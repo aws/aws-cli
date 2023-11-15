@@ -46,7 +46,7 @@
         {"shape":"ValidationException"},
         {"shape":"ThrottlingException"}
       ],
-      "documentation":"<p> Associates a resource with an application. The resource can be specified by its ARN or name. The application can be specified by ARN, ID, or name. </p>"
+      "documentation":"<p> Associates a resource with an application. The resource can be specified by its ARN or name. The application can be specified by ARN, ID, or name. </p> <p> <b>Minimum permissions</b> </p> <p> You must have the following permissions to associate a resource using the <code>OPTIONS</code> parameter set to <code>APPLY_APPLICATION_TAG</code>. </p> <ul> <li> <p> <code>tag:GetResources</code> </p> </li> <li> <p> <code>tag:TagResources</code> </p> </li> </ul> <p> You must also have these additional permissions if you don't use the <code>AWSServiceCatalogAppRegistryFullAccess</code> policy. For more information, see <a href=\"https://docs.aws.amazon.com/servicecatalog/latest/arguide/full.html\">AWSServiceCatalogAppRegistryFullAccess</a> in the AppRegistry Administrator Guide. </p> <ul> <li> <p> <code>resource-groups:DisassociateResource</code> </p> </li> <li> <p> <code>cloudformation:UpdateStack</code> </p> </li> <li> <p> <code>cloudformation:DescribeStacks</code> </p> </li> </ul> <note> <p> In addition, you must have the tagging permission defined by the Amazon Web Services service that creates the resource. For more information, see <a href=\"https://docs.aws.amazon.com/resourcegroupstagging/latest/APIReference/API_TagResources.html\">TagResources</a> in the <i>Resource Groups Tagging API Reference</i>. </p> </note>"
     },
     "CreateApplication":{
       "name":"CreateApplication",
@@ -142,7 +142,7 @@
         {"shape":"ValidationException"},
         {"shape":"ThrottlingException"}
       ],
-      "documentation":"<p>Disassociates a resource from application. Both the resource and the application can be specified either by ID or name.</p>"
+      "documentation":"<p> Disassociates a resource from application. Both the resource and the application can be specified either by ID or name. </p> <p> <b>Minimum permissions</b> </p> <p> You must have the following permissions to remove a resource that's been associated with an application using the <code>APPLY_APPLICATION_TAG</code> option for <a href=\"https://docs.aws.amazon.com/servicecatalog/latest/dg/API_app-registry_AssociateResource.html\">AssociateResource</a>. </p> <ul> <li> <p> <code>tag:GetResources</code> </p> </li> <li> <p> <code>tag:UntagResources</code> </p> </li> </ul> <p> You must also have the following permissions if you don't use the <code>AWSServiceCatalogAppRegistryFullAccess</code> policy. For more information, see <a href=\"https://docs.aws.amazon.com/servicecatalog/latest/arguide/full.html\">AWSServiceCatalogAppRegistryFullAccess</a> in the AppRegistry Administrator Guide. </p> <ul> <li> <p> <code>resource-groups:DisassociateResource</code> </p> </li> <li> <p> <code>cloudformation:UpdateStack</code> </p> </li> <li> <p> <code>cloudformation:DescribeStacks</code> </p> </li> </ul> <note> <p> In addition, you must have the tagging permission defined by the Amazon Web Services service that creates the resource. For more information, see <a href=\"https://docs.aws.amazon.com/resourcegroupstagging/latest/APIReference/API_UntTagResources.html\">UntagResources</a> in the <i>Resource Groups Tagging API Reference</i>. </p> </note>"
     },
     "GetApplication":{
       "name":"GetApplication",
@@ -433,6 +433,10 @@
         "tags":{
           "shape":"Tags",
           "documentation":"<p>Key-value pairs you can use to associate with the application.</p>"
+        },
+        "applicationTag":{
+          "shape":"ApplicationTagDefinition",
+          "documentation":"<p> A key-value pair that identifies an associated resource. </p>"
         }
       },
       "documentation":"<p>Represents a Amazon Web Services Service Catalog AppRegistry application that is the top-level node in a hierarchy of related cloud resource abstractions.</p>"
@@ -486,6 +490,41 @@
         }
       },
       "documentation":"<p>Summary of a Amazon Web Services Service Catalog AppRegistry application.</p>"
+    },
+    "ApplicationTagDefinition":{
+      "type":"map",
+      "key":{"shape":"TagKey"},
+      "value":{"shape":"TagValue"}
+    },
+    "ApplicationTagResult":{
+      "type":"structure",
+      "members":{
+        "applicationTagStatus":{
+          "shape":"ApplicationTagStatus",
+          "documentation":"<p> The application tag is in the process of being applied to a resource, was successfully applied to a resource, or failed to apply to a resource. </p>"
+        },
+        "errorMessage":{
+          "shape":"String",
+          "documentation":"<p> The message returned if the call fails. </p>"
+        },
+        "resources":{
+          "shape":"ResourcesList",
+          "documentation":"<p> The resources associated with an application </p>"
+        },
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p> A unique pagination token for each page of results. Make the call again with the returned token to retrieve the next page of results. </p>"
+        }
+      },
+      "documentation":"<p> The result of the application tag that's applied to a resource. </p>"
+    },
+    "ApplicationTagStatus":{
+      "type":"string",
+      "enum":[
+        "IN_PROGRESS",
+        "SUCCESS",
+        "FAILURE"
+      ]
     },
     "Arn":{
       "type":"string",
@@ -552,6 +591,10 @@
           "documentation":"<p>The name or ID of the resource of which the application will be associated.</p>",
           "location":"uri",
           "locationName":"resource"
+        },
+        "options":{
+          "shape":"Options",
+          "documentation":"<p> Determines whether an application tag is applied or skipped. </p>"
         }
       }
     },
@@ -565,12 +608,23 @@
         "resourceArn":{
           "shape":"Arn",
           "documentation":"<p>The Amazon resource name (ARN) that specifies the resource.</p>"
+        },
+        "options":{
+          "shape":"Options",
+          "documentation":"<p> Determines whether an application tag is applied or skipped. </p>"
         }
       }
     },
     "AssociationCount":{
       "type":"integer",
       "min":0
+    },
+    "AssociationOption":{
+      "type":"string",
+      "enum":[
+        "APPLY_APPLICATION_TAG",
+        "SKIP_APPLICATION_TAG"
+      ]
     },
     "AttributeGroup":{
       "type":"structure",
@@ -623,9 +677,7 @@
         },
         "name":{
           "shape":"Name",
-          "documentation":"<important> <p> This field is no longer supported. We recommend you don't use the field when using <code>ListAttributeGroupsForApplication</code>. </p> </important> <p> The name of the attribute group. </p>",
-          "deprecated":true,
-          "deprecatedMessage":"This field is deprecated. We recommend not using the field when using ListAttributeGroupsForApplication."
+          "documentation":"<important> <p> This field is no longer supported. We recommend you don't use the field when using <code>ListAttributeGroupsForApplication</code>. </p> </important> <p> The name of the attribute group. </p>"
         },
         "createdBy":{
           "shape":"CreatedBy",
@@ -965,8 +1017,18 @@
         "integrations":{
           "shape":"Integrations",
           "documentation":"<p> The information about the integration of the application with other services, such as Resource Groups. </p>"
+        },
+        "applicationTag":{
+          "shape":"ApplicationTagDefinition",
+          "documentation":"<p> A key-value pair that identifies an associated resource. </p>"
         }
       }
+    },
+    "GetAssociatedResourceFilter":{
+      "type":"list",
+      "member":{"shape":"ResourceItemStatus"},
+      "max":4,
+      "min":1
     },
     "GetAssociatedResourceRequest":{
       "type":"structure",
@@ -993,6 +1055,25 @@
           "documentation":"<p>The name or ID of the resource associated with the application.</p>",
           "location":"uri",
           "locationName":"resource"
+        },
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p> A unique pagination token for each page of results. Make the call again with the returned token to retrieve the next page of results. </p>",
+          "location":"querystring",
+          "locationName":"nextToken"
+        },
+        "resourceTagStatus":{
+          "shape":"GetAssociatedResourceFilter",
+          "documentation":"<p> States whether an application tag is applied, not applied, in the process of being applied, or skipped. </p>",
+          "location":"querystring",
+          "locationName":"resourceTagStatus"
+        },
+        "maxResults":{
+          "shape":"MaxResults",
+          "documentation":"<p> The maximum number of results to return. If the parameter is omitted, it defaults to 25. The value is optional. </p>",
+          "box":true,
+          "location":"querystring",
+          "locationName":"maxResults"
         }
       }
     },
@@ -1002,6 +1083,14 @@
         "resource":{
           "shape":"Resource",
           "documentation":"<p>The resource associated with the application.</p>"
+        },
+        "options":{
+          "shape":"Options",
+          "documentation":"<p> Determines whether an application tag is applied or skipped. </p>"
+        },
+        "applicationTagResult":{
+          "shape":"ApplicationTagResult",
+          "documentation":"<p> The result of the application that's tag applied to a resource. </p>"
         }
       }
     },
@@ -1073,7 +1162,8 @@
         "resourceGroup":{
           "shape":"ResourceGroup",
           "documentation":"<p> The information about the resource group integration.</p>"
-        }
+        },
+        "applicationTagResourceGroup":{"shape":"ResourceGroup"}
       },
       "documentation":"<p> The information about the service integration.</p>"
     },
@@ -1301,6 +1391,10 @@
       "min":1,
       "pattern":"[A-Za-z0-9+/=]+"
     },
+    "Options":{
+      "type":"list",
+      "member":{"shape":"AssociationOption"}
+    },
     "PutConfigurationRequest":{
       "type":"structure",
       "required":["configuration"],
@@ -1319,7 +1413,7 @@
           "documentation":"<p>The name of the resource.</p>"
         },
         "arn":{
-          "shape":"StackArn",
+          "shape":"Arn",
           "documentation":"<p>The Amazon resource name (ARN) of the resource.</p>"
         },
         "associationTime":{
@@ -1390,6 +1484,10 @@
         "resourceDetails":{
           "shape":"ResourceDetails",
           "documentation":"<p> The details related to the resource. </p>"
+        },
+        "options":{
+          "shape":"Options",
+          "documentation":"<p> Determines whether an application tag is applied or skipped. </p>"
         }
       },
       "documentation":"<p>The information about the resource.</p>"
@@ -1403,6 +1501,19 @@
         }
       },
       "documentation":"<p>The service integration information about the resource.</p>"
+    },
+    "ResourceItemStatus":{
+      "type":"string",
+      "enum":[
+        "SUCCESS",
+        "FAILED",
+        "IN_PROGRESS",
+        "SKIPPED"
+      ]
+    },
+    "ResourceItemType":{
+      "type":"string",
+      "pattern":"AWS::[a-zA-Z0-9]+::\\w+"
     },
     "ResourceNotFoundException":{
       "type":"structure",
@@ -1430,6 +1541,37 @@
       "type":"list",
       "member":{"shape":"ResourceInfo"}
     },
+    "ResourcesList":{
+      "type":"list",
+      "member":{"shape":"ResourcesListItem"}
+    },
+    "ResourcesListItem":{
+      "type":"structure",
+      "members":{
+        "resourceArn":{
+          "shape":"Arn",
+          "documentation":"<p> The Amazon resource name (ARN) of the resource. </p>"
+        },
+        "errorMessage":{
+          "shape":"ResourcesListItemErrorMessage",
+          "documentation":"<p> The message returned if the call fails. </p>"
+        },
+        "status":{
+          "shape":"String",
+          "documentation":"<p> The status of the list item. </p>"
+        },
+        "resourceType":{
+          "shape":"ResourceItemType",
+          "documentation":"<p> Provides information about the AppRegistry resource type. </p>"
+        }
+      },
+      "documentation":"<p> The resource in a list of resources. </p>"
+    },
+    "ResourcesListItemErrorMessage":{
+      "type":"string",
+      "max":1024,
+      "min":1
+    },
     "ServiceQuotaExceededException":{
       "type":"structure",
       "members":{
@@ -1438,10 +1580,6 @@
       "documentation":"<p> The maximum number of resources per account has been reached.</p>",
       "error":{"httpStatusCode":402},
       "exception":true
-    },
-    "StackArn":{
-      "type":"string",
-      "pattern":"arn:aws[-a-z]*:cloudformation:[a-z]{2}(-gov)?-[a-z]+-\\d:\\d{12}:stack/[a-zA-Z][-A-Za-z0-9]{0,127}/[0-9a-f]{8}(-[0-9a-f]{4}){3}-[0-9a-f]{12}"
     },
     "String":{"type":"string"},
     "SyncAction":{
@@ -1493,7 +1631,7 @@
       "type":"string",
       "max":128,
       "min":1,
-      "pattern":"[a-zA-Z+-=._:/]+"
+      "pattern":"^([\\p{L}\\p{Z}\\p{N}_.:\\/=+\\-@]*)$"
     },
     "TagKeyConfig":{
       "type":"string",

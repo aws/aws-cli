@@ -186,7 +186,7 @@
         {"shape":"NotFoundException"},
         {"shape":"ConflictException"}
       ],
-      "documentation":"<p>Update an existing pipe. When you call <code>UpdatePipe</code>, only the fields that are included in the request are changed, the rest are unchanged. The exception to this is if you modify any Amazon Web Services-service specific fields in the <code>SourceParameters</code>, <code>EnrichmentParameters</code>, or <code>TargetParameters</code> objects. The fields in these objects are updated atomically as one and override existing values. This is by design and means that if you don't specify an optional field in one of these Parameters objects, that field will be set to its system-default value after the update.</p> <p>For more information about pipes, see <a href=\"https://docs.aws.amazon.com/eventbridge/latest/userguide/eb-pipes.html\"> Amazon EventBridge Pipes</a> in the Amazon EventBridge User Guide.</p>",
+      "documentation":"<p>Update an existing pipe. When you call <code>UpdatePipe</code>, EventBridge only the updates fields you have specified in the request; the rest remain unchanged. The exception to this is if you modify any Amazon Web Services-service specific fields in the <code>SourceParameters</code>, <code>EnrichmentParameters</code>, or <code>TargetParameters</code> objects. For example, <code>DynamoDBStreamParameters</code> or <code>EventBridgeEventBusParameters</code>. EventBridge updates the fields in these objects atomically as one and overrides existing values. This is by design, and means that if you don't specify an optional field in one of these <code>Parameters</code> objects, EventBridge sets that field to its system-default value during the update.</p> <p>For more information about pipes, see <a href=\"https://docs.aws.amazon.com/eventbridge/latest/userguide/eb-pipes.html\"> Amazon EventBridge Pipes</a> in the Amazon EventBridge User Guide.</p>",
       "idempotent":true
     }
   },
@@ -409,6 +409,33 @@
       "max":1000,
       "min":0
     },
+    "CloudwatchLogGroupArn":{
+      "type":"string",
+      "max":1600,
+      "min":1,
+      "pattern":"^(^arn:aws([a-z]|\\-)*:logs:([a-z]{2}((-gov)|(-iso(b?)))?-[a-z]+-\\d{1}):(\\d{12}):log-group:.+)$"
+    },
+    "CloudwatchLogsLogDestination":{
+      "type":"structure",
+      "members":{
+        "LogGroupArn":{
+          "shape":"CloudwatchLogGroupArn",
+          "documentation":"<p>The Amazon Web Services Resource Name (ARN) for the CloudWatch log group to which EventBridge sends the log records.</p>"
+        }
+      },
+      "documentation":"<p>The Amazon CloudWatch Logs logging configuration settings for the pipe.</p>"
+    },
+    "CloudwatchLogsLogDestinationParameters":{
+      "type":"structure",
+      "required":["LogGroupArn"],
+      "members":{
+        "LogGroupArn":{
+          "shape":"CloudwatchLogGroupArn",
+          "documentation":"<p>The Amazon Web Services Resource Name (ARN) for the CloudWatch log group to which EventBridge sends the log records.</p>"
+        }
+      },
+      "documentation":"<p>The Amazon CloudWatch Logs logging configuration settings for the pipe.</p>"
+    },
     "ConflictException":{
       "type":"structure",
       "required":[
@@ -459,6 +486,10 @@
           "shape":"PipeEnrichmentParameters",
           "documentation":"<p>The parameters required to set up enrichment on your pipe.</p>"
         },
+        "LogConfiguration":{
+          "shape":"PipeLogConfigurationParameters",
+          "documentation":"<p>The logging configuration settings for the pipe.</p>"
+        },
         "Name":{
           "shape":"PipeName",
           "documentation":"<p>The name of the pipe.</p>",
@@ -487,7 +518,7 @@
         },
         "TargetParameters":{
           "shape":"PipeTargetParameters",
-          "documentation":"<p>The parameters required to set up a target for your pipe.</p>"
+          "documentation":"<p>The parameters required to set up a target for your pipe.</p> <p>For more information about pipe target parameters, including how to use dynamic path parameters, see <a href=\"https://docs.aws.amazon.com/eventbridge/latest/userguide/eb-pipes-event-target.html\">Target parameters</a> in the <i>Amazon EventBridge User Guide</i>.</p>"
         }
       }
     },
@@ -539,7 +570,7 @@
       "members":{
         "Arn":{
           "shape":"Arn",
-          "documentation":"<p>The ARN of the Amazon SQS queue specified as the target for the dead-letter queue.</p>"
+          "documentation":"<p>The ARN of the specified target for the dead-letter queue. </p> <p>For Amazon Kinesis stream and Amazon DynamoDB stream sources, specify either an Amazon SNS topic or Amazon SQS queue ARN.</p>"
         }
       },
       "documentation":"<p>A <code>DeadLetterConfig</code> object that contains information about a dead-letter queue configuration.</p>"
@@ -632,6 +663,10 @@
           "shape":"Timestamp",
           "documentation":"<p>When the pipe was last updated, in <a href=\"https://www.w3.org/TR/NOTE-datetime\">ISO-8601 format</a> (YYYY-MM-DDThh:mm:ss.sTZD).</p>"
         },
+        "LogConfiguration":{
+          "shape":"PipeLogConfiguration",
+          "documentation":"<p>The logging configuration settings for the pipe.</p>"
+        },
         "Name":{
           "shape":"PipeName",
           "documentation":"<p>The name of the pipe.</p>"
@@ -662,7 +697,7 @@
         },
         "TargetParameters":{
           "shape":"PipeTargetParameters",
-          "documentation":"<p>The parameters required to set up a target for your pipe.</p>"
+          "documentation":"<p>The parameters required to set up a target for your pipe.</p> <p>For more information about pipe target parameters, including how to use dynamic path parameters, see <a href=\"https://docs.aws.amazon.com/eventbridge/latest/userguide/eb-pipes-event-target.html\">Target parameters</a> in the <i>Amazon EventBridge User Guide</i>.</p>"
         }
       }
     },
@@ -914,13 +949,40 @@
           "documentation":"<p>The event patterns.</p>"
         }
       },
-      "documentation":"<p>The collection of event patterns used to filter events. For more information, see <a href=\"https://docs.aws.amazon.com/eventbridge/latest/userguide/eventbridge-and-event-patterns.html\">Events and Event Patterns</a> in the <i>Amazon EventBridge User Guide</i>.</p>"
+      "documentation":"<p>The collection of event patterns used to filter events.</p> <p>To remove a filter, specify a <code>FilterCriteria</code> object with an empty array of <code>Filter</code> objects.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/eventbridge/latest/userguide/eventbridge-and-event-patterns.html\">Events and Event Patterns</a> in the <i>Amazon EventBridge User Guide</i>.</p>"
     },
     "FilterList":{
       "type":"list",
       "member":{"shape":"Filter"},
       "max":5,
       "min":0
+    },
+    "FirehoseArn":{
+      "type":"string",
+      "max":1600,
+      "min":1,
+      "pattern":"^(^arn:aws([a-z]|\\-)*:firehose:([a-z]{2}((-gov)|(-iso(b?)))?-[a-z]+-\\d{1}):(\\d{12}):deliverystream/.+)$"
+    },
+    "FirehoseLogDestination":{
+      "type":"structure",
+      "members":{
+        "DeliveryStreamArn":{
+          "shape":"FirehoseArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the Kinesis Data Firehose delivery stream to which EventBridge delivers the pipe log records.</p>"
+        }
+      },
+      "documentation":"<p>The Amazon Kinesis Data Firehose logging configuration settings for the pipe.</p>"
+    },
+    "FirehoseLogDestinationParameters":{
+      "type":"structure",
+      "required":["DeliveryStreamArn"],
+      "members":{
+        "DeliveryStreamArn":{
+          "shape":"FirehoseArn",
+          "documentation":"<p>Specifies the Amazon Resource Name (ARN) of the Kinesis Data Firehose delivery stream to which EventBridge delivers the pipe log records.</p>"
+        }
+      },
+      "documentation":"<p>The Amazon Kinesis Data Firehose logging configuration settings for the pipe.</p>"
     },
     "HeaderKey":{
       "type":"string",
@@ -939,6 +1001,14 @@
       "min":0,
       "pattern":"^[ \\t]*[\\x20-\\x7E]+([ \\t]+[\\x20-\\x7E]+)*[ \\t]*|(\\$(\\.[\\w/_-]+(\\[(\\d+|\\*)\\])*)*)$",
       "sensitive":true
+    },
+    "IncludeExecutionData":{
+      "type":"list",
+      "member":{"shape":"IncludeExecutionDataOption"}
+    },
+    "IncludeExecutionDataOption":{
+      "type":"string",
+      "enum":["ALL"]
     },
     "InputTemplate":{
       "type":"string",
@@ -1112,6 +1182,15 @@
         }
       }
     },
+    "LogLevel":{
+      "type":"string",
+      "enum":[
+        "OFF",
+        "ERROR",
+        "INFO",
+        "TRACE"
+      ]
+    },
     "LogStreamName":{
       "type":"string",
       "max":256,
@@ -1232,9 +1311,7 @@
     },
     "PathParameterList":{
       "type":"list",
-      "member":{"shape":"PathParameter"},
-      "max":1,
-      "min":0
+      "member":{"shape":"PathParameter"}
     },
     "Pipe":{
       "type":"structure",
@@ -1322,7 +1399,7 @@
         },
         "InputTemplate":{
           "shape":"InputTemplate",
-          "documentation":"<p>Valid JSON text passed to the enrichment. In this case, nothing from the event itself is passed to the enrichment. For more information, see <a href=\"http://www.rfc-editor.org/rfc/rfc7159.txt\">The JavaScript Object Notation (JSON) Data Interchange Format</a>.</p>"
+          "documentation":"<p>Valid JSON text passed to the enrichment. In this case, nothing from the event itself is passed to the enrichment. For more information, see <a href=\"http://www.rfc-editor.org/rfc/rfc7159.txt\">The JavaScript Object Notation (JSON) Data Interchange Format</a>.</p> <p>To remove an input template, specify an empty string.</p>"
         }
       },
       "documentation":"<p>The parameters required to set up enrichment on your pipe.</p>"
@@ -1330,6 +1407,59 @@
     "PipeList":{
       "type":"list",
       "member":{"shape":"Pipe"}
+    },
+    "PipeLogConfiguration":{
+      "type":"structure",
+      "members":{
+        "CloudwatchLogsLogDestination":{
+          "shape":"CloudwatchLogsLogDestination",
+          "documentation":"<p>The Amazon CloudWatch Logs logging configuration settings for the pipe.</p>"
+        },
+        "FirehoseLogDestination":{
+          "shape":"FirehoseLogDestination",
+          "documentation":"<p>The Amazon Kinesis Data Firehose logging configuration settings for the pipe.</p>"
+        },
+        "IncludeExecutionData":{
+          "shape":"IncludeExecutionData",
+          "documentation":"<p>Whether the execution data (specifically, the <code>payload</code>, <code>awsRequest</code>, and <code>awsResponse</code> fields) is included in the log messages for this pipe.</p> <p>This applies to all log destinations for the pipe.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/eventbridge/latest/userguide/eb-pipes-logs.html#eb-pipes-logs-execution-data\">Including execution data in logs</a> in the <i>Amazon EventBridge User Guide</i>.</p>"
+        },
+        "Level":{
+          "shape":"LogLevel",
+          "documentation":"<p>The level of logging detail to include. This applies to all log destinations for the pipe.</p>"
+        },
+        "S3LogDestination":{
+          "shape":"S3LogDestination",
+          "documentation":"<p>The Amazon S3 logging configuration settings for the pipe.</p>"
+        }
+      },
+      "documentation":"<p>The logging configuration settings for the pipe.</p>"
+    },
+    "PipeLogConfigurationParameters":{
+      "type":"structure",
+      "required":["Level"],
+      "members":{
+        "CloudwatchLogsLogDestination":{
+          "shape":"CloudwatchLogsLogDestinationParameters",
+          "documentation":"<p>The Amazon CloudWatch Logs logging configuration settings for the pipe.</p>"
+        },
+        "FirehoseLogDestination":{
+          "shape":"FirehoseLogDestinationParameters",
+          "documentation":"<p>The Amazon Kinesis Data Firehose logging configuration settings for the pipe.</p>"
+        },
+        "IncludeExecutionData":{
+          "shape":"IncludeExecutionData",
+          "documentation":"<p>Specify <code>ON</code> to include the execution data (specifically, the <code>payload</code> and <code>awsRequest</code> fields) in the log messages for this pipe.</p> <p>This applies to all log destinations for the pipe.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/eventbridge/latest/userguide/eb-pipes-logs.html#eb-pipes-logs-execution-data\">Including execution data in logs</a> in the <i>Amazon EventBridge User Guide</i>.</p> <p>The default is <code>OFF</code>.</p>"
+        },
+        "Level":{
+          "shape":"LogLevel",
+          "documentation":"<p>The level of logging detail to include. This applies to all log destinations for the pipe.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/eventbridge/latest/userguide/eb-pipes-logs.html#eb-pipes-logs-level\">Specifying EventBridge Pipes log level</a> in the <i>Amazon EventBridge User Guide</i>.</p>"
+        },
+        "S3LogDestination":{
+          "shape":"S3LogDestinationParameters",
+          "documentation":"<p>The Amazon S3 logging configuration settings for the pipe.</p>"
+        }
+      },
+      "documentation":"<p>Specifies the logging configuration settings for the pipe.</p> <p>When you call <code>UpdatePipe</code>, EventBridge updates the fields in the <code>PipeLogConfigurationParameters</code> object atomically as one and overrides existing values. This is by design. If you don't specify an optional field in any of the Amazon Web Services service parameters objects (<code>CloudwatchLogsLogDestinationParameters</code>, <code>FirehoseLogDestinationParameters</code>, or <code>S3LogDestinationParameters</code>), EventBridge sets that field to its system-default value during the update. </p> <p>For example, suppose when you created the pipe you specified a Kinesis Data Firehose stream log destination. You then update the pipe to add an Amazon S3 log destination. In addition to specifying the <code>S3LogDestinationParameters</code> for the new log destination, you must also specify the fields in the <code>FirehoseLogDestinationParameters</code> object in order to retain the Kinesis Data Firehose stream log destination. </p> <p>For more information on generating pipe log records, see <a href=\"eventbridge/latest/userguide/eb-pipes-logs.html\">Log EventBridge Pipes</a> in the <i>Amazon EventBridge User Guide</i>.</p>"
     },
     "PipeName":{
       "type":"string",
@@ -1489,7 +1619,7 @@
         },
         "FilterCriteria":{
           "shape":"FilterCriteria",
-          "documentation":"<p>The collection of event patterns used to filter events. For more information, see <a href=\"https://docs.aws.amazon.com/eventbridge/latest/userguide/eventbridge-and-event-patterns.html\">Events and Event Patterns</a> in the <i>Amazon EventBridge User Guide</i>.</p>"
+          "documentation":"<p>The collection of event patterns used to filter events.</p> <p>To remove a filter, specify a <code>FilterCriteria</code> object with an empty array of <code>Filter</code> objects.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/eventbridge/latest/userguide/eventbridge-and-event-patterns.html\">Events and Event Patterns</a> in the <i>Amazon EventBridge User Guide</i>.</p>"
         },
         "KinesisStreamParameters":{
           "shape":"PipeSourceKinesisStreamParameters",
@@ -1614,7 +1744,11 @@
         "CREATE_FAILED",
         "UPDATE_FAILED",
         "START_FAILED",
-        "STOP_FAILED"
+        "STOP_FAILED",
+        "DELETE_FAILED",
+        "CREATE_ROLLBACK_FAILED",
+        "DELETE_ROLLBACK_FAILED",
+        "UPDATE_ROLLBACK_FAILED"
       ]
     },
     "PipeStateReason":{
@@ -1751,7 +1885,7 @@
         },
         "EndpointId":{
           "shape":"EventBridgeEndpointId",
-          "documentation":"<p>The URL subdomain of the endpoint. For example, if the URL for Endpoint is https://abcde.veo.endpoints.event.amazonaws.com, then the EndpointId is <code>abcde.veo</code>.</p> <important> <p>When using Java, you must include <code>auth-crt</code> on the class path.</p> </important>"
+          "documentation":"<p>The URL subdomain of the endpoint. For example, if the URL for Endpoint is https://abcde.veo.endpoints.event.amazonaws.com, then the EndpointId is <code>abcde.veo</code>.</p>"
         },
         "Resources":{
           "shape":"EventBridgeEventResourceList",
@@ -1802,14 +1936,14 @@
           "documentation":"<p>Determines which shard in the stream the data record is assigned to. Partition keys are Unicode strings with a maximum length limit of 256 characters for each key. Amazon Kinesis Data Streams uses the partition key as input to a hash function that maps the partition key and associated data to a specific shard. Specifically, an MD5 hash function is used to map partition keys to 128-bit integer values and to map associated data records to shards. As a result of this hashing mechanism, all data records with the same partition key map to the same shard within the stream.</p>"
         }
       },
-      "documentation":"<p>The parameters for using a Kinesis stream as a source.</p>"
+      "documentation":"<p>The parameters for using a Kinesis stream as a target.</p>"
     },
     "PipeTargetLambdaFunctionParameters":{
       "type":"structure",
       "members":{
         "InvocationType":{
           "shape":"PipeTargetInvocationType",
-          "documentation":"<p>Choose from the following options.</p> <ul> <li> <p> <code>RequestResponse</code> (default) - Invoke the function synchronously. Keep the connection open until the function returns a response or times out. The API response includes the function response and additional data.</p> </li> <li> <p> <code>Event</code> - Invoke the function asynchronously. Send events that fail multiple times to the function's dead-letter queue (if it's configured). The API response only includes a status code.</p> </li> <li> <p> <code>DryRun</code> - Validate parameter values and verify that the user or role has permission to invoke the function.</p> </li> </ul>"
+          "documentation":"<p>Specify whether to invoke the function synchronously or asynchronously.</p> <ul> <li> <p> <code>REQUEST_RESPONSE</code> (default) - Invoke synchronously. This corresponds to the <code>RequestResponse</code> option in the <code>InvocationType</code> parameter for the Lambda <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/API_Invoke.html#API_Invoke_RequestSyntax\">Invoke</a> API.</p> </li> <li> <p> <code>FIRE_AND_FORGET</code> - Invoke asynchronously. This corresponds to the <code>Event</code> option in the <code>InvocationType</code> parameter for the Lambda <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/API_Invoke.html#API_Invoke_RequestSyntax\">Invoke</a> API.</p> </li> </ul> <p>For more information, see <a href=\"https://docs.aws.amazon.com/eventbridge/latest/userguide/eb-pipes.html#pipes-invocation\">Invocation types</a> in the <i>Amazon EventBridge User Guide</i>.</p>"
         }
       },
       "documentation":"<p>The parameters for using a Lambda function as a target.</p>"
@@ -1839,11 +1973,11 @@
         },
         "InputTemplate":{
           "shape":"InputTemplate",
-          "documentation":"<p>Valid JSON text passed to the target. In this case, nothing from the event itself is passed to the target. For more information, see <a href=\"http://www.rfc-editor.org/rfc/rfc7159.txt\">The JavaScript Object Notation (JSON) Data Interchange Format</a>.</p>"
+          "documentation":"<p>Valid JSON text passed to the target. In this case, nothing from the event itself is passed to the target. For more information, see <a href=\"http://www.rfc-editor.org/rfc/rfc7159.txt\">The JavaScript Object Notation (JSON) Data Interchange Format</a>.</p> <p>To remove an input template, specify an empty string.</p>"
         },
         "KinesisStreamParameters":{
           "shape":"PipeTargetKinesisStreamParameters",
-          "documentation":"<p>The parameters for using a Kinesis stream as a source.</p>"
+          "documentation":"<p>The parameters for using a Kinesis stream as a target.</p>"
         },
         "LambdaFunctionParameters":{
           "shape":"PipeTargetLambdaFunctionParameters",
@@ -1851,7 +1985,7 @@
         },
         "RedshiftDataParameters":{
           "shape":"PipeTargetRedshiftDataParameters",
-          "documentation":"<p>These are custom parameters to be used when the target is a Amazon Redshift cluster to invoke the Amazon Redshift Data API ExecuteStatement.</p>"
+          "documentation":"<p>These are custom parameters to be used when the target is a Amazon Redshift cluster to invoke the Amazon Redshift Data API BatchExecuteStatement.</p>"
         },
         "SageMakerPipelineParameters":{
           "shape":"PipeTargetSageMakerPipelineParameters",
@@ -1859,14 +1993,14 @@
         },
         "SqsQueueParameters":{
           "shape":"PipeTargetSqsQueueParameters",
-          "documentation":"<p>The parameters for using a Amazon SQS stream as a source.</p>"
+          "documentation":"<p>The parameters for using a Amazon SQS stream as a target.</p>"
         },
         "StepFunctionStateMachineParameters":{
           "shape":"PipeTargetStateMachineParameters",
           "documentation":"<p>The parameters for using a Step Functions state machine as a target.</p>"
         }
       },
-      "documentation":"<p>The parameters required to set up a target for your pipe.</p>"
+      "documentation":"<p>The parameters required to set up a target for your pipe.</p> <p>For more information about pipe target parameters, including how to use dynamic path parameters, see <a href=\"https://docs.aws.amazon.com/eventbridge/latest/userguide/eb-pipes-event-target.html\">Target parameters</a> in the <i>Amazon EventBridge User Guide</i>.</p>"
     },
     "PipeTargetRedshiftDataParameters":{
       "type":"structure",
@@ -1885,7 +2019,7 @@
         },
         "SecretManagerArn":{
           "shape":"SecretManagerArnOrJsonPath",
-          "documentation":"<p>The name or ARN of the secret that enables access to the database. Required when authenticating using SageMaker.</p>"
+          "documentation":"<p>The name or ARN of the secret that enables access to the database. Required when authenticating using Secrets Manager.</p>"
         },
         "Sqls":{
           "shape":"Sqls",
@@ -1900,7 +2034,7 @@
           "documentation":"<p>Indicates whether to send an event back to EventBridge after the SQL statement runs.</p>"
         }
       },
-      "documentation":"<p>These are custom parameters to be used when the target is a Amazon Redshift cluster to invoke the Amazon Redshift Data API ExecuteStatement.</p>"
+      "documentation":"<p>These are custom parameters to be used when the target is a Amazon Redshift cluster to invoke the Amazon Redshift Data API BatchExecuteStatement.</p>"
     },
     "PipeTargetSageMakerPipelineParameters":{
       "type":"structure",
@@ -1924,14 +2058,14 @@
           "documentation":"<p>The FIFO message group ID to use as the target.</p>"
         }
       },
-      "documentation":"<p>The parameters for using a Amazon SQS stream as a source.</p>"
+      "documentation":"<p>The parameters for using a Amazon SQS stream as a target.</p>"
     },
     "PipeTargetStateMachineParameters":{
       "type":"structure",
       "members":{
         "InvocationType":{
           "shape":"PipeTargetInvocationType",
-          "documentation":"<p>Specify whether to wait for the state machine to finish or not.</p>"
+          "documentation":"<p>Specify whether to invoke the Step Functions state machine synchronously or asynchronously.</p> <ul> <li> <p> <code>REQUEST_RESPONSE</code> (default) - Invoke synchronously. For more information, see <a href=\"https://docs.aws.amazon.com/step-functions/latest/apireference/API_StartSyncExecution.html\">StartSyncExecution</a> in the <i>Step Functions API Reference</i>.</p> <note> <p> <code>REQUEST_RESPONSE</code> is not supported for <code>STANDARD</code> state machine workflows.</p> </note> </li> <li> <p> <code>FIRE_AND_FORGET</code> - Invoke asynchronously. For more information, see <a href=\"https://docs.aws.amazon.com/step-functions/latest/apireference/API_StartExecution.html\">StartExecution</a> in the <i>Step Functions API Reference</i>.</p> </li> </ul> <p>For more information, see <a href=\"https://docs.aws.amazon.com/eventbridge/latest/userguide/eb-pipes.html#pipes-invocation\">Invocation types</a> in the <i>Amazon EventBridge User Guide</i>.</p>"
         }
       },
       "documentation":"<p>The parameters for using a Step Functions state machine as a target.</p>"
@@ -2056,6 +2190,76 @@
       "max":1600,
       "min":1,
       "pattern":"^arn:(aws[a-zA-Z-]*)?:iam::\\d{12}:role/?[a-zA-Z0-9+=,.@\\-_/]+$"
+    },
+    "S3LogDestination":{
+      "type":"structure",
+      "members":{
+        "BucketName":{
+          "shape":"String",
+          "documentation":"<p>The name of the Amazon S3 bucket to which EventBridge delivers the log records for the pipe.</p>"
+        },
+        "BucketOwner":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Web Services account that owns the Amazon S3 bucket to which EventBridge delivers the log records for the pipe.</p>"
+        },
+        "OutputFormat":{
+          "shape":"S3OutputFormat",
+          "documentation":"<p>The format EventBridge uses for the log records.</p> <ul> <li> <p> <code>json</code>: JSON </p> </li> <li> <p> <code>plain</code>: Plain text</p> </li> <li> <p> <code>w3c</code>: <a href=\"https://www.w3.org/TR/WD-logfile\">W3C extended logging file format</a> </p> </li> </ul>"
+        },
+        "Prefix":{
+          "shape":"String",
+          "documentation":"<p>The prefix text with which to begin Amazon S3 log object names.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/using-prefixes.html\">Organizing objects using prefixes</a> in the <i>Amazon Simple Storage Service User Guide</i>.</p>"
+        }
+      },
+      "documentation":"<p>The Amazon S3 logging configuration settings for the pipe.</p>"
+    },
+    "S3LogDestinationParameters":{
+      "type":"structure",
+      "required":[
+        "BucketName",
+        "BucketOwner"
+      ],
+      "members":{
+        "BucketName":{
+          "shape":"S3LogDestinationParametersBucketNameString",
+          "documentation":"<p>Specifies the name of the Amazon S3 bucket to which EventBridge delivers the log records for the pipe.</p>"
+        },
+        "BucketOwner":{
+          "shape":"S3LogDestinationParametersBucketOwnerString",
+          "documentation":"<p>Specifies the Amazon Web Services account that owns the Amazon S3 bucket to which EventBridge delivers the log records for the pipe.</p>"
+        },
+        "OutputFormat":{
+          "shape":"S3OutputFormat",
+          "documentation":"<p>How EventBridge should format the log records.</p> <ul> <li> <p> <code>json</code>: JSON </p> </li> <li> <p> <code>plain</code>: Plain text</p> </li> <li> <p> <code>w3c</code>: <a href=\"https://www.w3.org/TR/WD-logfile\">W3C extended logging file format</a> </p> </li> </ul>"
+        },
+        "Prefix":{
+          "shape":"S3LogDestinationParametersPrefixString",
+          "documentation":"<p>Specifies any prefix text with which to begin Amazon S3 log object names.</p> <p>You can use prefixes to organize the data that you store in Amazon S3 buckets. A prefix is a string of characters at the beginning of the object key name. A prefix can be any length, subject to the maximum length of the object key name (1,024 bytes). For more information, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/using-prefixes.html\">Organizing objects using prefixes</a> in the <i>Amazon Simple Storage Service User Guide</i>.</p>"
+        }
+      },
+      "documentation":"<p>The Amazon S3 logging configuration settings for the pipe.</p>"
+    },
+    "S3LogDestinationParametersBucketNameString":{
+      "type":"string",
+      "max":63,
+      "min":3
+    },
+    "S3LogDestinationParametersBucketOwnerString":{
+      "type":"string",
+      "pattern":"^\\d{12}$"
+    },
+    "S3LogDestinationParametersPrefixString":{
+      "type":"string",
+      "max":256,
+      "min":0
+    },
+    "S3OutputFormat":{
+      "type":"string",
+      "enum":[
+        "json",
+        "plain",
+        "w3c"
+      ]
     },
     "SageMakerPipelineParameter":{
       "type":"structure",
@@ -2225,6 +2429,7 @@
       "type":"list",
       "member":{"shape":"Sql"},
       "documentation":"<p>// A list of SQLs.</p>",
+      "max":40,
       "min":1
     },
     "StartPipeRequest":{
@@ -2502,6 +2707,10 @@
           "shape":"PipeEnrichmentParameters",
           "documentation":"<p>The parameters required to set up enrichment on your pipe.</p>"
         },
+        "LogConfiguration":{
+          "shape":"PipeLogConfigurationParameters",
+          "documentation":"<p>The logging configuration settings for the pipe.</p>"
+        },
         "Name":{
           "shape":"PipeName",
           "documentation":"<p>The name of the pipe.</p>",
@@ -2522,7 +2731,7 @@
         },
         "TargetParameters":{
           "shape":"PipeTargetParameters",
-          "documentation":"<p>The parameters required to set up a target for your pipe.</p>"
+          "documentation":"<p>The parameters required to set up a target for your pipe.</p> <p>For more information about pipe target parameters, including how to use dynamic path parameters, see <a href=\"https://docs.aws.amazon.com/eventbridge/latest/userguide/eb-pipes-event-target.html\">Target parameters</a> in the <i>Amazon EventBridge User Guide</i>.</p>"
         }
       }
     },
@@ -2673,7 +2882,7 @@
         },
         "FilterCriteria":{
           "shape":"FilterCriteria",
-          "documentation":"<p>The collection of event patterns used to filter events. For more information, see <a href=\"https://docs.aws.amazon.com/eventbridge/latest/userguide/eventbridge-and-event-patterns.html\">Events and Event Patterns</a> in the <i>Amazon EventBridge User Guide</i>.</p>"
+          "documentation":"<p>The collection of event patterns used to filter events.</p> <p>To remove a filter, specify a <code>FilterCriteria</code> object with an empty array of <code>Filter</code> objects.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/eventbridge/latest/userguide/eventbridge-and-event-patterns.html\">Events and Event Patterns</a> in the <i>Amazon EventBridge User Guide</i>.</p>"
         },
         "KinesisStreamParameters":{
           "shape":"UpdatePipeSourceKinesisStreamParameters",

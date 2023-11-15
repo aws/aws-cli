@@ -1287,7 +1287,7 @@
       "type":"string",
       "max":36,
       "min":36,
-      "pattern":".*[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}.*"
+      "pattern":"[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}"
     },
     "AnalysisTemplateSummary":{
       "type":"structure",
@@ -1352,7 +1352,7 @@
     },
     "AnalysisTemplateText":{
       "type":"string",
-      "max":15000,
+      "max":90000,
       "min":0
     },
     "BatchGetCollaborationAnalysisTemplateError":{
@@ -1713,7 +1713,7 @@
       "type":"string",
       "max":36,
       "min":36,
-      "pattern":".*[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}.*"
+      "pattern":"[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}"
     },
     "CollaborationName":{
       "type":"string",
@@ -2034,7 +2034,7 @@
       "type":"string",
       "max":36,
       "min":36,
-      "pattern":".*[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}.*"
+      "pattern":"[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}"
     },
     "ConfiguredTableAssociationSummary":{
       "type":"structure",
@@ -2092,7 +2092,7 @@
       "type":"string",
       "max":36,
       "min":36,
-      "pattern":".*[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}.*"
+      "pattern":"[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}"
     },
     "ConfiguredTableSummary":{
       "type":"structure",
@@ -2269,6 +2269,10 @@
         "tags":{
           "shape":"TagMap",
           "documentation":"<p>An optional label that you can assign to a resource when you create it. Each tag consists of a key and an optional value, both of which you define. When you use tagging, you can also use tag-based access control in IAM policies to control access to this resource.</p>"
+        },
+        "creatorPaymentConfiguration":{
+          "shape":"PaymentConfiguration",
+          "documentation":"<p>The collaboration creator's payment responsibilities set by the collaboration creator. </p> <p>If the collaboration creator hasn't specified anyone as the member paying for query compute costs, then the member who can query is the default payer.</p>"
         }
       }
     },
@@ -2421,7 +2425,7 @@
         },
         "queryLogStatus":{
           "shape":"MembershipQueryLogStatus",
-          "documentation":"<p>An indicator as to whether query logging has been enabled or disabled for the collaboration.</p>"
+          "documentation":"<p>An indicator as to whether query logging has been enabled or disabled for the membership.</p>"
         },
         "tags":{
           "shape":"TagMap",
@@ -2430,6 +2434,10 @@
         "defaultResultConfiguration":{
           "shape":"MembershipProtectedQueryResultConfiguration",
           "documentation":"<p>The default protected query result configuration as specified by the member who can receive results.</p>"
+        },
+        "paymentConfiguration":{
+          "shape":"MembershipPaymentConfiguration",
+          "documentation":"<p>The payment responsibilities accepted by the collaboration member.</p> <p>Not required if the collaboration member has the member ability to run queries. </p> <p>Required if the collaboration member doesn't have the member ability to run queries but is configured as a payer by the collaboration creator. </p>"
         }
       }
     },
@@ -2454,19 +2462,19 @@
       "members":{
         "allowCleartext":{
           "shape":"Boolean",
-          "documentation":"<p>Indicates whether encrypted tables can contain cleartext data (true) or are to cryptographically process every column (false).</p>"
+          "documentation":"<p>Indicates whether encrypted tables can contain cleartext data (<code>TRUE</code>) or are to cryptographically process every column (<code>FALSE</code>).</p>"
         },
         "allowDuplicates":{
           "shape":"Boolean",
-          "documentation":"<p>Indicates whether Fingerprint columns can contain duplicate entries (true) or are to contain only non-repeated values (false).</p>"
+          "documentation":"<p>Indicates whether Fingerprint columns can contain duplicate entries (<code>TRUE</code>) or are to contain only non-repeated values (<code>FALSE</code>).</p>"
         },
         "allowJoinsOnColumnsWithDifferentNames":{
           "shape":"Boolean",
-          "documentation":"<p>Indicates whether Fingerprint columns can be joined on any other Fingerprint column with a different name (true) or can only be joined on Fingerprint columns of the same name (false).</p>"
+          "documentation":"<p>Indicates whether Fingerprint columns can be joined on any other Fingerprint column with a different name (<code>TRUE</code>) or can only be joined on Fingerprint columns of the same name (<code>FALSE</code>).</p>"
         },
         "preserveNulls":{
           "shape":"Boolean",
-          "documentation":"<p>Indicates whether NULL values are to be copied as NULL to encrypted tables (true) or cryptographically processed (false).</p>"
+          "documentation":"<p>Indicates whether NULL values are to be copied as NULL to encrypted tables (<code>TRUE</code>) or cryptographically processed (<code>FALSE</code>).</p>"
         }
       },
       "documentation":"<p>The settings for client-side encryption for cryptographic computing.</p>"
@@ -3411,6 +3419,10 @@
         "displayName":{
           "shape":"DisplayName",
           "documentation":"<p>The member's display name.</p>"
+        },
+        "paymentConfiguration":{
+          "shape":"PaymentConfiguration",
+          "documentation":"<p>The collaboration member's payment responsibilities set by the collaboration creator. </p> <p>If the collaboration creator hasn't speciﬁed anyone as the member paying for query compute costs, then the member who can query is the default payer.</p>"
         }
       },
       "documentation":"<p>Basic metadata used to construct a new member.</p>"
@@ -3432,7 +3444,8 @@
         "displayName",
         "abilities",
         "createTime",
-        "updateTime"
+        "updateTime",
+        "paymentConfiguration"
       ],
       "members":{
         "accountId":{
@@ -3441,7 +3454,7 @@
         },
         "status":{
           "shape":"MemberStatus",
-          "documentation":"<p>The status of the member. Valid values are `INVITED`, `ACTIVE`, `LEFT`, and `REMOVED`.</p>"
+          "documentation":"<p>The status of the member. </p>"
         },
         "displayName":{
           "shape":"DisplayName",
@@ -3466,6 +3479,10 @@
         "membershipArn":{
           "shape":"MembershipArn",
           "documentation":"<p>The unique ARN for the member's associated membership, if present.</p>"
+        },
+        "paymentConfiguration":{
+          "shape":"PaymentConfiguration",
+          "documentation":"<p>The collaboration member's payment responsibilities set by the collaboration creator. </p>"
         }
       },
       "documentation":"<p>The member object listed by the request.</p>"
@@ -3488,7 +3505,8 @@
         "updateTime",
         "status",
         "memberAbilities",
-        "queryLogStatus"
+        "queryLogStatus",
+        "paymentConfiguration"
       ],
       "members":{
         "id":{
@@ -3529,7 +3547,7 @@
         },
         "status":{
           "shape":"MembershipStatus",
-          "documentation":"<p>The status of the membership. Valid values are `ACTIVE`, `REMOVED`, and `COLLABORATION_DELETED`.</p>"
+          "documentation":"<p>The status of the membership.</p>"
         },
         "memberAbilities":{
           "shape":"MemberAbilities",
@@ -3537,11 +3555,15 @@
         },
         "queryLogStatus":{
           "shape":"MembershipQueryLogStatus",
-          "documentation":"<p>An indicator as to whether query logging has been enabled or disabled for the collaboration.</p>"
+          "documentation":"<p>An indicator as to whether query logging has been enabled or disabled for the membership.</p>"
         },
         "defaultResultConfiguration":{
           "shape":"MembershipProtectedQueryResultConfiguration",
           "documentation":"<p>The default protected query result configuration as specified by the member who can receive results.</p>"
+        },
+        "paymentConfiguration":{
+          "shape":"MembershipPaymentConfiguration",
+          "documentation":"<p>The payment responsibilities accepted by the collaboration member.</p>"
         }
       },
       "documentation":"<p>The membership object.</p>"
@@ -3556,7 +3578,18 @@
       "type":"string",
       "max":36,
       "min":36,
-      "pattern":".*[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}.*"
+      "pattern":"[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}"
+    },
+    "MembershipPaymentConfiguration":{
+      "type":"structure",
+      "required":["queryCompute"],
+      "members":{
+        "queryCompute":{
+          "shape":"MembershipQueryComputePaymentConfig",
+          "documentation":"<p>The payment responsibilities accepted by the collaboration member for query compute costs.</p>"
+        }
+      },
+      "documentation":"<p>An object representing the payment responsibilities accepted by the collaboration member.</p>"
     },
     "MembershipProtectedQueryOutputConfiguration":{
       "type":"structure",
@@ -3580,6 +3613,17 @@
         }
       },
       "documentation":"<p>Contains configurations for protected query results.</p>"
+    },
+    "MembershipQueryComputePaymentConfig":{
+      "type":"structure",
+      "required":["isResponsible"],
+      "members":{
+        "isResponsible":{
+          "shape":"Boolean",
+          "documentation":"<p>Indicates whether the collaboration member has accepted to pay for query compute costs (<code>TRUE</code>) or has not accepted to pay for query compute costs (<code>FALSE</code>).</p> <p>If the collaboration creator has not specified anyone to pay for query compute costs, then the member who can query is the default payer. </p> <p>An error message is returned for the following reasons: </p> <ul> <li> <p>If you set the value to <code>FALSE</code> but you are responsible to pay for query compute costs. </p> </li> <li> <p>If you set the value to <code>TRUE</code> but you are not responsible to pay for query compute costs. </p> </li> </ul>"
+        }
+      },
+      "documentation":"<p>An object representing the payment responsibilities accepted by the collaboration member for query compute costs.</p>"
     },
     "MembershipQueryLogStatus":{
       "type":"string",
@@ -3609,7 +3653,8 @@
         "createTime",
         "updateTime",
         "status",
-        "memberAbilities"
+        "memberAbilities",
+        "paymentConfiguration"
       ],
       "members":{
         "id":{
@@ -3650,11 +3695,15 @@
         },
         "status":{
           "shape":"MembershipStatus",
-          "documentation":"<p>The status of the membership. Valid values are `ACTIVE`, `REMOVED`, and `COLLABORATION_DELETED`.</p>"
+          "documentation":"<p>The status of the membership.</p>"
         },
         "memberAbilities":{
           "shape":"MemberAbilities",
           "documentation":"<p>The abilities granted to the collaboration member.</p>"
+        },
+        "paymentConfiguration":{
+          "shape":"MembershipPaymentConfiguration",
+          "documentation":"<p>The payment responsibilities accepted by the collaboration member.</p>"
         }
       },
       "documentation":"<p>The membership object listed by the request.</p>"
@@ -3703,6 +3752,17 @@
       "type":"string",
       "max":250,
       "min":0
+    },
+    "PaymentConfiguration":{
+      "type":"structure",
+      "required":["queryCompute"],
+      "members":{
+        "queryCompute":{
+          "shape":"QueryComputePaymentConfig",
+          "documentation":"<p>The collaboration member's payment responsibilities set by the collaboration creator for query compute costs.</p>"
+        }
+      },
+      "documentation":"<p>An object representing the collaboration member's payment responsibilities set by the collaboration creator.</p>"
     },
     "ProtectedQuery":{
       "type":"structure",
@@ -3778,8 +3838,8 @@
     "ProtectedQueryIdentifier":{
       "type":"string",
       "max":36,
-      "min":1,
-      "pattern":".*[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}.*"
+      "min":36,
+      "pattern":"[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}"
     },
     "ProtectedQueryMemberOutputList":{
       "type":"list",
@@ -3893,7 +3953,7 @@
     },
     "ProtectedQuerySQLParametersQueryStringString":{
       "type":"string",
-      "max":15000,
+      "max":90000,
       "min":0
     },
     "ProtectedQuerySingleMemberOutput":{
@@ -3970,6 +4030,17 @@
       "type":"string",
       "enum":["SQL"]
     },
+    "QueryComputePaymentConfig":{
+      "type":"structure",
+      "required":["isResponsible"],
+      "members":{
+        "isResponsible":{
+          "shape":"Boolean",
+          "documentation":"<p>Indicates whether the collaboration creator has configured the collaboration member to pay for query compute costs (<code>TRUE</code>) or has not configured the collaboration member to pay for query compute costs (<code>FALSE</code>).</p> <p>Exactly one member can be configured to pay for query compute costs. An error is returned if the collaboration creator sets a <code>TRUE</code> value for more than one member in the collaboration. </p> <p>If the collaboration creator hasn't specified anyone as the member paying for query compute costs, then the member who can query is the default payer. An error is returned if the collaboration creator sets a <code>FALSE</code> value for the member who can query.</p>"
+        }
+      },
+      "documentation":"<p>An object representing the collaboration member's payment responsibilities set by the collaboration creator for query compute costs.</p>"
+    },
     "QueryTables":{
       "type":"list",
       "member":{"shape":"TableAlias"}
@@ -4031,7 +4102,7 @@
       "type":"string",
       "max":512,
       "min":32,
-      "pattern":"arn:aws:iam::[\\w]+:role/[\\w+=,./@-]+"
+      "pattern":"arn:aws:iam::[\\w]+:role/[\\w+=./@-]+"
     },
     "ScalarFunctions":{
       "type":"string",
@@ -4348,7 +4419,7 @@
       "type":"string",
       "max":36,
       "min":36,
-      "pattern":".*[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}.*"
+      "pattern":"[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}"
     },
     "UntagResourceInput":{
       "type":"structure",
@@ -4558,7 +4629,7 @@
         },
         "queryLogStatus":{
           "shape":"MembershipQueryLogStatus",
-          "documentation":"<p>An indicator as to whether query logging has been enabled or disabled for the collaboration.</p>"
+          "documentation":"<p>An indicator as to whether query logging has been enabled or disabled for the membership.</p>"
         },
         "defaultResultConfiguration":{
           "shape":"MembershipProtectedQueryResultConfiguration",

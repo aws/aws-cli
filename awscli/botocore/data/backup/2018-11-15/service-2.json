@@ -679,6 +679,20 @@
       ],
       "documentation":"<p>Returns the Amazon Web Services resource types supported by Backup.</p>"
     },
+    "ListBackupJobSummaries":{
+      "name":"ListBackupJobSummaries",
+      "http":{
+        "method":"GET",
+        "requestUri":"/audit/backup-job-summaries"
+      },
+      "input":{"shape":"ListBackupJobSummariesInput"},
+      "output":{"shape":"ListBackupJobSummariesOutput"},
+      "errors":[
+        {"shape":"InvalidParameterValueException"},
+        {"shape":"ServiceUnavailableException"}
+      ],
+      "documentation":"<p>This is a request for a summary of backup jobs created or running within the most recent 30 days. You can include parameters AccountID, State, ResourceType, MessageCategory, AggregationPeriod, MaxResults, or NextToken to filter results.</p> <p>This request returns a summary that contains Region, Account, State, ResourceType, MessageCategory, StartTime, EndTime, and Count of included jobs.</p>"
+    },
     "ListBackupJobs":{
       "name":"ListBackupJobs",
       "http":{
@@ -777,6 +791,20 @@
       ],
       "documentation":"<p>Returns a list of recovery point storage containers along with information about them.</p>",
       "idempotent":true
+    },
+    "ListCopyJobSummaries":{
+      "name":"ListCopyJobSummaries",
+      "http":{
+        "method":"GET",
+        "requestUri":"/audit/copy-job-summaries"
+      },
+      "input":{"shape":"ListCopyJobSummariesInput"},
+      "output":{"shape":"ListCopyJobSummariesOutput"},
+      "errors":[
+        {"shape":"InvalidParameterValueException"},
+        {"shape":"ServiceUnavailableException"}
+      ],
+      "documentation":"<p>This request obtains a list of copy jobs created or running within the the most recent 30 days. You can include parameters AccountID, State, ResourceType, MessageCategory, AggregationPeriod, MaxResults, or NextToken to filter results.</p> <p>This request returns a summary that contains Region, Account, State, RestourceType, MessageCategory, StartTime, EndTime, and Count of included jobs.</p>"
     },
     "ListCopyJobs":{
       "name":"ListCopyJobs",
@@ -929,6 +957,20 @@
         {"shape":"ServiceUnavailableException"}
       ],
       "documentation":"<p>Returns a list of your report plans. For detailed information about a single report plan, use <code>DescribeReportPlan</code>.</p>"
+    },
+    "ListRestoreJobSummaries":{
+      "name":"ListRestoreJobSummaries",
+      "http":{
+        "method":"GET",
+        "requestUri":"/audit/restore-job-summaries"
+      },
+      "input":{"shape":"ListRestoreJobSummariesInput"},
+      "output":{"shape":"ListRestoreJobSummariesOutput"},
+      "errors":[
+        {"shape":"InvalidParameterValueException"},
+        {"shape":"ServiceUnavailableException"}
+      ],
+      "documentation":"<p>This request obtains a summary of restore jobs created or running within the the most recent 30 days. You can include parameters AccountID, State, ResourceType, AggregationPeriod, MaxResults, or NextToken to filter results.</p> <p>This request returns a summary that contains Region, Account, State, RestourceType, MessageCategory, StartTime, EndTime, and Count of included jobs.</p>"
     },
     "ListRestoreJobs":{
       "name":"ListRestoreJobs",
@@ -1262,6 +1304,14 @@
       "type":"list",
       "member":{"shape":"AdvancedBackupSetting"}
     },
+    "AggregationPeriod":{
+      "type":"string",
+      "enum":[
+        "ONE_DAY",
+        "SEVEN_DAYS",
+        "FOURTEEN_DAYS"
+      ]
+    },
     "AlreadyExistsException":{
       "type":"structure",
       "members":{
@@ -1381,6 +1431,10 @@
         "ResourceName":{
           "shape":"string",
           "documentation":"<p>This is the non-unique name of the resource that belongs to the specified backup.</p>"
+        },
+        "MessageCategory":{
+          "shape":"string",
+          "documentation":"<p>This parameter is the job count for the specified message category.</p> <p>Example strings include <code>AccessDenied</code>, <code>Success</code>, and <code>InvalidParameters</code>. See <a href=\"https://docs.aws.amazon.com/aws-backup/latest/devguide/monitoring.html\">Monitoring</a> for a list of MessageCategory strings.</p> <p>The the value ANY returns count of all message categories.</p> <p> <code>AGGREGATE_ALL</code> aggregates job counts for all message categories and returns the sum.</p>"
         }
       },
       "documentation":"<p>Contains detailed information about a backup job.</p>"
@@ -1403,6 +1457,64 @@
         "EXPIRED",
         "PARTIAL"
       ]
+    },
+    "BackupJobStatus":{
+      "type":"string",
+      "enum":[
+        "CREATED",
+        "PENDING",
+        "RUNNING",
+        "ABORTING",
+        "ABORTED",
+        "COMPLETED",
+        "FAILED",
+        "EXPIRED",
+        "PARTIAL",
+        "AGGREGATE_ALL",
+        "ANY"
+      ]
+    },
+    "BackupJobSummary":{
+      "type":"structure",
+      "members":{
+        "Region":{
+          "shape":"Region",
+          "documentation":"<p>The Amazon Web Services Regions within the job summary.</p>"
+        },
+        "AccountId":{
+          "shape":"AccountId",
+          "documentation":"<p>The account ID that owns the jobs within the summary.</p>"
+        },
+        "State":{
+          "shape":"BackupJobStatus",
+          "documentation":"<p>This value is job count for jobs with the specified state.</p>"
+        },
+        "ResourceType":{
+          "shape":"ResourceType",
+          "documentation":"<p>This value is the job count for the specified resource type. The request <code>GetSupportedResourceTypes</code> returns strings for supported resource types.</p>"
+        },
+        "MessageCategory":{
+          "shape":"MessageCategory",
+          "documentation":"<p>This parameter is the job count for the specified message category.</p> <p>Example strings include <code>AccessDenied</code>, <code>Success</code>, and <code>InvalidParameters</code>. See <a href=\"https://docs.aws.amazon.com/aws-backup/latest/devguide/monitoring.html\">Monitoring</a> for a list of MessageCategory strings.</p> <p>The the value ANY returns count of all message categories.</p> <p> <code>AGGREGATE_ALL</code> aggregates job counts for all message categories and returns the sum.</p>"
+        },
+        "Count":{
+          "shape":"integer",
+          "documentation":"<p>The value as a number of jobs in a job summary.</p>"
+        },
+        "StartTime":{
+          "shape":"timestamp",
+          "documentation":"<p>The value of time in number format of a job start time.</p> <p>This value is the time in Unix format, Coordinated Universal Time (UTC), and accurate to milliseconds. For example, the value 1516925490.087 represents Friday, January 26, 2018 12:11:30.087 AM.</p>"
+        },
+        "EndTime":{
+          "shape":"timestamp",
+          "documentation":"<p>The value of time in number format of a job end time.</p> <p>This value is the time in Unix format, Coordinated Universal Time (UTC), and accurate to milliseconds. For example, the value 1516925490.087 represents Friday, January 26, 2018 12:11:30.087 AM.</p>"
+        }
+      },
+      "documentation":"<p>This is a summary of jobs created or running within the most recent 30 days.</p> <p>The returned summary may contain the following: Region, Account, State, RestourceType, MessageCategory, StartTime, EndTime, and Count of included jobs.</p>"
+    },
+    "BackupJobSummaryList":{
+      "type":"list",
+      "member":{"shape":"BackupJobSummary"}
     },
     "BackupJobsList":{
       "type":"list",
@@ -2077,6 +2189,10 @@
         "ResourceName":{
           "shape":"string",
           "documentation":"<p>This is the non-unique name of the resource that belongs to the specified backup.</p>"
+        },
+        "MessageCategory":{
+          "shape":"string",
+          "documentation":"<p>This parameter is the job count for the specified message category.</p> <p>Example strings include <code>AccessDenied</code>, <code>Success</code>, and <code>InvalidParameters</code>. See <a href=\"https://docs.aws.amazon.com/aws-backup/latest/devguide/monitoring.html\">Monitoring</a> for a list of MessageCategory strings.</p> <p>The the value ANY returns count of all message categories.</p> <p> <code>AGGREGATE_ALL</code> aggregates job counts for all message categories and returns the sum</p>"
         }
       },
       "documentation":"<p>Contains detailed information about a copy job.</p>"
@@ -2095,6 +2211,64 @@
         "FAILED",
         "PARTIAL"
       ]
+    },
+    "CopyJobStatus":{
+      "type":"string",
+      "enum":[
+        "CREATED",
+        "RUNNING",
+        "ABORTING",
+        "ABORTED",
+        "COMPLETING",
+        "COMPLETED",
+        "FAILING",
+        "FAILED",
+        "PARTIAL",
+        "AGGREGATE_ALL",
+        "ANY"
+      ]
+    },
+    "CopyJobSummary":{
+      "type":"structure",
+      "members":{
+        "Region":{
+          "shape":"Region",
+          "documentation":"<p>This is the Amazon Web Services Regions within the job summary.</p>"
+        },
+        "AccountId":{
+          "shape":"AccountId",
+          "documentation":"<p>The account ID that owns the jobs within the summary.</p>"
+        },
+        "State":{
+          "shape":"CopyJobStatus",
+          "documentation":"<p>This value is job count for jobs with the specified state.</p>"
+        },
+        "ResourceType":{
+          "shape":"ResourceType",
+          "documentation":"<p>This value is the job count for the specified resource type. The request <code>GetSupportedResourceTypes</code> returns strings for supported resource types</p>"
+        },
+        "MessageCategory":{
+          "shape":"MessageCategory",
+          "documentation":"<p>This parameter is the job count for the specified message category.</p> <p>Example strings include <code>AccessDenied</code>, <code>Success</code>, and <code>InvalidParameters</code>. See <a href=\"https://docs.aws.amazon.com/aws-backup/latest/devguide/monitoring.html\">Monitoring</a> for a list of MessageCategory strings.</p> <p>The the value ANY returns count of all message categories.</p> <p> <code>AGGREGATE_ALL</code> aggregates job counts for all message categories and returns the sum.</p>"
+        },
+        "Count":{
+          "shape":"integer",
+          "documentation":"<p>The value as a number of jobs in a job summary.</p>"
+        },
+        "StartTime":{
+          "shape":"timestamp",
+          "documentation":"<p>The value of time in number format of a job start time.</p> <p>This value is the time in Unix format, Coordinated Universal Time (UTC), and accurate to milliseconds. For example, the value 1516925490.087 represents Friday, January 26, 2018 12:11:30.087 AM.</p>"
+        },
+        "EndTime":{
+          "shape":"timestamp",
+          "documentation":"<p>The value of time in number format of a job end time.</p> <p>This value is the time in Unix format, Coordinated Universal Time (UTC), and accurate to milliseconds. For example, the value 1516925490.087 represents Friday, January 26, 2018 12:11:30.087 AM.</p>"
+        }
+      },
+      "documentation":"<p>This is a summary of copy jobs created or running within the most recent 30 days.</p> <p>The returned summary may contain the following: Region, Account, State, RestourceType, MessageCategory, StartTime, EndTime, and Count of included jobs.</p>"
+    },
+    "CopyJobSummaryList":{
+      "type":"list",
+      "member":{"shape":"CopyJobSummary"}
     },
     "CopyJobsList":{
       "type":"list",
@@ -2732,6 +2906,10 @@
         "ResourceName":{
           "shape":"string",
           "documentation":"<p>This is the non-unique name of the resource that belongs to the specified backup.</p>"
+        },
+        "MessageCategory":{
+          "shape":"string",
+          "documentation":"<p>This is the job count for the specified message category.</p> <p>Example strings may include <code>AccessDenied</code>, <code>Success</code>, and <code>InvalidParameters</code>. See <a href=\"https://docs.aws.amazon.com/aws-backup/latest/devguide/monitoring.html\">Monitoring</a> for a list of MessageCategory strings.</p>"
         }
       }
     },
@@ -3768,6 +3946,70 @@
       "documentation":"<p>A limit in the request has been exceeded; for example, a maximum number of items allowed in a request.</p>",
       "exception":true
     },
+    "ListBackupJobSummariesInput":{
+      "type":"structure",
+      "members":{
+        "AccountId":{
+          "shape":"AccountId",
+          "documentation":"<p>Returns the job count for the specified account.</p> <p>If the request is sent from a member account or an account not part of Amazon Web Services Organizations, jobs within requestor's account will be returned.</p> <p>Root, admin, and delegated administrator accounts can use the value ANY to return job counts from every account in the organization.</p> <p> <code>AGGREGATE_ALL</code> aggregates job counts from all accounts within the authenticated organization, then returns the sum.</p>",
+          "location":"querystring",
+          "locationName":"AccountId"
+        },
+        "State":{
+          "shape":"BackupJobStatus",
+          "documentation":"<p>This parameter returns the job count for jobs with the specified state.</p> <p>The the value ANY returns count of all states.</p> <p> <code>AGGREGATE_ALL</code> aggregates job counts for all states and returns the sum.</p>",
+          "location":"querystring",
+          "locationName":"State"
+        },
+        "ResourceType":{
+          "shape":"ResourceType",
+          "documentation":"<p>Returns the job count for the specified resource type. Use request <code>GetSupportedResourceTypes</code> to obtain strings for supported resource types.</p> <p>The the value ANY returns count of all resource types.</p> <p> <code>AGGREGATE_ALL</code> aggregates job counts for all resource types and returns the sum.</p> <p>The type of Amazon Web Services resource to be backed up; for example, an Amazon Elastic Block Store (Amazon EBS) volume or an Amazon Relational Database Service (Amazon RDS) database.</p>",
+          "location":"querystring",
+          "locationName":"ResourceType"
+        },
+        "MessageCategory":{
+          "shape":"MessageCategory",
+          "documentation":"<p>This parameter returns the job count for the specified message category.</p> <p>Example accepted strings include <code>AccessDenied</code>, <code>Success</code>, and <code>InvalidParameters</code>. See <a href=\"https://docs.aws.amazon.com/aws-backup/latest/devguide/monitoring.html\">Monitoring</a> for a list of accepted MessageCategory strings.</p> <p>The the value ANY returns count of all message categories.</p> <p> <code>AGGREGATE_ALL</code> aggregates job counts for all message categories and returns the sum.</p>",
+          "location":"querystring",
+          "locationName":"MessageCategory"
+        },
+        "AggregationPeriod":{
+          "shape":"AggregationPeriod",
+          "documentation":"<p>This is the period that sets the boundaries for returned results.</p> <p>Acceptable values include</p> <ul> <li> <p> <code>ONE_DAY</code> for daily job count for the prior 14 days.</p> </li> <li> <p> <code>SEVEN_DAYS</code> for the aggregated job count for the prior 7 days.</p> </li> <li> <p> <code>FOURTEEN_DAYS</code> for aggregated job count for prior 14 days.</p> </li> </ul>",
+          "location":"querystring",
+          "locationName":"AggregationPeriod"
+        },
+        "MaxResults":{
+          "shape":"MaxResults",
+          "documentation":"<p>This parameter sets the maximum number of items to be returned.</p> <p>The value is an integer. Range of accepted values is from 1 to 500.</p>",
+          "location":"querystring",
+          "locationName":"MaxResults"
+        },
+        "NextToken":{
+          "shape":"string",
+          "documentation":"<p>The next item following a partial list of returned resources. For example, if a request is made to return <code>maxResults</code> number of resources, <code>NextToken</code> allows you to return more items in your list starting at the location pointed to by the next token.</p>",
+          "location":"querystring",
+          "locationName":"NextToken"
+        }
+      }
+    },
+    "ListBackupJobSummariesOutput":{
+      "type":"structure",
+      "members":{
+        "BackupJobSummaries":{
+          "shape":"BackupJobSummaryList",
+          "documentation":"<p>This request returns a summary that contains Region, Account, State, ResourceType, MessageCategory, StartTime, EndTime, and Count of included jobs.</p>"
+        },
+        "AggregationPeriod":{
+          "shape":"string",
+          "documentation":"<p>This is the period that sets the boundaries for returned results.</p> <ul> <li> <p> <code>ONE_DAY</code> for daily job count for the prior 14 days.</p> </li> <li> <p> <code>SEVEN_DAYS</code> for the aggregated job count for the prior 7 days.</p> </li> <li> <p> <code>FOURTEEN_DAYS</code> for aggregated job count for prior 14 days.</p> </li> </ul>"
+        },
+        "NextToken":{
+          "shape":"string",
+          "documentation":"<p>The next item following a partial list of returned resources. For example, if a request is made to return <code>maxResults</code> number of resources, <code>NextToken</code> allows you to return more items in your list starting at the location pointed to by the next token.</p>"
+        }
+      }
+    },
     "ListBackupJobsInput":{
       "type":"structure",
       "members":{
@@ -3842,6 +4084,12 @@
           "documentation":"<p>This is a filter to list child (nested) jobs based on parent job ID.</p>",
           "location":"querystring",
           "locationName":"parentJobId"
+        },
+        "ByMessageCategory":{
+          "shape":"string",
+          "documentation":"<p>This returns a list of backup jobs for the specified message category.</p> <p>Example strings may include <code>AccessDenied</code>, <code>Success</code>, and <code>InvalidParameters</code>. See <a href=\"https://docs.aws.amazon.com/aws-backup/latest/devguide/monitoring.html\">Monitoring</a> for a list of MessageCategory strings.</p>",
+          "location":"querystring",
+          "locationName":"messageCategory"
         }
       }
     },
@@ -4040,6 +4288,70 @@
         }
       }
     },
+    "ListCopyJobSummariesInput":{
+      "type":"structure",
+      "members":{
+        "AccountId":{
+          "shape":"AccountId",
+          "documentation":"<p>Returns the job count for the specified account.</p> <p>If the request is sent from a member account or an account not part of Amazon Web Services Organizations, jobs within requestor's account will be returned.</p> <p>Root, admin, and delegated administrator accounts can use the value ANY to return job counts from every account in the organization.</p> <p> <code>AGGREGATE_ALL</code> aggregates job counts from all accounts within the authenticated organization, then returns the sum.</p>",
+          "location":"querystring",
+          "locationName":"AccountId"
+        },
+        "State":{
+          "shape":"CopyJobStatus",
+          "documentation":"<p>This parameter returns the job count for jobs with the specified state.</p> <p>The the value ANY returns count of all states.</p> <p> <code>AGGREGATE_ALL</code> aggregates job counts for all states and returns the sum.</p>",
+          "location":"querystring",
+          "locationName":"State"
+        },
+        "ResourceType":{
+          "shape":"ResourceType",
+          "documentation":"<p>Returns the job count for the specified resource type. Use request <code>GetSupportedResourceTypes</code> to obtain strings for supported resource types.</p> <p>The the value ANY returns count of all resource types.</p> <p> <code>AGGREGATE_ALL</code> aggregates job counts for all resource types and returns the sum.</p> <p>The type of Amazon Web Services resource to be backed up; for example, an Amazon Elastic Block Store (Amazon EBS) volume or an Amazon Relational Database Service (Amazon RDS) database.</p>",
+          "location":"querystring",
+          "locationName":"ResourceType"
+        },
+        "MessageCategory":{
+          "shape":"MessageCategory",
+          "documentation":"<p>This parameter returns the job count for the specified message category.</p> <p>Example accepted strings include <code>AccessDenied</code>, <code>Success</code>, and <code>InvalidParameters</code>. See <a href=\"https://docs.aws.amazon.com/aws-backup/latest/devguide/monitoring.html\">Monitoring</a> for a list of accepted MessageCategory strings.</p> <p>The the value ANY returns count of all message categories.</p> <p> <code>AGGREGATE_ALL</code> aggregates job counts for all message categories and returns the sum.</p>",
+          "location":"querystring",
+          "locationName":"MessageCategory"
+        },
+        "AggregationPeriod":{
+          "shape":"AggregationPeriod",
+          "documentation":"<p>This is the period that sets the boundaries for returned results.</p> <ul> <li> <p> <code>ONE_DAY</code> for daily job count for the prior 14 days.</p> </li> <li> <p> <code>SEVEN_DAYS</code> for the aggregated job count for the prior 7 days.</p> </li> <li> <p> <code>FOURTEEN_DAYS</code> for aggregated job count for prior 14 days.</p> </li> </ul>",
+          "location":"querystring",
+          "locationName":"AggregationPeriod"
+        },
+        "MaxResults":{
+          "shape":"MaxResults",
+          "documentation":"<p>This parameter sets the maximum number of items to be returned.</p> <p>The value is an integer. Range of accepted values is from 1 to 500.</p>",
+          "location":"querystring",
+          "locationName":"MaxResults"
+        },
+        "NextToken":{
+          "shape":"string",
+          "documentation":"<p>The next item following a partial list of returned resources. For example, if a request is made to return <code>maxResults</code> number of resources, <code>NextToken</code> allows you to return more items in your list starting at the location pointed to by the next token.</p>",
+          "location":"querystring",
+          "locationName":"NextToken"
+        }
+      }
+    },
+    "ListCopyJobSummariesOutput":{
+      "type":"structure",
+      "members":{
+        "CopyJobSummaries":{
+          "shape":"CopyJobSummaryList",
+          "documentation":"<p>This return shows a summary that contains Region, Account, State, ResourceType, MessageCategory, StartTime, EndTime, and Count of included jobs.</p>"
+        },
+        "AggregationPeriod":{
+          "shape":"string",
+          "documentation":"<p>This is the period that sets the boundaries for returned results.</p> <ul> <li> <p> <code>ONE_DAY</code> for daily job count for the prior 14 days.</p> </li> <li> <p> <code>SEVEN_DAYS</code> for the aggregated job count for the prior 7 days.</p> </li> <li> <p> <code>FOURTEEN_DAYS</code> for aggregated job count for prior 14 days.</p> </li> </ul>"
+        },
+        "NextToken":{
+          "shape":"string",
+          "documentation":"<p>The next item following a partial list of returned resources. For example, if a request is made to return <code>maxResults</code> number of resources, <code>NextToken</code> allows you to return more items in your list starting at the location pointed to by the next token.</p>"
+        }
+      }
+    },
     "ListCopyJobsInput":{
       "type":"structure",
       "members":{
@@ -4114,6 +4426,12 @@
           "documentation":"<p>This is a filter to list child (nested) jobs based on parent job ID.</p>",
           "location":"querystring",
           "locationName":"parentJobId"
+        },
+        "ByMessageCategory":{
+          "shape":"string",
+          "documentation":"<p>This parameter returns the job count for the specified message category.</p> <p>Example accepted strings include <code>AccessDenied</code>, <code>Success</code>, and <code>InvalidParameters</code>. See <a href=\"https://docs.aws.amazon.com/aws-backup/latest/devguide/monitoring.html\">Monitoring</a> for a list of accepted MessageCategory strings.</p> <p>The the value ANY returns count of all message categories.</p> <p> <code>AGGREGATE_ALL</code> aggregates job counts for all message categories and returns the sum.</p>",
+          "location":"querystring",
+          "locationName":"messageCategory"
         }
       }
     },
@@ -4504,6 +4822,64 @@
         }
       }
     },
+    "ListRestoreJobSummariesInput":{
+      "type":"structure",
+      "members":{
+        "AccountId":{
+          "shape":"AccountId",
+          "documentation":"<p>Returns the job count for the specified account.</p> <p>If the request is sent from a member account or an account not part of Amazon Web Services Organizations, jobs within requestor's account will be returned.</p> <p>Root, admin, and delegated administrator accounts can use the value ANY to return job counts from every account in the organization.</p> <p> <code>AGGREGATE_ALL</code> aggregates job counts from all accounts within the authenticated organization, then returns the sum.</p>",
+          "location":"querystring",
+          "locationName":"AccountId"
+        },
+        "State":{
+          "shape":"RestoreJobState",
+          "documentation":"<p>This parameter returns the job count for jobs with the specified state.</p> <p>The the value ANY returns count of all states.</p> <p> <code>AGGREGATE_ALL</code> aggregates job counts for all states and returns the sum.</p>",
+          "location":"querystring",
+          "locationName":"State"
+        },
+        "ResourceType":{
+          "shape":"ResourceType",
+          "documentation":"<p>Returns the job count for the specified resource type. Use request <code>GetSupportedResourceTypes</code> to obtain strings for supported resource types.</p> <p>The the value ANY returns count of all resource types.</p> <p> <code>AGGREGATE_ALL</code> aggregates job counts for all resource types and returns the sum.</p> <p>The type of Amazon Web Services resource to be backed up; for example, an Amazon Elastic Block Store (Amazon EBS) volume or an Amazon Relational Database Service (Amazon RDS) database.</p>",
+          "location":"querystring",
+          "locationName":"ResourceType"
+        },
+        "AggregationPeriod":{
+          "shape":"AggregationPeriod",
+          "documentation":"<p>This is the period that sets the boundaries for returned results.</p> <p>Acceptable values include</p> <ul> <li> <p> <code>ONE_DAY</code> for daily job count for the prior 14 days.</p> </li> <li> <p> <code>SEVEN_DAYS</code> for the aggregated job count for the prior 7 days.</p> </li> <li> <p> <code>FOURTEEN_DAYS</code> for aggregated job count for prior 14 days.</p> </li> </ul>",
+          "location":"querystring",
+          "locationName":"AggregationPeriod"
+        },
+        "MaxResults":{
+          "shape":"MaxResults",
+          "documentation":"<p>This parameter sets the maximum number of items to be returned.</p> <p>The value is an integer. Range of accepted values is from 1 to 500.</p>",
+          "location":"querystring",
+          "locationName":"MaxResults"
+        },
+        "NextToken":{
+          "shape":"string",
+          "documentation":"<p>The next item following a partial list of returned resources. For example, if a request is made to return <code>maxResults</code> number of resources, <code>NextToken</code> allows you to return more items in your list starting at the location pointed to by the next token.</p>",
+          "location":"querystring",
+          "locationName":"NextToken"
+        }
+      }
+    },
+    "ListRestoreJobSummariesOutput":{
+      "type":"structure",
+      "members":{
+        "RestoreJobSummaries":{
+          "shape":"RestoreJobSummaryList",
+          "documentation":"<p>This return contains a summary that contains Region, Account, State, ResourceType, MessageCategory, StartTime, EndTime, and Count of included jobs.</p>"
+        },
+        "AggregationPeriod":{
+          "shape":"string",
+          "documentation":"<p>This is the period that sets the boundaries for returned results.</p> <ul> <li> <p> <code>ONE_DAY</code> for daily job count for the prior 14 days.</p> </li> <li> <p> <code>SEVEN_DAYS</code> for the aggregated job count for the prior 7 days.</p> </li> <li> <p> <code>FOURTEEN_DAYS</code> for aggregated job count for prior 14 days.</p> </li> </ul>"
+        },
+        "NextToken":{
+          "shape":"string",
+          "documentation":"<p>The next item following a partial list of returned resources. For example, if a request is made to return <code>maxResults</code> number of resources, <code>NextToken</code> allows you to return more items in your list starting at the location pointed to by the next token.</p>"
+        }
+      }
+    },
     "ListRestoreJobsInput":{
       "type":"structure",
       "members":{
@@ -4618,6 +4994,7 @@
       "max":1000,
       "min":1
     },
+    "MessageCategory":{"type":"string"},
     "Metadata":{
       "type":"map",
       "key":{"shape":"MetadataKey"},
@@ -4955,6 +5332,7 @@
       "type":"list",
       "member":{"shape":"RecoveryPointMember"}
     },
+    "Region":{"type":"string"},
     "ReportDeliveryChannel":{
       "type":"structure",
       "required":["S3BucketName"],
@@ -5168,6 +5546,19 @@
       "member":{"shape":"ResourceType"}
     },
     "RestoreJobId":{"type":"string"},
+    "RestoreJobState":{
+      "type":"string",
+      "enum":[
+        "CREATED",
+        "PENDING",
+        "RUNNING",
+        "ABORTED",
+        "COMPLETED",
+        "FAILED",
+        "AGGREGATE_ALL",
+        "ANY"
+      ]
+    },
     "RestoreJobStatus":{
       "type":"string",
       "enum":[
@@ -5177,6 +5568,44 @@
         "ABORTED",
         "FAILED"
       ]
+    },
+    "RestoreJobSummary":{
+      "type":"structure",
+      "members":{
+        "Region":{
+          "shape":"Region",
+          "documentation":"<p>The Amazon Web Services Regions within the job summary.</p>"
+        },
+        "AccountId":{
+          "shape":"AccountId",
+          "documentation":"<p>The account ID that owns the jobs within the summary.</p>"
+        },
+        "State":{
+          "shape":"RestoreJobState",
+          "documentation":"<p>This value is job count for jobs with the specified state.</p>"
+        },
+        "ResourceType":{
+          "shape":"ResourceType",
+          "documentation":"<p>This value is the job count for the specified resource type. The request <code>GetSupportedResourceTypes</code> returns strings for supported resource types.</p>"
+        },
+        "Count":{
+          "shape":"integer",
+          "documentation":"<p>The value as a number of jobs in a job summary.</p>"
+        },
+        "StartTime":{
+          "shape":"timestamp",
+          "documentation":"<p>The value of time in number format of a job start time.</p> <p>This value is the time in Unix format, Coordinated Universal Time (UTC), and accurate to milliseconds. For example, the value 1516925490.087 represents Friday, January 26, 2018 12:11:30.087 AM.</p>"
+        },
+        "EndTime":{
+          "shape":"timestamp",
+          "documentation":"<p>The value of time in number format of a job end time.</p> <p>This value is the time in Unix format, Coordinated Universal Time (UTC), and accurate to milliseconds. For example, the value 1516925490.087 represents Friday, January 26, 2018 12:11:30.087 AM.</p>"
+        }
+      },
+      "documentation":"<p>This is a summary of restore jobs created or running within the most recent 30 days.</p> <p>The returned summary may contain the following: Region, Account, State, ResourceType, MessageCategory, StartTime, EndTime, and Count of included jobs.</p>"
+    },
+    "RestoreJobSummaryList":{
+      "type":"list",
+      "member":{"shape":"RestoreJobSummary"}
     },
     "RestoreJobsList":{
       "type":"list",

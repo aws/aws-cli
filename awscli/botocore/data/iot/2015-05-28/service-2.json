@@ -778,7 +778,7 @@
         {"shape":"ThrottlingException"},
         {"shape":"InternalFailureException"}
       ],
-      "documentation":"<p>Create a thing group.</p> <note> <p>This is a control plane operation. See <a href=\"https://docs.aws.amazon.com/iot/latest/developerguide/iot-authorization.html\">Authorization</a> for information about authorizing control plane actions.</p> </note> <p>Requires permission to access the <a href=\"https://docs.aws.amazon.com/service-authorization/latest/reference/list_awsiot.html#awsiot-actions-as-permissions\">CreateThingGroup</a> action.</p>"
+      "documentation":"<p>Create a thing group.</p> <note> <p>This is a control plane operation. See <a href=\"https://docs.aws.amazon.com/iot/latest/developerguide/iot-authorization.html\">Authorization</a> for information about authorizing control plane actions.</p> <p>If the <code>ThingGroup</code> that you create has the exact same attributes as an existing <code>ThingGroup</code>, you will get a 200 success response. </p> </note> <p>Requires permission to access the <a href=\"https://docs.aws.amazon.com/service-authorization/latest/reference/list_awsiot.html#awsiot-actions-as-permissions\">CreateThingGroup</a> action.</p>"
     },
     "CreateThingType":{
       "name":"CreateThingType",
@@ -5655,6 +5655,10 @@
         "suppressAlerts":{
           "shape":"SuppressAlerts",
           "documentation":"<p> Suppresses alerts. </p>"
+        },
+        "exportMetric":{
+          "shape":"ExportMetric",
+          "documentation":"<p>Value indicates exporting metrics related to the behavior when it is true.</p>"
         }
       },
       "documentation":"<p>A Device Defender security profile behavior.</p>"
@@ -7765,6 +7769,10 @@
         "tags":{
           "shape":"TagList",
           "documentation":"<p>Metadata that can be used to manage the security profile.</p>"
+        },
+        "metricsExportConfig":{
+          "shape":"MetricsExportConfig",
+          "documentation":"<p>Specifies the MQTT topic and role ARN required for metric export.</p>"
         }
       }
     },
@@ -8371,6 +8379,7 @@
         }
       }
     },
+    "DeleteMetricsExportConfig":{"type":"boolean"},
     "DeleteMitigationActionRequest":{
       "type":"structure",
       "required":["actionName"],
@@ -9820,6 +9829,10 @@
         "lastModifiedDate":{
           "shape":"Timestamp",
           "documentation":"<p>The time the security profile was last modified.</p>"
+        },
+        "metricsExportConfig":{
+          "shape":"MetricsExportConfig",
+          "documentation":"<p>Specifies the MQTT topic and role ARN required for metric export.</p>"
         }
       }
     },
@@ -10778,6 +10791,7 @@
       },
       "documentation":"<p>Allows you to create an exponential rate of rollout for a job.</p>"
     },
+    "ExportMetric":{"type":"boolean"},
     "FailedChecksCount":{"type":"integer"},
     "FailedFindingsCount":{"type":"long"},
     "FailedThings":{"type":"integer"},
@@ -15321,6 +15335,10 @@
         "metricDimension":{
           "shape":"MetricDimension",
           "documentation":"<p>The dimension of a metric. This can't be used with custom metrics.</p>"
+        },
+        "exportMetric":{
+          "shape":"ExportMetric",
+          "documentation":"<p>Value added in both Behavior and AdditionalMetricsToRetainV2 to indicate if Device Defender Detect should export the corresponding metrics.</p>"
         }
       },
       "documentation":"<p>The metric you want to retain. Dimensions are optional.</p>"
@@ -15354,6 +15372,24 @@
         }
       },
       "documentation":"<p>The value to be compared with the <code>metric</code>.</p>"
+    },
+    "MetricsExportConfig":{
+      "type":"structure",
+      "required":[
+        "mqttTopic",
+        "roleArn"
+      ],
+      "members":{
+        "mqttTopic":{
+          "shape":"MqttTopic",
+          "documentation":"<p>The MQTT topic that Device Defender Detect should publish messages to for metrics export.</p>"
+        },
+        "roleArn":{
+          "shape":"RoleArn",
+          "documentation":"<p>This role ARN has permission to publish MQTT messages, after which Device Defender Detect can assume the role and publish messages on your behalf.</p>"
+        }
+      },
+      "documentation":"<p>Set configurations for metrics export.</p>"
     },
     "Minimum":{"type":"double"},
     "MinimumNumberOfExecutedThings":{
@@ -15538,6 +15574,11 @@
     "MqttPassword":{
       "type":"blob",
       "max":65535,
+      "min":1
+    },
+    "MqttTopic":{
+      "type":"string",
+      "max":512,
       "min":1
     },
     "MqttUsername":{
@@ -17175,7 +17216,7 @@
         },
         "maxResults":{
           "shape":"QueryMaxResults",
-          "documentation":"<p>The maximum number of results to return at one time.</p>"
+          "documentation":"<p>The maximum number of results to return at one time. The response might contain fewer results but will never contain more.</p>"
         },
         "queryVersion":{
           "shape":"QueryVersion",
@@ -18435,7 +18476,7 @@
         },
         "managedFields":{
           "shape":"Fields",
-          "documentation":"<p>Contains fields that are indexed and whose types are already known by the Fleet Indexing service. This is an optional field. For more information, see <a href=\"https://docs.aws.amazon.com/iot/latest/developerguide/managing-fleet-index.html#managed-field\">Managed fields</a> in the <i>Amazon Web Services IoT Core Developer Guide</i>.</p>"
+          "documentation":"<p>Contains fields that are indexed and whose types are already known by the Fleet Indexing service. This is an optional field. For more information, see <a href=\"https://docs.aws.amazon.com/iot/latest/developerguide/managing-fleet-index.html#managed-field\">Managed fields</a> in the <i>Amazon Web Services IoT Core Developer Guide</i>.</p> <note> <p>You can't modify managed fields by updating fleet indexing configuration.</p> </note>"
         },
         "customFields":{
           "shape":"Fields",
@@ -18530,7 +18571,7 @@
         },
         "managedFields":{
           "shape":"Fields",
-          "documentation":"<p>Contains fields that are indexed and whose types are already known by the Fleet Indexing service.</p>"
+          "documentation":"<p>Contains fields that are indexed and whose types are already known by the Fleet Indexing service. This is an optional field. For more information, see <a href=\"https://docs.aws.amazon.com/iot/latest/developerguide/managing-fleet-index.html#managed-field\">Managed fields</a> in the <i>Amazon Web Services IoT Core Developer Guide</i>.</p> <note> <p>You can't modify managed fields by updating fleet indexing configuration.</p> </note>"
         },
         "customFields":{
           "shape":"Fields",
@@ -19926,6 +19967,14 @@
           "documentation":"<p>The expected version of the security profile. A new version is generated whenever the security profile is updated. If you specify a value that is different from the actual version, a <code>VersionConflictException</code> is thrown.</p>",
           "location":"querystring",
           "locationName":"expectedVersion"
+        },
+        "metricsExportConfig":{
+          "shape":"MetricsExportConfig",
+          "documentation":"<p>Specifies the MQTT topic and role ARN required for metric export.</p>"
+        },
+        "deleteMetricsExportConfig":{
+          "shape":"DeleteMetricsExportConfig",
+          "documentation":"<p>Set the value as true to delete metrics export related configurations.</p>"
         }
       }
     },
@@ -19973,6 +20022,10 @@
         "lastModifiedDate":{
           "shape":"Timestamp",
           "documentation":"<p>The time the security profile was last modified.</p>"
+        },
+        "metricsExportConfig":{
+          "shape":"MetricsExportConfig",
+          "documentation":"<p>Specifies the MQTT topic and role ARN required for metric export.</p>"
         }
       }
     },

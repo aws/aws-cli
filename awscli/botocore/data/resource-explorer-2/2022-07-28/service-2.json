@@ -135,6 +135,7 @@
         "responseCode":200
       },
       "errors":[
+        {"shape":"ResourceNotFoundException"},
         {"shape":"InternalServerException"},
         {"shape":"ValidationException"},
         {"shape":"ThrottlingException"},
@@ -142,6 +143,22 @@
       ],
       "documentation":"<p>After you call this operation, the affected Amazon Web Services Region no longer has a default view. All <a>Search</a> operations in that Region must explicitly specify a view or the operation fails. You can configure a new default by calling the <a>AssociateDefaultView</a> operation.</p> <p>If an Amazon Web Services Region doesn't have a default view configured, then users must explicitly specify a view with every <code>Search</code> operation performed in that Region.</p>",
       "idempotent":true
+    },
+    "GetAccountLevelServiceConfiguration":{
+      "name":"GetAccountLevelServiceConfiguration",
+      "http":{
+        "method":"POST",
+        "requestUri":"/GetAccountLevelServiceConfiguration",
+        "responseCode":200
+      },
+      "output":{"shape":"GetAccountLevelServiceConfigurationOutput"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Retrieves the status of your account's Amazon Web Services service access, and validates the service linked role required to access the multi-account search feature. Only the management account or a delegated administrator with service access enabled can invoke this API call. </p>"
     },
     "GetDefaultView":{
       "name":"GetDefaultView",
@@ -212,6 +229,23 @@
         {"shape":"AccessDeniedException"}
       ],
       "documentation":"<p>Retrieves a list of all of the indexes in Amazon Web Services Regions that are currently collecting resource information for Amazon Web Services Resource Explorer.</p>"
+    },
+    "ListIndexesForMembers":{
+      "name":"ListIndexesForMembers",
+      "http":{
+        "method":"POST",
+        "requestUri":"/ListIndexesForMembers",
+        "responseCode":200
+      },
+      "input":{"shape":"ListIndexesForMembersInput"},
+      "output":{"shape":"ListIndexesForMembersOutput"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"ValidationException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Retrieves a list of a member's indexes in all Amazon Web Services Regions that are currently collecting resource information for Amazon Web Services Resource Explorer. Only the management account or a delegated administrator with service access enabled can invoke this API call. </p>"
     },
     "ListSupportedResourceTypes":{
       "name":"ListSupportedResourceTypes",
@@ -365,6 +399,13 @@
     }
   },
   "shapes":{
+    "AWSServiceAccessStatus":{
+      "type":"string",
+      "enum":[
+        "ENABLED",
+        "DISABLED"
+      ]
+    },
     "AccessDeniedException":{
       "type":"structure",
       "members":{
@@ -376,6 +417,11 @@
         "senderFault":true
       },
       "exception":true
+    },
+    "AccountId":{
+      "type":"string",
+      "max":2048,
+      "min":1
     },
     "AssociateDefaultViewInput":{
       "type":"structure",
@@ -461,7 +507,7 @@
       "members":{
         "Message":{"shape":"String"}
       },
-      "documentation":"<p>The request failed because either you specified parameters that didn’t match the original request, or you attempted to create a view with a name that already exists in this Amazon Web Services Region.</p>",
+      "documentation":"<p>If you attempted to create a view, then the request failed because either you specified parameters that didn’t match the original request, or you attempted to create a view with a name that already exists in this Amazon Web Services Region.</p> <p>If you attempted to create an index, then the request failed because either you specified parameters that didn't match the original request, or an index already exists in the current Amazon Web Services Region.</p> <p>If you attempted to update an index type to <code>AGGREGATOR</code>, then the request failed because you already have an <code>AGGREGATOR</code> index in a different Amazon Web Services Region.</p>",
       "error":{
         "httpStatusCode":409,
         "senderFault":true
@@ -473,7 +519,7 @@
       "members":{
         "ClientToken":{
           "shape":"String",
-          "documentation":"<p>This value helps ensure idempotency. Resource Explorer uses this value to prevent the accidental creation of duplicate versions. We recommend that you generate a <a href=\"https://wikipedia.org/wiki/Universally_unique_identifier\">UUID-type value</a> to ensure the uniqueness of your views.</p>",
+          "documentation":"<p>This value helps ensure idempotency. Resource Explorer uses this value to prevent the accidental creation of duplicate versions. We recommend that you generate a <a href=\"https://wikipedia.org/wiki/Universally_unique_identifier\">UUID-type value</a> to ensure the uniqueness of your index.</p>",
           "idempotencyToken":true
         },
         "Tags":{
@@ -516,6 +562,10 @@
           "shape":"IncludedPropertyList",
           "documentation":"<p>Specifies optional fields that you want included in search results from this view. It is a list of objects that each describe a field to include.</p> <p>The default is an empty list, with no optional fields included in the results.</p>"
         },
+        "Scope":{
+          "shape":"CreateViewInputScopeString",
+          "documentation":"<p>The root ARN of the account, an organizational unit (OU), or an organization ARN. If left empty, the default is account.</p>"
+        },
         "Tags":{
           "shape":"TagMap",
           "documentation":"<p>Tag key and value pairs that are attached to the view.</p>"
@@ -527,6 +577,11 @@
       }
     },
     "CreateViewInputClientTokenString":{
+      "type":"string",
+      "max":2048,
+      "min":1
+    },
+    "CreateViewInputScopeString":{
       "type":"string",
       "max":2048,
       "min":1
@@ -596,6 +651,15 @@
       "members":{
       },
       "document":true
+    },
+    "GetAccountLevelServiceConfigurationOutput":{
+      "type":"structure",
+      "members":{
+        "OrgConfiguration":{
+          "shape":"OrgConfiguration",
+          "documentation":"<p>Details about the organization, and whether configuration is <code>ENABLED</code> or <code>DISABLED</code>.</p>"
+        }
+      }
     },
     "GetDefaultViewOutput":{
       "type":"structure",
@@ -704,7 +768,7 @@
         },
         "Type":{
           "shape":"IndexType",
-          "documentation":"<p>The type of index. It can be one of the following values:</p> <ul> <li> <p> <b>LOCAL</b> – The index contains information about resources from only the same Amazon Web Services Region.</p> </li> <li> <p> <b>AGGREGATOR</b> – Resource Explorer replicates copies of the indexed information about resources in all other Amazon Web Services Regions to the aggregator index. This lets search results in the Region with the aggregator index to include resources from all Regions in the account where Resource Explorer is turned on.</p> </li> </ul>"
+          "documentation":"<p>The type of index. It can be one of the following values:</p> <ul> <li> <p> <code>LOCAL</code> – The index contains information about resources from only the same Amazon Web Services Region.</p> </li> <li> <p> <code>AGGREGATOR</code> – Resource Explorer replicates copies of the indexed information about resources in all other Amazon Web Services Regions to the aggregator index. This lets search results in the Region with the aggregator index to include resources from all Regions in the account where Resource Explorer is turned on.</p> </li> </ul>"
         }
       },
       "documentation":"<p>An index is the data store used by Amazon Web Services Resource Explorer to hold information about your Amazon Web Services resources that the service discovers. Creating an index in an Amazon Web Services Region turns on Resource Explorer and lets it discover your resources.</p> <p>By default, an index is <i>local</i>, meaning that it contains information about resources in only the same Region as the index. However, you can promote the index of one Region in the account by calling <a>UpdateIndexType</a> to convert it into an aggregator index. The aggregator index receives a replicated copy of the index information from all other Regions where Resource Explorer is turned on. This allows search operations in that Region to return results from all Regions in the account.</p>"
@@ -740,6 +804,54 @@
       "exception":true,
       "fault":true
     },
+    "ListIndexesForMembersInput":{
+      "type":"structure",
+      "required":["AccountIdList"],
+      "members":{
+        "AccountIdList":{
+          "shape":"ListIndexesForMembersInputAccountIdListList",
+          "documentation":"<p>The account IDs will limit the output to only indexes from these accounts.</p>"
+        },
+        "MaxResults":{
+          "shape":"ListIndexesForMembersInputMaxResultsInteger",
+          "documentation":"<p>The maximum number of results that you want included on each page of the response. If you do not include this parameter, it defaults to a value appropriate to the operation. If additional items exist beyond those included in the current response, the <code>NextToken</code> response element is present and has a value (is not null). Include that value as the <code>NextToken</code> request parameter in the next call to the operation to get the next part of the results.</p> <note> <p>An API operation can return fewer results than the maximum even when there are more results available. You should check <code>NextToken</code> after every operation to ensure that you receive all of the results.</p> </note>"
+        },
+        "NextToken":{
+          "shape":"ListIndexesForMembersInputNextTokenString",
+          "documentation":"<p>The parameter for receiving additional results if you receive a <code>NextToken</code> response in a previous request. A <code>NextToken</code> response indicates that more output is available. Set this parameter to the value of the previous call's <code>NextToken</code> response to indicate where the output should continue from. The pagination tokens expire after 24 hours.</p>"
+        }
+      }
+    },
+    "ListIndexesForMembersInputAccountIdListList":{
+      "type":"list",
+      "member":{"shape":"AccountId"},
+      "max":10,
+      "min":1
+    },
+    "ListIndexesForMembersInputMaxResultsInteger":{
+      "type":"integer",
+      "box":true,
+      "max":10,
+      "min":1
+    },
+    "ListIndexesForMembersInputNextTokenString":{
+      "type":"string",
+      "max":2048,
+      "min":1
+    },
+    "ListIndexesForMembersOutput":{
+      "type":"structure",
+      "members":{
+        "Indexes":{
+          "shape":"MemberIndexList",
+          "documentation":"<p>A structure that contains the details and status of each index.</p>"
+        },
+        "NextToken":{
+          "shape":"String",
+          "documentation":"<p>If present, indicates that more output is available than is included in the current response. Use this value in the <code>NextToken</code> request parameter in a subsequent call to the operation to get the next part of the output. You should repeat this until the <code>NextToken</code> response element comes back as <code>null</code>. The pagination tokens expire after 24 hours.</p>"
+        }
+      }
+    },
     "ListIndexesInput":{
       "type":"structure",
       "members":{
@@ -749,7 +861,7 @@
         },
         "NextToken":{
           "shape":"ListIndexesInputNextTokenString",
-          "documentation":"<p>The parameter for receiving additional results if you receive a <code>NextToken</code> response in a previous request. A <code>NextToken</code> response indicates that more output is available. Set this parameter to the value of the previous call's <code>NextToken</code> response to indicate where the output should continue from.</p>"
+          "documentation":"<p>The parameter for receiving additional results if you receive a <code>NextToken</code> response in a previous request. A <code>NextToken</code> response indicates that more output is available. Set this parameter to the value of the previous call's <code>NextToken</code> response to indicate where the output should continue from. The pagination tokens expire after 24 hours.</p>"
         },
         "Regions":{
           "shape":"ListIndexesInputRegionsList",
@@ -787,7 +899,7 @@
         },
         "NextToken":{
           "shape":"String",
-          "documentation":"<p>If present, indicates that more output is available than is included in the current response. Use this value in the <code>NextToken</code> request parameter in a subsequent call to the operation to get the next part of the output. You should repeat this until the <code>NextToken</code> response element comes back as <code>null</code>.</p>"
+          "documentation":"<p>If present, indicates that more output is available than is included in the current response. Use this value in the <code>NextToken</code> request parameter in a subsequent call to the operation to get the next part of the output. You should repeat this until the <code>NextToken</code> response element comes back as <code>null</code>. The pagination tokens expire after 24 hours.</p>"
         }
       }
     },
@@ -800,7 +912,7 @@
         },
         "NextToken":{
           "shape":"String",
-          "documentation":"<p>The parameter for receiving additional results if you receive a <code>NextToken</code> response in a previous request. A <code>NextToken</code> response indicates that more output is available. Set this parameter to the value of the previous call's <code>NextToken</code> response to indicate where the output should continue from.</p>"
+          "documentation":"<p>The parameter for receiving additional results if you receive a <code>NextToken</code> response in a previous request. A <code>NextToken</code> response indicates that more output is available. Set this parameter to the value of the previous call's <code>NextToken</code> response to indicate where the output should continue from. The pagination tokens expire after 24 hours.</p>"
         }
       }
     },
@@ -815,7 +927,7 @@
       "members":{
         "NextToken":{
           "shape":"String",
-          "documentation":"<p>If present, indicates that more output is available than is included in the current response. Use this value in the <code>NextToken</code> request parameter in a subsequent call to the operation to get the next part of the output. You should repeat this until the <code>NextToken</code> response element comes back as <code>null</code>.</p>"
+          "documentation":"<p>If present, indicates that more output is available than is included in the current response. Use this value in the <code>NextToken</code> request parameter in a subsequent call to the operation to get the next part of the output. You should repeat this until the <code>NextToken</code> response element comes back as <code>null</code>. The pagination tokens expire after 24 hours.</p>"
         },
         "ResourceTypes":{
           "shape":"ResourceTypeList",
@@ -853,14 +965,14 @@
         },
         "NextToken":{
           "shape":"String",
-          "documentation":"<p>The parameter for receiving additional results if you receive a <code>NextToken</code> response in a previous request. A <code>NextToken</code> response indicates that more output is available. Set this parameter to the value of the previous call's <code>NextToken</code> response to indicate where the output should continue from.</p>"
+          "documentation":"<p>The parameter for receiving additional results if you receive a <code>NextToken</code> response in a previous request. A <code>NextToken</code> response indicates that more output is available. Set this parameter to the value of the previous call's <code>NextToken</code> response to indicate where the output should continue from. The pagination tokens expire after 24 hours.</p>"
         }
       }
     },
     "ListViewsInputMaxResultsInteger":{
       "type":"integer",
       "box":true,
-      "max":20,
+      "max":50,
       "min":1
     },
     "ListViewsOutput":{
@@ -868,7 +980,7 @@
       "members":{
         "NextToken":{
           "shape":"String",
-          "documentation":"<p>If present, indicates that more output is available than is included in the current response. Use this value in the <code>NextToken</code> request parameter in a subsequent call to the operation to get the next part of the output. You should repeat this until the <code>NextToken</code> response element comes back as <code>null</code>.</p>"
+          "documentation":"<p>If present, indicates that more output is available than is included in the current response. Use this value in the <code>NextToken</code> request parameter in a subsequent call to the operation to get the next part of the output. You should repeat this until the <code>NextToken</code> response element comes back as <code>null</code>. The pagination tokens expire after 24 hours.</p>"
         },
         "Views":{
           "shape":"ViewArnList",
@@ -879,6 +991,47 @@
     "Long":{
       "type":"long",
       "box":true
+    },
+    "MemberIndex":{
+      "type":"structure",
+      "members":{
+        "AccountId":{
+          "shape":"String",
+          "documentation":"<p>The account ID for the index.</p>"
+        },
+        "Arn":{
+          "shape":"String",
+          "documentation":"<p>The <a href=\"https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html\">Amazon resource name (ARN)</a> of the index.</p>"
+        },
+        "Region":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Web Services Region in which the index exists.</p>"
+        },
+        "Type":{
+          "shape":"IndexType",
+          "documentation":"<p>The type of index. It can be one of the following values: </p> <ul> <li> <p> <code>LOCAL</code> – The index contains information about resources from only the same Amazon Web Services Region.</p> </li> <li> <p> <code>AGGREGATOR</code> – Resource Explorer replicates copies of the indexed information about resources in all other Amazon Web Services Regions to the aggregator index. This lets search results in the Region with the aggregator index to include resources from all Regions in the account where Resource Explorer is turned on.</p> </li> </ul>"
+        }
+      },
+      "documentation":"<p>An index is the data store used by Amazon Web Services Resource Explorer to hold information about your Amazon Web Services resources that the service discovers. </p>"
+    },
+    "MemberIndexList":{
+      "type":"list",
+      "member":{"shape":"MemberIndex"}
+    },
+    "OrgConfiguration":{
+      "type":"structure",
+      "required":["AWSServiceAccessStatus"],
+      "members":{
+        "AWSServiceAccessStatus":{
+          "shape":"AWSServiceAccessStatus",
+          "documentation":"<p>This value displays whether your Amazon Web Services service access is <code>ENABLED</code> or <code>DISABLED</code>.</p>"
+        },
+        "ServiceLinkedRole":{
+          "shape":"String",
+          "documentation":"<p>This value shows whether or not you have a valid a service-linked role required to start the multi-account search feature.</p>"
+        }
+      },
+      "documentation":"<p>This is a structure that contains the status of Amazon Web Services service access, and whether you have a valid service-linked role to enable multi-account search for your organization.</p>"
     },
     "QueryString":{
       "type":"string",
@@ -1007,7 +1160,7 @@
         },
         "NextToken":{
           "shape":"SearchInputNextTokenString",
-          "documentation":"<p>The parameter for receiving additional results if you receive a <code>NextToken</code> response in a previous request. A <code>NextToken</code> response indicates that more output is available. Set this parameter to the value of the previous call's <code>NextToken</code> response to indicate where the output should continue from.</p>"
+          "documentation":"<p>The parameter for receiving additional results if you receive a <code>NextToken</code> response in a previous request. A <code>NextToken</code> response indicates that more output is available. Set this parameter to the value of the previous call's <code>NextToken</code> response to indicate where the output should continue from. The pagination tokens expire after 24 hours.</p>"
         },
         "QueryString":{
           "shape":"QueryString",
@@ -1044,7 +1197,7 @@
         },
         "NextToken":{
           "shape":"SearchOutputNextTokenString",
-          "documentation":"<p>If present, indicates that more output is available than is included in the current response. Use this value in the <code>NextToken</code> request parameter in a subsequent call to the operation to get the next part of the output. You should repeat this until the <code>NextToken</code> response element comes back as <code>null</code>.</p>"
+          "documentation":"<p>If present, indicates that more output is available than is included in the current response. Use this value in the <code>NextToken</code> request parameter in a subsequent call to the operation to get the next part of the output. You should repeat this until the <code>NextToken</code> response element comes back as <code>null</code>. The pagination tokens expire after 24 hours.</p>"
         },
         "Resources":{
           "shape":"ResourceList",
@@ -1094,7 +1247,8 @@
     "String":{"type":"string"},
     "StringList":{
       "type":"list",
-      "member":{"shape":"String"}
+      "member":{"shape":"String"},
+      "sensitive":true
     },
     "SupportedResourceType":{
       "type":"structure",
@@ -1117,7 +1271,8 @@
     "TagMap":{
       "type":"map",
       "key":{"shape":"String"},
-      "value":{"shape":"String"}
+      "value":{"shape":"String"},
+      "sensitive":true
     },
     "TagResourceInput":{
       "type":"structure",
@@ -1145,7 +1300,7 @@
       "members":{
         "Message":{"shape":"String"}
       },
-      "documentation":"<p>The request failed because you exceeded a rate limit for this operation. For more information, see <a href=\"https://docs.aws.amazon.com/arexug/mainline/quotas.html\">Quotas for Resource Explorer</a>.</p>",
+      "documentation":"<p>The request failed because you exceeded a rate limit for this operation. For more information, see <a href=\"https://docs.aws.amazon.com/resource-explorer/latest/userguide/quotas.html\">Quotas for Resource Explorer</a>.</p>",
       "error":{
         "httpStatusCode":429,
         "senderFault":true

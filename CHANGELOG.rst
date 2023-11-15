@@ -2,6 +2,39 @@
 CHANGELOG
 =========
 
+2.13.36
+=======
+
+* api-change:``iot``: This release introduces new attributes in API CreateSecurityProfile, UpdateSecurityProfile and DescribeSecurityProfile to support management of Metrics Export for AWS IoT Device Defender Detect.
+* api-change:``pipes``: Added support (via new LogConfiguration field in CreatePipe and UpdatePipe APIs) for logging to Amazon CloudWatch Logs, Amazon Simple Storage Service (Amazon S3), and Amazon Kinesis Data Firehose
+* api-change:``emr``: Update emr command to latest version
+* api-change:``dataexchange``: Removed Required trait for DataSet.OriginDetails.ProductId.
+* api-change:``marketplace-entitlement``: Update marketplace-entitlement command to latest version
+* api-change:``sagemaker``: This release makes Model Registry Inference Specification fields as not required.
+* api-change:``endpoint-rules``: Update endpoint-rules command to latest version
+* api-change:``controltower``: AWS Control Tower supports tagging for enabled controls. This release introduces TagResource, UntagResource and ListTagsForResource APIs to manage tags in existing enabled controls. It updates EnabledControl API to tag resources at creation time.
+* api-change:``backup``: AWS Backup - Features: Provide Job Summary for your backup activity.
+* api-change:``cur``: This release adds support for tagging and customers can now tag report definitions. Additionally, ReportStatus is now added to report definition to show when the last delivered time stamp and if it succeeded or not.
+* api-change:``resource-explorer-2``: Resource Explorer supports multi-account search. You can now use Resource Explorer to search and discover resources across AWS accounts within your organization or organizational unit.
+* api-change:``mediatailor``: Removed unnecessary default values.
+* api-change:``ec2``: EC2 adds API updates to enable ENA Express at instance launch time.
+* api-change:``endpoint-rules``: Update endpoint-rules command to latest version
+* api-change:``signer``: Documentation updates for AWS Signer
+* api-change:``stepfunctions``: Update stepfunctions command to latest version
+* api-change:``ec2``: Adds the new EC2 DescribeInstanceTopology API, which you can use to retrieve the network topology of your running instances on select platform types to determine their relative proximity to each other.
+* api-change:``connect``: Introducing SegmentAttributes parameter for StartChatContact API
+* api-change:``fms``: Adds optimizeUnassociatedWebACL flag to ManagedServiceData, updates third-party firewall examples, and other minor documentation updates.
+* api-change:``glue``: Introduces new storage optimization APIs to support automatic compaction of Apache Iceberg tables.
+* api-change:``mediaconvert``: This release includes the ability to specify any input source as the primary input for corresponding follow modes, and allows users to specify fit and fill behaviors without resizing content.
+* api-change:``cleanrooms``: This feature provides the ability for the collaboration creator to configure either the member who can run queries or a different member in the collaboration to be billed for query compute costs.
+* api-change:``endpoint-rules``: Update endpoint-rules command to latest version
+* api-change:``servicecatalog-appregistry``: When the customer associates a resource collection to their application with this new feature, then a new application tag will be applied to all supported resources that are part of that collection. This allows customers to more easily find the application that is associated with those resources.
+* api-change:``rds``: Updates Amazon RDS documentation for zero-ETL integrations.
+* api-change:``dms``: Added new Db2 LUW Target endpoint with related endpoint settings. New executeTimeout endpoint setting for mysql endpoint. New ReplicationDeprovisionTime field for serverless describe-replications.
+* api-change:``ecs``: Adds a Client Token parameter to the ECS RunTask API. The Client Token parameter allows for idempotent RunTask requests.
+* api-change:``lambda``: Add Python 3.12 (python3.12) support to AWS Lambda
+
+
 2.13.35
 =======
 
@@ -6372,7 +6405,6 @@ CHANGELOG
 * api-change:``signer``: Documentation updates for AWS Signer
 * api-change:``stepfunctions``: Update stepfunctions command to latest version
 * api-change:``endpoint-rules``: Update endpoint-rules command to latest version
-* feature:ContainerProvider: Added Support for EKS container credentials
 
 
 1.29.85

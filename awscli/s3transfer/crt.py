@@ -118,12 +118,13 @@ def create_s3_crt_client(
         is the number of processors in the machine.
 
     :type target_throughput: Optional[int]
-    :param target_throughput: Throughput target in Bytes.
+    :param target_throughput: Throughput target in bytes per second.
         By default, CRT will automatically attempt to choose a target
         throughput that matches the system's maximum network throughput.
         Currently, if CRT is unable to determine the maximum network
-        throughput, a fallback target throughput of 1.25 GB/s
-        (which translates to 10Gb/s) is used. To guarantee a specific target
+        throughput, a fallback target throughput of ``1_250_000_000`` bytes
+        per second (which translates to 10 gigabits per second, or 1.16
+        gibibytes per second) is used. To set a specific target
         throughput, set a value for this parameter.
 
     :type part_size: Optional[int]
@@ -197,8 +198,9 @@ def _get_crt_throughput_target_gbps(provided_throughput_target_bytes=None):
             target_gbps = 10.0
     else:
         # NOTE: The GB constant in s3transfer is technically a gibibyte. The
-        # GB constant is not used here because the CRT interprets a gigabyte
-        # as a base power of 10 (i.e. 1000 ** 3 instead of 1024 ** 3).
+        # GB constant is not used here because the CRT interprets gigabits
+        # for networking as a base power of 10
+        # (i.e. 1000 ** 3 instead of 1024 ** 3).
         target_gbps = provided_throughput_target_bytes * 8 / 1_000_000_000
     logger.debug('Using CRT throughput target in gbps: %s', target_gbps)
     return target_gbps

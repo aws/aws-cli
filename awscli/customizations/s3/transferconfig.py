@@ -10,8 +10,6 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
-import re
-
 from s3transfer.manager import TransferConfig
 
 from awscli.customizations.s3 import constants
@@ -59,7 +57,6 @@ class RuntimeConfig(object):
             'default': constants.CLASSIC_TRANSFER_CLIENT
         }
     }
-    _INTEGER_STR_REGEX = re.compile(r'^[0-9]+$')
 
     @staticmethod
     def defaults():
@@ -103,13 +100,14 @@ class RuntimeConfig(object):
                     bits_per_sec = self._human_readable_rate_to_int(value)
                     bytes_per_sec = int(bits_per_sec / 8)
                     runtime_config[attr] = bytes_per_sec
-                elif self._INTEGER_STR_REGEX.match(value):
+                elif self._is_integer_str(value):
                     runtime_config[attr] = int(value)
                 else:
                     raise InvalidConfigError(
                         'Invalid rate: %s. The value must be expressed '
-                        'as a rate in terms of bytes per second '
-                        '(e.g. 10MB/s or 800KB/s) or bits per '
+                        'as an integer in terms of bytes per second '
+                        '(e.g. 10485760) or a rate in terms of bytes '
+                        'per second (e.g. 10MB/s or 800KB/s) or bits per '
                         'second (e.g. 10Mb/s or 800Kb/s)' % value)
 
     def _human_readable_rate_to_int(self, value):
@@ -130,9 +128,16 @@ class RuntimeConfig(object):
         # 2. Otherwise, it will strip the "/s" to provide the value as a
         #    human readable size to human_readable_int()
         #    (e.g. "1024MB/s -> "1024MB")
-        if self._INTEGER_STR_REGEX.match(value[:-3]):
+        if self._is_integer_str(value[:-3]):
             return human_readable_to_int(value[:-3])
         return human_readable_to_int(value[:-2])
+
+    def _is_integer_str(self, value):
+        try:
+            int(value)
+            return True
+        except ValueError:
+            return False
 
     def _resolve_choice_aliases(self, runtime_config):
         for attr in self.CHOICE_ALIASES:

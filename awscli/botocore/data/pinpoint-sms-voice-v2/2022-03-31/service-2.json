@@ -30,7 +30,7 @@
         {"shape":"ConflictException"},
         {"shape":"InternalServerException"}
       ],
-      "documentation":"<p>Associates the specified origination identity with a pool.</p> <p>If the origination identity is a phone number and is already associated with another pool, an Error is returned. A sender ID can be associated with multiple pools.</p> <p>If the origination identity configuration doesn't match the pool's configuration, an Error is returned.</p>"
+      "documentation":"<p>Associates the specified origination identity with a pool.</p> <p>If the origination identity is a phone number and is already associated with another pool, an error is returned. A sender ID can be associated with multiple pools.</p> <p>If the origination identity configuration doesn't match the pool's configuration, an error is returned.</p>"
     },
     "CreateConfigurationSet":{
       "name":"CreateConfigurationSet",
@@ -85,7 +85,7 @@
         {"shape":"ConflictException"},
         {"shape":"InternalServerException"}
       ],
-      "documentation":"<p>Creates a new opt-out list.</p> <p>If the opt-out list name already exists, an Error is returned.</p> <p>An opt-out list is a list of phone numbers that are opted out, meaning you can't send SMS or voice messages to them. If end user replies with the keyword \"STOP,\" an entry for the phone number is added to the opt-out list. In addition to STOP, your recipients can use any supported opt-out keyword, such as CANCEL or OPTOUT. For a list of supported opt-out keywords, see <a href=\"https://docs.aws.amazon.com/pinpoint/latest/userguide/channels-sms-manage.html#channels-sms-manage-optout\"> SMS opt out </a> in the <i>Amazon Pinpoint User Guide</i>.</p>"
+      "documentation":"<p>Creates a new opt-out list.</p> <p>If the opt-out list name already exists, an error is returned.</p> <p>An opt-out list is a list of phone numbers that are opted out, meaning you can't send SMS or voice messages to them. If end user replies with the keyword \"STOP,\" an entry for the phone number is added to the opt-out list. In addition to STOP, your recipients can use any supported opt-out keyword, such as CANCEL or OPTOUT. For a list of supported opt-out keywords, see <a href=\"https://docs.aws.amazon.com/pinpoint/latest/userguide/channels-sms-manage.html#channels-sms-manage-optout\"> SMS opt out </a> in the <i>Amazon Pinpoint User Guide</i>.</p>"
     },
     "CreatePool":{
       "name":"CreatePool",
@@ -104,7 +104,99 @@
         {"shape":"ConflictException"},
         {"shape":"InternalServerException"}
       ],
-      "documentation":"<p>Creates a new pool and associates the specified origination identity to the pool. A pool can include one or more phone numbers and SenderIds that are associated with your Amazon Web Services account.</p> <p>The new pool inherits its configuration from the specified origination identity. This includes keywords, message type, opt-out list, two-way configuration, and self-managed opt-out configuration. Deletion protection isn't inherited from the origination identity and defaults to false.</p> <p>If the origination identity is a phone number and is already associated with another pool, an Error is returned. A sender ID can be associated with multiple pools.</p>"
+      "documentation":"<p>Creates a new pool and associates the specified origination identity to the pool. A pool can include one or more phone numbers and SenderIds that are associated with your Amazon Web Services account.</p> <p>The new pool inherits its configuration from the specified origination identity. This includes keywords, message type, opt-out list, two-way configuration, and self-managed opt-out configuration. Deletion protection isn't inherited from the origination identity and defaults to false.</p> <p>If the origination identity is a phone number and is already associated with another pool, an error is returned. A sender ID can be associated with multiple pools.</p>"
+    },
+    "CreateRegistration":{
+      "name":"CreateRegistration",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"CreateRegistrationRequest"},
+      "output":{"shape":"CreateRegistrationResult"},
+      "errors":[
+        {"shape":"ServiceQuotaExceededException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"},
+        {"shape":"ConflictException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Creates a new registration based on the <b>RegistrationType</b> field. </p>"
+    },
+    "CreateRegistrationAssociation":{
+      "name":"CreateRegistrationAssociation",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"CreateRegistrationAssociationRequest"},
+      "output":{"shape":"CreateRegistrationAssociationResult"},
+      "errors":[
+        {"shape":"ServiceQuotaExceededException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ValidationException"},
+        {"shape":"ConflictException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Associate the registration with an origination identity such as a phone number or sender ID.</p>"
+    },
+    "CreateRegistrationAttachment":{
+      "name":"CreateRegistrationAttachment",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"CreateRegistrationAttachmentRequest"},
+      "output":{"shape":"CreateRegistrationAttachmentResult"},
+      "errors":[
+        {"shape":"ServiceQuotaExceededException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"},
+        {"shape":"ConflictException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Create a new registration attachment to use for uploading a file or a URL to a file. The maximum file size is 1MiB and valid file extensions are PDF, JPEG and PNG. For example, many sender ID registrations require a signed “letter of authorization” (LOA) to be submitted.</p>"
+    },
+    "CreateRegistrationVersion":{
+      "name":"CreateRegistrationVersion",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"CreateRegistrationVersionRequest"},
+      "output":{"shape":"CreateRegistrationVersionResult"},
+      "errors":[
+        {"shape":"ServiceQuotaExceededException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ValidationException"},
+        {"shape":"ConflictException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Create a new version of the registration and increase the <b>VersionNumber</b>. The previous version of the registration becomes read-only.</p>"
+    },
+    "CreateVerifiedDestinationNumber":{
+      "name":"CreateVerifiedDestinationNumber",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"CreateVerifiedDestinationNumberRequest"},
+      "output":{"shape":"CreateVerifiedDestinationNumberResult"},
+      "errors":[
+        {"shape":"ServiceQuotaExceededException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"},
+        {"shape":"ConflictException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>You can only send messages to verified destination numbers when your account is in the sandbox. You can add up to 10 verified destination numbers.</p>"
     },
     "DeleteConfigurationSet":{
       "name":"DeleteConfigurationSet",
@@ -208,7 +300,7 @@
         {"shape":"ConflictException"},
         {"shape":"InternalServerException"}
       ],
-      "documentation":"<p>Deletes an existing opt-out list. All opted out phone numbers in the opt-out list are deleted.</p> <p>If the specified opt-out list name doesn't exist or is in-use by an origination phone number or pool, an Error is returned.</p>"
+      "documentation":"<p>Deletes an existing opt-out list. All opted out phone numbers in the opt-out list are deleted.</p> <p>If the specified opt-out list name doesn't exist or is in-use by an origination phone number or pool, an error is returned.</p>"
     },
     "DeleteOptedOutNumber":{
       "name":"DeleteOptedOutNumber",
@@ -226,7 +318,7 @@
         {"shape":"ConflictException"},
         {"shape":"InternalServerException"}
       ],
-      "documentation":"<p>Deletes an existing opted out destination phone number from the specified opt-out list.</p> <p>Each destination phone number can only be deleted once every 30 days.</p> <p>If the specified destination phone number doesn't exist or if the opt-out list doesn't exist, an Error is returned.</p>"
+      "documentation":"<p>Deletes an existing opted out destination phone number from the specified opt-out list.</p> <p>Each destination phone number can only be deleted once every 30 days.</p> <p>If the specified destination phone number doesn't exist or if the opt-out list doesn't exist, an error is returned.</p>"
     },
     "DeletePool":{
       "name":"DeletePool",
@@ -244,7 +336,61 @@
         {"shape":"ConflictException"},
         {"shape":"InternalServerException"}
       ],
-      "documentation":"<p>Deletes an existing pool. Deleting a pool disassociates all origination identities from that pool.</p> <p>If the pool status isn't active or if deletion protection is enabled, an Error is returned.</p> <p>A pool is a collection of phone numbers and SenderIds. A pool can include one or more phone numbers and SenderIds that are associated with your Amazon Web Services account.</p>"
+      "documentation":"<p>Deletes an existing pool. Deleting a pool disassociates all origination identities from that pool.</p> <p>If the pool status isn't active or if deletion protection is enabled, an error is returned.</p> <p>A pool is a collection of phone numbers and SenderIds. A pool can include one or more phone numbers and SenderIds that are associated with your Amazon Web Services account.</p>"
+    },
+    "DeleteRegistration":{
+      "name":"DeleteRegistration",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DeleteRegistrationRequest"},
+      "output":{"shape":"DeleteRegistrationResult"},
+      "errors":[
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ValidationException"},
+        {"shape":"ConflictException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Permanently delete an existing registration from your account.</p>"
+    },
+    "DeleteRegistrationAttachment":{
+      "name":"DeleteRegistrationAttachment",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DeleteRegistrationAttachmentRequest"},
+      "output":{"shape":"DeleteRegistrationAttachmentResult"},
+      "errors":[
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ValidationException"},
+        {"shape":"ConflictException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Permanently delete the specified registration attachment.</p>"
+    },
+    "DeleteRegistrationFieldValue":{
+      "name":"DeleteRegistrationFieldValue",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DeleteRegistrationFieldValueRequest"},
+      "output":{"shape":"DeleteRegistrationFieldValueResult"},
+      "errors":[
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ValidationException"},
+        {"shape":"ConflictException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Delete the value in a registration form field.</p>"
     },
     "DeleteTextMessageSpendLimitOverride":{
       "name":"DeleteTextMessageSpendLimitOverride",
@@ -261,6 +407,24 @@
         {"shape":"InternalServerException"}
       ],
       "documentation":"<p>Deletes an account-level monthly spending limit override for sending text messages. Deleting a spend limit override will set the <code>EnforcedLimit</code> to equal the <code>MaxLimit</code>, which is controlled by Amazon Web Services. For more information on spend limits (quotas) see <a href=\"https://docs.aws.amazon.com/pinpoint/latest/developerguide/quotas.html\">Amazon Pinpoint quotas </a> in the <i>Amazon Pinpoint Developer Guide</i>.</p>"
+    },
+    "DeleteVerifiedDestinationNumber":{
+      "name":"DeleteVerifiedDestinationNumber",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DeleteVerifiedDestinationNumberRequest"},
+      "output":{"shape":"DeleteVerifiedDestinationNumberResult"},
+      "errors":[
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ValidationException"},
+        {"shape":"ConflictException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Delete a verified destination phone number.</p>"
     },
     "DeleteVoiceMessageSpendLimitOverride":{
       "name":"DeleteVoiceMessageSpendLimitOverride",
@@ -342,7 +506,7 @@
         {"shape":"ValidationException"},
         {"shape":"InternalServerException"}
       ],
-      "documentation":"<p>Describes the specified keywords or all keywords on your origination phone number or pool.</p> <p>A keyword is a word that you can search for on a particular phone number or pool. It is also a specific word or phrase that an end user can send to your number to elicit a response, such as an informational message or a special offer. When your number receives a message that begins with a keyword, Amazon Pinpoint responds with a customizable message.</p> <p>If you specify a keyword that isn't valid, an Error is returned.</p>"
+      "documentation":"<p>Describes the specified keywords or all keywords on your origination phone number or pool.</p> <p>A keyword is a word that you can search for on a particular phone number or pool. It is also a specific word or phrase that an end user can send to your number to elicit a response, such as an informational message or a special offer. When your number receives a message that begins with a keyword, Amazon Pinpoint responds with a customizable message.</p> <p>If you specify a keyword that isn't valid, an error is returned.</p>"
     },
     "DescribeOptOutLists":{
       "name":"DescribeOptOutLists",
@@ -359,7 +523,7 @@
         {"shape":"ValidationException"},
         {"shape":"InternalServerException"}
       ],
-      "documentation":"<p>Describes the specified opt-out list or all opt-out lists in your account.</p> <p>If you specify opt-out list names, the output includes information for only the specified opt-out lists. Opt-out lists include only those that meet the filter criteria. If you don't specify opt-out list names or filters, the output includes information for all opt-out lists.</p> <p>If you specify an opt-out list name that isn't valid, an Error is returned.</p>"
+      "documentation":"<p>Describes the specified opt-out list or all opt-out lists in your account.</p> <p>If you specify opt-out list names, the output includes information for only the specified opt-out lists. Opt-out lists include only those that meet the filter criteria. If you don't specify opt-out list names or filters, the output includes information for all opt-out lists.</p> <p>If you specify an opt-out list name that isn't valid, an error is returned.</p>"
     },
     "DescribeOptedOutNumbers":{
       "name":"DescribeOptedOutNumbers",
@@ -376,7 +540,7 @@
         {"shape":"ValidationException"},
         {"shape":"InternalServerException"}
       ],
-      "documentation":"<p>Describes the specified opted out destination numbers or all opted out destination numbers in an opt-out list.</p> <p>If you specify opted out numbers, the output includes information for only the specified opted out numbers. If you specify filters, the output includes information for only those opted out numbers that meet the filter criteria. If you don't specify opted out numbers or filters, the output includes information for all opted out destination numbers in your opt-out list.</p> <p>If you specify an opted out number that isn't valid, an Error is returned.</p>"
+      "documentation":"<p>Describes the specified opted out destination numbers or all opted out destination numbers in an opt-out list.</p> <p>If you specify opted out numbers, the output includes information for only the specified opted out numbers. If you specify filters, the output includes information for only those opted out numbers that meet the filter criteria. If you don't specify opted out numbers or filters, the output includes information for all opted out destination numbers in your opt-out list.</p> <p>If you specify an opted out number that isn't valid, an error is returned.</p>"
     },
     "DescribePhoneNumbers":{
       "name":"DescribePhoneNumbers",
@@ -393,7 +557,7 @@
         {"shape":"ValidationException"},
         {"shape":"InternalServerException"}
       ],
-      "documentation":"<p>Describes the specified origination phone number, or all the phone numbers in your account.</p> <p>If you specify phone number IDs, the output includes information for only the specified phone numbers. If you specify filters, the output includes information for only those phone numbers that meet the filter criteria. If you don't specify phone number IDs or filters, the output includes information for all phone numbers.</p> <p>If you specify a phone number ID that isn't valid, an Error is returned.</p>"
+      "documentation":"<p>Describes the specified origination phone number, or all the phone numbers in your account.</p> <p>If you specify phone number IDs, the output includes information for only the specified phone numbers. If you specify filters, the output includes information for only those phone numbers that meet the filter criteria. If you don't specify phone number IDs or filters, the output includes information for all phone numbers.</p> <p>If you specify a phone number ID that isn't valid, an error is returned.</p>"
     },
     "DescribePools":{
       "name":"DescribePools",
@@ -410,7 +574,123 @@
         {"shape":"ValidationException"},
         {"shape":"InternalServerException"}
       ],
-      "documentation":"<p>Retrieves the specified pools or all pools associated with your Amazon Web Services account.</p> <p>If you specify pool IDs, the output includes information for only the specified pools. If you specify filters, the output includes information for only those pools that meet the filter criteria. If you don't specify pool IDs or filters, the output includes information for all pools.</p> <p>If you specify a pool ID that isn't valid, an Error is returned.</p> <p>A pool is a collection of phone numbers and SenderIds. A pool can include one or more phone numbers and SenderIds that are associated with your Amazon Web Services account.</p>"
+      "documentation":"<p>Retrieves the specified pools or all pools associated with your Amazon Web Services account.</p> <p>If you specify pool IDs, the output includes information for only the specified pools. If you specify filters, the output includes information for only those pools that meet the filter criteria. If you don't specify pool IDs or filters, the output includes information for all pools.</p> <p>If you specify a pool ID that isn't valid, an error is returned.</p> <p>A pool is a collection of phone numbers and SenderIds. A pool can include one or more phone numbers and SenderIds that are associated with your Amazon Web Services account.</p>"
+    },
+    "DescribeRegistrationAttachments":{
+      "name":"DescribeRegistrationAttachments",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DescribeRegistrationAttachmentsRequest"},
+      "output":{"shape":"DescribeRegistrationAttachmentsResult"},
+      "errors":[
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ValidationException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Retrieves the specified registration attachments or all registration attachments associated with your Amazon Web Services account.</p>"
+    },
+    "DescribeRegistrationFieldDefinitions":{
+      "name":"DescribeRegistrationFieldDefinitions",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DescribeRegistrationFieldDefinitionsRequest"},
+      "output":{"shape":"DescribeRegistrationFieldDefinitionsResult"},
+      "errors":[
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Retrieves the specified registration type field definitions. You can use DescribeRegistrationFieldDefinitions to view the requirements for creating, filling out, and submitting each registration type.</p>"
+    },
+    "DescribeRegistrationFieldValues":{
+      "name":"DescribeRegistrationFieldValues",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DescribeRegistrationFieldValuesRequest"},
+      "output":{"shape":"DescribeRegistrationFieldValuesResult"},
+      "errors":[
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ValidationException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Retrieves the specified registration field values.</p>"
+    },
+    "DescribeRegistrationSectionDefinitions":{
+      "name":"DescribeRegistrationSectionDefinitions",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DescribeRegistrationSectionDefinitionsRequest"},
+      "output":{"shape":"DescribeRegistrationSectionDefinitionsResult"},
+      "errors":[
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Retrieves the specified registration section definitions. You can use DescribeRegistrationSectionDefinitions to view the requirements for creating, filling out, and submitting each registration type.</p>"
+    },
+    "DescribeRegistrationTypeDefinitions":{
+      "name":"DescribeRegistrationTypeDefinitions",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DescribeRegistrationTypeDefinitionsRequest"},
+      "output":{"shape":"DescribeRegistrationTypeDefinitionsResult"},
+      "errors":[
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Retrieves the specified registration type definitions. You can use DescribeRegistrationTypeDefinitions to view the requirements for creating, filling out, and submitting each registration type.</p>"
+    },
+    "DescribeRegistrationVersions":{
+      "name":"DescribeRegistrationVersions",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DescribeRegistrationVersionsRequest"},
+      "output":{"shape":"DescribeRegistrationVersionsResult"},
+      "errors":[
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ValidationException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Retrieves the specified registration version.</p>"
+    },
+    "DescribeRegistrations":{
+      "name":"DescribeRegistrations",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DescribeRegistrationsRequest"},
+      "output":{"shape":"DescribeRegistrationsResult"},
+      "errors":[
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ValidationException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Retrieves the specified registrations.</p>"
     },
     "DescribeSenderIds":{
       "name":"DescribeSenderIds",
@@ -427,7 +707,7 @@
         {"shape":"ValidationException"},
         {"shape":"InternalServerException"}
       ],
-      "documentation":"<p>Describes the specified SenderIds or all SenderIds associated with your Amazon Web Services account.</p> <p>If you specify SenderIds, the output includes information for only the specified SenderIds. If you specify filters, the output includes information for only those SenderIds that meet the filter criteria. If you don't specify SenderIds or filters, the output includes information for all SenderIds.</p> <p>f you specify a sender ID that isn't valid, an Error is returned.</p>"
+      "documentation":"<p>Describes the specified SenderIds or all SenderIds associated with your Amazon Web Services account.</p> <p>If you specify SenderIds, the output includes information for only the specified SenderIds. If you specify filters, the output includes information for only those SenderIds that meet the filter criteria. If you don't specify SenderIds or filters, the output includes information for all SenderIds.</p> <p>f you specify a sender ID that isn't valid, an error is returned.</p>"
     },
     "DescribeSpendLimits":{
       "name":"DescribeSpendLimits",
@@ -445,6 +725,23 @@
       ],
       "documentation":"<p>Describes the current Amazon Pinpoint monthly spend limits for sending voice and text messages.</p> <p>When you establish an Amazon Web Services account, the account has initial monthly spend limit in a given Region. For more information on increasing your monthly spend limit, see <a href=\"https://docs.aws.amazon.com/pinpoint/latest/userguide/channels-sms-awssupport-spend-threshold.html\"> Requesting increases to your monthly SMS spending quota for Amazon Pinpoint </a> in the <i>Amazon Pinpoint User Guide</i>.</p>"
     },
+    "DescribeVerifiedDestinationNumbers":{
+      "name":"DescribeVerifiedDestinationNumbers",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DescribeVerifiedDestinationNumbersRequest"},
+      "output":{"shape":"DescribeVerifiedDestinationNumbersResult"},
+      "errors":[
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ValidationException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Retrieves the specified verified destiona numbers.</p>"
+    },
     "DisassociateOriginationIdentity":{
       "name":"DisassociateOriginationIdentity",
       "http":{
@@ -461,7 +758,25 @@
         {"shape":"ConflictException"},
         {"shape":"InternalServerException"}
       ],
-      "documentation":"<p>Removes the specified origination identity from an existing pool.</p> <p>If the origination identity isn't associated with the specified pool, an Error is returned.</p>"
+      "documentation":"<p>Removes the specified origination identity from an existing pool.</p> <p>If the origination identity isn't associated with the specified pool, an error is returned.</p>"
+    },
+    "DiscardRegistrationVersion":{
+      "name":"DiscardRegistrationVersion",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DiscardRegistrationVersionRequest"},
+      "output":{"shape":"DiscardRegistrationVersionResult"},
+      "errors":[
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ValidationException"},
+        {"shape":"ConflictException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Discard the current version of the registration.</p>"
     },
     "ListPoolOriginationIdentities":{
       "name":"ListPoolOriginationIdentities",
@@ -479,6 +794,23 @@
         {"shape":"InternalServerException"}
       ],
       "documentation":"<p>Lists all associated origination identities in your pool.</p> <p>If you specify filters, the output includes information for only those origination identities that meet the filter criteria.</p>"
+    },
+    "ListRegistrationAssociations":{
+      "name":"ListRegistrationAssociations",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"ListRegistrationAssociationsRequest"},
+      "output":{"shape":"ListRegistrationAssociationsResult"},
+      "errors":[
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ValidationException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Retreive all of the origination identies that are associated with a registration.</p>"
     },
     "ListTagsForResource":{
       "name":"ListTagsForResource",
@@ -514,7 +846,7 @@
         {"shape":"ConflictException"},
         {"shape":"InternalServerException"}
       ],
-      "documentation":"<p>Creates or updates a keyword configuration on an origination phone number or pool.</p> <p> A keyword is a word that you can search for on a particular phone number or pool. It is also a specific word or phrase that an end user can send to your number to elicit a response, such as an informational message or a special offer. When your number receives a message that begins with a keyword, Amazon Pinpoint responds with a customizable message.</p> <p>If you specify a keyword that isn't valid, an Error is returned.</p>"
+      "documentation":"<p>Creates or updates a keyword configuration on an origination phone number or pool.</p> <p> A keyword is a word that you can search for on a particular phone number or pool. It is also a specific word or phrase that an end user can send to your number to elicit a response, such as an informational message or a special offer. When your number receives a message that begins with a keyword, Amazon Pinpoint responds with a customizable message.</p> <p>If you specify a keyword that isn't valid, an error is returned.</p>"
     },
     "PutOptedOutNumber":{
       "name":"PutOptedOutNumber",
@@ -531,7 +863,25 @@
         {"shape":"ValidationException"},
         {"shape":"InternalServerException"}
       ],
-      "documentation":"<p>Creates an opted out destination phone number in the opt-out list.</p> <p>If the destination phone number isn't valid or if the specified opt-out list doesn't exist, an Error is returned.</p>"
+      "documentation":"<p>Creates an opted out destination phone number in the opt-out list.</p> <p>If the destination phone number isn't valid or if the specified opt-out list doesn't exist, an error is returned.</p>"
+    },
+    "PutRegistrationFieldValue":{
+      "name":"PutRegistrationFieldValue",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"PutRegistrationFieldValueRequest"},
+      "output":{"shape":"PutRegistrationFieldValueResult"},
+      "errors":[
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ValidationException"},
+        {"shape":"ConflictException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Creates or updates a field value for a registration.</p>"
     },
     "ReleasePhoneNumber":{
       "name":"ReleasePhoneNumber",
@@ -549,7 +899,25 @@
         {"shape":"ConflictException"},
         {"shape":"InternalServerException"}
       ],
-      "documentation":"<p>Releases an existing origination phone number in your account. Once released, a phone number is no longer available for sending messages.</p> <p>If the origination phone number has deletion protection enabled or is associated with a pool, an Error is returned.</p>"
+      "documentation":"<p>Releases an existing origination phone number in your account. Once released, a phone number is no longer available for sending messages.</p> <p>If the origination phone number has deletion protection enabled or is associated with a pool, an error is returned.</p>"
+    },
+    "ReleaseSenderId":{
+      "name":"ReleaseSenderId",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"ReleaseSenderIdRequest"},
+      "output":{"shape":"ReleaseSenderIdResult"},
+      "errors":[
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ValidationException"},
+        {"shape":"ConflictException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Releases an existing sender ID in your account.</p>"
     },
     "RequestPhoneNumber":{
       "name":"RequestPhoneNumber",
@@ -569,6 +937,43 @@
         {"shape":"InternalServerException"}
       ],
       "documentation":"<p>Request an origination phone number for use in your account. For more information on phone number request see <a href=\"https://docs.aws.amazon.com/pinpoint/latest/userguide/settings-sms-request-number.html\"> Requesting a number </a> in the <i>Amazon Pinpoint User Guide</i>.</p>"
+    },
+    "RequestSenderId":{
+      "name":"RequestSenderId",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"RequestSenderIdRequest"},
+      "output":{"shape":"RequestSenderIdResult"},
+      "errors":[
+        {"shape":"ServiceQuotaExceededException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"},
+        {"shape":"ConflictException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Request a new sender ID that doesn't require registration. </p>"
+    },
+    "SendDestinationNumberVerificationCode":{
+      "name":"SendDestinationNumberVerificationCode",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"SendDestinationNumberVerificationCodeRequest"},
+      "output":{"shape":"SendDestinationNumberVerificationCodeResult"},
+      "errors":[
+        {"shape":"ServiceQuotaExceededException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ValidationException"},
+        {"shape":"ConflictException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Before you can send test messages to a verified destination phone number you need to opt-in the verified destination phone number. Creates a new text message with a verification code and send it to a verified destination phone number. Once you have the verification code use <a>VerifyDestinationNumber</a> to opt-in the verified destination phone number to receive messages.</p>"
     },
     "SendTextMessage":{
       "name":"SendTextMessage",
@@ -606,7 +1011,7 @@
         {"shape":"ConflictException"},
         {"shape":"InternalServerException"}
       ],
-      "documentation":"<p>Allows you to send a request that sends a text message through Amazon Pinpoint. This operation uses <a href=\"http://aws.amazon.com/polly/\">Amazon Polly</a> to convert a text script into a voice message.</p>"
+      "documentation":"<p>Allows you to send a request that sends a voice message through Amazon Pinpoint. This operation uses <a href=\"http://aws.amazon.com/polly/\">Amazon Polly</a> to convert a text script into a voice message.</p>"
     },
     "SetDefaultMessageType":{
       "name":"SetDefaultMessageType",
@@ -673,6 +1078,24 @@
         {"shape":"InternalServerException"}
       ],
       "documentation":"<p>Sets an account level monthly spend limit override for sending voice messages. The requested spend limit must be less than or equal to the <code>MaxLimit</code>, which is set by Amazon Web Services. </p>"
+    },
+    "SubmitRegistrationVersion":{
+      "name":"SubmitRegistrationVersion",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"SubmitRegistrationVersionRequest"},
+      "output":{"shape":"SubmitRegistrationVersionResult"},
+      "errors":[
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ValidationException"},
+        {"shape":"ConflictException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Submit the specified registration for review and approval.</p>"
     },
     "TagResource":{
       "name":"TagResource",
@@ -743,7 +1166,7 @@
         {"shape":"ConflictException"},
         {"shape":"InternalServerException"}
       ],
-      "documentation":"<p>Updates the configuration of an existing origination phone number. You can update the opt-out list, enable or disable two-way messaging, change the TwoWayChannelArn, enable or disable self-managed opt-outs, and enable or disable deletion protection.</p> <p>If the origination phone number is associated with a pool, an Error is returned.</p>"
+      "documentation":"<p>Updates the configuration of an existing origination phone number. You can update the opt-out list, enable or disable two-way messaging, change the TwoWayChannelArn, enable or disable self-managed opt-outs, and enable or disable deletion protection.</p> <p>If the origination phone number is associated with a pool, an error is returned.</p>"
     },
     "UpdatePool":{
       "name":"UpdatePool",
@@ -762,6 +1185,41 @@
         {"shape":"InternalServerException"}
       ],
       "documentation":"<p>Updates the configuration of an existing pool. You can update the opt-out list, enable or disable two-way messaging, change the <code>TwoWayChannelArn</code>, enable or disable self-managed opt-outs, enable or disable deletion protection, and enable or disable shared routes.</p>"
+    },
+    "UpdateSenderId":{
+      "name":"UpdateSenderId",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"UpdateSenderIdRequest"},
+      "output":{"shape":"UpdateSenderIdResult"},
+      "errors":[
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ValidationException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Updates the configuration of an existing sender ID.</p>"
+    },
+    "VerifyDestinationNumber":{
+      "name":"VerifyDestinationNumber",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"VerifyDestinationNumberRequest"},
+      "output":{"shape":"VerifyDestinationNumberResult"},
+      "errors":[
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ValidationException"},
+        {"shape":"ConflictException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Use the verification code that was received by the verified destination phone number to opt-in the verified destination phone number to receive more messages.</p>"
     }
   },
   "shapes":{
@@ -843,7 +1301,11 @@
         "PHONE_NUMBERS",
         "POOLS",
         "CONFIGURATION_SETS",
-        "OPT_OUT_LISTS"
+        "OPT_OUT_LISTS",
+        "SENDER_IDS",
+        "REGISTRATIONS",
+        "REGISTRATION_ATTACHMENTS",
+        "VERIFIED_DESTINATION_NUMBERS"
       ]
     },
     "AmazonResourceName":{
@@ -903,6 +1365,30 @@
           "documentation":"<p>The two-character code, in ISO 3166-1 alpha-2 format, for the country or region. </p>"
         }
       }
+    },
+    "AttachmentBody":{
+      "type":"blob",
+      "max":1572864,
+      "min":1
+    },
+    "AttachmentStatus":{
+      "type":"string",
+      "enum":[
+        "UPLOAD_IN_PROGRESS",
+        "UPLOAD_COMPLETE",
+        "UPLOAD_FAILED",
+        "DELETED"
+      ]
+    },
+    "AttachmentUploadErrorReason":{
+      "type":"string",
+      "enum":["INTERNAL_ERROR"]
+    },
+    "AttachmentUrl":{
+      "type":"string",
+      "max":2048,
+      "min":1,
+      "pattern":"\\S+"
     },
     "Boolean":{
       "type":"boolean",
@@ -1046,25 +1532,37 @@
     "ConflictExceptionReason":{
       "type":"string",
       "enum":[
+        "CREATE_REGISTRATION_VERSION_NOT_ALLOWED",
         "DELETION_PROTECTION_ENABLED",
         "DESTINATION_PHONE_NUMBER_NOT_VERIFIED",
         "DESTINATION_PHONE_NUMBER_OPTED_OUT",
+        "DISASSOCIATE_REGISTRATION_NOT_ALLOWED",
+        "DISCARD_REGISTRATION_VERSION_NOT_ALLOWED",
+        "EDIT_REGISTRATION_FIELD_VALUES_NOT_ALLOWED",
         "EVENT_DESTINATION_MISMATCH",
         "KEYWORD_MISMATCH",
         "LAST_PHONE_NUMBER",
-        "SELF_MANAGED_OPT_OUTS_MISMATCH",
+        "NUMBER_CAPABILITIES_MISMATCH",
         "MESSAGE_TYPE_MISMATCH",
         "NO_ORIGINATION_IDENTITIES_FOUND",
         "OPT_OUT_LIST_MISMATCH",
         "PHONE_NUMBER_ASSOCIATED_TO_POOL",
+        "PHONE_NUMBER_ASSOCIATED_TO_REGISTRATION",
         "PHONE_NUMBER_NOT_ASSOCIATED_TO_POOL",
         "PHONE_NUMBER_NOT_IN_REGISTRATION_REGION",
+        "REGISTRATION_ALREADY_SUBMITTED",
+        "REGISTRATION_NOT_COMPLETE",
+        "SENDER_ID_ASSOCIATED_TO_POOL",
         "RESOURCE_ALREADY_EXISTS",
         "RESOURCE_DELETION_NOT_ALLOWED",
         "RESOURCE_MODIFICATION_NOT_ALLOWED",
         "RESOURCE_NOT_ACTIVE",
         "RESOURCE_NOT_EMPTY",
-        "TWO_WAY_CONFIG_MISMATCH"
+        "SELF_MANAGED_OPT_OUTS_MISMATCH",
+        "SUBMIT_REGISTRATION_VERSION_NOT_ALLOWED",
+        "TWO_WAY_CONFIG_MISMATCH",
+        "VERIFICATION_CODE_EXPIRED",
+        "VERIFICATION_ALREADY_COMPLETE"
       ]
     },
     "ContextKey":{
@@ -1084,7 +1582,7 @@
       "type":"string",
       "max":800,
       "min":1,
-      "pattern":"\\S+"
+      "pattern":"(?!\\s)^[\\s\\S]+(?<!\\s)"
     },
     "CreateConfigurationSetRequest":{
       "type":"structure",
@@ -1144,7 +1642,7 @@
         },
         "MatchingEventTypes":{
           "shape":"EventTypeList",
-          "documentation":"<p>An array of event types that determine which events to log. If \"ALL\" is used, then Amazon Pinpoint logs every event type.</p>"
+          "documentation":"<p>An array of event types that determine which events to log. If \"ALL\" is used, then Amazon Pinpoint logs every event type.</p> <note> <p>The <code>TEXT_SENT</code> event type is not supported.</p> </note>"
         },
         "CloudWatchLogsDestination":{
           "shape":"CloudWatchLogsDestination",
@@ -1284,6 +1782,10 @@
           "shape":"TwoWayChannelArn",
           "documentation":"<p>The Amazon Resource Name (ARN) of the two way channel.</p>"
         },
+        "TwoWayChannelRole":{
+          "shape":"IamRoleArn",
+          "documentation":"<p>An optional IAM Role Arn for a service to assume, to be able to post inbound SMS messages.</p>"
+        },
         "SelfManagedOptOutsEnabled":{
           "shape":"PrimitiveBoolean",
           "documentation":"<p>By default this is set to false. When an end recipient sends a message that begins with HELP or STOP to one of your dedicated numbers, Amazon Pinpoint automatically replies with a customizable message and adds the end recipient to the OptOutList. When set to true you're responsible for responding to HELP and STOP requests. You're also responsible for tracking and honoring opt-out requests.</p>"
@@ -1307,6 +1809,282 @@
         "CreatedTimestamp":{
           "shape":"Timestamp",
           "documentation":"<p>The time when the pool was created, in <a href=\"https://www.epochconverter.com/\">UNIX epoch time</a> format.</p>"
+        }
+      }
+    },
+    "CreateRegistrationAssociationRequest":{
+      "type":"structure",
+      "required":[
+        "RegistrationId",
+        "ResourceId"
+      ],
+      "members":{
+        "RegistrationId":{
+          "shape":"RegistrationIdOrArn",
+          "documentation":"<p>The unique identifier for the registration.</p>"
+        },
+        "ResourceId":{
+          "shape":"ResourceIdOrArn",
+          "documentation":"<p>The unique identifier for the origination identity. For example this could be a <b>PhoneNumberId</b> or <b>SenderId</b>.</p>"
+        }
+      }
+    },
+    "CreateRegistrationAssociationResult":{
+      "type":"structure",
+      "required":[
+        "RegistrationArn",
+        "RegistrationId",
+        "RegistrationType",
+        "ResourceArn",
+        "ResourceId",
+        "ResourceType"
+      ],
+      "members":{
+        "RegistrationArn":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Resource Name (ARN) for the registration.</p>"
+        },
+        "RegistrationId":{
+          "shape":"String",
+          "documentation":"<p>The unique identifier for the registration.</p>"
+        },
+        "RegistrationType":{
+          "shape":"RegistrationType",
+          "documentation":"<p>The type of registration form. The list of <b>RegistrationTypes</b> can be found using the <a>DescribeRegistrationTypeDefinitions</a> action.</p>"
+        },
+        "ResourceArn":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the origination identity that is associated with the registration. </p>"
+        },
+        "ResourceId":{
+          "shape":"String",
+          "documentation":"<p>The unique identifier for the origination identity. For example this could be a <b>PhoneNumberId</b> or <b>SenderId</b>.</p>"
+        },
+        "ResourceType":{
+          "shape":"String",
+          "documentation":"<p>The registration type or origination identity type.</p>"
+        },
+        "IsoCountryCode":{
+          "shape":"IsoCountryCode",
+          "documentation":"<p>The two-character code, in ISO 3166-1 alpha-2 format, for the country or region.</p>"
+        },
+        "PhoneNumber":{
+          "shape":"PhoneNumber",
+          "documentation":"<p>The phone number associated with the registration in E.164 format.</p>"
+        }
+      }
+    },
+    "CreateRegistrationAttachmentRequest":{
+      "type":"structure",
+      "members":{
+        "AttachmentBody":{
+          "shape":"AttachmentBody",
+          "documentation":"<p>The registration file to upload. The maximum file size is 1MiB and valid file extensions are PDF, JPEG and PNG.</p>"
+        },
+        "AttachmentUrl":{
+          "shape":"AttachmentUrl",
+          "documentation":"<p>A URL to the required registration file. For example, you can provide the S3 object URL.</p>"
+        },
+        "Tags":{
+          "shape":"TagList",
+          "documentation":"<p>An array of tags (key and value pairs) to associate with the registration attachment.</p>"
+        },
+        "ClientToken":{
+          "shape":"ClientToken",
+          "documentation":"<p>Unique, case-sensitive identifier that you provide to ensure the idempotency of the request. If you don't specify a client token, a randomly generated token is used for the request to ensure idempotency.</p>",
+          "idempotencyToken":true
+        }
+      }
+    },
+    "CreateRegistrationAttachmentResult":{
+      "type":"structure",
+      "required":[
+        "RegistrationAttachmentArn",
+        "RegistrationAttachmentId",
+        "AttachmentStatus",
+        "CreatedTimestamp"
+      ],
+      "members":{
+        "RegistrationAttachmentArn":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Resource Name (ARN) for the registration attachment.</p>"
+        },
+        "RegistrationAttachmentId":{
+          "shape":"String",
+          "documentation":"<p>The unique identifier for the registration attachment.</p>"
+        },
+        "AttachmentStatus":{
+          "shape":"AttachmentStatus",
+          "documentation":"<p>The status of the registration attachment. </p> <ul> <li> <p> <code>UPLOAD_IN_PROGRESS</code> The attachment is being uploaded.</p> </li> <li> <p> <code>UPLOAD_COMPLETE</code> The attachment has been uploaded.</p> </li> <li> <p> <code>UPLOAD_FAILED</code> The attachment failed to uploaded.</p> </li> <li> <p> <code>DELETED</code> The attachment has been deleted..</p> </li> </ul>"
+        },
+        "Tags":{
+          "shape":"TagList",
+          "documentation":"<p>An array of tags (key and value pairs) to associate with the registration attachment.</p>"
+        },
+        "CreatedTimestamp":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time when the registration attachment was created, in <a href=\"https://www.epochconverter.com/\">UNIX epoch time</a> format.</p>"
+        }
+      }
+    },
+    "CreateRegistrationRequest":{
+      "type":"structure",
+      "required":["RegistrationType"],
+      "members":{
+        "RegistrationType":{
+          "shape":"RegistrationType",
+          "documentation":"<p>The type of registration form to create. The list of <b>RegistrationTypes</b> can be found using the <a>DescribeRegistrationTypeDefinitions</a> action.</p>"
+        },
+        "Tags":{
+          "shape":"TagList",
+          "documentation":"<p>An array of tags (key and value pairs) to associate with the registration.</p>"
+        },
+        "ClientToken":{
+          "shape":"ClientToken",
+          "documentation":"<p>Unique, case-sensitive identifier that you provide to ensure the idempotency of the request. If you don't specify a client token, a randomly generated token is used for the request to ensure idempotency.</p>",
+          "idempotencyToken":true
+        }
+      }
+    },
+    "CreateRegistrationResult":{
+      "type":"structure",
+      "required":[
+        "RegistrationArn",
+        "RegistrationId",
+        "RegistrationType",
+        "RegistrationStatus",
+        "CurrentVersionNumber",
+        "CreatedTimestamp"
+      ],
+      "members":{
+        "RegistrationArn":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Resource Name (ARN) for the registration.</p>"
+        },
+        "RegistrationId":{
+          "shape":"String",
+          "documentation":"<p>The unique identifier for the registration.</p>"
+        },
+        "RegistrationType":{
+          "shape":"RegistrationType",
+          "documentation":"<p>The type of registration form to create. The list of <b>RegistrationTypes</b> can be found using the <a>DescribeRegistrationTypeDefinitions</a> action.</p>"
+        },
+        "RegistrationStatus":{
+          "shape":"RegistrationStatus",
+          "documentation":"<p>The status of the registration.</p> <ul> <li> <p> <code>CREATED</code>: Your registration is created but not submitted.</p> </li> <li> <p> <code>SUBMITTED</code>: Your registration has been submitted and is awaiting review.</p> </li> <li> <p> <code>REVIEWING</code>: Your registration has been accepted and is being reviewed.</p> </li> <li> <p> <code>PROVISIONING</code>: Your registration has been approved and your origination identity is being created.</p> </li> <li> <p> <code>COMPLETE</code>: Your registration has been approved and and your origination identity has been created.</p> </li> <li> <p> <code>REQUIRES_UPDATES</code>: You must fix your registration and resubmit it.</p> </li> <li> <p> <code>CLOSED</code>: The phone number or sender ID has been deleted and you must also delete the registration for the number.</p> </li> <li> <p> <code>DELETED</code>: The registration has been deleted.</p> </li> </ul>"
+        },
+        "CurrentVersionNumber":{
+          "shape":"RegistrationVersionNumber",
+          "documentation":"<p>The current version number of the registration.</p>"
+        },
+        "AdditionalAttributes":{
+          "shape":"StringMap",
+          "documentation":"<p>Metadata about a given registration which is specific to that registration type.</p>"
+        },
+        "Tags":{
+          "shape":"TagList",
+          "documentation":"<p>An array of tags (key and value pairs) to associate with the registration.</p>"
+        },
+        "CreatedTimestamp":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time when the registration was created, in <a href=\"https://www.epochconverter.com/\">UNIX epoch time</a> format.</p>"
+        }
+      }
+    },
+    "CreateRegistrationVersionRequest":{
+      "type":"structure",
+      "required":["RegistrationId"],
+      "members":{
+        "RegistrationId":{
+          "shape":"RegistrationIdOrArn",
+          "documentation":"<p>The unique identifier for the registration.</p>"
+        }
+      }
+    },
+    "CreateRegistrationVersionResult":{
+      "type":"structure",
+      "required":[
+        "RegistrationArn",
+        "RegistrationId",
+        "VersionNumber",
+        "RegistrationVersionStatus",
+        "RegistrationVersionStatusHistory"
+      ],
+      "members":{
+        "RegistrationArn":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Resource Name (ARN) for the registration.</p>"
+        },
+        "RegistrationId":{
+          "shape":"String",
+          "documentation":"<p>The unique identifier for the registration.</p>"
+        },
+        "VersionNumber":{
+          "shape":"RegistrationVersionNumber",
+          "documentation":"<p>The new version number of the registration.</p>"
+        },
+        "RegistrationVersionStatus":{
+          "shape":"RegistrationVersionStatus",
+          "documentation":"<p>The status of the registration.</p> <ul> <li> <p> <code>DRAFT</code>: The initial status of a registration version after it’s created.</p> </li> <li> <p> <code>SUBMITTED</code>: Your registration has been submitted.</p> </li> <li> <p> <code>REVIEWING</code>: Your registration has been accepted and is being reviewed.</p> </li> <li> <p> <code>APPROVED</code>: Your registration has been approved.</p> </li> <li> <p> <code>DISCARDED</code>: You've abandon this version of their registration to start over with a new version. </p> </li> <li> <p> <code>DENIED</code>: You must fix your registration and resubmit it.</p> </li> <li> <p> <code>REVOKED</code>: Your previously approved registration has been revoked.</p> </li> <li> <p> <code>ARCHIVED</code>: Your previously approved registration version moves into this status when a more recently submitted version is approved.</p> </li> </ul>"
+        },
+        "RegistrationVersionStatusHistory":{
+          "shape":"RegistrationVersionStatusHistory",
+          "documentation":"<p>A <b>RegistrationVersionStatusHistory</b> object that contains timestamps for the registration.</p>"
+        }
+      }
+    },
+    "CreateVerifiedDestinationNumberRequest":{
+      "type":"structure",
+      "required":["DestinationPhoneNumber"],
+      "members":{
+        "DestinationPhoneNumber":{
+          "shape":"PhoneNumber",
+          "documentation":"<p>The verified destination phone number, in E.164 format.</p>"
+        },
+        "Tags":{
+          "shape":"TagList",
+          "documentation":"<p>An array of tags (key and value pairs) to associate with the destination number.</p>"
+        },
+        "ClientToken":{
+          "shape":"ClientToken",
+          "documentation":"<p>Unique, case-sensitive identifier that you provide to ensure the idempotency of the request. If you don't specify a client token, a randomly generated token is used for the request to ensure idempotency.</p>",
+          "idempotencyToken":true
+        }
+      }
+    },
+    "CreateVerifiedDestinationNumberResult":{
+      "type":"structure",
+      "required":[
+        "VerifiedDestinationNumberArn",
+        "VerifiedDestinationNumberId",
+        "DestinationPhoneNumber",
+        "Status",
+        "CreatedTimestamp"
+      ],
+      "members":{
+        "VerifiedDestinationNumberArn":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Resource Name (ARN) for the verified destination phone number.</p>"
+        },
+        "VerifiedDestinationNumberId":{
+          "shape":"String",
+          "documentation":"<p>The unique identifier for the verified destination phone number.</p>"
+        },
+        "DestinationPhoneNumber":{
+          "shape":"PhoneNumber",
+          "documentation":"<p>The verified destination phone number, in E.164 format.</p>"
+        },
+        "Status":{
+          "shape":"VerificationStatus",
+          "documentation":"<p>The status of the verified destination phone number.</p> <ul> <li> <p> <code>PENDING</code>: The phone number hasn't been verified yet.</p> </li> <li> <p> <code>VERIFIED</code>: The phone number is verified and can receive messages.</p> </li> </ul>"
+        },
+        "Tags":{
+          "shape":"TagList",
+          "documentation":"<p>An array of tags (key and value pairs) to associate with the destination number.</p>"
+        },
+        "CreatedTimestamp":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time when the verified phone number was created, in <a href=\"https://www.epochconverter.com/\">UNIX epoch time</a> format.</p>"
         }
       }
     },
@@ -1585,6 +2363,10 @@
           "shape":"TwoWayChannelArn",
           "documentation":"<p>The Amazon Resource Name (ARN) of the TwoWayChannel.</p>"
         },
+        "TwoWayChannelRole":{
+          "shape":"IamRoleArn",
+          "documentation":"<p>An optional IAM Role Arn for a service to assume, to be able to post inbound SMS messages.</p>"
+        },
         "SelfManagedOptOutsEnabled":{
           "shape":"PrimitiveBoolean",
           "documentation":"<p>By default this is set to false. When an end recipient sends a message that begins with HELP or STOP to one of your dedicated numbers, Amazon Pinpoint automatically replies with a customizable message and adds the end recipient to the OptOutList. When set to true you're responsible for responding to HELP and STOP requests. You're also responsible for tracking and honoring opt-out requests.</p>"
@@ -1603,6 +2385,162 @@
         }
       }
     },
+    "DeleteRegistrationAttachmentRequest":{
+      "type":"structure",
+      "required":["RegistrationAttachmentId"],
+      "members":{
+        "RegistrationAttachmentId":{
+          "shape":"RegistrationAttachmentIdOrArn",
+          "documentation":"<p>The unique identifier for the registration attachment.</p>"
+        }
+      }
+    },
+    "DeleteRegistrationAttachmentResult":{
+      "type":"structure",
+      "required":[
+        "RegistrationAttachmentArn",
+        "RegistrationAttachmentId",
+        "AttachmentStatus",
+        "CreatedTimestamp"
+      ],
+      "members":{
+        "RegistrationAttachmentArn":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Resource Name (ARN) for the registration attachment.</p>"
+        },
+        "RegistrationAttachmentId":{
+          "shape":"String",
+          "documentation":"<p>The unique identifier for the registration attachment.</p>"
+        },
+        "AttachmentStatus":{
+          "shape":"AttachmentStatus",
+          "documentation":"<p>The status of the registration attachment. </p> <ul> <li> <p> <code>UPLOAD_IN_PROGRESS</code> The attachment is being uploaded.</p> </li> <li> <p> <code>UPLOAD_COMPLETE</code> The attachment has been uploaded.</p> </li> <li> <p> <code>UPLOAD_FAILED</code> The attachment failed to uploaded.</p> </li> <li> <p> <code>DELETED</code> The attachment has been deleted..</p> </li> </ul>"
+        },
+        "AttachmentUploadErrorReason":{
+          "shape":"AttachmentUploadErrorReason",
+          "documentation":"<p>The error message if the upload failed.</p>"
+        },
+        "CreatedTimestamp":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time when the registration attachment was created, in <a href=\"https://www.epochconverter.com/\">UNIX epoch time</a> format.</p>"
+        }
+      }
+    },
+    "DeleteRegistrationFieldValueRequest":{
+      "type":"structure",
+      "required":[
+        "RegistrationId",
+        "FieldPath"
+      ],
+      "members":{
+        "RegistrationId":{
+          "shape":"RegistrationIdOrArn",
+          "documentation":"<p>The unique identifier for the registration.</p>"
+        },
+        "FieldPath":{
+          "shape":"FieldPath",
+          "documentation":"<p>The path to the registration form field. You can use <a>DescribeRegistrationFieldDefinitions</a> for a list of <b>FieldPaths</b>.</p>"
+        }
+      }
+    },
+    "DeleteRegistrationFieldValueResult":{
+      "type":"structure",
+      "required":[
+        "RegistrationArn",
+        "RegistrationId",
+        "VersionNumber",
+        "FieldPath"
+      ],
+      "members":{
+        "RegistrationArn":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Resource Name (ARN) for the registration.</p>"
+        },
+        "RegistrationId":{
+          "shape":"String",
+          "documentation":"<p>The unique identifier for the registration.</p>"
+        },
+        "VersionNumber":{
+          "shape":"RegistrationVersionNumber",
+          "documentation":"<p>The version number of the registration.</p>"
+        },
+        "FieldPath":{
+          "shape":"FieldPath",
+          "documentation":"<p>The path to the registration form field.</p>"
+        },
+        "SelectChoices":{
+          "shape":"SelectChoiceList",
+          "documentation":"<p>An array of values for the form field.</p>"
+        },
+        "TextValue":{
+          "shape":"TextValue",
+          "documentation":"<p>The text data for a free form field.</p>"
+        },
+        "RegistrationAttachmentId":{
+          "shape":"String",
+          "documentation":"<p>The unique identifier for the registration attachment.</p>"
+        }
+      }
+    },
+    "DeleteRegistrationRequest":{
+      "type":"structure",
+      "required":["RegistrationId"],
+      "members":{
+        "RegistrationId":{
+          "shape":"RegistrationIdOrArn",
+          "documentation":"<p>The unique identifier for the registration.</p>"
+        }
+      }
+    },
+    "DeleteRegistrationResult":{
+      "type":"structure",
+      "required":[
+        "RegistrationArn",
+        "RegistrationId",
+        "RegistrationType",
+        "RegistrationStatus",
+        "CurrentVersionNumber",
+        "CreatedTimestamp"
+      ],
+      "members":{
+        "RegistrationArn":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Resource Name (ARN) for the registration.</p>"
+        },
+        "RegistrationId":{
+          "shape":"String",
+          "documentation":"<p>The unique identifier for the registration.</p>"
+        },
+        "RegistrationType":{
+          "shape":"RegistrationType",
+          "documentation":"<p>The type of registration form. The list of <b>RegistrationTypes</b> can be found using the <a>DescribeRegistrationTypeDefinitions</a> action.</p>"
+        },
+        "RegistrationStatus":{
+          "shape":"RegistrationStatus",
+          "documentation":"<p>The status of the registration.</p> <ul> <li> <p> <code>CREATED</code>: Your registration is created but not submitted.</p> </li> <li> <p> <code>SUBMITTED</code>: Your registration has been submitted and is awaiting review.</p> </li> <li> <p> <code>REVIEWING</code>: Your registration has been accepted and is being reviewed.</p> </li> <li> <p> <code>PROVISIONING</code>: Your registration has been approved and your origination identity is being created.</p> </li> <li> <p> <code>COMPLETE</code>: Your registration has been approved and and your origination identity has been created.</p> </li> <li> <p> <code>REQUIRES_UPDATES</code>: You must fix your registration and resubmit it.</p> </li> <li> <p> <code>CLOSED</code>: The phone number or sender ID has been deleted and you must also delete the registration for the number.</p> </li> <li> <p> <code>DELETED</code>: The registration has been deleted.</p> </li> </ul>"
+        },
+        "CurrentVersionNumber":{
+          "shape":"RegistrationVersionNumber",
+          "documentation":"<p>The current version number of the registration.</p>"
+        },
+        "ApprovedVersionNumber":{
+          "shape":"RegistrationVersionNumber",
+          "documentation":"<p>The version number of the registration that was approved.</p>"
+        },
+        "LatestDeniedVersionNumber":{
+          "shape":"RegistrationVersionNumber",
+          "documentation":"<p>The latest version number of the registration that was denied.</p>"
+        },
+        "AdditionalAttributes":{
+          "shape":"StringMap",
+          "documentation":"<p>Metadata about a given registration which is specific to that registration type.</p>"
+        },
+        "CreatedTimestamp":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time when the registration was created, in <a href=\"https://www.epochconverter.com/\">UNIX epoch time</a> format.</p>"
+        }
+      }
+    },
     "DeleteTextMessageSpendLimitOverrideRequest":{
       "type":"structure",
       "members":{
@@ -1614,6 +2552,43 @@
         "MonthlyLimit":{
           "shape":"MonthlyLimit",
           "documentation":"<p>The current monthly limit, in US dollars.</p>"
+        }
+      }
+    },
+    "DeleteVerifiedDestinationNumberRequest":{
+      "type":"structure",
+      "required":["VerifiedDestinationNumberId"],
+      "members":{
+        "VerifiedDestinationNumberId":{
+          "shape":"VerifiedDestinationNumberIdOrArn",
+          "documentation":"<p>The unique identifier for the verified destination phone number.</p>"
+        }
+      }
+    },
+    "DeleteVerifiedDestinationNumberResult":{
+      "type":"structure",
+      "required":[
+        "VerifiedDestinationNumberArn",
+        "VerifiedDestinationNumberId",
+        "DestinationPhoneNumber",
+        "CreatedTimestamp"
+      ],
+      "members":{
+        "VerifiedDestinationNumberArn":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Resource Name (ARN) for the verified destination phone number.</p>"
+        },
+        "VerifiedDestinationNumberId":{
+          "shape":"String",
+          "documentation":"<p>The unique identifier for the verified destination phone number.</p>"
+        },
+        "DestinationPhoneNumber":{
+          "shape":"PhoneNumber",
+          "documentation":"<p>The verified destination phone number, in E.164 format.</p>"
+        },
+        "CreatedTimestamp":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time when the destination phone number was created, in <a href=\"https://www.epochconverter.com/\">UNIX epoch time</a> format.</p>"
         }
       }
     },
@@ -1915,6 +2890,314 @@
         }
       }
     },
+    "DescribeRegistrationAttachmentsRequest":{
+      "type":"structure",
+      "members":{
+        "RegistrationAttachmentIds":{
+          "shape":"RegistrationAttachmentIdList",
+          "documentation":"<p>The unique identifier of registration attachments to find. This is an array of <b>RegistrationAttachmentId</b>.</p>"
+        },
+        "Filters":{
+          "shape":"RegistrationAttachmentFilterList",
+          "documentation":"<p>An array of RegistrationAttachmentFilter objects to filter the results.</p>"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The token to be used for the next set of paginated results. You don't need to supply a value for this field in the initial request.</p>"
+        },
+        "MaxResults":{
+          "shape":"MaxResults",
+          "documentation":"<p>The maximum number of results to return per each request.</p>"
+        }
+      }
+    },
+    "DescribeRegistrationAttachmentsResult":{
+      "type":"structure",
+      "required":["RegistrationAttachments"],
+      "members":{
+        "RegistrationAttachments":{
+          "shape":"RegistrationAttachmentsInformationList",
+          "documentation":"<p>An array of <b>RegistrationAttachments</b> objects that contain the details for the requested registration attachments. </p>"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The token to be used for the next set of paginated results. You don't need to supply a value for this field in the initial request.</p>"
+        }
+      }
+    },
+    "DescribeRegistrationFieldDefinitionsRequest":{
+      "type":"structure",
+      "required":["RegistrationType"],
+      "members":{
+        "RegistrationType":{
+          "shape":"RegistrationType",
+          "documentation":"<p>The type of registration form. The list of <b>RegistrationTypes</b> can be found using the <a>DescribeRegistrationTypeDefinitions</a> action.</p>"
+        },
+        "SectionPath":{
+          "shape":"SectionPath",
+          "documentation":"<p>The path to the section of the registration.</p>"
+        },
+        "FieldPaths":{
+          "shape":"FieldPathList",
+          "documentation":"<p>An array of paths to the registration form field.</p>"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The token to be used for the next set of paginated results. You don't need to supply a value for this field in the initial request.</p>"
+        },
+        "MaxResults":{
+          "shape":"MaxResults",
+          "documentation":"<p>The maximum number of results to return per each request.</p>"
+        }
+      }
+    },
+    "DescribeRegistrationFieldDefinitionsResult":{
+      "type":"structure",
+      "required":[
+        "RegistrationType",
+        "RegistrationFieldDefinitions"
+      ],
+      "members":{
+        "RegistrationType":{
+          "shape":"RegistrationType",
+          "documentation":"<p>The type of registration form. The list of <b>RegistrationTypes</b> can be found using the <a>DescribeRegistrationTypeDefinitions</a> action.</p>"
+        },
+        "RegistrationFieldDefinitions":{
+          "shape":"RegistrationFieldDefinitionList",
+          "documentation":"<p>An array of RegistrationFieldDefinitions objects that contain the details for the requested fields. </p>"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The token to be used for the next set of paginated results. You don't need to supply a value for this field in the initial request.</p>"
+        }
+      }
+    },
+    "DescribeRegistrationFieldValuesRequest":{
+      "type":"structure",
+      "required":["RegistrationId"],
+      "members":{
+        "RegistrationId":{
+          "shape":"RegistrationIdOrArn",
+          "documentation":"<p>The unique identifier for the registration.</p>"
+        },
+        "VersionNumber":{
+          "shape":"RegistrationVersionNumber",
+          "documentation":"<p>The version number of the registration.</p>"
+        },
+        "SectionPath":{
+          "shape":"SectionPath",
+          "documentation":"<p>The path to the section of the registration.</p>"
+        },
+        "FieldPaths":{
+          "shape":"FieldPathList",
+          "documentation":"<p>An array of paths to the registration form field.</p>"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The token to be used for the next set of paginated results. You don't need to supply a value for this field in the initial request.</p>"
+        },
+        "MaxResults":{
+          "shape":"MaxResults",
+          "documentation":"<p>The maximum number of results to return per each request.</p>"
+        }
+      }
+    },
+    "DescribeRegistrationFieldValuesResult":{
+      "type":"structure",
+      "required":[
+        "RegistrationArn",
+        "RegistrationId",
+        "VersionNumber",
+        "RegistrationFieldValues"
+      ],
+      "members":{
+        "RegistrationArn":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Resource Name (ARN) for the registration.</p>"
+        },
+        "RegistrationId":{
+          "shape":"String",
+          "documentation":"<p>The unique identifier for the registration.</p>"
+        },
+        "VersionNumber":{
+          "shape":"RegistrationVersionNumber",
+          "documentation":"<p>The current version of the registration.</p>"
+        },
+        "RegistrationFieldValues":{
+          "shape":"RegistrationFieldValueInformationList",
+          "documentation":"<p>An array of RegistrationFieldValues objects that contain the values for the requested registration. </p>"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The token to be used for the next set of paginated results. You don't need to supply a value for this field in the initial request.</p>"
+        }
+      }
+    },
+    "DescribeRegistrationSectionDefinitionsRequest":{
+      "type":"structure",
+      "required":["RegistrationType"],
+      "members":{
+        "RegistrationType":{
+          "shape":"RegistrationType",
+          "documentation":"<p>The type of registration form. The list of <b>RegistrationTypes</b> can be found using the <a>DescribeRegistrationTypeDefinitions</a> action.</p>"
+        },
+        "SectionPaths":{
+          "shape":"SectionPathList",
+          "documentation":"<p>An array of paths for the registration form section.</p>"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The token to be used for the next set of paginated results. You don't need to supply a value for this field in the initial request.</p>"
+        },
+        "MaxResults":{
+          "shape":"MaxResults",
+          "documentation":"<p>The maximum number of results to return per each request.</p>"
+        }
+      }
+    },
+    "DescribeRegistrationSectionDefinitionsResult":{
+      "type":"structure",
+      "required":[
+        "RegistrationType",
+        "RegistrationSectionDefinitions"
+      ],
+      "members":{
+        "RegistrationType":{
+          "shape":"RegistrationType",
+          "documentation":"<p>The type of registration form. The list of <b>RegistrationTypes</b> can be found using the <a>DescribeRegistrationTypeDefinitions</a> action.</p>"
+        },
+        "RegistrationSectionDefinitions":{
+          "shape":"RegistrationSectionDefinitionList",
+          "documentation":"<p>An array of RegistrationSectionDefinition objects.</p>"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The token to be used for the next set of paginated results. You don't need to supply a value for this field in the initial request.</p>"
+        }
+      }
+    },
+    "DescribeRegistrationTypeDefinitionsRequest":{
+      "type":"structure",
+      "members":{
+        "RegistrationTypes":{
+          "shape":"RegistrationTypeList",
+          "documentation":"<p>The type of registration form. The list of <b>RegistrationTypes</b> can be found using the <a>DescribeRegistrationTypeDefinitions</a> action.</p>"
+        },
+        "Filters":{
+          "shape":"RegistrationTypeFilterList",
+          "documentation":"<p>An array of RegistrationFilter objects to filter the results.</p>"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The token to be used for the next set of paginated results. You don't need to supply a value for this field in the initial request.</p>"
+        },
+        "MaxResults":{
+          "shape":"MaxResults",
+          "documentation":"<p>The maximum number of results to return per each request.</p>"
+        }
+      }
+    },
+    "DescribeRegistrationTypeDefinitionsResult":{
+      "type":"structure",
+      "required":["RegistrationTypeDefinitions"],
+      "members":{
+        "RegistrationTypeDefinitions":{
+          "shape":"RegistrationTypeDefinitionList",
+          "documentation":"<p>The type of registration form. The list of <b>RegistrationTypes</b> can be found using the <a>DescribeRegistrationTypeDefinitions</a> action.</p>"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The token to be used for the next set of paginated results. You don't need to supply a value for this field in the initial request.</p>"
+        }
+      }
+    },
+    "DescribeRegistrationVersionsRequest":{
+      "type":"structure",
+      "required":["RegistrationId"],
+      "members":{
+        "RegistrationId":{
+          "shape":"RegistrationIdOrArn",
+          "documentation":"<p>The unique identifier for the registration.</p>"
+        },
+        "VersionNumbers":{
+          "shape":"RegistrationVersionNumberList",
+          "documentation":"<p>An array of registration version numbers.</p>"
+        },
+        "Filters":{
+          "shape":"RegistrationVersionFilterList",
+          "documentation":"<p>An array of RegistrationVersionFilter objects to filter the results.</p>"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The token to be used for the next set of paginated results. You don't need to supply a value for this field in the initial request.</p>"
+        },
+        "MaxResults":{
+          "shape":"MaxResults",
+          "documentation":"<p>The maximum number of results to return per each request.</p>"
+        }
+      }
+    },
+    "DescribeRegistrationVersionsResult":{
+      "type":"structure",
+      "required":[
+        "RegistrationArn",
+        "RegistrationId",
+        "RegistrationVersions"
+      ],
+      "members":{
+        "RegistrationArn":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Resource Name (ARN) for the registration.</p>"
+        },
+        "RegistrationId":{
+          "shape":"String",
+          "documentation":"<p>The unique identifier for the registration.</p>"
+        },
+        "RegistrationVersions":{
+          "shape":"RegistrationVersionInformationList",
+          "documentation":"<p>An array of RegistrationVersions objects.</p>"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The token to be used for the next set of paginated results. You don't need to supply a value for this field in the initial request.</p>"
+        }
+      }
+    },
+    "DescribeRegistrationsRequest":{
+      "type":"structure",
+      "members":{
+        "RegistrationIds":{
+          "shape":"RegistrationIdList",
+          "documentation":"<p>An array of unique identifiers for each registration.</p>"
+        },
+        "Filters":{
+          "shape":"RegistrationFilterList",
+          "documentation":"<p>An array of RegistrationFilter objects to filter the results.</p>"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The token to be used for the next set of paginated results. You don't need to supply a value for this field in the initial request.</p>"
+        },
+        "MaxResults":{
+          "shape":"MaxResults",
+          "documentation":"<p>The maximum number of results to return per each request.</p>"
+        }
+      }
+    },
+    "DescribeRegistrationsResult":{
+      "type":"structure",
+      "required":["Registrations"],
+      "members":{
+        "Registrations":{
+          "shape":"RegistrationInformationList",
+          "documentation":"<p>An array of RegistrationInformation objects.</p>"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The token to be used for the next set of paginated results. You don't need to supply a value for this field in the initial request.</p>"
+        }
+      }
+    },
     "DescribeSenderIdsRequest":{
       "type":"structure",
       "members":{
@@ -1975,6 +3258,45 @@
         }
       }
     },
+    "DescribeVerifiedDestinationNumbersRequest":{
+      "type":"structure",
+      "members":{
+        "VerifiedDestinationNumberIds":{
+          "shape":"VerifiedDestinationNumberIdList",
+          "documentation":"<p>An array of VerifiedDestinationNumberid to retreive.</p>"
+        },
+        "DestinationPhoneNumbers":{
+          "shape":"DestinationPhoneNumberList",
+          "documentation":"<p>An array of verified destination phone number, in E.164 format.</p>"
+        },
+        "Filters":{
+          "shape":"VerifiedDestinationNumberFilterList",
+          "documentation":"<p>An array of VerifiedDestinationNumberFilter objects to filter the results.</p>"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The token to be used for the next set of paginated results. You don't need to supply a value for this field in the initial request.</p>"
+        },
+        "MaxResults":{
+          "shape":"MaxResults",
+          "documentation":"<p>The maximum number of results to return per each request.</p>"
+        }
+      }
+    },
+    "DescribeVerifiedDestinationNumbersResult":{
+      "type":"structure",
+      "required":["VerifiedDestinationNumbers"],
+      "members":{
+        "VerifiedDestinationNumbers":{
+          "shape":"VerifiedDestinationNumberInformationList",
+          "documentation":"<p>An array of VerifiedDestinationNumberInformation objects</p>"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The token to be used for the next set of paginated results. You don't need to supply a value for this field in the initial request.</p>"
+        }
+      }
+    },
     "DestinationCountryParameterKey":{
       "type":"string",
       "enum":[
@@ -1993,6 +3315,12 @@
       "key":{"shape":"DestinationCountryParameterKey"},
       "value":{"shape":"DestinationCountryParameterValue"},
       "max":10,
+      "min":0
+    },
+    "DestinationPhoneNumberList":{
+      "type":"list",
+      "member":{"shape":"PhoneNumber"},
+      "max":5,
       "min":0
     },
     "DisassociateOriginationIdentityRequest":{
@@ -2047,6 +3375,48 @@
         }
       }
     },
+    "DiscardRegistrationVersionRequest":{
+      "type":"structure",
+      "required":["RegistrationId"],
+      "members":{
+        "RegistrationId":{
+          "shape":"RegistrationIdOrArn",
+          "documentation":"<p>The unique identifier for the registration.</p>"
+        }
+      }
+    },
+    "DiscardRegistrationVersionResult":{
+      "type":"structure",
+      "required":[
+        "RegistrationArn",
+        "RegistrationId",
+        "VersionNumber",
+        "RegistrationVersionStatus",
+        "RegistrationVersionStatusHistory"
+      ],
+      "members":{
+        "RegistrationArn":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Resource Name (ARN) for the registration.</p>"
+        },
+        "RegistrationId":{
+          "shape":"String",
+          "documentation":"<p>The unique identifier for the registration.</p>"
+        },
+        "VersionNumber":{
+          "shape":"RegistrationVersionNumber",
+          "documentation":"<p>The version number of the registration.</p>"
+        },
+        "RegistrationVersionStatus":{
+          "shape":"RegistrationVersionStatus",
+          "documentation":"<p>The status of the registration version.</p> <ul> <li> <p> <code>DRAFT</code>: The initial status of a registration version after it’s created.</p> </li> <li> <p> <code>SUBMITTED</code>: Your registration has been submitted.</p> </li> <li> <p> <code>REVIEWING</code>: Your registration has been accepted and is being reviewed.</p> </li> <li> <p> <code>APPROVED</code>: Your registration has been approved.</p> </li> <li> <p> <code>DISCARDED</code>: You've abandon this version of their registration to start over with a new version. </p> </li> <li> <p> <code>DENIED</code>: You must fix your registration and resubmit it.</p> </li> <li> <p> <code>REVOKED</code>: Your previously approved registration has been revoked.</p> </li> <li> <p> <code>ARCHIVED</code>: Your previously approved registration version moves into this status when a more recently submitted version is approved.</p> </li> </ul>"
+        },
+        "RegistrationVersionStatusHistory":{
+          "shape":"RegistrationVersionStatusHistory",
+          "documentation":"<p>The <b>RegistrationVersionStatusHistory</b> object contains the time stamps for when the reservations status changes.</p>"
+        }
+      }
+    },
     "EventDestination":{
       "type":"structure",
       "required":[
@@ -2065,7 +3435,7 @@
         },
         "MatchingEventTypes":{
           "shape":"EventTypeList",
-          "documentation":"<p>An array of event types that determine which events to log.</p>"
+          "documentation":"<p>An array of event types that determine which events to log.</p> <note> <p>The <code>TEXT_SENT</code> event type is not supported.</p> </note>"
         },
         "CloudWatchLogsDestination":{
           "shape":"CloudWatchLogsDestination",
@@ -2080,7 +3450,7 @@
           "documentation":"<p>An object that contains information about an event destination that sends logging events to Amazon SNS.</p>"
         }
       },
-      "documentation":"<p>Contains information about an event destination.</p> <p>Event destinations are associated with configuration sets, which enable you to publish message sending events to Amazon CloudWatch, Amazon Kinesis Data Firehose, or Amazon SNS.</p>"
+      "documentation":"<p>Contains information about an event destination.</p> <p>Event destinations are associated with configuration sets, which enable you to publish message sending events to CloudWatch, Kinesis Data Firehose,or Amazon SNS.</p>"
     },
     "EventDestinationList":{
       "type":"list",
@@ -2128,11 +3498,39 @@
       "max":25,
       "min":1
     },
+    "FieldPath":{
+      "type":"string",
+      "max":100,
+      "min":1,
+      "pattern":"[A-Za-z0-9_\\.]+"
+    },
+    "FieldPathList":{
+      "type":"list",
+      "member":{"shape":"FieldPath"},
+      "max":5,
+      "min":0
+    },
+    "FieldRequirement":{
+      "type":"string",
+      "enum":[
+        "REQUIRED",
+        "CONDITIONAL",
+        "OPTIONAL"
+      ]
+    },
+    "FieldType":{
+      "type":"string",
+      "enum":[
+        "SELECT",
+        "TEXT",
+        "ATTACHMENT"
+      ]
+    },
     "FilterValue":{
       "type":"string",
       "max":100,
       "min":1,
-      "pattern":"[A-Za-z0-9_-]+"
+      "pattern":"[\\.:A-Za-z0-9_-]+"
     },
     "FilterValueList":{
       "type":"list",
@@ -2145,6 +3543,10 @@
       "max":2048,
       "min":20,
       "pattern":"arn:\\S+"
+    },
+    "Integer":{
+      "type":"integer",
+      "box":true
     },
     "InternalServerException":{
       "type":"structure",
@@ -2265,6 +3667,24 @@
       },
       "documentation":"<p>Contains the delivery stream Amazon Resource Name (ARN), and the ARN of the Identity and Access Management (IAM) role associated with an Kinesis Data Firehose event destination.</p> <p>Event destinations, such as Kinesis Data Firehose, are associated with configuration sets, which enable you to publish message sending events.</p>"
     },
+    "LanguageCode":{
+      "type":"string",
+      "enum":[
+        "DE_DE",
+        "EN_GB",
+        "EN_US",
+        "ES_419",
+        "ES_ES",
+        "FR_CA",
+        "FR_FR",
+        "IT_IT",
+        "JA_JP",
+        "KO_KR",
+        "PT_BR",
+        "ZH_CN",
+        "ZH_TW"
+      ]
+    },
     "ListPoolOriginationIdentitiesRequest":{
       "type":"structure",
       "required":["PoolId"],
@@ -2305,6 +3725,59 @@
         "NextToken":{
           "shape":"NextToken",
           "documentation":"<p>The token to be used for the next set of paginated results. If this field is empty then there are no more results.</p>"
+        }
+      }
+    },
+    "ListRegistrationAssociationsRequest":{
+      "type":"structure",
+      "required":["RegistrationId"],
+      "members":{
+        "RegistrationId":{
+          "shape":"RegistrationIdOrArn",
+          "documentation":"<p>The unique identifier for the registration.</p>"
+        },
+        "Filters":{
+          "shape":"RegistrationAssociationFilterList",
+          "documentation":"<p>An array of RegistrationAssociationFilter to apply to the results that are returned.</p>"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The token to be used for the next set of paginated results. You don't need to supply a value for this field in the initial request.</p>"
+        },
+        "MaxResults":{
+          "shape":"MaxResults",
+          "documentation":"<p>The maximum number of results to return per each request.</p>"
+        }
+      }
+    },
+    "ListRegistrationAssociationsResult":{
+      "type":"structure",
+      "required":[
+        "RegistrationArn",
+        "RegistrationId",
+        "RegistrationType",
+        "RegistrationAssociations"
+      ],
+      "members":{
+        "RegistrationArn":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Resource Name (ARN) for the registration.</p>"
+        },
+        "RegistrationId":{
+          "shape":"String",
+          "documentation":"<p>The unique identifier for the registration.</p>"
+        },
+        "RegistrationType":{
+          "shape":"RegistrationType",
+          "documentation":"<p>The type of registration form. The list of <b>RegistrationTypes</b> can be found using the <a>DescribeRegistrationTypeDefinitions</a> action.</p>"
+        },
+        "RegistrationAssociations":{
+          "shape":"RegistrationAssociationMetadataList",
+          "documentation":"<p>An array of RegistrationAssociationMetadata objects.</p>"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The token to be used for the next set of paginated results. You don't need to supply a value for this field in the initial request.</p>"
         }
       }
     },
@@ -2358,7 +3831,9 @@
     },
     "MessageTypeList":{
       "type":"list",
-      "member":{"shape":"MessageType"}
+      "member":{"shape":"MessageType"},
+      "max":2,
+      "min":0
     },
     "MonthlyLimit":{
       "type":"long",
@@ -2407,7 +3882,8 @@
         "SHORT_CODE",
         "LONG_CODE",
         "TOLL_FREE",
-        "TEN_DLC"
+        "TEN_DLC",
+        "SIMULATOR"
       ]
     },
     "OptOutListInformation":{
@@ -2540,6 +4016,10 @@
         "NumberCapabilities":{
           "shape":"NumberCapabilityList",
           "documentation":"<p>Describes if the origination identity can be used for text messages, voice calls or both.</p>"
+        },
+        "PhoneNumber":{
+          "shape":"PhoneNumber",
+          "documentation":"<p>The phone number in E.164 format.</p>"
         }
       },
       "documentation":"<p>The metadata for an origination identity associated with a pool.</p>"
@@ -2589,7 +4069,8 @@
         "two-way-enabled",
         "self-managed-opt-outs-enabled",
         "opt-out-list-name",
-        "deletion-protection-enabled"
+        "deletion-protection-enabled",
+        "two-way-channel-arn"
       ]
     },
     "PhoneNumberIdList":{
@@ -2666,6 +4147,10 @@
           "shape":"TwoWayChannelArn",
           "documentation":"<p>The Amazon Resource Name (ARN) of the two way channel.</p>"
         },
+        "TwoWayChannelRole":{
+          "shape":"IamRoleArn",
+          "documentation":"<p>An optional IAM Role Arn for a service to assume, to be able to post inbound SMS messages.</p>"
+        },
         "SelfManagedOptOutsEnabled":{
           "shape":"PrimitiveBoolean",
           "documentation":"<p>When set to false an end recipient sends a message that begins with HELP or STOP to one of your dedicated numbers, Amazon Pinpoint automatically replies with a customizable message and adds the end recipient to the OptOutList. When set to true you're responsible for responding to HELP and STOP requests. You're also responsible for tracking and honoring opt-out request. For more information see <a href=\"https://docs.aws.amazon.com/pinpoint/latest/userguide/settings-sms-managing.html#settings-account-sms-self-managed-opt-out\">Self-managed opt-outs</a> </p>"
@@ -2682,12 +4167,16 @@
           "shape":"String",
           "documentation":"<p>The unique identifier of the pool associated with the phone number.</p>"
         },
+        "RegistrationId":{
+          "shape":"String",
+          "documentation":"<p>The unique identifier for the registration.</p>"
+        },
         "CreatedTimestamp":{
           "shape":"Timestamp",
           "documentation":"<p>The time when the phone number was created, in <a href=\"https://www.epochconverter.com/\">UNIX epoch time</a> format.</p>"
         }
       },
-      "documentation":"<p>The information for a phone number in an Amazon Web Services account.</p>"
+      "documentation":"<p>The information for a phone number, in E.164 format, in an Amazon Web Services account.</p>"
     },
     "PhoneNumberInformationList":{
       "type":"list",
@@ -2738,7 +4227,8 @@
         "self-managed-opt-outs-enabled",
         "opt-out-list-name",
         "shared-routes-enabled",
-        "deletion-protection-enabled"
+        "deletion-protection-enabled",
+        "two-way-channel-arn"
       ]
     },
     "PoolIdList":{
@@ -2791,6 +4281,10 @@
         "TwoWayChannelArn":{
           "shape":"TwoWayChannelArn",
           "documentation":"<p>The Amazon Resource Name (ARN) of the two way channel.</p>"
+        },
+        "TwoWayChannelRole":{
+          "shape":"IamRoleArn",
+          "documentation":"<p>An optional IAM Role Arn for a service to assume, to be able to post inbound SMS messages.</p>"
         },
         "SelfManagedOptOutsEnabled":{
           "shape":"PrimitiveBoolean",
@@ -2878,11 +4372,11 @@
         },
         "KeywordMessage":{
           "shape":"KeywordMessage",
-          "documentation":"<p>The message associated with the keyword.</p> <ul> <li> <p>AUTOMATIC_RESPONSE: A message is sent to the recipient.</p> </li> <li> <p>OPT_OUT: Keeps the recipient from receiving future messages.</p> </li> <li> <p>OPT_IN: The recipient wants to receive future messages.</p> </li> </ul>"
+          "documentation":"<p>The message associated with the keyword.</p>"
         },
         "KeywordAction":{
           "shape":"KeywordAction",
-          "documentation":"<p>The action to perform for the new keyword when it is received.</p>"
+          "documentation":"<p>The action to perform for the new keyword when it is received.</p> <ul> <li> <p>AUTOMATIC_RESPONSE: A message is sent to the recipient.</p> </li> <li> <p>OPT_OUT: Keeps the recipient from receiving future messages.</p> </li> <li> <p>OPT_IN: The recipient wants to receive future messages.</p> </li> </ul>"
         }
       }
     },
@@ -2953,11 +4447,764 @@
         }
       }
     },
-    "RegistrationId":{
+    "PutRegistrationFieldValueRequest":{
+      "type":"structure",
+      "required":[
+        "RegistrationId",
+        "FieldPath"
+      ],
+      "members":{
+        "RegistrationId":{
+          "shape":"RegistrationIdOrArn",
+          "documentation":"<p>The unique identifier for the registration.</p>"
+        },
+        "FieldPath":{
+          "shape":"FieldPath",
+          "documentation":"<p>The path to the registration form field. You can use <a>DescribeRegistrationFieldDefinitions</a> for a list of <b>FieldPaths</b>.</p>"
+        },
+        "SelectChoices":{
+          "shape":"SelectChoiceList",
+          "documentation":"<p>An array of values for the form field.</p>"
+        },
+        "TextValue":{
+          "shape":"TextValue",
+          "documentation":"<p>The text data for a free form field.</p>"
+        },
+        "RegistrationAttachmentId":{
+          "shape":"RegistrationAttachmentIdOrArn",
+          "documentation":"<p>The unique identifier for the registration attachment.</p>"
+        }
+      }
+    },
+    "PutRegistrationFieldValueResult":{
+      "type":"structure",
+      "required":[
+        "RegistrationArn",
+        "RegistrationId",
+        "VersionNumber",
+        "FieldPath"
+      ],
+      "members":{
+        "RegistrationArn":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Resource Name (ARN) for the registration.</p>"
+        },
+        "RegistrationId":{
+          "shape":"String",
+          "documentation":"<p>The unique identifier for the registration.</p>"
+        },
+        "VersionNumber":{
+          "shape":"RegistrationVersionNumber",
+          "documentation":"<p>The version number of the registration.</p>"
+        },
+        "FieldPath":{
+          "shape":"FieldPath",
+          "documentation":"<p>The path to the registration form field. You can use <a>DescribeRegistrationFieldDefinitions</a> for a list of <b>FieldPaths</b>.</p>"
+        },
+        "SelectChoices":{
+          "shape":"SelectChoiceList",
+          "documentation":"<p>An array of values for the form field.</p>"
+        },
+        "TextValue":{
+          "shape":"TextValue",
+          "documentation":"<p>The text data for a free form field.</p>"
+        },
+        "RegistrationAttachmentId":{
+          "shape":"String",
+          "documentation":"<p>The unique identifier for the registration attachment.</p>"
+        }
+      }
+    },
+    "RegistrationAssociationBehavior":{
+      "type":"string",
+      "enum":[
+        "ASSOCIATE_BEFORE_SUBMIT",
+        "ASSOCIATE_ON_APPROVAL",
+        "ASSOCIATE_AFTER_COMPLETE"
+      ]
+    },
+    "RegistrationAssociationFilter":{
+      "type":"structure",
+      "required":[
+        "Name",
+        "Values"
+      ],
+      "members":{
+        "Name":{
+          "shape":"RegistrationAssociationFilterName",
+          "documentation":"<p>The name of the attribute to filter on.</p>"
+        },
+        "Values":{
+          "shape":"FilterValueList",
+          "documentation":"<p>An array of values to filter for.</p>"
+        }
+      },
+      "documentation":"<p>The filter definition for filtering registrations that meets a specified criteria.</p>"
+    },
+    "RegistrationAssociationFilterList":{
+      "type":"list",
+      "member":{"shape":"RegistrationAssociationFilter"},
+      "max":20,
+      "min":0
+    },
+    "RegistrationAssociationFilterName":{
+      "type":"string",
+      "enum":[
+        "resource-type",
+        "iso-country-code"
+      ]
+    },
+    "RegistrationAssociationMetadata":{
+      "type":"structure",
+      "required":[
+        "ResourceArn",
+        "ResourceId",
+        "ResourceType"
+      ],
+      "members":{
+        "ResourceArn":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the origination identity that is associated with the registration. </p>"
+        },
+        "ResourceId":{
+          "shape":"String",
+          "documentation":"<p>The unique identifier for the origination identity. For example this could be a <b>PhoneNumberId</b> or <b>SenderId</b>.</p>"
+        },
+        "ResourceType":{
+          "shape":"String",
+          "documentation":"<p>The origination identity type.</p>"
+        },
+        "IsoCountryCode":{
+          "shape":"IsoCountryCode",
+          "documentation":"<p>The two-character code, in ISO 3166-1 alpha-2 format, for the country or region.</p>"
+        },
+        "PhoneNumber":{
+          "shape":"PhoneNumber",
+          "documentation":"<p>The phone number associated with the registration in E.164 format.</p>"
+        }
+      },
+      "documentation":"<p>Metadata for the origination identity that is associated with the registration.</p>"
+    },
+    "RegistrationAssociationMetadataList":{
+      "type":"list",
+      "member":{"shape":"RegistrationAssociationMetadata"}
+    },
+    "RegistrationAttachmentFilter":{
+      "type":"structure",
+      "required":[
+        "Name",
+        "Values"
+      ],
+      "members":{
+        "Name":{
+          "shape":"RegistrationAttachmentFilterName",
+          "documentation":"<p>The name of the attribute to filter on.</p>"
+        },
+        "Values":{
+          "shape":"FilterValueList",
+          "documentation":"<p>An array of values to filter on.</p>"
+        }
+      },
+      "documentation":"<p>The filter definition for filtering registration attachments that meets a specified criteria.</p>"
+    },
+    "RegistrationAttachmentFilterList":{
+      "type":"list",
+      "member":{"shape":"RegistrationAttachmentFilter"},
+      "max":20,
+      "min":0
+    },
+    "RegistrationAttachmentFilterName":{
+      "type":"string",
+      "enum":["attachment-status"]
+    },
+    "RegistrationAttachmentIdList":{
+      "type":"list",
+      "member":{"shape":"RegistrationIdOrArn"},
+      "max":5,
+      "min":0
+    },
+    "RegistrationAttachmentIdOrArn":{
+      "type":"string",
+      "max":256,
+      "min":1,
+      "pattern":"[A-Za-z0-9_:/-]+"
+    },
+    "RegistrationAttachmentsInformation":{
+      "type":"structure",
+      "required":[
+        "RegistrationAttachmentArn",
+        "RegistrationAttachmentId",
+        "AttachmentStatus",
+        "CreatedTimestamp"
+      ],
+      "members":{
+        "RegistrationAttachmentArn":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Resource Name (ARN) for the registration attachment.</p>"
+        },
+        "RegistrationAttachmentId":{
+          "shape":"String",
+          "documentation":"<p>The unique identifier for the registration attachment.</p>"
+        },
+        "AttachmentStatus":{
+          "shape":"AttachmentStatus",
+          "documentation":"<p>The status of the registration attachment. </p> <ul> <li> <p> <code>UPLOAD_IN_PROGRESS</code> The attachment is being uploaded.</p> </li> <li> <p> <code>UPLOAD_COMPLETE</code> The attachment has been uploaded.</p> </li> <li> <p> <code>UPLOAD_FAILED</code> The attachment failed to uploaded.</p> </li> <li> <p> <code>DELETED</code> The attachment has been deleted..</p> </li> </ul>"
+        },
+        "AttachmentUploadErrorReason":{
+          "shape":"AttachmentUploadErrorReason",
+          "documentation":"<p>A description of why the upload didn't successfully complete.</p>"
+        },
+        "CreatedTimestamp":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time when the registration attachment was created, in <a href=\"https://www.epochconverter.com/\">UNIX epoch time</a> format.</p>"
+        }
+      },
+      "documentation":"<p>Provides information on the specified registration attachments.</p>"
+    },
+    "RegistrationAttachmentsInformationList":{
+      "type":"list",
+      "member":{"shape":"RegistrationAttachmentsInformation"}
+    },
+    "RegistrationDeniedReasonInformation":{
+      "type":"structure",
+      "required":[
+        "Reason",
+        "ShortDescription"
+      ],
+      "members":{
+        "Reason":{
+          "shape":"String",
+          "documentation":"<p>The reason a registration was rejected.</p>"
+        },
+        "ShortDescription":{
+          "shape":"String",
+          "documentation":"<p>A short description of the rejection reason.</p>"
+        },
+        "LongDescription":{
+          "shape":"String",
+          "documentation":"<p>A long description of the rejection reason.</p>"
+        },
+        "DocumentationTitle":{
+          "shape":"String",
+          "documentation":"<p>The title of the document.</p>"
+        },
+        "DocumentationLink":{
+          "shape":"String",
+          "documentation":"<p>The link to the document.</p>"
+        }
+      },
+      "documentation":"<p>Provides the reason a registration was rejected.</p>"
+    },
+    "RegistrationDeniedReasonInformationList":{
+      "type":"list",
+      "member":{"shape":"RegistrationDeniedReasonInformation"}
+    },
+    "RegistrationDisassociationBehavior":{
+      "type":"string",
+      "enum":[
+        "DISASSOCIATE_ALL_CLOSES_REGISTRATION",
+        "DISASSOCIATE_ALL_ALLOWS_DELETE_REGISTRATION",
+        "DELETE_REGISTRATION_DISASSOCIATES"
+      ]
+    },
+    "RegistrationFieldDefinition":{
+      "type":"structure",
+      "required":[
+        "SectionPath",
+        "FieldPath",
+        "FieldType",
+        "FieldRequirement",
+        "DisplayHints"
+      ],
+      "members":{
+        "SectionPath":{
+          "shape":"SectionPath",
+          "documentation":"<p>The section path of the field.</p>"
+        },
+        "FieldPath":{
+          "shape":"FieldPath",
+          "documentation":"<p>The path to the registration form field. You can use <a>DescribeRegistrationFieldDefinitions</a> for a list of <b>FieldPaths</b>.</p>"
+        },
+        "FieldType":{
+          "shape":"FieldType",
+          "documentation":"<p>The type of field.</p>"
+        },
+        "FieldRequirement":{
+          "shape":"FieldRequirement",
+          "documentation":"<p>Specifies if the field for the registration form is required, conditional or optional.</p>"
+        },
+        "SelectValidation":{
+          "shape":"SelectValidation",
+          "documentation":"<p>The validation rules for a select field.</p>"
+        },
+        "TextValidation":{
+          "shape":"TextValidation",
+          "documentation":"<p>The validation rules for a text field.</p>"
+        },
+        "DisplayHints":{
+          "shape":"RegistrationFieldDisplayHints",
+          "documentation":"<p>An array of RegistrationFieldDisplayHints objects for the field.</p>"
+        }
+      },
+      "documentation":"<p>Provides a description of the specified field.</p>"
+    },
+    "RegistrationFieldDefinitionList":{
+      "type":"list",
+      "member":{"shape":"RegistrationFieldDefinition"}
+    },
+    "RegistrationFieldDisplayHints":{
+      "type":"structure",
+      "required":[
+        "Title",
+        "ShortDescription"
+      ],
+      "members":{
+        "Title":{
+          "shape":"String",
+          "documentation":"<p>The title of the display hint.</p>"
+        },
+        "ShortDescription":{
+          "shape":"String",
+          "documentation":"<p>A short description of the display hint.</p>"
+        },
+        "LongDescription":{
+          "shape":"String",
+          "documentation":"<p>A full description of the display hint.</p>"
+        },
+        "DocumentationTitle":{
+          "shape":"String",
+          "documentation":"<p>The title of the document the display hint is associated with.</p>"
+        },
+        "DocumentationLink":{
+          "shape":"String",
+          "documentation":"<p>The link to the document the display hint is associated with.</p>"
+        },
+        "SelectOptionDescriptions":{
+          "shape":"SelectOptionDescriptionsList",
+          "documentation":"<p>An array of SelectOptionDescription objects.</p>"
+        },
+        "TextValidationDescription":{
+          "shape":"String",
+          "documentation":"<p>The validation rules for the text field.</p>"
+        },
+        "ExampleTextValue":{
+          "shape":"String",
+          "documentation":"<p>Example text of what the value of a field should contain.</p>"
+        }
+      },
+      "documentation":"<p>Provides help information on the registration field.</p>"
+    },
+    "RegistrationFieldValueInformation":{
+      "type":"structure",
+      "required":["FieldPath"],
+      "members":{
+        "FieldPath":{
+          "shape":"FieldPath",
+          "documentation":"<p>The path to the registration form field. You can use <a>DescribeRegistrationFieldDefinitions</a> for a list of <b>FieldPaths</b>.</p>"
+        },
+        "SelectChoices":{
+          "shape":"SelectChoiceList",
+          "documentation":"<p>An array of values for the form field.</p>"
+        },
+        "TextValue":{
+          "shape":"TextValue",
+          "documentation":"<p>The text data for a free form field.</p>"
+        },
+        "RegistrationAttachmentId":{
+          "shape":"RegistrationAttachmentIdOrArn",
+          "documentation":"<p>The unique identifier for the registration attachment.</p>"
+        },
+        "DeniedReason":{
+          "shape":"String",
+          "documentation":"<p>A description of why the registration was denied.</p>"
+        }
+      },
+      "documentation":"<p>Provides the values of the specified field.</p>"
+    },
+    "RegistrationFieldValueInformationList":{
+      "type":"list",
+      "member":{"shape":"RegistrationFieldValueInformation"}
+    },
+    "RegistrationFilter":{
+      "type":"structure",
+      "required":[
+        "Name",
+        "Values"
+      ],
+      "members":{
+        "Name":{
+          "shape":"RegistrationFilterName",
+          "documentation":"<p>The name of the attribute to filter on.</p>"
+        },
+        "Values":{
+          "shape":"FilterValueList",
+          "documentation":"<p>An array of values to filter on.</p>"
+        }
+      },
+      "documentation":"<p>The filter definition for filtering registrations that meets a specified criteria.</p>"
+    },
+    "RegistrationFilterList":{
+      "type":"list",
+      "member":{"shape":"RegistrationFilter"},
+      "max":20,
+      "min":0
+    },
+    "RegistrationFilterName":{
+      "type":"string",
+      "enum":[
+        "registration-type",
+        "registration-status"
+      ]
+    },
+    "RegistrationIdList":{
+      "type":"list",
+      "member":{"shape":"RegistrationIdOrArn"},
+      "max":5,
+      "min":0
+    },
+    "RegistrationIdOrArn":{
+      "type":"string",
+      "max":256,
+      "min":1,
+      "pattern":"[A-Za-z0-9_:/-]+"
+    },
+    "RegistrationInformation":{
+      "type":"structure",
+      "required":[
+        "RegistrationArn",
+        "RegistrationId",
+        "RegistrationType",
+        "RegistrationStatus",
+        "CurrentVersionNumber",
+        "CreatedTimestamp"
+      ],
+      "members":{
+        "RegistrationArn":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Resource Name (ARN) for the registration.</p>"
+        },
+        "RegistrationId":{
+          "shape":"String",
+          "documentation":"<p>The unique identifier for the registration.</p>"
+        },
+        "RegistrationType":{
+          "shape":"RegistrationType",
+          "documentation":"<p>The type of registration form. The list of <b>RegistrationTypes</b> can be found using the <a>DescribeRegistrationTypeDefinitions</a> action.</p>"
+        },
+        "RegistrationStatus":{
+          "shape":"RegistrationStatus",
+          "documentation":"<p>The status of the registration.</p> <ul> <li> <p> <code>CREATED</code>: Your registration is created but not submitted.</p> </li> <li> <p> <code>SUBMITTED</code>: Your registration has been submitted and is awaiting review.</p> </li> <li> <p> <code>REVIEWING</code>: Your registration has been accepted and is being reviewed.</p> </li> <li> <p> <code>PROVISIONING</code>: Your registration has been approved and your origination identity is being created.</p> </li> <li> <p> <code>COMPLETE</code>: Your registration has been approved and and your origination identity has been created.</p> </li> <li> <p> <code>REQUIRES_UPDATES</code>: You must fix your registration and resubmit it.</p> </li> <li> <p> <code>CLOSED</code>: The phone number or sender ID has been deleted and you must also delete the registration for the number.</p> </li> <li> <p> <code>DELETED</code>: The registration has been deleted.</p> </li> </ul>"
+        },
+        "CurrentVersionNumber":{
+          "shape":"RegistrationVersionNumber",
+          "documentation":"<p>The current version number of the registration.</p>"
+        },
+        "ApprovedVersionNumber":{
+          "shape":"RegistrationVersionNumber",
+          "documentation":"<p>The version number of the registration that was approved.</p>"
+        },
+        "LatestDeniedVersionNumber":{
+          "shape":"RegistrationVersionNumber",
+          "documentation":"<p>The latest version number of the registration that was denied.</p>"
+        },
+        "AdditionalAttributes":{
+          "shape":"StringMap",
+          "documentation":"<p>Metadata about a given registration which is specific to that registration type.</p>"
+        },
+        "CreatedTimestamp":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time when the registration was created, in <a href=\"https://www.epochconverter.com/\">UNIX epoch time</a> format.</p>"
+        }
+      },
+      "documentation":"<p>Provides information about the requested registration.</p>"
+    },
+    "RegistrationInformationList":{
+      "type":"list",
+      "member":{"shape":"RegistrationInformation"}
+    },
+    "RegistrationSectionDefinition":{
+      "type":"structure",
+      "required":[
+        "SectionPath",
+        "DisplayHints"
+      ],
+      "members":{
+        "SectionPath":{
+          "shape":"SectionPath",
+          "documentation":"<p>The path to the section of the registration.</p>"
+        },
+        "DisplayHints":{
+          "shape":"RegistrationSectionDisplayHints",
+          "documentation":"<p>The path to the section of the registration.</p>"
+        }
+      },
+      "documentation":"<p>Provides information on the specified section definition.</p>"
+    },
+    "RegistrationSectionDefinitionList":{
+      "type":"list",
+      "member":{"shape":"RegistrationSectionDefinition"}
+    },
+    "RegistrationSectionDisplayHints":{
+      "type":"structure",
+      "required":[
+        "Title",
+        "ShortDescription"
+      ],
+      "members":{
+        "Title":{
+          "shape":"String",
+          "documentation":"<p>The title of the display hint.</p>"
+        },
+        "ShortDescription":{
+          "shape":"String",
+          "documentation":"<p>A short description of the display hint.</p>"
+        },
+        "LongDescription":{
+          "shape":"String",
+          "documentation":"<p>A full description of the display hint.</p>"
+        },
+        "DocumentationTitle":{
+          "shape":"String",
+          "documentation":"<p>The title of the document the display hint is associated with.</p>"
+        },
+        "DocumentationLink":{
+          "shape":"String",
+          "documentation":"<p>The link to the document the display hint is associated with.</p>"
+        }
+      },
+      "documentation":"<p>Provides help information on the registration section.</p>"
+    },
+    "RegistrationStatus":{
+      "type":"string",
+      "enum":[
+        "CREATED",
+        "SUBMITTED",
+        "REVIEWING",
+        "PROVISIONING",
+        "COMPLETE",
+        "REQUIRES_UPDATES",
+        "CLOSED",
+        "DELETED"
+      ]
+    },
+    "RegistrationType":{
       "type":"string",
       "max":64,
       "min":1,
-      "pattern":"\\S+"
+      "pattern":"[A-Za-z0-9_]+"
+    },
+    "RegistrationTypeDefinition":{
+      "type":"structure",
+      "required":[
+        "RegistrationType",
+        "DisplayHints"
+      ],
+      "members":{
+        "RegistrationType":{
+          "shape":"RegistrationType",
+          "documentation":"<p>The type of registration form. The list of <b>RegistrationTypes</b> can be found using the <a>DescribeRegistrationTypeDefinitions</a> action.</p>"
+        },
+        "SupportedAssociations":{
+          "shape":"SupportedAssociationList",
+          "documentation":"<p>The supported association behavior for the registration type.</p>"
+        },
+        "DisplayHints":{
+          "shape":"RegistrationTypeDisplayHints",
+          "documentation":"<p>Provides help information on the registration.</p>"
+        }
+      },
+      "documentation":"<p>Provides information on the supported registration type.</p>"
+    },
+    "RegistrationTypeDefinitionList":{
+      "type":"list",
+      "member":{"shape":"RegistrationTypeDefinition"}
+    },
+    "RegistrationTypeDisplayHints":{
+      "type":"structure",
+      "required":["Title"],
+      "members":{
+        "Title":{
+          "shape":"String",
+          "documentation":"<p>The title of the display hint.</p>"
+        },
+        "ShortDescription":{
+          "shape":"String",
+          "documentation":"<p>A short description of the display hint.</p>"
+        },
+        "LongDescription":{
+          "shape":"String",
+          "documentation":"<p>A full description of the display hint.</p>"
+        },
+        "DocumentationTitle":{
+          "shape":"String",
+          "documentation":"<p>The title of the document the display hint is associated with.</p>"
+        },
+        "DocumentationLink":{
+          "shape":"String",
+          "documentation":"<p>The link to the document the display hint is associated with.</p>"
+        }
+      },
+      "documentation":"<p>Provides help information on the registration type.</p>"
+    },
+    "RegistrationTypeFilter":{
+      "type":"structure",
+      "required":[
+        "Name",
+        "Values"
+      ],
+      "members":{
+        "Name":{
+          "shape":"RegistrationTypeFilterName",
+          "documentation":"<p>The name of the attribute to filter on.</p>"
+        },
+        "Values":{
+          "shape":"FilterValueList",
+          "documentation":"<p>An array of values to filter on.</p>"
+        }
+      },
+      "documentation":"<p>The filter definition for filtering registration types that meets a specified criteria.</p>"
+    },
+    "RegistrationTypeFilterList":{
+      "type":"list",
+      "member":{"shape":"RegistrationTypeFilter"},
+      "max":20,
+      "min":0
+    },
+    "RegistrationTypeFilterName":{
+      "type":"string",
+      "enum":[
+        "supported-association-resource-type",
+        "supported-association-iso-country-code"
+      ]
+    },
+    "RegistrationTypeList":{
+      "type":"list",
+      "member":{"shape":"RegistrationType"},
+      "max":5,
+      "min":0
+    },
+    "RegistrationVersionFilter":{
+      "type":"structure",
+      "required":[
+        "Name",
+        "Values"
+      ],
+      "members":{
+        "Name":{
+          "shape":"RegistrationVersionFilterName",
+          "documentation":"<p>The name of the attribute to filter on.</p>"
+        },
+        "Values":{
+          "shape":"FilterValueList",
+          "documentation":"<p>An array of values to filter on.</p>"
+        }
+      },
+      "documentation":"<p>The filter definition for filtering registration versions that meets a specified criteria.</p>"
+    },
+    "RegistrationVersionFilterList":{
+      "type":"list",
+      "member":{"shape":"RegistrationVersionFilter"},
+      "max":20,
+      "min":0
+    },
+    "RegistrationVersionFilterName":{
+      "type":"string",
+      "enum":["registration-version-status"]
+    },
+    "RegistrationVersionInformation":{
+      "type":"structure",
+      "required":[
+        "VersionNumber",
+        "RegistrationVersionStatus",
+        "RegistrationVersionStatusHistory"
+      ],
+      "members":{
+        "VersionNumber":{
+          "shape":"RegistrationVersionNumber",
+          "documentation":"<p>The version number of the registration.</p>"
+        },
+        "RegistrationVersionStatus":{
+          "shape":"RegistrationVersionStatus",
+          "documentation":"<p>The status of the registration.</p> <ul> <li> <p> <code>DRAFT</code>: The initial status of a registration version after it’s created.</p> </li> <li> <p> <code>SUBMITTED</code>: Your registration has been submitted.</p> </li> <li> <p> <code>REVIEWING</code>: Your registration has been accepted and is being reviewed.</p> </li> <li> <p> <code>APPROVED</code>: Your registration has been approved.</p> </li> <li> <p> <code>DISCARDED</code>: You've abandon this version of their registration to start over with a new version. </p> </li> <li> <p> <code>DENIED</code>: You must fix your registration and resubmit it.</p> </li> <li> <p> <code>REVOKED</code>: Your previously approved registration has been revoked.</p> </li> <li> <p> <code>ARCHIVED</code>: Your previously approved registration version moves into this status when a more recently submitted version is approved.</p> </li> </ul>"
+        },
+        "RegistrationVersionStatusHistory":{
+          "shape":"RegistrationVersionStatusHistory",
+          "documentation":"<p>The <b>RegistrationVersionStatusHistory</b> object contains the time stamps for when the reservations status changes.</p>"
+        },
+        "DeniedReasons":{
+          "shape":"RegistrationDeniedReasonInformationList",
+          "documentation":"<p>An array of RegistrationDeniedReasonInformation objects. </p>"
+        }
+      },
+      "documentation":"<p>Provides information about the specified version of the registration.</p>"
+    },
+    "RegistrationVersionInformationList":{
+      "type":"list",
+      "member":{"shape":"RegistrationVersionInformation"}
+    },
+    "RegistrationVersionNumber":{
+      "type":"long",
+      "box":true,
+      "max":100000,
+      "min":1
+    },
+    "RegistrationVersionNumberList":{
+      "type":"list",
+      "member":{"shape":"RegistrationVersionNumber"},
+      "max":5,
+      "min":0
+    },
+    "RegistrationVersionStatus":{
+      "type":"string",
+      "enum":[
+        "DRAFT",
+        "SUBMITTED",
+        "REVIEWING",
+        "APPROVED",
+        "DISCARDED",
+        "DENIED",
+        "REVOKED",
+        "ARCHIVED"
+      ]
+    },
+    "RegistrationVersionStatusHistory":{
+      "type":"structure",
+      "required":["DraftTimestamp"],
+      "members":{
+        "DraftTimestamp":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time when the registration was in the draft state, in <a href=\"https://www.epochconverter.com/\">UNIX epoch time</a> format.</p>"
+        },
+        "SubmittedTimestamp":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time when the registration was in the submitted state, in <a href=\"https://www.epochconverter.com/\">UNIX epoch time</a> format.</p>"
+        },
+        "ReviewingTimestamp":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time when the registration was in the reviewing state, in <a href=\"https://www.epochconverter.com/\">UNIX epoch time</a> format.</p>"
+        },
+        "ApprovedTimestamp":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time when the registration was in the approved state, in <a href=\"https://www.epochconverter.com/\">UNIX epoch time</a> format.</p>"
+        },
+        "DiscardedTimestamp":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time when the registration was in the discarded state, in <a href=\"https://www.epochconverter.com/\">UNIX epoch time</a> format.</p>"
+        },
+        "DeniedTimestamp":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time when the registration was in the denied state, in <a href=\"https://www.epochconverter.com/\">UNIX epoch time</a> format.</p>"
+        },
+        "RevokedTimestamp":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time when the registration was in the revoked state, in <a href=\"https://www.epochconverter.com/\">UNIX epoch time</a> format.</p>"
+        },
+        "ArchivedTimestamp":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time when the registration was in the archived state, in <a href=\"https://www.epochconverter.com/\">UNIX epoch time</a> format.</p>"
+        }
+      },
+      "documentation":"<p>The <b>RegistrationVersionStatusHistory</b> object contains the time stamps for when the reservations status changes.</p>"
     },
     "ReleasePhoneNumberRequest":{
       "type":"structure",
@@ -3016,6 +5263,10 @@
           "shape":"TwoWayChannelArn",
           "documentation":"<p>The Amazon Resource Name (ARN) of the TwoWayChannel.</p>"
         },
+        "TwoWayChannelRole":{
+          "shape":"IamRoleArn",
+          "documentation":"<p>An optional IAM Role Arn for a service to assume, to be able to post inbound SMS messages.</p>"
+        },
         "SelfManagedOptOutsEnabled":{
           "shape":"PrimitiveBoolean",
           "documentation":"<p>By default this is set to false. When an end recipient sends a message that begins with HELP or STOP to one of your dedicated numbers, Amazon Pinpoint automatically replies with a customizable message and adds the end recipient to the OptOutList. When set to true you're responsible for responding to HELP and STOP requests. You're also responsible for tracking and honoring opt-out requests.</p>"
@@ -3024,9 +5275,71 @@
           "shape":"OptOutListName",
           "documentation":"<p>The name of the OptOutList that was associated with the phone number.</p>"
         },
+        "RegistrationId":{
+          "shape":"String",
+          "documentation":"<p>The unique identifier for the registration.</p>"
+        },
         "CreatedTimestamp":{
           "shape":"Timestamp",
           "documentation":"<p>The time when the phone number was created, in <a href=\"https://www.epochconverter.com/\">UNIX epoch time</a> format.</p>"
+        }
+      }
+    },
+    "ReleaseSenderIdRequest":{
+      "type":"structure",
+      "required":[
+        "SenderId",
+        "IsoCountryCode"
+      ],
+      "members":{
+        "SenderId":{
+          "shape":"SenderIdOrArn",
+          "documentation":"<p>The sender ID to release.</p>"
+        },
+        "IsoCountryCode":{
+          "shape":"IsoCountryCode",
+          "documentation":"<p>The two-character code, in ISO 3166-1 alpha-2 format, for the country or region.</p>"
+        }
+      }
+    },
+    "ReleaseSenderIdResult":{
+      "type":"structure",
+      "required":[
+        "SenderIdArn",
+        "SenderId",
+        "IsoCountryCode",
+        "MessageTypes",
+        "MonthlyLeasingPrice",
+        "Registered"
+      ],
+      "members":{
+        "SenderIdArn":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Resource Name (ARN) associated with the SenderId.</p>"
+        },
+        "SenderId":{
+          "shape":"SenderId",
+          "documentation":"<p>The sender ID that was released.</p>"
+        },
+        "IsoCountryCode":{
+          "shape":"IsoCountryCode",
+          "documentation":"<p>The two-character code, in ISO 3166-1 alpha-2 format, for the country or region.</p>"
+        },
+        "MessageTypes":{
+          "shape":"MessageTypeList",
+          "documentation":"<p>The type of message. Valid values are TRANSACTIONAL for messages that are critical or time-sensitive and PROMOTIONAL for messages that aren't critical or time-sensitive.</p>"
+        },
+        "MonthlyLeasingPrice":{
+          "shape":"String",
+          "documentation":"<p>The monthly price, in US dollars, to lease the sender ID.</p>"
+        },
+        "Registered":{
+          "shape":"PrimitiveBoolean",
+          "documentation":"<p>True if the sender ID is registered.</p>"
+        },
+        "RegistrationId":{
+          "shape":"String",
+          "documentation":"<p>The unique identifier for the registration.</p>"
         }
       }
     },
@@ -3057,14 +5370,14 @@
         },
         "OptOutListName":{
           "shape":"OptOutListNameOrArn",
-          "documentation":"<p>The name of the OptOutList to associate with the phone number. You can use the OutOutListName or OptPutListArn.</p>"
+          "documentation":"<p>The name of the OptOutList to associate with the phone number. You can use the OptOutListName or OptOutListArn.</p>"
         },
         "PoolId":{
           "shape":"PoolIdOrArn",
           "documentation":"<p>The pool to associated with the phone number. You can use the PoolId or PoolArn. </p>"
         },
         "RegistrationId":{
-          "shape":"RegistrationId",
+          "shape":"RegistrationIdOrArn",
           "documentation":"<p>Use this field to attach your phone number for an external registration process.</p>"
         },
         "DeletionProtectionEnabled":{
@@ -3129,6 +5442,10 @@
           "shape":"TwoWayChannelArn",
           "documentation":"<p>The ARN used to identify the two way channel.</p>"
         },
+        "TwoWayChannelRole":{
+          "shape":"IamRoleArn",
+          "documentation":"<p>An optional IAM Role Arn for a service to assume, to be able to post inbound SMS messages.</p>"
+        },
         "SelfManagedOptOutsEnabled":{
           "shape":"PrimitiveBoolean",
           "documentation":"<p>By default this is set to false. When an end recipient sends a message that begins with HELP or STOP to one of your dedicated numbers, Amazon Pinpoint automatically replies with a customizable message and adds the end recipient to the OptOutList. When set to true you're responsible for responding to HELP and STOP requests. You're also responsible for tracking and honoring opt-out requests.</p>"
@@ -3145,6 +5462,10 @@
           "shape":"String",
           "documentation":"<p>The unique identifier of the pool associated with the phone number </p>"
         },
+        "RegistrationId":{
+          "shape":"String",
+          "documentation":"<p>The unique identifier for the registration.</p>"
+        },
         "Tags":{
           "shape":"TagList",
           "documentation":"<p>An array of key and value pair tags that are associated with the phone number.</p>"
@@ -3155,13 +5476,100 @@
         }
       }
     },
+    "RequestSenderIdRequest":{
+      "type":"structure",
+      "required":[
+        "SenderId",
+        "IsoCountryCode"
+      ],
+      "members":{
+        "SenderId":{
+          "shape":"SenderId",
+          "documentation":"<p>The sender ID string to request.</p>"
+        },
+        "IsoCountryCode":{
+          "shape":"IsoCountryCode",
+          "documentation":"<p>The two-character code, in ISO 3166-1 alpha-2 format, for the country or region.</p>"
+        },
+        "MessageTypes":{
+          "shape":"MessageTypeList",
+          "documentation":"<p>The type of message. Valid values are TRANSACTIONAL for messages that are critical or time-sensitive and PROMOTIONAL for messages that aren't critical or time-sensitive.</p>"
+        },
+        "DeletionProtectionEnabled":{
+          "shape":"Boolean",
+          "documentation":"<p>By default this is set to false. When set to true the sender ID can't be deleted.</p>"
+        },
+        "Tags":{
+          "shape":"TagList",
+          "documentation":"<p>An array of tags (key and value pairs) to associate with the sender ID.</p>"
+        },
+        "ClientToken":{
+          "shape":"ClientToken",
+          "documentation":"<p>Unique, case-sensitive identifier that you provide to ensure the idempotency of the request. If you don't specify a client token, a randomly generated token is used for the request to ensure idempotency.</p>",
+          "idempotencyToken":true
+        }
+      }
+    },
+    "RequestSenderIdResult":{
+      "type":"structure",
+      "required":[
+        "SenderIdArn",
+        "SenderId",
+        "IsoCountryCode",
+        "MessageTypes",
+        "MonthlyLeasingPrice",
+        "DeletionProtectionEnabled",
+        "Registered"
+      ],
+      "members":{
+        "SenderIdArn":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Resource Name (ARN) associated with the SenderId.</p>"
+        },
+        "SenderId":{
+          "shape":"SenderId",
+          "documentation":"<p>The sender ID that was requested.</p>"
+        },
+        "IsoCountryCode":{
+          "shape":"IsoCountryCode",
+          "documentation":"<p>The two-character code, in ISO 3166-1 alpha-2 format, for the country or region.</p>"
+        },
+        "MessageTypes":{
+          "shape":"MessageTypeList",
+          "documentation":"<p>The type of message. Valid values are TRANSACTIONAL for messages that are critical or time-sensitive and PROMOTIONAL for messages that aren't critical or time-sensitive.</p>"
+        },
+        "MonthlyLeasingPrice":{
+          "shape":"String",
+          "documentation":"<p>The monthly price, in US dollars, to lease the sender ID.</p>"
+        },
+        "DeletionProtectionEnabled":{
+          "shape":"PrimitiveBoolean",
+          "documentation":"<p>By default this is set to false. When set to true the sender ID can't be deleted.</p>"
+        },
+        "Registered":{
+          "shape":"PrimitiveBoolean",
+          "documentation":"<p>True if the sender ID is registered.</p>"
+        },
+        "Tags":{
+          "shape":"TagList",
+          "documentation":"<p>An array of tags (key and value pairs) to associate with the sender ID.</p>"
+        }
+      }
+    },
     "RequestableNumberType":{
       "type":"string",
       "enum":[
         "LONG_CODE",
         "TOLL_FREE",
-        "TEN_DLC"
+        "TEN_DLC",
+        "SIMULATOR"
       ]
+    },
+    "ResourceIdOrArn":{
+      "type":"string",
+      "max":256,
+      "min":1,
+      "pattern":"[A-Za-z0-9_:/-]+"
     },
     "ResourceNotFoundException":{
       "type":"structure",
@@ -3191,8 +5599,126 @@
         "event-destination",
         "keyword",
         "opted-out-number",
-        "registration"
+        "registration",
+        "registration-attachment",
+        "verified-destination-number"
       ]
+    },
+    "SectionPath":{
+      "type":"string",
+      "max":100,
+      "min":1,
+      "pattern":"[A-Za-z0-9_]+"
+    },
+    "SectionPathList":{
+      "type":"list",
+      "member":{"shape":"SectionPath"},
+      "max":5,
+      "min":0
+    },
+    "SelectChoice":{
+      "type":"string",
+      "max":256,
+      "min":1
+    },
+    "SelectChoiceList":{
+      "type":"list",
+      "member":{"shape":"SelectChoice"},
+      "max":100,
+      "min":0
+    },
+    "SelectOptionDescription":{
+      "type":"structure",
+      "required":["Option"],
+      "members":{
+        "Option":{
+          "shape":"String",
+          "documentation":"<p>The value of the option.</p>"
+        },
+        "Title":{
+          "shape":"String",
+          "documentation":"<p>The title of the select option.</p>"
+        },
+        "Description":{
+          "shape":"String",
+          "documentation":"<p>A description of the option meaning.</p>"
+        }
+      },
+      "documentation":"<p>A description of each select option.</p>"
+    },
+    "SelectOptionDescriptionsList":{
+      "type":"list",
+      "member":{"shape":"SelectOptionDescription"}
+    },
+    "SelectValidation":{
+      "type":"structure",
+      "required":[
+        "MinChoices",
+        "MaxChoices",
+        "Options"
+      ],
+      "members":{
+        "MinChoices":{
+          "shape":"Integer",
+          "documentation":"<p>The minimum number of choices for the select.</p>"
+        },
+        "MaxChoices":{
+          "shape":"Integer",
+          "documentation":"<p>The maximum number of choices for the select.</p>"
+        },
+        "Options":{
+          "shape":"StringList",
+          "documentation":"<p>An array of strings for the possible selection options. </p>"
+        }
+      },
+      "documentation":"<p>Validation rules for a select field.</p>"
+    },
+    "SendDestinationNumberVerificationCodeRequest":{
+      "type":"structure",
+      "required":[
+        "VerifiedDestinationNumberId",
+        "VerificationChannel"
+      ],
+      "members":{
+        "VerifiedDestinationNumberId":{
+          "shape":"VerifiedDestinationNumberIdOrArn",
+          "documentation":"<p>The unique identifier for the verified destination phone number.</p>"
+        },
+        "VerificationChannel":{
+          "shape":"VerificationChannel",
+          "documentation":"<p>Choose to send the verification code as an SMS or voice message.</p>"
+        },
+        "LanguageCode":{
+          "shape":"LanguageCode",
+          "documentation":"<p>Choose the language to use for the message.</p>"
+        },
+        "OriginationIdentity":{
+          "shape":"VerificationMessageOriginationIdentity",
+          "documentation":"<p>The origination identity of the message. This can be either the PhoneNumber, PhoneNumberId, PhoneNumberArn, SenderId, SenderIdArn, PoolId, or PoolArn.</p>"
+        },
+        "ConfigurationSetName":{
+          "shape":"ConfigurationSetNameOrArn",
+          "documentation":"<p>The name of the configuration set to use. This can be either the ConfigurationSetName or ConfigurationSetArn.</p>"
+        },
+        "Context":{
+          "shape":"ContextMap",
+          "documentation":"<p>You can specify custom data in this field. If you do, that data is logged to the event destination.</p>"
+        },
+        "DestinationCountryParameters":{
+          "shape":"DestinationCountryParameters",
+          "documentation":"<p>This field is used for any country-specific registration requirements. Currently, this setting is only used when you send messages to recipients in India using a sender ID. For more information see <a href=\"https://docs.aws.amazon.com/pinpoint/latest/userguide/channels-sms-senderid-india.html\">Special requirements for sending SMS messages to recipients in India</a>. </p>"
+        }
+      }
+    },
+    "SendDestinationNumberVerificationCodeResult":{
+      "type":"structure",
+      "required":["MessageId"],
+      "members":{
+        "MessageId":{
+          "shape":"String",
+          "documentation":"<p>The unique identifier for the message.</p>"
+        }
+      }
     },
     "SendTextMessageRequest":{
       "type":"structure",
@@ -3212,7 +5738,7 @@
         },
         "MessageType":{
           "shape":"MessageType",
-          "documentation":"<p>The type of message. Valid values are TRANSACTIONAL for messages that are critical or time-sensitive and PROMOTIONAL for messages that aren't critical or time-sensitive.</p>"
+          "documentation":"<p>The type of message. Valid values are for messages that are critical or time-sensitive and PROMOTIONAL for messages that aren't critical or time-sensitive.</p>"
         },
         "Keyword":{
           "shape":"Keyword",
@@ -3364,7 +5890,9 @@
       "enum":[
         "sender-id",
         "iso-country-code",
-        "message-type"
+        "message-type",
+        "deletion-protection-enabled",
+        "registered"
       ]
     },
     "SenderIdInformation":{
@@ -3374,7 +5902,9 @@
         "SenderId",
         "IsoCountryCode",
         "MessageTypes",
-        "MonthlyLeasingPrice"
+        "MonthlyLeasingPrice",
+        "DeletionProtectionEnabled",
+        "Registered"
       ],
       "members":{
         "SenderIdArn":{
@@ -3396,6 +5926,18 @@
         "MonthlyLeasingPrice":{
           "shape":"String",
           "documentation":"<p>The monthly leasing price, in US dollars.</p>"
+        },
+        "DeletionProtectionEnabled":{
+          "shape":"PrimitiveBoolean",
+          "documentation":"<p>By default this is set to false. When set to true the sender ID can't be deleted.</p>"
+        },
+        "Registered":{
+          "shape":"PrimitiveBoolean",
+          "documentation":"<p>True if the sender ID is registered.</p>"
+        },
+        "RegistrationId":{
+          "shape":"String",
+          "documentation":"<p>The unique identifier for the registration.</p>"
         }
       },
       "documentation":"<p>The information for all SenderIds in an Amazon Web Services account.</p>"
@@ -3431,6 +5973,7 @@
     "ServiceQuotaExceededExceptionReason":{
       "type":"string",
       "enum":[
+        "ASSOCIATIONS_PER_REGISTRATION",
         "CONFIGURATION_SETS_PER_ACCOUNT",
         "DAILY_DESTINATION_CALL_LIMIT",
         "EVENT_DESTINATIONS_PER_CONFIGURATION_SET",
@@ -3443,7 +5986,14 @@
         "PHONE_NUMBERS_PER_ACCOUNT",
         "PHONE_NUMBERS_PER_REGISTRATION",
         "POOLS_PER_ACCOUNT",
-        "TAGS_PER_RESOURCE"
+        "REGISTRATION_ATTACHMENTS_CREATED_PER_DAY",
+        "REGISTRATION_ATTACHMENTS_PER_ACCOUNT",
+        "REGISTRATION_VERSIONS_CREATED_PER_DAY",
+        "REGISTRATIONS_PER_ACCOUNT",
+        "SENDER_IDS_PER_ACCOUNT",
+        "TAGS_PER_RESOURCE",
+        "VERIFIED_DESTINATION_NUMBERS_PER_ACCOUNT",
+        "VERIFICATION_ATTEMPTS_PER_DAY"
       ]
     },
     "SetDefaultMessageTypeRequest":{
@@ -3609,6 +6159,88 @@
       ]
     },
     "String":{"type":"string"},
+    "StringList":{
+      "type":"list",
+      "member":{"shape":"String"}
+    },
+    "StringMap":{
+      "type":"map",
+      "key":{"shape":"String"},
+      "value":{"shape":"String"}
+    },
+    "SubmitRegistrationVersionRequest":{
+      "type":"structure",
+      "required":["RegistrationId"],
+      "members":{
+        "RegistrationId":{
+          "shape":"RegistrationIdOrArn",
+          "documentation":"<p>The unique identifier for the registration.</p>"
+        }
+      }
+    },
+    "SubmitRegistrationVersionResult":{
+      "type":"structure",
+      "required":[
+        "RegistrationArn",
+        "RegistrationId",
+        "VersionNumber",
+        "RegistrationVersionStatus",
+        "RegistrationVersionStatusHistory"
+      ],
+      "members":{
+        "RegistrationArn":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Resource Name (ARN) for the registration.</p>"
+        },
+        "RegistrationId":{
+          "shape":"String",
+          "documentation":"<p>The unique identifier for the registration.</p>"
+        },
+        "VersionNumber":{
+          "shape":"RegistrationVersionNumber",
+          "documentation":"<p>The version number of the registration.</p>"
+        },
+        "RegistrationVersionStatus":{
+          "shape":"RegistrationVersionStatus",
+          "documentation":"<p>The status of the registration version.</p> <ul> <li> <p> <code>DRAFT</code>: The initial status of a registration version after it’s created.</p> </li> <li> <p> <code>SUBMITTED</code>: Your registration has been submitted.</p> </li> <li> <p> <code>REVIEWING</code>: Your registration has been accepted and is being reviewed.</p> </li> <li> <p> <code>APPROVED</code>: Your registration has been approved.</p> </li> <li> <p> <code>DISCARDED</code>: You've abandon this version of their registration to start over with a new version. </p> </li> <li> <p> <code>DENIED</code>: You must fix your registration and resubmit it.</p> </li> <li> <p> <code>REVOKED</code>: Your previously approved registration has been revoked.</p> </li> <li> <p> <code>ARCHIVED</code>: Your previously approved registration version moves into this status when a more recently submitted version is approved.</p> </li> </ul>"
+        },
+        "RegistrationVersionStatusHistory":{
+          "shape":"RegistrationVersionStatusHistory",
+          "documentation":"<p>The <b>RegistrationVersionStatusHistory</b> object contains the time stamps for when the reservations status changes.</p>"
+        }
+      }
+    },
+    "SupportedAssociation":{
+      "type":"structure",
+      "required":[
+        "ResourceType",
+        "AssociationBehavior",
+        "DisassociationBehavior"
+      ],
+      "members":{
+        "ResourceType":{
+          "shape":"String",
+          "documentation":"<p>Defines the behavior of when an origination identity and registration can be associated with each other.</p>"
+        },
+        "IsoCountryCode":{
+          "shape":"IsoCountryCode",
+          "documentation":"<p>The two-character code, in ISO 3166-1 alpha-2 format, for the country or region.</p>"
+        },
+        "AssociationBehavior":{
+          "shape":"RegistrationAssociationBehavior",
+          "documentation":"<p>The association behavior.</p> <ul> <li> <p> <code>ASSOCIATE_BEFORE_SUBMIT</code> The origination identity has to be supplied when creating a registration.</p> </li> <li> <p> <code>ASSOCIATE_ON_APPROVAL</code> This applies to all short code registrations. The short code will be automatically provisioned once the registration is approved.</p> </li> <li> <p> <code>ASSOCIATE_AFTER_COMPLETE</code> This applies to phone number registrations when you must complete a registration first, then associate one or more phone numbers later. For example 10DLC campaigns and long codes. </p> </li> </ul>"
+        },
+        "DisassociationBehavior":{
+          "shape":"RegistrationDisassociationBehavior",
+          "documentation":"<p>The disassociation behavior.</p> <ul> <li> <p> <code>DISASSOCIATE_ALL_CLOSES_REGISTRATION</code> All origination identities must be disassociated from the registration before the registration can be closed.</p> </li> <li> <p> <code>DISASSOCIATE_ALL_ALLOWS_DELETE_REGISTRATION</code> All origination identities must be disassociated from the registration before the registration can be deleted.</p> </li> <li> <p> <code>DELETE_REGISTRATION_DISASSOCIATES</code> The registration can be deleted and all origination identities will be disasscoiated.</p> </li> </ul>"
+        }
+      },
+      "documentation":"<p>The processing rules for when a registration can be associated with an origination identity and disassociated from an origination identity.</p>"
+    },
+    "SupportedAssociationList":{
+      "type":"list",
+      "member":{"shape":"SupportedAssociation"}
+    },
     "Tag":{
       "type":"structure",
       "required":[
@@ -3685,6 +6317,34 @@
       "min":1,
       "pattern":"[A-Za-z0-9_:/\\+-]+"
     },
+    "TextValidation":{
+      "type":"structure",
+      "required":[
+        "MinLength",
+        "MaxLength",
+        "Pattern"
+      ],
+      "members":{
+        "MinLength":{
+          "shape":"Integer",
+          "documentation":"<p>The minimum number of characters for the text field.</p>"
+        },
+        "MaxLength":{
+          "shape":"Integer",
+          "documentation":"<p>The maximum number of characters for the text field.</p>"
+        },
+        "Pattern":{
+          "shape":"String",
+          "documentation":"<p>The regular expression used to validate the text field.</p>"
+        }
+      },
+      "documentation":"<p>Validation rules for a text field.</p>"
+    },
+    "TextValue":{
+      "type":"string",
+      "max":2048,
+      "min":1
+    },
     "ThrottlingException":{
       "type":"structure",
       "members":{
@@ -3705,7 +6365,7 @@
       "type":"string",
       "max":2048,
       "min":20,
-      "pattern":"arn:\\S+"
+      "pattern":"\\S+"
     },
     "UntagResourceRequest":{
       "type":"structure",
@@ -3750,7 +6410,7 @@
         },
         "MatchingEventTypes":{
           "shape":"EventTypeList",
-          "documentation":"<p>An array of event types that determine which events to log.</p>"
+          "documentation":"<p>An array of event types that determine which events to log.</p> <note> <p>The <code>TEXT_SENT</code> event type is not supported.</p> </note>"
         },
         "CloudWatchLogsDestination":{
           "shape":"CloudWatchLogsDestination",
@@ -3798,6 +6458,10 @@
         "TwoWayChannelArn":{
           "shape":"TwoWayChannelArn",
           "documentation":"<p>The Amazon Resource Name (ARN) of the two way channel.</p>"
+        },
+        "TwoWayChannelRole":{
+          "shape":"IamRoleArn",
+          "documentation":"<p>An optional IAM Role Arn for a service to assume, to be able to post inbound SMS messages.</p>"
         },
         "SelfManagedOptOutsEnabled":{
           "shape":"Boolean",
@@ -3860,6 +6524,10 @@
           "shape":"TwoWayChannelArn",
           "documentation":"<p>The Amazon Resource Name (ARN) of the two way channel.</p>"
         },
+        "TwoWayChannelRole":{
+          "shape":"IamRoleArn",
+          "documentation":"<p>An optional IAM Role Arn for a service to assume, to be able to post inbound SMS messages.</p>"
+        },
         "SelfManagedOptOutsEnabled":{
           "shape":"PrimitiveBoolean",
           "documentation":"<p>This is true if self managed opt-out are enabled.</p>"
@@ -3871,6 +6539,10 @@
         "DeletionProtectionEnabled":{
           "shape":"PrimitiveBoolean",
           "documentation":"<p>When set to true the phone number can't be deleted.</p>"
+        },
+        "RegistrationId":{
+          "shape":"String",
+          "documentation":"<p>The unique identifier for the registration.</p>"
         },
         "CreatedTimestamp":{
           "shape":"Timestamp",
@@ -3893,6 +6565,10 @@
         "TwoWayChannelArn":{
           "shape":"TwoWayChannelArn",
           "documentation":"<p>The Amazon Resource Name (ARN) of the two way channel.</p>"
+        },
+        "TwoWayChannelRole":{
+          "shape":"IamRoleArn",
+          "documentation":"<p>An optional IAM Role Arn for a service to assume, to be able to post inbound SMS messages.</p>"
         },
         "SelfManagedOptOutsEnabled":{
           "shape":"Boolean",
@@ -3939,6 +6615,10 @@
           "shape":"TwoWayChannelArn",
           "documentation":"<p>The Amazon Resource Name (ARN) of the two way channel.</p>"
         },
+        "TwoWayChannelRole":{
+          "shape":"IamRoleArn",
+          "documentation":"<p>An optional IAM Role Arn for a service to assume, to be able to post inbound SMS messages.</p>"
+        },
         "SelfManagedOptOutsEnabled":{
           "shape":"PrimitiveBoolean",
           "documentation":"<p>When an end recipient sends a message that begins with HELP or STOP to one of your dedicated numbers, Amazon Pinpoint automatically replies with a customizable message and adds the end recipient to the OptOutList. When set to true you're responsible for responding to HELP and STOP requests. You're also responsible for tracking and honoring opt-out requests.</p>"
@@ -3958,6 +6638,73 @@
         "CreatedTimestamp":{
           "shape":"Timestamp",
           "documentation":"<p>The time when the pool was created, in <a href=\"https://www.epochconverter.com/\">UNIX epoch time</a> format.</p>"
+        }
+      }
+    },
+    "UpdateSenderIdRequest":{
+      "type":"structure",
+      "required":[
+        "SenderId",
+        "IsoCountryCode"
+      ],
+      "members":{
+        "SenderId":{
+          "shape":"SenderIdOrArn",
+          "documentation":"<p>The sender ID to update.</p>"
+        },
+        "IsoCountryCode":{
+          "shape":"IsoCountryCode",
+          "documentation":"<p>The two-character code, in ISO 3166-1 alpha-2 format, for the country or region.</p>"
+        },
+        "DeletionProtectionEnabled":{
+          "shape":"Boolean",
+          "documentation":"<p>By default this is set to false. When set to true the sender ID can't be deleted.</p>"
+        }
+      }
+    },
+    "UpdateSenderIdResult":{
+      "type":"structure",
+      "required":[
+        "SenderIdArn",
+        "SenderId",
+        "IsoCountryCode",
+        "MessageTypes",
+        "MonthlyLeasingPrice",
+        "DeletionProtectionEnabled",
+        "Registered"
+      ],
+      "members":{
+        "SenderIdArn":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Resource Name (ARN) associated with the SenderId.</p>"
+        },
+        "SenderId":{
+          "shape":"SenderId",
+          "documentation":"<p>The sender ID that was updated.</p>"
+        },
+        "IsoCountryCode":{
+          "shape":"IsoCountryCode",
+          "documentation":"<p>The two-character code, in ISO 3166-1 alpha-2 format, for the country or region.</p>"
+        },
+        "MessageTypes":{
+          "shape":"MessageTypeList",
+          "documentation":"<p>The type of message. Valid values are TRANSACTIONAL for messages that are critical or time-sensitive and PROMOTIONAL for messages that aren't critical or time-sensitive.</p>"
+        },
+        "MonthlyLeasingPrice":{
+          "shape":"String",
+          "documentation":"<p>The monthly price, in US dollars, to lease the sender ID.</p>"
+        },
+        "DeletionProtectionEnabled":{
+          "shape":"PrimitiveBoolean",
+          "documentation":"<p>By default this is set to false. When set to true the sender ID can't be deleted.</p>"
+        },
+        "Registered":{
+          "shape":"PrimitiveBoolean",
+          "documentation":"<p>True if the sender ID is registered..</p>"
+        },
+        "RegistrationId":{
+          "shape":"String",
+          "documentation":"<p>The unique identifier for the registration.</p>"
         }
       }
     },
@@ -4002,31 +6749,197 @@
     "ValidationExceptionReason":{
       "type":"string",
       "enum":[
-        "UNKNOWN_OPERATION",
-        "CANNOT_PARSE",
-        "FIELD_VALIDATION_FAILED",
-        "OTHER",
-        "INVALID_PARAMETER",
-        "INVALID_ARN",
-        "INVALID_IDENTITY_FOR_DESTINATION_COUNTRY",
-        "DESTINATION_COUNTRY_BLOCKED",
         "CANNOT_ADD_OPTED_OUT_NUMBER",
+        "CANNOT_PARSE",
         "COUNTRY_CODE_MISMATCH",
+        "DESTINATION_COUNTRY_BLOCKED",
+        "FIELD_VALIDATION_FAILED",
+        "ATTACHMENT_TYPE_NOT_SUPPORTED",
+        "INVALID_ARN",
         "INVALID_FILTER_VALUES",
+        "INVALID_IDENTITY_FOR_DESTINATION_COUNTRY",
         "INVALID_NEXT_TOKEN",
+        "INVALID_PARAMETER",
+        "INVALID_REQUEST",
+        "INVALID_REGISTRATION_ASSOCIATION",
+        "MAXIMUM_SIZE_EXCEEDED",
         "MISSING_PARAMETER",
         "PARAMETERS_CANNOT_BE_USED_TOGETHER",
         "PHONE_NUMBER_CANNOT_BE_OPTED_IN",
         "PHONE_NUMBER_CANNOT_BE_RELEASED",
         "PRICE_OVER_THRESHOLD",
+        "RESOURCE_NOT_ACCESSIBLE",
         "REQUESTED_SPEND_LIMIT_HIGHER_THAN_SERVICE_LIMIT",
         "SENDER_ID_NOT_REGISTERED",
         "SENDER_ID_NOT_SUPPORTED",
+        "SENDER_ID_REQUIRES_REGISTRATION",
+        "TWO_WAY_TOPIC_NOT_PRESENT",
         "TWO_WAY_NOT_ENABLED",
         "TWO_WAY_NOT_SUPPORTED_IN_COUNTRY",
         "TWO_WAY_NOT_SUPPORTED_IN_REGION",
-        "TWO_WAY_TOPIC_NOT_PRESENT"
+        "TWO_WAY_CHANNEL_NOT_PRESENT",
+        "UNKNOWN_REGISTRATION_FIELD",
+        "UNKNOWN_REGISTRATION_SECTION",
+        "UNKNOWN_REGISTRATION_TYPE",
+        "UNKNOWN_REGISTRATION_VERSION",
+        "UNKNOWN_OPERATION",
+        "REGISTRATION_FIELD_CANNOT_BE_DELETED",
+        "VERIFICATION_CODE_MISMATCH",
+        "VOICE_CAPABILITY_NOT_AVAILABLE",
+        "OTHER"
       ]
+    },
+    "VerificationChannel":{
+      "type":"string",
+      "enum":[
+        "TEXT",
+        "VOICE"
+      ]
+    },
+    "VerificationCode":{
+      "type":"string",
+      "max":20,
+      "min":1,
+      "pattern":"[A-Za-z0-9]+"
+    },
+    "VerificationMessageOriginationIdentity":{
+      "type":"string",
+      "max":256,
+      "min":1,
+      "pattern":"[A-Za-z0-9_:/\\+-]+"
+    },
+    "VerificationStatus":{
+      "type":"string",
+      "enum":[
+        "PENDING",
+        "VERIFIED"
+      ]
+    },
+    "VerifiedDestinationNumberFilter":{
+      "type":"structure",
+      "required":[
+        "Name",
+        "Values"
+      ],
+      "members":{
+        "Name":{
+          "shape":"VerifiedDestinationNumberFilterName",
+          "documentation":"<p>The name of the attribute to filter on.</p>"
+        },
+        "Values":{
+          "shape":"FilterValueList",
+          "documentation":"<p>An array of values to filter on.</p>"
+        }
+      },
+      "documentation":"<p>The filter definition for filtering verified destination phone numbers that meets a specified criteria.</p>"
+    },
+    "VerifiedDestinationNumberFilterList":{
+      "type":"list",
+      "member":{"shape":"VerifiedDestinationNumberFilter"},
+      "max":20,
+      "min":0
+    },
+    "VerifiedDestinationNumberFilterName":{
+      "type":"string",
+      "enum":["status"]
+    },
+    "VerifiedDestinationNumberIdList":{
+      "type":"list",
+      "member":{"shape":"VerifiedDestinationNumberIdOrArn"},
+      "max":5,
+      "min":0
+    },
+    "VerifiedDestinationNumberIdOrArn":{
+      "type":"string",
+      "max":256,
+      "min":1,
+      "pattern":"[A-Za-z0-9_:/-]+"
+    },
+    "VerifiedDestinationNumberInformation":{
+      "type":"structure",
+      "required":[
+        "VerifiedDestinationNumberArn",
+        "VerifiedDestinationNumberId",
+        "DestinationPhoneNumber",
+        "Status",
+        "CreatedTimestamp"
+      ],
+      "members":{
+        "VerifiedDestinationNumberArn":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Resource Name (ARN) for the verified destination phone number.</p>"
+        },
+        "VerifiedDestinationNumberId":{
+          "shape":"String",
+          "documentation":"<p>The unique identifier for the verified destination phone number.</p>"
+        },
+        "DestinationPhoneNumber":{
+          "shape":"PhoneNumber",
+          "documentation":"<p>The verified destination phone number, in E.164 format.</p>"
+        },
+        "Status":{
+          "shape":"VerificationStatus",
+          "documentation":"<p>The status of the verified destination phone number.</p> <ul> <li> <p> <code>PENDING</code>: The phone number hasn't been verified yet.</p> </li> <li> <p> <code>VERIFIED</code>: The phone number is verified and can receive messages.</p> </li> </ul>"
+        },
+        "CreatedTimestamp":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time when the destination phone number was created, in <a href=\"https://www.epochconverter.com/\">UNIX epoch time</a> format.</p>"
+        }
+      },
+      "documentation":"<p>Provides information about the requested verified destintion phone number.</p>"
+    },
+    "VerifiedDestinationNumberInformationList":{
+      "type":"list",
+      "member":{"shape":"VerifiedDestinationNumberInformation"}
+    },
+    "VerifyDestinationNumberRequest":{
+      "type":"structure",
+      "required":[
+        "VerifiedDestinationNumberId",
+        "VerificationCode"
+      ],
+      "members":{
+        "VerifiedDestinationNumberId":{
+          "shape":"VerifiedDestinationNumberIdOrArn",
+          "documentation":"<p>The unique identifier for the verififed destination phone number.</p>"
+        },
+        "VerificationCode":{
+          "shape":"VerificationCode",
+          "documentation":"<p>The verification code that was received by the verified destination phone number.</p>"
+        }
+      }
+    },
+    "VerifyDestinationNumberResult":{
+      "type":"structure",
+      "required":[
+        "VerifiedDestinationNumberArn",
+        "VerifiedDestinationNumberId",
+        "DestinationPhoneNumber",
+        "Status",
+        "CreatedTimestamp"
+      ],
+      "members":{
+        "VerifiedDestinationNumberArn":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Resource Name (ARN) for the verified destination phone number.</p>"
+        },
+        "VerifiedDestinationNumberId":{
+          "shape":"String",
+          "documentation":"<p>The unique identifier for the verified destination phone number.</p>"
+        },
+        "DestinationPhoneNumber":{
+          "shape":"PhoneNumber",
+          "documentation":"<p>The phone number in E.164 format.</p>"
+        },
+        "Status":{
+          "shape":"VerificationStatus",
+          "documentation":"<p>The status for being able to send messages to the phone number.</p>"
+        },
+        "CreatedTimestamp":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time when the destination phone number was created, in <a href=\"https://www.epochconverter.com/\">UNIX epoch time</a> format.</p>"
+        }
+      }
     },
     "VoiceId":{
       "type":"string",
@@ -4112,5 +7025,5 @@
       "pattern":"[A-Za-z0-9_:/\\+-]+"
     }
   },
-  "documentation":"<p>Welcome to the <i>Amazon Pinpoint SMS and Voice, version 2 API Reference</i>. This guide provides information about Amazon Pinpoint SMS and Voice, version 2 API resources, including supported HTTP methods, parameters, and schemas.</p> <p>Amazon Pinpoint is an Amazon Web Services service that you can use to engage with your recipients across multiple messaging channels. The Amazon Pinpoint SMS and Voice, version 2 API provides programmatic access to options that are unique to the SMS and voice channels and supplements the resources provided by the Amazon Pinpoint API.</p> <p>If you're new to Amazon Pinpoint, it's also helpful to review the <a href=\"https://docs.aws.amazon.com/pinpoint/latest/developerguide/welcome.html\"> Amazon Pinpoint Developer Guide</a>. The <i>Amazon Pinpoint Developer Guide</i> provides tutorials, code samples, and procedures that demonstrate how to use Amazon Pinpoint features programmatically and how to integrate Amazon Pinpoint functionality into mobile apps and other types of applications. The guide also provides key information, such as Amazon Pinpoint integration with other Amazon Web Services services, and the quotas that apply to use of the service.</p>"
+  "documentation":"<p>Welcome to the <i>Amazon Pinpoint SMS and Voice, version 2 API Reference</i>. This guide provides information about Amazon Pinpoint SMS and Voice, version 2 API resources, including supported HTTP methods, parameters, and schemas.</p> <p>Amazon Pinpoint is an Amazon Web Services service that you can use to engage with your recipients across multiple messaging channels. The Amazon Pinpoint SMS and Voice, version 2 API provides programmatic access to options that are unique to the SMS and voice channels and supplements the resources provided by the Amazon Pinpoint API.</p> <p>If you're new to Amazon Pinpoint, it's also helpful to review the <a href=\"https://docs.aws.amazon.com/pinpoint/latest/developerguide/welcome.html\"> Amazon Pinpoint Developer Guide</a>. The <i>Amazon Pinpoint Developer Guide</i> provides tutorials, code samples, and procedures that demonstrate how to use Amazon Pinpoint features programmatically and how to integrate Amazon Pinpoint functionality into mobile apps and other types of applications. The guide also provides key information, such as Amazon Pinpoint integration with other Amazon Web Services services, and the quotas that apply to use of the service.</p> <p> <b>Regional availability</b> </p> <p>The <i>Amazon Pinpoint SMS and Voice, version 2 API Reference</i> is available in several Amazon Web Services Regions and it provides an endpoint for each of these Regions. For a list of all the Regions and endpoints where the API is currently available, see <a href=\"https://docs.aws.amazon.com/general/latest/gr/rande.html#pinpoint_region\">Amazon Web Services Service Endpoints</a> and <a href=\"https://docs.aws.amazon.com/general/latest/gr/pinpoint.html\">Amazon Pinpoint endpoints and quotas</a> in the Amazon Web Services General Reference. To learn more about Amazon Web Services Regions, see <a href=\"https://docs.aws.amazon.com/general/latest/gr/rande-manage.html\">Managing Amazon Web Services Regions</a> in the Amazon Web Services General Reference.</p> <p>In each Region, Amazon Web Services maintains multiple Availability Zones. These Availability Zones are physically isolated from each other, but are united by private, low-latency, high-throughput, and highly redundant network connections. These Availability Zones enable us to provide very high levels of availability and redundancy, while also minimizing latency. To learn more about the number of Availability Zones that are available in each Region, see <a href=\"https://aws.amazon.com/about-aws/global-infrastructure/\">Amazon Web Services Global Infrastructure.</a> </p>"
 }

@@ -312,6 +312,25 @@
       ],
       "documentation":"<p>Creates a refresh schedule for a dataset. You can create up to 5 different schedules for a single dataset.</p>"
     },
+    "CreateRoleMembership":{
+      "name":"CreateRoleMembership",
+      "http":{
+        "method":"POST",
+        "requestUri":"/accounts/{AwsAccountId}/namespaces/{Namespace}/roles/{Role}/members/{MemberName}"
+      },
+      "input":{"shape":"CreateRoleMembershipRequest"},
+      "output":{"shape":"CreateRoleMembershipResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"InvalidParameterValueException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"PreconditionNotMetException"},
+        {"shape":"InternalFailureException"},
+        {"shape":"ResourceUnavailableException"}
+      ],
+      "documentation":"<p>Use <code>CreateRoleMembership</code> to add an existing Amazon QuickSight group to an existing role.</p>"
+    },
     "CreateTemplate":{
       "name":"CreateTemplate",
       "http":{
@@ -713,6 +732,44 @@
         {"shape":"InternalFailureException"}
       ],
       "documentation":"<p>Deletes a refresh schedule from a dataset.</p>"
+    },
+    "DeleteRoleCustomPermission":{
+      "name":"DeleteRoleCustomPermission",
+      "http":{
+        "method":"DELETE",
+        "requestUri":"/accounts/{AwsAccountId}/namespaces/{Namespace}/roles/{Role}/custom-permission"
+      },
+      "input":{"shape":"DeleteRoleCustomPermissionRequest"},
+      "output":{"shape":"DeleteRoleCustomPermissionResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"InvalidParameterValueException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"PreconditionNotMetException"},
+        {"shape":"InternalFailureException"},
+        {"shape":"ResourceUnavailableException"}
+      ],
+      "documentation":"<p>Removes custom permissions from the role.</p>"
+    },
+    "DeleteRoleMembership":{
+      "name":"DeleteRoleMembership",
+      "http":{
+        "method":"DELETE",
+        "requestUri":"/accounts/{AwsAccountId}/namespaces/{Namespace}/roles/{Role}/members/{MemberName}"
+      },
+      "input":{"shape":"DeleteRoleMembershipRequest"},
+      "output":{"shape":"DeleteRoleMembershipResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"InvalidParameterValueException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"PreconditionNotMetException"},
+        {"shape":"InternalFailureException"},
+        {"shape":"ResourceUnavailableException"}
+      ],
+      "documentation":"<p>Removes a group from a role.</p>"
     },
     "DeleteTemplate":{
       "name":"DeleteTemplate",
@@ -1382,6 +1439,25 @@
       ],
       "documentation":"<p>Provides a summary of a refresh schedule.</p>"
     },
+    "DescribeRoleCustomPermission":{
+      "name":"DescribeRoleCustomPermission",
+      "http":{
+        "method":"GET",
+        "requestUri":"/accounts/{AwsAccountId}/namespaces/{Namespace}/roles/{Role}/custom-permission"
+      },
+      "input":{"shape":"DescribeRoleCustomPermissionRequest"},
+      "output":{"shape":"DescribeRoleCustomPermissionResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"InvalidParameterValueException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"PreconditionNotMetException"},
+        {"shape":"InternalFailureException"},
+        {"shape":"ResourceUnavailableException"}
+      ],
+      "documentation":"<p>Describes all custom permissions that are mapped to a role.</p>"
+    },
     "DescribeTemplate":{
       "name":"DescribeTemplate",
       "http":{
@@ -1994,6 +2070,27 @@
         {"shape":"InternalFailureException"}
       ],
       "documentation":"<p>Lists the refresh schedules of a dataset. Each dataset can have up to 5 schedules. </p>"
+    },
+    "ListRoleMemberships":{
+      "name":"ListRoleMemberships",
+      "http":{
+        "method":"GET",
+        "requestUri":"/accounts/{AwsAccountId}/namespaces/{Namespace}/roles/{Role}/members"
+      },
+      "input":{"shape":"ListRoleMembershipsRequest"},
+      "output":{"shape":"ListRoleMembershipsResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"InvalidParameterValueException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InvalidNextTokenException"},
+        {"shape":"PreconditionNotMetException"},
+        {"shape":"LimitExceededException"},
+        {"shape":"InternalFailureException"},
+        {"shape":"ResourceUnavailableException"}
+      ],
+      "documentation":"<p>Lists all groups that are associated with a role.</p>"
     },
     "ListTagsForResource":{
       "name":"ListTagsForResource",
@@ -2818,6 +2915,25 @@
       ],
       "documentation":"<p>Updates a refresh schedule for a dataset.</p>"
     },
+    "UpdateRoleCustomPermission":{
+      "name":"UpdateRoleCustomPermission",
+      "http":{
+        "method":"PUT",
+        "requestUri":"/accounts/{AwsAccountId}/namespaces/{Namespace}/roles/{Role}/custom-permission"
+      },
+      "input":{"shape":"UpdateRoleCustomPermissionRequest"},
+      "output":{"shape":"UpdateRoleCustomPermissionResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"InvalidParameterValueException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"PreconditionNotMetException"},
+        {"shape":"InternalFailureException"},
+        {"shape":"ResourceUnavailableException"}
+      ],
+      "documentation":"<p>Updates the custom permissions that are associated with a role.</p>"
+    },
     "UpdateTemplate":{
       "name":"UpdateTemplate",
       "http":{
@@ -3297,8 +3413,7 @@
         "Sheets":{
           "shape":"SheetList",
           "documentation":"<p>A list of the associated sheets with the unique identifier and name of each sheet.</p>"
-        },
-        "Options":{"shape":"AssetOptions"}
+        }
       },
       "documentation":"<p>Metadata structure for an analysis in Amazon QuickSight</p>"
     },
@@ -3698,7 +3813,10 @@
     },
     "AssetBundleExportJobAnalysisOverrideProperties":{
       "type":"structure",
-      "required":["Properties"],
+      "required":[
+        "Arn",
+        "Properties"
+      ],
       "members":{
         "Arn":{
           "shape":"Arn",
@@ -3729,7 +3847,10 @@
     },
     "AssetBundleExportJobDashboardOverrideProperties":{
       "type":"structure",
-      "required":["Properties"],
+      "required":[
+        "Arn",
+        "Properties"
+      ],
       "members":{
         "Arn":{
           "shape":"Arn",
@@ -3760,7 +3881,10 @@
     },
     "AssetBundleExportJobDataSetOverrideProperties":{
       "type":"structure",
-      "required":["Properties"],
+      "required":[
+        "Arn",
+        "Properties"
+      ],
       "members":{
         "Arn":{
           "shape":"Arn",
@@ -3791,7 +3915,10 @@
     },
     "AssetBundleExportJobDataSourceOverrideProperties":{
       "type":"structure",
-      "required":["Properties"],
+      "required":[
+        "Arn",
+        "Properties"
+      ],
       "members":{
         "Arn":{
           "shape":"Arn",
@@ -3862,7 +3989,10 @@
     },
     "AssetBundleExportJobRefreshScheduleOverrideProperties":{
       "type":"structure",
-      "required":["Properties"],
+      "required":[
+        "Arn",
+        "Properties"
+      ],
       "members":{
         "Arn":{
           "shape":"Arn",
@@ -3936,6 +4066,14 @@
         "ExportFormat":{
           "shape":"AssetBundleExportFormat",
           "documentation":"<p>The format for the export job.</p>"
+        },
+        "IncludePermissions":{
+          "shape":"Boolean",
+          "documentation":"<p>The flag that determines the inclusion of permissions associated with each resource ARN.</p>"
+        },
+        "IncludeTags":{
+          "shape":"Boolean",
+          "documentation":"<p>The flag that determines the inclusion of tags associated with each resource ARN.</p>"
         }
       },
       "documentation":"<p>A summary of the export job that includes details of the job's configuration and its current status.</p>"
@@ -3946,7 +4084,10 @@
     },
     "AssetBundleExportJobThemeOverrideProperties":{
       "type":"structure",
-      "required":["Properties"],
+      "required":[
+        "Arn",
+        "Properties"
+      ],
       "members":{
         "Arn":{
           "shape":"Arn",
@@ -3977,7 +4118,10 @@
     },
     "AssetBundleExportJobVPCConnectionOverrideProperties":{
       "type":"structure",
-      "required":["Properties"],
+      "required":[
+        "Arn",
+        "Properties"
+      ],
       "members":{
         "Arn":{
           "shape":"Arn",
@@ -4009,6 +4153,34 @@
       "member":{"shape":"AssetBundleExportJobVPCConnectionPropertyToOverride"},
       "max":10,
       "min":1
+    },
+    "AssetBundleExportJobValidationStrategy":{
+      "type":"structure",
+      "members":{
+        "StrictModeForAllResources":{
+          "shape":"Boolean",
+          "documentation":"<p>A Boolean value that indicates whether to export resources under strict or lenient mode.</p>"
+        }
+      },
+      "documentation":"<p>The option to relax the validation that is required to export each asset. When <code>StrictModeForAllResource</code> is set to true, validation is skipped for specific UI errors.</p>"
+    },
+    "AssetBundleExportJobWarning":{
+      "type":"structure",
+      "members":{
+        "Arn":{
+          "shape":"Arn",
+          "documentation":"<p>The ARN of the resource whose processing caused a warning.</p>"
+        },
+        "Message":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>A description of the warning.</p>"
+        }
+      },
+      "documentation":"<p>Describes a warning that occurred during an Asset Bundle export job.</p>"
+    },
+    "AssetBundleExportJobWarningList":{
+      "type":"list",
+      "member":{"shape":"AssetBundleExportJobWarning"}
     },
     "AssetBundleImportBodyBlob":{
       "type":"blob",
@@ -4044,6 +4216,54 @@
       "max":50,
       "min":1
     },
+    "AssetBundleImportJobAnalysisOverridePermissions":{
+      "type":"structure",
+      "required":[
+        "AnalysisIds",
+        "Permissions"
+      ],
+      "members":{
+        "AnalysisIds":{
+          "shape":"AssetBundleRestrictiveResourceIdList",
+          "documentation":"<p>A list of analysis IDs that you want to apply overrides to. You can use <code>*</code> to override all analyses in this asset bundle.</p>"
+        },
+        "Permissions":{
+          "shape":"AssetBundleResourcePermissions",
+          "documentation":"<p>A list of permissions for the analyses that you want to apply overrides to.</p>"
+        }
+      },
+      "documentation":"<p>An object that contains a list of permissions to be applied to a list of analysis IDs.</p>"
+    },
+    "AssetBundleImportJobAnalysisOverridePermissionsList":{
+      "type":"list",
+      "member":{"shape":"AssetBundleImportJobAnalysisOverridePermissions"},
+      "max":1,
+      "min":1
+    },
+    "AssetBundleImportJobAnalysisOverrideTags":{
+      "type":"structure",
+      "required":[
+        "AnalysisIds",
+        "Tags"
+      ],
+      "members":{
+        "AnalysisIds":{
+          "shape":"AssetBundleRestrictiveResourceIdList",
+          "documentation":"<p>A list of analysis IDs that you want to apply overrides to. You can use <code>*</code> to override all analyses in this asset bundle.</p>"
+        },
+        "Tags":{
+          "shape":"TagList",
+          "documentation":"<p>A list of tags for the analyses that you want to apply overrides to.</p>"
+        }
+      },
+      "documentation":"<p>An object that contains a list of tags to be assigned to a list of analysis IDs.</p>"
+    },
+    "AssetBundleImportJobAnalysisOverrideTagsList":{
+      "type":"list",
+      "member":{"shape":"AssetBundleImportJobAnalysisOverrideTags"},
+      "max":5,
+      "min":1
+    },
     "AssetBundleImportJobDashboardOverrideParameters":{
       "type":"structure",
       "required":["DashboardId"],
@@ -4065,6 +4285,55 @@
       "max":50,
       "min":1
     },
+    "AssetBundleImportJobDashboardOverridePermissions":{
+      "type":"structure",
+      "required":["DashboardIds"],
+      "members":{
+        "DashboardIds":{
+          "shape":"AssetBundleRestrictiveResourceIdList",
+          "documentation":"<p>A list of dashboard IDs that you want to apply overrides to. You can use <code>*</code> to override all dashboards in this asset bundle.</p>"
+        },
+        "Permissions":{
+          "shape":"AssetBundleResourcePermissions",
+          "documentation":"<p>A list of permissions for the dashboards that you want to apply overrides to.</p>"
+        },
+        "LinkSharingConfiguration":{
+          "shape":"AssetBundleResourceLinkSharingConfiguration",
+          "documentation":"<p>A structure that contains the link sharing configurations that you want to apply overrides to.</p>"
+        }
+      },
+      "documentation":"<p>An object that contains a list of permissions to be applied to a list of dashboard IDs.</p>"
+    },
+    "AssetBundleImportJobDashboardOverridePermissionsList":{
+      "type":"list",
+      "member":{"shape":"AssetBundleImportJobDashboardOverridePermissions"},
+      "max":2,
+      "min":1
+    },
+    "AssetBundleImportJobDashboardOverrideTags":{
+      "type":"structure",
+      "required":[
+        "DashboardIds",
+        "Tags"
+      ],
+      "members":{
+        "DashboardIds":{
+          "shape":"AssetBundleRestrictiveResourceIdList",
+          "documentation":"<p>A list of dashboard IDs that you want to apply overrides to. You can use <code>*</code> to override all dashboards in this asset bundle.</p>"
+        },
+        "Tags":{
+          "shape":"TagList",
+          "documentation":"<p>A list of tags for the dashboards that you want to apply overrides to.</p>"
+        }
+      },
+      "documentation":"<p>An object that contains a list of tags to be assigned to a list of dashboard IDs.</p>"
+    },
+    "AssetBundleImportJobDashboardOverrideTagsList":{
+      "type":"list",
+      "member":{"shape":"AssetBundleImportJobDashboardOverrideTags"},
+      "max":5,
+      "min":1
+    },
     "AssetBundleImportJobDataSetOverrideParameters":{
       "type":"structure",
       "required":["DataSetId"],
@@ -4084,6 +4353,54 @@
       "type":"list",
       "member":{"shape":"AssetBundleImportJobDataSetOverrideParameters"},
       "max":50,
+      "min":1
+    },
+    "AssetBundleImportJobDataSetOverridePermissions":{
+      "type":"structure",
+      "required":[
+        "DataSetIds",
+        "Permissions"
+      ],
+      "members":{
+        "DataSetIds":{
+          "shape":"AssetBundleRestrictiveResourceIdList",
+          "documentation":"<p>A list of dataset IDs that you want to apply overrides to. You can use <code>*</code> to override all datasets in this asset bundle.</p>"
+        },
+        "Permissions":{
+          "shape":"AssetBundleResourcePermissions",
+          "documentation":"<p>A list of permissions for the datasets that you want to apply overrides to.</p>"
+        }
+      },
+      "documentation":"<p>An object that contains a list of permissions to be applied to a list of dataset IDs.</p>"
+    },
+    "AssetBundleImportJobDataSetOverridePermissionsList":{
+      "type":"list",
+      "member":{"shape":"AssetBundleImportJobDataSetOverridePermissions"},
+      "max":2,
+      "min":1
+    },
+    "AssetBundleImportJobDataSetOverrideTags":{
+      "type":"structure",
+      "required":[
+        "DataSetIds",
+        "Tags"
+      ],
+      "members":{
+        "DataSetIds":{
+          "shape":"AssetBundleRestrictiveResourceIdList",
+          "documentation":"<p>A list of dataset IDs that you want to apply overrides to. You can use <code>*</code> to override all datasets in this asset bundle.</p>"
+        },
+        "Tags":{
+          "shape":"TagList",
+          "documentation":"<p>A list of tags for the datasets that you want to apply overrides to.</p>"
+        }
+      },
+      "documentation":"<p>An object that contains a list of tags to be assigned to a list of dataset IDs.</p>"
+    },
+    "AssetBundleImportJobDataSetOverrideTagsList":{
+      "type":"list",
+      "member":{"shape":"AssetBundleImportJobDataSetOverrideTags"},
+      "max":5,
       "min":1
     },
     "AssetBundleImportJobDataSourceCredentialPair":{
@@ -4147,6 +4464,54 @@
       "max":50,
       "min":1
     },
+    "AssetBundleImportJobDataSourceOverridePermissions":{
+      "type":"structure",
+      "required":[
+        "DataSourceIds",
+        "Permissions"
+      ],
+      "members":{
+        "DataSourceIds":{
+          "shape":"AssetBundleRestrictiveResourceIdList",
+          "documentation":"<p>A list of data source IDs that you want to apply overrides to. You can use <code>*</code> to override all data sources in this asset bundle.</p>"
+        },
+        "Permissions":{
+          "shape":"AssetBundleResourcePermissions",
+          "documentation":"<p>A list of permissions for the data source that you want to apply overrides to.</p>"
+        }
+      },
+      "documentation":"<p>An object that contains a list of permissions to be applied to a list of data source IDs.</p>"
+    },
+    "AssetBundleImportJobDataSourceOverridePermissionsList":{
+      "type":"list",
+      "member":{"shape":"AssetBundleImportJobDataSourceOverridePermissions"},
+      "max":2,
+      "min":1
+    },
+    "AssetBundleImportJobDataSourceOverrideTags":{
+      "type":"structure",
+      "required":[
+        "DataSourceIds",
+        "Tags"
+      ],
+      "members":{
+        "DataSourceIds":{
+          "shape":"AssetBundleRestrictiveResourceIdList",
+          "documentation":"<p>A list of data source IDs that you want to apply overrides to. You can use <code>*</code> to override all data sources in this asset bundle.</p>"
+        },
+        "Tags":{
+          "shape":"TagList",
+          "documentation":"<p>A list of tags for the data source that you want to apply overrides to.</p>"
+        }
+      },
+      "documentation":"<p>An object that contains a list of tags to be assigned to a list of data source IDs.</p>"
+    },
+    "AssetBundleImportJobDataSourceOverrideTagsList":{
+      "type":"list",
+      "member":{"shape":"AssetBundleImportJobDataSourceOverrideTags"},
+      "max":5,
+      "min":1
+    },
     "AssetBundleImportJobError":{
       "type":"structure",
       "members":{
@@ -4206,6 +4571,72 @@
         }
       },
       "documentation":"<p>A list of overrides that modify the asset bundle resource configuration before the resource is imported.</p>"
+    },
+    "AssetBundleImportJobOverridePermissions":{
+      "type":"structure",
+      "members":{
+        "DataSources":{
+          "shape":"AssetBundleImportJobDataSourceOverridePermissionsList",
+          "documentation":"<p>A list of permissions overrides for any <code>DataSource</code> resources that are present in the asset bundle that is imported.</p>"
+        },
+        "DataSets":{
+          "shape":"AssetBundleImportJobDataSetOverridePermissionsList",
+          "documentation":"<p>A list of permissions overrides for any <code>DataSet</code> resources that are present in the asset bundle that is imported.</p>"
+        },
+        "Themes":{
+          "shape":"AssetBundleImportJobThemeOverridePermissionsList",
+          "documentation":"<p>A list of permissions overrides for any <code>Theme</code> resources that are present in the asset bundle that is imported.</p>"
+        },
+        "Analyses":{
+          "shape":"AssetBundleImportJobAnalysisOverridePermissionsList",
+          "documentation":"<p>A list of permissions overrides for any <code>Analysis</code> resources that are present in the asset bundle that is imported.</p>"
+        },
+        "Dashboards":{
+          "shape":"AssetBundleImportJobDashboardOverridePermissionsList",
+          "documentation":"<p>A list of permissions overrides for any <code>Dashboard</code> resources that are present in the asset bundle that is imported.</p>"
+        }
+      },
+      "documentation":"<p>A structure that contains the override permission configurations that modify the permissions for specified resources before the resource is imported.</p>"
+    },
+    "AssetBundleImportJobOverrideTags":{
+      "type":"structure",
+      "members":{
+        "VPCConnections":{
+          "shape":"AssetBundleImportJobVPCConnectionOverrideTagsList",
+          "documentation":"<p>A list of tag overrides for any <code>VPCConnection</code> resources that are present in the asset bundle that is imported.</p>"
+        },
+        "DataSources":{
+          "shape":"AssetBundleImportJobDataSourceOverrideTagsList",
+          "documentation":"<p>A list of tag overrides for any <code>DataSource</code> resources that are present in the asset bundle that is imported.</p>"
+        },
+        "DataSets":{
+          "shape":"AssetBundleImportJobDataSetOverrideTagsList",
+          "documentation":"<p>A list of tag overrides for any <code>DataSet</code> resources that are present in the asset bundle that is imported.</p>"
+        },
+        "Themes":{
+          "shape":"AssetBundleImportJobThemeOverrideTagsList",
+          "documentation":"<p>A list of tag overrides for any <code>Theme</code> resources that are present in the asset bundle that is imported.</p>"
+        },
+        "Analyses":{
+          "shape":"AssetBundleImportJobAnalysisOverrideTagsList",
+          "documentation":"<p>A list of tag overrides for any <code>Analysis</code> resources that are present in the asset bundle that is imported.</p>"
+        },
+        "Dashboards":{
+          "shape":"AssetBundleImportJobDashboardOverrideTagsList",
+          "documentation":"<p>A list of tag overrides for any <code>Dashboard</code> resources that are present in the asset bundle that is imported.</p>"
+        }
+      },
+      "documentation":"<p>A structure that contains the override tag configuration that modify the tags that are assigned to specified resources before the resource is imported.</p>"
+    },
+    "AssetBundleImportJobOverrideValidationStrategy":{
+      "type":"structure",
+      "members":{
+        "StrictModeForAllResources":{
+          "shape":"Boolean",
+          "documentation":"<p>A Boolean value that indicates whether to import all analyses and dashboards under strict or lenient mode.</p>"
+        }
+      },
+      "documentation":"<p>An optional parameter that overrides the validation strategy for all analyses and dashboards before the resource is imported.</p>"
     },
     "AssetBundleImportJobRefreshScheduleOverrideParameters":{
       "type":"structure",
@@ -4308,6 +4739,54 @@
       "max":50,
       "min":1
     },
+    "AssetBundleImportJobThemeOverridePermissions":{
+      "type":"structure",
+      "required":[
+        "ThemeIds",
+        "Permissions"
+      ],
+      "members":{
+        "ThemeIds":{
+          "shape":"AssetBundleRestrictiveResourceIdList",
+          "documentation":"<p>A list of theme IDs that you want to apply overrides to. You can use <code>*</code> to override all themes in this asset bundle.</p>"
+        },
+        "Permissions":{
+          "shape":"AssetBundleResourcePermissions",
+          "documentation":"<p>A list of permissions for the themes that you want to apply overrides to.</p>"
+        }
+      },
+      "documentation":"<p>An object that contains a list of permissions to be applied to a list of theme IDs.</p>"
+    },
+    "AssetBundleImportJobThemeOverridePermissionsList":{
+      "type":"list",
+      "member":{"shape":"AssetBundleImportJobThemeOverridePermissions"},
+      "max":2,
+      "min":1
+    },
+    "AssetBundleImportJobThemeOverrideTags":{
+      "type":"structure",
+      "required":[
+        "ThemeIds",
+        "Tags"
+      ],
+      "members":{
+        "ThemeIds":{
+          "shape":"AssetBundleRestrictiveResourceIdList",
+          "documentation":"<p>A list of theme IDs that you want to apply overrides to. You can use <code>*</code> to override all themes in this asset bundle.</p>"
+        },
+        "Tags":{
+          "shape":"TagList",
+          "documentation":"<p>A list of tags for the themes that you want to apply overrides to.</p>"
+        }
+      },
+      "documentation":"<p>An object that contains a list of tags to be assigned to a list of theme IDs.</p>"
+    },
+    "AssetBundleImportJobThemeOverrideTagsList":{
+      "type":"list",
+      "member":{"shape":"AssetBundleImportJobThemeOverrideTags"},
+      "max":5,
+      "min":1
+    },
     "AssetBundleImportJobVPCConnectionOverrideParameters":{
       "type":"structure",
       "required":["VPCConnectionId"],
@@ -4345,6 +4824,30 @@
       "max":50,
       "min":1
     },
+    "AssetBundleImportJobVPCConnectionOverrideTags":{
+      "type":"structure",
+      "required":[
+        "VPCConnectionIds",
+        "Tags"
+      ],
+      "members":{
+        "VPCConnectionIds":{
+          "shape":"AssetBundleRestrictiveResourceIdList",
+          "documentation":"<p>A list of VPC connection IDs that you want to apply overrides to. You can use <code>*</code> to override all VPC connections in this asset bundle.</p>"
+        },
+        "Tags":{
+          "shape":"TagList",
+          "documentation":"<p>A list of tags for the VPC connections that you want to apply overrides to.</p>"
+        }
+      },
+      "documentation":"<p>An object that contains a list of tags to be assigned to a list of VPC connection IDs.</p>"
+    },
+    "AssetBundleImportJobVPCConnectionOverrideTagsList":{
+      "type":"list",
+      "member":{"shape":"AssetBundleImportJobVPCConnectionOverrideTags"},
+      "max":5,
+      "min":1
+    },
     "AssetBundleImportSource":{
       "type":"structure",
       "members":{
@@ -4363,7 +4866,7 @@
       "type":"structure",
       "members":{
         "Body":{
-          "shape":"String",
+          "shape":"SensitiveS3Uri",
           "documentation":"<p>An HTTPS download URL for the provided asset bundle that you optionally provided at the start of the import job. This URL is valid for five minutes after issuance. Call <code>DescribeAssetBundleExportJob</code> again for a fresh URL if needed. The downloaded asset bundle is a <code>.qs</code> zip file.</p>"
         },
         "S3Uri":{
@@ -4373,10 +4876,54 @@
       },
       "documentation":"<p>A description of the import source that you provide at the start of an import job. This value is set to either <code>Body</code> or <code>S3Uri</code>, depending on how the <code>StartAssetBundleImportJobRequest</code> is configured.</p>"
     },
+    "AssetBundlePrincipalList":{
+      "type":"list",
+      "member":{"shape":"Principal"},
+      "max":64,
+      "min":1
+    },
     "AssetBundleResourceArns":{
       "type":"list",
       "member":{"shape":"Arn"},
       "max":100,
+      "min":1
+    },
+    "AssetBundleResourceLinkSharingConfiguration":{
+      "type":"structure",
+      "members":{
+        "Permissions":{
+          "shape":"AssetBundleResourcePermissions",
+          "documentation":"<p>A list of link sharing permissions for the dashboards that you want to apply overrides to.</p>"
+        }
+      },
+      "documentation":"<p>A structure that contains the configuration of a shared link to an Amazon QuickSight dashboard.</p>"
+    },
+    "AssetBundleResourcePermissions":{
+      "type":"structure",
+      "required":[
+        "Principals",
+        "Actions"
+      ],
+      "members":{
+        "Principals":{
+          "shape":"AssetBundlePrincipalList",
+          "documentation":"<p>A list of principals to grant permissions on.</p>"
+        },
+        "Actions":{
+          "shape":"ActionList",
+          "documentation":"<p>A list of IAM actions to grant permissions on.</p>"
+        }
+      },
+      "documentation":"<p>A structure that contains the permissions for the resource that you want to override in an asset bundle import job.</p>"
+    },
+    "AssetBundleRestrictiveResourceId":{
+      "type":"string",
+      "pattern":"\\*|[\\w\\-]{1,2048}"
+    },
+    "AssetBundleRestrictiveResourceIdList":{
+      "type":"list",
+      "member":{"shape":"AssetBundleRestrictiveResourceId"},
+      "max":50,
       "min":1
     },
     "AssetOptions":{
@@ -4896,6 +5443,21 @@
         "STREET",
         "IMAGERY"
       ]
+    },
+    "BigQueryParameters":{
+      "type":"structure",
+      "required":["ProjectId"],
+      "members":{
+        "ProjectId":{
+          "shape":"ProjectId",
+          "documentation":"<p>The Google Cloud Platform project ID where your datasource was created.</p>"
+        },
+        "DataSetRegion":{
+          "shape":"DataSetRegion",
+          "documentation":"<p>The storage location where you create a Google BigQuery data source.</p>"
+        }
+      },
+      "documentation":"<p>The parameters that are required to connect to a Google BigQuery data source.</p>"
     },
     "BinCountLimit":{
       "type":"long",
@@ -6491,7 +7053,7 @@
         },
         "AuthenticationMethod":{
           "shape":"AuthenticationMethodOption",
-          "documentation":"<p>The method that you want to use to authenticate your Amazon QuickSight account. Currently, the valid values for this parameter are <code>IAM_AND_QUICKSIGHT</code>, <code>IAM_ONLY</code>, and <code>ACTIVE_DIRECTORY</code>.</p> <p>If you choose <code>ACTIVE_DIRECTORY</code>, provide an <code>ActiveDirectoryName</code> and an <code>AdminGroup</code> associated with your Active Directory.</p>"
+          "documentation":"<p>The method that you want to use to authenticate your Amazon QuickSight account.</p> <p>If you choose <code>ACTIVE_DIRECTORY</code>, provide an <code>ActiveDirectoryName</code> and an <code>AdminGroup</code> associated with your Active Directory.</p> <p>If you choose <code>IAM_IDENTITY_CENTER</code>, provide an <code>AdminGroup</code> associated with your IAM Identity Center account.</p>"
         },
         "AwsAccountId":{
           "shape":"AwsAccountId",
@@ -6521,15 +7083,15 @@
         },
         "AdminGroup":{
           "shape":"GroupsList",
-          "documentation":"<p>The admin group associated with your Active Directory. This field is required if <code>ACTIVE_DIRECTORY</code> is the selected authentication method of the new Amazon QuickSight account. For more information about using Active Directory in Amazon QuickSight, see <a href=\"https://docs.aws.amazon.com/quicksight/latest/user/aws-directory-service.html\">Using Active Directory with Amazon QuickSight Enterprise Edition</a> in the Amazon QuickSight User Guide.</p>"
+          "documentation":"<p>The admin group associated with your Active Directory or IAM Identity Center account. This field is required if <code>ACTIVE_DIRECTORY</code> or <code>IAM_IDENTITY_CENTER</code> is the selected authentication method of the new Amazon QuickSight account.</p> <p>For more information about using IAM Identity Center in Amazon QuickSight, see <a href=\"https://docs.aws.amazon.com/quicksight/latest/user/sec-identity-management-identity-center.html\">Using IAM Identity Center with Amazon QuickSight Enterprise Edition</a> in the Amazon QuickSight User Guide. For more information about using Active Directory in Amazon QuickSight, see <a href=\"https://docs.aws.amazon.com/quicksight/latest/user/aws-directory-service.html\">Using Active Directory with Amazon QuickSight Enterprise Edition</a> in the Amazon QuickSight User Guide.</p>"
         },
         "AuthorGroup":{
           "shape":"GroupsList",
-          "documentation":"<p>The author group associated with your Active Directory. For more information about using Active Directory in Amazon QuickSight, see <a href=\"https://docs.aws.amazon.com/quicksight/latest/user/aws-directory-service.html\">Using Active Directory with Amazon QuickSight Enterprise Edition</a> in the Amazon QuickSight User Guide.</p>"
+          "documentation":"<p>The author group associated with your Active Directory or IAM Identity Center account.</p> <p>For more information about using IAM Identity Center in Amazon QuickSight, see <a href=\"https://docs.aws.amazon.com/quicksight/latest/user/sec-identity-management-identity-center.html\">Using IAM Identity Center with Amazon QuickSight Enterprise Edition</a> in the Amazon QuickSight User Guide. For more information about using Active Directory in Amazon QuickSight, see <a href=\"https://docs.aws.amazon.com/quicksight/latest/user/aws-directory-service.html\">Using Active Directory with Amazon QuickSight Enterprise Edition</a> in the Amazon QuickSight User Guide.</p>"
         },
         "ReaderGroup":{
           "shape":"GroupsList",
-          "documentation":"<p>The reader group associated with your Active Direcrtory. For more information about using Active Directory in Amazon QuickSight, see <a href=\"https://docs.aws.amazon.com/quicksight/latest/user/aws-directory-service.html\">Using Active Directory with Amazon QuickSight Enterprise Edition</a> in the <i>Amazon QuickSight User Guide</i>.</p>"
+          "documentation":"<p>The reader group associated with your Active Directory or IAM Identity Center account.</p> <p>For more information about using IAM Identity Center in Amazon QuickSight, see <a href=\"https://docs.aws.amazon.com/quicksight/latest/user/sec-identity-management-identity-center.html\">Using IAM Identity Center with Amazon QuickSight Enterprise Edition</a> in the Amazon QuickSight User Guide. For more information about using Active Directory in Amazon QuickSight, see <a href=\"https://docs.aws.amazon.com/quicksight/latest/user/aws-directory-service.html\">Using Active Directory with Amazon QuickSight Enterprise Edition</a> in the Amazon QuickSight User Guide.</p>"
         },
         "FirstName":{
           "shape":"String",
@@ -6725,6 +7287,10 @@
         "FolderArns":{
           "shape":"FolderArnList",
           "documentation":"<p>When you create the dashboard, Amazon QuickSight adds the dashboard to these folders.</p>"
+        },
+        "LinkSharingConfiguration":{
+          "shape":"LinkSharingConfiguration",
+          "documentation":"<p>A structure that contains the permissions of a shareable link to the dashboard.</p>"
         }
       }
     },
@@ -7406,6 +7972,55 @@
         "Arn":{
           "shape":"Arn",
           "documentation":"<p>The Amazon Resource Name (ARN) for the refresh schedule.</p>"
+        }
+      }
+    },
+    "CreateRoleMembershipRequest":{
+      "type":"structure",
+      "required":[
+        "MemberName",
+        "AwsAccountId",
+        "Namespace",
+        "Role"
+      ],
+      "members":{
+        "MemberName":{
+          "shape":"GroupName",
+          "documentation":"<p>The name of the group that you want to add to the role.</p>",
+          "location":"uri",
+          "locationName":"MemberName"
+        },
+        "AwsAccountId":{
+          "shape":"AwsAccountId",
+          "documentation":"<p>The ID for the Amazon Web Services account that you want to create a group in. The Amazon Web Services account ID that you provide must be the same Amazon Web Services account that contains your Amazon QuickSight account.</p>",
+          "location":"uri",
+          "locationName":"AwsAccountId"
+        },
+        "Namespace":{
+          "shape":"Namespace",
+          "documentation":"<p>The namespace that the role belongs to.</p>",
+          "location":"uri",
+          "locationName":"Namespace"
+        },
+        "Role":{
+          "shape":"Role",
+          "documentation":"<p>The role that you want to add a group to.</p>",
+          "location":"uri",
+          "locationName":"Role"
+        }
+      }
+    },
+    "CreateRoleMembershipResponse":{
+      "type":"structure",
+      "members":{
+        "RequestId":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Web Services request ID for this operation.</p>"
+        },
+        "Status":{
+          "shape":"StatusCode",
+          "documentation":"<p>The HTTP status of the request.</p>",
+          "location":"statusCode"
         }
       }
     },
@@ -8512,8 +9127,7 @@
         "Sheets":{
           "shape":"SheetList",
           "documentation":"<p>A list of the associated sheets with the unique identifier and name of each sheet.</p>"
-        },
-        "Options":{"shape":"AssetOptions"}
+        }
       },
       "documentation":"<p>Dashboard version.</p>"
     },
@@ -9130,6 +9744,11 @@
       },
       "documentation":"<p>The refresh properties of a dataset.</p>"
     },
+    "DataSetRegion":{
+      "type":"string",
+      "max":256,
+      "min":1
+    },
     "DataSetSchema":{
       "type":"structure",
       "members":{
@@ -9448,6 +10067,10 @@
         "TrinoParameters":{
           "shape":"TrinoParameters",
           "documentation":"<p>The parameters that are required to connect to a Trino data source.</p>"
+        },
+        "BigQueryParameters":{
+          "shape":"BigQueryParameters",
+          "documentation":"<p>The parameters that are required to connect to a Google BigQuery data source.</p>"
         }
       },
       "documentation":"<p>The parameters that Amazon QuickSight uses to connect to your underlying data source. This is a variant type structure. For this structure to be valid, only one of the attributes can be non-null.</p>"
@@ -9549,7 +10172,10 @@
         "TIMESTREAM",
         "AMAZON_OPENSEARCH",
         "EXASOL",
-        "DATABRICKS"
+        "DATABRICKS",
+        "STARBURST",
+        "TRINO",
+        "BIGQUERY"
       ]
     },
     "Database":{
@@ -10839,6 +11465,96 @@
         }
       }
     },
+    "DeleteRoleCustomPermissionRequest":{
+      "type":"structure",
+      "required":[
+        "Role",
+        "AwsAccountId",
+        "Namespace"
+      ],
+      "members":{
+        "Role":{
+          "shape":"Role",
+          "documentation":"<p>The role that you want to remove permissions from.</p>",
+          "location":"uri",
+          "locationName":"Role"
+        },
+        "AwsAccountId":{
+          "shape":"AwsAccountId",
+          "documentation":"<p>The ID for the Amazon Web Services account that the group is in. Currently, you use the ID for the Amazon Web Services account that contains your Amazon QuickSight account.</p>",
+          "location":"uri",
+          "locationName":"AwsAccountId"
+        },
+        "Namespace":{
+          "shape":"Namespace",
+          "documentation":"<p>The namespace that includes the role.</p>",
+          "location":"uri",
+          "locationName":"Namespace"
+        }
+      }
+    },
+    "DeleteRoleCustomPermissionResponse":{
+      "type":"structure",
+      "members":{
+        "RequestId":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Web Services request ID for this operation.</p>"
+        },
+        "Status":{
+          "shape":"StatusCode",
+          "documentation":"<p>The HTTP status of the request.</p>"
+        }
+      }
+    },
+    "DeleteRoleMembershipRequest":{
+      "type":"structure",
+      "required":[
+        "MemberName",
+        "Role",
+        "AwsAccountId",
+        "Namespace"
+      ],
+      "members":{
+        "MemberName":{
+          "shape":"GroupName",
+          "documentation":"<p>The name of the group.</p>",
+          "location":"uri",
+          "locationName":"MemberName"
+        },
+        "Role":{
+          "shape":"Role",
+          "documentation":"<p>The role that you want to remove permissions from.</p>",
+          "location":"uri",
+          "locationName":"Role"
+        },
+        "AwsAccountId":{
+          "shape":"AwsAccountId",
+          "documentation":"<p>The ID for the Amazon Web Services account that you want to create a group in. The Amazon Web Services account ID that you provide must be the same Amazon Web Services account that contains your Amazon QuickSight account.</p>",
+          "location":"uri",
+          "locationName":"AwsAccountId"
+        },
+        "Namespace":{
+          "shape":"Namespace",
+          "documentation":"<p>The namespace that contains the role.</p>",
+          "location":"uri",
+          "locationName":"Namespace"
+        }
+      }
+    },
+    "DeleteRoleMembershipResponse":{
+      "type":"structure",
+      "members":{
+        "RequestId":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Web Services request ID for this operation.</p>"
+        },
+        "Status":{
+          "shape":"StatusCode",
+          "documentation":"<p>The HTTP status of the request.</p>",
+          "location":"statusCode"
+        }
+      }
+    },
     "DeleteTemplateAliasRequest":{
       "type":"structure",
       "required":[
@@ -11571,7 +12287,7 @@
           "documentation":"<p>Indicates the status of a job through its queuing and execution.</p> <p>Poll this <code>DescribeAssetBundleExportApi</code> until <code>JobStatus</code> is either <code>SUCCESSFUL</code> or <code>FAILED</code>.</p>"
         },
         "DownloadUrl":{
-          "shape":"String",
+          "shape":"SensitiveS3Uri",
           "documentation":"<p>The URL to download the exported asset bundle data from.</p> <p>This URL is available only after the job has succeeded. This URL is valid for 5 minutes after issuance. Call <code>DescribeAssetBundleExportJob</code> again for a fresh URL if needed.</p> <p>The downloaded asset bundle is a zip file named <code>assetbundle-{jobId}.qs</code>. The file has a <code>.qs</code> extension.</p> <p>This URL can't be used in a <code>StartAssetBundleImportJob</code> API call and should only be used for download purposes.</p>"
         },
         "Errors":{
@@ -11618,6 +12334,22 @@
           "shape":"StatusCode",
           "documentation":"<p>The HTTP status of the response.</p>",
           "location":"statusCode"
+        },
+        "IncludePermissions":{
+          "shape":"Boolean",
+          "documentation":"<p>The include permissions flag.</p>"
+        },
+        "IncludeTags":{
+          "shape":"Boolean",
+          "documentation":"<p>The include tags flag.</p>"
+        },
+        "ValidationStrategy":{
+          "shape":"AssetBundleExportJobValidationStrategy",
+          "documentation":"<p>The validation strategy that is used to export the analysis or dashboard.</p>"
+        },
+        "Warnings":{
+          "shape":"AssetBundleExportJobWarningList",
+          "documentation":"<p>An array of warning records that describe the analysis or dashboard that is exported. This array includes UI errors that can be skipped during the validation process.</p> <p>This property only appears if <code>StrictModeForAllResources</code> in <code>ValidationStrategy</code> is set to <code>FALSE</code>.</p>"
         }
       }
     },
@@ -11679,7 +12411,7 @@
         },
         "OverrideParameters":{
           "shape":"AssetBundleImportJobOverrideParameters",
-          "documentation":"<p>Optional overrides to be applied to the resource configuration before import.</p>"
+          "documentation":"<p>Optional overrides that are applied to the resource configuration before import.</p>"
         },
         "FailureAction":{
           "shape":"AssetBundleImportFailureAction",
@@ -11693,6 +12425,18 @@
           "shape":"StatusCode",
           "documentation":"<p>The HTTP status of the response.</p>",
           "location":"statusCode"
+        },
+        "OverridePermissions":{
+          "shape":"AssetBundleImportJobOverridePermissions",
+          "documentation":"<p>Optional permission overrides that are applied to the resource configuration before import.</p>"
+        },
+        "OverrideTags":{
+          "shape":"AssetBundleImportJobOverrideTags",
+          "documentation":"<p>Optional tag overrides that are applied to the resource configuration before import.</p>"
+        },
+        "OverrideValidationStrategy":{
+          "shape":"AssetBundleImportJobOverrideValidationStrategy",
+          "documentation":"<p>An optional validation strategy override for all analyses and dashboards to be applied to the resource configuration before import.</p>"
         }
       }
     },
@@ -12718,6 +13462,51 @@
         "Arn":{
           "shape":"Arn",
           "documentation":"<p>The Amazon Resource Name (ARN) for the refresh schedule.</p>"
+        }
+      }
+    },
+    "DescribeRoleCustomPermissionRequest":{
+      "type":"structure",
+      "required":[
+        "Role",
+        "AwsAccountId",
+        "Namespace"
+      ],
+      "members":{
+        "Role":{
+          "shape":"Role",
+          "documentation":"<p>The name of the role whose permissions you want described.</p>",
+          "location":"uri",
+          "locationName":"Role"
+        },
+        "AwsAccountId":{
+          "shape":"AwsAccountId",
+          "documentation":"<p>The ID for the Amazon Web Services account that you want to create a group in. The Amazon Web Services account ID that you provide must be the same Amazon Web Services account that contains your Amazon QuickSight account.</p>",
+          "location":"uri",
+          "locationName":"AwsAccountId"
+        },
+        "Namespace":{
+          "shape":"Namespace",
+          "documentation":"<p>The namespace that contains the role.</p>",
+          "location":"uri",
+          "locationName":"Namespace"
+        }
+      }
+    },
+    "DescribeRoleCustomPermissionResponse":{
+      "type":"structure",
+      "members":{
+        "CustomPermissionsName":{
+          "shape":"RoleName",
+          "documentation":"<p>The name of the custom permission that is described.</p>"
+        },
+        "RequestId":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Web Services request ID for this operation.</p>"
+        },
+        "Status":{
+          "shape":"StatusCode",
+          "documentation":"<p>The HTTP status of the request.</p>"
         }
       }
     },
@@ -18702,6 +19491,69 @@
         }
       }
     },
+    "ListRoleMembershipsRequest":{
+      "type":"structure",
+      "required":[
+        "Role",
+        "AwsAccountId",
+        "Namespace"
+      ],
+      "members":{
+        "Role":{
+          "shape":"Role",
+          "documentation":"<p>The name of the role.</p>",
+          "location":"uri",
+          "locationName":"Role"
+        },
+        "NextToken":{
+          "shape":"String",
+          "documentation":"<p>A pagination token that can be used in a subsequent request.</p>",
+          "location":"querystring",
+          "locationName":"next-token"
+        },
+        "MaxResults":{
+          "shape":"MaxResults",
+          "documentation":"<p>The maximum number of results to return.</p>",
+          "box":true,
+          "location":"querystring",
+          "locationName":"max-results"
+        },
+        "AwsAccountId":{
+          "shape":"AwsAccountId",
+          "documentation":"<p>The ID for the Amazon Web Services account that you want to create a group in. The Amazon Web Services account ID that you provide must be the same Amazon Web Services account that contains your Amazon QuickSight account.</p>",
+          "location":"uri",
+          "locationName":"AwsAccountId"
+        },
+        "Namespace":{
+          "shape":"Namespace",
+          "documentation":"<p>The namespace that includes the role.</p>",
+          "location":"uri",
+          "locationName":"Namespace"
+        }
+      }
+    },
+    "ListRoleMembershipsResponse":{
+      "type":"structure",
+      "members":{
+        "MembersList":{
+          "shape":"GroupsList",
+          "documentation":"<p>The list of groups associated with a role</p>"
+        },
+        "NextToken":{
+          "shape":"String",
+          "documentation":"<p>A pagination token that can be used in a subsequent request.</p>"
+        },
+        "RequestId":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Web Services request ID for this operation.</p>"
+        },
+        "Status":{
+          "shape":"StatusCode",
+          "documentation":"<p>The HTTP status of the request.</p>",
+          "location":"statusCode"
+        }
+      }
+    },
     "ListTagsForResourceRequest":{
       "type":"structure",
       "required":["ResourceArn"],
@@ -21811,6 +22663,11 @@
       },
       "documentation":"<p>The options that determine the presentation of the progress bar of a KPI visual.</p>"
     },
+    "ProjectId":{
+      "type":"string",
+      "max":256,
+      "min":1
+    },
     "ProjectOperation":{
       "type":"structure",
       "required":["ProjectedColumns"],
@@ -22982,6 +23839,14 @@
       "max":2048,
       "min":1,
       "pattern":"[\\w\\-]+"
+    },
+    "Role":{
+      "type":"string",
+      "enum":[
+        "ADMIN",
+        "AUTHOR",
+        "READER"
+      ]
     },
     "RoleArn":{
       "type":"string",
@@ -25155,6 +26020,18 @@
         "CloudFormationOverridePropertyConfiguration":{
           "shape":"AssetBundleCloudFormationOverridePropertyConfiguration",
           "documentation":"<p>An optional collection of structures that generate CloudFormation parameters to override the existing resource property values when the resource is exported to a new CloudFormation template.</p> <p>Use this field if the <code>ExportFormat</code> field of a <code>StartAssetBundleExportJobRequest</code> API call is set to <code>CLOUDFORMATION_JSON</code>.</p>"
+        },
+        "IncludePermissions":{
+          "shape":"Boolean",
+          "documentation":"<p>A Boolean that determines whether all permissions for each resource ARN are exported with the job. If you set <code>IncludePermissions</code> to <code>TRUE</code>, any permissions associated with each resource are exported. </p>"
+        },
+        "IncludeTags":{
+          "shape":"Boolean",
+          "documentation":"<p> A Boolean that determines whether all tags for each resource ARN are exported with the job. If you set <code>IncludeTags</code> to <code>TRUE</code>, any tags associated with each resource are exported.</p>"
+        },
+        "ValidationStrategy":{
+          "shape":"AssetBundleExportJobValidationStrategy",
+          "documentation":"<p>An optional parameter that determines which validation strategy to use for the export job. If <code>StrictModeForAllResources</code> is set to <code>TRUE</code>, strict validation for every error is enforced. If it is set to <code>FALSE</code>, validation is skipped for specific UI errors that are shown as warnings. The default value for <code>StrictModeForAllResources</code> is <code>FALSE</code>.</p>"
         }
       }
     },
@@ -25204,11 +26081,23 @@
         },
         "OverrideParameters":{
           "shape":"AssetBundleImportJobOverrideParameters",
-          "documentation":"<p>Optional overrides to be applied to the resource configuration before import.</p>"
+          "documentation":"<p>Optional overrides that are applied to the resource configuration before import.</p>"
         },
         "FailureAction":{
           "shape":"AssetBundleImportFailureAction",
           "documentation":"<p>The failure action for the import job.</p> <p>If you choose <code>ROLLBACK</code>, failed import jobs will attempt to undo any asset changes caused by the failed job.</p> <p>If you choose <code>DO_NOTHING</code>, failed import jobs will not attempt to roll back any asset changes caused by the failed job, possibly keeping the Amazon QuickSight account in an inconsistent state.</p>"
+        },
+        "OverridePermissions":{
+          "shape":"AssetBundleImportJobOverridePermissions",
+          "documentation":"<p>Optional permission overrides that are applied to the resource configuration before import.</p>"
+        },
+        "OverrideTags":{
+          "shape":"AssetBundleImportJobOverrideTags",
+          "documentation":"<p>Optional tag overrides that are applied to the resource configuration before import.</p>"
+        },
+        "OverrideValidationStrategy":{
+          "shape":"AssetBundleImportJobOverrideValidationStrategy",
+          "documentation":"<p>An optional validation strategy override for all analyses and dashboards that is applied to the resource configuration before import. </p>"
         }
       }
     },
@@ -26373,8 +27262,7 @@
         "Sheets":{
           "shape":"SheetList",
           "documentation":"<p>A list of the associated sheets with the unique identifier and name of each sheet.</p>"
-        },
-        "Options":{"shape":"AssetOptions"}
+        }
       },
       "documentation":"<p>A version of a template.</p>"
     },
@@ -29225,7 +30113,7 @@
     "UpdateLinkPermissionList":{
       "type":"list",
       "member":{"shape":"ResourcePermission"},
-      "max":2
+      "max":100
     },
     "UpdatePublicSharingSettingsRequest":{
       "type":"structure",
@@ -29309,6 +30197,52 @@
       "type":"list",
       "member":{"shape":"ResourcePermission"},
       "max":100
+    },
+    "UpdateRoleCustomPermissionRequest":{
+      "type":"structure",
+      "required":[
+        "CustomPermissionsName",
+        "Role",
+        "AwsAccountId",
+        "Namespace"
+      ],
+      "members":{
+        "CustomPermissionsName":{
+          "shape":"RoleName",
+          "documentation":"<p>The name of the custom permission that you want to update the role with.</p>"
+        },
+        "Role":{
+          "shape":"Role",
+          "documentation":"<p>The name of role tht you want to update.</p>",
+          "location":"uri",
+          "locationName":"Role"
+        },
+        "AwsAccountId":{
+          "shape":"AwsAccountId",
+          "documentation":"<p>The ID for the Amazon Web Services account that you want to create a group in. The Amazon Web Services account ID that you provide must be the same Amazon Web Services account that contains your Amazon QuickSight account.</p>",
+          "location":"uri",
+          "locationName":"AwsAccountId"
+        },
+        "Namespace":{
+          "shape":"Namespace",
+          "documentation":"<p>The namespace that contains the role that you want to update.</p>",
+          "location":"uri",
+          "locationName":"Namespace"
+        }
+      }
+    },
+    "UpdateRoleCustomPermissionResponse":{
+      "type":"structure",
+      "members":{
+        "RequestId":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Web Services request ID for this operation.</p>"
+        },
+        "Status":{
+          "shape":"StatusCode",
+          "documentation":"<p>The HTTP status of the request.</p>"
+        }
+      }
     },
     "UpdateTemplateAliasRequest":{
       "type":"structure",
@@ -30226,7 +31160,7 @@
       "members":{
         "Mode":{
           "shape":"ValidationStrategyMode",
-          "documentation":"<p>The mode of validation for the asset to be creaed or updated. When you set this value to <code>STRICT</code>, strict validation for every error is enforced. When you set this value to <code>LENIENT</code>, validation is skipped for specific UI errors.</p>"
+          "documentation":"<p>The mode of validation for the asset to be created or updated. When you set this value to <code>STRICT</code>, strict validation for every error is enforced. When you set this value to <code>LENIENT</code>, validation is skipped for specific UI errors.</p>"
         }
       },
       "documentation":"<p>The option to relax the validation that is required to create and update analyses, dashboards, and templates with definition objects. When you set this value to <code>LENIENT</code>, validation is skipped for specific errors.</p>"

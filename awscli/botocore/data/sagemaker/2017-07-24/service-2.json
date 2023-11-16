@@ -4328,7 +4328,10 @@
         "ml.g5.48xlarge",
         "ml.geospatial.interactive",
         "ml.p4d.24xlarge",
-        "ml.p4de.24xlarge"
+        "ml.p4de.24xlarge",
+        "ml.trn1.2xlarge",
+        "ml.trn1.32xlarge",
+        "ml.trn1n.32xlarge"
       ]
     },
     "AppList":{
@@ -11881,6 +11884,10 @@
           "shape":"String256",
           "documentation":"<p>The IAM Identity Center managed application instance ID.</p>"
         },
+        "SingleSignOnApplicationArn":{
+          "shape":"SingleSignOnApplicationArn",
+          "documentation":"<p>The ARN of the associated Amazon Web Services Single Sign-On application for this Domain.</p>"
+        },
         "Status":{
           "shape":"DomainStatus",
           "documentation":"<p>The status.</p>"
@@ -15092,7 +15099,7 @@
       "type":"string",
       "max":40,
       "min":1,
-      "pattern":"[\\S\\s]+"
+      "pattern":"^[-a-zA-Z0-9_.,;:! ]*$"
     },
     "DeviceFleetArn":{
       "type":"string",
@@ -15102,7 +15109,7 @@
       "type":"string",
       "max":800,
       "min":1,
-      "pattern":"[\\S\\s]+"
+      "pattern":"^[-a-zA-Z0-9_.,;:! ]*$"
     },
     "DeviceFleetSummaries":{
       "type":"list",
@@ -23942,6 +23949,12 @@
       "type":"integer",
       "min":0
     },
+    "MaxPendingTimeInSeconds":{
+      "type":"integer",
+      "documentation":"Maximum job scheduler pending time in seconds.",
+      "max":2419200,
+      "min":7200
+    },
     "MaxPercentageOfInputDatasetLabeled":{
       "type":"integer",
       "max":100,
@@ -25402,7 +25415,6 @@
     "ModelPackageSummary":{
       "type":"structure",
       "required":[
-        "ModelPackageName",
         "ModelPackageArn",
         "CreationTime",
         "ModelPackageStatus"
@@ -26126,7 +26138,7 @@
       "type":"string",
       "max":63,
       "min":1,
-      "pattern":"^[a-zA-Z0-9](-*[a-zA-Z0-9])*$"
+      "pattern":"^[a-zA-Z0-9](-*[a-zA-Z0-9]){0,62}$"
     },
     "MonitoringJobDefinitionSortKey":{
       "type":"string",
@@ -27718,7 +27730,7 @@
       "type":"string",
       "max":256,
       "min":1,
-      "pattern":"^[a-zA-Z0-9](-*[a-zA-Z0-9]){0,255}$"
+      "pattern":"^[A-Za-z0-9\\-_]*$"
     },
     "PipelineStatus":{
       "type":"string",
@@ -30902,6 +30914,10 @@
       },
       "documentation":"<p>A configuration for a shuffle option for input data in a channel. If you use <code>S3Prefix</code> for <code>S3DataType</code>, the results of the S3 key prefix matches are shuffled. If you use <code>ManifestFile</code>, the order of the S3 object references in the <code>ManifestFile</code> is shuffled. If you use <code>AugmentedManifestFile</code>, the order of the JSON lines in the <code>AugmentedManifestFile</code> is shuffled. The shuffling order is determined using the <code>Seed</code> value.</p> <p>For Pipe input mode, when <code>ShuffleConfig</code> is specified shuffling is done at the start of every epoch. With large datasets, this ensures that the order of the training data is different for each epoch, and it helps reduce bias and possible overfitting. In a multi-node training job when <code>ShuffleConfig</code> is combined with <code>S3DataDistributionType</code> of <code>ShardedByS3Key</code>, the data is shuffled across nodes so that the content sent to a particular node on the first epoch might be sent to a different node on the second epoch.</p>"
     },
+    "SingleSignOnApplicationArn":{
+      "type":"string",
+      "pattern":"^arn:(aws|aws-us-gov|aws-cn|aws-iso|aws-iso-b):sso::[0-9]+:application\\/[a-zA-Z0-9-_.]+\\/apl-[a-zA-Z0-9]+$"
+    },
     "SingleSignOnUserIdentifier":{
       "type":"string",
       "pattern":"UserName"
@@ -31525,6 +31541,10 @@
         "MaxWaitTimeInSeconds":{
           "shape":"MaxWaitTimeInSeconds",
           "documentation":"<p>The maximum length of time, in seconds, that a managed Spot training job has to complete. It is the amount of time spent waiting for Spot capacity plus the amount of time the job can run. It must be equal to or greater than <code>MaxRuntimeInSeconds</code>. If the job does not complete during this time, SageMaker ends the job.</p> <p>When <code>RetryStrategy</code> is specified in the job request, <code>MaxWaitTimeInSeconds</code> specifies the maximum time for all of the attempts in total, not each individual attempt.</p>"
+        },
+        "MaxPendingTimeInSeconds":{
+          "shape":"MaxPendingTimeInSeconds",
+          "documentation":"<p>The maximum pending time in seconds.</p>"
         }
       },
       "documentation":"<p>Specifies a limit to how long a model training job or model compilation job can run. It also specifies how long a managed spot training job has to complete. When the job reaches the time limit, SageMaker ends the training or compilation job. Use this API to cap model training costs.</p> <p>To stop a training job, SageMaker sends the algorithm the <code>SIGTERM</code> signal, which delays job termination for 120 seconds. Algorithms can use this 120-second window to save the model artifacts, so the results of training are not lost. </p> <p>The training algorithms provided by SageMaker automatically save the intermediate results of a model training job when possible. This attempt to save artifacts is only a best effort case as model might not be in a state from which it can be saved. For example, if training has just started, the model might not be ready to save. When saved, this intermediate data is a valid model artifact. You can use it to create a model with <code>CreateModel</code>.</p> <note> <p>The Neural Topic Model (NTM) currently does not support saving intermediate model artifacts. When training NTMs, make sure that the maximum runtime is sufficient for the training job to complete.</p> </note>"

@@ -2865,6 +2865,16 @@
       "output":{"shape":"DescribeLocalGatewaysResult"},
       "documentation":"<p>Describes one or more local gateways. By default, all local gateways are described. Alternatively, you can filter the results.</p>"
     },
+    "DescribeLockedSnapshots":{
+      "name":"DescribeLockedSnapshots",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DescribeLockedSnapshotsRequest"},
+      "output":{"shape":"DescribeLockedSnapshotsResult"},
+      "documentation":"<p>Describes the lock status for a snapshot.</p>"
+    },
     "DescribeManagedPrefixLists":{
       "name":"DescribeManagedPrefixLists",
       "http":{
@@ -4717,6 +4727,16 @@
       "output":{"shape":"ListSnapshotsInRecycleBinResult"},
       "documentation":"<p>Lists one or more snapshots that are currently in the Recycle Bin.</p>"
     },
+    "LockSnapshot":{
+      "name":"LockSnapshot",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"LockSnapshotRequest"},
+      "output":{"shape":"LockSnapshotResult"},
+      "documentation":"<p>Locks an Amazon EBS snapshot in either <i>governance</i> or <i>compliance</i> mode to protect it against accidental or malicious deletions for a specific duration. A locked snapshot can't be deleted.</p> <p>You can also use this action to modify the lock settings for a snapshot that is already locked. The allowed modifications depend on the lock mode and lock state:</p> <ul> <li> <p>If the snapshot is locked in governance mode, you can modify the lock mode and the lock duration or lock expiration date.</p> </li> <li> <p>If the snapshot is locked in compliance mode and it is in the cooling-off period, you can modify the lock mode and the lock duration or lock expiration date.</p> </li> <li> <p>If the snapshot is locked in compliance mode and the cooling-off period has lapsed, you can only increase the lock duration or extend the lock expiration date.</p> </li> </ul>"
+    },
     "ModifyAddressAttribute":{
       "name":"ModifyAddressAttribute",
       "http":{
@@ -5976,6 +5996,16 @@
       "input":{"shape":"UnassignPrivateNatGatewayAddressRequest"},
       "output":{"shape":"UnassignPrivateNatGatewayAddressResult"},
       "documentation":"<p>Unassigns secondary private IPv4 addresses from a private NAT gateway. You cannot unassign your primary private IP. For more information, see <a href=\"https://docs.aws.amazon.com/vpc/latest/userguide/vpc-nat-gateway.html#nat-gateway-edit-secondary\">Edit secondary IP address associations</a> in the <i>Amazon VPC User Guide</i>.</p> <p>While unassigning is in progress, you cannot assign/unassign additional IP addresses while the connections are being drained. You are, however, allowed to delete the NAT gateway.</p> <p>A private IP address will only be released at the end of MaxDrainDurationSeconds. The private IP addresses stay associated and support the existing connections, but do not support any new connections (new connections are distributed across the remaining assigned private IP address). After the existing connections drain out, the private IP addresses are released.</p> <p/> <p/>"
+    },
+    "UnlockSnapshot":{
+      "name":"UnlockSnapshot",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"UnlockSnapshotRequest"},
+      "output":{"shape":"UnlockSnapshotResult"},
+      "documentation":"<p>Unlocks a snapshot that is locked in governance mode or that is locked in compliance mode but still in the cooling-off period. You can't unlock a snapshot that is locked in compliance mode after the cooling-off period has expired.</p>"
     },
     "UnmonitorInstances":{
       "name":"UnmonitorInstances",
@@ -11425,6 +11455,12 @@
         "completed"
       ]
     },
+    "CoolOffPeriodRequestHours":{
+      "type":"integer",
+      "max":72,
+      "min":1
+    },
+    "CoolOffPeriodResponseHours":{"type":"integer"},
     "CopyFpgaImageRequest":{
       "type":"structure",
       "required":[
@@ -15273,6 +15309,10 @@
         "TenantId":{
           "shape":"String",
           "documentation":"<p>The ID of the tenant application with the device-identity provider.</p>"
+        },
+        "PublicSigningKeyUrl":{
+          "shape":"String",
+          "documentation":"<p> The URL Amazon Web Services Verified Access will use to verify the authenticity of the device tokens. </p>"
         }
       },
       "documentation":"<p>Describes the options when creating an Amazon Web Services Verified Access trust provider using the <code>device</code> type.</p>"
@@ -21446,6 +21486,53 @@
         }
       }
     },
+    "DescribeLockedSnapshotsMaxResults":{
+      "type":"integer",
+      "max":1000,
+      "min":5
+    },
+    "DescribeLockedSnapshotsRequest":{
+      "type":"structure",
+      "members":{
+        "Filters":{
+          "shape":"FilterList",
+          "documentation":"<p>The filters.</p> <ul> <li> <p> <code>lock-state</code> - The state of the snapshot lock (<code>compliance-cooloff</code> | <code>governance</code> | <code>compliance</code> | <code>expired</code>).</p> </li> </ul>",
+          "locationName":"Filter"
+        },
+        "MaxResults":{
+          "shape":"DescribeLockedSnapshotsMaxResults",
+          "documentation":"<p>The maximum number of items to return for this request. To get the next page of items, make another request with the token returned in the output. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/APIReference/Query-Requests.html#api-pagination\">Pagination</a>.</p>"
+        },
+        "NextToken":{
+          "shape":"String",
+          "documentation":"<p>The token returned from a previous paginated request. Pagination continues from the end of the items returned by the previous request.</p>"
+        },
+        "SnapshotIds":{
+          "shape":"SnapshotIdStringList",
+          "documentation":"<p>The IDs of the snapshots for which to view the lock status.</p>",
+          "locationName":"SnapshotId"
+        },
+        "DryRun":{
+          "shape":"Boolean",
+          "documentation":"<p>Checks whether you have the required permissions for the action, without actually making the request, and provides an error response. If you have the required permissions, the error response is <code>DryRunOperation</code>. Otherwise, it is <code>UnauthorizedOperation</code>.</p>"
+        }
+      }
+    },
+    "DescribeLockedSnapshotsResult":{
+      "type":"structure",
+      "members":{
+        "Snapshots":{
+          "shape":"LockedSnapshotsInfoList",
+          "documentation":"<p>Information about the snapshots.</p>",
+          "locationName":"snapshotSet"
+        },
+        "NextToken":{
+          "shape":"String",
+          "documentation":"<p>The token to include in another request to get the next page of items. This value is <code>null</code> when there are no more items to return.</p>",
+          "locationName":"nextToken"
+        }
+      }
+    },
     "DescribeManagedPrefixListsRequest":{
       "type":"structure",
       "members":{
@@ -25071,6 +25158,11 @@
           "shape":"String",
           "documentation":"<p>The ID of the tenant application with the device-identity provider.</p>",
           "locationName":"tenantId"
+        },
+        "PublicSigningKeyUrl":{
+          "shape":"String",
+          "documentation":"<p> The URL Amazon Web Services Verified Access will use to verify the authenticity of the device tokens. </p>",
+          "locationName":"publicSigningKeyUrl"
         }
       },
       "documentation":"<p>Describes the options for an Amazon Web Services Verified Access device-identity based trust provider.</p>"
@@ -25079,7 +25171,8 @@
       "type":"string",
       "enum":[
         "jamf",
-        "crowdstrike"
+        "crowdstrike",
+        "jumpcloud"
       ]
     },
     "DeviceType":{
@@ -36136,7 +36229,8 @@
         "r7i.12xlarge",
         "r7i.16xlarge",
         "r7i.24xlarge",
-        "r7i.48xlarge"
+        "r7i.48xlarge",
+        "dl2q.24xlarge"
       ]
     },
     "InstanceTypeHypervisor":{
@@ -40087,6 +40181,158 @@
         "outpost"
       ]
     },
+    "LockMode":{
+      "type":"string",
+      "enum":[
+        "compliance",
+        "governance"
+      ]
+    },
+    "LockSnapshotRequest":{
+      "type":"structure",
+      "required":[
+        "SnapshotId",
+        "LockMode"
+      ],
+      "members":{
+        "SnapshotId":{
+          "shape":"SnapshotId",
+          "documentation":"<p>The ID of the snapshot to lock.</p>"
+        },
+        "DryRun":{
+          "shape":"Boolean",
+          "documentation":"<p>Checks whether you have the required permissions for the action, without actually making the request, and provides an error response. If you have the required permissions, the error response is <code>DryRunOperation</code>. Otherwise, it is <code>UnauthorizedOperation</code>.</p>"
+        },
+        "LockMode":{
+          "shape":"LockMode",
+          "documentation":"<p>The mode in which to lock the snapshot. Specify one of the following:</p> <ul> <li> <p> <code>governance</code> - Locks the snapshot in governance mode. Snapshots locked in governance mode can't be deleted until one of the following conditions are met:</p> <ul> <li> <p>The lock duration expires.</p> </li> <li> <p>The snapshot is unlocked by a user with the appropriate permissions.</p> </li> </ul> <p>Users with the appropriate IAM permissions can unlock the snapshot, increase or decrease the lock duration, and change the lock mode to <code>compliance</code> at any time.</p> <p>If you lock a snapshot in <code>governance</code> mode, omit <b> CoolOffPeriod</b>.</p> </li> <li> <p> <code>compliance</code> - Locks the snapshot in compliance mode. Snapshots locked in compliance mode can't be unlocked by any user. They can be deleted only after the lock duration expires. Users can't decrease the lock duration or change the lock mode to <code>governance</code>. However, users with appropriate IAM permissions can increase the lock duration at any time.</p> <p>If you lock a snapshot in <code>compliance</code> mode, you can optionally specify <b>CoolOffPeriod</b>.</p> </li> </ul>"
+        },
+        "CoolOffPeriod":{
+          "shape":"CoolOffPeriodRequestHours",
+          "documentation":"<p>The cooling-off period during which you can unlock the snapshot or modify the lock settings after locking the snapshot in compliance mode, in hours. After the cooling-off period expires, you can't unlock or delete the snapshot, decrease the lock duration, or change the lock mode. You can increase the lock duration after the cooling-off period expires.</p> <p>The cooling-off period is optional when locking a snapshot in compliance mode. If you are locking the snapshot in governance mode, omit this parameter.</p> <p>To lock the snapshot in compliance mode immediately without a cooling-off period, omit this parameter.</p> <p>If you are extending the lock duration for a snapshot that is locked in compliance mode after the cooling-off period has expired, omit this parameter. If you specify a cooling-period in a such a request, the request fails.</p> <p>Allowed values: Min 1, max 72.</p>"
+        },
+        "LockDuration":{
+          "shape":"RetentionPeriodRequestDays",
+          "documentation":"<p>The period of time for which to lock the snapshot, in days. The snapshot lock will automatically expire after this period lapses.</p> <p>You must specify either this parameter or <b>ExpirationDate</b>, but not both.</p> <p>Allowed values: Min: 1, max 36500</p>"
+        },
+        "ExpirationDate":{
+          "shape":"MillisecondDateTime",
+          "documentation":"<p>The date and time at which the snapshot lock is to automatically expire, in the UTC time zone (<code>YYYY-MM-DDThh:mm:ss.sssZ</code>).</p> <p>You must specify either this parameter or <b>LockDuration</b>, but not both.</p>"
+        }
+      }
+    },
+    "LockSnapshotResult":{
+      "type":"structure",
+      "members":{
+        "SnapshotId":{
+          "shape":"String",
+          "documentation":"<p>The ID of the snapshot</p>",
+          "locationName":"snapshotId"
+        },
+        "LockState":{
+          "shape":"LockState",
+          "documentation":"<p>The state of the snapshot lock. Valid states include:</p> <ul> <li> <p> <code>compliance-cooloff</code> - The snapshot has been locked in compliance mode but it is still within the cooling-off period. The snapshot can't be deleted, but it can be unlocked and the lock settings can be modified by users with appropriate permissions.</p> </li> <li> <p> <code>governance</code> - The snapshot is locked in governance mode. The snapshot can't be deleted, but it can be unlocked and the lock settings can be modified by users with appropriate permissions.</p> </li> <li> <p> <code>compliance</code> - The snapshot is locked in compliance mode and the cooling-off period has expired. The snapshot can't be unlocked or deleted. The lock duration can only be increased by users with appropriate permissions.</p> </li> <li> <p> <code>expired</code> - The snapshot was locked in compliance or governance mode but the lock duration has expired. The snapshot is not locked and can be deleted.</p> </li> </ul>",
+          "locationName":"lockState"
+        },
+        "LockDuration":{
+          "shape":"RetentionPeriodResponseDays",
+          "documentation":"<p>The period of time for which the snapshot is locked, in days.</p>",
+          "locationName":"lockDuration"
+        },
+        "CoolOffPeriod":{
+          "shape":"CoolOffPeriodResponseHours",
+          "documentation":"<p>The compliance mode cooling-off period, in hours.</p>",
+          "locationName":"coolOffPeriod"
+        },
+        "CoolOffPeriodExpiresOn":{
+          "shape":"MillisecondDateTime",
+          "documentation":"<p>The date and time at which the compliance mode cooling-off period expires, in the UTC time zone (<code>YYYY-MM-DDThh:mm:ss.sssZ</code>).</p>",
+          "locationName":"coolOffPeriodExpiresOn"
+        },
+        "LockCreatedOn":{
+          "shape":"MillisecondDateTime",
+          "documentation":"<p>The date and time at which the snapshot was locked, in the UTC time zone (<code>YYYY-MM-DDThh:mm:ss.sssZ</code>).</p>",
+          "locationName":"lockCreatedOn"
+        },
+        "LockExpiresOn":{
+          "shape":"MillisecondDateTime",
+          "documentation":"<p>The date and time at which the lock will expire, in the UTC time zone (<code>YYYY-MM-DDThh:mm:ss.sssZ</code>).</p>",
+          "locationName":"lockExpiresOn"
+        },
+        "LockDurationStartTime":{
+          "shape":"MillisecondDateTime",
+          "documentation":"<p>The date and time at which the lock duration started, in the UTC time zone (<code>YYYY-MM-DDThh:mm:ss.sssZ</code>).</p>",
+          "locationName":"lockDurationStartTime"
+        }
+      }
+    },
+    "LockState":{
+      "type":"string",
+      "enum":[
+        "compliance",
+        "governance",
+        "compliance-cooloff",
+        "expired"
+      ]
+    },
+    "LockedSnapshotsInfo":{
+      "type":"structure",
+      "members":{
+        "OwnerId":{
+          "shape":"String",
+          "documentation":"<p>The account ID of the Amazon Web Services account that owns the snapshot.</p>",
+          "locationName":"ownerId"
+        },
+        "SnapshotId":{
+          "shape":"String",
+          "documentation":"<p>The ID of the snapshot.</p>",
+          "locationName":"snapshotId"
+        },
+        "LockState":{
+          "shape":"LockState",
+          "documentation":"<p>The state of the snapshot lock. Valid states include:</p> <ul> <li> <p> <code>compliance-cooloff</code> - The snapshot has been locked in compliance mode but it is still within the cooling-off period. The snapshot can't be deleted, but it can be unlocked and the lock settings can be modified by users with appropriate permissions.</p> </li> <li> <p> <code>governance</code> - The snapshot is locked in governance mode. The snapshot can't be deleted, but it can be unlocked and the lock settings can be modified by users with appropriate permissions.</p> </li> <li> <p> <code>compliance</code> - The snapshot is locked in compliance mode and the cooling-off period has expired. The snapshot can't be unlocked or deleted. The lock duration can only be increased by users with appropriate permissions.</p> </li> <li> <p> <code>expired</code> - The snapshot was locked in compliance or governance mode but the lock duration has expired. The snapshot is not locked and can be deleted.</p> </li> </ul>",
+          "locationName":"lockState"
+        },
+        "LockDuration":{
+          "shape":"RetentionPeriodResponseDays",
+          "documentation":"<p>The period of time for which the snapshot is locked, in days.</p>",
+          "locationName":"lockDuration"
+        },
+        "CoolOffPeriod":{
+          "shape":"CoolOffPeriodResponseHours",
+          "documentation":"<p>The compliance mode cooling-off period, in hours.</p>",
+          "locationName":"coolOffPeriod"
+        },
+        "CoolOffPeriodExpiresOn":{
+          "shape":"MillisecondDateTime",
+          "documentation":"<p>The date and time at which the compliance mode cooling-off period expires, in the UTC time zone (<code>YYYY-MM-DDThh:mm:ss.sssZ</code>).</p>",
+          "locationName":"coolOffPeriodExpiresOn"
+        },
+        "LockCreatedOn":{
+          "shape":"MillisecondDateTime",
+          "documentation":"<p>The date and time at which the snapshot was locked, in the UTC time zone (<code>YYYY-MM-DDThh:mm:ss.sssZ</code>).</p>",
+          "locationName":"lockCreatedOn"
+        },
+        "LockDurationStartTime":{
+          "shape":"MillisecondDateTime",
+          "documentation":"<p>The date and time at which the lock duration started, in the UTC time zone (<code>YYYY-MM-DDThh:mm:ss.sssZ</code>).</p> <p>If you lock a snapshot that is in the <code>pending</code> state, the lock duration starts only once the snapshot enters the <code>completed</code> state.</p>",
+          "locationName":"lockDurationStartTime"
+        },
+        "LockExpiresOn":{
+          "shape":"MillisecondDateTime",
+          "documentation":"<p>The date and time at which the lock will expire, in the UTC time zone (<code>YYYY-MM-DDThh:mm:ss.sssZ</code>).</p>",
+          "locationName":"lockExpiresOn"
+        }
+      },
+      "documentation":"<p>Information about a locked snapshot.</p>"
+    },
+    "LockedSnapshotsInfoList":{
+      "type":"list",
+      "member":{
+        "shape":"LockedSnapshotsInfo",
+        "locationName":"item"
+      }
+    },
     "LogDestinationType":{
       "type":"string",
       "enum":[
@@ -42473,6 +42719,16 @@
         }
       }
     },
+    "ModifyVerifiedAccessTrustProviderDeviceOptions":{
+      "type":"structure",
+      "members":{
+        "PublicSigningKeyUrl":{
+          "shape":"String",
+          "documentation":"<p> The URL Amazon Web Services Verified Access will use to verify the authenticity of the device tokens. </p>"
+        }
+      },
+      "documentation":"<p>Modifies the configuration of the specified device-based Amazon Web Services Verified Access trust provider.</p>"
+    },
     "ModifyVerifiedAccessTrustProviderOidcOptions":{
       "type":"structure",
       "members":{
@@ -42518,6 +42774,10 @@
         "OidcOptions":{
           "shape":"ModifyVerifiedAccessTrustProviderOidcOptions",
           "documentation":"<p>The options for an OpenID Connect-compatible user-identity trust provider.</p>"
+        },
+        "DeviceOptions":{
+          "shape":"ModifyVerifiedAccessTrustProviderDeviceOptions",
+          "documentation":"<p>The options for a device-based trust provider. This parameter is required when the provider type is <code>device</code>.</p>"
         },
         "Description":{
           "shape":"String",
@@ -49506,6 +49766,12 @@
       "max":500,
       "min":20
     },
+    "RetentionPeriodRequestDays":{
+      "type":"integer",
+      "max":36500,
+      "min":1
+    },
+    "RetentionPeriodResponseDays":{"type":"integer"},
     "RevokeClientVpnIngressRequest":{
       "type":"structure",
       "required":[
@@ -56475,6 +56741,30 @@
         "t3a",
         "t4g"
       ]
+    },
+    "UnlockSnapshotRequest":{
+      "type":"structure",
+      "required":["SnapshotId"],
+      "members":{
+        "SnapshotId":{
+          "shape":"SnapshotId",
+          "documentation":"<p>The ID of the snapshot to unlock.</p>"
+        },
+        "DryRun":{
+          "shape":"Boolean",
+          "documentation":"<p>Checks whether you have the required permissions for the action, without actually making the request, and provides an error response. If you have the required permissions, the error response is <code>DryRunOperation</code>. Otherwise, it is <code>UnauthorizedOperation</code>.</p>"
+        }
+      }
+    },
+    "UnlockSnapshotResult":{
+      "type":"structure",
+      "members":{
+        "SnapshotId":{
+          "shape":"String",
+          "documentation":"<p>The ID of the snapshot.</p>",
+          "locationName":"snapshotId"
+        }
+      }
     },
     "UnmonitorInstancesRequest":{
       "type":"structure",

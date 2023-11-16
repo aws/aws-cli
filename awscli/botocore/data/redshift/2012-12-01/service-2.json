@@ -689,7 +689,8 @@
       "errors":[
         {"shape":"UnsupportedOperationFault"},
         {"shape":"ClusterNotFoundFault"},
-        {"shape":"CustomCnameAssociationFault"}
+        {"shape":"CustomCnameAssociationFault"},
+        {"shape":"CustomDomainAssociationNotFoundFault"}
       ],
       "documentation":"<p>Contains information about deleting a custom domain association for a cluster.</p>"
     },
@@ -1914,7 +1915,8 @@
       "errors":[
         {"shape":"UnsupportedOperationFault"},
         {"shape":"ClusterNotFoundFault"},
-        {"shape":"CustomCnameAssociationFault"}
+        {"shape":"CustomCnameAssociationFault"},
+        {"shape":"CustomDomainAssociationNotFoundFault"}
       ],
       "documentation":"<p>Contains information for changing a custom domain association.</p>"
     },
@@ -4623,7 +4625,7 @@
       "type":"string",
       "max":253,
       "min":1,
-      "pattern":"^((?!-)[A-Za-z0-9-]{1,63}(?<!-)\\.)+[A-Za-z]{2,6}$"
+      "pattern":"^(((?!-)[A-Za-z0-9-]{0,62}[A-Za-z0-9])\\.)+((?!-)[A-Za-z0-9-]{1,62}[A-Za-z0-9])$"
     },
     "CustomerStorageMessage":{
       "type":"structure",
@@ -4934,11 +4936,18 @@
     },
     "DeleteCustomDomainAssociationMessage":{
       "type":"structure",
-      "required":["ClusterIdentifier"],
+      "required":[
+        "ClusterIdentifier",
+        "CustomDomainName"
+      ],
       "members":{
         "ClusterIdentifier":{
           "shape":"String",
           "documentation":"<p>The identifier of the cluster to delete a custom domain association for.</p>"
+        },
+        "CustomDomainName":{
+          "shape":"CustomDomainNameString",
+          "documentation":"<p>The custom domain name for the custom domain association.</p>"
         }
       }
     },
@@ -8008,7 +8017,11 @@
     },
     "ModifyCustomDomainAssociationMessage":{
       "type":"structure",
-      "required":["ClusterIdentifier"],
+      "required":[
+        "CustomDomainName",
+        "CustomDomainCertificateArn",
+        "ClusterIdentifier"
+      ],
       "members":{
         "CustomDomainName":{
           "shape":"CustomDomainNameString",

@@ -13,6 +13,24 @@
     "uid":"ssm-incidents-2018-05-10"
   },
   "operations":{
+    "BatchGetIncidentFindings":{
+      "name":"BatchGetIncidentFindings",
+      "http":{
+        "method":"POST",
+        "requestUri":"/batchGetIncidentFindings",
+        "responseCode":200
+      },
+      "input":{"shape":"BatchGetIncidentFindingsInput"},
+      "output":{"shape":"BatchGetIncidentFindingsOutput"},
+      "errors":[
+        {"shape":"ThrottlingException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Retrieves details about all specified findings for an incident, including descriptive details about each finding. A finding represents a recent application environment change made by an CodeDeploy deployment or an CloudFormation stack creation or update that can be investigated as a potential cause of the incident.</p>"
+    },
     "CreateReplicationSet":{
       "name":"CreateReplicationSet",
       "http":{
@@ -252,6 +270,24 @@
       ],
       "documentation":"<p>Retrieves a timeline event based on its ID and incident record.</p>"
     },
+    "ListIncidentFindings":{
+      "name":"ListIncidentFindings",
+      "http":{
+        "method":"POST",
+        "requestUri":"/listIncidentFindings",
+        "responseCode":200
+      },
+      "input":{"shape":"ListIncidentFindingsInput"},
+      "output":{"shape":"ListIncidentFindingsOutput"},
+      "errors":[
+        {"shape":"ThrottlingException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Retrieves a list of the IDs of findings, plus their last modified times, that have been identified for a specified incident. A finding represents a recent application environment change made by an CloudFormation stack creation or update or an CodeDeploy deployment that can be investigated as a potential cause of the incident.</p>"
+    },
     "ListIncidentRecords":{
       "name":"ListIncidentRecords",
       "http":{
@@ -336,7 +372,7 @@
         {"shape":"ValidationException"},
         {"shape":"InternalServerException"}
       ],
-      "documentation":"<p>Lists the tags that are attached to the specified response plan.</p>"
+      "documentation":"<p>Lists the tags that are attached to the specified response plan or incident.</p>"
     },
     "ListTimelineEvents":{
       "name":"ListTimelineEvents",
@@ -635,6 +671,67 @@
       "max":100,
       "min":0
     },
+    "BatchGetIncidentFindingsError":{
+      "type":"structure",
+      "required":[
+        "code",
+        "findingId",
+        "message"
+      ],
+      "members":{
+        "code":{
+          "shape":"String",
+          "documentation":"<p>The code associated with an error that was returned for a <code>BatchGetIncidentFindings</code> operation.</p>"
+        },
+        "findingId":{
+          "shape":"FindingId",
+          "documentation":"<p>The ID of a specified finding for which an error was returned for a <code>BatchGetIncidentFindings</code> operation.</p>"
+        },
+        "message":{
+          "shape":"String",
+          "documentation":"<p>The description for an error that was returned for a <code>BatchGetIncidentFindings</code> operation.</p>"
+        }
+      },
+      "documentation":"<p>Details about an error returned for a <a>BatchGetIncidentFindings</a> operation.</p>"
+    },
+    "BatchGetIncidentFindingsErrorList":{
+      "type":"list",
+      "member":{"shape":"BatchGetIncidentFindingsError"}
+    },
+    "BatchGetIncidentFindingsInput":{
+      "type":"structure",
+      "required":[
+        "findingIds",
+        "incidentRecordArn"
+      ],
+      "members":{
+        "findingIds":{
+          "shape":"FindingIdList",
+          "documentation":"<p>A list of IDs of findings for which you want to view details.</p>"
+        },
+        "incidentRecordArn":{
+          "shape":"Arn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the incident for which you want to view finding details.</p>"
+        }
+      }
+    },
+    "BatchGetIncidentFindingsOutput":{
+      "type":"structure",
+      "required":[
+        "errors",
+        "findings"
+      ],
+      "members":{
+        "errors":{
+          "shape":"BatchGetIncidentFindingsErrorList",
+          "documentation":"<p>A list of errors encountered during the operation.</p>"
+        },
+        "findings":{
+          "shape":"FindingList",
+          "documentation":"<p>Information about the requested findings.</p>"
+        }
+      }
+    },
     "Boolean":{
       "type":"boolean",
       "box":true
@@ -661,6 +758,60 @@
       "min":1
     },
     "ClientToken":{
+      "type":"string",
+      "max":128,
+      "min":0
+    },
+    "CloudFormationStackUpdate":{
+      "type":"structure",
+      "required":[
+        "stackArn",
+        "startTime"
+      ],
+      "members":{
+        "endTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp for when the CloudFormation stack creation or update ended. Not reported for deployments that are still in progress.</p>"
+        },
+        "stackArn":{
+          "shape":"Arn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the CloudFormation stack involved in the update.</p>"
+        },
+        "startTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp for when the CloudFormation stack creation or update began.</p>"
+        }
+      },
+      "documentation":"<p>Information about an CloudFormation stack creation or update that occurred around the time of an incident and could be a potential cause of the incident.</p>"
+    },
+    "CodeDeployDeployment":{
+      "type":"structure",
+      "required":[
+        "deploymentGroupArn",
+        "deploymentId",
+        "startTime"
+      ],
+      "members":{
+        "deploymentGroupArn":{
+          "shape":"Arn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the CodeDeploy deployment group associated with the deployment.</p>"
+        },
+        "deploymentId":{
+          "shape":"CodeDeployDeploymentDeploymentIdString",
+          "documentation":"<p>The ID of the CodeDeploy deployment.</p>"
+        },
+        "endTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp for when the CodeDeploy deployment ended. Not reported for deployments that are still in progress.</p>"
+        },
+        "startTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp for when the CodeDeploy deployment began.</p>"
+        }
+      },
+      "documentation":"<p>Information about a CodeDeploy deployment that occurred around the time of an incident and could be a possible cause of the incident.</p>"
+    },
+    "CodeDeployDeploymentDeploymentIdString":{
       "type":"string",
       "max":128,
       "min":0
@@ -818,11 +969,11 @@
         },
         "eventTime":{
           "shape":"Timestamp",
-          "documentation":"<p>The time that the event occurred.</p>"
+          "documentation":"<p>The timestamp for when the event occurred.</p>"
         },
         "eventType":{
           "shape":"TimelineEventType",
-          "documentation":"<p>The type of event. You can create timeline events of type <code>Custom Event</code>.</p>"
+          "documentation":"<p>The type of event. You can create timeline events of type <code>Custom Event</code> and <code>Note</code>.</p> <p>To make a Note-type event appear on the <i>Incident notes</i> panel in the console, specify <code>eventType</code> as <code>Note</code>and enter the Amazon Resource Name (ARN) of the incident as the value for <code>eventReference</code>.</p>"
         },
         "incidentRecordArn":{
           "shape":"Arn",
@@ -1035,15 +1186,15 @@
         },
         "eventTime":{
           "shape":"Timestamp",
-          "documentation":"<p>The time that the event occurred.</p>"
+          "documentation":"<p>The timestamp for when the event occurred.</p>"
         },
         "eventType":{
           "shape":"TimelineEventType",
-          "documentation":"<p>The type of event. The timeline event must be <code>Custom Event</code>.</p>"
+          "documentation":"<p>The type of event. The timeline event must be <code>Custom Event</code> or <code>Note</code>.</p>"
         },
         "eventUpdatedTime":{
           "shape":"Timestamp",
-          "documentation":"<p>The time that the timeline event was last updated.</p>"
+          "documentation":"<p>The timestamp for when the timeline event was last updated.</p>"
         },
         "incidentRecordArn":{
           "shape":"Arn",
@@ -1086,6 +1237,87 @@
       "type":"list",
       "member":{"shape":"Filter"},
       "max":5,
+      "min":0
+    },
+    "Finding":{
+      "type":"structure",
+      "required":[
+        "creationTime",
+        "id",
+        "lastModifiedTime"
+      ],
+      "members":{
+        "creationTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp for when a finding was created.</p>"
+        },
+        "details":{
+          "shape":"FindingDetails",
+          "documentation":"<p>Details about the finding.</p>"
+        },
+        "id":{
+          "shape":"FindingId",
+          "documentation":"<p>The ID assigned to the finding.</p>"
+        },
+        "lastModifiedTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp for when the finding was most recently updated with additional information.</p>"
+        }
+      },
+      "documentation":"<p>Information about a specific CodeDeploy deployment or CloudFormation stack creation or update that occurred around the time of a reported incident. These activities can be investigated as a potential cause of the incident.</p>"
+    },
+    "FindingDetails":{
+      "type":"structure",
+      "members":{
+        "cloudFormationStackUpdate":{
+          "shape":"CloudFormationStackUpdate",
+          "documentation":"<p>Information about the CloudFormation stack creation or update associated with the finding.</p>"
+        },
+        "codeDeployDeployment":{
+          "shape":"CodeDeployDeployment",
+          "documentation":"<p>Information about the CodeDeploy deployment associated with the finding.</p>"
+        }
+      },
+      "documentation":"<p>Extended textual information about the finding.</p>",
+      "union":true
+    },
+    "FindingId":{
+      "type":"string",
+      "max":128,
+      "min":0
+    },
+    "FindingIdList":{
+      "type":"list",
+      "member":{"shape":"FindingId"},
+      "max":20,
+      "min":0
+    },
+    "FindingList":{
+      "type":"list",
+      "member":{"shape":"Finding"}
+    },
+    "FindingSummary":{
+      "type":"structure",
+      "required":[
+        "id",
+        "lastModifiedTime"
+      ],
+      "members":{
+        "id":{
+          "shape":"FindingId",
+          "documentation":"<p>The ID of the finding.</p>"
+        },
+        "lastModifiedTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp for when the finding was last updated.</p>"
+        }
+      },
+      "documentation":"<p>Identifying information about the finding.</p>"
+    },
+    "FindingSummaryList":{
+      "type":"list",
+      "member":{"shape":"FindingSummary"},
+      "max":100,
       "min":0
     },
     "GeneratedId":{
@@ -1148,7 +1380,7 @@
         },
         "nextToken":{
           "shape":"NextToken",
-          "documentation":"<p>The pagination token to continue to the next page of results.</p>"
+          "documentation":"<p>The pagination token for the next set of items to return. (You received this token from a previous call.)</p>"
         },
         "resourceArn":{
           "shape":"Arn",
@@ -1164,7 +1396,7 @@
       "members":{
         "nextToken":{
           "shape":"NextToken",
-          "documentation":"<p>The pagination token to continue to the next page of results.</p>"
+          "documentation":"<p>The pagination token to use when requesting the next set of items. If there are no additional items to return, the string is null.</p>"
         },
         "resourcePolicies":{
           "shape":"ResourcePolicyList",
@@ -1291,7 +1523,7 @@
         },
         "creationTime":{
           "shape":"Timestamp",
-          "documentation":"<p>The time that Incident Manager created the incident record.</p>"
+          "documentation":"<p>The timestamp for when Incident Manager created the incident record.</p>"
         },
         "dedupeString":{
           "shape":"DedupeString",
@@ -1299,7 +1531,7 @@
         },
         "impact":{
           "shape":"Impact",
-          "documentation":"<p>The impact of the incident on customers and applications.</p>"
+          "documentation":"<p>The impact of the incident on customers and applications.</p> <p class=\"title\"> <b>Supported impact codes</b> </p> <ul> <li> <p> <code>1</code> - Critical</p> </li> <li> <p> <code>2</code> - High</p> </li> <li> <p> <code>3</code> - Medium</p> </li> <li> <p> <code>4</code> - Low</p> </li> <li> <p> <code>5</code> - No Impact</p> </li> </ul>"
         },
         "incidentRecordSource":{
           "shape":"IncidentRecordSource",
@@ -1311,7 +1543,7 @@
         },
         "lastModifiedTime":{
           "shape":"Timestamp",
-          "documentation":"<p>The time at which the incident was most recently modified.</p>"
+          "documentation":"<p>The timestamp for when the incident was most recently modified.</p>"
         },
         "notificationTargets":{
           "shape":"NotificationTargetSet",
@@ -1319,7 +1551,7 @@
         },
         "resolvedTime":{
           "shape":"Timestamp",
-          "documentation":"<p>The time at which the incident was resolved. This appears as a timeline event.</p>"
+          "documentation":"<p>The timestamp for when the incident was resolved. This appears as a timeline event.</p>"
         },
         "status":{
           "shape":"IncidentRecordStatus",
@@ -1386,7 +1618,7 @@
         },
         "creationTime":{
           "shape":"Timestamp",
-          "documentation":"<p>The time the incident was created.</p>"
+          "documentation":"<p>The timestamp for when the incident was created.</p>"
         },
         "impact":{
           "shape":"Impact",
@@ -1398,7 +1630,7 @@
         },
         "resolvedTime":{
           "shape":"Timestamp",
-          "documentation":"<p>The time the incident was resolved.</p>"
+          "documentation":"<p>The timestamp for when the incident was resolved.</p>"
         },
         "status":{
           "shape":"IncidentRecordStatus",
@@ -1436,11 +1668,11 @@
       "members":{
         "dedupeString":{
           "shape":"DedupeString",
-          "documentation":"<p>Used to stop Incident Manager from creating multiple incident records for the same incident. </p>"
+          "documentation":"<p>The string Incident Manager uses to prevent the same root cause from creating multiple incidents in the same account.</p> <p>A deduplication string is a term or phrase the system uses to check for duplicate incidents. If you specify a deduplication string, Incident Manager searches for open incidents that contain the same string in the <code>dedupeString</code> field when it creates the incident. If a duplicate is detected, Incident Manager deduplicates the newer incident into the existing incident.</p> <note> <p>By default, Incident Manager automatically deduplicates multiple incidents created by the same Amazon CloudWatch alarm or Amazon EventBridge event. You don't have to enter your own deduplication string to prevent duplication for these resource types.</p> </note>"
         },
         "impact":{
           "shape":"Impact",
-          "documentation":"<p>The impact of the incident on your customers and applications. </p>"
+          "documentation":"<p>The impact of the incident on your customers and applications.</p> <p class=\"title\"> <b>Supported impact codes</b> </p> <ul> <li> <p> <code>1</code> - Critical</p> </li> <li> <p> <code>2</code> - High</p> </li> <li> <p> <code>3</code> - Medium</p> </li> <li> <p> <code>4</code> - Low</p> </li> <li> <p> <code>5</code> - No Impact</p> </li> </ul>"
         },
         "incidentTags":{
           "shape":"TagMap",
@@ -1559,6 +1791,44 @@
       "documentation":"<p>Describes a related item.</p>",
       "union":true
     },
+    "ListIncidentFindingsInput":{
+      "type":"structure",
+      "required":["incidentRecordArn"],
+      "members":{
+        "incidentRecordArn":{
+          "shape":"Arn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the incident for which you want to view associated findings.</p>"
+        },
+        "maxResults":{
+          "shape":"ListIncidentFindingsInputMaxResultsInteger",
+          "documentation":"<p>The maximum number of findings to retrieve per call.</p>"
+        },
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The pagination token for the next set of items to return. (You received this token from a previous call.)</p>"
+        }
+      }
+    },
+    "ListIncidentFindingsInputMaxResultsInteger":{
+      "type":"integer",
+      "box":true,
+      "max":20,
+      "min":1
+    },
+    "ListIncidentFindingsOutput":{
+      "type":"structure",
+      "required":["findings"],
+      "members":{
+        "findings":{
+          "shape":"FindingSummaryList",
+          "documentation":"<p>A list of findings that represent deployments that might be the potential cause of the incident.</p>"
+        },
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The pagination token to use when requesting the next set of items. If there are no additional items to return, the string is null.</p>"
+        }
+      }
+    },
     "ListIncidentRecordsInput":{
       "type":"structure",
       "members":{
@@ -1572,7 +1842,7 @@
         },
         "nextToken":{
           "shape":"NextToken",
-          "documentation":"<p>The pagination token to continue to the next page of results.</p>"
+          "documentation":"<p>The pagination token for the next set of items to return. (You received this token from a previous call.)</p>"
         }
       }
     },
@@ -1586,7 +1856,7 @@
         },
         "nextToken":{
           "shape":"NextToken",
-          "documentation":"<p>The pagination token to continue to the next page of results.</p>"
+          "documentation":"<p>The pagination token to use when requesting the next set of items. If there are no additional items to return, the string is null.</p>"
         }
       }
     },
@@ -1604,7 +1874,7 @@
         },
         "nextToken":{
           "shape":"NextToken",
-          "documentation":"<p>The pagination token to continue to the next page of results.</p>"
+          "documentation":"<p>The pagination token for the next set of items to return. (You received this token from a previous call.)</p>"
         }
       }
     },
@@ -1614,7 +1884,7 @@
       "members":{
         "nextToken":{
           "shape":"NextToken",
-          "documentation":"<p>The pagination token to continue to the next page of results.</p>"
+          "documentation":"<p>The pagination token to use when requesting the next set of items. If there are no additional items to return, the string is null.</p>"
         },
         "relatedItems":{
           "shape":"RelatedItemList",
@@ -1631,7 +1901,7 @@
         },
         "nextToken":{
           "shape":"NextToken",
-          "documentation":"<p>The pagination token to continue to the next page of results.</p>"
+          "documentation":"<p>The pagination token for the next set of items to return. (You received this token from a previous call.)</p>"
         }
       }
     },
@@ -1641,7 +1911,7 @@
       "members":{
         "nextToken":{
           "shape":"NextToken",
-          "documentation":"<p>The pagination token to continue to the next page of results.</p>"
+          "documentation":"<p>The pagination token to use when requesting the next set of items. If there are no additional items to return, the string is null.</p>"
         },
         "replicationSetArns":{
           "shape":"ReplicationSetArnList",
@@ -1658,7 +1928,7 @@
         },
         "nextToken":{
           "shape":"NextToken",
-          "documentation":"<p>The pagination token to continue to the next page of results.</p>"
+          "documentation":"<p>The pagination token for the next set of items to return. (You received this token from a previous call.)</p>"
         }
       }
     },
@@ -1668,7 +1938,7 @@
       "members":{
         "nextToken":{
           "shape":"NextToken",
-          "documentation":"<p>The pagination token to continue to the next page of results.</p>"
+          "documentation":"<p>The pagination token to use when requesting the next set of items. If there are no additional items to return, the string is null.</p>"
         },
         "responsePlanSummaries":{
           "shape":"ResponsePlanSummaryList",
@@ -1682,7 +1952,7 @@
       "members":{
         "resourceArn":{
           "shape":"String",
-          "documentation":"<p>The Amazon Resource Name (ARN) of the response plan.</p>",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the response plan or incident.</p>",
           "location":"uri",
           "locationName":"resourceArn"
         }
@@ -1694,7 +1964,7 @@
       "members":{
         "tags":{
           "shape":"TagMap",
-          "documentation":"<p>A list of tags for the response plan.</p>"
+          "documentation":"<p>A list of tags for the response plan or incident.</p>"
         }
       }
     },
@@ -1704,7 +1974,7 @@
       "members":{
         "filters":{
           "shape":"FilterList",
-          "documentation":"<p>Filters the timeline events based on the provided conditional values. You can filter timeline events with the following keys:</p> <ul> <li> <p> <code>eventTime</code> </p> </li> <li> <p> <code>eventType</code> </p> </li> </ul> <p>Note the following when deciding how to use Filters:</p> <ul> <li> <p>If you don't specify a Filter, the response includes all timeline events.</p> </li> <li> <p>If you specify more than one filter in a single request, the response returns timeline events that match all filters.</p> </li> <li> <p>If you specify a filter with more than one value, the response returns timeline events that match any of the values provided.</p> </li> </ul>"
+          "documentation":"<p>Filters the timeline events based on the provided conditional values. You can filter timeline events with the following keys:</p> <ul> <li> <p> <code>eventReference</code> </p> </li> <li> <p> <code>eventTime</code> </p> </li> <li> <p> <code>eventType</code> </p> </li> </ul> <p>Note the following when deciding how to use Filters:</p> <ul> <li> <p>If you don't specify a Filter, the response includes all timeline events.</p> </li> <li> <p>If you specify more than one filter in a single request, the response returns timeline events that match all filters.</p> </li> <li> <p>If you specify a filter with more than one value, the response returns timeline events that match any of the values provided.</p> </li> </ul>"
         },
         "incidentRecordArn":{
           "shape":"Arn",
@@ -1716,7 +1986,7 @@
         },
         "nextToken":{
           "shape":"NextToken",
-          "documentation":"<p>The pagination token to continue to the next page of results.</p>"
+          "documentation":"<p>The pagination token for the next set of items to return. (You received this token from a previous call.)</p>"
         },
         "sortBy":{
           "shape":"TimelineEventSort",
@@ -1738,7 +2008,7 @@
         },
         "nextToken":{
           "shape":"NextToken",
-          "documentation":"<p>The pagination token to continue to the next page of results.</p>"
+          "documentation":"<p>The pagination token to use when requesting the next set of items. If there are no additional items to return, the string is null.</p>"
         }
       }
     },
@@ -1916,7 +2186,7 @@
         },
         "statusUpdateDateTime":{
           "shape":"Timestamp",
-          "documentation":"<p>The most recent date and time that Incident Manager updated the Amazon Web Services Region's status.</p>"
+          "documentation":"<p>The timestamp for when Incident Manager updated the status of the Amazon Web Services Region.</p>"
         }
       },
       "documentation":"<p>Information about a Amazon Web Services Region in your replication set.</p>"
@@ -2317,7 +2587,7 @@
         },
         "impact":{
           "shape":"Impact",
-          "documentation":"<p>Defines the impact to the customers. Providing an impact overwrites the impact provided by a response plan.</p> <p class=\"title\"> <b>Possible impacts:</b> </p> <ul> <li> <p> <code>1</code> - Critical impact, this typically relates to full application failure that impacts many to all customers. </p> </li> <li> <p> <code>2</code> - High impact, partial application failure with impact to many customers.</p> </li> <li> <p> <code>3</code> - Medium impact, the application is providing reduced service to customers.</p> </li> <li> <p> <code>4</code> - Low impact, customer might aren't impacted by the problem yet.</p> </li> <li> <p> <code>5</code> - No impact, customers aren't currently impacted but urgent action is needed to avoid impact.</p> </li> </ul>"
+          "documentation":"<p>Defines the impact to the customers. Providing an impact overwrites the impact provided by a response plan.</p> <p class=\"title\"> <b>Supported impact codes</b> </p> <ul> <li> <p> <code>1</code> - Critical</p> </li> <li> <p> <code>2</code> - High</p> </li> <li> <p> <code>3</code> - Medium</p> </li> <li> <p> <code>4</code> - Low</p> </li> <li> <p> <code>5</code> - No Impact</p> </li> </ul>"
         },
         "relatedItems":{
           "shape":"RelatedItemList",
@@ -2465,15 +2735,15 @@
         },
         "eventTime":{
           "shape":"Timestamp",
-          "documentation":"<p>The time that the event occurred.</p>"
+          "documentation":"<p>The timestamp for when the event occurred.</p>"
         },
         "eventType":{
           "shape":"TimelineEventType",
-          "documentation":"<p>The type of event that occurred. Currently Incident Manager supports only the <code>Custom Event</code> type.</p>"
+          "documentation":"<p>The type of event that occurred. Currently Incident Manager supports only the <code>Custom Event</code> and <code>Note</code> types.</p>"
         },
         "eventUpdatedTime":{
           "shape":"Timestamp",
-          "documentation":"<p>The time that the timeline event was last updated.</p>"
+          "documentation":"<p>The timestamp for when the timeline event was last updated.</p>"
         },
         "incidentRecordArn":{
           "shape":"Arn",
@@ -2509,7 +2779,7 @@
         },
         "timestamp":{
           "shape":"Timestamp",
-          "documentation":"<p>The time that the incident was detected.</p>"
+          "documentation":"<p>The timestamp for when the incident was detected.</p>"
         },
         "triggerArn":{
           "shape":"Arn",
@@ -2595,7 +2865,7 @@
         },
         "impact":{
           "shape":"Impact",
-          "documentation":"<p>Defines the impact of the incident to customers and applications. If you provide an impact for an incident, it overwrites the impact provided by the response plan.</p> <p class=\"title\"> <b>Possible impacts:</b> </p> <ul> <li> <p> <code>1</code> - Critical impact, full application failure that impacts many to all customers. </p> </li> <li> <p> <code>2</code> - High impact, partial application failure with impact to many customers.</p> </li> <li> <p> <code>3</code> - Medium impact, the application is providing reduced service to customers.</p> </li> <li> <p> <code>4</code> - Low impact, customer aren't impacted by the problem yet.</p> </li> <li> <p> <code>5</code> - No impact, customers aren't currently impacted but urgent action is needed to avoid impact.</p> </li> </ul>"
+          "documentation":"<p>Defines the impact of the incident to customers and applications. If you provide an impact for an incident, it overwrites the impact provided by the response plan.</p> <p class=\"title\"> <b>Supported impact codes</b> </p> <ul> <li> <p> <code>1</code> - Critical</p> </li> <li> <p> <code>2</code> - High</p> </li> <li> <p> <code>3</code> - Medium</p> </li> <li> <p> <code>4</code> - Low</p> </li> <li> <p> <code>5</code> - No Impact</p> </li> </ul>"
         },
         "notificationTargets":{
           "shape":"NotificationTargetSet",
@@ -2730,7 +3000,7 @@
         },
         "incidentTemplateImpact":{
           "shape":"Impact",
-          "documentation":"<p>Defines the impact to the customers. Providing an impact overwrites the impact provided by a response plan.</p> <p class=\"title\"> <b>Possible impacts:</b> </p> <ul> <li> <p> <code>5</code> - Severe impact</p> </li> <li> <p> <code>4</code> - High impact</p> </li> <li> <p> <code>3</code> - Medium impact</p> </li> <li> <p> <code>2</code> - Low impact</p> </li> <li> <p> <code>1</code> - No impact</p> </li> </ul>"
+          "documentation":"<p>Defines the impact to the customers. Providing an impact overwrites the impact provided by a response plan.</p> <p class=\"title\"> <b>Supported impact codes</b> </p> <ul> <li> <p> <code>1</code> - Critical</p> </li> <li> <p> <code>2</code> - High</p> </li> <li> <p> <code>3</code> - Medium</p> </li> <li> <p> <code>4</code> - Low</p> </li> <li> <p> <code>5</code> - No Impact</p> </li> </ul>"
         },
         "incidentTemplateNotificationTargets":{
           "shape":"NotificationTargetSet",
@@ -2785,11 +3055,11 @@
         },
         "eventTime":{
           "shape":"Timestamp",
-          "documentation":"<p>The time that the event occurred.</p>"
+          "documentation":"<p>The timestamp for when the event occurred.</p>"
         },
         "eventType":{
           "shape":"TimelineEventType",
-          "documentation":"<p>The type of event. You can update events of type <code>Custom Event</code>.</p>"
+          "documentation":"<p>The type of event. You can update events of type <code>Custom Event</code> and <code>Note</code>.</p>"
         },
         "incidentRecordArn":{
           "shape":"Arn",

@@ -344,6 +344,44 @@
       ],
       "documentation":"<p>Returns information about a user. </p>"
     },
+    "GetWorkflow":{
+      "name":"GetWorkflow",
+      "http":{
+        "method":"GET",
+        "requestUri":"/v1/spaces/{spaceName}/projects/{projectName}/workflows/{id}",
+        "responseCode":200
+      },
+      "input":{"shape":"GetWorkflowRequest"},
+      "output":{"shape":"GetWorkflowResponse"},
+      "errors":[
+        {"shape":"ThrottlingException"},
+        {"shape":"ConflictException"},
+        {"shape":"ValidationException"},
+        {"shape":"ServiceQuotaExceededException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Returns information about a workflow.</p>"
+    },
+    "GetWorkflowRun":{
+      "name":"GetWorkflowRun",
+      "http":{
+        "method":"GET",
+        "requestUri":"/v1/spaces/{spaceName}/projects/{projectName}/workflowRuns/{id}",
+        "responseCode":200
+      },
+      "input":{"shape":"GetWorkflowRunRequest"},
+      "output":{"shape":"GetWorkflowRunResponse"},
+      "errors":[
+        {"shape":"ThrottlingException"},
+        {"shape":"ConflictException"},
+        {"shape":"ValidationException"},
+        {"shape":"ServiceQuotaExceededException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Returns information about a specified run of a workflow.</p>"
+    },
     "ListAccessTokens":{
       "name":"ListAccessTokens",
       "http":{
@@ -386,7 +424,7 @@
       "name":"ListDevEnvironments",
       "http":{
         "method":"POST",
-        "requestUri":"/v1/spaces/{spaceName}/projects/{projectName}/devEnvironments",
+        "requestUri":"/v1/spaces/{spaceName}/devEnvironments",
         "responseCode":200
       },
       "input":{"shape":"ListDevEnvironmentsRequest"},
@@ -418,7 +456,7 @@
         {"shape":"ResourceNotFoundException"},
         {"shape":"AccessDeniedException"}
       ],
-      "documentation":"<p>Retrieves a list of events that occurred during a specified time period in a space. You can use these events to audit user and system activity in a space.</p>"
+      "documentation":"<p>Retrieves a list of events that occurred during a specific time in a space. You can use these events to audit user and system activity in a space. For more information, see <a href=\"https://docs.aws.amazon.com/codecatalyst/latest/userguide/ipa-monitoring.html\">Monitoring</a> in the <i>Amazon CodeCatalyst User Guide</i>.</p> <note> <p>ListEventLogs guarantees events for the last 30 days in a given space. You can also view and retrieve a list of management events over the last 90 days for Amazon CodeCatalyst in the CloudTrail console by viewing Event history, or by creating a trail to create and maintain a record of events that extends past 90 days. For more information, see <a href=\"https://docs.aws.amazon.com/awscloudtrail/latest/userguide/view-cloudtrail-events.html\">Working with CloudTrail Event History</a> and <a href=\"https://docs.aws.amazon.com/awscloudtrail/latest/userguide/cloudtrail-getting-started.html\">Working with CloudTrail trails</a>.</p> </note>"
     },
     "ListProjects":{
       "name":"ListProjects",
@@ -496,6 +534,44 @@
       ],
       "documentation":"<p>Retrieves a list of spaces.</p>"
     },
+    "ListWorkflowRuns":{
+      "name":"ListWorkflowRuns",
+      "http":{
+        "method":"POST",
+        "requestUri":"/v1/spaces/{spaceName}/projects/{projectName}/workflowRuns",
+        "responseCode":200
+      },
+      "input":{"shape":"ListWorkflowRunsRequest"},
+      "output":{"shape":"ListWorkflowRunsResponse"},
+      "errors":[
+        {"shape":"ThrottlingException"},
+        {"shape":"ConflictException"},
+        {"shape":"ValidationException"},
+        {"shape":"ServiceQuotaExceededException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Retrieves a list of workflow runs of a specified workflow.</p>"
+    },
+    "ListWorkflows":{
+      "name":"ListWorkflows",
+      "http":{
+        "method":"POST",
+        "requestUri":"/v1/spaces/{spaceName}/projects/{projectName}/workflows",
+        "responseCode":200
+      },
+      "input":{"shape":"ListWorkflowsRequest"},
+      "output":{"shape":"ListWorkflowsResponse"},
+      "errors":[
+        {"shape":"ThrottlingException"},
+        {"shape":"ConflictException"},
+        {"shape":"ValidationException"},
+        {"shape":"ServiceQuotaExceededException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Retrieves a list of workflows in a specified project.</p>"
+    },
     "StartDevEnvironment":{
       "name":"StartDevEnvironment",
       "http":{
@@ -534,6 +610,26 @@
         {"shape":"AccessDeniedException"}
       ],
       "documentation":"<p>Starts a session for a specified Dev Environment.</p>"
+    },
+    "StartWorkflowRun":{
+      "name":"StartWorkflowRun",
+      "http":{
+        "method":"PUT",
+        "requestUri":"/v1/spaces/{spaceName}/projects/{projectName}/workflowRuns",
+        "responseCode":200
+      },
+      "input":{"shape":"StartWorkflowRunRequest"},
+      "output":{"shape":"StartWorkflowRunResponse"},
+      "errors":[
+        {"shape":"ThrottlingException"},
+        {"shape":"ConflictException"},
+        {"shape":"ValidationException"},
+        {"shape":"ServiceQuotaExceededException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Begins a run of a specified workflow.</p>",
+      "idempotent":true
     },
     "StopDevEnvironment":{
       "name":"StopDevEnvironment",
@@ -726,7 +822,8 @@
         "GT",
         "GE",
         "LT",
-        "LE"
+        "LE",
+        "BEGINS_WITH"
       ]
     },
     "ConflictException":{
@@ -831,6 +928,10 @@
         "persistentStorage":{
           "shape":"PersistentStorageConfiguration",
           "documentation":"<p>Information about the amount of storage allocated to the Dev Environment. </p> <note> <p>By default, a Dev Environment is configured to have 16GB of persistent storage when created from the Amazon CodeCatalyst console, but there is no default when programmatically creating a Dev Environment. Valid values for persistent storage are based on memory sizes in 16GB increments. Valid values are 16, 32, and 64.</p> </note>"
+        },
+        "vpcConnectionName":{
+          "shape":"NameString",
+          "documentation":"<p>The name of the connection to use connect to a Amazon VPC.</p>"
         }
       }
     },
@@ -859,6 +960,10 @@
         "id":{
           "shape":"Uuid",
           "documentation":"<p>The system-generated unique ID of the Dev Environment. </p>"
+        },
+        "vpcConnectionName":{
+          "shape":"NameString",
+          "documentation":"<p>The name of the connection used to connect to Amazon VPC used when the Dev Environment was created, if any.</p>"
         }
       }
     },
@@ -1389,6 +1494,10 @@
         "persistentStorage":{
           "shape":"PersistentStorage",
           "documentation":"<p>Information about the configuration of persistent storage for the Dev Environment.</p>"
+        },
+        "vpcConnectionName":{
+          "shape":"NameString",
+          "documentation":"<p>The name of the connection used to connect to Amazon VPC used when the Dev Environment was created, if any.</p>"
         }
       },
       "documentation":"<p>Information about a Dev Environment. </p>"
@@ -1568,7 +1677,10 @@
     },
     "FilterKey":{
       "type":"string",
-      "enum":["hasAccessTo"]
+      "enum":[
+        "hasAccessTo",
+        "name"
+      ]
     },
     "Filters":{
       "type":"list",
@@ -1668,6 +1780,10 @@
         "persistentStorage":{
           "shape":"PersistentStorage",
           "documentation":"<p>Information about the amount of storage allocated to the Dev Environment. By default, a Dev Environment is configured to have 16GB of persistent storage.</p>"
+        },
+        "vpcConnectionName":{
+          "shape":"NameString",
+          "documentation":"<p>The name of the connection used to connect to Amazon VPC used when the Dev Environment was created, if any.</p>"
         }
       }
     },
@@ -1941,6 +2057,182 @@
         }
       }
     },
+    "GetWorkflowRequest":{
+      "type":"structure",
+      "required":[
+        "spaceName",
+        "id",
+        "projectName"
+      ],
+      "members":{
+        "spaceName":{
+          "shape":"NameString",
+          "documentation":"<p>The name of the space.</p>",
+          "location":"uri",
+          "locationName":"spaceName"
+        },
+        "id":{
+          "shape":"Uuid",
+          "documentation":"<p>The ID of the workflow. To rerieve a list of workflow IDs, use <a>ListWorkflows</a>.</p>",
+          "location":"uri",
+          "locationName":"id"
+        },
+        "projectName":{
+          "shape":"GetWorkflowRequestProjectNameString",
+          "documentation":"<p>The name of the project in the space.</p>",
+          "location":"uri",
+          "locationName":"projectName"
+        }
+      }
+    },
+    "GetWorkflowRequestProjectNameString":{
+      "type":"string",
+      "min":1,
+      "pattern":"[a-zA-Z0-9]+(?:[-_\\.][a-zA-Z0-9]+)*"
+    },
+    "GetWorkflowResponse":{
+      "type":"structure",
+      "required":[
+        "spaceName",
+        "projectName",
+        "id",
+        "name",
+        "definition",
+        "createdTime",
+        "lastUpdatedTime",
+        "runMode",
+        "status"
+      ],
+      "members":{
+        "spaceName":{
+          "shape":"NameString",
+          "documentation":"<p>The name of the space.</p>"
+        },
+        "projectName":{
+          "shape":"NameString",
+          "documentation":"<p>The name of the project in the space.</p>"
+        },
+        "id":{
+          "shape":"Uuid",
+          "documentation":"<p>The ID of the workflow.</p>"
+        },
+        "name":{
+          "shape":"String",
+          "documentation":"<p>The name of the workflow.</p>"
+        },
+        "sourceRepositoryName":{
+          "shape":"SourceRepositoryNameString",
+          "documentation":"<p>The name of the source repository where the workflow YAML is stored.</p>"
+        },
+        "sourceBranchName":{
+          "shape":"SourceRepositoryBranchString",
+          "documentation":"<p>The name of the branch that contains the workflow YAML.</p>"
+        },
+        "definition":{
+          "shape":"WorkflowDefinition",
+          "documentation":"<p>Information about the workflow definition file for the workflow.</p>"
+        },
+        "createdTime":{
+          "shape":"SyntheticTimestamp_date_time",
+          "documentation":"<p>The date and time the workflow was created, in coordinated universal time (UTC) timestamp format as specified in <a href=\"https://www.rfc-editor.org/rfc/rfc3339#section-5.6\">RFC 3339</a> </p>"
+        },
+        "lastUpdatedTime":{
+          "shape":"SyntheticTimestamp_date_time",
+          "documentation":"<p>The date and time the workflow was last updated, in coordinated universal time (UTC) timestamp format as specified in <a href=\"https://www.rfc-editor.org/rfc/rfc3339#section-5.6\">RFC 3339</a> </p>"
+        },
+        "runMode":{
+          "shape":"WorkflowRunMode",
+          "documentation":"<p>The behavior to use when multiple workflows occur at the same time. For more information, see <a href=\"https://docs.aws.amazon.com/codecatalyst/latest/userguide/workflows-configure-runs.html\">https://docs.aws.amazon.com/codecatalyst/latest/userguide/workflows-configure-runs.html</a> in the Amazon CodeCatalyst User Guide.</p>"
+        },
+        "status":{
+          "shape":"WorkflowStatus",
+          "documentation":"<p>The status of the workflow.</p>"
+        }
+      }
+    },
+    "GetWorkflowRunRequest":{
+      "type":"structure",
+      "required":[
+        "spaceName",
+        "id",
+        "projectName"
+      ],
+      "members":{
+        "spaceName":{
+          "shape":"NameString",
+          "documentation":"<p>The name of the space.</p>",
+          "location":"uri",
+          "locationName":"spaceName"
+        },
+        "id":{
+          "shape":"Uuid",
+          "documentation":"<p>The ID of the workflow run. To retrieve a list of workflow run IDs, use <a>ListWorkflowRuns</a>.</p>",
+          "location":"uri",
+          "locationName":"id"
+        },
+        "projectName":{
+          "shape":"GetWorkflowRunRequestProjectNameString",
+          "documentation":"<p>The name of the project in the space.</p>",
+          "location":"uri",
+          "locationName":"projectName"
+        }
+      }
+    },
+    "GetWorkflowRunRequestProjectNameString":{
+      "type":"string",
+      "min":1,
+      "pattern":"[a-zA-Z0-9]+(?:[-_\\.][a-zA-Z0-9]+)*"
+    },
+    "GetWorkflowRunResponse":{
+      "type":"structure",
+      "required":[
+        "spaceName",
+        "projectName",
+        "id",
+        "workflowId",
+        "status",
+        "startTime",
+        "lastUpdatedTime"
+      ],
+      "members":{
+        "spaceName":{
+          "shape":"NameString",
+          "documentation":"<p>The name of the space.</p>"
+        },
+        "projectName":{
+          "shape":"NameString",
+          "documentation":"<p>The name of the project in the space.</p>"
+        },
+        "id":{
+          "shape":"Uuid",
+          "documentation":"<p>The ID of the workflow run.</p>"
+        },
+        "workflowId":{
+          "shape":"Uuid",
+          "documentation":"<p>The ID of the workflow.</p>"
+        },
+        "status":{
+          "shape":"WorkflowRunStatus",
+          "documentation":"<p>The status of the workflow run.</p>"
+        },
+        "statusReasons":{
+          "shape":"WorkflowRunStatusReasons",
+          "documentation":"<p>Information about the reasons for the status of the workflow run.</p>"
+        },
+        "startTime":{
+          "shape":"SyntheticTimestamp_date_time",
+          "documentation":"<p>The date and time the workflow run began, in coordinated universal time (UTC) timestamp format as specified in <a href=\"https://www.rfc-editor.org/rfc/rfc3339#section-5.6\">RFC 3339</a> </p>"
+        },
+        "endTime":{
+          "shape":"SyntheticTimestamp_date_time",
+          "documentation":"<p>The date and time the workflow run ended, in coordinated universal time (UTC) timestamp format as specified in <a href=\"https://www.rfc-editor.org/rfc/rfc3339#section-5.6\">RFC 3339</a>.</p>"
+        },
+        "lastUpdatedTime":{
+          "shape":"SyntheticTimestamp_date_time",
+          "documentation":"<p>The date and time the workflow run status was last updated, in coordinated universal time (UTC) timestamp format as specified in <a href=\"https://www.rfc-editor.org/rfc/rfc3339#section-5.6\">RFC 3339</a> </p>"
+        }
+      }
+    },
     "Ide":{
       "type":"structure",
       "members":{
@@ -2115,10 +2407,7 @@
     },
     "ListDevEnvironmentsRequest":{
       "type":"structure",
-      "required":[
-        "spaceName",
-        "projectName"
-      ],
+      "required":["spaceName"],
       "members":{
         "spaceName":{
           "shape":"NameString",
@@ -2128,9 +2417,7 @@
         },
         "projectName":{
           "shape":"NameString",
-          "documentation":"<p>The name of the project in the space.</p>",
-          "location":"uri",
-          "locationName":"projectName"
+          "documentation":"<p>The name of the project in the space.</p>"
         },
         "filters":{
           "shape":"Filters",
@@ -2480,6 +2767,144 @@
         "items":{
           "shape":"SpaceSummaries",
           "documentation":"<p>Information about the spaces. </p>"
+        }
+      }
+    },
+    "ListWorkflowRunsRequest":{
+      "type":"structure",
+      "required":[
+        "spaceName",
+        "projectName"
+      ],
+      "members":{
+        "spaceName":{
+          "shape":"NameString",
+          "documentation":"<p>The name of the space.</p>",
+          "location":"uri",
+          "locationName":"spaceName"
+        },
+        "workflowId":{
+          "shape":"Uuid",
+          "documentation":"<p>The ID of the workflow. To retrieve a list of workflow IDs, use <a>ListWorkflows</a>.</p>",
+          "location":"querystring",
+          "locationName":"workflowId"
+        },
+        "projectName":{
+          "shape":"ListWorkflowRunsRequestProjectNameString",
+          "documentation":"<p>The name of the project in the space.</p>",
+          "location":"uri",
+          "locationName":"projectName"
+        },
+        "nextToken":{
+          "shape":"ListWorkflowRunsRequestNextTokenString",
+          "documentation":"<p>A token returned from a call to this API to indicate the next batch of results to return, if any.</p>",
+          "location":"querystring",
+          "locationName":"nextToken"
+        },
+        "maxResults":{
+          "shape":"ListWorkflowRunsRequestMaxResultsInteger",
+          "documentation":"<p>The maximum number of results to show in a single call to this API. If the number of results is larger than the number you specified, the response will include a <code>NextToken</code> element, which you can use to obtain additional results.</p>",
+          "location":"querystring",
+          "locationName":"maxResults"
+        },
+        "sortBy":{
+          "shape":"WorkflowRunSortCriteriaList",
+          "documentation":"<p>Information used to sort the items in the returned list.</p>"
+        }
+      }
+    },
+    "ListWorkflowRunsRequestMaxResultsInteger":{
+      "type":"integer",
+      "box":true,
+      "max":50,
+      "min":1
+    },
+    "ListWorkflowRunsRequestNextTokenString":{
+      "type":"string",
+      "max":2048,
+      "min":1
+    },
+    "ListWorkflowRunsRequestProjectNameString":{
+      "type":"string",
+      "min":1,
+      "pattern":"[a-zA-Z0-9]+(?:[-_\\.][a-zA-Z0-9]+)*"
+    },
+    "ListWorkflowRunsResponse":{
+      "type":"structure",
+      "members":{
+        "nextToken":{
+          "shape":"String",
+          "documentation":"<p>A token returned from a call to this API to indicate the next batch of results to return, if any.</p>"
+        },
+        "items":{
+          "shape":"WorkflowRunSummaries",
+          "documentation":"<p>Information about the runs of a workflow.</p>"
+        }
+      }
+    },
+    "ListWorkflowsRequest":{
+      "type":"structure",
+      "required":[
+        "spaceName",
+        "projectName"
+      ],
+      "members":{
+        "spaceName":{
+          "shape":"ListWorkflowsRequestSpaceNameString",
+          "documentation":"<p>The name of the space.</p>",
+          "location":"uri",
+          "locationName":"spaceName"
+        },
+        "projectName":{
+          "shape":"NameString",
+          "documentation":"<p>The name of the project in the space.</p>",
+          "location":"uri",
+          "locationName":"projectName"
+        },
+        "nextToken":{
+          "shape":"ListWorkflowsRequestNextTokenString",
+          "documentation":"<p>A token returned from a call to this API to indicate the next batch of results to return, if any.</p>",
+          "location":"querystring",
+          "locationName":"nextToken"
+        },
+        "maxResults":{
+          "shape":"ListWorkflowsRequestMaxResultsInteger",
+          "documentation":"<p>The maximum number of results to show in a single call to this API. If the number of results is larger than the number you specified, the response will include a <code>NextToken</code> element, which you can use to obtain additional results.</p>",
+          "location":"querystring",
+          "locationName":"maxResults"
+        },
+        "sortBy":{
+          "shape":"WorkflowSortCriteriaList",
+          "documentation":"<p>Information used to sort the items in the returned list.</p>"
+        }
+      }
+    },
+    "ListWorkflowsRequestMaxResultsInteger":{
+      "type":"integer",
+      "box":true,
+      "max":100,
+      "min":1
+    },
+    "ListWorkflowsRequestNextTokenString":{
+      "type":"string",
+      "max":2048,
+      "min":1
+    },
+    "ListWorkflowsRequestSpaceNameString":{
+      "type":"string",
+      "min":1,
+      "pattern":"[a-zA-Z0-9]+(?:[-_\\.][a-zA-Z0-9]+)*"
+    },
+    "ListWorkflowsResponse":{
+      "type":"structure",
+      "members":{
+        "nextToken":{
+          "shape":"String",
+          "documentation":"<p>A token returned from a call to this API to indicate the next batch of results to return, if any.</p>"
+        },
+        "items":{
+          "shape":"WorkflowSummaries",
+          "documentation":"<p>Information about the workflows in a project.</p>"
         }
       }
     },
@@ -2850,6 +3275,82 @@
       "type":"string",
       "max":96,
       "min":1
+    },
+    "StartWorkflowRunRequest":{
+      "type":"structure",
+      "required":[
+        "spaceName",
+        "projectName",
+        "workflowId"
+      ],
+      "members":{
+        "spaceName":{
+          "shape":"StartWorkflowRunRequestSpaceNameString",
+          "documentation":"<p>The name of the space.</p>",
+          "location":"uri",
+          "locationName":"spaceName"
+        },
+        "projectName":{
+          "shape":"StartWorkflowRunRequestProjectNameString",
+          "documentation":"<p>The name of the project in the space.</p>",
+          "location":"uri",
+          "locationName":"projectName"
+        },
+        "workflowId":{
+          "shape":"Uuid",
+          "documentation":"<p>The system-generated unique ID of the workflow. To retrieve a list of workflow IDs, use <a>ListWorkflows</a>.</p>",
+          "location":"querystring",
+          "locationName":"workflowId"
+        },
+        "clientToken":{
+          "shape":"StartWorkflowRunRequestClientTokenString",
+          "documentation":"<p>A user-specified idempotency token. Idempotency ensures that an API request completes only once. With an idempotent request, if the original request completes successfully, the subsequent retries return the result from the original successful request and have no additional effect.</p>",
+          "idempotencyToken":true
+        }
+      }
+    },
+    "StartWorkflowRunRequestClientTokenString":{
+      "type":"string",
+      "max":64,
+      "min":1,
+      "pattern":"[a-zA-Z0-9]+(?:[-_\\.][a-zA-Z0-9]+)*"
+    },
+    "StartWorkflowRunRequestProjectNameString":{
+      "type":"string",
+      "min":1,
+      "pattern":"[a-zA-Z0-9]+(?:[-_\\.][a-zA-Z0-9]+)*"
+    },
+    "StartWorkflowRunRequestSpaceNameString":{
+      "type":"string",
+      "min":1,
+      "pattern":"[a-zA-Z0-9]+(?:[-_\\.][a-zA-Z0-9]+)*"
+    },
+    "StartWorkflowRunResponse":{
+      "type":"structure",
+      "required":[
+        "spaceName",
+        "projectName",
+        "id",
+        "workflowId"
+      ],
+      "members":{
+        "spaceName":{
+          "shape":"NameString",
+          "documentation":"<p>The name of the space.</p>"
+        },
+        "projectName":{
+          "shape":"NameString",
+          "documentation":"<p>The name of the project in the space.</p>"
+        },
+        "id":{
+          "shape":"Uuid",
+          "documentation":"<p>The system-generated unique ID of the workflow run.</p>"
+        },
+        "workflowId":{
+          "shape":"Uuid",
+          "documentation":"<p>The system-generated unique ID of the workflow.</p>"
+        }
+      }
     },
     "StatusReason":{
       "type":"string",
@@ -3255,7 +3756,201 @@
       "type":"string",
       "max":256,
       "min":1
+    },
+    "WorkflowDefinition":{
+      "type":"structure",
+      "required":["path"],
+      "members":{
+        "path":{
+          "shape":"String",
+          "documentation":"<p>The path to the workflow definition file stored in the source repository for the project, including the file name.</p>"
+        }
+      },
+      "documentation":"<p>Information about a workflow definition file.</p>"
+    },
+    "WorkflowDefinitionSummary":{
+      "type":"structure",
+      "required":["path"],
+      "members":{
+        "path":{
+          "shape":"String",
+          "documentation":"<p>The path to the workflow definition file stored in the source repository for the project, including the file name.</p>"
+        }
+      },
+      "documentation":"<p>Information about a workflow definition.</p>"
+    },
+    "WorkflowRunMode":{
+      "type":"string",
+      "enum":[
+        "QUEUED",
+        "PARALLEL",
+        "SUPERSEDED"
+      ]
+    },
+    "WorkflowRunSortCriteria":{
+      "type":"structure",
+      "members":{
+      },
+      "documentation":"<p>Information used to sort workflow runs in the returned list.</p>"
+    },
+    "WorkflowRunSortCriteriaList":{
+      "type":"list",
+      "member":{"shape":"WorkflowRunSortCriteria"},
+      "max":1,
+      "min":0
+    },
+    "WorkflowRunStatus":{
+      "type":"string",
+      "enum":[
+        "SUCCEEDED",
+        "FAILED",
+        "STOPPED",
+        "SUPERSEDED",
+        "CANCELLED",
+        "NOT_RUN",
+        "VALIDATING",
+        "PROVISIONING",
+        "IN_PROGRESS",
+        "STOPPING",
+        "ABANDONED"
+      ]
+    },
+    "WorkflowRunStatusReason":{
+      "type":"structure",
+      "members":{
+      },
+      "documentation":"<p>Information about the status of a workflow run.</p>"
+    },
+    "WorkflowRunStatusReasons":{
+      "type":"list",
+      "member":{"shape":"WorkflowRunStatusReason"}
+    },
+    "WorkflowRunSummaries":{
+      "type":"list",
+      "member":{"shape":"WorkflowRunSummary"}
+    },
+    "WorkflowRunSummary":{
+      "type":"structure",
+      "required":[
+        "id",
+        "workflowId",
+        "workflowName",
+        "status",
+        "startTime",
+        "lastUpdatedTime"
+      ],
+      "members":{
+        "id":{
+          "shape":"Uuid",
+          "documentation":"<p>The system-generated unique ID of the workflow run.</p>"
+        },
+        "workflowId":{
+          "shape":"Uuid",
+          "documentation":"<p>The system-generated unique ID of the workflow.</p>"
+        },
+        "workflowName":{
+          "shape":"String",
+          "documentation":"<p>The name of the workflow.</p>"
+        },
+        "status":{
+          "shape":"WorkflowRunStatus",
+          "documentation":"<p>The status of the workflow run.</p>"
+        },
+        "statusReasons":{
+          "shape":"WorkflowRunStatusReasons",
+          "documentation":"<p>The reasons for the workflow run status.</p>"
+        },
+        "startTime":{
+          "shape":"SyntheticTimestamp_date_time",
+          "documentation":"<p>The date and time the workflow run began, in coordinated universal time (UTC) timestamp format as specified in <a href=\"https://www.rfc-editor.org/rfc/rfc3339#section-5.6\">RFC 3339</a>.</p>"
+        },
+        "endTime":{
+          "shape":"SyntheticTimestamp_date_time",
+          "documentation":"<p>The date and time the workflow run ended, in coordinated universal time (UTC) timestamp format as specified in <a href=\"https://www.rfc-editor.org/rfc/rfc3339#section-5.6\">RFC 3339</a> </p>"
+        },
+        "lastUpdatedTime":{
+          "shape":"SyntheticTimestamp_date_time",
+          "documentation":"<p>The date and time the workflow was last updated, in coordinated universal time (UTC) timestamp format as specified in <a href=\"https://www.rfc-editor.org/rfc/rfc3339#section-5.6\">RFC 3339</a> </p>"
+        }
+      },
+      "documentation":"<p>Information about a workflow run.</p>"
+    },
+    "WorkflowSortCriteria":{
+      "type":"structure",
+      "members":{
+      },
+      "documentation":"<p>Information used to sort workflows in the returned list.</p>"
+    },
+    "WorkflowSortCriteriaList":{
+      "type":"list",
+      "member":{"shape":"WorkflowSortCriteria"},
+      "max":1,
+      "min":0
+    },
+    "WorkflowStatus":{
+      "type":"string",
+      "enum":[
+        "INVALID",
+        "ACTIVE"
+      ]
+    },
+    "WorkflowSummaries":{
+      "type":"list",
+      "member":{"shape":"WorkflowSummary"}
+    },
+    "WorkflowSummary":{
+      "type":"structure",
+      "required":[
+        "id",
+        "name",
+        "sourceRepositoryName",
+        "sourceBranchName",
+        "definition",
+        "createdTime",
+        "lastUpdatedTime",
+        "runMode",
+        "status"
+      ],
+      "members":{
+        "id":{
+          "shape":"Uuid",
+          "documentation":"<p>The system-generated unique ID of a workflow.</p>"
+        },
+        "name":{
+          "shape":"String",
+          "documentation":"<p>The name of the workflow.</p>"
+        },
+        "sourceRepositoryName":{
+          "shape":"SourceRepositoryNameString",
+          "documentation":"<p>The name of the source repository where the workflow definition file is stored.</p>"
+        },
+        "sourceBranchName":{
+          "shape":"SourceRepositoryBranchString",
+          "documentation":"<p>The name of the branch of the source repository where the workflow definition file is stored.</p>"
+        },
+        "definition":{
+          "shape":"WorkflowDefinitionSummary",
+          "documentation":"<p>Information about the workflow definition file.</p>"
+        },
+        "createdTime":{
+          "shape":"SyntheticTimestamp_date_time",
+          "documentation":"<p>The date and time the workflow was created, in coordinated universal time (UTC) timestamp format as specified in <a href=\"https://www.rfc-editor.org/rfc/rfc3339#section-5.6\">RFC 3339</a> </p>"
+        },
+        "lastUpdatedTime":{
+          "shape":"SyntheticTimestamp_date_time",
+          "documentation":"<p>The date and time the workflow was last updated, in coordinated universal time (UTC) timestamp format as specified in <a href=\"https://www.rfc-editor.org/rfc/rfc3339#section-5.6\">RFC 3339</a> </p>"
+        },
+        "runMode":{
+          "shape":"WorkflowRunMode",
+          "documentation":"<p>The run mode of the workflow.</p>"
+        },
+        "status":{
+          "shape":"WorkflowStatus",
+          "documentation":"<p>The status of the workflow.</p>"
+        }
+      },
+      "documentation":"<p>Information about a workflow.</p>"
     }
   },
-  "documentation":"<p>Welcome to the Amazon CodeCatalyst API reference. This reference provides descriptions of operations and data types for Amazon CodeCatalyst. You can use the Amazon CodeCatalyst API to work with the following objects. </p> <p>Spaces, by calling the following:</p> <ul> <li> <p> <a>DeleteSpace</a>, which deletes a space.</p> </li> <li> <p> <a>GetSpace</a>, which returns information about a space.</p> </li> <li> <p> <a>GetSubscription</a>, which returns information about the Amazon Web Services account used for billing purposes and the billing plan for the space.</p> </li> <li> <p> <a>ListSpaces</a>, which retrieves a list of spaces.</p> </li> <li> <p> <a>UpdateSpace</a>, which hanges one or more values for a space.</p> </li> </ul> <p>Projects, by calling the following:</p> <ul> <li> <p> <a>CreateProject</a> which creates a project in a specified space.</p> </li> <li> <p> <a>GetProject</a>, which returns information about a project.</p> </li> <li> <p> <a>ListProjects</a>, which retrieves a list of projects in a space.</p> </li> </ul> <p>Users, by calling the following:</p> <ul> <li> <p> <a>GetUserDetails</a>, which returns information about a user in Amazon CodeCatalyst.</p> </li> </ul> <p>Source repositories, by calling the following:</p> <ul> <li> <p> <a>CreateSourceRepository</a>, which creates an empty Git-based source repository in a specified project.</p> </li> <li> <p> <a>CreateSourceRepositoryBranch</a>, which creates a branch in a specified repository where you can work on code.</p> </li> <li> <p> <a>DeleteSourceRepository</a>, which deletes a source repository.</p> </li> <li> <p> <a>GetSourceRepository</a>, which returns information about a source repository.</p> </li> <li> <p> <a>GetSourceRepositoryCloneUrls</a>, which returns information about the URLs that can be used with a Git client to clone a source repository.</p> </li> <li> <p> <a>ListSourceRepositories</a>, which retrieves a list of source repositories in a project.</p> </li> <li> <p> <a>ListSourceRepositoryBranches</a>, which retrieves a list of branches in a source repository.</p> </li> </ul> <p>Dev Environments and the Amazon Web Services Toolkits, by calling the following:</p> <ul> <li> <p> <a>CreateDevEnvironment</a>, which creates a Dev Environment, where you can quickly work on the code stored in the source repositories of your project.</p> </li> <li> <p> <a>DeleteDevEnvironment</a>, which deletes a Dev Environment.</p> </li> <li> <p> <a>GetDevEnvironment</a>, which returns information about a Dev Environment.</p> </li> <li> <p> <a>ListDevEnvironments</a>, which retrieves a list of Dev Environments in a project.</p> </li> <li> <p> <a>ListDevEnvironmentSessions</a>, which retrieves a list of active Dev Environment sessions in a project.</p> </li> <li> <p> <a>StartDevEnvironment</a>, which starts a specified Dev Environment and puts it into an active state.</p> </li> <li> <p> <a>StartDevEnvironmentSession</a>, which starts a session to a specified Dev Environment.</p> </li> <li> <p> <a>StopDevEnvironment</a>, which stops a specified Dev Environment and puts it into an stopped state.</p> </li> <li> <p> <a>StopDevEnvironmentSession</a>, which stops a session for a specified Dev Environment.</p> </li> <li> <p> <a>UpdateDevEnvironment</a>, which changes one or more values for a Dev Environment.</p> </li> </ul> <p>Security, activity, and resource management in Amazon CodeCatalyst, by calling the following:</p> <ul> <li> <p> <a>CreateAccessToken</a>, which creates a personal access token (PAT) for the current user.</p> </li> <li> <p> <a>DeleteAccessToken</a>, which deletes a specified personal access token (PAT).</p> </li> <li> <p> <a>ListAccessTokens</a>, which lists all personal access tokens (PATs) associated with a user.</p> </li> <li> <p> <a>ListEventLogs</a>, which retrieves a list of events that occurred during a specified time period in a space.</p> </li> <li> <p> <a>VerifySession</a>, which verifies whether the calling user has a valid Amazon CodeCatalyst login and session.</p> </li> </ul> <note> <p>If you are using the Amazon CodeCatalyst APIs with an SDK or the CLI, you must configure your computer to work with Amazon CodeCatalyst and single sign-on (SSO). For more information, see <a href=\"https://docs.aws.amazon.com/codecatalyst/latest/userguide/set-up-cli.html\">Setting up to use the CLI with Amazon CodeCatalyst</a> and the SSO documentation for your SDK.</p> </note>"
+  "documentation":"<p>Welcome to the Amazon CodeCatalyst API reference. This reference provides descriptions of operations and data types for Amazon CodeCatalyst. You can use the Amazon CodeCatalyst API to work with the following objects. </p> <p>Spaces, by calling the following:</p> <ul> <li> <p> <a>DeleteSpace</a>, which deletes a space.</p> </li> <li> <p> <a>GetSpace</a>, which returns information about a space.</p> </li> <li> <p> <a>GetSubscription</a>, which returns information about the Amazon Web Services account used for billing purposes and the billing plan for the space.</p> </li> <li> <p> <a>ListSpaces</a>, which retrieves a list of spaces.</p> </li> <li> <p> <a>UpdateSpace</a>, which changes one or more values for a space.</p> </li> </ul> <p>Projects, by calling the following:</p> <ul> <li> <p> <a>CreateProject</a> which creates a project in a specified space.</p> </li> <li> <p> <a>GetProject</a>, which returns information about a project.</p> </li> <li> <p> <a>ListProjects</a>, which retrieves a list of projects in a space.</p> </li> </ul> <p>Users, by calling the following:</p> <ul> <li> <p> <a>GetUserDetails</a>, which returns information about a user in Amazon CodeCatalyst.</p> </li> </ul> <p>Source repositories, by calling the following:</p> <ul> <li> <p> <a>CreateSourceRepository</a>, which creates an empty Git-based source repository in a specified project.</p> </li> <li> <p> <a>CreateSourceRepositoryBranch</a>, which creates a branch in a specified repository where you can work on code.</p> </li> <li> <p> <a>DeleteSourceRepository</a>, which deletes a source repository.</p> </li> <li> <p> <a>GetSourceRepository</a>, which returns information about a source repository.</p> </li> <li> <p> <a>GetSourceRepositoryCloneUrls</a>, which returns information about the URLs that can be used with a Git client to clone a source repository.</p> </li> <li> <p> <a>ListSourceRepositories</a>, which retrieves a list of source repositories in a project.</p> </li> <li> <p> <a>ListSourceRepositoryBranches</a>, which retrieves a list of branches in a source repository.</p> </li> </ul> <p>Dev Environments and the Amazon Web Services Toolkits, by calling the following:</p> <ul> <li> <p> <a>CreateDevEnvironment</a>, which creates a Dev Environment, where you can quickly work on the code stored in the source repositories of your project.</p> </li> <li> <p> <a>DeleteDevEnvironment</a>, which deletes a Dev Environment.</p> </li> <li> <p> <a>GetDevEnvironment</a>, which returns information about a Dev Environment.</p> </li> <li> <p> <a>ListDevEnvironments</a>, which retrieves a list of Dev Environments in a project.</p> </li> <li> <p> <a>ListDevEnvironmentSessions</a>, which retrieves a list of active Dev Environment sessions in a project.</p> </li> <li> <p> <a>StartDevEnvironment</a>, which starts a specified Dev Environment and puts it into an active state.</p> </li> <li> <p> <a>StartDevEnvironmentSession</a>, which starts a session to a specified Dev Environment.</p> </li> <li> <p> <a>StopDevEnvironment</a>, which stops a specified Dev Environment and puts it into an stopped state.</p> </li> <li> <p> <a>StopDevEnvironmentSession</a>, which stops a session for a specified Dev Environment.</p> </li> <li> <p> <a>UpdateDevEnvironment</a>, which changes one or more values for a Dev Environment.</p> </li> </ul> <p>Workflows, by calling the following:</p> <ul> <li> <p> <a>GetWorkflow</a>, which returns information about a workflow.</p> </li> <li> <p> <a>GetWorkflowRun</a>, which returns information about a specified run of a workflow.</p> </li> <li> <p> <a>ListWorkflowRuns</a>, which retrieves a list of runs of a specified workflow.</p> </li> <li> <p> <a>ListWorkflows</a>, which retrieves a list of workflows in a specified project.</p> </li> <li> <p> <a>StartWorkflowRun</a>, which starts a run of a specified workflow.</p> </li> </ul> <p>Security, activity, and resource management in Amazon CodeCatalyst, by calling the following:</p> <ul> <li> <p> <a>CreateAccessToken</a>, which creates a personal access token (PAT) for the current user.</p> </li> <li> <p> <a>DeleteAccessToken</a>, which deletes a specified personal access token (PAT).</p> </li> <li> <p> <a>ListAccessTokens</a>, which lists all personal access tokens (PATs) associated with a user.</p> </li> <li> <p> <a>ListEventLogs</a>, which retrieves a list of events that occurred during a specified time period in a space.</p> </li> <li> <p> <a>VerifySession</a>, which verifies whether the calling user has a valid Amazon CodeCatalyst login and session.</p> </li> </ul> <note> <p>If you are using the Amazon CodeCatalyst APIs with an SDK or the CLI, you must configure your computer to work with Amazon CodeCatalyst and single sign-on (SSO). For more information, see <a href=\"https://docs.aws.amazon.com/codecatalyst/latest/userguide/set-up-cli.html\">Setting up to use the CLI with Amazon CodeCatalyst</a> and the SSO documentation for your SDK.</p> </note>"
 }

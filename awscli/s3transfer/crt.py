@@ -25,13 +25,18 @@ from awscrt.io import (
     EventLoopGroup,
     TlsContextOptions,
 )
-from awscrt.s3 import S3Client, S3RequestTlsMode, S3RequestType
+from awscrt.s3 import (
+    S3Client,
+    S3RequestTlsMode,
+    S3RequestType,
+    get_recommended_throughput_target_gbps,
+)
 from botocore import UNSIGNED
 from botocore.compat import urlsplit
 from botocore.config import Config
 from botocore.exceptions import NoCredentialsError
 
-from s3transfer.constants import GB, MB
+from s3transfer.constants import MB
 from s3transfer.exceptions import TransferNotDoneError
 from s3transfer.futures import BaseTransferFuture, BaseTransferMeta
 from s3transfer.utils import CallArgs, OSUtils, get_callbacks
@@ -94,7 +99,7 @@ def create_s3_crt_client(
     region,
     botocore_credential_provider=None,
     num_threads=None,
-    target_throughput=5 * GB / 8,
+    target_throughput=None,
     part_size=8 * MB,
     use_ssl=True,
     verify=None,
@@ -113,8 +118,14 @@ def create_s3_crt_client(
         is the number of processors in the machine.
 
     :type target_throughput: Optional[int]
-    :param target_throughput: Throughput target in Bytes.
-        Default is 0.625 GB/s (which translates to 5 Gb/s).
+    :param target_throughput: Throughput target in bytes per second.
+        By default, CRT will automatically attempt to choose a target
+        throughput that matches the system's maximum network throughput.
+        Currently, if CRT is unable to determine the maximum network
+        throughput, a fallback target throughput of ``1_250_000_000`` bytes
+        per second (which translates to 10 gigabits per second, or 1.16
+        gibibytes per second) is used. To set a specific target
+        throughput, set a value for this parameter.
 
     :type part_size: Optional[int]
     :param part_size: Size, in Bytes, of parts that files will be downloaded
@@ -163,8 +174,9 @@ def create_s3_crt_client(
         provider = AwsCredentialsProvider.new_delegate(
             credentails_provider_adapter
         )
-
-    target_gbps = target_throughput * 8 / GB
+    target_gbps = _get_crt_throughput_target_gbps(
+        provided_throughput_target_bytes=target_throughput
+    )
     return S3Client(
         bootstrap=bootstrap,
         region=region,
@@ -174,6 +186,24 @@ def create_s3_crt_client(
         tls_connection_options=tls_connection_options,
         throughput_target_gbps=target_gbps,
     )
+
+
+def _get_crt_throughput_target_gbps(provided_throughput_target_bytes=None):
+    if provided_throughput_target_bytes is None:
+        target_gbps = get_recommended_throughput_target_gbps()
+        logger.debug(
+            'Recommended CRT throughput target in gbps: %s', target_gbps
+        )
+        if target_gbps is None:
+            target_gbps = 10.0
+    else:
+        # NOTE: The GB constant in s3transfer is technically a gibibyte. The
+        # GB constant is not used here because the CRT interprets gigabits
+        # for networking as a base power of 10
+        # (i.e. 1000 ** 3 instead of 1024 ** 3).
+        target_gbps = provided_throughput_target_bytes * 8 / 1_000_000_000
+    logger.debug('Using CRT throughput target in gbps: %s', target_gbps)
+    return target_gbps
 
 
 class CRTTransferManager:

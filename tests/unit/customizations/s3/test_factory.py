@@ -16,6 +16,7 @@ import awscrt.s3
 from awscrt.s3 import S3RequestTlsMode
 from botocore.session import Session
 from botocore.config import Config
+from botocore.credentials import Credentials
 from botocore.httpsession import DEFAULT_CA_BUNDLE
 from s3transfer.manager import TransferManager
 import s3transfer.crt
@@ -324,20 +325,31 @@ class TestTransferManagerFactory(unittest.TestCase):
         self.assert_tls_disabled_for_crt_client(mock_crt_client)
 
     @mock.patch('s3transfer.crt.S3Client')
-    def test_uses_botocore_credential_provider_for_crt_manager(
+    def test_uses_botocore_credentials_for_crt_manager(
             self, mock_crt_client):
+        credentials = Credentials('access_key', 'secret_key', 'token')
+        self.session.get_credentials.return_value = credentials
         self.runtime_config = self.get_runtime_config(
             preferred_transfer_client='crt')
         transfer_manager = self.factory.create_transfer_manager(
             self.params, self.runtime_config)
         self.assert_is_crt_manager(transfer_manager)
-        self.session.get_component.assert_called_with('credential_provider')
-        self.assertIsNotNone(
-            mock_crt_client.call_args[1]['credential_provider']
-        )
+        self.session.get_credentials.assert_called_with()
+        crt_credential_provider = mock_crt_client.call_args[1][
+            'credential_provider'
+        ]
+        self.assertIsNotNone(crt_credential_provider)
+
+        # Ensure the credentials returned by the CRT credential provider
+        # match the session's credentials
+        future = crt_credential_provider.get_credentials()
+        crt_credentials = future.result()
+        assert crt_credentials.access_key_id == 'access_key'
+        assert crt_credentials.secret_access_key == 'secret_key'
+        assert crt_credentials.session_token == 'token'
 
     @mock.patch('s3transfer.crt.S3Client')
-    def test_disable_botocore_credential_provider_for_crt_manager(
+    def test_disable_botocore_credentials_for_crt_manager(
             self, mock_crt_client):
         self.runtime_config = self.get_runtime_config(
             preferred_transfer_client='crt')
@@ -345,7 +357,7 @@ class TestTransferManagerFactory(unittest.TestCase):
         transfer_manager = self.factory.create_transfer_manager(
             self.params, self.runtime_config)
         self.assert_is_crt_manager(transfer_manager)
-        self.session.get_component.assert_not_called()
+        self.session.get_credentials.assert_not_called()
         self.assertIsNone(
             mock_crt_client.call_args[1]['credential_provider']
         )

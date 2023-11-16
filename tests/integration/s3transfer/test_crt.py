@@ -60,15 +60,21 @@ class TestCRTS3Transfers(BaseTransferManagerIntegTest):
         self.request_serializer = s3transfer.crt.BotocoreCRTRequestSerializer(
             self.session, client_kwargs={'region_name': self.region}
         )
-        credetial_resolver = self.session.get_component('credential_provider')
         self.s3_crt_client = s3transfer.crt.create_s3_crt_client(
-            self.region, credetial_resolver
+            self.region, self._get_crt_credentials_provider()
         )
         self.record_subscriber = RecordingSubscriber()
         self.osutil = OSUtils()
         return s3transfer.crt.CRTTransferManager(
             self.s3_crt_client, self.request_serializer
         )
+
+    def _get_crt_credentials_provider(self):
+        botocore_credentials = self.session.get_credentials()
+        wrapper = s3transfer.crt.BotocoreCRTCredentialsWrapper(
+            botocore_credentials
+        )
+        return wrapper.to_crt_credentials_provider()
 
     def _upload_with_crt_transfer_manager(self, fileobj, key=None):
         if key is None:

@@ -13,7 +13,8 @@
 import io
 
 import pytest
-from botocore.credentials import CredentialResolver, ReadOnlyCredentials
+from botocore.credentials import Credentials, ReadOnlyCredentials
+from botocore.exceptions import NoCredentialsError
 from botocore.session import Session
 
 from s3transfer.exceptions import TransferNotDoneError
@@ -21,6 +22,7 @@ from s3transfer.utils import CallArgs
 from tests import HAS_CRT, FileCreator, mock, requires_crt, unittest
 
 if HAS_CRT:
+    import awscrt.auth
     import awscrt.s3
 
     import s3transfer.crt
@@ -163,45 +165,76 @@ class TestBotocoreCRTRequestSerializer(unittest.TestCase):
         self.assertIsNone(crt_request.headers.get("Authorization"))
 
 
-@requires_crt
-class TestCRTCredentialProviderAdapter(unittest.TestCase):
-    def setUp(self):
-        self.botocore_credential_provider = mock.Mock(CredentialResolver)
-        self.access_key = "access_key"
-        self.secret_key = "secret_key"
-        self.token = "token"
-        self.botocore_credential_provider.load_credentials.return_value.get_frozen_credentials.return_value = ReadOnlyCredentials(
-            self.access_key, self.secret_key, self.token
+@requires_crt_pytest
+class TestBotocoreCRTCredentialsWrapper:
+    @pytest.fixture
+    def botocore_credentials(self):
+        return Credentials(
+            access_key='access_key', secret_key='secret_key', token='token'
         )
 
-    def _call_adapter_and_check(self, credentails_provider_adapter):
-        credentials = credentails_provider_adapter()
-        self.assertEqual(credentials.access_key_id, self.access_key)
-        self.assertEqual(credentials.secret_access_key, self.secret_key)
-        self.assertEqual(credentials.session_token, self.token)
+    def assert_crt_credentials(
+        self,
+        crt_credentials,
+        expected_access_key='access_key',
+        expected_secret_key='secret_key',
+        expected_token='token',
+    ):
+        assert crt_credentials.access_key_id == expected_access_key
+        assert crt_credentials.secret_access_key == expected_secret_key
+        assert crt_credentials.session_token == expected_token
 
-    def test_fetch_crt_credentials_successfully(self):
-        credentails_provider_adapter = (
-            s3transfer.crt.CRTCredentialProviderAdapter(
-                self.botocore_credential_provider
-            )
+    def test_fetch_crt_credentials_successfully(self, botocore_credentials):
+        wrapper = s3transfer.crt.BotocoreCRTCredentialsWrapper(
+            botocore_credentials
         )
-        self._call_adapter_and_check(credentails_provider_adapter)
+        crt_credentials = wrapper()
+        self.assert_crt_credentials(crt_credentials)
 
-    def test_load_credentials_once(self):
-        credentails_provider_adapter = (
-            s3transfer.crt.CRTCredentialProviderAdapter(
-                self.botocore_credential_provider
-            )
+    def test_wrapper_does_not_cache_frozen_credentials(self):
+        mock_credentials = mock.Mock(Credentials)
+        mock_credentials.get_frozen_credentials.side_effect = [
+            ReadOnlyCredentials('access_key_1', 'secret_key_1', 'token_1'),
+            ReadOnlyCredentials('access_key_2', 'secret_key_2', 'token_2'),
+        ]
+        wrapper = s3transfer.crt.BotocoreCRTCredentialsWrapper(
+            mock_credentials
         )
-        called_times = 5
-        for i in range(called_times):
-            self._call_adapter_and_check(credentails_provider_adapter)
-        # Assert that the load_credentails of botocore credential provider
-        # will only be called once
-        self.assertEqual(
-            self.botocore_credential_provider.load_credentials.call_count, 1
+
+        crt_credentials_1 = wrapper()
+        self.assert_crt_credentials(
+            crt_credentials_1,
+            expected_access_key='access_key_1',
+            expected_secret_key='secret_key_1',
+            expected_token='token_1',
         )
+
+        crt_credentials_2 = wrapper()
+        self.assert_crt_credentials(
+            crt_credentials_2,
+            expected_access_key='access_key_2',
+            expected_secret_key='secret_key_2',
+            expected_token='token_2',
+        )
+
+        assert mock_credentials.get_frozen_credentials.call_count == 2
+
+    def test_raises_error_when_resolved_credentials_is_none(self):
+        wrapper = s3transfer.crt.BotocoreCRTCredentialsWrapper(None)
+        with pytest.raises(NoCredentialsError):
+            wrapper()
+
+    def test_to_crt_credentials_provider(self, botocore_credentials):
+        wrapper = s3transfer.crt.BotocoreCRTCredentialsWrapper(
+            botocore_credentials
+        )
+        crt_credentials_provider = wrapper.to_crt_credentials_provider()
+        assert isinstance(
+            crt_credentials_provider, awscrt.auth.AwsCredentialsProvider
+        )
+        get_credentials_future = crt_credentials_provider.get_credentials()
+        crt_credentials = get_credentials_future.result()
+        self.assert_crt_credentials(crt_credentials)
 
 
 @requires_crt

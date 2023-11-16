@@ -18,7 +18,8 @@ from botocore.httpsession import DEFAULT_CA_BUNDLE
 from s3transfer.manager import TransferManager
 from s3transfer.crt import (
     acquire_crt_s3_process_lock, create_s3_crt_client,
-    BotocoreCRTRequestSerializer, CRTTransferManager
+    BotocoreCRTRequestSerializer, CRTTransferManager,
+    BotocoreCRTCredentialsWrapper
 )
 
 from awscli.compat import urlparse
@@ -131,9 +132,9 @@ class TransferManagerFactory:
         if multipart_chunksize:
             create_crt_client_kwargs['part_size'] = multipart_chunksize
         if params.get('sign_request', True):
+            crt_credentials_provider = self._get_crt_credentials_provider()
             create_crt_client_kwargs[
-                'botocore_credential_provider'] = self._session.get_component(
-                    'credential_provider')
+                'crt_credentials_provider'] = crt_credentials_provider
 
         return create_s3_crt_client(**create_crt_client_kwargs)
 
@@ -162,6 +163,11 @@ class TransferManagerFactory:
             transfer_config.multipart_chunksize
         )
         return TransferManager(client, transfer_config)
+
+    def _get_crt_credentials_provider(self):
+        botocore_credentials = self._session.get_credentials()
+        wrapper = BotocoreCRTCredentialsWrapper(botocore_credentials)
+        return wrapper.to_crt_credentials_provider()
 
     def _resolve_region(self, params):
         region = params.get('region')

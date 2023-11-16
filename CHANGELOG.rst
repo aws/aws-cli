@@ -2,6 +2,32 @@
 CHANGELOG
 =========
 
+1.30.2
+======
+
+* api-change:``codecatalyst``: This release includes updates to the Dev Environment APIs to include an optional vpcConnectionName parameter that supports using Dev Environments with Amazon VPC.
+* api-change:``dlm``: This release adds support for Amazon Data Lifecycle Manager default policies for EBS snapshots and EBS-backed AMIs.
+* api-change:``ec2``: Enable use of tenant-specific PublicSigningKeyUrl from device trust providers and onboard jumpcloud as a new device trust provider.
+* api-change:``fsx``: Enables customers to update their PerUnitStorageThroughput on their Lustre file systems.
+* api-change:``glue``: Introduces new column statistics APIs to support statistics generation for tables within the Glue Data Catalog.
+* api-change:``imagebuilder``: This release adds the Image Lifecycle Management feature to automate the process of deprecating, disabling and deleting outdated images and their associated resources.
+* api-change:``iot``: GA release the ability to index and search devices based on their GeoLocation data. With GeoQueries you can narrow your search to retrieve devices located in the desired geographic boundary.
+* api-change:``ivs-realtime``: This release introduces server side composition and recording for stages.
+* api-change:``kafka``: Added a new API response field which determines if there is an action required from the customer regarding their cluster.
+* api-change:``lambda``: Adds support for logging configuration in Lambda Functions. Customers will have more control how their function logs are captured and to which cloud watch log group they are delivered also.
+* api-change:``macie2``: This release adds support for configuring Macie to assume an IAM role when retrieving sample occurrences of sensitive data reported by findings.
+* api-change:``mediapackage``: DRM_TOP_LEVEL_COMPACT allows placing content protection elements at the MPD level and referenced at the AdaptationSet level
+* api-change:``pinpoint-sms-voice-v2``: Amazon Pinpoint now offers additional operations as part of version 2 of the SMS and voice APIs. This release includes 26 new APIs to create and manage phone number registrations, add verified destination numbers, and request sender IDs.
+* api-change:``polly``: Add new engine - long-form - dedicated for longer content, such as news articles, training materials, or marketing videos.
+* api-change:``quicksight``: Custom permission support for QuickSight roles; Three new datasources STARBURST, TRINO, BIGQUERY; Lenient mode changes the default behavior to allow for exporting and importing with certain UI allowed errors, Support for permissions and tags export and import.
+* api-change:``sagemaker``: Amazon SageMaker Studio now supports Trainium instance types - trn1.2xlarge, trn1.32xlarge, trn1n.32xlarge.
+* api-change:``ssm-incidents``: Introduces new APIs ListIncidentFindings and BatchGetIncidentFindings to use findings related to an incident.
+* api-change:``ssm``: This release introduces the ability to filter automation execution steps which have parent steps. In addition, runbook variable information is returned by GetAutomationExecution and parent step information is returned by the DescribeAutomationStepExecutions API.
+* api-change:``sso-admin``: Instances bound to a single AWS account, API operations for managing instances and applications, and assignments to applications are now supported. Trusted identity propagation is also supported, with new API operations for managing trusted token issuers and application grants and scopes.
+* api-change:``transfer``: Introduced S3StorageOptions for servers to enable directory listing optimizations and added Type fields to logical directory mappings.
+* api-change:``endpoint-rules``: Update endpoint-rules command to latest version
+
+
 1.30.1
 ======
 

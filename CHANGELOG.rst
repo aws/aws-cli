@@ -6389,6 +6389,49 @@ CHANGELOG
 * feature:wizard: Added support for AWS CLI Wizards. See `#3752 <https://github.com/aws/aws-cli/issues/3752>`__.
 
 
+1.30.2
+======
+
+* api-change:``codecatalyst``: This release includes updates to the Dev Environment APIs to include an optional vpcConnectionName parameter that supports using Dev Environments with Amazon VPC.
+* api-change:``dlm``: This release adds support for Amazon Data Lifecycle Manager default policies for EBS snapshots and EBS-backed AMIs.
+* api-change:``ec2``: Enable use of tenant-specific PublicSigningKeyUrl from device trust providers and onboard jumpcloud as a new device trust provider.
+* api-change:``fsx``: Enables customers to update their PerUnitStorageThroughput on their Lustre file systems.
+* api-change:``glue``: Introduces new column statistics APIs to support statistics generation for tables within the Glue Data Catalog.
+* api-change:``imagebuilder``: This release adds the Image Lifecycle Management feature to automate the process of deprecating, disabling and deleting outdated images and their associated resources.
+* api-change:``iot``: GA release the ability to index and search devices based on their GeoLocation data. With GeoQueries you can narrow your search to retrieve devices located in the desired geographic boundary.
+* api-change:``ivs-realtime``: This release introduces server side composition and recording for stages.
+* api-change:``kafka``: Added a new API response field which determines if there is an action required from the customer regarding their cluster.
+* api-change:``lambda``: Adds support for logging configuration in Lambda Functions. Customers will have more control how their function logs are captured and to which cloud watch log group they are delivered also.
+* api-change:``macie2``: This release adds support for configuring Macie to assume an IAM role when retrieving sample occurrences of sensitive data reported by findings.
+* api-change:``mediapackage``: DRM_TOP_LEVEL_COMPACT allows placing content protection elements at the MPD level and referenced at the AdaptationSet level
+* api-change:``pinpoint-sms-voice-v2``: Amazon Pinpoint now offers additional operations as part of version 2 of the SMS and voice APIs. This release includes 26 new APIs to create and manage phone number registrations, add verified destination numbers, and request sender IDs.
+* api-change:``polly``: Add new engine - long-form - dedicated for longer content, such as news articles, training materials, or marketing videos.
+* api-change:``quicksight``: Custom permission support for QuickSight roles; Three new datasources STARBURST, TRINO, BIGQUERY; Lenient mode changes the default behavior to allow for exporting and importing with certain UI allowed errors, Support for permissions and tags export and import.
+* api-change:``sagemaker``: Amazon SageMaker Studio now supports Trainium instance types - trn1.2xlarge, trn1.32xlarge, trn1n.32xlarge.
+* api-change:``ssm-incidents``: Introduces new APIs ListIncidentFindings and BatchGetIncidentFindings to use findings related to an incident.
+* api-change:``ssm``: This release introduces the ability to filter automation execution steps which have parent steps. In addition, runbook variable information is returned by GetAutomationExecution and parent step information is returned by the DescribeAutomationStepExecutions API.
+* api-change:``sso-admin``: Instances bound to a single AWS account, API operations for managing instances and applications, and assignments to applications are now supported. Trusted identity propagation is also supported, with new API operations for managing trusted token issuers and application grants and scopes.
+* api-change:``transfer``: Introduced S3StorageOptions for servers to enable directory listing optimizations and added Type fields to logical directory mappings.
+* api-change:``endpoint-rules``: Update endpoint-rules command to latest version
+
+
+1.30.1
+======
+
+* api-change:``autoscaling``: This release introduces Instance Maintenance Policy, a new EC2 Auto Scaling capability that allows customers to define whether instances are launched before or after existing instances are terminated during instance replacement operations.
+* api-change:``cloudtrail``: The Lake Repricing feature lets customers configure a BillingMode for an event data store. The BillingMode determines the cost for ingesting and storing events and the default and maximum retention period for the event data store.
+* api-change:``codecatalyst``: This release adds functionality for retrieving information about workflows and workflow runs and starting workflow runs in Amazon CodeCatalyst.
+* api-change:``ec2``: AWS EBS now supports Snapshot Lock, giving users the ability to lock an EBS Snapshot to prohibit deletion of the snapshot. This release introduces the LockSnapshot, UnlockSnapshot & DescribeLockedSnapshots APIs to manage lock configuration for snapshots. The release also includes the dl2q_24xlarge.
+* api-change:``finspace-data``: Adding deprecated trait to APIs in this name space.
+* api-change:``finspace``: Adding deprecated trait on Dataset Browser Environment APIs
+* api-change:``lambda``: Add Java 21 (java21) support to AWS Lambda
+* api-change:``mwaa``: This Amazon MWAA release adds support for customer-managed VPC endpoints. This lets you choose whether to create, and manage your environment's VPC endpoints, or to have Amazon MWAA create, and manage them for you.
+* api-change:``rds``: Updates Amazon RDS documentation for support for upgrading RDS for MySQL snapshots from version 5.7 to version 8.0.
+* api-change:``redshift``: The custom domain name SDK for Amazon Redshift provisioned clusters is updated with additional required parameters for modify and delete operations. Additionally, users can provide domain names with longer top-level domains.
+* api-change:``s3control``: Add 5 APIs to create, update, get, list, delete S3 Storage Lens group(eg. CreateStorageLensGroup), 3 APIs for tagging(TagResource,UntagResource,ListTagsForResource), and update to StorageLensConfiguration to allow metrics to be aggregated on Storage Lens groups.
+* api-change:``ssm-sap``: Update the default value of MaxResult to 50.
+
+
 1.30.0
 ======
 

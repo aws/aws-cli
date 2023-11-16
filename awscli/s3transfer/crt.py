@@ -71,33 +71,9 @@ def acquire_crt_s3_process_lock(name):
     return CRT_S3_PROCESS_LOCK
 
 
-class CRTCredentialProviderAdapter:
-    def __init__(self, botocore_credential_provider):
-        self._botocore_credential_provider = botocore_credential_provider
-        self._loaded_credentials = None
-        self._lock = threading.Lock()
-
-    def __call__(self):
-        credentials = self._get_credentials().get_frozen_credentials()
-        return AwsCredentials(
-            credentials.access_key, credentials.secret_key, credentials.token
-        )
-
-    def _get_credentials(self):
-        with self._lock:
-            if self._loaded_credentials is None:
-                loaded_creds = (
-                    self._botocore_credential_provider.load_credentials()
-                )
-                if loaded_creds is None:
-                    raise NoCredentialsError()
-                self._loaded_credentials = loaded_creds
-            return self._loaded_credentials
-
-
 def create_s3_crt_client(
     region,
-    botocore_credential_provider=None,
+    crt_credentials_provider=None,
     num_threads=None,
     target_throughput=None,
     part_size=8 * MB,
@@ -108,10 +84,10 @@ def create_s3_crt_client(
     :type region: str
     :param region: The region used for signing
 
-    :type botocore_credential_provider:
-        Optional[botocore.credentials.CredentialResolver]
-    :param botocore_credential_provider: Provide credentials for CRT
-        to sign the request if not set, the request will not be signed
+    :type crt_credentials_provider:
+        Optional[awscrt.auth.AwsCredentialsProvider]
+    :param crt_credentials_provider: CRT AWS credentials provider
+        to use to sign requests. If not set, requests will not be signed.
 
     :type num_threads: Optional[int]
     :param num_threads: Number of worker threads generated. Default
@@ -151,7 +127,6 @@ def create_s3_crt_client(
     event_loop_group = EventLoopGroup(num_threads)
     host_resolver = DefaultHostResolver(event_loop_group)
     bootstrap = ClientBootstrap(event_loop_group, host_resolver)
-    provider = None
     tls_connection_options = None
 
     tls_mode = (
@@ -167,20 +142,13 @@ def create_s3_crt_client(
             tls_ctx_options.verify_peer = False
         client_tls_option = ClientTlsContext(tls_ctx_options)
         tls_connection_options = client_tls_option.new_connection_options()
-    if botocore_credential_provider:
-        credentails_provider_adapter = CRTCredentialProviderAdapter(
-            botocore_credential_provider
-        )
-        provider = AwsCredentialsProvider.new_delegate(
-            credentails_provider_adapter
-        )
     target_gbps = _get_crt_throughput_target_gbps(
         provided_throughput_target_bytes=target_throughput
     )
     return S3Client(
         bootstrap=bootstrap,
         region=region,
-        credential_provider=provider,
+        credential_provider=crt_credentials_provider,
         part_size=part_size,
         tls_mode=tls_mode,
         tls_connection_options=tls_connection_options,
@@ -573,6 +541,25 @@ class FakeRawResponse(BytesIO):
             if not chunk:
                 break
             yield chunk
+
+
+class BotocoreCRTCredentialsWrapper:
+    def __init__(self, resolved_botocore_credentials):
+        self._resolved_credentials = resolved_botocore_credentials
+
+    def __call__(self):
+        credentials = self._get_credentials().get_frozen_credentials()
+        return AwsCredentials(
+            credentials.access_key, credentials.secret_key, credentials.token
+        )
+
+    def to_crt_credentials_provider(self):
+        return AwsCredentialsProvider.new_delegate(self)
+
+    def _get_credentials(self):
+        if self._resolved_credentials is None:
+            raise NoCredentialsError()
+        return self._resolved_credentials
 
 
 class CRTTransferCoordinator:

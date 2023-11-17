@@ -667,10 +667,9 @@ class Template(object):
         for resource_id, resource in resource_dict.items():
 
             if resource_id.startswith("Fn::ForEach::"):
-                if not isinstance(resource, list) or len(resource) < 3:
+                if not isinstance(resource, list) or len(resource) != 3 or not isinstance(resource[2], dict):
                     raise exceptions.InvalidForEachIntrinsicFunctionError(resource_id=resource_id)
-                if isinstance(resource[2], dict):
-                    self.export_resources(resource[2])
+                self.export_resources(resource[2])
                 continue
 
             resource_type = resource.get("Type", None)

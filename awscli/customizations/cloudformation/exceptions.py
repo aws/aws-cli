@@ -56,4 +56,4 @@ class DeployBucketRequiredError(CloudFormationCommandError):
 
 
 class InvalidForEachIntrinsicFunctionError(CloudFormationCommandError):
-    fmt = 'The value of {resource_id} has an invalid "Fn::ForEach::" format: Must be a list of at least three entries'
+    fmt = 'The value of {resource_id} has an invalid "Fn::ForEach::" format: Must be a list of three entries'

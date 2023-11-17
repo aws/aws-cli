@@ -11,9 +11,15 @@ Output::
 
     {
         "participant": {
+            "browserName", "Google Chrome",
+            "browserVersion", "116",
             "firstJoinTime": "2023-04-26T20:30:34+00:00",
+            "ispName", "Comcast",
+            "osName", "Microsoft Windows 10 Pro",
+            "osVersion", "10.0.19044",
             "participantId": "abCDEf12GHIj",
             "published": true,
+            "sdkVersion", "",
             "state": "DISCONNECTED",
             "userId": ""
         }

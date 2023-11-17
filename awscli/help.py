@@ -66,6 +66,16 @@ class PagingHelpRenderer(object):
         self.output_stream = output_stream
 
     PAGER = None
+    _DEFAULT_DOCUTILS_SETTINGS_OVERRIDES = {
+        # The default for line length limit in docutils is 10,000. However,
+        # currently in the documentation, it inlines all possible enums in
+        # the JSON syntax which exceeds this limit for some EC2 commands
+        # and prevents the manpages from being generated.
+        # This is a temporary fix to allow the manpages for these commands
+        # to be rendered. Long term, we should avoid enumerating over all
+        # enums inline for the JSON syntax snippets.
+        'line_length_limit': 50_000
+    }
 
     def get_pager_cmdline(self):
         pager = self.PAGER
@@ -105,7 +115,10 @@ class PosixHelpRenderer(PagingHelpRenderer):
     PAGER = 'less -R'
 
     def _convert_doc_content(self, contents):
-        man_contents = publish_string(contents, writer=manpage.Writer())
+        man_contents = publish_string(
+            contents, writer=manpage.Writer(),
+            settings_overrides=self._DEFAULT_DOCUTILS_SETTINGS_OVERRIDES,
+        )
         if self._exists_on_path('groff'):
             cmdline = ['groff', '-m', 'man', '-T', 'ascii']
         elif self._exists_on_path('mandoc'):
@@ -154,8 +167,10 @@ class WindowsHelpRenderer(PagingHelpRenderer):
     PAGER = 'more'
 
     def _convert_doc_content(self, contents):
-        text_output = publish_string(contents,
-                                     writer=TextWriter())
+        text_output = publish_string(
+            contents, writer=TextWriter(),
+            settings_overrides=self._DEFAULT_DOCUTILS_SETTINGS_OVERRIDES,
+        )
         return text_output
 
     def _popen(self, *args, **kwargs):

@@ -7050,7 +7050,7 @@
         },
         "destinationPackageVersions":{
           "shape":"DestinationPackageVersions",
-          "documentation":"<p>The package version Amazon Resource Names (ARNs) that are installed on the device when the job successfully completes. </p> <p> <b>Note:</b>The following Length Constraints relates to a single string. Up to five strings are allowed.</p>"
+          "documentation":"<p>The package version Amazon Resource Names (ARNs) that are installed on the device when the job successfully completes. </p> <p> <b>Note:</b>The following Length Constraints relates to a single ARN. Up to 25 package version ARNs are allowed.</p>"
         }
       }
     },
@@ -7118,7 +7118,7 @@
         },
         "destinationPackageVersions":{
           "shape":"DestinationPackageVersions",
-          "documentation":"<p>The package version Amazon Resource Names (ARNs) that are installed on the device when the job successfully completes. </p> <p> <b>Note:</b>The following Length Constraints relates to a single string. Up to five strings are allowed.</p>"
+          "documentation":"<p>The package version Amazon Resource Names (ARNs) that are installed on the device when the job successfully completes. </p> <p> <b>Note:</b>The following Length Constraints relates to a single ARN. Up to 25 package version ARNs are allowed.</p>"
         }
       }
     },
@@ -9504,7 +9504,7 @@
         },
         "destinationPackageVersions":{
           "shape":"DestinationPackageVersions",
-          "documentation":"<p>The package version Amazon Resource Names (ARNs) that are installed on the device when the job successfully completes. </p> <p> <b>Note:</b>The following Length Constraints relates to a single string. Up to five strings are allowed.</p>"
+          "documentation":"<p>The package version Amazon Resource Names (ARNs) that are installed on the device when the job successfully completes. </p> <p> <b>Note:</b>The following Length Constraints relates to a single ARN. Up to 25 package version ARNs are allowed.</p>"
         }
       }
     },
@@ -10964,6 +10964,24 @@
     "FunctionArn":{"type":"string"},
     "GenerationId":{"type":"string"},
     "GenericLongValue":{"type":"long"},
+    "GeoLocationTarget":{
+      "type":"structure",
+      "members":{
+        "name":{
+          "shape":"TargetFieldName",
+          "documentation":"<p>The <code>name</code> of the geolocation target field. If the target field is part of a named shadow, you must select the named shadow using the <code>namedShadow</code> filter.</p>"
+        },
+        "order":{
+          "shape":"TargetFieldOrder",
+          "documentation":"<p>The <code>order</code> of the geolocation target field. This field is optional. The default value is <code>LatLon</code>.</p>"
+        }
+      },
+      "documentation":"<p>A geolocation target that you select to index. Each geolocation target contains a <code>name</code> and <code>order</code> key-value pair that specifies the geolocation target fields.</p>"
+    },
+    "GeoLocationsFilter":{
+      "type":"list",
+      "member":{"shape":"GeoLocationTarget"}
+    },
     "GetBehaviorModelTrainingSummariesRequest":{
       "type":"structure",
       "members":{
@@ -11761,9 +11779,13 @@
         "namedShadowNames":{
           "shape":"NamedShadowNamesFilter",
           "documentation":"<p>The shadow names that you select to index. The default maximum number of shadow names for indexing is 10. To increase the limit, see <a href=\"https://docs.aws.amazon.com/general/latest/gr/iot_device_management.html#fleet-indexing-limits\">Amazon Web Services IoT Device Management Quotas</a> in the <i>Amazon Web Services General Reference</i>. </p>"
+        },
+        "geoLocations":{
+          "shape":"GeoLocationsFilter",
+          "documentation":"<p>The list of geolocation targets that you select to index. The default maximum number of geolocation targets for indexing is <code>1</code>. To increase the limit, see <a href=\"https://docs.aws.amazon.com/general/latest/gr/iot_device_management.html#fleet-indexing-limits\">Amazon Web Services IoT Device Management Quotas</a> in the <i>Amazon Web Services General Reference</i>.</p>"
         }
       },
-      "documentation":"<p>Provides additional filters for specific data sources. Named shadow is the only data source that currently supports and requires a filter. To add named shadows to your fleet indexing configuration, set <code>namedShadowIndexingMode</code> to be <code>ON</code> and specify your shadow names in <code>filter</code>.</p>"
+      "documentation":"<p>Provides additional selections for named shadows and geolocation data. </p> <p>To add named shadows to your fleet indexing configuration, set <code>namedShadowIndexingMode</code> to be ON and specify your shadow names in <code>namedShadowNames</code> filter.</p> <p>To add geolocation data to your fleet indexing configuration: </p> <ul> <li> <p>If you store geolocation data in a class/unnamed shadow, set <code>thingIndexingMode</code> to be <code>REGISTRY_AND_SHADOW</code> and specify your geolocation data in <code>geoLocations</code> filter. </p> </li> <li> <p>If you store geolocation data in a named shadow, set <code>namedShadowIndexingMode</code> to be <code>ON</code>, add the shadow name in <code>namedShadowNames</code> filter, and specify your geolocation data in <code>geoLocations</code> filter. For more information, see <a href=\"https://docs.aws.amazon.com/iot/latest/developerguide/managing-fleet-index.html\">Managing fleet indexing</a>.</p> </li> </ul>"
     },
     "InlineDocument":{"type":"string"},
     "InputName":{
@@ -12068,7 +12090,7 @@
         },
         "destinationPackageVersions":{
           "shape":"DestinationPackageVersions",
-          "documentation":"<p>The package version Amazon Resource Names (ARNs) that are installed on the device when the job successfully completes. </p> <p> <b>Note:</b>The following Length Constraints relates to a single string. Up to five strings are allowed.</p>"
+          "documentation":"<p>The package version Amazon Resource Names (ARNs) that are installed on the device when the job successfully completes. </p> <p> <b>Note:</b>The following Length Constraints relates to a single ARN. Up to 25 package version ARNs are allowed.</p>"
         }
       },
       "documentation":"<p>The <code>Job</code> object contains details about a job.</p>"
@@ -17216,7 +17238,7 @@
         },
         "maxResults":{
           "shape":"QueryMaxResults",
-          "documentation":"<p>The maximum number of results to return at one time. The response might contain fewer results but will never contain more.</p>"
+          "documentation":"<p>The maximum number of results to return per page at one time. The response might contain fewer results but will never contain more.</p>"
         },
         "queryVersion":{
           "shape":"QueryVersion",
@@ -17495,7 +17517,7 @@
       "type":"string",
       "max":64,
       "min":1,
-      "pattern":"[a-zA-Z0-9:_-]+"
+      "pattern":"[$a-zA-Z0-9:_-]+"
     },
     "SigV4Authorization":{
       "type":"structure",
@@ -18096,6 +18118,14 @@
       "type":"list",
       "member":{"shape":"AuditCheckName"}
     },
+    "TargetFieldName":{"type":"string"},
+    "TargetFieldOrder":{
+      "type":"string",
+      "enum":[
+        "LatLon",
+        "LonLat"
+      ]
+    },
     "TargetSelection":{
       "type":"string",
       "enum":[
@@ -18579,7 +18609,7 @@
         },
         "filter":{
           "shape":"IndexingFilter",
-          "documentation":"<p>Provides additional filters for specific data sources. Named shadow is the only data source that currently supports and requires a filter. To add named shadows to your fleet indexing configuration, set <code>namedShadowIndexingMode</code> to be <code>ON</code> and specify your shadow names in <code>filter</code>.</p>"
+          "documentation":"<p>Provides additional selections for named shadows and geolocation data. </p> <p>To add named shadows to your fleet indexing configuration, set <code>namedShadowIndexingMode</code> to be ON and specify your shadow names in <code>namedShadowNames</code> filter.</p> <p>To add geolocation data to your fleet indexing configuration: </p> <ul> <li> <p>If you store geolocation data in a class/unnamed shadow, set <code>thingIndexingMode</code> to be <code>REGISTRY_AND_SHADOW</code> and specify your geolocation data in <code>geoLocations</code> filter. </p> </li> <li> <p>If you store geolocation data in a named shadow, set <code>namedShadowIndexingMode</code> to be <code>ON</code>, add the shadow name in <code>namedShadowNames</code> filter, and specify your geolocation data in <code>geoLocations</code> filter. For more information, see <a href=\"https://docs.aws.amazon.com/iot/latest/developerguide/managing-fleet-index.html\">Managing fleet indexing</a>.</p> </li> </ul>"
         }
       },
       "documentation":"<p>The thing indexing configuration. For more information, see <a href=\"https://docs.aws.amazon.com/iot/latest/developerguide/managing-index.html\">Managing Thing Indexing</a>.</p>"

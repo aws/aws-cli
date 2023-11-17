@@ -113,6 +113,26 @@
         "RequiresAccountId":{"value":true}
       }
     },
+    "CreateStorageLensGroup":{
+      "name":"CreateStorageLensGroup",
+      "http":{
+        "method":"POST",
+        "requestUri":"/v20180820/storagelensgroup",
+        "responseCode":204
+      },
+      "input":{
+        "shape":"CreateStorageLensGroupRequest",
+        "locationName":"CreateStorageLensGroupRequest",
+        "xmlNamespace":{"uri":"http://awss3control.amazonaws.com/doc/2018-08-20/"}
+      },
+      "documentation":"<p> Creates a new S3 Storage Lens group and associates it with the specified Amazon Web Services account ID. An S3 Storage Lens group is a custom grouping of objects based on prefix, suffix, object tags, object size, object age, or a combination of these filters. For each Storage Lens group that you’ve created, you can also optionally add Amazon Web Services resource tags. For more information about S3 Storage Lens groups, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/storage-lens-groups-overview.html\">Working with S3 Storage Lens groups</a>.</p> <p>To use this operation, you must have the permission to perform the <code>s3:CreateStorageLensGroup</code> action. If you’re trying to create a Storage Lens group with Amazon Web Services resource tags, you must also have permission to perform the <code>s3:TagResource</code> action. For more information about the required Storage Lens Groups permissions, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/storage_lens_iam_permissions.html#storage_lens_groups_permissions\">Setting account permissions to use S3 Storage Lens groups</a>.</p> <p>For information about Storage Lens groups errors, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/API/ErrorResponses.html#S3LensErrorCodeList\">List of Amazon S3 Storage Lens error codes</a>.</p>",
+      "endpoint":{
+        "hostPrefix":"{AccountId}."
+      },
+      "staticContextParams":{
+        "RequiresAccountId":{"value":true}
+      }
+    },
     "DeleteAccessPoint":{
       "name":"DeleteAccessPoint",
       "http":{
@@ -195,7 +215,7 @@
         "requestUri":"/v20180820/bucket/{name}/lifecycleconfiguration"
       },
       "input":{"shape":"DeleteBucketLifecycleConfigurationRequest"},
-      "documentation":"<note> <p>This action deletes an Amazon S3 on Outposts bucket's lifecycle configuration. To delete an S3 bucket's lifecycle configuration, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/API/API_DeleteBucketLifecycle.html\">DeleteBucketLifecycle</a> in the <i>Amazon S3 API Reference</i>. </p> </note> <p>Deletes the lifecycle configuration from the specified Outposts bucket. Amazon S3 on Outposts removes all the lifecycle configuration rules in the lifecycle subresource associated with the bucket. Your objects never expire, and Amazon S3 on Outposts no longer automatically deletes any objects on the basis of rules contained in the deleted lifecycle configuration. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/S3onOutposts.html\">Using Amazon S3 on Outposts</a> in <i>Amazon S3 User Guide</i>.</p> <p>To use this action, you must have permission to perform the <code>s3-outposts:DeleteLifecycleConfiguration</code> action. By default, the bucket owner has this permission and the Outposts bucket owner can grant this permission to others.</p> <p>All Amazon S3 on Outposts REST API requests for this action require an additional parameter of <code>x-amz-outpost-id</code> to be passed with the request. In addition, you must use an S3 on Outposts endpoint hostname prefix instead of <code>s3-control</code>. For an example of the request syntax for Amazon S3 on Outposts that uses the S3 on Outposts endpoint hostname prefix and the <code>x-amz-outpost-id</code> derived by using the access point ARN, see the <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/API/API_control_DeleteBucketLifecycleConfiguration.html#API_control_DeleteBucketLifecycleConfiguration_Examples\">Examples</a> section.</p> <p>For more information about object expiration, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/dev/intro-lifecycle-rules.html#intro-lifecycle-rules-actions\">Elements to Describe Lifecycle Actions</a>.</p> <p>Related actions include:</p> <ul> <li> <p> <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/API/API_control_PutBucketLifecycleConfiguration.html\">PutBucketLifecycleConfiguration</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/API/API_control_GetBucketLifecycleConfiguration.html\">GetBucketLifecycleConfiguration</a> </p> </li> </ul>",
+      "documentation":"<note> <p>This action deletes an Amazon S3 on Outposts bucket's lifecycle configuration. To delete an S3 bucket's lifecycle configuration, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/API/API_DeleteBucketLifecycle.html\">DeleteBucketLifecycle</a> in the <i>Amazon S3 API Reference</i>. </p> </note> <p>Deletes the lifecycle configuration from the specified Outposts bucket. Amazon S3 on Outposts removes all the lifecycle configuration rules in the lifecycle subresource associated with the bucket. Your objects never expire, and Amazon S3 on Outposts no longer automatically deletes any objects on the basis of rules contained in the deleted lifecycle configuration. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/S3onOutposts.html\">Using Amazon S3 on Outposts</a> in <i>Amazon S3 User Guide</i>.</p> <p>To use this operation, you must have permission to perform the <code>s3-outposts:PutLifecycleConfiguration</code> action. By default, the bucket owner has this permission and the Outposts bucket owner can grant this permission to others.</p> <p>All Amazon S3 on Outposts REST API requests for this action require an additional parameter of <code>x-amz-outpost-id</code> to be passed with the request. In addition, you must use an S3 on Outposts endpoint hostname prefix instead of <code>s3-control</code>. For an example of the request syntax for Amazon S3 on Outposts that uses the S3 on Outposts endpoint hostname prefix and the <code>x-amz-outpost-id</code> derived by using the access point ARN, see the <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/API/API_control_DeleteBucketLifecycleConfiguration.html#API_control_DeleteBucketLifecycleConfiguration_Examples\">Examples</a> section.</p> <p>For more information about object expiration, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/dev/intro-lifecycle-rules.html#intro-lifecycle-rules-actions\">Elements to Describe Lifecycle Actions</a>.</p> <p>Related actions include:</p> <ul> <li> <p> <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/API/API_control_PutBucketLifecycleConfiguration.html\">PutBucketLifecycleConfiguration</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/API/API_control_GetBucketLifecycleConfiguration.html\">GetBucketLifecycleConfiguration</a> </p> </li> </ul>",
       "endpoint":{
         "hostPrefix":"{AccountId}."
       },
@@ -330,6 +350,22 @@
       "input":{"shape":"DeleteStorageLensConfigurationTaggingRequest"},
       "output":{"shape":"DeleteStorageLensConfigurationTaggingResult"},
       "documentation":"<p>Deletes the Amazon S3 Storage Lens configuration tags. For more information about S3 Storage Lens, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/dev/storage_lens.html\">Assessing your storage activity and usage with Amazon S3 Storage Lens </a> in the <i>Amazon S3 User Guide</i>.</p> <note> <p>To use this action, you must have permission to perform the <code>s3:DeleteStorageLensConfigurationTagging</code> action. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/dev/storage_lens_iam_permissions.html\">Setting permissions to use Amazon S3 Storage Lens</a> in the <i>Amazon S3 User Guide</i>.</p> </note>",
+      "endpoint":{
+        "hostPrefix":"{AccountId}."
+      },
+      "staticContextParams":{
+        "RequiresAccountId":{"value":true}
+      }
+    },
+    "DeleteStorageLensGroup":{
+      "name":"DeleteStorageLensGroup",
+      "http":{
+        "method":"DELETE",
+        "requestUri":"/v20180820/storagelensgroup/{name}",
+        "responseCode":204
+      },
+      "input":{"shape":"DeleteStorageLensGroupRequest"},
+      "documentation":"<p> Deletes an existing S3 Storage Lens group.</p> <p>To use this operation, you must have the permission to perform the <code>s3:DeleteStorageLensGroup</code> action. For more information about the required Storage Lens Groups permissions, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/storage_lens_iam_permissions.html#storage_lens_groups_permissions\">Setting account permissions to use S3 Storage Lens groups</a>.</p> <p>For information about Storage Lens groups errors, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/API/ErrorResponses.html#S3LensErrorCodeList\">List of Amazon S3 Storage Lens error codes</a>.</p>",
       "endpoint":{
         "hostPrefix":"{AccountId}."
       },
@@ -724,6 +760,22 @@
         "RequiresAccountId":{"value":true}
       }
     },
+    "GetStorageLensGroup":{
+      "name":"GetStorageLensGroup",
+      "http":{
+        "method":"GET",
+        "requestUri":"/v20180820/storagelensgroup/{name}"
+      },
+      "input":{"shape":"GetStorageLensGroupRequest"},
+      "output":{"shape":"GetStorageLensGroupResult"},
+      "documentation":"<p> Retrieves the Storage Lens group configuration details.</p> <p>To use this operation, you must have the permission to perform the <code>s3:GetStorageLensGroup</code> action. For more information about the required Storage Lens Groups permissions, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/storage_lens_iam_permissions.html#storage_lens_groups_permissions\">Setting account permissions to use S3 Storage Lens groups</a>.</p> <p>For information about Storage Lens groups errors, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/API/ErrorResponses.html#S3LensErrorCodeList\">List of Amazon S3 Storage Lens error codes</a>.</p>",
+      "endpoint":{
+        "hostPrefix":"{AccountId}."
+      },
+      "staticContextParams":{
+        "RequiresAccountId":{"value":true}
+      }
+    },
     "ListAccessPoints":{
       "name":"ListAccessPoints",
       "http":{
@@ -819,6 +871,38 @@
       "input":{"shape":"ListStorageLensConfigurationsRequest"},
       "output":{"shape":"ListStorageLensConfigurationsResult"},
       "documentation":"<p>Gets a list of Amazon S3 Storage Lens configurations. For more information about S3 Storage Lens, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/dev/storage_lens.html\">Assessing your storage activity and usage with Amazon S3 Storage Lens </a> in the <i>Amazon S3 User Guide</i>.</p> <note> <p>To use this action, you must have permission to perform the <code>s3:ListStorageLensConfigurations</code> action. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/dev/storage_lens_iam_permissions.html\">Setting permissions to use Amazon S3 Storage Lens</a> in the <i>Amazon S3 User Guide</i>.</p> </note>",
+      "endpoint":{
+        "hostPrefix":"{AccountId}."
+      },
+      "staticContextParams":{
+        "RequiresAccountId":{"value":true}
+      }
+    },
+    "ListStorageLensGroups":{
+      "name":"ListStorageLensGroups",
+      "http":{
+        "method":"GET",
+        "requestUri":"/v20180820/storagelensgroup"
+      },
+      "input":{"shape":"ListStorageLensGroupsRequest"},
+      "output":{"shape":"ListStorageLensGroupsResult"},
+      "documentation":"<p> Lists all the Storage Lens groups in the specified home Region. </p> <p>To use this operation, you must have the permission to perform the <code>s3:ListStorageLensGroups</code> action. For more information about the required Storage Lens Groups permissions, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/storage_lens_iam_permissions.html#storage_lens_groups_permissions\">Setting account permissions to use S3 Storage Lens groups</a>.</p> <p>For information about Storage Lens groups errors, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/API/ErrorResponses.html#S3LensErrorCodeList\">List of Amazon S3 Storage Lens error codes</a>.</p>",
+      "endpoint":{
+        "hostPrefix":"{AccountId}."
+      },
+      "staticContextParams":{
+        "RequiresAccountId":{"value":true}
+      }
+    },
+    "ListTagsForResource":{
+      "name":"ListTagsForResource",
+      "http":{
+        "method":"GET",
+        "requestUri":"/v20180820/tags/{resourceArn+}"
+      },
+      "input":{"shape":"ListTagsForResourceRequest"},
+      "output":{"shape":"ListTagsForResourceResult"},
+      "documentation":"<p> This operation allows you to list all the Amazon Web Services resource tags for the specified resource. </p> <p>To use this operation, you must have the permission to perform the <code>s3:ListTagsForResource</code> action. For more information about the required Storage Lens Groups permissions, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/storage_lens_iam_permissions.html#storage_lens_groups_permissions\">Setting account permissions to use S3 Storage Lens groups</a>.</p> <p>For information about S3 Tagging errors, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/API/ErrorResponses.html#S3TaggingErrorCodeList\">List of Amazon S3 Tagging error codes</a>.</p> <note> <p>This operation is only supported for <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/storage-lens-groups.html\">S3 Storage Lens groups</a>.</p> </note>",
       "endpoint":{
         "hostPrefix":"{AccountId}."
       },
@@ -1089,6 +1173,44 @@
         "RequiresAccountId":{"value":true}
       }
     },
+    "TagResource":{
+      "name":"TagResource",
+      "http":{
+        "method":"POST",
+        "requestUri":"/v20180820/tags/{resourceArn+}",
+        "responseCode":204
+      },
+      "input":{
+        "shape":"TagResourceRequest",
+        "locationName":"TagResourceRequest",
+        "xmlNamespace":{"uri":"http://awss3control.amazonaws.com/doc/2018-08-20/"}
+      },
+      "output":{"shape":"TagResourceResult"},
+      "documentation":"<p> Creates a new Amazon Web Services resource tag or updates an existing resource tag. You can add up to 50 Amazon Web Services resource tags for each S3 resource. </p> <p>To use this operation, you must have the permission to perform the <code>s3:TagResource</code> action. For more information about the required Storage Lens Groups permissions, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/storage_lens_iam_permissions.html#storage_lens_groups_permissions\">Setting account permissions to use S3 Storage Lens groups</a>.</p> <p>For information about S3 Tagging errors, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/API/ErrorResponses.html#S3TaggingErrorCodeList\">List of Amazon S3 Tagging error codes</a>.</p> <note> <p>This operation is only supported for <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/storage-lens-groups.html\">S3 Storage Lens groups</a>.</p> </note>",
+      "endpoint":{
+        "hostPrefix":"{AccountId}."
+      },
+      "staticContextParams":{
+        "RequiresAccountId":{"value":true}
+      }
+    },
+    "UntagResource":{
+      "name":"UntagResource",
+      "http":{
+        "method":"DELETE",
+        "requestUri":"/v20180820/tags/{resourceArn+}",
+        "responseCode":204
+      },
+      "input":{"shape":"UntagResourceRequest"},
+      "output":{"shape":"UntagResourceResult"},
+      "documentation":"<p> This operation removes the specified Amazon Web Services resource tags from an S3 resource. </p> <p>To use this operation, you must have the permission to perform the <code>s3:UntagResource</code> action. For more information about the required Storage Lens Groups permissions, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/storage_lens_iam_permissions.html#storage_lens_groups_permissions\">Setting account permissions to use S3 Storage Lens groups</a>.</p> <p>For information about S3 Tagging errors, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/API/ErrorResponses.html#S3TaggingErrorCodeList\">List of Amazon S3 Tagging error codes</a>.</p> <note> <p>This operation is only supported for <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/storage-lens-groups.html\">S3 Storage Lens groups</a>.</p> </note>",
+      "endpoint":{
+        "hostPrefix":"{AccountId}."
+      },
+      "staticContextParams":{
+        "RequiresAccountId":{"value":true}
+      }
+    },
     "UpdateJobPriority":{
       "name":"UpdateJobPriority",
       "http":{
@@ -1127,6 +1249,26 @@
         {"shape":"InternalServiceException"}
       ],
       "documentation":"<p>Updates the status for the specified job. Use this action to confirm that you want to run a job or to cancel an existing job. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/batch-ops.html\">S3 Batch Operations</a> in the <i>Amazon S3 User Guide</i>.</p> <p/> <p>Related actions include:</p> <ul> <li> <p> <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/API/API_control_CreateJob.html\">CreateJob</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/API/API_control_ListJobs.html\">ListJobs</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/API/API_control_DescribeJob.html\">DescribeJob</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/API/API_control_UpdateJobStatus.html\">UpdateJobStatus</a> </p> </li> </ul>",
+      "endpoint":{
+        "hostPrefix":"{AccountId}."
+      },
+      "staticContextParams":{
+        "RequiresAccountId":{"value":true}
+      }
+    },
+    "UpdateStorageLensGroup":{
+      "name":"UpdateStorageLensGroup",
+      "http":{
+        "method":"PUT",
+        "requestUri":"/v20180820/storagelensgroup/{name}",
+        "responseCode":204
+      },
+      "input":{
+        "shape":"UpdateStorageLensGroupRequest",
+        "locationName":"UpdateStorageLensGroupRequest",
+        "xmlNamespace":{"uri":"http://awss3control.amazonaws.com/doc/2018-08-20/"}
+      },
+      "documentation":"<p> Updates the existing Storage Lens group.</p> <p>To use this operation, you must have the permission to perform the <code>s3:UpdateStorageLensGroup</code> action. For more information about the required Storage Lens Groups permissions, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/storage_lens_iam_permissions.html#storage_lens_groups_permissions\">Setting account permissions to use S3 Storage Lens groups</a>.</p> <p>For information about Storage Lens groups errors, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/API/ErrorResponses.html#S3LensErrorCodeList\">List of Amazon S3 Storage Lens error codes</a>.</p>",
       "endpoint":{
         "hostPrefix":"{AccountId}."
       },
@@ -1219,26 +1361,30 @@
       "members":{
         "ActivityMetrics":{
           "shape":"ActivityMetrics",
-          "documentation":"<p>A container for S3 Storage Lens activity metrics.</p>"
+          "documentation":"<p>A container element for S3 Storage Lens activity metrics.</p>"
         },
         "BucketLevel":{
           "shape":"BucketLevel",
-          "documentation":"<p>A container for the S3 Storage Lens bucket-level configuration.</p>"
+          "documentation":"<p>A container element for the S3 Storage Lens bucket-level configuration.</p>"
         },
         "AdvancedCostOptimizationMetrics":{
           "shape":"AdvancedCostOptimizationMetrics",
-          "documentation":"<p>A container for S3 Storage Lens advanced cost-optimization metrics.</p>"
+          "documentation":"<p>A container element for S3 Storage Lens advanced cost-optimization metrics.</p>"
         },
         "AdvancedDataProtectionMetrics":{
           "shape":"AdvancedDataProtectionMetrics",
-          "documentation":"<p>A container for S3 Storage Lens advanced data-protection metrics.</p>"
+          "documentation":"<p>A container element for S3 Storage Lens advanced data-protection metrics.</p>"
         },
         "DetailedStatusCodesMetrics":{
           "shape":"DetailedStatusCodesMetrics",
-          "documentation":"<p>A container for detailed status code metrics. </p>"
+          "documentation":"<p>A container element for detailed status code metrics. </p>"
+        },
+        "StorageLensGroupLevel":{
+          "shape":"StorageLensGroupLevel",
+          "documentation":"<p> A container element for S3 Storage Lens groups metrics. </p>"
         }
       },
-      "documentation":"<p>A container for the account-level Amazon S3 Storage Lens configuration.</p> <p>For more information about S3 Storage Lens, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/storage_lens.html\">Assessing your storage activity and usage with S3 Storage Lens</a> in the <i>Amazon S3 User Guide</i>. For a complete list of S3 Storage Lens metrics, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/storage_lens_metrics_glossary.html\">S3 Storage Lens metrics glossary</a> in the <i>Amazon S3 User Guide</i>.</p>"
+      "documentation":"<p>A container element for the account-level Amazon S3 Storage Lens configuration.</p> <p>For more information about S3 Storage Lens, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/storage_lens.html\">Assessing your storage activity and usage with S3 Storage Lens</a> in the <i>Amazon S3 User Guide</i>. For a complete list of S3 Storage Lens metrics, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/storage_lens_metrics_glossary.html\">S3 Storage Lens metrics glossary</a> in the <i>Amazon S3 User Guide</i>.</p>"
     },
     "ActivityMetrics":{
       "type":"structure",
@@ -1828,6 +1974,31 @@
         }
       }
     },
+    "CreateStorageLensGroupRequest":{
+      "type":"structure",
+      "required":[
+        "AccountId",
+        "StorageLensGroup"
+      ],
+      "members":{
+        "AccountId":{
+          "shape":"AccountId",
+          "documentation":"<p> The Amazon Web Services account ID that the Storage Lens group is created from and associated with. </p>",
+          "contextParam":{"name":"AccountId"},
+          "hostLabel":true,
+          "location":"header",
+          "locationName":"x-amz-account-id"
+        },
+        "StorageLensGroup":{
+          "shape":"StorageLensGroup",
+          "documentation":"<p> The Storage Lens group configuration. </p>"
+        },
+        "Tags":{
+          "shape":"TagList",
+          "documentation":"<p> The Amazon Web Services resource tags that you're adding to your Storage Lens group. This parameter is optional. </p>"
+        }
+      }
+    },
     "CreationDate":{"type":"timestamp"},
     "CreationTimestamp":{"type":"timestamp"},
     "Date":{"type":"timestamp"},
@@ -2203,6 +2374,29 @@
     "DeleteStorageLensConfigurationTaggingResult":{
       "type":"structure",
       "members":{
+      }
+    },
+    "DeleteStorageLensGroupRequest":{
+      "type":"structure",
+      "required":[
+        "Name",
+        "AccountId"
+      ],
+      "members":{
+        "Name":{
+          "shape":"StorageLensGroupName",
+          "documentation":"<p> The name of the Storage Lens group that you're trying to delete. </p>",
+          "location":"uri",
+          "locationName":"name"
+        },
+        "AccountId":{
+          "shape":"AccountId",
+          "documentation":"<p> The Amazon Web Services account ID used to create the Storage Lens group that you're trying to delete. </p>",
+          "contextParam":{"name":"AccountId"},
+          "hostLabel":true,
+          "location":"header",
+          "locationName":"x-amz-account-id"
+        }
       }
     },
     "DescribeJobRequest":{
@@ -3148,6 +3342,39 @@
           "documentation":"<p>The tags of S3 Storage Lens configuration requested.</p>"
         }
       }
+    },
+    "GetStorageLensGroupRequest":{
+      "type":"structure",
+      "required":[
+        "Name",
+        "AccountId"
+      ],
+      "members":{
+        "Name":{
+          "shape":"StorageLensGroupName",
+          "documentation":"<p> The name of the Storage Lens group that you're trying to retrieve the configuration details for. </p>",
+          "location":"uri",
+          "locationName":"name"
+        },
+        "AccountId":{
+          "shape":"AccountId",
+          "documentation":"<p> The Amazon Web Services account ID associated with the Storage Lens group that you're trying to retrieve the details for. </p>",
+          "contextParam":{"name":"AccountId"},
+          "hostLabel":true,
+          "location":"header",
+          "locationName":"x-amz-account-id"
+        }
+      }
+    },
+    "GetStorageLensGroupResult":{
+      "type":"structure",
+      "members":{
+        "StorageLensGroup":{
+          "shape":"StorageLensGroup",
+          "documentation":"<p> The name of the Storage Lens group that you're trying to retrieve the configuration details for. </p>"
+        }
+      },
+      "payload":"StorageLensGroup"
     },
     "GrantFullControl":{"type":"string"},
     "GrantRead":{"type":"string"},
@@ -4097,6 +4324,94 @@
         }
       }
     },
+    "ListStorageLensGroupEntry":{
+      "type":"structure",
+      "required":[
+        "Name",
+        "StorageLensGroupArn",
+        "HomeRegion"
+      ],
+      "members":{
+        "Name":{
+          "shape":"StorageLensGroupName",
+          "documentation":"<p> Contains the name of the Storage Lens group that exists in the specified home Region. </p>"
+        },
+        "StorageLensGroupArn":{
+          "shape":"StorageLensGroupArn",
+          "documentation":"<p> Contains the Amazon Resource Name (ARN) of the Storage Lens group. This property is read-only. </p>"
+        },
+        "HomeRegion":{
+          "shape":"S3AWSRegion",
+          "documentation":"<p> Contains the Amazon Web Services Region where the Storage Lens group was created. </p>"
+        }
+      },
+      "documentation":"<p> Each entry contains a Storage Lens group that exists in the specified home Region. </p>"
+    },
+    "ListStorageLensGroupsRequest":{
+      "type":"structure",
+      "required":["AccountId"],
+      "members":{
+        "AccountId":{
+          "shape":"AccountId",
+          "documentation":"<p> The Amazon Web Services account ID that owns the Storage Lens groups. </p>",
+          "contextParam":{"name":"AccountId"},
+          "hostLabel":true,
+          "location":"header",
+          "locationName":"x-amz-account-id"
+        },
+        "NextToken":{
+          "shape":"ContinuationToken",
+          "documentation":"<p>The token for the next set of results, or <code>null</code> if there are no more results. </p>",
+          "location":"querystring",
+          "locationName":"nextToken"
+        }
+      }
+    },
+    "ListStorageLensGroupsResult":{
+      "type":"structure",
+      "members":{
+        "NextToken":{
+          "shape":"ContinuationToken",
+          "documentation":"<p> If <code>NextToken</code> is returned, there are more Storage Lens groups results available. The value of <code>NextToken</code> is a unique pagination token for each page. Make the call again using the returned token to retrieve the next page. Keep all other arguments unchanged. Each pagination token expires after 24 hours. </p>"
+        },
+        "StorageLensGroupList":{
+          "shape":"StorageLensGroupList",
+          "documentation":"<p> The list of Storage Lens groups that exist in the specified home Region. </p>"
+        }
+      }
+    },
+    "ListTagsForResourceRequest":{
+      "type":"structure",
+      "required":[
+        "AccountId",
+        "ResourceArn"
+      ],
+      "members":{
+        "AccountId":{
+          "shape":"AccountId",
+          "documentation":"<p> The Amazon Web Services account ID of the resource owner. </p>",
+          "contextParam":{"name":"AccountId"},
+          "hostLabel":true,
+          "location":"header",
+          "locationName":"x-amz-account-id"
+        },
+        "ResourceArn":{
+          "shape":"S3ResourceArn",
+          "documentation":"<p> The Amazon Resource Name (ARN) of the S3 resource that you want to list the tags for. </p>",
+          "location":"uri",
+          "locationName":"resourceArn"
+        }
+      }
+    },
+    "ListTagsForResourceResult":{
+      "type":"structure",
+      "members":{
+        "Tags":{
+          "shape":"TagList",
+          "documentation":"<p> The Amazon Web Services resource tags that are associated with the resource. </p>"
+        }
+      }
+    },
     "Location":{"type":"string"},
     "MFA":{"type":"string"},
     "MFADelete":{
@@ -4117,6 +4432,55 @@
       "type":"string",
       "max":512,
       "min":1
+    },
+    "MatchAnyPrefix":{
+      "type":"list",
+      "member":{
+        "shape":"Prefix",
+        "locationName":"Prefix"
+      }
+    },
+    "MatchAnySuffix":{
+      "type":"list",
+      "member":{
+        "shape":"Suffix",
+        "locationName":"Suffix"
+      }
+    },
+    "MatchAnyTag":{
+      "type":"list",
+      "member":{
+        "shape":"S3Tag",
+        "locationName":"Tag"
+      }
+    },
+    "MatchObjectAge":{
+      "type":"structure",
+      "members":{
+        "DaysGreaterThan":{
+          "shape":"ObjectAgeValue",
+          "documentation":"<p> Specifies the maximum object age in days. Must be a positive whole number, greater than the minimum object age and less than or equal to 2,147,483,647. </p>"
+        },
+        "DaysLessThan":{
+          "shape":"ObjectAgeValue",
+          "documentation":"<p> Specifies the minimum object age in days. The value must be a positive whole number, greater than 0 and less than or equal to 2,147,483,647. </p>"
+        }
+      },
+      "documentation":"<p> A filter condition that specifies the object age range of included objects in days. Only integers are supported. </p>"
+    },
+    "MatchObjectSize":{
+      "type":"structure",
+      "members":{
+        "BytesGreaterThan":{
+          "shape":"ObjectSizeValue",
+          "documentation":"<p> Specifies the minimum object size in Bytes. The value must be a positive number, greater than 0 and less than 5 TB. </p>"
+        },
+        "BytesLessThan":{
+          "shape":"ObjectSizeValue",
+          "documentation":"<p> Specifies the maximum object size in Bytes. The value must be a positive number, greater than the minimum object size and less than 5 TB. </p>"
+        }
+      },
+      "documentation":"<p> A filter condition that specifies the object size range of included objects in bytes. Only integers are supported. </p>"
     },
     "MaxLength1024String":{
       "type":"string",
@@ -4366,6 +4730,7 @@
       "documentation":"<p/>",
       "exception":true
     },
+    "ObjectAgeValue":{"type":"integer"},
     "ObjectCreationTime":{"type":"timestamp"},
     "ObjectLambdaAccessPoint":{
       "type":"structure",
@@ -4538,6 +4903,7 @@
     "ObjectLockEnabledForBucket":{"type":"boolean"},
     "ObjectSizeGreaterThanBytes":{"type":"long"},
     "ObjectSizeLessThanBytes":{"type":"long"},
+    "ObjectSizeValue":{"type":"long"},
     "OperationName":{
       "type":"string",
       "enum":[
@@ -5560,7 +5926,7 @@
         },
         "ChecksumAlgorithm":{
           "shape":"S3ChecksumAlgorithm",
-          "documentation":"<p>Indicates the algorithm that you want Amazon S3 to use to create the checksum. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/CheckingObjectIntegrity.xml\"> Checking object integrity</a> in the <i>Amazon S3 User Guide</i>.</p>"
+          "documentation":"<p>Indicates the algorithm that you want Amazon S3 to use to create the checksum. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/checking-object-integrity.html\"> Checking object integrity</a> in the <i>Amazon S3 User Guide</i>.</p>"
         }
       },
       "documentation":"<p>Contains the configuration parameters for a PUT Copy object operation. S3 Batch Operations passes every object to the underlying <code>CopyObject</code> API operation. For more information about the parameters for this operation, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/API/RESTObjectCOPY.html\">CopyObject</a>.</p>"
@@ -5848,6 +6214,11 @@
       "members":{
       },
       "documentation":"<p>Directs the specified job to invoke <code>ReplicateObject</code> on every object in the job's manifest.</p>"
+    },
+    "S3ResourceArn":{
+      "type":"string",
+      "max":1011,
+      "pattern":"arn:[^:]+:s3:[^:].*"
     },
     "S3Retention":{
       "type":"structure",
@@ -6145,6 +6516,172 @@
       },
       "documentation":"<p>A container for the encryption of the S3 Storage Lens metrics exports.</p>"
     },
+    "StorageLensGroup":{
+      "type":"structure",
+      "required":[
+        "Name",
+        "Filter"
+      ],
+      "members":{
+        "Name":{
+          "shape":"StorageLensGroupName",
+          "documentation":"<p> Contains the name of the Storage Lens group. </p>"
+        },
+        "Filter":{
+          "shape":"StorageLensGroupFilter",
+          "documentation":"<p>Sets the criteria for the Storage Lens group data that is displayed. For multiple filter conditions, the <code>AND</code> or <code>OR</code> logical operator is used.</p>"
+        },
+        "StorageLensGroupArn":{
+          "shape":"StorageLensGroupArn",
+          "documentation":"<p> Contains the Amazon Resource Name (ARN) of the Storage Lens group. This property is read-only. </p>"
+        }
+      },
+      "documentation":"<p>A custom grouping of objects that include filters for prefixes, suffixes, object tags, object size, or object age. You can create an S3 Storage Lens group that includes a single filter or multiple filter conditions. To specify multiple filter conditions, you use <code>AND</code> or <code>OR</code> logical operators. </p>"
+    },
+    "StorageLensGroupAndOperator":{
+      "type":"structure",
+      "members":{
+        "MatchAnyPrefix":{
+          "shape":"MatchAnyPrefix",
+          "documentation":"<p> Contains a list of prefixes. At least one prefix must be specified. Up to 10 prefixes are allowed. </p>"
+        },
+        "MatchAnySuffix":{
+          "shape":"MatchAnySuffix",
+          "documentation":"<p> Contains a list of suffixes. At least one suffix must be specified. Up to 10 suffixes are allowed. </p>"
+        },
+        "MatchAnyTag":{
+          "shape":"MatchAnyTag",
+          "documentation":"<p> Contains the list of object tags. At least one object tag must be specified. Up to 10 object tags are allowed. </p>"
+        },
+        "MatchObjectAge":{
+          "shape":"MatchObjectAge",
+          "documentation":"<p> Contains <code>DaysGreaterThan</code> and <code>DaysLessThan</code> to define the object age range (minimum and maximum number of days). </p>"
+        },
+        "MatchObjectSize":{
+          "shape":"MatchObjectSize",
+          "documentation":"<p> Contains <code>BytesGreaterThan</code> and <code>BytesLessThan</code> to define the object size range (minimum and maximum number of Bytes). </p>"
+        }
+      },
+      "documentation":"<p> A logical operator that allows multiple filter conditions to be joined for more complex comparisons of Storage Lens group data. </p>"
+    },
+    "StorageLensGroupArn":{
+      "type":"string",
+      "max":1024,
+      "min":4,
+      "pattern":"arn:[a-z\\-]+:s3:[a-z0-9\\-]+:\\d{12}:storage\\-lens\\-group\\/.*"
+    },
+    "StorageLensGroupFilter":{
+      "type":"structure",
+      "members":{
+        "MatchAnyPrefix":{
+          "shape":"MatchAnyPrefix",
+          "documentation":"<p> Contains a list of prefixes. At least one prefix must be specified. Up to 10 prefixes are allowed. </p>"
+        },
+        "MatchAnySuffix":{
+          "shape":"MatchAnySuffix",
+          "documentation":"<p> Contains a list of suffixes. At least one suffix must be specified. Up to 10 suffixes are allowed. </p>"
+        },
+        "MatchAnyTag":{
+          "shape":"MatchAnyTag",
+          "documentation":"<p> Contains the list of S3 object tags. At least one object tag must be specified. Up to 10 object tags are allowed. </p>"
+        },
+        "MatchObjectAge":{
+          "shape":"MatchObjectAge",
+          "documentation":"<p> Contains <code>DaysGreaterThan</code> and <code>DaysLessThan</code> to define the object age range (minimum and maximum number of days). </p>"
+        },
+        "MatchObjectSize":{
+          "shape":"MatchObjectSize",
+          "documentation":"<p> Contains <code>BytesGreaterThan</code> and <code>BytesLessThan</code> to define the object size range (minimum and maximum number of Bytes). </p>"
+        },
+        "And":{
+          "shape":"StorageLensGroupAndOperator",
+          "documentation":"<p>A logical operator that allows multiple filter conditions to be joined for more complex comparisons of Storage Lens group data. Objects must match all of the listed filter conditions that are joined by the <code>And</code> logical operator. Only one of each filter condition is allowed.</p>"
+        },
+        "Or":{
+          "shape":"StorageLensGroupOrOperator",
+          "documentation":"<p>A single logical operator that allows multiple filter conditions to be joined. Objects can match any of the listed filter conditions, which are joined by the <code>Or</code> logical operator. Only one of each filter condition is allowed. </p>"
+        }
+      },
+      "documentation":"<p>The filter element sets the criteria for the Storage Lens group data that is displayed. For multiple filter conditions, the <code>AND</code> or <code>OR</code> logical operator is used.</p>"
+    },
+    "StorageLensGroupLevel":{
+      "type":"structure",
+      "members":{
+        "SelectionCriteria":{
+          "shape":"StorageLensGroupLevelSelectionCriteria",
+          "documentation":"<p> Indicates which Storage Lens group ARNs to include or exclude in the Storage Lens group aggregation. If this value is left null, then all Storage Lens groups are selected. </p>"
+        }
+      },
+      "documentation":"<p> Specifies the Storage Lens groups to include in the Storage Lens group aggregation. </p>"
+    },
+    "StorageLensGroupLevelExclude":{
+      "type":"list",
+      "member":{
+        "shape":"StorageLensGroupArn",
+        "locationName":"Arn"
+      }
+    },
+    "StorageLensGroupLevelInclude":{
+      "type":"list",
+      "member":{
+        "shape":"StorageLensGroupArn",
+        "locationName":"Arn"
+      }
+    },
+    "StorageLensGroupLevelSelectionCriteria":{
+      "type":"structure",
+      "members":{
+        "Include":{
+          "shape":"StorageLensGroupLevelInclude",
+          "documentation":"<p> Indicates which Storage Lens group ARNs to include in the Storage Lens group aggregation. </p>"
+        },
+        "Exclude":{
+          "shape":"StorageLensGroupLevelExclude",
+          "documentation":"<p> Indicates which Storage Lens group ARNs to exclude from the Storage Lens group aggregation. </p>"
+        }
+      },
+      "documentation":"<p> Indicates which Storage Lens group ARNs to include or exclude in the Storage Lens group aggregation. You can only attach Storage Lens groups to your Storage Lens dashboard if they're included in your Storage Lens group aggregation. If this value is left null, then all Storage Lens groups are selected. </p>"
+    },
+    "StorageLensGroupList":{
+      "type":"list",
+      "member":{
+        "shape":"ListStorageLensGroupEntry",
+        "locationName":"StorageLensGroup"
+      },
+      "flattened":true
+    },
+    "StorageLensGroupName":{
+      "type":"string",
+      "max":64,
+      "min":1,
+      "pattern":"[a-zA-Z0-9\\-\\_]+"
+    },
+    "StorageLensGroupOrOperator":{
+      "type":"structure",
+      "members":{
+        "MatchAnyPrefix":{
+          "shape":"MatchAnyPrefix",
+          "documentation":"<p> Filters objects that match any of the specified prefixes. </p>"
+        },
+        "MatchAnySuffix":{
+          "shape":"MatchAnySuffix",
+          "documentation":"<p> Filters objects that match any of the specified suffixes. </p>"
+        },
+        "MatchAnyTag":{
+          "shape":"MatchAnyTag",
+          "documentation":"<p> Filters objects that match any of the specified S3 object tags. </p>"
+        },
+        "MatchObjectAge":{
+          "shape":"MatchObjectAge",
+          "documentation":"<p> Filters objects that match the specified object age range. </p>"
+        },
+        "MatchObjectSize":{
+          "shape":"MatchObjectSize",
+          "documentation":"<p> Filters objects that match the specified object size range. </p>"
+        }
+      },
+      "documentation":"<p>A container element for specifying <code>Or</code> rule conditions. The rule conditions determine the subset of objects to which the <code>Or</code> rule applies. Objects can match any of the listed filter conditions, which are joined by the <code>Or</code> logical operator. Only one of each filter condition is allowed.</p>"
+    },
     "StorageLensPrefixLevelDelimiter":{
       "type":"string",
       "max":1
@@ -6218,21 +6755,89 @@
       "members":{
       }
     },
+    "Suffix":{"type":"string"},
     "SuspendedCause":{
       "type":"string",
       "max":1024,
       "min":1
     },
     "SuspendedDate":{"type":"timestamp"},
+    "Tag":{
+      "type":"structure",
+      "required":[
+        "Key",
+        "Value"
+      ],
+      "members":{
+        "Key":{
+          "shape":"TagKeyString",
+          "documentation":"<p> The tag key for your Amazon Web Services resource. A tag key can be up to 128 Unicode characters in length and is case-sensitive. System created tags that begin with <code>aws:</code> aren’t supported. </p>"
+        },
+        "Value":{
+          "shape":"TagValueString",
+          "documentation":"<p> The tag value for your Amazon Web Services resource. A tag value can be up to 256 Unicode characters in length and is case-sensitive. </p>"
+        }
+      },
+      "documentation":"<p> An Amazon Web Services resource tag that's associated with your S3 resource. You can add tags to new objects when you upload them, or you can add object tags to existing objects. </p> <note> <p>This data type is only supported for <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/storage-lens-groups.html\">S3 Storage Lens groups</a>.</p> </note>"
+    },
+    "TagKeyList":{
+      "type":"list",
+      "member":{"shape":"TagKeyString"},
+      "max":50,
+      "min":0
+    },
     "TagKeyString":{
       "type":"string",
-      "max":1024,
+      "max":128,
       "min":1,
       "pattern":"^([\\p{L}\\p{Z}\\p{N}_.:/=+\\-@]*)$"
     },
+    "TagList":{
+      "type":"list",
+      "member":{
+        "shape":"Tag",
+        "locationName":"Tag"
+      },
+      "max":50,
+      "min":0
+    },
+    "TagResourceRequest":{
+      "type":"structure",
+      "required":[
+        "AccountId",
+        "ResourceArn",
+        "Tags"
+      ],
+      "members":{
+        "AccountId":{
+          "shape":"AccountId",
+          "documentation":"<p> The Amazon Web Services account ID that created the S3 resource that you're trying to add tags to. </p>",
+          "contextParam":{"name":"AccountId"},
+          "hostLabel":true,
+          "location":"header",
+          "locationName":"x-amz-account-id"
+        },
+        "ResourceArn":{
+          "shape":"S3ResourceArn",
+          "documentation":"<p> The Amazon Resource Name (ARN) of the S3 resource that you're trying to add tags to. </p>",
+          "location":"uri",
+          "locationName":"resourceArn"
+        },
+        "Tags":{
+          "shape":"TagList",
+          "documentation":"<p> The Amazon Web Services resource tags that you want to add to the specified S3 resource. </p>"
+        }
+      }
+    },
+    "TagResourceResult":{
+      "type":"structure",
+      "members":{
+      }
+    },
     "TagValueString":{
       "type":"string",
-      "max":1024,
+      "max":256,
+      "min":0,
       "pattern":"^([\\p{L}\\p{Z}\\p{N}_.:/=+\\-@]*)$"
     },
     "Tagging":{
@@ -6302,6 +6907,41 @@
         "INTELLIGENT_TIERING",
         "DEEP_ARCHIVE"
       ]
+    },
+    "UntagResourceRequest":{
+      "type":"structure",
+      "required":[
+        "AccountId",
+        "ResourceArn",
+        "TagKeys"
+      ],
+      "members":{
+        "AccountId":{
+          "shape":"AccountId",
+          "documentation":"<p> The Amazon Web Services account ID that owns the resource that you're trying to remove the tags from. </p>",
+          "contextParam":{"name":"AccountId"},
+          "hostLabel":true,
+          "location":"header",
+          "locationName":"x-amz-account-id"
+        },
+        "ResourceArn":{
+          "shape":"S3ResourceArn",
+          "documentation":"<p> The Amazon Resource Name (ARN) of the S3 resource that you want to remove the resource tags from. </p>",
+          "location":"uri",
+          "locationName":"resourceArn"
+        },
+        "TagKeys":{
+          "shape":"TagKeyList",
+          "documentation":"<p> The tag key pair of the S3 resource tag that you're trying to remove. </p>",
+          "location":"querystring",
+          "locationName":"tagKeys"
+        }
+      }
+    },
+    "UntagResourceResult":{
+      "type":"structure",
+      "members":{
+      }
     },
     "UpdateJobPriorityRequest":{
       "type":"structure",
@@ -6400,6 +7040,34 @@
         "StatusUpdateReason":{
           "shape":"JobStatusUpdateReason",
           "documentation":"<p>The reason that the specified job's status was updated.</p>"
+        }
+      }
+    },
+    "UpdateStorageLensGroupRequest":{
+      "type":"structure",
+      "required":[
+        "Name",
+        "AccountId",
+        "StorageLensGroup"
+      ],
+      "members":{
+        "Name":{
+          "shape":"StorageLensGroupName",
+          "documentation":"<p> The name of the Storage Lens group that you want to update. </p>",
+          "location":"uri",
+          "locationName":"name"
+        },
+        "AccountId":{
+          "shape":"AccountId",
+          "documentation":"<p> The Amazon Web Services account ID of the Storage Lens group owner. </p>",
+          "contextParam":{"name":"AccountId"},
+          "hostLabel":true,
+          "location":"header",
+          "locationName":"x-amz-account-id"
+        },
+        "StorageLensGroup":{
+          "shape":"StorageLensGroup",
+          "documentation":"<p> The JSON file that contains the Storage Lens group configuration. </p>"
         }
       }
     },

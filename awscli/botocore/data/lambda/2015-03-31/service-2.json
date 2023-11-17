@@ -637,7 +637,7 @@
         {"shape":"InvalidRuntimeException"},
         {"shape":"ResourceConflictException"}
       ],
-      "documentation":"<important> <p>For asynchronous function invocation, use <a>Invoke</a>.</p> </important> <p>Invokes a function asynchronously.</p> <note> <p>If you do use the InvokeAsync action, note that it doesn't support the use of X-Ray active tracing. Trace ID is not propagated to the function, even if X-Ray active tracing is turned on.</p> </note>",
+      "documentation":"<important> <p>For asynchronous function invocation, use <a>Invoke</a>.</p> </important> <p>Invokes a function asynchronously.</p>",
       "deprecated":true
     },
     "InvokeWithResponseStream":{
@@ -1478,6 +1478,17 @@
       },
       "documentation":"<p>Specific configuration settings for an Amazon Managed Streaming for Apache Kafka (Amazon MSK) event source.</p>"
     },
+    "ApplicationLogLevel":{
+      "type":"string",
+      "enum":[
+        "TRACE",
+        "DEBUG",
+        "INFO",
+        "WARN",
+        "ERROR",
+        "FATAL"
+      ]
+    },
     "Architecture":{
       "type":"string",
       "enum":[
@@ -1917,11 +1928,15 @@
         },
         "EphemeralStorage":{
           "shape":"EphemeralStorage",
-          "documentation":"<p>The size of the function's <code>/tmp</code> directory in MB. The default value is 512, but can be any whole number between 512 and 10,240 MB. For more information, see <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/configuration-function-common.html#configuration-ephemeral-storage\">Configuring ephemeral storage (console)</a>.</p>"
+          "documentation":"<p>The size of the function's <code>/tmp</code> directory in MB. The default value is 512, but can be any whole number between 512 and 10,240 MB.</p>"
         },
         "SnapStart":{
           "shape":"SnapStart",
           "documentation":"<p>The function's <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/snapstart.html\">SnapStart</a> setting.</p>"
+        },
+        "LoggingConfig":{
+          "shape":"LoggingConfig",
+          "documentation":"<p>The function's Amazon CloudWatch Logs configuration settings.</p>"
         }
       }
     },
@@ -2390,7 +2405,7 @@
           "documentation":"<p>The size of the function's <code>/tmp</code> directory.</p>"
         }
       },
-      "documentation":"<p>The size of the function's <code>/tmp</code> directory in MB. The default value is 512, but can be any whole number between 512 and 10,240 MB. For more information, see <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/configuration-function-common.html#configuration-ephemeral-storage\">Configuring ephemeral storage (console)</a>.</p>"
+      "documentation":"<p>The size of the function's <code>/tmp</code> directory in MB. The default value is 512, but it can be any whole number between 512 and 10,240 MB.</p>"
     },
     "EphemeralStorageSize":{
       "type":"integer",
@@ -2777,7 +2792,7 @@
         },
         "EphemeralStorage":{
           "shape":"EphemeralStorage",
-          "documentation":"<p>The size of the function's <code>/tmp</code> directory in MB. The default value is 512, but can be any whole number between 512 and 10,240 MB. For more information, see <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/configuration-function-common.html#configuration-ephemeral-storage\">Configuring ephemeral storage (console)</a>.</p>"
+          "documentation":"<p>The size of the function’s <code>/tmp</code> directory in MB. The default value is 512, but it can be any whole number between 512 and 10,240 MB.</p>"
         },
         "SnapStart":{
           "shape":"SnapStartResponse",
@@ -2786,6 +2801,10 @@
         "RuntimeVersionConfig":{
           "shape":"RuntimeVersionConfig",
           "documentation":"<p>The ARN of the runtime and any errors that occured.</p>"
+        },
+        "LoggingConfig":{
+          "shape":"LoggingConfig",
+          "documentation":"<p>The function's Amazon CloudWatch Logs configuration settings.</p>"
         }
       },
       "documentation":"<p>Details about a function's configuration.</p>"
@@ -4477,12 +4496,47 @@
       "max":160,
       "pattern":"^/mnt/[a-zA-Z0-9-_.]+$"
     },
+    "LogFormat":{
+      "type":"string",
+      "enum":[
+        "JSON",
+        "Text"
+      ]
+    },
+    "LogGroup":{
+      "type":"string",
+      "max":512,
+      "min":1,
+      "pattern":"[\\.\\-_/#A-Za-z0-9]+"
+    },
     "LogType":{
       "type":"string",
       "enum":[
         "None",
         "Tail"
       ]
+    },
+    "LoggingConfig":{
+      "type":"structure",
+      "members":{
+        "LogFormat":{
+          "shape":"LogFormat",
+          "documentation":"<p>The format in which Lambda sends your function's application and system logs to CloudWatch. Select between plain text and structured JSON.</p>"
+        },
+        "ApplicationLogLevel":{
+          "shape":"ApplicationLogLevel",
+          "documentation":"<p>Set this property to filter the application logs for your function that Lambda sends to CloudWatch. Lambda only sends application logs at the selected level and lower.</p>"
+        },
+        "SystemLogLevel":{
+          "shape":"SystemLogLevel",
+          "documentation":"<p>Set this property to filter the system logs for your function that Lambda sends to CloudWatch. Lambda only sends system logs at the selected level and lower.</p>"
+        },
+        "LogGroup":{
+          "shape":"LogGroup",
+          "documentation":"<p>The name of the Amazon CloudWatch log group the function sends logs to. By default, Lambda functions send logs to a default log group named <code>/aws/lambda/&lt;function name&gt;</code>. To use a different log group, enter an existing log group or enter a new log group name.</p>"
+        }
+      },
+      "documentation":"<p>The function's Amazon CloudWatch Logs configuration settings.</p>"
     },
     "Long":{"type":"long"},
     "MasterRegion":{
@@ -5234,7 +5288,8 @@
         "python3.11",
         "nodejs20.x",
         "provided.al2023",
-        "python3.12"
+        "python3.12",
+        "java21"
       ]
     },
     "RuntimeVersionArn":{
@@ -5515,6 +5570,14 @@
       "type":"list",
       "member":{"shape":"SubnetId"},
       "max":16
+    },
+    "SystemLogLevel":{
+      "type":"string",
+      "enum":[
+        "DEBUG",
+        "INFO",
+        "WARN"
+      ]
     },
     "TagKey":{"type":"string"},
     "TagKeyList":{
@@ -5927,11 +5990,15 @@
         },
         "EphemeralStorage":{
           "shape":"EphemeralStorage",
-          "documentation":"<p>The size of the function's <code>/tmp</code> directory in MB. The default value is 512, but can be any whole number between 512 and 10,240 MB. For more information, see <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/configuration-function-common.html#configuration-ephemeral-storage\">Configuring ephemeral storage (console)</a>.</p>"
+          "documentation":"<p>The size of the function's <code>/tmp</code> directory in MB. The default value is 512, but can be any whole number between 512 and 10,240 MB.</p>"
         },
         "SnapStart":{
           "shape":"SnapStart",
           "documentation":"<p>The function's <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/snapstart.html\">SnapStart</a> setting.</p>"
+        },
+        "LoggingConfig":{
+          "shape":"LoggingConfig",
+          "documentation":"<p>The function's Amazon CloudWatch Logs configuration settings.</p>"
         }
       }
     },

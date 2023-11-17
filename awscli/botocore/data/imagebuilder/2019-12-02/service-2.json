@@ -33,6 +33,26 @@
       ],
       "documentation":"<p>CancelImageCreation cancels the creation of Image. This operation can only be used on images in a non-terminal state.</p>"
     },
+    "CancelLifecycleExecution":{
+      "name":"CancelLifecycleExecution",
+      "http":{
+        "method":"PUT",
+        "requestUri":"/CancelLifecycleExecution"
+      },
+      "input":{"shape":"CancelLifecycleExecutionRequest"},
+      "output":{"shape":"CancelLifecycleExecutionResponse"},
+      "errors":[
+        {"shape":"ServiceException"},
+        {"shape":"ClientException"},
+        {"shape":"ServiceUnavailableException"},
+        {"shape":"InvalidRequestException"},
+        {"shape":"IdempotentParameterMismatchException"},
+        {"shape":"ForbiddenException"},
+        {"shape":"CallRateLimitExceededException"},
+        {"shape":"ResourceInUseException"}
+      ],
+      "documentation":"<p>Cancel a specific image lifecycle policy runtime instance.</p>"
+    },
     "CreateComponent":{
       "name":"CreateComponent",
       "http":{
@@ -190,6 +210,28 @@
       ],
       "documentation":"<p>Creates a new infrastructure configuration. An infrastructure configuration defines the environment in which your image will be built and tested.</p>"
     },
+    "CreateLifecyclePolicy":{
+      "name":"CreateLifecyclePolicy",
+      "http":{
+        "method":"PUT",
+        "requestUri":"/CreateLifecyclePolicy"
+      },
+      "input":{"shape":"CreateLifecyclePolicyRequest"},
+      "output":{"shape":"CreateLifecyclePolicyResponse"},
+      "errors":[
+        {"shape":"ServiceException"},
+        {"shape":"ClientException"},
+        {"shape":"ServiceUnavailableException"},
+        {"shape":"InvalidRequestException"},
+        {"shape":"IdempotentParameterMismatchException"},
+        {"shape":"ForbiddenException"},
+        {"shape":"CallRateLimitExceededException"},
+        {"shape":"ResourceInUseException"},
+        {"shape":"ResourceAlreadyExistsException"},
+        {"shape":"ServiceQuotaExceededException"}
+      ],
+      "documentation":"<p>Create a lifecycle policy resource.</p>"
+    },
     "DeleteComponent":{
       "name":"DeleteComponent",
       "http":{
@@ -322,6 +364,25 @@
         {"shape":"ResourceDependencyException"}
       ],
       "documentation":"<p>Deletes an infrastructure configuration.</p>"
+    },
+    "DeleteLifecyclePolicy":{
+      "name":"DeleteLifecyclePolicy",
+      "http":{
+        "method":"DELETE",
+        "requestUri":"/DeleteLifecyclePolicy"
+      },
+      "input":{"shape":"DeleteLifecyclePolicyRequest"},
+      "output":{"shape":"DeleteLifecyclePolicyResponse"},
+      "errors":[
+        {"shape":"ServiceException"},
+        {"shape":"ClientException"},
+        {"shape":"InvalidRequestException"},
+        {"shape":"ServiceUnavailableException"},
+        {"shape":"ForbiddenException"},
+        {"shape":"CallRateLimitExceededException"},
+        {"shape":"ResourceDependencyException"}
+      ],
+      "documentation":"<p>Delete the specified lifecycle policy resource.</p>"
     },
     "GetComponent":{
       "name":"GetComponent",
@@ -520,6 +581,42 @@
         {"shape":"CallRateLimitExceededException"}
       ],
       "documentation":"<p>Gets an infrastructure configuration.</p>"
+    },
+    "GetLifecycleExecution":{
+      "name":"GetLifecycleExecution",
+      "http":{
+        "method":"GET",
+        "requestUri":"/GetLifecycleExecution"
+      },
+      "input":{"shape":"GetLifecycleExecutionRequest"},
+      "output":{"shape":"GetLifecycleExecutionResponse"},
+      "errors":[
+        {"shape":"ServiceException"},
+        {"shape":"ClientException"},
+        {"shape":"ServiceUnavailableException"},
+        {"shape":"InvalidRequestException"},
+        {"shape":"ForbiddenException"},
+        {"shape":"CallRateLimitExceededException"}
+      ],
+      "documentation":"<p>Get the runtime information that was logged for a specific runtime instance of the lifecycle policy.</p>"
+    },
+    "GetLifecyclePolicy":{
+      "name":"GetLifecyclePolicy",
+      "http":{
+        "method":"GET",
+        "requestUri":"/GetLifecyclePolicy"
+      },
+      "input":{"shape":"GetLifecyclePolicyRequest"},
+      "output":{"shape":"GetLifecyclePolicyResponse"},
+      "errors":[
+        {"shape":"ServiceException"},
+        {"shape":"ClientException"},
+        {"shape":"ServiceUnavailableException"},
+        {"shape":"InvalidRequestException"},
+        {"shape":"ForbiddenException"},
+        {"shape":"CallRateLimitExceededException"}
+      ],
+      "documentation":"<p>Get details for the specified image lifecycle policy.</p>"
     },
     "GetWorkflowExecution":{
       "name":"GetWorkflowExecution",
@@ -843,6 +940,63 @@
       ],
       "documentation":"<p>Returns a list of infrastructure configurations.</p>"
     },
+    "ListLifecycleExecutionResources":{
+      "name":"ListLifecycleExecutionResources",
+      "http":{
+        "method":"POST",
+        "requestUri":"/ListLifecycleExecutionResources"
+      },
+      "input":{"shape":"ListLifecycleExecutionResourcesRequest"},
+      "output":{"shape":"ListLifecycleExecutionResourcesResponse"},
+      "errors":[
+        {"shape":"ServiceException"},
+        {"shape":"ClientException"},
+        {"shape":"ServiceUnavailableException"},
+        {"shape":"InvalidRequestException"},
+        {"shape":"InvalidPaginationTokenException"},
+        {"shape":"ForbiddenException"},
+        {"shape":"CallRateLimitExceededException"}
+      ],
+      "documentation":"<p>List resources that the runtime instance of the image lifecycle identified for lifecycle actions.</p>"
+    },
+    "ListLifecycleExecutions":{
+      "name":"ListLifecycleExecutions",
+      "http":{
+        "method":"POST",
+        "requestUri":"/ListLifecycleExecutions"
+      },
+      "input":{"shape":"ListLifecycleExecutionsRequest"},
+      "output":{"shape":"ListLifecycleExecutionsResponse"},
+      "errors":[
+        {"shape":"ServiceException"},
+        {"shape":"ClientException"},
+        {"shape":"ServiceUnavailableException"},
+        {"shape":"InvalidRequestException"},
+        {"shape":"InvalidPaginationTokenException"},
+        {"shape":"ForbiddenException"},
+        {"shape":"CallRateLimitExceededException"}
+      ],
+      "documentation":"<p>Get the lifecycle runtime history for the specified resource.</p>"
+    },
+    "ListLifecyclePolicies":{
+      "name":"ListLifecyclePolicies",
+      "http":{
+        "method":"POST",
+        "requestUri":"/ListLifecyclePolicies"
+      },
+      "input":{"shape":"ListLifecyclePoliciesRequest"},
+      "output":{"shape":"ListLifecyclePoliciesResponse"},
+      "errors":[
+        {"shape":"ServiceException"},
+        {"shape":"ClientException"},
+        {"shape":"ServiceUnavailableException"},
+        {"shape":"InvalidRequestException"},
+        {"shape":"InvalidPaginationTokenException"},
+        {"shape":"ForbiddenException"},
+        {"shape":"CallRateLimitExceededException"}
+      ],
+      "documentation":"<p>Get a list of lifecycle policies in your Amazon Web Services account.</p>"
+    },
     "ListTagsForResource":{
       "name":"ListTagsForResource",
       "http":{
@@ -997,6 +1151,27 @@
       ],
       "documentation":"<p>Manually triggers a pipeline to create an image.</p>"
     },
+    "StartResourceStateUpdate":{
+      "name":"StartResourceStateUpdate",
+      "http":{
+        "method":"PUT",
+        "requestUri":"/StartResourceStateUpdate"
+      },
+      "input":{"shape":"StartResourceStateUpdateRequest"},
+      "output":{"shape":"StartResourceStateUpdateResponse"},
+      "errors":[
+        {"shape":"ServiceException"},
+        {"shape":"ClientException"},
+        {"shape":"ServiceUnavailableException"},
+        {"shape":"InvalidRequestException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"IdempotentParameterMismatchException"},
+        {"shape":"ForbiddenException"},
+        {"shape":"CallRateLimitExceededException"},
+        {"shape":"ResourceInUseException"}
+      ],
+      "documentation":"<p>Begin asynchronous resource state update for lifecycle changes to the specified image resources.</p>"
+    },
     "TagResource":{
       "name":"TagResource",
       "http":{
@@ -1087,6 +1262,27 @@
         {"shape":"ResourceInUseException"}
       ],
       "documentation":"<p>Updates a new infrastructure configuration. An infrastructure configuration defines the environment in which your image will be built and tested.</p>"
+    },
+    "UpdateLifecyclePolicy":{
+      "name":"UpdateLifecyclePolicy",
+      "http":{
+        "method":"PUT",
+        "requestUri":"/UpdateLifecyclePolicy"
+      },
+      "input":{"shape":"UpdateLifecyclePolicyRequest"},
+      "output":{"shape":"UpdateLifecyclePolicyResponse"},
+      "errors":[
+        {"shape":"ServiceException"},
+        {"shape":"ClientException"},
+        {"shape":"ServiceUnavailableException"},
+        {"shape":"InvalidRequestException"},
+        {"shape":"IdempotentParameterMismatchException"},
+        {"shape":"ForbiddenException"},
+        {"shape":"CallRateLimitExceededException"},
+        {"shape":"ResourceInUseException"},
+        {"shape":"InvalidParameterCombinationException"}
+      ],
+      "documentation":"<p>Update the specified lifecycle policy.</p>"
     }
   },
   "shapes":{
@@ -1241,11 +1437,38 @@
         },
         "clientToken":{
           "shape":"ClientToken",
-          "documentation":"<p>The idempotency token that was used for this request.</p>"
+          "documentation":"<p>The client token that uniquely identifies the request.</p>"
         },
         "imageBuildVersionArn":{
           "shape":"ImageBuildVersionArn",
           "documentation":"<p>The ARN of the image whose creation this request canceled.</p>"
+        }
+      }
+    },
+    "CancelLifecycleExecutionRequest":{
+      "type":"structure",
+      "required":[
+        "lifecycleExecutionId",
+        "clientToken"
+      ],
+      "members":{
+        "lifecycleExecutionId":{
+          "shape":"LifecycleExecutionId",
+          "documentation":"<p>Identifies the specific runtime instance of the image lifecycle to cancel.</p>"
+        },
+        "clientToken":{
+          "shape":"ClientToken",
+          "documentation":"<p>Unique, case-sensitive identifier you provide to ensure idempotency of the request. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/APIReference/Run_Instance_Idempotency.html\">Ensuring idempotency</a> in the <i>Amazon EC2 API Reference</i>.</p>",
+          "idempotencyToken":true
+        }
+      }
+    },
+    "CancelLifecycleExecutionResponse":{
+      "type":"structure",
+      "members":{
+        "lifecycleExecutionId":{
+          "shape":"LifecycleExecutionId",
+          "documentation":"<p>The unique identifier for the image lifecycle runtime instance that was canceled.</p>"
         }
       }
     },
@@ -1811,7 +2034,7 @@
         },
         "clientToken":{
           "shape":"ClientToken",
-          "documentation":"<p>The idempotency token of the component.</p>",
+          "documentation":"<p>Unique, case-sensitive identifier you provide to ensure idempotency of the request. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/APIReference/Run_Instance_Idempotency.html\">Ensuring idempotency</a> in the <i>Amazon EC2 API Reference</i>.</p>",
           "idempotencyToken":true
         }
       }
@@ -1825,11 +2048,11 @@
         },
         "clientToken":{
           "shape":"ClientToken",
-          "documentation":"<p>The idempotency token used to make this request idempotent.</p>"
+          "documentation":"<p>The client token that uniquely identifies the request.</p>"
         },
         "componentBuildVersionArn":{
           "shape":"ComponentBuildVersionArn",
-          "documentation":"<p>The Amazon Resource Name (ARN) of the component that this request created.</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of the component that the request created.</p>"
         }
       }
     },
@@ -1907,7 +2130,7 @@
         },
         "clientToken":{
           "shape":"ClientToken",
-          "documentation":"<p>The client token used to make this request idempotent.</p>",
+          "documentation":"<p>Unique, case-sensitive identifier you provide to ensure idempotency of the request. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/APIReference/Run_Instance_Idempotency.html\">Ensuring idempotency</a> in the <i>Amazon EC2 API Reference</i>.</p>",
           "idempotencyToken":true
         }
       }
@@ -1921,7 +2144,7 @@
         },
         "clientToken":{
           "shape":"ClientToken",
-          "documentation":"<p>The client token used to make this request idempotent.</p>"
+          "documentation":"<p>The client token that uniquely identifies the request.</p>"
         },
         "containerRecipeArn":{
           "shape":"ContainerRecipeArn",
@@ -1955,7 +2178,7 @@
         },
         "clientToken":{
           "shape":"ClientToken",
-          "documentation":"<p>The idempotency token of the distribution configuration.</p>",
+          "documentation":"<p>Unique, case-sensitive identifier you provide to ensure idempotency of the request. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/APIReference/Run_Instance_Idempotency.html\">Ensuring idempotency</a> in the <i>Amazon EC2 API Reference</i>.</p>",
           "idempotencyToken":true
         }
       }
@@ -1969,7 +2192,7 @@
         },
         "clientToken":{
           "shape":"ClientToken",
-          "documentation":"<p>The idempotency token used to make this request idempotent.</p>"
+          "documentation":"<p>The client token that uniquely identifies the request.</p>"
         },
         "distributionConfigurationArn":{
           "shape":"DistributionConfigurationArn",
@@ -2031,7 +2254,7 @@
         },
         "clientToken":{
           "shape":"ClientToken",
-          "documentation":"<p>The idempotency token used to make this request idempotent.</p>",
+          "documentation":"<p>Unique, case-sensitive identifier you provide to ensure idempotency of the request. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/APIReference/Run_Instance_Idempotency.html\">Ensuring idempotency</a> in the <i>Amazon EC2 API Reference</i>.</p>",
           "idempotencyToken":true
         },
         "imageScanningConfiguration":{
@@ -2049,7 +2272,7 @@
         },
         "clientToken":{
           "shape":"ClientToken",
-          "documentation":"<p>The idempotency token used to make this request idempotent.</p>"
+          "documentation":"<p>The client token that uniquely identifies the request.</p>"
         },
         "imagePipelineArn":{
           "shape":"ImagePipelineArn",
@@ -2105,7 +2328,7 @@
         },
         "clientToken":{
           "shape":"ClientToken",
-          "documentation":"<p>The idempotency token used to make this request idempotent.</p>",
+          "documentation":"<p>Unique, case-sensitive identifier you provide to ensure idempotency of the request. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/APIReference/Run_Instance_Idempotency.html\">Ensuring idempotency</a> in the <i>Amazon EC2 API Reference</i>.</p>",
           "idempotencyToken":true
         }
       }
@@ -2119,7 +2342,7 @@
         },
         "clientToken":{
           "shape":"ClientToken",
-          "documentation":"<p>The idempotency token used to make this request idempotent.</p>"
+          "documentation":"<p>The client token that uniquely identifies the request.</p>"
         },
         "imageRecipeArn":{
           "shape":"ImageRecipeArn",
@@ -2164,7 +2387,7 @@
         },
         "clientToken":{
           "shape":"ClientToken",
-          "documentation":"<p>The idempotency token used to make this request idempotent.</p>",
+          "documentation":"<p>Unique, case-sensitive identifier you provide to ensure idempotency of the request. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/APIReference/Run_Instance_Idempotency.html\">Ensuring idempotency</a> in the <i>Amazon EC2 API Reference</i>.</p>",
           "idempotencyToken":true
         },
         "imageScanningConfiguration":{
@@ -2182,11 +2405,11 @@
         },
         "clientToken":{
           "shape":"ClientToken",
-          "documentation":"<p>The idempotency token used to make this request idempotent.</p>"
+          "documentation":"<p>The client token that uniquely identifies the request.</p>"
         },
         "imageBuildVersionArn":{
           "shape":"ImageBuildVersionArn",
-          "documentation":"<p>The Amazon Resource Name (ARN) of the image that this request created.</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of the image that the request created.</p>"
         }
       }
     },
@@ -2252,7 +2475,7 @@
         },
         "clientToken":{
           "shape":"ClientToken",
-          "documentation":"<p>The idempotency token used to make this request idempotent.</p>",
+          "documentation":"<p>Unique, case-sensitive identifier you provide to ensure idempotency of the request. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/APIReference/Run_Instance_Idempotency.html\">Ensuring idempotency</a> in the <i>Amazon EC2 API Reference</i>.</p>",
           "idempotencyToken":true
         }
       }
@@ -2266,11 +2489,74 @@
         },
         "clientToken":{
           "shape":"ClientToken",
-          "documentation":"<p>The idempotency token used to make this request idempotent.</p>"
+          "documentation":"<p>The client token that uniquely identifies the request.</p>"
         },
         "infrastructureConfigurationArn":{
           "shape":"InfrastructureConfigurationArn",
           "documentation":"<p>The Amazon Resource Name (ARN) of the infrastructure configuration that was created by this request.</p>"
+        }
+      }
+    },
+    "CreateLifecyclePolicyRequest":{
+      "type":"structure",
+      "required":[
+        "name",
+        "executionRole",
+        "resourceType",
+        "policyDetails",
+        "resourceSelection",
+        "clientToken"
+      ],
+      "members":{
+        "name":{
+          "shape":"ResourceName",
+          "documentation":"<p>The name of the lifecycle policy to create.</p>"
+        },
+        "description":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>Optional description for the lifecycle policy.</p>"
+        },
+        "status":{
+          "shape":"LifecyclePolicyStatus",
+          "documentation":"<p>Indicates whether the lifecycle policy resource is enabled.</p>"
+        },
+        "executionRole":{
+          "shape":"RoleNameOrArn",
+          "documentation":"<p>The role name or Amazon Resource Name (ARN) for the IAM role that grants Image Builder access to run lifecycle actions.</p>"
+        },
+        "resourceType":{
+          "shape":"LifecyclePolicyResourceType",
+          "documentation":"<p>The type of Image Builder resource that the lifecycle policy applies to.</p>"
+        },
+        "policyDetails":{
+          "shape":"LifecyclePolicyDetails",
+          "documentation":"<p>Configuration details for the lifecycle policy rules.</p>"
+        },
+        "resourceSelection":{
+          "shape":"LifecyclePolicyResourceSelection",
+          "documentation":"<p>Selection criteria for the resources that the lifecycle policy applies to. </p>"
+        },
+        "tags":{
+          "shape":"TagMap",
+          "documentation":"<p>Tags to apply to the lifecycle policy resource.</p>"
+        },
+        "clientToken":{
+          "shape":"ClientToken",
+          "documentation":"<p>Unique, case-sensitive identifier you provide to ensure idempotency of the request. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/APIReference/Run_Instance_Idempotency.html\">Ensuring idempotency</a> in the <i>Amazon EC2 API Reference</i>.</p>",
+          "idempotencyToken":true
+        }
+      }
+    },
+    "CreateLifecyclePolicyResponse":{
+      "type":"structure",
+      "members":{
+        "clientToken":{
+          "shape":"ClientToken",
+          "documentation":"<p>The client token that uniquely identifies the request.</p>"
+        },
+        "lifecyclePolicyArn":{
+          "shape":"LifecyclePolicyArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the lifecycle policy that the request created.</p>"
         }
       }
     },
@@ -2522,6 +2808,27 @@
         "infrastructureConfigurationArn":{
           "shape":"InfrastructureConfigurationArn",
           "documentation":"<p>The Amazon Resource Name (ARN) of the infrastructure configuration that was deleted.</p>"
+        }
+      }
+    },
+    "DeleteLifecyclePolicyRequest":{
+      "type":"structure",
+      "required":["lifecyclePolicyArn"],
+      "members":{
+        "lifecyclePolicyArn":{
+          "shape":"LifecyclePolicyArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the lifecycle policy resource to delete.</p>",
+          "location":"querystring",
+          "locationName":"lifecyclePolicyArn"
+        }
+      }
+    },
+    "DeleteLifecyclePolicyResponse":{
+      "type":"structure",
+      "members":{
+        "lifecyclePolicyArn":{
+          "shape":"LifecyclePolicyArn",
+          "documentation":"<p>The ARN of the lifecycle policy that was deleted.</p>"
         }
       }
     },
@@ -3125,6 +3432,48 @@
       },
       "documentation":"<p>GetInfrastructureConfiguration response object.</p>"
     },
+    "GetLifecycleExecutionRequest":{
+      "type":"structure",
+      "required":["lifecycleExecutionId"],
+      "members":{
+        "lifecycleExecutionId":{
+          "shape":"LifecycleExecutionId",
+          "documentation":"<p>Use the unique identifier for a runtime instance of the lifecycle policy to get runtime details.</p>",
+          "location":"querystring",
+          "locationName":"lifecycleExecutionId"
+        }
+      }
+    },
+    "GetLifecycleExecutionResponse":{
+      "type":"structure",
+      "members":{
+        "lifecycleExecution":{
+          "shape":"LifecycleExecution",
+          "documentation":"<p>Runtime details for the specified runtime instance of the lifecycle policy.</p>"
+        }
+      }
+    },
+    "GetLifecyclePolicyRequest":{
+      "type":"structure",
+      "required":["lifecyclePolicyArn"],
+      "members":{
+        "lifecyclePolicyArn":{
+          "shape":"LifecyclePolicyArn",
+          "documentation":"<p>Specifies the Amazon Resource Name (ARN) of the image lifecycle policy resource to get.</p>",
+          "location":"querystring",
+          "locationName":"lifecyclePolicyArn"
+        }
+      }
+    },
+    "GetLifecyclePolicyResponse":{
+      "type":"structure",
+      "members":{
+        "lifecyclePolicy":{
+          "shape":"LifecyclePolicy",
+          "documentation":"<p>The ARN of the image lifecycle policy resource that was returned.</p>"
+        }
+      }
+    },
     "GetWorkflowExecutionRequest":{
       "type":"structure",
       "required":["workflowExecutionId"],
@@ -3387,6 +3736,14 @@
         "imageScanningConfiguration":{
           "shape":"ImageScanningConfiguration",
           "documentation":"<p>Contains settings for vulnerability scans.</p>"
+        },
+        "deprecationTime":{
+          "shape":"DateTimeTimestamp",
+          "documentation":"<p>The time when deprecation occurs for an image resource. This can be a past or future date.</p>"
+        },
+        "lifecycleExecutionId":{
+          "shape":"LifecycleExecutionId",
+          "documentation":"<p>Identifies the last runtime instance of the lifecycle policy to take action on the image.</p>"
         }
       },
       "documentation":"<p>An Image Builder image. You must specify exactly one recipe for the image – either a container recipe (<code>containerRecipe</code>), which creates a container image, or an image recipe (<code>imageRecipe</code>), which creates an AMI.</p>"
@@ -3416,7 +3773,7 @@
     },
     "ImageBuilderArn":{
       "type":"string",
-      "pattern":"^arn:aws[^:]*:imagebuilder:[^:]+:(?:[0-9]{12}|aws):(?:image-recipe|container-recipe|infrastructure-configuration|distribution-configuration|component|image|image-pipeline|workflow\\/(?:build|test|distribution))/[a-z0-9-_]+(?:/(?:(?:x|[0-9]+)\\.(?:x|[0-9]+)\\.(?:x|[0-9]+))(?:/[0-9]+)?)?$"
+      "pattern":"^arn:aws[^:]*:imagebuilder:[^:]+:(?:[0-9]{12}|aws):(?:image-recipe|container-recipe|infrastructure-configuration|distribution-configuration|component|image|image-pipeline|lifecycle-policy|workflow\\/(?:build|test|distribution))/[a-z0-9-_]+(?:/(?:(?:x|[0-9]+)\\.(?:x|[0-9]+)\\.(?:x|[0-9]+))(?:/[0-9]+)?)?$"
     },
     "ImagePackage":{
       "type":"structure",
@@ -3835,7 +4192,8 @@
         "CANCELLED",
         "FAILED",
         "DEPRECATED",
-        "DELETED"
+        "DELETED",
+        "DISABLED"
       ]
     },
     "ImageSummary":{
@@ -3892,6 +4250,14 @@
         "imageSource":{
           "shape":"ImageSource",
           "documentation":"<p>The origin of the base image that Image Builder used to build this image.</p>"
+        },
+        "deprecationTime":{
+          "shape":"DateTimeTimestamp",
+          "documentation":"<p>The time when deprecation occurs for an image resource. This can be a past or future date.</p>"
+        },
+        "lifecycleExecutionId":{
+          "shape":"LifecycleExecutionId",
+          "documentation":"<p>Identifies the last runtime instance of the lifecycle policy to take action on the image.</p>"
         }
       },
       "documentation":"<p>An image summary.</p>"
@@ -4041,7 +4407,7 @@
         },
         "clientToken":{
           "shape":"ClientToken",
-          "documentation":"<p>The idempotency token of the component.</p>",
+          "documentation":"<p>Unique, case-sensitive identifier you provide to ensure idempotency of the request. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/APIReference/Run_Instance_Idempotency.html\">Ensuring idempotency</a> in the <i>Amazon EC2 API Reference</i>.</p>",
           "idempotencyToken":true
         }
       }
@@ -4055,7 +4421,7 @@
         },
         "clientToken":{
           "shape":"ClientToken",
-          "documentation":"<p>The idempotency token used to make this request idempotent.</p>"
+          "documentation":"<p>The client token that uniquely identifies the request.</p>"
         },
         "componentBuildVersionArn":{
           "shape":"ComponentBuildVersionArn",
@@ -4121,7 +4487,7 @@
         },
         "clientToken":{
           "shape":"ClientToken",
-          "documentation":"<p>The idempotency token that was used for this request.</p>"
+          "documentation":"<p>The client token that uniquely identifies the request.</p>"
         }
       }
     },
@@ -4447,6 +4813,525 @@
       "max":50,
       "min":1
     },
+    "LifecycleExecution":{
+      "type":"structure",
+      "members":{
+        "lifecycleExecutionId":{
+          "shape":"LifecycleExecutionId",
+          "documentation":"<p>Identifies the lifecycle policy runtime instance.</p>"
+        },
+        "lifecyclePolicyArn":{
+          "shape":"LifecyclePolicyArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the lifecycle policy that ran.</p>"
+        },
+        "resourcesImpactedSummary":{
+          "shape":"LifecycleExecutionResourcesImpactedSummary",
+          "documentation":"<p>Contains information about associated resources that are identified for action by the runtime instance of the lifecycle policy.</p>"
+        },
+        "state":{
+          "shape":"LifecycleExecutionState",
+          "documentation":"<p>Runtime state that reports if the policy action ran successfully, failed, or was skipped.</p>"
+        },
+        "startTime":{
+          "shape":"DateTimeTimestamp",
+          "documentation":"<p>The timestamp when the lifecycle runtime instance started.</p>"
+        },
+        "endTime":{
+          "shape":"DateTimeTimestamp",
+          "documentation":"<p>The timestamp when the lifecycle runtime instance completed.</p>"
+        }
+      },
+      "documentation":"<p>Contains metadata from a runtime instance of a lifecycle policy.</p>"
+    },
+    "LifecycleExecutionId":{
+      "type":"string",
+      "pattern":"^lce-[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
+    },
+    "LifecycleExecutionResource":{
+      "type":"structure",
+      "members":{
+        "accountId":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>The account that owns the impacted resource.</p>"
+        },
+        "resourceId":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>Identifies the impacted resource. The resource ID depends on the type of resource, as follows.</p> <ul> <li> <p>Image Builder image resources: Amazon Resource Name (ARN)</p> </li> <li> <p>Distributed AMIs: AMI ID</p> </li> <li> <p>Container images distributed to an ECR repository: image URI or SHA Digest</p> </li> </ul>"
+        },
+        "state":{
+          "shape":"LifecycleExecutionResourceState",
+          "documentation":"<p>The runtime state for the lifecycle execution.</p>"
+        },
+        "action":{
+          "shape":"LifecycleExecutionResourceAction",
+          "documentation":"<p>The action to take for the identified resource.</p>"
+        },
+        "region":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>The Amazon Web Services Region where the lifecycle execution resource is stored.</p>"
+        },
+        "snapshots":{
+          "shape":"LifecycleExecutionSnapshotResourceList",
+          "documentation":"<p>A list of associated resource snapshots for the impacted resource if it’s an AMI.</p>"
+        },
+        "imageUris":{
+          "shape":"StringList",
+          "documentation":"<p>For an impacted container image, this identifies a list of URIs for associated container images distributed to ECR repositories.</p>"
+        }
+      },
+      "documentation":"<p>Contains details for a resource that the runtime instance of the lifecycle policy identified for action.</p>"
+    },
+    "LifecycleExecutionResourceAction":{
+      "type":"structure",
+      "members":{
+        "name":{
+          "shape":"LifecycleExecutionResourceActionName",
+          "documentation":"<p>The name of the resource that was identified for a lifecycle policy action.</p>"
+        },
+        "reason":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>The reason why the lifecycle policy action is taken.</p>"
+        }
+      },
+      "documentation":"<p>The lifecycle policy action that was identified for the impacted resource.</p>"
+    },
+    "LifecycleExecutionResourceActionName":{
+      "type":"string",
+      "enum":[
+        "AVAILABLE",
+        "DELETE",
+        "DEPRECATE",
+        "DISABLE"
+      ]
+    },
+    "LifecycleExecutionResourceList":{
+      "type":"list",
+      "member":{"shape":"LifecycleExecutionResource"}
+    },
+    "LifecycleExecutionResourceState":{
+      "type":"structure",
+      "members":{
+        "status":{
+          "shape":"LifecycleExecutionResourceStatus",
+          "documentation":"<p>The runtime status of the lifecycle action taken for the impacted resource.</p>"
+        },
+        "reason":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>Messaging that clarifies the reason for the assigned status.</p>"
+        }
+      },
+      "documentation":"<p>Contains the state of an impacted resource that the runtime instance of the lifecycle policy identified for action.</p>"
+    },
+    "LifecycleExecutionResourceStatus":{
+      "type":"string",
+      "enum":[
+        "FAILED",
+        "IN_PROGRESS",
+        "SKIPPED",
+        "SUCCESS"
+      ]
+    },
+    "LifecycleExecutionResourcesImpactedSummary":{
+      "type":"structure",
+      "members":{
+        "hasImpactedResources":{
+          "shape":"Boolean",
+          "documentation":"<p>Indicates whether an image resource that was identified for a lifecycle action has associated resources that are also impacted.</p>"
+        }
+      },
+      "documentation":"<p>Contains details for an image resource that was identified for a lifecycle action.</p>"
+    },
+    "LifecycleExecutionSnapshotResource":{
+      "type":"structure",
+      "members":{
+        "snapshotId":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>Identifies the impacted snapshot resource.</p>"
+        },
+        "state":{
+          "shape":"LifecycleExecutionResourceState",
+          "documentation":"<p>The runtime status of the lifecycle action taken for the snapshot.</p>"
+        }
+      },
+      "documentation":"<p>Contains the state of an impacted snapshot resource that the runtime instance of the lifecycle policy identified for action.</p>"
+    },
+    "LifecycleExecutionSnapshotResourceList":{
+      "type":"list",
+      "member":{"shape":"LifecycleExecutionSnapshotResource"}
+    },
+    "LifecycleExecutionState":{
+      "type":"structure",
+      "members":{
+        "status":{
+          "shape":"LifecycleExecutionStatus",
+          "documentation":"<p>The runtime status of the lifecycle execution.</p>"
+        },
+        "reason":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>The reason for the current status.</p>"
+        }
+      },
+      "documentation":"<p>The current state of the runtime instance of the lifecycle policy.</p>"
+    },
+    "LifecycleExecutionStatus":{
+      "type":"string",
+      "enum":[
+        "IN_PROGRESS",
+        "CANCELLED",
+        "CANCELLING",
+        "FAILED",
+        "SUCCESS"
+      ]
+    },
+    "LifecycleExecutionsList":{
+      "type":"list",
+      "member":{"shape":"LifecycleExecution"}
+    },
+    "LifecyclePolicy":{
+      "type":"structure",
+      "members":{
+        "arn":{
+          "shape":"LifecyclePolicyArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the lifecycle policy resource.</p>"
+        },
+        "name":{
+          "shape":"ResourceName",
+          "documentation":"<p>The name of the lifecycle policy.</p>"
+        },
+        "description":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>Optional description for the lifecycle policy.</p>"
+        },
+        "status":{
+          "shape":"LifecyclePolicyStatus",
+          "documentation":"<p>Indicates whether the lifecycle policy resource is enabled.</p>"
+        },
+        "executionRole":{
+          "shape":"RoleNameOrArn",
+          "documentation":"<p>The name of the IAM role that Image Builder uses to run the lifecycle policy. This is a custom role that you create.</p>"
+        },
+        "resourceType":{
+          "shape":"LifecyclePolicyResourceType",
+          "documentation":"<p>The type of resources the lifecycle policy targets.</p>"
+        },
+        "policyDetails":{
+          "shape":"LifecyclePolicyDetails",
+          "documentation":"<p>The configuration details for a lifecycle policy resource.</p>"
+        },
+        "resourceSelection":{
+          "shape":"LifecyclePolicyResourceSelection",
+          "documentation":"<p>Resource selection criteria used to run the lifecycle policy.</p>"
+        },
+        "dateCreated":{
+          "shape":"DateTimeTimestamp",
+          "documentation":"<p>The timestamp when Image Builder created the lifecycle policy resource.</p>"
+        },
+        "dateUpdated":{
+          "shape":"DateTimeTimestamp",
+          "documentation":"<p>The timestamp when Image Builder updated the lifecycle policy resource.</p>"
+        },
+        "dateLastRun":{
+          "shape":"DateTimeTimestamp",
+          "documentation":"<p>The timestamp for the last time Image Builder ran the lifecycle policy.</p>"
+        },
+        "tags":{
+          "shape":"TagMap",
+          "documentation":"<p>To help manage your lifecycle policy resources, you can assign your own metadata to each resource in the form of tags. Each tag consists of a key and an optional value, both of which you define.</p>"
+        }
+      },
+      "documentation":"<p>The configuration details for a lifecycle policy resource.</p>"
+    },
+    "LifecyclePolicyArn":{
+      "type":"string",
+      "max":1024,
+      "pattern":"^arn:aws(?:-[a-z]+)*:imagebuilder:[a-z]{2,}(?:-[a-z]+)+-[0-9]+:(?:[0-9]{12}|aws):lifecycle-policy/[a-z0-9-_]+$"
+    },
+    "LifecyclePolicyDetail":{
+      "type":"structure",
+      "required":[
+        "action",
+        "filter"
+      ],
+      "members":{
+        "action":{
+          "shape":"LifecyclePolicyDetailAction",
+          "documentation":"<p>Configuration details for the policy action.</p>"
+        },
+        "filter":{
+          "shape":"LifecyclePolicyDetailFilter",
+          "documentation":"<p>Specifies the resources that the lifecycle policy applies to.</p>"
+        },
+        "exclusionRules":{
+          "shape":"LifecyclePolicyDetailExclusionRules",
+          "documentation":"<p>Additional rules to specify resources that should be exempt from policy actions.</p>"
+        }
+      },
+      "documentation":"<p>The configuration details for a lifecycle policy resource.</p>"
+    },
+    "LifecyclePolicyDetailAction":{
+      "type":"structure",
+      "required":["type"],
+      "members":{
+        "type":{
+          "shape":"LifecyclePolicyDetailActionType",
+          "documentation":"<p>Specifies the lifecycle action to take.</p>"
+        },
+        "includeResources":{
+          "shape":"LifecyclePolicyDetailActionIncludeResources",
+          "documentation":"<p>Specifies the resources that the lifecycle policy applies to.</p>"
+        }
+      },
+      "documentation":"<p>Contains selection criteria for the lifecycle policy.</p>"
+    },
+    "LifecyclePolicyDetailActionIncludeResources":{
+      "type":"structure",
+      "members":{
+        "amis":{
+          "shape":"Boolean",
+          "documentation":"<p>Specifies whether the lifecycle action should apply to distributed AMIs.</p>"
+        },
+        "snapshots":{
+          "shape":"Boolean",
+          "documentation":"<p>Specifies whether the lifecycle action should apply to snapshots associated with distributed AMIs.</p>"
+        },
+        "containers":{
+          "shape":"Boolean",
+          "documentation":"<p>Specifies whether the lifecycle action should apply to distributed containers.</p>"
+        }
+      },
+      "documentation":"<p>Specifies how the lifecycle policy should apply actions to selected resources.</p>"
+    },
+    "LifecyclePolicyDetailActionType":{
+      "type":"string",
+      "enum":[
+        "DELETE",
+        "DEPRECATE",
+        "DISABLE"
+      ]
+    },
+    "LifecyclePolicyDetailExclusionRules":{
+      "type":"structure",
+      "members":{
+        "tagMap":{
+          "shape":"TagMap",
+          "documentation":"<p>Contains a list of tags that Image Builder uses to skip lifecycle actions for AMIs that have them.</p>"
+        },
+        "amis":{
+          "shape":"LifecyclePolicyDetailExclusionRulesAmis",
+          "documentation":"<p>Lists configuration values that apply to AMIs that Image Builder should exclude from the lifecycle action.</p>"
+        }
+      },
+      "documentation":"<p>Specifies resources that lifecycle policy actions should not apply to.</p>"
+    },
+    "LifecyclePolicyDetailExclusionRulesAmis":{
+      "type":"structure",
+      "members":{
+        "isPublic":{
+          "shape":"Boolean",
+          "documentation":"<p>Configures whether public AMIs are excluded from the lifecycle action.</p>"
+        },
+        "regions":{
+          "shape":"StringList",
+          "documentation":"<p>Specifies Amazon Web Services accounts whose resources are excluded from the lifecycle action.</p>"
+        },
+        "sharedAccounts":{
+          "shape":"AccountList",
+          "documentation":"<p>Specifies configuration details for Image Builder to exclude the most recent resources from lifecycle actions.</p>"
+        },
+        "lastLaunched":{
+          "shape":"LifecyclePolicyDetailExclusionRulesAmisLastLaunched",
+          "documentation":"<p>Configures Amazon Web Services Regions that are excluded from the lifecycle action.</p>"
+        },
+        "tagMap":{
+          "shape":"TagMap",
+          "documentation":"<p>Lists tags that should be excluded from lifecycle actions for the AMIs that have them.</p>"
+        }
+      },
+      "documentation":"<p>Defines criteria for AMIs that are excluded from lifecycle actions.</p>"
+    },
+    "LifecyclePolicyDetailExclusionRulesAmisLastLaunched":{
+      "type":"structure",
+      "required":[
+        "value",
+        "unit"
+      ],
+      "members":{
+        "value":{
+          "shape":"LifecyclePolicyDetailExclusionRulesAmisLastLaunchedValue",
+          "documentation":"<p>The integer number of units for the time period. For example <code>6</code> (months).</p>"
+        },
+        "unit":{
+          "shape":"LifecyclePolicyTimeUnit",
+          "documentation":"<p>Defines the unit of time that the lifecycle policy uses to calculate elapsed time since the last instance launched from the AMI. For example: days, weeks, months, or years.</p>"
+        }
+      },
+      "documentation":"<p>Defines criteria to exclude AMIs from lifecycle actions based on the last time they were used to launch an instance.</p>"
+    },
+    "LifecyclePolicyDetailExclusionRulesAmisLastLaunchedValue":{
+      "type":"integer",
+      "max":365,
+      "min":1
+    },
+    "LifecyclePolicyDetailFilter":{
+      "type":"structure",
+      "required":[
+        "type",
+        "value"
+      ],
+      "members":{
+        "type":{
+          "shape":"LifecyclePolicyDetailFilterType",
+          "documentation":"<p>Filter resources based on either <code>age</code> or <code>count</code>.</p>"
+        },
+        "value":{
+          "shape":"LifecyclePolicyDetailFilterValue",
+          "documentation":"<p>The number of units for the time period or for the count. For example, a value of <code>6</code> might refer to six months or six AMIs.</p> <note> <p>For count-based filters, this value represents the minimum number of resources to keep on hand. If you have fewer resources than this number, the resource is excluded from lifecycle actions.</p> </note>"
+        },
+        "unit":{
+          "shape":"LifecyclePolicyTimeUnit",
+          "documentation":"<p>Defines the unit of time that the lifecycle policy uses to determine impacted resources. This is required for age-based rules.</p>"
+        },
+        "retainAtLeast":{
+          "shape":"LifecyclePolicyDetailFilterRetainAtLeast",
+          "documentation":"<p>For age-based filters, this is the number of resources to keep on hand after the lifecycle <code>DELETE</code> action is applied. Impacted resources are only deleted if you have more than this number of resources. If you have fewer resources than this number, the impacted resource is not deleted.</p>"
+        }
+      },
+      "documentation":"<p>Defines filters that the lifecycle policy uses to determine impacted resource.</p>"
+    },
+    "LifecyclePolicyDetailFilterRetainAtLeast":{
+      "type":"integer",
+      "max":10,
+      "min":1
+    },
+    "LifecyclePolicyDetailFilterType":{
+      "type":"string",
+      "enum":[
+        "AGE",
+        "COUNT"
+      ]
+    },
+    "LifecyclePolicyDetailFilterValue":{
+      "type":"integer",
+      "max":1000,
+      "min":1
+    },
+    "LifecyclePolicyDetails":{
+      "type":"list",
+      "member":{"shape":"LifecyclePolicyDetail"},
+      "max":3,
+      "min":1
+    },
+    "LifecyclePolicyResourceSelection":{
+      "type":"structure",
+      "members":{
+        "recipes":{
+          "shape":"LifecyclePolicyResourceSelectionRecipes",
+          "documentation":"<p>A list of recipes that are used as selection criteria for the output images that the lifecycle policy applies to.</p>"
+        },
+        "tagMap":{
+          "shape":"TagMap",
+          "documentation":"<p>A list of tags that are used as selection criteria for the resources that the lifecycle policy applies to.</p>"
+        }
+      },
+      "documentation":"<p>Resource selection criteria for the lifecycle policy.</p>"
+    },
+    "LifecyclePolicyResourceSelectionRecipe":{
+      "type":"structure",
+      "required":[
+        "name",
+        "semanticVersion"
+      ],
+      "members":{
+        "name":{
+          "shape":"ResourceName",
+          "documentation":"<p>The name of an Image Builder recipe that the lifecycle policy uses for resource selection.</p>"
+        },
+        "semanticVersion":{
+          "shape":"VersionNumber",
+          "documentation":"<p>The version of the Image Builder recipe specified by the <code>name</code> field.</p>"
+        }
+      },
+      "documentation":"<p>Specifies an Image Builder recipe that the lifecycle policy uses for resource selection.</p>"
+    },
+    "LifecyclePolicyResourceSelectionRecipes":{
+      "type":"list",
+      "member":{"shape":"LifecyclePolicyResourceSelectionRecipe"},
+      "max":50,
+      "min":1
+    },
+    "LifecyclePolicyResourceType":{
+      "type":"string",
+      "enum":[
+        "AMI_IMAGE",
+        "CONTAINER_IMAGE"
+      ]
+    },
+    "LifecyclePolicyStatus":{
+      "type":"string",
+      "enum":[
+        "DISABLED",
+        "ENABLED"
+      ]
+    },
+    "LifecyclePolicySummary":{
+      "type":"structure",
+      "members":{
+        "arn":{
+          "shape":"LifecyclePolicyArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the lifecycle policy summary resource.</p>"
+        },
+        "name":{
+          "shape":"ResourceName",
+          "documentation":"<p>The name of the lifecycle policy.</p>"
+        },
+        "description":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>Optional description for the lifecycle policy.</p>"
+        },
+        "status":{
+          "shape":"LifecyclePolicyStatus",
+          "documentation":"<p>The lifecycle policy resource status.</p>"
+        },
+        "executionRole":{
+          "shape":"RoleNameOrArn",
+          "documentation":"<p>The name of the IAM role that Image Builder uses to run the lifecycle policy.</p>"
+        },
+        "resourceType":{
+          "shape":"LifecyclePolicyResourceType",
+          "documentation":"<p>The type of resources the lifecycle policy targets.</p>"
+        },
+        "dateCreated":{
+          "shape":"DateTimeTimestamp",
+          "documentation":"<p>The timestamp when Image Builder created the lifecycle policy resource.</p>"
+        },
+        "dateUpdated":{
+          "shape":"DateTimeTimestamp",
+          "documentation":"<p>The timestamp when Image Builder updated the lifecycle policy resource.</p>"
+        },
+        "dateLastRun":{
+          "shape":"DateTimeTimestamp",
+          "documentation":"<p>The timestamp for the last time Image Builder ran the lifecycle policy.</p>"
+        },
+        "tags":{
+          "shape":"TagMap",
+          "documentation":"<p>To help manage your lifecycle policy resources, you can assign your own metadata to each resource in the form of tags. Each tag consists of a key and an optional value, both of which you define.</p>"
+        }
+      },
+      "documentation":"<p>Contains a summary of lifecycle policy resources.</p>"
+    },
+    "LifecyclePolicySummaryList":{
+      "type":"list",
+      "member":{"shape":"LifecyclePolicySummary"}
+    },
+    "LifecyclePolicyTimeUnit":{
+      "type":"string",
+      "enum":[
+        "DAYS",
+        "WEEKS",
+        "MONTHS",
+        "YEARS"
+      ]
+    },
     "ListComponentBuildVersionsRequest":{
       "type":"structure",
       "required":["componentVersionArn"],
@@ -4462,7 +5347,7 @@
         },
         "nextToken":{
           "shape":"PaginationToken",
-          "documentation":"<p>A token to specify where to start paginating. This is the NextToken from a previously truncated response.</p>"
+          "documentation":"<p>A token to specify where to start paginating. This is the nextToken from a previously truncated response.</p>"
         }
       }
     },
@@ -4479,7 +5364,7 @@
         },
         "nextToken":{
           "shape":"PaginationToken",
-          "documentation":"<p>The next token used for paginated responses. When this field isn't empty, there are additional elements that the service has'ot included in this request. Use this token with the next request to retrieve additional objects.</p>"
+          "documentation":"<p>The next token used for paginated responses. When this field isn't empty, there are additional elements that the service hasn't included in this request. Use this token with the next request to retrieve additional objects.</p>"
         }
       }
     },
@@ -4505,7 +5390,7 @@
         },
         "nextToken":{
           "shape":"PaginationToken",
-          "documentation":"<p>A token to specify where to start paginating. This is the NextToken from a previously truncated response.</p>"
+          "documentation":"<p>A token to specify where to start paginating. This is the nextToken from a previously truncated response.</p>"
         }
       }
     },
@@ -4522,7 +5407,7 @@
         },
         "nextToken":{
           "shape":"PaginationToken",
-          "documentation":"<p>The next token used for paginated responses. When this field isn't empty, there are additional elements that the service has'ot included in this request. Use this token with the next request to retrieve additional objects.</p>"
+          "documentation":"<p>The next token used for paginated responses. When this field isn't empty, there are additional elements that the service hasn't included in this request. Use this token with the next request to retrieve additional objects.</p>"
         }
       }
     },
@@ -4544,7 +5429,7 @@
         },
         "nextToken":{
           "shape":"NonEmptyString",
-          "documentation":"<p>A token to specify where to start paginating. This is the NextToken from a previously truncated response.</p>"
+          "documentation":"<p>A token to specify where to start paginating. This is the nextToken from a previously truncated response.</p>"
         }
       }
     },
@@ -4561,7 +5446,7 @@
         },
         "nextToken":{
           "shape":"NonEmptyString",
-          "documentation":"<p>The next token used for paginated responses. When this field isn't empty, there are additional elements that the service has'ot included in this request. Use this token with the next request to retrieve additional objects.</p>"
+          "documentation":"<p>The next token used for paginated responses. When this field isn't empty, there are additional elements that the service hasn't included in this request. Use this token with the next request to retrieve additional objects.</p>"
         }
       }
     },
@@ -4579,7 +5464,7 @@
         },
         "nextToken":{
           "shape":"PaginationToken",
-          "documentation":"<p>A token to specify where to start paginating. This is the NextToken from a previously truncated response.</p>"
+          "documentation":"<p>A token to specify where to start paginating. This is the nextToken from a previously truncated response.</p>"
         }
       }
     },
@@ -4596,7 +5481,7 @@
         },
         "nextToken":{
           "shape":"PaginationToken",
-          "documentation":"<p>The next token used for paginated responses. When this field isn't empty, there are additional elements that the service has'ot included in this request. Use this token with the next request to retrieve additional objects.</p>"
+          "documentation":"<p>The next token used for paginated responses. When this field isn't empty, there are additional elements that the service hasn't included in this request. Use this token with the next request to retrieve additional objects.</p>"
         }
       }
     },
@@ -4619,7 +5504,7 @@
         },
         "nextToken":{
           "shape":"PaginationToken",
-          "documentation":"<p>A token to specify where to start paginating. This is the NextToken from a previously truncated response.</p>"
+          "documentation":"<p>A token to specify where to start paginating. This is the nextToken from a previously truncated response.</p>"
         }
       }
     },
@@ -4636,7 +5521,7 @@
         },
         "nextToken":{
           "shape":"PaginationToken",
-          "documentation":"<p>The next token used for paginated responses. When this field isn't empty, there are additional elements that the service has'ot included in this request. Use this token with the next request to retrieve additional objects.</p>"
+          "documentation":"<p>The next token used for paginated responses. When this field isn't empty, there are additional elements that the service hasn't included in this request. Use this token with the next request to retrieve additional objects.</p>"
         }
       }
     },
@@ -4655,7 +5540,7 @@
         },
         "nextToken":{
           "shape":"PaginationToken",
-          "documentation":"<p>A token to specify where to start paginating. This is the NextToken from a previously truncated response.</p>"
+          "documentation":"<p>A token to specify where to start paginating. This is the nextToken from a previously truncated response.</p>"
         }
       }
     },
@@ -4672,7 +5557,7 @@
         },
         "nextToken":{
           "shape":"PaginationToken",
-          "documentation":"<p>The next token used for paginated responses. When this field isn't empty, there are additional elements that the service has'ot included in this request. Use this token with the next request to retrieve additional objects.</p>"
+          "documentation":"<p>The next token used for paginated responses. When this field isn't empty, there are additional elements that the service hasn't included in this request. Use this token with the next request to retrieve additional objects.</p>"
         }
       }
     },
@@ -4695,7 +5580,7 @@
         },
         "nextToken":{
           "shape":"PaginationToken",
-          "documentation":"<p>A token to specify where to start paginating. This is the NextToken from a previously truncated response.</p>"
+          "documentation":"<p>A token to specify where to start paginating. This is the nextToken from a previously truncated response.</p>"
         }
       }
     },
@@ -4712,7 +5597,7 @@
         },
         "nextToken":{
           "shape":"PaginationToken",
-          "documentation":"<p>The next token used for paginated responses. When this field isn't empty, there are additional elements that the service has'ot included in this request. Use this token with the next request to retrieve additional objects.</p>"
+          "documentation":"<p>The next token used for paginated responses. When this field isn't empty, there are additional elements that the service hasn't included in this request. Use this token with the next request to retrieve additional objects.</p>"
         }
       }
     },
@@ -4730,7 +5615,7 @@
         },
         "nextToken":{
           "shape":"PaginationToken",
-          "documentation":"<p>A token to specify where to start paginating. This is the NextToken from a previously truncated response.</p>"
+          "documentation":"<p>A token to specify where to start paginating. This is the nextToken from a previously truncated response.</p>"
         }
       }
     },
@@ -4747,7 +5632,7 @@
         },
         "nextToken":{
           "shape":"PaginationToken",
-          "documentation":"<p>The next token used for paginated responses. When this field isn't empty, there are additional elements that the service has'ot included in this request. Use this token with the next request to retrieve additional objects.</p>"
+          "documentation":"<p>The next token used for paginated responses. When this field isn't empty, there are additional elements that the service hasn't included in this request. Use this token with the next request to retrieve additional objects.</p>"
         }
       }
     },
@@ -4769,7 +5654,7 @@
         },
         "nextToken":{
           "shape":"PaginationToken",
-          "documentation":"<p>A token to specify where to start paginating. This is the NextToken from a previously truncated response.</p>"
+          "documentation":"<p>A token to specify where to start paginating. This is the nextToken from a previously truncated response.</p>"
         }
       }
     },
@@ -4786,7 +5671,7 @@
         },
         "nextToken":{
           "shape":"PaginationToken",
-          "documentation":"<p>The next token used for paginated responses. When this field isn't empty, there are additional elements that the service has'ot included in this request. Use this token with the next request to retrieve additional objects.</p>"
+          "documentation":"<p>The next token used for paginated responses. When this field isn't empty, there are additional elements that the service hasn't included in this request. Use this token with the next request to retrieve additional objects.</p>"
         }
       }
     },
@@ -4796,7 +5681,7 @@
         "filter":{"shape":"Filter"},
         "nextToken":{
           "shape":"PaginationToken",
-          "documentation":"<p>A token to specify where to start paginating. This is the NextToken from a previously truncated response.</p>"
+          "documentation":"<p>A token to specify where to start paginating. This is the nextToken from a previously truncated response.</p>"
         }
       }
     },
@@ -4817,7 +5702,7 @@
         },
         "nextToken":{
           "shape":"PaginationToken",
-          "documentation":"<p>The next token used for paginated responses. When this field isn't empty, there are additional elements that the service has'ot included in this request. Use this token with the next request to retrieve additional objects.</p>"
+          "documentation":"<p>The next token used for paginated responses. When this field isn't empty, there are additional elements that the service hasn't included in this request. Use this token with the next request to retrieve additional objects.</p>"
         }
       }
     },
@@ -4835,7 +5720,7 @@
         },
         "nextToken":{
           "shape":"PaginationToken",
-          "documentation":"<p>A token to specify where to start paginating. This is the NextToken from a previously truncated response.</p>"
+          "documentation":"<p>A token to specify where to start paginating. This is the nextToken from a previously truncated response.</p>"
         }
       }
     },
@@ -4852,7 +5737,7 @@
         },
         "nextToken":{
           "shape":"PaginationToken",
-          "documentation":"<p>The next token used for paginated responses. When this field isn't empty, there are additional elements that the service has'ot included in this request. Use this token with the next request to retrieve additional objects.</p>"
+          "documentation":"<p>The next token used for paginated responses. When this field isn't empty, there are additional elements that the service hasn't included in this request. Use this token with the next request to retrieve additional objects.</p>"
         }
       }
     },
@@ -4878,7 +5763,7 @@
         },
         "nextToken":{
           "shape":"PaginationToken",
-          "documentation":"<p>A token to specify where to start paginating. This is the NextToken from a previously truncated response.</p>"
+          "documentation":"<p>A token to specify where to start paginating. This is the nextToken from a previously truncated response.</p>"
         },
         "includeDeprecated":{
           "shape":"NullableBoolean",
@@ -4899,7 +5784,7 @@
         },
         "nextToken":{
           "shape":"PaginationToken",
-          "documentation":"<p>The next token used for paginated responses. When this field isn't empty, there are additional elements that the service has'ot included in this request. Use this token with the next request to retrieve additional objects.</p>"
+          "documentation":"<p>The next token used for paginated responses. When this field isn't empty, there are additional elements that the service hasn't included in this request. Use this token with the next request to retrieve additional objects.</p>"
         }
       }
     },
@@ -4917,7 +5802,7 @@
         },
         "nextToken":{
           "shape":"PaginationToken",
-          "documentation":"<p>A token to specify where to start paginating. This is the NextToken from a previously truncated response.</p>"
+          "documentation":"<p>A token to specify where to start paginating. This is the nextToken from a previously truncated response.</p>"
         }
       }
     },
@@ -4934,7 +5819,114 @@
         },
         "nextToken":{
           "shape":"PaginationToken",
-          "documentation":"<p>The next token used for paginated responses. When this field isn't empty, there are additional elements that the service has'ot included in this request. Use this token with the next request to retrieve additional objects.</p>"
+          "documentation":"<p>The next token used for paginated responses. When this field isn't empty, there are additional elements that the service hasn't included in this request. Use this token with the next request to retrieve additional objects.</p>"
+        }
+      }
+    },
+    "ListLifecycleExecutionResourcesRequest":{
+      "type":"structure",
+      "required":["lifecycleExecutionId"],
+      "members":{
+        "lifecycleExecutionId":{
+          "shape":"LifecycleExecutionId",
+          "documentation":"<p>Use the unique identifier for a runtime instance of the lifecycle policy to get runtime details.</p>"
+        },
+        "parentResourceId":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>You can leave this empty to get a list of Image Builder resources that were identified for lifecycle actions.</p> <p>To get a list of associated resources that are impacted for an individual resource (the parent), specify its Amazon Resource Name (ARN). Associated resources are produced from your image and distributed when you run a build, such as AMIs or container images stored in ECR repositories.</p>"
+        },
+        "maxResults":{
+          "shape":"RestrictedInteger",
+          "documentation":"<p>The maximum items to return in a request.</p>",
+          "box":true
+        },
+        "nextToken":{
+          "shape":"PaginationToken",
+          "documentation":"<p>A token to specify where to start paginating. This is the nextToken from a previously truncated response.</p>"
+        }
+      }
+    },
+    "ListLifecycleExecutionResourcesResponse":{
+      "type":"structure",
+      "members":{
+        "lifecycleExecutionId":{
+          "shape":"LifecycleExecutionId",
+          "documentation":"<p>Runtime details for the specified runtime instance of the lifecycle policy.</p>"
+        },
+        "lifecycleExecutionState":{
+          "shape":"LifecycleExecutionState",
+          "documentation":"<p>The current state of the lifecycle runtime instance.</p>"
+        },
+        "resources":{
+          "shape":"LifecycleExecutionResourceList",
+          "documentation":"<p>A list of resources that were identified for lifecycle actions.</p>"
+        },
+        "nextToken":{
+          "shape":"PaginationToken",
+          "documentation":"<p>The next token used for paginated responses. When this field isn't empty, there are additional elements that the service hasn't included in this request. Use this token with the next request to retrieve additional objects.</p>"
+        }
+      }
+    },
+    "ListLifecycleExecutionsRequest":{
+      "type":"structure",
+      "required":["resourceArn"],
+      "members":{
+        "maxResults":{
+          "shape":"RestrictedInteger",
+          "documentation":"<p>The maximum items to return in a request.</p>",
+          "box":true
+        },
+        "nextToken":{
+          "shape":"PaginationToken",
+          "documentation":"<p>A token to specify where to start paginating. This is the nextToken from a previously truncated response.</p>"
+        },
+        "resourceArn":{
+          "shape":"ImageBuilderArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the resource for which to get a list of lifecycle runtime instances.</p>"
+        }
+      }
+    },
+    "ListLifecycleExecutionsResponse":{
+      "type":"structure",
+      "members":{
+        "lifecycleExecutions":{
+          "shape":"LifecycleExecutionsList",
+          "documentation":"<p>A list of lifecycle runtime instances for the specified resource.</p>"
+        },
+        "nextToken":{
+          "shape":"PaginationToken",
+          "documentation":"<p>The next token used for paginated responses. When this field isn't empty, there are additional elements that the service hasn't included in this request. Use this token with the next request to retrieve additional objects.</p>"
+        }
+      }
+    },
+    "ListLifecyclePoliciesRequest":{
+      "type":"structure",
+      "members":{
+        "filters":{
+          "shape":"FilterList",
+          "documentation":"<p>Streamline results based on one of the following values: <code>Name</code>, <code>Status</code>.</p>"
+        },
+        "maxResults":{
+          "shape":"RestrictedInteger",
+          "documentation":"<p>The maximum items to return in a request.</p>",
+          "box":true
+        },
+        "nextToken":{
+          "shape":"PaginationToken",
+          "documentation":"<p>A token to specify where to start paginating. This is the nextToken from a previously truncated response.</p>"
+        }
+      }
+    },
+    "ListLifecyclePoliciesResponse":{
+      "type":"structure",
+      "members":{
+        "lifecyclePolicySummaryList":{
+          "shape":"LifecyclePolicySummaryList",
+          "documentation":"<p>A list of lifecycle policies in your Amazon Web Services account that meet the criteria specified in the request.</p>"
+        },
+        "nextToken":{
+          "shape":"PaginationToken",
+          "documentation":"<p>The next token used for paginated responses. When this field isn't empty, there are additional elements that the service hasn't included in this request. Use this token with the next request to retrieve additional objects.</p>"
         }
       }
     },
@@ -4970,7 +5962,7 @@
         },
         "nextToken":{
           "shape":"PaginationToken",
-          "documentation":"<p>A token to specify where to start paginating. This is the NextToken from a previously truncated response.</p>"
+          "documentation":"<p>A token to specify where to start paginating. This is the nextToken from a previously truncated response.</p>"
         },
         "imageBuildVersionArn":{
           "shape":"ImageBuildVersionArn",
@@ -4999,7 +5991,7 @@
         },
         "nextToken":{
           "shape":"PaginationToken",
-          "documentation":"<p>The next token used for paginated responses. When this field isn't empty, there are additional elements that the service has'ot included in this request. Use this token with the next request to retrieve additional objects.</p>"
+          "documentation":"<p>The next token used for paginated responses. When this field isn't empty, there are additional elements that the service hasn't included in this request. Use this token with the next request to retrieve additional objects.</p>"
         }
       }
     },
@@ -5014,7 +6006,7 @@
         },
         "nextToken":{
           "shape":"PaginationToken",
-          "documentation":"<p>A token to specify where to start paginating. This is the NextToken from a previously truncated response.</p>"
+          "documentation":"<p>A token to specify where to start paginating. This is the nextToken from a previously truncated response.</p>"
         },
         "workflowExecutionId":{
           "shape":"WorkflowExecutionId",
@@ -5051,7 +6043,7 @@
         },
         "nextToken":{
           "shape":"PaginationToken",
-          "documentation":"<p>The next token used for paginated responses. When this field isn't empty, there are additional elements that the service has'ot included in this request. Use this token with the next request to retrieve additional objects.</p>"
+          "documentation":"<p>The next token used for paginated responses. When this field isn't empty, there are additional elements that the service hasn't included in this request. Use this token with the next request to retrieve additional objects.</p>"
         }
       }
     },
@@ -5067,7 +6059,6 @@
     },
     "MaxParallelLaunches":{
       "type":"integer",
-      "max":10000,
       "min":1
     },
     "NonEmptyString":{
@@ -5406,6 +6397,50 @@
       "max":30000,
       "min":1
     },
+    "ResourceState":{
+      "type":"structure",
+      "members":{
+        "status":{
+          "shape":"ResourceStatus",
+          "documentation":"<p>Shows the current lifecycle policy action that was applied to an impacted resource.</p>"
+        }
+      },
+      "documentation":"<p>The current state of an impacted resource.</p>"
+    },
+    "ResourceStateUpdateExclusionRules":{
+      "type":"structure",
+      "members":{
+        "amis":{"shape":"LifecyclePolicyDetailExclusionRulesAmis"}
+      },
+      "documentation":"<p>Additional rules to specify resources that should be exempt from ad-hoc lifecycle actions.</p>"
+    },
+    "ResourceStateUpdateIncludeResources":{
+      "type":"structure",
+      "members":{
+        "amis":{
+          "shape":"Boolean",
+          "documentation":"<p>Specifies whether the lifecycle action should apply to distributed AMIs</p>"
+        },
+        "snapshots":{
+          "shape":"Boolean",
+          "documentation":"<p>Specifies whether the lifecycle action should apply to snapshots associated with distributed AMIs.</p>"
+        },
+        "containers":{
+          "shape":"Boolean",
+          "documentation":"<p>Specifies whether the lifecycle action should apply to distributed containers.</p>"
+        }
+      },
+      "documentation":"<p>Specifies if the lifecycle policy should apply actions to selected resources.</p>"
+    },
+    "ResourceStatus":{
+      "type":"string",
+      "enum":[
+        "AVAILABLE",
+        "DELETED",
+        "DEPRECATED",
+        "DISABLED"
+      ]
+    },
     "ResourceTagMap":{
       "type":"map",
       "key":{"shape":"TagKey"},
@@ -5417,6 +6452,12 @@
       "type":"integer",
       "max":25,
       "min":1
+    },
+    "RoleNameOrArn":{
+      "type":"string",
+      "max":2048,
+      "min":1,
+      "pattern":"^(?:arn:aws(?:-[a-z]+)*:iam::[0-9]{12}:role/)?[a-zA-Z_0-9+=,.@\\-_/]+$"
     },
     "S3ExportConfiguration":{
       "type":"structure",
@@ -5549,7 +6590,7 @@
         },
         "clientToken":{
           "shape":"ClientToken",
-          "documentation":"<p>The idempotency token used to make this request idempotent.</p>",
+          "documentation":"<p>Unique, case-sensitive identifier you provide to ensure idempotency of the request. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/APIReference/Run_Instance_Idempotency.html\">Ensuring idempotency</a> in the <i>Amazon EC2 API Reference</i>.</p>",
           "idempotencyToken":true
         }
       }
@@ -5563,11 +6604,63 @@
         },
         "clientToken":{
           "shape":"ClientToken",
-          "documentation":"<p>The idempotency token used to make this request idempotent.</p>"
+          "documentation":"<p>The client token that uniquely identifies the request.</p>"
         },
         "imageBuildVersionArn":{
           "shape":"ImageBuildVersionArn",
-          "documentation":"<p>The Amazon Resource Name (ARN) of the image that was created by this request.</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of the image that the request created.</p>"
+        }
+      }
+    },
+    "StartResourceStateUpdateRequest":{
+      "type":"structure",
+      "required":[
+        "resourceArn",
+        "state",
+        "clientToken"
+      ],
+      "members":{
+        "resourceArn":{
+          "shape":"ImageBuildVersionArn",
+          "documentation":"<p>The ARN of the Image Builder resource that is updated. The state update might also impact associated resources.</p>"
+        },
+        "state":{
+          "shape":"ResourceState",
+          "documentation":"<p>Indicates the lifecycle action to take for this request.</p>"
+        },
+        "executionRole":{
+          "shape":"RoleNameOrArn",
+          "documentation":"<p>The name or Amazon Resource Name (ARN) of the IAM role that’s used to update image state.</p>"
+        },
+        "includeResources":{
+          "shape":"ResourceStateUpdateIncludeResources",
+          "documentation":"<p>A list of image resources to update state for.</p>"
+        },
+        "exclusionRules":{
+          "shape":"ResourceStateUpdateExclusionRules",
+          "documentation":"<p>Skip action on the image resource and associated resources if specified exclusion rules are met.</p>"
+        },
+        "updateAt":{
+          "shape":"DateTimeTimestamp",
+          "documentation":"<p>The timestamp that indicates when resources are updated by a lifecycle action.</p>"
+        },
+        "clientToken":{
+          "shape":"ClientToken",
+          "documentation":"<p>Unique, case-sensitive identifier you provide to ensure idempotency of the request. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/APIReference/Run_Instance_Idempotency.html\">Ensuring idempotency</a> in the <i>Amazon EC2 API Reference</i>.</p>",
+          "idempotencyToken":true
+        }
+      }
+    },
+    "StartResourceStateUpdateResponse":{
+      "type":"structure",
+      "members":{
+        "lifecycleExecutionId":{
+          "shape":"LifecycleExecutionId",
+          "documentation":"<p>Identifies the lifecycle runtime instance that started the resource state update.</p>"
+        },
+        "resourceArn":{
+          "shape":"ImageBuildVersionArn",
+          "documentation":"<p>The requested ARN of the Image Builder resource for the asynchronous update.</p>"
         }
       }
     },
@@ -5709,7 +6802,7 @@
         },
         "clientToken":{
           "shape":"ClientToken",
-          "documentation":"<p>The idempotency token of the distribution configuration.</p>",
+          "documentation":"<p>Unique, case-sensitive identifier you provide to ensure idempotency of the request. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/APIReference/Run_Instance_Idempotency.html\">Ensuring idempotency</a> in the <i>Amazon EC2 API Reference</i>.</p>",
           "idempotencyToken":true
         }
       }
@@ -5723,7 +6816,7 @@
         },
         "clientToken":{
           "shape":"ClientToken",
-          "documentation":"<p>The idempotency token used to make this request idempotent.</p>"
+          "documentation":"<p>The client token that uniquely identifies the request.</p>"
         },
         "distributionConfigurationArn":{
           "shape":"DistributionConfigurationArn",
@@ -5781,7 +6874,7 @@
         },
         "clientToken":{
           "shape":"ClientToken",
-          "documentation":"<p>The idempotency token used to make this request idempotent.</p>",
+          "documentation":"<p>Unique, case-sensitive identifier you provide to ensure idempotency of the request. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/APIReference/Run_Instance_Idempotency.html\">Ensuring idempotency</a> in the <i>Amazon EC2 API Reference</i>.</p>",
           "idempotencyToken":true
         },
         "imageScanningConfiguration":{
@@ -5799,7 +6892,7 @@
         },
         "clientToken":{
           "shape":"ClientToken",
-          "documentation":"<p>The idempotency token used to make this request idempotent.</p>"
+          "documentation":"<p>The client token that uniquely identifies the request.</p>"
         },
         "imagePipelineArn":{
           "shape":"ImagePipelineArn",
@@ -5857,7 +6950,7 @@
         },
         "clientToken":{
           "shape":"ClientToken",
-          "documentation":"<p>The idempotency token used to make this request idempotent.</p>",
+          "documentation":"<p>Unique, case-sensitive identifier you provide to ensure idempotency of the request. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/APIReference/Run_Instance_Idempotency.html\">Ensuring idempotency</a> in the <i>Amazon EC2 API Reference</i>.</p>",
           "idempotencyToken":true
         },
         "resourceTags":{
@@ -5879,11 +6972,66 @@
         },
         "clientToken":{
           "shape":"ClientToken",
-          "documentation":"<p>The idempotency token used to make this request idempotent.</p>"
+          "documentation":"<p>The client token that uniquely identifies the request.</p>"
         },
         "infrastructureConfigurationArn":{
           "shape":"InfrastructureConfigurationArn",
           "documentation":"<p>The Amazon Resource Name (ARN) of the infrastructure configuration that was updated by this request.</p>"
+        }
+      }
+    },
+    "UpdateLifecyclePolicyRequest":{
+      "type":"structure",
+      "required":[
+        "lifecyclePolicyArn",
+        "executionRole",
+        "resourceType",
+        "policyDetails",
+        "resourceSelection",
+        "clientToken"
+      ],
+      "members":{
+        "lifecyclePolicyArn":{
+          "shape":"LifecyclePolicyArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the lifecycle policy resource.</p>"
+        },
+        "description":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>Optional description for the lifecycle policy.</p>"
+        },
+        "status":{
+          "shape":"LifecyclePolicyStatus",
+          "documentation":"<p>Indicates whether the lifecycle policy resource is enabled.</p>"
+        },
+        "executionRole":{
+          "shape":"RoleNameOrArn",
+          "documentation":"<p>The name of the IAM role that Image Builder should use to update the lifecycle policy.</p>"
+        },
+        "resourceType":{
+          "shape":"LifecyclePolicyResourceType",
+          "documentation":"<p>The type of image resource that the lifecycle policy applies to.</p>"
+        },
+        "policyDetails":{
+          "shape":"LifecyclePolicyDetails",
+          "documentation":"<p>The configuration details for a lifecycle policy resource.</p>"
+        },
+        "resourceSelection":{
+          "shape":"LifecyclePolicyResourceSelection",
+          "documentation":"<p>Selection criteria for resources that the lifecycle policy applies to.</p>"
+        },
+        "clientToken":{
+          "shape":"ClientToken",
+          "documentation":"<p>Unique, case-sensitive identifier you provide to ensure idempotency of the request. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/APIReference/Run_Instance_Idempotency.html\">Ensuring idempotency</a> in the <i>Amazon EC2 API Reference</i>.</p>",
+          "idempotencyToken":true
+        }
+      }
+    },
+    "UpdateLifecyclePolicyResponse":{
+      "type":"structure",
+      "members":{
+        "lifecyclePolicyArn":{
+          "shape":"LifecyclePolicyArn",
+          "documentation":"<p>The ARN of the image lifecycle policy resource that was updated.</p>"
         }
       }
     },

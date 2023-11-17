@@ -1023,7 +1023,7 @@
       "type":"string",
       "max":1600,
       "min":20,
-      "pattern":"arn:.*"
+      "pattern":"arn:\\S+"
     },
     "As2ConnectorConfig":{
       "type":"structure",
@@ -1450,6 +1450,10 @@
         "StructuredLogDestinations":{
           "shape":"StructuredLogDestinations",
           "documentation":"<p>Specifies the log groups to which your server logs are sent.</p> <p>To specify a log group, you must provide the ARN for an existing log group. In this case, the format of the log group is as follows:</p> <p> <code>arn:aws:logs:region-name:amazon-account-id:log-group:log-group-name:*</code> </p> <p>For example, <code>arn:aws:logs:us-east-1:111122223333:log-group:mytestgroup:*</code> </p> <p>If you have previously specified a log group for a server, you can clear it, and in effect turn off structured logging, by providing an empty value for this parameter in an <code>update-server</code> call. For example:</p> <p> <code>update-server --server-id s-1234567890abcdef0 --structured-log-destinations</code> </p>"
+        },
+        "S3StorageOptions":{
+          "shape":"S3StorageOptions",
+          "documentation":"<p>Specifies whether or not performance for your Amazon S3 directories is optimized. This is disabled by default.</p> <p>By default, home directory mappings have a <code>TYPE</code> of <code>DIRECTORY</code>. If you enable this option, you would then need to explicitly set the <code>HomeDirectoryMapEntry</code> <code>Type</code> to <code>FILE</code> if you want a mapping to have a file target.</p>"
         }
       }
     },
@@ -2459,6 +2463,10 @@
         "StructuredLogDestinations":{
           "shape":"StructuredLogDestinations",
           "documentation":"<p>Specifies the log groups to which your server logs are sent.</p> <p>To specify a log group, you must provide the ARN for an existing log group. In this case, the format of the log group is as follows:</p> <p> <code>arn:aws:logs:region-name:amazon-account-id:log-group:log-group-name:*</code> </p> <p>For example, <code>arn:aws:logs:us-east-1:111122223333:log-group:mytestgroup:*</code> </p> <p>If you have previously specified a log group for a server, you can clear it, and in effect turn off structured logging, by providing an empty value for this parameter in an <code>update-server</code> call. For example:</p> <p> <code>update-server --server-id s-1234567890abcdef0 --structured-log-destinations</code> </p>"
+        },
+        "S3StorageOptions":{
+          "shape":"S3StorageOptions",
+          "documentation":"<p>Specifies whether or not performance for your Amazon S3 directories is optimized. This is disabled by default.</p> <p>By default, home directory mappings have a <code>TYPE</code> of <code>DIRECTORY</code>. If you enable this option, you would then need to explicitly set the <code>HomeDirectoryMapEntry</code> <code>Type</code> to <code>FILE</code> if you want a mapping to have a file target.</p>"
         }
       },
       "documentation":"<p>Describes the properties of a file transfer protocol-enabled server that was specified.</p>"
@@ -2552,6 +2560,14 @@
       "max":12,
       "min":12,
       "pattern":"d-[0-9a-f]{10}"
+    },
+    "DirectoryListingOptimization":{
+      "type":"string",
+      "documentation":"<p>Indicates whether optimization to directory listing on S3 servers is used. Disabled by default for compatibility.</p>",
+      "enum":[
+        "ENABLED",
+        "DISABLED"
+      ]
     },
     "Domain":{
       "type":"string",
@@ -2764,7 +2780,7 @@
       "type":"string",
       "max":1024,
       "min":0,
-      "pattern":"$|/.*"
+      "pattern":"(|/.*)"
     },
     "HomeDirectoryMapEntry":{
       "type":"structure",
@@ -2779,7 +2795,11 @@
         },
         "Target":{
           "shape":"MapTarget",
-          "documentation":"<p>Represents the map target that is used in a <code>HomeDirectorymapEntry</code>.</p>"
+          "documentation":"<p>Represents the map target that is used in a <code>HomeDirectoryMapEntry</code>.</p>"
+        },
+        "Type":{
+          "shape":"MapType",
+          "documentation":"<p>Specifies the type of mapping. Set the type to <code>FILE</code> if you want the mapping to point to a file, or <code>DIRECTORY</code> for the directory to point to a directory.</p> <note> <p>By default, home directory mappings have a <code>Type</code> of <code>DIRECTORY</code> when you create a Transfer Family server. You would need to explicitly set <code>Type</code> to <code>FILE</code> if you want a mapping to have a file target.</p> </note>"
         }
       },
       "documentation":"<p>Represents an object that contains entries and targets for <code>HomeDirectoryMappings</code>.</p> <p>The following is an <code>Entry</code> and <code>Target</code> pair example for <code>chroot</code>.</p> <p> <code>[ { \"Entry\": \"/\", \"Target\": \"/bucket_name/home/mydirectory\" } ]</code> </p>"
@@ -2787,7 +2807,7 @@
     "HomeDirectoryMappings":{
       "type":"list",
       "member":{"shape":"HomeDirectoryMapEntry"},
-      "max":50,
+      "max":50000,
       "min":1
     },
     "HomeDirectoryType":{
@@ -3769,6 +3789,13 @@
       "min":0,
       "pattern":"/.*"
     },
+    "MapType":{
+      "type":"string",
+      "enum":[
+        "FILE",
+        "DIRECTORY"
+      ]
+    },
     "MaxResults":{
       "type":"integer",
       "box":true,
@@ -3809,7 +3836,7 @@
       "type":"string",
       "max":2048,
       "min":0,
-      "pattern":"$|arn:.*role/.*"
+      "pattern":"(|arn:.*role/\\S+)"
     },
     "OnPartialUploadWorkflowDetails":{
       "type":"list",
@@ -3975,7 +4002,7 @@
       "type":"string",
       "max":2048,
       "min":20,
-      "pattern":"arn:.*role/.*"
+      "pattern":"arn:.*role/\\S+"
     },
     "S3Bucket":{
       "type":"string",
@@ -4030,6 +4057,16 @@
       "max":1024,
       "min":0,
       "pattern":"[\\P{M}\\p{M}]*"
+    },
+    "S3StorageOptions":{
+      "type":"structure",
+      "members":{
+        "DirectoryListingOptimization":{
+          "shape":"DirectoryListingOptimization",
+          "documentation":"<p>Specifies whether or not performance for your Amazon S3 directories is optimized. This is disabled by default.</p> <p>By default, home directory mappings have a <code>TYPE</code> of <code>DIRECTORY</code>. If you enable this option, you would then need to explicitly set the <code>HomeDirectoryMapEntry</code> <code>Type</code> to <code>FILE</code> if you want a mapping to have a file target.</p>"
+        }
+      },
+      "documentation":"<p>The Amazon S3 storage options that are configured for your server.</p>"
     },
     "S3Tag":{
       "type":"structure",
@@ -4866,6 +4903,10 @@
         "StructuredLogDestinations":{
           "shape":"StructuredLogDestinations",
           "documentation":"<p>Specifies the log groups to which your server logs are sent.</p> <p>To specify a log group, you must provide the ARN for an existing log group. In this case, the format of the log group is as follows:</p> <p> <code>arn:aws:logs:region-name:amazon-account-id:log-group:log-group-name:*</code> </p> <p>For example, <code>arn:aws:logs:us-east-1:111122223333:log-group:mytestgroup:*</code> </p> <p>If you have previously specified a log group for a server, you can clear it, and in effect turn off structured logging, by providing an empty value for this parameter in an <code>update-server</code> call. For example:</p> <p> <code>update-server --server-id s-1234567890abcdef0 --structured-log-destinations</code> </p>"
+        },
+        "S3StorageOptions":{
+          "shape":"S3StorageOptions",
+          "documentation":"<p>Specifies whether or not performance for your Amazon S3 directories is optimized. This is disabled by default.</p> <p>By default, home directory mappings have a <code>TYPE</code> of <code>DIRECTORY</code>. If you enable this option, you would then need to explicitly set the <code>HomeDirectoryMapEntry</code> <code>Type</code> to <code>FILE</code> if you want a mapping to have a file target.</p>"
         }
       }
     },

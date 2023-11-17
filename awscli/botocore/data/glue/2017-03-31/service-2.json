@@ -1306,6 +1306,34 @@
       ],
       "documentation":"<p>Retrieves table statistics of columns.</p> <p>The Identity and Access Management (IAM) permission required for this operation is <code>GetTable</code>.</p>"
     },
+    "GetColumnStatisticsTaskRun":{
+      "name":"GetColumnStatisticsTaskRun",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"GetColumnStatisticsTaskRunRequest"},
+      "output":{"shape":"GetColumnStatisticsTaskRunResponse"},
+      "errors":[
+        {"shape":"EntityNotFoundException"},
+        {"shape":"OperationTimeoutException"},
+        {"shape":"InvalidInputException"}
+      ],
+      "documentation":"<p>Get the associated metadata/information for a task run, given a task run ID.</p>"
+    },
+    "GetColumnStatisticsTaskRuns":{
+      "name":"GetColumnStatisticsTaskRuns",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"GetColumnStatisticsTaskRunsRequest"},
+      "output":{"shape":"GetColumnStatisticsTaskRunsResponse"},
+      "errors":[
+        {"shape":"OperationTimeoutException"}
+      ],
+      "documentation":"<p>Retrieves information about all runs associated with the specified table.</p>"
+    },
     "GetConnection":{
       "name":"GetConnection",
       "http":{
@@ -2291,6 +2319,19 @@
       ],
       "documentation":"<p>Lists all the blueprint names in an account.</p>"
     },
+    "ListColumnStatisticsTaskRuns":{
+      "name":"ListColumnStatisticsTaskRuns",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"ListColumnStatisticsTaskRunsRequest"},
+      "output":{"shape":"ListColumnStatisticsTaskRunsResponse"},
+      "errors":[
+        {"shape":"OperationTimeoutException"}
+      ],
+      "documentation":"<p>List all task runs for a particular account.</p>"
+    },
     "ListCrawlers":{
       "name":"ListCrawlers",
       "http":{
@@ -2774,6 +2815,24 @@
       ],
       "documentation":"<p>Starts a new run of the specified blueprint.</p>"
     },
+    "StartColumnStatisticsTaskRun":{
+      "name":"StartColumnStatisticsTaskRun",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"StartColumnStatisticsTaskRunRequest"},
+      "output":{"shape":"StartColumnStatisticsTaskRunResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"EntityNotFoundException"},
+        {"shape":"ColumnStatisticsTaskRunningException"},
+        {"shape":"OperationTimeoutException"},
+        {"shape":"ResourceNumberLimitExceededException"},
+        {"shape":"InvalidInputException"}
+      ],
+      "documentation":"<p>Starts a column statistics task run, for a specified table and columns.</p>"
+    },
     "StartCrawler":{
       "name":"StartCrawler",
       "http":{
@@ -2962,6 +3021,22 @@
         {"shape":"ConcurrentRunsExceededException"}
       ],
       "documentation":"<p>Starts a new run of the specified workflow.</p>"
+    },
+    "StopColumnStatisticsTaskRun":{
+      "name":"StopColumnStatisticsTaskRun",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"StopColumnStatisticsTaskRunRequest"},
+      "output":{"shape":"StopColumnStatisticsTaskRunResponse"},
+      "errors":[
+        {"shape":"EntityNotFoundException"},
+        {"shape":"ColumnStatisticsTaskNotRunningException"},
+        {"shape":"ColumnStatisticsTaskStoppingException"},
+        {"shape":"OperationTimeoutException"}
+      ],
+      "documentation":"<p>Stops a task run for the specified table.</p>"
     },
     "StopCrawler":{
       "name":"StopCrawler",
@@ -5760,6 +5835,10 @@
       "type":"list",
       "member":{"shape":"Column"}
     },
+    "ColumnNameList":{
+      "type":"list",
+      "member":{"shape":"NameString"}
+    },
     "ColumnNameString":{
       "type":"string",
       "max":1024,
@@ -5872,6 +5951,137 @@
     "ColumnStatisticsList":{
       "type":"list",
       "member":{"shape":"ColumnStatistics"}
+    },
+    "ColumnStatisticsState":{
+      "type":"string",
+      "enum":[
+        "STARTING",
+        "RUNNING",
+        "SUCCEEDED",
+        "FAILED",
+        "STOPPED"
+      ]
+    },
+    "ColumnStatisticsTaskNotRunningException":{
+      "type":"structure",
+      "members":{
+        "Message":{
+          "shape":"MessageString",
+          "documentation":"<p>A message describing the problem.</p>"
+        }
+      },
+      "documentation":"<p>An exception thrown when you try to stop a task run when there is no task running.</p>",
+      "exception":true
+    },
+    "ColumnStatisticsTaskRun":{
+      "type":"structure",
+      "members":{
+        "CustomerId":{
+          "shape":"AccountId",
+          "documentation":"<p>The Amazon Web Services account ID.</p>"
+        },
+        "ColumnStatisticsTaskRunId":{
+          "shape":"HashString",
+          "documentation":"<p>The identifier for the particular column statistics task run.</p>"
+        },
+        "DatabaseName":{
+          "shape":"DatabaseName",
+          "documentation":"<p>The database where the table resides.</p>"
+        },
+        "TableName":{
+          "shape":"TableName",
+          "documentation":"<p>The name of the table for which column statistics is generated.</p>"
+        },
+        "ColumnNameList":{
+          "shape":"ColumnNameList",
+          "documentation":"<p>A list of the column names. If none is supplied, all column names for the table will be used by default.</p>"
+        },
+        "CatalogID":{
+          "shape":"CatalogIdString",
+          "documentation":"<p>The ID of the Data Catalog where the table resides. If none is supplied, the Amazon Web Services account ID is used by default.</p>"
+        },
+        "Role":{
+          "shape":"Role",
+          "documentation":"<p>The IAM role that the service assumes to generate statistics.</p>"
+        },
+        "SampleSize":{
+          "shape":"SampleSizePercentage",
+          "documentation":"<p>The percentage of rows used to generate statistics. If none is supplied, the entire table will be used to generate stats.</p>"
+        },
+        "SecurityConfiguration":{
+          "shape":"CrawlerSecurityConfiguration",
+          "documentation":"<p>Name of the security configuration that is used to encrypt CloudWatch logs for the column stats task run.</p>"
+        },
+        "NumberOfWorkers":{
+          "shape":"PositiveInteger",
+          "documentation":"<p>The number of workers used to generate column statistics. The job is preconfigured to autoscale up to 25 instances.</p>"
+        },
+        "WorkerType":{
+          "shape":"NameString",
+          "documentation":"<p>The type of workers being used for generating stats. The default is <code>g.1x</code>.</p>"
+        },
+        "Status":{
+          "shape":"ColumnStatisticsState",
+          "documentation":"<p>The status of the task run.</p>"
+        },
+        "CreationTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time that this task was created.</p>"
+        },
+        "LastUpdated":{
+          "shape":"Timestamp",
+          "documentation":"<p>The last point in time when this task was modified.</p>"
+        },
+        "StartTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The start time of the task.</p>"
+        },
+        "EndTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The end time of the task.</p>"
+        },
+        "ErrorMessage":{
+          "shape":"DescriptionString",
+          "documentation":"<p>The error message for the job.</p>"
+        },
+        "DPUSeconds":{
+          "shape":"NonNegativeDouble",
+          "documentation":"<p>The calculated DPU usage in seconds for all autoscaled workers.</p>"
+        }
+      },
+      "documentation":"<p>The object that shows the details of the column stats run.</p>"
+    },
+    "ColumnStatisticsTaskRunIdList":{
+      "type":"list",
+      "member":{"shape":"HashString"},
+      "max":100,
+      "min":0
+    },
+    "ColumnStatisticsTaskRunningException":{
+      "type":"structure",
+      "members":{
+        "Message":{
+          "shape":"MessageString",
+          "documentation":"<p>A message describing the problem.</p>"
+        }
+      },
+      "documentation":"<p>An exception thrown when you try to start another job while running a column stats generation job.</p>",
+      "exception":true
+    },
+    "ColumnStatisticsTaskRunsList":{
+      "type":"list",
+      "member":{"shape":"ColumnStatisticsTaskRun"}
+    },
+    "ColumnStatisticsTaskStoppingException":{
+      "type":"structure",
+      "members":{
+        "Message":{
+          "shape":"MessageString",
+          "documentation":"<p>A message describing the problem.</p>"
+        }
+      },
+      "documentation":"<p>An exception thrown when you try to stop a task run.</p>",
+      "exception":true
     },
     "ColumnStatisticsType":{
       "type":"string",
@@ -10665,6 +10875,63 @@
         }
       }
     },
+    "GetColumnStatisticsTaskRunRequest":{
+      "type":"structure",
+      "required":["ColumnStatisticsTaskRunId"],
+      "members":{
+        "ColumnStatisticsTaskRunId":{
+          "shape":"HashString",
+          "documentation":"<p>The identifier for the particular column statistics task run.</p>"
+        }
+      }
+    },
+    "GetColumnStatisticsTaskRunResponse":{
+      "type":"structure",
+      "members":{
+        "ColumnStatisticsTaskRun":{
+          "shape":"ColumnStatisticsTaskRun",
+          "documentation":"<p>A <code>ColumnStatisticsTaskRun</code> object representing the details of the column stats run.</p>"
+        }
+      }
+    },
+    "GetColumnStatisticsTaskRunsRequest":{
+      "type":"structure",
+      "required":[
+        "DatabaseName",
+        "TableName"
+      ],
+      "members":{
+        "DatabaseName":{
+          "shape":"DatabaseName",
+          "documentation":"<p>The name of the database where the table resides.</p>"
+        },
+        "TableName":{
+          "shape":"NameString",
+          "documentation":"<p>The name of the table.</p>"
+        },
+        "MaxResults":{
+          "shape":"PageSize",
+          "documentation":"<p>The maximum size of the response.</p>"
+        },
+        "NextToken":{
+          "shape":"Token",
+          "documentation":"<p>A continuation token, if this is a continuation call.</p>"
+        }
+      }
+    },
+    "GetColumnStatisticsTaskRunsResponse":{
+      "type":"structure",
+      "members":{
+        "ColumnStatisticsTaskRuns":{
+          "shape":"ColumnStatisticsTaskRunsList",
+          "documentation":"<p>A list of column statistics task runs.</p>"
+        },
+        "NextToken":{
+          "shape":"Token",
+          "documentation":"<p>A continuation token, if not all task runs have yet been returned.</p>"
+        }
+      }
+    },
     "GetConnectionRequest":{
       "type":"structure",
       "required":["Name"],
@@ -14367,6 +14634,32 @@
         }
       }
     },
+    "ListColumnStatisticsTaskRunsRequest":{
+      "type":"structure",
+      "members":{
+        "MaxResults":{
+          "shape":"PageSize",
+          "documentation":"<p>The maximum size of the response.</p>"
+        },
+        "NextToken":{
+          "shape":"Token",
+          "documentation":"<p>A continuation token, if this is a continuation call.</p>"
+        }
+      }
+    },
+    "ListColumnStatisticsTaskRunsResponse":{
+      "type":"structure",
+      "members":{
+        "ColumnStatisticsTaskRunIds":{
+          "shape":"ColumnStatisticsTaskRunIdList",
+          "documentation":"<p>A list of column statistics task run IDs.</p>"
+        },
+        "NextToken":{
+          "shape":"Token",
+          "documentation":"<p>A continuation token, if not all task run IDs have yet been returned.</p>"
+        }
+      }
+    },
     "ListCrawlersRequest":{
       "type":"structure",
       "members":{
@@ -16165,6 +16458,10 @@
       "box":true,
       "min":10
     },
+    "PositiveInteger":{
+      "type":"integer",
+      "min":1
+    },
     "PositiveLong":{
       "type":"long",
       "box":true,
@@ -17781,6 +18078,11 @@
       "type":"list",
       "member":{"shape":"S3Target"}
     },
+    "SampleSizePercentage":{
+      "type":"double",
+      "max":100,
+      "min":0
+    },
     "ScalaCode":{"type":"string"},
     "Schedule":{
       "type":"structure",
@@ -18807,6 +19109,53 @@
         }
       }
     },
+    "StartColumnStatisticsTaskRunRequest":{
+      "type":"structure",
+      "required":[
+        "DatabaseName",
+        "TableName",
+        "Role"
+      ],
+      "members":{
+        "DatabaseName":{
+          "shape":"NameString",
+          "documentation":"<p>The name of the database where the table resides.</p>"
+        },
+        "TableName":{
+          "shape":"NameString",
+          "documentation":"<p>The name of the table to generate statistics.</p>"
+        },
+        "ColumnNameList":{
+          "shape":"ColumnNameList",
+          "documentation":"<p>A list of the column names to generate statistics. If none is supplied, all column names for the table will be used by default.</p>"
+        },
+        "Role":{
+          "shape":"NameString",
+          "documentation":"<p>The IAM role that the service assumes to generate statistics.</p>"
+        },
+        "SampleSize":{
+          "shape":"SampleSizePercentage",
+          "documentation":"<p>The percentage of rows used to generate statistics. If none is supplied, the entire table will be used to generate stats.</p>"
+        },
+        "CatalogID":{
+          "shape":"NameString",
+          "documentation":"<p>The ID of the Data Catalog where the table reside. If none is supplied, the Amazon Web Services account ID is used by default.</p>"
+        },
+        "SecurityConfiguration":{
+          "shape":"NameString",
+          "documentation":"<p>Name of the security configuration that is used to encrypt CloudWatch logs for the column stats task run.</p>"
+        }
+      }
+    },
+    "StartColumnStatisticsTaskRunResponse":{
+      "type":"structure",
+      "members":{
+        "ColumnStatisticsTaskRunId":{
+          "shape":"HashString",
+          "documentation":"<p>The identifier for the column statistics task run.</p>"
+        }
+      }
+    },
     "StartCrawlerRequest":{
       "type":"structure",
       "required":["Name"],
@@ -19245,6 +19594,28 @@
         "CANCELLED",
         "ERROR"
       ]
+    },
+    "StopColumnStatisticsTaskRunRequest":{
+      "type":"structure",
+      "required":[
+        "DatabaseName",
+        "TableName"
+      ],
+      "members":{
+        "DatabaseName":{
+          "shape":"DatabaseName",
+          "documentation":"<p>The name of the database where the table resides.</p>"
+        },
+        "TableName":{
+          "shape":"NameString",
+          "documentation":"<p>The name of the table.</p>"
+        }
+      }
+    },
+    "StopColumnStatisticsTaskRunResponse":{
+      "type":"structure",
+      "members":{
+      }
     },
     "StopCrawlerRequest":{
       "type":"structure",

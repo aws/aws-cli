@@ -14,9 +14,8 @@ import zipfile
 import copy
 from contextlib import closing
 
-from botocore.vendored import six
-
 from awscli.arguments import CustomArgument, CLIArgument
+from awscli.compat import BytesIO
 
 
 ERROR_MSG = (
@@ -90,7 +89,7 @@ def _should_contain_zip_content(value):
         # still try to load the contents as a zip file
         # to be absolutely sure.
         value = value.encode('utf-8')
-    fileobj = six.BytesIO(value)
+    fileobj = BytesIO(value)
     try:
         with closing(zipfile.ZipFile(fileobj)) as f:
             f.infolist()

@@ -18,7 +18,6 @@ import zipfile
 import contextlib
 import uuid
 import shutil
-from awscli.compat import six
 from botocore.utils import set_value_from_jmespath
 
 from awscli.compat import urlparse
@@ -33,7 +32,7 @@ LOG = logging.getLogger(__name__)
 
 
 def is_path_value_valid(path):
-    return isinstance(path, six.string_types)
+    return isinstance(path, str)
 
 
 def make_abs_path(directory, path):
@@ -70,7 +69,7 @@ def parse_s3_url(url,
                  object_key_property="Key",
                  version_property=None):
 
-    if isinstance(url, six.string_types) \
+    if isinstance(url, str) \
             and url.startswith("s3://"):
 
         # Python < 2.7.10 don't parse query parameters from URI with custom

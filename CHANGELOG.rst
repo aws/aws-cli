@@ -2,6 +2,14 @@
 CHANGELOG
 =========
 
+1.30.4
+======
+
+* api-change:``codestar-connections``: This release updates a few CodeStar Connections related APIs.
+* api-change:``docdb``: Amazon DocumentDB updates for new cluster storage configuration: Amazon DocumentDB I/O-Optimized.
+* api-change:``ec2``: This release adds support for Security group referencing over Transit gateways, enabling you to simplify Security group management and control of instance-to-instance traffic across VPCs that are connected by Transit gateway.
+
+
 1.30.3
 ======
 

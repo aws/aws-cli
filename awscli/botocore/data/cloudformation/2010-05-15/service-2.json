@@ -312,7 +312,7 @@
       "errors":[
         {"shape":"ChangeSetNotFoundException"}
       ],
-      "documentation":"<p>Returns the inputs for the change set and a list of changes that CloudFormation will make if you execute the change set. For more information, see <a href=\"https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/using-cfn-updating-stacks-changesets.html\">Updating Stacks Using Change Sets</a> in the CloudFormation User Guide.</p>"
+      "documentation":"<p>Returns the inputs for the change set and a list of changes that CloudFormation will make if you execute the change set. For more information, see <a href=\"https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/using-cfn-updating-stacks-changesets.html\">Updating Stacks Using Change Sets</a> in the <i>CloudFormation User Guide</i>.</p>"
     },
     "DescribeChangeSetHooks":{
       "name":"DescribeChangeSetHooks",
@@ -388,7 +388,7 @@
         "shape":"DescribeStackEventsOutput",
         "resultWrapper":"DescribeStackEventsResult"
       },
-      "documentation":"<p>Returns all stack related events for a specified stack in reverse chronological order. For more information about a stack's event history, go to <a href=\"https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/concept-stack.html\">Stacks</a> in the CloudFormation User Guide.</p> <note> <p>You can list events for stacks that have failed to create or have been deleted by specifying the unique stack identifier (stack ID).</p> </note>"
+      "documentation":"<p>Returns all stack related events for a specified stack in reverse chronological order. For more information about a stack's event history, go to <a href=\"https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/concept-stack.html\">Stacks</a> in the <i>CloudFormation User Guide</i>.</p> <note> <p>You can list events for stacks that have failed to create or have been deleted by specifying the unique stack identifier (stack ID).</p> </note>"
     },
     "DescribeStackInstance":{
       "name":"DescribeStackInstance",
@@ -1610,6 +1610,10 @@
         "RootChangeSetId":{
           "shape":"ChangeSetId",
           "documentation":"<p>The root change set ID.</p>"
+        },
+        "ImportExistingResources":{
+          "shape":"ImportExistingResources",
+          "documentation":"<p>Indicates if the stack set imports resources that already exist.</p>"
         }
       },
       "documentation":"<p>The <code>ChangeSetSummary</code> structure describes a change set, its status, and the stack with which it's associated.</p>"
@@ -1732,7 +1736,7 @@
         },
         "ResourceTypes":{
           "shape":"ResourceTypes",
-          "documentation":"<p>The template resource types that you have permissions to work with if you execute this change set, such as <code>AWS::EC2::Instance</code>, <code>AWS::EC2::*</code>, or <code>Custom::MyCustomInstance</code>.</p> <p>If the list of resource types doesn't include a resource type that you're updating, the stack update fails. By default, CloudFormation grants permissions to all resource types. Identity and Access Management (IAM) uses this parameter for condition keys in IAM policies for CloudFormation. For more information, see <a href=\"https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/using-iam-template.html\">Controlling access with Identity and Access Management</a> in the CloudFormation User Guide.</p> <note> <p>Only one of the <code>Capabilities</code> and <code>ResourceType</code> parameters can be specified.</p> </note>"
+          "documentation":"<p>The template resource types that you have permissions to work with if you execute this change set, such as <code>AWS::EC2::Instance</code>, <code>AWS::EC2::*</code>, or <code>Custom::MyCustomInstance</code>.</p> <p>If the list of resource types doesn't include a resource type that you're updating, the stack update fails. By default, CloudFormation grants permissions to all resource types. Identity and Access Management (IAM) uses this parameter for condition keys in IAM policies for CloudFormation. For more information, see <a href=\"https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/using-iam-template.html\">Controlling access with Identity and Access Management</a> in the <i>CloudFormation User Guide</i>.</p> <note> <p>Only one of the <code>Capabilities</code> and <code>ResourceType</code> parameters can be specified.</p> </note>"
         },
         "RoleARN":{
           "shape":"RoleARN",
@@ -1777,6 +1781,10 @@
         "OnStackFailure":{
           "shape":"OnStackFailure",
           "documentation":"<p>Determines what action will be taken if stack creation fails. If this parameter is specified, the <code>DisableRollback</code> parameter to the <a href=\"https://docs.aws.amazon.com/AWSCloudFormation/latest/APIReference/API_ExecuteChangeSet.html\">ExecuteChangeSet</a> API operation must not be specified. This must be one of these values:</p> <ul> <li> <p> <code>DELETE</code> - Deletes the change set if the stack creation fails. This is only valid when the <code>ChangeSetType</code> parameter is set to <code>CREATE</code>. If the deletion of the stack fails, the status of the stack is <code>DELETE_FAILED</code>.</p> </li> <li> <p> <code>DO_NOTHING</code> - if the stack creation fails, do nothing. This is equivalent to specifying <code>true</code> for the <code>DisableRollback</code> parameter to the <a href=\"https://docs.aws.amazon.com/AWSCloudFormation/latest/APIReference/API_ExecuteChangeSet.html\">ExecuteChangeSet</a> API operation.</p> </li> <li> <p> <code>ROLLBACK</code> - if the stack creation fails, roll back the stack. This is equivalent to specifying <code>false</code> for the <code>DisableRollback</code> parameter to the <a href=\"https://docs.aws.amazon.com/AWSCloudFormation/latest/APIReference/API_ExecuteChangeSet.html\">ExecuteChangeSet</a> API operation.</p> </li> </ul> <p>For nested stacks, when the <code>OnStackFailure</code> parameter is set to <code>DELETE</code> for the change set for the parent stack, any failure in a child stack will cause the parent stack creation to fail and all stacks to be deleted.</p>"
+        },
+        "ImportExistingResources":{
+          "shape":"ImportExistingResources",
+          "documentation":"<p>Indicates if the stack set imports resources that already exist.</p> <note> <p>This parameter can only import resources that have custom names in templates. For more information, see <a href=\"https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-name.html\">name type</a> in the <i>CloudFormation User Guide</i>. To import resources that do not accept custom names, such as EC2 instances, use the resource import feature instead. For more information, see <a href=\"https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/resource-import.html\">Bringing existing resources into CloudFormation management</a> in the <i>CloudFormation User Guide</i>.</p> </note>"
         }
       },
       "documentation":"<p>The input for the <a>CreateChangeSet</a> action.</p>"
@@ -1805,11 +1813,11 @@
         },
         "TemplateBody":{
           "shape":"TemplateBody",
-          "documentation":"<p>Structure containing the template body with a minimum length of 1 byte and a maximum length of 51,200 bytes. For more information, go to <a href=\"https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/template-anatomy.html\">Template anatomy</a> in the CloudFormation User Guide.</p> <p>Conditional: You must specify either the <code>TemplateBody</code> or the <code>TemplateURL</code> parameter, but not both.</p>"
+          "documentation":"<p>Structure containing the template body with a minimum length of 1 byte and a maximum length of 51,200 bytes. For more information, go to <a href=\"https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/template-anatomy.html\">Template anatomy</a> in the <i>CloudFormation User Guide</i>.</p> <p>Conditional: You must specify either the <code>TemplateBody</code> or the <code>TemplateURL</code> parameter, but not both.</p>"
         },
         "TemplateURL":{
           "shape":"TemplateURL",
-          "documentation":"<p>Location of file containing the template body. The URL must point to a template (max size: 460,800 bytes) that's located in an Amazon S3 bucket or a Systems Manager document. For more information, go to the <a href=\"https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/template-anatomy.html\">Template anatomy</a> in the CloudFormation User Guide.</p> <p>Conditional: You must specify either the <code>TemplateBody</code> or the <code>TemplateURL</code> parameter, but not both.</p>"
+          "documentation":"<p>Location of file containing the template body. The URL must point to a template (max size: 460,800 bytes) that's located in an Amazon S3 bucket or a Systems Manager document. For more information, go to the <a href=\"https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/template-anatomy.html\">Template anatomy</a> in the <i>CloudFormation User Guide</i>.</p> <p>Conditional: You must specify either the <code>TemplateBody</code> or the <code>TemplateURL</code> parameter, but not both.</p>"
         },
         "Parameters":{
           "shape":"Parameters",
@@ -2407,6 +2415,10 @@
         "OnStackFailure":{
           "shape":"OnStackFailure",
           "documentation":"<p>Determines what action will be taken if stack creation fails. When this parameter is specified, the <code>DisableRollback</code> parameter to the <a href=\"https://docs.aws.amazon.com/AWSCloudFormation/latest/APIReference/API_ExecuteChangeSet.html\">ExecuteChangeSet</a> API operation must not be specified. This must be one of these values:</p> <ul> <li> <p> <code>DELETE</code> - Deletes the change set if the stack creation fails. This is only valid when the <code>ChangeSetType</code> parameter is set to <code>CREATE</code>. If the deletion of the stack fails, the status of the stack is <code>DELETE_FAILED</code>.</p> </li> <li> <p> <code>DO_NOTHING</code> - if the stack creation fails, do nothing. This is equivalent to specifying <code>true</code> for the <code>DisableRollback</code> parameter to the <a href=\"https://docs.aws.amazon.com/AWSCloudFormation/latest/APIReference/API_ExecuteChangeSet.html\">ExecuteChangeSet</a> API operation.</p> </li> <li> <p> <code>ROLLBACK</code> - if the stack creation fails, roll back the stack. This is equivalent to specifying <code>false</code> for the <code>DisableRollback</code> parameter to the <a href=\"https://docs.aws.amazon.com/AWSCloudFormation/latest/APIReference/API_ExecuteChangeSet.html\">ExecuteChangeSet</a> API operation.</p> </li> </ul>"
+        },
+        "ImportExistingResources":{
+          "shape":"ImportExistingResources",
+          "documentation":"<p>Indicates if the stack set imports resources that already exist.</p> <note> <p>This parameter can only import resources that have <a href=\"https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-name.html\">custom names</a> in templates. To import resources that do not accept custom names, such as EC2 instances, use the <a href=\"https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/resource-import.html\">resource import</a> feature instead.</p> </note>"
         }
       },
       "documentation":"<p>The output for the <a>DescribeChangeSet</a> action.</p>"
@@ -3034,11 +3046,11 @@
       "members":{
         "TemplateBody":{
           "shape":"TemplateBody",
-          "documentation":"<p>Structure containing the template body with a minimum length of 1 byte and a maximum length of 51,200 bytes. (For more information, go to <a href=\"https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/template-anatomy.html\">Template Anatomy</a> in the CloudFormation User Guide.)</p> <p>Conditional: You must pass <code>TemplateBody</code> or <code>TemplateURL</code>. If both are passed, only <code>TemplateBody</code> is used.</p>"
+          "documentation":"<p>Structure containing the template body with a minimum length of 1 byte and a maximum length of 51,200 bytes. (For more information, go to <a href=\"https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/template-anatomy.html\">Template Anatomy</a> in the <i>CloudFormation User Guide</i>.)</p> <p>Conditional: You must pass <code>TemplateBody</code> or <code>TemplateURL</code>. If both are passed, only <code>TemplateBody</code> is used.</p>"
         },
         "TemplateURL":{
           "shape":"TemplateURL",
-          "documentation":"<p>Location of file containing the template body. The URL must point to a template that's located in an Amazon S3 bucket or a Systems Manager document. For more information, go to <a href=\"https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/template-anatomy.html\">Template Anatomy</a> in the CloudFormation User Guide.</p> <p>Conditional: You must pass <code>TemplateURL</code> or <code>TemplateBody</code>. If both are passed, only <code>TemplateBody</code> is used.</p>"
+          "documentation":"<p>Location of file containing the template body. The URL must point to a template that's located in an Amazon S3 bucket or a Systems Manager document. For more information, go to <a href=\"https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/template-anatomy.html\">Template Anatomy</a> in the <i>CloudFormation User Guide</i>.</p> <p>Conditional: You must pass <code>TemplateURL</code> or <code>TemplateBody</code>. If both are passed, only <code>TemplateBody</code> is used.</p>"
         },
         "Parameters":{
           "shape":"Parameters",
@@ -3168,7 +3180,7 @@
       "members":{
         "StackPolicyBody":{
           "shape":"StackPolicyBody",
-          "documentation":"<p>Structure containing the stack policy body. (For more information, go to <a href=\"https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/protect-stack-resources.html\"> Prevent Updates to Stack Resources</a> in the CloudFormation User Guide.)</p>"
+          "documentation":"<p>Structure containing the stack policy body. (For more information, go to <a href=\"https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/protect-stack-resources.html\"> Prevent Updates to Stack Resources</a> in the <i>CloudFormation User Guide</i>.)</p>"
         }
       },
       "documentation":"<p>The output for the <a>GetStackPolicy</a> action.</p>"
@@ -3196,7 +3208,7 @@
       "members":{
         "TemplateBody":{
           "shape":"TemplateBody",
-          "documentation":"<p>Structure containing the template body. (For more information, go to <a href=\"https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/template-anatomy.html\">Template Anatomy</a> in the CloudFormation User Guide.)</p> <p>CloudFormation returns the same template that was used when the stack was created.</p>"
+          "documentation":"<p>Structure containing the template body. (For more information, go to <a href=\"https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/template-anatomy.html\">Template Anatomy</a> in the <i>CloudFormation User Guide</i>.)</p> <p>CloudFormation returns the same template that was used when the stack was created.</p>"
         },
         "StagesAvailable":{
           "shape":"StageList",
@@ -3210,11 +3222,11 @@
       "members":{
         "TemplateBody":{
           "shape":"TemplateBody",
-          "documentation":"<p>Structure containing the template body with a minimum length of 1 byte and a maximum length of 51,200 bytes. For more information about templates, see <a href=\"https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/template-anatomy.html\">Template anatomy</a> in the CloudFormation User Guide.</p> <p>Conditional: You must specify only one of the following parameters: <code>StackName</code>, <code>StackSetName</code>, <code>TemplateBody</code>, or <code>TemplateURL</code>.</p>"
+          "documentation":"<p>Structure containing the template body with a minimum length of 1 byte and a maximum length of 51,200 bytes. For more information about templates, see <a href=\"https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/template-anatomy.html\">Template anatomy</a> in the <i>CloudFormation User Guide</i>.</p> <p>Conditional: You must specify only one of the following parameters: <code>StackName</code>, <code>StackSetName</code>, <code>TemplateBody</code>, or <code>TemplateURL</code>.</p>"
         },
         "TemplateURL":{
           "shape":"TemplateURL",
-          "documentation":"<p>Location of file containing the template body. The URL must point to a template (max size: 460,800 bytes) that's located in an Amazon S3 bucket or a Systems Manager document. For more information about templates, see <a href=\"https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/template-anatomy.html\">Template anatomy</a> in the CloudFormation User Guide.</p> <p>Conditional: You must specify only one of the following parameters: <code>StackName</code>, <code>StackSetName</code>, <code>TemplateBody</code>, or <code>TemplateURL</code>.</p>"
+          "documentation":"<p>Location of file containing the template body. The URL must point to a template (max size: 460,800 bytes) that's located in an Amazon S3 bucket or a Systems Manager document. For more information about templates, see <a href=\"https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/template-anatomy.html\">Template anatomy</a> in the <i>CloudFormation User Guide</i>.</p> <p>Conditional: You must specify only one of the following parameters: <code>StackName</code>, <code>StackSetName</code>, <code>TemplateBody</code>, or <code>TemplateURL</code>.</p>"
         },
         "StackName":{
           "shape":"StackNameOrId",
@@ -3375,6 +3387,7 @@
         "Bitbucket"
       ]
     },
+    "ImportExistingResources":{"type":"boolean"},
     "ImportStacksToStackSetInput":{
       "type":"structure",
       "required":["StackSetName"],
@@ -4994,7 +5007,7 @@
         },
         "StackPolicyBody":{
           "shape":"StackPolicyBody",
-          "documentation":"<p>Structure containing the stack policy body. For more information, go to <a href=\"https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/protect-stack-resources.html\"> Prevent updates to stack resources</a> in the CloudFormation User Guide. You can specify either the <code>StackPolicyBody</code> or the <code>StackPolicyURL</code> parameter, but not both.</p>"
+          "documentation":"<p>Structure containing the stack policy body. For more information, go to <a href=\"https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/protect-stack-resources.html\"> Prevent updates to stack resources</a> in the <i>CloudFormation User Guide</i>. You can specify either the <code>StackPolicyBody</code> or the <code>StackPolicyURL</code> parameter, but not both.</p>"
         },
         "StackPolicyURL":{
           "shape":"StackPolicyURL",
@@ -6144,7 +6157,7 @@
         },
         "ConcurrencyMode":{
           "shape":"ConcurrencyMode",
-          "documentation":"<p>Specifies how the concurrency level behaves during the operation execution.</p> <ul> <li> <p> <code>STRICT_FAILURE_TOLERANCE</code>: Dynamically lowers the concurrency level to ensure the number of failed accounts never exceeds the <code>FailureToleranceCount</code> +1. StackSets will set the actual concurrency of your deployment as the minimum value between the <code>MaxConcurrentCount</code> and the <code>FailureToleranceCount</code> +1. This is the default behavior.</p> <p>If failure tolerance or Maximum concurrent accounts are set to percentages, the behavior is similar.</p> </li> <li> <p> <code>SOFT_FAILURE_TOLERANCE</code>: Always run at the concurrency level set by the user in the <code>MaxConcurrentCount</code> or <code>MaxConcurrentPercentage</code>, regardless of the number of failures.</p> </li> </ul>"
+          "documentation":"<p>Specifies how the concurrency level behaves during the operation execution.</p> <ul> <li> <p> <code>STRICT_FAILURE_TOLERANCE</code>: This option dynamically lowers the concurrency level to ensure the number of failed accounts never exceeds the value of <code>FailureToleranceCount</code> +1. The initial actual concurrency is set to the lower of either the value of the <code>MaxConcurrentCount</code>, or the value of <code>MaxConcurrentCount</code> +1. The actual concurrency is then reduced proportionally by the number of failures. This is the default behavior.</p> <p>If failure tolerance or Maximum concurrent accounts are set to percentages, the behavior is similar.</p> </li> <li> <p> <code>SOFT_FAILURE_TOLERANCE</code>: This option decouples <code>FailureToleranceCount</code> from the actual concurrency. This allows stack set operations to run at the concurrency level set by the <code>MaxConcurrentCount</code> value, or <code>MaxConcurrentPercentage</code>, regardless of the number of failures.</p> </li> </ul>"
         }
       },
       "documentation":"<p>The user-specified preferences for how CloudFormation performs a stack set operation.</p> <p>For more information about maximum concurrent accounts and failure tolerance, see <a href=\"https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/stacksets-concepts.html#stackset-ops-options\">Stack set operation options</a>.</p>"
@@ -6912,11 +6925,11 @@
         },
         "TemplateBody":{
           "shape":"TemplateBody",
-          "documentation":"<p>Structure containing the template body with a minimum length of 1 byte and a maximum length of 51,200 bytes. (For more information, go to <a href=\"https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/template-anatomy.html\">Template Anatomy</a> in the CloudFormation User Guide.)</p> <p>Conditional: You must specify only one of the following parameters: <code>TemplateBody</code>, <code>TemplateURL</code>, or set the <code>UsePreviousTemplate</code> to <code>true</code>.</p>"
+          "documentation":"<p>Structure containing the template body with a minimum length of 1 byte and a maximum length of 51,200 bytes. (For more information, go to <a href=\"https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/template-anatomy.html\">Template Anatomy</a> in the <i>CloudFormation User Guide</i>.)</p> <p>Conditional: You must specify only one of the following parameters: <code>TemplateBody</code>, <code>TemplateURL</code>, or set the <code>UsePreviousTemplate</code> to <code>true</code>.</p>"
         },
         "TemplateURL":{
           "shape":"TemplateURL",
-          "documentation":"<p>Location of file containing the template body. The URL must point to a template that's located in an Amazon S3 bucket or a Systems Manager document. For more information, go to <a href=\"https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/template-anatomy.html\">Template Anatomy</a> in the CloudFormation User Guide.</p> <p>Conditional: You must specify only one of the following parameters: <code>TemplateBody</code>, <code>TemplateURL</code>, or set the <code>UsePreviousTemplate</code> to <code>true</code>.</p>"
+          "documentation":"<p>Location of file containing the template body. The URL must point to a template that's located in an Amazon S3 bucket or a Systems Manager document. For more information, go to <a href=\"https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/template-anatomy.html\">Template Anatomy</a> in the <i>CloudFormation User Guide</i>.</p> <p>Conditional: You must specify only one of the following parameters: <code>TemplateBody</code>, <code>TemplateURL</code>, or set the <code>UsePreviousTemplate</code> to <code>true</code>.</p>"
         },
         "UsePreviousTemplate":{
           "shape":"UsePreviousTemplate",
@@ -7168,11 +7181,11 @@
       "members":{
         "TemplateBody":{
           "shape":"TemplateBody",
-          "documentation":"<p>Structure containing the template body with a minimum length of 1 byte and a maximum length of 51,200 bytes. For more information, go to <a href=\"https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/template-anatomy.html\">Template Anatomy</a> in the CloudFormation User Guide.</p> <p>Conditional: You must pass <code>TemplateURL</code> or <code>TemplateBody</code>. If both are passed, only <code>TemplateBody</code> is used.</p>"
+          "documentation":"<p>Structure containing the template body with a minimum length of 1 byte and a maximum length of 51,200 bytes. For more information, go to <a href=\"https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/template-anatomy.html\">Template Anatomy</a> in the <i>CloudFormation User Guide</i>.</p> <p>Conditional: You must pass <code>TemplateURL</code> or <code>TemplateBody</code>. If both are passed, only <code>TemplateBody</code> is used.</p>"
         },
         "TemplateURL":{
           "shape":"TemplateURL",
-          "documentation":"<p>Location of file containing the template body. The URL must point to a template (max size: 460,800 bytes) that is located in an Amazon S3 bucket or a Systems Manager document. For more information, go to <a href=\"https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/template-anatomy.html\">Template Anatomy</a> in the CloudFormation User Guide.</p> <p>Conditional: You must pass <code>TemplateURL</code> or <code>TemplateBody</code>. If both are passed, only <code>TemplateBody</code> is used.</p>"
+          "documentation":"<p>Location of file containing the template body. The URL must point to a template (max size: 460,800 bytes) that is located in an Amazon S3 bucket or a Systems Manager document. For more information, go to <a href=\"https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/template-anatomy.html\">Template Anatomy</a> in the <i>CloudFormation User Guide</i>.</p> <p>Conditional: You must pass <code>TemplateURL</code> or <code>TemplateBody</code>. If both are passed, only <code>TemplateBody</code> is used.</p>"
         }
       },
       "documentation":"<p>The input for <a>ValidateTemplate</a> action.</p>"

@@ -13,6 +13,23 @@
     "uid":"verifiedpermissions-2021-12-01"
   },
   "operations":{
+    "BatchIsAuthorized":{
+      "name":"BatchIsAuthorized",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"BatchIsAuthorizedInput"},
+      "output":{"shape":"BatchIsAuthorizedOutput"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Makes a series of decisions about multiple authorization requests for one principal or resource. Each request contains the equivalent content of an <code>IsAuthorized</code> request: principal, action, resource, and context. Either the <code>principal</code> or the <code>resource</code> parameter must be identical across all requests. For example, Verified Permissions won't evaluate a pair of requests where <code>bob</code> views <code>photo1</code> and <code>alice</code> views <code>photo2</code>. Authorization of <code>bob</code> to view <code>photo1</code> and <code>photo2</code>, or <code>bob</code> and <code>alice</code> to view <code>photo1</code>, are valid batches. </p> <p>The request is evaluated against all policies in the specified policy store that match the entities that you declare. The result of the decisions is a series of <code>Allow</code> or <code>Deny</code> responses, along with the IDs of the policies that produced each decision.</p> <p>The <code>entities</code> of a <code>BatchIsAuthorized</code> API request can contain up to 100 principals and up to 100 resources. The <code>requests</code> of a <code>BatchIsAuthorized</code> API request can contain up to 30 requests.</p>"
+    },
     "CreateIdentitySource":{
       "name":"CreateIdentitySource",
       "http":{
@@ -483,7 +500,7 @@
           "documentation":"<p>The ID of an action.</p>"
         }
       },
-      "documentation":"<p>Contains information about an action for a request for which an authorization decision is made.</p> <p>This data type is used as an request parameter to the <a href=\"https://docs.aws.amazon.com/verifiedpermissions/latest/apireference/API_IsAuthorized.html\">IsAuthorized</a> and <a href=\"https://docs.aws.amazon.com/verifiedpermissions/latest/apireference/API_IsAuthorizedWithToken.html\">IsAuthorizedWithToken</a> operations.</p> <p>Example: <code>{ \"actionId\": \"&lt;action name&gt;\", \"actionType\": \"Action\" }</code> </p>"
+      "documentation":"<p>Contains information about an action for a request for which an authorization decision is made.</p> <p>This data type is used as a request parameter to the <a href=\"https://docs.aws.amazon.com/verifiedpermissions/latest/apireference/API_IsAuthorized.html\">IsAuthorized</a>, <a href=\"https://docs.aws.amazon.com/verifiedpermissions/latest/apireference/API_BatchIsAuthorized.html\">BatchIsAuthorized</a>, and <a href=\"https://docs.aws.amazon.com/verifiedpermissions/latest/apireference/API_IsAuthorizedWithToken.html\">IsAuthorizedWithToken</a> operations.</p> <p>Example: <code>{ \"actionId\": \"&lt;action name&gt;\", \"actionType\": \"Action\" }</code> </p>"
     },
     "ActionType":{
       "type":"string",
@@ -520,8 +537,98 @@
           "documentation":"<p>An attribute value of <a href=\"https://docs.cedarpolicy.com/policies/syntax-datatypes.html#record\">Record</a> type.</p> <p>Example: <code>{\"record\": { \"keyName\": {} } }</code> </p>"
         }
       },
-      "documentation":"<p>The value of an attribute.</p> <p>Contains information about the runtime context for a request for which an authorization decision is made. </p> <p>This data type is used as a member of the <a href=\"https://docs.aws.amazon.com/verifiedpermissions/latest/apireference/API_ContextDefinition.html\">ContextDefinition</a> structure which is uses as a request parameter for the <a href=\"https://docs.aws.amazon.com/verifiedpermissions/latest/apireference/API_IsAuthorized.html\">IsAuthorized</a> and <a href=\"https://docs.aws.amazon.com/verifiedpermissions/latest/apireference/API_IsAuthorizedWithToken.html\">IsAuthorizedWithToken</a> operations.</p>",
+      "documentation":"<p>The value of an attribute.</p> <p>Contains information about the runtime context for a request for which an authorization decision is made. </p> <p>This data type is used as a member of the <a href=\"https://docs.aws.amazon.com/verifiedpermissions/latest/apireference/API_ContextDefinition.html\">ContextDefinition</a> structure which is uses as a request parameter for the <a href=\"https://docs.aws.amazon.com/verifiedpermissions/latest/apireference/API_IsAuthorized.html\">IsAuthorized</a>, <a href=\"https://docs.aws.amazon.com/verifiedpermissions/latest/apireference/API_BatchIsAuthorized.html\">BatchIsAuthorized</a>, and <a href=\"https://docs.aws.amazon.com/verifiedpermissions/latest/apireference/API_IsAuthorizedWithToken.html\">IsAuthorizedWithToken</a> operations.</p>",
       "union":true
+    },
+    "BatchIsAuthorizedInput":{
+      "type":"structure",
+      "required":[
+        "policyStoreId",
+        "requests"
+      ],
+      "members":{
+        "policyStoreId":{
+          "shape":"PolicyStoreId",
+          "documentation":"<p>Specifies the ID of the policy store. Policies in this policy store will be used to make the authorization decisions for the input.</p>"
+        },
+        "entities":{
+          "shape":"EntitiesDefinition",
+          "documentation":"<p>Specifies the list of resources and principals and their associated attributes that Verified Permissions can examine when evaluating the policies. </p> <note> <p>You can include only principal and resource entities in this parameter; you can't include actions. You must specify actions in the schema.</p> </note>"
+        },
+        "requests":{
+          "shape":"BatchIsAuthorizedInputList",
+          "documentation":"<p>An array of up to 30 requests that you want Verified Permissions to evaluate.</p>"
+        }
+      }
+    },
+    "BatchIsAuthorizedInputItem":{
+      "type":"structure",
+      "members":{
+        "principal":{
+          "shape":"EntityIdentifier",
+          "documentation":"<p>Specifies the principal for which the authorization decision is to be made.</p>"
+        },
+        "action":{
+          "shape":"ActionIdentifier",
+          "documentation":"<p>Specifies the requested action to be authorized. For example, is the principal authorized to perform this action on the resource?</p>"
+        },
+        "resource":{
+          "shape":"EntityIdentifier",
+          "documentation":"<p>Specifies the resource for which the authorization decision is to be made.</p>"
+        },
+        "context":{
+          "shape":"ContextDefinition",
+          "documentation":"<p>Specifies additional context that can be used to make more granular authorization decisions.</p>"
+        }
+      },
+      "documentation":"<p>An authorization request that you include in a <code>BatchIsAuthorized</code> API request.</p>"
+    },
+    "BatchIsAuthorizedInputList":{
+      "type":"list",
+      "member":{"shape":"BatchIsAuthorizedInputItem"},
+      "min":1
+    },
+    "BatchIsAuthorizedOutput":{
+      "type":"structure",
+      "required":["results"],
+      "members":{
+        "results":{
+          "shape":"BatchIsAuthorizedOutputList",
+          "documentation":"<p>A series of <code>Allow</code> or <code>Deny</code> decisions for each request, and the policies that produced them.</p>"
+        }
+      }
+    },
+    "BatchIsAuthorizedOutputItem":{
+      "type":"structure",
+      "required":[
+        "request",
+        "decision",
+        "determiningPolicies",
+        "errors"
+      ],
+      "members":{
+        "request":{
+          "shape":"BatchIsAuthorizedInputItem",
+          "documentation":"<p>The authorization request that initiated the decision.</p>"
+        },
+        "decision":{
+          "shape":"Decision",
+          "documentation":"<p>An authorization decision that indicates if the authorization request should be allowed or denied.</p>"
+        },
+        "determiningPolicies":{
+          "shape":"DeterminingPolicyList",
+          "documentation":"<p>The list of determining policies used to make the authorization decision. For example, if there are two matching policies, where one is a forbid and the other is a permit, then the forbid policy will be the determining policy. In the case of multiple matching permit policies then there would be multiple determining policies. In the case that no policies match, and hence the response is DENY, there would be no determining policies.</p>"
+        },
+        "errors":{
+          "shape":"EvaluationErrorList",
+          "documentation":"<p>Errors that occurred while making an authorization decision, for example, a policy references an Entity or entity Attribute that does not exist in the slice.</p>"
+        }
+      },
+      "documentation":"<p>The decision, based on policy evaluation, from an individual authorization request in a <code>BatchIsAuthorized</code> API request.</p>"
+    },
+    "BatchIsAuthorizedOutputList":{
+      "type":"list",
+      "member":{"shape":"BatchIsAuthorizedOutputItem"}
     },
     "Boolean":{
       "type":"boolean",
@@ -592,10 +699,10 @@
       "members":{
         "contextMap":{
           "shape":"ContextMap",
-          "documentation":"<p>An list of attributes that are needed to successfully evaluate an authorization request. Each attribute in this array must include a map of a data type and its value.</p> <p>Example: <code>\"Context\":{\"&lt;KeyName1&gt;\":{\"boolean\":true},\"&lt;KeyName2&gt;\":{\"long\":1234}}</code> </p>"
+          "documentation":"<p>An list of attributes that are needed to successfully evaluate an authorization request. Each attribute in this array must include a map of a data type and its value.</p> <p>Example: <code>\"contextMap\":{\"&lt;KeyName1&gt;\":{\"boolean\":true},\"&lt;KeyName2&gt;\":{\"long\":1234}}</code> </p>"
         }
       },
-      "documentation":"<p>Contains additional details about the context of the request. Verified Permissions evaluates this information in an authorization request as part of the <code>when</code> and <code>unless</code> clauses in a policy.</p> <p>This data type is used as a request parameter for the <a href=\"https://docs.aws.amazon.com/verifiedpermissions/latest/apireference/API_IsAuthorized.html\">IsAuthorized</a> and <a href=\"https://docs.aws.amazon.com/verifiedpermissions/latest/apireference/API_IsAuthorizedWithToken.html\">IsAuthorizedWithToken</a> operations.</p> <p>Example: <code>\"context\":{\"Context\":{\"&lt;KeyName1&gt;\":{\"boolean\":true},\"&lt;KeyName2&gt;\":{\"long\":1234}}}</code> </p>",
+      "documentation":"<p>Contains additional details about the context of the request. Verified Permissions evaluates this information in an authorization request as part of the <code>when</code> and <code>unless</code> clauses in a policy.</p> <p>This data type is used as a request parameter for the <a href=\"https://docs.aws.amazon.com/verifiedpermissions/latest/apireference/API_IsAuthorized.html\">IsAuthorized</a>, <a href=\"https://docs.aws.amazon.com/verifiedpermissions/latest/apireference/API_BatchIsAuthorized.html\">BatchIsAuthorized</a>, and <a href=\"https://docs.aws.amazon.com/verifiedpermissions/latest/apireference/API_IsAuthorizedWithToken.html\">IsAuthorizedWithToken</a> operations.</p> <p>Example: <code>\"context\":{\"contextMap\":{\"&lt;KeyName1&gt;\":{\"boolean\":true},\"&lt;KeyName2&gt;\":{\"long\":1234}}}</code> </p>",
       "union":true
     },
     "ContextMap":{
@@ -910,7 +1017,7 @@
           "documentation":"<p>The Id of a policy that determined to an authorization decision.</p> <p>Example: <code>\"policyId\":\"SPEXAMPLEabcdefg111111\"</code> </p>"
         }
       },
-      "documentation":"<p>Contains information about one of the policies that determined an authorization decision.</p> <p>This data type is used as an element in a response parameter for the <a href=\"https://docs.aws.amazon.com/verifiedpermissions/latest/apireference/API_IsAuthorized.html\">IsAuthorized</a> and <a href=\"https://docs.aws.amazon.com/verifiedpermissions/latest/apireference/API_IsAuthorizedWithToken.html\">IsAuthorizedWithToken</a> operations.</p> <p>Example: <code>\"determiningPolicies\":[{\"policyId\":\"SPEXAMPLEabcdefg111111\"}]</code> </p>"
+      "documentation":"<p>Contains information about one of the policies that determined an authorization decision.</p> <p>This data type is used as an element in a response parameter for the <a href=\"https://docs.aws.amazon.com/verifiedpermissions/latest/apireference/API_IsAuthorized.html\">IsAuthorized</a>, <a href=\"https://docs.aws.amazon.com/verifiedpermissions/latest/apireference/API_BatchIsAuthorized.html\">BatchIsAuthorized</a>, and <a href=\"https://docs.aws.amazon.com/verifiedpermissions/latest/apireference/API_IsAuthorizedWithToken.html\">IsAuthorizedWithToken</a> operations.</p> <p>Example: <code>\"determiningPolicies\":[{\"policyId\":\"SPEXAMPLEabcdefg111111\"}]</code> </p>"
     },
     "DeterminingPolicyList":{
       "type":"list",
@@ -1017,7 +1124,7 @@
           "documentation":"<p>The error description.</p>"
         }
       },
-      "documentation":"<p>Contains a description of an evaluation error.</p> <p>This data type is used as a request parameter in the <a href=\"https://docs.aws.amazon.com/verifiedpermissions/latest/apireference/API_IsAuthorized.html\">IsAuthorized</a> and <a href=\"https://docs.aws.amazon.com/verifiedpermissions/latest/apireference/API_IsAuthorizedWithToken.html\">IsAuthorizedWithToken</a> operations.</p>",
+      "documentation":"<p>Contains a description of an evaluation error.</p> <p>This data type is a response parameter of the <a href=\"https://docs.aws.amazon.com/verifiedpermissions/latest/apireference/API_IsAuthorized.html\">IsAuthorized</a>, <a href=\"https://docs.aws.amazon.com/verifiedpermissions/latest/apireference/API_BatchIsAuthorized.html\">BatchIsAuthorized</a>, and <a href=\"https://docs.aws.amazon.com/verifiedpermissions/latest/apireference/API_IsAuthorizedWithToken.html\">IsAuthorizedWithToken</a> operations.</p>",
       "sensitive":true
     },
     "EvaluationErrorList":{
@@ -2025,7 +2132,7 @@
     },
     "SchemaJson":{
       "type":"string",
-      "max":10000,
+      "max":100000,
       "min":1,
       "sensitive":true
     },

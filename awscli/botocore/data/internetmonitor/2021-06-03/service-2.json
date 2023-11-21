@@ -84,6 +84,42 @@
       ],
       "documentation":"<p>Gets information about a monitor in Amazon CloudWatch Internet Monitor based on a monitor name. The information returned includes the Amazon Resource Name (ARN), create time, modified time, resources included in the monitor, and status information.</p>"
     },
+    "GetQueryResults":{
+      "name":"GetQueryResults",
+      "http":{
+        "method":"GET",
+        "requestUri":"/v20210603/Monitors/{MonitorName}/Queries/{QueryId}/Results",
+        "responseCode":200
+      },
+      "input":{"shape":"GetQueryResultsInput"},
+      "output":{"shape":"GetQueryResultsOutput"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"LimitExceededException"},
+        {"shape":"ValidationException"}
+      ],
+      "documentation":"<p>Return the data for a query with the Amazon CloudWatch Internet Monitor query interface. Specify the query that you want to return results for by providing a <code>QueryId</code> and a monitor name.</p> <p>For more information about using the query interface, including examples, see <a href=\"https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/CloudWatch-IM-view-cw-tools-cwim-query.html\">Using the Amazon CloudWatch Internet Monitor query interface</a> in the Amazon CloudWatch Internet Monitor User Guide.</p>"
+    },
+    "GetQueryStatus":{
+      "name":"GetQueryStatus",
+      "http":{
+        "method":"GET",
+        "requestUri":"/v20210603/Monitors/{MonitorName}/Queries/{QueryId}/Status",
+        "responseCode":200
+      },
+      "input":{"shape":"GetQueryStatusInput"},
+      "output":{"shape":"GetQueryStatusOutput"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"LimitExceededException"},
+        {"shape":"ValidationException"}
+      ],
+      "documentation":"<p>Returns the current status of a query for the Amazon CloudWatch Internet Monitor query interface, for a specified query ID and monitor. When you run a query, check the status to make sure that the query has <code>SUCCEEDED</code> before you review the results.</p> <ul> <li> <p> <code>QUEUED</code>: The query is scheduled to run.</p> </li> <li> <p> <code>RUNNING</code>: The query is in progress but not complete.</p> </li> <li> <p> <code>SUCCEEDED</code>: The query completed sucessfully.</p> </li> <li> <p> <code>FAILED</code>: The query failed due to an error.</p> </li> <li> <p> <code>CANCELED</code>: The query was canceled.</p> </li> </ul>"
+    },
     "ListHealthEvents":{
       "name":"ListHealthEvents",
       "http":{
@@ -135,6 +171,42 @@
         {"shape":"InternalServerErrorException"}
       ],
       "documentation":"<p>Lists the tags for a resource. Tags are supported only for monitors in Amazon CloudWatch Internet Monitor.</p>"
+    },
+    "StartQuery":{
+      "name":"StartQuery",
+      "http":{
+        "method":"POST",
+        "requestUri":"/v20210603/Monitors/{MonitorName}/Queries",
+        "responseCode":200
+      },
+      "input":{"shape":"StartQueryInput"},
+      "output":{"shape":"StartQueryOutput"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"LimitExceededException"},
+        {"shape":"ValidationException"}
+      ],
+      "documentation":"<p>Start a query to return data for a specific query type for the Amazon CloudWatch Internet Monitor query interface. Specify a time period for the data that you want returned by using <code>StartTime</code> and <code>EndTime</code>. You filter the query results to return by providing parameters that you specify with <code>FilterParameters</code>.</p> <p>For more information about using the query interface, including examples, see <a href=\"https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/CloudWatch-IM-view-cw-tools-cwim-query.html\">Using the Amazon CloudWatch Internet Monitor query interface</a> in the Amazon CloudWatch Internet Monitor User Guide.</p>"
+    },
+    "StopQuery":{
+      "name":"StopQuery",
+      "http":{
+        "method":"DELETE",
+        "requestUri":"/v20210603/Monitors/{MonitorName}/Queries/{QueryId}",
+        "responseCode":200
+      },
+      "input":{"shape":"StopQueryInput"},
+      "output":{"shape":"StopQueryOutput"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"LimitExceededException"},
+        {"shape":"ValidationException"}
+      ],
+      "documentation":"<p>Stop a query that is progress for a specific monitor.</p>"
     },
     "TagResource":{
       "name":"TagResource",
@@ -333,6 +405,32 @@
       "type":"double",
       "box":true
     },
+    "FilterList":{
+      "type":"list",
+      "member":{"shape":"String"}
+    },
+    "FilterParameter":{
+      "type":"structure",
+      "members":{
+        "Field":{
+          "shape":"String",
+          "documentation":"<p>A data field that you want to filter, to further scope your application's Internet Monitor data in a repository that you created by running a query. A field might be <code>city</code>, for example. The field must be one of the fields that was returned by the specific query that you used to create the repository.</p>"
+        },
+        "Operator":{
+          "shape":"Operator",
+          "documentation":"<p>The operator to use with the filter field and a value, such as <code>not_equals</code>.</p>"
+        },
+        "Values":{
+          "shape":"FilterList",
+          "documentation":"<p>One or more values to be used, together with the specified operator, to filter data for a query. For example, you could specify an array of values such as <code>[\"Seattle\", \"Redmond\"]</code>. Values in the array are separated by commas.</p>"
+        }
+      },
+      "documentation":"<p>A filter that you use with the results of a Amazon CloudWatch Internet Monitor query that you created and ran. The query sets up a repository of data that is a subset of your application's Internet Monitor data. <code>FilterParameter</code> is a string that defines how you want to filter the repository of data to return a set of results, based on your criteria.</p> <p>The filter parameters that you can specify depend on the query type that you used to create the repository, since each query type returns a different set of Internet Monitor data.</p> <p>For each filter, you specify a field (such as <code>city</code>), an operator (such as <code>not_equals</code>, and a value or array of values (such as <code>[\"Seattle\", \"Redmond\"]</code>). Separate values in the array with commas.</p> <p>For more information about specifying filter parameters, see <a href=\"https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/CloudWatch-IM-view-cw-tools-cwim-query.html\">Using the Amazon CloudWatch Internet Monitor query interface</a> in the Amazon CloudWatch Internet Monitor User Guide.</p>"
+    },
+    "FilterParameters":{
+      "type":"list",
+      "member":{"shape":"FilterParameter"}
+    },
     "GetHealthEventInput":{
       "type":"structure",
       "required":[
@@ -348,7 +446,7 @@
         },
         "EventId":{
           "shape":"HealthEventName",
-          "documentation":"<p>The internally generated identifier of a health event. Because <code>EventID</code> contains the forward slash (“/”) character, you must URL-encode the <code>EventID</code> field in the request URL.</p>",
+          "documentation":"<p>The internally-generated identifier of a health event. Because <code>EventID</code> contains the forward slash (“/”) character, you must URL-encode the <code>EventID</code> field in the request URL.</p>",
           "location":"uri",
           "locationName":"EventId"
         }
@@ -372,7 +470,7 @@
         },
         "EventId":{
           "shape":"HealthEventName",
-          "documentation":"<p>The internally generated identifier of a health event.</p>"
+          "documentation":"<p>The internally-generated identifier of a health event.</p>"
         },
         "StartedAt":{
           "shape":"SyntheticTimestamp_date_time",
@@ -489,6 +587,91 @@
         }
       }
     },
+    "GetQueryResultsInput":{
+      "type":"structure",
+      "required":[
+        "MonitorName",
+        "QueryId"
+      ],
+      "members":{
+        "MonitorName":{
+          "shape":"ResourceName",
+          "documentation":"<p>The name of the monitor to return data for.</p>",
+          "location":"uri",
+          "locationName":"MonitorName"
+        },
+        "QueryId":{
+          "shape":"String",
+          "documentation":"<p>The ID of the query that you want to return data results for. A <code>QueryId</code> is an internally-generated identifier for a specific query.</p>",
+          "location":"uri",
+          "locationName":"QueryId"
+        },
+        "NextToken":{
+          "shape":"String",
+          "documentation":"<p>The token for the next set of results. You receive this token from a previous call.</p>",
+          "location":"querystring",
+          "locationName":"NextToken"
+        },
+        "MaxResults":{
+          "shape":"QueryMaxResults",
+          "documentation":"<p>The number of query results that you want to return with this call.</p>",
+          "location":"querystring",
+          "locationName":"MaxResults"
+        }
+      }
+    },
+    "GetQueryResultsOutput":{
+      "type":"structure",
+      "required":[
+        "Fields",
+        "Data"
+      ],
+      "members":{
+        "Fields":{
+          "shape":"QueryFields",
+          "documentation":"<p>The fields that the query returns data for. Fields are name-data type pairs, such as <code>availability_score</code>-<code>float</code>.</p>"
+        },
+        "Data":{
+          "shape":"QueryData",
+          "documentation":"<p>The data results that the query returns. Data is returned in arrays, aligned with the <code>Fields</code> for the query, which creates a repository of Amazon CloudWatch Internet Monitor information for your application. Then, you can filter the information in the repository by using <code>FilterParameters</code> that you define.</p>"
+        },
+        "NextToken":{
+          "shape":"String",
+          "documentation":"<p>The token for the next set of results. You receive this token from a previous call.</p>"
+        }
+      }
+    },
+    "GetQueryStatusInput":{
+      "type":"structure",
+      "required":[
+        "MonitorName",
+        "QueryId"
+      ],
+      "members":{
+        "MonitorName":{
+          "shape":"ResourceName",
+          "documentation":"<p>The name of the monitor.</p>",
+          "location":"uri",
+          "locationName":"MonitorName"
+        },
+        "QueryId":{
+          "shape":"String",
+          "documentation":"<p>The ID of the query that you want to return the status for. A <code>QueryId</code> is an internally-generated dentifier for a specific query.</p>",
+          "location":"uri",
+          "locationName":"QueryId"
+        }
+      }
+    },
+    "GetQueryStatusOutput":{
+      "type":"structure",
+      "required":["Status"],
+      "members":{
+        "Status":{
+          "shape":"QueryStatus",
+          "documentation":"<p>The current status for a query.</p>"
+        }
+      }
+    },
     "HealthEvent":{
       "type":"structure",
       "required":[
@@ -507,7 +690,7 @@
         },
         "EventId":{
           "shape":"HealthEventName",
-          "documentation":"<p>The internally generated identifier of a specific network traffic impairment health event.</p>"
+          "documentation":"<p>The internally-generated identifier of a specific network traffic impairment health event.</p>"
         },
         "StartedAt":{
           "shape":"SyntheticTimestamp_date_time",
@@ -853,10 +1036,10 @@
         },
         "MinTrafficImpact":{
           "shape":"Percentage",
-          "documentation":"<p>The minimum percentage of overall traffic for an application that must be impacted by an issue before Internet Monitor creates an event when a threshold is crossed for a local health score.</p>"
+          "documentation":"<p>The minimum percentage of overall traffic for an application that must be impacted by an issue before Internet Monitor creates an event when a threshold is crossed for a local health score.</p> <p>If you don't set a minimum traffic impact threshold, the default value is 0.01%.</p>"
         }
       },
-      "documentation":"<p>A complex type with the configuration information that determines the threshold and other conditions for when Internet Monitor creates a health event for a local performance or availability issue, when scores cross a threshold for one or more city-networks.</p> <p>Defines the percentages, for performance scores or availability scores, that are the local thresholds for when Amazon CloudWatch Internet Monitor creates a health event. Also defines whether a local threshold is enabled or disabled, and the minimum percentage of overall traffic that must be impacted by an issue before Internet Monitor creates an event when a threshold is crossed for a local health score.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/CloudWatch-IM-overview.html#IMUpdateThresholdFromOverview\"> Change health event thresholds</a> in the Internet Monitor section of the <i>CloudWatch User Guide</i>.</p>"
+      "documentation":"<p>A complex type with the configuration information that determines the threshold and other conditions for when Internet Monitor creates a health event for a local performance or availability issue, when scores cross a threshold for one or more city-networks.</p> <p>Defines the percentages, for performance scores or availability scores, that are the local thresholds for when Amazon CloudWatch Internet Monitor creates a health event. Also defines whether a local threshold is enabled or disabled, and the minimum percentage of overall traffic that must be impacted by an issue before Internet Monitor creates an event when a threshold is crossed for a local health score.</p> <p>If you don't set a local health event threshold, the default value is 60%.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/CloudWatch-IM-overview.html#IMUpdateThresholdFromOverview\"> Change health event thresholds</a> in the Internet Monitor section of the <i>CloudWatch User Guide</i>.</p>"
     },
     "LocalHealthEventsConfigStatus":{
       "type":"string",
@@ -878,11 +1061,13 @@
     },
     "MaxCityNetworksToMonitor":{
       "type":"integer",
+      "box":true,
       "max":500000,
       "min":1
     },
     "MaxResults":{
       "type":"integer",
+      "box":true,
       "max":25,
       "min":1
     },
@@ -1000,6 +1185,13 @@
       },
       "exception":true
     },
+    "Operator":{
+      "type":"string",
+      "enum":[
+        "EQUALS",
+        "NOT_EQUALS"
+      ]
+    },
     "Percentage":{
       "type":"double",
       "max":100,
@@ -1026,6 +1218,56 @@
         }
       },
       "documentation":"<p>Amazon CloudWatch Internet Monitor calculates measurements about the performance for your application's internet traffic between client locations and Amazon Web Services. Amazon Web Services has substantial historical data about internet performance and availability between Amazon Web Services services and different network providers and geographies. By applying statistical analysis to the data, Internet Monitor can detect when the performance and availability for your application has dropped, compared to an estimated baseline that's already calculated. To make it easier to see those drops, we report that information to you in the form of health scores: a performance score and an availability score.</p> <p>Performance in Internet Monitor represents the estimated percentage of traffic that is not seeing a performance drop. For example, a performance score of 99% for an end user and service location pair is equivalent to 1% of the traffic experiencing a performance drop for that pair.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/CloudWatch-IM-inside-internet-monitor.html#IMExperienceScores\">How Internet Monitor calculates performance and availability scores</a> in the Amazon CloudWatch Internet Monitor section of the <i>CloudWatch User Guide</i>.</p>"
+    },
+    "QueryData":{
+      "type":"list",
+      "member":{"shape":"QueryRow"}
+    },
+    "QueryField":{
+      "type":"structure",
+      "members":{
+        "Name":{
+          "shape":"String",
+          "documentation":"<p>The name of a field to query your application's Amazon CloudWatch Internet Monitor data for, such as <code>availability_score</code>.</p>"
+        },
+        "Type":{
+          "shape":"String",
+          "documentation":"<p>The data type for a query field, which must correspond to the field you're defining for <code>QueryField</code>. For example, if the query field name is <code>availability_score</code>, the data type is <code>float</code>.</p>"
+        }
+      },
+      "documentation":"<p>Defines a field to query for your application's Amazon CloudWatch Internet Monitor data. You create a data repository by running a query of a specific type. Each <code>QueryType</code> includes a specific set of fields and datatypes to retrieve data for. </p>"
+    },
+    "QueryFields":{
+      "type":"list",
+      "member":{"shape":"QueryField"}
+    },
+    "QueryMaxResults":{
+      "type":"integer",
+      "box":true,
+      "max":1000,
+      "min":1
+    },
+    "QueryRow":{
+      "type":"list",
+      "member":{"shape":"String"}
+    },
+    "QueryStatus":{
+      "type":"string",
+      "enum":[
+        "QUEUED",
+        "RUNNING",
+        "SUCCEEDED",
+        "FAILED",
+        "CANCELED"
+      ]
+    },
+    "QueryType":{
+      "type":"string",
+      "enum":[
+        "MEASUREMENTS",
+        "TOP_LOCATIONS",
+        "TOP_LOCATION_DETAILS"
+      ]
     },
     "ResourceName":{
       "type":"string",
@@ -1088,6 +1330,75 @@
     "SetOfARNs":{
       "type":"list",
       "member":{"shape":"Arn"}
+    },
+    "StartQueryInput":{
+      "type":"structure",
+      "required":[
+        "MonitorName",
+        "StartTime",
+        "EndTime",
+        "QueryType"
+      ],
+      "members":{
+        "MonitorName":{
+          "shape":"ResourceName",
+          "documentation":"<p>The name of the monitor to query.</p>",
+          "location":"uri",
+          "locationName":"MonitorName"
+        },
+        "StartTime":{
+          "shape":"SyntheticTimestamp_date_time",
+          "documentation":"<p>The timestamp that is the beginning of the period that you want to retrieve data for with your query.</p>"
+        },
+        "EndTime":{
+          "shape":"SyntheticTimestamp_date_time",
+          "documentation":"<p>The timestamp that is the end of the period that you want to retrieve data for with your query.</p>"
+        },
+        "QueryType":{
+          "shape":"QueryType",
+          "documentation":"<p>The type of query to run. The following are the three types of queries that you can run using the Internet Monitor query interface:</p> <ul> <li> <p> <code>MEASUREMENTS</code>: TBD definition</p> </li> <li> <p> <code>TOP_LOCATIONS</code>: TBD definition</p> </li> <li> <p> <code>TOP_LOCATION_DETAILS</code>: TBD definition</p> </li> </ul> <p>For lists of the fields returned with each query type and more information about how each type of query is performed, see <a href=\"https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/CloudWatch-IM-view-cw-tools-cwim-query.html\"> Using the Amazon CloudWatch Internet Monitor query interface</a> in the Amazon CloudWatch Internet Monitor User Guide.</p>"
+        },
+        "FilterParameters":{
+          "shape":"FilterParameters",
+          "documentation":"<p>The <code>FilterParameters</code> field that you use with Amazon CloudWatch Internet Monitor queries is a string the defines how you want a query to be filtered. The filter parameters that you can specify depend on the query type, since each query type returns a different set of Internet Monitor data.</p> <p>For more information about specifying filter parameters, see <a href=\"https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/CloudWatch-IM-view-cw-tools-cwim-query.html\">Using the Amazon CloudWatch Internet Monitor query interface</a> in the Amazon CloudWatch Internet Monitor User Guide.</p>"
+        }
+      }
+    },
+    "StartQueryOutput":{
+      "type":"structure",
+      "required":["QueryId"],
+      "members":{
+        "QueryId":{
+          "shape":"String",
+          "documentation":"<p>The internally-generated identifier of a specific query.</p>"
+        }
+      }
+    },
+    "StopQueryInput":{
+      "type":"structure",
+      "required":[
+        "MonitorName",
+        "QueryId"
+      ],
+      "members":{
+        "MonitorName":{
+          "shape":"ResourceName",
+          "documentation":"<p>The name of the monitor.</p>",
+          "location":"uri",
+          "locationName":"MonitorName"
+        },
+        "QueryId":{
+          "shape":"String",
+          "documentation":"<p>The ID of the query that you want to stop. A <code>QueryId</code> is an internally-generated identifier for a specific query.</p>",
+          "location":"uri",
+          "locationName":"QueryId"
+        }
+      }
+    },
+    "StopQueryOutput":{
+      "type":"structure",
+      "members":{
+      }
     },
     "String":{"type":"string"},
     "SyntheticTimestamp_date_time":{
@@ -1169,6 +1480,7 @@
     },
     "TrafficPercentageToMonitor":{
       "type":"integer",
+      "box":true,
       "max":100,
       "min":1
     },

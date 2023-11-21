@@ -6428,6 +6428,65 @@ CHANGELOG
 * feature:wizard: Added support for AWS CLI Wizards. See `#3752 <https://github.com/aws/aws-cli/issues/3752>`__.
 
 
+1.30.5
+======
+
+* api-change:``cloudfront-keyvaluestore``: This release adds support for CloudFront KeyValueStore, a globally managed key value datastore associated with CloudFront Functions.
+* api-change:``cloudfront``: This release adds support for CloudFront KeyValueStore, a globally managed key value datastore associated with CloudFront Functions.
+* api-change:``ec2``: Documentation updates for Amazon EC2.
+* api-change:``inspector-scan``: This release adds support for the new Amazon Inspector Scan API. The new Inspector Scan API can synchronously scan SBOMs adhering to the CycloneDX v1.5 format.
+* api-change:``iotsitewise``: Adds 1/ user-defined unique identifier for asset and model metadata, 2/ asset model components, and 3/ query API for asset metadata and telemetry data. Supports 4/ multi variate anomaly detection using Amazon Lookout for Equipment, 5/ warm storage tier, and 6/ buffered ingestion of time series data.
+* api-change:``iottwinmaker``: This release adds following support. 1. New APIs for metadata bulk operations. 2. Modify the component type API to support composite component types - nesting component types within one another. 3. New list APIs for components and properties. 4. Support the larger scope digital twin modeling.
+* api-change:``s3``: Add support for automatic date based partitioning in S3 Server Access Logs.
+* api-change:``endpoint-rules``: Update endpoint-rules command to latest version
+
+
+1.30.4
+======
+
+* api-change:``codestar-connections``: This release updates a few CodeStar Connections related APIs.
+* api-change:``docdb``: Amazon DocumentDB updates for new cluster storage configuration: Amazon DocumentDB I/O-Optimized.
+* api-change:``ec2``: This release adds support for Security group referencing over Transit gateways, enabling you to simplify Security group management and control of instance-to-instance traffic across VPCs that are connected by Transit gateway.
+
+
+1.30.3
+======
+
+* enhancement:``ssm`` Session Manager: Pass StartSession API response as environment variable to session-manager-plugin
+* api-change:``appmesh``: Change the default value of these fields from 0 to null: MaxConnections, MaxPendingRequests, MaxRequests, HealthCheckThreshold, PortNumber, and HealthCheckPolicy -> port. Users are not expected to perceive the change, except that badRequestException is thrown when required fields missing configured.
+* api-change:``athena``: Adding SerivicePreProcessing time metric
+* api-change:``cloud9``: A minor doc only update related to changing the date of an API change.
+* api-change:``cloudformation``: This release adds a new flag ImportExistingResources to CreateChangeSet. Specify this parameter on a CREATE- or UPDATE-type change set to import existing resources with custom names instead of recreating them.
+* api-change:``codepipeline``: CodePipeline now supports overriding source revisions to achieve manual re-deploy of a past revision
+* api-change:``codestar-connections``: This release adds support for the CloudFormation Git sync feature. Git sync enables updating a CloudFormation stack from a template stored in a Git repository.
+* api-change:``connect``: This release adds WISDOM_QUICK_RESPONSES as new IntegrationType of Connect IntegrationAssociation resource and bug fixes.
+* api-change:``dlm``: Added support for SAP HANA in Amazon Data Lifecycle Manager EBS snapshot lifecycle policies with pre and post scripts.
+* api-change:``ec2``: This release adds new features for Amazon VPC IP Address Manager (IPAM) Allowing a choice between Free and Advanced Tiers, viewing public IP address insights across regions and in Amazon Cloudwatch, use IPAM to plan your subnet IPs within a VPC and bring your own autonomous system number to IPAM.
+* api-change:``ecr``: Documentation and operational updates for Amazon ECR, adding support for pull through cache rules for upstream registries that require authentication.
+* api-change:``emr``: Update emr command to latest version
+* api-change:``events``: Update events command to latest version
+* api-change:``internetmonitor``: Adds new querying capabilities for running data queries on a monitor
+* api-change:``ivs``: type & defaulting refinement to various range properties
+* api-change:``ivschat``: type & defaulting refinement to various range properties
+* api-change:``kinesisvideo``: Docs only build to bring up-to-date with public docs.
+* api-change:``location``: Remove default value and allow nullable for request parameters having minimum value larger than zero.
+* api-change:``medialive``: MediaLive has now added support for per-output static image overlay.
+* api-change:``mgn``: Removed invalid and unnecessary default values.
+* api-change:``osis``: Add support for enabling a persistent buffer when creating or updating an OpenSearch Ingestion pipeline. Add tags to Pipeline and PipelineSummary response models.
+* api-change:``pipes``: TargetParameters now properly supports BatchJobParameters.ArrayProperties.Size and BatchJobParameters.RetryStrategy.Attempts being optional, and EcsTaskParameters.Overrides.EphemeralStorage.SizeInGiB now properly required when setting EphemeralStorage
+* api-change:``rds``: This release adds support for option groups and replica enhancements to Amazon RDS Custom.
+* api-change:``redshift-serverless``: Updated SDK for Amazon Redshift Serverless, which provides the ability to configure a connection with IAM Identity Center to manage user and group access to databases.
+* api-change:``redshift``: Updated SDK for Amazon Redshift, which you can use to configure a connection with IAM Identity Center to manage access to databases. With these, you can create a connection through a managed application. You can also change a managed application, delete it, or get information about an existing one.
+* api-change:``s3``: Removes all default 0 values for numbers and false values for booleans
+* api-change:``sso-admin``: Improves support for configuring RefreshToken and TokenExchange grants on applications.
+* api-change:``sso-oidc``: Adding support for `sso-oauth:CreateTokenWithIAM`.
+* api-change:``sts``: API updates for the AWS Security Token Service
+* api-change:``trustedadvisor``: AWS Trusted Advisor introduces new APIs to enable you to programmatically access Trusted Advisor best practice checks, recommendations, and prioritized recommendations. Trusted Advisor APIs enable you to integrate Trusted Advisor with your operational tools to automate your workloads.
+* api-change:``verifiedpermissions``: Adding BatchIsAuthorized API which supports multiple authorization requests against a PolicyStore
+* api-change:``wisdom``: This release adds QuickResponse as a new Wisdom resource and Wisdom APIs for import, create, read, search, update and delete QuickResponse resources.
+* api-change:``endpoint-rules``: Update endpoint-rules command to latest version
+
+
 1.30.2
 ======
 

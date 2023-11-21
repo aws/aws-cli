@@ -58,7 +58,7 @@
         {"shape":"LimitExceededException"},
         {"shape":"InternalException"}
       ],
-      "documentation":"<p>Creates an API destination, which is an HTTP invocation endpoint configured as a target for events.</p>"
+      "documentation":"<p>Creates an API destination, which is an HTTP invocation endpoint configured as a target for events.</p> <p>API destinations do not support private destinations, such as interface VPC endpoints.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/eventbridge/latest/userguide/eb-api-destinations.html\">API destinations</a> in the <i>EventBridge User Guide</i>.</p>"
     },
     "CreateArchive":{
       "name":"CreateArchive",
@@ -142,7 +142,7 @@
         {"shape":"LimitExceededException"},
         {"shape":"OperationDisabledException"}
       ],
-      "documentation":"<p>Called by an SaaS partner to create a partner event source. This operation is not used by Amazon Web Services customers.</p> <p>Each partner event source can be used by one Amazon Web Services account to create a matching partner event bus in that Amazon Web Services account. A SaaS partner must create one partner event source for each Amazon Web Services account that wants to receive those event types. </p> <p>A partner event source creates events based on resources within the SaaS partner's service or application.</p> <p>An Amazon Web Services account that creates a partner event bus that matches the partner event source can use that event bus to receive events from the partner, and then process them using Amazon Web Services Events rules and targets.</p> <p>Partner event source names follow this format:</p> <p> <code> <i>partner_name</i>/<i>event_namespace</i>/<i>event_name</i> </code> </p> <p> <i>partner_name</i> is determined during partner registration and identifies the partner to Amazon Web Services customers. <i>event_namespace</i> is determined by the partner and is a way for the partner to categorize their events. <i>event_name</i> is determined by the partner, and should uniquely identify an event-generating resource within the partner system. The combination of <i>event_namespace</i> and <i>event_name</i> should help Amazon Web Services customers decide whether to create an event bus to receive these events.</p>"
+      "documentation":"<p>Called by an SaaS partner to create a partner event source. This operation is not used by Amazon Web Services customers.</p> <p>Each partner event source can be used by one Amazon Web Services account to create a matching partner event bus in that Amazon Web Services account. A SaaS partner must create one partner event source for each Amazon Web Services account that wants to receive those event types. </p> <p>A partner event source creates events based on resources within the SaaS partner's service or application.</p> <p>An Amazon Web Services account that creates a partner event bus that matches the partner event source can use that event bus to receive events from the partner, and then process them using Amazon Web Services Events rules and targets.</p> <p>Partner event source names follow this format:</p> <p> <code> <i>partner_name</i>/<i>event_namespace</i>/<i>event_name</i> </code> </p> <ul> <li> <p> <i>partner_name</i> is determined during partner registration, and identifies the partner to Amazon Web Services customers. </p> </li> <li> <p> <i>event_namespace</i> is determined by the partner, and is a way for the partner to categorize their events.</p> </li> <li> <p> <i>event_name</i> is determined by the partner, and should uniquely identify an event-generating resource within the partner system. </p> <p>The <i>event_name</i> must be unique across all Amazon Web Services customers. This is because the event source is a shared resource between the partner and customer accounts, and each partner event source unique in the partner account.</p> </li> </ul> <p>The combination of <i>event_namespace</i> and <i>event_name</i> should help Amazon Web Services customers decide whether to create an event bus to receive these events.</p>"
     },
     "DeactivateEventSource":{
       "name":"DeactivateEventSource",
@@ -233,7 +233,7 @@
         {"shape":"ResourceNotFoundException"},
         {"shape":"InternalException"}
       ],
-      "documentation":"<p>Delete an existing global endpoint. For more information about global endpoints, see <a href=\"https://docs.aws.amazon.com/eventbridge/latest/userguide/eb-global-endpoints.html\">Making applications Regional-fault tolerant with global endpoints and event replication</a> in the Amazon EventBridge User Guide.</p>"
+      "documentation":"<p>Delete an existing global endpoint. For more information about global endpoints, see <a href=\"https://docs.aws.amazon.com/eventbridge/latest/userguide/eb-global-endpoints.html\">Making applications Regional-fault tolerant with global endpoints and event replication</a> in the <i>Amazon EventBridge User Guide</i>.</p>"
     },
     "DeleteEventBus":{
       "name":"DeleteEventBus",
@@ -332,7 +332,7 @@
         {"shape":"ResourceNotFoundException"},
         {"shape":"InternalException"}
       ],
-      "documentation":"<p>Get the information about an existing global endpoint. For more information about global endpoints, see <a href=\"https://docs.aws.amazon.com/eventbridge/latest/userguide/eb-global-endpoints.html\">Making applications Regional-fault tolerant with global endpoints and event replication</a> in the Amazon EventBridge User Guide..</p>"
+      "documentation":"<p>Get the information about an existing global endpoint. For more information about global endpoints, see <a href=\"https://docs.aws.amazon.com/eventbridge/latest/userguide/eb-global-endpoints.html\">Making applications Regional-fault tolerant with global endpoints and event replication</a> in the <i>Amazon EventBridge User Guide</i>.</p>"
     },
     "DescribeEventBus":{
       "name":"DescribeEventBus",
@@ -487,7 +487,7 @@
       "errors":[
         {"shape":"InternalException"}
       ],
-      "documentation":"<p>List the global endpoints associated with this account. For more information about global endpoints, see <a href=\"https://docs.aws.amazon.com/eventbridge/latest/userguide/eb-global-endpoints.html\">Making applications Regional-fault tolerant with global endpoints and event replication</a> in the Amazon EventBridge User Guide..</p>"
+      "documentation":"<p>List the global endpoints associated with this account. For more information about global endpoints, see <a href=\"https://docs.aws.amazon.com/eventbridge/latest/userguide/eb-global-endpoints.html\">Making applications Regional-fault tolerant with global endpoints and event replication</a> in the <i>Amazon EventBridge User Guide</i>.</p>"
     },
     "ListEventBuses":{
       "name":"ListEventBuses",
@@ -570,7 +570,7 @@
         {"shape":"InternalException"},
         {"shape":"ResourceNotFoundException"}
       ],
-      "documentation":"<p>Lists the rules for the specified target. You can see which of the rules in Amazon EventBridge can invoke a specific target in your account.</p>"
+      "documentation":"<p>Lists the rules for the specified target. You can see which of the rules in Amazon EventBridge can invoke a specific target in your account.</p> <p>The maximum number of results per page for requests is 100.</p>"
     },
     "ListRules":{
       "name":"ListRules",
@@ -584,7 +584,7 @@
         {"shape":"InternalException"},
         {"shape":"ResourceNotFoundException"}
       ],
-      "documentation":"<p>Lists your Amazon EventBridge rules. You can either list all the rules or you can provide a prefix to match to the rule names.</p> <p>ListRules does not list the targets of a rule. To see the targets associated with a rule, use <a href=\"https://docs.aws.amazon.com/eventbridge/latest/APIReference/API_ListTargetsByRule.html\">ListTargetsByRule</a>.</p>"
+      "documentation":"<p>Lists your Amazon EventBridge rules. You can either list all the rules or you can provide a prefix to match to the rule names.</p> <p>The maximum number of results per page for requests is 100.</p> <p>ListRules does not list the targets of a rule. To see the targets associated with a rule, use <a href=\"https://docs.aws.amazon.com/eventbridge/latest/APIReference/API_ListTargetsByRule.html\">ListTargetsByRule</a>.</p>"
     },
     "ListTagsForResource":{
       "name":"ListTagsForResource",
@@ -612,7 +612,7 @@
         {"shape":"ResourceNotFoundException"},
         {"shape":"InternalException"}
       ],
-      "documentation":"<p>Lists the targets assigned to the specified rule.</p>"
+      "documentation":"<p>Lists the targets assigned to the specified rule.</p> <p>The maximum number of results per page for requests is 100.</p>"
     },
     "PutEvents":{
       "name":"PutEvents",
@@ -625,7 +625,7 @@
       "errors":[
         {"shape":"InternalException"}
       ],
-      "documentation":"<p>Sends custom events to Amazon EventBridge so that they can be matched to rules.</p> <note> <p>PutEvents will only process nested JSON up to 1100 levels deep.</p> </note>"
+      "documentation":"<p>Sends custom events to Amazon EventBridge so that they can be matched to rules.</p> <p>The maximum size for a PutEvents event entry is 256 KB. Entry size is calculated including the event and any necessary characters and keys of the JSON representation of the event. To learn more, see <a href=\"https://docs.aws.amazon.com/eventbridge/latest/userguide/eb-putevent-size.html\">Calculating PutEvents event entry size</a> in the <i>Amazon EventBridge User Guide</i> </p> <p>PutEvents accepts the data in JSON format. For the JSON number (integer) data type, the constraints are: a minimum value of -9,223,372,036,854,775,808 and a maximum value of 9,223,372,036,854,775,807.</p> <note> <p>PutEvents will only process nested JSON up to 1100 levels deep.</p> </note>"
     },
     "PutPartnerEvents":{
       "name":"PutPartnerEvents",
@@ -639,7 +639,7 @@
         {"shape":"InternalException"},
         {"shape":"OperationDisabledException"}
       ],
-      "documentation":"<p>This is used by SaaS partners to write events to a customer's partner event bus. Amazon Web Services customers do not use this operation.</p>"
+      "documentation":"<p>This is used by SaaS partners to write events to a customer's partner event bus. Amazon Web Services customers do not use this operation.</p> <p>For information on calculating event batch size, see <a href=\"https://docs.aws.amazon.com/eventbridge/latest/userguide/eb-putevent-size.html\">Calculating EventBridge PutEvents event entry size</a> in the <i>EventBridge User Guide</i>.</p>"
     },
     "PutPermission":{
       "name":"PutPermission",
@@ -690,7 +690,7 @@
         {"shape":"ManagedRuleException"},
         {"shape":"InternalException"}
       ],
-      "documentation":"<p>Adds the specified targets to the specified rule, or updates the targets if they are already associated with the rule.</p> <p>Targets are the resources that are invoked when a rule is triggered.</p> <note> <p>Each rule can have up to five (5) targets associated with it at one time.</p> </note> <p>You can configure the following as targets for Events:</p> <ul> <li> <p> <a href=\"https://docs.aws.amazon.com/eventbridge/latest/userguide/eb-api-destinations.html\">API destination</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/eventbridge/latest/userguide/eb-api-gateway-target.html\">API Gateway</a> </p> </li> <li> <p>Batch job queue</p> </li> <li> <p>CloudWatch group</p> </li> <li> <p>CodeBuild project</p> </li> <li> <p>CodePipeline</p> </li> <li> <p>EC2 <code>CreateSnapshot</code> API call</p> </li> <li> <p>EC2 Image Builder</p> </li> <li> <p>EC2 <code>RebootInstances</code> API call</p> </li> <li> <p>EC2 <code>StopInstances</code> API call</p> </li> <li> <p>EC2 <code>TerminateInstances</code> API call</p> </li> <li> <p>ECS task</p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/eventbridge/latest/userguide/eb-cross-account.html\">Event bus in a different account or Region</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/eventbridge/latest/userguide/eb-bus-to-bus.html\">Event bus in the same account and Region</a> </p> </li> <li> <p>Firehose delivery stream</p> </li> <li> <p>Glue workflow</p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/incident-manager/latest/userguide/incident-creation.html#incident-tracking-auto-eventbridge\">Incident Manager response plan</a> </p> </li> <li> <p>Inspector assessment template</p> </li> <li> <p>Kinesis stream</p> </li> <li> <p>Lambda function</p> </li> <li> <p>Redshift cluster</p> </li> <li> <p>Redshift Serverless workgroup</p> </li> <li> <p>SageMaker Pipeline</p> </li> <li> <p>SNS topic</p> </li> <li> <p>SQS queue</p> </li> <li> <p>Step Functions state machine</p> </li> <li> <p>Systems Manager Automation</p> </li> <li> <p>Systems Manager OpsItem</p> </li> <li> <p>Systems Manager Run Command</p> </li> </ul> <p>Creating rules with built-in targets is supported only in the Amazon Web Services Management Console. The built-in targets are <code>EC2 CreateSnapshot API call</code>, <code>EC2 RebootInstances API call</code>, <code>EC2 StopInstances API call</code>, and <code>EC2 TerminateInstances API call</code>. </p> <p>For some target types, <code>PutTargets</code> provides target-specific parameters. If the target is a Kinesis data stream, you can optionally specify which shard the event goes to by using the <code>KinesisParameters</code> argument. To invoke a command on multiple EC2 instances with one rule, you can use the <code>RunCommandParameters</code> field.</p> <p>To be able to make API calls against the resources that you own, Amazon EventBridge needs the appropriate permissions. For Lambda and Amazon SNS resources, EventBridge relies on resource-based policies. For EC2 instances, Kinesis Data Streams, Step Functions state machines and API Gateway APIs, EventBridge relies on IAM roles that you specify in the <code>RoleARN</code> argument in <code>PutTargets</code>. For more information, see <a href=\"https://docs.aws.amazon.com/eventbridge/latest/userguide/auth-and-access-control-eventbridge.html\">Authentication and Access Control</a> in the <i>Amazon EventBridge User Guide</i>.</p> <p>If another Amazon Web Services account is in the same region and has granted you permission (using <code>PutPermission</code>), you can send events to that account. Set that account's event bus as a target of the rules in your account. To send the matched events to the other account, specify that account's event bus as the <code>Arn</code> value when you run <code>PutTargets</code>. If your account sends events to another account, your account is charged for each sent event. Each event sent to another account is charged as a custom event. The account receiving the event is not charged. For more information, see <a href=\"http://aws.amazon.com/eventbridge/pricing/\">Amazon EventBridge Pricing</a>.</p> <note> <p> <code>Input</code>, <code>InputPath</code>, and <code>InputTransformer</code> are not available with <code>PutTarget</code> if the target is an event bus of a different Amazon Web Services account.</p> </note> <p>If you are setting the event bus of another account as the target, and that account granted permission to your account through an organization instead of directly by the account ID, then you must specify a <code>RoleArn</code> with proper permissions in the <code>Target</code> structure. For more information, see <a href=\"https://docs.aws.amazon.com/eventbridge/latest/userguide/eventbridge-cross-account-event-delivery.html\">Sending and Receiving Events Between Amazon Web Services Accounts</a> in the <i>Amazon EventBridge User Guide</i>.</p> <p>For more information about enabling cross-account events, see <a href=\"https://docs.aws.amazon.com/eventbridge/latest/APIReference/API_PutPermission.html\">PutPermission</a>.</p> <p> <b>Input</b>, <b>InputPath</b>, and <b>InputTransformer</b> are mutually exclusive and optional parameters of a target. When a rule is triggered due to a matched event:</p> <ul> <li> <p>If none of the following arguments are specified for a target, then the entire event is passed to the target in JSON format (unless the target is Amazon EC2 Run Command or Amazon ECS task, in which case nothing from the event is passed to the target).</p> </li> <li> <p>If <b>Input</b> is specified in the form of valid JSON, then the matched event is overridden with this constant.</p> </li> <li> <p>If <b>InputPath</b> is specified in the form of JSONPath (for example, <code>$.detail</code>), then only the part of the event specified in the path is passed to the target (for example, only the detail part of the event is passed).</p> </li> <li> <p>If <b>InputTransformer</b> is specified, then one or more specified JSONPaths are extracted from the event and used as values in a template that you specify as the input to the target.</p> </li> </ul> <p>When you specify <code>InputPath</code> or <code>InputTransformer</code>, you must use JSON dot notation, not bracket notation.</p> <p>When you add targets to a rule and the associated rule triggers soon after, new or updated targets might not be immediately invoked. Allow a short period of time for changes to take effect.</p> <p>This action can partially fail if too many requests are made at the same time. If that happens, <code>FailedEntryCount</code> is non-zero in the response and each entry in <code>FailedEntries</code> provides the ID of the failed target and the error code.</p>"
+      "documentation":"<p>Adds the specified targets to the specified rule, or updates the targets if they are already associated with the rule.</p> <p>Targets are the resources that are invoked when a rule is triggered.</p> <p>The maximum number of entries per request is 10.</p> <note> <p>Each rule can have up to five (5) targets associated with it at one time.</p> </note> <p>For a list of services you can configure as targets for events, see <a href=\"https://docs.aws.amazon.com/eventbridge/latest/userguide/eb-targets.html\">EventBridge targets</a> in the <i>Amazon EventBridge User Guide</i>.</p> <p>Creating rules with built-in targets is supported only in the Amazon Web Services Management Console. The built-in targets are:</p> <ul> <li> <p> <code>Amazon EBS CreateSnapshot API call</code> </p> </li> <li> <p> <code>Amazon EC2 RebootInstances API call</code> </p> </li> <li> <p> <code>Amazon EC2 StopInstances API call</code> </p> </li> <li> <p> <code>Amazon EC2 TerminateInstances API call</code> </p> </li> </ul> <p>For some target types, <code>PutTargets</code> provides target-specific parameters. If the target is a Kinesis data stream, you can optionally specify which shard the event goes to by using the <code>KinesisParameters</code> argument. To invoke a command on multiple EC2 instances with one rule, you can use the <code>RunCommandParameters</code> field.</p> <p>To be able to make API calls against the resources that you own, Amazon EventBridge needs the appropriate permissions: </p> <ul> <li> <p>For Lambda and Amazon SNS resources, EventBridge relies on resource-based policies.</p> </li> <li> <p>For EC2 instances, Kinesis Data Streams, Step Functions state machines and API Gateway APIs, EventBridge relies on IAM roles that you specify in the <code>RoleARN</code> argument in <code>PutTargets</code>.</p> </li> </ul> <p>For more information, see <a href=\"https://docs.aws.amazon.com/eventbridge/latest/userguide/auth-and-access-control-eventbridge.html\">Authentication and Access Control</a> in the <i>Amazon EventBridge User Guide</i>.</p> <p>If another Amazon Web Services account is in the same region and has granted you permission (using <code>PutPermission</code>), you can send events to that account. Set that account's event bus as a target of the rules in your account. To send the matched events to the other account, specify that account's event bus as the <code>Arn</code> value when you run <code>PutTargets</code>. If your account sends events to another account, your account is charged for each sent event. Each event sent to another account is charged as a custom event. The account receiving the event is not charged. For more information, see <a href=\"http://aws.amazon.com/eventbridge/pricing/\">Amazon EventBridge Pricing</a>.</p> <note> <p> <code>Input</code>, <code>InputPath</code>, and <code>InputTransformer</code> are not available with <code>PutTarget</code> if the target is an event bus of a different Amazon Web Services account.</p> </note> <p>If you are setting the event bus of another account as the target, and that account granted permission to your account through an organization instead of directly by the account ID, then you must specify a <code>RoleArn</code> with proper permissions in the <code>Target</code> structure. For more information, see <a href=\"https://docs.aws.amazon.com/eventbridge/latest/userguide/eventbridge-cross-account-event-delivery.html\">Sending and Receiving Events Between Amazon Web Services Accounts</a> in the <i>Amazon EventBridge User Guide</i>.</p> <note> <p>If you have an IAM role on a cross-account event bus target, a <code>PutTargets</code> call without a role on the same target (same <code>Id</code> and <code>Arn</code>) will not remove the role.</p> </note> <p>For more information about enabling cross-account events, see <a href=\"https://docs.aws.amazon.com/eventbridge/latest/APIReference/API_PutPermission.html\">PutPermission</a>.</p> <p> <b>Input</b>, <b>InputPath</b>, and <b>InputTransformer</b> are mutually exclusive and optional parameters of a target. When a rule is triggered due to a matched event:</p> <ul> <li> <p>If none of the following arguments are specified for a target, then the entire event is passed to the target in JSON format (unless the target is Amazon EC2 Run Command or Amazon ECS task, in which case nothing from the event is passed to the target).</p> </li> <li> <p>If <b>Input</b> is specified in the form of valid JSON, then the matched event is overridden with this constant.</p> </li> <li> <p>If <b>InputPath</b> is specified in the form of JSONPath (for example, <code>$.detail</code>), then only the part of the event specified in the path is passed to the target (for example, only the detail part of the event is passed).</p> </li> <li> <p>If <b>InputTransformer</b> is specified, then one or more specified JSONPaths are extracted from the event and used as values in a template that you specify as the input to the target.</p> </li> </ul> <p>When you specify <code>InputPath</code> or <code>InputTransformer</code>, you must use JSON dot notation, not bracket notation.</p> <p>When you add targets to a rule and the associated rule triggers soon after, new or updated targets might not be immediately invoked. Allow a short period of time for changes to take effect.</p> <p>This action can partially fail if too many requests are made at the same time. If that happens, <code>FailedEntryCount</code> is non-zero in the response and each entry in <code>FailedEntries</code> provides the ID of the failed target and the error code.</p>"
     },
     "RemovePermission":{
       "name":"RemovePermission",
@@ -721,7 +721,7 @@
         {"shape":"ManagedRuleException"},
         {"shape":"InternalException"}
       ],
-      "documentation":"<p>Removes the specified targets from the specified rule. When the rule is triggered, those targets are no longer be invoked.</p> <note> <p>A successful execution of <code>RemoveTargets</code> doesn't guarantee all targets are removed from the rule, it means that the target(s) listed in the request are removed.</p> </note> <p>When you remove a target, when the associated rule triggers, removed targets might continue to be invoked. Allow a short period of time for changes to take effect.</p> <p>This action can partially fail if too many requests are made at the same time. If that happens, <code>FailedEntryCount</code> is non-zero in the response and each entry in <code>FailedEntries</code> provides the ID of the failed target and the error code.</p>"
+      "documentation":"<p>Removes the specified targets from the specified rule. When the rule is triggered, those targets are no longer be invoked.</p> <note> <p>A successful execution of <code>RemoveTargets</code> doesn't guarantee all targets are removed from the rule, it means that the target(s) listed in the request are removed.</p> </note> <p>When you remove a target, when the associated rule triggers, removed targets might continue to be invoked. Allow a short period of time for changes to take effect.</p> <p>This action can partially fail if too many requests are made at the same time. If that happens, <code>FailedEntryCount</code> is non-zero in the response and each entry in <code>FailedEntries</code> provides the ID of the failed target and the error code.</p> <p>The maximum number of entries per request is 10.</p>"
     },
     "StartReplay":{
       "name":"StartReplay",
@@ -848,7 +848,7 @@
         {"shape":"ConcurrentModificationException"},
         {"shape":"InternalException"}
       ],
-      "documentation":"<p>Update an existing endpoint. For more information about global endpoints, see <a href=\"https://docs.aws.amazon.com/eventbridge/latest/userguide/eb-global-endpoints.html\">Making applications Regional-fault tolerant with global endpoints and event replication</a> in the Amazon EventBridge User Guide..</p>"
+      "documentation":"<p>Update an existing endpoint. For more information about global endpoints, see <a href=\"https://docs.aws.amazon.com/eventbridge/latest/userguide/eb-global-endpoints.html\">Making applications Regional-fault tolerant with global endpoints and event replication</a> in the <i>Amazon EventBridge User Guide</i>.</p>"
     }
   },
   "shapes":{
@@ -2652,7 +2652,7 @@
           "documentation":"<p>The last time the endpoint was modified.</p>"
         }
       },
-      "documentation":"<p>A global endpoint used to improve your application's availability by making it regional-fault tolerant. For more information about global endpoints, see <a href=\"https://docs.aws.amazon.com/eventbridge/latest/userguide/eb-global-endpoints.html\">Making applications Regional-fault tolerant with global endpoints and event replication</a> in the Amazon EventBridge User Guide.</p>"
+      "documentation":"<p>A global endpoint used to improve your application's availability by making it regional-fault tolerant. For more information about global endpoints, see <a href=\"https://docs.aws.amazon.com/eventbridge/latest/userguide/eb-global-endpoints.html\">Making applications Regional-fault tolerant with global endpoints and event replication</a> in the <i>Amazon EventBridge User Guide</i>.</p>"
     },
     "EndpointArn":{
       "type":"string",
@@ -3657,7 +3657,7 @@
         },
         "Source":{
           "shape":"String",
-          "documentation":"<p>The source of the event.</p>"
+          "documentation":"<p>The source of the event.</p> <note> <p> <code>Detail</code>, <code>DetailType</code>, and <code>Source</code> are required for EventBridge to successfully send an event to an event bus. If you include event entries in a request that do not include each of those properties, EventBridge fails that entry. If you submit a request in which <i>none</i> of the entries have each of these properties, EventBridge fails the entire request. </p> </note>"
         },
         "Resources":{
           "shape":"EventResourceList",
@@ -3665,15 +3665,15 @@
         },
         "DetailType":{
           "shape":"String",
-          "documentation":"<p>Free-form string, with a maximum of 128 characters, used to decide what fields to expect in the event detail.</p>"
+          "documentation":"<p>Free-form string, with a maximum of 128 characters, used to decide what fields to expect in the event detail.</p> <note> <p> <code>Detail</code>, <code>DetailType</code>, and <code>Source</code> are required for EventBridge to successfully send an event to an event bus. If you include event entries in a request that do not include each of those properties, EventBridge fails that entry. If you submit a request in which <i>none</i> of the entries have each of these properties, EventBridge fails the entire request. </p> </note>"
         },
         "Detail":{
           "shape":"String",
-          "documentation":"<p>A valid JSON object. There is no other schema imposed. The JSON object may contain fields and nested subobjects.</p>"
+          "documentation":"<p>A valid JSON object. There is no other schema imposed. The JSON object may contain fields and nested sub-objects.</p> <note> <p> <code>Detail</code>, <code>DetailType</code>, and <code>Source</code> are required for EventBridge to successfully send an event to an event bus. If you include event entries in a request that do not include each of those properties, EventBridge fails that entry. If you submit a request in which <i>none</i> of the entries have each of these properties, EventBridge fails the entire request. </p> </note>"
         },
         "EventBusName":{
           "shape":"NonPartnerEventBusNameOrArn",
-          "documentation":"<p>The name or ARN of the event bus to receive the event. Only the rules that are associated with this event bus are used to match the event. If you omit this, the default event bus is used.</p> <note> <p>If you're using a global endpoint with a custom bus, you must enter the name, not the ARN, of the event bus in either the primary or secondary Region here and the corresponding event bus in the other Region will be determined based on the endpoint referenced by the <code>EndpointId</code>.</p> </note>"
+          "documentation":"<p>The name or ARN of the event bus to receive the event. Only the rules that are associated with this event bus are used to match the event. If you omit this, the default event bus is used.</p> <note> <p>If you're using a global endpoint with a custom bus, you can enter either the name or Amazon Resource Name (ARN) of the event bus in either the primary or secondary Region here. EventBridge then determines the corresponding event bus in the other Region based on the endpoint referenced by the <code>EndpointId</code>. Specifying the event bus ARN is preferred.</p> </note>"
         },
         "TraceHeader":{
           "shape":"TraceHeader",
@@ -3710,14 +3710,14 @@
         },
         "ErrorCode":{
           "shape":"ErrorCode",
-          "documentation":"<p>The error code that indicates why the event submission failed.</p>"
+          "documentation":"<p>The error code that indicates why the event submission failed.</p> <p>Retryable errors include:</p> <ul> <li> <p> <code> <a href=\"https://docs.aws.amazon.com/eventbridge/latest/APIReference/CommonErrors.html\">InternalFailure</a> </code> </p> <p>The request processing has failed because of an unknown error, exception or failure.</p> </li> <li> <p> <code> <a href=\"https://docs.aws.amazon.com/eventbridge/latest/APIReference/CommonErrors.html\">ThrottlingException</a> </code> </p> <p>The request was denied due to request throttling.</p> </li> </ul> <p>Non-retryable errors include:</p> <ul> <li> <p> <code> <a href=\"https://docs.aws.amazon.com/eventbridge/latest/APIReference/CommonErrors.html\">AccessDeniedException</a> </code> </p> <p>You do not have sufficient access to perform this action.</p> </li> <li> <p> <code>InvalidAccountIdException</code> </p> <p>The account ID provided is not valid.</p> </li> <li> <p> <code>InvalidArgument</code> </p> <p>A specified parameter is not valid.</p> </li> <li> <p> <code>MalformedDetail</code> </p> <p>The JSON provided is not valid.</p> </li> <li> <p> <code>RedactionFailure</code> </p> <p>Redacting the CloudTrail event failed.</p> </li> <li> <p> <code>NotAuthorizedForSourceException</code> </p> <p>You do not have permissions to publish events with this source onto this event bus.</p> </li> <li> <p> <code>NotAuthorizedForDetailTypeException</code> </p> <p>You do not have permissions to publish events with this detail type onto this event bus.</p> </li> </ul>"
         },
         "ErrorMessage":{
           "shape":"ErrorMessage",
           "documentation":"<p>The error message that explains why the event submission failed.</p>"
         }
       },
-      "documentation":"<p>Represents an event that failed to be submitted. For information about the errors that are common to all actions, see <a href=\"https://docs.aws.amazon.com/eventbridge/latest/APIReference/CommonErrors.html\">Common Errors</a>.</p>"
+      "documentation":"<p>Represents the results of an event submitted to an event bus.</p> <p>If the submission was successful, the entry has the event ID in it. Otherwise, you can use the error code and error message to identify the problem with the entry.</p> <p>For information about the errors that are common to all actions, see <a href=\"https://docs.aws.amazon.com/eventbridge/latest/APIReference/CommonErrors.html\">Common Errors</a>.</p>"
     },
     "PutEventsResultEntryList":{
       "type":"list",
@@ -3742,7 +3742,7 @@
         },
         "Source":{
           "shape":"EventSourceName",
-          "documentation":"<p>The event source that is generating the entry.</p>"
+          "documentation":"<p>The event source that is generating the entry.</p> <note> <p> <code>Detail</code>, <code>DetailType</code>, and <code>Source</code> are required for EventBridge to successfully send an event to an event bus. If you include event entries in a request that do not include each of those properties, EventBridge fails that entry. If you submit a request in which <i>none</i> of the entries have each of these properties, EventBridge fails the entire request. </p> </note>"
         },
         "Resources":{
           "shape":"EventResourceList",
@@ -3750,11 +3750,11 @@
         },
         "DetailType":{
           "shape":"String",
-          "documentation":"<p>A free-form string, with a maximum of 128 characters, used to decide what fields to expect in the event detail.</p>"
+          "documentation":"<p>A free-form string, with a maximum of 128 characters, used to decide what fields to expect in the event detail.</p> <note> <p> <code>Detail</code>, <code>DetailType</code>, and <code>Source</code> are required for EventBridge to successfully send an event to an event bus. If you include event entries in a request that do not include each of those properties, EventBridge fails that entry. If you submit a request in which <i>none</i> of the entries have each of these properties, EventBridge fails the entire request. </p> </note>"
         },
         "Detail":{
           "shape":"String",
-          "documentation":"<p>A valid JSON string. There is no other schema imposed. The JSON string may contain fields and nested subobjects.</p>"
+          "documentation":"<p>A valid JSON string. There is no other schema imposed. The JSON string may contain fields and nested sub-objects.</p> <note> <p> <code>Detail</code>, <code>DetailType</code>, and <code>Source</code> are required for EventBridge to successfully send an event to an event bus. If you include event entries in a request that do not include each of those properties, EventBridge fails that entry. If you submit a request in which <i>none</i> of the entries have each of these properties, EventBridge fails the entire request. </p> </note>"
         }
       },
       "documentation":"<p>The details about an event generated by an SaaS partner.</p>"
@@ -3774,7 +3774,7 @@
         },
         "Entries":{
           "shape":"PutPartnerEventsResultEntryList",
-          "documentation":"<p>The list of events from this operation that were successfully written to the partner event bus.</p>"
+          "documentation":"<p>The results for each event entry the partner submitted in this request. If the event was successfully submitted, the entry has the event ID in it. Otherwise, you can use the error code and error message to identify the problem with the entry.</p> <p>For each record, the index of the response element is the same as the index in the request array.</p>"
         }
       }
     },
@@ -3794,7 +3794,7 @@
           "documentation":"<p>The error message that explains why the event submission failed.</p>"
         }
       },
-      "documentation":"<p>Represents an event that a partner tried to generate, but failed.</p>"
+      "documentation":"<p>The result of an event entry the partner submitted in this request. If the event was successfully submitted, the entry has the event ID in it. Otherwise, you can use the error code and error message to identify the problem with the entry.</p>"
     },
     "PutPartnerEventsResultEntryList":{
       "type":"list",
@@ -3847,7 +3847,7 @@
         },
         "State":{
           "shape":"RuleState",
-          "documentation":"<p>Indicates whether the rule is enabled or disabled.</p>"
+          "documentation":"<p>The state of the rule.</p> <p>Valid values include:</p> <ul> <li> <p> <code>DISABLED</code>: The rule is disabled. EventBridge does not match any events against the rule.</p> </li> <li> <p> <code>ENABLED</code>: The rule is enabled. EventBridge matches events against the rule, <i>except</i> for Amazon Web Services management events delivered through CloudTrail.</p> </li> <li> <p> <code>ENABLED_WITH_ALL_CLOUDTRAIL_MANAGEMENT_EVENTS</code>: The rule is enabled for all events, including Amazon Web Services management events delivered through CloudTrail.</p> <p>Management events provide visibility into management operations that are performed on resources in your Amazon Web Services account. These are also known as control plane operations. For more information, see <a href=\"https://docs.aws.amazon.com/awscloudtrail/latest/userguide/logging-management-events-with-cloudtrail.html#logging-management-events\">Logging management events</a> in the <i>CloudTrail User Guide</i>, and <a href=\"https://docs.aws.amazon.com/eventbridge/latest/userguide/eb-service-event.html#eb-service-event-cloudtrail\">Filtering management events from Amazon Web Services services</a> in the <i>Amazon EventBridge User Guide</i>.</p> <p>This value is only valid for rules on the <a href=\"https://docs.aws.amazon.com/eventbridge/latest/userguide/eb-what-is-how-it-works-concepts.html#eb-bus-concepts-buses\">default</a> event bus or <a href=\"https://docs.aws.amazon.com/eventbridge/latest/userguide/eb-create-event-bus.html\">custom event buses</a>. It does not apply to <a href=\"https://docs.aws.amazon.com/eventbridge/latest/userguide/eb-saas.html\">partner event buses</a>.</p> </li> </ul>"
         },
         "Description":{
           "shape":"RuleDescription",
@@ -3967,7 +3967,7 @@
         },
         "DbUser":{
           "shape":"DbUser",
-          "documentation":"<p>The database user name. Required when authenticating using temporary credentials.</p> <p>Do not provide this parameter when connecting to a Redshift Serverless workgroup.</p>"
+          "documentation":"<p>The database user name. Required when authenticating using temporary credentials.</p>"
         },
         "Sql":{
           "shape":"Sql",
@@ -3981,9 +3981,12 @@
           "shape":"Boolean",
           "documentation":"<p>Indicates whether to send an event back to EventBridge after the SQL statement runs.</p>"
         },
-        "Sqls":{"shape":"Sqls"}
+        "Sqls":{
+          "shape":"Sqls",
+          "documentation":"<p>One or more SQL statements to run. The SQL statements are run as a single transaction. They run serially in the order of the array. Subsequent SQL statements don't start until the previous statement in the array completes. If any SQL statement fails, then because they are run as one transaction, all work is rolled back.</p>"
+        }
       },
-      "documentation":"<p>These are custom parameters to be used when the target is a Amazon Redshift cluster or Redshift Serverless workgroup to invoke the Amazon Redshift Data API ExecuteStatement based on EventBridge events.</p>"
+      "documentation":"<p>These are custom parameters to be used when the target is a Amazon Redshift cluster to invoke the Amazon Redshift Data API ExecuteStatement based on EventBridge events.</p>"
     },
     "RedshiftSecretManagerArn":{
       "type":"string",
@@ -4264,7 +4267,7 @@
         },
         "State":{
           "shape":"RuleState",
-          "documentation":"<p>The state of the rule.</p>"
+          "documentation":"<p>The state of the rule.</p> <p>Valid values include:</p> <ul> <li> <p> <code>DISABLED</code>: The rule is disabled. EventBridge does not match any events against the rule.</p> </li> <li> <p> <code>ENABLED</code>: The rule is enabled. EventBridge matches events against the rule, <i>except</i> for Amazon Web Services management events delivered through CloudTrail.</p> </li> <li> <p> <code>ENABLED_WITH_ALL_CLOUDTRAIL_MANAGEMENT_EVENTS</code>: The rule is enabled for all events, including Amazon Web Services management events delivered through CloudTrail.</p> <p>Management events provide visibility into management operations that are performed on resources in your Amazon Web Services account. These are also known as control plane operations. For more information, see <a href=\"https://docs.aws.amazon.com/awscloudtrail/latest/userguide/logging-management-events-with-cloudtrail.html#logging-management-events\">Logging management events</a> in the <i>CloudTrail User Guide</i>, and <a href=\"https://docs.aws.amazon.com/eventbridge/latest/userguide/eb-service-event.html#eb-service-event-cloudtrail\">Filtering management events from Amazon Web Services services</a> in the <i>Amazon EventBridge User Guide</i>.</p> <p>This value is only valid for rules on the <a href=\"https://docs.aws.amazon.com/eventbridge/latest/userguide/eb-what-is-how-it-works-concepts.html#eb-bus-concepts-buses\">default</a> event bus or <a href=\"https://docs.aws.amazon.com/eventbridge/latest/userguide/eb-create-event-bus.html\">custom event buses</a>. It does not apply to <a href=\"https://docs.aws.amazon.com/eventbridge/latest/userguide/eb-saas.html\">partner event buses</a>.</p> </li> </ul>"
         },
         "Description":{
           "shape":"RuleDescription",
@@ -4316,7 +4319,8 @@
       "type":"string",
       "enum":[
         "ENABLED",
-        "DISABLED"
+        "DISABLED",
+        "ENABLED_WITH_ALL_CLOUDTRAIL_MANAGEMENT_EVENTS"
       ]
     },
     "RunCommandParameters":{

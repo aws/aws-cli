@@ -166,7 +166,7 @@
         {"shape":"DBParameterGroupQuotaExceededFault"},
         {"shape":"DBParameterGroupAlreadyExistsFault"}
       ],
-      "documentation":"<p>Copies the specified DB cluster parameter group.</p>"
+      "documentation":"<p>Copies the specified DB cluster parameter group.</p> <note> <p>You can't copy a default DB cluster parameter group. Instead, create a new custom DB cluster parameter group, which copies the default parameters and values for the specified DB cluster parameter group family.</p> </note>"
     },
     "CopyDBClusterSnapshot":{
       "name":"CopyDBClusterSnapshot",
@@ -205,7 +205,7 @@
         {"shape":"DBParameterGroupAlreadyExistsFault"},
         {"shape":"DBParameterGroupQuotaExceededFault"}
       ],
-      "documentation":"<p>Copies the specified DB parameter group.</p>"
+      "documentation":"<p>Copies the specified DB parameter group.</p> <note> <p>You can't copy a default DB parameter group. Instead, create a new custom DB parameter group, which copies the default parameters and values for the specified DB parameter group family.</p> </note>"
     },
     "CopyDBSnapshot":{
       "name":"CopyDBSnapshot",
@@ -311,6 +311,7 @@
         {"shape":"DBSubnetGroupNotFoundFault"},
         {"shape":"InvalidVPCNetworkStateFault"},
         {"shape":"InvalidDBClusterStateFault"},
+        {"shape":"InvalidDBSubnetGroupFault"},
         {"shape":"InvalidDBSubnetGroupStateFault"},
         {"shape":"InvalidSubnet"},
         {"shape":"InvalidDBInstanceStateFault"},
@@ -321,7 +322,8 @@
         {"shape":"DBSubnetGroupDoesNotCoverEnoughAZs"},
         {"shape":"GlobalClusterNotFoundFault"},
         {"shape":"InvalidGlobalClusterStateFault"},
-        {"shape":"DomainNotFoundFault"}
+        {"shape":"DomainNotFoundFault"},
+        {"shape":"OptionGroupNotFoundFault"}
       ],
       "documentation":"<p>Creates a new Amazon Aurora DB cluster or Multi-AZ DB cluster.</p> <p>If you create an Aurora DB cluster, the request creates an empty cluster. You must explicitly create the writer instance for your DB cluster using the <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/APIReference/API_CreateDBInstance.html\">CreateDBInstance</a> operation. If you create a Multi-AZ DB cluster, the request creates a writer and two reader DB instances for you, each in a different Availability Zone.</p> <p>You can use the <code>ReplicationSourceIdentifier</code> parameter to create an Amazon Aurora DB cluster as a read replica of another DB cluster or Amazon RDS for MySQL or PostgreSQL DB instance. For more information about Amazon Aurora, see <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/CHAP_AuroraOverview.html\">What is Amazon Aurora?</a> in the <i>Amazon Aurora User Guide</i>.</p> <p>You can also use the <code>ReplicationSourceIdentifier</code> parameter to create a Multi-AZ DB cluster read replica with an RDS for MySQL or PostgreSQL DB instance as the source. For more information about Multi-AZ DB clusters, see <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/multi-az-db-clusters-concepts.html\">Multi-AZ DB cluster deployments</a> in the <i>Amazon RDS User Guide</i>.</p>"
     },
@@ -1860,7 +1862,8 @@
         {"shape":"DBClusterAlreadyExistsFault"},
         {"shape":"DBInstanceAlreadyExistsFault"},
         {"shape":"DomainNotFoundFault"},
-        {"shape":"StorageTypeNotAvailableFault"}
+        {"shape":"StorageTypeNotAvailableFault"},
+        {"shape":"OptionGroupNotFoundFault"}
       ],
       "documentation":"<p>Modifies the settings of an Amazon Aurora DB cluster or a Multi-AZ DB cluster. You can change one or more settings by specifying these parameters and the new values in the request.</p> <p>For more information on Amazon Aurora DB clusters, see <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/CHAP_AuroraOverview.html\"> What is Amazon Aurora?</a> in the <i>Amazon Aurora User Guide</i>.</p> <p>For more information on Multi-AZ DB clusters, see <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/multi-az-db-clusters-concepts.html\"> Multi-AZ DB cluster deployments</a> in the <i>Amazon RDS User Guide</i>.</p>"
     },
@@ -5238,6 +5241,10 @@
           "shape":"ReadReplicaIdentifierList",
           "documentation":"<p>Contains one or more identifiers of the read replicas associated with this DB cluster.</p>"
         },
+        "StatusInfos":{
+          "shape":"DBClusterStatusInfoList",
+          "documentation":"<p>Reserved for future use.</p>"
+        },
         "DBClusterMembers":{
           "shape":"DBClusterMemberList",
           "documentation":"<p>The list of DB instances that make up the DB cluster.</p>"
@@ -6202,6 +6209,35 @@
         "senderFault":true
       },
       "exception":true
+    },
+    "DBClusterStatusInfo":{
+      "type":"structure",
+      "members":{
+        "StatusType":{
+          "shape":"String",
+          "documentation":"<p>Reserved for future use.</p>"
+        },
+        "Normal":{
+          "shape":"Boolean",
+          "documentation":"<p>Reserved for future use.</p>"
+        },
+        "Status":{
+          "shape":"String",
+          "documentation":"<p>Reserved for future use.</p>"
+        },
+        "Message":{
+          "shape":"String",
+          "documentation":"<p>Reserved for future use.</p>"
+        }
+      },
+      "documentation":"<p>Reserved for future use.</p>"
+    },
+    "DBClusterStatusInfoList":{
+      "type":"list",
+      "member":{
+        "shape":"DBClusterStatusInfo",
+        "locationName":"DBClusterStatusInfo"
+      }
     },
     "DBEngineVersion":{
       "type":"structure",
@@ -13208,6 +13244,10 @@
         },
         "TransitGatewayMulticastDomainId":{
           "shape":"String",
+          "documentation":"<p>Reserved for future use.</p>"
+        },
+        "ReplicaMode":{
+          "shape":"ReplicaMode",
           "documentation":"<p>Reserved for future use.</p>"
         }
       },

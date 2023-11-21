@@ -23,7 +23,8 @@
         {"shape":"ValidationException"},
         {"shape":"InternalException"},
         {"shape":"AccessDeniedException"},
-        {"shape":"ResourceAlreadyExistsException"}
+        {"shape":"ResourceAlreadyExistsException"},
+        {"shape":"ResourceNotFoundException"}
       ],
       "documentation":"<p>Creates an OpenSearch Ingestion pipeline. For more information, see <a href=\"https://docs.aws.amazon.com/opensearch-service/latest/developerguide/creating-pipeline.html\">Creating Amazon OpenSearch Ingestion pipelines</a>.</p>"
     },
@@ -250,6 +251,17 @@
       "exception":true
     },
     "Boolean":{"type":"boolean"},
+    "BufferOptions":{
+      "type":"structure",
+      "required":["PersistentBufferEnabled"],
+      "members":{
+        "PersistentBufferEnabled":{
+          "shape":"Boolean",
+          "documentation":"<p>Whether persistent buffering should be enabled.</p>"
+        }
+      },
+      "documentation":"<p>Options that specify the configuration of a persistent buffer. To configure how OpenSearch Ingestion encrypts this data, set the EncryptionAtRestOptions.</p>"
+    },
     "ChangeProgressStage":{
       "type":"structure",
       "members":{
@@ -372,6 +384,14 @@
           "shape":"VpcOptions",
           "documentation":"<p>Container for the values required to configure VPC access for the pipeline. If you don't specify these values, OpenSearch Ingestion creates the pipeline with a public endpoint.</p>"
         },
+        "BufferOptions":{
+          "shape":"BufferOptions",
+          "documentation":"<p>Key-value pairs to configure persistent buffering for the pipeline.</p>"
+        },
+        "EncryptionAtRestOptions":{
+          "shape":"EncryptionAtRestOptions",
+          "documentation":"<p>Key-value pairs to configure encryption for data that is written to a persistent buffer.</p>"
+        },
         "Tags":{
           "shape":"TagList",
           "documentation":"<p>List of tags to add to the pipeline upon creation.</p>"
@@ -403,6 +423,17 @@
       "type":"structure",
       "members":{
       }
+    },
+    "EncryptionAtRestOptions":{
+      "type":"structure",
+      "required":["KmsKeyArn"],
+      "members":{
+        "KmsKeyArn":{
+          "shape":"KmsKeyArn",
+          "documentation":"<p>The ARN of the KMS key used to encrypt data-at-rest in OpenSearch Ingestion. By default, data is encrypted using an AWS owned key.</p>"
+        }
+      },
+      "documentation":"<p>Options to control how OpenSearch encrypts all data-at-rest.</p>"
     },
     "GetPipelineBlueprintRequest":{
       "type":"structure",
@@ -487,6 +518,11 @@
       "documentation":"<p>An invalid pagination token provided in the request.</p>",
       "error":{"httpStatusCode":400},
       "exception":true
+    },
+    "KmsKeyArn":{
+      "type":"string",
+      "max":2048,
+      "min":7
     },
     "LimitExceededException":{
       "type":"structure",
@@ -642,6 +678,16 @@
         "VpcEndpoints":{
           "shape":"VpcEndpointsList",
           "documentation":"<p>The VPC interface endpoints that have access to the pipeline.</p>"
+        },
+        "BufferOptions":{"shape":"BufferOptions"},
+        "EncryptionAtRestOptions":{"shape":"EncryptionAtRestOptions"},
+        "ServiceVpcEndpoints":{
+          "shape":"ServiceVpcEndpointsList",
+          "documentation":"<p>A list of VPC endpoints that OpenSearch Ingestion has created to other AWS services.</p>"
+        },
+        "Tags":{
+          "shape":"TagList",
+          "documentation":"<p>A list of tags associated with the given pipeline.</p>"
         }
       },
       "documentation":"<p>Information about an existing OpenSearch Ingestion pipeline.</p>"
@@ -747,6 +793,10 @@
         "LastUpdatedAt":{
           "shape":"Timestamp",
           "documentation":"<p>The date and time when the pipeline was last updated.</p>"
+        },
+        "Tags":{
+          "shape":"TagList",
+          "documentation":"<p>A list of tags associated with the given pipeline.</p>"
         }
       },
       "documentation":"<p>Summary information for an OpenSearch Ingestion pipeline.</p>"
@@ -757,7 +807,6 @@
     },
     "PipelineUnits":{
       "type":"integer",
-      "max":96,
       "min":1
     },
     "ResourceAlreadyExistsException":{
@@ -787,6 +836,24 @@
       "member":{"shape":"SecurityGroupId"},
       "max":12,
       "min":1
+    },
+    "ServiceVpcEndpoint":{
+      "type":"structure",
+      "members":{
+        "ServiceName":{
+          "shape":"VpcEndpointServiceName",
+          "documentation":"<p>The name of the service for which a VPC endpoint was created.</p>"
+        },
+        "VpcEndpointId":{
+          "shape":"String",
+          "documentation":"<p>The ID of the VPC endpoint that was created.</p>"
+        }
+      },
+      "documentation":"<p>A container for information about VPC endpoints that were created to other services</p>"
+    },
+    "ServiceVpcEndpointsList":{
+      "type":"list",
+      "member":{"shape":"ServiceVpcEndpoint"}
     },
     "StartPipelineRequest":{
       "type":"structure",
@@ -949,6 +1016,14 @@
         "LogPublishingOptions":{
           "shape":"LogPublishingOptions",
           "documentation":"<p>Key-value pairs to configure log publishing.</p>"
+        },
+        "BufferOptions":{
+          "shape":"BufferOptions",
+          "documentation":"<p>Key-value pairs to configure persistent buffering for the pipeline.</p>"
+        },
+        "EncryptionAtRestOptions":{
+          "shape":"EncryptionAtRestOptions",
+          "documentation":"<p>Key-value pairs to configure encryption for data that is written to a persistent buffer.</p>"
         }
       }
     },
@@ -1023,6 +1098,10 @@
         }
       },
       "documentation":"<p>An OpenSearch Ingestion-managed VPC endpoint that will access one or more pipelines.</p>"
+    },
+    "VpcEndpointServiceName":{
+      "type":"string",
+      "enum":["OPENSEARCH_SERVERLESS"]
     },
     "VpcEndpointsList":{
       "type":"list",

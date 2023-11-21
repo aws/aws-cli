@@ -426,6 +426,28 @@
       ],
       "documentation":"<p>Creates a key group that you can use with <a href=\"https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/PrivateContent.html\">CloudFront signed URLs and signed cookies</a>.</p> <p>To create a key group, you must specify at least one public key for the key group. After you create a key group, you can reference it from one or more cache behaviors. When you reference a key group in a cache behavior, CloudFront requires signed URLs or signed cookies for all requests that match the cache behavior. The URLs or cookies must be signed with a private key whose corresponding public key is in the key group. The signed URL or cookie contains information about which public key CloudFront should use to verify the signature. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/PrivateContent.html\">Serving private content</a> in the <i>Amazon CloudFront Developer Guide</i>.</p>"
     },
+    "CreateKeyValueStore":{
+      "name":"CreateKeyValueStore2020_05_31",
+      "http":{
+        "method":"POST",
+        "requestUri":"/2020-05-31/key-value-store/",
+        "responseCode":201
+      },
+      "input":{
+        "shape":"CreateKeyValueStoreRequest",
+        "locationName":"CreateKeyValueStoreRequest",
+        "xmlNamespace":{"uri":"http://cloudfront.amazonaws.com/doc/2020-05-31/"}
+      },
+      "output":{"shape":"CreateKeyValueStoreResult"},
+      "errors":[
+        {"shape":"AccessDenied"},
+        {"shape":"EntityLimitExceeded"},
+        {"shape":"EntityAlreadyExists"},
+        {"shape":"EntitySizeLimitExceeded"},
+        {"shape":"InvalidArgument"}
+      ],
+      "documentation":"<p>Specifies the Key Value Store resource to add to your account. In your account, the Key Value Store names must be unique. You can also import Key Value Store data in JSON format from an S3 bucket by providing a valid <code>ImportSource</code> that you own.</p>"
+    },
     "CreateMonitoringSubscription":{
       "name":"CreateMonitoringSubscription2020_05_31",
       "http":{
@@ -727,6 +749,24 @@
       ],
       "documentation":"<p>Deletes a key group.</p> <p>You cannot delete a key group that is referenced in a cache behavior. First update your distributions to remove the key group from all cache behaviors, then delete the key group.</p> <p>To delete a key group, you must provide the key group's identifier and version. To get these values, use <code>ListKeyGroups</code> followed by <code>GetKeyGroup</code> or <code>GetKeyGroupConfig</code>.</p>"
     },
+    "DeleteKeyValueStore":{
+      "name":"DeleteKeyValueStore2020_05_31",
+      "http":{
+        "method":"DELETE",
+        "requestUri":"/2020-05-31/key-value-store/{Name}",
+        "responseCode":204
+      },
+      "input":{"shape":"DeleteKeyValueStoreRequest"},
+      "errors":[
+        {"shape":"AccessDenied"},
+        {"shape":"InvalidIfMatchVersion"},
+        {"shape":"EntityNotFound"},
+        {"shape":"CannotDeleteEntityWhileInUse"},
+        {"shape":"PreconditionFailed"}
+      ],
+      "documentation":"<p>Specifies the Key Value Store to delete.</p>",
+      "idempotent":true
+    },
     "DeleteMonitoringSubscription":{
       "name":"DeleteMonitoringSubscription2020_05_31",
       "http":{
@@ -863,6 +903,21 @@
         {"shape":"UnsupportedOperation"}
       ],
       "documentation":"<p>Gets configuration information and metadata about a CloudFront function, but not the function's code. To get a function's code, use <code>GetFunction</code>.</p> <p>To get configuration information and metadata about a function, you must provide the function's name and stage. To get these values, you can use <code>ListFunctions</code>.</p>"
+    },
+    "DescribeKeyValueStore":{
+      "name":"DescribeKeyValueStore2020_05_31",
+      "http":{
+        "method":"GET",
+        "requestUri":"/2020-05-31/key-value-store/{Name}"
+      },
+      "input":{"shape":"DescribeKeyValueStoreRequest"},
+      "output":{"shape":"DescribeKeyValueStoreResult"},
+      "errors":[
+        {"shape":"AccessDenied"},
+        {"shape":"InvalidArgument"},
+        {"shape":"EntityNotFound"}
+      ],
+      "documentation":"<p>Specifies the Key Value Store and its configuration.</p>"
     },
     "GetCachePolicy":{
       "name":"GetCachePolicy2020_05_31",
@@ -1491,6 +1546,20 @@
       ],
       "documentation":"<p>Gets a list of key groups.</p> <p>You can optionally specify the maximum number of items to receive in the response. If the total number of items in the list exceeds the maximum that you specify, or the default maximum, the response is paginated. To get the next page of items, send a subsequent request that specifies the <code>NextMarker</code> value from the current response as the <code>Marker</code> value in the subsequent request.</p>"
     },
+    "ListKeyValueStores":{
+      "name":"ListKeyValueStores2020_05_31",
+      "http":{
+        "method":"GET",
+        "requestUri":"/2020-05-31/key-value-store"
+      },
+      "input":{"shape":"ListKeyValueStoresRequest"},
+      "output":{"shape":"ListKeyValueStoresResult"},
+      "errors":[
+        {"shape":"AccessDenied"},
+        {"shape":"InvalidArgument"}
+      ],
+      "documentation":"<p>Specifies the Key Value Stores to list.</p>"
+    },
     "ListOriginAccessControls":{
       "name":"ListOriginAccessControls2020_05_31",
       "http":{
@@ -1960,6 +2029,28 @@
         {"shape":"TooManyPublicKeysInKeyGroup"}
       ],
       "documentation":"<p>Updates a key group.</p> <p>When you update a key group, all the fields are updated with the values provided in the request. You cannot update some fields independent of others. To update a key group:</p> <ol> <li> <p>Get the current key group with <code>GetKeyGroup</code> or <code>GetKeyGroupConfig</code>.</p> </li> <li> <p>Locally modify the fields in the key group that you want to update. For example, add or remove public key IDs.</p> </li> <li> <p>Call <code>UpdateKeyGroup</code> with the entire key group object, including the fields that you modified and those that you didn't.</p> </li> </ol>"
+    },
+    "UpdateKeyValueStore":{
+      "name":"UpdateKeyValueStore2020_05_31",
+      "http":{
+        "method":"PUT",
+        "requestUri":"/2020-05-31/key-value-store/{Name}"
+      },
+      "input":{
+        "shape":"UpdateKeyValueStoreRequest",
+        "locationName":"UpdateKeyValueStoreRequest",
+        "xmlNamespace":{"uri":"http://cloudfront.amazonaws.com/doc/2020-05-31/"}
+      },
+      "output":{"shape":"UpdateKeyValueStoreResult"},
+      "errors":[
+        {"shape":"AccessDenied"},
+        {"shape":"InvalidArgument"},
+        {"shape":"EntityNotFound"},
+        {"shape":"InvalidIfMatchVersion"},
+        {"shape":"PreconditionFailed"}
+      ],
+      "documentation":"<p>Specifies the Key Value Store to update.</p>",
+      "idempotent":true
     },
     "UpdateOriginAccessControl":{
       "name":"UpdateOriginAccessControl2020_05_31",
@@ -2613,6 +2704,15 @@
       },
       "documentation":"<p>You can't change the value of a public key.</p>",
       "error":{"httpStatusCode":400},
+      "exception":true
+    },
+    "CannotDeleteEntityWhileInUse":{
+      "type":"structure",
+      "members":{
+        "Message":{"shape":"string"}
+      },
+      "documentation":"<p>The Key Value Store entity cannot be deleted while it is in use.</p>",
+      "error":{"httpStatusCode":409},
       "exception":true
     },
     "CertificateSource":{
@@ -3459,6 +3559,46 @@
       },
       "payload":"KeyGroup"
     },
+    "CreateKeyValueStoreRequest":{
+      "type":"structure",
+      "required":["Name"],
+      "members":{
+        "Name":{
+          "shape":"KeyValueStoreName",
+          "documentation":"<p>The name of the Key Value Store. The maximum length of the name is 32 characters.</p>"
+        },
+        "Comment":{
+          "shape":"KeyValueStoreComment",
+          "documentation":"<p>The comment of the Key Value Store.</p>"
+        },
+        "ImportSource":{
+          "shape":"ImportSource",
+          "documentation":"<p>The S3 bucket that provides the source for the import. The source must be in a valid JSON format.</p>"
+        }
+      }
+    },
+    "CreateKeyValueStoreResult":{
+      "type":"structure",
+      "members":{
+        "KeyValueStore":{
+          "shape":"KeyValueStore",
+          "documentation":"<p>The resulting Key Value Store.</p>"
+        },
+        "ETag":{
+          "shape":"string",
+          "documentation":"<p>The ETag in the resulting Key Value Store.</p>",
+          "location":"header",
+          "locationName":"ETag"
+        },
+        "Location":{
+          "shape":"string",
+          "documentation":"<p>The location of the resulting Key Value Store.</p>",
+          "location":"header",
+          "locationName":"Location"
+        }
+      },
+      "payload":"KeyValueStore"
+    },
     "CreateMonitoringSubscriptionRequest":{
       "type":"structure",
       "required":[
@@ -4068,6 +4208,27 @@
         }
       }
     },
+    "DeleteKeyValueStoreRequest":{
+      "type":"structure",
+      "required":[
+        "IfMatch",
+        "Name"
+      ],
+      "members":{
+        "Name":{
+          "shape":"KeyValueStoreName",
+          "documentation":"<p>The name of the Key Value Store.</p>",
+          "location":"uri",
+          "locationName":"Name"
+        },
+        "IfMatch":{
+          "shape":"string",
+          "documentation":"<p>The Key Value Store to delete, if a match occurs.</p>",
+          "location":"header",
+          "locationName":"If-Match"
+        }
+      }
+    },
     "DeleteMonitoringSubscriptionRequest":{
       "type":"structure",
       "required":["DistributionId"],
@@ -4222,6 +4383,34 @@
         }
       },
       "payload":"FunctionSummary"
+    },
+    "DescribeKeyValueStoreRequest":{
+      "type":"structure",
+      "required":["Name"],
+      "members":{
+        "Name":{
+          "shape":"KeyValueStoreName",
+          "documentation":"<p>The name of the Key Value Store.</p>",
+          "location":"uri",
+          "locationName":"Name"
+        }
+      }
+    },
+    "DescribeKeyValueStoreResult":{
+      "type":"structure",
+      "members":{
+        "KeyValueStore":{
+          "shape":"KeyValueStore",
+          "documentation":"<p>The resulting Key Value Store.</p>"
+        },
+        "ETag":{
+          "shape":"string",
+          "documentation":"<p>The ETag of the resulting Key Value Store.</p>",
+          "location":"header",
+          "locationName":"ETag"
+        }
+      },
+      "payload":"KeyValueStore"
     },
     "Distribution":{
       "type":"structure",
@@ -4664,6 +4853,42 @@
       "type":"list",
       "member":{"shape":"EndPoint"}
     },
+    "EntityAlreadyExists":{
+      "type":"structure",
+      "members":{
+        "Message":{"shape":"string"}
+      },
+      "documentation":"<p>The Key Value Store entity already exists. You must provide a unique Key Value Store entity.</p>",
+      "error":{"httpStatusCode":409},
+      "exception":true
+    },
+    "EntityLimitExceeded":{
+      "type":"structure",
+      "members":{
+        "Message":{"shape":"string"}
+      },
+      "documentation":"<p>The Key Value Store entity limit has been exceeded.</p>",
+      "error":{"httpStatusCode":400},
+      "exception":true
+    },
+    "EntityNotFound":{
+      "type":"structure",
+      "members":{
+        "Message":{"shape":"string"}
+      },
+      "documentation":"<p>The Key Value Store entity was not found.</p>",
+      "error":{"httpStatusCode":404},
+      "exception":true
+    },
+    "EntitySizeLimitExceeded":{
+      "type":"structure",
+      "members":{
+        "Message":{"shape":"string"}
+      },
+      "documentation":"<p>The Key Value Store entity size limit was exceeded.</p>",
+      "error":{"httpStatusCode":413},
+      "exception":true
+    },
     "EventType":{
       "type":"string",
       "enum":[
@@ -4761,7 +4986,7 @@
           "documentation":"<p>An array of field-level encryption items.</p>"
         }
       },
-      "documentation":"<p>List of field-level encrpytion configurations.</p>"
+      "documentation":"<p>List of field-level encryption configurations.</p>"
     },
     "FieldLevelEncryptionProfile":{
       "type":"structure",
@@ -4881,7 +5106,7 @@
         },
         "LastModifiedTime":{
           "shape":"timestamp",
-          "documentation":"<p>The time when the the field-level encryption profile summary was last updated.</p>"
+          "documentation":"<p>The time when the field-level encryption profile summary was last updated.</p>"
         },
         "Name":{
           "shape":"string",
@@ -5081,7 +5306,11 @@
         },
         "Runtime":{
           "shape":"FunctionRuntime",
-          "documentation":"<p>The function's runtime environment verion.</p>"
+          "documentation":"<p>The function's runtime environment version.</p>"
+        },
+        "KeyValueStoreAssociations":{
+          "shape":"KeyValueStoreAssociations",
+          "documentation":"<p>The configuration for the Key Value Store associations.</p>"
         }
       },
       "documentation":"<p>Contains configuration information about a CloudFront function.</p>"
@@ -6123,6 +6352,28 @@
       "error":{"httpStatusCode":400},
       "exception":true
     },
+    "ImportSource":{
+      "type":"structure",
+      "required":[
+        "SourceType",
+        "SourceARN"
+      ],
+      "members":{
+        "SourceType":{
+          "shape":"ImportSourceType",
+          "documentation":"<p>The source type of the import source for the Key Value Store.</p>"
+        },
+        "SourceARN":{
+          "shape":"string",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the import source for the Key Value Store.</p>"
+        }
+      },
+      "documentation":"<p>The import source for the Key Value Store.</p>"
+    },
+    "ImportSourceType":{
+      "type":"string",
+      "enum":["S3"]
+    },
     "InconsistentQuantities":{
       "type":"structure",
       "members":{
@@ -6623,6 +6874,124 @@
         }
       },
       "documentation":"<p>A list of CloudFront key pair identifiers.</p>"
+    },
+    "KeyValueStore":{
+      "type":"structure",
+      "required":[
+        "Name",
+        "Id",
+        "Comment",
+        "ARN",
+        "LastModifiedTime"
+      ],
+      "members":{
+        "Name":{
+          "shape":"string",
+          "documentation":"<p>The name of the Key Value Store.</p>"
+        },
+        "Id":{
+          "shape":"string",
+          "documentation":"<p>The unique Id for the Key Value Store.</p>"
+        },
+        "Comment":{
+          "shape":"string",
+          "documentation":"<p>A comment for the Key Value Store.</p>"
+        },
+        "ARN":{
+          "shape":"string",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the Key Value Store.</p>"
+        },
+        "Status":{
+          "shape":"string",
+          "documentation":"<p>The status of the Key Value Store.</p>"
+        },
+        "LastModifiedTime":{
+          "shape":"timestamp",
+          "documentation":"<p>The last-modified time of the Key Value Store.</p>"
+        }
+      },
+      "documentation":"<p>The Key Value Store. Use this to separate data from function code, allowing you to update data without having to publish a new version of a function. The Key Value Store holds keys and their corresponding values.</p>"
+    },
+    "KeyValueStoreARN":{
+      "type":"string",
+      "max":85,
+      "pattern":"arn:aws:cloudfront::[0-9]{12}:key-value-store\\/[0-9a-fA-F-]{36}$"
+    },
+    "KeyValueStoreAssociation":{
+      "type":"structure",
+      "required":["KeyValueStoreARN"],
+      "members":{
+        "KeyValueStoreARN":{
+          "shape":"KeyValueStoreARN",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the Key Value Store association.</p>"
+        }
+      },
+      "documentation":"<p>The Key Value Store association.</p>"
+    },
+    "KeyValueStoreAssociationList":{
+      "type":"list",
+      "member":{
+        "shape":"KeyValueStoreAssociation",
+        "locationName":"KeyValueStoreAssociation"
+      }
+    },
+    "KeyValueStoreAssociations":{
+      "type":"structure",
+      "required":["Quantity"],
+      "members":{
+        "Quantity":{
+          "shape":"integer",
+          "documentation":"<p>The quantity of Key Value Store associations.</p>"
+        },
+        "Items":{
+          "shape":"KeyValueStoreAssociationList",
+          "documentation":"<p>The items of the Key Value Store association.</p>"
+        }
+      },
+      "documentation":"<p>The Key Value Store associations.</p>"
+    },
+    "KeyValueStoreComment":{
+      "type":"string",
+      "max":128
+    },
+    "KeyValueStoreList":{
+      "type":"structure",
+      "required":[
+        "MaxItems",
+        "Quantity"
+      ],
+      "members":{
+        "NextMarker":{
+          "shape":"string",
+          "documentation":"<p>The next marker associated with the Key Value Store list.</p>"
+        },
+        "MaxItems":{
+          "shape":"integer",
+          "documentation":"<p>The maximum number of items in the Key Value Store list.</p>"
+        },
+        "Quantity":{
+          "shape":"integer",
+          "documentation":"<p>The quantity of the Key Value Store list.</p>"
+        },
+        "Items":{
+          "shape":"KeyValueStoreSummaryList",
+          "documentation":"<p>The items of the Key Value Store list.</p>"
+        }
+      },
+      "documentation":"<p>The Key Value Store list.</p>"
+    },
+    "KeyValueStoreName":{
+      "type":"string",
+      "max":64,
+      "min":1,
+      "pattern":"^[a-zA-Z0-9-_]{1,64}$"
+    },
+    "KeyValueStoreSummaryList":{
+      "type":"list",
+      "member":{
+        "shape":"KeyValueStore",
+        "locationName":"KeyValueStore"
+      }
     },
     "KinesisStreamConfig":{
       "type":"structure",
@@ -7192,6 +7561,39 @@
       },
       "payload":"KeyGroupList"
     },
+    "ListKeyValueStoresRequest":{
+      "type":"structure",
+      "members":{
+        "Marker":{
+          "shape":"string",
+          "documentation":"<p>The marker associated with the Key Value Stores list.</p>",
+          "location":"querystring",
+          "locationName":"Marker"
+        },
+        "MaxItems":{
+          "shape":"string",
+          "documentation":"<p>The maximum number of items in the Key Value Stores list.</p>",
+          "location":"querystring",
+          "locationName":"MaxItems"
+        },
+        "Status":{
+          "shape":"string",
+          "documentation":"<p>The status of the request for the Key Value Stores list.</p>",
+          "location":"querystring",
+          "locationName":"Status"
+        }
+      }
+    },
+    "ListKeyValueStoresResult":{
+      "type":"structure",
+      "members":{
+        "KeyValueStoreList":{
+          "shape":"KeyValueStoreList",
+          "documentation":"<p>The resulting Key Value Stores list.</p>"
+        }
+      },
+      "payload":"KeyValueStoreList"
+    },
     "ListOriginAccessControlsRequest":{
       "type":"structure",
       "members":{
@@ -7688,7 +8090,7 @@
           "documentation":"<p>The unique identifier of an origin access control for this origin.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/private-content-restricting-access-to-s3.html\">Restricting access to an Amazon S3 origin</a> in the <i>Amazon CloudFront Developer Guide</i>.</p>"
         }
       },
-      "documentation":"<p>An origin.</p> <p>An origin is the location where content is stored, and from which CloudFront gets content to serve to viewers. To specify an origin:</p> <ul> <li> <p>Use <code>S3OriginConfig</code> to specify an Amazon S3 bucket that is not configured with static website hosting.</p> </li> <li> <p>Use <code>CustomOriginConfig</code> to specify all other kinds of origins, including:</p> <ul> <li> <p>An Amazon S3 bucket that is configured with static website hosting</p> </li> <li> <p>An Elastic Load Balancing load balancer</p> </li> <li> <p>An AWS Elemental MediaPackage endpoint</p> </li> <li> <p>An AWS Elemental MediaStore container</p> </li> <li> <p>Any other HTTP server, running on an Amazon EC2 instance or any other kind of host</p> </li> </ul> </li> </ul> <p>For the current maximum number of origins that you can specify per distribution, see <a href=\"https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/cloudfront-limits.html#limits-web-distributions\">General Quotas on Web Distributions</a> in the <i>Amazon CloudFront Developer Guide</i> (quotas were formerly referred to as limits).</p>"
+      "documentation":"<p>An origin.</p> <p>An origin is the location where content is stored, and from which CloudFront gets content to serve to viewers. To specify an origin:</p> <ul> <li> <p>Use <code>S3OriginConfig</code> to specify an Amazon S3 bucket that is not configured with static website hosting.</p> </li> <li> <p>Use <code>CustomOriginConfig</code> to specify all other kinds of origins, including:</p> <ul> <li> <p>An Amazon S3 bucket that is configured with static website hosting</p> </li> <li> <p>An Elastic Load Balancing load balancer</p> </li> <li> <p>An Elemental MediaPackage endpoint</p> </li> <li> <p>An Elemental MediaStore container</p> </li> <li> <p>Any other HTTP server, running on an Amazon EC2 instance or any other kind of host</p> </li> </ul> </li> </ul> <p>For the current maximum number of origins that you can specify per distribution, see <a href=\"https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/cloudfront-limits.html#limits-web-distributions\">General Quotas on Web Distributions</a> in the <i>Amazon CloudFront Developer Guide</i> (quotas were formerly referred to as limits).</p>"
     },
     "OriginAccessControl":{
       "type":"structure",
@@ -7901,7 +8303,7 @@
           "documentation":"<p>A complex type that contains information about the origins in an origin group.</p>"
         }
       },
-      "documentation":"<p>An origin group includes two origins (a primary origin and a second origin to failover to) and a failover criteria that you specify. You create an origin group to support origin failover in CloudFront. When you create or update a distribution, you can specifiy the origin group instead of a single origin, and CloudFront will failover from the primary origin to the second origin under the failover conditions that you've chosen.</p>"
+      "documentation":"<p>An origin group includes two origins (a primary origin and a second origin to failover to) and a failover criteria that you specify. You create an origin group to support origin failover in CloudFront. When you create or update a distribution, you can specify the origin group instead of a single origin, and CloudFront will failover from the primary origin to the second origin under the failover conditions that you've chosen.</p>"
     },
     "OriginGroupFailoverCriteria":{
       "type":"structure",
@@ -10794,6 +11196,48 @@
         }
       },
       "payload":"KeyGroup"
+    },
+    "UpdateKeyValueStoreRequest":{
+      "type":"structure",
+      "required":[
+        "Name",
+        "Comment",
+        "IfMatch"
+      ],
+      "members":{
+        "Name":{
+          "shape":"KeyValueStoreName",
+          "documentation":"<p>The name of the Key Value Store to update.</p>",
+          "location":"uri",
+          "locationName":"Name"
+        },
+        "Comment":{
+          "shape":"KeyValueStoreComment",
+          "documentation":"<p>The comment of the Key Value Store to update.</p>"
+        },
+        "IfMatch":{
+          "shape":"string",
+          "documentation":"<p>The Key Value Store to update, if a match occurs.</p>",
+          "location":"header",
+          "locationName":"If-Match"
+        }
+      }
+    },
+    "UpdateKeyValueStoreResult":{
+      "type":"structure",
+      "members":{
+        "KeyValueStore":{
+          "shape":"KeyValueStore",
+          "documentation":"<p>The resulting Key Value Store to update.</p>"
+        },
+        "ETag":{
+          "shape":"string",
+          "documentation":"<p>The ETag of the resulting Key Value Store.</p>",
+          "location":"header",
+          "locationName":"ETag"
+        }
+      },
+      "payload":"KeyValueStore"
     },
     "UpdateOriginAccessControlRequest":{
       "type":"structure",

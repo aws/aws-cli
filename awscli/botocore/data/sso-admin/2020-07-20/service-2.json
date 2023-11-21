@@ -1761,10 +1761,10 @@
       "members":{
         "RedirectUris":{
           "shape":"RedirectUris",
-          "documentation":"<p>~~~[ TODO: ADD DESCRIPTION HERE ]~~~</p>"
+          "documentation":"<p>A list of URIs that are valid locations to redirect a user's browser after the user is authorized.</p>"
         }
       },
-      "documentation":"<p>~~~[ TODO: ADD DESCRIPTION HERE ]~~~</p>"
+      "documentation":"<p>A structure that defines configuration settings for an application that supports the OAuth 2.0 Authorization Code Grant.</p>"
     },
     "AuthorizedTokenIssuer":{
       "type":"structure",
@@ -2912,14 +2912,22 @@
       "members":{
         "AuthorizationCode":{
           "shape":"AuthorizationCodeGrant",
-          "documentation":"<p>~~~[ TODO: ADD DESCRIPTION HERE ]~~~</p>"
+          "documentation":"<p>Configuration options for the <code>authorization_code</code> grant type.</p>"
         },
         "JwtBearer":{
           "shape":"JwtBearerGrant",
-          "documentation":"<p>~~~[ TODO: ADD DESCRIPTION HERE ]~~~</p>"
+          "documentation":"<p>Configuration options for the <code>urn:ietf:params:oauth:grant-type:jwt-bearer</code> grant type.</p>"
+        },
+        "RefreshToken":{
+          "shape":"RefreshTokenGrant",
+          "documentation":"<p>Configuration options for the <code>refresh_token</code> grant type.</p>"
+        },
+        "TokenExchange":{
+          "shape":"TokenExchangeGrant",
+          "documentation":"<p>Configuration options for the <code>urn:ietf:params:oauth:grant-type:token-exchange</code> grant type.</p>"
         }
       },
-      "documentation":"<p>~~~[ TODO: ADD DESCRIPTION HERE ]~~~</p>",
+      "documentation":"<p>The Grant union represents the set of possible configuration options for the selected grant type. Exactly one member of the union must be specified, and must match the grant type selected.</p>",
       "union":true
     },
     "GrantItem":{
@@ -2931,14 +2939,14 @@
       "members":{
         "Grant":{
           "shape":"Grant",
-          "documentation":"<p>~~~[ TODO: ADD DESCRIPTION HERE ]~~~</p>"
+          "documentation":"<p>The configuration structure for the selected grant.</p>"
         },
         "GrantType":{
           "shape":"GrantType",
-          "documentation":"<p>~~~[ TODO: ADD DESCRIPTION HERE ]~~~</p>"
+          "documentation":"<p>The type of the selected grant.</p>"
         }
       },
-      "documentation":"<p>~~~[ TODO: ADD DESCRIPTION HERE ]~~~</p>"
+      "documentation":"<p>A structure that defines a single grant and its configuration.</p>"
     },
     "GrantType":{
       "type":"string",
@@ -3071,10 +3079,10 @@
       "members":{
         "AuthorizedTokenIssuers":{
           "shape":"AuthorizedTokenIssuers",
-          "documentation":"<p>~~~[ TODO: ADD DESCRIPTION HERE ]~~~</p>"
+          "documentation":"<p>A list of allowed token issuers trusted by the Identity Center instances for this application.</p>"
         }
       },
-      "documentation":"<p>~~~[ TODO: ADD DESCRIPTION HERE ]~~~</p>"
+      "documentation":"<p>A structure that defines configuration settings for an application that supports the JWT Bearer Token Authorization Grant.</p>"
     },
     "ListAccountAssignmentCreationStatusRequest":{
       "type":"structure",
@@ -4258,6 +4266,12 @@
       "max":10,
       "min":1
     },
+    "RefreshTokenGrant":{
+      "type":"structure",
+      "members":{
+      },
+      "documentation":"<p>A structure that defines configuration settings for an application that supports the OAuth 2.0 Refresh Token Grant.</p>"
+    },
     "RelayState":{
       "type":"string",
       "max":240,
@@ -4483,6 +4497,12 @@
       "min":0,
       "pattern":"^[-a-zA-Z0-9+=/_]*$"
     },
+    "TokenExchangeGrant":{
+      "type":"structure",
+      "members":{
+      },
+      "documentation":"<p>A structure that defines configuration settings for an application that supports the OAuth 2.0 Token Exchange Grant.</p>"
+    },
     "TokenIssuerAudience":{
       "type":"string",
       "max":512,
@@ -4598,7 +4618,7 @@
       "members":{
         "SignInOptions":{"shape":"SignInOptions"}
       },
-      "documentation":"<p/>"
+      "documentation":"<p>A structure that describes the options for the access portal associated with an application that can be updated.</p>"
     },
     "UpdateApplicationRequest":{
       "type":"structure",

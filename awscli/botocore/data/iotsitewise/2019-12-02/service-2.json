@@ -214,7 +214,28 @@
         {"shape":"LimitExceededException"},
         {"shape":"ConflictingOperationException"}
       ],
-      "documentation":"<p>Creates an asset model from specified property and hierarchy definitions. You create assets from asset models. With asset models, you can easily create assets of the same type that have standardized definitions. Each asset created from a model inherits the asset model's property and hierarchy definitions. For more information, see <a href=\"https://docs.aws.amazon.com/iot-sitewise/latest/userguide/define-models.html\">Defining asset models</a> in the <i>IoT SiteWise User Guide</i>.</p>",
+      "documentation":"<p>Creates an asset model from specified property and hierarchy definitions. You create assets from asset models. With asset models, you can easily create assets of the same type that have standardized definitions. Each asset created from a model inherits the asset model's property and hierarchy definitions. For more information, see <a href=\"https://docs.aws.amazon.com/iot-sitewise/latest/userguide/define-models.html\">Defining asset models</a> in the <i>IoT SiteWise User Guide</i>.</p> <p>You can create two types of asset models, <code>ASSET_MODEL</code> or <code>COMPONENT_MODEL</code>.</p> <ul> <li> <p> <b>ASSET_MODEL</b> – (default) An asset model that you can use to create assets. Can't be included as a component in another asset model.</p> </li> <li> <p> <b>COMPONENT_MODEL</b> – A reusable component that you can include in the composite models of other asset models. You can't create assets directly from this type of asset model. </p> </li> </ul>",
+      "endpoint":{"hostPrefix":"api."}
+    },
+    "CreateAssetModelCompositeModel":{
+      "name":"CreateAssetModelCompositeModel",
+      "http":{
+        "method":"POST",
+        "requestUri":"/asset-models/{assetModelId}/composite-models",
+        "responseCode":202
+      },
+      "input":{"shape":"CreateAssetModelCompositeModelRequest"},
+      "output":{"shape":"CreateAssetModelCompositeModelResponse"},
+      "errors":[
+        {"shape":"ConflictingOperationException"},
+        {"shape":"InternalFailureException"},
+        {"shape":"InvalidRequestException"},
+        {"shape":"ResourceAlreadyExistsException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"LimitExceededException"}
+      ],
+      "documentation":"<p>Creates a custom composite model from specified property and hierarchy definitions. There are two types of custom composite models, <code>inline</code> and <code>component-model-based</code>. </p> <p>Use component-model-based custom composite models to define standard, reusable components. A component-model-based custom composite model consists of a name, a description, and the ID of the component model it references. A component-model-based custom composite model has no properties of its own; its referenced component model provides its associated properties to any created assets. For more information, see <a href=\"https://docs.aws.amazon.com/iot-sitewise/latest/userguide/custom-composite-models.html\">Custom composite models (Components)</a> in the <i>IoT SiteWise User Guide</i>.</p> <p>Use inline custom composite models to organize the properties of an asset model. The properties of inline custom composite models are local to the asset model where they are included and can't be used to create multiple assets.</p> <p>To create a component-model-based model, specify the <code>composedAssetModelId</code> of an existing asset model with <code>assetModelType</code> of <code>COMPONENT_MODEL</code>.</p> <p>To create an inline model, specify the <code>assetModelCompositeModelProperties</code> and don't include an <code>composedAssetModelId</code>.</p>",
       "endpoint":{"hostPrefix":"api."}
     },
     "CreateBulkImportJob":{
@@ -235,7 +256,7 @@
         {"shape":"LimitExceededException"},
         {"shape":"ConflictingOperationException"}
       ],
-      "documentation":"<p>Defines a job to ingest data to IoT SiteWise from Amazon S3. For more information, see <a href=\"https://docs.aws.amazon.com/iot-sitewise/latest/userguide/CreateBulkImportJob.html\">Create a bulk import job (CLI)</a> in the <i>Amazon Simple Storage Service User Guide</i>.</p> <important> <p>You must enable IoT SiteWise to export data to Amazon S3 before you create a bulk import job. For more information about how to configure storage settings, see <a href=\"https://docs.aws.amazon.com/iot-sitewise/latest/APIReference/API_PutStorageConfiguration.html\">PutStorageConfiguration</a>.</p> </important>",
+      "documentation":"<p>Defines a job to ingest data to IoT SiteWise from Amazon S3. For more information, see <a href=\"https://docs.aws.amazon.com/iot-sitewise/latest/userguide/CreateBulkImportJob.html\">Create a bulk import job (CLI)</a> in the <i>Amazon Simple Storage Service User Guide</i>.</p> <important> <p>Before you create a bulk import job, you must enable IoT SiteWise warm tier or IoT SiteWise cold tier. For more information about how to configure storage settings, see <a href=\"https://docs.aws.amazon.com/iot-sitewise/latest/APIReference/API_PutStorageConfiguration.html\">PutStorageConfiguration</a>.</p> <p>Bulk import is designed to store historical data to IoT SiteWise. It does not trigger computations or notifications on IoT SiteWise warm or cold tier storage.</p> </important>",
       "endpoint":{"hostPrefix":"data."}
     },
     "CreateDashboard":{
@@ -348,7 +369,7 @@
         {"shape":"ThrottlingException"},
         {"shape":"ConflictingOperationException"}
       ],
-      "documentation":"<p>Deletes an asset. This action can't be undone. For more information, see <a href=\"https://docs.aws.amazon.com/iot-sitewise/latest/userguide/delete-assets-and-models.html\">Deleting assets and models</a> in the <i>IoT SiteWise User Guide</i>. </p> <note> <p>You can't delete an asset that's associated to another asset. For more information, see <a href=\"https://docs.aws.amazon.com/iot-sitewise/latest/APIReference/API_DisassociateAssets.html\">DisassociateAssets</a>.</p> </note>",
+      "documentation":"<p>Deletes an asset. This action can't be undone. For more information, see <a href=\"https://docs.aws.amazon.com/iot-sitewise/latest/userguide/delete-assets-and-models.html\">Deleting assets and models</a> in the <i>IoT SiteWise User Guide</i>.</p> <note> <p>You can't delete an asset that's associated to another asset. For more information, see <a href=\"https://docs.aws.amazon.com/iot-sitewise/latest/APIReference/API_DisassociateAssets.html\">DisassociateAssets</a>.</p> </note>",
       "endpoint":{"hostPrefix":"api."}
     },
     "DeleteAssetModel":{
@@ -368,6 +389,25 @@
         {"shape":"ConflictingOperationException"}
       ],
       "documentation":"<p>Deletes an asset model. This action can't be undone. You must delete all assets created from an asset model before you can delete the model. Also, you can't delete an asset model if a parent asset model exists that contains a property formula expression that depends on the asset model that you want to delete. For more information, see <a href=\"https://docs.aws.amazon.com/iot-sitewise/latest/userguide/delete-assets-and-models.html\">Deleting assets and models</a> in the <i>IoT SiteWise User Guide</i>.</p>",
+      "endpoint":{"hostPrefix":"api."}
+    },
+    "DeleteAssetModelCompositeModel":{
+      "name":"DeleteAssetModelCompositeModel",
+      "http":{
+        "method":"DELETE",
+        "requestUri":"/asset-models/{assetModelId}/composite-models/{assetModelCompositeModelId}",
+        "responseCode":202
+      },
+      "input":{"shape":"DeleteAssetModelCompositeModelRequest"},
+      "output":{"shape":"DeleteAssetModelCompositeModelResponse"},
+      "errors":[
+        {"shape":"InvalidRequestException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalFailureException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ConflictingOperationException"}
+      ],
+      "documentation":"<p>Deletes a composite model. This action can't be undone. You must delete all assets created from a composite model before you can delete the model. Also, you can't delete a composite model if a parent asset model exists that contains a property formula expression that depends on the asset model that you want to delete. For more information, see <a href=\"https://docs.aws.amazon.com/iot-sitewise/latest/userguide/delete-assets-and-models.html\">Deleting assets and models</a> in the <i>IoT SiteWise User Guide</i>.</p>",
       "endpoint":{"hostPrefix":"api."}
     },
     "DeleteDashboard":{
@@ -476,6 +516,23 @@
       "documentation":"<p>Describes an access policy, which specifies an identity's access to an IoT SiteWise Monitor portal or project.</p>",
       "endpoint":{"hostPrefix":"monitor."}
     },
+    "DescribeAction":{
+      "name":"DescribeAction",
+      "http":{
+        "method":"GET",
+        "requestUri":"/actions/{actionId}"
+      },
+      "input":{"shape":"DescribeActionRequest"},
+      "output":{"shape":"DescribeActionResponse"},
+      "errors":[
+        {"shape":"InvalidRequestException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalFailureException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Retrieves information about an action.</p>",
+      "endpoint":{"hostPrefix":"api."}
+    },
     "DescribeAsset":{
       "name":"DescribeAsset",
       "http":{
@@ -493,6 +550,23 @@
       "documentation":"<p>Retrieves information about an asset.</p>",
       "endpoint":{"hostPrefix":"api."}
     },
+    "DescribeAssetCompositeModel":{
+      "name":"DescribeAssetCompositeModel",
+      "http":{
+        "method":"GET",
+        "requestUri":"/assets/{assetId}/composite-models/{assetCompositeModelId}"
+      },
+      "input":{"shape":"DescribeAssetCompositeModelRequest"},
+      "output":{"shape":"DescribeAssetCompositeModelResponse"},
+      "errors":[
+        {"shape":"InvalidRequestException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalFailureException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Retrieves information about an asset composite model (also known as an asset component). An <code>AssetCompositeModel</code> is an instance of an <code>AssetModelCompositeModel</code>. If you want to see information about the model this is based on, call <a href=\"https://docs.aws.amazon.com/iot-sitewise/latest/APIReference/API_DescribeAssetModelCompositeModel.html\">DescribeAssetModelCompositeModel</a>.</p>",
+      "endpoint":{"hostPrefix":"api."}
+    },
     "DescribeAssetModel":{
       "name":"DescribeAssetModel",
       "http":{
@@ -508,6 +582,23 @@
         {"shape":"ThrottlingException"}
       ],
       "documentation":"<p>Retrieves information about an asset model.</p>",
+      "endpoint":{"hostPrefix":"api."}
+    },
+    "DescribeAssetModelCompositeModel":{
+      "name":"DescribeAssetModelCompositeModel",
+      "http":{
+        "method":"GET",
+        "requestUri":"/asset-models/{assetModelId}/composite-models/{assetModelCompositeModelId}"
+      },
+      "input":{"shape":"DescribeAssetModelCompositeModelRequest"},
+      "output":{"shape":"DescribeAssetModelCompositeModelResponse"},
+      "errors":[
+        {"shape":"InvalidRequestException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalFailureException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Retrieves information about an asset model composite model (also known as an asset model component). For more information, see <a href=\"https://docs.aws.amazon.com/iot-sitewise/latest/userguide/custom-composite-models.html\">Custom composite models (Components)</a> in the <i>IoT SiteWise User Guide</i>.</p>",
       "endpoint":{"hostPrefix":"api."}
     },
     "DescribeAssetProperty":{
@@ -735,6 +826,46 @@
       "documentation":"<p>Disassociates a time series (data stream) from an asset property.</p>",
       "endpoint":{"hostPrefix":"api."}
     },
+    "ExecuteAction":{
+      "name":"ExecuteAction",
+      "http":{
+        "method":"POST",
+        "requestUri":"/actions",
+        "responseCode":202
+      },
+      "input":{"shape":"ExecuteActionRequest"},
+      "output":{"shape":"ExecuteActionResponse"},
+      "errors":[
+        {"shape":"InvalidRequestException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalFailureException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"LimitExceededException"},
+        {"shape":"ConflictingOperationException"}
+      ],
+      "documentation":"<p>Executes an action on a target resource.</p>",
+      "endpoint":{"hostPrefix":"api."}
+    },
+    "ExecuteQuery":{
+      "name":"ExecuteQuery",
+      "http":{
+        "method":"POST",
+        "requestUri":"/queries/execution"
+      },
+      "input":{"shape":"ExecuteQueryRequest"},
+      "output":{"shape":"ExecuteQueryResponse"},
+      "errors":[
+        {"shape":"InvalidRequestException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"},
+        {"shape":"QueryTimeoutException"},
+        {"shape":"InternalFailureException"},
+        {"shape":"ServiceUnavailableException"}
+      ],
+      "documentation":"<p>Run SQL queries to retrieve metadata and time-series data from asset models, assets, measurements, metrics, transforms, and aggregates.</p>",
+      "endpoint":{"hostPrefix":"data."}
+    },
     "GetAssetPropertyAggregates":{
       "name":"GetAssetPropertyAggregates",
       "http":{
@@ -823,6 +954,40 @@
       ],
       "documentation":"<p>Retrieves a paginated list of access policies for an identity (an IAM Identity Center user, an IAM Identity Center group, or an IAM user) or an IoT SiteWise Monitor resource (a portal or project).</p>",
       "endpoint":{"hostPrefix":"monitor."}
+    },
+    "ListActions":{
+      "name":"ListActions",
+      "http":{
+        "method":"GET",
+        "requestUri":"/actions"
+      },
+      "input":{"shape":"ListActionsRequest"},
+      "output":{"shape":"ListActionsResponse"},
+      "errors":[
+        {"shape":"InvalidRequestException"},
+        {"shape":"InternalFailureException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Retrieves a paginated list of actions for a specific target resource.</p>",
+      "endpoint":{"hostPrefix":"api."}
+    },
+    "ListAssetModelCompositeModels":{
+      "name":"ListAssetModelCompositeModels",
+      "http":{
+        "method":"GET",
+        "requestUri":"/asset-models/{assetModelId}/composite-models"
+      },
+      "input":{"shape":"ListAssetModelCompositeModelsRequest"},
+      "output":{"shape":"ListAssetModelCompositeModelsResponse"},
+      "errors":[
+        {"shape":"InvalidRequestException"},
+        {"shape":"InternalFailureException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p>Retrieves a paginated list of composite models associated with the asset model</p>",
+      "endpoint":{"hostPrefix":"api."}
     },
     "ListAssetModelProperties":{
       "name":"ListAssetModelProperties",
@@ -941,6 +1106,23 @@
       ],
       "documentation":"<p>Retrieves a paginated list of bulk import job requests. For more information, see <a href=\"https://docs.aws.amazon.com/iot-sitewise/latest/userguide/ListBulkImportJobs.html\">List bulk import jobs (CLI)</a> in the <i>IoT SiteWise User Guide</i>.</p>",
       "endpoint":{"hostPrefix":"data."}
+    },
+    "ListCompositionRelationships":{
+      "name":"ListCompositionRelationships",
+      "http":{
+        "method":"GET",
+        "requestUri":"/asset-models/{assetModelId}/composition-relationships"
+      },
+      "input":{"shape":"ListCompositionRelationshipsRequest"},
+      "output":{"shape":"ListCompositionRelationshipsResponse"},
+      "errors":[
+        {"shape":"InvalidRequestException"},
+        {"shape":"InternalFailureException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Retrieves a paginated list of composition relationships for an asset model of type <code>COMPONENT_MODEL</code>.</p>",
+      "endpoint":{"hostPrefix":"api."}
     },
     "ListDashboards":{
       "name":"ListDashboards",
@@ -1219,6 +1401,27 @@
       "documentation":"<p>Updates an asset model and all of the assets that were created from the model. Each asset created from the model inherits the updated asset model's property and hierarchy definitions. For more information, see <a href=\"https://docs.aws.amazon.com/iot-sitewise/latest/userguide/update-assets-and-models.html\">Updating assets and models</a> in the <i>IoT SiteWise User Guide</i>.</p> <important> <p>This operation overwrites the existing model with the provided model. To avoid deleting your asset model's properties or hierarchies, you must include their IDs and definitions in the updated asset model payload. For more information, see <a href=\"https://docs.aws.amazon.com/iot-sitewise/latest/APIReference/API_DescribeAssetModel.html\">DescribeAssetModel</a>.</p> <p>If you remove a property from an asset model, IoT SiteWise deletes all previous data for that property. If you remove a hierarchy definition from an asset model, IoT SiteWise disassociates every asset associated with that hierarchy. You can't change the type or data type of an existing property.</p> </important>",
       "endpoint":{"hostPrefix":"api."}
     },
+    "UpdateAssetModelCompositeModel":{
+      "name":"UpdateAssetModelCompositeModel",
+      "http":{
+        "method":"PUT",
+        "requestUri":"/asset-models/{assetModelId}/composite-models/{assetModelCompositeModelId}",
+        "responseCode":202
+      },
+      "input":{"shape":"UpdateAssetModelCompositeModelRequest"},
+      "output":{"shape":"UpdateAssetModelCompositeModelResponse"},
+      "errors":[
+        {"shape":"ConflictingOperationException"},
+        {"shape":"InternalFailureException"},
+        {"shape":"InvalidRequestException"},
+        {"shape":"ResourceAlreadyExistsException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"LimitExceededException"}
+      ],
+      "documentation":"<p>Updates a composite model and all of the assets that were created from the model. Each asset created from the model inherits the updated asset model's property and hierarchy definitions. For more information, see <a href=\"https://docs.aws.amazon.com/iot-sitewise/latest/userguide/update-assets-and-models.html\">Updating assets and models</a> in the <i>IoT SiteWise User Guide</i>.</p> <important> <p>If you remove a property from a composite asset model, IoT SiteWise deletes all previous data for that property. You can’t change the type or data type of an existing property.</p> <p>To replace an existing composite asset model property with a new one with the same <code>name</code>, do the following:</p> <ol> <li> <p>Submit an <code>UpdateAssetModelCompositeModel</code> request with the entire existing property removed.</p> </li> <li> <p>Submit a second <code>UpdateAssetModelCompositeModel</code> request that includes the new property. The new asset property will have the same <code>name</code> as the previous one and IoT SiteWise will generate a new unique <code>id</code>.</p> </li> </ol> </important>",
+      "endpoint":{"hostPrefix":"api."}
+    },
     "UpdateAssetProperty":{
       "name":"UpdateAssetProperty",
       "http":{
@@ -1334,7 +1537,16 @@
       "type":"string",
       "max":1600,
       "min":1,
-      "pattern":".*"
+      "pattern":"^arn:aws(-cn|-us-gov)?:[a-zA-Z0-9-:\\/_\\.]+$"
+    },
+    "AccessDeniedException":{
+      "type":"structure",
+      "members":{
+        "message":{"shape":"errorMessage"}
+      },
+      "documentation":"<p>Access is denied.</p>",
+      "error":{"httpStatusCode":403},
+      "exception":true
     },
     "AccessPolicySummaries":{
       "type":"list",
@@ -1376,6 +1588,71 @@
       },
       "documentation":"<p>Contains an access policy that defines an identity's access to an IoT SiteWise Monitor resource.</p>"
     },
+    "ActionDefinition":{
+      "type":"structure",
+      "required":[
+        "actionDefinitionId",
+        "actionName",
+        "actionType"
+      ],
+      "members":{
+        "actionDefinitionId":{
+          "shape":"ID",
+          "documentation":"<p>The ID of the action definition.</p>"
+        },
+        "actionName":{
+          "shape":"Name",
+          "documentation":"<p>The name of the action definition.</p>"
+        },
+        "actionType":{
+          "shape":"Name",
+          "documentation":"<p>The type of the action definition.</p>"
+        }
+      },
+      "documentation":"<p>Contains a definition for an action.</p>"
+    },
+    "ActionDefinitions":{
+      "type":"list",
+      "member":{"shape":"ActionDefinition"}
+    },
+    "ActionPayload":{
+      "type":"structure",
+      "required":["stringValue"],
+      "members":{
+        "stringValue":{
+          "shape":"ActionPayloadString",
+          "documentation":"<p>The payload of the action in a JSON string.</p>"
+        }
+      },
+      "documentation":"<p>The JSON payload of the action.</p>"
+    },
+    "ActionPayloadString":{
+      "type":"string",
+      "pattern":"[^\\u0000-\\u001F\\u007F]+"
+    },
+    "ActionSummaries":{
+      "type":"list",
+      "member":{"shape":"ActionSummary"}
+    },
+    "ActionSummary":{
+      "type":"structure",
+      "members":{
+        "actionId":{
+          "shape":"ID",
+          "documentation":"<p>The ID of the action.</p>"
+        },
+        "actionDefinitionId":{
+          "shape":"ID",
+          "documentation":"<p>The ID of the action definition.</p>"
+        },
+        "targetResource":{
+          "shape":"TargetResource",
+          "documentation":"<p>The resource the action will be taken on.</p>"
+        }
+      },
+      "documentation":"<p>Contains the summary of the actions.</p>"
+    },
+    "AdaptiveIngestion":{"type":"boolean"},
     "AggregateType":{
       "type":"string",
       "enum":[
@@ -1496,9 +1773,72 @@
         "id":{
           "shape":"ID",
           "documentation":"<p> The ID of the asset composite model. </p>"
+        },
+        "externalId":{
+          "shape":"ExternalId",
+          "documentation":"<p>The external ID of the asset composite model. For more information, see <a href=\"https://docs.aws.amazon.com/iot-sitewise/latest/userguide/object-ids.html#external-ids\">Using external IDs</a> in the <i>IoT SiteWise User Guide</i>.</p>"
         }
       },
       "documentation":"<p>Contains information about a composite model in an asset. This object contains the asset's properties that you define in the composite model.</p>"
+    },
+    "AssetCompositeModelPath":{
+      "type":"list",
+      "member":{"shape":"AssetCompositeModelPathSegment"}
+    },
+    "AssetCompositeModelPathSegment":{
+      "type":"structure",
+      "members":{
+        "id":{
+          "shape":"ID",
+          "documentation":"<p>The ID of the path segment.</p>"
+        },
+        "name":{
+          "shape":"Name",
+          "documentation":"<p>The name of the path segment.</p>"
+        }
+      },
+      "documentation":"<p>Represents one level between a composite model and the root of the asset.</p>"
+    },
+    "AssetCompositeModelSummaries":{
+      "type":"list",
+      "member":{"shape":"AssetCompositeModelSummary"}
+    },
+    "AssetCompositeModelSummary":{
+      "type":"structure",
+      "required":[
+        "id",
+        "name",
+        "type",
+        "description",
+        "path"
+      ],
+      "members":{
+        "id":{
+          "shape":"ID",
+          "documentation":"<p>The ID of the composite model that this summary describes.</p>"
+        },
+        "externalId":{
+          "shape":"ExternalId",
+          "documentation":"<p>An external ID to assign to the asset model.</p> <p>If the composite model is a derived composite model, or one nested inside a component model, you can only set the external ID using <code>UpdateAssetModelCompositeModel</code> and specifying the derived ID of the model or property from the created model it's a part of.</p>"
+        },
+        "name":{
+          "shape":"Name",
+          "documentation":"<p>The name of the composite model that this summary describes.</p>"
+        },
+        "type":{
+          "shape":"Name",
+          "documentation":"<p>The type of asset model.</p> <ul> <li> <p> <b>ASSET_MODEL</b> – (default) An asset model that you can use to create assets. Can't be included as a component in another asset model.</p> </li> <li> <p> <b>COMPONENT_MODEL</b> – A reusable component that you can include in the composite models of other asset models. You can't create assets directly from this type of asset model. </p> </li> </ul>"
+        },
+        "description":{
+          "shape":"Description",
+          "documentation":"<p>A description of the composite model that this summary describes.</p>"
+        },
+        "path":{
+          "shape":"AssetCompositeModelPath",
+          "documentation":"<p>The path that includes all the components of the asset model for the asset.</p>"
+        }
+      },
+      "documentation":"<p>Contains a summary of the composite model for a specific asset.</p>"
     },
     "AssetCompositeModels":{
       "type":"list",
@@ -1518,7 +1858,7 @@
       "members":{
         "assetId":{
           "shape":"ID",
-          "documentation":"<p>The ID of the asset.</p>"
+          "documentation":"<p>The ID of the asset, in UUID format.</p>"
         },
         "code":{
           "shape":"AssetErrorCode",
@@ -1547,6 +1887,10 @@
         "name":{
           "shape":"Name",
           "documentation":"<p>The hierarchy name provided in the <a href=\"https://docs.aws.amazon.com/iot-sitewise/latest/APIReference/API_CreateAssetModel.html\">CreateAssetModel</a> or <a href=\"https://docs.aws.amazon.com/iot-sitewise/latest/APIReference/API_UpdateAssetModel.html\">UpdateAssetModel</a> API operation.</p>"
+        },
+        "externalId":{
+          "shape":"ExternalId",
+          "documentation":"<p>The external ID of the hierarchy, if it has one. When you update an asset hierarchy, you may assign an external ID if it doesn't already have one. You can't change the external ID of an asset hierarchy that already has one. For more information, see <a href=\"https://docs.aws.amazon.com/iot-sitewise/latest/userguide/object-ids.html#external-ids\">Using external IDs</a> in the <i>IoT SiteWise User Guide</i>.</p>"
         }
       },
       "documentation":"<p>Describes an asset hierarchy that contains a hierarchy's name and ID.</p>"
@@ -1593,8 +1937,12 @@
           "documentation":"<p>The asset property definitions for this composite model.</p>"
         },
         "id":{
-          "shape":"ID",
+          "shape":"CustomID",
           "documentation":"<p> The ID of the asset model composite model. </p>"
+        },
+        "externalId":{
+          "shape":"ExternalId",
+          "documentation":"<p>The external ID of the asset model composite model. For more information, see <a href=\"https://docs.aws.amazon.com/iot-sitewise/latest/userguide/object-ids.html#external-ids\">Using external IDs</a> in the <i>IoT SiteWise User Guide</i>.</p>"
         }
       },
       "documentation":"<p>Contains information about a composite model in an asset model. This object contains the asset property definitions that you define in the composite model.</p>"
@@ -1621,6 +1969,14 @@
         "properties":{
           "shape":"AssetModelPropertyDefinitions",
           "documentation":"<p>The asset property definitions for this composite model.</p>"
+        },
+        "id":{
+          "shape":"ID",
+          "documentation":"<p>The ID to assign to the composite model, if desired. IoT SiteWise automatically generates a unique ID for you, so this parameter is never required. However, if you prefer to supply your own ID instead, you can specify it here in UUID format. If you specify your own ID, it must be globally unique.</p>"
+        },
+        "externalId":{
+          "shape":"ExternalId",
+          "documentation":"<p>An external ID to assign to the composite model. The external ID must be unique among composite models within this asset model. For more information, see <a href=\"https://docs.aws.amazon.com/iot-sitewise/latest/userguide/object-ids.html#external-ids\">Using external IDs</a> in the <i>IoT SiteWise User Guide</i>.</p>"
         }
       },
       "documentation":"<p>Contains a composite model definition in an asset model. This composite model definition is applied to all assets created from the asset model.</p>"
@@ -1628,6 +1984,63 @@
     "AssetModelCompositeModelDefinitions":{
       "type":"list",
       "member":{"shape":"AssetModelCompositeModelDefinition"}
+    },
+    "AssetModelCompositeModelPath":{
+      "type":"list",
+      "member":{"shape":"AssetModelCompositeModelPathSegment"}
+    },
+    "AssetModelCompositeModelPathSegment":{
+      "type":"structure",
+      "members":{
+        "id":{
+          "shape":"ID",
+          "documentation":"<p>The ID of the path segment.</p>"
+        },
+        "name":{
+          "shape":"Name",
+          "documentation":"<p>The name of the path segment.</p>"
+        }
+      },
+      "documentation":"<p>Represents one level between a composite model and the root of the asset model.</p>"
+    },
+    "AssetModelCompositeModelSummaries":{
+      "type":"list",
+      "member":{"shape":"AssetModelCompositeModelSummary"}
+    },
+    "AssetModelCompositeModelSummary":{
+      "type":"structure",
+      "required":[
+        "id",
+        "name",
+        "type"
+      ],
+      "members":{
+        "id":{
+          "shape":"ID",
+          "documentation":"<p>The ID of the the composite model that this summary describes..</p>"
+        },
+        "externalId":{
+          "shape":"ExternalId",
+          "documentation":"<p>The external ID of a composite model on this asset model. For more information, see <a href=\"https://docs.aws.amazon.com/iot-sitewise/latest/userguide/object-ids.html#external-ids\">Using external IDs</a> in the <i>IoT SiteWise User Guide</i>.</p>"
+        },
+        "name":{
+          "shape":"Name",
+          "documentation":"<p>The name of the the composite model that this summary describes..</p>"
+        },
+        "type":{
+          "shape":"Name",
+          "documentation":"<p>The type of asset model.</p> <ul> <li> <p> <b>ASSET_MODEL</b> – (default) An asset model that you can use to create assets. Can't be included as a component in another asset model.</p> </li> <li> <p> <b>COMPONENT_MODEL</b> – A reusable component that you can include in the composite models of other asset models. You can't create assets directly from this type of asset model. </p> </li> </ul>"
+        },
+        "description":{
+          "shape":"Description",
+          "documentation":"<p>The description of the the composite model that this summary describes..</p>"
+        },
+        "path":{
+          "shape":"AssetModelCompositeModelPath",
+          "documentation":"<p>The path that includes all the pieces that make up the composite model.</p>"
+        }
+      },
+      "documentation":"<p>Contains a summary of the composite model.</p>"
     },
     "AssetModelCompositeModels":{
       "type":"list",
@@ -1645,16 +2058,20 @@
       ],
       "members":{
         "id":{
-          "shape":"ID",
-          "documentation":"<p>The ID of the asset model hierarchy. This ID is a <code>hierarchyId</code>.</p>"
+          "shape":"CustomID",
+          "documentation":"<p>The ID of the asset model hierarchy. This ID is a <code>hierarchyId</code>.</p> <ul> <li> <p>If you are callling <a href=\"https://docs.aws.amazon.com/iot-sitewise/latest/APIReference/API_UpdateAssetModel.html\">UpdateAssetModel</a> to create a <i>new</i> hierarchy: You can specify its ID here, if desired. IoT SiteWise automatically generates a unique ID for you, so this parameter is never required. However, if you prefer to supply your own ID instead, you can specify it here in UUID format. If you specify your own ID, it must be globally unique.</p> </li> <li> <p>If you are calling UpdateAssetModel to modify an <i>existing</i> hierarchy: This can be either the actual ID in UUID format, or else <code>externalId:</code> followed by the external ID, if it has one. For more information, see <a href=\"https://docs.aws.amazon.com/iot-sitewise/latest/userguide/object-ids.html#external-id-references\">Referencing objects with external IDs</a> in the <i>IoT SiteWise User Guide</i>.</p> </li> </ul>"
         },
         "name":{
           "shape":"Name",
           "documentation":"<p>The name of the asset model hierarchy that you specify by using the <a href=\"https://docs.aws.amazon.com/iot-sitewise/latest/APIReference/API_CreateAssetModel.html\">CreateAssetModel</a> or <a href=\"https://docs.aws.amazon.com/iot-sitewise/latest/APIReference/API_UpdateAssetModel.html\">UpdateAssetModel</a> API operation.</p>"
         },
         "childAssetModelId":{
-          "shape":"ID",
-          "documentation":"<p>The ID of the asset model. All assets in this hierarchy must be instances of the <code>childAssetModelId</code> asset model.</p>"
+          "shape":"CustomID",
+          "documentation":"<p>The ID of the asset model, in UUID format. All assets in this hierarchy must be instances of the <code>childAssetModelId</code> asset model. IoT SiteWise will always return the actual asset model ID for this value. However, when you are specifying this value as part of a call to <a href=\"https://docs.aws.amazon.com/iot-sitewise/latest/APIReference/API_UpdateAssetModel.html\">UpdateAssetModel</a>, you may provide either the asset model ID or else <code>externalId:</code> followed by the asset model's external ID. For more information, see <a href=\"https://docs.aws.amazon.com/iot-sitewise/latest/userguide/object-ids.html#external-ids\">Using external IDs</a> in the <i>IoT SiteWise User Guide</i>. </p>"
+        },
+        "externalId":{
+          "shape":"ExternalId",
+          "documentation":"<p>The external ID (if any) provided in the <a href=\"https://docs.aws.amazon.com/iot-sitewise/latest/APIReference/API_CreateAssetModel.html\">CreateAssetModel</a> or <a href=\"https://docs.aws.amazon.com/iot-sitewise/latest/APIReference/API_UpdateAssetModel.html\">UpdateAssetModel</a> operation. You can assign an external ID by specifying this value as part of a call to <a href=\"https://docs.aws.amazon.com/iot-sitewise/latest/APIReference/API_UpdateAssetModel.html\">UpdateAssetModel</a>. However, you can't change the external ID if one is already assigned. For more information, see <a href=\"https://docs.aws.amazon.com/iot-sitewise/latest/userguide/object-ids.html#external-ids\">Using external IDs</a> in the <i>IoT SiteWise User Guide</i>.</p>"
         }
       },
       "documentation":"<p>Describes an asset hierarchy that contains a hierarchy's name, ID, and child asset model ID that specifies the type of asset that can be in this hierarchy.</p>"
@@ -1671,8 +2088,16 @@
           "documentation":"<p>The name of the asset model hierarchy definition (as specified in the <a href=\"https://docs.aws.amazon.com/iot-sitewise/latest/APIReference/API_CreateAssetModel.html\">CreateAssetModel</a> or <a href=\"https://docs.aws.amazon.com/iot-sitewise/latest/APIReference/API_UpdateAssetModel.html\">UpdateAssetModel</a> API operation).</p>"
         },
         "childAssetModelId":{
+          "shape":"CustomID",
+          "documentation":"<p>The ID of an asset model for this hierarchy. This can be either the actual ID in UUID format, or else <code>externalId:</code> followed by the external ID, if it has one. For more information, see <a href=\"https://docs.aws.amazon.com/iot-sitewise/latest/userguide/object-ids.html#external-id-references\">Referencing objects with external IDs</a> in the <i>IoT SiteWise User Guide</i>.</p>"
+        },
+        "id":{
           "shape":"ID",
-          "documentation":"<p>The ID of an asset model for this hierarchy.</p>"
+          "documentation":"<p>The ID to assign to the asset model hierarchy, if desired. IoT SiteWise automatically generates a unique ID for you, so this parameter is never required. However, if you prefer to supply your own ID instead, you can specify it here in UUID format. If you specify your own ID, it must be globally unique.</p>"
+        },
+        "externalId":{
+          "shape":"ExternalId",
+          "documentation":"<p>An external ID to assign to the asset model hierarchy. The external ID must be unique among asset model hierarchies within this asset model. For more information, see <a href=\"https://docs.aws.amazon.com/iot-sitewise/latest/userguide/object-ids.html#external-ids\">Using external IDs</a> in the <i>IoT SiteWise User Guide</i>.</p>"
         }
       },
       "documentation":"<p>Contains an asset model hierarchy used in asset model creation. An asset model hierarchy determines the kind (or type) of asset that can belong to a hierarchy.</p>"
@@ -1694,8 +2119,8 @@
       ],
       "members":{
         "id":{
-          "shape":"ID",
-          "documentation":"<p>The ID of the asset model property.</p>"
+          "shape":"CustomID",
+          "documentation":"<p>The ID of the asset model property.</p> <ul> <li> <p>If you are callling <a href=\"https://docs.aws.amazon.com/iot-sitewise/latest/APIReference/API_UpdateAssetModel.html\">UpdateAssetModel</a> to create a <i>new</i> property: You can specify its ID here, if desired. IoT SiteWise automatically generates a unique ID for you, so this parameter is never required. However, if you prefer to supply your own ID instead, you can specify it here in UUID format. If you specify your own ID, it must be globally unique.</p> </li> <li> <p>If you are calling UpdateAssetModel to modify an <i>existing</i> property: This can be either the actual ID in UUID format, or else <code>externalId:</code> followed by the external ID, if it has one. For more information, see <a href=\"https://docs.aws.amazon.com/iot-sitewise/latest/userguide/object-ids.html#external-id-references\">Referencing objects with external IDs</a> in the <i>IoT SiteWise User Guide</i>.</p> </li> </ul>"
         },
         "name":{
           "shape":"Name",
@@ -1716,6 +2141,14 @@
         "type":{
           "shape":"PropertyType",
           "documentation":"<p>The property type (see <code>PropertyType</code>).</p>"
+        },
+        "path":{
+          "shape":"AssetModelPropertyPath",
+          "documentation":"<p>The structured path to the property from the root of the asset model.</p>"
+        },
+        "externalId":{
+          "shape":"ExternalId",
+          "documentation":"<p>The external ID (if any) provided in the <a href=\"https://docs.aws.amazon.com/iot-sitewise/latest/APIReference/API_CreateAssetModel.html\">CreateAssetModel</a> or <a href=\"https://docs.aws.amazon.com/iot-sitewise/latest/APIReference/API_UpdateAssetModel.html\">UpdateAssetModel</a> operation. You can assign an external ID by specifying this value as part of a call to <a href=\"https://docs.aws.amazon.com/iot-sitewise/latest/APIReference/API_UpdateAssetModel.html\">UpdateAssetModel</a>. However, you can't change the external ID if one is already assigned. For more information, see <a href=\"https://docs.aws.amazon.com/iot-sitewise/latest/userguide/object-ids.html#external-ids\">Using external IDs</a> in the <i>IoT SiteWise User Guide</i>.</p>"
         }
       },
       "documentation":"<p>Contains information about an asset model property.</p>"
@@ -1747,6 +2180,14 @@
         "type":{
           "shape":"PropertyType",
           "documentation":"<p>The property definition type (see <code>PropertyType</code>). You can only specify one type in a property definition.</p>"
+        },
+        "id":{
+          "shape":"ID",
+          "documentation":"<p>The ID to assign to the asset model property, if desired. IoT SiteWise automatically generates a unique ID for you, so this parameter is never required. However, if you prefer to supply your own ID instead, you can specify it here in UUID format. If you specify your own ID, it must be globally unique.</p>"
+        },
+        "externalId":{
+          "shape":"ExternalId",
+          "documentation":"<p>An external ID to assign to the property definition. The external ID must be unique among property definitions within this asset model. For more information, see <a href=\"https://docs.aws.amazon.com/iot-sitewise/latest/userguide/object-ids.html#external-ids\">Using external IDs</a> in the <i>IoT SiteWise User Guide</i>.</p>"
         }
       },
       "documentation":"<p>Contains an asset model property definition. This property definition is applied to all assets created from the asset model.</p>"
@@ -1754,6 +2195,24 @@
     "AssetModelPropertyDefinitions":{
       "type":"list",
       "member":{"shape":"AssetModelPropertyDefinition"}
+    },
+    "AssetModelPropertyPath":{
+      "type":"list",
+      "member":{"shape":"AssetModelPropertyPathSegment"}
+    },
+    "AssetModelPropertyPathSegment":{
+      "type":"structure",
+      "members":{
+        "id":{
+          "shape":"ID",
+          "documentation":"<p>The ID of the path segment.</p>"
+        },
+        "name":{
+          "shape":"Name",
+          "documentation":"<p>The name of the path segment.</p>"
+        }
+      },
+      "documentation":"<p>Represents one level between a property and the root of the asset model.</p>"
     },
     "AssetModelPropertySummaries":{
       "type":"list",
@@ -1791,6 +2250,14 @@
         "assetModelCompositeModelId":{
           "shape":"ID",
           "documentation":"<p> The ID of the composite model that contains the asset model property. </p>"
+        },
+        "path":{
+          "shape":"AssetModelPropertyPath",
+          "documentation":"<p>The structured path to the property from the root of the asset model.</p>"
+        },
+        "externalId":{
+          "shape":"ExternalId",
+          "documentation":"<p>The external ID of the property. For more information, see <a href=\"https://docs.aws.amazon.com/iot-sitewise/latest/userguide/object-ids.html#external-ids\">Using external IDs</a> in the <i>IoT SiteWise User Guide</i>.</p>"
         }
       },
       "documentation":"<p>Contains a summary of a property associated with a model.</p>"
@@ -1839,7 +2306,7 @@
       "members":{
         "id":{
           "shape":"ID",
-          "documentation":"<p>The ID of the asset model (used with IoT SiteWise APIs).</p>"
+          "documentation":"<p>The ID of the asset model (used with IoT SiteWise API operations).</p>"
         },
         "arn":{
           "shape":"ARN",
@@ -1864,9 +2331,24 @@
         "status":{
           "shape":"AssetModelStatus",
           "documentation":"<p>The current status of the asset model.</p>"
+        },
+        "assetModelType":{
+          "shape":"AssetModelType",
+          "documentation":"<p>The type of asset model.</p> <ul> <li> <p> <b>ASSET_MODEL</b> – (default) An asset model that you can use to create assets. Can't be included as a component in another asset model.</p> </li> <li> <p> <b>COMPONENT_MODEL</b> – A reusable component that you can include in the composite models of other asset models. You can't create assets directly from this type of asset model. </p> </li> </ul>"
+        },
+        "externalId":{
+          "shape":"ExternalId",
+          "documentation":"<p>The external ID of the asset model. For more information, see <a href=\"https://docs.aws.amazon.com/iot-sitewise/latest/userguide/object-ids.html#external-ids\">Using external IDs</a> in the <i>IoT SiteWise User Guide</i>.</p>"
         }
       },
       "documentation":"<p>Contains a summary of an asset model.</p>"
+    },
+    "AssetModelType":{
+      "type":"string",
+      "enum":[
+        "ASSET_MODEL",
+        "COMPONENT_MODEL"
+      ]
     },
     "AssetProperties":{
       "type":"list",
@@ -1907,6 +2389,14 @@
         "unit":{
           "shape":"PropertyUnit",
           "documentation":"<p>The unit (such as <code>Newtons</code> or <code>RPM</code>) of the asset property.</p>"
+        },
+        "path":{
+          "shape":"AssetPropertyPath",
+          "documentation":"<p>The structured path to the property from the root of the asset.</p>"
+        },
+        "externalId":{
+          "shape":"ExternalId",
+          "documentation":"<p>The external ID of the asset property. For more information, see <a href=\"https://docs.aws.amazon.com/iot-sitewise/latest/userguide/object-ids.html#external-ids\">Using external IDs</a> in the <i>IoT SiteWise User Guide</i>.</p>"
         }
       },
       "documentation":"<p>Contains asset property information.</p>"
@@ -1917,12 +2407,31 @@
       "min":1,
       "pattern":"[^\\u0000-\\u001F\\u007F]+"
     },
+    "AssetPropertyPath":{
+      "type":"list",
+      "member":{"shape":"AssetPropertyPathSegment"}
+    },
+    "AssetPropertyPathSegment":{
+      "type":"structure",
+      "members":{
+        "id":{
+          "shape":"ID",
+          "documentation":"<p>The ID of the path segment.</p>"
+        },
+        "name":{
+          "shape":"Name",
+          "documentation":"<p>The name of the path segment.</p>"
+        }
+      },
+      "documentation":"<p>Represents one level between a property and the root of the asset.</p>"
+    },
     "AssetPropertySummaries":{
       "type":"list",
       "member":{"shape":"AssetPropertySummary"}
     },
     "AssetPropertySummary":{
       "type":"structure",
+      "required":["id"],
       "members":{
         "id":{
           "shape":"ID",
@@ -1940,6 +2449,14 @@
         "assetCompositeModelId":{
           "shape":"ID",
           "documentation":"<p> The ID of the composite model that contains the asset property. </p>"
+        },
+        "path":{
+          "shape":"AssetPropertyPath",
+          "documentation":"<p>The structured path to the property from the root of the asset.</p>"
+        },
+        "externalId":{
+          "shape":"ExternalId",
+          "documentation":"<p>The external ID of the property. For more information, see <a href=\"https://docs.aws.amazon.com/iot-sitewise/latest/userguide/object-ids.html#external-ids\">Using external IDs</a> in the <i>IoT SiteWise User Guide</i>.</p>"
         }
       },
       "documentation":"<p>Contains a summary of a property associated with an asset.</p>"
@@ -2041,7 +2558,7 @@
       "members":{
         "id":{
           "shape":"ID",
-          "documentation":"<p>The ID of the asset.</p>"
+          "documentation":"<p>The ID of the asset, in UUID format.</p>"
         },
         "arn":{
           "shape":"ARN",
@@ -2074,6 +2591,10 @@
         "description":{
           "shape":"Description",
           "documentation":"<p>A description for the asset.</p>"
+        },
+        "externalId":{
+          "shape":"ExternalId",
+          "documentation":"<p>The external ID of the asset. For more information, see <a href=\"https://docs.aws.amazon.com/iot-sitewise/latest/userguide/object-ids.html#external-ids\">Using external IDs</a> in the <i>IoT SiteWise User Guide</i>.</p>"
         }
       },
       "documentation":"<p>Contains a summary of an asset.</p>"
@@ -2087,18 +2608,18 @@
       ],
       "members":{
         "assetId":{
-          "shape":"ID",
-          "documentation":"<p>The ID of the parent asset.</p>",
+          "shape":"CustomID",
+          "documentation":"<p>The ID of the parent asset. This can be either the actual ID in UUID format, or else <code>externalId:</code> followed by the external ID, if it has one. For more information, see <a href=\"https://docs.aws.amazon.com/iot-sitewise/latest/userguide/object-ids.html#external-id-references\">Referencing objects with external IDs</a> in the <i>IoT SiteWise User Guide</i>.</p>",
           "location":"uri",
           "locationName":"assetId"
         },
         "hierarchyId":{
-          "shape":"ID",
-          "documentation":"<p>The ID of a hierarchy in the parent asset's model. Hierarchies allow different groupings of assets to be formed that all come from the same asset model. For more information, see <a href=\"https://docs.aws.amazon.com/iot-sitewise/latest/userguide/asset-hierarchies.html\">Asset hierarchies</a> in the <i>IoT SiteWise User Guide</i>.</p>"
+          "shape":"CustomID",
+          "documentation":"<p>The ID of a hierarchy in the parent asset's model. (This can be either the actual ID in UUID format, or else <code>externalId:</code> followed by the external ID, if it has one. For more information, see <a href=\"https://docs.aws.amazon.com/iot-sitewise/latest/userguide/object-ids.html#external-id-references\">Referencing objects with external IDs</a> in the <i>IoT SiteWise User Guide</i>.) Hierarchies allow different groupings of assets to be formed that all come from the same asset model. For more information, see <a href=\"https://docs.aws.amazon.com/iot-sitewise/latest/userguide/asset-hierarchies.html\">Asset hierarchies</a> in the <i>IoT SiteWise User Guide</i>.</p>"
         },
         "childAssetId":{
-          "shape":"ID",
-          "documentation":"<p>The ID of the child asset to be associated.</p>"
+          "shape":"CustomID",
+          "documentation":"<p>The ID of the child asset to be associated. This can be either the actual ID in UUID format, or else <code>externalId:</code> followed by the external ID, if it has one. For more information, see <a href=\"https://docs.aws.amazon.com/iot-sitewise/latest/userguide/object-ids.html#external-id-references\">Referencing objects with external IDs</a> in the <i>IoT SiteWise User Guide</i>.</p>"
         },
         "clientToken":{
           "shape":"ClientToken",
@@ -2122,14 +2643,14 @@
           "locationName":"alias"
         },
         "assetId":{
-          "shape":"ID",
-          "documentation":"<p>The ID of the asset in which the asset property was created.</p>",
+          "shape":"CustomID",
+          "documentation":"<p>The ID of the asset in which the asset property was created. This can be either the actual ID in UUID format, or else <code>externalId:</code> followed by the external ID, if it has one. For more information, see <a href=\"https://docs.aws.amazon.com/iot-sitewise/latest/userguide/object-ids.html#external-id-references\">Referencing objects with external IDs</a> in the <i>IoT SiteWise User Guide</i>.</p>",
           "location":"querystring",
           "locationName":"assetId"
         },
         "propertyId":{
-          "shape":"ID",
-          "documentation":"<p>The ID of the asset property.</p>",
+          "shape":"CustomID",
+          "documentation":"<p>The ID of the asset property. This can be either the actual ID in UUID format, or else <code>externalId:</code> followed by the external ID, if it has one. For more information, see <a href=\"https://docs.aws.amazon.com/iot-sitewise/latest/userguide/object-ids.html#external-id-references\">Referencing objects with external IDs</a> in the <i>IoT SiteWise User Guide</i>.</p>",
           "location":"querystring",
           "locationName":"propertyId"
         },
@@ -2159,7 +2680,7 @@
       "members":{
         "id":{
           "shape":"ID",
-          "documentation":"<p>The ID of the asset.</p>"
+          "documentation":"<p>The ID of the asset, in UUID format.</p>"
         },
         "arn":{
           "shape":"ARN",
@@ -2192,6 +2713,10 @@
         "description":{
           "shape":"Description",
           "documentation":"<p>A description for the asset.</p>"
+        },
+        "externalId":{
+          "shape":"ExternalId",
+          "documentation":"<p>The external ID of the asset. For more information, see <a href=\"https://docs.aws.amazon.com/iot-sitewise/latest/userguide/object-ids.html#external-ids\">Using external IDs</a> in the <i>IoT SiteWise User Guide</i>.</p>"
         }
       },
       "documentation":"<p>Contains a summary of an associated asset.</p>"
@@ -2318,7 +2843,7 @@
         },
         "propertyId":{
           "shape":"ID",
-          "documentation":"<p>The ID of the asset property.</p>"
+          "documentation":"<p>The ID of the asset property, in UUID format.</p>"
         },
         "propertyAlias":{
           "shape":"AssetPropertyAlias",
@@ -2518,7 +3043,7 @@
         },
         "propertyId":{
           "shape":"ID",
-          "documentation":"<p>The ID of the asset property.</p>"
+          "documentation":"<p>The ID of the asset property, in UUID format.</p>"
         },
         "propertyAlias":{
           "shape":"AssetPropertyAlias",
@@ -2598,7 +3123,7 @@
         },
         "propertyId":{
           "shape":"ID",
-          "documentation":"<p>The ID of the asset property.</p>"
+          "documentation":"<p>The ID of the asset property, in UUID format.</p>"
         },
         "propertyAlias":{
           "shape":"AssetPropertyAlias",
@@ -2968,6 +3493,20 @@
       "min":36,
       "pattern":"\\S{36,64}"
     },
+    "ColumnInfo":{
+      "type":"structure",
+      "members":{
+        "name":{
+          "shape":"String",
+          "documentation":"<p>The name of the column description.</p>"
+        },
+        "type":{
+          "shape":"ColumnType",
+          "documentation":"<p>The type of the column description.</p>"
+        }
+      },
+      "documentation":"<p>A description of the column in the query results.</p>"
+    },
     "ColumnName":{
       "type":"string",
       "enum":[
@@ -2984,6 +3523,20 @@
     "ColumnNames":{
       "type":"list",
       "member":{"shape":"ColumnName"}
+    },
+    "ColumnType":{
+      "type":"structure",
+      "members":{
+        "scalarType":{
+          "shape":"ScalarType",
+          "documentation":"<p>The allowed data types that the column has as it's value.</p>"
+        }
+      },
+      "documentation":"<p>The data type of the column.</p>"
+    },
+    "ColumnsList":{
+      "type":"list",
+      "member":{"shape":"ColumnInfo"}
     },
     "CompositeModelProperty":{
       "type":"structure",
@@ -3005,9 +3558,64 @@
         "id":{
           "shape":"ID",
           "documentation":"<p> The ID of the composite model that contains the property. </p>"
+        },
+        "externalId":{
+          "shape":"ExternalId",
+          "documentation":"<p>The external ID of the composite model that contains the property. For more information, see <a href=\"https://docs.aws.amazon.com/iot-sitewise/latest/userguide/object-ids.html#external-ids\">Using external IDs</a> in the <i>IoT SiteWise User Guide</i>.</p>"
         }
       },
       "documentation":"<p>Contains information about a composite model property on an asset.</p>"
+    },
+    "CompositionDetails":{
+      "type":"structure",
+      "members":{
+        "compositionRelationship":{
+          "shape":"CompositionRelationship",
+          "documentation":"<p>An array detailing the composition relationship for this composite model.</p>"
+        }
+      },
+      "documentation":"<p>Metadata for the composition relationship established by using <code>composedAssetModelId</code> in <a href=\"https://docs.aws.amazon.com/iot-sitewise/latest/APIReference/API_CreateAssetModelCompositeModel.html\"> <code>CreateAssetModelCompositeModel</code> </a>.</p>"
+    },
+    "CompositionRelationship":{
+      "type":"list",
+      "member":{"shape":"CompositionRelationshipItem"}
+    },
+    "CompositionRelationshipItem":{
+      "type":"structure",
+      "members":{
+        "id":{
+          "shape":"ID",
+          "documentation":"<p>The ID of the component.</p>"
+        }
+      },
+      "documentation":"<p>Represents a composite model that composed an asset model of type <code>COMPONENT_MODEL</code>.</p>"
+    },
+    "CompositionRelationshipSummaries":{
+      "type":"list",
+      "member":{"shape":"CompositionRelationshipSummary"}
+    },
+    "CompositionRelationshipSummary":{
+      "type":"structure",
+      "required":[
+        "assetModelId",
+        "assetModelCompositeModelId",
+        "assetModelCompositeModelType"
+      ],
+      "members":{
+        "assetModelId":{
+          "shape":"ID",
+          "documentation":"<p>The ID of the asset model, in UUID format.</p>"
+        },
+        "assetModelCompositeModelId":{
+          "shape":"ID",
+          "documentation":"<p>The ID of a composite model on this asset model.</p>"
+        },
+        "assetModelCompositeModelType":{
+          "shape":"Name",
+          "documentation":"<p>The composite model type. Valid values are <code>AWS/ALARM</code>, <code>CUSTOM</code>, or <code> AWS/L4E_ANOMALY</code>.</p>"
+        }
+      },
+      "documentation":"<p>Contains a summary of the components of the composite model.</p>"
     },
     "ComputeLocation":{
       "type":"string",
@@ -3132,6 +3740,78 @@
         }
       }
     },
+    "CreateAssetModelCompositeModelRequest":{
+      "type":"structure",
+      "required":[
+        "assetModelId",
+        "assetModelCompositeModelName",
+        "assetModelCompositeModelType"
+      ],
+      "members":{
+        "assetModelId":{
+          "shape":"CustomID",
+          "documentation":"<p>The ID of the asset model this composite model is a part of.</p>",
+          "location":"uri",
+          "locationName":"assetModelId"
+        },
+        "parentAssetModelCompositeModelId":{
+          "shape":"CustomID",
+          "documentation":"<p>The ID of the parent composite model in this asset model relationship.</p>"
+        },
+        "assetModelCompositeModelExternalId":{
+          "shape":"ExternalId",
+          "documentation":"<p>An external ID to assign to the composite model.</p> <p>If the composite model is a derived composite model, or one nested inside a component model, you can only set the external ID using <code>UpdateAssetModelCompositeModel</code> and specifying the derived ID of the model or property from the created model it's a part of.</p>"
+        },
+        "assetModelCompositeModelId":{
+          "shape":"ID",
+          "documentation":"<p>The ID of the composite model. IoT SiteWise automatically generates a unique ID for you, so this parameter is never required. However, if you prefer to supply your own ID instead, you can specify it here in UUID format. If you specify your own ID, it must be globally unique.</p>"
+        },
+        "assetModelCompositeModelDescription":{
+          "shape":"Description",
+          "documentation":"<p>A description for the composite model.</p>"
+        },
+        "assetModelCompositeModelName":{
+          "shape":"Name",
+          "documentation":"<p>A unique, friendly name for the composite model.</p>"
+        },
+        "assetModelCompositeModelType":{
+          "shape":"Name",
+          "documentation":"<p>The composite model type. Valid values are <code>AWS/ALARM</code>, <code>CUSTOM</code>, or <code> AWS/L4E_ANOMALY</code>.</p>"
+        },
+        "clientToken":{
+          "shape":"ClientToken",
+          "documentation":"<p>A unique case-sensitive identifier that you can provide to ensure the idempotency of the request. Don't reuse this client token if a new idempotent request is required.</p>",
+          "idempotencyToken":true
+        },
+        "composedAssetModelId":{
+          "shape":"CustomID",
+          "documentation":"<p>The ID of a composite model on this asset.</p>"
+        },
+        "assetModelCompositeModelProperties":{
+          "shape":"AssetModelPropertyDefinitions",
+          "documentation":"<p>The property definitions of the composite model. For more information, see &lt;LINK&gt;.</p> <p>You can specify up to 200 properties per composite model. For more information, see <a href=\"https://docs.aws.amazon.com/iot-sitewise/latest/userguide/quotas.html\">Quotas</a> in the <i>IoT SiteWise User Guide</i>.</p>"
+        }
+      }
+    },
+    "CreateAssetModelCompositeModelResponse":{
+      "type":"structure",
+      "required":[
+        "assetModelCompositeModelId",
+        "assetModelCompositeModelPath",
+        "assetModelStatus"
+      ],
+      "members":{
+        "assetModelCompositeModelId":{
+          "shape":"ID",
+          "documentation":"<p>The ID of the composed asset model. You can use this ID when you call other IoT SiteWise APIs.</p>"
+        },
+        "assetModelCompositeModelPath":{
+          "shape":"AssetModelCompositeModelPath",
+          "documentation":"<p>The path to the composite model listing the parent composite models.</p>"
+        },
+        "assetModelStatus":{"shape":"AssetModelStatus"}
+      }
+    },
     "CreateAssetModelRequest":{
       "type":"structure",
       "required":["assetModelName"],
@@ -3154,7 +3834,7 @@
         },
         "assetModelCompositeModels":{
           "shape":"AssetModelCompositeModelDefinitions",
-          "documentation":"<p>The composite asset models that are part of this asset model. Composite asset models are asset models that contain specific properties. Each composite model has a type that defines the properties that the composite model supports. Use composite asset models to define alarms on this asset model.</p>"
+          "documentation":"<p>The composite models that are part of this asset model. It groups properties (such as attributes, measurements, transforms, and metrics) and child composite models that model parts of your industrial equipment. Each composite model has a type that defines the properties that the composite model supports. Use composite models to define alarms on this asset model.</p> <note> <p>When creating custom composite models, you need to use <a href=\"https://docs.aws.amazon.com/iot-sitewise/latest/APIReference/API_CreateAssetModelCompositeModel.html\">CreateAssetModelCompositeModel</a>. For more information, see &lt;LINK&gt;.</p> </note>"
         },
         "clientToken":{
           "shape":"ClientToken",
@@ -3164,6 +3844,18 @@
         "tags":{
           "shape":"TagMap",
           "documentation":"<p>A list of key-value pairs that contain metadata for the asset model. For more information, see <a href=\"https://docs.aws.amazon.com/iot-sitewise/latest/userguide/tag-resources.html\">Tagging your IoT SiteWise resources</a> in the <i>IoT SiteWise User Guide</i>.</p>"
+        },
+        "assetModelId":{
+          "shape":"ID",
+          "documentation":"<p>The ID to assign to the asset model, if desired. IoT SiteWise automatically generates a unique ID for you, so this parameter is never required. However, if you prefer to supply your own ID instead, you can specify it here in UUID format. If you specify your own ID, it must be globally unique.</p>"
+        },
+        "assetModelExternalId":{
+          "shape":"ExternalId",
+          "documentation":"<p>An external ID to assign to the asset model. The external ID must be unique within your Amazon Web Services account. For more information, see <a href=\"https://docs.aws.amazon.com/iot-sitewise/latest/userguide/object-ids.html#external-ids\">Using external IDs</a> in the <i>IoT SiteWise User Guide</i>.</p>"
+        },
+        "assetModelType":{
+          "shape":"AssetModelType",
+          "documentation":"<p>The type of asset model.</p> <ul> <li> <p> <b>ASSET_MODEL</b> – (default) An asset model that you can use to create assets. Can't be included as a component in another asset model.</p> </li> <li> <p> <b>COMPONENT_MODEL</b> – A reusable component that you can include in the composite models of other asset models. You can't create assets directly from this type of asset model. </p> </li> </ul>"
         }
       }
     },
@@ -3177,7 +3869,7 @@
       "members":{
         "assetModelId":{
           "shape":"ID",
-          "documentation":"<p>The ID of the asset model. You can use this ID when you call other IoT SiteWise APIs.</p>"
+          "documentation":"<p>The ID of the asset model, in UUID format. You can use this ID when you call other IoT SiteWise API operations.</p>"
         },
         "assetModelArn":{
           "shape":"ARN",
@@ -3201,8 +3893,8 @@
           "documentation":"<p>A friendly name for the asset.</p>"
         },
         "assetModelId":{
-          "shape":"ID",
-          "documentation":"<p>The ID of the asset model from which to create the asset.</p>"
+          "shape":"CustomID",
+          "documentation":"<p>The ID of the asset model from which to create the asset. This can be either the actual ID in UUID format, or else <code>externalId:</code> followed by the external ID, if it has one. For more information, see <a href=\"https://docs.aws.amazon.com/iot-sitewise/latest/userguide/object-ids.html#external-id-references\">Referencing objects with external IDs</a> in the <i>IoT SiteWise User Guide</i>.</p>"
         },
         "clientToken":{
           "shape":"ClientToken",
@@ -3216,6 +3908,14 @@
         "assetDescription":{
           "shape":"Description",
           "documentation":"<p>A description for the asset.</p>"
+        },
+        "assetId":{
+          "shape":"ID",
+          "documentation":"<p>The ID to assign to the asset, if desired. IoT SiteWise automatically generates a unique ID for you, so this parameter is never required. However, if you prefer to supply your own ID instead, you can specify it here in UUID format. If you specify your own ID, it must be globally unique.</p>"
+        },
+        "assetExternalId":{
+          "shape":"ExternalId",
+          "documentation":"<p>An external ID to assign to the asset. The external ID must be unique within your Amazon Web Services account. For more information, see <a href=\"https://docs.aws.amazon.com/iot-sitewise/latest/userguide/object-ids.html#external-ids\">Using external IDs</a> in the <i>IoT SiteWise User Guide</i>.</p>"
         }
       }
     },
@@ -3229,7 +3929,7 @@
       "members":{
         "assetId":{
           "shape":"ID",
-          "documentation":"<p>The ID of the asset. This ID uniquely identifies the asset within IoT SiteWise and can be used with other IoT SiteWise APIs.</p>"
+          "documentation":"<p>The ID of the asset, in UUID format. This ID uniquely identifies the asset within IoT SiteWise and can be used with other IoT SiteWise API operations.</p>"
         },
         "assetArn":{
           "shape":"ARN",
@@ -3270,6 +3970,14 @@
         "jobConfiguration":{
           "shape":"JobConfiguration",
           "documentation":"<p>Contains the configuration information of a job, such as the file format used to save data in Amazon S3.</p>"
+        },
+        "adaptiveIngestion":{
+          "shape":"AdaptiveIngestion",
+          "documentation":"<p>If set to true, ingest new data into IoT SiteWise storage. Measurements with notifications, metrics and transforms are computed. If set to false, historical data is ingested into IoT SiteWise as is.</p>"
+        },
+        "deleteFilesAfterImport":{
+          "shape":"DeleteFilesAfterImport",
+          "documentation":"<p>If set to true, your data files is deleted from S3, after ingestion into IoT SiteWise storage.</p>"
         }
       }
     },
@@ -3291,7 +3999,7 @@
         },
         "jobStatus":{
           "shape":"JobStatus",
-          "documentation":"<p>The status of the bulk import job can be one of following values.</p> <ul> <li> <p> <code>PENDING</code> – IoT SiteWise is waiting for the current bulk import job to finish.</p> </li> <li> <p> <code>CANCELLED</code> – The bulk import job has been canceled.</p> </li> <li> <p> <code>RUNNING</code> – IoT SiteWise is processing your request to import your data from Amazon S3.</p> </li> <li> <p> <code>COMPLETED</code> – IoT SiteWise successfully completed your request to import data from Amazon S3.</p> </li> <li> <p> <code>FAILED</code> – IoT SiteWise couldn't process your request to import data from Amazon S3. You can use logs saved in the specified error report location in Amazon S3 to troubleshoot issues.</p> </li> <li> <p> <code>COMPLETED_WITH_FAILURES</code> – IoT SiteWise completed your request to import data from Amazon S3 with errors. You can use logs saved in the specified error report location in Amazon S3 to troubleshoot issues.</p> </li> </ul>"
+          "documentation":"<p>The status of the bulk import job can be one of following values:</p> <ul> <li> <p> <code>PENDING</code> – IoT SiteWise is waiting for the current bulk import job to finish.</p> </li> <li> <p> <code>CANCELLED</code> – The bulk import job has been canceled.</p> </li> <li> <p> <code>RUNNING</code> – IoT SiteWise is processing your request to import your data from Amazon S3.</p> </li> <li> <p> <code>COMPLETED</code> – IoT SiteWise successfully completed your request to import data from Amazon S3.</p> </li> <li> <p> <code>FAILED</code> – IoT SiteWise couldn't process your request to import data from Amazon S3. You can use logs saved in the specified error report location in Amazon S3 to troubleshoot issues.</p> </li> <li> <p> <code>COMPLETED_WITH_FAILURES</code> – IoT SiteWise completed your request to import data from Amazon S3 with errors. You can use logs saved in the specified error report location in Amazon S3 to troubleshoot issues.</p> </li> </ul>"
         }
       }
     },
@@ -3377,7 +4085,7 @@
       "members":{
         "gatewayId":{
           "shape":"ID",
-          "documentation":"<p>The ID of the gateway device. You can use this ID when you call other IoT SiteWise APIs.</p>"
+          "documentation":"<p>The ID of the gateway device. You can use this ID when you call other IoT SiteWise API operations.</p>"
         },
         "gatewayArn":{
           "shape":"ARN",
@@ -3424,7 +4132,7 @@
         },
         "portalAuthMode":{
           "shape":"AuthMode",
-          "documentation":"<p>The service to use to authenticate users to the portal. Choose from the following options:</p> <ul> <li> <p> <code>SSO</code> – The portal uses IAM Identity Center (successor to Single Sign-On) to authenticate users and manage user permissions. Before you can create a portal that uses IAM Identity Center, you must enable IAM Identity Center. For more information, see <a href=\"https://docs.aws.amazon.com/iot-sitewise/latest/userguide/monitor-get-started.html#mon-gs-sso\">Enabling IAM Identity Center</a> in the <i>IoT SiteWise User Guide</i>. This option is only available in Amazon Web Services Regions other than the China Regions.</p> </li> <li> <p> <code>IAM</code> – The portal uses Identity and Access Management to authenticate users and manage user permissions.</p> </li> </ul> <p>You can't change this value after you create a portal.</p> <p>Default: <code>SSO</code> </p>"
+          "documentation":"<p>The service to use to authenticate users to the portal. Choose from the following options:</p> <ul> <li> <p> <code>SSO</code> – The portal uses IAM Identity Center to authenticate users and manage user permissions. Before you can create a portal that uses IAM Identity Center, you must enable IAM Identity Center. For more information, see <a href=\"https://docs.aws.amazon.com/iot-sitewise/latest/userguide/monitor-get-started.html#mon-gs-sso\">Enabling IAM Identity Center</a> in the <i>IoT SiteWise User Guide</i>. This option is only available in Amazon Web Services Regions other than the China Regions.</p> </li> <li> <p> <code>IAM</code> – The portal uses Identity and Access Management to authenticate users and manage user permissions.</p> </li> </ul> <p>You can't change this value after you create a portal.</p> <p>Default: <code>SSO</code> </p>"
         },
         "notificationSenderEmail":{
           "shape":"Email",
@@ -3517,13 +4225,20 @@
     },
     "Csv":{
       "type":"structure",
+      "required":["columnNames"],
       "members":{
         "columnNames":{
           "shape":"ColumnNames",
           "documentation":"<p>The column names specified in the .csv file.</p>"
         }
       },
-      "documentation":"<p>A .csv file.</p>"
+      "documentation":"<p>A .CSV file.</p>"
+    },
+    "CustomID":{
+      "type":"string",
+      "max":139,
+      "min":13,
+      "pattern":"^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$|^externalId:[a-zA-Z0-9][a-zA-Z_\\-0-9.:]*[a-zA-Z0-9]+"
     },
     "CustomerManagedS3Storage":{
       "type":"structure",
@@ -3583,10 +4298,34 @@
       },
       "documentation":"<p>Contains a dashboard summary.</p>"
     },
+    "Datum":{
+      "type":"structure",
+      "members":{
+        "scalarValue":{
+          "shape":"ScalarValue",
+          "documentation":"<p>Indicates if the data point is a scalar value such as integer, string, double, or Boolean. </p>"
+        },
+        "arrayValue":{
+          "shape":"DatumList",
+          "documentation":"<p>Indicates if the data point is an array. </p>"
+        },
+        "rowValue":{
+          "shape":"Row",
+          "documentation":"<p>Indicates if the data point is a row.</p>"
+        },
+        "nullValue":{
+          "shape":"NullableBoolean",
+          "documentation":"<p>Indicates if the data point is null.</p>"
+        }
+      },
+      "documentation":"<p>Represents a single data point in a query result. </p>"
+    },
+    "DatumList":{
+      "type":"list",
+      "member":{"shape":"Datum"}
+    },
     "DefaultValue":{
       "type":"string",
-      "max":1024,
-      "min":1,
       "pattern":"[^\\u0000-\\u001F\\u007F]+"
     },
     "DeleteAccessPolicyRequest":{
@@ -3613,13 +4352,48 @@
       "members":{
       }
     },
+    "DeleteAssetModelCompositeModelRequest":{
+      "type":"structure",
+      "required":[
+        "assetModelId",
+        "assetModelCompositeModelId"
+      ],
+      "members":{
+        "assetModelId":{
+          "shape":"CustomID",
+          "documentation":"<p>The ID of the asset model, in UUID format.</p>",
+          "location":"uri",
+          "locationName":"assetModelId"
+        },
+        "assetModelCompositeModelId":{
+          "shape":"CustomID",
+          "documentation":"<p>The ID of a composite model on this asset model.</p>",
+          "location":"uri",
+          "locationName":"assetModelCompositeModelId"
+        },
+        "clientToken":{
+          "shape":"ClientToken",
+          "documentation":"<p>A unique case-sensitive identifier that you can provide to ensure the idempotency of the request. Don't reuse this client token if a new idempotent request is required.</p>",
+          "idempotencyToken":true,
+          "location":"querystring",
+          "locationName":"clientToken"
+        }
+      }
+    },
+    "DeleteAssetModelCompositeModelResponse":{
+      "type":"structure",
+      "required":["assetModelStatus"],
+      "members":{
+        "assetModelStatus":{"shape":"AssetModelStatus"}
+      }
+    },
     "DeleteAssetModelRequest":{
       "type":"structure",
       "required":["assetModelId"],
       "members":{
         "assetModelId":{
-          "shape":"ID",
-          "documentation":"<p>The ID of the asset model to delete.</p>",
+          "shape":"CustomID",
+          "documentation":"<p>The ID of the asset model to delete. This can be either the actual ID in UUID format, or else <code>externalId:</code> followed by the external ID, if it has one. For more information, see <a href=\"https://docs.aws.amazon.com/iot-sitewise/latest/userguide/object-ids.html#external-id-references\">Referencing objects with external IDs</a> in the <i>IoT SiteWise User Guide</i>.</p>",
           "location":"uri",
           "locationName":"assetModelId"
         },
@@ -3647,8 +4421,8 @@
       "required":["assetId"],
       "members":{
         "assetId":{
-          "shape":"ID",
-          "documentation":"<p>The ID of the asset to delete.</p>",
+          "shape":"CustomID",
+          "documentation":"<p>The ID of the asset to delete. This can be either the actual ID in UUID format, or else <code>externalId:</code> followed by the external ID, if it has one. For more information, see <a href=\"https://docs.aws.amazon.com/iot-sitewise/latest/userguide/object-ids.html#external-id-references\">Referencing objects with external IDs</a> in the <i>IoT SiteWise User Guide</i>.</p>",
           "location":"uri",
           "locationName":"assetId"
         },
@@ -3695,6 +4469,7 @@
       "members":{
       }
     },
+    "DeleteFilesAfterImport":{"type":"boolean"},
     "DeleteGatewayRequest":{
       "type":"structure",
       "required":["gatewayId"],
@@ -3770,14 +4545,14 @@
           "locationName":"alias"
         },
         "assetId":{
-          "shape":"ID",
-          "documentation":"<p>The ID of the asset in which the asset property was created.</p>",
+          "shape":"CustomID",
+          "documentation":"<p>The ID of the asset in which the asset property was created. This can be either the actual ID in UUID format, or else <code>externalId:</code> followed by the external ID, if it has one. For more information, see <a href=\"https://docs.aws.amazon.com/iot-sitewise/latest/userguide/object-ids.html#external-id-references\">Referencing objects with external IDs</a> in the <i>IoT SiteWise User Guide</i>.</p>",
           "location":"querystring",
           "locationName":"assetId"
         },
         "propertyId":{
-          "shape":"ID",
-          "documentation":"<p>The ID of the asset property.</p>",
+          "shape":"CustomID",
+          "documentation":"<p>The ID of the asset property. This can be either the actual ID in UUID format, or else <code>externalId:</code> followed by the external ID, if it has one. For more information, see <a href=\"https://docs.aws.amazon.com/iot-sitewise/latest/userguide/object-ids.html#external-id-references\">Referencing objects with external IDs</a> in the <i>IoT SiteWise User Guide</i>.</p>",
           "location":"querystring",
           "locationName":"propertyId"
         },
@@ -3842,13 +4617,213 @@
         }
       }
     },
+    "DescribeActionRequest":{
+      "type":"structure",
+      "required":["actionId"],
+      "members":{
+        "actionId":{
+          "shape":"ID",
+          "documentation":"<p>The ID of the action.</p>",
+          "location":"uri",
+          "locationName":"actionId"
+        }
+      }
+    },
+    "DescribeActionResponse":{
+      "type":"structure",
+      "required":[
+        "actionId",
+        "targetResource",
+        "actionDefinitionId",
+        "actionPayload",
+        "executionTime"
+      ],
+      "members":{
+        "actionId":{
+          "shape":"ID",
+          "documentation":"<p>The ID of the action.</p>"
+        },
+        "targetResource":{
+          "shape":"TargetResource",
+          "documentation":"<p>The resource the action will be taken on.</p>"
+        },
+        "actionDefinitionId":{
+          "shape":"ID",
+          "documentation":"<p>The ID of the action definition.</p>"
+        },
+        "actionPayload":{
+          "shape":"ActionPayload",
+          "documentation":"<p>The JSON payload of the action.</p>"
+        },
+        "executionTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time the action was executed.</p>"
+        }
+      }
+    },
+    "DescribeAssetCompositeModelRequest":{
+      "type":"structure",
+      "required":[
+        "assetId",
+        "assetCompositeModelId"
+      ],
+      "members":{
+        "assetId":{
+          "shape":"CustomID",
+          "documentation":"<p>The ID of the asset. This can be either the actual ID in UUID format, or else <code>externalId:</code> followed by the external ID, if it has one. For more information, see <a href=\"https://docs.aws.amazon.com/iot-sitewise/latest/userguide/object-ids.html#external-id-references\">Referencing objects with external IDs</a> in the <i>IoT SiteWise User Guide</i>.</p>",
+          "location":"uri",
+          "locationName":"assetId"
+        },
+        "assetCompositeModelId":{
+          "shape":"CustomID",
+          "documentation":"<p>The ID of a composite model on this asset. This can be either the actual ID in UUID format, or else <code>externalId:</code> followed by the external ID, if it has one. For more information, see <a href=\"https://docs.aws.amazon.com/iot-sitewise/latest/userguide/object-ids.html#external-id-references\">Referencing objects with external IDs</a> in the <i>IoT SiteWise User Guide</i>.</p>",
+          "location":"uri",
+          "locationName":"assetCompositeModelId"
+        }
+      }
+    },
+    "DescribeAssetCompositeModelResponse":{
+      "type":"structure",
+      "required":[
+        "assetId",
+        "assetCompositeModelId",
+        "assetCompositeModelPath",
+        "assetCompositeModelName",
+        "assetCompositeModelDescription",
+        "assetCompositeModelType",
+        "assetCompositeModelProperties",
+        "assetCompositeModelSummaries"
+      ],
+      "members":{
+        "assetId":{
+          "shape":"ID",
+          "documentation":"<p>The ID of the asset, in UUID format. This ID uniquely identifies the asset within IoT SiteWise and can be used with other IoT SiteWise APIs.</p>"
+        },
+        "assetCompositeModelId":{
+          "shape":"ID",
+          "documentation":"<p>The ID of a composite model on this asset.</p>"
+        },
+        "assetCompositeModelExternalId":{
+          "shape":"ExternalId",
+          "documentation":"<p>An external ID to assign to the asset model.</p> <p>If the composite model is a component-based composite model, or one nested inside a component model, you can only set the external ID using <code>UpdateAssetModelCompositeModel</code> and specifying the derived ID of the model or property from the created model it's a part of.</p>"
+        },
+        "assetCompositeModelPath":{
+          "shape":"AssetCompositeModelPath",
+          "documentation":"<p>The path to the composite model listing the parent composite models.</p>"
+        },
+        "assetCompositeModelName":{
+          "shape":"Name",
+          "documentation":"<p>The unique, friendly name for the composite model.</p>"
+        },
+        "assetCompositeModelDescription":{
+          "shape":"Description",
+          "documentation":"<p>A description for the composite model.</p>"
+        },
+        "assetCompositeModelType":{
+          "shape":"Name",
+          "documentation":"<p>The composite model type. Valid values are <code>AWS/ALARM</code>, <code>CUSTOM</code>, or <code> AWS/L4E_ANOMALY</code>.</p>"
+        },
+        "assetCompositeModelProperties":{
+          "shape":"AssetProperties",
+          "documentation":"<p>The property definitions of the composite model that was used to create the asset.</p>"
+        },
+        "assetCompositeModelSummaries":{
+          "shape":"AssetCompositeModelSummaries",
+          "documentation":"<p>The list of composite model summaries.</p>"
+        },
+        "actionDefinitions":{
+          "shape":"ActionDefinitions",
+          "documentation":"<p>The available actions for a composite model on this asset.</p>"
+        }
+      }
+    },
+    "DescribeAssetModelCompositeModelRequest":{
+      "type":"structure",
+      "required":[
+        "assetModelId",
+        "assetModelCompositeModelId"
+      ],
+      "members":{
+        "assetModelId":{
+          "shape":"CustomID",
+          "documentation":"<p>The ID of the asset model. This can be either the actual ID in UUID format, or else <code>externalId:</code> followed by the external ID, if it has one. For more information, see <a href=\"https://docs.aws.amazon.com/iot-sitewise/latest/userguide/object-ids.html#external-id-references\">Referencing objects with external IDs</a> in the <i>IoT SiteWise User Guide</i>.</p>",
+          "location":"uri",
+          "locationName":"assetModelId"
+        },
+        "assetModelCompositeModelId":{
+          "shape":"CustomID",
+          "documentation":"<p>The ID of a composite model on this asset model. This can be either the actual ID in UUID format, or else <code>externalId:</code> followed by the external ID, if it has one. For more information, see <a href=\"https://docs.aws.amazon.com/iot-sitewise/latest/userguide/object-ids.html#external-id-references\">Referencing objects with external IDs</a> in the <i>IoT SiteWise User Guide</i>.</p>",
+          "location":"uri",
+          "locationName":"assetModelCompositeModelId"
+        }
+      }
+    },
+    "DescribeAssetModelCompositeModelResponse":{
+      "type":"structure",
+      "required":[
+        "assetModelId",
+        "assetModelCompositeModelId",
+        "assetModelCompositeModelPath",
+        "assetModelCompositeModelName",
+        "assetModelCompositeModelDescription",
+        "assetModelCompositeModelType",
+        "assetModelCompositeModelProperties",
+        "assetModelCompositeModelSummaries"
+      ],
+      "members":{
+        "assetModelId":{
+          "shape":"ID",
+          "documentation":"<p>The ID of the asset model, in UUID format.</p>"
+        },
+        "assetModelCompositeModelId":{
+          "shape":"ID",
+          "documentation":"<p>The ID of a composite model on this asset model.</p>"
+        },
+        "assetModelCompositeModelExternalId":{
+          "shape":"ExternalId",
+          "documentation":"<p>The external ID of a composite model on this asset model.</p>"
+        },
+        "assetModelCompositeModelPath":{
+          "shape":"AssetModelCompositeModelPath",
+          "documentation":"<p>The path to the composite model listing the parent composite models.</p>"
+        },
+        "assetModelCompositeModelName":{
+          "shape":"Name",
+          "documentation":"<p>The unique, friendly name for the composite model.</p>"
+        },
+        "assetModelCompositeModelDescription":{
+          "shape":"Description",
+          "documentation":"<p>The description for the composite model.</p>"
+        },
+        "assetModelCompositeModelType":{
+          "shape":"Name",
+          "documentation":"<p>The composite model type. Valid values are <code>AWS/ALARM</code>, <code>CUSTOM</code>, or <code> AWS/L4E_ANOMALY</code>.</p>"
+        },
+        "assetModelCompositeModelProperties":{
+          "shape":"AssetModelProperties",
+          "documentation":"<p>The property definitions of the composite model.</p>"
+        },
+        "compositionDetails":{
+          "shape":"CompositionDetails",
+          "documentation":"<p>Metadata for the composition relationship established by using <code>composedAssetModelId</code> in <a href=\"https://docs.aws.amazon.com/iot-sitewise/latest/APIReference/API_CreateAssetModelCompositeModel.html\"> <code>CreateAssetModelCompositeModel</code> </a>. For instance, an array detailing the path of the composition relationship for this composite model.</p>"
+        },
+        "assetModelCompositeModelSummaries":{
+          "shape":"AssetModelCompositeModelSummaries",
+          "documentation":"<p>The list of composite model summaries for the composite model.</p>"
+        },
+        "actionDefinitions":{
+          "shape":"ActionDefinitions",
+          "documentation":"<p>The available actions for a composite model on this asset model.</p>"
+        }
+      }
+    },
     "DescribeAssetModelRequest":{
       "type":"structure",
       "required":["assetModelId"],
       "members":{
         "assetModelId":{
-          "shape":"ID",
-          "documentation":"<p>The ID of the asset model.</p>",
+          "shape":"CustomID",
+          "documentation":"<p>The ID of the asset model. This can be either the actual ID in UUID format, or else <code>externalId:</code> followed by the external ID, if it has one. For more information, see <a href=\"https://docs.aws.amazon.com/iot-sitewise/latest/userguide/object-ids.html#external-id-references\">Referencing objects with external IDs</a> in the <i>IoT SiteWise User Guide</i>.</p>",
           "location":"uri",
           "locationName":"assetModelId"
         },
@@ -3876,7 +4851,7 @@
       "members":{
         "assetModelId":{
           "shape":"ID",
-          "documentation":"<p>The ID of the asset model.</p>"
+          "documentation":"<p>The ID of the asset model, in UUID format.</p>"
         },
         "assetModelArn":{
           "shape":"ARN",
@@ -3900,7 +4875,7 @@
         },
         "assetModelCompositeModels":{
           "shape":"AssetModelCompositeModels",
-          "documentation":"<p>The list of composite asset models for the asset model.</p>"
+          "documentation":"<p>The list of built-in composite models for the asset model, such as those with those of type <code>AWS/ALARMS</code>.</p>"
         },
         "assetModelCreationDate":{
           "shape":"Timestamp",
@@ -3913,6 +4888,18 @@
         "assetModelStatus":{
           "shape":"AssetModelStatus",
           "documentation":"<p>The current status of the asset model, which contains a state and any error message.</p>"
+        },
+        "assetModelType":{
+          "shape":"AssetModelType",
+          "documentation":"<p>The type of asset model.</p> <ul> <li> <p> <b>ASSET_MODEL</b> – (default) An asset model that you can use to create assets. Can't be included as a component in another asset model.</p> </li> <li> <p> <b>COMPONENT_MODEL</b> – A reusable component that you can include in the composite models of other asset models. You can't create assets directly from this type of asset model. </p> </li> </ul>"
+        },
+        "assetModelCompositeModelSummaries":{
+          "shape":"AssetModelCompositeModelSummaries",
+          "documentation":"<p>The list of the immediate child custom composite model summaries for the asset model.</p>"
+        },
+        "assetModelExternalId":{
+          "shape":"ExternalId",
+          "documentation":"<p>The external ID of the asset model, if any.</p>"
         }
       }
     },
@@ -3924,14 +4911,14 @@
       ],
       "members":{
         "assetId":{
-          "shape":"ID",
-          "documentation":"<p>The ID of the asset.</p>",
+          "shape":"CustomID",
+          "documentation":"<p>The ID of the asset. This can be either the actual ID in UUID format, or else <code>externalId:</code> followed by the external ID, if it has one. For more information, see <a href=\"https://docs.aws.amazon.com/iot-sitewise/latest/userguide/object-ids.html#external-id-references\">Referencing objects with external IDs</a> in the <i>IoT SiteWise User Guide</i>.</p>",
           "location":"uri",
           "locationName":"assetId"
         },
         "propertyId":{
-          "shape":"ID",
-          "documentation":"<p>The ID of the asset property.</p>",
+          "shape":"CustomID",
+          "documentation":"<p>The ID of the asset property. This can be either the actual ID in UUID format, or else <code>externalId:</code> followed by the external ID, if it has one. For more information, see <a href=\"https://docs.aws.amazon.com/iot-sitewise/latest/userguide/object-ids.html#external-id-references\">Referencing objects with external IDs</a> in the <i>IoT SiteWise User Guide</i>.</p>",
           "location":"uri",
           "locationName":"propertyId"
         }
@@ -3947,7 +4934,7 @@
       "members":{
         "assetId":{
           "shape":"ID",
-          "documentation":"<p>The ID of the asset.</p>"
+          "documentation":"<p>The ID of the asset, in UUID format.</p>"
         },
         "assetName":{
           "shape":"Name",
@@ -3955,7 +4942,7 @@
         },
         "assetModelId":{
           "shape":"ID",
-          "documentation":"<p>The ID of the asset model.</p>"
+          "documentation":"<p>The ID of the asset model, in UUID format.</p>"
         },
         "assetProperty":{
           "shape":"Property",
@@ -3963,7 +4950,11 @@
         },
         "compositeModel":{
           "shape":"CompositeModelProperty",
-          "documentation":"<p>The composite asset model that declares this asset property, if this asset property exists in a composite model.</p>"
+          "documentation":"<p>The composite model that declares this asset property, if this asset property exists in a composite model.</p>"
+        },
+        "assetExternalId":{
+          "shape":"ExternalId",
+          "documentation":"<p>The external ID of the asset. For more information, see <a href=\"https://docs.aws.amazon.com/iot-sitewise/latest/userguide/object-ids.html#external-ids\">Using external IDs</a> in the <i>IoT SiteWise User Guide</i>.</p>"
         }
       }
     },
@@ -3972,8 +4963,8 @@
       "required":["assetId"],
       "members":{
         "assetId":{
-          "shape":"ID",
-          "documentation":"<p>The ID of the asset.</p>",
+          "shape":"CustomID",
+          "documentation":"<p>The ID of the asset. This can be either the actual ID in UUID format, or else <code>externalId:</code> followed by the external ID, if it has one. For more information, see <a href=\"https://docs.aws.amazon.com/iot-sitewise/latest/userguide/object-ids.html#external-id-references\">Referencing objects with external IDs</a> in the <i>IoT SiteWise User Guide</i>.</p>",
           "location":"uri",
           "locationName":"assetId"
         },
@@ -4001,7 +4992,7 @@
       "members":{
         "assetId":{
           "shape":"ID",
-          "documentation":"<p>The ID of the asset.</p>"
+          "documentation":"<p>The ID of the asset, in UUID format.</p>"
         },
         "assetArn":{
           "shape":"ARN",
@@ -4042,6 +5033,14 @@
         "assetDescription":{
           "shape":"Description",
           "documentation":"<p>A description for the asset.</p>"
+        },
+        "assetCompositeModelSummaries":{
+          "shape":"AssetCompositeModelSummaries",
+          "documentation":"<p>The list of the immediate child custom composite model summaries for the asset.</p>"
+        },
+        "assetExternalId":{
+          "shape":"ExternalId",
+          "documentation":"<p>The external ID of the asset, if any.</p>"
         }
       }
     },
@@ -4081,7 +5080,7 @@
         },
         "jobStatus":{
           "shape":"JobStatus",
-          "documentation":"<p>The status of the bulk import job can be one of following values.</p> <ul> <li> <p> <code>PENDING</code> – IoT SiteWise is waiting for the current bulk import job to finish.</p> </li> <li> <p> <code>CANCELLED</code> – The bulk import job has been canceled.</p> </li> <li> <p> <code>RUNNING</code> – IoT SiteWise is processing your request to import your data from Amazon S3.</p> </li> <li> <p> <code>COMPLETED</code> – IoT SiteWise successfully completed your request to import data from Amazon S3.</p> </li> <li> <p> <code>FAILED</code> – IoT SiteWise couldn't process your request to import data from Amazon S3. You can use logs saved in the specified error report location in Amazon S3 to troubleshoot issues.</p> </li> <li> <p> <code>COMPLETED_WITH_FAILURES</code> – IoT SiteWise completed your request to import data from Amazon S3 with errors. You can use logs saved in the specified error report location in Amazon S3 to troubleshoot issues.</p> </li> </ul>"
+          "documentation":"<p>The status of the bulk import job can be one of following values:</p> <ul> <li> <p> <code>PENDING</code> – IoT SiteWise is waiting for the current bulk import job to finish.</p> </li> <li> <p> <code>CANCELLED</code> – The bulk import job has been canceled.</p> </li> <li> <p> <code>RUNNING</code> – IoT SiteWise is processing your request to import your data from Amazon S3.</p> </li> <li> <p> <code>COMPLETED</code> – IoT SiteWise successfully completed your request to import data from Amazon S3.</p> </li> <li> <p> <code>FAILED</code> – IoT SiteWise couldn't process your request to import data from Amazon S3. You can use logs saved in the specified error report location in Amazon S3 to troubleshoot issues.</p> </li> <li> <p> <code>COMPLETED_WITH_FAILURES</code> – IoT SiteWise completed your request to import data from Amazon S3 with errors. You can use logs saved in the specified error report location in Amazon S3 to troubleshoot issues.</p> </li> </ul>"
         },
         "jobRoleArn":{
           "shape":"ARN",
@@ -4106,6 +5105,14 @@
         "jobLastUpdateDate":{
           "shape":"Timestamp",
           "documentation":"<p>The date the job was last updated, in Unix epoch time.</p>"
+        },
+        "adaptiveIngestion":{
+          "shape":"AdaptiveIngestion",
+          "documentation":"<p>If set to true, ingest new data into IoT SiteWise storage. Measurements with notifications, metrics and transforms are computed. If set to false, historical data is ingested into IoT SiteWise as is.</p>"
+        },
+        "deleteFilesAfterImport":{
+          "shape":"DeleteFilesAfterImport",
+          "documentation":"<p>If set to true, your data files is deleted from S3, after ingestion into IoT SiteWise storage.</p>"
         }
       }
     },
@@ -4353,7 +5360,7 @@
         },
         "portalClientId":{
           "shape":"PortalClientId",
-          "documentation":"<p>The IAM Identity Center application generated client ID (used with IAM Identity Center APIs). IoT SiteWise includes <code>portalClientId</code> for only portals that use IAM Identity Center to authenticate users.</p>"
+          "documentation":"<p>The IAM Identity Center application generated client ID (used with IAM Identity Center API operations). IoT SiteWise includes <code>portalClientId</code> for only portals that use IAM Identity Center to authenticate users.</p>"
         },
         "portalStartUrl":{
           "shape":"Url",
@@ -4476,12 +5483,20 @@
         },
         "retentionPeriod":{
           "shape":"RetentionPeriod",
-          "documentation":"<p>How many days your data is kept in the hot tier. By default, your data is kept indefinitely in the hot tier.</p>"
+          "documentation":"<p>The number of days your data is kept in the hot tier. By default, your data is kept indefinitely in the hot tier.</p>"
         },
         "configurationStatus":{"shape":"ConfigurationStatus"},
         "lastUpdateDate":{
           "shape":"Timestamp",
           "documentation":"<p>The date the storage configuration was last updated, in Unix epoch time.</p>"
+        },
+        "warmTier":{
+          "shape":"WarmTierState",
+          "documentation":"<p>A service managed storage tier optimized for analytical queries. It stores periodically uploaded, buffered and historical data ingested with the CreaeBulkImportJob API.</p>"
+        },
+        "warmTierRetentionPeriod":{
+          "shape":"WarmTierRetentionPeriod",
+          "documentation":"<p>Set this period to specify how long your data is stored in the warm tier before it is deleted. You can set this only if cold tier is enabled.</p>"
         }
       }
     },
@@ -4495,14 +5510,14 @@
           "locationName":"alias"
         },
         "assetId":{
-          "shape":"ID",
-          "documentation":"<p>The ID of the asset in which the asset property was created.</p>",
+          "shape":"CustomID",
+          "documentation":"<p>The ID of the asset in which the asset property was created. This can be either the actual ID in UUID format, or else <code>externalId:</code> followed by the external ID, if it has one. For more information, see <a href=\"https://docs.aws.amazon.com/iot-sitewise/latest/userguide/object-ids.html#external-id-references\">Referencing objects with external IDs</a> in the <i>IoT SiteWise User Guide</i>.</p>",
           "location":"querystring",
           "locationName":"assetId"
         },
         "propertyId":{
-          "shape":"ID",
-          "documentation":"<p>The ID of the asset property.</p>",
+          "shape":"CustomID",
+          "documentation":"<p>The ID of the asset property. This can be either the actual ID in UUID format, or else <code>externalId:</code> followed by the external ID, if it has one. For more information, see <a href=\"https://docs.aws.amazon.com/iot-sitewise/latest/userguide/object-ids.html#external-id-references\">Referencing objects with external IDs</a> in the <i>IoT SiteWise User Guide</i>.</p>",
           "location":"querystring",
           "locationName":"propertyId"
         }
@@ -4524,7 +5539,7 @@
         },
         "propertyId":{
           "shape":"ID",
-          "documentation":"<p>The ID of the asset property.</p>"
+          "documentation":"<p>The ID of the asset property, in UUID format.</p>"
         },
         "alias":{
           "shape":"PropertyAlias",
@@ -4601,18 +5616,18 @@
       ],
       "members":{
         "assetId":{
-          "shape":"ID",
-          "documentation":"<p>The ID of the parent asset from which to disassociate the child asset.</p>",
+          "shape":"CustomID",
+          "documentation":"<p>The ID of the parent asset from which to disassociate the child asset. This can be either the actual ID in UUID format, or else <code>externalId:</code> followed by the external ID, if it has one. For more information, see <a href=\"https://docs.aws.amazon.com/iot-sitewise/latest/userguide/object-ids.html#external-id-references\">Referencing objects with external IDs</a> in the <i>IoT SiteWise User Guide</i>.</p>",
           "location":"uri",
           "locationName":"assetId"
         },
         "hierarchyId":{
-          "shape":"ID",
-          "documentation":"<p>The ID of a hierarchy in the parent asset's model. Hierarchies allow different groupings of assets to be formed that all come from the same asset model. You can use the hierarchy ID to identify the correct asset to disassociate. For more information, see <a href=\"https://docs.aws.amazon.com/iot-sitewise/latest/userguide/asset-hierarchies.html\">Asset hierarchies</a> in the <i>IoT SiteWise User Guide</i>.</p>"
+          "shape":"CustomID",
+          "documentation":"<p>The ID of a hierarchy in the parent asset's model. (This can be either the actual ID in UUID format, or else <code>externalId:</code> followed by the external ID, if it has one. For more information, see <a href=\"https://docs.aws.amazon.com/iot-sitewise/latest/userguide/object-ids.html#external-id-references\">Referencing objects with external IDs</a> in the <i>IoT SiteWise User Guide</i>.) Hierarchies allow different groupings of assets to be formed that all come from the same asset model. You can use the hierarchy ID to identify the correct asset to disassociate. For more information, see <a href=\"https://docs.aws.amazon.com/iot-sitewise/latest/userguide/asset-hierarchies.html\">Asset hierarchies</a> in the <i>IoT SiteWise User Guide</i>.</p>"
         },
         "childAssetId":{
-          "shape":"ID",
-          "documentation":"<p>The ID of the child asset to disassociate.</p>"
+          "shape":"CustomID",
+          "documentation":"<p>The ID of the child asset to disassociate. This can be either the actual ID in UUID format, or else <code>externalId:</code> followed by the external ID, if it has one. For more information, see <a href=\"https://docs.aws.amazon.com/iot-sitewise/latest/userguide/object-ids.html#external-id-references\">Referencing objects with external IDs</a> in the <i>IoT SiteWise User Guide</i>.</p>"
         },
         "clientToken":{
           "shape":"ClientToken",
@@ -4636,14 +5651,14 @@
           "locationName":"alias"
         },
         "assetId":{
-          "shape":"ID",
-          "documentation":"<p>The ID of the asset in which the asset property was created.</p>",
+          "shape":"CustomID",
+          "documentation":"<p>The ID of the asset in which the asset property was created. This can be either the actual ID in UUID format, or else <code>externalId:</code> followed by the external ID, if it has one. For more information, see <a href=\"https://docs.aws.amazon.com/iot-sitewise/latest/userguide/object-ids.html#external-id-references\">Referencing objects with external IDs</a> in the <i>IoT SiteWise User Guide</i>.</p>",
           "location":"querystring",
           "locationName":"assetId"
         },
         "propertyId":{
-          "shape":"ID",
-          "documentation":"<p>The ID of the asset property.</p>",
+          "shape":"CustomID",
+          "documentation":"<p>The ID of the asset property. This can be either the actual ID in UUID format, or else <code>externalId:</code> followed by the external ID, if it has one. For more information, see <a href=\"https://docs.aws.amazon.com/iot-sitewise/latest/userguide/object-ids.html#external-id-references\">Referencing objects with external IDs</a> in the <i>IoT SiteWise User Guide</i>.</p>",
           "location":"querystring",
           "locationName":"propertyId"
         },
@@ -4730,6 +5745,86 @@
     },
     "ExceptionMessage":{"type":"string"},
     "ExcludeProperties":{"type":"boolean"},
+    "ExecuteActionRequest":{
+      "type":"structure",
+      "required":[
+        "targetResource",
+        "actionDefinitionId",
+        "actionPayload"
+      ],
+      "members":{
+        "targetResource":{
+          "shape":"TargetResource",
+          "documentation":"<p>The resource the action will be taken on.</p>"
+        },
+        "actionDefinitionId":{
+          "shape":"ID",
+          "documentation":"<p>The ID of the action definition.</p>"
+        },
+        "actionPayload":{
+          "shape":"ActionPayload",
+          "documentation":"<p>The JSON payload of the action.</p>"
+        },
+        "clientToken":{
+          "shape":"ClientToken",
+          "documentation":"<p>A unique case-sensitive identifier that you can provide to ensure the idempotency of the request. Don't reuse this client token if a new idempotent request is required.</p>"
+        }
+      }
+    },
+    "ExecuteActionResponse":{
+      "type":"structure",
+      "required":["actionId"],
+      "members":{
+        "actionId":{
+          "shape":"ID",
+          "documentation":"<p>The ID of the action.</p>"
+        }
+      }
+    },
+    "ExecuteQueryMaxResults":{
+      "type":"integer",
+      "min":1
+    },
+    "ExecuteQueryNextToken":{
+      "type":"string",
+      "max":4096,
+      "min":1
+    },
+    "ExecuteQueryRequest":{
+      "type":"structure",
+      "required":["queryStatement"],
+      "members":{
+        "queryStatement":{
+          "shape":"QueryStatement",
+          "documentation":"<p>The IoT SiteWise query statement.</p>"
+        },
+        "nextToken":{
+          "shape":"ExecuteQueryNextToken",
+          "documentation":"<p>The string that specifies the next page of results.</p>"
+        },
+        "maxResults":{
+          "shape":"ExecuteQueryMaxResults",
+          "documentation":"<p>The maximum number of results to return at one time. The default is 25.</p>"
+        }
+      }
+    },
+    "ExecuteQueryResponse":{
+      "type":"structure",
+      "members":{
+        "columns":{
+          "shape":"ColumnsList",
+          "documentation":"<p>Represents a single column in the query results.</p>"
+        },
+        "rows":{
+          "shape":"Rows",
+          "documentation":"<p>Represents a single row in the query results.</p>"
+        },
+        "nextToken":{
+          "shape":"ExecuteQueryNextToken",
+          "documentation":"<p>The string that specifies the next page of results.</p>"
+        }
+      }
+    },
     "Expression":{
       "type":"string",
       "max":1024,
@@ -4756,6 +5851,12 @@
     "ExpressionVariables":{
       "type":"list",
       "member":{"shape":"ExpressionVariable"}
+    },
+    "ExternalId":{
+      "type":"string",
+      "max":128,
+      "min":2,
+      "pattern":"[a-zA-Z0-9_][a-zA-Z_\\-0-9.:]*[a-zA-Z0-9_]+"
     },
     "File":{
       "type":"structure",
@@ -4784,10 +5885,14 @@
       "members":{
         "csv":{
           "shape":"Csv",
-          "documentation":"<p>The .csv file format.</p>"
+          "documentation":"<p>The file is in .CSV format.</p>"
+        },
+        "parquet":{
+          "shape":"Parquet",
+          "documentation":"<p>The file is in parquet format.</p>"
         }
       },
-      "documentation":"<p>The file format of the data.</p>"
+      "documentation":"<p>The file format of the data in S3.</p>"
     },
     "Files":{
       "type":"list",
@@ -4895,13 +6000,13 @@
       "members":{
         "assetId":{
           "shape":"ID",
-          "documentation":"<p>The ID of the asset.</p>",
+          "documentation":"<p>The ID of the asset, in UUID format.</p>",
           "location":"querystring",
           "locationName":"assetId"
         },
         "propertyId":{
           "shape":"ID",
-          "documentation":"<p>The ID of the asset property.</p>",
+          "documentation":"<p>The ID of the asset property, in UUID format.</p>",
           "location":"querystring",
           "locationName":"propertyId"
         },
@@ -4955,7 +6060,7 @@
         },
         "maxResults":{
           "shape":"GetAssetPropertyValueAggregatesMaxResults",
-          "documentation":"<p>The maximum number of results to return for each paginated request. A result set is returned in the two cases, whichever occurs first.</p> <ul> <li> <p>The size of the result set is equal to 1 MB.</p> </li> <li> <p>The number of data points in the result set is equal to the value of <code>maxResults</code>. The maximum value of <code>maxResults</code> is 250.</p> </li> </ul>",
+          "documentation":"<p>The maximum number of results to return for each paginated request. A result set is returned in the two cases, whichever occurs first.</p> <ul> <li> <p>The size of the result set is equal to 1 MB.</p> </li> <li> <p>The number of data points in the result set is equal to the value of <code>maxResults</code>. The maximum value of <code>maxResults</code> is 2500.</p> </li> </ul>",
           "location":"querystring",
           "locationName":"maxResults"
         }
@@ -4988,13 +6093,13 @@
       "members":{
         "assetId":{
           "shape":"ID",
-          "documentation":"<p>The ID of the asset.</p>",
+          "documentation":"<p>The ID of the asset, in UUID format.</p>",
           "location":"querystring",
           "locationName":"assetId"
         },
         "propertyId":{
           "shape":"ID",
-          "documentation":"<p>The ID of the asset property.</p>",
+          "documentation":"<p>The ID of the asset property, in UUID format.</p>",
           "location":"querystring",
           "locationName":"propertyId"
         },
@@ -5061,13 +6166,13 @@
       "members":{
         "assetId":{
           "shape":"ID",
-          "documentation":"<p>The ID of the asset.</p>",
+          "documentation":"<p>The ID of the asset, in UUID format.</p>",
           "location":"querystring",
           "locationName":"assetId"
         },
         "propertyId":{
           "shape":"ID",
-          "documentation":"<p>The ID of the asset property.</p>",
+          "documentation":"<p>The ID of the asset property, in UUID format.</p>",
           "location":"querystring",
           "locationName":"propertyId"
         },
@@ -5100,13 +6205,13 @@
       "members":{
         "assetId":{
           "shape":"ID",
-          "documentation":"<p>The ID of the asset.</p>",
+          "documentation":"<p>The ID of the asset, in UUID format.</p>",
           "location":"querystring",
           "locationName":"assetId"
         },
         "propertyId":{
           "shape":"ID",
-          "documentation":"<p>The ID of the asset property.</p>",
+          "documentation":"<p>The ID of the asset property, in UUID format.</p>",
           "location":"querystring",
           "locationName":"propertyId"
         },
@@ -5279,7 +6384,7 @@
           "documentation":"<p>An IAM role identity.</p>"
         }
       },
-      "documentation":"<p>Contains an identity that can access an IoT SiteWise Monitor resource.</p> <note> <p>Currently, you can't use Amazon Web Services APIs to retrieve IAM Identity Center identity IDs. You can find the IAM Identity Center identity IDs in the URL of user and group pages in the <a href=\"https://console.aws.amazon.com/singlesignon\">IAM Identity Center console</a>.</p> </note>"
+      "documentation":"<p>Contains an identity that can access an IoT SiteWise Monitor resource.</p> <note> <p>Currently, you can't use Amazon Web Services API operations to retrieve IAM Identity Center identity IDs. You can find the IAM Identity Center identity IDs in the URL of user and group pages in the <a href=\"https://console.aws.amazon.com/singlesignon\">IAM Identity Center console</a>.</p> </note>"
     },
     "IdentityId":{
       "type":"string",
@@ -5414,7 +6519,7 @@
       "members":{
         "fileFormat":{
           "shape":"FileFormat",
-          "documentation":"<p>The file format of the data in Amazon S3.</p>"
+          "documentation":"<p>The file format of the data in S3.</p>"
         }
       },
       "documentation":"<p>Contains the configuration information of a job, such as the file format used to save data in Amazon S3.</p>"
@@ -5452,10 +6557,10 @@
         },
         "status":{
           "shape":"JobStatus",
-          "documentation":"<p>The status of the bulk import job can be one of following values.</p> <ul> <li> <p> <code>PENDING</code> – IoT SiteWise is waiting for the current bulk import job to finish.</p> </li> <li> <p> <code>CANCELLED</code> – The bulk import job has been canceled.</p> </li> <li> <p> <code>RUNNING</code> – IoT SiteWise is processing your request to import your data from Amazon S3.</p> </li> <li> <p> <code>COMPLETED</code> – IoT SiteWise successfully completed your request to import data from Amazon S3.</p> </li> <li> <p> <code>FAILED</code> – IoT SiteWise couldn't process your request to import data from Amazon S3. You can use logs saved in the specified error report location in Amazon S3 to troubleshoot issues.</p> </li> <li> <p> <code>COMPLETED_WITH_FAILURES</code> – IoT SiteWise completed your request to import data from Amazon S3 with errors. You can use logs saved in the specified error report location in Amazon S3 to troubleshoot issues.</p> </li> </ul>"
+          "documentation":"<p>The status of the bulk import job can be one of following values:</p> <ul> <li> <p> <code>PENDING</code> – IoT SiteWise is waiting for the current bulk import job to finish.</p> </li> <li> <p> <code>CANCELLED</code> – The bulk import job has been canceled.</p> </li> <li> <p> <code>RUNNING</code> – IoT SiteWise is processing your request to import your data from Amazon S3.</p> </li> <li> <p> <code>COMPLETED</code> – IoT SiteWise successfully completed your request to import data from Amazon S3.</p> </li> <li> <p> <code>FAILED</code> – IoT SiteWise couldn't process your request to import data from Amazon S3. You can use logs saved in the specified error report location in Amazon S3 to troubleshoot issues.</p> </li> <li> <p> <code>COMPLETED_WITH_FAILURES</code> – IoT SiteWise completed your request to import data from Amazon S3 with errors. You can use logs saved in the specified error report location in Amazon S3 to troubleshoot issues.</p> </li> </ul>"
         }
       },
-      "documentation":"<p>Contains a job summary information.</p>"
+      "documentation":"<p>Contains the job summary information.</p>"
     },
     "KmsKeyId":{
       "type":"string",
@@ -5533,6 +6638,94 @@
         }
       }
     },
+    "ListActionsRequest":{
+      "type":"structure",
+      "required":[
+        "targetResourceType",
+        "targetResourceId"
+      ],
+      "members":{
+        "targetResourceType":{
+          "shape":"TargetResourceType",
+          "documentation":"<p>The type of resource.</p>",
+          "location":"querystring",
+          "locationName":"targetResourceType"
+        },
+        "targetResourceId":{
+          "shape":"CustomID",
+          "documentation":"<p>The ID of the target resource.</p>",
+          "location":"querystring",
+          "locationName":"targetResourceId"
+        },
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The token to be used for the next set of paginated results.</p>",
+          "location":"querystring",
+          "locationName":"nextToken"
+        },
+        "maxResults":{
+          "shape":"MaxResults",
+          "documentation":"<p>The maximum number of results to return for each paginated request.</p>",
+          "location":"querystring",
+          "locationName":"maxResults"
+        }
+      }
+    },
+    "ListActionsResponse":{
+      "type":"structure",
+      "required":[
+        "actionSummaries",
+        "nextToken"
+      ],
+      "members":{
+        "actionSummaries":{
+          "shape":"ActionSummaries",
+          "documentation":"<p>A list that summarizes the actions associated with the specified asset.</p>"
+        },
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The token for the next set of results, or null if there are no additional results.</p>"
+        }
+      }
+    },
+    "ListAssetModelCompositeModelsRequest":{
+      "type":"structure",
+      "required":["assetModelId"],
+      "members":{
+        "assetModelId":{
+          "shape":"CustomID",
+          "documentation":"<p>The ID of the asset model. This can be either the actual ID in UUID format, or else <code>externalId:</code> followed by the external ID, if it has one. For more information, see <a href=\"https://docs.aws.amazon.com/iot-sitewise/latest/userguide/object-ids.html#external-id-references\">Referencing objects with external IDs</a> in the <i>IoT SiteWise User Guide</i>.</p>",
+          "location":"uri",
+          "locationName":"assetModelId"
+        },
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The token to be used for the next set of paginated results.</p>",
+          "location":"querystring",
+          "locationName":"nextToken"
+        },
+        "maxResults":{
+          "shape":"MaxResults",
+          "documentation":"<p>The maximum number of results to return for each paginated request.</p> <p>Default: 50</p>",
+          "location":"querystring",
+          "locationName":"maxResults"
+        }
+      }
+    },
+    "ListAssetModelCompositeModelsResponse":{
+      "type":"structure",
+      "required":["assetModelCompositeModelSummaries"],
+      "members":{
+        "assetModelCompositeModelSummaries":{
+          "shape":"AssetModelCompositeModelSummaries",
+          "documentation":"<p>A list that summarizes each composite model.</p>"
+        },
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The token for the next set of results, or null if there are no additional results.</p>"
+        }
+      }
+    },
     "ListAssetModelPropertiesFilter":{
       "type":"string",
       "enum":[
@@ -5545,8 +6738,8 @@
       "required":["assetModelId"],
       "members":{
         "assetModelId":{
-          "shape":"ID",
-          "documentation":"<p>The ID of the asset model.</p>",
+          "shape":"CustomID",
+          "documentation":"<p>The ID of the asset model. This can be either the actual ID in UUID format, or else <code>externalId:</code> followed by the external ID, if it has one. For more information, see <a href=\"https://docs.aws.amazon.com/iot-sitewise/latest/userguide/object-ids.html#external-id-references\">Referencing objects with external IDs</a> in the <i>IoT SiteWise User Guide</i>.</p>",
           "location":"uri",
           "locationName":"assetModelId"
         },
@@ -5598,6 +6791,12 @@
           "documentation":"<p>The maximum number of results to return for each paginated request.</p> <p>Default: 50</p>",
           "location":"querystring",
           "locationName":"maxResults"
+        },
+        "assetModelTypes":{
+          "shape":"ListAssetModelsTypeFilter",
+          "documentation":"<p>The type of asset model.</p> <ul> <li> <p> <b>ASSET_MODEL</b> – (default) An asset model that you can use to create assets. Can't be included as a component in another asset model.</p> </li> <li> <p> <b>COMPONENT_MODEL</b> – A reusable component that you can include in the composite models of other asset models. You can't create assets directly from this type of asset model. </p> </li> </ul>",
+          "location":"querystring",
+          "locationName":"assetModelTypes"
         }
       }
     },
@@ -5615,6 +6814,10 @@
         }
       }
     },
+    "ListAssetModelsTypeFilter":{
+      "type":"list",
+      "member":{"shape":"AssetModelType"}
+    },
     "ListAssetPropertiesFilter":{
       "type":"string",
       "enum":[
@@ -5627,8 +6830,8 @@
       "required":["assetId"],
       "members":{
         "assetId":{
-          "shape":"ID",
-          "documentation":"<p>The ID of the asset.</p>",
+          "shape":"CustomID",
+          "documentation":"<p>The ID of the asset. This can be either the actual ID in UUID format, or else <code>externalId:</code> followed by the external ID, if it has one. For more information, see <a href=\"https://docs.aws.amazon.com/iot-sitewise/latest/userguide/object-ids.html#external-id-references\">Referencing objects with external IDs</a> in the <i>IoT SiteWise User Guide</i>.</p>",
           "location":"uri",
           "locationName":"assetId"
         },
@@ -5674,8 +6877,8 @@
       ],
       "members":{
         "assetId":{
-          "shape":"ID",
-          "documentation":"<p>The ID of the asset.</p>",
+          "shape":"CustomID",
+          "documentation":"<p>The ID of the asset. This can be either the actual ID in UUID format, or else <code>externalId:</code> followed by the external ID, if it has one. For more information, see <a href=\"https://docs.aws.amazon.com/iot-sitewise/latest/userguide/object-ids.html#external-id-references\">Referencing objects with external IDs</a> in the <i>IoT SiteWise User Guide</i>.</p>",
           "location":"uri",
           "locationName":"assetId"
         },
@@ -5736,8 +6939,8 @@
           "locationName":"maxResults"
         },
         "assetModelId":{
-          "shape":"ID",
-          "documentation":"<p>The ID of the asset model by which to filter the list of assets. This parameter is required if you choose <code>ALL</code> for <code>filter</code>.</p>",
+          "shape":"CustomID",
+          "documentation":"<p>The ID of the asset model by which to filter the list of assets. This parameter is required if you choose <code>ALL</code> for <code>filter</code>. This can be either the actual ID in UUID format, or else <code>externalId:</code> followed by the external ID, if it has one. For more information, see <a href=\"https://docs.aws.amazon.com/iot-sitewise/latest/userguide/object-ids.html#external-id-references\">Referencing objects with external IDs</a> in the <i>IoT SiteWise User Guide</i>.</p>",
           "location":"querystring",
           "locationName":"assetModelId"
         },
@@ -5768,14 +6971,14 @@
       "required":["assetId"],
       "members":{
         "assetId":{
-          "shape":"ID",
-          "documentation":"<p>The ID of the asset to query.</p>",
+          "shape":"CustomID",
+          "documentation":"<p>The ID of the asset to query. This can be either the actual ID in UUID format, or else <code>externalId:</code> followed by the external ID, if it has one. For more information, see <a href=\"https://docs.aws.amazon.com/iot-sitewise/latest/userguide/object-ids.html#external-id-references\">Referencing objects with external IDs</a> in the <i>IoT SiteWise User Guide</i>.</p>",
           "location":"uri",
           "locationName":"assetId"
         },
         "hierarchyId":{
-          "shape":"ID",
-          "documentation":"<p>The ID of the hierarchy by which child assets are associated to the asset. To find a hierarchy ID, use the <a href=\"https://docs.aws.amazon.com/iot-sitewise/latest/APIReference/API_DescribeAsset.html\">DescribeAsset</a> or <a href=\"https://docs.aws.amazon.com/iot-sitewise/latest/APIReference/API_DescribeAssetModel.html\">DescribeAssetModel</a> operations. This parameter is required if you choose <code>CHILD</code> for <code>traversalDirection</code>.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/iot-sitewise/latest/userguide/asset-hierarchies.html\">Asset hierarchies</a> in the <i>IoT SiteWise User Guide</i>.</p>",
+          "shape":"CustomID",
+          "documentation":"<p>The ID of the hierarchy by which child assets are associated to the asset. (This can be either the actual ID in UUID format, or else <code>externalId:</code> followed by the external ID, if it has one. For more information, see <a href=\"https://docs.aws.amazon.com/iot-sitewise/latest/userguide/object-ids.html#external-id-references\">Referencing objects with external IDs</a> in the <i>IoT SiteWise User Guide</i>.) To find a hierarchy ID, use the <a href=\"https://docs.aws.amazon.com/iot-sitewise/latest/APIReference/API_DescribeAsset.html\">DescribeAsset</a> or <a href=\"https://docs.aws.amazon.com/iot-sitewise/latest/APIReference/API_DescribeAssetModel.html\">DescribeAssetModel</a> operations. This parameter is required if you choose <code>CHILD</code> for <code>traversalDirection</code>.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/iot-sitewise/latest/userguide/asset-hierarchies.html\">Asset hierarchies</a> in the <i>IoT SiteWise User Guide</i>.</p>",
           "location":"querystring",
           "locationName":"hierarchyId"
         },
@@ -5855,6 +7058,44 @@
         "jobSummaries":{
           "shape":"JobSummaries",
           "documentation":"<p>One or more job summaries to list.</p>"
+        },
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The token for the next set of results, or null if there are no additional results.</p>"
+        }
+      }
+    },
+    "ListCompositionRelationshipsRequest":{
+      "type":"structure",
+      "required":["assetModelId"],
+      "members":{
+        "assetModelId":{
+          "shape":"ID",
+          "documentation":"<p>The ID of the asset model. This can be either the actual ID in UUID format, or else <code>externalId:</code> followed by the external ID, if it has one. For more information, see <a href=\"https://docs.aws.amazon.com/iot-sitewise/latest/userguide/object-ids.html#external-id-references\">Referencing objects with external IDs</a> in the <i>IoT SiteWise User Guide</i>.</p>",
+          "location":"uri",
+          "locationName":"assetModelId"
+        },
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The token to be used for the next set of paginated results.</p>",
+          "location":"querystring",
+          "locationName":"nextToken"
+        },
+        "maxResults":{
+          "shape":"MaxResults",
+          "documentation":"<p>The maximum number of results to return for each paginated request.</p> <p>Default: 50</p>",
+          "location":"querystring",
+          "locationName":"maxResults"
+        }
+      }
+    },
+    "ListCompositionRelationshipsResponse":{
+      "type":"structure",
+      "required":["compositionRelationshipSummaries"],
+      "members":{
+        "compositionRelationshipSummaries":{
+          "shape":"CompositionRelationshipSummaries",
+          "documentation":"<p>A list that summarizes each composition relationship.</p>"
         },
         "nextToken":{
           "shape":"NextToken",
@@ -6074,8 +7315,8 @@
           "locationName":"maxResults"
         },
         "assetId":{
-          "shape":"ID",
-          "documentation":"<p>The ID of the asset in which the asset property was created.</p>",
+          "shape":"CustomID",
+          "documentation":"<p>The ID of the asset in which the asset property was created. This can be either the actual ID in UUID format, or else <code>externalId:</code> followed by the external ID, if it has one. For more information, see <a href=\"https://docs.aws.amazon.com/iot-sitewise/latest/userguide/object-ids.html#external-id-references\">Referencing objects with external IDs</a> in the <i>IoT SiteWise User Guide</i>.</p>",
           "location":"querystring",
           "locationName":"assetId"
         },
@@ -6263,6 +7504,10 @@
       "min":1,
       "pattern":"[A-Za-z0-9+/=]+"
     },
+    "NullableBoolean":{
+      "type":"boolean",
+      "box":true
+    },
     "NumberOfDays":{
       "type":"integer",
       "min":30
@@ -6276,6 +7521,12 @@
       "type":"integer",
       "max":999999999,
       "min":0
+    },
+    "Parquet":{
+      "type":"structure",
+      "members":{
+      },
+      "documentation":"<p>A parquet file.</p>"
     },
     "Permission":{
       "type":"string",
@@ -6451,6 +7702,14 @@
         "type":{
           "shape":"PropertyType",
           "documentation":"<p>The property type (see <code>PropertyType</code>). A property contains one type.</p>"
+        },
+        "path":{
+          "shape":"AssetPropertyPath",
+          "documentation":"<p>The structured path to the property from the root of the asset.</p>"
+        },
+        "externalId":{
+          "shape":"ExternalId",
+          "documentation":"<p>The external ID of the asset property. For more information, see <a href=\"https://docs.aws.amazon.com/iot-sitewise/latest/userguide/object-ids.html#external-ids\">Using external IDs</a> in the <i>IoT SiteWise User Guide</i>.</p>"
         }
       },
       "documentation":"<p>Contains asset property information.</p>"
@@ -6628,7 +7887,15 @@
           "shape":"DisassociatedDataStorageState",
           "documentation":"<p>Contains the storage configuration for time series (data streams) that aren't associated with asset properties. The <code>disassociatedDataStorage</code> can be one of the following values:</p> <ul> <li> <p> <code>ENABLED</code> – IoT SiteWise accepts time series that aren't associated with asset properties.</p> <important> <p>After the <code>disassociatedDataStorage</code> is enabled, you can't disable it.</p> </important> </li> <li> <p> <code>DISABLED</code> – IoT SiteWise doesn't accept time series (data streams) that aren't associated with asset properties.</p> </li> </ul> <p>For more information, see <a href=\"https://docs.aws.amazon.com/iot-sitewise/latest/userguide/data-streams.html\">Data streams</a> in the <i>IoT SiteWise User Guide</i>.</p>"
         },
-        "retentionPeriod":{"shape":"RetentionPeriod"}
+        "retentionPeriod":{"shape":"RetentionPeriod"},
+        "warmTier":{
+          "shape":"WarmTierState",
+          "documentation":"<p>A service managed storage tier optimized for analytical queries. It stores periodically uploaded, buffered and historical data ingested with the CreaeBulkImportJob API.</p>"
+        },
+        "warmTierRetentionPeriod":{
+          "shape":"WarmTierRetentionPeriod",
+          "documentation":"<p>Set this period to specify how long your data is stored in the warm tier before it is deleted. You can set this only if cold tier is enabled.</p>"
+        }
       }
     },
     "PutStorageConfigurationResponse":{
@@ -6651,7 +7918,15 @@
           "documentation":"<p>Contains the storage configuration for time series (data streams) that aren't associated with asset properties. The <code>disassociatedDataStorage</code> can be one of the following values:</p> <ul> <li> <p> <code>ENABLED</code> – IoT SiteWise accepts time series that aren't associated with asset properties.</p> <important> <p>After the <code>disassociatedDataStorage</code> is enabled, you can't disable it.</p> </important> </li> <li> <p> <code>DISABLED</code> – IoT SiteWise doesn't accept time series (data streams) that aren't associated with asset properties.</p> </li> </ul> <p>For more information, see <a href=\"https://docs.aws.amazon.com/iot-sitewise/latest/userguide/data-streams.html\">Data streams</a> in the <i>IoT SiteWise User Guide</i>.</p>"
         },
         "retentionPeriod":{"shape":"RetentionPeriod"},
-        "configurationStatus":{"shape":"ConfigurationStatus"}
+        "configurationStatus":{"shape":"ConfigurationStatus"},
+        "warmTier":{
+          "shape":"WarmTierState",
+          "documentation":"<p>A service managed storage tier optimized for analytical queries. It stores periodically uploaded, buffered and historical data ingested with the CreaeBulkImportJob API.</p>"
+        },
+        "warmTierRetentionPeriod":{
+          "shape":"WarmTierRetentionPeriod",
+          "documentation":"<p>Set this period to specify how long your data is stored in the warm tier before it is deleted. You can set this only if cold tier is enabled.</p>"
+        }
       }
     },
     "Qualities":{
@@ -6667,6 +7942,20 @@
         "BAD",
         "UNCERTAIN"
       ]
+    },
+    "QueryStatement":{
+      "type":"string",
+      "min":1,
+      "pattern":"^[\\s\\S]+$"
+    },
+    "QueryTimeoutException":{
+      "type":"structure",
+      "members":{
+        "message":{"shape":"errorMessage"}
+      },
+      "documentation":"<p>The query timed out.</p>",
+      "error":{"httpStatusCode":400},
+      "exception":true
     },
     "Resolution":{
       "type":"string",
@@ -6741,7 +8030,22 @@
           "documentation":"<p>If true, your data is kept indefinitely.</p> <note> <p>If configured to <code>true</code>, you must not specify a value for the <code>numberOfDays</code> parameter.</p> </note>"
         }
       },
-      "documentation":"<p>How many days your data is kept in the hot tier. By default, your data is kept indefinitely in the hot tier.</p>"
+      "documentation":"<p>The number of days your data is kept in the hot tier. By default, your data is kept indefinitely in the hot tier.</p>"
+    },
+    "Row":{
+      "type":"structure",
+      "required":["data"],
+      "members":{
+        "data":{
+          "shape":"DatumList",
+          "documentation":"<p>List of data points in a single row of the result set.</p>"
+        }
+      },
+      "documentation":"<p>Represents a single row in the query results.</p>"
+    },
+    "Rows":{
+      "type":"list",
+      "member":{"shape":"Row"}
     },
     "SSOApplicationId":{
       "type":"string",
@@ -6749,6 +8053,17 @@
       "min":1,
       "pattern":"^[!-~]*"
     },
+    "ScalarType":{
+      "type":"string",
+      "enum":[
+        "BOOLEAN",
+        "INT",
+        "DOUBLE",
+        "TIMESTAMP",
+        "STRING"
+      ]
+    },
+    "ScalarValue":{"type":"string"},
     "ServiceUnavailableException":{
       "type":"structure",
       "required":["message"],
@@ -6815,6 +8130,21 @@
       "max":256,
       "min":0
     },
+    "TargetResource":{
+      "type":"structure",
+      "required":["assetId"],
+      "members":{
+        "assetId":{
+          "shape":"CustomID",
+          "documentation":"<p>The ID of the asset, in UUID format.</p>"
+        }
+      },
+      "documentation":"<p>The resource the action will be taken on.</p>"
+    },
+    "TargetResourceType":{
+      "type":"string",
+      "enum":["ASSET"]
+    },
     "ThrottlingException":{
       "type":"structure",
       "required":["message"],
@@ -6877,7 +8207,7 @@
         },
         "propertyId":{
           "shape":"ID",
-          "documentation":"<p>The ID of the asset property.</p>"
+          "documentation":"<p>The ID of the asset property, in UUID format.</p>"
         },
         "alias":{
           "shape":"PropertyAlias",
@@ -7064,6 +8394,63 @@
       "members":{
       }
     },
+    "UpdateAssetModelCompositeModelRequest":{
+      "type":"structure",
+      "required":[
+        "assetModelId",
+        "assetModelCompositeModelId",
+        "assetModelCompositeModelName"
+      ],
+      "members":{
+        "assetModelId":{
+          "shape":"CustomID",
+          "documentation":"<p>The ID of the asset model, in UUID format.</p>",
+          "location":"uri",
+          "locationName":"assetModelId"
+        },
+        "assetModelCompositeModelId":{
+          "shape":"CustomID",
+          "documentation":"<p>The ID of a composite model on this asset model.</p>",
+          "location":"uri",
+          "locationName":"assetModelCompositeModelId"
+        },
+        "assetModelCompositeModelExternalId":{
+          "shape":"ExternalId",
+          "documentation":"<p>An external ID to assign to the asset model. You can only set the external ID of the asset model if it wasn't set when it was created, or you're setting it to the exact same thing as when it was created.</p>"
+        },
+        "assetModelCompositeModelDescription":{
+          "shape":"Description",
+          "documentation":"<p>A description for the composite model.</p>"
+        },
+        "assetModelCompositeModelName":{
+          "shape":"Name",
+          "documentation":"<p>A unique, friendly name for the composite model.</p>"
+        },
+        "clientToken":{
+          "shape":"ClientToken",
+          "documentation":"<p>A unique case-sensitive identifier that you can provide to ensure the idempotency of the request. Don't reuse this client token if a new idempotent request is required.</p>",
+          "idempotencyToken":true
+        },
+        "assetModelCompositeModelProperties":{
+          "shape":"AssetModelProperties",
+          "documentation":"<p>The property definitions of the composite model. For more information, see &lt;LINK&gt;.</p> <p>You can specify up to 200 properties per composite model. For more information, see <a href=\"https://docs.aws.amazon.com/iot-sitewise/latest/userguide/quotas.html\">Quotas</a> in the <i>IoT SiteWise User Guide</i>.</p>"
+        }
+      }
+    },
+    "UpdateAssetModelCompositeModelResponse":{
+      "type":"structure",
+      "required":[
+        "assetModelCompositeModelPath",
+        "assetModelStatus"
+      ],
+      "members":{
+        "assetModelCompositeModelPath":{
+          "shape":"AssetModelCompositeModelPath",
+          "documentation":"<p>The path to the composite model listing the parent composite models.</p>"
+        },
+        "assetModelStatus":{"shape":"AssetModelStatus"}
+      }
+    },
     "UpdateAssetModelRequest":{
       "type":"structure",
       "required":[
@@ -7072,8 +8459,8 @@
       ],
       "members":{
         "assetModelId":{
-          "shape":"ID",
-          "documentation":"<p>The ID of the asset model to update.</p>",
+          "shape":"CustomID",
+          "documentation":"<p>The ID of the asset model to update. This can be either the actual ID in UUID format, or else <code>externalId:</code> followed by the external ID, if it has one. For more information, see <a href=\"https://docs.aws.amazon.com/iot-sitewise/latest/userguide/object-ids.html#external-id-references\">Referencing objects with external IDs</a> in the <i>IoT SiteWise User Guide</i>.</p>",
           "location":"uri",
           "locationName":"assetModelId"
         },
@@ -7095,12 +8482,16 @@
         },
         "assetModelCompositeModels":{
           "shape":"AssetModelCompositeModels",
-          "documentation":"<p>The composite asset models that are part of this asset model. Composite asset models are asset models that contain specific properties. Each composite model has a type that defines the properties that the composite model supports. Use composite asset models to define alarms on this asset model.</p>"
+          "documentation":"<p>The composite models that are part of this asset model. It groups properties (such as attributes, measurements, transforms, and metrics) and child composite models that model parts of your industrial equipment. Each composite model has a type that defines the properties that the composite model supports. Use composite models to define alarms on this asset model.</p> <note> <p>When creating custom composite models, you need to use <a href=\"https://docs.aws.amazon.com/iot-sitewise/latest/APIReference/API_CreateAssetModelCompositeModel.html\">CreateAssetModelCompositeModel</a>. For more information, see &lt;LINK&gt;.</p> </note>"
         },
         "clientToken":{
           "shape":"ClientToken",
           "documentation":"<p>A unique case-sensitive identifier that you can provide to ensure the idempotency of the request. Don't reuse this client token if a new idempotent request is required.</p>",
           "idempotencyToken":true
+        },
+        "assetModelExternalId":{
+          "shape":"ExternalId",
+          "documentation":"<p>An external ID to assign to the asset model. The asset model must not already have an external ID. The external ID must be unique within your Amazon Web Services account. For more information, see <a href=\"https://docs.aws.amazon.com/iot-sitewise/latest/userguide/object-ids.html#external-ids\">Using external IDs</a> in the <i>IoT SiteWise User Guide</i>.</p>"
         }
       }
     },
@@ -7122,14 +8513,14 @@
       ],
       "members":{
         "assetId":{
-          "shape":"ID",
-          "documentation":"<p>The ID of the asset to be updated.</p>",
+          "shape":"CustomID",
+          "documentation":"<p>The ID of the asset to be updated. This can be either the actual ID in UUID format, or else <code>externalId:</code> followed by the external ID, if it has one. For more information, see <a href=\"https://docs.aws.amazon.com/iot-sitewise/latest/userguide/object-ids.html#external-id-references\">Referencing objects with external IDs</a> in the <i>IoT SiteWise User Guide</i>.</p>",
           "location":"uri",
           "locationName":"assetId"
         },
         "propertyId":{
-          "shape":"ID",
-          "documentation":"<p>The ID of the asset property to be updated.</p>",
+          "shape":"CustomID",
+          "documentation":"<p>The ID of the asset property to be updated. This can be either the actual ID in UUID format, or else <code>externalId:</code> followed by the external ID, if it has one. For more information, see <a href=\"https://docs.aws.amazon.com/iot-sitewise/latest/userguide/object-ids.html#external-id-references\">Referencing objects with external IDs</a> in the <i>IoT SiteWise User Guide</i>.</p>",
           "location":"uri",
           "locationName":"propertyId"
         },
@@ -7160,8 +8551,8 @@
       ],
       "members":{
         "assetId":{
-          "shape":"ID",
-          "documentation":"<p>The ID of the asset to update.</p>",
+          "shape":"CustomID",
+          "documentation":"<p>The ID of the asset to update. This can be either the actual ID in UUID format, or else <code>externalId:</code> followed by the external ID, if it has one. For more information, see <a href=\"https://docs.aws.amazon.com/iot-sitewise/latest/userguide/object-ids.html#external-id-references\">Referencing objects with external IDs</a> in the <i>IoT SiteWise User Guide</i>.</p>",
           "location":"uri",
           "locationName":"assetId"
         },
@@ -7177,6 +8568,10 @@
         "assetDescription":{
           "shape":"Description",
           "documentation":"<p>A description for the asset.</p>"
+        },
+        "assetExternalId":{
+          "shape":"ExternalId",
+          "documentation":"<p>An external ID to assign to the asset. The asset must not already have an external ID. The external ID must be unique within your Amazon Web Services account. For more information, see <a href=\"https://docs.aws.amazon.com/iot-sitewise/latest/userguide/object-ids.html#external-ids\">Using external IDs</a> in the <i>IoT SiteWise User Guide</i>.</p>"
         }
       }
     },
@@ -7395,6 +8790,15 @@
       },
       "documentation":"<p>Contains information for a user identity in an access policy.</p>"
     },
+    "ValidationException":{
+      "type":"structure",
+      "members":{
+        "message":{"shape":"errorMessage"}
+      },
+      "documentation":"<p>The validation failed for this query.</p>",
+      "error":{"httpStatusCode":400},
+      "exception":true
+    },
     "VariableName":{
       "type":"string",
       "max":64,
@@ -7403,15 +8807,18 @@
     },
     "VariableValue":{
       "type":"structure",
-      "required":["propertyId"],
       "members":{
         "propertyId":{
           "shape":"Macro",
-          "documentation":"<p>The ID of the property to use as the variable. You can use the property <code>name</code> if it's from the same asset model.</p>"
+          "documentation":"<p>The ID of the property to use as the variable. You can use the property <code>name</code> if it's from the same asset model. If the property has an external ID, you can specify <code>externalId:</code> followed by the external ID. For more information, see <a href=\"https://docs.aws.amazon.com/iot-sitewise/latest/userguide/object-ids.html#external-ids\">Using external IDs</a> in the <i>IoT SiteWise User Guide</i>.</p>"
         },
         "hierarchyId":{
           "shape":"Macro",
-          "documentation":"<p>The ID of the hierarchy to query for the property ID. You can use the hierarchy's name instead of the hierarchy's ID.</p> <p>You use a hierarchy ID instead of a model ID because you can have several hierarchies using the same model and therefore the same <code>propertyId</code>. For example, you might have separately grouped assets that come from the same asset model. For more information, see <a href=\"https://docs.aws.amazon.com/iot-sitewise/latest/userguide/asset-hierarchies.html\">Asset hierarchies</a> in the <i>IoT SiteWise User Guide</i>.</p>"
+          "documentation":"<p>The ID of the hierarchy to query for the property ID. You can use the hierarchy's name instead of the hierarchy's ID. If the hierarchy has an external ID, you can specify <code>externalId:</code> followed by the external ID. For more information, see <a href=\"https://docs.aws.amazon.com/iot-sitewise/latest/userguide/object-ids.html#external-ids\">Using external IDs</a> in the <i>IoT SiteWise User Guide</i>.</p> <p>You use a hierarchy ID instead of a model ID because you can have several hierarchies using the same model and therefore the same <code>propertyId</code>. For example, you might have separately grouped assets that come from the same asset model. For more information, see <a href=\"https://docs.aws.amazon.com/iot-sitewise/latest/userguide/asset-hierarchies.html\">Asset hierarchies</a> in the <i>IoT SiteWise User Guide</i>.</p>"
+        },
+        "propertyPath":{
+          "shape":"AssetModelPropertyPath",
+          "documentation":"<p>The path of the property.</p>"
         }
       },
       "documentation":"<p>Identifies a property value used in an expression.</p>"
@@ -7425,7 +8832,7 @@
         },
         "integerValue":{
           "shape":"PropertyValueIntegerValue",
-          "documentation":"<p>Asset property data of type integer (whole number).</p>"
+          "documentation":"<p>Asset property data of type integer (number that's greater than or equal to zero).</p>"
         },
         "doubleValue":{
           "shape":"PropertyValueDoubleValue",
@@ -7437,7 +8844,29 @@
         }
       },
       "documentation":"<p>Contains an asset property value (of a single type only).</p>"
-    }
+    },
+    "WarmTierRetentionPeriod":{
+      "type":"structure",
+      "members":{
+        "numberOfDays":{
+          "shape":"NumberOfDays",
+          "documentation":"<p>The number of days the data is stored in the warm tier.</p>"
+        },
+        "unlimited":{
+          "shape":"Unlimited",
+          "documentation":"<p>If set to true, the data is stored indefinitely in the warm tier.</p>"
+        }
+      },
+      "documentation":"<p>Set this period to specify how long your data is stored in the warm tier before it is deleted. You can set this only if cold tier is enabled.</p>"
+    },
+    "WarmTierState":{
+      "type":"string",
+      "enum":[
+        "ENABLED",
+        "DISABLED"
+      ]
+    },
+    "errorMessage":{"type":"string"}
   },
   "documentation":"<p>Welcome to the IoT SiteWise API Reference. IoT SiteWise is an Amazon Web Services service that connects <a href=\"https://en.wikipedia.org/wiki/Internet_of_things#Industrial_applications\">Industrial Internet of Things (IIoT)</a> devices to the power of the Amazon Web Services Cloud. For more information, see the <a href=\"https://docs.aws.amazon.com/iot-sitewise/latest/userguide/\">IoT SiteWise User Guide</a>. For information about IoT SiteWise quotas, see <a href=\"https://docs.aws.amazon.com/iot-sitewise/latest/userguide/quotas.html\">Quotas</a> in the <i>IoT SiteWise User Guide</i>.</p>"
 }

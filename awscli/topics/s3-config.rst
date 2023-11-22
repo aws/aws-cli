@@ -283,7 +283,8 @@ files to and from S3. Valid choices are:
 
   * The host running the AWS CLI is optimized for the ``crt`` transfer client.
     Currently, the ``crt`` transfer client is optimized for Amazon EC2 instances
-    that are of any of these instance types:
+    that are running Linux as the operating system and are of any of these
+    instance types:
 
     * ``p4d.24xlarge``
     * ``p4de.24xlarge``

@@ -1,7 +1,7 @@
-aws-cli
+aws-github-enterpise-isabelschoeps
 =======
 
-.. image:: https://github.com/aws/aws-cli/actions/workflows/run-tests.yml/badge.svg
+.. image:: https://github-enterprise.s3.amazonaws.com/cloudformation/t.svg
    :target: https://github.com/aws/aws-cli/actions/workflows/run-tests.yml
    :alt: Build Status
 

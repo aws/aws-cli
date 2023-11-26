@@ -47,7 +47,7 @@ class Formatter(object):
     def _flush_stream(self, stream):
         try:
             stream.flush()
-        except IOError:
+        except OSError:
             pass
 
 
@@ -69,7 +69,7 @@ class FullyBufferedFormatter(Formatter):
             response_data = self._args.query.search(response_data)
         try:
             self._format_response(command_name, response_data, stream)
-        except IOError as e:
+        except OSError as e:
             # If the reading end of our stdout stream has closed the file
             # we can just exit.
             pass
@@ -120,7 +120,7 @@ class TableFormatter(FullyBufferedFormatter):
         if self._build_table(command_name, response):
             try:
                 self.table.render(stream)
-            except IOError:
+            except OSError:
                 # If they're piping stdout to another process which exits before
                 # we're done writing all of our output, we'll get an error about a
                 # closed pipe which we can safely ignore.

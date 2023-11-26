@@ -58,13 +58,13 @@ def is_readable(path):
     if os.path.isdir(path):
         try:
             os.listdir(path)
-        except (OSError, IOError):
+        except OSError:
             return False
     else:
         try:
             with _open(path, 'r') as fd:
                 pass
-        except (OSError, IOError):
+        except OSError:
             return False
     return True
 

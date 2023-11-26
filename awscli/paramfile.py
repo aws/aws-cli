@@ -242,7 +242,7 @@ def get_file(prefix, path, mode):
             'Unable to load paramfile (%s), text contents could '
             'not be decoded.  If this is a binary file, please use the '
             'fileb:// prefix instead of the file:// prefix.' % file_path)
-    except (OSError, IOError) as e:
+    except OSError as e:
         raise ResourceLoadingError('Unable to load paramfile %s: %s' % (
             path, e))
 

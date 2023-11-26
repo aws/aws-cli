@@ -217,8 +217,8 @@ class OutputStreamFactory(object):
         try:
             process = self._popen(**popen_kwargs)
             yield process.stdin
-        except IOError:
-            # Ignore IOError since this can commonly be raised when a pager
+        except OSError:
+            # Ignore OSError since this can commonly be raised when a pager
             # is closed abruptly and causes a broken pipe.
             pass
         finally:

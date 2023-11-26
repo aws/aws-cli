@@ -156,7 +156,7 @@ class KubeconfigLoader(object):
         try:
             with open(path, "r") as stream:
                 loaded_content=ordered_yaml_load(stream)
-        except IOError as e:
+        except OSError as e:
             if e.errno == errno.ENOENT:
                 loaded_content=None
             else:
@@ -200,7 +200,7 @@ class KubeconfigWriter(object):
                         0o600),
                     "w+") as stream:
                 ordered_yaml_dump(config.content, stream)
-        except (IOError, OSError) as e:
+        except OSError as e:
             raise KubeconfigInaccessableError(
                 f"Can't open kubeconfig for writing: {e}")
 

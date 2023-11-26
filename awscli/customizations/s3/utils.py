@@ -255,7 +255,7 @@ def get_file_stat(path):
     """
     try:
         stats = os.stat(path)
-    except IOError as e:
+    except OSError as e:
         raise ValueError('Could not retrieve file stat of "%s": %s' % (
             path, e))
 

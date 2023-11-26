@@ -161,7 +161,7 @@ class ECSDeploy(BasicCommand):
         try:
             with compat_open(full_path) as f:
                 return f.read()
-        except (OSError, IOError, UnicodeDecodeError) as e:
+        except (OSError, UnicodeDecodeError) as e:
             raise exceptions.FileLoadError(
                 file_path=file_path, error=e)
 

@@ -18,14 +18,19 @@ from awscli.compat import six
 # If the user does not specify any overrides,
 # these are the default values we use for the s3 transfer
 # commands.
+import logging
+
+
+LOGGER = logging.getLogger(__name__)
+
 DEFAULTS = {
     'multipart_threshold': 8 * (1024 ** 2),
     'multipart_chunksize': 8 * (1024 ** 2),
     'max_concurrent_requests': 10,
     'max_queue_size': 1000,
     'max_bandwidth': None,
-    'preferred_transfer_client': constants.DEFAULT_TRANSFER_CLIENT,
-    'target_bandwidth': int(5 * (1024 ** 3) / 8),  # which is 5 Gb/s
+    'preferred_transfer_client': constants.AUTO_RESOLVE_TRANSFER_CLIENT,
+    'target_bandwidth': None,
 }
 
 
@@ -42,9 +47,15 @@ class RuntimeConfig(object):
     HUMAN_READABLE_RATES = ['max_bandwidth', 'target_bandwidth']
     SUPPORTED_CHOICES = {
         'preferred_transfer_client': [
-            constants.DEFAULT_TRANSFER_CLIENT,
+            constants.AUTO_RESOLVE_TRANSFER_CLIENT,
+            constants.CLASSIC_TRANSFER_CLIENT,
             constants.CRT_TRANSFER_CLIENT,
         ]
+    }
+    CHOICE_ALIASES = {
+        'preferred_transfer_client': {
+            'default': constants.CLASSIC_TRANSFER_CLIENT
+        }
     }
 
     @staticmethod
@@ -67,6 +78,7 @@ class RuntimeConfig(object):
             runtime_config.update(kwargs)
         self._convert_human_readable_sizes(runtime_config)
         self._convert_human_readable_rates(runtime_config)
+        self._resolve_choice_aliases(runtime_config)
         self._validate_config(runtime_config)
         return runtime_config
 
@@ -81,17 +93,62 @@ class RuntimeConfig(object):
             value = runtime_config.get(attr)
             if value is not None and not isinstance(value, six.integer_types):
                 if value.endswith('B/s'):
-                    runtime_config[attr] = human_readable_to_int(value[:-2])
+                    runtime_config[attr] = self._human_readable_rate_to_int(
+                        value
+                    )
                 elif value.endswith('b/s'):
-                    bits_per_sec = human_readable_to_int(value[:-2])
+                    bits_per_sec = self._human_readable_rate_to_int(value)
                     bytes_per_sec = int(bits_per_sec / 8)
                     runtime_config[attr] = bytes_per_sec
+                elif self._is_integer_str(value):
+                    runtime_config[attr] = int(value)
                 else:
                     raise InvalidConfigError(
                         'Invalid rate: %s. The value must be expressed '
-                        'as a rate in terms of bytes per second '
-                        '(e.g. 10MB/s or 800KB/s) or bits per '
+                        'as an integer in terms of bytes per second '
+                        '(e.g. 10485760) or a rate in terms of bytes '
+                        'per second (e.g. 10MB/s or 800KB/s) or bits per '
                         'second (e.g. 10Mb/s or 800Kb/s)' % value)
+
+    def _human_readable_rate_to_int(self, value):
+        # The human_readable_to_int() utility only supports integers (e.g. 1024)
+        # as strings and human readable sizes (e.g. 10MB, 5GB). It does not
+        # directly support human readable rates (e.g. 10MB/s, 5GB/s) nor human
+        # readable sizes that do not contain a magnitude prefix (e.g. 1024B).
+        # However, the rate configuration require the values end with "/s"
+        # and allows for values that do not have a magnitude prefix
+        # (e.g. 1024B/s).
+        #
+        # To account for these limitations:
+        #
+        # 1. If the human readable rate does not contain a magnitude prefix, it
+        #    will strip the "B/s" to provide the value as an integer string to
+        #    human_readable_int() (e.g. "1024B/s" -> "1024")
+        #
+        # 2. Otherwise, it will strip the "/s" to provide the value as a
+        #    human readable size to human_readable_int()
+        #    (e.g. "1024MB/s -> "1024MB")
+        if self._is_integer_str(value[:-3]):
+            return human_readable_to_int(value[:-3])
+        return human_readable_to_int(value[:-2])
+
+    def _is_integer_str(self, value):
+        try:
+            int(value)
+            return True
+        except ValueError:
+            return False
+
+    def _resolve_choice_aliases(self, runtime_config):
+        for attr in self.CHOICE_ALIASES:
+            current_value = runtime_config.get(attr)
+            if current_value in self.CHOICE_ALIASES[attr]:
+                resolved_value = self.CHOICE_ALIASES[attr][current_value]
+                LOGGER.debug(
+                    'Resolved %s configuration alias value "%s" to "%s"',
+                    attr, current_value, resolved_value
+                )
+                runtime_config[attr] = resolved_value
 
     def _validate_config(self, runtime_config):
         self._validate_positive_integers(runtime_config)

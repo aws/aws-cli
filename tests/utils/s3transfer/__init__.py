@@ -500,6 +500,9 @@ class NonSeekableReader(io.RawIOBase):
     def read(self, n=-1):
         return self._data.read(n)
 
+    def readinto(self, b):
+        return self._data.readinto(b)
+
 
 class NonSeekableWriter(io.RawIOBase):
     def __init__(self, fileobj):

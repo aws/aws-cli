@@ -97,7 +97,7 @@ def _get_config_contents(session):
 
 @pytest.fixture
 def preferred_transfer_client(request, aws_config_copy):
-    aws(f'configure set s3.preferred_transfer_client {request.param}')
+    configure_preferred_transfer_client(request.param)
 
 
 @pytest.fixture
@@ -143,6 +143,10 @@ def wait_for_process_exit(process, timeout=60):
                              "receiving a Ctrl+C" % timeout)
 
 
+def configure_preferred_transfer_client(value):
+    aws(f'configure set s3.preferred_transfer_client {value}')
+
+
 def _running_on_rhel():
     return (
         hasattr(platform, 'linux_distribution') and
@@ -150,7 +154,7 @@ def _running_on_rhel():
 
 
 @pytest.mark.parametrize(
-    'preferred_transfer_client', ['default', 'crt'], indirect=True
+    'preferred_transfer_client', ['classic', 'crt'], indirect=True
 )
 @pytest.mark.usefixtures('preferred_transfer_client')
 class BaseParameterizedS3ClientTest(BaseS3IntegrationTest):
@@ -1350,6 +1354,13 @@ class TestMemoryUtilization(BaseS3IntegrationTest):
     # lowered.
     runtime_margin = 1.5
     max_mem_allowed = runtime_margin * expected_memory_usage
+
+    @pytest.fixture(autouse=True)
+    def use_classic_transfer_client(self, aws_config_copy):
+        # This test class is only intended for memory utilization with
+        # the classic transfer client. This ensures that we are never
+        # auto resolved to the CRT transfer client for this test class.
+        configure_preferred_transfer_client('classic')
 
     def assert_max_memory_used(self, process, max_mem_allowed, full_command):
         peak_memory = max(process.memory_usage)

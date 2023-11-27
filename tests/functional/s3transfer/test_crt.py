@@ -11,6 +11,7 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 import fnmatch
+import io
 import threading
 import time
 from concurrent.futures import Future
@@ -18,7 +19,15 @@ from concurrent.futures import Future
 from botocore.session import Session
 
 from s3transfer.subscribers import BaseSubscriber
-from tests import HAS_CRT, FileCreator, mock, requires_crt, unittest
+from tests import (
+    HAS_CRT,
+    FileCreator,
+    NonSeekableReader,
+    NonSeekableWriter,
+    mock,
+    requires_crt,
+    unittest,
+)
 
 if HAS_CRT:
     import awscrt
@@ -60,13 +69,19 @@ class TestCRTTransferManager(unittest.TestCase):
         self.region = 'us-west-2'
         self.bucket = "test_bucket"
         self.key = "test_key"
+        self.expected_content = b'my content'
+        self.expected_download_content = b'new content'
         self.files = FileCreator()
-        self.filename = self.files.create_file('myfile', 'my content')
+        self.filename = self.files.create_file(
+            'myfile', self.expected_content, mode='wb'
+        )
         self.expected_path = "/" + self.bucket + "/" + self.key
         self.expected_host = "s3.%s.amazonaws.com" % (self.region)
         self.s3_request = mock.Mock(awscrt.s3.S3Request)
         self.s3_crt_client = mock.Mock(awscrt.s3.S3Client)
-        self.s3_crt_client.make_request.return_value = self.s3_request
+        self.s3_crt_client.make_request.side_effect = (
+            self._simulate_make_request_side_effect
+        )
         self.session = Session()
         self.session.set_config_variable('region', self.region)
         self.request_serializer = s3transfer.crt.BotocoreCRTRequestSerializer(
@@ -81,6 +96,44 @@ class TestCRTTransferManager(unittest.TestCase):
     def tearDown(self):
         self.files.remove_all()
 
+    def _assert_expected_crt_http_request(
+        self,
+        crt_http_request,
+        expected_http_method='GET',
+        expected_host=None,
+        expected_path=None,
+        expected_body_content=None,
+        expected_content_length=None,
+        expected_missing_headers=None,
+    ):
+        if expected_host is None:
+            expected_host = self.expected_host
+        if expected_path is None:
+            expected_path = self.expected_path
+        self.assertEqual(crt_http_request.method, expected_http_method)
+        self.assertEqual(crt_http_request.headers.get("host"), expected_host)
+        self.assertEqual(crt_http_request.path, expected_path)
+        if expected_body_content is not None:
+            # Note: The underlying CRT awscrt.io.InputStream does not expose
+            # a public read method so we have to reach into the private,
+            # underlying stream to determine the content. We should update
+            # to use a public interface if a public interface is ever exposed.
+            self.assertEqual(
+                crt_http_request.body_stream._stream.read(),
+                expected_body_content,
+            )
+        if expected_content_length is not None:
+            self.assertEqual(
+                crt_http_request.headers.get('Content-Length'),
+                str(expected_content_length),
+            )
+        if expected_missing_headers is not None:
+            header_names = [
+                header[0].lower() for header in crt_http_request.headers
+            ]
+            for expected_missing_header in expected_missing_headers:
+                self.assertNotIn(expected_missing_header.lower(), header_names)
+
     def _assert_subscribers_called(self, expected_future=None):
         self.assertTrue(self.record_subscriber.on_queued_called)
         self.assertTrue(self.record_subscriber.on_done_called)
@@ -92,6 +145,21 @@ class TestCRTTransferManager(unittest.TestCase):
                 self.record_subscriber.on_done_future, expected_future
             )
 
+    def _get_expected_upload_checksum_config(self, **overrides):
+        checksum_config_kwargs = {
+            'algorithm': awscrt.s3.S3ChecksumAlgorithm.CRC32,
+            'location': awscrt.s3.S3ChecksumLocation.TRAILER,
+        }
+        checksum_config_kwargs.update(overrides)
+        return awscrt.s3.S3ChecksumConfig(**checksum_config_kwargs)
+
+    def _get_expected_download_checksum_config(self, **overrides):
+        checksum_config_kwargs = {
+            'validate_response': True,
+        }
+        checksum_config_kwargs.update(overrides)
+        return awscrt.s3.S3ChecksumConfig(**checksum_config_kwargs)
+
     def _invoke_done_callbacks(self, **kwargs):
         callargs = self.s3_crt_client.make_request.call_args
         callargs_kwargs = callargs[1]
@@ -99,47 +167,213 @@ class TestCRTTransferManager(unittest.TestCase):
         on_done(error=None)
 
     def _simulate_file_download(self, recv_filepath):
-        self.files.create_file(recv_filepath, "fake response")
+        self.files.create_file(
+            recv_filepath, self.expected_download_content, mode='wb'
+        )
+
+    def _simulate_on_body_download(self, on_body_callback):
+        on_body_callback(chunk=self.expected_download_content, offset=0)
 
     def _simulate_make_request_side_effect(self, **kwargs):
         if kwargs.get('recv_filepath'):
             self._simulate_file_download(kwargs['recv_filepath'])
+        if kwargs.get('on_body'):
+            self._simulate_on_body_download(kwargs['on_body'])
         self._invoke_done_callbacks()
-        return mock.DEFAULT
+        return self.s3_request
 
     def test_upload(self):
-        self.s3_crt_client.make_request.side_effect = (
-            self._simulate_make_request_side_effect
-        )
         future = self.transfer_manager.upload(
             self.filename, self.bucket, self.key, {}, [self.record_subscriber]
         )
         future.result()
 
-        callargs = self.s3_crt_client.make_request.call_args
-        callargs_kwargs = callargs[1]
-        self.assertEqual(callargs_kwargs["send_filepath"], self.filename)
-        self.assertIsNone(callargs_kwargs["recv_filepath"])
+        callargs_kwargs = self.s3_crt_client.make_request.call_args[1]
         self.assertEqual(
-            callargs_kwargs["type"], awscrt.s3.S3RequestType.PUT_OBJECT
+            callargs_kwargs,
+            {
+                'request': mock.ANY,
+                'type': awscrt.s3.S3RequestType.PUT_OBJECT,
+                'send_filepath': self.filename,
+                'on_progress': mock.ANY,
+                'on_done': mock.ANY,
+                'checksum_config': self._get_expected_upload_checksum_config(),
+            },
         )
-        crt_request = callargs_kwargs["request"]
-        self.assertEqual("PUT", crt_request.method)
-        self.assertEqual(self.expected_path, crt_request.path)
-        self.assertEqual(self.expected_host, crt_request.headers.get("host"))
+        self._assert_expected_crt_http_request(
+            callargs_kwargs["request"],
+            expected_http_method='PUT',
+            expected_content_length=len(self.expected_content),
+            expected_missing_headers=['Content-MD5'],
+        )
         self._assert_subscribers_called(future)
 
-    def test_download(self):
-        self.s3_crt_client.make_request.side_effect = (
-            self._simulate_make_request_side_effect
+    def test_upload_from_seekable_stream(self):
+        with open(self.filename, 'rb') as f:
+            future = self.transfer_manager.upload(
+                f, self.bucket, self.key, {}, [self.record_subscriber]
+            )
+            future.result()
+
+            callargs_kwargs = self.s3_crt_client.make_request.call_args[1]
+            self.assertEqual(
+                callargs_kwargs,
+                {
+                    'request': mock.ANY,
+                    'type': awscrt.s3.S3RequestType.PUT_OBJECT,
+                    'send_filepath': None,
+                    'on_progress': mock.ANY,
+                    'on_done': mock.ANY,
+                    'checksum_config': self._get_expected_upload_checksum_config(),
+                },
+            )
+            self._assert_expected_crt_http_request(
+                callargs_kwargs["request"],
+                expected_http_method='PUT',
+                expected_body_content=self.expected_content,
+                expected_content_length=len(self.expected_content),
+                expected_missing_headers=['Content-MD5'],
+            )
+            self._assert_subscribers_called(future)
+
+    def test_upload_from_nonseekable_stream(self):
+        nonseekable_stream = NonSeekableReader(self.expected_content)
+        future = self.transfer_manager.upload(
+            nonseekable_stream,
+            self.bucket,
+            self.key,
+            {},
+            [self.record_subscriber],
         )
+        future.result()
+
+        callargs_kwargs = self.s3_crt_client.make_request.call_args[1]
+        self.assertEqual(
+            callargs_kwargs,
+            {
+                'request': mock.ANY,
+                'type': awscrt.s3.S3RequestType.PUT_OBJECT,
+                'send_filepath': None,
+                'on_progress': mock.ANY,
+                'on_done': mock.ANY,
+                'checksum_config': self._get_expected_upload_checksum_config(),
+            },
+        )
+        self._assert_expected_crt_http_request(
+            callargs_kwargs["request"],
+            expected_http_method='PUT',
+            expected_body_content=self.expected_content,
+            expected_missing_headers=[
+                'Content-MD5',
+                'Content-Length',
+                'Transfer-Encoding',
+            ],
+        )
+        self._assert_subscribers_called(future)
+
+    def test_upload_override_checksum_algorithm(self):
+        future = self.transfer_manager.upload(
+            self.filename,
+            self.bucket,
+            self.key,
+            {'ChecksumAlgorithm': 'CRC32C'},
+            [self.record_subscriber],
+        )
+        future.result()
+
+        callargs_kwargs = self.s3_crt_client.make_request.call_args[1]
+        self.assertEqual(
+            callargs_kwargs,
+            {
+                'request': mock.ANY,
+                'type': awscrt.s3.S3RequestType.PUT_OBJECT,
+                'send_filepath': self.filename,
+                'on_progress': mock.ANY,
+                'on_done': mock.ANY,
+                'checksum_config': self._get_expected_upload_checksum_config(
+                    algorithm=awscrt.s3.S3ChecksumAlgorithm.CRC32C
+                ),
+            },
+        )
+        self._assert_expected_crt_http_request(
+            callargs_kwargs["request"],
+            expected_http_method='PUT',
+            expected_content_length=len(self.expected_content),
+            expected_missing_headers=[
+                'Content-MD5',
+                'x-amz-sdk-checksum-algorithm',
+                'X-Amz-Trailer',
+            ],
+        )
+        self._assert_subscribers_called(future)
+
+    def test_upload_override_checksum_algorithm_accepts_lowercase(self):
+        future = self.transfer_manager.upload(
+            self.filename,
+            self.bucket,
+            self.key,
+            {'ChecksumAlgorithm': 'crc32c'},
+            [self.record_subscriber],
+        )
+        future.result()
+
+        callargs_kwargs = self.s3_crt_client.make_request.call_args[1]
+        self.assertEqual(
+            callargs_kwargs,
+            {
+                'request': mock.ANY,
+                'type': awscrt.s3.S3RequestType.PUT_OBJECT,
+                'send_filepath': self.filename,
+                'on_progress': mock.ANY,
+                'on_done': mock.ANY,
+                'checksum_config': self._get_expected_upload_checksum_config(
+                    algorithm=awscrt.s3.S3ChecksumAlgorithm.CRC32C
+                ),
+            },
+        )
+        self._assert_expected_crt_http_request(
+            callargs_kwargs["request"],
+            expected_http_method='PUT',
+            expected_content_length=len(self.expected_content),
+            expected_missing_headers=[
+                'Content-MD5',
+                'x-amz-sdk-checksum-algorithm',
+                'X-Amz-Trailer',
+            ],
+        )
+        self._assert_subscribers_called(future)
+
+    def test_upload_throws_error_for_unsupported_checksum(self):
+        with self.assertRaisesRegex(
+            ValueError, 'ChecksumAlgorithm: UNSUPPORTED not supported'
+        ):
+            self.transfer_manager.upload(
+                self.filename,
+                self.bucket,
+                self.key,
+                {'ChecksumAlgorithm': 'UNSUPPORTED'},
+                [self.record_subscriber],
+            )
+
+    def test_download(self):
         future = self.transfer_manager.download(
             self.bucket, self.key, self.filename, {}, [self.record_subscriber]
         )
         future.result()
 
-        callargs = self.s3_crt_client.make_request.call_args
-        callargs_kwargs = callargs[1]
+        callargs_kwargs = self.s3_crt_client.make_request.call_args[1]
+        self.assertEqual(
+            callargs_kwargs,
+            {
+                'request': mock.ANY,
+                'type': awscrt.s3.S3RequestType.GET_OBJECT,
+                'recv_filepath': mock.ANY,
+                'on_progress': mock.ANY,
+                'on_done': mock.ANY,
+                'on_body': None,
+                'checksum_config': self._get_expected_download_checksum_config(),
+            },
+        )
         # the recv_filepath will be set to a temporary file path with some
         # random suffix
         self.assertTrue(
@@ -148,42 +382,111 @@ class TestCRTTransferManager(unittest.TestCase):
                 f'{self.filename}.*',
             )
         )
-        self.assertIsNone(callargs_kwargs["send_filepath"])
-        self.assertEqual(
-            callargs_kwargs["type"], awscrt.s3.S3RequestType.GET_OBJECT
+        self._assert_expected_crt_http_request(
+            callargs_kwargs["request"],
+            expected_http_method='GET',
+            expected_content_length=0,
         )
-        crt_request = callargs_kwargs["request"]
-        self.assertEqual("GET", crt_request.method)
-        self.assertEqual(self.expected_path, crt_request.path)
-        self.assertEqual(self.expected_host, crt_request.headers.get("host"))
         self._assert_subscribers_called(future)
         with open(self.filename, 'rb') as f:
             # Check the fake response overwrites the file because of download
-            self.assertEqual(f.read(), b'fake response')
+            self.assertEqual(f.read(), self.expected_download_content)
+
+    def test_download_to_seekable_stream(self):
+        with open(self.filename, 'wb') as f:
+            future = self.transfer_manager.download(
+                self.bucket, self.key, f, {}, [self.record_subscriber]
+            )
+            future.result()
+
+        callargs_kwargs = self.s3_crt_client.make_request.call_args[1]
+        self.assertEqual(
+            callargs_kwargs,
+            {
+                'request': mock.ANY,
+                'type': awscrt.s3.S3RequestType.GET_OBJECT,
+                'recv_filepath': None,
+                'on_progress': mock.ANY,
+                'on_done': mock.ANY,
+                'on_body': mock.ANY,
+                'checksum_config': self._get_expected_download_checksum_config(),
+            },
+        )
+        self._assert_expected_crt_http_request(
+            callargs_kwargs["request"],
+            expected_http_method='GET',
+            expected_content_length=0,
+        )
+        self._assert_subscribers_called(future)
+        with open(self.filename, 'rb') as f:
+            # Check the fake response overwrites the file because of download
+            self.assertEqual(f.read(), self.expected_download_content)
+
+    def test_download_to_nonseekable_stream(self):
+        underlying_stream = io.BytesIO()
+        nonseekable_stream = NonSeekableWriter(underlying_stream)
+        future = self.transfer_manager.download(
+            self.bucket,
+            self.key,
+            nonseekable_stream,
+            {},
+            [self.record_subscriber],
+        )
+        future.result()
+
+        callargs_kwargs = self.s3_crt_client.make_request.call_args[1]
+        self.assertEqual(
+            callargs_kwargs,
+            {
+                'request': mock.ANY,
+                'type': awscrt.s3.S3RequestType.GET_OBJECT,
+                'recv_filepath': None,
+                'on_progress': mock.ANY,
+                'on_done': mock.ANY,
+                'on_body': mock.ANY,
+                'checksum_config': self._get_expected_download_checksum_config(),
+            },
+        )
+        self._assert_expected_crt_http_request(
+            callargs_kwargs["request"],
+            expected_http_method='GET',
+            expected_content_length=0,
+        )
+        self._assert_subscribers_called(future)
+        self.assertEqual(
+            underlying_stream.getvalue(), self.expected_download_content
+        )
 
     def test_delete(self):
-        self.s3_crt_client.make_request.side_effect = (
-            self._simulate_make_request_side_effect
-        )
         future = self.transfer_manager.delete(
             self.bucket, self.key, {}, [self.record_subscriber]
         )
         future.result()
 
-        callargs = self.s3_crt_client.make_request.call_args
-        callargs_kwargs = callargs[1]
-        self.assertIsNone(callargs_kwargs["send_filepath"])
-        self.assertIsNone(callargs_kwargs["recv_filepath"])
+        callargs_kwargs = self.s3_crt_client.make_request.call_args[1]
         self.assertEqual(
-            callargs_kwargs["type"], awscrt.s3.S3RequestType.DEFAULT
+            callargs_kwargs,
+            {
+                'request': mock.ANY,
+                'type': awscrt.s3.S3RequestType.DEFAULT,
+                'on_progress': mock.ANY,
+                'on_done': mock.ANY,
+            },
         )
-        crt_request = callargs_kwargs["request"]
-        self.assertEqual("DELETE", crt_request.method)
-        self.assertEqual(self.expected_path, crt_request.path)
-        self.assertEqual(self.expected_host, crt_request.headers.get("host"))
+        self._assert_expected_crt_http_request(
+            callargs_kwargs["request"],
+            expected_http_method='DELETE',
+            expected_content_length=0,
+        )
         self._assert_subscribers_called(future)
 
     def test_blocks_when_max_requests_processes_reached(self):
+        self.s3_crt_client.make_request.return_value = self.s3_request
+        # We simulate blocking by not invoking the on_done callbacks for
+        # all of the requests we send. The default side effect invokes all
+        # callbacks so we need to unset the side effect to avoid on_done from
+        # being called in the child threads.
+        self.s3_crt_client.make_request.side_effect = None
         futures = []
         callargs = (self.bucket, self.key, self.filename, {}, [])
         max_request_processes = 128  # the hard coded max processes

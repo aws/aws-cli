@@ -696,6 +696,23 @@
       ],
       "documentation":"<p>Deletes an existing IAM policy assignment.</p>"
     },
+    "DeleteIdentityPropagationConfig":{
+      "name":"DeleteIdentityPropagationConfig",
+      "http":{
+        "method":"DELETE",
+        "requestUri":"/accounts/{AwsAccountId}/identity-propagation-config/{Service}"
+      },
+      "input":{"shape":"DeleteIdentityPropagationConfigRequest"},
+      "output":{"shape":"DeleteIdentityPropagationConfigResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"InvalidParameterValueException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalFailureException"}
+      ],
+      "documentation":"<p>Deletes all access scopes and authorized targets that are associated with a service from the Amazon QuickSight IAM Identity Center application.</p> <p>This operation is only supported for Amazon QuickSight accounts that use IAM Identity Center.</p>"
+    },
     "DeleteNamespace":{
       "name":"DeleteNamespace",
       "http":{
@@ -2014,6 +2031,23 @@
       ],
       "documentation":"<p>Lists all of the IAM policy assignments, including the Amazon Resource Names (ARNs), for the IAM policies assigned to the specified user and group, or groups that the user belongs to.</p>"
     },
+    "ListIdentityPropagationConfigs":{
+      "name":"ListIdentityPropagationConfigs",
+      "http":{
+        "method":"GET",
+        "requestUri":"/accounts/{AwsAccountId}/identity-propagation-config"
+      },
+      "input":{"shape":"ListIdentityPropagationConfigsRequest"},
+      "output":{"shape":"ListIdentityPropagationConfigsResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"InvalidParameterValueException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalFailureException"}
+      ],
+      "documentation":"<p>Lists all services and authorized targets that the Amazon QuickSight IAM Identity Center application can access.</p> <p>This operation is only supported for Amazon QuickSight accounts that use IAM Identity Center.</p>"
+    },
     "ListIngestions":{
       "name":"ListIngestions",
       "http":{
@@ -2859,6 +2893,23 @@
         {"shape":"InternalFailureException"}
       ],
       "documentation":"<p>Updates an existing IAM policy assignment. This operation updates only the optional parameter or parameters that are specified in the request. This overwrites all of the users included in <code>Identities</code>. </p>"
+    },
+    "UpdateIdentityPropagationConfig":{
+      "name":"UpdateIdentityPropagationConfig",
+      "http":{
+        "method":"POST",
+        "requestUri":"/accounts/{AwsAccountId}/identity-propagation-config/{Service}"
+      },
+      "input":{"shape":"UpdateIdentityPropagationConfigRequest"},
+      "output":{"shape":"UpdateIdentityPropagationConfigResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"InvalidParameterValueException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalFailureException"}
+      ],
+      "documentation":"<p>Adds or updates services and authorized targets to configure what the Amazon QuickSight IAM Identity Center application can access.</p> <p>This operation is only supported for Amazon QuickSight accounts using IAM Identity Center</p>"
     },
     "UpdateIpRestriction":{
       "name":"UpdateIpRestriction",
@@ -5051,6 +5102,28 @@
     "AuthorSpecifiedAggregations":{
       "type":"list",
       "member":{"shape":"AuthorSpecifiedAggregation"}
+    },
+    "AuthorizedTargetsByService":{
+      "type":"structure",
+      "members":{
+        "Service":{
+          "shape":"ServiceType",
+          "documentation":"<p>The name of the Amazon Web Services service.</p>"
+        },
+        "AuthorizedTargets":{
+          "shape":"AuthorizedTargetsList",
+          "documentation":"<p>Aist of authorized targets that are represented by IAM Identity Center application ARNs.</p>"
+        }
+      },
+      "documentation":"<p>The authorized targets that are associated with a service.</p>"
+    },
+    "AuthorizedTargetsByServices":{
+      "type":"list",
+      "member":{"shape":"AuthorizedTargetsByService"}
+    },
+    "AuthorizedTargetsList":{
+      "type":"list",
+      "member":{"shape":"String"}
     },
     "AwsAccountId":{
       "type":"string",
@@ -11380,6 +11453,41 @@
         }
       }
     },
+    "DeleteIdentityPropagationConfigRequest":{
+      "type":"structure",
+      "required":[
+        "AwsAccountId",
+        "Service"
+      ],
+      "members":{
+        "AwsAccountId":{
+          "shape":"AwsAccountId",
+          "documentation":"<p>The ID of the Amazon Web Services account that you want to delete an identity propagation configuration from.</p>",
+          "location":"uri",
+          "locationName":"AwsAccountId"
+        },
+        "Service":{
+          "shape":"ServiceType",
+          "documentation":"<p>The name of the Amazon Web Services service that you want to delete the associated access scopes and authorized targets from.</p>",
+          "location":"uri",
+          "locationName":"Service"
+        }
+      }
+    },
+    "DeleteIdentityPropagationConfigResponse":{
+      "type":"structure",
+      "members":{
+        "RequestId":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Web Services request ID for this operation.</p>"
+        },
+        "Status":{
+          "shape":"StatusCode",
+          "documentation":"<p>The HTTP status of the request.</p>",
+          "location":"statusCode"
+        }
+      }
+    },
     "DeleteNamespaceRequest":{
       "type":"structure",
       "required":[
@@ -17348,6 +17456,17 @@
         "X"
       ]
     },
+    "IdentityCenterConfiguration":{
+      "type":"structure",
+      "members":{
+        "EnableIdentityPropagation":{
+          "shape":"Boolean",
+          "documentation":"<p>A Boolean option that controls whether Trusted Identity Propagation should be used.</p>",
+          "box":true
+        }
+      },
+      "documentation":"<p>The parameters for an IAM Identity Center configuration.</p>"
+    },
     "IdentityMap":{
       "type":"map",
       "key":{"shape":"String"},
@@ -19348,6 +19467,58 @@
           "location":"statusCode"
         }
       }
+    },
+    "ListIdentityPropagationConfigsRequest":{
+      "type":"structure",
+      "required":["AwsAccountId"],
+      "members":{
+        "AwsAccountId":{
+          "shape":"AwsAccountId",
+          "documentation":"<p>The ID of the Amazon Web Services account that contain the identity propagation configurations of.</p>",
+          "location":"uri",
+          "locationName":"AwsAccountId"
+        },
+        "MaxResults":{
+          "shape":"ListIdentityPropagationMaxResults",
+          "documentation":"<p>The maximum number of results to be returned.</p>",
+          "box":true,
+          "location":"querystring",
+          "locationName":"max-results"
+        },
+        "NextToken":{
+          "shape":"String",
+          "documentation":"<p>The token for the next set of results, or null if there are no more results.</p>",
+          "location":"querystring",
+          "locationName":"next-token"
+        }
+      }
+    },
+    "ListIdentityPropagationConfigsResponse":{
+      "type":"structure",
+      "members":{
+        "Services":{
+          "shape":"AuthorizedTargetsByServices",
+          "documentation":"<p>A list of services and their authorized targets that the Amazon QuickSight IAM Identity Center application can access.</p>"
+        },
+        "NextToken":{
+          "shape":"String",
+          "documentation":"<p>The token for the next set of results, or null if there are no more results.</p>"
+        },
+        "Status":{
+          "shape":"StatusCode",
+          "documentation":"<p>The HTTP status of the request.</p>",
+          "location":"statusCode"
+        },
+        "RequestId":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Web Services request ID for this operation.</p>"
+        }
+      }
+    },
+    "ListIdentityPropagationMaxResults":{
+      "type":"integer",
+      "max":10,
+      "min":1
     },
     "ListIngestionsRequest":{
       "type":"structure",
@@ -23074,6 +23245,10 @@
         "IAMParameters":{
           "shape":"RedshiftIAMParameters",
           "documentation":"<p>An optional parameter that uses IAM authentication to grant Amazon QuickSight access to your cluster. This parameter can be used instead of <a href=\"https://docs.aws.amazon.com/quicksight/latest/APIReference/API_DataSourceCredentials.html\">DataSourceCredentials</a>.</p>"
+        },
+        "IdentityCenterConfiguration":{
+          "shape":"IdentityCenterConfiguration",
+          "documentation":"<p>An optional parameter that configures IAM Identity Center authentication to grant Amazon QuickSight access to your cluster.</p> <p>This parameter can only be specified if your Amazon QuickSight account is configured with IAM Identity Center.</p>"
         }
       },
       "documentation":"<p>The parameters for Amazon Redshift. The <code>ClusterId</code> field can be blank if <code>Host</code> and <code>Port</code> are both set. The <code>Host</code> and <code>Port</code> fields can be blank if the <code>ClusterId</code> field is set.</p>"
@@ -24999,6 +25174,10 @@
         }
       },
       "documentation":"<p>The parameters for ServiceNow.</p>"
+    },
+    "ServiceType":{
+      "type":"string",
+      "enum":["REDSHIFT"]
     },
     "SessionLifetimeInMinutes":{
       "type":"long",
@@ -30061,6 +30240,45 @@
           "shape":"AssignmentStatus",
           "documentation":"<p>The status of the assignment. Possible values are as follows:</p> <ul> <li> <p> <code>ENABLED</code> - Anything specified in this assignment is used when creating the data source.</p> </li> <li> <p> <code>DISABLED</code> - This assignment isn't used when creating the data source.</p> </li> <li> <p> <code>DRAFT</code> - This assignment is an unfinished draft and isn't used when creating the data source.</p> </li> </ul>"
         },
+        "RequestId":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Web Services request ID for this operation.</p>"
+        },
+        "Status":{
+          "shape":"StatusCode",
+          "documentation":"<p>The HTTP status of the request.</p>",
+          "location":"statusCode"
+        }
+      }
+    },
+    "UpdateIdentityPropagationConfigRequest":{
+      "type":"structure",
+      "required":[
+        "AwsAccountId",
+        "Service"
+      ],
+      "members":{
+        "AwsAccountId":{
+          "shape":"AwsAccountId",
+          "documentation":"<p>The ID of the Amazon Web Services account that contains the identity propagation configuration that you want to update.</p>",
+          "location":"uri",
+          "locationName":"AwsAccountId"
+        },
+        "Service":{
+          "shape":"ServiceType",
+          "documentation":"<p>The name of the Amazon Web Services service that contains the authorized targets that you want to add or update.</p>",
+          "location":"uri",
+          "locationName":"Service"
+        },
+        "AuthorizedTargets":{
+          "shape":"AuthorizedTargetsList",
+          "documentation":"<p>Specifies a list of application ARNs that represent the authorized targets for a service.</p>"
+        }
+      }
+    },
+    "UpdateIdentityPropagationConfigResponse":{
+      "type":"structure",
+      "members":{
         "RequestId":{
           "shape":"String",
           "documentation":"<p>The Amazon Web Services request ID for this operation.</p>"

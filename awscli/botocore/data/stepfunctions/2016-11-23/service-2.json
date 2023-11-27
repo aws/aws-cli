@@ -384,7 +384,7 @@
         {"shape":"ExecutionLimitExceeded"},
         {"shape":"InvalidArn"}
       ],
-      "documentation":"<p>Restarts unsuccessful executions of Standard workflows that didn't complete successfully in the last 14 days. These include failed, aborted, or timed out executions. When you <a href=\"https://docs.aws.amazon.com/step-functions/latest/dg/redrive-executions.html\">redrive</a> an execution, it continues the failed execution from the unsuccessful step and uses the same input. Step Functions preserves the results and execution history of the successful steps, and doesn't rerun these steps when you redrive an execution. Redriven executions use the same state machine definition and execution ARN as the original execution attempt.</p> <p>For workflows that include an <a href=\"https://docs.aws.amazon.com/step-functions/latest/dg/amazon-states-language-map-state.html\">Inline Map</a> or <a href=\"https://docs.aws.amazon.com/step-functions/latest/dg/amazon-states-language-parallel-state.html\">Parallel</a> state, <code>RedriveExecution</code> API action reschedules and redrives only the iterations and branches that failed or aborted.</p> <p>To redrive a workflow that includes a Distributed Map state with failed child workflow executions, you must redrive the <a href=\"https://docs.aws.amazon.com/step-functions/latest/dg/use-dist-map-orchestrate-large-scale-parallel-workloads.html#dist-map-orchestrate-parallel-workloads-key-terms\">parent workflow</a>. The parent workflow redrives all the unsuccessful states, including Distributed Map.</p> <note> <p>This API action is not supported by <code>EXPRESS</code> state machines.</p> <p>However, you can restart the unsuccessful executions of Express child workflows in a Distributed Map by redriving its Map Run. When you redrive a Map Run, the Express child workflows are rerun using the <a>StartExecution</a> API action. For more information, see <a href=\"https://docs.aws.amazon.com/step-functions/latest/dg/redrive-map-run.html\">Redriving Map Runs</a>.</p> </note> <p>You can redrive executions if your original execution meets the following conditions:</p> <ul> <li> <p>The execution status isn't <code>SUCCEEDED</code>.</p> </li> <li> <p>Your workflow execution has not exceeded the redrivable period of 14 days. Redrivable period refers to the time during which you can redrive a given execution. This period starts from the day a state machine completes its execution.</p> </li> <li> <p>The workflow execution has not exceeded the maximum open time of one year. For more information about state machine quotas, see <a href=\"https://docs.aws.amazon.com/step-functions/latest/dg/limits-overview.html#service-limits-state-machine-executions\">Quotas related to state machine executions</a>.</p> </li> <li> <p>The execution event history count is less than 24,999. Redriven executions append their event history to the existing event history. Make sure your workflow execution contains less than 24,999 events to accommodate the <code>ExecutionRedriven</code> history event and at least one other history event.</p> </li> </ul>",
+      "documentation":"<p>Restarts unsuccessful executions of Standard workflows that didn't complete successfully in the last 14 days. These include failed, aborted, or timed out executions. When you <a href=\"https://docs.aws.amazon.com/step-functions/latest/dg/redrive-executions.html\">redrive</a> an execution, it continues the failed execution from the unsuccessful step and uses the same input. Step Functions preserves the results and execution history of the successful steps, and doesn't rerun these steps when you redrive an execution. Redriven executions use the same state machine definition and execution ARN as the original execution attempt.</p> <p>For workflows that include an <a href=\"https://docs.aws.amazon.com/step-functions/latest/dg/amazon-states-language-map-state.html\">Inline Map</a> or <a href=\"https://docs.aws.amazon.com/step-functions/latest/dg/amazon-states-language-parallel-state.html\">Parallel</a> state, <code>RedriveExecution</code> API action reschedules and redrives only the iterations and branches that failed or aborted.</p> <p>To redrive a workflow that includes a Distributed Map state whose Map Run failed, you must redrive the <a href=\"https://docs.aws.amazon.com/step-functions/latest/dg/use-dist-map-orchestrate-large-scale-parallel-workloads.html#dist-map-orchestrate-parallel-workloads-key-terms\">parent workflow</a>. The parent workflow redrives all the unsuccessful states, including a failed Map Run. If a Map Run was not started in the original execution attempt, the redriven parent workflow starts the Map Run.</p> <note> <p>This API action is not supported by <code>EXPRESS</code> state machines.</p> <p>However, you can restart the unsuccessful executions of Express child workflows in a Distributed Map by redriving its Map Run. When you redrive a Map Run, the Express child workflows are rerun using the <a>StartExecution</a> API action. For more information, see <a href=\"https://docs.aws.amazon.com/step-functions/latest/dg/redrive-map-run.html\">Redriving Map Runs</a>.</p> </note> <p>You can redrive executions if your original execution meets the following conditions:</p> <ul> <li> <p>The execution status isn't <code>SUCCEEDED</code>.</p> </li> <li> <p>Your workflow execution has not exceeded the redrivable period of 14 days. Redrivable period refers to the time during which you can redrive a given execution. This period starts from the day a state machine completes its execution.</p> </li> <li> <p>The workflow execution has not exceeded the maximum open time of one year. For more information about state machine quotas, see <a href=\"https://docs.aws.amazon.com/step-functions/latest/dg/limits-overview.html#service-limits-state-machine-executions\">Quotas related to state machine executions</a>.</p> </li> <li> <p>The execution event history count is less than 24,999. Redriven executions append their event history to the existing event history. Make sure your workflow execution contains less than 24,999 events to accommodate the <code>ExecutionRedriven</code> history event and at least one other history event.</p> </li> </ul>",
       "idempotent":true
     },
     "SendTaskFailure":{
@@ -503,6 +503,23 @@
       ],
       "documentation":"<p>Add a tag to a Step Functions resource.</p> <p>An array of key-value pairs. For more information, see <a href=\"https://docs.aws.amazon.com/awsaccountbilling/latest/aboutv2/cost-alloc-tags.html\">Using Cost Allocation Tags</a> in the <i>Amazon Web Services Billing and Cost Management User Guide</i>, and <a href=\"https://docs.aws.amazon.com/IAM/latest/UserGuide/access_iam-tags.html\">Controlling Access Using IAM Tags</a>.</p> <p>Tags may only contain Unicode letters, digits, white space, or these symbols: <code>_ . : / = + - @</code>.</p>"
     },
+    "TestState":{
+      "name":"TestState",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"TestStateInput"},
+      "output":{"shape":"TestStateOutput"},
+      "errors":[
+        {"shape":"InvalidArn"},
+        {"shape":"InvalidDefinition"},
+        {"shape":"InvalidExecutionInput"},
+        {"shape":"ValidationException"}
+      ],
+      "documentation":"<p>Accepts the definition of a single state and executes it. You can test a state without creating a state machine or updating an existing state machine. Using this API, you can test the following:</p> <ul> <li> <p>A state's <a href=\"https://docs.aws.amazon.com/step-functions/latest/dg/test-state-isolation.html#test-state-input-output-dataflow\">input and output processing</a> data flow</p> </li> <li> <p>An <a href=\"https://docs.aws.amazon.com/step-functions/latest/dg/connect-to-services.html\">Amazon Web Services service integration</a> request and response</p> </li> <li> <p>An <a href=\"https://docs.aws.amazon.com/step-functions/latest/dg/connect-third-party-apis.html\">HTTP Task</a> request and response</p> </li> </ul> <p>You can call this API on only one state at a time. The states that you can test include the following:</p> <ul> <li> <p> <a href=\"https://docs.aws.amazon.com/step-functions/latest/dg/amazon-states-language-task-state.html#task-types\">All Task types</a> except <a href=\"https://docs.aws.amazon.com/step-functions/latest/dg/concepts-activities.html\">Activity</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/step-functions/latest/dg/amazon-states-language-pass-state.html\">Pass</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/step-functions/latest/dg/amazon-states-language-wait-state.html\">Wait</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/step-functions/latest/dg/amazon-states-language-choice-state.html\">Choice</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/step-functions/latest/dg/amazon-states-language-succeed-state.html\">Succeed</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/step-functions/latest/dg/amazon-states-language-fail-state.html\">Fail</a> </p> </li> </ul> <p>The <code>TestState</code> API assumes an IAM role which must contain the required IAM permissions for the resources your state is accessing. For information about the permissions a state might need, see <a href=\"https://docs.aws.amazon.com/step-functions/latest/dg/test-state-isolation.html#test-state-permissions\">IAM permissions to test a state</a>.</p> <p>The <code>TestState</code> API can run for up to five minutes. If the execution of a state exceeds this duration, it fails with the <code>States.Timeout</code> error.</p> <p> <code>TestState</code> doesn't support <a href=\"https://docs.aws.amazon.com/step-functions/latest/dg/concepts-activities.html\">Activity tasks</a>, <code>.sync</code> or <code>.waitForTaskToken</code> <a href=\"https://docs.aws.amazon.com/step-functions/latest/dg/connect-to-resource.html\">service integration patterns</a>, <a href=\"https://docs.aws.amazon.com/step-functions/latest/dg/amazon-states-language-parallel-state.html\">Parallel</a>, or <a href=\"https://docs.aws.amazon.com/step-functions/latest/dg/amazon-states-language-map-state.html\">Map</a> states.</p>",
+      "endpoint":{"hostPrefix":"sync-"}
+    },
     "UntagResource":{
       "name":"UntagResource",
       "http":{
@@ -567,7 +584,8 @@
         {"shape":"ValidationException"},
         {"shape":"InvalidArn"},
         {"shape":"ResourceNotFound"},
-        {"shape":"ConflictException"}
+        {"shape":"ConflictException"},
+        {"shape":"StateMachineDeleting"}
       ],
       "documentation":"<p>Updates the configuration of an existing state machine <a href=\"https://docs.aws.amazon.com/step-functions/latest/dg/concepts-state-machine-alias.html\">alias</a> by modifying its <code>description</code> or <code>routingConfiguration</code>.</p> <p>You must specify at least one of the <code>description</code> or <code>routingConfiguration</code> parameters to update a state machine alias.</p> <note> <p> <code>UpdateStateMachineAlias</code> is an idempotent API. Step Functions bases the idempotency check on the <code>stateMachineAliasArn</code>, <code>description</code>, and <code>routingConfiguration</code> parameters. Requests with the same parameters return an idempotent response.</p> </note> <note> <p>This operation is eventually consistent. All <a>StartExecution</a> requests made within a few seconds use the latest alias configuration. Executions started immediately after calling <code>UpdateStateMachineAlias</code> may use the previous routing configuration.</p> </note> <p> <b>Related operations:</b> </p> <ul> <li> <p> <a>CreateStateMachineAlias</a> </p> </li> <li> <p> <a>DescribeStateMachineAlias</a> </p> </li> <li> <p> <a>ListStateMachineAliases</a> </p> </li> <li> <p> <a>DeleteStateMachineAlias</a> </p> </li> </ul>"
     }
@@ -1110,7 +1128,7 @@
         },
         "redriveCount":{
           "shape":"RedriveCount",
-          "documentation":"<p>The number of times you've redriven an execution. If you have not yet redriven an execution, the <code>redriveCount</code> is 0. This count is not updated for redrives that failed to start or are pending to be redriven.</p>"
+          "documentation":"<p>The number of times you've redriven an execution. If you have not yet redriven an execution, the <code>redriveCount</code> is 0. This count is only updated if you successfully redrive an execution.</p>"
         },
         "redriveDate":{
           "shape":"Timestamp",
@@ -1192,7 +1210,7 @@
         },
         "redriveCount":{
           "shape":"RedriveCount",
-          "documentation":"<p>The number of times you've redriven a Map Run. If you have not yet redriven a Map Run, the <code>redriveCount</code> is 0. This count is not updated for redrives that failed to start or are pending to be redriven.</p>"
+          "documentation":"<p>The number of times you've redriven a Map Run. If you have not yet redriven a Map Run, the <code>redriveCount</code> is 0. This count is only updated if you successfully redrive a Map Run.</p>"
         },
         "redriveDate":{
           "shape":"Timestamp",
@@ -1478,7 +1496,7 @@
         },
         "redriveCount":{
           "shape":"RedriveCount",
-          "documentation":"<p>The number of times you've redriven an execution. If you have not yet redriven an execution, the <code>redriveCount</code> is 0. This count is not updated for redrives that failed to start or are pending to be redriven.</p>",
+          "documentation":"<p>The number of times you've redriven an execution. If you have not yet redriven an execution, the <code>redriveCount</code> is 0. This count is only updated when you successfully redrive an execution.</p>",
           "box":true
         },
         "redriveDate":{
@@ -1653,6 +1671,12 @@
         }
       }
     },
+    "HTTPBody":{"type":"string"},
+    "HTTPHeaders":{"type":"string"},
+    "HTTPMethod":{"type":"string"},
+    "HTTPProtocol":{"type":"string"},
+    "HTTPStatusCode":{"type":"string"},
+    "HTTPStatusMessage":{"type":"string"},
     "HistoryEvent":{
       "type":"structure",
       "required":[
@@ -1865,6 +1889,105 @@
     "IncludeExecutionDataGetExecutionHistory":{
       "type":"boolean",
       "box":true
+    },
+    "InspectionData":{
+      "type":"structure",
+      "members":{
+        "input":{
+          "shape":"SensitiveData",
+          "documentation":"<p>The raw state input.</p>"
+        },
+        "afterInputPath":{
+          "shape":"SensitiveData",
+          "documentation":"<p>The input after Step Functions applies the <a href=\"https://docs.aws.amazon.com/step-functions/latest/dg/input-output-inputpath-params.html#input-output-inputpath\">InputPath</a> filter.</p>"
+        },
+        "afterParameters":{
+          "shape":"SensitiveData",
+          "documentation":"<p>The effective input after Step Functions applies the <a href=\"https://docs.aws.amazon.com/step-functions/latest/dg/input-output-inputpath-params.html#input-output-parameters\">Parameters</a> filter.</p>"
+        },
+        "result":{
+          "shape":"SensitiveData",
+          "documentation":"<p>The state's raw result.</p>"
+        },
+        "afterResultSelector":{
+          "shape":"SensitiveData",
+          "documentation":"<p>The effective result after Step Functions applies the <a href=\"https://docs.aws.amazon.com/step-functions/latest/dg/input-output-inputpath-params.html#input-output-resultselector\">ResultSelector</a> filter.</p>"
+        },
+        "afterResultPath":{
+          "shape":"SensitiveData",
+          "documentation":"<p>The effective result combined with the raw state input after Step Functions applies the <a href=\"https://docs.aws.amazon.com/step-functions/latest/dg/input-output-resultpath.html\">ResultPath</a> filter.</p>"
+        },
+        "request":{
+          "shape":"InspectionDataRequest",
+          "documentation":"<p>The raw HTTP request that is sent when you test an HTTP Task.</p>"
+        },
+        "response":{
+          "shape":"InspectionDataResponse",
+          "documentation":"<p>The raw HTTP response that is returned when you test an HTTP Task.</p>"
+        }
+      },
+      "documentation":"<p>Contains additional details about the state's execution, including its input and output data processing flow, and HTTP request and response information.</p>",
+      "sensitive":true
+    },
+    "InspectionDataRequest":{
+      "type":"structure",
+      "members":{
+        "protocol":{
+          "shape":"HTTPProtocol",
+          "documentation":"<p>The protocol used to make the HTTP request.</p>"
+        },
+        "method":{
+          "shape":"HTTPMethod",
+          "documentation":"<p>The HTTP method used for the HTTP request.</p>"
+        },
+        "url":{
+          "shape":"URL",
+          "documentation":"<p>The API endpoint used for the HTTP request.</p>"
+        },
+        "headers":{
+          "shape":"HTTPHeaders",
+          "documentation":"<p>The request headers associated with the HTTP request.</p>"
+        },
+        "body":{
+          "shape":"HTTPBody",
+          "documentation":"<p>The request body for the HTTP request.</p>"
+        }
+      },
+      "documentation":"<p>Contains additional details about the state's execution, including its input and output data processing flow, and HTTP request information.</p>"
+    },
+    "InspectionDataResponse":{
+      "type":"structure",
+      "members":{
+        "protocol":{
+          "shape":"HTTPProtocol",
+          "documentation":"<p>The protocol used to return the HTTP response.</p>"
+        },
+        "statusCode":{
+          "shape":"HTTPStatusCode",
+          "documentation":"<p>The HTTP response status code for the HTTP response.</p>"
+        },
+        "statusMessage":{
+          "shape":"HTTPStatusMessage",
+          "documentation":"<p>The message associated with the HTTP status code.</p>"
+        },
+        "headers":{
+          "shape":"HTTPHeaders",
+          "documentation":"<p>The response headers associated with the HTTP response.</p>"
+        },
+        "body":{
+          "shape":"HTTPBody",
+          "documentation":"<p>The HTTP response returned.</p>"
+        }
+      },
+      "documentation":"<p>Contains additional details about the state's execution, including its input and output data processing flow, and HTTP response information. The <code>inspectionLevel</code> request parameter specifies which details are returned.</p>"
+    },
+    "InspectionLevel":{
+      "type":"string",
+      "enum":[
+        "INFO",
+        "DEBUG",
+        "TRACE"
+      ]
     },
     "InvalidArn":{
       "type":"structure",
@@ -2350,7 +2473,7 @@
         },
         "failuresNotRedrivable":{
           "shape":"LongObject",
-          "documentation":"<p>The number of <code>FAILED</code>, <code>ABORTED</code>, or <code>TIMED_OUT</code> child workflow executions that cannot be redriven because their execution status is terminal. For example, if your execution event history contains 25,000 entries, or the <code>toleratedFailureCount</code> or <code>toleratedFailurePercentage</code> for the Distributed Map has exceeded.</p>"
+          "documentation":"<p>The number of <code>FAILED</code>, <code>ABORTED</code>, or <code>TIMED_OUT</code> child workflow executions that cannot be redriven because their execution status is terminal. For example, child workflows with an execution status of <code>FAILED</code>, <code>ABORTED</code>, or <code>TIMED_OUT</code> and a <code>redriveStatus</code> of <code>NOT_REDRIVABLE</code>.</p>"
         },
         "pendingRedrive":{
           "shape":"LongObject",
@@ -2420,7 +2543,7 @@
         },
         "failuresNotRedrivable":{
           "shape":"LongObject",
-          "documentation":"<p>The number of <code>FAILED</code>, <code>ABORTED</code>, or <code>TIMED_OUT</code> items in child workflow executions that cannot be redriven because the execution status of those child workflows is terminal. For example, if your execution event history contains 25,000 entries, or the <code>toleratedFailureCount</code> or <code>toleratedFailurePercentage</code> for the Distributed Map has exceeded.</p>"
+          "documentation":"<p>The number of <code>FAILED</code>, <code>ABORTED</code>, or <code>TIMED_OUT</code> items in child workflow executions that cannot be redriven because the execution status of those child workflows is terminal. For example, child workflows with an execution status of <code>FAILED</code>, <code>ABORTED</code>, or <code>TIMED_OUT</code> and a <code>redriveStatus</code> of <code>NOT_REDRIVABLE</code>.</p>"
         },
         "pendingRedrive":{
           "shape":"LongObject",
@@ -2586,7 +2709,7 @@
         },
         "clientToken":{
           "shape":"ClientToken",
-          "documentation":"<p>A unique, case-sensitive identifier that you provide to ensure the idempotency of the request. If you don’t specify a client token, the Amazon Web Services SDK automatically generates a client token and uses it for the request to ensure idempotency. The API uses one of the last 10 client tokens provided.</p>",
+          "documentation":"<p>A unique, case-sensitive identifier that you provide to ensure the idempotency of the request. If you don’t specify a client token, the Amazon Web Services SDK automatically generates a client token and uses it for the request to ensure idempotency. The API will return idempotent responses for the last 10 client tokens used to successfully redrive the execution. These client tokens are valid for up to 15 minutes after they are first used.</p>",
           "idempotencyToken":true
         }
       }
@@ -2610,6 +2733,7 @@
       "documentation":"<p>Could not find the referenced resource.</p>",
       "exception":true
     },
+    "RevealSecrets":{"type":"boolean"},
     "ReverseOrder":{"type":"boolean"},
     "RevisionId":{"type":"string"},
     "RoutingConfigurationList":{
@@ -3016,6 +3140,11 @@
       },
       "documentation":"<p>Contains details about a specific state machine version.</p>"
     },
+    "StateName":{
+      "type":"string",
+      "max":80,
+      "min":1
+    },
     "StopExecutionInput":{
       "type":"structure",
       "required":["executionArn"],
@@ -3353,6 +3482,73 @@
       "max":1024,
       "min":1
     },
+    "TestExecutionStatus":{
+      "type":"string",
+      "enum":[
+        "SUCCEEDED",
+        "FAILED",
+        "RETRIABLE",
+        "CAUGHT_ERROR"
+      ]
+    },
+    "TestStateInput":{
+      "type":"structure",
+      "required":[
+        "definition",
+        "roleArn"
+      ],
+      "members":{
+        "definition":{
+          "shape":"Definition",
+          "documentation":"<p>The <a href=\"https://docs.aws.amazon.com/step-functions/latest/dg/concepts-amazon-states-language.html\">Amazon States Language</a> (ASL) definition of the state.</p>"
+        },
+        "roleArn":{
+          "shape":"Arn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the execution role with the required IAM permissions for the state.</p>"
+        },
+        "input":{
+          "shape":"SensitiveData",
+          "documentation":"<p>A string that contains the JSON input data for the state.</p>"
+        },
+        "inspectionLevel":{
+          "shape":"InspectionLevel",
+          "documentation":"<p>Determines the values to return when a state is tested. You can specify one of the following types:</p> <ul> <li> <p> <code>INFO</code>: Shows the final state output. By default, Step Functions sets <code>inspectionLevel</code> to <code>INFO</code> if you don't specify a level.</p> </li> <li> <p> <code>DEBUG</code>: Shows the final state output along with the input and output data processing result.</p> </li> <li> <p> <code>TRACE</code>: Shows the HTTP request and response for an HTTP Task. This level also shows the final state output along with the input and output data processing result.</p> </li> </ul> <p>Each of these levels also provide information about the status of the state execution and the next state to transition to.</p>"
+        },
+        "revealSecrets":{
+          "shape":"RevealSecrets",
+          "documentation":"<p>Specifies whether or not to include secret information in the test result. For HTTP Tasks, a secret includes the data that an EventBridge connection adds to modify the HTTP request headers, query parameters, and body. Step Functions doesn't omit any information included in the state definition or the HTTP response.</p> <p>If you set <code>revealSecrets</code> to <code>true</code>, you must make sure that the IAM user that calls the <code>TestState</code> API has permission for the <code>states:RevealSecrets</code> action. For an example of IAM policy that sets the <code>states:RevealSecrets</code> permission, see <a href=\"https://docs.aws.amazon.com/step-functions/latest/dg/test-state-isolation.html#test-state-permissions\">IAM permissions to test a state</a>. Without this permission, Step Functions throws an access denied error.</p> <p>By default, <code>revealSecrets</code> is set to <code>false</code>.</p>"
+        }
+      }
+    },
+    "TestStateOutput":{
+      "type":"structure",
+      "members":{
+        "output":{
+          "shape":"SensitiveData",
+          "documentation":"<p>The JSON output data of the state. Length constraints apply to the payload size, and are expressed as bytes in UTF-8 encoding.</p>"
+        },
+        "error":{
+          "shape":"SensitiveError",
+          "documentation":"<p>The error returned when the execution of a state fails.</p>"
+        },
+        "cause":{
+          "shape":"SensitiveCause",
+          "documentation":"<p>A detailed explanation of the cause for the error when the execution of a state fails.</p>"
+        },
+        "inspectionData":{
+          "shape":"InspectionData",
+          "documentation":"<p>Returns additional details about the state's execution, including its input and output data processing flow, and HTTP request and response information. The <code>inspectionLevel</code> request parameter specifies which details are returned.</p>"
+        },
+        "nextState":{
+          "shape":"StateName",
+          "documentation":"<p>The name of the next state to transition to. If you haven't defined a next state in your definition or if the execution of the state fails, this ﬁeld doesn't contain a value.</p>"
+        },
+        "status":{
+          "shape":"TestExecutionStatus",
+          "documentation":"<p>The execution status of the state.</p>"
+        }
+      }
+    },
     "TimeoutInSeconds":{"type":"long"},
     "Timestamp":{"type":"timestamp"},
     "ToleratedFailureCount":{
@@ -3389,6 +3585,7 @@
       },
       "documentation":"<p>Selects whether or not the state machine's X-Ray tracing is enabled. Default is <code>false</code> </p>"
     },
+    "URL":{"type":"string"},
     "UnsignedInteger":{
       "type":"integer",
       "min":0

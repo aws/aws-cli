@@ -542,6 +542,20 @@
       },
       "documentation":"<p>Describes the configuration of an Auto Scaling group.</p>"
     },
+    "AutoScalingGroupEstimatedMonthlySavings":{
+      "type":"structure",
+      "members":{
+        "currency":{
+          "shape":"Currency",
+          "documentation":"<p> The currency of the estimated monthly savings. </p>"
+        },
+        "value":{
+          "shape":"Value",
+          "documentation":"<p> The value of the estimated monthly savings. </p>"
+        }
+      },
+      "documentation":"<p> An object that describes the estimated monthly savings possible by adopting Compute Optimizer’s Auto Scaling group recommendations. This is based on the Savings Plans and Reserved Instances discounts. </p>"
+    },
     "AutoScalingGroupName":{"type":"string"},
     "AutoScalingGroupRecommendation":{
       "type":"structure",
@@ -631,6 +645,10 @@
         "instanceGpuInfo":{
           "shape":"GpuInfo",
           "documentation":"<p> Describes the GPU accelerator settings for the recommended instance type of the Auto Scaling group. </p>"
+        },
+        "savingsOpportunityAfterDiscounts":{
+          "shape":"AutoScalingGroupSavingsOpportunityAfterDiscounts",
+          "documentation":"<p> An object that describes the savings opportunity for the Auto Scaling group recommendation option that includes Savings Plans and Reserved Instances discounts. Savings opportunity includes the estimated monthly savings and percentage. </p>"
         }
       },
       "documentation":"<p>Describes a recommendation option for an Auto Scaling group.</p>"
@@ -642,6 +660,20 @@
     "AutoScalingGroupRecommendations":{
       "type":"list",
       "member":{"shape":"AutoScalingGroupRecommendation"}
+    },
+    "AutoScalingGroupSavingsOpportunityAfterDiscounts":{
+      "type":"structure",
+      "members":{
+        "savingsOpportunityPercentage":{
+          "shape":"SavingsOpportunityPercentage",
+          "documentation":"<p> The estimated monthly savings possible as a percentage of monthly cost after applying the Savings Plans and Reserved Instances discounts. This saving can be achieved by adopting Compute Optimizer’s Auto Scaling group recommendations. </p>"
+        },
+        "estimatedMonthlySavings":{
+          "shape":"AutoScalingGroupEstimatedMonthlySavings",
+          "documentation":"<p> An object that describes the estimated monthly savings possible by adopting Compute Optimizer’s Auto Scaling group recommendations. This is based on the Savings Plans and Reserved Instances pricing discounts. </p>"
+        }
+      },
+      "documentation":"<p> Describes the savings opportunity for Auto Scaling group recommendations after applying the Savings Plans and Reserved Instances discounts. </p> <p>Savings opportunity represents the estimated monthly savings you can achieve by implementing Compute Optimizer recommendations.</p>"
     },
     "Code":{"type":"string"},
     "ContainerConfiguration":{
@@ -741,6 +773,40 @@
       },
       "documentation":"<p>Describes the performance risk ratings for a given resource type.</p> <p>Resources with a <code>high</code> or <code>medium</code> rating are at risk of not meeting the performance needs of their workloads, while resources with a <code>low</code> rating are performing well in their workloads.</p>"
     },
+    "CustomizableMetricHeadroom":{
+      "type":"string",
+      "enum":[
+        "PERCENT_30",
+        "PERCENT_20",
+        "PERCENT_0"
+      ]
+    },
+    "CustomizableMetricName":{
+      "type":"string",
+      "enum":["CpuUtilization"]
+    },
+    "CustomizableMetricParameters":{
+      "type":"structure",
+      "members":{
+        "threshold":{
+          "shape":"CustomizableMetricThreshold",
+          "documentation":"<p> The threshold value used for the specified metric parameter. </p>"
+        },
+        "headroom":{
+          "shape":"CustomizableMetricHeadroom",
+          "documentation":"<p> The headroom threshold value in percentage used for the specified metric parameter. </p>"
+        }
+      },
+      "documentation":"<p> Defines the various metric parameters that can be customized, such as threshold and headroom. </p>"
+    },
+    "CustomizableMetricThreshold":{
+      "type":"string",
+      "enum":[
+        "P90",
+        "P95",
+        "P99_5"
+      ]
+    },
     "DeleteRecommendationPreferencesRequest":{
       "type":"structure",
       "required":[
@@ -805,6 +871,30 @@
     "DestinationBucket":{"type":"string"},
     "DestinationKey":{"type":"string"},
     "DestinationKeyPrefix":{"type":"string"},
+    "EBSEffectiveRecommendationPreferences":{
+      "type":"structure",
+      "members":{
+        "savingsEstimationMode":{
+          "shape":"EBSSavingsEstimationMode",
+          "documentation":"<p> Describes the savings estimation mode preference applied for calculating savings opportunity for Amazon EBS volumes. </p>"
+        }
+      },
+      "documentation":"<p> Describes the effective recommendation preferences for Amazon EBS volumes. </p>"
+    },
+    "EBSEstimatedMonthlySavings":{
+      "type":"structure",
+      "members":{
+        "currency":{
+          "shape":"Currency",
+          "documentation":"<p> The currency of the estimated monthly savings. </p>"
+        },
+        "value":{
+          "shape":"Value",
+          "documentation":"<p> The value of the estimated monthly savings. </p>"
+        }
+      },
+      "documentation":"<p> An object that describes the estimated monthly savings possible by adopting Compute Optimizer’s Amazon EBS volume recommendations. This includes any applicable discounts. </p>"
+    },
     "EBSFilter":{
       "type":"structure",
       "members":{
@@ -843,6 +933,38 @@
         "VolumeWriteBytesPerSecond"
       ]
     },
+    "EBSSavingsEstimationMode":{
+      "type":"structure",
+      "members":{
+        "source":{
+          "shape":"EBSSavingsEstimationModeSource",
+          "documentation":"<p> Describes the source for calculating the savings opportunity for Amazon EBS volumes. </p>"
+        }
+      },
+      "documentation":"<p> Describes the savings estimation mode used for calculating savings opportunity for Amazon EBS volumes. </p>"
+    },
+    "EBSSavingsEstimationModeSource":{
+      "type":"string",
+      "enum":[
+        "PublicPricing",
+        "CostExplorerRightsizing",
+        "CostOptimizationHub"
+      ]
+    },
+    "EBSSavingsOpportunityAfterDiscounts":{
+      "type":"structure",
+      "members":{
+        "savingsOpportunityPercentage":{
+          "shape":"SavingsOpportunityPercentage",
+          "documentation":"<p> The estimated monthly savings possible as a percentage of monthly cost after applying the specific discounts. This saving can be achieved by adopting Compute Optimizer’s Amazon EBS volume recommendations. </p>"
+        },
+        "estimatedMonthlySavings":{
+          "shape":"EBSEstimatedMonthlySavings",
+          "documentation":"<p> The estimated monthly savings possible as a percentage of monthly cost by adopting Compute Optimizer’s Amazon EBS volume recommendations. This saving includes any applicable discounts. </p>"
+        }
+      },
+      "documentation":"<p> Describes the savings opportunity for Amazon EBS volume recommendations after applying specific discounts. </p>"
+    },
     "EBSUtilizationMetric":{
       "type":"structure",
       "members":{
@@ -864,6 +986,62 @@
     "EBSUtilizationMetrics":{
       "type":"list",
       "member":{"shape":"EBSUtilizationMetric"}
+    },
+    "ECSEffectiveRecommendationPreferences":{
+      "type":"structure",
+      "members":{
+        "savingsEstimationMode":{
+          "shape":"ECSSavingsEstimationMode",
+          "documentation":"<p> Describes the savings estimation mode preference applied for calculating savings opportunity for Amazon ECS services. </p>"
+        }
+      },
+      "documentation":"<p> Describes the effective recommendation preferences for Amazon ECS services. </p>"
+    },
+    "ECSEstimatedMonthlySavings":{
+      "type":"structure",
+      "members":{
+        "currency":{
+          "shape":"Currency",
+          "documentation":"<p> The currency of the estimated monthly savings. </p>"
+        },
+        "value":{
+          "shape":"Value",
+          "documentation":"<p> The value of the estimated monthly savings for Amazon ECS services. </p>"
+        }
+      },
+      "documentation":"<p> Describes the estimated monthly savings possible for Amazon ECS services by adopting Compute Optimizer recommendations. This is based on Amazon ECS service pricing after applying Savings Plans discounts. </p>"
+    },
+    "ECSSavingsEstimationMode":{
+      "type":"structure",
+      "members":{
+        "source":{
+          "shape":"ECSSavingsEstimationModeSource",
+          "documentation":"<p> Describes the source for calculating the savings opportunity for Amazon ECS services. </p>"
+        }
+      },
+      "documentation":"<p> Describes the savings estimation mode used for calculating savings opportunity for Amazon ECS services. </p>"
+    },
+    "ECSSavingsEstimationModeSource":{
+      "type":"string",
+      "enum":[
+        "PublicPricing",
+        "CostExplorerRightsizing",
+        "CostOptimizationHub"
+      ]
+    },
+    "ECSSavingsOpportunityAfterDiscounts":{
+      "type":"structure",
+      "members":{
+        "savingsOpportunityPercentage":{
+          "shape":"SavingsOpportunityPercentage",
+          "documentation":"<p> The estimated monthly savings possible as a percentage of monthly cost by adopting Compute Optimizer’s Amazon ECS service recommendations. This includes any applicable Savings Plans discounts. </p>"
+        },
+        "estimatedMonthlySavings":{
+          "shape":"ECSEstimatedMonthlySavings",
+          "documentation":"<p> The estimated monthly savings possible by adopting Compute Optimizer’s Amazon ECS service recommendations. This includes any applicable Savings Plans discounts. </p>"
+        }
+      },
+      "documentation":"<p> Describes the savings opportunity for Amazon ECS service recommendations after applying Savings Plans discounts. </p> <p>Savings opportunity represents the estimated monthly savings after applying Savings Plans discounts. You can achieve this by implementing a given Compute Optimizer recommendation.</p>"
     },
     "ECSServiceLaunchType":{
       "type":"string",
@@ -988,6 +1166,10 @@
         "tags":{
           "shape":"Tags",
           "documentation":"<p> A list of tags assigned to your Amazon ECS service recommendations. </p>"
+        },
+        "effectiveRecommendationPreferences":{
+          "shape":"ECSEffectiveRecommendationPreferences",
+          "documentation":"<p> Describes the effective recommendation preferences for Amazon ECS services. </p>"
         }
       },
       "documentation":"<p> Describes an Amazon ECS service recommendation. </p>"
@@ -1057,6 +1239,10 @@
         "containerRecommendations":{
           "shape":"ContainerRecommendations",
           "documentation":"<p> The CPU and memory size recommendations for the containers within the task of your Amazon ECS service. </p>"
+        },
+        "savingsOpportunityAfterDiscounts":{
+          "shape":"ECSSavingsOpportunityAfterDiscounts",
+          "documentation":"<p> Describes the savings opportunity for Amazon ECS service recommendations or for the recommendation option. </p> <p>Savings opportunity represents the estimated monthly savings after applying Savings Plans discounts. You can achieve this by implementing a given Compute Optimizer recommendation.</p>"
         }
       },
       "documentation":"<p> Describes the recommendation options for an Amazon ECS service. </p>"
@@ -1113,6 +1299,32 @@
       "type":"list",
       "member":{"shape":"ECSServiceUtilizationMetric"}
     },
+    "EffectivePreferredResource":{
+      "type":"structure",
+      "members":{
+        "name":{
+          "shape":"PreferredResourceName",
+          "documentation":"<p> The name of the preferred resource list. </p>"
+        },
+        "includeList":{
+          "shape":"PreferredResourceValues",
+          "documentation":"<p> The list of preferred resource values that you want considered as rightsizing recommendation candidates. </p>"
+        },
+        "effectiveIncludeList":{
+          "shape":"PreferredResourceValues",
+          "documentation":"<p> The expanded version of your preferred resource's include list. </p>"
+        },
+        "excludeList":{
+          "shape":"PreferredResourceValues",
+          "documentation":"<p> The list of preferred resources values that you want excluded from rightsizing recommendation candidates. </p>"
+        }
+      },
+      "documentation":"<p> Describes the effective preferred resources that Compute Optimizer considers as rightsizing recommendation candidates. </p> <note> <p>Compute Optimizer only supports Amazon EC2 instance types.</p> </note>"
+    },
+    "EffectivePreferredResources":{
+      "type":"list",
+      "member":{"shape":"EffectivePreferredResource"}
+    },
     "EffectiveRecommendationPreferences":{
       "type":"structure",
       "members":{
@@ -1131,6 +1343,22 @@
         "externalMetricsPreference":{
           "shape":"ExternalMetricsPreference",
           "documentation":"<p> An object that describes the external metrics recommendation preference. </p> <p> If the preference is applied in the latest recommendation refresh, an object with a valid <code>source</code> value appears in the response. If the preference isn't applied to the recommendations already, then this object doesn't appear in the response. </p>"
+        },
+        "lookBackPeriod":{
+          "shape":"LookBackPeriodPreference",
+          "documentation":"<p> The number of days the utilization metrics of the Amazon Web Services resource are analyzed. </p>"
+        },
+        "utilizationPreferences":{
+          "shape":"UtilizationPreferences",
+          "documentation":"<p> The resource’s CPU utilization threshold preferences, such as threshold and headroom, that are used to generate rightsizing recommendations. </p> <note> <p>This preference is only available for the Amazon EC2 instance resource type.</p> </note>"
+        },
+        "preferredResources":{
+          "shape":"EffectivePreferredResources",
+          "documentation":"<p> The resource type values that are considered as candidates when generating rightsizing recommendations. </p>"
+        },
+        "savingsEstimationMode":{
+          "shape":"InstanceSavingsEstimationMode",
+          "documentation":"<p> Describes the savings estimation mode applied for calculating savings opportunity for a resource. </p>"
         }
       },
       "documentation":"<p>Describes the effective recommendation preferences for a resource.</p>"
@@ -1493,7 +1721,13 @@
         "UtilizationMetricsGpuPercentageMaximum",
         "UtilizationMetricsGpuMemoryPercentageMaximum",
         "RecommendationOptionsProjectedUtilizationMetricsGpuPercentageMaximum",
-        "RecommendationOptionsProjectedUtilizationMetricsGpuMemoryPercentageMaximum"
+        "RecommendationOptionsProjectedUtilizationMetricsGpuMemoryPercentageMaximum",
+        "EffectiveRecommendationPreferencesSavingsEstimationMode",
+        "RecommendationOptionsSavingsOpportunityAfterDiscountsPercentage",
+        "RecommendationOptionsEstimatedMonthlySavingsCurrencyAfterDiscounts",
+        "RecommendationOptionsEstimatedMonthlySavingsValueAfterDiscounts",
+        "EffectiveRecommendationPreferencesPreferredResources",
+        "EffectiveRecommendationPreferencesLookBackPeriod"
       ]
     },
     "ExportableAutoScalingGroupFields":{
@@ -1526,7 +1760,11 @@
         "RecommendationOptionsContainerRecommendations",
         "RecommendationOptionsProjectedUtilizationMetricsCpuMaximum",
         "RecommendationOptionsProjectedUtilizationMetricsMemoryMaximum",
-        "Tags"
+        "Tags",
+        "EffectiveRecommendationPreferencesSavingsEstimationMode",
+        "RecommendationOptionsSavingsOpportunityAfterDiscountsPercentage",
+        "RecommendationOptionsEstimatedMonthlySavingsCurrencyAfterDiscounts",
+        "RecommendationOptionsEstimatedMonthlySavingsValueAfterDiscounts"
       ]
     },
     "ExportableECSServiceFields":{
@@ -1599,7 +1837,14 @@
         "UtilizationMetricsGpuMemoryPercentageMaximum",
         "RecommendationOptionsProjectedUtilizationMetricsGpuPercentageMaximum",
         "RecommendationOptionsProjectedUtilizationMetricsGpuMemoryPercentageMaximum",
-        "Idle"
+        "Idle",
+        "EffectiveRecommendationPreferencesPreferredResources",
+        "EffectiveRecommendationPreferencesLookBackPeriod",
+        "EffectiveRecommendationPreferencesUtilizationPreferences",
+        "EffectiveRecommendationPreferencesSavingsEstimationMode",
+        "RecommendationOptionsSavingsOpportunityAfterDiscountsPercentage",
+        "RecommendationOptionsEstimatedMonthlySavingsCurrencyAfterDiscounts",
+        "RecommendationOptionsEstimatedMonthlySavingsValueAfterDiscounts"
       ]
     },
     "ExportableInstanceFields":{
@@ -1635,7 +1880,11 @@
         "RecommendationOptionsSavingsOpportunityPercentage",
         "RecommendationOptionsEstimatedMonthlySavingsCurrency",
         "RecommendationOptionsEstimatedMonthlySavingsValue",
-        "Tags"
+        "Tags",
+        "EffectiveRecommendationPreferencesSavingsEstimationMode",
+        "RecommendationOptionsSavingsOpportunityAfterDiscountsPercentage",
+        "RecommendationOptionsEstimatedMonthlySavingsCurrencyAfterDiscounts",
+        "RecommendationOptionsEstimatedMonthlySavingsValueAfterDiscounts"
       ]
     },
     "ExportableLambdaFunctionFields":{
@@ -1705,7 +1954,11 @@
         "RecommendationOptionsEstimatedMonthlySavingsValue",
         "RootVolume",
         "Tags",
-        "CurrentConfigurationRootVolume"
+        "CurrentConfigurationRootVolume",
+        "EffectiveRecommendationPreferencesSavingsEstimationMode",
+        "RecommendationOptionsSavingsOpportunityAfterDiscountsPercentage",
+        "RecommendationOptionsEstimatedMonthlySavingsCurrencyAfterDiscounts",
+        "RecommendationOptionsEstimatedMonthlySavingsValueAfterDiscounts"
       ]
     },
     "ExportableVolumeFields":{
@@ -2102,6 +2355,18 @@
         "externalMetricsPreference":{
           "shape":"ExternalMetricsPreference",
           "documentation":"<p>The provider of the external metrics recommendation preference. Considers all applicable preferences that you might have set at the account and organization level.</p> <p>If the preference is applied in the latest recommendation refresh, an object with a valid <code>source</code> value appears in the response. If the preference isn't applied to the recommendations already, then this object doesn't appear in the response.</p> <p>To validate whether the preference is applied to your last generated set of recommendations, review the <code>effectiveRecommendationPreferences</code> value in the response of the <a>GetEC2InstanceRecommendations</a> actions.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/compute-optimizer/latest/ug/external-metrics-ingestion.html\">Enhanced infrastructure metrics</a> in the <i>Compute Optimizer User Guide</i>.</p>"
+        },
+        "lookBackPeriod":{
+          "shape":"LookBackPeriodPreference",
+          "documentation":"<p> The number of days the utilization metrics of the Amazon Web Services resource are analyzed. </p> <p>To validate that the preference is applied to your last generated set of recommendations, review the <code>effectiveRecommendationPreferences</code> value in the response of the GetAutoScalingGroupRecommendations or GetEC2InstanceRecommendations actions.</p>"
+        },
+        "utilizationPreferences":{
+          "shape":"UtilizationPreferences",
+          "documentation":"<p> The resource’s CPU utilization threshold preferences, such as threshold and headroom, that were used to generate rightsizing recommendations. It considers all applicable preferences that you set at the resource, account, and organization level. </p> <p>To validate that the preference is applied to your last generated set of recommendations, review the <code>effectiveRecommendationPreferences</code> value in the response of the GetAutoScalingGroupRecommendations or GetEC2InstanceRecommendations actions.</p>"
+        },
+        "preferredResources":{
+          "shape":"EffectivePreferredResources",
+          "documentation":"<p> The resource type values that are considered as candidates when generating rightsizing recommendations. This object resolves any wildcard expressions and returns the effective list of candidate resource type values. It also considers all applicable preferences that you set at the resource, account, and organization level. </p> <p>To validate that the preference is applied to your last generated set of recommendations, review the <code>effectiveRecommendationPreferences</code> value in the response of the GetAutoScalingGroupRecommendations or GetEC2InstanceRecommendations actions.</p>"
         }
       }
     },
@@ -2413,6 +2678,20 @@
       "type":"list",
       "member":{"shape":"InstanceArn"}
     },
+    "InstanceEstimatedMonthlySavings":{
+      "type":"structure",
+      "members":{
+        "currency":{
+          "shape":"Currency",
+          "documentation":"<p> The currency of the estimated monthly savings. </p>"
+        },
+        "value":{
+          "shape":"Value",
+          "documentation":"<p> The value of the estimated monthly savings. </p>"
+        }
+      },
+      "documentation":"<p> An object that describes the estimated monthly savings possible by adopting Compute Optimizer’s Amazon EC2 instance recommendations. This is based on the Savings Plans and Reserved Instances pricing discounts. </p>"
+    },
     "InstanceIdle":{
       "type":"string",
       "enum":[
@@ -2566,6 +2845,10 @@
         "instanceGpuInfo":{
           "shape":"GpuInfo",
           "documentation":"<p> Describes the GPU accelerator settings for the recommended instance type. </p>"
+        },
+        "savingsOpportunityAfterDiscounts":{
+          "shape":"InstanceSavingsOpportunityAfterDiscounts",
+          "documentation":"<p> An object that describes the savings opportunity for the instance recommendation option that includes Savings Plans and Reserved Instances discounts. Savings opportunity includes the estimated monthly savings and percentage. </p>"
         }
       },
       "documentation":"<p>Describes a recommendation option for an Amazon EC2 instance.</p>"
@@ -2573,6 +2856,38 @@
     "InstanceRecommendations":{
       "type":"list",
       "member":{"shape":"InstanceRecommendation"}
+    },
+    "InstanceSavingsEstimationMode":{
+      "type":"structure",
+      "members":{
+        "source":{
+          "shape":"InstanceSavingsEstimationModeSource",
+          "documentation":"<p> Describes the source for calculating the savings opportunity for Amazon EC2 instances. </p>"
+        }
+      },
+      "documentation":"<p> Describes the savings estimation mode used for calculating savings opportunity for Amazon EC2 instances. </p>"
+    },
+    "InstanceSavingsEstimationModeSource":{
+      "type":"string",
+      "enum":[
+        "PublicPricing",
+        "CostExplorerRightsizing",
+        "CostOptimizationHub"
+      ]
+    },
+    "InstanceSavingsOpportunityAfterDiscounts":{
+      "type":"structure",
+      "members":{
+        "savingsOpportunityPercentage":{
+          "shape":"SavingsOpportunityPercentage",
+          "documentation":"<p> The estimated monthly savings possible as a percentage of monthly cost after applying the Savings Plans and Reserved Instances discounts. This saving can be achieved by adopting Compute Optimizer’s EC2 instance recommendations. </p>"
+        },
+        "estimatedMonthlySavings":{
+          "shape":"InstanceEstimatedMonthlySavings",
+          "documentation":"<p> An object that describes the estimated monthly savings possible by adopting Compute Optimizer’s Amazon EC2 instance recommendations. This is based on pricing after applying the Savings Plans and Reserved Instances discounts. </p>"
+        }
+      },
+      "documentation":"<p> Describes the savings opportunity for instance recommendations after applying the Savings Plans and Reserved Instances discounts. </p> <p>Savings opportunity after discounts represents the estimated monthly savings you can achieve by implementing Compute Optimizer recommendations.</p>"
     },
     "InstanceState":{
       "type":"string",
@@ -2643,6 +2958,30 @@
         "Failed"
       ]
     },
+    "LambdaEffectiveRecommendationPreferences":{
+      "type":"structure",
+      "members":{
+        "savingsEstimationMode":{
+          "shape":"LambdaSavingsEstimationMode",
+          "documentation":"<p> Describes the savings estimation mode applied for calculating savings opportunity for Lambda functions. </p>"
+        }
+      },
+      "documentation":"<p> Describes the effective recommendation preferences for Lambda functions. </p>"
+    },
+    "LambdaEstimatedMonthlySavings":{
+      "type":"structure",
+      "members":{
+        "currency":{
+          "shape":"Currency",
+          "documentation":"<p> The currency of the estimated monthly savings. </p>"
+        },
+        "value":{
+          "shape":"Value",
+          "documentation":"<p> The value of the estimated monthly savings. </p>"
+        }
+      },
+      "documentation":"<p> Describes the estimated monthly savings possible for Lambda functions by adopting Compute Optimizer recommendations. This is based on Lambda functions pricing after applying Savings Plans discounts. </p>"
+    },
     "LambdaFunctionMemoryMetricName":{
       "type":"string",
       "enum":["Duration"]
@@ -2695,6 +3034,10 @@
         "savingsOpportunity":{
           "shape":"SavingsOpportunity",
           "documentation":"<p>An object that describes the savings opportunity for the Lambda function recommendation option. Savings opportunity includes the estimated monthly savings amount and percentage.</p>"
+        },
+        "savingsOpportunityAfterDiscounts":{
+          "shape":"LambdaSavingsOpportunityAfterDiscounts",
+          "documentation":"<p> An object that describes the savings opportunity for the Lambda recommendation option which includes Saving Plans discounts. Savings opportunity includes the estimated monthly savings and percentage. </p>"
         }
       },
       "documentation":"<p>Describes a recommendation option for an Lambda function.</p>"
@@ -2771,6 +3114,10 @@
         "tags":{
           "shape":"Tags",
           "documentation":"<p> A list of tags assigned to your Lambda function recommendations. </p>"
+        },
+        "effectiveRecommendationPreferences":{
+          "shape":"LambdaEffectiveRecommendationPreferences",
+          "documentation":"<p> Describes the effective recommendation preferences for Lambda functions. </p>"
         }
       },
       "documentation":"<p>Describes an Lambda function recommendation.</p>"
@@ -2846,6 +3193,38 @@
     "LambdaFunctionUtilizationMetrics":{
       "type":"list",
       "member":{"shape":"LambdaFunctionUtilizationMetric"}
+    },
+    "LambdaSavingsEstimationMode":{
+      "type":"structure",
+      "members":{
+        "source":{
+          "shape":"LambdaSavingsEstimationModeSource",
+          "documentation":"<p> Describes the source for calculation of savings opportunity for Lambda functions. </p>"
+        }
+      },
+      "documentation":"<p> Describes the savings estimation used for calculating savings opportunity for Lambda functions. </p>"
+    },
+    "LambdaSavingsEstimationModeSource":{
+      "type":"string",
+      "enum":[
+        "PublicPricing",
+        "CostExplorerRightsizing",
+        "CostOptimizationHub"
+      ]
+    },
+    "LambdaSavingsOpportunityAfterDiscounts":{
+      "type":"structure",
+      "members":{
+        "savingsOpportunityPercentage":{
+          "shape":"SavingsOpportunityPercentage",
+          "documentation":"<p> The estimated monthly savings possible as a percentage of monthly cost by adopting Compute Optimizer’s Lambda function recommendations. This includes any applicable Savings Plans discounts. </p>"
+        },
+        "estimatedMonthlySavings":{
+          "shape":"LambdaEstimatedMonthlySavings",
+          "documentation":"<p> The estimated monthly savings possible by adopting Compute Optimizer’s Lambda function recommendations. This includes any applicable Savings Plans discounts. </p>"
+        }
+      },
+      "documentation":"<p> Describes the savings opportunity for Lambda functions recommendations after applying Savings Plans discounts. </p> <p>Savings opportunity represents the estimated monthly savings after applying Savings Plans discounts. You can achieve this by implementing a given Compute Optimizer recommendation.</p>"
     },
     "LastRefreshTimestamp":{"type":"timestamp"},
     "LastUpdatedTimestamp":{"type":"timestamp"},
@@ -3038,6 +3417,14 @@
       "synthetic":true
     },
     "LookBackPeriodInDays":{"type":"double"},
+    "LookBackPeriodPreference":{
+      "type":"string",
+      "enum":[
+        "DAYS_14",
+        "DAYS_32",
+        "DAYS_93"
+      ]
+    },
     "Low":{"type":"long"},
     "LowerBoundValue":{"type":"double"},
     "MaxResults":{
@@ -3179,6 +3566,37 @@
       "type":"list",
       "member":{"shape":"PlatformDifference"}
     },
+    "PreferredResource":{
+      "type":"structure",
+      "members":{
+        "name":{
+          "shape":"PreferredResourceName",
+          "documentation":"<p> The type of preferred resource to customize. </p> <note> <p>Compute Optimizer only supports the customization of <code>Ec2InstanceTypes</code>.</p> </note>"
+        },
+        "includeList":{
+          "shape":"PreferredResourceValues",
+          "documentation":"<p> The preferred resource type values to include in the recommendation candidates. You can specify the exact resource type value, such as m5.large, or use wild card expressions, such as m5. If this isn’t specified, all supported resources are included by default. You can specify up to 1000 values in this list. </p>"
+        },
+        "excludeList":{
+          "shape":"PreferredResourceValues",
+          "documentation":"<p> The preferred resource type values to exclude from the recommendation candidates. If this isn’t specified, all supported resources are included by default. You can specify up to 1000 values in this list. </p>"
+        }
+      },
+      "documentation":"<p> The preference to control which resource type values are considered when generating rightsizing recommendations. You can specify this preference as a combination of include and exclude lists. You must specify either an <code>includeList</code> or <code>excludeList</code>. If the preference is an empty set of resource type values, an error occurs. For more information, see <a href=\"https://docs.aws.amazon.com/compute-optimizer/latest/ug/rightsizing-preferences.html\"> Rightsizing recommendation preferences</a> in the <i>Compute Optimizer User Guide</i>. </p> <note> <ul> <li> <p>This preference is only available for the Amazon EC2 instance and Auto Scaling group resource types.</p> </li> <li> <p>Compute Optimizer only supports the customization of <code>Ec2InstanceTypes</code>.</p> </li> </ul> </note>"
+    },
+    "PreferredResourceName":{
+      "type":"string",
+      "enum":["Ec2InstanceTypes"]
+    },
+    "PreferredResourceValue":{"type":"string"},
+    "PreferredResourceValues":{
+      "type":"list",
+      "member":{"shape":"PreferredResourceValue"}
+    },
+    "PreferredResources":{
+      "type":"list",
+      "member":{"shape":"PreferredResource"}
+    },
     "ProjectedMetric":{
       "type":"structure",
       "members":{
@@ -3228,6 +3646,22 @@
         "externalMetricsPreference":{
           "shape":"ExternalMetricsPreference",
           "documentation":"<p>The provider of the external metrics recommendation preference to create or update.</p> <p>Specify a valid provider in the <code>source</code> field to activate the preference. To delete this preference, see the <a>DeleteRecommendationPreferences</a> action.</p> <p>This preference can only be set for the <code>Ec2Instance</code> resource type.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/compute-optimizer/latest/ug/external-metrics-ingestion.html\">External metrics ingestion</a> in the <i>Compute Optimizer User Guide</i>.</p>"
+        },
+        "lookBackPeriod":{
+          "shape":"LookBackPeriodPreference",
+          "documentation":"<p> The preference to control the number of days the utilization metrics of the Amazon Web Services resource are analyzed. When this preference isn't specified, we use the default value <code>DAYS_14</code>. </p> <note> <p>You can only set this preference for the Amazon EC2 instance and Auto Scaling group resource types.</p> </note>"
+        },
+        "utilizationPreferences":{
+          "shape":"UtilizationPreferences",
+          "documentation":"<p> The preference to control the resource’s CPU utilization thresholds - threshold and headroom. When this preference isn't specified, we use the following default values: </p> <ul> <li> <p> <code>P99_5</code> for threshold</p> </li> <li> <p> <code>PERCENT_17</code> for headroom</p> </li> </ul> <note> <p>You can only set this preference for the Amazon EC2 instance resource type.</p> </note>"
+        },
+        "preferredResources":{
+          "shape":"PreferredResources",
+          "documentation":"<p> The preference to control which resource type values are considered when generating rightsizing recommendations. You can specify this preference as a combination of include and exclude lists. You must specify either an <code>includeList</code> or <code>excludeList</code>. If the preference is an empty set of resource type values, an error occurs. </p> <note> <p>You can only set this preference for the Amazon EC2 instance and Auto Scaling group resource types.</p> </note>"
+        },
+        "savingsEstimationMode":{
+          "shape":"SavingsEstimationMode",
+          "documentation":"<p> The status of the savings estimation mode preference to create or update. </p> <p>Specify the <code>AfterDiscounts</code> status to activate the preference, or specify <code>BeforeDiscounts</code> to deactivate the preference.</p> <p>Only the account manager or delegated administrator of your organization can activate this preference.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/compute-optimizer/latest/ug/savings-estimation-mode.html\"> Savings estimation mode</a> in the <i>Compute Optimizer User Guide</i>.</p>"
         }
       }
     },
@@ -3302,7 +3736,10 @@
       "enum":[
         "EnhancedInfrastructureMetrics",
         "InferredWorkloadTypes",
-        "ExternalMetricsPreference"
+        "ExternalMetricsPreference",
+        "LookBackPeriodPreference",
+        "PreferredResources",
+        "UtilizationPreferences"
       ]
     },
     "RecommendationPreferenceNames":{
@@ -3341,6 +3778,22 @@
         "externalMetricsPreference":{
           "shape":"ExternalMetricsPreference",
           "documentation":"<p> An object that describes the external metrics recommendation preference. </p> <p> If the preference is applied in the latest recommendation refresh, an object with a valid <code>source</code> value appears in the response. If the preference isn't applied to the recommendations already, then this object doesn't appear in the response. </p>"
+        },
+        "lookBackPeriod":{
+          "shape":"LookBackPeriodPreference",
+          "documentation":"<p> The preference to control the number of days the utilization metrics of the Amazon Web Services resource are analyzed. If the preference isn’t set, this object is null. </p>"
+        },
+        "utilizationPreferences":{
+          "shape":"UtilizationPreferences",
+          "documentation":"<p> The preference to control the resource’s CPU utilization thresholds - threshold and headroom. If the preference isn’t set, this object is null. </p> <note> <p>This preference is only available for the Amazon EC2 instance resource type.</p> </note>"
+        },
+        "preferredResources":{
+          "shape":"EffectivePreferredResources",
+          "documentation":"<p> The preference to control which resource type values are considered when generating rightsizing recommendations. This object resolves any wildcard expressions and returns the effective list of candidate resource type values. If the preference isn’t set, this object is null. </p>"
+        },
+        "savingsEstimationMode":{
+          "shape":"SavingsEstimationMode",
+          "documentation":"<p> Describes the savings estimation mode used for calculating savings opportunity. </p> <p>Only the account manager or delegated administrator of your organization can activate this preference.</p>"
         }
       },
       "documentation":"<p>Describes a recommendation preference.</p>"
@@ -3494,6 +3947,13 @@
         }
       },
       "documentation":"<p>Describes the destination Amazon Simple Storage Service (Amazon S3) bucket name and key prefix for a recommendations export job.</p> <p>You must create the destination Amazon S3 bucket for your recommendations export before you create the export job. Compute Optimizer does not create the S3 bucket for you. After you create the S3 bucket, ensure that it has the required permission policy to allow Compute Optimizer to write the export file to it. If you plan to specify an object prefix when you create the export job, you must include the object prefix in the policy that you add to the S3 bucket. For more information, see <a href=\"https://docs.aws.amazon.com/compute-optimizer/latest/ug/create-s3-bucket-policy-for-compute-optimizer.html\">Amazon S3 Bucket Policy for Compute Optimizer</a> in the <i>Compute Optimizer User Guide</i>.</p>"
+    },
+    "SavingsEstimationMode":{
+      "type":"string",
+      "enum":[
+        "AfterDiscounts",
+        "BeforeDiscounts"
+      ]
     },
     "SavingsOpportunity":{
       "type":"structure",
@@ -3692,6 +4152,24 @@
       "type":"list",
       "member":{"shape":"UtilizationMetric"}
     },
+    "UtilizationPreference":{
+      "type":"structure",
+      "members":{
+        "metricName":{
+          "shape":"CustomizableMetricName",
+          "documentation":"<p> The name of the resource utilization metric name to customize. </p> <note> <p>Compute Optimizer only supports <code>CpuUtilization</code>.</p> </note>"
+        },
+        "metricParameters":{
+          "shape":"CustomizableMetricParameters",
+          "documentation":"<p> The parameters to set when customizing the resource utilization thresholds. </p>"
+        }
+      },
+      "documentation":"<p> The preference to control the resource’s CPU utilization thresholds - threshold and headroom. </p> <note> <p>This preference is only available for the Amazon EC2 instance resource type.</p> </note>"
+    },
+    "UtilizationPreferences":{
+      "type":"list",
+      "member":{"shape":"UtilizationPreference"}
+    },
     "Value":{"type":"double"},
     "VeryLow":{"type":"long"},
     "VolumeArn":{"type":"string"},
@@ -3779,6 +4257,10 @@
         "tags":{
           "shape":"Tags",
           "documentation":"<p> A list of tags assigned to your Amazon EBS volume recommendations. </p>"
+        },
+        "effectiveRecommendationPreferences":{
+          "shape":"EBSEffectiveRecommendationPreferences",
+          "documentation":"<p> Describes the effective recommendation preferences for Amazon EBS volume. </p>"
         }
       },
       "documentation":"<p>Describes an Amazon Elastic Block Store (Amazon EBS) volume recommendation.</p>"
@@ -3801,6 +4283,10 @@
         "savingsOpportunity":{
           "shape":"SavingsOpportunity",
           "documentation":"<p>An object that describes the savings opportunity for the EBS volume recommendation option. Savings opportunity includes the estimated monthly savings amount and percentage.</p>"
+        },
+        "savingsOpportunityAfterDiscounts":{
+          "shape":"EBSSavingsOpportunityAfterDiscounts",
+          "documentation":"<p> An object that describes the savings opportunity for the Amazon EBS volume recommendation option with specific discounts. Savings opportunity includes the estimated monthly savings and percentage. </p>"
         }
       },
       "documentation":"<p>Describes a recommendation option for an Amazon Elastic Block Store (Amazon EBS) instance.</p>"

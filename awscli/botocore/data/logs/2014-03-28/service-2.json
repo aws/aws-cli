@@ -59,7 +59,7 @@
         {"shape":"ServiceQuotaExceededException"},
         {"shape":"ThrottlingException"}
       ],
-      "documentation":"<p>Creates a <i>delivery</i>. A delivery is a connection between a logical <i>delivery source</i> and a logical <i>delivery destination</i> that you have already created.</p> <p>Only some Amazon Web Services services support being configured as a delivery source using this operation. These services are listed as <b>Supported [V2 Permissions]</b> in the table at <a href=\"https://docs.aws.amazon.com/ AmazonCloudWatch/latest/logs/AWS-logs-and-resource-policy.html#AWS-vended-logs-permissions\">Enabling logging from Amazon Web Services services.</a> </p> <p>A delivery destination can represent a log group in CloudWatch Logs, an Amazon S3 bucket, or a delivery stream in Kinesis Data Firehose.</p> <p>To configure logs delivery between a supported Amazon Web Services service and a destination, you must do the following:</p> <ul> <li> <p>Create a delivery source, which is a logical object that represents the resource that is actually sending the logs. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonCloudWatchLogs/latest/APIReference/API_PutDeliverySource.html\">PutDeliverySource</a>.</p> </li> <li> <p>Create a <i>delivery destination</i>, which is a logical object that represents the actual delivery destination. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonCloudWatchLogs/latest/APIReference/API_PutDeliveryDestination.html\">PutDeliveryDestination</a>.</p> </li> <li> <p>If you are delivering logs cross-account, you must use <a href=\"https://docs.aws.amazon.com/AmazonCloudWatchLogs/latest/APIReference/API_PutDeliveryDestinationolicy.html\">PutDeliveryDestinationPolicy</a> in the destination account to assign an IAM policy to the destination. This policy allows delivery to that destination. </p> </li> <li> <p>Use <code>CreateDelivery</code> to create a <i>delivery</i> by pairing exactly one delivery source and one delivery destination. </p> </li> </ul> <p>You can configure a single delivery source to send logs to multiple destinations by creating multiple deliveries. You can also create multiple deliveries to configure multiple delivery sources to send logs to the same delivery destination.</p> <p>You can't update an existing delivery. You can only create and delete deliveries.</p>"
+      "documentation":"<p>Creates a <i>delivery</i>. A delivery is a connection between a logical <i>delivery source</i> and a logical <i>delivery destination</i> that you have already created.</p> <p>Only some Amazon Web Services services support being configured as a delivery source using this operation. These services are listed as <b>Supported [V2 Permissions]</b> in the table at <a href=\"https://docs.aws.amazon.com/AmazonCloudWatch/latest/logs/AWS-logs-and-resource-policy.html\">Enabling logging from Amazon Web Services services.</a> </p> <p>A delivery destination can represent a log group in CloudWatch Logs, an Amazon S3 bucket, or a delivery stream in Kinesis Data Firehose.</p> <p>To configure logs delivery between a supported Amazon Web Services service and a destination, you must do the following:</p> <ul> <li> <p>Create a delivery source, which is a logical object that represents the resource that is actually sending the logs. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonCloudWatchLogs/latest/APIReference/API_PutDeliverySource.html\">PutDeliverySource</a>.</p> </li> <li> <p>Create a <i>delivery destination</i>, which is a logical object that represents the actual delivery destination. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonCloudWatchLogs/latest/APIReference/API_PutDeliveryDestination.html\">PutDeliveryDestination</a>.</p> </li> <li> <p>If you are delivering logs cross-account, you must use <a href=\"https://docs.aws.amazon.com/AmazonCloudWatchLogs/latest/APIReference/API_PutDeliveryDestinationolicy.html\">PutDeliveryDestinationPolicy</a> in the destination account to assign an IAM policy to the destination. This policy allows delivery to that destination. </p> </li> <li> <p>Use <code>CreateDelivery</code> to create a <i>delivery</i> by pairing exactly one delivery source and one delivery destination. </p> </li> </ul> <p>You can configure a single delivery source to send logs to multiple destinations by creating multiple deliveries. You can also create multiple deliveries to configure multiple delivery sources to send logs to the same delivery destination.</p> <p>You can't update an existing delivery. You can only create and delete deliveries.</p>"
     },
     "CreateExportTask":{
       "name":"CreateExportTask",
@@ -78,6 +78,23 @@
         {"shape":"ResourceAlreadyExistsException"}
       ],
       "documentation":"<p>Creates an export task so that you can efficiently export data from a log group to an Amazon S3 bucket. When you perform a <code>CreateExportTask</code> operation, you must use credentials that have permission to write to the S3 bucket that you specify as the destination.</p> <p>Exporting log data to S3 buckets that are encrypted by KMS is supported. Exporting log data to Amazon S3 buckets that have S3 Object Lock enabled with a retention period is also supported.</p> <p>Exporting to S3 buckets that are encrypted with AES-256 is supported. </p> <p>This is an asynchronous call. If all the required information is provided, this operation initiates an export task and responds with the ID of the task. After the task has started, you can use <a href=\"https://docs.aws.amazon.com/AmazonCloudWatchLogs/latest/APIReference/API_DescribeExportTasks.html\">DescribeExportTasks</a> to get the status of the export task. Each account can only have one active (<code>RUNNING</code> or <code>PENDING</code>) export task at a time. To cancel an export task, use <a href=\"https://docs.aws.amazon.com/AmazonCloudWatchLogs/latest/APIReference/API_CancelExportTask.html\">CancelExportTask</a>.</p> <p>You can export logs from multiple log groups or multiple time ranges to the same S3 bucket. To separate log data for each export task, specify a prefix to be used as the Amazon S3 key prefix for all exported objects.</p> <note> <p>Time-based sorting on chunks of log data inside an exported file is not guaranteed. You can sort the exported log field data by using Linux utilities.</p> </note>"
+    },
+    "CreateLogAnomalyDetector":{
+      "name":"CreateLogAnomalyDetector",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"CreateLogAnomalyDetectorRequest"},
+      "output":{"shape":"CreateLogAnomalyDetectorResponse"},
+      "errors":[
+        {"shape":"InvalidParameterException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ServiceUnavailableException"},
+        {"shape":"OperationAbortedException"},
+        {"shape":"LimitExceededException"}
+      ],
+      "documentation":"<p>Creates an <i>anomaly detector</i> that regularly scans one or more log groups and look for patterns and anomalies in the logs.</p> <p>An anomaly detector can help surface issues by automatically discovering anomalies in your log event traffic. An anomaly detector uses machine learning algorithms to scan log events and find <i>patterns</i>. A pattern is a shared text structure that recurs among your log fields. Patterns provide a useful tool for analyzing large sets of logs because a large number of log events can often be compressed into a few patterns.</p> <p>The anomaly detector uses pattern recognition to find <code>anomalies</code>, which are unusual log events. It uses the <code>evaluationFrequency</code> to compare current log events and patterns with trained baselines. </p> <p>Fields within a pattern are called <i>tokens</i>. Fields that vary within a pattern, such as a request ID or timestamp, are referred to as <i>dynamic tokens</i> and represented by <code>&lt;*&gt;</code>. </p> <p>The following is an example of a pattern:</p> <p> <code>[INFO] Request time: &lt;*&gt; ms</code> </p> <p>This pattern represents log events like <code>[INFO] Request time: 327 ms</code> and other similar log events that differ only by the number, in this csse 327. When the pattern is displayed, the different numbers are replaced by <code>&lt;*&gt;</code> </p> <note> <p>Any parts of log events that are masked as sensitive data are not scanned for anomalies. For more information about masking sensitive data, see <a href=\"https://docs.aws.amazon.com/AmazonCloudWatch/latest/logs/mask-sensitive-log-data.html\">Help protect sensitive log data with masking</a>. </p> </note>"
     },
     "CreateLogGroup":{
       "name":"CreateLogGroup",
@@ -220,6 +237,21 @@
         {"shape":"ServiceUnavailableException"}
       ],
       "documentation":"<p>Deletes the specified destination, and eventually disables all the subscription filters that publish to it. This operation does not delete the physical resource encapsulated by the destination.</p>"
+    },
+    "DeleteLogAnomalyDetector":{
+      "name":"DeleteLogAnomalyDetector",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DeleteLogAnomalyDetectorRequest"},
+      "errors":[
+        {"shape":"InvalidParameterException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ServiceUnavailableException"},
+        {"shape":"OperationAbortedException"}
+      ],
+      "documentation":"<p>Deletes the specified CloudWatch Logs anomaly detector.</p>"
     },
     "DeleteLogGroup":{
       "name":"DeleteLogGroup",
@@ -631,6 +663,22 @@
       ],
       "documentation":"<p>Retrieves complete information about one delivery source.</p>"
     },
+    "GetLogAnomalyDetector":{
+      "name":"GetLogAnomalyDetector",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"GetLogAnomalyDetectorRequest"},
+      "output":{"shape":"GetLogAnomalyDetectorResponse"},
+      "errors":[
+        {"shape":"InvalidParameterException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ServiceUnavailableException"},
+        {"shape":"OperationAbortedException"}
+      ],
+      "documentation":"<p>Retrieves information about the log anomaly detector that you specify.</p>"
+    },
     "GetLogEvents":{
       "name":"GetLogEvents",
       "http":{
@@ -692,6 +740,38 @@
         {"shape":"ServiceUnavailableException"}
       ],
       "documentation":"<p>Returns the results from the specified query.</p> <p>Only the fields requested in the query are returned, along with a <code>@ptr</code> field, which is the identifier for the log record. You can use the value of <code>@ptr</code> in a <a href=\"https://docs.aws.amazon.com/AmazonCloudWatchLogs/latest/APIReference/API_GetLogRecord.html\">GetLogRecord</a> operation to get the full log record.</p> <p> <code>GetQueryResults</code> does not start running a query. To run a query, use <a href=\"https://docs.aws.amazon.com/AmazonCloudWatchLogs/latest/APIReference/API_StartQuery.html\">StartQuery</a>. For more information about how long results of previous queries are available, see <a href=\"https://docs.aws.amazon.com/AmazonCloudWatch/latest/logs/cloudwatch_limits_cwl.html\">CloudWatch Logs quotas</a>.</p> <p>If the value of the <code>Status</code> field in the output is <code>Running</code>, this operation returns only partial results. If you see a value of <code>Scheduled</code> or <code>Running</code> for the status, you can retry the operation later to see the final results. </p> <p>If you are using CloudWatch cross-account observability, you can use this operation in a monitoring account to start queries in linked source accounts. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/CloudWatch-Unified-Cross-Account.html\">CloudWatch cross-account observability</a>.</p>"
+    },
+    "ListAnomalies":{
+      "name":"ListAnomalies",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"ListAnomaliesRequest"},
+      "output":{"shape":"ListAnomaliesResponse"},
+      "errors":[
+        {"shape":"InvalidParameterException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ServiceUnavailableException"},
+        {"shape":"OperationAbortedException"}
+      ],
+      "documentation":"<p>Returns a list of anomalies that log anomaly detectors have found. For details about the structure format of each anomaly object that is returned, see the example in this section.</p>"
+    },
+    "ListLogAnomalyDetectors":{
+      "name":"ListLogAnomalyDetectors",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"ListLogAnomalyDetectorsRequest"},
+      "output":{"shape":"ListLogAnomalyDetectorsResponse"},
+      "errors":[
+        {"shape":"InvalidParameterException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ServiceUnavailableException"},
+        {"shape":"OperationAbortedException"}
+      ],
+      "documentation":"<p>Retrieves a list of the log anomaly detectors in the account.</p>"
     },
     "ListTagsForResource":{
       "name":"ListTagsForResource",
@@ -773,7 +853,7 @@
         {"shape":"ThrottlingException"},
         {"shape":"ResourceNotFoundException"}
       ],
-      "documentation":"<p>Creates or updates a logical <i>delivery destination</i>. A delivery destination is an Amazon Web Services resource that represents an Amazon Web Services service that logs can be sent to. CloudWatch Logs, Amazon S3, and Kinesis Data Firehose are supported as logs delivery destinations.</p> <p>To configure logs delivery between a supported Amazon Web Services service and a destination, you must do the following:</p> <ul> <li> <p>Create a delivery source, which is a logical object that represents the resource that is actually sending the logs. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonCloudWatchLogs/latest/APIReference/API_PutDeliverySource.html\">PutDeliverySource</a>.</p> </li> <li> <p>Use <code>PutDeliveryDestination</code> to create a <i>delivery destination</i>, which is a logical object that represents the actual delivery destination. </p> </li> <li> <p>If you are delivering logs cross-account, you must use <a href=\"https://docs.aws.amazon.com/AmazonCloudWatchLogs/latest/APIReference/API_PutDeliveryDestinationolicy.html\">PutDeliveryDestinationPolicy</a> in the destination account to assign an IAM policy to the destination. This policy allows delivery to that destination. </p> </li> <li> <p>Use <code>CreateDelivery</code> to create a <i>delivery</i> by pairing exactly one delivery source and one delivery destination. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonCloudWatchLogs/latest/APIReference/API_CreateDelivery.html\">CreateDelivery</a>. </p> </li> </ul> <p>You can configure a single delivery source to send logs to multiple destinations by creating multiple deliveries. You can also create multiple deliveries to configure multiple delivery sources to send logs to the same delivery destination.</p> <p>Only some Amazon Web Services services support being configured as a delivery source. These services are listed as <b>Supported [V2 Permissions]</b> in the table at <a href=\"https://docs.aws.amazon.com/ AmazonCloudWatch/latest/logs/AWS-logs-and-resource-policy.html#AWS-vended-logs-permissions\">Enabling logging from Amazon Web Services services.</a> </p> <p>If you use this operation to update an existing delivery destination, all the current delivery destination parameters are overwritten with the new parameter values that you specify.</p>"
+      "documentation":"<p>Creates or updates a logical <i>delivery destination</i>. A delivery destination is an Amazon Web Services resource that represents an Amazon Web Services service that logs can be sent to. CloudWatch Logs, Amazon S3, and Kinesis Data Firehose are supported as logs delivery destinations.</p> <p>To configure logs delivery between a supported Amazon Web Services service and a destination, you must do the following:</p> <ul> <li> <p>Create a delivery source, which is a logical object that represents the resource that is actually sending the logs. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonCloudWatchLogs/latest/APIReference/API_PutDeliverySource.html\">PutDeliverySource</a>.</p> </li> <li> <p>Use <code>PutDeliveryDestination</code> to create a <i>delivery destination</i>, which is a logical object that represents the actual delivery destination. </p> </li> <li> <p>If you are delivering logs cross-account, you must use <a href=\"https://docs.aws.amazon.com/AmazonCloudWatchLogs/latest/APIReference/API_PutDeliveryDestinationolicy.html\">PutDeliveryDestinationPolicy</a> in the destination account to assign an IAM policy to the destination. This policy allows delivery to that destination. </p> </li> <li> <p>Use <code>CreateDelivery</code> to create a <i>delivery</i> by pairing exactly one delivery source and one delivery destination. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonCloudWatchLogs/latest/APIReference/API_CreateDelivery.html\">CreateDelivery</a>. </p> </li> </ul> <p>You can configure a single delivery source to send logs to multiple destinations by creating multiple deliveries. You can also create multiple deliveries to configure multiple delivery sources to send logs to the same delivery destination.</p> <p>Only some Amazon Web Services services support being configured as a delivery source. These services are listed as <b>Supported [V2 Permissions]</b> in the table at <a href=\"https://docs.aws.amazon.com/AmazonCloudWatch/latest/logs/AWS-logs-and-resource-policy.html\">Enabling logging from Amazon Web Services services.</a> </p> <p>If you use this operation to update an existing delivery destination, all the current delivery destination parameters are overwritten with the new parameter values that you specify.</p>"
     },
     "PutDeliveryDestinationPolicy":{
       "name":"PutDeliveryDestinationPolicy",
@@ -789,7 +869,7 @@
         {"shape":"ResourceNotFoundException"},
         {"shape":"ConflictException"}
       ],
-      "documentation":"<p>Creates and assigns an IAM policy that grants permissions to CloudWatch Logs to deliver logs cross-account to a specified destination in this account. To configure the delivery of logs from an Amazon Web Services service in another account to a logs delivery destination in the current account, you must do the following:</p> <ul> <li> <p>Create a delivery source, which is a logical object that represents the resource that is actually sending the logs. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonCloudWatchLogs/latest/APIReference/API_PutDeliverySource.html\">PutDeliverySource</a>.</p> </li> <li> <p>Create a <i>delivery destination</i>, which is a logical object that represents the actual delivery destination. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonCloudWatchLogs/latest/APIReference/API_PutDeliveryDestination.html\">PutDeliveryDestination</a>.</p> </li> <li> <p>Use this operation in the destination account to assign an IAM policy to the destination. This policy allows delivery to that destination. </p> </li> <li> <p>Create a <i>delivery</i> by pairing exactly one delivery source and one delivery destination. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonCloudWatchLogs/latest/APIReference/API_CreateDelivery.html\">CreateDelivery</a>.</p> </li> </ul> <p>Only some Amazon Web Services services support being configured as a delivery source. These services are listed as <b>Supported [V2 Permissions]</b> in the table at <a href=\"https://docs.aws.amazon.com/ AmazonCloudWatch/latest/logs/AWS-logs-and-resource-policy.html#AWS-vended-logs-permissions\">Enabling logging from Amazon Web Services services.</a> </p> <p>The contents of the policy must include two statements. One statement enables general logs delivery, and the other allows delivery to the chosen destination. See the examples for the needed policies.</p>"
+      "documentation":"<p>Creates and assigns an IAM policy that grants permissions to CloudWatch Logs to deliver logs cross-account to a specified destination in this account. To configure the delivery of logs from an Amazon Web Services service in another account to a logs delivery destination in the current account, you must do the following:</p> <ul> <li> <p>Create a delivery source, which is a logical object that represents the resource that is actually sending the logs. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonCloudWatchLogs/latest/APIReference/API_PutDeliverySource.html\">PutDeliverySource</a>.</p> </li> <li> <p>Create a <i>delivery destination</i>, which is a logical object that represents the actual delivery destination. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonCloudWatchLogs/latest/APIReference/API_PutDeliveryDestination.html\">PutDeliveryDestination</a>.</p> </li> <li> <p>Use this operation in the destination account to assign an IAM policy to the destination. This policy allows delivery to that destination. </p> </li> <li> <p>Create a <i>delivery</i> by pairing exactly one delivery source and one delivery destination. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonCloudWatchLogs/latest/APIReference/API_CreateDelivery.html\">CreateDelivery</a>.</p> </li> </ul> <p>Only some Amazon Web Services services support being configured as a delivery source. These services are listed as <b>Supported [V2 Permissions]</b> in the table at <a href=\"https://docs.aws.amazon.com/AmazonCloudWatch/latest/logs/AWS-logs-and-resource-policy.html\">Enabling logging from Amazon Web Services services.</a> </p> <p>The contents of the policy must include two statements. One statement enables general logs delivery, and the other allows delivery to the chosen destination. See the examples for the needed policies.</p>"
     },
     "PutDeliverySource":{
       "name":"PutDeliverySource",
@@ -807,7 +887,7 @@
         {"shape":"ResourceNotFoundException"},
         {"shape":"ThrottlingException"}
       ],
-      "documentation":"<p>Creates or updates a logical <i>delivery source</i>. A delivery source represents an Amazon Web Services resource that sends logs to an logs delivery destination. The destination can be CloudWatch Logs, Amazon S3, or Kinesis Data Firehose.</p> <p>To configure logs delivery between a delivery destination and an Amazon Web Services service that is supported as a delivery source, you must do the following:</p> <ul> <li> <p>Use <code>PutDeliverySource</code> to create a delivery source, which is a logical object that represents the resource that is actually sending the logs. </p> </li> <li> <p>Use <code>PutDeliveryDestination</code> to create a <i>delivery destination</i>, which is a logical object that represents the actual delivery destination. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonCloudWatchLogs/latest/APIReference/API_PutDeliveryDestination.html\">PutDeliveryDestination</a>.</p> </li> <li> <p>If you are delivering logs cross-account, you must use <a href=\"https://docs.aws.amazon.com/AmazonCloudWatchLogs/latest/APIReference/API_PutDeliveryDestinationolicy.html\">PutDeliveryDestinationPolicy</a> in the destination account to assign an IAM policy to the destination. This policy allows delivery to that destination. </p> </li> <li> <p>Use <code>CreateDelivery</code> to create a <i>delivery</i> by pairing exactly one delivery source and one delivery destination. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonCloudWatchLogs/latest/APIReference/API_CreateDelivery.html\">CreateDelivery</a>. </p> </li> </ul> <p>You can configure a single delivery source to send logs to multiple destinations by creating multiple deliveries. You can also create multiple deliveries to configure multiple delivery sources to send logs to the same delivery destination.</p> <p>Only some Amazon Web Services services support being configured as a delivery source. These services are listed as <b>Supported [V2 Permissions]</b> in the table at <a href=\"https://docs.aws.amazon.com/ AmazonCloudWatch/latest/logs/AWS-logs-and-resource-policy.html#AWS-vended-logs-permissions\">Enabling logging from Amazon Web Services services.</a> </p> <p>If you use this operation to update an existing delivery source, all the current delivery source parameters are overwritten with the new parameter values that you specify.</p>"
+      "documentation":"<p>Creates or updates a logical <i>delivery source</i>. A delivery source represents an Amazon Web Services resource that sends logs to an logs delivery destination. The destination can be CloudWatch Logs, Amazon S3, or Kinesis Data Firehose.</p> <p>To configure logs delivery between a delivery destination and an Amazon Web Services service that is supported as a delivery source, you must do the following:</p> <ul> <li> <p>Use <code>PutDeliverySource</code> to create a delivery source, which is a logical object that represents the resource that is actually sending the logs. </p> </li> <li> <p>Use <code>PutDeliveryDestination</code> to create a <i>delivery destination</i>, which is a logical object that represents the actual delivery destination. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonCloudWatchLogs/latest/APIReference/API_PutDeliveryDestination.html\">PutDeliveryDestination</a>.</p> </li> <li> <p>If you are delivering logs cross-account, you must use <a href=\"https://docs.aws.amazon.com/AmazonCloudWatchLogs/latest/APIReference/API_PutDeliveryDestinationolicy.html\">PutDeliveryDestinationPolicy</a> in the destination account to assign an IAM policy to the destination. This policy allows delivery to that destination. </p> </li> <li> <p>Use <code>CreateDelivery</code> to create a <i>delivery</i> by pairing exactly one delivery source and one delivery destination. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonCloudWatchLogs/latest/APIReference/API_CreateDelivery.html\">CreateDelivery</a>. </p> </li> </ul> <p>You can configure a single delivery source to send logs to multiple destinations by creating multiple deliveries. You can also create multiple deliveries to configure multiple delivery sources to send logs to the same delivery destination.</p> <p>Only some Amazon Web Services services support being configured as a delivery source. These services are listed as <b>Supported [V2 Permissions]</b> in the table at <a href=\"https://docs.aws.amazon.com/AmazonCloudWatch/latest/logs/AWS-logs-and-resource-policy.html\">Enabling logging from Amazon Web Services services.</a> </p> <p>If you use this operation to update an existing delivery source, all the current delivery source parameters are overwritten with the new parameter values that you specify.</p>"
     },
     "PutDestination":{
       "name":"PutDestination",
@@ -1037,6 +1117,36 @@
         {"shape":"ServiceUnavailableException"}
       ],
       "documentation":"<p>Removes one or more tags from the specified resource.</p>"
+    },
+    "UpdateAnomaly":{
+      "name":"UpdateAnomaly",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"UpdateAnomalyRequest"},
+      "errors":[
+        {"shape":"InvalidParameterException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ServiceUnavailableException"},
+        {"shape":"OperationAbortedException"}
+      ],
+      "documentation":"<p>Use this operation to <i>suppress</i> anomaly detection for a specified anomaly or pattern. If you suppress an anomaly, CloudWatch Logs won’t report new occurrences of that anomaly and won't update that anomaly with new data. If you suppress a pattern, CloudWatch Logs won’t report any anomalies related to that pattern.</p> <p>You must specify either <code>anomalyId</code> or <code>patternId</code>, but you can't specify both parameters in the same operation.</p> <p>If you have previously used this operation to suppress detection of a pattern or anomaly, you can use it again to cause CloudWatch Logs to end the suppression. To do this, use this operation and specify the anomaly or pattern to stop suppressing, and omit the <code>suppressionType</code> and <code>suppressionPeriod</code> parameters.</p>"
+    },
+    "UpdateLogAnomalyDetector":{
+      "name":"UpdateLogAnomalyDetector",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"UpdateLogAnomalyDetectorRequest"},
+      "errors":[
+        {"shape":"InvalidParameterException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ServiceUnavailableException"},
+        {"shape":"OperationAbortedException"}
+      ],
+      "documentation":"<p>Updates an existing log anomaly detector.</p>"
     }
   },
   "shapes":{
@@ -1104,6 +1214,180 @@
       "min":1,
       "pattern":"[\\w+=/:,.@-]*"
     },
+    "Anomalies":{
+      "type":"list",
+      "member":{"shape":"Anomaly"}
+    },
+    "Anomaly":{
+      "type":"structure",
+      "required":[
+        "anomalyId",
+        "patternId",
+        "anomalyDetectorArn",
+        "patternString",
+        "firstSeen",
+        "lastSeen",
+        "description",
+        "active",
+        "state",
+        "histogram",
+        "logSamples",
+        "patternTokens",
+        "logGroupArnList"
+      ],
+      "members":{
+        "anomalyId":{
+          "shape":"AnomalyId",
+          "documentation":"<p>The unique ID that CloudWatch Logs assigned to this anomaly.</p>"
+        },
+        "patternId":{
+          "shape":"PatternId",
+          "documentation":"<p>The ID of the pattern used to help identify this anomaly.</p>"
+        },
+        "anomalyDetectorArn":{
+          "shape":"AnomalyDetectorArn",
+          "documentation":"<p>The ARN of the anomaly detector that identified this anomaly.</p>"
+        },
+        "patternString":{
+          "shape":"PatternString",
+          "documentation":"<p>The pattern used to help identify this anomaly, in string format.</p>"
+        },
+        "patternRegex":{
+          "shape":"PatternRegex",
+          "documentation":"<p>The pattern used to help identify this anomaly, in regular expression format.</p>"
+        },
+        "priority":{
+          "shape":"Priority",
+          "documentation":"<p>The priority level of this anomaly, as determined by CloudWatch Logs. Priority is computed based on log severity labels such as <code>FATAL</code> and <code>ERROR</code> and the amount of deviation from the baseline. Possible values are <code>HIGH</code>, <code>MEDIUM</code>, and <code>LOW</code>.</p>"
+        },
+        "firstSeen":{
+          "shape":"EpochMillis",
+          "documentation":"<p>The date and time when the anomaly detector first saw this anomaly. It is specified as epoch time, which is the number of seconds since <code>January 1, 1970, 00:00:00 UTC</code>.</p>"
+        },
+        "lastSeen":{
+          "shape":"EpochMillis",
+          "documentation":"<p>The date and time when the anomaly detector most recently saw this anomaly. It is specified as epoch time, which is the number of seconds since <code>January 1, 1970, 00:00:00 UTC</code>.</p>"
+        },
+        "description":{
+          "shape":"Description",
+          "documentation":"<p>A human-readable description of the anomaly. This description is generated by CloudWatch Logs.</p>"
+        },
+        "active":{
+          "shape":"Boolean",
+          "documentation":"<p>Specifies whether this anomaly is still ongoing.</p>"
+        },
+        "state":{
+          "shape":"State",
+          "documentation":"<p>Indicates the current state of this anomaly. If it is still being treated as an anomaly, the value is <code>Active</code>. If you have suppressed this anomaly by using the <a href=\"https://docs.aws.amazon.com/AmazonCloudWatchLogs/latest/APIReference/API_UpdateAnomaly.html\">UpdateAnomaly</a> operation, the value is <code>Suppressed</code>. If this behavior is now considered to be normal, the value is <code>Baseline</code>.</p>"
+        },
+        "histogram":{
+          "shape":"Histogram",
+          "documentation":"<p>A map showing times when the anomaly detector ran, and the number of occurrences of this anomaly that were detected at each of those runs. The times are specified in epoch time, which is the number of seconds since <code>January 1, 1970, 00:00:00 UTC</code>.</p>"
+        },
+        "logSamples":{
+          "shape":"LogSamples",
+          "documentation":"<p>An array of sample log event messages that are considered to be part of this anomaly.</p>"
+        },
+        "patternTokens":{
+          "shape":"PatternTokens",
+          "documentation":"<p>An array of structures where each structure contains information about one token that makes up the pattern.</p>"
+        },
+        "logGroupArnList":{
+          "shape":"LogGroupArnList",
+          "documentation":"<p>An array of ARNS of the log groups that contained log events considered to be part of this anomaly.</p>"
+        },
+        "suppressed":{
+          "shape":"Boolean",
+          "documentation":"<p>Indicates whether this anomaly is currently suppressed. To suppress an anomaly, use <a href=\"https://docs.aws.amazon.com/AmazonCloudWatchLogs/latest/APIReference/API_UpdateAnomaly.html\">UpdateAnomaly</a>.</p>"
+        },
+        "suppressedDate":{
+          "shape":"EpochMillis",
+          "documentation":"<p>If the anomaly is suppressed, this indicates when it was suppressed.</p>"
+        },
+        "suppressedUntil":{
+          "shape":"EpochMillis",
+          "documentation":"<p>If the anomaly is suppressed, this indicates when the suppression will end. If this value is <code>0</code>, the anomaly was suppressed with no expiration, with the <code>INFINITE</code> value.</p>"
+        },
+        "isPatternLevelSuppression":{
+          "shape":"Boolean",
+          "documentation":"<p>If this anomaly is suppressed, this field is <code>true</code> if the suppression is because the pattern is suppressed. If <code>false</code>, then only this particular anomaly is suppressed.</p>"
+        }
+      },
+      "documentation":"<p>This structure represents one anomaly that has been found by a logs anomaly detector.</p> <p>For more information about patterns and anomalies, see <a href=\"https://docs.aws.amazon.com/AmazonCloudWatchLogs/latest/APIReference/API_CreateLogAnomalyDetector.html\">CreateLogAnomalyDetector</a>. </p>"
+    },
+    "AnomalyDetector":{
+      "type":"structure",
+      "members":{
+        "anomalyDetectorArn":{
+          "shape":"AnomalyDetectorArn",
+          "documentation":"<p>The ARN of the anomaly detector.</p>"
+        },
+        "detectorName":{
+          "shape":"DetectorName",
+          "documentation":"<p>The name of the anomaly detector.</p>"
+        },
+        "logGroupArnList":{
+          "shape":"LogGroupArnList",
+          "documentation":"<p>A list of the ARNs of the log groups that this anomaly detector watches.</p>"
+        },
+        "evaluationFrequency":{
+          "shape":"EvaluationFrequency",
+          "documentation":"<p>Specifies how often the anomaly detector runs and look for anomalies.</p>"
+        },
+        "filterPattern":{"shape":"FilterPattern"},
+        "anomalyDetectorStatus":{
+          "shape":"AnomalyDetectorStatus",
+          "documentation":"<p>Specifies the current status of the anomaly detector. To pause an anomaly detector, use the <code>enabled</code> parameter in the <a href=\"https://docs.aws.amazon.com/AmazonCloudWatchLogs/latest/APIReference/API_UpdateLogAnomalyDetector.html\">UpdateLogAnomalyDetector</a> operation.</p>"
+        },
+        "kmsKeyId":{
+          "shape":"KmsKeyId",
+          "documentation":"<p>The ID of the KMS key assigned to this anomaly detector, if any.</p>"
+        },
+        "creationTimeStamp":{
+          "shape":"EpochMillis",
+          "documentation":"<p>The date and time when this anomaly detector was created.</p>"
+        },
+        "lastModifiedTimeStamp":{
+          "shape":"EpochMillis",
+          "documentation":"<p>The date and time when this anomaly detector was most recently modified.</p>"
+        },
+        "anomalyVisibilityTime":{
+          "shape":"AnomalyVisibilityTime",
+          "documentation":"<p>The number of days used as the life cycle of anomalies. After this time, anomalies are automatically baselined and the anomaly detector model will treat new occurrences of similar event as normal. </p>"
+        }
+      },
+      "documentation":"<p>Contains information about one anomaly detector in the account.</p>"
+    },
+    "AnomalyDetectorArn":{
+      "type":"string",
+      "min":1,
+      "pattern":"[\\w#+=/:,.@-]*"
+    },
+    "AnomalyDetectorStatus":{
+      "type":"string",
+      "enum":[
+        "INITIALIZING",
+        "TRAINING",
+        "ANALYZING",
+        "FAILED",
+        "DELETED",
+        "PAUSED"
+      ]
+    },
+    "AnomalyDetectors":{
+      "type":"list",
+      "member":{"shape":"AnomalyDetector"}
+    },
+    "AnomalyId":{
+      "type":"string",
+      "max":36,
+      "min":36
+    },
+    "AnomalyVisibilityTime":{
+      "type":"long",
+      "max":90,
+      "min":7
+    },
     "Arn":{"type":"string"},
     "AssociateKmsKeyRequest":{
       "type":"structure",
@@ -1123,6 +1407,7 @@
         }
       }
     },
+    "Boolean":{"type":"boolean"},
     "CancelExportTaskRequest":{
       "type":"structure",
       "required":["taskId"],
@@ -1146,6 +1431,7 @@
       "documentation":"<p>This operation attempted to create a resource that already exists.</p>",
       "exception":true
     },
+    "Count":{"type":"long"},
     "CreateDeliveryRequest":{
       "type":"structure",
       "required":[
@@ -1224,13 +1510,56 @@
         }
       }
     },
+    "CreateLogAnomalyDetectorRequest":{
+      "type":"structure",
+      "required":["logGroupArnList"],
+      "members":{
+        "logGroupArnList":{
+          "shape":"LogGroupArnList",
+          "documentation":"<p>An array containing the ARNs of the log groups that this anomaly detector will watch. You must specify at least one ARN.</p>"
+        },
+        "detectorName":{
+          "shape":"DetectorName",
+          "documentation":"<p>A name for this anomaly detector.</p>"
+        },
+        "evaluationFrequency":{
+          "shape":"EvaluationFrequency",
+          "documentation":"<p>Specifies how often the anomaly detector is to run and look for anomalies. Set this value according to the frequency that the log group receives new logs. For example, if the log group receives new log events every 10 minutes, then 15 minutes might be a good setting for <code>evaluationFrequency</code> .</p>"
+        },
+        "filterPattern":{
+          "shape":"FilterPattern",
+          "documentation":"<p>You can use this parameter to limit the anomaly detection model to examine only log events that match the pattern you specify here. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonCloudWatch/latest/logs/FilterAndPatternSyntax.html\">Filter and Pattern Syntax</a>.</p>"
+        },
+        "kmsKeyId":{
+          "shape":"KmsKeyId",
+          "documentation":"<p>Optionally assigns a KMS key to secure this anomaly detector and its findings. If a key is assigned, the anomalies found and the model used by this detector are encrypted at rest with the key. If a key is assigned to an anomaly detector, a user must have permissions for both this key and for the anomaly detector to retrieve information about the anomalies that it finds.</p> <p>For more information about using a KMS key and to see the required IAM policy, see <a href=\"https://docs.aws.amazon.com/AmazonCloudWatch/latest/logs/LogsAnomalyDetection-KMS.html\">Use a KMS key with an anomaly detector</a>.</p>"
+        },
+        "anomalyVisibilityTime":{
+          "shape":"AnomalyVisibilityTime",
+          "documentation":"<p>The number of days to have visibility on an anomaly. After this time period has elapsed for an anomaly, it will be automatically baselined and the anomaly detector will treat new occurrences of a similar anomaly as normal. Therefore, if you do not correct the cause of an anomaly during the time period specified in <code>anomalyVisibilityTime</code>, it will be considered normal going forward and will not be detected as an anomaly.</p>"
+        },
+        "tags":{
+          "shape":"Tags",
+          "documentation":"<p>An optional list of key-value pairs to associate with the resource.</p> <p>For more information about tagging, see <a href=\"https://docs.aws.amazon.com/general/latest/gr/aws_tagging.html\">Tagging Amazon Web Services resources</a> </p>"
+        }
+      }
+    },
+    "CreateLogAnomalyDetectorResponse":{
+      "type":"structure",
+      "members":{
+        "anomalyDetectorArn":{
+          "shape":"AnomalyDetectorArn",
+          "documentation":"<p>The ARN of the log anomaly detector that you just created.</p>"
+        }
+      }
+    },
     "CreateLogGroupRequest":{
       "type":"structure",
       "required":["logGroupName"],
       "members":{
         "logGroupName":{
           "shape":"LogGroupName",
-          "documentation":"<p>The name of the log group.</p>"
+          "documentation":"<p>A name for the log group.</p>"
         },
         "kmsKeyId":{
           "shape":"KmsKeyId",
@@ -1239,6 +1568,10 @@
         "tags":{
           "shape":"Tags",
           "documentation":"<p>The key-value pairs to use for the tags.</p> <p>You can grant users access to certain log groups while preventing them from accessing other log groups. To do so, tag your groups and use IAM policies that refer to those tags. To assign tags when you create a log group, you must have either the <code>logs:TagResource</code> or <code>logs:TagLogGroup</code> permission. For more information about tagging, see <a href=\"https://docs.aws.amazon.com/general/latest/gr/aws_tagging.html\">Tagging Amazon Web Services resources</a>. For more information about using tags to control access, see <a href=\"https://docs.aws.amazon.com/IAM/latest/UserGuide/access_tags.html\">Controlling access to Amazon Web Services resources using tags</a>.</p>"
+        },
+        "logGroupClass":{
+          "shape":"LogGroupClass",
+          "documentation":"<p>Use this parameter to specify the log group class for this log group. There are two classes:</p> <ul> <li> <p>The <code>Standard</code> log class supports all CloudWatch Logs features.</p> </li> <li> <p>The <code>Infrequent Access</code> log class supports a subset of CloudWatch Logs features and incurs lower costs.</p> </li> </ul> <p>If you omit this parameter, the default of <code>STANDARD</code> is used.</p> <p>For details about the features supported by each class, see <a href=\"https://docs.aws.amazon.com/AmazonCloudWatch/latest/logs/CloudWatch_Logs_Log_Classes.html\">Log classes</a> </p>"
         }
       }
     },
@@ -1356,6 +1689,16 @@
         "destinationName":{
           "shape":"DestinationName",
           "documentation":"<p>The name of the destination.</p>"
+        }
+      }
+    },
+    "DeleteLogAnomalyDetectorRequest":{
+      "type":"structure",
+      "required":["anomalyDetectorArn"],
+      "members":{
+        "anomalyDetectorArn":{
+          "shape":"AnomalyDetectorArn",
+          "documentation":"<p>The ARN of the anomaly detector to delete. You can find the ARNs of log anomaly detectors in your account by using the <a href=\"https://docs.aws.amazon.com/AmazonCloudWatchLogs/latest/APIReference/API_ListLogAnomalyDetectors.html\">ListLogAnomalyDetectors</a> operation.</p>"
         }
       }
     },
@@ -1520,7 +1863,7 @@
           "documentation":"<p>The tags that have been assigned to this delivery destination.</p>"
         }
       },
-      "documentation":"<p>This structure contains information about one <i>delivery destination</i> in your account. A delivery destination is an Amazon Web Services resource that represents an shared id=\"AWS\"/&gt; service that logs can be sent to. CloudWatch Logs, Amazon S3, are supported as Kinesis Data Firehose delivery destinations.</p> <p>To configure logs delivery between a supported Amazon Web Services service and a destination, you must do the following:</p> <ul> <li> <p>Create a delivery source, which is a logical object that represents the resource that is actually sending the logs. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonCloudWatchLogs/latest/APIReference/API_PutDeliverySource.html\">PutDeliverySource</a>.</p> </li> <li> <p>Create a <i>delivery destination</i>, which is a logical object that represents the actual delivery destination. </p> </li> <li> <p>If you are delivering logs cross-account, you must use <a href=\"https://docs.aws.amazon.com/AmazonCloudWatchLogs/latest/APIReference/API_PutDeliveryDestinationolicy.html\">PutDeliveryDestinationPolicy</a> in the destination account to assign an IAM policy to the destination. This policy allows delivery to that destination. </p> </li> <li> <p>Create a <i>delivery</i> by pairing exactly one delivery source and one delivery destination. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonCloudWatchLogs/latest/APIReference/API_CreateDelivery.html\">CreateDelivery</a>.</p> </li> </ul> <p>You can configure a single delivery source to send logs to multiple destinations by creating multiple deliveries. You can also create multiple deliveries to configure multiple delivery sources to send logs to the same delivery destination.</p>"
+      "documentation":"<p>This structure contains information about one <i>delivery destination</i> in your account. A delivery destination is an Amazon Web Services resource that represents an Amazon Web Services service that logs can be sent to. CloudWatch Logs, Amazon S3, are supported as Kinesis Data Firehose delivery destinations.</p> <p>To configure logs delivery between a supported Amazon Web Services service and a destination, you must do the following:</p> <ul> <li> <p>Create a delivery source, which is a logical object that represents the resource that is actually sending the logs. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonCloudWatchLogs/latest/APIReference/API_PutDeliverySource.html\">PutDeliverySource</a>.</p> </li> <li> <p>Create a <i>delivery destination</i>, which is a logical object that represents the actual delivery destination. </p> </li> <li> <p>If you are delivering logs cross-account, you must use <a href=\"https://docs.aws.amazon.com/AmazonCloudWatchLogs/latest/APIReference/API_PutDeliveryDestinationolicy.html\">PutDeliveryDestinationPolicy</a> in the destination account to assign an IAM policy to the destination. This policy allows delivery to that destination. </p> </li> <li> <p>Create a <i>delivery</i> by pairing exactly one delivery source and one delivery destination. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonCloudWatchLogs/latest/APIReference/API_CreateDelivery.html\">CreateDelivery</a>.</p> </li> </ul> <p>You can configure a single delivery source to send logs to multiple destinations by creating multiple deliveries. You can also create multiple deliveries to configure multiple delivery sources to send logs to the same delivery destination.</p>"
     },
     "DeliveryDestinationConfiguration":{
       "type":"structure",
@@ -1590,7 +1933,7 @@
           "documentation":"<p>The tags that have been assigned to this delivery source.</p>"
         }
       },
-      "documentation":"<p>This structure contains information about one <i>delivery source</i> in your account. A delivery source is an Amazon Web Services resource that sends logs to an Amazon Web Services destination. The destination can be CloudWatch Logs, Amazon S3, or Kinesis Data Firehose.</p> <p>Only some Amazon Web Services services support being configured as a delivery source. These services are listed as <b>Supported [V2 Permissions]</b> in the table at <a href=\"https://docs.aws.amazon.com/ AmazonCloudWatch/latest/logs/AWS-logs-and-resource-policy.html#AWS-vended-logs-permissions\">Enabling logging from Amazon Web Services services.</a> </p> <p>To configure logs delivery between a supported Amazon Web Services service and a destination, you must do the following:</p> <ul> <li> <p>Create a delivery source, which is a logical object that represents the resource that is actually sending the logs. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonCloudWatchLogs/latest/APIReference/API_PutDeliverySource.html\">PutDeliverySource</a>.</p> </li> <li> <p>Create a <i>delivery destination</i>, which is a logical object that represents the actual delivery destination. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonCloudWatchLogs/latest/APIReference/API_PutDeliveryDestination.html\">PutDeliveryDestination</a>.</p> </li> <li> <p>If you are delivering logs cross-account, you must use <a href=\"https://docs.aws.amazon.com/AmazonCloudWatchLogs/latest/APIReference/API_PutDeliveryDestinationolicy.html\">PutDeliveryDestinationPolicy</a> in the destination account to assign an IAM policy to the destination. This policy allows delivery to that destination. </p> </li> <li> <p>Create a <i>delivery</i> by pairing exactly one delivery source and one delivery destination. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonCloudWatchLogs/latest/APIReference/API_CreateDelivery.html\">CreateDelivery</a>.</p> </li> </ul> <p>You can configure a single delivery source to send logs to multiple destinations by creating multiple deliveries. You can also create multiple deliveries to configure multiple delivery sources to send logs to the same delivery destination.</p>"
+      "documentation":"<p>This structure contains information about one <i>delivery source</i> in your account. A delivery source is an Amazon Web Services resource that sends logs to an Amazon Web Services destination. The destination can be CloudWatch Logs, Amazon S3, or Kinesis Data Firehose.</p> <p>Only some Amazon Web Services services support being configured as a delivery source. These services are listed as <b>Supported [V2 Permissions]</b> in the table at <a href=\"https://docs.aws.amazon.com/AmazonCloudWatch/latest/logs/AWS-logs-and-resource-policy.html\">Enabling logging from Amazon Web Services services.</a> </p> <p>To configure logs delivery between a supported Amazon Web Services service and a destination, you must do the following:</p> <ul> <li> <p>Create a delivery source, which is a logical object that represents the resource that is actually sending the logs. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonCloudWatchLogs/latest/APIReference/API_PutDeliverySource.html\">PutDeliverySource</a>.</p> </li> <li> <p>Create a <i>delivery destination</i>, which is a logical object that represents the actual delivery destination. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonCloudWatchLogs/latest/APIReference/API_PutDeliveryDestination.html\">PutDeliveryDestination</a>.</p> </li> <li> <p>If you are delivering logs cross-account, you must use <a href=\"https://docs.aws.amazon.com/AmazonCloudWatchLogs/latest/APIReference/API_PutDeliveryDestinationolicy.html\">PutDeliveryDestinationPolicy</a> in the destination account to assign an IAM policy to the destination. This policy allows delivery to that destination. </p> </li> <li> <p>Create a <i>delivery</i> by pairing exactly one delivery source and one delivery destination. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonCloudWatchLogs/latest/APIReference/API_CreateDelivery.html\">CreateDelivery</a>.</p> </li> </ul> <p>You can configure a single delivery source to send logs to multiple destinations by creating multiple deliveries. You can also create multiple deliveries to configure multiple delivery sources to send logs to the same delivery destination.</p>"
     },
     "DeliverySourceName":{
       "type":"string",
@@ -1779,6 +2122,10 @@
         "includeLinkedAccounts":{
           "shape":"IncludeLinkedAccounts",
           "documentation":"<p>If you are using a monitoring account, set this to <code>True</code> to have the operation return log groups in the accounts listed in <code>accountIdentifiers</code>.</p> <p>If this parameter is set to <code>true</code> and <code>accountIdentifiers</code> contains a null value, the operation returns all log groups in the monitoring account and all log groups in all source accounts that are linked to the monitoring account. </p>"
+        },
+        "logGroupClass":{
+          "shape":"LogGroupClass",
+          "documentation":"<p>Specifies the log group class for this log group. There are two classes:</p> <ul> <li> <p>The <code>Standard</code> log class supports all CloudWatch Logs features.</p> </li> <li> <p>The <code>Infrequent Access</code> log class supports a subset of CloudWatch Logs features and incurs lower costs.</p> </li> </ul> <p>For details about the features supported by each class, see <a href=\"https://docs.aws.amazon.com/AmazonCloudWatch/latest/logs/CloudWatch_Logs_Log_Classes.html\">Log classes</a> </p>"
         }
       }
     },
@@ -1983,6 +2330,10 @@
         "nextToken":{"shape":"NextToken"}
       }
     },
+    "Description":{
+      "type":"string",
+      "min":1
+    },
     "Destination":{
       "type":"structure",
       "members":{
@@ -2027,6 +2378,10 @@
       "type":"list",
       "member":{"shape":"Destination"}
     },
+    "DetectorName":{
+      "type":"string",
+      "min":1
+    },
     "Dimensions":{
       "type":"map",
       "key":{"shape":"DimensionsKey"},
@@ -2061,9 +2416,30 @@
         "ByLogStream"
       ]
     },
+    "DynamicTokenPosition":{"type":"integer"},
     "EncryptionKey":{
       "type":"string",
       "max":256
+    },
+    "Enumerations":{
+      "type":"map",
+      "key":{"shape":"TokenString"},
+      "value":{"shape":"TokenValue"}
+    },
+    "EpochMillis":{
+      "type":"long",
+      "min":0
+    },
+    "EvaluationFrequency":{
+      "type":"string",
+      "enum":[
+        "ONE_MIN",
+        "FIVE_MIN",
+        "TEN_MIN",
+        "FIFTEEN_MIN",
+        "THIRTY_MIN",
+        "ONE_HOUR"
+      ]
     },
     "EventId":{"type":"string"},
     "EventMessage":{
@@ -2399,6 +2775,54 @@
         }
       }
     },
+    "GetLogAnomalyDetectorRequest":{
+      "type":"structure",
+      "required":["anomalyDetectorArn"],
+      "members":{
+        "anomalyDetectorArn":{
+          "shape":"AnomalyDetectorArn",
+          "documentation":"<p>The ARN of the anomaly detector to retrieve information about. You can find the ARNs of log anomaly detectors in your account by using the <a href=\"https://docs.aws.amazon.com/AmazonCloudWatchLogs/latest/APIReference/API_ListLogAnomalyDetectors.html\">ListLogAnomalyDetectors</a> operation.</p>"
+        }
+      }
+    },
+    "GetLogAnomalyDetectorResponse":{
+      "type":"structure",
+      "members":{
+        "detectorName":{
+          "shape":"DetectorName",
+          "documentation":"<p>The name of the log anomaly detector</p>"
+        },
+        "logGroupArnList":{
+          "shape":"LogGroupArnList",
+          "documentation":"<p>An array of structures, where each structure contains the ARN of a log group associated with this anomaly detector.</p>"
+        },
+        "evaluationFrequency":{
+          "shape":"EvaluationFrequency",
+          "documentation":"<p>Specifies how often the anomaly detector runs and look for anomalies. Set this value according to the frequency that the log group receives new logs. For example, if the log group receives new log events every 10 minutes, then setting <code>evaluationFrequency</code> to <code>FIFTEEN_MIN</code> might be appropriate.</p>"
+        },
+        "filterPattern":{"shape":"FilterPattern"},
+        "anomalyDetectorStatus":{
+          "shape":"AnomalyDetectorStatus",
+          "documentation":"<p>Specifies whether the anomaly detector is currently active. To change its status, use the <code>enabled</code> parameter in the <a href=\"https://docs.aws.amazon.com/AmazonCloudWatchLogs/latest/APIReference/API_UpdateLogAnomalyDetector.html\">UpdateLogAnomalyDetector</a> operation.</p>"
+        },
+        "kmsKeyId":{
+          "shape":"KmsKeyId",
+          "documentation":"<p>The ID of the KMS key assigned to this anomaly detector, if any.</p>"
+        },
+        "creationTimeStamp":{
+          "shape":"EpochMillis",
+          "documentation":"<p>The date and time when this anomaly detector was created.</p>"
+        },
+        "lastModifiedTimeStamp":{
+          "shape":"EpochMillis",
+          "documentation":"<p>The date and time when this anomaly detector was most recently modified.</p>"
+        },
+        "anomalyVisibilityTime":{
+          "shape":"AnomalyVisibilityTime",
+          "documentation":"<p>The number of days used as the life cycle of anomalies. After this time, anomalies are automatically baselined and the anomaly detector model will treat new occurrences of similar event as normal. </p>"
+        }
+      }
+    },
     "GetLogEventsRequest":{
       "type":"structure",
       "required":["logStreamName"],
@@ -2538,6 +2962,11 @@
         }
       }
     },
+    "Histogram":{
+      "type":"map",
+      "key":{"shape":"Time"},
+      "value":{"shape":"Count"}
+    },
     "IncludeLinkedAccounts":{"type":"boolean"},
     "InheritedProperties":{
       "type":"list",
@@ -2577,6 +3006,7 @@
       "max":100,
       "min":1
     },
+    "Integer":{"type":"integer"},
     "Interleaved":{"type":"boolean"},
     "InvalidOperationException":{
       "type":"structure",
@@ -2610,6 +3040,68 @@
       },
       "documentation":"<p>You have reached the maximum number of resources that can be created.</p>",
       "exception":true
+    },
+    "ListAnomaliesLimit":{
+      "type":"integer",
+      "max":50,
+      "min":1
+    },
+    "ListAnomaliesRequest":{
+      "type":"structure",
+      "members":{
+        "anomalyDetectorArn":{
+          "shape":"AnomalyDetectorArn",
+          "documentation":"<p>Use this to optionally limit the results to only the anomalies found by a certain anomaly detector.</p>"
+        },
+        "suppressionState":{
+          "shape":"SuppressionState",
+          "documentation":"<p>You can specify this parameter if you want to the operation to return only anomalies that are currently either suppressed or unsuppressed.</p>"
+        },
+        "limit":{
+          "shape":"ListAnomaliesLimit",
+          "documentation":"<p>The maximum number of items to return. If you don't specify a value, the default maximum value of 50 items is used.</p>"
+        },
+        "nextToken":{"shape":"NextToken"}
+      }
+    },
+    "ListAnomaliesResponse":{
+      "type":"structure",
+      "members":{
+        "anomalies":{
+          "shape":"Anomalies",
+          "documentation":"<p>An array of structures, where each structure contains information about one anomaly that a log anomaly detector has found.</p>"
+        },
+        "nextToken":{"shape":"NextToken"}
+      }
+    },
+    "ListLogAnomalyDetectorsLimit":{
+      "type":"integer",
+      "max":50,
+      "min":1
+    },
+    "ListLogAnomalyDetectorsRequest":{
+      "type":"structure",
+      "members":{
+        "filterLogGroupArn":{
+          "shape":"LogGroupArn",
+          "documentation":"<p>Use this to optionally filter the results to only include anomaly detectors that are associated with the specified log group.</p>"
+        },
+        "limit":{
+          "shape":"ListLogAnomalyDetectorsLimit",
+          "documentation":"<p>The maximum number of items to return. If you don't specify a value, the default maximum value of 50 items is used.</p>"
+        },
+        "nextToken":{"shape":"NextToken"}
+      }
+    },
+    "ListLogAnomalyDetectorsResponse":{
+      "type":"structure",
+      "members":{
+        "anomalyDetectors":{
+          "shape":"AnomalyDetectors",
+          "documentation":"<p>An array of structures, where each structure in the array contains information about one anomaly detector.</p>"
+        },
+        "nextToken":{"shape":"NextToken"}
+      }
     },
     "ListTagsForResourceRequest":{
       "type":"structure",
@@ -2653,6 +3145,10 @@
       "deprecated":true,
       "deprecatedMessage":"Please use the generic tagging API model ListTagsForResourceRequest and ListTagsForResourceResponse"
     },
+    "LogEvent":{
+      "type":"string",
+      "min":1
+    },
     "LogEventIndex":{"type":"integer"},
     "LogGroup":{
       "type":"structure",
@@ -2689,9 +3185,30 @@
         "inheritedProperties":{
           "shape":"InheritedProperties",
           "documentation":"<p>Displays all the properties that this log group has inherited from account-level settings.</p>"
+        },
+        "logGroupClass":{
+          "shape":"LogGroupClass",
+          "documentation":"<p>This specifies the log group class for this log group. There are two classes:</p> <ul> <li> <p>The <code>Standard</code> log class supports all CloudWatch Logs features.</p> </li> <li> <p>The <code>Infrequent Access</code> log class supports a subset of CloudWatch Logs features and incurs lower costs.</p> </li> </ul> <p>For details about the features supported by each class, see <a href=\"https://docs.aws.amazon.com/AmazonCloudWatch/latest/logs/CloudWatch_Logs_Log_Classes.html\">Log classes</a> </p>"
         }
       },
       "documentation":"<p>Represents a log group.</p>"
+    },
+    "LogGroupArn":{
+      "type":"string",
+      "max":2048,
+      "min":1,
+      "pattern":"[\\w#+=/:,.@-]*"
+    },
+    "LogGroupArnList":{
+      "type":"list",
+      "member":{"shape":"LogGroupArn"}
+    },
+    "LogGroupClass":{
+      "type":"string",
+      "enum":[
+        "STANDARD",
+        "INFREQUENT_ACCESS"
+      ]
     },
     "LogGroupField":{
       "type":"structure",
@@ -2747,6 +3264,10 @@
       "value":{"shape":"Value"}
     },
     "LogRecordPointer":{"type":"string"},
+    "LogSamples":{
+      "type":"list",
+      "member":{"shape":"LogEvent"}
+    },
     "LogStream":{
       "type":"structure",
       "members":{
@@ -2970,6 +3491,45 @@
       "type":"list",
       "member":{"shape":"OutputLogEvent"}
     },
+    "PatternId":{
+      "type":"string",
+      "max":32,
+      "min":32
+    },
+    "PatternRegex":{
+      "type":"string",
+      "min":1
+    },
+    "PatternString":{
+      "type":"string",
+      "min":1
+    },
+    "PatternToken":{
+      "type":"structure",
+      "members":{
+        "dynamicTokenPosition":{
+          "shape":"DynamicTokenPosition",
+          "documentation":"<p>For a dynamic token, this indicates where in the pattern that this token appears, related to other dynamic tokens. The dynamic token that appears first has a value of <code>1</code>, the one that appears second is <code>2</code>, and so on.</p>"
+        },
+        "isDynamic":{
+          "shape":"Boolean",
+          "documentation":"<p>Specifies whether this is a dynamic token.</p>"
+        },
+        "tokenString":{
+          "shape":"TokenString",
+          "documentation":"<p>The string represented by this token. If this is a dynamic token, the value will be <code>&lt;*&gt;</code> </p>"
+        },
+        "enumerations":{
+          "shape":"Enumerations",
+          "documentation":"<p>Contains the values found for a dynamic token, and the number of times each value was found.</p>"
+        }
+      },
+      "documentation":"<p>A tructures that contains information about one pattern token related to an anomaly.</p> <p>For more information about patterns and tokens, see <a href=\"https://docs.aws.amazon.com/AmazonCloudWatchLogs/latest/APIReference/API_CreateLogAnomalyDetector.html\">CreateLogAnomalyDetector</a>. </p>"
+    },
+    "PatternTokens":{
+      "type":"list",
+      "member":{"shape":"PatternToken"}
+    },
     "Percentage":{
       "type":"integer",
       "max":100,
@@ -2994,6 +3554,10 @@
     "PolicyType":{
       "type":"string",
       "enum":["DATA_PROTECTION_POLICY"]
+    },
+    "Priority":{
+      "type":"string",
+      "min":1
     },
     "PutAccountPolicyRequest":{
       "type":"structure",
@@ -3752,6 +4316,14 @@
         }
       }
     },
+    "State":{
+      "type":"string",
+      "enum":[
+        "Active",
+        "Suppressed",
+        "Baseline"
+      ]
+    },
     "StatsValue":{"type":"double"},
     "StopQueryRequest":{
       "type":"structure",
@@ -3809,6 +4381,42 @@
       "member":{"shape":"SubscriptionFilter"}
     },
     "Success":{"type":"boolean"},
+    "SuppressionPeriod":{
+      "type":"structure",
+      "members":{
+        "value":{
+          "shape":"Integer",
+          "documentation":"<p>Specifies the number of seconds, minutes or hours to suppress this anomaly. There is no maximum.</p>"
+        },
+        "suppressionUnit":{
+          "shape":"SuppressionUnit",
+          "documentation":"<p>Specifies whether the value of <code>value</code> is in seconds, minutes, or hours.</p>"
+        }
+      },
+      "documentation":"<p>If you are suppressing an anomaly temporariliy, this structure defines how long the suppression period is to be.</p>"
+    },
+    "SuppressionState":{
+      "type":"string",
+      "enum":[
+        "SUPPRESSED",
+        "UNSUPPRESSED"
+      ]
+    },
+    "SuppressionType":{
+      "type":"string",
+      "enum":[
+        "LIMITED",
+        "INFINITE"
+      ]
+    },
+    "SuppressionUnit":{
+      "type":"string",
+      "enum":[
+        "SECONDS",
+        "MINUTES",
+        "HOURS"
+      ]
+    },
     "TagKey":{
       "type":"string",
       "max":128,
@@ -3914,11 +4522,20 @@
       "documentation":"<p>The request was throttled because of quota limits.</p>",
       "exception":true
     },
+    "Time":{
+      "type":"string",
+      "min":1
+    },
     "Timestamp":{
       "type":"long",
       "min":0
     },
     "Token":{"type":"string"},
+    "TokenString":{
+      "type":"string",
+      "min":1
+    },
+    "TokenValue":{"type":"long"},
     "TooManyTagsException":{
       "type":"structure",
       "members":{
@@ -3972,6 +4589,58 @@
         "tagKeys":{
           "shape":"TagKeyList",
           "documentation":"<p>The list of tag keys to remove from the resource.</p>"
+        }
+      }
+    },
+    "UpdateAnomalyRequest":{
+      "type":"structure",
+      "required":["anomalyDetectorArn"],
+      "members":{
+        "anomalyId":{
+          "shape":"AnomalyId",
+          "documentation":"<p>If you are suppressing or unsuppressing an anomaly, specify its unique ID here. You can find anomaly IDs by using the <a href=\"https://docs.aws.amazon.com/AmazonCloudWatchLogs/latest/APIReference/API_ListAnomalies.html\">ListAnomalies</a> operation.</p>"
+        },
+        "patternId":{
+          "shape":"PatternId",
+          "documentation":"<p>If you are suppressing or unsuppressing an pattern, specify its unique ID here. You can find pattern IDs by using the <a href=\"https://docs.aws.amazon.com/AmazonCloudWatchLogs/latest/APIReference/API_ListAnomalies.html\">ListAnomalies</a> operation.</p>"
+        },
+        "anomalyDetectorArn":{
+          "shape":"AnomalyDetectorArn",
+          "documentation":"<p>The ARN of the anomaly detector that this operation is to act on.</p>"
+        },
+        "suppressionType":{
+          "shape":"SuppressionType",
+          "documentation":"<p>Use this to specify whether the suppression to be temporary or infinite. If you specify <code>LIMITED</code>, you must also specify a <code>suppressionPeriod</code>. If you specify <code>INFINITE</code>, any value for <code>suppressionPeriod</code> is ignored. </p>"
+        },
+        "suppressionPeriod":{
+          "shape":"SuppressionPeriod",
+          "documentation":"<p>If you are temporarily suppressing an anomaly or pattern, use this structure to specify how long the suppression is to last.</p>"
+        }
+      }
+    },
+    "UpdateLogAnomalyDetectorRequest":{
+      "type":"structure",
+      "required":[
+        "anomalyDetectorArn",
+        "enabled"
+      ],
+      "members":{
+        "anomalyDetectorArn":{
+          "shape":"AnomalyDetectorArn",
+          "documentation":"<p>The ARN of the anomaly detector that you want to update.</p>"
+        },
+        "evaluationFrequency":{
+          "shape":"EvaluationFrequency",
+          "documentation":"<p>Specifies how often the anomaly detector runs and look for anomalies. Set this value according to the frequency that the log group receives new logs. For example, if the log group receives new log events every 10 minutes, then setting <code>evaluationFrequency</code> to <code>FIFTEEN_MIN</code> might be appropriate.</p>"
+        },
+        "filterPattern":{"shape":"FilterPattern"},
+        "anomalyVisibilityTime":{
+          "shape":"AnomalyVisibilityTime",
+          "documentation":"<p>The number of days to use as the life cycle of anomalies. After this time, anomalies are automatically baselined and the anomaly detector model will treat new occurrences of similar event as normal. Therefore, if you do not correct the cause of an anomaly during this time, it will be considered normal going forward and will not be detected.</p>"
+        },
+        "enabled":{
+          "shape":"Boolean",
+          "documentation":"<p>Use this parameter to pause or restart the anomaly detector. </p>"
         }
       }
     },

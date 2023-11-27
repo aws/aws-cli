@@ -2143,6 +2143,27 @@
         }
       }
     },
+    "DataReplication":{
+      "type":"string",
+      "enum":[
+        "NO_REPLICATION",
+        "PRIMARY_AS_SOURCE"
+      ]
+    },
+    "DataReplicationSettings":{
+      "type":"structure",
+      "members":{
+        "DataReplication":{
+          "shape":"DataReplication",
+          "documentation":"<p>Indicates whether data replication is enabled, and if enabled, the type of data replication.</p>"
+        },
+        "RecoverySnapshotTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The date and time at which the last successful snapshot was taken of the primary WorkSpace used for replicating data.</p>"
+        }
+      },
+      "documentation":"<p>Describes the data replication settings.</p>"
+    },
     "DedicatedTenancyCidrRangeList":{
       "type":"list",
       "member":{"shape":"DedicatedTenancyManagementCidrRange"}
@@ -3853,10 +3874,7 @@
     },
     "ModifyWorkspacePropertiesRequest":{
       "type":"structure",
-      "required":[
-        "WorkspaceId",
-        "WorkspaceProperties"
-      ],
+      "required":["WorkspaceId"],
       "members":{
         "WorkspaceId":{
           "shape":"WorkspaceId",
@@ -3865,6 +3883,10 @@
         "WorkspaceProperties":{
           "shape":"WorkspaceProperties",
           "documentation":"<p>The properties of the WorkSpace.</p>"
+        },
+        "DataReplication":{
+          "shape":"DataReplication",
+          "documentation":"<p>Indicates the data replication status.</p>"
         }
       }
     },
@@ -4402,6 +4424,10 @@
         "Tags":{
           "shape":"TagList",
           "documentation":"<p>The tags associated with the standby WorkSpace.</p>"
+        },
+        "DataReplication":{
+          "shape":"DataReplication",
+          "documentation":"<p>Indicates whether data replication is enabled, and if enabled, the type of data replication.</p>"
         }
       },
       "documentation":"<p>Describes a standby WorkSpace.</p>"
@@ -4416,6 +4442,28 @@
     "StandbyWorkspacesList":{
       "type":"list",
       "member":{"shape":"StandbyWorkspace"}
+    },
+    "StandbyWorkspacesProperties":{
+      "type":"structure",
+      "members":{
+        "StandbyWorkspaceId":{
+          "shape":"WorkspaceId",
+          "documentation":"<p>The identifier of the standby WorkSpace</p>"
+        },
+        "DataReplication":{
+          "shape":"DataReplication",
+          "documentation":"<p>Indicates whether data replication is enabled, and if enabled, the type of data replication.</p>"
+        },
+        "RecoverySnapshotTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The date and time at which the last successful snapshot was taken of the primary WorkSpace used for replicating data.</p>"
+        }
+      },
+      "documentation":"<p>Describes the properties of the related standby WorkSpaces. </p>"
+    },
+    "StandbyWorkspacesPropertiesList":{
+      "type":"list",
+      "member":{"shape":"StandbyWorkspacesProperties"}
     },
     "StartRequest":{
       "type":"structure",
@@ -4918,6 +4966,14 @@
         "RelatedWorkspaces":{
           "shape":"RelatedWorkspaces",
           "documentation":"<p>The standby WorkSpace or primary WorkSpace related to the specified WorkSpace.</p>"
+        },
+        "DataReplicationSettings":{
+          "shape":"DataReplicationSettings",
+          "documentation":"<p>Indicates the settings of the data replication.</p>"
+        },
+        "StandbyWorkspacesProperties":{
+          "shape":"StandbyWorkspacesPropertiesList",
+          "documentation":"<p>The properties of the standby WorkSpace</p>"
         }
       },
       "documentation":"<p>Describes a WorkSpace.</p>"

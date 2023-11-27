@@ -1455,6 +1455,746 @@
                 "StreamARN": "arn:aws:kinesis:us-east-1:123:stream/foobar",
                 "ConsumerARN": "arn:aws:kinesis:us-east-1:123456789123:stream/foobar/consumer/test-consumer:1525898737"
             }
+        },
+        {
+            "documentation": "ResourceARN test: Invalid ARN: Failed to parse ARN.",
+            "expect": {
+                "error": "Invalid ARN: Failed to parse ARN."
+            },
+            "params": {
+                "Region": "us-east-1",
+                "UseFIPS": false,
+                "UseDualStack": false,
+                "ResourceARN": "arn"
+            }
+        },
+        {
+            "documentation": "ResourceARN as StreamARN test: Invalid ARN: partition missing from ARN.",
+            "expect": {
+                "error": "Invalid ARN: Failed to parse ARN."
+            },
+            "params": {
+                "Region": "us-east-1",
+                "UseFIPS": false,
+                "UseDualStack": false,
+                "ResourceARN": "arn::kinesis:us-west-2:123456789012:stream/testStream"
+            }
+        },
+        {
+            "documentation": "ResourceARN as StreamARN test: Invalid ARN: partitions mismatch.",
+            "expect": {
+                "error": "Partition: aws from ARN doesn't match with partition name: aws-us-gov."
+            },
+            "params": {
+                "Region": "us-gov-west-1",
+                "UseFIPS": false,
+                "UseDualStack": false,
+                "ResourceARN": "arn:aws:kinesis:us-west-2:123456789012:stream/testStream"
+            }
+        },
+        {
+            "documentation": "ResourceARN as StreamARN test: Invalid ARN: Not Kinesis",
+            "expect": {
+                "error": "Invalid ARN: The ARN was not for the Kinesis service, found: s3."
+            },
+            "params": {
+                "Region": "us-east-1",
+                "UseFIPS": false,
+                "UseDualStack": false,
+                "ResourceARN": "arn:aws:s3:us-west-2:123456789012:stream/testStream"
+            }
+        },
+        {
+            "documentation": "ResourceARN as StreamARN test: Invalid ARN: Region is missing in ARN",
+            "expect": {
+                "error": "Invalid ARN: Invalid region."
+            },
+            "params": {
+                "Region": "us-east-1",
+                "UseFIPS": false,
+                "UseDualStack": false,
+                "ResourceARN": "arn:aws:kinesis::123456789012:stream/testStream"
+            }
+        },
+        {
+            "documentation": "ResourceARN as StreamARN test: Invalid ARN: Region is empty string in ARN",
+            "expect": {
+                "error": "Invalid ARN: Invalid region."
+            },
+            "params": {
+                "Region": "us-east-1",
+                "UseFIPS": false,
+                "UseDualStack": false,
+                "ResourceARN": "arn:aws:kinesis:  :123456789012:stream/testStream"
+            }
+        },
+        {
+            "documentation": "ResourceARN as StreamARN test: Invalid ARN: Invalid account id",
+            "expect": {
+                "error": "Invalid ARN: Invalid account id."
+            },
+            "params": {
+                "Region": "us-east-1",
+                "UseFIPS": false,
+                "UseDualStack": false,
+                "ResourceARN": "arn:aws:kinesis:us-east-1::stream/testStream",
+                "OperationType": "control"
+            }
+        },
+        {
+            "documentation": "ResourceARN as StreamARN test: Invalid ARN: Invalid account id",
+            "expect": {
+                "error": "Invalid ARN: Invalid account id."
+            },
+            "params": {
+                "Region": "us-east-1",
+                "UseFIPS": false,
+                "UseDualStack": false,
+                "ResourceARN": "arn:aws:kinesis:us-east-1:   :stream/testStream",
+                "OperationType": "control"
+            }
+        },
+        {
+            "documentation": "ResourceARN as StreamARN test: Invalid ARN: Kinesis ARNs only support stream arn types",
+            "expect": {
+                "error": "Invalid ARN: Kinesis ARNs don't support `accesspoint` arn types."
+            },
+            "params": {
+                "Region": "us-east-1",
+                "UseFIPS": false,
+                "UseDualStack": false,
+                "ResourceARN": "arn:aws:kinesis:us-east-1:123:accesspoint/testStream"
+            }
+        },
+        {
+            "documentation": "ResourceARN as StreamARN test: Dual Stack not supported region.",
+            "expect": {
+                "error": "FIPS and DualStack are enabled, but this partition does not support one or both"
+            },
+            "params": {
+                "Region": "us-iso-west-1",
+                "UseFIPS": true,
+                "UseDualStack": true,
+                "ResourceARN": "arn:aws-iso:kinesis:us-iso-west-1:123456789012:stream/testStream",
+                "OperationType": "control"
+            }
+        },
+        {
+            "documentation": "ResourceARN as StreamARN test: OperationType not set",
+            "expect": {
+                "error": "Operation Type is not set. Please contact service team for resolution."
+            },
+            "params": {
+                "Region": "us-east-1",
+                "UseFIPS": false,
+                "UseDualStack": false,
+                "ResourceARN": "arn:aws:kinesis:us-east-1:123456789012:stream/testStream"
+            }
+        },
+        {
+            "documentation": "ResourceARN as StreamARN test: Custom Endpoint is specified",
+            "expect": {
+                "endpoint": {
+                    "url": "https://example.com"
+                }
+            },
+            "params": {
+                "Region": "us-east-1",
+                "UseFIPS": false,
+                "UseDualStack": false,
+                "OperationType": "control",
+                "ResourceARN": "arn:aws:kinesis:us-east-1:123:stream/test-stream",
+                "Endpoint": "https://example.com"
+            }
+        },
+        {
+            "documentation": "ResourceARN as StreamARN test: Account endpoint targeting control operation type",
+            "expect": {
+                "endpoint": {
+                    "url": "https://123.control-kinesis.us-east-1.amazonaws.com"
+                }
+            },
+            "params": {
+                "Region": "us-east-1",
+                "UseFIPS": false,
+                "UseDualStack": false,
+                "OperationType": "control",
+                "ResourceARN": "arn:aws:kinesis:us-east-1:123:stream/test-stream"
+            }
+        },
+        {
+            "documentation": "ResourceARN as StreamARN test: Account endpoint targeting data operation type",
+            "expect": {
+                "endpoint": {
+                    "url": "https://123.data-kinesis.us-east-1.amazonaws.com"
+                }
+            },
+            "params": {
+                "Region": "us-east-1",
+                "UseFIPS": false,
+                "UseDualStack": false,
+                "OperationType": "data",
+                "ResourceARN": "arn:aws:kinesis:us-east-1:123:stream/test-stream"
+            }
+        },
+        {
+            "documentation": "ResourceARN as StreamARN test: Account endpoint with fips targeting data operation type",
+            "expect": {
+                "endpoint": {
+                    "url": "https://123.data-kinesis-fips.us-east-1.amazonaws.com"
+                }
+            },
+            "params": {
+                "Region": "us-east-1",
+                "UseFIPS": true,
+                "UseDualStack": false,
+                "OperationType": "data",
+                "ResourceARN": "arn:aws:kinesis:us-east-1:123:stream/test-stream"
+            }
+        },
+        {
+            "documentation": "ResourceARN as StreamARN test: Account endpoint with fips targeting control operation type",
+            "expect": {
+                "endpoint": {
+                    "url": "https://123.control-kinesis-fips.us-east-1.amazonaws.com"
+                }
+            },
+            "params": {
+                "Region": "us-east-1",
+                "UseFIPS": true,
+                "UseDualStack": false,
+                "OperationType": "control",
+                "ResourceARN": "arn:aws:kinesis:us-east-1:123:stream/test-stream"
+            }
+        },
+        {
+            "documentation": "ResourceARN as StreamARN test: Account endpoint with Dual Stack and FIPS enabled",
+            "expect": {
+                "endpoint": {
+                    "url": "https://123.control-kinesis-fips.us-east-1.api.aws"
+                }
+            },
+            "params": {
+                "Region": "us-east-1",
+                "UseFIPS": true,
+                "UseDualStack": true,
+                "OperationType": "control",
+                "ResourceARN": "arn:aws:kinesis:us-east-1:123:stream/test-stream"
+            }
+        },
+        {
+            "documentation": "ResourceARN as StreamARN test: Account endpoint with Dual Stack enabled",
+            "expect": {
+                "endpoint": {
+                    "url": "https://123.data-kinesis.us-west-1.api.aws"
+                }
+            },
+            "params": {
+                "Region": "us-west-1",
+                "UseFIPS": false,
+                "UseDualStack": true,
+                "OperationType": "data",
+                "ResourceARN": "arn:aws:kinesis:us-west-1:123:stream/test-stream"
+            }
+        },
+        {
+            "documentation": "ResourceARN as StreamARN test: Account endpoint with FIPS and DualStack disabled",
+            "expect": {
+                "endpoint": {
+                    "url": "https://123.control-kinesis.us-west-1.amazonaws.com"
+                }
+            },
+            "params": {
+                "Region": "us-west-1",
+                "UseFIPS": false,
+                "UseDualStack": false,
+                "OperationType": "control",
+                "ResourceARN": "arn:aws:kinesis:us-west-1:123:stream/test-stream"
+            }
+        },
+        {
+            "documentation": "ResourceARN as StreamARN test: RegionMismatch: client region should be used for endpoint region",
+            "expect": {
+                "endpoint": {
+                    "url": "https://123.data-kinesis.us-east-1.amazonaws.com"
+                }
+            },
+            "params": {
+                "Region": "us-east-1",
+                "UseFIPS": false,
+                "UseDualStack": false,
+                "OperationType": "data",
+                "ResourceARN": "arn:aws:kinesis:us-west-1:123:stream/testStream"
+            }
+        },
+        {
+            "documentation": "ResourceARN as StreamARN test: Account endpoint with FIPS enabled",
+            "expect": {
+                "endpoint": {
+                    "url": "https://123.data-kinesis-fips.cn-northwest-1.amazonaws.com.cn"
+                }
+            },
+            "params": {
+                "Region": "cn-northwest-1",
+                "UseFIPS": true,
+                "UseDualStack": false,
+                "OperationType": "data",
+                "ResourceARN": "arn:aws-cn:kinesis:cn-northwest-1:123:stream/test-stream"
+            }
+        },
+        {
+            "documentation": "ResourceARN as StreamARN test: Account endpoint with FIPS and DualStack enabled for cn regions.",
+            "expect": {
+                "endpoint": {
+                    "url": "https://123.data-kinesis-fips.cn-northwest-1.api.amazonwebservices.com.cn"
+                }
+            },
+            "params": {
+                "Region": "cn-northwest-1",
+                "UseFIPS": true,
+                "UseDualStack": true,
+                "OperationType": "data",
+                "ResourceARN": "arn:aws-cn:kinesis:cn-northwest-1:123:stream/test-stream"
+            }
+        },
+        {
+            "documentation": "ResourceARN as StreamARN test: Account endpoint targeting control operation type in ADC regions",
+            "expect": {
+                "endpoint": {
+                    "url": "https://kinesis.us-iso-east-1.c2s.ic.gov"
+                }
+            },
+            "params": {
+                "Region": "us-iso-east-1",
+                "UseFIPS": false,
+                "UseDualStack": false,
+                "OperationType": "control",
+                "ResourceARN": "arn:aws-iso:kinesis:us-iso-east-1:123:stream/test-stream"
+            }
+        },
+        {
+            "documentation": "ResourceARN as StreamARN test: Account endpoint targeting control operation type in ADC regions",
+            "expect": {
+                "endpoint": {
+                    "url": "https://kinesis.us-iso-west-1.c2s.ic.gov"
+                }
+            },
+            "params": {
+                "Region": "us-iso-west-1",
+                "UseFIPS": false,
+                "UseDualStack": false,
+                "OperationType": "control",
+                "ResourceARN": "arn:aws-iso:kinesis:us-iso-west-1:123:stream/test-stream"
+            }
+        },
+        {
+            "documentation": "ResourceARN as StreamARN test: Account endpoint targeting data operation type in ADC regions",
+            "expect": {
+                "endpoint": {
+                    "url": "https://kinesis.us-isob-east-1.sc2s.sgov.gov"
+                }
+            },
+            "params": {
+                "Region": "us-isob-east-1",
+                "UseFIPS": false,
+                "UseDualStack": false,
+                "OperationType": "data",
+                "ResourceARN": "arn:aws-iso-b:kinesis:us-isob-east-1:123:stream/test-stream"
+            }
+        },
+        {
+            "documentation": "ResourceARN as StreamARN test: Account endpoint with fips targeting control operation type in ADC regions",
+            "expect": {
+                "endpoint": {
+                    "url": "https://kinesis-fips.us-iso-east-1.c2s.ic.gov"
+                }
+            },
+            "params": {
+                "Region": "us-iso-east-1",
+                "UseFIPS": true,
+                "UseDualStack": false,
+                "OperationType": "control",
+                "ResourceARN": "arn:aws-iso:kinesis:us-iso-east-1:123:stream/test-stream"
+            }
+        },
+        {
+            "documentation": "ResourceARN as StreamARN test: Account endpoint with fips targeting data operation type in ADC regions",
+            "expect": {
+                "endpoint": {
+                    "url": "https://kinesis-fips.us-isob-east-1.sc2s.sgov.gov"
+                }
+            },
+            "params": {
+                "Region": "us-isob-east-1",
+                "UseFIPS": true,
+                "UseDualStack": false,
+                "OperationType": "data",
+                "ResourceARN": "arn:aws-iso-b:kinesis:us-isob-east-1:123:stream/test-stream"
+            }
+        },
+        {
+            "documentation": "ResourceARN as ConsumerARN test: Invalid ARN: partition missing from ARN.",
+            "expect": {
+                "error": "Invalid ARN: Failed to parse ARN."
+            },
+            "params": {
+                "Region": "us-east-1",
+                "UseFIPS": false,
+                "UseDualStack": false,
+                "ResourceARN": "arn::kinesis:us-west-2:123456789012:stream/testStream/consumer/test-consumer:1525898737"
+            }
+        },
+        {
+            "documentation": "ResourceARN as ConsumerARN test: Invalid ARN: partitions mismatch.",
+            "expect": {
+                "error": "Partition: aws from ARN doesn't match with partition name: aws-us-gov."
+            },
+            "params": {
+                "Region": "us-gov-west-1",
+                "UseFIPS": false,
+                "UseDualStack": false,
+                "ResourceARN": "arn:aws:kinesis:us-west-2:123456789012:stream/testStream/consumer/test-consumer:1525898737"
+            }
+        },
+        {
+            "documentation": "ResourceARN as ConsumerARN test: Invalid ARN: Not Kinesis",
+            "expect": {
+                "error": "Invalid ARN: The ARN was not for the Kinesis service, found: s3."
+            },
+            "params": {
+                "Region": "us-east-1",
+                "UseFIPS": false,
+                "UseDualStack": false,
+                "ResourceARN": "arn:aws:s3:us-west-2:123456789012:stream/testStream/consumer/test-consumer:1525898737"
+            }
+        },
+        {
+            "documentation": "ResourceARN as ConsumerARN test: Invalid ARN: Region is missing in ARN",
+            "expect": {
+                "error": "Invalid ARN: Invalid region."
+            },
+            "params": {
+                "Region": "us-east-1",
+                "UseFIPS": false,
+                "UseDualStack": false,
+                "ResourceARN": "arn:aws:kinesis::123456789012:stream/testStream/consumer/test-consumer:1525898737"
+            }
+        },
+        {
+            "documentation": "ResourceARN as ConsumerARN test: Invalid ARN: Region is empty string in ARN",
+            "expect": {
+                "error": "Invalid ARN: Invalid region."
+            },
+            "params": {
+                "Region": "us-east-1",
+                "UseFIPS": false,
+                "UseDualStack": false,
+                "ResourceARN": "arn:aws:kinesis:  :123456789012:stream/testStream/consumer/test-consumer:1525898737"
+            }
+        },
+        {
+            "documentation": "ResourceARN as ConsumerARN test: Invalid ARN: Invalid account id",
+            "expect": {
+                "error": "Invalid ARN: Invalid account id."
+            },
+            "params": {
+                "Region": "us-east-1",
+                "UseFIPS": false,
+                "UseDualStack": false,
+                "ResourceARN": "arn:aws:kinesis:us-east-1::stream/testStream/consumer/test-consumer:1525898737",
+                "OperationType": "control"
+            }
+        },
+        {
+            "documentation": "ResourceARN as ConsumerARN test: Invalid ARN: Invalid account id",
+            "expect": {
+                "error": "Invalid ARN: Invalid account id."
+            },
+            "params": {
+                "Region": "us-east-1",
+                "UseFIPS": false,
+                "UseDualStack": false,
+                "ResourceARN": "arn:aws:kinesis:us-east-1:   :stream/testStream/consumer/test-consumer:1525898737",
+                "OperationType": "control"
+            }
+        },
+        {
+            "documentation": "ResourceARN as ConsumerARN test: Invalid ARN: Kinesis ARNs only support stream arn/consumer arn types",
+            "expect": {
+                "error": "Invalid ARN: Kinesis ARNs don't support `accesspoint` arn types."
+            },
+            "params": {
+                "Region": "us-east-1",
+                "UseFIPS": false,
+                "UseDualStack": false,
+                "ResourceARN": "arn:aws:kinesis:us-east-1:123:accesspoint/testStream/consumer/test-consumer:1525898737"
+            }
+        },
+        {
+            "documentation": "ResourceARN as ConsumerARN test: Dual Stack not supported region.",
+            "expect": {
+                "error": "FIPS and DualStack are enabled, but this partition does not support one or both"
+            },
+            "params": {
+                "Region": "us-iso-west-1",
+                "UseFIPS": true,
+                "UseDualStack": true,
+                "ResourceARN": "arn:aws-iso:kinesis:us-iso-west-1:123456789012:stream/testStream/consumer/test-consumer:1525898737",
+                "OperationType": "control"
+            }
+        },
+        {
+            "documentation": "ResourceARN as ConsumerARN test: OperationType not set",
+            "expect": {
+                "error": "Operation Type is not set. Please contact service team for resolution."
+            },
+            "params": {
+                "Region": "us-east-1",
+                "UseFIPS": false,
+                "UseDualStack": false,
+                "ResourceARN": "arn:aws:kinesis:us-east-1:123456789012:stream/testStream/consumer/test-consumer:1525898737"
+            }
+        },
+        {
+            "documentation": "ResourceARN as ConsumerARN test: Custom Endpoint is specified",
+            "expect": {
+                "endpoint": {
+                    "url": "https://example.com"
+                }
+            },
+            "params": {
+                "Region": "us-east-1",
+                "UseFIPS": false,
+                "UseDualStack": false,
+                "OperationType": "control",
+                "ResourceARN": "arn:aws:kinesis:us-east-1:123:stream/test-stream/consumer/test-consumer:1525898737",
+                "Endpoint": "https://example.com"
+            }
+        },
+        {
+            "documentation": "ResourceARN as ConsumerARN test: Account endpoint targeting control operation type",
+            "expect": {
+                "endpoint": {
+                    "url": "https://123.control-kinesis.us-east-1.amazonaws.com"
+                }
+            },
+            "params": {
+                "Region": "us-east-1",
+                "UseFIPS": false,
+                "UseDualStack": false,
+                "OperationType": "control",
+                "ResourceARN": "arn:aws:kinesis:us-east-1:123:stream/test-stream/consumer/test-consumer:1525898737"
+            }
+        },
+        {
+            "documentation": "ResourceARN as ConsumerARN test: Account endpoint targeting data operation type",
+            "expect": {
+                "endpoint": {
+                    "url": "https://123.data-kinesis.us-east-1.amazonaws.com"
+                }
+            },
+            "params": {
+                "Region": "us-east-1",
+                "UseFIPS": false,
+                "UseDualStack": false,
+                "OperationType": "data",
+                "ResourceARN": "arn:aws:kinesis:us-east-1:123:stream/test-stream/consumer/test-consumer:1525898737"
+            }
+        },
+        {
+            "documentation": "ResourceARN as ConsumerARN test: Account endpoint with fips targeting data operation type",
+            "expect": {
+                "endpoint": {
+                    "url": "https://123.data-kinesis-fips.us-east-1.amazonaws.com"
+                }
+            },
+            "params": {
+                "Region": "us-east-1",
+                "UseFIPS": true,
+                "UseDualStack": false,
+                "OperationType": "data",
+                "ResourceARN": "arn:aws:kinesis:us-east-1:123:stream/test-stream/consumer/test-consumer:1525898737"
+            }
+        },
+        {
+            "documentation": "ResourceARN as ConsumerARN test: Account endpoint with fips targeting control operation type",
+            "expect": {
+                "endpoint": {
+                    "url": "https://123.control-kinesis-fips.us-east-1.amazonaws.com"
+                }
+            },
+            "params": {
+                "Region": "us-east-1",
+                "UseFIPS": true,
+                "UseDualStack": false,
+                "OperationType": "control",
+                "ResourceARN": "arn:aws:kinesis:us-east-1:123:stream/test-stream/consumer/test-consumer:1525898737"
+            }
+        },
+        {
+            "documentation": "ResourceARN as ConsumerARN test: Account endpoint with Dual Stack and FIPS enabled",
+            "expect": {
+                "endpoint": {
+                    "url": "https://123.control-kinesis-fips.us-east-1.api.aws"
+                }
+            },
+            "params": {
+                "Region": "us-east-1",
+                "UseFIPS": true,
+                "UseDualStack": true,
+                "OperationType": "control",
+                "ResourceARN": "arn:aws:kinesis:us-east-1:123:stream/test-stream/consumer/test-consumer:1525898737"
+            }
+        },
+        {
+            "documentation": "ResourceARN as ConsumerARN test: Account endpoint with Dual Stack enabled",
+            "expect": {
+                "endpoint": {
+                    "url": "https://123.data-kinesis.us-west-1.api.aws"
+                }
+            },
+            "params": {
+                "Region": "us-west-1",
+                "UseFIPS": false,
+                "UseDualStack": true,
+                "OperationType": "data",
+                "ResourceARN": "arn:aws:kinesis:us-west-1:123:stream/test-stream/consumer/test-consumer:1525898737"
+            }
+        },
+        {
+            "documentation": "ResourceARN as ConsumerARN test: Account endpoint with FIPS and DualStack disabled",
+            "expect": {
+                "endpoint": {
+                    "url": "https://123.control-kinesis.us-west-1.amazonaws.com"
+                }
+            },
+            "params": {
+                "Region": "us-west-1",
+                "UseFIPS": false,
+                "UseDualStack": false,
+                "OperationType": "control",
+                "ResourceARN": "arn:aws:kinesis:us-west-1:123:stream/test-stream/consumer/test-consumer:1525898737"
+            }
+        },
+        {
+            "documentation": "ResourceARN as ConsumerARN test: RegionMismatch: client region should be used for endpoint region",
+            "expect": {
+                "endpoint": {
+                    "url": "https://123.data-kinesis.us-east-1.amazonaws.com"
+                }
+            },
+            "params": {
+                "Region": "us-east-1",
+                "UseFIPS": false,
+                "UseDualStack": false,
+                "OperationType": "data",
+                "ResourceARN": "arn:aws:kinesis:us-west-1:123:stream/testStream/consumer/test-consumer:1525898737"
+            }
+        },
+        {
+            "documentation": "ResourceARN as ConsumerARN test: Account endpoint with FIPS enabled",
+            "expect": {
+                "endpoint": {
+                    "url": "https://123.data-kinesis-fips.cn-northwest-1.amazonaws.com.cn"
+                }
+            },
+            "params": {
+                "Region": "cn-northwest-1",
+                "UseFIPS": true,
+                "UseDualStack": false,
+                "OperationType": "data",
+                "ResourceARN": "arn:aws-cn:kinesis:cn-northwest-1:123:stream/test-stream/consumer/test-consumer:1525898737"
+            }
+        },
+        {
+            "documentation": "ResourceARN as ConsumerARN test: Account endpoint with FIPS and DualStack enabled for cn regions.",
+            "expect": {
+                "endpoint": {
+                    "url": "https://123.data-kinesis-fips.cn-northwest-1.api.amazonwebservices.com.cn"
+                }
+            },
+            "params": {
+                "Region": "cn-northwest-1",
+                "UseFIPS": true,
+                "UseDualStack": true,
+                "OperationType": "data",
+                "ResourceARN": "arn:aws-cn:kinesis:cn-northwest-1:123:stream/test-stream/consumer/test-consumer:1525898737"
+            }
+        },
+        {
+            "documentation": "ResourceARN as ConsumerARN test: Account endpoint targeting control operation type in ADC regions",
+            "expect": {
+                "endpoint": {
+                    "url": "https://kinesis.us-iso-east-1.c2s.ic.gov"
+                }
+            },
+            "params": {
+                "Region": "us-iso-east-1",
+                "UseFIPS": false,
+                "UseDualStack": false,
+                "OperationType": "control",
+                "ResourceARN": "arn:aws-iso:kinesis:us-iso-east-1:123:stream/test-stream/consumer/test-consumer:1525898737"
+            }
+        },
+        {
+            "documentation": "ResourceARN as ConsumerARN test: Account endpoint targeting control operation type in ADC regions",
+            "expect": {
+                "endpoint": {
+                    "url": "https://kinesis.us-iso-west-1.c2s.ic.gov"
+                }
+            },
+            "params": {
+                "Region": "us-iso-west-1",
+                "UseFIPS": false,
+                "UseDualStack": false,
+                "OperationType": "control",
+                "ResourceARN": "arn:aws-iso:kinesis:us-iso-west-1:123:stream/test-stream/consumer/test-consumer:1525898737"
+            }
+        },
+        {
+            "documentation": "ResourceARN as ConsumerARN test: Account endpoint targeting data operation type in ADC regions",
+            "expect": {
+                "endpoint": {
+                    "url": "https://kinesis.us-isob-east-1.sc2s.sgov.gov"
+                }
+            },
+            "params": {
+                "Region": "us-isob-east-1",
+                "UseFIPS": false,
+                "UseDualStack": false,
+                "OperationType": "data",
+                "ResourceARN": "arn:aws-iso-b:kinesis:us-isob-east-1:123:stream/test-stream/consumer/test-consumer:1525898737"
+            }
+        },
+        {
+            "documentation": "ResourceARN as ConsumerARN test: Account endpoint with fips targeting control operation type in ADC regions",
+            "expect": {
+                "endpoint": {
+                    "url": "https://kinesis-fips.us-iso-east-1.c2s.ic.gov"
+                }
+            },
+            "params": {
+                "Region": "us-iso-east-1",
+                "UseFIPS": true,
+                "UseDualStack": false,
+                "OperationType": "control",
+                "ResourceARN": "arn:aws-iso:kinesis:us-iso-east-1:123:stream/test-stream/consumer/test-consumer:1525898737"
+            }
+        },
+        {
+            "documentation": "ResourceARN as ConsumerARN test: Account endpoint with fips targeting data operation type in ADC regions",
+            "expect": {
+                "endpoint": {
+                    "url": "https://kinesis-fips.us-isob-east-1.sc2s.sgov.gov"
+                }
+            },
+            "params": {
+                "Region": "us-isob-east-1",
+                "UseFIPS": true,
+                "UseDualStack": false,
+                "OperationType": "data",
+                "ResourceARN": "arn:aws-iso-b:kinesis:us-isob-east-1:123:stream/test-stream/consumer/test-consumer:1525898737"
+            }
         }
     ],
     "version": "1.0"

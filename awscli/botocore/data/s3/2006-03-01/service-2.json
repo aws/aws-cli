@@ -1059,7 +1059,7 @@
       },
       "input":{"shape":"PutObjectLockConfigurationRequest"},
       "output":{"shape":"PutObjectLockConfigurationOutput"},
-      "documentation":"<p>Places an Object Lock configuration on the specified bucket. The rule specified in the Object Lock configuration will be applied by default to every new object placed in the specified bucket. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/dev/object-lock.html\">Locking Objects</a>. </p> <note> <ul> <li> <p>The <code>DefaultRetention</code> settings require both a mode and a period.</p> </li> <li> <p>The <code>DefaultRetention</code> period can be either <code>Days</code> or <code>Years</code> but you must select one. You cannot specify <code>Days</code> and <code>Years</code> at the same time.</p> </li> <li> <p>You can only enable Object Lock for new buckets. If you want to turn on Object Lock for an existing bucket, contact Amazon Web Services Support.</p> </li> </ul> </note>",
+      "documentation":"<p>Places an Object Lock configuration on the specified bucket. The rule specified in the Object Lock configuration will be applied by default to every new object placed in the specified bucket. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/dev/object-lock.html\">Locking Objects</a>. </p> <note> <ul> <li> <p>The <code>DefaultRetention</code> settings require both a mode and a period.</p> </li> <li> <p>The <code>DefaultRetention</code> period can be either <code>Days</code> or <code>Years</code> but you must select one. You cannot specify <code>Days</code> and <code>Years</code> at the same time.</p> </li> <li> <p>You can enable Object Lock for new or existing buckets. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/object-lock-configure.html\">Configuring Object Lock</a>.</p> </li> </ul> </note>",
       "httpChecksum":{
         "requestAlgorithmMember":"ChecksumAlgorithm",
         "requestChecksumRequired":true
@@ -1222,6 +1222,7 @@
         "Key":{
           "shape":"ObjectKey",
           "documentation":"<p>Key of the object for which the multipart upload was initiated.</p>",
+          "contextParam":{"name":"Key"},
           "location":"uri",
           "locationName":"Key"
         },
@@ -1849,6 +1850,7 @@
         "Key":{
           "shape":"ObjectKey",
           "documentation":"<p>Object key for which the multipart upload was initiated.</p>",
+          "contextParam":{"name":"Key"},
           "location":"uri",
           "locationName":"Key"
         },
@@ -2655,6 +2657,7 @@
         "Key":{
           "shape":"ObjectKey",
           "documentation":"<p>Object key for which the multipart upload is to be initiated.</p>",
+          "contextParam":{"name":"Key"},
           "location":"uri",
           "locationName":"Key"
         },
@@ -3174,6 +3177,7 @@
         "Key":{
           "shape":"ObjectKey",
           "documentation":"<p>Key name of the object to delete.</p>",
+          "contextParam":{"name":"Key"},
           "location":"uri",
           "locationName":"Key"
         },
@@ -4307,6 +4311,7 @@
         "Key":{
           "shape":"ObjectKey",
           "documentation":"<p>The key of the object for which to get the ACL information.</p>",
+          "contextParam":{"name":"Key"},
           "location":"uri",
           "locationName":"Key"
         },
@@ -4824,6 +4829,7 @@
         "Key":{
           "shape":"ObjectKey",
           "documentation":"<p>Key of the object to get.</p>",
+          "contextParam":{"name":"Key"},
           "location":"uri",
           "locationName":"Key"
         },
@@ -5442,6 +5448,7 @@
         "Key":{
           "shape":"ObjectKey",
           "documentation":"<p>The object key.</p>",
+          "contextParam":{"name":"Key"},
           "location":"uri",
           "locationName":"Key"
         },
@@ -6316,6 +6323,7 @@
         "Prefix":{
           "shape":"Prefix",
           "documentation":"<p>Lists in-progress uploads only for those keys that begin with the specified prefix. You can use prefixes to separate a bucket into different grouping of keys. (You can think of using <code>prefix</code> to make groups in the same way that you'd use a folder in a file system.)</p>",
+          "contextParam":{"name":"Prefix"},
           "location":"querystring",
           "locationName":"prefix"
         },
@@ -6439,6 +6447,7 @@
         "Prefix":{
           "shape":"Prefix",
           "documentation":"<p>Use this parameter to select only those keys that begin with the specified prefix. You can use prefixes to separate a bucket into different groupings of keys. (You can think of using <code>prefix</code> to make groups in the same way that you'd use a folder in a file system.) You can use <code>prefix</code> with <code>delimiter</code> to roll up numerous objects into a single result under <code>CommonPrefixes</code>. </p>",
+          "contextParam":{"name":"Prefix"},
           "location":"querystring",
           "locationName":"prefix"
         },
@@ -6554,6 +6563,7 @@
         "Prefix":{
           "shape":"Prefix",
           "documentation":"<p>Limits the response to keys that begin with the specified prefix.</p>",
+          "contextParam":{"name":"Prefix"},
           "location":"querystring",
           "locationName":"prefix"
         },
@@ -6667,6 +6677,7 @@
         "Prefix":{
           "shape":"Prefix",
           "documentation":"<p>Limits the response to keys that begin with the specified prefix.</p>",
+          "contextParam":{"name":"Prefix"},
           "location":"querystring",
           "locationName":"prefix"
         },
@@ -6797,6 +6808,7 @@
         "Key":{
           "shape":"ObjectKey",
           "documentation":"<p>Object key for which the multipart upload was initiated.</p>",
+          "contextParam":{"name":"Key"},
           "location":"uri",
           "locationName":"Key"
         },
@@ -8634,6 +8646,7 @@
         "Key":{
           "shape":"ObjectKey",
           "documentation":"<p>Key for which the PUT action was initiated.</p> <p>When using this action with an access point, you must direct requests to the access point hostname. The access point hostname takes the form <i>AccessPointName</i>-<i>AccountId</i>.s3-accesspoint.<i>Region</i>.amazonaws.com. When using this action with an access point through the Amazon Web Services SDKs, you provide the access point ARN in place of the bucket name. For more information about access point ARNs, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/using-access-points.html\">Using access points</a> in the <i>Amazon S3 User Guide</i>.</p> <p>When you use this action with Amazon S3 on Outposts, you must direct requests to the S3 on Outposts hostname. The S3 on Outposts hostname takes the form <code> <i>AccessPointName</i>-<i>AccountId</i>.<i>outpostID</i>.s3-outposts.<i>Region</i>.amazonaws.com</code>. When you use this action with S3 on Outposts through the Amazon Web Services SDKs, you provide the Outposts access point ARN in place of the bucket name. For more information about S3 on Outposts ARNs, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/S3onOutposts.html\">What is S3 on Outposts?</a> in the <i>Amazon S3 User Guide</i>.</p>",
+          "contextParam":{"name":"Key"},
           "location":"uri",
           "locationName":"Key"
         },
@@ -9002,6 +9015,7 @@
         "Key":{
           "shape":"ObjectKey",
           "documentation":"<p>Object key for which the PUT action was initiated.</p>",
+          "contextParam":{"name":"Key"},
           "location":"uri",
           "locationName":"Key"
         },
@@ -10750,6 +10764,7 @@
         "Key":{
           "shape":"ObjectKey",
           "documentation":"<p>Object key for which the multipart upload was initiated.</p>",
+          "contextParam":{"name":"Key"},
           "location":"uri",
           "locationName":"Key"
         },

@@ -24,6 +24,7 @@
       "errors":[
         {"shape":"InternalServerException"},
         {"shape":"ResourceNotFoundException"},
+        {"shape":"LimitExceededException"},
         {"shape":"ThrottlingException"},
         {"shape":"ValidationException"},
         {"shape":"AccessDeniedException"}
@@ -789,7 +790,7 @@
         {"shape":"ValidationException"},
         {"shape":"AccessDeniedException"}
       ],
-      "documentation":"<important> <p>This API operation contains deprecated parameters. Register your account again without the Timestream resources parameter so that Amazon Web Services IoT FleetWise can remove the Timestream metadata stored. You should then pass the data destination into the <a href=\"https://docs.aws.amazon.com/iot-fleetwise/latest/APIReference/API_CreateCampaign.html\">CreateCampaign</a> API operation.</p> <p>You must delete any existing campaigns that include an empty data destination before you register your account again. For more information, see the <a href=\"https://docs.aws.amazon.com/iot-fleetwise/latest/APIReference/API_DeleteCampaign.html\">DeleteCampaign</a> API operation.</p> <p>If you want to delete the Timestream inline policy from the service-linked role, such as to mitigate an overly permissive policy, you must first delete any existing campaigns. Then delete the service-linked role and register your account again to enable CloudWatch metrics. For more information, see <a href=\"https://docs.aws.amazon.com/IAM/latest/APIReference/API_DeleteServiceLinkedRole.html\">DeleteServiceLinkedRole</a> in the <i>Identity and Access Management API Reference</i>.</p> </important> <pre><code> &lt;p&gt;Registers your Amazon Web Services account, IAM, and Amazon Timestream resources so Amazon Web Services IoT FleetWise can transfer your vehicle data to the Amazon Web Services Cloud. For more information, including step-by-step procedures, see &lt;a href=&quot;https://docs.aws.amazon.com/iot-fleetwise/latest/developerguide/setting-up.html&quot;&gt;Setting up Amazon Web Services IoT FleetWise&lt;/a&gt;. &lt;/p&gt; &lt;note&gt; &lt;p&gt;An Amazon Web Services account is &lt;b&gt;not&lt;/b&gt; the same thing as a &quot;user.&quot; An &lt;a href=&quot;https://docs.aws.amazon.com/IAM/latest/UserGuide/introduction_identity-management.html#intro-identity-users&quot;&gt;Amazon Web Services user&lt;/a&gt; is an identity that you create using Identity and Access Management (IAM) and takes the form of either an &lt;a href=&quot;https://docs.aws.amazon.com/IAM/latest/UserGuide/id_users.html&quot;&gt;IAM user&lt;/a&gt; or an &lt;a href=&quot;https://docs.aws.amazon.com/IAM/latest/UserGuide/id_roles.html&quot;&gt;IAM role, both with credentials&lt;/a&gt;. A single Amazon Web Services account can, and typically does, contain many users and roles.&lt;/p&gt; &lt;/note&gt; </code></pre>"
+      "documentation":"<important> <p>This API operation contains deprecated parameters. Register your account again without the Timestream resources parameter so that Amazon Web Services IoT FleetWise can remove the Timestream metadata stored. You should then pass the data destination into the <a href=\"https://docs.aws.amazon.com/iot-fleetwise/latest/APIReference/API_CreateCampaign.html\">CreateCampaign</a> API operation.</p> <p>You must delete any existing campaigns that include an empty data destination before you register your account again. For more information, see the <a href=\"https://docs.aws.amazon.com/iot-fleetwise/latest/APIReference/API_DeleteCampaign.html\">DeleteCampaign</a> API operation.</p> <p>If you want to delete the Timestream inline policy from the service-linked role, such as to mitigate an overly permissive policy, you must first delete any existing campaigns. Then delete the service-linked role and register your account again to enable CloudWatch metrics. For more information, see <a href=\"https://docs.aws.amazon.com/IAM/latest/APIReference/API_DeleteServiceLinkedRole.html\">DeleteServiceLinkedRole</a> in the <i>Identity and Access Management API Reference</i>.</p> </important> <p>Registers your Amazon Web Services account, IAM, and Amazon Timestream resources so Amazon Web Services IoT FleetWise can transfer your vehicle data to the Amazon Web Services Cloud. For more information, including step-by-step procedures, see <a href=\"https://docs.aws.amazon.com/iot-fleetwise/latest/developerguide/setting-up.html\">Setting up Amazon Web Services IoT FleetWise</a>. </p> <note> <p>An Amazon Web Services account is <b>not</b> the same thing as a \"user.\" An <a href=\"https://docs.aws.amazon.com/IAM/latest/UserGuide/introduction_identity-management.html#intro-identity-users\">Amazon Web Services user</a> is an identity that you create using Identity and Access Management (IAM) and takes the form of either an <a href=\"https://docs.aws.amazon.com/IAM/latest/UserGuide/id_users.html\">IAM user</a> or an <a href=\"https://docs.aws.amazon.com/IAM/latest/UserGuide/id_roles.html\">IAM role, both with credentials</a>. A single Amazon Web Services account can, and typically does, contain many users and roles.</p> </note>"
     },
     "TagResource":{
       "name":"TagResource",
@@ -1003,6 +1004,10 @@
         "comment":{
           "shape":"message",
           "documentation":"<p>A comment in addition to the description.</p>"
+        },
+        "structFullyQualifiedName":{
+          "shape":"NodePath",
+          "documentation":"<p>The fully qualified name of the struct node for the actuator if the data type of the actuator is <code>Struct</code> or <code>StructArray</code>. For example, the struct fully qualified name of an actuator might be <code>Vehicle.Door.LockStruct</code>.</p>"
         }
       },
       "documentation":"<p>A signal that represents a vehicle device such as the engine, heater, and door locks. Data from an actuator reports the state of a certain vehicle device.</p> <note> <p> Updating actuator data can change the state of a device. For example, you can turn on or off the heater by updating its actuator data.</p> </note>"
@@ -1223,7 +1228,7 @@
         },
         "canDbcFiles":{
           "shape":"NetworkFilesList",
-          "documentation":"<p>A list of DBC files. You can upload only one DBC file for each network interface and specify up to five (inclusive) files in the list.</p>"
+          "documentation":"<p>A list of DBC files. You can upload only one DBC file for each network interface and specify up to five (inclusive) files in the list. The DBC file can be a maximum size of 200 MB.</p>"
         },
         "signalsMap":{
           "shape":"ModelSignalsMap",
@@ -1273,11 +1278,11 @@
           "documentation":"<p>The ID of the message.</p>"
         },
         "isBigEndian":{
-          "shape":"boolean",
+          "shape":"PrimitiveBoolean",
           "documentation":"<p>Whether the byte ordering of a CAN message is big-endian.</p>"
         },
         "isSigned":{
-          "shape":"boolean",
+          "shape":"PrimitiveBoolean",
           "documentation":"<p>Whether the message data is specified as a signed value.</p>"
         },
         "startBit":{
@@ -1783,6 +1788,67 @@
       },
       "documentation":"<p>Information about a created vehicle.</p>"
     },
+    "CustomProperty":{
+      "type":"structure",
+      "required":[
+        "fullyQualifiedName",
+        "dataType"
+      ],
+      "members":{
+        "fullyQualifiedName":{
+          "shape":"string",
+          "documentation":"<p>The fully qualified name of the custom property. For example, the fully qualified name of a custom property might be <code>ComplexDataTypes.VehicleDataTypes.SVMCamera.FPS</code>.</p>"
+        },
+        "dataType":{
+          "shape":"NodeDataType",
+          "documentation":"<p>The data type for the custom property. </p>"
+        },
+        "dataEncoding":{
+          "shape":"NodeDataEncoding",
+          "documentation":"<p>Indicates whether the property is binary data.</p>"
+        },
+        "description":{
+          "shape":"description",
+          "documentation":"<p>A brief description of the custom property.</p>"
+        },
+        "deprecationMessage":{
+          "shape":"message",
+          "documentation":"<p>The deprecation message for the node or the branch that was moved or deleted.</p>"
+        },
+        "comment":{
+          "shape":"message",
+          "documentation":"<p>A comment in addition to the description.</p>"
+        },
+        "structFullyQualifiedName":{
+          "shape":"NodePath",
+          "documentation":"<p>The fully qualified name of the struct node for the custom property if the data type of the custom property is <code>Struct</code> or <code>StructArray</code>. </p>"
+        }
+      },
+      "documentation":"<p>Represents a member of the complex data structure. The data type of the property can be either primitive or another <code>struct</code>.</p>"
+    },
+    "CustomStruct":{
+      "type":"structure",
+      "required":["fullyQualifiedName"],
+      "members":{
+        "fullyQualifiedName":{
+          "shape":"string",
+          "documentation":"<p>The fully qualified name of the custom structure. For example, the fully qualified name of a custom structure might be <code>ComplexDataTypes.VehicleDataTypes.SVMCamera</code>.</p>"
+        },
+        "description":{
+          "shape":"description",
+          "documentation":"<p>A brief description of the custom structure.</p>"
+        },
+        "deprecationMessage":{
+          "shape":"message",
+          "documentation":"<p>The deprecation message for the node or the branch that was moved or deleted.</p>"
+        },
+        "comment":{
+          "shape":"message",
+          "documentation":"<p>A comment in addition to the description.</p>"
+        }
+      },
+      "documentation":"<p>The custom structure represents a complex or higher-order data structure.</p>"
+    },
     "DataDestinationConfig":{
       "type":"structure",
       "members":{
@@ -1851,6 +1917,10 @@
         "lastModificationTime":{
           "shape":"timestamp",
           "documentation":"<p>The time the decoder manifest was last updated in seconds since epoch (January 1, 1970 at midnight UTC time).</p>"
+        },
+        "message":{
+          "shape":"message",
+          "documentation":"<p>The detailed message for the decoder manifest. When a decoder manifest is in an <code>INVALID</code> status, the message contains detailed reason and help information.</p>"
         }
       },
       "documentation":"<p>Information about a created decoder manifest. You can use the API operation to return this information about multiple decoder manifests.</p>"
@@ -2264,6 +2334,10 @@
         "lastModificationTime":{
           "shape":"timestamp",
           "documentation":"<p> The time the decoder manifest was last updated in seconds since epoch (January 1, 1970 at midnight UTC time). </p>"
+        },
+        "message":{
+          "shape":"message",
+          "documentation":"<p>The detailed message for the decoder manifest. When a decoder manifest is in an <code>INVALID</code> status, the message contains detailed reason and help information.</p>"
         }
       }
     },
@@ -2289,7 +2363,7 @@
         },
         "encryptionType":{
           "shape":"EncryptionType",
-          "documentation":"<p>The type of encryption. Set to <code>KMS_BASED_ENCRYPTION</code> to use an KMS key that you own and manage. Set to <code>FLEETWISE_DEFAULT_ENCRYPTION</code> to use an Amazon Web Services managed key that is owned by the Amazon Web Services IoT FleetWise service account.</p>"
+          "documentation":"<p>The type of encryption. Set to <code>KMS_BASED_ENCRYPTION</code> to use a KMS key that you own and manage. Set to <code>FLEETWISE_DEFAULT_ENCRYPTION</code> to use an Amazon Web Services managed key that is owned by the Amazon Web Services IoT FleetWise service account.</p>"
         },
         "errorMessage":{
           "shape":"errorMessage",
@@ -2770,6 +2844,10 @@
         "reason":{
           "shape":"SignalDecoderFailureReason",
           "documentation":"<p>A message about why the signal decoder isn't valid.</p>"
+        },
+        "hint":{
+          "shape":"message",
+          "documentation":"<p>The possible cause for the invalid signal decoder.</p>"
         }
       },
       "documentation":"<p>A reason that a signal decoder isn't valid.</p>"
@@ -3203,8 +3281,28 @@
       "type":"string",
       "enum":[
         "ACTIVE",
-        "DRAFT"
+        "DRAFT",
+        "INVALID",
+        "VALIDATING"
       ]
+    },
+    "MessageSignal":{
+      "type":"structure",
+      "required":[
+        "topicName",
+        "structuredMessage"
+      ],
+      "members":{
+        "topicName":{
+          "shape":"TopicName",
+          "documentation":"<p>The topic name for the message signal. It corresponds to topics in ROS 2. </p>"
+        },
+        "structuredMessage":{
+          "shape":"StructuredMessage",
+          "documentation":"<p>The structured message for the message signal. It can be defined with either a <code>primitiveMessageDefinition</code>, <code>structuredMessageListDefinition</code>, or <code>structuredMessageDefinition</code> recursively.</p>"
+        }
+      },
+      "documentation":"<p>The decoding information for a specific message which support higher order data types. </p>"
     },
     "ModelManifestSummary":{
       "type":"structure",
@@ -3249,7 +3347,11 @@
       "key":{"shape":"string"},
       "value":{"shape":"string"}
     },
-    "NetworkFileBlob":{"type":"blob"},
+    "NetworkFileBlob":{
+      "type":"blob",
+      "max":200000000,
+      "min":0
+    },
     "NetworkFileDefinition":{
       "type":"structure",
       "members":{
@@ -3293,6 +3395,10 @@
         "obdInterface":{
           "shape":"ObdInterface",
           "documentation":"<p>Information about a network interface specified by the On-board diagnostic (OBD) II protocol.</p>"
+        },
+        "vehicleMiddleware":{
+          "shape":"VehicleMiddleware",
+          "documentation":"<p>The vehicle middleware defined as a type of network interface. Examples of vehicle middleware include <code>ROS2</code> and <code>SOME/IP</code>.</p>"
         }
       },
       "documentation":"<p>Represents a node and its specifications in an in-vehicle communication network. All signal decoders must be associated with a network node. </p> <p> To return this information about all the network interfaces specified in a decoder manifest, use the API operation.</p>"
@@ -3305,14 +3411,18 @@
         "NETWORK_INTERFACE_TO_ADD_ALREADY_EXISTS",
         "CAN_NETWORK_INTERFACE_INFO_IS_NULL",
         "OBD_NETWORK_INTERFACE_INFO_IS_NULL",
-        "NETWORK_INTERFACE_TO_REMOVE_ASSOCIATED_WITH_SIGNALS"
+        "NETWORK_INTERFACE_TO_REMOVE_ASSOCIATED_WITH_SIGNALS",
+        "VEHICLE_MIDDLEWARE_NETWORK_INTERFACE_INFO_IS_NULL",
+        "CUSTOMER_DECODED_SIGNAL_NETWORK_INTERFACE_INFO_IS_NULL"
       ]
     },
     "NetworkInterfaceType":{
       "type":"string",
       "enum":[
         "CAN_INTERFACE",
-        "OBD_INTERFACE"
+        "OBD_INTERFACE",
+        "VEHICLE_MIDDLEWARE",
+        "CUSTOMER_DECODED_INTERFACE"
       ]
     },
     "NetworkInterfaces":{
@@ -3336,6 +3446,14 @@
         "attribute":{
           "shape":"Attribute",
           "documentation":"<p>Information about a node specified as an attribute.</p> <note> <p>An attribute represents static information about a vehicle.</p> </note>"
+        },
+        "struct":{
+          "shape":"CustomStruct",
+          "documentation":"<p>Represents a complex or higher-order data structure.</p>"
+        },
+        "property":{
+          "shape":"CustomProperty",
+          "documentation":"<p>Represents a member of the complex data structure. The <code>datatype</code> of the property can be either primitive or another <code>struct</code>.</p>"
         }
       },
       "documentation":"<p>A general abstraction of a signal. A node can be specified as an actuator, attribute, branch, or sensor.</p>",
@@ -3363,9 +3481,24 @@
         "totalActuators":{
           "shape":"number",
           "documentation":"<p>The total number of nodes in a vehicle network that represent actuators.</p>"
+        },
+        "totalStructs":{
+          "shape":"number",
+          "documentation":"<p>The total structure for the node.</p>"
+        },
+        "totalProperties":{
+          "shape":"number",
+          "documentation":"<p>The total properties for the node.</p>"
         }
       },
       "documentation":"<p>Information about the number of nodes and node types in a vehicle network.</p>"
+    },
+    "NodeDataEncoding":{
+      "type":"string",
+      "enum":[
+        "BINARY",
+        "TYPED"
+      ]
     },
     "NodeDataType":{
       "type":"string",
@@ -3396,7 +3529,9 @@
         "DOUBLE_ARRAY",
         "STRING_ARRAY",
         "UNIX_TIMESTAMP_ARRAY",
-        "UNKNOWN"
+        "UNKNOWN",
+        "STRUCT",
+        "STRUCT_ARRAY"
       ]
     },
     "NodePath":{
@@ -3457,11 +3592,11 @@
           "documentation":"<p>The maximum number message requests per diagnostic trouble code per second.</p>"
         },
         "useExtendedIds":{
-          "shape":"boolean",
+          "shape":"PrimitiveBoolean",
           "documentation":"<p>Whether to use extended IDs in the message.</p>"
         },
         "hasTransmissionEcu":{
-          "shape":"boolean",
+          "shape":"PrimitiveBoolean",
           "documentation":"<p>Whether the vehicle has a transmission control module (TCM).</p>"
         }
       },
@@ -3534,6 +3669,18 @@
       "min":1,
       "pattern":"[a-zA-Z0-9-_:./!*'()]+"
     },
+    "PrimitiveBoolean":{"type":"boolean"},
+    "PrimitiveMessageDefinition":{
+      "type":"structure",
+      "members":{
+        "ros2PrimitiveMessageDefinition":{
+          "shape":"ROS2PrimitiveMessageDefinition",
+          "documentation":"<p>Information about a <code>PrimitiveMessage</code> using a ROS 2 compliant primitive type message of the complex data structure.</p>"
+        }
+      },
+      "documentation":"<p>Represents a primitive type node of the complex data structure.</p>",
+      "union":true
+    },
     "ProtocolName":{
       "type":"string",
       "max":50,
@@ -3549,7 +3696,7 @@
       "required":["encryptionType"],
       "members":{
         "kmsKeyId":{
-          "shape":"String",
+          "shape":"PutEncryptionConfigurationRequestKmsKeyIdString",
           "documentation":"<p>The ID of the KMS key that is used for encryption.</p>"
         },
         "encryptionType":{
@@ -3557,6 +3704,11 @@
           "documentation":"<p>The type of encryption. Choose <code>KMS_BASED_ENCRYPTION</code> to use a KMS key or <code>FLEETWISE_DEFAULT_ENCRYPTION</code> to use an Amazon Web Services managed key.</p>"
         }
       }
+    },
+    "PutEncryptionConfigurationRequestKmsKeyIdString":{
+      "type":"string",
+      "max":2048,
+      "min":0
     },
     "PutEncryptionConfigurationResponse":{
       "type":"structure",
@@ -3593,6 +3745,55 @@
       "type":"structure",
       "members":{
       }
+    },
+    "ROS2PrimitiveMessageDefinition":{
+      "type":"structure",
+      "required":["primitiveType"],
+      "members":{
+        "primitiveType":{
+          "shape":"ROS2PrimitiveType",
+          "documentation":"<p>The primitive type (integer, floating point, boolean, etc.) for the ROS 2 primitive message definition.</p>"
+        },
+        "offset":{
+          "shape":"double",
+          "documentation":"<p>The offset used to calculate the signal value. Combined with scaling, the calculation is <code>value = raw_value * scaling + offset</code>.</p>"
+        },
+        "scaling":{
+          "shape":"double",
+          "documentation":"<p>A multiplier used to decode the message.</p>"
+        },
+        "upperBound":{
+          "shape":"ROS2PrimitiveMessageDefinitionUpperBoundLong",
+          "documentation":"<p>An optional attribute specifying the upper bound for <code>STRING</code> and <code>WSTRING</code>.</p>"
+        }
+      },
+      "documentation":"<p>Represents a ROS 2 compliant primitive type message of the complex data structure.</p>"
+    },
+    "ROS2PrimitiveMessageDefinitionUpperBoundLong":{
+      "type":"long",
+      "box":true,
+      "max":2048,
+      "min":0
+    },
+    "ROS2PrimitiveType":{
+      "type":"string",
+      "enum":[
+        "BOOL",
+        "BYTE",
+        "CHAR",
+        "FLOAT32",
+        "FLOAT64",
+        "INT8",
+        "UINT8",
+        "INT16",
+        "UINT16",
+        "INT32",
+        "UINT32",
+        "INT64",
+        "UINT64",
+        "STRING",
+        "WSTRING"
+      ]
     },
     "RegisterAccountRequest":{
       "type":"structure",
@@ -3739,6 +3940,10 @@
         "comment":{
           "shape":"message",
           "documentation":"<p>A comment in addition to the description.</p>"
+        },
+        "structFullyQualifiedName":{
+          "shape":"NodePath",
+          "documentation":"<p>The fully qualified name of the struct node for a sensor if the data type of the actuator is <code>Struct</code> or <code>StructArray</code>. For example, the struct fully qualified name of a sensor might be <code>Vehicle.ADAS.CameraStruct</code>.</p>"
         }
       },
       "documentation":"<p>An input component that reports the environmental condition of a vehicle.</p> <note> <p>You can collect data about fluid levels, temperatures, vibrations, or battery voltage from sensors.</p> </note>"
@@ -3792,6 +3997,10 @@
         "obdSignal":{
           "shape":"ObdSignal",
           "documentation":"<p>Information about signal decoder using the On-board diagnostic (OBD) II protocol.</p>"
+        },
+        "messageSignal":{
+          "shape":"MessageSignal",
+          "documentation":"<p>The decoding information for a specific message which supports higher order data types. </p>"
         }
       },
       "documentation":"<p>Information about a signal decoder.</p>"
@@ -3807,14 +4016,23 @@
         "SIGNAL_NOT_IN_MODEL",
         "CAN_SIGNAL_INFO_IS_NULL",
         "OBD_SIGNAL_INFO_IS_NULL",
-        "NO_DECODER_INFO_FOR_SIGNAL_IN_MODEL"
+        "NO_DECODER_INFO_FOR_SIGNAL_IN_MODEL",
+        "MESSAGE_SIGNAL_INFO_IS_NULL",
+        "SIGNAL_DECODER_TYPE_INCOMPATIBLE_WITH_MESSAGE_SIGNAL_TYPE",
+        "STRUCT_SIZE_MISMATCH",
+        "NO_SIGNAL_IN_CATALOG_FOR_DECODER_SIGNAL",
+        "SIGNAL_DECODER_INCOMPATIBLE_WITH_SIGNAL_CATALOG",
+        "EMPTY_MESSAGE_SIGNAL",
+        "CUSTOMER_DECODED_SIGNAL_INFO_IS_NULL"
       ]
     },
     "SignalDecoderType":{
       "type":"string",
       "enum":[
         "CAN_SIGNAL",
-        "OBD_SIGNAL"
+        "OBD_SIGNAL",
+        "MESSAGE_SIGNAL",
+        "CUSTOMER_DECODED_SIGNAL"
       ]
     },
     "SignalDecoders":{
@@ -3863,6 +4081,89 @@
       ]
     },
     "String":{"type":"string"},
+    "StructureMessageName":{
+      "type":"string",
+      "max":150,
+      "min":1
+    },
+    "StructuredMessage":{
+      "type":"structure",
+      "members":{
+        "primitiveMessageDefinition":{
+          "shape":"PrimitiveMessageDefinition",
+          "documentation":"<p>Represents a primitive type node of the complex data structure.</p>"
+        },
+        "structuredMessageListDefinition":{
+          "shape":"StructuredMessageListDefinition",
+          "documentation":"<p>Represents a list type node of the complex data structure.</p>"
+        },
+        "structuredMessageDefinition":{
+          "shape":"StructuredMessageDefinition",
+          "documentation":"<p>Represents a struct type node of the complex data structure.</p>"
+        }
+      },
+      "documentation":"<p>The structured message for the message signal. It can be defined with either a <code>primitiveMessageDefinition</code>, <code>structuredMessageListDefinition</code>, or <code>structuredMessageDefinition</code> recursively.</p>",
+      "union":true
+    },
+    "StructuredMessageDefinition":{
+      "type":"list",
+      "member":{"shape":"StructuredMessageFieldNameAndDataTypePair"},
+      "max":500,
+      "min":1
+    },
+    "StructuredMessageFieldNameAndDataTypePair":{
+      "type":"structure",
+      "required":[
+        "fieldName",
+        "dataType"
+      ],
+      "members":{
+        "fieldName":{
+          "shape":"StructureMessageName",
+          "documentation":"<p>The field name of the structured message. It determines how a data value is referenced in the target language. </p>"
+        },
+        "dataType":{
+          "shape":"StructuredMessage",
+          "documentation":"<p>The data type. </p>"
+        }
+      },
+      "documentation":"<p>Represents a <code>StructureMessageName</code> to <code>DataType</code> map element.</p>"
+    },
+    "StructuredMessageListDefinition":{
+      "type":"structure",
+      "required":[
+        "name",
+        "memberType",
+        "listType"
+      ],
+      "members":{
+        "name":{
+          "shape":"StructureMessageName",
+          "documentation":"<p>The name of the structured message list definition. </p>"
+        },
+        "memberType":{
+          "shape":"StructuredMessage",
+          "documentation":"<p>The member type of the structured message list definition.</p>"
+        },
+        "listType":{
+          "shape":"StructuredMessageListType",
+          "documentation":"<p>The type of list of the structured message list definition.</p>"
+        },
+        "capacity":{
+          "shape":"nonNegativeInteger",
+          "documentation":"<p>The capacity of the structured message list definition when the list type is <code>FIXED_CAPACITY</code> or <code>DYNAMIC_BOUNDED_CAPACITY</code>.</p>"
+        }
+      },
+      "documentation":"<p>Represents a list type node of the complex data structure.</p>"
+    },
+    "StructuredMessageListType":{
+      "type":"string",
+      "enum":[
+        "FIXED_CAPACITY",
+        "DYNAMIC_UNBOUNDED_CAPACITY",
+        "DYNAMIC_BOUNDED_CAPACITY"
+      ]
+    },
     "Tag":{
       "type":"structure",
       "required":[
@@ -4045,6 +4346,12 @@
       "max":255,
       "min":3,
       "pattern":"[a-zA-Z0-9_.-]+"
+    },
+    "TopicName":{
+      "type":"string",
+      "max":150,
+      "min":1,
+      "pattern":"[a-zA-Z0-9_\\-#:./]+"
     },
     "TriggerMode":{
       "type":"string",
@@ -4458,6 +4765,33 @@
         "ValidateIotThingExists"
       ]
     },
+    "VehicleMiddleware":{
+      "type":"structure",
+      "required":[
+        "name",
+        "protocolName"
+      ],
+      "members":{
+        "name":{
+          "shape":"VehicleMiddlewareName",
+          "documentation":"<p>The name of the vehicle middleware. </p>"
+        },
+        "protocolName":{
+          "shape":"VehicleMiddlewareProtocol",
+          "documentation":"<p>The protocol name of the vehicle middleware. </p>"
+        }
+      },
+      "documentation":"<p>The vehicle middleware defined as a type of network interface. Examples of vehicle middleware include <code>ROS2</code> and <code>SOME/IP</code>.</p>"
+    },
+    "VehicleMiddlewareName":{
+      "type":"string",
+      "max":100,
+      "min":1
+    },
+    "VehicleMiddlewareProtocol":{
+      "type":"string",
+      "enum":["ROS_2"]
+    },
     "VehicleState":{
       "type":"string",
       "enum":[
@@ -4541,7 +4875,6 @@
       "key":{"shape":"attributeName"},
       "value":{"shape":"attributeValue"}
     },
-    "boolean":{"type":"boolean"},
     "campaignName":{
       "type":"string",
       "max":100,
@@ -4655,6 +4988,7 @@
     "number":{"type":"integer"},
     "positiveInteger":{
       "type":"integer",
+      "box":true,
       "min":1
     },
     "priority":{

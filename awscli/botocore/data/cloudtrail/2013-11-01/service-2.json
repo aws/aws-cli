@@ -200,9 +200,11 @@
         {"shape":"NotOrganizationMasterAccountException"},
         {"shape":"NoManagementAccountSLRExistsException"},
         {"shape":"ChannelExistsForEDSException"},
-        {"shape":"InsufficientDependencyServiceAccessPermissionException"}
+        {"shape":"InsufficientDependencyServiceAccessPermissionException"},
+        {"shape":"ConflictException"},
+        {"shape":"EventDataStoreFederationEnabledException"}
       ],
-      "documentation":"<p>Disables the event data store specified by <code>EventDataStore</code>, which accepts an event data store ARN. After you run <code>DeleteEventDataStore</code>, the event data store enters a <code>PENDING_DELETION</code> state, and is automatically deleted after a wait period of seven days. <code>TerminationProtectionEnabled</code> must be set to <code>False</code> on the event data store; this operation cannot work if <code>TerminationProtectionEnabled</code> is <code>True</code>.</p> <p>After you run <code>DeleteEventDataStore</code> on an event data store, you cannot run <code>ListQueries</code>, <code>DescribeQuery</code>, or <code>GetQueryResults</code> on queries that are using an event data store in a <code>PENDING_DELETION</code> state. An event data store in the <code>PENDING_DELETION</code> state does not incur costs.</p>"
+      "documentation":"<p>Disables the event data store specified by <code>EventDataStore</code>, which accepts an event data store ARN. After you run <code>DeleteEventDataStore</code>, the event data store enters a <code>PENDING_DELETION</code> state, and is automatically deleted after a wait period of seven days. <code>TerminationProtectionEnabled</code> must be set to <code>False</code> on the event data store and the <code>FederationStatus</code> must be <code>DISABLED</code>. You cannot delete an event data store if <code>TerminationProtectionEnabled</code> is <code>True</code> or the <code>FederationStatus</code> is <code>ENABLED</code>.</p> <p>After you run <code>DeleteEventDataStore</code> on an event data store, you cannot run <code>ListQueries</code>, <code>DescribeQuery</code>, or <code>GetQueryResults</code> on queries that are using an event data store in a <code>PENDING_DELETION</code> state. An event data store in the <code>PENDING_DELETION</code> state does not incur costs.</p>"
     },
     "DeleteResourcePolicy":{
       "name":"DeleteResourcePolicy",
@@ -308,6 +310,59 @@
       ],
       "documentation":"<p>Retrieves settings for one or more trails associated with the current Region for your account.</p>",
       "idempotent":true
+    },
+    "DisableFederation":{
+      "name":"DisableFederation",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DisableFederationRequest"},
+      "output":{"shape":"DisableFederationResponse"},
+      "errors":[
+        {"shape":"EventDataStoreARNInvalidException"},
+        {"shape":"EventDataStoreNotFoundException"},
+        {"shape":"InvalidParameterException"},
+        {"shape":"InactiveEventDataStoreException"},
+        {"shape":"OperationNotPermittedException"},
+        {"shape":"UnsupportedOperationException"},
+        {"shape":"CloudTrailAccessNotEnabledException"},
+        {"shape":"InsufficientDependencyServiceAccessPermissionException"},
+        {"shape":"NotOrganizationMasterAccountException"},
+        {"shape":"NoManagementAccountSLRExistsException"},
+        {"shape":"OrganizationsNotInUseException"},
+        {"shape":"OrganizationNotInAllFeaturesModeException"},
+        {"shape":"ConcurrentModificationException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p> Disables Lake query federation on the specified event data store. When you disable federation, CloudTrail removes the metadata associated with the federated event data store in the Glue Data Catalog and removes registration for the federation role ARN and event data store in Lake Formation. No CloudTrail Lake data is deleted when you disable federation. </p>"
+    },
+    "EnableFederation":{
+      "name":"EnableFederation",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"EnableFederationRequest"},
+      "output":{"shape":"EnableFederationResponse"},
+      "errors":[
+        {"shape":"EventDataStoreARNInvalidException"},
+        {"shape":"EventDataStoreNotFoundException"},
+        {"shape":"InvalidParameterException"},
+        {"shape":"InactiveEventDataStoreException"},
+        {"shape":"OperationNotPermittedException"},
+        {"shape":"UnsupportedOperationException"},
+        {"shape":"CloudTrailAccessNotEnabledException"},
+        {"shape":"InsufficientDependencyServiceAccessPermissionException"},
+        {"shape":"NotOrganizationMasterAccountException"},
+        {"shape":"NoManagementAccountSLRExistsException"},
+        {"shape":"OrganizationsNotInUseException"},
+        {"shape":"OrganizationNotInAllFeaturesModeException"},
+        {"shape":"ConcurrentModificationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"EventDataStoreFederationEnabledException"}
+      ],
+      "documentation":"<p> Enables Lake query federation on the specified event data store. Federating an event data store lets you view the metadata associated with the event data store in the Glue <a href=\"https://docs.aws.amazon.com/glue/latest/dg/components-overview.html#data-catalog-intro\">Data Catalog</a> and run SQL queries against your event data using Amazon Athena. The table metadata stored in the Glue Data Catalog lets the Athena query engine know how to find, read, and process the data that you want to query.</p> <p>When you enable Lake query federation, CloudTrail creates a federated database named <code>aws:cloudtrail</code> (if the database doesn't already exist) and a federated table in the Glue Data Catalog. The event data store ID is used for the table name. CloudTrail registers the role ARN and event data store in <a href=\"https://docs.aws.amazon.com/lake-formation/latest/dg/how-it-works.html\">Lake Formation</a>, the service responsible for revoking or granting permissions to the federated resources in the Glue Data Catalog. </p> <p>For more information about Lake query federation, see <a href=\"https://docs.aws.amazon.com/awscloudtrail/latest/userguide/query-federation.html\">Federate an event data store</a>.</p>"
     },
     "GetChannel":{
       "name":"GetChannel",
@@ -1066,6 +1121,13 @@
     }
   },
   "shapes":{
+    "AccessDeniedException":{
+      "type":"structure",
+      "members":{
+      },
+      "documentation":"<p> You do not have sufficient access to perform this action. </p>",
+      "exception":true
+    },
     "AccountHasOngoingImportException":{
       "type":"structure",
       "members":{
@@ -1323,6 +1385,13 @@
       "members":{
       },
       "documentation":"<p>Cannot set a CloudWatch Logs delivery for this Region.</p>",
+      "exception":true
+    },
+    "ConcurrentModificationException":{
+      "type":"structure",
+      "members":{
+      },
+      "documentation":"<p> You are trying to update a resource when another request is in progress. Allow sufficient wait time for the previous request to complete, then retry your request. </p>",
       "exception":true
     },
     "ConflictException":{
@@ -1823,6 +1892,63 @@
       "max":200,
       "min":1
     },
+    "DisableFederationRequest":{
+      "type":"structure",
+      "required":["EventDataStore"],
+      "members":{
+        "EventDataStore":{
+          "shape":"EventDataStoreArn",
+          "documentation":"<p> The ARN (or ID suffix of the ARN) of the event data store for which you want to disable Lake query federation. </p>"
+        }
+      }
+    },
+    "DisableFederationResponse":{
+      "type":"structure",
+      "members":{
+        "EventDataStoreArn":{
+          "shape":"EventDataStoreArn",
+          "documentation":"<p> The ARN of the event data store for which you disabled Lake query federation. </p>"
+        },
+        "FederationStatus":{
+          "shape":"FederationStatus",
+          "documentation":"<p> The federation status. </p>"
+        }
+      }
+    },
+    "EnableFederationRequest":{
+      "type":"structure",
+      "required":[
+        "EventDataStore",
+        "FederationRoleArn"
+      ],
+      "members":{
+        "EventDataStore":{
+          "shape":"EventDataStoreArn",
+          "documentation":"<p>The ARN (or ID suffix of the ARN) of the event data store for which you want to enable Lake query federation.</p>"
+        },
+        "FederationRoleArn":{
+          "shape":"FederationRoleArn",
+          "documentation":"<p> The ARN of the federation role to use for the event data store. Amazon Web Services services like Lake Formation use this federation role to access data for the federated event data store. The federation role must exist in your account and provide the <a href=\"https://docs.aws.amazon.com/awscloudtrail/latest/userguide/query-federation.html#query-federation-permissions-role\">required minimum permissions</a>. </p>"
+        }
+      }
+    },
+    "EnableFederationResponse":{
+      "type":"structure",
+      "members":{
+        "EventDataStoreArn":{
+          "shape":"EventDataStoreArn",
+          "documentation":"<p> The ARN of the event data store for which you enabled Lake query federation. </p>"
+        },
+        "FederationStatus":{
+          "shape":"FederationStatus",
+          "documentation":"<p> The federation status. </p>"
+        },
+        "FederationRoleArn":{
+          "shape":"FederationRoleArn",
+          "documentation":"<p> The ARN of the federation role. </p>"
+        }
+      }
+    },
     "ErrorMessage":{
       "type":"string",
       "max":1000,
@@ -1957,6 +2083,13 @@
       "min":3,
       "pattern":"^[a-zA-Z0-9._/\\-:]+$"
     },
+    "EventDataStoreFederationEnabledException":{
+      "type":"structure",
+      "members":{
+      },
+      "documentation":"<p> You cannot delete the event data store because Lake query federation is enabled. To delete the event data store, run the <code>DisableFederation</code> operation to disable Lake query federation on the event data store. </p>",
+      "exception":true
+    },
     "EventDataStoreHasOngoingImportException":{
       "type":"structure",
       "members":{
@@ -2045,6 +2178,21 @@
     "ExcludeManagementEventSources":{
       "type":"list",
       "member":{"shape":"String"}
+    },
+    "FederationRoleArn":{
+      "type":"string",
+      "max":125,
+      "min":3,
+      "pattern":"^[a-zA-Z0-9._/\\-:@=\\+,\\.]+$"
+    },
+    "FederationStatus":{
+      "type":"string",
+      "enum":[
+        "ENABLING",
+        "ENABLED",
+        "DISABLING",
+        "DISABLED"
+      ]
     },
     "GetChannelRequest":{
       "type":"structure",
@@ -2145,6 +2293,14 @@
         "BillingMode":{
           "shape":"BillingMode",
           "documentation":"<p>The billing mode for the event data store.</p>"
+        },
+        "FederationStatus":{
+          "shape":"FederationStatus",
+          "documentation":"<p> Indicates the <a href=\"https://docs.aws.amazon.com/awscloudtrail/latest/userguide/query-federation.html\">Lake query federation</a> status. The status is <code>ENABLED</code> if Lake query federation is enabled, or <code>DISABLED</code> if Lake query federation is disabled. You cannot delete an event data store if the <code>FederationStatus</code> is <code>ENABLED</code>. </p>"
+        },
+        "FederationRoleArn":{
+          "shape":"FederationRoleArn",
+          "documentation":"<p> If Lake query federation is enabled, provides the ARN of the federation role used to access the resources for the federated event data store. </p>"
         }
       }
     },
@@ -4348,6 +4504,14 @@
         "BillingMode":{
           "shape":"BillingMode",
           "documentation":"<p>The billing mode for the event data store.</p>"
+        },
+        "FederationStatus":{
+          "shape":"FederationStatus",
+          "documentation":"<p> Indicates the <a href=\"https://docs.aws.amazon.com/awscloudtrail/latest/userguide/query-federation.html\">Lake query federation</a> status. The status is <code>ENABLED</code> if Lake query federation is enabled, or <code>DISABLED</code> if Lake query federation is disabled. You cannot delete an event data store if the <code>FederationStatus</code> is <code>ENABLED</code>. </p>"
+        },
+        "FederationRoleArn":{
+          "shape":"FederationRoleArn",
+          "documentation":"<p> If Lake query federation is enabled, provides the ARN of the federation role used to access the resources for the federated event data store. </p>"
         }
       }
     },

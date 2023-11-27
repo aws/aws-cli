@@ -28,7 +28,7 @@
         {"shape":"AccessDeniedException"},
         {"shape":"ThrottlingException"}
       ],
-      "documentation":"<p>Creates a new landing zone. This starts an asynchronous operation that creates and configures a landing zone based on the parameters specified in the manifest JSON file. </p>"
+      "documentation":"<p>Creates a new landing zone. This API call starts an asynchronous operation that creates and configures a landing zone, based on the parameters specified in the manifest JSON file.</p>"
     },
     "DeleteLandingZone":{
       "name":"DeleteLandingZone",
@@ -47,7 +47,7 @@
         {"shape":"ThrottlingException"},
         {"shape":"ResourceNotFoundException"}
       ],
-      "documentation":"<p>This decommissions a landing zone. This starts an asynchronous operation that deletes Amazon Web Services Control Tower resources deployed in Amazon Web Services Control Tower managed accounts. </p>",
+      "documentation":"<p>Decommissions a landing zone. This API call starts an asynchronous operation that deletes Amazon Web Services Control Tower resources deployed in accounts managed by Amazon Web Services Control Tower.</p>",
       "idempotent":true
     },
     "DisableControl":{
@@ -142,7 +142,7 @@
         {"shape":"ThrottlingException"},
         {"shape":"ResourceNotFoundException"}
       ],
-      "documentation":"<p>Returns details about the landing zone. Displays a message in case of error. </p>"
+      "documentation":"<p>Returns details about the landing zone. Displays a message in case of error.</p>"
     },
     "GetLandingZoneOperation":{
       "name":"GetLandingZoneOperation",
@@ -160,7 +160,7 @@
         {"shape":"ThrottlingException"},
         {"shape":"ResourceNotFoundException"}
       ],
-      "documentation":"<p>Returns the status of the specified landing zone operation. Details for an operation are available for X days. </p>"
+      "documentation":"<p>Returns the status of the specified landing zone operation. Details for an operation are available for 60 days.</p>"
     },
     "ListEnabledControls":{
       "name":"ListEnabledControls",
@@ -195,7 +195,7 @@
         {"shape":"AccessDeniedException"},
         {"shape":"ThrottlingException"}
       ],
-      "documentation":"<p>Returns the landing zone ARN for the landing zone deployed in your managed account. This API also creates an ARN for existing accounts that do not yet have a landing zone ARN. </p> <p>The return limit is one landing zone ARN. </p>"
+      "documentation":"<p>Returns the landing zone ARN for the landing zone deployed in your managed account. This API also creates an ARN for existing accounts that do not yet have a landing zone ARN. </p> <p>Returns one landing zone ARN.</p>"
     },
     "ListTagsForResource":{
       "name":"ListTagsForResource",
@@ -230,7 +230,7 @@
         {"shape":"ThrottlingException"},
         {"shape":"ResourceNotFoundException"}
       ],
-      "documentation":"<p>This API call resets a landing zone. It starts an asynchronous operation that resets the landing zone to the parameters specified in its original configuration. </p>"
+      "documentation":"<p>This API call resets a landing zone. It starts an asynchronous operation that resets the landing zone to the parameters specified in its original configuration.</p>"
     },
     "TagResource":{
       "name":"TagResource",
@@ -264,6 +264,26 @@
       ],
       "documentation":"<p>Removes tags from a resource. For usage examples, see <a href=\"https://docs.aws.amazon.com/controltower/latest/userguide/control-api-examples-short.html\"> <i>the Amazon Web Services Control Tower User Guide</i> </a>.</p>"
     },
+    "UpdateEnabledControl":{
+      "name":"UpdateEnabledControl",
+      "http":{
+        "method":"POST",
+        "requestUri":"/update-enabled-control",
+        "responseCode":200
+      },
+      "input":{"shape":"UpdateEnabledControlInput"},
+      "output":{"shape":"UpdateEnabledControlOutput"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"ConflictException"},
+        {"shape":"ServiceQuotaExceededException"},
+        {"shape":"InternalServerException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p> Updates the configuration of an already enabled control.</p> <p>If the enabled control shows an <code>EnablementStatus</code> of SUCCEEDED, supply parameters that are different from the currently configured parameters. Otherwise, Amazon Web Services Control Tower will not accept the request.</p> <p>If the enabled control shows an <code>EnablementStatus</code> of FAILED, Amazon Web Services Control Tower will update the control to match any valid parameters that you supply.</p> <p>If the <code>DriftSummary</code> status for the control shows as DRIFTED, you cannot call this API. Instead, you can update the control by calling <code>DisableControl</code> and again calling <code>EnableControl</code>, or you can run an extending governance operation. For usage examples, see <a href=\"https://docs.aws.amazon.com/controltower/latest/userguide/control-api-examples-short.html\"> <i>the Amazon Web Services Control Tower User Guide</i> </a> </p>"
+    },
     "UpdateLandingZone":{
       "name":"UpdateLandingZone",
       "http":{
@@ -281,7 +301,7 @@
         {"shape":"ThrottlingException"},
         {"shape":"ResourceNotFoundException"}
       ],
-      "documentation":"<p>This API call updates the landing zone. It starts an asynchronous operation that updates the landing zone based on the new landing zone version or the updated parameters specified in the updated manifest file. </p>"
+      "documentation":"<p>This API call updates the landing zone. It starts an asynchronous operation that updates the landing zone based on the new landing zone version, or on the changed parameters specified in the updated manifest file. </p>"
     }
   },
   "shapes":{
@@ -310,7 +330,7 @@
       "members":{
         "message":{"shape":"String"}
       },
-      "documentation":"<p>Updating or deleting a resource can cause an inconsistent state.</p>",
+      "documentation":"<p>Updating or deleting the resource can cause an inconsistent state.</p>",
       "error":{
         "httpStatusCode":409,
         "senderFault":true
@@ -361,7 +381,8 @@
       "type":"string",
       "enum":[
         "ENABLE_CONTROL",
-        "DISABLE_CONTROL"
+        "DISABLE_CONTROL",
+        "UPDATE_ENABLED_CONTROL"
       ]
     },
     "CreateLandingZoneInput":{
@@ -381,7 +402,7 @@
         },
         "version":{
           "shape":"LandingZoneVersion",
-          "documentation":"<p>The landing zone version. </p>"
+          "documentation":"<p>The landing zone version, for example, 3.0.</p>"
         }
       }
     },
@@ -394,11 +415,11 @@
       "members":{
         "arn":{
           "shape":"Arn",
-          "documentation":"<p>The ARN of the landing zone. </p>"
+          "documentation":"<p>The ARN of the landing zone resource.</p>"
         },
         "operationIdentifier":{
           "shape":"OperationIdentifier",
-          "documentation":"<p>A unique identifier assigned to a <code>CreateLandingZone</code> operation. You can use this identifier as an input of <code>GetLandingZoneOperation</code> to check the operation's status. </p>"
+          "documentation":"<p>A unique identifier assigned to a <code>CreateLandingZone</code> operation. You can use this identifier as an input of <code>GetLandingZoneOperation</code> to check the operation's status.</p>"
         }
       }
     },
@@ -408,7 +429,7 @@
       "members":{
         "landingZoneIdentifier":{
           "shape":"String",
-          "documentation":"<p>The unique identifier of the landing zone. </p>"
+          "documentation":"<p>The unique identifier of the landing zone.</p>"
         }
       }
     },
@@ -418,7 +439,7 @@
       "members":{
         "operationIdentifier":{
           "shape":"OperationIdentifier",
-          "documentation":"<p>A unique identifier assigned to a <code>DeleteLandingZone</code> operation. You can use this identifier as an input of <code>GetLandingZoneOperation</code> to check the operation's status. </p>"
+          "documentation":"<p>&gt;A unique identifier assigned to a <code>DeleteLandingZone</code> operation. You can use this identifier as an input parameter of <code>GetLandingZoneOperation</code> to check the operation's status.</p>"
         }
       }
     },
@@ -431,7 +452,7 @@
       "members":{
         "controlIdentifier":{
           "shape":"ControlIdentifier",
-          "documentation":"<p>The ARN of the control. Only <b>Strongly recommended</b> and <b>Elective</b> controls are permitted, with the exception of the <b>Region deny</b> control. For information on how to find the <code>controlIdentifier</code>, see <a href=\"https://docs.aws.amazon.com/controltower/latest/APIReference/Welcome.html\">the overview page</a>.</p>"
+          "documentation":"<p>The ARN of the control. Only <b>Strongly recommended</b> and <b>Elective</b> controls are permitted, with the exception of the <b>landing zone Region deny</b> control. For information on how to find the <code>controlIdentifier</code>, see <a href=\"https://docs.aws.amazon.com/controltower/latest/APIReference/Welcome.html\">the overview page</a>.</p>"
         },
         "targetIdentifier":{
           "shape":"TargetIdentifier",
@@ -448,6 +469,12 @@
           "documentation":"<p>The ID of the asynchronous operation, which is used to track status. The operation is available for 90 days.</p>"
         }
       }
+    },
+    "Document":{
+      "type":"structure",
+      "members":{
+      },
+      "document":true
     },
     "DriftStatus":{
       "type":"string",
@@ -466,7 +493,7 @@
           "documentation":"<p> The drift status of the enabled control.</p> <p>Valid values:</p> <ul> <li> <p> <code>DRIFTED</code>: The <code>enabledControl</code> deployed in this configuration doesn’t match the configuration that Amazon Web Services Control Tower expected. </p> </li> <li> <p> <code>IN_SYNC</code>: The <code>enabledControl</code> deployed in this configuration matches the configuration that Amazon Web Services Control Tower expected.</p> </li> <li> <p> <code>NOT_CHECKING</code>: Amazon Web Services Control Tower does not check drift for this enabled control. Drift is not supported for the control type.</p> </li> <li> <p> <code>UNKNOWN</code>: Amazon Web Services Control Tower is not able to check the drift status for the enabled control. </p> </li> </ul>"
         }
       },
-      "documentation":"<p> The drift summary of the enabled control.</p> <p>Amazon Web Services Control Tower expects the enabled control configuration to include all supported and governed Regions. If the enabled control differs from the expected configuration, it is defined to be in a state of drift. You can repair this drift by resetting the enabled control.</p>"
+      "documentation":"<p>The drift summary of the enabled control.</p> <p>Amazon Web Services Control Tower expects the enabled control configuration to include all supported and governed Regions. If the enabled control differs from the expected configuration, it is defined to be in a state of drift. You can repair this drift by resetting the enabled control.</p>"
     },
     "EnableControlInput":{
       "type":"structure",
@@ -477,7 +504,11 @@
       "members":{
         "controlIdentifier":{
           "shape":"ControlIdentifier",
-          "documentation":"<p>The ARN of the control. Only <b>Strongly recommended</b> and <b>Elective</b> controls are permitted, with the exception of the <b>Region deny</b> control. For information on how to find the <code>controlIdentifier</code>, see <a href=\"https://docs.aws.amazon.com/controltower/latest/APIReference/Welcome.html\">the overview page</a>.</p>"
+          "documentation":"<p>The ARN of the control. Only <b>Strongly recommended</b> and <b>Elective</b> controls are permitted, with the exception of the <b>landing zone Region deny</b> control. For information on how to find the <code>controlIdentifier</code>, see <a href=\"https://docs.aws.amazon.com/controltower/latest/APIReference/Welcome.html\">the overview page</a>.</p>"
+        },
+        "parameters":{
+          "shape":"EnabledControlParameters",
+          "documentation":"<p>An array of <code>EnabledControlParameter</code> objects</p>"
         },
         "tags":{
           "shape":"TagMap",
@@ -518,6 +549,10 @@
           "shape":"DriftStatusSummary",
           "documentation":"<p>The drift status of the enabled control.</p>"
         },
+        "parameters":{
+          "shape":"EnabledControlParameterSummaries",
+          "documentation":"<p>Array of <code>EnabledControlParameter</code> objects.</p>"
+        },
         "statusSummary":{
           "shape":"EnablementStatusSummary",
           "documentation":"<p>The deployment summary of the enabled control.</p>"
@@ -532,6 +567,50 @@
         }
       },
       "documentation":"<p>Information about the enabled control.</p>"
+    },
+    "EnabledControlParameter":{
+      "type":"structure",
+      "required":[
+        "key",
+        "value"
+      ],
+      "members":{
+        "key":{
+          "shape":"String",
+          "documentation":"<p>The key of a key/value pair. It is of type <code>string</code>.</p>"
+        },
+        "value":{
+          "shape":"Document",
+          "documentation":"<p>The value of a key/value pair. It can be of type <code>array</code> <code>string</code>, <code>number</code>, <code>object</code>, or <code>boolean</code>. </p>"
+        }
+      },
+      "documentation":"<p> A set of parameters that configure the behavior of the enabled control. A key/value pair, where <code>Key</code> is of type <code>String</code> and <code>Value</code> is of type <code>Document</code>.</p>"
+    },
+    "EnabledControlParameterSummaries":{
+      "type":"list",
+      "member":{"shape":"EnabledControlParameterSummary"}
+    },
+    "EnabledControlParameterSummary":{
+      "type":"structure",
+      "required":[
+        "key",
+        "value"
+      ],
+      "members":{
+        "key":{
+          "shape":"String",
+          "documentation":"<p>The key of a key/value pair.</p>"
+        },
+        "value":{
+          "shape":"Document",
+          "documentation":"<p>The value of a key/value pair.</p>"
+        }
+      },
+      "documentation":"<p>Returns a summary of information about the parameters of an enabled control.</p>"
+    },
+    "EnabledControlParameters":{
+      "type":"list",
+      "member":{"shape":"EnabledControlParameter"}
     },
     "EnabledControlSummary":{
       "type":"structure",
@@ -554,7 +633,7 @@
         },
         "targetIdentifier":{
           "shape":"TargetIdentifier",
-          "documentation":"<p> The ARN of the organizational unit. </p>"
+          "documentation":"<p>The ARN of the organizational unit.</p>"
         }
       },
       "documentation":"<p>Returns a summary of information about an enabled control.</p>"
@@ -631,7 +710,7 @@
       "members":{
         "landingZoneIdentifier":{
           "shape":"String",
-          "documentation":"<p>The unique identifier of the landing zone. </p>"
+          "documentation":"<p>The unique identifier of the landing zone.</p>"
         }
       }
     },
@@ -641,7 +720,7 @@
       "members":{
         "operationIdentifier":{
           "shape":"OperationIdentifier",
-          "documentation":"<p>A unique identifier assigned to a landing zone operation. </p>"
+          "documentation":"<p>A unique identifier assigned to a landing zone operation.</p>"
         }
       }
     },
@@ -651,7 +730,7 @@
       "members":{
         "operationDetails":{
           "shape":"LandingZoneOperationDetail",
-          "documentation":"<p>The landing zone operation details. </p>"
+          "documentation":"<p>Details about a landing zone operation.</p>"
         }
       }
     },
@@ -661,7 +740,7 @@
       "members":{
         "landingZone":{
           "shape":"LandingZoneDetail",
-          "documentation":"<p>Information about the landing zone. </p>"
+          "documentation":"<p>Information about the landing zone.</p>"
         }
       }
     },
@@ -675,7 +754,7 @@
       "members":{
         "message":{"shape":"String"}
       },
-      "documentation":"<p>Unexpected error during processing of request.</p>",
+      "documentation":"<p>An unexpected error occurred during processing of a request.</p>",
       "error":{"httpStatusCode":500},
       "exception":true,
       "fault":true,
@@ -690,30 +769,30 @@
       "members":{
         "arn":{
           "shape":"Arn",
-          "documentation":"<p>The ARN of the landing zone. </p>"
+          "documentation":"<p>The ARN of the landing zone.</p>"
         },
         "driftStatus":{
           "shape":"LandingZoneDriftStatusSummary",
-          "documentation":"<p>The drift status of the landing zone. </p>"
+          "documentation":"<p>The drift status of the landing zone.</p>"
         },
         "latestAvailableVersion":{
           "shape":"LandingZoneVersion",
-          "documentation":"<p>The latest available version of the landing zone. </p>"
+          "documentation":"<p>The latest available version of the landing zone.</p>"
         },
         "manifest":{
           "shape":"Manifest",
-          "documentation":"<p>The landing zone manifest.yaml text file that specifies the landing zone configurations. </p>"
+          "documentation":"<p>The landing zone <code>manifest.yaml</code> text file that specifies the landing zone configurations. </p>"
         },
         "status":{
           "shape":"LandingZoneStatus",
-          "documentation":"<p>The landing zone deployment status. </p> <p>Valid values:</p> <ul> <li> <p> <code>ACTIVE</code>: The landing zone is actively deployed. </p> </li> <li> <p> <code>PROCESSING</code>: The landing zone is processing deployment. </p> </li> <li> <p> <code>FAILED</code>: The landing zone failed deployment. </p> </li> </ul>"
+          "documentation":"<p>The landing zone deployment status.</p>"
         },
         "version":{
           "shape":"LandingZoneVersion",
-          "documentation":"<p>The landing zone's current deployed version. </p>"
+          "documentation":"<p>The landing zone's current deployed version.</p>"
         }
       },
-      "documentation":"<p>Information about the landing zone. </p>"
+      "documentation":"<p>Information about the landing zone.</p>"
     },
     "LandingZoneDriftStatus":{
       "type":"string",
@@ -730,14 +809,14 @@
           "documentation":"<p>The drift status of the landing zone. </p> <p>Valid values:</p> <ul> <li> <p> <code>DRIFTED</code>: The landing zone deployed in this configuration does not match the configuration that Amazon Web Services Control Tower expected. </p> </li> <li> <p> <code>IN_SYNC</code>: The landing zone deployed in this configuration matches the configuration that Amazon Web Services Control Tower expected. </p> </li> </ul>"
         }
       },
-      "documentation":"<p>The drift status summary of the landing zone. </p> <p>If the landing zone differs from the expected configuration, it is defined to be in a state of drift. You can repair this drift by resetting the landing zone. </p>"
+      "documentation":"<p>The drift status summary of the landing zone. </p> <p>If the landing zone differs from the expected configuration, it is defined to be in a state of drift. You can repair this drift by resetting the landing zone.</p>"
     },
     "LandingZoneOperationDetail":{
       "type":"structure",
       "members":{
         "endTime":{
           "shape":"Timestamp",
-          "documentation":"<p>The landing zone operation end time. </p>"
+          "documentation":"<p>The landing zone operation end time.</p>"
         },
         "operationType":{
           "shape":"LandingZoneOperationType",
@@ -745,18 +824,18 @@
         },
         "startTime":{
           "shape":"Timestamp",
-          "documentation":"<p>The landing zone operation start time. </p>"
+          "documentation":"<p>The landing zone operation start time.</p>"
         },
         "status":{
           "shape":"LandingZoneOperationStatus",
-          "documentation":"<p>The landing zone operation status. </p> <p>Valid values:</p> <ul> <li> <p> <code>SUCCEEDED</code>: The landing zone operation succeeded. </p> </li> <li> <p> <code>IN_PROGRESS</code>: The landing zone operation is in progress. </p> </li> <li> <p> <code>FAILED</code>: The landing zone operation failed. </p> </li> </ul>"
+          "documentation":"<p>Valid values:</p> <ul> <li> <p> <code>SUCCEEDED</code>: The landing zone operation succeeded. </p> </li> <li> <p> <code>IN_PROGRESS</code>: The landing zone operation is in progress. </p> </li> <li> <p> <code>FAILED</code>: The landing zone operation failed. </p> </li> </ul>"
         },
         "statusMessage":{
           "shape":"String",
-          "documentation":"<p>If the operation result is FAILED, this string contains a message explaining why the operation failed. </p>"
+          "documentation":"<p>If the operation result is FAILED, this string contains a message explaining why the operation failed.</p>"
         }
       },
-      "documentation":"<p>Information about a landing zone operation. </p>"
+      "documentation":"<p>Information about a landing zone operation.</p>"
     },
     "LandingZoneOperationStatus":{
       "type":"string",
@@ -788,10 +867,10 @@
       "members":{
         "arn":{
           "shape":"Arn",
-          "documentation":"<p>The ARN of the landing zone. </p>"
+          "documentation":"<p>The ARN of the landing zone.</p>"
         }
       },
-      "documentation":"<p>Returns a summary of information about a landing zone. </p>"
+      "documentation":"<p>Returns a summary of information about a landing zone.</p>"
     },
     "LandingZoneVersion":{
       "type":"string",
@@ -827,7 +906,7 @@
         },
         "nextToken":{
           "shape":"String",
-          "documentation":"<p>Retrieves the next page of results. If the string is empty, the current response is the end of the results.</p>"
+          "documentation":"<p>Retrieves the next page of results. If the string is empty, the response is the end of the results.</p>"
         }
       }
     },
@@ -836,11 +915,11 @@
       "members":{
         "maxResults":{
           "shape":"ListLandingZonesMaxResults",
-          "documentation":"<p>The maximum number of returned landing zone ARNs. </p>"
+          "documentation":"<p>The maximum number of returned landing zone ARNs, which is one.</p>"
         },
         "nextToken":{
           "shape":"String",
-          "documentation":"<p>The token to continue the list from a previous API call with the same parameters. </p>"
+          "documentation":"<p>The token to continue the list from a previous API call with the same parameters.</p>"
         }
       }
     },
@@ -856,11 +935,11 @@
       "members":{
         "landingZones":{
           "shape":"ListLandingZonesOutputLandingZonesList",
-          "documentation":"<p>The ARN of the landing zone. </p>"
+          "documentation":"<p>The ARN of the landing zone.</p>"
         },
         "nextToken":{
           "shape":"String",
-          "documentation":"<p>Retrieves the next page of results. If the string is empty, the current response is the end of the results. </p>"
+          "documentation":"<p>Retrieves the next page of results. If the string is empty, the response is the end of the results.</p>"
         }
       }
     },
@@ -931,7 +1010,7 @@
       "members":{
         "landingZoneIdentifier":{
           "shape":"String",
-          "documentation":"<p>The unique identifier of the landing zone. </p>"
+          "documentation":"<p>The unique identifier of the landing zone.</p>"
         }
       }
     },
@@ -941,7 +1020,7 @@
       "members":{
         "operationIdentifier":{
           "shape":"OperationIdentifier",
-          "documentation":"<p>A unique identifier assigned to a <code>ResetLandingZone</code> operation. You can use this identifier as an input of <code>GetLandingZoneOperation</code> to check the operation's status.</p>"
+          "documentation":"<p>A unique identifier assigned to a <code>ResetLandingZone</code> operation. You can use this identifier as an input parameter of <code>GetLandingZoneOperation</code> to check the operation's status.</p>"
         }
       }
     },
@@ -951,7 +1030,7 @@
       "members":{
         "message":{"shape":"String"}
       },
-      "documentation":"<p>Request references a resource which does not exist.</p>",
+      "documentation":"<p>The request references a resource that does not exist.</p>",
       "error":{
         "httpStatusCode":404,
         "senderFault":true
@@ -964,7 +1043,7 @@
       "members":{
         "message":{"shape":"String"}
       },
-      "documentation":"<p>Request would cause a service quota to be exceeded. The limit is 10 concurrent operations.</p>",
+      "documentation":"<p>The request would cause a service quota to be exceeded. The limit is 10 concurrent operations.</p>",
       "error":{
         "httpStatusCode":402,
         "senderFault":true
@@ -1044,16 +1123,16 @@
         },
         "retryAfterSeconds":{
           "shape":"Integer",
-          "documentation":"<p>The number of seconds the caller should wait before retrying.</p>",
+          "documentation":"<p>The number of seconds to wait before retrying.</p>",
           "location":"header",
           "locationName":"Retry-After"
         },
         "serviceCode":{
           "shape":"String",
-          "documentation":"<p>The ID of the service that is associated with the error.</p>"
+          "documentation":"<p>The ID of the service that is associated with the error. </p>"
         }
       },
-      "documentation":"<p>Request was denied due to request throttling.</p>",
+      "documentation":"<p>The request was denied due to request throttling.</p>",
       "error":{
         "httpStatusCode":429,
         "senderFault":true
@@ -1091,6 +1170,33 @@
       "members":{
       }
     },
+    "UpdateEnabledControlInput":{
+      "type":"structure",
+      "required":[
+        "enabledControlIdentifier",
+        "parameters"
+      ],
+      "members":{
+        "enabledControlIdentifier":{
+          "shape":"Arn",
+          "documentation":"<p> The ARN of the enabled control that will be updated. </p>"
+        },
+        "parameters":{
+          "shape":"EnabledControlParameters",
+          "documentation":"<p>A key/value pair, where <code>Key</code> is of type <code>String</code> and <code>Value</code> is of type <code>Document</code>.</p>"
+        }
+      }
+    },
+    "UpdateEnabledControlOutput":{
+      "type":"structure",
+      "required":["operationIdentifier"],
+      "members":{
+        "operationIdentifier":{
+          "shape":"OperationIdentifier",
+          "documentation":"<p> The operation identifier for this <code>UpdateEnabledControl</code> operation. </p>"
+        }
+      }
+    },
     "UpdateLandingZoneInput":{
       "type":"structure",
       "required":[
@@ -1101,15 +1207,15 @@
       "members":{
         "landingZoneIdentifier":{
           "shape":"String",
-          "documentation":"<p>The unique identifier of the landing zone. </p>"
+          "documentation":"<p>The unique identifier of the landing zone.</p>"
         },
         "manifest":{
           "shape":"Manifest",
-          "documentation":"<p>The manifest.yaml file is a text file that describes your Amazon Web Services resources. For examples, review <a href=\"https://docs.aws.amazon.com/controltower/latest/userguide/the-manifest-file\">The manifest file</a> </p>"
+          "documentation":"<p>The <code>manifest.yaml</code> file is a text file that describes your Amazon Web Services resources. For examples, review <a href=\"https://docs.aws.amazon.com/controltower/latest/userguide/the-manifest-file\">The manifest file</a>.</p>"
         },
         "version":{
           "shape":"LandingZoneVersion",
-          "documentation":"<p>The landing zone version. </p>"
+          "documentation":"<p>The landing zone version, for example, 3.2.</p>"
         }
       }
     },
@@ -1129,7 +1235,7 @@
       "members":{
         "message":{"shape":"String"}
       },
-      "documentation":"<p>The input fails to satisfy the constraints specified by an Amazon Web Services service.</p>",
+      "documentation":"<p>The input does not satisfy the constraints specified by an Amazon Web Services service.</p>",
       "error":{
         "httpStatusCode":400,
         "senderFault":true
@@ -1137,5 +1243,5 @@
       "exception":true
     }
   },
-  "documentation":"<p>These interfaces allow you to apply the Amazon Web Services library of pre-defined <i>controls</i> to your organizational units, programmatically. In Amazon Web Services Control Tower, the terms \"control\" and \"guardrail\" are synonyms.</p> <p>To call these APIs, you'll need to know:</p> <ul> <li> <p>the <code>controlIdentifier</code> for the control--or guardrail--you are targeting.</p> </li> <li> <p>the ARN associated with the target organizational unit (OU), which we call the <code>targetIdentifier</code>.</p> </li> <li> <p>the ARN associated with a resource that you wish to tag or untag.</p> </li> </ul> <p> <b>To get the <code>controlIdentifier</code> for your AWS Control Tower control:</b> </p> <p>The <code>controlIdentifier</code> is an ARN that is specified for each control. You can view the <code>controlIdentifier</code> in the console on the <b>Control details</b> page, as well as in the documentation.</p> <p>The <code>controlIdentifier</code> is unique in each Amazon Web Services Region for each control. You can find the <code>controlIdentifier</code> for each Region and control in the <a href=\"https://docs.aws.amazon.com/controltower/latest/userguide/control-metadata-tables.html\">Tables of control metadata</a> in the <i>Amazon Web Services Control Tower User Guide.</i> </p> <p>A quick-reference list of control identifers for the Amazon Web Services Control Tower legacy <i>Strongly recommended</i> and <i>Elective</i> controls is given in <a href=\"https://docs.aws.amazon.com/controltower/latest/userguide/control-identifiers.html.html\">Resource identifiers for APIs and controls</a> in the <a href=\"https://docs.aws.amazon.com/controltower/latest/userguide/control-identifiers.html\">Controls reference guide section</a> of the <i>Amazon Web Services Control Tower User Guide</i>. Remember that <i>Mandatory</i> controls cannot be added or removed.</p> <note> <p> <b>ARN format:</b> <code>arn:aws:controltower:{REGION}::control/{CONTROL_NAME}</code> </p> <p> <b>Example:</b> </p> <p> <code>arn:aws:controltower:us-west-2::control/AWS-GR_AUTOSCALING_LAUNCH_CONFIG_PUBLIC_IP_DISABLED</code> </p> </note> <p> <b>To get the <code>targetIdentifier</code>:</b> </p> <p>The <code>targetIdentifier</code> is the ARN for an OU.</p> <p>In the Amazon Web Services Organizations console, you can find the ARN for the OU on the <b>Organizational unit details</b> page associated with that OU.</p> <note> <p> <b>OU ARN format:</b> </p> <p> <code>arn:${Partition}:organizations::${MasterAccountId}:ou/o-${OrganizationId}/ou-${OrganizationalUnitId}</code> </p> </note> <p class=\"title\"> <b>Details and examples</b> </p> <ul> <li> <p> <a href=\"https://docs.aws.amazon.com/controltower/latest/userguide/control-api-examples-short.html\">Control API input and output examples with CLI</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/controltower/latest/userguide/enable-controls.html\">Enable controls with CloudFormation</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/controltower/latest/userguide/control-metadata-tables.html\">Control metadata tables</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/controltower/latest/userguide/control-identifiers.html\">List of identifiers for legacy controls</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/controltower/latest/userguide/controls.html\">Controls reference guide</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/controltower/latest/userguide/controls-reference.html\">Controls library groupings</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/controltower/latest/userguide/creating-resources-with-cloudformation.html\">Creating Amazon Web Services Control Tower resources with Amazon Web Services CloudFormation</a> </p> </li> </ul> <p>To view the open source resource repository on GitHub, see <a href=\"https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-controltower\">aws-cloudformation/aws-cloudformation-resource-providers-controltower</a> </p> <p> <b>Recording API Requests</b> </p> <p>Amazon Web Services Control Tower supports Amazon Web Services CloudTrail, a service that records Amazon Web Services API calls for your Amazon Web Services account and delivers log files to an Amazon S3 bucket. By using information collected by CloudTrail, you can determine which requests the Amazon Web Services Control Tower service received, who made the request and when, and so on. For more about Amazon Web Services Control Tower and its support for CloudTrail, see <a href=\"https://docs.aws.amazon.com/controltower/latest/userguide/logging-using-cloudtrail.html\">Logging Amazon Web Services Control Tower Actions with Amazon Web Services CloudTrail</a> in the Amazon Web Services Control Tower User Guide. To learn more about CloudTrail, including how to turn it on and find your log files, see the Amazon Web Services CloudTrail User Guide.</p>"
+  "documentation":"<p>These interfaces allow you to apply the Amazon Web Services library of pre-defined <i>controls</i> to your organizational units, programmatically. In Amazon Web Services Control Tower, the terms \"control\" and \"guardrail\" are synonyms.</p> <p>To call these APIs, you'll need to know:</p> <ul> <li> <p>the <code>controlIdentifier</code> for the control--or guardrail--you are targeting.</p> </li> <li> <p>the ARN associated with the target organizational unit (OU), which we call the <code>targetIdentifier</code>.</p> </li> <li> <p>the ARN associated with a resource that you wish to tag or untag.</p> </li> </ul> <p> <b>To get the <code>controlIdentifier</code> for your Amazon Web Services Control Tower control:</b> </p> <p>The <code>controlIdentifier</code> is an ARN that is specified for each control. You can view the <code>controlIdentifier</code> in the console on the <b>Control details</b> page, as well as in the documentation.</p> <p>The <code>controlIdentifier</code> is unique in each Amazon Web Services Region for each control. You can find the <code>controlIdentifier</code> for each Region and control in the <a href=\"https://docs.aws.amazon.com/controltower/latest/userguide/control-metadata-tables.html\">Tables of control metadata</a> in the <i>Amazon Web Services Control Tower User Guide.</i> </p> <p>A quick-reference list of control identifers for the Amazon Web Services Control Tower legacy <i>Strongly recommended</i> and <i>Elective</i> controls is given in <a href=\"https://docs.aws.amazon.com/controltower/latest/userguide/control-identifiers.html.html\">Resource identifiers for APIs and controls</a> in the <a href=\"https://docs.aws.amazon.com/controltower/latest/userguide/control-identifiers.html\">Controls reference guide section</a> of the <i>Amazon Web Services Control Tower User Guide</i>. Remember that <i>Mandatory</i> controls cannot be added or removed.</p> <note> <p> <b>ARN format:</b> <code>arn:aws:controltower:{REGION}::control/{CONTROL_NAME}</code> </p> <p> <b>Example:</b> </p> <p> <code>arn:aws:controltower:us-west-2::control/AWS-GR_AUTOSCALING_LAUNCH_CONFIG_PUBLIC_IP_DISABLED</code> </p> </note> <p> <b>To get the <code>targetIdentifier</code>:</b> </p> <p>The <code>targetIdentifier</code> is the ARN for an OU.</p> <p>In the Amazon Web Services Organizations console, you can find the ARN for the OU on the <b>Organizational unit details</b> page associated with that OU.</p> <note> <p> <b>OU ARN format:</b> </p> <p> <code>arn:${Partition}:organizations::${MasterAccountId}:ou/o-${OrganizationId}/ou-${OrganizationalUnitId}</code> </p> </note> <p class=\"title\"> <b>Details and examples</b> </p> <ul> <li> <p> <a href=\"https://docs.aws.amazon.com/controltower/latest/userguide/control-api-examples-short.html\">Control API input and output examples with CLI</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/controltower/latest/userguide/enable-controls.html\">Enable controls with CloudFormation</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/controltower/latest/userguide/control-metadata-tables.html\">Control metadata tables</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/controltower/latest/userguide/control-identifiers.html\">List of identifiers for legacy controls</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/controltower/latest/userguide/controls.html\">Controls reference guide</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/controltower/latest/userguide/controls-reference.html\">Controls library groupings</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/controltower/latest/userguide/creating-resources-with-cloudformation.html\">Creating Amazon Web Services Control Tower resources with Amazon Web Services CloudFormation</a> </p> </li> </ul> <p>To view the open source resource repository on GitHub, see <a href=\"https://github.com/aws-cloudformation/aws-cloudformation-resource-providers-controltower\">aws-cloudformation/aws-cloudformation-resource-providers-controltower</a> </p> <p> <b>Recording API Requests</b> </p> <p>Amazon Web Services Control Tower supports Amazon Web Services CloudTrail, a service that records Amazon Web Services API calls for your Amazon Web Services account and delivers log files to an Amazon S3 bucket. By using information collected by CloudTrail, you can determine which requests the Amazon Web Services Control Tower service received, who made the request and when, and so on. For more about Amazon Web Services Control Tower and its support for CloudTrail, see <a href=\"https://docs.aws.amazon.com/controltower/latest/userguide/logging-using-cloudtrail.html\">Logging Amazon Web Services Control Tower Actions with Amazon Web Services CloudTrail</a> in the Amazon Web Services Control Tower User Guide. To learn more about CloudTrail, including how to turn it on and find your log files, see the Amazon Web Services CloudTrail User Guide.</p>"
 }

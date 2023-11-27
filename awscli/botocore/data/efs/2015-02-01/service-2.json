@@ -96,9 +96,10 @@
         {"shape":"FileSystemLimitExceeded"},
         {"shape":"InsufficientThroughputCapacity"},
         {"shape":"ThroughputLimitExceeded"},
+        {"shape":"ConflictException"},
         {"shape":"InternalServerError"}
       ],
-      "documentation":"<p>Creates a replication configuration that replicates an existing EFS file system to a new, read-only file system. For more information, see <a href=\"https://docs.aws.amazon.com/efs/latest/ug/efs-replication.html\">Amazon EFS replication</a> in the <i>Amazon EFS User Guide</i>. The replication configuration specifies the following:</p> <ul> <li> <p> <b>Source file system</b> - An existing EFS file system that you want replicated. The source file system cannot be a destination file system in an existing replication configuration.</p> </li> <li> <p> <b>Destination file system configuration</b> - The configuration of the destination file system to which the source file system will be replicated. There can only be one destination file system in a replication configuration. The destination file system configuration consists of the following properties:</p> <ul> <li> <p> <b>Amazon Web Services Region</b> - The Amazon Web Services Region in which the destination file system is created. Amazon EFS replication is available in all Amazon Web Services Regions in which EFS is available. To use EFS replication in a Region that is disabled by default, you must first opt in to the Region. For more information, see <a href=\"https://docs.aws.amazon.com/general/latest/gr/rande-manage.html#rande-manage-enable\">Managing Amazon Web Services Regions</a> in the <i>Amazon Web Services General Reference Reference Guide</i> </p> </li> <li> <p> <b>Availability Zone</b> - If you want the destination file system to use EFS One Zone availability, you must specify the Availability Zone to create the file system in. For more information about EFS storage classes, see <a href=\"https://docs.aws.amazon.com/efs/latest/ug/storage-classes.html\"> Amazon EFS storage classes</a> in the <i>Amazon EFS User Guide</i>.</p> </li> <li> <p> <b>Encryption</b> - All destination file systems are created with encryption at rest enabled. You can specify the Key Management Service (KMS) key that is used to encrypt the destination file system. If you don't specify a KMS key, your service-managed KMS key for Amazon EFS is used. </p> <note> <p>After the file system is created, you cannot change the KMS key.</p> </note> </li> </ul> </li> </ul> <p>The following properties are set by default:</p> <ul> <li> <p> <b>Performance mode</b> - The destination file system's performance mode matches that of the source file system, unless the destination file system uses EFS One Zone storage. In that case, the General Purpose performance mode is used. The performance mode cannot be changed.</p> </li> <li> <p> <b>Throughput mode</b> - The destination file system's throughput mode matches that of the source file system. After the file system is created, you can modify the throughput mode.</p> </li> </ul> <p>The following properties are turned off by default:</p> <ul> <li> <p> <b>Lifecycle management</b> – Lifecycle management is not enabled on the destination file system. After the destination file system is created, you can enable it.</p> </li> <li> <p> <b>Automatic backups</b> – Automatic daily backups are enabled on the destination file system. After the file system is created, you can change this setting.</p> </li> </ul> <p>For more information, see <a href=\"https://docs.aws.amazon.com/efs/latest/ug/efs-replication.html\">Amazon EFS replication</a> in the <i>Amazon EFS User Guide</i>.</p>"
+      "documentation":"<p>Creates a replication configuration that replicates an existing EFS file system to a new, read-only file system. For more information, see <a href=\"https://docs.aws.amazon.com/efs/latest/ug/efs-replication.html\">Amazon EFS replication</a> in the <i>Amazon EFS User Guide</i>. The replication configuration specifies the following:</p> <ul> <li> <p> <b>Source file system</b> – The EFS file system that you want replicated. The source file system cannot be a destination file system in an existing replication configuration.</p> </li> <li> <p> <b>Amazon Web Services Region</b> – The Amazon Web Services Region in which the destination file system is created. Amazon EFS replication is available in all Amazon Web Services Regions in which EFS is available. The Region must be enabled. For more information, see <a href=\"https://docs.aws.amazon.com/general/latest/gr/rande-manage.html#rande-manage-enable\">Managing Amazon Web Services Regions</a> in the <i>Amazon Web Services General Reference Reference Guide</i>.</p> </li> <li> <p> <b>Destination file system configuration</b> – The configuration of the destination file system to which the source file system will be replicated. There can only be one destination file system in a replication configuration. </p> <p>Parameters for the replication configuration include:</p> <ul> <li> <p> <b>File system ID</b> – The ID of the destination file system for the replication. If no ID is provided, then EFS creates a new file system with the default settings. For existing file systems, the file system's replication overwrite protection must be disabled. For more information, see <a href=\"https://docs.aws.amazon.com/efs/latest/ug/efs-replication#replicate-existing-destination\"> Replicating to an existing file system</a>.</p> </li> <li> <p> <b>Availability Zone</b> – If you want the destination file system to use One Zone storage, you must specify the Availability Zone to create the file system in. For more information, see <a href=\"https://docs.aws.amazon.com/efs/latest/ug/storage-classes.html\"> EFS file system types</a> in the <i>Amazon EFS User Guide</i>.</p> </li> <li> <p> <b>Encryption</b> – All destination file systems are created with encryption at rest enabled. You can specify the Key Management Service (KMS) key that is used to encrypt the destination file system. If you don't specify a KMS key, your service-managed KMS key for Amazon EFS is used. </p> <note> <p>After the file system is created, you cannot change the KMS key.</p> </note> </li> </ul> </li> </ul> <note> <p>After the file system is created, you cannot change the KMS key.</p> </note> <p>For new destination file systems, the following properties are set by default:</p> <ul> <li> <p> <b>Performance mode</b> - The destination file system's performance mode matches that of the source file system, unless the destination file system uses EFS One Zone storage. In that case, the General Purpose performance mode is used. The performance mode cannot be changed.</p> </li> <li> <p> <b>Throughput mode</b> - The destination file system's throughput mode matches that of the source file system. After the file system is created, you can modify the throughput mode.</p> </li> </ul> <ul> <li> <p> <b>Lifecycle management</b> – Lifecycle management is not enabled on the destination file system. After the destination file system is created, you can enable lifecycle management.</p> </li> <li> <p> <b>Automatic backups</b> – Automatic daily backups are enabled on the destination file system. After the file system is created, you can change this setting.</p> </li> </ul> <p>For more information, see <a href=\"https://docs.aws.amazon.com/efs/latest/ug/efs-replication.html\">Amazon EFS replication</a> in the <i>Amazon EFS User Guide</i>.</p>"
     },
     "CreateTags":{
       "name":"CreateTags",
@@ -194,7 +195,7 @@
         {"shape":"FileSystemNotFound"},
         {"shape":"ReplicationNotFound"}
       ],
-      "documentation":"<p>Deletes an existing replication configuration. Deleting a replication configuration ends the replication process. After a replication configuration is deleted, the destination file system is no longer read-only. You can write to the destination file system after its status becomes <code>Writeable</code>.</p>"
+      "documentation":"<p>Deletes a replication configuration. Deleting a replication configuration ends the replication process. After a replication configuration is deleted, the destination file system becomes <code>Writeable</code> and its replication overwrite protection is re-enabled. For more information, see <a href=\"https://docs.aws.amazon.com/efs/latest/ug/delete-replications.html\">Delete a replication configuration</a>.</p> <p>This operation requires permissions for the <code>elasticfilesystem:DeleteReplicationConfiguration</code> action. </p>"
     },
     "DeleteTags":{
       "name":"DeleteTags",
@@ -309,7 +310,7 @@
         {"shape":"BadRequest"},
         {"shape":"FileSystemNotFound"}
       ],
-      "documentation":"<p>Returns the current <code>LifecycleConfiguration</code> object for the specified Amazon EFS file system. Llifecycle management uses the <code>LifecycleConfiguration</code> object to identify when to move files between storage classes. For a file system without a <code>LifecycleConfiguration</code> object, the call returns an empty array in the response.</p> <p>This operation requires permissions for the <code>elasticfilesystem:DescribeLifecycleConfiguration</code> operation.</p>"
+      "documentation":"<p>Returns the current <code>LifecycleConfiguration</code> object for the specified Amazon EFS file system. Lifecycle management uses the <code>LifecycleConfiguration</code> object to identify when to move files between storage classes. For a file system without a <code>LifecycleConfiguration</code> object, the call returns an empty array in the response.</p> <p>This operation requires permissions for the <code>elasticfilesystem:DescribeLifecycleConfiguration</code> operation.</p>"
     },
     "DescribeMountTargetSecurityGroups":{
       "name":"DescribeMountTargetSecurityGroups",
@@ -483,7 +484,7 @@
         {"shape":"FileSystemNotFound"},
         {"shape":"IncorrectFileSystemLifeCycleState"}
       ],
-      "documentation":"<p>Use this action to manage storage of your file system. A <code>LifecycleConfiguration</code> consists of one or more <code>LifecyclePolicy</code> objects that define the following:</p> <ul> <li> <p> <b> <code>TransitionToIA</code> </b> – When to move files in the file system from primary storage (Standard storage class) into the Infrequent Access (IA) storage.</p> </li> <li> <p> <b> <code>TransitionToArchive</code> </b> – When to move files in the file system from their current storage class (either IA or Standard storage) into the Archive storage.</p> <p>File systems cannot transition into Archive storage before transitioning into IA storage. Therefore, TransitionToArchive must either not be set or must be later than TransitionToIA.</p> <note> <p> The Archive storage class is available only for file systems that use the Elastic Throughput mode and the General Purpose Performance mode. </p> </note> </li> <li> <p> <b> <code>TransitionToPrimaryStorageClass</code> </b> – Whether to move files in the file system back to primary storage (Standard storage class) after they are accessed in IA or Archive storage.</p> </li> </ul> <p>For more information, see <a href=\"https://docs.aws.amazon.com/efs/latest/ug/lifecycle-management-efs.html\"> Managing file system storage</a>.</p> <p>Each Amazon EFS file system supports one lifecycle configuration, which applies to all files in the file system. If a <code>LifecycleConfiguration</code> object already exists for the specified file system, a <code>PutLifecycleConfiguration</code> call modifies the existing configuration. A <code>PutLifecycleConfiguration</code> call with an empty <code>LifecyclePolicies</code> array in the request body deletes any existing <code>LifecycleConfiguration</code> for the file system.</p> <p>In the request, specify the following: </p> <ul> <li> <p>The ID for the file system for which you are enabling, disabling, or modifying Lifecycle management.</p> </li> <li> <p>A <code>LifecyclePolicies</code> array of <code>LifecyclePolicy</code> objects that define when to move files to IA storage, to Archive storage, and back to primary storage.</p> <note> <p>Amazon EFS requires that each <code>LifecyclePolicy</code> object have only have a single transition, so the <code>LifecyclePolicies</code> array needs to be structured with separate <code>LifecyclePolicy</code> objects. See the example requests in the following section for more information.</p> </note> </li> </ul> <p>This operation requires permissions for the <code>elasticfilesystem:PutLifecycleConfiguration</code> operation.</p> <p>To apply a <code>LifecycleConfiguration</code> object to an encrypted file system, you need the same Key Management Service permissions as when you created the encrypted file system.</p>"
+      "documentation":"<p>Use this action to manage storage for your file system. A <code>LifecycleConfiguration</code> consists of one or more <code>LifecyclePolicy</code> objects that define the following:</p> <ul> <li> <p> <b> <code>TransitionToIA</code> </b> – When to move files in the file system from primary storage (Standard storage class) into the Infrequent Access (IA) storage.</p> </li> <li> <p> <b> <code>TransitionToArchive</code> </b> – When to move files in the file system from their current storage class (either IA or Standard storage) into the Archive storage.</p> <p>File systems cannot transition into Archive storage before transitioning into IA storage. Therefore, TransitionToArchive must either not be set or must be later than TransitionToIA.</p> <note> <p> The Archive storage class is available only for file systems that use the Elastic Throughput mode and the General Purpose Performance mode. </p> </note> </li> </ul> <ul> <li> <p> <b> <code>TransitionToPrimaryStorageClass</code> </b> – Whether to move files in the file system back to primary storage (Standard storage class) after they are accessed in IA or Archive storage.</p> </li> </ul> <p>For more information, see <a href=\"https://docs.aws.amazon.com/efs/latest/ug/lifecycle-management-efs.html\"> Managing file system storage</a>.</p> <p>Each Amazon EFS file system supports one lifecycle configuration, which applies to all files in the file system. If a <code>LifecycleConfiguration</code> object already exists for the specified file system, a <code>PutLifecycleConfiguration</code> call modifies the existing configuration. A <code>PutLifecycleConfiguration</code> call with an empty <code>LifecyclePolicies</code> array in the request body deletes any existing <code>LifecycleConfiguration</code>. In the request, specify the following: </p> <ul> <li> <p>The ID for the file system for which you are enabling, disabling, or modifying Lifecycle management.</p> </li> <li> <p>A <code>LifecyclePolicies</code> array of <code>LifecyclePolicy</code> objects that define when to move files to IA storage, to Archive storage, and back to primary storage.</p> <note> <p>Amazon EFS requires that each <code>LifecyclePolicy</code> object have only have a single transition, so the <code>LifecyclePolicies</code> array needs to be structured with separate <code>LifecyclePolicy</code> objects. See the example requests in the following section for more information.</p> </note> </li> </ul> <p>This operation requires permissions for the <code>elasticfilesystem:PutLifecycleConfiguration</code> operation.</p> <p>To apply a <code>LifecycleConfiguration</code> object to an encrypted file system, you need the same Key Management Service permissions as when you created the encrypted file system.</p>"
     },
     "TagResource":{
       "name":"TagResource",
@@ -536,6 +537,28 @@
         {"shape":"TooManyRequests"}
       ],
       "documentation":"<p>Updates the throughput mode or the amount of provisioned throughput of an existing file system.</p>"
+    },
+    "UpdateFileSystemProtection":{
+      "name":"UpdateFileSystemProtection",
+      "http":{
+        "method":"PUT",
+        "requestUri":"/2015-02-01/file-systems/{FileSystemId}/protection",
+        "responseCode":200
+      },
+      "input":{"shape":"UpdateFileSystemProtectionRequest"},
+      "output":{"shape":"FileSystemProtectionDescription"},
+      "errors":[
+        {"shape":"BadRequest"},
+        {"shape":"FileSystemNotFound"},
+        {"shape":"IncorrectFileSystemLifeCycleState"},
+        {"shape":"InsufficientThroughputCapacity"},
+        {"shape":"InternalServerError"},
+        {"shape":"ThroughputLimitExceeded"},
+        {"shape":"ReplicationAlreadyExists"},
+        {"shape":"TooManyRequests"}
+      ],
+      "documentation":"<p>Updates protection on the file system.</p> <p>This operation requires permissions for the <code>elasticfilesystem:UpdateFileSystemProtection</code> action. </p>",
+      "idempotent":true
     }
   },
   "shapes":{
@@ -696,6 +719,16 @@
       "max":64,
       "min":1,
       "pattern":".+"
+    },
+    "ConflictException":{
+      "type":"structure",
+      "members":{
+        "ErrorCode":{"shape":"ErrorCode"},
+        "Message":{"shape":"ErrorMessage"}
+      },
+      "documentation":"<p>Returned if the source file system in a replication is encrypted but the destination file system is unencrypted.</p>",
+      "error":{"httpStatusCode":409},
+      "exception":true
     },
     "CreateAccessPointRequest":{
       "type":"structure",
@@ -1305,10 +1338,14 @@
         },
         "KmsKeyId":{
           "shape":"KmsKeyId",
-          "documentation":"<p>Specifies the Key Management Service (KMS) key that you want to use to encrypt the destination file system. If you do not specify a KMS key, Amazon EFS uses your default KMS key for Amazon EFS, <code>/aws/elasticfilesystem</code>. This ID can be in one of the following formats:</p> <ul> <li> <p>Key ID - The unique identifier of the key, for example <code>1234abcd-12ab-34cd-56ef-1234567890ab</code>.</p> </li> <li> <p>ARN - The Amazon Resource Name (ARN) for the key, for example <code>arn:aws:kms:us-west-2:111122223333:key/1234abcd-12ab-34cd-56ef-1234567890ab</code>.</p> </li> <li> <p>Key alias - A previously created display name for a key, for example <code>alias/projectKey1</code>.</p> </li> <li> <p>Key alias ARN - The ARN for a key alias, for example <code>arn:aws:kms:us-west-2:444455556666:alias/projectKey1</code>.</p> </li> </ul>"
+          "documentation":"<p>Specify the Key Management Service (KMS) key that you want to use to encrypt the destination file system. If you do not specify a KMS key, Amazon EFS uses your default KMS key for Amazon EFS, <code>/aws/elasticfilesystem</code>. This ID can be in one of the following formats:</p> <ul> <li> <p>Key ID - The unique identifier of the key, for example <code>1234abcd-12ab-34cd-56ef-1234567890ab</code>.</p> </li> <li> <p>ARN - The Amazon Resource Name (ARN) for the key, for example <code>arn:aws:kms:us-west-2:111122223333:key/1234abcd-12ab-34cd-56ef-1234567890ab</code>.</p> </li> <li> <p>Key alias - A previously created display name for a key, for example <code>alias/projectKey1</code>.</p> </li> <li> <p>Key alias ARN - The ARN for a key alias, for example <code>arn:aws:kms:us-west-2:444455556666:alias/projectKey1</code>.</p> </li> </ul>"
+        },
+        "FileSystemId":{
+          "shape":"FileSystemId",
+          "documentation":"<p>The ID of the file system to use for the destination. The file system's replication overwrite replication must be disabled. If you do not provide an ID, then EFS creates a new file system for the replication destination.</p>"
         }
       },
-      "documentation":"<p>Describes the destination file system to create in the replication configuration.</p>"
+      "documentation":"<p>Describes the new or existing destination file system for the replication configuration.</p>"
     },
     "Destinations":{
       "type":"list",
@@ -1425,6 +1462,10 @@
         "Tags":{
           "shape":"Tags",
           "documentation":"<p>The tags associated with the file system, presented as an array of <code>Tag</code> objects.</p>"
+        },
+        "FileSystemProtection":{
+          "shape":"FileSystemProtectionDescription",
+          "documentation":"<p>Describes the protection on the file system. </p>"
         }
       },
       "documentation":"<p>A description of the file system.</p>"
@@ -1487,6 +1528,16 @@
           "documentation":"<p>The JSON formatted <code>FileSystemPolicy</code> for the EFS file system.</p>"
         }
       }
+    },
+    "FileSystemProtectionDescription":{
+      "type":"structure",
+      "members":{
+        "ReplicationOverwriteProtection":{
+          "shape":"ReplicationOverwriteProtection",
+          "documentation":"<p>The status of the file system's replication overwrite protection.</p> <ul> <li> <p> <code>ENABLED</code> – The file system cannot be used as the destination file system in a replication configuration. The file system is writeable. Replication overwrite protection is <code>ENABLED</code> by default. </p> </li> <li> <p> <code>DISABLED</code> – The file system can be used as the destination file system in a replication configuration. The file system is read-only and can only be modified by EFS replication.</p> </li> <li> <p> <code>REPLICATING</code> – The file system is being used as the destination file system in a replication configuration. The file system is read-only and is only modified only by EFS replication.</p> </li> </ul> <p>If the replication configuration is deleted, the file system's replication overwrite protection is re-enabled, the file system becomes writeable.</p>"
+        }
+      },
+      "documentation":"<p>Describes the protection on a file system. </p>"
     },
     "FileSystemSize":{
       "type":"structure",
@@ -1641,7 +1692,7 @@
           "documentation":"<p>The number of days after files were last accessed in primary storage (the Standard storage class) files at which to move them to Archive storage. Metadata operations such as listing the contents of a directory don't count as file access events.</p>"
         }
       },
-      "documentation":"<p>Describes a policy used by Lifecycle management that specifies when to transition files into and out of the Infrequent Access (IA) and Archive storage classes. For more information, see <a href=\"https://docs.aws.amazon.com/efs/latest/ug/lifecycle-management-efs.html\">Managing file system storage</a>.</p> <note> <p>When using the <code>put-lifecycle-configuration</code> CLI command or the <code>PutLifecycleConfiguration</code> API action, Amazon EFS requires that each <code>LifecyclePolicy</code> object have only a single transition. This means that in a request body, <code>LifecyclePolicies</code> must be structured as an array of <code>LifecyclePolicy</code> objects, one object for each transition. For more information, see the request examples in <a>PutLifecycleConfiguration</a>.</p> </note>"
+      "documentation":"<p>Describes a policy used by Lifecycle management that specifies when to transition files into and out of storage classes. For more information, see <a href=\"https://docs.aws.amazon.com/efs/latest/ug/lifecycle-management-efs.html\">Managing file system storage</a>.</p> <note> <p>When using the <code>put-lifecycle-configuration</code> CLI command or the <code>PutLifecycleConfiguration</code> API action, Amazon EFS requires that each <code>LifecyclePolicy</code> object have only a single transition. This means that in a request body, <code>LifecyclePolicies</code> must be structured as an array of <code>LifecyclePolicy</code> objects, one object for each transition. For more information, see the request examples in <a>PutLifecycleConfiguration</a>.</p> </note>"
     },
     "ListTagsForResourceRequest":{
       "type":"structure",
@@ -1978,6 +2029,16 @@
       "min":1,
       "pattern":"^[a-z]{2}-((iso[a-z]{0,1}-)|(gov-)){0,1}[a-z]+-{0,1}[0-9]{0,1}$"
     },
+    "ReplicationAlreadyExists":{
+      "type":"structure",
+      "members":{
+        "ErrorCode":{"shape":"ErrorCode"},
+        "Message":{"shape":"ErrorMessage"}
+      },
+      "documentation":"<p>Returned if the file system is already included in a replication configuration.&gt;</p>",
+      "error":{"httpStatusCode":409},
+      "exception":true
+    },
     "ReplicationConfigurationDescription":{
       "type":"structure",
       "required":[
@@ -2032,6 +2093,14 @@
       "documentation":"<p>Returned if the specified file system does not have a replication configuration.</p>",
       "error":{"httpStatusCode":404},
       "exception":true
+    },
+    "ReplicationOverwriteProtection":{
+      "type":"string",
+      "enum":[
+        "ENABLED",
+        "DISABLED",
+        "REPLICATING"
+      ]
     },
     "ReplicationStatus":{
       "type":"string",
@@ -2335,6 +2404,22 @@
           "documentation":"<p>The keys of the key-value tag pairs that you want to remove from the specified EFS resource.</p>",
           "location":"querystring",
           "locationName":"tagKeys"
+        }
+      }
+    },
+    "UpdateFileSystemProtectionRequest":{
+      "type":"structure",
+      "required":["FileSystemId"],
+      "members":{
+        "FileSystemId":{
+          "shape":"FileSystemId",
+          "documentation":"<p>The ID of the file system to update. </p>",
+          "location":"uri",
+          "locationName":"FileSystemId"
+        },
+        "ReplicationOverwriteProtection":{
+          "shape":"ReplicationOverwriteProtection",
+          "documentation":"<p>The status of the file system's replication overwrite protection.</p> <ul> <li> <p> <code>ENABLED</code> – The file system cannot be used as the destination file system in a replication configuration. The file system is writeable. Replication overwrite protection is <code>ENABLED</code> by default. </p> </li> <li> <p> <code>DISABLED</code> – The file system can be used as the destination file system in a replication configuration. The file system is read-only and can only be modified by EFS replication.</p> </li> <li> <p> <code>REPLICATING</code> – The file system is being used as the destination file system in a replication configuration. The file system is read-only and is only modified only by EFS replication.</p> </li> </ul> <p>If the replication configuration is deleted, the file system's replication overwrite protection is re-enabled, the file system becomes writeable.</p>"
         }
       }
     },

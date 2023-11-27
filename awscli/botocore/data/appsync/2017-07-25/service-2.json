@@ -485,6 +485,21 @@
       ],
       "documentation":"<p>Retrieves a <code>DataSource</code> object.</p>"
     },
+    "GetDataSourceIntrospection":{
+      "name":"GetDataSourceIntrospection",
+      "http":{
+        "method":"GET",
+        "requestUri":"/v1/datasources/introspections/{introspectionId}"
+      },
+      "input":{"shape":"GetDataSourceIntrospectionRequest"},
+      "output":{"shape":"GetDataSourceIntrospectionResponse"},
+      "errors":[
+        {"shape":"BadRequestException"},
+        {"shape":"NotFoundException"},
+        {"shape":"InternalFailureException"}
+      ],
+      "documentation":"<p>Retrieves the record of an existing introspection. If the retrieval is successful, the result of the instrospection will also be returned. If the retrieval fails the operation, an error message will be returned instead.</p>"
+    },
     "GetDomainName":{
       "name":"GetDomainName",
       "http":{
@@ -790,6 +805,22 @@
         {"shape":"InternalFailureException"}
       ],
       "documentation":"<p>Lists <code>Type</code> objects by the source API association ID.</p>"
+    },
+    "StartDataSourceIntrospection":{
+      "name":"StartDataSourceIntrospection",
+      "http":{
+        "method":"POST",
+        "requestUri":"/v1/datasources/introspections"
+      },
+      "input":{"shape":"StartDataSourceIntrospectionRequest"},
+      "output":{"shape":"StartDataSourceIntrospectionResponse"},
+      "errors":[
+        {"shape":"NotFoundException"},
+        {"shape":"UnauthorizedException"},
+        {"shape":"InternalFailureException"},
+        {"shape":"BadRequestException"}
+      ],
+      "documentation":"<p>Creates a new introspection. Returns the <code>introspectionId</code> of the new introspection after its creation. </p>"
     },
     "StartSchemaCreation":{
       "name":"StartSchemaCreation",
@@ -1982,6 +2013,128 @@
       },
       "documentation":"<p>Describes a data source.</p>"
     },
+    "DataSourceIntrospectionModel":{
+      "type":"structure",
+      "members":{
+        "name":{
+          "shape":"String",
+          "documentation":"<p>The name of the model. For example, this could be the name of a single table in a database.</p>"
+        },
+        "fields":{
+          "shape":"DataSourceIntrospectionModelFields",
+          "documentation":"<p>The <code>DataSourceIntrospectionModelField</code> object data.</p>"
+        },
+        "primaryKey":{
+          "shape":"DataSourceIntrospectionModelIndex",
+          "documentation":"<p>The primary key stored as a <code>DataSourceIntrospectionModelIndex</code> object.</p>"
+        },
+        "indexes":{
+          "shape":"DataSourceIntrospectionModelIndexes",
+          "documentation":"<p>The array of <code>DataSourceIntrospectionModelIndex</code> objects.</p>"
+        },
+        "sdl":{
+          "shape":"String",
+          "documentation":"<p>Contains the output of the SDL that was generated from the introspected types. This is controlled by the <code>includeModelsSDL</code> parameter of the <code>GetDataSourceIntrospection</code> operation.</p>"
+        }
+      },
+      "documentation":"<p>Contains the introspected data that was retrieved from the data source.</p>"
+    },
+    "DataSourceIntrospectionModelField":{
+      "type":"structure",
+      "members":{
+        "name":{
+          "shape":"String",
+          "documentation":"<p>The name of the field that was retrieved from the introspected data.</p>"
+        },
+        "type":{
+          "shape":"DataSourceIntrospectionModelFieldType",
+          "documentation":"<p>The <code>DataSourceIntrospectionModelFieldType</code> object data.</p>"
+        },
+        "length":{
+          "shape":"Long",
+          "documentation":"<p>The length value of the introspected field.</p>"
+        }
+      },
+      "documentation":"<p>Represents the fields that were retrieved from the introspected data.</p>"
+    },
+    "DataSourceIntrospectionModelFieldType":{
+      "type":"structure",
+      "members":{
+        "kind":{
+          "shape":"String",
+          "documentation":"<p>Specifies the classification of data. For example, this could be set to values like <code>Scalar</code> or <code>NonNull</code> to indicate a fundamental property of the field.</p> <p>Valid values include:</p> <ul> <li> <p> <code>Scalar</code>: Indicates the value is a primitive type (scalar).</p> </li> <li> <p> <code>NonNull</code>: Indicates the field cannot be <code>null</code>.</p> </li> <li> <p> <code>List</code>: Indicates the field contains a list.</p> </li> </ul>"
+        },
+        "name":{
+          "shape":"String",
+          "documentation":"<p>The name of the data type that represents the field. For example, <code>String</code> is a valid <code>name</code> value.</p>"
+        },
+        "type":{
+          "shape":"DataSourceIntrospectionModelFieldType",
+          "documentation":"<p>The <code>DataSourceIntrospectionModelFieldType</code> object data. The <code>type</code> is only present if <code>DataSourceIntrospectionModelFieldType.kind</code> is set to <code>NonNull</code> or <code>List</code>. </p> <p>The <code>type</code> typically contains its own <code>kind</code> and <code>name</code> fields to represent the actual type data. For instance, <code>type</code> could contain a <code>kind</code> value of <code>Scalar</code> with a <code>name</code> value of <code>String</code>. The values <code>Scalar</code> and <code>String</code> will be collectively stored in the <code>values</code> field.</p>"
+        },
+        "values":{
+          "shape":"DataSourceIntrospectionModelFieldTypeValues",
+          "documentation":"<p>The values of the <code>type</code> field. This field represents the AppSync data type equivalent of the introspected field.</p>"
+        }
+      },
+      "documentation":"<p>Represents the type data for each field retrieved from the introspection.</p>"
+    },
+    "DataSourceIntrospectionModelFieldTypeValues":{
+      "type":"list",
+      "member":{"shape":"String"}
+    },
+    "DataSourceIntrospectionModelFields":{
+      "type":"list",
+      "member":{"shape":"DataSourceIntrospectionModelField"}
+    },
+    "DataSourceIntrospectionModelIndex":{
+      "type":"structure",
+      "members":{
+        "name":{
+          "shape":"String",
+          "documentation":"<p>The name of the index.</p>"
+        },
+        "fields":{
+          "shape":"DataSourceIntrospectionModelIndexFields",
+          "documentation":"<p>The fields of the index.</p>"
+        }
+      },
+      "documentation":"<p>The index that was retrieved from the introspected data.</p>"
+    },
+    "DataSourceIntrospectionModelIndexFields":{
+      "type":"list",
+      "member":{"shape":"String"}
+    },
+    "DataSourceIntrospectionModelIndexes":{
+      "type":"list",
+      "member":{"shape":"DataSourceIntrospectionModelIndex"}
+    },
+    "DataSourceIntrospectionModels":{
+      "type":"list",
+      "member":{"shape":"DataSourceIntrospectionModel"}
+    },
+    "DataSourceIntrospectionResult":{
+      "type":"structure",
+      "members":{
+        "models":{
+          "shape":"DataSourceIntrospectionModels",
+          "documentation":"<p>The array of <code>DataSourceIntrospectionModel</code> objects.</p>"
+        },
+        "nextToken":{
+          "shape":"PaginationToken",
+          "documentation":"<p>Determines the number of types to be returned in a single response before paginating. This value is typically taken from <code>nextToken</code> value from the previous response.</p>"
+        }
+      },
+      "documentation":"<p>Represents the output of a <code>DataSourceIntrospectionResult</code>. This is the populated result of a <code>GetDataSourceIntrospection</code> operation.</p>"
+    },
+    "DataSourceIntrospectionStatus":{
+      "type":"string",
+      "enum":[
+        "PROCESSING",
+        "FAILED",
+        "SUCCESS"
+      ]
+    },
     "DataSourceType":{
       "type":"string",
       "enum":[
@@ -2627,6 +2780,57 @@
         }
       },
       "documentation":"<p>Represents the output of a <code>GetApiCache</code> operation.</p>"
+    },
+    "GetDataSourceIntrospectionRequest":{
+      "type":"structure",
+      "required":["introspectionId"],
+      "members":{
+        "introspectionId":{
+          "shape":"String",
+          "documentation":"<p>The introspection ID. Each introspection contains a unique ID that can be used to reference the instrospection record.</p>",
+          "location":"uri",
+          "locationName":"introspectionId"
+        },
+        "includeModelsSDL":{
+          "shape":"Boolean",
+          "documentation":"<p>A boolean flag that determines whether SDL should be generated for introspected types or not. If set to <code>true</code>, each model will contain an <code>sdl</code> property that contains the SDL for that type. The SDL only contains the type data and no additional metadata or directives. </p>",
+          "location":"querystring",
+          "locationName":"includeModelsSDL"
+        },
+        "nextToken":{
+          "shape":"PaginationToken",
+          "documentation":"<p>Determines the number of types to be returned in a single response before paginating. This value is typically taken from <code>nextToken</code> value from the previous response.</p>",
+          "location":"querystring",
+          "locationName":"nextToken"
+        },
+        "maxResults":{
+          "shape":"MaxResults",
+          "documentation":"<p>The maximum number of introspected types that will be returned in a single response.</p>",
+          "location":"querystring",
+          "locationName":"maxResults"
+        }
+      }
+    },
+    "GetDataSourceIntrospectionResponse":{
+      "type":"structure",
+      "members":{
+        "introspectionId":{
+          "shape":"String",
+          "documentation":"<p>The introspection ID. Each introspection contains a unique ID that can be used to reference the instrospection record.</p>"
+        },
+        "introspectionStatus":{
+          "shape":"DataSourceIntrospectionStatus",
+          "documentation":"<p>The status of the introspection during retrieval. By default, when a new instrospection is being retrieved, the status will be set to <code>PROCESSING</code>. Once the operation has been completed, the status will change to <code>SUCCESS</code> or <code>FAILED</code> depending on how the data was parsed. A <code>FAILED</code> operation will return an error and its details as an <code>introspectionStatusDetail</code>.</p>"
+        },
+        "introspectionStatusDetail":{
+          "shape":"String",
+          "documentation":"<p>The error detail field. When a <code>FAILED</code> <code>introspectionStatus</code> is returned, the <code>introspectionStatusDetail</code> will also return the exact error that was generated during the operation.</p>"
+        },
+        "introspectionResult":{
+          "shape":"DataSourceIntrospectionResult",
+          "documentation":"<p>The <code>DataSourceIntrospectionResult</code> object data.</p>"
+        }
+      }
     },
     "GetDataSourceRequest":{
       "type":"structure",
@@ -3645,6 +3849,46 @@
       },
       "documentation":"<p>The pipeline configuration for a resolver of kind <code>PIPELINE</code>.</p>"
     },
+    "RdsDataApiConfig":{
+      "type":"structure",
+      "required":[
+        "resourceArn",
+        "secretArn",
+        "databaseName"
+      ],
+      "members":{
+        "resourceArn":{
+          "shape":"RdsDataApiConfigResourceArn",
+          "documentation":"<p>The resource ARN of the RDS cluster.</p>"
+        },
+        "secretArn":{
+          "shape":"RdsDataApiConfigSecretArn",
+          "documentation":"<p>The secret's ARN that was obtained from Secrets Manager. A secret consists of secret information, the secret value, plus metadata about the secret. A secret value can be a string or binary. It typically includes the ARN, secret name and description, policies, tags, encryption key from the Key Management Service, and key rotation data.</p>"
+        },
+        "databaseName":{
+          "shape":"RdsDataApiConfigDatabaseName",
+          "documentation":"<p>The name of the database in the cluster.</p>"
+        }
+      },
+      "documentation":"<p>Contains the metadata required to introspect the RDS cluster.</p>"
+    },
+    "RdsDataApiConfigDatabaseName":{
+      "type":"string",
+      "max":128,
+      "min":1
+    },
+    "RdsDataApiConfigResourceArn":{
+      "type":"string",
+      "max":2048,
+      "min":20,
+      "pattern":"^arn:[a-z-]*:rds:[a-z0-9-]*:\\d{12}:cluster:[0-9A-Za-z_/-]*$"
+    },
+    "RdsDataApiConfigSecretArn":{
+      "type":"string",
+      "max":2048,
+      "min":20,
+      "pattern":"^arn:[a-z-]*:secretsmanager:[a-z0-9-]*:\\d{12}:secret:[0-9A-Za-z_/-]*$"
+    },
     "RdsHttpEndpointConfig":{
       "type":"structure",
       "members":{
@@ -3892,6 +4136,32 @@
     "SourceApiAssociationSummaryList":{
       "type":"list",
       "member":{"shape":"SourceApiAssociationSummary"}
+    },
+    "StartDataSourceIntrospectionRequest":{
+      "type":"structure",
+      "members":{
+        "rdsDataApiConfig":{
+          "shape":"RdsDataApiConfig",
+          "documentation":"<p>The <code>rdsDataApiConfig</code> object data.</p>"
+        }
+      }
+    },
+    "StartDataSourceIntrospectionResponse":{
+      "type":"structure",
+      "members":{
+        "introspectionId":{
+          "shape":"String",
+          "documentation":"<p>The introspection ID. Each introspection contains a unique ID that can be used to reference the instrospection record.</p>"
+        },
+        "introspectionStatus":{
+          "shape":"DataSourceIntrospectionStatus",
+          "documentation":"<p>The status of the introspection during creation. By default, when a new instrospection has been created, the status will be set to <code>PROCESSING</code>. Once the operation has been completed, the status will change to <code>SUCCESS</code> or <code>FAILED</code> depending on how the data was parsed. A <code>FAILED</code> operation will return an error and its details as an <code>introspectionStatusDetail</code>.</p>"
+        },
+        "introspectionStatusDetail":{
+          "shape":"String",
+          "documentation":"<p>The error detail field. When a <code>FAILED</code> <code>introspectionStatus</code> is returned, the <code>introspectionStatusDetail</code> will also return the exact error that was generated during the operation.</p>"
+        }
+      }
     },
     "StartSchemaCreationRequest":{
       "type":"structure",

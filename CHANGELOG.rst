@@ -2,6 +2,28 @@
 CHANGELOG
 =========
 
+2.14.0
+======
+
+* api-change:``controltower``: This release adds the following support: 1. The EnableControl API can configure controls that are configurable.  2. The GetEnabledControl API shows the configured parameters on an enabled control. 3. The new UpdateEnabledControl API can change parameters on an enabled control.
+* enhancement:``s3 cp``: Support streaming uploads from stdin and streaming downloads to stdout for CRT transfer client
+* api-change:``b2bi``: This is the initial SDK release for AWS B2B Data Interchange.
+* api-change:``efs``: Update efs command to latest version
+* enhancement:``s3``: Automatically configure CRC32 checksums for uploads and checksum validation for downloads through the CRT transfer client.
+* api-change:``endpoint-rules``: Update endpoint-rules command to latest version
+* api-change:``transcribe``: This release adds support for AWS HealthScribe APIs within Amazon Transcribe
+* enchancement:``s3``: Update ``target_bandwidth`` defaults. If not configured, the AWS CLI will use the AWS CRT to attempt to determine a recommended target throughput to use based on the system. If there is no recommended throughput, the AWS CLI now falls back to ten gigabits per second.
+* bugfix:``s3``: Support integers (e.g. 1024) and values that do not have a magnitude prefix (e.g. 1024B/s) for s3 rate configurations.
+* api-change:``backup``: AWS Backup now supports restore testing, a new feature that allows customers to automate restore testing and validating their backups. Additionally, this release adds support for EBS Snapshots Archive tier.
+* api-change:``fis``: AWS FIS adds support for multi-account experiments & empty target resolution. This release also introduces the CreateTargetAccountConfiguration API that allows experiments across multiple AWS accounts, and the ListExperimentResolvedTargets API to list target details.
+* feature:``s3``: ``s3`` command integrations with the CRT S3 transfer client is now generally available and supported for production use. The ``preferred_transfer_client`` and ``target_bandwidth`` S3 configurations are also now stable and no longer documented as experimental.
+* feature:``s3``: Add ``auto`` as new default option for ``preferred_transfer_client`` S3 configuration. This option auto resolves the S3 transfer client to use based on the system running the ``s3`` transfer commands. In addition, the ``default`` value for the ``preferred_transfer_client`` configuration is now named ``classic``.
+* api-change:``appsync``: This update enables introspection of Aurora cluster databases using the RDS Data API
+* api-change:``glue``: add observations support to DQ CodeGen config model + update document for connectiontypes supported by ConnectorData entities
+* api-change:``securityhub``: Adds and updates APIs to support central configuration. This feature allows the Security Hub delegated administrator to configure Security Hub for their entire AWS Org across multiple regions from a home Region. With this release, findings also include account name and application metadata.
+* api-change:``rds``: Updates Amazon RDS documentation for support for RDS for Db2.
+
+
 2.13.39
 =======
 

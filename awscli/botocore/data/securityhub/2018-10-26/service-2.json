@@ -815,6 +815,23 @@
       ],
       "documentation":"<p>Returns the details for the Security Hub member accounts for the specified account IDs.</p> <p>An administrator account can be either the delegated Security Hub administrator account for an organization or an administrator account that enabled Security Hub manually.</p> <p>The results include both member accounts that are managed using Organizations and accounts that were invited manually.</p>"
     },
+    "GetSecurityControlDefinition":{
+      "name":"GetSecurityControlDefinition",
+      "http":{
+        "method":"GET",
+        "requestUri":"/securityControl/definition"
+      },
+      "input":{"shape":"GetSecurityControlDefinitionRequest"},
+      "output":{"shape":"GetSecurityControlDefinitionResponse"},
+      "errors":[
+        {"shape":"InternalException"},
+        {"shape":"InvalidInputException"},
+        {"shape":"InvalidAccessException"},
+        {"shape":"LimitExceededException"},
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p> Retrieves the definition of a security control. The definition includes the control title, description, Region availability, parameter definitions, and other details. </p>"
+    },
     "InviteMembers":{
       "name":"InviteMembers",
       "http":{
@@ -1090,6 +1107,24 @@
         {"shape":"LimitExceededException"}
       ],
       "documentation":"<p>Used to update the configuration related to Organizations. Can only be called from a Security Hub administrator account.</p>"
+    },
+    "UpdateSecurityControl":{
+      "name":"UpdateSecurityControl",
+      "http":{
+        "method":"PATCH",
+        "requestUri":"/securityControl/update"
+      },
+      "input":{"shape":"UpdateSecurityControlRequest"},
+      "output":{"shape":"UpdateSecurityControlResponse"},
+      "errors":[
+        {"shape":"InternalException"},
+        {"shape":"InvalidInputException"},
+        {"shape":"InvalidAccessException"},
+        {"shape":"LimitExceededException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ResourceInUseException"}
+      ],
+      "documentation":"<p> Updates the properties of a security control. </p>"
     },
     "UpdateSecurityHubConfiguration":{
       "name":"UpdateSecurityHubConfiguration",
@@ -1374,6 +1409,10 @@
       "type":"integer",
       "max":10,
       "min":1
+    },
+    "AlphaNumericNonEmptyString":{
+      "type":"string",
+      "pattern":"^[-_ a-zA-Z0-9]+$"
     },
     "ArnList":{
       "type":"list",
@@ -3770,7 +3809,7 @@
           "documentation":"<p>An origin that is not an Amazon S3 bucket, with one exception. If the Amazon S3 bucket is configured with static website hosting, use this attribute. If the Amazon S3 bucket is not configured with static website hosting, use the <code>S3OriginConfig</code> type instead. </p>"
         }
       },
-      "documentation":"<p>A complex type that describes the Amazon S3 bucket, HTTP server (for example, a web server), AWS Elemental MediaStore, or other server from which CloudFront gets your files.</p>"
+      "documentation":"<p>A complex type that describes the Amazon S3 bucket, HTTP server (for example, a web server), Elemental MediaStore, or other server from which CloudFront gets your files.</p>"
     },
     "AwsCloudFrontDistributionOriginItemList":{
       "type":"list",
@@ -13744,9 +13783,25 @@
         "ComplianceAssociatedStandardsId":{
           "shape":"StringFilterList",
           "documentation":"<p> The unique identifier of a standard in which a control is enabled. This field consists of the resource portion of the Amazon Resource Name (ARN) returned for a standard in the <a href=\"https://docs.aws.amazon.com/securityhub/1.0/APIReference/API_DescribeStandards.html\">DescribeStandards</a> API response. </p>"
+        },
+        "VulnerabilitiesExploitAvailable":{
+          "shape":"StringFilterList",
+          "documentation":"<p> Indicates whether a software vulnerability in your environment has a known exploit. You can filter findings by this field only if you use Security Hub and Amazon Inspector. </p>"
+        },
+        "VulnerabilitiesFixAvailable":{
+          "shape":"StringFilterList",
+          "documentation":"<p> Indicates whether a vulnerability is fixed in a newer version of the affected software packages. You can filter findings by this field only if you use Security Hub and Amazon Inspector. </p>"
+        },
+        "ComplianceSecurityControlParametersName":{
+          "shape":"StringFilterList",
+          "documentation":"<p> The name of a security control parameter. </p>"
+        },
+        "ComplianceSecurityControlParametersValue":{
+          "shape":"StringFilterList",
+          "documentation":"<p> The current value of a security control parameter. </p>"
         }
       },
-      "documentation":"<p>A collection of attributes that are applied to all active Security Hub-aggregated findings and that result in a subset of findings that are included in this insight.</p> <p>You can filter by up to 10 finding attributes. For each attribute, you can provide up to 20 filter values.</p>"
+      "documentation":"<p>A collection of filters that are applied to all active findings aggregated by Security Hub.</p> <p>You can filter by up to ten finding attributes. For each attribute, you can provide up to 20 filter values.</p>"
     },
     "AwsSecurityFindingIdentifier":{
       "type":"structure",
@@ -15083,6 +15138,16 @@
       }
     },
     "Boolean":{"type":"boolean"},
+    "BooleanConfigurationOptions":{
+      "type":"structure",
+      "members":{
+        "DefaultValue":{
+          "shape":"Boolean",
+          "documentation":"<p> The Security Hub default value for a boolean parameter. </p>"
+        }
+      },
+      "documentation":"<p> The options for customizing a security control parameter with a boolean. For a boolean parameter, the options are <code>true</code> and <code>false</code>. </p>"
+    },
     "BooleanFilter":{
       "type":"structure",
       "members":{
@@ -15265,6 +15330,10 @@
         "AssociatedStandards":{
           "shape":"AssociatedStandardsList",
           "documentation":"<p>The enabled security standards in which a security control is currently enabled. </p>"
+        },
+        "SecurityControlParameters":{
+          "shape":"SecurityControlParametersList",
+          "documentation":"<p> An object that includes security control parameter names and values. </p>"
         }
       },
       "documentation":"<p>Contains finding details that are specific to control-based findings. Only returned for findings generated from controls.</p>"
@@ -15277,6 +15346,45 @@
         "FAILED",
         "NOT_AVAILABLE"
       ]
+    },
+    "ConfigurationOptions":{
+      "type":"structure",
+      "members":{
+        "Integer":{
+          "shape":"IntegerConfigurationOptions",
+          "documentation":"<p> The options for customizing a security control parameter that is an integer. </p>"
+        },
+        "IntegerList":{
+          "shape":"IntegerListConfigurationOptions",
+          "documentation":"<p> The options for customizing a security control parameter that is a list of integers. </p>"
+        },
+        "Double":{
+          "shape":"DoubleConfigurationOptions",
+          "documentation":"<p> The options for customizing a security control parameter that is a double. </p>"
+        },
+        "String":{
+          "shape":"StringConfigurationOptions",
+          "documentation":"<p> The options for customizing a security control parameter that is a string data type. </p>"
+        },
+        "StringList":{
+          "shape":"StringListConfigurationOptions",
+          "documentation":"<p> The options for customizing a security control parameter that is a list of strings. </p>"
+        },
+        "Boolean":{
+          "shape":"BooleanConfigurationOptions",
+          "documentation":"<p> The options for customizing a security control parameter that is a boolean. For a boolean parameter, the options are <code>true</code> and <code>false</code>. </p>"
+        },
+        "Enum":{
+          "shape":"EnumConfigurationOptions",
+          "documentation":"<p> The options for customizing a security control parameter that is an enum. </p>"
+        },
+        "EnumList":{
+          "shape":"EnumListConfigurationOptions",
+          "documentation":"<p> The options for customizing a security control parameter that is a list of enums. </p>"
+        }
+      },
+      "documentation":"<p> The options for customizing a security control parameter. </p>",
+      "union":true
     },
     "ContainerDetails":{
       "type":"structure",
@@ -15555,6 +15663,10 @@
         }
       },
       "documentation":"<p>Contains an instance of sensitive data that was detected by a customer-defined identifier.</p>"
+    },
+    "CustomizableProperties":{
+      "type":"list",
+      "member":{"shape":"SecurityControlProperty"}
     },
     "Cvss":{
       "type":"structure",
@@ -16043,6 +16155,24 @@
       "documentation":"<p>Provided if <code>ActionType</code> is <code>DNS_REQUEST</code>. It provides details about the DNS request that was detected.</p>"
     },
     "Double":{"type":"double"},
+    "DoubleConfigurationOptions":{
+      "type":"structure",
+      "members":{
+        "DefaultValue":{
+          "shape":"Double",
+          "documentation":"<p> The Security Hub default value for a control parameter that is a double. </p>"
+        },
+        "Min":{
+          "shape":"Double",
+          "documentation":"<p> The minimum valid value for a control parameter that is a double. </p>"
+        },
+        "Max":{
+          "shape":"Double",
+          "documentation":"<p> The maximum valid value for a control parameter that is a double. </p>"
+        }
+      },
+      "documentation":"<p> The options for customizing a security control parameter that is a double. </p>"
+    },
     "EnableImportFindingsForProductRequest":{
       "type":"structure",
       "required":["ProductArn"],
@@ -16098,6 +16228,38 @@
       "type":"structure",
       "members":{
       }
+    },
+    "EnumConfigurationOptions":{
+      "type":"structure",
+      "members":{
+        "DefaultValue":{
+          "shape":"NonEmptyString",
+          "documentation":"<p> The Security Hub default value for a control parameter that is an enum. </p>"
+        },
+        "AllowedValues":{
+          "shape":"StringList",
+          "documentation":"<p> The valid values for a control parameter that is an enum. </p>"
+        }
+      },
+      "documentation":"<p> The options for customizing a security control parameter that is an enum. </p>"
+    },
+    "EnumListConfigurationOptions":{
+      "type":"structure",
+      "members":{
+        "DefaultValue":{
+          "shape":"StringList",
+          "documentation":"<p> The Security Hub default value for a control parameter that is a list of enums. </p>"
+        },
+        "MaxItems":{
+          "shape":"Integer",
+          "documentation":"<p> The maximum number of list items that an enum list control parameter can accept. </p>"
+        },
+        "AllowedValues":{
+          "shape":"StringList",
+          "documentation":"<p> The valid values for a control parameter that is a list of enums. </p>"
+        }
+      },
+      "documentation":"<p> The options for customizing a security control parameter that is a list of enums. </p>"
     },
     "FieldMap":{
       "type":"map",
@@ -16615,6 +16777,25 @@
         }
       }
     },
+    "GetSecurityControlDefinitionRequest":{
+      "type":"structure",
+      "required":["SecurityControlId"],
+      "members":{
+        "SecurityControlId":{
+          "shape":"NonEmptyString",
+          "documentation":"<p> The ID of the security control to retrieve the definition for. This field doesn’t accept an Amazon Resource Name (ARN). </p>",
+          "location":"querystring",
+          "locationName":"SecurityControlId"
+        }
+      }
+    },
+    "GetSecurityControlDefinitionResponse":{
+      "type":"structure",
+      "required":["SecurityControlDefinition"],
+      "members":{
+        "SecurityControlDefinition":{"shape":"SecurityControlDefinition"}
+      }
+    },
     "IcmpTypeCode":{
       "type":"structure",
       "members":{
@@ -16734,9 +16915,49 @@
       "documentation":"<p>The insight results returned by the <code>GetInsightResults</code> operation.</p>"
     },
     "Integer":{"type":"integer"},
+    "IntegerConfigurationOptions":{
+      "type":"structure",
+      "members":{
+        "DefaultValue":{
+          "shape":"Integer",
+          "documentation":"<p> The Security Hub default value for a control parameter that is an integer. </p>"
+        },
+        "Min":{
+          "shape":"Integer",
+          "documentation":"<p> The minimum valid value for a control parameter that is an integer. </p>"
+        },
+        "Max":{
+          "shape":"Integer",
+          "documentation":"<p> The maximum valid value for a control parameter that is an integer. </p>"
+        }
+      },
+      "documentation":"<p> The options for customizing a security control parameter that is an integer. </p>"
+    },
     "IntegerList":{
       "type":"list",
       "member":{"shape":"Integer"}
+    },
+    "IntegerListConfigurationOptions":{
+      "type":"structure",
+      "members":{
+        "DefaultValue":{
+          "shape":"IntegerList",
+          "documentation":"<p> The Security Hub default value for a control parameter that is a list of integers. </p>"
+        },
+        "Min":{
+          "shape":"Integer",
+          "documentation":"<p> The minimum valid value for a control parameter that is a list of integers. </p>"
+        },
+        "Max":{
+          "shape":"Integer",
+          "documentation":"<p> The maximum valid value for a control parameter that is a list of integers. </p>"
+        },
+        "MaxItems":{
+          "shape":"Integer",
+          "documentation":"<p> The maximum number of list items that an interger list control parameter can accept. </p>"
+        }
+      },
+      "documentation":"<p> The options for customizing a security control parameter that is a list of integers. </p>"
     },
     "IntegrationType":{
       "type":"string",
@@ -17548,6 +17769,14 @@
         "Eq":{
           "shape":"Double",
           "documentation":"<p>The equal-to condition to be applied to a single field when querying for findings.</p>"
+        },
+        "Gt":{
+          "shape":"Double",
+          "documentation":"<p> The greater-than condition to be applied to a single field when querying for findings. </p>"
+        },
+        "Lt":{
+          "shape":"Double",
+          "documentation":"<p> The less-than condition to be applied to a single field when querying for findings. </p>"
         }
       },
       "documentation":"<p>A number filter for querying findings.</p>"
@@ -17603,6 +17832,95 @@
     "Pages":{
       "type":"list",
       "member":{"shape":"Page"}
+    },
+    "ParameterConfiguration":{
+      "type":"structure",
+      "required":["ValueType"],
+      "members":{
+        "ValueType":{
+          "shape":"ParameterValueType",
+          "documentation":"<p> Identifies whether a control parameter uses a custom user-defined value or the Security Hub default value. </p>"
+        },
+        "Value":{
+          "shape":"ParameterValue",
+          "documentation":"<p> The current value of a control parameter. </p>"
+        }
+      },
+      "documentation":"<p> An object that provides the current value of a security control parameter and identifies whether it has been customized. </p>"
+    },
+    "ParameterDefinition":{
+      "type":"structure",
+      "required":[
+        "Description",
+        "ConfigurationOptions"
+      ],
+      "members":{
+        "Description":{
+          "shape":"NonEmptyString",
+          "documentation":"<p> Description of a control parameter. </p>"
+        },
+        "ConfigurationOptions":{
+          "shape":"ConfigurationOptions",
+          "documentation":"<p> The options for customizing a control parameter. Customization options vary based on the data type of the parameter. </p>"
+        }
+      },
+      "documentation":"<p> An object that describes a security control parameter and the options for customizing it. </p>"
+    },
+    "ParameterDefinitions":{
+      "type":"map",
+      "key":{"shape":"NonEmptyString"},
+      "value":{"shape":"ParameterDefinition"}
+    },
+    "ParameterValue":{
+      "type":"structure",
+      "members":{
+        "Integer":{
+          "shape":"Integer",
+          "documentation":"<p> A control parameter that is an integer. </p>"
+        },
+        "IntegerList":{
+          "shape":"IntegerList",
+          "documentation":"<p> A control parameter that is a list of integers. </p>"
+        },
+        "Double":{
+          "shape":"Double",
+          "documentation":"<p> A control parameter that is a double. </p>"
+        },
+        "String":{
+          "shape":"NonEmptyString",
+          "documentation":"<p> A control parameter that is a string. </p>"
+        },
+        "StringList":{
+          "shape":"StringList",
+          "documentation":"<p> A control parameter that is a list of strings. </p>"
+        },
+        "Boolean":{
+          "shape":"Boolean",
+          "documentation":"<p> A control parameter that is a boolean. </p>"
+        },
+        "Enum":{
+          "shape":"NonEmptyString",
+          "documentation":"<p> A control parameter that is an enum. </p>"
+        },
+        "EnumList":{
+          "shape":"StringList",
+          "documentation":"<p> A control parameter that is a list of enums. </p>"
+        }
+      },
+      "documentation":"<p> An object that includes the data type of a security control parameter and its current value. </p>",
+      "union":true
+    },
+    "ParameterValueType":{
+      "type":"string",
+      "enum":[
+        "DEFAULT",
+        "CUSTOM"
+      ]
+    },
+    "Parameters":{
+      "type":"map",
+      "key":{"shape":"NonEmptyString"},
+      "value":{"shape":"ParameterConfiguration"}
     },
     "Partition":{
       "type":"string",
@@ -18373,6 +18691,16 @@
       },
       "documentation":"<p>Additional details about a resource related to a finding.</p> <p>To provide the details, use the object that corresponds to the resource type. For example, if the resource type is <code>AwsEc2Instance</code>, then you use the <code>AwsEc2Instance</code> object to provide the details.</p> <p>If the type-specific object does not contain all of the fields you want to populate, then you use the <code>Other</code> object to populate those additional fields.</p> <p>You also use the <code>Other</code> object to populate the details when the selected type does not have a corresponding object.</p>"
     },
+    "ResourceInUseException":{
+      "type":"structure",
+      "members":{
+        "Message":{"shape":"NonEmptyString"},
+        "Code":{"shape":"NonEmptyString"}
+      },
+      "documentation":"<p> The request was rejected because it conflicts with the resource's availability. For example, you tried to update a security control that's currently in the <code>UPDATING</code> state. </p>",
+      "error":{"httpStatusCode":400},
+      "exception":true
+    },
     "ResourceList":{
       "type":"list",
       "member":{"shape":"Resource"}
@@ -18872,6 +19200,18 @@
         "SecurityControlStatus":{
           "shape":"ControlStatus",
           "documentation":"<p> The enablement status of a security control in a specific standard. </p>"
+        },
+        "UpdateStatus":{
+          "shape":"UpdateStatus",
+          "documentation":"<p> Identifies whether customizable properties of a security control are reflected in Security Hub findings. A status of <code>READY</code> indicates findings include the current parameter values. A status of <code>UPDATING</code> indicates that all findings may not include the current parameter values. </p>"
+        },
+        "Parameters":{
+          "shape":"Parameters",
+          "documentation":"<p> An object that identifies the name of a control parameter, its current value, and whether it has been customized. </p>"
+        },
+        "LastUpdateReason":{
+          "shape":"AlphaNumericNonEmptyString",
+          "documentation":"<p> The most recent reason for updating the customizable properties of a security control. This differs from the <code>UpdateReason</code> field of the <a href=\"https://docs.aws.amazon.com/securityhub/1.0/APIReference/API_BatchUpdateStandardsControlAssociations.html\"> <code>BatchUpdateStandardsControlAssociations</code> </a> API, which tracks the reason for updating the enablement status of a control. This field accepts alphanumeric characters in addition to white spaces, dashes, and underscores. </p>"
         }
       },
       "documentation":"<p> A security control in Security Hub describes a security best practice related to a specific resource. </p>"
@@ -18910,6 +19250,14 @@
         "CurrentRegionAvailability":{
           "shape":"RegionAvailabilityStatus",
           "documentation":"<p> Specifies whether a security control is available in the current Amazon Web Services Region. </p>"
+        },
+        "CustomizableProperties":{
+          "shape":"CustomizableProperties",
+          "documentation":"<p> Security control properties that you can customize. Currently, only parameter customization is supported for select controls. An empty array is returned for controls that don’t support custom properties. </p>"
+        },
+        "ParameterDefinitions":{
+          "shape":"ParameterDefinitions",
+          "documentation":"<p> An object that provides a security control parameter name, description, and the options for customizing it. This object is excluded for a control that doesn't support custom parameters. </p>"
         }
       },
       "documentation":"<p> Provides metadata for a security control, including its unique standard-agnostic identifier, title, description, severity, availability in Amazon Web Services Regions, and a link to remediation steps. </p>"
@@ -18917,6 +19265,28 @@
     "SecurityControlDefinitions":{
       "type":"list",
       "member":{"shape":"SecurityControlDefinition"}
+    },
+    "SecurityControlParameter":{
+      "type":"structure",
+      "members":{
+        "Name":{
+          "shape":"NonEmptyString",
+          "documentation":"<p> The name of a </p>"
+        },
+        "Value":{
+          "shape":"TypeList",
+          "documentation":"<p> The current value of a control parameter. </p>"
+        }
+      },
+      "documentation":"<p> A parameter that a security control accepts. </p>"
+    },
+    "SecurityControlParametersList":{
+      "type":"list",
+      "member":{"shape":"SecurityControlParameter"}
+    },
+    "SecurityControlProperty":{
+      "type":"string",
+      "enum":["Parameters"]
     },
     "SecurityControls":{
       "type":"list",
@@ -18975,7 +19345,7 @@
       "members":{
         "Product":{
           "shape":"Double",
-          "documentation":"<p>Deprecated. This attribute is being deprecated. Instead of providing <code>Product</code>, provide <code>Original</code>.</p> <p>The native severity as defined by the Amazon Web Services service or integrated partner product that generated the finding.</p>"
+          "documentation":"<p>Deprecated. This attribute isn't included in findings. Instead of providing <code>Product</code>, provide <code>Original</code>.</p> <p>The native severity as defined by the Amazon Web Services service or integrated partner product that generated the finding.</p>"
         },
         "Label":{
           "shape":"SeverityLabel",
@@ -18983,7 +19353,7 @@
         },
         "Normalized":{
           "shape":"Integer",
-          "documentation":"<p>Deprecated. The normalized severity of a finding. This attribute is being deprecated. Instead of providing <code>Normalized</code>, provide <code>Label</code>.</p> <p>If you provide <code>Label</code> and do not provide <code>Normalized</code>, then <code>Normalized</code> is set automatically as follows.</p> <ul> <li> <p> <code>INFORMATIONAL</code> - 0</p> </li> <li> <p> <code>LOW</code> - 1</p> </li> <li> <p> <code>MEDIUM</code> - 40</p> </li> <li> <p> <code>HIGH</code> - 70</p> </li> <li> <p> <code>CRITICAL</code> - 90</p> </li> </ul>"
+          "documentation":"<p>Deprecated. The normalized severity of a finding. Instead of providing <code>Normalized</code>, provide <code>Label</code>.</p> <p>If you provide <code>Label</code> and do not provide <code>Normalized</code>, then <code>Normalized</code> is set automatically as follows.</p> <ul> <li> <p> <code>INFORMATIONAL</code> - 0</p> </li> <li> <p> <code>LOW</code> - 1</p> </li> <li> <p> <code>MEDIUM</code> - 40</p> </li> <li> <p> <code>HIGH</code> - 70</p> </li> <li> <p> <code>CRITICAL</code> - 90</p> </li> </ul>"
         },
         "Original":{
           "shape":"NonEmptyString",
@@ -19517,6 +19887,24 @@
       "type":"list",
       "member":{"shape":"StatusReason"}
     },
+    "StringConfigurationOptions":{
+      "type":"structure",
+      "members":{
+        "DefaultValue":{
+          "shape":"NonEmptyString",
+          "documentation":"<p> The Security Hub default value for a control parameter that is a string. </p>"
+        },
+        "Re2Expression":{
+          "shape":"NonEmptyString",
+          "documentation":"<p> An RE2 regular expression that Security Hub uses to validate a user-provided control parameter string. </p>"
+        },
+        "ExpressionDescription":{
+          "shape":"NonEmptyString",
+          "documentation":"<p> The description of the RE2 regular expression. </p>"
+        }
+      },
+      "documentation":"<p> The options for customizing a security control parameter that is a string. </p>"
+    },
     "StringFilter":{
       "type":"structure",
       "members":{
@@ -19549,6 +19937,28 @@
     "StringList":{
       "type":"list",
       "member":{"shape":"NonEmptyString"}
+    },
+    "StringListConfigurationOptions":{
+      "type":"structure",
+      "members":{
+        "DefaultValue":{
+          "shape":"StringList",
+          "documentation":"<p> The Security Hub default value for a control parameter that is a list of strings. </p>"
+        },
+        "Re2Expression":{
+          "shape":"NonEmptyString",
+          "documentation":"<p> An RE2 regular expression that Security Hub uses to validate a user-provided list of strings for a control parameter. </p>"
+        },
+        "MaxItems":{
+          "shape":"Integer",
+          "documentation":"<p> The maximum number of list items that a string list control parameter can accept. </p>"
+        },
+        "ExpressionDescription":{
+          "shape":"NonEmptyString",
+          "documentation":"<p> The description of the RE2 regular expression. </p>"
+        }
+      },
+      "documentation":"<p> The options for customizing a security control parameter that is a list of strings. </p>"
     },
     "TagKey":{
       "type":"string",
@@ -20010,6 +20420,32 @@
       "members":{
       }
     },
+    "UpdateSecurityControlRequest":{
+      "type":"structure",
+      "required":[
+        "SecurityControlId",
+        "Parameters"
+      ],
+      "members":{
+        "SecurityControlId":{
+          "shape":"NonEmptyString",
+          "documentation":"<p> The Amazon Resource Name (ARN) or ID of the control to update. </p>"
+        },
+        "Parameters":{
+          "shape":"Parameters",
+          "documentation":"<p> An object that specifies which security control parameters to update. </p>"
+        },
+        "LastUpdateReason":{
+          "shape":"AlphaNumericNonEmptyString",
+          "documentation":"<p> The most recent reason for updating the properties of the security control. This field accepts alphanumeric characters in addition to white spaces, dashes, and underscores. </p>"
+        }
+      }
+    },
+    "UpdateSecurityControlResponse":{
+      "type":"structure",
+      "members":{
+      }
+    },
     "UpdateSecurityHubConfigurationRequest":{
       "type":"structure",
       "members":{
@@ -20052,6 +20488,13 @@
       "type":"structure",
       "members":{
       }
+    },
+    "UpdateStatus":{
+      "type":"string",
+      "enum":[
+        "READY",
+        "UPDATING"
+      ]
     },
     "VerificationState":{
       "type":"string",

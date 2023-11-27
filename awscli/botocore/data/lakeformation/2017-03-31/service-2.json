@@ -149,6 +149,24 @@
       ],
       "documentation":"<p>Creates an LF-tag with the specified name and values.</p>"
     },
+    "CreateLakeFormationIdentityCenterConfiguration":{
+      "name":"CreateLakeFormationIdentityCenterConfiguration",
+      "http":{
+        "method":"POST",
+        "requestUri":"/CreateLakeFormationIdentityCenterConfiguration"
+      },
+      "input":{"shape":"CreateLakeFormationIdentityCenterConfigurationRequest"},
+      "output":{"shape":"CreateLakeFormationIdentityCenterConfigurationResponse"},
+      "errors":[
+        {"shape":"InvalidInputException"},
+        {"shape":"AlreadyExistsException"},
+        {"shape":"InternalServiceException"},
+        {"shape":"OperationTimeoutException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ConcurrentModificationException"}
+      ],
+      "documentation":"<p>Creates an IAM Identity Center connection with Lake Formation to allow IAM Identity Center users and groups to access Data Catalog resources.</p>"
+    },
     "CreateLakeFormationOptIn":{
       "name":"CreateLakeFormationOptIn",
       "http":{
@@ -200,6 +218,24 @@
         {"shape":"AccessDeniedException"}
       ],
       "documentation":"<p>Deletes the specified LF-tag given a key name. If the input parameter tag key was not found, then the operation will throw an exception. When you delete an LF-tag, the <code>LFTagPolicy</code> attached to the LF-tag becomes invalid. If the deleted LF-tag was still assigned to any resource, the tag policy attach to the deleted LF-tag will no longer be applied to the resource.</p>"
+    },
+    "DeleteLakeFormationIdentityCenterConfiguration":{
+      "name":"DeleteLakeFormationIdentityCenterConfiguration",
+      "http":{
+        "method":"POST",
+        "requestUri":"/DeleteLakeFormationIdentityCenterConfiguration"
+      },
+      "input":{"shape":"DeleteLakeFormationIdentityCenterConfigurationRequest"},
+      "output":{"shape":"DeleteLakeFormationIdentityCenterConfigurationResponse"},
+      "errors":[
+        {"shape":"InvalidInputException"},
+        {"shape":"EntityNotFoundException"},
+        {"shape":"InternalServiceException"},
+        {"shape":"OperationTimeoutException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ConcurrentModificationException"}
+      ],
+      "documentation":"<p>Deletes an IAM Identity Center connection with Lake Formation.</p>"
     },
     "DeleteLakeFormationOptIn":{
       "name":"DeleteLakeFormationOptIn",
@@ -254,6 +290,23 @@
         {"shape":"EntityNotFoundException"}
       ],
       "documentation":"<p>Deregisters the resource as managed by the Data Catalog.</p> <p>When you deregister a path, Lake Formation removes the path from the inline policy attached to your service-linked role.</p>"
+    },
+    "DescribeLakeFormationIdentityCenterConfiguration":{
+      "name":"DescribeLakeFormationIdentityCenterConfiguration",
+      "http":{
+        "method":"POST",
+        "requestUri":"/DescribeLakeFormationIdentityCenterConfiguration"
+      },
+      "input":{"shape":"DescribeLakeFormationIdentityCenterConfigurationRequest"},
+      "output":{"shape":"DescribeLakeFormationIdentityCenterConfigurationResponse"},
+      "errors":[
+        {"shape":"InvalidInputException"},
+        {"shape":"EntityNotFoundException"},
+        {"shape":"InternalServiceException"},
+        {"shape":"OperationTimeoutException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Retrieves the instance ARN and application ARN for the connection.</p>"
     },
     "DescribeResource":{
       "name":"DescribeResource",
@@ -815,6 +868,24 @@
       ],
       "documentation":"<p>Updates the list of possible values for the specified LF-tag key. If the LF-tag does not exist, the operation throws an EntityNotFoundException. The values in the delete key values will be deleted from list of possible values. If any value in the delete key values is attached to a resource, then API errors out with a 400 Exception - \"Update not allowed\". Untag the attribute before deleting the LF-tag key's value. </p>"
     },
+    "UpdateLakeFormationIdentityCenterConfiguration":{
+      "name":"UpdateLakeFormationIdentityCenterConfiguration",
+      "http":{
+        "method":"POST",
+        "requestUri":"/UpdateLakeFormationIdentityCenterConfiguration"
+      },
+      "input":{"shape":"UpdateLakeFormationIdentityCenterConfigurationRequest"},
+      "output":{"shape":"UpdateLakeFormationIdentityCenterConfigurationResponse"},
+      "errors":[
+        {"shape":"InvalidInputException"},
+        {"shape":"EntityNotFoundException"},
+        {"shape":"InternalServiceException"},
+        {"shape":"OperationTimeoutException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ConcurrentModificationException"}
+      ],
+      "documentation":"<p>Updates the IAM Identity Center connection parameters.</p>"
+    },
     "UpdateResource":{
       "name":"UpdateResource",
       "http":{
@@ -959,6 +1030,14 @@
       },
       "documentation":"<p>A resource to be created or added already exists.</p>",
       "exception":true
+    },
+    "ApplicationArn":{"type":"string"},
+    "ApplicationStatus":{
+      "type":"string",
+      "enum":[
+        "ENABLED",
+        "DISABLED"
+      ]
     },
     "AssumeDecoratedRoleWithSAMLRequest":{
       "type":"structure",
@@ -1269,6 +1348,32 @@
       "members":{
       }
     },
+    "CreateLakeFormationIdentityCenterConfigurationRequest":{
+      "type":"structure",
+      "members":{
+        "CatalogId":{
+          "shape":"CatalogIdString",
+          "documentation":"<p>The identifier for the Data Catalog. By default, the account ID. The Data Catalog is the persistent metadata store. It contains database definitions, table definitions, view definitions, and other control information to manage your Lake Formation environment.</p>"
+        },
+        "InstanceArn":{
+          "shape":"IdentityCenterInstanceArn",
+          "documentation":"<p>The ARN of the IAM Identity Center instance for which the operation will be executed. For more information about ARNs, see Amazon Resource Names (ARNs) and Amazon Web Services Service Namespaces in the Amazon Web Services General Reference.</p>"
+        },
+        "ExternalFiltering":{
+          "shape":"ExternalFilteringConfiguration",
+          "documentation":"<p>A list of the account IDs of Amazon Web Services accounts of third-party applications that are allowed to to access data managed by Lake Formation.</p>"
+        }
+      }
+    },
+    "CreateLakeFormationIdentityCenterConfigurationResponse":{
+      "type":"structure",
+      "members":{
+        "ApplicationArn":{
+          "shape":"ApplicationArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the integrated application.</p>"
+        }
+      }
+    },
     "CreateLakeFormationOptInRequest":{
       "type":"structure",
       "required":[
@@ -1416,7 +1521,7 @@
         },
         "Parameters":{
           "shape":"ParametersMap",
-          "documentation":"<p>A key-value map that provides an additional configuration on your data lake. CrossAccountVersion is the key you can configure in the Parameters field. Accepted values for the CrossAccountVersion key are 1, 2, and 3.</p>"
+          "documentation":"<p>A key-value map that provides an additional configuration on your data lake. CROSS_ACCOUNT_VERSION is the key you can configure in the Parameters field. Accepted values for the CrossAccountVersion key are 1, 2, 3, and 4.</p>"
         },
         "TrustedResourceOwners":{
           "shape":"TrustedResourceOwners",
@@ -1524,6 +1629,20 @@
       "members":{
       }
     },
+    "DeleteLakeFormationIdentityCenterConfigurationRequest":{
+      "type":"structure",
+      "members":{
+        "CatalogId":{
+          "shape":"CatalogIdString",
+          "documentation":"<p>The identifier for the Data Catalog. By default, the account ID. The Data Catalog is the persistent metadata store. It contains database definitions, table definitions, view definition, and other control information to manage your Lake Formation environment.</p>"
+        }
+      }
+    },
+    "DeleteLakeFormationIdentityCenterConfigurationResponse":{
+      "type":"structure",
+      "members":{
+      }
+    },
     "DeleteLakeFormationOptInRequest":{
       "type":"structure",
       "required":[
@@ -1610,6 +1729,36 @@
       "members":{
       }
     },
+    "DescribeLakeFormationIdentityCenterConfigurationRequest":{
+      "type":"structure",
+      "members":{
+        "CatalogId":{
+          "shape":"CatalogIdString",
+          "documentation":"<p>The identifier for the Data Catalog. By default, the account ID. The Data Catalog is the persistent metadata store. It contains database definitions, table definitions, and other control information to manage your Lake Formation environment.</p>"
+        }
+      }
+    },
+    "DescribeLakeFormationIdentityCenterConfigurationResponse":{
+      "type":"structure",
+      "members":{
+        "CatalogId":{
+          "shape":"CatalogIdString",
+          "documentation":"<p>The identifier for the Data Catalog. By default, the account ID. The Data Catalog is the persistent metadata store. It contains database definitions, table definitions, and other control information to manage your Lake Formation environment.</p>"
+        },
+        "InstanceArn":{
+          "shape":"IdentityCenterInstanceArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the connection.</p>"
+        },
+        "ApplicationArn":{
+          "shape":"ApplicationArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the integrated application.</p>"
+        },
+        "ExternalFiltering":{
+          "shape":"ExternalFilteringConfiguration",
+          "documentation":"<p>Indicates if external filtering is enabled.</p>"
+        }
+      }
+    },
     "DescribeResourceRequest":{
       "type":"structure",
       "required":["ResourceArn"],
@@ -1669,6 +1818,13 @@
       "max":255,
       "min":1,
       "pattern":"[\\p{L}\\p{N}\\p{P}]*"
+    },
+    "EnableStatus":{
+      "type":"string",
+      "enum":[
+        "ENABLED",
+        "DISABLED"
+      ]
     },
     "EntityNotFoundException":{
       "type":"structure",
@@ -1747,6 +1903,24 @@
       "type":"structure",
       "members":{
       }
+    },
+    "ExternalFilteringConfiguration":{
+      "type":"structure",
+      "required":[
+        "Status",
+        "AuthorizedTargets"
+      ],
+      "members":{
+        "Status":{
+          "shape":"EnableStatus",
+          "documentation":"<p>Allows to enable or disable the third-party applications that are allowed to access data managed by Lake Formation.</p>"
+        },
+        "AuthorizedTargets":{
+          "shape":"ScopeTargets",
+          "documentation":"<p>List of third-party application <code>ARNs</code> integrated with Lake Formation.</p>"
+        }
+      },
+      "documentation":"<p>Configuration for enabling external data filtering for third-party applications to access data managed by Lake Formation .</p>"
     },
     "FieldNameString":{
       "type":"string",
@@ -2298,6 +2472,7 @@
       "max":255,
       "min":1
     },
+    "IdentityCenterInstanceArn":{"type":"string"},
     "Integer":{
       "type":"integer",
       "box":true
@@ -3246,6 +3421,11 @@
       "max":100000,
       "min":4
     },
+    "ScopeTarget":{"type":"string"},
+    "ScopeTargets":{
+      "type":"list",
+      "member":{"shape":"ScopeTarget"}
+    },
     "SearchDatabasesByLFTagsRequest":{
       "type":"structure",
       "required":["Expression"],
@@ -3314,7 +3494,7 @@
       "members":{
         "NextToken":{
           "shape":"Token",
-          "documentation":"<p>A continuation token, present if the current list segment is not the last.</p>"
+          "documentation":"<p>A continuation token, present if the current list segment is not the last. On the first run, if you include a not null (a value) token you can get empty pages.</p>"
         },
         "TableList":{
           "shape":"TableLFTagsList",
@@ -3740,6 +3920,28 @@
       }
     },
     "UpdateLFTagResponse":{
+      "type":"structure",
+      "members":{
+      }
+    },
+    "UpdateLakeFormationIdentityCenterConfigurationRequest":{
+      "type":"structure",
+      "members":{
+        "CatalogId":{
+          "shape":"CatalogIdString",
+          "documentation":"<p>The identifier for the Data Catalog. By default, the account ID. The Data Catalog is the persistent metadata store. It contains database definitions, table definitions, view definitions, and other control information to manage your Lake Formation environment.</p>"
+        },
+        "ApplicationStatus":{
+          "shape":"ApplicationStatus",
+          "documentation":"<p>Allows to enable or disable the IAM Identity Center connection.</p>"
+        },
+        "ExternalFiltering":{
+          "shape":"ExternalFilteringConfiguration",
+          "documentation":"<p>A list of the account IDs of Amazon Web Services accounts of third-party applications that are allowed to access data managed by Lake Formation.</p>"
+        }
+      }
+    },
+    "UpdateLakeFormationIdentityCenterConfigurationResponse":{
       "type":"structure",
       "members":{
       }

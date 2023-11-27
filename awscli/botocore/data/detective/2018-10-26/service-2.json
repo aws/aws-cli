@@ -186,6 +186,23 @@
       ],
       "documentation":"<p>Designates the Detective administrator account for the organization in the current Region.</p> <p>If the account does not have Detective enabled, then enables Detective for that account and creates a new behavior graph.</p> <p>Can only be called by the organization management account.</p> <p>If the organization has a delegated administrator account in Organizations, then the Detective administrator account must be either the delegated administrator account or the organization management account.</p> <p>If the organization does not have a delegated administrator account in Organizations, then you can choose any account in the organization. If you choose an account other than the organization management account, Detective calls Organizations to make that account the delegated administrator account for Detective. The organization management account cannot be the delegated administrator account.</p>"
     },
+    "GetInvestigation":{
+      "name":"GetInvestigation",
+      "http":{
+        "method":"POST",
+        "requestUri":"/investigations/getInvestigation"
+      },
+      "input":{"shape":"GetInvestigationRequest"},
+      "output":{"shape":"GetInvestigationResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ValidationException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"TooManyRequestsException"}
+      ],
+      "documentation":"<p>Returns the investigation results of an investigation for a behavior graph. </p>"
+    },
     "GetMembers":{
       "name":"GetMembers",
       "http":{
@@ -232,6 +249,40 @@
         {"shape":"ValidationException"}
       ],
       "documentation":"<p>Returns the list of behavior graphs that the calling account is an administrator account of. This operation can only be called by an administrator account.</p> <p>Because an account can currently only be the administrator of one behavior graph within a Region, the results always contain a single behavior graph.</p>"
+    },
+    "ListIndicators":{
+      "name":"ListIndicators",
+      "http":{
+        "method":"POST",
+        "requestUri":"/investigations/listIndicators"
+      },
+      "input":{"shape":"ListIndicatorsRequest"},
+      "output":{"shape":"ListIndicatorsResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ValidationException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"TooManyRequestsException"}
+      ],
+      "documentation":"<p>Get the indicators from an investigation</p>"
+    },
+    "ListInvestigations":{
+      "name":"ListInvestigations",
+      "http":{
+        "method":"POST",
+        "requestUri":"/investigations/listInvestigations"
+      },
+      "input":{"shape":"ListInvestigationsRequest"},
+      "output":{"shape":"ListInvestigationsResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ValidationException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"TooManyRequestsException"}
+      ],
+      "documentation":"<p>List all Investigations.</p>"
     },
     "ListInvitations":{
       "name":"ListInvitations",
@@ -313,6 +364,23 @@
       ],
       "documentation":"<p>Rejects an invitation to contribute the account data to a behavior graph. This operation must be called by an invited member account that has the <code>INVITED</code> status.</p> <p> <code>RejectInvitation</code> cannot be called by an organization account in the organization behavior graph. In the organization behavior graph, organization accounts do not receive an invitation.</p>"
     },
+    "StartInvestigation":{
+      "name":"StartInvestigation",
+      "http":{
+        "method":"POST",
+        "requestUri":"/investigations/startInvestigation"
+      },
+      "input":{"shape":"StartInvestigationRequest"},
+      "output":{"shape":"StartInvestigationResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ValidationException"},
+        {"shape":"TooManyRequestsException"},
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p>initiate an investigation on an entity in a graph</p>"
+    },
     "StartMonitoringMember":{
       "name":"StartMonitoringMember",
       "http":{
@@ -380,6 +448,22 @@
       ],
       "documentation":"<p>Starts a data source packages for the behavior graph.</p>"
     },
+    "UpdateInvestigationState":{
+      "name":"UpdateInvestigationState",
+      "http":{
+        "method":"POST",
+        "requestUri":"/investigations/updateInvestigationState"
+      },
+      "input":{"shape":"UpdateInvestigationStateRequest"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ValidationException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"TooManyRequestsException"}
+      ],
+      "documentation":"<p>Update the state of an investigation.</p>"
+    },
     "UpdateOrganizationConfiguration":{
       "name":"UpdateOrganizationConfiguration",
       "http":{
@@ -397,6 +481,9 @@
     }
   },
   "shapes":{
+    "APIFailureCount":{"type":"long"},
+    "APIName":{"type":"string"},
+    "APISuccessCount":{"type":"long"},
     "AcceptInvitationRequest":{
       "type":"structure",
       "required":["GraphArn"],
@@ -496,6 +583,12 @@
       "type":"list",
       "member":{"shape":"Administrator"}
     },
+    "AiPaginationToken":{
+      "type":"string",
+      "max":2048,
+      "min":1
+    },
+    "Aso":{"type":"string"},
     "BatchGetGraphMemberDatasourcesRequest":{
       "type":"structure",
       "required":[
@@ -681,6 +774,24 @@
       },
       "documentation":"<p>Information on the usage of a data source package in the behavior graph.</p>"
     },
+    "DateFilter":{
+      "type":"structure",
+      "required":[
+        "StartInclusive",
+        "EndInclusive"
+      ],
+      "members":{
+        "StartInclusive":{
+          "shape":"Timestamp",
+          "documentation":"<p>A timestamp representing the start of the time period from when data is filtered, including the start date.</p>"
+        },
+        "EndInclusive":{
+          "shape":"Timestamp",
+          "documentation":"<p>A timestamp representing the end date of the time period until when data is filtered , including the end date.</p>"
+        }
+      },
+      "documentation":"<p>Contains details on the time range used to filter data.</p>"
+    },
     "DeleteGraphRequest":{
       "type":"structure",
       "required":["GraphArn"],
@@ -773,6 +884,17 @@
         }
       }
     },
+    "EntityArn":{
+      "type":"string",
+      "pattern":"^arn:.*"
+    },
+    "EntityType":{
+      "type":"string",
+      "enum":[
+        "IAM_ROLE",
+        "IAM_USER"
+      ]
+    },
     "ErrorCode":{
       "type":"string",
       "enum":[
@@ -783,6 +905,116 @@
     },
     "ErrorCodeReason":{"type":"string"},
     "ErrorMessage":{"type":"string"},
+    "Field":{
+      "type":"string",
+      "enum":[
+        "SEVERITY",
+        "STATUS",
+        "CREATED_TIME"
+      ]
+    },
+    "FilterCriteria":{
+      "type":"structure",
+      "members":{
+        "Severity":{
+          "shape":"StringFilter",
+          "documentation":"<p>Filter the investigation results based on the severity.</p>"
+        },
+        "Status":{
+          "shape":"StringFilter",
+          "documentation":"<p>Filter the investigation results based on the status.</p>"
+        },
+        "State":{
+          "shape":"StringFilter",
+          "documentation":"<p>Filter the investigation results based on the state.</p>"
+        },
+        "EntityArn":{
+          "shape":"StringFilter",
+          "documentation":"<p>Filter the investigation results based on the Amazon Resource Name (ARN) of the entity.</p>"
+        },
+        "CreatedTime":{
+          "shape":"DateFilter",
+          "documentation":"<p>Filter the investigation results based on when the investigation was created.</p>"
+        }
+      },
+      "documentation":"<p>Details on the criteria used to define the filter for investigation results.</p>"
+    },
+    "FlaggedIpAddressDetail":{
+      "type":"structure",
+      "members":{
+        "IpAddress":{
+          "shape":"IpAddress",
+          "documentation":"<p>IP address of the suspicious entity.</p>"
+        },
+        "Reason":{
+          "shape":"Reason",
+          "documentation":"<p>Details the reason the IP address was flagged as suspicious.</p>"
+        }
+      },
+      "documentation":"<p>Contains information on suspicious IP addresses identified as indicators of compromise. This indicator is derived from Amazon Web Services threat intelligence.</p>"
+    },
+    "GetInvestigationRequest":{
+      "type":"structure",
+      "required":[
+        "GraphArn",
+        "InvestigationId"
+      ],
+      "members":{
+        "GraphArn":{
+          "shape":"GraphArn",
+          "documentation":"<p>The ARN of the behavior graph.</p>"
+        },
+        "InvestigationId":{
+          "shape":"InvestigationId",
+          "documentation":"<p>The investigation ID of the investigation report.</p>"
+        }
+      }
+    },
+    "GetInvestigationResponse":{
+      "type":"structure",
+      "members":{
+        "GraphArn":{
+          "shape":"GraphArn",
+          "documentation":"<p>The ARN of the behavior graph.</p>"
+        },
+        "InvestigationId":{
+          "shape":"InvestigationId",
+          "documentation":"<p>The investigation ID of the investigation report.</p>"
+        },
+        "EntityArn":{
+          "shape":"EntityArn",
+          "documentation":"<p>The unique Amazon Resource Name (ARN) of the IAM user and IAM role.</p>"
+        },
+        "EntityType":{
+          "shape":"EntityType",
+          "documentation":"<p>Type of entity. For example, Amazon Web Services accounts, such as IAM user and role.</p>"
+        },
+        "CreatedTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The UTC time stamp of the creation time of the investigation report.</p>"
+        },
+        "ScopeStartTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The start date and time for the scope time set to generate the investigation report.</p>"
+        },
+        "ScopeEndTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The data and time when the investigation began. The value is an UTC ISO8601 formatted string. For example, 2021-08-18T16:35:56.284Z.</p>"
+        },
+        "Status":{
+          "shape":"Status",
+          "documentation":"<p>Status based on the completion status of the investigation.</p>"
+        },
+        "Severity":{
+          "shape":"Severity",
+          "documentation":"<p>Severity based on the likelihood and impact of the indicators of compromise discovered in the investigation.</p>"
+        },
+        "State":{
+          "shape":"State",
+          "documentation":"<p>The current state of the investigation. An archived investigation indicates you have completed reviewing the investigation.</p>"
+        }
+      }
+    },
     "GetMembersRequest":{
       "type":"structure",
       "required":[
@@ -841,6 +1073,106 @@
       "type":"list",
       "member":{"shape":"Graph"}
     },
+    "HourlyTimeDelta":{
+      "type":"integer",
+      "box":true
+    },
+    "Id":{"type":"string"},
+    "ImpossibleTravelDetail":{
+      "type":"structure",
+      "members":{
+        "StartingIpAddress":{
+          "shape":"IpAddress",
+          "documentation":"<p>IP address where the resource was first used in the impossible travel</p>"
+        },
+        "EndingIpAddress":{
+          "shape":"IpAddress",
+          "documentation":"<p>IP address where the resource was last used in the impossible travel.</p>"
+        },
+        "StartingLocation":{
+          "shape":"Location",
+          "documentation":"<p>Location where the resource was first used in the impossible travel</p>"
+        },
+        "EndingLocation":{
+          "shape":"Location",
+          "documentation":"<p>Location where the resource was last used in the impossible travel.</p>"
+        },
+        "HourlyTimeDelta":{
+          "shape":"HourlyTimeDelta",
+          "documentation":"<p>Returns the time difference between the first and last timestamp the resource was used.</p>"
+        }
+      },
+      "documentation":"<p>Contains information on unusual and impossible travel in an account.</p>"
+    },
+    "Indicator":{
+      "type":"structure",
+      "members":{
+        "IndicatorType":{
+          "shape":"IndicatorType",
+          "documentation":"<p>The type of indicator.</p>"
+        },
+        "IndicatorDetail":{
+          "shape":"IndicatorDetail",
+          "documentation":"<p>Details about the indicator of compromise.</p>"
+        }
+      },
+      "documentation":"<p>Investigations triages indicators of compromises such as a finding and surfaces only the most critical and suspicious issues, so you can focus on high-level investigations. </p>"
+    },
+    "IndicatorDetail":{
+      "type":"structure",
+      "members":{
+        "TTPsObservedDetail":{
+          "shape":"TTPsObservedDetail",
+          "documentation":"<p>Details about the indicator of compromise.</p>"
+        },
+        "ImpossibleTravelDetail":{
+          "shape":"ImpossibleTravelDetail",
+          "documentation":"<p>Identifies unusual and impossible user activity for an account. </p>"
+        },
+        "FlaggedIpAddressDetail":{
+          "shape":"FlaggedIpAddressDetail",
+          "documentation":"<p>Suspicious IP addresses that are flagged, which indicates critical or severe threats based on threat intelligence by Detective. This indicator is derived from AWS threat intelligence.</p>"
+        },
+        "NewGeolocationDetail":{
+          "shape":"NewGeolocationDetail",
+          "documentation":"<p>Contains details about the new geographic location.</p>"
+        },
+        "NewAsoDetail":{
+          "shape":"NewAsoDetail",
+          "documentation":"<p>Contains details about the new Autonomous System Organization (ASO).</p>"
+        },
+        "NewUserAgentDetail":{
+          "shape":"NewUserAgentDetail",
+          "documentation":"<p>Contains details about the new user agent.</p>"
+        },
+        "RelatedFindingDetail":{
+          "shape":"RelatedFindingDetail",
+          "documentation":"<p>Contains details about related findings.</p>"
+        },
+        "RelatedFindingGroupDetail":{
+          "shape":"RelatedFindingGroupDetail",
+          "documentation":"<p>Contains details about related finding groups.</p>"
+        }
+      },
+      "documentation":"<p>Details about the indicators of compromise which are used to determine if a resource is involved in a security incident. </p>"
+    },
+    "IndicatorType":{
+      "type":"string",
+      "enum":[
+        "TTP_OBSERVED",
+        "IMPOSSIBLE_TRAVEL",
+        "FLAGGED_IP_ADDRESS",
+        "NEW_GEOLOCATION",
+        "NEW_ASO",
+        "NEW_USER_AGENT",
+        "RELATED_FINDING",
+        "RELATED_FINDING_GROUP"
+      ]
+    },
+    "Indicators":{
+      "type":"list",
+      "member":{"shape":"Indicator"}
+    },
     "InternalServerException":{
       "type":"structure",
       "members":{
@@ -850,6 +1182,50 @@
       "error":{"httpStatusCode":500},
       "exception":true
     },
+    "InvestigationDetail":{
+      "type":"structure",
+      "members":{
+        "InvestigationId":{
+          "shape":"InvestigationId",
+          "documentation":"<p>The investigation ID of the investigation report.</p>"
+        },
+        "Severity":{
+          "shape":"Severity",
+          "documentation":"<p>Severity based on the likelihood and impact of the indicators of compromise discovered in the investigation.</p>"
+        },
+        "Status":{
+          "shape":"Status",
+          "documentation":"<p>Status based on the completion status of the investigation.</p>"
+        },
+        "State":{
+          "shape":"State",
+          "documentation":"<p>The current state of the investigation. An archived investigation indicates you have completed reviewing the investigation.</p>"
+        },
+        "CreatedTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The UTC time stamp of the creation time of the investigation report.</p>"
+        },
+        "EntityArn":{
+          "shape":"EntityArn",
+          "documentation":"<p>The unique Amazon Resource Name (ARN) of the IAM user and IAM role.</p>"
+        },
+        "EntityType":{
+          "shape":"EntityType",
+          "documentation":"<p>Type of entity. For example, Amazon Web Services accounts, such as IAM user and role.</p>"
+        }
+      },
+      "documentation":"<p>Details about the investigation related to a potential security event identified by Detective</p>"
+    },
+    "InvestigationDetails":{
+      "type":"list",
+      "member":{"shape":"InvestigationDetail"}
+    },
+    "InvestigationId":{
+      "type":"string",
+      "max":21,
+      "min":21,
+      "pattern":"^[0-9]+$"
+    },
     "InvitationType":{
       "type":"string",
       "enum":[
@@ -857,6 +1233,8 @@
         "ORGANIZATION"
       ]
     },
+    "IpAddress":{"type":"string"},
+    "IsNewForEntireAccount":{"type":"boolean"},
     "LastIngestStateChangeDates":{
       "type":"map",
       "key":{"shape":"DatasourcePackageIngestState"},
@@ -916,6 +1294,95 @@
         "NextToken":{
           "shape":"PaginationToken",
           "documentation":"<p>If there are more behavior graphs remaining in the results, then this is the pagination token to use to request the next page of behavior graphs.</p>"
+        }
+      }
+    },
+    "ListIndicatorsRequest":{
+      "type":"structure",
+      "required":[
+        "GraphArn",
+        "InvestigationId"
+      ],
+      "members":{
+        "GraphArn":{
+          "shape":"GraphArn",
+          "documentation":"<p>The ARN of the behavior graph.</p>"
+        },
+        "InvestigationId":{
+          "shape":"InvestigationId",
+          "documentation":"<p>The investigation ID of the investigation report.</p>"
+        },
+        "IndicatorType":{
+          "shape":"IndicatorType",
+          "documentation":"<p>See <a href=\"https://docs.aws.amazon.com/detective/latest/userguide/detective-investigations.html\">Detective investigations.</a>.</p>"
+        },
+        "NextToken":{
+          "shape":"AiPaginationToken",
+          "documentation":"<p>List if there are more results available. The value of nextToken is a unique pagination token for each page. Repeat the call using the returned token to retrieve the next page. Keep all other arguments unchanged.</p> <p>Each pagination token expires after 24 hours. Using an expired pagination token will return a Validation Exception error.</p>"
+        },
+        "MaxResults":{
+          "shape":"MaxResults",
+          "documentation":"<p>List the maximum number of indicators in a page.</p>"
+        }
+      }
+    },
+    "ListIndicatorsResponse":{
+      "type":"structure",
+      "members":{
+        "GraphArn":{
+          "shape":"GraphArn",
+          "documentation":"<p>The ARN of the behavior graph.</p>"
+        },
+        "InvestigationId":{
+          "shape":"InvestigationId",
+          "documentation":"<p>The investigation ID of the investigation report.</p>"
+        },
+        "NextToken":{
+          "shape":"AiPaginationToken",
+          "documentation":"<p>List if there are more results available. The value of nextToken is a unique pagination token for each page. Repeat the call using the returned token to retrieve the next page. Keep all other arguments unchanged.</p> <p>Each pagination token expires after 24 hours. Using an expired pagination token will return a Validation Exception error.</p>"
+        },
+        "Indicators":{
+          "shape":"Indicators",
+          "documentation":"<p>Indicators of compromise listed based on severity.</p>"
+        }
+      }
+    },
+    "ListInvestigationsRequest":{
+      "type":"structure",
+      "required":["GraphArn"],
+      "members":{
+        "GraphArn":{
+          "shape":"GraphArn",
+          "documentation":"<p>The ARN of the behavior graph.</p>"
+        },
+        "NextToken":{
+          "shape":"AiPaginationToken",
+          "documentation":"<p>List if there are more results available. The value of nextToken is a unique pagination token for each page. Repeat the call using the returned token to retrieve the next page. Keep all other arguments unchanged.</p> <p>Each pagination token expires after 24 hours. Using an expired pagination token will return a Validation Exception error.</p>"
+        },
+        "MaxResults":{
+          "shape":"MaxResults",
+          "documentation":"<p>List the maximum number of investigations in a page.</p>"
+        },
+        "FilterCriteria":{
+          "shape":"FilterCriteria",
+          "documentation":"<p>Filter the investigation results based on a criteria.</p>"
+        },
+        "SortCriteria":{
+          "shape":"SortCriteria",
+          "documentation":"<p>Sorts the investigation results based on a criteria.</p>"
+        }
+      }
+    },
+    "ListInvestigationsResponse":{
+      "type":"structure",
+      "members":{
+        "InvestigationDetails":{
+          "shape":"InvestigationDetails",
+          "documentation":"<p>Investigations details lists the summary of uncommon behavior or malicious activity which indicates a compromise.</p>"
+        },
+        "NextToken":{
+          "shape":"AiPaginationToken",
+          "documentation":"<p>List if there are more results available. The value of nextToken is a unique pagination token for each page. Repeat the call using the returned token to retrieve the next page. Keep all other arguments unchanged.</p> <p>Each pagination token expires after 24 hours. Using an expired pagination token will return an HTTP 400 InvalidToken error.</p>"
         }
       }
     },
@@ -1022,6 +1489,13 @@
           "documentation":"<p>The tag values that are assigned to the behavior graph. The request returns up to 50 tag values.</p>"
         }
       }
+    },
+    "Location":{"type":"string"},
+    "MaxResults":{
+      "type":"integer",
+      "box":true,
+      "max":100,
+      "min":1
     },
     "MemberDetail":{
       "type":"structure",
@@ -1152,12 +1626,63 @@
       "type":"list",
       "member":{"shape":"MembershipDatasources"}
     },
+    "NewAsoDetail":{
+      "type":"structure",
+      "members":{
+        "Aso":{
+          "shape":"Aso",
+          "documentation":"<p>Details about the new Autonomous System Organization (ASO).</p>"
+        },
+        "IsNewForEntireAccount":{
+          "shape":"IsNewForEntireAccount",
+          "documentation":"<p>Checks if the ASO is for new for the entire account.</p>"
+        }
+      },
+      "documentation":"<p>Details new Autonomous System Organizations (ASOs) used either at the resource or account level. </p>"
+    },
+    "NewGeolocationDetail":{
+      "type":"structure",
+      "members":{
+        "Location":{
+          "shape":"Location",
+          "documentation":"<p>Location where the resource was accessed.</p>"
+        },
+        "IpAddress":{
+          "shape":"IpAddress",
+          "documentation":"<p>IP address using which the resource was accessed.</p>"
+        },
+        "IsNewForEntireAccount":{
+          "shape":"IsNewForEntireAccount",
+          "documentation":"<p>Checks if the gelocation is new for the entire account.</p>"
+        }
+      },
+      "documentation":"<p>Details new geolocations used either at the resource or account level. For example, lists an observed geolocation that is an infrequent or unused location based on previous user activity.</p>"
+    },
+    "NewUserAgentDetail":{
+      "type":"structure",
+      "members":{
+        "UserAgent":{
+          "shape":"UserAgent",
+          "documentation":"<p>New user agent which accessed the resource.</p>"
+        },
+        "IsNewForEntireAccount":{
+          "shape":"IsNewForEntireAccount",
+          "documentation":"<p>Checks if the user agent is new for the entire account.</p>"
+        }
+      },
+      "documentation":"<p>Details new user agents used either at the resource or account level.</p>"
+    },
     "PaginationToken":{
       "type":"string",
       "max":1024,
       "min":1
     },
     "Percentage":{"type":"double"},
+    "Procedure":{"type":"string"},
+    "Reason":{
+      "type":"string",
+      "enum":["AWS_THREAT_INTELLIGENCE"]
+    },
     "RejectInvitationRequest":{
       "type":"structure",
       "required":["GraphArn"],
@@ -1167,6 +1692,34 @@
           "documentation":"<p>The ARN of the behavior graph to reject the invitation to.</p> <p>The member account's current member status in the behavior graph must be <code>INVITED</code>.</p>"
         }
       }
+    },
+    "RelatedFindingDetail":{
+      "type":"structure",
+      "members":{
+        "Arn":{
+          "shape":"EntityArn",
+          "documentation":"<p>The ARN of the related finding.</p>"
+        },
+        "Type":{
+          "shape":"Type",
+          "documentation":"<p>The type of finding.</p>"
+        },
+        "IpAddress":{
+          "shape":"IpAddress",
+          "documentation":"<p>The IP address of the finding.</p>"
+        }
+      },
+      "documentation":"<p>Details related activities associated with a potential security event. Lists all distinct categories of evidence that are connected to the resource or the finding group.</p>"
+    },
+    "RelatedFindingGroupDetail":{
+      "type":"structure",
+      "members":{
+        "Id":{
+          "shape":"Id",
+          "documentation":"<p>The unique identifier for the finding group.</p>"
+        }
+      },
+      "documentation":"<p>Details multiple activities as they related to a potential security event. Detective uses graph analysis technique that infers relationships between findings and entities, and groups them together as a finding group.</p>"
     },
     "Resource":{
       "type":"string",
@@ -1201,6 +1754,73 @@
       "error":{"httpStatusCode":402},
       "exception":true
     },
+    "Severity":{
+      "type":"string",
+      "enum":[
+        "INFORMATIONAL",
+        "LOW",
+        "MEDIUM",
+        "HIGH",
+        "CRITICAL"
+      ]
+    },
+    "SortCriteria":{
+      "type":"structure",
+      "members":{
+        "Field":{
+          "shape":"Field",
+          "documentation":"<p>Represents the <code>Field</code> attribute to sort investigations.</p>"
+        },
+        "SortOrder":{
+          "shape":"SortOrder",
+          "documentation":"<p>The order by which the sorted findings are displayed.</p>"
+        }
+      },
+      "documentation":"<p>Details about the criteria used for sorting investigations.</p>"
+    },
+    "SortOrder":{
+      "type":"string",
+      "enum":[
+        "ASC",
+        "DESC"
+      ]
+    },
+    "StartInvestigationRequest":{
+      "type":"structure",
+      "required":[
+        "GraphArn",
+        "EntityArn",
+        "ScopeStartTime",
+        "ScopeEndTime"
+      ],
+      "members":{
+        "GraphArn":{
+          "shape":"GraphArn",
+          "documentation":"<p>The ARN of the behavior graph.</p>"
+        },
+        "EntityArn":{
+          "shape":"EntityArn",
+          "documentation":"<p>The unique Amazon Resource Name (ARN) of the IAM user and IAM role.</p>"
+        },
+        "ScopeStartTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The data and time when the investigation began. The value is an UTC ISO8601 formatted string. For example, <code>2021-08-18T16:35:56.284Z</code>.</p>"
+        },
+        "ScopeEndTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The data and time when the investigation began. The value is an UTC ISO8601 formatted string. For example, <code>2021-08-18T16:35:56.284Z</code>.</p>"
+        }
+      }
+    },
+    "StartInvestigationResponse":{
+      "type":"structure",
+      "members":{
+        "InvestigationId":{
+          "shape":"InvestigationId",
+          "documentation":"<p>The investigation ID of the investigation report.</p>"
+        }
+      }
+    },
     "StartMonitoringMemberRequest":{
       "type":"structure",
       "required":[
@@ -1218,6 +1838,67 @@
         }
       }
     },
+    "State":{
+      "type":"string",
+      "enum":[
+        "ACTIVE",
+        "ARCHIVED"
+      ]
+    },
+    "Status":{
+      "type":"string",
+      "enum":[
+        "RUNNING",
+        "FAILED",
+        "SUCCESSFUL"
+      ]
+    },
+    "StringFilter":{
+      "type":"structure",
+      "required":["Value"],
+      "members":{
+        "Value":{
+          "shape":"Value",
+          "documentation":"<p>The string filter value.</p>"
+        }
+      },
+      "documentation":"<p>A string for filtering Detective investigations.</p>"
+    },
+    "TTPsObservedDetail":{
+      "type":"structure",
+      "members":{
+        "Tactic":{
+          "shape":"Tactic",
+          "documentation":"<p>The tactic used, identified by the investigation.</p>"
+        },
+        "Technique":{
+          "shape":"Technique",
+          "documentation":"<p>The technique used, identified by the investigation. </p>"
+        },
+        "Procedure":{
+          "shape":"Procedure",
+          "documentation":"<p>The procedure used, identified by the investigation.</p>"
+        },
+        "IpAddress":{
+          "shape":"IpAddress",
+          "documentation":"<p>The IP address where the TTP was observed.</p>"
+        },
+        "APIName":{
+          "shape":"APIName",
+          "documentation":"<p>The name of the API where the TTP was observed.</p>"
+        },
+        "APISuccessCount":{
+          "shape":"APISuccessCount",
+          "documentation":"<p>The total number of successful API requests.</p>"
+        },
+        "APIFailureCount":{
+          "shape":"APIFailureCount",
+          "documentation":"<p>The total number of failed API requests.</p>"
+        }
+      },
+      "documentation":"<p>Details tactics, techniques, and procedures (TTPs) used in a potential security event. Tactics are based on <a href=\"https://attack.mitre.org/matrices/enterprise/\">MITRE ATT&amp;CK Matrix for Enterprise</a>. </p>"
+    },
+    "Tactic":{"type":"string"},
     "TagKey":{
       "type":"string",
       "max":128,
@@ -1265,6 +1946,7 @@
       "type":"string",
       "max":256
     },
+    "Technique":{"type":"string"},
     "Timestamp":{
       "type":"timestamp",
       "timestampFormat":"iso8601"
@@ -1288,6 +1970,7 @@
       "error":{"httpStatusCode":429},
       "exception":true
     },
+    "Type":{"type":"string"},
     "UnprocessedAccount":{
       "type":"structure",
       "members":{
@@ -1368,6 +2051,28 @@
         }
       }
     },
+    "UpdateInvestigationStateRequest":{
+      "type":"structure",
+      "required":[
+        "GraphArn",
+        "InvestigationId",
+        "State"
+      ],
+      "members":{
+        "GraphArn":{
+          "shape":"GraphArn",
+          "documentation":"<p>The ARN of the behavior graph.</p>"
+        },
+        "InvestigationId":{
+          "shape":"InvestigationId",
+          "documentation":"<p>The investigation ID of the investigation report.</p>"
+        },
+        "State":{
+          "shape":"State",
+          "documentation":"<p>The current state of the investigation. An archived investigation indicates you have completed reviewing the investigation.</p>"
+        }
+      }
+    },
     "UpdateOrganizationConfigurationRequest":{
       "type":"structure",
       "required":["GraphArn"],
@@ -1382,6 +2087,7 @@
         }
       }
     },
+    "UserAgent":{"type":"string"},
     "ValidationException":{
       "type":"structure",
       "members":{
@@ -1398,6 +2104,11 @@
       "documentation":"<p>The request parameters are invalid.</p>",
       "error":{"httpStatusCode":400},
       "exception":true
+    },
+    "Value":{
+      "type":"string",
+      "max":500,
+      "min":1
     },
     "VolumeUsageByDatasourcePackage":{
       "type":"map",

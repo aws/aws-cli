@@ -772,6 +772,10 @@
         "LanguageIdSettings":{
           "shape":"LanguageIdSettingsMap",
           "documentation":"<p>If using automatic language identification in your request and you want to apply a custom language model, a custom vocabulary, or a custom vocabulary filter, include <code>LanguageIdSettings</code> with the relevant sub-parameters (<code>VocabularyName</code>, <code>LanguageModelName</code>, and <code>VocabularyFilterName</code>).</p> <p> <code>LanguageIdSettings</code> supports two to five language codes. Each language code you include can have an associated custom language model, custom vocabulary, and custom vocabulary filter. The language codes that you specify must match the languages of the associated custom language models, custom vocabularies, and custom vocabulary filters.</p> <p>It's recommended that you include <code>LanguageOptions</code> when using <code>LanguageIdSettings</code> to ensure that the correct language dialect is identified. For example, if you specify a custom vocabulary that is in <code>en-US</code> but Amazon Transcribe determines that the language spoken in your media is <code>en-AU</code>, your custom vocabulary <i>is not</i> applied to your transcription. If you include <code>LanguageOptions</code> and include <code>en-US</code> as the only English language dialect, your custom vocabulary <i>is</i> applied to your transcription.</p> <p>If you want to include a custom language model, custom vocabulary, or custom vocabulary filter with your request but <b>do not</b> want to use automatic language identification, use instead the <code/> parameter with the <code>LanguageModelName</code>, <code>VocabularyName</code>, or <code>VocabularyFilterName</code> sub-parameters.</p> <p>For a list of languages supported with Call Analytics, refer to <a href=\"https://docs.aws.amazon.com/transcribe/latest/dg/supported-languages.html\">Supported languages and language-specific features</a>.</p>"
+        },
+        "Summarization":{
+          "shape":"Summarization",
+          "documentation":"<p>Contains <code>GenerateAbstractiveSummary</code>, which is a required parameter if you want to enable Generative call summarization in your Call Analytics request.</p>"
         }
       },
       "documentation":"<p>Provides additional optional settings for your request, including content redaction, automatic language identification; allows you to apply custom language models, custom vocabulary filters, and custom vocabularies.</p>"
@@ -1595,7 +1599,71 @@
         "en-ZA",
         "en-NZ",
         "vi-VN",
-        "sv-SE"
+        "sv-SE",
+        "ab-GE",
+        "ast-ES",
+        "az-AZ",
+        "ba-RU",
+        "be-BY",
+        "bg-BG",
+        "bn-IN",
+        "bs-BA",
+        "ca-ES",
+        "ckb-IQ",
+        "ckb-IR",
+        "cs-CZ",
+        "cy-WL",
+        "el-GR",
+        "et-ET",
+        "eu-ES",
+        "fi-FI",
+        "gl-ES",
+        "gu-IN",
+        "ha-NG",
+        "hr-HR",
+        "hu-HU",
+        "hy-AM",
+        "is-IS",
+        "ka-GE",
+        "kab-DZ",
+        "kk-KZ",
+        "kn-IN",
+        "ky-KG",
+        "lg-IN",
+        "lt-LT",
+        "lv-LV",
+        "mhr-RU",
+        "mi-NZ",
+        "mk-MK",
+        "ml-IN",
+        "mn-MN",
+        "mr-IN",
+        "mt-MT",
+        "no-NO",
+        "or-IN",
+        "pa-IN",
+        "pl-PL",
+        "ps-AF",
+        "ro-RO",
+        "rw-RW",
+        "si-LK",
+        "sk-SK",
+        "sl-SI",
+        "so-SO",
+        "sr-RS",
+        "su-ID",
+        "sw-BI",
+        "sw-KE",
+        "sw-RW",
+        "sw-TZ",
+        "sw-UG",
+        "tl-PH",
+        "tt-RU",
+        "ug-CN",
+        "uk-UA",
+        "uz-UZ",
+        "wo-SN",
+        "zu-ZA"
       ]
     },
     "LanguageCodeItem":{
@@ -2770,6 +2838,17 @@
         }
       },
       "documentation":"<p>Provides information about your subtitle file, including format, start index, and Amazon S3 location.</p>"
+    },
+    "Summarization":{
+      "type":"structure",
+      "required":["GenerateAbstractiveSummary"],
+      "members":{
+        "GenerateAbstractiveSummary":{
+          "shape":"Boolean",
+          "documentation":"<p>Enables Generative call summarization in your Call Analytics request</p> <p>Generative call summarization provides a summary of the transcript including important components discussed in the conversation.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/transcribe/latest/dg/tca-enable-summarization.html\">Enabling generative call summarization</a>.</p>"
+        }
+      },
+      "documentation":"<p>Contains <code>GenerateAbstractiveSummary</code>, which is a required parameter if you want to enable Generative call summarization in your Call Analytics request.</p>"
     },
     "Tag":{
       "type":"structure",

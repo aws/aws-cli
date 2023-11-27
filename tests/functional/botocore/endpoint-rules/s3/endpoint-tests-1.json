@@ -1755,6 +1755,45 @@
             }
         },
         {
+            "documentation": "virtual addressing, aws-global region with Prefix, and Key uses the global endpoint. Prefix and Key parameters should not be used in endpoint evaluation.",
+            "expect": {
+                "endpoint": {
+                    "properties": {
+                        "authSchemes": [
+                            {
+                                "name": "sigv4",
+                                "signingName": "s3",
+                                "signingRegion": "us-east-1",
+                                "disableDoubleEncoding": true
+                            }
+                        ]
+                    },
+                    "url": "https://bucket-name.s3.amazonaws.com"
+                }
+            },
+            "operationInputs": [
+                {
+                    "builtInParams": {
+                        "AWS::Region": "aws-global"
+                    },
+                    "operationName": "ListObjects",
+                    "operationParams": {
+                        "Bucket": "bucket-name",
+                        "Prefix": "prefix"
+                    }
+                }
+            ],
+            "params": {
+                "Region": "aws-global",
+                "Bucket": "bucket-name",
+                "UseFIPS": false,
+                "UseDualStack": false,
+                "Accelerate": false,
+                "Prefix": "prefix",
+                "Key": "key"
+            }
+        },
+        {
             "documentation": "virtual addressing, aws-global region with fips uses the regional fips endpoint",
             "expect": {
                 "endpoint": {

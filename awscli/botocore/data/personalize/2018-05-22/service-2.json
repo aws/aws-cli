@@ -29,7 +29,7 @@
         {"shape":"ResourceInUseException"},
         {"shape":"TooManyTagsException"}
       ],
-      "documentation":"<p>Creates a batch inference job. The operation can handle up to 50 million records and the input file must be in JSON format. For more information, see <a href=\"https://docs.aws.amazon.com/personalize/latest/dg/creating-batch-inference-job.html\">Creating a batch inference job</a>. </p>"
+      "documentation":"<p>Generates batch recommendations based on a list of items or users stored in Amazon S3 and exports the recommendations to an Amazon S3 bucket.</p> <p>To generate batch recommendations, specify the ARN of a solution version and an Amazon S3 URI for the input and output data. For user personalization, popular items, and personalized ranking solutions, the batch inference job generates a list of recommended items for each user ID in the input file. For related items solutions, the job generates a list of recommended items for each item ID in the input file.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/personalize/latest/dg/getting-batch-recommendations.html\">Creating a batch inference job </a>.</p> <p> If you use the Similar-Items recipe, Amazon Personalize can add descriptive themes to batch recommendations. To generate themes, set the job's mode to <code>THEME_GENERATION</code> and specify the name of the field that contains item names in the input data.</p> <p> For more information about generating themes, see <a href=\"https://docs.aws.amazon.com/personalize/latest/dg/themed-batch-recommendations.html\">Batch recommendations with themes from Content Generator </a>. </p> <p>You can't get batch recommendations with the Trending-Now or Next-Best-Action recipes.</p>"
     },
     "CreateBatchSegmentJob":{
       "name":"CreateBatchSegmentJob",
@@ -84,7 +84,7 @@
         {"shape":"ResourceInUseException"},
         {"shape":"TooManyTagsException"}
       ],
-      "documentation":"<p>Creates an empty dataset and adds it to the specified dataset group. Use <a href=\"https://docs.aws.amazon.com/personalize/latest/dg/API_CreateDatasetImportJob.html\">CreateDatasetImportJob</a> to import your training data to a dataset.</p> <p>There are three types of datasets:</p> <ul> <li> <p>Interactions</p> </li> <li> <p>Items</p> </li> <li> <p>Users</p> </li> </ul> <p>Each dataset type has an associated schema with required field types. Only the <code>Interactions</code> dataset is required in order to train a model (also referred to as creating a solution).</p> <p>A dataset can be in one of the following states:</p> <ul> <li> <p>CREATE PENDING &gt; CREATE IN_PROGRESS &gt; ACTIVE -or- CREATE FAILED</p> </li> <li> <p>DELETE PENDING &gt; DELETE IN_PROGRESS</p> </li> </ul> <p>To get the status of the dataset, call <a href=\"https://docs.aws.amazon.com/personalize/latest/dg/API_DescribeDataset.html\">DescribeDataset</a>.</p> <p class=\"title\"> <b>Related APIs</b> </p> <ul> <li> <p> <a href=\"https://docs.aws.amazon.com/personalize/latest/dg/API_CreateDatasetGroup.html\">CreateDatasetGroup</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/personalize/latest/dg/API_ListDatasets.html\">ListDatasets</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/personalize/latest/dg/API_DescribeDataset.html\">DescribeDataset</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/personalize/latest/dg/API_DeleteDataset.html\">DeleteDataset</a> </p> </li> </ul>",
+      "documentation":"<p>Creates an empty dataset and adds it to the specified dataset group. Use <a href=\"https://docs.aws.amazon.com/personalize/latest/dg/API_CreateDatasetImportJob.html\">CreateDatasetImportJob</a> to import your training data to a dataset.</p> <p>There are 5 types of datasets:</p> <ul> <li> <p>Item interactions</p> </li> <li> <p>Items</p> </li> <li> <p>Users</p> </li> <li> <p>Action interactions</p> </li> <li> <p>Actions</p> </li> </ul> <p>Each dataset type has an associated schema with required field types. Only the <code>Item interactions</code> dataset is required in order to train a model (also referred to as creating a solution).</p> <p>A dataset can be in one of the following states:</p> <ul> <li> <p>CREATE PENDING &gt; CREATE IN_PROGRESS &gt; ACTIVE -or- CREATE FAILED</p> </li> <li> <p>DELETE PENDING &gt; DELETE IN_PROGRESS</p> </li> </ul> <p>To get the status of the dataset, call <a href=\"https://docs.aws.amazon.com/personalize/latest/dg/API_DescribeDataset.html\">DescribeDataset</a>.</p> <p class=\"title\"> <b>Related APIs</b> </p> <ul> <li> <p> <a href=\"https://docs.aws.amazon.com/personalize/latest/dg/API_CreateDatasetGroup.html\">CreateDatasetGroup</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/personalize/latest/dg/API_ListDatasets.html\">ListDatasets</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/personalize/latest/dg/API_DescribeDataset.html\">DescribeDataset</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/personalize/latest/dg/API_DeleteDataset.html\">DeleteDataset</a> </p> </li> </ul>",
       "idempotent":true
     },
     "CreateDatasetExportJob":{
@@ -120,7 +120,7 @@
         {"shape":"LimitExceededException"},
         {"shape":"TooManyTagsException"}
       ],
-      "documentation":"<p>Creates an empty dataset group. A dataset group is a container for Amazon Personalize resources. A dataset group can contain at most three datasets, one for each type of dataset:</p> <ul> <li> <p>Interactions</p> </li> <li> <p>Items</p> </li> <li> <p>Users</p> </li> </ul> <p> A dataset group can be a Domain dataset group, where you specify a domain and use pre-configured resources like recommenders, or a Custom dataset group, where you use custom resources, such as a solution with a solution version, that you deploy with a campaign. If you start with a Domain dataset group, you can still add custom resources such as solutions and solution versions trained with recipes for custom use cases and deployed with campaigns. </p> <p>A dataset group can be in one of the following states:</p> <ul> <li> <p>CREATE PENDING &gt; CREATE IN_PROGRESS &gt; ACTIVE -or- CREATE FAILED</p> </li> <li> <p>DELETE PENDING</p> </li> </ul> <p>To get the status of the dataset group, call <a href=\"https://docs.aws.amazon.com/personalize/latest/dg/API_DescribeDatasetGroup.html\">DescribeDatasetGroup</a>. If the status shows as CREATE FAILED, the response includes a <code>failureReason</code> key, which describes why the creation failed.</p> <note> <p>You must wait until the <code>status</code> of the dataset group is <code>ACTIVE</code> before adding a dataset to the group.</p> </note> <p>You can specify an Key Management Service (KMS) key to encrypt the datasets in the group. If you specify a KMS key, you must also include an Identity and Access Management (IAM) role that has permission to access the key.</p> <p class=\"title\"> <b>APIs that require a dataset group ARN in the request</b> </p> <ul> <li> <p> <a href=\"https://docs.aws.amazon.com/personalize/latest/dg/API_CreateDataset.html\">CreateDataset</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/personalize/latest/dg/API_CreateEventTracker.html\">CreateEventTracker</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/personalize/latest/dg/API_CreateSolution.html\">CreateSolution</a> </p> </li> </ul> <p class=\"title\"> <b>Related APIs</b> </p> <ul> <li> <p> <a href=\"https://docs.aws.amazon.com/personalize/latest/dg/API_ListDatasetGroups.html\">ListDatasetGroups</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/personalize/latest/dg/API_DescribeDatasetGroup.html\">DescribeDatasetGroup</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/personalize/latest/dg/API_DeleteDatasetGroup.html\">DeleteDatasetGroup</a> </p> </li> </ul>"
+      "documentation":"<p>Creates an empty dataset group. A dataset group is a container for Amazon Personalize resources. A dataset group can contain at most three datasets, one for each type of dataset:</p> <ul> <li> <p>Item interactions</p> </li> <li> <p>Items</p> </li> <li> <p>Users</p> </li> <li> <p>Actions</p> </li> <li> <p>Action interactions</p> </li> </ul> <p> A dataset group can be a Domain dataset group, where you specify a domain and use pre-configured resources like recommenders, or a Custom dataset group, where you use custom resources, such as a solution with a solution version, that you deploy with a campaign. If you start with a Domain dataset group, you can still add custom resources such as solutions and solution versions trained with recipes for custom use cases and deployed with campaigns. </p> <p>A dataset group can be in one of the following states:</p> <ul> <li> <p>CREATE PENDING &gt; CREATE IN_PROGRESS &gt; ACTIVE -or- CREATE FAILED</p> </li> <li> <p>DELETE PENDING</p> </li> </ul> <p>To get the status of the dataset group, call <a href=\"https://docs.aws.amazon.com/personalize/latest/dg/API_DescribeDatasetGroup.html\">DescribeDatasetGroup</a>. If the status shows as CREATE FAILED, the response includes a <code>failureReason</code> key, which describes why the creation failed.</p> <note> <p>You must wait until the <code>status</code> of the dataset group is <code>ACTIVE</code> before adding a dataset to the group.</p> </note> <p>You can specify an Key Management Service (KMS) key to encrypt the datasets in the group. If you specify a KMS key, you must also include an Identity and Access Management (IAM) role that has permission to access the key.</p> <p class=\"title\"> <b>APIs that require a dataset group ARN in the request</b> </p> <ul> <li> <p> <a href=\"https://docs.aws.amazon.com/personalize/latest/dg/API_CreateDataset.html\">CreateDataset</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/personalize/latest/dg/API_CreateEventTracker.html\">CreateEventTracker</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/personalize/latest/dg/API_CreateSolution.html\">CreateSolution</a> </p> </li> </ul> <p class=\"title\"> <b>Related APIs</b> </p> <ul> <li> <p> <a href=\"https://docs.aws.amazon.com/personalize/latest/dg/API_ListDatasetGroups.html\">ListDatasetGroups</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/personalize/latest/dg/API_DescribeDatasetGroup.html\">DescribeDatasetGroup</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/personalize/latest/dg/API_DeleteDatasetGroup.html\">DeleteDatasetGroup</a> </p> </li> </ul>"
     },
     "CreateDatasetImportJob":{
       "name":"CreateDatasetImportJob",
@@ -138,7 +138,7 @@
         {"shape":"ResourceInUseException"},
         {"shape":"TooManyTagsException"}
       ],
-      "documentation":"<p>Creates a job that imports training data from your data source (an Amazon S3 bucket) to an Amazon Personalize dataset. To allow Amazon Personalize to import the training data, you must specify an IAM service role that has permission to read from the data source, as Amazon Personalize makes a copy of your data and processes it internally. For information on granting access to your Amazon S3 bucket, see <a href=\"https://docs.aws.amazon.com/personalize/latest/dg/granting-personalize-s3-access.html\">Giving Amazon Personalize Access to Amazon S3 Resources</a>. </p> <important> <p>By default, a dataset import job replaces any existing data in the dataset that you imported in bulk. To add new records without replacing existing data, specify INCREMENTAL for the import mode in the CreateDatasetImportJob operation.</p> </important> <p> <b>Status</b> </p> <p>A dataset import job can be in one of the following states:</p> <ul> <li> <p>CREATE PENDING &gt; CREATE IN_PROGRESS &gt; ACTIVE -or- CREATE FAILED</p> </li> </ul> <p>To get the status of the import job, call <a href=\"https://docs.aws.amazon.com/personalize/latest/dg/API_DescribeDatasetImportJob.html\">DescribeDatasetImportJob</a>, providing the Amazon Resource Name (ARN) of the dataset import job. The dataset import is complete when the status shows as ACTIVE. If the status shows as CREATE FAILED, the response includes a <code>failureReason</code> key, which describes why the job failed.</p> <note> <p>Importing takes time. You must wait until the status shows as ACTIVE before training a model using the dataset.</p> </note> <p class=\"title\"> <b>Related APIs</b> </p> <ul> <li> <p> <a href=\"https://docs.aws.amazon.com/personalize/latest/dg/API_ListDatasetImportJobs.html\">ListDatasetImportJobs</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/personalize/latest/dg/API_DescribeDatasetImportJob.html\">DescribeDatasetImportJob</a> </p> </li> </ul>"
+      "documentation":"<p>Creates a job that imports training data from your data source (an Amazon S3 bucket) to an Amazon Personalize dataset. To allow Amazon Personalize to import the training data, you must specify an IAM service role that has permission to read from the data source, as Amazon Personalize makes a copy of your data and processes it internally. For information on granting access to your Amazon S3 bucket, see <a href=\"https://docs.aws.amazon.com/personalize/latest/dg/granting-personalize-s3-access.html\">Giving Amazon Personalize Access to Amazon S3 Resources</a>. </p> <p>If you already created a recommender or deployed a custom solution version with a campaign, how new bulk records influence recommendations depends on the domain use case or recipe that you use. For more information, see <a href=\"https://docs.aws.amazon.com/personalize/latest/dg/how-new-data-influences-recommendations.html\">How new data influences real-time recommendations</a>.</p> <important> <p>By default, a dataset import job replaces any existing data in the dataset that you imported in bulk. To add new records without replacing existing data, specify INCREMENTAL for the import mode in the CreateDatasetImportJob operation.</p> </important> <p> <b>Status</b> </p> <p>A dataset import job can be in one of the following states:</p> <ul> <li> <p>CREATE PENDING &gt; CREATE IN_PROGRESS &gt; ACTIVE -or- CREATE FAILED</p> </li> </ul> <p>To get the status of the import job, call <a href=\"https://docs.aws.amazon.com/personalize/latest/dg/API_DescribeDatasetImportJob.html\">DescribeDatasetImportJob</a>, providing the Amazon Resource Name (ARN) of the dataset import job. The dataset import is complete when the status shows as ACTIVE. If the status shows as CREATE FAILED, the response includes a <code>failureReason</code> key, which describes why the job failed.</p> <note> <p>Importing takes time. You must wait until the status shows as ACTIVE before training a model using the dataset.</p> </note> <p class=\"title\"> <b>Related APIs</b> </p> <ul> <li> <p> <a href=\"https://docs.aws.amazon.com/personalize/latest/dg/API_ListDatasetImportJobs.html\">ListDatasetImportJobs</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/personalize/latest/dg/API_DescribeDatasetImportJob.html\">DescribeDatasetImportJob</a> </p> </li> </ul>"
     },
     "CreateEventTracker":{
       "name":"CreateEventTracker",
@@ -156,7 +156,7 @@
         {"shape":"ResourceInUseException"},
         {"shape":"TooManyTagsException"}
       ],
-      "documentation":"<p>Creates an event tracker that you use when adding event data to a specified dataset group using the <a href=\"https://docs.aws.amazon.com/personalize/latest/dg/API_UBS_PutEvents.html\">PutEvents</a> API.</p> <note> <p>Only one event tracker can be associated with a dataset group. You will get an error if you call <code>CreateEventTracker</code> using the same dataset group as an existing event tracker.</p> </note> <p>When you create an event tracker, the response includes a tracking ID, which you pass as a parameter when you use the <a href=\"https://docs.aws.amazon.com/personalize/latest/dg/API_UBS_PutEvents.html\">PutEvents</a> operation. Amazon Personalize then appends the event data to the Interactions dataset of the dataset group you specify in your event tracker. </p> <p>The event tracker can be in one of the following states:</p> <ul> <li> <p>CREATE PENDING &gt; CREATE IN_PROGRESS &gt; ACTIVE -or- CREATE FAILED</p> </li> <li> <p>DELETE PENDING &gt; DELETE IN_PROGRESS</p> </li> </ul> <p>To get the status of the event tracker, call <a href=\"https://docs.aws.amazon.com/personalize/latest/dg/API_DescribeEventTracker.html\">DescribeEventTracker</a>.</p> <note> <p>The event tracker must be in the ACTIVE state before using the tracking ID.</p> </note> <p class=\"title\"> <b>Related APIs</b> </p> <ul> <li> <p> <a href=\"https://docs.aws.amazon.com/personalize/latest/dg/API_ListEventTrackers.html\">ListEventTrackers</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/personalize/latest/dg/API_DescribeEventTracker.html\">DescribeEventTracker</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/personalize/latest/dg/API_DeleteEventTracker.html\">DeleteEventTracker</a> </p> </li> </ul>",
+      "documentation":"<p>Creates an event tracker that you use when adding event data to a specified dataset group using the <a href=\"https://docs.aws.amazon.com/personalize/latest/dg/API_UBS_PutEvents.html\">PutEvents</a> API.</p> <note> <p>Only one event tracker can be associated with a dataset group. You will get an error if you call <code>CreateEventTracker</code> using the same dataset group as an existing event tracker.</p> </note> <p>When you create an event tracker, the response includes a tracking ID, which you pass as a parameter when you use the <a href=\"https://docs.aws.amazon.com/personalize/latest/dg/API_UBS_PutEvents.html\">PutEvents</a> operation. Amazon Personalize then appends the event data to the Item interactions dataset of the dataset group you specify in your event tracker. </p> <p>The event tracker can be in one of the following states:</p> <ul> <li> <p>CREATE PENDING &gt; CREATE IN_PROGRESS &gt; ACTIVE -or- CREATE FAILED</p> </li> <li> <p>DELETE PENDING &gt; DELETE IN_PROGRESS</p> </li> </ul> <p>To get the status of the event tracker, call <a href=\"https://docs.aws.amazon.com/personalize/latest/dg/API_DescribeEventTracker.html\">DescribeEventTracker</a>.</p> <note> <p>The event tracker must be in the ACTIVE state before using the tracking ID.</p> </note> <p class=\"title\"> <b>Related APIs</b> </p> <ul> <li> <p> <a href=\"https://docs.aws.amazon.com/personalize/latest/dg/API_ListEventTrackers.html\">ListEventTrackers</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/personalize/latest/dg/API_DescribeEventTracker.html\">DescribeEventTracker</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/personalize/latest/dg/API_DeleteEventTracker.html\">DeleteEventTracker</a> </p> </li> </ul>",
       "idempotent":true
     },
     "CreateFilter":{
@@ -321,7 +321,7 @@
         {"shape":"ResourceNotFoundException"},
         {"shape":"ResourceInUseException"}
       ],
-      "documentation":"<p>Deletes the event tracker. Does not delete the event-interactions dataset from the associated dataset group. For more information on event trackers, see <a href=\"https://docs.aws.amazon.com/personalize/latest/dg/API_CreateEventTracker.html\">CreateEventTracker</a>.</p>",
+      "documentation":"<p>Deletes the event tracker. Does not delete the dataset from the dataset group. For more information on event trackers, see <a href=\"https://docs.aws.amazon.com/personalize/latest/dg/API_CreateEventTracker.html\">CreateEventTracker</a>.</p>",
       "idempotent":true
     },
     "DeleteFilter":{
@@ -1014,7 +1014,7 @@
         {"shape":"ResourceNotFoundException"},
         {"shape":"ResourceInUseException"}
       ],
-      "documentation":"<p>Updates a campaign by either deploying a new solution or changing the value of the campaign's <code>minProvisionedTPS</code> parameter.</p> <p>To update a campaign, the campaign status must be ACTIVE or CREATE FAILED. Check the campaign status using the <a href=\"https://docs.aws.amazon.com/personalize/latest/dg/API_DescribeCampaign.html\">DescribeCampaign</a> operation.</p> <note> <p>You can still get recommendations from a campaign while an update is in progress. The campaign will use the previous solution version and campaign configuration to generate recommendations until the latest campaign update status is <code>Active</code>. </p> </note> <p>For more information on campaigns, see <a href=\"https://docs.aws.amazon.com/personalize/latest/dg/API_CreateCampaign.html\">CreateCampaign</a>.</p>",
+      "documentation":"<p> Updates a campaign to deploy a retrained solution version with an existing campaign, change your campaign's <code>minProvisionedTPS</code>, or modify your campaign's configuration, such as the exploration configuration. </p> <p>To update a campaign, the campaign status must be ACTIVE or CREATE FAILED. Check the campaign status using the <a href=\"https://docs.aws.amazon.com/personalize/latest/dg/API_DescribeCampaign.html\">DescribeCampaign</a> operation.</p> <note> <p>You can still get recommendations from a campaign while an update is in progress. The campaign will use the previous solution version and campaign configuration to generate recommendations until the latest campaign update status is <code>Active</code>. </p> </note> <p>For more information about updating a campaign, including code samples, see <a href=\"https://docs.aws.amazon.com/personalize/latest/dg/update-campaigns.html\">Updating a campaign</a>. For more information about campaigns, see <a href=\"https://docs.aws.amazon.com/personalize/latest/dg/campaigns.html\">Creating a campaign</a>.</p>",
       "idempotent":true
     },
     "UpdateDataset":{
@@ -1168,7 +1168,7 @@
     },
     "AvroSchema":{
       "type":"string",
-      "max":10000
+      "max":20000
     },
     "BatchInferenceJob":{
       "type":"structure",
@@ -1213,6 +1213,14 @@
           "shape":"RoleArn",
           "documentation":"<p>The ARN of the Amazon Identity and Access Management (IAM) role that requested the batch inference job.</p>"
         },
+        "batchInferenceJobMode":{
+          "shape":"BatchInferenceJobMode",
+          "documentation":"<p>The job's mode.</p>"
+        },
+        "themeGenerationConfig":{
+          "shape":"ThemeGenerationConfig",
+          "documentation":"<p>The job's theme generation settings.</p>"
+        },
         "status":{
           "shape":"Status",
           "documentation":"<p>The status of the batch inference job. The status is one of the following values:</p> <ul> <li> <p>PENDING</p> </li> <li> <p>IN PROGRESS</p> </li> <li> <p>ACTIVE</p> </li> <li> <p>CREATE FAILED</p> </li> </ul>"
@@ -1248,6 +1256,13 @@
         }
       },
       "documentation":"<p>The input configuration of a batch inference job.</p>"
+    },
+    "BatchInferenceJobMode":{
+      "type":"string",
+      "enum":[
+        "BATCH_INFERENCE",
+        "THEME_GENERATION"
+      ]
     },
     "BatchInferenceJobOutput":{
       "type":"structure",
@@ -1290,6 +1305,10 @@
         "solutionVersionArn":{
           "shape":"Arn",
           "documentation":"<p>The ARN of the solution version used by the batch inference job.</p>"
+        },
+        "batchInferenceJobMode":{
+          "shape":"BatchInferenceJobMode",
+          "documentation":"<p>The job's mode.</p>"
         }
       },
       "documentation":"<p>A truncated version of the <a href=\"https://docs.aws.amazon.com/personalize/latest/dg/API_BatchInferenceJob.html\">BatchInferenceJob</a>. The <a href=\"https://docs.aws.amazon.com/personalize/latest/dg/API_ListBatchInferenceJobs.html\">ListBatchInferenceJobs</a> operation returns a list of batch inference job summaries.</p>"
@@ -1458,6 +1477,10 @@
         "itemExplorationConfig":{
           "shape":"HyperParameters",
           "documentation":"<p>Specifies the exploration configuration hyperparameters, including <code>explorationWeight</code> and <code>explorationItemAgeCutOff</code>, you want to use to configure the amount of item exploration Amazon Personalize uses when recommending items. Provide <code>itemExplorationConfig</code> data only if your solution uses the <a href=\"https://docs.aws.amazon.com/personalize/latest/dg/native-recipe-new-item-USER_PERSONALIZATION.html\">User-Personalization</a> recipe.</p>"
+        },
+        "enableMetadataWithRecommendations":{
+          "shape":"Boolean",
+          "documentation":"<p>Whether metadata with recommendations is enabled for the campaign. If enabled, you can specify the columns from your Items dataset in your request for recommendations. Amazon Personalize returns this data for each item in the recommendation response. </p> <p> If you enable metadata in recommendations, you will incur additional costs. For more information, see <a href=\"https://aws.amazon.com/personalize/pricing/\">Amazon Personalize pricing</a>. </p>"
         }
       },
       "documentation":"<p>The configuration details of a campaign.</p>"
@@ -1641,6 +1664,14 @@
         "tags":{
           "shape":"Tags",
           "documentation":"<p>A list of <a href=\"https://docs.aws.amazon.com/personalize/latest/dg/tagging-resources.html\">tags</a> to apply to the batch inference job.</p>"
+        },
+        "batchInferenceJobMode":{
+          "shape":"BatchInferenceJobMode",
+          "documentation":"<p>The mode of the batch inference job. To generate descriptive themes for groups of similar items, set the job mode to <code>THEME_GENERATION</code>. If you don't want to generate themes, use the default <code>BATCH_INFERENCE</code>.</p> <p> When you get batch recommendations with themes, you will incur additional costs. For more information, see <a href=\"https://aws.amazon.com/personalize/pricing/\">Amazon Personalize pricing</a>. </p>"
+        },
+        "themeGenerationConfig":{
+          "shape":"ThemeGenerationConfig",
+          "documentation":"<p>For theme generation jobs, specify the name of the column in your Items dataset that contains each item's name.</p>"
         }
       }
     },
@@ -1898,7 +1929,7 @@
         },
         "datasetType":{
           "shape":"DatasetType",
-          "documentation":"<p>The type of dataset.</p> <p>One of the following (case insensitive) values:</p> <ul> <li> <p>Interactions</p> </li> <li> <p>Items</p> </li> <li> <p>Users</p> </li> </ul>"
+          "documentation":"<p>The type of dataset.</p> <p>One of the following (case insensitive) values:</p> <ul> <li> <p>Interactions</p> </li> <li> <p>Items</p> </li> <li> <p>Users</p> </li> <li> <p>Actions</p> </li> <li> <p>Action_Interactions</p> </li> </ul>"
         },
         "tags":{
           "shape":"Tags",
@@ -2153,7 +2184,7 @@
         },
         "trainingMode":{
           "shape":"TrainingMode",
-          "documentation":"<p>The scope of training to be performed when creating the solution version. The <code>FULL</code> option trains the solution version based on the entirety of the input solution's training data, while the <code>UPDATE</code> option processes only the data that has changed in comparison to the input solution. Choose <code>UPDATE</code> when you want to incrementally update your solution version instead of creating an entirely new one.</p> <important> <p>The <code>UPDATE</code> option can only be used when you already have an active solution version created from the input solution using the <code>FULL</code> option and the input solution was trained with the <a href=\"https://docs.aws.amazon.com/personalize/latest/dg/native-recipe-new-item-USER_PERSONALIZATION.html\">User-Personalization</a> recipe or the <a href=\"https://docs.aws.amazon.com/personalize/latest/dg/native-recipe-hrnn-coldstart.html\">HRNN-Coldstart</a> recipe.</p> </important>"
+          "documentation":"<p>The scope of training to be performed when creating the solution version. The default is <code>FULL</code>. This creates a completely new model based on the entirety of the training data from the datasets in your dataset group. </p> <p>If you use <a href=\"https://docs.aws.amazon.com/personalize/latest/dg/native-recipe-new-item-USER_PERSONALIZATION.html\">User-Personalization</a>, you can specify a training mode of <code>UPDATE</code>. This updates the model to consider new items for recommendations. It is not a full retraining. You should still complete a full retraining weekly. If you specify <code>UPDATE</code>, Amazon Personalize will stop automatic updates for the solution version. To resume updates, create a new solution with training mode set to <code>FULL</code> and deploy it in a campaign. For more information about automatic updates, see <a href=\"https://docs.aws.amazon.com/personalize/latest/dg/use-case-recipe-features.html#maintaining-with-automatic-updates\">Automatic updates</a>. </p> <p>The <code>UPDATE</code> option can only be used when you already have an active solution version created from the input solution using the <code>FULL</code> option and the input solution was trained with the <a href=\"https://docs.aws.amazon.com/personalize/latest/dg/native-recipe-new-item-USER_PERSONALIZATION.html\">User-Personalization</a> recipe or the legacy <a href=\"https://docs.aws.amazon.com/personalize/latest/dg/native-recipe-hrnn-coldstart.html\">HRNN-Coldstart</a> recipe.</p>"
         },
         "tags":{
           "shape":"Tags",
@@ -2197,7 +2228,7 @@
         },
         "datasetType":{
           "shape":"DatasetType",
-          "documentation":"<p>One of the following values:</p> <ul> <li> <p>Interactions</p> </li> <li> <p>Items</p> </li> <li> <p>Users</p> </li> </ul>"
+          "documentation":"<p>One of the following values:</p> <ul> <li> <p>Interactions</p> </li> <li> <p>Items</p> </li> <li> <p>Users</p> </li> <li> <p>Actions</p> </li> <li> <p>Action_Interactions</p> </li> </ul>"
         },
         "schemaArn":{
           "shape":"Arn",
@@ -2218,6 +2249,10 @@
         "latestDatasetUpdate":{
           "shape":"DatasetUpdateSummary",
           "documentation":"<p>Describes the latest update to the dataset.</p>"
+        },
+        "trackingId":{
+          "shape":"TrackingId",
+          "documentation":"<p>The ID of the event tracker for an Action interactions dataset. You specify the tracker's ID in the <code>PutActionInteractions</code> API operation. Amazon Personalize uses it to direct new data to the Action interactions dataset in your dataset group.</p>"
         }
       },
       "documentation":"<p>Provides metadata for a dataset.</p>"
@@ -2328,7 +2363,7 @@
         },
         "roleArn":{
           "shape":"RoleArn",
-          "documentation":"<p>The ARN of the IAM role that has permissions to create the dataset group.</p>"
+          "documentation":"<p>The ARN of the Identity and Access Management (IAM) role that has permissions to access the Key Management Service (KMS) key. Supplying an IAM role is only valid when also specifying a KMS key.</p>"
         },
         "kmsKeyArn":{
           "shape":"KmsKeyArn",
@@ -2351,7 +2386,7 @@
           "documentation":"<p>The domain of a Domain dataset group.</p>"
         }
       },
-      "documentation":"<p>A dataset group is a collection of related datasets (Interactions, User, and Item). You create a dataset group by calling <a href=\"https://docs.aws.amazon.com/personalize/latest/dg/API_CreateDatasetGroup.html\">CreateDatasetGroup</a>. You then create a dataset and add it to a dataset group by calling <a href=\"https://docs.aws.amazon.com/personalize/latest/dg/API_CreateDataset.html\">CreateDataset</a>. The dataset group is used to create and train a solution by calling <a href=\"https://docs.aws.amazon.com/personalize/latest/dg/API_CreateSolution.html\">CreateSolution</a>. A dataset group can contain only one of each type of dataset.</p> <p>You can specify an Key Management Service (KMS) key to encrypt the datasets in the group.</p>"
+      "documentation":"<p>A dataset group is a collection of related datasets (Item interactions, Users, Items, Actions, Action interactions). You create a dataset group by calling <a href=\"https://docs.aws.amazon.com/personalize/latest/dg/API_CreateDatasetGroup.html\">CreateDatasetGroup</a>. You then create a dataset and add it to a dataset group by calling <a href=\"https://docs.aws.amazon.com/personalize/latest/dg/API_CreateDataset.html\">CreateDataset</a>. The dataset group is used to create and train a solution by calling <a href=\"https://docs.aws.amazon.com/personalize/latest/dg/API_CreateSolution.html\">CreateSolution</a>. A dataset group can contain only one of each type of dataset.</p> <p>You can specify an Key Management Service (KMS) key to encrypt the datasets in the group.</p>"
     },
     "DatasetGroupSummary":{
       "type":"structure",
@@ -3250,6 +3285,17 @@
       "value":{"shape":"ParameterValue"},
       "max":100
     },
+    "FieldsForThemeGeneration":{
+      "type":"structure",
+      "required":["itemName"],
+      "members":{
+        "itemName":{
+          "shape":"ColumnName",
+          "documentation":"<p>The name of the Items dataset column that stores the name of each item in the dataset.</p>"
+        }
+      },
+      "documentation":"<p>A string to string map of the configuration details for theme generation.</p>"
+    },
     "Filter":{
       "type":"structure",
       "members":{
@@ -3703,7 +3749,7 @@
         },
         "nextToken":{
           "shape":"NextToken",
-          "documentation":"<p>A token returned from the previous call to <code>ListDatasetImportJobs</code> for getting the next set of dataset import jobs (if they exist).</p>"
+          "documentation":"<p>A token returned from the previous call to <code>ListDatasets</code> for getting the next set of dataset import jobs (if they exist).</p>"
         },
         "maxResults":{
           "shape":"MaxResults",
@@ -4348,6 +4394,10 @@
         "trainingDataConfig":{
           "shape":"TrainingDataConfig",
           "documentation":"<p> Specifies the training data configuration to use when creating a domain recommender. </p>"
+        },
+        "enableMetadataWithRecommendations":{
+          "shape":"Boolean",
+          "documentation":"<p>Whether metadata with recommendations is enabled for the recommender. If enabled, you can specify the columns from your Items dataset in your request for recommendations. Amazon Personalize returns this data for each item in the recommendation response. </p> <p> If you enable metadata in recommendations, you will incur additional costs. For more information, see <a href=\"https://aws.amazon.com/personalize/pricing/\">Amazon Personalize pricing</a>. </p>"
         }
       },
       "documentation":"<p>The configuration details of the recommender.</p>"
@@ -4552,7 +4602,7 @@
         },
         "algorithmHyperParameters":{
           "shape":"HyperParameters",
-          "documentation":"<p>Lists the hyperparameter names and ranges.</p>"
+          "documentation":"<p>Lists the algorithm hyperparameters and their values.</p>"
         },
         "featureTransformationParameters":{
           "shape":"FeatureTransformationParameters",
@@ -4824,6 +4874,17 @@
       "member":{"shape":"Tag"},
       "max":200,
       "min":0
+    },
+    "ThemeGenerationConfig":{
+      "type":"structure",
+      "required":["fieldsForThemeGeneration"],
+      "members":{
+        "fieldsForThemeGeneration":{
+          "shape":"FieldsForThemeGeneration",
+          "documentation":"<p>Fields used to generate descriptive themes for a batch inference job.</p>"
+        }
+      },
+      "documentation":"<p>The configuration details for generating themes with a batch inference job.</p>"
     },
     "TooManyTagKeysException":{
       "type":"structure",

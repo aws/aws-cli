@@ -1379,6 +1379,17 @@
       "key":{"shape":"String"},
       "value":{"shape":"String"}
     },
+    "AgentDetails":{
+      "type":"structure",
+      "members":{
+        "Version":{
+          "shape":"String",
+          "documentation":"<p>Version of the installed GuardDuty security agent.</p>",
+          "locationName":"version"
+        }
+      },
+      "documentation":"<p>Information about the installed GuardDuty security agent.</p>"
+    },
     "Anomaly":{
       "type":"structure",
       "members":{
@@ -1776,6 +1787,22 @@
       },
       "documentation":"<p>Details of a container.</p>"
     },
+    "ContainerInstanceDetails":{
+      "type":"structure",
+      "members":{
+        "CoveredContainerInstances":{
+          "shape":"Long",
+          "documentation":"<p>Represents the nodes in the Amazon ECS cluster that has a <code>HEALTHY</code> coverage status.</p>",
+          "locationName":"coveredContainerInstances"
+        },
+        "CompatibleContainerInstances":{
+          "shape":"Long",
+          "documentation":"<p>Represents total number of nodes in the Amazon ECS cluster.</p>",
+          "locationName":"compatibleContainerInstances"
+        }
+      },
+      "documentation":"<p>Contains information about the Amazon EC2 instance that is running the Amazon ECS container.</p>"
+    },
     "Containers":{
       "type":"list",
       "member":{"shape":"Container"}
@@ -1810,6 +1837,58 @@
         }
       },
       "documentation":"<p>Contains information about the country where the remote IP address is located.</p>"
+    },
+    "CoverageEc2InstanceDetails":{
+      "type":"structure",
+      "members":{
+        "InstanceId":{
+          "shape":"String",
+          "documentation":"<p>The Amazon EC2 instance ID.</p>",
+          "locationName":"instanceId"
+        },
+        "InstanceType":{
+          "shape":"String",
+          "documentation":"<p>The instance type of the Amazon EC2 instance.</p>",
+          "locationName":"instanceType"
+        },
+        "ClusterArn":{
+          "shape":"String",
+          "documentation":"<p>The cluster ARN of the Amazon ECS cluster running on the Amazon EC2 instance.</p>",
+          "locationName":"clusterArn"
+        },
+        "AgentDetails":{
+          "shape":"AgentDetails",
+          "documentation":"<p>Information about the installed security agent.</p>",
+          "locationName":"agentDetails"
+        },
+        "ManagementType":{
+          "shape":"ManagementType",
+          "documentation":"<p>Indicates how the GuardDuty security agent is managed for this resource.</p> <ul> <li> <p> <code>AUTO_MANAGED</code> indicates that GuardDuty deploys and manages updates for this resource.</p> </li> <li> <p> <code>MANUAL</code> indicates that you are responsible to deploy, update, and manage the GuardDuty security agent updates for this resource.</p> </li> </ul> <note> <p>The <code>DISABLED</code> status doesn't apply to Amazon EC2 instances and Amazon EKS clusters that run on Amazon EC2 instances.</p> </note>",
+          "locationName":"managementType"
+        }
+      },
+      "documentation":"<note> <p>This API is also used when you use GuardDuty Runtime Monitoring for your Amazon EC2 instances (currently in preview release) and is subject to change.</p> </note> <p>Contains information about the Amazon EC2 instance runtime coverage details.</p>"
+    },
+    "CoverageEcsClusterDetails":{
+      "type":"structure",
+      "members":{
+        "ClusterName":{
+          "shape":"String",
+          "documentation":"<p>The name of the Amazon ECS cluster.</p>",
+          "locationName":"clusterName"
+        },
+        "FargateDetails":{
+          "shape":"FargateDetails",
+          "documentation":"<p>Information about the Fargate details associated with the Amazon ECS cluster.</p>",
+          "locationName":"fargateDetails"
+        },
+        "ContainerInstanceDetails":{
+          "shape":"ContainerInstanceDetails",
+          "documentation":"<p>Information about the Amazon ECS container running on Amazon EC2 instance.</p>",
+          "locationName":"containerInstanceDetails"
+        }
+      },
+      "documentation":"<p>Contains information about Amazon ECS cluster runtime coverage details.</p>"
     },
     "CoverageEksClusterDetails":{
       "type":"structure",
@@ -1894,7 +1973,11 @@
         "COVERAGE_STATUS",
         "ADDON_VERSION",
         "MANAGEMENT_TYPE",
-        "EKS_CLUSTER_NAME"
+        "EKS_CLUSTER_NAME",
+        "ECS_CLUSTER_NAME",
+        "AGENT_VERSION",
+        "INSTANCE_ID",
+        "CLUSTER_ARN"
       ]
     },
     "CoverageFilterCriterionList":{
@@ -1956,6 +2039,16 @@
           "shape":"ResourceType",
           "documentation":"<p>The type of Amazon Web Services resource.</p>",
           "locationName":"resourceType"
+        },
+        "EcsClusterDetails":{
+          "shape":"CoverageEcsClusterDetails",
+          "documentation":"<p>Information about the Amazon ECS cluster that is assessed for runtime coverage.</p>",
+          "locationName":"ecsClusterDetails"
+        },
+        "Ec2InstanceDetails":{
+          "shape":"CoverageEc2InstanceDetails",
+          "documentation":"<note> <p>This API is also used when you use GuardDuty Runtime Monitoring for your Amazon EC2 instances (currently in preview release) and is subject to change.</p> </note> <p>Information about the Amazon EC2 instance assessed for runtime coverage.</p>",
+          "locationName":"ec2InstanceDetails"
         }
       },
       "documentation":"<p>Information about the resource for each individual EKS cluster.</p>"
@@ -1989,7 +2082,9 @@
         "ISSUE",
         "ADDON_VERSION",
         "UPDATED_AT",
-        "EKS_CLUSTER_NAME"
+        "EKS_CLUSTER_NAME",
+        "ECS_CLUSTER_NAME",
+        "INSTANCE_ID"
       ]
     },
     "CoverageStatistics":{
@@ -3020,7 +3115,8 @@
         "EBS_MALWARE_PROTECTION",
         "RDS_LOGIN_EVENTS",
         "EKS_RUNTIME_MONITORING",
-        "LAMBDA_NETWORK_LOGS"
+        "LAMBDA_NETWORK_LOGS",
+        "RUNTIME_MONITORING"
       ]
     },
     "DetectorFeatureConfiguration":{
@@ -3089,7 +3185,8 @@
         "EBS_MALWARE_PROTECTION",
         "RDS_LOGIN_EVENTS",
         "EKS_RUNTIME_MONITORING",
-        "LAMBDA_NETWORK_LOGS"
+        "LAMBDA_NETWORK_LOGS",
+        "RUNTIME_MONITORING"
       ]
     },
     "DetectorId":{
@@ -3493,9 +3590,28 @@
       },
       "documentation":"<p>Contains information about the reason that the finding was generated.</p>"
     },
+    "FargateDetails":{
+      "type":"structure",
+      "members":{
+        "Issues":{
+          "shape":"Issues",
+          "documentation":"<p>Runtime coverage issues identified for the resource running on AWS Fargate.</p>",
+          "locationName":"issues"
+        },
+        "ManagementType":{
+          "shape":"ManagementType",
+          "documentation":"<p>Indicates how the GuardDuty security agent is managed for this resource.</p> <ul> <li> <p> <code>AUTO_MANAGED</code> indicates that GuardDuty deploys and manages updates for this resource.</p> </li> <li> <p> <code>MANUAL</code> indicates that you are responsible to deploy, update, and manage the GuardDuty security agent updates for this resource.</p> </li> <li> <p> <code>DISABLED</code> indicates that the deployment of the GuardDuty security agent is disabled for this resource.</p> </li> </ul>",
+          "locationName":"managementType"
+        }
+      },
+      "documentation":"<p>Contains information about AWS Fargate details associated with an Amazon ECS cluster.</p>"
+    },
     "FeatureAdditionalConfiguration":{
       "type":"string",
-      "enum":["EKS_ADDON_MANAGEMENT"]
+      "enum":[
+        "EKS_ADDON_MANAGEMENT",
+        "ECS_FARGATE_AGENT_MANAGEMENT"
+      ]
     },
     "FeatureStatus":{
       "type":"string",
@@ -3805,7 +3921,9 @@
         "EBS_MALWARE_PROTECTION",
         "RDS_LOGIN_EVENTS",
         "EKS_RUNTIME_MONITORING",
-        "LAMBDA_NETWORK_LOGS"
+        "LAMBDA_NETWORK_LOGS",
+        "FARGATE_RUNTIME_MONITORING",
+        "EC2_RUNTIME_MONITORING"
       ]
     },
     "GeoLocation":{
@@ -4707,6 +4825,12 @@
     "Ipv6Addresses":{
       "type":"list",
       "member":{"shape":"String"}
+    },
+    "Issues":{
+      "type":"list",
+      "member":{"shape":"String"},
+      "max":50,
+      "min":0
     },
     "KubernetesApiCallAction":{
       "type":"structure",
@@ -5640,7 +5764,8 @@
       "type":"string",
       "enum":[
         "AUTO_MANAGED",
-        "MANUAL"
+        "MANUAL",
+        "DISABLED"
       ]
     },
     "MapEquals":{
@@ -6020,12 +6145,16 @@
         "EBS_MALWARE_PROTECTION",
         "RDS_LOGIN_EVENTS",
         "EKS_RUNTIME_MONITORING",
-        "LAMBDA_NETWORK_LOGS"
+        "LAMBDA_NETWORK_LOGS",
+        "RUNTIME_MONITORING"
       ]
     },
     "OrgFeatureAdditionalConfiguration":{
       "type":"string",
-      "enum":["EKS_ADDON_MANAGEMENT"]
+      "enum":[
+        "EKS_ADDON_MANAGEMENT",
+        "ECS_FARGATE_AGENT_MANAGEMENT"
+      ]
     },
     "OrgFeatureStatus":{
       "type":"string",
@@ -6785,7 +6914,11 @@
     },
     "ResourceType":{
       "type":"string",
-      "enum":["EKS"]
+      "enum":[
+        "EKS",
+        "ECS",
+        "EC2"
+      ]
     },
     "RuntimeContext":{
       "type":"structure",
@@ -8244,7 +8377,9 @@
         "EBS_MALWARE_PROTECTION",
         "RDS_LOGIN_EVENTS",
         "LAMBDA_NETWORK_LOGS",
-        "EKS_RUNTIME_MONITORING"
+        "EKS_RUNTIME_MONITORING",
+        "FARGATE_RUNTIME_MONITORING",
+        "EC2_RUNTIME_MONITORING"
       ]
     },
     "UsageFeatureList":{
@@ -8438,5 +8573,5 @@
       "documentation":"<p>Amazon Virtual Private Cloud configuration details associated with your Lambda function.</p>"
     }
   },
-  "documentation":"<p>Amazon GuardDuty is a continuous security monitoring service that analyzes and processes the following data sources: VPC flow logs, Amazon Web Services CloudTrail management event logs, CloudTrail S3 data event logs, EKS audit logs, DNS logs, and Amazon EBS volume data. It uses threat intelligence feeds, such as lists of malicious IPs and domains, and machine learning to identify unexpected, potentially unauthorized, and malicious activity within your Amazon Web Services environment. This can include issues like escalations of privileges, uses of exposed credentials, or communication with malicious IPs, domains, or presence of malware on your Amazon EC2 instances and container workloads. For example, GuardDuty can detect compromised EC2 instances and container workloads serving malware, or mining bitcoin. </p> <p>GuardDuty also monitors Amazon Web Services account access behavior for signs of compromise, such as unauthorized infrastructure deployments like EC2 instances deployed in a Region that has never been used, or unusual API calls like a password policy change to reduce password strength. </p> <p>GuardDuty informs you about the status of your Amazon Web Services environment by producing security findings that you can view in the GuardDuty console or through Amazon EventBridge. For more information, see the <i> <a href=\"https://docs.aws.amazon.com/guardduty/latest/ug/what-is-guardduty.html\">Amazon GuardDuty User Guide</a> </i>. </p>"
+  "documentation":"<p>Amazon GuardDuty is a continuous security monitoring service that analyzes and processes the following foundational data sources - VPC flow logs, Amazon Web Services CloudTrail management event logs, CloudTrail S3 data event logs, EKS audit logs, DNS logs, Amazon EBS volume data, runtime activity belonging to container workloads, such as Amazon EKS, Amazon ECS (including Amazon Web Services Fargate), and Amazon EC2 instances. It uses threat intelligence feeds, such as lists of malicious IPs and domains, and machine learning to identify unexpected, potentially unauthorized, and malicious activity within your Amazon Web Services environment. This can include issues like escalations of privileges, uses of exposed credentials, or communication with malicious IPs, domains, or presence of malware on your Amazon EC2 instances and container workloads. For example, GuardDuty can detect compromised EC2 instances and container workloads serving malware, or mining bitcoin. </p> <p>GuardDuty also monitors Amazon Web Services account access behavior for signs of compromise, such as unauthorized infrastructure deployments like EC2 instances deployed in a Region that has never been used, or unusual API calls like a password policy change to reduce password strength. </p> <p>GuardDuty informs you about the status of your Amazon Web Services environment by producing security findings that you can view in the GuardDuty console or through Amazon EventBridge. For more information, see the <i> <a href=\"https://docs.aws.amazon.com/guardduty/latest/ug/what-is-guardduty.html\">Amazon GuardDuty User Guide</a> </i>. </p>"
 }

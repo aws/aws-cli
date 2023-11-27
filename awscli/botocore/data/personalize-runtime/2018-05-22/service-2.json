@@ -12,6 +12,21 @@
     "uid":"personalize-runtime-2018-05-22"
   },
   "operations":{
+    "GetActionRecommendations":{
+      "name":"GetActionRecommendations",
+      "http":{
+        "method":"POST",
+        "requestUri":"/action-recommendations"
+      },
+      "input":{"shape":"GetActionRecommendationsRequest"},
+      "output":{"shape":"GetActionRecommendationsResponse"},
+      "errors":[
+        {"shape":"InvalidInputException"},
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p>Returns a list of recommended actions in sorted in descending order by prediction score. Use the <code>GetActionRecommendations</code> API if you have a custom campaign that deploys a solution version trained with a PERSONALIZED_ACTIONS recipe. </p> <p>For more information about PERSONALIZED_ACTIONS recipes, see <a href=\"https://docs.aws.amazon.com/personalize/latest/dg/nexts-best-action-recipes.html\">PERSONALIZED_ACTIONS recipes</a>. For more information about getting action recommendations, see <a href=\"https://docs.aws.amazon.com/personalize/latest/dg/get-action-recommendations.html\">Getting action recommendations</a>.</p>",
+      "idempotent":true
+    },
     "GetPersonalizedRanking":{
       "name":"GetPersonalizedRanking",
       "http":{
@@ -44,6 +59,14 @@
     }
   },
   "shapes":{
+    "ActionID":{
+      "type":"string",
+      "max":256
+    },
+    "ActionList":{
+      "type":"list",
+      "member":{"shape":"PredictedAction"}
+    },
     "Arn":{
       "type":"string",
       "max":256,
@@ -59,11 +82,28 @@
       "max":1000,
       "sensitive":true
     },
+    "ColumnName":{
+      "type":"string",
+      "max":150
+    },
+    "ColumnNamesList":{
+      "type":"list",
+      "member":{"shape":"ColumnName"},
+      "max":99
+    },
+    "ColumnValue":{
+      "type":"string",
+      "max":20000
+    },
     "Context":{
       "type":"map",
       "key":{"shape":"AttributeName"},
       "value":{"shape":"AttributeValue"},
       "max":150
+    },
+    "DatasetType":{
+      "type":"string",
+      "max":256
     },
     "ErrorMessage":{"type":"string"},
     "FilterAttributeName":{
@@ -82,6 +122,44 @@
       "value":{"shape":"FilterAttributeValue"},
       "max":25
     },
+    "GetActionRecommendationsRequest":{
+      "type":"structure",
+      "members":{
+        "campaignArn":{
+          "shape":"Arn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the campaign to use for getting action recommendations. This campaign must deploy a solution version trained with a PERSONALIZED_ACTIONS recipe.</p>"
+        },
+        "userId":{
+          "shape":"UserID",
+          "documentation":"<p>The user ID of the user to provide action recommendations for.</p>"
+        },
+        "numResults":{
+          "shape":"NumResults",
+          "documentation":"<p>The number of results to return. The default is 5. The maximum is 100.</p>"
+        },
+        "filterArn":{
+          "shape":"Arn",
+          "documentation":"<p>The ARN of the filter to apply to the returned recommendations. For more information, see <a href=\"https://docs.aws.amazon.com/personalize/latest/dg/filter.html\">Filtering Recommendations</a>.</p> <p>When using this parameter, be sure the filter resource is <code>ACTIVE</code>.</p>"
+        },
+        "filterValues":{
+          "shape":"FilterValues",
+          "documentation":"<p>The values to use when filtering recommendations. For each placeholder parameter in your filter expression, provide the parameter name (in matching case) as a key and the filter value(s) as the corresponding value. Separate multiple values for one parameter with a comma. </p> <p>For filter expressions that use an <code>INCLUDE</code> element to include actions, you must provide values for all parameters that are defined in the expression. For filters with expressions that use an <code>EXCLUDE</code> element to exclude actions, you can omit the <code>filter-values</code>. In this case, Amazon Personalize doesn't use that portion of the expression to filter recommendations.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/personalize/latest/dg/filter.html\">Filtering recommendations and user segments</a>.</p>"
+        }
+      }
+    },
+    "GetActionRecommendationsResponse":{
+      "type":"structure",
+      "members":{
+        "actionList":{
+          "shape":"ActionList",
+          "documentation":"<p>A list of action recommendations sorted in descending order by prediction score. There can be a maximum of 100 actions in the list. For information about action scores, see <a href=\"https://docs.aws.amazon.com/personalize/latest/dg/how-action-recommendation-scoring-works.html\">How action recommendation scoring works</a>.</p>"
+        },
+        "recommendationId":{
+          "shape":"RecommendationID",
+          "documentation":"<p>The ID of the recommendation.</p>"
+        }
+      }
+    },
     "GetPersonalizedRankingRequest":{
       "type":"structure",
       "required":[
@@ -96,7 +174,7 @@
         },
         "inputList":{
           "shape":"InputList",
-          "documentation":"<p>A list of items (by <code>itemId</code>) to rank. If an item was not included in the training dataset, the item is appended to the end of the reranked list. The maximum is 500.</p>"
+          "documentation":"<p>A list of items (by <code>itemId</code>) to rank. If an item was not included in the training dataset, the item is appended to the end of the reranked list. If you are including metadata in recommendations, the maximum is 50. Otherwise, the maximum is 500.</p>"
         },
         "userId":{
           "shape":"UserID",
@@ -113,6 +191,10 @@
         "filterValues":{
           "shape":"FilterValues",
           "documentation":"<p>The values to use when filtering recommendations. For each placeholder parameter in your filter expression, provide the parameter name (in matching case) as a key and the filter value(s) as the corresponding value. Separate multiple values for one parameter with a comma. </p> <p>For filter expressions that use an <code>INCLUDE</code> element to include items, you must provide values for all parameters that are defined in the expression. For filters with expressions that use an <code>EXCLUDE</code> element to exclude items, you can omit the <code>filter-values</code>.In this case, Amazon Personalize doesn't use that portion of the expression to filter recommendations.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/personalize/latest/dg/filter.html\">Filtering Recommendations</a>.</p>"
+        },
+        "metadataColumns":{
+          "shape":"MetadataColumns",
+          "documentation":"<p>If you enabled metadata in recommendations when you created or updated the campaign, specify metadata columns from your Items dataset to include in the personalized ranking. The map key is <code>ITEMS</code> and the value is a list of column names from your Items dataset. The maximum number of columns you can provide is 10.</p> <p> For information about enabling metadata for a campaign, see <a href=\"https://docs.aws.amazon.com/personalize/latest/dg/create-campaign-return-metadata.html\">Enabling metadata in recommendations for a campaign</a>. </p>"
         }
       }
     },
@@ -146,7 +228,7 @@
         },
         "numResults":{
           "shape":"NumResults",
-          "documentation":"<p>The number of results to return. The default is 25. The maximum is 500.</p>"
+          "documentation":"<p>The number of results to return. The default is 25. If you are including metadata in recommendations, the maximum is 50. Otherwise, the maximum is 500.</p>"
         },
         "context":{
           "shape":"Context",
@@ -167,6 +249,10 @@
         "promotions":{
           "shape":"PromotionList",
           "documentation":"<p>The promotions to apply to the recommendation request. A promotion defines additional business rules that apply to a configurable subset of recommended items.</p>"
+        },
+        "metadataColumns":{
+          "shape":"MetadataColumns",
+          "documentation":"<p>If you enabled metadata in recommendations when you created or updated the campaign or recommender, specify the metadata columns from your Items dataset to include in item recommendations. The map key is <code>ITEMS</code> and the value is a list of column names from your Items dataset. The maximum number of columns you can provide is 10.</p> <p> For information about enabling metadata for a campaign, see <a href=\"https://docs.aws.amazon.com/personalize/latest/dg/create-campaign-return-metadata.html\">Enabling metadata in recommendations for a campaign</a>. For information about enabling metadata for a recommender, see <a href=\"https://docs.aws.amazon.com/personalize/latest/dg/create-recommender-return-metadata.html\">Enabling metadata in recommendations for a recommender</a>. </p>"
         }
       }
     },
@@ -204,6 +290,17 @@
       "type":"list",
       "member":{"shape":"PredictedItem"}
     },
+    "Metadata":{
+      "type":"map",
+      "key":{"shape":"ColumnName"},
+      "value":{"shape":"ColumnValue"}
+    },
+    "MetadataColumns":{
+      "type":"map",
+      "key":{"shape":"DatasetType"},
+      "value":{"shape":"ColumnNamesList"},
+      "max":1
+    },
     "Name":{
       "type":"string",
       "max":63,
@@ -219,6 +316,20 @@
       "max":100,
       "min":1
     },
+    "PredictedAction":{
+      "type":"structure",
+      "members":{
+        "actionId":{
+          "shape":"ActionID",
+          "documentation":"<p>The ID of the recommended action.</p>"
+        },
+        "score":{
+          "shape":"Score",
+          "documentation":"<p>The score of the recommended action. For information about action scores, see <a href=\"https://docs.aws.amazon.com/personalize/latest/dg/how-action-recommendation-scoring-works.html\">How action recommendation scoring works</a>.</p>"
+        }
+      },
+      "documentation":"<p>An object that identifies an action.</p> <p>The API returns a list of <code>PredictedAction</code>s.</p>"
+    },
     "PredictedItem":{
       "type":"structure",
       "members":{
@@ -233,6 +344,10 @@
         "promotionName":{
           "shape":"Name",
           "documentation":"<p>The name of the promotion that included the predicted item.</p>"
+        },
+        "metadata":{
+          "shape":"Metadata",
+          "documentation":"<p>Metadata about the item from your Items dataset.</p>"
         }
       },
       "documentation":"<p>An object that identifies an item.</p> <p>The and APIs return a list of <code>PredictedItem</code>s.</p>"

@@ -28,7 +28,24 @@
         {"shape":"ResourceNotFoundException"},
         {"shape":"ServiceQuotaExceededException"}
       ],
-      "documentation":"<p>Creates an experiment template. </p> <p>An experiment template includes the following components:</p> <ul> <li> <p> <b>Targets</b>: A target can be a specific resource in your Amazon Web Services environment, or one or more resources that match criteria that you specify, for example, resources that have specific tags.</p> </li> <li> <p> <b>Actions</b>: The actions to carry out on the target. You can specify multiple actions, the duration of each action, and when to start each action during an experiment.</p> </li> <li> <p> <b>Stop conditions</b>: If a stop condition is triggered while an experiment is running, the experiment is automatically stopped. You can define a stop condition as a CloudWatch alarm.</p> </li> </ul> <p>For more information, see <a href=\"https://docs.aws.amazon.com/fis/latest/userguide/experiment-templates.html\">Experiment templates</a> in the <i>Fault Injection Simulator User Guide</i>.</p>"
+      "documentation":"<p>Creates an experiment template. </p> <p>An experiment template includes the following components:</p> <ul> <li> <p> <b>Targets</b>: A target can be a specific resource in your Amazon Web Services environment, or one or more resources that match criteria that you specify, for example, resources that have specific tags.</p> </li> <li> <p> <b>Actions</b>: The actions to carry out on the target. You can specify multiple actions, the duration of each action, and when to start each action during an experiment.</p> </li> <li> <p> <b>Stop conditions</b>: If a stop condition is triggered while an experiment is running, the experiment is automatically stopped. You can define a stop condition as a CloudWatch alarm.</p> </li> </ul> <p>For more information, see <a href=\"https://docs.aws.amazon.com/fis/latest/userguide/experiment-templates.html\">experiment templates</a> in the <i>Fault Injection Simulator User Guide</i>.</p>"
+    },
+    "CreateTargetAccountConfiguration":{
+      "name":"CreateTargetAccountConfiguration",
+      "http":{
+        "method":"POST",
+        "requestUri":"/experimentTemplates/{id}/targetAccountConfigurations/{accountId}",
+        "responseCode":200
+      },
+      "input":{"shape":"CreateTargetAccountConfigurationRequest"},
+      "output":{"shape":"CreateTargetAccountConfigurationResponse"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"ConflictException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ServiceQuotaExceededException"}
+      ],
+      "documentation":"<p>Creates a target account configuration for the experiment template. A target account configuration is required when <code>accountTargeting</code> of <code>experimentOptions</code> is set to <code>multi-account</code>. For more information, see <a href=\"https://docs.aws.amazon.com/fis/latest/userguide/experiment-options.html\">experiment options</a> in the <i>Fault Injection Simulator User Guide</i>. </p>"
     },
     "DeleteExperimentTemplate":{
       "name":"DeleteExperimentTemplate",
@@ -44,6 +61,21 @@
         {"shape":"ResourceNotFoundException"}
       ],
       "documentation":"<p>Deletes the specified experiment template.</p>"
+    },
+    "DeleteTargetAccountConfiguration":{
+      "name":"DeleteTargetAccountConfiguration",
+      "http":{
+        "method":"DELETE",
+        "requestUri":"/experimentTemplates/{id}/targetAccountConfigurations/{accountId}",
+        "responseCode":200
+      },
+      "input":{"shape":"DeleteTargetAccountConfigurationRequest"},
+      "output":{"shape":"DeleteTargetAccountConfigurationResponse"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p>Deletes the specified target account configuration of the experiment template.</p>"
     },
     "GetAction":{
       "name":"GetAction",
@@ -75,6 +107,21 @@
       ],
       "documentation":"<p>Gets information about the specified experiment.</p>"
     },
+    "GetExperimentTargetAccountConfiguration":{
+      "name":"GetExperimentTargetAccountConfiguration",
+      "http":{
+        "method":"GET",
+        "requestUri":"/experiments/{id}/targetAccountConfigurations/{accountId}",
+        "responseCode":200
+      },
+      "input":{"shape":"GetExperimentTargetAccountConfigurationRequest"},
+      "output":{"shape":"GetExperimentTargetAccountConfigurationResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ValidationException"}
+      ],
+      "documentation":"<p>Gets information about the specified target account configuration of the experiment.</p>"
+    },
     "GetExperimentTemplate":{
       "name":"GetExperimentTemplate",
       "http":{
@@ -89,6 +136,21 @@
         {"shape":"ResourceNotFoundException"}
       ],
       "documentation":"<p>Gets information about the specified experiment template.</p>"
+    },
+    "GetTargetAccountConfiguration":{
+      "name":"GetTargetAccountConfiguration",
+      "http":{
+        "method":"GET",
+        "requestUri":"/experimentTemplates/{id}/targetAccountConfigurations/{accountId}",
+        "responseCode":200
+      },
+      "input":{"shape":"GetTargetAccountConfigurationRequest"},
+      "output":{"shape":"GetTargetAccountConfigurationResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ValidationException"}
+      ],
+      "documentation":"<p>Gets information about the specified target account configuration of the experiment template.</p>"
     },
     "GetTargetResourceType":{
       "name":"GetTargetResourceType",
@@ -118,6 +180,36 @@
         {"shape":"ValidationException"}
       ],
       "documentation":"<p>Lists the available FIS actions.</p>"
+    },
+    "ListExperimentResolvedTargets":{
+      "name":"ListExperimentResolvedTargets",
+      "http":{
+        "method":"GET",
+        "requestUri":"/experiments/{id}/resolvedTargets",
+        "responseCode":200
+      },
+      "input":{"shape":"ListExperimentResolvedTargetsRequest"},
+      "output":{"shape":"ListExperimentResolvedTargetsResponse"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p>Lists the resolved targets information of the specified experiment.</p>"
+    },
+    "ListExperimentTargetAccountConfigurations":{
+      "name":"ListExperimentTargetAccountConfigurations",
+      "http":{
+        "method":"GET",
+        "requestUri":"/experiments/{id}/targetAccountConfigurations",
+        "responseCode":200
+      },
+      "input":{"shape":"ListExperimentTargetAccountConfigurationsRequest"},
+      "output":{"shape":"ListExperimentTargetAccountConfigurationsResponse"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p>Lists the target account configurations of the specified experiment.</p>"
     },
     "ListExperimentTemplates":{
       "name":"ListExperimentTemplates",
@@ -157,6 +249,21 @@
       "input":{"shape":"ListTagsForResourceRequest"},
       "output":{"shape":"ListTagsForResourceResponse"},
       "documentation":"<p>Lists the tags for the specified resource.</p>"
+    },
+    "ListTargetAccountConfigurations":{
+      "name":"ListTargetAccountConfigurations",
+      "http":{
+        "method":"GET",
+        "requestUri":"/experimentTemplates/{id}/targetAccountConfigurations",
+        "responseCode":200
+      },
+      "input":{"shape":"ListTargetAccountConfigurationsRequest"},
+      "output":{"shape":"ListTargetAccountConfigurationsResponse"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p>Lists the target account configurations of the specified experiment template.</p>"
     },
     "ListTargetResourceTypes":{
       "name":"ListTargetResourceTypes",
@@ -241,9 +348,31 @@
         {"shape":"ServiceQuotaExceededException"}
       ],
       "documentation":"<p>Updates the specified experiment template.</p>"
+    },
+    "UpdateTargetAccountConfiguration":{
+      "name":"UpdateTargetAccountConfiguration",
+      "http":{
+        "method":"PATCH",
+        "requestUri":"/experimentTemplates/{id}/targetAccountConfigurations/{accountId}",
+        "responseCode":200
+      },
+      "input":{"shape":"UpdateTargetAccountConfigurationRequest"},
+      "output":{"shape":"UpdateTargetAccountConfigurationResponse"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p>Updates the target account configuration for the specified experiment template.</p>"
     }
   },
   "shapes":{
+    "AccountTargeting":{
+      "type":"string",
+      "enum":[
+        "single-account",
+        "multi-account"
+      ]
+    },
     "Action":{
       "type":"structure",
       "members":{
@@ -410,6 +539,20 @@
       "key":{"shape":"ExperimentTemplateActionName"},
       "value":{"shape":"CreateExperimentTemplateActionInput"}
     },
+    "CreateExperimentTemplateExperimentOptionsInput":{
+      "type":"structure",
+      "members":{
+        "accountTargeting":{
+          "shape":"AccountTargeting",
+          "documentation":"<p>Specifies the account targeting setting for experiment options.</p>"
+        },
+        "emptyTargetResolutionMode":{
+          "shape":"EmptyTargetResolutionMode",
+          "documentation":"<p>Specifies the empty target resolution mode for experiment options.</p>"
+        }
+      },
+      "documentation":"<p>Specifies experiment options for an experiment template.</p>"
+    },
     "CreateExperimentTemplateLogConfigurationInput":{
       "type":"structure",
       "required":["logSchemaVersion"],
@@ -471,6 +614,10 @@
         "logConfiguration":{
           "shape":"CreateExperimentTemplateLogConfigurationInput",
           "documentation":"<p>The configuration for experiment logging.</p>"
+        },
+        "experimentOptions":{
+          "shape":"CreateExperimentTemplateExperimentOptionsInput",
+          "documentation":"<p>The experiment options for the experiment template.</p>"
         }
       }
     },
@@ -541,6 +688,50 @@
       "key":{"shape":"ExperimentTemplateTargetName"},
       "value":{"shape":"CreateExperimentTemplateTargetInput"}
     },
+    "CreateTargetAccountConfigurationRequest":{
+      "type":"structure",
+      "required":[
+        "experimentTemplateId",
+        "accountId",
+        "roleArn"
+      ],
+      "members":{
+        "clientToken":{
+          "shape":"ClientToken",
+          "documentation":"<p>Unique, case-sensitive identifier that you provide to ensure the idempotency of the request.</p>",
+          "idempotencyToken":true
+        },
+        "experimentTemplateId":{
+          "shape":"ExperimentTemplateId",
+          "documentation":"<p>The experiment template ID.</p>",
+          "location":"uri",
+          "locationName":"id"
+        },
+        "accountId":{
+          "shape":"TargetAccountId",
+          "documentation":"<p>The AWS account ID of the target account.</p>",
+          "location":"uri",
+          "locationName":"accountId"
+        },
+        "roleArn":{
+          "shape":"RoleArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of an IAM role for the target account.</p>"
+        },
+        "description":{
+          "shape":"TargetAccountConfigurationDescription",
+          "documentation":"<p>The description of the target account.</p>"
+        }
+      }
+    },
+    "CreateTargetAccountConfigurationResponse":{
+      "type":"structure",
+      "members":{
+        "targetAccountConfiguration":{
+          "shape":"TargetAccountConfiguration",
+          "documentation":"<p>Information about the target account configuration.</p>"
+        }
+      }
+    },
     "CreationTime":{"type":"timestamp"},
     "DeleteExperimentTemplateRequest":{
       "type":"structure",
@@ -562,6 +753,43 @@
           "documentation":"<p>Information about the experiment template.</p>"
         }
       }
+    },
+    "DeleteTargetAccountConfigurationRequest":{
+      "type":"structure",
+      "required":[
+        "experimentTemplateId",
+        "accountId"
+      ],
+      "members":{
+        "experimentTemplateId":{
+          "shape":"ExperimentTemplateId",
+          "documentation":"<p>The ID of the experiment template.</p>",
+          "location":"uri",
+          "locationName":"id"
+        },
+        "accountId":{
+          "shape":"TargetAccountId",
+          "documentation":"<p>The AWS account ID of the target account.</p>",
+          "location":"uri",
+          "locationName":"accountId"
+        }
+      }
+    },
+    "DeleteTargetAccountConfigurationResponse":{
+      "type":"structure",
+      "members":{
+        "targetAccountConfiguration":{
+          "shape":"TargetAccountConfiguration",
+          "documentation":"<p>Information about the target account configuration.</p>"
+        }
+      }
+    },
+    "EmptyTargetResolutionMode":{
+      "type":"string",
+      "enum":[
+        "fail",
+        "skip"
+      ]
     },
     "ExceptionMessage":{
       "type":"string",
@@ -618,6 +846,14 @@
         "logConfiguration":{
           "shape":"ExperimentLogConfiguration",
           "documentation":"<p>The configuration for experiment logging.</p>"
+        },
+        "experimentOptions":{
+          "shape":"ExperimentOptions",
+          "documentation":"<p>The experiment options for the experiment.</p>"
+        },
+        "targetAccountConfigurationsCount":{
+          "shape":"TargetAccountConfigurationsCount",
+          "documentation":"<p>The count of target account configurations for the experiment.</p>"
         }
       },
       "documentation":"<p>Describes an experiment.</p>"
@@ -725,7 +961,8 @@
         "cancelled",
         "stopping",
         "stopped",
-        "failed"
+        "failed",
+        "skipped"
       ]
     },
     "ExperimentActionStatusReason":{
@@ -776,6 +1013,20 @@
         }
       },
       "documentation":"<p>Describes the configuration for experiment logging.</p>"
+    },
+    "ExperimentOptions":{
+      "type":"structure",
+      "members":{
+        "accountTargeting":{
+          "shape":"AccountTargeting",
+          "documentation":"<p>The account targeting setting for an experiment.</p>"
+        },
+        "emptyTargetResolutionMode":{
+          "shape":"EmptyTargetResolutionMode",
+          "documentation":"<p>The empty target resolution mode for an experiment.</p>"
+        }
+      },
+      "documentation":"<p>Describes the options for an experiment.</p>"
     },
     "ExperimentS3LogConfiguration":{
       "type":"structure",
@@ -901,6 +1152,46 @@
       },
       "documentation":"<p>Describes a target for an experiment.</p>"
     },
+    "ExperimentTargetAccountConfiguration":{
+      "type":"structure",
+      "members":{
+        "roleArn":{
+          "shape":"RoleArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of an IAM role for the target account.</p>"
+        },
+        "accountId":{
+          "shape":"TargetAccountId",
+          "documentation":"<p>The AWS account ID of the target account.</p>"
+        },
+        "description":{
+          "shape":"TargetAccountConfigurationDescription",
+          "documentation":"<p>The description of the target account.</p>"
+        }
+      },
+      "documentation":"<p>Describes a target account configuration for an experiment.</p>"
+    },
+    "ExperimentTargetAccountConfigurationList":{
+      "type":"list",
+      "member":{"shape":"ExperimentTargetAccountConfigurationSummary"}
+    },
+    "ExperimentTargetAccountConfigurationSummary":{
+      "type":"structure",
+      "members":{
+        "roleArn":{
+          "shape":"RoleArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of an IAM role for the target account.</p>"
+        },
+        "accountId":{
+          "shape":"TargetAccountId",
+          "documentation":"<p>The AWS account ID of the target account.</p>"
+        },
+        "description":{
+          "shape":"TargetAccountConfigurationDescription",
+          "documentation":"<p>The description of the target account.</p>"
+        }
+      },
+      "documentation":"<p>Provides a summary of a target account configuration.</p>"
+    },
     "ExperimentTargetFilter":{
       "type":"structure",
       "members":{
@@ -1005,6 +1296,14 @@
         "logConfiguration":{
           "shape":"ExperimentTemplateLogConfiguration",
           "documentation":"<p>The configuration for experiment logging.</p>"
+        },
+        "experimentOptions":{
+          "shape":"ExperimentTemplateExperimentOptions",
+          "documentation":"<p>The experiment options for an experiment template.</p>"
+        },
+        "targetAccountConfigurationsCount":{
+          "shape":"TargetAccountConfigurationsCount",
+          "documentation":"<p>The count of target account configurations for the experiment template.</p>"
         }
       },
       "documentation":"<p>Describes an experiment template.</p>"
@@ -1109,6 +1408,20 @@
       "type":"string",
       "max":512,
       "pattern":"[\\s\\S]+"
+    },
+    "ExperimentTemplateExperimentOptions":{
+      "type":"structure",
+      "members":{
+        "accountTargeting":{
+          "shape":"AccountTargeting",
+          "documentation":"<p>The account targeting setting for an experiment template. </p>"
+        },
+        "emptyTargetResolutionMode":{
+          "shape":"EmptyTargetResolutionMode",
+          "documentation":"<p>The empty target resolution mode for an experiment template.</p>"
+        }
+      },
+      "documentation":"<p>Describes the experiment options for an experiment template.</p>"
     },
     "ExperimentTemplateId":{
       "type":"string",
@@ -1367,6 +1680,36 @@
         }
       }
     },
+    "GetExperimentTargetAccountConfigurationRequest":{
+      "type":"structure",
+      "required":[
+        "experimentId",
+        "accountId"
+      ],
+      "members":{
+        "experimentId":{
+          "shape":"ExperimentId",
+          "documentation":"<p>The ID of the experiment.</p>",
+          "location":"uri",
+          "locationName":"id"
+        },
+        "accountId":{
+          "shape":"TargetAccountId",
+          "documentation":"<p>The AWS account ID of the target account.</p>",
+          "location":"uri",
+          "locationName":"accountId"
+        }
+      }
+    },
+    "GetExperimentTargetAccountConfigurationResponse":{
+      "type":"structure",
+      "members":{
+        "targetAccountConfiguration":{
+          "shape":"ExperimentTargetAccountConfiguration",
+          "documentation":"<p>Information about the target account configuration.</p>"
+        }
+      }
+    },
     "GetExperimentTemplateRequest":{
       "type":"structure",
       "required":["id"],
@@ -1385,6 +1728,36 @@
         "experimentTemplate":{
           "shape":"ExperimentTemplate",
           "documentation":"<p>Information about the experiment template.</p>"
+        }
+      }
+    },
+    "GetTargetAccountConfigurationRequest":{
+      "type":"structure",
+      "required":[
+        "experimentTemplateId",
+        "accountId"
+      ],
+      "members":{
+        "experimentTemplateId":{
+          "shape":"ExperimentTemplateId",
+          "documentation":"<p>The ID of the experiment template.</p>",
+          "location":"uri",
+          "locationName":"id"
+        },
+        "accountId":{
+          "shape":"TargetAccountId",
+          "documentation":"<p>The AWS account ID of the target account.</p>",
+          "location":"uri",
+          "locationName":"accountId"
+        }
+      }
+    },
+    "GetTargetAccountConfigurationResponse":{
+      "type":"structure",
+      "members":{
+        "targetAccountConfiguration":{
+          "shape":"TargetAccountConfiguration",
+          "documentation":"<p>Information about the target account configuration.</p>"
         }
       }
     },
@@ -1443,6 +1816,86 @@
         "nextToken":{
           "shape":"NextToken",
           "documentation":"<p>The token to use to retrieve the next page of results. This value is <code>null</code> when there are no more results to return.</p>"
+        }
+      }
+    },
+    "ListExperimentResolvedTargetsMaxResults":{
+      "type":"integer",
+      "box":true,
+      "max":100,
+      "min":1
+    },
+    "ListExperimentResolvedTargetsRequest":{
+      "type":"structure",
+      "required":["experimentId"],
+      "members":{
+        "experimentId":{
+          "shape":"ExperimentId",
+          "documentation":"<p>The ID of the experiment.</p>",
+          "location":"uri",
+          "locationName":"id"
+        },
+        "maxResults":{
+          "shape":"ListExperimentResolvedTargetsMaxResults",
+          "documentation":"<p>The maximum number of results to return with a single call. To retrieve the remaining results, make another call with the returned nextToken value.</p>",
+          "location":"querystring",
+          "locationName":"maxResults"
+        },
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The token for the next page of results.</p>",
+          "location":"querystring",
+          "locationName":"nextToken"
+        },
+        "targetName":{
+          "shape":"TargetName",
+          "documentation":"<p>The name of the target.</p>",
+          "location":"querystring",
+          "locationName":"targetName"
+        }
+      }
+    },
+    "ListExperimentResolvedTargetsResponse":{
+      "type":"structure",
+      "members":{
+        "resolvedTargets":{
+          "shape":"ResolvedTargetList",
+          "documentation":"<p>The resolved targets.</p>"
+        },
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The token to use to retrieve the next page of results. This value is null when there are no more results to return.</p>"
+        }
+      }
+    },
+    "ListExperimentTargetAccountConfigurationsRequest":{
+      "type":"structure",
+      "required":["experimentId"],
+      "members":{
+        "experimentId":{
+          "shape":"ExperimentId",
+          "documentation":"<p>The ID of the experiment.</p>",
+          "location":"uri",
+          "locationName":"id"
+        },
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The token for the next page of results.</p>",
+          "location":"querystring",
+          "locationName":"nextToken"
+        }
+      }
+    },
+    "ListExperimentTargetAccountConfigurationsResponse":{
+      "type":"structure",
+      "members":{
+        "targetAccountConfigurations":{
+          "shape":"ExperimentTargetAccountConfigurationList",
+          "documentation":"<p>The target account configurations.</p>"
+        },
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The token to use to retrieve the next page of results. This value is null when there are no more results to return.</p>"
         }
       }
     },
@@ -1539,6 +1992,49 @@
         }
       }
     },
+    "ListTargetAccountConfigurationsMaxResults":{
+      "type":"integer",
+      "box":true,
+      "max":100,
+      "min":1
+    },
+    "ListTargetAccountConfigurationsRequest":{
+      "type":"structure",
+      "required":["experimentTemplateId"],
+      "members":{
+        "experimentTemplateId":{
+          "shape":"ExperimentTemplateId",
+          "documentation":"<p>The ID of the experiment template.</p>",
+          "location":"uri",
+          "locationName":"id"
+        },
+        "maxResults":{
+          "shape":"ListTargetAccountConfigurationsMaxResults",
+          "documentation":"<p>The maximum number of results to return with a single call. To retrieve the remaining results, make another call with the returned nextToken value.</p>",
+          "location":"querystring",
+          "locationName":"maxResults"
+        },
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The token for the next page of results.</p>",
+          "location":"querystring",
+          "locationName":"nextToken"
+        }
+      }
+    },
+    "ListTargetAccountConfigurationsResponse":{
+      "type":"structure",
+      "members":{
+        "targetAccountConfigurations":{
+          "shape":"TargetAccountConfigurationList",
+          "documentation":"<p>The target account configurations.</p>"
+        },
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The token to use to retrieve the next page of results. This value is null when there are no more results to return.</p>"
+        }
+      }
+    },
     "ListTargetResourceTypesMaxResults":{
       "type":"integer",
       "max":100,
@@ -1581,6 +2077,28 @@
       "max":1024,
       "min":1,
       "pattern":"[\\S]+"
+    },
+    "ResolvedTarget":{
+      "type":"structure",
+      "members":{
+        "resourceType":{
+          "shape":"TargetResourceTypeId",
+          "documentation":"<p>The resource type of the target.</p>"
+        },
+        "targetName":{
+          "shape":"TargetName",
+          "documentation":"<p>The name of the target.</p>"
+        },
+        "targetInformation":{
+          "shape":"TargetInformationMap",
+          "documentation":"<p>Information about the target.</p>"
+        }
+      },
+      "documentation":"<p>Describes a resolved target.</p>"
+    },
+    "ResolvedTargetList":{
+      "type":"list",
+      "member":{"shape":"ResolvedTarget"}
     },
     "ResourceArn":{
       "type":"string",
@@ -1736,6 +2254,81 @@
       "max":256,
       "pattern":"[\\s\\S]*"
     },
+    "TargetAccountConfiguration":{
+      "type":"structure",
+      "members":{
+        "roleArn":{
+          "shape":"RoleArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of an IAM role for the target account.</p>"
+        },
+        "accountId":{
+          "shape":"TargetAccountId",
+          "documentation":"<p>The AWS account ID of the target account.</p>"
+        },
+        "description":{
+          "shape":"TargetAccountConfigurationDescription",
+          "documentation":"<p>The description of the target account.</p>"
+        }
+      },
+      "documentation":"<p>Describes a target account configuration.</p>"
+    },
+    "TargetAccountConfigurationDescription":{
+      "type":"string",
+      "max":512,
+      "pattern":"[\\s\\S]*"
+    },
+    "TargetAccountConfigurationList":{
+      "type":"list",
+      "member":{"shape":"TargetAccountConfigurationSummary"}
+    },
+    "TargetAccountConfigurationSummary":{
+      "type":"structure",
+      "members":{
+        "roleArn":{
+          "shape":"RoleArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of an IAM role for the target account.</p>"
+        },
+        "accountId":{
+          "shape":"TargetAccountId",
+          "documentation":"<p>The AWS account ID of the target account.</p>"
+        },
+        "description":{
+          "shape":"TargetAccountConfigurationDescription",
+          "documentation":"<p>The description of the target account.</p>"
+        }
+      },
+      "documentation":"<p>Provides a summary of a target account configuration.</p>"
+    },
+    "TargetAccountConfigurationsCount":{
+      "type":"long",
+      "min":0
+    },
+    "TargetAccountId":{
+      "type":"string",
+      "max":48,
+      "min":12,
+      "pattern":"[\\S]+"
+    },
+    "TargetInformationKey":{
+      "type":"string",
+      "max":64,
+      "pattern":"[\\S]+"
+    },
+    "TargetInformationMap":{
+      "type":"map",
+      "key":{"shape":"TargetInformationKey"},
+      "value":{"shape":"TargetInformationValue"}
+    },
+    "TargetInformationValue":{
+      "type":"string",
+      "max":2048,
+      "pattern":"[\\S]+"
+    },
+    "TargetName":{
+      "type":"string",
+      "max":64,
+      "pattern":"[\\S]+"
+    },
     "TargetResourceType":{
       "type":"structure",
       "members":{
@@ -1867,6 +2460,16 @@
       "key":{"shape":"ExperimentTemplateActionName"},
       "value":{"shape":"UpdateExperimentTemplateActionInputItem"}
     },
+    "UpdateExperimentTemplateExperimentOptionsInput":{
+      "type":"structure",
+      "members":{
+        "emptyTargetResolutionMode":{
+          "shape":"EmptyTargetResolutionMode",
+          "documentation":"<p>The empty target resolution mode of the experiment template.</p>"
+        }
+      },
+      "documentation":"<p>Specifies an experiment option for an experiment template.</p>"
+    },
     "UpdateExperimentTemplateLogConfigurationInput":{
       "type":"structure",
       "members":{
@@ -1918,6 +2521,10 @@
         "logConfiguration":{
           "shape":"UpdateExperimentTemplateLogConfigurationInput",
           "documentation":"<p>The configuration for experiment logging.</p>"
+        },
+        "experimentOptions":{
+          "shape":"UpdateExperimentTemplateExperimentOptionsInput",
+          "documentation":"<p>The experiment options for the experiment template.</p>"
         }
       }
     },
@@ -1987,6 +2594,44 @@
       "type":"map",
       "key":{"shape":"ExperimentTemplateTargetName"},
       "value":{"shape":"UpdateExperimentTemplateTargetInput"}
+    },
+    "UpdateTargetAccountConfigurationRequest":{
+      "type":"structure",
+      "required":[
+        "experimentTemplateId",
+        "accountId"
+      ],
+      "members":{
+        "experimentTemplateId":{
+          "shape":"ExperimentTemplateId",
+          "documentation":"<p>The ID of the experiment template.</p>",
+          "location":"uri",
+          "locationName":"id"
+        },
+        "accountId":{
+          "shape":"TargetAccountId",
+          "documentation":"<p>The AWS account ID of the target account.</p>",
+          "location":"uri",
+          "locationName":"accountId"
+        },
+        "roleArn":{
+          "shape":"RoleArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of an IAM role for the target account.</p>"
+        },
+        "description":{
+          "shape":"TargetAccountConfigurationDescription",
+          "documentation":"<p>The description of the target account.</p>"
+        }
+      }
+    },
+    "UpdateTargetAccountConfigurationResponse":{
+      "type":"structure",
+      "members":{
+        "targetAccountConfiguration":{
+          "shape":"TargetAccountConfiguration",
+          "documentation":"<p>Information about the target account configuration.</p>"
+        }
+      }
     },
     "ValidationException":{
       "type":"structure",

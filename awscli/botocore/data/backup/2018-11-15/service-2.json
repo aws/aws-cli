@@ -156,6 +156,46 @@
       "documentation":"<p>Creates a report plan. A report plan is a document that contains information about the contents of the report and where Backup will deliver it.</p> <p>If you call <code>CreateReportPlan</code> with a plan that already exists, you receive an <code>AlreadyExistsException</code> exception.</p>",
       "idempotent":true
     },
+    "CreateRestoreTestingPlan":{
+      "name":"CreateRestoreTestingPlan",
+      "http":{
+        "method":"PUT",
+        "requestUri":"/restore-testing/plans",
+        "responseCode":201
+      },
+      "input":{"shape":"CreateRestoreTestingPlanInput"},
+      "output":{"shape":"CreateRestoreTestingPlanOutput"},
+      "errors":[
+        {"shape":"AlreadyExistsException"},
+        {"shape":"ConflictException"},
+        {"shape":"InvalidParameterValueException"},
+        {"shape":"LimitExceededException"},
+        {"shape":"MissingParameterValueException"},
+        {"shape":"ServiceUnavailableException"}
+      ],
+      "documentation":"<p>This is the first of two steps to create a restore testing plan; once this request is successful, finish the procedure with request CreateRestoreTestingSelection.</p> <p>You must include the parameter RestoreTestingPlan. You may optionally include CreatorRequestId and Tags.</p>",
+      "idempotent":true
+    },
+    "CreateRestoreTestingSelection":{
+      "name":"CreateRestoreTestingSelection",
+      "http":{
+        "method":"PUT",
+        "requestUri":"/restore-testing/plans/{RestoreTestingPlanName}/selections",
+        "responseCode":201
+      },
+      "input":{"shape":"CreateRestoreTestingSelectionInput"},
+      "output":{"shape":"CreateRestoreTestingSelectionOutput"},
+      "errors":[
+        {"shape":"AlreadyExistsException"},
+        {"shape":"InvalidParameterValueException"},
+        {"shape":"LimitExceededException"},
+        {"shape":"MissingParameterValueException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ServiceUnavailableException"}
+      ],
+      "documentation":"<p>This request can be sent after CreateRestoreTestingPlan request returns successfully. This is the second part of creating a resource testing plan, and it must be completed sequentially.</p> <p>This consists of <code>RestoreTestingSelectionName</code>, <code>ProtectedResourceType</code>, and one of the following:</p> <ul> <li> <p> <code>ProtectedResourceArns</code> </p> </li> <li> <p> <code>ProtectedResourceConditions</code> </p> </li> </ul> <p>Each protected resource type can have one single value.</p> <p>A restore testing selection can include a wildcard value (\"*\") for <code>ProtectedResourceArns</code> along with <code>ProtectedResourceConditions</code>. Alternatively, you can include up to 30 specific protected resource ARNs in <code>ProtectedResourceArns</code>.</p> <p>Cannot select by both protected resource types AND specific ARNs. Request will fail if both are included.</p>",
+      "idempotent":true
+    },
     "DeleteBackupPlan":{
       "name":"DeleteBackupPlan",
       "http":{
@@ -302,6 +342,36 @@
         {"shape":"ResourceNotFoundException"}
       ],
       "documentation":"<p>Deletes the report plan specified by a report plan name.</p>",
+      "idempotent":true
+    },
+    "DeleteRestoreTestingPlan":{
+      "name":"DeleteRestoreTestingPlan",
+      "http":{
+        "method":"DELETE",
+        "requestUri":"/restore-testing/plans/{RestoreTestingPlanName}",
+        "responseCode":204
+      },
+      "input":{"shape":"DeleteRestoreTestingPlanInput"},
+      "errors":[
+        {"shape":"InvalidRequestException"},
+        {"shape":"ServiceUnavailableException"}
+      ],
+      "documentation":"<p>This request deletes the specified restore testing plan.</p> <p>Deletion can only successfully occur if all associated restore testing selections are deleted first.</p>",
+      "idempotent":true
+    },
+    "DeleteRestoreTestingSelection":{
+      "name":"DeleteRestoreTestingSelection",
+      "http":{
+        "method":"DELETE",
+        "requestUri":"/restore-testing/plans/{RestoreTestingPlanName}/selections/{RestoreTestingSelectionName}",
+        "responseCode":204
+      },
+      "input":{"shape":"DeleteRestoreTestingSelectionInput"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ServiceUnavailableException"}
+      ],
+      "documentation":"<p>Input the Restore Testing Plan name and Restore Testing Selection name.</p> <p>All testing selections associated with a restore testing plan must be deleted before the restore testing plan can be deleted.</p>",
       "idempotent":true
     },
     "DescribeBackupJob":{
@@ -667,6 +737,69 @@
       "documentation":"<p>Returns a set of metadata key-value pairs that were used to create the backup.</p>",
       "idempotent":true
     },
+    "GetRestoreJobMetadata":{
+      "name":"GetRestoreJobMetadata",
+      "http":{
+        "method":"GET",
+        "requestUri":"/restore-jobs/{restoreJobId}/metadata"
+      },
+      "input":{"shape":"GetRestoreJobMetadataInput"},
+      "output":{"shape":"GetRestoreJobMetadataOutput"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InvalidParameterValueException"},
+        {"shape":"MissingParameterValueException"},
+        {"shape":"ServiceUnavailableException"}
+      ],
+      "documentation":"<p>This request returns the metadata for the specified restore job.</p>"
+    },
+    "GetRestoreTestingInferredMetadata":{
+      "name":"GetRestoreTestingInferredMetadata",
+      "http":{
+        "method":"GET",
+        "requestUri":"/restore-testing/inferred-metadata",
+        "responseCode":200
+      },
+      "input":{"shape":"GetRestoreTestingInferredMetadataInput"},
+      "output":{"shape":"GetRestoreTestingInferredMetadataOutput"},
+      "errors":[
+        {"shape":"InvalidParameterValueException"},
+        {"shape":"MissingParameterValueException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ServiceUnavailableException"}
+      ],
+      "documentation":"<p>This request returns the minimal required set of metadata needed to start a restore job with secure default settings. <code>BackupVaultName</code> and <code>RecoveryPointArn</code> are required parameters. <code>BackupVaultAccountId</code> is an optional parameter.</p>"
+    },
+    "GetRestoreTestingPlan":{
+      "name":"GetRestoreTestingPlan",
+      "http":{
+        "method":"GET",
+        "requestUri":"/restore-testing/plans/{RestoreTestingPlanName}",
+        "responseCode":200
+      },
+      "input":{"shape":"GetRestoreTestingPlanInput"},
+      "output":{"shape":"GetRestoreTestingPlanOutput"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ServiceUnavailableException"}
+      ],
+      "documentation":"<p>Returns <code>RestoreTestingPlan</code> details for the specified <code>RestoreTestingPlanName</code>. The details are the body of a restore testing plan in JSON format, in addition to plan metadata.</p>"
+    },
+    "GetRestoreTestingSelection":{
+      "name":"GetRestoreTestingSelection",
+      "http":{
+        "method":"GET",
+        "requestUri":"/restore-testing/plans/{RestoreTestingPlanName}/selections/{RestoreTestingSelectionName}",
+        "responseCode":200
+      },
+      "input":{"shape":"GetRestoreTestingSelectionInput"},
+      "output":{"shape":"GetRestoreTestingSelectionOutput"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ServiceUnavailableException"}
+      ],
+      "documentation":"<p>Returns RestoreTestingSelection, which displays resources and elements of the restore testing plan.</p>"
+    },
     "GetSupportedResourceTypes":{
       "name":"GetSupportedResourceTypes",
       "http":{
@@ -989,6 +1122,53 @@
       "documentation":"<p>Returns a list of jobs that Backup initiated to restore a saved resource, including details about the recovery process.</p>",
       "idempotent":true
     },
+    "ListRestoreJobsByProtectedResource":{
+      "name":"ListRestoreJobsByProtectedResource",
+      "http":{
+        "method":"GET",
+        "requestUri":"/resources/{resourceArn}/restore-jobs/"
+      },
+      "input":{"shape":"ListRestoreJobsByProtectedResourceInput"},
+      "output":{"shape":"ListRestoreJobsByProtectedResourceOutput"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InvalidParameterValueException"},
+        {"shape":"MissingParameterValueException"},
+        {"shape":"ServiceUnavailableException"}
+      ],
+      "documentation":"<p>This returns restore jobs that contain the specified protected resource.</p> <p>You must include <code>ResourceArn</code>. You can optionally include <code>NextToken</code>, <code>ByStatus</code>, <code>MaxResults</code>, <code>ByRecoveryPointCreationDateAfter</code> , and <code>ByRecoveryPointCreationDateBefore</code>.</p>"
+    },
+    "ListRestoreTestingPlans":{
+      "name":"ListRestoreTestingPlans",
+      "http":{
+        "method":"GET",
+        "requestUri":"/restore-testing/plans",
+        "responseCode":200
+      },
+      "input":{"shape":"ListRestoreTestingPlansInput"},
+      "output":{"shape":"ListRestoreTestingPlansOutput"},
+      "errors":[
+        {"shape":"InvalidParameterValueException"},
+        {"shape":"ServiceUnavailableException"}
+      ],
+      "documentation":"<p>Returns a list of restore testing plans.</p>"
+    },
+    "ListRestoreTestingSelections":{
+      "name":"ListRestoreTestingSelections",
+      "http":{
+        "method":"GET",
+        "requestUri":"/restore-testing/plans/{RestoreTestingPlanName}/selections",
+        "responseCode":200
+      },
+      "input":{"shape":"ListRestoreTestingSelectionsInput"},
+      "output":{"shape":"ListRestoreTestingSelectionsOutput"},
+      "errors":[
+        {"shape":"InvalidParameterValueException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ServiceUnavailableException"}
+      ],
+      "documentation":"<p>Returns a list of restore testing selections. Can be filtered by <code>MaxResults</code> and <code>RestoreTestingPlanName</code>.</p>"
+    },
     "ListTags":{
       "name":"ListTags",
       "http":{
@@ -1053,6 +1233,24 @@
         {"shape":"ServiceUnavailableException"}
       ],
       "documentation":"<p>Turns on notifications on a backup vault for the specified topic and events.</p>",
+      "idempotent":true
+    },
+    "PutRestoreValidationResult":{
+      "name":"PutRestoreValidationResult",
+      "http":{
+        "method":"PUT",
+        "requestUri":"/restore-jobs/{restoreJobId}/validations",
+        "responseCode":204
+      },
+      "input":{"shape":"PutRestoreValidationResultInput"},
+      "errors":[
+        {"shape":"InvalidParameterValueException"},
+        {"shape":"InvalidRequestException"},
+        {"shape":"MissingParameterValueException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ServiceUnavailableException"}
+      ],
+      "documentation":"<p>This request allows you to send your independent self-run restore test validation results. <code>RestoreJobId</code> and <code>ValidationStatus</code> are required. Optionally, you can input a <code>ValidationStatusMessage</code>.</p>",
       "idempotent":true
     },
     "StartBackupJob":{
@@ -1278,6 +1476,44 @@
       ],
       "documentation":"<p>Updates an existing report plan identified by its <code>ReportPlanName</code> with the input document in JSON format.</p>",
       "idempotent":true
+    },
+    "UpdateRestoreTestingPlan":{
+      "name":"UpdateRestoreTestingPlan",
+      "http":{
+        "method":"PUT",
+        "requestUri":"/restore-testing/plans/{RestoreTestingPlanName}",
+        "responseCode":200
+      },
+      "input":{"shape":"UpdateRestoreTestingPlanInput"},
+      "output":{"shape":"UpdateRestoreTestingPlanOutput"},
+      "errors":[
+        {"shape":"ConflictException"},
+        {"shape":"InvalidParameterValueException"},
+        {"shape":"MissingParameterValueException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ServiceUnavailableException"}
+      ],
+      "documentation":"<p>This request will send changes to your specified restore testing plan. <code>RestoreTestingPlanName</code> cannot be updated after it is created.</p> <p> <code>RecoveryPointSelection</code> can contain:</p> <ul> <li> <p> <code>Algorithm</code> </p> </li> <li> <p> <code>ExcludeVaults</code> </p> </li> <li> <p> <code>IncludeVaults</code> </p> </li> <li> <p> <code>RecoveryPointTypes</code> </p> </li> <li> <p> <code>SelectionWindowDays</code> </p> </li> </ul>",
+      "idempotent":true
+    },
+    "UpdateRestoreTestingSelection":{
+      "name":"UpdateRestoreTestingSelection",
+      "http":{
+        "method":"PUT",
+        "requestUri":"/restore-testing/plans/{RestoreTestingPlanName}/selections/{RestoreTestingSelectionName}",
+        "responseCode":200
+      },
+      "input":{"shape":"UpdateRestoreTestingSelectionInput"},
+      "output":{"shape":"UpdateRestoreTestingSelectionOutput"},
+      "errors":[
+        {"shape":"ConflictException"},
+        {"shape":"InvalidParameterValueException"},
+        {"shape":"MissingParameterValueException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ServiceUnavailableException"}
+      ],
+      "documentation":"<p>Most elements except the <code>RestoreTestingSelectionName</code> can be updated with this request.</p> <p> <code>RestoreTestingSelection</code> can use either protected resource ARNs or conditions, but not both. That is, if your selection has <code>ProtectedResourceArns</code>, requesting an update with the parameter <code>ProtectedResourceConditions</code> will be unsuccessful.</p>",
+      "idempotent":true
     }
   },
   "shapes":{
@@ -1432,9 +1668,13 @@
           "shape":"string",
           "documentation":"<p>This is the non-unique name of the resource that belongs to the specified backup.</p>"
         },
+        "InitiationDate":{
+          "shape":"timestamp",
+          "documentation":"<p>This is the date on which the backup job was initiated.</p>"
+        },
         "MessageCategory":{
           "shape":"string",
-          "documentation":"<p>This parameter is the job count for the specified message category.</p> <p>Example strings include <code>AccessDenied</code>, <code>Success</code>, and <code>InvalidParameters</code>. See <a href=\"https://docs.aws.amazon.com/aws-backup/latest/devguide/monitoring.html\">Monitoring</a> for a list of MessageCategory strings.</p> <p>The the value ANY returns count of all message categories.</p> <p> <code>AGGREGATE_ALL</code> aggregates job counts for all message categories and returns the sum.</p>"
+          "documentation":"<p>This parameter is the job count for the specified message category.</p> <p>Example strings may include <code>AccessDenied</code>, <code>SUCCESS</code>, <code>AGGREGATE_ALL</code>, and <code>INVALIDPARAMETERS</code>. See <a href=\"https://docs.aws.amazon.com/aws-backup/latest/devguide/monitoring.html\">Monitoring</a> for a list of MessageCategory strings.</p> <p>The the value ANY returns count of all message categories.</p> <p> <code>AGGREGATE_ALL</code> aggregates job counts for all message categories and returns the sum.</p>"
         }
       },
       "documentation":"<p>Contains detailed information about a backup job.</p>"
@@ -1783,7 +2023,7 @@
         },
         "ListOfTags":{
           "shape":"ListOfTags",
-          "documentation":"<p>A list of conditions that you define to assign resources to your backup plans using tags. For example, <code>\"StringEquals\": { \"ConditionKey\": \"aws:ResourceTag/CreatedByCryo\", \"ConditionValue\": \"true\" },</code>. Condition operators are case sensitive.</p> <p> <code>ListOfTags</code> differs from <code>Conditions</code> as follows:</p> <ul> <li> <p>When you specify more than one condition, you assign all resources that match AT LEAST ONE condition (using OR logic).</p> </li> <li> <p> <code>ListOfTags</code> only supports <code>StringEquals</code>. <code>Conditions</code> supports <code>StringEquals</code>, <code>StringLike</code>, <code>StringNotEquals</code>, and <code>StringNotLike</code>. </p> </li> </ul>"
+          "documentation":"<p>A list of conditions that you define to assign resources to your backup plans using tags. For example, <code>\"StringEquals\": { \"Key\": \"aws:ResourceTag/CreatedByCryo\", \"Value\": \"true\" },</code>. Condition operators are case sensitive.</p> <p> <code>ListOfTags</code> differs from <code>Conditions</code> as follows:</p> <ul> <li> <p>When you specify more than one condition, you assign all resources that match AT LEAST ONE condition (using OR logic).</p> </li> <li> <p> <code>ListOfTags</code> only supports <code>StringEquals</code>. <code>Conditions</code> supports <code>StringEquals</code>, <code>StringLike</code>, <code>StringNotEquals</code>, and <code>StringNotLike</code>. </p> </li> </ul>"
         },
         "NotResources":{
           "shape":"ResourceArns",
@@ -1791,7 +2031,7 @@
         },
         "Conditions":{
           "shape":"Conditions",
-          "documentation":"<p>A list of conditions that you define to assign resources to your backup plans using tags. For example, <code>\"StringEquals\": { \"ConditionKey\": \"aws:ResourceTag/CreatedByCryo\", \"ConditionValue\": \"true\" },</code>. Condition operators are case sensitive.</p> <p> <code>Conditions</code> differs from <code>ListOfTags</code> as follows:</p> <ul> <li> <p>When you specify more than one condition, you only assign the resources that match ALL conditions (using AND logic).</p> </li> <li> <p> <code>Conditions</code> supports <code>StringEquals</code>, <code>StringLike</code>, <code>StringNotEquals</code>, and <code>StringNotLike</code>. <code>ListOfTags</code> only supports <code>StringEquals</code>.</p> </li> </ul>"
+          "documentation":"<p>A list of conditions that you define to assign resources to your backup plans using tags. For example, <code>\"StringEquals\": { \"Key\": \"aws:ResourceTag/CreatedByCryo\", \"Value\": \"true\" },</code>. Condition operators are case sensitive.</p> <p> <code>Conditions</code> differs from <code>ListOfTags</code> as follows:</p> <ul> <li> <p>When you specify more than one condition, you only assign the resources that match ALL conditions (using AND logic).</p> </li> <li> <p> <code>Conditions</code> supports <code>StringEquals</code>, <code>StringLike</code>, <code>StringNotEquals</code>, and <code>StringNotLike</code>. <code>ListOfTags</code> only supports <code>StringEquals</code>.</p> </li> </ul>"
         }
       },
       "documentation":"<p>Used to specify a set of resources to a backup plan.</p> <p>Specifying your desired <code>Conditions</code>, <code>ListOfTags</code>, <code>NotResources</code>, and/or <code>Resources</code> is recommended. If none of these are specified, Backup will attempt to select all supported and opted-in storage resources, which could have unintended cost implications.</p>"
@@ -2192,7 +2432,7 @@
         },
         "MessageCategory":{
           "shape":"string",
-          "documentation":"<p>This parameter is the job count for the specified message category.</p> <p>Example strings include <code>AccessDenied</code>, <code>Success</code>, and <code>InvalidParameters</code>. See <a href=\"https://docs.aws.amazon.com/aws-backup/latest/devguide/monitoring.html\">Monitoring</a> for a list of MessageCategory strings.</p> <p>The the value ANY returns count of all message categories.</p> <p> <code>AGGREGATE_ALL</code> aggregates job counts for all message categories and returns the sum</p>"
+          "documentation":"<p>This parameter is the job count for the specified message category.</p> <p>Example strings may include <code>AccessDenied</code>, <code>SUCCESS</code>, <code>AGGREGATE_ALL</code>, and <code>InvalidParameters</code>. See <a href=\"https://docs.aws.amazon.com/aws-backup/latest/devguide/monitoring.html\">Monitoring</a> for a list of MessageCategory strings.</p> <p>The the value ANY returns count of all message categories.</p> <p> <code>AGGREGATE_ALL</code> aggregates job counts for all message categories and returns the sum</p>"
         }
       },
       "documentation":"<p>Contains detailed information about a copy job.</p>"
@@ -2523,7 +2763,7 @@
         },
         "CreatorRequestId":{
           "shape":"string",
-          "documentation":"<p>This is the ID of the creation request.</p>"
+          "documentation":"<p>This is the ID of the creation request.</p> <p>This parameter is optional. If used, this parameter must contain 1 to 50 alphanumeric or '-_.' characters.</p>"
         },
         "MinRetentionDays":{
           "shape":"Long",
@@ -2605,6 +2845,96 @@
         "CreationTime":{
           "shape":"timestamp",
           "documentation":"<p>The date and time a backup vault is created, in Unix format and Coordinated Universal Time (UTC). The value of <code>CreationTime</code> is accurate to milliseconds. For example, the value 1516925490.087 represents Friday, January 26, 2018 12:11:30.087 AM.</p>"
+        }
+      }
+    },
+    "CreateRestoreTestingPlanInput":{
+      "type":"structure",
+      "required":["RestoreTestingPlan"],
+      "members":{
+        "CreatorRequestId":{
+          "shape":"String",
+          "documentation":"<p>This is a unique string that identifies the request and allows failed requests to be retriedwithout the risk of running the operation twice. This parameter is optional. If used, this parameter must contain 1 to 50 alphanumeric or '-_.' characters.</p>"
+        },
+        "RestoreTestingPlan":{
+          "shape":"RestoreTestingPlanForCreate",
+          "documentation":"<p>A restore testing plan must contain a unique <code>RestoreTestingPlanName</code> string you create and must contain a <code>ScheduleExpression</code> cron. You may optionally include a <code>StartWindowHours</code> integer and a <code>CreatorRequestId</code> string.</p> <p>The <code>RestoreTestingPlanName</code> is a unique string that is the name of the restore testing plan. This cannot be changed after creation, and it must consist of only alphanumeric characters and underscores.</p>"
+        },
+        "Tags":{
+          "shape":"SensitiveStringMap",
+          "documentation":"<p>Optional tags to include. A tag is a key-value pair you can use to manage, filter, and search for your resources. Allowed characters include UTF-8 letters,numbers, spaces, and the following characters: + - = . _ : /.</p>"
+        }
+      }
+    },
+    "CreateRestoreTestingPlanOutput":{
+      "type":"structure",
+      "required":[
+        "CreationTime",
+        "RestoreTestingPlanArn",
+        "RestoreTestingPlanName"
+      ],
+      "members":{
+        "CreationTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The date and time a restore testing plan was created, in Unix format and Coordinated Universal Time (UTC). The value of <code>CreationTime</code> is accurate to milliseconds. For example, the value 1516925490.087 represents Friday, January 26, 2018 12:11:30.087AM.</p>"
+        },
+        "RestoreTestingPlanArn":{
+          "shape":"String",
+          "documentation":"<p>An Amazon Resource Name (ARN) that uniquely identifies the created restore testing plan.</p>"
+        },
+        "RestoreTestingPlanName":{
+          "shape":"String",
+          "documentation":"<p>This unique string is the name of the restore testing plan.</p> <p>The name cannot be changed after creation. The name consists of only alphanumeric characters and underscores. Maximum length is 50.</p>"
+        }
+      }
+    },
+    "CreateRestoreTestingSelectionInput":{
+      "type":"structure",
+      "required":[
+        "RestoreTestingPlanName",
+        "RestoreTestingSelection"
+      ],
+      "members":{
+        "CreatorRequestId":{
+          "shape":"String",
+          "documentation":"<p>This is an optional unique string that identifies the request and allows failed requests to be retried without the risk of running the operation twice. If used, this parameter must contain 1 to 50 alphanumeric or '-_.' characters.</p>"
+        },
+        "RestoreTestingPlanName":{
+          "shape":"String",
+          "documentation":"<p>Input the restore testing plan name that was returned from the related CreateRestoreTestingPlan request.</p>",
+          "location":"uri",
+          "locationName":"RestoreTestingPlanName"
+        },
+        "RestoreTestingSelection":{
+          "shape":"RestoreTestingSelectionForCreate",
+          "documentation":"<p>This consists of <code>RestoreTestingSelectionName</code>, <code>ProtectedResourceType</code>, and one of the following:</p> <ul> <li> <p> <code>ProtectedResourceArns</code> </p> </li> <li> <p> <code>ProtectedResourceConditions</code> </p> </li> </ul> <p>Each protected resource type can have one single value.</p> <p>A restore testing selection can include a wildcard value (\"*\") for <code>ProtectedResourceArns</code> along with <code>ProtectedResourceConditions</code>. Alternatively, you can include up to 30 specific protected resource ARNs in <code>ProtectedResourceArns</code>.</p>"
+        }
+      }
+    },
+    "CreateRestoreTestingSelectionOutput":{
+      "type":"structure",
+      "required":[
+        "CreationTime",
+        "RestoreTestingPlanArn",
+        "RestoreTestingPlanName",
+        "RestoreTestingSelectionName"
+      ],
+      "members":{
+        "CreationTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>This is the time the resource testing selection was created successfully.</p>"
+        },
+        "RestoreTestingPlanArn":{
+          "shape":"String",
+          "documentation":"<p>This is the ARN of the restore testing plan with which the restore testing selection is associated.</p>"
+        },
+        "RestoreTestingPlanName":{
+          "shape":"String",
+          "documentation":"<p>Unique string that is the name of the restore testing plan.</p> <p>The name cannot be changed after creation. The name consists of only alphanumeric characters and underscores. Maximum length is 50.</p>"
+        },
+        "RestoreTestingSelectionName":{
+          "shape":"String",
+          "documentation":"<p>This is the unique name of the restore testing selection that belongs to the related restore testing plan.</p>"
         }
       }
     },
@@ -2774,6 +3104,39 @@
         }
       }
     },
+    "DeleteRestoreTestingPlanInput":{
+      "type":"structure",
+      "required":["RestoreTestingPlanName"],
+      "members":{
+        "RestoreTestingPlanName":{
+          "shape":"String",
+          "documentation":"<p>Required unique name of the restore testing plan you wish to delete.</p>",
+          "location":"uri",
+          "locationName":"RestoreTestingPlanName"
+        }
+      }
+    },
+    "DeleteRestoreTestingSelectionInput":{
+      "type":"structure",
+      "required":[
+        "RestoreTestingPlanName",
+        "RestoreTestingSelectionName"
+      ],
+      "members":{
+        "RestoreTestingPlanName":{
+          "shape":"String",
+          "documentation":"<p>Required unique name of the restore testing plan that contains the restore testing selection you wish to delete.</p>",
+          "location":"uri",
+          "locationName":"RestoreTestingPlanName"
+        },
+        "RestoreTestingSelectionName":{
+          "shape":"String",
+          "documentation":"<p>Required unique name of the restore testing selection you wish to delete.</p>",
+          "location":"uri",
+          "locationName":"RestoreTestingSelectionName"
+        }
+      }
+    },
     "DependencyFailureException":{
       "type":"structure",
       "members":{
@@ -2907,9 +3270,13 @@
           "shape":"string",
           "documentation":"<p>This is the non-unique name of the resource that belongs to the specified backup.</p>"
         },
+        "InitiationDate":{
+          "shape":"timestamp",
+          "documentation":"<p>This is the date a backup job was initiated.</p>"
+        },
         "MessageCategory":{
           "shape":"string",
-          "documentation":"<p>This is the job count for the specified message category.</p> <p>Example strings may include <code>AccessDenied</code>, <code>Success</code>, and <code>InvalidParameters</code>. See <a href=\"https://docs.aws.amazon.com/aws-backup/latest/devguide/monitoring.html\">Monitoring</a> for a list of MessageCategory strings.</p>"
+          "documentation":"<p>This is the job count for the specified message category.</p> <p>Example strings may include <code>AccessDenied</code>, <code>SUCCESS</code>, <code>AGGREGATE_ALL</code>, and <code>INVALIDPARAMETERS</code>. View <a href=\"https://docs.aws.amazon.com/aws-backup/latest/devguide/monitoring.html\">Monitoring</a> for a list of accepted MessageCategory strings.</p>"
         }
       }
     },
@@ -2956,7 +3323,7 @@
         },
         "CreatorRequestId":{
           "shape":"string",
-          "documentation":"<p>A unique string that identifies the request and allows failed requests to be retried without the risk of running the operation twice.</p>"
+          "documentation":"<p>A unique string that identifies the request and allows failed requests to be retried without the risk of running the operation twice. This parameter is optional. If used, this parameter must contain 1 to 50 alphanumeric or '-_.' characters.</p>"
         },
         "NumberOfRecoveryPoints":{
           "shape":"long",
@@ -3098,6 +3465,26 @@
         "ResourceName":{
           "shape":"string",
           "documentation":"<p>This is the non-unique name of the resource that belongs to the specified backup.</p>"
+        },
+        "LastBackupVaultArn":{
+          "shape":"ARN",
+          "documentation":"<p>This is the ARN (Amazon Resource Name) of the backup vault that contains the most recent backup recovery point.</p>"
+        },
+        "LastRecoveryPointArn":{
+          "shape":"ARN",
+          "documentation":"<p>This is the ARN (Amazon Resource Name) of the most recent recovery point.</p>"
+        },
+        "LatestRestoreExecutionTimeMinutes":{
+          "shape":"Long",
+          "documentation":"<p>This is the time in minutes the most recent restore job took to complete.</p>"
+        },
+        "LatestRestoreJobCreationDate":{
+          "shape":"timestamp",
+          "documentation":"<p>This is the creation date of the most recent restore job.</p>"
+        },
+        "LatestRestoreRecoveryPointCreationDate":{
+          "shape":"timestamp",
+          "documentation":"<p>This is the date the most recent recovery point was created.</p>"
         }
       }
     },
@@ -3351,6 +3738,30 @@
         "ResourceType":{
           "shape":"ResourceType",
           "documentation":"<p>Returns metadata associated with a restore job listed by resource type.</p>"
+        },
+        "RecoveryPointCreationDate":{
+          "shape":"timestamp",
+          "documentation":"<p>This is the creation date of the recovery point made by the specifed restore job.</p>"
+        },
+        "CreatedBy":{
+          "shape":"RestoreJobCreator",
+          "documentation":"<p>Contains identifying information about the creation of a restore job.</p>"
+        },
+        "ValidationStatus":{
+          "shape":"RestoreValidationStatus",
+          "documentation":"<p>This is the status of validation run on the indicated restore job.</p>"
+        },
+        "ValidationStatusMessage":{
+          "shape":"string",
+          "documentation":"<p>This describes the status of validation run on the indicated restore job.</p>"
+        },
+        "DeletionStatus":{
+          "shape":"RestoreDeletionStatus",
+          "documentation":"<p>This notes the status of the data generated by the restore test. The status may be <code>Deleting</code>, <code>Failed</code>, or <code>Successful</code>.</p>"
+        },
+        "DeletionStatusMessage":{
+          "shape":"string",
+          "documentation":"<p>This describes the restore job deletion status.</p>"
         }
       }
     },
@@ -3569,7 +3980,7 @@
         },
         "CreatorRequestId":{
           "shape":"string",
-          "documentation":"<p>A unique string that identifies the request and allows failed requests to be retried without the risk of running the operation twice.</p>"
+          "documentation":"<p>A unique string that identifies the request and allows failed requests to be retried without the risk of running the operation twice. </p>"
         },
         "CreationDate":{
           "shape":"timestamp",
@@ -3795,6 +4206,125 @@
         "RestoreMetadata":{
           "shape":"Metadata",
           "documentation":"<p>The set of metadata key-value pairs that describe the original configuration of the backed-up resource. These values vary depending on the service that is being restored.</p>"
+        },
+        "ResourceType":{
+          "shape":"ResourceType",
+          "documentation":"<p>This is the resource type associated with the recovery point.</p>"
+        }
+      }
+    },
+    "GetRestoreJobMetadataInput":{
+      "type":"structure",
+      "required":["RestoreJobId"],
+      "members":{
+        "RestoreJobId":{
+          "shape":"RestoreJobId",
+          "documentation":"<p>This is a unique identifier of a restore job within Backup.</p>",
+          "location":"uri",
+          "locationName":"restoreJobId"
+        }
+      }
+    },
+    "GetRestoreJobMetadataOutput":{
+      "type":"structure",
+      "members":{
+        "RestoreJobId":{
+          "shape":"RestoreJobId",
+          "documentation":"<p>This is a unique identifier of a restore job within Backup.</p>"
+        },
+        "Metadata":{
+          "shape":"Metadata",
+          "documentation":"<p>This contains the metadata of the specified backup job.</p>"
+        }
+      }
+    },
+    "GetRestoreTestingInferredMetadataInput":{
+      "type":"structure",
+      "required":[
+        "BackupVaultName",
+        "RecoveryPointArn"
+      ],
+      "members":{
+        "BackupVaultAccountId":{
+          "shape":"String",
+          "documentation":"<p>This is the account ID of the specified backup vault.</p>",
+          "location":"querystring",
+          "locationName":"BackupVaultAccountId"
+        },
+        "BackupVaultName":{
+          "shape":"String",
+          "documentation":"<p>The name of a logical container where backups are stored. Backup vaults are identified by names that are unique to the account used to create them and the Amazon Web ServicesRegion where they are created. They consist of letters, numbers, and hyphens.</p>",
+          "location":"querystring",
+          "locationName":"BackupVaultName"
+        },
+        "RecoveryPointArn":{
+          "shape":"String",
+          "documentation":"<p>An Amazon Resource Name (ARN) that uniquely identifies a recovery point; for example, <code>arn:aws:backup:us-east-1:123456789012:recovery-point:1EB3B5E7-9EB0-435A-A80B-108B488B0D45</code>. </p>",
+          "location":"querystring",
+          "locationName":"RecoveryPointArn"
+        }
+      }
+    },
+    "GetRestoreTestingInferredMetadataOutput":{
+      "type":"structure",
+      "required":["InferredMetadata"],
+      "members":{
+        "InferredMetadata":{
+          "shape":"stringMap",
+          "documentation":"<p>This is a string map of the metadata inferred from the request.</p>"
+        }
+      }
+    },
+    "GetRestoreTestingPlanInput":{
+      "type":"structure",
+      "required":["RestoreTestingPlanName"],
+      "members":{
+        "RestoreTestingPlanName":{
+          "shape":"String",
+          "documentation":"<p>Required unique name of the restore testing plan.</p>",
+          "location":"uri",
+          "locationName":"RestoreTestingPlanName"
+        }
+      }
+    },
+    "GetRestoreTestingPlanOutput":{
+      "type":"structure",
+      "required":["RestoreTestingPlan"],
+      "members":{
+        "RestoreTestingPlan":{
+          "shape":"RestoreTestingPlanForGet",
+          "documentation":"<p>Specifies the body of a restore testing plan. Includes <code>RestoreTestingPlanName</code>.</p>"
+        }
+      }
+    },
+    "GetRestoreTestingSelectionInput":{
+      "type":"structure",
+      "required":[
+        "RestoreTestingPlanName",
+        "RestoreTestingSelectionName"
+      ],
+      "members":{
+        "RestoreTestingPlanName":{
+          "shape":"String",
+          "documentation":"<p>Required unique name of the restore testing plan.</p>",
+          "location":"uri",
+          "locationName":"RestoreTestingPlanName"
+        },
+        "RestoreTestingSelectionName":{
+          "shape":"String",
+          "documentation":"<p>Required unique name of the restore testing selection.</p>",
+          "location":"uri",
+          "locationName":"RestoreTestingSelectionName"
+        }
+      }
+    },
+    "GetRestoreTestingSelectionOutput":{
+      "type":"structure",
+      "required":["RestoreTestingSelection"],
+      "members":{
+        "RestoreTestingSelection":{
+          "shape":"RestoreTestingSelectionForGet",
+          "documentation":"<p>Unique name of the restore testing selection.</p>"
         }
       }
     },
@@ -3868,6 +4398,28 @@
       "exception":true
     },
     "IsEnabled":{"type":"boolean"},
+    "KeyValue":{
+      "type":"structure",
+      "required":[
+        "Key",
+        "Value"
+      ],
+      "members":{
+        "Key":{
+          "shape":"String",
+          "documentation":"<p>The tag key (String). The key can't start with <code>aws:</code>.</p> <p>Length Constraints: Minimum length of 1. Maximum length of 128.</p> <p>Pattern: <code>^(?![aA]{1}[wW]{1}[sS]{1}:)([\\p{L}\\p{Z}\\p{N}_.:/=+\\-@]+)$</code> </p>"
+        },
+        "Value":{
+          "shape":"String",
+          "documentation":"<p>The value of the key.</p> <p>Length Constraints: Maximum length of 256.</p> <p>Pattern: <code>^([\\p{L}\\p{Z}\\p{N}_.:/=+\\-@]*)$</code> </p>"
+        }
+      },
+      "documentation":"<p>Pair of two related strings. Allowed characters are letters, white space, and numbers that can be represented in UTF-8 and the following characters: <code> + - = . _ : /</code> </p>"
+    },
+    "KeyValueList":{
+      "type":"list",
+      "member":{"shape":"KeyValue"}
+    },
     "LegalHold":{
       "type":"structure",
       "members":{
@@ -3925,6 +4477,10 @@
         "DeleteAfterDays":{
           "shape":"Long",
           "documentation":"<p>Specifies the number of days after creation that a recovery point is deleted. Must be greater than 90 days plus <code>MoveToColdStorageAfterDays</code>.</p>"
+        },
+        "OptInToArchiveForSupportedResources":{
+          "shape":"Boolean",
+          "documentation":"<p>Optional Boolean. If this is true, this setting will instruct your backup plan to transition supported resources to archive (cold) storage tier in accordance with your lifecycle settings.</p>"
         }
       },
       "documentation":"<p>Contains an array of <code>Transition</code> objects specifying how long in days before a recovery point transitions to cold storage or is deleted.</p> <p>Backups transitioned to cold storage must be stored in cold storage for a minimum of 90 days. Therefore, on the console, the “retention” setting must be 90 days greater than the “transition to cold after days” setting. The “transition to cold after days” setting cannot be changed after a backup has been transitioned to cold.</p> <p>Resource types that are able to be transitioned to cold storage are listed in the \"Lifecycle to cold storage\" section of the <a href=\"https://docs.aws.amazon.com/aws-backup/latest/devguide/whatisbackup.html#features-by-resource\"> Feature availability by resource</a> table. Backup ignores this expression for other resource types.</p>"
@@ -3987,7 +4543,7 @@
         },
         "NextToken":{
           "shape":"string",
-          "documentation":"<p>The next item following a partial list of returned resources. For example, if a request is made to return <code>maxResults</code> number of resources, <code>NextToken</code> allows you to return more items in your list starting at the location pointed to by the next token.</p>",
+          "documentation":"<p>The next item following a partial list of returned resources. For example, if a request is made to return <code>MaxResults</code> number of resources, <code>NextToken</code> allows you to return more items in your list starting at the location pointed to by the next token.</p>",
           "location":"querystring",
           "locationName":"NextToken"
         }
@@ -4006,7 +4562,7 @@
         },
         "NextToken":{
           "shape":"string",
-          "documentation":"<p>The next item following a partial list of returned resources. For example, if a request is made to return <code>maxResults</code> number of resources, <code>NextToken</code> allows you to return more items in your list starting at the location pointed to by the next token.</p>"
+          "documentation":"<p>The next item following a partial list of returned resources. For example, if a request is made to return <code>MaxResults</code> number of resources, <code>NextToken</code> allows you to return more items in your list starting at the location pointed to by the next token.</p>"
         }
       }
     },
@@ -4015,7 +4571,7 @@
       "members":{
         "NextToken":{
           "shape":"string",
-          "documentation":"<p>The next item following a partial list of returned items. For example, if a request is made to return <code>maxResults</code> number of items, <code>NextToken</code> allows you to return more items in your list starting at the location pointed to by the next token.</p>",
+          "documentation":"<p>The next item following a partial list of returned items. For example, if a request is made to return <code>MaxResults</code> number of items, <code>NextToken</code> allows you to return more items in your list starting at the location pointed to by the next token.</p>",
           "location":"querystring",
           "locationName":"nextToken"
         },
@@ -4087,7 +4643,7 @@
         },
         "ByMessageCategory":{
           "shape":"string",
-          "documentation":"<p>This returns a list of backup jobs for the specified message category.</p> <p>Example strings may include <code>AccessDenied</code>, <code>Success</code>, and <code>InvalidParameters</code>. See <a href=\"https://docs.aws.amazon.com/aws-backup/latest/devguide/monitoring.html\">Monitoring</a> for a list of MessageCategory strings.</p>",
+          "documentation":"<p>This is an optional parameter that can be used to filter out jobs with a MessageCategory which matches the value you input.</p> <p>Example strings may include <code>AccessDenied</code>, <code>SUCCESS</code>, <code>AGGREGATE_ALL</code>, and <code>InvalidParameters</code>.</p> <p>View <a href=\"https://docs.aws.amazon.com/aws-backup/latest/devguide/monitoring.html\">Monitoring</a> </p> <p>The wildcard () returns count of all message categories.</p> <p> <code>AGGREGATE_ALL</code> aggregates job counts for all message categories and returns the sum.</p>",
           "location":"querystring",
           "locationName":"messageCategory"
         }
@@ -4102,7 +4658,7 @@
         },
         "NextToken":{
           "shape":"string",
-          "documentation":"<p>The next item following a partial list of returned items. For example, if a request is made to return <code>maxResults</code> number of items, <code>NextToken</code> allows you to return more items in your list starting at the location pointed to by the next token.</p>"
+          "documentation":"<p>The next item following a partial list of returned items. For example, if a request is made to return <code>MaxResults</code> number of items, <code>NextToken</code> allows you to return more items in your list starting at the location pointed to by the next token.</p>"
         }
       }
     },
@@ -4111,7 +4667,7 @@
       "members":{
         "NextToken":{
           "shape":"string",
-          "documentation":"<p>The next item following a partial list of returned items. For example, if a request is made to return <code>maxResults</code> number of items, <code>NextToken</code> allows you to return more items in your list starting at the location pointed to by the next token.</p>",
+          "documentation":"<p>The next item following a partial list of returned items. For example, if a request is made to return <code>MaxResults</code> number of items, <code>NextToken</code> allows you to return more items in your list starting at the location pointed to by the next token.</p>",
           "location":"querystring",
           "locationName":"nextToken"
         },
@@ -4128,7 +4684,7 @@
       "members":{
         "NextToken":{
           "shape":"string",
-          "documentation":"<p>The next item following a partial list of returned items. For example, if a request is made to return <code>maxResults</code> number of items, <code>NextToken</code> allows you to return more items in your list starting at the location pointed to by the next token.</p>"
+          "documentation":"<p>The next item following a partial list of returned items. For example, if a request is made to return <code>MaxResults</code> number of items, <code>NextToken</code> allows you to return more items in your list starting at the location pointed to by the next token.</p>"
         },
         "BackupPlanTemplatesList":{
           "shape":"BackupPlanTemplatesList",
@@ -4148,7 +4704,7 @@
         },
         "NextToken":{
           "shape":"string",
-          "documentation":"<p>The next item following a partial list of returned items. For example, if a request is made to return <code>maxResults</code> number of items, <code>NextToken</code> allows you to return more items in your list starting at the location pointed to by the next token.</p>",
+          "documentation":"<p>The next item following a partial list of returned items. For example, if a request is made to return <code>MaxResults</code> number of items, <code>NextToken</code> allows you to return more items in your list starting at the location pointed to by the next token.</p>",
           "location":"querystring",
           "locationName":"nextToken"
         },
@@ -4165,7 +4721,7 @@
       "members":{
         "NextToken":{
           "shape":"string",
-          "documentation":"<p>The next item following a partial list of returned items. For example, if a request is made to return <code>maxResults</code> number of items, <code>NextToken</code> allows you to return more items in your list starting at the location pointed to by the next token.</p>"
+          "documentation":"<p>The next item following a partial list of returned items. For example, if a request is made to return <code>MaxResults</code> number of items, <code>NextToken</code> allows you to return more items in your list starting at the location pointed to by the next token.</p>"
         },
         "BackupPlanVersionsList":{
           "shape":"BackupPlanVersionsList",
@@ -4178,7 +4734,7 @@
       "members":{
         "NextToken":{
           "shape":"string",
-          "documentation":"<p>The next item following a partial list of returned items. For example, if a request is made to return <code>maxResults</code> number of items, <code>NextToken</code> allows you to return more items in your list starting at the location pointed to by the next token.</p>",
+          "documentation":"<p>The next item following a partial list of returned items. For example, if a request is made to return <code>MaxResults</code> number of items, <code>NextToken</code> allows you to return more items in your list starting at the location pointed to by the next token.</p>",
           "location":"querystring",
           "locationName":"nextToken"
         },
@@ -4201,7 +4757,7 @@
       "members":{
         "NextToken":{
           "shape":"string",
-          "documentation":"<p>The next item following a partial list of returned items. For example, if a request is made to return <code>maxResults</code> number of items, <code>NextToken</code> allows you to return more items in your list starting at the location pointed to by the next token.</p>"
+          "documentation":"<p>The next item following a partial list of returned items. For example, if a request is made to return <code>MaxResults</code> number of items, <code>NextToken</code> allows you to return more items in your list starting at the location pointed to by the next token.</p>"
         },
         "BackupPlansList":{
           "shape":"BackupPlansList",
@@ -4221,7 +4777,7 @@
         },
         "NextToken":{
           "shape":"string",
-          "documentation":"<p>The next item following a partial list of returned items. For example, if a request is made to return <code>maxResults</code> number of items, <code>NextToken</code> allows you to return more items in your list starting at the location pointed to by the next token.</p>",
+          "documentation":"<p>The next item following a partial list of returned items. For example, if a request is made to return <code>MaxResults</code> number of items, <code>NextToken</code> allows you to return more items in your list starting at the location pointed to by the next token.</p>",
           "location":"querystring",
           "locationName":"nextToken"
         },
@@ -4238,7 +4794,7 @@
       "members":{
         "NextToken":{
           "shape":"string",
-          "documentation":"<p>The next item following a partial list of returned items. For example, if a request is made to return <code>maxResults</code> number of items, <code>NextToken</code> allows you to return more items in your list starting at the location pointed to by the next token.</p>"
+          "documentation":"<p>The next item following a partial list of returned items. For example, if a request is made to return <code>MaxResults</code> number of items, <code>NextToken</code> allows you to return more items in your list starting at the location pointed to by the next token.</p>"
         },
         "BackupSelectionsList":{
           "shape":"BackupSelectionsList",
@@ -4263,7 +4819,7 @@
         },
         "NextToken":{
           "shape":"string",
-          "documentation":"<p>The next item following a partial list of returned items. For example, if a request is made to return <code>maxResults</code> number of items, <code>NextToken</code> allows you to return more items in your list starting at the location pointed to by the next token.</p>",
+          "documentation":"<p>The next item following a partial list of returned items. For example, if a request is made to return <code>MaxResults</code> number of items, <code>NextToken</code> allows you to return more items in your list starting at the location pointed to by the next token.</p>",
           "location":"querystring",
           "locationName":"nextToken"
         },
@@ -4284,7 +4840,7 @@
         },
         "NextToken":{
           "shape":"string",
-          "documentation":"<p>The next item following a partial list of returned items. For example, if a request is made to return <code>maxResults</code> number of items, <code>NextToken</code> allows you to return more items in your list starting at the location pointed to by the next token.</p>"
+          "documentation":"<p>The next item following a partial list of returned items. For example, if a request is made to return <code>MaxResults</code> number of items, <code>NextToken</code> allows you to return more items in your list starting at the location pointed to by the next token.</p>"
         }
       }
     },
@@ -4329,7 +4885,7 @@
         },
         "NextToken":{
           "shape":"string",
-          "documentation":"<p>The next item following a partial list of returned resources. For example, if a request is made to return <code>maxResults</code> number of resources, <code>NextToken</code> allows you to return more items in your list starting at the location pointed to by the next token.</p>",
+          "documentation":"<p>The next item following a partial list of returned resources. For example, if a request is made to return <code>MaxResults</code> number of resources, <code>NextToken</code> allows you to return more items in your list starting at the location pointed to by the next token.</p>",
           "location":"querystring",
           "locationName":"NextToken"
         }
@@ -4348,7 +4904,7 @@
         },
         "NextToken":{
           "shape":"string",
-          "documentation":"<p>The next item following a partial list of returned resources. For example, if a request is made to return <code>maxResults</code> number of resources, <code>NextToken</code> allows you to return more items in your list starting at the location pointed to by the next token.</p>"
+          "documentation":"<p>The next item following a partial list of returned resources. For example, if a request is made to return <code>MaxResults</code> number of resources, <code>NextToken</code> allows you to return more items in your list starting at the location pointed to by the next token.</p>"
         }
       }
     },
@@ -4357,7 +4913,7 @@
       "members":{
         "NextToken":{
           "shape":"string",
-          "documentation":"<p>The next item following a partial list of returned items. For example, if a request is made to return maxResults number of items, NextToken allows you to return more items in your list starting at the location pointed to by the next token. </p>",
+          "documentation":"<p>The next item following a partial list of returned items. For example, if a request is made to return MaxResults number of items, NextToken allows you to return more items in your list starting at the location pointed to by the next token. </p>",
           "location":"querystring",
           "locationName":"nextToken"
         },
@@ -4429,7 +4985,7 @@
         },
         "ByMessageCategory":{
           "shape":"string",
-          "documentation":"<p>This parameter returns the job count for the specified message category.</p> <p>Example accepted strings include <code>AccessDenied</code>, <code>Success</code>, and <code>InvalidParameters</code>. See <a href=\"https://docs.aws.amazon.com/aws-backup/latest/devguide/monitoring.html\">Monitoring</a> for a list of accepted MessageCategory strings.</p> <p>The the value ANY returns count of all message categories.</p> <p> <code>AGGREGATE_ALL</code> aggregates job counts for all message categories and returns the sum.</p>",
+          "documentation":"<p>This is an optional parameter that can be used to filter out jobs with a MessageCategory which matches the value you input.</p> <p>Example strings may include <code>AccessDenied</code>, <code>SUCCESS</code>, <code>AGGREGATE_ALL</code>, and <code>INVALIDPARAMETERS</code>.</p> <p>View <a href=\"https://docs.aws.amazon.com/aws-backup/latest/devguide/monitoring.html\">Monitoring</a> for a list of accepted strings.</p> <p>The the value ANY returns count of all message categories.</p> <p> <code>AGGREGATE_ALL</code> aggregates job counts for all message categories and returns the sum.</p>",
           "location":"querystring",
           "locationName":"messageCategory"
         }
@@ -4444,7 +5000,7 @@
         },
         "NextToken":{
           "shape":"string",
-          "documentation":"<p>The next item following a partial list of returned items. For example, if a request is made to return maxResults number of items, NextToken allows you to return more items in your list starting at the location pointed to by the next token. </p>"
+          "documentation":"<p>The next item following a partial list of returned items. For example, if a request is made to return MaxResults number of items, NextToken allows you to return more items in your list starting at the location pointed to by the next token. </p>"
         }
       }
     },
@@ -4483,7 +5039,7 @@
       "members":{
         "NextToken":{
           "shape":"string",
-          "documentation":"<p>The next item following a partial list of returned resources. For example, if a request is made to return <code>maxResults</code> number of resources, <code>NextToken</code> allows you to return more items in your list starting at the location pointed to by the next token.</p>",
+          "documentation":"<p>The next item following a partial list of returned resources. For example, if a request is made to return <code>MaxResults</code> number of resources, <code>NextToken</code> allows you to return more items in your list starting at the location pointed to by the next token.</p>",
           "location":"querystring",
           "locationName":"nextToken"
         },
@@ -4500,7 +5056,7 @@
       "members":{
         "NextToken":{
           "shape":"string",
-          "documentation":"<p>The next item following a partial list of returned resources. For example, if a request is made to return <code>maxResults</code> number of resources, <code>NextToken</code> allows you to return more items in your list starting at the location pointed to by the next token.</p>"
+          "documentation":"<p>The next item following a partial list of returned resources. For example, if a request is made to return <code>MaxResults</code> number of resources, <code>NextToken</code> allows you to return more items in your list starting at the location pointed to by the next token.</p>"
         },
         "LegalHolds":{
           "shape":"LegalHoldsList",
@@ -4530,7 +5086,7 @@
         },
         "NextToken":{
           "shape":"string",
-          "documentation":"<p>The next item following a partial list of returned items. For example, if a request is made to return <code>maxResults</code> number of items, <code>NextToken</code> allows you to return more items in your list starting at the location pointed to by the next token.</p>",
+          "documentation":"<p>The next item following a partial list of returned items. For example, if a request is made to return <code>MaxResults</code> number of items, <code>NextToken</code> allows you to return more items in your list starting at the location pointed to by the next token.</p>",
           "location":"querystring",
           "locationName":"nextToken"
         },
@@ -4551,7 +5107,7 @@
         },
         "NextToken":{
           "shape":"string",
-          "documentation":"<p>The next item following a partial list of returned items. For example, if a request is made to return <code>maxResults</code> number of items, <code>NextToken</code> allows you to return more items in your list starting at the location pointed to by the next token.</p>"
+          "documentation":"<p>The next item following a partial list of returned items. For example, if a request is made to return <code>MaxResults</code> number of items, <code>NextToken</code> allows you to return more items in your list starting at the location pointed to by the next token.</p>"
         }
       }
     },
@@ -4560,7 +5116,7 @@
       "members":{
         "NextToken":{
           "shape":"string",
-          "documentation":"<p>The next item following a partial list of returned items. For example, if a request is made to return <code>maxResults</code> number of items, <code>NextToken</code> allows you to return more items in your list starting at the location pointed to by the next token.</p>",
+          "documentation":"<p>The next item following a partial list of returned items. For example, if a request is made to return <code>MaxResults</code> number of items, <code>NextToken</code> allows you to return more items in your list starting at the location pointed to by the next token.</p>",
           "location":"querystring",
           "locationName":"nextToken"
         },
@@ -4581,7 +5137,7 @@
         },
         "NextToken":{
           "shape":"string",
-          "documentation":"<p>The next item following a partial list of returned items. For example, if a request is made to return <code>maxResults</code> number of items, <code>NextToken</code> allows you to return more items in your list starting at the location pointed to by the next token.</p>"
+          "documentation":"<p>The next item following a partial list of returned items. For example, if a request is made to return <code>MaxResults</code> number of items, <code>NextToken</code> allows you to return more items in your list starting at the location pointed to by the next token.</p>"
         }
       }
     },
@@ -4603,7 +5159,7 @@
         },
         "NextToken":{
           "shape":"string",
-          "documentation":"<p>The next item following a partial list of returned items. For example, if a request is made to return <code>maxResults</code> number of items, <code>NextToken</code> allows you to return more items in your list starting at the location pointed to by the next token.</p>",
+          "documentation":"<p>The next item following a partial list of returned items. For example, if a request is made to return <code>MaxResults</code> number of items, <code>NextToken</code> allows you to return more items in your list starting at the location pointed to by the next token.</p>",
           "location":"querystring",
           "locationName":"nextToken"
         },
@@ -4656,7 +5212,7 @@
       "members":{
         "NextToken":{
           "shape":"string",
-          "documentation":"<p>The next item following a partial list of returned items. For example, if a request is made to return <code>maxResults</code> number of items, <code>NextToken</code> allows you to return more items in your list starting at the location pointed to by the next token.</p>"
+          "documentation":"<p>The next item following a partial list of returned items. For example, if a request is made to return <code>MaxResults</code> number of items, <code>NextToken</code> allows you to return more items in your list starting at the location pointed to by the next token.</p>"
         },
         "RecoveryPoints":{
           "shape":"RecoveryPointByBackupVaultList",
@@ -4676,7 +5232,7 @@
         },
         "NextToken":{
           "shape":"string",
-          "documentation":"<p>This is the next item following a partial list of returned resources. For example, if a request is made to return <code>maxResults</code> number of resources, <code>NextToken</code> allows you to return more items in your list starting at the location pointed to by the next token.</p>",
+          "documentation":"<p>This is the next item following a partial list of returned resources. For example, if a request is made to return <code>MaxResults</code> number of resources, <code>NextToken</code> allows you to return more items in your list starting at the location pointed to by the next token.</p>",
           "location":"querystring",
           "locationName":"nextToken"
         },
@@ -4713,7 +5269,7 @@
         },
         "NextToken":{
           "shape":"string",
-          "documentation":"<p>The next item following a partial list of returned items. For example, if a request is made to return <code>maxResults</code> number of items, <code>NextToken</code> allows you to return more items in your list starting at the location pointed to by the next token.</p>",
+          "documentation":"<p>The next item following a partial list of returned items. For example, if a request is made to return <code>MaxResults</code> number of items, <code>NextToken</code> allows you to return more items in your list starting at the location pointed to by the next token.</p>",
           "location":"querystring",
           "locationName":"nextToken"
         },
@@ -4730,7 +5286,7 @@
       "members":{
         "NextToken":{
           "shape":"string",
-          "documentation":"<p>The next item following a partial list of returned items. For example, if a request is made to return <code>maxResults</code> number of items, <code>NextToken</code> allows you to return more items in your list starting at the location pointed to by the next token.</p>"
+          "documentation":"<p>The next item following a partial list of returned items. For example, if a request is made to return <code>MaxResults</code> number of items, <code>NextToken</code> allows you to return more items in your list starting at the location pointed to by the next token.</p>"
         },
         "RecoveryPoints":{
           "shape":"RecoveryPointByResourceList",
@@ -4857,7 +5413,7 @@
         },
         "NextToken":{
           "shape":"string",
-          "documentation":"<p>The next item following a partial list of returned resources. For example, if a request is made to return <code>maxResults</code> number of resources, <code>NextToken</code> allows you to return more items in your list starting at the location pointed to by the next token.</p>",
+          "documentation":"<p>The next item following a partial list of returned resources. For example, if a request is made to return <code>MaxResults</code> number of resources, <code>NextToken</code> allows you to return more items in your list starting at the location pointed to by the next token.</p>",
           "location":"querystring",
           "locationName":"NextToken"
         }
@@ -4876,7 +5432,62 @@
         },
         "NextToken":{
           "shape":"string",
-          "documentation":"<p>The next item following a partial list of returned resources. For example, if a request is made to return <code>maxResults</code> number of resources, <code>NextToken</code> allows you to return more items in your list starting at the location pointed to by the next token.</p>"
+          "documentation":"<p>The next item following a partial list of returned resources. For example, if a request is made to return <code>MaxResults</code> number of resources, <code>NextToken</code> allows you to return more items in your list starting at the location pointed to by the next token.</p>"
+        }
+      }
+    },
+    "ListRestoreJobsByProtectedResourceInput":{
+      "type":"structure",
+      "required":["ResourceArn"],
+      "members":{
+        "ResourceArn":{
+          "shape":"ARN",
+          "documentation":"<p>Returns only restore jobs that match the specified resource Amazon Resource Name (ARN).</p>",
+          "location":"uri",
+          "locationName":"resourceArn"
+        },
+        "ByStatus":{
+          "shape":"RestoreJobStatus",
+          "documentation":"<p>Returns only restore jobs associated with the specified job status.</p>",
+          "location":"querystring",
+          "locationName":"status"
+        },
+        "ByRecoveryPointCreationDateAfter":{
+          "shape":"timestamp",
+          "documentation":"<p>Returns only restore jobs of recovery points that were created after the specified date.</p>",
+          "location":"querystring",
+          "locationName":"recoveryPointCreationDateAfter"
+        },
+        "ByRecoveryPointCreationDateBefore":{
+          "shape":"timestamp",
+          "documentation":"<p>Returns only restore jobs of recovery points that were created before the specified date.</p>",
+          "location":"querystring",
+          "locationName":"recoveryPointCreationDateBefore"
+        },
+        "NextToken":{
+          "shape":"string",
+          "documentation":"<p>The next item following a partial list of returned items. For example, if a request ismade to return <code>MaxResults</code> number of items, <code>NextToken</code> allows you to return more items in your list starting at the location pointed to by the next token.</p>",
+          "location":"querystring",
+          "locationName":"nextToken"
+        },
+        "MaxResults":{
+          "shape":"MaxResults",
+          "documentation":"<p>The maximum number of items to be returned.</p>",
+          "location":"querystring",
+          "locationName":"maxResults"
+        }
+      }
+    },
+    "ListRestoreJobsByProtectedResourceOutput":{
+      "type":"structure",
+      "members":{
+        "RestoreJobs":{
+          "shape":"RestoreJobsList",
+          "documentation":"<p>An array of objects that contain detailed information about jobs to restore saved resources.&gt;</p>"
+        },
+        "NextToken":{
+          "shape":"string",
+          "documentation":"<p>The next item following a partial list of returned items. For example, if a request is made to return <code>MaxResults</code> number of items, <code>NextToken</code> allows youto return more items in your list starting at the location pointed to by the next token</p>"
         }
       }
     },
@@ -4885,7 +5496,7 @@
       "members":{
         "NextToken":{
           "shape":"string",
-          "documentation":"<p>The next item following a partial list of returned items. For example, if a request is made to return <code>maxResults</code> number of items, <code>NextToken</code> allows you to return more items in your list starting at the location pointed to by the next token.</p>",
+          "documentation":"<p>The next item following a partial list of returned items. For example, if a request is made to return <code>MaxResults</code> number of items, <code>NextToken</code> allows you to return more items in your list starting at the location pointed to by the next token.</p>",
           "location":"querystring",
           "locationName":"nextToken"
         },
@@ -4930,6 +5541,12 @@
           "documentation":"<p>Returns only copy jobs completed after a date expressed in Unix format and Coordinated Universal Time (UTC).</p>",
           "location":"querystring",
           "locationName":"completeAfter"
+        },
+        "ByRestoreTestingPlanArn":{
+          "shape":"ARN",
+          "documentation":"<p>This returns only restore testing jobs that match the specified resource Amazon Resource Name (ARN).</p>",
+          "location":"querystring",
+          "locationName":"restoreTestingPlanArn"
         }
       }
     },
@@ -4942,7 +5559,88 @@
         },
         "NextToken":{
           "shape":"string",
-          "documentation":"<p>The next item following a partial list of returned items. For example, if a request is made to return <code>maxResults</code> number of items, <code>NextToken</code> allows you to return more items in your list starting at the location pointed to by the next token.</p>"
+          "documentation":"<p>The next item following a partial list of returned items. For example, if a request is made to return <code>MaxResults</code> number of items, <code>NextToken</code> allows you to return more items in your list starting at the location pointed to by the next token.</p>"
+        }
+      }
+    },
+    "ListRestoreTestingPlansInput":{
+      "type":"structure",
+      "members":{
+        "MaxResults":{
+          "shape":"ListRestoreTestingPlansInputMaxResultsInteger",
+          "documentation":"<p>The maximum number of items to be returned.</p>",
+          "location":"querystring",
+          "locationName":"MaxResults"
+        },
+        "NextToken":{
+          "shape":"String",
+          "documentation":"<p>The next item following a partial list of returned items. For example, if a request is made to return <code>MaxResults</code> number of items, <code>NextToken</code> allows you to return more items in your list starting at the location pointed to by the nexttoken.</p>",
+          "location":"querystring",
+          "locationName":"NextToken"
+        }
+      }
+    },
+    "ListRestoreTestingPlansInputMaxResultsInteger":{
+      "type":"integer",
+      "box":true,
+      "max":1000,
+      "min":1
+    },
+    "ListRestoreTestingPlansOutput":{
+      "type":"structure",
+      "required":["RestoreTestingPlans"],
+      "members":{
+        "NextToken":{
+          "shape":"String",
+          "documentation":"<p>The next item following a partial list of returned items. For example, if a request is made to return <code>MaxResults</code> number of items, <code>NextToken</code> allows you to return more items in your list starting at the location pointed to by the nexttoken.</p>"
+        },
+        "RestoreTestingPlans":{
+          "shape":"RestoreTestingPlans",
+          "documentation":"<p>This is a returned list of restore testing plans.</p>"
+        }
+      }
+    },
+    "ListRestoreTestingSelectionsInput":{
+      "type":"structure",
+      "required":["RestoreTestingPlanName"],
+      "members":{
+        "MaxResults":{
+          "shape":"ListRestoreTestingSelectionsInputMaxResultsInteger",
+          "documentation":"<p>The maximum number of items to be returned.</p>",
+          "location":"querystring",
+          "locationName":"MaxResults"
+        },
+        "NextToken":{
+          "shape":"String",
+          "documentation":"<p>The next item following a partial list of returned items. For example, if a request is made to return <code>MaxResults</code> number of items, <code>NextToken</code> allows you to return more items in your list starting at the location pointed to by the nexttoken.</p>",
+          "location":"querystring",
+          "locationName":"NextToken"
+        },
+        "RestoreTestingPlanName":{
+          "shape":"String",
+          "documentation":"<p>Returns restore testing selections by the specified restore testing plan name.</p>",
+          "location":"uri",
+          "locationName":"RestoreTestingPlanName"
+        }
+      }
+    },
+    "ListRestoreTestingSelectionsInputMaxResultsInteger":{
+      "type":"integer",
+      "box":true,
+      "max":1000,
+      "min":1
+    },
+    "ListRestoreTestingSelectionsOutput":{
+      "type":"structure",
+      "required":["RestoreTestingSelections"],
+      "members":{
+        "NextToken":{
+          "shape":"String",
+          "documentation":"<p>The next item following a partial list of returned items. For example, if a request is made to return <code>MaxResults</code> number of items, <code>NextToken</code> allows you to return more items in your list starting at the location pointed to by the nexttoken.</p>"
+        },
+        "RestoreTestingSelections":{
+          "shape":"RestoreTestingSelections",
+          "documentation":"<p>The returned restore testing selections associated with the restore testing plan.</p>"
         }
       }
     },
@@ -4958,7 +5656,7 @@
         },
         "NextToken":{
           "shape":"string",
-          "documentation":"<p>The next item following a partial list of returned items. For example, if a request is made to return <code>maxResults</code> number of items, <code>NextToken</code> allows you to return more items in your list starting at the location pointed to by the next token.</p>",
+          "documentation":"<p>The next item following a partial list of returned items. For example, if a request is made to return <code>MaxResults</code> number of items, <code>NextToken</code> allows you to return more items in your list starting at the location pointed to by the next token.</p>",
           "location":"querystring",
           "locationName":"nextToken"
         },
@@ -4975,7 +5673,7 @@
       "members":{
         "NextToken":{
           "shape":"string",
-          "documentation":"<p>The next item following a partial list of returned items. For example, if a request is made to return <code>maxResults</code> number of items, <code>NextToken</code> allows you to return more items in your list starting at the location pointed to by the next token.</p>"
+          "documentation":"<p>The next item following a partial list of returned items. For example, if a request is made to return <code>MaxResults</code> number of items, <code>NextToken</code> allows you to return more items in your list starting at the location pointed to by the next token.</p>"
         },
         "Tags":{
           "shape":"Tags",
@@ -5040,9 +5738,31 @@
         "ResourceName":{
           "shape":"string",
           "documentation":"<p>This is the non-unique name of the resource that belongs to the specified backup.</p>"
+        },
+        "LastBackupVaultArn":{
+          "shape":"ARN",
+          "documentation":"<p>This is the ARN (Amazon Resource Name) of the backup vault that contains the most recent backup recovery point.</p>"
+        },
+        "LastRecoveryPointArn":{
+          "shape":"ARN",
+          "documentation":"<p>This is the ARN (Amazon Resource Name) of the most recent recovery point.</p>"
         }
       },
       "documentation":"<p>A structure that contains information about a backed-up resource.</p>"
+    },
+    "ProtectedResourceConditions":{
+      "type":"structure",
+      "members":{
+        "StringEquals":{
+          "shape":"KeyValueList",
+          "documentation":"<p>Filters the values of your tagged resources for only those resources that you tagged with the same value. Also called \"exact matching.\"</p>"
+        },
+        "StringNotEquals":{
+          "shape":"KeyValueList",
+          "documentation":"<p>Filters the values of your tagged resources for only those resources that you tagged that do not have the same value. Also called \"negated matching.\"</p>"
+        }
+      },
+      "documentation":"<p>A list of conditions that you define for resources in your restore testing plan using tags.</p> <p>For example, <code>\"StringEquals\": { \"Key\": \"aws:ResourceTag/CreatedByCryo\", \"Value\": \"true\" },</code>. Condition operators are case sensitive.</p>"
     },
     "ProtectedResourcesList":{
       "type":"list",
@@ -5109,6 +5829,29 @@
         "BackupVaultEvents":{
           "shape":"BackupVaultEvents",
           "documentation":"<p>An array of events that indicate the status of jobs to back up resources to the backup vault.</p> <p>For common use cases and code samples, see <a href=\"https://docs.aws.amazon.com/aws-backup/latest/devguide/sns-notifications.html\">Using Amazon SNS to track Backup events</a>.</p> <p>The following events are supported:</p> <ul> <li> <p> <code>BACKUP_JOB_STARTED</code> | <code>BACKUP_JOB_COMPLETED</code> </p> </li> <li> <p> <code>COPY_JOB_STARTED</code> | <code>COPY_JOB_SUCCESSFUL</code> | <code>COPY_JOB_FAILED</code> </p> </li> <li> <p> <code>RESTORE_JOB_STARTED</code> | <code>RESTORE_JOB_COMPLETED</code> | <code>RECOVERY_POINT_MODIFIED</code> </p> </li> <li> <p> <code>S3_BACKUP_OBJECT_FAILED</code> | <code>S3_RESTORE_OBJECT_FAILED</code> </p> </li> </ul> <note> <p>The list below shows items that are deprecated events (for reference) and are no longer in use. They are no longer supported and will not return statuses or notifications. Refer to the list above for current supported events.</p> </note>"
+        }
+      }
+    },
+    "PutRestoreValidationResultInput":{
+      "type":"structure",
+      "required":[
+        "RestoreJobId",
+        "ValidationStatus"
+      ],
+      "members":{
+        "RestoreJobId":{
+          "shape":"RestoreJobId",
+          "documentation":"<p>This is a unique identifier of a restore job within Backup.</p>",
+          "location":"uri",
+          "locationName":"restoreJobId"
+        },
+        "ValidationStatus":{
+          "shape":"RestoreValidationStatus",
+          "documentation":"<p>This is the status of your restore validation.</p>"
+        },
+        "ValidationStatusMessage":{
+          "shape":"string",
+          "documentation":"<p>This is an optional message string you can input to describe the validation status for the restore test validation.</p>"
         }
       }
     },
@@ -5545,6 +6288,24 @@
       "type":"list",
       "member":{"shape":"ResourceType"}
     },
+    "RestoreDeletionStatus":{
+      "type":"string",
+      "enum":[
+        "DELETING",
+        "FAILED",
+        "SUCCESSFUL"
+      ]
+    },
+    "RestoreJobCreator":{
+      "type":"structure",
+      "members":{
+        "RestoreTestingPlanArn":{
+          "shape":"ARN",
+          "documentation":"<p>An Amazon Resource Name (ARN) that uniquely identifies a restore testing plan.</p>"
+        }
+      },
+      "documentation":"<p>Contains information about the restore testing plan that Backup used to initiate the restore job.</p>"
+    },
     "RestoreJobId":{"type":"string"},
     "RestoreJobState":{
       "type":"string",
@@ -5665,9 +6426,405 @@
         "ResourceType":{
           "shape":"ResourceType",
           "documentation":"<p>The resource type of the listed restore jobs; for example, an Amazon Elastic Block Store (Amazon EBS) volume or an Amazon Relational Database Service (Amazon RDS) database. For Windows Volume Shadow Copy Service (VSS) backups, the only supported resource type is Amazon EC2.</p>"
+        },
+        "RecoveryPointCreationDate":{
+          "shape":"timestamp",
+          "documentation":"<p>The date on which a recovery point was created.</p>"
+        },
+        "CreatedBy":{
+          "shape":"RestoreJobCreator",
+          "documentation":"<p>Contains identifying information about the creation of a restore job.</p>"
+        },
+        "ValidationStatus":{
+          "shape":"RestoreValidationStatus",
+          "documentation":"<p>This is the status of validation run on the indicated restore job.</p>"
+        },
+        "ValidationStatusMessage":{
+          "shape":"string",
+          "documentation":"<p>This describes the status of validation run on the indicated restore job.</p>"
+        },
+        "DeletionStatus":{
+          "shape":"RestoreDeletionStatus",
+          "documentation":"<p>This notes the status of the data generated by the restore test. The status may be <code>Deleting</code>, <code>Failed</code>, or <code>Successful</code>.</p>"
+        },
+        "DeletionStatusMessage":{
+          "shape":"string",
+          "documentation":"<p>This describes the restore job deletion status.</p>"
         }
       },
       "documentation":"<p>Contains metadata about a restore job.</p>"
+    },
+    "RestoreTestingPlanForCreate":{
+      "type":"structure",
+      "required":[
+        "RecoveryPointSelection",
+        "RestoreTestingPlanName",
+        "ScheduleExpression"
+      ],
+      "members":{
+        "RecoveryPointSelection":{
+          "shape":"RestoreTestingRecoveryPointSelection",
+          "documentation":"<p>Required: Algorithm; Required: Recovery point types; IncludeVaults (one or more). Optional: SelectionWindowDays ('30' if not specified); ExcludeVaults (list of selectors), defaults to empty list if not listed.</p>"
+        },
+        "RestoreTestingPlanName":{
+          "shape":"String",
+          "documentation":"<p>The RestoreTestingPlanName is a unique string that is the name of the restore testing plan. This cannot be changed after creation, and it must consist of only alphanumeric characters and underscores.</p>"
+        },
+        "ScheduleExpression":{
+          "shape":"String",
+          "documentation":"<p>A CRON expression in specified timezone when a restore testing plan is executed.</p>"
+        },
+        "ScheduleExpressionTimezone":{
+          "shape":"String",
+          "documentation":"<p>Optional. This is the timezone in which the schedule expression is set. By default, ScheduleExpressions are in UTC. You can modify this to a specified timezone.</p>"
+        },
+        "StartWindowHours":{
+          "shape":"integer",
+          "documentation":"<p>Defaults to 24 hours.</p> <p>A value in hours after a restore test is scheduled before a job will be canceled if it doesn't start successfully. This value is optional. If this value is included, this parameter has a maximum value of 168 hours (one week).</p>"
+        }
+      },
+      "documentation":"<p>This contains metadata about a restore testing plan.</p>"
+    },
+    "RestoreTestingPlanForGet":{
+      "type":"structure",
+      "required":[
+        "CreationTime",
+        "RecoveryPointSelection",
+        "RestoreTestingPlanArn",
+        "RestoreTestingPlanName",
+        "ScheduleExpression"
+      ],
+      "members":{
+        "CreationTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The date and time that a restore testing plan was created, in Unix format and Coordinated Universal Time (UTC). The value of <code>CreationTime</code> is accurate to milliseconds. For example, the value 1516925490.087 represents Friday, January 26, 2018 12:11:30.087 AM.</p>"
+        },
+        "CreatorRequestId":{
+          "shape":"String",
+          "documentation":"<p>This identifies the request and allows failed requests to be retried without the risk of running the operation twice. If the request includes a <code>CreatorRequestId</code> that matches an existing backup plan, that plan is returned. This parameter is optional.</p> <p>If used, this parameter must contain 1 to 50 alphanumeric or '-_.' characters.</p>"
+        },
+        "LastExecutionTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The last time a restore test was run with the specified restore testing plan. A date and time, in Unix format and Coordinated Universal Time (UTC). The value of <code>LastExecutionDate</code> is accurate to milliseconds. For example, the value 1516925490.087 represents Friday, January 26, 2018 12:11:30.087 AM.</p>"
+        },
+        "LastUpdateTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The date and time that the restore testing plan was updated. This update is in Unix format and Coordinated Universal Time (UTC). The value of <code>LastUpdateTime</code> is accurate to milliseconds. For example, the value 1516925490.087 represents Friday, January 26, 2018 12:11:30.087 AM.</p>"
+        },
+        "RecoveryPointSelection":{
+          "shape":"RestoreTestingRecoveryPointSelection",
+          "documentation":"<p>The specified criteria to assign a set of resources, such as recovery point types or backup vaults.</p>"
+        },
+        "RestoreTestingPlanArn":{
+          "shape":"String",
+          "documentation":"<p>An Amazon Resource Name (ARN) that uniquely identifies a restore testing plan.</p>"
+        },
+        "RestoreTestingPlanName":{
+          "shape":"String",
+          "documentation":"<p>This is the restore testing plan name.</p>"
+        },
+        "ScheduleExpression":{
+          "shape":"String",
+          "documentation":"<p>A CRON expression in specified timezone when a restore testing plan is executed.</p>"
+        },
+        "ScheduleExpressionTimezone":{
+          "shape":"String",
+          "documentation":"<p>Optional. This is the timezone in which the schedule expression is set. By default, ScheduleExpressions are in UTC. You can modify this to a specified timezone.</p>"
+        },
+        "StartWindowHours":{
+          "shape":"integer",
+          "documentation":"<p>Defaults to 24 hours.</p> <p>A value in hours after a restore test is scheduled before a job will be canceled if it doesn't start successfully. This value is optional. If this value is included, this parameter has a maximum value of 168 hours (one week).</p>"
+        }
+      },
+      "documentation":"<p>This contains metadata about a restore testing plan.</p>"
+    },
+    "RestoreTestingPlanForList":{
+      "type":"structure",
+      "required":[
+        "CreationTime",
+        "RestoreTestingPlanArn",
+        "RestoreTestingPlanName",
+        "ScheduleExpression"
+      ],
+      "members":{
+        "CreationTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The date and time that a restore testing plan was created, in Unix format and Coordinated Universal Time (UTC). The value of <code>CreationTime</code> is accurate to milliseconds. For example, the value 1516925490.087 represents Friday, January 26, 2018 12:11:30.087 AM.</p>"
+        },
+        "LastExecutionTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The last time a restore test was run with the specified restore testing plan. A date and time, in Unix format and Coordinated Universal Time (UTC). The value of <code>LastExecutionDate</code> is accurate to milliseconds. For example, the value 1516925490.087 represents Friday, January 26, 2018 12:11:30.087 AM.</p>"
+        },
+        "LastUpdateTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The date and time that the restore testing plan was updated. This update is in Unix format and Coordinated Universal Time (UTC). The value of <code>LastUpdateTime</code> is accurate to milliseconds. For example, the value 1516925490.087 represents Friday, January 26, 2018 12:11:30.087 AM.</p>"
+        },
+        "RestoreTestingPlanArn":{
+          "shape":"String",
+          "documentation":"<p>An Amazon Resource Name (ARN) that uniquely identifiesa restore testing plan.</p>"
+        },
+        "RestoreTestingPlanName":{
+          "shape":"String",
+          "documentation":"<p>This is the restore testing plan name.</p>"
+        },
+        "ScheduleExpression":{
+          "shape":"String",
+          "documentation":"<p>A CRON expression in specified timezone when a restore testing plan is executed.</p>"
+        },
+        "ScheduleExpressionTimezone":{
+          "shape":"String",
+          "documentation":"<p>Optional. This is the timezone in which the schedule expression is set. By default, ScheduleExpressions are in UTC. You can modify this to a specified timezone.</p>"
+        },
+        "StartWindowHours":{
+          "shape":"integer",
+          "documentation":"<p>Defaults to 24 hours.</p> <p>A value in hours after a restore test is scheduled before a job will be canceled if it doesn't start successfully. This value is optional. If this value is included, this parameter has a maximum value of 168 hours (one week).</p>"
+        }
+      },
+      "documentation":"<p>This contains metadata about a restore testing plan.</p>"
+    },
+    "RestoreTestingPlanForUpdate":{
+      "type":"structure",
+      "members":{
+        "RecoveryPointSelection":{
+          "shape":"RestoreTestingRecoveryPointSelection",
+          "documentation":"<p>Required: <code>Algorithm</code>; <code>RecoveryPointTypes</code>; <code>IncludeVaults</code> (<i>one or more</i>).</p> <p>Optional: <i>SelectionWindowDays</i> (<i>'30' if not specified</i>); <code>ExcludeVaults</code> (defaults to empty list if not listed).</p>"
+        },
+        "ScheduleExpression":{
+          "shape":"String",
+          "documentation":"<p>A CRON expression in specified timezone when a restore testing plan is executed.</p>"
+        },
+        "ScheduleExpressionTimezone":{
+          "shape":"String",
+          "documentation":"<p>Optional. This is the timezone in which the schedule expression is set. By default, ScheduleExpressions are in UTC. You can modify this to a specified timezone.</p>"
+        },
+        "StartWindowHours":{
+          "shape":"integer",
+          "documentation":"<p>Defaults to 24 hours.</p> <p>A value in hours after a restore test is scheduled before a job will be canceled if it doesn't start successfully. This value is optional. If this value is included, this parameter has a maximum value of 168 hours (one week).</p>"
+        }
+      },
+      "documentation":"<p>This contains metadata about a restore testing plan.</p>"
+    },
+    "RestoreTestingPlans":{
+      "type":"list",
+      "member":{"shape":"RestoreTestingPlanForList"}
+    },
+    "RestoreTestingRecoveryPointSelection":{
+      "type":"structure",
+      "members":{
+        "Algorithm":{
+          "shape":"RestoreTestingRecoveryPointSelectionAlgorithm",
+          "documentation":"<p>Acceptable values include \"LATEST_WITHIN_WINDOW\" or \"RANDOM_WITHIN_WINDOW\"</p>"
+        },
+        "ExcludeVaults":{
+          "shape":"stringList",
+          "documentation":"<p>Accepted values include specific ARNs or list of selectors. Defaults to empty list if not listed.</p>"
+        },
+        "IncludeVaults":{
+          "shape":"stringList",
+          "documentation":"<p>Accepted values include wildcard [\"*\"] or by specific ARNs or ARN wilcard replacement [\"arn:aws:backup:us-west-2:123456789012:backup-vault:asdf\", ...] [\"arn:aws:backup:*:*:backup-vault:asdf-*\", ...]</p>"
+        },
+        "RecoveryPointTypes":{
+          "shape":"RestoreTestingRecoveryPointTypeList",
+          "documentation":"<p>These are the types of recovery points.</p>"
+        },
+        "SelectionWindowDays":{
+          "shape":"integer",
+          "documentation":"<p>Accepted values are integers from 1 to 365.</p>"
+        }
+      },
+      "documentation":"<p>Required: Algorithm; Required: Recovery point types; IncludeVaults(one or more). Optional: SelectionWindowDays ('30' if not specified);ExcludeVaults (list of selectors), defaults to empty list if not listed.</p>"
+    },
+    "RestoreTestingRecoveryPointSelectionAlgorithm":{
+      "type":"string",
+      "enum":[
+        "LATEST_WITHIN_WINDOW",
+        "RANDOM_WITHIN_WINDOW"
+      ]
+    },
+    "RestoreTestingRecoveryPointType":{
+      "type":"string",
+      "enum":[
+        "CONTINUOUS",
+        "SNAPSHOT"
+      ]
+    },
+    "RestoreTestingRecoveryPointTypeList":{
+      "type":"list",
+      "member":{"shape":"RestoreTestingRecoveryPointType"}
+    },
+    "RestoreTestingSelectionForCreate":{
+      "type":"structure",
+      "required":[
+        "IamRoleArn",
+        "ProtectedResourceType",
+        "RestoreTestingSelectionName"
+      ],
+      "members":{
+        "IamRoleArn":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the IAM role that Backup uses to create the target resource; for example: <code>arn:aws:iam::123456789012:role/S3Access</code>. </p>"
+        },
+        "ProtectedResourceArns":{
+          "shape":"stringList",
+          "documentation":"<p>Each protected resource can be filtered by its specific ARNs, such as <code>ProtectedResourceArns: [\"arn:aws:...\", \"arn:aws:...\"]</code> or by a wildcard: <code>ProtectedResourceArns: [\"*\"]</code>, but not both.</p>"
+        },
+        "ProtectedResourceConditions":{
+          "shape":"ProtectedResourceConditions",
+          "documentation":"<p>If you have included the wildcard in ProtectedResourceArns, you can include resource conditions, such as <code>ProtectedResourceConditions: { StringEquals: [{ key: \"XXXX\", value: \"YYYY\" }]</code>.</p>"
+        },
+        "ProtectedResourceType":{
+          "shape":"String",
+          "documentation":"<p>The type of Amazon Web Services resource included in a restore testing selection; for example, an Amazon EBS volume or an Amazon RDS database.</p> <p>Supported resource types accepted include:</p> <ul> <li> <p> <code>Aurora</code> for Amazon Aurora</p> </li> <li> <p> <code>DocumentDB</code> for Amazon DocumentDB (with MongoDB compatibility)</p> </li> <li> <p> <code>DynamoDB</code> for Amazon DynamoDB</p> </li> <li> <p> <code>EBS</code> for Amazon Elastic Block Store</p> </li> <li> <p> <code>EC2</code> for Amazon Elastic Compute Cloud</p> </li> <li> <p> <code>EFS</code> for Amazon Elastic File System</p> </li> <li> <p> <code>FSx</code> for Amazon FSx</p> </li> <li> <p> <code>Neptune</code> for Amazon Neptune</p> </li> <li> <p> <code>RDS</code> for Amazon Relational Database Service</p> </li> <li> <p> <code>S3</code> for Amazon S3</p> </li> </ul>"
+        },
+        "RestoreMetadataOverrides":{
+          "shape":"SensitiveStringMap",
+          "documentation":"<p>You can override certain restore metadata keys by including the parameter <code>RestoreMetadataOverrides</code> in the body of <code>RestoreTestingSelection</code>. Key values are not case sensitive.</p> <p>See the complete list of <a href=\"https://docs.aws.amazon.com/aws-backup/latest/devguide/restore-testing-inferred-metadata.html\">restore testing inferred metadata</a>.</p>"
+        },
+        "RestoreTestingSelectionName":{
+          "shape":"String",
+          "documentation":"<p>This is the unique name of the restore testing selection that belongs to the related restore testing plan.</p>"
+        },
+        "ValidationWindowHours":{
+          "shape":"integer",
+          "documentation":"<p>This is amount of hours (1 to 168) available to run a validation script on the data. The data will be deleted upon the completion of the validation script or the end of the specified retention period, whichever comes first.</p>"
+        }
+      },
+      "documentation":"<p>This contains metadata about a specific restore testing selection.</p> <p>ProtectedResourceType is required, such as Amazon EBS or Amazon EC2.</p> <p>This consists of <code>RestoreTestingSelectionName</code>, <code>ProtectedResourceType</code>, and one of the following:</p> <ul> <li> <p> <code>ProtectedResourceArns</code> </p> </li> <li> <p> <code>ProtectedResourceConditions</code> </p> </li> </ul> <p>Each protected resource type can have one single value.</p> <p>A restore testing selection can include a wildcard value (\"*\") for <code>ProtectedResourceArns</code> along with <code>ProtectedResourceConditions</code>. Alternatively, you can include up to 30 specific protected resource ARNs in <code>ProtectedResourceArns</code>.</p> <p> <code>ProtectedResourceConditions</code> examples include as <code>StringEquals</code> and <code>StringNotEquals</code>.</p>"
+    },
+    "RestoreTestingSelectionForGet":{
+      "type":"structure",
+      "required":[
+        "CreationTime",
+        "IamRoleArn",
+        "ProtectedResourceType",
+        "RestoreTestingPlanName",
+        "RestoreTestingSelectionName"
+      ],
+      "members":{
+        "CreationTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The date and time that a restore testing selection was created, in Unix format and Coordinated Universal Time (UTC). The value of <code>CreationTime</code> is accurate to milliseconds. For example, the value 1516925490.087 represents Friday, January 26, 201812:11:30.087 AM.</p>"
+        },
+        "CreatorRequestId":{
+          "shape":"String",
+          "documentation":"<p>This identifies the request and allows failed requests to be retried without the risk of running the operation twice. If the request includes a <code>CreatorRequestId</code> that matches an existing backup plan, that plan is returned. This parameter is optional.</p> <p>If used, this parameter must contain 1 to 50 alphanumeric or '-_.' characters.</p>"
+        },
+        "IamRoleArn":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the IAM role that Backup uses to create the target resource; for example:<code>arn:aws:iam::123456789012:role/S3Access</code>.</p>"
+        },
+        "ProtectedResourceArns":{
+          "shape":"stringList",
+          "documentation":"<p>You can include specific ARNs, such as <code>ProtectedResourceArns: [\"arn:aws:...\", \"arn:aws:...\"]</code> or you can include a wildcard: <code>ProtectedResourceArns: [\"*\"]</code>, but not both.</p>"
+        },
+        "ProtectedResourceConditions":{
+          "shape":"ProtectedResourceConditions",
+          "documentation":"<p>In a resource testing selection, this parameter filters by specific conditions such as <code>StringEquals</code> or <code>StringNotEquals</code>.</p>"
+        },
+        "ProtectedResourceType":{
+          "shape":"String",
+          "documentation":"<p>The type of Amazon Web Services resource included in a resource testing selection; for example, an Amazon EBS volume or an Amazon RDS database.</p>"
+        },
+        "RestoreMetadataOverrides":{
+          "shape":"SensitiveStringMap",
+          "documentation":"<p>You can override certain restore metadata keys by including the parameter <code>RestoreMetadataOverrides</code> in the body of <code>RestoreTestingSelection</code>. Key values are not case sensitive.</p> <p>See the complete list of <a href=\"https://docs.aws.amazon.com/aws-backup/latest/devguide/restore-testing-inferred-metadata.html\">restore testing inferred metadata</a>.</p>"
+        },
+        "RestoreTestingPlanName":{
+          "shape":"String",
+          "documentation":"<p>The RestoreTestingPlanName is a unique string that is the name of the restore testing plan.</p>"
+        },
+        "RestoreTestingSelectionName":{
+          "shape":"String",
+          "documentation":"<p>This is the unique name of the restore testing selection that belongs to the related restore testing plan.</p>"
+        },
+        "ValidationWindowHours":{
+          "shape":"integer",
+          "documentation":"<p>This is amount of hours (1 to 168) available to run a validation script on the data. The data will be deleted upon the completion of the validation script or the end of the specified retention period, whichever comes first.</p>"
+        }
+      },
+      "documentation":"<p>This contains metadata about a restore testing selection.</p>"
+    },
+    "RestoreTestingSelectionForList":{
+      "type":"structure",
+      "required":[
+        "CreationTime",
+        "IamRoleArn",
+        "ProtectedResourceType",
+        "RestoreTestingPlanName",
+        "RestoreTestingSelectionName"
+      ],
+      "members":{
+        "CreationTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>This is the date and time that a restore testing selection was created, in Unix format and Coordinated Universal Time (UTC). The value of <code>CreationTime</code> is accurate to milliseconds. For example, the value 1516925490.087 represents Friday, January 26,2018 12:11:30.087 AM.</p>"
+        },
+        "IamRoleArn":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the IAM role that Backup uses to create the target resource; for example: <code>arn:aws:iam::123456789012:role/S3Access</code>.</p>"
+        },
+        "ProtectedResourceType":{
+          "shape":"String",
+          "documentation":"<p>The type of Amazon Web Services resource included in a restore testing selection; for example, an Amazon EBS volume or an Amazon RDS database.</p>"
+        },
+        "RestoreTestingPlanName":{
+          "shape":"String",
+          "documentation":"<p>Unique string that is the name of the restore testing plan.</p> <p>The name cannot be changed after creation. The name must consist of only alphanumeric characters and underscores. Maximum length is 50.</p>"
+        },
+        "RestoreTestingSelectionName":{
+          "shape":"String",
+          "documentation":"<p>Unique name of a restore testing selection.</p>"
+        },
+        "ValidationWindowHours":{
+          "shape":"integer",
+          "documentation":"<p>This value represents the time, in hours, data is retained after a restore test so that optional validation can be completed.</p> <p>Accepted value is an integer between 0 and 168 (the hourly equivalent of seven days).</p>"
+        }
+      },
+      "documentation":"<p>This contains metadata about a restore testing selection.</p>"
+    },
+    "RestoreTestingSelectionForUpdate":{
+      "type":"structure",
+      "members":{
+        "IamRoleArn":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the IAM role that Backup uses to create the target resource; for example: <code>arn:aws:iam::123456789012:role/S3Access</code>.</p>"
+        },
+        "ProtectedResourceArns":{
+          "shape":"stringList",
+          "documentation":"<p>You can include a list of specific ARNs, such as <code>ProtectedResourceArns: [\"arn:aws:...\", \"arn:aws:...\"]</code> or you can include a wildcard: <code>ProtectedResourceArns: [\"*\"]</code>, but not both.</p>"
+        },
+        "ProtectedResourceConditions":{
+          "shape":"ProtectedResourceConditions",
+          "documentation":"<p>A list of conditions that you define for resources in your restore testing plan using tags.</p> <p>For example, <code>\"StringEquals\": { \"Key\": \"aws:ResourceTag/CreatedByCryo\", \"Value\": \"true\" },</code>. Condition operators are case sensitive.</p>"
+        },
+        "RestoreMetadataOverrides":{
+          "shape":"SensitiveStringMap",
+          "documentation":"<p>You can override certain restore metadata keys by including the parameter <code>RestoreMetadataOverrides</code> in the body of <code>RestoreTestingSelection</code>. Key values are not case sensitive.</p> <p>See the complete list of <a href=\"https://docs.aws.amazon.com/aws-backup/latest/devguide/restore-testing-inferred-metadata.html\">restore testing inferred metadata</a>.</p>"
+        },
+        "ValidationWindowHours":{
+          "shape":"integer",
+          "documentation":"<p>This value represents the time, in hours, data is retained after a restore test so that optional validation can be completed.</p> <p>Accepted value is an integer between 0 and 168 (the hourly equivalent of seven days).</p>"
+        }
+      },
+      "documentation":"<p>This contains metadata about a restore testing selection.</p>"
+    },
+    "RestoreTestingSelections":{
+      "type":"list",
+      "member":{"shape":"RestoreTestingSelectionForList"}
+    },
+    "RestoreValidationStatus":{
+      "type":"string",
+      "enum":[
+        "FAILED",
+        "SUCCESSFUL",
+        "TIMED_OUT",
+        "VALIDATING"
+      ]
+    },
+    "SensitiveStringMap":{
+      "type":"map",
+      "key":{"shape":"String"},
+      "value":{"shape":"String"},
+      "sensitive":true
     },
     "ServiceUnavailableException":{
       "type":"structure",
@@ -5891,6 +7048,7 @@
         "DELETED"
       ]
     },
+    "String":{"type":"string"},
     "TagKey":{"type":"string"},
     "TagKeyList":{
       "type":"list",
@@ -5923,6 +7081,7 @@
       "value":{"shape":"TagValue"},
       "sensitive":true
     },
+    "Timestamp":{"type":"timestamp"},
     "Timezone":{"type":"string"},
     "UntagResourceInput":{
       "type":"structure",
@@ -6140,6 +7299,110 @@
         "CreationTime":{
           "shape":"timestamp",
           "documentation":"<p>The date and time that a report plan is created, in Unix format and Coordinated Universal Time (UTC). The value of <code>CreationTime</code> is accurate to milliseconds. For example, the value 1516925490.087 represents Friday, January 26, 2018 12:11:30.087 AM.</p>"
+        }
+      }
+    },
+    "UpdateRestoreTestingPlanInput":{
+      "type":"structure",
+      "required":[
+        "RestoreTestingPlan",
+        "RestoreTestingPlanName"
+      ],
+      "members":{
+        "RestoreTestingPlan":{
+          "shape":"RestoreTestingPlanForUpdate",
+          "documentation":"<p>Specifies the body of a restore testing plan.</p>"
+        },
+        "RestoreTestingPlanName":{
+          "shape":"String",
+          "documentation":"<p>This is the restore testing plan name you wish to update.</p>",
+          "location":"uri",
+          "locationName":"RestoreTestingPlanName"
+        }
+      }
+    },
+    "UpdateRestoreTestingPlanOutput":{
+      "type":"structure",
+      "required":[
+        "CreationTime",
+        "RestoreTestingPlanArn",
+        "RestoreTestingPlanName",
+        "UpdateTime"
+      ],
+      "members":{
+        "CreationTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>This is the time the resource testing plan was created.</p>"
+        },
+        "RestoreTestingPlanArn":{
+          "shape":"String",
+          "documentation":"<p>Unique ARN (Amazon Resource Name) of the restore testing plan.</p>"
+        },
+        "RestoreTestingPlanName":{
+          "shape":"String",
+          "documentation":"<p>The name cannot be changed after creation. The name consists of only alphanumeric characters and underscores. Maximum length is 50.</p>"
+        },
+        "UpdateTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>This is the time the update completed for the restore testing plan.</p>"
+        }
+      }
+    },
+    "UpdateRestoreTestingSelectionInput":{
+      "type":"structure",
+      "required":[
+        "RestoreTestingPlanName",
+        "RestoreTestingSelection",
+        "RestoreTestingSelectionName"
+      ],
+      "members":{
+        "RestoreTestingPlanName":{
+          "shape":"String",
+          "documentation":"<p>The restore testing plan name is required to update the indicated testing plan.</p>",
+          "location":"uri",
+          "locationName":"RestoreTestingPlanName"
+        },
+        "RestoreTestingSelection":{
+          "shape":"RestoreTestingSelectionForUpdate",
+          "documentation":"<p>To update your restore testing selection, you can use either protected resource ARNs or conditions, but not both. That is, if your selection has <code>ProtectedResourceArns</code>, requesting an update with the parameter <code>ProtectedResourceConditions</code> will be unsuccessful.</p>"
+        },
+        "RestoreTestingSelectionName":{
+          "shape":"String",
+          "documentation":"<p>This is the required restore testing selection name of the restore testing selection you wish to update.</p>",
+          "location":"uri",
+          "locationName":"RestoreTestingSelectionName"
+        }
+      }
+    },
+    "UpdateRestoreTestingSelectionOutput":{
+      "type":"structure",
+      "required":[
+        "CreationTime",
+        "RestoreTestingPlanArn",
+        "RestoreTestingPlanName",
+        "RestoreTestingSelectionName",
+        "UpdateTime"
+      ],
+      "members":{
+        "CreationTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>This is the time the resource testing selection was updated successfully.</p>"
+        },
+        "RestoreTestingPlanArn":{
+          "shape":"String",
+          "documentation":"<p>Unique string that is the name of the restore testing plan.</p>"
+        },
+        "RestoreTestingPlanName":{
+          "shape":"String",
+          "documentation":"<p>This is the restore testing plan with which the updated restore testing selection is associated.</p>"
+        },
+        "RestoreTestingSelectionName":{
+          "shape":"String",
+          "documentation":"<p>This is the returned restore testing selection name.</p>"
+        },
+        "UpdateTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>This is the time the update completed for the restore testing selection.</p>"
         }
       }
     },

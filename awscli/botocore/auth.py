@@ -503,6 +503,176 @@ class S3SigV4Auth(SigV4Auth):
         return path
 
 
+class S3ExpressAuth(S3SigV4Auth):
+    REQUIRES_IDENTITY_CACHE = True
+
+    def __init__(
+        self, credentials, service_name, region_name, *, identity_cache
+    ):
+        super().__init__(credentials, service_name, region_name)
+        self._identity_cache = identity_cache
+
+    def add_auth(self, request):
+        super().add_auth(request)
+
+    def _modify_request_before_signing(self, request):
+        super()._modify_request_before_signing(request)
+        if 'x-amz-s3session-token' not in request.headers:
+            request.headers['x-amz-s3session-token'] = self.credentials.token
+        # S3Express does not support STS' X-Amz-Security-Token
+        if 'X-Amz-Security-Token' in request.headers:
+            del request.headers['X-Amz-Security-Token']
+
+
+class S3ExpressPostAuth(S3ExpressAuth):
+    REQUIRES_IDENTITY_CACHE = True
+
+    def add_auth(self, request):
+        datetime_now = datetime.datetime.utcnow()
+        request.context['timestamp'] = datetime_now.strftime(SIGV4_TIMESTAMP)
+
+        fields = {}
+        if request.context.get('s3-presign-post-fields', None) is not None:
+            fields = request.context['s3-presign-post-fields']
+
+        policy = {}
+        conditions = []
+        if request.context.get('s3-presign-post-policy', None) is not None:
+            policy = request.context['s3-presign-post-policy']
+            if policy.get('conditions', None) is not None:
+                conditions = policy['conditions']
+
+        policy['conditions'] = conditions
+
+        fields['x-amz-algorithm'] = 'AWS4-HMAC-SHA256'
+        fields['x-amz-credential'] = self.scope(request)
+        fields['x-amz-date'] = request.context['timestamp']
+
+        conditions.append({'x-amz-algorithm': 'AWS4-HMAC-SHA256'})
+        conditions.append({'x-amz-credential': self.scope(request)})
+        conditions.append({'x-amz-date': request.context['timestamp']})
+
+        if self.credentials.token is not None:
+            fields['X-Amz-S3session-Token'] = self.credentials.token
+            conditions.append(
+                {'X-Amz-S3session-Token': self.credentials.token}
+            )
+
+        # Dump the base64 encoded policy into the fields dictionary.
+        fields['policy'] = base64.b64encode(
+            json.dumps(policy).encode('utf-8')
+        ).decode('utf-8')
+
+        fields['x-amz-signature'] = self.signature(fields['policy'], request)
+
+        request.context['s3-presign-post-fields'] = fields
+        request.context['s3-presign-post-policy'] = policy
+
+
+class S3ExpressQueryAuth(S3ExpressAuth):
+    DEFAULT_EXPIRES = 300
+    REQUIRES_IDENTITY_CACHE = True
+
+    def __init__(
+        self,
+        credentials,
+        service_name,
+        region_name,
+        *,
+        identity_cache,
+        expires=DEFAULT_EXPIRES,
+    ):
+        super().__init__(
+            credentials,
+            service_name,
+            region_name,
+            identity_cache=identity_cache,
+        )
+        self._expires = expires
+
+    def _modify_request_before_signing(self, request):
+        # We automatically set this header, so if it's the auto-set value we
+        # want to get rid of it since it doesn't make sense for presigned urls.
+        content_type = request.headers.get('content-type')
+        blocklisted_content_type = (
+            'application/x-www-form-urlencoded; charset=utf-8'
+        )
+        if content_type == blocklisted_content_type:
+            del request.headers['content-type']
+
+        # Note that we're not including X-Amz-Signature.
+        # From the docs: "The Canonical Query String must include all the query
+        # parameters from the preceding table except for X-Amz-Signature.
+        signed_headers = self.signed_headers(self.headers_to_sign(request))
+
+        auth_params = {
+            'X-Amz-Algorithm': 'AWS4-HMAC-SHA256',
+            'X-Amz-Credential': self.scope(request),
+            'X-Amz-Date': request.context['timestamp'],
+            'X-Amz-Expires': self._expires,
+            'X-Amz-SignedHeaders': signed_headers,
+        }
+        if self.credentials.token is not None:
+            auth_params['X-Amz-S3session-Token'] = self.credentials.token
+        # Now parse the original query string to a dict, inject our new query
+        # params, and serialize back to a query string.
+        url_parts = urlsplit(request.url)
+        # parse_qs makes each value a list, but in our case we know we won't
+        # have repeated keys so we know we have single element lists which we
+        # can convert back to scalar values.
+        query_string_parts = parse_qs(url_parts.query, keep_blank_values=True)
+        query_dict = {k: v[0] for k, v in query_string_parts.items()}
+
+        if request.params:
+            query_dict.update(request.params)
+            request.params = {}
+        # The spec is particular about this.  It *has* to be:
+        # https://<endpoint>?<operation params>&<auth params>
+        # You can't mix the two types of params together, i.e just keep doing
+        # new_query_params.update(op_params)
+        # new_query_params.update(auth_params)
+        # percent_encode_sequence(new_query_params)
+        operation_params = ''
+        if request.data:
+            # We also need to move the body params into the query string. To
+            # do this, we first have to convert it to a dict.
+            query_dict.update(_get_body_as_dict(request))
+            request.data = ''
+        if query_dict:
+            operation_params = percent_encode_sequence(query_dict) + '&'
+        new_query_string = (
+            f"{operation_params}{percent_encode_sequence(auth_params)}"
+        )
+        # url_parts is a tuple (and therefore immutable) so we need to create
+        # a new url_parts with the new query string.
+        # <part>   - <index>
+        # scheme   - 0
+        # netloc   - 1
+        # path     - 2
+        # query    - 3  <-- we're replacing this.
+        # fragment - 4
+        p = url_parts
+        new_url_parts = (p[0], p[1], p[2], new_query_string, p[4])
+        request.url = urlunsplit(new_url_parts)
+
+    def _inject_signature_to_request(self, request, signature):
+        # Rather than calculating an "Authorization" header, for the query
+        # param quth, we just append an 'X-Amz-Signature' param to the end
+        # of the query string.
+        request.url += '&X-Amz-Signature=%s' % signature
+
+    def _normalize_url_path(self, path):
+        # For S3, we do not normalize the path.
+        return path
+
+    def payload(self, request):
+        # From the doc link above:
+        # "You don't include a payload hash in the Canonical Request, because
+        # when you create a presigned URL, you don't know anything about the
+        # payload. Instead, you use a constant string "UNSIGNED-PAYLOAD".
+        return UNSIGNED_PAYLOAD
+
+
 class SigV4QueryAuth(SigV4Auth):
     DEFAULT_EXPIRES = 3600
 
@@ -687,5 +857,8 @@ AUTH_TYPE_MAPS = {
     's3v4-presign-post': S3SigV4PostAuth,
     's3v4a': botocore.crt.auth.CrtS3SigV4AsymAuth,
     's3v4a-query': botocore.crt.auth.CrtS3SigV4AsymQueryAuth,
+    'v4-s3express': S3ExpressAuth,
+    'v4-s3express-query': S3ExpressQueryAuth,
+    'v4-s3express-presign-post': S3ExpressPostAuth,
     'bearer': BearerAuth,
 }

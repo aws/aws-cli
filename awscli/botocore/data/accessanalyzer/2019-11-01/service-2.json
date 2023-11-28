@@ -1292,7 +1292,7 @@
         },
         "s3Bucket":{
           "shape":"S3BucketConfiguration",
-          "documentation":"<p>The access control configuration is for an Amazon S3 Bucket. </p>"
+          "documentation":"<p>The access control configuration is for an Amazon S3 bucket. </p>"
         },
         "snsTopic":{
           "shape":"SnsTopicConfiguration",
@@ -1301,6 +1301,10 @@
         "sqsQueue":{
           "shape":"SqsQueueConfiguration",
           "documentation":"<p>The access control configuration is for an Amazon SQS queue. </p>"
+        },
+        "s3ExpressDirectoryBucket":{
+          "shape":"S3ExpressDirectoryBucketConfiguration",
+          "documentation":"<p>The access control configuration is for an Amazon S3 directory bucket.</p>"
         }
       },
       "documentation":"<p>Access control configuration structures for your resource. You specify the configuration as a type-value pair. You can specify only one type of access control configuration.</p>",
@@ -3171,7 +3175,8 @@
         "AWS::ECR::Repository",
         "AWS::RDS::DBSnapshot",
         "AWS::RDS::DBClusterSnapshot",
-        "AWS::SNS::Topic"
+        "AWS::SNS::Topic",
+        "AWS::S3Express::DirectoryBucket"
       ]
     },
     "RetiringPrincipal":{"type":"string"},
@@ -3247,6 +3252,17 @@
       "documentation":"<p>Proposed access control configuration for an Amazon S3 bucket. You can propose a configuration for a new Amazon S3 bucket or an existing Amazon S3 bucket that you own by specifying the Amazon S3 bucket policy, bucket ACLs, bucket BPA settings, Amazon S3 access points, and multi-region access points attached to the bucket. If the configuration is for an existing Amazon S3 bucket and you do not specify the Amazon S3 bucket policy, the access preview uses the existing policy attached to the bucket. If the access preview is for a new resource and you do not specify the Amazon S3 bucket policy, the access preview assumes a bucket without a policy. To propose deletion of an existing bucket policy, you can specify an empty string. For more information about bucket policy limits, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/dev/example-bucket-policies.html\">Bucket Policy Examples</a>.</p>"
     },
     "S3BucketPolicy":{"type":"string"},
+    "S3ExpressDirectoryBucketConfiguration":{
+      "type":"structure",
+      "members":{
+        "bucketPolicy":{
+          "shape":"S3ExpressDirectoryBucketPolicy",
+          "documentation":"<p>The proposed bucket policy for the Amazon S3 directory bucket.</p>"
+        }
+      },
+      "documentation":"<p>Proposed access control configuration for an Amazon S3 directory bucket. You can propose a configuration for a new Amazon S3 directory bucket or an existing Amazon S3 directory bucket that you own by specifying the Amazon S3 bucket policy. If the configuration is for an existing Amazon S3 directory bucket and you do not specify the Amazon S3 bucket policy, the access preview uses the existing policy attached to the directory bucket. If the access preview is for a new resource and you do not specify the Amazon S3 bucket policy, the access preview assumes an directory bucket without a policy. To propose deletion of an existing bucket policy, you can specify an empty string. For more information about bucket policy limits, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/s3-express-security-iam-example-bucket-policies.html\">Example bucket policies</a>.</p>"
+    },
+    "S3ExpressDirectoryBucketPolicy":{"type":"string"},
     "S3PublicAccessBlockConfiguration":{
       "type":"structure",
       "required":[

@@ -22,6 +22,8 @@ import threading
 from collections import defaultdict
 
 from botocore.exceptions import IncompleteReadError, ReadTimeoutError
+from botocore.httpchecksum import AwsChunkedWrapper
+from botocore.utils import is_s3express_bucket
 
 from s3transfer.compat import SOCKET_ERROR, fallocate, rename_file
 
@@ -54,10 +56,12 @@ def signal_not_transferring(request, operation_name, **kwargs):
 
 
 def signal_transferring(request, operation_name, **kwargs):
-    if operation_name in ['PutObject', 'UploadPart'] and hasattr(
-        request.body, 'signal_transferring'
-    ):
-        request.body.signal_transferring()
+    if operation_name in ['PutObject', 'UploadPart']:
+        body = request.body
+        if isinstance(body, AwsChunkedWrapper):
+            body = getattr(body, '_raw', None)
+        if hasattr(body, 'signal_transferring'):
+            body.signal_transferring()
 
 
 def calculate_num_parts(size, part_size):
@@ -800,3 +804,9 @@ class ChunksizeAdjuster:
             )
 
         return chunksize
+
+
+def add_s3express_defaults(bucket, extra_args):
+    if is_s3express_bucket(bucket) and "ChecksumAlgorithm" not in extra_args:
+        # Default Transfer Operations to S3Express to use CRC32
+        extra_args["ChecksumAlgorithm"] = "crc32"

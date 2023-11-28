@@ -2,6 +2,12 @@
 CHANGELOG
 =========
 
+2.14.1
+======
+
+* api-change:``elasticache``: Launching Amazon ElastiCache Serverless that enables you to create a cache in under a minute without any capacity management. ElastiCache Serverless monitors the cache's memory, CPU, and network usage and scales both vertically and horizontally to support your application's requirements.
+
+
 2.14.0
 ======
 

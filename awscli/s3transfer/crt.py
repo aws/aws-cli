@@ -17,7 +17,12 @@ from io import BytesIO
 import awscrt.http
 import botocore.awsrequest
 import botocore.session
-from awscrt.auth import AwsCredentials, AwsCredentialsProvider
+from awscrt.auth import (
+    AwsCredentials,
+    AwsCredentialsProvider,
+    AwsSigningAlgorithm,
+    AwsSigningConfig,
+)
 from awscrt.io import (
     ClientBootstrap,
     ClientTlsContext,
@@ -35,6 +40,7 @@ from botocore import UNSIGNED
 from botocore.compat import urlsplit
 from botocore.config import Config
 from botocore.exceptions import NoCredentialsError
+from botocore.utils import is_s3express_bucket
 
 from s3transfer.constants import MB
 from s3transfer.exceptions import TransferNotDoneError
@@ -153,6 +159,7 @@ def create_s3_crt_client(
         tls_mode=tls_mode,
         tls_connection_options=tls_connection_options,
         throughput_target_gbps=target_gbps,
+        enable_s3express=True,
     )
 
 
@@ -749,7 +756,7 @@ class S3ClientArgsCreator:
         on_done_before_calls,
         on_done_after_calls,
     ):
-        return {
+        make_request_args = {
             'request': self._request_serializer.serialize_http_request(
                 request_type, future
             ),
@@ -761,6 +768,11 @@ class S3ClientArgsCreator:
             ),
             'on_progress': self.get_crt_callback(future, 'progress'),
         }
+        if is_s3express_bucket(call_args.bucket):
+            make_request_args['signing_config'] = AwsSigningConfig(
+                algorithm=AwsSigningAlgorithm.V4_S3EXPRESS
+            )
+        return make_request_args
 
 
 class RenameTempFileHandler:

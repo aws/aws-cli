@@ -35,6 +35,7 @@ from s3transfer.utils import (
     OSUtils,
     SlidingWindowSemaphore,
     TaskSemaphore,
+    add_s3express_defaults,
     get_callbacks,
     signal_not_transferring,
     signal_transferring,
@@ -317,6 +318,7 @@ class TransferManager:
             subscribers = []
         self._validate_all_known_args(extra_args, self.ALLOWED_UPLOAD_ARGS)
         self._validate_if_bucket_supported(bucket)
+        self._add_operation_defaults(bucket, extra_args)
         call_args = CallArgs(
             fileobj=fileobj,
             bucket=bucket,
@@ -498,6 +500,9 @@ class TransferManager:
                     "Invalid extra_args key '%s', "
                     "must be one of: %s" % (kwarg, ', '.join(allowed))
                 )
+
+    def _add_operation_defaults(self, bucket, extra_args):
+        add_s3express_defaults(bucket, extra_args)
 
     def _submit_transfer(
         self, call_args, submission_task_cls, extra_main_kwargs=None

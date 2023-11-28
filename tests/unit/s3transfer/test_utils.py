@@ -20,6 +20,8 @@ import threading
 import time
 from io import BytesIO, StringIO
 
+import pytest
+
 from s3transfer.futures import TransferFuture, TransferMeta
 from s3transfer.utils import (
     MAX_PARTS,
@@ -36,6 +38,7 @@ from s3transfer.utils import (
     SlidingWindowSemaphore,
     StreamReaderProgress,
     TaskSemaphore,
+    add_s3express_defaults,
     calculate_num_parts,
     calculate_range_parameter,
     get_callbacks,
@@ -1187,3 +1190,34 @@ class TestAdjustChunksize(unittest.TestCase):
         chunksize = MAX_SINGLE_UPLOAD_SIZE + 1
         new_size = self.adjuster.adjust_chunksize(chunksize)
         self.assertEqual(new_size, MAX_SINGLE_UPLOAD_SIZE)
+
+
+class TestS3ExpressDefaults:
+    @pytest.mark.parametrize(
+        "bucket,extra_args,expected",
+        (
+            (
+                "mytestbucket--usw2-az2--x-s3",
+                {},
+                {"ChecksumAlgorithm": "crc32"},
+            ),
+            (
+                "mytestbucket--usw2-az2--x-s3",
+                {"Some": "Setting"},
+                {"ChecksumAlgorithm": "crc32", "Some": "Setting"},
+            ),
+            (
+                "mytestbucket",
+                {},
+                {},
+            ),
+            (
+                "mytestbucket--usw2-az2--x-s3",
+                {"ChecksumAlgorithm": "sha256"},
+                {"ChecksumAlgorithm": "sha256"},
+            ),
+        ),
+    )
+    def test_add_s3express_defaults(self, bucket, extra_args, expected):
+        add_s3express_defaults(bucket, extra_args)
+        assert extra_args == expected

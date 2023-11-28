@@ -308,3 +308,7 @@ class TestCreateS3CRTClient:
             mock_s3_crt_client.call_args[1]['throughput_target_gbps']
             == expected_gbps
         )
+
+    def test_always_enables_s3express(self, mock_s3_crt_client):
+        s3transfer.crt.create_s3_crt_client('us-west-2')
+        assert mock_s3_crt_client.call_args[1]['enable_s3express'] is True

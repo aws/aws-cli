@@ -26,6 +26,7 @@ import socket
 import time
 import warnings
 import weakref
+from datetime import datetime as _DatetimeClass
 from pathlib import Path
 
 import botocore
@@ -781,7 +782,7 @@ def parse_to_aware_datetime(value):
     # converting the provided value to a string timestamp suitable to be
     # serialized to an http request. It can handle:
     # 1) A datetime.datetime object.
-    if isinstance(value, datetime.datetime):
+    if isinstance(value, _DatetimeClass):
         datetime_obj = value
     else:
         # 2) A string object that's formatted as a timestamp.
@@ -1282,6 +1283,136 @@ def hyphenize_service_id(service_id):
     :param service_id: The service_id to convert.
     """
     return service_id.replace(' ', '-').lower()
+
+
+class IdentityCache:
+    """Base IdentityCache implementation for storing and retrieving
+    highly accessed credentials.
+
+    This class is not intended to be instantiated in user code.
+    """
+
+    METHOD = "base_identity_cache"
+
+    def __init__(self, client, credential_cls):
+        self._client = client
+        self._credential_cls = credential_cls
+
+    def get_credentials(self, **kwargs):
+        callback = self.build_refresh_callback(**kwargs)
+        metadata = callback()
+        credential_entry = self._credential_cls.create_from_metadata(
+            metadata=metadata,
+            refresh_using=callback,
+            method=self.METHOD,
+            advisory_timeout=45,
+            mandatory_timeout=10,
+        )
+        return credential_entry
+
+    def build_refresh_callback(**kwargs):
+        """Callback to be implemented by subclasses.
+
+        Returns a set of metadata to be converted into a new
+        credential instance.
+        """
+        raise NotImplementedError()
+
+
+class S3ExpressIdentityCache(IdentityCache):
+    """S3Express IdentityCache for retrieving and storing
+    credentials from CreateSession calls.
+
+    This class is not intended to be instantiated in user code.
+    """
+
+    METHOD = "s3express"
+
+    def __init__(self, client, credential_cls):
+        self._client = client
+        self._credential_cls = credential_cls
+
+    @functools.lru_cache(maxsize=100)
+    def get_credentials(self, bucket):
+        return super().get_credentials(bucket=bucket)
+
+    def build_refresh_callback(self, bucket):
+        def refresher():
+            response = self._client.create_session(Bucket=bucket)
+            creds = response['Credentials']
+            expiration = self._serialize_if_needed(
+                creds['Expiration'], iso=True
+            )
+            return {
+                "access_key": creds['AccessKeyId'],
+                "secret_key": creds['SecretAccessKey'],
+                "token": creds['SessionToken'],
+                "expiry_time": expiration,
+            }
+
+        return refresher
+
+    def _serialize_if_needed(self, value, iso=False):
+        if isinstance(value, _DatetimeClass):
+            if iso:
+                return value.isoformat()
+            return value.strftime('%Y-%m-%dT%H:%M:%S%Z')
+        return value
+
+
+class S3ExpressIdentityResolver:
+    def __init__(self, client, credential_cls, cache=None):
+        self._client = weakref.proxy(client)
+
+        if cache is None:
+            cache = S3ExpressIdentityCache(self._client, credential_cls)
+        self._cache = cache
+
+    def register(self, event_emitter=None):
+        logger.debug('Registering S3Express Identity Resolver')
+        emitter = event_emitter or self._client.meta.events
+        emitter.register(
+            'before-parameter-build.s3', self.inject_signing_cache_key
+        )
+        emitter.register('before-call.s3', self.apply_signing_cache_key)
+        emitter.register('before-sign.s3', self.resolve_s3express_identity)
+
+    def inject_signing_cache_key(self, params, context, **kwargs):
+        if 'Bucket' in params:
+            context['S3Express'] = {'bucket_name': params['Bucket']}
+
+    def apply_signing_cache_key(self, params, context, **kwargs):
+        endpoint_properties = context.get('endpoint_properties', {})
+        backend = endpoint_properties.get('backend', None)
+
+        # Add cache key if Bucket supplied for s3express request
+        bucket_name = context.get('S3Express', {}).get('bucket_name')
+        if backend == 'S3Express' and bucket_name is not None:
+            context.setdefault('signing', {})
+            context['signing']['cache_key'] = bucket_name
+
+    def resolve_s3express_identity(
+        self,
+        request,
+        signing_name,
+        region_name,
+        signature_version,
+        request_signer,
+        operation_name,
+        **kwargs,
+    ):
+        signing_context = request.context.get('signing', {})
+        signing_name = signing_context.get('signing_name')
+        if signing_name == 's3express' and signature_version.startswith(
+            'v4-s3express'
+        ):
+            signing_context['identity_cache'] = self._cache
+            if 'cache_key' not in signing_context:
+                signing_context['cache_key'] = (
+                    request.context.get('s3_redirect', {})
+                    .get('params', {})
+                    .get('Bucket')
+                )
 
 
 class S3RegionRedirectorv2:
@@ -2780,21 +2911,70 @@ def _calculate_md5_from_file(fileobj):
     return md5.digest()
 
 
+def _is_s3express_request(params):
+    endpoint_properties = params.get('context', {}).get(
+        'endpoint_properties', {}
+    )
+    return endpoint_properties.get('backend') == 'S3Express'
+
+
+def _has_checksum_header(params):
+    headers = params['headers']
+    # If a user provided Content-MD5 is present,
+    # don't try to compute a new one.
+    if 'Content-MD5' in headers:
+        return True
+
+    # If a header matching the x-amz-checksum-* pattern is present, we
+    # assume a checksum has already been provided and an md5 is not needed
+    for header in headers:
+        if CHECKSUM_HEADER_PATTERN.match(header):
+            return True
+
+    return False
+
+
+def conditionally_calculate_checksum(params, **kwargs):
+    if not _has_checksum_header(params):
+        conditionally_calculate_md5(params, **kwargs)
+        conditionally_enable_crc32(params, **kwargs)
+
+
+def conditionally_enable_crc32(params, **kwargs):
+    checksum_context = params.get('context', {}).get('checksum', {})
+    checksum_algorithm = checksum_context.get('request_algorithm')
+    if (
+        _is_s3express_request(params)
+        and params['body'] is not None
+        and checksum_algorithm in (None, "conditional-md5")
+    ):
+        params['context']['checksum'] = {
+            'request_algorithm': {
+                'algorithm': 'crc32',
+                'in': 'header',
+                'name': 'x-amz-checksum-crc32',
+            }
+        }
+
+
 def conditionally_calculate_md5(params, **kwargs):
     """Only add a Content-MD5 if the system supports it."""
-    headers = params['headers']
     body = params['body']
     checksum_context = params.get('context', {}).get('checksum', {})
     checksum_algorithm = checksum_context.get('request_algorithm')
     if checksum_algorithm and checksum_algorithm != 'conditional-md5':
         # Skip for requests that will have a flexible checksum applied
         return
-    # If a header matching the x-amz-checksum-* pattern is present, we
-    # assume a checksum has already been provided and an md5 is not needed
-    for header in headers:
-        if CHECKSUM_HEADER_PATTERN.match(header):
-            return
-    if MD5_AVAILABLE and body is not None and 'Content-MD5' not in headers:
+
+    if _has_checksum_header(params):
+        # Don't add a new header if one is already available.
+        return
+
+    if _is_s3express_request(params):
+        # S3Express doesn't support MD5
+        return
+
+    if MD5_AVAILABLE and body is not None:
         md5_digest = calculate_md5(body, **kwargs)
         params['headers']['Content-MD5'] = md5_digest
 
@@ -2844,7 +3024,7 @@ class SSOTokenFetcher(object):
         return datetime.datetime.now(tzutc())
 
     def _parse_if_needed(self, value):
-        if isinstance(value, datetime.datetime):
+        if isinstance(value, _DatetimeClass):
             return value
         return dateutil.parser.parse(value)
 
@@ -3264,7 +3444,7 @@ class JSONFileCache:
         return full_path
 
     def _serialize_if_needed(self, value, iso=False):
-        if isinstance(value, datetime.datetime):
+        if isinstance(value, _DatetimeClass):
             if iso:
                 return value.isoformat()
             return value.strftime('%Y-%m-%dT%H:%M:%S%Z')
@@ -3302,6 +3482,12 @@ def is_s3_accelerate_url(url):
 
     # Remaining parts must all be in the whitelist.
     return all(p in S3_ACCELERATE_WHITELIST for p in feature_parts)
+
+
+def is_s3express_bucket(bucket):
+    if bucket is None:
+        return False
+    return bucket.endswith('--x-s3')
 
 
 # This parameter is not part of the public interface and is subject to abrupt

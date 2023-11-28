@@ -350,7 +350,8 @@ class RefreshableCredentials(Credentials):
 
     def __init__(self, access_key, secret_key, token,
                  expiry_time, refresh_using, method,
-                 time_fetcher=_local_now):
+                 time_fetcher=_local_now,
+                 advisory_timeout=None, mandatory_timeout=None):
         self._refresh_using = refresh_using
         self._access_key = access_key
         self._secret_key = secret_key
@@ -362,20 +363,38 @@ class RefreshableCredentials(Credentials):
         self._frozen_credentials = ReadOnlyCredentials(
             access_key, secret_key, token)
         self._normalize()
+        if advisory_timeout is not None:
+            self._advisory_refresh_timeout = advisory_timeout
+        if mandatory_timeout is not None:
+            self._mandatory_refresh_timeout = mandatory_timeout
 
     def _normalize(self):
         self._access_key = botocore.compat.ensure_unicode(self._access_key)
         self._secret_key = botocore.compat.ensure_unicode(self._secret_key)
 
     @classmethod
-    def create_from_metadata(cls, metadata, refresh_using, method):
+    def create_from_metadata(
+            cls,
+            metadata,
+            refresh_using,
+            method,
+            advisory_timeout=None,
+            mandatory_timeout=None,
+    ):
+        kwargs = {}
+        if advisory_timeout is not None:
+            kwargs['advisory_timeout'] = advisory_timeout
+        if mandatory_timeout is not None:
+            kwargs['mandatory_timeout'] = mandatory_timeout
+
         instance = cls(
             access_key=metadata['access_key'],
             secret_key=metadata['secret_key'],
             token=metadata['token'],
             expiry_time=cls._expiry_datetime(metadata['expiry_time']),
             method=method,
-            refresh_using=refresh_using
+            refresh_using=refresh_using,
+            **kwargs,
         )
         return instance
 

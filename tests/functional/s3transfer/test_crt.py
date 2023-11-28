@@ -68,6 +68,7 @@ class TestCRTTransferManager(unittest.TestCase):
     def setUp(self):
         self.region = 'us-west-2'
         self.bucket = "test_bucket"
+        self.s3express_bucket = 's3expressbucket--usw2-az5--x-s3'
         self.key = "test_key"
         self.expected_content = b'my content'
         self.expected_download_content = b'new content'
@@ -77,6 +78,10 @@ class TestCRTTransferManager(unittest.TestCase):
         )
         self.expected_path = "/" + self.bucket + "/" + self.key
         self.expected_host = "s3.%s.amazonaws.com" % (self.region)
+        self.expected_s3express_host = (
+            f'{self.s3express_bucket}.s3express-usw2-az5.us-west-2.amazonaws.com'
+        )
+        self.expected_s3express_path = f'/{self.key}'
         self.s3_request = mock.Mock(awscrt.s3.S3Request)
         self.s3_crt_client = mock.Mock(awscrt.s3.S3Client)
         self.s3_crt_client.make_request.side_effect = (
@@ -133,6 +138,23 @@ class TestCRTTransferManager(unittest.TestCase):
             ]
             for expected_missing_header in expected_missing_headers:
                 self.assertNotIn(expected_missing_header.lower(), header_names)
+
+    def _assert_exected_s3express_request(
+        self,
+        make_request_kwargs,
+        expected_http_method='GET'
+    ):
+        self._assert_expected_crt_http_request(
+            make_request_kwargs["request"],
+            expected_host=self.expected_s3express_host,
+            expected_path=self.expected_s3express_path,
+            expected_http_method=expected_http_method,
+        )
+        self.assertIn('signing_config', make_request_kwargs)
+        self.assertEqual(
+            make_request_kwargs['signing_config'].algorithm,
+            awscrt.auth.AwsSigningAlgorithm.V4_S3EXPRESS
+        )
 
     def _assert_subscribers_called(self, expected_future=None):
         self.assertTrue(self.record_subscriber.on_queued_called)
@@ -355,6 +377,17 @@ class TestCRTTransferManager(unittest.TestCase):
                 [self.record_subscriber],
             )
 
+    def test_upload_with_s3express(self):
+        future = self.transfer_manager.upload(
+            self.filename, self.s3express_bucket, self.key, {},
+            [self.record_subscriber]
+        )
+        future.result()
+        self._assert_exected_s3express_request(
+            self.s3_crt_client.make_request.call_args[1],
+            expected_http_method='PUT'
+        )
+
     def test_download(self):
         future = self.transfer_manager.download(
             self.bucket, self.key, self.filename, {}, [self.record_subscriber]
@@ -457,6 +490,17 @@ class TestCRTTransferManager(unittest.TestCase):
             underlying_stream.getvalue(), self.expected_download_content
         )
 
+    def test_download_with_s3express(self):
+        future = self.transfer_manager.download(
+            self.s3express_bucket, self.key, self.filename, {},
+            [self.record_subscriber]
+        )
+        future.result()
+        self._assert_exected_s3express_request(
+            self.s3_crt_client.make_request.call_args[1],
+            expected_http_method='GET'
+        )
+
     def test_delete(self):
         future = self.transfer_manager.delete(
             self.bucket, self.key, {}, [self.record_subscriber]
@@ -479,6 +523,16 @@ class TestCRTTransferManager(unittest.TestCase):
             expected_content_length=0,
         )
         self._assert_subscribers_called(future)
+
+    def test_delete_with_s3express(self):
+        future = self.transfer_manager.delete(
+            self.s3express_bucket, self.key, {}, [self.record_subscriber]
+        )
+        future.result()
+        self._assert_exected_s3express_request(
+            self.s3_crt_client.make_request.call_args[1],
+            expected_http_method='DELETE'
+        )
 
     def test_blocks_when_max_requests_processes_reached(self):
         self.s3_crt_client.make_request.return_value = self.s3_request

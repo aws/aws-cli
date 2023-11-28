@@ -31,7 +31,7 @@
         {"shape":"ServiceQuotaExceededException"},
         {"shape":"ThrottlingException"}
       ],
-      "documentation":"<p>Creates a fine-tuning job to customize a base model.</p> <p>You specify the base foundation model and the location of the training data. After the model-customization job completes successfully, your custom model resource will be ready to use. Training data contains input and output text for each record in a JSONL format. Optionally, you can specify validation data in the same format as the training data. Bedrock returns validation loss metrics and output generations after the job completes. </p> <p> Model-customization jobs are asynchronous and the completion time depends on the base model and the training/validation data size. To monitor a job, use the <code>GetModelCustomizationJob</code> operation to retrieve the job status.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/custom-models.html\">Custom models</a> in the Bedrock User Guide.</p>",
+      "documentation":"<p>Creates a fine-tuning job to customize a base model.</p> <p>You specify the base foundation model and the location of the training data. After the model-customization job completes successfully, your custom model resource will be ready to use. Training data contains input and output text for each record in a JSONL format. Optionally, you can specify validation data in the same format as the training data. Amazon Bedrock returns validation loss metrics and output generations after the job completes. </p> <p> Model-customization jobs are asynchronous and the completion time depends on the base model and the training/validation data size. To monitor a job, use the <code>GetModelCustomizationJob</code> operation to retrieve the job status.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/custom-models.html\">Custom models</a> in the Bedrock User Guide.</p>",
       "idempotent":true
     },
     "CreateProvisionedModelThroughput":{
@@ -128,7 +128,7 @@
         {"shape":"InternalServerException"},
         {"shape":"ThrottlingException"}
       ],
-      "documentation":"<p>Get the properties associated with a Bedrock custom model that you have created.For more information, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/custom-models.html\">Custom models</a> in the Bedrock User Guide.</p>"
+      "documentation":"<p>Get the properties associated with a Amazon Bedrock custom model that you have created.For more information, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/custom-models.html\">Custom models</a> in the Bedrock User Guide.</p>"
     },
     "GetFoundationModel":{
       "name":"GetFoundationModel",
@@ -146,7 +146,7 @@
         {"shape":"InternalServerException"},
         {"shape":"ThrottlingException"}
       ],
-      "documentation":"<p>Get details about a Bedrock foundation model.</p>"
+      "documentation":"<p>Get details about a Amazon Bedrock foundation model.</p>"
     },
     "GetModelCustomizationJob":{
       "name":"GetModelCustomizationJob",
@@ -232,7 +232,7 @@
         {"shape":"InternalServerException"},
         {"shape":"ThrottlingException"}
       ],
-      "documentation":"<p>List of Bedrock foundation models that you can use. For more information, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/foundation-models.html\">Foundation models</a> in the Bedrock User Guide.</p>"
+      "documentation":"<p>List of Amazon Bedrock foundation models that you can use. For more information, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/foundation-models.html\">Foundation models</a> in the Bedrock User Guide.</p>"
     },
     "ListModelCustomizationJobs":{
       "name":"ListModelCustomizationJobs",
@@ -398,7 +398,7 @@
       "type":"string",
       "max":2048,
       "min":1,
-      "pattern":"(arn:aws(-[^:]+)?:bedrock:[a-z0-9-]{1,20}:(([0-9]{12}:custom-model/[a-z0-9-]{1,63}[.]{1}[a-z0-9-]{1,63}/[a-z0-9]{12})|(:foundation-model/[a-z0-9-]{1,63}[.]{1}[a-z0-9-]{1,63}([a-z0-9-]{1,63}[.]){0,2}[a-z0-9-]{1,63}([:][a-z0-9-]{1,63}){0,2})))|([a-z0-9-]{1,63}[.]{1}[a-z0-9-]{1,63}([.]?[a-z0-9-]{1,63})([:][a-z0-9-]{1,63}){0,2})|(([0-9a-zA-Z][_-]?)+)"
+      "pattern":"(arn:aws(-[^:]+)?:bedrock:[a-z0-9-]{1,20}:(([0-9]{12}:custom-model/([a-z0-9-]{1,63}[.]{1}[a-z0-9-]{1,63}([.]?[a-z0-9-]{1,63})([:][a-z0-9-]{1,63}){0,2})/[a-z0-9]{12})|(:foundation-model/[a-z0-9-]{1,63}[.]{1}[a-z0-9-]{1,63}([:][a-z0-9-]{1,63}){0,2})))|([a-z0-9-]{1,63}[.]{1}[a-z0-9-]{1,63}([.]?[a-z0-9-]{1,63})([:][a-z0-9-]{1,63}){0,2})|(([0-9a-zA-Z][_-]?)+)"
     },
     "BedrockModelId":{
       "type":"string",
@@ -484,7 +484,7 @@
         },
         "roleArn":{
           "shape":"RoleArn",
-          "documentation":"<p>The Amazon Resource Name (ARN) of an IAM role that Bedrock can assume to perform tasks on your behalf. For example, during model training, Bedrock needs your permission to read input data from an S3 bucket, write model artifacts to an S3 bucket. To pass this role to Bedrock, the caller of this API must have the <code>iam:PassRole</code> permission. </p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of an IAM role that Amazon Bedrock can assume to perform tasks on your behalf. For example, during model training, Amazon Bedrock needs your permission to read input data from an S3 bucket, write model artifacts to an S3 bucket. To pass this role to Amazon Bedrock, the caller of this API must have the <code>iam:PassRole</code> permission. </p>"
         },
         "clientRequestToken":{
           "shape":"IdempotencyToken",
@@ -494,6 +494,10 @@
         "baseModelIdentifier":{
           "shape":"BaseModelIdentifier",
           "documentation":"<p>Name of the base model.</p>"
+        },
+        "customizationType":{
+          "shape":"CustomizationType",
+          "documentation":"<p>The customization type.</p>"
         },
         "customModelKmsKeyId":{
           "shape":"KmsKeyId",
@@ -549,7 +553,7 @@
       "members":{
         "clientRequestToken":{
           "shape":"IdempotencyToken",
-          "documentation":"<p>Unique token value that you can provide. If this token matches a previous request, Bedrock ignores the request, but does not return an error.</p>",
+          "documentation":"<p>Unique token value that you can provide. If this token matches a previous request, Amazon Bedrock ignores the request, but does not return an error.</p>",
           "idempotencyToken":true
         },
         "modelUnits":{
@@ -625,6 +629,10 @@
         "baseModelName":{
           "shape":"ModelName",
           "documentation":"<p>The base model name.</p>"
+        },
+        "customizationType":{
+          "shape":"CustomizationType",
+          "documentation":"<p>Specifies whether to carry out continued pre-training of a model or whether to fine-tune it. For more information, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/custom-models.html\">Custom models</a>.</p>"
         }
       },
       "documentation":"<p>Summary information for a custom model.</p>"
@@ -632,6 +640,13 @@
     "CustomModelSummaryList":{
       "type":"list",
       "member":{"shape":"CustomModelSummary"}
+    },
+    "CustomizationType":{
+      "type":"string",
+      "enum":[
+        "FINE_TUNING",
+        "CONTINUED_PRE_TRAINING"
+      ]
     },
     "DeleteCustomModelRequest":{
       "type":"structure",
@@ -738,9 +753,31 @@
         "inferenceTypesSupported":{
           "shape":"InferenceTypeList",
           "documentation":"<p>The inference types that the model supports.</p>"
+        },
+        "modelLifecycle":{
+          "shape":"FoundationModelLifecycle",
+          "documentation":"<p>Contains details about whether a model version is available or deprecated</p>"
         }
       },
       "documentation":"<p>Information about a foundation model.</p>"
+    },
+    "FoundationModelLifecycle":{
+      "type":"structure",
+      "required":["status"],
+      "members":{
+        "status":{
+          "shape":"FoundationModelLifecycleStatus",
+          "documentation":"<p>Specifies whether a model version is available (<code>ACTIVE</code>) or deprecated (<code>LEGACY</code>.</p>"
+        }
+      },
+      "documentation":"<p>Details about whether a model version is available or deprecated.</p>"
+    },
+    "FoundationModelLifecycleStatus":{
+      "type":"string",
+      "enum":[
+        "ACTIVE",
+        "LEGACY"
+      ]
     },
     "FoundationModelSummary":{
       "type":"structure",
@@ -784,6 +821,10 @@
         "inferenceTypesSupported":{
           "shape":"InferenceTypeList",
           "documentation":"<p>The inference types that the model supports.</p>"
+        },
+        "modelLifecycle":{
+          "shape":"FoundationModelLifecycle",
+          "documentation":"<p>Contains details about whether a model version is available or deprecated.</p>"
         }
       },
       "documentation":"<p>Summary information for a foundation model.</p>"
@@ -835,6 +876,10 @@
         "baseModelArn":{
           "shape":"ModelArn",
           "documentation":"<p>ARN of the base model.</p>"
+        },
+        "customizationType":{
+          "shape":"CustomizationType",
+          "documentation":"<p>The type of model customization.</p>"
         },
         "modelKmsKeyArn":{
           "shape":"KmsKeyArn",
@@ -965,13 +1010,17 @@
         },
         "hyperParameters":{
           "shape":"ModelCustomizationHyperParameters",
-          "documentation":"<p>The hyperparameter values for the job.</p>"
+          "documentation":"<p>The hyperparameter values for the job. For information about hyperparameters for specific models, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/model-customization-guidelines.html\">Guidelines for model customization</a>.</p>"
         },
         "trainingDataConfig":{"shape":"TrainingDataConfig"},
         "validationDataConfig":{"shape":"ValidationDataConfig"},
         "outputDataConfig":{
           "shape":"OutputDataConfig",
           "documentation":"<p>Output data configuration </p>"
+        },
+        "customizationType":{
+          "shape":"CustomizationType",
+          "documentation":"<p>The type of model customization.</p>"
         },
         "outputModelKmsKeyArn":{
           "shape":"KmsKeyArn",
@@ -1174,7 +1223,7 @@
         },
         "nextToken":{
           "shape":"PaginationToken",
-          "documentation":"<p>Continuation token from the previous response, for Bedrock to list the next set of results.</p>",
+          "documentation":"<p>Continuation token from the previous response, for Amazon Bedrock to list the next set of results.</p>",
           "location":"querystring",
           "locationName":"nextToken"
         },
@@ -1210,7 +1259,7 @@
       "members":{
         "byProvider":{
           "shape":"Provider",
-          "documentation":"<p>A Bedrock model provider.</p>",
+          "documentation":"<p>A Amazon Bedrock model provider.</p>",
           "location":"querystring",
           "locationName":"byProvider"
         },
@@ -1239,7 +1288,7 @@
       "members":{
         "modelSummaries":{
           "shape":"FoundationModelSummaryList",
-          "documentation":"<p>A list of bedrock foundation models.</p>"
+          "documentation":"<p>A list of Amazon Bedrock foundation models.</p>"
         }
       }
     },
@@ -1278,7 +1327,7 @@
         },
         "nextToken":{
           "shape":"PaginationToken",
-          "documentation":"<p>Continuation token from the previous response, for Bedrock to list the next set of results.</p>",
+          "documentation":"<p>Continuation token from the previous response, for Amazon Bedrock to list the next set of results.</p>",
           "location":"querystring",
           "locationName":"nextToken"
         },
@@ -1350,7 +1399,7 @@
         },
         "nextToken":{
           "shape":"PaginationToken",
-          "documentation":"<p>Continuation token from the previous response, for Bedrock to list the next set of results.</p>",
+          "documentation":"<p>Continuation token from the previous response, for Amazon Bedrock to list the next set of results.</p>",
           "location":"querystring",
           "locationName":"nextToken"
         },
@@ -1449,7 +1498,10 @@
     },
     "ModelCustomization":{
       "type":"string",
-      "enum":["FINE_TUNING"]
+      "enum":[
+        "FINE_TUNING",
+        "CONTINUED_PRE_TRAINING"
+      ]
     },
     "ModelCustomizationHyperParameters":{
       "type":"map",
@@ -1527,6 +1579,10 @@
         "customModelName":{
           "shape":"CustomModelName",
           "documentation":"<p>Name of the custom model.</p>"
+        },
+        "customizationType":{
+          "shape":"CustomizationType",
+          "documentation":"<p>Specifies whether to carry out continued pre-training of a model or whether to fine-tune it. For more information, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/custom-models.html\">Custom models</a>.</p>"
         }
       },
       "documentation":"<p>Information about one customization job</p>"
@@ -1587,7 +1643,7 @@
     },
     "Provider":{
       "type":"string",
-      "pattern":"[a-z0-9-]{1,63}"
+      "pattern":"[A-Za-z0-9- ]{1,63}"
     },
     "ProvisionedModelArn":{
       "type":"string",
@@ -2052,5 +2108,5 @@
       "documentation":"<p>VPC configuration.</p>"
     }
   },
-  "documentation":"<p>Describes the API operations for creating and managing Bedrock models.</p>"
+  "documentation":"<p>Describes the API operations for creating and managing Amazon Bedrock models.</p>"
 }

@@ -85,6 +85,16 @@
             "required": false,
             "documentation": "When an Access Point ARN is provided and this flag is enabled, the SDK MUST use the ARN's region when constructing the endpoint instead of the client's configured region.",
             "type": "Boolean"
+        },
+        "UseS3ExpressControlEndpoint": {
+            "required": false,
+            "documentation": "Internal parameter to indicate whether S3Express operation should use control plane, (ex. CreateBucket)",
+            "type": "Boolean"
+        },
+        "DisableS3ExpressSessionAuth": {
+            "required": false,
+            "documentation": "Parameter to indicate whether S3Express session auth should be disabled",
+            "type": "Boolean"
         }
     },
     "rules": [
@@ -231,6 +241,944 @@
                     ],
                     "error": "Partition does not support FIPS",
                     "type": "error"
+                },
+                {
+                    "conditions": [
+                        {
+                            "fn": "isSet",
+                            "argv": [
+                                {
+                                    "ref": "Bucket"
+                                }
+                            ]
+                        },
+                        {
+                            "fn": "substring",
+                            "argv": [
+                                {
+                                    "ref": "Bucket"
+                                },
+                                0,
+                                6,
+                                true
+                            ],
+                            "assign": "bucketSuffix"
+                        },
+                        {
+                            "fn": "stringEquals",
+                            "argv": [
+                                {
+                                    "ref": "bucketSuffix"
+                                },
+                                "--x-s3"
+                            ]
+                        }
+                    ],
+                    "rules": [
+                        {
+                            "conditions": [
+                                {
+                                    "fn": "booleanEquals",
+                                    "argv": [
+                                        {
+                                            "ref": "UseDualStack"
+                                        },
+                                        true
+                                    ]
+                                }
+                            ],
+                            "error": "S3Express does not support Dual-stack.",
+                            "type": "error"
+                        },
+                        {
+                            "conditions": [
+                                {
+                                    "fn": "booleanEquals",
+                                    "argv": [
+                                        {
+                                            "ref": "Accelerate"
+                                        },
+                                        true
+                                    ]
+                                }
+                            ],
+                            "error": "S3Express does not support S3 Accelerate.",
+                            "type": "error"
+                        },
+                        {
+                            "conditions": [
+                                {
+                                    "fn": "isSet",
+                                    "argv": [
+                                        {
+                                            "ref": "Endpoint"
+                                        }
+                                    ]
+                                },
+                                {
+                                    "fn": "parseURL",
+                                    "argv": [
+                                        {
+                                            "ref": "Endpoint"
+                                        }
+                                    ],
+                                    "assign": "url"
+                                }
+                            ],
+                            "rules": [
+                                {
+                                    "conditions": [
+                                        {
+                                            "fn": "isSet",
+                                            "argv": [
+                                                {
+                                                    "ref": "DisableS3ExpressSessionAuth"
+                                                }
+                                            ]
+                                        },
+                                        {
+                                            "fn": "booleanEquals",
+                                            "argv": [
+                                                {
+                                                    "ref": "DisableS3ExpressSessionAuth"
+                                                },
+                                                true
+                                            ]
+                                        }
+                                    ],
+                                    "rules": [
+                                        {
+                                            "conditions": [
+                                                {
+                                                    "fn": "booleanEquals",
+                                                    "argv": [
+                                                        {
+                                                            "fn": "getAttr",
+                                                            "argv": [
+                                                                {
+                                                                    "ref": "url"
+                                                                },
+                                                                "isIp"
+                                                            ]
+                                                        },
+                                                        true
+                                                    ]
+                                                }
+                                            ],
+                                            "rules": [
+                                                {
+                                                    "conditions": [
+                                                        {
+                                                            "fn": "uriEncode",
+                                                            "argv": [
+                                                                {
+                                                                    "ref": "Bucket"
+                                                                }
+                                                            ],
+                                                            "assign": "uri_encoded_bucket"
+                                                        }
+                                                    ],
+                                                    "rules": [
+                                                        {
+                                                            "conditions": [],
+                                                            "endpoint": {
+                                                                "url": "{url#scheme}://{url#authority}/{uri_encoded_bucket}{url#path}",
+                                                                "properties": {
+                                                                    "backend": "S3Express",
+                                                                    "authSchemes": [
+                                                                        {
+                                                                            "disableDoubleEncoding": true,
+                                                                            "name": "sigv4",
+                                                                            "signingName": "s3express",
+                                                                            "signingRegion": "{Region}"
+                                                                        }
+                                                                    ]
+                                                                },
+                                                                "headers": {}
+                                                            },
+                                                            "type": "endpoint"
+                                                        }
+                                                    ],
+                                                    "type": "tree"
+                                                }
+                                            ],
+                                            "type": "tree"
+                                        },
+                                        {
+                                            "conditions": [
+                                                {
+                                                    "fn": "aws.isVirtualHostableS3Bucket",
+                                                    "argv": [
+                                                        {
+                                                            "ref": "Bucket"
+                                                        },
+                                                        false
+                                                    ]
+                                                }
+                                            ],
+                                            "rules": [
+                                                {
+                                                    "conditions": [],
+                                                    "endpoint": {
+                                                        "url": "{url#scheme}://{Bucket}.{url#authority}{url#path}",
+                                                        "properties": {
+                                                            "backend": "S3Express",
+                                                            "authSchemes": [
+                                                                {
+                                                                    "disableDoubleEncoding": true,
+                                                                    "name": "sigv4",
+                                                                    "signingName": "s3express",
+                                                                    "signingRegion": "{Region}"
+                                                                }
+                                                            ]
+                                                        },
+                                                        "headers": {}
+                                                    },
+                                                    "type": "endpoint"
+                                                }
+                                            ],
+                                            "type": "tree"
+                                        },
+                                        {
+                                            "conditions": [],
+                                            "error": "S3Express bucket name is not a valid virtual hostable name.",
+                                            "type": "error"
+                                        }
+                                    ],
+                                    "type": "tree"
+                                },
+                                {
+                                    "conditions": [
+                                        {
+                                            "fn": "booleanEquals",
+                                            "argv": [
+                                                {
+                                                    "fn": "getAttr",
+                                                    "argv": [
+                                                        {
+                                                            "ref": "url"
+                                                        },
+                                                        "isIp"
+                                                    ]
+                                                },
+                                                true
+                                            ]
+                                        }
+                                    ],
+                                    "rules": [
+                                        {
+                                            "conditions": [
+                                                {
+                                                    "fn": "uriEncode",
+                                                    "argv": [
+                                                        {
+                                                            "ref": "Bucket"
+                                                        }
+                                                    ],
+                                                    "assign": "uri_encoded_bucket"
+                                                }
+                                            ],
+                                            "rules": [
+                                                {
+                                                    "conditions": [],
+                                                    "endpoint": {
+                                                        "url": "{url#scheme}://{url#authority}/{uri_encoded_bucket}{url#path}",
+                                                        "properties": {
+                                                            "backend": "S3Express",
+                                                            "authSchemes": [
+                                                                {
+                                                                    "disableDoubleEncoding": true,
+                                                                    "name": "sigv4-s3express",
+                                                                    "signingName": "s3express",
+                                                                    "signingRegion": "{Region}"
+                                                                }
+                                                            ]
+                                                        },
+                                                        "headers": {}
+                                                    },
+                                                    "type": "endpoint"
+                                                }
+                                            ],
+                                            "type": "tree"
+                                        }
+                                    ],
+                                    "type": "tree"
+                                },
+                                {
+                                    "conditions": [
+                                        {
+                                            "fn": "aws.isVirtualHostableS3Bucket",
+                                            "argv": [
+                                                {
+                                                    "ref": "Bucket"
+                                                },
+                                                false
+                                            ]
+                                        }
+                                    ],
+                                    "rules": [
+                                        {
+                                            "conditions": [],
+                                            "endpoint": {
+                                                "url": "{url#scheme}://{Bucket}.{url#authority}{url#path}",
+                                                "properties": {
+                                                    "backend": "S3Express",
+                                                    "authSchemes": [
+                                                        {
+                                                            "disableDoubleEncoding": true,
+                                                            "name": "sigv4-s3express",
+                                                            "signingName": "s3express",
+                                                            "signingRegion": "{Region}"
+                                                        }
+                                                    ]
+                                                },
+                                                "headers": {}
+                                            },
+                                            "type": "endpoint"
+                                        }
+                                    ],
+                                    "type": "tree"
+                                },
+                                {
+                                    "conditions": [],
+                                    "error": "S3Express bucket name is not a valid virtual hostable name.",
+                                    "type": "error"
+                                }
+                            ],
+                            "type": "tree"
+                        },
+                        {
+                            "conditions": [
+                                {
+                                    "fn": "isSet",
+                                    "argv": [
+                                        {
+                                            "ref": "UseS3ExpressControlEndpoint"
+                                        }
+                                    ]
+                                },
+                                {
+                                    "fn": "booleanEquals",
+                                    "argv": [
+                                        {
+                                            "ref": "UseS3ExpressControlEndpoint"
+                                        },
+                                        true
+                                    ]
+                                }
+                            ],
+                            "rules": [
+                                {
+                                    "conditions": [
+                                        {
+                                            "fn": "uriEncode",
+                                            "argv": [
+                                                {
+                                                    "ref": "Bucket"
+                                                }
+                                            ],
+                                            "assign": "uri_encoded_bucket"
+                                        },
+                                        {
+                                            "fn": "not",
+                                            "argv": [
+                                                {
+                                                    "fn": "isSet",
+                                                    "argv": [
+                                                        {
+                                                            "ref": "Endpoint"
+                                                        }
+                                                    ]
+                                                }
+                                            ]
+                                        }
+                                    ],
+                                    "rules": [
+                                        {
+                                            "conditions": [
+                                                {
+                                                    "fn": "booleanEquals",
+                                                    "argv": [
+                                                        {
+                                                            "ref": "UseFIPS"
+                                                        },
+                                                        true
+                                                    ]
+                                                }
+                                            ],
+                                            "endpoint": {
+                                                "url": "https://s3express-control-fips.{Region}.amazonaws.com/{uri_encoded_bucket}",
+                                                "properties": {
+                                                    "backend": "S3Express",
+                                                    "authSchemes": [
+                                                        {
+                                                            "disableDoubleEncoding": true,
+                                                            "name": "sigv4",
+                                                            "signingName": "s3express",
+                                                            "signingRegion": "{Region}"
+                                                        }
+                                                    ]
+                                                },
+                                                "headers": {}
+                                            },
+                                            "type": "endpoint"
+                                        },
+                                        {
+                                            "conditions": [],
+                                            "endpoint": {
+                                                "url": "https://s3express-control.{Region}.amazonaws.com/{uri_encoded_bucket}",
+                                                "properties": {
+                                                    "backend": "S3Express",
+                                                    "authSchemes": [
+                                                        {
+                                                            "disableDoubleEncoding": true,
+                                                            "name": "sigv4",
+                                                            "signingName": "s3express",
+                                                            "signingRegion": "{Region}"
+                                                        }
+                                                    ]
+                                                },
+                                                "headers": {}
+                                            },
+                                            "type": "endpoint"
+                                        }
+                                    ],
+                                    "type": "tree"
+                                }
+                            ],
+                            "type": "tree"
+                        },
+                        {
+                            "conditions": [
+                                {
+                                    "fn": "aws.isVirtualHostableS3Bucket",
+                                    "argv": [
+                                        {
+                                            "ref": "Bucket"
+                                        },
+                                        false
+                                    ]
+                                }
+                            ],
+                            "rules": [
+                                {
+                                    "conditions": [
+                                        {
+                                            "fn": "isSet",
+                                            "argv": [
+                                                {
+                                                    "ref": "DisableS3ExpressSessionAuth"
+                                                }
+                                            ]
+                                        },
+                                        {
+                                            "fn": "booleanEquals",
+                                            "argv": [
+                                                {
+                                                    "ref": "DisableS3ExpressSessionAuth"
+                                                },
+                                                true
+                                            ]
+                                        }
+                                    ],
+                                    "rules": [
+                                        {
+                                            "conditions": [
+                                                {
+                                                    "fn": "substring",
+                                                    "argv": [
+                                                        {
+                                                            "ref": "Bucket"
+                                                        },
+                                                        6,
+                                                        14,
+                                                        true
+                                                    ],
+                                                    "assign": "s3expressAvailabilityZoneId"
+                                                },
+                                                {
+                                                    "fn": "substring",
+                                                    "argv": [
+                                                        {
+                                                            "ref": "Bucket"
+                                                        },
+                                                        14,
+                                                        16,
+                                                        true
+                                                    ],
+                                                    "assign": "s3expressAvailabilityZoneDelim"
+                                                },
+                                                {
+                                                    "fn": "stringEquals",
+                                                    "argv": [
+                                                        {
+                                                            "ref": "s3expressAvailabilityZoneDelim"
+                                                        },
+                                                        "--"
+                                                    ]
+                                                }
+                                            ],
+                                            "rules": [
+                                                {
+                                                    "conditions": [
+                                                        {
+                                                            "fn": "booleanEquals",
+                                                            "argv": [
+                                                                {
+                                                                    "ref": "UseFIPS"
+                                                                },
+                                                                true
+                                                            ]
+                                                        }
+                                                    ],
+                                                    "endpoint": {
+                                                        "url": "https://{Bucket}.s3express-fips-{s3expressAvailabilityZoneId}.{Region}.amazonaws.com",
+                                                        "properties": {
+                                                            "backend": "S3Express",
+                                                            "authSchemes": [
+                                                                {
+                                                                    "disableDoubleEncoding": true,
+                                                                    "name": "sigv4",
+                                                                    "signingName": "s3express",
+                                                                    "signingRegion": "{Region}"
+                                                                }
+                                                            ]
+                                                        },
+                                                        "headers": {}
+                                                    },
+                                                    "type": "endpoint"
+                                                },
+                                                {
+                                                    "conditions": [],
+                                                    "endpoint": {
+                                                        "url": "https://{Bucket}.s3express-{s3expressAvailabilityZoneId}.{Region}.amazonaws.com",
+                                                        "properties": {
+                                                            "backend": "S3Express",
+                                                            "authSchemes": [
+                                                                {
+                                                                    "disableDoubleEncoding": true,
+                                                                    "name": "sigv4",
+                                                                    "signingName": "s3express",
+                                                                    "signingRegion": "{Region}"
+                                                                }
+                                                            ]
+                                                        },
+                                                        "headers": {}
+                                                    },
+                                                    "type": "endpoint"
+                                                }
+                                            ],
+                                            "type": "tree"
+                                        },
+                                        {
+                                            "conditions": [
+                                                {
+                                                    "fn": "substring",
+                                                    "argv": [
+                                                        {
+                                                            "ref": "Bucket"
+                                                        },
+                                                        6,
+                                                        15,
+                                                        true
+                                                    ],
+                                                    "assign": "s3expressAvailabilityZoneId"
+                                                },
+                                                {
+                                                    "fn": "substring",
+                                                    "argv": [
+                                                        {
+                                                            "ref": "Bucket"
+                                                        },
+                                                        15,
+                                                        17,
+                                                        true
+                                                    ],
+                                                    "assign": "s3expressAvailabilityZoneDelim"
+                                                },
+                                                {
+                                                    "fn": "stringEquals",
+                                                    "argv": [
+                                                        {
+                                                            "ref": "s3expressAvailabilityZoneDelim"
+                                                        },
+                                                        "--"
+                                                    ]
+                                                }
+                                            ],
+                                            "rules": [
+                                                {
+                                                    "conditions": [
+                                                        {
+                                                            "fn": "booleanEquals",
+                                                            "argv": [
+                                                                {
+                                                                    "ref": "UseFIPS"
+                                                                },
+                                                                true
+                                                            ]
+                                                        }
+                                                    ],
+                                                    "endpoint": {
+                                                        "url": "https://{Bucket}.s3express-fips-{s3expressAvailabilityZoneId}.{Region}.amazonaws.com",
+                                                        "properties": {
+                                                            "backend": "S3Express",
+                                                            "authSchemes": [
+                                                                {
+                                                                    "disableDoubleEncoding": true,
+                                                                    "name": "sigv4",
+                                                                    "signingName": "s3express",
+                                                                    "signingRegion": "{Region}"
+                                                                }
+                                                            ]
+                                                        },
+                                                        "headers": {}
+                                                    },
+                                                    "type": "endpoint"
+                                                },
+                                                {
+                                                    "conditions": [],
+                                                    "endpoint": {
+                                                        "url": "https://{Bucket}.s3express-{s3expressAvailabilityZoneId}.{Region}.amazonaws.com",
+                                                        "properties": {
+                                                            "backend": "S3Express",
+                                                            "authSchemes": [
+                                                                {
+                                                                    "disableDoubleEncoding": true,
+                                                                    "name": "sigv4",
+                                                                    "signingName": "s3express",
+                                                                    "signingRegion": "{Region}"
+                                                                }
+                                                            ]
+                                                        },
+                                                        "headers": {}
+                                                    },
+                                                    "type": "endpoint"
+                                                }
+                                            ],
+                                            "type": "tree"
+                                        },
+                                        {
+                                            "conditions": [],
+                                            "error": "Unrecognized S3Express bucket name format.",
+                                            "type": "error"
+                                        }
+                                    ],
+                                    "type": "tree"
+                                },
+                                {
+                                    "conditions": [
+                                        {
+                                            "fn": "substring",
+                                            "argv": [
+                                                {
+                                                    "ref": "Bucket"
+                                                },
+                                                6,
+                                                14,
+                                                true
+                                            ],
+                                            "assign": "s3expressAvailabilityZoneId"
+                                        },
+                                        {
+                                            "fn": "substring",
+                                            "argv": [
+                                                {
+                                                    "ref": "Bucket"
+                                                },
+                                                14,
+                                                16,
+                                                true
+                                            ],
+                                            "assign": "s3expressAvailabilityZoneDelim"
+                                        },
+                                        {
+                                            "fn": "stringEquals",
+                                            "argv": [
+                                                {
+                                                    "ref": "s3expressAvailabilityZoneDelim"
+                                                },
+                                                "--"
+                                            ]
+                                        }
+                                    ],
+                                    "rules": [
+                                        {
+                                            "conditions": [
+                                                {
+                                                    "fn": "booleanEquals",
+                                                    "argv": [
+                                                        {
+                                                            "ref": "UseFIPS"
+                                                        },
+                                                        true
+                                                    ]
+                                                }
+                                            ],
+                                            "endpoint": {
+                                                "url": "https://{Bucket}.s3express-fips-{s3expressAvailabilityZoneId}.{Region}.amazonaws.com",
+                                                "properties": {
+                                                    "backend": "S3Express",
+                                                    "authSchemes": [
+                                                        {
+                                                            "disableDoubleEncoding": true,
+                                                            "name": "sigv4-s3express",
+                                                            "signingName": "s3express",
+                                                            "signingRegion": "{Region}"
+                                                        }
+                                                    ]
+                                                },
+                                                "headers": {}
+                                            },
+                                            "type": "endpoint"
+                                        },
+                                        {
+                                            "conditions": [],
+                                            "endpoint": {
+                                                "url": "https://{Bucket}.s3express-{s3expressAvailabilityZoneId}.{Region}.amazonaws.com",
+                                                "properties": {
+                                                    "backend": "S3Express",
+                                                    "authSchemes": [
+                                                        {
+                                                            "disableDoubleEncoding": true,
+                                                            "name": "sigv4-s3express",
+                                                            "signingName": "s3express",
+                                                            "signingRegion": "{Region}"
+                                                        }
+                                                    ]
+                                                },
+                                                "headers": {}
+                                            },
+                                            "type": "endpoint"
+                                        }
+                                    ],
+                                    "type": "tree"
+                                },
+                                {
+                                    "conditions": [
+                                        {
+                                            "fn": "substring",
+                                            "argv": [
+                                                {
+                                                    "ref": "Bucket"
+                                                },
+                                                6,
+                                                15,
+                                                true
+                                            ],
+                                            "assign": "s3expressAvailabilityZoneId"
+                                        },
+                                        {
+                                            "fn": "substring",
+                                            "argv": [
+                                                {
+                                                    "ref": "Bucket"
+                                                },
+                                                15,
+                                                17,
+                                                true
+                                            ],
+                                            "assign": "s3expressAvailabilityZoneDelim"
+                                        },
+                                        {
+                                            "fn": "stringEquals",
+                                            "argv": [
+                                                {
+                                                    "ref": "s3expressAvailabilityZoneDelim"
+                                                },
+                                                "--"
+                                            ]
+                                        }
+                                    ],
+                                    "rules": [
+                                        {
+                                            "conditions": [
+                                                {
+                                                    "fn": "booleanEquals",
+                                                    "argv": [
+                                                        {
+                                                            "ref": "UseFIPS"
+                                                        },
+                                                        true
+                                                    ]
+                                                }
+                                            ],
+                                            "endpoint": {
+                                                "url": "https://{Bucket}.s3express-fips-{s3expressAvailabilityZoneId}.{Region}.amazonaws.com",
+                                                "properties": {
+                                                    "backend": "S3Express",
+                                                    "authSchemes": [
+                                                        {
+                                                            "disableDoubleEncoding": true,
+                                                            "name": "sigv4-s3express",
+                                                            "signingName": "s3express",
+                                                            "signingRegion": "{Region}"
+                                                        }
+                                                    ]
+                                                },
+                                                "headers": {}
+                                            },
+                                            "type": "endpoint"
+                                        },
+                                        {
+                                            "conditions": [],
+                                            "endpoint": {
+                                                "url": "https://{Bucket}.s3express-{s3expressAvailabilityZoneId}.{Region}.amazonaws.com",
+                                                "properties": {
+                                                    "backend": "S3Express",
+                                                    "authSchemes": [
+                                                        {
+                                                            "disableDoubleEncoding": true,
+                                                            "name": "sigv4-s3express",
+                                                            "signingName": "s3express",
+                                                            "signingRegion": "{Region}"
+                                                        }
+                                                    ]
+                                                },
+                                                "headers": {}
+                                            },
+                                            "type": "endpoint"
+                                        }
+                                    ],
+                                    "type": "tree"
+                                },
+                                {
+                                    "conditions": [],
+                                    "error": "Unrecognized S3Express bucket name format.",
+                                    "type": "error"
+                                }
+                            ],
+                            "type": "tree"
+                        },
+                        {
+                            "conditions": [],
+                            "error": "S3Express bucket name is not a valid virtual hostable name.",
+                            "type": "error"
+                        }
+                    ],
+                    "type": "tree"
+                },
+                {
+                    "conditions": [
+                        {
+                            "fn": "not",
+                            "argv": [
+                                {
+                                    "fn": "isSet",
+                                    "argv": [
+                                        {
+                                            "ref": "Bucket"
+                                        }
+                                    ]
+                                }
+                            ]
+                        },
+                        {
+                            "fn": "isSet",
+                            "argv": [
+                                {
+                                    "ref": "UseS3ExpressControlEndpoint"
+                                }
+                            ]
+                        },
+                        {
+                            "fn": "booleanEquals",
+                            "argv": [
+                                {
+                                    "ref": "UseS3ExpressControlEndpoint"
+                                },
+                                true
+                            ]
+                        }
+                    ],
+                    "rules": [
+                        {
+                            "conditions": [
+                                {
+                                    "fn": "isSet",
+                                    "argv": [
+                                        {
+                                            "ref": "Endpoint"
+                                        }
+                                    ]
+                                },
+                                {
+                                    "fn": "parseURL",
+                                    "argv": [
+                                        {
+                                            "ref": "Endpoint"
+                                        }
+                                    ],
+                                    "assign": "url"
+                                }
+                            ],
+                            "endpoint": {
+                                "url": "{url#scheme}://{url#authority}{url#path}",
+                                "properties": {
+                                    "backend": "S3Express",
+                                    "authSchemes": [
+                                        {
+                                            "disableDoubleEncoding": true,
+                                            "name": "sigv4",
+                                            "signingName": "s3express",
+                                            "signingRegion": "{Region}"
+                                        }
+                                    ]
+                                },
+                                "headers": {}
+                            },
+                            "type": "endpoint"
+                        },
+                        {
+                            "conditions": [
+                                {
+                                    "fn": "booleanEquals",
+                                    "argv": [
+                                        {
+                                            "ref": "UseFIPS"
+                                        },
+                                        true
+                                    ]
+                                }
+                            ],
+                            "endpoint": {
+                                "url": "https://s3express-control-fips.{Region}.amazonaws.com",
+                                "properties": {
+                                    "backend": "S3Express",
+                                    "authSchemes": [
+                                        {
+                                            "disableDoubleEncoding": true,
+                                            "name": "sigv4",
+                                            "signingName": "s3express",
+                                            "signingRegion": "{Region}"
+                                        }
+                                    ]
+                                },
+                                "headers": {}
+                            },
+                            "type": "endpoint"
+                        },
+                        {
+                            "conditions": [],
+                            "endpoint": {
+                                "url": "https://s3express-control.{Region}.amazonaws.com",
+                                "properties": {
+                                    "backend": "S3Express",
+                                    "authSchemes": [
+                                        {
+                                            "disableDoubleEncoding": true,
+                                            "name": "sigv4",
+                                            "signingName": "s3express",
+                                            "signingRegion": "{Region}"
+                                        }
+                                    ]
+                                },
+                                "headers": {}
+                            },
+                            "type": "endpoint"
+                        }
+                    ],
+                    "type": "tree"
                 },
                 {
                     "conditions": [

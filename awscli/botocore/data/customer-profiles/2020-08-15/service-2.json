@@ -269,6 +269,23 @@
       ],
       "documentation":"<p>Deletes the specified workflow and all its corresponding resources. This is an async process.</p>"
     },
+    "DetectProfileObjectType":{
+      "name":"DetectProfileObjectType",
+      "http":{
+        "method":"POST",
+        "requestUri":"/domains/{DomainName}/detect/object-types"
+      },
+      "input":{"shape":"DetectProfileObjectTypeRequest"},
+      "output":{"shape":"DetectProfileObjectTypeResponse"},
+      "errors":[
+        {"shape":"BadRequestException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>The process of detecting profile object type mapping by using given objects.</p>"
+    },
     "GetAutoMergingPreview":{
       "name":"GetAutoMergingPreview",
       "http":{
@@ -2033,6 +2050,56 @@
         }
       },
       "documentation":"<p>Summary information about the Kinesis data stream</p>"
+    },
+    "DetectProfileObjectTypeRequest":{
+      "type":"structure",
+      "required":[
+        "Objects",
+        "DomainName"
+      ],
+      "members":{
+        "Objects":{
+          "shape":"Objects",
+          "documentation":"<p>A string that is serialized from a JSON object.</p>"
+        },
+        "DomainName":{
+          "shape":"name",
+          "documentation":"<p>The unique name of the domain.</p>",
+          "location":"uri",
+          "locationName":"DomainName"
+        }
+      }
+    },
+    "DetectProfileObjectTypeResponse":{
+      "type":"structure",
+      "members":{
+        "DetectedProfileObjectTypes":{
+          "shape":"DetectedProfileObjectTypes",
+          "documentation":"<p>Detected <code>ProfileObjectType</code> mappings from given objects. A maximum of one mapping is supported.</p>"
+        }
+      }
+    },
+    "DetectedProfileObjectType":{
+      "type":"structure",
+      "members":{
+        "SourceLastUpdatedTimestampFormat":{
+          "shape":"string1To255",
+          "documentation":"<p>The format of <code>sourceLastUpdatedTimestamp</code> that was detected in fields.</p>"
+        },
+        "Fields":{
+          "shape":"FieldMap",
+          "documentation":"<p>A map of the name and the <code>ObjectType</code> field.</p>"
+        },
+        "Keys":{
+          "shape":"KeyMap",
+          "documentation":"<p>A list of unique keys that can be used to map data to a profile.</p>"
+        }
+      },
+      "documentation":"<p>Contains <code>ProfileObjectType</code> mapping information from the model.</p>"
+    },
+    "DetectedProfileObjectTypes":{
+      "type":"list",
+      "member":{"shape":"DetectedProfileObjectType"}
     },
     "DomainList":{
       "type":"list",
@@ -4275,6 +4342,13 @@
       "type":"map",
       "key":{"shape":"string1To255"},
       "value":{"shape":"typeName"}
+    },
+    "Objects":{
+      "type":"list",
+      "member":{"shape":"stringifiedJson"},
+      "max":5,
+      "min":1,
+      "sensitive":true
     },
     "Operator":{
       "type":"string",

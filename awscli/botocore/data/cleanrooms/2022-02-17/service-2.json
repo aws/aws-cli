@@ -86,6 +86,26 @@
       ],
       "documentation":"<p>Creates a new collaboration.</p>"
     },
+    "CreateConfiguredAudienceModelAssociation":{
+      "name":"CreateConfiguredAudienceModelAssociation",
+      "http":{
+        "method":"POST",
+        "requestUri":"/memberships/{membershipIdentifier}/configuredaudiencemodelassociations",
+        "responseCode":200
+      },
+      "input":{"shape":"CreateConfiguredAudienceModelAssociationInput"},
+      "output":{"shape":"CreateConfiguredAudienceModelAssociationOutput"},
+      "errors":[
+        {"shape":"ConflictException"},
+        {"shape":"ServiceQuotaExceededException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ValidationException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Provides the details necessary to create a configured audience model association.</p>"
+    },
     "CreateConfiguredTable":{
       "name":"CreateConfiguredTable",
       "http":{
@@ -167,6 +187,25 @@
       ],
       "documentation":"<p>Creates a membership for a specific collaboration identifier and joins the collaboration.</p>"
     },
+    "CreatePrivacyBudgetTemplate":{
+      "name":"CreatePrivacyBudgetTemplate",
+      "http":{
+        "method":"POST",
+        "requestUri":"/memberships/{membershipIdentifier}/privacybudgettemplates",
+        "responseCode":200
+      },
+      "input":{"shape":"CreatePrivacyBudgetTemplateInput"},
+      "output":{"shape":"CreatePrivacyBudgetTemplateOutput"},
+      "errors":[
+        {"shape":"ConflictException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ValidationException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Creates a privacy budget template for a specified membership. Each membership can have only one privacy budget template, but it can be deleted and recreated. If you need to change the privacy budget template for a membership, use the <a>UpdatePrivacyBudgetTemplate</a> operation.</p>"
+    },
     "DeleteAnalysisTemplate":{
       "name":"DeleteAnalysisTemplate",
       "http":{
@@ -202,6 +241,25 @@
         {"shape":"AccessDeniedException"}
       ],
       "documentation":"<p>Deletes a collaboration. It can only be called by the collaboration owner.</p>",
+      "idempotent":true
+    },
+    "DeleteConfiguredAudienceModelAssociation":{
+      "name":"DeleteConfiguredAudienceModelAssociation",
+      "http":{
+        "method":"DELETE",
+        "requestUri":"/memberships/{membershipIdentifier}/configuredaudiencemodelassociations/{configuredAudienceModelAssociationIdentifier}",
+        "responseCode":204
+      },
+      "input":{"shape":"DeleteConfiguredAudienceModelAssociationInput"},
+      "output":{"shape":"DeleteConfiguredAudienceModelAssociationOutput"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ValidationException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Provides the information necessary to delete a configured audience model association.</p>",
       "idempotent":true
     },
     "DeleteConfiguredTable":{
@@ -304,6 +362,25 @@
       "documentation":"<p>Deletes a specified membership. All resources under a membership must be deleted.</p>",
       "idempotent":true
     },
+    "DeletePrivacyBudgetTemplate":{
+      "name":"DeletePrivacyBudgetTemplate",
+      "http":{
+        "method":"DELETE",
+        "requestUri":"/memberships/{membershipIdentifier}/privacybudgettemplates/{privacyBudgetTemplateIdentifier}",
+        "responseCode":204
+      },
+      "input":{"shape":"DeletePrivacyBudgetTemplateInput"},
+      "output":{"shape":"DeletePrivacyBudgetTemplateOutput"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ValidationException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Deletes a privacy budget template for a specified membership.</p>",
+      "idempotent":true
+    },
     "GetAnalysisTemplate":{
       "name":"GetAnalysisTemplate",
       "http":{
@@ -356,6 +433,60 @@
         {"shape":"AccessDeniedException"}
       ],
       "documentation":"<p>Retrieves an analysis template within a collaboration.</p>"
+    },
+    "GetCollaborationConfiguredAudienceModelAssociation":{
+      "name":"GetCollaborationConfiguredAudienceModelAssociation",
+      "http":{
+        "method":"GET",
+        "requestUri":"/collaborations/{collaborationIdentifier}/configuredaudiencemodelassociations/{configuredAudienceModelAssociationIdentifier}",
+        "responseCode":200
+      },
+      "input":{"shape":"GetCollaborationConfiguredAudienceModelAssociationInput"},
+      "output":{"shape":"GetCollaborationConfiguredAudienceModelAssociationOutput"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ValidationException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Retrieves a configured audience model association within a collaboration.</p>"
+    },
+    "GetCollaborationPrivacyBudgetTemplate":{
+      "name":"GetCollaborationPrivacyBudgetTemplate",
+      "http":{
+        "method":"GET",
+        "requestUri":"/collaborations/{collaborationIdentifier}/privacybudgettemplates/{privacyBudgetTemplateIdentifier}",
+        "responseCode":200
+      },
+      "input":{"shape":"GetCollaborationPrivacyBudgetTemplateInput"},
+      "output":{"shape":"GetCollaborationPrivacyBudgetTemplateOutput"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ValidationException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Returns details about a specified privacy budget template.</p>"
+    },
+    "GetConfiguredAudienceModelAssociation":{
+      "name":"GetConfiguredAudienceModelAssociation",
+      "http":{
+        "method":"GET",
+        "requestUri":"/memberships/{membershipIdentifier}/configuredaudiencemodelassociations/{configuredAudienceModelAssociationIdentifier}",
+        "responseCode":200
+      },
+      "input":{"shape":"GetConfiguredAudienceModelAssociationInput"},
+      "output":{"shape":"GetConfiguredAudienceModelAssociationOutput"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ValidationException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Returns information about a configured audience model association.</p>"
     },
     "GetConfiguredTable":{
       "name":"GetConfiguredTable",
@@ -428,6 +559,24 @@
         {"shape":"AccessDeniedException"}
       ],
       "documentation":"<p>Retrieves a specified membership for an identifier.</p>"
+    },
+    "GetPrivacyBudgetTemplate":{
+      "name":"GetPrivacyBudgetTemplate",
+      "http":{
+        "method":"GET",
+        "requestUri":"/memberships/{membershipIdentifier}/privacybudgettemplates/{privacyBudgetTemplateIdentifier}",
+        "responseCode":200
+      },
+      "input":{"shape":"GetPrivacyBudgetTemplateInput"},
+      "output":{"shape":"GetPrivacyBudgetTemplateOutput"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ValidationException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Returns details for a specified privacy budget template.</p>"
     },
     "GetProtectedQuery":{
       "name":"GetProtectedQuery",
@@ -519,6 +668,60 @@
       ],
       "documentation":"<p>Lists analysis templates within a collaboration.</p>"
     },
+    "ListCollaborationConfiguredAudienceModelAssociations":{
+      "name":"ListCollaborationConfiguredAudienceModelAssociations",
+      "http":{
+        "method":"GET",
+        "requestUri":"/collaborations/{collaborationIdentifier}/configuredaudiencemodelassociations",
+        "responseCode":200
+      },
+      "input":{"shape":"ListCollaborationConfiguredAudienceModelAssociationsInput"},
+      "output":{"shape":"ListCollaborationConfiguredAudienceModelAssociationsOutput"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ValidationException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Lists configured audience model associations within a collaboration.</p>"
+    },
+    "ListCollaborationPrivacyBudgetTemplates":{
+      "name":"ListCollaborationPrivacyBudgetTemplates",
+      "http":{
+        "method":"GET",
+        "requestUri":"/collaborations/{collaborationIdentifier}/privacybudgettemplates",
+        "responseCode":200
+      },
+      "input":{"shape":"ListCollaborationPrivacyBudgetTemplatesInput"},
+      "output":{"shape":"ListCollaborationPrivacyBudgetTemplatesOutput"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ValidationException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Returns an array that summarizes each privacy budget template in a specified collaboration.</p>"
+    },
+    "ListCollaborationPrivacyBudgets":{
+      "name":"ListCollaborationPrivacyBudgets",
+      "http":{
+        "method":"GET",
+        "requestUri":"/collaborations/{collaborationIdentifier}/privacybudgets",
+        "responseCode":200
+      },
+      "input":{"shape":"ListCollaborationPrivacyBudgetsInput"},
+      "output":{"shape":"ListCollaborationPrivacyBudgetsOutput"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ValidationException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Returns an array that summarizes each privacy budget in a specified collaboration. The summary includes the collaboration ARN, creation time, creating account, and privacy budget details.</p>"
+    },
     "ListCollaborations":{
       "name":"ListCollaborations",
       "http":{
@@ -535,6 +738,24 @@
         {"shape":"AccessDeniedException"}
       ],
       "documentation":"<p>Lists collaborations the caller owns, is active in, or has been invited to.</p>"
+    },
+    "ListConfiguredAudienceModelAssociations":{
+      "name":"ListConfiguredAudienceModelAssociations",
+      "http":{
+        "method":"GET",
+        "requestUri":"/memberships/{membershipIdentifier}/configuredaudiencemodelassociations",
+        "responseCode":200
+      },
+      "input":{"shape":"ListConfiguredAudienceModelAssociationsInput"},
+      "output":{"shape":"ListConfiguredAudienceModelAssociationsOutput"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ValidationException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Lists information about requested configured audience model associations.</p>"
     },
     "ListConfiguredTableAssociations":{
       "name":"ListConfiguredTableAssociations",
@@ -606,6 +827,42 @@
       ],
       "documentation":"<p>Lists all memberships resources within the caller's account.</p>"
     },
+    "ListPrivacyBudgetTemplates":{
+      "name":"ListPrivacyBudgetTemplates",
+      "http":{
+        "method":"GET",
+        "requestUri":"/memberships/{membershipIdentifier}/privacybudgettemplates",
+        "responseCode":200
+      },
+      "input":{"shape":"ListPrivacyBudgetTemplatesInput"},
+      "output":{"shape":"ListPrivacyBudgetTemplatesOutput"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ValidationException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Returns detailed information about the privacy budget templates in a specified membership.</p>"
+    },
+    "ListPrivacyBudgets":{
+      "name":"ListPrivacyBudgets",
+      "http":{
+        "method":"GET",
+        "requestUri":"/memberships/{membershipIdentifier}/privacybudgets",
+        "responseCode":200
+      },
+      "input":{"shape":"ListPrivacyBudgetsInput"},
+      "output":{"shape":"ListPrivacyBudgetsOutput"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ValidationException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Returns detailed information about the privacy budgets in a specified membership.</p>"
+    },
     "ListProtectedQueries":{
       "name":"ListProtectedQueries",
       "http":{
@@ -656,6 +913,24 @@
         {"shape":"ValidationException"}
       ],
       "documentation":"<p>Lists all of the tags that have been added to a resource.</p>"
+    },
+    "PreviewPrivacyImpact":{
+      "name":"PreviewPrivacyImpact",
+      "http":{
+        "method":"POST",
+        "requestUri":"/memberships/{membershipIdentifier}/previewprivacyimpact",
+        "responseCode":200
+      },
+      "input":{"shape":"PreviewPrivacyImpactInput"},
+      "output":{"shape":"PreviewPrivacyImpactOutput"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ValidationException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>An estimate of the number of aggregation functions that the member who can query can run given epsilon and noise parameters.</p>"
     },
     "StartProtectedQuery":{
       "name":"StartProtectedQuery",
@@ -741,6 +1016,24 @@
       ],
       "documentation":"<p>Updates collaboration metadata and can only be called by the collaboration owner.</p>"
     },
+    "UpdateConfiguredAudienceModelAssociation":{
+      "name":"UpdateConfiguredAudienceModelAssociation",
+      "http":{
+        "method":"PATCH",
+        "requestUri":"/memberships/{membershipIdentifier}/configuredaudiencemodelassociations/{configuredAudienceModelAssociationIdentifier}",
+        "responseCode":200
+      },
+      "input":{"shape":"UpdateConfiguredAudienceModelAssociationInput"},
+      "output":{"shape":"UpdateConfiguredAudienceModelAssociationOutput"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ValidationException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Provides the details necessary to update a configured audience model association.</p>"
+    },
     "UpdateConfiguredTable":{
       "name":"UpdateConfiguredTable",
       "http":{
@@ -816,6 +1109,25 @@
         {"shape":"AccessDeniedException"}
       ],
       "documentation":"<p>Updates a membership.</p>"
+    },
+    "UpdatePrivacyBudgetTemplate":{
+      "name":"UpdatePrivacyBudgetTemplate",
+      "http":{
+        "method":"PATCH",
+        "requestUri":"/memberships/{membershipIdentifier}/privacybudgettemplates/{privacyBudgetTemplateIdentifier}",
+        "responseCode":200
+      },
+      "input":{"shape":"UpdatePrivacyBudgetTemplateInput"},
+      "output":{"shape":"UpdatePrivacyBudgetTemplateOutput"},
+      "errors":[
+        {"shape":"ConflictException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ValidationException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Updates the privacy budget template for the specified membership.</p>"
     },
     "UpdateProtectedQuery":{
       "name":"UpdateProtectedQuery",
@@ -1084,9 +1396,13 @@
         "allowedAnalysisProviders":{
           "shape":"AnalysisRuleCustomAllowedAnalysisProvidersList",
           "documentation":"<p>The Amazon Web Services accounts that are allowed to query by the custom analysis rule. Required when <code>allowedAnalyses</code> is <code>ANY_QUERY</code>.</p>"
+        },
+        "differentialPrivacy":{
+          "shape":"DifferentialPrivacyConfiguration",
+          "documentation":"<p>The differential privacy configuration.</p>"
         }
       },
-      "documentation":"<p>A type of analysis rule that enables the table owner to approve custom SQL queries on their configured tables.</p>"
+      "documentation":"<p>A type of analysis rule that enables the table owner to approve custom SQL queries on their configured tables. It supports differential privacy.</p>"
     },
     "AnalysisRuleCustomAllowedAnalysesList":{
       "type":"list",
@@ -1703,6 +2019,119 @@
       "min":0,
       "pattern":"arn:aws:[\\w]+:[\\w]{2}-[\\w]{4,9}-[\\d]:[\\d]{12}:collaboration/[\\d\\w-]+"
     },
+    "CollaborationConfiguredAudienceModelAssociation":{
+      "type":"structure",
+      "required":[
+        "id",
+        "arn",
+        "collaborationId",
+        "collaborationArn",
+        "configuredAudienceModelArn",
+        "name",
+        "creatorAccountId",
+        "createTime",
+        "updateTime"
+      ],
+      "members":{
+        "id":{
+          "shape":"ConfiguredAudienceModelAssociationIdentifier",
+          "documentation":"<p>The identifier of the configured audience model association.</p>"
+        },
+        "arn":{
+          "shape":"ConfiguredAudienceModelAssociationArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the configured audience model association.</p>"
+        },
+        "collaborationId":{
+          "shape":"UUID",
+          "documentation":"<p>A unique identifier for the collaboration that the configured audience model associations belong to. Accepts collaboration ID.</p>"
+        },
+        "collaborationArn":{
+          "shape":"CollaborationArn",
+          "documentation":"<p>The unique ARN for the configured audience model's associated collaboration.</p>"
+        },
+        "configuredAudienceModelArn":{
+          "shape":"ConfiguredAudienceModelArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the configure audience model.</p>"
+        },
+        "name":{
+          "shape":"ConfiguredAudienceModelAssociationName",
+          "documentation":"<p>The name of the configured audience model association.</p>"
+        },
+        "description":{
+          "shape":"ResourceDescription",
+          "documentation":"<p>The description of the configured audience model association.</p>"
+        },
+        "creatorAccountId":{
+          "shape":"AccountId",
+          "documentation":"<p>The identifier used to reference members of the collaboration. Only supports AWS account ID.</p>"
+        },
+        "createTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time at which the configured audience model association was created.</p>"
+        },
+        "updateTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The most recent time at which the configured audience model association was updated.</p>"
+        }
+      },
+      "documentation":"<p>The configured audience model association within a collaboration.</p>"
+    },
+    "CollaborationConfiguredAudienceModelAssociationSummary":{
+      "type":"structure",
+      "required":[
+        "arn",
+        "createTime",
+        "id",
+        "name",
+        "updateTime",
+        "collaborationArn",
+        "collaborationId",
+        "creatorAccountId"
+      ],
+      "members":{
+        "arn":{
+          "shape":"ConfiguredAudienceModelAssociationArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the configured audience model association.</p>"
+        },
+        "createTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time at which the configured audience model association was created.</p>"
+        },
+        "id":{
+          "shape":"ConfiguredAudienceModelAssociationIdentifier",
+          "documentation":"<p>The identifier of the configured audience model association.</p>"
+        },
+        "name":{
+          "shape":"ConfiguredAudienceModelAssociationName",
+          "documentation":"<p>The name of the configured audience model association.</p>"
+        },
+        "updateTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The most recent time at which the configured audience model association was updated.</p>"
+        },
+        "collaborationArn":{
+          "shape":"CollaborationArn",
+          "documentation":"<p>The unique ARN for the configured audience model's associated collaboration.</p>"
+        },
+        "collaborationId":{
+          "shape":"UUID",
+          "documentation":"<p>A unique identifier for the collaboration that the configured audience model associations belong to. Accepts collaboration ID.</p>"
+        },
+        "creatorAccountId":{
+          "shape":"AccountId",
+          "documentation":"<p>The identifier used to reference members of the collaboration. Only supports AWS account ID.</p>"
+        },
+        "description":{
+          "shape":"ResourceDescription",
+          "documentation":"<p>The description of the configured audience model association.</p>"
+        }
+      },
+      "documentation":"<p>A summary of the configured audience model association in the collaboration.</p>"
+    },
+    "CollaborationConfiguredAudienceModelAssociationSummaryList":{
+      "type":"list",
+      "member":{"shape":"CollaborationConfiguredAudienceModelAssociationSummary"}
+    },
     "CollaborationDescription":{
       "type":"string",
       "max":255,
@@ -1720,6 +2149,178 @@
       "max":100,
       "min":1,
       "pattern":"(?!\\s*$)[\\u0020-\\uD7FF\\uE000-\\uFFFD\\uD800\\uDBFF-\\uDC00\\uDFFF\\t]*"
+    },
+    "CollaborationPrivacyBudgetSummary":{
+      "type":"structure",
+      "required":[
+        "id",
+        "privacyBudgetTemplateId",
+        "privacyBudgetTemplateArn",
+        "collaborationId",
+        "collaborationArn",
+        "creatorAccountId",
+        "type",
+        "createTime",
+        "updateTime",
+        "budget"
+      ],
+      "members":{
+        "id":{
+          "shape":"UUID",
+          "documentation":"<p>The unique identifier of the collaboration privacy budget.</p>"
+        },
+        "privacyBudgetTemplateId":{
+          "shape":"PrivacyBudgetTemplateIdentifier",
+          "documentation":"<p>The unique identifier of the collaboration privacy budget template.</p>"
+        },
+        "privacyBudgetTemplateArn":{
+          "shape":"PrivacyBudgetTemplateArn",
+          "documentation":"<p>The ARN of the collaboration privacy budget template.</p>"
+        },
+        "collaborationId":{
+          "shape":"UUID",
+          "documentation":"<p>The unique identifier of the collaboration that includes this privacy budget.</p>"
+        },
+        "collaborationArn":{
+          "shape":"CollaborationArn",
+          "documentation":"<p>The ARN of the collaboration that includes this privacy budget.</p>"
+        },
+        "creatorAccountId":{
+          "shape":"AccountId",
+          "documentation":"<p>The unique identifier of the account that created this privacy budget.</p>"
+        },
+        "type":{
+          "shape":"PrivacyBudgetType",
+          "documentation":"<p>The type of privacy budget template.</p>"
+        },
+        "createTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time at which the privacy budget was created.</p>"
+        },
+        "updateTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The most recent time at which the privacy budget was updated.</p>"
+        },
+        "budget":{
+          "shape":"PrivacyBudget",
+          "documentation":"<p>The includes epsilon provided and utility in terms of aggregations.</p>"
+        }
+      },
+      "documentation":"<p>A summary of the collaboration privacy budgets. This summary includes the collaboration information, creation information, epsilon provided, and utility in terms of aggregations.</p>"
+    },
+    "CollaborationPrivacyBudgetSummaryList":{
+      "type":"list",
+      "member":{"shape":"CollaborationPrivacyBudgetSummary"}
+    },
+    "CollaborationPrivacyBudgetTemplate":{
+      "type":"structure",
+      "required":[
+        "id",
+        "arn",
+        "collaborationId",
+        "collaborationArn",
+        "creatorAccountId",
+        "createTime",
+        "updateTime",
+        "privacyBudgetType",
+        "autoRefresh",
+        "parameters"
+      ],
+      "members":{
+        "id":{
+          "shape":"PrivacyBudgetTemplateIdentifier",
+          "documentation":"<p>The unique identifier of the collaboration privacy budget template.</p>"
+        },
+        "arn":{
+          "shape":"PrivacyBudgetTemplateArn",
+          "documentation":"<p>The ARN of the collaboration privacy budget template.</p>"
+        },
+        "collaborationId":{
+          "shape":"UUID",
+          "documentation":"<p>The unique identifier of the collaboration that includes this collaboration privacy budget template.</p>"
+        },
+        "collaborationArn":{
+          "shape":"CollaborationArn",
+          "documentation":"<p>The ARN of the collaboration that includes this collaboration privacy budget template.</p>"
+        },
+        "creatorAccountId":{
+          "shape":"AccountId",
+          "documentation":"<p>The unique identifier of the account that created this collaboration privacy budget template.</p>"
+        },
+        "createTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time at which the collaboration privacy budget template was created.</p>"
+        },
+        "updateTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The most recent time at which the collaboration privacy budget template was updated.</p>"
+        },
+        "privacyBudgetType":{
+          "shape":"PrivacyBudgetType",
+          "documentation":"<p>The type of privacy budget template.</p>"
+        },
+        "autoRefresh":{
+          "shape":"PrivacyBudgetTemplateAutoRefresh",
+          "documentation":"<p>How often the privacy budget refreshes.</p> <important> <p>If you plan to regularly bring new data into the collaboration, use <code>CALENDAR_MONTH</code> to automatically get a new privacy budget for the collaboration every calendar month. Choosing this option allows arbitrary amounts of information to be revealed about rows of the data when repeatedly queried across refreshes. Avoid choosing this if the same rows will be repeatedly queried between privacy budget refreshes.</p> </important>"
+        },
+        "parameters":{
+          "shape":"PrivacyBudgetTemplateParametersOutput",
+          "documentation":"<p>Specifies the epsilon and noise parameters for the privacy budget template.</p>"
+        }
+      },
+      "documentation":"<p>An array that specifies the information for a collaboration's privacy budget template.</p>"
+    },
+    "CollaborationPrivacyBudgetTemplateSummary":{
+      "type":"structure",
+      "required":[
+        "id",
+        "arn",
+        "collaborationId",
+        "collaborationArn",
+        "creatorAccountId",
+        "privacyBudgetType",
+        "createTime",
+        "updateTime"
+      ],
+      "members":{
+        "id":{
+          "shape":"PrivacyBudgetTemplateIdentifier",
+          "documentation":"<p>The unique identifier of the collaboration privacy budget template.</p>"
+        },
+        "arn":{
+          "shape":"PrivacyBudgetTemplateArn",
+          "documentation":"<p>The ARN of the collaboration privacy budget template.</p>"
+        },
+        "collaborationId":{
+          "shape":"UUID",
+          "documentation":"<p>The unique identifier of the collaboration that contains this collaboration privacy budget template.</p>"
+        },
+        "collaborationArn":{
+          "shape":"CollaborationArn",
+          "documentation":"<p>The ARN of the collaboration that contains this collaboration privacy budget template.</p>"
+        },
+        "creatorAccountId":{
+          "shape":"AccountId",
+          "documentation":"<p>The unique identifier of the account that created this collaboration privacy budget template.</p>"
+        },
+        "privacyBudgetType":{
+          "shape":"PrivacyBudgetType",
+          "documentation":"<p>The type of the privacy budget template.</p>"
+        },
+        "createTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time at which the collaboration privacy budget template was created.</p>"
+        },
+        "updateTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The most recent time at which the collaboration privacy budget template was updated.</p>"
+        }
+      },
+      "documentation":"<p>A summary of the collaboration's privacy budget template. This summary includes information about who created the privacy budget template and what collaborations it belongs to.</p>"
+    },
+    "CollaborationPrivacyBudgetTemplateSummaryList":{
+      "type":"list",
+      "member":{"shape":"CollaborationPrivacyBudgetTemplateSummary"}
     },
     "CollaborationQueryLogStatus":{
       "type":"string",
@@ -1821,6 +2422,163 @@
       "max":255,
       "min":0,
       "pattern":"[\\u0020-\\uD7FF\\uE000-\\uFFFD\\uD800\\uDBFF-\\uDC00\\uDFFF\\t]*"
+    },
+    "ConfiguredAudienceModelArn":{
+      "type":"string",
+      "max":2048,
+      "min":20,
+      "pattern":"arn:aws[-a-z]*:cleanrooms-ml:[-a-z0-9]+:[0-9]{12}:configured-audience-model/[-a-zA-Z0-9_/.]+"
+    },
+    "ConfiguredAudienceModelAssociation":{
+      "type":"structure",
+      "required":[
+        "id",
+        "arn",
+        "configuredAudienceModelArn",
+        "membershipId",
+        "membershipArn",
+        "collaborationId",
+        "collaborationArn",
+        "name",
+        "manageResourcePolicies",
+        "createTime",
+        "updateTime"
+      ],
+      "members":{
+        "id":{
+          "shape":"ConfiguredAudienceModelAssociationIdentifier",
+          "documentation":"<p>A unique identifier of the configured audience model association.</p>"
+        },
+        "arn":{
+          "shape":"ConfiguredAudienceModelAssociationArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the configured audience model association.</p>"
+        },
+        "configuredAudienceModelArn":{
+          "shape":"ConfiguredAudienceModelArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the configured audience model that was used for this configured audience model association.</p>"
+        },
+        "membershipId":{
+          "shape":"UUID",
+          "documentation":"<p>A unique identifier for the membership that contains this configured audience model association.</p>"
+        },
+        "membershipArn":{
+          "shape":"MembershipArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the membership that contains this configured audience model association.</p>"
+        },
+        "collaborationId":{
+          "shape":"UUID",
+          "documentation":"<p>A unique identifier of the collaboration that contains this configured audience model association.</p>"
+        },
+        "collaborationArn":{
+          "shape":"CollaborationArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the collaboration that contains this configured audience model association.</p>"
+        },
+        "name":{
+          "shape":"ConfiguredAudienceModelAssociationName",
+          "documentation":"<p>The name of the configured audience model association.</p>"
+        },
+        "manageResourcePolicies":{
+          "shape":"Boolean",
+          "documentation":"<p>When <code>TRUE</code>, indicates that the resource policy for the configured audience model resource being associated is configured for Clean Rooms to manage permissions related to the given collaboration. When <code>FALSE</code>, indicates that the configured audience model resource owner will manage permissions related to the given collaboration.</p>"
+        },
+        "description":{
+          "shape":"ResourceDescription",
+          "documentation":"<p>The description of the configured audience model association.</p>"
+        },
+        "createTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time at which the configured audience model association was created.</p>"
+        },
+        "updateTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The most recent time at which the configured audience model association was updated.</p>"
+        }
+      },
+      "documentation":"<p>Details about the configured audience model association.</p>"
+    },
+    "ConfiguredAudienceModelAssociationArn":{
+      "type":"string",
+      "max":256,
+      "min":0,
+      "pattern":"arn:aws:cleanrooms:[\\w]{2}-[\\w]{4,9}-[\\d]:[\\d]{12}:membership/[\\d\\w-]+/configuredaudiencemodelassociation/[\\d\\w-]+"
+    },
+    "ConfiguredAudienceModelAssociationIdentifier":{
+      "type":"string",
+      "max":36,
+      "min":36,
+      "pattern":"[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}"
+    },
+    "ConfiguredAudienceModelAssociationName":{
+      "type":"string",
+      "max":100,
+      "min":1,
+      "pattern":"(?!\\s*$)[\\u0020-\\uD7FF\\uE000-\\uFFFD\\uD800\\uDBFF-\\uDC00\\uDFFF\\t]*"
+    },
+    "ConfiguredAudienceModelAssociationSummary":{
+      "type":"structure",
+      "required":[
+        "membershipId",
+        "membershipArn",
+        "collaborationArn",
+        "collaborationId",
+        "createTime",
+        "updateTime",
+        "id",
+        "arn",
+        "name",
+        "configuredAudienceModelArn"
+      ],
+      "members":{
+        "membershipId":{
+          "shape":"MembershipIdentifier",
+          "documentation":"<p>A unique identifier of the membership that contains the configured audience model association.</p>"
+        },
+        "membershipArn":{
+          "shape":"MembershipArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the membership that contains the configured audience model association.</p>"
+        },
+        "collaborationArn":{
+          "shape":"CollaborationArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the collaboration that contains the configured audience model association.</p>"
+        },
+        "collaborationId":{
+          "shape":"UUID",
+          "documentation":"<p>A unique identifier of the collaboration that configured audience model is associated with.</p>"
+        },
+        "createTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time at which the configured audience model association was created.</p>"
+        },
+        "updateTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The most recent time at which the configured audience model association was updated.</p>"
+        },
+        "id":{
+          "shape":"UUID",
+          "documentation":"<p>A unique identifier of the configured audience model association.</p>"
+        },
+        "arn":{
+          "shape":"ConfiguredAudienceModelAssociationArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the configured audience model association.</p>"
+        },
+        "name":{
+          "shape":"ConfiguredAudienceModelAssociationName",
+          "documentation":"<p>The name of the configured audience model association.</p>"
+        },
+        "configuredAudienceModelArn":{
+          "shape":"ConfiguredAudienceModelArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the configured audience model that was used for this configured audience model association.</p>"
+        },
+        "description":{
+          "shape":"ResourceDescription",
+          "documentation":"<p>The description of the configured audience model association.</p>"
+        }
+      },
+      "documentation":"<p>A summary of the configured audience model association.</p>"
+    },
+    "ConfiguredAudienceModelAssociationSummaryList":{
+      "type":"list",
+      "member":{"shape":"ConfiguredAudienceModelAssociationSummary"}
     },
     "ConfiguredTable":{
       "type":"structure",
@@ -2286,6 +3044,53 @@
         }
       }
     },
+    "CreateConfiguredAudienceModelAssociationInput":{
+      "type":"structure",
+      "required":[
+        "membershipIdentifier",
+        "configuredAudienceModelArn",
+        "configuredAudienceModelAssociationName",
+        "manageResourcePolicies"
+      ],
+      "members":{
+        "membershipIdentifier":{
+          "shape":"MembershipIdentifier",
+          "documentation":"<p>A unique identifier for one of your memberships for a collaboration. The configured audience model is associated to the collaboration that this membership belongs to. Accepts a membership ID.</p>",
+          "location":"uri",
+          "locationName":"membershipIdentifier"
+        },
+        "configuredAudienceModelArn":{
+          "shape":"ConfiguredAudienceModelArn",
+          "documentation":"<p>A unique identifier for the configured audience model that you want to associate.</p>"
+        },
+        "configuredAudienceModelAssociationName":{
+          "shape":"ConfiguredAudienceModelAssociationName",
+          "documentation":"<p>The name of the configured audience model association.</p>"
+        },
+        "manageResourcePolicies":{
+          "shape":"Boolean",
+          "documentation":"<p>When <code>TRUE</code>, indicates that the resource policy for the configured audience model resource being associated is configured for Clean Rooms to manage permissions related to the given collaboration. When <code>FALSE</code>, indicates that the configured audience model resource owner will manage permissions related to the given collaboration.</p> <p>Setting this to <code>TRUE</code> requires you to have permissions to create, update, and delete the resource policy for the <code>cleanrooms-ml</code> resource when you call the <a>DeleteConfiguredAudienceModelAssociation</a> resource. In addition, if you are the collaboration creator and specify <code>TRUE</code>, you must have the same permissions when you call the <a>DeleteMember</a> and <a>DeleteCollaboration</a> APIs.</p>"
+        },
+        "tags":{
+          "shape":"TagMap",
+          "documentation":"<p>An optional label that you can assign to a resource when you create it. Each tag consists of a key and an optional value, both of which you define. When you use tagging, you can also use tag-based access control in IAM policies to control access to this resource.</p>"
+        },
+        "description":{
+          "shape":"ResourceDescription",
+          "documentation":"<p>A description of the configured audience model association.</p>"
+        }
+      }
+    },
+    "CreateConfiguredAudienceModelAssociationOutput":{
+      "type":"structure",
+      "required":["configuredAudienceModelAssociation"],
+      "members":{
+        "configuredAudienceModelAssociation":{
+          "shape":"ConfiguredAudienceModelAssociation",
+          "documentation":"<p>Information about the configured audience model association.</p>"
+        }
+      }
+    },
     "CreateConfiguredTableAnalysisRuleInput":{
       "type":"structure",
       "required":[
@@ -2451,6 +3256,49 @@
         }
       }
     },
+    "CreatePrivacyBudgetTemplateInput":{
+      "type":"structure",
+      "required":[
+        "membershipIdentifier",
+        "autoRefresh",
+        "privacyBudgetType",
+        "parameters"
+      ],
+      "members":{
+        "membershipIdentifier":{
+          "shape":"MembershipIdentifier",
+          "documentation":"<p>A unique identifier for one of your memberships for a collaboration. The privacy budget template is created in the collaboration that this membership belongs to. Accepts a membership ID.</p>",
+          "location":"uri",
+          "locationName":"membershipIdentifier"
+        },
+        "autoRefresh":{
+          "shape":"PrivacyBudgetTemplateAutoRefresh",
+          "documentation":"<p>How often the privacy budget refreshes.</p> <important> <p>If you plan to regularly bring new data into the collaboration, you can use <code>CALENDAR_MONTH</code> to automatically get a new privacy budget for the collaboration every calendar month. Choosing this option allows arbitrary amounts of information to be revealed about rows of the data when repeatedly queries across refreshes. Avoid choosing this if the same rows will be repeatedly queried between privacy budget refreshes.</p> </important>"
+        },
+        "privacyBudgetType":{
+          "shape":"PrivacyBudgetType",
+          "documentation":"<p>Specifies the type of the privacy budget template.</p>"
+        },
+        "parameters":{
+          "shape":"PrivacyBudgetTemplateParametersInput",
+          "documentation":"<p>Specifies your parameters for the privacy budget template.</p>"
+        },
+        "tags":{
+          "shape":"TagMap",
+          "documentation":"<p>An optional label that you can assign to a resource when you create it. Each tag consists of a key and an optional value, both of which you define. When you use tagging, you can also use tag-based access control in IAM policies to control access to this resource.</p>"
+        }
+      }
+    },
+    "CreatePrivacyBudgetTemplateOutput":{
+      "type":"structure",
+      "required":["privacyBudgetTemplate"],
+      "members":{
+        "privacyBudgetTemplate":{
+          "shape":"PrivacyBudgetTemplate",
+          "documentation":"<p>A summary of the elements in the privacy budget template.</p>"
+        }
+      }
+    },
     "DataEncryptionMetadata":{
       "type":"structure",
       "required":[
@@ -2518,6 +3366,32 @@
       }
     },
     "DeleteCollaborationOutput":{
+      "type":"structure",
+      "members":{
+      }
+    },
+    "DeleteConfiguredAudienceModelAssociationInput":{
+      "type":"structure",
+      "required":[
+        "configuredAudienceModelAssociationIdentifier",
+        "membershipIdentifier"
+      ],
+      "members":{
+        "configuredAudienceModelAssociationIdentifier":{
+          "shape":"ConfiguredAudienceModelAssociationIdentifier",
+          "documentation":"<p>A unique identifier of the configured audience model association that you want to delete.</p>",
+          "location":"uri",
+          "locationName":"configuredAudienceModelAssociationIdentifier"
+        },
+        "membershipIdentifier":{
+          "shape":"MembershipIdentifier",
+          "documentation":"<p>A unique identifier of the membership that contains the audience model association that you want to delete.</p>",
+          "location":"uri",
+          "locationName":"membershipIdentifier"
+        }
+      }
+    },
+    "DeleteConfiguredAudienceModelAssociationOutput":{
       "type":"structure",
       "members":{
       }
@@ -2636,6 +3510,286 @@
       "members":{
       }
     },
+    "DeletePrivacyBudgetTemplateInput":{
+      "type":"structure",
+      "required":[
+        "membershipIdentifier",
+        "privacyBudgetTemplateIdentifier"
+      ],
+      "members":{
+        "membershipIdentifier":{
+          "shape":"MembershipIdentifier",
+          "documentation":"<p>A unique identifier for one of your memberships for a collaboration. The privacy budget template is deleted from the collaboration that this membership belongs to. Accepts a membership ID.</p>",
+          "location":"uri",
+          "locationName":"membershipIdentifier"
+        },
+        "privacyBudgetTemplateIdentifier":{
+          "shape":"PrivacyBudgetTemplateIdentifier",
+          "documentation":"<p>A unique identifier for your privacy budget template. </p>",
+          "location":"uri",
+          "locationName":"privacyBudgetTemplateIdentifier"
+        }
+      }
+    },
+    "DeletePrivacyBudgetTemplateOutput":{
+      "type":"structure",
+      "members":{
+      }
+    },
+    "DifferentialPrivacyAggregationExpression":{
+      "type":"string",
+      "min":1
+    },
+    "DifferentialPrivacyAggregationType":{
+      "type":"string",
+      "enum":[
+        "AVG",
+        "COUNT",
+        "COUNT_DISTINCT",
+        "SUM",
+        "STDDEV"
+      ]
+    },
+    "DifferentialPrivacyColumn":{
+      "type":"structure",
+      "required":["name"],
+      "members":{
+        "name":{
+          "shape":"String",
+          "documentation":"<p>The name of the column, such as user_id, that contains the unique identifier of your users, whose privacy you want to protect. If you want to turn on differential privacy for two or more tables in a collaboration, you must configure the same column as the user identifier column in both analysis rules.</p>"
+        }
+      },
+      "documentation":"<p>Specifies the name of the column that contains the unique identifier of your users, whose privacy you want to protect.</p>"
+    },
+    "DifferentialPrivacyColumnList":{
+      "type":"list",
+      "member":{"shape":"DifferentialPrivacyColumn"},
+      "max":1,
+      "min":1
+    },
+    "DifferentialPrivacyConfiguration":{
+      "type":"structure",
+      "required":["columns"],
+      "members":{
+        "columns":{
+          "shape":"DifferentialPrivacyColumnList",
+          "documentation":"<p>The name of the column (such as user_id) that contains the unique identifier of your users whose privacy you want to protect. If you want to turn on diﬀerential privacy for two or more tables in a collaboration, you must conﬁgure the same column as the user identiﬁer column in both analysis rules.</p>"
+        }
+      },
+      "documentation":"<p>Specifies the unique identifier for your users.</p>"
+    },
+    "DifferentialPrivacyParameters":{
+      "type":"structure",
+      "required":["sensitivityParameters"],
+      "members":{
+        "sensitivityParameters":{
+          "shape":"DifferentialPrivacySensitivityParametersList",
+          "documentation":"<p>Provides the sensitivity parameters that you can use to better understand the total amount of noise in query results.</p>"
+        }
+      },
+      "documentation":"<p>An array that contains the sensitivity parameters.</p>"
+    },
+    "DifferentialPrivacyPreviewAggregation":{
+      "type":"structure",
+      "required":[
+        "type",
+        "maxCount"
+      ],
+      "members":{
+        "type":{
+          "shape":"DifferentialPrivacyAggregationType",
+          "documentation":"<p>The type of aggregation function.</p>"
+        },
+        "maxCount":{
+          "shape":"DifferentialPrivacyPreviewAggregationMaxCountInteger",
+          "documentation":"<p>The maximum number of aggregations that the member who can query can run given the epsilon and noise parameters.</p>"
+        }
+      },
+      "documentation":"<p>Provides an estimate of the number of aggregation functions that the member who can query can run given the epsilon and noise parameters.</p>"
+    },
+    "DifferentialPrivacyPreviewAggregationList":{
+      "type":"list",
+      "member":{"shape":"DifferentialPrivacyPreviewAggregation"}
+    },
+    "DifferentialPrivacyPreviewAggregationMaxCountInteger":{
+      "type":"integer",
+      "box":true,
+      "min":0
+    },
+    "DifferentialPrivacyPreviewParametersInput":{
+      "type":"structure",
+      "required":[
+        "epsilon",
+        "usersNoisePerQuery"
+      ],
+      "members":{
+        "epsilon":{
+          "shape":"Epsilon",
+          "documentation":"<p>The epsilon value that you want to preview.</p>"
+        },
+        "usersNoisePerQuery":{
+          "shape":"UsersNoisePerQuery",
+          "documentation":"<p>Noise added per query is measured in terms of the number of users whose contributions you want to obscure. This value governs the rate at which the privacy budget is depleted.</p>"
+        }
+      },
+      "documentation":"<p>The epsilon and noise parameters that you want to preview.</p>"
+    },
+    "DifferentialPrivacyPrivacyBudget":{
+      "type":"structure",
+      "required":[
+        "aggregations",
+        "epsilon"
+      ],
+      "members":{
+        "aggregations":{
+          "shape":"DifferentialPrivacyPrivacyBudgetAggregationList",
+          "documentation":"<p>This information includes the configured epsilon value and the utility in terms of total aggregations, as well as the remaining aggregations.</p>"
+        },
+        "epsilon":{
+          "shape":"Epsilon",
+          "documentation":"<p>The epsilon value that you configured.</p>"
+        }
+      },
+      "documentation":"<p>Specifies the configured epsilon value and the utility in terms of total aggregations, as well as the remaining aggregations available.</p>"
+    },
+    "DifferentialPrivacyPrivacyBudgetAggregation":{
+      "type":"structure",
+      "required":[
+        "type",
+        "maxCount",
+        "remainingCount"
+      ],
+      "members":{
+        "type":{
+          "shape":"DifferentialPrivacyAggregationType",
+          "documentation":"<p>The different types of aggregation functions that you can perform.</p>"
+        },
+        "maxCount":{
+          "shape":"DifferentialPrivacyPrivacyBudgetAggregationMaxCountInteger",
+          "documentation":"<p>The maximum number of aggregation functions that you can perform with the given privacy budget.</p>"
+        },
+        "remainingCount":{
+          "shape":"DifferentialPrivacyPrivacyBudgetAggregationRemainingCountInteger",
+          "documentation":"<p>The remaining number of aggregation functions that can be run with the available privacy budget.</p>"
+        }
+      },
+      "documentation":"<p>Information about the total number of aggregations, as well as the remaining aggregations.</p>"
+    },
+    "DifferentialPrivacyPrivacyBudgetAggregationList":{
+      "type":"list",
+      "member":{"shape":"DifferentialPrivacyPrivacyBudgetAggregation"}
+    },
+    "DifferentialPrivacyPrivacyBudgetAggregationMaxCountInteger":{
+      "type":"integer",
+      "box":true,
+      "min":0
+    },
+    "DifferentialPrivacyPrivacyBudgetAggregationRemainingCountInteger":{
+      "type":"integer",
+      "box":true,
+      "min":0
+    },
+    "DifferentialPrivacyPrivacyImpact":{
+      "type":"structure",
+      "required":["aggregations"],
+      "members":{
+        "aggregations":{
+          "shape":"DifferentialPrivacyPreviewAggregationList",
+          "documentation":"<p>The number of aggregation functions that you can perform.</p>"
+        }
+      },
+      "documentation":"<p>Information about the number of aggregation functions that the member who can query can run given the epsilon and noise parameters.</p>"
+    },
+    "DifferentialPrivacySensitivityParameters":{
+      "type":"structure",
+      "required":[
+        "aggregationType",
+        "aggregationExpression",
+        "userContributionLimit"
+      ],
+      "members":{
+        "aggregationType":{
+          "shape":"DifferentialPrivacyAggregationType",
+          "documentation":"<p>The type of aggregation function that was run.</p>"
+        },
+        "aggregationExpression":{
+          "shape":"DifferentialPrivacyAggregationExpression",
+          "documentation":"<p>The aggregation expression that was run.</p>"
+        },
+        "userContributionLimit":{
+          "shape":"DifferentialPrivacySensitivityParametersUserContributionLimitInteger",
+          "documentation":"<p>The maximum number of rows contributed by a user in a SQL query.</p>"
+        },
+        "minColumnValue":{
+          "shape":"Float",
+          "documentation":"<p>The lower bound of the aggregation expression.</p>"
+        },
+        "maxColumnValue":{
+          "shape":"Float",
+          "documentation":"<p>The upper bound of the aggregation expression.</p>"
+        }
+      },
+      "documentation":"<p>Provides the sensitivity parameters.</p>"
+    },
+    "DifferentialPrivacySensitivityParametersList":{
+      "type":"list",
+      "member":{"shape":"DifferentialPrivacySensitivityParameters"}
+    },
+    "DifferentialPrivacySensitivityParametersUserContributionLimitInteger":{
+      "type":"integer",
+      "box":true,
+      "min":0
+    },
+    "DifferentialPrivacyTemplateParametersInput":{
+      "type":"structure",
+      "required":[
+        "epsilon",
+        "usersNoisePerQuery"
+      ],
+      "members":{
+        "epsilon":{
+          "shape":"Epsilon",
+          "documentation":"<p>The epsilon value that you want to use.</p>"
+        },
+        "usersNoisePerQuery":{
+          "shape":"UsersNoisePerQuery",
+          "documentation":"<p>Noise added per query is measured in terms of the number of users whose contributions you want to obscure. This value governs the rate at which the privacy budget is depleted.</p>"
+        }
+      },
+      "documentation":"<p>The epsilon and noise parameter values that you want to use for the differential privacy template.</p>"
+    },
+    "DifferentialPrivacyTemplateParametersOutput":{
+      "type":"structure",
+      "required":[
+        "epsilon",
+        "usersNoisePerQuery"
+      ],
+      "members":{
+        "epsilon":{
+          "shape":"Epsilon",
+          "documentation":"<p>The epsilon value that you specified.</p>"
+        },
+        "usersNoisePerQuery":{
+          "shape":"UsersNoisePerQuery",
+          "documentation":"<p>Noise added per query is measured in terms of the number of users whose contributions you want to obscure. This value governs the rate at which the privacy budget is depleted.</p>"
+        }
+      },
+      "documentation":"<p>The epsilon and noise parameter values that were used for the differential privacy template.</p>"
+    },
+    "DifferentialPrivacyTemplateUpdateParameters":{
+      "type":"structure",
+      "members":{
+        "epsilon":{
+          "shape":"Epsilon",
+          "documentation":"<p>The updated epsilon value that you want to use.</p>"
+        },
+        "usersNoisePerQuery":{
+          "shape":"UsersNoisePerQuery",
+          "documentation":"<p>The updated value of noise added per query. It is measured in terms of the number of users whose contributions you want to obscure. This value governs the rate at which the privacy budget is depleted.</p>"
+        }
+      },
+      "documentation":"<p>The epsilon and noise parameter values that you want to update in the differential privacy template.</p>"
+    },
     "DisplayName":{
       "type":"string",
       "max":100,
@@ -2646,12 +3800,22 @@
       "type":"double",
       "box":true
     },
+    "Epsilon":{
+      "type":"integer",
+      "box":true,
+      "max":20,
+      "min":1
+    },
     "FilterableMemberStatus":{
       "type":"string",
       "enum":[
         "INVITED",
         "ACTIVE"
       ]
+    },
+    "Float":{
+      "type":"float",
+      "box":true
     },
     "GetAnalysisTemplateInput":{
       "type":"structure",
@@ -2715,6 +3879,37 @@
         }
       }
     },
+    "GetCollaborationConfiguredAudienceModelAssociationInput":{
+      "type":"structure",
+      "required":[
+        "collaborationIdentifier",
+        "configuredAudienceModelAssociationIdentifier"
+      ],
+      "members":{
+        "collaborationIdentifier":{
+          "shape":"CollaborationIdentifier",
+          "documentation":"<p>A unique identifier for the collaboration that the configured audience model association belongs to. Accepts a collaboration ID.</p>",
+          "location":"uri",
+          "locationName":"collaborationIdentifier"
+        },
+        "configuredAudienceModelAssociationIdentifier":{
+          "shape":"ConfiguredAudienceModelAssociationIdentifier",
+          "documentation":"<p>A unique identifier for the configured audience model association that you want to retrieve.</p>",
+          "location":"uri",
+          "locationName":"configuredAudienceModelAssociationIdentifier"
+        }
+      }
+    },
+    "GetCollaborationConfiguredAudienceModelAssociationOutput":{
+      "type":"structure",
+      "required":["collaborationConfiguredAudienceModelAssociation"],
+      "members":{
+        "collaborationConfiguredAudienceModelAssociation":{
+          "shape":"CollaborationConfiguredAudienceModelAssociation",
+          "documentation":"<p>The metadata of the configured audience model association.</p>"
+        }
+      }
+    },
     "GetCollaborationInput":{
       "type":"structure",
       "required":["collaborationIdentifier"],
@@ -2734,6 +3929,68 @@
         "collaboration":{
           "shape":"Collaboration",
           "documentation":"<p>The entire collaboration for this identifier.</p>"
+        }
+      }
+    },
+    "GetCollaborationPrivacyBudgetTemplateInput":{
+      "type":"structure",
+      "required":[
+        "collaborationIdentifier",
+        "privacyBudgetTemplateIdentifier"
+      ],
+      "members":{
+        "collaborationIdentifier":{
+          "shape":"CollaborationIdentifier",
+          "documentation":"<p>A unique identifier for one of your collaborations.</p>",
+          "location":"uri",
+          "locationName":"collaborationIdentifier"
+        },
+        "privacyBudgetTemplateIdentifier":{
+          "shape":"PrivacyBudgetTemplateIdentifier",
+          "documentation":"<p>A unique identifier for one of your privacy budget templates.</p>",
+          "location":"uri",
+          "locationName":"privacyBudgetTemplateIdentifier"
+        }
+      }
+    },
+    "GetCollaborationPrivacyBudgetTemplateOutput":{
+      "type":"structure",
+      "required":["collaborationPrivacyBudgetTemplate"],
+      "members":{
+        "collaborationPrivacyBudgetTemplate":{
+          "shape":"CollaborationPrivacyBudgetTemplate",
+          "documentation":"<p>Returns the details of the privacy budget template that you requested.</p>"
+        }
+      }
+    },
+    "GetConfiguredAudienceModelAssociationInput":{
+      "type":"structure",
+      "required":[
+        "configuredAudienceModelAssociationIdentifier",
+        "membershipIdentifier"
+      ],
+      "members":{
+        "configuredAudienceModelAssociationIdentifier":{
+          "shape":"ConfiguredAudienceModelAssociationIdentifier",
+          "documentation":"<p>A unique identifier for the configured audience model association that you want to retrieve.</p>",
+          "location":"uri",
+          "locationName":"configuredAudienceModelAssociationIdentifier"
+        },
+        "membershipIdentifier":{
+          "shape":"MembershipIdentifier",
+          "documentation":"<p>A unique identifier for the membership that contains the configured audience model association that you want to retrieve.</p>",
+          "location":"uri",
+          "locationName":"membershipIdentifier"
+        }
+      }
+    },
+    "GetConfiguredAudienceModelAssociationOutput":{
+      "type":"structure",
+      "required":["configuredAudienceModelAssociation"],
+      "members":{
+        "configuredAudienceModelAssociation":{
+          "shape":"ConfiguredAudienceModelAssociation",
+          "documentation":"<p>Information about the configured audience model association that you requested.</p>"
         }
       }
     },
@@ -2840,6 +4097,37 @@
         "membership":{
           "shape":"Membership",
           "documentation":"<p>The membership retrieved for the provided identifier.</p>"
+        }
+      }
+    },
+    "GetPrivacyBudgetTemplateInput":{
+      "type":"structure",
+      "required":[
+        "membershipIdentifier",
+        "privacyBudgetTemplateIdentifier"
+      ],
+      "members":{
+        "membershipIdentifier":{
+          "shape":"MembershipIdentifier",
+          "documentation":"<p>A unique identifier for one of your memberships for a collaboration. The privacy budget template is retrieved from the collaboration that this membership belongs to. Accepts a membership ID.</p>",
+          "location":"uri",
+          "locationName":"membershipIdentifier"
+        },
+        "privacyBudgetTemplateIdentifier":{
+          "shape":"PrivacyBudgetTemplateIdentifier",
+          "documentation":"<p>A unique identifier for your privacy budget template.</p>",
+          "location":"uri",
+          "locationName":"privacyBudgetTemplateIdentifier"
+        }
+      }
+    },
+    "GetPrivacyBudgetTemplateOutput":{
+      "type":"structure",
+      "required":["privacyBudgetTemplate"],
+      "members":{
+        "privacyBudgetTemplate":{
+          "shape":"PrivacyBudgetTemplate",
+          "documentation":"<p>Returns the details of the privacy budget template that you requested.</p>"
         }
       }
     },
@@ -3082,6 +4370,129 @@
         }
       }
     },
+    "ListCollaborationConfiguredAudienceModelAssociationsInput":{
+      "type":"structure",
+      "required":["collaborationIdentifier"],
+      "members":{
+        "collaborationIdentifier":{
+          "shape":"CollaborationIdentifier",
+          "documentation":"<p>A unique identifier for the collaboration that the configured audience model association belongs to. Accepts a collaboration ID.</p>",
+          "location":"uri",
+          "locationName":"collaborationIdentifier"
+        },
+        "nextToken":{
+          "shape":"PaginationToken",
+          "documentation":"<p>The token value retrieved from a previous call to access the next page of results.</p>",
+          "location":"querystring",
+          "locationName":"nextToken"
+        },
+        "maxResults":{
+          "shape":"MaxResults",
+          "documentation":"<p>The maximum size of the results that is returned per call.</p>",
+          "location":"querystring",
+          "locationName":"maxResults"
+        }
+      }
+    },
+    "ListCollaborationConfiguredAudienceModelAssociationsOutput":{
+      "type":"structure",
+      "required":["collaborationConfiguredAudienceModelAssociationSummaries"],
+      "members":{
+        "collaborationConfiguredAudienceModelAssociationSummaries":{
+          "shape":"CollaborationConfiguredAudienceModelAssociationSummaryList",
+          "documentation":"<p>The metadata of the configured audience model association within a collaboration.</p>"
+        },
+        "nextToken":{
+          "shape":"PaginationToken",
+          "documentation":"<p>The token value retrieved from a previous call to access the next page of results.</p>"
+        }
+      }
+    },
+    "ListCollaborationPrivacyBudgetTemplatesInput":{
+      "type":"structure",
+      "required":["collaborationIdentifier"],
+      "members":{
+        "collaborationIdentifier":{
+          "shape":"CollaborationIdentifier",
+          "documentation":"<p>A unique identifier for one of your collaborations.</p>",
+          "location":"uri",
+          "locationName":"collaborationIdentifier"
+        },
+        "nextToken":{
+          "shape":"PaginationToken",
+          "documentation":"<p>The token value retrieved from a previous call to access the next page of results.</p>",
+          "location":"querystring",
+          "locationName":"nextToken"
+        },
+        "maxResults":{
+          "shape":"MaxResults",
+          "documentation":"<p>The maximum size of the results that is returned per call. Service chooses a default if it has not been set. Service may return a nextToken even if the maximum results has not been met.</p>",
+          "location":"querystring",
+          "locationName":"maxResults"
+        }
+      }
+    },
+    "ListCollaborationPrivacyBudgetTemplatesOutput":{
+      "type":"structure",
+      "required":["collaborationPrivacyBudgetTemplateSummaries"],
+      "members":{
+        "nextToken":{
+          "shape":"PaginationToken",
+          "documentation":"<p>The token value retrieved from a previous call to access the next page of results.</p>"
+        },
+        "collaborationPrivacyBudgetTemplateSummaries":{
+          "shape":"CollaborationPrivacyBudgetTemplateSummaryList",
+          "documentation":"<p>An array that summarizes the collaboration privacy budget templates. The summary includes collaboration information, creation information, the privacy budget type.</p>"
+        }
+      }
+    },
+    "ListCollaborationPrivacyBudgetsInput":{
+      "type":"structure",
+      "required":[
+        "collaborationIdentifier",
+        "privacyBudgetType"
+      ],
+      "members":{
+        "collaborationIdentifier":{
+          "shape":"CollaborationIdentifier",
+          "documentation":"<p>A unique identifier for one of your collaborations.</p>",
+          "location":"uri",
+          "locationName":"collaborationIdentifier"
+        },
+        "privacyBudgetType":{
+          "shape":"PrivacyBudgetType",
+          "documentation":"<p>Specifies the type of the privacy budget.</p>",
+          "location":"querystring",
+          "locationName":"privacyBudgetType"
+        },
+        "maxResults":{
+          "shape":"MaxResults",
+          "documentation":"<p>The maximum size of the results that is returned per call. Service chooses a default if it has not been set. Service may return a nextToken even if the maximum results has not been met.</p>",
+          "location":"querystring",
+          "locationName":"maxResults"
+        },
+        "nextToken":{
+          "shape":"PaginationToken",
+          "documentation":"<p>The token value retrieved from a previous call to access the next page of results.</p>",
+          "location":"querystring",
+          "locationName":"nextToken"
+        }
+      }
+    },
+    "ListCollaborationPrivacyBudgetsOutput":{
+      "type":"structure",
+      "required":["collaborationPrivacyBudgetSummaries"],
+      "members":{
+        "collaborationPrivacyBudgetSummaries":{
+          "shape":"CollaborationPrivacyBudgetSummaryList",
+          "documentation":"<p>Summaries of the collaboration privacy budgets.</p>"
+        },
+        "nextToken":{
+          "shape":"PaginationToken",
+          "documentation":"<p>The token value retrieved from a previous call to access the next page of results.</p>"
+        }
+      }
+    },
     "ListCollaborationsInput":{
       "type":"structure",
       "members":{
@@ -3116,6 +4527,44 @@
         "collaborationList":{
           "shape":"CollaborationSummaryList",
           "documentation":"<p>The list of collaborations.</p>"
+        }
+      }
+    },
+    "ListConfiguredAudienceModelAssociationsInput":{
+      "type":"structure",
+      "required":["membershipIdentifier"],
+      "members":{
+        "membershipIdentifier":{
+          "shape":"MembershipIdentifier",
+          "documentation":"<p>A unique identifier for a membership that contains the configured audience model associations that you want to retrieve.</p>",
+          "location":"uri",
+          "locationName":"membershipIdentifier"
+        },
+        "nextToken":{
+          "shape":"PaginationToken",
+          "documentation":"<p>The token value retrieved from a previous call to access the next page of results.</p>",
+          "location":"querystring",
+          "locationName":"nextToken"
+        },
+        "maxResults":{
+          "shape":"MaxResults",
+          "documentation":"<p>The maximum size of the results that is returned per call. Service chooses a default if it has not been set. Service may return a nextToken even if the maximum results has not been met.</p>",
+          "location":"querystring",
+          "locationName":"maxResults"
+        }
+      }
+    },
+    "ListConfiguredAudienceModelAssociationsOutput":{
+      "type":"structure",
+      "required":["configuredAudienceModelAssociationSummaries"],
+      "members":{
+        "configuredAudienceModelAssociationSummaries":{
+          "shape":"ConfiguredAudienceModelAssociationSummaryList",
+          "documentation":"<p>Summaries of the configured audience model associations that you requested.</p>"
+        },
+        "nextToken":{
+          "shape":"PaginationToken",
+          "documentation":"<p>The token value provided to access the next page of results.</p>"
         }
       }
     },
@@ -3260,6 +4709,91 @@
         "membershipSummaries":{
           "shape":"MembershipSummaryList",
           "documentation":"<p>The list of memberships returned from the ListMemberships operation.</p>"
+        }
+      }
+    },
+    "ListPrivacyBudgetTemplatesInput":{
+      "type":"structure",
+      "required":["membershipIdentifier"],
+      "members":{
+        "membershipIdentifier":{
+          "shape":"MembershipIdentifier",
+          "documentation":"<p>A unique identifier for one of your memberships for a collaboration. The privacy budget templates are retrieved from the collaboration that this membership belongs to. Accepts a membership ID.</p>",
+          "location":"uri",
+          "locationName":"membershipIdentifier"
+        },
+        "nextToken":{
+          "shape":"PaginationToken",
+          "documentation":"<p>The token value retrieved from a previous call to access the next page of results.</p>",
+          "location":"querystring",
+          "locationName":"nextToken"
+        },
+        "maxResults":{
+          "shape":"MaxResults",
+          "documentation":"<p>The maximum size of the results that is returned per call. Service chooses a default if it has not been set. Service may return a nextToken even if the maximum results has not been met.</p>",
+          "location":"querystring",
+          "locationName":"maxResults"
+        }
+      }
+    },
+    "ListPrivacyBudgetTemplatesOutput":{
+      "type":"structure",
+      "required":["privacyBudgetTemplateSummaries"],
+      "members":{
+        "nextToken":{
+          "shape":"PaginationToken",
+          "documentation":"<p>The token value retrieved from a previous call to access the next page of results.</p>"
+        },
+        "privacyBudgetTemplateSummaries":{
+          "shape":"PrivacyBudgetTemplateSummaryList",
+          "documentation":"<p>An array that summarizes the privacy budget templates. The summary includes collaboration information, creation information, and privacy budget type.</p>"
+        }
+      }
+    },
+    "ListPrivacyBudgetsInput":{
+      "type":"structure",
+      "required":[
+        "membershipIdentifier",
+        "privacyBudgetType"
+      ],
+      "members":{
+        "membershipIdentifier":{
+          "shape":"MembershipIdentifier",
+          "documentation":"<p>A unique identifier for one of your memberships for a collaboration. The privacy budget is retrieved from the collaboration that this membership belongs to. Accepts a membership ID.</p>",
+          "location":"uri",
+          "locationName":"membershipIdentifier"
+        },
+        "privacyBudgetType":{
+          "shape":"PrivacyBudgetType",
+          "documentation":"<p>The privacy budget type.</p>",
+          "location":"querystring",
+          "locationName":"privacyBudgetType"
+        },
+        "nextToken":{
+          "shape":"PaginationToken",
+          "documentation":"<p>The token value retrieved from a previous call to access the next page of results.</p>",
+          "location":"querystring",
+          "locationName":"nextToken"
+        },
+        "maxResults":{
+          "shape":"MaxResults",
+          "documentation":"<p>The maximum size of the results that is returned per call. Service chooses a default if it has not been set. Service may return a nextToken even if the maximum results has not been met.</p>",
+          "location":"querystring",
+          "locationName":"maxResults"
+        }
+      }
+    },
+    "ListPrivacyBudgetsOutput":{
+      "type":"structure",
+      "required":["privacyBudgetSummaries"],
+      "members":{
+        "privacyBudgetSummaries":{
+          "shape":"PrivacyBudgetSummaryList",
+          "documentation":"<p>An array that summarizes the privacy budgets. The summary includes collaboration information, membership information, privacy budget template information, and privacy budget details.</p>"
+        },
+        "nextToken":{
+          "shape":"PaginationToken",
+          "documentation":"<p>The token value retrieved from a previous call to access the next page of results.</p>"
         }
       }
     },
@@ -3764,6 +5298,311 @@
       },
       "documentation":"<p>An object representing the collaboration member's payment responsibilities set by the collaboration creator.</p>"
     },
+    "PreviewPrivacyImpactInput":{
+      "type":"structure",
+      "required":[
+        "membershipIdentifier",
+        "parameters"
+      ],
+      "members":{
+        "membershipIdentifier":{
+          "shape":"MembershipIdentifier",
+          "documentation":"<p>A unique identifier for one of your memberships for a collaboration. Accepts a membership ID.</p>",
+          "location":"uri",
+          "locationName":"membershipIdentifier"
+        },
+        "parameters":{
+          "shape":"PreviewPrivacyImpactParametersInput",
+          "documentation":"<p>Specifies the desired epsilon and noise parameters to preview.</p>"
+        }
+      }
+    },
+    "PreviewPrivacyImpactOutput":{
+      "type":"structure",
+      "required":["privacyImpact"],
+      "members":{
+        "privacyImpact":{
+          "shape":"PrivacyImpact",
+          "documentation":"<p>An estimate of the number of aggregation functions that the member who can query can run given the epsilon and noise parameters. This does not change the privacy budget.</p>"
+        }
+      }
+    },
+    "PreviewPrivacyImpactParametersInput":{
+      "type":"structure",
+      "members":{
+        "differentialPrivacy":{
+          "shape":"DifferentialPrivacyPreviewParametersInput",
+          "documentation":"<p>An array that specifies the epsilon and noise parameters.</p>"
+        }
+      },
+      "documentation":"<p>Specifies the updated epsilon and noise parameters to preview. The preview allows you to see how the maximum number of each type of aggregation function would change with the new parameters.</p>",
+      "union":true
+    },
+    "PrivacyBudget":{
+      "type":"structure",
+      "members":{
+        "differentialPrivacy":{
+          "shape":"DifferentialPrivacyPrivacyBudget",
+          "documentation":"<p>An object that specifies the epsilon parameter and the utility in terms of total aggregations, as well as the remaining aggregations available.</p>"
+        }
+      },
+      "documentation":"<p>The epsilon parameter value and number of each aggregation function that you can perform.</p>",
+      "union":true
+    },
+    "PrivacyBudgetSummary":{
+      "type":"structure",
+      "required":[
+        "id",
+        "privacyBudgetTemplateId",
+        "privacyBudgetTemplateArn",
+        "membershipId",
+        "membershipArn",
+        "collaborationId",
+        "collaborationArn",
+        "type",
+        "createTime",
+        "updateTime",
+        "budget"
+      ],
+      "members":{
+        "id":{
+          "shape":"UUID",
+          "documentation":"<p>The unique identifier of the privacy budget.</p>"
+        },
+        "privacyBudgetTemplateId":{
+          "shape":"PrivacyBudgetTemplateIdentifier",
+          "documentation":"<p>The unique identifier of the privacy budget template.</p>"
+        },
+        "privacyBudgetTemplateArn":{
+          "shape":"PrivacyBudgetTemplateArn",
+          "documentation":"<p>The ARN of the privacy budget template.</p>"
+        },
+        "membershipId":{
+          "shape":"MembershipIdentifier",
+          "documentation":"<p>The identifier for a membership resource.</p>"
+        },
+        "membershipArn":{
+          "shape":"MembershipArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the member who created the privacy budget summary.</p>"
+        },
+        "collaborationId":{
+          "shape":"UUID",
+          "documentation":"<p>The unique identifier of the collaboration that contains this privacy budget.</p>"
+        },
+        "collaborationArn":{
+          "shape":"CollaborationArn",
+          "documentation":"<p>The ARN of the collaboration that contains this privacy budget.</p>"
+        },
+        "type":{
+          "shape":"PrivacyBudgetType",
+          "documentation":"<p>Specifies the type of the privacy budget.</p>"
+        },
+        "createTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time at which the privacy budget was created.</p>"
+        },
+        "updateTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The most recent time at which the privacy budget was updated.</p>"
+        },
+        "budget":{
+          "shape":"PrivacyBudget",
+          "documentation":"<p>The provided privacy budget.</p>"
+        }
+      },
+      "documentation":"<p>An array that summaries the specified privacy budget. This summary includes collaboration information, creation information, membership information, and privacy budget information.</p>"
+    },
+    "PrivacyBudgetSummaryList":{
+      "type":"list",
+      "member":{"shape":"PrivacyBudgetSummary"}
+    },
+    "PrivacyBudgetTemplate":{
+      "type":"structure",
+      "required":[
+        "id",
+        "arn",
+        "membershipId",
+        "membershipArn",
+        "collaborationId",
+        "collaborationArn",
+        "createTime",
+        "updateTime",
+        "privacyBudgetType",
+        "autoRefresh",
+        "parameters"
+      ],
+      "members":{
+        "id":{
+          "shape":"PrivacyBudgetTemplateIdentifier",
+          "documentation":"<p>The unique identifier of the privacy budget template.</p>"
+        },
+        "arn":{
+          "shape":"PrivacyBudgetTemplateArn",
+          "documentation":"<p>The ARN of the privacy budget template.</p>"
+        },
+        "membershipId":{
+          "shape":"UUID",
+          "documentation":"<p>The identifier for a membership resource.</p>"
+        },
+        "membershipArn":{
+          "shape":"MembershipArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the member who created the privacy budget template.</p>"
+        },
+        "collaborationId":{
+          "shape":"UUID",
+          "documentation":"<p>The unique ID of the collaboration that contains this privacy budget template.</p>"
+        },
+        "collaborationArn":{
+          "shape":"CollaborationArn",
+          "documentation":"<p>The ARN of the collaboration that contains this privacy budget template.</p>"
+        },
+        "createTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time at which the privacy budget template was created.</p>"
+        },
+        "updateTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The most recent time at which the privacy budget template was updated.</p>"
+        },
+        "privacyBudgetType":{
+          "shape":"PrivacyBudgetType",
+          "documentation":"<p>Specifies the type of the privacy budget template.</p>"
+        },
+        "autoRefresh":{
+          "shape":"PrivacyBudgetTemplateAutoRefresh",
+          "documentation":"<p>How often the privacy budget refreshes.</p> <important> <p>If you plan to regularly bring new data into the collaboration, use <code>CALENDAR_MONTH</code> to automatically get a new privacy budget for the collaboration every calendar month. Choosing this option allows arbitrary amounts of information to be revealed about rows of the data when repeatedly queried across refreshes. Avoid choosing this if the same rows will be repeatedly queried between privacy budget refreshes.</p> </important>"
+        },
+        "parameters":{
+          "shape":"PrivacyBudgetTemplateParametersOutput",
+          "documentation":"<p>Specifies the epislon and noise parameters for the privacy budget template.</p>"
+        }
+      },
+      "documentation":"<p>An object that defines the privacy budget template.</p>"
+    },
+    "PrivacyBudgetTemplateArn":{
+      "type":"string",
+      "max":100,
+      "min":0,
+      "pattern":"arn:aws:[\\w]+:[\\w]{2}-[\\w]{4,9}-[\\d]:[\\d]{12}:privacybudgettemplate/[\\d\\w-]+"
+    },
+    "PrivacyBudgetTemplateAutoRefresh":{
+      "type":"string",
+      "enum":[
+        "CALENDAR_MONTH",
+        "NONE"
+      ]
+    },
+    "PrivacyBudgetTemplateIdentifier":{
+      "type":"string",
+      "max":36,
+      "min":36,
+      "pattern":"[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}"
+    },
+    "PrivacyBudgetTemplateParametersInput":{
+      "type":"structure",
+      "members":{
+        "differentialPrivacy":{
+          "shape":"DifferentialPrivacyTemplateParametersInput",
+          "documentation":"<p>An object that specifies the epsilon and noise parameters.</p>"
+        }
+      },
+      "documentation":"<p>The epsilon and noise parameters that you want to use for the privacy budget template.</p>",
+      "union":true
+    },
+    "PrivacyBudgetTemplateParametersOutput":{
+      "type":"structure",
+      "members":{
+        "differentialPrivacy":{
+          "shape":"DifferentialPrivacyTemplateParametersOutput",
+          "documentation":"<p>The epsilon and noise parameters.</p>"
+        }
+      },
+      "documentation":"<p>The epsilon and noise parameters that were used in the privacy budget template.</p>",
+      "union":true
+    },
+    "PrivacyBudgetTemplateSummary":{
+      "type":"structure",
+      "required":[
+        "id",
+        "arn",
+        "membershipId",
+        "membershipArn",
+        "collaborationId",
+        "collaborationArn",
+        "privacyBudgetType",
+        "createTime",
+        "updateTime"
+      ],
+      "members":{
+        "id":{
+          "shape":"PrivacyBudgetTemplateIdentifier",
+          "documentation":"<p>The unique identifier of the privacy budget template.</p>"
+        },
+        "arn":{
+          "shape":"PrivacyBudgetTemplateArn",
+          "documentation":"<p>The ARN of the privacy budget template.</p>"
+        },
+        "membershipId":{
+          "shape":"UUID",
+          "documentation":"<p>The identifier for a membership resource.</p>"
+        },
+        "membershipArn":{
+          "shape":"MembershipArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the member who created the privacy budget template.</p>"
+        },
+        "collaborationId":{
+          "shape":"UUID",
+          "documentation":"<p>The unique ID of the collaboration that contains this privacy budget template.</p>"
+        },
+        "collaborationArn":{
+          "shape":"CollaborationArn",
+          "documentation":"<p>The ARN of the collaboration that contains this privacy budget template.</p>"
+        },
+        "privacyBudgetType":{
+          "shape":"PrivacyBudgetType",
+          "documentation":"<p>The type of the privacy budget template.</p>"
+        },
+        "createTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time at which the privacy budget template was created.</p>"
+        },
+        "updateTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The most recent time at which the privacy budget template was updated.</p>"
+        }
+      },
+      "documentation":"<p>A summary of the privacy budget template. The summary includes membership information, collaboration information, and creation information.</p>"
+    },
+    "PrivacyBudgetTemplateSummaryList":{
+      "type":"list",
+      "member":{"shape":"PrivacyBudgetTemplateSummary"}
+    },
+    "PrivacyBudgetTemplateUpdateParameters":{
+      "type":"structure",
+      "members":{
+        "differentialPrivacy":{
+          "shape":"DifferentialPrivacyTemplateUpdateParameters",
+          "documentation":"<p>An object that specifies the new values for the epsilon and noise parameters.</p>"
+        }
+      },
+      "documentation":"<p>The epsilon and noise parameters that you want to update in the privacy budget template.</p>",
+      "union":true
+    },
+    "PrivacyBudgetType":{
+      "type":"string",
+      "enum":["DIFFERENTIAL_PRIVACY"]
+    },
+    "PrivacyImpact":{
+      "type":"structure",
+      "members":{
+        "differentialPrivacy":{
+          "shape":"DifferentialPrivacyPrivacyImpact",
+          "documentation":"<p>An object that lists the number and type of aggregation functions you can perform.</p>"
+        }
+      },
+      "documentation":"<p>Provides an estimate of the number of aggregation functions that the member who can query can run given the epsilon and noise parameters.</p>",
+      "union":true
+    },
     "ProtectedQuery":{
       "type":"structure",
       "required":[
@@ -3813,6 +5652,10 @@
         "error":{
           "shape":"ProtectedQueryError",
           "documentation":"<p>An error thrown by the protected query.</p>"
+        },
+        "differentialPrivacy":{
+          "shape":"DifferentialPrivacyParameters",
+          "documentation":"<p>The sensitivity parameters of the differential privacy results of the protected query.</p>"
         }
       },
       "documentation":"<p>The parameters for an Clean Rooms protected query.</p>"
@@ -4512,6 +6355,45 @@
         }
       }
     },
+    "UpdateConfiguredAudienceModelAssociationInput":{
+      "type":"structure",
+      "required":[
+        "configuredAudienceModelAssociationIdentifier",
+        "membershipIdentifier"
+      ],
+      "members":{
+        "configuredAudienceModelAssociationIdentifier":{
+          "shape":"ConfiguredAudienceModelAssociationIdentifier",
+          "documentation":"<p>A unique identifier for the configured audience model association that you want to update.</p>",
+          "location":"uri",
+          "locationName":"configuredAudienceModelAssociationIdentifier"
+        },
+        "membershipIdentifier":{
+          "shape":"MembershipIdentifier",
+          "documentation":"<p>A unique identifier of the membership that contains the configured audience model association that you want to update.</p>",
+          "location":"uri",
+          "locationName":"membershipIdentifier"
+        },
+        "description":{
+          "shape":"ResourceDescription",
+          "documentation":"<p>A new description for the configured audience model association.</p>"
+        },
+        "name":{
+          "shape":"ConfiguredAudienceModelAssociationName",
+          "documentation":"<p>A new name for the configured audience model association.</p>"
+        }
+      }
+    },
+    "UpdateConfiguredAudienceModelAssociationOutput":{
+      "type":"structure",
+      "required":["configuredAudienceModelAssociation"],
+      "members":{
+        "configuredAudienceModelAssociation":{
+          "shape":"ConfiguredAudienceModelAssociation",
+          "documentation":"<p>Details about the configured audience model association that you updated.</p>"
+        }
+      }
+    },
     "UpdateConfiguredTableAnalysisRuleInput":{
       "type":"structure",
       "required":[
@@ -4644,6 +6526,46 @@
         "membership":{"shape":"Membership"}
       }
     },
+    "UpdatePrivacyBudgetTemplateInput":{
+      "type":"structure",
+      "required":[
+        "membershipIdentifier",
+        "privacyBudgetTemplateIdentifier",
+        "privacyBudgetType"
+      ],
+      "members":{
+        "membershipIdentifier":{
+          "shape":"MembershipIdentifier",
+          "documentation":"<p>A unique identifier for one of your memberships for a collaboration. The privacy budget template is updated in the collaboration that this membership belongs to. Accepts a membership ID.</p>",
+          "location":"uri",
+          "locationName":"membershipIdentifier"
+        },
+        "privacyBudgetTemplateIdentifier":{
+          "shape":"PrivacyBudgetTemplateIdentifier",
+          "documentation":"<p>A unique identifier for your privacy budget template that you want to update.</p>",
+          "location":"uri",
+          "locationName":"privacyBudgetTemplateIdentifier"
+        },
+        "privacyBudgetType":{
+          "shape":"PrivacyBudgetType",
+          "documentation":"<p>Specifies the type of the privacy budget template.</p>"
+        },
+        "parameters":{
+          "shape":"PrivacyBudgetTemplateUpdateParameters",
+          "documentation":"<p>Specifies the epsilon and noise parameters for the privacy budget template.</p>"
+        }
+      }
+    },
+    "UpdatePrivacyBudgetTemplateOutput":{
+      "type":"structure",
+      "required":["privacyBudgetTemplate"],
+      "members":{
+        "privacyBudgetTemplate":{
+          "shape":"PrivacyBudgetTemplate",
+          "documentation":"<p>Summary of the privacy budget template.</p>"
+        }
+      }
+    },
     "UpdateProtectedQueryInput":{
       "type":"structure",
       "required":[
@@ -4679,6 +6601,12 @@
           "documentation":"<p>The protected query output.</p>"
         }
       }
+    },
+    "UsersNoisePerQuery":{
+      "type":"integer",
+      "box":true,
+      "max":100,
+      "min":10
     },
     "ValidationException":{
       "type":"structure",

@@ -36,7 +36,7 @@
       },
       "input":{"shape":"AddTagsInput"},
       "output":{"shape":"AddTagsOutput"},
-      "documentation":"<p>Adds or overwrites one or more tags for the specified SageMaker resource. You can add tags to notebook instances, training jobs, hyperparameter tuning jobs, batch transform jobs, models, labeling jobs, work teams, endpoint configurations, and endpoints.</p> <p>Each tag consists of a key and an optional value. Tag keys must be unique per resource. For more information about tags, see For more information, see <a href=\"https://aws.amazon.com/answers/account-management/aws-tagging-strategies/\">Amazon Web Services Tagging Strategies</a>.</p> <note> <p>Tags that you add to a hyperparameter tuning job by calling this API are also added to any training jobs that the hyperparameter tuning job launches after you call this API, but not to training jobs that the hyperparameter tuning job launched before you called this API. To make sure that the tags associated with a hyperparameter tuning job are also added to all training jobs that the hyperparameter tuning job launches, add the tags when you first create the tuning job by specifying them in the <code>Tags</code> parameter of <a href=\"https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_CreateHyperParameterTuningJob.html\">CreateHyperParameterTuningJob</a> </p> </note> <note> <p>Tags that you add to a SageMaker Studio Domain or User Profile by calling this API are also added to any Apps that the Domain or User Profile launches after you call this API, but not to Apps that the Domain or User Profile launched before you called this API. To make sure that the tags associated with a Domain or User Profile are also added to all Apps that the Domain or User Profile launches, add the tags when you first create the Domain or User Profile by specifying them in the <code>Tags</code> parameter of <a href=\"https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_CreateDomain.html\">CreateDomain</a> or <a href=\"https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_CreateUserProfile.html\">CreateUserProfile</a>.</p> </note>"
+      "documentation":"<p>Adds or overwrites one or more tags for the specified SageMaker resource. You can add tags to notebook instances, training jobs, hyperparameter tuning jobs, batch transform jobs, models, labeling jobs, work teams, endpoint configurations, and endpoints.</p> <p>Each tag consists of a key and an optional value. Tag keys must be unique per resource. For more information about tags, see For more information, see <a href=\"https://aws.amazon.com/answers/account-management/aws-tagging-strategies/\">Amazon Web Services Tagging Strategies</a>.</p> <note> <p>Tags that you add to a hyperparameter tuning job by calling this API are also added to any training jobs that the hyperparameter tuning job launches after you call this API, but not to training jobs that the hyperparameter tuning job launched before you called this API. To make sure that the tags associated with a hyperparameter tuning job are also added to all training jobs that the hyperparameter tuning job launches, add the tags when you first create the tuning job by specifying them in the <code>Tags</code> parameter of <a href=\"https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_CreateHyperParameterTuningJob.html\">CreateHyperParameterTuningJob</a> </p> </note> <note> <p>Tags that you add to a SageMaker Domain or User Profile by calling this API are also added to any Apps that the Domain or User Profile launches after you call this API, but not to Apps that the Domain or User Profile launched before you called this API. To make sure that the tags associated with a Domain or User Profile are also added to all Apps that the Domain or User Profile launches, add the tags when you first create the Domain or User Profile by specifying them in the <code>Tags</code> parameter of <a href=\"https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_CreateDomain.html\">CreateDomain</a> or <a href=\"https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_CreateUserProfile.html\">CreateUserProfile</a>.</p> </note>"
     },
     "AssociateTrialComponent":{
       "name":"AssociateTrialComponent",
@@ -97,7 +97,7 @@
         {"shape":"ResourceLimitExceeded"},
         {"shape":"ResourceInUse"}
       ],
-      "documentation":"<p>Creates a running app for the specified UserProfile. This operation is automatically invoked by Amazon SageMaker Studio upon access to the associated Domain, and when new kernel configurations are selected by the user. A user may have multiple Apps active simultaneously.</p>"
+      "documentation":"<p>Creates a running app for the specified UserProfile. This operation is automatically invoked by Amazon SageMaker upon access to the associated Domain, and when new kernel configurations are selected by the user. A user may have multiple Apps active simultaneously.</p>"
     },
     "CreateAppImageConfig":{
       "name":"CreateAppImageConfig",
@@ -152,6 +152,20 @@
         {"shape":"ResourceLimitExceeded"}
       ],
       "documentation":"<p>Creates an Autopilot job also referred to as Autopilot experiment or AutoML job V2.</p> <note> <p> <a href=\"https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_CreateAutoMLJobV2.html\">CreateAutoMLJobV2</a> and <a href=\"https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_DescribeAutoMLJobV2.html\">DescribeAutoMLJobV2</a> are new versions of <a href=\"https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_CreateAutoMLJob.html\">CreateAutoMLJob</a> and <a href=\"https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_DescribeAutoMLJob.html\">DescribeAutoMLJob</a> which offer backward compatibility.</p> <p> <code>CreateAutoMLJobV2</code> can manage tabular problem types identical to those of its previous version <code>CreateAutoMLJob</code>, as well as time-series forecasting, non-tabular problem types such as image or text classification, and text generation (LLMs fine-tuning).</p> <p>Find guidelines about how to migrate a <code>CreateAutoMLJob</code> to <code>CreateAutoMLJobV2</code> in <a href=\"https://docs.aws.amazon.com/sagemaker/latest/dg/autopilot-automate-model-development-create-experiment-api.html#autopilot-create-experiment-api-migrate-v1-v2\">Migrate a CreateAutoMLJob to CreateAutoMLJobV2</a>.</p> </note> <p>For the list of available problem types supported by <code>CreateAutoMLJobV2</code>, see <a href=\"https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_AutoMLProblemTypeConfig.html\">AutoMLProblemTypeConfig</a>.</p> <p>You can find the best-performing model after you run an AutoML job V2 by calling <a href=\"https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_DescribeAutoMLJobV2.html\">DescribeAutoMLJobV2</a>.</p>"
+    },
+    "CreateCluster":{
+      "name":"CreateCluster",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"CreateClusterRequest"},
+      "output":{"shape":"CreateClusterResponse"},
+      "errors":[
+        {"shape":"ResourceLimitExceeded"},
+        {"shape":"ResourceInUse"}
+      ],
+      "documentation":"<p>Creates a SageMaker HyperPod cluster. SageMaker HyperPod is a capability of SageMaker for creating and managing persistent clusters for developing large machine learning models, such as large language models (LLMs) and diffusion models. To learn more, see <a href=\"https://docs.aws.amazon.com/sagemaker/latest/dg/sagemaker-hyperpod.html\">Amazon SageMaker HyperPod</a> in the <i>Amazon SageMaker Developer Guide</i>.</p>"
     },
     "CreateCodeRepository":{
       "name":"CreateCodeRepository",
@@ -229,7 +243,7 @@
         {"shape":"ResourceLimitExceeded"},
         {"shape":"ResourceInUse"}
       ],
-      "documentation":"<p>Creates a <code>Domain</code> used by Amazon SageMaker Studio. A domain consists of an associated Amazon Elastic File System (EFS) volume, a list of authorized users, and a variety of security, application, policy, and Amazon Virtual Private Cloud (VPC) configurations. Users within a domain can share notebook files and other artifacts with each other.</p> <p> <b>EFS storage</b> </p> <p>When a domain is created, an EFS volume is created for use by all of the users within the domain. Each user receives a private home directory within the EFS volume for notebooks, Git repositories, and data files.</p> <p>SageMaker uses the Amazon Web Services Key Management Service (Amazon Web Services KMS) to encrypt the EFS volume attached to the domain with an Amazon Web Services managed key by default. For more control, you can specify a customer managed key. For more information, see <a href=\"https://docs.aws.amazon.com/sagemaker/latest/dg/encryption-at-rest.html\">Protect Data at Rest Using Encryption</a>.</p> <p> <b>VPC configuration</b> </p> <p>All SageMaker Studio traffic between the domain and the EFS volume is through the specified VPC and subnets. For other Studio traffic, you can specify the <code>AppNetworkAccessType</code> parameter. <code>AppNetworkAccessType</code> corresponds to the network access type that you choose when you onboard to Studio. The following options are available:</p> <ul> <li> <p> <code>PublicInternetOnly</code> - Non-EFS traffic goes through a VPC managed by Amazon SageMaker, which allows internet access. This is the default value.</p> </li> <li> <p> <code>VpcOnly</code> - All Studio traffic is through the specified VPC and subnets. Internet access is disabled by default. To allow internet access, you must specify a NAT gateway.</p> <p>When internet access is disabled, you won't be able to run a Studio notebook or to train or host models unless your VPC has an interface endpoint to the SageMaker API and runtime or a NAT gateway and your security groups allow outbound connections.</p> </li> </ul> <important> <p>NFS traffic over TCP on port 2049 needs to be allowed in both inbound and outbound rules in order to launch a SageMaker Studio app successfully.</p> </important> <p>For more information, see <a href=\"https://docs.aws.amazon.com/sagemaker/latest/dg/studio-notebooks-and-internet-access.html\">Connect SageMaker Studio Notebooks to Resources in a VPC</a>.</p>"
+      "documentation":"<p>Creates a <code>Domain</code>. A domain consists of an associated Amazon Elastic File System (EFS) volume, a list of authorized users, and a variety of security, application, policy, and Amazon Virtual Private Cloud (VPC) configurations. Users within a domain can share notebook files and other artifacts with each other.</p> <p> <b>EFS storage</b> </p> <p>When a domain is created, an EFS volume is created for use by all of the users within the domain. Each user receives a private home directory within the EFS volume for notebooks, Git repositories, and data files.</p> <p>SageMaker uses the Amazon Web Services Key Management Service (Amazon Web Services KMS) to encrypt the EFS volume attached to the domain with an Amazon Web Services managed key by default. For more control, you can specify a customer managed key. For more information, see <a href=\"https://docs.aws.amazon.com/sagemaker/latest/dg/encryption-at-rest.html\">Protect Data at Rest Using Encryption</a>.</p> <p> <b>VPC configuration</b> </p> <p>All traffic between the domain and the EFS volume is through the specified VPC and subnets. For other traffic, you can specify the <code>AppNetworkAccessType</code> parameter. <code>AppNetworkAccessType</code> corresponds to the network access type that you choose when you onboard to the domain. The following options are available:</p> <ul> <li> <p> <code>PublicInternetOnly</code> - Non-EFS traffic goes through a VPC managed by Amazon SageMaker, which allows internet access. This is the default value.</p> </li> <li> <p> <code>VpcOnly</code> - All traffic is through the specified VPC and subnets. Internet access is disabled by default. To allow internet access, you must specify a NAT gateway.</p> <p>When internet access is disabled, you won't be able to run a Amazon SageMaker Studio notebook or to train or host models unless your VPC has an interface endpoint to the SageMaker API and runtime or a NAT gateway and your security groups allow outbound connections.</p> </li> </ul> <important> <p>NFS traffic over TCP on port 2049 needs to be allowed in both inbound and outbound rules in order to launch a Amazon SageMaker Studio app successfully.</p> </important> <p>For more information, see <a href=\"https://docs.aws.amazon.com/sagemaker/latest/dg/studio-notebooks-and-internet-access.html\">Connect Amazon SageMaker Studio Notebooks to Resources in a VPC</a>.</p>"
     },
     "CreateEdgeDeploymentPlan":{
       "name":"CreateEdgeDeploymentPlan",
@@ -405,6 +419,19 @@
         {"shape":"ResourceNotFound"}
       ],
       "documentation":"<p>Creates a version of the SageMaker image specified by <code>ImageName</code>. The version represents the Amazon Elastic Container Registry (ECR) container image specified by <code>BaseImage</code>.</p>"
+    },
+    "CreateInferenceComponent":{
+      "name":"CreateInferenceComponent",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"CreateInferenceComponentInput"},
+      "output":{"shape":"CreateInferenceComponentOutput"},
+      "errors":[
+        {"shape":"ResourceLimitExceeded"}
+      ],
+      "documentation":"<p>Creates an inference component, which is a SageMaker hosting object that you can use to deploy a model to an endpoint. In the inference component settings, you specify the model, the endpoint, and how the model utilizes the resources that the endpoint hosts. You can optimize resource utilization by tailoring how the required CPU cores, accelerators, and memory are allocated. You can deploy multiple inference components to an endpoint, where each inference component contains one model and the resource utilization needs for that individual model. After you deploy an inference component, you can directly invoke the associated model when you use the InvokeEndpoint API action.</p>"
     },
     "CreateInferenceExperiment":{
       "name":"CreateInferenceExperiment",
@@ -624,7 +651,7 @@
       "errors":[
         {"shape":"ResourceNotFound"}
       ],
-      "documentation":"<p>Creates a URL for a specified UserProfile in a Domain. When accessed in a web browser, the user will be automatically signed in to Amazon SageMaker Studio, and granted access to all of the Apps and files associated with the Domain's Amazon Elastic File System (EFS) volume. This operation can only be called when the authentication mode equals IAM. </p> <p>The IAM role or user passed to this API defines the permissions to access the app. Once the presigned URL is created, no additional permission is required to access this URL. IAM authorization policies for this API are also enforced for every HTTP request and WebSocket frame that attempts to connect to the app.</p> <p>You can restrict access to this API and to the URL that it returns to a list of IP addresses, Amazon VPCs or Amazon VPC Endpoints that you specify. For more information, see <a href=\"https://docs.aws.amazon.com/sagemaker/latest/dg/studio-interface-endpoint.html\">Connect to SageMaker Studio Through an Interface VPC Endpoint</a> .</p> <note> <p>The URL that you get from a call to <code>CreatePresignedDomainUrl</code> has a default timeout of 5 minutes. You can configure this value using <code>ExpiresInSeconds</code>. If you try to use the URL after the timeout limit expires, you are directed to the Amazon Web Services console sign-in page.</p> </note>"
+      "documentation":"<p>Creates a URL for a specified UserProfile in a Domain. When accessed in a web browser, the user will be automatically signed in to the domain, and granted access to all of the Apps and files associated with the Domain's Amazon Elastic File System (EFS) volume. This operation can only be called when the authentication mode equals IAM. </p> <p>The IAM role or user passed to this API defines the permissions to access the app. Once the presigned URL is created, no additional permission is required to access this URL. IAM authorization policies for this API are also enforced for every HTTP request and WebSocket frame that attempts to connect to the app.</p> <p>You can restrict access to this API and to the URL that it returns to a list of IP addresses, Amazon VPCs or Amazon VPC Endpoints that you specify. For more information, see <a href=\"https://docs.aws.amazon.com/sagemaker/latest/dg/studio-interface-endpoint.html\">Connect to Amazon SageMaker Studio Through an Interface VPC Endpoint</a> .</p> <note> <p>The URL that you get from a call to <code>CreatePresignedDomainUrl</code> has a default timeout of 5 minutes. You can configure this value using <code>ExpiresInSeconds</code>. If you try to use the URL after the timeout limit expires, you are directed to the Amazon Web Services console sign-in page.</p> </note>"
     },
     "CreatePresignedNotebookInstanceUrl":{
       "name":"CreatePresignedNotebookInstanceUrl",
@@ -689,7 +716,7 @@
       "errors":[
         {"shape":"ResourceInUse"}
       ],
-      "documentation":"<p>Creates a new Studio Lifecycle Configuration.</p>"
+      "documentation":"<p>Creates a new Amazon SageMaker Studio Lifecycle Configuration.</p>"
     },
     "CreateTrainingJob":{
       "name":"CreateTrainingJob",
@@ -760,7 +787,7 @@
         {"shape":"ResourceLimitExceeded"},
         {"shape":"ResourceInUse"}
       ],
-      "documentation":"<p>Creates a user profile. A user profile represents a single user within a domain, and is the main way to reference a \"person\" for the purposes of sharing, reporting, and other user-oriented features. This entity is created when a user onboards to Amazon SageMaker Studio. If an administrator invites a person by email or imports them from IAM Identity Center, a user profile is automatically created. A user profile is the primary holder of settings for an individual user and has a reference to the user's private Amazon Elastic File System (EFS) home directory. </p>"
+      "documentation":"<p>Creates a user profile. A user profile represents a single user within a domain, and is the main way to reference a \"person\" for the purposes of sharing, reporting, and other user-oriented features. This entity is created when a user onboards to a domain. If an administrator invites a person by email or imports them from IAM Identity Center, a user profile is automatically created. A user profile is the primary holder of settings for an individual user and has a reference to the user's private Amazon Elastic File System (EFS) home directory. </p>"
     },
     "CreateWorkforce":{
       "name":"CreateWorkforce",
@@ -858,6 +885,20 @@
         {"shape":"ResourceNotFound"}
       ],
       "documentation":"<p>Deletes an association.</p>"
+    },
+    "DeleteCluster":{
+      "name":"DeleteCluster",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DeleteClusterRequest"},
+      "output":{"shape":"DeleteClusterResponse"},
+      "errors":[
+        {"shape":"ResourceNotFound"},
+        {"shape":"ConflictException"}
+      ],
+      "documentation":"<p>Delete a SageMaker HyperPod cluster.</p>"
     },
     "DeleteCodeRepository":{
       "name":"DeleteCodeRepository",
@@ -1066,6 +1107,15 @@
       ],
       "documentation":"<p>Deletes a version of a SageMaker image. The container image the version represents isn't deleted.</p>"
     },
+    "DeleteInferenceComponent":{
+      "name":"DeleteInferenceComponent",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DeleteInferenceComponentInput"},
+      "documentation":"<p>Deletes an inference component.</p>"
+    },
     "DeleteInferenceExperiment":{
       "name":"DeleteInferenceExperiment",
       "http":{
@@ -1250,7 +1300,7 @@
         {"shape":"ResourceNotFound"},
         {"shape":"ResourceInUse"}
       ],
-      "documentation":"<p>Deletes the Studio Lifecycle Configuration. In order to delete the Lifecycle Configuration, there must be no running apps using the Lifecycle Configuration. You must also remove the Lifecycle Configuration from UserSettings in all Domains and UserProfiles.</p>"
+      "documentation":"<p>Deletes the Amazon SageMaker Studio Lifecycle Configuration. In order to delete the Lifecycle Configuration, there must be no running apps using the Lifecycle Configuration. You must also remove the Lifecycle Configuration from UserSettings in all Domains and UserProfiles.</p>"
     },
     "DeleteTags":{
       "name":"DeleteTags",
@@ -1260,7 +1310,7 @@
       },
       "input":{"shape":"DeleteTagsInput"},
       "output":{"shape":"DeleteTagsOutput"},
-      "documentation":"<p>Deletes the specified tags from an SageMaker resource.</p> <p>To list a resource's tags, use the <code>ListTags</code> API. </p> <note> <p>When you call this API to delete tags from a hyperparameter tuning job, the deleted tags are not removed from training jobs that the hyperparameter tuning job launched before you called this API.</p> </note> <note> <p>When you call this API to delete tags from a SageMaker Studio Domain or User Profile, the deleted tags are not removed from Apps that the SageMaker Studio Domain or User Profile launched before you called this API.</p> </note>"
+      "documentation":"<p>Deletes the specified tags from an SageMaker resource.</p> <p>To list a resource's tags, use the <code>ListTags</code> API. </p> <note> <p>When you call this API to delete tags from a hyperparameter tuning job, the deleted tags are not removed from training jobs that the hyperparameter tuning job launched before you called this API.</p> </note> <note> <p>When you call this API to delete tags from a SageMaker Domain or User Profile, the deleted tags are not removed from Apps that the SageMaker Domain or User Profile launched before you called this API.</p> </note>"
     },
     "DeleteTrial":{
       "name":"DeleteTrial",
@@ -1420,6 +1470,32 @@
         {"shape":"ResourceNotFound"}
       ],
       "documentation":"<p>Returns information about an AutoML job created by calling <a href=\"https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_CreateAutoMLJobV2.html\">CreateAutoMLJobV2</a> or <a href=\"https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_CreateAutoMLJob.html\">CreateAutoMLJob</a>.</p>"
+    },
+    "DescribeCluster":{
+      "name":"DescribeCluster",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DescribeClusterRequest"},
+      "output":{"shape":"DescribeClusterResponse"},
+      "errors":[
+        {"shape":"ResourceNotFound"}
+      ],
+      "documentation":"<p>Retrieves information of a SageMaker HyperPod cluster.</p>"
+    },
+    "DescribeClusterNode":{
+      "name":"DescribeClusterNode",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DescribeClusterNodeRequest"},
+      "output":{"shape":"DescribeClusterNodeResponse"},
+      "errors":[
+        {"shape":"ResourceNotFound"}
+      ],
+      "documentation":"<p>Retrieves information of an instance (also called a <i>node</i> interchangeably) of a SageMaker HyperPod cluster.</p>"
     },
     "DescribeCodeRepository":{
       "name":"DescribeCodeRepository",
@@ -1684,6 +1760,16 @@
         {"shape":"ResourceNotFound"}
       ],
       "documentation":"<p>Describes a version of a SageMaker image.</p>"
+    },
+    "DescribeInferenceComponent":{
+      "name":"DescribeInferenceComponent",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DescribeInferenceComponentInput"},
+      "output":{"shape":"DescribeInferenceComponentOutput"},
+      "documentation":"<p>Returns information about an inference component.</p>"
     },
     "DescribeInferenceExperiment":{
       "name":"DescribeInferenceExperiment",
@@ -1951,7 +2037,7 @@
       "errors":[
         {"shape":"ResourceNotFound"}
       ],
-      "documentation":"<p>Describes the Studio Lifecycle Configuration.</p>"
+      "documentation":"<p>Describes the Amazon SageMaker Studio Lifecycle Configuration.</p>"
     },
     "DescribeSubscribedWorkteam":{
       "name":"DescribeSubscribedWorkteam",
@@ -2267,6 +2353,29 @@
       ],
       "documentation":"<p>List the candidates created for the job.</p>"
     },
+    "ListClusterNodes":{
+      "name":"ListClusterNodes",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"ListClusterNodesRequest"},
+      "output":{"shape":"ListClusterNodesResponse"},
+      "errors":[
+        {"shape":"ResourceNotFound"}
+      ],
+      "documentation":"<p>Retrieves the list of instances (also called <i>nodes</i> interchangeably) in a SageMaker HyperPod cluster.</p>"
+    },
+    "ListClusters":{
+      "name":"ListClusters",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"ListClustersRequest"},
+      "output":{"shape":"ListClustersResponse"},
+      "documentation":"<p>Retrieves the list of SageMaker HyperPod clusters.</p>"
+    },
     "ListCodeRepositories":{
       "name":"ListCodeRepositories",
       "http":{
@@ -2488,6 +2597,16 @@
       "input":{"shape":"ListImagesRequest"},
       "output":{"shape":"ListImagesResponse"},
       "documentation":"<p>Lists the images in your account and their properties. The list can be filtered by creation time or modified time, and whether the image name contains a specified string.</p>"
+    },
+    "ListInferenceComponents":{
+      "name":"ListInferenceComponents",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"ListInferenceComponentsInput"},
+      "output":{"shape":"ListInferenceComponentsOutput"},
+      "documentation":"<p>Lists the inference components in your account and their properties.</p>"
     },
     "ListInferenceExperiments":{
       "name":"ListInferenceExperiments",
@@ -2834,7 +2953,7 @@
       "errors":[
         {"shape":"ResourceInUse"}
       ],
-      "documentation":"<p>Lists the Studio Lifecycle Configurations in your Amazon Web Services Account.</p>"
+      "documentation":"<p>Lists the Amazon SageMaker Studio Lifecycle Configurations in your Amazon Web Services Account.</p>"
     },
     "ListSubscribedWorkteams":{
       "name":"ListSubscribedWorkteams",
@@ -3310,6 +3429,21 @@
       ],
       "documentation":"<p>Updates an artifact.</p>"
     },
+    "UpdateCluster":{
+      "name":"UpdateCluster",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"UpdateClusterRequest"},
+      "output":{"shape":"UpdateClusterResponse"},
+      "errors":[
+        {"shape":"ResourceLimitExceeded"},
+        {"shape":"ResourceNotFound"},
+        {"shape":"ConflictException"}
+      ],
+      "documentation":"<p>Update a SageMaker HyperPod cluster.</p>"
+    },
     "UpdateCodeRepository":{
       "name":"UpdateCodeRepository",
       "http":{
@@ -3475,6 +3609,32 @@
         {"shape":"ResourceNotFound"}
       ],
       "documentation":"<p>Updates the properties of a SageMaker image version.</p>"
+    },
+    "UpdateInferenceComponent":{
+      "name":"UpdateInferenceComponent",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"UpdateInferenceComponentInput"},
+      "output":{"shape":"UpdateInferenceComponentOutput"},
+      "errors":[
+        {"shape":"ResourceLimitExceeded"}
+      ],
+      "documentation":"<p>Updates an inference component.</p>"
+    },
+    "UpdateInferenceComponentRuntimeConfig":{
+      "name":"UpdateInferenceComponentRuntimeConfig",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"UpdateInferenceComponentRuntimeConfigInput"},
+      "output":{"shape":"UpdateInferenceComponentRuntimeConfigOutput"},
+      "errors":[
+        {"shape":"ResourceLimitExceeded"}
+      ],
+      "documentation":"<p>Runtime settings for a model that is deployed with an inference component.</p>"
     },
     "UpdateInferenceExperiment":{
       "name":"UpdateInferenceExperiment",
@@ -5066,7 +5226,7 @@
         },
         "MaxRuntimePerTrainingJobInSeconds":{
           "shape":"MaxRuntimePerTrainingJobInSeconds",
-          "documentation":"<p>The maximum time, in seconds, that each training job executed inside hyperparameter tuning is allowed to run as part of a hyperparameter tuning job. For more information, see the <a href=\"https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_StoppingCondition.html\">StoppingCondition</a> used by the <a href=\"https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_CreateHyperParameterTuningJob.html\">CreateHyperParameterTuningJob</a> action.</p> <p>For job V2s (jobs created by calling <code>CreateAutoMLJobV2</code>), this field controls the runtime of the job candidate.</p>"
+          "documentation":"<p>The maximum time, in seconds, that each training job executed inside hyperparameter tuning is allowed to run as part of a hyperparameter tuning job. For more information, see the <a href=\"https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_StoppingCondition.html\">StoppingCondition</a> used by the <a href=\"https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_CreateHyperParameterTuningJob.html\">CreateHyperParameterTuningJob</a> action.</p> <p>For job V2s (jobs created by calling <code>CreateAutoMLJobV2</code>), this field controls the runtime of the job candidate.</p> <p>For <a href=\"https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_TextClassificationJobConfig.html\">TextGenerationJobConfig</a> problem types, the maximum time defaults to 72 hours (259200 seconds).</p>"
         },
         "MaxAutoMLJobRuntimeInSeconds":{
           "shape":"MaxAutoMLJobRuntimeInSeconds",
@@ -6551,6 +6711,342 @@
       "min":1,
       "pattern":"^[a-zA-Z0-9-]+$"
     },
+    "ClusterArn":{
+      "type":"string",
+      "max":256,
+      "pattern":"^arn:aws[a-z\\-]*:sagemaker:[a-z0-9\\-]*:[0-9]{12}:cluster/[a-z0-9]{12}$"
+    },
+    "ClusterInstanceCount":{
+      "type":"integer",
+      "min":1
+    },
+    "ClusterInstanceGroupDetails":{
+      "type":"structure",
+      "members":{
+        "CurrentCount":{
+          "shape":"ClusterNonNegativeInstanceCount",
+          "documentation":"<p>The number of instances that are currently in the instance group of a SageMaker HyperPod cluster.</p>"
+        },
+        "TargetCount":{
+          "shape":"ClusterInstanceCount",
+          "documentation":"<p>The number of instances you specified to add to the instance group of a SageMaker HyperPod cluster.</p>"
+        },
+        "InstanceGroupName":{
+          "shape":"ClusterInstanceGroupName",
+          "documentation":"<p>The name of the instance group of a SageMaker HyperPod cluster.</p>"
+        },
+        "InstanceType":{
+          "shape":"ClusterInstanceType",
+          "documentation":"<p>The instance type of the instance group of a SageMaker HyperPod cluster.</p>"
+        },
+        "LifeCycleConfig":{
+          "shape":"ClusterLifeCycleConfig",
+          "documentation":"<p>Details of LifeCycle configuration for the instance group.</p>"
+        },
+        "ExecutionRole":{
+          "shape":"RoleArn",
+          "documentation":"<p>The execution role for the instance group to assume.</p>"
+        },
+        "ThreadsPerCore":{
+          "shape":"ClusterThreadsPerCore",
+          "documentation":"<p>The number you specified to <code>TreadsPerCore</code> in <code>CreateCluster</code> for enabling or disabling multithreading. For instance types that support multithreading, you can specify 1 for disabling multithreading and 2 for enabling multithreading. For more information, see the reference table of <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/cpu-options-supported-instances-values.html\">CPU cores and threads per CPU core per instance type</a> in the <i>Amazon Elastic Compute Cloud User Guide</i>.</p>"
+        }
+      },
+      "documentation":"<p>Details of an instance group in a SageMaker HyperPod cluster.</p>"
+    },
+    "ClusterInstanceGroupDetailsList":{
+      "type":"list",
+      "member":{"shape":"ClusterInstanceGroupDetails"}
+    },
+    "ClusterInstanceGroupName":{
+      "type":"string",
+      "max":63,
+      "min":1,
+      "pattern":"^[a-zA-Z0-9](-*[a-zA-Z0-9])*$"
+    },
+    "ClusterInstanceGroupSpecification":{
+      "type":"structure",
+      "required":[
+        "InstanceCount",
+        "InstanceGroupName",
+        "InstanceType",
+        "LifeCycleConfig",
+        "ExecutionRole"
+      ],
+      "members":{
+        "InstanceCount":{
+          "shape":"ClusterInstanceCount",
+          "documentation":"<p>Specifies the number of instances to add to the instance group of a SageMaker HyperPod cluster.</p>"
+        },
+        "InstanceGroupName":{
+          "shape":"ClusterInstanceGroupName",
+          "documentation":"<p>Specifies the name of the instance group.</p>"
+        },
+        "InstanceType":{
+          "shape":"ClusterInstanceType",
+          "documentation":"<p>Specifies the instance type of the instance group.</p>"
+        },
+        "LifeCycleConfig":{
+          "shape":"ClusterLifeCycleConfig",
+          "documentation":"<p>Specifies the LifeCycle configuration for the instance group.</p>"
+        },
+        "ExecutionRole":{
+          "shape":"RoleArn",
+          "documentation":"<p>Specifies an IAM execution role to be assumed by the instance group.</p>"
+        },
+        "ThreadsPerCore":{
+          "shape":"ClusterThreadsPerCore",
+          "documentation":"<p>Specifies the value for <b>Threads per core</b>. For instance types that support multithreading, you can specify <code>1</code> for disabling multithreading and <code>2</code> for enabling multithreading. For instance types that doesn't support multithreading, specify <code>1</code>. For more information, see the reference table of <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/cpu-options-supported-instances-values.html\">CPU cores and threads per CPU core per instance type</a> in the <i>Amazon Elastic Compute Cloud User Guide</i>.</p>"
+        }
+      },
+      "documentation":"<p>The specifications of an instance group that you need to define.</p>"
+    },
+    "ClusterInstanceGroupSpecifications":{
+      "type":"list",
+      "member":{"shape":"ClusterInstanceGroupSpecification"},
+      "max":5,
+      "min":1
+    },
+    "ClusterInstanceStatus":{
+      "type":"string",
+      "enum":[
+        "Running",
+        "Failure",
+        "Pending",
+        "ShuttingDown",
+        "SystemUpdating"
+      ]
+    },
+    "ClusterInstanceStatusDetails":{
+      "type":"structure",
+      "required":["Status"],
+      "members":{
+        "Status":{
+          "shape":"ClusterInstanceStatus",
+          "documentation":"<p>The status of an instance in a SageMaker HyperPod cluster.</p>"
+        },
+        "Message":{
+          "shape":"String",
+          "documentation":"<p>The message from an instance in a SageMaker HyperPod cluster.</p>"
+        }
+      },
+      "documentation":"<p>Details of an instance in a SageMaker HyperPod cluster.</p>"
+    },
+    "ClusterInstanceType":{
+      "type":"string",
+      "enum":[
+        "ml.p4d.24xlarge",
+        "ml.p4de.24xlarge",
+        "ml.p5.48xlarge",
+        "ml.trn1.32xlarge",
+        "ml.trn1n.32xlarge",
+        "ml.g5.xlarge",
+        "ml.g5.2xlarge",
+        "ml.g5.4xlarge",
+        "ml.g5.8xlarge",
+        "ml.g5.12xlarge",
+        "ml.g5.16xlarge",
+        "ml.g5.24xlarge",
+        "ml.g5.48xlarge",
+        "ml.c5.large",
+        "ml.c5.xlarge",
+        "ml.c5.2xlarge",
+        "ml.c5.4xlarge",
+        "ml.c5.9xlarge",
+        "ml.c5.12xlarge",
+        "ml.c5.18xlarge",
+        "ml.c5.24xlarge",
+        "ml.c5n.large",
+        "ml.c5n.2xlarge",
+        "ml.c5n.4xlarge",
+        "ml.c5n.9xlarge",
+        "ml.c5n.18xlarge",
+        "ml.m5.large",
+        "ml.m5.xlarge",
+        "ml.m5.2xlarge",
+        "ml.m5.4xlarge",
+        "ml.m5.8xlarge",
+        "ml.m5.12xlarge",
+        "ml.m5.16xlarge",
+        "ml.m5.24xlarge",
+        "ml.t3.medium",
+        "ml.t3.large",
+        "ml.t3.xlarge",
+        "ml.t3.2xlarge"
+      ]
+    },
+    "ClusterLifeCycleConfig":{
+      "type":"structure",
+      "required":[
+        "SourceS3Uri",
+        "OnCreate"
+      ],
+      "members":{
+        "SourceS3Uri":{
+          "shape":"S3Uri",
+          "documentation":"<p>An Amazon S3 bucket path where your LifeCycle scripts are stored.</p>"
+        },
+        "OnCreate":{
+          "shape":"ClusterLifeCycleConfigFileName",
+          "documentation":"<p>The directory of the LifeCycle script under <code>SourceS3Uri</code>. This LifeCycle script runs during cluster creation.</p>"
+        }
+      },
+      "documentation":"<p>The LifeCycle configuration for a SageMaker HyperPod cluster.</p>"
+    },
+    "ClusterLifeCycleConfigFileName":{
+      "type":"string",
+      "max":128,
+      "min":1,
+      "pattern":"^[\\S\\s]+$"
+    },
+    "ClusterName":{
+      "type":"string",
+      "max":63,
+      "min":1,
+      "pattern":"^[a-zA-Z0-9](-*[a-zA-Z0-9])*$"
+    },
+    "ClusterNameOrArn":{
+      "type":"string",
+      "max":256,
+      "pattern":"^(arn:aws[a-z\\-]*:sagemaker:[a-z0-9\\-]*:[0-9]{12}:cluster/[a-z0-9]{12})|([a-zA-Z0-9](-*[a-zA-Z0-9]){0,62})$"
+    },
+    "ClusterNodeDetails":{
+      "type":"structure",
+      "members":{
+        "InstanceGroupName":{
+          "shape":"ClusterInstanceGroupName",
+          "documentation":"<p>The instance group name in which the instance is.</p>"
+        },
+        "InstanceId":{
+          "shape":"String",
+          "documentation":"<p>The ID of the instance.</p>"
+        },
+        "InstanceStatus":{
+          "shape":"ClusterInstanceStatusDetails",
+          "documentation":"<p>The status of the instance.</p>"
+        },
+        "InstanceType":{
+          "shape":"ClusterInstanceType",
+          "documentation":"<p>The type of the instance.</p>"
+        },
+        "LaunchTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time when the instance is launched.</p>"
+        },
+        "LifeCycleConfig":{
+          "shape":"ClusterLifeCycleConfig",
+          "documentation":"<p>The LifeCycle configuration applied to the instance.</p>"
+        },
+        "ThreadsPerCore":{
+          "shape":"ClusterThreadsPerCore",
+          "documentation":"<p>The number of threads per CPU core you specified under <code>CreateCluster</code>.</p>"
+        }
+      },
+      "documentation":"<p>Details of an instance (also called a <i>node</i> interchangeably) in a SageMaker HyperPod cluster.</p>"
+    },
+    "ClusterNodeId":{
+      "type":"string",
+      "max":256,
+      "min":1,
+      "pattern":"^[a-zA-Z][-a-zA-Z0-9]*$"
+    },
+    "ClusterNodeSummaries":{
+      "type":"list",
+      "member":{"shape":"ClusterNodeSummary"}
+    },
+    "ClusterNodeSummary":{
+      "type":"structure",
+      "required":[
+        "InstanceGroupName",
+        "InstanceId",
+        "InstanceType",
+        "LaunchTime",
+        "InstanceStatus"
+      ],
+      "members":{
+        "InstanceGroupName":{
+          "shape":"ClusterInstanceGroupName",
+          "documentation":"<p>The name of the instance group in which the instance is.</p>"
+        },
+        "InstanceId":{
+          "shape":"String",
+          "documentation":"<p>The ID of the instance.</p>"
+        },
+        "InstanceType":{
+          "shape":"ClusterInstanceType",
+          "documentation":"<p>The type of the instance.</p>"
+        },
+        "LaunchTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time when the instance is launched.</p>"
+        },
+        "InstanceStatus":{
+          "shape":"ClusterInstanceStatusDetails",
+          "documentation":"<p>The status of the instance.</p>"
+        }
+      },
+      "documentation":"<p>Lists a summary of the properties of an instance (also called a <i>node</i> interchangeably) of a SageMaker HyperPod cluster.</p>"
+    },
+    "ClusterNonNegativeInstanceCount":{
+      "type":"integer",
+      "min":0
+    },
+    "ClusterSortBy":{
+      "type":"string",
+      "enum":[
+        "CREATION_TIME",
+        "NAME"
+      ]
+    },
+    "ClusterStatus":{
+      "type":"string",
+      "enum":[
+        "Creating",
+        "Deleting",
+        "Failed",
+        "InService",
+        "RollingBack",
+        "SystemUpdating",
+        "Updating"
+      ]
+    },
+    "ClusterSummaries":{
+      "type":"list",
+      "member":{"shape":"ClusterSummary"}
+    },
+    "ClusterSummary":{
+      "type":"structure",
+      "required":[
+        "ClusterArn",
+        "ClusterName",
+        "CreationTime",
+        "ClusterStatus"
+      ],
+      "members":{
+        "ClusterArn":{
+          "shape":"ClusterArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the SageMaker HyperPod cluster.</p>"
+        },
+        "ClusterName":{
+          "shape":"ClusterName",
+          "documentation":"<p>The name of the SageMaker HyperPod cluster.</p>"
+        },
+        "CreationTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time when the SageMaker HyperPod cluster is created.</p>"
+        },
+        "ClusterStatus":{
+          "shape":"ClusterStatus",
+          "documentation":"<p>The status of the SageMaker HyperPod cluster.</p>"
+        }
+      },
+      "documentation":"<p>Lists a summary of the properties of a SageMaker HyperPod cluster.</p>"
+    },
+    "ClusterThreadsPerCore":{
+      "type":"integer",
+      "max":2,
+      "min":1
+    },
     "CodeRepositories":{
       "type":"list",
       "member":{"shape":"CodeRepository"},
@@ -7458,6 +7954,38 @@
         }
       }
     },
+    "CreateClusterRequest":{
+      "type":"structure",
+      "required":[
+        "ClusterName",
+        "InstanceGroups"
+      ],
+      "members":{
+        "ClusterName":{
+          "shape":"ClusterName",
+          "documentation":"<p>The name for the new SageMaker HyperPod cluster.</p>"
+        },
+        "InstanceGroups":{
+          "shape":"ClusterInstanceGroupSpecifications",
+          "documentation":"<p>The instance groups to be created in the SageMaker HyperPod cluster.</p>"
+        },
+        "VpcConfig":{"shape":"VpcConfig"},
+        "Tags":{
+          "shape":"TagList",
+          "documentation":"<p>Custom tags for managing the SageMaker HyperPod cluster as an Amazon Web Services resource. You can add tags to your cluster in the same way you add them in other Amazon Web Services services that support tagging. To learn more about tagging Amazon Web Services resources in general, see <a href=\"https://docs.aws.amazon.com/tag-editor/latest/userguide/tagging.html\">Tagging Amazon Web Services Resources User Guide</a>.</p>"
+        }
+      }
+    },
+    "CreateClusterResponse":{
+      "type":"structure",
+      "required":["ClusterArn"],
+      "members":{
+        "ClusterArn":{
+          "shape":"ClusterArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the cluster.</p>"
+        }
+      }
+    },
     "CreateCodeRepositoryInput":{
       "type":"structure",
       "required":[
@@ -7696,11 +8224,11 @@
         },
         "SubnetIds":{
           "shape":"Subnets",
-          "documentation":"<p>The VPC subnets that Studio uses for communication.</p>"
+          "documentation":"<p>The VPC subnets that the domain uses for communication.</p>"
         },
         "VpcId":{
           "shape":"VpcId",
-          "documentation":"<p>The ID of the Amazon Virtual Private Cloud (VPC) that Studio uses for communication.</p>"
+          "documentation":"<p>The ID of the Amazon Virtual Private Cloud (VPC) that the domain uses for communication.</p>"
         },
         "Tags":{
           "shape":"TagList",
@@ -7708,7 +8236,7 @@
         },
         "AppNetworkAccessType":{
           "shape":"AppNetworkAccessType",
-          "documentation":"<p>Specifies the VPC used for non-EFS traffic. The default value is <code>PublicInternetOnly</code>.</p> <ul> <li> <p> <code>PublicInternetOnly</code> - Non-EFS traffic is through a VPC managed by Amazon SageMaker, which allows direct internet access</p> </li> <li> <p> <code>VpcOnly</code> - All Studio traffic is through the specified VPC and subnets</p> </li> </ul>"
+          "documentation":"<p>Specifies the VPC used for non-EFS traffic. The default value is <code>PublicInternetOnly</code>.</p> <ul> <li> <p> <code>PublicInternetOnly</code> - Non-EFS traffic is through a VPC managed by Amazon SageMaker, which allows direct internet access</p> </li> <li> <p> <code>VpcOnly</code> - All traffic is through the specified VPC and subnets</p> </li> </ul>"
         },
         "HomeEfsFileSystemKmsKeyId":{
           "shape":"KmsKeyId",
@@ -7884,6 +8412,15 @@
         "ShadowProductionVariants":{
           "shape":"ProductionVariantList",
           "documentation":"<p>An array of <code>ProductionVariant</code> objects, one for each model that you want to host at this endpoint in shadow mode with production traffic replicated from the model specified on <code>ProductionVariants</code>. If you use this field, you can only specify one variant for <code>ProductionVariants</code> and one variant for <code>ShadowProductionVariants</code>.</p>"
+        },
+        "ExecutionRoleArn":{
+          "shape":"RoleArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of an IAM role that Amazon SageMaker can assume to perform actions on your behalf. For more information, see <a href=\"https://docs.aws.amazon.com/sagemaker/latest/dg/sagemaker-roles.html\">SageMaker Roles</a>. </p> <note> <p>To be able to pass this role to Amazon SageMaker, the caller of this action must have the <code>iam:PassRole</code> permission.</p> </note>"
+        },
+        "VpcConfig":{"shape":"VpcConfig"},
+        "EnableNetworkIsolation":{
+          "shape":"Boolean",
+          "documentation":"<p>Sets whether all model containers deployed to the endpoint are isolated. If they are, no inbound or outbound network calls can be made to or from the model containers.</p>"
         }
       }
     },
@@ -8286,6 +8823,52 @@
         }
       }
     },
+    "CreateInferenceComponentInput":{
+      "type":"structure",
+      "required":[
+        "InferenceComponentName",
+        "EndpointName",
+        "VariantName",
+        "Specification",
+        "RuntimeConfig"
+      ],
+      "members":{
+        "InferenceComponentName":{
+          "shape":"InferenceComponentName",
+          "documentation":"<p>A unique name to assign to the inference component.</p>"
+        },
+        "EndpointName":{
+          "shape":"EndpointName",
+          "documentation":"<p>The name of an existing endpoint where you host the inference component.</p>"
+        },
+        "VariantName":{
+          "shape":"VariantName",
+          "documentation":"<p>The name of an existing production variant where you host the inference component.</p>"
+        },
+        "Specification":{
+          "shape":"InferenceComponentSpecification",
+          "documentation":"<p>Details about the resources to deploy with this inference component, including the model, container, and compute resources.</p>"
+        },
+        "RuntimeConfig":{
+          "shape":"InferenceComponentRuntimeConfig",
+          "documentation":"<p>Runtime settings for a model that is deployed with an inference component.</p>"
+        },
+        "Tags":{
+          "shape":"TagList",
+          "documentation":"<p>A list of key-value pairs associated with the model. For more information, see <a href=\"https://docs.aws.amazon.com/general/latest/gr/aws_tagging.html\">Tagging Amazon Web Services resources</a> in the <i>Amazon Web Services General Reference</i>.</p>"
+        }
+      }
+    },
+    "CreateInferenceComponentOutput":{
+      "type":"structure",
+      "required":["InferenceComponentArn"],
+      "members":{
+        "InferenceComponentArn":{
+          "shape":"InferenceComponentArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the inference component.</p>"
+        }
+      }
+    },
     "CreateInferenceExperimentRequest":{
       "type":"structure",
       "required":[
@@ -8655,10 +9238,7 @@
     },
     "CreateModelInput":{
       "type":"structure",
-      "required":[
-        "ModelName",
-        "ExecutionRoleArn"
-      ],
+      "required":["ModelName"],
       "members":{
         "ModelName":{
           "shape":"ModelName",
@@ -9098,6 +9678,10 @@
         "SpaceName":{
           "shape":"SpaceName",
           "documentation":"<p>The name of the space.</p>"
+        },
+        "LandingUri":{
+          "shape":"LandingUri",
+          "documentation":"<p>The landing page that the user is directed to when accessing the presigned URL. Using this value, users can access Studio or Studio Classic, even if it is not the default experience for the domain. The supported values are:</p> <ul> <li> <p> <code>studio::relative/path</code>: Directs users to the relative path in Studio.</p> </li> <li> <p> <code>app:JupyterServer:relative/path</code>: Directs users to the relative path in the Studio Classic application.</p> </li> <li> <p> <code>app:JupyterLab:relative/path</code>: Directs users to the relative path in the JupyterLab application.</p> </li> <li> <p> <code>app:RStudioServerPro:relative/path</code>: Directs users to the relative path in the RStudio application.</p> </li> <li> <p> <code>app:Canvas:relative/path</code>: Directs users to the relative path in the Canvas application.</p> </li> </ul>"
         }
       }
     },
@@ -9281,11 +9865,11 @@
       "members":{
         "StudioLifecycleConfigName":{
           "shape":"StudioLifecycleConfigName",
-          "documentation":"<p>The name of the Studio Lifecycle Configuration to create.</p>"
+          "documentation":"<p>The name of the Amazon SageMaker Studio Lifecycle Configuration to create.</p>"
         },
         "StudioLifecycleConfigContent":{
           "shape":"StudioLifecycleConfigContent",
-          "documentation":"<p>The content of your Studio Lifecycle Configuration script. This content must be base64 encoded.</p>"
+          "documentation":"<p>The content of your Amazon SageMaker Studio Lifecycle Configuration script. This content must be base64 encoded.</p>"
         },
         "StudioLifecycleConfigAppType":{
           "shape":"StudioLifecycleConfigAppType",
@@ -9392,6 +9976,10 @@
         "RetryStrategy":{
           "shape":"RetryStrategy",
           "documentation":"<p>The number of times to retry the job when the job fails due to an <code>InternalServerError</code>.</p>"
+        },
+        "InfraCheckConfig":{
+          "shape":"InfraCheckConfig",
+          "documentation":"<p>Contains information about the infrastructure health check configuration for the training job.</p>"
         }
       }
     },
@@ -10251,6 +10839,26 @@
         }
       }
     },
+    "DeleteClusterRequest":{
+      "type":"structure",
+      "required":["ClusterName"],
+      "members":{
+        "ClusterName":{
+          "shape":"ClusterNameOrArn",
+          "documentation":"<p>The string name or the Amazon Resource Name (ARN) of the SageMaker HyperPod cluster to delete.</p>"
+        }
+      }
+    },
+    "DeleteClusterResponse":{
+      "type":"structure",
+      "required":["ClusterArn"],
+      "members":{
+        "ClusterArn":{
+          "shape":"ClusterArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the SageMaker HyperPod cluster to delete.</p>"
+        }
+      }
+    },
     "DeleteCodeRepositoryInput":{
       "type":"structure",
       "required":["CodeRepositoryName"],
@@ -10495,6 +11103,16 @@
       "members":{
       }
     },
+    "DeleteInferenceComponentInput":{
+      "type":"structure",
+      "required":["InferenceComponentName"],
+      "members":{
+        "InferenceComponentName":{
+          "shape":"InferenceComponentName",
+          "documentation":"<p>The name of the inference component to delete.</p>"
+        }
+      }
+    },
     "DeleteInferenceExperimentRequest":{
       "type":"structure",
       "required":["Name"],
@@ -10685,7 +11303,7 @@
       "members":{
         "StudioLifecycleConfigName":{
           "shape":"StudioLifecycleConfigName",
-          "documentation":"<p>The name of the Studio Lifecycle Configuration to delete.</p>"
+          "documentation":"<p>The name of the Amazon SageMaker Studio Lifecycle Configuration to delete.</p>"
         }
       }
     },
@@ -11469,6 +12087,78 @@
         }
       }
     },
+    "DescribeClusterNodeRequest":{
+      "type":"structure",
+      "required":[
+        "ClusterName",
+        "NodeId"
+      ],
+      "members":{
+        "ClusterName":{
+          "shape":"ClusterNameOrArn",
+          "documentation":"<p>The string name or the Amazon Resource Name (ARN) of the SageMaker HyperPod cluster in which the instance is.</p>"
+        },
+        "NodeId":{
+          "shape":"ClusterNodeId",
+          "documentation":"<p>The ID of the instance.</p>"
+        }
+      }
+    },
+    "DescribeClusterNodeResponse":{
+      "type":"structure",
+      "required":["NodeDetails"],
+      "members":{
+        "NodeDetails":{
+          "shape":"ClusterNodeDetails",
+          "documentation":"<p>The details of the instance.</p>"
+        }
+      }
+    },
+    "DescribeClusterRequest":{
+      "type":"structure",
+      "required":["ClusterName"],
+      "members":{
+        "ClusterName":{
+          "shape":"ClusterNameOrArn",
+          "documentation":"<p>The string name or the Amazon Resource Name (ARN) of the SageMaker HyperPod cluster.</p>"
+        }
+      }
+    },
+    "DescribeClusterResponse":{
+      "type":"structure",
+      "required":[
+        "ClusterArn",
+        "ClusterStatus",
+        "InstanceGroups"
+      ],
+      "members":{
+        "ClusterArn":{
+          "shape":"ClusterArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the SageMaker HyperPod cluster.</p>"
+        },
+        "ClusterName":{
+          "shape":"ClusterName",
+          "documentation":"<p>The name of the SageMaker HyperPod cluster.</p>"
+        },
+        "ClusterStatus":{
+          "shape":"ClusterStatus",
+          "documentation":"<p>The status of the SageMaker HyperPod cluster.</p>"
+        },
+        "CreationTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time when the SageMaker Cluster is created.</p>"
+        },
+        "FailureMessage":{
+          "shape":"String",
+          "documentation":"<p>The failure message of the SageMaker HyperPod cluster.</p>"
+        },
+        "InstanceGroups":{
+          "shape":"ClusterInstanceGroupDetailsList",
+          "documentation":"<p>The instance groups of the SageMaker HyperPod cluster.</p>"
+        },
+        "VpcConfig":{"shape":"VpcConfig"}
+      }
+    },
     "DescribeCodeRepositoryInput":{
       "type":"structure",
       "required":["CodeRepositoryName"],
@@ -11915,7 +12605,7 @@
         },
         "AppNetworkAccessType":{
           "shape":"AppNetworkAccessType",
-          "documentation":"<p>Specifies the VPC used for non-EFS traffic. The default value is <code>PublicInternetOnly</code>.</p> <ul> <li> <p> <code>PublicInternetOnly</code> - Non-EFS traffic is through a VPC managed by Amazon SageMaker, which allows direct internet access</p> </li> <li> <p> <code>VpcOnly</code> - All Studio traffic is through the specified VPC and subnets</p> </li> </ul>"
+          "documentation":"<p>Specifies the VPC used for non-EFS traffic. The default value is <code>PublicInternetOnly</code>.</p> <ul> <li> <p> <code>PublicInternetOnly</code> - Non-EFS traffic is through a VPC managed by Amazon SageMaker, which allows direct internet access</p> </li> <li> <p> <code>VpcOnly</code> - All traffic is through the specified VPC and subnets</p> </li> </ul>"
         },
         "HomeEfsFileSystemKmsKeyId":{
           "shape":"KmsKeyId",
@@ -11925,7 +12615,7 @@
         },
         "SubnetIds":{
           "shape":"Subnets",
-          "documentation":"<p>The VPC subnets that Studio uses for communication.</p>"
+          "documentation":"<p>The VPC subnets that the domain uses for communication.</p>"
         },
         "Url":{
           "shape":"String1024",
@@ -11933,7 +12623,7 @@
         },
         "VpcId":{
           "shape":"VpcId",
-          "documentation":"<p>The ID of the Amazon Virtual Private Cloud (VPC) that Studio uses for communication.</p>"
+          "documentation":"<p>The ID of the Amazon Virtual Private Cloud (VPC) that the domain uses for communication.</p>"
         },
         "KmsKeyId":{
           "shape":"KmsKeyId",
@@ -12162,6 +12852,15 @@
         "ShadowProductionVariants":{
           "shape":"ProductionVariantList",
           "documentation":"<p>An array of <code>ProductionVariant</code> objects, one for each model that you want to host at this endpoint in shadow mode with production traffic replicated from the model specified on <code>ProductionVariants</code>.</p>"
+        },
+        "ExecutionRoleArn":{
+          "shape":"RoleArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the IAM role that you assigned to the endpoint configuration.</p>"
+        },
+        "VpcConfig":{"shape":"VpcConfig"},
+        "EnableNetworkIsolation":{
+          "shape":"Boolean",
+          "documentation":"<p>Indicates whether all model containers deployed to the endpoint are isolated. If they are, no inbound or outbound network calls can be made to or from the model containers.</p>"
         }
       }
     },
@@ -12952,6 +13651,73 @@
         }
       }
     },
+    "DescribeInferenceComponentInput":{
+      "type":"structure",
+      "required":["InferenceComponentName"],
+      "members":{
+        "InferenceComponentName":{
+          "shape":"InferenceComponentName",
+          "documentation":"<p>The name of the inference component.</p>"
+        }
+      }
+    },
+    "DescribeInferenceComponentOutput":{
+      "type":"structure",
+      "required":[
+        "InferenceComponentName",
+        "InferenceComponentArn",
+        "EndpointName",
+        "EndpointArn",
+        "CreationTime",
+        "LastModifiedTime"
+      ],
+      "members":{
+        "InferenceComponentName":{
+          "shape":"InferenceComponentName",
+          "documentation":"<p>The name of the inference component.</p>"
+        },
+        "InferenceComponentArn":{
+          "shape":"InferenceComponentArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the inference component.</p>"
+        },
+        "EndpointName":{
+          "shape":"EndpointName",
+          "documentation":"<p>The name of the endpoint that hosts the inference component.</p>"
+        },
+        "EndpointArn":{
+          "shape":"EndpointArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the endpoint that hosts the inference component.</p>"
+        },
+        "VariantName":{
+          "shape":"VariantName",
+          "documentation":"<p>The name of the production variant that hosts the inference component.</p>"
+        },
+        "FailureReason":{
+          "shape":"FailureReason",
+          "documentation":"<p>If the inference component status is <code>Failed</code>, the reason for the failure.</p>"
+        },
+        "Specification":{
+          "shape":"InferenceComponentSpecificationSummary",
+          "documentation":"<p>Details about the resources that are deployed with this inference component.</p>"
+        },
+        "RuntimeConfig":{
+          "shape":"InferenceComponentRuntimeConfigSummary",
+          "documentation":"<p>Details about the runtime settings for the model that is deployed with the inference component.</p>"
+        },
+        "CreationTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time when the inference component was created.</p>"
+        },
+        "LastModifiedTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time when the inference component was last updated.</p>"
+        },
+        "InferenceComponentStatus":{
+          "shape":"InferenceComponentStatus",
+          "documentation":"<p>The status of the inference component.</p>"
+        }
+      }
+    },
     "DescribeInferenceExperimentRequest":{
       "type":"structure",
       "required":["Name"],
@@ -13526,7 +14292,6 @@
       "type":"structure",
       "required":[
         "ModelName",
-        "ExecutionRoleArn",
         "CreationTime",
         "ModelArn"
       ],
@@ -14363,6 +15128,10 @@
         "SpaceSettings":{
           "shape":"SpaceSettings",
           "documentation":"<p>A collection of space settings.</p>"
+        },
+        "Url":{
+          "shape":"String1024",
+          "documentation":"<p>Returns the URL of the space. If the space is created with Amazon Web Services IAM Identity Center (Successor to Amazon Web Services Single Sign-On) authentication, users can navigate to the URL after appending the respective redirect parameter for the application type to be federated through Amazon Web Services IAM Identity Center.</p> <p>The following application types are supported:</p> <ul> <li> <p>Studio Classic: <code>&amp;redirect=JupyterServer</code> </p> </li> <li> <p>JupyterLab: <code>&amp;redirect=JupyterLab</code> </p> </li> </ul>"
         }
       }
     },
@@ -14372,7 +15141,7 @@
       "members":{
         "StudioLifecycleConfigName":{
           "shape":"StudioLifecycleConfigName",
-          "documentation":"<p>The name of the Studio Lifecycle Configuration to describe.</p>"
+          "documentation":"<p>The name of the Amazon SageMaker Studio Lifecycle Configuration to describe.</p>"
         }
       }
     },
@@ -14385,19 +15154,19 @@
         },
         "StudioLifecycleConfigName":{
           "shape":"StudioLifecycleConfigName",
-          "documentation":"<p>The name of the Studio Lifecycle Configuration that is described.</p>"
+          "documentation":"<p>The name of the Amazon SageMaker Studio Lifecycle Configuration that is described.</p>"
         },
         "CreationTime":{
           "shape":"Timestamp",
-          "documentation":"<p>The creation time of the Studio Lifecycle Configuration.</p>"
+          "documentation":"<p>The creation time of the Amazon SageMaker Studio Lifecycle Configuration.</p>"
         },
         "LastModifiedTime":{
           "shape":"Timestamp",
-          "documentation":"<p>This value is equivalent to CreationTime because Studio Lifecycle Configurations are immutable.</p>"
+          "documentation":"<p>This value is equivalent to CreationTime because Amazon SageMaker Studio Lifecycle Configurations are immutable.</p>"
         },
         "StudioLifecycleConfigContent":{
           "shape":"StudioLifecycleConfigContent",
-          "documentation":"<p>The content of your Studio Lifecycle Configuration script.</p>"
+          "documentation":"<p>The content of your Amazon SageMaker Studio Lifecycle Configuration script.</p>"
         },
         "StudioLifecycleConfigAppType":{
           "shape":"StudioLifecycleConfigAppType",
@@ -14597,6 +15366,10 @@
         "WarmPoolStatus":{
           "shape":"WarmPoolStatus",
           "documentation":"<p>The status of the warm pool associated with the training job.</p>"
+        },
+        "InfraCheckConfig":{
+          "shape":"InfraCheckConfig",
+          "documentation":"<p>Contains information about the infrastructure health check configuration for the training job.</p>"
         }
       }
     },
@@ -15962,6 +16735,7 @@
       "pattern":"\\d+"
     },
     "EnableCapture":{"type":"boolean"},
+    "EnableInfraCheck":{"type":"boolean"},
     "EnableIotRoleAlias":{"type":"boolean"},
     "EnableSagemakerServicecatalogPortfolioInput":{
       "type":"structure",
@@ -18853,6 +19627,12 @@
       },
       "documentation":"<p>A version of a SageMaker <code>Image</code>. A version represents an existing container image.</p>"
     },
+    "ImageVersionAlias":{
+      "type":"string",
+      "max":128,
+      "min":1,
+      "pattern":"(^\\d+$)|(^\\d+.\\d+$)|(^(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)(?:-((?:0|[1-9]\\d*|\\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\\.(?:0|[1-9]\\d*|\\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?(?:\\+([0-9a-zA-Z-]+(?:\\.[0-9a-zA-Z-]+)*))?$)"
+    },
     "ImageVersionArn":{
       "type":"string",
       "max":256,
@@ -18967,6 +19747,234 @@
           "documentation":"<p>The ARN of the hub content that was imported.</p>"
         }
       }
+    },
+    "InferenceComponentArn":{
+      "type":"string",
+      "max":2048,
+      "min":20
+    },
+    "InferenceComponentComputeResourceRequirements":{
+      "type":"structure",
+      "required":["MinMemoryRequiredInMb"],
+      "members":{
+        "NumberOfCpuCoresRequired":{
+          "shape":"NumberOfCpuCores",
+          "documentation":"<p>The number of CPU cores to allocate to run a model that you assign to an inference component.</p>"
+        },
+        "NumberOfAcceleratorDevicesRequired":{
+          "shape":"NumberOfAcceleratorDevices",
+          "documentation":"<p>The number of accelerators to allocate to run a model that you assign to an inference component. Accelerators include GPUs and Amazon Web Services Inferentia.</p>"
+        },
+        "MinMemoryRequiredInMb":{
+          "shape":"MemoryInMb",
+          "documentation":"<p>The minimum MB of memory to allocate to run a model that you assign to an inference component.</p>"
+        },
+        "MaxMemoryRequiredInMb":{
+          "shape":"MemoryInMb",
+          "documentation":"<p>The maximum MB of memory to allocate to run a model that you assign to an inference component.</p>"
+        }
+      },
+      "documentation":"<p>Defines the compute resources to allocate to run a model that you assign to an inference component. These resources include CPU cores, accelerators, and memory.</p>"
+    },
+    "InferenceComponentContainerSpecification":{
+      "type":"structure",
+      "members":{
+        "Image":{
+          "shape":"ContainerImage",
+          "documentation":"<p>The Amazon Elastic Container Registry (Amazon ECR) path where the Docker image for the model is stored.</p>"
+        },
+        "ArtifactUrl":{
+          "shape":"Url",
+          "documentation":"<p>The Amazon S3 path where the model artifacts, which result from model training, are stored. This path must point to a single gzip compressed tar archive (.tar.gz suffix).</p>"
+        },
+        "Environment":{
+          "shape":"EnvironmentMap",
+          "documentation":"<p>The environment variables to set in the Docker container. Each key and value in the Environment string-to-string map can have length of up to 1024. We support up to 16 entries in the map.</p>"
+        }
+      },
+      "documentation":"<p>Defines a container that provides the runtime environment for a model that you deploy with an inference component.</p>"
+    },
+    "InferenceComponentContainerSpecificationSummary":{
+      "type":"structure",
+      "members":{
+        "DeployedImage":{"shape":"DeployedImage"},
+        "ArtifactUrl":{
+          "shape":"Url",
+          "documentation":"<p>The Amazon S3 path where the model artifacts are stored.</p>"
+        },
+        "Environment":{
+          "shape":"EnvironmentMap",
+          "documentation":"<p>The environment variables to set in the Docker container.</p>"
+        }
+      },
+      "documentation":"<p>Details about the resources that are deployed with this inference component.</p>"
+    },
+    "InferenceComponentCopyCount":{
+      "type":"integer",
+      "min":0
+    },
+    "InferenceComponentName":{
+      "type":"string",
+      "max":63,
+      "pattern":"^[a-zA-Z0-9]([\\-a-zA-Z0-9]*[a-zA-Z0-9])?$"
+    },
+    "InferenceComponentNameContains":{
+      "type":"string",
+      "max":63,
+      "pattern":"[a-zA-Z0-9-]+"
+    },
+    "InferenceComponentRuntimeConfig":{
+      "type":"structure",
+      "required":["CopyCount"],
+      "members":{
+        "CopyCount":{
+          "shape":"InferenceComponentCopyCount",
+          "documentation":"<p>The number of runtime copies of the model container to deploy with the inference component. Each copy can serve inference requests.</p>"
+        }
+      },
+      "documentation":"<p>Runtime settings for a model that is deployed with an inference component.</p>"
+    },
+    "InferenceComponentRuntimeConfigSummary":{
+      "type":"structure",
+      "members":{
+        "DesiredCopyCount":{
+          "shape":"InferenceComponentCopyCount",
+          "documentation":"<p>The number of runtime copies of the model container that you requested to deploy with the inference component.</p>"
+        },
+        "CurrentCopyCount":{
+          "shape":"InferenceComponentCopyCount",
+          "documentation":"<p>The number of runtime copies of the model container that are currently deployed.</p>"
+        }
+      },
+      "documentation":"<p>Details about the runtime settings for the model that is deployed with the inference component.</p>"
+    },
+    "InferenceComponentSortKey":{
+      "type":"string",
+      "enum":[
+        "Name",
+        "CreationTime",
+        "Status"
+      ]
+    },
+    "InferenceComponentSpecification":{
+      "type":"structure",
+      "required":["ComputeResourceRequirements"],
+      "members":{
+        "ModelName":{
+          "shape":"ModelName",
+          "documentation":"<p>The name of an existing SageMaker model object in your account that you want to deploy with the inference component.</p>"
+        },
+        "Container":{
+          "shape":"InferenceComponentContainerSpecification",
+          "documentation":"<p>Defines a container that provides the runtime environment for a model that you deploy with an inference component.</p>"
+        },
+        "StartupParameters":{
+          "shape":"InferenceComponentStartupParameters",
+          "documentation":"<p>Settings that take effect while the model container starts up.</p>"
+        },
+        "ComputeResourceRequirements":{
+          "shape":"InferenceComponentComputeResourceRequirements",
+          "documentation":"<p>The compute resources allocated to run the model assigned to the inference component.</p>"
+        }
+      },
+      "documentation":"<p>Details about the resources to deploy with this inference component, including the model, container, and compute resources.</p>"
+    },
+    "InferenceComponentSpecificationSummary":{
+      "type":"structure",
+      "members":{
+        "ModelName":{
+          "shape":"ModelName",
+          "documentation":"<p>The name of the SageMaker model object that is deployed with the inference component.</p>"
+        },
+        "Container":{
+          "shape":"InferenceComponentContainerSpecificationSummary",
+          "documentation":"<p>Details about the container that provides the runtime environment for the model that is deployed with the inference component.</p>"
+        },
+        "StartupParameters":{
+          "shape":"InferenceComponentStartupParameters",
+          "documentation":"<p>Settings that take effect while the model container starts up.</p>"
+        },
+        "ComputeResourceRequirements":{
+          "shape":"InferenceComponentComputeResourceRequirements",
+          "documentation":"<p>The compute resources allocated to run the model assigned to the inference component.</p>"
+        }
+      },
+      "documentation":"<p>Details about the resources that are deployed with this inference component.</p>"
+    },
+    "InferenceComponentStartupParameters":{
+      "type":"structure",
+      "members":{
+        "ModelDataDownloadTimeoutInSeconds":{
+          "shape":"ProductionVariantModelDataDownloadTimeoutInSeconds",
+          "documentation":"<p>The timeout value, in seconds, to download and extract the model that you want to host from Amazon S3 to the individual inference instance associated with this inference component.</p>"
+        },
+        "ContainerStartupHealthCheckTimeoutInSeconds":{
+          "shape":"ProductionVariantContainerStartupHealthCheckTimeoutInSeconds",
+          "documentation":"<p>The timeout value, in seconds, for your inference container to pass health check by Amazon S3 Hosting. For more information about health check, see <a href=\"https://docs.aws.amazon.com/sagemaker/latest/dg/your-algorithms-inference-code.html#your-algorithms-inference-algo-ping-requests\">How Your Container Should Respond to Health Check (Ping) Requests</a>.</p>"
+        }
+      },
+      "documentation":"<p>Settings that take effect while the model container starts up.</p>"
+    },
+    "InferenceComponentStatus":{
+      "type":"string",
+      "enum":[
+        "InService",
+        "Creating",
+        "Updating",
+        "Failed",
+        "Deleting"
+      ]
+    },
+    "InferenceComponentSummary":{
+      "type":"structure",
+      "required":[
+        "CreationTime",
+        "InferenceComponentArn",
+        "InferenceComponentName",
+        "EndpointArn",
+        "EndpointName",
+        "VariantName",
+        "LastModifiedTime"
+      ],
+      "members":{
+        "CreationTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time when the inference component was created.</p>"
+        },
+        "InferenceComponentArn":{
+          "shape":"InferenceComponentArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the inference component.</p>"
+        },
+        "InferenceComponentName":{
+          "shape":"InferenceComponentName",
+          "documentation":"<p>The name of the inference component.</p>"
+        },
+        "EndpointArn":{
+          "shape":"EndpointArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the endpoint that hosts the inference component.</p>"
+        },
+        "EndpointName":{
+          "shape":"EndpointName",
+          "documentation":"<p>The name of the endpoint that hosts the inference component.</p>"
+        },
+        "VariantName":{
+          "shape":"VariantName",
+          "documentation":"<p>The name of the production variant that hosts the inference component.</p>"
+        },
+        "InferenceComponentStatus":{
+          "shape":"InferenceComponentStatus",
+          "documentation":"<p>The status of the inference component.</p>"
+        },
+        "LastModifiedTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time when the inference component was last updated.</p>"
+        }
+      },
+      "documentation":"<p>A summary of the properties of an inference component.</p>"
+    },
+    "InferenceComponentSummaryList":{
+      "type":"list",
+      "member":{"shape":"InferenceComponentSummary"}
     },
     "InferenceExecutionConfig":{
       "type":"structure",
@@ -19316,6 +20324,16 @@
       "max":63,
       "min":1,
       "pattern":"^[a-zA-Z0-9](-*[a-zA-Z0-9]){0,62}$"
+    },
+    "InfraCheckConfig":{
+      "type":"structure",
+      "members":{
+        "EnableInfraCheck":{
+          "shape":"EnableInfraCheck",
+          "documentation":"<p>Enables an infrastructure health check.</p>"
+        }
+      },
+      "documentation":"<p>Configuration information for the infrastructure health check of a training job. A SageMaker-provided health check tests the health of instance hardware and cluster network connectivity.</p>"
     },
     "InitialInstanceCount":{
       "type":"integer",
@@ -20076,6 +21094,10 @@
       },
       "documentation":"<p>Metadata for a Lambda step.</p>"
     },
+    "LandingUri":{
+      "type":"string",
+      "max":1023
+    },
     "LastModifiedTime":{"type":"timestamp"},
     "LastUpdateStatus":{
       "type":"structure",
@@ -20614,6 +21636,111 @@
         "NextToken":{
           "shape":"NextToken",
           "documentation":"<p>If the previous response was truncated, you receive this token. Use it in your next request to receive the next set of results.</p>"
+        }
+      }
+    },
+    "ListClusterNodesRequest":{
+      "type":"structure",
+      "required":["ClusterName"],
+      "members":{
+        "ClusterName":{
+          "shape":"ClusterNameOrArn",
+          "documentation":"<p>The string name or the Amazon Resource Name (ARN) of the SageMaker HyperPod cluster in which you want to retrieve the list of nodes.</p>"
+        },
+        "CreationTimeAfter":{
+          "shape":"Timestamp",
+          "documentation":"<p>A filter that returns nodes in a SageMaker HyperPod cluster created after the specified time. Timestamps are formatted according to the ISO 8601 standard. </p> <p>Acceptable formats include:</p> <ul> <li> <p> <code>YYYY-MM-DDThh:mm:ss.sssTZD</code> (UTC), for example, <code>2014-10-01T20:30:00.000Z</code> </p> </li> <li> <p> <code>YYYY-MM-DDThh:mm:ss.sssTZD</code> (with offset), for example, <code>2014-10-01T12:30:00.000-08:00</code> </p> </li> <li> <p> <code>YYYY-MM-DD</code>, for example, <code>2014-10-01</code> </p> </li> <li> <p>Unix time in seconds, for example, <code>1412195400</code>. This is also referred to as Unix Epoch time and represents the number of seconds since midnight, January 1, 1970 UTC.</p> </li> </ul> <p>For more information about the timestamp format, see <a href=\"https://docs.aws.amazon.com/cli/latest/userguide/cli-usage-parameters-types.html#parameter-type-timestamp\">Timestamp</a> in the <i>Amazon Web Services Command Line Interface User Guide</i>.</p>"
+        },
+        "CreationTimeBefore":{
+          "shape":"Timestamp",
+          "documentation":"<p>A filter that returns nodes in a SageMaker HyperPod cluster created before the specified time. The acceptable formats are the same as the timestamp formats for <code>CreationTimeAfter</code>. For more information about the timestamp format, see <a href=\"https://docs.aws.amazon.com/cli/latest/userguide/cli-usage-parameters-types.html#parameter-type-timestamp\">Timestamp</a> in the <i>Amazon Web Services Command Line Interface User Guide</i>.</p>"
+        },
+        "InstanceGroupNameContains":{
+          "shape":"ClusterInstanceGroupName",
+          "documentation":"<p>A filter that returns the instance groups whose name contain a specified string.</p>"
+        },
+        "MaxResults":{
+          "shape":"MaxResults",
+          "documentation":"<p>The maximum number of nodes to return in the response.</p>"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>If the result of the previous <code>ListClusterNodes</code> request was truncated, the response includes a <code>NextToken</code>. To retrieve the next set of cluster nodes, use the token in the next request.</p>"
+        },
+        "SortBy":{
+          "shape":"ClusterSortBy",
+          "documentation":"<p>The field by which to sort results. The default value is <code>CREATION_TIME</code>.</p>"
+        },
+        "SortOrder":{
+          "shape":"SortOrder",
+          "documentation":"<p>The sort order for results. The default value is <code>Ascending</code>.</p>"
+        }
+      }
+    },
+    "ListClusterNodesResponse":{
+      "type":"structure",
+      "required":[
+        "NextToken",
+        "ClusterNodeSummaries"
+      ],
+      "members":{
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The next token specified for listing instances in a SageMaker HyperPod cluster.</p>"
+        },
+        "ClusterNodeSummaries":{
+          "shape":"ClusterNodeSummaries",
+          "documentation":"<p>The summaries of listed instances in a SageMaker HyperPod cluster</p>"
+        }
+      }
+    },
+    "ListClustersRequest":{
+      "type":"structure",
+      "members":{
+        "CreationTimeAfter":{
+          "shape":"Timestamp",
+          "documentation":"<p>Set a start time for the time range during which you want to list SageMaker HyperPod clusters. Timestamps are formatted according to the ISO 8601 standard. </p> <p>Acceptable formats include:</p> <ul> <li> <p> <code>YYYY-MM-DDThh:mm:ss.sssTZD</code> (UTC), for example, <code>2014-10-01T20:30:00.000Z</code> </p> </li> <li> <p> <code>YYYY-MM-DDThh:mm:ss.sssTZD</code> (with offset), for example, <code>2014-10-01T12:30:00.000-08:00</code> </p> </li> <li> <p> <code>YYYY-MM-DD</code>, for example, <code>2014-10-01</code> </p> </li> <li> <p>Unix time in seconds, for example, <code>1412195400</code>. This is also referred to as Unix Epoch time and represents the number of seconds since midnight, January 1, 1970 UTC.</p> </li> </ul> <p>For more information about the timestamp format, see <a href=\"https://docs.aws.amazon.com/cli/latest/userguide/cli-usage-parameters-types.html#parameter-type-timestamp\">Timestamp</a> in the <i>Amazon Web Services Command Line Interface User Guide</i>.</p>"
+        },
+        "CreationTimeBefore":{
+          "shape":"Timestamp",
+          "documentation":"<p>Set an end time for the time range during which you want to list SageMaker HyperPod clusters. A filter that returns nodes in a SageMaker HyperPod cluster created before the specified time. The acceptable formats are the same as the timestamp formats for <code>CreationTimeAfter</code>. For more information about the timestamp format, see <a href=\"https://docs.aws.amazon.com/cli/latest/userguide/cli-usage-parameters-types.html#parameter-type-timestamp\">Timestamp</a> in the <i>Amazon Web Services Command Line Interface User Guide</i>.</p>"
+        },
+        "MaxResults":{
+          "shape":"MaxResults",
+          "documentation":"<p>Set the maximum number of SageMaker HyperPod clusters to list.</p>"
+        },
+        "NameContains":{
+          "shape":"NameContains",
+          "documentation":"<p>Set the maximum number of instances to print in the list.</p>"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>Set the next token to retrieve the list of SageMaker HyperPod clusters.</p>"
+        },
+        "SortBy":{
+          "shape":"ClusterSortBy",
+          "documentation":"<p>The field by which to sort results. The default value is <code>CREATION_TIME</code>.</p>"
+        },
+        "SortOrder":{
+          "shape":"SortOrder",
+          "documentation":"<p>The sort order for results. The default value is <code>Ascending</code>.</p>"
+        }
+      }
+    },
+    "ListClustersResponse":{
+      "type":"structure",
+      "required":[
+        "NextToken",
+        "ClusterSummaries"
+      ],
+      "members":{
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>If the result of the previous <code>ListClusters</code> request was truncated, the response includes a <code>NextToken</code>. To retrieve the next set of clusters, use the token in the next request.</p>"
+        },
+        "ClusterSummaries":{
+          "shape":"ClusterSummaries",
+          "documentation":"<p>The summaries of listed SageMaker HyperPod clusters.</p>"
         }
       }
     },
@@ -21752,6 +22879,73 @@
         "NextToken":{
           "shape":"NextToken",
           "documentation":"<p>A token for getting the next set of images, if there are any.</p>"
+        }
+      }
+    },
+    "ListInferenceComponentsInput":{
+      "type":"structure",
+      "members":{
+        "SortBy":{
+          "shape":"InferenceComponentSortKey",
+          "documentation":"<p>The field by which to sort the inference components in the response. The default is <code>CreationTime</code>.</p>"
+        },
+        "SortOrder":{
+          "shape":"OrderKey",
+          "documentation":"<p>The sort order for results. The default is <code>Descending</code>.</p>"
+        },
+        "NextToken":{
+          "shape":"PaginationToken",
+          "documentation":"<p>A token that you use to get the next set of results following a truncated response. If the response to the previous request was truncated, that response provides the value for this token.</p>"
+        },
+        "MaxResults":{
+          "shape":"MaxResults",
+          "documentation":"<p>The maximum number of inference components to return in the response. This value defaults to 10.</p>"
+        },
+        "NameContains":{
+          "shape":"InferenceComponentNameContains",
+          "documentation":"<p>Filters the results to only those inference components with a name that contains the specified string.</p>"
+        },
+        "CreationTimeBefore":{
+          "shape":"Timestamp",
+          "documentation":"<p>Filters the results to only those inference components that were created before the specified time.</p>"
+        },
+        "CreationTimeAfter":{
+          "shape":"Timestamp",
+          "documentation":"<p>Filters the results to only those inference components that were created after the specified time.</p>"
+        },
+        "LastModifiedTimeBefore":{
+          "shape":"Timestamp",
+          "documentation":"<p>Filters the results to only those inference components that were updated before the specified time.</p>"
+        },
+        "LastModifiedTimeAfter":{
+          "shape":"Timestamp",
+          "documentation":"<p>Filters the results to only those inference components that were updated after the specified time.</p>"
+        },
+        "StatusEquals":{
+          "shape":"InferenceComponentStatus",
+          "documentation":"<p>Filters the results to only those inference components with the specified status.</p>"
+        },
+        "EndpointNameEquals":{
+          "shape":"EndpointName",
+          "documentation":"<p>An endpoint name to filter the listed inference components. The response includes only those inference components that are hosted at the specified endpoint.</p>"
+        },
+        "VariantNameEquals":{
+          "shape":"VariantName",
+          "documentation":"<p>A production variant name to filter the listed inference components. The response includes only those inference components that are hosted at the specified variant.</p>"
+        }
+      }
+    },
+    "ListInferenceComponentsOutput":{
+      "type":"structure",
+      "required":["InferenceComponents"],
+      "members":{
+        "InferenceComponents":{
+          "shape":"InferenceComponentSummaryList",
+          "documentation":"<p>A list of inference components and their properties that matches any of the filters you specified in the request.</p>"
+        },
+        "NextToken":{
+          "shape":"PaginationToken",
+          "documentation":"<p>The token to use in a subsequent request to get the next set of results following a truncated response.</p>"
         }
       }
     },
@@ -23895,6 +25089,21 @@
       "min":1,
       "pattern":"^[a-zA-Z]+ ?\\d+\\.\\d+(\\.\\d+)?$"
     },
+    "ManagedInstanceScalingMaxInstanceCount":{
+      "type":"integer",
+      "min":1
+    },
+    "ManagedInstanceScalingMinInstanceCount":{
+      "type":"integer",
+      "min":1
+    },
+    "ManagedInstanceScalingStatus":{
+      "type":"string",
+      "enum":[
+        "ENABLED",
+        "DISABLED"
+      ]
+    },
     "MaxAutoMLJobRuntimeInSeconds":{
       "type":"integer",
       "min":1
@@ -24012,6 +25221,10 @@
       "member":{"shape":"MemberDefinition"},
       "max":10,
       "min":1
+    },
+    "MemoryInMb":{
+      "type":"integer",
+      "min":128
     },
     "MetadataProperties":{
       "type":"structure",
@@ -26801,6 +28014,14 @@
       "type":"string",
       "pattern":"arn:aws[a-z\\-]*:sns:[a-z0-9\\-]*:[0-9]{12}:[a-zA-Z0-9_.-]*"
     },
+    "NumberOfAcceleratorDevices":{
+      "type":"float",
+      "min":1
+    },
+    "NumberOfCpuCores":{
+      "type":"float",
+      "min":0.25
+    },
     "NumberOfHumanWorkersPerDataObject":{
       "type":"integer",
       "max":9,
@@ -27346,6 +28567,14 @@
         "DesiredServerlessConfig":{
           "shape":"ProductionVariantServerlessConfig",
           "documentation":"<p>The serverless configuration requested for this deployment, as specified in the endpoint configuration for the endpoint.</p>"
+        },
+        "ManagedInstanceScaling":{
+          "shape":"ProductionVariantManagedInstanceScaling",
+          "documentation":"<p>Settings that control the range in the number of instances that the endpoint provisions as it scales up or down to accommodate traffic. </p>"
+        },
+        "RoutingConfig":{
+          "shape":"ProductionVariantRoutingConfig",
+          "documentation":"<p>Settings that control how the endpoint routes incoming traffic to the instances that the endpoint hosts.</p>"
         }
       },
       "documentation":"<p>The production variant summary for a deployment when an endpoint is creating or updating with the <a href=\"https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_CreateEndpoint.html\">CreateEndpoint</a> or <a href=\"https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_UpdateEndpoint.html\">UpdateEndpoint</a> operations. Describes the <code>VariantStatus </code>, weight and capacity for a production variant associated with an endpoint. </p>"
@@ -28306,10 +29535,7 @@
     },
     "ProductionVariant":{
       "type":"structure",
-      "required":[
-        "VariantName",
-        "ModelName"
-      ],
+      "required":["VariantName"],
       "members":{
         "VariantName":{
           "shape":"VariantName",
@@ -28358,6 +29584,14 @@
         "EnableSSMAccess":{
           "shape":"ProductionVariantSSMAccess",
           "documentation":"<p> You can use this parameter to turn on native Amazon Web Services Systems Manager (SSM) access for a production variant behind an endpoint. By default, SSM access is disabled for all production variants behind an endpoint. You can turn on or turn off SSM access for a production variant behind an existing endpoint by creating a new endpoint configuration and calling <code>UpdateEndpoint</code>. </p>"
+        },
+        "ManagedInstanceScaling":{
+          "shape":"ProductionVariantManagedInstanceScaling",
+          "documentation":"<p>Settings that control the range in the number of instances that the endpoint provisions as it scales up or down to accommodate traffic. </p>"
+        },
+        "RoutingConfig":{
+          "shape":"ProductionVariantRoutingConfig",
+          "documentation":"<p>Settings that control how the endpoint routes incoming traffic to the instances that the endpoint hosts.</p>"
         }
       },
       "documentation":"<p> Identifies a model that you want to host and the resources chosen to deploy for hosting it. If you are deploying multiple models, tell SageMaker how to distribute traffic among the models by specifying variant weights. For more information on production variants, check <a href=\"https://docs.aws.amazon.com/sagemaker/latest/dg/model-ab-testing.html\"> Production variants</a>. </p>"
@@ -28552,10 +29786,39 @@
       "max":10,
       "min":1
     },
+    "ProductionVariantManagedInstanceScaling":{
+      "type":"structure",
+      "members":{
+        "Status":{
+          "shape":"ManagedInstanceScalingStatus",
+          "documentation":"<p>Indicates whether managed instance scaling is enabled.</p>"
+        },
+        "MinInstanceCount":{
+          "shape":"ManagedInstanceScalingMinInstanceCount",
+          "documentation":"<p>The minimum number of instances that the endpoint must retain when it scales down to accommodate a decrease in traffic.</p>"
+        },
+        "MaxInstanceCount":{
+          "shape":"ManagedInstanceScalingMaxInstanceCount",
+          "documentation":"<p>The maximum number of instances that the endpoint can provision when it scales up to accommodate an increase in traffic.</p>"
+        }
+      },
+      "documentation":"<p>Settings that control the range in the number of instances that the endpoint provisions as it scales up or down to accommodate traffic. </p>"
+    },
     "ProductionVariantModelDataDownloadTimeoutInSeconds":{
       "type":"integer",
       "max":3600,
       "min":60
+    },
+    "ProductionVariantRoutingConfig":{
+      "type":"structure",
+      "required":["RoutingStrategy"],
+      "members":{
+        "RoutingStrategy":{
+          "shape":"RoutingStrategy",
+          "documentation":"<p>Sets how the endpoint routes incoming traffic:</p> <ul> <li> <p> <code>LEAST_OUTSTANDING_REQUESTS</code>: The endpoint routes requests to the specific instances that have more capacity to process them.</p> </li> <li> <p> <code>RANDOM</code>: The endpoint routes each request to a randomly chosen instance.</p> </li> </ul>"
+        }
+      },
+      "documentation":"<p>Settings that control how the endpoint routes incoming traffic to the instances that the endpoint hosts.</p>"
     },
     "ProductionVariantSSMAccess":{"type":"boolean"},
     "ProductionVariantServerlessConfig":{
@@ -28658,6 +29921,14 @@
         "DesiredServerlessConfig":{
           "shape":"ProductionVariantServerlessConfig",
           "documentation":"<p>The serverless configuration requested for the endpoint update.</p>"
+        },
+        "ManagedInstanceScaling":{
+          "shape":"ProductionVariantManagedInstanceScaling",
+          "documentation":"<p>Settings that control the range in the number of instances that the endpoint provisions as it scales up or down to accommodate traffic. </p>"
+        },
+        "RoutingConfig":{
+          "shape":"ProductionVariantRoutingConfig",
+          "documentation":"<p>Settings that control how the endpoint routes incoming traffic to the instances that the endpoint hosts.</p>"
         }
       },
       "documentation":"<p>Describes weight and capacities for a production variant associated with an endpoint. If you sent a request to the <code>UpdateEndpointWeightsAndCapacities</code> API and the endpoint status is <code>Updating</code>, you get different desired and current values. </p>"
@@ -30105,6 +31376,10 @@
           "shape":"ImageVersionArn",
           "documentation":"<p>The ARN of the image version created on the instance.</p>"
         },
+        "SageMakerImageVersionAlias":{
+          "shape":"ImageVersionAlias",
+          "documentation":"<p>The SageMakerImageVersionAlias.</p>"
+        },
         "InstanceType":{
           "shape":"AppInstanceType",
           "documentation":"<p>The instance type that the image version runs on.</p> <note> <p> <b>JupyterServer apps</b> only support the <code>system</code> value.</p> <p>For <b>KernelGateway apps</b>, the <code>system</code> value is translated to <code>ml.t3.medium</code>. KernelGateway apps also support all other values for available instance types.</p> </note>"
@@ -30241,6 +31516,13 @@
       "enum":[
         "Enabled",
         "Disabled"
+      ]
+    },
+    "RoutingStrategy":{
+      "type":"string",
+      "enum":[
+        "LEAST_OUTSTANDING_REQUESTS",
+        "RANDOM"
       ]
     },
     "RuleConfigurationName":{
@@ -30917,7 +32199,7 @@
           "documentation":"<p>When <code>NotebookOutputOption</code> is <code>Allowed</code>, the Amazon Web Services Key Management Service (KMS) encryption key ID used to encrypt the notebook cell output in the Amazon S3 bucket.</p>"
         }
       },
-      "documentation":"<p>Specifies options for sharing SageMaker Studio notebooks. These settings are specified as part of <code>DefaultUserSettings</code> when the <code>CreateDomain</code> API is called, and as part of <code>UserSettings</code> when the <code>CreateUserProfile</code> API is called. When <code>SharingSettings</code> is not specified, notebook sharing isn't allowed.</p>"
+      "documentation":"<p>Specifies options for sharing Amazon SageMaker Studio notebooks. These settings are specified as part of <code>DefaultUserSettings</code> when the <code>CreateDomain</code> API is called, and as part of <code>UserSettings</code> when the <code>CreateUserProfile</code> API is called. When <code>SharingSettings</code> is not specified, notebook sharing isn't allowed.</p>"
     },
     "ShuffleConfig":{
       "type":"structure",
@@ -31643,22 +32925,22 @@
         },
         "StudioLifecycleConfigName":{
           "shape":"StudioLifecycleConfigName",
-          "documentation":"<p>The name of the Studio Lifecycle Configuration.</p>"
+          "documentation":"<p>The name of the Amazon SageMaker Studio Lifecycle Configuration.</p>"
         },
         "CreationTime":{
           "shape":"Timestamp",
-          "documentation":"<p>The creation time of the Studio Lifecycle Configuration.</p>"
+          "documentation":"<p>The creation time of the Amazon SageMaker Studio Lifecycle Configuration.</p>"
         },
         "LastModifiedTime":{
           "shape":"Timestamp",
-          "documentation":"<p>This value is equivalent to CreationTime because Studio Lifecycle Configurations are immutable.</p>"
+          "documentation":"<p>This value is equivalent to CreationTime because Amazon SageMaker Studio Lifecycle Configurations are immutable.</p>"
         },
         "StudioLifecycleConfigAppType":{
           "shape":"StudioLifecycleConfigAppType",
           "documentation":"<p>The App type to which the Lifecycle Configuration is attached.</p>"
         }
       },
-      "documentation":"<p>Details of the Studio Lifecycle Configuration.</p>"
+      "documentation":"<p>Details of the Amazon SageMaker Studio Lifecycle Configuration.</p>"
     },
     "StudioLifecycleConfigName":{
       "type":"string",
@@ -31676,6 +32958,13 @@
     "StudioLifecycleConfigsList":{
       "type":"list",
       "member":{"shape":"StudioLifecycleConfigDetails"}
+    },
+    "StudioWebPortal":{
+      "type":"string",
+      "enum":[
+        "ENABLED",
+        "DISABLED"
+      ]
     },
     "SubnetId":{
       "type":"string",
@@ -32057,13 +33346,37 @@
       },
       "documentation":"<p>The collection of settings used by an AutoML job V2 for the text classification problem type.</p>"
     },
+    "TextGenerationHyperParameterKey":{
+      "type":"string",
+      "max":32,
+      "pattern":"^[a-zA-Z0-9._-]+$"
+    },
+    "TextGenerationHyperParameterValue":{
+      "type":"string",
+      "max":16,
+      "pattern":"^[a-zA-Z0-9._-]+$"
+    },
+    "TextGenerationHyperParameters":{
+      "type":"map",
+      "key":{"shape":"TextGenerationHyperParameterKey"},
+      "value":{"shape":"TextGenerationHyperParameterValue"},
+      "max":30,
+      "min":0
+    },
     "TextGenerationJobConfig":{
       "type":"structure",
       "members":{
-        "CompletionCriteria":{"shape":"AutoMLJobCompletionCriteria"},
+        "CompletionCriteria":{
+          "shape":"AutoMLJobCompletionCriteria",
+          "documentation":"<p>How long a fine-tuning job is allowed to run. For <code>TextGenerationJobConfig</code> problem types, the <code>MaxRuntimePerTrainingJobInSeconds</code> attribute of <code>AutoMLJobCompletionCriteria</code> defaults to 72h (259200s).</p>"
+        },
         "BaseModelName":{
           "shape":"BaseModelName",
-          "documentation":"<p>The name of the base model to fine-tune. Autopilot supports fine-tuning a variety of large language models. For information on the list of supported models, see <a href=\"https://docs.aws.amazon.com/sagemaker/latest/dg/autopilot-llms-finetuning-models.html#autopilot-llms-finetuning-supported-llms\">Text generation models supporting fine-tuning in Autopilot</a>. If no <code>BaseModelName</code> is provided, the default model used is Falcon-7B-Instruct. </p>"
+          "documentation":"<p>The name of the base model to fine-tune. Autopilot supports fine-tuning a variety of large language models. For information on the list of supported models, see <a href=\"https://docs.aws.amazon.com/sagemaker/latest/dg/autopilot-llms-finetuning-models.html#autopilot-llms-finetuning-supported-llms\">Text generation models supporting fine-tuning in Autopilot</a>. If no <code>BaseModelName</code> is provided, the default model used is <b>Falcon7BInstruct</b>. </p>"
+        },
+        "TextGenerationHyperParameters":{
+          "shape":"TextGenerationHyperParameters",
+          "documentation":"<p>The hyperparameters used to configure and optimize the learning process of the base model. You can set any combination of the following hyperparameters for all base models. For more information on each supported hyperparameter, see <a href=\"https://docs.aws.amazon.com/sagemaker/latest/dg/autopilot-llms-finetuning-set-hyperparameters.html\">Optimize the learning process of your text generation models with hyperparameters</a>.</p> <ul> <li> <p> <code>\"epochCount\"</code>: The number of times the model goes through the entire training dataset. Its value should be a string containing an integer value within the range of \"1\" to \"10\".</p> </li> <li> <p> <code>\"batchSize\"</code>: The number of data samples used in each iteration of training. Its value should be a string containing an integer value within the range of \"1\" to \"64\".</p> </li> <li> <p> <code>\"learningRate\"</code>: The step size at which a model's parameters are updated during training. Its value should be a string containing a floating-point value within the range of \"0\" to \"1\".</p> </li> <li> <p> <code>\"learningRateWarmupSteps\"</code>: The number of training steps during which the learning rate gradually increases before reaching its target or maximum value. Its value should be a string containing an integer value within the range of \"0\" to \"250\".</p> </li> </ul> <p>Here is an example where all four hyperparameters are configured.</p> <p> <code>{ \"epochCount\":\"5\", \"learningRate\":\"0.5\", \"batchSize\": \"32\", \"learningRateWarmupSteps\": \"10\" }</code> </p>"
         }
       },
       "documentation":"<p>The collection of settings used by an AutoML job V2 for the text generation problem type.</p> <note> <p>The text generation models that support fine-tuning in Autopilot are currently accessible exclusively in regions supported by Canvas. Refer to the documentation of Canvas for the <a href=\"https://docs.aws.amazon.com/sagemaker/latest/dg/canvas.html\">full list of its supported Regions</a>.</p> </note>"
@@ -33738,6 +35051,33 @@
         }
       }
     },
+    "UpdateClusterRequest":{
+      "type":"structure",
+      "required":[
+        "ClusterName",
+        "InstanceGroups"
+      ],
+      "members":{
+        "ClusterName":{
+          "shape":"ClusterNameOrArn",
+          "documentation":"<p>Specify the name of the SageMaker HyperPod cluster you want to update.</p>"
+        },
+        "InstanceGroups":{
+          "shape":"ClusterInstanceGroupSpecifications",
+          "documentation":"<p>Specify the instance groups to update.</p>"
+        }
+      }
+    },
+    "UpdateClusterResponse":{
+      "type":"structure",
+      "required":["ClusterArn"],
+      "members":{
+        "ClusterArn":{
+          "shape":"ClusterArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the updated SageMaker HyperPod cluster.</p>"
+        }
+      }
+    },
     "UpdateCodeRepositoryInput":{
       "type":"structure",
       "required":["CodeRepositoryName"],
@@ -33862,6 +35202,14 @@
         "AppSecurityGroupManagement":{
           "shape":"AppSecurityGroupManagement",
           "documentation":"<p>The entity that creates and manages the required security groups for inter-app communication in <code>VPCOnly</code> mode. Required when <code>CreateDomain.AppNetworkAccessType</code> is <code>VPCOnly</code> and <code>DomainSettings.RStudioServerProDomainSettings.DomainExecutionRoleArn</code> is provided. If setting up the domain for use with RStudio, this value must be set to <code>Service</code>.</p>"
+        },
+        "SubnetIds":{
+          "shape":"Subnets",
+          "documentation":"<p>The VPC subnets that Studio uses for communication.</p> <p>If removing subnets, ensure there are no apps in the <code>InService</code>, <code>Pending</code>, or <code>Deleting</code> state.</p>"
+        },
+        "AppNetworkAccessType":{
+          "shape":"AppNetworkAccessType",
+          "documentation":"<p>Specifies the VPC used for non-EFS traffic.</p> <ul> <li> <p> <code>PublicInternetOnly</code> - Non-EFS traffic is through a VPC managed by Amazon SageMaker, which allows direct internet access.</p> </li> <li> <p> <code>VpcOnly</code> - All Studio traffic is through the specified VPC and subnets.</p> </li> </ul> <p>This configuration can only be modified if there are no apps in the <code>InService</code>, <code>Pending</code>, or <code>Deleting</code> state. The configuration cannot be updated if <code>DomainSettings.RStudioServerProDomainSettings.DomainExecutionRoleArn</code> is already set or <code>DomainSettings.RStudioServerProDomainSettings.DomainExecutionRoleArn</code> is provided as part of the same request.</p>"
         }
       }
     },
@@ -34155,6 +35503,61 @@
         "ImageVersionArn":{
           "shape":"ImageVersionArn",
           "documentation":"<p>The ARN of the image version.</p>"
+        }
+      }
+    },
+    "UpdateInferenceComponentInput":{
+      "type":"structure",
+      "required":["InferenceComponentName"],
+      "members":{
+        "InferenceComponentName":{
+          "shape":"InferenceComponentName",
+          "documentation":"<p>The name of the inference component.</p>"
+        },
+        "Specification":{
+          "shape":"InferenceComponentSpecification",
+          "documentation":"<p>Details about the resources to deploy with this inference component, including the model, container, and compute resources.</p>"
+        },
+        "RuntimeConfig":{
+          "shape":"InferenceComponentRuntimeConfig",
+          "documentation":"<p>Runtime settings for a model that is deployed with an inference component.</p>"
+        }
+      }
+    },
+    "UpdateInferenceComponentOutput":{
+      "type":"structure",
+      "required":["InferenceComponentArn"],
+      "members":{
+        "InferenceComponentArn":{
+          "shape":"InferenceComponentArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the inference component.</p>"
+        }
+      }
+    },
+    "UpdateInferenceComponentRuntimeConfigInput":{
+      "type":"structure",
+      "required":[
+        "InferenceComponentName",
+        "DesiredRuntimeConfig"
+      ],
+      "members":{
+        "InferenceComponentName":{
+          "shape":"InferenceComponentName",
+          "documentation":"<p>The name of the inference component to update.</p>"
+        },
+        "DesiredRuntimeConfig":{
+          "shape":"InferenceComponentRuntimeConfig",
+          "documentation":"<p>Runtime settings for a model that is deployed with an inference component.</p>"
+        }
+      }
+    },
+    "UpdateInferenceComponentRuntimeConfigOutput":{
+      "type":"structure",
+      "required":["InferenceComponentArn"],
+      "members":{
+        "InferenceComponentArn":{
+          "shape":"InferenceComponentArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the inference component.</p>"
         }
       }
     },
@@ -34863,11 +36266,11 @@
         },
         "SecurityGroups":{
           "shape":"SecurityGroupIds",
-          "documentation":"<p>The security groups for the Amazon Virtual Private Cloud (VPC) that Studio uses for communication.</p> <p>Optional when the <code>CreateDomain.AppNetworkAccessType</code> parameter is set to <code>PublicInternetOnly</code>.</p> <p>Required when the <code>CreateDomain.AppNetworkAccessType</code> parameter is set to <code>VpcOnly</code>, unless specified as part of the <code>DefaultUserSettings</code> for the domain.</p> <p>Amazon SageMaker adds a security group to allow NFS traffic from SageMaker Studio. Therefore, the number of security groups that you can specify is one less than the maximum number shown.</p>"
+          "documentation":"<p>The security groups for the Amazon Virtual Private Cloud (VPC) that the domain uses for communication.</p> <p>Optional when the <code>CreateDomain.AppNetworkAccessType</code> parameter is set to <code>PublicInternetOnly</code>.</p> <p>Required when the <code>CreateDomain.AppNetworkAccessType</code> parameter is set to <code>VpcOnly</code>, unless specified as part of the <code>DefaultUserSettings</code> for the domain.</p> <p>Amazon SageMaker adds a security group to allow NFS traffic from Amazon SageMaker Studio. Therefore, the number of security groups that you can specify is one less than the maximum number shown.</p>"
         },
         "SharingSettings":{
           "shape":"SharingSettings",
-          "documentation":"<p>Specifies options for sharing SageMaker Studio notebooks.</p>"
+          "documentation":"<p>Specifies options for sharing Amazon SageMaker Studio notebooks.</p>"
         },
         "JupyterServerAppSettings":{
           "shape":"JupyterServerAppSettings",
@@ -34892,9 +36295,17 @@
         "CanvasAppSettings":{
           "shape":"CanvasAppSettings",
           "documentation":"<p>The Canvas app settings.</p>"
+        },
+        "DefaultLandingUri":{
+          "shape":"LandingUri",
+          "documentation":"<p>The default experience that the user is directed to when accessing the domain. The supported values are:</p> <ul> <li> <p> <code>studio::</code>: Indicates that Studio is the default experience. This value can only be passed if <code>StudioWebPortal</code> is set to <code>ENABLED</code>.</p> </li> <li> <p> <code>app:JupyterServer:</code>: Indicates that Studio Classic is the default experience.</p> </li> </ul>"
+        },
+        "StudioWebPortal":{
+          "shape":"StudioWebPortal",
+          "documentation":"<p>Whether the user can access Studio. If this value is set to <code>DISABLED</code>, the user cannot access Studio, even if that is the default experience for the domain.</p>"
         }
       },
-      "documentation":"<p>A collection of settings that apply to users of Amazon SageMaker Studio. These settings are specified when the <code>CreateUserProfile</code> API is called, and as <code>DefaultUserSettings</code> when the <code>CreateDomain</code> API is called.</p> <p> <code>SecurityGroups</code> is aggregated when specified in both calls. For all other settings in <code>UserSettings</code>, the values specified in <code>CreateUserProfile</code> take precedence over those specified in <code>CreateDomain</code>.</p>"
+      "documentation":"<p>A collection of settings that apply to users in a domain. These settings are specified when the <code>CreateUserProfile</code> API is called, and as <code>DefaultUserSettings</code> when the <code>CreateDomain</code> API is called.</p> <p> <code>SecurityGroups</code> is aggregated when specified in both calls. For all other settings in <code>UserSettings</code>, the values specified in <code>CreateUserProfile</code> take precedence over those specified in <code>CreateDomain</code>.</p>"
     },
     "UsersPerStep":{
       "type":"integer",
@@ -35030,14 +36441,14 @@
       "members":{
         "SecurityGroupIds":{
           "shape":"VpcSecurityGroupIds",
-          "documentation":"<p>The VPC security group IDs, in the form sg-xxxxxxxx. Specify the security groups for the VPC that is specified in the <code>Subnets</code> field.</p>"
+          "documentation":"<p>The VPC security group IDs, in the form <code>sg-xxxxxxxx</code>. Specify the security groups for the VPC that is specified in the <code>Subnets</code> field.</p>"
         },
         "Subnets":{
           "shape":"Subnets",
           "documentation":"<p>The ID of the subnets in the VPC to which you want to connect your training job or model. For information about the availability of specific instance types, see <a href=\"https://docs.aws.amazon.com/sagemaker/latest/dg/instance-types-az.html\">Supported Instance Types and Availability Zones</a>.</p>"
         }
       },
-      "documentation":"<p>Specifies a VPC that your training jobs and hosted models have access to. Control access to and from your training and model containers by configuring the VPC. For more information, see <a href=\"https://docs.aws.amazon.com/sagemaker/latest/dg/host-vpc.html\">Protect Endpoints by Using an Amazon Virtual Private Cloud</a> and <a href=\"https://docs.aws.amazon.com/sagemaker/latest/dg/train-vpc.html\">Protect Training Jobs by Using an Amazon Virtual Private Cloud</a>. </p>"
+      "documentation":"<p>Specifies an Amazon Virtual Private Cloud (VPC) that your SageMaker jobs, hosted models, and compute resources have access to. You can control access to and from your resources by configuring a VPC. For more information, see <a href=\"https://docs.aws.amazon.com/sagemaker/latest/dg/infrastructure-give-access.html\">Give SageMaker Access to Resources in your Amazon VPC</a>. </p>"
     },
     "VpcId":{
       "type":"string",

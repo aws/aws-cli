@@ -25,6 +25,25 @@
       ],
       "documentation":"<p>Allows the destination Amazon OpenSearch Service domain owner to accept an inbound cross-cluster search connection request. For more information, see <a href=\"https://docs.aws.amazon.com/opensearch-service/latest/developerguide/cross-cluster-search.html\">Cross-cluster search for Amazon OpenSearch Service</a>.</p>"
     },
+    "AddDataSource":{
+      "name":"AddDataSource",
+      "http":{
+        "method":"POST",
+        "requestUri":"/2021-01-01/opensearch/domain/{DomainName}/dataSource"
+      },
+      "input":{"shape":"AddDataSourceRequest"},
+      "output":{"shape":"AddDataSourceResponse"},
+      "errors":[
+        {"shape":"BaseException"},
+        {"shape":"InternalException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ValidationException"},
+        {"shape":"DisabledOperationException"},
+        {"shape":"DependencyFailureException"},
+        {"shape":"LimitExceededException"}
+      ],
+      "documentation":"<p>Adds the data source on the domain.</p>"
+    },
     "AddTags":{
       "name":"AddTags",
       "http":{
@@ -163,6 +182,24 @@
         {"shape":"BaseException"}
       ],
       "documentation":"<p>Creates an Amazon OpenSearch Service-managed VPC endpoint.</p>"
+    },
+    "DeleteDataSource":{
+      "name":"DeleteDataSource",
+      "http":{
+        "method":"DELETE",
+        "requestUri":"/2021-01-01/opensearch/domain/{DomainName}/dataSource/{DataSourceName}"
+      },
+      "input":{"shape":"DeleteDataSourceRequest"},
+      "output":{"shape":"DeleteDataSourceResponse"},
+      "errors":[
+        {"shape":"BaseException"},
+        {"shape":"InternalException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ValidationException"},
+        {"shape":"DisabledOperationException"},
+        {"shape":"DependencyFailureException"}
+      ],
+      "documentation":"<p>Deletes the data source.</p>"
     },
     "DeleteDomain":{
       "name":"DeleteDomain",
@@ -519,6 +556,24 @@
       ],
       "documentation":"<p>Returns a map of OpenSearch or Elasticsearch versions and the versions you can upgrade them to.</p>"
     },
+    "GetDataSource":{
+      "name":"GetDataSource",
+      "http":{
+        "method":"GET",
+        "requestUri":"/2021-01-01/opensearch/domain/{DomainName}/dataSource/{DataSourceName}"
+      },
+      "input":{"shape":"GetDataSourceRequest"},
+      "output":{"shape":"GetDataSourceResponse"},
+      "errors":[
+        {"shape":"BaseException"},
+        {"shape":"InternalException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ValidationException"},
+        {"shape":"DisabledOperationException"},
+        {"shape":"DependencyFailureException"}
+      ],
+      "documentation":"<p>Describes the data source details.</p>"
+    },
     "GetDomainMaintenanceStatus":{
       "name":"GetDomainMaintenanceStatus",
       "http":{
@@ -586,6 +641,24 @@
         {"shape":"InternalException"}
       ],
       "documentation":"<p>Returns the most recent status of the last upgrade or upgrade eligibility check performed on an Amazon OpenSearch Service domain.</p>"
+    },
+    "ListDataSources":{
+      "name":"ListDataSources",
+      "http":{
+        "method":"GET",
+        "requestUri":"/2021-01-01/opensearch/domain/{DomainName}/dataSource"
+      },
+      "input":{"shape":"ListDataSourcesRequest"},
+      "output":{"shape":"ListDataSourcesResponse"},
+      "errors":[
+        {"shape":"BaseException"},
+        {"shape":"InternalException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ValidationException"},
+        {"shape":"DisabledOperationException"},
+        {"shape":"DependencyFailureException"}
+      ],
+      "documentation":"<p>A list of the data source details of the domain.</p>"
     },
     "ListDomainMaintenances":{
       "name":"ListDomainMaintenances",
@@ -860,6 +933,24 @@
       ],
       "documentation":"<p>Schedules a service software update for an Amazon OpenSearch Service domain. For more information, see <a href=\"https://docs.aws.amazon.com/opensearch-service/latest/developerguide/service-software.html\">Service software updates in Amazon OpenSearch Service</a>.</p>"
     },
+    "UpdateDataSource":{
+      "name":"UpdateDataSource",
+      "http":{
+        "method":"PUT",
+        "requestUri":"/2021-01-01/opensearch/domain/{DomainName}/dataSource/{DataSourceName}"
+      },
+      "input":{"shape":"UpdateDataSourceRequest"},
+      "output":{"shape":"UpdateDataSourceResponse"},
+      "errors":[
+        {"shape":"BaseException"},
+        {"shape":"InternalException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ValidationException"},
+        {"shape":"DisabledOperationException"},
+        {"shape":"DependencyFailureException"}
+      ],
+      "documentation":"<p>Updates the data source on the domain.</p>"
+    },
     "UpdateDomainConfig":{
       "name":"UpdateDomainConfig",
       "http":{
@@ -1058,6 +1149,45 @@
         "JVM_HEAP_SIZE_TUNING",
         "JVM_YOUNG_GEN_TUNING"
       ]
+    },
+    "AddDataSourceRequest":{
+      "type":"structure",
+      "required":[
+        "DomainName",
+        "Name",
+        "DataSourceType"
+      ],
+      "members":{
+        "DomainName":{
+          "shape":"DomainName",
+          "documentation":"<p>The name of the domain.</p>",
+          "location":"uri",
+          "locationName":"DomainName"
+        },
+        "Name":{
+          "shape":"DataSourceName",
+          "documentation":"<p>The name of the data source.</p>"
+        },
+        "DataSourceType":{
+          "shape":"DataSourceType",
+          "documentation":"<p>The type of data source.</p>"
+        },
+        "Description":{
+          "shape":"DataSourceDescription",
+          "documentation":"<p>A description of the data source.</p>"
+        }
+      },
+      "documentation":"<p>Container for the parameters to the <code>AddDataSource</code> operation.</p>"
+    },
+    "AddDataSourceResponse":{
+      "type":"structure",
+      "members":{
+        "Message":{
+          "shape":"String",
+          "documentation":"<p>A message associated with the data source.</p>"
+        }
+      },
+      "documentation":"<p>The result of an <code>AddDataSource</code> operation.</p>"
     },
     "AddTagsRequest":{
       "type":"structure",
@@ -2060,6 +2190,82 @@
       },
       "documentation":"<p>Cross-cluster search specific connection properties.</p>"
     },
+    "DataSourceDescription":{
+      "type":"string",
+      "max":1000,
+      "pattern":"^([a-zA-Z0-9_])*[\\\\a-zA-Z0-9_@#%*+=:?./!\\s-]*$"
+    },
+    "DataSourceDetails":{
+      "type":"structure",
+      "members":{
+        "DataSourceType":{
+          "shape":"DataSourceType",
+          "documentation":"<p>The type of data source.</p>"
+        },
+        "Name":{
+          "shape":"DataSourceName",
+          "documentation":"<p>The name of the data source.</p>"
+        },
+        "Description":{
+          "shape":"DataSourceDescription",
+          "documentation":"<p>A description of the data source.</p>"
+        }
+      },
+      "documentation":"<p>Details about the data sources.</p>"
+    },
+    "DataSourceList":{
+      "type":"list",
+      "member":{"shape":"DataSourceDetails"}
+    },
+    "DataSourceName":{
+      "type":"string",
+      "max":80,
+      "min":3,
+      "pattern":"[a-z][a-z0-9_]+"
+    },
+    "DataSourceType":{
+      "type":"structure",
+      "members":{
+        "S3GlueDataCatalog":{
+          "shape":"S3GlueDataCatalog",
+          "documentation":"<p>The data source for the AWS S3 Glue Data Catalog.</p>"
+        }
+      },
+      "documentation":"<p>Information about the data source.</p>",
+      "union":true
+    },
+    "DeleteDataSourceRequest":{
+      "type":"structure",
+      "required":[
+        "DomainName",
+        "Name"
+      ],
+      "members":{
+        "DomainName":{
+          "shape":"DomainName",
+          "documentation":"<p>The name of the domain.</p>",
+          "location":"uri",
+          "locationName":"DomainName"
+        },
+        "Name":{
+          "shape":"DataSourceName",
+          "documentation":"<p>The name of the data source.</p>",
+          "location":"uri",
+          "locationName":"DataSourceName"
+        }
+      },
+      "documentation":"<p>Container for the parameters to the <code>DeleteDataSource</code> operation.</p>"
+    },
+    "DeleteDataSourceResponse":{
+      "type":"structure",
+      "members":{
+        "Message":{
+          "shape":"String",
+          "documentation":"<p>A message associated with the initiated request.</p>"
+        }
+      },
+      "documentation":"<p>The result of a <code>GetDataSource</code> operation.</p>"
+    },
     "DeleteDomainRequest":{
       "type":"structure",
       "required":["DomainName"],
@@ -2877,7 +3083,7 @@
         },
         "TLSSecurityPolicy":{
           "shape":"TLSSecurityPolicy",
-          "documentation":"<p>Specify the TLS security policy to apply to the HTTPS endpoint of the domain.</p> <p> Can be one of the following values:</p> <ul> <li> <p> <b>Policy-Min-TLS-1-0-2019-07:</b> TLS security policy which supports TLS version 1.0 and higher.</p> </li> <li> <p> <b>Policy-Min-TLS-1-2-2019-07:</b> TLS security policy which supports only TLS version 1.2 </p> </li> </ul>"
+          "documentation":"<p>Specify the TLS security policy to apply to the HTTPS endpoint of the domain. The policy can be one of the following values:</p> <ul> <li> <p> <b>Policy-Min-TLS-1-0-2019-07:</b> TLS security policy which supports TLS version 1.0 to TLS version 1.2</p> </li> <li> <p> <b>Policy-Min-TLS-1-2-2019-07:</b> TLS security policy which supports only TLS version 1.2</p> </li> <li> <p> <b>Policy-Min-TLS-1-0-2023-10:</b> TLS security policy which supports TLS version 1.0 to TLS version 1.3</p> </li> <li> <p> <b>Policy-Min-TLS-1-2-2023-10:</b> TLS security policy which supports TLS version 1.2 to TLS version 1.3 with perfect forward secrecy cipher suites</p> </li> </ul>"
         },
         "CustomEndpointEnabled":{
           "shape":"Boolean",
@@ -3500,6 +3706,46 @@
       },
       "documentation":"<p>Container for the response returned by the <code>GetCompatibleVersions</code> operation.</p>"
     },
+    "GetDataSourceRequest":{
+      "type":"structure",
+      "required":[
+        "DomainName",
+        "Name"
+      ],
+      "members":{
+        "DomainName":{
+          "shape":"DomainName",
+          "documentation":"<p>The name of the domain.</p>",
+          "location":"uri",
+          "locationName":"DomainName"
+        },
+        "Name":{
+          "shape":"DataSourceName",
+          "documentation":"<p>The name of the data source.</p>",
+          "location":"uri",
+          "locationName":"DataSourceName"
+        }
+      },
+      "documentation":"<p>Container for the parameters to the <code>GetDataSource</code> operation.</p>"
+    },
+    "GetDataSourceResponse":{
+      "type":"structure",
+      "members":{
+        "DataSourceType":{
+          "shape":"DataSourceType",
+          "documentation":"<p>The type of data source.</p>"
+        },
+        "Name":{
+          "shape":"DataSourceName",
+          "documentation":"<p>The name of the data source.</p>"
+        },
+        "Description":{
+          "shape":"DataSourceDescription",
+          "documentation":"<p>A description of the data source.</p>"
+        }
+      },
+      "documentation":"<p>The result of a <code>GetDataSource</code> operation.</p>"
+    },
     "GetDomainMaintenanceStatusRequest":{
       "type":"structure",
       "required":[
@@ -3907,6 +4153,29 @@
       "key":{"shape":"InstanceRole"},
       "value":{"shape":"Limits"},
       "documentation":"<p> The role of a given instance and all applicable limits. The role performed by a given OpenSearch instance can be one of the following: </p> <ul> <li> <p> <b>data</b> - A data node.</p> </li> <li> <p> <b>master</b> - A dedicated master node.</p> </li> <li> <p> <b>ultra_warm</b> - An UltraWarm node.</p> </li> </ul>"
+    },
+    "ListDataSourcesRequest":{
+      "type":"structure",
+      "required":["DomainName"],
+      "members":{
+        "DomainName":{
+          "shape":"DomainName",
+          "documentation":"<p>The name of the domain.</p>",
+          "location":"uri",
+          "locationName":"DomainName"
+        }
+      },
+      "documentation":"<p>Container for the parameters to the <code>ListDataSources</code> operation.</p>"
+    },
+    "ListDataSourcesResponse":{
+      "type":"structure",
+      "members":{
+        "DataSources":{
+          "shape":"DataSourceList",
+          "documentation":"<p>A list of the data sources.</p>"
+        }
+      },
+      "documentation":"<p>The result of a <code>ListDataSources</code> operation.</p>"
     },
     "ListDomainMaintenancesRequest":{
       "type":"structure",
@@ -5236,6 +5505,16 @@
       "max":63,
       "min":3
     },
+    "S3GlueDataCatalog":{
+      "type":"structure",
+      "members":{
+        "RoleArn":{
+          "shape":"RoleArn",
+          "documentation":"<p>The role ARN for the AWS S3 Glue Data Catalog.</p>"
+        }
+      },
+      "documentation":"<p>Information about the AWS S3 Glue Data Catalog.</p>"
+    },
     "S3Key":{
       "type":"string",
       "max":1024,
@@ -5740,6 +6019,47 @@
       "min":0
     },
     "UncompressedPluginSizeInBytes":{"type":"long"},
+    "UpdateDataSourceRequest":{
+      "type":"structure",
+      "required":[
+        "DomainName",
+        "Name",
+        "DataSourceType"
+      ],
+      "members":{
+        "DomainName":{
+          "shape":"DomainName",
+          "documentation":"<p>The name of the domain.</p>",
+          "location":"uri",
+          "locationName":"DomainName"
+        },
+        "Name":{
+          "shape":"DataSourceName",
+          "documentation":"<p>The name of the data source.</p>",
+          "location":"uri",
+          "locationName":"DataSourceName"
+        },
+        "DataSourceType":{
+          "shape":"DataSourceType",
+          "documentation":"<p>The type of data source.</p>"
+        },
+        "Description":{
+          "shape":"DataSourceDescription",
+          "documentation":"<p>A description of the data source.</p>"
+        }
+      },
+      "documentation":"<p>Container for the parameters to the <code>UpdateDataSource</code> operation.</p>"
+    },
+    "UpdateDataSourceResponse":{
+      "type":"structure",
+      "members":{
+        "Message":{
+          "shape":"String",
+          "documentation":"<p>A message associated with the data source.</p>"
+        }
+      },
+      "documentation":"<p>The result of an <code>UpdateDataSource</code> operation.</p>"
+    },
     "UpdateDomainConfigRequest":{
       "type":"structure",
       "required":["DomainName"],

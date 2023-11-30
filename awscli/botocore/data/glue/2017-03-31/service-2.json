@@ -8359,6 +8359,34 @@
       "max":255,
       "min":1
     },
+    "DataQualityAnalyzerResult":{
+      "type":"structure",
+      "members":{
+        "Name":{
+          "shape":"NameString",
+          "documentation":"<p>The name of the data quality analyzer.</p>"
+        },
+        "Description":{
+          "shape":"DataQualityRuleResultDescription",
+          "documentation":"<p>A description of the data quality analyzer.</p>"
+        },
+        "EvaluationMessage":{
+          "shape":"DataQualityRuleResultDescription",
+          "documentation":"<p>An evaluation message.</p>"
+        },
+        "EvaluatedMetrics":{
+          "shape":"EvaluatedMetricsMap",
+          "documentation":"<p>A map of metrics associated with the evaluation of the analyzer.</p>"
+        }
+      },
+      "documentation":"<p>Describes the result of the evaluation of a data quality analyzer.</p>"
+    },
+    "DataQualityAnalyzerResults":{
+      "type":"list",
+      "member":{"shape":"DataQualityAnalyzerResult"},
+      "max":2000,
+      "min":0
+    },
     "DataQualityEvaluationRunAdditionalRunOptions":{
       "type":"structure",
       "members":{
@@ -8372,6 +8400,54 @@
         }
       },
       "documentation":"<p>Additional run options you can specify for an evaluation run.</p>"
+    },
+    "DataQualityMetricValues":{
+      "type":"structure",
+      "members":{
+        "ActualValue":{
+          "shape":"NullableDouble",
+          "documentation":"<p>The actual value of the data quality metric.</p>"
+        },
+        "ExpectedValue":{
+          "shape":"NullableDouble",
+          "documentation":"<p>The expected value of the data quality metric according to the analysis of historical data.</p>"
+        },
+        "LowerLimit":{
+          "shape":"NullableDouble",
+          "documentation":"<p>The lower limit of the data quality metric value according to the analysis of historical data.</p>"
+        },
+        "UpperLimit":{
+          "shape":"NullableDouble",
+          "documentation":"<p>The upper limit of the data quality metric value according to the analysis of historical data.</p>"
+        }
+      },
+      "documentation":"<p>Describes the data quality metric value according to the analysis of historical data.</p>"
+    },
+    "DataQualityObservation":{
+      "type":"structure",
+      "members":{
+        "Description":{
+          "shape":"DataQualityObservationDescription",
+          "documentation":"<p>A description of the data quality observation.</p>"
+        },
+        "MetricBasedObservation":{
+          "shape":"MetricBasedObservation",
+          "documentation":"<p>An object of type <code>MetricBasedObservation</code> representing the observation that is based on evaluated data quality metrics.</p>"
+        }
+      },
+      "documentation":"<p>Describes the observation generated after evaluating the rules and analyzers.</p>"
+    },
+    "DataQualityObservationDescription":{
+      "type":"string",
+      "max":2048,
+      "min":0,
+      "pattern":"[\\u0020-\\uD7FF\\uE000-\\uFFFD\\uD800\\uDC00-\\uDBFF\\uDFFF\\r\\n\\t]*"
+    },
+    "DataQualityObservations":{
+      "type":"list",
+      "member":{"shape":"DataQualityObservation"},
+      "max":50,
+      "min":0
     },
     "DataQualityResult":{
       "type":"structure",
@@ -8419,6 +8495,14 @@
         "RuleResults":{
           "shape":"DataQualityRuleResults",
           "documentation":"<p>A list of <code>DataQualityRuleResult</code> objects representing the results for each rule. </p>"
+        },
+        "AnalyzerResults":{
+          "shape":"DataQualityAnalyzerResults",
+          "documentation":"<p>A list of <code>DataQualityAnalyzerResult</code> objects representing the results for each analyzer. </p>"
+        },
+        "Observations":{
+          "shape":"DataQualityObservations",
+          "documentation":"<p>A list of <code>DataQualityObservation</code> objects representing the observations generated after evaluating the rules and analyzers. </p>"
         }
       },
       "documentation":"<p>Describes a data quality result.</p>"
@@ -8548,11 +8632,11 @@
           "documentation":"<p>The name of the data quality rule.</p>"
         },
         "Description":{
-          "shape":"DescriptionString",
+          "shape":"DataQualityRuleResultDescription",
           "documentation":"<p>A description of the data quality rule.</p>"
         },
         "EvaluationMessage":{
-          "shape":"DescriptionString",
+          "shape":"DataQualityRuleResultDescription",
           "documentation":"<p>An evaluation message.</p>"
         },
         "Result":{
@@ -8566,6 +8650,12 @@
       },
       "documentation":"<p>Describes the result of the evaluation of a data quality rule.</p>"
     },
+    "DataQualityRuleResultDescription":{
+      "type":"string",
+      "max":2048,
+      "min":0,
+      "pattern":"[\\u0020-\\uD7FF\\uE000-\\uFFFD\\uD800\\uDC00-\\uDBFF\\uDFFF\\r\\n\\t]*"
+    },
     "DataQualityRuleResultStatus":{
       "type":"string",
       "enum":[
@@ -8578,7 +8668,7 @@
       "type":"list",
       "member":{"shape":"DataQualityRuleResult"},
       "max":2000,
-      "min":1
+      "min":0
     },
     "DataQualityRulesetEvaluationRunDescription":{
       "type":"structure",
@@ -11190,6 +11280,14 @@
         "RuleResults":{
           "shape":"DataQualityRuleResults",
           "documentation":"<p>A list of <code>DataQualityRuleResult</code> objects representing the results for each rule. </p>"
+        },
+        "AnalyzerResults":{
+          "shape":"DataQualityAnalyzerResults",
+          "documentation":"<p>A list of <code>DataQualityAnalyzerResult</code> objects representing the results for each analyzer. </p>"
+        },
+        "Observations":{
+          "shape":"DataQualityObservations",
+          "documentation":"<p>A list of <code>DataQualityObservation</code> objects representing the observations generated after evaluating the rules and analyzers. </p>"
         }
       }
     },
@@ -15650,6 +15748,24 @@
       "min":1,
       "pattern":"[a-zA-Z0-9+-=._./@]+"
     },
+    "MetricBasedObservation":{
+      "type":"structure",
+      "members":{
+        "MetricName":{
+          "shape":"NameString",
+          "documentation":"<p>The name of the data quality metric used for generating the observation.</p>"
+        },
+        "MetricValues":{
+          "shape":"DataQualityMetricValues",
+          "documentation":"<p>An object of type <code>DataQualityMetricValues</code> representing the analysis of the data quality metric value.</p>"
+        },
+        "NewRules":{
+          "shape":"NewRules",
+          "documentation":"<p>A list of new data quality rules generated as part of the observation based on the data quality metric value.</p>"
+        }
+      },
+      "documentation":"<p>Describes the metric based observation generated based on evaluated data quality metrics.</p>"
+    },
     "MicrosoftSQLServerCatalogSource":{
       "type":"structure",
       "required":[
@@ -15782,6 +15898,10 @@
       "pattern":"[\\u0020-\\uD7FF\\uE000-\\uFFFD\\uD800\\uDC00-\\uDBFF\\uDFFF\\t]*"
     },
     "NameStringList":{
+      "type":"list",
+      "member":{"shape":"NameString"}
+    },
+    "NewRules":{
       "type":"list",
       "member":{"shape":"NameString"}
     },

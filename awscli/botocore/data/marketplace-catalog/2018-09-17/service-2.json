@@ -238,6 +238,162 @@
       "exception":true,
       "synthetic":true
     },
+    "AmiProductEntityIdFilter":{
+      "type":"structure",
+      "members":{
+        "ValueList":{
+          "shape":"AmiProductEntityIdFilterValueList",
+          "documentation":"<p>A string array of unique entity id values to be filtered on.</p>"
+        }
+      },
+      "documentation":"<p>Object that allows filtering on entity id of an AMI product.</p>"
+    },
+    "AmiProductEntityIdFilterValueList":{
+      "type":"list",
+      "member":{"shape":"AmiProductEntityIdString"},
+      "max":10,
+      "min":1
+    },
+    "AmiProductEntityIdString":{
+      "type":"string",
+      "max":255,
+      "min":1,
+      "pattern":"^[a-zA-Z0-9][.a-zA-Z0-9/-]+[a-zA-Z0-9]$"
+    },
+    "AmiProductFilters":{
+      "type":"structure",
+      "members":{
+        "EntityId":{
+          "shape":"AmiProductEntityIdFilter",
+          "documentation":"<p>Unique identifier for the AMI product.</p>"
+        },
+        "LastModifiedDate":{
+          "shape":"AmiProductLastModifiedDateFilter",
+          "documentation":"<p>The last date on which the AMI product was modified.</p>"
+        },
+        "ProductTitle":{
+          "shape":"AmiProductTitleFilter",
+          "documentation":"<p>The title of the AMI product.</p>"
+        },
+        "Visibility":{
+          "shape":"AmiProductVisibilityFilter",
+          "documentation":"<p>The visibility of the AMI product.</p>"
+        }
+      },
+      "documentation":"<p>Object containing all the filter fields for AMI products. Client can add a maximum of 8 filters in a single <code>ListEntities</code> request.</p>"
+    },
+    "AmiProductLastModifiedDateFilter":{
+      "type":"structure",
+      "members":{
+        "DateRange":{
+          "shape":"AmiProductLastModifiedDateFilterDateRange",
+          "documentation":"<p>Dates between which the AMI product was last modified.</p>"
+        }
+      },
+      "documentation":"<p>Object that allows filtering based on the last modified date of AMI products.</p>"
+    },
+    "AmiProductLastModifiedDateFilterDateRange":{
+      "type":"structure",
+      "members":{
+        "AfterValue":{
+          "shape":"DateTimeISO8601",
+          "documentation":"<p>Date after which the AMI product was last modified.</p>"
+        },
+        "BeforeValue":{
+          "shape":"DateTimeISO8601",
+          "documentation":"<p>Date before which the AMI product was last modified.</p>"
+        }
+      },
+      "documentation":"<p>Object that contains date range of the last modified date to be filtered on. You can optionally provide a <code>BeforeValue</code> and/or <code>AfterValue</code>. Both are inclusive.</p>"
+    },
+    "AmiProductSort":{
+      "type":"structure",
+      "members":{
+        "SortBy":{
+          "shape":"AmiProductSortBy",
+          "documentation":"<p>Field to sort the AMI products by.</p>"
+        },
+        "SortOrder":{
+          "shape":"SortOrder",
+          "documentation":"<p>The sorting order. Can be <code>ASCENDING</code> or <code>DESCENDING</code>. The default value is <code>DESCENDING</code>.</p>"
+        }
+      },
+      "documentation":"<p>Objects that allows sorting on AMI products based on certain fields and sorting order.</p>"
+    },
+    "AmiProductSortBy":{
+      "type":"string",
+      "enum":[
+        "EntityId",
+        "LastModifiedDate",
+        "ProductTitle",
+        "Visibility"
+      ]
+    },
+    "AmiProductSummary":{
+      "type":"structure",
+      "members":{
+        "ProductTitle":{
+          "shape":"AmiProductTitleString",
+          "documentation":"<p>The title of the AMI product.</p>"
+        },
+        "Visibility":{
+          "shape":"AmiProductVisibilityString",
+          "documentation":"<p>The lifecycle of the AMI product.</p>"
+        }
+      },
+      "documentation":"<p>Object that contains summarized information about an AMI product.</p>"
+    },
+    "AmiProductTitleFilter":{
+      "type":"structure",
+      "members":{
+        "ValueList":{
+          "shape":"AmiProductTitleFilterValueList",
+          "documentation":"<p>A string array of unique product title values to be filtered on.</p>"
+        },
+        "WildCardValue":{
+          "shape":"AmiProductTitleString",
+          "documentation":"<p>A string that will be the <code>wildCard</code> input for product tile filter. It matches the provided value as a substring in the actual value.</p>"
+        }
+      },
+      "documentation":"<p>Object that allows filtering on product title.</p>"
+    },
+    "AmiProductTitleFilterValueList":{
+      "type":"list",
+      "member":{"shape":"AmiProductTitleString"},
+      "max":10,
+      "min":1
+    },
+    "AmiProductTitleString":{
+      "type":"string",
+      "max":255,
+      "min":1,
+      "pattern":"^(.)+$"
+    },
+    "AmiProductVisibilityFilter":{
+      "type":"structure",
+      "members":{
+        "ValueList":{
+          "shape":"AmiProductVisibilityFilterValueList",
+          "documentation":"<p>A string array of unique visibility values to be filtered on.</p>"
+        }
+      },
+      "documentation":"<p>Object that allows filtering on the visibility of the product in the AWS Marketplace.</p>"
+    },
+    "AmiProductVisibilityFilterValueList":{
+      "type":"list",
+      "member":{"shape":"AmiProductVisibilityString"},
+      "max":10,
+      "min":1
+    },
+    "AmiProductVisibilityString":{
+      "type":"string",
+      "enum":[
+        "Limited",
+        "Public",
+        "Restricted",
+        "Draft"
+      ]
+    },
     "CancelChangeSetRequest":{
       "type":"structure",
       "required":[
@@ -422,6 +578,319 @@
       "min":1,
       "pattern":"^[!-~]+$"
     },
+    "ContainerProductEntityIdFilter":{
+      "type":"structure",
+      "members":{
+        "ValueList":{
+          "shape":"ContainerProductEntityIdFilterValueList",
+          "documentation":"<p>A string array of unique entity id values to be filtered on.</p>"
+        }
+      },
+      "documentation":"<p>Object that allows filtering on entity id of a container product.</p>"
+    },
+    "ContainerProductEntityIdFilterValueList":{
+      "type":"list",
+      "member":{"shape":"ContainerProductEntityIdString"},
+      "max":10,
+      "min":1
+    },
+    "ContainerProductEntityIdString":{
+      "type":"string",
+      "max":255,
+      "min":1,
+      "pattern":"^[a-zA-Z0-9][.a-zA-Z0-9/-]+[a-zA-Z0-9]$"
+    },
+    "ContainerProductFilters":{
+      "type":"structure",
+      "members":{
+        "EntityId":{
+          "shape":"ContainerProductEntityIdFilter",
+          "documentation":"<p>Unique identifier for the container product.</p>"
+        },
+        "LastModifiedDate":{
+          "shape":"ContainerProductLastModifiedDateFilter",
+          "documentation":"<p>The last date on which the container product was modified.</p>"
+        },
+        "ProductTitle":{
+          "shape":"ContainerProductTitleFilter",
+          "documentation":"<p>The title of the container product.</p>"
+        },
+        "Visibility":{
+          "shape":"ContainerProductVisibilityFilter",
+          "documentation":"<p>The visibility of the container product.</p>"
+        }
+      },
+      "documentation":"<p>Object containing all the filter fields for container products. Client can add a maximum of 8 filters in a single <code>ListEntities</code> request.</p>"
+    },
+    "ContainerProductLastModifiedDateFilter":{
+      "type":"structure",
+      "members":{
+        "DateRange":{
+          "shape":"ContainerProductLastModifiedDateFilterDateRange",
+          "documentation":"<p>Dates between which the container product was last modified.</p>"
+        }
+      },
+      "documentation":"<p>Object that allows filtering based on the last modified date of container products.</p>"
+    },
+    "ContainerProductLastModifiedDateFilterDateRange":{
+      "type":"structure",
+      "members":{
+        "AfterValue":{
+          "shape":"DateTimeISO8601",
+          "documentation":"<p>Date after which the container product was last modified.</p>"
+        },
+        "BeforeValue":{
+          "shape":"DateTimeISO8601",
+          "documentation":"<p>Date before which the container product was last modified.</p>"
+        }
+      },
+      "documentation":"<p>Object that contains date range of the last modified date to be filtered on. You can optionally provide a <code>BeforeValue</code> and/or <code>AfterValue</code>. Both are inclusive.</p>"
+    },
+    "ContainerProductSort":{
+      "type":"structure",
+      "members":{
+        "SortBy":{
+          "shape":"ContainerProductSortBy",
+          "documentation":"<p>Field to sort the container products by.</p>"
+        },
+        "SortOrder":{
+          "shape":"SortOrder",
+          "documentation":"<p>The sorting order. Can be <code>ASCENDING</code> or <code>DESCENDING</code>. The default value is <code>DESCENDING</code>.</p>"
+        }
+      },
+      "documentation":"<p>Objects that allows sorting on container products based on certain fields and sorting order.</p>"
+    },
+    "ContainerProductSortBy":{
+      "type":"string",
+      "enum":[
+        "EntityId",
+        "LastModifiedDate",
+        "ProductTitle",
+        "Visibility"
+      ]
+    },
+    "ContainerProductSummary":{
+      "type":"structure",
+      "members":{
+        "ProductTitle":{
+          "shape":"ContainerProductTitleString",
+          "documentation":"<p>The title of the container product.</p>"
+        },
+        "Visibility":{
+          "shape":"ContainerProductVisibilityString",
+          "documentation":"<p>The lifecycle of the product.</p>"
+        }
+      },
+      "documentation":"<p>Object that contains summarized information about a container product.</p>"
+    },
+    "ContainerProductTitleFilter":{
+      "type":"structure",
+      "members":{
+        "ValueList":{
+          "shape":"ContainerProductTitleFilterValueList",
+          "documentation":"<p>A string array of unique product title values to be filtered on.</p>"
+        },
+        "WildCardValue":{
+          "shape":"ContainerProductTitleString",
+          "documentation":"<p>A string that will be the <code>wildCard</code> input for product tile filter. It matches the provided value as a substring in the actual value.</p>"
+        }
+      },
+      "documentation":"<p>Object that allows filtering on product title.</p>"
+    },
+    "ContainerProductTitleFilterValueList":{
+      "type":"list",
+      "member":{"shape":"ContainerProductTitleString"},
+      "max":10,
+      "min":1
+    },
+    "ContainerProductTitleString":{
+      "type":"string",
+      "max":255,
+      "min":1,
+      "pattern":"^(.)+$"
+    },
+    "ContainerProductVisibilityFilter":{
+      "type":"structure",
+      "members":{
+        "ValueList":{
+          "shape":"ContainerProductVisibilityFilterValueList",
+          "documentation":"<p>A string array of unique visibility values to be filtered on.</p>"
+        }
+      },
+      "documentation":"<p>Object that allows filtering on the visibility of the product in the AWS Marketplace.</p>"
+    },
+    "ContainerProductVisibilityFilterValueList":{
+      "type":"list",
+      "member":{"shape":"ContainerProductVisibilityString"},
+      "max":10,
+      "min":1
+    },
+    "ContainerProductVisibilityString":{
+      "type":"string",
+      "enum":[
+        "Limited",
+        "Public",
+        "Restricted",
+        "Draft"
+      ]
+    },
+    "DataProductEntityIdFilter":{
+      "type":"structure",
+      "members":{
+        "ValueList":{
+          "shape":"DataProductEntityIdFilterValueList",
+          "documentation":"<p>A string array of unique entity id values to be filtered on.</p>"
+        }
+      },
+      "documentation":"<p>Object that allows filtering on entity id of a data product.</p>"
+    },
+    "DataProductEntityIdFilterValueList":{
+      "type":"list",
+      "member":{"shape":"DataProductEntityIdString"},
+      "max":10,
+      "min":1
+    },
+    "DataProductEntityIdString":{
+      "type":"string",
+      "max":255,
+      "min":1,
+      "pattern":"^[a-zA-Z0-9][.a-zA-Z0-9/-]+[a-zA-Z0-9]$"
+    },
+    "DataProductFilters":{
+      "type":"structure",
+      "members":{
+        "EntityId":{
+          "shape":"DataProductEntityIdFilter",
+          "documentation":"<p>Unique identifier for the data product.</p>"
+        },
+        "ProductTitle":{
+          "shape":"DataProductTitleFilter",
+          "documentation":"<p>The title of the data product.</p>"
+        },
+        "Visibility":{
+          "shape":"DataProductVisibilityFilter",
+          "documentation":"<p>The visibility of the data product.</p>"
+        },
+        "LastModifiedDate":{
+          "shape":"DataProductLastModifiedDateFilter",
+          "documentation":"<p>The last date on which the data product was modified.</p>"
+        }
+      },
+      "documentation":"<p>Object containing all the filter fields for data products. Client can add a maximum of 8 filters in a single <code>ListEntities</code> request.</p>"
+    },
+    "DataProductLastModifiedDateFilter":{
+      "type":"structure",
+      "members":{
+        "DateRange":{
+          "shape":"DataProductLastModifiedDateFilterDateRange",
+          "documentation":"<p>Dates between which the data product was last modified.</p>"
+        }
+      },
+      "documentation":"<p>Object that allows filtering based on the last modified date of data products.</p>"
+    },
+    "DataProductLastModifiedDateFilterDateRange":{
+      "type":"structure",
+      "members":{
+        "AfterValue":{
+          "shape":"DateTimeISO8601",
+          "documentation":"<p>Date after which the data product was last modified.</p>"
+        },
+        "BeforeValue":{
+          "shape":"DateTimeISO8601",
+          "documentation":"<p>Date before which the data product was last modified.</p>"
+        }
+      },
+      "documentation":"<p>Object that contains date range of the last modified date to be filtered on. You can optionally provide a <code>BeforeValue</code> and/or <code>AfterValue</code>. Both are inclusive.</p>"
+    },
+    "DataProductSort":{
+      "type":"structure",
+      "members":{
+        "SortBy":{
+          "shape":"DataProductSortBy",
+          "documentation":"<p>Field to sort the data products by.</p>"
+        },
+        "SortOrder":{
+          "shape":"SortOrder",
+          "documentation":"<p>The sorting order. Can be <code>ASCENDING</code> or <code>DESCENDING</code>. The default value is <code>DESCENDING</code>.</p>"
+        }
+      },
+      "documentation":"<p>Objects that allows sorting on data products based on certain fields and sorting order.</p>"
+    },
+    "DataProductSortBy":{
+      "type":"string",
+      "enum":[
+        "EntityId",
+        "ProductTitle",
+        "Visibility",
+        "LastModifiedDate"
+      ]
+    },
+    "DataProductSummary":{
+      "type":"structure",
+      "members":{
+        "ProductTitle":{
+          "shape":"DataProductTitleString",
+          "documentation":"<p>The title of the data product.</p>"
+        },
+        "Visibility":{
+          "shape":"DataProductVisibilityString",
+          "documentation":"<p>The lifecycle of the data product.</p>"
+        }
+      },
+      "documentation":"<p>Object that contains summarized information about a data product.</p>"
+    },
+    "DataProductTitleFilter":{
+      "type":"structure",
+      "members":{
+        "ValueList":{
+          "shape":"DataProductTitleFilterValueList",
+          "documentation":"<p>A string array of unique product title values to be filtered on.</p>"
+        },
+        "WildCardValue":{
+          "shape":"DataProductTitleString",
+          "documentation":"<p>A string that will be the <code>wildCard</code> input for product tile filter. It matches the provided value as a substring in the actual value.</p>"
+        }
+      },
+      "documentation":"<p>Object that allows filtering on product title.</p>"
+    },
+    "DataProductTitleFilterValueList":{
+      "type":"list",
+      "member":{"shape":"DataProductTitleString"},
+      "max":10,
+      "min":1
+    },
+    "DataProductTitleString":{
+      "type":"string",
+      "max":255,
+      "min":1,
+      "pattern":"^(.)+$"
+    },
+    "DataProductVisibilityFilter":{
+      "type":"structure",
+      "members":{
+        "ValueList":{
+          "shape":"DataProductVisibilityFilterValueList",
+          "documentation":"<p>A string array of unique visibility values to be filtered on.</p>"
+        }
+      },
+      "documentation":"<p>Object that allows filtering on the visibility of the product in the AWS Marketplace.</p>"
+    },
+    "DataProductVisibilityFilterValueList":{
+      "type":"list",
+      "member":{"shape":"DataProductVisibilityString"},
+      "max":10,
+      "min":1
+    },
+    "DataProductVisibilityString":{
+      "type":"string",
+      "enum":[
+        "Limited",
+        "Public",
+        "Restricted",
+        "Unavailable",
+        "Draft"
+      ]
+    },
     "DateTimeISO8601":{
       "type":"string",
       "max":20,
@@ -604,6 +1073,30 @@
         "Visibility":{
           "shape":"VisibilityValue",
           "documentation":"<p>The visibility status of the entity to buyers. This value can be <code>Public</code> (everyone can view the entity), <code>Limited</code> (the entity is visible to limited accounts only), or <code>Restricted</code> (the entity was published and then unpublished and only existing buyers can view it). </p>"
+        },
+        "AmiProductSummary":{
+          "shape":"AmiProductSummary",
+          "documentation":"<p>An object that contains summary information about the AMI product.</p>"
+        },
+        "ContainerProductSummary":{
+          "shape":"ContainerProductSummary",
+          "documentation":"<p>An object that contains summary information about the container product.</p>"
+        },
+        "DataProductSummary":{
+          "shape":"DataProductSummary",
+          "documentation":"<p>An object that contains summary information about the data product.</p>"
+        },
+        "SaaSProductSummary":{
+          "shape":"SaaSProductSummary",
+          "documentation":"<p>An object that contains summary information about the SaaS product.</p>"
+        },
+        "OfferSummary":{
+          "shape":"OfferSummary",
+          "documentation":"<p>An object that contains summary information about the offer.</p>"
+        },
+        "ResaleAuthorizationSummary":{
+          "shape":"ResaleAuthorizationSummary",
+          "documentation":"<p>An object that contains summary information about the Resale Authorization.</p>"
         }
       },
       "documentation":"<p>This object is a container for common summary information about the entity. The summary doesn't contain the whole entity structure, but it does contain information common across all entities.</p>"
@@ -617,6 +1110,68 @@
       "max":255,
       "min":1,
       "pattern":"^[a-zA-Z]+$"
+    },
+    "EntityTypeFilters":{
+      "type":"structure",
+      "members":{
+        "DataProductFilters":{
+          "shape":"DataProductFilters",
+          "documentation":"<p>A filter for data products.</p>"
+        },
+        "SaaSProductFilters":{
+          "shape":"SaaSProductFilters",
+          "documentation":"<p>A filter for SaaS products.</p>"
+        },
+        "AmiProductFilters":{
+          "shape":"AmiProductFilters",
+          "documentation":"<p>A filter for AMI products.</p>"
+        },
+        "OfferFilters":{
+          "shape":"OfferFilters",
+          "documentation":"<p>A filter for offers.</p>"
+        },
+        "ContainerProductFilters":{
+          "shape":"ContainerProductFilters",
+          "documentation":"<p>A filter for container products.</p>"
+        },
+        "ResaleAuthorizationFilters":{
+          "shape":"ResaleAuthorizationFilters",
+          "documentation":"<p>A filter for Resale Authorizations.</p>"
+        }
+      },
+      "documentation":"<p>Object containing all the filter fields per entity type.</p>",
+      "union":true
+    },
+    "EntityTypeSort":{
+      "type":"structure",
+      "members":{
+        "DataProductSort":{
+          "shape":"DataProductSort",
+          "documentation":"<p>A sort for data products.</p>"
+        },
+        "SaaSProductSort":{
+          "shape":"SaaSProductSort",
+          "documentation":"<p>A sort for SaaS products.</p>"
+        },
+        "AmiProductSort":{
+          "shape":"AmiProductSort",
+          "documentation":"<p>A sort for AMI products.</p>"
+        },
+        "OfferSort":{
+          "shape":"OfferSort",
+          "documentation":"<p>A sort for offers.</p>"
+        },
+        "ContainerProductSort":{
+          "shape":"ContainerProductSort",
+          "documentation":"<p>A sort for container products.</p>"
+        },
+        "ResaleAuthorizationSort":{
+          "shape":"ResaleAuthorizationSort",
+          "documentation":"<p>A sort for Resale Authorizations.</p>"
+        }
+      },
+      "documentation":"<p>Object containing all the sort fields per entity type.</p>",
+      "union":true
     },
     "ErrorCodeString":{
       "type":"string",
@@ -800,7 +1355,7 @@
         },
         "EntityType":{
           "shape":"EntityType",
-          "documentation":"<p>The type of entities to retrieve.</p>"
+          "documentation":"<p>The type of entities to retrieve. Valid values are: <code>ServerProduct</code>, <code>AmiProduct</code>, <code>ContainerProduct</code>, <code>DataProduct</code>, <code>SaaSProduct</code>, <code>ProcurementPolicy</code>, <code>Experience</code>, <code>Audience</code>, <code>BrandingSettings</code>, <code>Offer</code>, <code>Seller</code>, <code>ResaleAuthorization</code>.</p>"
         },
         "FilterList":{
           "shape":"FilterList",
@@ -821,6 +1376,14 @@
         "OwnershipType":{
           "shape":"OwnershipType",
           "documentation":"<p>Filters the returned set of entities based on their owner. The default is <code>SELF</code>. To list entities shared with you through AWS Resource Access Manager (AWS RAM), set to <code>SHARED</code>. Entities shared through the AWS Marketplace Catalog API <code>PutResourcePolicy</code> operation can't be discovered through the <code>SHARED</code> parameter.</p>"
+        },
+        "EntityTypeFilters":{
+          "shape":"EntityTypeFilters",
+          "documentation":"<p>A Union object containing filter shapes for all <code>EntityType</code>s. Each <code>EntityTypeFilter</code> shape will have filters applicable for that <code>EntityType</code> that can be used to search or filter entities.</p>"
+        },
+        "EntityTypeSort":{
+          "shape":"EntityTypeSort",
+          "documentation":"<p>A Union object containing <code>Sort</code> shapes for all <code>EntityType</code>s. Each <code>EntityTypeSort</code> shape will have <code>SortBy</code> and <code>SortOrder</code> applicable for fields on that <code>EntityType</code>. This can be used to sort the results of the filter query.</p>"
         }
       }
     },
@@ -829,7 +1392,7 @@
       "members":{
         "EntitySummaryList":{
           "shape":"EntitySummaryList",
-          "documentation":"<p> Array of <code>EntitySummary</code> object.</p>"
+          "documentation":"<p>Array of <code>EntitySummary</code> objects.</p>"
         },
         "NextToken":{
           "shape":"NextToken",
@@ -866,6 +1429,334 @@
       "min":1,
       "pattern":"^[\\w+=.:@\\-\\/]$"
     },
+    "OfferAvailabilityEndDateFilter":{
+      "type":"structure",
+      "members":{
+        "DateRange":{
+          "shape":"OfferAvailabilityEndDateFilterDateRange",
+          "documentation":"<p>Allows filtering on the <code>AvailabilityEndDate</code> of an offer with date range as input.</p>"
+        }
+      },
+      "documentation":"<p>Allows filtering on the <code>AvailabilityEndDate</code> of an offer.</p>"
+    },
+    "OfferAvailabilityEndDateFilterDateRange":{
+      "type":"structure",
+      "members":{
+        "AfterValue":{
+          "shape":"DateTimeISO8601",
+          "documentation":"<p>Allows filtering on the <code>AvailabilityEndDate</code> of an offer after a date.</p>"
+        },
+        "BeforeValue":{
+          "shape":"DateTimeISO8601",
+          "documentation":"<p>Allows filtering on the <code>AvailabilityEndDate</code> of an offer before a date.</p>"
+        }
+      },
+      "documentation":"<p>Allows filtering on the <code>AvailabilityEndDate</code> of an offer with date range as input.</p>"
+    },
+    "OfferBuyerAccountsFilter":{
+      "type":"structure",
+      "members":{
+        "WildCardValue":{
+          "shape":"OfferBuyerAccountsFilterWildcard",
+          "documentation":"<p>Allows filtering on the <code>BuyerAccounts</code> of an offer with wild card input.</p>"
+        }
+      },
+      "documentation":"<p>Allows filtering on the <code>BuyerAccounts</code> of an offer.</p>"
+    },
+    "OfferBuyerAccountsFilterWildcard":{
+      "type":"string",
+      "max":255,
+      "min":1,
+      "pattern":"^(.)+$"
+    },
+    "OfferBuyerAccountsList":{
+      "type":"list",
+      "member":{"shape":"OfferBuyerAccountsString"},
+      "max":26,
+      "min":0
+    },
+    "OfferBuyerAccountsString":{
+      "type":"string",
+      "max":12,
+      "min":12,
+      "pattern":"^\\d{12}$"
+    },
+    "OfferEntityIdFilter":{
+      "type":"structure",
+      "members":{
+        "ValueList":{
+          "shape":"OfferEntityIdFilterValueList",
+          "documentation":"<p>Allows filtering on entity id of an offer with list input.</p>"
+        }
+      },
+      "documentation":"<p>Allows filtering on the entity id of an offer.</p>"
+    },
+    "OfferEntityIdFilterValueList":{
+      "type":"list",
+      "member":{"shape":"OfferEntityIdString"},
+      "max":10,
+      "min":1
+    },
+    "OfferEntityIdString":{
+      "type":"string",
+      "max":255,
+      "min":1,
+      "pattern":"^[a-zA-Z0-9][.a-zA-Z0-9/-]+[a-zA-Z0-9]$"
+    },
+    "OfferFilters":{
+      "type":"structure",
+      "members":{
+        "EntityId":{
+          "shape":"OfferEntityIdFilter",
+          "documentation":"<p>Allows filtering on <code>EntityId</code> of an offer.</p>"
+        },
+        "Name":{
+          "shape":"OfferNameFilter",
+          "documentation":"<p>Allows filtering on the <code>Name</code> of an offer.</p>"
+        },
+        "ProductId":{
+          "shape":"OfferProductIdFilter",
+          "documentation":"<p>Allows filtering on the <code>ProductId</code> of an offer.</p>"
+        },
+        "ReleaseDate":{
+          "shape":"OfferReleaseDateFilter",
+          "documentation":"<p>Allows filtering on the <code>ReleaseDate</code> of an offer.</p>"
+        },
+        "AvailabilityEndDate":{
+          "shape":"OfferAvailabilityEndDateFilter",
+          "documentation":"<p>Allows filtering on the <code>AvailabilityEndDate</code> of an offer.</p>"
+        },
+        "BuyerAccounts":{
+          "shape":"OfferBuyerAccountsFilter",
+          "documentation":"<p>Allows filtering on the <code>BuyerAccounts</code> of an offer.</p>"
+        },
+        "State":{
+          "shape":"OfferStateFilter",
+          "documentation":"<p>Allows filtering on the <code>State</code> of an offer.</p>"
+        },
+        "Targeting":{
+          "shape":"OfferTargetingFilter",
+          "documentation":"<p>Allows filtering on the <code>Targeting</code> of an offer.</p>"
+        },
+        "LastModifiedDate":{
+          "shape":"OfferLastModifiedDateFilter",
+          "documentation":"<p>Allows filtering on the <code>LastModifiedDate</code> of an offer.</p>"
+        }
+      },
+      "documentation":"<p>A filter for offers entity.</p>"
+    },
+    "OfferLastModifiedDateFilter":{
+      "type":"structure",
+      "members":{
+        "DateRange":{
+          "shape":"OfferLastModifiedDateFilterDateRange",
+          "documentation":"<p>Allows filtering on the <code>LastModifiedDate</code> of an offer with date range as input.</p>"
+        }
+      },
+      "documentation":"<p>Allows filtering on the <code>LastModifiedDate</code> of an offer.</p>"
+    },
+    "OfferLastModifiedDateFilterDateRange":{
+      "type":"structure",
+      "members":{
+        "AfterValue":{
+          "shape":"DateTimeISO8601",
+          "documentation":"<p>Allows filtering on the <code>LastModifiedDate</code> of an offer after a date.</p>"
+        },
+        "BeforeValue":{
+          "shape":"DateTimeISO8601",
+          "documentation":"<p>Allows filtering on the <code>LastModifiedDate</code> of an offer before a date.</p>"
+        }
+      },
+      "documentation":"<p>Allows filtering on the <code>LastModifiedDate</code> of an offer with date range as input.</p>"
+    },
+    "OfferNameFilter":{
+      "type":"structure",
+      "members":{
+        "ValueList":{
+          "shape":"OfferNameFilterValueList",
+          "documentation":"<p>Allows filtering on the <code>Name</code> of an offer with list input.</p>"
+        },
+        "WildCardValue":{
+          "shape":"OfferNameString",
+          "documentation":"<p>Allows filtering on the <code>Name</code> of an offer with wild card input.</p>"
+        }
+      },
+      "documentation":"<p>Allows filtering on the <code>Name</code> of an offer.</p>"
+    },
+    "OfferNameFilterValueList":{
+      "type":"list",
+      "member":{"shape":"OfferNameString"},
+      "max":10,
+      "min":1
+    },
+    "OfferNameString":{
+      "type":"string",
+      "max":150,
+      "min":1,
+      "pattern":"^(.)+$"
+    },
+    "OfferProductIdFilter":{
+      "type":"structure",
+      "members":{
+        "ValueList":{
+          "shape":"OfferProductIdFilterValueList",
+          "documentation":"<p>Allows filtering on the <code>ProductId</code> of an offer with list input.</p>"
+        }
+      },
+      "documentation":"<p>Allows filtering on the <code>ProductId</code> of an offer.</p>"
+    },
+    "OfferProductIdFilterValueList":{
+      "type":"list",
+      "member":{"shape":"OfferProductIdString"},
+      "max":10,
+      "min":1
+    },
+    "OfferProductIdString":{
+      "type":"string",
+      "max":255,
+      "min":1,
+      "pattern":"^(.)+$"
+    },
+    "OfferReleaseDateFilter":{
+      "type":"structure",
+      "members":{
+        "DateRange":{
+          "shape":"OfferReleaseDateFilterDateRange",
+          "documentation":"<p>Allows filtering on the <code>ReleaseDate</code> of an offer with date range as input.</p>"
+        }
+      },
+      "documentation":"<p>Allows filtering on the <code>ReleaseDate</code> of an offer.</p>"
+    },
+    "OfferReleaseDateFilterDateRange":{
+      "type":"structure",
+      "members":{
+        "AfterValue":{
+          "shape":"DateTimeISO8601",
+          "documentation":"<p>Allows filtering on the <code>ReleaseDate</code> of offers after a date.</p>"
+        },
+        "BeforeValue":{
+          "shape":"DateTimeISO8601",
+          "documentation":"<p>Allows filtering on the <code>ReleaseDate</code> of offers before a date.</p>"
+        }
+      },
+      "documentation":"<p>Allows filtering on the <code>ReleaseDate</code> of an offer with date range as input.</p>"
+    },
+    "OfferSort":{
+      "type":"structure",
+      "members":{
+        "SortBy":{
+          "shape":"OfferSortBy",
+          "documentation":"<p>Allows to sort offers.</p>"
+        },
+        "SortOrder":{
+          "shape":"SortOrder",
+          "documentation":"<p>Allows to sort offers.</p>"
+        }
+      },
+      "documentation":"<p>Allows to sort offers.</p>"
+    },
+    "OfferSortBy":{
+      "type":"string",
+      "enum":[
+        "EntityId",
+        "Name",
+        "ProductId",
+        "ReleaseDate",
+        "AvailabilityEndDate",
+        "BuyerAccounts",
+        "State",
+        "Targeting",
+        "LastModifiedDate"
+      ]
+    },
+    "OfferStateFilter":{
+      "type":"structure",
+      "members":{
+        "ValueList":{
+          "shape":"OfferStateFilterValueList",
+          "documentation":"<p>Allows filtering on the <code>State</code> of an offer with list input.</p>"
+        }
+      },
+      "documentation":"<p>Allows filtering on the <code>State</code> of an offer.</p>"
+    },
+    "OfferStateFilterValueList":{
+      "type":"list",
+      "member":{"shape":"OfferStateString"},
+      "max":2,
+      "min":1
+    },
+    "OfferStateString":{
+      "type":"string",
+      "enum":[
+        "Draft",
+        "Released"
+      ]
+    },
+    "OfferSummary":{
+      "type":"structure",
+      "members":{
+        "Name":{
+          "shape":"OfferNameString",
+          "documentation":"<p>The name of the offer.</p>"
+        },
+        "ProductId":{
+          "shape":"OfferProductIdString",
+          "documentation":"<p>The product ID of the offer.</p>"
+        },
+        "ReleaseDate":{
+          "shape":"DateTimeISO8601",
+          "documentation":"<p>The release date of the offer.</p>"
+        },
+        "AvailabilityEndDate":{
+          "shape":"DateTimeISO8601",
+          "documentation":"<p>The availability end date of the offer.</p>"
+        },
+        "BuyerAccounts":{
+          "shape":"OfferBuyerAccountsList",
+          "documentation":"<p>The buyer accounts in the offer.</p>"
+        },
+        "State":{
+          "shape":"OfferStateString",
+          "documentation":"<p>The status of the offer.</p>"
+        },
+        "Targeting":{
+          "shape":"OfferTargetingList",
+          "documentation":"<p>The targeting in the offer.</p>"
+        }
+      },
+      "documentation":"<p>Summarized information about an offer.</p>"
+    },
+    "OfferTargetingFilter":{
+      "type":"structure",
+      "members":{
+        "ValueList":{
+          "shape":"OfferTargetingFilterValueList",
+          "documentation":"<p>Allows filtering on the <code>Targeting</code> of an offer with list input.</p>"
+        }
+      },
+      "documentation":"<p>Allows filtering on the <code>Targeting</code> of an offer.</p>"
+    },
+    "OfferTargetingFilterValueList":{
+      "type":"list",
+      "member":{"shape":"OfferTargetingString"},
+      "max":4,
+      "min":1
+    },
+    "OfferTargetingList":{
+      "type":"list",
+      "member":{"shape":"OfferTargetingString"},
+      "max":4,
+      "min":0
+    },
+    "OfferTargetingString":{
+      "type":"string",
+      "enum":[
+        "BuyerAccounts",
+        "ParticipatingPrograms",
+        "CountryCodes",
+        "None"
+      ]
+    },
     "OwnershipType":{
       "type":"string",
       "enum":[
@@ -900,6 +1791,530 @@
       "member":{"shape":"Change"},
       "max":20,
       "min":1
+    },
+    "ResaleAuthorizationAvailabilityEndDateFilter":{
+      "type":"structure",
+      "members":{
+        "DateRange":{
+          "shape":"ResaleAuthorizationAvailabilityEndDateFilterDateRange",
+          "documentation":"<p>Allows filtering on <code>AvailabilityEndDate</code> of a ResaleAuthorization with date range as input</p>"
+        },
+        "ValueList":{
+          "shape":"ResaleAuthorizationAvailabilityEndDateFilterValueList",
+          "documentation":"<p>Allows filtering on <code>AvailabilityEndDate</code> of a ResaleAuthorization with date value as input.</p>"
+        }
+      },
+      "documentation":"<p>Allows filtering on <code>AvailabilityEndDate</code> of a ResaleAuthorization.</p>"
+    },
+    "ResaleAuthorizationAvailabilityEndDateFilterDateRange":{
+      "type":"structure",
+      "members":{
+        "AfterValue":{
+          "shape":"DateTimeISO8601",
+          "documentation":"<p>Allows filtering on <code>AvailabilityEndDate</code> of a ResaleAuthorization after a date.</p>"
+        },
+        "BeforeValue":{
+          "shape":"DateTimeISO8601",
+          "documentation":"<p>Allows filtering on <code>AvailabilityEndDate</code> of a ResaleAuthorization before a date.</p>"
+        }
+      },
+      "documentation":"<p>Allows filtering on <code>AvailabilityEndDate</code> of a ResaleAuthorization with date range as input.</p>"
+    },
+    "ResaleAuthorizationAvailabilityEndDateFilterValueList":{
+      "type":"list",
+      "member":{"shape":"DateTimeISO8601"},
+      "max":10,
+      "min":1
+    },
+    "ResaleAuthorizationCreatedDateFilter":{
+      "type":"structure",
+      "members":{
+        "DateRange":{
+          "shape":"ResaleAuthorizationCreatedDateFilterDateRange",
+          "documentation":"<p>Allows filtering on <code>CreatedDate</code> of a ResaleAuthorization with date range as input.</p>"
+        },
+        "ValueList":{
+          "shape":"ResaleAuthorizationCreatedDateFilterValueList",
+          "documentation":"<p>Allows filtering on <code>CreatedDate</code> of a ResaleAuthorization with date value as input.</p>"
+        }
+      },
+      "documentation":"<p>Allows filtering on <code>CreatedDate</code> of a ResaleAuthorization.</p>"
+    },
+    "ResaleAuthorizationCreatedDateFilterDateRange":{
+      "type":"structure",
+      "members":{
+        "AfterValue":{
+          "shape":"DateTimeISO8601",
+          "documentation":"<p>Allows filtering on <code>CreatedDate</code> of a ResaleAuthorization after a date.</p>"
+        },
+        "BeforeValue":{
+          "shape":"DateTimeISO8601",
+          "documentation":"<p>Allows filtering on <code>CreatedDate</code> of a ResaleAuthorization before a date.</p>"
+        }
+      },
+      "documentation":"<p>Allows filtering on <code>CreatedDate</code> of a ResaleAuthorization with date range as input.</p>"
+    },
+    "ResaleAuthorizationCreatedDateFilterValueList":{
+      "type":"list",
+      "member":{"shape":"DateTimeISO8601"},
+      "max":10,
+      "min":1
+    },
+    "ResaleAuthorizationEntityIdFilter":{
+      "type":"structure",
+      "members":{
+        "ValueList":{
+          "shape":"ResaleAuthorizationEntityIdFilterValueList",
+          "documentation":"<p>Allows filtering on <code>EntityId</code> of a ResaleAuthorization with list input.</p>"
+        }
+      },
+      "documentation":"<p>Allows filtering on <code>EntityId</code> of a ResaleAuthorization.</p>"
+    },
+    "ResaleAuthorizationEntityIdFilterValueList":{
+      "type":"list",
+      "member":{"shape":"ResaleAuthorizationEntityIdString"},
+      "max":10,
+      "min":1
+    },
+    "ResaleAuthorizationEntityIdString":{
+      "type":"string",
+      "max":255,
+      "min":1,
+      "pattern":"^[a-zA-Z0-9][.a-zA-Z0-9/-]+[a-zA-Z0-9]$"
+    },
+    "ResaleAuthorizationFilters":{
+      "type":"structure",
+      "members":{
+        "EntityId":{
+          "shape":"ResaleAuthorizationEntityIdFilter",
+          "documentation":"<p>Allows filtering on the <code>EntityId</code> of a ResaleAuthorization.</p>"
+        },
+        "Name":{
+          "shape":"ResaleAuthorizationNameFilter",
+          "documentation":"<p>Allows filtering on the <code>Name</code> of a ResaleAuthorization.</p>"
+        },
+        "ProductId":{
+          "shape":"ResaleAuthorizationProductIdFilter",
+          "documentation":"<p>Allows filtering on the <code>ProductId</code> of a ResaleAuthorization.</p>"
+        },
+        "CreatedDate":{
+          "shape":"ResaleAuthorizationCreatedDateFilter",
+          "documentation":"<p>Allows filtering on the <code>CreatedDate</code> of a ResaleAuthorization.</p>"
+        },
+        "AvailabilityEndDate":{
+          "shape":"ResaleAuthorizationAvailabilityEndDateFilter",
+          "documentation":"<p>Allows filtering on the <code>AvailabilityEndDate</code> of a ResaleAuthorization.</p>"
+        },
+        "ManufacturerAccountId":{
+          "shape":"ResaleAuthorizationManufacturerAccountIdFilter",
+          "documentation":"<p>Allows filtering on the <code>ManufacturerAccountId</code> of a ResaleAuthorization.</p>"
+        },
+        "ProductName":{
+          "shape":"ResaleAuthorizationProductNameFilter",
+          "documentation":"<p>Allows filtering on the <code>ProductName</code> of a ResaleAuthorization.</p>"
+        },
+        "ManufacturerLegalName":{
+          "shape":"ResaleAuthorizationManufacturerLegalNameFilter",
+          "documentation":"<p>Allows filtering on the <code>ManufacturerLegalName</code> of a ResaleAuthorization.</p>"
+        },
+        "ResellerAccountID":{
+          "shape":"ResaleAuthorizationResellerAccountIDFilter",
+          "documentation":"<p>Allows filtering on the <code>ResellerAccountID</code> of a ResaleAuthorization.</p>"
+        },
+        "ResellerLegalName":{
+          "shape":"ResaleAuthorizationResellerLegalNameFilter",
+          "documentation":"<p>Allows filtering on the <code>ResellerLegalName</code> of a ResaleAuthorization.</p>"
+        },
+        "Status":{
+          "shape":"ResaleAuthorizationStatusFilter",
+          "documentation":"<p>Allows filtering on the <code>Status</code> of a ResaleAuthorization.</p>"
+        },
+        "OfferExtendedStatus":{
+          "shape":"ResaleAuthorizationOfferExtendedStatusFilter",
+          "documentation":"<p>Allows filtering on the <code>OfferExtendedStatus</code> of a ResaleAuthorization.</p>"
+        },
+        "LastModifiedDate":{
+          "shape":"ResaleAuthorizationLastModifiedDateFilter",
+          "documentation":"<p>Allows filtering on the <code>LastModifiedDate</code> of a ResaleAuthorization.</p>"
+        }
+      },
+      "documentation":"<p>A filter for ResaleAuthorization entity.</p>"
+    },
+    "ResaleAuthorizationLastModifiedDateFilter":{
+      "type":"structure",
+      "members":{
+        "DateRange":{
+          "shape":"ResaleAuthorizationLastModifiedDateFilterDateRange",
+          "documentation":"<p>Allows filtering on the <code>LastModifiedDate</code> of a ResaleAuthorization with date range as input.</p>"
+        }
+      },
+      "documentation":"<p>Allows filtering on the <code>LastModifiedDate</code> of a ResaleAuthorization.</p>"
+    },
+    "ResaleAuthorizationLastModifiedDateFilterDateRange":{
+      "type":"structure",
+      "members":{
+        "AfterValue":{
+          "shape":"DateTimeISO8601",
+          "documentation":"<p>Allows filtering on the <code>LastModifiedDate</code> of a ResaleAuthorization after a date.</p>"
+        },
+        "BeforeValue":{
+          "shape":"DateTimeISO8601",
+          "documentation":"<p>Allows filtering on the <code>LastModifiedDate</code> of a ResaleAuthorization before a date.</p>"
+        }
+      },
+      "documentation":"<p>Allows filtering on the <code>LastModifiedDate</code> of a ResaleAuthorization with date range as input.</p>"
+    },
+    "ResaleAuthorizationManufacturerAccountIdFilter":{
+      "type":"structure",
+      "members":{
+        "ValueList":{
+          "shape":"ResaleAuthorizationManufacturerAccountIdFilterValueList",
+          "documentation":"<p>Allows filtering on the <code>ManufacturerAccountId</code> of a ResaleAuthorization with list input.</p>"
+        },
+        "WildCardValue":{
+          "shape":"ResaleAuthorizationManufacturerAccountIdFilterWildcard",
+          "documentation":"<p>Allows filtering on the <code>ManufacturerAccountId</code> of a ResaleAuthorization with wild card input.</p>"
+        }
+      },
+      "documentation":"<p>Allows filtering on the <code>ManufacturerAccountId</code> of a ResaleAuthorization.</p>"
+    },
+    "ResaleAuthorizationManufacturerAccountIdFilterValueList":{
+      "type":"list",
+      "member":{"shape":"ResaleAuthorizationManufacturerAccountIdString"},
+      "max":10,
+      "min":1
+    },
+    "ResaleAuthorizationManufacturerAccountIdFilterWildcard":{
+      "type":"string",
+      "max":12,
+      "min":12,
+      "pattern":"^\\d{12}$"
+    },
+    "ResaleAuthorizationManufacturerAccountIdString":{
+      "type":"string",
+      "max":12,
+      "min":12,
+      "pattern":"^\\d{12}$"
+    },
+    "ResaleAuthorizationManufacturerLegalNameFilter":{
+      "type":"structure",
+      "members":{
+        "ValueList":{
+          "shape":"ResaleAuthorizationManufacturerLegalNameFilterValueList",
+          "documentation":"<p>Allows filtering on the <code>ManufacturerLegalName</code> of a ResaleAuthorization with list input.</p>"
+        },
+        "WildCardValue":{
+          "shape":"ResaleAuthorizationManufacturerLegalNameFilterWildcard",
+          "documentation":"<p>Allows filtering on the <code>ManufacturerLegalName</code> of a ResaleAuthorization with wild card input.</p>"
+        }
+      },
+      "documentation":"<p>Allows filtering on the <code>ManufacturerLegalName</code> of a ResaleAuthorization.</p>"
+    },
+    "ResaleAuthorizationManufacturerLegalNameFilterValueList":{
+      "type":"list",
+      "member":{"shape":"ResaleAuthorizationManufacturerLegalNameString"},
+      "max":10,
+      "min":1
+    },
+    "ResaleAuthorizationManufacturerLegalNameFilterWildcard":{
+      "type":"string",
+      "max":255,
+      "min":1,
+      "pattern":"^(.)+$"
+    },
+    "ResaleAuthorizationManufacturerLegalNameString":{
+      "type":"string",
+      "max":255,
+      "min":1,
+      "pattern":"^(.)+$"
+    },
+    "ResaleAuthorizationNameFilter":{
+      "type":"structure",
+      "members":{
+        "ValueList":{
+          "shape":"ResaleAuthorizationNameFilterValueList",
+          "documentation":"<p>Allows filtering on the <code>Name</code> of a ResaleAuthorization with list input.</p>"
+        },
+        "WildCardValue":{
+          "shape":"ResaleAuthorizationNameFilterWildcard",
+          "documentation":"<p>Allows filtering on the <code>Name</code> of a ResaleAuthorization with wild card input.</p>"
+        }
+      },
+      "documentation":"<p>Allows filtering on the <code>Name</code> of a ResaleAuthorization.</p>"
+    },
+    "ResaleAuthorizationNameFilterValueList":{
+      "type":"list",
+      "member":{"shape":"ResaleAuthorizationNameString"},
+      "max":10,
+      "min":1
+    },
+    "ResaleAuthorizationNameFilterWildcard":{
+      "type":"string",
+      "max":255,
+      "min":1,
+      "pattern":"^(.)+$"
+    },
+    "ResaleAuthorizationNameString":{
+      "type":"string",
+      "max":255,
+      "min":1,
+      "pattern":"^(.)+$"
+    },
+    "ResaleAuthorizationOfferExtendedStatusFilter":{
+      "type":"structure",
+      "members":{
+        "ValueList":{
+          "shape":"ResaleAuthorizationOfferExtendedStatusFilterValueList",
+          "documentation":"<p>Allows filtering on the <code>OfferExtendedStatus</code> of a ResaleAuthorization with list input.</p>"
+        }
+      },
+      "documentation":"<p>Allows filtering on the <code>OfferExtendedStatus</code> of a ResaleAuthorization.</p>"
+    },
+    "ResaleAuthorizationOfferExtendedStatusFilterValueList":{
+      "type":"list",
+      "member":{"shape":"ResaleAuthorizationOfferExtendedStatusString"},
+      "max":10,
+      "min":1
+    },
+    "ResaleAuthorizationOfferExtendedStatusString":{
+      "type":"string",
+      "max":255,
+      "min":1,
+      "pattern":"^(.)+$"
+    },
+    "ResaleAuthorizationProductIdFilter":{
+      "type":"structure",
+      "members":{
+        "ValueList":{
+          "shape":"ResaleAuthorizationProductIdFilterValueList",
+          "documentation":"<p>Allows filtering on the <code>ProductId</code> of a ResaleAuthorization with list input.</p>"
+        },
+        "WildCardValue":{
+          "shape":"ResaleAuthorizationProductIdFilterWildcard",
+          "documentation":"<p>Allows filtering on the <code>ProductId</code> of a ResaleAuthorization with wild card input.</p>"
+        }
+      },
+      "documentation":"<p>Allows filtering on the <code>ProductId</code> of a ResaleAuthorization.</p>"
+    },
+    "ResaleAuthorizationProductIdFilterValueList":{
+      "type":"list",
+      "member":{"shape":"ResaleAuthorizationProductIdString"},
+      "max":10,
+      "min":1
+    },
+    "ResaleAuthorizationProductIdFilterWildcard":{
+      "type":"string",
+      "max":255,
+      "min":1,
+      "pattern":"^(.)+$"
+    },
+    "ResaleAuthorizationProductIdString":{
+      "type":"string",
+      "max":255,
+      "min":1,
+      "pattern":"^(.)+$"
+    },
+    "ResaleAuthorizationProductNameFilter":{
+      "type":"structure",
+      "members":{
+        "ValueList":{
+          "shape":"ResaleAuthorizationProductNameFilterValueList",
+          "documentation":"<p>Allows filtering on the <code>ProductName</code> of a ResaleAuthorization with list input.</p>"
+        },
+        "WildCardValue":{
+          "shape":"ResaleAuthorizationProductNameFilterWildcard",
+          "documentation":"<p>Allows filtering on the <code>ProductName</code> of a ResaleAuthorization with wild card input.</p>"
+        }
+      },
+      "documentation":"<p>Allows filtering on the <code>ProductName</code> of a ResaleAuthorization.</p>"
+    },
+    "ResaleAuthorizationProductNameFilterValueList":{
+      "type":"list",
+      "member":{"shape":"ResaleAuthorizationProductNameString"},
+      "max":10,
+      "min":1
+    },
+    "ResaleAuthorizationProductNameFilterWildcard":{
+      "type":"string",
+      "max":255,
+      "min":1,
+      "pattern":"^(.)+$"
+    },
+    "ResaleAuthorizationProductNameString":{
+      "type":"string",
+      "max":255,
+      "min":1,
+      "pattern":"^(.)+$"
+    },
+    "ResaleAuthorizationResellerAccountIDFilter":{
+      "type":"structure",
+      "members":{
+        "ValueList":{
+          "shape":"ResaleAuthorizationResellerAccountIDFilterValueList",
+          "documentation":"<p>Allows filtering on the <code>ResellerAccountID</code> of a ResaleAuthorization with list input.</p>"
+        },
+        "WildCardValue":{
+          "shape":"ResaleAuthorizationResellerAccountIDFilterWildcard",
+          "documentation":"<p>Allows filtering on the <code>ResellerAccountID</code> of a ResaleAuthorization with wild card input.</p>"
+        }
+      },
+      "documentation":"<p>Allows filtering on the <code>ResellerAccountID</code> of a ResaleAuthorization.</p>"
+    },
+    "ResaleAuthorizationResellerAccountIDFilterValueList":{
+      "type":"list",
+      "member":{"shape":"ResaleAuthorizationResellerAccountIDString"},
+      "max":10,
+      "min":1
+    },
+    "ResaleAuthorizationResellerAccountIDFilterWildcard":{
+      "type":"string",
+      "max":12,
+      "min":12,
+      "pattern":"^\\d{12}$"
+    },
+    "ResaleAuthorizationResellerAccountIDString":{
+      "type":"string",
+      "max":12,
+      "min":12,
+      "pattern":"^\\d{12}$"
+    },
+    "ResaleAuthorizationResellerLegalNameFilter":{
+      "type":"structure",
+      "members":{
+        "ValueList":{
+          "shape":"ResaleAuthorizationResellerLegalNameFilterValueList",
+          "documentation":"<p>Allows filtering on the ResellerLegalNameProductName of a ResaleAuthorization with list input.</p>"
+        },
+        "WildCardValue":{
+          "shape":"ResaleAuthorizationResellerLegalNameFilterWildcard",
+          "documentation":"<p>Allows filtering on the ResellerLegalName of a ResaleAuthorization with wild card input.</p>"
+        }
+      },
+      "documentation":"<p>Allows filtering on the ResellerLegalName of a ResaleAuthorization.</p>"
+    },
+    "ResaleAuthorizationResellerLegalNameFilterValueList":{
+      "type":"list",
+      "member":{"shape":"ResaleAuthorizationResellerLegalNameString"},
+      "max":10,
+      "min":1
+    },
+    "ResaleAuthorizationResellerLegalNameFilterWildcard":{
+      "type":"string",
+      "max":255,
+      "min":1,
+      "pattern":"^(.)+$"
+    },
+    "ResaleAuthorizationResellerLegalNameString":{
+      "type":"string",
+      "max":255,
+      "min":1,
+      "pattern":"^(.)+$"
+    },
+    "ResaleAuthorizationSort":{
+      "type":"structure",
+      "members":{
+        "SortBy":{
+          "shape":"ResaleAuthorizationSortBy",
+          "documentation":"<p>Allows to sort ResaleAuthorization.</p>"
+        },
+        "SortOrder":{
+          "shape":"SortOrder",
+          "documentation":"<p>Allows to sort ResaleAuthorization.</p>"
+        }
+      },
+      "documentation":"<p>Allows to sort ResaleAuthorization.</p>"
+    },
+    "ResaleAuthorizationSortBy":{
+      "type":"string",
+      "enum":[
+        "EntityId",
+        "Name",
+        "ProductId",
+        "ProductName",
+        "ManufacturerAccountId",
+        "ManufacturerLegalName",
+        "ResellerAccountID",
+        "ResellerLegalName",
+        "Status",
+        "OfferExtendedStatus",
+        "CreatedDate",
+        "AvailabilityEndDate",
+        "LastModifiedDate"
+      ]
+    },
+    "ResaleAuthorizationStatusFilter":{
+      "type":"structure",
+      "members":{
+        "ValueList":{
+          "shape":"ResaleAuthorizationStatusFilterValueList",
+          "documentation":"<p>Allows filtering on the <code>Status</code> of a ResaleAuthorization with list input.</p>"
+        }
+      },
+      "documentation":"<p>Allows filtering on the <code>Status</code> of a ResaleAuthorization.</p>"
+    },
+    "ResaleAuthorizationStatusFilterValueList":{
+      "type":"list",
+      "member":{"shape":"ResaleAuthorizationStatusString"},
+      "max":10,
+      "min":1
+    },
+    "ResaleAuthorizationStatusString":{
+      "type":"string",
+      "enum":[
+        "Draft",
+        "Active",
+        "Restricted"
+      ]
+    },
+    "ResaleAuthorizationSummary":{
+      "type":"structure",
+      "members":{
+        "Name":{
+          "shape":"ResaleAuthorizationNameString",
+          "documentation":"<p>The name of the ResaleAuthorization.</p>"
+        },
+        "ProductId":{
+          "shape":"ResaleAuthorizationProductIdString",
+          "documentation":"<p>The product ID of the ResaleAuthorization.</p>"
+        },
+        "ProductName":{
+          "shape":"ResaleAuthorizationProductNameString",
+          "documentation":"<p>The product name of the ResaleAuthorization.</p>"
+        },
+        "ManufacturerAccountId":{
+          "shape":"ResaleAuthorizationManufacturerAccountIdString",
+          "documentation":"<p>The manufacturer account ID of the ResaleAuthorization.</p>"
+        },
+        "ManufacturerLegalName":{
+          "shape":"ResaleAuthorizationManufacturerLegalNameString",
+          "documentation":"<p>The manufacturer legal name of the ResaleAuthorization.</p>"
+        },
+        "ResellerAccountID":{
+          "shape":"ResaleAuthorizationResellerAccountIDString",
+          "documentation":"<p>The reseller account ID of the ResaleAuthorization.</p>"
+        },
+        "ResellerLegalName":{
+          "shape":"ResaleAuthorizationResellerLegalNameString",
+          "documentation":"<p>The reseller legal name of the ResaleAuthorization</p>"
+        },
+        "Status":{
+          "shape":"ResaleAuthorizationStatusString",
+          "documentation":"<p>The status of the ResaleAuthorization.</p>"
+        },
+        "OfferExtendedStatus":{
+          "shape":"ResaleAuthorizationOfferExtendedStatusString",
+          "documentation":"<p>The offer extended status of the ResaleAuthorization</p>"
+        },
+        "CreatedDate":{
+          "shape":"DateTimeISO8601",
+          "documentation":"<p>The created date of the ResaleAuthorization.</p>"
+        },
+        "AvailabilityEndDate":{
+          "shape":"DateTimeISO8601",
+          "documentation":"<p>The availability end date of the ResaleAuthorization.</p>"
+        }
+      },
+      "documentation":"<p>Summarized information about a Resale Authorization.</p>"
     },
     "ResourceARN":{
       "type":"string",
@@ -952,6 +2367,162 @@
       "max":10240,
       "min":1,
       "pattern":"^[\\u0009\\u000A\\u000D\\u0020-\\u00FF]+$"
+    },
+    "SaaSProductEntityIdFilter":{
+      "type":"structure",
+      "members":{
+        "ValueList":{
+          "shape":"SaaSProductEntityIdFilterValueList",
+          "documentation":"<p>A string array of unique entity id values to be filtered on.</p>"
+        }
+      },
+      "documentation":"<p>Object that allows filtering on entity id of a SaaS product.</p>"
+    },
+    "SaaSProductEntityIdFilterValueList":{
+      "type":"list",
+      "member":{"shape":"SaaSProductEntityIdString"},
+      "max":10,
+      "min":1
+    },
+    "SaaSProductEntityIdString":{
+      "type":"string",
+      "max":255,
+      "min":1,
+      "pattern":"^[a-zA-Z0-9][.a-zA-Z0-9/-]+[a-zA-Z0-9]$"
+    },
+    "SaaSProductFilters":{
+      "type":"structure",
+      "members":{
+        "EntityId":{
+          "shape":"SaaSProductEntityIdFilter",
+          "documentation":"<p>Unique identifier for the SaaS product.</p>"
+        },
+        "ProductTitle":{
+          "shape":"SaaSProductTitleFilter",
+          "documentation":"<p>The title of the SaaS product.</p>"
+        },
+        "Visibility":{
+          "shape":"SaaSProductVisibilityFilter",
+          "documentation":"<p>The visibility of the SaaS product.</p>"
+        },
+        "LastModifiedDate":{
+          "shape":"SaaSProductLastModifiedDateFilter",
+          "documentation":"<p>The last date on which the SaaS product was modified.</p>"
+        }
+      },
+      "documentation":"<p>Object containing all the filter fields for SaaS products. Client can add a maximum of 8 filters in a single <code>ListEntities</code> request.</p>"
+    },
+    "SaaSProductLastModifiedDateFilter":{
+      "type":"structure",
+      "members":{
+        "DateRange":{
+          "shape":"SaaSProductLastModifiedDateFilterDateRange",
+          "documentation":"<p>Dates between which the SaaS product was last modified.</p>"
+        }
+      },
+      "documentation":"<p>Object that allows filtering based on the last modified date of SaaS products</p>"
+    },
+    "SaaSProductLastModifiedDateFilterDateRange":{
+      "type":"structure",
+      "members":{
+        "AfterValue":{
+          "shape":"DateTimeISO8601",
+          "documentation":"<p>Date after which the SaaS product was last modified.</p>"
+        },
+        "BeforeValue":{
+          "shape":"DateTimeISO8601",
+          "documentation":"<p>Date before which the SaaS product was last modified.</p>"
+        }
+      },
+      "documentation":"<p>Object that contains date range of the last modified date to be filtered on. You can optionally provide a <code>BeforeValue</code> and/or <code>AfterValue</code>. Both are inclusive.</p>"
+    },
+    "SaaSProductSort":{
+      "type":"structure",
+      "members":{
+        "SortBy":{
+          "shape":"SaaSProductSortBy",
+          "documentation":"<p>Field to sort the SaaS products by.</p>"
+        },
+        "SortOrder":{
+          "shape":"SortOrder",
+          "documentation":"<p>The sorting order. Can be <code>ASCENDING</code> or <code>DESCENDING</code>. The default value is <code>DESCENDING</code>.</p>"
+        }
+      },
+      "documentation":"<p>Objects that allows sorting on SaaS products based on certain fields and sorting order.</p>"
+    },
+    "SaaSProductSortBy":{
+      "type":"string",
+      "enum":[
+        "EntityId",
+        "ProductTitle",
+        "Visibility",
+        "LastModifiedDate"
+      ]
+    },
+    "SaaSProductSummary":{
+      "type":"structure",
+      "members":{
+        "ProductTitle":{
+          "shape":"SaaSProductTitleString",
+          "documentation":"<p>The title of the SaaS product.</p>"
+        },
+        "Visibility":{
+          "shape":"SaaSProductVisibilityString",
+          "documentation":"<p>The lifecycle of the SaaS product.</p>"
+        }
+      },
+      "documentation":"<p>Object that contains summarized information about a SaaS product.</p>"
+    },
+    "SaaSProductTitleFilter":{
+      "type":"structure",
+      "members":{
+        "ValueList":{
+          "shape":"SaaSProductTitleFilterValueList",
+          "documentation":"<p>A string array of unique product title values to be filtered on.</p>"
+        },
+        "WildCardValue":{
+          "shape":"SaaSProductTitleString",
+          "documentation":"<p>A string that will be the <code>wildCard</code> input for product tile filter. It matches the provided value as a substring in the actual value.</p>"
+        }
+      },
+      "documentation":"<p>Object that allows filtering on product title.</p>"
+    },
+    "SaaSProductTitleFilterValueList":{
+      "type":"list",
+      "member":{"shape":"SaaSProductTitleString"},
+      "max":10,
+      "min":1
+    },
+    "SaaSProductTitleString":{
+      "type":"string",
+      "max":255,
+      "min":1,
+      "pattern":"^(.)+$"
+    },
+    "SaaSProductVisibilityFilter":{
+      "type":"structure",
+      "members":{
+        "ValueList":{
+          "shape":"SaaSProductVisibilityFilterValueList",
+          "documentation":"<p>A string array of unique visibility values to be filtered on.</p>"
+        }
+      },
+      "documentation":"<p>Object that allows filtering on the visibility of the product in the AWS Marketplace.</p>"
+    },
+    "SaaSProductVisibilityFilterValueList":{
+      "type":"list",
+      "member":{"shape":"SaaSProductVisibilityString"},
+      "max":10,
+      "min":1
+    },
+    "SaaSProductVisibilityString":{
+      "type":"string",
+      "enum":[
+        "Limited",
+        "Public",
+        "Restricted",
+        "Draft"
+      ]
     },
     "ServiceQuotaExceededException":{
       "type":"structure",

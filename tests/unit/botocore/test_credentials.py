@@ -2805,6 +2805,14 @@ class TestRefreshLogic(unittest.TestCase):
 
 
 class TestContainerProvider(BaseEnvVar):
+    def setUp(self):
+        super().setUp()
+        self.tempdir = tempfile.mkdtemp()
+
+    def tearDown(self):
+        super().tearDown()
+        shutil.rmtree(self.tempdir)
+
     def test_noop_if_env_var_is_not_set(self):
         # The 'AWS_CONTAINER_CREDENTIALS_RELATIVE_URI' env var
         # is not present as an env var.
@@ -2961,6 +2969,58 @@ class TestContainerProvider(BaseEnvVar):
         self.assertEqual(creds.secret_key, 'secret_key')
         self.assertEqual(creds.token, 'token')
         self.assertEqual(creds.method, 'container-role')
+
+    def test_can_pass_auth_token_from_file(self):
+        token_file_path = os.path.join(self.tempdir, 'token.jwt')
+        with open(token_file_path, 'w') as token_file:
+            token_file.write('Basic auth-token')
+        environ = {
+            'AWS_CONTAINER_CREDENTIALS_FULL_URI': 'http://localhost/foo',
+            'AWS_CONTAINER_AUTHORIZATION_TOKEN_FILE': token_file_path,
+        }
+        fetcher = self.create_fetcher()
+        timeobj = datetime.now(tzlocal())
+        timestamp = (timeobj + timedelta(hours=24)).isoformat()
+        fetcher.retrieve_full_uri.return_value = {
+            "AccessKeyId": "access_key",
+            "SecretAccessKey": "secret_key",
+            "Token": "token",
+            "Expiration": timestamp,
+        }
+        provider = credentials.ContainerProvider(environ, fetcher)
+        creds = provider.load()
+
+        fetcher.retrieve_full_uri.assert_called_with(
+            'http://localhost/foo',
+            headers={'Authorization': 'Basic auth-token'},
+        )
+        self.assertEqual(creds.access_key, 'access_key')
+        self.assertEqual(creds.secret_key, 'secret_key')
+        self.assertEqual(creds.token, 'token')
+        self.assertEqual(creds.method, 'container-role')
+
+    def test_throws_error_on_invalid_token_file(self):
+        token_file_path = '/some/path/token.jwt'
+        environ = {
+            'AWS_CONTAINER_CREDENTIALS_FULL_URI': 'http://localhost/foo',
+            'AWS_CONTAINER_AUTHORIZATION_TOKEN_FILE': token_file_path,
+        }
+        fetcher = self.create_fetcher()
+        provider = credentials.ContainerProvider(environ, fetcher)
+
+        with self.assertRaises(FileNotFoundError):
+            provider.load()
+
+    def test_throws_error_on_illegal_header(self):
+        environ = {
+            'AWS_CONTAINER_CREDENTIALS_FULL_URI': 'http://localhost/foo',
+            'AWS_CONTAINER_AUTHORIZATION_TOKEN': 'invalid\r\ntoken',
+        }
+        fetcher = self.create_fetcher()
+        provider = credentials.ContainerProvider(environ, fetcher)
+
+        with self.assertRaises(ValueError):
+            provider.load()
 
 
 class TestProcessProvider(BaseEnvVar):

@@ -27,6 +27,7 @@ import time
 import warnings
 import weakref
 from datetime import datetime as _DatetimeClass
+from ipaddress import ip_address
 from pathlib import Path
 
 import botocore
@@ -2715,7 +2716,12 @@ class ContainerMetadataFetcher(object):
     RETRY_ATTEMPTS = 3
     SLEEP_TIME = 1
     IP_ADDRESS = '169.254.170.2'
-    _ALLOWED_HOSTS = [IP_ADDRESS, 'localhost', '127.0.0.1']
+    _ALLOWED_HOSTS = [
+        IP_ADDRESS,
+        '169.254.170.23',
+        'fd00:ec2::23',
+        'localhost',
+    ]
 
     def __init__(self, session=None, sleep=time.sleep):
         if session is None:
@@ -2739,13 +2745,22 @@ class ContainerMetadataFetcher(object):
 
     def _validate_allowed_url(self, full_url):
         parsed = botocore.compat.urlparse(full_url)
+        if self._is_loopback_address(parsed.hostname):
+            return
         is_whitelisted_host = self._check_if_whitelisted_host(
             parsed.hostname)
         if not is_whitelisted_host:
             raise ValueError(
-                "Unsupported host '%s'.  Can only "
-                "retrieve metadata from these hosts: %s" %
-                (parsed.hostname, ', '.join(self._ALLOWED_HOSTS)))
+                f"Unsupported host '{parsed.hostname}'.  Can only retrieve metadata "
+                f"from a loopback address or one of these hosts: {', '.join(self._ALLOWED_HOSTS)}"
+            )
+
+    def _is_loopback_address(self, hostname):
+        try:
+            ip = ip_address(hostname)
+            return ip.is_loopback
+        except ValueError:
+            return False
 
     def _check_if_whitelisted_host(self, host):
         if host in self._ALLOWED_HOSTS:
@@ -2753,7 +2768,7 @@ class ContainerMetadataFetcher(object):
         return False
 
     def retrieve_uri(self, relative_uri):
-        """Retrieve JSON metadata from ECS metadata.
+        """Retrieve JSON metadata from container metadata.
 
         :type relative_uri: str
         :param relative_uri: A relative URI, e.g "/foo/bar?id=123"
@@ -2790,19 +2805,21 @@ class ContainerMetadataFetcher(object):
             if response.status_code != 200:
                 raise MetadataRetrievalError(
                     error_msg=(
-                        "Received non 200 response (%s) from ECS metadata: %s"
-                    ) % (response.status_code, response_text))
+                        f"Received non 200 response {response.status_code} "
+                        f"from container metadata: {response_text}"
+                    )
+                )
             try:
                 return json.loads(response_text)
             except ValueError:
-                error_msg = (
-                    "Unable to parse JSON returned from ECS metadata services"
-                )
+                error_msg = "Unable to parse JSON returned from container metadata services"
                 logger.debug('%s:%s', error_msg, response_text)
                 raise MetadataRetrievalError(error_msg=error_msg)
         except RETRYABLE_HTTP_ERRORS as e:
-            error_msg = ("Received error when attempting to retrieve "
-                         "ECS metadata: %s" % e)
+            error_msg = (
+                "Received error when attempting to retrieve "
+                f"container metadata: {e}"
+            )
             raise MetadataRetrievalError(error_msg=error_msg)
 
     def full_url(self, relative_uri):

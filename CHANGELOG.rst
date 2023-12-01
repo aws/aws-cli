@@ -2,6 +2,14 @@
 CHANGELOG
 =========
 
+1.31.6
+======
+
+* api-change:``qconnect``: This release adds the PutFeedback API and allows providing feedback against the specified assistant for the specified target.
+* api-change:``rbin``: Added resource identifier in the output and updated error handling.
+* api-change:``verifiedpermissions``: Adds description field to PolicyStore API's and namespaces field to GetSchema.
+
+
 1.31.5
 ======
 

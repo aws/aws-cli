@@ -2,6 +2,19 @@
 CHANGELOG
 =========
 
+1.31.7
+======
+
+* api-change:``billingconductor``: This release adds the ability to specify a linked account of the billing group for the custom line item resource.
+* api-change:``braket``: This release enhances service support to create quantum tasks and hybrid jobs associated with Braket Direct Reservations.
+* api-change:``cloud9``: This release adds the requirement to include the imageId parameter in the CreateEnvironmentEC2 API call.
+* api-change:``cloudformation``: Including UPDATE_* states as a success status for CreateStack waiter.
+* api-change:``finspace``: Release General Purpose type clusters
+* api-change:``medialive``: Adds support for custom color correction on channels using 3D LUT files.
+* api-change:``servicecatalog-appregistry``: Documentation-only updates for Dawn
+* api-change:``endpoint-rules``: Update endpoint-rules command to latest version
+
+
 1.31.6
 ======
 

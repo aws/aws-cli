@@ -6604,6 +6604,36 @@ CHANGELOG
 * feature:wizard: Added support for AWS CLI Wizards. See `#3752 <https://github.com/aws/aws-cli/issues/3752>`__.
 
 
+1.31.8
+======
+
+* api-change:``athena``: Adding IdentityCenter enabled request for interactive query
+* api-change:``cleanroomsml``: Updated service title from cleanroomsml to CleanRoomsML.
+* api-change:``cloudformation``: Documentation update, December 2023
+* api-change:``ec2``: Adds A10G, T4G, and H100 as accelerator name options and Habana as an accelerator manufacturer option for attribute based selection
+
+
+1.31.7
+======
+
+* api-change:``billingconductor``: This release adds the ability to specify a linked account of the billing group for the custom line item resource.
+* api-change:``braket``: This release enhances service support to create quantum tasks and hybrid jobs associated with Braket Direct Reservations.
+* api-change:``cloud9``: This release adds the requirement to include the imageId parameter in the CreateEnvironmentEC2 API call.
+* api-change:``cloudformation``: Including UPDATE_* states as a success status for CreateStack waiter.
+* api-change:``finspace``: Release General Purpose type clusters
+* api-change:``medialive``: Adds support for custom color correction on channels using 3D LUT files.
+* api-change:``servicecatalog-appregistry``: Documentation-only updates for Dawn
+* api-change:``endpoint-rules``: Update endpoint-rules command to latest version
+
+
+1.31.6
+======
+
+* api-change:``qconnect``: This release adds the PutFeedback API and allows providing feedback against the specified assistant for the specified target.
+* api-change:``rbin``: Added resource identifier in the output and updated error handling.
+* api-change:``verifiedpermissions``: Adds description field to PolicyStore API's and namespaces field to GetSchema.
+
+
 1.31.5
 ======
 

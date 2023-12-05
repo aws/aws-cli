@@ -2,6 +2,76 @@
 CHANGELOG
 =========
 
+1.31.7
+======
+
+* api-change:``billingconductor``: This release adds the ability to specify a linked account of the billing group for the custom line item resource.
+* api-change:``braket``: This release enhances service support to create quantum tasks and hybrid jobs associated with Braket Direct Reservations.
+* api-change:``cloud9``: This release adds the requirement to include the imageId parameter in the CreateEnvironmentEC2 API call.
+* api-change:``cloudformation``: Including UPDATE_* states as a success status for CreateStack waiter.
+* api-change:``finspace``: Release General Purpose type clusters
+* api-change:``medialive``: Adds support for custom color correction on channels using 3D LUT files.
+* api-change:``servicecatalog-appregistry``: Documentation-only updates for Dawn
+* api-change:``endpoint-rules``: Update endpoint-rules command to latest version
+
+
+1.31.6
+======
+
+* api-change:``qconnect``: This release adds the PutFeedback API and allows providing feedback against the specified assistant for the specified target.
+* api-change:``rbin``: Added resource identifier in the output and updated error handling.
+* api-change:``verifiedpermissions``: Adds description field to PolicyStore API's and namespaces field to GetSchema.
+
+
+1.31.5
+======
+
+* api-change:``arc-zonal-shift``: This release adds a new capability, zonal autoshift. You can configure zonal autoshift so that AWS shifts traffic for a resource away from an Availability Zone, on your behalf, when AWS determines that there is an issue that could potentially affect customers in the Availability Zone.
+* api-change:``glue``: Adds observation and analyzer support to the GetDataQualityResult and BatchGetDataQualityResult APIs.
+* api-change:``sagemaker``: This release adds support for 1/ Code Editor, based on Code-OSS, Visual Studio Code Open Source, a new fully managed IDE option in SageMaker Studio  2/ JupyterLab, a new fully managed JupyterLab IDE experience in SageMaker Studio
+
+
+1.31.4
+======
+
+* api-change:``marketplace-agreement``: The AWS Marketplace Agreement Service provides an API interface that helps AWS Marketplace sellers manage their agreements, including listing, filtering, and viewing details about their agreements.
+* api-change:``marketplace-catalog``: This release enhances the ListEntities API to support new entity type-specific strongly typed filters in the request and entity type-specific strongly typed summaries in the response.
+* api-change:``marketplace-deployment``: AWS Marketplace Deployment is a new service that provides essential features that facilitate the deployment of software, data, and services procured through AWS Marketplace.
+* api-change:``redshift-serverless``: This release adds the following support for Amazon Redshift Serverless: 1) cross-account cross-VPCs, 2) copying snapshots across Regions, 3) scheduling snapshot creation, and 4) restoring tables from a recovery point.
+* api-change:``endpoint-rules``: Update endpoint-rules command to latest version
+
+
+1.31.3
+======
+
+* api-change:``application-autoscaling``: Amazon SageMaker customers can now use Application Auto Scaling to automatically scale the number of Inference Component copies across an endpoint to meet the varying demand of their workloads.
+* api-change:``cleanrooms``: AWS Clean Rooms now provides differential privacy to protect against user-identification attempts and machine learning modeling to allow two parties to identify similar users in their data.
+* api-change:``cleanroomsml``: Public Preview SDK release of AWS Clean Rooms ML APIs
+* api-change:``opensearch``: Launching Amazon OpenSearch Service support for new zero-ETL integration with Amazon S3. Customers can now manage their direct query data sources to Amazon S3 programatically
+* api-change:``opensearchserverless``: Amazon OpenSearch Serverless collections support an additional attribute called standby-replicas. This allows to specify whether a collection should have redundancy enabled.
+* api-change:``sagemaker-runtime``: Update sagemaker-runtime command to latest version
+* api-change:``sagemaker``: This release adds following support 1/ Improved SDK tooling for model deployment. 2/ New Inference Component based features to lower inference costs and latency 3/ SageMaker HyperPod management. 4/ Additional parameters for FM Fine Tuning in Autopilot
+* api-change:``sts``: Documentation updates for AWS Security Token Service.
+* api-change:``endpoint-rules``: Update endpoint-rules command to latest version
+
+
+1.31.2
+======
+
+* api-change:``accessanalyzer``: This release adds support for external access findings for S3 directory buckets to help you easily identify cross-account access. Updated service API, documentation, and paginators.
+* api-change:``bedrock``: This release adds support for customization types, model life cycle status and minor versions/aliases for model identifiers.
+* api-change:``bedrock-agent``: This release introduces Agents for Amazon Bedrock
+* api-change:``bedrock-agent-runtime``: This release introduces Agents for Amazon Bedrock Runtime
+* api-change:``bedrock-runtime``: This release adds support for minor versions/aliases for invoke model identifier.
+* api-change:``connect``: Added support for following capabilities: Amazon Connect's in-app, web, and video calling. Two-way SMS integrations. Contact Lens real-time chat analytics feature. Amazon Connect Analytics Datalake capability. Capability to configure real time chat rules.
+* api-change:``customer-profiles``: This release introduces DetectProfileObjectType API to auto generate object type mapping.
+* api-change:``endpoint-rules``: Update endpoint-rules command to latest version
+* api-change:``qbusiness``: Amazon Q - a generative AI powered application that your employees can use to ask questions and get answers from knowledge spread across disparate content repositories, summarize reports, write articles, take actions, and much more - all within their company's connected content repositories.
+* api-change:``qconnect``: Amazon Q in Connect, an LLM-enhanced evolution of Amazon Connect Wisdom. This release adds generative AI support to Amazon Q Connect QueryAssistant and GetRecommendations APIs.
+* api-change:``s3``: Adds support for S3 Express One Zone.
+* api-change:``s3control``: Adds support for S3 Express One Zone, and InvocationSchemaVersion 2.0 for S3 Batch Operations.
+
+
 1.31.1
 ======
 

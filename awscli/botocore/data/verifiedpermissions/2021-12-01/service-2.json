@@ -28,7 +28,7 @@
         {"shape":"ThrottlingException"},
         {"shape":"InternalServerException"}
       ],
-      "documentation":"<p>Makes a series of decisions about multiple authorization requests for one principal or resource. Each request contains the equivalent content of an <code>IsAuthorized</code> request: principal, action, resource, and context. Either the <code>principal</code> or the <code>resource</code> parameter must be identical across all requests. For example, Verified Permissions won't evaluate a pair of requests where <code>bob</code> views <code>photo1</code> and <code>alice</code> views <code>photo2</code>. Authorization of <code>bob</code> to view <code>photo1</code> and <code>photo2</code>, or <code>bob</code> and <code>alice</code> to view <code>photo1</code>, are valid batches. </p> <p>The request is evaluated against all policies in the specified policy store that match the entities that you declare. The result of the decisions is a series of <code>Allow</code> or <code>Deny</code> responses, along with the IDs of the policies that produced each decision.</p> <p>The <code>entities</code> of a <code>BatchIsAuthorized</code> API request can contain up to 100 principals and up to 100 resources. The <code>requests</code> of a <code>BatchIsAuthorized</code> API request can contain up to 30 requests.</p>"
+      "documentation":"<p>Makes a series of decisions about multiple authorization requests for one principal or resource. Each request contains the equivalent content of an <code>IsAuthorized</code> request: principal, action, resource, and context. Either the <code>principal</code> or the <code>resource</code> parameter must be identical across all requests. For example, Verified Permissions won't evaluate a pair of requests where <code>bob</code> views <code>photo1</code> and <code>alice</code> views <code>photo2</code>. Authorization of <code>bob</code> to view <code>photo1</code> and <code>photo2</code>, or <code>bob</code> and <code>alice</code> to view <code>photo1</code>, are valid batches. </p> <p>The request is evaluated against all policies in the specified policy store that match the entities that you declare. The result of the decisions is a series of <code>Allow</code> or <code>Deny</code> responses, along with the IDs of the policies that produced each decision.</p> <p>The <code>entities</code> of a <code>BatchIsAuthorized</code> API request can contain up to 100 principals and up to 100 resources. The <code>requests</code> of a <code>BatchIsAuthorized</code> API request can contain up to 30 requests.</p> <note> <p>The <code>BatchIsAuthorized</code> operation doesn't have its own IAM permission. To authorize this operation for Amazon Web Services principals, include the permission <code>verifiedpermissions:IsAuthorized</code> in their IAM policies.</p> </note>"
     },
     "CreateIdentitySource":{
       "name":"CreateIdentitySource",
@@ -837,6 +837,10 @@
         "validationSettings":{
           "shape":"ValidationSettings",
           "documentation":"<p>Specifies the validation setting for this policy store.</p> <p>Currently, the only valid and required value is <code>Mode</code>.</p> <important> <p>We recommend that you turn on <code>STRICT</code> mode only after you define a schema. If a schema doesn't exist, then <code>STRICT</code> mode causes any policy to fail validation, and Verified Permissions rejects the policy. You can turn off validation by using the <a href=\"https://docs.aws.amazon.com/verifiedpermissions/latest/apireference/API_UpdatePolicyStore\">UpdatePolicyStore</a>. Then, when you have a schema defined, use <a href=\"https://docs.aws.amazon.com/verifiedpermissions/latest/apireference/API_UpdatePolicyStore\">UpdatePolicyStore</a> again to turn validation back on.</p> </important>"
+        },
+        "description":{
+          "shape":"PolicyStoreDescription",
+          "documentation":"<p>Descriptive text that you can provide to help with identification of the current policy store.</p>"
         }
       }
     },
@@ -1286,6 +1290,10 @@
         "lastUpdatedDate":{
           "shape":"TimestampFormat",
           "documentation":"<p>The date and time that the policy store was last updated.</p>"
+        },
+        "description":{
+          "shape":"PolicyStoreDescription",
+          "documentation":"<p>Descriptive text that you can provide to help with identification of the current policy store.</p>"
         }
       }
     },
@@ -1376,6 +1384,10 @@
         "lastUpdatedDate":{
           "shape":"TimestampFormat",
           "documentation":"<p>The date and time that the schema was most recently updated.</p>"
+        },
+        "namespaces":{
+          "shape":"NamespaceList",
+          "documentation":"<p>The namespaces of the entities referenced by this schema.</p>"
         }
       }
     },
@@ -1916,6 +1928,12 @@
       "min":1,
       "sensitive":true
     },
+    "PolicyStoreDescription":{
+      "type":"string",
+      "max":150,
+      "min":0,
+      "sensitive":true
+    },
     "PolicyStoreId":{
       "type":"string",
       "max":200,
@@ -1941,6 +1959,14 @@
         "createdDate":{
           "shape":"TimestampFormat",
           "documentation":"<p>The date and time the policy was created.</p>"
+        },
+        "lastUpdatedDate":{
+          "shape":"TimestampFormat",
+          "documentation":"<p>The date and time the policy store was most recently updated.</p>"
+        },
+        "description":{
+          "shape":"PolicyStoreDescription",
+          "documentation":"<p>Descriptive text that you can provide to help with identification of the current policy store.</p>"
         }
       },
       "documentation":"<p>Contains information about a policy store.</p> <p>This data type is used as a response parameter for the <a href=\"https://docs.aws.amazon.com/verifiedpermissions/latest/apireference/API_ListPolicyStores.html\">ListPolicyStores</a> operation.</p>"
@@ -2471,6 +2497,10 @@
         "validationSettings":{
           "shape":"ValidationSettings",
           "documentation":"<p>A structure that defines the validation settings that want to enable for the policy store.</p>"
+        },
+        "description":{
+          "shape":"PolicyStoreDescription",
+          "documentation":"<p>Descriptive text that you can provide to help with identification of the current policy store.</p>"
         }
       }
     },

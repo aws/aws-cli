@@ -102,7 +102,7 @@
         {"shape":"AccessDeniedException"},
         {"shape":"ResourceNotFoundException"}
       ],
-      "documentation":"<p>Creates a Amazon Q quick response.</p>",
+      "documentation":"<p>Creates an Amazon Q quick response.</p>",
       "idempotent":true
     },
     "CreateSession":{
@@ -494,6 +494,23 @@
       "documentation":"<p>Removes the specified recommendations from the specified assistant's queue of newly available recommendations. You can use this API in conjunction with <a href=\"https://docs.aws.amazon.com/amazon-q-connect/latest/APIReference/API_GetRecommendations.html\">GetRecommendations</a> and a <code>waitTimeSeconds</code> input for long-polling behavior and avoiding duplicate recommendations.</p>",
       "idempotent":true
     },
+    "PutFeedback":{
+      "name":"PutFeedback",
+      "http":{
+        "method":"PUT",
+        "requestUri":"/assistants/{assistantId}/feedback",
+        "responseCode":200
+      },
+      "input":{"shape":"PutFeedbackRequest"},
+      "output":{"shape":"PutFeedbackResponse"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p>Provides feedback against the specified assistant for the specified target. This API only supports generative targets.</p>",
+      "idempotent":true
+    },
     "QueryAssistant":{
       "name":"QueryAssistant",
       "http":{
@@ -558,7 +575,7 @@
         {"shape":"AccessDeniedException"},
         {"shape":"ResourceNotFoundException"}
       ],
-      "documentation":"<p>Searches existing Amazon Q quick responses in a Amazon Q knowledge base.</p>"
+      "documentation":"<p>Searches existing Amazon Q quick responses in an Amazon Q knowledge base.</p>"
     },
     "SearchSessions":{
       "name":"SearchSessions",
@@ -844,7 +861,7 @@
           "documentation":"<p>The type of Amazon Q assistant capability. </p>"
         }
       },
-      "documentation":"<p>The capability configuration for a Amazon Q assistant. </p>"
+      "documentation":"<p>The capability configuration for an Amazon Q assistant. </p>"
     },
     "AssistantCapabilityType":{
       "type":"string",
@@ -1150,6 +1167,17 @@
         }
       },
       "documentation":"<p>Details about the content data.</p>"
+    },
+    "ContentFeedbackData":{
+      "type":"structure",
+      "members":{
+        "generativeContentFeedbackData":{
+          "shape":"GenerativeContentFeedbackData",
+          "documentation":"<p>Information about the feedback for a generative target type.</p>"
+        }
+      },
+      "documentation":"<p>Information about the feedback.</p>",
+      "union":true
     },
     "ContentMetadata":{
       "type":"map",
@@ -1854,6 +1882,17 @@
     "FilterOperator":{
       "type":"string",
       "enum":["EQUALS"]
+    },
+    "GenerativeContentFeedbackData":{
+      "type":"structure",
+      "required":["relevance"],
+      "members":{
+        "relevance":{
+          "shape":"Relevance",
+          "documentation":"<p>The relevance of the feedback.</p>"
+        }
+      },
+      "documentation":"<p>The feedback information for a generative target type.</p>"
     },
     "GenerativeDataDetails":{
       "type":"structure",
@@ -2868,6 +2907,67 @@
         "LOW"
       ]
     },
+    "PutFeedbackRequest":{
+      "type":"structure",
+      "required":[
+        "assistantId",
+        "contentFeedback",
+        "targetId",
+        "targetType"
+      ],
+      "members":{
+        "assistantId":{
+          "shape":"UuidOrArn",
+          "documentation":"<p>The identifier of the Amazon Q assistant.</p>",
+          "location":"uri",
+          "locationName":"assistantId"
+        },
+        "contentFeedback":{
+          "shape":"ContentFeedbackData",
+          "documentation":"<p>Information about the feedback provided.</p>"
+        },
+        "targetId":{
+          "shape":"Uuid",
+          "documentation":"<p>The identifier of the feedback target.</p>"
+        },
+        "targetType":{
+          "shape":"TargetType",
+          "documentation":"<p>The type of the feedback target.</p>"
+        }
+      }
+    },
+    "PutFeedbackResponse":{
+      "type":"structure",
+      "required":[
+        "assistantArn",
+        "assistantId",
+        "contentFeedback",
+        "targetId",
+        "targetType"
+      ],
+      "members":{
+        "assistantArn":{
+          "shape":"UuidOrArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the Amazon Q assistant.</p>"
+        },
+        "assistantId":{
+          "shape":"Uuid",
+          "documentation":"<p>The identifier of the Amazon Q assistant.</p>"
+        },
+        "contentFeedback":{
+          "shape":"ContentFeedbackData",
+          "documentation":"<p>Information about the feedback provided.</p>"
+        },
+        "targetId":{
+          "shape":"Uuid",
+          "documentation":"<p>The identifier of the feedback target.</p>"
+        },
+        "targetType":{
+          "shape":"TargetType",
+          "documentation":"<p>The type of the feedback target.</p>"
+        }
+      }
+    },
     "QueryAssistantRequest":{
       "type":"structure",
       "required":[
@@ -3593,6 +3693,13 @@
         "GENERATIVE_ANSWER"
       ]
     },
+    "Relevance":{
+      "type":"string",
+      "enum":[
+        "HELPFUL",
+        "NOT_HELPFUL"
+      ]
+    },
     "RelevanceLevel":{
       "type":"string",
       "enum":[
@@ -4136,6 +4243,13 @@
       "key":{"shape":"TagKey"},
       "value":{"shape":"TagValue"}
     },
+    "TargetType":{
+      "type":"string",
+      "enum":[
+        "RECOMMENDATION",
+        "RESULT"
+      ]
+    },
     "TextData":{
       "type":"structure",
       "members":{
@@ -4395,5 +4509,5 @@
       "min":0
     }
   },
-  "documentation":"<p>Amazon Q in Connect is a generative AI customer service assistant. It is an LLM-enhanced evolution of Amazon Connect Wisdom that delivers real-time recommendations to help contact center agents resolve customer issues quickly and accurately.</p> <p>Amazon Q automatically detects customer intent during calls and chats using conversational analytics and natural language understanding (NLU). It then provides agents with immediate, real-time generative responses and suggested actions, and links to relevant documents and articles. Agents can also query Amazon Q directly using natural language or keywords to answer customer requests.</p> <p>Use the Amazon Q in Connect APIs to create an assistant and a knowledge base, for example, or manage content by uploading custom files.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/amazon-q-connect.html\">Use Amazon Q in Connect for generative AI powered agent assistance in real-time</a> in the <i>Amazon Connect Administrator Guide</i>.</p>"
+  "documentation":"<note> <p> <b>Powered by Amazon Bedrock</b>: Amazon Web Services implements <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/abuse-detection.html\">automated abuse detection</a>. Because Amazon Q in Connect is built on Amazon Bedrock, users can take full advantage of the controls implemented in Amazon Bedrock to enforce safety, security, and the responsible use of artificial intelligence (AI).</p> </note> <p>Amazon Q in Connect is a generative AI customer service assistant. It is an LLM-enhanced evolution of Amazon Connect Wisdom that delivers real-time recommendations to help contact center agents resolve customer issues quickly and accurately.</p> <p>Amazon Q automatically detects customer intent during calls and chats using conversational analytics and natural language understanding (NLU). It then provides agents with immediate, real-time generative responses and suggested actions, and links to relevant documents and articles. Agents can also query Amazon Q directly using natural language or keywords to answer customer requests.</p> <p>Use the Amazon Q in Connect APIs to create an assistant and a knowledge base, for example, or manage content by uploading custom files.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/amazon-q-connect.html\">Use Amazon Q in Connect for generative AI powered agent assistance in real-time</a> in the <i>Amazon Connect Administrator Guide</i>.</p>"
 }

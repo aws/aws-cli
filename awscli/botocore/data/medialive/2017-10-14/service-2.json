@@ -5000,6 +5000,56 @@
       },
       "documentation": "Placeholder documentation for ClaimDeviceResponse"
     },
+    "ColorCorrection": {
+      "type": "structure",
+      "members": {
+        "InputColorSpace": {
+          "shape": "ColorSpace",
+          "locationName": "inputColorSpace",
+          "documentation": "The color space of the input."
+        },
+        "OutputColorSpace": {
+          "shape": "ColorSpace",
+          "locationName": "outputColorSpace",
+          "documentation": "The color space of the output."
+        },
+        "Uri": {
+          "shape": "__string",
+          "locationName": "uri",
+          "documentation": "The URI of the 3D LUT file. The protocol must be 's3:' or 's3ssl:':."
+        }
+      },
+      "documentation": "Property of ColorCorrectionSettings. Used for custom color space conversion. The object identifies one 3D LUT file and specifies the input/output color space combination that the file will be used for.",
+      "required": [
+        "OutputColorSpace",
+        "InputColorSpace",
+        "Uri"
+      ]
+    },
+    "ColorCorrectionSettings": {
+      "type": "structure",
+      "members": {
+        "GlobalColorCorrections": {
+          "shape": "__listOfColorCorrection",
+          "locationName": "globalColorCorrections",
+          "documentation": "An array of colorCorrections that applies when you are using 3D LUT files to perform color conversion on video. Each colorCorrection contains one 3D LUT file (that defines the color mapping for converting an input color space to an output color space), and the input/output combination that this 3D LUT file applies to. MediaLive reads the color space in the input metadata, determines the color space that you have specified for the output, and finds and uses the LUT file that applies to this combination."
+        }
+      },
+      "documentation": "Property of encoderSettings. Controls color conversion when you are using 3D LUT files to perform color conversion on video.",
+      "required": [
+        "GlobalColorCorrections"
+      ]
+    },
+    "ColorSpace": {
+      "type": "string",
+      "documentation": "Property of colorCorrections. When you are using 3D LUT files to perform color conversion on video, these are the supported color spaces.",
+      "enum": [
+        "HDR10",
+        "HLG_2020",
+        "REC_601",
+        "REC_709"
+      ]
+    },
     "ColorSpacePassthroughSettings": {
       "type": "structure",
       "members": {
@@ -7637,6 +7687,11 @@
           "shape": "__listOfCaptionDescription",
           "locationName": "captionDescriptions",
           "documentation": "Settings for caption decriptions"
+        },
+        "ColorCorrectionSettings": {
+          "shape": "ColorCorrectionSettings",
+          "locationName": "colorCorrectionSettings",
+          "documentation": "Color correction settings"
         },
         "FeatureActivations": {
           "shape": "FeatureActivations",
@@ -17364,6 +17419,13 @@
         "shape": "ChannelSummary"
       },
       "documentation": "Placeholder documentation for __listOfChannelSummary"
+    },
+    "__listOfColorCorrection": {
+      "type": "list",
+      "member": {
+        "shape": "ColorCorrection"
+      },
+      "documentation": "Placeholder documentation for __listOfColorCorrection"
     },
     "__listOfFailoverCondition": {
       "type": "list",

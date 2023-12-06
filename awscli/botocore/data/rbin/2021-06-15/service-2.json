@@ -172,7 +172,8 @@
         {"shape":"ValidationException"},
         {"shape":"InternalServerException"},
         {"shape":"ResourceNotFoundException"},
-        {"shape":"ConflictException"}
+        {"shape":"ConflictException"},
+        {"shape":"ServiceQuotaExceededException"}
       ],
       "documentation":"<p>Updates an existing Recycle Bin retention rule. You can update a retention rule's description, resource tags, and retention period at any time after creation. You can't update a retention rule's resource type after creation. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/recycle-bin-working-with-rules.html#recycle-bin-update-rule\"> Update Recycle Bin retention rules</a> in the <i>Amazon Elastic Compute Cloud User Guide</i>.</p>"
     }
@@ -263,6 +264,10 @@
         "LockState":{
           "shape":"LockState",
           "documentation":"<p>The lock state for the retention rule.</p> <ul> <li> <p> <code>locked</code> - The retention rule is locked and can't be modified or deleted.</p> </li> <li> <p> <code>pending_unlock</code> - The retention rule has been unlocked but it is still within the unlock delay period. The retention rule can be modified or deleted only after the unlock delay period has expired.</p> </li> <li> <p> <code>unlocked</code> - The retention rule is unlocked and it can be modified or deleted by any user with the required permissions.</p> </li> <li> <p> <code>null</code> - The retention rule has never been locked. Once a retention rule has been locked, it can transition between the <code>locked</code> and <code>unlocked</code> states only; it can never transition back to <code>null</code>.</p> </li> </ul>"
+        },
+        "RuleArn":{
+          "shape":"RuleArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the retention rule.</p>"
         }
       }
     },
@@ -338,6 +343,10 @@
         "LockEndTime":{
           "shape":"TimeStamp",
           "documentation":"<p>The date and time at which the unlock delay is set to expire. Only returned for retention rules that have been unlocked and that are still within the unlock delay period.</p>"
+        },
+        "RuleArn":{
+          "shape":"RuleArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the retention rule.</p>"
         }
       }
     },
@@ -472,6 +481,10 @@
         "LockState":{
           "shape":"LockState",
           "documentation":"<p>The lock state for the retention rule.</p> <ul> <li> <p> <code>locked</code> - The retention rule is locked and can't be modified or deleted.</p> </li> <li> <p> <code>pending_unlock</code> - The retention rule has been unlocked but it is still within the unlock delay period. The retention rule can be modified or deleted only after the unlock delay period has expired.</p> </li> <li> <p> <code>unlocked</code> - The retention rule is unlocked and it can be modified or deleted by any user with the required permissions.</p> </li> <li> <p> <code>null</code> - The retention rule has never been locked. Once a retention rule has been locked, it can transition between the <code>locked</code> and <code>unlocked</code> states only; it can never transition back to <code>null</code>.</p> </li> </ul>"
+        },
+        "RuleArn":{
+          "shape":"RuleArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the retention rule.</p>"
         }
       }
     },
@@ -607,6 +620,10 @@
         "LockState":{
           "shape":"LockState",
           "documentation":"<p>The lock state for the retention rule.</p> <ul> <li> <p> <code>locked</code> - The retention rule is locked and can't be modified or deleted.</p> </li> <li> <p> <code>pending_unlock</code> - The retention rule has been unlocked but it is still within the unlock delay period. The retention rule can be modified or deleted only after the unlock delay period has expired.</p> </li> <li> <p> <code>unlocked</code> - The retention rule is unlocked and it can be modified or deleted by any user with the required permissions.</p> </li> <li> <p> <code>null</code> - The retention rule has never been locked. Once a retention rule has been locked, it can transition between the <code>locked</code> and <code>unlocked</code> states only; it can never transition back to <code>null</code>.</p> </li> </ul>"
+        },
+        "RuleArn":{
+          "shape":"RuleArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the retention rule.</p>"
         }
       },
       "documentation":"<p>Information about a Recycle Bin retention rule.</p>"
@@ -773,6 +790,10 @@
         "LockEndTime":{
           "shape":"TimeStamp",
           "documentation":"<p>The date and time at which the unlock delay is set to expire. Only returned for retention rules that have been unlocked and that are still within the unlock delay period.</p>"
+        },
+        "RuleArn":{
+          "shape":"RuleArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the retention rule.</p>"
         }
       }
     },
@@ -861,6 +882,10 @@
         "LockEndTime":{
           "shape":"TimeStamp",
           "documentation":"<p>The date and time at which the unlock delay is set to expire. Only returned for retention rules that have been unlocked and that are still within the unlock delay period.</p>"
+        },
+        "RuleArn":{
+          "shape":"RuleArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the retention rule.</p>"
         }
       }
     },
@@ -885,5 +910,5 @@
       ]
     }
   },
-  "documentation":"<p>This is the <i>Recycle Bin API Reference</i>. This documentation provides descriptions and syntax for each of the actions and data types in Recycle Bin.</p> <p>Recycle Bin is a resource recovery feature that enables you to restore accidentally deleted snapshots and EBS-backed AMIs. When using Recycle Bin, if your resources are deleted, they are retained in the Recycle Bin for a time period that you specify.</p> <p>You can restore a resource from the Recycle Bin at any time before its retention period expires. After you restore a resource from the Recycle Bin, the resource is removed from the Recycle Bin, and you can then use it in the same way you use any other resource of that type in your account. If the retention period expires and the resource is not restored, the resource is permanently deleted from the Recycle Bin and is no longer available for recovery. For more information about Recycle Bin, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/snapshot-recycle-bin.html\"> Recycle Bin</a> in the <i>Amazon Elastic Compute Cloud User Guide</i>.</p>"
+  "documentation":"<p>This is the <i>Recycle Bin API Reference</i>. This documentation provides descriptions and syntax for each of the actions and data types in Recycle Bin.</p> <p>Recycle Bin is a resource recovery feature that enables you to restore accidentally deleted snapshots and EBS-backed AMIs. When using Recycle Bin, if your resources are deleted, they are retained in the Recycle Bin for a time period that you specify.</p> <p>You can restore a resource from the Recycle Bin at any time before its retention period expires. After you restore a resource from the Recycle Bin, the resource is removed from the Recycle Bin, and you can then use it in the same way you use any other resource of that type in your account. If the retention period expires and the resource is not restored, the resource is permanently deleted from the Recycle Bin and is no longer available for recovery. For more information about Recycle Bin, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/recycle-bin.html\"> Recycle Bin</a> in the <i>Amazon Elastic Compute Cloud User Guide</i>.</p>"
 }

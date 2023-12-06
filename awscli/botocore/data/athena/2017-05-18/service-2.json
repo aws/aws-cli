@@ -1083,6 +1083,10 @@
       "type":"string",
       "max":2048
     },
+    "AuthenticationType":{
+      "type":"string",
+      "enum":["DIRECTORY_IDENTITY"]
+    },
     "AwsAccountId":{
       "type":"string",
       "max":12,
@@ -1501,7 +1505,7 @@
         },
         "Nullable":{
           "shape":"ColumnNullable",
-          "documentation":"<p>Indicates the column's nullable status.</p>"
+          "documentation":"<p>Unsupported constraint. This value always shows as <code>UNKNOWN</code>.</p>"
         },
         "CaseSensitive":{
           "shape":"Boolean",
@@ -2305,6 +2309,10 @@
         "Name":{
           "shape":"CatalogNameString",
           "documentation":"<p>The name of the data catalog to return.</p>"
+        },
+        "WorkGroup":{
+          "shape":"WorkGroupName",
+          "documentation":"<p>The name of the workgroup. Required if making an IAM Identity Center request.</p>"
         }
       }
     },
@@ -2331,6 +2339,10 @@
         "DatabaseName":{
           "shape":"NameString",
           "documentation":"<p>The name of the database to return.</p>"
+        },
+        "WorkGroup":{
+          "shape":"WorkGroupName",
+          "documentation":"<p>The name of the workgroup for which the metadata is being fetched. Required if requesting an IAM Identity Center enabled Glue Data Catalog.</p>"
         }
       }
     },
@@ -2573,6 +2585,10 @@
         "TableName":{
           "shape":"NameString",
           "documentation":"<p>The name of the table for which metadata is returned.</p>"
+        },
+        "WorkGroup":{
+          "shape":"WorkGroupName",
+          "documentation":"<p>The name of the workgroup for which the metadata is being fetched. Required if requesting an IAM Identity Center enabled Glue Data Catalog.</p>"
         }
       }
     },
@@ -2608,6 +2624,32 @@
       "type":"string",
       "max":128,
       "min":32
+    },
+    "IdentityCenterApplicationArn":{
+      "type":"string",
+      "max":255,
+      "min":0,
+      "pattern":"^arn:(aws|aws-us-gov|aws-cn|aws-iso|aws-iso-b):sso::\\d{12}:application/(sso)?ins-[a-zA-Z0-9-.]{16}/apl-[a-zA-Z0-9]{16}$"
+    },
+    "IdentityCenterConfiguration":{
+      "type":"structure",
+      "members":{
+        "EnableIdentityCenter":{
+          "shape":"BoxedBoolean",
+          "documentation":"<p>Specifies whether the workgroup is IAM Identity Center supported.</p>"
+        },
+        "IdentityCenterInstanceArn":{
+          "shape":"IdentityCenterInstanceArn",
+          "documentation":"<p>The IAM Identity Center instance ARN that the workgroup associates to.</p>"
+        }
+      },
+      "documentation":"<p>Specifies whether the workgroup is IAM Identity Center supported.</p>"
+    },
+    "IdentityCenterInstanceArn":{
+      "type":"string",
+      "max":255,
+      "min":0,
+      "pattern":"^arn:(aws|aws-us-gov|aws-cn|aws-iso|aws-iso-b):sso:::instance/(sso)?ins-[a-zA-Z0-9-.]{16}$"
     },
     "ImportNotebookInput":{
       "type":"structure",
@@ -2778,6 +2820,10 @@
         "MaxResults":{
           "shape":"MaxDataCatalogsCount",
           "documentation":"<p>Specifies the maximum number of data catalogs to return.</p>"
+        },
+        "WorkGroup":{
+          "shape":"WorkGroupName",
+          "documentation":"<p>The name of the workgroup. Required if making an IAM Identity Center request.</p>"
         }
       }
     },
@@ -2809,6 +2855,10 @@
         "MaxResults":{
           "shape":"MaxDatabasesCount",
           "documentation":"<p>Specifies the maximum number of results to return.</p>"
+        },
+        "WorkGroup":{
+          "shape":"WorkGroupName",
+          "documentation":"<p>The name of the workgroup for which the metadata is being fetched. Required if requesting an IAM Identity Center enabled Glue Data Catalog.</p>"
         }
       }
     },
@@ -3110,6 +3160,10 @@
         "MaxResults":{
           "shape":"MaxTableMetadataCount",
           "documentation":"<p>Specifies the maximum number of results to return.</p>"
+        },
+        "WorkGroup":{
+          "shape":"WorkGroupName",
+          "documentation":"<p>The name of the workgroup for which the metadata is being fetched. Required if requesting an IAM Identity Center enabled Glue Data Catalog.</p>"
         }
       }
     },
@@ -3563,6 +3617,10 @@
         "SubstatementType":{
           "shape":"String",
           "documentation":"<p>The kind of query statement that was run.</p>"
+        },
+        "QueryResultsS3AccessGrantsConfiguration":{
+          "shape":"QueryResultsS3AccessGrantsConfiguration",
+          "documentation":"<p>Specifies whether Amazon S3 access grants are enabled for query results.</p>"
         }
       },
       "documentation":"<p>Information about a single instance of a query execution.</p>"
@@ -3674,6 +3732,28 @@
         }
       },
       "documentation":"<p>The completion date, current state, submission time, and state change reason (if applicable) for the query execution.</p>"
+    },
+    "QueryResultsS3AccessGrantsConfiguration":{
+      "type":"structure",
+      "required":[
+        "EnableS3AccessGrants",
+        "AuthenticationType"
+      ],
+      "members":{
+        "EnableS3AccessGrants":{
+          "shape":"BoxedBoolean",
+          "documentation":"<p>Specifies whether Amazon S3 access grants are enabled for query results.</p>"
+        },
+        "CreateUserLevelPrefix":{
+          "shape":"BoxedBoolean",
+          "documentation":"<p>When enabled, appends the user ID as an Amazon S3 path prefix to the query result output location.</p>"
+        },
+        "AuthenticationType":{
+          "shape":"AuthenticationType",
+          "documentation":"<p>The authentication type used for Amazon S3 access grants. Currently, only <code>DIRECTORY_IDENTITY</code> is supported.</p>"
+        }
+      },
+      "documentation":"<p>Specifies whether Amazon S3 access grants are enabled for query results.</p>"
     },
     "QueryRuntimeStatistics":{
       "type":"structure",
@@ -3991,7 +4071,7 @@
       "members":{
         "ExecutionRole":{
           "shape":"RoleArn",
-          "documentation":"<p>The ARN of the execution role used in a Spark session to access user resources. This property applies only to Spark-enabled workgroups.</p>"
+          "documentation":"<p>The ARN of the execution role used to access user resources for Spark sessions and Identity Center enabled workgroups. This property applies only to Spark enabled workgroups and Identity Center enabled workgroups.</p>"
         },
         "WorkingDirectory":{
           "shape":"ResultOutputLocation",
@@ -4156,7 +4236,7 @@
         },
         "ClientRequestToken":{
           "shape":"IdempotencyToken",
-          "documentation":"<p>A unique case-sensitive string used to ensure the request to create the query is idempotent (executes only once). If another <code>StartQueryExecution</code> request is received, the same response is returned and another query is not created. If a parameter has changed, for example, the <code>QueryString</code>, an error is returned.</p> <important> <p>This token is listed as not required because Amazon Web Services SDKs (for example the Amazon Web Services SDK for Java) auto-generate the token for users. If you are not using the Amazon Web Services SDK or the Amazon Web Services CLI, you must provide this token or the action will fail.</p> </important>",
+          "documentation":"<p>A unique case-sensitive string used to ensure the request to create the query is idempotent (executes only once). If another <code>StartQueryExecution</code> request is received, the same response is returned and another query is not created. An error is returned if a parameter, such as <code>QueryString</code>, has changed. A call to <code>StartQueryExecution</code> that uses a previous client request token returns the same <code>QueryExecutionId</code> even if the requester doesn't have permission on the tables specified in <code>QueryString</code>.</p> <important> <p>This token is listed as not required because Amazon Web Services SDKs (for example the Amazon Web Services SDK for Java) auto-generate the token for users. If you are not using the Amazon Web Services SDK or the Amazon Web Services CLI, you must provide this token or the action will fail.</p> </important>",
           "idempotencyToken":true
         },
         "QueryExecutionContext":{
@@ -4754,6 +4834,10 @@
         "CreationTime":{
           "shape":"Date",
           "documentation":"<p>The date and time the workgroup was created.</p>"
+        },
+        "IdentityCenterApplicationArn":{
+          "shape":"IdentityCenterApplicationArn",
+          "documentation":"<p>The ARN of the IAM Identity Center enabled application associated with the workgroup.</p>"
         }
       },
       "documentation":"<p>A workgroup, which contains a name, description, creation time, state, and other configuration, listed under <a>WorkGroup$Configuration</a>. Each workgroup enables you to isolate queries for you or your group of users from other queries in the same account, to configure the query results location and the encryption configuration (known as workgroup settings), to enable sending query metrics to Amazon CloudWatch, and to establish per-query data usage control limits for all queries in a workgroup. The workgroup settings override is specified in <code>EnforceWorkGroupConfiguration</code> (true/false) in the <code>WorkGroupConfiguration</code>. See <a>WorkGroupConfiguration$EnforceWorkGroupConfiguration</a>.</p>"
@@ -4791,7 +4875,7 @@
         },
         "ExecutionRole":{
           "shape":"RoleArn",
-          "documentation":"<p>Role used in a Spark session for accessing the user's resources. This property applies only to Spark-enabled workgroups.</p>"
+          "documentation":"<p>The ARN of the execution role used to access user resources for Spark sessions and Identity Center enabled workgroups. This property applies only to Spark enabled workgroups and Identity Center enabled workgroups.</p>"
         },
         "CustomerContentEncryptionConfiguration":{
           "shape":"CustomerContentEncryptionConfiguration",
@@ -4800,6 +4884,14 @@
         "EnableMinimumEncryptionConfiguration":{
           "shape":"BoxedBoolean",
           "documentation":"<p>Enforces a minimal level of encryption for the workgroup for query and calculation results that are written to Amazon S3. When enabled, workgroup users can set encryption only to the minimum level set by the administrator or higher when they submit queries.</p> <p>The <code>EnforceWorkGroupConfiguration</code> setting takes precedence over the <code>EnableMinimumEncryptionConfiguration</code> flag. This means that if <code>EnforceWorkGroupConfiguration</code> is true, the <code>EnableMinimumEncryptionConfiguration</code> flag is ignored, and the workgroup configuration for encryption is used.</p>"
+        },
+        "IdentityCenterConfiguration":{
+          "shape":"IdentityCenterConfiguration",
+          "documentation":"<p>Specifies whether the workgroup is IAM Identity Center supported.</p>"
+        },
+        "QueryResultsS3AccessGrantsConfiguration":{
+          "shape":"QueryResultsS3AccessGrantsConfiguration",
+          "documentation":"<p>Specifies whether Amazon S3 access grants are enabled for query results.</p>"
         }
       },
       "documentation":"<p>The configuration of the workgroup, which includes the location in Amazon S3 where query and calculation results are stored, the encryption option, if any, used for query and calculation results, whether the Amazon CloudWatch Metrics are enabled for the workgroup and whether workgroup settings override query settings, and the data usage limits for the amount of data scanned per query or per workgroup. The workgroup settings override is specified in <code>EnforceWorkGroupConfiguration</code> (true/false) in the <code>WorkGroupConfiguration</code>. See <a>WorkGroupConfiguration$EnforceWorkGroupConfiguration</a>. </p>"
@@ -4845,12 +4937,16 @@
         },
         "ExecutionRole":{
           "shape":"RoleArn",
-          "documentation":"<p>The ARN of the execution role used to access user resources. This property applies only to Spark-enabled workgroups.</p>"
+          "documentation":"<p>The ARN of the execution role used to access user resources for Spark sessions and Identity Center enabled workgroups. This property applies only to Spark enabled workgroups and Identity Center enabled workgroups.</p>"
         },
         "CustomerContentEncryptionConfiguration":{"shape":"CustomerContentEncryptionConfiguration"},
         "EnableMinimumEncryptionConfiguration":{
           "shape":"BoxedBoolean",
           "documentation":"<p>Enforces a minimal level of encryption for the workgroup for query and calculation results that are written to Amazon S3. When enabled, workgroup users can set encryption only to the minimum level set by the administrator or higher when they submit queries. This setting does not apply to Spark-enabled workgroups.</p> <p>The <code>EnforceWorkGroupConfiguration</code> setting takes precedence over the <code>EnableMinimumEncryptionConfiguration</code> flag. This means that if <code>EnforceWorkGroupConfiguration</code> is true, the <code>EnableMinimumEncryptionConfiguration</code> flag is ignored, and the workgroup configuration for encryption is used.</p>"
+        },
+        "QueryResultsS3AccessGrantsConfiguration":{
+          "shape":"QueryResultsS3AccessGrantsConfiguration",
+          "documentation":"<p>Specifies whether Amazon S3 access grants are enabled for query results.</p>"
         }
       },
       "documentation":"<p>The configuration information that will be updated for this workgroup, which includes the location in Amazon S3 where query and calculation results are stored, the encryption option, if any, used for query results, whether the Amazon CloudWatch Metrics are enabled for the workgroup, whether the workgroup settings override the client-side settings, and the data usage limit for the amount of bytes scanned per query, if it is specified.</p>"
@@ -4897,6 +4993,10 @@
         "EngineVersion":{
           "shape":"EngineVersion",
           "documentation":"<p>The engine version setting for all queries on the workgroup. Queries on the <code>AmazonAthenaPreviewFunctionality</code> workgroup run on the preview engine regardless of this setting.</p>"
+        },
+        "IdentityCenterApplicationArn":{
+          "shape":"IdentityCenterApplicationArn",
+          "documentation":"<p>The ARN of the IAM Identity Center enabled application associated with the workgroup.</p>"
         }
       },
       "documentation":"<p>The summary information for the workgroup, which includes its name, state, description, and the date and time it was created.</p>"

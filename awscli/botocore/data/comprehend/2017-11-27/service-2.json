@@ -128,7 +128,7 @@
         {"shape":"TextSizeLimitExceededException"},
         {"shape":"InternalServerException"}
       ],
-      "documentation":"<p>Creates a classification request to analyze a single document in real-time. <code>ClassifyDocument</code> supports the following model types:</p> <ul> <li> <p>Custom classifier - a custom model that you have created and trained. For input, you can provide plain text, a single-page document (PDF, Word, or image), or Textract API output. For more information, see <a href=\"https://docs.aws.amazon.com/comprehend/latest/dg/how-document-classification.html\">Custom classification</a> in the <i>Amazon Comprehend Developer Guide</i>.</p> </li> <li> <p>Prompt classifier - Amazon Comprehend provides a model for classifying prompts. For input, you provide English plain text input. For prompt classification, the response includes only the <code>Classes</code> field. For more information about prompt classifiers, see <a href=\"https://docs.aws.amazon.com/comprehend/latest/dg/prompt-classification.html\">Prompt classifiers</a> in the <i>Amazon Comprehend Developer Guide</i>.</p> </li> </ul> <p>If the system detects errors while processing a page in the input document, the API response includes an entry in <code>Errors</code> that describes the errors.</p> <p>If the system detects a document-level error in your input document, the API returns an <code>InvalidRequestException</code> error response. For details about this exception, see <a href=\"https://docs.aws.amazon.com/comprehend/latest/dg/idp-inputs-sync-err.html\"> Errors in semi-structured documents</a> in the Comprehend Developer Guide. </p>"
+      "documentation":"<p>Creates a classification request to analyze a single document in real-time. <code>ClassifyDocument</code> supports the following model types:</p> <ul> <li> <p>Custom classifier - a custom model that you have created and trained. For input, you can provide plain text, a single-page document (PDF, Word, or image), or Amazon Textract API output. For more information, see <a href=\"https://docs.aws.amazon.com/comprehend/latest/dg/how-document-classification.html\">Custom classification</a> in the <i>Amazon Comprehend Developer Guide</i>.</p> </li> <li> <p>Prompt safety classifier - Amazon Comprehend provides a pre-trained model for classifying input prompts for generative AI applications. For input, you provide English plain text input. For prompt safety classification, the response includes only the <code>Classes</code> field. For more information about prompt safety classifiers, see <a href=\"https://docs.aws.amazon.com/comprehend/latest/dg/trust-safety.html#prompt-classification\">Prompt safety classification</a> in the <i>Amazon Comprehend Developer Guide</i>.</p> </li> </ul> <p>If the system detects errors while processing a page in the input document, the API response includes an <code>Errors</code> field that describes the errors.</p> <p>If the system detects a document-level error in your input document, the API returns an <code>InvalidRequestException</code> error response. For details about this exception, see <a href=\"https://docs.aws.amazon.com/comprehend/latest/dg/idp-inputs-sync-err.html\"> Errors in semi-structured documents</a> in the Comprehend Developer Guide. </p>"
     },
     "ContainsPiiEntities":{
       "name":"ContainsPiiEntities",
@@ -714,7 +714,7 @@
         {"shape":"UnsupportedLanguageException"},
         {"shape":"InternalServerException"}
       ],
-      "documentation":"<p>Performs toxicity analysis on the list of text strings that you provide as input. The analysis uses the order of strings in the list to determine context when predicting toxicity. The API response contains a results list that matches the size of the input list. For more information about toxicity detection, see <a href=\"https://docs.aws.amazon.com/comprehend/latest/dg/toxicity-detection.html\">Toxicity detection</a> in the <i>Amazon Comprehend Developer Guide</i> </p>"
+      "documentation":"<p>Performs toxicity analysis on the list of text strings that you provide as input. The API response contains a results list that matches the size of the input list. For more information about toxicity detection, see <a href=\"https://docs.aws.amazon.com/comprehend/latest/dg/toxicity-detection.html\">Toxicity detection</a> in the <i>Amazon Comprehend Developer Guide</i>. </p>"
     },
     "ImportModel":{
       "name":"ImportModel",
@@ -1056,7 +1056,7 @@
         {"shape":"ResourceInUseException"},
         {"shape":"InternalServerException"}
       ],
-      "documentation":"<p>Starts an asynchronous document classification job. Use the <code>DescribeDocumentClassificationJob</code> operation to track the progress of the job.</p>"
+      "documentation":"<p>Starts an asynchronous document classification job using a custom classification model. Use the <code>DescribeDocumentClassificationJob</code> operation to track the progress of the job.</p>"
     },
     "StartDominantLanguageDetectionJob":{
       "name":"StartDominantLanguageDetectionJob",
@@ -1973,11 +1973,11 @@
         },
         "EndpointArn":{
           "shape":"DocumentClassifierEndpointArn",
-          "documentation":"<p>The Amazon Resource Number (ARN) of the endpoint. </p> <p>For prompt classification, Amazon Comprehend provides the endpoint ARN: <code>zzz</code>.</p> <p>For custom classification, you create an endpoint for your custom model. For more information, see <a href=\"https://docs.aws.amazon.com/comprehend/latest/dg/using-endpoints.html\">Using Amazon Comprehend endpoints</a>.</p>"
+          "documentation":"<p>The Amazon Resource Number (ARN) of the endpoint. </p> <p>For prompt safety classification, Amazon Comprehend provides the endpoint ARN. For more information about prompt safety classifiers, see <a href=\"https://docs.aws.amazon.com/comprehend/latest/dg/trust-safety.html#prompt-classification\">Prompt safety classification</a> in the <i>Amazon Comprehend Developer Guide</i> </p> <p>For custom classification, you create an endpoint for your custom model. For more information, see <a href=\"https://docs.aws.amazon.com/comprehend/latest/dg/using-endpoints.html\">Using Amazon Comprehend endpoints</a>.</p>"
         },
         "Bytes":{
           "shape":"SemiStructuredDocumentBlob",
-          "documentation":"<p>Use the <code>Bytes</code> parameter to input a text, PDF, Word or image file.</p> <p>When you classify a document using a custom model, you can also use the <code>Bytes</code> parameter to input an Amazon Textract <code>DetectDocumentText</code> or <code>AnalyzeDocument</code> output file.</p> <p>To classify a document using the prompt classifier, use the <code>Text</code> parameter for input.</p> <p>Provide the input document as a sequence of base64-encoded bytes. If your code uses an Amazon Web Services SDK to classify documents, the SDK may encode the document file bytes for you. </p> <p>The maximum length of this field depends on the input document type. For details, see <a href=\"https://docs.aws.amazon.com/comprehend/latest/dg/idp-inputs-sync.html\"> Inputs for real-time custom analysis</a> in the Comprehend Developer Guide. </p> <p>If you use the <code>Bytes</code> parameter, do not use the <code>Text</code> parameter.</p>"
+          "documentation":"<p>Use the <code>Bytes</code> parameter to input a text, PDF, Word or image file.</p> <p>When you classify a document using a custom model, you can also use the <code>Bytes</code> parameter to input an Amazon Textract <code>DetectDocumentText</code> or <code>AnalyzeDocument</code> output file.</p> <p>To classify a document using the prompt safety classifier, use the <code>Text</code> parameter for input.</p> <p>Provide the input document as a sequence of base64-encoded bytes. If your code uses an Amazon Web Services SDK to classify documents, the SDK may encode the document file bytes for you. </p> <p>The maximum length of this field depends on the input document type. For details, see <a href=\"https://docs.aws.amazon.com/comprehend/latest/dg/idp-inputs-sync.html\"> Inputs for real-time custom analysis</a> in the Comprehend Developer Guide. </p> <p>If you use the <code>Bytes</code> parameter, do not use the <code>Text</code> parameter.</p>"
         },
         "DocumentReaderConfig":{
           "shape":"DocumentReaderConfig",
@@ -1990,11 +1990,11 @@
       "members":{
         "Classes":{
           "shape":"ListOfClasses",
-          "documentation":"<p>The classes used by the document being analyzed. These are used for multi-class trained models. Individual classes are mutually exclusive and each document is expected to have only a single class assigned to it. For example, an animal can be a dog or a cat, but not both at the same time. </p> <p>For prompt classification, the response includes a single class (<code>UNDESIRED_PROMPT</code>), along with a confidence score. A higher confidence score indicates that the input prompt is undesired in nature.</p>"
+          "documentation":"<p>The classes used by the document being analyzed. These are used for models trained in multi-class mode. Individual classes are mutually exclusive and each document is expected to have only a single class assigned to it. For example, an animal can be a dog or a cat, but not both at the same time. </p> <p>For prompt safety classification, the response includes only two classes (SAFE_PROMPT and UNSAFE_PROMPT), along with a confidence score for each class. The value range of the score is zero to one, where one is the highest confidence.</p>"
         },
         "Labels":{
           "shape":"ListOfLabels",
-          "documentation":"<p>The labels used the document being analyzed. These are used for multi-label trained models. Individual labels represent different categories that are related in some manner and are not mutually exclusive. For example, a movie can be just an action movie, or it can be an action movie, a science fiction movie, and a comedy, all at the same time. </p>"
+          "documentation":"<p>The labels used in the document being analyzed. These are used for multi-label trained models. Individual labels represent different categories that are related in some manner and are not mutually exclusive. For example, a movie can be just an action movie, or it can be an action movie, a science fiction movie, and a comedy, all at the same time. </p>"
         },
         "DocumentMetadata":{
           "shape":"DocumentMetadata",
@@ -2190,7 +2190,7 @@
         },
         "Mode":{
           "shape":"DocumentClassifierMode",
-          "documentation":"<p>Indicates the mode in which the classifier will be trained. The classifier can be trained in multi-class mode, which identifies one and only one class for each document, or multi-label mode, which identifies one or more labels for each document. In multi-label mode, multiple labels for an individual document are separated by a delimiter. The default delimiter between labels is a pipe (|).</p>"
+          "documentation":"<p>Indicates the mode in which the classifier will be trained. The classifier can be trained in multi-class (single-label) mode or multi-label mode. Multi-class mode identifies a single class label for each document and multi-label mode identifies one or more class labels for each document. Multiple labels for an individual document are separated by a delimiter. The default delimiter between labels is a pipe (|).</p>"
         },
         "ModelKmsKeyId":{
           "shape":"KmsKeyId",
@@ -3260,7 +3260,7 @@
       "members":{
         "TextSegments":{
           "shape":"ListOfTextSegments",
-          "documentation":"<p>A list of up to 10 text strings. The maximum size for the list is 10 KB.</p>"
+          "documentation":"<p>A list of up to 10 text strings. Each string has a maximum size of 1 KB, and the maximum size of the list is 10 KB.</p>"
         },
         "LanguageCode":{
           "shape":"LanguageCode",
@@ -3680,7 +3680,7 @@
     },
     "DocumentReadFeatureTypes":{
       "type":"string",
-      "documentation":"<p>Specifies the type of Amazon Textract features to apply. If you chose <code>TEXTRACT_ANALYZE_DOCUMENT</code> as the read action, you must specify one or both of the following values:</p> <ul> <li> <p> <code>TABLES</code> - Returns additional information about any tables that are detected in the input document. </p> </li> <li> <p> <code>FORMS</code> - Returns additional information about any forms that are detected in the input document. </p> </li> </ul>",
+      "documentation":"<p>TABLES or FORMS</p>",
       "enum":[
         "TABLES",
         "FORMS"
@@ -3707,7 +3707,7 @@
         },
         "FeatureTypes":{
           "shape":"ListOfDocumentReadFeatureTypes",
-          "documentation":"<p>Specifies the type of Amazon Textract features to apply. If you chose <code>TEXTRACT_ANALYZE_DOCUMENT</code> as the read action, you must specify one or both of the following values:</p> <ul> <li> <p> <code>TABLES</code> - Returns information about any tables that are detected in the input document. </p> </li> <li> <p> <code>FORMS</code> - Returns information and the data from any forms that are detected in the input document. </p> </li> </ul>"
+          "documentation":"<p>Specifies the type of Amazon Textract features to apply. If you chose <code>TEXTRACT_ANALYZE_DOCUMENT</code> as the read action, you must specify one or both of the following values:</p> <ul> <li> <p> <code>TABLES</code> - Returns additional information about any tables that are detected in the input document. </p> </li> <li> <p> <code>FORMS</code> - Returns additional information about any forms that are detected in the input document. </p> </li> </ul>"
         }
       },
       "documentation":"<p>Provides configuration parameters to override the default actions for extracting text from PDF documents and image files. </p> <p> By default, Amazon Comprehend performs the following actions to extract text from files, based on the input file type: </p> <ul> <li> <p> <b>Word files</b> - Amazon Comprehend parser extracts the text. </p> </li> <li> <p> <b>Digital PDF files</b> - Amazon Comprehend parser extracts the text. </p> </li> <li> <p> <b>Image files and scanned PDF files</b> - Amazon Comprehend uses the Amazon Textract <code>DetectDocumentText</code> API to extract the text. </p> </li> </ul> <p> <code>DocumentReaderConfig</code> does not apply to plain text files or Word files.</p> <p> For image files and PDF documents, you can override these default actions using the fields listed below. For more information, see <a href=\"https://docs.aws.amazon.com/comprehend/latest/dg/idp-set-textract-options.html\"> Setting text extraction options</a> in the Comprehend Developer Guide. </p>"
@@ -4421,7 +4421,7 @@
       "members":{
         "Type":{
           "shape":"EntityTypeName",
-          "documentation":"<p>An entity type within a labeled training dataset that Amazon Comprehend uses to train a custom entity recognizer.</p> <p>Entity types must not contain the following invalid characters: \\n (line break), \\\\n (escaped line break, \\r (carriage return), \\\\r (escaped carriage return), \\t (tab), \\\\t (escaped tab), space, and , (comma).</p>"
+          "documentation":"<p>An entity type within a labeled training dataset that Amazon Comprehend uses to train a custom entity recognizer.</p> <p>Entity types must not contain the following invalid characters: \\n (line break), \\\\n (escaped line break, \\r (carriage return), \\\\r (escaped carriage return), \\t (tab), \\\\t (escaped tab), and , (comma).</p>"
         }
       },
       "documentation":"<p>An entity type within a labeled training dataset that Amazon Comprehend uses to train a custom entity recognizer.</p>"
@@ -4893,10 +4893,10 @@
       "members":{
         "Reason":{
           "shape":"InvalidRequestDetailReason",
-          "documentation":"<p>Reason code is <code>INVALID_DOCUMENT</code>.</p>"
+          "documentation":"<p>Reason codes include the following values:</p> <ul> <li> <p>DOCUMENT_SIZE_EXCEEDED - Document size is too large. Check the size of your file and resubmit the request.</p> </li> <li> <p>UNSUPPORTED_DOC_TYPE - Document type is not supported. Check the file type and resubmit the request.</p> </li> <li> <p>PAGE_LIMIT_EXCEEDED - Too many pages in the document. Check the number of pages in your file and resubmit the request.</p> </li> <li> <p>TEXTRACT_ACCESS_DENIED - Access denied to Amazon Textract. Verify that your account has permission to use Amazon Textract API operations and resubmit the request.</p> </li> <li> <p>NOT_TEXTRACT_JSON - Document is not Amazon Textract JSON format. Verify the format and resubmit the request.</p> </li> <li> <p>MISMATCHED_TOTAL_PAGE_COUNT - Check the number of pages in your file and resubmit the request.</p> </li> <li> <p>INVALID_DOCUMENT - Invalid document. Check the file and resubmit the request.</p> </li> </ul>"
         }
       },
-      "documentation":"<p>Provides additional detail about why the request failed:</p> <ul> <li> <p>Document size is too large - Check the size of your file and resubmit the request.</p> </li> <li> <p>Document type is not supported - Check the file type and resubmit the request.</p> </li> <li> <p>Too many pages in the document - Check the number of pages in your file and resubmit the request.</p> </li> <li> <p>Access denied to Amazon Textract - Verify that your account has permission to use Amazon Textract API operations and resubmit the request.</p> </li> </ul>"
+      "documentation":"<p>Provides additional detail about why the request failed.</p>"
     },
     "InvalidRequestDetailReason":{
       "type":"string",
@@ -7578,17 +7578,17 @@
         },
         "Toxicity":{
           "shape":"Float",
-          "documentation":"<p>Overall toxicity score for the string.</p>"
+          "documentation":"<p>Overall toxicity score for the string. Value range is zero to one, where one is the highest confidence.</p>"
         }
       },
-      "documentation":"<p>Toxicity analysis result for one string. For more information about toxicity detection, see <a href=\"https://docs.aws.amazon.com/comprehend/latest/dg/toxicity-detection.html\">Toxicity detection</a> in the <i>Amazon Comprehend Developer Guide</i> </p>"
+      "documentation":"<p>Toxicity analysis result for one string. For more information about toxicity detection, see <a href=\"https://docs.aws.amazon.com/comprehend/latest/dg/toxicity-detection.html\">Toxicity detection</a> in the <i>Amazon Comprehend Developer Guide</i>.</p>"
     },
     "UnsupportedLanguageException":{
       "type":"structure",
       "members":{
         "Message":{"shape":"String"}
       },
-      "documentation":"<p>Amazon Comprehend can't process the language of the input text. For custom entity recognition APIs, only English, Spanish, French, Italian, German, or Portuguese are accepted. For a list of supported languages, <a href=\"https://docs.aws.amazon.com/comprehend/latest/dg/supported-languages.html\">Supported languages</a> in the Comprehend Developer Guide. </p>",
+      "documentation":"<p>Amazon Comprehend can't process the language of the input text. For a list of supported languages, <a href=\"https://docs.aws.amazon.com/comprehend/latest/dg/supported-languages.html\">Supported languages</a> in the Comprehend Developer Guide. </p>",
       "exception":true
     },
     "UntagResourceRequest":{

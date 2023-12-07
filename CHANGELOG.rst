@@ -6625,6 +6625,22 @@ CHANGELOG
 * feature:wizard: Added support for AWS CLI Wizards. See `#3752 <https://github.com/aws/aws-cli/issues/3752>`__.
 
 
+1.31.10
+=======
+
+* api-change:``codedeploy``: This release adds support for two new CodeDeploy features: 1) zonal deployments for Amazon EC2 in-place deployments, 2) deployments triggered by Auto Scaling group termination lifecycle hook events.
+
+
+1.31.9
+======
+
+* api-change:``backup``: AWS Backup - Features: Add VaultType to the output of DescribeRecoveryPoint, ListRecoveryPointByBackupVault API and add ResourceType to the input of ListRestoreJobs API
+* api-change:``comprehend``: Documentation updates for Trust and Safety features.
+* api-change:``connect``: Releasing Tagging Support for Instance Management APIS
+* api-change:``ec2``: Releasing the new cpuManufacturer attribute within the DescribeInstanceTypes API response which notifies our customers with information on who the Manufacturer is for the processor attached to the instance, for example: Intel.
+* api-change:``payment-cryptography``: AWS Payment Cryptography IPEK feature release
+
+
 1.31.8
 ======
 

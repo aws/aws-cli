@@ -246,7 +246,8 @@
         {"shape":"InvalidMinimumHealthyHostValueException"},
         {"shape":"DeploymentConfigLimitExceededException"},
         {"shape":"InvalidComputePlatformException"},
-        {"shape":"InvalidTrafficRoutingConfigurationException"}
+        {"shape":"InvalidTrafficRoutingConfigurationException"},
+        {"shape":"InvalidZonalDeploymentConfigurationException"}
       ],
       "documentation":"<p> Creates a deployment configuration. </p>"
     },
@@ -625,7 +626,8 @@
         {"shape":"InvalidDeploymentIdException"},
         {"shape":"InvalidInstanceStatusException"},
         {"shape":"InvalidInstanceTypeException"},
-        {"shape":"InvalidDeploymentInstanceTypeException"}
+        {"shape":"InvalidDeploymentInstanceTypeException"},
+        {"shape":"InvalidTargetFilterNameException"}
       ],
       "documentation":"<p> Returns an array of target IDs that are associated a deployment. </p>"
     },
@@ -1113,7 +1115,11 @@
         },
         "hook":{
           "shape":"AutoScalingGroupHook",
-          "documentation":"<p>An Auto Scaling lifecycle event hook name.</p>"
+          "documentation":"<p>The name of the launch hook that CodeDeploy installed into the Auto Scaling group.</p> <p>For more information about the launch hook, see <a href=\"https://docs.aws.amazon.com/codedeploy/latest/userguide/integrations-aws-auto-scaling.html#integrations-aws-auto-scaling-behaviors\">How Amazon EC2 Auto Scaling works with CodeDeploy</a> in the <i>CodeDeploy User Guide</i>.</p>"
+        },
+        "terminationHook":{
+          "shape":"AutoScalingGroupHook",
+          "documentation":"<p>The name of the termination hook that CodeDeploy installed into the Auto Scaling group.</p> <p>For more information about the termination hook, see <a href=\"https://docs.aws.amazon.com/codedeploy/latest/userguide/integrations-aws-auto-scaling.html#integrations-aws-auto-scaling-behaviors-hook-enable\">Enabling termination deployments during Auto Scaling scale-in events</a> in the <i>CodeDeploy User Guide</i>.</p>"
         }
       },
       "documentation":"<p>Information about an Auto Scaling group.</p>"
@@ -1251,6 +1257,10 @@
     },
     "BatchGetDeploymentTargetsInput":{
       "type":"structure",
+      "required":[
+        "deploymentId",
+        "targetIds"
+      ],
       "members":{
         "deploymentId":{
           "shape":"DeploymentId",
@@ -1475,6 +1485,10 @@
         "computePlatform":{
           "shape":"ComputePlatform",
           "documentation":"<p>The destination platform type for the deployment (<code>Lambda</code>, <code>Server</code>, or <code>ECS</code>).</p>"
+        },
+        "zonalConfig":{
+          "shape":"ZonalConfig",
+          "documentation":"<p>Configure the <code>ZonalConfig</code> object if you want CodeDeploy to deploy your application to one <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/using-regions-availability-zones.html#concepts-availability-zones\">Availability Zone</a> at a time, within an Amazon Web Services Region.</p> <p>For more information about the zonal configuration feature, see <a href=\"https://docs.aws.amazon.com/codedeploy/latest/userguide/deployment-configurations-create.html#zonal-config\">zonal configuration</a> in the <i>CodeDeploy User Guide</i>.</p>"
         }
       },
       "documentation":"<p>Represents the input of a <code>CreateDeploymentConfig</code> operation.</p>"
@@ -1568,6 +1582,10 @@
         "tags":{
           "shape":"TagList",
           "documentation":"<p> The metadata that you apply to CodeDeploy deployment groups to help you organize and categorize them. Each tag consists of a key and an optional value, both of which you define. </p>"
+        },
+        "terminationHookEnabled":{
+          "shape":"NullableBoolean",
+          "documentation":"<p>This parameter only applies if you are using CodeDeploy with Amazon EC2 Auto Scaling. For more information, see <a href=\"https://docs.aws.amazon.com/codedeploy/latest/userguide/integrations-aws-auto-scaling.html\">Integrating CodeDeploy with Amazon EC2 Auto Scaling</a> in the <i>CodeDeploy User Guide</i>.</p> <p>Set <code>terminationHookEnabled</code> to <code>true</code> to have CodeDeploy install a termination hook into your Auto Scaling group when you create a deployment group. When this hook is installed, CodeDeploy will perform termination deployments.</p> <p>For information about termination deployments, see <a href=\"https://docs.aws.amazon.com/codedeploy/latest/userguide/integrations-aws-auto-scaling.html#integrations-aws-auto-scaling-behaviors-hook-enable\">Enabling termination deployments during Auto Scaling scale-in events</a> in the <i>CodeDeploy User Guide</i>.</p> <p>For more information about Auto Scaling scale-in events, see the <a href=\"https://docs.aws.amazon.com/autoscaling/ec2/userguide/ec2-auto-scaling-lifecycle.html#as-lifecycle-scale-in\">Scale in</a> topic in the <i>Amazon EC2 Auto Scaling User Guide</i>.</p>"
         }
       },
       "documentation":"<p>Represents the input of a <code>CreateDeploymentGroup</code> operation.</p>"
@@ -1776,7 +1794,7 @@
         },
         "minimumHealthyHosts":{
           "shape":"MinimumHealthyHosts",
-          "documentation":"<p>Information about the number or percentage of minimum healthy instance.</p>"
+          "documentation":"<p>Information about the number or percentage of minimum healthy instances.</p>"
         },
         "createTime":{
           "shape":"Timestamp",
@@ -1789,6 +1807,10 @@
         "trafficRoutingConfig":{
           "shape":"TrafficRoutingConfig",
           "documentation":"<p>The configuration that specifies how the deployment traffic is routed. Used for deployments with a Lambda or Amazon ECS compute platform only.</p>"
+        },
+        "zonalConfig":{
+          "shape":"ZonalConfig",
+          "documentation":"<p>Information about a zonal configuration.</p>"
         }
       },
       "documentation":"<p>Information about a deployment configuration.</p>"
@@ -1825,7 +1847,8 @@
         "CodeDeploy",
         "CodeDeployAutoUpdate",
         "CloudFormation",
-        "CloudFormationRollback"
+        "CloudFormationRollback",
+        "autoscalingTermination"
       ]
     },
     "DeploymentDoesNotExistException":{
@@ -1940,6 +1963,10 @@
         "ecsServices":{
           "shape":"ECSServiceList",
           "documentation":"<p> The target Amazon ECS services in the deployment group. This applies only to deployment groups that use the Amazon ECS compute platform. A target Amazon ECS service is specified as an Amazon ECS cluster and service name pair using the format <code>&lt;clustername&gt;:&lt;servicename&gt;</code>. </p>"
+        },
+        "terminationHookEnabled":{
+          "shape":"Boolean",
+          "documentation":"<p>Indicates whether the deployment group was configured to have CodeDeploy install a termination hook into an Auto Scaling group.</p> <p>For more information about the termination hook, see <a href=\"https://docs.aws.amazon.com/codedeploy/latest/userguide/integrations-aws-auto-scaling.html#integrations-aws-auto-scaling-behaviors\">How Amazon EC2 Auto Scaling works with CodeDeploy</a> in the <i>CodeDeploy User Guide</i>.</p>"
         }
       },
       "documentation":"<p>Information about a deployment group.</p>"
@@ -2751,6 +2778,10 @@
     },
     "GetDeploymentTargetInput":{
       "type":"structure",
+      "required":[
+        "deploymentId",
+        "targetId"
+      ],
       "members":{
         "deploymentId":{
           "shape":"DeploymentId",
@@ -3466,6 +3497,13 @@
       "documentation":"<p>The UpdateOutdatedInstancesOnly value is invalid. For Lambda deployments, <code>false</code> is expected. For EC2/On-premises deployments, <code>true</code> or <code>false</code> is expected.</p>",
       "exception":true
     },
+    "InvalidZonalDeploymentConfigurationException":{
+      "type":"structure",
+      "members":{
+      },
+      "documentation":"<p>The <code>ZonalConfig</code> object is not valid.</p>",
+      "exception":true
+    },
     "Key":{"type":"string"},
     "LambdaFunctionAlias":{"type":"string"},
     "LambdaFunctionInfo":{
@@ -3789,6 +3827,7 @@
     },
     "ListDeploymentTargetsInput":{
       "type":"structure",
+      "required":["deploymentId"],
       "members":{
         "deploymentId":{
           "shape":"DeploymentId",
@@ -3989,8 +4028,30 @@
           "documentation":"<p>The minimum healthy instance value.</p>"
         }
       },
-      "documentation":"<p>Information about minimum healthy instance.</p>"
+      "documentation":"<p>Information about the minimum number of healthy instances.</p>"
     },
+    "MinimumHealthyHostsPerZone":{
+      "type":"structure",
+      "members":{
+        "type":{
+          "shape":"MinimumHealthyHostsPerZoneType",
+          "documentation":"<p>The <code>type</code> associated with the <code>MinimumHealthyHostsPerZone</code> option.</p>"
+        },
+        "value":{
+          "shape":"MinimumHealthyHostsPerZoneValue",
+          "documentation":"<p>The <code>value</code> associated with the <code>MinimumHealthyHostsPerZone</code> option.</p>"
+        }
+      },
+      "documentation":"<p>Information about the minimum number of healthy instances per Availability Zone.</p>"
+    },
+    "MinimumHealthyHostsPerZoneType":{
+      "type":"string",
+      "enum":[
+        "HOST_COUNT",
+        "FLEET_PERCENT"
+      ]
+    },
+    "MinimumHealthyHostsPerZoneValue":{"type":"integer"},
     "MinimumHealthyHostsType":{
       "type":"string",
       "enum":[
@@ -4800,6 +4861,10 @@
         "onPremisesTagSet":{
           "shape":"OnPremisesTagSet",
           "documentation":"<p>Information about an on-premises instance tag set. The deployment group includes only on-premises instances identified by all the tag groups.</p>"
+        },
+        "terminationHookEnabled":{
+          "shape":"NullableBoolean",
+          "documentation":"<p>This parameter only applies if you are using CodeDeploy with Amazon EC2 Auto Scaling. For more information, see <a href=\"https://docs.aws.amazon.com/codedeploy/latest/userguide/integrations-aws-auto-scaling.html\">Integrating CodeDeploy with Amazon EC2 Auto Scaling</a> in the <i>CodeDeploy User Guide</i>.</p> <p>Set <code>terminationHookEnabled</code> to <code>true</code> to have CodeDeploy install a termination hook into your Auto Scaling group when you update a deployment group. When this hook is installed, CodeDeploy will perform termination deployments.</p> <p>For information about termination deployments, see <a href=\"https://docs.aws.amazon.com/codedeploy/latest/userguide/integrations-aws-auto-scaling.html#integrations-aws-auto-scaling-behaviors-hook-enable\">Enabling termination deployments during Auto Scaling scale-in events</a> in the <i>CodeDeploy User Guide</i>.</p> <p>For more information about Auto Scaling scale-in events, see the <a href=\"https://docs.aws.amazon.com/autoscaling/ec2/userguide/ec2-auto-scaling-lifecycle.html#as-lifecycle-scale-in\">Scale in</a> topic in the <i>Amazon EC2 Auto Scaling User Guide</i>.</p>"
         }
       },
       "documentation":"<p>Represents the input of an <code>UpdateDeploymentGroup</code> operation.</p>"
@@ -4817,7 +4882,26 @@
     "Value":{"type":"string"},
     "Version":{"type":"string"},
     "VersionId":{"type":"string"},
-    "WaitTimeInMins":{"type":"integer"}
+    "WaitTimeInMins":{"type":"integer"},
+    "WaitTimeInSeconds":{"type":"long"},
+    "ZonalConfig":{
+      "type":"structure",
+      "members":{
+        "firstZoneMonitorDurationInSeconds":{
+          "shape":"WaitTimeInSeconds",
+          "documentation":"<p>The period of time, in seconds, that CodeDeploy must wait after completing a deployment to the <i>first</i> Availability Zone. CodeDeploy will wait this amount of time before starting a deployment to the second Availability Zone. You might set this option if you want to allow extra bake time for the first Availability Zone. If you don't specify a value for <code>firstZoneMonitorDurationInSeconds</code>, then CodeDeploy uses the <code>monitorDurationInSeconds</code> value for the first Availability Zone.</p> <p>For more information about the zonal configuration feature, see <a href=\"https://docs.aws.amazon.com/codedeploy/latest/userguide/deployment-configurations-create.html#zonal-config\">zonal configuration</a> in the <i>CodeDeploy User Guide</i>.</p>"
+        },
+        "monitorDurationInSeconds":{
+          "shape":"WaitTimeInSeconds",
+          "documentation":"<p>The period of time, in seconds, that CodeDeploy must wait after completing a deployment to an Availability Zone. CodeDeploy will wait this amount of time before starting a deployment to the next Availability Zone. Consider adding a monitor duration to give the deployment some time to prove itself (or 'bake') in one Availability Zone before it is released in the next zone. If you don't specify a <code>monitorDurationInSeconds</code>, CodeDeploy starts deploying to the next Availability Zone immediately.</p> <p>For more information about the zonal configuration feature, see <a href=\"https://docs.aws.amazon.com/codedeploy/latest/userguide/deployment-configurations-create.html#zonal-config\">zonal configuration</a> in the <i>CodeDeploy User Guide</i>.</p>"
+        },
+        "minimumHealthyHostsPerZone":{
+          "shape":"MinimumHealthyHostsPerZone",
+          "documentation":"<p>The number or percentage of instances that must remain available per Availability Zone during a deployment. This option works in conjunction with the <code>MinimumHealthyHosts</code> option. For more information, see <a href=\"https://docs.aws.amazon.com/codedeploy/latest/userguide/instances-health.html#minimum-healthy-hosts-az\">About the minimum number of healthy hosts per Availability Zone</a> in the <i>CodeDeploy User Guide</i>.</p> <p>If you don't specify the <code>minimumHealthyHostsPerZone</code> option, then CodeDeploy uses a default value of <code>0</code> percent.</p> <p>For more information about the zonal configuration feature, see <a href=\"https://docs.aws.amazon.com/codedeploy/latest/userguide/deployment-configurations-create.html#zonal-config\">zonal configuration</a> in the <i>CodeDeploy User Guide</i>.</p>"
+        }
+      },
+      "documentation":"<p>Configure the <code>ZonalConfig</code> object if you want CodeDeploy to deploy your application to one <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/using-regions-availability-zones.html#concepts-availability-zones\">Availability Zone</a> at a time, within an Amazon Web Services Region. By deploying to one Availability Zone at a time, you can expose your deployment to a progressively larger audience as confidence in the deployment's performance and viability grows. If you don't configure the <code>ZonalConfig</code> object, CodeDeploy deploys your application to a random selection of hosts across a Region.</p> <p>For more information about the zonal configuration feature, see <a href=\"https://docs.aws.amazon.com/codedeploy/latest/userguide/deployment-configurations-create.html#zonal-config\">zonal configuration</a> in the <i>CodeDeploy User Guide</i>.</p>"
+    }
   },
   "documentation":"<p>CodeDeploy is a deployment service that automates application deployments to Amazon EC2 instances, on-premises instances running in your own facility, serverless Lambda functions, or applications in an Amazon ECS service.</p> <p>You can deploy a nearly unlimited variety of application content, such as an updated Lambda function, updated applications in an Amazon ECS service, code, web and configuration files, executables, packages, scripts, multimedia files, and so on. CodeDeploy can deploy application content stored in Amazon S3 buckets, GitHub repositories, or Bitbucket repositories. You do not need to make changes to your existing code before you can use CodeDeploy.</p> <p>CodeDeploy makes it easier for you to rapidly release new features, helps you avoid downtime during application deployment, and handles the complexity of updating your applications, without many of the risks associated with error-prone manual deployments.</p> <p> <b>CodeDeploy Components</b> </p> <p>Use the information in this guide to help you work with the following CodeDeploy components:</p> <ul> <li> <p> <b>Application</b>: A name that uniquely identifies the application you want to deploy. CodeDeploy uses this name, which functions as a container, to ensure the correct combination of revision, deployment configuration, and deployment group are referenced during a deployment.</p> </li> <li> <p> <b>Deployment group</b>: A set of individual instances, CodeDeploy Lambda deployment configuration settings, or an Amazon ECS service and network details. A Lambda deployment group specifies how to route traffic to a new version of a Lambda function. An Amazon ECS deployment group specifies the service created in Amazon ECS to deploy, a load balancer, and a listener to reroute production traffic to an updated containerized application. An Amazon EC2/On-premises deployment group contains individually tagged instances, Amazon EC2 instances in Amazon EC2 Auto Scaling groups, or both. All deployment groups can specify optional trigger, alarm, and rollback settings.</p> </li> <li> <p> <b>Deployment configuration</b>: A set of deployment rules and deployment success and failure conditions used by CodeDeploy during a deployment.</p> </li> <li> <p> <b>Deployment</b>: The process and the components used when updating a Lambda function, a containerized application in an Amazon ECS service, or of installing content on one or more instances. </p> </li> <li> <p> <b>Application revisions</b>: For an Lambda deployment, this is an AppSpec file that specifies the Lambda function to be updated and one or more functions to validate deployment lifecycle events. For an Amazon ECS deployment, this is an AppSpec file that specifies the Amazon ECS task definition, container, and port where production traffic is rerouted. For an EC2/On-premises deployment, this is an archive file that contains source content—source code, webpages, executable files, and deployment scripts—along with an AppSpec file. Revisions are stored in Amazon S3 buckets or GitHub repositories. For Amazon S3, a revision is uniquely identified by its Amazon S3 object key and its ETag, version, or both. For GitHub, a revision is uniquely identified by its commit ID.</p> </li> </ul> <p>This guide also contains information to help you get details about the instances in your deployments, to make on-premises instances available for CodeDeploy deployments, to get details about a Lambda function deployment, and to get details about Amazon ECS service deployments.</p> <p> <b>CodeDeploy Information Resources</b> </p> <ul> <li> <p> <a href=\"https://docs.aws.amazon.com/codedeploy/latest/userguide\">CodeDeploy User Guide</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/codedeploy/latest/APIReference/\">CodeDeploy API Reference Guide</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/cli/latest/reference/deploy/index.html\">CLI Reference for CodeDeploy</a> </p> </li> <li> <p> <a href=\"https://forums.aws.amazon.com/forum.jspa?forumID=179\">CodeDeploy Developer Forum</a> </p> </li> </ul>"
 }

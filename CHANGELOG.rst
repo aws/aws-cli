@@ -2,6 +2,39 @@
 CHANGELOG
 =========
 
+1.31.11
+=======
+
+* api-change:``cloudwatch``: Update cloudwatch command to latest version
+* api-change:``ec2``: M2 Mac instances are built on Apple M2 Mac mini computers. I4i instances are powered by 3rd generation Intel Xeon Scalable processors. C7i compute optimized, M7i general purpose and R7i memory optimized instances are powered by custom 4th Generation Intel Xeon Scalable processors.
+* api-change:``finspace``: Releasing Scaling Group, Dataview, and Volume APIs
+
+
+1.31.10
+=======
+
+* api-change:``codedeploy``: This release adds support for two new CodeDeploy features: 1) zonal deployments for Amazon EC2 in-place deployments, 2) deployments triggered by Auto Scaling group termination lifecycle hook events.
+
+
+1.31.9
+======
+
+* api-change:``backup``: AWS Backup - Features: Add VaultType to the output of DescribeRecoveryPoint, ListRecoveryPointByBackupVault API and add ResourceType to the input of ListRestoreJobs API
+* api-change:``comprehend``: Documentation updates for Trust and Safety features.
+* api-change:``connect``: Releasing Tagging Support for Instance Management APIS
+* api-change:``ec2``: Releasing the new cpuManufacturer attribute within the DescribeInstanceTypes API response which notifies our customers with information on who the Manufacturer is for the processor attached to the instance, for example: Intel.
+* api-change:``payment-cryptography``: AWS Payment Cryptography IPEK feature release
+
+
+1.31.8
+======
+
+* api-change:``athena``: Adding IdentityCenter enabled request for interactive query
+* api-change:``cleanroomsml``: Updated service title from cleanroomsml to CleanRoomsML.
+* api-change:``cloudformation``: Documentation update, December 2023
+* api-change:``ec2``: Adds A10G, T4G, and H100 as accelerator name options and Habana as an accelerator manufacturer option for attribute based selection
+
+
 1.31.7
 ======
 

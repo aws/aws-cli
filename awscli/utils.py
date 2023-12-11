@@ -135,7 +135,10 @@ class IMDSRegionProvider(BaseProvider):
                 'ec2_metadata_service_endpoint'),
             'ec2_metadata_service_endpoint_mode': resolve_imds_endpoint_mode(
                 self._session
-            )
+            ),
+            'ec2_metadata_v1_disabled': self._session.get_config_variable(
+                'ec2_metadata_v1_disabled'
+            ),
         }
         fetcher = InstanceMetadataRegionFetcher(
             timeout=metadata_timeout,

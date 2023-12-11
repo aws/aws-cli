@@ -79,6 +79,12 @@ BOTOCORE_DEFAUT_SESSION_VARIABLES = {
         'ec2_metadata_service_endpoint_mode',
         'AWS_EC2_METADATA_SERVICE_ENDPOINT_MODE',
         None, None),
+    'ec2_metadata_v1_disabled': (
+        'ec2_metadata_v1_disabled',
+        'AWS_EC2_METADATA_V1_DISABLED',
+        False,
+        utils.ensure_boolean,
+    ),
     'imds_use_ipv6': (
         'imds_use_ipv6',
         'AWS_IMDS_USE_IPV6',

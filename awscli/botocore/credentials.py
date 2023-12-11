@@ -80,6 +80,9 @@ def create_credential_resolver(session, cache=None, region_name=None):
         'ec2_metadata_service_endpoint_mode': resolve_imds_endpoint_mode(
             session),
         'ec2_credential_refresh_window': _DEFAULT_ADVISORY_REFRESH_TIMEOUT,
+        'ec2_metadata_v1_disabled': session.get_config_variable(
+            'ec2_metadata_v1_disabled'
+        ),
     }
 
     if cache is None:

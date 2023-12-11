@@ -333,8 +333,10 @@ class IMDSFetcher(object):
 
         if env is None:
             env = os.environ.copy()
-        self._disabled = env.get('AWS_EC2_METADATA_DISABLED', 'false').lower()
-        self._disabled = self._disabled == 'true'
+        self._disabled = (
+            env.get('AWS_EC2_METADATA_DISABLED', 'false').lower() == 'true'
+        )
+        self._imds_v1_disabled = config.get('ec2_metadata_v1_disabled')
         self._user_agent = user_agent
         self._session = botocore.httpsession.URLLib3Session(
             timeout=self._timeout,
@@ -419,6 +421,8 @@ class IMDSFetcher(object):
         :param token: Metadata token to send along with GET requests to IMDS.
         """
         self._assert_enabled()
+        if not token:
+            self._assert_v1_enabled()
         if retry_func is None:
             retry_func = self._default_retry
         url = self._base_url + url_path
@@ -447,6 +451,12 @@ class IMDSFetcher(object):
         if self._disabled:
             logger.debug("Access to EC2 metadata has been disabled.")
             raise self._RETRIES_EXCEEDED_ERROR_CLS()
+
+    def _assert_v1_enabled(self):
+        if self._imds_v1_disabled:
+            raise MetadataRetrievalError(
+                error_msg="Unable to retrieve token for use in IMDSv2 call and IMDSv1 has been disabled"
+            )
 
     def _default_retry(self, response):
         return (

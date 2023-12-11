@@ -21,7 +21,7 @@ import shlex
 import botocore
 import botocore.model
 import botocore.session as session
-from botocore.exceptions import ConnectionClosedError
+from botocore.exceptions import ConnectionClosedError, MetadataRetrievalError
 from awscli.clidriver import create_clidriver
 from awscli.testutils import unittest, skip_if_windows, mock
 from awscli.compat import is_windows
@@ -316,7 +316,7 @@ class TestOutputStreamFactory(unittest.TestCase):
         self.assertEqual(self.popen.call_count, 0)
 
 
-class TestInstanceMetadataRegionFetcher(unittest.TestCase):
+class BaseIMDSRegionTest(unittest.TestCase):
     def setUp(self):
         urllib3_session_send = 'botocore.httpsession.URLLib3Session.send'
         self._urllib3_patch = mock.patch(urllib3_session_send)
@@ -324,9 +324,13 @@ class TestInstanceMetadataRegionFetcher(unittest.TestCase):
         self._imds_responses = []
         self._send.side_effect = self.get_imds_response
         self._region = 'us-mars-1a'
+        self.environ = {}
+        self.environ_patch = mock.patch('os.environ', self.environ)
+        self.environ_patch.start()
 
     def tearDown(self):
         self._urllib3_patch.stop()
+        self.environ_patch.stop()
 
     def add_imds_response(self, body, status_code=200):
         response = botocore.awsrequest.AWSResponse(
@@ -354,6 +358,8 @@ class TestInstanceMetadataRegionFetcher(unittest.TestCase):
             raise response
         return response
 
+
+class TestInstanceMetadataRegionFetcher(BaseIMDSRegionTest):
     def test_disabled_by_environment(self):
         env = {'AWS_EC2_METADATA_DISABLED': 'true'}
         fetcher = InstanceMetadataRegionFetcher(env=env)
@@ -454,15 +460,7 @@ class TestInstanceMetadataRegionFetcher(unittest.TestCase):
         self.assertEqual(result, None)
 
 
-class TestIMDSRegionProvider(unittest.TestCase):
-    def setUp(self):
-        self.environ = {}
-        self.environ_patch = mock.patch('os.environ', self.environ)
-        self.environ_patch.start()
-
-    def tearDown(self):
-        self.environ_patch.stop()
-
+class TestIMDSRegionProvider(BaseIMDSRegionTest):
     def assert_does_provide_expected_value(self, fetcher_region=None,
                                            expected_result=None,):
         fake_session = mock.Mock(spec=session.Session)
@@ -484,73 +482,88 @@ class TestIMDSRegionProvider(unittest.TestCase):
             expected_result=None,
         )
 
-    @mock.patch('botocore.httpsession.URLLib3Session.send')
-    def test_use_truncated_user_agent(self, send):
+    def test_use_truncated_user_agent(self):
         driver = create_clidriver()
         driver.session.user_agent_version = '3.0'
+        self.add_imds_token_response()
+        self.add_get_region_imds_response()
         provider = IMDSRegionProvider(driver.session)
         provider.provide()
-        args, _ = send.call_args
+        args, _ = self._send.call_args
         self.assertEqual(args[0].headers['User-Agent'], 'aws-cli/3.0')
 
-    @mock.patch('botocore.httpsession.URLLib3Session.send')
-    def test_can_use_ipv6(self, send):
+    def test_can_use_ipv6(self):
         driver = create_clidriver()
         driver.session.set_config_variable('imds_use_ipv6', True)
+        self.add_imds_token_response()
+        self.add_get_region_imds_response()
         provider = IMDSRegionProvider(driver.session)
         provider.provide()
-        args, _ = send.call_args
+        args, _ = self._send.call_args
         self.assertIn('[fd00:ec2::254]', args[0].url)
 
-    @mock.patch('botocore.httpsession.URLLib3Session.send')
-    def test_use_ipv4_by_default(self, send):
+    def test_use_ipv4_by_default(self):
         driver = create_clidriver()
+        self.add_imds_token_response()
+        self.add_get_region_imds_response()
         provider = IMDSRegionProvider(driver.session)
         provider.provide()
-        args, _ = send.call_args
+        args, _ = self._send.call_args
         self.assertIn('169.254.169.254', args[0].url)
 
-    @mock.patch('botocore.httpsession.URLLib3Session.send')
-    def test_can_set_imds_endpoint_mode_to_ipv4(self, send):
+    def test_can_set_imds_endpoint_mode_to_ipv4(self):
         driver = create_clidriver()
         driver.session.set_config_variable(
             'ec2_metadata_service_endpoint_mode', 'ipv4')
+        self.add_imds_token_response()
+        self.add_get_region_imds_response()
         provider = IMDSRegionProvider(driver.session)
         provider.provide()
-        args, _ = send.call_args
+        args, _ = self._send.call_args
         self.assertIn('169.254.169.254', args[0].url)
 
-    @mock.patch('botocore.httpsession.URLLib3Session.send')
-    def test_can_set_imds_endpoint_mode_to_ipv6(self, send):
+    def test_can_set_imds_endpoint_mode_to_ipv6(self):
         driver = create_clidriver()
         driver.session.set_config_variable(
             'ec2_metadata_service_endpoint_mode', 'ipv6')
+        self.add_imds_token_response()
+        self.add_get_region_imds_response()
         provider = IMDSRegionProvider(driver.session)
         provider.provide()
-        args, _ = send.call_args
+        args, _ = self._send.call_args
         self.assertIn('[fd00:ec2::254]', args[0].url)
 
-    @mock.patch('botocore.httpsession.URLLib3Session.send')
-    def test_can_set_imds_service_endpoint(self, send):
+    def test_can_set_imds_service_endpoint(self):
         driver = create_clidriver()
         driver.session.set_config_variable(
             'ec2_metadata_service_endpoint', 'http://myendpoint/')
+        self.add_imds_token_response()
+        self.add_get_region_imds_response()
         provider = IMDSRegionProvider(driver.session)
         provider.provide()
-        args, _ = send.call_args
+        args, _ = self._send.call_args
         self.assertIn('http://myendpoint/', args[0].url)
 
-    @mock.patch('botocore.httpsession.URLLib3Session.send')
-    def test_imds_service_endpoint_overrides_ipv6_endpoint(self, send):
+    def test_imds_service_endpoint_overrides_ipv6_endpoint(self):
         driver = create_clidriver()
         driver.session.set_config_variable(
             'ec2_metadata_service_endpoint_mode', 'ipv6')
         driver.session.set_config_variable(
             'ec2_metadata_service_endpoint', 'http://myendpoint/')
+        self.add_imds_token_response()
+        self.add_get_region_imds_response()
         provider = IMDSRegionProvider(driver.session)
         provider.provide()
-        args, _ = send.call_args
+        args, _ = self._send.call_args
         self.assertIn('http://myendpoint/', args[0].url)
+
+    def test_disable_ec2_metadata_v1(self):
+        driver = create_clidriver()
+        driver.session.set_config_variable('ec2_metadata_v1_disabled', True)
+        self.add_imds_response(b'', 404)
+        provider = IMDSRegionProvider(driver.session)
+        with self.assertRaises(MetadataRetrievalError):
+            provider.provide()
 
 
 class TestLazyPager(unittest.TestCase):

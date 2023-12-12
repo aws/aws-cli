@@ -2,6 +2,14 @@
 CHANGELOG
 =========
 
+1.31.13
+=======
+
+* api-change:``imagebuilder``: This release adds the Image Workflows feature to give more flexibility and control over the image building and testing process.
+* api-change:``location``: This release 1)  adds sub-municipality field in Places API for searching and getting places information, and 2) allows optimizing route calculation based on expected arrival time.
+* api-change:``logs``: This release introduces the StartLiveTail API to tail ingested logs in near real time.
+
+
 1.31.12
 =======
 

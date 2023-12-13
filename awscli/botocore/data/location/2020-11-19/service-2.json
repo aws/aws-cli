@@ -1869,6 +1869,10 @@
         "DestinationPosition"
       ],
       "members":{
+        "ArrivalTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>Specifies the desired time of arrival. Uses the given time to calculate the route. Otherwise, the best time of day to travel with the best traffic conditions is used to calculate the route.</p> <note> <p>ArrivalTime is not supported Esri.</p> </note>"
+        },
         "CalculatorName":{
           "shape":"ResourceName",
           "documentation":"<p>The name of the route calculator resource that you want to use to calculate the route. </p>",
@@ -1889,7 +1893,7 @@
         },
         "DepartureTime":{
           "shape":"Timestamp",
-          "documentation":"<p>Specifies the desired time of departure. Uses the given time to calculate the route. Otherwise, the best time of day to travel with the best traffic conditions is used to calculate the route.</p> <note> <p>Setting a departure time in the past returns a <code>400 ValidationException</code> error.</p> </note> <ul> <li> <p>In <a href=\"https://www.iso.org/iso-8601-date-and-time-format.html\">ISO 8601</a> format: <code>YYYY-MM-DDThh:mm:ss.sssZ</code>. For example, <code>2020–07-2T12:15:20.000Z+01:00</code> </p> </li> </ul>"
+          "documentation":"<p>Specifies the desired time of departure. Uses the given time to calculate the route. Otherwise, the best time of day to travel with the best traffic conditions is used to calculate the route.</p> <ul> <li> <p>In <a href=\"https://www.iso.org/iso-8601-date-and-time-format.html\">ISO 8601</a> format: <code>YYYY-MM-DDThh:mm:ss.sssZ</code>. For example, <code>2020–07-2T12:15:20.000Z+01:00</code> </p> </li> </ul>"
         },
         "DestinationPosition":{
           "shape":"Position",
@@ -1908,6 +1912,10 @@
           "documentation":"<p>The optional <a href=\"https://docs.aws.amazon.com/location/latest/developerguide/using-apikeys.html\">API key</a> to authorize the request.</p>",
           "location":"querystring",
           "locationName":"key"
+        },
+        "OptimizeFor":{
+          "shape":"OptimizationMode",
+          "documentation":"<p>Specifies the distance to optimize for when calculating a route.</p>"
         },
         "TravelMode":{
           "shape":"TravelMode",
@@ -3627,7 +3635,7 @@
       "members":{
         "FilterGeometry":{
           "shape":"TrackingFilterGeometry",
-          "documentation":"<p>The geomerty used to filter device positions.</p>"
+          "documentation":"<p>The geometry used to filter device positions.</p>"
         },
         "MaxResults":{
           "shape":"ListDevicePositionsRequestMaxResultsInteger",
@@ -4330,6 +4338,13 @@
       "min":1,
       "pattern":"^[-._\\w]+$"
     },
+    "OptimizationMode":{
+      "type":"string",
+      "enum":[
+        "FastestRoute",
+        "ShortestRoute"
+      ]
+    },
     "Place":{
       "type":"structure",
       "required":["Geometry"],
@@ -4374,6 +4389,10 @@
         "Street":{
           "shape":"String",
           "documentation":"<p>The name for a street or a road to identify a location. For example, <code>Main Street</code>.</p>"
+        },
+        "SubMunicipality":{
+          "shape":"String",
+          "documentation":"<p>An area that's part of a larger municipality. For example, <code>Blissville </code> is a submunicipality in the Queen County in New York.</p> <note> <p>This property supported by Esri and OpenData. The Esri property is <code>district</code>, and the OpenData property is <code>borough</code>.</p> </note>"
         },
         "SubRegion":{
           "shape":"String",

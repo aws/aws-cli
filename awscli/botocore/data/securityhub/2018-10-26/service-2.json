@@ -1315,7 +1315,9 @@
         {"shape":"LimitExceededException"},
         {"shape":"ResourceNotFoundException"},
         {"shape":"ResourceInUseException"},
-        {"shape":"AccessDeniedException"}
+        {"shape":"AccessDeniedException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ResourceInUseException"}
       ],
       "documentation":"<p> Updates the properties of a security control. </p>"
     },
@@ -1607,7 +1609,7 @@
     },
     "AlphaNumericNonEmptyString":{
       "type":"string",
-      "pattern":"^[-_ a-zA-Z0-9]+$"
+      "pattern":"^([^\\u0000-\\u007F]|[-_ a-zA-Z0-9])+$"
     },
     "ArnList":{
       "type":"list",
@@ -4871,6 +4873,10 @@
         "TableStatus":{
           "shape":"NonEmptyString",
           "documentation":"<p>The current status of the table. Valid values are as follows:</p> <ul> <li> <p> <code>ACTIVE</code> </p> </li> <li> <p> <code>ARCHIVED</code> </p> </li> <li> <p> <code>ARCHIVING</code> </p> </li> <li> <p> <code>CREATING</code> </p> </li> <li> <p> <code>DELETING</code> </p> </li> <li> <p> <code>INACCESSIBLE_ENCRYPTION_CREDENTIALS</code> </p> </li> <li> <p> <code>UPDATING</code> </p> </li> </ul>"
+        },
+        "DeletionProtectionEnabled":{
+          "shape":"Boolean",
+          "documentation":"<p> Indicates whether deletion protection is to be enabled (true) or disabled (false) on the table. </p>"
         }
       },
       "documentation":"<p>Provides details about a DynamoDB table.</p>"
@@ -5124,6 +5130,200 @@
         }
       },
       "documentation":"<p>The current DynamoDB Streams configuration for the table.</p>"
+    },
+    "AwsEc2ClientVpnEndpointAuthenticationOptionsActiveDirectoryDetails":{
+      "type":"structure",
+      "members":{
+        "DirectoryId":{
+          "shape":"NonEmptyString",
+          "documentation":"<p> The ID of the Active Directory used for authentication. </p>"
+        }
+      },
+      "documentation":"<p> Provides details about an Active Directory that’s used to authenticate an Client VPN endpoint. </p>"
+    },
+    "AwsEc2ClientVpnEndpointAuthenticationOptionsDetails":{
+      "type":"structure",
+      "members":{
+        "Type":{
+          "shape":"NonEmptyString",
+          "documentation":"<p> The authentication type used. </p>"
+        },
+        "ActiveDirectory":{
+          "shape":"AwsEc2ClientVpnEndpointAuthenticationOptionsActiveDirectoryDetails",
+          "documentation":"<p> Information about the Active Directory, if applicable. With Active Directory authentication, clients are authenticated against existing Active Directory groups. </p>"
+        },
+        "MutualAuthentication":{
+          "shape":"AwsEc2ClientVpnEndpointAuthenticationOptionsMutualAuthenticationDetails",
+          "documentation":"<p> Information about the authentication certificates, if applicable.</p>"
+        },
+        "FederatedAuthentication":{
+          "shape":"AwsEc2ClientVpnEndpointAuthenticationOptionsFederatedAuthenticationDetails",
+          "documentation":"<p> Information about the IAM SAML identity provider, if applicable.</p>"
+        }
+      },
+      "documentation":"<p> Information about the authentication method used by the Client VPN endpoint. </p>"
+    },
+    "AwsEc2ClientVpnEndpointAuthenticationOptionsFederatedAuthenticationDetails":{
+      "type":"structure",
+      "members":{
+        "SamlProviderArn":{
+          "shape":"NonEmptyString",
+          "documentation":"<p> The Amazon Resource Name (ARN) of the IAM SAML identity provider. </p>"
+        },
+        "SelfServiceSamlProviderArn":{
+          "shape":"NonEmptyString",
+          "documentation":"<p> The Amazon Resource Name (ARN) of the IAM SAML identity provider for the self-service portal. </p>"
+        }
+      },
+      "documentation":"<p> Describes the IAM SAML identity providers used for federated authentication. </p>"
+    },
+    "AwsEc2ClientVpnEndpointAuthenticationOptionsList":{
+      "type":"list",
+      "member":{"shape":"AwsEc2ClientVpnEndpointAuthenticationOptionsDetails"}
+    },
+    "AwsEc2ClientVpnEndpointAuthenticationOptionsMutualAuthenticationDetails":{
+      "type":"structure",
+      "members":{
+        "ClientRootCertificateChain":{
+          "shape":"NonEmptyString",
+          "documentation":"<p> The Amazon Resource Name (ARN) of the client certificate. </p>"
+        }
+      },
+      "documentation":"<p> Information about the client certificate used for authentication. </p>"
+    },
+    "AwsEc2ClientVpnEndpointClientConnectOptionsDetails":{
+      "type":"structure",
+      "members":{
+        "Enabled":{
+          "shape":"Boolean",
+          "documentation":"<p> Indicates whether client connect options are enabled. </p>"
+        },
+        "LambdaFunctionArn":{
+          "shape":"NonEmptyString",
+          "documentation":"<p> The Amazon Resource Name (ARN) of the Lambda function used for connection authorization. </p>"
+        },
+        "Status":{
+          "shape":"AwsEc2ClientVpnEndpointClientConnectOptionsStatusDetails",
+          "documentation":"<p> The status of any updates to the client connect options. </p>"
+        }
+      },
+      "documentation":"<p> The options for managing connection authorization for new client connections. </p>"
+    },
+    "AwsEc2ClientVpnEndpointClientConnectOptionsStatusDetails":{
+      "type":"structure",
+      "members":{
+        "Code":{
+          "shape":"NonEmptyString",
+          "documentation":"<p> The status code. </p>"
+        },
+        "Message":{
+          "shape":"NonEmptyString",
+          "documentation":"<p> The status message. </p>"
+        }
+      },
+      "documentation":"<p> Describes the status of the Client VPN endpoint attribute. </p>"
+    },
+    "AwsEc2ClientVpnEndpointClientLoginBannerOptionsDetails":{
+      "type":"structure",
+      "members":{
+        "Enabled":{
+          "shape":"Boolean",
+          "documentation":"<p> Current state of text banner feature. </p>"
+        },
+        "BannerText":{
+          "shape":"NonEmptyString",
+          "documentation":"<p> Customizable text that will be displayed in a banner on Amazon Web Services provided clients when a VPN session is established. </p>"
+        }
+      },
+      "documentation":"<p> Options for enabling a customizable text banner that will be displayed on Amazon Web Services provided clients when a VPN session is established. </p>"
+    },
+    "AwsEc2ClientVpnEndpointConnectionLogOptionsDetails":{
+      "type":"structure",
+      "members":{
+        "Enabled":{
+          "shape":"Boolean",
+          "documentation":"<p> Indicates whether client connection logging is enabled for the Client VPN endpoint. </p>"
+        },
+        "CloudwatchLogGroup":{
+          "shape":"NonEmptyString",
+          "documentation":"<p> The name of the Amazon CloudWatch Logs log group to which connection logging data is published. </p>"
+        },
+        "CloudwatchLogStream":{
+          "shape":"NonEmptyString",
+          "documentation":"<p> The name of the Amazon CloudWatch Logs log stream to which connection logging data is published. </p>"
+        }
+      },
+      "documentation":"<p> Information about the client connection logging options for the Client VPN endpoint. </p>"
+    },
+    "AwsEc2ClientVpnEndpointDetails":{
+      "type":"structure",
+      "members":{
+        "ClientVpnEndpointId":{
+          "shape":"NonEmptyString",
+          "documentation":"<p> The ID of the Client VPN endpoint. </p>"
+        },
+        "Description":{
+          "shape":"NonEmptyString",
+          "documentation":"<p> A brief description of the endpoint. </p>"
+        },
+        "ClientCidrBlock":{
+          "shape":"NonEmptyString",
+          "documentation":"<p> The IPv4 address range, in CIDR notation, from which client IP addresses are assigned. </p>"
+        },
+        "DnsServer":{
+          "shape":"StringList",
+          "documentation":"<p> Information about the DNS servers to be used for DNS resolution. </p>"
+        },
+        "SplitTunnel":{
+          "shape":"Boolean",
+          "documentation":"<p> Indicates whether split-tunnel is enabled in the Client VPN endpoint. </p>"
+        },
+        "TransportProtocol":{
+          "shape":"NonEmptyString",
+          "documentation":"<p> The transport protocol used by the Client VPN endpoint. </p>"
+        },
+        "VpnPort":{
+          "shape":"Integer",
+          "documentation":"<p> The port number for the Client VPN endpoint. </p>"
+        },
+        "ServerCertificateArn":{
+          "shape":"NonEmptyString",
+          "documentation":"<p> The Amazon Resource Name (ARN) of the server certificate. </p>"
+        },
+        "AuthenticationOptions":{
+          "shape":"AwsEc2ClientVpnEndpointAuthenticationOptionsList",
+          "documentation":"<p> Information about the authentication method used by the Client VPN endpoint. </p>"
+        },
+        "ConnectionLogOptions":{
+          "shape":"AwsEc2ClientVpnEndpointConnectionLogOptionsDetails",
+          "documentation":"<p> Information about the client connection logging options for the Client VPN endpoint. </p>"
+        },
+        "SecurityGroupIdSet":{
+          "shape":"StringList",
+          "documentation":"<p> The IDs of the security groups for the target network. </p>"
+        },
+        "VpcId":{
+          "shape":"NonEmptyString",
+          "documentation":"<p> The ID of the VPC. </p>"
+        },
+        "SelfServicePortalUrl":{
+          "shape":"NonEmptyString",
+          "documentation":"<p> The URL of the self-service portal. </p>"
+        },
+        "ClientConnectOptions":{
+          "shape":"AwsEc2ClientVpnEndpointClientConnectOptionsDetails",
+          "documentation":"<p> The options for managing connection authorization for new client connections. </p>"
+        },
+        "SessionTimeoutHours":{
+          "shape":"Integer",
+          "documentation":"<p> The maximum VPN session duration time in hours. </p>"
+        },
+        "ClientLoginBannerOptions":{
+          "shape":"AwsEc2ClientVpnEndpointClientLoginBannerOptionsDetails",
+          "documentation":"<p> Options for enabling a customizable text banner that will be displayed on Amazon Web Services provided clients when a VPN session is established. </p>"
+        }
+      },
+      "documentation":"<p> Describes an Client VPN endpoint. A Client VPN endpoint is the resource that you create and configure to enable and manage client VPN sessions. It's the termination point for all client VPN sessions. </p>"
     },
     "AwsEc2EipDetails":{
       "type":"structure",
@@ -10524,7 +10724,7 @@
         },
         "CurrentVersion":{
           "shape":"NonEmptyString",
-          "documentation":"<p> The current version of the MSK cluster.</p>"
+          "documentation":"<p> The current version of the cluster.</p>"
         },
         "NumberOfBrokerNodes":{
           "shape":"Integer",
@@ -10537,9 +10737,13 @@
         "ClientAuthentication":{
           "shape":"AwsMskClusterClusterInfoClientAuthenticationDetails",
           "documentation":"<p> Provides information for different modes of client authentication.</p>"
+        },
+        "EnhancedMonitoring":{
+          "shape":"NonEmptyString",
+          "documentation":"<p> Specifies the level of monitoring for the cluster. </p>"
         }
       },
-      "documentation":"<p> Provide details about an Amazon MSK cluster.</p>"
+      "documentation":"<p> Provide details about an Amazon Managed Streaming for Apache Kafka (Amazon MSK) cluster.</p>"
     },
     "AwsMskClusterClusterInfoEncryptionInfoDetails":{
       "type":"structure",
@@ -12694,6 +12898,51 @@
       },
       "documentation":"<p> Provides details about a specified Amazon Route 53 configuration for DNS query logging.</p>"
     },
+    "AwsS3AccessPointDetails":{
+      "type":"structure",
+      "members":{
+        "AccessPointArn":{
+          "shape":"NonEmptyString",
+          "documentation":"<p> The Amazon Resource Name (ARN) of the access point. </p>"
+        },
+        "Alias":{
+          "shape":"NonEmptyString",
+          "documentation":"<p> The name or alias of the access point. </p>"
+        },
+        "Bucket":{
+          "shape":"NonEmptyString",
+          "documentation":"<p> The name of the S3 bucket associated with the specified access point. </p>"
+        },
+        "BucketAccountId":{
+          "shape":"NonEmptyString",
+          "documentation":"<p> The Amazon Web Services account ID associated with the S3 bucket associated with this access point. </p>"
+        },
+        "Name":{
+          "shape":"NonEmptyString",
+          "documentation":"<p> The name of the specified access point. </p>"
+        },
+        "NetworkOrigin":{
+          "shape":"NonEmptyString",
+          "documentation":"<p> Indicates whether this access point allows access from the public internet. </p>"
+        },
+        "PublicAccessBlockConfiguration":{"shape":"AwsS3AccountPublicAccessBlockDetails"},
+        "VpcConfiguration":{
+          "shape":"AwsS3AccessPointVpcConfigurationDetails",
+          "documentation":"<p> Contains the virtual private cloud (VPC) configuration for the specified access point. </p>"
+        }
+      },
+      "documentation":"<p> Returns configuration information about the specified Amazon S3 access point. S3 access points are named network endpoints that are attached to buckets that you can use to perform S3 object operations. </p>"
+    },
+    "AwsS3AccessPointVpcConfigurationDetails":{
+      "type":"structure",
+      "members":{
+        "VpcId":{
+          "shape":"NonEmptyString",
+          "documentation":"<p> If this field is specified, this access point will only allow connections from the specified VPC ID. </p>"
+        }
+      },
+      "documentation":"<p> The virtual private cloud (VPC) configuration for an Amazon S3 access point. </p>"
+    },
     "AwsS3AccountPublicAccessBlockDetails":{
       "type":"structure",
       "members":{
@@ -12951,7 +13200,7 @@
         },
         "BucketLifecycleConfiguration":{
           "shape":"AwsS3BucketBucketLifecycleConfigurationDetails",
-          "documentation":"<p>The lifecycle configuration for objects in the S3 bucket.</p>"
+          "documentation":"<p>The lifecycle configuration for objects in the specified bucket.</p>"
         },
         "PublicAccessBlockConfiguration":{
           "shape":"AwsS3AccountPublicAccessBlockDetails",
@@ -12979,10 +13228,14 @@
         },
         "ObjectLockConfiguration":{
           "shape":"AwsS3BucketObjectLockConfiguration",
-          "documentation":"<p> Specifies which rule Amazon S3 applies by default to every new object placed in the specified bucket. </p>"
+          "documentation":"<p> Specifies which rule Amazon S3 applies by default to every new object placed in the bucket. </p>"
+        },
+        "Name":{
+          "shape":"NonEmptyString",
+          "documentation":"<p> The name of the bucket. </p>"
         }
       },
-      "documentation":"<p>The details of an Amazon S3 bucket.</p>"
+      "documentation":"<p>The details of an Amazon Simple Storage Service (Amazon S3) bucket.</p>"
     },
     "AwsS3BucketLoggingConfiguration":{
       "type":"structure",
@@ -15738,7 +15991,7 @@
         },
         "Name":{
           "shape":"NonEmptyString",
-          "documentation":"<p> The name of the configuration policy. </p>"
+          "documentation":"<p> The name of the configuration policy. Alphanumeric characters and the following ASCII characters are permitted: <code>-, ., !, *, /</code>. </p>"
         },
         "Description":{
           "shape":"NonEmptyString",
@@ -15915,7 +16168,7 @@
       "members":{
         "Name":{
           "shape":"NonEmptyString",
-          "documentation":"<p> The name of the configuration policy. </p>"
+          "documentation":"<p> The name of the configuration policy. Alphanumeric characters and the following ASCII characters are permitted: <code>-, ., !, *, /</code>. </p>"
         },
         "Description":{
           "shape":"NonEmptyString",
@@ -18481,7 +18734,7 @@
       "members":{
         "ValueType":{
           "shape":"ParameterValueType",
-          "documentation":"<p> Identifies whether a control parameter uses a custom user-defined value or the Security Hub default value. </p>"
+          "documentation":"<p> Identifies whether a control parameter uses a custom user-defined value or subscribes to the default Security Hub behavior.</p> <p>When <code>ValueType</code> is set equal to <code>DEFAULT</code>, the default behavior can be a specific Security Hub default value, or the default behavior can be to ignore a specific parameter. When <code>ValueType</code> is set equal to <code>DEFAULT</code>, Security Hub ignores user-provided input for the <code>Value</code> field.</p> <p>When <code>ValueType</code> is set equal to <code>CUSTOM</code>, the <code>Value</code> field can't be empty.</p>"
         },
         "Value":{
           "shape":"ParameterValue",
@@ -19348,6 +19601,14 @@
         "AwsMskCluster":{
           "shape":"AwsMskClusterDetails",
           "documentation":"<p> Provides details about an Amazon Managed Streaming for Apache Kafka (Amazon MSK) cluster.</p>"
+        },
+        "AwsS3AccessPoint":{
+          "shape":"AwsS3AccessPointDetails",
+          "documentation":"<p> Provides details about an Amazon Simple Storage Service (Amazon S3) access point. S3 access points are named network endpoints that are attached to S3 buckets that you can use to perform S3 object operations. </p>"
+        },
+        "AwsEc2ClientVpnEndpoint":{
+          "shape":"AwsEc2ClientVpnEndpointDetails",
+          "documentation":"<p> Provides details about an Client VPN endpoint. A Client VPN endpoint is the resource that you create and configure to enable and manage client VPN sessions. It's the termination point for all client VPN sessions. </p>"
         }
       },
       "documentation":"<p>Additional details about a resource related to a finding.</p> <p>To provide the details, use the object that corresponds to the resource type. For example, if the resource type is <code>AwsEc2Instance</code>, then you use the <code>AwsEc2Instance</code> object to provide the details.</p> <p>If the type-specific object does not contain all of the fields you want to populate, then you use the <code>Other</code> object to populate those additional fields.</p> <p>You also use the <code>Other</code> object to populate the details when the selected type does not have a corresponding object.</p>"
@@ -21151,7 +21412,7 @@
         },
         "Name":{
           "shape":"NonEmptyString",
-          "documentation":"<p> The name of the configuration policy. </p>"
+          "documentation":"<p> The name of the configuration policy. Alphanumeric characters and the following ASCII characters are permitted: <code>-, ., !, *, /</code>. </p>"
         },
         "Description":{
           "shape":"NonEmptyString",

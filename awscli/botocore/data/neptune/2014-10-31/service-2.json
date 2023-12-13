@@ -862,7 +862,8 @@
         {"shape":"DBClusterParameterGroupNotFoundFault"},
         {"shape":"InvalidDBSecurityGroupStateFault"},
         {"shape":"InvalidDBInstanceStateFault"},
-        {"shape":"DBClusterAlreadyExistsFault"}
+        {"shape":"DBClusterAlreadyExistsFault"},
+        {"shape":"StorageTypeNotSupportedFault"}
       ],
       "documentation":"<p>Modify a setting for a DB cluster. You can change one or more database configuration parameters by specifying these parameters and the new values in the request.</p>"
     },
@@ -1441,7 +1442,7 @@
           "documentation":"<p>The list of log types to disable.</p>"
         }
       },
-      "documentation":"<p>The configuration setting for the log types to be enabled for export to CloudWatch Logs for a specific DB instance or DB cluster.</p> <p>The <code>EnableLogTypes</code> and <code>DisableLogTypes</code> arrays determine which logs will be exported (or not exported) to CloudWatch Logs.</p>"
+      "documentation":"<p>The configuration setting for the log types to be enabled for export to CloudWatch Logs for a specific DB instance or DB cluster.</p> <p>The <code>EnableLogTypes</code> and <code>DisableLogTypes</code> arrays determine which logs will be exported (or not exported) to CloudWatch Logs.</p> <p>Valid log types are: <code>audit</code> (to publish audit logs) and <code>slowquery</code> (to publish slow-query logs). See <a href=\"https://docs.aws.amazon.com/neptune/latest/userguide/cloudwatch-logs.html\">Publishing Neptune logs to Amazon CloudWatch logs</a>.</p>"
     },
     "ClusterPendingModifiedValues":{
       "type":"structure",
@@ -1465,6 +1466,10 @@
         "BackupRetentionPeriod":{
           "shape":"IntegerOptional",
           "documentation":"<p>The number of days for which automatic DB snapshots are retained.</p>"
+        },
+        "StorageType":{
+          "shape":"String",
+          "documentation":"<p>The storage type for the DB cluster.</p>"
         },
         "AllocatedStorage":{
           "shape":"IntegerOptional",
@@ -1761,7 +1766,7 @@
         },
         "EnableCloudwatchLogsExports":{
           "shape":"LogTypeList",
-          "documentation":"<p>The list of log types that need to be enabled for exporting to CloudWatch Logs.</p>"
+          "documentation":"<p>A list of the log types that this DB cluster should export to CloudWatch Logs. Valid log types are: <code>audit</code> (to publish audit logs) and <code>slowquery</code> (to publish slow-query logs). See <a href=\"https://docs.aws.amazon.com/neptune/latest/userguide/cloudwatch-logs.html\">Publishing Neptune logs to Amazon CloudWatch logs</a>.</p>"
         },
         "DeletionProtection":{
           "shape":"BooleanOptional",
@@ -1774,6 +1779,10 @@
         "GlobalClusterIdentifier":{
           "shape":"GlobalClusterIdentifier",
           "documentation":"<p>The ID of the Neptune global database to which this new DB cluster should be added.</p>"
+        },
+        "StorageType":{
+          "shape":"String",
+          "documentation":"<p>The storage type to associate with the DB cluster.</p> <p>Valid Values:</p> <ul> <li> <p> <code>standard | iopt1</code> </p> </li> </ul> <p>Default:</p> <ul> <li> <p> <code>standard</code> </p> </li> </ul> <note> <p>When you create a Neptune cluster with the storage type set to <code>iopt1</code>, the storage type is returned in the response. The storage type isn't returned when you set it to <code>standard</code>.</p> </note>"
         }
       }
     },
@@ -2324,7 +2333,7 @@
         },
         "EnabledCloudwatchLogsExports":{
           "shape":"LogTypeList",
-          "documentation":"<p>A list of log types that this DB cluster is configured to export to CloudWatch Logs.</p>"
+          "documentation":"<p>A list of the log types that this DB cluster is configured to export to CloudWatch Logs. Valid log types are: <code>audit</code> (to publish audit logs to CloudWatch) and slowquery (to publish slow-query logs to CloudWatch). See <a href=\"https://docs.aws.amazon.com/neptune/latest/userguide/cloudwatch-logs.html\">Publishing Neptune logs to Amazon CloudWatch logs</a>.</p>"
         },
         "PendingModifiedValues":{
           "shape":"ClusterPendingModifiedValues",
@@ -2349,6 +2358,14 @@
         "GlobalClusterIdentifier":{
           "shape":"GlobalClusterIdentifier",
           "documentation":"<p>Contains a user-supplied global database cluster identifier. This identifier is the unique key that identifies a global database.</p>"
+        },
+        "IOOptimizedNextAllowedModificationTime":{
+          "shape":"TStamp",
+          "documentation":"<p>The next time you can modify the DB cluster to use the <code>iopt1</code> storage type.</p>"
+        },
+        "StorageType":{
+          "shape":"String",
+          "documentation":"<p>The storage type associated with the DB cluster.</p>"
         }
       },
       "documentation":"<p>Contains the details of an Amazon Neptune DB cluster.</p> <p>This data type is used as a response element in the <a>DescribeDBClusters</a>.</p>",
@@ -2783,6 +2800,10 @@
         "IAMDatabaseAuthenticationEnabled":{
           "shape":"Boolean",
           "documentation":"<p>True if mapping of Amazon Identity and Access Management (IAM) accounts to database accounts is enabled, and otherwise false.</p>"
+        },
+        "StorageType":{
+          "shape":"String",
+          "documentation":"<p>The storage type associated with the DB cluster snapshot.</p>"
         }
       },
       "documentation":"<p>Contains the details for an Amazon Neptune DB cluster snapshot</p> <p>This data type is used as a response element in the <a>DescribeDBClusterSnapshots</a> action.</p>",
@@ -5076,7 +5097,7 @@
         },
         "CloudwatchLogsExportConfiguration":{
           "shape":"CloudwatchLogsExportConfiguration",
-          "documentation":"<p>The configuration setting for the log types to be enabled for export to CloudWatch Logs for a specific DB cluster.</p>"
+          "documentation":"<p>The configuration setting for the log types to be enabled for export to CloudWatch Logs for a specific DB cluster. See <a href=\"https://docs.aws.amazon.com/neptune/latest/userguide/cloudwatch-logs.html#cloudwatch-logs-cli\">Using the CLI to publish Neptune audit logs to CloudWatch Logs</a>.</p>"
         },
         "EngineVersion":{
           "shape":"String",
@@ -5101,6 +5122,10 @@
         "ServerlessV2ScalingConfiguration":{
           "shape":"ServerlessV2ScalingConfiguration",
           "documentation":"<p>Contains the scaling configuration of a Neptune Serverless DB cluster.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/neptune/latest/userguide/neptune-serverless-using.html\">Using Amazon Neptune Serverless</a> in the <i>Amazon Neptune User Guide</i>.</p>"
+        },
+        "StorageType":{
+          "shape":"String",
+          "documentation":"<p>The storage type to associate with the DB cluster.</p> <p>Valid Values:</p> <ul> <li> <p> <code>standard | iopt1</code> </p> </li> </ul> <p>Default:</p> <ul> <li> <p> <code>standard</code> </p> </li> </ul>"
         }
       }
     },
@@ -5636,7 +5661,7 @@
           "documentation":"<p>Log types that are in the process of being enabled. After they are enabled, these log types are exported to CloudWatch Logs.</p>"
         }
       },
-      "documentation":"<p>A list of the log types whose configuration is still pending. In other words, these log types are in the process of being activated or deactivated.</p>"
+      "documentation":"<p>A list of the log types whose configuration is still pending. In other words, these log types are in the process of being activated or deactivated.</p> <p>Valid log types are: <code>audit</code> (to publish audit logs) and <code>slowquery</code> (to publish slow-query logs). See <a href=\"https://docs.aws.amazon.com/neptune/latest/userguide/cloudwatch-logs.html\">Publishing Neptune logs to Amazon CloudWatch logs</a>.</p>"
     },
     "PendingMaintenanceAction":{
       "type":"structure",
@@ -5755,7 +5780,7 @@
           "documentation":"<p>This <code>PendingCloudwatchLogsExports</code> structure specifies pending changes to which CloudWatch logs are enabled and which are disabled.</p>"
         }
       },
-      "documentation":"<p> This data type is used as a response element in the <a>ModifyDBInstance</a> action.</p>"
+      "documentation":"<p>This data type is used as a response element in the <a>ModifyDBInstance</a> action.</p>"
     },
     "PromoteReadReplicaDBClusterMessage":{
       "type":"structure",
@@ -6081,6 +6106,10 @@
         "ServerlessV2ScalingConfiguration":{
           "shape":"ServerlessV2ScalingConfiguration",
           "documentation":"<p>Contains the scaling configuration of a Neptune Serverless DB cluster.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/neptune/latest/userguide/neptune-serverless-using.html\">Using Amazon Neptune Serverless</a> in the <i>Amazon Neptune User Guide</i>.</p>"
+        },
+        "StorageType":{
+          "shape":"String",
+          "documentation":"<p>Specifies the storage type to be associated with the DB cluster.</p> <p>Valid values: <code>standard</code>, <code>iopt1</code> </p> <p>Default: <code>standard</code> </p>"
         }
       }
     },
@@ -6160,6 +6189,10 @@
         "ServerlessV2ScalingConfiguration":{
           "shape":"ServerlessV2ScalingConfiguration",
           "documentation":"<p>Contains the scaling configuration of a Neptune Serverless DB cluster.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/neptune/latest/userguide/neptune-serverless-using.html\">Using Amazon Neptune Serverless</a> in the <i>Amazon Neptune User Guide</i>.</p>"
+        },
+        "StorageType":{
+          "shape":"String",
+          "documentation":"<p>Specifies the storage type to be associated with the DB cluster.</p> <p>Valid values: <code>standard</code>, <code>iopt1</code> </p> <p>Default: <code>standard</code> </p>"
         }
       }
     },

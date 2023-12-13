@@ -2,6 +2,22 @@
 CHANGELOG
 =========
 
+2.15.1
+======
+
+* api-change:``location``: This release 1)  adds sub-municipality field in Places API for searching and getting places information, and 2) allows optimizing route calculation based on expected arrival time.
+* enhancement:IMDS: Adds a config option to opt out of IMDSv1 fallback
+* api-change:``neptune``: This release adds a new parameter configuration setting to the Neptune cluster related APIs that can be leveraged to switch between the underlying supported storage modes.
+* api-change:``pinpoint``: This release includes Amazon Pinpoint API documentation updates pertaining to campaign message sending rate limits.
+* api-change:``logs``: This release introduces the StartLiveTail API to tail ingested logs in near real time.
+* api-change:``imagebuilder``: This release adds the Image Workflows feature to give more flexibility and control over the image building and testing process.
+* api-change:``cloudwatch``: Update cloudwatch command to latest version
+* api-change:``finspace``: Releasing Scaling Group, Dataview, and Volume APIs
+* api-change:``endpoint-rules``: Update endpoint-rules command to latest version
+* api-change:``ec2``: M2 Mac instances are built on Apple M2 Mac mini computers. I4i instances are powered by 3rd generation Intel Xeon Scalable processors. C7i compute optimized, M7i general purpose and R7i memory optimized instances are powered by custom 4th Generation Intel Xeon Scalable processors.
+* api-change:``securityhub``: Added new resource detail objects to ASFF, including resources for AwsDynamoDbTable, AwsEc2ClientVpnEndpoint, AwsMskCluster, AwsS3AccessPoint, AwsS3Bucket
+
+
 2.15.0
 ======
 

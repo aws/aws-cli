@@ -53,3 +53,7 @@ class DeployBucketRequiredError(CloudFormationCommandError):
          "via an S3 Bucket. Please add the --s3-bucket parameter to your "
          "command. The local template will be copied to that S3 bucket and "
          "then deployed.")
+
+
+class InvalidForEachIntrinsicFunctionError(CloudFormationCommandError):
+    fmt = 'The value of {resource_id} has an invalid "Fn::ForEach::" format: Must be a list of three entries'

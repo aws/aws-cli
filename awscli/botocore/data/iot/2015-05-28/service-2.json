@@ -355,6 +355,25 @@
       ],
       "documentation":"<p>Creates an X.509 certificate using the specified certificate signing request. </p> <p>Requires permission to access the <a href=\"https://docs.aws.amazon.com/service-authorization/latest/reference/list_awsiot.html#awsiot-actions-as-permissions\">CreateCertificateFromCsr</a> action. </p> <note> <p>The CSR must include a public key that is either an RSA key with a length of at least 2048 bits or an ECC key from NIST P-256, NIST P-384, or NIST P-521 curves. For supported certificates, consult <a href=\"https://docs.aws.amazon.com/iot/latest/developerguide/x509-client-certs.html#x509-cert-algorithms\"> Certificate signing algorithms supported by IoT</a>. </p> </note> <note> <p>Reusing the same certificate signing request (CSR) results in a distinct certificate.</p> </note> <p>You can create multiple certificates in a batch by creating a directory, copying multiple <code>.csr</code> files into that directory, and then specifying that directory on the command line. The following commands show how to create a batch of certificates given a batch of CSRs. In the following commands, we assume that a set of CSRs are located inside of the directory my-csr-directory:</p> <p>On Linux and OS X, the command is: </p> <p> <code>$ ls my-csr-directory/ | xargs -I {} aws iot create-certificate-from-csr --certificate-signing-request file://my-csr-directory/{}</code> </p> <p>This command lists all of the CSRs in my-csr-directory and pipes each CSR file name to the <code>aws iot create-certificate-from-csr</code> Amazon Web Services CLI command to create a certificate for the corresponding CSR. </p> <p>You can also run the <code>aws iot create-certificate-from-csr</code> part of the command in parallel to speed up the certificate creation process:</p> <p> <code>$ ls my-csr-directory/ | xargs -P 10 -I {} aws iot create-certificate-from-csr --certificate-signing-request file://my-csr-directory/{} </code> </p> <p>On Windows PowerShell, the command to create certificates for all CSRs in my-csr-directory is:</p> <p> <code>&gt; ls -Name my-csr-directory | %{aws iot create-certificate-from-csr --certificate-signing-request file://my-csr-directory/$_} </code> </p> <p>On a Windows command prompt, the command to create certificates for all CSRs in my-csr-directory is:</p> <p> <code>&gt; forfiles /p my-csr-directory /c \"cmd /c aws iot create-certificate-from-csr --certificate-signing-request file://@path\" </code> </p>"
     },
+    "CreateCertificateProvider":{
+      "name":"CreateCertificateProvider",
+      "http":{
+        "method":"POST",
+        "requestUri":"/certificate-providers/{certificateProviderName}"
+      },
+      "input":{"shape":"CreateCertificateProviderRequest"},
+      "output":{"shape":"CreateCertificateProviderResponse"},
+      "errors":[
+        {"shape":"LimitExceededException"},
+        {"shape":"ResourceAlreadyExistsException"},
+        {"shape":"InvalidRequestException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"UnauthorizedException"},
+        {"shape":"ServiceUnavailableException"},
+        {"shape":"InternalFailureException"}
+      ],
+      "documentation":"<p>Creates an Amazon Web Services IoT Core certificate provider. You can use Amazon Web Services IoT Core certificate provider to customize how to sign a certificate signing request (CSR) in IoT fleet provisioning. For more information, see <a href=\"https://docs.aws.amazon.com/iot/latest/developerguide/provisioning-cert-provider.html\">Customizing certificate signing using Amazon Web Services IoT Core certificate provider</a> from <i>Amazon Web Services IoT Core Developer Guide</i>.</p> <p>Requires permission to access the <a href=\"https://docs.aws.amazon.com/service-authorization/latest/reference/list_awsiot.html#awsiot-actions-as-permissions\">CreateCertificateProvider</a> action.</p> <important> <p>After you create a certificate provider, the behavior of <a href=\"https://docs.aws.amazon.com/iot/latest/developerguide/fleet-provision-api.html#create-cert-csr\"> <code>CreateCertificateFromCsr</code> API for fleet provisioning</a> will change and all API calls to <code>CreateCertificateFromCsr</code> will invoke the certificate provider to create the certificates. It can take up to a few minutes for this behavior to change after a certificate provider is created.</p> </important>"
+    },
     "CreateCustomMetric":{
       "name":"CreateCustomMetric",
       "http":{
@@ -935,6 +954,25 @@
         {"shape":"ResourceNotFoundException"}
       ],
       "documentation":"<p>Deletes the specified certificate.</p> <p>A certificate cannot be deleted if it has a policy or IoT thing attached to it or if its status is set to ACTIVE. To delete a certificate, first use the <a>DetachPolicy</a> action to detach all policies. Next, use the <a>UpdateCertificate</a> action to set the certificate to the INACTIVE status.</p> <p>Requires permission to access the <a href=\"https://docs.aws.amazon.com/service-authorization/latest/reference/list_awsiot.html#awsiot-actions-as-permissions\">DeleteCertificate</a> action.</p>"
+    },
+    "DeleteCertificateProvider":{
+      "name":"DeleteCertificateProvider",
+      "http":{
+        "method":"DELETE",
+        "requestUri":"/certificate-providers/{certificateProviderName}"
+      },
+      "input":{"shape":"DeleteCertificateProviderRequest"},
+      "output":{"shape":"DeleteCertificateProviderResponse"},
+      "errors":[
+        {"shape":"DeleteConflictException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InvalidRequestException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"UnauthorizedException"},
+        {"shape":"ServiceUnavailableException"},
+        {"shape":"InternalFailureException"}
+      ],
+      "documentation":"<p>Deletes a certificate provider.</p> <p>Requires permission to access the <a href=\"https://docs.aws.amazon.com/service-authorization/latest/reference/list_awsiot.html#awsiot-actions-as-permissions\">DeleteCertificateProvider</a> action. </p> <p>If you delete the certificate provider resource, the behavior of <code>CreateCertificateFromCsr</code> will resume, and IoT will create certificates signed by IoT from a certificate signing request (CSR).</p>"
     },
     "DeleteCustomMetric":{
       "name":"DeleteCustomMetric",
@@ -1559,6 +1597,24 @@
         {"shape":"ResourceNotFoundException"}
       ],
       "documentation":"<p>Gets information about the specified certificate.</p> <p>Requires permission to access the <a href=\"https://docs.aws.amazon.com/service-authorization/latest/reference/list_awsiot.html#awsiot-actions-as-permissions\">DescribeCertificate</a> action.</p>"
+    },
+    "DescribeCertificateProvider":{
+      "name":"DescribeCertificateProvider",
+      "http":{
+        "method":"GET",
+        "requestUri":"/certificate-providers/{certificateProviderName}"
+      },
+      "input":{"shape":"DescribeCertificateProviderRequest"},
+      "output":{"shape":"DescribeCertificateProviderResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InvalidRequestException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"UnauthorizedException"},
+        {"shape":"ServiceUnavailableException"},
+        {"shape":"InternalFailureException"}
+      ],
+      "documentation":"<p>Describes a certificate provider.</p> <p>Requires permission to access the <a href=\"https://docs.aws.amazon.com/service-authorization/latest/reference/list_awsiot.html#awsiot-actions-as-permissions\">DescribeCertificateProvider</a> action. </p>"
     },
     "DescribeCustomMetric":{
       "name":"DescribeCustomMetric",
@@ -2555,6 +2611,23 @@
         {"shape":"InternalFailureException"}
       ],
       "documentation":"<p>Lists the CA certificates registered for your Amazon Web Services account.</p> <p>The results are paginated with a default page size of 25. You can use the returned marker to retrieve additional results.</p> <p>Requires permission to access the <a href=\"https://docs.aws.amazon.com/service-authorization/latest/reference/list_awsiot.html#awsiot-actions-as-permissions\">ListCACertificates</a> action.</p>"
+    },
+    "ListCertificateProviders":{
+      "name":"ListCertificateProviders",
+      "http":{
+        "method":"GET",
+        "requestUri":"/certificate-providers/"
+      },
+      "input":{"shape":"ListCertificateProvidersRequest"},
+      "output":{"shape":"ListCertificateProvidersResponse"},
+      "errors":[
+        {"shape":"InvalidRequestException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"UnauthorizedException"},
+        {"shape":"ServiceUnavailableException"},
+        {"shape":"InternalFailureException"}
+      ],
+      "documentation":"<p>Lists all your certificate providers in your Amazon Web Services account.</p> <p>Requires permission to access the <a href=\"https://docs.aws.amazon.com/service-authorization/latest/reference/list_awsiot.html#awsiot-actions-as-permissions\">ListCertificateProviders</a> action. </p>"
     },
     "ListCertificates":{
       "name":"ListCertificates",
@@ -3898,6 +3971,24 @@
         {"shape":"InternalFailureException"}
       ],
       "documentation":"<p>Updates the status of the specified certificate. This operation is idempotent.</p> <p>Requires permission to access the <a href=\"https://docs.aws.amazon.com/service-authorization/latest/reference/list_awsiot.html#awsiot-actions-as-permissions\">UpdateCertificate</a> action.</p> <p>Certificates must be in the ACTIVE state to authenticate devices that use a certificate to connect to IoT.</p> <p>Within a few minutes of updating a certificate from the ACTIVE state to any other state, IoT disconnects all devices that used that certificate to connect. Devices cannot use a certificate that is not in the ACTIVE state to reconnect.</p>"
+    },
+    "UpdateCertificateProvider":{
+      "name":"UpdateCertificateProvider",
+      "http":{
+        "method":"PUT",
+        "requestUri":"/certificate-providers/{certificateProviderName}"
+      },
+      "input":{"shape":"UpdateCertificateProviderRequest"},
+      "output":{"shape":"UpdateCertificateProviderResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InvalidRequestException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"UnauthorizedException"},
+        {"shape":"ServiceUnavailableException"},
+        {"shape":"InternalFailureException"}
+      ],
+      "documentation":"<p>Updates a certificate provider.</p> <p>Requires permission to access the <a href=\"https://docs.aws.amazon.com/service-authorization/latest/reference/list_awsiot.html#awsiot-actions-as-permissions\">UpdateCertificateProvider</a> action. </p>"
     },
     "UpdateCustomMetric":{
       "name":"UpdateCustomMetric",
@@ -6198,6 +6289,49 @@
       "min":1,
       "pattern":"[\\s\\S]*"
     },
+    "CertificateProviderAccountDefaultForOperations":{
+      "type":"list",
+      "member":{"shape":"CertificateProviderOperation"},
+      "max":1,
+      "min":1
+    },
+    "CertificateProviderArn":{
+      "type":"string",
+      "max":2048
+    },
+    "CertificateProviderFunctionArn":{
+      "type":"string",
+      "max":2048,
+      "pattern":"[\\s\\S]*"
+    },
+    "CertificateProviderName":{
+      "type":"string",
+      "max":128,
+      "min":1,
+      "pattern":"[\\w=,@-]+"
+    },
+    "CertificateProviderOperation":{
+      "type":"string",
+      "enum":["CreateCertificateFromCsr"]
+    },
+    "CertificateProviderSummary":{
+      "type":"structure",
+      "members":{
+        "certificateProviderName":{
+          "shape":"CertificateProviderName",
+          "documentation":"<p>The name of the certificate provider.</p>"
+        },
+        "certificateProviderArn":{
+          "shape":"CertificateProviderArn",
+          "documentation":"<p>The ARN of the certificate provider.</p>"
+        }
+      },
+      "documentation":"<p>The certificate provider summary.</p>"
+    },
+    "CertificateProviders":{
+      "type":"list",
+      "member":{"shape":"CertificateProviderSummary"}
+    },
     "CertificateSigningRequest":{
       "type":"string",
       "max":4096,
@@ -6697,6 +6831,52 @@
         }
       },
       "documentation":"<p>The output from the CreateCertificateFromCsr operation.</p>"
+    },
+    "CreateCertificateProviderRequest":{
+      "type":"structure",
+      "required":[
+        "certificateProviderName",
+        "lambdaFunctionArn",
+        "accountDefaultForOperations"
+      ],
+      "members":{
+        "certificateProviderName":{
+          "shape":"CertificateProviderName",
+          "documentation":"<p>The name of the certificate provider.</p>",
+          "location":"uri",
+          "locationName":"certificateProviderName"
+        },
+        "lambdaFunctionArn":{
+          "shape":"CertificateProviderFunctionArn",
+          "documentation":"<p>The ARN of the Lambda function that defines the authentication logic.</p>"
+        },
+        "accountDefaultForOperations":{
+          "shape":"CertificateProviderAccountDefaultForOperations",
+          "documentation":"<p>A list of the operations that the certificate provider will use to generate certificates. Valid value: <code>CreateCertificateFromCsr</code>.</p>"
+        },
+        "clientToken":{
+          "shape":"ClientToken",
+          "documentation":"<p>A string that you can optionally pass in the <code>CreateCertificateProvider</code> request to make sure the request is idempotent.</p>",
+          "idempotencyToken":true
+        },
+        "tags":{
+          "shape":"TagList",
+          "documentation":"<p>Metadata which can be used to manage the certificate provider.</p>"
+        }
+      }
+    },
+    "CreateCertificateProviderResponse":{
+      "type":"structure",
+      "members":{
+        "certificateProviderName":{
+          "shape":"CertificateProviderName",
+          "documentation":"<p>The name of the certificate provider.</p>"
+        },
+        "certificateProviderArn":{
+          "shape":"CertificateProviderArn",
+          "documentation":"<p>The ARN of the certificate provider.</p>"
+        }
+      }
     },
     "CreateCustomMetricRequest":{
       "type":"structure",
@@ -8180,6 +8360,23 @@
       },
       "documentation":"<p>The output for the DeleteCACertificate operation.</p>"
     },
+    "DeleteCertificateProviderRequest":{
+      "type":"structure",
+      "required":["certificateProviderName"],
+      "members":{
+        "certificateProviderName":{
+          "shape":"CertificateProviderName",
+          "documentation":"<p>The name of the certificate provider.</p>",
+          "location":"uri",
+          "locationName":"certificateProviderName"
+        }
+      }
+    },
+    "DeleteCertificateProviderResponse":{
+      "type":"structure",
+      "members":{
+      }
+    },
     "DeleteCertificateRequest":{
       "type":"structure",
       "required":["certificateId"],
@@ -9050,6 +9247,47 @@
         }
       },
       "documentation":"<p>The output from the DescribeCACertificate operation.</p>"
+    },
+    "DescribeCertificateProviderRequest":{
+      "type":"structure",
+      "required":["certificateProviderName"],
+      "members":{
+        "certificateProviderName":{
+          "shape":"CertificateProviderName",
+          "documentation":"<p>The name of the certificate provider.</p>",
+          "location":"uri",
+          "locationName":"certificateProviderName"
+        }
+      }
+    },
+    "DescribeCertificateProviderResponse":{
+      "type":"structure",
+      "members":{
+        "certificateProviderName":{
+          "shape":"CertificateProviderName",
+          "documentation":"<p>The name of the certificate provider.</p>"
+        },
+        "certificateProviderArn":{
+          "shape":"CertificateProviderArn",
+          "documentation":"<p>The ARN of the certificate provider.</p>"
+        },
+        "lambdaFunctionArn":{
+          "shape":"CertificateProviderFunctionArn",
+          "documentation":"<p>The Lambda function ARN that's associated with the certificate provider.</p>"
+        },
+        "accountDefaultForOperations":{
+          "shape":"CertificateProviderAccountDefaultForOperations",
+          "documentation":"<p>A list of the operations that the certificate provider will use to generate certificates. Valid value: <code>CreateCertificateFromCsr</code>.</p>"
+        },
+        "creationDate":{
+          "shape":"DateType",
+          "documentation":"<p>The date-time string that indicates when the certificate provider was created.</p>"
+        },
+        "lastModifiedDate":{
+          "shape":"DateType",
+          "documentation":"<p>The date-time string that indicates when the certificate provider was last updated.</p>"
+        }
+      }
     },
     "DescribeCertificateRequest":{
       "type":"structure",
@@ -13067,6 +13305,36 @@
       },
       "documentation":"<p>The output from the ListCACertificates operation.</p>"
     },
+    "ListCertificateProvidersRequest":{
+      "type":"structure",
+      "members":{
+        "nextToken":{
+          "shape":"Marker",
+          "documentation":"<p>The token for the next set of results, or <code>null</code> if there are no more results.</p>",
+          "location":"querystring",
+          "locationName":"nextToken"
+        },
+        "ascendingOrder":{
+          "shape":"AscendingOrder",
+          "documentation":"<p>Returns the list of certificate providers in ascending alphabetical order.</p>",
+          "location":"querystring",
+          "locationName":"isAscendingOrder"
+        }
+      }
+    },
+    "ListCertificateProvidersResponse":{
+      "type":"structure",
+      "members":{
+        "certificateProviders":{
+          "shape":"CertificateProviders",
+          "documentation":"<p>The list of certificate providers in your Amazon Web Services account.</p>"
+        },
+        "nextToken":{
+          "shape":"Marker",
+          "documentation":"<p>The token for the next set of results, or <code>null</code> if there are no more results.</p>"
+        }
+      }
+    },
     "ListCertificatesByCARequest":{
       "type":"structure",
       "required":["caCertificateId"],
@@ -15360,7 +15628,7 @@
         },
         "exportMetric":{
           "shape":"ExportMetric",
-          "documentation":"<p>Value added in both Behavior and AdditionalMetricsToRetainV2 to indicate if Device Defender Detect should export the corresponding metrics.</p>"
+          "documentation":"<p>The value indicates exporting metrics related to the <code>MetricToRetain </code> when it's true.</p>"
         }
       },
       "documentation":"<p>The metric you want to retain. Dimensions are optional.</p>"
@@ -19362,6 +19630,39 @@
         }
       },
       "documentation":"<p>The input to the UpdateCACertificate operation.</p>"
+    },
+    "UpdateCertificateProviderRequest":{
+      "type":"structure",
+      "required":["certificateProviderName"],
+      "members":{
+        "certificateProviderName":{
+          "shape":"CertificateProviderName",
+          "documentation":"<p>The name of the certificate provider.</p>",
+          "location":"uri",
+          "locationName":"certificateProviderName"
+        },
+        "lambdaFunctionArn":{
+          "shape":"CertificateProviderFunctionArn",
+          "documentation":"<p>The Lambda function ARN that's associated with the certificate provider.</p>"
+        },
+        "accountDefaultForOperations":{
+          "shape":"CertificateProviderAccountDefaultForOperations",
+          "documentation":"<p>A list of the operations that the certificate provider will use to generate certificates. Valid value: <code>CreateCertificateFromCsr</code>.</p>"
+        }
+      }
+    },
+    "UpdateCertificateProviderResponse":{
+      "type":"structure",
+      "members":{
+        "certificateProviderName":{
+          "shape":"CertificateProviderName",
+          "documentation":"<p>The name of the certificate provider.</p>"
+        },
+        "certificateProviderArn":{
+          "shape":"CertificateProviderArn",
+          "documentation":"<p>The ARN of the certificate provider.</p>"
+        }
+      }
     },
     "UpdateCertificateRequest":{
       "type":"structure",

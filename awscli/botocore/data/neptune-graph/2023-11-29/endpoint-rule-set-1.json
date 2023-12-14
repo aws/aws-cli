@@ -7,13 +7,6 @@
             "documentation": "The AWS region used to dispatch the request.",
             "type": "String"
         },
-        "UseDualStack": {
-            "builtIn": "AWS::UseDualStack",
-            "required": true,
-            "default": false,
-            "documentation": "When true, use the dual-stack endpoint. If the configured endpoint does not support dual-stack, dispatching the request MAY return an error.",
-            "type": "Boolean"
-        },
         "UseFIPS": {
             "builtIn": "AWS::UseFIPS",
             "required": true,
@@ -21,10 +14,22 @@
             "documentation": "When true, send this request to the FIPS-compliant regional endpoint. If the configured endpoint does not have a FIPS compliant endpoint, dispatching the request will return an error.",
             "type": "Boolean"
         },
+        "UseDualStack": {
+            "builtIn": "AWS::UseDualStack",
+            "required": true,
+            "default": false,
+            "documentation": "When true, use the dual-stack endpoint. If the configured endpoint does not support dual-stack, dispatching the request MAY return an error.",
+            "type": "Boolean"
+        },
         "Endpoint": {
             "builtIn": "SDK::Endpoint",
             "required": false,
             "documentation": "Override the endpoint used to send this request",
+            "type": "String"
+        },
+        "ApiType": {
+            "required": true,
+            "documentation": "Parameter to determine whether current API is a control plane or dataplane API",
             "type": "String"
         }
     },
@@ -167,13 +172,43 @@
                                     ],
                                     "rules": [
                                         {
-                                            "conditions": [],
+                                            "conditions": [
+                                                {
+                                                    "fn": "stringEquals",
+                                                    "argv": [
+                                                        {
+                                                            "ref": "ApiType"
+                                                        },
+                                                        "ControlPlane"
+                                                    ]
+                                                }
+                                            ],
                                             "endpoint": {
-                                                "url": "https://drs-fips.{Region}.{PartitionResult#dualStackDnsSuffix}",
+                                                "url": "https://neptune-graph-fips.{Region}.{PartitionResult#dualStackDnsSuffix}",
                                                 "properties": {},
                                                 "headers": {}
                                             },
                                             "type": "endpoint"
+                                        },
+                                        {
+                                            "conditions": [
+                                                {
+                                                    "fn": "stringEquals",
+                                                    "argv": [
+                                                        {
+                                                            "ref": "ApiType"
+                                                        },
+                                                        "DataPlane"
+                                                    ]
+                                                }
+                                            ],
+                                            "error": "Invalid Configuration: fips endpoint is not supported for this API",
+                                            "type": "error"
+                                        },
+                                        {
+                                            "conditions": [],
+                                            "error": "Invalid Configuration: Unknown ApiType",
+                                            "type": "error"
                                         }
                                     ],
                                     "type": "tree"
@@ -204,6 +239,7 @@
                                         {
                                             "fn": "booleanEquals",
                                             "argv": [
+                                                true,
                                                 {
                                                     "fn": "getAttr",
                                                     "argv": [
@@ -212,20 +248,49 @@
                                                         },
                                                         "supportsFIPS"
                                                     ]
-                                                },
-                                                true
+                                                }
                                             ]
                                         }
                                     ],
                                     "rules": [
                                         {
-                                            "conditions": [],
+                                            "conditions": [
+                                                {
+                                                    "fn": "stringEquals",
+                                                    "argv": [
+                                                        {
+                                                            "ref": "ApiType"
+                                                        },
+                                                        "ControlPlane"
+                                                    ]
+                                                }
+                                            ],
                                             "endpoint": {
-                                                "url": "https://drs-fips.{Region}.{PartitionResult#dnsSuffix}",
+                                                "url": "https://neptune-graph-fips.{Region}.{PartitionResult#dnsSuffix}",
                                                 "properties": {},
                                                 "headers": {}
                                             },
                                             "type": "endpoint"
+                                        },
+                                        {
+                                            "conditions": [
+                                                {
+                                                    "fn": "stringEquals",
+                                                    "argv": [
+                                                        {
+                                                            "ref": "ApiType"
+                                                        },
+                                                        "DataPlane"
+                                                    ]
+                                                }
+                                            ],
+                                            "error": "Invalid Configuration: fips endpoint is not supported for this API",
+                                            "type": "error"
+                                        },
+                                        {
+                                            "conditions": [],
+                                            "error": "Invalid Configuration: Unknown ApiType",
+                                            "type": "error"
                                         }
                                     ],
                                     "type": "tree"
@@ -271,13 +336,47 @@
                                     ],
                                     "rules": [
                                         {
-                                            "conditions": [],
+                                            "conditions": [
+                                                {
+                                                    "fn": "stringEquals",
+                                                    "argv": [
+                                                        {
+                                                            "ref": "ApiType"
+                                                        },
+                                                        "ControlPlane"
+                                                    ]
+                                                }
+                                            ],
                                             "endpoint": {
-                                                "url": "https://drs.{Region}.{PartitionResult#dualStackDnsSuffix}",
+                                                "url": "https://neptune-graph.{Region}.{PartitionResult#dualStackDnsSuffix}",
                                                 "properties": {},
                                                 "headers": {}
                                             },
                                             "type": "endpoint"
+                                        },
+                                        {
+                                            "conditions": [
+                                                {
+                                                    "fn": "stringEquals",
+                                                    "argv": [
+                                                        {
+                                                            "ref": "ApiType"
+                                                        },
+                                                        "DataPlane"
+                                                    ]
+                                                }
+                                            ],
+                                            "endpoint": {
+                                                "url": "https://neptune-graph.{Region}.on.aws",
+                                                "properties": {},
+                                                "headers": {}
+                                            },
+                                            "type": "endpoint"
+                                        },
+                                        {
+                                            "conditions": [],
+                                            "error": "Invalid Configuration: Unknown ApiType",
+                                            "type": "error"
                                         }
                                     ],
                                     "type": "tree"
@@ -291,13 +390,47 @@
                             "type": "tree"
                         },
                         {
-                            "conditions": [],
+                            "conditions": [
+                                {
+                                    "fn": "stringEquals",
+                                    "argv": [
+                                        {
+                                            "ref": "ApiType"
+                                        },
+                                        "ControlPlane"
+                                    ]
+                                }
+                            ],
                             "endpoint": {
-                                "url": "https://drs.{Region}.{PartitionResult#dnsSuffix}",
+                                "url": "https://neptune-graph.{Region}.{PartitionResult#dnsSuffix}",
                                 "properties": {},
                                 "headers": {}
                             },
                             "type": "endpoint"
+                        },
+                        {
+                            "conditions": [
+                                {
+                                    "fn": "stringEquals",
+                                    "argv": [
+                                        {
+                                            "ref": "ApiType"
+                                        },
+                                        "DataPlane"
+                                    ]
+                                }
+                            ],
+                            "endpoint": {
+                                "url": "https://{Region}.neptune-graph.{PartitionResult#dnsSuffix}",
+                                "properties": {},
+                                "headers": {}
+                            },
+                            "type": "endpoint"
+                        },
+                        {
+                            "conditions": [],
+                            "error": "Invalid Configuration: Unknown ApiType",
+                            "type": "error"
                         }
                     ],
                     "type": "tree"

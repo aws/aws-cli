@@ -132,7 +132,7 @@
         {"shape":"ServiceLimitExceededException"},
         {"shape":"InternalServerException"}
       ],
-      "documentation":"<p> Creates a custom line item that can be used to create a one-time fixed charge that can be applied to a single billing group for the current or previous billing period. The one-time fixed charge is either a fee or discount. </p>"
+      "documentation":"<p>Creates a custom line item that can be used to create a one-time fixed charge that can be applied to a single billing group for the current or previous billing period. The one-time fixed charge is either a fee or discount. </p>"
     },
     "CreatePricingPlan":{
       "name":"CreatePricingPlan",
@@ -289,6 +289,24 @@
       ],
       "documentation":"<p> Disassociates a list of pricing rules from a pricing plan. </p>",
       "idempotent":true
+    },
+    "GetBillingGroupCostReport":{
+      "name":"GetBillingGroupCostReport",
+      "http":{
+        "method":"POST",
+        "requestUri":"/get-billing-group-cost-report",
+        "responseCode":200
+      },
+      "input":{"shape":"GetBillingGroupCostReportInput"},
+      "output":{"shape":"GetBillingGroupCostReportOutput"},
+      "errors":[
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p>Retrieves the margin summary report, which includes the Amazon Web Services cost and charged amount (pro forma cost) by Amazon Web Service for a specific billing group.</p>"
     },
     "ListAccountAssociations":{
       "name":"ListAccountAssociations",
@@ -785,6 +803,24 @@
       "type":"string",
       "pattern":"((arn:aws(-cn)?:billingconductor::[0-9]{12}:billinggroup/)?[0-9]{12}|MONITORED|UNMONITORED)"
     },
+    "Attribute":{
+      "type":"structure",
+      "members":{
+        "Key":{
+          "shape":"String",
+          "documentation":"<p>The key in a key-value pair that describes the margin summary.</p>"
+        },
+        "Value":{
+          "shape":"String",
+          "documentation":"<p>The value in a key-value pair that describes the margin summary.</p>"
+        }
+      },
+      "documentation":"<p>The key-value pair that represents the attribute by which the <code>BillingGroupCostReportResults</code> are grouped. For example, if you want a service-level breakdown for Amazon Simple Storage Service (Amazon S3) of the billing group, the attribute will be a key-value pair of <code>\"PRODUCT_NAME\"</code> and <code>\"S3\"</code>.</p>"
+    },
+    "AttributesList":{
+      "type":"list",
+      "member":{"shape":"Attribute"}
+    },
     "BatchAssociateResourcesToCustomLineItemInput":{
       "type":"structure",
       "required":[
@@ -895,6 +931,44 @@
       "type":"list",
       "member":{"shape":"BillingGroupCostReportElement"}
     },
+    "BillingGroupCostReportResultElement":{
+      "type":"structure",
+      "members":{
+        "Arn":{
+          "shape":"BillingGroupArn",
+          "documentation":"<p>The Amazon Resource Number (ARN) that uniquely identifies the billing group.</p>"
+        },
+        "AWSCost":{
+          "shape":"AWSCost",
+          "documentation":"<p>The actual Amazon Web Services charges for the billing group.</p>"
+        },
+        "ProformaCost":{
+          "shape":"ProformaCost",
+          "documentation":"<p>The hypothetical Amazon Web Services charges based on the associated pricing plan of a billing group.</p>"
+        },
+        "Margin":{
+          "shape":"Margin",
+          "documentation":"<p>The billing group margin.</p>"
+        },
+        "MarginPercentage":{
+          "shape":"MarginPercentage",
+          "documentation":"<p>The percentage of the billing group margin.</p>"
+        },
+        "Currency":{
+          "shape":"Currency",
+          "documentation":"<p>The displayed currency.</p>"
+        },
+        "Attributes":{
+          "shape":"AttributesList",
+          "documentation":"<p>The list of key-value pairs that represent the attributes by which the <code>BillingGroupCostReportResults</code> are grouped. For example, if you want the Amazon S3 service-level breakdown of a billing group for November 2023, the attributes list will contain a key-value pair of <code>\"PRODUCT_NAME\"</code> and <code>\"S3\"</code> and a key-value pair of <code>\"BILLING_PERIOD\"</code> and <code>\"Nov 2023\"</code>.</p>"
+        }
+      },
+      "documentation":"<p>A paginated call to retrieve a list of summary reports of actual Amazon Web Services charges and the calculated Amazon Web Services charges, broken down by attributes.</p>"
+    },
+    "BillingGroupCostReportResultsList":{
+      "type":"list",
+      "member":{"shape":"BillingGroupCostReportResultElement"}
+    },
     "BillingGroupDescription":{
       "type":"string",
       "max":1024,
@@ -980,6 +1054,24 @@
     "BillingPeriod":{
       "type":"string",
       "pattern":"\\d{4}-(0?[1-9]|1[012])"
+    },
+    "BillingPeriodRange":{
+      "type":"structure",
+      "required":[
+        "InclusiveStartBillingPeriod",
+        "ExclusiveEndBillingPeriod"
+      ],
+      "members":{
+        "InclusiveStartBillingPeriod":{
+          "shape":"BillingPeriod",
+          "documentation":"<p>The inclusive start billing period that defines a billing period range for the margin summary.</p>"
+        },
+        "ExclusiveEndBillingPeriod":{
+          "shape":"BillingPeriod",
+          "documentation":"<p>The exclusive end billing period that defines a billing period range for the margin summary. For example, if you choose a billing period that starts in October 2023 and ends in December 2023, the margin summary will only include data from October 2023 and November 2023.</p>"
+        }
+      },
+      "documentation":"<p>A time range for which the margin summary is effective. The time range can be up to 12 months.</p>"
     },
     "Boolean":{
       "type":"boolean",
@@ -1582,7 +1674,7 @@
       "members":{
         "Arn":{
           "shape":"CustomLineItemArn",
-          "documentation":"<p> Then ARN of the deleted custom line item. </p>"
+          "documentation":"<p>The ARN of the deleted custom line item. </p>"
         }
       }
     },
@@ -1704,6 +1796,56 @@
         }
       },
       "documentation":"<p> The possible Amazon Web Services Free Tier configurations. </p>"
+    },
+    "GetBillingGroupCostReportInput":{
+      "type":"structure",
+      "required":["Arn"],
+      "members":{
+        "Arn":{
+          "shape":"BillingGroupArn",
+          "documentation":"<p>The Amazon Resource Number (ARN) that uniquely identifies the billing group.</p>"
+        },
+        "BillingPeriodRange":{
+          "shape":"BillingPeriodRange",
+          "documentation":"<p>A time range for which the margin summary is effective. You can specify up to 12 months.</p>"
+        },
+        "GroupBy":{
+          "shape":"GroupByAttributesList",
+          "documentation":"<p>A list of strings that specify the attributes that are used to break down costs in the margin summary reports for the billing group. For example, you can view your costs by the Amazon Web Service name or the billing period.</p>"
+        },
+        "MaxResults":{
+          "shape":"MaxBillingGroupCostReportResults",
+          "documentation":"<p>The maximum number of margin summary reports to retrieve.</p>"
+        },
+        "NextToken":{
+          "shape":"Token",
+          "documentation":"<p>The pagination token used on subsequent calls to get reports.</p>"
+        }
+      }
+    },
+    "GetBillingGroupCostReportOutput":{
+      "type":"structure",
+      "members":{
+        "BillingGroupCostReportResults":{
+          "shape":"BillingGroupCostReportResultsList",
+          "documentation":"<p>The list of margin summary reports.</p>"
+        },
+        "NextToken":{
+          "shape":"Token",
+          "documentation":"<p>The pagination token used on subsequent calls to get reports.</p>"
+        }
+      }
+    },
+    "GroupByAttributeName":{
+      "type":"string",
+      "enum":[
+        "PRODUCT_NAME",
+        "BILLING_PERIOD"
+      ]
+    },
+    "GroupByAttributesList":{
+      "type":"list",
+      "member":{"shape":"GroupByAttributeName"}
     },
     "Instant":{"type":"long"},
     "InternalServerException":{
@@ -2367,6 +2509,12 @@
     "MatchOption":{
       "type":"string",
       "enum":["NOT_EQUAL"]
+    },
+    "MaxBillingGroupCostReportResults":{
+      "type":"integer",
+      "box":true,
+      "max":300,
+      "min":200
     },
     "MaxBillingGroupResults":{
       "type":"integer",
@@ -3221,5 +3369,5 @@
       ]
     }
   },
-  "documentation":"<p>Amazon Web Services Billing Conductor is a fully managed service that you can use to customize a <a href=\"https://docs.aws.amazon.com/billingconductor/latest/userguide/understanding-eb.html#eb-other-definitions\">pro forma</a> version of your billing data each month, to accurately show or chargeback your end customers. Amazon Web Services Billing Conductor doesn't change the way you're billed by Amazon Web Services each month by design. Instead, it provides you with a mechanism to configure, generate, and display rates to certain customers over a given billing period. You can also analyze the difference between the rates you apply to your accounting groupings relative to your actual rates from Amazon Web Services. As a result of your Amazon Web Services Billing Conductor configuration, the payer account can also see the custom rate applied on the billing details page of the <a href=\"https://console.aws.amazon.com/billing\">Amazon Web Services Billing console</a>, or configure a cost and usage report per billing group.</p> <p>This documentation shows how you can configure Amazon Web Services Billing Conductor using its API. For more information about using the <a href=\"https://console.aws.amazon.com/billingconductor/\">Amazon Web Services Billing Conductor</a> user interface, see the <a href=\"https://docs.aws.amazon.com/billingconductor/latest/userguide/what-is-billingconductor.html\"> Amazon Web Services Billing Conductor User Guide</a>.</p>"
+  "documentation":"<p>Amazon Web Services Billing Conductor is a fully managed service that you can use to customize a <a href=\"https://docs.aws.amazon.com/billingconductor/latest/userguide/understanding-eb.html#eb-other-definitions\">proforma</a> version of your billing data each month, to accurately show or chargeback your end customers. Amazon Web Services Billing Conductor doesn't change the way you're billed by Amazon Web Services each month by design. Instead, it provides you with a mechanism to configure, generate, and display rates to certain customers over a given billing period. You can also analyze the difference between the rates you apply to your accounting groupings relative to your actual rates from Amazon Web Services. As a result of your Amazon Web Services Billing Conductor configuration, the payer account can also see the custom rate applied on the billing details page of the <a href=\"https://console.aws.amazon.com/billing\">Amazon Web Services Billing console</a>, or configure a cost and usage report per billing group.</p> <p>This documentation shows how you can configure Amazon Web Services Billing Conductor using its API. For more information about using the <a href=\"https://console.aws.amazon.com/billingconductor/\">Amazon Web Services Billing Conductor</a> user interface, see the <a href=\"https://docs.aws.amazon.com/billingconductor/latest/userguide/what-is-billingconductor.html\"> Amazon Web Services Billing Conductor User Guide</a>.</p>"
 }

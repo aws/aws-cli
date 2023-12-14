@@ -68,7 +68,7 @@
         {"shape":"InternalFailureException"},
         {"shape":"ResourceUnavailableException"}
       ],
-      "documentation":"<p>Creates an Amazon QuickSight account, or subscribes to Amazon QuickSight Q.</p> <p>The Amazon Web Services Region for the account is derived from what is configured in the CLI or SDK. This operation isn't supported in the US East (Ohio) Region, South America (Sao Paulo) Region, or Asia Pacific (Singapore) Region. </p> <p>Before you use this operation, make sure that you can connect to an existing Amazon Web Services account. If you don't have an Amazon Web Services account, see <a href=\"https://docs.aws.amazon.com/quicksight/latest/user/setting-up-aws-sign-up.html\">Sign up for Amazon Web Services</a> in the <i>Amazon QuickSight User Guide</i>. The person who signs up for Amazon QuickSight needs to have the correct Identity and Access Management (IAM) permissions. For more information, see <a href=\"https://docs.aws.amazon.com/quicksight/latest/user/iam-policy-examples.html\">IAM Policy Examples for Amazon QuickSight</a> in the <i>Amazon QuickSight User Guide</i>.</p> <p>If your IAM policy includes both the <code>Subscribe</code> and <code>CreateAccountSubscription</code> actions, make sure that both actions are set to <code>Allow</code>. If either action is set to <code>Deny</code>, the <code>Deny</code> action prevails and your API call fails.</p> <p>You can't pass an existing IAM role to access other Amazon Web Services services using this API operation. To pass your existing IAM role to Amazon QuickSight, see <a href=\"https://docs.aws.amazon.com/quicksight/latest/user/security_iam_service-with-iam.html#security-create-iam-role\">Passing IAM roles to Amazon QuickSight</a> in the <i>Amazon QuickSight User Guide</i>.</p> <p>You can't set default resource access on the new account from the Amazon QuickSight API. Instead, add default resource access from the Amazon QuickSight console. For more information about setting default resource access to Amazon Web Services services, see <a href=\"https://docs.aws.amazon.com/quicksight/latest/user/scoping-policies-defaults.html\">Setting default resource access to Amazon Web Services services</a> in the <i>Amazon QuickSight User Guide</i>.</p>"
+      "documentation":"<p>Creates an Amazon QuickSight account, or subscribes to Amazon QuickSight Q.</p> <p>The Amazon Web Services Region for the account is derived from what is configured in the CLI or SDK.</p> <p>Before you use this operation, make sure that you can connect to an existing Amazon Web Services account. If you don't have an Amazon Web Services account, see <a href=\"https://docs.aws.amazon.com/quicksight/latest/user/setting-up-aws-sign-up.html\">Sign up for Amazon Web Services</a> in the <i>Amazon QuickSight User Guide</i>. The person who signs up for Amazon QuickSight needs to have the correct Identity and Access Management (IAM) permissions. For more information, see <a href=\"https://docs.aws.amazon.com/quicksight/latest/user/iam-policy-examples.html\">IAM Policy Examples for Amazon QuickSight</a> in the <i>Amazon QuickSight User Guide</i>.</p> <p>If your IAM policy includes both the <code>Subscribe</code> and <code>CreateAccountSubscription</code> actions, make sure that both actions are set to <code>Allow</code>. If either action is set to <code>Deny</code>, the <code>Deny</code> action prevails and your API call fails.</p> <p>You can't pass an existing IAM role to access other Amazon Web Services services using this API operation. To pass your existing IAM role to Amazon QuickSight, see <a href=\"https://docs.aws.amazon.com/quicksight/latest/user/security_iam_service-with-iam.html#security-create-iam-role\">Passing IAM roles to Amazon QuickSight</a> in the <i>Amazon QuickSight User Guide</i>.</p> <p>You can't set default resource access on the new account from the Amazon QuickSight API. Instead, add default resource access from the Amazon QuickSight console. For more information about setting default resource access to Amazon Web Services services, see <a href=\"https://docs.aws.amazon.com/quicksight/latest/user/scoping-policies-defaults.html\">Setting default resource access to Amazon Web Services services</a> in the <i>Amazon QuickSight User Guide</i>.</p>"
     },
     "CreateAnalysis":{
       "name":"CreateAnalysis",
@@ -2705,6 +2705,24 @@
         {"shape":"InternalFailureException"}
       ],
       "documentation":"<p>Updates a dashboard in an Amazon Web Services account.</p> <note> <p>Updating a Dashboard creates a new dashboard version but does not immediately publish the new version. You can update the published version of a dashboard by using the <code> <a href=\"https://docs.aws.amazon.com/quicksight/latest/APIReference/API_UpdateDashboardPublishedVersion.html\">UpdateDashboardPublishedVersion</a> </code> API operation.</p> </note>"
+    },
+    "UpdateDashboardLinks":{
+      "name":"UpdateDashboardLinks",
+      "http":{
+        "method":"PUT",
+        "requestUri":"/accounts/{AwsAccountId}/dashboards/{DashboardId}/linked-entities"
+      },
+      "input":{"shape":"UpdateDashboardLinksRequest"},
+      "output":{"shape":"UpdateDashboardLinksResponse"},
+      "errors":[
+        {"shape":"ThrottlingException"},
+        {"shape":"InvalidParameterValueException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ConflictException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalFailureException"}
+      ],
+      "documentation":"<p>Updates the linked analyses on a dashboard.</p>"
     },
     "UpdateDashboardPermissions":{
       "name":"UpdateDashboardPermissions",
@@ -6641,6 +6659,7 @@
           "shape":"ChartAxisLabelOptions",
           "documentation":"<p>The label options (label text, label visibility, and sort icon visibility) of a combo chart's secondary y-axis(line) field well.</p>"
         },
+        "SingleAxisOptions":{"shape":"SingleAxisOptions"},
         "ColorLabelOptions":{
           "shape":"ChartAxisLabelOptions",
           "documentation":"<p>The label options (label text, label visibility, and sort icon visibility) of a combo chart's color field well.</p>"
@@ -7364,6 +7383,10 @@
         "LinkSharingConfiguration":{
           "shape":"LinkSharingConfiguration",
           "documentation":"<p>A structure that contains the permissions of a shareable link to the dashboard.</p>"
+        },
+        "LinkEntities":{
+          "shape":"LinkEntityArnList",
+          "documentation":"<p>A list of analysis Amazon Resource Names (ARNs) to be linked to the dashboard.</p>"
         }
       }
     },
@@ -8941,6 +8964,10 @@
         "LastUpdatedTime":{
           "shape":"Timestamp",
           "documentation":"<p>The last time that this dashboard was updated.</p>"
+        },
+        "LinkEntities":{
+          "shape":"LinkEntityArnList",
+          "documentation":"<p>A list of analysis Amazon Resource Names (ARNs) to be linked to the dashboard.</p>"
         }
       },
       "documentation":"<p>Dashboard.</p>"
@@ -18505,6 +18532,7 @@
           "shape":"ChartAxisLabelOptions",
           "documentation":"<p>The options that determine the presentation of the secondary y-axis label.</p>"
         },
+        "SingleAxisOptions":{"shape":"SingleAxisOptions"},
         "DefaultSeriesSettings":{
           "shape":"LineChartDefaultSeriesSettings",
           "documentation":"<p>The options that determine the default presentation of all line series in <code>LineChartVisual</code>.</p>"
@@ -18730,6 +18758,17 @@
         }
       },
       "documentation":"<p>The series axis configuration of a line chart.</p>"
+    },
+    "LinkEntityArn":{
+      "type":"string",
+      "max":1024,
+      "min":1,
+      "pattern":"^arn:aws:quicksight:[\\w\\-]+:\\d+:analysis/[\\w\\-]{1,512}"
+    },
+    "LinkEntityArnList":{
+      "type":"list",
+      "member":{"shape":"LinkEntityArn"},
+      "max":5
     },
     "LinkSharingConfiguration":{
       "type":"structure",
@@ -24427,6 +24466,10 @@
           "shape":"ScatterPlotFieldWells",
           "documentation":"<p>The field wells of the visual.</p>"
         },
+        "SortConfiguration":{
+          "shape":"ScatterPlotSortConfiguration",
+          "documentation":"<p>The sort configuration of a scatter plot.</p>"
+        },
         "XAxisLabelOptions":{
           "shape":"ChartAxisLabelOptions",
           "documentation":"<p>The label options (label text, label visibility, and sort icon visibility) of the scatter plot's x-axis.</p>"
@@ -24475,6 +24518,13 @@
         }
       },
       "documentation":"<p>The field well configuration of a scatter plot.</p> <p>This is a union type structure. For this structure to be valid, only one of the attributes can be defined.</p>"
+    },
+    "ScatterPlotSortConfiguration":{
+      "type":"structure",
+      "members":{
+        "ScatterPlotLimitConfiguration":{"shape":"ItemsLimitConfiguration"}
+      },
+      "documentation":"<p>The sort configuration of a scatter plot.</p>"
     },
     "ScatterPlotUnaggregatedFieldWells":{
       "type":"structure",
@@ -25658,6 +25708,20 @@
         "NONE"
       ]
     },
+    "SingleAxisOptions":{
+      "type":"structure",
+      "members":{
+        "YAxisOptions":{
+          "shape":"YAxisOptions",
+          "documentation":"<p>The Y axis options of a single axis configuration.</p>"
+        }
+      },
+      "documentation":"<p>The settings of a chart's single axis configuration.</p>"
+    },
+    "SingleYAxisOption":{
+      "type":"string",
+      "enum":["PRIMARY_Y_AXIS"]
+    },
     "SiteBaseUrl":{
       "type":"string",
       "max":1024,
@@ -25976,6 +26040,7 @@
     },
     "SnapshotS3DestinationConfiguration":{
       "type":"structure",
+      "required":["BucketConfiguration"],
       "members":{
         "BucketConfiguration":{
           "shape":"S3BucketConfiguration",
@@ -29560,6 +29625,54 @@
         }
       }
     },
+    "UpdateDashboardLinksRequest":{
+      "type":"structure",
+      "required":[
+        "AwsAccountId",
+        "DashboardId",
+        "LinkEntities"
+      ],
+      "members":{
+        "AwsAccountId":{
+          "shape":"AwsAccountId",
+          "documentation":"<p>The ID of the Amazon Web Services account that contains the dashboard whose links you want to update.</p>",
+          "location":"uri",
+          "locationName":"AwsAccountId"
+        },
+        "DashboardId":{
+          "shape":"ShortRestrictiveResourceId",
+          "documentation":"<p>The ID for the dashboard.</p>",
+          "location":"uri",
+          "locationName":"DashboardId"
+        },
+        "LinkEntities":{
+          "shape":"LinkEntityArnList",
+          "documentation":"<p> list of analysis Amazon Resource Names (ARNs) to be linked to the dashboard.</p>"
+        }
+      }
+    },
+    "UpdateDashboardLinksResponse":{
+      "type":"structure",
+      "members":{
+        "RequestId":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Web Services request ID for this operation.</p>"
+        },
+        "Status":{
+          "shape":"StatusCode",
+          "documentation":"<p>The HTTP status of the request.</p>",
+          "location":"statusCode"
+        },
+        "DashboardArn":{
+          "shape":"Arn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the dashboard.</p>"
+        },
+        "LinkEntities":{
+          "shape":"LinkEntityArnList",
+          "documentation":"<p>A list of analysis Amazon Resource Names (ARNs) to be linked to the dashboard.</p>"
+        }
+      }
+    },
     "UpdateDashboardPermissionsRequest":{
       "type":"structure",
       "required":[
@@ -32053,6 +32166,17 @@
       "type":"string",
       "max":128,
       "min":1
+    },
+    "YAxisOptions":{
+      "type":"structure",
+      "required":["YAxis"],
+      "members":{
+        "YAxis":{
+          "shape":"SingleYAxisOption",
+          "documentation":"<p>The Y axis type to be used in the chart.</p> <p>If you choose <code>PRIMARY_Y_AXIS</code>, the primary Y Axis is located on the leftmost vertical axis of the chart.</p>"
+        }
+      },
+      "documentation":"<p>The options that are available for a single Y axis in a chart.</p>"
     },
     "boolean":{"type":"boolean"}
   },

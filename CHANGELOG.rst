@@ -2,6 +2,25 @@
 CHANGELOG
 =========
 
+2.15.2
+======
+
+* api-change:``controltower``: Documentation updates for AWS Control Tower.
+* api-change:``quicksight``: Update Dashboard Links support; SingleAxisOptions support; Scatterplot Query limit support.
+* api-change:``iot``: This release adds the ability to self-manage certificate signing in AWS IoT Core fleet provisioning using the new certificate provider resource.
+* api-change:``endpoint-rules``: Update endpoint-rules command to latest version
+* api-change:``appstream``: This release includes support for images of Windows Server 2022 platform.
+* api-change:``opensearch``: Updating documentation for Amazon OpenSearch Service support for new zero-ETL integration with Amazon S3.
+* api-change:``workspaces``: Updated note to ensure customers understand running modes.
+* api-change:``connect``: This release adds support for more granular billing using tags (key:value pairs)
+* api-change:``b2bi``: Documentation updates for AWS B2B Data Interchange
+* api-change:``drs``: Adding AgentVersion to SourceServer and RecoveryInstance structures
+* api-change:``gamelift``: Amazon GameLift adds the ability to add and update the game properties of active game sessions.
+* api-change:``billingconductor``: Billing Conductor is releasing a new API, GetBillingGroupCostReport, which provides the ability to retrieve/view the Billing Group Cost Report broken down by attributes for a specific billing group.
+* api-change:``firehose``: This release, 1) adds configurable buffering hints for the Splunk destination, and 2) reduces the minimum configurable buffering interval for supported destinations
+* api-change:``neptune-graph``: This is the initial SDK release for Amazon Neptune Analytics
+
+
 2.15.1
 ======
 
@@ -6676,7 +6695,6 @@ CHANGELOG
 
 * feature:Python: End of support for Python 3.7
 * api-change:``drs``: Adding AgentVersion to SourceServer and RecoveryInstance structures
-* feature:Python: End of support for Python 3.7
 
 
 1.31.13

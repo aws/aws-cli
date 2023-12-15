@@ -659,7 +659,18 @@ class Template(object):
 
         self.template_dict = self.export_global_artifacts(self.template_dict)
 
-        for resource_id, resource in self.template_dict["Resources"].items():
+        self.export_resources(self.template_dict["Resources"])
+
+        return self.template_dict
+
+    def export_resources(self, resource_dict):
+        for resource_id, resource in resource_dict.items():
+
+            if resource_id.startswith("Fn::ForEach::"):
+                if not isinstance(resource, list) or len(resource) != 3:
+                    raise exceptions.InvalidForEachIntrinsicFunctionError(resource_id=resource_id)
+                self.export_resources(resource[2])
+                continue
 
             resource_type = resource.get("Type", None)
             resource_dict = resource.get("Properties", None)
@@ -671,5 +682,3 @@ class Template(object):
                 # Export code resources
                 exporter = exporter_class(self.uploader)
                 exporter.export(resource_id, resource_dict, self.template_dir)
-
-        return self.template_dict

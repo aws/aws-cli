@@ -2,6 +2,15 @@
 CHANGELOG
 =========
 
+1.32.3
+======
+
+* api-change:``cognito-idp``: Amazon Cognito now supports trigger versions that define the fields in the request sent to pre token generation Lambda triggers.
+* api-change:``eks``: Add support for EKS Cluster Access Management.
+* api-change:``quicksight``: A docs-only release to add missing entities to the API reference.
+* api-change:``route53resolver``: Add DOH protocols in resolver endpoints.
+
+
 1.32.2
 ======
 

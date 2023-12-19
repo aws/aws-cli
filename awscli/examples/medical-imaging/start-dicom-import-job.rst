@@ -18,6 +18,4 @@ Output::
         "submittedAt": "2022-08-12T11:28:11.152000+00:00"
     }
 
-For more information, see `Starting an import job`_ in the *AWS HealthImaging Developers Guide*.
-
-.. _`Starting an import job`: https://docs.aws.amazon.com/healthimaging/latest/devguide/start-dicom-import-job.html
+For more information, see `Starting an import job <https://docs.aws.amazon.com/healthimaging/latest/devguide/start-dicom-import-job.html>`__ in the *AWS HealthImaging Developer Guide*.

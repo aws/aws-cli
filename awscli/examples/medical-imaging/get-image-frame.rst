@@ -13,6 +13,4 @@ Note:
 This code example does not include output because the GetImageFrame action returns a stream of pixel data to the imageframe.jph file. For information about decoding and viewing image frames, see HTJ2K decoding libraries.
 
 
-For more information, see `Getting image set pixel data`_ in the *AWS HealthImaging Developers Guide*.
-
-.. _`Getting image set pixel data`: https://docs.aws.amazon.com/healthimaging/latest/devguide/get-image-frame.html
+For more information, see `Getting image set pixel data <https://docs.aws.amazon.com/healthimaging/latest/devguide/get-image-frame.html>`__ in the *AWS HealthImaging Developer Guide*.

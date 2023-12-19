@@ -144,6 +144,4 @@ Output::
         }]
     }
 
-For more information, see `Searching image sets`_ in the *AWS HealthImaging Developers Guide*.
-
-.. _`Searching image sets`: https://docs.aws.amazon.com/healthimaging/latest/devguide/search-image-sets.html
+For more information, see `Searching image sets <https://docs.aws.amazon.com/healthimaging/latest/devguide/search-image-sets.html>`__ in the *AWS HealthImaging Developer Guide*.

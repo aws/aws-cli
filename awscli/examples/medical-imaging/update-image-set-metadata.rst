@@ -32,6 +32,4 @@ Output::
         "datastoreId": "12345678901234567890123456789012"
     }
 
-For more information, see `Updating image set metadata`_ in the *AWS HealthImaging Developers Guide*.
-
-.. _`Updating image set metadata`: https://docs.aws.amazon.com/healthimaging/latest/devguide/update-image-set-metadata.html
+For more information, see `Updating image set metadata <https://docs.aws.amazon.com/healthimaging/latest/devguide/update-image-set-metadata.html>`__ in the *AWS HealthImaging Developer Guide*.

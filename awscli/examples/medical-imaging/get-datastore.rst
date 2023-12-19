@@ -19,6 +19,4 @@ Output::
         }
     }
 
-For more information, see `Getting data store properties`_ in the *AWS HealthImaging Developers Guide*.
-
-.. _`Getting data store properties`: https://docs.aws.amazon.com/healthimaging/latest/devguide/get-data-store.html
+For more information, see `Getting data store properties <https://docs.aws.amazon.com/healthimaging/latest/devguide/get-data-store.html>`__ in the *AWS HealthImaging Developer Guide*.

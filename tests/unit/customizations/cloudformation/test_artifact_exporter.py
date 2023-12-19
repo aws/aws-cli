@@ -1086,7 +1086,8 @@ class TestArtifactExporter(BaseYAMLTest):
 
         # Patch the file open method to return template string
         with mock.patch(
-                "awscli.customizations.cloudformation.artifact_exporter.open",
+                "awscli.customizations.cloudformation."
+                "artifact_exporter.compat_open",
                 open_mock(read_data=template_str)) as open_mock:
 
             template_exporter = Template(
@@ -1168,7 +1169,8 @@ class TestArtifactExporter(BaseYAMLTest):
 
         # Patch the file open method to return template string
         with mock.patch(
-                "awscli.customizations.cloudformation.artifact_exporter.open",
+                "awscli.customizations.cloudformation."
+                "artifact_exporter.compat_open",
                 open_mock(read_data=template_str)) as open_mock:
             template_exporter = Template(
                 template_path, parent_dir, self.s3_uploader_mock,

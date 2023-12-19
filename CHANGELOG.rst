@@ -6672,6 +6672,38 @@ CHANGELOG
 * feature:wizard: Added support for AWS CLI Wizards. See `#3752 <https://github.com/aws/aws-cli/issues/3752>`__.
 
 
+1.32.4
+======
+
+* api-change:``appsync``: This release adds additional configurations on GraphQL APIs for limits on query depth, resolver count, and introspection
+* api-change:``chime-sdk-meetings``: Add meeting features to specify a maximum camera resolution, a maximum content sharing resolution, and a maximum number of attendees for a given meeting.
+* api-change:``ec2``: Provision BYOIPv4 address ranges and advertise them by specifying the network border groups option in Los Angeles, Phoenix and Dallas AWS Local Zones.
+* api-change:``fsx``: Added support for FSx for OpenZFS on-demand data replication across AWS accounts and/or regions.Added the IncludeShared attribute for DescribeSnapshots.Added the CopyStrategy attribute for OpenZFSVolumeConfiguration.
+* api-change:``marketplace-catalog``: AWS Marketplace now supports a new API, BatchDescribeEntities, which returns metadata and content for multiple entities.
+* api-change:``rds``: RDS - The release adds two new APIs: DescribeDBRecommendations and ModifyDBRecommendation
+
+
+1.32.3
+======
+
+* api-change:``cognito-idp``: Amazon Cognito now supports trigger versions that define the fields in the request sent to pre token generation Lambda triggers.
+* api-change:``eks``: Add support for EKS Cluster Access Management.
+* api-change:``quicksight``: A docs-only release to add missing entities to the API reference.
+* api-change:``route53resolver``: Add DOH protocols in resolver endpoints.
+
+
+1.32.2
+======
+
+* enhancement:``cloudformation package``: Add support for intrinsic Fn:ForEach (fixes `#8075 <https://github.com/aws/aws-cli/issues/8075>`__)
+* api-change:``cloud9``: Updated Cloud9 API documentation for AL2023 release
+* api-change:``connect``: Adds relatedContactId field to StartOutboundVoiceContact API input. Introduces PauseContact API and ResumeContact API for Task contacts. Adds pause duration, number of pauses, timestamps for last paused and resumed events to DescribeContact API response. Adds new Rule type and new Rule action.
+* api-change:``connectcases``: Increase number of fields that can be included in CaseEventIncludedData from 50 to 200
+* api-change:``kms``: Documentation updates for AWS Key Management Service
+* api-change:``rds``: Updates Amazon RDS documentation by adding code examples
+* api-change:``sagemaker``: This release 1) introduces a new API: DeleteCompilationJob , and 2) adds InfraCheckConfig for Create/Describe training job API
+
+
 1.32.1
 ======
 

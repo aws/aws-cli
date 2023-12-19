@@ -1797,7 +1797,7 @@
         },
         "ThroughputCapacityPerHAPair":{
           "shape":"ThroughputCapacityPerHAPair",
-          "documentation":"<p>Use to choose the throughput capacity per HA pair, rather than the total throughput for the file system. </p> <p>This field and <code>ThroughputCapacity</code> cannot be defined in the same API call, but one is required.</p> <p>This field and <code>ThroughputCapacity</code> are the same for file systems with one HA pair.</p> <ul> <li> <p>For <code>SINGLE_AZ_1</code> and <code>MULTI_AZ_1</code>, valid values are 128, 256, 512, 1024, 2048, or 4096 MBps.</p> </li> <li> <p>For <code>SINGLE_AZ_2</code>, valid values are 3072 or 6144 MBps.</p> </li> </ul> <p>Amazon FSx responds with an HTTP status code 400 (Bad Request) for the following conditions:</p> <ul> <li> <p>The value of <code>ThroughputCapacity</code> and <code>ThroughputCapacityPerHAPair</code> are not the same value</p> </li> <li> <p>The value of <code>ThroughputCapacityPerHAPair</code> is not a valid value.</p> </li> </ul>"
+          "documentation":"<p>Use to choose the throughput capacity per HA pair, rather than the total throughput for the file system. </p> <p>This field and <code>ThroughputCapacity</code> cannot be defined in the same API call, but one is required.</p> <p>This field and <code>ThroughputCapacity</code> are the same for file systems with one HA pair.</p> <ul> <li> <p>For <code>SINGLE_AZ_1</code> and <code>MULTI_AZ_1</code>, valid values are 128, 256, 512, 1024, 2048, or 4096 MBps.</p> </li> <li> <p>For <code>SINGLE_AZ_2</code>, valid values are 3072 or 6144 MBps.</p> </li> </ul> <p>Amazon FSx responds with an HTTP status code 400 (Bad Request) for the following conditions:</p> <ul> <li> <p>The value of <code>ThroughputCapacity</code> and <code>ThroughputCapacityPerHAPair</code> are not the same value for file systems with one HA pair.</p> </li> <li> <p>The value of deployment type is <code>SINGLE_AZ_2</code> and <code>ThroughputCapacity</code> / <code>ThroughputCapacityPerHAPair</code> is a valid HA pair (a value between 2 and 6).</p> </li> <li> <p>The value of <code>ThroughputCapacityPerHAPair</code> is not a valid value.</p> </li> </ul>"
         }
       },
       "documentation":"<p>The ONTAP configuration properties of the FSx for ONTAP file system that you are creating.</p>"
@@ -3178,7 +3178,11 @@
           "documentation":"<p>The filters structure. The supported names are <code>file-system-id</code> or <code>volume-id</code>.</p>"
         },
         "MaxResults":{"shape":"MaxResults"},
-        "NextToken":{"shape":"NextToken"}
+        "NextToken":{"shape":"NextToken"},
+        "IncludeShared":{
+          "shape":"IncludeShared",
+          "documentation":"<p>Set to <code>false</code> (default) if you want to only see the snapshots in your Amazon Web Services account. Set to <code>true</code> if you want to see the snapshots in your account and the ones shared with you from another account.</p>"
+        }
       }
     },
     "DescribeSnapshotsResponse":{
@@ -3862,6 +3866,7 @@
       "max":6,
       "min":1
     },
+    "IncludeShared":{"type":"boolean"},
     "IncompatibleParameterError":{
       "type":"structure",
       "required":["Parameter"],
@@ -4718,6 +4723,10 @@
         "DestinationSnapshot":{
           "shape":"SnapshotId",
           "documentation":"<p>The ID of the snapshot that's being copied or was most recently copied to the destination volume.</p>"
+        },
+        "CopyStrategy":{
+          "shape":"OpenZFSCopyStrategy",
+          "documentation":"<p>Specifies the strategy used when copying data from the snapshot to the new volume. </p> <ul> <li> <p> <code>CLONE</code> - The new volume references the data in the origin snapshot. Cloning a snapshot is faster than copying data from the snapshot to a new volume and doesn't consume disk throughput. However, the origin snapshot can't be deleted if there is a volume using its copied data.</p> </li> <li> <p> <code>FULL_COPY</code> - Copies all data from the snapshot to the new volume.</p> <p>Specify this option to create the volume from a snapshot on another FSx for OpenZFS file system.</p> </li> </ul> <note> <p>The <code>INCREMENTAL_COPY</code> option is only for updating an existing volume by using a snapshot from another FSx for OpenZFS file system. For more information, see <a href=\"https://docs.aws.amazon.com/fsx/latest/APIReference/API_CopySnapshotAndUpdateVolume.html\">CopySnapshotAndUpdateVolume</a>.</p> </note>"
         }
       },
       "documentation":"<p>The configuration of an Amazon FSx for OpenZFS volume.</p>"
@@ -5816,7 +5825,7 @@
         },
         "ThroughputCapacityPerHAPair":{
           "shape":"ThroughputCapacityPerHAPair",
-          "documentation":"<p>Use to choose the throughput capacity per HA pair, rather than the total throughput for the file system. </p> <p>This field and <code>ThroughputCapacity</code> cannot be defined in the same API call, but one is required.</p> <p>This field and <code>ThroughputCapacity</code> are the same for file systems with one HA pair.</p> <ul> <li> <p>For <code>SINGLE_AZ_1</code> and <code>MULTI_AZ_1</code>, valid values are 128, 256, 512, 1024, 2048, or 4096 MBps.</p> </li> <li> <p>For <code>SINGLE_AZ_2</code>, valid values are 3072 or 6144 MBps.</p> </li> </ul> <p>Amazon FSx responds with an HTTP status code 400 (Bad Request) for the following conditions:</p> <p>The value of <code>ThroughputCapacity</code> and <code>ThroughputCapacityPerHAPair</code> are not the same value.</p> <p>The value of <code>ThroughputCapacityPerHAPair</code> is not a valid value.</p>"
+          "documentation":"<p>Use to choose the throughput capacity per HA pair, rather than the total throughput for the file system. </p> <p>This field and <code>ThroughputCapacity</code> cannot be defined in the same API call, but one is required.</p> <p>This field and <code>ThroughputCapacity</code> are the same for file systems with one HA pair.</p> <ul> <li> <p>For <code>SINGLE_AZ_1</code> and <code>MULTI_AZ_1</code>, valid values are 128, 256, 512, 1024, 2048, or 4096 MBps.</p> </li> <li> <p>For <code>SINGLE_AZ_2</code>, valid values are 3072 or 6144 MBps.</p> </li> </ul> <p>Amazon FSx responds with an HTTP status code 400 (Bad Request) for the following conditions:</p> <ul> <li> <p>The value of <code>ThroughputCapacity</code> and <code>ThroughputCapacityPerHAPair</code> are not the same value for file systems with one HA pair.</p> </li> <li> <p>The value of deployment type is <code>SINGLE_AZ_2</code> and <code>ThroughputCapacity</code> / <code>ThroughputCapacityPerHAPair</code> is a valid HA pair (a value between 2 and 6).</p> </li> <li> <p>The value of <code>ThroughputCapacityPerHAPair</code> is not a valid value.</p> </li> </ul>"
         }
       },
       "documentation":"<p>The configuration updates for an Amazon FSx for NetApp ONTAP file system.</p>"

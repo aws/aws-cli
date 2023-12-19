@@ -1358,6 +1358,19 @@
       ],
       "documentation":"<p>Returns information about <code>DBProxyTarget</code> objects. This API supports pagination.</p>"
     },
+    "DescribeDBRecommendations":{
+      "name":"DescribeDBRecommendations",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DescribeDBRecommendationsMessage"},
+      "output":{
+        "shape":"DBRecommendationsMessage",
+        "resultWrapper":"DescribeDBRecommendationsResult"
+      },
+      "documentation":"<p>Describes the recommendations to resolve the issues for your DB instances, DB clusters, and DB parameter groups.</p>"
+    },
     "DescribeDBSecurityGroups":{
       "name":"DescribeDBSecurityGroups",
       "http":{
@@ -2029,6 +2042,20 @@
         {"shape":"InvalidDBProxyStateFault"}
       ],
       "documentation":"<p>Modifies the properties of a <code>DBProxyTargetGroup</code>.</p>"
+    },
+    "ModifyDBRecommendation":{
+      "name":"ModifyDBRecommendation",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"ModifyDBRecommendationMessage"},
+      "output":{
+        "shape":"DBRecommendationMessage",
+        "resultWrapper":"ModifyDBRecommendationResult"
+      },
+      "errors":[],
+      "documentation":"<p>Updates the recommendation status and recommended action status for the specified recommendation.</p>"
     },
     "ModifyDBSnapshot":{
       "name":"ModifyDBSnapshot",
@@ -3589,6 +3616,24 @@
       },
       "documentation":"<p>Displays the settings that control the size and behavior of the connection pool associated with a <code>DBProxyTarget</code>.</p>"
     },
+    "ContextAttribute":{
+      "type":"structure",
+      "members":{
+        "Key":{
+          "shape":"String",
+          "documentation":"<p>The key of <code>ContextAttribute</code>.</p>"
+        },
+        "Value":{
+          "shape":"String",
+          "documentation":"<p>The value of <code>ContextAttribute</code>.</p>"
+        }
+      },
+      "documentation":"<p>The additional attributes of <code>RecommendedAction</code> data type.</p>"
+    },
+    "ContextAttributeList":{
+      "type":"list",
+      "member":{"shape":"ContextAttribute"}
+    },
     "CopyDBClusterParameterGroupMessage":{
       "type":"structure",
       "required":[
@@ -4203,7 +4248,7 @@
         },
         "AllocatedStorage":{
           "shape":"IntegerOptional",
-          "documentation":"<p>The amount of storage in gibibytes (GiB) to allocate for the DB instance.</p> <p>This setting doesn't apply to Amazon Aurora DB instances. Aurora cluster volumes automatically grow as the amount of data in your database increases, though you are only charged for the space that you use in an Aurora cluster volume.</p> <dl> <dt>Amazon RDS Custom</dt> <dd> <p>Constraints to the amount of storage for each storage type are the following:</p> <ul> <li> <p>General Purpose (SSD) storage (gp2, gp3): Must be an integer from 40 to 65536 for RDS Custom for Oracle, 16384 for RDS Custom for SQL Server.</p> </li> <li> <p>Provisioned IOPS storage (io1): Must be an integer from 40 to 65536 for RDS Custom for Oracle, 16384 for RDS Custom for SQL Server.</p> </li> </ul> </dd> <dt>RDS for Db2</dt> <dd> <p>Constraints to the amount of storage for each storage type are the following:</p> <ul> <li> <p>General Purpose (SSD) storage (gp2, gp3): Must be an integer from 20 to 64000.</p> </li> <li> <p>Provisioned IOPS storage (io1): Must be an integer from 100 to 64000.</p> </li> </ul> </dd> <dt>RDS for MariaDB</dt> <dd> <p>Constraints to the amount of storage for each storage type are the following:</p> <ul> <li> <p>General Purpose (SSD) storage (gp2, gp3): Must be an integer from 20 to 65536.</p> </li> <li> <p>Provisioned IOPS storage (io1): Must be an integer from 100 to 65536.</p> </li> <li> <p>Magnetic storage (standard): Must be an integer from 5 to 3072.</p> </li> </ul> </dd> <dt>RDS for MySQL</dt> <dd> <p>Constraints to the amount of storage for each storage type are the following:</p> <ul> <li> <p>General Purpose (SSD) storage (gp2, gp3): Must be an integer from 20 to 65536.</p> </li> <li> <p>Provisioned IOPS storage (io1): Must be an integer from 100 to 65536.</p> </li> <li> <p>Magnetic storage (standard): Must be an integer from 5 to 3072.</p> </li> </ul> </dd> <dt>RDS for Oracle</dt> <dd> <p>Constraints to the amount of storage for each storage type are the following:</p> <ul> <li> <p>General Purpose (SSD) storage (gp2, gp3): Must be an integer from 20 to 65536.</p> </li> <li> <p>Provisioned IOPS storage (io1): Must be an integer from 100 to 65536.</p> </li> <li> <p>Magnetic storage (standard): Must be an integer from 10 to 3072.</p> </li> </ul> </dd> <dt>RDS for PostgreSQL</dt> <dd> <p>Constraints to the amount of storage for each storage type are the following:</p> <ul> <li> <p>General Purpose (SSD) storage (gp2, gp3): Must be an integer from 20 to 65536.</p> </li> <li> <p>Provisioned IOPS storage (io1): Must be an integer from 100 to 65536.</p> </li> <li> <p>Magnetic storage (standard): Must be an integer from 5 to 3072.</p> </li> </ul> </dd> <dt>RDS for SQL Server</dt> <dd> <p>Constraints to the amount of storage for each storage type are the following:</p> <ul> <li> <p>General Purpose (SSD) storage (gp2, gp3):</p> <ul> <li> <p>Enterprise and Standard editions: Must be an integer from 20 to 16384.</p> </li> <li> <p>Web and Express editions: Must be an integer from 20 to 16384.</p> </li> </ul> </li> <li> <p>Provisioned IOPS storage (io1):</p> <ul> <li> <p>Enterprise and Standard editions: Must be an integer from 100 to 16384.</p> </li> <li> <p>Web and Express editions: Must be an integer from 100 to 16384.</p> </li> </ul> </li> <li> <p>Magnetic storage (standard):</p> <ul> <li> <p>Enterprise and Standard editions: Must be an integer from 20 to 1024.</p> </li> <li> <p>Web and Express editions: Must be an integer from 20 to 1024.</p> </li> </ul> </li> </ul> </dd> </dl>"
+          "documentation":"<p>The amount of storage in gibibytes (GiB) to allocate for the DB instance.</p> <p>This setting doesn't apply to Amazon Aurora DB instances. Aurora cluster volumes automatically grow as the amount of data in your database increases, though you are only charged for the space that you use in an Aurora cluster volume.</p> <dl> <dt>Amazon RDS Custom</dt> <dd> <p>Constraints to the amount of storage for each storage type are the following:</p> <ul> <li> <p>General Purpose (SSD) storage (gp2, gp3): Must be an integer from 40 to 65536 for RDS Custom for Oracle, 16384 for RDS Custom for SQL Server.</p> </li> <li> <p>Provisioned IOPS storage (io1): Must be an integer from 40 to 65536 for RDS Custom for Oracle, 16384 for RDS Custom for SQL Server.</p> </li> </ul> </dd> <dt>RDS for Db2</dt> <dd> <p>Constraints to the amount of storage for each storage type are the following:</p> <ul> <li> <p>General Purpose (SSD) storage (gp3): Must be an integer from 20 to 64000.</p> </li> <li> <p>Provisioned IOPS storage (io1): Must be an integer from 100 to 64000.</p> </li> </ul> </dd> <dt>RDS for MariaDB</dt> <dd> <p>Constraints to the amount of storage for each storage type are the following:</p> <ul> <li> <p>General Purpose (SSD) storage (gp2, gp3): Must be an integer from 20 to 65536.</p> </li> <li> <p>Provisioned IOPS storage (io1): Must be an integer from 100 to 65536.</p> </li> <li> <p>Magnetic storage (standard): Must be an integer from 5 to 3072.</p> </li> </ul> </dd> <dt>RDS for MySQL</dt> <dd> <p>Constraints to the amount of storage for each storage type are the following:</p> <ul> <li> <p>General Purpose (SSD) storage (gp2, gp3): Must be an integer from 20 to 65536.</p> </li> <li> <p>Provisioned IOPS storage (io1): Must be an integer from 100 to 65536.</p> </li> <li> <p>Magnetic storage (standard): Must be an integer from 5 to 3072.</p> </li> </ul> </dd> <dt>RDS for Oracle</dt> <dd> <p>Constraints to the amount of storage for each storage type are the following:</p> <ul> <li> <p>General Purpose (SSD) storage (gp2, gp3): Must be an integer from 20 to 65536.</p> </li> <li> <p>Provisioned IOPS storage (io1): Must be an integer from 100 to 65536.</p> </li> <li> <p>Magnetic storage (standard): Must be an integer from 10 to 3072.</p> </li> </ul> </dd> <dt>RDS for PostgreSQL</dt> <dd> <p>Constraints to the amount of storage for each storage type are the following:</p> <ul> <li> <p>General Purpose (SSD) storage (gp2, gp3): Must be an integer from 20 to 65536.</p> </li> <li> <p>Provisioned IOPS storage (io1): Must be an integer from 100 to 65536.</p> </li> <li> <p>Magnetic storage (standard): Must be an integer from 5 to 3072.</p> </li> </ul> </dd> <dt>RDS for SQL Server</dt> <dd> <p>Constraints to the amount of storage for each storage type are the following:</p> <ul> <li> <p>General Purpose (SSD) storage (gp2, gp3):</p> <ul> <li> <p>Enterprise and Standard editions: Must be an integer from 20 to 16384.</p> </li> <li> <p>Web and Express editions: Must be an integer from 20 to 16384.</p> </li> </ul> </li> <li> <p>Provisioned IOPS storage (io1):</p> <ul> <li> <p>Enterprise and Standard editions: Must be an integer from 100 to 16384.</p> </li> <li> <p>Web and Express editions: Must be an integer from 100 to 16384.</p> </li> </ul> </li> <li> <p>Magnetic storage (standard):</p> <ul> <li> <p>Enterprise and Standard editions: Must be an integer from 20 to 1024.</p> </li> <li> <p>Web and Express editions: Must be an integer from 20 to 1024.</p> </li> </ul> </li> </ul> </dd> </dl>"
         },
         "DBInstanceClass":{
           "shape":"String",
@@ -7556,6 +7601,115 @@
       },
       "exception":true
     },
+    "DBRecommendation":{
+      "type":"structure",
+      "members":{
+        "RecommendationId":{
+          "shape":"String",
+          "documentation":"<p>The unique identifier of the recommendation.</p>"
+        },
+        "TypeId":{
+          "shape":"String",
+          "documentation":"<p>A value that indicates the type of recommendation. This value determines how the description is rendered.</p>"
+        },
+        "Severity":{
+          "shape":"String",
+          "documentation":"<p>The severity level of the recommendation. The severity level can help you decide the urgency with which to address the recommendation.</p> <p>Valid values:</p> <ul> <li> <p> <code>high</code> </p> </li> <li> <p> <code>medium</code> </p> </li> <li> <p> <code>low</code> </p> </li> <li> <p> <code>informational</code> </p> </li> </ul>"
+        },
+        "ResourceArn":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the RDS resource associated with the recommendation.</p>"
+        },
+        "Status":{
+          "shape":"String",
+          "documentation":"<p>The current status of the recommendation.</p> <p>Valid values:</p> <ul> <li> <p> <code>active</code> - The recommendations which are ready for you to apply.</p> </li> <li> <p> <code>pending</code> - The applied or scheduled recommendations which are in progress.</p> </li> <li> <p> <code>resolved</code> - The recommendations which are completed.</p> </li> <li> <p> <code>dismissed</code> - The recommendations that you dismissed.</p> </li> </ul>"
+        },
+        "CreatedTime":{
+          "shape":"TStamp",
+          "documentation":"<p>The time when the recommendation was created. For example, <code>2023-09-28T01:13:53.931000+00:00</code>.</p>"
+        },
+        "UpdatedTime":{
+          "shape":"TStamp",
+          "documentation":"<p>The time when the recommendation was last updated.</p>"
+        },
+        "Detection":{
+          "shape":"String",
+          "documentation":"<p>A short description of the issue identified for this recommendation. The description might contain markdown.</p>"
+        },
+        "Recommendation":{
+          "shape":"String",
+          "documentation":"<p>A short description of the recommendation to resolve an issue. The description might contain markdown.</p>"
+        },
+        "Description":{
+          "shape":"String",
+          "documentation":"<p>A detailed description of the recommendation. The description might contain markdown.</p>"
+        },
+        "Reason":{
+          "shape":"String",
+          "documentation":"<p>The reason why this recommendation was created. The information might contain markdown.</p>"
+        },
+        "RecommendedActions":{
+          "shape":"RecommendedActionList",
+          "documentation":"<p>A list of recommended actions.</p>"
+        },
+        "Category":{
+          "shape":"String",
+          "documentation":"<p>The category of the recommendation.</p> <p>Valid values:</p> <ul> <li> <p> <code>performance efficiency</code> </p> </li> <li> <p> <code>security</code> </p> </li> <li> <p> <code>reliability</code> </p> </li> <li> <p> <code>cost optimization</code> </p> </li> <li> <p> <code>operational excellence</code> </p> </li> <li> <p> <code>sustainability</code> </p> </li> </ul>"
+        },
+        "Source":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Web Services service that generated the recommendations.</p>"
+        },
+        "TypeDetection":{
+          "shape":"String",
+          "documentation":"<p>A short description of the recommendation type. The description might contain markdown.</p>"
+        },
+        "TypeRecommendation":{
+          "shape":"String",
+          "documentation":"<p>A short description that summarizes the recommendation to fix all the issues of the recommendation type. The description might contain markdown.</p>"
+        },
+        "Impact":{
+          "shape":"String",
+          "documentation":"<p>A short description that explains the possible impact of an issue.</p>"
+        },
+        "AdditionalInfo":{
+          "shape":"String",
+          "documentation":"<p>Additional information about the recommendation. The information might contain markdown.</p>"
+        },
+        "Links":{
+          "shape":"DocLinkList",
+          "documentation":"<p>A link to documentation that provides additional information about the recommendation.</p>"
+        },
+        "IssueDetails":{
+          "shape":"IssueDetails",
+          "documentation":"<p>Details of the issue that caused the recommendation.</p>"
+        }
+      },
+      "documentation":"<p>The recommendation for your DB instances, DB clusters, and DB parameter groups.</p>"
+    },
+    "DBRecommendationList":{
+      "type":"list",
+      "member":{"shape":"DBRecommendation"}
+    },
+    "DBRecommendationMessage":{
+      "type":"structure",
+      "members":{
+        "DBRecommendation":{"shape":"DBRecommendation"}
+      }
+    },
+    "DBRecommendationsMessage":{
+      "type":"structure",
+      "members":{
+        "DBRecommendations":{
+          "shape":"DBRecommendationList",
+          "documentation":"<p>A list of recommendations which is returned from <code>DescribeDBRecommendations</code> API request.</p>"
+        },
+        "Marker":{
+          "shape":"String",
+          "documentation":"<p>An optional pagination token provided by a previous <code>DBRecommendationsMessage</code> request. This token can be used later in a <code>DescribeDBRecomendations</code> request. </p>"
+        }
+      }
+    },
     "DBSecurityGroup":{
       "type":"structure",
       "members":{
@@ -9163,6 +9317,35 @@
         }
       }
     },
+    "DescribeDBRecommendationsMessage":{
+      "type":"structure",
+      "members":{
+        "LastUpdatedAfter":{
+          "shape":"TStamp",
+          "documentation":"<p>A filter to include only the recommendations that were updated after this specified time.</p>"
+        },
+        "LastUpdatedBefore":{
+          "shape":"TStamp",
+          "documentation":"<p>A filter to include only the recommendations that were updated before this specified time.</p>"
+        },
+        "Locale":{
+          "shape":"String",
+          "documentation":"<p>The language that you choose to return the list of recommendations.</p> <p>Valid values:</p> <ul> <li> <p> <code>en</code> </p> </li> <li> <p> <code>en_UK</code> </p> </li> <li> <p> <code>de</code> </p> </li> <li> <p> <code>es</code> </p> </li> <li> <p> <code>fr</code> </p> </li> <li> <p> <code>id</code> </p> </li> <li> <p> <code>it</code> </p> </li> <li> <p> <code>ja</code> </p> </li> <li> <p> <code>ko</code> </p> </li> <li> <p> <code>pt_BR</code> </p> </li> <li> <p> <code>zh_TW</code> </p> </li> <li> <p> <code>zh_CN</code> </p> </li> </ul>"
+        },
+        "Filters":{
+          "shape":"FilterList",
+          "documentation":"<p>A filter that specifies one or more recommendations to describe.</p> <p>Supported Filters:</p> <ul> <li> <p> <code>recommendation-id</code> - Accepts a list of recommendation identifiers. The results list only includes the recommendations whose identifier is one of the specified filter values.</p> </li> <li> <p> <code>status</code> - Accepts a list of recommendation statuses.</p> <p>Valid values:</p> <ul> <li> <p> <code>active</code> - The recommendations which are ready for you to apply.</p> </li> <li> <p> <code>pending</code> - The applied or scheduled recommendations which are in progress.</p> </li> <li> <p> <code>resolved</code> - The recommendations which are completed.</p> </li> <li> <p> <code>dismissed</code> - The recommendations that you dismissed.</p> </li> </ul> <p>The results list only includes the recommendations whose status is one of the specified filter values.</p> </li> <li> <p> <code>severity</code> - Accepts a list of recommendation severities. The results list only includes the recommendations whose severity is one of the specified filter values.</p> <p>Valid values:</p> <ul> <li> <p> <code>high</code> </p> </li> <li> <p> <code>medium</code> </p> </li> <li> <p> <code>low</code> </p> </li> <li> <p> <code>informational</code> </p> </li> </ul> </li> <li> <p> <code>type-id</code> - Accepts a list of recommendation type identifiers. The results list only includes the recommendations whose type is one of the specified filter values.</p> </li> <li> <p> <code>dbi-resource-id</code> - Accepts a list of database resource identifiers. The results list only includes the recommendations that generated for the specified databases.</p> </li> <li> <p> <code>cluster-resource-id</code> - Accepts a list of cluster resource identifiers. The results list only includes the recommendations that generated for the specified clusters.</p> </li> <li> <p> <code>pg-arn</code> - Accepts a list of parameter group ARNs. The results list only includes the recommendations that generated for the specified parameter groups.</p> </li> <li> <p> <code>cluster-pg-arn</code> - Accepts a list of cluster parameter group ARNs. The results list only includes the recommendations that generated for the specified cluster parameter groups.</p> </li> </ul>"
+        },
+        "MaxRecords":{
+          "shape":"IntegerOptional",
+          "documentation":"<p>The maximum number of recommendations to include in the response. If more records exist than the specified <code>MaxRecords</code> value, a pagination token called a marker is included in the response so that you can retrieve the remaining results.</p>"
+        },
+        "Marker":{
+          "shape":"String",
+          "documentation":"<p>An optional pagination token provided by a previous <code>DescribeDBRecommendations</code> request. If this parameter is specified, the response includes only records beyond the marker, up to the value specified by <code>MaxRecords</code>. </p>"
+        }
+      }
+    },
     "DescribeDBSecurityGroupsMessage":{
       "type":"structure",
       "members":{
@@ -9803,6 +9986,24 @@
       "min":1,
       "pattern":".*"
     },
+    "DocLink":{
+      "type":"structure",
+      "members":{
+        "Text":{
+          "shape":"String",
+          "documentation":"<p>The text with the link to documentation for the recommendation.</p>"
+        },
+        "Url":{
+          "shape":"String",
+          "documentation":"<p>The URL for the documentation for the recommendation.</p>"
+        }
+      },
+      "documentation":"<p>A link to documentation that provides additional information for a recommendation.</p>"
+    },
+    "DocLinkList":{
+      "type":"list",
+      "member":{"shape":"DocLink"}
+    },
     "DomainMembership":{
       "type":"structure",
       "members":{
@@ -10412,7 +10613,7 @@
           "documentation":"<p>One or more filter values. Filter values are case-sensitive.</p>"
         }
       },
-      "documentation":"<p>A filter name and value pair that is used to return a more specific list of results from a describe operation. Filters can be used to match a set of resources by specific criteria, such as IDs. The filters supported by a describe operation are documented with the describe operation.</p> <note> <p>Currently, wildcards are not supported in filters.</p> </note> <p>The following actions can be filtered:</p> <ul> <li> <p> <code>DescribeDBClusterBacktracks</code> </p> </li> <li> <p> <code>DescribeDBClusterEndpoints</code> </p> </li> <li> <p> <code>DescribeDBClusters</code> </p> </li> <li> <p> <code>DescribeDBInstances</code> </p> </li> <li> <p> <code>DescribePendingMaintenanceActions</code> </p> </li> </ul>"
+      "documentation":"<p>A filter name and value pair that is used to return a more specific list of results from a describe operation. Filters can be used to match a set of resources by specific criteria, such as IDs. The filters supported by a describe operation are documented with the describe operation.</p> <note> <p>Currently, wildcards are not supported in filters.</p> </note> <p>The following actions can be filtered:</p> <ul> <li> <p> <code>DescribeDBClusterBacktracks</code> </p> </li> <li> <p> <code>DescribeDBClusterEndpoints</code> </p> </li> <li> <p> <code>DescribeDBClusters</code> </p> </li> <li> <p> <code>DescribeDBInstances</code> </p> </li> <li> <p> <code>DescribeDBRecommendations</code> </p> </li> <li> <p> <code>DescribePendingMaintenanceActions</code> </p> </li> </ul>"
     },
     "FilterList":{
       "type":"list",
@@ -11183,6 +11384,16 @@
       },
       "exception":true
     },
+    "IssueDetails":{
+      "type":"structure",
+      "members":{
+        "PerformanceIssueDetails":{
+          "shape":"PerformanceIssueDetails",
+          "documentation":"<p>A detailed description of the issue when the recommendation category is <code>performance</code>.</p>"
+        }
+      },
+      "documentation":"<p>The details of an issue with your DB instances, DB clusters, and DB parameter groups.</p>"
+    },
     "KMSKeyNotAccessibleFault":{
       "type":"structure",
       "members":{
@@ -11263,6 +11474,60 @@
       "type":"integer",
       "max":100,
       "min":20
+    },
+    "Metric":{
+      "type":"structure",
+      "members":{
+        "Name":{
+          "shape":"String",
+          "documentation":"<p>The name of a metric.</p>"
+        },
+        "References":{
+          "shape":"MetricReferenceList",
+          "documentation":"<p>A list of metric references (thresholds).</p>"
+        },
+        "StatisticsDetails":{
+          "shape":"String",
+          "documentation":"<p>The details of different statistics for a metric. The description might contain markdown.</p>"
+        },
+        "MetricQuery":{
+          "shape":"MetricQuery",
+          "documentation":"<p>The query to retrieve metric data points.</p>"
+        }
+      },
+      "documentation":"<p>The representation of a metric.</p>"
+    },
+    "MetricList":{
+      "type":"list",
+      "member":{"shape":"Metric"}
+    },
+    "MetricQuery":{
+      "type":"structure",
+      "members":{
+        "PerformanceInsightsMetricQuery":{
+          "shape":"PerformanceInsightsMetricQuery",
+          "documentation":"<p>The Performance Insights query that you can use to retrieve Performance Insights metric data points.</p>"
+        }
+      },
+      "documentation":"<p>The query to retrieve metric data points.</p>"
+    },
+    "MetricReference":{
+      "type":"structure",
+      "members":{
+        "Name":{
+          "shape":"String",
+          "documentation":"<p>The name of the metric reference.</p>"
+        },
+        "ReferenceDetails":{
+          "shape":"ReferenceDetails",
+          "documentation":"<p>The details of a performance issue.</p>"
+        }
+      },
+      "documentation":"<p>The reference (threshold) for a metric.</p>"
+    },
+    "MetricReferenceList":{
+      "type":"list",
+      "member":{"shape":"MetricReference"}
     },
     "MinimumEngineVersionPerAllowedValue":{
       "type":"structure",
@@ -12023,6 +12288,28 @@
         "DBProxyTargetGroup":{
           "shape":"DBProxyTargetGroup",
           "documentation":"<p>The settings of the modified <code>DBProxyTarget</code>.</p>"
+        }
+      }
+    },
+    "ModifyDBRecommendationMessage":{
+      "type":"structure",
+      "required":["RecommendationId"],
+      "members":{
+        "RecommendationId":{
+          "shape":"String",
+          "documentation":"<p>The identifier of the recommendation to update.</p>"
+        },
+        "Locale":{
+          "shape":"String",
+          "documentation":"<p>The language of the modified recommendation.</p>"
+        },
+        "Status":{
+          "shape":"String",
+          "documentation":"<p>The recommendation status to update.</p> <p>Valid values:</p> <ul> <li> <p>active</p> </li> <li> <p>dismissed</p> </li> </ul>"
+        },
+        "RecommendedActionUpdates":{
+          "shape":"RecommendedActionUpdateList",
+          "documentation":"<p>The list of recommended action status to update. You can update multiple recommended actions at one time.</p>"
         }
       }
     },
@@ -13097,6 +13384,60 @@
       },
       "documentation":"<p>This data type is used as a response element in the <code>ModifyDBInstance</code> operation and contains changes that will be applied during the next maintenance window.</p>"
     },
+    "PerformanceInsightsMetricDimensionGroup":{
+      "type":"structure",
+      "members":{
+        "Dimensions":{
+          "shape":"StringList",
+          "documentation":"<p>A list of specific dimensions from a dimension group. If this list isn't included, then all of the dimensions in the group were requested, or are present in the response.</p>"
+        },
+        "Group":{
+          "shape":"String",
+          "documentation":"<p>The available dimension groups for Performance Insights metric type.</p>"
+        },
+        "Limit":{
+          "shape":"Integer",
+          "documentation":"<p>The maximum number of items to fetch for this dimension group.</p>"
+        }
+      },
+      "documentation":"<p>A logical grouping of Performance Insights metrics for a related subject area. For example, the <code>db.sql</code> dimension group consists of the following dimensions: </p> <ul> <li> <p> <code>db.sql.id</code> - The hash of a running SQL statement, generated by Performance Insights.</p> </li> <li> <p> <code>db.sql.db_id</code> - Either the SQL ID generated by the database engine, or a value generated by Performance Insights that begins with <code>pi-</code>.</p> </li> <li> <p> <code>db.sql.statement</code> - The full text of the SQL statement that is running, for example, <code>SELECT * FROM employees</code>.</p> </li> <li> <p> <code>db.sql_tokenized.id</code> - The hash of the SQL digest generated by Performance Insights.</p> </li> </ul> <note> <p>Each response element returns a maximum of 500 bytes. For larger elements, such as SQL statements, only the first 500 bytes are returned.</p> </note>"
+    },
+    "PerformanceInsightsMetricQuery":{
+      "type":"structure",
+      "members":{
+        "GroupBy":{
+          "shape":"PerformanceInsightsMetricDimensionGroup",
+          "documentation":"<p>A specification for how to aggregate the data points from a query result. You must specify a valid dimension group. Performance Insights will return all of the dimensions within that group, unless you provide the names of specific dimensions within that group. You can also request that Performance Insights return a limited number of values for a dimension.</p>"
+        },
+        "Metric":{
+          "shape":"String",
+          "documentation":"<p>The name of a Performance Insights metric to be measured.</p> <p>Valid Values:</p> <ul> <li> <p> <code>db.load.avg</code> - A scaled representation of the number of active sessions for the database engine.</p> </li> <li> <p> <code>db.sampledload.avg</code> - The raw number of active sessions for the database engine.</p> </li> <li> <p>The counter metrics listed in <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/USER_PerfInsights_Counters.html#USER_PerfInsights_Counters.OS\">Performance Insights operating system counters</a> in the <i>Amazon Aurora User Guide</i>.</p> </li> </ul> <p>If the number of active sessions is less than an internal Performance Insights threshold, <code>db.load.avg</code> and <code>db.sampledload.avg</code> are the same value. If the number of active sessions is greater than the internal threshold, Performance Insights samples the active sessions, with <code>db.load.avg</code> showing the scaled values, <code>db.sampledload.avg</code> showing the raw values, and <code>db.sampledload.avg</code> less than <code>db.load.avg</code>. For most use cases, you can query <code>db.load.avg</code> only.</p>"
+        }
+      },
+      "documentation":"<p>A single Performance Insights metric query to process. You must provide the metric to the query. If other parameters aren't specified, Performance Insights returns all data points for the specified metric. Optionally, you can request the data points to be aggregated by dimension group (<code>GroupBy</code>) and return only those data points that match your criteria (<code>Filter</code>).</p> <p>Constraints:</p> <ul> <li> <p>Must be a valid Performance Insights query.</p> </li> </ul>"
+    },
+    "PerformanceIssueDetails":{
+      "type":"structure",
+      "members":{
+        "StartTime":{
+          "shape":"TStamp",
+          "documentation":"<p>The time when the performance issue started.</p>"
+        },
+        "EndTime":{
+          "shape":"TStamp",
+          "documentation":"<p>The time when the performance issue stopped.</p>"
+        },
+        "Metrics":{
+          "shape":"MetricList",
+          "documentation":"<p>The metrics that are relevant to the performance issue.</p>"
+        },
+        "Analysis":{
+          "shape":"String",
+          "documentation":"<p>The analysis of the performance issue. The information might contain markdown.</p>"
+        }
+      },
+      "documentation":"<p>Details of the performance issue.</p>"
+    },
     "PointInTimeRestoreNotEnabledFault":{
       "type":"structure",
       "members":{
@@ -13315,6 +13656,92 @@
         "DBInstance":{"shape":"DBInstance"}
       }
     },
+    "RecommendedAction":{
+      "type":"structure",
+      "members":{
+        "ActionId":{
+          "shape":"String",
+          "documentation":"<p>The unique identifier of the recommended action.</p>"
+        },
+        "Title":{
+          "shape":"String",
+          "documentation":"<p>A short description to summarize the action. The description might contain markdown.</p>"
+        },
+        "Description":{
+          "shape":"String",
+          "documentation":"<p>A detailed description of the action. The description might contain markdown.</p>"
+        },
+        "Operation":{
+          "shape":"String",
+          "documentation":"<p>An API operation for the action.</p>"
+        },
+        "Parameters":{
+          "shape":"RecommendedActionParameterList",
+          "documentation":"<p>The parameters for the API operation.</p>"
+        },
+        "ApplyModes":{
+          "shape":"StringList",
+          "documentation":"<p>The methods to apply the recommended action.</p> <p>Valid values:</p> <ul> <li> <p> <code>manual</code> - The action requires you to resolve the recommendation manually.</p> </li> <li> <p> <code>immediately</code> - The action is applied immediately.</p> </li> <li> <p> <code>next-maintainance-window</code> - The action is applied during the next scheduled maintainance.</p> </li> </ul>"
+        },
+        "Status":{
+          "shape":"String",
+          "documentation":"<p>The status of the action.</p> <ul> <li> <p> <code>ready</code> </p> </li> <li> <p> <code>applied</code> </p> </li> <li> <p> <code>scheduled</code> </p> </li> <li> <p> <code>resolved</code> </p> </li> </ul>"
+        },
+        "IssueDetails":{
+          "shape":"IssueDetails",
+          "documentation":"<p>The details of the issue.</p>"
+        },
+        "ContextAttributes":{
+          "shape":"ContextAttributeList",
+          "documentation":"<p>The supporting attributes to explain the recommended action.</p>"
+        }
+      },
+      "documentation":"<p>The recommended actions to apply to resolve the issues associated with your DB instances, DB clusters, and DB parameter groups.</p>"
+    },
+    "RecommendedActionList":{
+      "type":"list",
+      "member":{"shape":"RecommendedAction"}
+    },
+    "RecommendedActionParameter":{
+      "type":"structure",
+      "members":{
+        "Key":{
+          "shape":"String",
+          "documentation":"<p>The key of the parameter to use with the <code>RecommendedAction</code> API operation.</p>"
+        },
+        "Value":{
+          "shape":"String",
+          "documentation":"<p>The value of the parameter to use with the <code>RecommendedAction</code> API operation.</p>"
+        }
+      },
+      "documentation":"<p>A single parameter to use with the <code>RecommendedAction</code> API operation to apply the action.</p>"
+    },
+    "RecommendedActionParameterList":{
+      "type":"list",
+      "member":{"shape":"RecommendedActionParameter"}
+    },
+    "RecommendedActionUpdate":{
+      "type":"structure",
+      "required":[
+        "ActionId",
+        "Status"
+      ],
+      "members":{
+        "ActionId":{
+          "shape":"String",
+          "documentation":"<p>A unique identifier of the updated recommendation action.</p>"
+        },
+        "Status":{
+          "shape":"String",
+          "documentation":"<p>The status of the updated recommendation action.</p> <ul> <li> <p> <code>applied</code> </p> </li> <li> <p> <code>scheduled</code> </p> </li> </ul>"
+        }
+      },
+      "documentation":"<p>The recommended status to update for the specified recommendation action ID.</p>"
+    },
+    "RecommendedActionUpdateList":{
+      "type":"list",
+      "member":{"shape":"RecommendedActionUpdate"}
+    },
     "RecurringCharge":{
       "type":"structure",
       "members":{
@@ -13336,6 +13763,16 @@
         "shape":"RecurringCharge",
         "locationName":"RecurringCharge"
       }
+    },
+    "ReferenceDetails":{
+      "type":"structure",
+      "members":{
+        "ScalarReferenceDetails":{
+          "shape":"ScalarReferenceDetails",
+          "documentation":"<p>The metric reference details when the reference is a scalar.</p>"
+        }
+      },
+      "documentation":"<p>The reference details of a metric.</p>"
     },
     "RegisterDBProxyTargetsRequest":{
       "type":"structure",
@@ -14817,6 +15254,16 @@
         "senderFault":true
       },
       "exception":true
+    },
+    "ScalarReferenceDetails":{
+      "type":"structure",
+      "members":{
+        "Value":{
+          "shape":"Double",
+          "documentation":"<p>The value of a scalar reference.</p>"
+        }
+      },
+      "documentation":"<p>The metric reference details when the reference is a scalar.</p>"
     },
     "ScalingConfiguration":{
       "type":"structure",

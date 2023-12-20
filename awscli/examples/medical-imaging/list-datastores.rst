@@ -20,6 +20,4 @@ Output::
     }
 
 
-For more information, see `Listing data stores`_ in the *AWS HealthImaging Developers Guide*.
-
-.. _`Listing data stores`: https://docs.aws.amazon.com/healthimaging/latest/devguide/list-data-stores.html
+For more information, see `Listing data stores <https://docs.aws.amazon.com/healthimaging/latest/devguide/list-data-stores.html>`__ in the *AWS HealthImaging Developer Guide*.

@@ -21,6 +21,4 @@ Output::
         ]
     }
 
-For more information, see `Listing import jobs`_ in the *AWS HealthImaging Developers Guide*.
-
-.. _`Listing import jobs`: https://docs.aws.amazon.com/healthimaging/latest/devguide/list-dicom-import-jobs.html
+For more information, see `Listing import jobs <https://docs.aws.amazon.com/healthimaging/latest/devguide/list-dicom-import-jobs.html>`__ in the *AWS HealthImaging Developer Guide*.

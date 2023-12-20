@@ -4,6 +4,19 @@
     <title>AWS Command Line Interface</title>
     <license file="LICENSE.txt" />
     <readme file="README.html" mimetype="text/html" />
+    <installation-check script="checkOsVersion();"/>
+    <script>
+    <![CDATA[
+    function checkOsVersion() {
+      if(system.compareVersions(system.version.ProductVersion, '10.15.0') < 0) {
+        my.result.type = 'Warning';
+        my.result.message = 'On June 20, 2024, the AWS CLI v2 will drop support for macOS versions below 10.15.0. Please upgrade to macOS version 10.15.0 or later to ensure compatibility with future versions of AWS CLI v2. For more information, please visit: https://aws.amazon.com/blogs/developer/macos-support-policy-updates-for-the-aws-cli-v2/';
+        return false;
+      }
+      return true;
+    }
+    ]]>
+    </script>
     <domains enable_anywhere="true" enable_currentUserHome="true" enable_localSystem="true" />
     <options customize="always" require-scripts="false" />
     <choices-outline>

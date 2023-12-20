@@ -1842,6 +1842,18 @@
         "ownerContact":{
           "shape":"String",
           "documentation":"<p>The owner contact information for an API resource.</p> <p>This field accepts any string input with a length of 0 - 256 characters.</p>"
+        },
+        "introspectionConfig":{
+          "shape":"GraphQLApiIntrospectionConfig",
+          "documentation":"<p>Sets the value of the GraphQL API to enable (<code>ENABLED</code>) or disable (<code>DISABLED</code>) introspection. If no value is provided, the introspection configuration will be set to <code>ENABLED</code> by default. This field will produce an error if the operation attempts to use the introspection feature while this field is disabled.</p> <p>For more information about introspection, see <a href=\"https://graphql.org/learn/introspection/\">GraphQL introspection</a>.</p>"
+        },
+        "queryDepthLimit":{
+          "shape":"QueryDepthLimit",
+          "documentation":"<p>The maximum depth a query can have in a single request. Depth refers to the amount of nested levels allowed in the body of query. The default value is <code>0</code> (or unspecified), which indicates there's no depth limit. If you set a limit, it can be between <code>1</code> and <code>75</code> nested levels. This field will produce a limit error if the operation falls out of bounds.</p> <p>Note that fields can still be set to nullable or non-nullable. If a non-nullable field produces an error, the error will be thrown upwards to the first nullable field available.</p>"
+        },
+        "resolverCountLimit":{
+          "shape":"ResolverCountLimit",
+          "documentation":"<p>The maximum number of resolvers that can be invoked in a single request. The default value is <code>0</code> (or unspecified), which will set the limit to <code>10000</code>. When specified, the limit value can be between <code>1</code> and <code>10000</code>. This field will produce a limit error if the operation falls out of bounds.</p>"
         }
       }
     },
@@ -3100,6 +3112,13 @@
         }
       }
     },
+    "GraphQLApiIntrospectionConfig":{
+      "type":"string",
+      "enum":[
+        "ENABLED",
+        "DISABLED"
+      ]
+    },
     "GraphQLApiType":{
       "type":"string",
       "enum":[
@@ -3201,6 +3220,18 @@
         "ownerContact":{
           "shape":"String",
           "documentation":"<p>The owner contact information for an API resource.</p> <p>This field accepts any string input with a length of 0 - 256 characters.</p>"
+        },
+        "introspectionConfig":{
+          "shape":"GraphQLApiIntrospectionConfig",
+          "documentation":"<p>Sets the value of the GraphQL API to enable (<code>ENABLED</code>) or disable (<code>DISABLED</code>) introspection. If no value is provided, the introspection configuration will be set to <code>ENABLED</code> by default. This field will produce an error if the operation attempts to use the introspection feature while this field is disabled.</p> <p>For more information about introspection, see <a href=\"https://graphql.org/learn/introspection/\">GraphQL introspection</a>.</p>"
+        },
+        "queryDepthLimit":{
+          "shape":"QueryDepthLimit",
+          "documentation":"<p>The maximum depth a query can have in a single request. Depth refers to the amount of nested levels allowed in the body of query. The default value is <code>0</code> (or unspecified), which indicates there's no depth limit. If you set a limit, it can be between <code>1</code> and <code>75</code> nested levels. This field will produce a limit error if the operation falls out of bounds.</p> <p>Note that fields can still be set to nullable or non-nullable. If a non-nullable field produces an error, the error will be thrown upwards to the first nullable field available.</p>"
+        },
+        "resolverCountLimit":{
+          "shape":"ResolverCountLimit",
+          "documentation":"<p>The maximum number of resolvers that can be invoked in a single request. The default value is <code>0</code> (or unspecified), which will set the limit to <code>10000</code>. When specified, the limit value can be between <code>1</code> and <code>10000</code>. This field will produce a limit error if the operation falls out of bounds.</p>"
         }
       },
       "documentation":"<p>Describes a GraphQL API.</p>"
@@ -3849,6 +3880,11 @@
       },
       "documentation":"<p>The pipeline configuration for a resolver of kind <code>PIPELINE</code>.</p>"
     },
+    "QueryDepthLimit":{
+      "type":"integer",
+      "max":75,
+      "min":0
+    },
     "RdsDataApiConfig":{
       "type":"structure",
       "required":[
@@ -3987,6 +4023,11 @@
         }
       },
       "documentation":"<p>Describes a resolver.</p>"
+    },
+    "ResolverCountLimit":{
+      "type":"integer",
+      "max":10000,
+      "min":0
     },
     "ResolverKind":{
       "type":"string",
@@ -4666,6 +4707,18 @@
         "ownerContact":{
           "shape":"String",
           "documentation":"<p>The owner contact information for an API resource.</p> <p>This field accepts any string input with a length of 0 - 256 characters.</p>"
+        },
+        "introspectionConfig":{
+          "shape":"GraphQLApiIntrospectionConfig",
+          "documentation":"<p>Sets the value of the GraphQL API to enable (<code>ENABLED</code>) or disable (<code>DISABLED</code>) introspection. If no value is provided, the introspection configuration will be set to <code>ENABLED</code> by default. This field will produce an error if the operation attempts to use the introspection feature while this field is disabled.</p> <p>For more information about introspection, see <a href=\"https://graphql.org/learn/introspection/\">GraphQL introspection</a>.</p>"
+        },
+        "queryDepthLimit":{
+          "shape":"QueryDepthLimit",
+          "documentation":"<p>The maximum depth a query can have in a single request. Depth refers to the amount of nested levels allowed in the body of query. The default value is <code>0</code> (or unspecified), which indicates there's no depth limit. If you set a limit, it can be between <code>1</code> and <code>75</code> nested levels. This field will produce a limit error if the operation falls out of bounds.</p> <p>Note that fields can still be set to nullable or non-nullable. If a non-nullable field produces an error, the error will be thrown upwards to the first nullable field available.</p>"
+        },
+        "resolverCountLimit":{
+          "shape":"ResolverCountLimit",
+          "documentation":"<p>The maximum number of resolvers that can be invoked in a single request. The default value is <code>0</code> (or unspecified), which will set the limit to <code>10000</code>. When specified, the limit value can be between <code>1</code> and <code>10000</code>. This field will produce a limit error if the operation falls out of bounds.</p>"
         }
       }
     },

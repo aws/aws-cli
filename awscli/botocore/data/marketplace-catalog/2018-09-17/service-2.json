@@ -13,6 +13,22 @@
     "uid":"marketplace-catalog-2018-09-17"
   },
   "operations":{
+    "BatchDescribeEntities":{
+      "name":"BatchDescribeEntities",
+      "http":{
+        "method":"POST",
+        "requestUri":"/BatchDescribeEntities"
+      },
+      "input":{"shape":"BatchDescribeEntitiesRequest"},
+      "output":{"shape":"BatchDescribeEntitiesResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalServiceException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ValidationException"}
+      ],
+      "documentation":"<p>Returns metadata and content for multiple entities.</p>"
+    },
     "CancelChangeSet":{
       "name":"CancelChangeSet",
       "http":{
@@ -394,6 +410,55 @@
         "Draft"
       ]
     },
+    "BatchDescribeEntitiesRequest":{
+      "type":"structure",
+      "required":["EntityRequestList"],
+      "members":{
+        "EntityRequestList":{
+          "shape":"EntityRequestList",
+          "documentation":"<p>List of entity IDs and the catalogs the entities are present in.</p>"
+        }
+      }
+    },
+    "BatchDescribeEntitiesResponse":{
+      "type":"structure",
+      "members":{
+        "EntityDetails":{
+          "shape":"EntityDetails",
+          "documentation":"<p>Details about each entity.</p>"
+        },
+        "Errors":{
+          "shape":"Errors",
+          "documentation":"<p>A map of errors returned, with <code>EntityId</code> as the key and <code>errorDetail</code> as the value.</p>"
+        }
+      }
+    },
+    "BatchDescribeErrorCodeString":{
+      "type":"string",
+      "max":72,
+      "min":1,
+      "pattern":"^[a-zA-Z_]+$"
+    },
+    "BatchDescribeErrorDetail":{
+      "type":"structure",
+      "members":{
+        "ErrorCode":{
+          "shape":"BatchDescribeErrorCodeString",
+          "documentation":"<p>The error code returned.</p>"
+        },
+        "ErrorMessage":{
+          "shape":"BatchDescribeErrorMessageContent",
+          "documentation":"<p>The error message returned.</p>"
+        }
+      },
+      "documentation":"<p>An object that contains an error code and error message.</p>"
+    },
+    "BatchDescribeErrorMessageContent":{
+      "type":"string",
+      "max":2048,
+      "min":1,
+      "pattern":"^(.)+$"
+    },
     "CancelChangeSetRequest":{
       "type":"structure",
       "required":[
@@ -443,7 +508,7 @@
       "members":{
         "ChangeType":{
           "shape":"ChangeType",
-          "documentation":"<p>Change types are single string values that describe your intention for the change. Each change type is unique for each <code>EntityType</code> provided in the change's scope. For more information on change types available for single-AMI products, see <a href=\"https://docs.aws.amazon.com/marketplace-catalog/latest/api-reference/ami-products.html#working-with-single-AMI-products\">Working with single-AMI products</a>. Also, for more information about change types available for container-based products, see <a href=\"https://docs.aws.amazon.com/marketplace-catalog/latest/api-reference/container-products.html#working-with-container-products\">Working with container products</a>.</p>"
+          "documentation":"<p>Change types are single string values that describe your intention for the change. Each change type is unique for each <code>EntityType</code> provided in the change's scope. For more information about change types available for single-AMI products, see <a href=\"https://docs.aws.amazon.com/marketplace-catalog/latest/api-reference/ami-products.html#working-with-single-AMI-products\">Working with single-AMI products</a>. Also, for more information about change types available for container-based products, see <a href=\"https://docs.aws.amazon.com/marketplace-catalog/latest/api-reference/container-products.html#working-with-container-products\">Working with container products</a>.</p>"
         },
         "Entity":{
           "shape":"Entity",
@@ -1041,11 +1106,72 @@
       },
       "documentation":"<p>An entity contains data that describes your product, its supported features, and how it can be used or launched by your customer. </p>"
     },
+    "EntityDetail":{
+      "type":"structure",
+      "members":{
+        "EntityType":{
+          "shape":"EntityType",
+          "documentation":"<p>The entity type of the entity, in the format of <code>EntityType@Version</code>.</p>"
+        },
+        "EntityArn":{
+          "shape":"ARN",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the entity.</p>"
+        },
+        "EntityIdentifier":{
+          "shape":"Identifier",
+          "documentation":"<p>The ID of the entity, in the format of <code>EntityId@RevisionId</code>.</p>"
+        },
+        "LastModifiedDate":{
+          "shape":"DateTimeISO8601",
+          "documentation":"<p>The last time the entity was modified.</p>"
+        },
+        "DetailsDocument":{
+          "shape":"JsonDocumentType",
+          "documentation":"<p>An object that contains all the details of the entity.</p>"
+        }
+      },
+      "documentation":"<p>An object that contains metadata and details about the entity.</p>"
+    },
+    "EntityDetails":{
+      "type":"map",
+      "key":{"shape":"EntityId"},
+      "value":{"shape":"EntityDetail"}
+    },
+    "EntityId":{
+      "type":"string",
+      "max":255,
+      "min":1,
+      "pattern":"^[a-zA-Z0-9][.a-zA-Z0-9/-]+[a-zA-Z0-9]$"
+    },
     "EntityNameString":{
       "type":"string",
       "max":255,
       "min":1,
       "pattern":"^\\\\S+[\\\\S\\\\s]*"
+    },
+    "EntityRequest":{
+      "type":"structure",
+      "required":[
+        "Catalog",
+        "EntityId"
+      ],
+      "members":{
+        "Catalog":{
+          "shape":"Catalog",
+          "documentation":"<p>The name of the catalog the entity is present in. The only value at this time is <code>AWSMarketplace</code>.</p>"
+        },
+        "EntityId":{
+          "shape":"EntityId",
+          "documentation":"<p>The ID of the entity.</p>"
+        }
+      },
+      "documentation":"<p>An object that contains entity ID and the catalog in which the entity is present.</p>"
+    },
+    "EntityRequestList":{
+      "type":"list",
+      "member":{"shape":"EntityRequest"},
+      "max":20,
+      "min":1
     },
     "EntitySummary":{
       "type":"structure",
@@ -1196,6 +1322,11 @@
     "ErrorDetailList":{
       "type":"list",
       "member":{"shape":"ErrorDetail"}
+    },
+    "Errors":{
+      "type":"map",
+      "key":{"shape":"EntityId"},
+      "value":{"shape":"BatchDescribeErrorDetail"}
     },
     "ExceptionMessageContent":{
       "type":"string",
@@ -1355,7 +1486,7 @@
         },
         "EntityType":{
           "shape":"EntityType",
-          "documentation":"<p>The type of entities to retrieve. Valid values are: <code>ServerProduct</code>, <code>AmiProduct</code>, <code>ContainerProduct</code>, <code>DataProduct</code>, <code>SaaSProduct</code>, <code>ProcurementPolicy</code>, <code>Experience</code>, <code>Audience</code>, <code>BrandingSettings</code>, <code>Offer</code>, <code>Seller</code>, <code>ResaleAuthorization</code>.</p>"
+          "documentation":"<p>The type of entities to retrieve. Valid values are: <code>AmiProduct</code>, <code>ContainerProduct</code>, <code>DataProduct</code>, <code>SaaSProduct</code>, <code>ProcurementPolicy</code>, <code>Experience</code>, <code>Audience</code>, <code>BrandingSettings</code>, <code>Offer</code>, <code>Seller</code>, <code>ResaleAuthorization</code>.</p>"
         },
         "FilterList":{
           "shape":"FilterList",

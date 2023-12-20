@@ -23,10 +23,21 @@ The aws-cli package works on Python versions:
 
  Jump to:
 
+-  `Notices <#notices>`__
 -  `Installation <#installation>`__
 -  `Getting Started <#getting-started>`__
 -  `Getting Help <#getting-help>`__
 -  `More Resources <#more-resources>`__
+
+
+-------
+Notices
+-------
+On 2024-06-20, support for macOS versions 10.14 and prior will be dropped.
+To avoid disruption, customers using macOS 10.14 or prior
+should upgrade to macOS 10.15 or later. For more information, please see
+this `blog post <https://aws.amazon.com/blogs/developer/macos-support-policy-updates-for-the-aws-cli-v2/>`__.
+
 
 ------------
 Installation

@@ -150,7 +150,7 @@ class CodeCommitGetCommand(BasicCommand):
         request = AWSRequest()
         request.url = url_to_sign
         request.method = 'GIT'
-        now = datetime.datetime.utcnow()
+        now = datetime.datetime.now(datetime.timezone.utc)
         request.context['timestamp'] = now.strftime('%Y%m%dT%H%M%S')
         split = urlsplit(request.url)
         # we don't want to include the port number in the signature

@@ -14,7 +14,7 @@
 import awscli
 import os
 
-from datetime import datetime
+from datetime import datetime, timezone
 
 from six import StringIO
 from botocore.session import Session
@@ -59,7 +59,7 @@ class TestCodeCommitCredentialHelper(unittest.TestCase):
     @mock.patch('sys.stdout', new_callable=StringIOWithFileNo)
     @mock.patch.object(awscli.customizations.codecommit.datetime, 'datetime')
     def test_integration_using_cli_driver(self, dt_mock, stdout_mock):
-        dt_mock.utcnow.return_value = datetime(2010, 10, 8)
+        dt_mock.now.return_value = datetime(2010, 10, 8, tzinfo=timezone.utc)
         driver = create_clidriver()
         rc = driver.main('codecommit credential-helper get'.split())
         output = stdout_mock.getvalue().strip()
@@ -74,7 +74,7 @@ class TestCodeCommitCredentialHelper(unittest.TestCase):
     @mock.patch('sys.stdout', new_callable=StringIOWithFileNo)
     @mock.patch.object(awscli.customizations.codecommit.datetime, 'datetime')
     def test_integration_fips_using_cli_driver(self, dt_mock, stdout_mock):
-        dt_mock.utcnow.return_value = datetime(2010, 10, 8)
+        dt_mock.now.return_value = datetime(2010, 10, 8, tzinfo=timezone.utc)
         driver = create_clidriver()
         rc = driver.main('codecommit credential-helper get'.split())
         output = stdout_mock.getvalue().strip()
@@ -89,7 +89,7 @@ class TestCodeCommitCredentialHelper(unittest.TestCase):
     @mock.patch('sys.stdout', new_callable=StringIOWithFileNo)
     @mock.patch.object(awscli.customizations.codecommit.datetime, 'datetime')
     def test_integration_vpc_using_cli_driver(self, dt_mock, stdout_mock):
-        dt_mock.utcnow.return_value = datetime(2010, 10, 8)
+        dt_mock.now.return_value = datetime(2010, 10, 8, tzinfo=timezone.utc)
         driver = create_clidriver()
         rc = driver.main('codecommit credential-helper get'.split())
         output = stdout_mock.getvalue().strip()

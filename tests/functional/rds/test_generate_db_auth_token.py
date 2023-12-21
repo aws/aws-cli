@@ -52,7 +52,7 @@ class TestGenerateDBAuthToken(BaseAWSCommandParamsTest):
         clock = datetime.datetime(2016, 11, 7, 17, 39, 33, tzinfo=tzutc())
 
         with mock.patch('datetime.datetime') as dt:
-            dt.utcnow.return_value = clock
+            dt.now.return_value = clock
             stdout, _, _ = self.run_cmd(command, expected_rc=0)
 
         expected = (

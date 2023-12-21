@@ -505,7 +505,7 @@ class OpsWorksRegister(BasicCommand):
             "Resource": arn,
         }
         if timeout is not None:
-            valid_until = datetime.datetime.utcnow() + timeout
+            valid_until = datetime.datetime.now(datetime.timezone.utc) + timeout
             statement["Condition"] = {
                 "DateLessThan": {
                     "aws:CurrentTime":

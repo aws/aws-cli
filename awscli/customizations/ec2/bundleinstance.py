@@ -119,7 +119,7 @@ def _generate_policy(params):
     # Called if there is no policy supplied by the user.
     # Creates a policy that provides access for 24 hours.
     delta = datetime.timedelta(hours=24)
-    expires = datetime.datetime.utcnow() + delta
+    expires = datetime.datetime.now(datetime.timezone.utc) + delta
     expires_iso = expires.strftime("%Y-%m-%dT%H:%M:%S.%fZ")
     policy = POLICY.format(expires=expires_iso,
                            bucket=params['Bucket'],

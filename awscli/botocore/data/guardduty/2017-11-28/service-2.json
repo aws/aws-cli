@@ -117,7 +117,7 @@
         {"shape":"BadRequestException"},
         {"shape":"InternalServerErrorException"}
       ],
-      "documentation":"<p>Creates member accounts of the current Amazon Web Services account by specifying a list of Amazon Web Services account IDs. This step is a prerequisite for managing the associated member accounts either by invitation or through an organization.</p> <p>As a delegated administrator, using <code>CreateMembers</code> will enable GuardDuty in the added member accounts, with the exception of the organization delegated administrator account. A delegated administrator must enable GuardDuty prior to being added as a member.</p> <p>If you are adding accounts by invitation, before using <a href=\"https://docs.aws.amazon.com/guardduty/latest/APIReference/API_InviteMembers.html\">InviteMembers</a>, use <code>CreateMembers</code> after GuardDuty has been enabled in potential member accounts.</p> <p>If you disassociate a member from a GuardDuty delegated administrator, the member account details obtained from this API, including the associated email addresses, will be retained. This is done so that the delegated administrator can invoke the <a href=\"https://docs.aws.amazon.com/guardduty/latest/APIReference/API_InviteMembers.html\">InviteMembers</a> API without the need to invoke the CreateMembers API again. To remove the details associated with a member account, the delegated administrator must invoke the <a href=\"https://docs.aws.amazon.com/guardduty/latest/APIReference/API_DeleteMembers.html\">DeleteMembers</a> API. </p>"
+      "documentation":"<p>Creates member accounts of the current Amazon Web Services account by specifying a list of Amazon Web Services account IDs. This step is a prerequisite for managing the associated member accounts either by invitation or through an organization.</p> <p>As a delegated administrator, using <code>CreateMembers</code> will enable GuardDuty in the added member accounts, with the exception of the organization delegated administrator account. A delegated administrator must enable GuardDuty prior to being added as a member.</p> <p>When you use CreateMembers as an Organizations delegated administrator, GuardDuty applies your organization's auto-enable settings to the member accounts in this request, irrespective of the accounts being new or existing members. For more information about the existing auto-enable settings for your organization, see <a href=\"https://docs.aws.amazon.com/guardduty/latest/APIReference/API_DescribeOrganizationConfiguration.html\">DescribeOrganizationConfiguration</a>.</p> <p>If you are adding accounts by invitation, before using <a href=\"https://docs.aws.amazon.com/guardduty/latest/APIReference/API_InviteMembers.html\">InviteMembers</a>, use <code>CreateMembers</code> after GuardDuty has been enabled in potential member accounts.</p> <p>If you disassociate a member from a GuardDuty delegated administrator, the member account details obtained from this API, including the associated email addresses, will be retained. This is done so that the delegated administrator can invoke the <a href=\"https://docs.aws.amazon.com/guardduty/latest/APIReference/API_InviteMembers.html\">InviteMembers</a> API without the need to invoke the CreateMembers API again. To remove the details associated with a member account, the delegated administrator must invoke the <a href=\"https://docs.aws.amazon.com/guardduty/latest/APIReference/API_DeleteMembers.html\">DeleteMembers</a> API. </p>"
     },
     "CreatePublishingDestination":{
       "name":"CreatePublishingDestination",
@@ -434,7 +434,7 @@
         {"shape":"BadRequestException"},
         {"shape":"InternalServerErrorException"}
       ],
-      "documentation":"<p>Retrieves aggregated statistics for your account. If you are a GuardDuty administrator, you can retrieve the statistics for all the resources associated with the active member accounts in your organization who have enabled EKS Runtime Monitoring and have the GuardDuty agent running on their EKS nodes.</p>"
+      "documentation":"<p>Retrieves aggregated statistics for your account. If you are a GuardDuty administrator, you can retrieve the statistics for all the resources associated with the active member accounts in your organization who have enabled Runtime Monitoring and have the GuardDuty security agent running on their resources.</p>"
     },
     "GetDetector":{
       "name":"GetDetector",
@@ -588,6 +588,20 @@
       ],
       "documentation":"<p>Retrieves GuardDuty member accounts (of the current GuardDuty administrator account) specified by the account IDs.</p>"
     },
+    "GetOrganizationStatistics":{
+      "name":"GetOrganizationStatistics",
+      "http":{
+        "method":"GET",
+        "requestUri":"/organization/statistics",
+        "responseCode":200
+      },
+      "output":{"shape":"GetOrganizationStatisticsResponse"},
+      "errors":[
+        {"shape":"BadRequestException"},
+        {"shape":"InternalServerErrorException"}
+      ],
+      "documentation":"<p>Retrieves how many active member accounts in your Amazon Web Services organization have each feature enabled within GuardDuty. Only a delegated GuardDuty administrator of an organization can run this API.</p> <p>When you create a new Amazon Web Services organization, it might take up to 24 hours to generate the statistics for the entire organization.</p>"
+    },
     "GetRemainingFreeTrialDays":{
       "name":"GetRemainingFreeTrialDays",
       "http":{
@@ -661,7 +675,7 @@
         {"shape":"BadRequestException"},
         {"shape":"InternalServerErrorException"}
       ],
-      "documentation":"<p>Lists coverage details for your GuardDuty account. If you're a GuardDuty administrator, you can retrieve all resources associated with the active member accounts in your organization.</p> <p>Make sure the accounts have EKS Runtime Monitoring enabled and GuardDuty agent running on their EKS nodes.</p>"
+      "documentation":"<p>Lists coverage details for your GuardDuty account. If you're a GuardDuty administrator, you can retrieve all resources associated with the active member accounts in your organization.</p> <p>Make sure the accounts have Runtime Monitoring enabled and GuardDuty agent running on their resources.</p>"
     },
     "ListDetectors":{
       "name":"ListDetectors",
@@ -1863,11 +1877,11 @@
         },
         "ManagementType":{
           "shape":"ManagementType",
-          "documentation":"<p>Indicates how the GuardDuty security agent is managed for this resource.</p> <ul> <li> <p> <code>AUTO_MANAGED</code> indicates that GuardDuty deploys and manages updates for this resource.</p> </li> <li> <p> <code>MANUAL</code> indicates that you are responsible to deploy, update, and manage the GuardDuty security agent updates for this resource.</p> </li> </ul> <note> <p>The <code>DISABLED</code> status doesn't apply to Amazon EC2 instances and Amazon EKS clusters that run on Amazon EC2 instances.</p> </note>",
+          "documentation":"<p>Indicates how the GuardDuty security agent is managed for this resource.</p> <ul> <li> <p> <code>AUTO_MANAGED</code> indicates that GuardDuty deploys and manages updates for this resource.</p> </li> <li> <p> <code>MANUAL</code> indicates that you are responsible to deploy, update, and manage the GuardDuty security agent updates for this resource.</p> </li> </ul> <note> <p>The <code>DISABLED</code> status doesn't apply to Amazon EC2 instances and Amazon EKS clusters.</p> </note>",
           "locationName":"managementType"
         }
       },
-      "documentation":"<note> <p>This API is also used when you use GuardDuty Runtime Monitoring for your Amazon EC2 instances (currently in preview release) and is subject to change.</p> </note> <p>Contains information about the Amazon EC2 instance runtime coverage details.</p>"
+      "documentation":"<note> <p>This API is also used when you use GuardDuty Runtime Monitoring for your Amazon EC2 instances (currently in preview release) and is subject to change. The use of this API is subject to Section 2 of the <a href=\"http://aws.amazon.com/service-terms/\">Amazon Web Services Service Terms</a> (\"Betas and Previews\").</p> </note> <p>Contains information about the Amazon EC2 instance runtime coverage details.</p>"
     },
     "CoverageEcsClusterDetails":{
       "type":"structure",
@@ -2047,7 +2061,7 @@
         },
         "Ec2InstanceDetails":{
           "shape":"CoverageEc2InstanceDetails",
-          "documentation":"<note> <p>This API is also used when you use GuardDuty Runtime Monitoring for your Amazon EC2 instances (currently in preview release) and is subject to change.</p> </note> <p>Information about the Amazon EC2 instance assessed for runtime coverage.</p>",
+          "documentation":"<note> <p>This API is also used when you use GuardDuty Runtime Monitoring for your Amazon EC2 instances (currently in preview release) and is subject to change. The use of this API is subject to Section 2 of the <a href=\"http://aws.amazon.com/service-terms/\">Amazon Web Services Service Terms</a> (\"Betas and Previews\").</p> </note> <p>Information about the Amazon EC2 instance assessed for runtime coverage.</p>",
           "locationName":"ec2InstanceDetails"
         }
       },
@@ -3595,16 +3609,16 @@
       "members":{
         "Issues":{
           "shape":"Issues",
-          "documentation":"<p>Runtime coverage issues identified for the resource running on AWS Fargate.</p>",
+          "documentation":"<p>Runtime coverage issues identified for the resource running on Amazon Web Services Fargate.</p>",
           "locationName":"issues"
         },
         "ManagementType":{
           "shape":"ManagementType",
-          "documentation":"<p>Indicates how the GuardDuty security agent is managed for this resource.</p> <ul> <li> <p> <code>AUTO_MANAGED</code> indicates that GuardDuty deploys and manages updates for this resource.</p> </li> <li> <p> <code>MANUAL</code> indicates that you are responsible to deploy, update, and manage the GuardDuty security agent updates for this resource.</p> </li> <li> <p> <code>DISABLED</code> indicates that the deployment of the GuardDuty security agent is disabled for this resource.</p> </li> </ul>",
+          "documentation":"<p>Indicates how the GuardDuty security agent is managed for this resource.</p> <ul> <li> <p> <code>AUTO_MANAGED</code> indicates that GuardDuty deploys and manages updates for this resource.</p> </li> <li> <p> <code>DISABLED</code> indicates that the deployment of the GuardDuty security agent is disabled for this resource.</p> </li> </ul> <note> <p>The <code>MANUAL</code> status doesn't apply to the Amazon Web Services Fargate (Amazon ECS only) woprkloads.</p> </note>",
           "locationName":"managementType"
         }
       },
-      "documentation":"<p>Contains information about AWS Fargate details associated with an Amazon ECS cluster.</p>"
+      "documentation":"<p>Contains information about Amazon Web Services Fargate details associated with an Amazon ECS cluster.</p>"
     },
     "FeatureAdditionalConfiguration":{
       "type":"string",
@@ -4397,6 +4411,16 @@
           "shape":"UnprocessedAccounts",
           "documentation":"<p>A list of objects that contain the unprocessed account and a result string that explains why it was unprocessed.</p>",
           "locationName":"unprocessedAccounts"
+        }
+      }
+    },
+    "GetOrganizationStatisticsResponse":{
+      "type":"structure",
+      "members":{
+        "OrganizationDetails":{
+          "shape":"OrganizationDetails",
+          "documentation":"<p>Information about the statistics report for your organization.</p>",
+          "locationName":"organizationDetails"
         }
       }
     },
@@ -6273,6 +6297,22 @@
       },
       "documentation":"<p>An object that contains information on which data sources are automatically enabled for new members within the organization.</p>"
     },
+    "OrganizationDetails":{
+      "type":"structure",
+      "members":{
+        "UpdatedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp at which the organization statistics was last updated. This is in UTC format.</p>",
+          "locationName":"updatedAt"
+        },
+        "OrganizationStatistics":{
+          "shape":"OrganizationStatistics",
+          "documentation":"<p>Information about the GuardDuty coverage statistics for members in your Amazon Web Services organization.</p>",
+          "locationName":"organizationStatistics"
+        }
+      },
+      "documentation":"<p>Information about GuardDuty coverage statistics for members in your Amazon Web Services organization.</p>"
+    },
     "OrganizationEbsVolumes":{
       "type":"structure",
       "members":{
@@ -6336,6 +6376,51 @@
         }
       },
       "documentation":"<p>A list of features which will be configured for the organization.</p>"
+    },
+    "OrganizationFeatureStatistics":{
+      "type":"structure",
+      "members":{
+        "Name":{
+          "shape":"OrgFeature",
+          "documentation":"<p>Name of the feature.</p>",
+          "locationName":"name"
+        },
+        "EnabledAccountsCount":{
+          "shape":"Integer",
+          "documentation":"<p>Total number of accounts that have enabled a specific feature.</p>",
+          "locationName":"enabledAccountsCount"
+        },
+        "AdditionalConfiguration":{
+          "shape":"OrganizationFeatureStatisticsAdditionalConfigurations",
+          "documentation":"<p>Name of the additional configuration.</p>",
+          "locationName":"additionalConfiguration"
+        }
+      },
+      "documentation":"<p>Information about the number of accounts that have enabled a specific feature.</p>"
+    },
+    "OrganizationFeatureStatisticsAdditionalConfiguration":{
+      "type":"structure",
+      "members":{
+        "Name":{
+          "shape":"OrgFeatureAdditionalConfiguration",
+          "documentation":"<p>Name of the additional configuration within a feature.</p>",
+          "locationName":"name"
+        },
+        "EnabledAccountsCount":{
+          "shape":"Integer",
+          "documentation":"<p>Total number of accounts that have enabled the additional configuration.</p>",
+          "locationName":"enabledAccountsCount"
+        }
+      },
+      "documentation":"<p>Information about the coverage statistic for the additional configuration of the feature.</p>"
+    },
+    "OrganizationFeatureStatisticsAdditionalConfigurations":{
+      "type":"list",
+      "member":{"shape":"OrganizationFeatureStatisticsAdditionalConfiguration"}
+    },
+    "OrganizationFeatureStatisticsResults":{
+      "type":"list",
+      "member":{"shape":"OrganizationFeatureStatistics"}
     },
     "OrganizationFeaturesConfigurations":{
       "type":"list",
@@ -6460,6 +6545,37 @@
         }
       },
       "documentation":"<p>An object that contains information on the status of scanning EC2 instances with findings for an organization.</p>"
+    },
+    "OrganizationStatistics":{
+      "type":"structure",
+      "members":{
+        "TotalAccountsCount":{
+          "shape":"Integer",
+          "documentation":"<p>Total number of accounts in your Amazon Web Services organization.</p>",
+          "locationName":"totalAccountsCount"
+        },
+        "MemberAccountsCount":{
+          "shape":"Integer",
+          "documentation":"<p>Total number of accounts in your Amazon Web Services organization that are associated with GuardDuty.</p>",
+          "locationName":"memberAccountsCount"
+        },
+        "ActiveAccountsCount":{
+          "shape":"Integer",
+          "documentation":"<p>Total number of active accounts in your Amazon Web Services organization that are associated with GuardDuty.</p>",
+          "locationName":"activeAccountsCount"
+        },
+        "EnabledAccountsCount":{
+          "shape":"Integer",
+          "documentation":"<p>Total number of accounts that have enabled GuardDuty.</p>",
+          "locationName":"enabledAccountsCount"
+        },
+        "CountByFeature":{
+          "shape":"OrganizationFeatureStatisticsResults",
+          "documentation":"<p>Retrieves the coverage statistics for each feature.</p>",
+          "locationName":"countByFeature"
+        }
+      },
+      "documentation":"<p>Information about the coverage statistics of the features for the entire Amazon Web Services organization.</p> <p>When you create a new Amazon Web Services organization, it might take up to 24 hours to generate the statistics summary for this organization.</p>"
     },
     "Owner":{
       "type":"structure",
@@ -8432,7 +8548,8 @@
         "SUM_BY_DATA_SOURCE",
         "SUM_BY_RESOURCE",
         "TOP_RESOURCES",
-        "SUM_BY_FEATURES"
+        "SUM_BY_FEATURES",
+        "TOP_ACCOUNTS_BY_FEATURE"
       ]
     },
     "UsageStatistics":{
@@ -8442,6 +8559,11 @@
           "shape":"UsageAccountResultList",
           "documentation":"<p>The usage statistic sum organized by account ID.</p>",
           "locationName":"sumByAccount"
+        },
+        "TopAccountsByFeature":{
+          "shape":"UsageTopAccountsResultList",
+          "documentation":"<p>Lists the top 50 accounts by feature that have generated the most GuardDuty usage, in the order from most to least expensive.</p> <p>Currently, this doesn't support <code>RDS_LOGIN_EVENTS</code>.</p>",
+          "locationName":"topAccountsByFeature"
         },
         "SumByDataSource":{
           "shape":"UsageDataSourceResultList",
@@ -8465,6 +8587,45 @@
         }
       },
       "documentation":"<p>Contains the result of GuardDuty usage. If a UsageStatisticType is provided the result for other types will be null. </p>"
+    },
+    "UsageTopAccountResult":{
+      "type":"structure",
+      "members":{
+        "AccountId":{
+          "shape":"AccountId",
+          "documentation":"<p>The unique account ID.</p>",
+          "locationName":"accountId"
+        },
+        "Total":{
+          "shape":"Total",
+          "locationName":"total"
+        }
+      },
+      "documentation":"<p>Contains information on the total of usage based on the topmost 50 account IDs.</p>"
+    },
+    "UsageTopAccountsByFeatureList":{
+      "type":"list",
+      "member":{"shape":"UsageTopAccountResult"}
+    },
+    "UsageTopAccountsResult":{
+      "type":"structure",
+      "members":{
+        "Feature":{
+          "shape":"UsageFeature",
+          "documentation":"<p>Features by which you can generate the usage statistics.</p> <p> <code>RDS_LOGIN_EVENTS</code> is currently not supported with <code>topAccountsByFeature</code>.</p>",
+          "locationName":"feature"
+        },
+        "Accounts":{
+          "shape":"UsageTopAccountsByFeatureList",
+          "documentation":"<p>The accounts that contributed to the total usage cost.</p>",
+          "locationName":"accounts"
+        }
+      },
+      "documentation":"<p>Information about the usage statistics, calculated by top accounts by feature.</p>"
+    },
+    "UsageTopAccountsResultList":{
+      "type":"list",
+      "member":{"shape":"UsageTopAccountsResult"}
     },
     "Volume":{
       "type":"structure",

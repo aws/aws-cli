@@ -15,6 +15,4 @@ Output::
         "datastoreId": "12345678901234567890123456789012"
     }
 
-For more information, see `Deleting an image set`_ in the *AWS HealthImaging Developers Guide*.
-
-.. _`Deleting an image set`: https://docs.aws.amazon.com/healthimaging/latest/devguide/delete-image-set.html
+For more information, see `Deleting an image set <https://docs.aws.amazon.com/healthimaging/latest/devguide/delete-image-set.html>`__ in the *AWS HealthImaging Developer Guide*.

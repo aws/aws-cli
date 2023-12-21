@@ -64,6 +64,4 @@ Output::
         "datastoreId": "12345678901234567890123456789012"
     }
 
-For more information, see `Copying an image set`_ in the *AWS HealthImaging Developers Guide*.
-
-.. _`Copying an image set`: https://docs.aws.amazon.com/healthimaging/latest/devguide/copy-image-set.html
+For more information, see `Copying an image set <https://docs.aws.amazon.com/healthimaging/latest/devguide/copy-image-set.html>`__ in the *AWS HealthImaging Developer Guide*.

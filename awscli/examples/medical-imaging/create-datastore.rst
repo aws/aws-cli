@@ -12,6 +12,4 @@ Output::
         "datastoreStatus": "CREATING"
     }
 
-For more information, see `Creating a data store`_ in the *AWS HealthImaging Developers Guide*.
-
-.. _`Creating a data store`: https://docs.aws.amazon.com/healthimaging/latest/devguide/create-data-store.html
+For more information, see `Creating a data store <https://docs.aws.amazon.com/healthimaging/latest/devguide/create-data-store.html>`__ in the *AWS HealthImaging Developer Guide*.

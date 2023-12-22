@@ -108,10 +108,11 @@ class ArgumentType(Enum):
         self._map_handlers(self.help_command.session,
                            self.help_command.event_class,
                            self.help_command.session.unregister)
+
     # These are default doc handlers that apply in the general case.
 
     def doc_breadcrumbs(self, help_command, **kwargs):
-        doc = self.get_doc(help_command)
+        doc = help_command.doc
         if doc.target != 'man':
             cmd_names = help_command.event_class.split('.')
             doc.write('[ ')
@@ -125,7 +126,7 @@ class ArgumentType(Enum):
             doc.write(' ]')
 
     def doc_title(self, help_command, **kwargs):
-        doc = self.get_doc(help_command)
+        doc = help_command.doc
         doc.style.new_paragraph() 
         reference = help_command.event_class.replace('.', ' ')
         if reference != 'aws':
@@ -134,20 +135,20 @@ class ArgumentType(Enum):
         doc.style.h1(help_command.name)
 
     def doc_description(self, help_command, **kwargs):
-        doc = self.get_doc(help_command)
+        doc = help_command.doc
         doc.style.h2(DESCRIPTION) # Replace local constants with global constants
         doc.include_doc_string(help_command.description) 
         doc.style.new_paragraph()
 
     def doc_synopsis_start(self, help_command, **kwargs):
         self._documented_arg_groups = []
-        doc = self.get_doc(help_command)
+        doc = help_command.doc
         doc.style.h2(SYNOPSIS) # Replace local constants with global constants
         doc.style.start_codeblock()
         doc.writeln('%s' % help_command.name)
 
     def doc_synopsis_option(self, arg_name, help_command, **kwargs):
-        doc = self.get_doc(help_command)
+        doc = help_command.doc
         argument = help_command.arg_table[arg_name]
         if argument.group_name in self._arg_groups:
             if argument.group_name in self._documented_arg_groups:
@@ -167,7 +168,7 @@ class ArgumentType(Enum):
         doc.writeln('%s' % option_str)
 
     def doc_synopsis_end(self, help_command, **kwargs):
-        doc = self.get_doc(help_command)
+        doc = help_command.doc
         # Append synopsis for global options.
         doc.write_from_file(GLOBAL_OPTIONS_SYNOPSIS_FILE)
         doc.style.end_codeblock()
@@ -177,12 +178,12 @@ class ArgumentType(Enum):
         self._documented_arg_groups = []
 
     def doc_options_start(self, help_command, **kwargs):
-        doc = self.get_doc(help_command)
+        doc = help_command.doc
         doc.style.h2(OPTIONS)  # Replace local constants with global constants
         if not help_command.arg_table:
             doc.write('*None*\n')
     def doc_option(self, arg_name, help_command, **kwargs):
-        doc = self.get_doc(help_command)
+        doc = help_command.doc
         argument = help_command.arg_table[arg_name]
         self._document_arg_group(argument, doc)
         self._document_individual_arg(argument, doc)
@@ -193,17 +194,17 @@ class ArgumentType(Enum):
    
 
     def doc_global_option(self, help_command, **kwargs):
-        doc = self.get_doc(help_command)
+        doc = help_command.doc
         doc.style.h2('Global Options')
         doc.write_from_file(GLOBAL_OPTIONS_FILE)
 
     def doc_relateditems_start(self, help_command, **kwargs):
         if help_command.related_items:
-            doc = self.get_doc(help_command)
+            doc = help_command.doc
             doc.style.h2('See Also')
 
     def doc_relateditem(self, help_command, related_item, **kwargs):
-        doc = self.get_doc(help_command)
+        doc = help_command.doc
         doc.write('* ')
         doc.style.sphinx_reference_label(
             label='cli:%s' % related_item,

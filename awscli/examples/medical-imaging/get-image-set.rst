@@ -20,6 +20,4 @@ Output::
     }
 
 
-For more information, see `Getting image set properties`_ in the *AWS HealthImaging Developers Guide*.
-
-.. _`Getting image set properties`: https://docs.aws.amazon.com/healthimaging/latest/devguide/get-image-set-properties.html
+For more information, see `Getting image set properties <https://docs.aws.amazon.com/healthimaging/latest/devguide/get-image-set-properties.html>`__ in the *AWS HealthImaging Developer Guide*.

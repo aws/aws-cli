@@ -1017,6 +1017,161 @@ class TestArtifactExporter(unittest.TestCase):
                 "Resource2", mock.ANY, template_dir)
 
     @mock.patch("awscli.customizations.cloudformation.artifact_exporter.yaml_parse")
+    def test_template_export_foreach_valid(self, yaml_parse_mock):
+        parent_dir = os.path.sep
+        template_dir = os.path.join(parent_dir, 'foo', 'bar')
+        template_path = os.path.join(template_dir, 'path')
+        template_str = self.example_yaml_template()
+
+        resource_type1_class = mock.Mock()
+        resource_type1_class.RESOURCE_TYPE = "resource_type1"
+        resource_type1_instance = mock.Mock()
+        resource_type1_class.return_value = resource_type1_instance
+        resource_type2_class = mock.Mock()
+        resource_type2_class.RESOURCE_TYPE = "resource_type2"
+        resource_type2_instance = mock.Mock()
+        resource_type2_class.return_value = resource_type2_instance
+
+        resources_to_export = [
+            resource_type1_class,
+            resource_type2_class
+        ]
+
+        properties = {"foo": "bar"}
+        template_dict = {
+            "Resources": {
+                "Resource1": {
+                    "Type": "resource_type1",
+                    "Properties": properties
+                },
+                "Resource2": {
+                    "Type": "resource_type2",
+                    "Properties": properties
+                },
+                "Resource3": {
+                    "Type": "some-other-type",
+                    "Properties": properties
+                },
+                "Fn::ForEach::OuterLoopName": [
+                    "Identifier1",
+                    ["4", "5"],
+                    {
+                        "Fn::ForEach::InnerLoopName": [
+                            "Identifier2",
+                            ["6", "7"],
+                            {
+                                "Resource${Identifier1}${Identifier2}": {
+                                    "Type": "resource_type2",
+                                    "Properties": properties
+                                }
+                            }
+                        ],
+                        "Resource${Identifier1}": {
+                            "Type": "resource_type1",
+                            "Properties": properties
+                        }
+                    }
+                ]
+            }
+        }
+
+        open_mock = mock.mock_open()
+        yaml_parse_mock.return_value = template_dict
+
+        # Patch the file open method to return template string
+        with mock.patch(
+                "awscli.customizations.cloudformation.artifact_exporter.open",
+                open_mock(read_data=template_str)) as open_mock:
+
+            template_exporter = Template(
+                template_path, parent_dir, self.s3_uploader_mock,
+                resources_to_export)
+            exported_template = template_exporter.export()
+            self.assertEqual(exported_template, template_dict)
+
+            open_mock.assert_called_once_with(
+                    make_abs_path(parent_dir, template_path), "r")
+
+            self.assertEqual(1, yaml_parse_mock.call_count)
+
+            resource_type1_class.assert_called_with(self.s3_uploader_mock)
+            self.assertEqual(
+                resource_type1_instance.export.call_args_list,
+                [
+                    mock.call("Resource1", properties, template_dir),
+                    mock.call("Resource${Identifier1}", properties, template_dir)
+                ]
+            )
+            resource_type2_class.assert_called_with(self.s3_uploader_mock)
+            self.assertEqual(
+                resource_type2_instance.export.call_args_list,
+                [
+                    mock.call("Resource2", properties, template_dir),
+                    mock.call("Resource${Identifier1}${Identifier2}", properties, template_dir)
+                ]
+            )
+
+    @mock.patch("awscli.customizations.cloudformation.artifact_exporter.yaml_parse")
+    def test_template_export_foreach_invalid(self, yaml_parse_mock):
+        parent_dir = os.path.sep
+        template_dir = os.path.join(parent_dir, 'foo', 'bar')
+        template_path = os.path.join(template_dir, 'path')
+        template_str = self.example_yaml_template()
+
+        resource_type1_class = mock.Mock()
+        resource_type1_class.RESOURCE_TYPE = "resource_type1"
+        resource_type1_instance = mock.Mock()
+        resource_type1_class.return_value = resource_type1_instance
+        resource_type2_class = mock.Mock()
+        resource_type2_class.RESOURCE_TYPE = "resource_type2"
+        resource_type2_instance = mock.Mock()
+        resource_type2_class.return_value = resource_type2_instance
+
+        resources_to_export = [
+            resource_type1_class,
+            resource_type2_class
+        ]
+
+        properties = {"foo": "bar"}
+        template_dict = {
+            "Resources": {
+                "Resource1": {
+                    "Type": "resource_type1",
+                    "Properties": properties
+                },
+                "Resource2": {
+                    "Type": "resource_type2",
+                    "Properties": properties
+                },
+                "Resource3": {
+                    "Type": "some-other-type",
+                    "Properties": properties
+                },
+                "Fn::ForEach::OuterLoopName": [
+                    "Identifier1",
+                    {
+                        "Resource${Identifier1}": {
+                        }
+                    }
+                ]
+            }
+        }
+
+        open_mock = mock.mock_open()
+        yaml_parse_mock.return_value = template_dict
+
+        # Patch the file open method to return template string
+        with mock.patch(
+                "awscli.customizations.cloudformation.artifact_exporter.open",
+                open_mock(read_data=template_str)) as open_mock:
+            template_exporter = Template(
+                template_path, parent_dir, self.s3_uploader_mock,
+                resources_to_export)
+            with self.assertRaises(exceptions.InvalidForEachIntrinsicFunctionError):
+                template_exporter.export()
+
+
+    @mock.patch("awscli.customizations.cloudformation.artifact_exporter.yaml_parse")
     def test_template_global_export(self, yaml_parse_mock):
         parent_dir = os.path.sep
         template_dir = os.path.join(parent_dir, 'foo', 'bar')

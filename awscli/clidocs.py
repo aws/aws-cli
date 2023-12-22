@@ -53,15 +53,22 @@ class CLIDocumentEventHandler(object):
                 arg_groups.setdefault(arg.group_name, []).append(arg)
         return arg_groups 
 
+from enum import Enum
+
+class ArgumentType(Enum):
+    JSON = 'JSON'
+    DOCUMENT = 'document'
+    STREAMING_BLOB = 'streaming blob'
+    TAGGED_UNION = 'tagged union structure'
     def _get_argument_type_name(self, shape, default):
         if is_json_value_header(shape):
-            return 'JSON'
+            return ArgumentType.JSON.value # Replace local constants with global constants
         if is_document_type(shape):
-            return 'document'
+            return ArgumentType.DOCUMENT.value # Replace local constants with global constants
         if is_streaming_blob_type(shape):
-            return 'streaming blob'
+            return ArgumentType.STREAMING_BLOB.value # Replace local constants with global constants
         if is_tagged_union_type(shape):
-            return 'tagged union structure'
+            return ArgumentType.TAGGED_UNION.value  # Replace local constants with global constants
         return default
 
     def _map_handlers(self, session, event_class, mapfn):
@@ -89,6 +96,7 @@ class CLIDocumentEventHandler(object):
         except Exception as e:
               LOG.debug("Error registering event handlers for %s: %s",
                         event_class, e, exc_info=True) 
+              
     def unregister(self):
         """
         The default unregister iterates through all of the

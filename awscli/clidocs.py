@@ -127,11 +127,11 @@ class ArgumentType(Enum):
 
     def doc_title(self, help_command, **kwargs):
         doc = help_command.doc
-        doc.style.new_paragraph()
+        doc.style.new_paragraph() 
         reference = help_command.event_class.replace('.', ' ')
         if reference != 'aws':
             reference = 'aws ' + reference
-        doc.writeln('.. _cli:%s:' % reference)
+        doc.writeln(f'.. _cli: {reference}') # f-string formatting.  
         doc.style.h1(help_command.name)
 
     def doc_description(self, help_command, **kwargs):

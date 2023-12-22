@@ -168,33 +168,16 @@ class CLIDocumentEventHandler(object):
         doc.style.h2('Options')
         if not help_command.arg_table:
             doc.write('*None*\n')
-
     def doc_option(self, arg_name, help_command, **kwargs):
         doc = help_command.doc
         argument = help_command.arg_table[arg_name]
-        if argument.group_name in self._arg_groups:
-            if argument.group_name in self._documented_arg_groups:
-                # This arg is already documented so we can move on.
-                return
-            name = ' | '.join(
-                ['``%s``' % a.cli_name for a in
-                 self._arg_groups[argument.group_name]])
-            self._documented_arg_groups.append(argument.group_name)
-        else:
-            name = '``%s``' % argument.cli_name
-        doc.write('%s (%s)\n' % (name, self._get_argument_type_name(
-            argument.argument_model, argument.cli_type_name)))
-        doc.style.indent()
-        doc.include_doc_string(argument.documentation)
-        if is_streaming_blob_type(argument.argument_model):
-            self._add_streaming_blob_note(doc)
-        if is_tagged_union_type(argument.argument_model):
-            self._add_tagged_union_note(argument.argument_model, doc)
-        if hasattr(argument, 'argument_model'):
-            self._document_enums(argument.argument_model, doc)
-            self._document_nested_structure(argument.argument_model, doc)
+        self._document_arg_group(argument, doc)
+        self._document_individual_arg(argument, doc)
+        self._add_notes(argument, doc)
+        self._document_model(argument, doc)
         doc.style.dedent()
-        doc.style.new_paragraph()
+        doc.style.new_paragraph() 
+   
 
     def doc_global_option(self, help_command, **kwargs):
         doc = help_command.doc

@@ -10106,6 +10106,10 @@
           "shape":"RetryStrategy",
           "documentation":"<p>The number of times to retry the job when the job fails due to an <code>InternalServerError</code>.</p>"
         },
+        "RemoteDebugConfig":{
+          "shape":"RemoteDebugConfig",
+          "documentation":"<p>Configuration for remote debugging. To learn more about the remote debugging functionality of SageMaker, see <a href=\"https://docs.aws.amazon.com/sagemaker/latest/dg/train-remote-debugging.html\">Access a training container through Amazon Web Services Systems Manager (SSM) for remote debugging</a>.</p>"
+        },
         "InfraCheckConfig":{
           "shape":"InfraCheckConfig",
           "documentation":"<p>Contains information about the infrastructure health check configuration for the training job.</p>"
@@ -15614,6 +15618,10 @@
           "shape":"RetryStrategy",
           "documentation":"<p>The number of times to retry the job when the job fails due to an <code>InternalServerError</code>.</p>"
         },
+        "RemoteDebugConfig":{
+          "shape":"RemoteDebugConfig",
+          "documentation":"<p>Configuration for remote debugging. To learn more about the remote debugging functionality of SageMaker, see <a href=\"https://docs.aws.amazon.com/sagemaker/latest/dg/train-remote-debugging.html\">Access a training container through Amazon Web Services Systems Manager (SSM) for remote debugging</a>.</p>"
+        },
         "InfraCheckConfig":{
           "shape":"InfraCheckConfig",
           "documentation":"<p>Contains information about the infrastructure health check configuration for the training job.</p>"
@@ -17022,6 +17030,7 @@
     "EnableCapture":{"type":"boolean"},
     "EnableInfraCheck":{"type":"boolean"},
     "EnableIotRoleAlias":{"type":"boolean"},
+    "EnableRemoteDebug":{"type":"boolean"},
     "EnableSagemakerServicecatalogPortfolioInput":{
       "type":"structure",
       "members":{
@@ -31481,6 +31490,26 @@
       "min":1,
       "pattern":".*"
     },
+    "RemoteDebugConfig":{
+      "type":"structure",
+      "members":{
+        "EnableRemoteDebug":{
+          "shape":"EnableRemoteDebug",
+          "documentation":"<p>If set to True, enables remote debugging.</p>"
+        }
+      },
+      "documentation":"<p>Configuration for remote debugging for the <a href=\"https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_CreateTrainingJob.html\">CreateTrainingJob</a> API. To learn more about the remote debugging functionality of SageMaker, see <a href=\"https://docs.aws.amazon.com/sagemaker/latest/dg/train-remote-debugging.html\">Access a training container through Amazon Web Services Systems Manager (SSM) for remote debugging</a>.</p>"
+    },
+    "RemoteDebugConfigForUpdate":{
+      "type":"structure",
+      "members":{
+        "EnableRemoteDebug":{
+          "shape":"EnableRemoteDebug",
+          "documentation":"<p>If set to True, enables remote debugging.</p>"
+        }
+      },
+      "documentation":"<p>Configuration for remote debugging for the <a href=\"https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_UpdateTrainingJob.html\">UpdateTrainingJob</a> API. To learn more about the remote debugging functionality of SageMaker, see <a href=\"https://docs.aws.amazon.com/sagemaker/latest/dg/train-remote-debugging.html\">Access a training container through Amazon Web Services Systems Manager (SSM) for remote debugging</a>.</p>"
+    },
     "RenderUiTemplateRequest":{
       "type":"structure",
       "required":[
@@ -32272,6 +32301,10 @@
         "CrossAccountFilterOption":{
           "shape":"CrossAccountFilterOption",
           "documentation":"<p> A cross account filter option. When the value is <code>\"CrossAccount\"</code> the search results will only include resources made discoverable to you from other accounts. When the value is <code>\"SameAccount\"</code> or <code>null</code> the search results will only include resources from your account. Default is <code>null</code>. For more information on searching for resources made discoverable to your account, see <a href=\"https://docs.aws.amazon.com/sagemaker/latest/dg/feature-store-cross-account-discoverability-use.html\"> Search discoverable resources</a> in the SageMaker Developer Guide. The maximum number of <code>ResourceCatalog</code>s viewable is 1000. </p>"
+        },
+        "VisibilityConditions":{
+          "shape":"VisibilityConditionsList",
+          "documentation":"<p> Limits the results of your search request to the resources that you can access. </p>"
         }
       }
     },
@@ -32342,7 +32375,7 @@
         },
         "StatusMessage":{
           "shape":"StatusMessage",
-          "documentation":"<p>A detailed description of the progress within a secondary status. </p> <p>SageMaker provides secondary statuses and status messages that apply to each of them:</p> <dl> <dt>Starting</dt> <dd> <ul> <li> <p>Starting the training job.</p> </li> <li> <p>Launching requested ML instances.</p> </li> <li> <p>Insufficient capacity error from EC2 while launching instances, retrying!</p> </li> <li> <p>Launched instance was unhealthy, replacing it!</p> </li> <li> <p>Preparing the instances for training.</p> </li> </ul> </dd> <dt>Training</dt> <dd> <ul> <li> <p>Downloading the training image.</p> </li> <li> <p>Training image download completed. Training in progress.</p> </li> </ul> </dd> </dl> <important> <p>Status messages are subject to change. Therefore, we recommend not including them in code that programmatically initiates actions. For examples, don't use status messages in if statements.</p> </important> <p>To have an overview of your training job's progress, view <code>TrainingJobStatus</code> and <code>SecondaryStatus</code> in <a href=\"https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_DescribeTrainingJob.html\">DescribeTrainingJob</a>, and <code>StatusMessage</code> together. For example, at the start of a training job, you might see the following:</p> <ul> <li> <p> <code>TrainingJobStatus</code> - InProgress</p> </li> <li> <p> <code>SecondaryStatus</code> - Training</p> </li> <li> <p> <code>StatusMessage</code> - Downloading the training image</p> </li> </ul>"
+          "documentation":"<p>A detailed description of the progress within a secondary status. </p> <p>SageMaker provides secondary statuses and status messages that apply to each of them:</p> <dl> <dt>Starting</dt> <dd> <ul> <li> <p>Starting the training job.</p> </li> <li> <p>Launching requested ML instances.</p> </li> <li> <p>Insufficient capacity error from EC2 while launching instances, retrying!</p> </li> <li> <p>Launched instance was unhealthy, replacing it!</p> </li> <li> <p>Preparing the instances for training.</p> </li> </ul> </dd> <dt>Training</dt> <dd> <ul> <li> <p>Training image download completed. Training in progress.</p> </li> </ul> </dd> </dl> <important> <p>Status messages are subject to change. Therefore, we recommend not including them in code that programmatically initiates actions. For examples, don't use status messages in if statements.</p> </important> <p>To have an overview of your training job's progress, view <code>TrainingJobStatus</code> and <code>SecondaryStatus</code> in <a href=\"https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_DescribeTrainingJob.html\">DescribeTrainingJob</a>, and <code>StatusMessage</code> together. For example, at the start of a training job, you might see the following:</p> <ul> <li> <p> <code>TrainingJobStatus</code> - InProgress</p> </li> <li> <p> <code>SecondaryStatus</code> - Training</p> </li> <li> <p> <code>StatusMessage</code> - Downloading the training image</p> </li> </ul>"
         }
       },
       "documentation":"<p>An array element of <code>SecondaryStatusTransitions</code> for <a href=\"https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_DescribeTrainingJob.html\">DescribeTrainingJob</a>. It provides additional details about a status that the training job has transitioned through. A training job can be in one of several states, for example, starting, downloading, training, or uploading. Within each state, there are a number of intermediate states. For example, within the starting state, SageMaker could be starting the training job or launching the ML instances. These transitional states are referred to as the job's secondary status. </p> <p/>"
@@ -36537,6 +36570,10 @@
         "ResourceConfig":{
           "shape":"ResourceConfigForUpdate",
           "documentation":"<p>The training job <code>ResourceConfig</code> to update warm pool retention length.</p>"
+        },
+        "RemoteDebugConfig":{
+          "shape":"RemoteDebugConfigForUpdate",
+          "documentation":"<p>Configuration for remote debugging while the training job is running. You can update the remote debugging configuration when the <code>SecondaryStatus</code> of the job is <code>Downloading</code> or <code>Training</code>.To learn more about the remote debugging functionality of SageMaker, see <a href=\"https://docs.aws.amazon.com/sagemaker/latest/dg/train-remote-debugging.html\">Access a training container through Amazon Web Services Systems Manager (SSM) for remote debugging</a>.</p>"
         }
       }
     },
@@ -37002,6 +37039,38 @@
     "Vertices":{
       "type":"list",
       "member":{"shape":"Vertex"}
+    },
+    "VisibilityConditions":{
+      "type":"structure",
+      "members":{
+        "Key":{
+          "shape":"VisibilityConditionsKey",
+          "documentation":"<p>The key for that specifies the tag that you're using to filter the search results. The key must start with <code>Tags.</code>.</p>"
+        },
+        "Value":{
+          "shape":"VisibilityConditionsValue",
+          "documentation":"<p>The value for the tag that you're using to filter the search results.</p>"
+        }
+      },
+      "documentation":"<p>The list of key-value pairs that you specify for your resources.</p>"
+    },
+    "VisibilityConditionsKey":{
+      "type":"string",
+      "max":128,
+      "min":1,
+      "pattern":"^([\\p{L}\\p{Z}\\p{N}_.:/=+\\-@]*)$"
+    },
+    "VisibilityConditionsList":{
+      "type":"list",
+      "member":{"shape":"VisibilityConditions"},
+      "max":5,
+      "min":1
+    },
+    "VisibilityConditionsValue":{
+      "type":"string",
+      "max":256,
+      "min":0,
+      "pattern":"^([\\p{L}\\p{Z}\\p{N}_.:/=+\\-@]*)$"
     },
     "VolumeSizeInGB":{
       "type":"integer",

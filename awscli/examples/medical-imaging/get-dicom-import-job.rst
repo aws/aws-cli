@@ -23,6 +23,4 @@ Output::
         }
     }
 
-For more information, see `Getting import job properties`_ in the *AWS HealthImaging Developers Guide*.
-
-.. _`Getting import job properties`: https://docs.aws.amazon.com/healthimaging/latest/devguide/get-dicom-import-job.html
+For more information, see `Getting import job properties <https://docs.aws.amazon.com/healthimaging/latest/devguide/get-dicom-import-job.html>`__ in the *AWS HealthImaging Developer Guide*.

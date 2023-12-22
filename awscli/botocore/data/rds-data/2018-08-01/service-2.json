@@ -22,12 +22,19 @@
       "input":{"shape":"BatchExecuteStatementRequest"},
       "output":{"shape":"BatchExecuteStatementResponse"},
       "errors":[
+        {"shape":"SecretsErrorException"},
+        {"shape":"HttpEndpointNotEnabledException"},
+        {"shape":"DatabaseErrorException"},
+        {"shape":"DatabaseUnavailableException"},
+        {"shape":"TransactionNotFoundException"},
+        {"shape":"InvalidSecretException"},
+        {"shape":"ServiceUnavailableError"},
+        {"shape":"ForbiddenException"},
+        {"shape":"DatabaseNotFoundException"},
         {"shape":"AccessDeniedException"},
         {"shape":"BadRequestException"},
         {"shape":"StatementTimeoutException"},
-        {"shape":"InternalServerErrorException"},
-        {"shape":"ForbiddenException"},
-        {"shape":"ServiceUnavailableError"}
+        {"shape":"InternalServerErrorException"}
       ],
       "documentation":"<p>Runs a batch SQL statement over an array of data.</p> <p>You can run bulk update and insert operations for multiple records using a DML statement with different parameter sets. Bulk operations can provide a significant performance improvement over individual insert and update operations.</p> <note> <p>If a call isn't part of a transaction because it doesn't include the <code>transactionID</code> parameter, changes that result from the call are committed automatically.</p> <p>There isn't a fixed upper limit on the number of parameter sets. However, the maximum size of the HTTP request submitted through the Data API is 4 MiB. If the request exceeds this limit, the Data API returns an error and doesn't process the request. This 4-MiB limit includes the size of the HTTP headers and the JSON notation in the request. Thus, the number of parameter sets that you can include depends on a combination of factors, such as the size of the SQL statement and the size of each parameter set.</p> <p>The response size limit is 1 MiB. If the call returns more than 1 MiB of response data, the call is terminated.</p> </note>"
     },
@@ -41,12 +48,19 @@
       "input":{"shape":"BeginTransactionRequest"},
       "output":{"shape":"BeginTransactionResponse"},
       "errors":[
+        {"shape":"SecretsErrorException"},
+        {"shape":"HttpEndpointNotEnabledException"},
+        {"shape":"DatabaseErrorException"},
+        {"shape":"DatabaseUnavailableException"},
+        {"shape":"TransactionNotFoundException"},
+        {"shape":"InvalidSecretException"},
+        {"shape":"ServiceUnavailableError"},
+        {"shape":"ForbiddenException"},
+        {"shape":"DatabaseNotFoundException"},
         {"shape":"AccessDeniedException"},
         {"shape":"BadRequestException"},
         {"shape":"StatementTimeoutException"},
-        {"shape":"InternalServerErrorException"},
-        {"shape":"ForbiddenException"},
-        {"shape":"ServiceUnavailableError"}
+        {"shape":"InternalServerErrorException"}
       ],
       "documentation":"<p>Starts a SQL transaction.</p> <note> <p>A transaction can run for a maximum of 24 hours. A transaction is terminated and rolled back automatically after 24 hours.</p> <p>A transaction times out if no calls use its transaction ID in three minutes. If a transaction times out before it's committed, it's rolled back automatically.</p> <p>DDL statements inside a transaction cause an implicit commit. We recommend that you run each DDL statement in a separate <code>ExecuteStatement</code> call with <code>continueAfterTimeout</code> enabled.</p> </note>"
     },
@@ -60,12 +74,19 @@
       "input":{"shape":"CommitTransactionRequest"},
       "output":{"shape":"CommitTransactionResponse"},
       "errors":[
+        {"shape":"SecretsErrorException"},
+        {"shape":"HttpEndpointNotEnabledException"},
+        {"shape":"DatabaseErrorException"},
+        {"shape":"DatabaseUnavailableException"},
+        {"shape":"TransactionNotFoundException"},
+        {"shape":"InvalidSecretException"},
+        {"shape":"ServiceUnavailableError"},
+        {"shape":"ForbiddenException"},
+        {"shape":"DatabaseNotFoundException"},
         {"shape":"AccessDeniedException"},
         {"shape":"BadRequestException"},
         {"shape":"StatementTimeoutException"},
         {"shape":"InternalServerErrorException"},
-        {"shape":"ForbiddenException"},
-        {"shape":"ServiceUnavailableError"},
         {"shape":"NotFoundException"}
       ],
       "documentation":"<p>Ends a SQL transaction started with the <code>BeginTransaction</code> operation and commits the changes.</p>"
@@ -86,7 +107,7 @@
         {"shape":"ForbiddenException"},
         {"shape":"ServiceUnavailableError"}
       ],
-      "documentation":"<p>Runs one or more SQL statements.</p> <note> <p>This operation is deprecated. Use the <code>BatchExecuteStatement</code> or <code>ExecuteStatement</code> operation.</p> </note>",
+      "documentation":"<p>Runs one or more SQL statements.</p> <note> <p>This operation isn't supported for Aurora PostgreSQL Serverless v2 and provisioned DB clusters, and for Aurora Serverless v1 DB clusters, the operation is deprecated. Use the <code>BatchExecuteStatement</code> or <code>ExecuteStatement</code> operation.</p> </note>",
       "deprecated":true,
       "deprecatedMessage":"The ExecuteSql API is deprecated, please use the ExecuteStatement API."
     },
@@ -100,12 +121,20 @@
       "input":{"shape":"ExecuteStatementRequest"},
       "output":{"shape":"ExecuteStatementResponse"},
       "errors":[
+        {"shape":"SecretsErrorException"},
+        {"shape":"HttpEndpointNotEnabledException"},
+        {"shape":"DatabaseErrorException"},
+        {"shape":"DatabaseUnavailableException"},
+        {"shape":"TransactionNotFoundException"},
+        {"shape":"InvalidSecretException"},
+        {"shape":"ServiceUnavailableError"},
+        {"shape":"ForbiddenException"},
+        {"shape":"DatabaseNotFoundException"},
         {"shape":"AccessDeniedException"},
         {"shape":"BadRequestException"},
         {"shape":"StatementTimeoutException"},
         {"shape":"InternalServerErrorException"},
-        {"shape":"ForbiddenException"},
-        {"shape":"ServiceUnavailableError"}
+        {"shape":"UnsupportedResultException"}
       ],
       "documentation":"<p>Runs a SQL statement against a database.</p> <note> <p>If a call isn't part of a transaction because it doesn't include the <code>transactionID</code> parameter, changes that result from the call are committed automatically.</p> <p>If the binary response data from the database is more than 1 MB, the call is terminated.</p> </note>"
     },
@@ -119,12 +148,19 @@
       "input":{"shape":"RollbackTransactionRequest"},
       "output":{"shape":"RollbackTransactionResponse"},
       "errors":[
+        {"shape":"SecretsErrorException"},
+        {"shape":"HttpEndpointNotEnabledException"},
+        {"shape":"DatabaseErrorException"},
+        {"shape":"DatabaseUnavailableException"},
+        {"shape":"TransactionNotFoundException"},
+        {"shape":"InvalidSecretException"},
+        {"shape":"ServiceUnavailableError"},
+        {"shape":"ForbiddenException"},
+        {"shape":"DatabaseNotFoundException"},
         {"shape":"AccessDeniedException"},
         {"shape":"BadRequestException"},
         {"shape":"StatementTimeoutException"},
         {"shape":"InternalServerErrorException"},
-        {"shape":"ForbiddenException"},
-        {"shape":"ServiceUnavailableError"},
         {"shape":"NotFoundException"}
       ],
       "documentation":"<p>Performs a rollback of a transaction. Rolling back a transaction cancels its changes.</p>"
@@ -136,7 +172,7 @@
       "members":{
         "message":{"shape":"ErrorMessage"}
       },
-      "documentation":"<p>You do not have sufficient access to perform this action.</p>",
+      "documentation":"<p>You don't have sufficient access to perform this action.</p>",
       "error":{
         "httpStatusCode":403,
         "senderFault":true
@@ -192,7 +228,7 @@
           "documentation":"<p>The error message returned by this <code>BadRequestException</code> error.</p>"
         }
       },
-      "documentation":"<p>There is an error in the call or in a SQL statement.</p>",
+      "documentation":"<p>There is an error in the call or in a SQL statement. (This error only appears in calls from Aurora Serverless v1 databases.)</p>",
       "error":{
         "httpStatusCode":400,
         "senderFault":true
@@ -406,6 +442,39 @@
       },
       "documentation":"<p>The response elements represent the output of a commit transaction request.</p>"
     },
+    "DatabaseErrorException":{
+      "type":"structure",
+      "members":{
+        "message":{"shape":"ErrorMessage"}
+      },
+      "documentation":"<p>There was an error in processing the SQL statement.</p>",
+      "error":{
+        "httpStatusCode":400,
+        "senderFault":true
+      },
+      "exception":true
+    },
+    "DatabaseNotFoundException":{
+      "type":"structure",
+      "members":{
+        "message":{"shape":"ErrorMessage"}
+      },
+      "documentation":"<p>The DB cluster doesn't have a DB instance.</p>",
+      "error":{
+        "httpStatusCode":404,
+        "senderFault":true
+      },
+      "exception":true
+    },
+    "DatabaseUnavailableException":{
+      "type":"structure",
+      "members":{
+      },
+      "documentation":"<p>The writer instance in the DB cluster isn't available.</p>",
+      "error":{"httpStatusCode":504},
+      "exception":true,
+      "fault":true
+    },
     "DbName":{
       "type":"string",
       "max":64,
@@ -537,7 +606,7 @@
         },
         "generatedFields":{
           "shape":"FieldList",
-          "documentation":"<p>Values for fields generated during a DML request.</p> <pre><code> &lt;note&gt; &lt;p&gt;The &lt;code&gt;generatedFields&lt;/code&gt; data isn't supported by Aurora PostgreSQL. To get the values of generated fields, use the &lt;code&gt;RETURNING&lt;/code&gt; clause. For more information, see &lt;a href=&quot;https://www.postgresql.org/docs/10/dml-returning.html&quot;&gt;Returning Data From Modified Rows&lt;/a&gt; in the PostgreSQL documentation.&lt;/p&gt; &lt;/note&gt; </code></pre>"
+          "documentation":"<p>Values for fields generated during a DML request.</p> <note> <p>The <code>generatedFields</code> data isn't supported by Aurora PostgreSQL. To get the values of generated fields, use the <code>RETURNING</code> clause. For more information, see <a href=\"https://www.postgresql.org/docs/10/dml-returning.html\">Returning Data From Modified Rows</a> in the PostgreSQL documentation.</p> </note>"
         },
         "formattedRecords":{
           "shape":"FormattedSqlRecords",
@@ -551,23 +620,19 @@
       "members":{
         "isNull":{
           "shape":"BoxedBoolean",
-          "documentation":"<p>A NULL value.</p>",
-          "box":true
+          "documentation":"<p>A NULL value.</p>"
         },
         "booleanValue":{
           "shape":"BoxedBoolean",
-          "documentation":"<p>A value of Boolean data type.</p>",
-          "box":true
+          "documentation":"<p>A value of Boolean data type.</p>"
         },
         "longValue":{
           "shape":"BoxedLong",
-          "documentation":"<p>A value of long data type.</p>",
-          "box":true
+          "documentation":"<p>A value of long data type.</p>"
         },
         "doubleValue":{
           "shape":"BoxedDouble",
-          "documentation":"<p>A value of double data type.</p>",
-          "box":true
+          "documentation":"<p>A value of double data type.</p>"
         },
         "stringValue":{
           "shape":"String",
@@ -605,6 +670,18 @@
       "exception":true
     },
     "FormattedSqlRecords":{"type":"string"},
+    "HttpEndpointNotEnabledException":{
+      "type":"structure",
+      "members":{
+        "message":{"shape":"ErrorMessage"}
+      },
+      "documentation":"<p>The HTTP endpoint for using RDS Data API isn't enabled for the DB cluster.</p>",
+      "error":{
+        "httpStatusCode":400,
+        "senderFault":true
+      },
+      "exception":true
+    },
     "Id":{
       "type":"string",
       "max":192,
@@ -619,6 +696,18 @@
       "error":{"httpStatusCode":500},
       "exception":true,
       "fault":true
+    },
+    "InvalidSecretException":{
+      "type":"structure",
+      "members":{
+        "message":{"shape":"ErrorMessage"}
+      },
+      "documentation":"<p>The Secrets Manager secret used with the request isn't valid.</p>",
+      "error":{
+        "httpStatusCode":400,
+        "senderFault":true
+      },
+      "exception":true
     },
     "Long":{"type":"long"},
     "LongArray":{
@@ -754,11 +843,23 @@
       "type":"list",
       "member":{"shape":"Value"}
     },
+    "SecretsErrorException":{
+      "type":"structure",
+      "members":{
+        "message":{"shape":"ErrorMessage"}
+      },
+      "documentation":"<p>There was a problem with the Secrets Manager secret used with the request, caused by one of the following conditions:</p> <ul> <li> <p>RDS Data API timed out retrieving the secret.</p> </li> <li> <p>The secret provided wasn't found.</p> </li> <li> <p>The secret couldn't be decrypted.</p> </li> </ul>",
+      "error":{
+        "httpStatusCode":400,
+        "senderFault":true
+      },
+      "exception":true
+    },
     "ServiceUnavailableError":{
       "type":"structure",
       "members":{
       },
-      "documentation":"<p>The service specified by the <code>resourceArn</code> parameter is not available.</p>",
+      "documentation":"<p>The service specified by the <code>resourceArn</code> parameter isn't available.</p>",
       "error":{"httpStatusCode":503},
       "exception":true,
       "fault":true
@@ -810,7 +911,7 @@
           "documentation":"<p>The number of records updated by a SQL statement.</p>"
         }
       },
-      "documentation":"<p>The result of a SQL statement.</p> <pre><code> &lt;note&gt; &lt;p&gt;This data structure is only used with the deprecated &lt;code&gt;ExecuteSql&lt;/code&gt; operation. Use the &lt;code&gt;BatchExecuteStatement&lt;/code&gt; or &lt;code&gt;ExecuteStatement&lt;/code&gt; operation instead.&lt;/p&gt; &lt;/note&gt; </code></pre>"
+      "documentation":"<p>The result of a SQL statement.</p> <note> <p>This data structure is only used with the deprecated <code>ExecuteSql</code> operation. Use the <code>BatchExecuteStatement</code> or <code>ExecuteStatement</code> operation instead.</p> </note>"
     },
     "SqlStatementResults":{
       "type":"list",
@@ -851,6 +952,18 @@
       },
       "documentation":"<p>A structure value returned by a call.</p> <note> <p>This data structure is only used with the deprecated <code>ExecuteSql</code> operation. Use the <code>BatchExecuteStatement</code> or <code>ExecuteStatement</code> operation instead.</p> </note>"
     },
+    "TransactionNotFoundException":{
+      "type":"structure",
+      "members":{
+        "message":{"shape":"ErrorMessage"}
+      },
+      "documentation":"<p>The transaction ID wasn't found.</p>",
+      "error":{
+        "httpStatusCode":404,
+        "senderFault":true
+      },
+      "exception":true
+    },
     "TransactionStatus":{
       "type":"string",
       "max":128,
@@ -866,6 +979,18 @@
         "TIME",
         "DECIMAL"
       ]
+    },
+    "UnsupportedResultException":{
+      "type":"structure",
+      "members":{
+        "message":{"shape":"ErrorMessage"}
+      },
+      "documentation":"<p>There was a problem with the result because of one of the following conditions:</p> <ul> <li> <p>It contained an unsupported data type.</p> </li> <li> <p>It contained a multidimensional array.</p> </li> <li> <p>The size was too large.</p> </li> </ul>",
+      "error":{
+        "httpStatusCode":400,
+        "senderFault":true
+      },
+      "exception":true
     },
     "UpdateResult":{
       "type":"structure",
@@ -886,33 +1011,27 @@
       "members":{
         "isNull":{
           "shape":"BoxedBoolean",
-          "documentation":"<p>A NULL value.</p>",
-          "box":true
+          "documentation":"<p>A NULL value.</p>"
         },
         "bitValue":{
           "shape":"BoxedBoolean",
-          "documentation":"<p>A value for a column of BIT data type.</p>",
-          "box":true
+          "documentation":"<p>A value for a column of BIT data type.</p>"
         },
         "bigIntValue":{
           "shape":"BoxedLong",
-          "documentation":"<p>A value for a column of big integer data type.</p>",
-          "box":true
+          "documentation":"<p>A value for a column of big integer data type.</p>"
         },
         "intValue":{
           "shape":"BoxedInteger",
-          "documentation":"<p>A value for a column of integer data type.</p>",
-          "box":true
+          "documentation":"<p>A value for a column of integer data type.</p>"
         },
         "doubleValue":{
           "shape":"BoxedDouble",
-          "documentation":"<p>A value for a column of double data type.</p>",
-          "box":true
+          "documentation":"<p>A value for a column of double data type.</p>"
         },
         "realValue":{
           "shape":"BoxedFloat",
-          "documentation":"<p>A value for a column of real data type.</p>",
-          "box":true
+          "documentation":"<p>A value for a column of real data type.</p>"
         },
         "stringValue":{
           "shape":"String",
@@ -931,9 +1050,9 @@
           "documentation":"<p>A value for a column of STRUCT data type.</p>"
         }
       },
-      "documentation":"<p>Contains the value of a column.</p> <pre><code> &lt;note&gt; &lt;p&gt;This data structure is only used with the deprecated &lt;code&gt;ExecuteSql&lt;/code&gt; operation. Use the &lt;code&gt;BatchExecuteStatement&lt;/code&gt; or &lt;code&gt;ExecuteStatement&lt;/code&gt; operation instead.&lt;/p&gt; &lt;/note&gt; </code></pre>",
+      "documentation":"<p>Contains the value of a column.</p> <note> <p>This data structure is only used with the deprecated <code>ExecuteSql</code> operation. Use the <code>BatchExecuteStatement</code> or <code>ExecuteStatement</code> operation instead.</p> </note>",
       "union":true
     }
   },
-  "documentation":"<p><fullname>Amazon RDS Data Service</fullname> <p>Amazon RDS provides an HTTP endpoint to run SQL statements on an Amazon Aurora Serverless v1 DB cluster. To run these statements, you work with the Data Service API.</p> <note> <p>The Data Service API isn't supported on Amazon Aurora Serverless v2 DB clusters.</p> </note> <p>For more information about the Data Service API, see <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/data-api.html\">Using the Data API</a> in the <i>Amazon Aurora User Guide</i>.</p></p>"
+  "documentation":"<p><fullname>RDS Data API</fullname> <p>Amazon RDS provides an HTTP endpoint to run SQL statements on an Amazon Aurora DB cluster. To run these statements, you use the RDS Data API (Data API).</p> <p>Data API is available with the following types of Aurora databases:</p> <ul> <li> <p>Aurora PostgreSQL - Serverless v2, Serverless v1, and provisioned</p> </li> <li> <p>Aurora MySQL - Serverless v1 only</p> </li> </ul> <p>For more information about the Data API, see <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/data-api.html\">Using RDS Data API</a> in the <i>Amazon Aurora User Guide</i>.</p></p>"
 }

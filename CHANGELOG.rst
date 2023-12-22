@@ -6695,6 +6695,33 @@ CHANGELOG
 * feature:wizard: Added support for AWS CLI Wizards. See `#3752 <https://github.com/aws/aws-cli/issues/3752>`__.
 
 
+1.32.6
+======
+
+* api-change:``amp``: This release updates Amazon Managed Service for Prometheus APIs to support customer managed KMS keys.
+* api-change:``appintegrations``: The Amazon AppIntegrations service adds DeleteApplication API for deleting applications, and updates APIs to support third party applications reacting to workspace events and make data requests to Amazon Connect for agent and contact events.
+* api-change:``bedrock-agent``: This release introduces Amazon Aurora as a vector store on Knowledge Bases for Amazon Bedrock
+* api-change:``codecommit``: AWS CodeCommit now supports customer managed keys from AWS Key Management Service. UpdateRepositoryEncryptionKey is added for updating the key configuration. CreateRepository, GetRepository, BatchGetRepositories are updated with new input or output parameters.
+* api-change:``connect``: Adds APIs to manage User Proficiencies and Predefined Attributes. Enhances StartOutboundVoiceContact API input. Introduces SearchContacts API. Enhances DescribeContact API. Adds an API to update Routing Attributes in QueuePriority and QueueTimeAdjustmentSeconds.
+* api-change:``medialive``: MediaLive now supports the ability to configure the audio that an AWS Elemental Link UHD device produces, when the device is configured as the source for a flow in AWS Elemental MediaConnect.
+* api-change:``neptune-graph``: Adds Waiters for successful creation and deletion of Graph, Graph Snapshot, Import Task and Private Endpoints for Neptune Analytics
+* api-change:``rds-data``: This release adds support for using RDS Data API with Aurora PostgreSQL Serverless v2 and provisioned DB clusters.
+* api-change:``rds``: This release adds support for using RDS Data API with Aurora PostgreSQL Serverless v2 and provisioned DB clusters.
+* api-change:``sagemaker``: Amazon SageMaker Training now provides model training container access for debugging purposes. Amazon SageMaker Search now provides the ability to use visibility conditions to limit resource access to a single domain or multiple domains.
+
+
+1.32.5
+======
+
+* api-change:``appstream``: This release introduces configurable clipboard, allowing admins to specify the maximum length of text that can be copied by the users from their device to the remote session and vice-versa.
+* api-change:``eks``: Add support for cluster insights, new EKS capability that surfaces potentially upgrade impacting issues.
+* api-change:``guardduty``: This release 1) introduces a new API: GetOrganizationStatistics , and 2) adds a new UsageStatisticType TOP_ACCOUNTS_BY_FEATURE for GetUsageStatistics API
+* api-change:``managedblockchain-query``: Adding Confirmation Status and Execution Status to GetTransaction Response.
+* api-change:``mediatailor``: Adds the ability to configure time shifting on MediaTailor channels using the TimeShiftConfiguration field
+* api-change:``route53``: Amazon Route 53 now supports the Canada West (Calgary) Region (ca-west-1) for latency records, geoproximity records, and private DNS for Amazon VPCs in that region.
+* api-change:``endpoint-rules``: Update endpoint-rules command to latest version
+
+
 1.32.4
 ======
 

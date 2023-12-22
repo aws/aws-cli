@@ -259,6 +259,22 @@
       "documentation":"<p>Associates an agent with a traffic distribution group.</p>",
       "idempotent":true
     },
+    "AssociateUserProficiencies":{
+      "name":"AssociateUserProficiencies",
+      "http":{
+        "method":"POST",
+        "requestUri":"/users/{InstanceId}/{UserId}/associate-proficiencies"
+      },
+      "input":{"shape":"AssociateUserProficienciesRequest"},
+      "errors":[
+        {"shape":"InvalidRequestException"},
+        {"shape":"InvalidParameterException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServiceException"}
+      ],
+      "documentation":"<p>&gt;Associates a set of proficiencies with a user.</p>"
+    },
     "BatchAssociateAnalyticsDataSet":{
       "name":"BatchAssociateAnalyticsDataSet",
       "http":{
@@ -515,6 +531,24 @@
         {"shape":"InternalServiceException"}
       ],
       "documentation":"<p>Enables rehydration of chats for the lifespan of a contact. For more information about chat rehydration, see <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/chat-persistence.html\">Enable persistent chat</a> in the <i>Amazon Connect Administrator Guide</i>. </p>"
+    },
+    "CreatePredefinedAttribute":{
+      "name":"CreatePredefinedAttribute",
+      "http":{
+        "method":"PUT",
+        "requestUri":"/predefined-attributes/{InstanceId}"
+      },
+      "input":{"shape":"CreatePredefinedAttributeRequest"},
+      "errors":[
+        {"shape":"DuplicateResourceException"},
+        {"shape":"InvalidRequestException"},
+        {"shape":"InvalidParameterException"},
+        {"shape":"LimitExceededException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServiceException"}
+      ],
+      "documentation":"<p>Creates a new predefined attribute for the specified Amazon Connect instance.</p>"
     },
     "CreatePrompt":{
       "name":"CreatePrompt",
@@ -915,6 +949,24 @@
         {"shape":"ThrottlingException"}
       ],
       "documentation":"<p>Deletes an Amazon Web Services resource association from an Amazon Connect instance. The association must not have any use cases associated with it.</p>"
+    },
+    "DeletePredefinedAttribute":{
+      "name":"DeletePredefinedAttribute",
+      "http":{
+        "method":"DELETE",
+        "requestUri":"/predefined-attributes/{InstanceId}/{Name}"
+      },
+      "input":{"shape":"DeletePredefinedAttributeRequest"},
+      "errors":[
+        {"shape":"ResourceInUseException"},
+        {"shape":"InvalidRequestException"},
+        {"shape":"InvalidParameterException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServiceException"}
+      ],
+      "documentation":"<p>Deletes a predefined attribute from the specified Amazon Connect instance.</p>",
+      "idempotent":true
     },
     "DeletePrompt":{
       "name":"DeletePrompt",
@@ -1339,6 +1391,23 @@
       ],
       "documentation":"<p>Gets details and status of a phone number that’s claimed to your Amazon Connect instance or traffic distribution group.</p> <important> <p>If the number is claimed to a traffic distribution group, and you are calling in the Amazon Web Services Region where the traffic distribution group was created, you can use either a phone number ARN or UUID value for the <code>PhoneNumberId</code> URI request parameter. However, if the number is claimed to a traffic distribution group and you are calling this API in the alternate Amazon Web Services Region associated with the traffic distribution group, you must provide a full phone number ARN. If a UUID is provided in this scenario, you will receive a <code>ResourceNotFoundException</code>.</p> </important>"
     },
+    "DescribePredefinedAttribute":{
+      "name":"DescribePredefinedAttribute",
+      "http":{
+        "method":"GET",
+        "requestUri":"/predefined-attributes/{InstanceId}/{Name}"
+      },
+      "input":{"shape":"DescribePredefinedAttributeRequest"},
+      "output":{"shape":"DescribePredefinedAttributeResponse"},
+      "errors":[
+        {"shape":"InvalidRequestException"},
+        {"shape":"InvalidParameterException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServiceException"}
+      ],
+      "documentation":"<p>Describes a predefined attribute for the specified Amazon Connect instance.</p>"
+    },
     "DescribePrompt":{
       "name":"DescribePrompt",
       "http":{
@@ -1739,6 +1808,22 @@
       ],
       "documentation":"<p>Disassociates an agent from a traffic distribution group.</p>",
       "idempotent":true
+    },
+    "DisassociateUserProficiencies":{
+      "name":"DisassociateUserProficiencies",
+      "http":{
+        "method":"POST",
+        "requestUri":"/users/{InstanceId}/{UserId}/disassociate-proficiencies"
+      },
+      "input":{"shape":"DisassociateUserProficienciesRequest"},
+      "errors":[
+        {"shape":"InvalidRequestException"},
+        {"shape":"InvalidParameterException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServiceException"}
+      ],
+      "documentation":"<p>Disassociates a set of proficiencies from a user.</p>"
     },
     "DismissUserContact":{
       "name":"DismissUserContact",
@@ -2296,6 +2381,23 @@
       ],
       "documentation":"<p>Lists phone numbers claimed to your Amazon Connect instance or traffic distribution group. If the provided <code>TargetArn</code> is a traffic distribution group, you can call this API in both Amazon Web Services Regions associated with traffic distribution group.</p> <p>For more information about phone numbers, see <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/contact-center-phone-number.html\">Set Up Phone Numbers for Your Contact Center</a> in the <i>Amazon Connect Administrator Guide</i>.</p> <note> <ul> <li> <p>When given an instance ARN, <code>ListPhoneNumbersV2</code> returns only the phone numbers claimed to the instance.</p> </li> <li> <p>When given a traffic distribution group ARN <code>ListPhoneNumbersV2</code> returns only the phone numbers claimed to the traffic distribution group.</p> </li> </ul> </note>"
     },
+    "ListPredefinedAttributes":{
+      "name":"ListPredefinedAttributes",
+      "http":{
+        "method":"GET",
+        "requestUri":"/predefined-attributes/{InstanceId}"
+      },
+      "input":{"shape":"ListPredefinedAttributesRequest"},
+      "output":{"shape":"ListPredefinedAttributesResponse"},
+      "errors":[
+        {"shape":"InvalidRequestException"},
+        {"shape":"InvalidParameterException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServiceException"}
+      ],
+      "documentation":"<p>Lists predefined attributes for the specified Amazon Connect instance.</p>"
+    },
     "ListPrompts":{
       "name":"ListPrompts",
       "http":{
@@ -2601,6 +2703,23 @@
       ],
       "documentation":"<p>Provides summary information about the hierarchy groups for the specified Amazon Connect instance.</p> <p>For more information about agent hierarchies, see <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/agent-hierarchy.html\">Set Up Agent Hierarchies</a> in the <i>Amazon Connect Administrator Guide</i>.</p>"
     },
+    "ListUserProficiencies":{
+      "name":"ListUserProficiencies",
+      "http":{
+        "method":"GET",
+        "requestUri":"/users/{InstanceId}/{UserId}/proficiencies"
+      },
+      "input":{"shape":"ListUserProficienciesRequest"},
+      "output":{"shape":"ListUserProficienciesResponse"},
+      "errors":[
+        {"shape":"InvalidRequestException"},
+        {"shape":"InvalidParameterException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServiceException"}
+      ],
+      "documentation":"<p>Lists proficiencies associated with a user.</p>"
+    },
     "ListUsers":{
       "name":"ListUsers",
       "http":{
@@ -2799,6 +2918,23 @@
       ],
       "documentation":"<p>Searches for available phone numbers that you can claim to your Amazon Connect instance or traffic distribution group. If the provided <code>TargetArn</code> is a traffic distribution group, you can call this API in both Amazon Web Services Regions associated with the traffic distribution group.</p>"
     },
+    "SearchContacts":{
+      "name":"SearchContacts",
+      "http":{
+        "method":"POST",
+        "requestUri":"/search-contacts"
+      },
+      "input":{"shape":"SearchContactsRequest"},
+      "output":{"shape":"SearchContactsResponse"},
+      "errors":[
+        {"shape":"InvalidRequestException"},
+        {"shape":"InvalidParameterException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServiceException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Searches contacts in an Amazon Connect instance.</p>"
+    },
     "SearchHoursOfOperations":{
       "name":"SearchHoursOfOperations",
       "http":{
@@ -2815,6 +2951,23 @@
         {"shape":"InternalServiceException"}
       ],
       "documentation":"<p>Searches the hours of operation in an Amazon Connect instance, with optional filtering.</p>"
+    },
+    "SearchPredefinedAttributes":{
+      "name":"SearchPredefinedAttributes",
+      "http":{
+        "method":"POST",
+        "requestUri":"/search-predefined-attributes"
+      },
+      "input":{"shape":"SearchPredefinedAttributesRequest"},
+      "output":{"shape":"SearchPredefinedAttributesResponse"},
+      "errors":[
+        {"shape":"InvalidRequestException"},
+        {"shape":"InvalidParameterException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServiceException"}
+      ],
+      "documentation":"<p>Predefined attributes that meet certain criteria.</p>"
     },
     "SearchPrompts":{
       "name":"SearchPrompts",
@@ -3418,6 +3571,24 @@
       ],
       "documentation":"<p>The name of the flow.</p> <p>You can also create and update flows using the <a href=\"https://docs.aws.amazon.com/connect/latest/APIReference/flow-language.html\">Amazon Connect Flow language</a>.</p>"
     },
+    "UpdateContactRoutingData":{
+      "name":"UpdateContactRoutingData",
+      "http":{
+        "method":"POST",
+        "requestUri":"/contacts/{InstanceId}/{ContactId}/routing-data"
+      },
+      "input":{"shape":"UpdateContactRoutingDataRequest"},
+      "output":{"shape":"UpdateContactRoutingDataResponse"},
+      "errors":[
+        {"shape":"ResourceConflictException"},
+        {"shape":"InvalidParameterException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServiceException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>This API is in preview release for Amazon Connect and is subject to change.</p> <p>Updates routing priority and age on the contact (<b>QueuePriority</b> and <b>QueueTimeAdjustmentInSeconds</b>). These properties can be used to change a customer's position in the queue. For example, you can move a contact to the back of the queue by setting a lower routing priority relative to other contacts in queue; or you can move a contact to the front of the queue by increasing the routing age which will make the contact look artificially older and therefore higher up in the first-in-first-out routing order. Note that adjusting the routing age of a contact affects only its position in queue, and not its actual queue wait time as reported through metrics. These properties can also be updated by using <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/change-routing-priority.html\">the Set routing priority / age flow block</a>.</p>"
+    },
     "UpdateContactSchedule":{
       "name":"UpdateContactSchedule",
       "http":{
@@ -3559,6 +3730,22 @@
         {"shape":"InternalServiceException"}
       ],
       "documentation":"<p>Updates a phone number’s metadata.</p> <important> <p>To verify the status of a previous UpdatePhoneNumberMetadata operation, call the <a href=\"https://docs.aws.amazon.com/connect/latest/APIReference/API_DescribePhoneNumber.html\">DescribePhoneNumber</a> API.</p> </important>"
+    },
+    "UpdatePredefinedAttribute":{
+      "name":"UpdatePredefinedAttribute",
+      "http":{
+        "method":"POST",
+        "requestUri":"/predefined-attributes/{InstanceId}/{Name}"
+      },
+      "input":{"shape":"UpdatePredefinedAttributeRequest"},
+      "errors":[
+        {"shape":"InvalidRequestException"},
+        {"shape":"InvalidParameterException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServiceException"}
+      ],
+      "documentation":"<p>Updates a predefined attribute for the specified Amazon Connect instance.</p>"
     },
     "UpdatePrompt":{
       "name":"UpdatePrompt",
@@ -3922,6 +4109,22 @@
       ],
       "documentation":"<p>Updates the phone configuration settings for the specified user.</p>"
     },
+    "UpdateUserProficiencies":{
+      "name":"UpdateUserProficiencies",
+      "http":{
+        "method":"POST",
+        "requestUri":"/users/{InstanceId}/{UserId}/proficiencies"
+      },
+      "input":{"shape":"UpdateUserProficienciesRequest"},
+      "errors":[
+        {"shape":"InvalidRequestException"},
+        {"shape":"InvalidParameterException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServiceException"}
+      ],
+      "documentation":"<p>Updates the properties associated with the proficiencies of a user.</p>"
+    },
     "UpdateUserRoutingProfile":{
       "name":"UpdateUserRoutingProfile",
       "http":{
@@ -4143,6 +4346,32 @@
       "max":100,
       "min":1
     },
+    "AgentHierarchyGroups":{
+      "type":"structure",
+      "members":{
+        "L1Ids":{
+          "shape":"HierarchyGroupIdList",
+          "documentation":"<p>The identifiers for level 1 hierarchy groups.</p>"
+        },
+        "L2Ids":{
+          "shape":"HierarchyGroupIdList",
+          "documentation":"<p>The identifiers for level 2 hierarchy groups.</p>"
+        },
+        "L3Ids":{
+          "shape":"HierarchyGroupIdList",
+          "documentation":"<p>The identifiers for level 3 hierarchy groups.</p>"
+        },
+        "L4Ids":{
+          "shape":"HierarchyGroupIdList",
+          "documentation":"<p>The identifiers for level 4 hierarchy groups.</p>"
+        },
+        "L5Ids":{
+          "shape":"HierarchyGroupIdList",
+          "documentation":"<p>The identifiers for level 5 hierarchy groups.</p>"
+        }
+      },
+      "documentation":"<p>A structure that defines agent hierarchy group levels which can be used to filter search results. Important: Agent hierarchy group level information in search result is a snapshot, it does not represent current agent hierarchy who handled the contact.</p>"
+    },
     "AgentInfo":{
       "type":"structure",
       "members":{
@@ -4174,6 +4403,12 @@
       "type":"string",
       "max":256,
       "min":1
+    },
+    "AgentResourceIdList":{
+      "type":"list",
+      "member":{"shape":"AgentResourceId"},
+      "max":100,
+      "min":0
     },
     "AgentStatus":{
       "type":"structure",
@@ -4783,6 +5018,32 @@
       "members":{
       }
     },
+    "AssociateUserProficienciesRequest":{
+      "type":"structure",
+      "required":[
+        "InstanceId",
+        "UserId",
+        "UserProficiencies"
+      ],
+      "members":{
+        "InstanceId":{
+          "shape":"InstanceId",
+          "documentation":"<p>The identifier of the Amazon Connect instance. You can find the instance ID in the Amazon Resource Name (ARN of the instance).</p>",
+          "location":"uri",
+          "locationName":"InstanceId"
+        },
+        "UserId":{
+          "shape":"UserId",
+          "documentation":"<p>The identifier of the user account.</p>",
+          "location":"uri",
+          "locationName":"UserId"
+        },
+        "UserProficiencies":{
+          "shape":"UserProficiencyList",
+          "documentation":"<p>The proficiencies to associate with the user.</p>"
+        }
+      }
+    },
     "AssociationId":{
       "type":"string",
       "max":100,
@@ -5079,6 +5340,10 @@
         "CHAT",
         "TASK"
       ]
+    },
+    "ChannelList":{
+      "type":"list",
+      "member":{"shape":"Channel"}
     },
     "ChannelToCountMap":{
       "type":"map",
@@ -5395,12 +5660,30 @@
           "shape":"WisdomInfo",
           "documentation":"<p>Information about Amazon Connect Wisdom.</p>"
         },
+        "QueueTimeAdjustmentSeconds":{
+          "shape":"QueueTimeAdjustmentSeconds",
+          "documentation":"<p>An integer that represents the queue time adjust to be applied to the contact, in seconds (longer / larger queue time are routed preferentially). Cannot be specified if the QueuePriority is specified. Must be statically defined and a valid integer value.</p>"
+        },
+        "QueuePriority":{
+          "shape":"QueuePriority",
+          "documentation":"<p>An integer that represents the queue priority to be applied to the contact (lower priorities are routed preferentially). Cannot be specified if the QueueTimeAdjustmentSeconds is specified. Must be statically defined, must be larger than zero, and a valid integer value. Default Value is 5.</p>"
+        },
         "Tags":{
           "shape":"ContactTagMap",
           "documentation":"<p>Tags associated with the contact. This contains both Amazon Web Services generated and user-defined tags.</p>"
         }
       },
       "documentation":"<p>Contains information about a contact.</p>"
+    },
+    "ContactAnalysis":{
+      "type":"structure",
+      "members":{
+        "Transcript":{
+          "shape":"Transcript",
+          "documentation":"<p>A structure that defines filters can be used to search with text within an Amazon Connect Contact Lens analyzed transcript.</p>"
+        }
+      },
+      "documentation":"<p>A structure that defines filters can be used to search within outputs analyzed by Amazon Connect Contact Lens in a contact.</p>"
     },
     "ContactDataRequest":{
       "type":"structure",
@@ -5697,6 +5980,84 @@
       "key":{"shape":"ReferenceKey"},
       "value":{"shape":"Reference"}
     },
+    "ContactSearchSummary":{
+      "type":"structure",
+      "members":{
+        "Arn":{
+          "shape":"ARN",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the contact</p>"
+        },
+        "Id":{
+          "shape":"ContactId",
+          "documentation":"<p>The identifier of the contact summary.</p>"
+        },
+        "InitialContactId":{
+          "shape":"ContactId",
+          "documentation":"<p>If this contact is related to other contacts, this is the ID of the initial contact.</p>"
+        },
+        "PreviousContactId":{
+          "shape":"ContactId",
+          "documentation":"<p>If this contact is not the first contact, this is the ID of the previous contact.</p>"
+        },
+        "InitiationMethod":{
+          "shape":"ContactInitiationMethod",
+          "documentation":"<p>Indicates how the contact was initiated.</p>"
+        },
+        "Channel":{
+          "shape":"Channel",
+          "documentation":"<p>How the contact reached your contact center.</p>"
+        },
+        "QueueInfo":{
+          "shape":"ContactSearchSummaryQueueInfo",
+          "documentation":"<p>If this contact was queued, this contains information about the queue.</p>"
+        },
+        "AgentInfo":{
+          "shape":"ContactSearchSummaryAgentInfo",
+          "documentation":"<p>Information about the agent who accepted the contact.</p>"
+        },
+        "InitiationTimestamp":{
+          "shape":"timestamp",
+          "documentation":"<p>The date and time this contact was initiated, in UTC time. For INBOUND, this is when the contact arrived. For OUTBOUND, this is when the agent began dialing. For CALLBACK, this is when the callback contact was created. For TRANSFER and QUEUE_TRANSFER, this is when the transfer was initiated. For API, this is when the request arrived. For EXTERNAL_OUTBOUND, this is when the agent started dialing the external participant. For MONITOR, this is when the supervisor started listening to a contact.</p>"
+        },
+        "DisconnectTimestamp":{
+          "shape":"timestamp",
+          "documentation":"<p>The timestamp when the customer endpoint disconnected from Amazon Connect.</p>"
+        },
+        "ScheduledTimestamp":{
+          "shape":"timestamp",
+          "documentation":"<p>The timestamp, in Unix epoch time format, at which to start running the inbound flow.</p>"
+        }
+      },
+      "documentation":"<p>Information of returned contact.</p>"
+    },
+    "ContactSearchSummaryAgentInfo":{
+      "type":"structure",
+      "members":{
+        "Id":{
+          "shape":"AgentResourceId",
+          "documentation":"<p>The identifier of the agent who accepted the contact.</p>"
+        },
+        "ConnectedToAgentTimestamp":{
+          "shape":"timestamp",
+          "documentation":"<p>The timestamp when the contact was connected to the agent.</p>"
+        }
+      },
+      "documentation":"<p>Information about the agent who accepted the contact.</p>"
+    },
+    "ContactSearchSummaryQueueInfo":{
+      "type":"structure",
+      "members":{
+        "Id":{
+          "shape":"QueueId",
+          "documentation":"<p>The unique identifier for the queue.</p>"
+        },
+        "EnqueueTimestamp":{
+          "shape":"timestamp",
+          "documentation":"<p>The timestamp when the contact was added to the queue.</p>"
+        }
+      },
+      "documentation":"<p>If this contact was queued, this contains information about the queue.</p>"
+    },
     "ContactState":{
       "type":"string",
       "enum":[
@@ -5738,6 +6099,10 @@
     "ContactTagValue":{
       "type":"string",
       "max":256
+    },
+    "Contacts":{
+      "type":"list",
+      "member":{"shape":"ContactSearchSummary"}
     },
     "Content":{
       "type":"string",
@@ -6224,6 +6589,30 @@
         "ContinuedFromContactId":{
           "shape":"ContactId",
           "documentation":"<p>The contactId from which a persistent chat session is started. This field is populated only for persistent chat.</p>"
+        }
+      }
+    },
+    "CreatePredefinedAttributeRequest":{
+      "type":"structure",
+      "required":[
+        "InstanceId",
+        "Name",
+        "Values"
+      ],
+      "members":{
+        "InstanceId":{
+          "shape":"InstanceId",
+          "documentation":"<p>The identifier of the Amazon Connect instance. You can find the instance ID in the Amazon Resource Name (ARN) of the instance.</p>",
+          "location":"uri",
+          "locationName":"InstanceId"
+        },
+        "Name":{
+          "shape":"PredefinedAttributeName",
+          "documentation":"<p> The name of the predefined attribute. </p>"
+        },
+        "Values":{
+          "shape":"PredefinedAttributeValues",
+          "documentation":"<p> The values of the predefined attribute. </p>"
         }
       }
     },
@@ -7351,6 +7740,27 @@
         }
       }
     },
+    "DeletePredefinedAttributeRequest":{
+      "type":"structure",
+      "required":[
+        "InstanceId",
+        "Name"
+      ],
+      "members":{
+        "InstanceId":{
+          "shape":"InstanceId",
+          "documentation":"<p> The identifier of the Amazon Connect instance. You can find the instance ID in the Amazon Resource Name (ARN) of the instance.</p>",
+          "location":"uri",
+          "locationName":"InstanceId"
+        },
+        "Name":{
+          "shape":"PredefinedAttributeName",
+          "documentation":"<p> The name of the predefined attribute.</p>",
+          "location":"uri",
+          "locationName":"Name"
+        }
+      }
+    },
     "DeletePromptRequest":{
       "type":"structure",
       "required":[
@@ -8027,6 +8437,36 @@
         }
       }
     },
+    "DescribePredefinedAttributeRequest":{
+      "type":"structure",
+      "required":[
+        "InstanceId",
+        "Name"
+      ],
+      "members":{
+        "InstanceId":{
+          "shape":"InstanceId",
+          "documentation":"<p>The identifier of the Amazon Connect instance. You can find the instance ID in the Amazon Resource Name (ARN) of the instance.</p>",
+          "location":"uri",
+          "locationName":"InstanceId"
+        },
+        "Name":{
+          "shape":"PredefinedAttributeName",
+          "documentation":"<p>The name of the predefined attribute.</p>",
+          "location":"uri",
+          "locationName":"Name"
+        }
+      }
+    },
+    "DescribePredefinedAttributeResponse":{
+      "type":"structure",
+      "members":{
+        "PredefinedAttribute":{
+          "shape":"PredefinedAttribute",
+          "documentation":"<p>Information about the predefined attribute.</p>"
+        }
+      }
+    },
     "DescribePromptRequest":{
       "type":"structure",
       "required":[
@@ -8410,7 +8850,11 @@
           "shape":"Channel",
           "documentation":"<p>The channel used for grouping and filters.</p>"
         },
-        "RoutingProfile":{"shape":"RoutingProfileReference"}
+        "RoutingProfile":{"shape":"RoutingProfileReference"},
+        "RoutingStepExpression":{
+          "shape":"RoutingExpression",
+          "documentation":"<p>The expression of a step in a routing criteria.</p>"
+        }
       },
       "documentation":"<p>Contains information about the dimensions for a set of metrics.</p>"
     },
@@ -8739,6 +9183,32 @@
     "DisassociateTrafficDistributionGroupUserResponse":{
       "type":"structure",
       "members":{
+      }
+    },
+    "DisassociateUserProficienciesRequest":{
+      "type":"structure",
+      "required":[
+        "InstanceId",
+        "UserId",
+        "UserProficiencies"
+      ],
+      "members":{
+        "InstanceId":{
+          "shape":"InstanceId",
+          "documentation":"<p>The identifier of the Amazon Connect instance. You can find the instance ID in the Amazon Resource Name (ARN) of the instance.</p>",
+          "location":"uri",
+          "locationName":"InstanceId"
+        },
+        "UserId":{
+          "shape":"UserId",
+          "documentation":"<p>The identifier of the user account.</p>",
+          "location":"uri",
+          "locationName":"UserId"
+        },
+        "UserProficiencies":{
+          "shape":"UserProficiencyDisassociateList",
+          "documentation":"<p>The proficiencies to disassociate from the user.</p>"
+        }
       }
     },
     "DisconnectReason":{
@@ -9918,6 +10388,10 @@
         "RoutingProfiles":{
           "shape":"RoutingProfiles",
           "documentation":"<p>A list of up to 100 routing profile IDs or ARNs.</p>"
+        },
+        "RoutingStepExpressions":{
+          "shape":"RoutingExpressions",
+          "documentation":"<p>A list of expressions as a filter, in which an expression is an object of a step in a routing criteria.</p>"
         }
       },
       "documentation":"<p>Contains the filter to apply when retrieving metrics.</p>"
@@ -10469,7 +10943,8 @@
       "enum":[
         "QUEUE",
         "CHANNEL",
-        "ROUTING_PROFILE"
+        "ROUTING_PROFILE",
+        "ROUTING_STEP_EXPRESSION"
       ]
     },
     "GroupingV2":{"type":"string"},
@@ -10536,6 +11011,12 @@
       "documentation":"<p>A leaf node condition which can be used to specify a hierarchy group condition.</p>"
     },
     "HierarchyGroupId":{"type":"string"},
+    "HierarchyGroupIdList":{
+      "type":"list",
+      "member":{"shape":"HierarchyGroupId"},
+      "max":10,
+      "min":0
+    },
     "HierarchyGroupMatchType":{
       "type":"string",
       "enum":[
@@ -11063,6 +11544,10 @@
       }
     },
     "InboundCallsEnabled":{"type":"boolean"},
+    "InitiationMethodList":{
+      "type":"list",
+      "member":{"shape":"ContactInitiationMethod"}
+    },
     "Instance":{
       "type":"structure",
       "members":{
@@ -12502,6 +12987,44 @@
         }
       }
     },
+    "ListPredefinedAttributesRequest":{
+      "type":"structure",
+      "required":["InstanceId"],
+      "members":{
+        "InstanceId":{
+          "shape":"InstanceId",
+          "documentation":"<p>The identifier of the Amazon Connect instance. You can find the instance ID in the Amazon Resource Name (ARN) of the instance.</p>",
+          "location":"uri",
+          "locationName":"InstanceId"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The token for the next set of results. Use the value returned in the previous response in the next request to retrieve the next set of results.</p>",
+          "location":"querystring",
+          "locationName":"nextToken"
+        },
+        "MaxResults":{
+          "shape":"MaxResult100",
+          "documentation":"<p>The maximum number of results to return per page. </p>",
+          "box":true,
+          "location":"querystring",
+          "locationName":"maxResults"
+        }
+      }
+    },
+    "ListPredefinedAttributesResponse":{
+      "type":"structure",
+      "members":{
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>If there are additional results, this is the token for the next set of results.</p>"
+        },
+        "PredefinedAttributeSummaryList":{
+          "shape":"PredefinedAttributeSummaryList",
+          "documentation":"<p>Summary of the predefined attributes.</p>"
+        }
+      }
+    },
     "ListPromptsRequest":{
       "type":"structure",
       "required":["InstanceId"],
@@ -13304,6 +13827,61 @@
         "NextToken":{
           "shape":"NextToken",
           "documentation":"<p>If there are additional results, this is the token for the next set of results.</p>"
+        }
+      }
+    },
+    "ListUserProficienciesRequest":{
+      "type":"structure",
+      "required":[
+        "InstanceId",
+        "UserId"
+      ],
+      "members":{
+        "InstanceId":{
+          "shape":"InstanceId",
+          "documentation":"<p>The identifier of the Amazon Connect instance. You can find the instance ID in the Amazon Resource Name (ARN) of the instance.</p>",
+          "location":"uri",
+          "locationName":"InstanceId"
+        },
+        "UserId":{
+          "shape":"UserId",
+          "documentation":"<p>The identifier of the user account.</p>",
+          "location":"uri",
+          "locationName":"UserId"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The token for the next set of results. Use the value returned in the previous response in the next request to retrieve the next set of results.</p>",
+          "location":"querystring",
+          "locationName":"nextToken"
+        },
+        "MaxResults":{
+          "shape":"MaxResult100",
+          "documentation":"<p>The maximum number of results to return per page.</p>",
+          "box":true,
+          "location":"querystring",
+          "locationName":"maxResults"
+        }
+      }
+    },
+    "ListUserProficienciesResponse":{
+      "type":"structure",
+      "members":{
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>If there are additional results, this is the token for the next set of results.</p>"
+        },
+        "UserProficiencyList":{
+          "shape":"UserProficiencyList",
+          "documentation":"<p>Information about the user proficiencies.</p>"
+        },
+        "LastModifiedTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The last time that the user's proficiencies are were modified.</p>"
+        },
+        "LastModifiedRegion":{
+          "shape":"RegionName",
+          "documentation":"<p>The region in which a user's proficiencies were last modified.</p>"
         }
       }
     },
@@ -14446,6 +15024,100 @@
         "DESK_PHONE"
       ]
     },
+    "PredefinedAttribute":{
+      "type":"structure",
+      "members":{
+        "Name":{
+          "shape":"PredefinedAttributeName",
+          "documentation":"<p>The name of the predefined attribute.</p>"
+        },
+        "Values":{
+          "shape":"PredefinedAttributeValues",
+          "documentation":"<p>The values of the predefined attribute.</p>"
+        },
+        "LastModifiedTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>Last modified time.</p>"
+        },
+        "LastModifiedRegion":{
+          "shape":"RegionName",
+          "documentation":"<p>Last modified region.</p>"
+        }
+      },
+      "documentation":"<p>Information about a predefined attribute.</p>"
+    },
+    "PredefinedAttributeName":{
+      "type":"string",
+      "max":128,
+      "min":1
+    },
+    "PredefinedAttributeSearchConditionList":{
+      "type":"list",
+      "member":{"shape":"PredefinedAttributeSearchCriteria"}
+    },
+    "PredefinedAttributeSearchCriteria":{
+      "type":"structure",
+      "members":{
+        "OrConditions":{
+          "shape":"PredefinedAttributeSearchConditionList",
+          "documentation":"<p>A list of conditions which would be applied together with an <code>OR</code> condition.</p>"
+        },
+        "AndConditions":{
+          "shape":"PredefinedAttributeSearchConditionList",
+          "documentation":"<p>A list of conditions which would be applied together with an <code>AND</code> condition.</p>"
+        },
+        "StringCondition":{"shape":"StringCondition"}
+      },
+      "documentation":"<p>The search criteria to be used to return predefined attributes.</p>"
+    },
+    "PredefinedAttributeSearchSummaryList":{
+      "type":"list",
+      "member":{"shape":"PredefinedAttribute"}
+    },
+    "PredefinedAttributeStringValue":{
+      "type":"string",
+      "max":128,
+      "min":1
+    },
+    "PredefinedAttributeStringValuesList":{
+      "type":"list",
+      "member":{"shape":"PredefinedAttributeStringValue"},
+      "max":75,
+      "min":1
+    },
+    "PredefinedAttributeSummary":{
+      "type":"structure",
+      "members":{
+        "Name":{
+          "shape":"PredefinedAttributeName",
+          "documentation":"<p>The name of the predefined attribute.</p>"
+        },
+        "LastModifiedTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>Last modified time.</p>"
+        },
+        "LastModifiedRegion":{
+          "shape":"RegionName",
+          "documentation":"<p>Last modified region.</p>"
+        }
+      },
+      "documentation":"<p>Summary of a predefined attribute.</p>"
+    },
+    "PredefinedAttributeSummaryList":{
+      "type":"list",
+      "member":{"shape":"PredefinedAttributeSummary"}
+    },
+    "PredefinedAttributeValues":{
+      "type":"structure",
+      "members":{
+        "StringList":{
+          "shape":"PredefinedAttributeStringValuesList",
+          "documentation":"<p>Predefined attribute values of type string list.</p>"
+        }
+      },
+      "documentation":"<p>Information about values of a predefined attribute.</p>",
+      "union":true
+    },
     "Prefix":{
       "type":"string",
       "max":128,
@@ -14476,6 +15148,12 @@
       "member":{"shape":"ProblemDetail"},
       "max":50,
       "min":1
+    },
+    "ProficiencyLevel":{
+      "type":"float",
+      "box":true,
+      "max":5.0,
+      "min":1.0
     },
     "Prompt":{
       "type":"structure",
@@ -14731,6 +15409,12 @@
       "min":1
     },
     "QueueId":{"type":"string"},
+    "QueueIdList":{
+      "type":"list",
+      "member":{"shape":"QueueId"},
+      "max":100,
+      "min":0
+    },
     "QueueInfo":{
       "type":"structure",
       "members":{
@@ -14752,6 +15436,11 @@
     "QueueName":{
       "type":"string",
       "max":256,
+      "min":1
+    },
+    "QueuePriority":{
+      "type":"long",
+      "max":9223372036854775807,
       "min":1
     },
     "QueueQuickConnectConfig":{
@@ -14864,6 +15553,7 @@
       "type":"list",
       "member":{"shape":"QueueSummary"}
     },
+    "QueueTimeAdjustmentSeconds":{"type":"integer"},
     "QueueType":{
       "type":"string",
       "enum":[
@@ -15776,6 +16466,16 @@
       "members":{
       }
     },
+    "RoutingExpression":{
+      "type":"string",
+      "max":3000,
+      "min":1
+    },
+    "RoutingExpressions":{
+      "type":"list",
+      "member":{"shape":"RoutingExpression"},
+      "max":50
+    },
     "RoutingProfile":{
       "type":"structure",
       "members":{
@@ -16297,6 +16997,131 @@
         }
       }
     },
+    "SearchContactsMatchType":{
+      "type":"string",
+      "enum":[
+        "MATCH_ALL",
+        "MATCH_ANY"
+      ]
+    },
+    "SearchContactsRequest":{
+      "type":"structure",
+      "required":[
+        "InstanceId",
+        "TimeRange"
+      ],
+      "members":{
+        "InstanceId":{
+          "shape":"InstanceId",
+          "documentation":"<p>The identifier of Amazon Connect instance. You can find the instance ID in the Amazon Resource Name (ARN) of the instance</p>"
+        },
+        "TimeRange":{
+          "shape":"SearchContactsTimeRange",
+          "documentation":"<p>Time range that you want to search results</p>"
+        },
+        "SearchCriteria":{
+          "shape":"SearchCriteria",
+          "documentation":"<p>The search criteria to be used to return contacts.</p>"
+        },
+        "MaxResults":{
+          "shape":"MaxResult100",
+          "documentation":"<p>The maximum number of results to return per page.</p>",
+          "box":true
+        },
+        "NextToken":{
+          "shape":"LargeNextToken",
+          "documentation":"<p>The token for the next set of results. Use the value returned in the previous response in the next request to retrieve the next set of results.</p>"
+        },
+        "Sort":{
+          "shape":"Sort",
+          "documentation":"<p>Specifies a field to sort by and a sort order</p>"
+        }
+      }
+    },
+    "SearchContactsResponse":{
+      "type":"structure",
+      "required":["Contacts"],
+      "members":{
+        "Contacts":{
+          "shape":"Contacts",
+          "documentation":"<p>Information about the contacts.</p>"
+        },
+        "NextToken":{
+          "shape":"LargeNextToken",
+          "documentation":"<p>If there are additional results, this is the token for the next set of results.</p>"
+        },
+        "TotalCount":{
+          "shape":"TotalCount",
+          "documentation":"<p>The total number of contacts which matched your search query.</p>"
+        }
+      }
+    },
+    "SearchContactsTimeRange":{
+      "type":"structure",
+      "required":[
+        "Type",
+        "StartTime",
+        "EndTime"
+      ],
+      "members":{
+        "Type":{
+          "shape":"SearchContactsTimeRangeType",
+          "documentation":"<p>The type of timestamp to search</p>"
+        },
+        "StartTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The start time of the time range.</p>"
+        },
+        "EndTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The end time of the time range.</p>"
+        }
+      },
+      "documentation":"<p>A structure of time range that you want to search results</p>"
+    },
+    "SearchContactsTimeRangeType":{
+      "type":"string",
+      "enum":[
+        "INITIATION_TIMESTAMP",
+        "SCHEDULED_TIMESTAMP",
+        "CONNECTED_TO_AGENT_TIMESTAMP",
+        "DISCONNECT_TIMESTAMP"
+      ]
+    },
+    "SearchCriteria":{
+      "type":"structure",
+      "members":{
+        "AgentIds":{
+          "shape":"AgentResourceIdList",
+          "documentation":"<p>The array of agent ids</p>"
+        },
+        "AgentHierarchyGroups":{
+          "shape":"AgentHierarchyGroups",
+          "documentation":"<p>The agent hierarchy groups</p>"
+        },
+        "Channels":{
+          "shape":"ChannelList",
+          "documentation":"<p>The array of channels</p>"
+        },
+        "ContactAnalysis":{
+          "shape":"ContactAnalysis",
+          "documentation":"<p>The ContactAnalysis object used in search criteria</p>"
+        },
+        "InitiationMethods":{
+          "shape":"InitiationMethodList",
+          "documentation":"<p>The array of initiaton methods</p>"
+        },
+        "QueueIds":{
+          "shape":"QueueIdList",
+          "documentation":"<p>The array of queue ids.</p>"
+        },
+        "SearchableContactAttributes":{
+          "shape":"SearchableContactAttributes",
+          "documentation":"<p>The SearchableContactAttributes object used in search criteria</p>"
+        }
+      },
+      "documentation":"<p>A structure of search criteria to be used to return contacts</p>"
+    },
     "SearchHoursOfOperationsRequest":{
       "type":"structure",
       "required":["InstanceId"],
@@ -16338,6 +17163,46 @@
         "ApproximateTotalCount":{
           "shape":"ApproximateTotalCount",
           "documentation":"<p>The total number of hours of operations which matched your search query.</p>"
+        }
+      }
+    },
+    "SearchPredefinedAttributesRequest":{
+      "type":"structure",
+      "required":["InstanceId"],
+      "members":{
+        "InstanceId":{
+          "shape":"InstanceId",
+          "documentation":"<p>The identifier of the Amazon Connect instance. You can find the instance ID in the Amazon Resource Name (ARN) of the instance.</p>"
+        },
+        "NextToken":{
+          "shape":"NextToken2500",
+          "documentation":"<p>The token for the next set of results. Use the value returned in the previous response in the next request to retrieve the next set of results.</p>"
+        },
+        "MaxResults":{
+          "shape":"MaxResult100",
+          "documentation":"<p>The maximum number of results to return per page.</p>",
+          "box":true
+        },
+        "SearchCriteria":{
+          "shape":"PredefinedAttributeSearchCriteria",
+          "documentation":"<p>The search criteria to be used to return predefined attributes.</p>"
+        }
+      }
+    },
+    "SearchPredefinedAttributesResponse":{
+      "type":"structure",
+      "members":{
+        "PredefinedAttributes":{
+          "shape":"PredefinedAttributeSearchSummaryList",
+          "documentation":"<p>Predefined attributes matched by the search criteria.</p>"
+        },
+        "NextToken":{
+          "shape":"NextToken2500",
+          "documentation":"<p>The token for the next set of results. Use the value returned in the previous response in the next request to retrieve the next set of results.</p>"
+        },
+        "ApproximateTotalCount":{
+          "shape":"ApproximateTotalCount",
+          "documentation":"<p>The approximate number of predefined attributes which matched your search query.</p>"
         }
       }
     },
@@ -16601,6 +17466,17 @@
         }
       }
     },
+    "SearchText":{
+      "type":"string",
+      "max":128,
+      "sensitive":true
+    },
+    "SearchTextList":{
+      "type":"list",
+      "member":{"shape":"SearchText"},
+      "max":100,
+      "min":0
+    },
     "SearchUsersRequest":{
       "type":"structure",
       "required":["InstanceId"],
@@ -16686,6 +17562,63 @@
           "documentation":"<p>If there are additional results, this is the token for the next set of results.</p>"
         }
       }
+    },
+    "SearchableContactAttributeKey":{
+      "type":"string",
+      "max":100,
+      "min":0,
+      "sensitive":true
+    },
+    "SearchableContactAttributeValue":{
+      "type":"string",
+      "max":100,
+      "min":0,
+      "sensitive":true
+    },
+    "SearchableContactAttributeValueList":{
+      "type":"list",
+      "member":{"shape":"SearchableContactAttributeValue"},
+      "max":20,
+      "min":0
+    },
+    "SearchableContactAttributes":{
+      "type":"structure",
+      "required":["Criteria"],
+      "members":{
+        "Criteria":{
+          "shape":"SearchableContactAttributesCriteriaList",
+          "documentation":"<p>The array of searhale contact attribute criteria</p>"
+        },
+        "MatchType":{
+          "shape":"SearchContactsMatchType",
+          "documentation":"<p>The match type of multiple searchable contact attributes criteria.</p>"
+        }
+      },
+      "documentation":"<p>A structure that defines searchable contact attributes which can be used to filter search results. </p>"
+    },
+    "SearchableContactAttributesCriteria":{
+      "type":"structure",
+      "required":[
+        "Key",
+        "Values"
+      ],
+      "members":{
+        "Key":{
+          "shape":"SearchableContactAttributeKey",
+          "documentation":"<p>The searchable contact attribute key</p>"
+        },
+        "Values":{
+          "shape":"SearchableContactAttributeValueList",
+          "documentation":"<p>The array of contact attribute values used to filter search results.</p>"
+        }
+      },
+      "documentation":"<p>The criteria of searchable contact attributes.</p>"
+    },
+    "SearchableContactAttributesCriteriaList":{
+      "type":"list",
+      "member":{"shape":"SearchableContactAttributesCriteria"},
+      "max":15,
+      "min":0
     },
     "SearchableQueueType":{
       "type":"string",
@@ -17061,11 +17994,40 @@
       "min":1
     },
     "SnapshotVersion":{"type":"string"},
+    "Sort":{
+      "type":"structure",
+      "required":[
+        "FieldName",
+        "Order"
+      ],
+      "members":{
+        "FieldName":{
+          "shape":"SortableFieldName",
+          "documentation":"<p>The name of the field on which to sort.</p>"
+        },
+        "Order":{
+          "shape":"SortOrder",
+          "documentation":"<p>An ascending or descending sort.</p>"
+        }
+      },
+      "documentation":"<p>A structure that defines the sort by and a sort order</p>"
+    },
     "SortOrder":{
       "type":"string",
       "enum":[
         "ASCENDING",
         "DESCENDING"
+      ]
+    },
+    "SortableFieldName":{
+      "type":"string",
+      "enum":[
+        "INITIATION_TIMESTAMP",
+        "SCHEDULED_TIMESTAMP",
+        "CONNECTED_TO_AGENT_TIMESTAMP",
+        "DISCONNECT_TIMESTAMP",
+        "INITIATION_METHOD",
+        "CHANNEL"
       ]
     },
     "SourceApplicationName":{
@@ -17614,7 +18576,7 @@
           "documentation":"<p>The type of comparison to be made when evaluating the string condition.</p>"
         }
       },
-      "documentation":"<p>A leaf node condition which can be used to specify a string condition. </p>"
+      "documentation":"<p>A leaf node condition which can be used to specify a string condition.</p> <note> <p>The currently supported values for <code>FieldName</code> are <code>name</code> and <code>description</code>.</p> </note>"
     },
     "StringReference":{
       "type":"structure",
@@ -18189,6 +19151,7 @@
       "error":{"httpStatusCode":429},
       "exception":true
     },
+    "TotalCount":{"type":"long"},
     "TotalPauseCount":{
       "type":"integer",
       "max":10,
@@ -18317,6 +19280,50 @@
         "GENERAL",
         "CAMPAIGN"
       ]
+    },
+    "Transcript":{
+      "type":"structure",
+      "required":["Criteria"],
+      "members":{
+        "Criteria":{
+          "shape":"TranscriptCriteriaList",
+          "documentation":"<p>The array of transcript search criteria</p>"
+        },
+        "MatchType":{
+          "shape":"SearchContactsMatchType",
+          "documentation":"<p>The match type of multiple transcript criteira</p>"
+        }
+      },
+      "documentation":"<p>The transcript object used to search results.</p>"
+    },
+    "TranscriptCriteria":{
+      "type":"structure",
+      "required":[
+        "ParticipantRole",
+        "SearchText",
+        "MatchType"
+      ],
+      "members":{
+        "ParticipantRole":{
+          "shape":"ParticipantRole",
+          "documentation":"<p>The participant role in a transcript</p>"
+        },
+        "SearchText":{
+          "shape":"SearchTextList",
+          "documentation":"<p>The words or phrases used to search within a transcript.</p>"
+        },
+        "MatchType":{
+          "shape":"SearchContactsMatchType",
+          "documentation":"<p>The match type of search texts in a transcript criteria.</p>"
+        }
+      },
+      "documentation":"<p>The transcript criteria used to search</p>"
+    },
+    "TranscriptCriteriaList":{
+      "type":"list",
+      "member":{"shape":"TranscriptCriteria"},
+      "max":6,
+      "min":0
     },
     "TransferContactRequest":{
       "type":"structure",
@@ -18774,6 +19781,40 @@
       "members":{
       }
     },
+    "UpdateContactRoutingDataRequest":{
+      "type":"structure",
+      "required":[
+        "InstanceId",
+        "ContactId"
+      ],
+      "members":{
+        "InstanceId":{
+          "shape":"InstanceId",
+          "documentation":"<p>The identifier of the Amazon Connect instance. You can <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/find-instance-arn.html\">find the instance ID</a> in the Amazon Resource Name (ARN) of the instance.</p>",
+          "location":"uri",
+          "locationName":"InstanceId"
+        },
+        "ContactId":{
+          "shape":"ContactId",
+          "documentation":"<p>The identifier of the contact in this instance of Amazon Connect. </p>",
+          "location":"uri",
+          "locationName":"ContactId"
+        },
+        "QueueTimeAdjustmentSeconds":{
+          "shape":"QueueTimeAdjustmentSeconds",
+          "documentation":"<p>The number of seconds to add or subtract from the contact's routing age. Contacts are routed to agents on a first-come, first-serve basis. This means that changing their amount of time in queue compared to others also changes their position in queue.</p>"
+        },
+        "QueuePriority":{
+          "shape":"QueuePriority",
+          "documentation":"<p>Priority of the contact in the queue. The default priority for new contacts is 5. You can raise the priority of a contact compared to other contacts in the queue by assigning them a higher priority, such as 1 or 2.</p>"
+        }
+      }
+    },
+    "UpdateContactRoutingDataResponse":{
+      "type":"structure",
+      "members":{
+      }
+    },
     "UpdateContactScheduleRequest":{
       "type":"structure",
       "required":[
@@ -19073,6 +20114,31 @@
         "PhoneNumberArn":{
           "shape":"ARN",
           "documentation":"<p>The Amazon Resource Name (ARN) of the phone number.</p>"
+        }
+      }
+    },
+    "UpdatePredefinedAttributeRequest":{
+      "type":"structure",
+      "required":[
+        "InstanceId",
+        "Name"
+      ],
+      "members":{
+        "InstanceId":{
+          "shape":"InstanceId",
+          "documentation":"<p>The identifier of the Amazon Connect instance. You can find the instance ID in the Amazon Resource Name (ARN) of the instance.</p>",
+          "location":"uri",
+          "locationName":"InstanceId"
+        },
+        "Name":{
+          "shape":"PredefinedAttributeName",
+          "documentation":"<p>The name of the predefined attribute.</p>",
+          "location":"uri",
+          "locationName":"Name"
+        },
+        "Values":{
+          "shape":"PredefinedAttributeValues",
+          "documentation":"<p>The values of the predefined attribute.</p>"
         }
       }
     },
@@ -19783,6 +20849,32 @@
         }
       }
     },
+    "UpdateUserProficienciesRequest":{
+      "type":"structure",
+      "required":[
+        "InstanceId",
+        "UserId",
+        "UserProficiencies"
+      ],
+      "members":{
+        "InstanceId":{
+          "shape":"InstanceId",
+          "documentation":"<p> The identifier of the Amazon Connect instance. You can find the instance ID in the Amazon Resource Name (ARN) of the instance.</p>",
+          "location":"uri",
+          "locationName":"InstanceId"
+        },
+        "UserId":{
+          "shape":"UserId",
+          "documentation":"<p>The identifier of the user account.</p>",
+          "location":"uri",
+          "locationName":"UserId"
+        },
+        "UserProficiencies":{
+          "shape":"UserProficiencyList",
+          "documentation":"<p>The proficiencies to be updated for the user. Proficiencies must first be associated to the user. You can do this using AssociateUserProficiencies API.</p>"
+        }
+      }
+    },
     "UpdateUserRoutingProfileRequest":{
       "type":"structure",
       "required":[
@@ -20166,6 +21258,55 @@
         }
       },
       "documentation":"<p>Contains information about the phone configuration settings for a user.</p>"
+    },
+    "UserProficiency":{
+      "type":"structure",
+      "required":[
+        "AttributeName",
+        "AttributeValue",
+        "Level"
+      ],
+      "members":{
+        "AttributeName":{
+          "shape":"PredefinedAttributeName",
+          "documentation":"<p>The name of user's proficiency. You must use name of predefined attribute present in the Amazon Connect instance.</p>"
+        },
+        "AttributeValue":{
+          "shape":"PredefinedAttributeStringValue",
+          "documentation":"<p>The value of user's proficiency. You must use value of predefined attribute present in the Amazon Connect instance.</p>"
+        },
+        "Level":{
+          "shape":"ProficiencyLevel",
+          "documentation":"<p>The level of the proficiency. The valid values are 1, 2, 3, 4 and 5.</p>"
+        }
+      },
+      "documentation":"<p>Information about proficiency of a user.</p>"
+    },
+    "UserProficiencyDisassociate":{
+      "type":"structure",
+      "required":[
+        "AttributeName",
+        "AttributeValue"
+      ],
+      "members":{
+        "AttributeName":{
+          "shape":"PredefinedAttributeName",
+          "documentation":"<p>The name of user's proficiency.</p>"
+        },
+        "AttributeValue":{
+          "shape":"PredefinedAttributeStringValue",
+          "documentation":"<p>The value of user's proficiency.</p>"
+        }
+      },
+      "documentation":"<p>Information about proficiency to be disassociated from the user.</p>"
+    },
+    "UserProficiencyDisassociateList":{
+      "type":"list",
+      "member":{"shape":"UserProficiencyDisassociate"}
+    },
+    "UserProficiencyList":{
+      "type":"list",
+      "member":{"shape":"UserProficiency"}
     },
     "UserQuickConnectConfig":{
       "type":"structure",

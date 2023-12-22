@@ -452,6 +452,22 @@
       ],
       "documentation":"<p>Describes an identity provider configuration.</p>"
     },
+    "DescribeInsight":{
+      "name":"DescribeInsight",
+      "http":{
+        "method":"GET",
+        "requestUri":"/clusters/{name}/insights/{id}"
+      },
+      "input":{"shape":"DescribeInsightRequest"},
+      "output":{"shape":"DescribeInsightResponse"},
+      "errors":[
+        {"shape":"ServerException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InvalidRequestException"},
+        {"shape":"InvalidParameterException"}
+      ],
+      "documentation":"<p>Returns details about an insight that you specify using its ID.</p>"
+    },
     "DescribeNodegroup":{
       "name":"DescribeNodegroup",
       "http":{
@@ -659,6 +675,22 @@
         {"shape":"ResourceNotFoundException"}
       ],
       "documentation":"<p>Lists the identity provider configurations for your cluster.</p>"
+    },
+    "ListInsights":{
+      "name":"ListInsights",
+      "http":{
+        "method":"POST",
+        "requestUri":"/clusters/{name}/insights"
+      },
+      "input":{"shape":"ListInsightsRequest"},
+      "output":{"shape":"ListInsightsResponse"},
+      "errors":[
+        {"shape":"ServerException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InvalidRequestException"},
+        {"shape":"InvalidParameterException"}
+      ],
+      "documentation":"<p>Returns a list of all insights checked for against the specified cluster. You can filter which insights are returned by category, associated Kubernetes version, and status.</p>"
     },
     "ListNodegroups":{
       "name":"ListNodegroups",
@@ -1035,6 +1067,11 @@
         "cluster",
         "namespace"
       ]
+    },
+    "AdditionalInfoMap":{
+      "type":"map",
+      "key":{"shape":"String"},
+      "value":{"shape":"String"}
     },
     "Addon":{
       "type":"structure",
@@ -1413,6 +1450,14 @@
         "SPOT"
       ]
     },
+    "Category":{
+      "type":"string",
+      "enum":["UPGRADE_READINESS"]
+    },
+    "CategoryList":{
+      "type":"list",
+      "member":{"shape":"Category"}
+    },
     "Certificate":{
       "type":"structure",
       "members":{
@@ -1450,6 +1495,28 @@
       "documentation":"<p>These errors are usually caused by a client action. Actions can include using an action or resource on behalf of an <a href=\"https://docs.aws.amazon.com/IAM/latest/UserGuide/id_roles_terms-and-concepts.html\">IAM principal</a> that doesn't have permissions to use the action or resource or specifying an identifier that is not valid.</p>",
       "error":{"httpStatusCode":400},
       "exception":true
+    },
+    "ClientStat":{
+      "type":"structure",
+      "members":{
+        "userAgent":{
+          "shape":"String",
+          "documentation":"<p>The user agent of the Kubernetes client using the deprecated resource.</p>"
+        },
+        "numberOfRequestsLast30Days":{
+          "shape":"Integer",
+          "documentation":"<p>The number of requests from the Kubernetes client seen over the last 30 days.</p>"
+        },
+        "lastRequestTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp of the last request seen from the Kubernetes client.</p>"
+        }
+      },
+      "documentation":"<p>Details about clients using the deprecated resources.</p>"
+    },
+    "ClientStats":{
+      "type":"list",
+      "member":{"shape":"ClientStat"}
     },
     "Cluster":{
       "type":"structure",
@@ -1743,7 +1810,7 @@
         },
         "principalArn":{
           "shape":"String",
-          "documentation":"<p>The ARN of the IAM principal for the <code>AccessEntry</code>. You can specify one ARN for each access entry. You can't specify the same ARN in more than one access entry. This value can't be changed after access entry creation.</p> <p> <a href=\"https://docs.aws.amazon.com/IAM/latest/UserGuide/best-practices.html#bp-users-federation-idp\">IAM best practices</a> recommend using IAM roles with temporary credentials, rather than IAM users with long-term credentials. </p>"
+          "documentation":"<p>The ARN of the IAM principal for the <code>AccessEntry</code>. You can specify one ARN for each access entry. You can't specify the same ARN in more than one access entry. This value can't be changed after access entry creation.</p> <p>The valid principals differ depending on the type of the access entry in the <code>type</code> field. The only valid ARN is IAM roles for the types of access entries for nodes: <code/> <code/>. You can use every IAM principal type for <code>STANDARD</code> access entries. You can't use the STS session principal type with access entries because this is a temporary principal for each session and not a permanent identity that can be assigned permissions.</p> <p> <a href=\"https://docs.aws.amazon.com/IAM/latest/UserGuide/best-practices.html#bp-users-federation-idp\">IAM best practices</a> recommend using IAM roles with temporary credentials, rather than IAM users with long-term credentials. </p>"
         },
         "kubernetesGroups":{
           "shape":"StringList",
@@ -1764,7 +1831,7 @@
         },
         "type":{
           "shape":"String",
-          "documentation":"<p>If the <code>principalArn</code> is for an IAM role that's used for self-managed Amazon EC2 nodes, specify <code>EC2_LINUX</code> or <code>EC2_WINDOWS</code>. Amazon EKS grants the necessary permissions to the node for you. If the <code>principalArn</code> is for any other purpose, specify <code>STANDARD</code>. If you don't specify a value, Amazon EKS sets the value to <code>STANDARD</code>. It's unnecessary to create access entries for IAM roles used with Fargate profiles or managed Amazon EC2 nodes, because Amazon EKS creates entries in the <code>aws-auth</code> <code>ConfigMap</code> for the roles. You can't change this value once you've created the access entry.</p> <p>If you set the value to <code>EC2_LINUX</code> or <code>EC2_WINDOWS</code>, you can't specify values for <code>kubernetesGroups</code>, or associate an <code>AccessPolicy</code> to the access entry.</p>"
+          "documentation":"<p>The type of the new access entry. Valid values are <code>Standard</code>, <code>FARGATE_LINUX</code>, <code>EC2_LINUX</code>, and <code>EC2_WINDOWS</code>.</p> <p>If the <code>principalArn</code> is for an IAM role that's used for self-managed Amazon EC2 nodes, specify <code>EC2_LINUX</code> or <code>EC2_WINDOWS</code>. Amazon EKS grants the necessary permissions to the node for you. If the <code>principalArn</code> is for any other purpose, specify <code>STANDARD</code>. If you don't specify a value, Amazon EKS sets the value to <code>STANDARD</code>. It's unnecessary to create access entries for IAM roles used with Fargate profiles or managed Amazon EC2 nodes, because Amazon EKS creates entries in the <code>aws-auth</code> <code>ConfigMap</code> for the roles. You can't change this value once you've created the access entry.</p> <p>If you set the value to <code>EC2_LINUX</code> or <code>EC2_WINDOWS</code>, you can't specify values for <code>kubernetesGroups</code>, or associate an <code>AccessPolicy</code> to the access entry.</p>"
         }
       }
     },
@@ -2318,6 +2385,36 @@
         }
       }
     },
+    "DeprecationDetail":{
+      "type":"structure",
+      "members":{
+        "usage":{
+          "shape":"String",
+          "documentation":"<p>The deprecated version of the resource.</p>"
+        },
+        "replacedWith":{
+          "shape":"String",
+          "documentation":"<p>The newer version of the resource to migrate to if applicable. </p>"
+        },
+        "stopServingVersion":{
+          "shape":"String",
+          "documentation":"<p>The version of the software where the deprecated resource version will stop being served.</p>"
+        },
+        "startServingReplacementVersion":{
+          "shape":"String",
+          "documentation":"<p>The version of the software where the newer resource version became available to migrate to if applicable.</p>"
+        },
+        "clientStats":{
+          "shape":"ClientStats",
+          "documentation":"<p>Details about Kubernetes clients using the deprecated resources.</p>"
+        }
+      },
+      "documentation":"<p>The summary information about deprecated resource usage for an insight check in the <code>UPGRADE_READINESS</code> category.</p>"
+    },
+    "DeprecationDetails":{
+      "type":"list",
+      "member":{"shape":"DeprecationDetail"}
+    },
     "DeregisterClusterRequest":{
       "type":"structure",
       "required":["name"],
@@ -2594,6 +2691,36 @@
         "identityProviderConfig":{
           "shape":"IdentityProviderConfigResponse",
           "documentation":"<p>The object that represents an OpenID Connect (OIDC) identity provider configuration.</p>"
+        }
+      }
+    },
+    "DescribeInsightRequest":{
+      "type":"structure",
+      "required":[
+        "clusterName",
+        "id"
+      ],
+      "members":{
+        "clusterName":{
+          "shape":"String",
+          "documentation":"<p>The name of the cluster to describe the insight for.</p>",
+          "location":"uri",
+          "locationName":"name"
+        },
+        "id":{
+          "shape":"String",
+          "documentation":"<p>The identity of the insight to describe.</p>",
+          "location":"uri",
+          "locationName":"id"
+        }
+      }
+    },
+    "DescribeInsightResponse":{
+      "type":"structure",
+      "members":{
+        "insight":{
+          "shape":"Insight",
+          "documentation":"<p>The full description of the insight.</p>"
         }
       }
     },
@@ -3053,6 +3180,179 @@
     "IncludeClustersList":{
       "type":"list",
       "member":{"shape":"String"}
+    },
+    "Insight":{
+      "type":"structure",
+      "members":{
+        "id":{
+          "shape":"String",
+          "documentation":"<p>The ID of the insight.</p>"
+        },
+        "name":{
+          "shape":"String",
+          "documentation":"<p>The name of the insight.</p>"
+        },
+        "category":{
+          "shape":"Category",
+          "documentation":"<p>The category of the insight.</p>"
+        },
+        "kubernetesVersion":{
+          "shape":"String",
+          "documentation":"<p>The Kubernetes minor version associated with an insight if applicable.</p>"
+        },
+        "lastRefreshTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time Amazon EKS last successfully completed a refresh of this insight check on the cluster.</p>"
+        },
+        "lastTransitionTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time the status of the insight last changed.</p>"
+        },
+        "description":{
+          "shape":"String",
+          "documentation":"<p>The description of the insight which includes alert criteria, remediation recommendation, and additional resources (contains Markdown).</p>"
+        },
+        "insightStatus":{
+          "shape":"InsightStatus",
+          "documentation":"<p>An object containing more detail on the status of the insight resource.</p>"
+        },
+        "recommendation":{
+          "shape":"String",
+          "documentation":"<p>A summary of how to remediate the finding of this insight if applicable. </p>"
+        },
+        "additionalInfo":{
+          "shape":"AdditionalInfoMap",
+          "documentation":"<p>Links to sources that provide additional context on the insight.</p>"
+        },
+        "resources":{
+          "shape":"InsightResourceDetails",
+          "documentation":"<p>The details about each resource listed in the insight check result.</p>"
+        },
+        "categorySpecificSummary":{
+          "shape":"InsightCategorySpecificSummary",
+          "documentation":"<p>Summary information that relates to the category of the insight. Currently only returned with certain insights having category <code>UPGRADE_READINESS</code>.</p>"
+        }
+      },
+      "documentation":"<p>A check that provides recommendations to remedy potential upgrade-impacting issues.</p>"
+    },
+    "InsightCategorySpecificSummary":{
+      "type":"structure",
+      "members":{
+        "deprecationDetails":{
+          "shape":"DeprecationDetails",
+          "documentation":"<p>The summary information about deprecated resource usage for an insight check in the <code>UPGRADE_READINESS</code> category.</p>"
+        }
+      },
+      "documentation":"<p>Summary information that relates to the category of the insight. Currently only returned with certain insights having category <code>UPGRADE_READINESS</code>.</p>"
+    },
+    "InsightResourceDetail":{
+      "type":"structure",
+      "members":{
+        "insightStatus":{
+          "shape":"InsightStatus",
+          "documentation":"<p>An object containing more detail on the status of the insight resource.</p>"
+        },
+        "kubernetesResourceUri":{
+          "shape":"String",
+          "documentation":"<p>The Kubernetes resource URI if applicable.</p>"
+        },
+        "arn":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Resource Name (ARN) if applicable.</p>"
+        }
+      },
+      "documentation":"<p>Returns information about the resource being evaluated.</p>"
+    },
+    "InsightResourceDetails":{
+      "type":"list",
+      "member":{"shape":"InsightResourceDetail"}
+    },
+    "InsightStatus":{
+      "type":"structure",
+      "members":{
+        "status":{
+          "shape":"InsightStatusValue",
+          "documentation":"<p>The status of the resource.</p>"
+        },
+        "reason":{
+          "shape":"String",
+          "documentation":"<p>Explanation on the reasoning for the status of the resource. </p>"
+        }
+      },
+      "documentation":"<p>The status of the insight.</p>"
+    },
+    "InsightStatusValue":{
+      "type":"string",
+      "enum":[
+        "PASSING",
+        "WARNING",
+        "ERROR",
+        "UNKNOWN"
+      ]
+    },
+    "InsightStatusValueList":{
+      "type":"list",
+      "member":{"shape":"InsightStatusValue"}
+    },
+    "InsightSummaries":{
+      "type":"list",
+      "member":{"shape":"InsightSummary"}
+    },
+    "InsightSummary":{
+      "type":"structure",
+      "members":{
+        "id":{
+          "shape":"String",
+          "documentation":"<p>The ID of the insight.</p>"
+        },
+        "name":{
+          "shape":"String",
+          "documentation":"<p>The name of the insight.</p>"
+        },
+        "category":{
+          "shape":"Category",
+          "documentation":"<p>The category of the insight.</p>"
+        },
+        "kubernetesVersion":{
+          "shape":"String",
+          "documentation":"<p>The Kubernetes minor version associated with an insight if applicable. </p>"
+        },
+        "lastRefreshTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time Amazon EKS last successfully completed a refresh of this insight check on the cluster.</p>"
+        },
+        "lastTransitionTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time the status of the insight last changed.</p>"
+        },
+        "description":{
+          "shape":"String",
+          "documentation":"<p>The description of the insight which includes alert criteria, remediation recommendation, and additional resources (contains Markdown).</p>"
+        },
+        "insightStatus":{
+          "shape":"InsightStatus",
+          "documentation":"<p>An object containing more detail on the status of the insight.</p>"
+        }
+      },
+      "documentation":"<p>The summarized description of the insight.</p>"
+    },
+    "InsightsFilter":{
+      "type":"structure",
+      "members":{
+        "categories":{
+          "shape":"CategoryList",
+          "documentation":"<p>The categories to use to filter insights.</p>"
+        },
+        "kubernetesVersions":{
+          "shape":"StringList",
+          "documentation":"<p>The Kubernetes versions to use to filter the insights.</p>"
+        },
+        "statuses":{
+          "shape":"InsightStatusValueList",
+          "documentation":"<p>The statuses to use to filter the insights. </p>"
+        }
+      },
+      "documentation":"<p>The criteria to use for the insights.</p>"
     },
     "Integer":{"type":"integer"},
     "InvalidParameterException":{
@@ -3542,7 +3842,50 @@
         },
         "nextToken":{
           "shape":"String",
-          "documentation":"<p>The <code>nextToken</code> value to include in a future <code>ListIdentityProviderConfigsResponse</code> request. When the results of a <code>ListIdentityProviderConfigsResponse</code> request exceed <code>maxResults</code>, you can use this value to retrieve the next page of results. This value is <code>null</code> when there are no more results to return.</p>"
+          "documentation":"<p>The <code>nextToken</code> value to include in a future <code>ListIdentityProviderConfigsResponse</code> request. When the results of a <code>ListIdentityProviderConfigsResponse</code> request exceed <code>maxResults</code>, you can use this value to retrieve the next page of results. This value is <code>null</code> when there are no more results to return.</p> <note> <p>This token should be treated as an opaque identifier that is used only to retrieve the next items in a list and not for other programmatic purposes.</p> </note>"
+        }
+      }
+    },
+    "ListInsightsMaxResults":{
+      "type":"integer",
+      "box":true,
+      "max":100,
+      "min":1
+    },
+    "ListInsightsRequest":{
+      "type":"structure",
+      "required":["clusterName"],
+      "members":{
+        "clusterName":{
+          "shape":"String",
+          "documentation":"<p>The name of the Amazon EKS cluster associated with the insights.</p>",
+          "location":"uri",
+          "locationName":"name"
+        },
+        "filter":{
+          "shape":"InsightsFilter",
+          "documentation":"<p>The criteria to filter your list of insights for your cluster. You can filter which insights are returned by category, associated Kubernetes version, and status.</p>"
+        },
+        "maxResults":{
+          "shape":"ListInsightsMaxResults",
+          "documentation":"<p>The maximum number of identity provider configurations returned by <code>ListInsights</code> in paginated output. When you use this parameter, <code>ListInsights</code> returns only <code>maxResults</code> results in a single page along with a <code>nextToken</code> response element. You can see the remaining results of the initial request by sending another <code>ListInsights</code> request with the returned <code>nextToken</code> value. This value can be between 1 and 100. If you don't use this parameter, <code>ListInsights</code> returns up to 100 results and a <code>nextToken</code> value, if applicable.</p>"
+        },
+        "nextToken":{
+          "shape":"String",
+          "documentation":"<p>The <code>nextToken</code> value returned from a previous paginated <code>ListInsights</code> request. When the results of a <code>ListInsights</code> request exceed <code>maxResults</code>, you can use this value to retrieve the next page of results. This value is <code>null</code> when there are no more results to return.</p>"
+        }
+      }
+    },
+    "ListInsightsResponse":{
+      "type":"structure",
+      "members":{
+        "insights":{
+          "shape":"InsightSummaries",
+          "documentation":"<p>The returned list of insights.</p>"
+        },
+        "nextToken":{
+          "shape":"String",
+          "documentation":"<p>The <code>nextToken</code> value to include in a future <code>ListInsights</code> request. When the results of a <code>ListInsights</code> request exceed <code>maxResults</code>, you can use this value to retrieve the next page of results. This value is <code>null</code> when there are no more results to return.</p>"
         }
       }
     },

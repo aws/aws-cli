@@ -20,6 +20,5 @@ The following ``untag-resource`` code example untags an image set. ::
 
 This command produces no output.
 
-For more information, see `Tagging resources with AWS HealthImaging`_ in the *AWS HealthImaging Developers Guide*.
+For more information, see `Tagging resources with AWS HealthImaging <https://docs.aws.amazon.com/healthimaging/latest/devguide/tagging.html>`__ in the *AWS HealthImaging Developer Guide*.
 
-.. _`Tagging resources with AWS HealthImaging`: https://docs.aws.amazon.com/healthimaging/latest/devguide/tagging.html

@@ -71,7 +71,7 @@ class ArgumentType(Enum):
             return ArgumentType.TAGGED_UNION.value  # Replace local constants with global constants
         return default
 
-    def _map_handlers(self, session, event_class, mapfn):
+    def _map_event_handlers(self, session, event_class, mapfn): 
         for event in DOC_EVENTS:
             event_handler_name = event.replace('-', '_')
             if hasattr(self, event_handler_name):

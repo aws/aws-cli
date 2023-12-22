@@ -84,8 +84,11 @@ class CLIDocumentEventHandler(object):
         handler method will be registered for the all events of
         that type for the specified ``event_class``.
         """
-        self._map_handlers(session, event_class, session.register)
-
+        try:
+           self._map_handlers(session, event_class, session.register)
+        except Exception as e:
+              LOG.debug("Error registering event handlers for %s: %s",
+                        event_class, e, exc_info=True) 
     def unregister(self):
         """
         The default unregister iterates through all of the

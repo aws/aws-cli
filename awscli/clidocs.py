@@ -46,11 +46,12 @@ class CLIDocumentEventHandler(object):
         self._documented_arg_groups = []
 
     def _build_arg_table_groups(self, help_command):
+        """ Builds a dictionary of argument groups for the given help command."""
         arg_groups = {}
         for arg in help_command.arg_table.values():
             if arg.group_name is not None:
                 arg_groups.setdefault(arg.group_name, []).append(arg)
-        return arg_groups
+        return arg_groups 
 
     def _get_argument_type_name(self, shape, default):
         if is_json_value_header(shape):

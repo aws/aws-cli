@@ -4,13 +4,14 @@ The following ``create-function`` example creates a Lambda function named ``my-f
 
     aws lambda create-function \
         --function-name my-function \
-        --runtime nodejs14.x \
+        --runtime nodejs18.x \
         --zip-file fileb://my-function.zip \
         --handler my-function.handler \
         --role arn:aws:iam::123456789012:role/service-role/MyTestFunction-role-tges6bf4
 
-Contents of ``my-function.zip``: 
-This file is a deployment package that contains your function code and any dependencies.
+Contents of ``my-function.zip``::
+
+    This file is a deployment package that contains your function code and any dependencies.
 
 Output::
 
@@ -27,9 +28,9 @@ Output::
         "Version": "$LATEST",
         "Role": "arn:aws:iam::123456789012:role/service-role/MyTestFunction-role-zgur6bf4",
         "Timeout": 3,
-        "LastModified": "2019-08-14T22:26:11.234+0000",
+        "LastModified": "2023-10-14T22:26:11.234+0000",
         "Handler": "my-function.handler",
-        "Runtime": "nodejs14.x",
+        "Runtime": "nodejs18.x",
         "Description": ""
     }
 

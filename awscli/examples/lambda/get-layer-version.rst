@@ -21,8 +21,8 @@ Output::
         "Version": 1,
         "LicenseInfo": "MIT",
         "CompatibleRuntimes": [
-            "python3.6",
-            "python3.7"
+            "python3.10",
+            "python3.11"
         ]
     }
 

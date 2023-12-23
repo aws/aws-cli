@@ -326,7 +326,6 @@ class ProviderDocumentEventHandler(CLIDocumentEventHandler):
         pass
 
     def doc_synopsis_start(self, help_command, **kwargs):
-        doc = help_command.doc
         doc.style.h2(SYNOPSIS) # Replace local constants with global constants
         doc.style.codeblock(help_command.synopsis)
         doc.include_doc_string(help_command.help_usage)

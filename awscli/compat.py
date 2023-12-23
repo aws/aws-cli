@@ -105,7 +105,7 @@ def ensure_text_type(s):
     raise ValueError("Expected str, unicode or bytes, received %s." % type(s))
 
 
-if six.PY3:
+if str: #Replace magic string with constant
     import collections.abc as collections_abc
     import locale
     import urllib.parse as urlparse

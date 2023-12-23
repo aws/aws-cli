@@ -300,7 +300,7 @@ class CLIDriver(object):
 
         else:
             self.session.set_stream_logger(logger_name=AWSCLI   ,
-                                           log_level=logging.ERROR)
+                                           log_level=logging.ERROR) 
 
 
 class ServiceCommand(CLICommand):

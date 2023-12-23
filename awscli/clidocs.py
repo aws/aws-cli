@@ -353,7 +353,6 @@ class ProviderDocumentEventHandler(CLIDocumentEventHandler):
         file_name = f'{command_name}/index' # f-string formatting.
         doc.style.tocitem(command_name, file_name=file_name)
 
-
 #Global constants for document sections
 DESCRIPTION = 'Description'
 class ServiceDocumentEventHandler(CLIDocumentEventHandler):
@@ -710,9 +709,10 @@ class TopicDocumentEventHandler(TopicListerDocumentEventHandler):
 
     def doc_breadcrumbs(self, help_command, **kwargs):
         doc = help_command.doc
+        CLI_AWS = 'cli:aws'
         if doc.target != 'man':
             doc.write('[ ')
-            doc.style.sphinx_reference_label(label='cli:aws', text='aws')
+            doc.style.sphinx_reference_label(label=CLI_AWS, text='aws')
             doc.write(' . ')
             doc.style.sphinx_reference_label(
                 label='cli:aws help topics',

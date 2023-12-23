@@ -304,8 +304,7 @@ class ArgumentType(Enum):
                f"following top level keys can be set: {members_str}.")
         doc.writeln(msg)
         doc.style.end_note()
-
-# Global constants for document sections
+ # Global constants for document sections
 SYNOPSIS = 'Synopsis'
 AVAILABLE_SERVICES = 'Available Services'
 AVAILABLE_COMMANDS = 'Available Commands'
@@ -326,6 +325,7 @@ class ProviderDocumentEventHandler(CLIDocumentEventHandler):
         pass
 
     def doc_synopsis_start(self, help_command, **kwargs):
+        doc = help_command.doc 
         doc.style.h2(SYNOPSIS) # Replace local constants with global constants
         doc.style.codeblock(help_command.synopsis)
         doc.include_doc_string(help_command.help_usage)
@@ -404,11 +404,11 @@ class ServiceDocumentEventHandler(CLIDocumentEventHandler):
         # direct the subitem to the command's index because
         # it has more subcommands to be documented.
         if (len(subcommand_table) > 0):
-            file_name = '%s/index' % command_name
+            file_name = f"{command_name}/index" # f-string formatting.
             doc.style.tocitem(command_name, file_name=file_name)
         else:
             doc.style.tocitem(command_name)
-
+service_uid
 #Global constants for document sections
 DESCRIPTION = 'Description'
 OUTPUT = 'Output'
@@ -434,7 +434,7 @@ class OperationDocumentEventHandler(CLIDocumentEventHandler):
             # If there's no service_uid in the model, we can't
             # be certain if the generated cross link will work
             # so we don't generate any crosslink info.
-            return
+            raise ValueError("Missing service_uid in service_model metadata") #Add error message for missing service_uid
         doc.style.new_paragraph()
         doc.write("See also: ")
         link = '%s/%s/%s' % (self.AWS_DOC_BASE, service_uid,

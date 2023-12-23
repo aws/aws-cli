@@ -739,6 +739,7 @@ class TopicDocumentEventHandler(TopicListerDocumentEventHandler):
         doc.style.new_paragraph()
 
     def _remove_tags_from_content(self, filename):
+        "Removes tags from the content of the given file."
         with open(filename, 'r') as f:
             lines = f.readlines()
 

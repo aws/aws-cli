@@ -274,19 +274,24 @@ class CLIDriver(object):
             # Unfortunately, by setting debug mode here, we miss out
             # on all of the debug events prior to this such as the
             # loading of plugins, etc.
-            self.session.set_stream_logger('botocore', logging.DEBUG,
+            BOTOCORE = 'botocore'
+            USER_AGENT_NAME = 'aws-cli'
+            AWSCLI = 'awscli'
+            S3TRANSFER = 's3transfer'
+            URLLIB3 = 'urllib3'
+            self.session.set_stream_logger(BOTOCORE, logging.DEBUG,
                                            format_string=LOG_FORMAT)
-            self.session.set_stream_logger('awscli', logging.DEBUG,
+            self.session.set_stream_logger(AWSCLI, logging.DEBUG,
                                            format_string=LOG_FORMAT)
-            self.session.set_stream_logger('s3transfer', logging.DEBUG,
+            self.session.set_stream_logger(S3TRANSFER, logging.DEBUG,
                                            format_string=LOG_FORMAT)
-            self.session.set_stream_logger('urllib3', logging.DEBUG,
+            self.session.set_stream_logger(URLLIB3, logging.DEBUG,
                                            format_string=LOG_FORMAT)
             LOG.debug("CLI version: %s", self.session.user_agent())
             LOG.debug("Arguments entered to CLI: %s", sys.argv[1:])
 
         else:
-            self.session.set_stream_logger(logger_name='awscli',
+            self.session.set_stream_logger(logger_name=AWSCLI,
                                            log_level=logging.ERROR)
 
 

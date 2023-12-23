@@ -740,8 +740,12 @@ class TopicDocumentEventHandler(TopicListerDocumentEventHandler):
 
     def _remove_tags_from_content(self, filename):
         "Removes tags from the content of the given file."
-        with open(filename, 'r') as f:
-            lines = f.readlines()
+        try:
+            with open(filename, 'r') as f:
+                 lines
+        except IOError:
+            print(f"Error opening file {filename}")
+        
 
         content_begin_index = 0
         for i, line in enumerate(lines):

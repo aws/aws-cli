@@ -84,8 +84,7 @@ def create_clidriver():
 def _set_user_agent_for_session(session):
     session.user_agent_name = 'aws-cli'
     session.user_agent_version = __version__
-    session.user_agent_extra = 'botocore/%s' % botocore_version
-
+    session.user_agent_extra = f'botocore/{botocore_version}' # Use f-string
 
 class CLIDriver(object):
 

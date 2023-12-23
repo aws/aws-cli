@@ -652,6 +652,7 @@ class TopicListerDocumentEventHandler(CLIDocumentEventHandler):
         doc.style.link_target_definition(
             refname='cli:aws help %s' % self.help_command.name,
             link='')
+        f"cli:aws help {self.help_command.name}" # f-string formatting.
         doc.style.h1('AWS CLI Topic Guide')
 
     def doc_description(self, help_command, **kwargs):
@@ -739,21 +740,47 @@ class TopicDocumentEventHandler(TopicListerDocumentEventHandler):
         doc.style.new_paragraph()
 
     def _remove_tags_from_content(self, filename):
-        "Removes tags from the content of the given file."
-        try:
-            with open(filename, 'r') as f:
-                 lines
-        except IOError:
-            print(f"Error opening file {filename}")
-        
+        def _remove_tags_from_content(self, filename):
+            """Removes tags from the content of the given file."""
+            try:
+                with open(filename, 'r') as f:
+                    lines = f.readlines()
+            except IOError:
+                print(f"Error opening file {filename}")
 
-        content_begin_index = 0
-        for i, line in enumerate(lines):
-            # If a line is encountered that does not begin with the tag
-            # end the search for tags and mark where tags end.
-            if not self._line_has_tag(line):
-                content_begin_index = i
-                break
+            content_begin_index = 0
+            for i, line in enumerate(lines):
+                # If a line is encountered that does not begin with the tag,
+                # end the search for tags and mark where tags end.
+                if not self._line_has_tag(line):
+                    content_begin_index = i
+                    break
+            # Join all of the non-tagged lines back together.
+            return ''.join(lines[content_begin_index:])
+
+
+        def _line_has_tag(self, line):
+            for tag in self._topic_tag_db.valid_tags:
+                if line.startswith(':' + tag + ':'):
+                    return True
+            return False
+
+
+        def doc_subitems_start(self, help_command, **kwargs):
+            pass
+
+
+        class GlobalOptionsDocumenter:
+            """Documenter used to pre-generate global options docs."""
+
+            def __init__(self, help_command):
+                self._help_command = help_command
+
+            def _remove_multilines(self, s):
+                return re.sub(r'\n+', '\n', s)
+
+            def doc_global_options(self):
+                help_command = self._help_command
 
         # Join all of the non-tagged lines back together.
         return ''.join(lines[content_begin_index:])

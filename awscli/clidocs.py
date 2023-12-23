@@ -307,6 +307,8 @@ class ArgumentType(Enum):
 
 # Global constants for document sections
 SYNOPSIS = 'Synopsis'
+AVAILABLE_SERVICES = 'Available Services'
+AVAILABLE_COMMANDS = 'Available Commands'
 class ProviderDocumentEventHandler(CLIDocumentEventHandler):
 
     def doc_breadcrumbs(self, help_command, event_name, **kwargs):
@@ -333,7 +335,7 @@ class ProviderDocumentEventHandler(CLIDocumentEventHandler):
 
     def doc_subitems_start(self, help_command, **kwargs):
         doc = help_command.doc
-        doc.style.h2('Available Services')
+        doc.style.h2(AVAILABLE_SERVICES) # Replace magic string with global constant
         doc.style.toctree()
 
     def doc_subitem(self, command_name, help_command, **kwargs):
@@ -381,7 +383,7 @@ class ServiceDocumentEventHandler(CLIDocumentEventHandler):
 
     def doc_subitems_start(self, help_command, **kwargs):
         doc = help_command.doc
-        doc.style.h2('Available Commands')
+        doc.style.h2(AVAILABLE_COMMANDS) # Replace magic string with global constant
         doc.style.toctree()
 
     def doc_subitem(self, command_name, help_command, **kwargs):
@@ -611,6 +613,7 @@ class OperationDocumentEventHandler(CLIDocumentEventHandler):
 
 #Global constants for document sections
 DESCRIPTION = 'Description'
+AVAILABLE_TOPICS = 'Available Topics'
 class TopicListerDocumentEventHandler(CLIDocumentEventHandler):
     DESCRIPTION = (
         'This is the AWS CLI Topic Guide. It gives access to a set '
@@ -664,7 +667,7 @@ class TopicListerDocumentEventHandler(CLIDocumentEventHandler):
 
     def doc_subitems_start(self, help_command, **kwargs):
         doc = help_command.doc
-        doc.style.h2('Available Topics')
+        doc.style.h2(AVAILABLE_TOPICS) # Replace magic string with global constant
 
         categories = self._topic_tag_db.query('category')
         topic_names = self._topic_tag_db.get_all_topic_names()

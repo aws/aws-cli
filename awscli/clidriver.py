@@ -63,6 +63,7 @@ HISTORY_RECORDER = get_global_history_recorder()
 # which will stop the LookupErrors from happening.
 # See: https://bugs.python.org/issue29288
 u''.encode('idna')
+""" Used to ensure the idna encoding is registered in the codecs registry."""
 
 
 def main():
@@ -291,7 +292,7 @@ class CLIDriver(object):
             LOG.debug("Arguments entered to CLI: %s", sys.argv[1:])
 
         else:
-            self.session.set_stream_logger(logger_name=AWSCLI,
+            self.session.set_stream_logger(logger_name=AWSCLI   ,
                                            log_level=logging.ERROR)
 
 

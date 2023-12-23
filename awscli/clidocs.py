@@ -312,6 +312,17 @@ AVAILABLE_COMMANDS = 'Available Commands'
 class ProviderDocumentEventHandler(CLIDocumentEventHandler):
 
     def doc_breadcrumbs(self, help_command, event_name, **kwargs):
+        """
+        This method generates breadcrumbs for the documentation of a command.
+
+        Args:
+            help_command (str): The command for which breadcrumbs are generated.
+            event_name (str): The event name associated with the command.
+            **kwargs: Additional keyword arguments.
+
+        Returns:
+            None
+        """
         pass
 
     def doc_synopsis_start(self, help_command, **kwargs):

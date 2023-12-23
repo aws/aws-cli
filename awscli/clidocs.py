@@ -426,6 +426,7 @@ class OperationDocumentEventHandler(CLIDocumentEventHandler):
 
 
     def _add_webapi_crosslink(self, help_command):
+        """ Adds a crosslink to the AWS API documentation for the operation."""
         doc = help_command.doc
         operation_model = help_command.obj
         service_model = operation_model.service_model

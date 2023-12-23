@@ -89,16 +89,23 @@ def _set_user_agent_for_session(session):
 
 class CLIDriver(object):
 
-    def __init__(self, session=None):
-        if session is None:
-            self.session = botocore.session.get_session(EnvironmentVariables)
-            _set_user_agent_for_session(self.session)
-        else:
-            self.session = session
-        self._cli_data = None
-        self._command_table = None
-        self._argument_table = None
-        self.alias_loader = AliasLoader()
+    class CLIDriver:
+        """
+        The main driver class for the AWS CLI.
+        Args:
+            session (botocore.session.Session): The session object to use for the CLI. 
+            If not provided, a new session will be created. """
+        def __init__(self, session=None):
+            """Initializes the CLIDriver object."""
+            if session is None:
+                self.session = botocore.session.get_session(EnvironmentVariables)
+                _set_user_agent_for_session(self.session)
+            else:
+                self.session = session
+            self._cli_data = None
+            self._command_table = None
+            self._argument_table = None
+            self.alias_loader = AliasLoader() 
 
     def _get_cli_data(self):
         # Not crazy about this but the data in here is needed in

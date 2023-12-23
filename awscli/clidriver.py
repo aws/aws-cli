@@ -67,6 +67,13 @@ u''.encode('idna')
 
 
 def main():
+    """
+    Entry point for the AWS CLI.
+    This function creates the CLIDriver object, executes the main command,
+    and records the return code in the global history recorder.
+    Returns:
+        int: The return code of the main command execution.
+    """
     driver = create_clidriver()
     rc = driver.main()
     HISTORY_RECORDER.record('CLI_RC', rc, 'CLI')

@@ -781,9 +781,13 @@ class TopicDocumentEventHandler(TopicListerDocumentEventHandler):
 
             def doc_global_options(self):
                 help_command = self._help_command
+                # Fix 1: Define the 'lines' variable
+                lines = []
+                # Fix 2: Define the 'content_begin_index' variable
+                content_begin_index = 0
 
-        # Join all of the non-tagged lines back together.
-        return ''.join(lines[content_begin_index:])
+                # Join all of the non-tagged lines back together.
+                return ''.join(lines[content_begin_index:])
 
     def _line_has_tag(self, line):
         for tag in self._topic_tag_db.valid_tags:

@@ -408,12 +408,12 @@ class ServiceDocumentEventHandler(CLIDocumentEventHandler):
             doc.style.tocitem(command_name, file_name=file_name)
         else:
             doc.style.tocitem(command_name)
-            
+
 #Global constants for document sections
 DESCRIPTION = 'Description'
 OUTPUT = 'Output'
 
-AWS_DOC_BASE = 'https://docs.aws.amazon.com/goto/WebAPI'
+AWS_DOC_BASE = 'https://docs.aws.amazon.com/goto/WebAPI' #Now global 
 class OperationDocumentEventHandler(CLIDocumentEventHandler):
 
     def doc_description(self, help_command, **kwargs):

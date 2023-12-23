@@ -350,7 +350,7 @@ class ProviderDocumentEventHandler(CLIDocumentEventHandler):
 
     def doc_subitem(self, command_name, help_command, **kwargs):
         doc = help_command.doc
-        file_name = '%s/index' % command_name
+        file_name = f'{command_name}/index' # f-string formatting.
         doc.style.tocitem(command_name, file_name=file_name)
 
 

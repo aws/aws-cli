@@ -408,7 +408,7 @@
         {"shape":"ResourceNumberLimitExceededException"},
         {"shape":"GlueEncryptionException"}
       ],
-      "documentation":"<p>Creates a connection definition in the Data Catalog.</p>"
+      "documentation":"<p>Creates a connection definition in the Data Catalog.</p> <p>Connections used for creating federated resources require the IAM <code>glue:PassConnection</code> permission.</p>"
     },
     "CreateCrawler":{
       "name":"CreateCrawler",
@@ -3589,6 +3589,11 @@
       "type":"list",
       "member":{"shape":"Action"}
     },
+    "AdditionalContextMap":{
+      "type":"map",
+      "key":{"shape":"ContextKey"},
+      "value":{"shape":"ContextValue"}
+    },
     "AdditionalOptionKeys":{
       "type":"string",
       "enum":[
@@ -6475,6 +6480,16 @@
       "type":"map",
       "key":{"shape":"GenericString"},
       "value":{"shape":"GenericString"}
+    },
+    "ContextKey":{
+      "type":"string",
+      "max":128,
+      "min":1
+    },
+    "ContextValue":{
+      "type":"string",
+      "max":256,
+      "min":0
     },
     "ContextWords":{
       "type":"list",
@@ -10475,8 +10490,12 @@
     "FederationSourceRetryableException":{
       "type":"structure",
       "members":{
-        "Message":{"shape":"MessageString"}
+        "Message":{
+          "shape":"MessageString",
+          "documentation":"<p>A message describing the problem.</p>"
+        }
       },
+      "documentation":"<p>A federation source failed, but the operation may be retried.</p>",
       "exception":true
     },
     "FieldName":{
@@ -12849,6 +12868,10 @@
         "SupportedPermissionTypes"
       ],
       "members":{
+        "Region":{
+          "shape":"ValueString",
+          "documentation":"<p>Specified only if the base tables belong to a different Amazon Web Services Region.</p>"
+        },
         "CatalogId":{
           "shape":"CatalogIdString",
           "documentation":"<p>The catalog ID where the partition resides.</p>"
@@ -12872,6 +12895,10 @@
         "SupportedPermissionTypes":{
           "shape":"PermissionTypeList",
           "documentation":"<p>(Required) A list of supported permission types. </p>"
+        },
+        "QuerySessionContext":{
+          "shape":"QuerySessionContext",
+          "documentation":"<p>A structure used as a protocol between query engines and Lake Formation or Glue. Contains both a Lake Formation generated authorization identifier and information from the request's authorization context.</p>"
         }
       }
     },
@@ -12901,6 +12928,10 @@
         "SupportedPermissionTypes"
       ],
       "members":{
+        "Region":{
+          "shape":"ValueString",
+          "documentation":"<p>Specified only if the base tables belong to a different Amazon Web Services Region.</p>"
+        },
         "CatalogId":{
           "shape":"CatalogIdString",
           "documentation":"<p>The ID of the Data Catalog where the partitions in question reside. If none is provided, the AWS account ID is used by default. </p>"
@@ -12936,6 +12967,10 @@
         "MaxResults":{
           "shape":"PageSize",
           "documentation":"<p>The maximum number of partitions to return in a single response.</p>"
+        },
+        "QuerySessionContext":{
+          "shape":"QuerySessionContext",
+          "documentation":"<p>A structure used as a protocol between query engines and Lake Formation or Glue. Contains both a Lake Formation generated authorization identifier and information from the request's authorization context.</p>"
         }
       }
     },
@@ -12961,6 +12996,10 @@
         "SupportedPermissionTypes"
       ],
       "members":{
+        "Region":{
+          "shape":"ValueString",
+          "documentation":"<p>Specified only if the base tables belong to a different Amazon Web Services Region.</p>"
+        },
         "CatalogId":{
           "shape":"CatalogIdString",
           "documentation":"<p>The catalog ID where the table resides.</p>"
@@ -12980,6 +13019,18 @@
         "SupportedPermissionTypes":{
           "shape":"PermissionTypeList",
           "documentation":"<p>(Required) A list of supported permission types. </p>"
+        },
+        "SupportedDialect":{
+          "shape":"SupportedDialect",
+          "documentation":"<p>A structure specifying the dialect and dialect version used by the query engine.</p>"
+        },
+        "Permissions":{
+          "shape":"PermissionList",
+          "documentation":"<p>The Lake Formation data permissions of the caller on the table. Used to authorize the call when no view context is found.</p>"
+        },
+        "QuerySessionContext":{
+          "shape":"QuerySessionContext",
+          "documentation":"<p>A structure used as a protocol between query engines and Lake Formation or Glue. Contains both a Lake Formation generated authorization identifier and information from the request's authorization context.</p>"
         }
       }
     },
@@ -13001,6 +13052,18 @@
         "CellFilters":{
           "shape":"ColumnRowFilterList",
           "documentation":"<p>A list of column row filters.</p>"
+        },
+        "QueryAuthorizationId":{
+          "shape":"HashString",
+          "documentation":"<p>A cryptographically generated query identifier generated by Glue or Lake Formation.</p>"
+        },
+        "ResourceArn":{
+          "shape":"ArnString",
+          "documentation":"<p>The resource ARN of the parent resource extracted from the request.</p>"
+        },
+        "Permissions":{
+          "shape":"PermissionList",
+          "documentation":"<p>The Lake Formation data permissions of the caller on the table. Used to authorize the call when no view context is found.</p>"
         }
       }
     },
@@ -16055,6 +16118,10 @@
       "type":"integer",
       "box":true
     },
+    "NullableString":{
+      "type":"string",
+      "box":true
+    },
     "OneInput":{
       "type":"list",
       "member":{"shape":"NodeId"},
@@ -16929,6 +16996,32 @@
           "documentation":"<p>A continuation token for paginating the returned list of tokens, returned if the current segment of the list is not the last.</p>"
         }
       }
+    },
+    "QuerySessionContext":{
+      "type":"structure",
+      "members":{
+        "QueryId":{
+          "shape":"HashString",
+          "documentation":"<p>A unique identifier generated by the query engine for the query.</p>"
+        },
+        "QueryStartTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>A timestamp provided by the query engine for when the query started.</p>"
+        },
+        "ClusterId":{
+          "shape":"NullableString",
+          "documentation":"<p>An identifier string for the consumer cluster.</p>"
+        },
+        "QueryAuthorizationId":{
+          "shape":"HashString",
+          "documentation":"<p>A cryptographically generated query identifier generated by Glue or Lake Formation.</p>"
+        },
+        "AdditionalContext":{
+          "shape":"AdditionalContextMap",
+          "documentation":"<p>An opaque string-string map passed by the query engine.</p>"
+        }
+      },
+      "documentation":"<p>A structure used as a protocol between query engines and Lake Formation or Glue. Contains both a Lake Formation generated authorization identifier and information from the request's authorization context.</p>"
     },
     "QuoteChar":{
       "type":"string",
@@ -19942,6 +20035,20 @@
       "type":"list",
       "member":{"shape":"GenericString"}
     },
+    "SupportedDialect":{
+      "type":"structure",
+      "members":{
+        "Dialect":{
+          "shape":"ViewDialect",
+          "documentation":"<p>The dialect of the query engine.</p>"
+        },
+        "DialectVersion":{
+          "shape":"ViewDialectVersionString",
+          "documentation":"<p>The version of the dialect of the query engine. For example, 3.0.0.</p>"
+        }
+      },
+      "documentation":"<p>A structure specifying the dialect and dialect version used by the query engine.</p>"
+    },
     "Table":{
       "type":"structure",
       "required":["Name"],
@@ -21919,6 +22026,19 @@
       "max":100000,
       "min":1,
       "pattern":"[1-9][0-9]*|[1-9][0-9]*-[1-9][0-9]*"
+    },
+    "ViewDialect":{
+      "type":"string",
+      "enum":[
+        "REDSHIFT",
+        "ATHENA",
+        "SPARK"
+      ]
+    },
+    "ViewDialectVersionString":{
+      "type":"string",
+      "max":255,
+      "min":1
     },
     "ViewTextString":{
       "type":"string",

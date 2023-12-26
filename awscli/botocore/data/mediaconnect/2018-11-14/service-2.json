@@ -677,6 +677,48 @@
       ],
       "documentation": "Displays the details of a flow. The response includes the flow ARN, name, and Availability Zone, as well as details about the source, outputs, and entitlements."
     },
+    "DescribeFlowSourceMetadata": {
+      "name": "DescribeFlowSourceMetadata",
+      "http": {
+        "method": "GET",
+        "requestUri": "/v1/flows/{flowArn}/source-metadata",
+        "responseCode": 200
+      },
+      "input": {
+        "shape": "DescribeFlowSourceMetadataRequest"
+      },
+      "output": {
+        "shape": "DescribeFlowSourceMetadataResponse",
+        "documentation": "Flow source metadata successfully described."
+      },
+      "errors": [
+        {
+          "shape": "BadRequestException",
+          "documentation": "The request that you submitted is not valid."
+        },
+        {
+          "shape": "InternalServerErrorException",
+          "documentation": "AWS Elemental MediaConnect can't fulfill your request because it encountered an unexpected condition."
+        },
+        {
+          "shape": "ForbiddenException",
+          "documentation": "You don't have the required permissions to perform this operation."
+        },
+        {
+          "shape": "NotFoundException",
+          "documentation": "AWS Elemental MediaConnect did not find the resource that you specified in the request."
+        },
+        {
+          "shape": "ServiceUnavailableException",
+          "documentation": "AWS Elemental MediaConnect is currently unavailable. Try again later."
+        },
+        {
+          "shape": "TooManyRequestsException",
+          "documentation": "You have exceeded the service request rate limit for your AWS Elemental MediaConnect account."
+        }
+      ],
+      "documentation": "Displays details of the flow's source stream. The response contains information about the contents of the stream and its programs."
+    },
     "DescribeGateway": {
       "name": "DescribeGateway",
       "http": {
@@ -3333,6 +3375,44 @@
         }
       }
     },
+    "DescribeFlowSourceMetadataRequest": {
+      "type": "structure",
+      "members": {
+        "FlowArn": {
+          "shape": "__string",
+          "location": "uri",
+          "locationName": "flowArn",
+          "documentation": "The Amazon Resource Name (ARN) of the flow."
+        }
+      },
+      "required": [
+        "FlowArn"
+      ]
+    },
+    "DescribeFlowSourceMetadataResponse": {
+      "type": "structure",
+      "members": {
+        "FlowArn": {
+          "shape": "__string",
+          "locationName": "flowArn",
+          "documentation": "The ARN of the flow that DescribeFlowSourceMetadata was performed on."
+        },
+        "Messages": {
+          "shape": "__listOfMessageDetail",
+          "locationName": "messages",
+          "documentation": "Provides a status code and message regarding issues found with the flow source metadata."
+        },
+        "Timestamp": {
+          "shape": "__timestampIso8601",
+          "locationName": "timestamp",
+          "documentation": "The timestamp of the most recent change in metadata for this flow’s source."
+        },
+        "TransportMediaInfo": {
+          "shape": "TransportMediaInfo",
+          "locationName": "transportMediaInfo"
+        }
+      }
+    },
     "DescribeGatewayInstanceRequest": {
       "type": "structure",
       "members": {
@@ -3892,6 +3972,26 @@
       "error": {
         "httpStatusCode": 403
       }
+    },
+    "FrameResolution": {
+      "type": "structure",
+      "members": {
+        "FrameHeight": {
+          "shape": "__integer",
+          "locationName": "frameHeight",
+          "documentation": "The number of pixels in the height of the video frame."
+        },
+        "FrameWidth": {
+          "shape": "__integer",
+          "locationName": "frameWidth",
+          "documentation": "The number of pixels in the width of the video frame."
+        }
+      },
+      "documentation": "The frame resolution used by the video stream.",
+      "required": [
+        "FrameWidth",
+        "FrameHeight"
+      ]
     },
     "Gateway": {
       "type": "structure",
@@ -6065,6 +6165,106 @@
         "Protocol"
       ]
     },
+    "TransportMediaInfo": {
+      "type": "structure",
+      "members": {
+        "Programs": {
+          "shape": "__listOfTransportStreamProgram",
+          "locationName": "programs",
+          "documentation": "The list of transport stream programs in the current flow's source."
+        }
+      },
+      "documentation": "The metadata of the transport stream in the current flow's source.",
+      "required": [
+        "Programs"
+      ]
+    },
+    "TransportStream": {
+      "type": "structure",
+      "members": {
+        "Channels": {
+          "shape": "__integer",
+          "locationName": "channels",
+          "documentation": "The number of channels in the audio stream."
+        },
+        "Codec": {
+          "shape": "__string",
+          "locationName": "codec",
+          "documentation": "The codec used by the stream."
+        },
+        "FrameRate": {
+          "shape": "__string",
+          "locationName": "frameRate",
+          "documentation": "The frame rate used by the video stream."
+        },
+        "FrameResolution": {
+          "shape": "FrameResolution",
+          "locationName": "frameResolution"
+        },
+        "Pid": {
+          "shape": "__integer",
+          "locationName": "pid",
+          "documentation": "The Packet ID (PID) as it is reported in the Program Map Table."
+        },
+        "SampleRate": {
+          "shape": "__integer",
+          "locationName": "sampleRate",
+          "documentation": "The sample rate used by the audio stream."
+        },
+        "SampleSize": {
+          "shape": "__integer",
+          "locationName": "sampleSize",
+          "documentation": "The sample bit size used by the audio stream."
+        },
+        "StreamType": {
+          "shape": "__string",
+          "locationName": "streamType",
+          "documentation": "The Stream Type as it is reported in the Program Map Table."
+        }
+      },
+      "documentation": "The metadata of an elementary transport stream.",
+      "required": [
+        "StreamType",
+        "Pid"
+      ]
+    },
+    "TransportStreamProgram": {
+      "type": "structure",
+      "members": {
+        "PcrPid": {
+          "shape": "__integer",
+          "locationName": "pcrPid",
+          "documentation": "The Program Clock Reference (PCR) Packet ID (PID) as it is reported in the Program Association Table."
+        },
+        "ProgramName": {
+          "shape": "__string",
+          "locationName": "programName",
+          "documentation": "The program name as it is reported in the Program Association Table."
+        },
+        "ProgramNumber": {
+          "shape": "__integer",
+          "locationName": "programNumber",
+          "documentation": "The program number as it is reported in the Program Association Table."
+        },
+        "ProgramPid": {
+          "shape": "__integer",
+          "locationName": "programPid",
+          "documentation": "The program Packet ID (PID) as it is reported in the Program Association Table."
+        },
+        "Streams": {
+          "shape": "__listOfTransportStream",
+          "locationName": "streams",
+          "documentation": "The list of elementary transport streams in the program. The list includes video, audio, and data streams."
+        }
+      },
+      "documentation": "The metadata of a single transport stream program.",
+      "required": [
+        "ProgramPid",
+        "PcrPid",
+        "ProgramNumber",
+        "Streams"
+      ]
+    },
     "UntagResourceRequest": {
       "type": "structure",
       "members": {
@@ -7167,6 +7367,18 @@
       "type": "list",
       "member": {
         "shape": "Source"
+      }
+    },
+    "__listOfTransportStream": {
+      "type": "list",
+      "member": {
+        "shape": "TransportStream"
+      }
+    },
+    "__listOfTransportStreamProgram": {
+      "type": "list",
+      "member": {
+        "shape": "TransportStreamProgram"
       }
     },
     "__listOfVpcInterface": {

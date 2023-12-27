@@ -2,6 +2,12 @@
 CHANGELOG
 =========
 
+1.32.9
+======
+
+* api-change:``emr``: Update emr command to latest version
+
+
 1.32.8
 ======
 

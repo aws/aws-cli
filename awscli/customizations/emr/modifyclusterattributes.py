@@ -36,6 +36,12 @@ class ModifyClusterAttr(Command):
         {'name': 'no-termination-protected', 'required': False, 'action':
             'store_true', 'group_name': 'terminate',
             'help_text': 'Set termination protection on or off'},
+        {'name': 'auto-terminate', 'required': False, 'action':
+            'store_true', 'group_name': 'auto_terminate',
+            'help_text': 'Set cluster auto terminate after completing all the steps on or off'},
+        {'name': 'no-auto-terminate', 'required': False, 'action':
+            'store_true', 'group_name': 'auto_terminate',
+            'help_text': 'Set cluster auto terminate after completing all the steps on or off'},
     ]
 
     def _run_main_command(self, args, parsed_globals):
@@ -48,8 +54,13 @@ class ModifyClusterAttr(Command):
             raise exceptions.MutualExclusiveOptionError(
                 option1='--termination-protected',
                 option2='--no-termination-protected')
+        if (args.auto_terminate and args.no_auto_terminate):
+            raise exceptions.MutualExclusiveOptionError(
+                option1='--auto-terminate',
+                option2='--no-auto-terminate')
         if not(args.termination_protected or args.no_termination_protected or
-               args.visible_to_all_users or args.no_visible_to_all_users):
+               args.visible_to_all_users or args.no_visible_to_all_users or
+               args.auto_terminate or args.no_auto_terminate):
             raise exceptions.MissingClusterAttributesError()
 
         if (args.visible_to_all_users or args.no_visible_to_all_users):
@@ -69,4 +80,14 @@ class ModifyClusterAttr(Command):
             emrutils.call_and_display_response(self._session,
                                                'SetTerminationProtection',
                                                parameters, parsed_globals)
+
+        if (args.auto_terminate or args.no_auto_terminate):
+            auto_terminate = (args.auto_terminate and
+                         not args.no_auto_terminate)
+            parameters = {'JobFlowIds': [args.cluster_id],
+                          'KeepJobFlowAliveWhenNoSteps': not auto_terminate}
+            emrutils.call_and_display_response(self._session,
+                                               'SetKeepJobFlowAliveWhenNoSteps',
+                                               parameters, parsed_globals)
+
         return 0

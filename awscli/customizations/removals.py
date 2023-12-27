@@ -39,6 +39,7 @@ def register_removals(event_handler):
                                         'list-bootstrap-actions',
                                         'list-instance-groups',
                                         'set-termination-protection',
+                                        'set-keep-job-flow-alive-when-no-steps',
                                         'set-visible-to-all-users'])
     cmd_remover.remove(on_event='building-command-table.kinesis',
                        remove_commands=['subscribe-to-shard'])

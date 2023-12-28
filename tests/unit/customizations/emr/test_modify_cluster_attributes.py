@@ -81,7 +81,7 @@ class TestModifyClusterAttributes(BaseAWSCommandParamsTest):
         expected_error_msg = (
             '\naws: error: You cannot specify both --auto-terminate '
             'and --no-auto-terminate options together.\n')
-        result = self.run_cmd(cmdline, 255)
+        result = self.run_cmd(cmdline, 252)
         self.assertEqual(expected_error_msg, result[1])
 
     def test_termination_protected_and_visible_to_all(self):
@@ -120,7 +120,7 @@ class TestModifyClusterAttributes(BaseAWSCommandParamsTest):
             '--visible-to-all-users|--no-visible-to-all-users, '
             '--termination-protected|--no-termination-protected, '
             '--auto-terminate|--no-auto-terminate.\n')
-        result = self.run_cmd(cmdline, 255)
+        result = self.run_cmd(cmdline, 252)
         self.assertEqual(expected_error_msg, result[1])
 
 if __name__ == "__main__":

@@ -84,9 +84,10 @@
         {"shape":"ResourceNotFoundException"},
         {"shape":"InvalidArgumentException"},
         {"shape":"ClientLimitExceededException"},
-        {"shape":"NotAuthorizedException"}
+        {"shape":"NotAuthorizedException"},
+        {"shape":"NoDataRetentionException"}
       ],
-      "documentation":"<p>Retrieves a list of Images corresponding to each timestamp for a given time range, sampling interval, and image format configuration.</p>"
+      "documentation":"<p>Retrieves a list of images corresponding to each timestamp for a given time range, sampling interval, and image format configuration.</p>"
     },
     "GetMediaForFragmentList":{
       "name":"GetMediaForFragmentList",
@@ -508,7 +509,7 @@
         },
         "SamplingInterval":{
           "shape":"SamplingInterval",
-          "documentation":"<p>The time interval in milliseconds (ms) at which the images need to be generated from the stream, with a default of 3000 ms. The minimum value that can be provided is 200 ms. If the timestamp range is less than the sampling interval, the Image from the <code>startTimestamp</code> will be returned if available. </p> <note> <p>The minimum value of 200 ms is a hard limit.</p> </note>"
+          "documentation":"<p>The time interval in milliseconds (ms) at which the images need to be generated from the stream. The minimum value that can be provided is 200 ms (5 images per second). If the timestamp range is less than the sampling interval, the image from the <code>startTimestamp</code> will be returned if available. </p>"
         },
         "Format":{
           "shape":"Format",
@@ -746,7 +747,7 @@
         },
         "FragmentSelector":{
           "shape":"FragmentSelector",
-          "documentation":"<p>Describes the timestamp range and timestamp origin for the range of fragments to return.</p>"
+          "documentation":"<p>Describes the timestamp range and timestamp origin for the range of fragments to return.</p> <note> <p>This is only required when the <code>NextToken</code> isn't passed in the API.</p> </note>"
         }
       }
     },
@@ -789,7 +790,7 @@
       "members":{
         "Message":{"shape":"ErrorMessage"}
       },
-      "documentation":"<p>A streaming session was requested for a stream that does not retain data (that is, has a <code>DataRetentionInHours</code> of 0). </p>",
+      "documentation":"<p> <code>GetImages</code> was requested for a stream that does not retain data (that is, has a <code>DataRetentionInHours</code> of 0). </p>",
       "error":{"httpStatusCode":400},
       "exception":true
     },

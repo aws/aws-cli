@@ -42,6 +42,18 @@ class TestModifyClusterAttributes(BaseAWSCommandParamsTest):
         result = {'JobFlowIds': ['j-ABC123456'], 'TerminationProtected': False}
         self.assert_params_for_cmd(cmdline, result)
 
+    def test_no_auto_terminate(self):
+        args = ' --cluster-id j-ABC123456 --no-auto-terminate'
+        cmdline = self.prefix + args
+        result = {'JobFlowIds': ['j-ABC123456'], 'KeepJobFlowAliveWhenNoSteps': True}
+        self.assert_params_for_cmd(cmdline, result)
+
+    def test_auto_terminate(self):
+        args = ' --cluster-id j-ABC123456 --auto-terminate'
+        cmdline = self.prefix + args
+        result = {'JobFlowIds': ['j-ABC123456'], 'KeepJobFlowAliveWhenNoSteps': False}
+        self.assert_params_for_cmd(cmdline, result)
+
     def test_visible_to_all_and_no_visible_to_all(self):
         args = ' --cluster-id j-ABC123456 --no-visible-to-all-users'\
                ' --visible-to-all-users'
@@ -59,6 +71,16 @@ class TestModifyClusterAttributes(BaseAWSCommandParamsTest):
         expected_error_msg = (
             '\naws: error: You cannot specify both --termination-protected '
             'and --no-termination-protected options together.\n')
+        result = self.run_cmd(cmdline, 252)
+        self.assertEqual(expected_error_msg, result[1])
+
+    def test_auto_terminate_and_no_auto_terminate(self):
+        args = ' --cluster-id j-ABC123456 --auto-terminate'\
+               ' --no-auto-terminate'
+        cmdline = self.prefix + args
+        expected_error_msg = (
+            '\naws: error: You cannot specify both --auto-terminate '
+            'and --no-auto-terminate options together.\n')
         result = self.run_cmd(cmdline, 252)
         self.assertEqual(expected_error_msg, result[1])
 
@@ -96,7 +118,8 @@ class TestModifyClusterAttributes(BaseAWSCommandParamsTest):
         expected_error_msg = (
             '\naws: error: Must specify one of the following boolean options: '
             '--visible-to-all-users|--no-visible-to-all-users, '
-            '--termination-protected|--no-termination-protected.\n')
+            '--termination-protected|--no-termination-protected, '
+            '--auto-terminate|--no-auto-terminate.\n')
         result = self.run_cmd(cmdline, 252)
         self.assertEqual(expected_error_msg, result[1])
 

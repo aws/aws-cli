@@ -16363,6 +16363,20 @@
         }
       }
     },
+    "DockerSettings":{
+      "type":"structure",
+      "members":{
+        "EnableDockerAccess":{
+          "shape":"FeatureStatus",
+          "documentation":"<p>Indicates whether the domain can access Docker.</p>"
+        },
+        "VpcOnlyTrustedAccounts":{
+          "shape":"VpcOnlyTrustedAccounts",
+          "documentation":"<p>The list of Amazon Web Services accounts that are trusted when the domain is created in VPC-only mode.</p>"
+        }
+      },
+      "documentation":"<p>A collection of settings that configure the domain's Docker interaction.</p>"
+    },
     "DocumentSchemaVersion":{
       "type":"string",
       "max":14,
@@ -16446,6 +16460,10 @@
         "ExecutionRoleIdentityConfig":{
           "shape":"ExecutionRoleIdentityConfig",
           "documentation":"<p>The configuration for attaching a SageMaker user profile name to the execution role as a <a href=\"https://docs.aws.amazon.com/IAM/latest/UserGuide/id_credentials_temp_control-access_monitor.html\">sts:SourceIdentity key</a>.</p>"
+        },
+        "DockerSettings":{
+          "shape":"DockerSettings",
+          "documentation":"<p>A collection of settings that configure the domain's Docker interaction.</p>"
         }
       },
       "documentation":"<p>A collection of settings that apply to the <code>SageMaker Domain</code>. These settings are specified through the <code>CreateDomain</code> API call.</p>"
@@ -16464,6 +16482,10 @@
         "SecurityGroupIds":{
           "shape":"DomainSecurityGroupIds",
           "documentation":"<p>The security groups for the Amazon Virtual Private Cloud that the <code>Domain</code> uses for communication between Domain-level apps and user apps.</p>"
+        },
+        "DockerSettings":{
+          "shape":"DockerSettings",
+          "documentation":"<p>A collection of settings that configure the domain's Docker interaction.</p>"
         }
       },
       "documentation":"<p>A collection of <code>Domain</code> configuration settings to update.</p>"
@@ -37098,6 +37120,10 @@
       "type":"string",
       "max":32,
       "pattern":"[-0-9a-zA-Z]+"
+    },
+    "VpcOnlyTrustedAccounts":{
+      "type":"list",
+      "member":{"shape":"AccountId"}
     },
     "VpcSecurityGroupIds":{
       "type":"list",

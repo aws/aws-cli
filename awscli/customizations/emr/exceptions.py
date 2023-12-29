@@ -260,12 +260,13 @@ class MissingClusterAttributesError(EmrError, ParamValidationError):
     """
     In the modify-cluster-attributes command, customers need to provide
     at least one of the following cluster attributes: --visible-to-all-users,
-    --no-visible-to-all-users, --termination-protected
-    and --no-termination-protected
+    --no-visible-to-all-users, --termination-protected, --no-termination-protected,
+    --auto-terminate and --no-auto-terminate
     """
     fmt = ('aws: error: Must specify one of the following boolean options: '
            '--visible-to-all-users|--no-visible-to-all-users, '
-           '--termination-protected|--no-termination-protected.')
+           '--termination-protected|--no-termination-protected, '
+           '--auto-terminate|--no-auto-terminate.')
 
 
 class InvalidEmrFsArgumentsError(EmrError, ParamValidationError):

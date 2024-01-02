@@ -2720,6 +2720,7 @@
         {"shape":"ResourceNotFoundException"},
         {"shape":"ConflictException"},
         {"shape":"AccessDeniedException"},
+        {"shape":"UnsupportedUserEditionException"},
         {"shape":"InternalFailureException"}
       ],
       "documentation":"<p>Updates the linked analyses on a dashboard.</p>"
@@ -18763,7 +18764,7 @@
       "type":"string",
       "max":1024,
       "min":1,
-      "pattern":"^arn:aws:quicksight:[\\w\\-]+:\\d+:analysis/[\\w\\-]{1,512}"
+      "pattern":"^arn:aws[\\w\\-]*:quicksight:[\\w\\-]+:\\d+:analysis/[\\w\\-]{1,512}"
     },
     "LinkEntityArnList":{
       "type":"list",
@@ -28534,6 +28535,10 @@
           "shape":"LimitedString",
           "documentation":"<p>The description of the topic.</p>"
         },
+        "UserExperienceVersion":{
+          "shape":"TopicUserExperienceVersion",
+          "documentation":"<p>The user experience version of a topic.</p>"
+        },
         "DataSets":{
           "shape":"Datasets",
           "documentation":"<p>The data sets that the topic is associated with.</p>"
@@ -28862,6 +28867,13 @@
         "MONTH",
         "QUARTER",
         "YEAR"
+      ]
+    },
+    "TopicUserExperienceVersion":{
+      "type":"string",
+      "enum":[
+        "LEGACY",
+        "NEW_READER_EXPERIENCE"
       ]
     },
     "TotalAggregationComputation":{

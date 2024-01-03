@@ -2,6 +2,14 @@
 CHANGELOG
 =========
 
+2.15.7
+======
+
+* api-change:``quicksight``: Add LinkEntityArn support for different partitions; Add UnsupportedUserEditionException in UpdateDashboardLinks API; Add support for New Reader Experience Topics
+* api-change:``apprunner``: AWS App Runner adds Python 3.11 and Node.js 18 runtimes.
+* api-change:``location``: This release introduces a new parameter to bypasses an API key's expiry conditions and delete the key.
+
+
 2.15.6
 ======
 

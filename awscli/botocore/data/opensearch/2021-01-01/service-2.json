@@ -1046,7 +1046,7 @@
   "shapes":{
     "ARN":{
       "type":"string",
-      "documentation":"<p>The Amazon Resource Name (ARN) of the domain. See <a href=\"https://docs.aws.amazon.com/IAM/latest/UserGuide/index.html\">Identifiers for IAM Entities </a> in <i>Using AWS Identity and Access Management</i> for more information. </p>",
+      "documentation":"<p>The Amazon Resource Name (ARN) of the domain. See <a href=\"https://docs.aws.amazon.com/IAM/latest/UserGuide/index.html\">Identifiers for IAM Entities </a> in <i>Using Amazon Web Services Identity and Access Management</i> for more information. </p>",
       "max":2048,
       "min":20,
       "pattern":".*"
@@ -1980,7 +1980,7 @@
         },
         "IPAddressType":{
           "shape":"IPAddressType",
-          "documentation":"<p>The type of IP addresses supported by the endpoint for the domain.</p>"
+          "documentation":"<p>Specify either dual stack or IPv4 as your IP address type. Dual stack allows you to share domain resources across IPv4 and IPv6 address types, and is the recommended option. If you set your IP address type to dual stack, you can't change your address type later.</p>"
         },
         "SnapshotOptions":{
           "shape":"SnapshotOptions",
@@ -3017,7 +3017,7 @@
         },
         "IPAddressType":{
           "shape":"IPAddressTypeStatus",
-          "documentation":"<p>The type of IP addresses supported by the endpoint for the domain.</p>"
+          "documentation":"<p>Choose either dual stack or IPv4 as your IP address type. Dual stack allows you to share domain resources across IPv4 and IPv6 address types, and is the recommended option. If you set your IP address type to dual stack, you can't change your address type later.</p>"
         },
         "SnapshotOptions":{
           "shape":"SnapshotOptionsStatus",
@@ -3083,7 +3083,7 @@
         },
         "TLSSecurityPolicy":{
           "shape":"TLSSecurityPolicy",
-          "documentation":"<p>Specify the TLS security policy to apply to the HTTPS endpoint of the domain. The policy can be one of the following values:</p> <ul> <li> <p> <b>Policy-Min-TLS-1-0-2019-07:</b> TLS security policy that supports TLS version 1.0 to TLS version 1.2</p> </li> <li> <p> <b>Policy-Min-TLS-1-2-2019-07:</b> TLS security policy that supports only TLS version 1.2</p> </li> </ul>"
+          "documentation":"<p>Specify the TLS security policy to apply to the HTTPS endpoint of the domain. The policy can be one of the following values:</p> <ul> <li> <p> <b>Policy-Min-TLS-1-0-2019-07:</b> TLS security policy that supports TLS version 1.0 to TLS version 1.2</p> </li> <li> <p> <b>Policy-Min-TLS-1-2-2019-07:</b> TLS security policy that supports only TLS version 1.2</p> </li> <li> <p> <b>Policy-Min-TLS-1-2-PFS-2023-10:</b> TLS security policy that supports TLS version 1.2 to TLS version 1.3 with perfect forward secrecy cipher suites</p> </li> </ul>"
         },
         "CustomEndpointEnabled":{
           "shape":"Boolean",
@@ -3362,10 +3362,13 @@
           "shape":"ServiceUrl",
           "documentation":"<p>Domain-specific endpoint used to submit index, search, and data upload requests to the domain.</p>"
         },
-        "EndpointV2":{"shape":"ServiceUrl"},
+        "EndpointV2":{
+          "shape":"ServiceUrl",
+          "documentation":"<p>If <code>IPAddressType</code> to set to <code>dualstack</code>, a version 2 domain endpoint is provisioned. This endpoint functions like a normal endpoint, except that it works with both IPv4 and IPv6 IP addresses. Normal endpoints work only with IPv4 IP addresses. </p>"
+        },
         "Endpoints":{
           "shape":"EndpointsMap",
-          "documentation":"<p>The key-value pair that exists if the OpenSearch Service domain uses VPC endpoints.. Example <code>key, value</code>: <code>'vpc','vpc-endpoint-h2dsd34efgyghrtguk5gt6j2foh4.us-east-1.es.amazonaws.com'</code>.</p>"
+          "documentation":"<p>The key-value pair that exists if the OpenSearch Service domain uses VPC endpoints. Example <code>key, value</code>: <code>'vpc','vpc-endpoint-h2dsd34efgyghrtguk5gt6j2foh4.us-east-1.es.amazonaws.com'</code>.</p>"
         },
         "Processing":{
           "shape":"Boolean",
@@ -5968,7 +5971,8 @@
       "type":"string",
       "enum":[
         "Policy-Min-TLS-1-0-2019-07",
-        "Policy-Min-TLS-1-2-2019-07"
+        "Policy-Min-TLS-1-2-2019-07",
+        "Policy-Min-TLS-1-2-PFS-2023-10"
       ]
     },
     "Tag":{
@@ -6100,7 +6104,7 @@
         },
         "IPAddressType":{
           "shape":"IPAddressType",
-          "documentation":"<p>The type of IP addresses supported by the endpoint for the domain.</p>"
+          "documentation":"<p>Specify either dual stack or IPv4 as your IP address type. Dual stack allows you to share domain resources across IPv4 and IPv6 address types, and is the recommended option. If your IP address type is currently set to dual stack, you can't change it. </p>"
         },
         "LogPublishingOptions":{
           "shape":"LogPublishingOptions",

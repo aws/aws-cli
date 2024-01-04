@@ -88,7 +88,7 @@
         {"shape":"ServiceNotActiveException"},
         {"shape":"NamespaceNotFoundException"}
       ],
-      "documentation":"<p>Create a task set in the specified cluster and service. This is used when a service uses the <code>EXTERNAL</code> deployment controller type. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonECS/latest/developerguide/deployment-types.html\">Amazon ECS deployment types</a> in the <i>Amazon Elastic Container Service Developer Guide</i>.</p>"
+      "documentation":"<p>Create a task set in the specified cluster and service. This is used when a service uses the <code>EXTERNAL</code> deployment controller type. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonECS/latest/developerguide/deployment-types.html\">Amazon ECS deployment types</a> in the <i>Amazon Elastic Container Service Developer Guide</i>.</p> <p>You can create a maximum of 5 tasks sets for a deployment.</p>"
     },
     "DeleteAccountSetting":{
       "name":"DeleteAccountSetting",
@@ -1090,6 +1090,10 @@
         "managedTerminationProtection":{
           "shape":"ManagedTerminationProtection",
           "documentation":"<p>The managed termination protection setting to use for the Auto Scaling group capacity provider. This determines whether the Auto Scaling group has managed termination protection. The default is off.</p> <important> <p>When using managed termination protection, managed scaling must also be used otherwise managed termination protection doesn't work.</p> </important> <p>When managed termination protection is on, Amazon ECS prevents the Amazon EC2 instances in an Auto Scaling group that contain tasks from being terminated during a scale-in action. The Auto Scaling group and each instance in the Auto Scaling group must have instance protection from scale-in actions on as well. For more information, see <a href=\"https://docs.aws.amazon.com/autoscaling/ec2/userguide/as-instance-termination.html#instance-protection\">Instance Protection</a> in the <i>Auto Scaling User Guide</i>.</p> <p>When managed termination protection is off, your Amazon EC2 instances aren't protected from termination when the Auto Scaling group scales in.</p>"
+        },
+        "managedDraining":{
+          "shape":"ManagedDraining",
+          "documentation":"<p>The managed draining option for the Auto Scaling group capacity provider. When you enable this, Amazon ECS manages and gracefully drains the EC2 container instances that are in the Auto Scaling group capacity provider.</p> <p>The default is <code>ENABLED</code>.</p>"
         }
       },
       "documentation":"<p>The details of the Auto Scaling group for the capacity provider.</p>"
@@ -1104,6 +1108,10 @@
         "managedTerminationProtection":{
           "shape":"ManagedTerminationProtection",
           "documentation":"<p>The managed termination protection setting to use for the Auto Scaling group capacity provider. This determines whether the Auto Scaling group has managed termination protection.</p> <important> <p>When using managed termination protection, managed scaling must also be used otherwise managed termination protection doesn't work.</p> </important> <p>When managed termination protection is on, Amazon ECS prevents the Amazon EC2 instances in an Auto Scaling group that contain tasks from being terminated during a scale-in action. The Auto Scaling group and each instance in the Auto Scaling group must have instance protection from scale-in actions on. For more information, see <a href=\"https://docs.aws.amazon.com/autoscaling/ec2/userguide/as-instance-termination.html#instance-protection\">Instance Protection</a> in the <i>Auto Scaling User Guide</i>.</p> <p>When managed termination protection is off, your Amazon EC2 instances aren't protected from termination when the Auto Scaling group scales in.</p>"
+        },
+        "managedDraining":{
+          "shape":"ManagedDraining",
+          "documentation":"<p>The managed draining option for the Auto Scaling group capacity provider. When you enable this, Amazon ECS manages and gracefully drains the EC2 container instances that are in the Auto Scaling group capacity provider.</p> <p>The default is <code>ENABLED</code>.</p>"
         }
       },
       "documentation":"<p>The details of the Auto Scaling group capacity provider to update.</p>"
@@ -1250,7 +1258,10 @@
     "ClientException":{
       "type":"structure",
       "members":{
-        "message":{"shape":"String"}
+        "message":{
+          "shape":"String",
+          "documentation":"<p> Message that describes the cause of the exception.</p>"
+        }
       },
       "documentation":"<p>These errors are usually caused by a client action. This client action might be using an action or resource on behalf of a user that doesn't have permissions to use the action or resource. Or, it might be specifying an identifier that isn't valid.</p>",
       "exception":true
@@ -3949,6 +3960,13 @@
       "type":"list",
       "member":{"shape":"ManagedAgent"}
     },
+    "ManagedDraining":{
+      "type":"string",
+      "enum":[
+        "ENABLED",
+        "DISABLED"
+      ]
+    },
     "ManagedScaling":{
       "type":"structure",
       "members":{
@@ -4843,7 +4861,10 @@
     "ServerException":{
       "type":"structure",
       "members":{
-        "message":{"shape":"String"}
+        "message":{
+          "shape":"String",
+          "documentation":"<p> Message that describes the cause of the exception.</p>"
+        }
       },
       "documentation":"<p>These errors are usually caused by a server issue.</p>",
       "exception":true,

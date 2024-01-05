@@ -7,7 +7,7 @@ The following ``publish-layer-version`` example creates a new Python library lay
         --description "My Python layer" \
         --license-info "MIT" \
         --content S3Bucket=lambda-layers-us-west-2-123456789012,S3Key=layer.zip \
-        --compatible-runtimes python3.6 python3.7
+        --compatible-runtimes python3.10 python3.11
 
 Output::
 
@@ -20,12 +20,12 @@ Output::
         "LayerArn": "arn:aws:lambda:us-west-2:123456789012:layer:my-layer",
         "LayerVersionArn": "arn:aws:lambda:us-west-2:123456789012:layer:my-layer:1",
         "Description": "My Python layer",
-        "CreatedDate": "2018-11-14T23:03:52.894+0000",
+        "CreatedDate": "2023-11-14T23:03:52.894+0000",
         "Version": 1,
         "LicenseInfo": "MIT",
         "CompatibleRuntimes": [
-            "python3.6",
-            "python3.7"
+            "python3.10",
+            "python3.11"
         ]
     }
 

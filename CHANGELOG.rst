@@ -2,6 +2,14 @@
 CHANGELOG
 =========
 
+1.32.14
+=======
+
+* api-change:``connect``: Minor trait updates for User APIs
+* api-change:``kms``: Documentation updates for AWS Key Management Service (KMS).
+* api-change:``redshift-serverless``: use_fips_ssl and require_ssl parameter support for Workgroup, UpdateWorkgroup, and CreateWorkgroup
+
+
 1.32.13
 =======
 

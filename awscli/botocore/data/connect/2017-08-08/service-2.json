@@ -4370,7 +4370,7 @@
           "documentation":"<p>The identifiers for level 5 hierarchy groups.</p>"
         }
       },
-      "documentation":"<p>A structure that defines agent hierarchy group levels which can be used to filter search results. Important: Agent hierarchy group level information in search result is a snapshot, it does not represent current agent hierarchy who handled the contact.</p>"
+      "documentation":"<p>A structure that defines search criteria for contacts using agent hierarchy group levels. For more information about agent hierarchies, see <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/agent-hierarchy.html\">Set Up Agent Hierarchies</a> in the <i>Amazon Connect Administrator Guide</i>.</p>"
     },
     "AgentInfo":{
       "type":"structure",
@@ -5680,10 +5680,10 @@
       "members":{
         "Transcript":{
           "shape":"Transcript",
-          "documentation":"<p>A structure that defines filters can be used to search with text within an Amazon Connect Contact Lens analyzed transcript.</p>"
+          "documentation":"<p>Search criteria based on transcript analyzed by Amazon Connect Contact Lens.</p>"
         }
       },
-      "documentation":"<p>A structure that defines filters can be used to search within outputs analyzed by Amazon Connect Contact Lens in a contact.</p>"
+      "documentation":"<p>A structure that defines search criteria for contacts using analysis outputs from Amazon Connect Contact Lens.</p>"
     },
     "ContactDataRequest":{
       "type":"structure",
@@ -5985,7 +5985,7 @@
       "members":{
         "Arn":{
           "shape":"ARN",
-          "documentation":"<p>The Amazon Resource Name (ARN) of the contact</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of the contact.</p>"
         },
         "Id":{
           "shape":"ContactId",
@@ -6017,7 +6017,7 @@
         },
         "InitiationTimestamp":{
           "shape":"timestamp",
-          "documentation":"<p>The date and time this contact was initiated, in UTC time. For INBOUND, this is when the contact arrived. For OUTBOUND, this is when the agent began dialing. For CALLBACK, this is when the callback contact was created. For TRANSFER and QUEUE_TRANSFER, this is when the transfer was initiated. For API, this is when the request arrived. For EXTERNAL_OUTBOUND, this is when the agent started dialing the external participant. For MONITOR, this is when the supervisor started listening to a contact.</p>"
+          "documentation":"<p>The date and time this contact was initiated, in UTC time. For <code>INBOUND</code>, this is when the contact arrived. For <code>OUTBOUND</code>, this is when the agent began dialing. For <code>CALLBACK</code>, this is when the callback contact was created. For <code>TRANSFER</code> and <code>QUEUE_TRANSFER</code>, this is when the transfer was initiated. For API, this is when the request arrived. For <code>EXTERNAL_OUTBOUND</code>, this is when the agent started dialing the external participant. For <code>MONITOR</code>, this is when the supervisor started listening to a contact.</p>"
         },
         "DisconnectTimestamp":{
           "shape":"timestamp",
@@ -10130,7 +10130,7 @@
     },
     "EvaluationNoteString":{
       "type":"string",
-      "max":1024,
+      "max":3072,
       "min":0
     },
     "EvaluationNotesMap":{
@@ -17013,11 +17013,11 @@
       "members":{
         "InstanceId":{
           "shape":"InstanceId",
-          "documentation":"<p>The identifier of Amazon Connect instance. You can find the instance ID in the Amazon Resource Name (ARN) of the instance</p>"
+          "documentation":"<p>The identifier of Amazon Connect instance. You can find the instance ID in the Amazon Resource Name (ARN) of the instance.</p>"
         },
         "TimeRange":{
           "shape":"SearchContactsTimeRange",
-          "documentation":"<p>Time range that you want to search results</p>"
+          "documentation":"<p>Time range that you want to search results.</p>"
         },
         "SearchCriteria":{
           "shape":"SearchCriteria",
@@ -17034,7 +17034,7 @@
         },
         "Sort":{
           "shape":"Sort",
-          "documentation":"<p>Specifies a field to sort by and a sort order</p>"
+          "documentation":"<p>Specifies a field to sort by and a sort order.</p>"
         }
       }
     },
@@ -17066,7 +17066,7 @@
       "members":{
         "Type":{
           "shape":"SearchContactsTimeRangeType",
-          "documentation":"<p>The type of timestamp to search</p>"
+          "documentation":"<p>The type of timestamp to search.</p>"
         },
         "StartTime":{
           "shape":"Timestamp",
@@ -17077,7 +17077,7 @@
           "documentation":"<p>The end time of the time range.</p>"
         }
       },
-      "documentation":"<p>A structure of time range that you want to search results</p>"
+      "documentation":"<p>A structure of time range that you want to search results.</p>"
     },
     "SearchContactsTimeRangeType":{
       "type":"string",
@@ -17093,34 +17093,34 @@
       "members":{
         "AgentIds":{
           "shape":"AgentResourceIdList",
-          "documentation":"<p>The array of agent ids</p>"
+          "documentation":"<p>The identifiers of agents who handled the contacts.</p>"
         },
         "AgentHierarchyGroups":{
           "shape":"AgentHierarchyGroups",
-          "documentation":"<p>The agent hierarchy groups</p>"
+          "documentation":"<p>The agent hierarchy groups of the agent at the time of handling the contact.</p>"
         },
         "Channels":{
           "shape":"ChannelList",
-          "documentation":"<p>The array of channels</p>"
+          "documentation":"<p>The list of channels associated with contacts.</p>"
         },
         "ContactAnalysis":{
           "shape":"ContactAnalysis",
-          "documentation":"<p>The ContactAnalysis object used in search criteria</p>"
+          "documentation":"<p>Search criteria based on analysis outputs from Amazon Connect Contact Lens.</p>"
         },
         "InitiationMethods":{
           "shape":"InitiationMethodList",
-          "documentation":"<p>The array of initiaton methods</p>"
+          "documentation":"<p>The list of initiation methods associated with contacts.</p>"
         },
         "QueueIds":{
           "shape":"QueueIdList",
-          "documentation":"<p>The array of queue ids.</p>"
+          "documentation":"<p>The list of queue IDs associated with contacts.</p>"
         },
         "SearchableContactAttributes":{
           "shape":"SearchableContactAttributes",
-          "documentation":"<p>The SearchableContactAttributes object used in search criteria</p>"
+          "documentation":"<p>The search criteria based on user-defined contact attributes that have been configured for contact search. For more information, see <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/search-custom-attributes.html\">Search by customer contact attributes</a> in the <i>Amazon Connect Administrator Guide</i>.</p> <important> <p>To use <code>SearchableContactAttributes</code> in a search request, the <code>GetContactAttributes</code> action is required to perform an API request. For more information, see <a href=\"https://docs.aws.amazon.com/service-authorization/latest/reference/list_amazonconnect.html#amazonconnect-actions-as-permissions\">https://docs.aws.amazon.com/service-authorization/latest/reference/list_amazonconnect.html#amazonconnect-actions-as-permissions</a>Actions defined by Amazon Connect.</p> </important>"
         }
       },
-      "documentation":"<p>A structure of search criteria to be used to return contacts</p>"
+      "documentation":"<p>A structure of search criteria to be used to return contacts.</p>"
     },
     "SearchHoursOfOperationsRequest":{
       "type":"structure",
@@ -17587,14 +17587,14 @@
       "members":{
         "Criteria":{
           "shape":"SearchableContactAttributesCriteriaList",
-          "documentation":"<p>The array of searhale contact attribute criteria</p>"
+          "documentation":"<p>The list of criteria based on user-defined contact attributes that are configured for contact search.</p>"
         },
         "MatchType":{
           "shape":"SearchContactsMatchType",
-          "documentation":"<p>The match type of multiple searchable contact attributes criteria.</p>"
+          "documentation":"<p>The match type combining search criteria using multiple searchable contact attributes.</p>"
         }
       },
-      "documentation":"<p>A structure that defines searchable contact attributes which can be used to filter search results. </p>"
+      "documentation":"<p>A structure that defines search criteria based on user-defined contact attributes that are configured for contact search.</p>"
     },
     "SearchableContactAttributesCriteria":{
       "type":"structure",
@@ -17605,14 +17605,14 @@
       "members":{
         "Key":{
           "shape":"SearchableContactAttributeKey",
-          "documentation":"<p>The searchable contact attribute key</p>"
+          "documentation":"<p>The key containing a searchable user-defined contact attribute.</p>"
         },
         "Values":{
           "shape":"SearchableContactAttributeValueList",
-          "documentation":"<p>The array of contact attribute values used to filter search results.</p>"
+          "documentation":"<p>The list of values to search for within a user-defined contact attribute.</p>"
         }
       },
-      "documentation":"<p>The criteria of searchable contact attributes.</p>"
+      "documentation":"<p>The search criteria based on user-defned contact attribute key and values to search on.</p>"
     },
     "SearchableContactAttributesCriteriaList":{
       "type":"list",
@@ -18010,7 +18010,7 @@
           "documentation":"<p>An ascending or descending sort.</p>"
         }
       },
-      "documentation":"<p>A structure that defines the sort by and a sort order</p>"
+      "documentation":"<p>A structure that defineds the field name to sort by and a sort order.</p>"
     },
     "SortOrder":{
       "type":"string",
@@ -19287,14 +19287,14 @@
       "members":{
         "Criteria":{
           "shape":"TranscriptCriteriaList",
-          "documentation":"<p>The array of transcript search criteria</p>"
+          "documentation":"<p>The list of search criteria based on Contact Lens conversational analytics transcript.</p>"
         },
         "MatchType":{
           "shape":"SearchContactsMatchType",
-          "documentation":"<p>The match type of multiple transcript criteira</p>"
+          "documentation":"<p>The match type combining search criteria using multiple transcript criteria.</p>"
         }
       },
-      "documentation":"<p>The transcript object used to search results.</p>"
+      "documentation":"<p>A structure that defines search criteria and matching logic to search for contacts by matching text with transcripts analyzed by Amazon Connect Contact Lens.</p>"
     },
     "TranscriptCriteria":{
       "type":"structure",
@@ -19314,10 +19314,10 @@
         },
         "MatchType":{
           "shape":"SearchContactsMatchType",
-          "documentation":"<p>The match type of search texts in a transcript criteria.</p>"
+          "documentation":"<p>The match type combining search criteria using multiple search texts in a transcript criteria.</p>"
         }
       },
-      "documentation":"<p>The transcript criteria used to search</p>"
+      "documentation":"<p>A structure that defines search criteria base on words or phrases, participants in the Contact Lens conversational analytics transcript.</p>"
     },
     "TranscriptCriteriaList":{
       "type":"list",
@@ -21357,7 +21357,7 @@
         },
         "StringCondition":{
           "shape":"StringCondition",
-          "documentation":"<p>A leaf node condition which can be used to specify a string condition.</p> <note> <p>The currently supported values for <code>FieldName</code> are <code>name</code>, <code>description</code>, and <code>resourceID</code>.</p> </note>"
+          "documentation":"<p>A leaf node condition which can be used to specify a string condition.</p> <p>The currently supported values for <code>FieldName</code> are <code>username</code>, <code>firstname</code>, <code>lastname</code>, <code>resourceId</code>, <code>routingProfileId</code>, <code>securityProfileId</code>, <code>agentGroupId</code>, and <code>agentGroupPathIds</code>.</p>"
         },
         "HierarchyGroupCondition":{
           "shape":"HierarchyGroupCondition",

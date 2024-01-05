@@ -6193,6 +6193,11 @@
       "type":"integer",
       "min":1
     },
+    "CapacityUnit":{
+      "type":"integer",
+      "max":10000000,
+      "min":0
+    },
     "CaptureContentTypeHeader":{
       "type":"structure",
       "members":{
@@ -8648,6 +8653,7 @@
           "shape":"OfflineStoreConfig",
           "documentation":"<p>Use this to configure an <code>OfflineFeatureStore</code>. This parameter allows you to specify:</p> <ul> <li> <p>The Amazon Simple Storage Service (Amazon S3) location of an <code>OfflineStore</code>.</p> </li> <li> <p>A configuration for an Amazon Web Services Glue or Amazon Web Services Hive data catalog. </p> </li> <li> <p>An KMS encryption key to encrypt the Amazon S3 location used for <code>OfflineStore</code>. If KMS encryption key is not specified, by default we encrypt all data at rest using Amazon Web Services KMS key. By defining your <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/bucket-key.html\">bucket-level key</a> for SSE, you can reduce Amazon Web Services KMS requests costs by up to 99 percent.</p> </li> <li> <p>Format for the offline store table. Supported formats are Glue (Default) and <a href=\"https://iceberg.apache.org/\">Apache Iceberg</a>.</p> </li> </ul> <p>To learn more about this parameter, see <a href=\"https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_OfflineStoreConfig.html\">OfflineStoreConfig</a>.</p>"
         },
+        "ThroughputConfig":{"shape":"ThroughputConfig"},
         "RoleArn":{
           "shape":"RoleArn",
           "documentation":"<p>The Amazon Resource Name (ARN) of the IAM execution role used to persist data into the <code>OfflineStore</code> if an <code>OfflineStoreConfig</code> is provided.</p>"
@@ -13293,6 +13299,7 @@
           "shape":"OfflineStoreConfig",
           "documentation":"<p>The configuration of the offline store. It includes the following configurations:</p> <ul> <li> <p>Amazon S3 location of the offline store.</p> </li> <li> <p>Configuration of the Glue data catalog.</p> </li> <li> <p>Table format of the offline store.</p> </li> <li> <p>Option to disable the automatic creation of a Glue table for the offline store.</p> </li> <li> <p>Encryption configuration.</p> </li> </ul>"
         },
+        "ThroughputConfig":{"shape":"ThroughputConfigDescription"},
         "RoleArn":{
           "shape":"RoleArn",
           "documentation":"<p>The Amazon Resource Name (ARN) of the IAM execution role used to persist data into the OfflineStore if an OfflineStoreConfig is provided.</p>"
@@ -33970,6 +33977,69 @@
       "max":128,
       "pattern":"[a-zA-Z0-9:_-]+"
     },
+    "ThroughputConfig":{
+      "type":"structure",
+      "required":["ThroughputMode"],
+      "members":{
+        "ThroughputMode":{
+          "shape":"ThroughputMode",
+          "documentation":"<p>The mode used for your feature group throughput: <code>ON_DEMAND</code> or <code>PROVISIONED</code>. </p>"
+        },
+        "ProvisionedReadCapacityUnits":{
+          "shape":"CapacityUnit",
+          "documentation":"<p> For provisioned feature groups with online store enabled, this indicates the read throughput you are billed for and can consume without throttling. </p> <p>This field is not applicable for on-demand feature groups. </p>"
+        },
+        "ProvisionedWriteCapacityUnits":{
+          "shape":"CapacityUnit",
+          "documentation":"<p> For provisioned feature groups, this indicates the write throughput you are billed for and can consume without throttling. </p> <p>This field is not applicable for on-demand feature groups. </p>"
+        }
+      },
+      "documentation":"<p>Used to set feature group throughput configuration. There are two modes: <code>ON_DEMAND</code> and <code>PROVISIONED</code>. With on-demand mode, you are charged for data reads and writes that your application performs on your feature group. You do not need to specify read and write throughput because Feature Store accommodates your workloads as they ramp up and down. You can switch a feature group to on-demand only once in a 24 hour period. With provisioned throughput mode, you specify the read and write capacity per second that you expect your application to require, and you are billed based on those limits. Exceeding provisioned throughput will result in your requests being throttled. </p> <p>Note: <code>PROVISIONED</code> throughput mode is supported only for feature groups that are offline-only, or use the <a href=\"https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_OnlineStoreConfig.html#sagemaker-Type-OnlineStoreConfig-StorageType\"> <code>Standard</code> </a> tier online store. </p>"
+    },
+    "ThroughputConfigDescription":{
+      "type":"structure",
+      "required":["ThroughputMode"],
+      "members":{
+        "ThroughputMode":{
+          "shape":"ThroughputMode",
+          "documentation":"<p>The mode used for your feature group throughput: <code>ON_DEMAND</code> or <code>PROVISIONED</code>. </p>"
+        },
+        "ProvisionedReadCapacityUnits":{
+          "shape":"CapacityUnit",
+          "documentation":"<p> For provisioned feature groups with online store enabled, this indicates the read throughput you are billed for and can consume without throttling. </p> <p>This field is not applicable for on-demand feature groups. </p>"
+        },
+        "ProvisionedWriteCapacityUnits":{
+          "shape":"CapacityUnit",
+          "documentation":"<p> For provisioned feature groups, this indicates the write throughput you are billed for and can consume without throttling. </p> <p>This field is not applicable for on-demand feature groups. </p>"
+        }
+      },
+      "documentation":"<p>Active throughput configuration of the feature group. Used to set feature group throughput configuration. There are two modes: <code>ON_DEMAND</code> and <code>PROVISIONED</code>. With on-demand mode, you are charged for data reads and writes that your application performs on your feature group. You do not need to specify read and write throughput because Feature Store accommodates your workloads as they ramp up and down. You can switch a feature group to on-demand only once in a 24 hour period. With provisioned throughput mode, you specify the read and write capacity per second that you expect your application to require, and you are billed based on those limits. Exceeding provisioned throughput will result in your requests being throttled. </p> <p>Note: <code>PROVISIONED</code> throughput mode is supported only for feature groups that are offline-only, or use the <a href=\"https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_OnlineStoreConfig.html#sagemaker-Type-OnlineStoreConfig-StorageType\"> <code>Standard</code> </a> tier online store. </p>"
+    },
+    "ThroughputConfigUpdate":{
+      "type":"structure",
+      "members":{
+        "ThroughputMode":{
+          "shape":"ThroughputMode",
+          "documentation":"<p>Target throughput mode of the feature group. Throughput update is an asynchronous operation, and the outcome should be monitored by polling <code>LastUpdateStatus</code> field in <code>DescribeFeatureGroup</code> response. You cannot update a feature group's throughput while another update is in progress. </p>"
+        },
+        "ProvisionedReadCapacityUnits":{
+          "shape":"CapacityUnit",
+          "documentation":"<p>For provisioned feature groups with online store enabled, this indicates the read throughput you are billed for and can consume without throttling. </p>"
+        },
+        "ProvisionedWriteCapacityUnits":{
+          "shape":"CapacityUnit",
+          "documentation":"<p>For provisioned feature groups, this indicates the write throughput you are billed for and can consume without throttling. </p>"
+        }
+      },
+      "documentation":"<p>The new throughput configuration for the feature group. You can switch between on-demand and provisioned modes or update the read / write capacity of provisioned feature groups. You can switch a feature group to on-demand only once in a 24 hour period. </p>"
+    },
+    "ThroughputMode":{
+      "type":"string",
+      "enum":[
+        "OnDemand",
+        "Provisioned"
+      ]
+    },
     "TimeSeriesConfig":{
       "type":"structure",
       "required":[
@@ -35940,7 +36010,8 @@
         "OnlineStoreConfig":{
           "shape":"OnlineStoreConfigUpdate",
           "documentation":"<p>Updates the feature group online store configuration.</p>"
-        }
+        },
+        "ThroughputConfig":{"shape":"ThroughputConfigUpdate"}
       }
     },
     "UpdateFeatureGroupResponse":{

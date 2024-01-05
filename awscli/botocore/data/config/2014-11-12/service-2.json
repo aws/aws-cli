@@ -2460,7 +2460,7 @@
         },
         "recordingMode":{
           "shape":"RecordingMode",
-          "documentation":"<p>Specifies the default recording frequency that Config uses to record configuration changes. Config supports <i>Continuous recording</i> and <i>Daily recording</i>.</p> <ul> <li> <p>Continuous recording allows you to record configuration changes continuously whenever a change occurs.</p> </li> <li> <p>Daily recording allows you record configuration data once every 24 hours, only if a change has occurred.</p> </li> </ul> <note> <p>Firewall Manager depends on continuous recording to monitor your resources. If you are using Firewall Manager, it is recommended that you set the recording frequency to Continuous.</p> </note> <p>You can also override the recording frequency for specific resource types.</p>"
+          "documentation":"<p>Specifies the default recording frequency that Config uses to record configuration changes. Config supports <i>Continuous recording</i> and <i>Daily recording</i>.</p> <ul> <li> <p>Continuous recording allows you to record configuration changes continuously whenever a change occurs.</p> </li> <li> <p>Daily recording allows you to receive a configuration item (CI) representing the most recent state of your resources over the last 24-hour period, only if it’s different from the previous CI recorded. </p> </li> </ul> <note> <p>Firewall Manager depends on continuous recording to monitor your resources. If you are using Firewall Manager, it is recommended that you set the recording frequency to Continuous.</p> </note> <p>You can also override the recording frequency for specific resource types.</p>"
         }
       },
       "documentation":"<p>Records configuration changes to your specified resource types. For more information about the configuration recorder, see <a href=\"https://docs.aws.amazon.com/config/latest/developerguide/stop-start-recorder.html\"> <b>Managing the Configuration Recorder</b> </a> in the <i>Config Developer Guide</i>.</p>"
@@ -6668,7 +6668,7 @@
           "documentation":"<p>An array of <code>recordingModeOverride</code> objects for you to specify your overrides for the recording mode. The <code>recordingModeOverride</code> object in the <code>recordingModeOverrides</code> array consists of three fields: a <code>description</code>, the new <code>recordingFrequency</code>, and an array of <code>resourceTypes</code> to override.</p>"
         }
       },
-      "documentation":"<p>Specifies the default recording frequency that Config uses to record configuration changes. Config supports <i>Continuous recording</i> and <i>Daily recording</i>.</p> <ul> <li> <p>Continuous recording allows you to record configuration changes continuously whenever a change occurs.</p> </li> <li> <p>Daily recording allows you record configuration data once every 24 hours, only if a change has occurred.</p> </li> </ul> <note> <p>Firewall Manager depends on continuous recording to monitor your resources. If you are using Firewall Manager, it is recommended that you set the recording frequency to Continuous.</p> </note> <p>You can also override the recording frequency for specific resource types.</p>"
+      "documentation":"<p>Specifies the default recording frequency that Config uses to record configuration changes. Config supports <i>Continuous recording</i> and <i>Daily recording</i>.</p> <ul> <li> <p>Continuous recording allows you to record configuration changes continuously whenever a change occurs.</p> </li> <li> <p>Daily recording allows you to receive a configuration item (CI) representing the most recent state of your resources over the last 24-hour period, only if it’s different from the previous CI recorded. </p> </li> </ul> <note> <p>Firewall Manager depends on continuous recording to monitor your resources. If you are using Firewall Manager, it is recommended that you set the recording frequency to Continuous.</p> </note> <p>You can also override the recording frequency for specific resource types.</p>"
     },
     "RecordingModeOverride":{
       "type":"structure",
@@ -6687,7 +6687,7 @@
         },
         "recordingFrequency":{
           "shape":"RecordingFrequency",
-          "documentation":"<p>The recording frequency that will be applied to all the resource types specified in the override.</p> <ul> <li> <p>Continuous recording allows you to record configuration changes continuously whenever a change occurs.</p> </li> <li> <p>Daily recording allows you record configuration data once every 24 hours, only if a change has occurred.</p> </li> </ul> <note> <p>Firewall Manager depends on continuous recording to monitor your resources. If you are using Firewall Manager, it is recommended that you set the recording frequency to Continuous.</p> </note>"
+          "documentation":"<p>The recording frequency that will be applied to all the resource types specified in the override.</p> <ul> <li> <p>Continuous recording allows you to record configuration changes continuously whenever a change occurs.</p> </li> <li> <p>Daily recording allows you to receive a configuration item (CI) representing the most recent state of your resources over the last 24-hour period, only if it’s different from the previous CI recorded. </p> </li> </ul> <note> <p>Firewall Manager depends on continuous recording to monitor your resources. If you are using Firewall Manager, it is recommended that you set the recording frequency to Continuous.</p> </note>"
         }
       },
       "documentation":"<p>An object for you to specify your overrides for the recording mode.</p>"
@@ -6804,7 +6804,7 @@
         },
         "RetryAttemptSeconds":{
           "shape":"AutoRemediationAttemptSeconds",
-          "documentation":"<p>Maximum time in seconds that Config runs auto-remediation. If you do not select a number, the default is 60 seconds. </p> <p>For example, if you specify RetryAttemptSeconds as 50 seconds and MaximumAutomaticAttempts as 5, Config will run auto-remediations 5 times within 50 seconds before throwing an exception.</p>"
+          "documentation":"<p>Time window to determine whether or not to add a remediation exception to prevent infinite remediation attempts. If <code>MaximumAutomaticAttempts</code> remediation attempts have been made under <code>RetryAttemptSeconds</code>, a remediation exception will be added to the resource. If you do not select a number, the default is 60 seconds. </p> <p>For example, if you specify <code>RetryAttemptSeconds</code> as 50 seconds and <code>MaximumAutomaticAttempts</code> as 5, Config will run auto-remediations 5 times within 50 seconds before adding a remediation exception to the resource.</p>"
         },
         "Arn":{
           "shape":"StringWithCharLimit1024",
@@ -7629,7 +7629,25 @@
         "AWS::KafkaConnect::Connector",
         "AWS::Lambda::CodeSigningConfig",
         "AWS::NetworkManager::ConnectPeer",
-        "AWS::ResourceExplorer2::Index"
+        "AWS::ResourceExplorer2::Index",
+        "AWS::AppStream::Fleet",
+        "AWS::Cognito::UserPool",
+        "AWS::Cognito::UserPoolClient",
+        "AWS::Cognito::UserPoolGroup",
+        "AWS::EC2::NetworkInsightsAccessScope",
+        "AWS::EC2::NetworkInsightsAnalysis",
+        "AWS::Grafana::Workspace",
+        "AWS::GroundStation::DataflowEndpointGroup",
+        "AWS::ImageBuilder::ImageRecipe",
+        "AWS::KMS::Alias",
+        "AWS::M2::Environment",
+        "AWS::QuickSight::DataSource",
+        "AWS::QuickSight::Template",
+        "AWS::QuickSight::Theme",
+        "AWS::RDS::OptionGroup",
+        "AWS::Redshift::EndpointAccess",
+        "AWS::Route53Resolver::FirewallRuleGroup",
+        "AWS::SSM::Document"
       ]
     },
     "ResourceTypeList":{

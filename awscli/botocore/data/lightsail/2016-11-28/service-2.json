@@ -318,7 +318,7 @@
         {"shape":"AccountSetupInProgressException"},
         {"shape":"UnauthenticatedException"}
       ],
-      "documentation":"<p>Creates a block storage disk that can be attached to an Amazon Lightsail instance in the same Availability Zone (e.g., <code>us-east-2a</code>).</p> <p>The <code>create disk</code> operation supports tag-based access control via request tags. For more information, see the <a href=\"https://lightsail.aws.amazon.com/ls/docs/en_us/articles/amazon-lightsail-controlling-access-using-tags\">Amazon Lightsail Developer Guide</a>.</p>"
+      "documentation":"<p>Creates a block storage disk that can be attached to an Amazon Lightsail instance in the same Availability Zone (<code>us-east-2a</code>).</p> <p>The <code>create disk</code> operation supports tag-based access control via request tags. For more information, see the <a href=\"https://lightsail.aws.amazon.com/ls/docs/en_us/articles/amazon-lightsail-controlling-access-using-tags\">Amazon Lightsail Developer Guide</a>.</p>"
     },
     "CreateDiskFromSnapshot":{
       "name":"CreateDiskFromSnapshot",
@@ -337,7 +337,7 @@
         {"shape":"AccountSetupInProgressException"},
         {"shape":"UnauthenticatedException"}
       ],
-      "documentation":"<p>Creates a block storage disk from a manual or automatic snapshot of a disk. The resulting disk can be attached to an Amazon Lightsail instance in the same Availability Zone (e.g., <code>us-east-2a</code>).</p> <p>The <code>create disk from snapshot</code> operation supports tag-based access control via request tags and resource tags applied to the resource identified by <code>disk snapshot name</code>. For more information, see the <a href=\"https://lightsail.aws.amazon.com/ls/docs/en_us/articles/amazon-lightsail-controlling-access-using-tags\">Amazon Lightsail Developer Guide</a>.</p>"
+      "documentation":"<p>Creates a block storage disk from a manual or automatic snapshot of a disk. The resulting disk can be attached to an Amazon Lightsail instance in the same Availability Zone (<code>us-east-2a</code>).</p> <p>The <code>create disk from snapshot</code> operation supports tag-based access control via request tags and resource tags applied to the resource identified by <code>disk snapshot name</code>. For more information, see the <a href=\"https://lightsail.aws.amazon.com/ls/docs/en_us/articles/amazon-lightsail-controlling-access-using-tags\">Amazon Lightsail Developer Guide</a>.</p>"
     },
     "CreateDiskSnapshot":{
       "name":"CreateDiskSnapshot",
@@ -393,7 +393,7 @@
         {"shape":"AccountSetupInProgressException"},
         {"shape":"UnauthenticatedException"}
       ],
-      "documentation":"<p>Creates a domain resource for the specified domain (e.g., example.com).</p> <p>The <code>create domain</code> operation supports tag-based access control via request tags. For more information, see the <a href=\"https://lightsail.aws.amazon.com/ls/docs/en_us/articles/amazon-lightsail-controlling-access-using-tags\">Amazon Lightsail Developer Guide</a>.</p>"
+      "documentation":"<p>Creates a domain resource for the specified domain (example.com).</p> <p>The <code>create domain</code> operation supports tag-based access control via request tags. For more information, see the <a href=\"https://lightsail.aws.amazon.com/ls/docs/en_us/articles/amazon-lightsail-controlling-access-using-tags\">Amazon Lightsail Developer Guide</a>.</p>"
     },
     "CreateDomainEntry":{
       "name":"CreateDomainEntry",
@@ -2027,7 +2027,7 @@
         {"shape":"AccountSetupInProgressException"},
         {"shape":"UnauthenticatedException"}
       ],
-      "documentation":"<p>Gets operations for a specific resource (e.g., an instance or a static IP).</p>"
+      "documentation":"<p>Gets operations for a specific resource (an instance or a static IP).</p>"
     },
     "GetRegions":{
       "name":"GetRegions",
@@ -2275,6 +2275,23 @@
         {"shape":"UnauthenticatedException"}
       ],
       "documentation":"<p>Returns information about all of your databases in Amazon Lightsail.</p>"
+    },
+    "GetSetupHistory":{
+      "name":"GetSetupHistory",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"GetSetupHistoryRequest"},
+      "output":{"shape":"GetSetupHistoryResult"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"InvalidInputException"},
+        {"shape":"NotFoundException"},
+        {"shape":"ServiceException"},
+        {"shape":"UnauthenticatedException"}
+      ],
+      "documentation":"<p>Returns detailed information for five of the most recent <code>SetupInstanceHttps</code> requests that were ran on the target instance.</p>"
     },
     "GetStaticIp":{
       "name":"GetStaticIp",
@@ -2572,6 +2589,23 @@
         {"shape":"UnauthenticatedException"}
       ],
       "documentation":"<p>Sets the Amazon Lightsail resources that can access the specified Lightsail bucket.</p> <p>Lightsail buckets currently support setting access for Lightsail instances in the same Amazon Web Services Region.</p>"
+    },
+    "SetupInstanceHttps":{
+      "name":"SetupInstanceHttps",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"SetupInstanceHttpsRequest"},
+      "output":{"shape":"SetupInstanceHttpsResult"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"InvalidInputException"},
+        {"shape":"NotFoundException"},
+        {"shape":"ServiceException"},
+        {"shape":"UnauthenticatedException"}
+      ],
+      "documentation":"<p>Creates an SSL/TLS certificate that secures traffic for your website. After the certificate is created, it is installed on the specified Lightsail instance.</p> <p>If you provide more than one domain name in the request, at least one name must be less than or equal to 63 characters in length.</p>"
     },
     "StartGUISession":{
       "name":"StartGUISession",
@@ -3160,7 +3194,7 @@
         },
         "resourceType":{
           "shape":"ResourceType",
-          "documentation":"<p>The Lightsail resource type (e.g., <code>Alarm</code>).</p>"
+          "documentation":"<p>The Lightsail resource type of the alarm.</p>"
         },
         "supportCode":{
           "shape":"string",
@@ -3300,7 +3334,7 @@
       "members":{
         "diskName":{
           "shape":"ResourceName",
-          "documentation":"<p>The unique Lightsail disk name (e.g., <code>my-disk</code>).</p>"
+          "documentation":"<p>The unique Lightsail disk name (<code>my-disk</code>).</p>"
         },
         "instanceName":{
           "shape":"ResourceName",
@@ -3308,7 +3342,7 @@
         },
         "diskPath":{
           "shape":"NonEmptyString",
-          "documentation":"<p>The disk path to expose to the instance (e.g., <code>/dev/xvdf</code>).</p>"
+          "documentation":"<p>The disk path to expose to the instance (<code>/dev/xvdf</code>).</p>"
         },
         "autoMounting":{
           "shape":"boolean",
@@ -3408,7 +3442,7 @@
       "members":{
         "path":{
           "shape":"string",
-          "documentation":"<p>The path of the disk (e.g., <code>/dev/xvdf</code>).</p>"
+          "documentation":"<p>The path of the disk (<code>/dev/xvdf</code>).</p>"
         },
         "sizeInGb":{
           "shape":"integer",
@@ -3524,19 +3558,19 @@
       "members":{
         "blueprintId":{
           "shape":"NonEmptyString",
-          "documentation":"<p>The ID for the virtual private server image (e.g., <code>app_wordpress_4_4</code> or <code>app_lamp_7_0</code>).</p>"
+          "documentation":"<p>The ID for the virtual private server image (<code>app_wordpress_4_4</code> or <code>app_lamp_7_0</code>).</p>"
         },
         "name":{
           "shape":"ResourceName",
-          "documentation":"<p>The friendly name of the blueprint (e.g., <code>Amazon Linux</code>).</p>"
+          "documentation":"<p>The friendly name of the blueprint (<code>Amazon Linux</code>).</p>"
         },
         "group":{
           "shape":"NonEmptyString",
-          "documentation":"<p>The group name of the blueprint (e.g., <code>amazon-linux</code>).</p>"
+          "documentation":"<p>The group name of the blueprint (<code>amazon-linux</code>).</p>"
         },
         "type":{
           "shape":"BlueprintType",
-          "documentation":"<p>The type of the blueprint (e.g., <code>os</code> or <code>app</code>).</p>"
+          "documentation":"<p>The type of the blueprint (<code>os</code> or <code>app</code>).</p>"
         },
         "description":{
           "shape":"string",
@@ -3552,7 +3586,7 @@
         },
         "version":{
           "shape":"string",
-          "documentation":"<p>The version number of the operating system, application, or stack (e.g., <code>2016.03.0</code>).</p>"
+          "documentation":"<p>The version number of the operating system, application, or stack ( <code>2016.03.0</code>).</p>"
         },
         "versionCode":{
           "shape":"string",
@@ -3593,7 +3627,7 @@
       "members":{
         "resourceType":{
           "shape":"NonEmptyString",
-          "documentation":"<p>The Lightsail resource type of the bucket (for example, <code>Bucket</code>).</p>"
+          "documentation":"<p>The Lightsail resource type of the bucket.</p>"
         },
         "accessRules":{
           "shape":"AccessRules",
@@ -3753,23 +3787,23 @@
       "members":{
         "price":{
           "shape":"float",
-          "documentation":"<p>The price in US dollars (e.g., <code>5.0</code>) of the bundle.</p>"
+          "documentation":"<p>The price in US dollars (<code>5.0</code>) of the bundle.</p>"
         },
         "cpuCount":{
           "shape":"integer",
-          "documentation":"<p>The number of vCPUs included in the bundle (e.g., <code>2</code>).</p>"
+          "documentation":"<p>The number of vCPUs included in the bundle (<code>2</code>).</p>"
         },
         "diskSizeInGb":{
           "shape":"integer",
-          "documentation":"<p>The size of the SSD (e.g., <code>30</code>).</p>"
+          "documentation":"<p>The size of the SSD (<code>30</code>).</p>"
         },
         "bundleId":{
           "shape":"NonEmptyString",
-          "documentation":"<p>The bundle ID (e.g., <code>micro_1_0</code>).</p>"
+          "documentation":"<p>The bundle ID (<code>micro_1_0</code>).</p>"
         },
         "instanceType":{
           "shape":"string",
-          "documentation":"<p>The Amazon EC2 instance type (e.g., <code>t2.micro</code>).</p>"
+          "documentation":"<p>The Amazon EC2 instance type (<code>t2.micro</code>).</p>"
         },
         "isActive":{
           "shape":"boolean",
@@ -3777,19 +3811,19 @@
         },
         "name":{
           "shape":"string",
-          "documentation":"<p>A friendly name for the bundle (e.g., <code>Micro</code>).</p>"
+          "documentation":"<p>A friendly name for the bundle (<code>Micro</code>).</p>"
         },
         "power":{
           "shape":"integer",
-          "documentation":"<p>A numeric value that represents the power of the bundle (e.g., <code>500</code>). You can use the bundle's power value in conjunction with a blueprint's minimum power value to determine whether the blueprint will run on the bundle. For example, you need a bundle with a power value of 500 or more to create an instance that uses a blueprint with a minimum power value of 500.</p>"
+          "documentation":"<p>A numeric value that represents the power of the bundle (<code>500</code>). You can use the bundle's power value in conjunction with a blueprint's minimum power value to determine whether the blueprint will run on the bundle. For example, you need a bundle with a power value of 500 or more to create an instance that uses a blueprint with a minimum power value of 500.</p>"
         },
         "ramSizeInGb":{
           "shape":"float",
-          "documentation":"<p>The amount of RAM in GB (e.g., <code>2.0</code>).</p>"
+          "documentation":"<p>The amount of RAM in GB (<code>2.0</code>).</p>"
         },
         "transferPerMonthInGb":{
           "shape":"integer",
-          "documentation":"<p>The data transfer rate per month in GB (e.g., <code>2000</code>).</p>"
+          "documentation":"<p>The data transfer rate per month in GB (<code>2000</code>).</p>"
         },
         "supportedPlatforms":{
           "shape":"InstancePlatformList",
@@ -3881,7 +3915,7 @@
         },
         "name":{
           "shape":"CertificateName",
-          "documentation":"<p>The name of the certificate (e.g., <code>my-certificate</code>).</p>"
+          "documentation":"<p>The name of the certificate (<code>my-certificate</code>).</p>"
         },
         "domainName":{
           "shape":"DomainName",
@@ -3897,7 +3931,7 @@
         },
         "subjectAlternativeNames":{
           "shape":"SubjectAlternativeNameList",
-          "documentation":"<p>An array of strings that specify the alternate domains (e.g., <code>example2.com</code>) and subdomains (e.g., <code>blog.example.com</code>) of the certificate.</p>"
+          "documentation":"<p>An array of strings that specify the alternate domains (<code>example2.com</code>) and subdomains (<code>blog.example.com</code>) of the certificate.</p>"
         },
         "domainValidationRecords":{
           "shape":"DomainValidationRecordList",
@@ -3971,6 +4005,10 @@
       ]
     },
     "CertificateName":{"type":"string"},
+    "CertificateProvider":{
+      "type":"string",
+      "enum":["LetsEncrypt"]
+    },
     "CertificateStatus":{
       "type":"string",
       "enum":[
@@ -4064,7 +4102,7 @@
         },
         "resourceType":{
           "shape":"ResourceType",
-          "documentation":"<p>The Lightsail resource type (e.g., <code>CloudFormationStackRecord</code>).</p>"
+          "documentation":"<p>The Lightsail resource type (<code>CloudFormationStackRecord</code>).</p>"
         },
         "state":{
           "shape":"RecordState",
@@ -4090,7 +4128,7 @@
       "members":{
         "resourceType":{
           "shape":"CloudFormationStackRecordSourceType",
-          "documentation":"<p>The Lightsail resource type (e.g., <code>ExportSnapshotRecord</code>).</p>"
+          "documentation":"<p>The Lightsail resource type (<code>ExportSnapshotRecord</code>).</p>"
         },
         "name":{
           "shape":"NonEmptyString",
@@ -4153,7 +4191,7 @@
         },
         "resourceType":{
           "shape":"ResourceType",
-          "documentation":"<p>The Lightsail resource type (e.g., <code>ContactMethod</code>).</p>"
+          "documentation":"<p>The Lightsail resource type of the contact method.</p>"
         },
         "supportCode":{
           "shape":"string",
@@ -4271,7 +4309,7 @@
         },
         "resourceType":{
           "shape":"ResourceType",
-          "documentation":"<p>The Lightsail resource type of the container service (i.e., <code>ContainerService</code>).</p>"
+          "documentation":"<p>The Lightsail resource type of the container service.</p>"
         },
         "tags":{
           "shape":"TagList",
@@ -4341,7 +4379,7 @@
         },
         "state":{
           "shape":"ContainerServiceDeploymentState",
-          "documentation":"<p>The state of the deployment.</p> <p>A deployment can be in one of the following states:</p> <ul> <li> <p> <code>Activating</code> - The deployment is being created.</p> </li> <li> <p> <code>Active</code> - The deployment was successfully created, and it's currently running on the container service. The container service can have only one deployment in an active state at a time.</p> </li> <li> <p> <code>Inactive</code> - The deployment was previously successfully created, but it is not currently running on the container service.</p> </li> <li> <p> <code>Failed</code> - The deployment failed. Use the <code>GetContainerLog</code> action to view the log events for the containers in the deployment to try to determine the reason for the failure.</p> </li> </ul>"
+          "documentation":"<p>The state of the deployment.</p> <p>A deployment can be in one of the following states:</p> <ul> <li> <p> <code>ACTIVATING</code> - The deployment is being created.</p> </li> <li> <p> <code>ACTIVE</code> - The deployment was successfully created, and it's currently running on the container service. The container service can have only one deployment in an active state at a time.</p> </li> <li> <p> <code>INACTIVE</code> - The deployment was previously successfully created, but it is not currently running on the container service.</p> </li> <li> <p> <code>FAILED</code> - The deployment failed. Use the <code>GetContainerLog</code> action to view the log events for the containers in the deployment to try to determine the reason for the failure.</p> </li> </ul>"
         },
         "containers":{
           "shape":"ContainerMap",
@@ -4506,7 +4544,7 @@
       "members":{
         "powerId":{
           "shape":"string",
-          "documentation":"<p>The ID of the power (e.g., <code>nano-1</code>).</p>"
+          "documentation":"<p>The ID of the power (<code>nano-1</code>).</p>"
         },
         "price":{
           "shape":"float",
@@ -4522,7 +4560,7 @@
         },
         "name":{
           "shape":"string",
-          "documentation":"<p>The friendly name of the power (e.g., <code>nano</code>).</p>"
+          "documentation":"<p>The friendly name of the power (<code>nano</code>).</p>"
         },
         "isActive":{
           "shape":"boolean",
@@ -4788,11 +4826,11 @@
         },
         "domainName":{
           "shape":"DomainName",
-          "documentation":"<p>The domain name (e.g., <code>example.com</code>) for the certificate.</p>"
+          "documentation":"<p>The domain name (<code>example.com</code>) for the certificate.</p>"
         },
         "subjectAlternativeNames":{
           "shape":"SubjectAlternativeNameList",
-          "documentation":"<p>An array of strings that specify the alternate domains (e.g., <code>example2.com</code>) and subdomains (e.g., <code>blog.example.com</code>) for the certificate.</p> <p>You can specify a maximum of nine alternate domains (in addition to the primary domain name).</p> <p>Wildcard domain entries (e.g., <code>*.example.com</code>) are not supported.</p>"
+          "documentation":"<p>An array of strings that specify the alternate domains (<code>example2.com</code>) and subdomains (<code>blog.example.com</code>) for the certificate.</p> <p>You can specify a maximum of nine alternate domains (in addition to the primary domain name).</p> <p>Wildcard domain entries (<code>*.example.com</code>) are not supported.</p>"
         },
         "tags":{
           "shape":"TagList",
@@ -4956,19 +4994,19 @@
       "members":{
         "diskName":{
           "shape":"ResourceName",
-          "documentation":"<p>The unique Lightsail disk name (e.g., <code>my-disk</code>).</p>"
+          "documentation":"<p>The unique Lightsail disk name (<code>my-disk</code>).</p>"
         },
         "diskSnapshotName":{
           "shape":"ResourceName",
-          "documentation":"<p>The name of the disk snapshot (e.g., <code>my-snapshot</code>) from which to create the new storage disk.</p> <p>Constraint:</p> <ul> <li> <p>This parameter cannot be defined together with the <code>source disk name</code> parameter. The <code>disk snapshot name</code> and <code>source disk name</code> parameters are mutually exclusive.</p> </li> </ul>"
+          "documentation":"<p>The name of the disk snapshot (<code>my-snapshot</code>) from which to create the new storage disk.</p> <p>Constraint:</p> <ul> <li> <p>This parameter cannot be defined together with the <code>source disk name</code> parameter. The <code>disk snapshot name</code> and <code>source disk name</code> parameters are mutually exclusive.</p> </li> </ul>"
         },
         "availabilityZone":{
           "shape":"NonEmptyString",
-          "documentation":"<p>The Availability Zone where you want to create the disk (e.g., <code>us-east-2a</code>). Choose the same Availability Zone as the Lightsail instance where you want to create the disk.</p> <p>Use the GetRegions operation to list the Availability Zones where Lightsail is currently available.</p>"
+          "documentation":"<p>The Availability Zone where you want to create the disk (<code>us-east-2a</code>). Choose the same Availability Zone as the Lightsail instance where you want to create the disk.</p> <p>Use the GetRegions operation to list the Availability Zones where Lightsail is currently available.</p>"
         },
         "sizeInGb":{
           "shape":"integer",
-          "documentation":"<p>The size of the disk in GB (e.g., <code>32</code>).</p>"
+          "documentation":"<p>The size of the disk in GB (<code>32</code>).</p>"
         },
         "tags":{
           "shape":"TagList",
@@ -5011,15 +5049,15 @@
       "members":{
         "diskName":{
           "shape":"ResourceName",
-          "documentation":"<p>The unique Lightsail disk name (e.g., <code>my-disk</code>).</p>"
+          "documentation":"<p>The unique Lightsail disk name (<code>my-disk</code>).</p>"
         },
         "availabilityZone":{
           "shape":"NonEmptyString",
-          "documentation":"<p>The Availability Zone where you want to create the disk (e.g., <code>us-east-2a</code>). Use the same Availability Zone as the Lightsail instance to which you want to attach the disk.</p> <p>Use the <code>get regions</code> operation to list the Availability Zones where Lightsail is currently available.</p>"
+          "documentation":"<p>The Availability Zone where you want to create the disk (<code>us-east-2a</code>). Use the same Availability Zone as the Lightsail instance to which you want to attach the disk.</p> <p>Use the <code>get regions</code> operation to list the Availability Zones where Lightsail is currently available.</p>"
         },
         "sizeInGb":{
           "shape":"integer",
-          "documentation":"<p>The size of the disk in GB (e.g., <code>32</code>).</p>"
+          "documentation":"<p>The size of the disk in GB (<code>32</code>).</p>"
         },
         "tags":{
           "shape":"TagList",
@@ -5046,15 +5084,15 @@
       "members":{
         "diskName":{
           "shape":"ResourceName",
-          "documentation":"<p>The unique name of the source disk (e.g., <code>Disk-Virginia-1</code>).</p> <note> <p>This parameter cannot be defined together with the <code>instance name</code> parameter. The <code>disk name</code> and <code>instance name</code> parameters are mutually exclusive.</p> </note>"
+          "documentation":"<p>The unique name of the source disk (<code>Disk-Virginia-1</code>).</p> <note> <p>This parameter cannot be defined together with the <code>instance name</code> parameter. The <code>disk name</code> and <code>instance name</code> parameters are mutually exclusive.</p> </note>"
         },
         "diskSnapshotName":{
           "shape":"ResourceName",
-          "documentation":"<p>The name of the destination disk snapshot (e.g., <code>my-disk-snapshot</code>) based on the source disk.</p>"
+          "documentation":"<p>The name of the destination disk snapshot (<code>my-disk-snapshot</code>) based on the source disk.</p>"
         },
         "instanceName":{
           "shape":"ResourceName",
-          "documentation":"<p>The unique name of the source instance (e.g., <code>Amazon_Linux-512MB-Virginia-1</code>). When this is defined, a snapshot of the instance's system volume is created.</p> <note> <p>This parameter cannot be defined together with the <code>disk name</code> parameter. The <code>instance name</code> and <code>disk name</code> parameters are mutually exclusive.</p> </note>"
+          "documentation":"<p>The unique name of the source instance (<code>Amazon_Linux-512MB-Virginia-1</code>). When this is defined, a snapshot of the instance's system volume is created.</p> <note> <p>This parameter cannot be defined together with the <code>disk name</code> parameter. The <code>instance name</code> and <code>disk name</code> parameters are mutually exclusive.</p> </note>"
         },
         "tags":{
           "shape":"TagList",
@@ -5136,7 +5174,7 @@
       "members":{
         "domainName":{
           "shape":"DomainName",
-          "documentation":"<p>The domain name (e.g., <code>example.com</code>) for which you want to create the domain entry.</p>"
+          "documentation":"<p>The domain name (<code>example.com</code>) for which you want to create the domain entry.</p>"
         },
         "domainEntry":{
           "shape":"DomainEntry",
@@ -5159,7 +5197,7 @@
       "members":{
         "domainName":{
           "shape":"DomainName",
-          "documentation":"<p>The domain name to manage (e.g., <code>example.com</code>).</p>"
+          "documentation":"<p>The domain name to manage (<code>example.com</code>).</p>"
         },
         "tags":{
           "shape":"TagList",
@@ -5267,7 +5305,7 @@
         },
         "bundleId":{
           "shape":"NonEmptyString",
-          "documentation":"<p>The bundle of specification information for your virtual private server (or <i>instance</i>), including the pricing plan (e.g., <code>micro_1_0</code>).</p>"
+          "documentation":"<p>The bundle of specification information for your virtual private server (or <i>instance</i>), including the pricing plan (<code>micro_1_0</code>).</p>"
         },
         "userData":{
           "shape":"string",
@@ -5331,16 +5369,16 @@
         },
         "customImageName":{
           "shape":"ResourceName",
-          "documentation":"<p>(Deprecated) The name for your custom image.</p> <note> <p>In releases prior to June 12, 2017, this parameter was ignored by the API. It is now deprecated.</p> </note>",
+          "documentation":"<p>(Discontinued) The name for your custom image.</p> <note> <p>In releases prior to June 12, 2017, this parameter was ignored by the API. It is now discontinued.</p> </note>",
           "deprecated":true
         },
         "blueprintId":{
           "shape":"NonEmptyString",
-          "documentation":"<p>The ID for a virtual private server image (e.g., <code>app_wordpress_4_4</code> or <code>app_lamp_7_0</code>). Use the <code>get blueprints</code> operation to return a list of available images (or <i>blueprints</i>).</p> <note> <p>Use active blueprints when creating new instances. Inactive blueprints are listed to support customers with existing instances and are not necessarily available to create new instances. Blueprints are marked inactive when they become outdated due to operating system updates or new application releases.</p> </note>"
+          "documentation":"<p>The ID for a virtual private server image (<code>app_wordpress_4_4</code> or <code>app_lamp_7_0</code>). Use the <code>get blueprints</code> operation to return a list of available images (or <i>blueprints</i>).</p> <note> <p>Use active blueprints when creating new instances. Inactive blueprints are listed to support customers with existing instances and are not necessarily available to create new instances. Blueprints are marked inactive when they become outdated due to operating system updates or new application releases.</p> </note>"
         },
         "bundleId":{
           "shape":"NonEmptyString",
-          "documentation":"<p>The bundle of specification information for your virtual private server (or <i>instance</i>), including the pricing plan (e.g., <code>micro_1_0</code>).</p>"
+          "documentation":"<p>The bundle of specification information for your virtual private server (or <i>instance</i>), including the pricing plan (<code>micro_1_0</code>).</p>"
         },
         "userData":{
           "shape":"string",
@@ -5425,7 +5463,7 @@
         },
         "healthCheckPath":{
           "shape":"string",
-          "documentation":"<p>The path you provided to perform the load balancer health check. If you didn't specify a health check path, Lightsail uses the root path of your website (e.g., <code>\"/\"</code>).</p> <p>You may want to specify a custom health check path other than the root of your application if your home page loads slowly or has a lot of media or scripting on it.</p>"
+          "documentation":"<p>The path you provided to perform the load balancer health check. If you didn't specify a health check path, Lightsail uses the root path of your website (<code>\"/\"</code>).</p> <p>You may want to specify a custom health check path other than the root of your application if your home page loads slowly or has a lot of media or scripting on it.</p>"
         },
         "certificateName":{
           "shape":"ResourceName",
@@ -5433,11 +5471,11 @@
         },
         "certificateDomainName":{
           "shape":"DomainName",
-          "documentation":"<p>The domain name with which your certificate is associated (e.g., <code>example.com</code>).</p> <p>If you specify <code>certificateDomainName</code>, then <code>certificateName</code> is required (and vice-versa).</p>"
+          "documentation":"<p>The domain name with which your certificate is associated (<code>example.com</code>).</p> <p>If you specify <code>certificateDomainName</code>, then <code>certificateName</code> is required (and vice-versa).</p>"
         },
         "certificateAlternativeNames":{
           "shape":"DomainNameList",
-          "documentation":"<p>The optional alternative domains and subdomains to use with your SSL/TLS certificate (e.g., <code>www.example.com</code>, <code>example.com</code>, <code>m.example.com</code>, <code>blog.example.com</code>).</p>"
+          "documentation":"<p>The optional alternative domains and subdomains to use with your SSL/TLS certificate (<code>www.example.com</code>, <code>example.com</code>, <code>m.example.com</code>, <code>blog.example.com</code>).</p>"
         },
         "tags":{
           "shape":"TagList",
@@ -5480,11 +5518,11 @@
         },
         "certificateDomainName":{
           "shape":"DomainName",
-          "documentation":"<p>The domain name (e.g., <code>example.com</code>) for your SSL/TLS certificate.</p>"
+          "documentation":"<p>The domain name (<code>example.com</code>) for your SSL/TLS certificate.</p>"
         },
         "certificateAlternativeNames":{
           "shape":"DomainNameList",
-          "documentation":"<p>An array of strings listing alternative domains and subdomains for your SSL/TLS certificate. Lightsail will de-dupe the names for you. You can have a maximum of 9 alternative names (in addition to the 1 primary domain). We do not support wildcards (e.g., <code>*.example.com</code>).</p>"
+          "documentation":"<p>An array of strings listing alternative domains and subdomains for your SSL/TLS certificate. Lightsail will de-dupe the names for you. You can have a maximum of 9 alternative names (in addition to the 1 primary domain). We do not support wildcards (<code>*.example.com</code>).</p>"
         },
         "tags":{
           "shape":"TagList",
@@ -5826,7 +5864,7 @@
       "members":{
         "diskName":{
           "shape":"ResourceName",
-          "documentation":"<p>The unique name of the disk you want to delete (e.g., <code>my-disk</code>).</p>"
+          "documentation":"<p>The unique name of the disk you want to delete (<code>my-disk</code>).</p>"
         },
         "forceDeleteAddOns":{
           "shape":"boolean",
@@ -5849,7 +5887,7 @@
       "members":{
         "diskSnapshotName":{
           "shape":"ResourceName",
-          "documentation":"<p>The name of the disk snapshot you want to delete (e.g., <code>my-disk-snapshot</code>).</p>"
+          "documentation":"<p>The name of the disk snapshot you want to delete (<code>my-disk-snapshot</code>).</p>"
         }
       }
     },
@@ -6143,7 +6181,7 @@
       "members":{
         "diskName":{
           "shape":"ResourceName",
-          "documentation":"<p>The unique name of the disk you want to detach from your instance (e.g., <code>my-disk</code>).</p>"
+          "documentation":"<p>The unique name of the disk you want to detach from your instance (<code>my-disk</code>).</p>"
         }
       }
     },
@@ -6252,7 +6290,7 @@
         },
         "resourceType":{
           "shape":"ResourceType",
-          "documentation":"<p>The Lightsail resource type (e.g., <code>Disk</code>).</p>"
+          "documentation":"<p>The Lightsail resource type (<code>Disk</code>).</p>"
         },
         "tags":{
           "shape":"TagList",
@@ -6292,12 +6330,12 @@
         },
         "attachmentState":{
           "shape":"string",
-          "documentation":"<p>(Deprecated) The attachment state of the disk.</p> <note> <p>In releases prior to November 14, 2017, this parameter returned <code>attached</code> for system disks in the API response. It is now deprecated, but still included in the response. Use <code>isAttached</code> instead.</p> </note>",
+          "documentation":"<p>(Discontinued) The attachment state of the disk.</p> <note> <p>In releases prior to November 14, 2017, this parameter returned <code>attached</code> for system disks in the API response. It is now discontinued, but still included in the response. Use <code>isAttached</code> instead.</p> </note>",
           "deprecated":true
         },
         "gbInUse":{
           "shape":"integer",
-          "documentation":"<p>(Deprecated) The number of GB in use by the disk.</p> <note> <p>In releases prior to November 14, 2017, this parameter was not included in the API response. It is now deprecated.</p> </note>",
+          "documentation":"<p>(Discontinued) The number of GB in use by the disk.</p> <note> <p>In releases prior to November 14, 2017, this parameter was not included in the API response. It is now discontinued.</p> </note>",
           "deprecated":true
         },
         "autoMountStatus":{
@@ -6320,7 +6358,7 @@
         },
         "sizeInGb":{
           "shape":"integer",
-          "documentation":"<p>The size of the disk in GB (e.g., <code>32</code>).</p>"
+          "documentation":"<p>The size of the disk in GB (<code>32</code>).</p>"
         },
         "isSystemDisk":{
           "shape":"boolean",
@@ -6346,7 +6384,7 @@
         },
         "newDiskName":{
           "shape":"ResourceName",
-          "documentation":"<p>The new disk name (e.g., <code>my-new-disk</code>).</p>"
+          "documentation":"<p>The new disk name (<code>my-new-disk</code>).</p>"
         }
       },
       "documentation":"<p>Describes a block storage disk mapping.</p>"
@@ -6360,7 +6398,7 @@
       "members":{
         "name":{
           "shape":"ResourceName",
-          "documentation":"<p>The name of the disk snapshot (e.g., <code>my-disk-snapshot</code>).</p>"
+          "documentation":"<p>The name of the disk snapshot (<code>my-disk-snapshot</code>).</p>"
         },
         "arn":{
           "shape":"NonEmptyString",
@@ -6380,7 +6418,7 @@
         },
         "resourceType":{
           "shape":"ResourceType",
-          "documentation":"<p>The Lightsail resource type (e.g., <code>DiskSnapshot</code>).</p>"
+          "documentation":"<p>The Lightsail resource type (<code>DiskSnapshot</code>).</p>"
         },
         "tags":{
           "shape":"TagList",
@@ -6426,7 +6464,7 @@
       "members":{
         "sizeInGb":{
           "shape":"integer",
-          "documentation":"<p>The size of the disk in GB (e.g., <code>32</code>).</p>"
+          "documentation":"<p>The size of the disk in GB (<code>32</code>).</p>"
         }
       },
       "documentation":"<p>Describes a disk snapshot.</p>"
@@ -6530,7 +6568,7 @@
         },
         "arn":{
           "shape":"NonEmptyString",
-          "documentation":"<p>The Amazon Resource Name (ARN) of the domain recordset (e.g., <code>arn:aws:lightsail:global:123456789101:Domain/824cede0-abc7-4f84-8dbc-12345EXAMPLE</code>).</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of the domain recordset (<code>arn:aws:lightsail:global:123456789101:Domain/824cede0-abc7-4f84-8dbc-12345EXAMPLE</code>).</p>"
         },
         "supportCode":{
           "shape":"string",
@@ -6576,7 +6614,7 @@
         },
         "target":{
           "shape":"string",
-          "documentation":"<p>The target IP address (e.g., <code>192.0.2.0</code>), or AWS name server (e.g., <code>ns-111.awsdns-22.com.</code>).</p> <p>For Lightsail load balancers, the value looks like <code>ab1234c56789c6b86aba6fb203d443bc-123456789.us-east-2.elb.amazonaws.com</code>. For Lightsail distributions, the value looks like <code>exampled1182ne.cloudfront.net</code>. For Lightsail container services, the value looks like <code>container-service-1.example23scljs.us-west-2.cs.amazonlightsail.com</code>. Be sure to also set <code>isAlias</code> to <code>true</code> when setting up an A record for a Lightsail load balancer, distribution, or container service.</p>"
+          "documentation":"<p>The target IP address (<code>192.0.2.0</code>), or AWS name server (<code>ns-111.awsdns-22.com.</code>).</p> <p>For Lightsail load balancers, the value looks like <code>ab1234c56789c6b86aba6fb203d443bc-123456789.us-east-2.elb.amazonaws.com</code>. For Lightsail distributions, the value looks like <code>exampled1182ne.cloudfront.net</code>. For Lightsail container services, the value looks like <code>container-service-1.example23scljs.us-west-2.cs.amazonlightsail.com</code>. Be sure to also set <code>isAlias</code> to <code>true</code> when setting up an A record for a Lightsail load balancer, distribution, or container service.</p>"
         },
         "isAlias":{
           "shape":"boolean",
@@ -6588,7 +6626,7 @@
         },
         "options":{
           "shape":"DomainEntryOptions",
-          "documentation":"<p>(Deprecated) The options for the domain entry.</p> <note> <p>In releases prior to November 29, 2017, this parameter was not included in the API response. It is now deprecated.</p> </note>",
+          "documentation":"<p>(Discontinued) The options for the domain entry.</p> <note> <p>In releases prior to November 29, 2017, this parameter was not included in the API response. It is now discontinued.</p> </note>",
           "deprecated":true
         }
       },
@@ -6663,6 +6701,13 @@
       }
     },
     "EligibleToRenew":{"type":"string"},
+    "EmailAddress":{
+      "type":"string",
+      "max":254,
+      "min":6,
+      "pattern":"^[\\w!#$%&.'*+\\/=?^_\\x60{|}~\\-]{1,64}@[a-zA-Z0-9\\-]{1,63}(\\.[a-zA-Z0-9\\-]{1,63}){0,8}(\\.[a-zA-Z]{2,63})$",
+      "sensitive":true
+    },
     "EnableAddOnRequest":{
       "type":"structure",
       "required":[
@@ -6767,7 +6812,7 @@
         },
         "resourceType":{
           "shape":"ResourceType",
-          "documentation":"<p>The Lightsail resource type (e.g., <code>ExportSnapshotRecord</code>).</p>"
+          "documentation":"<p>The Lightsail resource type (<code>ExportSnapshotRecord</code>).</p>"
         },
         "state":{
           "shape":"RecordState",
@@ -6793,7 +6838,7 @@
       "members":{
         "resourceType":{
           "shape":"ExportSnapshotRecordSourceType",
-          "documentation":"<p>The Lightsail resource type (e.g., <code>InstanceSnapshot</code> or <code>DiskSnapshot</code>).</p>"
+          "documentation":"<p>The Lightsail resource type (<code>InstanceSnapshot</code> or <code>DiskSnapshot</code>).</p>"
         },
         "createdAt":{
           "shape":"IsoDate",
@@ -6931,7 +6976,7 @@
         },
         "resourceType":{
           "shape":"ResourceType",
-          "documentation":"<p>The resource type (e.g., <code>Instance</code> or <code>Disk</code>).</p>"
+          "documentation":"<p>The resource type of the automatic snapshot. The possible values are <code>Instance</code>, and <code>Disk</code>.</p>"
         },
         "autoSnapshots":{
           "shape":"AutoSnapshotDetailsList",
@@ -7407,7 +7452,7 @@
       "members":{
         "diskName":{
           "shape":"ResourceName",
-          "documentation":"<p>The name of the disk (e.g., <code>my-disk</code>).</p>"
+          "documentation":"<p>The name of the disk (<code>my-disk</code>).</p>"
         }
       }
     },
@@ -7426,7 +7471,7 @@
       "members":{
         "diskSnapshotName":{
           "shape":"ResourceName",
-          "documentation":"<p>The name of the disk snapshot (e.g., <code>my-disk-snapshot</code>).</p>"
+          "documentation":"<p>The name of the disk snapshot (<code>my-disk-snapshot</code>).</p>"
         }
       }
     },
@@ -7515,7 +7560,7 @@
         },
         "createTime":{
           "shape":"IsoDate",
-          "documentation":"<p>The timestamp of the last cache reset (e.g., <code>1479734909.17</code>) in Unix time format.</p>"
+          "documentation":"<p>The timestamp of the last cache reset (<code>1479734909.17</code>) in Unix time format.</p>"
         }
       }
     },
@@ -8085,7 +8130,7 @@
         },
         "nextPageCount":{
           "shape":"string",
-          "documentation":"<p>(Deprecated) Returns the number of pages of results that remain.</p> <note> <p>In releases prior to June 12, 2017, this parameter returned <code>null</code> by the API. It is now deprecated, and the API returns the <code>next page token</code> parameter instead.</p> </note>",
+          "documentation":"<p>(Discontinued) Returns the number of pages of results that remain.</p> <note> <p>In releases prior to June 12, 2017, this parameter returned <code>null</code> by the API. It is now discontinued, and the API returns the <code>next page token</code> parameter instead.</p> </note>",
           "deprecated":true
         },
         "nextPageToken":{
@@ -8121,11 +8166,11 @@
       "members":{
         "includeAvailabilityZones":{
           "shape":"boolean",
-          "documentation":"<p>A Boolean value indicating whether to also include Availability Zones in your get regions request. Availability Zones are indicated with a letter: e.g., <code>us-east-2a</code>.</p>"
+          "documentation":"<p>A Boolean value indicating whether to also include Availability Zones in your get regions request. Availability Zones are indicated with a letter: <code>us-east-2a</code>.</p>"
         },
         "includeRelationalDatabaseAvailabilityZones":{
           "shape":"boolean",
-          "documentation":"<p>A Boolean value indicating whether to also include Availability Zones for databases in your get regions request. Availability Zones are indicated with a letter (e.g., <code>us-east-2a</code>).</p>"
+          "documentation":"<p>A Boolean value indicating whether to also include Availability Zones for databases in your get regions request. Availability Zones are indicated with a letter (<code>us-east-2a</code>).</p>"
         }
       }
     },
@@ -8477,6 +8522,33 @@
         }
       }
     },
+    "GetSetupHistoryRequest":{
+      "type":"structure",
+      "required":["resourceName"],
+      "members":{
+        "resourceName":{
+          "shape":"ResourceName",
+          "documentation":"<p>The name of the resource for which you are requesting information.</p>"
+        },
+        "pageToken":{
+          "shape":"SetupHistoryPageToken",
+          "documentation":"<p>The token to advance to the next page of results from your request.</p> <p>To get a page token, perform an initial <code>GetSetupHistory</code> request. If your results are paginated, the response will return a next page token that you can specify as the page token in a subsequent request.</p>"
+        }
+      }
+    },
+    "GetSetupHistoryResult":{
+      "type":"structure",
+      "members":{
+        "setupHistory":{
+          "shape":"setupHistoryList",
+          "documentation":"<p>The historical information that's returned.</p>"
+        },
+        "nextPageToken":{
+          "shape":"SetupHistoryPageToken",
+          "documentation":"<p>The token to advance to the next page of results from your request.</p> <p>A next page token is not returned if there are no more results to display.</p> <p>To get the next page of results, perform another <code>GetSetupHistory</code> request and specify the next page token using the pageToken parameter.</p>"
+        }
+      }
+    },
     "GetStaticIpRequest":{
       "type":"structure",
       "required":["staticIpName"],
@@ -8666,18 +8738,18 @@
           "documentation":"<p>The protocol that your Amazon Lightsail distribution uses when establishing a connection with your origin to pull content.</p>"
         }
       },
-      "documentation":"<p>Describes the origin resource of an Amazon Lightsail content delivery network (CDN) distribution.</p> <p>An origin can be a Lightsail instance, bucket, or load balancer. A distribution pulls content from an origin, caches it, and serves it to viewers via a worldwide network of edge servers.</p>"
+      "documentation":"<p>Describes the origin resource of an Amazon Lightsail content delivery network (CDN) distribution.</p> <p>An origin can be a Lightsail instance, bucket, container service, or load balancer. A distribution pulls content from an origin, caches it, and serves it to viewers via a worldwide network of edge servers.</p>"
     },
     "Instance":{
       "type":"structure",
       "members":{
         "name":{
           "shape":"ResourceName",
-          "documentation":"<p>The name the user gave the instance (e.g., <code>Amazon_Linux-1GB-Ohio-1</code>).</p>"
+          "documentation":"<p>The name the user gave the instance (<code>Amazon_Linux-1GB-Ohio-1</code>).</p>"
         },
         "arn":{
           "shape":"NonEmptyString",
-          "documentation":"<p>The Amazon Resource Name (ARN) of the instance (e.g., <code>arn:aws:lightsail:us-east-2:123456789101:Instance/244ad76f-8aad-4741-809f-12345EXAMPLE</code>).</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of the instance (<code>arn:aws:lightsail:us-east-2:123456789101:Instance/244ad76f-8aad-4741-809f-12345EXAMPLE</code>).</p>"
         },
         "supportCode":{
           "shape":"string",
@@ -8685,7 +8757,7 @@
         },
         "createdAt":{
           "shape":"IsoDate",
-          "documentation":"<p>The timestamp when the instance was created (e.g., <code>1479734909.17</code>) in Unix time format.</p>"
+          "documentation":"<p>The timestamp when the instance was created (<code>1479734909.17</code>) in Unix time format.</p>"
         },
         "location":{
           "shape":"ResourceLocation",
@@ -8701,15 +8773,15 @@
         },
         "blueprintId":{
           "shape":"NonEmptyString",
-          "documentation":"<p>The blueprint ID (e.g., <code>os_amlinux_2016_03</code>).</p>"
+          "documentation":"<p>The blueprint ID (<code>os_amlinux_2016_03</code>).</p>"
         },
         "blueprintName":{
           "shape":"NonEmptyString",
-          "documentation":"<p>The friendly name of the blueprint (e.g., <code>Amazon Linux</code>).</p>"
+          "documentation":"<p>The friendly name of the blueprint (<code>Amazon Linux</code>).</p>"
         },
         "bundleId":{
           "shape":"NonEmptyString",
-          "documentation":"<p>The bundle for the instance (e.g., <code>micro_1_0</code>).</p>"
+          "documentation":"<p>The bundle for the instance (<code>micro_1_0</code>).</p>"
         },
         "addOns":{
           "shape":"AddOnList",
@@ -8745,15 +8817,15 @@
         },
         "state":{
           "shape":"InstanceState",
-          "documentation":"<p>The status code and the state (e.g., <code>running</code>) for the instance.</p>"
+          "documentation":"<p>The status code and the state (<code>running</code>) for the instance.</p>"
         },
         "username":{
           "shape":"NonEmptyString",
-          "documentation":"<p>The user name for connecting to the instance (e.g., <code>ec2-user</code>).</p>"
+          "documentation":"<p>The user name for connecting to the instance (<code>ec2-user</code>).</p>"
         },
         "sshKeyName":{
           "shape":"ResourceName",
-          "documentation":"<p>The name of the SSH key being used to connect to the instance (e.g., <code>LightsailDefaultKeyPair</code>).</p>"
+          "documentation":"<p>The name of the SSH key being used to connect to the instance (<code>LightsailDefaultKeyPair</code>).</p>"
         },
         "metadataOptions":{
           "shape":"InstanceMetadataOptions",
@@ -8767,7 +8839,7 @@
       "members":{
         "certKey":{
           "shape":"string",
-          "documentation":"<p>For SSH access, the public key to use when accessing your instance For OpenSSH clients (e.g., command line SSH), you should save this value to <code>tempkey-cert.pub</code>.</p>"
+          "documentation":"<p>For SSH access, the public key to use when accessing your instance For OpenSSH clients (command line SSH), you should save this value to <code>tempkey-cert.pub</code>.</p>"
         },
         "expiresAt":{
           "shape":"IsoDate",
@@ -8787,7 +8859,7 @@
         },
         "privateKey":{
           "shape":"string",
-          "documentation":"<p>For SSH access, the temporary private key. For OpenSSH clients (e.g., command line SSH), you should save this value to <code>tempkey</code>).</p>"
+          "documentation":"<p>For SSH access, the temporary private key. For OpenSSH clients (command line SSH), you should save this value to <code>tempkey</code>).</p>"
         },
         "protocol":{
           "shape":"InstanceAccessProtocol",
@@ -8830,7 +8902,7 @@
         },
         "instanceType":{
           "shape":"NonEmptyString",
-          "documentation":"<p>The instance type (e.g., <code>t2.micro</code>) to use for the new Amazon EC2 instance.</p>"
+          "documentation":"<p>The instance type (<code>t2.micro</code>) to use for the new Amazon EC2 instance.</p>"
         },
         "portInfoSource":{
           "shape":"PortInfoSourceType",
@@ -8864,7 +8936,7 @@
         },
         "ramSizeInGb":{
           "shape":"float",
-          "documentation":"<p>The amount of RAM in GB on the instance (e.g., <code>1.0</code>).</p>"
+          "documentation":"<p>The amount of RAM in GB on the instance (<code>1.0</code>).</p>"
         }
       },
       "documentation":"<p>Describes the hardware for the instance.</p>"
@@ -9091,7 +9163,7 @@
         },
         "arn":{
           "shape":"NonEmptyString",
-          "documentation":"<p>The Amazon Resource Name (ARN) of the snapshot (e.g., <code>arn:aws:lightsail:us-east-2:123456789101:InstanceSnapshot/d23b5706-3322-4d83-81e5-12345EXAMPLE</code>).</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of the snapshot (<code>arn:aws:lightsail:us-east-2:123456789101:InstanceSnapshot/d23b5706-3322-4d83-81e5-12345EXAMPLE</code>).</p>"
         },
         "supportCode":{
           "shape":"string",
@@ -9099,7 +9171,7 @@
         },
         "createdAt":{
           "shape":"IsoDate",
-          "documentation":"<p>The timestamp when the snapshot was created (e.g., <code>1479907467.024</code>).</p>"
+          "documentation":"<p>The timestamp when the snapshot was created (<code>1479907467.024</code>).</p>"
         },
         "location":{
           "shape":"ResourceLocation",
@@ -9131,15 +9203,15 @@
         },
         "fromInstanceArn":{
           "shape":"NonEmptyString",
-          "documentation":"<p>The Amazon Resource Name (ARN) of the instance from which the snapshot was created (e.g., <code>arn:aws:lightsail:us-east-2:123456789101:Instance/64b8404c-ccb1-430b-8daf-12345EXAMPLE</code>).</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of the instance from which the snapshot was created (<code>arn:aws:lightsail:us-east-2:123456789101:Instance/64b8404c-ccb1-430b-8daf-12345EXAMPLE</code>).</p>"
         },
         "fromBlueprintId":{
           "shape":"string",
-          "documentation":"<p>The blueprint ID from which you created the snapshot (e.g., <code>os_debian_8_3</code>). A blueprint is a virtual private server (or <i>instance</i>) image used to create instances quickly.</p>"
+          "documentation":"<p>The blueprint ID from which you created the snapshot (<code>os_debian_8_3</code>). A blueprint is a virtual private server (or <i>instance</i>) image used to create instances quickly.</p>"
         },
         "fromBundleId":{
           "shape":"string",
-          "documentation":"<p>The bundle ID from which you created the snapshot (e.g., <code>micro_1_0</code>).</p>"
+          "documentation":"<p>The bundle ID from which you created the snapshot (<code>micro_1_0</code>).</p>"
         },
         "isFromAutoSnapshot":{
           "shape":"boolean",
@@ -9157,11 +9229,11 @@
       "members":{
         "fromBundleId":{
           "shape":"NonEmptyString",
-          "documentation":"<p>The bundle ID from which the source instance was created (e.g., <code>micro_1_0</code>).</p>"
+          "documentation":"<p>The bundle ID from which the source instance was created (<code>micro_1_0</code>).</p>"
         },
         "fromBlueprintId":{
           "shape":"NonEmptyString",
-          "documentation":"<p>The blueprint ID from which the source instance (e.g., <code>os_debian_8_3</code>).</p>"
+          "documentation":"<p>The blueprint ID from which the source instance (<code>os_debian_8_3</code>).</p>"
         },
         "fromDiskInfo":{
           "shape":"DiskInfoList",
@@ -9191,7 +9263,7 @@
         },
         "name":{
           "shape":"string",
-          "documentation":"<p>The state of the instance (e.g., <code>running</code> or <code>pending</code>).</p>"
+          "documentation":"<p>The state of the instance (<code>running</code> or <code>pending</code>).</p>"
         }
       },
       "documentation":"<p>Describes the virtual private server (or <i>instance</i>) status.</p>"
@@ -9252,7 +9324,7 @@
         },
         "arn":{
           "shape":"NonEmptyString",
-          "documentation":"<p>The Amazon Resource Name (ARN) of the key pair (e.g., <code>arn:aws:lightsail:us-east-2:123456789101:KeyPair/05859e3d-331d-48ba-9034-12345EXAMPLE</code>).</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of the key pair (<code>arn:aws:lightsail:us-east-2:123456789101:KeyPair/05859e3d-331d-48ba-9034-12345EXAMPLE</code>).</p>"
         },
         "supportCode":{
           "shape":"string",
@@ -9260,7 +9332,7 @@
         },
         "createdAt":{
           "shape":"IsoDate",
-          "documentation":"<p>The timestamp when the key pair was created (e.g., <code>1479816991.349</code>).</p>"
+          "documentation":"<p>The timestamp when the key pair was created (<code>1479816991.349</code>).</p>"
         },
         "location":{
           "shape":"ResourceLocation",
@@ -9310,7 +9382,7 @@
         },
         "resourceType":{
           "shape":"ResourceType",
-          "documentation":"<p>The Lightsail resource type (e.g., <code>Distribution</code>).</p>"
+          "documentation":"<p>The Lightsail resource type (<code>Distribution</code>).</p>"
         },
         "alternativeDomainNames":{
           "shape":"StringList",
@@ -9376,7 +9448,7 @@
       "members":{
         "name":{
           "shape":"ResourceName",
-          "documentation":"<p>The name of the load balancer (e.g., <code>my-load-balancer</code>).</p>"
+          "documentation":"<p>The name of the load balancer (<code>my-load-balancer</code>).</p>"
         },
         "arn":{
           "shape":"NonEmptyString",
@@ -9392,11 +9464,11 @@
         },
         "location":{
           "shape":"ResourceLocation",
-          "documentation":"<p>The AWS Region where your load balancer was created (e.g., <code>us-east-2a</code>). Lightsail automatically creates your load balancer across Availability Zones.</p>"
+          "documentation":"<p>The AWS Region where your load balancer was created (<code>us-east-2a</code>). Lightsail automatically creates your load balancer across Availability Zones.</p>"
         },
         "resourceType":{
           "shape":"ResourceType",
-          "documentation":"<p>The resource type (e.g., <code>LoadBalancer</code>.</p>"
+          "documentation":"<p>The resource type (<code>LoadBalancer</code>.</p>"
         },
         "tags":{
           "shape":"TagList",
@@ -9511,7 +9583,7 @@
       "members":{
         "name":{
           "shape":"ResourceName",
-          "documentation":"<p>The name of the SSL/TLS certificate (e.g., <code>my-certificate</code>).</p>"
+          "documentation":"<p>The name of the SSL/TLS certificate (<code>my-certificate</code>).</p>"
         },
         "arn":{
           "shape":"NonEmptyString",
@@ -9531,7 +9603,7 @@
         },
         "resourceType":{
           "shape":"ResourceType",
-          "documentation":"<p>The resource type (e.g., <code>LoadBalancerTlsCertificate</code>).</p> <ul> <li> <p> <b> <code>Instance</code> </b> - A Lightsail instance (a virtual private server)</p> </li> <li> <p> <b> <code>StaticIp</code> </b> - A static IP address</p> </li> <li> <p> <b> <code>KeyPair</code> </b> - The key pair used to connect to a Lightsail instance</p> </li> <li> <p> <b> <code>InstanceSnapshot</code> </b> - A Lightsail instance snapshot</p> </li> <li> <p> <b> <code>Domain</code> </b> - A DNS zone</p> </li> <li> <p> <b> <code>PeeredVpc</code> </b> - A peered VPC</p> </li> <li> <p> <b> <code>LoadBalancer</code> </b> - A Lightsail load balancer</p> </li> <li> <p> <b> <code>LoadBalancerTlsCertificate</code> </b> - An SSL/TLS certificate associated with a Lightsail load balancer</p> </li> <li> <p> <b> <code>Disk</code> </b> - A Lightsail block storage disk</p> </li> <li> <p> <b> <code>DiskSnapshot</code> </b> - A block storage disk snapshot</p> </li> </ul>"
+          "documentation":"<p>The resource type (<code>LoadBalancerTlsCertificate</code>).</p> <ul> <li> <p> <b> <code>Instance</code> </b> - A Lightsail instance (a virtual private server)</p> </li> <li> <p> <b> <code>StaticIp</code> </b> - A static IP address</p> </li> <li> <p> <b> <code>KeyPair</code> </b> - The key pair used to connect to a Lightsail instance</p> </li> <li> <p> <b> <code>InstanceSnapshot</code> </b> - A Lightsail instance snapshot</p> </li> <li> <p> <b> <code>Domain</code> </b> - A DNS zone</p> </li> <li> <p> <b> <code>PeeredVpc</code> </b> - A peered VPC</p> </li> <li> <p> <b> <code>LoadBalancer</code> </b> - A Lightsail load balancer</p> </li> <li> <p> <b> <code>LoadBalancerTlsCertificate</code> </b> - An SSL/TLS certificate associated with a Lightsail load balancer</p> </li> <li> <p> <b> <code>Disk</code> </b> - A Lightsail block storage disk</p> </li> <li> <p> <b> <code>DiskSnapshot</code> </b> - A block storage disk snapshot</p> </li> </ul>"
         },
         "tags":{
           "shape":"TagList",
@@ -9607,7 +9679,7 @@
         },
         "subjectAlternativeNames":{
           "shape":"StringList",
-          "documentation":"<p>An array of strings that specify the alternate domains (e.g., <code>example2.com</code>) and subdomains (e.g., <code>blog.example.com</code>) for the certificate.</p>"
+          "documentation":"<p>An array of strings that specify the alternate domains (<code>example2.com</code>) and subdomains (<code>blog.example.com</code>) for the certificate.</p>"
         }
       },
       "documentation":"<p>Describes a load balancer SSL/TLS certificate.</p> <p>TLS is just an updated, more secure version of Secure Socket Layer (SSL).</p>"
@@ -9850,7 +9922,7 @@
         },
         "timestamp":{
           "shape":"timestamp",
-          "documentation":"<p>The timestamp (e.g., <code>1479816991.349</code>).</p>"
+          "documentation":"<p>The timestamp (<code>1479816991.349</code>).</p>"
         },
         "unit":{
           "shape":"MetricUnit",
@@ -10066,7 +10138,7 @@
         },
         "createdAt":{
           "shape":"IsoDate",
-          "documentation":"<p>The timestamp when the operation was initialized (e.g., <code>1479816991.349</code>).</p>"
+          "documentation":"<p>The timestamp when the operation was initialized (<code>1479816991.349</code>).</p>"
         },
         "location":{
           "shape":"ResourceLocation",
@@ -10078,7 +10150,7 @@
         },
         "operationDetails":{
           "shape":"string",
-          "documentation":"<p>Details about the operation (e.g., <code>Debian-1GB-Ohio-1</code>).</p>"
+          "documentation":"<p>Details about the operation (<code>Debian-1GB-Ohio-1</code>).</p>"
         },
         "operationType":{
           "shape":"OperationType",
@@ -10090,7 +10162,7 @@
         },
         "statusChangedAt":{
           "shape":"IsoDate",
-          "documentation":"<p>The timestamp when the status was changed (e.g., <code>1479816991.349</code>).</p>"
+          "documentation":"<p>The timestamp when the status was changed (<code>1479816991.349</code>).</p>"
         },
         "errorCode":{
           "shape":"string",
@@ -10212,7 +10284,8 @@
         "SetResourceAccessForBucket",
         "UpdateInstanceMetadataOptions",
         "StartGUISession",
-        "StopGUISession"
+        "StopGUISession",
+        "SetupInstanceHttps"
       ]
     },
     "Origin":{
@@ -10224,7 +10297,7 @@
         },
         "resourceType":{
           "shape":"ResourceType",
-          "documentation":"<p>The resource type of the origin resource (e.g., <i>Instance</i>).</p>"
+          "documentation":"<p>The resource type of the origin resource (<i>Instance</i>).</p>"
         },
         "regionName":{
           "shape":"RegionName",
@@ -10598,19 +10671,19 @@
       "members":{
         "continentCode":{
           "shape":"string",
-          "documentation":"<p>The continent code (e.g., <code>NA</code>, meaning North America).</p>"
+          "documentation":"<p>The continent code (<code>NA</code>, meaning North America).</p>"
         },
         "description":{
           "shape":"string",
-          "documentation":"<p>The description of the Amazon Web Services Region (e.g., <code>This region is recommended to serve users in the eastern United States and eastern Canada</code>).</p>"
+          "documentation":"<p>The description of the Amazon Web Services Region (<code>This region is recommended to serve users in the eastern United States and eastern Canada</code>).</p>"
         },
         "displayName":{
           "shape":"string",
-          "documentation":"<p>The display name (e.g., <code>Ohio</code>).</p>"
+          "documentation":"<p>The display name (<code>Ohio</code>).</p>"
         },
         "name":{
           "shape":"RegionName",
-          "documentation":"<p>The region name (e.g., <code>us-east-2</code>).</p>"
+          "documentation":"<p>The region name (<code>us-east-2</code>).</p>"
         },
         "availabilityZones":{
           "shape":"AvailabilityZoneList",
@@ -11149,7 +11222,7 @@
         },
         "createTime":{
           "shape":"IsoDate",
-          "documentation":"<p>The timestamp of the reset cache request (e.g., <code>1479734909.17</code>) in Unix time format.</p>"
+          "documentation":"<p>The timestamp of the reset cache request (<code>1479734909.17</code>) in Unix time format.</p>"
         },
         "operation":{
           "shape":"Operation",
@@ -11351,7 +11424,7 @@
       "members":{
         "resourceType":{
           "shape":"ResourceType",
-          "documentation":"<p>The resource type.</p> <p>The possible values are <code>Distribution</code>, <code>Instance</code>, and <code>LoadBalancer</code>.</p> <note> <p>Distribution-related APIs are available only in the N. Virginia (<code>us-east-1</code>) Amazon Web Services Region. Set your Amazon Web Services Region configuration to <code>us-east-1</code> to create, view, or edit distributions.</p> </note>"
+          "documentation":"<p>The resource type.</p> <p>The resource values are <code>Distribution</code>, <code>Instance</code>, and <code>LoadBalancer</code>.</p> <note> <p>Distribution-related APIs are available only in the N. Virginia (<code>us-east-1</code>) Amazon Web Services Region. Set your Amazon Web Services Region configuration to <code>us-east-1</code> to create, view, or edit distributions.</p> </note>"
         },
         "resourceName":{
           "shape":"ResourceName",
@@ -11402,6 +11475,173 @@
           "documentation":"<p>An array of objects that describe the result of the action, such as the status of the request, the timestamp of the request, and the resources affected by the request.</p>"
         }
       }
+    },
+    "SetupDomainName":{
+      "type":"string",
+      "max":253,
+      "min":4,
+      "pattern":"^[a-zA-Z0-9\\-]{1,63}(\\.[a-zA-Z0-9\\-]{1,63}){0,8}(\\.[a-zA-Z]{2,63})$"
+    },
+    "SetupDomainNameList":{
+      "type":"list",
+      "member":{"shape":"SetupDomainName"},
+      "max":10,
+      "min":1
+    },
+    "SetupExecutionDetails":{
+      "type":"structure",
+      "members":{
+        "command":{
+          "shape":"string",
+          "documentation":"<p>The command that was executed.</p>"
+        },
+        "dateTime":{
+          "shape":"IsoDate",
+          "documentation":"<p>The timestamp for when the request was run.</p>"
+        },
+        "name":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>The name of the target resource.</p>"
+        },
+        "status":{
+          "shape":"SetupStatus",
+          "documentation":"<p>The status of the <code>SetupInstanceHttps</code> request.</p>"
+        },
+        "standardError":{
+          "shape":"string",
+          "documentation":"<p>The text written by the command to stderr.</p>"
+        },
+        "standardOutput":{
+          "shape":"string",
+          "documentation":"<p>The text written by the command to stdout.</p>"
+        },
+        "version":{
+          "shape":"string",
+          "documentation":"<p>The current version of the script..</p>"
+        }
+      },
+      "documentation":"<p>Returns details about the commands that were run.</p>"
+    },
+    "SetupExecutionDetailsList":{
+      "type":"list",
+      "member":{"shape":"SetupExecutionDetails"}
+    },
+    "SetupHistory":{
+      "type":"structure",
+      "members":{
+        "operationId":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>A GUID that's used to identify the operation.</p>"
+        },
+        "request":{
+          "shape":"SetupRequest",
+          "documentation":"<p>Information about the specified request.</p>"
+        },
+        "resource":{
+          "shape":"SetupHistoryResource",
+          "documentation":"<p>The target resource name for the request.</p>"
+        },
+        "executionDetails":{
+          "shape":"SetupExecutionDetailsList",
+          "documentation":"<p>Describes the full details of the request.</p>"
+        },
+        "status":{
+          "shape":"SetupStatus",
+          "documentation":"<p>The status of the request.</p>"
+        }
+      },
+      "documentation":"<p>Returns a list of the commands that were ran on the target resource.</p> <p>The status of each command is also returned.</p>"
+    },
+    "SetupHistoryPageToken":{
+      "type":"string",
+      "max":40,
+      "min":24,
+      "pattern":"^[A-Za-z0-9+/=]+$"
+    },
+    "SetupHistoryResource":{
+      "type":"structure",
+      "members":{
+        "name":{
+          "shape":"ResourceName",
+          "documentation":"<p>The name of the Lightsail resource.</p>"
+        },
+        "arn":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the Lightsail resource.</p>"
+        },
+        "createdAt":{
+          "shape":"IsoDate",
+          "documentation":"<p>The timestamp for when the resource was created.</p>"
+        },
+        "location":{"shape":"ResourceLocation"},
+        "resourceType":{
+          "shape":"ResourceType",
+          "documentation":"<p>The Lightsail resource type. For example, <code>Instance</code>.</p>"
+        }
+      },
+      "documentation":"<p>The Lightsail resource that <code>SetupHistory</code> was ran on. </p>"
+    },
+    "SetupInstanceHttpsRequest":{
+      "type":"structure",
+      "required":[
+        "instanceName",
+        "emailAddress",
+        "domainNames",
+        "certificateProvider"
+      ],
+      "members":{
+        "instanceName":{
+          "shape":"ResourceName",
+          "documentation":"<p>The name of the Lightsail instance.</p>"
+        },
+        "emailAddress":{
+          "shape":"EmailAddress",
+          "documentation":"<p>The contact method for SSL/TLS certificate renewal alerts. You can enter one email address. </p>"
+        },
+        "domainNames":{
+          "shape":"SetupDomainNameList",
+          "documentation":"<p>The name of the domain and subdomains that were specified for the SSL/TLS certificate.</p>"
+        },
+        "certificateProvider":{
+          "shape":"CertificateProvider",
+          "documentation":"<p>The certificate authority that issues the SSL/TLS certificate.</p>"
+        }
+      }
+    },
+    "SetupInstanceHttpsResult":{
+      "type":"structure",
+      "members":{
+        "operations":{
+          "shape":"OperationList",
+          "documentation":"<p>The available API operations for <code>SetupInstanceHttps</code>.</p>"
+        }
+      }
+    },
+    "SetupRequest":{
+      "type":"structure",
+      "members":{
+        "instanceName":{
+          "shape":"ResourceName",
+          "documentation":"<p>The name of the Lightsail instance.</p>"
+        },
+        "domainNames":{
+          "shape":"SetupDomainNameList",
+          "documentation":"<p>The name of the domain and subdomains that the SSL/TLS certificate secures.</p>"
+        },
+        "certificateProvider":{
+          "shape":"CertificateProvider",
+          "documentation":"<p>The Certificate Authority (CA) that issues the SSL/TLS certificate.</p>"
+        }
+      },
+      "documentation":"<p>Returns information that was submitted during the <code>SetupInstanceHttps</code> request. Email information is redacted for privacy.</p>"
+    },
+    "SetupStatus":{
+      "type":"string",
+      "enum":[
+        "succeeded",
+        "failed",
+        "inProgress"
+      ]
     },
     "StartGUISessionRequest":{
       "type":"structure",
@@ -11465,11 +11705,11 @@
       "members":{
         "name":{
           "shape":"ResourceName",
-          "documentation":"<p>The name of the static IP (e.g., <code>StaticIP-Ohio-EXAMPLE</code>).</p>"
+          "documentation":"<p>The name of the static IP (<code>StaticIP-Ohio-EXAMPLE</code>).</p>"
         },
         "arn":{
           "shape":"NonEmptyString",
-          "documentation":"<p>The Amazon Resource Name (ARN) of the static IP (e.g., <code>arn:aws:lightsail:us-east-2:123456789101:StaticIp/9cbb4a9e-f8e3-4dfe-b57e-12345EXAMPLE</code>).</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of the static IP (<code>arn:aws:lightsail:us-east-2:123456789101:StaticIp/9cbb4a9e-f8e3-4dfe-b57e-12345EXAMPLE</code>).</p>"
         },
         "supportCode":{
           "shape":"string",
@@ -11477,7 +11717,7 @@
         },
         "createdAt":{
           "shape":"IsoDate",
-          "documentation":"<p>The timestamp when the static IP was created (e.g., <code>1479735304.222</code>).</p>"
+          "documentation":"<p>The timestamp when the static IP was created (<code>1479735304.222</code>).</p>"
         },
         "location":{
           "shape":"ResourceLocation",
@@ -11493,7 +11733,7 @@
         },
         "attachedTo":{
           "shape":"ResourceName",
-          "documentation":"<p>The instance where the static IP is attached (e.g., <code>Amazon_Linux-1GB-Ohio-1</code>).</p>"
+          "documentation":"<p>The instance where the static IP is attached (<code>Amazon_Linux-1GB-Ohio-1</code>).</p>"
         },
         "isAttached":{
           "shape":"boolean",
@@ -12018,7 +12258,7 @@
       "members":{
         "loadBalancerName":{
           "shape":"ResourceName",
-          "documentation":"<p>The name of the load balancer that you want to modify (e.g., <code>my-load-balancer</code>.</p>"
+          "documentation":"<p>The name of the load balancer that you want to modify (<code>my-load-balancer</code>.</p>"
         },
         "attributeName":{
           "shape":"LoadBalancerAttributeName",
@@ -12125,6 +12365,10 @@
     "float":{"type":"float"},
     "integer":{"type":"integer"},
     "long":{"type":"long"},
+    "setupHistoryList":{
+      "type":"list",
+      "member":{"shape":"SetupHistory"}
+    },
     "string":{"type":"string"},
     "timestamp":{"type":"timestamp"}
   },

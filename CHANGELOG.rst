@@ -6765,6 +6765,22 @@ CHANGELOG
 * feature:wizard: Added support for AWS CLI Wizards. See `#3752 <https://github.com/aws/aws-cli/issues/3752>`__.
 
 
+1.32.15
+=======
+
+* api-change:``codebuild``: Aws CodeBuild now supports new compute type BUILD_GENERAL1_XLARGE
+* api-change:``ec2``: Amazon EC2 R7iz bare metal instances are powered by custom 4th generation Intel Xeon Scalable processors.
+* api-change:``route53resolver``: This release adds support for query type configuration on firewall rules that enables customers for granular action (ALLOW, ALERT, BLOCK) by DNS query type.
+
+
+1.32.14
+=======
+
+* api-change:``connect``: Minor trait updates for User APIs
+* api-change:``kms``: Documentation updates for AWS Key Management Service (KMS).
+* api-change:``redshift-serverless``: use_fips_ssl and require_ssl parameter support for Workgroup, UpdateWorkgroup, and CreateWorkgroup
+
+
 1.32.13
 =======
 

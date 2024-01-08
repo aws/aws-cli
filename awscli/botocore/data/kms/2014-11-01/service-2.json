@@ -1190,7 +1190,7 @@
         },
         "XksProxyUriEndpoint":{
           "shape":"XksProxyUriEndpointType",
-          "documentation":"<p>Specifies the endpoint that KMS uses to send requests to the external key store proxy (XKS proxy). This parameter is required for custom key stores with a <code>CustomKeyStoreType</code> of <code>EXTERNAL_KEY_STORE</code>.</p> <p>The protocol must be HTTPS. KMS communicates on port 443. Do not specify the port in the <code>XksProxyUriEndpoint</code> value.</p> <p>For external key stores with <code>XksProxyConnectivity</code> value of <code>VPC_ENDPOINT_SERVICE</code>, specify <code>https://</code> followed by the private DNS name of the VPC endpoint service.</p> <p>For external key stores with <code>PUBLIC_ENDPOINT</code> connectivity, this endpoint must be reachable before you create the custom key store. KMS connects to the external key store proxy while creating the custom key store. For external key stores with <code>VPC_ENDPOINT_SERVICE</code> connectivity, KMS connects when you call the <a>ConnectCustomKeyStore</a> operation.</p> <p>The value of this parameter must begin with <code>https://</code>. The remainder can contain upper and lower case letters (A-Z and a-z), numbers (0-9), dots (<code>.</code>), and hyphens (<code>-</code>). Additional slashes (<code>/</code> and <code>\\</code>) are not permitted.</p> <p> <b>Uniqueness requirements: </b> </p> <ul> <li> <p>The combined <code>XksProxyUriEndpoint</code> and <code>XksProxyUriPath</code> values must be unique in the Amazon Web Services account and Region.</p> </li> <li> <p>An external key store with <code>PUBLIC_ENDPOINT</code> connectivity cannot use the same <code>XksProxyUriEndpoint</code> value as an external key store with <code>VPC_ENDPOINT_SERVICE</code> connectivity in the same Amazon Web Services Region.</p> </li> <li> <p>Each external key store with <code>VPC_ENDPOINT_SERVICE</code> connectivity must have its own private DNS name. The <code>XksProxyUriEndpoint</code> value for external key stores with <code>VPC_ENDPOINT_SERVICE</code> connectivity (private DNS name) must be unique in the Amazon Web Services account and Region.</p> </li> </ul>"
+          "documentation":"<p>Specifies the endpoint that KMS uses to send requests to the external key store proxy (XKS proxy). This parameter is required for custom key stores with a <code>CustomKeyStoreType</code> of <code>EXTERNAL_KEY_STORE</code>.</p> <p>The protocol must be HTTPS. KMS communicates on port 443. Do not specify the port in the <code>XksProxyUriEndpoint</code> value.</p> <p>For external key stores with <code>XksProxyConnectivity</code> value of <code>VPC_ENDPOINT_SERVICE</code>, specify <code>https://</code> followed by the private DNS name of the VPC endpoint service.</p> <p>For external key stores with <code>PUBLIC_ENDPOINT</code> connectivity, this endpoint must be reachable before you create the custom key store. KMS connects to the external key store proxy while creating the custom key store. For external key stores with <code>VPC_ENDPOINT_SERVICE</code> connectivity, KMS connects when you call the <a>ConnectCustomKeyStore</a> operation.</p> <p>The value of this parameter must begin with <code>https://</code>. The remainder can contain upper and lower case letters (A-Z and a-z), numbers (0-9), dots (<code>.</code>), and hyphens (<code>-</code>). Additional slashes (<code>/</code> and <code>\\</code>) are not permitted.</p> <p> <b>Uniqueness requirements: </b> </p> <ul> <li> <p>The combined <code>XksProxyUriEndpoint</code> and <code>XksProxyUriPath</code> values must be unique in the Amazon Web Services account and Region.</p> </li> <li> <p>An external key store with <code>PUBLIC_ENDPOINT</code> connectivity cannot use the same <code>XksProxyUriEndpoint</code> value as an external key store with <code>VPC_ENDPOINT_SERVICE</code> connectivity in this Amazon Web Services Region.</p> </li> <li> <p>Each external key store with <code>VPC_ENDPOINT_SERVICE</code> connectivity must have its own private DNS name. The <code>XksProxyUriEndpoint</code> value for external key stores with <code>VPC_ENDPOINT_SERVICE</code> connectivity (private DNS name) must be unique in the Amazon Web Services account and Region.</p> </li> </ul>"
         },
         "XksProxyUriPath":{
           "shape":"XksProxyUriPathType",
@@ -3641,7 +3641,7 @@
       "members":{
         "message":{"shape":"ErrorMessageType"}
       },
-      "documentation":"<p>The request was rejected because the (<code>XksKeyId</code>) is already associated with a KMS key in this external key store. Each KMS key in an external key store must be associated with a different external key.</p>",
+      "documentation":"<p>The request was rejected because the (<code>XksKeyId</code>) is already associated with another KMS key in this external key store. Each KMS key in an external key store must be associated with a different external key.</p>",
       "exception":true
     },
     "XksKeyConfigurationType":{
@@ -3754,7 +3754,7 @@
       "members":{
         "message":{"shape":"ErrorMessageType"}
       },
-      "documentation":"<p>The request was rejected because the Amazon VPC endpoint service configuration does not fulfill the requirements for an external key store proxy. For details, see the exception message.</p>",
+      "documentation":"<p>The request was rejected because the external key store proxy is not configured correctly. To identify the cause, see the error message that accompanies the exception.</p>",
       "exception":true
     },
     "XksProxyInvalidResponseException":{
@@ -3770,7 +3770,7 @@
       "members":{
         "message":{"shape":"ErrorMessageType"}
       },
-      "documentation":"<p>The request was rejected because the concatenation of the <code>XksProxyUriEndpoint</code> is already associated with an external key store in the Amazon Web Services account and Region. Each external key store in an account and Region must use a unique external key store proxy address.</p>",
+      "documentation":"<p>The request was rejected because the <code>XksProxyUriEndpoint</code> is already associated with another external key store in this Amazon Web Services Region. To identify the cause, see the error message that accompanies the exception. </p>",
       "exception":true
     },
     "XksProxyUriEndpointType":{
@@ -3784,7 +3784,7 @@
       "members":{
         "message":{"shape":"ErrorMessageType"}
       },
-      "documentation":"<p>The request was rejected because the concatenation of the <code>XksProxyUriEndpoint</code> and <code>XksProxyUriPath</code> is already associated with an external key store in the Amazon Web Services account and Region. Each external key store in an account and Region must use a unique external key store proxy API address.</p>",
+      "documentation":"<p>The request was rejected because the concatenation of the <code>XksProxyUriEndpoint</code> and <code>XksProxyUriPath</code> is already associated with another external key store in this Amazon Web Services Region. Each external key store in a Region must use a unique external key store proxy API address.</p>",
       "exception":true
     },
     "XksProxyUriPathType":{
@@ -3806,7 +3806,7 @@
       "members":{
         "message":{"shape":"ErrorMessageType"}
       },
-      "documentation":"<p>The request was rejected because the specified Amazon VPC endpoint service is already associated with an external key store in the Amazon Web Services account and Region. Each external key store in an Amazon Web Services account and Region must use a different Amazon VPC endpoint service.</p>",
+      "documentation":"<p>The request was rejected because the specified Amazon VPC endpoint service is already associated with another external key store in this Amazon Web Services Region. Each external key store in a Region must use a different Amazon VPC endpoint service.</p>",
       "exception":true
     },
     "XksProxyVpcEndpointServiceInvalidConfigurationException":{
@@ -3814,7 +3814,7 @@
       "members":{
         "message":{"shape":"ErrorMessageType"}
       },
-      "documentation":"<p>The request was rejected because the Amazon VPC endpoint service configuration does not fulfill the requirements for an external key store proxy. For details, see the exception message and <a href=\"https://docs.aws.amazon.com/kms/latest/developerguide/vpc-connectivity.html#xks-vpc-requirements\">review the requirements</a> for Amazon VPC endpoint service connectivity for an external key store.</p>",
+      "documentation":"<p>The request was rejected because the Amazon VPC endpoint service configuration does not fulfill the requirements for an external key store. To identify the cause, see the error message that accompanies the exception and <a href=\"https://docs.aws.amazon.com/kms/latest/developerguide/vpc-connectivity.html#xks-vpc-requirements\">review the requirements</a> for Amazon VPC endpoint service connectivity for an external key store.</p>",
       "exception":true
     },
     "XksProxyVpcEndpointServiceNameType":{

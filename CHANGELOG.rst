@@ -2,6 +2,17 @@
 CHANGELOG
 =========
 
+2.15.9
+======
+
+* api-change:``ec2``: Amazon EC2 R7iz bare metal instances are powered by custom 4th generation Intel Xeon Scalable processors.
+* api-change:``redshift-serverless``: use_fips_ssl and require_ssl parameter support for Workgroup, UpdateWorkgroup, and CreateWorkgroup
+* api-change:``route53resolver``: This release adds support for query type configuration on firewall rules that enables customers for granular action (ALLOW, ALERT, BLOCK) by DNS query type.
+* api-change:``connect``: Minor trait updates for User APIs
+* api-change:``codebuild``: Aws CodeBuild now supports new compute type BUILD_GENERAL1_XLARGE
+* api-change:``kms``: Documentation updates for AWS Key Management Service (KMS).
+
+
 2.15.8
 ======
 

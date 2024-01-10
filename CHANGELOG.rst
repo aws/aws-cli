@@ -2,6 +2,18 @@
 CHANGELOG
 =========
 
+1.32.16
+=======
+
+* api-change:``connectcampaigns``: Minor pattern updates for Campaign and Dial Request API fields.
+* api-change:``location``: This release adds API support for custom layers for the maps service APIs: CreateMap, UpdateMap, DescribeMap.
+* api-change:``logs``: Add support for account level subscription filter policies to PutAccountPolicy, DescribeAccountPolicies, and DeleteAccountPolicy APIs. Additionally, PutAccountPolicy has been modified with new optional "selectionCriteria" parameter for resource selection.
+* api-change:``qconnect``: QueryAssistant and GetRecommendations will be discontinued starting June 1, 2024. To receive generative responses after March 1, 2024 you will need to create a new Assistant in the Connect console and integrate the Amazon Q in Connect JavaScript library (amazon-q-connectjs) into your applications.
+* api-change:``redshift-serverless``: Updates to ConfigParameter for RSS workgroup, removal of use_fips_ssl
+* api-change:``route53``: Route53 now supports geoproximity routing in AWS regions
+* api-change:``wisdom``: QueryAssistant and GetRecommendations will be discontinued starting June 1, 2024. To receive generative responses after March 1, 2024 you will need to create a new Assistant in the Connect console and integrate the Amazon Q in Connect JavaScript library (amazon-q-connectjs) into your applications.
+
+
 1.32.15
 =======
 

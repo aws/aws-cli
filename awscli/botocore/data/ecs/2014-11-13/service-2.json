@@ -65,7 +65,7 @@
         {"shape":"AccessDeniedException"},
         {"shape":"NamespaceNotFoundException"}
       ],
-      "documentation":"<p>Runs and maintains your desired number of tasks from a specified task definition. If the number of tasks running in a service drops below the <code>desiredCount</code>, Amazon ECS runs another copy of the task in the specified cluster. To update an existing service, see the <a>UpdateService</a> action.</p> <note> <p>Starting April 15, 2023, Amazon Web Services will not onboard new customers to Amazon Elastic Inference (EI), and will help current customers migrate their workloads to options that offer better price and performance. After April 15, 2023, new customers will not be able to launch instances with Amazon EI accelerators in Amazon SageMaker, Amazon ECS, or Amazon EC2. However, customers who have used Amazon EI at least once during the past 30-day period are considered current customers and will be able to continue using the service. </p> </note> <p>In addition to maintaining the desired count of tasks in your service, you can optionally run your service behind one or more load balancers. The load balancers distribute traffic across the tasks that are associated with the service. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonECS/latest/developerguide/service-load-balancing.html\">Service load balancing</a> in the <i>Amazon Elastic Container Service Developer Guide</i>.</p> <p>Tasks for services that don't use a load balancer are considered healthy if they're in the <code>RUNNING</code> state. Tasks for services that use a load balancer are considered healthy if they're in the <code>RUNNING</code> state and are reported as healthy by the load balancer.</p> <p>There are two service scheduler strategies available:</p> <ul> <li> <p> <code>REPLICA</code> - The replica scheduling strategy places and maintains your desired number of tasks across your cluster. By default, the service scheduler spreads tasks across Availability Zones. You can use task placement strategies and constraints to customize task placement decisions. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonECS/latest/developerguide/ecs_services.html\">Service scheduler concepts</a> in the <i>Amazon Elastic Container Service Developer Guide</i>.</p> </li> <li> <p> <code>DAEMON</code> - The daemon scheduling strategy deploys exactly one task on each active container instance that meets all of the task placement constraints that you specify in your cluster. The service scheduler also evaluates the task placement constraints for running tasks. It also stops tasks that don't meet the placement constraints. When using this strategy, you don't need to specify a desired number of tasks, a task placement strategy, or use Service Auto Scaling policies. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonECS/latest/developerguide/ecs_services.html\">Service scheduler concepts</a> in the <i>Amazon Elastic Container Service Developer Guide</i>.</p> </li> </ul> <p>You can optionally specify a deployment configuration for your service. The deployment is initiated by changing properties. For example, the deployment might be initiated by the task definition or by your desired count of a service. This is done with an <a>UpdateService</a> operation. The default value for a replica service for <code>minimumHealthyPercent</code> is 100%. The default value for a daemon service for <code>minimumHealthyPercent</code> is 0%.</p> <p>If a service uses the <code>ECS</code> deployment controller, the minimum healthy percent represents a lower limit on the number of tasks in a service that must remain in the <code>RUNNING</code> state during a deployment. Specifically, it represents it as a percentage of your desired number of tasks (rounded up to the nearest integer). This happens when any of your container instances are in the <code>DRAINING</code> state if the service contains tasks using the EC2 launch type. Using this parameter, you can deploy without using additional cluster capacity. For example, if you set your service to have desired number of four tasks and a minimum healthy percent of 50%, the scheduler might stop two existing tasks to free up cluster capacity before starting two new tasks. If they're in the <code>RUNNING</code> state, tasks for services that don't use a load balancer are considered healthy . If they're in the <code>RUNNING</code> state and reported as healthy by the load balancer, tasks for services that <i>do</i> use a load balancer are considered healthy . The default value for minimum healthy percent is 100%.</p> <p>If a service uses the <code>ECS</code> deployment controller, the <b>maximum percent</b> parameter represents an upper limit on the number of tasks in a service that are allowed in the <code>RUNNING</code> or <code>PENDING</code> state during a deployment. Specifically, it represents it as a percentage of the desired number of tasks (rounded down to the nearest integer). This happens when any of your container instances are in the <code>DRAINING</code> state if the service contains tasks using the EC2 launch type. Using this parameter, you can define the deployment batch size. For example, if your service has a desired number of four tasks and a maximum percent value of 200%, the scheduler may start four new tasks before stopping the four older tasks (provided that the cluster resources required to do this are available). The default value for maximum percent is 200%.</p> <p>If a service uses either the <code>CODE_DEPLOY</code> or <code>EXTERNAL</code> deployment controller types and tasks that use the EC2 launch type, the <b>minimum healthy percent</b> and <b>maximum percent</b> values are used only to define the lower and upper limit on the number of the tasks in the service that remain in the <code>RUNNING</code> state. This is while the container instances are in the <code>DRAINING</code> state. If the tasks in the service use the Fargate launch type, the minimum healthy percent and maximum percent values aren't used. This is the case even if they're currently visible when describing your service.</p> <p>When creating a service that uses the <code>EXTERNAL</code> deployment controller, you can specify only parameters that aren't controlled at the task set level. The only required parameter is the service name. You control your services using the <a>CreateTaskSet</a> operation. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonECS/latest/developerguide/deployment-types.html\">Amazon ECS deployment types</a> in the <i>Amazon Elastic Container Service Developer Guide</i>.</p> <p>When the service scheduler launches new tasks, it determines task placement. For information about task placement and task placement strategies, see <a href=\"https://docs.aws.amazon.com/AmazonECS/latest/developerguide/task-placement.html\">Amazon ECS task placement</a> in the <i>Amazon Elastic Container Service Developer Guide</i>.</p>"
+      "documentation":"<p>Runs and maintains your desired number of tasks from a specified task definition. If the number of tasks running in a service drops below the <code>desiredCount</code>, Amazon ECS runs another copy of the task in the specified cluster. To update an existing service, see the <a>UpdateService</a> action.</p> <note> <p>Starting April 15, 2023, Amazon Web Services will not onboard new customers to Amazon Elastic Inference (EI), and will help current customers migrate their workloads to options that offer better price and performance. After April 15, 2023, new customers will not be able to launch instances with Amazon EI accelerators in Amazon SageMaker, Amazon ECS, or Amazon EC2. However, customers who have used Amazon EI at least once during the past 30-day period are considered current customers and will be able to continue using the service. </p> </note> <p>In addition to maintaining the desired count of tasks in your service, you can optionally run your service behind one or more load balancers. The load balancers distribute traffic across the tasks that are associated with the service. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonECS/latest/developerguide/service-load-balancing.html\">Service load balancing</a> in the <i>Amazon Elastic Container Service Developer Guide</i>.</p> <p>You can attach Amazon EBS volumes to Amazon ECS tasks by configuring the volume when creating or updating a service. <code>volumeConfigurations</code> is only supported for REPLICA service and not DAEMON service. For more infomation, see <a href=\"https://docs.aws.amazon.com/AmazonECS/latest/developerguide/ebs-volumes.html#ebs-volume-types\">Amazon EBS volumes</a> in the <i>Amazon Elastic Container Service Developer Guide</i>.</p> <p>Tasks for services that don't use a load balancer are considered healthy if they're in the <code>RUNNING</code> state. Tasks for services that use a load balancer are considered healthy if they're in the <code>RUNNING</code> state and are reported as healthy by the load balancer.</p> <p>There are two service scheduler strategies available:</p> <ul> <li> <p> <code>REPLICA</code> - The replica scheduling strategy places and maintains your desired number of tasks across your cluster. By default, the service scheduler spreads tasks across Availability Zones. You can use task placement strategies and constraints to customize task placement decisions. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonECS/latest/developerguide/ecs_services.html\">Service scheduler concepts</a> in the <i>Amazon Elastic Container Service Developer Guide</i>.</p> </li> <li> <p> <code>DAEMON</code> - The daemon scheduling strategy deploys exactly one task on each active container instance that meets all of the task placement constraints that you specify in your cluster. The service scheduler also evaluates the task placement constraints for running tasks. It also stops tasks that don't meet the placement constraints. When using this strategy, you don't need to specify a desired number of tasks, a task placement strategy, or use Service Auto Scaling policies. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonECS/latest/developerguide/ecs_services.html\">Service scheduler concepts</a> in the <i>Amazon Elastic Container Service Developer Guide</i>.</p> </li> </ul> <p>You can optionally specify a deployment configuration for your service. The deployment is initiated by changing properties. For example, the deployment might be initiated by the task definition or by your desired count of a service. This is done with an <a>UpdateService</a> operation. The default value for a replica service for <code>minimumHealthyPercent</code> is 100%. The default value for a daemon service for <code>minimumHealthyPercent</code> is 0%.</p> <p>If a service uses the <code>ECS</code> deployment controller, the minimum healthy percent represents a lower limit on the number of tasks in a service that must remain in the <code>RUNNING</code> state during a deployment. Specifically, it represents it as a percentage of your desired number of tasks (rounded up to the nearest integer). This happens when any of your container instances are in the <code>DRAINING</code> state if the service contains tasks using the EC2 launch type. Using this parameter, you can deploy without using additional cluster capacity. For example, if you set your service to have desired number of four tasks and a minimum healthy percent of 50%, the scheduler might stop two existing tasks to free up cluster capacity before starting two new tasks. If they're in the <code>RUNNING</code> state, tasks for services that don't use a load balancer are considered healthy . If they're in the <code>RUNNING</code> state and reported as healthy by the load balancer, tasks for services that <i>do</i> use a load balancer are considered healthy . The default value for minimum healthy percent is 100%.</p> <p>If a service uses the <code>ECS</code> deployment controller, the <b>maximum percent</b> parameter represents an upper limit on the number of tasks in a service that are allowed in the <code>RUNNING</code> or <code>PENDING</code> state during a deployment. Specifically, it represents it as a percentage of the desired number of tasks (rounded down to the nearest integer). This happens when any of your container instances are in the <code>DRAINING</code> state if the service contains tasks using the EC2 launch type. Using this parameter, you can define the deployment batch size. For example, if your service has a desired number of four tasks and a maximum percent value of 200%, the scheduler may start four new tasks before stopping the four older tasks (provided that the cluster resources required to do this are available). The default value for maximum percent is 200%.</p> <p>If a service uses either the <code>CODE_DEPLOY</code> or <code>EXTERNAL</code> deployment controller types and tasks that use the EC2 launch type, the <b>minimum healthy percent</b> and <b>maximum percent</b> values are used only to define the lower and upper limit on the number of the tasks in the service that remain in the <code>RUNNING</code> state. This is while the container instances are in the <code>DRAINING</code> state. If the tasks in the service use the Fargate launch type, the minimum healthy percent and maximum percent values aren't used. This is the case even if they're currently visible when describing your service.</p> <p>When creating a service that uses the <code>EXTERNAL</code> deployment controller, you can specify only parameters that aren't controlled at the task set level. The only required parameter is the service name. You control your services using the <a>CreateTaskSet</a> operation. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonECS/latest/developerguide/deployment-types.html\">Amazon ECS deployment types</a> in the <i>Amazon Elastic Container Service Developer Guide</i>.</p> <p>When the service scheduler launches new tasks, it determines task placement. For information about task placement and task placement strategies, see <a href=\"https://docs.aws.amazon.com/AmazonECS/latest/developerguide/task-placement.html\">Amazon ECS task placement</a> in the <i>Amazon Elastic Container Service Developer Guide</i>.</p>"
     },
     "CreateTaskSet":{
       "name":"CreateTaskSet",
@@ -673,7 +673,7 @@
         {"shape":"BlockedException"},
         {"shape":"ConflictException"}
       ],
-      "documentation":"<p>Starts a new task using the specified task definition.</p> <p>You can allow Amazon ECS to place tasks for you, or you can customize how Amazon ECS places tasks using placement constraints and placement strategies. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonECS/latest/developerguide/scheduling_tasks.html\">Scheduling Tasks</a> in the <i>Amazon Elastic Container Service Developer Guide</i>.</p> <p>Alternatively, you can use <a>StartTask</a> to use your own scheduler or place tasks manually on specific container instances.</p> <note> <p>Starting April 15, 2023, Amazon Web Services will not onboard new customers to Amazon Elastic Inference (EI), and will help current customers migrate their workloads to options that offer better price and performance. After April 15, 2023, new customers will not be able to launch instances with Amazon EI accelerators in Amazon SageMaker, Amazon ECS, or Amazon EC2. However, customers who have used Amazon EI at least once during the past 30-day period are considered current customers and will be able to continue using the service. </p> </note> <p>The Amazon ECS API follows an eventual consistency model. This is because of the distributed nature of the system supporting the API. This means that the result of an API command you run that affects your Amazon ECS resources might not be immediately visible to all subsequent commands you run. Keep this in mind when you carry out an API command that immediately follows a previous API command.</p> <p>To manage eventual consistency, you can do the following:</p> <ul> <li> <p>Confirm the state of the resource before you run a command to modify it. Run the DescribeTasks command using an exponential backoff algorithm to ensure that you allow enough time for the previous command to propagate through the system. To do this, run the DescribeTasks command repeatedly, starting with a couple of seconds of wait time and increasing gradually up to five minutes of wait time.</p> </li> <li> <p>Add wait time between subsequent commands, even if the DescribeTasks command returns an accurate response. Apply an exponential backoff algorithm starting with a couple of seconds of wait time, and increase gradually up to about five minutes of wait time.</p> </li> </ul>"
+      "documentation":"<p>Starts a new task using the specified task definition.</p> <p>You can allow Amazon ECS to place tasks for you, or you can customize how Amazon ECS places tasks using placement constraints and placement strategies. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonECS/latest/developerguide/scheduling_tasks.html\">Scheduling Tasks</a> in the <i>Amazon Elastic Container Service Developer Guide</i>.</p> <p>Alternatively, you can use <a>StartTask</a> to use your own scheduler or place tasks manually on specific container instances.</p> <note> <p>Starting April 15, 2023, Amazon Web Services will not onboard new customers to Amazon Elastic Inference (EI), and will help current customers migrate their workloads to options that offer better price and performance. After April 15, 2023, new customers will not be able to launch instances with Amazon EI accelerators in Amazon SageMaker, Amazon ECS, or Amazon EC2. However, customers who have used Amazon EI at least once during the past 30-day period are considered current customers and will be able to continue using the service. </p> </note> <p>You can attach Amazon EBS volumes to Amazon ECS tasks by configuring the volume when creating or updating a service. For more infomation, see <a href=\"https://docs.aws.amazon.com/AmazonECS/latest/developerguide/ebs-volumes.html#ebs-volume-types\">Amazon EBS volumes</a> in the <i>Amazon Elastic Container Service Developer Guide</i>.</p> <p>The Amazon ECS API follows an eventual consistency model. This is because of the distributed nature of the system supporting the API. This means that the result of an API command you run that affects your Amazon ECS resources might not be immediately visible to all subsequent commands you run. Keep this in mind when you carry out an API command that immediately follows a previous API command.</p> <p>To manage eventual consistency, you can do the following:</p> <ul> <li> <p>Confirm the state of the resource before you run a command to modify it. Run the DescribeTasks command using an exponential backoff algorithm to ensure that you allow enough time for the previous command to propagate through the system. To do this, run the DescribeTasks command repeatedly, starting with a couple of seconds of wait time and increasing gradually up to five minutes of wait time.</p> </li> <li> <p>Add wait time between subsequent commands, even if the DescribeTasks command returns an accurate response. Apply an exponential backoff algorithm starting with a couple of seconds of wait time, and increase gradually up to about five minutes of wait time.</p> </li> </ul>"
     },
     "StartTask":{
       "name":"StartTask",
@@ -687,9 +687,10 @@
         {"shape":"ServerException"},
         {"shape":"ClientException"},
         {"shape":"InvalidParameterException"},
-        {"shape":"ClusterNotFoundException"}
+        {"shape":"ClusterNotFoundException"},
+        {"shape":"UnsupportedFeatureException"}
       ],
-      "documentation":"<p>Starts a new task from the specified task definition on the specified container instance or instances.</p> <note> <p>Starting April 15, 2023, Amazon Web Services will not onboard new customers to Amazon Elastic Inference (EI), and will help current customers migrate their workloads to options that offer better price and performance. After April 15, 2023, new customers will not be able to launch instances with Amazon EI accelerators in Amazon SageMaker, Amazon ECS, or Amazon EC2. However, customers who have used Amazon EI at least once during the past 30-day period are considered current customers and will be able to continue using the service. </p> </note> <p>Alternatively, you can use <a>RunTask</a> to place tasks for you. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonECS/latest/developerguide/scheduling_tasks.html\">Scheduling Tasks</a> in the <i>Amazon Elastic Container Service Developer Guide</i>.</p>"
+      "documentation":"<p>Starts a new task from the specified task definition on the specified container instance or instances.</p> <note> <p>Starting April 15, 2023, Amazon Web Services will not onboard new customers to Amazon Elastic Inference (EI), and will help current customers migrate their workloads to options that offer better price and performance. After April 15, 2023, new customers will not be able to launch instances with Amazon EI accelerators in Amazon SageMaker, Amazon ECS, or Amazon EC2. However, customers who have used Amazon EI at least once during the past 30-day period are considered current customers and will be able to continue using the service. </p> </note> <p>Alternatively, you can use <a>RunTask</a> to place tasks for you. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonECS/latest/developerguide/scheduling_tasks.html\">Scheduling Tasks</a> in the <i>Amazon Elastic Container Service Developer Guide</i>.</p> <p>You can attach Amazon EBS volumes to Amazon ECS tasks by configuring the volume when creating or updating a service. For more infomation, see <a href=\"https://docs.aws.amazon.com/AmazonECS/latest/developerguide/ebs-volumes.html#ebs-volume-types\">Amazon EBS volumes</a> in the <i>Amazon Elastic Container Service Developer Guide</i>.</p>"
     },
     "StopTask":{
       "name":"StopTask",
@@ -889,9 +890,10 @@
         {"shape":"PlatformUnknownException"},
         {"shape":"PlatformTaskDefinitionIncompatibilityException"},
         {"shape":"AccessDeniedException"},
-        {"shape":"NamespaceNotFoundException"}
+        {"shape":"NamespaceNotFoundException"},
+        {"shape":"UnsupportedFeatureException"}
       ],
-      "documentation":"<p>Modifies the parameters of a service.</p> <p>For services using the rolling update (<code>ECS</code>) you can update the desired count, deployment configuration, network configuration, load balancers, service registries, enable ECS managed tags option, propagate tags option, task placement constraints and strategies, and task definition. When you update any of these parameters, Amazon ECS starts new tasks with the new configuration. </p> <p>For services using the blue/green (<code>CODE_DEPLOY</code>) deployment controller, only the desired count, deployment configuration, health check grace period, task placement constraints and strategies, enable ECS managed tags option, and propagate tags can be updated using this API. If the network configuration, platform version, task definition, or load balancer need to be updated, create a new CodeDeploy deployment. For more information, see <a href=\"https://docs.aws.amazon.com/codedeploy/latest/APIReference/API_CreateDeployment.html\">CreateDeployment</a> in the <i>CodeDeploy API Reference</i>.</p> <p>For services using an external deployment controller, you can update only the desired count, task placement constraints and strategies, health check grace period, enable ECS managed tags option, and propagate tags option, using this API. If the launch type, load balancer, network configuration, platform version, or task definition need to be updated, create a new task set For more information, see <a>CreateTaskSet</a>.</p> <p>You can add to or subtract from the number of instantiations of a task definition in a service by specifying the cluster that the service is running in and a new <code>desiredCount</code> parameter.</p> <p>If you have updated the Docker image of your application, you can create a new task definition with that image and deploy it to your service. The service scheduler uses the minimum healthy percent and maximum percent parameters (in the service's deployment configuration) to determine the deployment strategy.</p> <note> <p>If your updated Docker image uses the same tag as what is in the existing task definition for your service (for example, <code>my_image:latest</code>), you don't need to create a new revision of your task definition. You can update the service using the <code>forceNewDeployment</code> option. The new tasks launched by the deployment pull the current image/tag combination from your repository when they start.</p> </note> <p>You can also update the deployment configuration of a service. When a deployment is triggered by updating the task definition of a service, the service scheduler uses the deployment configuration parameters, <code>minimumHealthyPercent</code> and <code>maximumPercent</code>, to determine the deployment strategy.</p> <ul> <li> <p>If <code>minimumHealthyPercent</code> is below 100%, the scheduler can ignore <code>desiredCount</code> temporarily during a deployment. For example, if <code>desiredCount</code> is four tasks, a minimum of 50% allows the scheduler to stop two existing tasks before starting two new tasks. Tasks for services that don't use a load balancer are considered healthy if they're in the <code>RUNNING</code> state. Tasks for services that use a load balancer are considered healthy if they're in the <code>RUNNING</code> state and are reported as healthy by the load balancer.</p> </li> <li> <p>The <code>maximumPercent</code> parameter represents an upper limit on the number of running tasks during a deployment. You can use it to define the deployment batch size. For example, if <code>desiredCount</code> is four tasks, a maximum of 200% starts four new tasks before stopping the four older tasks (provided that the cluster resources required to do this are available).</p> </li> </ul> <p>When <a>UpdateService</a> stops a task during a deployment, the equivalent of <code>docker stop</code> is issued to the containers running in the task. This results in a <code>SIGTERM</code> and a 30-second timeout. After this, <code>SIGKILL</code> is sent and the containers are forcibly stopped. If the container handles the <code>SIGTERM</code> gracefully and exits within 30 seconds from receiving it, no <code>SIGKILL</code> is sent.</p> <p>When the service scheduler launches new tasks, it determines task placement in your cluster with the following logic.</p> <ul> <li> <p>Determine which of the container instances in your cluster can support your service's task definition. For example, they have the required CPU, memory, ports, and container instance attributes.</p> </li> <li> <p>By default, the service scheduler attempts to balance tasks across Availability Zones in this manner even though you can choose a different placement strategy.</p> <ul> <li> <p>Sort the valid container instances by the fewest number of running tasks for this service in the same Availability Zone as the instance. For example, if zone A has one running service task and zones B and C each have zero, valid container instances in either zone B or C are considered optimal for placement.</p> </li> <li> <p>Place the new service task on a valid container instance in an optimal Availability Zone (based on the previous steps), favoring container instances with the fewest number of running tasks for this service.</p> </li> </ul> </li> </ul> <p>When the service scheduler stops running tasks, it attempts to maintain balance across the Availability Zones in your cluster using the following logic: </p> <ul> <li> <p>Sort the container instances by the largest number of running tasks for this service in the same Availability Zone as the instance. For example, if zone A has one running service task and zones B and C each have two, container instances in either zone B or C are considered optimal for termination.</p> </li> <li> <p>Stop the task on a container instance in an optimal Availability Zone (based on the previous steps), favoring container instances with the largest number of running tasks for this service.</p> </li> </ul> <note> <p>You must have a service-linked role when you update any of the following service properties:</p> <ul> <li> <p> <code>loadBalancers</code>,</p> </li> <li> <p> <code>serviceRegistries</code> </p> </li> </ul> <p>For more information about the role see the <code>CreateService</code> request parameter <a href=\"https://docs.aws.amazon.com/AmazonECS/latest/APIReference/API_CreateService.html#ECS-CreateService-request-role\"> <code>role</code> </a>. </p> </note>"
+      "documentation":"<p>Modifies the parameters of a service.</p> <p>For services using the rolling update (<code>ECS</code>) you can update the desired count, deployment configuration, network configuration, load balancers, service registries, enable ECS managed tags option, propagate tags option, task placement constraints and strategies, and task definition. When you update any of these parameters, Amazon ECS starts new tasks with the new configuration. </p> <p>You can attach Amazon EBS volumes to Amazon ECS tasks by configuring the volume when starting or running a task, or when creating or updating a service. For more infomation, see <a href=\"https://docs.aws.amazon.com/AmazonECS/latest/developerguide/ebs-volumes.html#ebs-volume-types\">Amazon EBS volumes</a> in the <i>Amazon Elastic Container Service Developer Guide</i>. You can update your volume configurations and trigger a new deployment. <code>volumeConfigurations</code> is only supported for REPLICA service and not DAEMON service. If you leave <code>volumeConfigurations</code> <code>null</code>, it doesn't trigger a new deployment. For more infomation on volumes, see <a href=\"https://docs.aws.amazon.com/AmazonECS/latest/developerguide/ebs-volumes.html#ebs-volume-types\">Amazon EBS volumes</a> in the <i>Amazon Elastic Container Service Developer Guide</i>.</p> <p>For services using the blue/green (<code>CODE_DEPLOY</code>) deployment controller, only the desired count, deployment configuration, health check grace period, task placement constraints and strategies, enable ECS managed tags option, and propagate tags can be updated using this API. If the network configuration, platform version, task definition, or load balancer need to be updated, create a new CodeDeploy deployment. For more information, see <a href=\"https://docs.aws.amazon.com/codedeploy/latest/APIReference/API_CreateDeployment.html\">CreateDeployment</a> in the <i>CodeDeploy API Reference</i>.</p> <p>For services using an external deployment controller, you can update only the desired count, task placement constraints and strategies, health check grace period, enable ECS managed tags option, and propagate tags option, using this API. If the launch type, load balancer, network configuration, platform version, or task definition need to be updated, create a new task set For more information, see <a>CreateTaskSet</a>.</p> <p>You can add to or subtract from the number of instantiations of a task definition in a service by specifying the cluster that the service is running in and a new <code>desiredCount</code> parameter.</p> <p>You can attach Amazon EBS volumes to Amazon ECS tasks by configuring the volume when starting or running a task, or when creating or updating a service. For more infomation, see <a href=\"https://docs.aws.amazon.com/AmazonECS/latest/developerguide/ebs-volumes.html#ebs-volume-types\">Amazon EBS volumes</a> in the <i>Amazon Elastic Container Service Developer Guide</i>.</p> <p>If you have updated the container image of your application, you can create a new task definition with that image and deploy it to your service. The service scheduler uses the minimum healthy percent and maximum percent parameters (in the service's deployment configuration) to determine the deployment strategy.</p> <note> <p>If your updated Docker image uses the same tag as what is in the existing task definition for your service (for example, <code>my_image:latest</code>), you don't need to create a new revision of your task definition. You can update the service using the <code>forceNewDeployment</code> option. The new tasks launched by the deployment pull the current image/tag combination from your repository when they start.</p> </note> <p>You can also update the deployment configuration of a service. When a deployment is triggered by updating the task definition of a service, the service scheduler uses the deployment configuration parameters, <code>minimumHealthyPercent</code> and <code>maximumPercent</code>, to determine the deployment strategy.</p> <ul> <li> <p>If <code>minimumHealthyPercent</code> is below 100%, the scheduler can ignore <code>desiredCount</code> temporarily during a deployment. For example, if <code>desiredCount</code> is four tasks, a minimum of 50% allows the scheduler to stop two existing tasks before starting two new tasks. Tasks for services that don't use a load balancer are considered healthy if they're in the <code>RUNNING</code> state. Tasks for services that use a load balancer are considered healthy if they're in the <code>RUNNING</code> state and are reported as healthy by the load balancer.</p> </li> <li> <p>The <code>maximumPercent</code> parameter represents an upper limit on the number of running tasks during a deployment. You can use it to define the deployment batch size. For example, if <code>desiredCount</code> is four tasks, a maximum of 200% starts four new tasks before stopping the four older tasks (provided that the cluster resources required to do this are available).</p> </li> </ul> <p>When <a>UpdateService</a> stops a task during a deployment, the equivalent of <code>docker stop</code> is issued to the containers running in the task. This results in a <code>SIGTERM</code> and a 30-second timeout. After this, <code>SIGKILL</code> is sent and the containers are forcibly stopped. If the container handles the <code>SIGTERM</code> gracefully and exits within 30 seconds from receiving it, no <code>SIGKILL</code> is sent.</p> <p>When the service scheduler launches new tasks, it determines task placement in your cluster with the following logic.</p> <ul> <li> <p>Determine which of the container instances in your cluster can support your service's task definition. For example, they have the required CPU, memory, ports, and container instance attributes.</p> </li> <li> <p>By default, the service scheduler attempts to balance tasks across Availability Zones in this manner even though you can choose a different placement strategy.</p> <ul> <li> <p>Sort the valid container instances by the fewest number of running tasks for this service in the same Availability Zone as the instance. For example, if zone A has one running service task and zones B and C each have zero, valid container instances in either zone B or C are considered optimal for placement.</p> </li> <li> <p>Place the new service task on a valid container instance in an optimal Availability Zone (based on the previous steps), favoring container instances with the fewest number of running tasks for this service.</p> </li> </ul> </li> </ul> <p>When the service scheduler stops running tasks, it attempts to maintain balance across the Availability Zones in your cluster using the following logic: </p> <ul> <li> <p>Sort the container instances by the largest number of running tasks for this service in the same Availability Zone as the instance. For example, if zone A has one running service task and zones B and C each have two, container instances in either zone B or C are considered optimal for termination.</p> </li> <li> <p>Stop the task on a container instance in an optimal Availability Zone (based on the previous steps), favoring container instances with the largest number of running tasks for this service.</p> </li> </ul> <note> <p>You must have a service-linked role when you update any of the following service properties:</p> <ul> <li> <p> <code>loadBalancers</code>,</p> </li> <li> <p> <code>serviceRegistries</code> </p> </li> </ul> <p>For more information about the role see the <code>CreateService</code> request parameter <a href=\"https://docs.aws.amazon.com/AmazonECS/latest/APIReference/API_CreateService.html#ECS-CreateService-request-role\"> <code>role</code> </a>. </p> </note>"
     },
     "UpdateServicePrimaryTaskSet":{
       "name":"UpdateServicePrimaryTaskSet",
@@ -998,7 +1000,7 @@
         },
         "type":{
           "shape":"String",
-          "documentation":"<p>The type of the attachment, such as <code>ElasticNetworkInterface</code>.</p>"
+          "documentation":"<p>The type of the attachment, such as <code>ElasticNetworkInterface</code>, <code>Service Connect</code>, and <code>AmazonElasticBlockStorage</code>.</p>"
         },
         "status":{
           "shape":"String",
@@ -1006,7 +1008,7 @@
         },
         "details":{
           "shape":"AttachmentDetails",
-          "documentation":"<p>Details of the attachment. For elastic network interfaces, this includes the network interface ID, the MAC address, the subnet ID, and the private IPv4 address.</p>"
+          "documentation":"<p>Details of the attachment.</p> <p>For elastic network interfaces, this includes the network interface ID, the MAC address, the subnet ID, and the private IPv4 address.</p> <p>For Service Connect services, this includes <code>portName</code>, <code>clientAliases</code>, <code>discoveryName</code>, and <code>ingressPortOverride</code>.</p> <p>For elastic block storage, this includes <code>roleArn</code>, <code>encrypted</code>, <code>filesystemType</code>, <code>iops</code>, <code>kmsKeyId</code>, <code>sizeInGiB</code>, <code>snapshotId</code>, <code>tagSpecifications</code>, <code>throughput</code>, and <code>volumeType</code>.</p>"
         }
       },
       "documentation":"<p>An object representing a container instance or task attachment.</p>"
@@ -1093,7 +1095,7 @@
         },
         "managedDraining":{
           "shape":"ManagedDraining",
-          "documentation":"<p>The managed draining option for the Auto Scaling group capacity provider. When you enable this, Amazon ECS manages and gracefully drains the EC2 container instances that are in the Auto Scaling group capacity provider.</p> <p>The default is <code>ENABLED</code>.</p>"
+          "documentation":"<p>The managed draining option for the Auto Scaling group capacity provider. When you enable this, Amazon ECS manages and gracefully drains the EC2 container instances that are in the Auto Scaling group capacity provider.</p>"
         }
       },
       "documentation":"<p>The details of the Auto Scaling group for the capacity provider.</p>"
@@ -1111,7 +1113,7 @@
         },
         "managedDraining":{
           "shape":"ManagedDraining",
-          "documentation":"<p>The managed draining option for the Auto Scaling group capacity provider. When you enable this, Amazon ECS manages and gracefully drains the EC2 container instances that are in the Auto Scaling group capacity provider.</p> <p>The default is <code>ENABLED</code>.</p>"
+          "documentation":"<p>The managed draining option for the Auto Scaling group capacity provider. When you enable this, Amazon ECS manages and gracefully drains the EC2 container instances that are in the Auto Scaling group capacity provider.</p>"
         }
       },
       "documentation":"<p>The details of the Auto Scaling group capacity provider to update.</p>"
@@ -2108,6 +2110,10 @@
         "serviceConnectConfiguration":{
           "shape":"ServiceConnectConfiguration",
           "documentation":"<p>The configuration for this service to discover and connect to services, and be discovered by, and connected from, other services within a namespace.</p> <p>Tasks that run in a namespace can use short names to connect to services in the namespace. Tasks can connect to services across all of the clusters in the namespace. Tasks connect through a managed proxy container that collects logs and metrics for increased visibility. Only the tasks that Amazon ECS services create are supported with Service Connect. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonECS/latest/developerguide/service-connect.html\">Service Connect</a> in the <i>Amazon Elastic Container Service Developer Guide</i>.</p>"
+        },
+        "volumeConfigurations":{
+          "shape":"ServiceVolumeConfigurations",
+          "documentation":"<p>The configuration for a volume specified in the task definition as a volume that is configured at launch time. Currently, the only supported volume type is an Amazon EBS volume.</p>"
         }
       }
     },
@@ -2434,6 +2440,10 @@
         "serviceConnectResources":{
           "shape":"ServiceConnectServiceResourceList",
           "documentation":"<p>The list of Service Connect resources that are associated with this deployment. Each list entry maps a discovery name to a Cloud Map service name.</p>"
+        },
+        "volumeConfigurations":{
+          "shape":"ServiceVolumeConfigurations",
+          "documentation":"<p>The details of the volume that was <code>configuredAtLaunch</code>. You can configure different settings like the size, throughput, volumeType, and ecryption in <a href=\"https://docs.aws.amazon.com/AmazonECS/latest/APIReference/API_ServiceManagedEBSVolumeConfiguration.html\">ServiceManagedEBSVolumeConfiguration</a>. The <code>name</code> of the volume must match the <code>name</code> from the task definition.</p>"
         }
       },
       "documentation":"<p>The details of an Amazon ECS service deployment. This is used only when a service uses the <code>ECS</code> deployment controller type.</p>"
@@ -2905,6 +2915,37 @@
       "documentation":"<p>This parameter is specified when you're using Docker volumes. Docker volumes are only supported when you're using the EC2 launch type. Windows containers only support the use of the <code>local</code> driver. To use bind mounts, specify a <code>host</code> instead.</p>"
     },
     "Double":{"type":"double"},
+    "EBSKMSKeyId":{"type":"string"},
+    "EBSResourceType":{
+      "type":"string",
+      "enum":["volume"]
+    },
+    "EBSSnapshotId":{"type":"string"},
+    "EBSTagSpecification":{
+      "type":"structure",
+      "required":["resourceType"],
+      "members":{
+        "resourceType":{
+          "shape":"EBSResourceType",
+          "documentation":"<p>The type of volume resource.</p>"
+        },
+        "tags":{
+          "shape":"Tags",
+          "documentation":"<p>The tags applied to this Amazon EBS volume. <code>AmazonECSCreated</code> and <code>AmazonECSManaged</code> are reserved tags that can't be used.</p>"
+        },
+        "propagateTags":{
+          "shape":"PropagateTags",
+          "documentation":"<p>Determines whether to propagate the tags from the task definition to &#x2028;the Amazon EBS volume. Tags can only propagate to a <code>SERVICE</code> specified in &#x2028;<code>ServiceVolumeConfiguration</code>. If no value is specified, the tags aren't &#x2028;propagated.</p>"
+        }
+      },
+      "documentation":"<p>The tag specifications of an Amazon EBS volume.</p>"
+    },
+    "EBSTagSpecifications":{
+      "type":"list",
+      "member":{"shape":"EBSTagSpecification"}
+    },
+    "EBSVolumeType":{"type":"string"},
+    "ECSVolumeName":{"type":"string"},
     "EFSAuthorizationConfig":{
       "type":"structure",
       "members":{
@@ -3300,6 +3341,7 @@
       },
       "documentation":"<p>Details on a container instance bind mount host volume.</p>"
     },
+    "IAMRoleArn":{"type":"string"},
     "InferenceAccelerator":{
       "type":"structure",
       "required":[
@@ -4770,6 +4812,10 @@
           "shape":"String",
           "documentation":"<p>An identifier that you provide to ensure the idempotency of the request. It must be unique and is case sensitive. Up to 64 characters are allowed. The valid characters are characters in the range of 33-126, inclusive. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonECS/latest/APIReference/ECS_Idempotency.html\">Ensuring idempotency</a>.</p>",
           "idempotencyToken":true
+        },
+        "volumeConfigurations":{
+          "shape":"TaskVolumeConfigurations",
+          "documentation":"<p>The details of the volume that was <code>configuredAtLaunch</code>. You can configure the size, volumeType, IOPS, throughput, snapshot and encryption in in <a href=\"https://docs.aws.amazon.com/AmazonECS/latest/APIReference/API_TaskManagedEBSVolumeConfiguration.html\">TaskManagedEBSVolumeConfiguration</a>. The <code>name</code> of the volume must match the <code>name</code> from the task definition.</p>"
         }
       }
     },
@@ -5114,6 +5160,53 @@
       "type":"list",
       "member":{"shape":"ServiceField"}
     },
+    "ServiceManagedEBSVolumeConfiguration":{
+      "type":"structure",
+      "required":["roleArn"],
+      "members":{
+        "encrypted":{
+          "shape":"BoxedBoolean",
+          "documentation":"<p>Indicates whether the volume should be encrypted. If no value is specified, encryption is turned on by default. This parameter maps 1:1 with the <code>Encrypted</code> parameter of the <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/APIReference/API_CreateVolume.html\">CreateVolume API</a> in the <i>Amazon EC2 API Reference</i>.</p>"
+        },
+        "kmsKeyId":{
+          "shape":"EBSKMSKeyId",
+          "documentation":"<p>The Amazon Resource Name (ARN) identifier of the Amazon Web Services Key Management Service key to use for Amazon EBS encryption. When encryption is turned on and no Amazon Web Services Key Management Service key is specified, the default Amazon Web Services managed key for Amazon EBS volumes is used. This parameter maps 1:1 with the <code>KmsKeyId</code> parameter of the <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/APIReference/API_CreateVolume.html\">CreateVolume API</a> in the <i>Amazon EC2 API Reference</i>.</p> <important> <p>Amazon Web Services authenticates the Amazon Web Services Key Management Service key asynchronously. Therefore, if you specify an ID, alias, or ARN that is invalid, the action can appear to complete, but eventually fails.</p> </important>"
+        },
+        "volumeType":{
+          "shape":"EBSVolumeType",
+          "documentation":"<p>The volume type. This parameter maps 1:1 with the <code>VolumeType</code> parameter of the <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/APIReference/API_CreateVolume.html\">CreateVolume API</a> in the <i>Amazon EC2 API Reference</i>. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ebs-volume-types.html\">Amazon EBS volume types</a> in the <i>Amazon EC2 User Guide</i>.</p> <p>The following are the supported volume types.</p> <ul> <li> <p>General Purpose SSD: <code>gp2</code>|<code>gp3</code> </p> </li> <li> <p>Provisioned IOPS SSD: <code>io1</code>|<code>io2</code> </p> </li> <li> <p>Throughput Optimized HDD: <code>st1</code> </p> </li> <li> <p>Cold HDD: <code>sc1</code> </p> </li> <li> <p>Magnetic: <code>standard</code> </p> <note> <p>The magnetic volume type is not supported on Fargate.</p> </note> </li> </ul>"
+        },
+        "sizeInGiB":{
+          "shape":"BoxedInteger",
+          "documentation":"<p>The size of the volume in GiB. You must specify either a volume size or a snapshot ID. If you specify a snapshot ID, the snapshot size is used for the volume size by default. You can optionally specify a volume size greater than or equal to the snapshot size. This parameter maps 1:1 with the <code>Size</code> parameter of the <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/APIReference/API_CreateVolume.html\">CreateVolume API</a> in the <i>Amazon EC2 API Reference</i>.</p> <p>The following are the supported volume size values for each volume type.</p> <ul> <li> <p> <code>gp2</code> and <code>gp3</code>: 1-16,384</p> </li> <li> <p> <code>io1</code> and <code>io2</code>: 4-16,384</p> </li> <li> <p> <code>st1</code> and <code>sc1</code>: 125-16,384</p> </li> <li> <p> <code>standard</code>: 1-1,024</p> </li> </ul>"
+        },
+        "snapshotId":{
+          "shape":"EBSSnapshotId",
+          "documentation":"<p>The snapshot that Amazon ECS uses to create the volume. You must specify either a snapshot ID or a volume size. This parameter maps 1:1 with the <code>SnapshotId</code> parameter of the <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/APIReference/API_CreateVolume.html\">CreateVolume API</a> in the <i>Amazon EC2 API Reference</i>.</p>"
+        },
+        "iops":{
+          "shape":"BoxedInteger",
+          "documentation":"<p>The number of I/O operations per second (IOPS). For <code>gp3</code>, <code>io1</code>, and <code>io2</code> volumes, this represents the number of IOPS that are provisioned for the volume. For <code>gp2</code> volumes, this represents the baseline performance of the volume and the rate at which the volume accumulates I/O credits for bursting.</p> <p>The following are the supported values for each volume type.</p> <ul> <li> <p> <code>gp3</code>: 3,000 - 16,000 IOPS</p> </li> <li> <p> <code>io1</code>: 100 - 64,000 IOPS</p> </li> <li> <p> <code>io2</code>: 100 - 256,000 IOPS</p> </li> </ul> <p>This parameter is required for <code>io1</code> and <code>io2</code> volume types. The default for <code>gp3</code> volumes is <code>3,000 IOPS</code>. This parameter is not supported for <code>st1</code>, <code>sc1</code>, or <code>standard</code> volume types.</p> <p>This parameter maps 1:1 with the <code>Iops</code> parameter of the <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/APIReference/API_CreateVolume.html\">CreateVolume API</a> in the <i>Amazon EC2 API Reference</i>.</p>"
+        },
+        "throughput":{
+          "shape":"BoxedInteger",
+          "documentation":"<p>The throughput to provision for a volume, in MiB/s, with a maximum of 1,000 MiB/s. This parameter maps 1:1 with the <code>Throughput</code> parameter of the <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/APIReference/API_CreateVolume.html\">CreateVolume API</a> in the <i>Amazon EC2 API Reference</i>.</p> <important> <p>This parameter is only supported for the <code>gp3</code> volume type.</p> </important>"
+        },
+        "tagSpecifications":{
+          "shape":"EBSTagSpecifications",
+          "documentation":"<p>The tags to apply to the volume. Amazon ECS applies service-managed tags by default. This parameter maps 1:1 with the <code>TagSpecifications.N</code> parameter of the <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/APIReference/API_CreateVolume.html\">CreateVolume API</a> in the <i>Amazon EC2 API Reference</i>.</p>"
+        },
+        "roleArn":{
+          "shape":"IAMRoleArn",
+          "documentation":"<p>The ARN of the IAM role to associate with this volume. This is the Amazon ECS infrastructure IAM role that is used to manage your Amazon Web Services infrastructure. We recommend using the Amazon ECS-managed <code>AmazonECSInfrastructureRolePolicyForVolumes</code> IAM policy with this role. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonECS/latest/developerguide/infrastructure_IAM_role.html\">Amazon ECS infrastructure IAM role</a> in the <i>Amazon ECS Developer Guide</i>.</p>"
+        },
+        "filesystemType":{
+          "shape":"TaskFilesystemType",
+          "documentation":"<p>The Linux filesystem type for the volume. For volumes created from a snapshot, you must specify the same filesystem type that the volume was using when the snapshot was created. If there is a filesystem type mismatch, the task will fail to start.</p> <p>The available filesystem types are&#x2028; <code>ext3</code>, <code>ext4</code>, and <code>xfs</code>. If no value is specified, the <code>xfs</code> filesystem type is used by default.</p>"
+        }
+      },
+      "documentation":"<p>The configuration for the Amazon EBS volume that Amazon ECS creates and manages on your behalf. These settings are used to create each Amazon EBS volume, with one volume created for each task in the service.</p> <p>Many of these parameters map 1:1 with the Amazon EBS <code>CreateVolume</code> API request parameters.</p>"
+    },
     "ServiceNotActiveException":{
       "type":"structure",
       "members":{
@@ -5153,6 +5246,25 @@
         }
       },
       "documentation":"<p>The details for the service registry.</p> <p>Each service may be associated with one service registry. Multiple service registries for each service are not supported.</p> <p>When you add, update, or remove the service registries configuration, Amazon ECS starts a new deployment. New tasks are registered and deregistered to the updated service registry configuration.</p>"
+    },
+    "ServiceVolumeConfiguration":{
+      "type":"structure",
+      "required":["name"],
+      "members":{
+        "name":{
+          "shape":"ECSVolumeName",
+          "documentation":"<p>The name of the volume. This value must match the volume name from the <code>Volume</code> object in the task definition.</p>"
+        },
+        "managedEBSVolume":{
+          "shape":"ServiceManagedEBSVolumeConfiguration",
+          "documentation":"<p>The configuration for the Amazon EBS volume that Amazon ECS creates and manages on your behalf. These settings are used to create each Amazon EBS volume, with one volume created for each task in the service. The Amazon EBS volumes are visible in your account in the Amazon EC2 console once they are created.</p>"
+        }
+      },
+      "documentation":"<p>The configuration for a volume specified in the task definition as a volume that is configured at launch time. Currently, the only supported volume type is an Amazon EBS volume.</p>"
+    },
+    "ServiceVolumeConfigurations":{
+      "type":"list",
+      "member":{"shape":"ServiceVolumeConfiguration"}
     },
     "Services":{
       "type":"list",
@@ -5291,6 +5403,10 @@
         "taskDefinition":{
           "shape":"String",
           "documentation":"<p>The <code>family</code> and <code>revision</code> (<code>family:revision</code>) or full ARN of the task definition to start. If a <code>revision</code> isn't specified, the latest <code>ACTIVE</code> revision is used.</p>"
+        },
+        "volumeConfigurations":{
+          "shape":"TaskVolumeConfigurations",
+          "documentation":"<p>The details of the volume that was <code>configuredAtLaunch</code>. You can configure the size, volumeType, IOPS, throughput, snapshot and encryption in <a href=\"https://docs.aws.amazon.com/AmazonECS/latest/APIReference/API_TaskManagedEBSVolumeConfiguration.html\">TaskManagedEBSVolumeConfiguration</a>. The <code>name</code> of the volume must match the <code>name</code> from the task definition.</p>"
         }
       }
     },
@@ -5875,6 +5991,76 @@
       "type":"list",
       "member":{"shape":"TaskField"}
     },
+    "TaskFilesystemType":{
+      "type":"string",
+      "enum":[
+        "ext3",
+        "ext4",
+        "xfs"
+      ]
+    },
+    "TaskManagedEBSVolumeConfiguration":{
+      "type":"structure",
+      "required":["roleArn"],
+      "members":{
+        "encrypted":{
+          "shape":"BoxedBoolean",
+          "documentation":"<p>Indicates whether the volume should be encrypted. If no value is specified, encryption is turned on by default. This parameter maps 1:1 with the <code>Encrypted</code> parameter of the <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/APIReference/API_CreateVolume.html\">CreateVolume API</a> in the <i>Amazon EC2 API Reference</i>.</p>"
+        },
+        "kmsKeyId":{
+          "shape":"EBSKMSKeyId",
+          "documentation":"<p>The Amazon Resource Name (ARN) identifier of the Amazon Web Services Key Management Service key to use for Amazon EBS encryption. When encryption is turned on and no Amazon Web Services Key Management Service key is specified, the default Amazon Web Services managed key for Amazon EBS volumes is used. This parameter maps 1:1 with the <code>KmsKeyId</code> parameter of the <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/APIReference/API_CreateVolume.html\">CreateVolume API</a> in the <i>Amazon EC2 API Reference</i>.</p> <important> <p>Amazon Web Services authenticates the Amazon Web Services Key Management Service key asynchronously. Therefore, if you specify an ID, alias, or ARN that is invalid, the action can appear to complete, but eventually fails.</p> </important>"
+        },
+        "volumeType":{
+          "shape":"EBSVolumeType",
+          "documentation":"<p>The volume type. This parameter maps 1:1 with the <code>VolumeType</code> parameter of the <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/APIReference/API_CreateVolume.html\">CreateVolume API</a> in the <i>Amazon EC2 API Reference</i>. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ebs-volume-types.html\">Amazon EBS volume types</a> in the <i>Amazon EC2 User Guide</i>.</p> <p>The following are the supported volume types.</p> <ul> <li> <p>General Purpose SSD: <code>gp2</code>|<code>gp3</code> </p> </li> <li> <p>Provisioned IOPS SSD: <code>io1</code>|<code>io2</code> </p> </li> <li> <p>Throughput Optimized HDD: <code>st1</code> </p> </li> <li> <p>Cold HDD: <code>sc1</code> </p> </li> <li> <p>Magnetic: <code>standard</code> </p> <note> <p>The magnetic volume type is not supported on Fargate.</p> </note> </li> </ul>"
+        },
+        "sizeInGiB":{
+          "shape":"BoxedInteger",
+          "documentation":"<p>The size of the volume in GiB. You must specify either a volume size or a snapshot ID. If you specify a snapshot ID, the snapshot size is used for the volume size by default. You can optionally specify a volume size greater than or equal to the snapshot size. This parameter maps 1:1 with the <code>Size</code> parameter of the <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/APIReference/API_CreateVolume.html\">CreateVolume API</a> in the <i>Amazon EC2 API Reference</i>.</p> <p>The following are the supported volume size values for each volume type.</p> <ul> <li> <p> <code>gp2</code> and <code>gp3</code>: 1-16,384</p> </li> <li> <p> <code>io1</code> and <code>io2</code>: 4-16,384</p> </li> <li> <p> <code>st1</code> and <code>sc1</code>: 125-16,384</p> </li> <li> <p> <code>standard</code>: 1-1,024</p> </li> </ul>"
+        },
+        "snapshotId":{
+          "shape":"EBSSnapshotId",
+          "documentation":"<p>The snapshot that Amazon ECS uses to create the volume. You must specify either a snapshot ID or a volume size. This parameter maps 1:1 with the <code>SnapshotId</code> parameter of the <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/APIReference/API_CreateVolume.html\">CreateVolume API</a> in the <i>Amazon EC2 API Reference</i>.</p>"
+        },
+        "iops":{
+          "shape":"BoxedInteger",
+          "documentation":"<p>The number of I/O operations per second (IOPS). For <code>gp3</code>, <code>io1</code>, and <code>io2</code> volumes, this represents the number of IOPS that are provisioned for the volume. For <code>gp2</code> volumes, this represents the baseline performance of the volume and the rate at which the volume accumulates I/O credits for bursting.</p> <p>The following are the supported values for each volume type.</p> <ul> <li> <p> <code>gp3</code>: 3,000 - 16,000 IOPS</p> </li> <li> <p> <code>io1</code>: 100 - 64,000 IOPS</p> </li> <li> <p> <code>io2</code>: 100 - 256,000 IOPS</p> </li> </ul> <p>This parameter is required for <code>io1</code> and <code>io2</code> volume types. The default for <code>gp3</code> volumes is <code>3,000 IOPS</code>. This parameter is not supported for <code>st1</code>, <code>sc1</code>, or <code>standard</code> volume types.</p> <p>This parameter maps 1:1 with the <code>Iops</code> parameter of the <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/APIReference/API_CreateVolume.html\">CreateVolume API</a> in the <i>Amazon EC2 API Reference</i>.</p>"
+        },
+        "throughput":{
+          "shape":"BoxedInteger",
+          "documentation":"<p>The throughput to provision for a volume, in MiB/s, with a maximum of 1,000 MiB/s. This parameter maps 1:1 with the <code>Throughput</code> parameter of the <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/APIReference/API_CreateVolume.html\">CreateVolume API</a> in the <i>Amazon EC2 API Reference</i>.</p> <important> <p>This parameter is only supported for the <code>gp3</code> volume type.</p> </important>"
+        },
+        "tagSpecifications":{
+          "shape":"EBSTagSpecifications",
+          "documentation":"<p>The tags to apply to the volume. Amazon ECS applies service-managed tags by default. This parameter maps 1:1 with the <code>TagSpecifications.N</code> parameter of the <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/APIReference/API_CreateVolume.html\">CreateVolume API</a> in the <i>Amazon EC2 API Reference</i>.</p>"
+        },
+        "roleArn":{
+          "shape":"IAMRoleArn",
+          "documentation":"<p>The ARN of the IAM role to associate with this volume. This is the Amazon ECS infrastructure IAM role that is used to manage your Amazon Web Services infrastructure. We recommend using the Amazon ECS-managed <code>AmazonECSInfrastructureRolePolicyForVolumes</code> IAM policy with this role. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonECS/latest/developerguide/infrastructure_IAM_role.html\">Amazon ECS infrastructure IAM role</a> in the <i>Amazon ECS Developer Guide</i>.</p>"
+        },
+        "terminationPolicy":{
+          "shape":"TaskManagedEBSVolumeTerminationPolicy",
+          "documentation":"<p>The termination policy for the volume when the task exits. This provides a way to control whether Amazon ECS terminates the Amazon EBS volume when the task stops.</p>"
+        },
+        "filesystemType":{
+          "shape":"TaskFilesystemType",
+          "documentation":"<p>The Linux filesystem type for the volume. For volumes created from a snapshot, you must specify the same filesystem type that the volume was using when the snapshot was created. If there is a filesystem type mismatch, the task will fail to start.</p> <p>The available filesystem types are&#x2028; <code>ext3</code>, <code>ext4</code>, and <code>xfs</code>. If no value is specified, the <code>xfs</code> filesystem type is used by default.</p>"
+        }
+      },
+      "documentation":"<p>The configuration for the Amazon EBS volume that Amazon ECS creates and manages on your behalf. These settings are used to create each Amazon EBS volume, with one volume created for each task.</p>"
+    },
+    "TaskManagedEBSVolumeTerminationPolicy":{
+      "type":"structure",
+      "required":["deleteOnTermination"],
+      "members":{
+        "deleteOnTermination":{
+          "shape":"BoxedBoolean",
+          "documentation":"<p>Indicates whether the volume should be deleted on when the task stops. If a value of <code>true</code> is specified, &#x2028;Amazon ECS deletes the Amazon EBS volume on your behalf when the task goes into the <code>STOPPED</code> state. If no value is specified, the &#x2028;default value is <code>true</code> is used. When set to <code>false</code>, Amazon ECS leaves the volume in your &#x2028;account.</p>"
+        }
+      },
+      "documentation":"<p>The termination policy for the Amazon EBS volume when the task exits. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonECS/latest/developerguide/ebs-volumes.html#ebs-volume-types\">Amazon ECS volume termination policy</a>.</p>"
+    },
     "TaskOverride":{
       "type":"structure",
       "members":{
@@ -6040,6 +6226,25 @@
         "SpotInterruption",
         "TerminationNotice"
       ]
+    },
+    "TaskVolumeConfiguration":{
+      "type":"structure",
+      "required":["name"],
+      "members":{
+        "name":{
+          "shape":"ECSVolumeName",
+          "documentation":"<p>The name of the volume. This value must match the volume name from the <code>Volume</code> object in the task definition.</p>"
+        },
+        "managedEBSVolume":{
+          "shape":"TaskManagedEBSVolumeConfiguration",
+          "documentation":"<p>The configuration for the Amazon EBS volume that Amazon ECS creates and manages on your behalf. These settings are used to create each Amazon EBS volume, with one volume created for each task. The Amazon EBS volumes are visible in your account in the Amazon EC2 console once they are created.</p>"
+        }
+      },
+      "documentation":"<p>Configuration settings for the task volume that was <code>configuredAtLaunch</code> that weren't set during <code>RegisterTaskDef</code>.</p>"
+    },
+    "TaskVolumeConfigurations":{
+      "type":"list",
+      "member":{"shape":"TaskVolumeConfiguration"}
     },
     "Tasks":{
       "type":"list",
@@ -6408,6 +6613,10 @@
         "serviceConnectConfiguration":{
           "shape":"ServiceConnectConfiguration",
           "documentation":"<p>The configuration for this service to discover and connect to services, and be discovered by, and connected from, other services within a namespace.</p> <p>Tasks that run in a namespace can use short names to connect to services in the namespace. Tasks can connect to services across all of the clusters in the namespace. Tasks connect through a managed proxy container that collects logs and metrics for increased visibility. Only the tasks that Amazon ECS services create are supported with Service Connect. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonECS/latest/developerguide/service-connect.html\">Service Connect</a> in the <i>Amazon Elastic Container Service Developer Guide</i>.</p>"
+        },
+        "volumeConfigurations":{
+          "shape":"ServiceVolumeConfigurations",
+          "documentation":"<p>The details of the volume that was <code>configuredAtLaunch</code>. You can configure the size, volumeType, IOPS, throughput, snapshot and encryption in <a href=\"https://docs.aws.amazon.com/AmazonECS/latest/APIReference/API_ServiceManagedEBSVolumeConfiguration.html\">ServiceManagedEBSVolumeConfiguration</a>. The <code>name</code> of the volume must match the <code>name</code> from the task definition. If set to null, no new deployment is triggered. Otherwise, if this configuration differs from the existing one, it triggers a new deployment.</p>"
         }
       }
     },
@@ -6518,7 +6727,7 @@
       "members":{
         "name":{
           "shape":"String",
-          "documentation":"<p>The name of the volume. Up to 255 letters (uppercase and lowercase), numbers, underscores, and hyphens are allowed. This name is referenced in the <code>sourceVolume</code> parameter of container definition <code>mountPoints</code>.</p> <p>This is required wwhen you use an Amazon EFS volume.</p>"
+          "documentation":"<p>The name of the volume. Up to 255 letters (uppercase and lowercase), numbers, underscores, and hyphens are allowed.</p> <p>When using a volume configured at launch, the <code>name</code> is required and must also be specified as the volume name in the <code>ServiceVolumeConfiguration</code> or <code>TaskVolumeConfiguration</code> parameter when creating your service or standalone task.</p> <p>For all other types of volumes, this name is referenced in the <code>sourceVolume</code> parameter of the <code>mountPoints</code> object in the container definition.</p> <p>When a volume is using the <code>efsVolumeConfiguration</code>, the name is required.</p>"
         },
         "host":{
           "shape":"HostVolumeProperties",
@@ -6535,9 +6744,13 @@
         "fsxWindowsFileServerVolumeConfiguration":{
           "shape":"FSxWindowsFileServerVolumeConfiguration",
           "documentation":"<p>This parameter is specified when you use Amazon FSx for Windows File Server file system for task storage.</p>"
+        },
+        "configuredAtLaunch":{
+          "shape":"BoxedBoolean",
+          "documentation":"<p>Indicates whether the volume should be configured at launch time. This is used to create Amazon EBS volumes for standalone tasks or tasks created as part of a service. Each task definition revision may only have one volume configured at launch in the volume configuration.</p> <p>To configure a volume at launch time, use this task definition revision and specify a <code>volumeConfigurations</code> object when calling the <code>CreateService</code>, <code>UpdateService</code>, <code>RunTask</code> or <code>StartTask</code> APIs.</p>"
         }
       },
-      "documentation":"<p>A data volume that's used in a task definition. For tasks that use the Amazon Elastic File System (Amazon EFS), specify an <code>efsVolumeConfiguration</code>. For Windows tasks that use Amazon FSx for Windows File Server file system, specify a <code>fsxWindowsFileServerVolumeConfiguration</code>. For tasks that use a Docker volume, specify a <code>DockerVolumeConfiguration</code>. For tasks that use a bind mount host volume, specify a <code>host</code> and optional <code>sourcePath</code>. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonECS/latest/developerguide/using_data_volumes.html\">Using Data Volumes in Tasks</a>.</p>"
+      "documentation":"<p>The data volume configuration for tasks launched using this task definition. Specifying a volume configuration in a task definition is optional. The volume configuration may contain multiple volumes but only one volume configured at launch is supported. Each volume defined in the volume configuration may only specify a <code>name</code> and one of either <code>configuredAtLaunch</code>, <code>dockerVolumeConfiguration</code>, <code>efsVolumeConfiguration</code>, <code>fsxWindowsFileServerVolumeConfiguration</code>, or <code>host</code>. If an empty volume configuration is specified, by default Amazon ECS uses a host volume. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonECS/latest/developerguide/using_data_volumes.html\">Using data volumes in tasks</a>.</p>"
     },
     "VolumeFrom":{
       "type":"structure",

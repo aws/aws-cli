@@ -2,6 +2,18 @@
 CHANGELOG
 =========
 
+1.32.17
+=======
+
+* api-change:``ec2``: This release adds support for adding an ElasticBlockStorage volume configurations in ECS RunTask/StartTask/CreateService/UpdateService APIs. The configuration allows for attaching EBS volumes to ECS Tasks.
+* api-change:``ecs``: This release adds support for adding an ElasticBlockStorage volume configurations in ECS RunTask/StartTask/CreateService/UpdateService APIs. The configuration allows for attaching EBS volumes to ECS Tasks.
+* api-change:``events``: Update events command to latest version
+* api-change:``iot``: Add ConflictException to Update APIs of AWS IoT Software Package Catalog
+* api-change:``iotfleetwise``: The following dataTypes have been removed: CUSTOMER_DECODED_INTERFACE in NetworkInterfaceType; CUSTOMER_DECODED_SIGNAL_INFO_IS_NULL in SignalDecoderFailureReason; CUSTOMER_DECODED_SIGNAL_NETWORK_INTERFACE_INFO_IS_NULL in NetworkInterfaceFailureReason; CUSTOMER_DECODED_SIGNAL in SignalDecoderType
+* api-change:``secretsmanager``: Doc only update for Secrets Manager
+* api-change:``workspaces``: Added AWS Workspaces RebootWorkspaces API - Extended Reboot documentation update
+
+
 1.32.16
 =======
 

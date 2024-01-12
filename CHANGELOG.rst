@@ -2,6 +2,25 @@
 CHANGELOG
 =========
 
+2.15.10
+=======
+
+* api-change:``iot``: Add ConflictException to Update APIs of AWS IoT Software Package Catalog
+* api-change:``ecs``: This release adds support for adding an ElasticBlockStorage volume configurations in ECS RunTask/StartTask/CreateService/UpdateService APIs. The configuration allows for attaching EBS volumes to ECS Tasks.
+* api-change:``workspaces``: Added AWS Workspaces RebootWorkspaces API - Extended Reboot documentation update
+* api-change:``iotfleetwise``: The following dataTypes have been removed: CUSTOMER_DECODED_INTERFACE in NetworkInterfaceType; CUSTOMER_DECODED_SIGNAL_INFO_IS_NULL in SignalDecoderFailureReason; CUSTOMER_DECODED_SIGNAL_NETWORK_INTERFACE_INFO_IS_NULL in NetworkInterfaceFailureReason; CUSTOMER_DECODED_SIGNAL in SignalDecoderType
+* api-change:``ec2``: This release adds support for adding an ElasticBlockStorage volume configurations in ECS RunTask/StartTask/CreateService/UpdateService APIs. The configuration allows for attaching EBS volumes to ECS Tasks.
+* api-change:``secretsmanager``: Doc only update for Secrets Manager
+* api-change:``events``: Update events command to latest version
+* api-change:``connectcampaigns``: Minor pattern updates for Campaign and Dial Request API fields.
+* api-change:``route53``: Route53 now supports geoproximity routing in AWS regions
+* api-change:``logs``: Add support for account level subscription filter policies to PutAccountPolicy, DescribeAccountPolicies, and DeleteAccountPolicy APIs. Additionally, PutAccountPolicy has been modified with new optional "selectionCriteria" parameter for resource selection.
+* api-change:``location``: This release adds API support for custom layers for the maps service APIs: CreateMap, UpdateMap, DescribeMap.
+* api-change:``wisdom``: QueryAssistant and GetRecommendations will be discontinued starting June 1, 2024. To receive generative responses after March 1, 2024 you will need to create a new Assistant in the Connect console and integrate the Amazon Q in Connect JavaScript library (amazon-q-connectjs) into your applications.
+* api-change:``redshift-serverless``: Updates to ConfigParameter for RSS workgroup, removal of use_fips_ssl
+* api-change:``qconnect``: QueryAssistant and GetRecommendations will be discontinued starting June 1, 2024. To receive generative responses after March 1, 2024 you will need to create a new Assistant in the Connect console and integrate the Amazon Q in Connect JavaScript library (amazon-q-connectjs) into your applications.
+
+
 2.15.9
 ======
 

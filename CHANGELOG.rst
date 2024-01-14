@@ -2,6 +2,12 @@
 CHANGELOG
 =========
 
+1.32.19
+=======
+
+* api-change:``sagemaker``: This release will have ValidationException thrown if certain invalid app types are provided. The release will also throw ValidationException if more than 10 account ids are provided in VpcOnlyTrustedAccounts.
+
+
 1.32.18
 =======
 

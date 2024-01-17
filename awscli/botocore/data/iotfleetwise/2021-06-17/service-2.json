@@ -1362,7 +1362,7 @@
       "members":{
         "expression":{
           "shape":"eventExpression",
-          "documentation":"<p>The logical expression used to recognize what data to collect. For example, <code>$variable.Vehicle.OutsideAirTemperature &gt;= 105.0</code>.</p>"
+          "documentation":"<p>The logical expression used to recognize what data to collect. For example, <code>$variable.`Vehicle.OutsideAirTemperature` &gt;= 105.0</code>.</p>"
         },
         "minimumTriggerIntervalMs":{
           "shape":"uint32",
@@ -3148,6 +3148,10 @@
         "maxResults":{
           "shape":"maxResults",
           "documentation":"<p> The maximum number of items to return, between 1 and 100, inclusive. </p>"
+        },
+        "signalNodeType":{
+          "shape":"SignalNodeType",
+          "documentation":"<p>The type of node in the signal catalog.</p>"
         }
       }
     },
@@ -4062,6 +4066,17 @@
       "max":1000,
       "min":0
     },
+    "SignalNodeType":{
+      "type":"string",
+      "enum":[
+        "SENSOR",
+        "ACTUATOR",
+        "ATTRIBUTE",
+        "BRANCH",
+        "CUSTOM_STRUCT",
+        "CUSTOM_PROPERTY"
+      ]
+    },
     "SpoolingMode":{
       "type":"string",
       "enum":[
@@ -4854,6 +4869,10 @@
         "lastModificationTime":{
           "shape":"timestamp",
           "documentation":"<p>The time the vehicle was last updated in seconds since epoch (January 1, 1970 at midnight UTC time). </p>"
+        },
+        "attributes":{
+          "shape":"attributesMap",
+          "documentation":"<p>Static information about a vehicle in a key-value pair. For example:</p> <p> <code>\"engineType\"</code> : <code>\"1.3 L R2\"</code> </p>"
         }
       },
       "documentation":"<p>Information about a vehicle.</p> <p>To return this information about vehicles in your account, you can use the API operation.</p>"

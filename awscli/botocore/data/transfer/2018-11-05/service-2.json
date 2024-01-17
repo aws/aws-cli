@@ -2244,6 +2244,10 @@
         "SftpConfig":{
           "shape":"SftpConnectorConfig",
           "documentation":"<p>A structure that contains the parameters for an SFTP connector object.</p>"
+        },
+        "ServiceManagedEgressIpAddresses":{
+          "shape":"ServiceManagedEgressIpAddresses",
+          "documentation":"<p>The list of egress IP addresses of this connector. These IP addresses are assigned automatically when you create the connector.</p>"
         }
       },
       "documentation":"<p>Describes the parameters for the connector, as identified by the <code>ConnectorId</code>.</p>"
@@ -2467,6 +2471,10 @@
         "S3StorageOptions":{
           "shape":"S3StorageOptions",
           "documentation":"<p>Specifies whether or not performance for your Amazon S3 directories is optimized. This is disabled by default.</p> <p>By default, home directory mappings have a <code>TYPE</code> of <code>DIRECTORY</code>. If you enable this option, you would then need to explicitly set the <code>HomeDirectoryMapEntry</code> <code>Type</code> to <code>FILE</code> if you want a mapping to have a file target.</p>"
+        },
+        "As2ServiceManagedEgressIpAddresses":{
+          "shape":"ServiceManagedEgressIpAddresses",
+          "documentation":"<p>The list of egress IP addresses of this server. These IP addresses are only relevant for servers that use the AS2 protocol. They are used for sending asynchronous MDNs.</p> <p>These IP addresses are assigned automatically when you create an AS2 server. Additionally, if you update an existing server and add the AS2 protocol, static IP addresses are assigned as well.</p>"
         }
       },
       "documentation":"<p>Describes the properties of a file transfer protocol-enabled server that was specified.</p>"
@@ -2850,7 +2858,7 @@
         },
         "DirectoryId":{
           "shape":"DirectoryId",
-          "documentation":"<p>The identifier of the Directory Service directory that you want to stop sharing.</p>"
+          "documentation":"<p>The identifier of the Directory Service directory that you want to use as your identity provider.</p>"
         },
         "Function":{
           "shape":"Function",
@@ -4189,6 +4197,14 @@
       "pattern":"s-([0-9a-f]{17})"
     },
     "ServiceErrorMessage":{"type":"string"},
+    "ServiceManagedEgressIpAddress":{
+      "type":"string",
+      "pattern":"\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}"
+    },
+    "ServiceManagedEgressIpAddresses":{
+      "type":"list",
+      "member":{"shape":"ServiceManagedEgressIpAddress"}
+    },
     "ServiceMetadata":{
       "type":"structure",
       "required":["UserDetails"],

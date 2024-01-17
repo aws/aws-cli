@@ -2,6 +2,28 @@
 CHANGELOG
 =========
 
+2.15.11
+=======
+
+* api-change:``iot``: Revert release of LogTargetTypes
+* api-change:``rekognition``: This release adds ContentType and TaxonomyLevel attributes to DetectModerationLabels and GetMediaAnalysisJob API responses.
+* api-change:``endpoint-rules``: Update endpoint-rules command to latest version
+* api-change:``location``: Location SDK documentation update. Added missing fonts to the MapConfiguration data type. Updated note for the SubMunicipality property in the place data type.
+* api-change:``supplychain``: This release includes APIs CreateBillOfMaterialsImportJob and GetBillOfMaterialsImportJob.
+* api-change:``s3control``: S3 On Outposts team adds dualstack endpoints support for S3Control and S3Outposts API calls.
+* api-change:``securityhub``: Documentation updates for AWS Security Hub
+* api-change:``sagemaker``: This release will have ValidationException thrown if certain invalid app types are provided. The release will also throw ValidationException if more than 10 account ids are provided in VpcOnlyTrustedAccounts.
+* api-change:``mwaa``: This Amazon MWAA feature release includes new fields in CreateWebLoginToken response model. The new fields IamIdentity and AirflowIdentity will let you match identifications, as the Airflow identity length is currently hashed to 64 characters.
+* api-change:``transfer``: AWS Transfer Family now supports static IP addresses for SFTP & AS2 connectors and for async MDNs on AS2 servers.
+* api-change:``personalize-runtime``: Documentation updates for Amazon Personalize
+* api-change:``personalize``: Documentation updates for Amazon Personalize.
+* api-change:``connect``: Supervisor Barge for Chat is now supported through the MonitorContact API.
+* api-change:``connectparticipant``: Introduce new Supervisor participant role
+* api-change:``iotfleetwise``: Updated APIs: SignalNodeType query parameter has been added to ListSignalCatalogNodesRequest and ListVehiclesResponse has been extended with attributes field.
+* api-change:``payment-cryptography``: Provide an additional option for key exchange using RSA wrap/unwrap in addition to tr-34/tr-31 in ImportKey and ExportKey operations. Added new key usage (type) TR31_M1_ISO_9797_1_MAC_KEY, for use with Generate/VerifyMac dataplane operations  with ISO9797 Algorithm 1 MAC calculations.
+* api-change:``macie2``: This release adds support for analyzing Amazon S3 objects that are encrypted using dual-layer server-side encryption with AWS KMS keys (DSSE-KMS). It also adds support for reporting DSSE-KMS details in statistics and metadata about encryption settings for S3 buckets and objects.
+
+
 2.15.10
 =======
 

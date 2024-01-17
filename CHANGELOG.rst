@@ -2,6 +2,13 @@
 CHANGELOG
 =========
 
+1.32.21
+=======
+
+* api-change:``dynamodb``: Updating note for enabling streams for UpdateTable.
+* api-change:``keyspaces``: This release adds support for Multi-Region Replication with provisioned tables, and Keyspaces auto scaling APIs
+
+
 1.32.20
 =======
 

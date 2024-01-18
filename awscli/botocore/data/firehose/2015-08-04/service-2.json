@@ -783,7 +783,11 @@
           "shape":"AmazonOpenSearchServerlessDestinationConfiguration",
           "documentation":"<p>The destination in the Serverless offering for Amazon OpenSearch Service. You can specify only one destination.</p>"
         },
-        "MSKSourceConfiguration":{"shape":"MSKSourceConfiguration"}
+        "MSKSourceConfiguration":{"shape":"MSKSourceConfiguration"},
+        "SnowflakeDestinationConfiguration":{
+          "shape":"SnowflakeDestinationConfiguration",
+          "documentation":"<p>Configure Snowflake destination</p>"
+        }
       }
     },
     "CreateDeliveryStreamOutput":{
@@ -1114,6 +1118,10 @@
         "HttpEndpointDestinationDescription":{
           "shape":"HttpEndpointDestinationDescription",
           "documentation":"<p>Describes the specified HTTP endpoint destination.</p>"
+        },
+        "SnowflakeDestinationDescription":{
+          "shape":"SnowflakeDestinationDescription",
+          "documentation":"<p>Optional description for the destination</p>"
         },
         "AmazonOpenSearchServerlessDestinationDescription":{
           "shape":"AmazonOpenSearchServerlessDestinationDescription",
@@ -3013,6 +3021,335 @@
       "max":128,
       "min":1
     },
+    "SnowflakeAccountUrl":{
+      "type":"string",
+      "max":2048,
+      "min":24,
+      "pattern":".+?\\.snowflakecomputing\\.com",
+      "sensitive":true
+    },
+    "SnowflakeContentColumnName":{
+      "type":"string",
+      "max":255,
+      "min":1,
+      "sensitive":true
+    },
+    "SnowflakeDataLoadingOption":{
+      "type":"string",
+      "enum":[
+        "JSON_MAPPING",
+        "VARIANT_CONTENT_MAPPING",
+        "VARIANT_CONTENT_AND_METADATA_MAPPING"
+      ]
+    },
+    "SnowflakeDatabase":{
+      "type":"string",
+      "max":255,
+      "min":1,
+      "sensitive":true
+    },
+    "SnowflakeDestinationConfiguration":{
+      "type":"structure",
+      "required":[
+        "AccountUrl",
+        "PrivateKey",
+        "User",
+        "Database",
+        "Schema",
+        "Table",
+        "RoleARN",
+        "S3Configuration"
+      ],
+      "members":{
+        "AccountUrl":{
+          "shape":"SnowflakeAccountUrl",
+          "documentation":"<p>URL for accessing your Snowflake account. This URL must include your <a href=\"https://docs.snowflake.com/en/user-guide/admin-account-identifier\">account identifier</a>. Note that the protocol (https://) and port number are optional.</p>"
+        },
+        "PrivateKey":{
+          "shape":"SnowflakePrivateKey",
+          "documentation":"<p>The private key used to encrypt your Snowflake client. For information, see <a href=\"https://docs.snowflake.com/en/user-guide/data-load-snowpipe-streaming-configuration#using-key-pair-authentication-key-rotation\">Using Key Pair Authentication &amp; Key Rotation</a>.</p>"
+        },
+        "KeyPassphrase":{
+          "shape":"SnowflakeKeyPassphrase",
+          "documentation":"<p>Passphrase to decrypt the private key when the key is encrypted. For information, see <a href=\"https://docs.snowflake.com/en/user-guide/data-load-snowpipe-streaming-configuration#using-key-pair-authentication-key-rotation\">Using Key Pair Authentication &amp; Key Rotation</a>.</p>"
+        },
+        "User":{
+          "shape":"SnowflakeUser",
+          "documentation":"<p>User login name for the Snowflake account.</p>"
+        },
+        "Database":{
+          "shape":"SnowflakeDatabase",
+          "documentation":"<p>All data in Snowflake is maintained in databases.</p>"
+        },
+        "Schema":{
+          "shape":"SnowflakeSchema",
+          "documentation":"<p>Each database consists of one or more schemas, which are logical groupings of database objects, such as tables and views</p>"
+        },
+        "Table":{
+          "shape":"SnowflakeTable",
+          "documentation":"<p>All data in Snowflake is stored in database tables, logically structured as collections of columns and rows.</p>"
+        },
+        "SnowflakeRoleConfiguration":{
+          "shape":"SnowflakeRoleConfiguration",
+          "documentation":"<p>Optionally configure a Snowflake role. Otherwise the default user role will be used.</p>"
+        },
+        "DataLoadingOption":{
+          "shape":"SnowflakeDataLoadingOption",
+          "documentation":"<p>Choose to load JSON keys mapped to table column names or choose to split the JSON payload where content is mapped to a record content column and source metadata is mapped to a record metadata column.</p>"
+        },
+        "MetaDataColumnName":{
+          "shape":"SnowflakeMetaDataColumnName",
+          "documentation":"<p>The name of the record metadata column</p>"
+        },
+        "ContentColumnName":{
+          "shape":"SnowflakeContentColumnName",
+          "documentation":"<p>The name of the record content column</p>"
+        },
+        "SnowflakeVpcConfiguration":{
+          "shape":"SnowflakeVpcConfiguration",
+          "documentation":"<p>The VPCE ID for Firehose to privately connect with Snowflake. The ID format is com.amazonaws.vpce.[region].vpce-svc-&lt;[id]&gt;. For more information, see <a href=\"https://docs.snowflake.com/en/user-guide/admin-security-privatelink\">Amazon PrivateLink &amp; Snowflake</a> </p>"
+        },
+        "CloudWatchLoggingOptions":{"shape":"CloudWatchLoggingOptions"},
+        "ProcessingConfiguration":{"shape":"ProcessingConfiguration"},
+        "RoleARN":{
+          "shape":"RoleARN",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the Snowflake role</p>"
+        },
+        "RetryOptions":{
+          "shape":"SnowflakeRetryOptions",
+          "documentation":"<p>The time period where Kinesis Data Firehose will retry sending data to the chosen HTTP endpoint.</p>"
+        },
+        "S3BackupMode":{
+          "shape":"SnowflakeS3BackupMode",
+          "documentation":"<p>Choose an S3 backup mode</p>"
+        },
+        "S3Configuration":{"shape":"S3DestinationConfiguration"}
+      },
+      "documentation":"<p>Configure Snowflake destination</p>"
+    },
+    "SnowflakeDestinationDescription":{
+      "type":"structure",
+      "members":{
+        "AccountUrl":{
+          "shape":"SnowflakeAccountUrl",
+          "documentation":"<p>URL for accessing your Snowflake account. This URL must include your <a href=\"https://docs.snowflake.com/en/user-guide/admin-account-identifier\">account identifier</a>. Note that the protocol (https://) and port number are optional.</p>"
+        },
+        "User":{
+          "shape":"SnowflakeUser",
+          "documentation":"<p>User login name for the Snowflake account.</p>"
+        },
+        "Database":{
+          "shape":"SnowflakeDatabase",
+          "documentation":"<p>All data in Snowflake is maintained in databases.</p>"
+        },
+        "Schema":{
+          "shape":"SnowflakeSchema",
+          "documentation":"<p>Each database consists of one or more schemas, which are logical groupings of database objects, such as tables and views</p>"
+        },
+        "Table":{
+          "shape":"SnowflakeTable",
+          "documentation":"<p>All data in Snowflake is stored in database tables, logically structured as collections of columns and rows.</p>"
+        },
+        "SnowflakeRoleConfiguration":{
+          "shape":"SnowflakeRoleConfiguration",
+          "documentation":"<p>Optionally configure a Snowflake role. Otherwise the default user role will be used.</p>"
+        },
+        "DataLoadingOption":{
+          "shape":"SnowflakeDataLoadingOption",
+          "documentation":"<p>Choose to load JSON keys mapped to table column names or choose to split the JSON payload where content is mapped to a record content column and source metadata is mapped to a record metadata column.</p>"
+        },
+        "MetaDataColumnName":{
+          "shape":"SnowflakeMetaDataColumnName",
+          "documentation":"<p>The name of the record metadata column</p>"
+        },
+        "ContentColumnName":{
+          "shape":"SnowflakeContentColumnName",
+          "documentation":"<p>The name of the record content column</p>"
+        },
+        "SnowflakeVpcConfiguration":{
+          "shape":"SnowflakeVpcConfiguration",
+          "documentation":"<p>The VPCE ID for Firehose to privately connect with Snowflake. The ID format is com.amazonaws.vpce.[region].vpce-svc-&lt;[id]&gt;. For more information, see <a href=\"https://docs.snowflake.com/en/user-guide/admin-security-privatelink\">Amazon PrivateLink &amp; Snowflake</a> </p>"
+        },
+        "CloudWatchLoggingOptions":{"shape":"CloudWatchLoggingOptions"},
+        "ProcessingConfiguration":{"shape":"ProcessingConfiguration"},
+        "RoleARN":{
+          "shape":"RoleARN",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the Snowflake role</p>"
+        },
+        "RetryOptions":{
+          "shape":"SnowflakeRetryOptions",
+          "documentation":"<p>The time period where Kinesis Data Firehose will retry sending data to the chosen HTTP endpoint.</p>"
+        },
+        "S3BackupMode":{
+          "shape":"SnowflakeS3BackupMode",
+          "documentation":"<p>Choose an S3 backup mode</p>"
+        },
+        "S3DestinationDescription":{"shape":"S3DestinationDescription"}
+      },
+      "documentation":"<p>Optional Snowflake destination description</p>"
+    },
+    "SnowflakeDestinationUpdate":{
+      "type":"structure",
+      "members":{
+        "AccountUrl":{
+          "shape":"SnowflakeAccountUrl",
+          "documentation":"<p>URL for accessing your Snowflake account. This URL must include your <a href=\"https://docs.snowflake.com/en/user-guide/admin-account-identifier\">account identifier</a>. Note that the protocol (https://) and port number are optional.</p>"
+        },
+        "PrivateKey":{
+          "shape":"SnowflakePrivateKey",
+          "documentation":"<p>The private key used to encrypt your Snowflake client. For information, see <a href=\"https://docs.snowflake.com/en/user-guide/data-load-snowpipe-streaming-configuration#using-key-pair-authentication-key-rotation\">Using Key Pair Authentication &amp; Key Rotation</a>.</p>"
+        },
+        "KeyPassphrase":{
+          "shape":"SnowflakeKeyPassphrase",
+          "documentation":"<p>Passphrase to decrypt the private key when the key is encrypted. For information, see <a href=\"https://docs.snowflake.com/en/user-guide/data-load-snowpipe-streaming-configuration#using-key-pair-authentication-key-rotation\">Using Key Pair Authentication &amp; Key Rotation</a>.</p>"
+        },
+        "User":{
+          "shape":"SnowflakeUser",
+          "documentation":"<p>User login name for the Snowflake account.</p>"
+        },
+        "Database":{
+          "shape":"SnowflakeDatabase",
+          "documentation":"<p>All data in Snowflake is maintained in databases.</p>"
+        },
+        "Schema":{
+          "shape":"SnowflakeSchema",
+          "documentation":"<p>Each database consists of one or more schemas, which are logical groupings of database objects, such as tables and views</p>"
+        },
+        "Table":{
+          "shape":"SnowflakeTable",
+          "documentation":"<p>All data in Snowflake is stored in database tables, logically structured as collections of columns and rows.</p>"
+        },
+        "SnowflakeRoleConfiguration":{
+          "shape":"SnowflakeRoleConfiguration",
+          "documentation":"<p>Optionally configure a Snowflake role. Otherwise the default user role will be used.</p>"
+        },
+        "DataLoadingOption":{
+          "shape":"SnowflakeDataLoadingOption",
+          "documentation":"<p> JSON keys mapped to table column names or choose to split the JSON payload where content is mapped to a record content column and source metadata is mapped to a record metadata column.</p>"
+        },
+        "MetaDataColumnName":{
+          "shape":"SnowflakeMetaDataColumnName",
+          "documentation":"<p>The name of the record metadata column</p>"
+        },
+        "ContentColumnName":{
+          "shape":"SnowflakeContentColumnName",
+          "documentation":"<p>The name of the content metadata column</p>"
+        },
+        "CloudWatchLoggingOptions":{"shape":"CloudWatchLoggingOptions"},
+        "ProcessingConfiguration":{"shape":"ProcessingConfiguration"},
+        "RoleARN":{
+          "shape":"RoleARN",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the Snowflake role</p>"
+        },
+        "RetryOptions":{
+          "shape":"SnowflakeRetryOptions",
+          "documentation":"<p>Specify how long Kinesis Data Firehose retries sending data to the New Relic HTTP endpoint. After sending data, Kinesis Data Firehose first waits for an acknowledgment from the HTTP endpoint. If an error occurs or the acknowledgment doesn’t arrive within the acknowledgment timeout period, Kinesis Data Firehose starts the retry duration counter. It keeps retrying until the retry duration expires. After that, Kinesis Data Firehose considers it a data delivery failure and backs up the data to your Amazon S3 bucket. Every time that Kinesis Data Firehose sends data to the HTTP endpoint (either the initial attempt or a retry), it restarts the acknowledgement timeout counter and waits for an acknowledgement from the HTTP endpoint. Even if the retry duration expires, Kinesis Data Firehose still waits for the acknowledgment until it receives it or the acknowledgement timeout period is reached. If the acknowledgment times out, Kinesis Data Firehose determines whether there's time left in the retry counter. If there is time left, it retries again and repeats the logic until it receives an acknowledgment or determines that the retry time has expired. If you don't want Kinesis Data Firehose to retry sending data, set this value to 0.</p>"
+        },
+        "S3BackupMode":{
+          "shape":"SnowflakeS3BackupMode",
+          "documentation":"<p>Choose an S3 backup mode</p>"
+        },
+        "S3Update":{"shape":"S3DestinationUpdate"}
+      },
+      "documentation":"<p>Update to configuration settings</p>"
+    },
+    "SnowflakeKeyPassphrase":{
+      "type":"string",
+      "max":255,
+      "min":7,
+      "sensitive":true
+    },
+    "SnowflakeMetaDataColumnName":{
+      "type":"string",
+      "max":255,
+      "min":1,
+      "sensitive":true
+    },
+    "SnowflakePrivateKey":{
+      "type":"string",
+      "max":4096,
+      "min":256,
+      "pattern":"^(?:[A-Za-z0-9+\\/]{4})*(?:[A-Za-z0-9+\\/]{2}==|[A-Za-z0-9+\\/]{3}=)?$",
+      "sensitive":true
+    },
+    "SnowflakePrivateLinkVpceId":{
+      "type":"string",
+      "max":255,
+      "min":47,
+      "pattern":"([a-zA-Z0-9\\-\\_]+\\.){2,3}vpce\\.[a-zA-Z0-9\\-]*\\.vpce-svc\\-[a-zA-Z0-9\\-]{17}$",
+      "sensitive":true
+    },
+    "SnowflakeRetryDurationInSeconds":{
+      "type":"integer",
+      "max":7200,
+      "min":0
+    },
+    "SnowflakeRetryOptions":{
+      "type":"structure",
+      "members":{
+        "DurationInSeconds":{
+          "shape":"SnowflakeRetryDurationInSeconds",
+          "documentation":"<p>the time period where Kinesis Data Firehose will retry sending data to the chosen HTTP endpoint.</p>"
+        }
+      },
+      "documentation":"<p>Specify how long Kinesis Data Firehose retries sending data to the New Relic HTTP endpoint. After sending data, Kinesis Data Firehose first waits for an acknowledgment from the HTTP endpoint. If an error occurs or the acknowledgment doesn’t arrive within the acknowledgment timeout period, Kinesis Data Firehose starts the retry duration counter. It keeps retrying until the retry duration expires. After that, Kinesis Data Firehose considers it a data delivery failure and backs up the data to your Amazon S3 bucket. Every time that Kinesis Data Firehose sends data to the HTTP endpoint (either the initial attempt or a retry), it restarts the acknowledgement timeout counter and waits for an acknowledgement from the HTTP endpoint. Even if the retry duration expires, Kinesis Data Firehose still waits for the acknowledgment until it receives it or the acknowledgement timeout period is reached. If the acknowledgment times out, Kinesis Data Firehose determines whether there's time left in the retry counter. If there is time left, it retries again and repeats the logic until it receives an acknowledgment or determines that the retry time has expired. If you don't want Kinesis Data Firehose to retry sending data, set this value to 0.</p>"
+    },
+    "SnowflakeRole":{
+      "type":"string",
+      "max":255,
+      "min":1,
+      "sensitive":true
+    },
+    "SnowflakeRoleConfiguration":{
+      "type":"structure",
+      "members":{
+        "Enabled":{
+          "shape":"BooleanObject",
+          "documentation":"<p>Enable Snowflake role</p>"
+        },
+        "SnowflakeRole":{
+          "shape":"SnowflakeRole",
+          "documentation":"<p>The Snowflake role you wish to configure</p>"
+        }
+      },
+      "documentation":"<p>Optionally configure a Snowflake role. Otherwise the default user role will be used.</p>"
+    },
+    "SnowflakeS3BackupMode":{
+      "type":"string",
+      "enum":[
+        "FailedDataOnly",
+        "AllData"
+      ]
+    },
+    "SnowflakeSchema":{
+      "type":"string",
+      "max":255,
+      "min":1,
+      "sensitive":true
+    },
+    "SnowflakeTable":{
+      "type":"string",
+      "max":255,
+      "min":1,
+      "sensitive":true
+    },
+    "SnowflakeUser":{
+      "type":"string",
+      "max":255,
+      "min":1,
+      "sensitive":true
+    },
+    "SnowflakeVpcConfiguration":{
+      "type":"structure",
+      "required":["PrivateLinkVpceId"],
+      "members":{
+        "PrivateLinkVpceId":{
+          "shape":"SnowflakePrivateLinkVpceId",
+          "documentation":"<p>The VPCE ID for Firehose to privately connect with Snowflake. The ID format is com.amazonaws.vpce.[region].vpce-svc-&lt;[id]&gt;. For more information, see <a href=\"https://docs.snowflake.com/en/user-guide/admin-security-privatelink\">Amazon PrivateLink &amp; Snowflake</a> </p>"
+        }
+      },
+      "documentation":"<p>Configure a Snowflake VPC</p>"
+    },
     "SourceDescription":{
       "type":"structure",
       "members":{
@@ -3399,6 +3736,10 @@
         "AmazonOpenSearchServerlessDestinationUpdate":{
           "shape":"AmazonOpenSearchServerlessDestinationUpdate",
           "documentation":"<p>Describes an update for a destination in the Serverless offering for Amazon OpenSearch Service.</p>"
+        },
+        "SnowflakeDestinationUpdate":{
+          "shape":"SnowflakeDestinationUpdate",
+          "documentation":"<p>Update to the Snowflake destination condiguration settings</p>"
         }
       }
     },

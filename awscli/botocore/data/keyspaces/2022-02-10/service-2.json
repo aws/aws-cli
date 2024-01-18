@@ -118,6 +118,23 @@
       ],
       "documentation":"<p>Returns information about the table, including the table's name and current status, the keyspace name, configuration settings, and metadata.</p> <p>To read table metadata using <code>GetTable</code>, <code>Select</code> action permissions for the table and system tables are required to complete the operation.</p>"
     },
+    "GetTableAutoScalingSettings":{
+      "name":"GetTableAutoScalingSettings",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"GetTableAutoScalingSettingsRequest"},
+      "output":{"shape":"GetTableAutoScalingSettingsResponse"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"ServiceQuotaExceededException"},
+        {"shape":"InternalServerException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p>Returns auto scaling related settings of the specified table in JSON format. If the table is a multi-Region table, the Amazon Web Services Region specific auto scaling settings of the table are included.</p> <p>Amazon Keyspaces auto scaling helps you provision throughput capacity for variable workloads efficiently by increasing and decreasing your table's read and write capacity automatically in response to application traffic. For more information, see <a href=\"https://docs.aws.amazon.com/keyspaces/latest/devguide/autoscaling.html\">Managing throughput capacity automatically with Amazon Keyspaces auto scaling</a> in the <i>Amazon Keyspaces Developer Guide</i>.</p>"
+    },
     "ListKeyspaces":{
       "name":"ListKeyspaces",
       "http":{
@@ -185,7 +202,7 @@
         {"shape":"AccessDeniedException"},
         {"shape":"ResourceNotFoundException"}
       ],
-      "documentation":"<p>Restores the specified table to the specified point in time within the <code>earliest_restorable_timestamp</code> and the current time. For more information about restore points, see <a href=\"https://docs.aws.amazon.com/keyspaces/latest/devguide/PointInTimeRecovery_HowItWorks.html#howitworks_backup_window\"> Time window for PITR continuous backups</a> in the <i>Amazon Keyspaces Developer Guide</i>.</p> <p>Any number of users can execute up to 4 concurrent restores (any type of restore) in a given account.</p> <p>When you restore using point in time recovery, Amazon Keyspaces restores your source table's schema and data to the state based on the selected timestamp <code>(day:hour:minute:second)</code> to a new table. The Time to Live (TTL) settings are also restored to the state based on the selected timestamp.</p> <p>In addition to the table's schema, data, and TTL settings, <code>RestoreTable</code> restores the capacity mode, encryption, and point-in-time recovery settings from the source table. Unlike the table's schema data and TTL settings, which are restored based on the selected timestamp, these settings are always restored based on the table's settings as of the current time or when the table was deleted.</p> <p>You can also overwrite these settings during restore:</p> <ul> <li> <p>Read/write capacity mode</p> </li> <li> <p>Provisioned throughput capacity settings</p> </li> <li> <p>Point-in-time (PITR) settings</p> </li> <li> <p>Tags</p> </li> </ul> <p>For more information, see <a href=\"https://docs.aws.amazon.com/keyspaces/latest/devguide/PointInTimeRecovery_HowItWorks.html#howitworks_backup_settings\">PITR restore settings</a> in the <i>Amazon Keyspaces Developer Guide</i>.</p> <p>Note that the following settings are not restored, and you must configure them manually for the new table:</p> <ul> <li> <p>Automatic scaling policies (for tables that use provisioned capacity mode)</p> </li> <li> <p>Identity and Access Management (IAM) policies</p> </li> <li> <p>Amazon CloudWatch metrics and alarms</p> </li> </ul>"
+      "documentation":"<p>Restores the table to the specified point in time within the <code>earliest_restorable_timestamp</code> and the current time. For more information about restore points, see <a href=\"https://docs.aws.amazon.com/keyspaces/latest/devguide/PointInTimeRecovery_HowItWorks.html#howitworks_backup_window\"> Time window for PITR continuous backups</a> in the <i>Amazon Keyspaces Developer Guide</i>.</p> <p>Any number of users can execute up to 4 concurrent restores (any type of restore) in a given account.</p> <p>When you restore using point in time recovery, Amazon Keyspaces restores your source table's schema and data to the state based on the selected timestamp <code>(day:hour:minute:second)</code> to a new table. The Time to Live (TTL) settings are also restored to the state based on the selected timestamp.</p> <p>In addition to the table's schema, data, and TTL settings, <code>RestoreTable</code> restores the capacity mode, auto scaling settings, encryption settings, and point-in-time recovery settings from the source table. Unlike the table's schema data and TTL settings, which are restored based on the selected timestamp, these settings are always restored based on the table's settings as of the current time or when the table was deleted.</p> <p>You can also overwrite these settings during restore:</p> <ul> <li> <p>Read/write capacity mode</p> </li> <li> <p>Provisioned throughput capacity units</p> </li> <li> <p>Auto scaling settings</p> </li> <li> <p>Point-in-time (PITR) settings</p> </li> <li> <p>Tags</p> </li> </ul> <p>For more information, see <a href=\"https://docs.aws.amazon.com/keyspaces/latest/devguide/PointInTimeRecovery_HowItWorks.html#howitworks_backup_settings\">PITR restore settings</a> in the <i>Amazon Keyspaces Developer Guide</i>.</p> <p>Note that the following settings are not restored, and you must configure them manually for the new table:</p> <ul> <li> <p>Identity and Access Management (IAM) policies</p> </li> <li> <p>Amazon CloudWatch metrics and alarms</p> </li> </ul>"
     },
     "TagResource":{
       "name":"TagResource",
@@ -238,7 +255,7 @@
         {"shape":"AccessDeniedException"},
         {"shape":"ResourceNotFoundException"}
       ],
-      "documentation":"<p>Adds new columns to the table or updates one of the table's settings, for example capacity mode, encryption, point-in-time recovery, or ttl settings. Note that you can only update one specific table setting per update operation.</p>"
+      "documentation":"<p>Adds new columns to the table or updates one of the table's settings, for example capacity mode, auto scaling, encryption, point-in-time recovery, or ttl settings. Note that you can only update one specific table setting per update operation.</p>"
     }
   },
   "shapes":{
@@ -251,11 +268,61 @@
     "AccessDeniedException":{
       "type":"structure",
       "members":{
-        "message":{"shape":"String"}
+        "message":{
+          "shape":"String",
+          "documentation":"<p>Description of the error.</p>"
+        }
       },
-      "documentation":"<p>You do not have sufficient access to perform this action. </p>",
+      "documentation":"<p>You don't have sufficient access permissions to perform this action. </p>",
       "exception":true
     },
+    "AutoScalingPolicy":{
+      "type":"structure",
+      "members":{
+        "targetTrackingScalingPolicyConfiguration":{
+          "shape":"TargetTrackingScalingPolicyConfiguration",
+          "documentation":"<p>Auto scaling scales up capacity automatically when traffic exceeds this target utilization rate, and then back down when it falls below the target. A <code>double</code> between 20 and 90.</p>"
+        }
+      },
+      "documentation":"<p>Amazon Keyspaces supports the <code>target tracking</code> auto scaling policy. With this policy, Amazon Keyspaces auto scaling ensures that the table's ratio of consumed to provisioned capacity stays at or near the target value that you specify. You define the target value as a percentage between 20 and 90.</p>"
+    },
+    "AutoScalingSettings":{
+      "type":"structure",
+      "members":{
+        "autoScalingDisabled":{
+          "shape":"BooleanObject",
+          "documentation":"<p>This optional parameter enables auto scaling for the table if set to <code>false</code>.</p>"
+        },
+        "minimumUnits":{
+          "shape":"CapacityUnits",
+          "documentation":"<p>The minimum level of throughput the table should always be ready to support. The value must be between 1 and the max throughput per second quota for your account (40,000 by default).</p>"
+        },
+        "maximumUnits":{
+          "shape":"CapacityUnits",
+          "documentation":"<p>Manage costs by specifying the maximum amount of throughput to provision. The value must be between 1 and the max throughput per second quota for your account (40,000 by default).</p>"
+        },
+        "scalingPolicy":{
+          "shape":"AutoScalingPolicy",
+          "documentation":"<p>Amazon Keyspaces supports the <code>target tracking</code> auto scaling policy. With this policy, Amazon Keyspaces auto scaling ensures that the table's ratio of consumed to provisioned capacity stays at or near the target value that you specify. You define the target value as a percentage between 20 and 90.</p>"
+        }
+      },
+      "documentation":"<p>The optional auto scaling settings for a table with provisioned throughput capacity.</p> <p>To turn on auto scaling for a table in <code>throughputMode:PROVISIONED</code>, you must specify the following parameters. </p> <p>Configure the minimum and maximum units for write and read capacity. The auto scaling policy ensures that capacity never goes below the minimum or above the maximum range.</p> <ul> <li> <p> <code>minimumUnits</code>: The minimum level of throughput the table should always be ready to support. The value must be between 1 and the max throughput per second quota for your account (40,000 by default).</p> </li> <li> <p> <code>maximumUnits</code>: The maximum level of throughput the table should always be ready to support. The value must be between 1 and the max throughput per second quota for your account (40,000 by default).</p> </li> <li> <p> <code>scalingPolicy</code>: Amazon Keyspaces supports the <code>target tracking</code> scaling policy. The auto scaling target is the provisioned read and write capacity of the table. </p> <ul> <li> <p> <code>targetTrackingScalingPolicyConfiguration</code>: To define the target tracking policy, you must define the target value. </p> <ul> <li> <p> <code>targetValue</code>: The target utilization rate of the table. Amazon Keyspaces auto scaling ensures that the ratio of consumed capacity to provisioned capacity stays at or near this value. You define <code>targetValue</code> as a percentage. A <code>double</code> between 20 and 90. (Required)</p> </li> <li> <p> <code>disableScaleIn</code>: A <code>boolean</code> that specifies if <code>scale-in</code> is disabled or enabled for the table. This parameter is disabled by default. To turn on <code>scale-in</code>, set the <code>boolean</code> value to <code>FALSE</code>. This means that capacity for a table can be automatically scaled down on your behalf. (Optional) </p> </li> <li> <p> <code>scaleInCooldown</code>: A cooldown period in seconds between scaling activities that lets the table stabilize before another scale in activity starts. If no value is provided, the default is 0. (Optional) </p> </li> <li> <p> <code>scaleOutCooldown</code>: A cooldown period in seconds between scaling activities that lets the table stabilize before another scale out activity starts. If no value is provided, the default is 0. (Optional) </p> </li> </ul> </li> </ul> </li> </ul> <p>For more information, see <a href=\"https://docs.aws.amazon.com/keyspaces/latest/devguide/autoscaling.html\">Managing throughput capacity automatically with Amazon Keyspaces auto scaling</a> in the <i>Amazon Keyspaces Developer Guide</i>.</p>"
+    },
+    "AutoScalingSpecification":{
+      "type":"structure",
+      "members":{
+        "writeCapacityAutoScaling":{
+          "shape":"AutoScalingSettings",
+          "documentation":"<p>The auto scaling settings for the table's write capacity.</p>"
+        },
+        "readCapacityAutoScaling":{
+          "shape":"AutoScalingSettings",
+          "documentation":"<p>The auto scaling settings for the table's read capacity.</p>"
+        }
+      },
+      "documentation":"<p>The optional auto scaling settings for read and write capacity of a table in provisioned capacity mode.</p>"
+    },
+    "BooleanObject":{"type":"boolean"},
     "CapacitySpecification":{
       "type":"structure",
       "required":["throughputMode"],
@@ -377,9 +444,12 @@
     "ConflictException":{
       "type":"structure",
       "members":{
-        "message":{"shape":"String"}
+        "message":{
+          "shape":"String",
+          "documentation":"<p>Description of the error.</p>"
+        }
       },
-      "documentation":"<p>Amazon Keyspaces could not complete the requested action. This error may occur if you try to perform an action and the same or a different action is already in progress, or if you try to create a resource that already exists. </p>",
+      "documentation":"<p>Amazon Keyspaces couldn't complete the requested action. This error may occur if you try to perform an action and the same or a different action is already in progress, or if you try to create a resource that already exists. </p>",
       "exception":true
     },
     "CreateKeyspaceRequest":{
@@ -461,6 +531,14 @@
         "clientSideTimestamps":{
           "shape":"ClientSideTimestamps",
           "documentation":"<p> Enables client-side timestamps for the table. By default, the setting is disabled. You can enable client-side timestamps with the following option:</p> <ul> <li> <p> <code>status: \"enabled\"</code> </p> </li> </ul> <p>Once client-side timestamps are enabled for a table, this setting cannot be disabled.</p>"
+        },
+        "autoScalingSpecification":{
+          "shape":"AutoScalingSpecification",
+          "documentation":"<p>The optional auto scaling settings for a table in provisioned capacity mode. Specifies if the service can manage throughput capacity automatically on your behalf.</p> <p>Auto scaling helps you provision throughput capacity for variable workloads efficiently by increasing and decreasing your table's read and write capacity automatically in response to application traffic. For more information, see <a href=\"https://docs.aws.amazon.com/keyspaces/latest/devguide/autoscaling.html\">Managing throughput capacity automatically with Amazon Keyspaces auto scaling</a> in the <i>Amazon Keyspaces Developer Guide</i>.</p> <p>By default, auto scaling is disabled for a table. </p>"
+        },
+        "replicaSpecifications":{
+          "shape":"ReplicaSpecificationList",
+          "documentation":"<p>The optional Amazon Web Services Region specific settings of a multi-Region table. These settings overwrite the general settings of the table for the specified Region. </p> <p>For a multi-Region table in provisioned capacity mode, you can configure the table's read capacity differently for each Region's replica. The write capacity, however, remains synchronized between all replicas to ensure that there's enough capacity to replicate writes across all Regions. To define the read capacity for a table replica in a specific Region, you can do so by configuring the following parameters.</p> <ul> <li> <p> <code>region</code>: The Region where these settings are applied. (Required)</p> </li> <li> <p> <code>readCapacityUnits</code>: The provisioned read capacity units. (Optional)</p> </li> <li> <p> <code>readCapacityAutoScaling</code>: The read capacity auto scaling settings for the table. (Optional) </p> </li> </ul>"
         }
       }
     },
@@ -478,7 +556,7 @@
       "type":"integer",
       "box":true,
       "max":630720000,
-      "min":1
+      "min":0
     },
     "DeleteKeyspaceRequest":{
       "type":"structure",
@@ -517,6 +595,7 @@
       "members":{
       }
     },
+    "DoubleObject":{"type":"double"},
     "EncryptionSpecification":{
       "type":"structure",
       "required":["type"],
@@ -573,6 +652,53 @@
         "replicationRegions":{
           "shape":"RegionList",
           "documentation":"<p> If the <code>replicationStrategy</code> of the keyspace is <code>MULTI_REGION</code>, a list of replication Regions is returned. </p>"
+        }
+      }
+    },
+    "GetTableAutoScalingSettingsRequest":{
+      "type":"structure",
+      "required":[
+        "keyspaceName",
+        "tableName"
+      ],
+      "members":{
+        "keyspaceName":{
+          "shape":"KeyspaceName",
+          "documentation":"<p>The name of the keyspace.</p>"
+        },
+        "tableName":{
+          "shape":"TableName",
+          "documentation":"<p>The name of the table.</p>"
+        }
+      }
+    },
+    "GetTableAutoScalingSettingsResponse":{
+      "type":"structure",
+      "required":[
+        "keyspaceName",
+        "tableName",
+        "resourceArn"
+      ],
+      "members":{
+        "keyspaceName":{
+          "shape":"KeyspaceName",
+          "documentation":"<p>The name of the keyspace.</p>"
+        },
+        "tableName":{
+          "shape":"TableName",
+          "documentation":"<p>The name of the table.</p>"
+        },
+        "resourceArn":{
+          "shape":"ARN",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the table.</p>"
+        },
+        "autoScalingSpecification":{
+          "shape":"AutoScalingSpecification",
+          "documentation":"<p>The auto scaling settings of the table.</p>"
+        },
+        "replicaSpecifications":{
+          "shape":"ReplicaAutoScalingSpecificationList",
+          "documentation":"<p>The Amazon Web Services Region specific settings of a multi-Region table. Returns the settings for all Regions the table is replicated in.</p>"
         }
       }
     },
@@ -652,13 +778,21 @@
         "clientSideTimestamps":{
           "shape":"ClientSideTimestamps",
           "documentation":"<p> The client-side timestamps setting of the table.</p>"
+        },
+        "replicaSpecifications":{
+          "shape":"ReplicaSpecificationSummaryList",
+          "documentation":"<p>Returns the Amazon Web Services Region specific settings of all Regions a multi-Region table is replicated in.</p>"
         }
       }
     },
+    "IntegerObject":{"type":"integer"},
     "InternalServerException":{
       "type":"structure",
       "members":{
-        "message":{"shape":"String"}
+        "message":{
+          "shape":"String",
+          "documentation":"<p>Description of the error.</p>"
+        }
       },
       "documentation":"<p>Amazon Keyspaces was unable to fully process this request because of an internal server error.</p>",
       "exception":true,
@@ -856,6 +990,69 @@
       "max":6,
       "min":2
     },
+    "ReplicaAutoScalingSpecification":{
+      "type":"structure",
+      "members":{
+        "region":{
+          "shape":"region",
+          "documentation":"<p>The Amazon Web Services Region.</p>"
+        },
+        "autoScalingSpecification":{
+          "shape":"AutoScalingSpecification",
+          "documentation":"<p>The auto scaling settings for a multi-Region table in the specified Amazon Web Services Region.</p>"
+        }
+      },
+      "documentation":"<p>The auto scaling settings of a multi-Region table in the specified Amazon Web Services Region.</p>"
+    },
+    "ReplicaAutoScalingSpecificationList":{
+      "type":"list",
+      "member":{"shape":"ReplicaAutoScalingSpecification"},
+      "min":0
+    },
+    "ReplicaSpecification":{
+      "type":"structure",
+      "required":["region"],
+      "members":{
+        "region":{
+          "shape":"region",
+          "documentation":"<p>The Amazon Web Services Region.</p>"
+        },
+        "readCapacityUnits":{
+          "shape":"CapacityUnits",
+          "documentation":"<p>The provisioned read capacity units for the multi-Region table in the specified Amazon Web Services Region.</p>"
+        },
+        "readCapacityAutoScaling":{
+          "shape":"AutoScalingSettings",
+          "documentation":"<p>The read capacity auto scaling settings for the multi-Region table in the specified Amazon Web Services Region.</p>"
+        }
+      },
+      "documentation":"<p>The Amazon Web Services Region specific settings of a multi-Region table.</p> <p>For a multi-Region table, you can configure the table's read capacity differently per Amazon Web Services Region. You can do this by configuring the following parameters.</p> <ul> <li> <p> <code>region</code>: The Region where these settings are applied. (Required)</p> </li> <li> <p> <code>readCapacityUnits</code>: The provisioned read capacity units. (Optional)</p> </li> <li> <p> <code>readCapacityAutoScaling</code>: The read capacity auto scaling settings for the table. (Optional)</p> </li> </ul>"
+    },
+    "ReplicaSpecificationList":{
+      "type":"list",
+      "member":{"shape":"ReplicaSpecification"},
+      "min":1
+    },
+    "ReplicaSpecificationSummary":{
+      "type":"structure",
+      "members":{
+        "region":{
+          "shape":"region",
+          "documentation":"<p>The Amazon Web Services Region.</p>"
+        },
+        "status":{
+          "shape":"TableStatus",
+          "documentation":"<p>The status of the multi-Region table in the specified Amazon Web Services Region.</p>"
+        },
+        "capacitySpecification":{"shape":"CapacitySpecificationSummary"}
+      },
+      "documentation":"<p>The Region-specific settings of a multi-Region table in the specified Amazon Web Services Region.</p> <p>If the multi-Region table is using provisioned capacity and has optional auto scaling policies configured, note that the Region specific summary returns both read and write capacity settings. But only Region specific read capacity settings can be configured for a multi-Region table. In a multi-Region table, your write capacity units will be synced across all Amazon Web Services Regions to ensure that there is enough capacity to replicate write events across Regions.</p>"
+    },
+    "ReplicaSpecificationSummaryList":{
+      "type":"list",
+      "member":{"shape":"ReplicaSpecificationSummary"},
+      "min":0
+    },
     "ReplicationSpecification":{
       "type":"structure",
       "required":["replicationStrategy"],
@@ -874,7 +1071,10 @@
     "ResourceNotFoundException":{
       "type":"structure",
       "members":{
-        "message":{"shape":"String"},
+        "message":{
+          "shape":"String",
+          "documentation":"<p>Description of the error.</p>"
+        },
         "resourceArn":{
           "shape":"ARN",
           "documentation":"<p>The unique identifier in the format of Amazon Resource Name (ARN), for the resource not found.</p>"
@@ -927,6 +1127,14 @@
         "tagsOverride":{
           "shape":"TagList",
           "documentation":"<p>A list of key-value pair tags to be attached to the restored table. </p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/keyspaces/latest/devguide/tagging-keyspaces.html\">Adding tags and labels to Amazon Keyspaces resources</a> in the <i>Amazon Keyspaces Developer Guide</i>.</p>"
+        },
+        "autoScalingSpecification":{
+          "shape":"AutoScalingSpecification",
+          "documentation":"<p>The optional auto scaling settings for the restored table in provisioned capacity mode. Specifies if the service can manage throughput capacity of a provisioned table automatically on your behalf. Amazon Keyspaces auto scaling helps you provision throughput capacity for variable workloads efficiently by increasing and decreasing your table's read and write capacity automatically in response to application traffic.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/keyspaces/latest/devguide/autoscaling.html\">Managing throughput capacity automatically with Amazon Keyspaces auto scaling</a> in the <i>Amazon Keyspaces Developer Guide</i>.</p>"
+        },
+        "replicaSpecifications":{
+          "shape":"ReplicaSpecificationList",
+          "documentation":"<p>The optional Region specific settings of a multi-Regional table.</p>"
         }
       }
     },
@@ -969,7 +1177,10 @@
     "ServiceQuotaExceededException":{
       "type":"structure",
       "members":{
-        "message":{"shape":"String"}
+        "message":{
+          "shape":"String",
+          "documentation":"<p>Description of the error.</p>"
+        }
       },
       "documentation":"<p>The operation exceeded the service quota for this resource. For more information on service quotas, see <a href=\"https://docs.aws.amazon.com/keyspaces/latest/devguide/quotas.html\">Quotas</a> in the <i>Amazon Keyspaces Developer Guide</i>.</p>",
       "exception":true
@@ -1098,6 +1309,29 @@
       "max":256,
       "min":1
     },
+    "TargetTrackingScalingPolicyConfiguration":{
+      "type":"structure",
+      "required":["targetValue"],
+      "members":{
+        "disableScaleIn":{
+          "shape":"BooleanObject",
+          "documentation":"<p>Specifies if <code>scale-in</code> is enabled.</p> <p>When auto scaling automatically decreases capacity for a table, the table <i>scales in</i>. When scaling policies are set, they can't scale in the table lower than its minimum capacity.</p>"
+        },
+        "scaleInCooldown":{
+          "shape":"IntegerObject",
+          "documentation":"<p>Specifies a <code>scale-in</code> cool down period.</p> <p>A cooldown period in seconds between scaling activities that lets the table stabilize before another scaling activity starts. </p>"
+        },
+        "scaleOutCooldown":{
+          "shape":"IntegerObject",
+          "documentation":"<p>Specifies a scale out cool down period.</p> <p>A cooldown period in seconds between scaling activities that lets the table stabilize before another scaling activity starts. </p>"
+        },
+        "targetValue":{
+          "shape":"DoubleObject",
+          "documentation":"<p>Specifies the target value for the target tracking auto scaling policy.</p> <p>Amazon Keyspaces auto scaling scales up capacity automatically when traffic exceeds this target utilization rate, and then back down when it falls below the target. This ensures that the ratio of consumed capacity to provisioned capacity stays at or near this value. You define <code>targetValue</code> as a percentage. A <code>double</code> between 20 and 90.</p>"
+        }
+      },
+      "documentation":"<p>The auto scaling policy that scales a table based on the ratio of consumed to provisioned capacity.</p>"
+    },
     "ThroughputMode":{
       "type":"string",
       "enum":[
@@ -1185,6 +1419,14 @@
         "clientSideTimestamps":{
           "shape":"ClientSideTimestamps",
           "documentation":"<p>Enables client-side timestamps for the table. By default, the setting is disabled. You can enable client-side timestamps with the following option:</p> <ul> <li> <p> <code>status: \"enabled\"</code> </p> </li> </ul> <p>Once client-side timestamps are enabled for a table, this setting cannot be disabled.</p>"
+        },
+        "autoScalingSpecification":{
+          "shape":"AutoScalingSpecification",
+          "documentation":"<p>The optional auto scaling settings to update for a table in provisioned capacity mode. Specifies if the service can manage throughput capacity of a provisioned table automatically on your behalf. Amazon Keyspaces auto scaling helps you provision throughput capacity for variable workloads efficiently by increasing and decreasing your table's read and write capacity automatically in response to application traffic.</p> <p>If auto scaling is already enabled for the table, you can use <code>UpdateTable</code> to update the minimum and maximum values or the auto scaling policy settings independently.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/keyspaces/latest/devguide/autoscaling.html\">Managing throughput capacity automatically with Amazon Keyspaces auto scaling</a> in the <i>Amazon Keyspaces Developer Guide</i>.</p>"
+        },
+        "replicaSpecifications":{
+          "shape":"ReplicaSpecificationList",
+          "documentation":"<p>The Region specific settings of a multi-Regional table.</p>"
         }
       }
     },
@@ -1201,7 +1443,10 @@
     "ValidationException":{
       "type":"structure",
       "members":{
-        "message":{"shape":"String"}
+        "message":{
+          "shape":"String",
+          "documentation":"<p>Description of the error.</p>"
+        }
       },
       "documentation":"<p>The operation failed due to an invalid or malformed request.</p>",
       "exception":true

@@ -2,6 +2,19 @@
 CHANGELOG
 =========
 
+2.15.12
+=======
+
+* api-change:``keyspaces``: This release adds support for Multi-Region Replication with provisioned tables, and Keyspaces auto scaling APIs
+* api-change:``b2bi``: Increasing TestMapping inputFileContent file size limit to 5MB and adding file size limit 250KB for TestParsing input file. This release also includes exposing InternalServerException for Tag APIs.
+* api-change:``connect``: GetMetricDataV2 now supports 3 groupings
+* api-change:``cloudtrail``: This release adds a new API ListInsightsMetricData to retrieve metric data from CloudTrail Insights.
+* api-change:``dynamodb``: Updating note for enabling streams for UpdateTable.
+* api-change:``firehose``: Allow support for Snowflake as a Kinesis Data Firehose delivery destination.
+* api-change:``sagemaker-featurestore-runtime``: Increase BatchGetRecord limits from 10 items to 100 items
+* api-change:``drs``: Removed invalid and unnecessary default values.
+
+
 2.15.11
 =======
 

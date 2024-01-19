@@ -2,6 +2,15 @@
 CHANGELOG
 =========
 
+1.32.23
+=======
+
+* api-change:``athena``: Introducing new NotebookS3LocationUri parameter to Athena ImportNotebook API. Payload is no longer required and either Payload or NotebookS3LocationUri needs to be provided (not both) for a successful ImportNotebook API call. If both are provided, an InvalidRequestException will be thrown.
+* api-change:``codebuild``: Release CodeBuild Reserved Capacity feature
+* api-change:``dynamodb``: This release adds support for including ApproximateCreationDateTimePrecision configurations in EnableKinesisStreamingDestination API, adds the same as an optional field in the response of DescribeKinesisStreamingDestination, and adds support for a new UpdateKinesisStreamingDestination API.
+* api-change:``qconnect``: Increased Quick Response name max length to 100
+
+
 1.32.22
 =======
 

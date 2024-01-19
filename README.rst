@@ -157,7 +157,7 @@ this:
    aws_secret_access_key=MYSECRETKEY
 
    [testing]
-   aws_access_key_id=MYACCESKEY
+   aws_access_key_id=MYACCESSKEY
    aws_secret_access_key=MYSECRETKEY
 
 and place it in ``~/.aws/credentials`` (or in

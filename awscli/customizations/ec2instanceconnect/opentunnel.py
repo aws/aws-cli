@@ -73,6 +73,12 @@ class OpenTunnelCommand(BasicCommand):
             "required": False,
         },
         {
+            "name": "local-ip",
+            "help_text": "Specify the local IP address to listen on. This defaults to localhost.",
+            "default": "localhost",
+            "required": False,
+        },
+        {
             "name": "max-tunnel-duration",
             "help_text": (
                 "Specify the maximum time, in seconds, to keep a websocket tunnel alive for. This "
@@ -140,7 +146,7 @@ class OpenTunnelCommand(BasicCommand):
         )
 
         with WebsocketManager(
-                parsed_args.local_port, parsed_args.max_websocket_connections, eice_request_signer, self._session.user_agent(),
+                parsed_args.local_port, parsed_args.local_ip, parsed_args.max_websocket_connections, eice_request_signer, self._session.user_agent(),
         ) as websocket_manager:
             websocket_manager.run()
         return 0

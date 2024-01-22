@@ -2,6 +2,21 @@
 CHANGELOG
 =========
 
+1.32.24
+=======
+
+* api-change:``appconfigdata``: Fix FIPS Endpoints in aws-us-gov.
+* api-change:``cloud9``: Doc-only update around removing AL1 from list of available AMIs for Cloud9
+* api-change:``cloudfront-keyvaluestore``: This release improves upon the DescribeKeyValueStore API by returning two additional fields, Status of the KeyValueStore and the FailureReason in case of failures during creation of KeyValueStore.
+* api-change:``connectcases``: This release adds the ability to view audit history on a case and introduces a new parameter, performedBy, for CreateCase and UpdateCase API's.
+* api-change:``ec2``: Documentation updates for Amazon EC2.
+* api-change:``ecs``: This release adds support for Transport Layer Security (TLS) and Configurable Timeout to ECS Service Connect. TLS facilitates privacy and data security for inter-service communications, while Configurable Timeout allows customized per-request timeout and idle timeout for Service Connect services.
+* api-change:``finspace``: Allow customer to set zip default through command line arguments.
+* api-change:``organizations``: Doc only update for quota increase change
+* api-change:``rds``: Introduced support for the InsufficientDBInstanceCapacityFault error in the RDS CreateDBCluster API method. This provides enhanced error handling, ensuring a more robust experience when creating database clusters with insufficient instance capacity.
+* api-change:``endpoint-rules``: Update endpoint-rules command to latest version
+
+
 1.32.23
 =======
 

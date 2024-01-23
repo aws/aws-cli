@@ -2,6 +2,12 @@
 CHANGELOG
 =========
 
+1.32.26
+=======
+
+* api-change:``inspector2``: This release adds support for CIS scans on EC2 instances.
+
+
 1.32.25
 =======
 

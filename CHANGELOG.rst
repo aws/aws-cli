@@ -2,6 +2,12 @@
 CHANGELOG
 =========
 
+1.32.25
+=======
+
+* bugfix:``s3 sync``: Disable S3 Express support for s3 sync command
+
+
 1.32.24
 =======
 

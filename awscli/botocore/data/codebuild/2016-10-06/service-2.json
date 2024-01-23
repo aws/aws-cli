@@ -51,6 +51,19 @@
       ],
       "documentation":"<p>Gets information about one or more builds.</p>"
     },
+    "BatchGetFleets":{
+      "name":"BatchGetFleets",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"BatchGetFleetsInput"},
+      "output":{"shape":"BatchGetFleetsOutput"},
+      "errors":[
+        {"shape":"InvalidInputException"}
+      ],
+      "documentation":"<p>Gets information about one or more compute fleets.</p>"
+    },
     "BatchGetProjects":{
       "name":"BatchGetProjects",
       "http":{
@@ -89,6 +102,21 @@
         {"shape":"InvalidInputException"}
       ],
       "documentation":"<p> Returns an array of reports. </p>"
+    },
+    "CreateFleet":{
+      "name":"CreateFleet",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"CreateFleetInput"},
+      "output":{"shape":"CreateFleetOutput"},
+      "errors":[
+        {"shape":"InvalidInputException"},
+        {"shape":"ResourceAlreadyExistsException"},
+        {"shape":"AccountLimitExceededException"}
+      ],
+      "documentation":"<p>Creates a compute fleet.</p>"
     },
     "CreateProject":{
       "name":"CreateProject",
@@ -148,6 +176,19 @@
         {"shape":"InvalidInputException"}
       ],
       "documentation":"<p>Deletes a batch build.</p>"
+    },
+    "DeleteFleet":{
+      "name":"DeleteFleet",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DeleteFleetInput"},
+      "output":{"shape":"DeleteFleetOutput"},
+      "errors":[
+        {"shape":"InvalidInputException"}
+      ],
+      "documentation":"<p>Deletes a compute fleet. When you delete a compute fleet, its builds are not deleted.</p>"
     },
     "DeleteProject":{
       "name":"DeleteProject",
@@ -378,6 +419,19 @@
       "output":{"shape":"ListCuratedEnvironmentImagesOutput"},
       "documentation":"<p>Gets information about Docker images that are managed by CodeBuild.</p>"
     },
+    "ListFleets":{
+      "name":"ListFleets",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"ListFleetsInput"},
+      "output":{"shape":"ListFleetsOutput"},
+      "errors":[
+        {"shape":"InvalidInputException"}
+      ],
+      "documentation":"<p>Gets a list of compute fleet names with each compute fleet name representing a single compute fleet.</p>"
+    },
     "ListProjects":{
       "name":"ListProjects",
       "http":{
@@ -570,6 +624,21 @@
       ],
       "documentation":"<p>Stops a running batch build.</p>"
     },
+    "UpdateFleet":{
+      "name":"UpdateFleet",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"UpdateFleetInput"},
+      "output":{"shape":"UpdateFleetOutput"},
+      "errors":[
+        {"shape":"InvalidInputException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccountLimitExceededException"}
+      ],
+      "documentation":"<p>Updates a compute fleet.</p>"
+    },
     "UpdateProject":{
       "name":"UpdateProject",
       "http":{
@@ -732,6 +801,29 @@
         "buildsNotFound":{
           "shape":"BuildIds",
           "documentation":"<p>The IDs of builds for which information could not be found.</p>"
+        }
+      }
+    },
+    "BatchGetFleetsInput":{
+      "type":"structure",
+      "required":["names"],
+      "members":{
+        "names":{
+          "shape":"FleetNames",
+          "documentation":"<p>The names or ARNs of the compute fleets.</p>"
+        }
+      }
+    },
+    "BatchGetFleetsOutput":{
+      "type":"structure",
+      "members":{
+        "fleets":{
+          "shape":"Fleets",
+          "documentation":"<p>Information about the requested compute fleets.</p>"
+        },
+        "fleetsNotFound":{
+          "shape":"FleetNames",
+          "documentation":"<p>The names of compute fleets for which information could not be found.</p>"
         }
       }
     },
@@ -1472,6 +1564,50 @@
       "type":"list",
       "member":{"shape":"NonEmptyString"}
     },
+    "CreateFleetInput":{
+      "type":"structure",
+      "required":[
+        "name",
+        "baseCapacity",
+        "environmentType",
+        "computeType"
+      ],
+      "members":{
+        "name":{
+          "shape":"FleetName",
+          "documentation":"<p>The name of the compute fleet.</p>"
+        },
+        "baseCapacity":{
+          "shape":"FleetCapacity",
+          "documentation":"<p>The initial number of machines allocated to the ﬂeet, which deﬁnes the number of builds that can run in parallel.</p>"
+        },
+        "environmentType":{
+          "shape":"EnvironmentType",
+          "documentation":"<p>The environment type of the compute fleet.</p> <ul> <li> <p>The environment type <code>ARM_CONTAINER</code> is available only in regions US East (N. Virginia), US East (Ohio), US West (Oregon), EU (Ireland), Asia Pacific (Mumbai), Asia Pacific (Tokyo), Asia Pacific (Singapore), Asia Pacific (Sydney), EU (Frankfurt), and South America (São Paulo).</p> </li> <li> <p>The environment type <code>LINUX_CONTAINER</code> is available only in regions US East (N. Virginia), US East (Ohio), US West (Oregon), EU (Ireland), EU (Frankfurt), Asia Pacific (Tokyo), Asia Pacific (Singapore), Asia Pacific (Sydney), South America (São Paulo), and Asia Pacific (Mumbai).</p> </li> <li> <p>The environment type <code>LINUX_GPU_CONTAINER</code> is available only in regions US East (N. Virginia), US East (Ohio), US West (Oregon), EU (Ireland), EU (Frankfurt), Asia Pacific (Tokyo), and Asia Pacific (Sydney).</p> </li> <li> <p>The environment type <code>WINDOWS_SERVER_2019_CONTAINER</code> is available only in regions US East (N. Virginia), US East (Ohio), US West (Oregon), Asia Pacific (Sydney), Asia Pacific (Tokyo), Asia Pacific (Mumbai) and EU (Ireland).</p> </li> <li> <p>The environment type <code>WINDOWS_SERVER_2022_CONTAINER</code> is available only in regions US East (N. Virginia), US East (Ohio), US West (Oregon), EU (Ireland), EU (Frankfurt), Asia Pacific (Sydney), Asia Pacific (Singapore), Asia Pacific (Tokyo), South America (São Paulo) and Asia Pacific (Mumbai).</p> </li> </ul> <p>For more information, see <a href=\"https://docs.aws.amazon.com/codebuild/latest/userguide/build-env-ref-compute-types.html\">Build environment compute types</a> in the <i>CodeBuild user guide</i>.</p>"
+        },
+        "computeType":{
+          "shape":"ComputeType",
+          "documentation":"<p>Information about the compute resources the compute fleet uses. Available values include:</p> <ul> <li> <p> <code>BUILD_GENERAL1_SMALL</code>: Use up to 3 GB memory and 2 vCPUs for builds.</p> </li> <li> <p> <code>BUILD_GENERAL1_MEDIUM</code>: Use up to 7 GB memory and 4 vCPUs for builds.</p> </li> <li> <p> <code>BUILD_GENERAL1_LARGE</code>: Use up to 16 GB memory and 8 vCPUs for builds, depending on your environment type.</p> </li> <li> <p> <code>BUILD_GENERAL1_XLARGE</code>: Use up to 70 GB memory and 36 vCPUs for builds, depending on your environment type.</p> </li> <li> <p> <code>BUILD_GENERAL1_2XLARGE</code>: Use up to 145 GB memory, 72 vCPUs, and 824 GB of SSD storage for builds. This compute type supports Docker images up to 100 GB uncompressed.</p> </li> </ul> <p> If you use <code>BUILD_GENERAL1_SMALL</code>: </p> <ul> <li> <p> For environment type <code>LINUX_CONTAINER</code>, you can use up to 3 GB memory and 2 vCPUs for builds. </p> </li> <li> <p> For environment type <code>LINUX_GPU_CONTAINER</code>, you can use up to 16 GB memory, 4 vCPUs, and 1 NVIDIA A10G Tensor Core GPU for builds.</p> </li> <li> <p> For environment type <code>ARM_CONTAINER</code>, you can use up to 4 GB memory and 2 vCPUs on ARM-based processors for builds.</p> </li> </ul> <p> If you use <code>BUILD_GENERAL1_LARGE</code>: </p> <ul> <li> <p> For environment type <code>LINUX_CONTAINER</code>, you can use up to 15 GB memory and 8 vCPUs for builds. </p> </li> <li> <p> For environment type <code>LINUX_GPU_CONTAINER</code>, you can use up to 255 GB memory, 32 vCPUs, and 4 NVIDIA Tesla V100 GPUs for builds.</p> </li> <li> <p> For environment type <code>ARM_CONTAINER</code>, you can use up to 16 GB memory and 8 vCPUs on ARM-based processors for builds.</p> </li> </ul> <p>For more information, see <a href=\"https://docs.aws.amazon.com/codebuild/latest/userguide/build-env-ref-compute-types.html\">Build environment compute types</a> in the <i>CodeBuild User Guide.</i> </p>"
+        },
+        "scalingConfiguration":{
+          "shape":"ScalingConfigurationInput",
+          "documentation":"<p>The scaling configuration of the compute fleet.</p>"
+        },
+        "tags":{
+          "shape":"TagList",
+          "documentation":"<p>A list of tag key and value pairs associated with this compute fleet.</p> <p>These tags are available for use by Amazon Web Services services that support CodeBuild build project tags.</p>"
+        }
+      }
+    },
+    "CreateFleetOutput":{
+      "type":"structure",
+      "members":{
+        "fleet":{
+          "shape":"Fleet",
+          "documentation":"<p>Information about the compute fleet</p>"
+        }
+      }
+    },
     "CreateProjectInput":{
       "type":"structure",
       "required":[
@@ -1686,6 +1822,21 @@
           "shape":"BuildsNotDeleted",
           "documentation":"<p>An array of <code>BuildNotDeleted</code> objects that specify the builds that could not be deleted.</p>"
         }
+      }
+    },
+    "DeleteFleetInput":{
+      "type":"structure",
+      "required":["arn"],
+      "members":{
+        "arn":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>The ARN of the compute fleet.</p>"
+        }
+      }
+    },
+    "DeleteFleetOutput":{
+      "type":"structure",
+      "members":{
       }
     },
     "DeleteProjectInput":{
@@ -2002,6 +2153,137 @@
       "type":"list",
       "member":{"shape":"FilterGroup"}
     },
+    "Fleet":{
+      "type":"structure",
+      "members":{
+        "arn":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>The ARN of the compute fleet.</p>"
+        },
+        "name":{
+          "shape":"FleetName",
+          "documentation":"<p>The name of the compute fleet.</p>"
+        },
+        "id":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>The ID of the compute fleet.</p>"
+        },
+        "created":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time at which the compute fleet was created.</p>"
+        },
+        "lastModified":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time at which the compute fleet was last modified.</p>"
+        },
+        "status":{
+          "shape":"FleetStatus",
+          "documentation":"<p>The status of the compute fleet.</p>"
+        },
+        "baseCapacity":{
+          "shape":"FleetCapacity",
+          "documentation":"<p>The initial number of machines allocated to the compute ﬂeet, which deﬁnes the number of builds that can run in parallel.</p>"
+        },
+        "environmentType":{
+          "shape":"EnvironmentType",
+          "documentation":"<p>The environment type of the compute fleet.</p> <ul> <li> <p>The environment type <code>ARM_CONTAINER</code> is available only in regions US East (N. Virginia), US East (Ohio), US West (Oregon), EU (Ireland), Asia Pacific (Mumbai), Asia Pacific (Tokyo), Asia Pacific (Singapore), Asia Pacific (Sydney), EU (Frankfurt), and South America (São Paulo).</p> </li> <li> <p>The environment type <code>LINUX_CONTAINER</code> is available only in regions US East (N. Virginia), US East (Ohio), US West (Oregon), EU (Ireland), EU (Frankfurt), Asia Pacific (Tokyo), Asia Pacific (Singapore), Asia Pacific (Sydney), South America (São Paulo), and Asia Pacific (Mumbai).</p> </li> <li> <p>The environment type <code>LINUX_GPU_CONTAINER</code> is available only in regions US East (N. Virginia), US East (Ohio), US West (Oregon), EU (Ireland), EU (Frankfurt), Asia Pacific (Tokyo), and Asia Pacific (Sydney).</p> </li> <li> <p>The environment type <code>WINDOWS_SERVER_2019_CONTAINER</code> is available only in regions US East (N. Virginia), US East (Ohio), US West (Oregon), Asia Pacific (Sydney), Asia Pacific (Tokyo), Asia Pacific (Mumbai) and EU (Ireland).</p> </li> <li> <p>The environment type <code>WINDOWS_SERVER_2022_CONTAINER</code> is available only in regions US East (N. Virginia), US East (Ohio), US West (Oregon), EU (Ireland), EU (Frankfurt), Asia Pacific (Sydney), Asia Pacific (Singapore), Asia Pacific (Tokyo), South America (São Paulo) and Asia Pacific (Mumbai).</p> </li> </ul> <p>For more information, see <a href=\"https://docs.aws.amazon.com/codebuild/latest/userguide/build-env-ref-compute-types.html\">Build environment compute types</a> in the <i>CodeBuild user guide</i>.</p>"
+        },
+        "computeType":{
+          "shape":"ComputeType",
+          "documentation":"<p>Information about the compute resources the compute fleet uses. Available values include:</p> <ul> <li> <p> <code>BUILD_GENERAL1_SMALL</code>: Use up to 3 GB memory and 2 vCPUs for builds.</p> </li> <li> <p> <code>BUILD_GENERAL1_MEDIUM</code>: Use up to 7 GB memory and 4 vCPUs for builds.</p> </li> <li> <p> <code>BUILD_GENERAL1_LARGE</code>: Use up to 16 GB memory and 8 vCPUs for builds, depending on your environment type.</p> </li> <li> <p> <code>BUILD_GENERAL1_XLARGE</code>: Use up to 70 GB memory and 36 vCPUs for builds, depending on your environment type.</p> </li> <li> <p> <code>BUILD_GENERAL1_2XLARGE</code>: Use up to 145 GB memory, 72 vCPUs, and 824 GB of SSD storage for builds. This compute type supports Docker images up to 100 GB uncompressed.</p> </li> </ul> <p> If you use <code>BUILD_GENERAL1_SMALL</code>: </p> <ul> <li> <p> For environment type <code>LINUX_CONTAINER</code>, you can use up to 3 GB memory and 2 vCPUs for builds. </p> </li> <li> <p> For environment type <code>LINUX_GPU_CONTAINER</code>, you can use up to 16 GB memory, 4 vCPUs, and 1 NVIDIA A10G Tensor Core GPU for builds.</p> </li> <li> <p> For environment type <code>ARM_CONTAINER</code>, you can use up to 4 GB memory and 2 vCPUs on ARM-based processors for builds.</p> </li> </ul> <p> If you use <code>BUILD_GENERAL1_LARGE</code>: </p> <ul> <li> <p> For environment type <code>LINUX_CONTAINER</code>, you can use up to 15 GB memory and 8 vCPUs for builds. </p> </li> <li> <p> For environment type <code>LINUX_GPU_CONTAINER</code>, you can use up to 255 GB memory, 32 vCPUs, and 4 NVIDIA Tesla V100 GPUs for builds.</p> </li> <li> <p> For environment type <code>ARM_CONTAINER</code>, you can use up to 16 GB memory and 8 vCPUs on ARM-based processors for builds.</p> </li> </ul> <p>For more information, see <a href=\"https://docs.aws.amazon.com/codebuild/latest/userguide/build-env-ref-compute-types.html\">Build environment compute types</a> in the <i>CodeBuild User Guide.</i> </p>"
+        },
+        "scalingConfiguration":{
+          "shape":"ScalingConfigurationOutput",
+          "documentation":"<p>The scaling configuration of the compute fleet.</p>"
+        },
+        "tags":{
+          "shape":"TagList",
+          "documentation":"<p>A list of tag key and value pairs associated with this compute fleet.</p> <p>These tags are available for use by Amazon Web Services services that support CodeBuild build project tags.</p>"
+        }
+      },
+      "documentation":"<p>A set of dedicated instances for your build environment.</p>"
+    },
+    "FleetArns":{
+      "type":"list",
+      "member":{"shape":"NonEmptyString"},
+      "max":100,
+      "min":1
+    },
+    "FleetCapacity":{
+      "type":"integer",
+      "min":1
+    },
+    "FleetContextCode":{
+      "type":"string",
+      "enum":[
+        "CREATE_FAILED",
+        "UPDATE_FAILED"
+      ]
+    },
+    "FleetName":{
+      "type":"string",
+      "max":128,
+      "min":2,
+      "pattern":"[A-Za-z0-9][A-Za-z0-9\\-_]{1,127}"
+    },
+    "FleetNames":{
+      "type":"list",
+      "member":{"shape":"NonEmptyString"},
+      "max":100,
+      "min":1
+    },
+    "FleetScalingMetricType":{
+      "type":"string",
+      "enum":["FLEET_UTILIZATION_RATE"]
+    },
+    "FleetScalingType":{
+      "type":"string",
+      "enum":["TARGET_TRACKING_SCALING"]
+    },
+    "FleetSortByType":{
+      "type":"string",
+      "enum":[
+        "NAME",
+        "CREATED_TIME",
+        "LAST_MODIFIED_TIME"
+      ]
+    },
+    "FleetStatus":{
+      "type":"structure",
+      "members":{
+        "statusCode":{
+          "shape":"FleetStatusCode",
+          "documentation":"<p>The status code of the compute fleet. Valid values include:</p> <ul> <li> <p> <code>CREATING</code>: The compute fleet is being created.</p> </li> <li> <p> <code>UPDATING</code>: The compute fleet is being updated.</p> </li> <li> <p> <code>ROTATING</code>: The compute fleet is being rotated.</p> </li> <li> <p> <code>DELETING</code>: The compute fleet is being deleted.</p> </li> <li> <p> <code>CREATE_FAILED</code>: The compute fleet has failed to create.</p> </li> <li> <p> <code>UPDATE_ROLLBACK_FAILED</code>: The compute fleet has failed to update and could not rollback to previous state.</p> </li> <li> <p> <code>ACTIVE</code>: The compute fleet has succeeded and is active.</p> </li> </ul>"
+        },
+        "context":{
+          "shape":"FleetContextCode",
+          "documentation":"<p>Additional information about a compute fleet. Valid values include:</p> <ul> <li> <p> <code>CREATE_FAILED</code>: The compute fleet has failed to create.</p> </li> <li> <p> <code>UPDATE_FAILED</code>: The compute fleet has failed to update.</p> </li> </ul>"
+        },
+        "message":{
+          "shape":"String",
+          "documentation":"<p>A message associated with the status of a compute fleet.</p>"
+        }
+      },
+      "documentation":"<p>The status of the compute fleet.</p>"
+    },
+    "FleetStatusCode":{
+      "type":"string",
+      "enum":[
+        "CREATING",
+        "UPDATING",
+        "ROTATING",
+        "DELETING",
+        "CREATE_FAILED",
+        "UPDATE_ROLLBACK_FAILED",
+        "ACTIVE"
+      ]
+    },
+    "Fleets":{
+      "type":"list",
+      "member":{"shape":"Fleet"},
+      "max":100,
+      "min":1
+    },
     "GetReportGroupTrendInput":{
       "type":"structure",
       "required":[
@@ -2307,6 +2589,40 @@
         "platforms":{
           "shape":"EnvironmentPlatforms",
           "documentation":"<p>Information about supported platforms for Docker images that are managed by CodeBuild.</p>"
+        }
+      }
+    },
+    "ListFleetsInput":{
+      "type":"structure",
+      "members":{
+        "nextToken":{
+          "shape":"SensitiveString",
+          "documentation":"<p>During a previous call, if there are more than 100 items in the list, only the first 100 items are returned, along with a unique string called a <i>nextToken</i>. To get the next batch of items in the list, call this operation again, adding the next token to the call. To get all of the items in the list, keep calling this operation with each subsequent next token that is returned, until no more next tokens are returned.</p>"
+        },
+        "maxResults":{
+          "shape":"PageSize",
+          "documentation":"<p>The maximum number of paginated compute fleets returned per response. Use <code>nextToken</code> to iterate pages in the list of returned compute fleets.</p>"
+        },
+        "sortOrder":{
+          "shape":"SortOrderType",
+          "documentation":"<p>The order in which to list compute fleets. Valid values include:</p> <ul> <li> <p> <code>ASCENDING</code>: List in ascending order.</p> </li> <li> <p> <code>DESCENDING</code>: List in descending order.</p> </li> </ul> <p>Use <code>sortBy</code> to specify the criterion to be used to list compute fleet names.</p>"
+        },
+        "sortBy":{
+          "shape":"FleetSortByType",
+          "documentation":"<p>The criterion to be used to list compute fleet names. Valid values include:</p> <ul> <li> <p> <code>CREATED_TIME</code>: List based on when each compute fleet was created.</p> </li> <li> <p> <code>LAST_MODIFIED_TIME</code>: List based on when information about each compute fleet was last changed.</p> </li> <li> <p> <code>NAME</code>: List based on each compute fleet's name.</p> </li> </ul> <p>Use <code>sortOrder</code> to specify in what order to list the compute fleet names based on the preceding criteria.</p>"
+        }
+      }
+    },
+    "ListFleetsOutput":{
+      "type":"structure",
+      "members":{
+        "nextToken":{
+          "shape":"String",
+          "documentation":"<p>If there are more than 100 items in the list, only the first 100 items are returned, along with a unique string called a <i>nextToken</i>. To get the next batch of items in the list, call this operation again, adding the next token to the call.</p>"
+        },
+        "fleets":{
+          "shape":"FleetArns",
+          "documentation":"<p>The list of compute fleet names.</p>"
         }
       }
     },
@@ -2903,7 +3219,7 @@
       "members":{
         "type":{
           "shape":"EnvironmentType",
-          "documentation":"<p>The type of build environment to use for related builds.</p> <ul> <li> <p>The environment type <code>ARM_CONTAINER</code> is available only in regions US East (N. Virginia), US East (Ohio), US West (Oregon), EU (Ireland), Asia Pacific (Mumbai), Asia Pacific (Tokyo), Asia Pacific (Sydney), and EU (Frankfurt).</p> </li> <li> <p>The environment type <code>LINUX_CONTAINER</code> with compute type <code>build.general1.2xlarge</code> is available only in regions US East (N. Virginia), US East (Ohio), US West (Oregon), Canada (Central), EU (Ireland), EU (London), EU (Frankfurt), Asia Pacific (Tokyo), Asia Pacific (Seoul), Asia Pacific (Singapore), Asia Pacific (Sydney), China (Beijing), and China (Ningxia).</p> </li> <li> <p>The environment type <code>LINUX_GPU_CONTAINER</code> is available only in regions US East (N. Virginia), US East (Ohio), US West (Oregon), Canada (Central), EU (Ireland), EU (London), EU (Frankfurt), Asia Pacific (Tokyo), Asia Pacific (Seoul), Asia Pacific (Singapore), Asia Pacific (Sydney) , China (Beijing), and China (Ningxia).</p> </li> </ul> <ul> <li> <p>The environment types <code>ARM_LAMBDA_CONTAINER</code> and <code>LINUX_LAMBDA_CONTAINER</code> are available only in regions US East (N. Virginia), US East (Ohio), US West (Oregon), Asia Pacific (Mumbai), Asia Pacific (Singapore), Asia Pacific (Sydney), Asia Pacific (Tokyo), EU (Frankfurt), EU (Ireland), and South America (São Paulo).</p> </li> </ul> <ul> <li> <p>The environment types <code>WINDOWS_CONTAINER</code> and <code>WINDOWS_SERVER_2019_CONTAINER</code> are available only in regions US East (N. Virginia), US East (Ohio), US West (Oregon), and EU (Ireland).</p> </li> </ul> <p>For more information, see <a href=\"https://docs.aws.amazon.com/codebuild/latest/userguide/build-env-ref-compute-types.html\">Build environment compute types</a> in the <i>CodeBuild user guide</i>.</p>"
+          "documentation":"<p>The type of build environment to use for related builds.</p> <ul> <li> <p>The environment type <code>ARM_CONTAINER</code> is available only in regions US East (N. Virginia), US East (Ohio), US West (Oregon), EU (Ireland), Asia Pacific (Mumbai), Asia Pacific (Tokyo), Asia Pacific (Sydney), and EU (Frankfurt).</p> </li> <li> <p>The environment type <code>LINUX_CONTAINER</code> is available only in regions US East (N. Virginia), US East (Ohio), US West (Oregon), Canada (Central), EU (Ireland), EU (London), EU (Frankfurt), Asia Pacific (Tokyo), Asia Pacific (Seoul), Asia Pacific (Singapore), Asia Pacific (Sydney), China (Beijing), and China (Ningxia).</p> </li> <li> <p>The environment type <code>LINUX_GPU_CONTAINER</code> is available only in regions US East (N. Virginia), US East (Ohio), US West (Oregon), Canada (Central), EU (Ireland), EU (London), EU (Frankfurt), Asia Pacific (Tokyo), Asia Pacific (Seoul), Asia Pacific (Singapore), Asia Pacific (Sydney) , China (Beijing), and China (Ningxia).</p> </li> </ul> <ul> <li> <p>The environment types <code>ARM_LAMBDA_CONTAINER</code> and <code>LINUX_LAMBDA_CONTAINER</code> are available only in regions US East (N. Virginia), US East (Ohio), US West (Oregon), Asia Pacific (Mumbai), Asia Pacific (Singapore), Asia Pacific (Sydney), Asia Pacific (Tokyo), EU (Frankfurt), EU (Ireland), and South America (São Paulo).</p> </li> </ul> <ul> <li> <p>The environment types <code>WINDOWS_CONTAINER</code> and <code>WINDOWS_SERVER_2019_CONTAINER</code> are available only in regions US East (N. Virginia), US East (Ohio), US West (Oregon), and EU (Ireland).</p> </li> </ul> <note> <p>If you're using compute fleets during project creation, <code>type</code> will be ignored.</p> </note> <p>For more information, see <a href=\"https://docs.aws.amazon.com/codebuild/latest/userguide/build-env-ref-compute-types.html\">Build environment compute types</a> in the <i>CodeBuild user guide</i>.</p>"
         },
         "image":{
           "shape":"NonEmptyString",
@@ -2911,7 +3227,11 @@
         },
         "computeType":{
           "shape":"ComputeType",
-          "documentation":"<p>Information about the compute resources the build project uses. Available values include:</p> <ul> <li> <p> <code>BUILD_GENERAL1_SMALL</code>: Use up to 3 GB memory and 2 vCPUs for builds.</p> </li> <li> <p> <code>BUILD_GENERAL1_MEDIUM</code>: Use up to 7 GB memory and 4 vCPUs for builds.</p> </li> <li> <p> <code>BUILD_GENERAL1_LARGE</code>: Use up to 16 GB memory and 8 vCPUs for builds, depending on your environment type.</p> </li> <li> <p> <code>BUILD_GENERAL1_XLARGE</code>: Use up to 70 GB memory and 36 vCPUs for builds, depending on your environment type.</p> </li> <li> <p> <code>BUILD_GENERAL1_2XLARGE</code>: Use up to 145 GB memory, 72 vCPUs, and 824 GB of SSD storage for builds. This compute type supports Docker images up to 100 GB uncompressed.</p> </li> <li> <p> <code>BUILD_LAMBDA_1GB</code>: Use up to 1 GB memory for builds. Only available for environment type <code>LINUX_LAMBDA_CONTAINER</code> and <code>ARM_LAMBDA_CONTAINER</code>.</p> </li> <li> <p> <code>BUILD_LAMBDA_2GB</code>: Use up to 2 GB memory for builds. Only available for environment type <code>LINUX_LAMBDA_CONTAINER</code> and <code>ARM_LAMBDA_CONTAINER</code>.</p> </li> <li> <p> <code>BUILD_LAMBDA_4GB</code>: Use up to 4 GB memory for builds. Only available for environment type <code>LINUX_LAMBDA_CONTAINER</code> and <code>ARM_LAMBDA_CONTAINER</code>.</p> </li> <li> <p> <code>BUILD_LAMBDA_8GB</code>: Use up to 8 GB memory for builds. Only available for environment type <code>LINUX_LAMBDA_CONTAINER</code> and <code>ARM_LAMBDA_CONTAINER</code>.</p> </li> <li> <p> <code>BUILD_LAMBDA_10GB</code>: Use up to 10 GB memory for builds. Only available for environment type <code>LINUX_LAMBDA_CONTAINER</code> and <code>ARM_LAMBDA_CONTAINER</code>.</p> </li> </ul> <p> If you use <code>BUILD_GENERAL1_SMALL</code>: </p> <ul> <li> <p> For environment type <code>LINUX_CONTAINER</code>, you can use up to 3 GB memory and 2 vCPUs for builds. </p> </li> <li> <p> For environment type <code>LINUX_GPU_CONTAINER</code>, you can use up to 16 GB memory, 4 vCPUs, and 1 NVIDIA A10G Tensor Core GPU for builds.</p> </li> <li> <p> For environment type <code>ARM_CONTAINER</code>, you can use up to 4 GB memory and 2 vCPUs on ARM-based processors for builds.</p> </li> </ul> <p> If you use <code>BUILD_GENERAL1_LARGE</code>: </p> <ul> <li> <p> For environment type <code>LINUX_CONTAINER</code>, you can use up to 15 GB memory and 8 vCPUs for builds. </p> </li> <li> <p> For environment type <code>LINUX_GPU_CONTAINER</code>, you can use up to 255 GB memory, 32 vCPUs, and 4 NVIDIA Tesla V100 GPUs for builds.</p> </li> <li> <p> For environment type <code>ARM_CONTAINER</code>, you can use up to 16 GB memory and 8 vCPUs on ARM-based processors for builds.</p> </li> </ul> <p>For more information, see <a href=\"https://docs.aws.amazon.com/codebuild/latest/userguide/build-env-ref-compute-types.html\">Build Environment Compute Types</a> in the <i>CodeBuild User Guide.</i> </p>"
+          "documentation":"<p>Information about the compute resources the build project uses. Available values include:</p> <ul> <li> <p> <code>BUILD_GENERAL1_SMALL</code>: Use up to 3 GB memory and 2 vCPUs for builds.</p> </li> <li> <p> <code>BUILD_GENERAL1_MEDIUM</code>: Use up to 7 GB memory and 4 vCPUs for builds.</p> </li> <li> <p> <code>BUILD_GENERAL1_LARGE</code>: Use up to 16 GB memory and 8 vCPUs for builds, depending on your environment type.</p> </li> <li> <p> <code>BUILD_GENERAL1_XLARGE</code>: Use up to 70 GB memory and 36 vCPUs for builds, depending on your environment type.</p> </li> <li> <p> <code>BUILD_GENERAL1_2XLARGE</code>: Use up to 145 GB memory, 72 vCPUs, and 824 GB of SSD storage for builds. This compute type supports Docker images up to 100 GB uncompressed.</p> </li> <li> <p> <code>BUILD_LAMBDA_1GB</code>: Use up to 1 GB memory for builds. Only available for environment type <code>LINUX_LAMBDA_CONTAINER</code> and <code>ARM_LAMBDA_CONTAINER</code>.</p> </li> <li> <p> <code>BUILD_LAMBDA_2GB</code>: Use up to 2 GB memory for builds. Only available for environment type <code>LINUX_LAMBDA_CONTAINER</code> and <code>ARM_LAMBDA_CONTAINER</code>.</p> </li> <li> <p> <code>BUILD_LAMBDA_4GB</code>: Use up to 4 GB memory for builds. Only available for environment type <code>LINUX_LAMBDA_CONTAINER</code> and <code>ARM_LAMBDA_CONTAINER</code>.</p> </li> <li> <p> <code>BUILD_LAMBDA_8GB</code>: Use up to 8 GB memory for builds. Only available for environment type <code>LINUX_LAMBDA_CONTAINER</code> and <code>ARM_LAMBDA_CONTAINER</code>.</p> </li> <li> <p> <code>BUILD_LAMBDA_10GB</code>: Use up to 10 GB memory for builds. Only available for environment type <code>LINUX_LAMBDA_CONTAINER</code> and <code>ARM_LAMBDA_CONTAINER</code>.</p> </li> </ul> <p> If you use <code>BUILD_GENERAL1_SMALL</code>: </p> <ul> <li> <p> For environment type <code>LINUX_CONTAINER</code>, you can use up to 3 GB memory and 2 vCPUs for builds. </p> </li> <li> <p> For environment type <code>LINUX_GPU_CONTAINER</code>, you can use up to 16 GB memory, 4 vCPUs, and 1 NVIDIA A10G Tensor Core GPU for builds.</p> </li> <li> <p> For environment type <code>ARM_CONTAINER</code>, you can use up to 4 GB memory and 2 vCPUs on ARM-based processors for builds.</p> </li> </ul> <p> If you use <code>BUILD_GENERAL1_LARGE</code>: </p> <ul> <li> <p> For environment type <code>LINUX_CONTAINER</code>, you can use up to 15 GB memory and 8 vCPUs for builds. </p> </li> <li> <p> For environment type <code>LINUX_GPU_CONTAINER</code>, you can use up to 255 GB memory, 32 vCPUs, and 4 NVIDIA Tesla V100 GPUs for builds.</p> </li> <li> <p> For environment type <code>ARM_CONTAINER</code>, you can use up to 16 GB memory and 8 vCPUs on ARM-based processors for builds.</p> </li> </ul> <note> <p>If you're using compute fleets during project creation, <code>computeType</code> will be ignored.</p> </note> <p>For more information, see <a href=\"https://docs.aws.amazon.com/codebuild/latest/userguide/build-env-ref-compute-types.html\">Build Environment Compute Types</a> in the <i>CodeBuild User Guide.</i> </p>"
+        },
+        "fleet":{
+          "shape":"ProjectFleet",
+          "documentation":"<p>A ProjectFleet object to use for this build project.</p>"
         },
         "environmentVariables":{
           "shape":"EnvironmentVariables",
@@ -2965,6 +3285,16 @@
     "ProjectFileSystemLocations":{
       "type":"list",
       "member":{"shape":"ProjectFileSystemLocation"}
+    },
+    "ProjectFleet":{
+      "type":"structure",
+      "members":{
+        "fleetArn":{
+          "shape":"String",
+          "documentation":"<p>Specifies the compute fleet ARN for the build project.</p>"
+        }
+      },
+      "documentation":"<p>Information about the compute fleet of the build project. For more information, see <a href=\"https://docs.aws.amazon.com/codebuild/latest/userguide/fleets.html\">Working with reserved capacity in CodeBuild</a>.</p>"
     },
     "ProjectName":{
       "type":"string",
@@ -3507,6 +3837,46 @@
       },
       "documentation":"<p> Information about the S3 bucket where the raw data of a report are exported. </p>"
     },
+    "ScalingConfigurationInput":{
+      "type":"structure",
+      "members":{
+        "scalingType":{
+          "shape":"FleetScalingType",
+          "documentation":"<p>The scaling type for a compute fleet.</p>"
+        },
+        "targetTrackingScalingConfigs":{
+          "shape":"TargetTrackingScalingConfigurations",
+          "documentation":"<p>A list of <code>TargetTrackingScalingConfiguration</code> objects.</p>"
+        },
+        "maxCapacity":{
+          "shape":"FleetCapacity",
+          "documentation":"<p>The maximum number of instances in the ﬂeet when auto-scaling.</p>"
+        }
+      },
+      "documentation":"<p>The scaling configuration input of a compute fleet.</p>"
+    },
+    "ScalingConfigurationOutput":{
+      "type":"structure",
+      "members":{
+        "scalingType":{
+          "shape":"FleetScalingType",
+          "documentation":"<p>The scaling type for a compute fleet.</p>"
+        },
+        "targetTrackingScalingConfigs":{
+          "shape":"TargetTrackingScalingConfigurations",
+          "documentation":"<p>A list of <code>TargetTrackingScalingConfiguration</code> objects.</p>"
+        },
+        "maxCapacity":{
+          "shape":"FleetCapacity",
+          "documentation":"<p>The maximum number of instances in the ﬂeet when auto-scaling.</p>"
+        },
+        "desiredCapacity":{
+          "shape":"FleetCapacity",
+          "documentation":"<p>The desired number of instances in the ﬂeet when auto-scaling.</p>"
+        }
+      },
+      "documentation":"<p>The scaling configuration output of a compute fleet.</p>"
+    },
     "SecurityGroupIds":{
       "type":"list",
       "member":{"shape":"NonEmptyString"},
@@ -3515,6 +3885,10 @@
     "SensitiveNonEmptyString":{
       "type":"string",
       "min":1,
+      "sensitive":true
+    },
+    "SensitiveString":{
+      "type":"string",
       "sensitive":true
     },
     "ServerType":{
@@ -3858,6 +4232,10 @@
         "debugSessionEnabled":{
           "shape":"WrapperBoolean",
           "documentation":"<p>Specifies if session debugging is enabled for this build. For more information, see <a href=\"https://docs.aws.amazon.com/codebuild/latest/userguide/session-manager.html\">Viewing a running build in Session Manager</a>.</p>"
+        },
+        "fleetOverride":{
+          "shape":"ProjectFleet",
+          "documentation":"<p>A ProjectFleet object specified for this build that overrides the one defined in the build project.</p>"
         }
       }
     },
@@ -3941,6 +4319,24 @@
       "member":{"shape":"Tag"},
       "max":50,
       "min":0
+    },
+    "TargetTrackingScalingConfiguration":{
+      "type":"structure",
+      "members":{
+        "metricType":{
+          "shape":"FleetScalingMetricType",
+          "documentation":"<p>The metric type to determine auto-scaling.</p>"
+        },
+        "targetValue":{
+          "shape":"WrapperDouble",
+          "documentation":"<p>The value of <code>metricType</code> when to start scaling.</p>"
+        }
+      },
+      "documentation":"<p>Defines when a new instance is auto-scaled into the compute fleet.</p>"
+    },
+    "TargetTrackingScalingConfigurations":{
+      "type":"list",
+      "member":{"shape":"TargetTrackingScalingConfiguration"}
     },
     "TestCase":{
       "type":"structure",
@@ -4027,6 +4423,45 @@
       "min":5
     },
     "Timestamp":{"type":"timestamp"},
+    "UpdateFleetInput":{
+      "type":"structure",
+      "required":["arn"],
+      "members":{
+        "arn":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>The ARN of the compute fleet.</p>"
+        },
+        "baseCapacity":{
+          "shape":"FleetCapacity",
+          "documentation":"<p>The initial number of machines allocated to the compute ﬂeet, which deﬁnes the number of builds that can run in parallel.</p>"
+        },
+        "environmentType":{
+          "shape":"EnvironmentType",
+          "documentation":"<p>The environment type of the compute fleet.</p> <ul> <li> <p>The environment type <code>ARM_CONTAINER</code> is available only in regions US East (N. Virginia), US East (Ohio), US West (Oregon), EU (Ireland), Asia Pacific (Mumbai), Asia Pacific (Tokyo), Asia Pacific (Singapore), Asia Pacific (Sydney), EU (Frankfurt), and South America (São Paulo).</p> </li> <li> <p>The environment type <code>LINUX_CONTAINER</code> is available only in regions US East (N. Virginia), US East (Ohio), US West (Oregon), EU (Ireland), EU (Frankfurt), Asia Pacific (Tokyo), Asia Pacific (Singapore), Asia Pacific (Sydney), South America (São Paulo), and Asia Pacific (Mumbai).</p> </li> <li> <p>The environment type <code>LINUX_GPU_CONTAINER</code> is available only in regions US East (N. Virginia), US East (Ohio), US West (Oregon), EU (Ireland), EU (Frankfurt), Asia Pacific (Tokyo), and Asia Pacific (Sydney).</p> </li> <li> <p>The environment type <code>WINDOWS_SERVER_2019_CONTAINER</code> is available only in regions US East (N. Virginia), US East (Ohio), US West (Oregon), Asia Pacific (Sydney), Asia Pacific (Tokyo), Asia Pacific (Mumbai) and EU (Ireland).</p> </li> <li> <p>The environment type <code>WINDOWS_SERVER_2022_CONTAINER</code> is available only in regions US East (N. Virginia), US East (Ohio), US West (Oregon), EU (Ireland), EU (Frankfurt), Asia Pacific (Sydney), Asia Pacific (Singapore), Asia Pacific (Tokyo), South America (São Paulo) and Asia Pacific (Mumbai).</p> </li> </ul> <p>For more information, see <a href=\"https://docs.aws.amazon.com/codebuild/latest/userguide/build-env-ref-compute-types.html\">Build environment compute types</a> in the <i>CodeBuild user guide</i>.</p>"
+        },
+        "computeType":{
+          "shape":"ComputeType",
+          "documentation":"<p>Information about the compute resources the compute fleet uses. Available values include:</p> <ul> <li> <p> <code>BUILD_GENERAL1_SMALL</code>: Use up to 3 GB memory and 2 vCPUs for builds.</p> </li> <li> <p> <code>BUILD_GENERAL1_MEDIUM</code>: Use up to 7 GB memory and 4 vCPUs for builds.</p> </li> <li> <p> <code>BUILD_GENERAL1_LARGE</code>: Use up to 16 GB memory and 8 vCPUs for builds, depending on your environment type.</p> </li> <li> <p> <code>BUILD_GENERAL1_XLARGE</code>: Use up to 70 GB memory and 36 vCPUs for builds, depending on your environment type.</p> </li> <li> <p> <code>BUILD_GENERAL1_2XLARGE</code>: Use up to 145 GB memory, 72 vCPUs, and 824 GB of SSD storage for builds. This compute type supports Docker images up to 100 GB uncompressed.</p> </li> </ul> <p> If you use <code>BUILD_GENERAL1_SMALL</code>: </p> <ul> <li> <p> For environment type <code>LINUX_CONTAINER</code>, you can use up to 3 GB memory and 2 vCPUs for builds. </p> </li> <li> <p> For environment type <code>LINUX_GPU_CONTAINER</code>, you can use up to 16 GB memory, 4 vCPUs, and 1 NVIDIA A10G Tensor Core GPU for builds.</p> </li> <li> <p> For environment type <code>ARM_CONTAINER</code>, you can use up to 4 GB memory and 2 vCPUs on ARM-based processors for builds.</p> </li> </ul> <p> If you use <code>BUILD_GENERAL1_LARGE</code>: </p> <ul> <li> <p> For environment type <code>LINUX_CONTAINER</code>, you can use up to 15 GB memory and 8 vCPUs for builds. </p> </li> <li> <p> For environment type <code>LINUX_GPU_CONTAINER</code>, you can use up to 255 GB memory, 32 vCPUs, and 4 NVIDIA Tesla V100 GPUs for builds.</p> </li> <li> <p> For environment type <code>ARM_CONTAINER</code>, you can use up to 16 GB memory and 8 vCPUs on ARM-based processors for builds.</p> </li> </ul> <p>For more information, see <a href=\"https://docs.aws.amazon.com/codebuild/latest/userguide/build-env-ref-compute-types.html\">Build environment compute types</a> in the <i>CodeBuild User Guide.</i> </p>"
+        },
+        "scalingConfiguration":{
+          "shape":"ScalingConfigurationInput",
+          "documentation":"<p>The scaling configuration of the compute fleet.</p>"
+        },
+        "tags":{
+          "shape":"TagList",
+          "documentation":"<p>A list of tag key and value pairs associated with this compute fleet.</p> <p>These tags are available for use by Amazon Web Services services that support CodeBuild build project tags.</p>"
+        }
+      }
+    },
+    "UpdateFleetOutput":{
+      "type":"structure",
+      "members":{
+        "fleet":{
+          "shape":"Fleet",
+          "documentation":"<p>A <code>Fleet</code> object.</p>"
+        }
+      }
+    },
     "UpdateProjectInput":{
       "type":"structure",
       "required":["name"],
@@ -4316,6 +4751,7 @@
       ]
     },
     "WrapperBoolean":{"type":"boolean"},
+    "WrapperDouble":{"type":"double"},
     "WrapperInt":{"type":"integer"},
     "WrapperLong":{"type":"long"}
   },

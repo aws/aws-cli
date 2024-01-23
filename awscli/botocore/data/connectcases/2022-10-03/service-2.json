@@ -68,7 +68,7 @@
         {"shape":"AccessDeniedException"},
         {"shape":"ConflictException"}
       ],
-      "documentation":"<p>Creates a case in the specified Cases domain. Case system and custom fields are taken as an array id/value pairs with a declared data types.</p> <p>The following fields are required when creating a case:</p> <pre><code> &lt;ul&gt; &lt;li&gt; &lt;p&gt; &lt;code&gt;customer_id&lt;/code&gt; - You must provide the full customer profile ARN in this format: &lt;code&gt;arn:aws:profile:your_AWS_Region:your_AWS_account ID:domains/your_profiles_domain_name/profiles/profile_ID&lt;/code&gt; &lt;/p&gt; &lt;/li&gt; &lt;li&gt; &lt;p&gt; &lt;code&gt;title&lt;/code&gt; &lt;/p&gt; &lt;/li&gt; &lt;/ul&gt; </code></pre>",
+      "documentation":"<note> <p>If you provide a value for <code>PerformedBy.UserArn</code> you must also have <a href=\"https://docs.aws.amazon.com/connect/latest/APIReference/API_DescribeUser.html\">connect:DescribeUser</a> permission on the User ARN resource that you provide</p> </note> <pre><code> &lt;p&gt;Creates a case in the specified Cases domain. Case system and custom fields are taken as an array id/value pairs with a declared data types.&lt;/p&gt; &lt;p&gt;The following fields are required when creating a case:&lt;/p&gt; &lt;ul&gt; &lt;li&gt; &lt;p&gt; &lt;code&gt;customer_id&lt;/code&gt; - You must provide the full customer profile ARN in this format: &lt;code&gt;arn:aws:profile:your_AWS_Region:your_AWS_account ID:domains/your_profiles_domain_name/profiles/profile_ID&lt;/code&gt; &lt;/p&gt; &lt;/li&gt; &lt;li&gt; &lt;p&gt; &lt;code&gt;title&lt;/code&gt; &lt;/p&gt; &lt;/li&gt; &lt;/ul&gt; </code></pre>",
       "idempotent":true
     },
     "CreateDomain":{
@@ -210,6 +210,24 @@
         {"shape":"AccessDeniedException"}
       ],
       "documentation":"<p>Returns information about a specific case if it exists. </p>"
+    },
+    "GetCaseAuditEvents":{
+      "name":"GetCaseAuditEvents",
+      "http":{
+        "method":"POST",
+        "requestUri":"/domains/{domainId}/cases/{caseId}/audit-history",
+        "responseCode":200
+      },
+      "input":{"shape":"GetCaseAuditEventsRequest"},
+      "output":{"shape":"GetCaseAuditEventsResponse"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ValidationException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Returns the audit history about a specific case if it exists.</p>"
     },
     "GetCaseEventConfiguration":{
       "name":"GetCaseEventConfiguration",
@@ -515,7 +533,7 @@
         {"shape":"ThrottlingException"},
         {"shape":"AccessDeniedException"}
       ],
-      "documentation":"<p>Updates the values of fields on a case. Fields to be updated are received as an array of id/value pairs identical to the <code>CreateCase</code> input .</p> <p>If the action is successful, the service sends back an HTTP 200 response with an empty HTTP body.</p>"
+      "documentation":"<note> <p>If you provide a value for <code>PerformedBy.UserArn</code> you must also have <a href=\"https://docs.aws.amazon.com/connect/latest/APIReference/API_DescribeUser.html\">connect:DescribeUser</a> permission on the User ARN resource that you provide</p> </note> <pre><code> &lt;p&gt;Updates the values of fields on a case. Fields to be updated are received as an array of id/value pairs identical to the &lt;code&gt;CreateCase&lt;/code&gt; input .&lt;/p&gt; &lt;p&gt;If the action is successful, the service sends back an HTTP 200 response with an empty HTTP body.&lt;/p&gt; </code></pre>"
     },
     "UpdateField":{
       "name":"UpdateField",
@@ -601,6 +619,131 @@
     "AssociationTime":{
       "type":"timestamp",
       "timestampFormat":"iso8601"
+    },
+    "AuditEvent":{
+      "type":"structure",
+      "required":[
+        "eventId",
+        "fields",
+        "performedTime",
+        "type"
+      ],
+      "members":{
+        "eventId":{
+          "shape":"AuditEventId",
+          "documentation":"<p>Unique identifier of a case audit history event.</p>"
+        },
+        "fields":{
+          "shape":"AuditEventFieldList",
+          "documentation":"<p>A list of Case Audit History event fields.</p>"
+        },
+        "performedBy":{
+          "shape":"AuditEventPerformedBy",
+          "documentation":"<p>Information of the user which performed the audit.</p>"
+        },
+        "performedTime":{
+          "shape":"AuditEventDateTime",
+          "documentation":"<p>Time at which an Audit History event took place.</p>"
+        },
+        "relatedItemType":{
+          "shape":"RelatedItemType",
+          "documentation":"<p>The Type of the related item.</p>"
+        },
+        "type":{
+          "shape":"AuditEventType",
+          "documentation":"<p>The Type of an audit history event.</p>"
+        }
+      },
+      "documentation":"<p>Represents the content of a particular audit event.</p>"
+    },
+    "AuditEventDateTime":{
+      "type":"timestamp",
+      "timestampFormat":"iso8601"
+    },
+    "AuditEventField":{
+      "type":"structure",
+      "required":[
+        "eventFieldId",
+        "newValue"
+      ],
+      "members":{
+        "eventFieldId":{
+          "shape":"AuditEventFieldId",
+          "documentation":"<p>Unique identifier of field in an Audit History entry.</p>"
+        },
+        "newValue":{
+          "shape":"AuditEventFieldValueUnion",
+          "documentation":"<p>Union of potential field value types.</p>"
+        },
+        "oldValue":{
+          "shape":"AuditEventFieldValueUnion",
+          "documentation":"<p>Union of potential field value types.</p>"
+        }
+      },
+      "documentation":"<p>Fields for audit event.</p>"
+    },
+    "AuditEventFieldId":{
+      "type":"string",
+      "max":500,
+      "min":1
+    },
+    "AuditEventFieldList":{
+      "type":"list",
+      "member":{"shape":"AuditEventField"}
+    },
+    "AuditEventFieldValueUnion":{
+      "type":"structure",
+      "members":{
+        "booleanValue":{
+          "shape":"Boolean",
+          "documentation":"<p>Can be either null, or have a Boolean value type. Only one value can be provided.</p>"
+        },
+        "doubleValue":{
+          "shape":"Double",
+          "documentation":"<p>Can be either null, or have a Double value type. Only one value can be provided.</p>"
+        },
+        "emptyValue":{"shape":"EmptyFieldValue"},
+        "stringValue":{
+          "shape":"AuditEventFieldValueUnionStringValueString",
+          "documentation":"<p>Can be either null, or have a String value type. Only one value can be provided.</p>"
+        },
+        "userArnValue":{
+          "shape":"String",
+          "documentation":"<p>Can be either null, or have a String value type formatted as an ARN. Only one value can be provided.</p>"
+        }
+      },
+      "documentation":"<p>Object to store union of Field values.</p> <important> <p>This data type is a UNION, so only one of the following members can be specified when used or returned.</p> </important>",
+      "union":true
+    },
+    "AuditEventFieldValueUnionStringValueString":{
+      "type":"string",
+      "max":500,
+      "min":0
+    },
+    "AuditEventId":{
+      "type":"string",
+      "max":500,
+      "min":1
+    },
+    "AuditEventPerformedBy":{
+      "type":"structure",
+      "required":["iamPrincipalArn"],
+      "members":{
+        "iamPrincipalArn":{
+          "shape":"IamPrincipalArn",
+          "documentation":"<p>Unique identifier of an IAM role.</p>"
+        },
+        "user":{"shape":"UserUnion"}
+      },
+      "documentation":"<p>Information of the user which performed the audit.</p>"
+    },
+    "AuditEventType":{
+      "type":"string",
+      "enum":[
+        "Case.Created",
+        "Case.Updated",
+        "RelatedItem.Created"
+      ]
     },
     "BasicLayout":{
       "type":"structure",
@@ -935,6 +1078,7 @@
           "shape":"CreateCaseRequestFieldsList",
           "documentation":"<p>An array of objects with field ID (matching ListFields/DescribeField) and value union data.</p>"
         },
+        "performedBy":{"shape":"UserUnion"},
         "templateId":{
           "shape":"TemplateId",
           "documentation":"<p>A unique identifier of a template.</p>"
@@ -1534,7 +1678,8 @@
         "Boolean",
         "DateTime",
         "SingleSelect",
-        "Url"
+        "Url",
+        "User"
       ]
     },
     "FieldValue":{
@@ -1573,14 +1718,73 @@
         "stringValue":{
           "shape":"FieldValueUnionStringValueString",
           "documentation":"<p>String value type.</p>"
+        },
+        "userArnValue":{
+          "shape":"String",
+          "documentation":"<p>Represents the user that performed the audit.</p>"
         }
       },
-      "documentation":"<p>Object to store union of Field values.</p>",
+      "documentation":"<p>Object to store union of Field values.</p> <note> <p>The <code>Summary</code> system field accepts 1500 characters while all other fields accept 500 characters.</p> </note>",
       "union":true
     },
     "FieldValueUnionStringValueString":{
       "type":"string",
       "max":1500,
+      "min":0
+    },
+    "GetCaseAuditEventsRequest":{
+      "type":"structure",
+      "required":[
+        "caseId",
+        "domainId"
+      ],
+      "members":{
+        "caseId":{
+          "shape":"CaseId",
+          "documentation":"<p>A unique identifier of the case.</p>",
+          "location":"uri",
+          "locationName":"caseId"
+        },
+        "domainId":{
+          "shape":"DomainId",
+          "documentation":"<p>The unique identifier of the Cases domain.</p>",
+          "location":"uri",
+          "locationName":"domainId"
+        },
+        "maxResults":{
+          "shape":"GetCaseAuditEventsRequestMaxResultsInteger",
+          "documentation":"<p>The maximum number of audit events to return. The current maximum supported value is 25. This is also the default when no other value is provided.</p>"
+        },
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The token for the next set of results. Use the value returned in the previous response in the next request to retrieve the next set of results.</p>"
+        }
+      }
+    },
+    "GetCaseAuditEventsRequestMaxResultsInteger":{
+      "type":"integer",
+      "box":true,
+      "max":25,
+      "min":1
+    },
+    "GetCaseAuditEventsResponse":{
+      "type":"structure",
+      "required":["auditEvents"],
+      "members":{
+        "auditEvents":{
+          "shape":"GetCaseAuditEventsResponseAuditEventsList",
+          "documentation":"<p>A list of case audits where each represents a particular edit of the case.</p>"
+        },
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The token for the next set of results. This is null if there are no more results to return.</p>"
+        }
+      }
+    },
+    "GetCaseAuditEventsResponseAuditEventsList":{
+      "type":"list",
+      "member":{"shape":"AuditEvent"},
+      "max":25,
       "min":0
     },
     "GetCaseEventConfigurationRequest":{
@@ -1876,6 +2080,11 @@
           "documentation":"<p>A unique identifier of a template.</p>"
         }
       }
+    },
+    "IamPrincipalArn":{
+      "type":"string",
+      "max":500,
+      "min":1
     },
     "Integer":{
       "type":"integer",
@@ -2842,7 +3051,8 @@
         "fields":{
           "shape":"UpdateCaseRequestFieldsList",
           "documentation":"<p>An array of objects with <code>fieldId</code> (matching ListFields/DescribeField) and value union data, structured identical to <code>CreateCase</code>.</p>"
-        }
+        },
+        "performedBy":{"shape":"UserUnion"}
       }
     },
     "UpdateCaseRequestFieldsList":{

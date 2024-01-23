@@ -170,6 +170,23 @@
       "documentation":"<p>Cancels a software bill of materials (SBOM) report.</p>",
       "idempotent":true
     },
+    "CreateCisScanConfiguration":{
+      "name":"CreateCisScanConfiguration",
+      "http":{
+        "method":"POST",
+        "requestUri":"/cis/scan-configuration/create",
+        "responseCode":200
+      },
+      "input":{"shape":"CreateCisScanConfigurationRequest"},
+      "output":{"shape":"CreateCisScanConfigurationResponse"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Creates a CIS scan configuration.</p>"
+    },
     "CreateFilter":{
       "name":"CreateFilter",
       "http":{
@@ -225,6 +242,24 @@
       ],
       "documentation":"<p>Creates a software bill of materials (SBOM) report.</p>",
       "idempotent":true
+    },
+    "DeleteCisScanConfiguration":{
+      "name":"DeleteCisScanConfiguration",
+      "http":{
+        "method":"POST",
+        "requestUri":"/cis/scan-configuration/delete",
+        "responseCode":200
+      },
+      "input":{"shape":"DeleteCisScanConfigurationRequest"},
+      "output":{"shape":"DeleteCisScanConfigurationResponse"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Deletes a CIS scan configuration.</p>"
     },
     "DeleteFilter":{
       "name":"DeleteFilter",
@@ -351,6 +386,40 @@
         {"shape":"InternalServerException"}
       ],
       "documentation":"<p>Enables the Amazon Inspector delegated administrator for your Organizations organization.</p>"
+    },
+    "GetCisScanReport":{
+      "name":"GetCisScanReport",
+      "http":{
+        "method":"POST",
+        "requestUri":"/cis/scan/report/get",
+        "responseCode":200
+      },
+      "input":{"shape":"GetCisScanReportRequest"},
+      "output":{"shape":"GetCisScanReportResponse"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Retrieves a CIS scan report.</p>"
+    },
+    "GetCisScanResultDetails":{
+      "name":"GetCisScanResultDetails",
+      "http":{
+        "method":"POST",
+        "requestUri":"/cis/scan-result/details/get",
+        "responseCode":200
+      },
+      "input":{"shape":"GetCisScanResultDetailsRequest"},
+      "output":{"shape":"GetCisScanResultDetailsResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Retrieves CIS scan result details.</p>"
     },
     "GetConfiguration":{
       "name":"GetConfiguration",
@@ -492,6 +561,74 @@
         {"shape":"InternalServerException"}
       ],
       "documentation":"<p>Lists the permissions an account has to configure Amazon Inspector.</p>"
+    },
+    "ListCisScanConfigurations":{
+      "name":"ListCisScanConfigurations",
+      "http":{
+        "method":"POST",
+        "requestUri":"/cis/scan-configuration/list",
+        "responseCode":200
+      },
+      "input":{"shape":"ListCisScanConfigurationsRequest"},
+      "output":{"shape":"ListCisScanConfigurationsResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Lists CIS scan configurations.</p>"
+    },
+    "ListCisScanResultsAggregatedByChecks":{
+      "name":"ListCisScanResultsAggregatedByChecks",
+      "http":{
+        "method":"POST",
+        "requestUri":"/cis/scan-result/check/list",
+        "responseCode":200
+      },
+      "input":{"shape":"ListCisScanResultsAggregatedByChecksRequest"},
+      "output":{"shape":"ListCisScanResultsAggregatedByChecksResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Lists scan results aggregated by checks.</p>"
+    },
+    "ListCisScanResultsAggregatedByTargetResource":{
+      "name":"ListCisScanResultsAggregatedByTargetResource",
+      "http":{
+        "method":"POST",
+        "requestUri":"/cis/scan-result/resource/list",
+        "responseCode":200
+      },
+      "input":{"shape":"ListCisScanResultsAggregatedByTargetResourceRequest"},
+      "output":{"shape":"ListCisScanResultsAggregatedByTargetResourceResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Lists scan results aggregated by a target resource.</p>"
+    },
+    "ListCisScans":{
+      "name":"ListCisScans",
+      "http":{
+        "method":"POST",
+        "requestUri":"/cis/scan/list",
+        "responseCode":200
+      },
+      "input":{"shape":"ListCisScansRequest"},
+      "output":{"shape":"ListCisScansResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Returns a CIS scan list.</p>"
     },
     "ListCoverage":{
       "name":"ListCoverage",
@@ -678,6 +815,82 @@
       ],
       "documentation":"<p>Lists Amazon Inspector coverage details for a specific vulnerability.</p>"
     },
+    "SendCisSessionHealth":{
+      "name":"SendCisSessionHealth",
+      "http":{
+        "method":"PUT",
+        "requestUri":"/cissession/health/send",
+        "responseCode":200
+      },
+      "input":{"shape":"SendCisSessionHealthRequest"},
+      "output":{"shape":"SendCisSessionHealthResponse"},
+      "errors":[
+        {"shape":"ConflictException"},
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p> Sends a CIS session health. This API is used by the Amazon Inspector SSM plugin to communicate with the Amazon Inspector service. The Amazon Inspector SSM plugin calls this API to start a CIS scan session for the scan ID supplied by the service. </p>",
+      "idempotent":true
+    },
+    "SendCisSessionTelemetry":{
+      "name":"SendCisSessionTelemetry",
+      "http":{
+        "method":"PUT",
+        "requestUri":"/cissession/telemetry/send",
+        "responseCode":200
+      },
+      "input":{"shape":"SendCisSessionTelemetryRequest"},
+      "output":{"shape":"SendCisSessionTelemetryResponse"},
+      "errors":[
+        {"shape":"ConflictException"},
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p> Sends a CIS session telemetry. This API is used by the Amazon Inspector SSM plugin to communicate with the Amazon Inspector service. The Amazon Inspector SSM plugin calls this API to start a CIS scan session for the scan ID supplied by the service. </p>",
+      "idempotent":true
+    },
+    "StartCisSession":{
+      "name":"StartCisSession",
+      "http":{
+        "method":"PUT",
+        "requestUri":"/cissession/start",
+        "responseCode":200
+      },
+      "input":{"shape":"StartCisSessionRequest"},
+      "output":{"shape":"StartCisSessionResponse"},
+      "errors":[
+        {"shape":"ConflictException"},
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p> Starts a CIS session. This API is used by the Amazon Inspector SSM plugin to communicate with the Amazon Inspector service. The Amazon Inspector SSM plugin calls this API to start a CIS scan session for the scan ID supplied by the service. </p>",
+      "idempotent":true
+    },
+    "StopCisSession":{
+      "name":"StopCisSession",
+      "http":{
+        "method":"PUT",
+        "requestUri":"/cissession/stop",
+        "responseCode":200
+      },
+      "input":{"shape":"StopCisSessionRequest"},
+      "output":{"shape":"StopCisSessionResponse"},
+      "errors":[
+        {"shape":"ConflictException"},
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p> Stops a CIS session. This API is used by the Amazon Inspector SSM plugin to communicate with the Amazon Inspector service. The Amazon Inspector SSM plugin calls this API to start a CIS scan session for the scan ID supplied by the service. </p>",
+      "idempotent":true
+    },
     "TagResource":{
       "name":"TagResource",
       "http":{
@@ -713,6 +926,24 @@
         {"shape":"InternalServerException"}
       ],
       "documentation":"<p>Removes tags from a resource.</p>"
+    },
+    "UpdateCisScanConfiguration":{
+      "name":"UpdateCisScanConfiguration",
+      "http":{
+        "method":"POST",
+        "requestUri":"/cis/scan-configuration/update",
+        "responseCode":200
+      },
+      "input":{"shape":"UpdateCisScanConfigurationRequest"},
+      "output":{"shape":"UpdateCisScanConfigurationResponse"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Updates a CIS scan configuration.</p>"
     },
     "UpdateConfiguration":{
       "name":"UpdateConfiguration",
@@ -898,6 +1129,12 @@
       "max":12,
       "min":12,
       "pattern":"^\\d{12}$"
+    },
+    "AccountIdFilterList":{
+      "type":"list",
+      "member":{"shape":"CisStringFilter"},
+      "max":10,
+      "min":1
     },
     "AccountIdSet":{
       "type":"list",
@@ -1610,6 +1847,16 @@
         }
       }
     },
+    "BenchmarkProfile":{
+      "type":"string",
+      "max":128,
+      "min":0
+    },
+    "BenchmarkVersion":{
+      "type":"string",
+      "max":8,
+      "min":0
+    },
     "Boolean":{
       "type":"boolean",
       "box":true
@@ -1652,6 +1899,807 @@
           "documentation":"<p>The report ID of the canceled SBOM export.</p>"
         }
       }
+    },
+    "CheckCount":{
+      "type":"integer",
+      "max":65536,
+      "min":0
+    },
+    "CheckIdFilterList":{
+      "type":"list",
+      "member":{"shape":"CisStringFilter"},
+      "max":10,
+      "min":1
+    },
+    "CisAccountIdList":{
+      "type":"list",
+      "member":{"shape":"AccountId"},
+      "max":10000,
+      "min":1
+    },
+    "CisCheckAggregation":{
+      "type":"structure",
+      "required":["scanArn"],
+      "members":{
+        "accountId":{
+          "shape":"AccountId",
+          "documentation":"<p>The account ID for the CIS check.</p>"
+        },
+        "checkDescription":{
+          "shape":"String",
+          "documentation":"<p>The description for the CIS check.</p>"
+        },
+        "checkId":{
+          "shape":"String",
+          "documentation":"<p>The check ID for the CIS check.</p>"
+        },
+        "level":{
+          "shape":"CisSecurityLevel",
+          "documentation":"<p>The CIS check level.</p>"
+        },
+        "platform":{
+          "shape":"String",
+          "documentation":"<p>The CIS check platform.</p>"
+        },
+        "scanArn":{
+          "shape":"CisScanArn",
+          "documentation":"<p>The scan ARN for the CIS check scan ARN.</p>"
+        },
+        "statusCounts":{
+          "shape":"StatusCounts",
+          "documentation":"<p>The CIS check status counts.</p>"
+        },
+        "title":{
+          "shape":"String",
+          "documentation":"<p>The CIS check title.</p>"
+        }
+      },
+      "documentation":"<p>A CIS check.</p>"
+    },
+    "CisCheckAggregationList":{
+      "type":"list",
+      "member":{"shape":"CisCheckAggregation"},
+      "max":1000,
+      "min":1
+    },
+    "CisDateFilter":{
+      "type":"structure",
+      "members":{
+        "earliestScanStartTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The CIS date filter's earliest scan start time.</p>"
+        },
+        "latestScanStartTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The CIS date filter's latest scan start time.</p>"
+        }
+      },
+      "documentation":"<p>The CIS date filter.</p>"
+    },
+    "CisFindingArn":{
+      "type":"string",
+      "pattern":"^arn:aws(-gov|-cn)?:inspector2:[-.a-z0-9]{0,20}:\\d{12}:owner/\\d{12}/cis-finding/[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
+    },
+    "CisFindingArnFilterList":{
+      "type":"list",
+      "member":{"shape":"CisStringFilter"},
+      "max":10,
+      "min":1
+    },
+    "CisFindingStatus":{
+      "type":"string",
+      "enum":[
+        "PASSED",
+        "FAILED",
+        "SKIPPED"
+      ]
+    },
+    "CisFindingStatusComparison":{
+      "type":"string",
+      "enum":["EQUALS"]
+    },
+    "CisFindingStatusFilter":{
+      "type":"structure",
+      "required":[
+        "comparison",
+        "value"
+      ],
+      "members":{
+        "comparison":{
+          "shape":"CisFindingStatusComparison",
+          "documentation":"<p>The comparison value of the CIS finding status filter.</p>"
+        },
+        "value":{
+          "shape":"CisFindingStatus",
+          "documentation":"<p>The value of the CIS finding status filter.</p>"
+        }
+      },
+      "documentation":"<p>The CIS finding status filter.</p>"
+    },
+    "CisFindingStatusFilterList":{
+      "type":"list",
+      "member":{"shape":"CisFindingStatusFilter"},
+      "max":10,
+      "min":1
+    },
+    "CisNumberFilter":{
+      "type":"structure",
+      "members":{
+        "lowerInclusive":{
+          "shape":"Integer",
+          "documentation":"<p>The CIS number filter's lower inclusive.</p>"
+        },
+        "upperInclusive":{
+          "shape":"Integer",
+          "documentation":"<p>The CIS number filter's upper inclusive.</p>"
+        }
+      },
+      "documentation":"<p>The CIS number filter.</p>"
+    },
+    "CisNumberFilterList":{
+      "type":"list",
+      "member":{"shape":"CisNumberFilter"},
+      "max":10,
+      "min":1
+    },
+    "CisOwnerId":{
+      "type":"string",
+      "pattern":"^\\d{12}|o-[a-z0-9]{10,32}$"
+    },
+    "CisReportStatus":{
+      "type":"string",
+      "enum":[
+        "SUCCEEDED",
+        "FAILED",
+        "IN_PROGRESS"
+      ]
+    },
+    "CisResultStatus":{
+      "type":"string",
+      "enum":[
+        "PASSED",
+        "FAILED",
+        "SKIPPED"
+      ]
+    },
+    "CisResultStatusComparison":{
+      "type":"string",
+      "enum":["EQUALS"]
+    },
+    "CisResultStatusFilter":{
+      "type":"structure",
+      "required":[
+        "comparison",
+        "value"
+      ],
+      "members":{
+        "comparison":{
+          "shape":"CisResultStatusComparison",
+          "documentation":"<p>The comparison value of the CIS result status filter.</p>"
+        },
+        "value":{
+          "shape":"CisResultStatus",
+          "documentation":"<p>The value of the CIS result status filter.</p>"
+        }
+      },
+      "documentation":"<p>The CIS result status filter.</p>"
+    },
+    "CisResultStatusFilterList":{
+      "type":"list",
+      "member":{"shape":"CisResultStatusFilter"},
+      "max":10,
+      "min":1
+    },
+    "CisRuleDetails":{
+      "type":"blob",
+      "max":1000,
+      "min":0
+    },
+    "CisRuleStatus":{
+      "type":"string",
+      "enum":[
+        "FAILED",
+        "PASSED",
+        "NOT_EVALUATED",
+        "INFORMATIONAL",
+        "UNKNOWN",
+        "NOT_APPLICABLE",
+        "ERROR"
+      ]
+    },
+    "CisScan":{
+      "type":"structure",
+      "required":[
+        "scanArn",
+        "scanConfigurationArn"
+      ],
+      "members":{
+        "failedChecks":{
+          "shape":"Integer",
+          "documentation":"<p>The CIS scan's failed checks.</p>"
+        },
+        "scanArn":{
+          "shape":"CisScanArn",
+          "documentation":"<p>The CIS scan's ARN.</p>"
+        },
+        "scanConfigurationArn":{
+          "shape":"CisScanConfigurationArn",
+          "documentation":"<p>The CIS scan's configuration ARN.</p>"
+        },
+        "scanDate":{
+          "shape":"Timestamp",
+          "documentation":"<p>The CIS scan's date.</p>"
+        },
+        "scanName":{
+          "shape":"CisScanName",
+          "documentation":"<p>The the name of the scan configuration that's associated with this scan.</p>"
+        },
+        "scheduledBy":{
+          "shape":"String",
+          "documentation":"<p>The account or organization that schedules the CIS scan.</p>"
+        },
+        "securityLevel":{
+          "shape":"CisSecurityLevel",
+          "documentation":"<p> The security level for the CIS scan. Security level refers to the Benchmark levels that CIS assigns to a profile. </p>"
+        },
+        "status":{
+          "shape":"CisScanStatus",
+          "documentation":"<p>The CIS scan's status.</p>"
+        },
+        "targets":{
+          "shape":"CisTargets",
+          "documentation":"<p>The CIS scan's targets.</p>"
+        },
+        "totalChecks":{
+          "shape":"Integer",
+          "documentation":"<p>The CIS scan's total checks.</p>"
+        }
+      },
+      "documentation":"<p>The CIS scan.</p>"
+    },
+    "CisScanArn":{
+      "type":"string",
+      "pattern":"^arn:aws(-us-gov|-cn)?:inspector2:[-.a-z0-9]{0,20}:\\d{12}:owner/(\\d{12}|o-[a-z0-9]{10,32})/cis-scan/[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
+    },
+    "CisScanArnFilterList":{
+      "type":"list",
+      "member":{"shape":"CisStringFilter"},
+      "max":10,
+      "min":1
+    },
+    "CisScanConfiguration":{
+      "type":"structure",
+      "required":["scanConfigurationArn"],
+      "members":{
+        "ownerId":{
+          "shape":"CisOwnerId",
+          "documentation":"<p>The CIS scan configuration's owner ID.</p>"
+        },
+        "scanConfigurationArn":{
+          "shape":"CisScanConfigurationArn",
+          "documentation":"<p>The CIS scan configuration's scan configuration ARN.</p>"
+        },
+        "scanName":{
+          "shape":"CisScanName",
+          "documentation":"<p>The name of the CIS scan configuration.</p>"
+        },
+        "schedule":{
+          "shape":"Schedule",
+          "documentation":"<p>The CIS scan configuration's schedule.</p>"
+        },
+        "securityLevel":{
+          "shape":"CisSecurityLevel",
+          "documentation":"<p>The CIS scan configuration's security level.</p>"
+        },
+        "tags":{
+          "shape":"CisTagMap",
+          "documentation":"<p>The CIS scan configuration's tags.</p>"
+        },
+        "targets":{
+          "shape":"CisTargets",
+          "documentation":"<p>The CIS scan configuration's targets.</p>"
+        }
+      },
+      "documentation":"<p>The CIS scan configuration.</p>"
+    },
+    "CisScanConfigurationArn":{
+      "type":"string",
+      "pattern":"^arn:aws(-us-gov|-cn)?:inspector2:[a-z]{2}(-gov)?-[a-z]+-[0-9]{1}:[0-9]{12}:owner/(o-[a-z0-9]+|[0-9]{12})/cis-configuration/[0-9a-fA-F-]+$"
+    },
+    "CisScanConfigurationArnFilterList":{
+      "type":"list",
+      "member":{"shape":"CisStringFilter"},
+      "max":10,
+      "min":1
+    },
+    "CisScanConfigurationList":{
+      "type":"list",
+      "member":{"shape":"CisScanConfiguration"},
+      "max":100,
+      "min":0
+    },
+    "CisScanConfigurationsSortBy":{
+      "type":"string",
+      "enum":[
+        "SCAN_NAME",
+        "SCAN_CONFIGURATION_ARN"
+      ]
+    },
+    "CisScanDateFilterList":{
+      "type":"list",
+      "member":{"shape":"CisDateFilter"},
+      "max":1,
+      "min":1
+    },
+    "CisScanList":{
+      "type":"list",
+      "member":{"shape":"CisScan"},
+      "max":50,
+      "min":0
+    },
+    "CisScanName":{
+      "type":"string",
+      "max":128,
+      "min":1
+    },
+    "CisScanNameFilterList":{
+      "type":"list",
+      "member":{"shape":"CisStringFilter"},
+      "max":10,
+      "min":1
+    },
+    "CisScanResultDetails":{
+      "type":"structure",
+      "required":["scanArn"],
+      "members":{
+        "accountId":{
+          "shape":"AccountId",
+          "documentation":"<p>The CIS scan result details' account ID.</p>"
+        },
+        "checkDescription":{
+          "shape":"String",
+          "documentation":"<p>The account ID that's associated with the CIS scan result details.</p>"
+        },
+        "checkId":{
+          "shape":"String",
+          "documentation":"<p>The CIS scan result details' check ID.</p>"
+        },
+        "findingArn":{
+          "shape":"CisFindingArn",
+          "documentation":"<p>The CIS scan result details' finding ARN.</p>"
+        },
+        "level":{
+          "shape":"CisSecurityLevel",
+          "documentation":"<p>The CIS scan result details' level.</p>"
+        },
+        "platform":{
+          "shape":"String",
+          "documentation":"<p>The CIS scan result details' platform.</p>"
+        },
+        "remediation":{
+          "shape":"String",
+          "documentation":"<p>The CIS scan result details' remediation.</p>"
+        },
+        "scanArn":{
+          "shape":"CisScanArn",
+          "documentation":"<p>The CIS scan result details' scan ARN.</p>"
+        },
+        "status":{
+          "shape":"CisFindingStatus",
+          "documentation":"<p>The CIS scan result details' status.</p>"
+        },
+        "statusReason":{
+          "shape":"String",
+          "documentation":"<p>The CIS scan result details' status reason.</p>"
+        },
+        "targetResourceId":{
+          "shape":"ResourceId",
+          "documentation":"<p>The CIS scan result details' target resource ID.</p>"
+        },
+        "title":{
+          "shape":"String",
+          "documentation":"<p>The CIS scan result details' title.</p>"
+        }
+      },
+      "documentation":"<p>The CIS scan result details.</p>"
+    },
+    "CisScanResultDetailsFilterCriteria":{
+      "type":"structure",
+      "members":{
+        "checkIdFilters":{
+          "shape":"CheckIdFilterList",
+          "documentation":"<p>The criteria's check ID filters.</p>"
+        },
+        "findingArnFilters":{
+          "shape":"CisFindingArnFilterList",
+          "documentation":"<p>The criteria's finding ARN filters.</p>"
+        },
+        "findingStatusFilters":{
+          "shape":"CisFindingStatusFilterList",
+          "documentation":"<p>The criteria's finding status filters.</p>"
+        },
+        "securityLevelFilters":{
+          "shape":"CisSecurityLevelFilterList",
+          "documentation":"<p> The criteria's security level filters. . Security level refers to the Benchmark levels that CIS assigns to a profile. </p>"
+        },
+        "titleFilters":{
+          "shape":"TitleFilterList",
+          "documentation":"<p>The criteria's title filters.</p>"
+        }
+      },
+      "documentation":"<p>The CIS scan result details filter criteria.</p>"
+    },
+    "CisScanResultDetailsList":{
+      "type":"list",
+      "member":{"shape":"CisScanResultDetails"},
+      "max":1000,
+      "min":1
+    },
+    "CisScanResultDetailsSortBy":{
+      "type":"string",
+      "enum":[
+        "CHECK_ID",
+        "STATUS"
+      ]
+    },
+    "CisScanResultsAggregatedByChecksFilterCriteria":{
+      "type":"structure",
+      "members":{
+        "accountIdFilters":{
+          "shape":"OneAccountIdFilterList",
+          "documentation":"<p>The criteria's account ID filters.</p>"
+        },
+        "checkIdFilters":{
+          "shape":"CheckIdFilterList",
+          "documentation":"<p>The criteria's check ID filters.</p>"
+        },
+        "failedResourcesFilters":{
+          "shape":"CisNumberFilterList",
+          "documentation":"<p>The criteria's failed resources filters.</p>"
+        },
+        "platformFilters":{
+          "shape":"PlatformFilterList",
+          "documentation":"<p>The criteria's platform filters.</p>"
+        },
+        "securityLevelFilters":{
+          "shape":"CisSecurityLevelFilterList",
+          "documentation":"<p>The criteria's security level filters.</p>"
+        },
+        "titleFilters":{
+          "shape":"TitleFilterList",
+          "documentation":"<p>The criteria's title filters.</p>"
+        }
+      },
+      "documentation":"<p>The scan results aggregated by checks filter criteria.</p>"
+    },
+    "CisScanResultsAggregatedByChecksSortBy":{
+      "type":"string",
+      "enum":[
+        "CHECK_ID",
+        "TITLE",
+        "PLATFORM",
+        "FAILED_COUNTS",
+        "SECURITY_LEVEL"
+      ]
+    },
+    "CisScanResultsAggregatedByTargetResourceFilterCriteria":{
+      "type":"structure",
+      "members":{
+        "accountIdFilters":{
+          "shape":"AccountIdFilterList",
+          "documentation":"<p>The criteria's account ID filters.</p>"
+        },
+        "checkIdFilters":{
+          "shape":"CheckIdFilterList",
+          "documentation":"<p>The criteria's check ID filters.</p>"
+        },
+        "failedChecksFilters":{
+          "shape":"CisNumberFilterList",
+          "documentation":"<p>The criteria's failed checks filters.</p>"
+        },
+        "platformFilters":{
+          "shape":"PlatformFilterList",
+          "documentation":"<p>The criteria's platform filters.</p>"
+        },
+        "statusFilters":{
+          "shape":"CisResultStatusFilterList",
+          "documentation":"<p>The criteria's status filter.</p>"
+        },
+        "targetResourceIdFilters":{
+          "shape":"ResourceIdFilterList",
+          "documentation":"<p>The criteria's target resource ID filters.</p>"
+        },
+        "targetResourceTagFilters":{
+          "shape":"ResourceTagFilterList",
+          "documentation":"<p>The criteria's target resource tag filters.</p>"
+        },
+        "targetStatusFilters":{
+          "shape":"TargetStatusFilterList",
+          "documentation":"<p>The criteria's target status filters.</p>"
+        },
+        "targetStatusReasonFilters":{
+          "shape":"TargetStatusReasonFilterList",
+          "documentation":"<p>The criteria's target status reason filters.</p>"
+        }
+      },
+      "documentation":"<p>The scan results aggregated by target resource filter criteria.</p>"
+    },
+    "CisScanResultsAggregatedByTargetResourceSortBy":{
+      "type":"string",
+      "enum":[
+        "RESOURCE_ID",
+        "FAILED_COUNTS",
+        "ACCOUNT_ID",
+        "PLATFORM",
+        "TARGET_STATUS",
+        "TARGET_STATUS_REASON"
+      ]
+    },
+    "CisScanResultsMaxResults":{
+      "type":"integer",
+      "box":true,
+      "max":100,
+      "min":1
+    },
+    "CisScanStatus":{
+      "type":"string",
+      "enum":[
+        "FAILED",
+        "COMPLETED",
+        "CANCELLED",
+        "IN_PROGRESS"
+      ]
+    },
+    "CisScanStatusComparison":{
+      "type":"string",
+      "enum":["EQUALS"]
+    },
+    "CisScanStatusFilter":{
+      "type":"structure",
+      "required":[
+        "comparison",
+        "value"
+      ],
+      "members":{
+        "comparison":{
+          "shape":"CisScanStatusComparison",
+          "documentation":"<p>The filter comparison value.</p>"
+        },
+        "value":{
+          "shape":"CisScanStatus",
+          "documentation":"<p>The filter value.</p>"
+        }
+      },
+      "documentation":"<p>The CIS scan status filter.</p>"
+    },
+    "CisScanStatusFilterList":{
+      "type":"list",
+      "member":{"shape":"CisScanStatusFilter"},
+      "max":10,
+      "min":1
+    },
+    "CisScheduledByFilterList":{
+      "type":"list",
+      "member":{"shape":"CisStringFilter"},
+      "max":10,
+      "min":1
+    },
+    "CisSecurityLevel":{
+      "type":"string",
+      "enum":[
+        "LEVEL_1",
+        "LEVEL_2"
+      ]
+    },
+    "CisSecurityLevelComparison":{
+      "type":"string",
+      "enum":["EQUALS"]
+    },
+    "CisSecurityLevelFilter":{
+      "type":"structure",
+      "required":[
+        "comparison",
+        "value"
+      ],
+      "members":{
+        "comparison":{
+          "shape":"CisSecurityLevelComparison",
+          "documentation":"<p>The CIS security filter comparison value.</p>"
+        },
+        "value":{
+          "shape":"CisSecurityLevel",
+          "documentation":"<p>The CIS security filter value.</p>"
+        }
+      },
+      "documentation":"<p> The CIS security level filter. Security level refers to the Benchmark levels that CIS assigns to a profile. </p>"
+    },
+    "CisSecurityLevelFilterList":{
+      "type":"list",
+      "member":{"shape":"CisSecurityLevelFilter"},
+      "max":10,
+      "min":1
+    },
+    "CisSessionMessage":{
+      "type":"structure",
+      "required":[
+        "cisRuleDetails",
+        "ruleId",
+        "status"
+      ],
+      "members":{
+        "cisRuleDetails":{
+          "shape":"CisRuleDetails",
+          "documentation":"<p>The CIS rule details for the CIS session message.</p>"
+        },
+        "ruleId":{
+          "shape":"RuleId",
+          "documentation":"<p>The rule ID for the CIS session message.</p>"
+        },
+        "status":{
+          "shape":"CisRuleStatus",
+          "documentation":"<p>The status of the CIS session message.</p>"
+        }
+      },
+      "documentation":"<p>The CIS session message.</p>"
+    },
+    "CisSessionMessages":{
+      "type":"list",
+      "member":{"shape":"CisSessionMessage"},
+      "max":50,
+      "min":1
+    },
+    "CisSortOrder":{
+      "type":"string",
+      "enum":[
+        "ASC",
+        "DESC"
+      ]
+    },
+    "CisStringComparison":{
+      "type":"string",
+      "enum":[
+        "EQUALS",
+        "PREFIX",
+        "NOT_EQUALS"
+      ]
+    },
+    "CisStringFilter":{
+      "type":"structure",
+      "required":[
+        "comparison",
+        "value"
+      ],
+      "members":{
+        "comparison":{
+          "shape":"CisStringComparison",
+          "documentation":"<p>The comparison value of the CIS string filter.</p>"
+        },
+        "value":{
+          "shape":"String",
+          "documentation":"<p>The value of the CIS string filter.</p>"
+        }
+      },
+      "documentation":"<p>The CIS string filter.</p>"
+    },
+    "CisTagMap":{
+      "type":"map",
+      "key":{"shape":"MapKey"},
+      "value":{"shape":"MapValue"}
+    },
+    "CisTargetResourceAggregation":{
+      "type":"structure",
+      "required":["scanArn"],
+      "members":{
+        "accountId":{
+          "shape":"AccountId",
+          "documentation":"<p>The account ID for the CIS target resource.</p>"
+        },
+        "platform":{
+          "shape":"String",
+          "documentation":"<p>The platform for the CIS target resource.</p>"
+        },
+        "scanArn":{
+          "shape":"CisScanArn",
+          "documentation":"<p>The scan ARN for the CIS target resource.</p>"
+        },
+        "statusCounts":{
+          "shape":"StatusCounts",
+          "documentation":"<p>The target resource status counts.</p>"
+        },
+        "targetResourceId":{
+          "shape":"ResourceId",
+          "documentation":"<p>The ID of the target resource.</p>"
+        },
+        "targetResourceTags":{
+          "shape":"TargetResourceTags",
+          "documentation":"<p>The tag for the target resource.</p>"
+        },
+        "targetStatus":{
+          "shape":"CisTargetStatus",
+          "documentation":"<p>The status of the target resource.</p>"
+        },
+        "targetStatusReason":{
+          "shape":"CisTargetStatusReason",
+          "documentation":"<p>The reason for the target resource.</p>"
+        }
+      },
+      "documentation":"<p>The CIS target resource aggregation.</p>"
+    },
+    "CisTargetResourceAggregationList":{
+      "type":"list",
+      "member":{"shape":"CisTargetResourceAggregation"},
+      "max":1000,
+      "min":1
+    },
+    "CisTargetStatus":{
+      "type":"string",
+      "enum":[
+        "TIMED_OUT",
+        "CANCELLED",
+        "COMPLETED"
+      ]
+    },
+    "CisTargetStatusComparison":{
+      "type":"string",
+      "enum":["EQUALS"]
+    },
+    "CisTargetStatusFilter":{
+      "type":"structure",
+      "required":[
+        "comparison",
+        "value"
+      ],
+      "members":{
+        "comparison":{
+          "shape":"CisTargetStatusComparison",
+          "documentation":"<p>The comparison value of the CIS target status filter.</p>"
+        },
+        "value":{
+          "shape":"CisTargetStatus",
+          "documentation":"<p>The value of the CIS target status filter.</p>"
+        }
+      },
+      "documentation":"<p>The CIS target status filter.</p>"
+    },
+    "CisTargetStatusReason":{
+      "type":"string",
+      "enum":[
+        "SCAN_IN_PROGRESS",
+        "UNSUPPORTED_OS",
+        "SSM_UNMANAGED"
+      ]
+    },
+    "CisTargetStatusReasonFilter":{
+      "type":"structure",
+      "required":[
+        "comparison",
+        "value"
+      ],
+      "members":{
+        "comparison":{
+          "shape":"CisTargetStatusComparison",
+          "documentation":"<p>The comparison value of the CIS target status reason filter.</p>"
+        },
+        "value":{
+          "shape":"CisTargetStatusReason",
+          "documentation":"<p>The value of the CIS target status reason filter.</p>"
+        }
+      },
+      "documentation":"<p>The CIS target status reason filter.</p>"
+    },
+    "CisTargets":{
+      "type":"structure",
+      "members":{
+        "accountIds":{
+          "shape":"CisAccountIdList",
+          "documentation":"<p>The CIS target account ids.</p>"
+        },
+        "targetResourceTags":{
+          "shape":"TargetResourceTags",
+          "documentation":"<p>The CIS target resource tags.</p>"
+        }
+      },
+      "documentation":"<p>The CIS targets.</p>"
     },
     "CisaAction":{
       "type":"string",
@@ -1851,6 +2899,24 @@
     },
     "Component":{"type":"string"},
     "ComponentType":{"type":"string"},
+    "ComputePlatform":{
+      "type":"structure",
+      "members":{
+        "product":{
+          "shape":"Product",
+          "documentation":"<p>The compute platform product.</p>"
+        },
+        "vendor":{
+          "shape":"Vendor",
+          "documentation":"<p>The compute platform vendor.</p>"
+        },
+        "version":{
+          "shape":"PlatformVersion",
+          "documentation":"<p>The compute platform version.</p>"
+        }
+      },
+      "documentation":"<p>A compute platform.</p>"
+    },
     "ConflictException":{
       "type":"structure",
       "required":[
@@ -1957,7 +3023,7 @@
         },
         "resourceType":{
           "shape":"CoverageStringFilterList",
-          "documentation":"<p>An array of Amazon Web Services resource types to return coverage statistics for. The values can be <code>AWS_EC2_INSTANCE</code>, <code>AWS_LAMBDA_FUNCTION</code> or <code>AWS_ECR_REPOSITORY</code>.</p>"
+          "documentation":"<p>An array of Amazon Web Services resource types to return coverage statistics for. The values can be <code>AWS_EC2_INSTANCE</code>, <code>AWS_LAMBDA_FUNCTION</code>, <code>AWS_ECR_CONTAINER_IMAGE</code>, <code>AWS_ECR_REPOSITORY</code> or <code>AWS_ACCOUNT</code>.</p>"
         },
         "scanStatusCode":{
           "shape":"CoverageStringFilterList",
@@ -2094,6 +3160,64 @@
     "CoveredResources":{
       "type":"list",
       "member":{"shape":"CoveredResource"}
+    },
+    "CreateCisScanConfigurationRequest":{
+      "type":"structure",
+      "required":[
+        "scanName",
+        "schedule",
+        "securityLevel",
+        "targets"
+      ],
+      "members":{
+        "scanName":{
+          "shape":"CisScanName",
+          "documentation":"<p>The scan name for the CIS scan configuration.</p>"
+        },
+        "schedule":{
+          "shape":"Schedule",
+          "documentation":"<p>The schedule for the CIS scan configuration.</p>"
+        },
+        "securityLevel":{
+          "shape":"CisSecurityLevel",
+          "documentation":"<p> The security level for the CIS scan configuration. Security level refers to the Benchmark levels that CIS assigns to a profile. </p>"
+        },
+        "tags":{
+          "shape":"CisTagMap",
+          "documentation":"<p>The tags for the CIS scan configuration.</p>"
+        },
+        "targets":{
+          "shape":"CreateCisTargets",
+          "documentation":"<p>The targets for the CIS scan configuration.</p>"
+        }
+      }
+    },
+    "CreateCisScanConfigurationResponse":{
+      "type":"structure",
+      "members":{
+        "scanConfigurationArn":{
+          "shape":"CisScanConfigurationArn",
+          "documentation":"<p>The scan configuration ARN for the CIS scan configuration.</p>"
+        }
+      }
+    },
+    "CreateCisTargets":{
+      "type":"structure",
+      "required":[
+        "accountIds",
+        "targetResourceTags"
+      ],
+      "members":{
+        "accountIds":{
+          "shape":"TargetAccountList",
+          "documentation":"<p>The CIS target account ids.</p>"
+        },
+        "targetResourceTags":{
+          "shape":"TargetResourceTags",
+          "documentation":"<p>The CIS target resource tags.</p>"
+        }
+      },
+      "documentation":"<p>Creates CIS targets.</p>"
     },
     "CreateFilterRequest":{
       "type":"structure",
@@ -2343,6 +3467,17 @@
       "member":{"shape":"Cwe"},
       "min":0
     },
+    "DailySchedule":{
+      "type":"structure",
+      "required":["startTime"],
+      "members":{
+        "startTime":{
+          "shape":"Time",
+          "documentation":"<p>The schedule start time.</p>"
+        }
+      },
+      "documentation":"<p>A daily schedule.</p>"
+    },
     "DateFilter":{
       "type":"structure",
       "members":{
@@ -2364,6 +3499,24 @@
       "min":1
     },
     "DateTimeTimestamp":{"type":"timestamp"},
+    "Day":{
+      "type":"string",
+      "enum":[
+        "SUN",
+        "MON",
+        "TUE",
+        "WED",
+        "THU",
+        "FRI",
+        "SAT"
+      ]
+    },
+    "DaysList":{
+      "type":"list",
+      "member":{"shape":"Day"},
+      "max":7,
+      "min":1
+    },
     "DelegatedAdmin":{
       "type":"structure",
       "members":{
@@ -2404,6 +3557,26 @@
         "ENABLED",
         "DISABLE_IN_PROGRESS"
       ]
+    },
+    "DeleteCisScanConfigurationRequest":{
+      "type":"structure",
+      "required":["scanConfigurationArn"],
+      "members":{
+        "scanConfigurationArn":{
+          "shape":"CisScanConfigurationArn",
+          "documentation":"<p>The ARN of the CIS scan configuration.</p>"
+        }
+      }
+    },
+    "DeleteCisScanConfigurationResponse":{
+      "type":"structure",
+      "required":["scanConfigurationArn"],
+      "members":{
+        "scanConfigurationArn":{
+          "shape":"CisScanConfigurationArn",
+          "documentation":"<p>The ARN of the CIS scan configuration.</p>"
+        }
+      }
     },
     "DeleteFilterRequest":{
       "type":"structure",
@@ -3658,6 +4831,94 @@
       "type":"string",
       "pattern":"^[a-zA-Z0-9-_\\.]+(:(\\$LATEST|[a-zA-Z0-9-_]+))?$"
     },
+    "GetCisScanReportRequest":{
+      "type":"structure",
+      "required":["scanArn"],
+      "members":{
+        "scanArn":{
+          "shape":"CisScanArn",
+          "documentation":"<p>The scan ARN.</p>"
+        },
+        "targetAccounts":{
+          "shape":"ReportTargetAccounts",
+          "documentation":"<p>The target accounts.</p>"
+        }
+      }
+    },
+    "GetCisScanReportResponse":{
+      "type":"structure",
+      "members":{
+        "status":{
+          "shape":"CisReportStatus",
+          "documentation":"<p>The status.</p>"
+        },
+        "url":{
+          "shape":"String",
+          "documentation":"<p> The URL where the CIS scan report PDF can be downloaded. </p>"
+        }
+      }
+    },
+    "GetCisScanResultDetailsMaxResults":{
+      "type":"integer",
+      "box":true,
+      "max":1000,
+      "min":1
+    },
+    "GetCisScanResultDetailsRequest":{
+      "type":"structure",
+      "required":[
+        "accountId",
+        "scanArn",
+        "targetResourceId"
+      ],
+      "members":{
+        "accountId":{
+          "shape":"AccountId",
+          "documentation":"<p>The account ID.</p>"
+        },
+        "filterCriteria":{
+          "shape":"CisScanResultDetailsFilterCriteria",
+          "documentation":"<p>The filter criteria.</p>"
+        },
+        "maxResults":{
+          "shape":"GetCisScanResultDetailsMaxResults",
+          "documentation":"<p>The maximum number of CIS scan result details to be returned in a single page of results.</p>"
+        },
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The pagination token from a previous request that's used to retrieve the next page of results.</p>"
+        },
+        "scanArn":{
+          "shape":"CisScanArn",
+          "documentation":"<p>The scan ARN.</p>"
+        },
+        "sortBy":{
+          "shape":"CisScanResultDetailsSortBy",
+          "documentation":"<p>The sort by order.</p>"
+        },
+        "sortOrder":{
+          "shape":"CisSortOrder",
+          "documentation":"<p>The sort order.</p>"
+        },
+        "targetResourceId":{
+          "shape":"ResourceId",
+          "documentation":"<p>The target resource ID.</p>"
+        }
+      }
+    },
+    "GetCisScanResultDetailsResponse":{
+      "type":"structure",
+      "members":{
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The pagination token from a previous request that's used to retrieve the next page of results.</p>"
+        },
+        "scanResultDetails":{
+          "shape":"CisScanResultDetailsList",
+          "documentation":"<p>The scan result details.</p>"
+        }
+      }
+    },
     "GetConfigurationRequest":{
       "type":"structure",
       "members":{
@@ -4208,6 +5469,264 @@
         }
       }
     },
+    "ListCisScanConfigurationsFilterCriteria":{
+      "type":"structure",
+      "members":{
+        "scanConfigurationArnFilters":{
+          "shape":"CisScanConfigurationArnFilterList",
+          "documentation":"<p>The list of scan configuration ARN filters.</p>"
+        },
+        "scanNameFilters":{
+          "shape":"CisScanNameFilterList",
+          "documentation":"<p>The list of scan name filters.</p>"
+        },
+        "targetResourceTagFilters":{
+          "shape":"ResourceTagFilterList",
+          "documentation":"<p>The list of target resource tag filters.</p>"
+        }
+      },
+      "documentation":"<p>A list of CIS scan configurations filter criteria.</p>"
+    },
+    "ListCisScanConfigurationsMaxResults":{
+      "type":"integer",
+      "box":true,
+      "max":100,
+      "min":1
+    },
+    "ListCisScanConfigurationsRequest":{
+      "type":"structure",
+      "members":{
+        "filterCriteria":{
+          "shape":"ListCisScanConfigurationsFilterCriteria",
+          "documentation":"<p>The CIS scan configuration filter criteria.</p>"
+        },
+        "maxResults":{
+          "shape":"ListCisScanConfigurationsMaxResults",
+          "documentation":"<p>The maximum number of CIS scan configurations to be returned in a single page of results.</p>"
+        },
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The pagination token from a previous request that's used to retrieve the next page of results.</p>"
+        },
+        "sortBy":{
+          "shape":"CisScanConfigurationsSortBy",
+          "documentation":"<p>The CIS scan configuration sort by order.</p>"
+        },
+        "sortOrder":{
+          "shape":"CisSortOrder",
+          "documentation":"<p>The CIS scan configuration sort order order.</p>"
+        }
+      }
+    },
+    "ListCisScanConfigurationsResponse":{
+      "type":"structure",
+      "members":{
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The pagination token from a previous request that's used to retrieve the next page of results.</p>"
+        },
+        "scanConfigurations":{
+          "shape":"CisScanConfigurationList",
+          "documentation":"<p>The CIS scan configuration scan configurations.</p>"
+        }
+      }
+    },
+    "ListCisScanResultsAggregatedByChecksRequest":{
+      "type":"structure",
+      "required":["scanArn"],
+      "members":{
+        "filterCriteria":{
+          "shape":"CisScanResultsAggregatedByChecksFilterCriteria",
+          "documentation":"<p>The filter criteria.</p>"
+        },
+        "maxResults":{
+          "shape":"CisScanResultsMaxResults",
+          "documentation":"<p>The maximum number of scan results aggregated by checks to be returned in a single page of results.</p>"
+        },
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The pagination token from a previous request that's used to retrieve the next page of results.</p>"
+        },
+        "scanArn":{
+          "shape":"CisScanArn",
+          "documentation":"<p>The scan ARN.</p>"
+        },
+        "sortBy":{
+          "shape":"CisScanResultsAggregatedByChecksSortBy",
+          "documentation":"<p>The sort by order.</p>"
+        },
+        "sortOrder":{
+          "shape":"CisSortOrder",
+          "documentation":"<p>The sort order.</p>"
+        }
+      }
+    },
+    "ListCisScanResultsAggregatedByChecksResponse":{
+      "type":"structure",
+      "members":{
+        "checkAggregations":{
+          "shape":"CisCheckAggregationList",
+          "documentation":"<p>The check aggregations.</p>"
+        },
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The pagination token from a previous request that's used to retrieve the next page of results.</p>"
+        }
+      }
+    },
+    "ListCisScanResultsAggregatedByTargetResourceRequest":{
+      "type":"structure",
+      "required":["scanArn"],
+      "members":{
+        "filterCriteria":{
+          "shape":"CisScanResultsAggregatedByTargetResourceFilterCriteria",
+          "documentation":"<p>The filter criteria.</p>"
+        },
+        "maxResults":{
+          "shape":"CisScanResultsMaxResults",
+          "documentation":"<p>The maximum number of scan results aggregated by a target resource to be returned in a single page of results.</p>"
+        },
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The pagination token from a previous request that's used to retrieve the next page of results.</p>"
+        },
+        "scanArn":{
+          "shape":"CisScanArn",
+          "documentation":"<p>The scan ARN.</p>"
+        },
+        "sortBy":{
+          "shape":"CisScanResultsAggregatedByTargetResourceSortBy",
+          "documentation":"<p>The sort by order.</p>"
+        },
+        "sortOrder":{
+          "shape":"CisSortOrder",
+          "documentation":"<p>The sort order.</p>"
+        }
+      }
+    },
+    "ListCisScanResultsAggregatedByTargetResourceResponse":{
+      "type":"structure",
+      "members":{
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The pagination token from a previous request that's used to retrieve the next page of results.</p>"
+        },
+        "targetResourceAggregations":{
+          "shape":"CisTargetResourceAggregationList",
+          "documentation":"<p>The resource aggregations.</p>"
+        }
+      }
+    },
+    "ListCisScansDetailLevel":{
+      "type":"string",
+      "enum":[
+        "ORGANIZATION",
+        "MEMBER"
+      ]
+    },
+    "ListCisScansFilterCriteria":{
+      "type":"structure",
+      "members":{
+        "failedChecksFilters":{
+          "shape":"CisNumberFilterList",
+          "documentation":"<p>The list of failed checks filters.</p>"
+        },
+        "scanArnFilters":{
+          "shape":"CisScanArnFilterList",
+          "documentation":"<p>The list of scan ARN filters.</p>"
+        },
+        "scanAtFilters":{
+          "shape":"CisScanDateFilterList",
+          "documentation":"<p>The list of scan at filters.</p>"
+        },
+        "scanConfigurationArnFilters":{
+          "shape":"CisScanConfigurationArnFilterList",
+          "documentation":"<p>The list of scan configuration ARN filters.</p>"
+        },
+        "scanNameFilters":{
+          "shape":"CisScanNameFilterList",
+          "documentation":"<p>The list of scan name filters.</p>"
+        },
+        "scanStatusFilters":{
+          "shape":"CisScanStatusFilterList",
+          "documentation":"<p>The list of scan status filters.</p>"
+        },
+        "scheduledByFilters":{
+          "shape":"CisScheduledByFilterList",
+          "documentation":"<p>The list of scheduled by filters.</p>"
+        },
+        "targetAccountIdFilters":{
+          "shape":"AccountIdFilterList",
+          "documentation":"<p>The list of target account ID filters.</p>"
+        },
+        "targetResourceIdFilters":{
+          "shape":"ResourceIdFilterList",
+          "documentation":"<p>The list of target resource ID filters.</p>"
+        },
+        "targetResourceTagFilters":{
+          "shape":"ResourceTagFilterList",
+          "documentation":"<p>The list of target resource tag filters.</p>"
+        }
+      },
+      "documentation":"<p>A list of CIS scans filter criteria.</p>"
+    },
+    "ListCisScansMaxResults":{
+      "type":"integer",
+      "box":true,
+      "max":100,
+      "min":1
+    },
+    "ListCisScansRequest":{
+      "type":"structure",
+      "members":{
+        "detailLevel":{
+          "shape":"ListCisScansDetailLevel",
+          "documentation":"<p>The detail applied to the CIS scan.</p>"
+        },
+        "filterCriteria":{
+          "shape":"ListCisScansFilterCriteria",
+          "documentation":"<p>The CIS scan filter criteria.</p>"
+        },
+        "maxResults":{
+          "shape":"ListCisScansMaxResults",
+          "documentation":"<p>The maximum number of results to be returned.</p>"
+        },
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The pagination token from a previous request that's used to retrieve the next page of results.</p>"
+        },
+        "sortBy":{
+          "shape":"ListCisScansSortBy",
+          "documentation":"<p>The CIS scans sort by order.</p>"
+        },
+        "sortOrder":{
+          "shape":"CisSortOrder",
+          "documentation":"<p>The CIS scans sort order.</p>"
+        }
+      }
+    },
+    "ListCisScansResponse":{
+      "type":"structure",
+      "members":{
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The pagination token from a previous request that's used to retrieve the next page of results.</p>"
+        },
+        "scans":{
+          "shape":"CisScanList",
+          "documentation":"<p>The CIS scans.</p>"
+        }
+      }
+    },
+    "ListCisScansSortBy":{
+      "type":"string",
+      "enum":[
+        "STATUS",
+        "SCHEDULED_BY",
+        "SCAN_START_DATE",
+        "FAILED_CHECKS"
+      ]
+    },
     "ListCoverageMaxResults":{
       "type":"integer",
       "box":true,
@@ -4670,6 +6189,24 @@
       "type":"double",
       "min":0
     },
+    "MonthlySchedule":{
+      "type":"structure",
+      "required":[
+        "day",
+        "startTime"
+      ],
+      "members":{
+        "day":{
+          "shape":"Day",
+          "documentation":"<p>The monthly schedule's day.</p>"
+        },
+        "startTime":{
+          "shape":"Time",
+          "documentation":"<p>The monthly schedule's start time.</p>"
+        }
+      },
+      "documentation":"<p>A monthly schedule.</p>"
+    },
     "NetworkPath":{
       "type":"structure",
       "members":{
@@ -4742,6 +6279,18 @@
       "member":{"shape":"NumberFilter"},
       "max":10,
       "min":1
+    },
+    "OneAccountIdFilterList":{
+      "type":"list",
+      "member":{"shape":"CisStringFilter"},
+      "max":1,
+      "min":1
+    },
+    "OneTimeSchedule":{
+      "type":"structure",
+      "members":{
+      },
+      "documentation":"<p>A one time schedule.</p>"
     },
     "Operation":{
       "type":"string",
@@ -4981,6 +6530,17 @@
       "max":1024,
       "min":1
     },
+    "PlatformFilterList":{
+      "type":"list",
+      "member":{"shape":"CisStringFilter"},
+      "max":10,
+      "min":1
+    },
+    "PlatformVersion":{
+      "type":"string",
+      "max":8,
+      "min":0
+    },
     "Port":{
       "type":"integer",
       "box":true,
@@ -5024,6 +6584,16 @@
       "member":{"shape":"PortRangeFilter"},
       "max":10,
       "min":1
+    },
+    "Product":{
+      "type":"string",
+      "max":32,
+      "min":0
+    },
+    "Reason":{
+      "type":"string",
+      "max":1024,
+      "min":0
     },
     "Recommendation":{
       "type":"structure",
@@ -5092,6 +6662,12 @@
     "ReportId":{
       "type":"string",
       "pattern":"\\b[a-f0-9]{8}\\b-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-\\b[a-f0-9]{12}\\b"
+    },
+    "ReportTargetAccounts":{
+      "type":"list",
+      "member":{"shape":"AccountId"},
+      "max":1,
+      "min":0
     },
     "ReportingErrorCode":{
       "type":"string",
@@ -5272,6 +6848,12 @@
       "min":10,
       "pattern":"(^arn:.*:ecr:.*:\\d{12}:repository\\/(?:[a-z0-9]+(?:[._-][a-z0-9]+)*\\/)*[a-z0-9]+(?:[._-][a-z0-9]+)*(\\/sha256:[a-z0-9]{64})?$)|(^i-([a-z0-9]{8}|[a-z0-9]{17}|\\\\*)$|(^arn:(aws[a-zA-Z-]*)?:lambda:[a-z]{2}(-gov)?-[a-z]+-\\d{1}:\\d{12}:function:[a-zA-Z0-9-_\\.]+(:(\\$LATEST|[a-zA-Z0-9-_]+))?$))"
     },
+    "ResourceIdFilterList":{
+      "type":"list",
+      "member":{"shape":"CisStringFilter"},
+      "max":10,
+      "min":1
+    },
     "ResourceList":{
       "type":"list",
       "member":{"shape":"Resource"},
@@ -5436,6 +7018,12 @@
       "max":1024,
       "min":1
     },
+    "ResourceTagFilterList":{
+      "type":"list",
+      "member":{"shape":"TagFilter"},
+      "max":10,
+      "min":1
+    },
     "ResourceType":{
       "type":"string",
       "enum":[
@@ -5448,6 +7036,11 @@
     "RiskScore":{
       "type":"integer",
       "box":true
+    },
+    "RuleId":{
+      "type":"string",
+      "max":500,
+      "min":1
     },
     "Runtime":{
       "type":"string",
@@ -5538,6 +7131,29 @@
         "CODE"
       ]
     },
+    "Schedule":{
+      "type":"structure",
+      "members":{
+        "daily":{
+          "shape":"DailySchedule",
+          "documentation":"<p>The schedule's daily.</p>"
+        },
+        "monthly":{
+          "shape":"MonthlySchedule",
+          "documentation":"<p>The schedule's monthly.</p>"
+        },
+        "oneTime":{
+          "shape":"OneTimeSchedule",
+          "documentation":"<p>The schedule's one time.</p>"
+        },
+        "weekly":{
+          "shape":"WeeklySchedule",
+          "documentation":"<p>The schedule's weekly.</p>"
+        }
+      },
+      "documentation":"<p>A schedule.</p>",
+      "union":true
+    },
     "SearchVulnerabilitiesFilterCriteria":{
       "type":"structure",
       "required":["vulnerabilityIds"],
@@ -5586,6 +7202,55 @@
       "member":{"shape":"SecurityGroupId"},
       "max":5,
       "min":0
+    },
+    "SendCisSessionHealthRequest":{
+      "type":"structure",
+      "required":[
+        "scanJobId",
+        "sessionToken"
+      ],
+      "members":{
+        "scanJobId":{
+          "shape":"UUID",
+          "documentation":"<p>A unique identifier for the scan job.</p>"
+        },
+        "sessionToken":{
+          "shape":"UUID",
+          "documentation":"<p>The unique token that identifies the CIS session.</p>"
+        }
+      }
+    },
+    "SendCisSessionHealthResponse":{
+      "type":"structure",
+      "members":{
+      }
+    },
+    "SendCisSessionTelemetryRequest":{
+      "type":"structure",
+      "required":[
+        "messages",
+        "scanJobId",
+        "sessionToken"
+      ],
+      "members":{
+        "messages":{
+          "shape":"CisSessionMessages",
+          "documentation":"<p>The CIS session telemetry messages.</p>"
+        },
+        "scanJobId":{
+          "shape":"UUID",
+          "documentation":"<p>A unique identifier for the scan job.</p>"
+        },
+        "sessionToken":{
+          "shape":"UUID",
+          "documentation":"<p>The unique token that identifies the CIS session.</p>"
+        }
+      }
+    },
+    "SendCisSessionTelemetryResponse":{
+      "type":"structure",
+      "members":{
+      }
     },
     "Service":{
       "type":"string",
@@ -5701,6 +7366,39 @@
       "min":71,
       "pattern":"^sha256:[a-z0-9]{64}$"
     },
+    "StartCisSessionMessage":{
+      "type":"structure",
+      "required":["sessionToken"],
+      "members":{
+        "sessionToken":{
+          "shape":"UUID",
+          "documentation":"<p>The unique token that identifies the CIS session.</p>"
+        }
+      },
+      "documentation":"<p>The start CIS session message.</p>"
+    },
+    "StartCisSessionRequest":{
+      "type":"structure",
+      "required":[
+        "message",
+        "scanJobId"
+      ],
+      "members":{
+        "message":{
+          "shape":"StartCisSessionMessage",
+          "documentation":"<p>The start CIS session message.</p>"
+        },
+        "scanJobId":{
+          "shape":"UUID",
+          "documentation":"<p>A unique identifier for the scan job.</p>"
+        }
+      }
+    },
+    "StartCisSessionResponse":{
+      "type":"structure",
+      "members":{
+      }
+    },
     "State":{
       "type":"structure",
       "required":[
@@ -5735,6 +7433,24 @@
         "SUSPENDED"
       ]
     },
+    "StatusCounts":{
+      "type":"structure",
+      "members":{
+        "failed":{
+          "shape":"Integer",
+          "documentation":"<p>The number of checks that failed.</p>"
+        },
+        "passed":{
+          "shape":"Integer",
+          "documentation":"<p>The number of checks that passed.</p>"
+        },
+        "skipped":{
+          "shape":"Integer",
+          "documentation":"<p>The number of checks that were skipped.</p>"
+        }
+      },
+      "documentation":"<p>The status counts.</p>"
+    },
     "Step":{
       "type":"structure",
       "required":[
@@ -5758,6 +7474,114 @@
       "member":{"shape":"Step"},
       "max":30,
       "min":1
+    },
+    "StopCisMessageProgress":{
+      "type":"structure",
+      "members":{
+        "errorChecks":{
+          "shape":"CheckCount",
+          "documentation":"<p>The progress' error checks.</p>"
+        },
+        "failedChecks":{
+          "shape":"CheckCount",
+          "documentation":"<p>The progress' failed checks.</p>"
+        },
+        "informationalChecks":{
+          "shape":"CheckCount",
+          "documentation":"<p>The progress' informational checks.</p>"
+        },
+        "notApplicableChecks":{
+          "shape":"CheckCount",
+          "documentation":"<p>The progress' not applicable checks.</p>"
+        },
+        "notEvaluatedChecks":{
+          "shape":"CheckCount",
+          "documentation":"<p>The progress' not evaluated checks.</p>"
+        },
+        "successfulChecks":{
+          "shape":"CheckCount",
+          "documentation":"<p>The progress' successful checks.</p>"
+        },
+        "totalChecks":{
+          "shape":"CheckCount",
+          "documentation":"<p>The progress' total checks.</p>"
+        },
+        "unknownChecks":{
+          "shape":"CheckCount",
+          "documentation":"<p>The progress' unknown checks.</p>"
+        }
+      },
+      "documentation":"<p>The stop CIS message progress.</p>"
+    },
+    "StopCisSessionMessage":{
+      "type":"structure",
+      "required":[
+        "progress",
+        "status"
+      ],
+      "members":{
+        "benchmarkProfile":{
+          "shape":"BenchmarkProfile",
+          "documentation":"<p>The message benchmark profile.</p>"
+        },
+        "benchmarkVersion":{
+          "shape":"BenchmarkVersion",
+          "documentation":"<p>The message benchmark version.</p>"
+        },
+        "computePlatform":{
+          "shape":"ComputePlatform",
+          "documentation":"<p>The message compute platform.</p>"
+        },
+        "progress":{
+          "shape":"StopCisMessageProgress",
+          "documentation":"<p>The progress of the message.</p>"
+        },
+        "reason":{
+          "shape":"Reason",
+          "documentation":"<p>The reason for the message.</p>"
+        },
+        "status":{
+          "shape":"StopCisSessionStatus",
+          "documentation":"<p>The status of the message.</p>"
+        }
+      },
+      "documentation":"<p>The stop CIS session message.</p>"
+    },
+    "StopCisSessionRequest":{
+      "type":"structure",
+      "required":[
+        "message",
+        "scanJobId",
+        "sessionToken"
+      ],
+      "members":{
+        "message":{
+          "shape":"StopCisSessionMessage",
+          "documentation":"<p>The stop CIS session message.</p>"
+        },
+        "scanJobId":{
+          "shape":"UUID",
+          "documentation":"<p>A unique identifier for the scan job.</p>"
+        },
+        "sessionToken":{
+          "shape":"UUID",
+          "documentation":"<p>The unique token that identifies the CIS session.</p>"
+        }
+      }
+    },
+    "StopCisSessionResponse":{
+      "type":"structure",
+      "members":{
+      }
+    },
+    "StopCisSessionStatus":{
+      "type":"string",
+      "enum":[
+        "SUCCESS",
+        "FAILED",
+        "INTERRUPTED",
+        "UNSUPPORTED_OS"
+      ]
     },
     "String":{"type":"string"},
     "StringComparison":{
@@ -5841,6 +7665,33 @@
       "max":5,
       "min":1
     },
+    "TagComparison":{
+      "type":"string",
+      "enum":["EQUALS"]
+    },
+    "TagFilter":{
+      "type":"structure",
+      "required":[
+        "comparison",
+        "key",
+        "value"
+      ],
+      "members":{
+        "comparison":{
+          "shape":"TagComparison",
+          "documentation":"<p>The tag filter comparison value.</p>"
+        },
+        "key":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>The tag filter key.</p>"
+        },
+        "value":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>The tag filter value.</p>"
+        }
+      },
+      "documentation":"<p>The tag filter.</p>"
+    },
     "TagKey":{
       "type":"string",
       "max":128,
@@ -5886,10 +7737,45 @@
       "members":{
       }
     },
+    "TagValueList":{
+      "type":"list",
+      "member":{"shape":"String"},
+      "max":5,
+      "min":1
+    },
     "Target":{
       "type":"string",
       "max":50,
       "min":0
+    },
+    "TargetAccount":{
+      "type":"string",
+      "pattern":"^\\d{12}|ALL_ACCOUNTS|SELF$"
+    },
+    "TargetAccountList":{
+      "type":"list",
+      "member":{"shape":"TargetAccount"},
+      "max":10000,
+      "min":1
+    },
+    "TargetResourceTags":{
+      "type":"map",
+      "key":{"shape":"NonEmptyString"},
+      "value":{"shape":"TagValueList"},
+      "max":5,
+      "min":1
+    },
+    "TargetStatusFilterList":{
+      "type":"list",
+      "member":{"shape":"CisTargetStatusFilter"},
+      "max":10,
+      "min":1
+    },
+    "TargetStatusReasonFilterList":{
+      "type":"list",
+      "member":{"shape":"CisTargetStatusReasonFilter"},
+      "max":10,
+      "min":1
     },
     "Targets":{
       "type":"list",
@@ -5916,7 +7802,34 @@
       "exception":true,
       "retryable":{"throttling":true}
     },
+    "Time":{
+      "type":"structure",
+      "required":[
+        "timeOfDay",
+        "timezone"
+      ],
+      "members":{
+        "timeOfDay":{
+          "shape":"TimeOfDay",
+          "documentation":"<p>The time of day in 24-hour format (00:00).</p>"
+        },
+        "timezone":{
+          "shape":"Timezone",
+          "documentation":"<p>The timezone.</p>"
+        }
+      },
+      "documentation":"<p>The time.</p>"
+    },
+    "TimeOfDay":{
+      "type":"string",
+      "pattern":"^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$"
+    },
     "Timestamp":{"type":"timestamp"},
+    "Timezone":{
+      "type":"string",
+      "max":50,
+      "min":1
+    },
     "TitleAggregation":{
       "type":"structure",
       "members":{
@@ -5970,6 +7883,12 @@
       },
       "documentation":"<p>A response that contains details on the results of a finding aggregation by title.</p>"
     },
+    "TitleFilterList":{
+      "type":"list",
+      "member":{"shape":"CisStringFilter"},
+      "max":10,
+      "min":1
+    },
     "TitleSortBy":{
       "type":"string",
       "enum":[
@@ -5996,6 +7915,10 @@
       "member":{"shape":"Ttp"},
       "min":0
     },
+    "UUID":{
+      "type":"string",
+      "pattern":"^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$"
+    },
     "UntagResourceRequest":{
       "type":"structure",
       "required":[
@@ -6021,6 +7944,56 @@
       "type":"structure",
       "members":{
       }
+    },
+    "UpdateCisScanConfigurationRequest":{
+      "type":"structure",
+      "required":["scanConfigurationArn"],
+      "members":{
+        "scanConfigurationArn":{
+          "shape":"CisScanConfigurationArn",
+          "documentation":"<p>The CIS scan configuration ARN.</p>"
+        },
+        "scanName":{
+          "shape":"CisScanName",
+          "documentation":"<p>The scan name for the CIS scan configuration.</p>"
+        },
+        "schedule":{
+          "shape":"Schedule",
+          "documentation":"<p>The schedule for the CIS scan configuration.</p>"
+        },
+        "securityLevel":{
+          "shape":"CisSecurityLevel",
+          "documentation":"<p> The security level for the CIS scan configuration. Security level refers to the Benchmark levels that CIS assigns to a profile. </p>"
+        },
+        "targets":{
+          "shape":"UpdateCisTargets",
+          "documentation":"<p>The targets for the CIS scan configuration.</p>"
+        }
+      }
+    },
+    "UpdateCisScanConfigurationResponse":{
+      "type":"structure",
+      "required":["scanConfigurationArn"],
+      "members":{
+        "scanConfigurationArn":{
+          "shape":"CisScanConfigurationArn",
+          "documentation":"<p>The CIS scan configuration ARN.</p>"
+        }
+      }
+    },
+    "UpdateCisTargets":{
+      "type":"structure",
+      "members":{
+        "accountIds":{
+          "shape":"TargetAccountList",
+          "documentation":"<p>The target account ids.</p>"
+        },
+        "targetResourceTags":{
+          "shape":"TargetResourceTags",
+          "documentation":"<p>The target resource tags.</p>"
+        }
+      },
+      "documentation":"<p>Updates CIS targets.</p>"
     },
     "UpdateConfigurationRequest":{
       "type":"structure",
@@ -6295,6 +8268,11 @@
         "OTHER"
       ]
     },
+    "Vendor":{
+      "type":"string",
+      "max":16,
+      "min":0
+    },
     "VendorCreatedAt":{"type":"timestamp"},
     "VendorSeverity":{
       "type":"string",
@@ -6491,6 +8469,24 @@
       "type":"string",
       "max":1024,
       "min":1
+    },
+    "WeeklySchedule":{
+      "type":"structure",
+      "required":[
+        "days",
+        "startTime"
+      ],
+      "members":{
+        "days":{
+          "shape":"DaysList",
+          "documentation":"<p>The weekly schedule's days.</p>"
+        },
+        "startTime":{
+          "shape":"Time",
+          "documentation":"<p>The weekly schedule's start time.</p>"
+        }
+      },
+      "documentation":"<p>A weekly schedule.</p>"
     }
   },
   "documentation":"<p>Amazon Inspector is a vulnerability discovery service that automates continuous scanning for security vulnerabilities within your Amazon EC2, Amazon ECR, and Amazon Web Services Lambda environments.</p>"

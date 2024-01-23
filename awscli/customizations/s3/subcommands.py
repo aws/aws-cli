@@ -15,6 +15,7 @@ import logging
 import sys
 
 from botocore.client import Config
+from botocore.utils import is_s3express_bucket
 from dateutil.parser import parse
 from dateutil.tz import tzlocal
 
@@ -1166,6 +1167,21 @@ class CommandParameters(object):
         self._validate_streaming_paths()
         self._validate_path_args()
         self._validate_sse_c_args()
+        self._validate_not_s3_express_bucket_for_sync()
+
+    def _validate_not_s3_express_bucket_for_sync(self):
+        if self.cmd == 'sync' and \
+            (self._is_s3express_path(self.parameters['src']) or
+             self._is_s3express_path(self.parameters['dest'])):
+            raise ValueError(
+                "Cannot use sync command with a directory bucket."
+            )
+
+    def _is_s3express_path(self, path):
+        if path.startswith("s3://"):
+            bucket = split_s3_bucket_key(path)[0]
+            return is_s3express_bucket(bucket)
+        return False
 
     def _validate_streaming_paths(self):
         self.parameters['is_stream'] = False

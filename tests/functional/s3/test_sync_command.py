@@ -17,7 +17,7 @@ from awscrt.s3 import S3RequestType
 
 from awscli.compat import six
 from awscli.customizations.s3.utils import relative_path
-from awscli.testutils import mock
+from awscli.testutils import mock, cd
 from tests.functional.s3 import (
     BaseS3TransferCommandTest, BaseS3CLIRunnerTest, BaseCRTTransferClientTest
 )
@@ -467,3 +467,37 @@ class TestSyncWithCRTClient(BaseCRTTransferClientTest):
         self.run_command(cmdline)
         self.assertEqual(self.get_crt_make_request_calls(), [])
         self.assert_no_remaining_botocore_responses()
+
+class TestSyncCommandWithS3Express(BaseS3TransferCommandTest):
+    prefix = 's3 sync '
+
+    def test_incompatible_with_sync_upload(self):
+        cmdline = '%s localdirectory/ s3://testdirectorybucket--usw2-az1--x-s3/' % self.prefix
+        stderr = self.run_cmd(cmdline, expected_rc=252)[1]
+        self.assertIn('Cannot use sync command with a directory bucket.', stderr)
+
+    def test_incompatible_with_sync_download(self):
+        cmdline = '%s s3://testdirectorybucket--usw2-az1--x-s3/ localdirectory/' % self.prefix
+        stderr = self.run_cmd(cmdline, expected_rc=252)[1]
+        self.assertIn('Cannot use sync command with a directory bucket.', stderr)
+
+    def test_incompatible_with_sync_copy(self):
+        cmdline = '%s s3://bucket/ s3://testdirectorybucket--usw2-az1--x-s3/' % self.prefix
+        stderr = self.run_cmd(cmdline, expected_rc=252)[1]
+        self.assertIn('Cannot use sync command with a directory bucket.', stderr)
+
+    def test_incompatible_with_sync_with_delete(self):
+        cmdline = '%s s3://bucket/ s3://testdirectorybucket--usw2-az1--x-s3/ --delete' % self.prefix
+        stderr = self.run_cmd(cmdline, expected_rc=252)[1]
+        self.assertIn('Cannot use sync command with a directory bucket.', stderr)
+
+    def test_compatible_with_sync_with_local_directory_like_directory_bucket(self):
+        self.parsed_responses = [
+            {'Contents': []}
+        ]
+        cmdline = '%s s3://bucket/ testdirectorybucket--usw2-az1--x-s3/' % self.prefix
+        with cd(self.files.rootdir):
+            _, stderr, _ = self.run_cmd(cmdline)
+        # Just asserting that command validated and made an API call
+        self.assertEqual(len(self.operations_called), 1)
+        self.assertEqual(self.operations_called[0][0].name, 'ListObjectsV2')

@@ -316,7 +316,6 @@ class TestSyncCommand(BaseS3TransferCommandTest):
             ]
         )
 
-<<<<<<< HEAD
     def test_with_copy_props(self):
         cmdline = self.prefix
         cmdline += 's3://sourcebucket/ s3://bucket/'
@@ -480,56 +479,25 @@ class TestSyncCommandWithS3Express(BaseS3TransferCommandTest):
     def test_incompatible_with_sync_download(self):
         cmdline = '%s s3://testdirectorybucket--usw2-az1--x-s3/ localdirectory/' % self.prefix
         stderr = self.run_cmd(cmdline, expected_rc=252)[1]
-=======
-
-class TestSyncCommandWithS3Express(BaseS3TransferCommandTest):
-
-    prefix = 's3 sync '
-
-    def test_incompatible_with_sync_upload(self):
-        cmdline = '%s %s s3://testdirectorybucket--usw2-az1--x-s3/' % (self.prefix, self.files.rootdir)
-        stderr = self.run_cmd(cmdline, expected_rc=255)[1]
-        self.assertIn('Cannot use sync command with a directory bucket.', stderr)
-
-    def test_incompatible_with_sync_download(self):
-        cmdline = '%s s3://testdirectorybucket--usw2-az1--x-s3/ %s' % (self.prefix, self.files.rootdir)
-        stderr = self.run_cmd(cmdline, expected_rc=255)[1]
->>>>>>> develop
         self.assertIn('Cannot use sync command with a directory bucket.', stderr)
 
     def test_incompatible_with_sync_copy(self):
         cmdline = '%s s3://bucket/ s3://testdirectorybucket--usw2-az1--x-s3/' % self.prefix
-<<<<<<< HEAD
         stderr = self.run_cmd(cmdline, expected_rc=252)[1]
-=======
-        stderr = self.run_cmd(cmdline, expected_rc=255)[1]
->>>>>>> develop
         self.assertIn('Cannot use sync command with a directory bucket.', stderr)
 
     def test_incompatible_with_sync_with_delete(self):
         cmdline = '%s s3://bucket/ s3://testdirectorybucket--usw2-az1--x-s3/ --delete' % self.prefix
-<<<<<<< HEAD
         stderr = self.run_cmd(cmdline, expected_rc=252)[1]
-=======
-        stderr = self.run_cmd(cmdline, expected_rc=255)[1]
->>>>>>> develop
         self.assertIn('Cannot use sync command with a directory bucket.', stderr)
 
     def test_compatible_with_sync_with_local_directory_like_directory_bucket(self):
         self.parsed_responses = [
             {'Contents': []}
         ]
-<<<<<<< HEAD
         cmdline = '%s s3://bucket/ testdirectorybucket--usw2-az1--x-s3/' % self.prefix
         with cd(self.files.rootdir):
             _, stderr, _ = self.run_cmd(cmdline)
-=======
-
-        cmdline = '%s s3://bucket/ testdirectorybucket--usw2-az1--x-s3/' % self.prefix
-        with cd(self.files.rootdir):
-            _, stderr, _ = self.run_cmd(cmdline)
-
->>>>>>> develop
         # Just asserting that command validated and made an API call
         self.assertEqual(len(self.operations_called), 1)
         self.assertEqual(self.operations_called[0][0].name, 'ListObjectsV2')

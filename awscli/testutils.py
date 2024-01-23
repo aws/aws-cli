@@ -1021,13 +1021,3 @@ class ConsistencyWaiter(object):
     def _fail_message(self, attempts, successes):
         format_args = (attempts, successes)
         return 'Failed after %s attempts, only had %s successes' % format_args
-
-
-@contextlib.contextmanager
-def cd(path):
-    try:
-        original_dir = os.getcwd()
-        os.chdir(path)
-        yield
-    finally:
-        os.chdir(original_dir)

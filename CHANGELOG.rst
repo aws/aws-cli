@@ -6836,6 +6836,42 @@ CHANGELOG
 * feature:wizard: Added support for AWS CLI Wizards. See `#3752 <https://github.com/aws/aws-cli/issues/3752>`__.
 
 
+1.32.26
+=======
+
+* api-change:``inspector2``: This release adds support for CIS scans on EC2 instances.
+
+
+1.32.25
+=======
+
+* bugfix:``s3 sync``: Disable S3 Express support for s3 sync command
+
+
+1.32.24
+=======
+
+* api-change:``appconfigdata``: Fix FIPS Endpoints in aws-us-gov.
+* api-change:``cloud9``: Doc-only update around removing AL1 from list of available AMIs for Cloud9
+* api-change:``cloudfront-keyvaluestore``: This release improves upon the DescribeKeyValueStore API by returning two additional fields, Status of the KeyValueStore and the FailureReason in case of failures during creation of KeyValueStore.
+* api-change:``connectcases``: This release adds the ability to view audit history on a case and introduces a new parameter, performedBy, for CreateCase and UpdateCase API's.
+* api-change:``ec2``: Documentation updates for Amazon EC2.
+* api-change:``ecs``: This release adds support for Transport Layer Security (TLS) and Configurable Timeout to ECS Service Connect. TLS facilitates privacy and data security for inter-service communications, while Configurable Timeout allows customized per-request timeout and idle timeout for Service Connect services.
+* api-change:``finspace``: Allow customer to set zip default through command line arguments.
+* api-change:``organizations``: Doc only update for quota increase change
+* api-change:``rds``: Introduced support for the InsufficientDBInstanceCapacityFault error in the RDS CreateDBCluster API method. This provides enhanced error handling, ensuring a more robust experience when creating database clusters with insufficient instance capacity.
+* api-change:``endpoint-rules``: Update endpoint-rules command to latest version
+
+
+1.32.23
+=======
+
+* api-change:``athena``: Introducing new NotebookS3LocationUri parameter to Athena ImportNotebook API. Payload is no longer required and either Payload or NotebookS3LocationUri needs to be provided (not both) for a successful ImportNotebook API call. If both are provided, an InvalidRequestException will be thrown.
+* api-change:``codebuild``: Release CodeBuild Reserved Capacity feature
+* api-change:``dynamodb``: This release adds support for including ApproximateCreationDateTimePrecision configurations in EnableKinesisStreamingDestination API, adds the same as an optional field in the response of DescribeKinesisStreamingDestination, and adds support for a new UpdateKinesisStreamingDestination API.
+* api-change:``qconnect``: Increased Quick Response name max length to 100
+
+
 1.32.22
 =======
 

@@ -294,12 +294,12 @@ class TestSyncCommandWithS3Express(BaseS3TransferCommandTest):
     prefix = 's3 sync '
 
     def test_incompatible_with_sync_upload(self):
-        cmdline = '%s localdirectory/ s3://testdirectorybucket--usw2-az1--x-s3/' % self.prefix
+        cmdline = '%s %s s3://testdirectorybucket--usw2-az1--x-s3/' % (self.prefix, self.files.rootdir)
         stderr = self.run_cmd(cmdline, expected_rc=255)[1]
         self.assertIn('Cannot use sync command with a directory bucket.', stderr)
 
     def test_incompatible_with_sync_download(self):
-        cmdline = '%s s3://testdirectorybucket--usw2-az1--x-s3/ localdirectory/' % self.prefix
+        cmdline = '%s s3://testdirectorybucket--usw2-az1--x-s3/ %s' % (self.prefix, self.files.rootdir)
         stderr = self.run_cmd(cmdline, expected_rc=255)[1]
         self.assertIn('Cannot use sync command with a directory bucket.', stderr)
 

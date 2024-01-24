@@ -2,6 +2,26 @@
 CHANGELOG
 =========
 
+2.15.14
+=======
+
+* api-change:``cloudfront-keyvaluestore``: This release improves upon the DescribeKeyValueStore API by returning two additional fields, Status of the KeyValueStore and the FailureReason in case of failures during creation of KeyValueStore.
+* api-change:``codebuild``: Release CodeBuild Reserved Capacity feature
+* api-change:``endpoint-rules``: Update endpoint-rules command to latest version
+* api-change:``cloud9``: Doc-only update around removing AL1 from list of available AMIs for Cloud9
+* api-change:``qconnect``: Increased Quick Response name max length to 100
+* api-change:``ec2``: Documentation updates for Amazon EC2.
+* api-change:``appconfigdata``: Fix FIPS Endpoints in aws-us-gov.
+* api-change:``ecs``: This release adds support for Transport Layer Security (TLS) and Configurable Timeout to ECS Service Connect. TLS facilitates privacy and data security for inter-service communications, while Configurable Timeout allows customized per-request timeout and idle timeout for Service Connect services.
+* api-change:``organizations``: Doc only update for quota increase change
+* api-change:``athena``: Introducing new NotebookS3LocationUri parameter to Athena ImportNotebook API. Payload is no longer required and either Payload or NotebookS3LocationUri needs to be provided (not both) for a successful ImportNotebook API call. If both are provided, an InvalidRequestException will be thrown.
+* api-change:``dynamodb``: This release adds support for including ApproximateCreationDateTimePrecision configurations in EnableKinesisStreamingDestination API, adds the same as an optional field in the response of DescribeKinesisStreamingDestination, and adds support for a new UpdateKinesisStreamingDestination API.
+* api-change:``connectcases``: This release adds the ability to view audit history on a case and introduces a new parameter, performedBy, for CreateCase and UpdateCase API's.
+* api-change:``inspector2``: This release adds support for CIS scans on EC2 instances.
+* api-change:``rds``: Introduced support for the InsufficientDBInstanceCapacityFault error in the RDS CreateDBCluster API method. This provides enhanced error handling, ensuring a more robust experience when creating database clusters with insufficient instance capacity.
+* api-change:``finspace``: Allow customer to set zip default through command line arguments.
+
+
 2.15.13
 =======
 

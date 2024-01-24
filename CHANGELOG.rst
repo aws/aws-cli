@@ -2,6 +2,16 @@
 CHANGELOG
 =========
 
+1.32.27
+=======
+
+* api-change:``ec2``: Introduced a new clientToken request parameter on CreateNetworkAcl and CreateRouteTable APIs. The clientToken parameter allows idempotent operations on the APIs.
+* api-change:``ecs``: Documentation updates for Amazon ECS.
+* api-change:``outposts``: DeviceSerialNumber parameter is now optional in StartConnection API
+* api-change:``rds``: This release adds support for Aurora Limitless Database.
+* api-change:``storagegateway``: Add DeprecationDate and SoftwareVersion to response of ListGateways.
+
+
 1.32.26
 =======
 

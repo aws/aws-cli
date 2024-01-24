@@ -2915,6 +2915,11 @@
       "documentation":"<p>This parameter is specified when you're using Docker volumes. Docker volumes are only supported when you're using the EC2 launch type. Windows containers only support the use of the <code>local</code> driver. To use bind mounts, specify a <code>host</code> instead.</p>"
     },
     "Double":{"type":"double"},
+    "Duration":{
+      "type":"integer",
+      "max":2147483647,
+      "min":0
+    },
     "EBSKMSKeyId":{"type":"string"},
     "EBSResourceType":{
       "type":"string",
@@ -5104,7 +5109,12 @@
         "ingressPortOverride":{
           "shape":"PortNumber",
           "documentation":"<p>The port number for the Service Connect proxy to listen on.</p> <p>Use the value of this field to bypass the proxy for traffic on the port number specified in the named <code>portMapping</code> in the task definition of this application, and then use it in your VPC security groups to allow traffic into the proxy for this Amazon ECS service.</p> <p>In <code>awsvpc</code> mode and Fargate, the default value is the container port number. The container port number is in the <code>portMapping</code> in the task definition. In bridge mode, the default value is the ephemeral port of the Service Connect proxy.</p>"
-        }
+        },
+        "timeout":{
+          "shape":"TimeoutConfiguration",
+          "documentation":"<p>A reference to an object that represents the configured timeouts for Service Connect.</p>"
+        },
+        "tls":{"shape":"ServiceConnectTlsConfiguration"}
       },
       "documentation":"<p>The Service Connect service object configuration. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonECS/latest/developerguide/service-connect.html\">Service Connect</a> in the <i>Amazon Elastic Container Service Developer Guide</i>.</p>"
     },
@@ -5129,6 +5139,35 @@
     "ServiceConnectServiceResourceList":{
       "type":"list",
       "member":{"shape":"ServiceConnectServiceResource"}
+    },
+    "ServiceConnectTlsCertificateAuthority":{
+      "type":"structure",
+      "members":{
+        "awsPcaAuthorityArn":{
+          "shape":"String",
+          "documentation":"<p>The ARN of the Amazon Web Services Private Certificate Authority certificate.</p>"
+        }
+      },
+      "documentation":"<p>An object that represents the Amazon Web Services Private Certificate Authority certificate.</p>"
+    },
+    "ServiceConnectTlsConfiguration":{
+      "type":"structure",
+      "required":["issuerCertificateAuthority"],
+      "members":{
+        "issuerCertificateAuthority":{
+          "shape":"ServiceConnectTlsCertificateAuthority",
+          "documentation":"<p>The signer certificate authority.</p>"
+        },
+        "kmsKey":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Web Services Key Management Service key.</p>"
+        },
+        "roleArn":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the IAM role that's associated with the Service Connect TLS.</p>"
+        }
+      },
+      "documentation":"<p>An object that represents the configuration for Service Connect TLS.</p>"
     },
     "ServiceEvent":{
       "type":"structure",
@@ -6249,6 +6288,20 @@
     "Tasks":{
       "type":"list",
       "member":{"shape":"Task"}
+    },
+    "TimeoutConfiguration":{
+      "type":"structure",
+      "members":{
+        "idleTimeoutSeconds":{
+          "shape":"Duration",
+          "documentation":"<p>The amount of time in seconds a connection will stay active while idle. A value of <code>0</code> can be set to disable <code>idleTimeout</code>.</p> <p>The <code>idleTimeout</code> default for <code>HTTP</code>/<code>HTTP2</code>/<code>GRPC</code> is 5 minutes.</p> <p>The <code>idleTimeout</code> default for <code>TCP</code> is 1 hour.</p>"
+        },
+        "perRequestTimeoutSeconds":{
+          "shape":"Duration",
+          "documentation":"<p>The amount of time waiting for the upstream to respond with a complete response per request. A value of <code>0</code> can be set to disable <code>perRequestTimeout</code>. <code>perRequestTimeout</code> can only be set if Service Connect <code>appProtocol</code> isn't <code>TCP</code>. Only <code>idleTimeout</code> is allowed for <code>TCP</code> <code>appProtocol</code>.</p>"
+        }
+      },
+      "documentation":"<p>An object that represents the timeout configurations for Service Connect.</p> <note> <p>If <code>idleTimeout</code> is set to a time that is less than <code>perRequestTimeout</code>, the connection will close when the <code>idleTimeout</code> is reached and not the <code>perRequestTimeout</code>.</p> </note>"
     },
     "Timestamp":{"type":"timestamp"},
     "Tmpfs":{

@@ -2,6 +2,13 @@
 CHANGELOG
 =========
 
+1.32.28
+=======
+
+* api-change:``acm-pca``: AWS Private CA now supports an option to omit the CDP extension from issued certificates, when CRL revocation is enabled.
+* api-change:``lightsail``: This release adds support for IPv6-only instance plans.
+
+
 1.32.27
 =======
 

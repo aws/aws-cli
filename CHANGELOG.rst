@@ -2,6 +2,14 @@
 CHANGELOG
 =========
 
+1.32.29
+=======
+
+* api-change:``connect``: Update list and string length limits for predefined attributes.
+* api-change:``inspector2``: This release adds ECR container image scanning based on their lastRecordedPullTime.
+* api-change:``sagemaker``: Amazon SageMaker Automatic Model Tuning now provides an API to programmatically delete tuning jobs.
+
+
 1.32.28
 =======
 

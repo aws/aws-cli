@@ -6856,6 +6856,23 @@ CHANGELOG
 * feature:wizard: Added support for AWS CLI Wizards. See `#3752 <https://github.com/aws/aws-cli/issues/3752>`__.
 
 
+1.32.28
+=======
+
+* api-change:``acm-pca``: AWS Private CA now supports an option to omit the CDP extension from issued certificates, when CRL revocation is enabled.
+* api-change:``lightsail``: This release adds support for IPv6-only instance plans.
+
+
+1.32.27
+=======
+
+* api-change:``ec2``: Introduced a new clientToken request parameter on CreateNetworkAcl and CreateRouteTable APIs. The clientToken parameter allows idempotent operations on the APIs.
+* api-change:``ecs``: Documentation updates for Amazon ECS.
+* api-change:``outposts``: DeviceSerialNumber parameter is now optional in StartConnection API
+* api-change:``rds``: This release adds support for Aurora Limitless Database.
+* api-change:``storagegateway``: Add DeprecationDate and SoftwareVersion to response of ListGateways.
+
+
 1.32.26
 =======
 

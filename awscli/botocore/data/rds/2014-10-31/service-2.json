@@ -534,6 +534,28 @@
       ],
       "documentation":"<p>Creates a new DB security group. DB security groups control access to a DB instance.</p> <p>A DB security group controls access to EC2-Classic DB instances that are not in a VPC.</p> <note> <p>EC2-Classic was retired on August 15, 2022. If you haven't migrated from EC2-Classic to a VPC, we recommend that you migrate as soon as possible. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/vpc-migrate.html\">Migrate from EC2-Classic to a VPC</a> in the <i>Amazon EC2 User Guide</i>, the blog <a href=\"http://aws.amazon.com/blogs/aws/ec2-classic-is-retiring-heres-how-to-prepare/\">EC2-Classic Networking is Retiring – Here’s How to Prepare</a>, and <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_VPC.Non-VPC2VPC.html\">Moving a DB instance not in a VPC into a VPC</a> in the <i>Amazon RDS User Guide</i>.</p> </note>"
     },
+    "CreateDBShardGroup":{
+      "name":"CreateDBShardGroup",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"CreateDBShardGroupMessage"},
+      "output":{
+        "shape":"DBShardGroup",
+        "resultWrapper":"CreateDBShardGroupResult"
+      },
+      "errors":[
+        {"shape":"DBShardGroupAlreadyExistsFault"},
+        {"shape":"DBClusterNotFoundFault"},
+        {"shape":"MaxDBShardGroupLimitReached"},
+        {"shape":"InvalidDBClusterStateFault"},
+        {"shape":"InvalidMaxAcuFault"},
+        {"shape":"UnsupportedDBEngineVersionFault"},
+        {"shape":"InvalidVPCNetworkStateFault"}
+      ],
+      "documentation":"<p>Creates a new DB shard group for Aurora Limitless Database. You must enable Aurora Limitless Database to create a DB shard group.</p> <p>Valid for: Aurora DB clusters only</p>"
+    },
     "CreateDBSnapshot":{
       "name":"CreateDBSnapshot",
       "http":{
@@ -888,6 +910,24 @@
         {"shape":"DBSecurityGroupNotFoundFault"}
       ],
       "documentation":"<p>Deletes a DB security group.</p> <p>The specified DB security group must not be associated with any DB instances.</p> <note> <p>EC2-Classic was retired on August 15, 2022. If you haven't migrated from EC2-Classic to a VPC, we recommend that you migrate as soon as possible. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/vpc-migrate.html\">Migrate from EC2-Classic to a VPC</a> in the <i>Amazon EC2 User Guide</i>, the blog <a href=\"http://aws.amazon.com/blogs/aws/ec2-classic-is-retiring-heres-how-to-prepare/\">EC2-Classic Networking is Retiring – Here’s How to Prepare</a>, and <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_VPC.Non-VPC2VPC.html\">Moving a DB instance not in a VPC into a VPC</a> in the <i>Amazon RDS User Guide</i>.</p> </note>"
+    },
+    "DeleteDBShardGroup":{
+      "name":"DeleteDBShardGroup",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DeleteDBShardGroupMessage"},
+      "output":{
+        "shape":"DBShardGroup",
+        "resultWrapper":"DeleteDBShardGroupResult"
+      },
+      "errors":[
+        {"shape":"DBShardGroupNotFoundFault"},
+        {"shape":"InvalidDBShardGroupStateFault"},
+        {"shape":"InvalidDBClusterStateFault"}
+      ],
+      "documentation":"<p>Deletes an Aurora Limitless Database DB shard group.</p>"
     },
     "DeleteDBSnapshot":{
       "name":"DeleteDBSnapshot",
@@ -1388,6 +1428,23 @@
       ],
       "documentation":"<p>Returns a list of <code>DBSecurityGroup</code> descriptions. If a <code>DBSecurityGroupName</code> is specified, the list will contain only the descriptions of the specified DB security group.</p> <note> <p>EC2-Classic was retired on August 15, 2022. If you haven't migrated from EC2-Classic to a VPC, we recommend that you migrate as soon as possible. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/vpc-migrate.html\">Migrate from EC2-Classic to a VPC</a> in the <i>Amazon EC2 User Guide</i>, the blog <a href=\"http://aws.amazon.com/blogs/aws/ec2-classic-is-retiring-heres-how-to-prepare/\">EC2-Classic Networking is Retiring – Here’s How to Prepare</a>, and <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_VPC.Non-VPC2VPC.html\">Moving a DB instance not in a VPC into a VPC</a> in the <i>Amazon RDS User Guide</i>.</p> </note>"
     },
+    "DescribeDBShardGroups":{
+      "name":"DescribeDBShardGroups",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DescribeDBShardGroupsMessage"},
+      "output":{
+        "shape":"DescribeDBShardGroupsResponse",
+        "resultWrapper":"DescribeDBShardGroupsResult"
+      },
+      "errors":[
+        {"shape":"DBShardGroupNotFoundFault"},
+        {"shape":"DBClusterNotFoundFault"}
+      ],
+      "documentation":"<p>Describes existing Aurora Limitless Database DB shard groups.</p>"
+    },
     "DescribeDBSnapshotAttributes":{
       "name":"DescribeDBSnapshotAttributes",
       "http":{
@@ -1771,7 +1828,7 @@
         {"shape":"InvalidDBClusterStateFault"},
         {"shape":"InvalidDBInstanceStateFault"}
       ],
-      "documentation":"<p>Forces a failover for a DB cluster.</p> <p>For an Aurora DB cluster, failover for a DB cluster promotes one of the Aurora Replicas (read-only instances) in the DB cluster to be the primary DB instance (the cluster writer).</p> <p>For a Multi-AZ DB cluster, failover for a DB cluster promotes one of the readable standby DB instances (read-only instances) in the DB cluster to be the primary DB instance (the cluster writer).</p> <p>An Amazon Aurora DB cluster automatically fails over to an Aurora Replica, if one exists, when the primary DB instance fails. A Multi-AZ DB cluster automatically fails over to a readable standby DB instance when the primary DB instance fails.</p> <p>To simulate a failure of a primary instance for testing, you can force a failover. Because each instance in a DB cluster has its own endpoint address, make sure to clean up and re-establish any existing connections that use those endpoint addresses when the failover is complete.</p> <p>For more information on Amazon Aurora DB clusters, see <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/CHAP_AuroraOverview.html\"> What is Amazon Aurora?</a> in the <i>Amazon Aurora User Guide</i>.</p> <p>For more information on Multi-AZ DB clusters, see <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/multi-az-db-clusters-concepts.html\"> Multi-AZ DB cluster deployments</a> in the <i>Amazon RDS User Guide</i>.</p>"
+      "documentation":"<p>Forces a failover for a DB cluster.</p> <p>For an Aurora DB cluster, failover for a DB cluster promotes one of the Aurora Replicas (read-only instances) in the DB cluster to be the primary DB instance (the cluster writer).</p> <p>For a Multi-AZ DB cluster, after RDS terminates the primary DB instance, the internal monitoring system detects that the primary DB instance is unhealthy and promotes a readable standby (read-only instances) in the DB cluster to be the primary DB instance (the cluster writer). Failover times are typically less than 35 seconds.</p> <p>An Amazon Aurora DB cluster automatically fails over to an Aurora Replica, if one exists, when the primary DB instance fails. A Multi-AZ DB cluster automatically fails over to a readable standby DB instance when the primary DB instance fails.</p> <p>To simulate a failure of a primary instance for testing, you can force a failover. Because each instance in a DB cluster has its own endpoint address, make sure to clean up and re-establish any existing connections that use those endpoint addresses when the failover is complete.</p> <p>For more information on Amazon Aurora DB clusters, see <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/CHAP_AuroraOverview.html\"> What is Amazon Aurora?</a> in the <i>Amazon Aurora User Guide</i>.</p> <p>For more information on Multi-AZ DB clusters, see <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/multi-az-db-clusters-concepts.html\"> Multi-AZ DB cluster deployments</a> in the <i>Amazon RDS User Guide</i>.</p>"
     },
     "FailoverGlobalCluster":{
       "name":"FailoverGlobalCluster",
@@ -2092,6 +2149,25 @@
       "errors":[],
       "documentation":"<p>Updates the recommendation status and recommended action status for the specified recommendation.</p>"
     },
+    "ModifyDBShardGroup":{
+      "name":"ModifyDBShardGroup",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"ModifyDBShardGroupMessage"},
+      "output":{
+        "shape":"DBShardGroup",
+        "resultWrapper":"ModifyDBShardGroupResult"
+      },
+      "errors":[
+        {"shape":"InvalidDBClusterStateFault"},
+        {"shape":"DBShardGroupAlreadyExistsFault"},
+        {"shape":"DBShardGroupNotFoundFault"},
+        {"shape":"InvalidMaxAcuFault"}
+      ],
+      "documentation":"<p>Modifies the settings of an Aurora Limitless Database DB shard group. You can change one or more settings by specifying these parameters and the new values in the request.</p>"
+    },
     "ModifyDBSnapshot":{
       "name":"ModifyDBSnapshot",
       "http":{
@@ -2308,6 +2384,23 @@
         {"shape":"DBInstanceNotFoundFault"}
       ],
       "documentation":"<p>You might need to reboot your DB instance, usually for maintenance reasons. For example, if you make certain modifications, or if you change the DB parameter group associated with the DB instance, you must reboot the instance for the changes to take effect.</p> <p>Rebooting a DB instance restarts the database engine service. Rebooting a DB instance results in a momentary outage, during which the DB instance status is set to rebooting.</p> <p>For more information about rebooting, see <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_RebootInstance.html\">Rebooting a DB Instance</a> in the <i>Amazon RDS User Guide.</i> </p> <p>This command doesn't apply to RDS Custom.</p> <p>If your DB instance is part of a Multi-AZ DB cluster, you can reboot the DB cluster with the <code>RebootDBCluster</code> operation.</p>"
+    },
+    "RebootDBShardGroup":{
+      "name":"RebootDBShardGroup",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"RebootDBShardGroupMessage"},
+      "output":{
+        "shape":"DBShardGroup",
+        "resultWrapper":"RebootDBShardGroupResult"
+      },
+      "errors":[
+        {"shape":"DBShardGroupNotFoundFault"},
+        {"shape":"InvalidDBShardGroupStateFault"}
+      ],
+      "documentation":"<p>You might need to reboot your DB shard group, usually for maintenance reasons. For example, if you make certain modifications, reboot the DB shard group for the changes to take effect.</p> <p>This operation applies only to Aurora Limitless Database DBb shard groups.</p>"
     },
     "RegisterDBProxyTargets":{
       "name":"RegisterDBProxyTargets",
@@ -3877,7 +3970,7 @@
         },
         "TargetDBInstanceClass":{
           "shape":"TargetDBInstanceClass",
-          "documentation":"<p>Specify the DB instance class for the databases in the green environment.</p>"
+          "documentation":"<p>Specify the DB instance class for the databases in the green environment.</p> <p>This parameter only applies to RDS DB instances, because DB instances within an Aurora DB cluster can have multiple different instance classes. If you're creating a blue/green deployment from an Aurora DB cluster, don't specify this parameter. After the green environment is created, you can individually modify the instance classes of the DB instances within the green DB cluster.</p>"
         },
         "UpgradeTargetStorageConfig":{
           "shape":"BooleanOptional",
@@ -4173,6 +4266,10 @@
         "PerformanceInsightsRetentionPeriod":{
           "shape":"IntegerOptional",
           "documentation":"<p>The number of days to retain Performance Insights data.</p> <p>Valid for Cluster Type: Multi-AZ DB clusters only</p> <p>Valid Values:</p> <ul> <li> <p> <code>7</code> </p> </li> <li> <p> <i>month</i> * 31, where <i>month</i> is a number of months from 1-23. Examples: <code>93</code> (3 months * 31), <code>341</code> (11 months * 31), <code>589</code> (19 months * 31)</p> </li> <li> <p> <code>731</code> </p> </li> </ul> <p>Default: <code>7</code> days</p> <p>If you specify a retention period that isn't valid, such as <code>94</code>, Amazon RDS issues an error.</p>"
+        },
+        "EnableLimitlessDatabase":{
+          "shape":"BooleanOptional",
+          "documentation":"<p>Specifies whether to enable Aurora Limitless Database. You must enable Aurora Limitless Database to create a DB shard group.</p> <p>Valid for: Aurora DB clusters only</p>"
         },
         "ServerlessV2ScalingConfiguration":{"shape":"ServerlessV2ScalingConfiguration"},
         "NetworkType":{
@@ -4877,6 +4974,36 @@
         "DBSecurityGroup":{"shape":"DBSecurityGroup"}
       }
     },
+    "CreateDBShardGroupMessage":{
+      "type":"structure",
+      "required":[
+        "DBShardGroupIdentifier",
+        "DBClusterIdentifier",
+        "MaxACU"
+      ],
+      "members":{
+        "DBShardGroupIdentifier":{
+          "shape":"String",
+          "documentation":"<p>The name of the DB shard group.</p>"
+        },
+        "DBClusterIdentifier":{
+          "shape":"String",
+          "documentation":"<p>The name of the primary DB cluster for the DB shard group.</p>"
+        },
+        "ComputeRedundancy":{
+          "shape":"IntegerOptional",
+          "documentation":"<p>Specifies whether to create standby instances for the DB shard group. Valid values are the following:</p> <ul> <li> <p>0 - Creates a single, primary DB instance for each physical shard. This is the default value, and the only one supported for the preview.</p> </li> <li> <p>1 - Creates a primary DB instance and a standby instance in a different Availability Zone (AZ) for each physical shard.</p> </li> <li> <p>2 - Creates a primary DB instance and two standby instances in different AZs for each physical shard.</p> </li> </ul>"
+        },
+        "MaxACU":{
+          "shape":"DoubleOptional",
+          "documentation":"<p>The maximum capacity of the DB shard group in Aurora capacity units (ACUs).</p>"
+        },
+        "PubliclyAccessible":{
+          "shape":"BooleanOptional",
+          "documentation":"<p>Specifies whether the DB shard group is publicly accessible.</p> <p>When the DB shard group is publicly accessible, its Domain Name System (DNS) endpoint resolves to the private IP address from within the DB shard group's virtual private cloud (VPC). It resolves to the public IP address from outside of the DB shard group's VPC. Access to the DB shard group is ultimately controlled by the security group it uses. That public access is not permitted if the security group assigned to the DB shard group doesn't permit it.</p> <p>When the DB shard group isn't publicly accessible, it is an internal DB shard group with a DNS name that resolves to a private IP address.</p> <p>Default: The default behavior varies depending on whether <code>DBSubnetGroupName</code> is specified.</p> <p>If <code>DBSubnetGroupName</code> isn't specified, and <code>PubliclyAccessible</code> isn't specified, the following applies:</p> <ul> <li> <p>If the default VPC in the target Region doesn’t have an internet gateway attached to it, the DB shard group is private.</p> </li> <li> <p>If the default VPC in the target Region has an internet gateway attached to it, the DB shard group is public.</p> </li> </ul> <p>If <code>DBSubnetGroupName</code> is specified, and <code>PubliclyAccessible</code> isn't specified, the following applies:</p> <ul> <li> <p>If the subnets are part of a VPC that doesn’t have an internet gateway attached to it, the DB shard group is private.</p> </li> <li> <p>If the subnets are part of a VPC that has an internet gateway attached to it, the DB shard group is public.</p> </li> </ul>"
+        }
+      }
+    },
     "CreateDBSnapshotMessage":{
       "type":"structure",
       "required":[
@@ -4948,7 +5075,7 @@
         },
         "SnsTopicArn":{
           "shape":"String",
-          "documentation":"<p>The Amazon Resource Name (ARN) of the SNS topic created for event notification. The ARN is created by Amazon SNS when you create a topic and subscribe to it.</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of the SNS topic created for event notification. SNS automatically creates the ARN when you create a topic and subscribe to it.</p> <note> <p>RDS doesn't support FIFO (first in, first out) topics. For more information, see <a href=\"https://docs.aws.amazon.com/sns/latest/dg/sns-fifo-topics.html\">Message ordering and deduplication (FIFO topics)</a> in the <i>Amazon Simple Notification Service Developer Guide</i>.</p> </note>"
         },
         "SourceType":{
           "shape":"String",
@@ -5511,6 +5638,10 @@
         "AwsBackupRecoveryPointArn":{
           "shape":"String",
           "documentation":"<p>The Amazon Resource Name (ARN) of the recovery point in Amazon Web Services Backup.</p>"
+        },
+        "LimitlessDatabase":{
+          "shape":"LimitlessDatabase",
+          "documentation":"<p>The details for Aurora Limitless Database.</p>"
         }
       },
       "documentation":"<p>Contains the details of an Amazon Aurora DB cluster or Multi-AZ DB cluster.</p> <p>For an Amazon Aurora DB cluster, this data type is used as a response element in the operations <code>CreateDBCluster</code>, <code>DeleteDBCluster</code>, <code>DescribeDBClusters</code>, <code>FailoverDBCluster</code>, <code>ModifyDBCluster</code>, <code>PromoteReadReplicaDBCluster</code>, <code>RestoreDBClusterFromS3</code>, <code>RestoreDBClusterFromSnapshot</code>, <code>RestoreDBClusterToPointInTime</code>, <code>StartDBCluster</code>, and <code>StopDBCluster</code>.</p> <p>For a Multi-AZ DB cluster, this data type is used as a response element in the operations <code>CreateDBCluster</code>, <code>DeleteDBCluster</code>, <code>DescribeDBClusters</code>, <code>FailoverDBCluster</code>, <code>ModifyDBCluster</code>, <code>RebootDBCluster</code>, <code>RestoreDBClusterFromSnapshot</code>, and <code>RestoreDBClusterToPointInTime</code>.</p> <p>For more information on Amazon Aurora DB clusters, see <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/CHAP_AuroraOverview.html\"> What is Amazon Aurora?</a> in the <i>Amazon Aurora User Guide.</i> </p> <p>For more information on Multi-AZ DB clusters, see <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/multi-az-db-clusters-concepts.html\"> Multi-AZ deployments with two readable standby DB instances</a> in the <i>Amazon RDS User Guide.</i> </p>",
@@ -7877,6 +8008,74 @@
         "locationName":"DBSecurityGroup"
       }
     },
+    "DBShardGroup":{
+      "type":"structure",
+      "members":{
+        "DBShardGroupResourceId":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Web Services Region-unique, immutable identifier for the DB shard group.</p>"
+        },
+        "DBShardGroupIdentifier":{
+          "shape":"String",
+          "documentation":"<p>The name of the DB shard group.</p>"
+        },
+        "DBClusterIdentifier":{
+          "shape":"String",
+          "documentation":"<p>The name of the primary DB cluster for the DB shard group.</p>"
+        },
+        "MaxACU":{
+          "shape":"DoubleOptional",
+          "documentation":"<p>The maximum capacity of the DB shard group in Aurora capacity units (ACUs).</p>"
+        },
+        "ComputeRedundancy":{
+          "shape":"IntegerOptional",
+          "documentation":"<p>Specifies whether to create standby instances for the DB shard group. Valid values are the following:</p> <ul> <li> <p>0 - Creates a single, primary DB instance for each physical shard. This is the default value, and the only one supported for the preview.</p> </li> <li> <p>1 - Creates a primary DB instance and a standby instance in a different Availability Zone (AZ) for each physical shard.</p> </li> <li> <p>2 - Creates a primary DB instance and two standby instances in different AZs for each physical shard.</p> </li> </ul>"
+        },
+        "Status":{
+          "shape":"String",
+          "documentation":"<p>The status of the DB shard group.</p>"
+        },
+        "PubliclyAccessible":{
+          "shape":"BooleanOptional",
+          "documentation":"<p>Indicates whether the DB shard group is publicly accessible.</p> <p>When the DB shard group is publicly accessible, its Domain Name System (DNS) endpoint resolves to the private IP address from within the DB shard group's virtual private cloud (VPC). It resolves to the public IP address from outside of the DB shard group's VPC. Access to the DB shard group is ultimately controlled by the security group it uses. That public access isn't permitted if the security group assigned to the DB shard group doesn't permit it.</p> <p>When the DB shard group isn't publicly accessible, it is an internal DB shard group with a DNS name that resolves to a private IP address.</p> <p>For more information, see <a>CreateDBShardGroup</a>.</p> <p>This setting is only for Aurora Limitless Database.</p>"
+        },
+        "Endpoint":{
+          "shape":"String",
+          "documentation":"<p>The connection endpoint for the DB shard group.</p>"
+        }
+      }
+    },
+    "DBShardGroupAlreadyExistsFault":{
+      "type":"structure",
+      "members":{
+      },
+      "documentation":"<p>The specified DB shard group name must be unique in your Amazon Web Services account in the specified Amazon Web Services Region.</p>",
+      "error":{
+        "code":"DBShardGroupAlreadyExists",
+        "httpStatusCode":400,
+        "senderFault":true
+      },
+      "exception":true
+    },
+    "DBShardGroupNotFoundFault":{
+      "type":"structure",
+      "members":{
+      },
+      "documentation":"<p>The specified DB shard group name wasn't found.</p>",
+      "error":{
+        "code":"DBShardGroupNotFound",
+        "httpStatusCode":404,
+        "senderFault":true
+      },
+      "exception":true
+    },
+    "DBShardGroupsList":{
+      "type":"list",
+      "member":{
+        "shape":"DBShardGroup",
+        "locationName":"DBShardGroup"
+      }
+    },
     "DBSnapshot":{
       "type":"structure",
       "members":{
@@ -8570,6 +8769,16 @@
       },
       "documentation":"<p/>"
     },
+    "DeleteDBShardGroupMessage":{
+      "type":"structure",
+      "required":["DBShardGroupIdentifier"],
+      "members":{
+        "DBShardGroupIdentifier":{
+          "shape":"String",
+          "documentation":"<p>Teh name of the DB shard group to delete.</p>"
+        }
+      }
+    },
     "DeleteDBSnapshotMessage":{
       "type":"structure",
       "required":["DBSnapshotIdentifier"],
@@ -8970,7 +9179,7 @@
         },
         "MaxRecords":{
           "shape":"IntegerOptional",
-          "documentation":"<p>The maximum number of records to include in the response. If more records exist than the specified <code>MaxRecords</code> value, a pagination token called a marker is included in the response so you can retrieve the remaining results.</p> <p>Default: 100</p> <p>Constraints: Minimum 20, maximum 100.</p>"
+          "documentation":"<p>The maximum number of records to include in the response. If more records exist than the specified <code>MaxRecords</code> value, a pagination token called a marker is included in the response so you can retrieve the remaining results.</p> <p>Default: 100</p> <p>Constraints: Minimum 20, maximum 100</p>"
         },
         "Marker":{
           "shape":"String",
@@ -9402,6 +9611,40 @@
         }
       },
       "documentation":"<p/>"
+    },
+    "DescribeDBShardGroupsMessage":{
+      "type":"structure",
+      "members":{
+        "DBShardGroupIdentifier":{
+          "shape":"String",
+          "documentation":"<p>The user-supplied DB shard group identifier or the Amazon Resource Name (ARN) of the DB shard group. If this parameter is specified, information for only the specific DB shard group is returned. This parameter isn't case-sensitive.</p> <p>Constraints:</p> <ul> <li> <p>If supplied, must match an existing DB shard group identifier.</p> </li> </ul>"
+        },
+        "Filters":{
+          "shape":"FilterList",
+          "documentation":"<p>A filter that specifies one or more DB shard groups to describe.</p>"
+        },
+        "Marker":{
+          "shape":"String",
+          "documentation":"<p>An optional pagination token provided by a previous <code>DescribeDBShardGroups</code> request. If this parameter is specified, the response includes only records beyond the marker, up to the value specified by <code>MaxRecords</code>.</p>"
+        },
+        "MaxRecords":{
+          "shape":"MaxRecords",
+          "documentation":"<p>The maximum number of records to include in the response. If more records exist than the specified <code>MaxRecords</code> value, a pagination token called a marker is included in the response so you can retrieve the remaining results.</p> <p>Default: 100</p> <p>Constraints: Minimum 20, maximum 100</p>"
+        }
+      }
+    },
+    "DescribeDBShardGroupsResponse":{
+      "type":"structure",
+      "members":{
+        "DBShardGroups":{
+          "shape":"DBShardGroupsList",
+          "documentation":"<p>Contains a list of DB shard groups for the user.</p>"
+        },
+        "Marker":{
+          "shape":"String",
+          "documentation":"<p>A pagination token that can be used in a later <code>DescribeDBClusters</code> request.</p>"
+        }
+      }
     },
     "DescribeDBSnapshotAttributesMessage":{
       "type":"structure",
@@ -11285,6 +11528,18 @@
       },
       "exception":true
     },
+    "InvalidDBShardGroupStateFault":{
+      "type":"structure",
+      "members":{
+      },
+      "documentation":"<p>The DB shard group must be in the available state.</p>",
+      "error":{
+        "code":"InvalidDBShardGroupState",
+        "httpStatusCode":400,
+        "senderFault":true
+      },
+      "exception":true
+    },
     "InvalidDBSnapshotStateFault":{
       "type":"structure",
       "members":{
@@ -11405,6 +11660,18 @@
       },
       "exception":true
     },
+    "InvalidMaxAcuFault":{
+      "type":"structure",
+      "members":{
+      },
+      "documentation":"<p>The maximum capacity of the DB shard group must be 48-7168 Aurora capacity units (ACUs).</p>",
+      "error":{
+        "code":"InvalidMaxAcu",
+        "httpStatusCode":400,
+        "senderFault":true
+      },
+      "exception":true
+    },
     "InvalidOptionGroupStateFault":{
       "type":"structure",
       "members":{
@@ -11509,6 +11776,33 @@
       "min":1,
       "pattern":"[a-zA-Z0-9_:\\-\\/]+"
     },
+    "LimitlessDatabase":{
+      "type":"structure",
+      "members":{
+        "Status":{
+          "shape":"LimitlessDatabaseStatus",
+          "documentation":"<p>The status of Aurora Limitless Database.</p>"
+        },
+        "MinRequiredACU":{
+          "shape":"DoubleOptional",
+          "documentation":"<p>The minimum required capacity for Aurora Limitless Database in Aurora capacity units (ACUs).</p>"
+        }
+      },
+      "documentation":"<p>Contains details for Aurora Limitless Database.</p>"
+    },
+    "LimitlessDatabaseStatus":{
+      "type":"string",
+      "enum":[
+        "active",
+        "not-in-use",
+        "enabled",
+        "disabled",
+        "enabling",
+        "disabling",
+        "modifying-max-capacity",
+        "error"
+      ]
+    },
     "ListTagsForResourceMessage":{
       "type":"structure",
       "required":["ResourceName"],
@@ -11562,6 +11856,18 @@
         }
       },
       "documentation":"<p>Contains the secret managed by RDS in Amazon Web Services Secrets Manager for the master user password.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/rds-secrets-manager.html\">Password management with Amazon Web Services Secrets Manager</a> in the <i>Amazon RDS User Guide</i> and <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/rds-secrets-manager.html\">Password management with Amazon Web Services Secrets Manager</a> in the <i>Amazon Aurora User Guide.</i> </p>"
+    },
+    "MaxDBShardGroupLimitReached":{
+      "type":"structure",
+      "members":{
+      },
+      "documentation":"<p>The maximum number of DB shard groups for your Amazon Web Services account in the specified Amazon Web Services Region has been reached.</p>",
+      "error":{
+        "code":"MaxDBShardGroupLimitReached",
+        "httpStatusCode":400,
+        "senderFault":true
+      },
+      "exception":true
     },
     "MaxRecords":{
       "type":"integer",
@@ -11945,6 +12251,10 @@
         "AwsBackupRecoveryPointArn":{
           "shape":"AwsBackupRecoveryPointArn",
           "documentation":"<p>The Amazon Resource Name (ARN) of the recovery point in Amazon Web Services Backup.</p>"
+        },
+        "EnableLimitlessDatabase":{
+          "shape":"BooleanOptional",
+          "documentation":"<p>Specifies whether to enable Aurora Limitless Database. You must enable Aurora Limitless Database to create a DB shard group.</p> <p>Valid for: Aurora DB clusters only</p>"
         }
       },
       "documentation":"<p/>"
@@ -12403,6 +12713,20 @@
         "RecommendedActionUpdates":{
           "shape":"RecommendedActionUpdateList",
           "documentation":"<p>The list of recommended action status to update. You can update multiple recommended actions at one time.</p>"
+        }
+      }
+    },
+    "ModifyDBShardGroupMessage":{
+      "type":"structure",
+      "required":["DBShardGroupIdentifier"],
+      "members":{
+        "DBShardGroupIdentifier":{
+          "shape":"String",
+          "documentation":"<p>The name of the DB shard group to modify.</p>"
+        },
+        "MaxACU":{
+          "shape":"DoubleOptional",
+          "documentation":"<p>The maximum capacity of the DB shard group in Aurora capacity units (ACUs).</p>"
         }
       }
     },
@@ -13747,6 +14071,16 @@
       "type":"structure",
       "members":{
         "DBInstance":{"shape":"DBInstance"}
+      }
+    },
+    "RebootDBShardGroupMessage":{
+      "type":"structure",
+      "required":["DBShardGroupIdentifier"],
+      "members":{
+        "DBShardGroupIdentifier":{
+          "shape":"String",
+          "documentation":"<p>The name of the DB shard group to reboot.</p>"
+        }
       }
     },
     "RecommendedAction":{
@@ -16302,6 +16636,18 @@
         }
       },
       "documentation":"<p>A time zone associated with a <code>DBInstance</code> or a <code>DBSnapshot</code>. This data type is an element in the response to the <code>DescribeDBInstances</code>, the <code>DescribeDBSnapshots</code>, and the <code>DescribeDBEngineVersions</code> actions.</p>"
+    },
+    "UnsupportedDBEngineVersionFault":{
+      "type":"structure",
+      "members":{
+      },
+      "documentation":"<p>The specified DB engine version isn't supported for Aurora Limitless Database.</p>",
+      "error":{
+        "code":"UnsupportedDBEngineVersion",
+        "httpStatusCode":400,
+        "senderFault":true
+      },
+      "exception":true
     },
     "UpgradeTarget":{
       "type":"structure",

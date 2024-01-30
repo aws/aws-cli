@@ -2,6 +2,13 @@
 CHANGELOG
 =========
 
+1.32.31
+=======
+
+* api-change:``datazone``: Add new skipDeletionCheck to DeleteDomain. Add new skipDeletionCheck to DeleteProject which also automatically deletes dependent objects
+* api-change:``route53``: Update the SDKs for text changes in the APIs.
+
+
 1.32.30
 =======
 

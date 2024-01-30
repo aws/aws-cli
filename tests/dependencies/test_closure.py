@@ -10,9 +10,12 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
+import fnmatch
 import functools
 import importlib.metadata
 import json
+import os
+import site
 from typing import Dict, Iterator, List, Tuple
 
 import pytest
@@ -42,7 +45,7 @@ class Package:
         return closure
 
     def _get_runtime_requirements(self) -> List[Requirement]:
-        req_strings = importlib.metadata.distribution(self.name).requires
+        req_strings = self._get_distribution(self.name).requires
         if req_strings is None:
             return []
         return [Requirement(req_string) for req_string in req_strings]
@@ -59,6 +62,34 @@ class Package:
         if requirement.marker and not requirement.marker.evaluate():
             return False
         return True
+
+    def _get_distribution(self, name: str) -> importlib.metadata.Distribution:
+        # For v2, we inject our own MetaPathFinder to handle
+        # botocore/s3transfer import aliases. However for the typical
+        # importlib.metadata.distribution(), it extends the built-in
+        # MetaPathFinder to include its own find_distributions() method
+        # to search for distribution directories. Read more here:
+        # https://docs.python.org/3/library/importlib.metadata.html#extending-the-search-algorithm
+        #
+        # Our MetaPathFinder class does not implement this method, which
+        # causes importlib.metadata.distribution() to not find the "awscli"
+        # package. So instead, this helper method is implemented to locate the
+        # dist-info directories based off our current site-packages
+        # and explicitly provide the directory to avoid needing to use
+        # MetaPathFinders and thus avoid this issue.
+
+        # Packages names may have a "-". These get converted to "_" for
+        # their respective directory names in the site packages directory.
+        snake_case_name = name.replace("-", "_")
+        for sitepackages in site.getsitepackages():
+            for filename in os.listdir(sitepackages):
+                if fnmatch.fnmatch(filename, f"{snake_case_name}-*.dist-info"):
+                    return importlib.metadata.Distribution.at(
+                        os.path.join(sitepackages, filename)
+                    )
+        raise ValueError(
+            f'Could not find .dist-info directory for {snake_case_name}'
+        )
 
 
 class DependencyClosure:
@@ -106,17 +137,21 @@ class TestDependencyClosure:
 
     def test_expected_runtime_dependencies(self, awscli_package):
         expected_dependencies = {
-            "botocore",
+            "awscrt",
+            "cffi",
             "colorama",
+            "cryptography",
+            "distro",
             "docutils",
             "jmespath",
-            "pyasn1",
+            "prompt-toolkit",
+            "pycparser",
             "python-dateutil",
-            "PyYAML",
-            "rsa",
-            "s3transfer",
+            "ruamel.yaml",
+            "ruamel.yaml.clib",
             "six",
             "urllib3",
+            "wcwidth",
         }
         actual_dependencies = set()
         for _, package in awscli_package.runtime_dependencies.walk():
@@ -128,8 +163,10 @@ class TestDependencyClosure:
 
     def test_expected_unbounded_runtime_dependencies(self, awscli_package):
         expected_unbounded_dependencies = {
-            "pyasn1",  # Transitive dependency from rsa
+            "cffi",  # Transitive dependency from cryptography
+            "pycparser",  # Transitive dependency from cffi
             "six",  # Transitive dependency from python-dateutil
+            "wcwidth",  # Transitive dependency from prompt-toolkit
         }
         all_dependencies = set()
         bounded_dependencies = set()

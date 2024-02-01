@@ -14,6 +14,7 @@ import os
 import re
 
 from awscli.arguments import CustomArgument
+from awscli.compat import compat_open
 import jmespath
 
 
@@ -126,12 +127,20 @@ class QueryOutFileArgument(StatefulArgument):
         """
         if is_parsed_result_successful(parsed):
             contents = jmespath.search(self.query, parsed)
-            with open(self.value, 'w') as fp:
+            with compat_open(
+                    self.value, 'w', access_permissions=self.perm) as fp:
                 # Don't write 'None' to a file -- write ''.
                 if contents is None:
                     fp.write('')
                 else:
                     fp.write(contents)
+                # Even though the file is opened using the requested mode
+                # (e.g. 0o600), the mode is only applied if a new file is
+                # created. This means if the file already exists, its
+                # permissions will not be changed. So, the os.chmod call is
+                # retained here to preserve behavior of this argument always
+                # clobbering a preexisting file's permissions to the desired
+                # mode.
                 os.chmod(self.value, self.perm)
 
 

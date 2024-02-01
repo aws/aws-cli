@@ -109,6 +109,24 @@
       ],
       "documentation":"<p>Creates a list of changes that will be applied to a stack so that you can review the changes before executing them. You can create a change set for a stack that doesn't exist or an existing stack. If you create a change set for a stack that doesn't exist, the change set shows all of the resources that CloudFormation will create. If you create a change set for an existing stack, CloudFormation compares the stack's information with the information that you submit in the change set and lists the differences. Use change sets to understand which resources CloudFormation will create or change, and how it will change resources in an existing stack, before you create or update a stack.</p> <p>To create a change set for a stack that doesn't exist, for the <code>ChangeSetType</code> parameter, specify <code>CREATE</code>. To create a change set for an existing stack, specify <code>UPDATE</code> for the <code>ChangeSetType</code> parameter. To create a change set for an import operation, specify <code>IMPORT</code> for the <code>ChangeSetType</code> parameter. After the <code>CreateChangeSet</code> call successfully completes, CloudFormation starts creating the change set. To check the status of the change set or to review it, use the <a>DescribeChangeSet</a> action.</p> <p>When you are satisfied with the changes the change set will make, execute the change set by using the <a>ExecuteChangeSet</a> action. CloudFormation doesn't make changes until you execute the change set.</p> <p>To create a change set for the entire stack hierarchy, set <code>IncludeNestedStacks</code> to <code>True</code>.</p>"
     },
+    "CreateGeneratedTemplate":{
+      "name":"CreateGeneratedTemplate",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"CreateGeneratedTemplateInput"},
+      "output":{
+        "shape":"CreateGeneratedTemplateOutput",
+        "resultWrapper":"CreateGeneratedTemplateResult"
+      },
+      "errors":[
+        {"shape":"AlreadyExistsException"},
+        {"shape":"LimitExceededException"},
+        {"shape":"ConcurrentResourcesLimitExceededException"}
+      ],
+      "documentation":"<p>Creates a template from existing resources that are not already managed with CloudFormation. You can check the status of the template generation using the <code>DescribeGeneratedTemplate</code> API action.</p>"
+    },
     "CreateStack":{
       "name":"CreateStack",
       "http":{
@@ -217,6 +235,19 @@
         {"shape":"InvalidChangeSetStatusException"}
       ],
       "documentation":"<p>Deletes the specified change set. Deleting change sets ensures that no one executes the wrong change set.</p> <p>If the call successfully completes, CloudFormation successfully deleted the change set.</p> <p>If <code>IncludeNestedStacks</code> specifies <code>True</code> during the creation of the nested change set, then <code>DeleteChangeSet</code> will delete all change sets that belong to the stacks hierarchy and will also delete all change sets for nested stacks with the status of <code>REVIEW_IN_PROGRESS</code>.</p>"
+    },
+    "DeleteGeneratedTemplate":{
+      "name":"DeleteGeneratedTemplate",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DeleteGeneratedTemplateInput"},
+      "errors":[
+        {"shape":"GeneratedTemplateNotFoundException"},
+        {"shape":"ConcurrentResourcesLimitExceededException"}
+      ],
+      "documentation":"<p>Deleted a generated template.</p>"
     },
     "DeleteStack":{
       "name":"DeleteStack",
@@ -330,6 +361,22 @@
       ],
       "documentation":"<p>Returns hook-related information for the change set and a list of changes that CloudFormation makes when you run the change set.</p>"
     },
+    "DescribeGeneratedTemplate":{
+      "name":"DescribeGeneratedTemplate",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DescribeGeneratedTemplateInput"},
+      "output":{
+        "shape":"DescribeGeneratedTemplateOutput",
+        "resultWrapper":"DescribeGeneratedTemplateResult"
+      },
+      "errors":[
+        {"shape":"GeneratedTemplateNotFoundException"}
+      ],
+      "documentation":"<p>Describes a generated template. The output includes details about the progress of the creation of a generated template started by a <code>CreateGeneratedTemplate</code> API action or the update of a generated template started with an <code>UpdateGeneratedTemplate</code> API action.</p>"
+    },
     "DescribeOrganizationsAccess":{
       "name":"DescribeOrganizationsAccess",
       "http":{
@@ -363,6 +410,22 @@
       ],
       "documentation":"<p>Returns information about a CloudFormation extension publisher.</p> <p>If you don't supply a <code>PublisherId</code>, and you have registered as an extension publisher, <code>DescribePublisher</code> returns information about your own publisher account.</p> <p>For more information about registering as a publisher, see:</p> <ul> <li> <p> <a href=\"https://docs.aws.amazon.com/AWSCloudFormation/latest/APIReference/API_RegisterPublisher.html\">RegisterPublisher</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/cloudformation-cli/latest/userguide/publish-extension.html\">Publishing extensions to make them available for public use</a> in the <i>CloudFormation CLI User Guide</i> </p> </li> </ul>",
       "idempotent":true
+    },
+    "DescribeResourceScan":{
+      "name":"DescribeResourceScan",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DescribeResourceScanInput"},
+      "output":{
+        "shape":"DescribeResourceScanOutput",
+        "resultWrapper":"DescribeResourceScanResult"
+      },
+      "errors":[
+        {"shape":"ResourceScanNotFoundException"}
+      ],
+      "documentation":"<p>Describes details of a resource scan.</p>"
     },
     "DescribeStackDriftDetectionStatus":{
       "name":"DescribeStackDriftDetectionStatus",
@@ -603,6 +666,22 @@
       ],
       "documentation":"<p>Updates a stack using the input information that was provided when the specified change set was created. After the call successfully completes, CloudFormation starts updating the stack. Use the <a>DescribeStacks</a> action to view the status of the update.</p> <p>When you execute a change set, CloudFormation deletes all other change sets associated with the stack because they aren't valid for the updated stack.</p> <p>If a stack policy is associated with the stack, CloudFormation enforces the policy during the update. You can't specify a temporary stack policy that overrides the current policy.</p> <p>To create a change set for the entire stack hierarchy, <code>IncludeNestedStacks</code> must have been set to <code>True</code>.</p>"
     },
+    "GetGeneratedTemplate":{
+      "name":"GetGeneratedTemplate",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"GetGeneratedTemplateInput"},
+      "output":{
+        "shape":"GetGeneratedTemplateOutput",
+        "resultWrapper":"GetGeneratedTemplateResult"
+      },
+      "errors":[
+        {"shape":"GeneratedTemplateNotFoundException"}
+      ],
+      "documentation":"<p>Retrieves a generated template. If the template is in an <code>InProgress</code> or <code>Pending</code> status then the template returned will be the template when the template was last in a <code>Complete</code> status. If the template has not yet been in a <code>Complete</code> status then an empty template will be returned.</p>"
+    },
     "GetStackPolicy":{
       "name":"GetStackPolicy",
       "http":{
@@ -696,6 +775,19 @@
       },
       "documentation":"<p>Lists all exported output values in the account and Region in which you call this action. Use this action to see the exported output values that you can import into other stacks. To import values, use the <a href=\"https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/intrinsic-function-reference-importvalue.html\"> Fn::ImportValue</a> function.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/using-cfn-stack-exports.html\"> CloudFormation export stack output values</a>.</p>"
     },
+    "ListGeneratedTemplates":{
+      "name":"ListGeneratedTemplates",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"ListGeneratedTemplatesInput"},
+      "output":{
+        "shape":"ListGeneratedTemplatesOutput",
+        "resultWrapper":"ListGeneratedTemplatesResult"
+      },
+      "documentation":"<p>Lists your generated templates in this Region.</p>"
+    },
     "ListImports":{
       "name":"ListImports",
       "http":{
@@ -708,6 +800,53 @@
         "resultWrapper":"ListImportsResult"
       },
       "documentation":"<p>Lists all stacks that are importing an exported output value. To modify or remove an exported output value, first use this action to see which stacks are using it. To see the exported output values in your account, see <a>ListExports</a>.</p> <p>For more information about importing an exported output value, see the <a href=\"https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/intrinsic-function-reference-importvalue.html\">Fn::ImportValue</a> function.</p>"
+    },
+    "ListResourceScanRelatedResources":{
+      "name":"ListResourceScanRelatedResources",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"ListResourceScanRelatedResourcesInput"},
+      "output":{
+        "shape":"ListResourceScanRelatedResourcesOutput",
+        "resultWrapper":"ListResourceScanRelatedResourcesResult"
+      },
+      "errors":[
+        {"shape":"ResourceScanNotFoundException"},
+        {"shape":"ResourceScanInProgressException"}
+      ],
+      "documentation":"<p>Lists the related resources for a list of resources from a resource scan. The response indicates whether each returned resource is already managed by CloudFormation.</p>"
+    },
+    "ListResourceScanResources":{
+      "name":"ListResourceScanResources",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"ListResourceScanResourcesInput"},
+      "output":{
+        "shape":"ListResourceScanResourcesOutput",
+        "resultWrapper":"ListResourceScanResourcesResult"
+      },
+      "errors":[
+        {"shape":"ResourceScanNotFoundException"},
+        {"shape":"ResourceScanInProgressException"}
+      ],
+      "documentation":"<p>Lists the resources from a resource scan. The results can be filtered by resource identifier, resource type prefix, tag key, and tag value. Only resources that match all specified filters are returned. The response indicates whether each returned resource is already managed by CloudFormation.</p>"
+    },
+    "ListResourceScans":{
+      "name":"ListResourceScans",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"ListResourceScansInput"},
+      "output":{
+        "shape":"ListResourceScansOutput",
+        "resultWrapper":"ListResourceScansResult"
+      },
+      "documentation":"<p>List the resource scans from newest to oldest. By default it will return up to 10 resource scans.</p>"
     },
     "ListStackInstanceResourceDrifts":{
       "name":"ListStackInstanceResourceDrifts",
@@ -1005,6 +1144,23 @@
       "input":{"shape":"SignalResourceInput"},
       "documentation":"<p>Sends a signal to the specified resource with a success or failure status. You can use the <code>SignalResource</code> operation in conjunction with a creation policy or update policy. CloudFormation doesn't proceed with a stack creation or update until resources receive the required number of signals or the timeout period is exceeded. The <code>SignalResource</code> operation is useful in cases where you want to send signals from anywhere other than an Amazon EC2 instance.</p>"
     },
+    "StartResourceScan":{
+      "name":"StartResourceScan",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"StartResourceScanInput"},
+      "output":{
+        "shape":"StartResourceScanOutput",
+        "resultWrapper":"StartResourceScanResult"
+      },
+      "errors":[
+        {"shape":"ResourceScanInProgressException"},
+        {"shape":"ResourceScanLimitExceededException"}
+      ],
+      "documentation":"<p>Starts a scan of the resources in this account in this Region. You can the status of a scan using the <code>ListResourceScans</code> API action.</p>"
+    },
     "StopStackSetOperation":{
       "name":"StopStackSetOperation",
       "http":{
@@ -1040,6 +1196,24 @@
       ],
       "documentation":"<p>Tests a registered extension to make sure it meets all necessary requirements for being published in the CloudFormation registry.</p> <ul> <li> <p>For resource types, this includes passing all contracts tests defined for the type.</p> </li> <li> <p>For modules, this includes determining if the module's model meets all necessary requirements.</p> </li> </ul> <p>For more information, see <a href=\"https://docs.aws.amazon.com/cloudformation-cli/latest/userguide/publish-extension.html#publish-extension-testing\">Testing your public extension prior to publishing</a> in the <i>CloudFormation CLI User Guide</i>.</p> <p>If you don't specify a version, CloudFormation uses the default version of the extension in your account and Region for testing.</p> <p>To perform testing, CloudFormation assumes the execution role specified when the type was registered. For more information, see <a href=\"https://docs.aws.amazon.com/AWSCloudFormation/latest/APIReference/API_RegisterType.html\">RegisterType</a>.</p> <p>Once you've initiated testing on an extension using <code>TestType</code>, you can pass the returned <code>TypeVersionArn</code> into <a href=\"https://docs.aws.amazon.com/AWSCloudFormation/latest/APIReference/API_DescribeType.html\">DescribeType</a> to monitor the current test status and test status description for the extension.</p> <p>An extension must have a test status of <code>PASSED</code> before it can be published. For more information, see <a href=\"https://docs.aws.amazon.com/cloudformation-cli/latest/userguide/resource-type-publish.html\">Publishing extensions to make them available for public use</a> in the <i>CloudFormation CLI User Guide</i>.</p>",
       "idempotent":true
+    },
+    "UpdateGeneratedTemplate":{
+      "name":"UpdateGeneratedTemplate",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"UpdateGeneratedTemplateInput"},
+      "output":{
+        "shape":"UpdateGeneratedTemplateOutput",
+        "resultWrapper":"UpdateGeneratedTemplateResult"
+      },
+      "errors":[
+        {"shape":"AlreadyExistsException"},
+        {"shape":"GeneratedTemplateNotFoundException"},
+        {"shape":"LimitExceededException"}
+      ],
+      "documentation":"<p>Updates a generated template. This can be used to change the name, add and remove resources, refresh resources, and change the <code>DeletionPolicy</code> and <code>UpdateReplacePolicy</code> settings. You can check the status of the update to the generated template using the <code>DescribeGeneratedTemplate</code> API action.</p>"
     },
     "UpdateStack":{
       "name":"UpdateStack",
@@ -1662,6 +1836,18 @@
         "SOFT_FAILURE_TOLERANCE"
       ]
     },
+    "ConcurrentResourcesLimitExceededException":{
+      "type":"structure",
+      "members":{
+      },
+      "documentation":"<p>No more than 5 generated templates can be in an <code>InProgress</code> or <code>Pending</code> status at one time. This error is also returned if a generated template that is in an <code>InProgress</code> or <code>Pending</code> status is attempted to be updated or deleted.</p>",
+      "error":{
+        "code":"ConcurrentResourcesLimitExceeded",
+        "httpStatusCode":429,
+        "senderFault":true
+      },
+      "exception":true
+    },
     "ConfigurationSchema":{
       "type":"string",
       "max":60000,
@@ -1803,6 +1989,37 @@
       },
       "documentation":"<p>The output for the <a>CreateChangeSet</a> action.</p>"
     },
+    "CreateGeneratedTemplateInput":{
+      "type":"structure",
+      "required":["GeneratedTemplateName"],
+      "members":{
+        "Resources":{
+          "shape":"ResourceDefinitions",
+          "documentation":"<p>An optional list of resources to be included in the generated template.</p> <p> If no resources are specified,the template will be created without any resources. Resources can be added to the template using the <code>UpdateGeneratedTemplate</code> API action.</p>"
+        },
+        "GeneratedTemplateName":{
+          "shape":"GeneratedTemplateName",
+          "documentation":"<p>The name assigned to the generated template.</p>"
+        },
+        "StackName":{
+          "shape":"StackName",
+          "documentation":"<p>An optional name or ARN of a stack to use as the base stack for the generated template.</p>"
+        },
+        "TemplateConfiguration":{
+          "shape":"TemplateConfiguration",
+          "documentation":"<p>The configuration details of the generated template, including the <code>DeletionPolicy</code> and <code>UpdateReplacePolicy</code>.</p>"
+        }
+      }
+    },
+    "CreateGeneratedTemplateOutput":{
+      "type":"structure",
+      "members":{
+        "GeneratedTemplateId":{
+          "shape":"GeneratedTemplateId",
+          "documentation":"<p>The ID of the generated template.</p>"
+        }
+      }
+    },
     "CreateStackInput":{
       "type":"structure",
       "required":["StackName"],
@@ -1833,7 +2050,7 @@
         },
         "TimeoutInMinutes":{
           "shape":"TimeoutMinutes",
-          "documentation":"<p>The amount of time that can pass before the stack status becomes CREATE_FAILED; if <code>DisableRollback</code> is not set or is set to <code>false</code>, the stack will be rolled back.</p>"
+          "documentation":"<p>The amount of time that can pass before the stack status becomes <code>CREATE_FAILED</code>; if <code>DisableRollback</code> is not set or is set to <code>false</code>, the stack will be rolled back.</p>"
         },
         "NotificationARNs":{
           "shape":"NotificationARNs",
@@ -2084,6 +2301,16 @@
       "members":{
       },
       "documentation":"<p>The output for the <a>DeleteChangeSet</a> action.</p>"
+    },
+    "DeleteGeneratedTemplateInput":{
+      "type":"structure",
+      "required":["GeneratedTemplateName"],
+      "members":{
+        "GeneratedTemplateName":{
+          "shape":"GeneratedTemplateName",
+          "documentation":"<p>The name or Amazon Resource Name (ARN) of a generated template.</p>"
+        }
+      }
     },
     "DeleteStackInput":{
       "type":"structure",
@@ -2423,6 +2650,65 @@
       },
       "documentation":"<p>The output for the <a>DescribeChangeSet</a> action.</p>"
     },
+    "DescribeGeneratedTemplateInput":{
+      "type":"structure",
+      "required":["GeneratedTemplateName"],
+      "members":{
+        "GeneratedTemplateName":{
+          "shape":"GeneratedTemplateName",
+          "documentation":"<p>The name or Amazon Resource Name (ARN) of a generated template.</p>"
+        }
+      }
+    },
+    "DescribeGeneratedTemplateOutput":{
+      "type":"structure",
+      "members":{
+        "GeneratedTemplateId":{
+          "shape":"GeneratedTemplateId",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the generated template. The format is <code>arn:${Partition}:cloudformation:${Region}:${Account}:generatedtemplate/${Id}</code>. For example, <code>arn:aws:cloudformation:<i>us-east-1</i>:<i>123456789012</i>:generatedtemplate/<i>2e8465c1-9a80-43ea-a3a3-4f2d692fe6dc</i> </code>.</p>"
+        },
+        "GeneratedTemplateName":{
+          "shape":"GeneratedTemplateName",
+          "documentation":"<p>The name of the generated template.</p>"
+        },
+        "Resources":{
+          "shape":"ResourceDetails",
+          "documentation":"<p>A list of objects describing the details of the resources in the template generation.</p>"
+        },
+        "Status":{
+          "shape":"GeneratedTemplateStatus",
+          "documentation":"<p>The status of the template generation. Supported values are:</p> <ul> <li> <p> <code>CreatePending</code> - the creation of the template is pending.</p> </li> <li> <p> <code>CreateInProgress</code> - the creation of the template is in progress.</p> </li> <li> <p> <code>DeletePending</code> - the deletion of the template is pending.</p> </li> <li> <p> <code>DeleteInProgress</code> - the deletion of the template is in progress.</p> </li> <li> <p> <code>UpdatePending</code> - the update of the template is pending.</p> </li> <li> <p> <code>UpdateInProgress</code> - the update of the template is in progress.</p> </li> <li> <p> <code>Failed</code> - the template operation failed.</p> </li> <li> <p> <code>Complete</code> - the template operation is complete.</p> </li> </ul>"
+        },
+        "StatusReason":{
+          "shape":"TemplateStatusReason",
+          "documentation":"<p>The reason for the current template generation status. This will provide more details if a failure happened.</p>"
+        },
+        "CreationTime":{
+          "shape":"CreationTime",
+          "documentation":"<p>The time the generated template was created.</p>"
+        },
+        "LastUpdatedTime":{
+          "shape":"LastUpdatedTime",
+          "documentation":"<p>The time the generated template was last updated.</p>"
+        },
+        "Progress":{
+          "shape":"TemplateProgress",
+          "documentation":"<p>An object describing the progress of the template generation.</p>"
+        },
+        "StackId":{
+          "shape":"StackId",
+          "documentation":"<p>The stack ARN of the base stack if a base stack was provided when generating the template.</p>"
+        },
+        "TemplateConfiguration":{
+          "shape":"TemplateConfiguration",
+          "documentation":"<p>The configuration details of the generated template, including the <code>DeletionPolicy</code> and <code>UpdateReplacePolicy</code>.</p>"
+        },
+        "TotalWarnings":{
+          "shape":"TotalWarnings",
+          "documentation":"<p>The number of warnings generated for this template. The warnings are found in the details of each of the resources in the template.</p>"
+        }
+      }
+    },
     "DescribeOrganizationsAccessInput":{
       "type":"structure",
       "members":{
@@ -2468,6 +2754,57 @@
         "PublisherProfile":{
           "shape":"PublisherProfile",
           "documentation":"<p>The URL to the publisher's profile with the identity provider.</p>"
+        }
+      }
+    },
+    "DescribeResourceScanInput":{
+      "type":"structure",
+      "required":["ResourceScanId"],
+      "members":{
+        "ResourceScanId":{
+          "shape":"ResourceScanId",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the resource scan.</p>"
+        }
+      }
+    },
+    "DescribeResourceScanOutput":{
+      "type":"structure",
+      "members":{
+        "ResourceScanId":{
+          "shape":"ResourceScanId",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the resource scan. The format is <code>arn:${Partition}:cloudformation:${Region}:${Account}:resourceScan/${Id}</code>. An example is <code>arn:aws:cloudformation:<i>us-east-1</i>:<i>123456789012</i>:resourceScan/<i>f5b490f7-7ed4-428a-aa06-31ff25db0772</i> </code>.</p>"
+        },
+        "Status":{
+          "shape":"ResourceScanStatus",
+          "documentation":"<p>Status of the resource scan.</p> <dl> <dt>INPROGRESS</dt> <dd> <p>The resource scan is still in progress.</p> </dd> <dt>COMPLETE</dt> <dd> <p>The resource scan is complete.</p> </dd> <dt>EXPIRED</dt> <dd> <p>The resource scan has expired.</p> </dd> <dt>FAILED</dt> <dd> <p>The resource scan has failed.</p> </dd> </dl>"
+        },
+        "StatusReason":{
+          "shape":"ResourceScanStatusReason",
+          "documentation":"<p>The reason for the resource scan status, providing more information if a failure happened.</p>"
+        },
+        "StartTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time that the resource scan was started.</p>"
+        },
+        "EndTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time that the resource scan was finished.</p>"
+        },
+        "PercentageCompleted":{
+          "shape":"PercentageCompleted",
+          "documentation":"<p>The percentage of the resource scan that has been completed.</p>"
+        },
+        "ResourceTypes":{
+          "shape":"ResourceTypes",
+          "documentation":"<p>The list of resource types for the specified scan. Resource types are only available for scans with a <code>Status</code> set to <code>COMPLETE</code> or <code>FAILED </code>.</p>"
+        },
+        "ResourcesScanned":{
+          "shape":"ResourcesScanned",
+          "documentation":"<p>The number of resources that were listed. This is only available for scans with a <code>Status</code> set to <code>COMPLETE</code>, <code>EXPIRED</code>, or <code>FAILED </code>.</p>"
+        },
+        "ResourcesRead":{
+          "shape":"ResourcesRead",
+          "documentation":"<p>The number of resources that were read. This is only available for scans with a <code>Status</code> set to <code>COMPLETE</code>, <code>EXPIRED</code>, or <code>FAILED </code>.</p> <note> <p>This field may be 0 if the resource scan failed with a <code>ResourceScanLimitExceededException</code>.</p> </note>"
         }
       }
     },
@@ -3164,6 +3501,91 @@
       "max":100,
       "min":0
     },
+    "GeneratedTemplateDeletionPolicy":{
+      "type":"string",
+      "enum":[
+        "DELETE",
+        "RETAIN"
+      ]
+    },
+    "GeneratedTemplateId":{
+      "type":"string",
+      "max":256,
+      "min":1
+    },
+    "GeneratedTemplateName":{
+      "type":"string",
+      "max":128,
+      "min":1
+    },
+    "GeneratedTemplateNotFoundException":{
+      "type":"structure",
+      "members":{
+      },
+      "documentation":"<p>The generated template was not found.</p>",
+      "error":{
+        "code":"GeneratedTemplateNotFound",
+        "httpStatusCode":404,
+        "senderFault":true
+      },
+      "exception":true
+    },
+    "GeneratedTemplateResourceStatus":{
+      "type":"string",
+      "enum":[
+        "PENDING",
+        "IN_PROGRESS",
+        "FAILED",
+        "COMPLETE"
+      ]
+    },
+    "GeneratedTemplateStatus":{
+      "type":"string",
+      "enum":[
+        "CREATE_PENDING",
+        "UPDATE_PENDING",
+        "DELETE_PENDING",
+        "CREATE_IN_PROGRESS",
+        "UPDATE_IN_PROGRESS",
+        "DELETE_IN_PROGRESS",
+        "FAILED",
+        "COMPLETE"
+      ]
+    },
+    "GeneratedTemplateUpdateReplacePolicy":{
+      "type":"string",
+      "enum":[
+        "DELETE",
+        "RETAIN"
+      ]
+    },
+    "GetGeneratedTemplateInput":{
+      "type":"structure",
+      "required":["GeneratedTemplateName"],
+      "members":{
+        "Format":{
+          "shape":"TemplateFormat",
+          "documentation":"<p>The language to use to retrieve for the generated template. Supported values are:</p> <ul> <li> <p> <code>JSON</code> </p> </li> <li> <p> <code>YAML</code> </p> </li> </ul>"
+        },
+        "GeneratedTemplateName":{
+          "shape":"GeneratedTemplateName",
+          "documentation":"<p>The name or Amazon Resource Name (ARN) of the generated template. The format is <code>arn:${Partition}:cloudformation:${Region}:${Account}:generatedtemplate/${Id}</code>. For example, <code>arn:aws:cloudformation:<i>us-east-1</i>:<i>123456789012</i>:generatedtemplate/<i>2e8465c1-9a80-43ea-a3a3-4f2d692fe6dc</i> </code>.</p>"
+        }
+      }
+    },
+    "GetGeneratedTemplateOutput":{
+      "type":"structure",
+      "members":{
+        "Status":{
+          "shape":"GeneratedTemplateStatus",
+          "documentation":"<p>The status of the template generation. Supported values are:</p> <ul> <li> <p> <code>CreatePending</code> - the creation of the template is pending.</p> </li> <li> <p> <code>CreateInProgress</code> - the creation of the template is in progress.</p> </li> <li> <p> <code>DeletePending</code> - the deletion of the template is pending.</p> </li> <li> <p> <code>DeleteInProgress</code> - the deletion of the template is in progress.</p> </li> <li> <p> <code>UpdatePending</code> - the update of the template is pending.</p> </li> <li> <p> <code>UpdateInProgress</code> - the update of the template is in progress.</p> </li> <li> <p> <code>Failed</code> - the template operation failed.</p> </li> <li> <p> <code>Complete</code> - the template operation is complete.</p> </li> </ul>"
+        },
+        "TemplateBody":{
+          "shape":"TemplateBody",
+          "documentation":"<p>The template body of the generated template, in the language specified by the <code>Language</code> parameter.</p>"
+        }
+      }
+    },
     "GetStackPolicyInput":{
       "type":"structure",
       "required":["StackName"],
@@ -3496,6 +3918,19 @@
     "IsActivated":{"type":"boolean"},
     "IsDefaultConfiguration":{"type":"boolean"},
     "IsDefaultVersion":{"type":"boolean"},
+    "JazzLogicalResourceIds":{
+      "type":"list",
+      "member":{"shape":"LogicalResourceId"},
+      "max":500,
+      "min":1
+    },
+    "JazzResourceIdentifierProperties":{
+      "type":"map",
+      "key":{"shape":"JazzResourceIdentifierPropertyKey"},
+      "value":{"shape":"JazzResourceIdentifierPropertyValue"}
+    },
+    "JazzResourceIdentifierPropertyKey":{"type":"string"},
+    "JazzResourceIdentifierPropertyValue":{"type":"string"},
     "Key":{"type":"string"},
     "LastUpdatedTime":{"type":"timestamp"},
     "LimitExceededException":{
@@ -3563,6 +3998,32 @@
         }
       }
     },
+    "ListGeneratedTemplatesInput":{
+      "type":"structure",
+      "members":{
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>A string that identifies the next page of resource scan results.</p>"
+        },
+        "MaxResults":{
+          "shape":"MaxResults",
+          "documentation":"<p> If the number of available results exceeds this maximum, the response includes a <code>NextToken</code> value that you can use for the <code>NextToken</code> parameter to get the next set of results. By default the <code>ListGeneratedTemplates</code> API action will return at most 50 results in each response. The maximum value is 100.</p>"
+        }
+      }
+    },
+    "ListGeneratedTemplatesOutput":{
+      "type":"structure",
+      "members":{
+        "Summaries":{
+          "shape":"TemplateSummaries",
+          "documentation":"<p>A list of summaries of the generated templates.</p>"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>If the request doesn't return all the remaining results, <code>NextToken</code> is set to a token. To retrieve the next set of results, call <code>ListGeneratedTemplates</code> again and use that value for the <code>NextToken</code> parameter. If the request returns all results, <code>NextToken</code> is set to an empty string.</p>"
+        }
+      }
+    },
     "ListImportsInput":{
       "type":"structure",
       "required":["ExportName"],
@@ -3587,6 +4048,117 @@
         "NextToken":{
           "shape":"NextToken",
           "documentation":"<p>A string that identifies the next page of exports. If there is no additional page, this value is null.</p>"
+        }
+      }
+    },
+    "ListResourceScanRelatedResourcesInput":{
+      "type":"structure",
+      "required":[
+        "ResourceScanId",
+        "Resources"
+      ],
+      "members":{
+        "ResourceScanId":{
+          "shape":"ResourceScanId",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the resource scan.</p>"
+        },
+        "Resources":{
+          "shape":"ScannedResourceIdentifiers",
+          "documentation":"<p>The list of resources for which you want to get the related resources. Up to 100 resources can be provided.</p>"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>A string that identifies the next page of resource scan results.</p>"
+        },
+        "MaxResults":{
+          "shape":"BoxedMaxResults",
+          "documentation":"<p> If the number of available results exceeds this maximum, the response includes a <code>NextToken</code> value that you can use for the <code>NextToken</code> parameter to get the next set of results. By default the <code>ListResourceScanRelatedResources</code> API action will return up to 100 results in each response. The maximum value is 100.</p>"
+        }
+      }
+    },
+    "ListResourceScanRelatedResourcesOutput":{
+      "type":"structure",
+      "members":{
+        "RelatedResources":{
+          "shape":"RelatedResources",
+          "documentation":"<p>List of up to <code>MaxResults</code> resources in the specified resource scan related to the specified resources.</p>"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>If the request doesn't return all the remaining results, <code>NextToken</code> is set to a token. To retrieve the next set of results, call <code>ListResourceScanRelatedResources</code> again and use that value for the <code>NextToken</code> parameter. If the request returns all results, <code>NextToken</code> is set to an empty string.</p>"
+        }
+      }
+    },
+    "ListResourceScanResourcesInput":{
+      "type":"structure",
+      "required":["ResourceScanId"],
+      "members":{
+        "ResourceScanId":{
+          "shape":"ResourceScanId",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the resource scan.</p>"
+        },
+        "ResourceIdentifier":{
+          "shape":"ResourceIdentifier",
+          "documentation":"<p>If specified, the returned resources will have the specified resource identifier (or one of them in the case where the resource has multiple identifiers).</p>"
+        },
+        "ResourceTypePrefix":{
+          "shape":"ResourceTypePrefix",
+          "documentation":"<p>If specified, the returned resources will be of any of the resource types with the specified prefix.</p>"
+        },
+        "TagKey":{
+          "shape":"TagKey",
+          "documentation":"<p>If specified, the returned resources will have a matching tag key.</p>"
+        },
+        "TagValue":{
+          "shape":"TagValue",
+          "documentation":"<p>If specified, the returned resources will have a matching tag value.</p>"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>A string that identifies the next page of resource scan results.</p>"
+        },
+        "MaxResults":{
+          "shape":"ResourceScannerMaxResults",
+          "documentation":"<p> If the number of available results exceeds this maximum, the response includes a <code>NextToken</code> value that you can use for the <code>NextToken</code> parameter to get the next set of results. By default the <code>ListResourceScanResources</code> API action will return at most 100 results in each response. The maximum value is 100.</p>"
+        }
+      }
+    },
+    "ListResourceScanResourcesOutput":{
+      "type":"structure",
+      "members":{
+        "Resources":{
+          "shape":"ScannedResources",
+          "documentation":"<p>List of up to <code>MaxResults</code> resources in the specified resource scan that match all of the specified filters.</p>"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>If the request doesn't return all the remaining results, <code>NextToken</code> is set to a token. To retrieve the next set of results, call <code>ListResourceScanResources</code> again and use that value for the <code>NextToken</code> parameter. If the request returns all results, <code>NextToken</code> is set to an empty string.</p>"
+        }
+      }
+    },
+    "ListResourceScansInput":{
+      "type":"structure",
+      "members":{
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>A string that identifies the next page of resource scan results.</p>"
+        },
+        "MaxResults":{
+          "shape":"ResourceScannerMaxResults",
+          "documentation":"<p> If the number of available results exceeds this maximum, the response includes a <code>NextToken</code> value that you can use for the <code>NextToken</code> parameter to get the next set of results. The default value is 10. The maximum value is 100.</p>"
+        }
+      }
+    },
+    "ListResourceScansOutput":{
+      "type":"structure",
+      "members":{
+        "ResourceScanSummaries":{
+          "shape":"ResourceScanSummaries",
+          "documentation":"<p>The list of scans returned.</p>"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>If the request doesn't return all the remaining results, <code>NextToken</code> is set to a token. To retrieve the next set of results, call <code>ListResourceScans</code> again and use that value for the <code>NextToken</code> parameter. If the request returns all results, <code>NextToken</code> is set to an empty string.</p>"
         }
       }
     },
@@ -4036,6 +4608,7 @@
       "max":100000,
       "min":1
     },
+    "ManagedByStack":{"type":"boolean"},
     "ManagedExecution":{
       "type":"structure",
       "members":{
@@ -4104,6 +4677,10 @@
       "type":"list",
       "member":{"shape":"NotificationARN"},
       "max":5
+    },
+    "NumberOfResources":{
+      "type":"integer",
+      "min":0
     },
     "OnFailure":{
       "type":"string",
@@ -4328,6 +4905,7 @@
       "type":"list",
       "member":{"shape":"Parameter"}
     },
+    "PercentageCompleted":{"type":"double"},
     "PermissionModels":{
       "type":"string",
       "enum":[
@@ -4365,6 +4943,7 @@
       "pattern":"arn:aws[A-Za-z0-9-]{0,64}:cloudformation:[A-Za-z0-9-]{1,64}:[0-9]{12}:type/.+"
     },
     "Properties":{"type":"string"},
+    "PropertyDescription":{"type":"string"},
     "PropertyDifference":{
       "type":"structure",
       "required":[
@@ -4510,6 +5089,7 @@
       "members":{
       }
     },
+    "RefreshAllResources":{"type":"boolean"},
     "Region":{
       "type":"string",
       "pattern":"^[a-zA-Z0-9-]{1,128}$"
@@ -4615,6 +5195,10 @@
         "HOOK"
       ]
     },
+    "RelatedResources":{
+      "type":"list",
+      "member":{"shape":"ScannedResource"}
+    },
     "Replacement":{
       "type":"string",
       "enum":[
@@ -4655,6 +5239,7 @@
       "type":"list",
       "member":{"shape":"RequiredActivatedType"}
     },
+    "RequiredProperty":{"type":"boolean"},
     "RequiresRecreation":{
       "type":"string",
       "enum":[
@@ -4743,6 +5328,71 @@
       "type":"list",
       "member":{"shape":"ResourceChangeDetail"}
     },
+    "ResourceDefinition":{
+      "type":"structure",
+      "required":[
+        "ResourceType",
+        "ResourceIdentifier"
+      ],
+      "members":{
+        "ResourceType":{
+          "shape":"ResourceType",
+          "documentation":"<p>The type of the resource, such as <code>AWS::DynamoDB::Table</code>. For the list of supported resources, see <a href=\"https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/generate-IaC-supported-resources.html\">IaC generator supported resource types</a> in the <i>CloudFormation User Guide</i> </p>"
+        },
+        "LogicalResourceId":{
+          "shape":"LogicalResourceId",
+          "documentation":"<p>The logical resource id for this resource in the generated template.</p>"
+        },
+        "ResourceIdentifier":{
+          "shape":"ResourceIdentifierProperties",
+          "documentation":"<p>A list of up to 256 key-value pairs that identifies the scanned resource. The key is the name of one of the primary identifiers for the resource. (Primary identifiers are specified in the <code>primaryIdentifier</code> list in the resource schema.) The value is the value of that primary identifier. For example, for a <code>AWS::DynamoDB::Table</code> resource, the primary identifiers is <code>TableName</code> so the key-value pair could be <code>\"TableName\": \"MyDDBTable\"</code>. For more information, see <a href=\"https://docs.aws.amazon.com/cloudformation-cli/latest/userguide/resource-type-schema.html#schema-properties-primaryidentifier\">primaryIdentifier</a> in the <i>CloudFormation Command Line Interface User guide for extension development</i>.</p>"
+        }
+      },
+      "documentation":"<p>A resource included in a generated template. This data type is used with the <code>CreateGeneratedTemplate</code> and <code>UpdateGeneratedTemplate</code> API actions.</p>"
+    },
+    "ResourceDefinitions":{
+      "type":"list",
+      "member":{"shape":"ResourceDefinition"},
+      "max":500,
+      "min":1
+    },
+    "ResourceDetail":{
+      "type":"structure",
+      "members":{
+        "ResourceType":{
+          "shape":"ResourceType",
+          "documentation":"<p>The type of the resource, such as <code>AWS::DynamoDB::Table</code>. For the list of supported resources, see <a href=\"https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/generate-IaC-supported-resources.html\">IaC generator supported resource types</a> In the <i>CloudFormation User Guide</i> </p>"
+        },
+        "LogicalResourceId":{
+          "shape":"LogicalResourceId",
+          "documentation":"<p>The logical id for this resource in the final generated template.</p>"
+        },
+        "ResourceIdentifier":{
+          "shape":"ResourceIdentifierProperties",
+          "documentation":"<p>A list of up to 256 key-value pairs that identifies the resource in the generated template. The key is the name of one of the primary identifiers for the resource. (Primary identifiers are specified in the <code>primaryIdentifier</code> list in the resource schema.) The value is the value of that primary identifier. For example, for a <code>AWS::DynamoDB::Table</code> resource, the primary identifiers is <code>TableName</code> so the key-value pair could be <code>\"TableName\": \"MyDDBTable\"</code>. For more information, see <a href=\"https://docs.aws.amazon.com/cloudformation-cli/latest/userguide/resource-type-schema.html#schema-properties-primaryidentifier\">primaryIdentifier</a> in the <i>CloudFormation Command Line Interface User guide for extension development</i>.</p>"
+        },
+        "ResourceStatus":{
+          "shape":"GeneratedTemplateResourceStatus",
+          "documentation":"<p>Status of the processing of a resource in a generated template.</p> <dl> <dt>InProgress</dt> <dd> <p>The resource processing is still in progress.</p> </dd> <dt>Complete</dt> <dd> <p>The resource processing is complete.</p> </dd> <dt>Pending</dt> <dd> <p>The resource processing is pending.</p> </dd> <dt>Failed</dt> <dd> <p>The resource processing has failed.</p> </dd> </dl>"
+        },
+        "ResourceStatusReason":{
+          "shape":"ResourceStatusReason",
+          "documentation":"<p>The reason for the resource detail, providing more information if a failure happened.</p>"
+        },
+        "Warnings":{
+          "shape":"WarningDetails",
+          "documentation":"<p>The warnings generated for this resource.</p>"
+        }
+      },
+      "documentation":"<p>Details about a resource in a generated template</p>"
+    },
+    "ResourceDetails":{
+      "type":"list",
+      "member":{"shape":"ResourceDetail"},
+      "max":500,
+      "min":1
+    },
+    "ResourceIdentifier":{"type":"string"},
     "ResourceIdentifierProperties":{
       "type":"map",
       "key":{"shape":"ResourceIdentifierPropertyKey"},
@@ -4792,6 +5442,91 @@
       "min":1
     },
     "ResourceProperties":{"type":"string"},
+    "ResourceScanId":{"type":"string"},
+    "ResourceScanInProgressException":{
+      "type":"structure",
+      "members":{
+      },
+      "documentation":"<p>A resource scan is currently in progress. Only one can be run at a time for an account in a Region.</p>",
+      "error":{
+        "code":"ResourceScanInProgress",
+        "httpStatusCode":400,
+        "senderFault":true
+      },
+      "exception":true
+    },
+    "ResourceScanLimitExceededException":{
+      "type":"structure",
+      "members":{
+      },
+      "documentation":"<p>The limit on resource scans has been exceeded. Reasons include:</p> <ul> <li> <p>Exceeded the daily quota for resource scans.</p> </li> <li> <p>A resource scan recently failed. You must wait 10 minutes before starting a new resource scan.</p> </li> <li> <p>The last resource scan failed after exceeding 100,000 resources. When this happens, you must wait 24 hours before starting a new resource scan.</p> </li> </ul>",
+      "error":{
+        "code":"ResourceScanLimitExceeded",
+        "httpStatusCode":400,
+        "senderFault":true
+      },
+      "exception":true
+    },
+    "ResourceScanNotFoundException":{
+      "type":"structure",
+      "members":{
+      },
+      "documentation":"<p>The resource scan was not found.</p>",
+      "error":{
+        "code":"ResourceScanNotFound",
+        "httpStatusCode":400,
+        "senderFault":true
+      },
+      "exception":true
+    },
+    "ResourceScanStatus":{
+      "type":"string",
+      "enum":[
+        "IN_PROGRESS",
+        "FAILED",
+        "COMPLETE",
+        "EXPIRED"
+      ]
+    },
+    "ResourceScanStatusReason":{"type":"string"},
+    "ResourceScanSummaries":{
+      "type":"list",
+      "member":{"shape":"ResourceScanSummary"}
+    },
+    "ResourceScanSummary":{
+      "type":"structure",
+      "members":{
+        "ResourceScanId":{
+          "shape":"ResourceScanId",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the resource scan.</p>"
+        },
+        "Status":{
+          "shape":"ResourceScanStatus",
+          "documentation":"<p>Status of the resource scan.</p> <dl> <dt>INPROGRESS</dt> <dd> <p>The resource scan is still in progress.</p> </dd> <dt>COMPLETE</dt> <dd> <p>The resource scan is complete.</p> </dd> <dt>EXPIRED</dt> <dd> <p>The resource scan has expired.</p> </dd> <dt>FAILED</dt> <dd> <p>The resource scan has failed.</p> </dd> </dl>"
+        },
+        "StatusReason":{
+          "shape":"ResourceScanStatusReason",
+          "documentation":"<p>The reason for the resource scan status, providing more information if a failure happened.</p>"
+        },
+        "StartTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time that the resource scan was started.</p>"
+        },
+        "EndTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time that the resource scan was finished.</p>"
+        },
+        "PercentageCompleted":{
+          "shape":"PercentageCompleted",
+          "documentation":"<p>The percentage of the resource scan that has been completed.</p>"
+        }
+      },
+      "documentation":"<p>A summary of the resource scan. This is returned by the <code>ListResourceScan</code> API action.</p>"
+    },
+    "ResourceScannerMaxResults":{
+      "type":"integer",
+      "box":true
+    },
     "ResourceSignalStatus":{
       "type":"string",
       "enum":[
@@ -4882,9 +5617,28 @@
       "max":256,
       "min":1
     },
+    "ResourceTypePrefix":{"type":"string"},
     "ResourceTypes":{
       "type":"list",
       "member":{"shape":"ResourceType"}
+    },
+    "ResourcesFailed":{
+      "type":"integer",
+      "min":0
+    },
+    "ResourcesPending":{
+      "type":"integer",
+      "min":0
+    },
+    "ResourcesProcessing":{
+      "type":"integer",
+      "min":0
+    },
+    "ResourcesRead":{"type":"integer"},
+    "ResourcesScanned":{"type":"integer"},
+    "ResourcesSucceeded":{
+      "type":"integer",
+      "min":0
     },
     "ResourcesToImport":{
       "type":"list",
@@ -4992,6 +5746,50 @@
       "type":"string",
       "max":4096,
       "min":1
+    },
+    "ScannedResource":{
+      "type":"structure",
+      "members":{
+        "ResourceType":{
+          "shape":"ResourceType",
+          "documentation":"<p>The type of the resource, such as <code>AWS::DynamoDB::Table</code>. For the list of supported resources, see <a href=\"https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/generate-IaC-supported-resources.html\">IaC generator supported resource types</a> In the <i>CloudFormation User Guide</i> </p>"
+        },
+        "ResourceIdentifier":{
+          "shape":"JazzResourceIdentifierProperties",
+          "documentation":"<p>A list of up to 256 key-value pairs that identifies for the scanned resource. The key is the name of one of the primary identifiers for the resource. (Primary identifiers are specified in the <code>primaryIdentifier</code> list in the resource schema.) The value is the value of that primary identifier. For example, for a <code>AWS::DynamoDB::Table</code> resource, the primary identifiers is <code>TableName</code> so the key-value pair could be <code>\"TableName\": \"MyDDBTable\"</code>. For more information, see <a href=\"https://docs.aws.amazon.com/cloudformation-cli/latest/userguide/resource-type-schema.html#schema-properties-primaryidentifier\">primaryIdentifier</a> in the <i>CloudFormation Command Line Interface User guide for extension development</i>.</p>"
+        },
+        "ManagedByStack":{
+          "shape":"ManagedByStack",
+          "documentation":"<p>If <code>true</code>, the resource is managed by a CloudFormation stack.</p>"
+        }
+      },
+      "documentation":"<p>A scanned resource returned by <code>ListResourceScanResources</code> or <code>ListResourceScanRelatedResources</code>.</p>"
+    },
+    "ScannedResourceIdentifier":{
+      "type":"structure",
+      "required":[
+        "ResourceType",
+        "ResourceIdentifier"
+      ],
+      "members":{
+        "ResourceType":{
+          "shape":"ResourceType",
+          "documentation":"<p>The type of the resource, such as <code>AWS::DynamoDB::Table</code>. For the list of supported resources, see <a href=\"https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/generate-IaC-supported-resources.html\">IaC generator supported resource types</a> In the <i>CloudFormation User Guide</i> </p>"
+        },
+        "ResourceIdentifier":{
+          "shape":"JazzResourceIdentifierProperties",
+          "documentation":"<p>A list of up to 256 key-value pairs that identifies the scanned resource. The key is the name of one of the primary identifiers for the resource. (Primary identifiers are specified in the <code>primaryIdentifier</code> list in the resource schema.) The value is the value of that primary identifier. For example, for a <code>AWS::DynamoDB::Table</code> resource, the primary identifiers is <code>TableName</code> so the key-value pair could be <code>\"TableName\": \"MyDDBTable\"</code>. For more information, see <a href=\"https://docs.aws.amazon.com/cloudformation-cli/latest/userguide/resource-type-schema.html#schema-properties-primaryidentifier\">primaryIdentifier</a> in the <i>CloudFormation Command Line Interface User guide for extension development</i>.</p>"
+        }
+      },
+      "documentation":"<p>Identifies a scanned resource. This is used with the <code>ListResourceScanRelatedResources</code> API action.</p>"
+    },
+    "ScannedResourceIdentifiers":{
+      "type":"list",
+      "member":{"shape":"ScannedResourceIdentifier"}
+    },
+    "ScannedResources":{
+      "type":"list",
+      "member":{"shape":"ScannedResource"}
     },
     "Scope":{
       "type":"list",
@@ -6137,7 +6935,7 @@
         },
         "RegionOrder":{
           "shape":"RegionList",
-          "documentation":"<p>The order of the Regions where you want to perform the stack operation.</p>"
+          "documentation":"<p>The order of the Regions where you want to perform the stack operation.</p> <note> <p> <code>RegionOrder</code> isn't followed if <code>AutoDeployment</code> is enabled.</p> </note>"
         },
         "FailureToleranceCount":{
           "shape":"FailureToleranceCount",
@@ -6435,6 +7233,24 @@
       },
       "exception":true
     },
+    "StartResourceScanInput":{
+      "type":"structure",
+      "members":{
+        "ClientRequestToken":{
+          "shape":"ClientRequestToken",
+          "documentation":"<p>A unique identifier for this <code>StartResourceScan</code> request. Specify this token if you plan to retry requests so that CloudFormation knows that you're not attempting to start a new resource scan.</p>"
+        }
+      }
+    },
+    "StartResourceScanOutput":{
+      "type":"structure",
+      "members":{
+        "ResourceScanId":{
+          "shape":"ResourceScanId",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the resource scan. The format is <code>arn:${Partition}:cloudformation:${Region}:${Account}:resourceScan/${Id}</code>. An example is <code>arn:aws:cloudformation:<i>us-east-1</i>:<i>123456789012</i>:resourceScan/<i>f5b490f7-7ed4-428a-aa06-31ff25db0772</i> </code>.</p>"
+        }
+      }
+    },
     "StatusMessage":{
       "type":"string",
       "max":1024
@@ -6511,7 +7327,28 @@
       "type":"string",
       "min":1
     },
+    "TemplateConfiguration":{
+      "type":"structure",
+      "members":{
+        "DeletionPolicy":{
+          "shape":"GeneratedTemplateDeletionPolicy",
+          "documentation":"<p>The <code>DeletionPolicy</code> assigned to resources in the generated template. Supported values are:</p> <ul> <li> <p> <code>DELETE</code> - delete all resources when the stack is deleted.</p> </li> <li> <p> <code>RETAIN</code> - retain all resources when the stack is deleted.</p> </li> </ul> <p>For more information, see <a href=\"https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-attribute-deletionpolicy.html\"> <code>DeletionPolicy</code> attribute</a> in the <i>CloudFormation User Guide</i>.</p>"
+        },
+        "UpdateReplacePolicy":{
+          "shape":"GeneratedTemplateUpdateReplacePolicy",
+          "documentation":"<p>The <code>UpdateReplacePolicy</code> assigned to resources in the generated template. Supported values are:</p> <ul> <li> <p> <code>DELETE</code> - delete all resources when the resource is replaced during an update operation.</p> </li> <li> <p> <code>RETAIN</code> - retain all resources when the resource is replaced during an update operation.</p> </li> </ul> <p>For more information, see <a href=\"https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-attribute-updatereplacepolicy.html\"> <code>UpdateReplacePolicy</code> attribute</a> in the <i>CloudFormation User Guide</i>.</p>"
+        }
+      },
+      "documentation":"<p>The configuration details of a generated template.</p>"
+    },
     "TemplateDescription":{"type":"string"},
+    "TemplateFormat":{
+      "type":"string",
+      "enum":[
+        "JSON",
+        "YAML"
+      ]
+    },
     "TemplateParameter":{
       "type":"structure",
       "members":{
@@ -6538,12 +7375,77 @@
       "type":"list",
       "member":{"shape":"TemplateParameter"}
     },
+    "TemplateProgress":{
+      "type":"structure",
+      "members":{
+        "ResourcesSucceeded":{
+          "shape":"ResourcesSucceeded",
+          "documentation":"<p>The number of resources that succeeded the template generation.</p>"
+        },
+        "ResourcesFailed":{
+          "shape":"ResourcesFailed",
+          "documentation":"<p>The number of resources that failed the template generation.</p>"
+        },
+        "ResourcesProcessing":{
+          "shape":"ResourcesProcessing",
+          "documentation":"<p>The number of resources that are in-process for the template generation.</p>"
+        },
+        "ResourcesPending":{
+          "shape":"ResourcesPending",
+          "documentation":"<p>The number of resources that are still pending the template generation.</p>"
+        }
+      },
+      "documentation":"<p>A summary of the progress of the template generation.</p>"
+    },
     "TemplateStage":{
       "type":"string",
       "enum":[
         "Original",
         "Processed"
       ]
+    },
+    "TemplateStatusReason":{
+      "type":"string",
+      "max":256,
+      "min":1
+    },
+    "TemplateSummaries":{
+      "type":"list",
+      "member":{"shape":"TemplateSummary"}
+    },
+    "TemplateSummary":{
+      "type":"structure",
+      "members":{
+        "GeneratedTemplateId":{
+          "shape":"GeneratedTemplateId",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the generated template. The format is <code>arn:${Partition}:cloudformation:${Region}:${Account}:generatedtemplate/${Id}</code>. For example, <code>arn:aws:cloudformation:<i>us-east-1</i>:<i>123456789012</i>:generatedtemplate/<i>2e8465c1-9a80-43ea-a3a3-4f2d692fe6dc</i> </code>.</p>"
+        },
+        "GeneratedTemplateName":{
+          "shape":"GeneratedTemplateName",
+          "documentation":"<p>The name of the generated template.</p>"
+        },
+        "Status":{
+          "shape":"GeneratedTemplateStatus",
+          "documentation":"<p>The status of the template generation. Supported values are:</p> <ul> <li> <p> <code>CreatePending</code> - the creation of the template is pending.</p> </li> <li> <p> <code>CreateInProgress</code> - the creation of the template is in progress.</p> </li> <li> <p> <code>DeletePending</code> - the deletion of the template is pending.</p> </li> <li> <p> <code>DeleteInProgress</code> - the deletion of the template is in progress.</p> </li> <li> <p> <code>UpdatePending</code> - the update of the template is pending.</p> </li> <li> <p> <code>UpdateInProgress</code> - the update of the template is in progress.</p> </li> <li> <p> <code>Failed</code> - the template operation failed.</p> </li> <li> <p> <code>Complete</code> - the template operation is complete.</p> </li> </ul>"
+        },
+        "StatusReason":{
+          "shape":"TemplateStatusReason",
+          "documentation":"<p>The reason for the current template generation status. This will provide more details if a failure happened.</p>"
+        },
+        "CreationTime":{
+          "shape":"CreationTime",
+          "documentation":"<p>The time the generated template was created.</p>"
+        },
+        "LastUpdatedTime":{
+          "shape":"LastUpdatedTime",
+          "documentation":"<p>The time the generated template was last updated.</p>"
+        },
+        "NumberOfResources":{
+          "shape":"NumberOfResources",
+          "documentation":"<p>The number of resources in the generated template. This is a total of resources in pending, in-progress, completed, and failed states.</p>"
+        }
+      },
+      "documentation":"<p>The summary of a generated template.</p>"
     },
     "TemplateSummaryConfig":{
       "type":"structure",
@@ -6625,6 +7527,10 @@
       "exception":true
     },
     "TotalStackInstancesCount":{
+      "type":"integer",
+      "min":0
+    },
+    "TotalWarnings":{
       "type":"integer",
       "min":0
     },
@@ -6914,6 +7820,45 @@
     "UnprocessedTypeConfigurations":{
       "type":"list",
       "member":{"shape":"TypeConfigurationIdentifier"}
+    },
+    "UpdateGeneratedTemplateInput":{
+      "type":"structure",
+      "required":["GeneratedTemplateName"],
+      "members":{
+        "GeneratedTemplateName":{
+          "shape":"GeneratedTemplateName",
+          "documentation":"<p>The name or Amazon Resource Name (ARN) of a generated template.</p>"
+        },
+        "NewGeneratedTemplateName":{
+          "shape":"GeneratedTemplateName",
+          "documentation":"<p>An optional new name to assign to the generated template.</p>"
+        },
+        "AddResources":{
+          "shape":"ResourceDefinitions",
+          "documentation":"<p>An optional list of resources to be added to the generated template.</p>"
+        },
+        "RemoveResources":{
+          "shape":"JazzLogicalResourceIds",
+          "documentation":"<p>A list of logical ids for resources to remove from the generated template.</p>"
+        },
+        "RefreshAllResources":{
+          "shape":"RefreshAllResources",
+          "documentation":"<p>If <code>true</code>, update the resource properties in the generated template with their current live state. This feature is useful when the resource properties in your generated a template does not reflect the live state of the resource properties. This happens when a user update the resource properties after generating a template.</p>"
+        },
+        "TemplateConfiguration":{
+          "shape":"TemplateConfiguration",
+          "documentation":"<p>The configuration details of the generated template, including the <code>DeletionPolicy</code> and <code>UpdateReplacePolicy</code>.</p>"
+        }
+      }
+    },
+    "UpdateGeneratedTemplateOutput":{
+      "type":"structure",
+      "members":{
+        "GeneratedTemplateId":{
+          "shape":"GeneratedTemplateId",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the generated template. The format is <code>arn:${Partition}:cloudformation:${Region}:${Account}:generatedtemplate/${Id}</code>. For example, <code>arn:aws:cloudformation:<i>us-east-1</i>:<i>123456789012</i>:generatedtemplate/<i>2e8465c1-9a80-43ea-a3a3-4f2d692fe6dc</i> </code>.</p>"
+        }
+      }
     },
     "UpdateStackInput":{
       "type":"structure",
@@ -7230,6 +8175,54 @@
       "enum":[
         "PUBLIC",
         "PRIVATE"
+      ]
+    },
+    "WarningDetail":{
+      "type":"structure",
+      "members":{
+        "Type":{
+          "shape":"WarningType",
+          "documentation":"<p>The type of this warning. For more information, see <a href=\"https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/generate-IaC-write-only-properties.html\">IaC generator and write-only properties</a> in the <i>CloudFormation User Guide</i>.</p> <ul> <li> <p> <code>MUTUALLY_EXCLUSIVE_PROPERTIES</code> - The resource requires mutually-exclusive write-only properties. The IaC generator selects one set of mutually exclusive properties and converts the included properties into parameters. The parameter names have a suffix <code>OneOf</code> and the parameter descriptions indicate that the corresponding property can be replaced with other exclusive properties.</p> </li> <li> <p> <code>UNSUPPORTED_PROPERTIES</code> - Unsupported properties are present in the resource. One example of unsupported properties would be a required write-only property that is an array, because a parameter cannot be an array. Another example is an optional write-only property.</p> </li> <li> <p> <code>MUTUALLY_EXCLUSIVE_TYPES</code> - One or more required write-only properties are found in the resource, and the type of that property can be any of several types.</p> </li> </ul> <note> <p>Currently the resource and property reference documentation does not indicate if a property uses a type of <code>oneOf</code> or <code>anyOf</code>. You need to look at the resource provider schema.</p> </note>"
+        },
+        "Properties":{
+          "shape":"WarningProperties",
+          "documentation":"<p>The properties of the resource that are impacted by this warning.</p>"
+        }
+      },
+      "documentation":"<p>The warnings generated for a specific resource for this generated template.</p>"
+    },
+    "WarningDetails":{
+      "type":"list",
+      "member":{"shape":"WarningDetail"}
+    },
+    "WarningProperties":{
+      "type":"list",
+      "member":{"shape":"WarningProperty"}
+    },
+    "WarningProperty":{
+      "type":"structure",
+      "members":{
+        "PropertyPath":{
+          "shape":"PropertyPath",
+          "documentation":"<p>The path of the property. For example, if this is for the <code>S3Bucket</code> member of the <code>Code</code> property, the property path would be <code>Code/S3Bucket</code>.</p>"
+        },
+        "Required":{
+          "shape":"RequiredProperty",
+          "documentation":"<p>If <code>true</code>, the specified property is required.</p>"
+        },
+        "Description":{
+          "shape":"PropertyDescription",
+          "documentation":"<p>The description of the property from the resource provider schema.</p>"
+        }
+      },
+      "documentation":"<p>A specific property that is impacted by a warning.</p>"
+    },
+    "WarningType":{
+      "type":"string",
+      "enum":[
+        "MUTUALLY_EXCLUSIVE_PROPERTIES",
+        "UNSUPPORTED_PROPERTIES",
+        "MUTUALLY_EXCLUSIVE_TYPES"
       ]
     },
     "Warnings":{

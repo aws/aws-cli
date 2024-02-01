@@ -30,7 +30,7 @@
         {"shape":"InternalServerException"},
         {"shape":"ServiceQuotaExceededException"}
       ],
-      "documentation":"<p>Gets the token balance for a batch of tokens by using the <code>BatchGetTokenBalance</code> action for every token in the request.</p> <note> <p>Only the native tokens BTC,ETH, and the ERC-20, ERC-721, and ERC 1155 token standards are supported.</p> </note>"
+      "documentation":"<p>Gets the token balance for a batch of tokens by using the <code>BatchGetTokenBalance</code> action for every token in the request.</p> <note> <p>Only the native tokens BTC and ETH, and the ERC-20, ERC-721, and ERC 1155 token standards are supported.</p> </note>"
     },
     "GetAssetContract":{
       "name":"GetAssetContract",
@@ -68,7 +68,7 @@
         {"shape":"InternalServerException"},
         {"shape":"ServiceQuotaExceededException"}
       ],
-      "documentation":"<p>Gets the balance of a specific token, including native tokens, for a given address (wallet or contract) on the blockchain.</p> <note> <p>Only the native tokens BTC,ETH, and the ERC-20, ERC-721, and ERC 1155 token standards are supported.</p> </note>"
+      "documentation":"<p>Gets the balance of a specific token, including native tokens, for a given address (wallet or contract) on the blockchain.</p> <note> <p>Only the native tokens BTC and ETH, and the ERC-20, ERC-721, and ERC 1155 token standards are supported.</p> </note>"
     },
     "GetTransaction":{
       "name":"GetTransaction",
@@ -87,7 +87,7 @@
         {"shape":"InternalServerException"},
         {"shape":"ServiceQuotaExceededException"}
       ],
-      "documentation":"<p>Get the details of a transaction.</p>"
+      "documentation":"<p>Gets the details of a transaction.</p> <note> <p>This action will return transaction details for all transactions that are <i>confirmed</i> on the blockchain, even if they have not reached <a href=\"https://docs.aws.amazon.com/managed-blockchain/latest/ambq-dg/key-concepts.html#finality\">finality</a>. </p> </note>"
     },
     "ListAssetContracts":{
       "name":"ListAssetContracts",
@@ -141,7 +141,7 @@
         {"shape":"InternalServerException"},
         {"shape":"ServiceQuotaExceededException"}
       ],
-      "documentation":"<p>An array of <code>TransactionEvent</code> objects. Each object contains details about the transaction event.</p>"
+      "documentation":"<p>An array of <code>TransactionEvent</code> objects. Each object contains details about the transaction event.</p> <note> <p>This action will return transaction details for all transactions that are <i>confirmed</i> on the blockchain, even if they have not reached <a href=\"https://docs.aws.amazon.com/managed-blockchain/latest/ambq-dg/key-concepts.html#finality\">finality</a>. </p> </note>"
     },
     "ListTransactions":{
       "name":"ListTransactions",
@@ -323,7 +323,26 @@
     },
     "ConfirmationStatus":{
       "type":"string",
-      "enum":["FINAL"]
+      "enum":[
+        "FINAL",
+        "NONFINAL"
+      ]
+    },
+    "ConfirmationStatusFilter":{
+      "type":"structure",
+      "required":["include"],
+      "members":{
+        "include":{
+          "shape":"ConfirmationStatusIncludeList",
+          "documentation":"<p>The container to determine whether to list results that have only reached <a href=\"https://docs.aws.amazon.com/managed-blockchain/latest/ambq-dg/key-concepts.html#finality\"> <i>finality</i> </a>. Transactions that have reached finality are always part of the response.</p>"
+        }
+      },
+      "documentation":"<p>The container for the <code>ConfirmationStatusFilter</code> that filters for the <a href=\"https://docs.aws.amazon.com/managed-blockchain/latest/ambq-dg/key-concepts.html#finality\"> <i>finality</i> </a> of the results.</p>"
+    },
+    "ConfirmationStatusIncludeList":{
+      "type":"list",
+      "member":{"shape":"ConfirmationStatus"},
+      "min":1
     },
     "ContractFilter":{
       "type":"structure",
@@ -545,7 +564,7 @@
         },
         "maxResults":{
           "shape":"ListAssetContractsInputMaxResultsInteger",
-          "documentation":"<p>The maximum number of contracts to list.</p>"
+          "documentation":"<p>The maximum number of contracts to list.</p> <p>Default:<code>100</code> </p> <note> <p>Even if additional results can be retrieved, the request can return less results than <code>maxResults</code> or an empty array of results.</p> <p>To retrieve the next set of results, make another request with the returned <code>nextToken</code> value. The value of <code>nextToken</code> is <code>null</code> when there are no more results to return</p> </note>"
         }
       }
     },
@@ -587,7 +606,7 @@
         },
         "maxResults":{
           "shape":"ListTokenBalancesInputMaxResultsInteger",
-          "documentation":"<p>The maximum number of token balances to return.</p>"
+          "documentation":"<p>The maximum number of token balances to return.</p> <p>Default:<code>100</code> </p> <note> <p>Even if additional results can be retrieved, the request can return less results than <code>maxResults</code> or an empty array of results.</p> <p>To retrieve the next set of results, make another request with the returned <code>nextToken</code> value. The value of <code>nextToken</code> is <code>null</code> when there are no more results to return</p> </note>"
         }
       }
     },
@@ -632,7 +651,7 @@
         },
         "maxResults":{
           "shape":"ListTransactionEventsInputMaxResultsInteger",
-          "documentation":"<p>The maximum number of transaction events to list.</p> <note> <p>Even if additional results can be retrieved, the request can return less results than <code>maxResults</code> or an empty array of results.</p> <p>To retrieve the next set of results, make another request with the returned <code>nextToken</code> value. The value of <code>nextToken</code> is <code>null</code> when there are no more results to return</p> </note>"
+          "documentation":"<p>The maximum number of transaction events to list.</p> <p>Default:<code>100</code> </p> <note> <p>Even if additional results can be retrieved, the request can return less results than <code>maxResults</code> or an empty array of results.</p> <p>To retrieve the next set of results, make another request with the returned <code>nextToken</code> value. The value of <code>nextToken</code> is <code>null</code> when there are no more results to return</p> </note>"
         }
       }
     },
@@ -675,7 +694,7 @@
         "toBlockchainInstant":{"shape":"BlockchainInstant"},
         "sort":{
           "shape":"ListTransactionsSort",
-          "documentation":"<p>Sorts items in an ascending order if the first page starts at <code>fromTime</code>. Sorts items in a descending order if the first page starts at <code>toTime</code>.</p>"
+          "documentation":"<p>The order by which the results will be sorted. If <code>ASCENNDING</code> is selected, the results will be ordered by <code>fromTime</code>. </p>"
         },
         "nextToken":{
           "shape":"NextToken",
@@ -683,7 +702,11 @@
         },
         "maxResults":{
           "shape":"ListTransactionsInputMaxResultsInteger",
-          "documentation":"<p>The maximum number of transactions to list.</p> <note> <p>Even if additional results can be retrieved, the request can return less results than <code>maxResults</code> or an empty array of results.</p> <p>To retrieve the next set of results, make another request with the returned <code>nextToken</code> value. The value of <code>nextToken</code> is <code>null</code> when there are no more results to return</p> </note>"
+          "documentation":"<p>The maximum number of transactions to list.</p> <p>Default:<code>100</code> </p> <note> <p>Even if additional results can be retrieved, the request can return less results than <code>maxResults</code> or an empty array of results.</p> <p>To retrieve the next set of results, make another request with the returned <code>nextToken</code> value. The value of <code>nextToken</code> is <code>null</code> when there are no more results to return</p> </note>"
+        },
+        "confirmationStatusFilter":{
+          "shape":"ConfirmationStatusFilter",
+          "documentation":"<p>This filter is used to include transactions in the response that haven't reached <a href=\"https://docs.aws.amazon.com/managed-blockchain/latest/ambq-dg/key-concepts.html#finality\"> <i>finality</i> </a>. Transactions that have reached finiality are always part of the response.</p>"
         }
       }
     },
@@ -796,13 +819,6 @@
     "QueryTransactionHash":{
       "type":"string",
       "pattern":"(0x[A-Fa-f0-9]{64}|[A-Fa-f0-9]{64})"
-    },
-    "QueryTransactionStatus":{
-      "type":"string",
-      "enum":[
-        "FINAL",
-        "FAILED"
-      ]
     },
     "QuotaCode":{"type":"string"},
     "ResourceId":{"type":"string"},
@@ -990,10 +1006,10 @@
         },
         "tokenId":{
           "shape":"QueryTokenId",
-          "documentation":"<p>The unique identifier of the token.</p> <note> <p>You must specify this container with <code>btc</code> for the native BTC token, and <code>eth</code> for the native ETH token. For all other token types you must specify the <code>tokenId</code> in the 64 character hexadecimal <code>tokenid</code> format.</p> </note>"
+          "documentation":"<p>The unique identifier of the token.</p> <note> <p>For native tokens, use the 3 character abbreviation that best matches your token. For example, btc for Bitcoin, eth for Ether, etc. For all other token types you must specify the <code>tokenId</code> in the 64 character hexadecimal <code>tokenid</code> format.</p> </note>"
         }
       },
-      "documentation":"<p>The container for the identifier for the token including the unique token ID and its blockchain network.</p> <note> <p>Only the native tokens BTC,ETH, and the ERC-20, ERC-721, and ERC 1155 token standards are supported.</p> </note>"
+      "documentation":"<p>The container for the identifier for the token including the unique token ID and its blockchain network.</p> <note> <p>Only the native tokens BTC and ETH, and the ERC-20, ERC-721, and ERC 1155 token standards are supported.</p> </note>"
     },
     "Transaction":{
       "type":"structure",
@@ -1033,12 +1049,6 @@
         "numberOfTransactions":{
           "shape":"Long",
           "documentation":"<p>The number of transactions in the block.</p>"
-        },
-        "status":{
-          "shape":"QueryTransactionStatus",
-          "documentation":"<p>The status of the transaction.</p> <important> <p>This property is deprecated. You must use the <code>confirmationStatus</code> and the <code>executionStatus</code> properties to determine if the <code>status</code> of the transaction is <code>FINAL</code> or <code>FAILED</code>.</p> <ul> <li> <p>Transactions with a <code>status</code> of <code>FINAL</code> will now have the <code>confirmationStatus</code> set to <code>FINAL</code> and the <code>executionStatus</code> set to <code>SUCCEEDED</code>.</p> </li> <li> <p>Transactions with a <code>status</code> of <code>FAILED</code> will now have the <code>confirmationStatus</code> set to <code>FINAL</code> and the <code>executionStatus</code> set to <code>FAILED</code>.</p> </li> </ul> </important>",
-          "deprecated":true,
-          "deprecatedMessage":"The status field in the GetTransaction response is deprecated and is replaced with the confirmationStatus and executionStatus fields."
         },
         "to":{
           "shape":"ChainAddress",
@@ -1171,6 +1181,10 @@
         "transactionTimestamp":{
           "shape":"Timestamp",
           "documentation":"<p>The time when the transaction occurred.</p>"
+        },
+        "confirmationStatus":{
+          "shape":"ConfirmationStatus",
+          "documentation":"<p>Specifies whether to list transactions that have not reached Finality.</p>"
         }
       },
       "documentation":"<p>The container of the transaction output.</p>"

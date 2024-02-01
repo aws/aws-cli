@@ -582,7 +582,7 @@
       "errors":[
         {"shape":"InternalServerError"}
       ],
-      "documentation":"<p>Lists all patches eligible to be included in a patch baseline.</p>"
+      "documentation":"<p>Lists all patches eligible to be included in a patch baseline.</p> <note> <p>Currently, <code>DescribeAvailablePatches</code> supports only the Amazon Linux 1, Amazon Linux 2, and Windows Server operating systems.</p> </note>"
     },
     "DescribeDocument":{
       "name":"DescribeDocument",
@@ -2504,6 +2504,11 @@
           "documentation":"<p>Number of days to wait after the scheduled day to run an association.</p>",
           "box":true
         },
+        "Duration":{
+          "shape":"Duration",
+          "documentation":"<p>The number of hours that an association can run on specified targets. After the resulting cutoff time passes, associations that are currently running are cancelled, and no pending executions are started on remaining targets.</p>",
+          "box":true
+        },
         "TargetMaps":{
           "shape":"TargetMaps",
           "documentation":"<p>A key-value mapping of document parameters to target resources. Both Targets and TargetMaps can't be specified together.</p>",
@@ -2631,6 +2636,11 @@
         "ScheduleOffset":{
           "shape":"ScheduleOffset",
           "documentation":"<p>Number of days to wait after the scheduled day to run an association.</p>",
+          "box":true
+        },
+        "Duration":{
+          "shape":"Duration",
+          "documentation":"<p>The number of hours that an association can run on specified targets. After the resulting cutoff time passes, associations that are currently running are cancelled, and no pending executions are started on remaining targets.</p>",
           "box":true
         },
         "TargetMaps":{
@@ -3064,6 +3074,11 @@
         "ScheduleOffset":{
           "shape":"ScheduleOffset",
           "documentation":"<p>Number of days to wait after the scheduled day to run an association.</p>",
+          "box":true
+        },
+        "Duration":{
+          "shape":"Duration",
+          "documentation":"<p>The number of hours that an association can run on specified targets. After the resulting cutoff time passes, associations that are currently running are cancelled, and no pending executions are started on remaining targets.</p>",
           "box":true
         },
         "TargetMaps":{
@@ -4560,6 +4575,11 @@
           "documentation":"<p>Number of days to wait after the scheduled day to run an association.</p>",
           "box":true
         },
+        "Duration":{
+          "shape":"Duration",
+          "documentation":"<p>The number of hours the association can run before it is canceled. Duration applies to associations that are currently running, and any pending and in progress commands on all targets. If a target was taken offline for the association to run, it is made available again immediately, without a reboot. </p> <p>The <code>Duration</code> parameter applies only when both these conditions are true:</p> <ul> <li> <p>The association for which you specify a duration is cancelable according to the parameters of the SSM command document or Automation runbook associated with this execution. </p> </li> <li> <p>The command specifies the <code> <a href=\"https://docs.aws.amazon.com/systems-manager/latest/APIReference/API_CreateAssociationBatchRequestEntry.html#systemsmanager-Type-CreateAssociationBatchRequestEntry-ApplyOnlyAtCronInterval\">ApplyOnlyAtCronInterval</a> </code> parameter, which means that the association doesn't run immediately after it is created, but only according to the specified schedule.</p> </li> </ul>",
+          "box":true
+        },
         "TargetMaps":{
           "shape":"TargetMaps",
           "documentation":"<p>A key-value mapping of document parameters to target resources. Both Targets and TargetMaps can't be specified together.</p>",
@@ -4653,6 +4673,11 @@
         "ScheduleOffset":{
           "shape":"ScheduleOffset",
           "documentation":"<p>Number of days to wait after the scheduled day to run an association. For example, if you specified a cron schedule of <code>cron(0 0 ? * THU#2 *)</code>, you could specify an offset of 3 to run the association each Sunday after the second Thursday of the month. For more information about cron schedules for associations, see <a href=\"https://docs.aws.amazon.com/systems-manager/latest/userguide/reference-cron-and-rate-expressions.html\">Reference: Cron and rate expressions for Systems Manager</a> in the <i>Amazon Web Services Systems Manager User Guide</i>. </p> <note> <p>To use offsets, you must specify the <code>ApplyOnlyAtCronInterval</code> parameter. This option tells the system not to run an association immediately after you create it. </p> </note>",
+          "box":true
+        },
+        "Duration":{
+          "shape":"Duration",
+          "documentation":"<p>The number of hours the association can run before it is canceled. Duration applies to associations that are currently running, and any pending and in progress commands on all targets. If a target was taken offline for the association to run, it is made available again immediately, without a reboot. </p> <p>The <code>Duration</code> parameter applies only when both these conditions are true:</p> <ul> <li> <p>The association for which you specify a duration is cancelable according to the parameters of the SSM command document or Automation runbook associated with this execution. </p> </li> <li> <p>The command specifies the <code> <a href=\"https://docs.aws.amazon.com/systems-manager/latest/APIReference/API_CreateAssociation.html#systemsmanager-CreateAssociation-request-ApplyOnlyAtCronInterval\">ApplyOnlyAtCronInterval</a> </code> parameter, which means that the association doesn't run immediately after it is created, but only according to the specified schedule.</p> </li> </ul>",
           "box":true
         },
         "TargetMaps":{
@@ -5726,7 +5751,7 @@
         },
         "VersionName":{
           "shape":"DocumentVersionName",
-          "documentation":"<p>An optional field specifying the version of the artifact associated with the document. For example, \"Release 12, Update 6\". This value is unique across all versions of a document, and can't be changed.</p>"
+          "documentation":"<p>An optional field specifying the version of the artifact associated with the document. For example, 12.6. This value is unique across all versions of a document, and can't be changed.</p>"
         }
       }
     },
@@ -6845,7 +6870,7 @@
         },
         "VersionName":{
           "shape":"DocumentVersionName",
-          "documentation":"<p>An optional field specifying the version of the artifact associated with the document. For example, \"Release 12, Update 6\". This value is unique across all versions of a document, and can't be changed.</p>"
+          "documentation":"<p>An optional field specifying the version of the artifact associated with the document. For example, 12.6. This value is unique across all versions of a document, and can't be changed.</p>"
         },
         "PlatformTypes":{
           "shape":"PlatformTypeList",
@@ -7026,7 +7051,7 @@
         },
         "VersionName":{
           "shape":"DocumentVersionName",
-          "documentation":"<p>An optional field specifying the version of the artifact associated with the document. For example, \"Release 12, Update 6\". This value is unique across all versions of a document, and can't be changed.</p>"
+          "documentation":"<p>An optional field specifying the version of the artifact associated with the document. For example, 12.6. This value is unique across all versions of a document, and can't be changed.</p>"
         }
       },
       "documentation":"<p>An SSM document required by the current document.</p>"
@@ -7178,7 +7203,7 @@
         },
         "VersionName":{
           "shape":"DocumentVersionName",
-          "documentation":"<p>The version of the artifact associated with the document. For example, \"Release 12, Update 6\". This value is unique across all versions of a document, and can't be changed.</p>"
+          "documentation":"<p>The version of the artifact associated with the document. For example, 12.6. This value is unique across all versions of a document, and can't be changed.</p>"
         },
         "CreatedDate":{
           "shape":"DateTime",
@@ -7259,6 +7284,12 @@
       },
       "documentation":"<p>You can't specify a managed node ID in more than one association.</p>",
       "exception":true
+    },
+    "Duration":{
+      "type":"integer",
+      "box":true,
+      "max":24,
+      "min":1
     },
     "EffectiveInstanceAssociationMaxResults":{
       "type":"integer",
@@ -7524,7 +7555,7 @@
         },
         "Status":{
           "shape":"ConnectionStatus",
-          "documentation":"<p>The status of the connection to the managed node. For example, 'Connected' or 'Not Connected'.</p>"
+          "documentation":"<p>The status of the connection to the managed node.</p>"
         }
       }
     },
@@ -7602,7 +7633,7 @@
         },
         "VersionName":{
           "shape":"DocumentVersionName",
-          "documentation":"<p>An optional field specifying the version of the artifact associated with the document. For example, \"Release 12, Update 6\". This value is unique across all versions of a document and can't be changed.</p>"
+          "documentation":"<p>An optional field specifying the version of the artifact associated with the document. For example, 12.6. This value is unique across all versions of a document and can't be changed.</p>"
         },
         "DocumentVersion":{
           "shape":"DocumentVersion",
@@ -7631,7 +7662,7 @@
         },
         "VersionName":{
           "shape":"DocumentVersionName",
-          "documentation":"<p>The version of the artifact associated with the document. For example, \"Release 12, Update 6\". This value is unique across all versions of a document, and can't be changed.</p>"
+          "documentation":"<p>The version of the artifact associated with the document. For example, 12.6. This value is unique across all versions of a document, and can't be changed.</p>"
         },
         "DocumentVersion":{
           "shape":"DocumentVersion",
@@ -12551,7 +12582,7 @@
         },
         "KeyId":{
           "shape":"ParameterKeyId",
-          "documentation":"<p>The ID of the query key used for this parameter.</p>"
+          "documentation":"<p>The alias of the Key Management Service (KMS) key used to encrypt the parameter. Applies to <code>SecureString</code> parameters only</p>"
         },
         "LastModifiedDate":{
           "shape":"DateTime",
@@ -12668,7 +12699,7 @@
         },
         "KeyId":{
           "shape":"ParameterKeyId",
-          "documentation":"<p>The ID of the query key used for this parameter.</p>"
+          "documentation":"<p>The alias of the Key Management Service (KMS) key used to encrypt the parameter. Applies to <code>SecureString</code> parameters only.</p>"
         },
         "LastModifiedDate":{
           "shape":"DateTime",
@@ -13095,7 +13126,7 @@
         },
         "CVEIds":{
           "shape":"PatchCVEIds",
-          "documentation":"<p>The IDs of one or more Common Vulnerabilities and Exposure (CVE) issues that are resolved by the patch.</p>"
+          "documentation":"<p>The IDs of one or more Common Vulnerabilities and Exposure (CVE) issues that are resolved by the patch.</p> <note> <p>Currently, CVE ID values are reported only for patches with a status of <code>Missing</code> or <code>Failed</code>.</p> </note>"
         }
       },
       "documentation":"<p>Information about the state of a patch on a particular managed node as it relates to the patch baseline used to patch the node.</p>"
@@ -15894,6 +15925,11 @@
           "documentation":"<p>Number of days to wait after the scheduled day to run an association. For example, if you specified a cron schedule of <code>cron(0 0 ? * THU#2 *)</code>, you could specify an offset of 3 to run the association each Sunday after the second Thursday of the month. For more information about cron schedules for associations, see <a href=\"https://docs.aws.amazon.com/systems-manager/latest/userguide/reference-cron-and-rate-expressions.html\">Reference: Cron and rate expressions for Systems Manager</a> in the <i>Amazon Web Services Systems Manager User Guide</i>. </p> <note> <p>To use offsets, you must specify the <code>ApplyOnlyAtCronInterval</code> parameter. This option tells the system not to run an association immediately after you create it. </p> </note>",
           "box":true
         },
+        "Duration":{
+          "shape":"Duration",
+          "documentation":"<p>The number of hours the association can run before it is canceled. Duration applies to associations that are currently running, and any pending and in progress commands on all targets. If a target was taken offline for the association to run, it is made available again immediately, without a reboot. </p> <p>The <code>Duration</code> parameter applies only when both these conditions are true:</p> <ul> <li> <p>The association for which you specify a duration is cancelable according to the parameters of the SSM command document or Automation runbook associated with this execution. </p> </li> <li> <p>The command specifies the <code> <a href=\"https://docs.aws.amazon.com/systems-manager/latest/APIReference/API_UpdateAssociation.html#systemsmanager-UpdateAssociation-request-ApplyOnlyAtCronInterval\">ApplyOnlyAtCronInterval</a> </code> parameter, which means that the association doesn't run immediately after it is updated, but only according to the specified schedule.</p> </li> </ul>",
+          "box":true
+        },
         "TargetMaps":{
           "shape":"TargetMaps",
           "documentation":"<p>A key-value mapping of document parameters to target resources. Both Targets and TargetMaps can't be specified together.</p>",
@@ -16019,7 +16055,7 @@
         },
         "VersionName":{
           "shape":"DocumentVersionName",
-          "documentation":"<p>An optional field specifying the version of the artifact you are updating with the document. For example, \"Release 12, Update 6\". This value is unique across all versions of a document, and can't be changed.</p>"
+          "documentation":"<p>An optional field specifying the version of the artifact you are updating with the document. For example, 12.6. This value is unique across all versions of a document, and can't be changed.</p>"
         },
         "DocumentVersion":{
           "shape":"DocumentVersion",

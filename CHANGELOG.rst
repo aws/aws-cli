@@ -2,6 +2,16 @@
 CHANGELOG
 =========
 
+1.32.33
+=======
+
+* api-change:``cognito-idp``: Added CreateIdentityProvider and UpdateIdentityProvider details for new SAML IdP features
+* api-change:``ivs``: This release introduces a new resource Playback Restriction Policy which can be used to geo-restrict or domain-restrict channel stream playback when associated with a channel.  New APIs to support this resource were introduced in the form of Create/Delete/Get/Update/List.
+* api-change:``managedblockchain-query``: This release adds support for transactions that have not reached finality. It also removes support for the status property from the response of the GetTransaction operation. You can use the confirmationStatus and executionStatus properties to determine the status of the transaction.
+* api-change:``mediaconvert``: This release includes support for broadcast-mixed audio description tracks.
+* api-change:``neptune-graph``: Adding new APIs in SDK for Amazon Neptune Analytics. These APIs include operations to execute, cancel, list queries and get the graph summary.
+
+
 1.32.32
 =======
 

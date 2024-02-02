@@ -2,6 +2,14 @@
 CHANGELOG
 =========
 
+1.32.34
+=======
+
+* api-change:``dynamodb``: Any number of users can execute up to 50 concurrent restores (any type of restore) in a given account.
+* api-change:``sagemaker``: Amazon SageMaker Canvas adds GenerativeAiSettings support for CanvasAppSettings.
+* api-change:``endpoint-rules``: Update endpoint-rules command to latest version
+
+
 1.32.33
 =======
 

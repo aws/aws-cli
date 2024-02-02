@@ -20,6 +20,7 @@ import zipfile
 import signal
 import contextlib
 from configparser import RawConfigParser
+from functools import partial
 
 from botocore.compat import six
 #import botocore.compat
@@ -123,21 +124,6 @@ if six.PY3:
     def _get_text_writer(stream, errors):
         return stream
 
-    def compat_open(filename, mode='r', encoding=None):
-        """Back-port open() that accepts an encoding argument.
-
-        In python3 this uses the built in open() and in python2 this
-        uses the io.open() function.
-
-        If the file is not being opened in binary mode, then we'll
-        use locale.getpreferredencoding() to find the preferred
-        encoding.
-
-        """
-        if 'b' not in mode:
-            encoding = locale.getpreferredencoding()
-        return open(filename, mode, encoding=encoding)
-
     def bytes_print(statement, stdout=None):
         """
         This function is used to write raw bytes to stdout.
@@ -196,17 +182,30 @@ else:
 
         return codecs.getwriter(encoding)(stream, errors)
 
-    def compat_open(filename, mode='r', encoding=None):
-        # See docstring for compat_open in the PY3 section above.
-        if 'b' not in mode:
-            encoding = locale.getpreferredencoding()
-        return io.open(filename, mode, encoding=encoding)
-
     def bytes_print(statement, stdout=None):
         if stdout is None:
             stdout = sys.stdout
 
         stdout.write(statement)
+
+
+def compat_open(filename, mode='r', encoding=None, access_permissions=None):
+    """Back-port open() that accepts an encoding argument.
+
+    In python3 this uses the built in open() and in python2 this
+    uses the io.open() function.
+
+    If the file is not being opened in binary mode, then we'll
+    use locale.getpreferredencoding() to find the preferred
+    encoding.
+
+    """
+    opener = os.open
+    if access_permissions is not None:
+        opener = partial(os.open, mode=access_permissions)
+    if 'b' not in mode:
+        encoding = locale.getpreferredencoding()
+    return open(filename, mode, encoding=encoding, opener=opener)
 
 
 def get_stdout_text_writer():

@@ -2,6 +2,20 @@
 CHANGELOG
 =========
 
+2.15.17
+=======
+
+* api-change:``ssm``: This release adds an optional Duration parameter to StateManager Associations. This allows customers to specify how long an apply-only-on-cron association execution should run. Once the specified Duration is out all the ongoing cancellable commands or automations are cancelled.
+* api-change:``neptune-graph``: Adding new APIs in SDK for Amazon Neptune Analytics. These APIs include operations to execute, cancel, list queries and get the graph summary.
+* api-change:``cognito-idp``: Added CreateIdentityProvider and UpdateIdentityProvider details for new SAML IdP features
+* api-change:``elbv2``: Update elbv2 command to latest version
+* api-change:``glue``: Update page size limits for GetJobRuns and GetTriggers APIs.
+* api-change:``managedblockchain-query``: This release adds support for transactions that have not reached finality. It also removes support for the status property from the response of the GetTransaction operation. You can use the confirmationStatus and executionStatus properties to determine the status of the transaction.
+* api-change:``cloudformation``: CloudFormation IaC generator allows you to scan existing resources in your account and select resources to generate a template for a new or existing CloudFormation stack.
+* api-change:``ivs``: This release introduces a new resource Playback Restriction Policy which can be used to geo-restrict or domain-restrict channel stream playback when associated with a channel.  New APIs to support this resource were introduced in the form of Create/Delete/Get/Update/List.
+* api-change:``mediaconvert``: This release includes support for broadcast-mixed audio description tracks.
+
+
 2.15.16
 =======
 

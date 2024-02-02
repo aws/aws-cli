@@ -1,5 +1,5 @@
 AC_CONFIG_MACRO_DIRS([m4])
-AC_INIT([awscli], [2.15.16])
+AC_INIT([awscli], [2.15.17])
 AC_CONFIG_SRCDIR([bin/aws])
 AM_PATH_PYTHON([3.8])
 

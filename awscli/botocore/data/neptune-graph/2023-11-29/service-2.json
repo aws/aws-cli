@@ -30,9 +30,33 @@
         {"shape":"InternalServerException"},
         {"shape":"ResourceNotFoundException"}
       ],
-      "documentation":"<p>Deletes the specified import task</p>",
+      "documentation":"<p>Deletes the specified import task.</p>",
       "staticContextParams":{
         "ApiType":{"value":"ControlPlane"}
+      }
+    },
+    "CancelQuery":{
+      "name":"CancelQuery",
+      "http":{
+        "method":"DELETE",
+        "requestUri":"/queries/{queryId}",
+        "responseCode":200
+      },
+      "input":{"shape":"CancelQueryInput"},
+      "errors":[
+        {"shape":"ThrottlingException"},
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p>Cancels a specified query.</p>",
+      "endpoint":{
+        "hostPrefix":"{graphIdentifier}."
+      },
+      "idempotent":true,
+      "staticContextParams":{
+        "ApiType":{"value":"DataPlane"}
       }
     },
     "CreateGraph":{
@@ -184,6 +208,31 @@
         "ApiType":{"value":"ControlPlane"}
       }
     },
+    "ExecuteQuery":{
+      "name":"ExecuteQuery",
+      "http":{
+        "method":"POST",
+        "requestUri":"/queries",
+        "responseCode":200
+      },
+      "input":{"shape":"ExecuteQueryInput"},
+      "output":{"shape":"ExecuteQueryOutput"},
+      "errors":[
+        {"shape":"UnprocessableException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ValidationException"},
+        {"shape":"ConflictException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Execute an openCypher query. Currently, the SDK does not support parameterized queries. If you want to make a parameterized query call, you can use an HTTP request. </p> <note> <p> Non-parametrized queries are not considered for plan caching. You can force plan caching with <code>planCache=enabled</code>. The plan cache will be reused only for the same exact query. Slight variations in the query will not be able to reuse the query plan cache. </p> </note>",
+      "endpoint":{
+        "hostPrefix":"{graphIdentifier}."
+      },
+      "staticContextParams":{
+        "ApiType":{"value":"DataPlane"}
+      }
+    },
     "GetGraph":{
       "name":"GetGraph",
       "http":{
@@ -224,6 +273,30 @@
         "ApiType":{"value":"ControlPlane"}
       }
     },
+    "GetGraphSummary":{
+      "name":"GetGraphSummary",
+      "http":{
+        "method":"GET",
+        "requestUri":"/summary",
+        "responseCode":200
+      },
+      "input":{"shape":"GetGraphSummaryInput"},
+      "output":{"shape":"GetGraphSummaryOutput"},
+      "errors":[
+        {"shape":"ThrottlingException"},
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p>Gets a graph summary for a property graph.</p>",
+      "endpoint":{
+        "hostPrefix":"{graphIdentifier}."
+      },
+      "staticContextParams":{
+        "ApiType":{"value":"DataPlane"}
+      }
+    },
     "GetImportTask":{
       "name":"GetImportTask",
       "http":{
@@ -262,6 +335,30 @@
       "documentation":"<p>Retrieves information about a specified private endpoint.</p>",
       "staticContextParams":{
         "ApiType":{"value":"ControlPlane"}
+      }
+    },
+    "GetQuery":{
+      "name":"GetQuery",
+      "http":{
+        "method":"GET",
+        "requestUri":"/queries/{queryId}",
+        "responseCode":200
+      },
+      "input":{"shape":"GetQueryInput"},
+      "output":{"shape":"GetQueryOutput"},
+      "errors":[
+        {"shape":"ThrottlingException"},
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p>Retrieves the status of a specified query.</p>",
+      "endpoint":{
+        "hostPrefix":"{graphIdentifier}."
+      },
+      "staticContextParams":{
+        "ApiType":{"value":"DataPlane"}
       }
     },
     "ListGraphSnapshots":{
@@ -341,6 +438,29 @@
       "documentation":"<p>Lists private endpoints for a specified Neptune Analytics graph.</p>",
       "staticContextParams":{
         "ApiType":{"value":"ControlPlane"}
+      }
+    },
+    "ListQueries":{
+      "name":"ListQueries",
+      "http":{
+        "method":"GET",
+        "requestUri":"/queries",
+        "responseCode":200
+      },
+      "input":{"shape":"ListQueriesInput"},
+      "output":{"shape":"ListQueriesOutput"},
+      "errors":[
+        {"shape":"ThrottlingException"},
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Lists active openCypher queries.</p>",
+      "endpoint":{
+        "hostPrefix":"{graphIdentifier}."
+      },
+      "staticContextParams":{
+        "ApiType":{"value":"DataPlane"}
       }
     },
     "ListTagsForResource":{
@@ -471,6 +591,22 @@
     }
   },
   "shapes":{
+    "AccessDeniedException":{
+      "type":"structure",
+      "required":["message"],
+      "members":{
+        "message":{
+          "shape":"String",
+          "documentation":"<p>A message describing the problem.</p>"
+        }
+      },
+      "documentation":"<p>Raised in case of an authentication or authorization failure.</p>",
+      "error":{
+        "httpStatusCode":403,
+        "senderFault":true
+      },
+      "exception":true
+    },
     "Arn":{
       "type":"string",
       "max":1011,
@@ -512,7 +648,7 @@
         },
         "source":{
           "shape":"String",
-          "documentation":"<p>A URL identifying to the location of the data to be imported. This can be an Amazon S3 path, or can point to a Neptune database endpoint or snapshot</p>"
+          "documentation":"<p>A URL identifying to the location of the data to be imported. This can be an Amazon S3 path, or can point to a Neptune database endpoint or snapshot.</p>"
         },
         "format":{
           "shape":"Format",
@@ -525,6 +661,28 @@
         "status":{
           "shape":"ImportTaskStatus",
           "documentation":"<p>Current status of the task. Status is CANCELLING when the import task is cancelled.</p>"
+        }
+      }
+    },
+    "CancelQueryInput":{
+      "type":"structure",
+      "required":[
+        "graphIdentifier",
+        "queryId"
+      ],
+      "members":{
+        "graphIdentifier":{
+          "shape":"GraphIdentifier",
+          "documentation":"<p>The unique identifier of the Neptune Analytics graph.</p>",
+          "hostLabel":true,
+          "location":"header",
+          "locationName":"graphIdentifier"
+        },
+        "queryId":{
+          "shape":"String",
+          "documentation":"<p>The unique identifier of the query to cancel.</p>",
+          "location":"uri",
+          "locationName":"queryId"
         }
       }
     },
@@ -581,7 +739,7 @@
         },
         "replicaCount":{
           "shape":"ReplicaCount",
-          "documentation":"<p>The number of replicas in other AZs. Min =0, Max = 2, Default =1</p>"
+          "documentation":"<p>The number of replicas in other AZs. Min =0, Max = 2, Default = 1.</p>"
         },
         "deletionProtection":{
           "shape":"Boolean",
@@ -740,7 +898,7 @@
         },
         "publicConnectivity":{
           "shape":"Boolean",
-          "documentation":"<p>Specifies whether or not the graph can be reachable over the internet. All access to graphs IAM authenticated. (<code>true</code> to enable, or <code>false</code> to disable.</p>"
+          "documentation":"<p>Specifies whether or not the graph can be reachable over the internet. All access to graphs IAM authenticated. (<code>true</code> to enable, or <code>false</code> to disable).</p>"
         },
         "kmsKeyIdentifier":{
           "shape":"KmsKeyArn",
@@ -1062,6 +1220,89 @@
         }
       }
     },
+    "EdgeLabels":{
+      "type":"list",
+      "member":{"shape":"String"}
+    },
+    "EdgeProperties":{
+      "type":"list",
+      "member":{"shape":"String"}
+    },
+    "EdgeStructure":{
+      "type":"structure",
+      "members":{
+        "count":{
+          "shape":"Long",
+          "documentation":"<p>The number of instances of the edge in the graph.</p>"
+        },
+        "edgeProperties":{
+          "shape":"EdgeProperties",
+          "documentation":"<p>A list of the properties associated with the edge.</p>"
+        }
+      },
+      "documentation":"<p>Contains information about an edge in a Neptune Analytics graph.</p>"
+    },
+    "EdgeStructures":{
+      "type":"list",
+      "member":{"shape":"EdgeStructure"}
+    },
+    "ExecuteQueryInput":{
+      "type":"structure",
+      "required":[
+        "graphIdentifier",
+        "queryString",
+        "language"
+      ],
+      "members":{
+        "graphIdentifier":{
+          "shape":"GraphIdentifier",
+          "documentation":"<p>The unique identifier of the Neptune Analytics graph.</p>",
+          "hostLabel":true,
+          "location":"header",
+          "locationName":"graphIdentifier"
+        },
+        "queryString":{
+          "shape":"String",
+          "documentation":"<p>The query string to be executed.</p>",
+          "locationName":"query"
+        },
+        "language":{
+          "shape":"QueryLanguage",
+          "documentation":"<p>The query language the query is written in. Currently only openCypher is supported.</p>"
+        },
+        "planCache":{
+          "shape":"PlanCacheType",
+          "documentation":"<p>Query plan cache is a feature that saves the query plan and reuses it on successive executions of the same query. This reduces query latency, and works for both <code>READ</code> and <code>UPDATE</code> queries. The plan cache is an LRU cache with a 5 minute TTL and a capacity of 1000.</p>"
+        },
+        "explainMode":{
+          "shape":"ExplainMode",
+          "documentation":"<p>The explain mode parameter returns a query explain instead of the actual query results. A query explain can be used to gather insights about the query execution such as planning decisions, time spent on each operator, solutions flowing etc.</p>",
+          "locationName":"explain"
+        },
+        "queryTimeoutMilliseconds":{
+          "shape":"Integer",
+          "documentation":"<p>Specifies the query timeout duration, in milliseconds. (optional)</p>"
+        }
+      }
+    },
+    "ExecuteQueryOutput":{
+      "type":"structure",
+      "required":["payload"],
+      "members":{
+        "payload":{
+          "shape":"QueryResponseBlob",
+          "documentation":"<p>The query results.</p>"
+        }
+      },
+      "payload":"payload"
+    },
+    "ExplainMode":{
+      "type":"string",
+      "enum":[
+        "STATIC",
+        "DETAILS"
+      ]
+    },
     "Format":{
       "type":"string",
       "enum":[
@@ -1198,6 +1439,42 @@
         }
       }
     },
+    "GetGraphSummaryInput":{
+      "type":"structure",
+      "required":["graphIdentifier"],
+      "members":{
+        "graphIdentifier":{
+          "shape":"GraphIdentifier",
+          "documentation":"<p>The unique identifier of the Neptune Analytics graph.</p>",
+          "hostLabel":true,
+          "location":"header",
+          "locationName":"graphIdentifier"
+        },
+        "mode":{
+          "shape":"GraphSummaryMode",
+          "documentation":"<p>The summary mode can take one of two values: <code>basic</code> (the default), and <code>detailed</code>.</p>",
+          "location":"querystring",
+          "locationName":"mode"
+        }
+      }
+    },
+    "GetGraphSummaryOutput":{
+      "type":"structure",
+      "members":{
+        "version":{
+          "shape":"String",
+          "documentation":"<p>Display the version of this tool.</p>"
+        },
+        "lastStatisticsComputationTime":{
+          "shape":"SyntheticTimestamp_date_time",
+          "documentation":"<p>The timestamp, in ISO 8601 format, of the time at which Neptune Analytics last computed statistics.</p>"
+        },
+        "graphSummary":{
+          "shape":"GraphDataSummary",
+          "documentation":"<p>The graph summary.</p>"
+        }
+      }
+    },
     "GetImportTaskInput":{
       "type":"structure",
       "required":["taskIdentifier"],
@@ -1307,6 +1584,115 @@
           "documentation":"<p>The ID of the private endpoint.</p>"
         }
       }
+    },
+    "GetQueryInput":{
+      "type":"structure",
+      "required":[
+        "graphIdentifier",
+        "queryId"
+      ],
+      "members":{
+        "graphIdentifier":{
+          "shape":"GraphIdentifier",
+          "documentation":"<p>The unique identifier of the Neptune Analytics graph.</p>",
+          "hostLabel":true,
+          "location":"header",
+          "locationName":"graphIdentifier"
+        },
+        "queryId":{
+          "shape":"String",
+          "documentation":"<p>The ID of the query in question.</p>",
+          "location":"uri",
+          "locationName":"queryId"
+        }
+      }
+    },
+    "GetQueryOutput":{
+      "type":"structure",
+      "members":{
+        "id":{
+          "shape":"String",
+          "documentation":"<p>The ID of the query in question.</p>"
+        },
+        "queryString":{
+          "shape":"String",
+          "documentation":"<p>The query in question.</p>"
+        },
+        "waited":{
+          "shape":"Integer",
+          "documentation":"<p>Indicates how long the query waited, in milliseconds.</p>"
+        },
+        "elapsed":{
+          "shape":"Integer",
+          "documentation":"<p>The number of milliseconds the query has been running.</p>"
+        },
+        "state":{
+          "shape":"QueryState",
+          "documentation":"<p>State of the query.</p>"
+        }
+      }
+    },
+    "GraphDataSummary":{
+      "type":"structure",
+      "members":{
+        "numNodes":{
+          "shape":"Long",
+          "documentation":"<p>The number of nodes in the graph.</p>"
+        },
+        "numEdges":{
+          "shape":"Long",
+          "documentation":"<p>The number of edges in the graph.</p>"
+        },
+        "numNodeLabels":{
+          "shape":"Long",
+          "documentation":"<p>The number of distinct node labels in the graph.</p>"
+        },
+        "numEdgeLabels":{
+          "shape":"Long",
+          "documentation":"<p>The number of unique edge labels in the graph.</p>"
+        },
+        "nodeLabels":{
+          "shape":"NodeLabels",
+          "documentation":"<p>A list of distinct node labels in the graph.</p>"
+        },
+        "edgeLabels":{
+          "shape":"EdgeLabels",
+          "documentation":"<p>A list of the edge labels in the graph.</p>"
+        },
+        "numNodeProperties":{
+          "shape":"Long",
+          "documentation":"<p>The number of distinct node properties in the graph.</p>"
+        },
+        "numEdgeProperties":{
+          "shape":"Long",
+          "documentation":"<p>The number of edge properties in the graph.</p>"
+        },
+        "nodeProperties":{
+          "shape":"LongValuedMapList",
+          "documentation":"<p>A list of the distinct node properties in the graph, along with the count of nodes where each property is used.</p>"
+        },
+        "edgeProperties":{
+          "shape":"LongValuedMapList",
+          "documentation":"<p>A list of the distinct edge properties in the graph, along with the count of edges where each property is used.</p>"
+        },
+        "totalNodePropertyValues":{
+          "shape":"Long",
+          "documentation":"<p>The total number of usages of all node properties.</p>"
+        },
+        "totalEdgePropertyValues":{
+          "shape":"Long",
+          "documentation":"<p>The total number of usages of all edge properties.</p>"
+        },
+        "nodeStructures":{
+          "shape":"NodeStructures",
+          "documentation":"<p>This field is only present when the requested mode is DETAILED. It contains a list of node structures.</p>"
+        },
+        "edgeStructures":{
+          "shape":"EdgeStructures",
+          "documentation":"<p>This field is only present when the requested mode is DETAILED. It contains a list of edge structures.</p>"
+        }
+      },
+      "documentation":"<p>Summary information about the graph.</p>"
     },
     "GraphId":{
       "type":"string",
@@ -1431,6 +1817,13 @@
     "GraphSummaryList":{
       "type":"list",
       "member":{"shape":"GraphSummary"}
+    },
+    "GraphSummaryMode":{
+      "type":"string",
+      "enum":[
+        "BASIC",
+        "DETAILED"
+      ]
     },
     "ImportOptions":{
       "type":"structure",
@@ -1707,6 +2100,44 @@
         }
       }
     },
+    "ListQueriesInput":{
+      "type":"structure",
+      "required":[
+        "graphIdentifier",
+        "maxResults"
+      ],
+      "members":{
+        "graphIdentifier":{
+          "shape":"GraphIdentifier",
+          "documentation":"<p>The unique identifier of the Neptune Analytics graph.</p>",
+          "hostLabel":true,
+          "location":"header",
+          "locationName":"graphIdentifier"
+        },
+        "maxResults":{
+          "shape":"Integer",
+          "documentation":"<p>The maximum number of results to be fetched by the API.</p>",
+          "location":"querystring",
+          "locationName":"maxResults"
+        },
+        "state":{
+          "shape":"QueryStateInput",
+          "documentation":"<p>Filtered list of queries based on state.</p>",
+          "location":"querystring",
+          "locationName":"state"
+        }
+      }
+    },
+    "ListQueriesOutput":{
+      "type":"structure",
+      "required":["queries"],
+      "members":{
+        "queries":{
+          "shape":"QuerySummaryList",
+          "documentation":"<p>A list of current openCypher queries.</p>"
+        }
+      }
+    },
     "ListTagsForResourceInput":{
       "type":"structure",
       "required":["resourceArn"],
@@ -1731,6 +2162,15 @@
     "Long":{
       "type":"long",
       "box":true
+    },
+    "LongValuedMap":{
+      "type":"map",
+      "key":{"shape":"String"},
+      "value":{"shape":"Long"}
+    },
+    "LongValuedMapList":{
+      "type":"list",
+      "member":{"shape":"LongValuedMap"}
     },
     "MaxResults":{
       "type":"integer",
@@ -1759,7 +2199,7 @@
         },
         "preserveEdgeIds":{
           "shape":"Boolean",
-          "documentation":"<p>Neptune Analytics currently does not support user defined edge ids. The edge ids are not imported by default. They are imported if <i>preserveEdgeIds</i> is set to true, and ids are stored as properties on the relationships with the property name neptuneEdgeId.</p>"
+          "documentation":"<p>Neptune Analytics currently does not support user defined edge ids. The edge ids are not imported by default. They are imported if <i>preserveEdgeIds</i> is set to true, and ids are stored as properties on the relationships with the property name <i>neptuneEdgeId</i>.</p>"
         }
       },
       "documentation":"<p>Options for how to import Neptune data.</p>"
@@ -1774,10 +2214,52 @@
       "max":1024,
       "min":1
     },
+    "NodeLabels":{
+      "type":"list",
+      "member":{"shape":"String"}
+    },
+    "NodeProperties":{
+      "type":"list",
+      "member":{"shape":"String"}
+    },
+    "NodeStructure":{
+      "type":"structure",
+      "members":{
+        "count":{
+          "shape":"Long",
+          "documentation":"<p>The number of instances of this node.</p>"
+        },
+        "nodeProperties":{
+          "shape":"NodeProperties",
+          "documentation":"<p>Properties associated with this node.</p>"
+        },
+        "distinctOutgoingEdgeLabels":{
+          "shape":"OutgoingEdgeLabels",
+          "documentation":"<p>The outgoing edge labels associated with this node.</p>"
+        }
+      },
+      "documentation":"<p>Information about a node.</p>"
+    },
+    "NodeStructures":{
+      "type":"list",
+      "member":{"shape":"NodeStructure"}
+    },
+    "OutgoingEdgeLabels":{
+      "type":"list",
+      "member":{"shape":"String"}
+    },
     "PaginationToken":{
       "type":"string",
       "max":8192,
       "min":1
+    },
+    "PlanCacheType":{
+      "type":"string",
+      "enum":[
+        "ENABLED",
+        "DISABLED",
+        "AUTO"
+      ]
     },
     "PrivateGraphEndpointStatus":{
       "type":"string",
@@ -1824,6 +2306,61 @@
       "box":true,
       "max":24576,
       "min":128
+    },
+    "QueryLanguage":{
+      "type":"string",
+      "enum":["OPEN_CYPHER"]
+    },
+    "QueryResponseBlob":{
+      "type":"blob",
+      "streaming":true
+    },
+    "QueryState":{
+      "type":"string",
+      "enum":[
+        "RUNNING",
+        "WAITING",
+        "CANCELLING"
+      ]
+    },
+    "QueryStateInput":{
+      "type":"string",
+      "enum":[
+        "ALL",
+        "RUNNING",
+        "WAITING",
+        "CANCELLING"
+      ]
+    },
+    "QuerySummary":{
+      "type":"structure",
+      "members":{
+        "id":{
+          "shape":"String",
+          "documentation":"<p>A string representation of the id of the query.</p>"
+        },
+        "queryString":{
+          "shape":"String",
+          "documentation":"<p>The actual query text. The <code>queryString</code> may be truncated if the actual query string is too long.</p>"
+        },
+        "waited":{
+          "shape":"Integer",
+          "documentation":"<p>The amount of time, in milliseconds, the query has waited in the queue before being picked up by a worker thread.</p>"
+        },
+        "elapsed":{
+          "shape":"Integer",
+          "documentation":"<p>The running time of the query, in milliseconds.</p>"
+        },
+        "state":{
+          "shape":"QueryState",
+          "documentation":"<p>State of the query.</p>"
+        }
+      },
+      "documentation":"<p>Details of the query listed.</p>"
+    },
+    "QuerySummaryList":{
+      "type":"list",
+      "member":{"shape":"QuerySummary"}
     },
     "ReplicaCount":{
       "type":"integer",
@@ -2116,6 +2653,10 @@
       "max":6,
       "min":1
     },
+    "SyntheticTimestamp_date_time":{
+      "type":"timestamp",
+      "timestampFormat":"iso8601"
+    },
     "TagKey":{
       "type":"string",
       "max":128,
@@ -2186,6 +2727,36 @@
       "retryable":{"throttling":true}
     },
     "Timestamp":{"type":"timestamp"},
+    "UnprocessableException":{
+      "type":"structure",
+      "required":[
+        "message",
+        "reason"
+      ],
+      "members":{
+        "message":{"shape":"String"},
+        "reason":{
+          "shape":"UnprocessableExceptionReason",
+          "documentation":"<p>The reason for the unprocessable exception.</p>"
+        }
+      },
+      "documentation":"<p>Request cannot be processed due to known reasons. Eg. partition full.</p>",
+      "error":{
+        "httpStatusCode":422,
+        "senderFault":true
+      },
+      "exception":true
+    },
+    "UnprocessableExceptionReason":{
+      "type":"string",
+      "enum":[
+        "QUERY_TIMEOUT",
+        "INTERNAL_LIMIT_EXCEEDED",
+        "MEMORY_LIMIT_EXCEEDED",
+        "STORAGE_LIMIT_EXCEEDED",
+        "PARTITION_FULL"
+      ]
+    },
     "UntagResourceInput":{
       "type":"structure",
       "required":[
@@ -2316,7 +2887,7 @@
           "documentation":"<p>The reason that the resource could not be validated.</p>"
         }
       },
-      "documentation":"<p>A resource could not be validated</p>",
+      "documentation":"<p>A resource could not be validated.</p>",
       "error":{
         "httpStatusCode":400,
         "senderFault":true
@@ -2361,5 +2932,5 @@
       "pattern":"vpc-[a-z0-9]+"
     }
   },
-  "documentation":"<p>Neptune Analytics is a serverless in-memory graph database service for analytics that delivers high-performance analytics and real-time queries for any graph type. It complements the Amazon Neptune Database, an industry-leading managed graph database.</p>"
+  "documentation":"<p>Neptune Analytics is a new analytics database engine for Amazon Neptune that helps customers get to insights faster by quickly processing large amounts of graph data, invoking popular graph analytic algorithms in low-latency queries, and getting analytics results in seconds.</p>"
 }

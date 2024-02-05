@@ -2,6 +2,13 @@
 CHANGELOG
 =========
 
+1.32.35
+=======
+
+* api-change:``glue``: Introduce Catalog Encryption Role within Glue Data Catalog Settings. Introduce SASL/PLAIN as an authentication method for Glue Kafka connections
+* api-change:``workspaces``: Added definitions of various WorkSpace states
+
+
 1.32.34
 =======
 

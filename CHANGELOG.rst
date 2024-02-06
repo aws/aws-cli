@@ -6898,6 +6898,32 @@ CHANGELOG
 * feature:wizard: Added support for AWS CLI Wizards. See `#3752 <https://github.com/aws/aws-cli/issues/3752>`__.
 
 
+1.32.36
+=======
+
+* api-change:``appsync``: Support for environment variables in AppSync GraphQL APIs
+* api-change:``ecs``: This release is a documentation only update to address customer issues.
+* api-change:``es``: This release adds clear visibility to the customers on the changes that they make on the domain.
+* api-change:``logs``: This release adds a new field, logGroupArn, to the response of the logs:DescribeLogGroups action.
+* api-change:``opensearch``: This release adds clear visibility to the customers on the changes that they make on the domain.
+* api-change:``wafv2``: You can now delete an API key that you've created for use with your CAPTCHA JavaScript integration API.
+
+
+1.32.35
+=======
+
+* api-change:``glue``: Introduce Catalog Encryption Role within Glue Data Catalog Settings. Introduce SASL/PLAIN as an authentication method for Glue Kafka connections
+* api-change:``workspaces``: Added definitions of various WorkSpace states
+
+
+1.32.34
+=======
+
+* api-change:``dynamodb``: Any number of users can execute up to 50 concurrent restores (any type of restore) in a given account.
+* api-change:``sagemaker``: Amazon SageMaker Canvas adds GenerativeAiSettings support for CanvasAppSettings.
+* api-change:``endpoint-rules``: Update endpoint-rules command to latest version
+
+
 1.32.33
 =======
 

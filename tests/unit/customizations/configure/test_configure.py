@@ -81,8 +81,25 @@ class TestConfigureCommand(unittest.TestCase):
         # Test the case where the user only wants to change a single_value.
         responses = {
             "AWS Access Key ID": None,
-            "AWS Secert Access Key": None,
+            "AWS Secret Access Key": None,
             "Default region name": None,
+            "Default output format": "NEW OUTPUT FORMAT",
+        }
+        prompter = KeyValuePrompter(responses)
+        self.configure = configure.ConfigureCommand(self.session, prompter=prompter,
+                                                    config_writer=self.writer)
+        self.configure(args=[], parsed_globals=self.global_args)
+
+        # We only need to write out the default output format.
+        self.writer.update_config.assert_called_with(
+            {'output': 'NEW OUTPUT FORMAT'}, 'myconfigfile')
+
+    def test_none_string_set_to_none_value(self):
+        # Test the case where the user will type None instead of typing enter
+        responses = {
+            "AWS Access Key ID": None,
+            "AWS Secret Access Key": None,
+            "Default region name": "None",
             "Default output format": "NEW OUTPUT FORMAT",
         }
         prompter = KeyValuePrompter(responses)

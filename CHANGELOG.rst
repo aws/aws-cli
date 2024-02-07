@@ -2,6 +2,23 @@
 CHANGELOG
 =========
 
+2.15.18
+=======
+
+* api-change:``ecs``: This release is a documentation only update to address customer issues.
+* api-change:``workspaces``: Added definitions of various WorkSpace states
+* api-change:``es``: This release adds clear visibility to the customers on the changes that they make on the domain.
+* api-change:``dynamodb``: Any number of users can execute up to 50 concurrent restores (any type of restore) in a given account.
+* api-change:``sagemaker``: Amazon SageMaker Canvas adds GenerativeAiSettings support for CanvasAppSettings.
+* api-change:``appsync``: Support for environment variables in AppSync GraphQL APIs
+* api-change:``endpoint-rules``: Update endpoint-rules command to latest version
+* enhancement:dependency: Update ``flit_core`` version range ceiling to 3.9.0
+* api-change:``logs``: This release adds a new field, logGroupArn, to the response of the logs:DescribeLogGroups action.
+* api-change:``wafv2``: You can now delete an API key that you've created for use with your CAPTCHA JavaScript integration API.
+* api-change:``opensearch``: This release adds clear visibility to the customers on the changes that they make on the domain.
+* api-change:``glue``: Introduce Catalog Encryption Role within Glue Data Catalog Settings. Introduce SASL/PLAIN as an authentication method for Glue Kafka connections
+
+
 2.15.17
 =======
 

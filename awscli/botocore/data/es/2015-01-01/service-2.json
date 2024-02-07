@@ -76,6 +76,23 @@
       ],
       "documentation":"<p>Provides access to an Amazon OpenSearch Service domain through the use of an interface VPC endpoint.</p>"
     },
+    "CancelDomainConfigChange":{
+      "name":"CancelDomainConfigChange",
+      "http":{
+        "method":"POST",
+        "requestUri":"/2015-01-01/es/domain/{DomainName}/config/cancel"
+      },
+      "input":{"shape":"CancelDomainConfigChangeRequest"},
+      "output":{"shape":"CancelDomainConfigChangeResponse"},
+      "errors":[
+        {"shape":"BaseException"},
+        {"shape":"InternalException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ValidationException"},
+        {"shape":"DisabledOperationException"}
+      ],
+      "documentation":"<p>Cancels a pending configuration change on an Amazon OpenSearch Service domain.</p>"
+    },
     "CancelElasticsearchServiceSoftwareUpdate":{
       "name":"CancelElasticsearchServiceSoftwareUpdate",
       "http":{
@@ -1287,6 +1304,41 @@
       "exception":true
     },
     "Boolean":{"type":"boolean"},
+    "CancelDomainConfigChangeRequest":{
+      "type":"structure",
+      "required":["DomainName"],
+      "members":{
+        "DomainName":{
+          "shape":"DomainName",
+          "documentation":"<p>Name of the OpenSearch Service domain configuration request to cancel.</p>",
+          "location":"uri",
+          "locationName":"DomainName"
+        },
+        "DryRun":{
+          "shape":"DryRun",
+          "documentation":"<p>When set to <b>True</b>, returns the list of change IDs and properties that will be cancelled without actually cancelling the change.</p>"
+        }
+      },
+      "documentation":"<p>Container for parameters of the <code>CancelDomainConfigChange</code> operation.</p>"
+    },
+    "CancelDomainConfigChangeResponse":{
+      "type":"structure",
+      "members":{
+        "DryRun":{
+          "shape":"DryRun",
+          "documentation":"<p>Whether or not the request was a dry run. If <b>True</b>, the changes were not actually cancelled.</p>"
+        },
+        "CancelledChangeIds":{
+          "shape":"GUIDList",
+          "documentation":"<p>The unique identifiers of the changes that were cancelled.</p>"
+        },
+        "CancelledChangeProperties":{
+          "shape":"CancelledChangePropertyList",
+          "documentation":"<p>The domain change properties that were cancelled.</p>"
+        }
+      },
+      "documentation":"<p>Contains the details of the cancelled domain config change.</p>"
+    },
     "CancelElasticsearchServiceSoftwareUpdateRequest":{
       "type":"structure",
       "required":["DomainName"],
@@ -1308,6 +1360,28 @@
       },
       "documentation":"<p>The result of a <code>CancelElasticsearchServiceSoftwareUpdate</code> operation. Contains the status of the update.</p>"
     },
+    "CancelledChangeProperty":{
+      "type":"structure",
+      "members":{
+        "PropertyName":{
+          "shape":"String",
+          "documentation":"<p>The name of the property whose change was cancelled.</p>"
+        },
+        "CancelledValue":{
+          "shape":"String",
+          "documentation":"<p>The pending value of the property that was cancelled. This would have been the eventual value of the property if the chance had not been cancelled.</p>"
+        },
+        "ActiveValue":{
+          "shape":"String",
+          "documentation":"<p>The current value of the property, after the change was cancelled.</p>"
+        }
+      },
+      "documentation":"<p>A property change that was cancelled for an Amazon OpenSearch Service domain.</p>"
+    },
+    "CancelledChangePropertyList":{
+      "type":"list",
+      "member":{"shape":"CancelledChangeProperty"}
+    },
     "ChangeProgressDetails":{
       "type":"structure",
       "members":{
@@ -1318,6 +1392,22 @@
         "Message":{
           "shape":"Message",
           "documentation":"<p>Contains an optional message associated with the domain configuration change.</p>"
+        },
+        "ConfigChangeStatus":{
+          "shape":"ConfigChangeStatus",
+          "documentation":"<p>The current status of the configuration change.</p>"
+        },
+        "StartTime":{
+          "shape":"UpdateTimestamp",
+          "documentation":"<p>The time that the configuration change was initiated, in Universal Coordinated Time (UTC).</p>"
+        },
+        "LastUpdatedTime":{
+          "shape":"UpdateTimestamp",
+          "documentation":"<p>The last time that the configuration change was updated.</p>"
+        },
+        "InitiatedBy":{
+          "shape":"InitiatedBy",
+          "documentation":"<p>The IAM principal who initiated the configuration change.</p>"
         }
       },
       "documentation":"<p>Specifies change details of the domain configuration change.</p>"
@@ -1389,6 +1479,18 @@
         "ChangeProgressStages":{
           "shape":"ChangeProgressStageList",
           "documentation":"<p>The specific stages that the domain is going through to perform the configuration change.</p>"
+        },
+        "ConfigChangeStatus":{
+          "shape":"ConfigChangeStatus",
+          "documentation":"<p>The current status of the configuration change.</p>"
+        },
+        "LastUpdatedTime":{
+          "shape":"UpdateTimestamp",
+          "documentation":"<p>The last time that the status of the configuration change was updated.</p>"
+        },
+        "InitiatedBy":{
+          "shape":"InitiatedBy",
+          "documentation":"<p>The IAM principal who initiated the configuration change.</p>"
         }
       },
       "documentation":"<p>The progress details of a specific domain configuration change.</p>"
@@ -1471,6 +1573,19 @@
         "TargetVersions":{"shape":"ElasticsearchVersionList"}
       },
       "documentation":"<p> A map from an <code> <a>ElasticsearchVersion</a> </code> to a list of compatible <code> <a>ElasticsearchVersion</a> </code> s to which the domain can be upgraded. </p>"
+    },
+    "ConfigChangeStatus":{
+      "type":"string",
+      "enum":[
+        "Pending",
+        "Initializing",
+        "Validating",
+        "ValidationFailed",
+        "ApplyingChanges",
+        "Completed",
+        "PendingUserInput",
+        "Cancelled"
+      ]
     },
     "ConflictException":{
       "type":"structure",
@@ -2417,6 +2532,18 @@
         "DISSOCIATION_FAILED"
       ]
     },
+    "DomainProcessingStatusType":{
+      "type":"string",
+      "enum":[
+        "Creating",
+        "Active",
+        "Modifying",
+        "UpgradingEngineVersion",
+        "UpdatingServiceSoftware",
+        "Isolated",
+        "Deleting"
+      ]
+    },
     "Double":{"type":"double"},
     "DryRun":{"type":"boolean"},
     "DryRunResults":{
@@ -2696,6 +2823,10 @@
         "ChangeProgressDetails":{
           "shape":"ChangeProgressDetails",
           "documentation":"<p>Specifies change details of the domain configuration change.</p>"
+        },
+        "ModifyingProperties":{
+          "shape":"ModifyingPropertiesList",
+          "documentation":"<p>Information about the domain properties that are currently being modified.</p>"
         }
       },
       "documentation":"<p>The configuration of an Elasticsearch domain.</p>"
@@ -2805,6 +2936,14 @@
         "ChangeProgressDetails":{
           "shape":"ChangeProgressDetails",
           "documentation":"<p>Specifies change details of the domain configuration change.</p>"
+        },
+        "DomainProcessingStatus":{
+          "shape":"DomainProcessingStatusType",
+          "documentation":"<p>The status of any changes that are currently in progress for the domain.</p>"
+        },
+        "ModifyingProperties":{
+          "shape":"ModifyingPropertiesList",
+          "documentation":"<p>Information about the domain properties that are currently being modified.</p>"
         }
       },
       "documentation":"<p>The current status of an Elasticsearch domain.</p>"
@@ -2924,6 +3063,10 @@
     "GUID":{
       "type":"string",
       "pattern":"\\p{XDigit}{8}-\\p{XDigit}{4}-\\p{XDigit}{4}-\\p{XDigit}{4}-\\p{XDigit}{12}"
+    },
+    "GUIDList":{
+      "type":"list",
+      "member":{"shape":"GUID"}
     },
     "GetCompatibleElasticsearchVersionsRequest":{
       "type":"structure",
@@ -3105,6 +3248,13 @@
     "InboundCrossClusterSearchConnections":{
       "type":"list",
       "member":{"shape":"InboundCrossClusterSearchConnection"}
+    },
+    "InitiatedBy":{
+      "type":"string",
+      "enum":[
+        "CUSTOMER",
+        "SERVICE"
+      ]
     },
     "InstanceCount":{
       "type":"integer",
@@ -3569,6 +3719,32 @@
       "type":"integer",
       "documentation":"<p> Minimum number of Instances that can be instantiated for given InstanceType. </p>"
     },
+    "ModifyingProperties":{
+      "type":"structure",
+      "members":{
+        "Name":{
+          "shape":"String",
+          "documentation":"<p>The name of the property that is currently being modified.</p>"
+        },
+        "ActiveValue":{
+          "shape":"String",
+          "documentation":"<p>The current value of the domain property that is being modified.</p>"
+        },
+        "PendingValue":{
+          "shape":"String",
+          "documentation":"<p>The value that the property that is currently being modified will eventually have.</p>"
+        },
+        "ValueType":{
+          "shape":"PropertyValueType",
+          "documentation":"<p>The type of value that is currently being modified. Properties can have two types:</p> <ul> <li><b>PLAIN_TEXT</b>: Contain direct values such as \"1\", \"True\", or \"c5.large.search\".</li> <li><b>STRINGIFIED_JSON</b>: Contain content in JSON format, such as {\"Enabled\":\"True\"}\".</li> </ul>"
+        }
+      },
+      "documentation":"<p>Information about the domain properties that are currently being modified.</p>"
+    },
+    "ModifyingPropertiesList":{
+      "type":"list",
+      "member":{"shape":"ModifyingProperties"}
+    },
     "NextToken":{
       "type":"string",
       "documentation":"<p> Paginated APIs accepts NextToken input to returns next page results and provides a NextToken output in the response which can be used by the client to retrieve more results. </p>"
@@ -3837,6 +4013,13 @@
       "enum":[
         "AWS_ACCOUNT",
         "AWS_SERVICE"
+      ]
+    },
+    "PropertyValueType":{
+      "type":"string",
+      "enum":[
+        "PLAIN_TEXT",
+        "STRINGIFIED_JSON"
       ]
     },
     "PurchaseReservedElasticsearchInstanceOfferingRequest":{

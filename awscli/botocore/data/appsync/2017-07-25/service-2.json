@@ -548,6 +548,23 @@
       ],
       "documentation":"<p>Retrieves a <code>GraphqlApi</code> object.</p>"
     },
+    "GetGraphqlApiEnvironmentVariables":{
+      "name":"GetGraphqlApiEnvironmentVariables",
+      "http":{
+        "method":"GET",
+        "requestUri":"/v1/apis/{apiId}/environmentVariables"
+      },
+      "input":{"shape":"GetGraphqlApiEnvironmentVariablesRequest"},
+      "output":{"shape":"GetGraphqlApiEnvironmentVariablesResponse"},
+      "errors":[
+        {"shape":"BadRequestException"},
+        {"shape":"NotFoundException"},
+        {"shape":"UnauthorizedException"},
+        {"shape":"InternalFailureException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Retrieves the list of environmental variable key-value pairs associated with an API by its ID value.</p>"
+    },
     "GetIntrospectionSchema":{
       "name":"GetIntrospectionSchema",
       "http":{
@@ -805,6 +822,24 @@
         {"shape":"InternalFailureException"}
       ],
       "documentation":"<p>Lists <code>Type</code> objects by the source API association ID.</p>"
+    },
+    "PutGraphqlApiEnvironmentVariables":{
+      "name":"PutGraphqlApiEnvironmentVariables",
+      "http":{
+        "method":"PUT",
+        "requestUri":"/v1/apis/{apiId}/environmentVariables"
+      },
+      "input":{"shape":"PutGraphqlApiEnvironmentVariablesRequest"},
+      "output":{"shape":"PutGraphqlApiEnvironmentVariablesResponse"},
+      "errors":[
+        {"shape":"BadRequestException"},
+        {"shape":"ConcurrentModificationException"},
+        {"shape":"NotFoundException"},
+        {"shape":"UnauthorizedException"},
+        {"shape":"InternalFailureException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Creates a list of environmental variables in an API by its ID value. </p> <p>When creating an environmental variable, it must follow the constraints below:</p> <ul> <li> <p>Both JavaScript and VTL templates support environmental variables.</p> </li> <li> <p>Environmental variables are not evaluated before function invocation.</p> </li> <li> <p>Environmental variables only support string values.</p> </li> <li> <p>Any defined value in an environmental variable is considered a string literal and not expanded.</p> </li> <li> <p>Variable evaluations should ideally be performed in the function code.</p> </li> </ul> <p>When creating an environmental variable key-value pair, it must follow the additional constraints below:</p> <ul> <li> <p>Keys must begin with a letter.</p> </li> <li> <p>Keys must be at least two characters long.</p> </li> <li> <p>Keys can only contain letters, numbers, and the underscore character (_).</p> </li> <li> <p>Values can be up to 512 characters long.</p> </li> <li> <p>You can configure up to 50 key-value pairs in a GraphQL API.</p> </li> </ul> <p>You can create a list of environmental variables by adding it to the <code>environmentVariables</code> payload as a list in the format <code>{\"key1\":\"value1\",\"key2\":\"value2\", …}</code>. Note that each call of the <code>PutGraphqlApiEnvironmentVariables</code> action will result in the overwriting of the existing environmental variable list of that API. This means the existing environmental variables will be lost. To avoid this, you must include all existing and new environmental variables in the list each time you call this action.</p>"
     },
     "StartDataSourceIntrospection":{
       "name":"StartDataSourceIntrospection",
@@ -2547,6 +2582,24 @@
       },
       "documentation":"<p>Describes an OpenSearch data source configuration.</p> <p>As of September 2021, Amazon Elasticsearch service is Amazon OpenSearch Service. This configuration is deprecated. For new data sources, use <a>OpenSearchServiceDataSourceConfig</a> to specify an OpenSearch data source.</p>"
     },
+    "EnvironmentVariableKey":{
+      "type":"string",
+      "max":64,
+      "min":2,
+      "pattern":"^[A-Za-z]+\\w*$"
+    },
+    "EnvironmentVariableMap":{
+      "type":"map",
+      "key":{"shape":"EnvironmentVariableKey"},
+      "value":{"shape":"EnvironmentVariableValue"},
+      "max":50,
+      "min":0
+    },
+    "EnvironmentVariableValue":{
+      "type":"string",
+      "max":512,
+      "min":0
+    },
     "ErrorDetail":{
       "type":"structure",
       "members":{
@@ -2922,6 +2975,27 @@
         "functionConfiguration":{
           "shape":"FunctionConfiguration",
           "documentation":"<p>The <code>Function</code> object.</p>"
+        }
+      }
+    },
+    "GetGraphqlApiEnvironmentVariablesRequest":{
+      "type":"structure",
+      "required":["apiId"],
+      "members":{
+        "apiId":{
+          "shape":"String",
+          "documentation":"<p>The ID of the API from which the environmental variable list will be retrieved.</p>",
+          "location":"uri",
+          "locationName":"apiId"
+        }
+      }
+    },
+    "GetGraphqlApiEnvironmentVariablesResponse":{
+      "type":"structure",
+      "members":{
+        "environmentVariables":{
+          "shape":"EnvironmentVariableMap",
+          "documentation":"<p>The payload containing each environmental variable in the <code>\"key\" : \"value\"</code> format.</p>"
         }
       }
     },
@@ -3879,6 +3953,34 @@
         }
       },
       "documentation":"<p>The pipeline configuration for a resolver of kind <code>PIPELINE</code>.</p>"
+    },
+    "PutGraphqlApiEnvironmentVariablesRequest":{
+      "type":"structure",
+      "required":[
+        "apiId",
+        "environmentVariables"
+      ],
+      "members":{
+        "apiId":{
+          "shape":"String",
+          "documentation":"<p>The ID of the API to which the environmental variable list will be written.</p>",
+          "location":"uri",
+          "locationName":"apiId"
+        },
+        "environmentVariables":{
+          "shape":"EnvironmentVariableMap",
+          "documentation":"<p>The list of environmental variables to add to the API.</p> <p>When creating an environmental variable key-value pair, it must follow the additional constraints below:</p> <ul> <li> <p>Keys must begin with a letter.</p> </li> <li> <p>Keys must be at least two characters long.</p> </li> <li> <p>Keys can only contain letters, numbers, and the underscore character (_).</p> </li> <li> <p>Values can be up to 512 characters long.</p> </li> <li> <p>You can configure up to 50 key-value pairs in a GraphQL API.</p> </li> </ul> <p>You can create a list of environmental variables by adding it to the <code>environmentVariables</code> payload as a list in the format <code>{\"key1\":\"value1\",\"key2\":\"value2\", …}</code>. Note that each call of the <code>PutGraphqlApiEnvironmentVariables</code> action will result in the overwriting of the existing environmental variable list of that API. This means the existing environmental variables will be lost. To avoid this, you must include all existing and new environmental variables in the list each time you call this action.</p>"
+        }
+      }
+    },
+    "PutGraphqlApiEnvironmentVariablesResponse":{
+      "type":"structure",
+      "members":{
+        "environmentVariables":{
+          "shape":"EnvironmentVariableMap",
+          "documentation":"<p>The payload containing each environmental variable in the <code>\"key\" : \"value\"</code> format.</p>"
+        }
+      }
     },
     "QueryDepthLimit":{
       "type":"integer",

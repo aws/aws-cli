@@ -2,6 +2,14 @@
 CHANGELOG
 =========
 
+1.32.37
+=======
+
+* api-change:``datasync``: AWS DataSync now supports manifests for specifying files or objects to transfer.
+* api-change:``lexv2-models``: Update lexv2-models command to latest version
+* api-change:``redshift``: LisRecommendations API to fetch Amazon Redshift Advisor recommendations.
+
+
 1.32.36
 =======
 

@@ -980,7 +980,7 @@
       "errors":[
         {"shape":"OperationNotSupportedException"}
       ],
-      "documentation":"<p>Reboots the specified WorkSpaces.</p> <p>You cannot reboot a WorkSpace unless its state is <code>AVAILABLE</code>, <code>UNHEALTHY</code>, or <code>REBOOTING</code>. Reboot a WorkSpace in the <code>REBOOTING</code> state only if your WorkSpace has been stuck in the <code>REBOOTING</code> state for over 20 minutes.</p> <p>This operation is asynchronous and returns before the WorkSpaces have rebooted.</p>"
+      "documentation":"<p>Reboots the specified WorkSpaces.</p> <p>You cannot reboot a WorkSpace unless its state is <code>AVAILABLE</code> or <code>UNHEALTHY</code>.</p> <p>This operation is asynchronous and returns before the WorkSpaces have rebooted.</p>"
     },
     "RebuildWorkspaces":{
       "name":"RebuildWorkspaces",
@@ -3074,6 +3074,10 @@
         "NextToken":{
           "shape":"PaginationToken",
           "documentation":"<p>If you received a <code>NextToken</code> from a previous call that was paginated, provide this token to receive the next set of results.</p>"
+        },
+        "WorkspaceName":{
+          "shape":"WorkspaceName",
+          "documentation":"<p>The name of the user-decoupled WorkSpace.</p>"
         }
       }
     },
@@ -4921,7 +4925,7 @@
         },
         "State":{
           "shape":"WorkspaceState",
-          "documentation":"<p>The operational state of the WorkSpace.</p> <ul> <li> <p> <code>PENDING</code> – The WorkSpace is in a waiting state (for example, the WorkSpace is being created).</p> </li> <li> <p> <code>AVAILABLE</code> – The WorkSpace is running and has passed the health checks.</p> </li> <li> <p> <code>IMPAIRED</code> – Refer to <code>UNHEALTHY</code> state.</p> </li> <li> <p> <code>UNHEALTHY</code> – The WorkSpace is not responding to health checks.</p> </li> <li> <p> <code>REBOOTING</code> – The WorkSpace is being rebooted (restarted).</p> </li> <li> <p> <code>STARTING</code> – The WorkSpace is starting up and health checks are being run.</p> </li> <li> <p> <code>REBUILDING</code> – The WorkSpace is being rebuilt.</p> </li> <li> <p> <code>RESTORING</code> – The WorkSpace is being restored.</p> </li> <li> <p> <code>MAINTENANCE</code> – The WorkSpace is undergoing scheduled maintenance by Amazon Web Services.</p> </li> <li> <p> <code>ADMIN_MAINTENANCE</code> – The WorkSpace is undergoing maintenance by the WorkSpaces administrator.</p> </li> <li> <p> <code>TERMINATING</code> – The WorkSpace is being deleted.</p> </li> <li> <p> <code>TERMINATED</code> – The WorkSpace has been deleted.</p> </li> <li> <p> <code>SUSPENDED</code> – The WorkSpace has been suspended for image creation.</p> </li> <li> <p> <code>UPDATING</code> – The WorkSpace is undergoing an update.</p> </li> <li> <p> <code>STOPPING</code> – The WorkSpace is being stopped.</p> </li> <li> <p> <code>STOPPED</code> – The WorkSpace has been stopped.</p> </li> <li> <p> <code>ERROR </code> – The WorkSpace is an error state (for example, an error occurred during startup).</p> </li> </ul> <note> <p>After a WorkSpace is terminated, the <code>TERMINATED</code> state is returned only briefly before the WorkSpace directory metadata is cleaned up, so this state is rarely returned. To confirm that a WorkSpace is terminated, check for the WorkSpace ID by using <a href=\"https://docs.aws.amazon.com/workspaces/latest/api/API_DescribeWorkspaces.html\"> DescribeWorkSpaces</a>. If the WorkSpace ID isn't returned, then the WorkSpace has been successfully terminated.</p> </note>"
+          "documentation":"<p>The operational state of the WorkSpace.</p> <note> <p>After a WorkSpace is terminated, the <code>TERMINATED</code> state is returned only briefly before the WorkSpace directory metadata is cleaned up, so this state is rarely returned. To confirm that a WorkSpace is terminated, check for the WorkSpace ID by using <a href=\"https://docs.aws.amazon.com/workspaces/latest/api/API_DescribeWorkspaces.html\"> DescribeWorkSpaces</a>. If the WorkSpace ID isn't returned, then the WorkSpace has been successfully terminated.</p> </note>"
         },
         "BundleId":{
           "shape":"BundleId",
@@ -4954,6 +4958,10 @@
         "RootVolumeEncryptionEnabled":{
           "shape":"BooleanObject",
           "documentation":"<p>Indicates whether the data stored on the root volume is encrypted.</p>"
+        },
+        "WorkspaceName":{
+          "shape":"WorkspaceName",
+          "documentation":"<p>The name of the user-decoupled WorkSpace.</p>"
         },
         "WorkspaceProperties":{
           "shape":"WorkspaceProperties",
@@ -5395,6 +5403,10 @@
       "type":"list",
       "member":{"shape":"Workspace"}
     },
+    "WorkspaceName":{
+      "type":"string",
+      "pattern":"^[a-zA-Z0-9_()][a-zA-Z0-9_.()-]{1,63}$"
+    },
     "WorkspaceProperties":{
       "type":"structure",
       "members":{
@@ -5443,7 +5455,7 @@
         },
         "UserName":{
           "shape":"UserName",
-          "documentation":"<p>The user name of the user for the WorkSpace. This user name must exist in the Directory Service directory for the WorkSpace.</p>"
+          "documentation":"<p>The user name of the user for the WorkSpace. This user name must exist in the Directory Service directory for the WorkSpace.</p> <p>The reserved keyword, <code>[UNDEFINED]</code>, is used when creating user-decoupled WorkSpaces.</p>"
         },
         "BundleId":{
           "shape":"BundleId",
@@ -5468,6 +5480,10 @@
         "Tags":{
           "shape":"TagList",
           "documentation":"<p>The tags for the WorkSpace.</p>"
+        },
+        "WorkspaceName":{
+          "shape":"WorkspaceName",
+          "documentation":"<p>The name of the user-decoupled WorkSpace.</p>"
         }
       },
       "documentation":"<p>Describes the information used to create a WorkSpace.</p>"

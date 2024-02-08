@@ -526,7 +526,8 @@
       "errors":[
         {"shape":"ValidationException"},
         {"shape":"ConflictException"},
-        {"shape":"PipelineNotFoundException"}
+        {"shape":"PipelineNotFoundException"},
+        {"shape":"ConcurrentPipelineExecutionsLimitExceededException"}
       ],
       "documentation":"<p>Starts the specified pipeline. Specifically, it begins processing the latest commit to the source location specified as part of the pipeline.</p>"
     },
@@ -946,6 +947,10 @@
           "shape":"Timestamp",
           "documentation":"<p>The last update time of the action execution.</p>"
         },
+        "updatedBy":{
+          "shape":"LastUpdatedBy",
+          "documentation":"<p>The ARN of the user who changed the pipeline execution details.</p>"
+        },
         "status":{
           "shape":"ActionExecutionStatus",
           "documentation":"<p> The status of the action execution. Status categories are <code>InProgress</code>, <code>Succeeded</code>, and <code>Failed</code>.</p>"
@@ -971,6 +976,10 @@
         "pipelineExecutionId":{
           "shape":"PipelineExecutionId",
           "documentation":"<p>The pipeline execution ID used to filter action execution history.</p>"
+        },
+        "latestInPipelineExecution":{
+          "shape":"LatestInPipelineExecutionFilter",
+          "documentation":"<p>The latest execution in the pipeline.</p> <note> <p>Filtering on the latest execution is available for executions run on or after February 08, 2024.</p> </note>"
         }
       },
       "documentation":"<p>Filter values for the action execution.</p>"
@@ -1039,7 +1048,8 @@
         "externalExecutionUrl":{
           "shape":"Url",
           "documentation":"<p>The deepest external link to the external resource (for example, a repository URL or deployment endpoint) that is used when running the action.</p>"
-        }
+        },
+        "errorDetails":{"shape":"ErrorDetails"}
       },
       "documentation":"<p>Execution result information, such as the external execution ID.</p>"
     },
@@ -1698,6 +1708,14 @@
       "documentation":"<p>Unable to modify the tag due to a simultaneous update request.</p>",
       "exception":true
     },
+    "ConcurrentPipelineExecutionsLimitExceededException":{
+      "type":"structure",
+      "members":{
+        "message":{"shape":"Message"}
+      },
+      "documentation":"<p>The pipeline has reached the limit for concurrent pipeline executions.</p>",
+      "exception":true
+    },
     "ConflictException":{
       "type":"structure",
       "members":{
@@ -2024,6 +2042,14 @@
       "max":1500,
       "min":1
     },
+    "ExecutionMode":{
+      "type":"string",
+      "enum":[
+        "QUEUED",
+        "SUPERSEDED",
+        "PARALLEL"
+      ]
+    },
     "ExecutionSummary":{
       "type":"string",
       "max":2048,
@@ -2278,6 +2304,32 @@
       },
       "documentation":"<p>Represents the output of a <code>GetThirdPartyJobDetails</code> action.</p>"
     },
+    "GitBranchFilterCriteria":{
+      "type":"structure",
+      "members":{
+        "includes":{
+          "shape":"GitBranchPatternList",
+          "documentation":"<p>The list of patterns of Git branches that, when a commit is pushed, are to be included as criteria that starts the pipeline.</p>"
+        },
+        "excludes":{
+          "shape":"GitBranchPatternList",
+          "documentation":"<p>The list of patterns of Git branches that, when a commit is pushed, are to be excluded from starting the pipeline.</p>"
+        }
+      },
+      "documentation":"<p>The Git repository branches specified as filter criteria to start the pipeline.</p>"
+    },
+    "GitBranchNamePattern":{
+      "type":"string",
+      "max":255,
+      "min":1,
+      "pattern":".*"
+    },
+    "GitBranchPatternList":{
+      "type":"list",
+      "member":{"shape":"GitBranchNamePattern"},
+      "max":8,
+      "min":1
+    },
     "GitConfiguration":{
       "type":"structure",
       "required":["sourceActionName"],
@@ -2288,10 +2340,78 @@
         },
         "push":{
           "shape":"GitPushFilterList",
-          "documentation":"<p>The field where the repository event that will start the pipeline, such as pushing Git tags, is specified with details.</p> <note> <p>Git tags is the only supported event type.</p> </note>"
+          "documentation":"<p>The field where the repository event that will start the pipeline, such as pushing Git tags, is specified with details.</p>"
+        },
+        "pullRequest":{
+          "shape":"GitPullRequestFilterList",
+          "documentation":"<p>The field where the repository event that will start the pipeline is specified as pull requests.</p>"
         }
       },
-      "documentation":"<p>A type of trigger configuration for Git-based source actions.</p> <note> <p>You can specify the Git configuration trigger type for all third-party Git-based source actions that are supported by the <code>CodeStarSourceConnection</code> action type.</p> </note> <note> <p>V2 type pipelines, along with triggers on Git tags and pipeline-level variables, are not currently supported for CloudFormation and CDK resources in CodePipeline. For more information about V2 type pipelines, see <a href=\"https://docs.aws.amazon.com/codepipeline/latest/userguide/pipeline-types.html\">Pipeline types</a> in the <i>CodePipeline User Guide</i>.</p> </note>"
+      "documentation":"<p>A type of trigger configuration for Git-based source actions.</p> <note> <p>You can specify the Git configuration trigger type for all third-party Git-based source actions that are supported by the <code>CodeStarSourceConnection</code> action type.</p> </note>"
+    },
+    "GitFilePathFilterCriteria":{
+      "type":"structure",
+      "members":{
+        "includes":{
+          "shape":"GitFilePathPatternList",
+          "documentation":"<p>The list of patterns of Git repository file paths that, when a commit is pushed, are to be included as criteria that starts the pipeline.</p>"
+        },
+        "excludes":{
+          "shape":"GitFilePathPatternList",
+          "documentation":"<p>The list of patterns of Git repository file paths that, when a commit is pushed, are to be excluded from starting the pipeline.</p>"
+        }
+      },
+      "documentation":"<p>The Git repository file paths specified as filter criteria to start the pipeline.</p>"
+    },
+    "GitFilePathPattern":{
+      "type":"string",
+      "max":255,
+      "min":1,
+      "pattern":".*"
+    },
+    "GitFilePathPatternList":{
+      "type":"list",
+      "member":{"shape":"GitFilePathPattern"},
+      "max":8,
+      "min":1
+    },
+    "GitPullRequestEventType":{
+      "type":"string",
+      "enum":[
+        "OPEN",
+        "UPDATED",
+        "CLOSED"
+      ]
+    },
+    "GitPullRequestEventTypeList":{
+      "type":"list",
+      "member":{"shape":"GitPullRequestEventType"},
+      "max":3,
+      "min":1
+    },
+    "GitPullRequestFilter":{
+      "type":"structure",
+      "members":{
+        "events":{
+          "shape":"GitPullRequestEventTypeList",
+          "documentation":"<p>The field that specifies which pull request events to filter on (opened, updated, closed) for the trigger configuration.</p>"
+        },
+        "branches":{
+          "shape":"GitBranchFilterCriteria",
+          "documentation":"<p>The field that specifies to filter on branches for the pull request trigger configuration.</p>"
+        },
+        "filePaths":{
+          "shape":"GitFilePathFilterCriteria",
+          "documentation":"<p>The field that specifies to filter on file paths for the pull request trigger configuration.</p>"
+        }
+      },
+      "documentation":"<p>The event criteria for the pull request trigger configuration, such as the lists of branches or file paths to include and exclude.</p>"
+    },
+    "GitPullRequestFilterList":{
+      "type":"list",
+      "member":{"shape":"GitPullRequestFilter"},
+      "max":3,
+      "min":1
     },
     "GitPushFilter":{
       "type":"structure",
@@ -2299,6 +2419,14 @@
         "tags":{
           "shape":"GitTagFilterCriteria",
           "documentation":"<p>The field that contains the details for the Git tags trigger configuration.</p>"
+        },
+        "branches":{
+          "shape":"GitBranchFilterCriteria",
+          "documentation":"<p>The field that specifies to filter on branches for the push trigger configuration.</p>"
+        },
+        "filePaths":{
+          "shape":"GitFilePathFilterCriteria",
+          "documentation":"<p>The field that specifies to filter on file paths for the push trigger configuration.</p>"
         }
       },
       "documentation":"<p>The event criteria that specify when a specified repository event will start the pipeline for the specified trigger configuration, such as the lists of Git tags to include and exclude.</p>"
@@ -2306,7 +2434,7 @@
     "GitPushFilterList":{
       "type":"list",
       "member":{"shape":"GitPushFilter"},
-      "max":1,
+      "max":3,
       "min":1
     },
     "GitTagFilterCriteria":{
@@ -2598,6 +2726,24 @@
     "LastChangedAt":{"type":"timestamp"},
     "LastChangedBy":{"type":"string"},
     "LastUpdatedBy":{"type":"string"},
+    "LatestInPipelineExecutionFilter":{
+      "type":"structure",
+      "required":[
+        "pipelineExecutionId",
+        "startTimeRange"
+      ],
+      "members":{
+        "pipelineExecutionId":{
+          "shape":"PipelineExecutionId",
+          "documentation":"<p>The execution ID for the latest execution in the pipeline.</p>"
+        },
+        "startTimeRange":{
+          "shape":"StartTimeRange",
+          "documentation":"<p>The start time to filter on for the latest execution in the pipeline. Valid options:</p> <ul> <li> <p>All</p> </li> <li> <p>Latest</p> </li> </ul>"
+        }
+      },
+      "documentation":"<p>The field that specifies to filter on the latest execution in the pipeline.</p> <note> <p>Filtering on the latest execution is available for executions run on or after February 08, 2024.</p> </note>"
+    },
     "LimitExceededException":{
       "type":"structure",
       "members":{
@@ -2990,17 +3136,21 @@
           "shape":"PipelineVersion",
           "documentation":"<p>The version number of the pipeline. A new pipeline always has a version number of 1. This number is incremented when a pipeline is updated.</p>"
         },
+        "executionMode":{
+          "shape":"ExecutionMode",
+          "documentation":"<p>The method that the pipeline will use to handle multiple executions. The default mode is SUPERSEDED.</p>"
+        },
         "pipelineType":{
           "shape":"PipelineType",
-          "documentation":"<p>CodePipeline provides the following pipeline types, which differ in characteristics and price, so that you can tailor your pipeline features and cost to the needs of your applications.</p> <ul> <li> <p>V1 type pipelines have a JSON structure that contains standard pipeline, stage, and action-level parameters.</p> </li> <li> <p>V2 type pipelines have the same structure as a V1 type, along with additional parameters for release safety and trigger configuration.</p> </li> </ul> <important> <p>Including V2 parameters, such as triggers on Git tags, in the pipeline JSON when creating or updating a pipeline will result in the pipeline having the V2 type of pipeline and the associated costs.</p> </important> <p>For information about pricing for CodePipeline, see <a href=\"https://aws.amazon.com/codepipeline/pricing/\">Pricing</a>.</p> <p> For information about which type of pipeline to choose, see <a href=\"https://docs.aws.amazon.com/codepipeline/latest/userguide/pipeline-types-planning.html\">What type of pipeline is right for me?</a>.</p> <note> <p>V2 type pipelines, along with triggers on Git tags and pipeline-level variables, are not currently supported for CloudFormation and CDK resources in CodePipeline. For more information about V2 type pipelines, see <a href=\"https://docs.aws.amazon.com/codepipeline/latest/userguide/pipeline-types.html\">Pipeline types</a> in the <i>CodePipeline User Guide</i>.</p> </note>"
-        },
-        "triggers":{
-          "shape":"PipelineTriggerDeclarationList",
-          "documentation":"<p>The trigger configuration specifying a type of event, such as Git tags, that starts the pipeline.</p> <note> <p>When a trigger configuration is specified, default change detection for repository and branch commits is disabled.</p> </note>"
+          "documentation":"<p>CodePipeline provides the following pipeline types, which differ in characteristics and price, so that you can tailor your pipeline features and cost to the needs of your applications.</p> <ul> <li> <p>V1 type pipelines have a JSON structure that contains standard pipeline, stage, and action-level parameters.</p> </li> <li> <p>V2 type pipelines have the same structure as a V1 type, along with additional parameters for release safety and trigger configuration.</p> </li> </ul> <important> <p>Including V2 parameters, such as triggers on Git tags, in the pipeline JSON when creating or updating a pipeline will result in the pipeline having the V2 type of pipeline and the associated costs.</p> </important> <p>For information about pricing for CodePipeline, see <a href=\"http://aws.amazon.com/codepipeline/pricing/\">Pricing</a>.</p> <p> For information about which type of pipeline to choose, see <a href=\"https://docs.aws.amazon.com/codepipeline/latest/userguide/pipeline-types-planning.html\">What type of pipeline is right for me?</a>.</p>"
         },
         "variables":{
           "shape":"PipelineVariableDeclarationList",
           "documentation":"<p>A list that defines the pipeline variables for a pipeline resource. Variable names can have alphanumeric and underscore characters, and the values must match <code>[A-Za-z0-9@\\-_]+</code>.</p>"
+        },
+        "triggers":{
+          "shape":"PipelineTriggerDeclarationList",
+          "documentation":"<p>The trigger configuration specifying a type of event, such as Git tags, that starts the pipeline.</p> <note> <p>When a trigger configuration is specified, default change detection for repository and branch commits is disabled.</p> </note>"
         }
       },
       "documentation":"<p>Represents the structure of actions and stages to be performed in the pipeline.</p>"
@@ -3032,10 +3182,14 @@
           "shape":"ArtifactRevisionList",
           "documentation":"<p>A list of <code>ArtifactRevision</code> objects included in a pipeline execution.</p>"
         },
-        "trigger":{"shape":"ExecutionTrigger"},
         "variables":{
           "shape":"ResolvedPipelineVariableList",
           "documentation":"<p>A list of pipeline variables used for the pipeline execution.</p>"
+        },
+        "trigger":{"shape":"ExecutionTrigger"},
+        "executionMode":{
+          "shape":"ExecutionMode",
+          "documentation":"<p>The method that the pipeline will use to handle multiple executions. The default mode is SUPERSEDED.</p>"
         }
       },
       "documentation":"<p>Represents information about an execution of a pipeline.</p>"
@@ -3102,6 +3256,10 @@
         "stopTrigger":{
           "shape":"StopExecutionTrigger",
           "documentation":"<p>The interaction that stopped a pipeline execution.</p>"
+        },
+        "executionMode":{
+          "shape":"ExecutionMode",
+          "documentation":"<p>The method that the pipeline will use to handle multiple executions. The default mode is SUPERSEDED.</p>"
         }
       },
       "documentation":"<p>Summary information about a pipeline execution.</p>"
@@ -3173,7 +3331,11 @@
         },
         "pipelineType":{
           "shape":"PipelineType",
-          "documentation":"<p>CodePipeline provides the following pipeline types, which differ in characteristics and price, so that you can tailor your pipeline features and cost to the needs of your applications.</p> <ul> <li> <p>V1 type pipelines have a JSON structure that contains standard pipeline, stage, and action-level parameters.</p> </li> <li> <p>V2 type pipelines have the same structure as a V1 type, along with additional parameters for release safety and trigger configuration.</p> </li> </ul> <important> <p>Including V2 parameters, such as triggers on Git tags, in the pipeline JSON when creating or updating a pipeline will result in the pipeline having the V2 type of pipeline and the associated costs.</p> </important> <p>For information about pricing for CodePipeline, see <a href=\"https://aws.amazon.com/codepipeline/pricing/\">Pricing</a>.</p> <p> For information about which type of pipeline to choose, see <a href=\"https://docs.aws.amazon.com/codepipeline/latest/userguide/pipeline-types-planning.html\">What type of pipeline is right for me?</a>.</p> <note> <p>V2 type pipelines, along with triggers on Git tags and pipeline-level variables, are not currently supported for CloudFormation and CDK resources in CodePipeline. For more information about V2 type pipelines, see <a href=\"https://docs.aws.amazon.com/codepipeline/latest/userguide/pipeline-types.html\">Pipeline types</a> in the <i>CodePipeline User Guide</i>.</p> </note>"
+          "documentation":"<p>CodePipeline provides the following pipeline types, which differ in characteristics and price, so that you can tailor your pipeline features and cost to the needs of your applications.</p> <ul> <li> <p>V1 type pipelines have a JSON structure that contains standard pipeline, stage, and action-level parameters.</p> </li> <li> <p>V2 type pipelines have the same structure as a V1 type, along with additional parameters for release safety and trigger configuration.</p> </li> </ul> <important> <p>Including V2 parameters, such as triggers on Git tags, in the pipeline JSON when creating or updating a pipeline will result in the pipeline having the V2 type of pipeline and the associated costs.</p> </important> <p>For information about pricing for CodePipeline, see <a href=\"http://aws.amazon.com/codepipeline/pricing/\">Pricing</a>.</p> <p> For information about which type of pipeline to choose, see <a href=\"https://docs.aws.amazon.com/codepipeline/latest/userguide/pipeline-types-planning.html\">What type of pipeline is right for me?</a>.</p>"
+        },
+        "executionMode":{
+          "shape":"ExecutionMode",
+          "documentation":"<p>The method that the pipeline will use to handle multiple executions. The default mode is SUPERSEDED.</p>"
         },
         "created":{
           "shape":"Timestamp",
@@ -3202,12 +3364,12 @@
           "documentation":"<p>Provides the filter criteria and the source stage for the repository event that starts the pipeline, such as Git tags.</p>"
         }
       },
-      "documentation":"<p>Represents information about the specified trigger configuration, such as the filter criteria and the source stage for the action that contains the trigger.</p> <note> <p>This is only supported for the <code>CodeStarSourceConnection</code> action type.</p> </note> <note> <p>When a trigger configuration is specified, default change detection for repository and branch commits is disabled.</p> </note> <note> <p>V2 type pipelines, along with triggers on Git tags and pipeline-level variables, are not currently supported for CloudFormation and CDK resources in CodePipeline. For more information about V2 type pipelines, see <a href=\"https://docs.aws.amazon.com/codepipeline/latest/userguide/pipeline-types.html\">Pipeline types</a> in the <i>CodePipeline User Guide</i>.</p> </note>"
+      "documentation":"<p>Represents information about the specified trigger configuration, such as the filter criteria and the source stage for the action that contains the trigger.</p> <note> <p>This is only supported for the <code>CodeStarSourceConnection</code> action type.</p> </note> <note> <p>When a trigger configuration is specified, default change detection for repository and branch commits is disabled.</p> </note>"
     },
     "PipelineTriggerDeclarationList":{
       "type":"list",
       "member":{"shape":"PipelineTriggerDeclaration"},
-      "max":20
+      "max":50
     },
     "PipelineTriggerProviderType":{
       "type":"string",
@@ -3236,7 +3398,7 @@
           "documentation":"<p>The value of a pipeline-level variable.</p>"
         }
       },
-      "documentation":"<p>A pipeline-level variable used for a pipeline execution.</p> <note> <p>V2 type pipelines, along with triggers on Git tags and pipeline-level variables, are not currently supported for CloudFormation and CDK resources in CodePipeline. For more information about V2 type pipelines, see <a href=\"https://docs.aws.amazon.com/codepipeline/latest/userguide/pipeline-types.html\">Pipeline types</a> in the <i>CodePipeline User Guide</i>.</p> </note>"
+      "documentation":"<p>A pipeline-level variable used for a pipeline execution.</p>"
     },
     "PipelineVariableDeclaration":{
       "type":"structure",
@@ -3255,7 +3417,7 @@
           "documentation":"<p>The description of a pipeline-level variable. It's used to add additional context about the variable, and not being used at time when pipeline executes.</p>"
         }
       },
-      "documentation":"<p>A variable declared at the pipeline level.</p> <note> <p>V2 type pipelines, along with triggers on Git tags and pipeline-level variables, are not currently supported for CloudFormation and CDK resources in CodePipeline. For more information about V2 type pipelines, see <a href=\"https://docs.aws.amazon.com/codepipeline/latest/userguide/pipeline-types.html\">Pipeline types</a> in the <i>CodePipeline User Guide</i>.</p> </note>"
+      "documentation":"<p>A variable declared at the pipeline level.</p>"
     },
     "PipelineVariableDeclarationList":{
       "type":"list",
@@ -3879,6 +4041,10 @@
       },
       "documentation":"<p>Represents information about the run of a stage.</p>"
     },
+    "StageExecutionList":{
+      "type":"list",
+      "member":{"shape":"StageExecution"}
+    },
     "StageExecutionStatus":{
       "type":"string",
       "enum":[
@@ -3925,6 +4091,10 @@
           "documentation":"<p>The name of the stage.</p>"
         },
         "inboundExecution":{"shape":"StageExecution"},
+        "inboundExecutions":{
+          "shape":"StageExecutionList",
+          "documentation":"<p>The inbound executions for a stage.</p>"
+        },
         "inboundTransitionState":{
           "shape":"TransitionState",
           "documentation":"<p>The state of the inbound transition, which is either enabled or disabled.</p>"
@@ -3984,6 +4154,13 @@
         }
       },
       "documentation":"<p>Represents the output of a <code>StartPipelineExecution</code> action.</p>"
+    },
+    "StartTimeRange":{
+      "type":"string",
+      "enum":[
+        "Latest",
+        "All"
+      ]
     },
     "StopExecutionTrigger":{
       "type":"structure",

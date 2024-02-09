@@ -2,6 +2,17 @@
 CHANGELOG
 =========
 
+2.15.19
+=======
+
+* api-change:``quicksight``: General Interactions for Visuals; Waterfall Chart Color Configuration; Documentation Update
+* api-change:``workspaces``: This release introduces User-Decoupling feature. This feature allows Workspaces Core customers to provision workspaces without providing users. CreateWorkspaces and DescribeWorkspaces APIs will now take a new optional parameter "WorkspaceName".
+* api-change:``datasync``: AWS DataSync now supports manifests for specifying files or objects to transfer.
+* api-change:``codepipeline``: Add ability to execute pipelines with new parallel & queued execution modes and add support for triggers with filtering on branches and file paths.
+* api-change:``redshift``: LisRecommendations API to fetch Amazon Redshift Advisor recommendations.
+* api-change:``lexv2-models``: Update lexv2-models command to latest version
+
+
 2.15.18
 =======
 

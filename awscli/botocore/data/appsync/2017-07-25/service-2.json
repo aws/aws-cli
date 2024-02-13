@@ -146,7 +146,8 @@
         {"shape":"ConcurrentModificationException"},
         {"shape":"NotFoundException"},
         {"shape":"UnauthorizedException"},
-        {"shape":"InternalFailureException"}
+        {"shape":"InternalFailureException"},
+        {"shape":"BadRequestException"}
       ],
       "documentation":"<p>Creates a <code>Function</code> object.</p> <p>A function is a reusable entity. You can use multiple functions to compose the resolver logic.</p>"
     },
@@ -281,7 +282,8 @@
         {"shape":"ConcurrentModificationException"},
         {"shape":"NotFoundException"},
         {"shape":"UnauthorizedException"},
-        {"shape":"InternalFailureException"}
+        {"shape":"InternalFailureException"},
+        {"shape":"BadRequestException"}
       ],
       "documentation":"<p>Deletes a <code>Function</code>.</p>"
     },
@@ -1008,7 +1010,8 @@
         {"shape":"ConcurrentModificationException"},
         {"shape":"NotFoundException"},
         {"shape":"UnauthorizedException"},
-        {"shape":"InternalFailureException"}
+        {"shape":"InternalFailureException"},
+        {"shape":"BadRequestException"}
       ],
       "documentation":"<p>Updates a <code>Function</code> object.</p>"
     },
@@ -1166,6 +1169,10 @@
         "status":{
           "shape":"ApiCacheStatus",
           "documentation":"<p>The cache instance status.</p> <ul> <li> <p> <b>AVAILABLE</b>: The instance is available for use.</p> </li> <li> <p> <b>CREATING</b>: The instance is currently creating.</p> </li> <li> <p> <b>DELETING</b>: The instance is currently deleting.</p> </li> <li> <p> <b>MODIFYING</b>: The instance is currently modifying.</p> </li> <li> <p> <b>FAILED</b>: The instance has failed creation.</p> </li> </ul>"
+        },
+        "healthMetricsConfig":{
+          "shape":"CacheHealthMetricsConfig",
+          "documentation":"<p>Controls how cache health metrics will be emitted to CloudWatch. Cache health metrics include:</p> <ul> <li> <p>NetworkBandwidthOutAllowanceExceeded: The network packets dropped because the throughput exceeded the aggregated bandwidth limit. This is useful for diagnosing bottlenecks in a cache configuration.</p> </li> <li> <p>EngineCPUUtilization: The CPU utilization (percentage) allocated to the Redis process. This is useful for diagnosing bottlenecks in a cache configuration.</p> </li> </ul> <p>Metrics will be recorded by API ID. You can set the value to <code>ENABLED</code> or <code>DISABLED</code>.</p>"
         }
       },
       "documentation":"<p>The <code>ApiCache</code> object.</p>"
@@ -1458,6 +1465,13 @@
     "Blob":{"type":"blob"},
     "Boolean":{"type":"boolean"},
     "BooleanValue":{"type":"boolean"},
+    "CacheHealthMetricsConfig":{
+      "type":"string",
+      "enum":[
+        "ENABLED",
+        "DISABLED"
+      ]
+    },
     "CachingConfig":{
       "type":"structure",
       "required":["ttl"],
@@ -1618,6 +1632,10 @@
         "type":{
           "shape":"ApiCacheType",
           "documentation":"<p>The cache instance type. Valid values are </p> <ul> <li> <p> <code>SMALL</code> </p> </li> <li> <p> <code>MEDIUM</code> </p> </li> <li> <p> <code>LARGE</code> </p> </li> <li> <p> <code>XLARGE</code> </p> </li> <li> <p> <code>LARGE_2X</code> </p> </li> <li> <p> <code>LARGE_4X</code> </p> </li> <li> <p> <code>LARGE_8X</code> (not available in all regions)</p> </li> <li> <p> <code>LARGE_12X</code> </p> </li> </ul> <p>Historically, instance types were identified by an EC2-style value. As of July 2020, this is deprecated, and the generic identifiers above should be used.</p> <p>The following legacy instance types are available, but their use is discouraged:</p> <ul> <li> <p> <b>T2_SMALL</b>: A t2.small instance type.</p> </li> <li> <p> <b>T2_MEDIUM</b>: A t2.medium instance type.</p> </li> <li> <p> <b>R4_LARGE</b>: A r4.large instance type.</p> </li> <li> <p> <b>R4_XLARGE</b>: A r4.xlarge instance type.</p> </li> <li> <p> <b>R4_2XLARGE</b>: A r4.2xlarge instance type.</p> </li> <li> <p> <b>R4_4XLARGE</b>: A r4.4xlarge instance type.</p> </li> <li> <p> <b>R4_8XLARGE</b>: A r4.8xlarge instance type.</p> </li> </ul>"
+        },
+        "healthMetricsConfig":{
+          "shape":"CacheHealthMetricsConfig",
+          "documentation":"<p>Controls how cache health metrics will be emitted to CloudWatch. Cache health metrics include:</p> <ul> <li> <p>NetworkBandwidthOutAllowanceExceeded: The number of times a specified GraphQL operation was called.</p> </li> <li> <p>EngineCPUUtilization: The number of GraphQL errors that occurred during a specified GraphQL operation.</p> </li> </ul> <p>Metrics will be recorded by API ID. You can set the value to <code>ENABLED</code> or <code>DISABLED</code>.</p>"
         }
       },
       "documentation":"<p>Represents the input of a <code>CreateApiCache</code> operation.</p>"
@@ -1718,6 +1736,10 @@
         "eventBridgeConfig":{
           "shape":"EventBridgeDataSourceConfig",
           "documentation":"<p>Amazon EventBridge settings.</p>"
+        },
+        "metricsConfig":{
+          "shape":"DataSourceLevelMetricsConfig",
+          "documentation":"<p>Enables or disables enhanced data source metrics for specified data sources. Note that <code>metricsConfig</code> won't be used unless the <code>dataSourceLevelMetricsBehavior</code> value is set to <code>PER_DATA_SOURCE_METRICS</code>. If the <code>dataSourceLevelMetricsBehavior</code> is set to <code>FULL_REQUEST_DATA_SOURCE_METRICS</code> instead, <code>metricsConfig</code> will be ignored. However, you can still set its value.</p> <p> <code>metricsConfig</code> can be <code>ENABLED</code> or <code>DISABLED</code>.</p>"
         }
       }
     },
@@ -1889,6 +1911,10 @@
         "resolverCountLimit":{
           "shape":"ResolverCountLimit",
           "documentation":"<p>The maximum number of resolvers that can be invoked in a single request. The default value is <code>0</code> (or unspecified), which will set the limit to <code>10000</code>. When specified, the limit value can be between <code>1</code> and <code>10000</code>. This field will produce a limit error if the operation falls out of bounds.</p>"
+        },
+        "enhancedMetricsConfig":{
+          "shape":"EnhancedMetricsConfig",
+          "documentation":"<p>The <code>enhancedMetricsConfig</code> object.</p>"
         }
       }
     },
@@ -1961,6 +1987,10 @@
         "code":{
           "shape":"Code",
           "documentation":"<p>The <code>resolver</code> code that contains the request and response functions. When code is used, the <code>runtime</code> is required. The <code>runtime</code> value must be <code>APPSYNC_JS</code>.</p>"
+        },
+        "metricsConfig":{
+          "shape":"ResolverLevelMetricsConfig",
+          "documentation":"<p>Enables or disables enhanced resolver metrics for specified resolvers. Note that <code>metricsConfig</code> won't be used unless the <code>resolverLevelMetricsBehavior</code> value is set to <code>PER_RESOLVER_METRICS</code>. If the <code>resolverLevelMetricsBehavior</code> is set to <code>FULL_REQUEST_RESOLVER_METRICS</code> instead, <code>metricsConfig</code> will be ignored. However, you can still set its value.</p> <p> <code>metricsConfig</code> can be <code>ENABLED</code> or <code>DISABLED</code>.</p>"
         }
       }
     },
@@ -2056,6 +2086,10 @@
         "eventBridgeConfig":{
           "shape":"EventBridgeDataSourceConfig",
           "documentation":"<p>Amazon EventBridge settings.</p>"
+        },
+        "metricsConfig":{
+          "shape":"DataSourceLevelMetricsConfig",
+          "documentation":"<p>Enables or disables enhanced data source metrics for specified data sources. Note that <code>metricsConfig</code> won't be used unless the <code>dataSourceLevelMetricsBehavior</code> value is set to <code>PER_DATA_SOURCE_METRICS</code>. If the <code>dataSourceLevelMetricsBehavior</code> is set to <code>FULL_REQUEST_DATA_SOURCE_METRICS</code> instead, <code>metricsConfig</code> will be ignored. However, you can still set its value.</p> <p> <code>metricsConfig</code> can be <code>ENABLED</code> or <code>DISABLED</code>.</p>"
         }
       },
       "documentation":"<p>Describes a data source.</p>"
@@ -2180,6 +2214,20 @@
         "PROCESSING",
         "FAILED",
         "SUCCESS"
+      ]
+    },
+    "DataSourceLevelMetricsBehavior":{
+      "type":"string",
+      "enum":[
+        "FULL_REQUEST_DATA_SOURCE_METRICS",
+        "PER_DATA_SOURCE_METRICS"
+      ]
+    },
+    "DataSourceLevelMetricsConfig":{
+      "type":"string",
+      "enum":[
+        "ENABLED",
+        "DISABLED"
       ]
     },
     "DataSourceType":{
@@ -2581,6 +2629,29 @@
         }
       },
       "documentation":"<p>Describes an OpenSearch data source configuration.</p> <p>As of September 2021, Amazon Elasticsearch service is Amazon OpenSearch Service. This configuration is deprecated. For new data sources, use <a>OpenSearchServiceDataSourceConfig</a> to specify an OpenSearch data source.</p>"
+    },
+    "EnhancedMetricsConfig":{
+      "type":"structure",
+      "required":[
+        "resolverLevelMetricsBehavior",
+        "dataSourceLevelMetricsBehavior",
+        "operationLevelMetricsConfig"
+      ],
+      "members":{
+        "resolverLevelMetricsBehavior":{
+          "shape":"ResolverLevelMetricsBehavior",
+          "documentation":"<p>Controls how resolver metrics will be emitted to CloudWatch. Resolver metrics include:</p> <ul> <li> <p>GraphQL errors: The number of GraphQL errors that occurred.</p> </li> <li> <p>Requests: The number of invocations that occurred during a request. </p> </li> <li> <p>Latency: The time to complete a resolver invocation.</p> </li> <li> <p>Cache hits: The number of cache hits during a request.</p> </li> <li> <p>Cache misses: The number of cache misses during a request.</p> </li> </ul> <p>These metrics can be emitted to CloudWatch per resolver or for all resolvers in the request. Metrics will be recorded by API ID and resolver name. <code>resolverLevelMetricsBehavior</code> accepts one of these values at a time:</p> <ul> <li> <p> <code>FULL_REQUEST_RESOLVER_METRICS</code>: Records and emits metric data for all resolvers in the request.</p> </li> <li> <p> <code>PER_RESOLVER_METRICS</code>: Records and emits metric data for resolvers that have the <code>metricConfig</code> value set to <code>ENABLED</code>.</p> </li> </ul>"
+        },
+        "dataSourceLevelMetricsBehavior":{
+          "shape":"DataSourceLevelMetricsBehavior",
+          "documentation":"<p>Controls how data source metrics will be emitted to CloudWatch. Data source metrics include:</p> <ul> <li> <p>Requests: The number of invocations that occured during a request.</p> </li> <li> <p>Latency: The time to complete a data source invocation.</p> </li> <li> <p>Errors: The number of errors that occurred during a data source invocation.</p> </li> </ul> <p>These metrics can be emitted to CloudWatch per data source or for all data sources in the request. Metrics will be recorded by API ID and data source name. <code>dataSourceLevelMetricsBehavior</code> accepts one of these values at a time:</p> <ul> <li> <p> <code>FULL_REQUEST_DATA_SOURCE_METRICS</code>: Records and emits metric data for all data sources in the request.</p> </li> <li> <p> <code>PER_DATA_SOURCE_METRICS</code>: Records and emits metric data for data sources that have the <code>metricConfig</code> value set to <code>ENABLED</code>.</p> </li> </ul>"
+        },
+        "operationLevelMetricsConfig":{
+          "shape":"OperationLevelMetricsConfig",
+          "documentation":"<p> Controls how operation metrics will be emitted to CloudWatch. Operation metrics include:</p> <ul> <li> <p>Requests: The number of times a specified GraphQL operation was called.</p> </li> <li> <p>GraphQL errors: The number of GraphQL errors that occurred during a specified GraphQL operation.</p> </li> </ul> <p>Metrics will be recorded by API ID and operation name. You can set the value to <code>ENABLED</code> or <code>DISABLED</code>.</p>"
+        }
+      },
+      "documentation":"<p>Enables and controls the enhanced metrics feature. Enhanced metrics emit granular data on API usage and performance such as AppSync request and error counts, latency, and cache hits/misses. All enhanced metric data is sent to your CloudWatch account, and you can configure the types of data that will be sent. </p> <p>Enhanced metrics can be configured at the resolver, data source, and operation levels. <code>EnhancedMetricsConfig</code> contains three required parameters, each controlling one of these categories:</p> <ol> <li> <p> <code>resolverLevelMetricsBehavior</code>: Controls how resolver metrics will be emitted to CloudWatch. Resolver metrics include:</p> <ul> <li> <p>GraphQL errors: The number of GraphQL errors that occurred.</p> </li> <li> <p>Requests: The number of invocations that occurred during a request. </p> </li> <li> <p>Latency: The time to complete a resolver invocation.</p> </li> <li> <p>Cache hits: The number of cache hits during a request.</p> </li> <li> <p>Cache misses: The number of cache misses during a request.</p> </li> </ul> <p>These metrics can be emitted to CloudWatch per resolver or for all resolvers in the request. Metrics will be recorded by API ID and resolver name. <code>resolverLevelMetricsBehavior</code> accepts one of these values at a time:</p> <ul> <li> <p> <code>FULL_REQUEST_RESOLVER_METRICS</code>: Records and emits metric data for all resolvers in the request.</p> </li> <li> <p> <code>PER_RESOLVER_METRICS</code>: Records and emits metric data for resolvers that have the <code>metricConfig</code> value set to <code>ENABLED</code>.</p> </li> </ul> </li> <li> <p> <code>dataSourceLevelMetricsBehavior</code>: Controls how data source metrics will be emitted to CloudWatch. Data source metrics include:</p> <ul> <li> <p>Requests: The number of invocations that occured during a request.</p> </li> <li> <p>Latency: The time to complete a data source invocation.</p> </li> <li> <p>Errors: The number of errors that occurred during a data source invocation.</p> </li> </ul> <p>These metrics can be emitted to CloudWatch per data source or for all data sources in the request. Metrics will be recorded by API ID and data source name. <code>dataSourceLevelMetricsBehavior</code> accepts one of these values at a time:</p> <ul> <li> <p> <code>FULL_REQUEST_DATA_SOURCE_METRICS</code>: Records and emits metric data for all data sources in the request.</p> </li> <li> <p> <code>PER_DATA_SOURCE_METRICS</code>: Records and emits metric data for data sources that have the <code>metricConfig</code> value set to <code>ENABLED</code>.</p> </li> </ul> </li> <li> <p> <code>operationLevelMetricsConfig</code>: Controls how operation metrics will be emitted to CloudWatch. Operation metrics include:</p> <ul> <li> <p>Requests: The number of times a specified GraphQL operation was called.</p> </li> <li> <p>GraphQL errors: The number of GraphQL errors that occurred during a specified GraphQL operation.</p> </li> </ul> <p>Metrics will be recorded by API ID and operation name. You can set the value to <code>ENABLED</code> or <code>DISABLED</code>.</p> </li> </ol>"
     },
     "EnvironmentVariableKey":{
       "type":"string",
@@ -3306,6 +3377,10 @@
         "resolverCountLimit":{
           "shape":"ResolverCountLimit",
           "documentation":"<p>The maximum number of resolvers that can be invoked in a single request. The default value is <code>0</code> (or unspecified), which will set the limit to <code>10000</code>. When specified, the limit value can be between <code>1</code> and <code>10000</code>. This field will produce a limit error if the operation falls out of bounds.</p>"
+        },
+        "enhancedMetricsConfig":{
+          "shape":"EnhancedMetricsConfig",
+          "documentation":"<p>The <code>enhancedMetricsConfig</code> object.</p>"
         }
       },
       "documentation":"<p>Describes a GraphQL API.</p>"
@@ -3924,6 +3999,13 @@
       },
       "documentation":"<p>Describes an OpenSearch data source configuration.</p>"
     },
+    "OperationLevelMetricsConfig":{
+      "type":"string",
+      "enum":[
+        "ENABLED",
+        "DISABLED"
+      ]
+    },
     "OutputType":{
       "type":"string",
       "enum":[
@@ -4122,6 +4204,10 @@
         "code":{
           "shape":"Code",
           "documentation":"<p>The <code>resolver</code> code that contains the request and response functions. When code is used, the <code>runtime</code> is required. The <code>runtime</code> value must be <code>APPSYNC_JS</code>.</p>"
+        },
+        "metricsConfig":{
+          "shape":"ResolverLevelMetricsConfig",
+          "documentation":"<p>Enables or disables enhanced resolver metrics for specified resolvers. Note that <code>metricsConfig</code> won't be used unless the <code>resolverLevelMetricsBehavior</code> value is set to <code>PER_RESOLVER_METRICS</code>. If the <code>resolverLevelMetricsBehavior</code> is set to <code>FULL_REQUEST_RESOLVER_METRICS</code> instead, <code>metricsConfig</code> will be ignored. However, you can still set its value.</p> <p> <code>metricsConfig</code> can be <code>ENABLED</code> or <code>DISABLED</code>.</p>"
         }
       },
       "documentation":"<p>Describes a resolver.</p>"
@@ -4136,6 +4222,20 @@
       "enum":[
         "UNIT",
         "PIPELINE"
+      ]
+    },
+    "ResolverLevelMetricsBehavior":{
+      "type":"string",
+      "enum":[
+        "FULL_REQUEST_RESOLVER_METRICS",
+        "PER_RESOLVER_METRICS"
+      ]
+    },
+    "ResolverLevelMetricsConfig":{
+      "type":"string",
+      "enum":[
+        "ENABLED",
+        "DISABLED"
       ]
     },
     "Resolvers":{
@@ -4543,6 +4643,10 @@
         "type":{
           "shape":"ApiCacheType",
           "documentation":"<p>The cache instance type. Valid values are </p> <ul> <li> <p> <code>SMALL</code> </p> </li> <li> <p> <code>MEDIUM</code> </p> </li> <li> <p> <code>LARGE</code> </p> </li> <li> <p> <code>XLARGE</code> </p> </li> <li> <p> <code>LARGE_2X</code> </p> </li> <li> <p> <code>LARGE_4X</code> </p> </li> <li> <p> <code>LARGE_8X</code> (not available in all regions)</p> </li> <li> <p> <code>LARGE_12X</code> </p> </li> </ul> <p>Historically, instance types were identified by an EC2-style value. As of July 2020, this is deprecated, and the generic identifiers above should be used.</p> <p>The following legacy instance types are available, but their use is discouraged:</p> <ul> <li> <p> <b>T2_SMALL</b>: A t2.small instance type.</p> </li> <li> <p> <b>T2_MEDIUM</b>: A t2.medium instance type.</p> </li> <li> <p> <b>R4_LARGE</b>: A r4.large instance type.</p> </li> <li> <p> <b>R4_XLARGE</b>: A r4.xlarge instance type.</p> </li> <li> <p> <b>R4_2XLARGE</b>: A r4.2xlarge instance type.</p> </li> <li> <p> <b>R4_4XLARGE</b>: A r4.4xlarge instance type.</p> </li> <li> <p> <b>R4_8XLARGE</b>: A r4.8xlarge instance type.</p> </li> </ul>"
+        },
+        "healthMetricsConfig":{
+          "shape":"CacheHealthMetricsConfig",
+          "documentation":"<p>Controls how cache health metrics will be emitted to CloudWatch. Cache health metrics include:</p> <ul> <li> <p>NetworkBandwidthOutAllowanceExceeded: The number of times a specified GraphQL operation was called.</p> </li> <li> <p>EngineCPUUtilization: The number of GraphQL errors that occurred during a specified GraphQL operation.</p> </li> </ul> <p>Metrics will be recorded by API ID. You can set the value to <code>ENABLED</code> or <code>DISABLED</code>.</p>"
         }
       },
       "documentation":"<p>Represents the input of a <code>UpdateApiCache</code> operation.</p>"
@@ -4654,6 +4758,10 @@
         "eventBridgeConfig":{
           "shape":"EventBridgeDataSourceConfig",
           "documentation":"<p>The new Amazon EventBridge settings.</p>"
+        },
+        "metricsConfig":{
+          "shape":"DataSourceLevelMetricsConfig",
+          "documentation":"<p>Enables or disables enhanced data source metrics for specified data sources. Note that <code>metricsConfig</code> won't be used unless the <code>dataSourceLevelMetricsBehavior</code> value is set to <code>PER_DATA_SOURCE_METRICS</code>. If the <code>dataSourceLevelMetricsBehavior</code> is set to <code>FULL_REQUEST_DATA_SOURCE_METRICS</code> instead, <code>metricsConfig</code> will be ignored. However, you can still set its value.</p> <p> <code>metricsConfig</code> can be <code>ENABLED</code> or <code>DISABLED</code>.</p>"
         }
       }
     },
@@ -4821,6 +4929,10 @@
         "resolverCountLimit":{
           "shape":"ResolverCountLimit",
           "documentation":"<p>The maximum number of resolvers that can be invoked in a single request. The default value is <code>0</code> (or unspecified), which will set the limit to <code>10000</code>. When specified, the limit value can be between <code>1</code> and <code>10000</code>. This field will produce a limit error if the operation falls out of bounds.</p>"
+        },
+        "enhancedMetricsConfig":{
+          "shape":"EnhancedMetricsConfig",
+          "documentation":"<p>The <code>enhancedMetricsConfig</code> object.</p>"
         }
       }
     },
@@ -4895,6 +5007,10 @@
         "code":{
           "shape":"Code",
           "documentation":"<p>The <code>resolver</code> code that contains the request and response functions. When code is used, the <code>runtime</code> is required. The <code>runtime</code> value must be <code>APPSYNC_JS</code>.</p>"
+        },
+        "metricsConfig":{
+          "shape":"ResolverLevelMetricsConfig",
+          "documentation":"<p>Enables or disables enhanced resolver metrics for specified resolvers. Note that <code>metricsConfig</code> won't be used unless the <code>resolverLevelMetricsBehavior</code> value is set to <code>PER_RESOLVER_METRICS</code>. If the <code>resolverLevelMetricsBehavior</code> is set to <code>FULL_REQUEST_RESOLVER_METRICS</code> instead, <code>metricsConfig</code> will be ignored. However, you can still set its value.</p> <p> <code>metricsConfig</code> can be <code>ENABLED</code> or <code>DISABLED</code>.</p>"
         }
       }
     },

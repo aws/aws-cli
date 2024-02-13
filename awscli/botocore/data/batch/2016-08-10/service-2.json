@@ -661,7 +661,7 @@
         },
         "allocationStrategy":{
           "shape":"CRAllocationStrategy",
-          "documentation":"<p>The allocation strategy to use for the compute resource if not enough instances of the best fitting instance type can be allocated. This might be because of availability of the instance type in the Region or <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-resource-limits.html\">Amazon EC2 service limits</a>. For more information, see <a href=\"https://docs.aws.amazon.com/batch/latest/userguide/allocation-strategies.html\">Allocation strategies</a> in the <i>Batch User Guide</i>.</p> <note> <p>This parameter isn't applicable to jobs that are running on Fargate resources. Don't specify it.</p> </note> <dl> <dt>BEST_FIT (default)</dt> <dd> <p>Batch selects an instance type that best fits the needs of the jobs with a preference for the lowest-cost instance type. If additional instances of the selected instance type aren't available, Batch waits for the additional instances to be available. If there aren't enough instances available or the user is reaching <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-resource-limits.html\">Amazon EC2 service limits</a>, additional jobs aren't run until the currently running jobs are completed. This allocation strategy keeps costs lower but can limit scaling. If you're using Spot Fleets with <code>BEST_FIT</code>, the Spot Fleet IAM Role must be specified. Compute resources that use a <code>BEST_FIT</code> allocation strategy don't support infrastructure updates and can't update some parameters. For more information, see <a href=\"https://docs.aws.amazon.com/batch/latest/userguide/updating-compute-environments.html\">Updating compute environments</a> in the <i>Batch User Guide</i>.</p> </dd> <dt>BEST_FIT_PROGRESSIVE</dt> <dd> <p>Batch selects additional instance types that are large enough to meet the requirements of the jobs in the queue. Its preference is for instance types with lower cost vCPUs. If additional instances of the previously selected instance types aren't available, Batch selects new instance types.</p> </dd> <dt>SPOT_CAPACITY_OPTIMIZED</dt> <dd> <p>Batch selects one or more instance types that are large enough to meet the requirements of the jobs in the queue. Its preference is for instance types that are less likely to be interrupted. This allocation strategy is only available for Spot Instance compute resources.</p> </dd> <dt>SPOT_PRICE_CAPACITY_OPTIMIZED</dt> <dd> <p>The price and capacity optimized allocation strategy looks at both price and capacity to select the Spot Instance pools that are the least likely to be interrupted and have the lowest possible price. This allocation strategy is only available for Spot Instance compute resources.</p> </dd> </dl> <p>With <code>BEST_FIT_PROGRESSIVE</code>,<code>SPOT_CAPACITY_OPTIMIZED</code> and <code>SPOT_PRICE_CAPACITY_OPTIMIZED</code> strategies using On-Demand or Spot Instances, and the <code>BEST_FIT</code> strategy using Spot Instances, Batch might need to exceed <code>maxvCpus</code> to meet your capacity requirements. In this event, Batch never exceeds <code>maxvCpus</code> by more than a single instance.</p>"
+          "documentation":"<p>The allocation strategy to use for the compute resource if not enough instances of the best fitting instance type can be allocated. This might be because of availability of the instance type in the Region or <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-resource-limits.html\">Amazon EC2 service limits</a>. For more information, see <a href=\"https://docs.aws.amazon.com/batch/latest/userguide/allocation-strategies.html\">Allocation strategies</a> in the <i>Batch User Guide</i>.</p> <note> <p>This parameter isn't applicable to jobs that are running on Fargate resources. Don't specify it.</p> </note> <dl> <dt>BEST_FIT (default)</dt> <dd> <p>Batch selects an instance type that best fits the needs of the jobs with a preference for the lowest-cost instance type. If additional instances of the selected instance type aren't available, Batch waits for the additional instances to be available. If there aren't enough instances available or the user is reaching <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-resource-limits.html\">Amazon EC2 service limits</a>, additional jobs aren't run until the currently running jobs are completed. This allocation strategy keeps costs lower but can limit scaling. If you're using Spot Fleets with <code>BEST_FIT</code>, the Spot Fleet IAM Role must be specified. Compute resources that use a <code>BEST_FIT</code> allocation strategy don't support infrastructure updates and can't update some parameters. For more information, see <a href=\"https://docs.aws.amazon.com/batch/latest/userguide/updating-compute-environments.html\">Updating compute environments</a> in the <i>Batch User Guide</i>.</p> </dd> <dt>BEST_FIT_PROGRESSIVE</dt> <dd> <p>Batch selects additional instance types that are large enough to meet the requirements of the jobs in the queue. Its preference is for instance types with lower cost vCPUs. If additional instances of the previously selected instance types aren't available, Batch selects new instance types.</p> </dd> <dt>SPOT_CAPACITY_OPTIMIZED</dt> <dd> <p>Batch selects one or more instance types that are large enough to meet the requirements of the jobs in the queue. Its preference is for instance types that are less likely to be interrupted. This allocation strategy is only available for Spot Instance compute resources.</p> </dd> <dt>SPOT_PRICE_CAPACITY_OPTIMIZED</dt> <dd> <p>The price and capacity optimized allocation strategy looks at both price and capacity to select the Spot Instance pools that are the least likely to be interrupted and have the lowest possible price. This allocation strategy is only available for Spot Instance compute resources.</p> </dd> </dl> <p>With <code>BEST_FIT_PROGRESSIVE</code>,<code>SPOT_CAPACITY_OPTIMIZED</code> and <code>SPOT_PRICE_CAPACITY_OPTIMIZED</code> (recommended) strategies using On-Demand or Spot Instances, and the <code>BEST_FIT</code> strategy using Spot Instances, Batch might need to exceed <code>maxvCpus</code> to meet your capacity requirements. In this event, Batch never exceeds <code>maxvCpus</code> by more than a single instance.</p>"
         },
         "minvCpus":{
           "shape":"Integer",
@@ -669,7 +669,7 @@
         },
         "maxvCpus":{
           "shape":"Integer",
-          "documentation":"<p>The maximum number of vCPUs that a compute environment can support.</p> <note> <p>With <code>BEST_FIT_PROGRESSIVE</code>, <code>SPOT_CAPACITY_OPTIMIZED</code> and <code>SPOT_PRICE_CAPACITY_OPTIMIZED</code> allocation strategies using On-Demand or Spot Instances, and the <code>BEST_FIT</code> strategy using Spot Instances, Batch might need to exceed <code>maxvCpus</code> to meet your capacity requirements. In this event, Batch never exceeds <code>maxvCpus</code> by more than a single instance. For example, no more than a single instance from among those specified in your compute environment is allocated.</p> </note>"
+          "documentation":"<p>The maximum number of vCPUs that a compute environment can support.</p> <note> <p>With <code>BEST_FIT_PROGRESSIVE</code>,<code>SPOT_CAPACITY_OPTIMIZED</code> and <code>SPOT_PRICE_CAPACITY_OPTIMIZED</code> (recommended) strategies using On-Demand or Spot Instances, and the <code>BEST_FIT</code> strategy using Spot Instances, Batch might need to exceed <code>maxvCpus</code> to meet your capacity requirements. In this event, Batch never exceeds <code>maxvCpus</code> by more than a single instance.</p> </note>"
         },
         "desiredvCpus":{
           "shape":"Integer",
@@ -699,7 +699,7 @@
         },
         "instanceRole":{
           "shape":"String",
-          "documentation":"<p>The Amazon ECS instance profile applied to Amazon EC2 instances in a compute environment. You can specify the short name or full Amazon Resource Name (ARN) of an instance profile. For example, <code> <i>ecsInstanceRole</i> </code> or <code>arn:aws:iam::<i>&lt;aws_account_id&gt;</i>:instance-profile/<i>ecsInstanceRole</i> </code>. For more information, see <a href=\"https://docs.aws.amazon.com/batch/latest/userguide/instance_IAM_role.html\">Amazon ECS instance role</a> in the <i>Batch User Guide</i>.</p> <note> <p>This parameter isn't applicable to jobs that are running on Fargate resources. Don't specify it.</p> </note>"
+          "documentation":"<p>The Amazon ECS instance profile applied to Amazon EC2 instances in a compute environment. This parameter is required for Amazon EC2 instances types. You can specify the short name or full Amazon Resource Name (ARN) of an instance profile. For example, <code> <i>ecsInstanceRole</i> </code> or <code>arn:aws:iam::<i>&lt;aws_account_id&gt;</i>:instance-profile/<i>ecsInstanceRole</i> </code>. For more information, see <a href=\"https://docs.aws.amazon.com/batch/latest/userguide/instance_IAM_role.html\">Amazon ECS instance role</a> in the <i>Batch User Guide</i>.</p> <note> <p>This parameter isn't applicable to jobs that are running on Fargate resources. Don't specify it.</p> </note>"
         },
         "tags":{
           "shape":"TagsMap",
@@ -737,7 +737,7 @@
         },
         "maxvCpus":{
           "shape":"Integer",
-          "documentation":"<p>The maximum number of Amazon EC2 vCPUs that an environment can reach.</p> <note> <p>With <code>BEST_FIT_PROGRESSIVE</code>, <code>SPOT_CAPACITY_OPTIMIZED</code>, and <code>SPOT_PRICE_CAPACITY_OPTIMIZED</code> allocation strategies using On-Demand or Spot Instances, and the <code>BEST_FIT</code> strategy using Spot Instances, Batch might need to exceed <code>maxvCpus</code> to meet your capacity requirements. In this event, Batch never exceeds <code>maxvCpus</code> by more than a single instance. That is, no more than a single instance from among those specified in your compute environment.</p> </note>"
+          "documentation":"<p>The maximum number of Amazon EC2 vCPUs that an environment can reach.</p> <note> <p>With <code>BEST_FIT_PROGRESSIVE</code>,<code>SPOT_CAPACITY_OPTIMIZED</code> and <code>SPOT_PRICE_CAPACITY_OPTIMIZED</code> (recommended) strategies using On-Demand or Spot Instances, and the <code>BEST_FIT</code> strategy using Spot Instances, Batch might need to exceed <code>maxvCpus</code> to meet your capacity requirements. In this event, Batch never exceeds <code>maxvCpus</code> by more than a single instance.</p> </note>"
         },
         "desiredvCpus":{
           "shape":"Integer",
@@ -753,7 +753,7 @@
         },
         "allocationStrategy":{
           "shape":"CRUpdateAllocationStrategy",
-          "documentation":"<p>The allocation strategy to use for the compute resource if there's not enough instances of the best fitting instance type that can be allocated. This might be because of availability of the instance type in the Region or <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-resource-limits.html\">Amazon EC2 service limits</a>. For more information, see <a href=\"https://docs.aws.amazon.com/batch/latest/userguide/allocation-strategies.html\">Allocation strategies</a> in the <i>Batch User Guide</i>.</p> <p>When updating a compute environment, changing the allocation strategy requires an infrastructure update of the compute environment. For more information, see <a href=\"https://docs.aws.amazon.com/batch/latest/userguide/updating-compute-environments.html\">Updating compute environments</a> in the <i>Batch User Guide</i>. <code>BEST_FIT</code> isn't supported when updating a compute environment.</p> <note> <p>This parameter isn't applicable to jobs that are running on Fargate resources. Don't specify it.</p> </note> <dl> <dt>BEST_FIT_PROGRESSIVE</dt> <dd> <p>Batch selects additional instance types that are large enough to meet the requirements of the jobs in the queue. Its preference is for instance types with lower cost vCPUs. If additional instances of the previously selected instance types aren't available, Batch selects new instance types.</p> </dd> <dt>SPOT_CAPACITY_OPTIMIZED</dt> <dd> <p>Batch selects one or more instance types that are large enough to meet the requirements of the jobs in the queue. Its preference is for instance types that are less likely to be interrupted. This allocation strategy is only available for Spot Instance compute resources.</p> </dd> <dt>SPOT_PRICE_CAPACITY_OPTIMIZED</dt> <dd> <p>The price and capacity optimized allocation strategy looks at both price and capacity to select the Spot Instance pools that are the least likely to be interrupted and have the lowest possible price. This allocation strategy is only available for Spot Instance compute resources.</p> </dd> </dl> <p>With both <code>BEST_FIT_PROGRESSIVE</code>, <code>SPOT_CAPACITY_OPTIMIZED</code>, and <code>SPOT_PRICE_CAPACITY_OPTIMIZED</code> strategies using On-Demand or Spot Instances, and the <code>BEST_FIT</code> strategy using Spot Instances, Batch might need to exceed <code>maxvCpus</code> to meet your capacity requirements. In this event, Batch never exceeds <code>maxvCpus</code> by more than a single instance.</p>"
+          "documentation":"<p>The allocation strategy to use for the compute resource if there's not enough instances of the best fitting instance type that can be allocated. This might be because of availability of the instance type in the Region or <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-resource-limits.html\">Amazon EC2 service limits</a>. For more information, see <a href=\"https://docs.aws.amazon.com/batch/latest/userguide/allocation-strategies.html\">Allocation strategies</a> in the <i>Batch User Guide</i>.</p> <p>When updating a compute environment, changing the allocation strategy requires an infrastructure update of the compute environment. For more information, see <a href=\"https://docs.aws.amazon.com/batch/latest/userguide/updating-compute-environments.html\">Updating compute environments</a> in the <i>Batch User Guide</i>. <code>BEST_FIT</code> isn't supported when updating a compute environment.</p> <note> <p>This parameter isn't applicable to jobs that are running on Fargate resources. Don't specify it.</p> </note> <dl> <dt>BEST_FIT_PROGRESSIVE</dt> <dd> <p>Batch selects additional instance types that are large enough to meet the requirements of the jobs in the queue. Its preference is for instance types with lower cost vCPUs. If additional instances of the previously selected instance types aren't available, Batch selects new instance types.</p> </dd> <dt>SPOT_CAPACITY_OPTIMIZED</dt> <dd> <p>Batch selects one or more instance types that are large enough to meet the requirements of the jobs in the queue. Its preference is for instance types that are less likely to be interrupted. This allocation strategy is only available for Spot Instance compute resources.</p> </dd> <dt>SPOT_PRICE_CAPACITY_OPTIMIZED</dt> <dd> <p>The price and capacity optimized allocation strategy looks at both price and capacity to select the Spot Instance pools that are the least likely to be interrupted and have the lowest possible price. This allocation strategy is only available for Spot Instance compute resources.</p> </dd> </dl> <p>With <code>BEST_FIT_PROGRESSIVE</code>,<code>SPOT_CAPACITY_OPTIMIZED</code> and <code>SPOT_PRICE_CAPACITY_OPTIMIZED</code> (recommended) strategies using On-Demand or Spot Instances, and the <code>BEST_FIT</code> strategy using Spot Instances, Batch might need to exceed <code>maxvCpus</code> to meet your capacity requirements. In this event, Batch never exceeds <code>maxvCpus</code> by more than a single instance.</p>"
         },
         "instanceTypes":{
           "shape":"StringList",
@@ -765,7 +765,7 @@
         },
         "instanceRole":{
           "shape":"String",
-          "documentation":"<p>The Amazon ECS instance profile applied to Amazon EC2 instances in a compute environment. You can specify the short name or full Amazon Resource Name (ARN) of an instance profile. For example, <code> <i>ecsInstanceRole</i> </code> or <code>arn:aws:iam::<i>&lt;aws_account_id&gt;</i>:instance-profile/<i>ecsInstanceRole</i> </code>. For more information, see <a href=\"https://docs.aws.amazon.com/batch/latest/userguide/instance_IAM_role.html\">Amazon ECS instance role</a> in the <i>Batch User Guide</i>.</p> <p>When updating a compute environment, changing this setting requires an infrastructure update of the compute environment. For more information, see <a href=\"https://docs.aws.amazon.com/batch/latest/userguide/updating-compute-environments.html\">Updating compute environments</a> in the <i>Batch User Guide</i>.</p> <note> <p>This parameter isn't applicable to jobs that are running on Fargate resources. Don't specify it.</p> </note>"
+          "documentation":"<p>The Amazon ECS instance profile applied to Amazon EC2 instances in a compute environment. Required for Amazon EC2 instances. You can specify the short name or full Amazon Resource Name (ARN) of an instance profile. For example, <code> <i>ecsInstanceRole</i> </code> or <code>arn:aws:iam::<i>&lt;aws_account_id&gt;</i>:instance-profile/<i>ecsInstanceRole</i> </code>. For more information, see <a href=\"https://docs.aws.amazon.com/batch/latest/userguide/instance_IAM_role.html\">Amazon ECS instance role</a> in the <i>Batch User Guide</i>.</p> <p>When updating a compute environment, changing this setting requires an infrastructure update of the compute environment. For more information, see <a href=\"https://docs.aws.amazon.com/batch/latest/userguide/updating-compute-environments.html\">Updating compute environments</a> in the <i>Batch User Guide</i>.</p> <note> <p>This parameter isn't applicable to jobs that are running on Fargate resources. Don't specify it.</p> </note>"
         },
         "tags":{
           "shape":"TagsMap",
@@ -913,7 +913,14 @@
           "shape":"EphemeralStorage",
           "documentation":"<p>The amount of ephemeral storage allocated for the task. This parameter is used to expand the total amount of ephemeral storage available, beyond the default amount, for tasks hosted on Fargate.</p>"
         },
-        "runtimePlatform":{"shape":"RuntimePlatform"}
+        "runtimePlatform":{
+          "shape":"RuntimePlatform",
+          "documentation":"<p>An object that represents the compute environment architecture for Batch jobs on Fargate.</p>"
+        },
+        "repositoryCredentials":{
+          "shape":"RepositoryCredentials",
+          "documentation":"<p>The private repository authentication credentials to use.</p>"
+        }
       },
       "documentation":"<p>An object that represents the details of a container that's part of a job.</p>"
     },
@@ -956,7 +963,7 @@
       "members":{
         "image":{
           "shape":"String",
-          "documentation":"<p>The image used to start a container. This string is passed directly to the Docker daemon. Images in the Docker Hub registry are available by default. Other repositories are specified with <code> <i>repository-url</i>/<i>image</i>:<i>tag</i> </code>. It can be 255 characters long. It can contain uppercase and lowercase letters, numbers, hyphens (-), underscores (_), colons (:), periods (.), forward slashes (/), and number signs (#). This parameter maps to <code>Image</code> in the <a href=\"https://docs.docker.com/engine/api/v1.23/#create-a-container\">Create a container</a> section of the <a href=\"https://docs.docker.com/engine/api/v1.23/\">Docker Remote API</a> and the <code>IMAGE</code> parameter of <a href=\"https://docs.docker.com/engine/reference/run/\">docker run</a>.</p> <note> <p>Docker image architecture must match the processor architecture of the compute resources that they're scheduled on. For example, ARM-based Docker images can only run on ARM-based compute resources.</p> </note> <ul> <li> <p>Images in Amazon ECR Public repositories use the full <code>registry/repository[:tag]</code> or <code>registry/repository[@digest]</code> naming conventions. For example, <code>public.ecr.aws/<i>registry_alias</i>/<i>my-web-app</i>:<i>latest</i> </code>.</p> </li> <li> <p>Images in Amazon ECR repositories use the full registry and repository URI (for example, <code>123456789012.dkr.ecr.&lt;region-name&gt;.amazonaws.com/&lt;repository-name&gt;</code>).</p> </li> <li> <p>Images in official repositories on Docker Hub use a single name (for example, <code>ubuntu</code> or <code>mongo</code>).</p> </li> <li> <p>Images in other repositories on Docker Hub are qualified with an organization name (for example, <code>amazon/amazon-ecs-agent</code>).</p> </li> <li> <p>Images in other online repositories are qualified further by a domain name (for example, <code>quay.io/assemblyline/ubuntu</code>).</p> </li> </ul>"
+          "documentation":"<p>Required. The image used to start a container. This string is passed directly to the Docker daemon. Images in the Docker Hub registry are available by default. Other repositories are specified with <code> <i>repository-url</i>/<i>image</i>:<i>tag</i> </code>. It can be 255 characters long. It can contain uppercase and lowercase letters, numbers, hyphens (-), underscores (_), colons (:), periods (.), forward slashes (/), and number signs (#). This parameter maps to <code>Image</code> in the <a href=\"https://docs.docker.com/engine/api/v1.23/#create-a-container\">Create a container</a> section of the <a href=\"https://docs.docker.com/engine/api/v1.23/\">Docker Remote API</a> and the <code>IMAGE</code> parameter of <a href=\"https://docs.docker.com/engine/reference/run/\">docker run</a>.</p> <note> <p>Docker image architecture must match the processor architecture of the compute resources that they're scheduled on. For example, ARM-based Docker images can only run on ARM-based compute resources.</p> </note> <ul> <li> <p>Images in Amazon ECR Public repositories use the full <code>registry/repository[:tag]</code> or <code>registry/repository[@digest]</code> naming conventions. For example, <code>public.ecr.aws/<i>registry_alias</i>/<i>my-web-app</i>:<i>latest</i> </code>.</p> </li> <li> <p>Images in Amazon ECR repositories use the full registry and repository URI (for example, <code>123456789012.dkr.ecr.&lt;region-name&gt;.amazonaws.com/&lt;repository-name&gt;</code>).</p> </li> <li> <p>Images in official repositories on Docker Hub use a single name (for example, <code>ubuntu</code> or <code>mongo</code>).</p> </li> <li> <p>Images in other repositories on Docker Hub are qualified with an organization name (for example, <code>amazon/amazon-ecs-agent</code>).</p> </li> <li> <p>Images in other online repositories are qualified further by a domain name (for example, <code>quay.io/assemblyline/ubuntu</code>).</p> </li> </ul>"
         },
         "vcpus":{
           "shape":"Integer",
@@ -1042,7 +1049,14 @@
           "shape":"EphemeralStorage",
           "documentation":"<p>The amount of ephemeral storage to allocate for the task. This parameter is used to expand the total amount of ephemeral storage available, beyond the default amount, for tasks hosted on Fargate.</p>"
         },
-        "runtimePlatform":{"shape":"RuntimePlatform"}
+        "runtimePlatform":{
+          "shape":"RuntimePlatform",
+          "documentation":"<p>An object that represents the compute environment architecture for Batch jobs on Fargate.</p>"
+        },
+        "repositoryCredentials":{
+          "shape":"RepositoryCredentials",
+          "documentation":"<p>The private repository authentication credentials to use.</p>"
+        }
       },
       "documentation":"<p>Container properties are used for Amazon ECS based job definitions. These properties to describe the container that's launched as part of a job.</p>"
     },
@@ -1302,7 +1316,7 @@
       "members":{
         "jobDefinitions":{
           "shape":"StringList",
-          "documentation":"<p>A list of up to 100 job definitions. Each entry in the list can either be an ARN in the format <code>arn:aws:batch:${Region}:${Account}:job-definition/${JobDefinitionName}:${Revision}</code> or a short version using the form <code>${JobDefinitionName}:${Revision}</code>.</p>"
+          "documentation":"<p>A list of up to 100 job definitions. Each entry in the list can either be an ARN in the format <code>arn:aws:batch:${Region}:${Account}:job-definition/${JobDefinitionName}:${Revision}</code> or a short version using the form <code>${JobDefinitionName}:${Revision}</code>. This parameter can't be used with other parameters.</p>"
         },
         "maxResults":{
           "shape":"Integer",
@@ -1503,7 +1517,7 @@
       "members":{
         "imageType":{
           "shape":"ImageType",
-          "documentation":"<p>The image type to match with the instance type to select an AMI. The supported values are different for <code>ECS</code> and <code>EKS</code> resources.</p> <dl> <dt>ECS</dt> <dd> <p>If the <code>imageIdOverride</code> parameter isn't specified, then a recent <a href=\"https://docs.aws.amazon.com/AmazonECS/latest/developerguide/ecs-optimized_AMI.html#al2ami\">Amazon ECS-optimized Amazon Linux 2 AMI</a> (<code>ECS_AL2</code>) is used. If a new image type is specified in an update, but neither an <code>imageId</code> nor a <code>imageIdOverride</code> parameter is specified, then the latest Amazon ECS optimized AMI for that image type that's supported by Batch is used.</p> <dl> <dt>ECS_AL2</dt> <dd> <p> <a href=\"https://docs.aws.amazon.com/AmazonECS/latest/developerguide/ecs-optimized_AMI.html#al2ami\">Amazon Linux 2</a>: Default for all non-GPU instance families.</p> </dd> <dt>ECS_AL2_NVIDIA</dt> <dd> <p> <a href=\"https://docs.aws.amazon.com/AmazonECS/latest/developerguide/ecs-optimized_AMI.html#gpuami\">Amazon Linux 2 (GPU)</a>: Default for all GPU instance families (for example <code>P4</code> and <code>G4</code>) and can be used for all non Amazon Web Services Graviton-based instance types.</p> </dd> <dt>ECS_AL1</dt> <dd> <p> <a href=\"https://docs.aws.amazon.com/AmazonECS/latest/developerguide/ecs-optimized_AMI.html#alami\">Amazon Linux</a>. Amazon Linux has reached the end-of-life of standard support. For more information, see <a href=\"http://aws.amazon.com/amazon-linux-ami/\">Amazon Linux AMI</a>.</p> </dd> </dl> </dd> <dt>EKS</dt> <dd> <p>If the <code>imageIdOverride</code> parameter isn't specified, then a recent <a href=\"https://docs.aws.amazon.com/eks/latest/userguide/eks-optimized-ami.html\">Amazon EKS-optimized Amazon Linux AMI</a> (<code>EKS_AL2</code>) is used. If a new image type is specified in an update, but neither an <code>imageId</code> nor a <code>imageIdOverride</code> parameter is specified, then the latest Amazon EKS optimized AMI for that image type that Batch supports is used.</p> <dl> <dt>EKS_AL2</dt> <dd> <p> <a href=\"https://docs.aws.amazon.com/eks/latest/userguide/eks-optimized-ami.html\">Amazon Linux 2</a>: Default for all non-GPU instance families.</p> </dd> <dt>EKS_AL2_NVIDIA</dt> <dd> <p> <a href=\"https://docs.aws.amazon.com/eks/latest/userguide/eks-optimized-ami.html\">Amazon Linux 2 (accelerated)</a>: Default for all GPU instance families (for example, <code>P4</code> and <code>G4</code>) and can be used for all non Amazon Web Services Graviton-based instance types.</p> </dd> </dl> </dd> </dl>"
+          "documentation":"<p>The image type to match with the instance type to select an AMI. The supported values are different for <code>ECS</code> and <code>EKS</code> resources.</p> <dl> <dt>ECS</dt> <dd> <p>If the <code>imageIdOverride</code> parameter isn't specified, then a recent <a href=\"https://docs.aws.amazon.com/AmazonECS/latest/developerguide/ecs-optimized_AMI.html#al2ami\">Amazon ECS-optimized Amazon Linux 2 AMI</a> (<code>ECS_AL2</code>) is used. If a new image type is specified in an update, but neither an <code>imageId</code> nor a <code>imageIdOverride</code> parameter is specified, then the latest Amazon ECS optimized AMI for that image type that's supported by Batch is used.</p> <dl> <dt>ECS_AL2</dt> <dd> <p> <a href=\"https://docs.aws.amazon.com/AmazonECS/latest/developerguide/ecs-optimized_AMI.html#al2ami\">Amazon Linux 2</a>: Default for all non-GPU instance families.</p> </dd> <dt>ECS_AL2_NVIDIA</dt> <dd> <p> <a href=\"https://docs.aws.amazon.com/AmazonECS/latest/developerguide/ecs-optimized_AMI.html#gpuami\">Amazon Linux 2 (GPU)</a>: Default for all GPU instance families (for example <code>P4</code> and <code>G4</code>) and can be used for all non Amazon Web Services Graviton-based instance types.</p> </dd> <dt>ECS_AL2023</dt> <dd> <p> <a href=\"https://docs.aws.amazon.com/AmazonECS/latest/developerguide/ecs-optimized_AMI.html\">Amazon Linux 2023</a>: Batch supports Amazon Linux 2023.</p> <note> <p>Amazon Linux 2023 does not support <code>A1</code> instances.</p> </note> </dd> <dt>ECS_AL1</dt> <dd> <p> <a href=\"https://docs.aws.amazon.com/AmazonECS/latest/developerguide/ecs-optimized_AMI.html#alami\">Amazon Linux</a>. Amazon Linux has reached the end-of-life of standard support. For more information, see <a href=\"http://aws.amazon.com/amazon-linux-ami/\">Amazon Linux AMI</a>.</p> </dd> </dl> </dd> <dt>EKS</dt> <dd> <p>If the <code>imageIdOverride</code> parameter isn't specified, then a recent <a href=\"https://docs.aws.amazon.com/eks/latest/userguide/eks-optimized-ami.html\">Amazon EKS-optimized Amazon Linux AMI</a> (<code>EKS_AL2</code>) is used. If a new image type is specified in an update, but neither an <code>imageId</code> nor a <code>imageIdOverride</code> parameter is specified, then the latest Amazon EKS optimized AMI for that image type that Batch supports is used.</p> <dl> <dt>EKS_AL2</dt> <dd> <p> <a href=\"https://docs.aws.amazon.com/eks/latest/userguide/eks-optimized-ami.html\">Amazon Linux 2</a>: Default for all non-GPU instance families.</p> </dd> <dt>EKS_AL2_NVIDIA</dt> <dd> <p> <a href=\"https://docs.aws.amazon.com/eks/latest/userguide/eks-optimized-ami.html\">Amazon Linux 2 (accelerated)</a>: Default for all GPU instance families (for example, <code>P4</code> and <code>G4</code>) and can be used for all non Amazon Web Services Graviton-based instance types.</p> </dd> </dl> </dd> </dl>"
         },
         "imageIdOverride":{
           "shape":"ImageIdOverride",
@@ -1907,7 +1921,10 @@
           "shape":"String",
           "documentation":"<p>The name of the node for this job.</p>"
         },
-        "metadata":{"shape":"EksMetadata"}
+        "metadata":{
+          "shape":"EksMetadata",
+          "documentation":"<p>Describes and uniquely identifies Kubernetes resources. For example, the compute environment that a pod runs in or the <code>jobID</code> for a job running in the pod. For more information, see <a href=\"https://kubernetes.io/docs/concepts/overview/working-with-objects/kubernetes-objects/\">Understanding Kubernetes Objects</a> in the <i>Kubernetes documentation</i>.</p>"
+        }
       },
       "documentation":"<p>The details for the pod.</p>"
     },
@@ -2053,7 +2070,7 @@
         },
         "computeReservation":{
           "shape":"Integer",
-          "documentation":"<p>A value used to reserve some of the available maximum vCPU for fair share identifiers that aren't already used.</p> <p>The reserved ratio is <code>(<i>computeReservation</i>/100)^<i>ActiveFairShares</i> </code> where <code> <i>ActiveFairShares</i> </code> is the number of active fair share identifiers.</p> <p>For example, a <code>computeReservation</code> value of 50 indicates that Batchreserves 50% of the maximum available vCPU if there's only one fair share identifier. It reserves 25% if there are two fair share identifiers. It reserves 12.5% if there are three fair share identifiers. A <code>computeReservation</code> value of 25 indicates that Batch should reserve 25% of the maximum available vCPU if there's only one fair share identifier, 6.25% if there are two fair share identifiers, and 1.56% if there are three fair share identifiers.</p> <p>The minimum value is 0 and the maximum value is 99.</p>"
+          "documentation":"<p>A value used to reserve some of the available maximum vCPU for fair share identifiers that aren't already used.</p> <p>The reserved ratio is <code>(<i>computeReservation</i>/100)^<i>ActiveFairShares</i> </code> where <code> <i>ActiveFairShares</i> </code> is the number of active fair share identifiers.</p> <p>For example, a <code>computeReservation</code> value of 50 indicates that Batch reserves 50% of the maximum available vCPU if there's only one fair share identifier. It reserves 25% if there are two fair share identifiers. It reserves 12.5% if there are three fair share identifiers. A <code>computeReservation</code> value of 25 indicates that Batch should reserve 25% of the maximum available vCPU if there's only one fair share identifier, 6.25% if there are two fair share identifiers, and 1.56% if there are three fair share identifiers.</p> <p>The minimum value is 0 and the maximum value is 99.</p>"
         },
         "shareDistribution":{
           "shape":"ShareAttributesList",
@@ -2274,7 +2291,7 @@
         },
         "startedAt":{
           "shape":"Long",
-          "documentation":"<p>The Unix timestamp (in milliseconds) for when the job was started. More specifically, it's when the job transitioned from the <code>STARTING</code> state to the <code>RUNNING</code> state. This parameter isn't provided for child jobs of array jobs or multi-node parallel jobs.</p>"
+          "documentation":"<p>The Unix timestamp (in milliseconds) for when the job was started. More specifically, it's when the job transitioned from the <code>STARTING</code> state to the <code>RUNNING</code> state. </p>"
         },
         "stoppedAt":{
           "shape":"Long",
@@ -2724,7 +2741,7 @@
           "documentation":"<p>The name of the volume to mount.</p>"
         }
       },
-      "documentation":"<p>Details for a Docker volume mount point that's used in a job's container properties. This parameter maps to <code>Volumes</code> in the <a href=\"https://docs.docker.com/engine/reference/api/docker_remote_api_v1.19/#create-a-container\">Create a container</a> section of the <i>Docker Remote API</i> and the <code>--volume</code> option to docker run.</p>"
+      "documentation":"<p>Details for a Docker volume mount point that's used in a job's container properties. This parameter maps to <code>Volumes</code> in the <a href=\"https://docs.docker.com/engine/api/v1.43/#tag/Container/operation/ContainerCreate\">Create a container</a> section of the <i>Docker Remote API</i> and the <code>--volume</code> option to docker run.</p>"
     },
     "MountPoints":{
       "type":"list",
@@ -2977,6 +2994,17 @@
         }
       }
     },
+    "RepositoryCredentials":{
+      "type":"structure",
+      "required":["credentialsParameter"],
+      "members":{
+        "credentialsParameter":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the secret containing the private repository credentials.</p>"
+        }
+      },
+      "documentation":"<p>The repository credentials for private registry authentication.</p>"
+    },
     "ResourceRequirement":{
       "type":"structure",
       "required":[
@@ -3033,14 +3061,14 @@
       "members":{
         "operatingSystemFamily":{
           "shape":"String",
-          "documentation":"<p>The operating system for the compute environment. Valid values are: <code>LINUX</code> (default), <code>WINDOWS_SERVER_2019_CORE</code>, <code>WINDOWS_SERVER_2019_FULL</code>, <code>WINDOWS_SERVER_2022_CORE</code>, and <code>WINDOWS_SERVER_2022_FULL</code>.</p> <note> <p>The following parameters can’t be set for Windows containers: <code>linuxParameters</code>, <code>privileged</code>, <code>user</code>, <code>ulimits</code>, <code>readonlyRootFilesystem</code>, and <code>efsVolumeConfiguration</code>.</p> </note> <note> <p>The Batch Scheduler checks before registering a task definition with Fargate. If the job requires a Windows container and the first compute environment is <code>LINUX</code>, the compute environment is skipped and the next is checked until a Windows-based compute environment is found.</p> </note> <note> <p>Fargate Spot is not supported for Windows-based containers on Fargate. A job queue will be blocked if a Fargate Windows job is submitted to a job queue with only Fargate Spot compute environments. However, you can attach both <code>FARGATE</code> and <code>FARGATE_SPOT</code> compute environments to the same job queue.</p> </note>"
+          "documentation":"<p>The operating system for the compute environment. Valid values are: <code>LINUX</code> (default), <code>WINDOWS_SERVER_2019_CORE</code>, <code>WINDOWS_SERVER_2019_FULL</code>, <code>WINDOWS_SERVER_2022_CORE</code>, and <code>WINDOWS_SERVER_2022_FULL</code>.</p> <note> <p>The following parameters can’t be set for Windows containers: <code>linuxParameters</code>, <code>privileged</code>, <code>user</code>, <code>ulimits</code>, <code>readonlyRootFilesystem</code>, and <code>efsVolumeConfiguration</code>.</p> </note> <note> <p>The Batch Scheduler checks the compute environments that are attached to the job queue before registering a task definition with Fargate. In this scenario, the job queue is where the job is submitted. If the job requires a Windows container and the first compute environment is <code>LINUX</code>, the compute environment is skipped and the next compute environment is checked until a Windows-based compute environment is found.</p> </note> <note> <p>Fargate Spot is not supported for <code>ARM64</code> and Windows-based containers on Fargate. A job queue will be blocked if a Fargate <code>ARM64</code> or Windows job is submitted to a job queue with only Fargate Spot compute environments. However, you can attach both <code>FARGATE</code> and <code>FARGATE_SPOT</code> compute environments to the same job queue.</p> </note>"
         },
         "cpuArchitecture":{
           "shape":"String",
-          "documentation":"<p>The vCPU architecture. The default value is <code>X86_64</code>. Valid values are <code>X86_64</code> and <code>ARM64</code>.</p> <note> <p>This parameter must be set to <code>X86_64</code> for Windows containers.</p> </note>"
+          "documentation":"<p> The vCPU architecture. The default value is <code>X86_64</code>. Valid values are <code>X86_64</code> and <code>ARM64</code>.</p> <note> <p>This parameter must be set to <code>X86_64</code> for Windows containers.</p> </note> <note> <p>Fargate Spot is not supported for <code>ARM64</code> and Windows-based containers on Fargate. A job queue will be blocked if a Fargate <code>ARM64</code> or Windows job is submitted to a job queue with only Fargate Spot compute environments. However, you can attach both <code>FARGATE</code> and <code>FARGATE_SPOT</code> compute environments to the same job queue.</p> </note>"
         }
       },
-      "documentation":"<p>An object that represents the compute environment architecture for Batch jobs on Fargate.</p>"
+      "documentation":"<p> An object that represents the compute environment architecture for Batch jobs on Fargate. </p>"
     },
     "SchedulingPolicyDetail":{
       "type":"structure",
@@ -3165,7 +3193,7 @@
         },
         "schedulingPriorityOverride":{
           "shape":"Integer",
-          "documentation":"<p>The scheduling priority for the job. This only affects jobs in job queues with a fair share policy. Jobs with a higher scheduling priority are scheduled before jobs with a lower scheduling priority. This overrides any scheduling priority in the job definition.</p> <p>The minimum supported value is 0 and the maximum supported value is 9999.</p>"
+          "documentation":"<p>The scheduling priority for the job. This only affects jobs in job queues with a fair share policy. Jobs with a higher scheduling priority are scheduled before jobs with a lower scheduling priority. This overrides any scheduling priority in the job definition and works only within a single share identifier.</p> <p>The minimum supported value is 0 and the maximum supported value is 9999.</p>"
         },
         "arrayProperties":{
           "shape":"ArrayProperties",
@@ -3346,18 +3374,18 @@
       "members":{
         "hardLimit":{
           "shape":"Integer",
-          "documentation":"<p>The hard limit for the <code>ulimit</code> type.</p>"
+          "documentation":"<p>The hard limit for the <code>ulimit</code> type. </p>"
         },
         "name":{
           "shape":"String",
-          "documentation":"<p>The <code>type</code> of the <code>ulimit</code>.</p>"
+          "documentation":"<p>The <code>type</code> of the <code>ulimit</code>. Valid values are: <code>core</code> | <code>cpu</code> | <code>data</code> | <code>fsize</code> | <code>locks</code> | <code>memlock</code> | <code>msgqueue</code> | <code>nice</code> | <code>nofile</code> | <code>nproc</code> | <code>rss</code> | <code>rtprio</code> | <code>rttime</code> | <code>sigpending</code> | <code>stack</code>.</p>"
         },
         "softLimit":{
           "shape":"Integer",
           "documentation":"<p>The soft limit for the <code>ulimit</code> type.</p>"
         }
       },
-      "documentation":"<p>The <code>ulimit</code> settings to pass to the container.</p> <note> <p>This object isn't applicable to jobs that are running on Fargate resources.</p> </note>"
+      "documentation":"<p>The <code>ulimit</code> settings to pass to the container. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonECS/latest/APIReference/API_Ulimit.html\">Ulimit</a>.</p> <note> <p>This object isn't applicable to jobs that are running on Fargate resources.</p> </note>"
     },
     "Ulimits":{
       "type":"list",

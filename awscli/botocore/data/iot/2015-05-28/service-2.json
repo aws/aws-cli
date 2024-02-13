@@ -1714,7 +1714,7 @@
         {"shape":"UnauthorizedException"},
         {"shape":"ThrottlingException"}
       ],
-      "documentation":"<p>Returns a unique endpoint specific to the Amazon Web Services account making the call.</p> <p>Requires permission to access the <a href=\"https://docs.aws.amazon.com/service-authorization/latest/reference/list_awsiot.html#awsiot-actions-as-permissions\">DescribeEndpoint</a> action.</p>"
+      "documentation":"<p>Returns or creates a unique endpoint specific to the Amazon Web Services account making the call.</p> <note> <p>The first time <code>DescribeEndpoint</code> is called, an endpoint is created. All subsequent calls to <code>DescribeEndpoint</code> return the same endpoint.</p> </note> <p>Requires permission to access the <a href=\"https://docs.aws.amazon.com/service-authorization/latest/reference/list_awsiot.html#awsiot-actions-as-permissions\">DescribeEndpoint</a> action.</p>"
     },
     "DescribeEventConfigurations":{
       "name":"DescribeEventConfigurations",
@@ -2382,7 +2382,7 @@
         {"shape":"InternalFailureException"},
         {"shape":"InvalidRequestException"}
       ],
-      "documentation":"<p>Gets a registration code used to register a CA certificate with IoT.</p> <p>Requires permission to access the <a href=\"https://docs.aws.amazon.com/service-authorization/latest/reference/list_awsiot.html#awsiot-actions-as-permissions\">GetRegistrationCode</a> action.</p>"
+      "documentation":"<p>Gets a registration code used to register a CA certificate with IoT.</p> <p>IoT will create a registration code as part of this API call if the registration code doesn't exist or has been deleted. If you already have a registration code, this API call will return the same registration code.</p> <p>Requires permission to access the <a href=\"https://docs.aws.amazon.com/service-authorization/latest/reference/list_awsiot.html#awsiot-actions-as-permissions\">GetRegistrationCode</a> action.</p>"
     },
     "GetStatistics":{
       "name":"GetStatistics",
@@ -7011,6 +7011,10 @@
         "tlsConfig":{
           "shape":"TlsConfig",
           "documentation":"<p>An object that specifies the TLS configuration for a domain.</p>"
+        },
+        "serverCertificateConfig":{
+          "shape":"ServerCertificateConfig",
+          "documentation":"<p>The server certificate configuration.</p>"
         }
       }
     },
@@ -9486,6 +9490,10 @@
         "tlsConfig":{
           "shape":"TlsConfig",
           "documentation":"<p>An object that specifies the TLS configuration for a domain.</p>"
+        },
+        "serverCertificateConfig":{
+          "shape":"ServerCertificateConfig",
+          "documentation":"<p>The server certificate configuration.</p>"
         }
       }
     },
@@ -10910,6 +10918,7 @@
       },
       "documentation":"<p>Parameters used when defining a mitigation action that enable Amazon Web Services IoT Core logging.</p>"
     },
+    "EnableOCSPCheck":{"type":"boolean"},
     "EnableTopicRuleRequest":{
       "type":"structure",
       "required":["ruleName"],
@@ -17621,6 +17630,16 @@
       "max":1,
       "min":0
     },
+    "ServerCertificateConfig":{
+      "type":"structure",
+      "members":{
+        "enableOCSPCheck":{
+          "shape":"EnableOCSPCheck",
+          "documentation":"<p>A Boolean value that indicates whether Online Certificate Status Protocol (OCSP) server certificate check is enabled or not.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/iot/latest/developerguide/iot-custom-domain-ocsp-config.html\">Configuring OCSP server-certificate stapling in domain configuration</a> from Amazon Web Services IoT Core Developer Guide.</p>"
+        }
+      },
+      "documentation":"<p>The server certificate configuration.</p>"
+    },
     "ServerCertificateStatus":{
       "type":"string",
       "enum":[
@@ -19819,6 +19838,10 @@
         "tlsConfig":{
           "shape":"TlsConfig",
           "documentation":"<p>An object that specifies the TLS configuration for a domain.</p>"
+        },
+        "serverCertificateConfig":{
+          "shape":"ServerCertificateConfig",
+          "documentation":"<p>The server certificate configuration.</p>"
         }
       }
     },

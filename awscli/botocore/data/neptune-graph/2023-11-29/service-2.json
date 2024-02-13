@@ -225,7 +225,7 @@
         {"shape":"AccessDeniedException"},
         {"shape":"InternalServerException"}
       ],
-      "documentation":"<p>Execute an openCypher query. Currently, the SDK does not support parameterized queries. If you want to make a parameterized query call, you can use an HTTP request. </p> <note> <p> Non-parametrized queries are not considered for plan caching. You can force plan caching with <code>planCache=enabled</code>. The plan cache will be reused only for the same exact query. Slight variations in the query will not be able to reuse the query plan cache. </p> </note>",
+      "documentation":"<p>Execute an openCypher query. Currently, the SDK does not support parameterized queries. If you want to make a parameterized query call, you can use an HTTP request. </p> <p> When invoking this operation in a Neptune Analytics cluster, the IAM user or role making the request must have a policy attached that allows one of the following IAM actions in that cluster, depending on the query: </p> <ul> <li> <p>neptune-graph:ReadDataViaQuery</p> </li> <li> <p>neptune-graph:WriteDataViaQuery</p> </li> <li> <p>neptune-graph:DeleteDataViaQuery</p> </li> </ul> <note> <p> Non-parametrized queries are not considered for plan caching. You can force plan caching with <code>planCache=enabled</code>. The plan cache will be reused only for the same exact query. Slight variations in the query will not be able to reuse the query plan cache. </p> </note>",
       "endpoint":{
         "hostPrefix":"{graphIdentifier}."
       },
@@ -353,7 +353,7 @@
         {"shape":"InternalServerException"},
         {"shape":"ResourceNotFoundException"}
       ],
-      "documentation":"<p>Retrieves the status of a specified query.</p>",
+      "documentation":"<p>Retrieves the status of a specified query.</p> <note> <p> When invoking this operation in a Neptune Analytics cluster, the IAM user or role making the request must have the <code>neptune-graph:GetQueryStatus</code> IAM action attached. </p> </note>",
       "endpoint":{
         "hostPrefix":"{graphIdentifier}."
       },
@@ -727,7 +727,7 @@
         },
         "publicConnectivity":{
           "shape":"Boolean",
-          "documentation":"<p>Specifies whether or not the graph can be reachable over the internet. All access to graphs IAM authenticated. (<code>true</code> to enable, or <code>false</code> to disable.</p>"
+          "documentation":"<p>Specifies whether or not the graph can be reachable over the internet. All access to graphs is IAM authenticated. (<code>true</code> to enable, or <code>false</code> to disable.</p>"
         },
         "kmsKeyIdentifier":{
           "shape":"KmsKeyArn",
@@ -793,7 +793,7 @@
         },
         "publicConnectivity":{
           "shape":"Boolean",
-          "documentation":"<p>Specifies whether or not the graph can be reachable over the internet. All access to graphs IAM authenticated.</p>"
+          "documentation":"<p>Specifies whether or not the graph can be reachable over the internet. All access to graphs is IAM authenticated.</p>"
         },
         "vectorSearchConfiguration":{
           "shape":"VectorSearchConfiguration",
@@ -898,7 +898,7 @@
         },
         "publicConnectivity":{
           "shape":"Boolean",
-          "documentation":"<p>Specifies whether or not the graph can be reachable over the internet. All access to graphs IAM authenticated. (<code>true</code> to enable, or <code>false</code> to disable).</p>"
+          "documentation":"<p>Specifies whether or not the graph can be reachable over the internet. All access to graphs is IAM authenticated. (<code>true</code> to enable, or <code>false</code> to disable).</p>"
         },
         "kmsKeyIdentifier":{
           "shape":"KmsKeyArn",
@@ -1220,6 +1220,17 @@
         }
       }
     },
+    "Document":{
+      "type":"structure",
+      "members":{
+      },
+      "document":true
+    },
+    "DocumentValuedMap":{
+      "type":"map",
+      "key":{"shape":"String"},
+      "value":{"shape":"Document"}
+    },
     "EdgeLabels":{
       "type":"list",
       "member":{"shape":"String"}
@@ -1269,6 +1280,10 @@
         "language":{
           "shape":"QueryLanguage",
           "documentation":"<p>The query language the query is written in. Currently only openCypher is supported.</p>"
+        },
+        "parameters":{
+          "shape":"DocumentValuedMap",
+          "documentation":"<p>The data parameters the query can use in JSON format. For example: {\"name\": \"john\", \"age\": 20}. (optional) </p>"
         },
         "planCache":{
           "shape":"PlanCacheType",
@@ -2505,7 +2520,7 @@
         },
         "publicConnectivity":{
           "shape":"Boolean",
-          "documentation":"<p>Specifies whether or not the graph can be reachable over the internet. All access to graphs IAM authenticated. (<code>true</code> to enable, or <code>false</code> to disable).</p>"
+          "documentation":"<p>Specifies whether or not the graph can be reachable over the internet. All access to graphs is IAM authenticated. (<code>true</code> to enable, or <code>false</code> to disable).</p>"
         }
       }
     },
@@ -2795,7 +2810,7 @@
         },
         "publicConnectivity":{
           "shape":"Boolean",
-          "documentation":"<p>Specifies whether or not the graph can be reachable over the internet. All access to graphs IAM authenticated. (<code>true</code> to enable, or <code>false</code> to disable.</p>"
+          "documentation":"<p>Specifies whether or not the graph can be reachable over the internet. All access to graphs is IAM authenticated. (<code>true</code> to enable, or <code>false</code> to disable.</p>"
         },
         "provisionedMemory":{
           "shape":"ProvisionedMemory",

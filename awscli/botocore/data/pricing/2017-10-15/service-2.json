@@ -27,6 +27,7 @@
         {"shape":"InvalidNextTokenException"},
         {"shape":"NotFoundException"},
         {"shape":"InternalErrorException"},
+        {"shape":"ThrottlingException"},
         {"shape":"ExpiredNextTokenException"}
       ],
       "documentation":"<p>Returns the metadata for one service or a list of the metadata for all services. Use this without a service code to get the service codes for all services. Use it with a service code, such as <code>AmazonEC2</code>, to get information specific to that service, such as the attribute names available for that service. For example, some of the attribute names available for EC2 are <code>volumeType</code>, <code>maxIopsVolume</code>, <code>operation</code>, <code>locationType</code>, and <code>instanceCapacity10xlarge</code>.</p>"
@@ -44,6 +45,7 @@
         {"shape":"InvalidNextTokenException"},
         {"shape":"NotFoundException"},
         {"shape":"InternalErrorException"},
+        {"shape":"ThrottlingException"},
         {"shape":"ExpiredNextTokenException"}
       ],
       "documentation":"<p>Returns a list of attribute values. Attributes are similar to the details in a Price List API offer file. For a list of available attributes, see <a href=\"https://docs.aws.amazon.com/awsaccountbilling/latest/aboutv2/reading-an-offer.html#pps-defs\">Offer File Definitions</a> in the <a href=\"https://docs.aws.amazon.com/awsaccountbilling/latest/aboutv2/billing-what-is.html\">Billing and Cost Management User Guide</a>.</p>"
@@ -60,7 +62,8 @@
         {"shape":"InvalidParameterException"},
         {"shape":"NotFoundException"},
         {"shape":"AccessDeniedException"},
-        {"shape":"InternalErrorException"}
+        {"shape":"InternalErrorException"},
+        {"shape":"ThrottlingException"}
       ],
       "documentation":"<p> <i> <b>This feature is in preview release and is subject to change. Your use of Amazon Web Services Price List API is subject to the Beta Service Participation terms of the <a href=\"https://aws.amazon.com/service-terms/\">Amazon Web Services Service Terms</a> (Section 1.10).</b> </i> </p> <p>This returns the URL that you can retrieve your Price List file from. This URL is based on the <code>PriceListArn</code> and <code>FileFormat</code> that you retrieve from the <a href=\"https://docs.aws.amazon.com/aws-cost-management/latest/APIReference/API_pricing_ListPriceLists.html\">ListPriceLists</a> response. </p>"
     },
@@ -77,6 +80,7 @@
         {"shape":"InvalidNextTokenException"},
         {"shape":"NotFoundException"},
         {"shape":"InternalErrorException"},
+        {"shape":"ThrottlingException"},
         {"shape":"ExpiredNextTokenException"}
       ],
       "documentation":"<p>Returns a list of all products that match the filter criteria.</p>"
@@ -95,6 +99,7 @@
         {"shape":"NotFoundException"},
         {"shape":"AccessDeniedException"},
         {"shape":"InternalErrorException"},
+        {"shape":"ThrottlingException"},
         {"shape":"ExpiredNextTokenException"}
       ],
       "documentation":"<p> <i> <b>This feature is in preview release and is subject to change. Your use of Amazon Web Services Price List API is subject to the Beta Service Participation terms of the <a href=\"https://aws.amazon.com/service-terms/\">Amazon Web Services Service Terms</a> (Section 1.10).</b> </i> </p> <p>This returns a list of Price List references that the requester if authorized to view, given a <code>ServiceCode</code>, <code>CurrencyCode</code>, and an <code>EffectiveDate</code>. Use without a <code>RegionCode</code> filter to list Price List references from all available Amazon Web Services Regions. Use with a <code>RegionCode</code> filter to get the Price List reference that's specific to a specific Amazon Web Services Region. You can use the <code>PriceListArn</code> from the response to get your preferred Price List files through the <a href=\"https://docs.aws.amazon.com/aws-cost-management/latest/APIReference/API_pricing_GetPriceListFileUrl.html\">GetPriceListFileUrl</a> API.</p>"
@@ -338,7 +343,8 @@
       },
       "documentation":"<p>An error on the server occurred during the processing of your request. Try again later.</p>",
       "exception":true,
-      "fault":true
+      "fault":true,
+      "retryable":{"throttling":false}
     },
     "InvalidNextTokenException":{
       "type":"structure",
@@ -443,7 +449,7 @@
       "type":"string",
       "max":2048,
       "min":18,
-      "pattern":"arn:[A-Za-z0-9][-.A-Za-z0-9]{0,62}:pricing:::price-list/[A-Za-z0-9_/.-]{1,1023}"
+      "pattern":"arn:[A-Za-z0-9][-.A-Za-z0-9]{0,62}:pricing:::price-list/[A-Za-z0-9+_/.-]{1,1023}"
     },
     "PriceListJsonItems":{
       "type":"list",
@@ -487,6 +493,15 @@
     },
     "String":{"type":"string"},
     "SynthesizedJsonPriceListJsonItem":{"type":"string"},
+    "ThrottlingException":{
+      "type":"structure",
+      "members":{
+        "Message":{"shape":"errorMessage"}
+      },
+      "documentation":"<p>You've made too many requests exceeding service quotas. </p>",
+      "exception":true,
+      "retryable":{"throttling":true}
+    },
     "errorMessage":{"type":"string"}
   },
   "documentation":"<p>The Amazon Web Services Price List API is a centralized and convenient way to programmatically query Amazon Web Services for services, products, and pricing information. The Amazon Web Services Price List uses standardized product attributes such as <code>Location</code>, <code>Storage Class</code>, and <code>Operating System</code>, and provides prices at the SKU level. You can use the Amazon Web Services Price List to do the following:</p> <ul> <li> <p>Build cost control and scenario planning tools</p> </li> <li> <p>Reconcile billing data</p> </li> <li> <p>Forecast future spend for budgeting purposes</p> </li> <li> <p>Provide cost benefit analysis that compare your internal workloads with Amazon Web Services</p> </li> </ul> <p>Use <code>GetServices</code> without a service code to retrieve the service codes for all Amazon Web Services, then <code>GetServices</code> with a service code to retrieve the attribute names for that service. After you have the service code and attribute names, you can use <code>GetAttributeValues</code> to see what values are available for an attribute. With the service code and an attribute name and value, you can use <code>GetProducts</code> to find specific products that you're interested in, such as an <code>AmazonEC2</code> instance, with a <code>Provisioned IOPS</code> <code>volumeType</code>.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/awsaccountbilling/latest/aboutv2/price-changes.html\">Using the Amazon Web Services Price List API</a> in the <i>Billing User Guide</i>.</p>"

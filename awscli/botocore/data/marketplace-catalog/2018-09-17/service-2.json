@@ -27,7 +27,7 @@
         {"shape":"ThrottlingException"},
         {"shape":"ValidationException"}
       ],
-      "documentation":"<p>Returns metadata and content for multiple entities.</p>"
+      "documentation":"<p>Returns metadata and content for multiple entities. This is the Batch version of the <code>DescribeEntity</code> API and uses the same IAM permission action as <code>DescribeEntity</code> API.</p>"
     },
     "CancelChangeSet":{
       "name":"CancelChangeSet",
@@ -296,7 +296,7 @@
           "documentation":"<p>The visibility of the AMI product.</p>"
         }
       },
-      "documentation":"<p>Object containing all the filter fields for AMI products. Client can add a maximum of 8 filters in a single <code>ListEntities</code> request.</p>"
+      "documentation":"<p>Object containing all the filter fields for AMI products. Client can add only one wildcard filter and a maximum of 8 filters in a single <code>ListEntities</code> request.</p>"
     },
     "AmiProductLastModifiedDateFilter":{
       "type":"structure",
@@ -685,7 +685,7 @@
           "documentation":"<p>The visibility of the container product.</p>"
         }
       },
-      "documentation":"<p>Object containing all the filter fields for container products. Client can add a maximum of 8 filters in a single <code>ListEntities</code> request.</p>"
+      "documentation":"<p>Object containing all the filter fields for container products. Client can add only one wildcard filter and a maximum of 8 filters in a single <code>ListEntities</code> request.</p>"
     },
     "ContainerProductLastModifiedDateFilter":{
       "type":"structure",
@@ -841,7 +841,7 @@
           "documentation":"<p>The last date on which the data product was modified.</p>"
         }
       },
-      "documentation":"<p>Object containing all the filter fields for data products. Client can add a maximum of 8 filters in a single <code>ListEntities</code> request.</p>"
+      "documentation":"<p>Object containing all the filter fields for data products. Client can add only one wildcard filter and a maximum of 8 filters in a single <code>ListEntities</code> request.</p>"
     },
     "DataProductLastModifiedDateFilter":{
       "type":"structure",
@@ -1014,6 +1014,10 @@
         "ChangeSetName":{
           "shape":"ChangeSetName",
           "documentation":"<p>The optional name provided in the <code>StartChangeSet</code> request. If you do not provide a name, one is set by default.</p>"
+        },
+        "Intent":{
+          "shape":"Intent",
+          "documentation":"<p>The optional intent provided in the <code>StartChangeSet</code> request. If you do not provide an intent, <code>APPLY</code> is set by default.</p>"
         },
         "StartTime":{
           "shape":"DateTimeISO8601",
@@ -1400,6 +1404,13 @@
       "min":1,
       "pattern":"^[\\w\\-@]+$"
     },
+    "Intent":{
+      "type":"string",
+      "enum":[
+        "VALIDATE",
+        "APPLY"
+      ]
+    },
     "InternalServiceException":{
       "type":"structure",
       "members":{
@@ -1674,7 +1685,7 @@
           "documentation":"<p>Allows filtering on the <code>LastModifiedDate</code> of an offer.</p>"
         }
       },
-      "documentation":"<p>A filter for offers entity.</p>"
+      "documentation":"<p>Object containing all the filter fields for offers entity. Client can add only one wildcard filter and a maximum of 8 filters in a single <code>ListEntities</code> request.</p>"
     },
     "OfferLastModifiedDateFilter":{
       "type":"structure",
@@ -2069,7 +2080,7 @@
           "documentation":"<p>Allows filtering on the <code>LastModifiedDate</code> of a ResaleAuthorization.</p>"
         }
       },
-      "documentation":"<p>A filter for ResaleAuthorization entity.</p>"
+      "documentation":"<p>Object containing all the filter fields for resale authorization entity. Client can add only one wildcard filter and a maximum of 8 filters in a single <code>ListEntities</code> request.</p>"
     },
     "ResaleAuthorizationLastModifiedDateFilter":{
       "type":"structure",
@@ -2541,7 +2552,7 @@
           "documentation":"<p>The last date on which the SaaS product was modified.</p>"
         }
       },
-      "documentation":"<p>Object containing all the filter fields for SaaS products. Client can add a maximum of 8 filters in a single <code>ListEntities</code> request.</p>"
+      "documentation":"<p>Object containing all the filter fields for SaaS products. Client can add only one wildcard filter and a maximum of 8 filters in a single <code>ListEntities</code> request.</p>"
     },
     "SaaSProductLastModifiedDateFilter":{
       "type":"structure",
@@ -2719,6 +2730,10 @@
         "ChangeSetTags":{
           "shape":"TagList",
           "documentation":"<p>A list of objects specifying each key name and value for the <code>ChangeSetTags</code> property.</p>"
+        },
+        "Intent":{
+          "shape":"Intent",
+          "documentation":"<p>The intent related to the request. The default is <code>APPLY</code>. To test your request before applying changes to your entities, use <code>VALIDATE</code>. This feature is currently available for adding versions to single-AMI products. For more information, see <a href=\"https://docs.aws.amazon.com/marketplace-catalog/latest/api-reference/ami-products.html#ami-add-version\">Add a new version</a>.</p>"
         }
       }
     },

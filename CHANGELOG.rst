@@ -2,6 +2,14 @@
 CHANGELOG
 =========
 
+1.32.42
+=======
+
+* api-change:``controltower``: Adds support for new Baseline and EnabledBaseline APIs for automating multi-account governance.
+* api-change:``lookoutequipment``: This feature allows customers to see pointwise model diagnostics results for their models.
+* api-change:``qbusiness``: This release adds the metadata-boosting feature, which allows customers to easily fine-tune the underlying ranking of retrieved RAG passages in order to optimize Q&A answer relevance. It also adds new feedback reasons for the PutFeedback API.
+
+
 1.32.41
 =======
 

@@ -903,8 +903,6 @@ class CommandArchitecture(object):
         """
         if self.needs_filegenerator():
             self.instructions.append('file_generator')
-            if self.parameters.get('filters'):
-                self.instructions.append('filters')
             if self.cmd == 'sync':
                 self.instructions.append('comparator')
             self.instructions.append('file_info_builder')
@@ -977,17 +975,22 @@ class CommandArchitecture(object):
         result_queue = queue.Queue()
         operation_name = cmd_translation[paths_type]
 
+        file_filter = (create_filter(self.parameters)
+                       if 'filters' in self.parameters else None)
+
         fgen_kwargs = {
             'client': self._source_client, 'operation_name': operation_name,
             'follow_symlinks': self.parameters['follow_symlinks'],
             'page_size': self.parameters['page_size'],
             'result_queue': result_queue,
+            'file_filter': file_filter,
         }
         rgen_kwargs = {
             'client': self._client, 'operation_name': '',
             'follow_symlinks': self.parameters['follow_symlinks'],
             'page_size': self.parameters['page_size'],
             'result_queue': result_queue,
+            'file_filter': file_filter,
         }
 
         fgen_request_parameters = \
@@ -1026,8 +1029,6 @@ class CommandArchitecture(object):
             command_dict = {'setup': [files, rev_files],
                             'file_generator': [file_generator,
                                                rev_generator],
-                            'filters': [create_filter(self.parameters),
-                                        create_filter(self.parameters)],
                             'comparator': [Comparator(**sync_strategies)],
                             'file_info_builder': [file_info_builder],
                             's3_handler': [s3_transfer_handler]}
@@ -1037,19 +1038,16 @@ class CommandArchitecture(object):
         elif self.cmd == 'cp':
             command_dict = {'setup': [files],
                             'file_generator': [file_generator],
-                            'filters': [create_filter(self.parameters)],
                             'file_info_builder': [file_info_builder],
                             's3_handler': [s3_transfer_handler]}
         elif self.cmd == 'rm':
             command_dict = {'setup': [files],
                             'file_generator': [file_generator],
-                            'filters': [create_filter(self.parameters)],
                             'file_info_builder': [file_info_builder],
                             's3_handler': [s3_transfer_handler]}
         elif self.cmd == 'mv':
             command_dict = {'setup': [files],
                             'file_generator': [file_generator],
-                            'filters': [create_filter(self.parameters)],
                             'file_info_builder': [file_info_builder],
                             's3_handler': [s3_transfer_handler]}
 

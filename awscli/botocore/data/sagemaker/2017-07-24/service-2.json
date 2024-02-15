@@ -3476,7 +3476,21 @@
         {"shape":"ResourceNotFound"},
         {"shape":"ConflictException"}
       ],
-      "documentation":"<p>Update a SageMaker HyperPod cluster.</p>"
+      "documentation":"<p>Updates a SageMaker HyperPod cluster.</p>"
+    },
+    "UpdateClusterSoftware":{
+      "name":"UpdateClusterSoftware",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"UpdateClusterSoftwareRequest"},
+      "output":{"shape":"UpdateClusterSoftwareResponse"},
+      "errors":[
+        {"shape":"ResourceNotFound"},
+        {"shape":"ConflictException"}
+      ],
+      "documentation":"<p>Updates the platform software of a SageMaker HyperPod cluster for security patching. To learn how to use this API, see <a href=\"https://docs.aws.amazon.com/sagemaker/latest/dg/sagemaker-hyperpod-operate.html#sagemaker-hyperpod-operate-cli-command-update-cluster-software\">Update the SageMaker HyperPod platform software of a cluster</a>.</p>"
     },
     "UpdateCodeRepository":{
       "name":"UpdateCodeRepository",
@@ -25853,7 +25867,7 @@
           "documentation":"<p>The path of the S3 object that contains the model artifacts. For example, <code>s3://bucket-name/keynameprefix/model.tar.gz</code>.</p>"
         }
       },
-      "documentation":"<p>Provides information about the location that is configured for storing model artifacts. </p> <p>Model artifacts are the output that results from training a model, and typically consist of trained parameters, a model definition that describes how to compute inferences, and other metadata.</p>"
+      "documentation":"<p>Provides information about the location that is configured for storing model artifacts. </p> <p>Model artifacts are outputs that result from training a model. They typically consist of trained parameters, a model definition that describes how to compute inferences, and other metadata. A SageMaker container stores your trained model artifacts in the <code>/opt/ml/model</code> directory. After training has completed, by default, these artifacts are uploaded to your Amazon S3 bucket as compressed files.</p>"
     },
     "ModelBiasAppSpecification":{
       "type":"structure",
@@ -35779,6 +35793,26 @@
         "ClusterArn":{
           "shape":"ClusterArn",
           "documentation":"<p>The Amazon Resource Name (ARN) of the updated SageMaker HyperPod cluster.</p>"
+        }
+      }
+    },
+    "UpdateClusterSoftwareRequest":{
+      "type":"structure",
+      "required":["ClusterName"],
+      "members":{
+        "ClusterName":{
+          "shape":"ClusterNameOrArn",
+          "documentation":"<p>Specify the name or the Amazon Resource Name (ARN) of the SageMaker HyperPod cluster you want to update for security patching.</p>"
+        }
+      }
+    },
+    "UpdateClusterSoftwareResponse":{
+      "type":"structure",
+      "required":["ClusterArn"],
+      "members":{
+        "ClusterArn":{
+          "shape":"ClusterArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the SageMaker HyperPod cluster being updated for security patching.</p>"
         }
       }
     },

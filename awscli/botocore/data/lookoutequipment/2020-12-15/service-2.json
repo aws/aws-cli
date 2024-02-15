@@ -1236,6 +1236,10 @@
         "OffCondition":{
           "shape":"OffCondition",
           "documentation":"<p>Indicates that the asset associated with this sensor has been shut off. As long as this condition is met, Lookout for Equipment will not use data from this asset for training, evaluation, or inference.</p>"
+        },
+        "ModelDiagnosticsOutputConfiguration":{
+          "shape":"ModelDiagnosticsOutputConfiguration",
+          "documentation":"<p>The Amazon S3 location where you want Amazon Lookout for Equipment to save the pointwise model diagnostics. You must also specify the <code>RoleArn</code> request parameter.</p>"
         }
       }
     },
@@ -1401,7 +1405,7 @@
       "type":"string",
       "max":2048,
       "min":20,
-      "pattern":"arn:aws(-[^:]+)?:lookoutequipment:[a-zA-Z0-9\\-]*:[0-9]{12}:dataset\\/.+"
+      "pattern":"arn:aws(-[^:]+)?:lookoutequipment:[a-zA-Z0-9\\-]*:[0-9]{12}:dataset\\/[0-9a-zA-Z_-]{1,200}\\/.+"
     },
     "DatasetIdentifier":{
       "type":"string",
@@ -1658,7 +1662,7 @@
         },
         "IngestedFilesSummary":{
           "shape":"IngestedFilesSummary",
-          "documentation":"<p> IngestedFilesSummary associated with the given dataset for the latest successful associated ingestion job id. </p>"
+          "documentation":"<p>IngestedFilesSummary associated with the given dataset for the latest successful associated ingestion job id. </p>"
         },
         "RoleArn":{
           "shape":"IamRoleArn",
@@ -2021,6 +2025,10 @@
         "RetrainingSchedulerStatus":{
           "shape":"RetrainingSchedulerStatus",
           "documentation":"<p>Indicates the status of the retraining scheduler. </p>"
+        },
+        "ModelDiagnosticsOutputConfiguration":{
+          "shape":"ModelDiagnosticsOutputConfiguration",
+          "documentation":"<p>Configuration information for the model's pointwise model diagnostics.</p>"
         }
       }
     },
@@ -2165,6 +2173,14 @@
         "AutoPromotionResultReason":{
           "shape":"AutoPromotionResultReason",
           "documentation":"<p>Indicates the reason for the <code>AutoPromotionResult</code>. For example, a model might not be promoted if its performance was worse than the active version, if there was an error during training, or if the retraining scheduler was using <code>MANUAL</code> promote mode. The model will be promoted in <code>MANAGED</code> promote mode if the performance is better than the previous model. </p>"
+        },
+        "ModelDiagnosticsOutputConfiguration":{
+          "shape":"ModelDiagnosticsOutputConfiguration",
+          "documentation":"<p>The Amazon S3 location where Amazon Lookout for Equipment saves the pointwise model diagnostics for the model version.</p>"
+        },
+        "ModelDiagnosticsResultsObject":{
+          "shape":"S3Object",
+          "documentation":"<p>The Amazon S3 output prefix for where Lookout for Equipment saves the pointwise model diagnostics for the model version.</p>"
         }
       }
     },
@@ -2766,7 +2782,7 @@
         },
         "SensorsWithShortDateRange":{
           "shape":"SensorsWithShortDateRange",
-          "documentation":"<p> Parameter that describes the total number of sensors that have a short date range of less than 90 days of data overall. </p>"
+          "documentation":"<p> Parameter that describes the total number of sensors that have a short date range of less than 14 days of data overall. </p>"
         }
       },
       "documentation":"<p> Entity that comprises aggregated information on sensors having insufficient data. </p>"
@@ -3109,7 +3125,7 @@
         },
         "InferenceExecutionSummaries":{
           "shape":"InferenceExecutionSummaries",
-          "documentation":"<p>Provides an array of information about the individual inference executions returned from the <code>ListInferenceExecutions</code> operation, including model used, inference scheduler, data configuration, and so on. </p>"
+          "documentation":"<p>Provides an array of information about the individual inference executions returned from the <code>ListInferenceExecutions</code> operation, including model used, inference scheduler, data configuration, and so on. </p> <note> <p>If you don't supply the <code>InferenceSchedulerName</code> request parameter, or if you supply the name of an inference scheduler that doesn't exist, <code>ListInferenceExecutions</code> returns an empty array in <code>InferenceExecutionSummaries</code>.</p> </note>"
         }
       }
     },
@@ -3187,7 +3203,7 @@
       "members":{
         "LabelGroupName":{
           "shape":"LabelGroupName",
-          "documentation":"<p> Retruns the name of the label group. </p>"
+          "documentation":"<p> Returns the name of the label group. </p>"
         },
         "IntervalStartTime":{
           "shape":"Timestamp",
@@ -3224,7 +3240,7 @@
         },
         "LabelSummaries":{
           "shape":"LabelSummaries",
-          "documentation":"<p> A summary of the items in the label group. </p>"
+          "documentation":"<p> A summary of the items in the label group. </p> <note> <p>If you don't supply the <code>LabelGroupName</code> request parameter, or if you supply the name of a label group that doesn't exist, <code>ListLabels</code> returns an empty array in <code>LabelSummaries</code>.</p> </note>"
         }
       }
     },
@@ -3279,7 +3295,7 @@
         },
         "ModelVersionSummaries":{
           "shape":"ModelVersionSummaries",
-          "documentation":"<p>Provides information on the specified model version, including the created time, model and dataset ARNs, and status.</p>"
+          "documentation":"<p>Provides information on the specified model version, including the created time, model and dataset ARNs, and status.</p> <note> <p>If you don't supply the <code>ModelName</code> request parameter, or if you supply the name of a model that doesn't exist, <code>ListModelVersions</code> returns an empty array in <code>ModelVersionSummaries</code>. </p> </note>"
         }
       }
     },
@@ -3458,6 +3474,36 @@
       "min":20,
       "pattern":"arn:aws(-[^:]+)?:lookoutequipment:[a-zA-Z0-9\\-]*:[0-9]{12}:model\\/.+"
     },
+    "ModelDiagnosticsOutputConfiguration":{
+      "type":"structure",
+      "required":["S3OutputConfiguration"],
+      "members":{
+        "S3OutputConfiguration":{
+          "shape":"ModelDiagnosticsS3OutputConfiguration",
+          "documentation":"<p>The Amazon S3 location for the pointwise model diagnostics. </p>"
+        },
+        "KmsKeyId":{
+          "shape":"NameOrArn",
+          "documentation":"<p>The Amazon Web Services Key Management Service (KMS) key identifier to encrypt the pointwise model diagnostics files.</p>"
+        }
+      },
+      "documentation":"<p>Output configuration information for the pointwise model diagnostics for an Amazon Lookout for Equipment model.</p>"
+    },
+    "ModelDiagnosticsS3OutputConfiguration":{
+      "type":"structure",
+      "required":["Bucket"],
+      "members":{
+        "Bucket":{
+          "shape":"S3Bucket",
+          "documentation":"<p>The name of the Amazon S3 bucket where the pointwise model diagnostics are located. You must be the owner of the Amazon S3 bucket. </p>"
+        },
+        "Prefix":{
+          "shape":"S3Prefix",
+          "documentation":"<p>The Amazon S3 prefix for the location of the pointwise model diagnostics. The prefix specifies the folder and evaluation result file name. (<code>bucket</code>).</p> <p>When you call <code>CreateModel</code> or <code>UpdateModel</code>, specify the path within the bucket that you want Lookout for Equipment to save the model to. During training, Lookout for Equipment creates the model evaluation model as a compressed JSON file with the name <code>model_diagnostics_results.json.gz</code>.</p> <p>When you call <code>DescribeModel</code> or <code>DescribeModelVersion</code>, <code>prefix</code> contains the file path and filename of the model evaluation file. </p>"
+        }
+      },
+      "documentation":"<p>The Amazon S3 location for the pointwise model diagnostics for an Amazon Lookout for Equipment model. </p>"
+    },
     "ModelMetrics":{
       "type":"string",
       "max":50000,
@@ -3543,7 +3589,8 @@
         "RetrainingSchedulerStatus":{
           "shape":"RetrainingSchedulerStatus",
           "documentation":"<p>Indicates the status of the retraining scheduler. </p>"
-        }
+        },
+        "ModelDiagnosticsOutputConfiguration":{"shape":"ModelDiagnosticsOutputConfiguration"}
       },
       "documentation":"<p>Provides information about the specified machine learning model, including dataset and model names and ARNs, as well as status. </p>"
     },
@@ -3555,7 +3602,7 @@
       "type":"string",
       "max":2048,
       "min":20,
-      "pattern":"^arn:aws(-[^:]+)?:lookoutequipment:[a-zA-Z0-9\\-]*:[0-9]{12}:model\\/.+\\/.+\\/model-version\\/[0-9]{1,}$"
+      "pattern":"^arn:aws(-[^:]+)?:lookoutequipment:[a-zA-Z0-9\\-]*:[0-9]{12}:model\\/[0-9a-zA-Z_-]{1,200}\\/.+\\/model-version\\/[0-9]{1,}$"
     },
     "ModelVersionSourceType":{
       "type":"string",
@@ -3888,7 +3935,7 @@
       "members":{
         "AffectedSensorCount":{
           "shape":"Integer",
-          "documentation":"<p> Indicates the number of sensors that have less than 90 days of data. </p>"
+          "documentation":"<p> Indicates the number of sensors that have less than 14 days of data. </p>"
         }
       },
       "documentation":"<p> Entity that comprises information on sensors that have shorter date range. </p>"
@@ -4303,6 +4350,10 @@
         "RoleArn":{
           "shape":"IamRoleArn",
           "documentation":"<p>The ARN of the model to update.</p>"
+        },
+        "ModelDiagnosticsOutputConfiguration":{
+          "shape":"ModelDiagnosticsOutputConfiguration",
+          "documentation":"<p>The Amazon S3 location where you want Amazon Lookout for Equipment to save the pointwise model diagnostics for the model. You must also specify the <code>RoleArn</code> request parameter.</p>"
         }
       }
     },

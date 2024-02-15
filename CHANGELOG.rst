@@ -2,6 +2,21 @@
 CHANGELOG
 =========
 
+1.32.43
+=======
+
+* api-change:``artifact``: This is the initial SDK release for AWS Artifact. AWS Artifact provides on-demand access to compliance and third-party compliance reports. This release includes access to List and Get reports, along with their metadata. This release also includes access to AWS Artifact notifications settings.
+* api-change:``codepipeline``: Add ability to override timeout on action level.
+* api-change:``detective``: Doc only updates for content enhancement
+* api-change:``guardduty``: Marked fields IpAddressV4, PrivateIpAddress, Email as Sensitive.
+* api-change:``healthlake``: This release adds a new response parameter, JobProgressReport, to the DescribeFHIRImportJob and ListFHIRImportJobs API operation. JobProgressReport provides details on the progress of the import job on the server.
+* api-change:``opensearch``: Adds additional supported instance types.
+* api-change:``polly``: Amazon Polly adds 1 new voice - Burcu (tr-TR)
+* api-change:``sagemaker``: This release adds a new API UpdateClusterSoftware for SageMaker HyperPod. This API allows users to patch HyperPod clusters with latest platform softwares.
+* api-change:``secretsmanager``: Doc only update for Secrets Manager
+* api-change:``endpoint-rules``: Update endpoint-rules command to latest version
+
+
 1.32.42
 =======
 

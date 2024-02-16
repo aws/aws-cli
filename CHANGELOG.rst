@@ -2,6 +2,17 @@
 CHANGELOG
 =========
 
+1.32.44
+=======
+
+* api-change:``connectparticipant``: Doc only update to GetTranscript API reference guide to inform users about presence of events in the chat transcript.
+* api-change:``emr``: adds fine grained control over Unhealthy Node Replacement to Amazon ElasticMapReduce
+* api-change:``firehose``: This release adds support for Data Message Extraction for decompressed CloudWatch logs, and to use a custom file extension or time zone for S3 destinations.
+* api-change:``lambda``: Documentation-only updates for Lambda to clarify a number of existing actions and properties.
+* api-change:``rds``: Doc only update for a valid option in DB parameter group
+* api-change:``sns``: This release marks phone numbers as sensitive inputs.
+
+
 1.32.43
 =======
 

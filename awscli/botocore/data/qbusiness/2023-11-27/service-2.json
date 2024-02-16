@@ -131,7 +131,7 @@
         {"shape":"AccessDeniedException"},
         {"shape":"ServiceQuotaExceededException"}
       ],
-      "documentation":"<p>Creates an Amazon Q index.</p> <p>To determine if index creation has completed, check the <code>Status</code> field returned from a call to <code>DescribeIndex</code>. The <code>Status</code> field is set to <code>ACTIVE</code> when the index is ready to use.</p> <p>Once the index is active, you can index your documents using the <a href=\"https://docs.aws.amazon.com/enterpriseq/latest/APIReference/API_BatchPutDocument.html\"> <code>BatchPutDocument</code> </a> API or the <a href=\"https://docs.aws.amazon.com/enterpriseq/latest/APIReference/API_CreateDataSource.html\"> <code>CreateDataSource</code> </a> API.</p>"
+      "documentation":"<p>Creates an Amazon Q index.</p> <p>To determine if index creation has completed, check the <code>Status</code> field returned from a call to <code>DescribeIndex</code>. The <code>Status</code> field is set to <code>ACTIVE</code> when the index is ready to use.</p> <p>Once the index is active, you can index your documents using the <a href=\"https://docs.aws.amazon.com/amazonq/latest/api-reference/API_BatchPutDocument.html\"> <code>BatchPutDocument</code> </a> API or the <a href=\"https://docs.aws.amazon.com/amazonq/latest/api-reference/API_CreateDataSource.html\"> <code>CreateDataSource</code> </a> API.</p>"
     },
     "CreatePlugin":{
       "name":"CreatePlugin",
@@ -1455,7 +1455,7 @@
           "documentation":"<p> Performs a logical <code>OR</code> operation on all supplied filters. </p>"
         }
       },
-      "documentation":"<p>Enables filtering of Amazon Q web experience responses based on document attributes or metadata fields.</p>"
+      "documentation":"<p>Enables filtering of responses based on document attributes or metadata fields.</p>"
     },
     "AttributeFilters":{
       "type":"list",
@@ -1622,6 +1622,12 @@
     "Boolean":{
       "type":"boolean",
       "box":true
+    },
+    "BoostingDurationInSeconds":{
+      "type":"long",
+      "box":true,
+      "max":999999999,
+      "min":0
     },
     "ChatSyncInput":{
       "type":"structure",
@@ -2351,6 +2357,21 @@
       "type":"list",
       "member":{"shape":"DataSource"}
     },
+    "DateAttributeBoostingConfiguration":{
+      "type":"structure",
+      "required":["boostingLevel"],
+      "members":{
+        "boostingDurationInSeconds":{
+          "shape":"BoostingDurationInSeconds",
+          "documentation":"<p>Specifies the duration, in seconds, of a boost applies to a <code>DATE</code> type document attribute.</p>"
+        },
+        "boostingLevel":{
+          "shape":"DocumentAttributeBoostingLevel",
+          "documentation":"<p>Specifies how much a document attribute is boosted.</p>"
+        }
+      },
+      "documentation":"<p>Provides information on boosting <code>DATE</code> type document attributes.</p> <p>For more information on how boosting document attributes work in Amazon Q, see <a href=\"https://docs.aws.amazon.com/amazonq/latest/business-use-dg/metadata-boosting.html\">Boosting using document attributes</a>.</p>"
+    },
     "DeleteApplicationRequest":{
       "type":"structure",
       "required":["applicationId"],
@@ -2694,6 +2715,45 @@
       },
       "documentation":"<p>A document attribute or metadata field.</p>"
     },
+    "DocumentAttributeBoostingConfiguration":{
+      "type":"structure",
+      "members":{
+        "dateConfiguration":{
+          "shape":"DateAttributeBoostingConfiguration",
+          "documentation":"<p>Provides information on boosting <code>DATE</code> type document attributes.</p>"
+        },
+        "numberConfiguration":{
+          "shape":"NumberAttributeBoostingConfiguration",
+          "documentation":"<p>Provides information on boosting <code>NUMBER</code> type document attributes.</p>"
+        },
+        "stringConfiguration":{
+          "shape":"StringAttributeBoostingConfiguration",
+          "documentation":"<p>Provides information on boosting <code>STRING</code> type document attributes.</p>"
+        },
+        "stringListConfiguration":{
+          "shape":"StringListAttributeBoostingConfiguration",
+          "documentation":"<p>Provides information on boosting <code>STRING_LIST</code> type document attributes.</p>"
+        }
+      },
+      "documentation":"<p>Provides information on boosting supported Amazon Q document attribute types. When an end user chat query matches document attributes that have been boosted, Amazon Q prioritizes generating responses from content that matches the boosted document attributes.</p> <note> <p>For <code>STRING</code> and <code>STRING_LIST</code> type document attributes to be used for boosting on the console and the API, they must be enabled for search using the <a href=\"https://docs.aws.amazon.com/amazonq/latest/api-reference/API_DocumentAttributeConfiguration.html\">DocumentAttributeConfiguration</a> object of the <a href=\"https://docs.aws.amazon.com/amazonq/latest/api-reference/API_UpdateIndex.html\">UpdateIndex</a> API. If you haven't enabled searching on these attributes, you can't boost attributes of these data types on either the console or the API.</p> </note> <p>For more information on how boosting document attributes work in Amazon Q, see <a href=\"https://docs.aws.amazon.com/amazonq/latest/business-use-dg/metadata-boosting.html\">Boosting using document attributes</a>.</p>",
+      "union":true
+    },
+    "DocumentAttributeBoostingLevel":{
+      "type":"string",
+      "enum":[
+        "NONE",
+        "LOW",
+        "MEDIUM",
+        "HIGH",
+        "VERY_HIGH"
+      ]
+    },
+    "DocumentAttributeBoostingOverrideMap":{
+      "type":"map",
+      "key":{"shape":"DocumentAttributeKey"},
+      "value":{"shape":"DocumentAttributeBoostingConfiguration"},
+      "min":1
+    },
     "DocumentAttributeCondition":{
       "type":"structure",
       "required":[
@@ -2711,7 +2771,7 @@
         },
         "value":{"shape":"DocumentAttributeValue"}
       },
-      "documentation":"<p>The condition used for the target document attribute or metadata field when ingesting documents into Amazon Q. You use this with <a href=\"https://docs.aws.amazon.com/enterpriseq/latest/APIReference/API_DocumentAttributeTarget.html\"> <code>DocumentAttributeTarget</code> </a> to apply the condition.</p> <p>For example, you can create the 'Department' target field and have it prefill department names associated with the documents based on information in the 'Source_URI' field. Set the condition that if the 'Source_URI' field contains 'financial' in its URI value, then prefill the target field 'Department' with the target value 'Finance' for the document.</p> <p>Amazon Q can't create a target field if it has not already been created as an index field. After you create your index field, you can create a document metadata field using <code>DocumentAttributeTarget</code>. Amazon Q then will map your newly created metadata field to your index field.</p>"
+      "documentation":"<p>The condition used for the target document attribute or metadata field when ingesting documents into Amazon Q. You use this with <a href=\"https://docs.aws.amazon.com/amazonq/latest/api-reference/API_DocumentAttributeTarget.html\"> <code>DocumentAttributeTarget</code> </a> to apply the condition.</p> <p>For example, you can create the 'Department' target field and have it prefill department names associated with the documents based on information in the 'Source_URI' field. Set the condition that if the 'Source_URI' field contains 'financial' in its URI value, then prefill the target field 'Department' with the target value 'Finance' for the document.</p> <p>Amazon Q can't create a target field if it has not already been created as an index field. After you create your index field, you can create a document metadata field using <code>DocumentAttributeTarget</code>. Amazon Q then will map your newly created metadata field to your index field.</p>"
     },
     "DocumentAttributeConfiguration":{
       "type":"structure",
@@ -2761,7 +2821,7 @@
         },
         "value":{"shape":"DocumentAttributeValue"}
       },
-      "documentation":"<p>The target document attribute or metadata field you want to alter when ingesting documents into Amazon Q.</p> <p>For example, you can delete all customer identification numbers associated with the documents, stored in the document metadata field called 'Customer_ID' by setting the target key as 'Customer_ID' and the deletion flag to <code>TRUE</code>. This removes all customer ID values in the field 'Customer_ID'. This would scrub personally identifiable information from each document's metadata.</p> <p>Amazon Q can't create a target field if it has not already been created as an index field. After you create your index field, you can create a document metadata field using <a href=\"https://docs.aws.amazon.com/enterpriseq/latest/APIReference/API_DocumentAttributeTarget.html\"> <code>DocumentAttributeTarget</code> </a>. Amazon Q will then map your newly created document attribute to your index field.</p> <p>You can also use this with <a href=\"https://docs.aws.amazon.com/enterpriseq/latest/APIReference/API_DocumentAttributeCondition.html\"> <code>DocumentAttributeCondition</code> </a>.</p>"
+      "documentation":"<p>The target document attribute or metadata field you want to alter when ingesting documents into Amazon Q.</p> <p>For example, you can delete all customer identification numbers associated with the documents, stored in the document metadata field called 'Customer_ID' by setting the target key as 'Customer_ID' and the deletion flag to <code>TRUE</code>. This removes all customer ID values in the field 'Customer_ID'. This would scrub personally identifiable information from each document's metadata.</p> <p>Amazon Q can't create a target field if it has not already been created as an index field. After you create your index field, you can create a document metadata field using <a href=\"https://docs.aws.amazon.com/amazonq/latest/api-reference/API_DocumentAttributeTarget.html\"> <code>DocumentAttributeTarget</code> </a>. Amazon Q will then map your newly created document attribute to your index field.</p> <p>You can also use this with <a href=\"https://docs.aws.amazon.com/amazonq/latest/api-reference/API_DocumentAttributeCondition.html\"> <code>DocumentAttributeCondition</code> </a>.</p>"
     },
     "DocumentAttributeValue":{
       "type":"structure",
@@ -3639,7 +3699,7 @@
           "documentation":"<p>Stores the original, raw documents or the structured, parsed documents before and after altering them. For more information, see <a href=\"https://docs.aws.amazon.com/amazonq/latest/business-use-dg/cde-lambda-operations.html#cde-lambda-operations-data-contracts\">Data contracts for Lambda functions</a>.</p>"
         }
       },
-      "documentation":"<p>Provides the configuration information for invoking a Lambda function in Lambda to alter document metadata and content when ingesting documents into Amazon Q.</p> <p>You can configure your Lambda function using <a href=\"https://docs.aws.amazon.com/enterpriseq/latest/APIReference/API_CustomDocumentEnrichmentConfiguration.html\">PreExtractionHookConfiguration</a> if you want to apply advanced alterations on the original or raw documents.</p> <p>If you want to apply advanced alterations on the Amazon Q structured documents, you must configure your Lambda function using <a href=\"https://docs.aws.amazon.com/enterpriseq/latest/APIReference/API_CustomDocumentEnrichmentConfiguration.html\">PostExtractionHookConfiguration</a>.</p> <p>You can only invoke one Lambda function. However, this function can invoke other functions it requires.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/amazonq/latest/business-use-dg/custom-document-enrichment.html\">Custom document enrichment</a>. </p>"
+      "documentation":"<p>Provides the configuration information for invoking a Lambda function in Lambda to alter document metadata and content when ingesting documents into Amazon Q.</p> <p>You can configure your Lambda function using <a href=\"https://docs.aws.amazon.com/amazonq/latest/api-reference/API_DocumentEnrichmentConfiguration.html\">PreExtractionHookConfiguration</a> if you want to apply advanced alterations on the original or raw documents.</p> <p>If you want to apply advanced alterations on the Amazon Q structured documents, you must configure your Lambda function using <a href=\"https://docs.aws.amazon.com/amazonq/latest/api-reference/API_DocumentEnrichmentConfiguration.html\">PostExtractionHookConfiguration</a>.</p> <p>You can only invoke one Lambda function. However, this function can invoke other functions it requires.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/amazonq/latest/business-use-dg/custom-document-enrichment.html\">Custom document enrichment</a>. </p>"
     },
     "Index":{
       "type":"structure",
@@ -3744,7 +3804,7 @@
         },
         "target":{"shape":"DocumentAttributeTarget"}
       },
-      "documentation":"<p>Provides the configuration information for applying basic logic to alter document metadata and content when ingesting documents into Amazon Q.</p> <p>To apply advanced logic, to go beyond what you can do with basic logic, see <a href=\"https://docs.aws.amazon.com/enterpriseq/latest/APIReference/API_HookConfiguration.html\"> <code>HookConfiguration</code> </a>.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/amazonq/latest/business-use-dg/custom-document-enrichment.html\">Custom document enrichment</a>. </p>"
+      "documentation":"<p>Provides the configuration information for applying basic logic to alter document metadata and content when ingesting documents into Amazon Q.</p> <p>To apply advanced logic, to go beyond what you can do with basic logic, see <a href=\"https://docs.aws.amazon.com/amazonq/latest/api-reference/API_HookConfiguration.html\"> <code>HookConfiguration</code> </a>.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/amazonq/latest/business-use-dg/custom-document-enrichment.html\">Custom document enrichment</a>. </p>"
     },
     "InlineDocumentEnrichmentConfigurations":{
       "type":"list",
@@ -4567,7 +4627,11 @@
         "FACTUALLY_CORRECT",
         "COMPLETE",
         "RELEVANT_SOURCES",
-        "HELPFUL"
+        "HELPFUL",
+        "NOT_BASED_ON_DOCUMENTS",
+        "NOT_COMPLETE",
+        "NOT_CONCISE",
+        "OTHER"
       ]
     },
     "Messages":{
@@ -4582,6 +4646,10 @@
       "type":"structure",
       "required":["indexId"],
       "members":{
+        "boostingOverride":{
+          "shape":"DocumentAttributeBoostingOverrideMap",
+          "documentation":"<p>Overrides the default boosts applied by Amazon Q to supported document attribute data types.</p>"
+        },
         "indexId":{
           "shape":"IndexId",
           "documentation":"<p>The identifier for the Amazon Q index.</p>"
@@ -4593,6 +4661,28 @@
       "type":"string",
       "max":800,
       "min":1
+    },
+    "NumberAttributeBoostingConfiguration":{
+      "type":"structure",
+      "required":["boostingLevel"],
+      "members":{
+        "boostingLevel":{
+          "shape":"DocumentAttributeBoostingLevel",
+          "documentation":"<p>Specifies the duration, in seconds, of a boost applies to a <code>NUMBER</code> type document attribute.</p>"
+        },
+        "boostingType":{
+          "shape":"NumberAttributeBoostingType",
+          "documentation":"<p>Specifies how much a document attribute is boosted.</p>"
+        }
+      },
+      "documentation":"<p>Provides information on boosting <code>NUMBER</code> type document attributes.</p> <p>For more information on how boosting document attributes work in Amazon Q, see <a href=\"https://docs.aws.amazon.com/amazonq/latest/business-use-dg/metadata-boosting.html\">Boosting using document attributes</a>.</p>"
+    },
+    "NumberAttributeBoostingType":{
+      "type":"string",
+      "enum":[
+        "PRIORITIZE_LARGER_VALUES",
+        "PRIORITIZE_SMALLER_VALUES"
+      ]
     },
     "OAuth2ClientCredentialConfiguration":{
       "type":"structure",
@@ -4985,7 +5075,7 @@
         },
         "ruleType":{
           "shape":"RuleType",
-          "documentation":"<p>The type fo rule.</p>"
+          "documentation":"<p>The type of rule.</p>"
         }
       },
       "documentation":"<p>Guardrail rules for an Amazon Q application. Amazon Q supports only one rule at a time.</p>"
@@ -5244,6 +5334,48 @@
       "max":2048,
       "min":1
     },
+    "StringAttributeBoostingConfiguration":{
+      "type":"structure",
+      "required":["boostingLevel"],
+      "members":{
+        "attributeValueBoosting":{
+          "shape":"StringAttributeValueBoosting",
+          "documentation":"<p>Specifies specific values of a <code>STRING</code> type document attribute being boosted.</p>"
+        },
+        "boostingLevel":{
+          "shape":"DocumentAttributeBoostingLevel",
+          "documentation":"<p>Specifies how much a document attribute is boosted.</p>"
+        }
+      },
+      "documentation":"<p>Provides information on boosting <code>STRING</code> type document attributes.</p> <note> <p>For <code>STRING</code> and <code>STRING_LIST</code> type document attributes to be used for boosting on the console and the API, they must be enabled for search using the <a href=\"https://docs.aws.amazon.com/amazonq/latest/api-reference/API_DocumentAttributeConfiguration.html\">DocumentAttributeConfiguration</a> object of the <a href=\"https://docs.aws.amazon.com/amazonq/latest/api-reference/API_UpdateIndex.html\">UpdateIndex</a> API. If you haven't enabled searching on these attributes, you can't boost attributes of these data types on either the console or the API.</p> </note> <p>For more information on how boosting document attributes work in Amazon Q, see <a href=\"https://docs.aws.amazon.com/amazonq/latest/business-use-dg/metadata-boosting.html\">Boosting using document attributes</a>.</p>"
+    },
+    "StringAttributeValueBoosting":{
+      "type":"map",
+      "key":{"shape":"String"},
+      "value":{"shape":"StringAttributeValueBoostingLevel"},
+      "max":10,
+      "min":1
+    },
+    "StringAttributeValueBoostingLevel":{
+      "type":"string",
+      "enum":[
+        "LOW",
+        "MEDIUM",
+        "HIGH",
+        "VERY_HIGH"
+      ]
+    },
+    "StringListAttributeBoostingConfiguration":{
+      "type":"structure",
+      "required":["boostingLevel"],
+      "members":{
+        "boostingLevel":{
+          "shape":"DocumentAttributeBoostingLevel",
+          "documentation":"<p>Specifies how much a document attribute is boosted.</p>"
+        }
+      },
+      "documentation":"<p>Provides information on boosting <code>STRING_LIST</code> type document attributes.</p> <note> <p>For <code>STRING</code> and <code>STRING_LIST</code> type document attributes to be used for boosting on the console and the API, they must be enabled for search using the <a href=\"https://docs.aws.amazon.com/amazonq/latest/api-reference/API_DocumentAttributeConfiguration.html\">DocumentAttributeConfiguration</a> object of the <a href=\"https://docs.aws.amazon.com/amazonq/latest/api-reference/API_UpdateIndex.html\">UpdateIndex</a> API. If you haven't enabled searching on these attributes, you can't boost attributes of these data types on either the console or the API.</p> </note> <p>For more information on how boosting document attributes work in Amazon Q, see <a href=\"https://docs.aws.amazon.com/amazonq/latest/business-use-dg/metadata-boosting.html\">Boosting using document attributes</a>.</p>"
+    },
     "SubnetId":{
       "type":"string",
       "max":200,
@@ -5396,7 +5528,7 @@
       "members":{
         "description":{
           "shape":"TopicDescription",
-          "documentation":"<p>A description for your topic control configuration. Use this outline how the large language model (LLM) should use this topic control configuration.</p>"
+          "documentation":"<p>A description for your topic control configuration. Use this to outline how the large language model (LLM) should use this topic control configuration.</p>"
         },
         "exampleChatMessages":{
           "shape":"ExampleChatMessages",
@@ -5995,5 +6127,5 @@
       "member":{"shape":"WebExperience"}
     }
   },
-  "documentation":"<p> </p>"
+  "documentation":"<note> <p>Amazon Q is in preview release and is subject to change.</p> </note> <p>This is the <i>Amazon Q (for business use)</i> API Reference. Amazon Q is a fully managed, generative-AI powered enterprise chat assistant that you can deploy within your organization. Amazon Q enhances employee productivity by supporting key tasks such as question-answering, knowledge discovery, writing email messages, summarizing text, drafting document outlines, and brainstorming ideas. Users ask questions of Amazon Q and get answers that are presented in a conversational manner. For an introduction to the service, see the <a href=\"https://docs.aws.amazon.com/amazonq/latest/business-use-dg/what-is.html\"> <i>Amazon Q (for business use) Developer Guide</i> </a>.</p> <p>For an overview of the Amazon Q APIs, see <a href=\"https://docs.aws.amazon.com/amazonq/latest/business-use-dg/api-ref.html#api-overview\">Overview of Amazon Q API operations</a>.</p> <p>For information about the IAM access control permissions you need to use this API, see <a href=\"https://docs.aws.amazon.com/amazonq/latest/business-use-dg/iam-roles.html\">IAM roles for Amazon Q</a> in the <i>Amazon Q (for business use) Developer Guide</i>.</p> <p>You can use the following AWS SDKs to access Amazon Q APIs:</p> <ul> <li> <p> <a href=\"https://docs.aws.amazon.com/sdk-for-cpp\">AWS SDK for C++</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/sdk-for-go\">AWS SDK for Go</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/sdk-for-java\">AWS SDK for Java</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/sdk-for-javascript\">AWS SDK for JavaScript</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/sdk-for-net\">AWS SDK for .NET</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/pythonsdk\">AWS SDK for Python (Boto3)</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/sdk-for-ruby\">AWS SDK for Ruby</a> </p> </li> </ul> <p>The following resources provide additional information about using the Amazon Q API:</p> <ul> <li> <p> <i> <a href=\"https://docs.aws.amazon.com/amazonq/latest/business-use-dg/setting-up.html\">Setting up for Amazon Q</a> </i> </p> </li> <li> <p> <i> <a href=\"https://awscli.amazonaws.com/v2/documentation/api/latest/reference/qbusiness/index.html\">Amazon Q CLI Reference</a> </i> </p> </li> <li> <p> <i> <a href=\"https://docs.aws.amazon.com/general/latest/gr/amazonq.html\">Amazon Web Services General Reference</a> </i> </p> </li> </ul>"
 }

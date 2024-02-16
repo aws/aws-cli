@@ -866,6 +866,10 @@
         "namespace":{
           "shape":"ActionNamespace",
           "documentation":"<p>The variable namespace associated with the action. All variables produced as output by this action fall under this namespace.</p>"
+        },
+        "timeoutInMinutes":{
+          "shape":"ActionTimeout",
+          "documentation":"<p>A timeout duration in minutes that can be applied against the ActionType’s default timeout value specified in <a href=\"https://docs.aws.amazon.com/codepipeline/latest/userguide/limits.html\">Quotas for CodePipeline </a>. This attribute is available only to the manual approval ActionType.</p>"
         }
       },
       "documentation":"<p>Represents information about an action declaration.</p>"
@@ -1153,6 +1157,12 @@
     "ActionStateList":{
       "type":"list",
       "member":{"shape":"ActionState"}
+    },
+    "ActionTimeout":{
+      "type":"integer",
+      "box":true,
+      "max":86400,
+      "min":5
     },
     "ActionType":{
       "type":"structure",

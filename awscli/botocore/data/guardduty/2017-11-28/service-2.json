@@ -494,7 +494,7 @@
         {"shape":"BadRequestException"},
         {"shape":"InternalServerErrorException"}
       ],
-      "documentation":"<p>Lists Amazon GuardDuty findings statistics for the specified detector ID.</p>"
+      "documentation":"<p>Lists Amazon GuardDuty findings statistics for the specified detector ID.</p> <p>There might be regional differences because some flags might not be available in all the Regions where GuardDuty is currently supported. For more information, see <a href=\"https://docs.aws.amazon.com/guardduty/latest/ug/guardduty_regions.html\">Regions and endpoints</a>.</p>"
     },
     "GetIPSet":{
       "name":"GetIPSet",
@@ -720,7 +720,7 @@
         {"shape":"BadRequestException"},
         {"shape":"InternalServerErrorException"}
       ],
-      "documentation":"<p>Lists Amazon GuardDuty findings for the specified detector ID.</p>"
+      "documentation":"<p>Lists GuardDuty findings for the specified detector ID.</p> <p>There might be regional differences because some flags might not be available in all the Regions where GuardDuty is currently supported. For more information, see <a href=\"https://docs.aws.amazon.com/guardduty/latest/ug/guardduty_regions.html\">Regions and endpoints</a>.</p>"
     },
     "ListIPSets":{
       "name":"ListIPSets",
@@ -934,7 +934,7 @@
         {"shape":"BadRequestException"},
         {"shape":"InternalServerErrorException"}
       ],
-      "documentation":"<p>Updates the Amazon GuardDuty detector specified by the detectorId.</p> <p>There might be regional differences because some data sources might not be available in all the Amazon Web Services Regions where GuardDuty is presently supported. For more information, see <a href=\"https://docs.aws.amazon.com/guardduty/latest/ug/guardduty_regions.html\">Regions and endpoints</a>.</p>"
+      "documentation":"<p>Updates the GuardDuty detector specified by the detectorId.</p> <p>There might be regional differences because some data sources might not be available in all the Amazon Web Services Regions where GuardDuty is presently supported. For more information, see <a href=\"https://docs.aws.amazon.com/guardduty/latest/ug/guardduty_regions.html\">Regions and endpoints</a>.</p>"
     },
     "UpdateFilter":{
       "name":"UpdateFilter",
@@ -3567,7 +3567,8 @@
     "Email":{
       "type":"string",
       "max":64,
-      "min":1
+      "min":1,
+      "sensitive":true
     },
     "EnableOrganizationAdminAccountRequest":{
       "type":"structure",
@@ -5686,7 +5687,7 @@
       "type":"structure",
       "members":{
         "IpAddressV4":{
-          "shape":"String",
+          "shape":"SensitiveString",
           "documentation":"<p>The IPv4 local address of the connection.</p>",
           "locationName":"ipAddressV4"
         }
@@ -6089,7 +6090,7 @@
           "locationName":"privateDnsName"
         },
         "PrivateIpAddress":{
-          "shape":"String",
+          "shape":"SensitiveString",
           "documentation":"<p>The private IP address of the EC2 instance.</p>",
           "locationName":"privateIpAddress"
         },
@@ -6658,7 +6659,7 @@
           "locationName":"privateDnsName"
         },
         "PrivateIpAddress":{
-          "shape":"String",
+          "shape":"SensitiveString",
           "documentation":"<p>The private IP address of the EC2 instance.</p>",
           "locationName":"privateIpAddress"
         }
@@ -6916,7 +6917,7 @@
           "locationName":"geoLocation"
         },
         "IpAddressV4":{
-          "shape":"String",
+          "shape":"SensitiveString",
           "documentation":"<p>The IPv4 remote address of the connection.</p>",
           "locationName":"ipAddressV4"
         },
@@ -7567,6 +7568,10 @@
     "SecurityGroups":{
       "type":"list",
       "member":{"shape":"SecurityGroup"}
+    },
+    "SensitiveString":{
+      "type":"string",
+      "sensitive":true
     },
     "Service":{
       "type":"structure",

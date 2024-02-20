@@ -2,6 +2,14 @@
 CHANGELOG
 =========
 
+1.32.46
+=======
+
+* api-change:``dynamodb``: Publishing quick fix for doc only update.
+* api-change:``firehose``: This release updates a few Firehose related APIs.
+* api-change:``lambda``: Add .NET 8 (dotnet8) Runtime support to AWS Lambda.
+
+
 1.32.45
 =======
 

@@ -6965,6 +6965,36 @@ CHANGELOG
 * feature:wizard: Added support for AWS CLI Wizards. See `#3752 <https://github.com/aws/aws-cli/issues/3752>`__.
 
 
+1.32.46
+=======
+
+* api-change:``dynamodb``: Publishing quick fix for doc only update.
+* api-change:``firehose``: This release updates a few Firehose related APIs.
+* api-change:``lambda``: Add .NET 8 (dotnet8) Runtime support to AWS Lambda.
+
+
+1.32.45
+=======
+
+* api-change:``amplify``: This release contains API changes that enable users to configure their Amplify domains with their own custom SSL/TLS certificate.
+* api-change:``chatbot``: This release adds support for AWS Chatbot. You can now monitor, operate, and troubleshoot your AWS resources with interactive ChatOps using the AWS SDK.
+* api-change:``config``: Documentation updates for the AWS Config CLI
+* api-change:``ivs``: Changed description for latencyMode in Create/UpdateChannel and Channel/ChannelSummary.
+* api-change:``keyspaces``: Documentation updates for Amazon Keyspaces
+* api-change:``mediatailor``: MediaTailor: marking #AdBreak.OffsetMillis as required.
+
+
+1.32.44
+=======
+
+* api-change:``connectparticipant``: Doc only update to GetTranscript API reference guide to inform users about presence of events in the chat transcript.
+* api-change:``emr``: adds fine grained control over Unhealthy Node Replacement to Amazon ElasticMapReduce
+* api-change:``firehose``: This release adds support for Data Message Extraction for decompressed CloudWatch logs, and to use a custom file extension or time zone for S3 destinations.
+* api-change:``lambda``: Documentation-only updates for Lambda to clarify a number of existing actions and properties.
+* api-change:``rds``: Doc only update for a valid option in DB parameter group
+* api-change:``sns``: This release marks phone numbers as sensitive inputs.
+
+
 1.32.43
 =======
 

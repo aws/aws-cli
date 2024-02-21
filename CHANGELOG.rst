@@ -2,6 +2,15 @@
 CHANGELOG
 =========
 
+1.32.47
+=======
+
+* api-change:``iotevents``: Increase the maximum length of descriptions for Inputs, Detector Models, and Alarm Models
+* api-change:``lookoutequipment``: This release adds a field exposing model quality to read APIs for models. It also adds a model quality field to the API response when creating an inference scheduler.
+* api-change:``medialive``: MediaLive now supports the ability to restart pipelines in a running channel.
+* api-change:``ssm``: This release adds support for sharing Systems Manager parameters with other AWS accounts.
+
+
 1.32.46
 =======
 

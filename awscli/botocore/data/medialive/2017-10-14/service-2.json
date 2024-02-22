@@ -3015,6 +3015,56 @@
         }
       ],
       "documentation": "Update reservation."
+    },
+    "RestartChannelPipelines": {
+      "name": "RestartChannelPipelines",
+      "http": {
+        "method": "POST",
+        "requestUri": "/prod/channels/{channelId}/restartChannelPipelines",
+        "responseCode": 200
+      },
+      "input": {
+        "shape": "RestartChannelPipelinesRequest"
+      },
+      "output": {
+        "shape": "RestartChannelPipelinesResponse",
+        "documentation": "MediaLive successfully initiated the restart request."
+      },
+      "errors": [
+        {
+          "shape": "BadRequestException",
+          "documentation": "The service can't process your request because of a problem in the request. Verify that the syntax is correct."
+        },
+        {
+          "shape": "InternalServerErrorException",
+          "documentation": "Internal Service Error"
+        },
+        {
+          "shape": "ForbiddenException",
+          "documentation": "You don't have permissions for this action with the credentials that you sent."
+        },
+        {
+          "shape": "BadGatewayException",
+          "documentation": "Bad Gateway Error"
+        },
+        {
+          "shape": "NotFoundException",
+          "documentation": "The channel or pipeline you specified doesn't exist."
+        },
+        {
+          "shape": "GatewayTimeoutException",
+          "documentation": "Gateway Timeout"
+        },
+        {
+          "shape": "TooManyRequestsException",
+          "documentation": "Too many requests have been sent in too short of a time. The service limits the rate at which it will accept requests."
+        },
+        {
+          "shape": "ConflictException",
+          "documentation": "The service could not complete your request because there is a conflict with the current state of the resource."
+        }
+      ],
+      "documentation": "Restart pipelines in one channel that is currently running."
     }
   },
   "shapes": {
@@ -4524,7 +4574,7 @@
         "Accessibility": {
           "shape": "AccessibilityType",
           "locationName": "accessibility",
-          "documentation": "Indicates whether the caption track implements accessibility features such as written descriptions of spoken dialog, music, and sounds."
+          "documentation": "Indicates whether the caption track implements accessibility features such as written descriptions of spoken dialog, music, and sounds. This signaling is added to HLS output group and MediaPackage output group."
         },
         "CaptionSelectorName": {
           "shape": "__string",
@@ -4734,7 +4784,7 @@
     },
     "CdiInputResolution": {
       "type": "string",
-      "documentation": "Maximum CDI input resolution; SD is 480i and 576i up to 30 frames-per-second (fps), HD is 720p up to 60 fps / 1080i up to 30 fps, FHD is 1080p up to 60 fps, UHD is 2160p up to 60 fps\n",
+      "documentation": "Maximum CDI input resolution; SD is 480i and 576i up to 30 frames-per-second (fps), HD is 720p up to 60 fps / 1080i up to 30 fps, FHD is 1080p up to 60 fps, UHD is 2160p up to 60 fps",
       "enum": [
         "SD",
         "HD",
@@ -4774,7 +4824,7 @@
         "Destinations": {
           "shape": "__listOfOutputDestination",
           "locationName": "destinations",
-          "documentation": "A list of destinations of the channel. For UDP outputs, there is one\ndestination per output. For other types (HLS, for example), there is\none destination per packager.\n"
+          "documentation": "A list of destinations of the channel. For UDP outputs, there is one\ndestination per output. For other types (HLS, for example), there is\none destination per packager."
         },
         "EgressEndpoints": {
           "shape": "__listOfChannelEgressEndpoint",
@@ -4919,7 +4969,7 @@
         "Destinations": {
           "shape": "__listOfOutputDestination",
           "locationName": "destinations",
-          "documentation": "A list of destinations of the channel. For UDP outputs, there is one\ndestination per output. For other types (HLS, for example), there is\none destination per packager.\n"
+          "documentation": "A list of destinations of the channel. For UDP outputs, there is one\ndestination per output. For other types (HLS, for example), there is\none destination per packager."
         },
         "EgressEndpoints": {
           "shape": "__listOfChannelEgressEndpoint",
@@ -5119,7 +5169,7 @@
         "RequestId": {
           "shape": "__string",
           "locationName": "requestId",
-          "documentation": "Unique request ID to be specified. This is needed to prevent retries from\ncreating multiple resources.\n",
+          "documentation": "Unique request ID to be specified. This is needed to prevent retries from\ncreating multiple resources.",
           "idempotencyToken": true
         },
         "Reserved": {
@@ -5195,7 +5245,7 @@
         "RequestId": {
           "shape": "__string",
           "locationName": "requestId",
-          "documentation": "Unique request ID to be specified. This is needed to prevent retries from\ncreating multiple resources.\n",
+          "documentation": "Unique request ID to be specified. This is needed to prevent retries from\ncreating multiple resources.",
           "idempotencyToken": true
         },
         "Reserved": {
@@ -5263,7 +5313,7 @@
         "MediaConnectFlows": {
           "shape": "__listOfMediaConnectFlowRequest",
           "locationName": "mediaConnectFlows",
-          "documentation": "A list of the MediaConnect Flows that you want to use in this input. You can specify as few as one\nFlow and presently, as many as two. The only requirement is when you have more than one is that each Flow is in a\nseparate Availability Zone as this ensures your EML input is redundant to AZ issues.\n"
+          "documentation": "A list of the MediaConnect Flows that you want to use in this input. You can specify as few as one\nFlow and presently, as many as two. The only requirement is when you have more than one is that each Flow is in a\nseparate Availability Zone as this ensures your EML input is redundant to AZ issues."
         },
         "Name": {
           "shape": "__string",
@@ -5273,7 +5323,7 @@
         "RequestId": {
           "shape": "__string",
           "locationName": "requestId",
-          "documentation": "Unique identifier of the request to ensure the request is handled\nexactly once in case of retries.\n",
+          "documentation": "Unique identifier of the request to ensure the request is handled\nexactly once in case of retries.",
           "idempotencyToken": true
         },
         "RoleArn": {
@@ -5284,7 +5334,7 @@
         "Sources": {
           "shape": "__listOfInputSourceRequest",
           "locationName": "sources",
-          "documentation": "The source URLs for a PULL-type input. Every PULL type input needs\nexactly two source URLs for redundancy.\nOnly specify sources for PULL type Inputs. Leave Destinations empty.\n"
+          "documentation": "The source URLs for a PULL-type input. Every PULL type input needs\nexactly two source URLs for redundancy.\nOnly specify sources for PULL type Inputs. Leave Destinations empty."
         },
         "Tags": {
           "shape": "Tags",
@@ -5323,7 +5373,7 @@
         "MediaConnectFlows": {
           "shape": "__listOfMediaConnectFlowRequest",
           "locationName": "mediaConnectFlows",
-          "documentation": "A list of the MediaConnect Flows that you want to use in this input. You can specify as few as one\nFlow and presently, as many as two. The only requirement is when you have more than one is that each Flow is in a\nseparate Availability Zone as this ensures your EML input is redundant to AZ issues.\n"
+          "documentation": "A list of the MediaConnect Flows that you want to use in this input. You can specify as few as one\nFlow and presently, as many as two. The only requirement is when you have more than one is that each Flow is in a\nseparate Availability Zone as this ensures your EML input is redundant to AZ issues."
         },
         "Name": {
           "shape": "__string",
@@ -5333,7 +5383,7 @@
         "RequestId": {
           "shape": "__string",
           "locationName": "requestId",
-          "documentation": "Unique identifier of the request to ensure the request is handled\nexactly once in case of retries.\n",
+          "documentation": "Unique identifier of the request to ensure the request is handled\nexactly once in case of retries.",
           "idempotencyToken": true
         },
         "RoleArn": {
@@ -5344,7 +5394,7 @@
         "Sources": {
           "shape": "__listOfInputSourceRequest",
           "locationName": "sources",
-          "documentation": "The source URLs for a PULL-type input. Every PULL type input needs\nexactly two source URLs for redundancy.\nOnly specify sources for PULL type Inputs. Leave Destinations empty.\n"
+          "documentation": "The source URLs for a PULL-type input. Every PULL type input needs\nexactly two source URLs for redundancy.\nOnly specify sources for PULL type Inputs. Leave Destinations empty."
         },
         "Tags": {
           "shape": "Tags",
@@ -5439,7 +5489,7 @@
         "RequestId": {
           "shape": "__string",
           "locationName": "requestId",
-          "documentation": "Unique request ID. This prevents retries from creating multiple\nresources.\n",
+          "documentation": "Unique request ID. This prevents retries from creating multiple\nresources.",
           "idempotencyToken": true
         },
         "Tags": {
@@ -5472,7 +5522,7 @@
         "RequestId": {
           "shape": "__string",
           "locationName": "requestId",
-          "documentation": "Unique request ID. This prevents retries from creating multiple\nresources.\n",
+          "documentation": "Unique request ID. This prevents retries from creating multiple\nresources.",
           "idempotencyToken": true
         }
       },
@@ -5505,7 +5555,7 @@
         "RequestId": {
           "shape": "__string",
           "locationName": "requestId",
-          "documentation": "Unique request ID. This prevents retries from creating multiple\nresources.\n",
+          "documentation": "Unique request ID. This prevents retries from creating multiple\nresources.",
           "idempotencyToken": true
         }
       },
@@ -5560,7 +5610,7 @@
         "RequestId": {
           "shape": "__string",
           "locationName": "requestId",
-          "documentation": "Unique request ID. This prevents retries from creating multiple\nresources.\n",
+          "documentation": "Unique request ID. This prevents retries from creating multiple\nresources.",
           "idempotencyToken": true
         },
         "Tags": {
@@ -5605,7 +5655,7 @@
         "RequestId": {
           "shape": "__string",
           "locationName": "requestId",
-          "documentation": "Unique identifier of the request to ensure the request is handled\nexactly once in case of retries.\n",
+          "documentation": "Unique identifier of the request to ensure the request is handled\nexactly once in case of retries.",
           "idempotencyToken": true
         },
         "Tags": {
@@ -5628,7 +5678,7 @@
         "RequestId": {
           "shape": "__string",
           "locationName": "requestId",
-          "documentation": "Unique identifier of the request to ensure the request is handled\nexactly once in case of retries.\n",
+          "documentation": "Unique identifier of the request to ensure the request is handled\nexactly once in case of retries.",
           "idempotencyToken": true
         },
         "Tags": {
@@ -5716,7 +5766,7 @@
         "Destinations": {
           "shape": "__listOfOutputDestination",
           "locationName": "destinations",
-          "documentation": "A list of destinations of the channel. For UDP outputs, there is one\ndestination per output. For other types (HLS, for example), there is\none destination per packager.\n"
+          "documentation": "A list of destinations of the channel. For UDP outputs, there is one\ndestination per output. For other types (HLS, for example), there is\none destination per packager."
         },
         "EgressEndpoints": {
           "shape": "__listOfChannelEgressEndpoint",
@@ -6175,7 +6225,7 @@
         "Destinations": {
           "shape": "__listOfOutputDestination",
           "locationName": "destinations",
-          "documentation": "A list of destinations of the channel. For UDP outputs, there is one\ndestination per output. For other types (HLS, for example), there is\none destination per packager.\n"
+          "documentation": "A list of destinations of the channel. For UDP outputs, there is one\ndestination per output. For other types (HLS, for example), there is\none destination per packager."
         },
         "EgressEndpoints": {
           "shape": "__listOfChannelEgressEndpoint",
@@ -6448,7 +6498,7 @@
         "InputClass": {
           "shape": "InputClass",
           "locationName": "inputClass",
-          "documentation": "STANDARD - MediaLive expects two sources to be connected to this input. If the channel is also STANDARD, both sources will be ingested. If the channel is SINGLE_PIPELINE, only the first source will be ingested; the second source will always be ignored, even if the first source fails.\nSINGLE_PIPELINE - You can connect only one source to this input. If the ChannelClass is also  SINGLE_PIPELINE, this value is valid. If the ChannelClass is STANDARD, this value is not valid because the channel requires two sources in the input.\n"
+          "documentation": "STANDARD - MediaLive expects two sources to be connected to this input. If the channel is also STANDARD, both sources will be ingested. If the channel is SINGLE_PIPELINE, only the first source will be ingested; the second source will always be ignored, even if the first source fails.\nSINGLE_PIPELINE - You can connect only one source to this input. If the ChannelClass is also  SINGLE_PIPELINE, this value is valid. If the ChannelClass is STANDARD, this value is not valid because the channel requires two sources in the input."
         },
         "InputDevices": {
           "shape": "__listOfInputDeviceSettings",
@@ -6463,7 +6513,7 @@
         "InputSourceType": {
           "shape": "InputSourceType",
           "locationName": "inputSourceType",
-          "documentation": "Certain pull input sources can be dynamic, meaning that they can have their URL's dynamically changes\nduring input switch actions. Presently, this functionality only works with MP4_FILE and TS_FILE inputs.\n"
+          "documentation": "Certain pull input sources can be dynamic, meaning that they can have their URL's dynamically changes\nduring input switch actions. Presently, this functionality only works with MP4_FILE and TS_FILE inputs."
         },
         "MediaConnectFlows": {
           "shape": "__listOfMediaConnectFlow",
@@ -9738,7 +9788,7 @@
         "InputClass": {
           "shape": "InputClass",
           "locationName": "inputClass",
-          "documentation": "STANDARD - MediaLive expects two sources to be connected to this input. If the channel is also STANDARD, both sources will be ingested. If the channel is SINGLE_PIPELINE, only the first source will be ingested; the second source will always be ignored, even if the first source fails.\nSINGLE_PIPELINE - You can connect only one source to this input. If the ChannelClass is also  SINGLE_PIPELINE, this value is valid. If the ChannelClass is STANDARD, this value is not valid because the channel requires two sources in the input.\n"
+          "documentation": "STANDARD - MediaLive expects two sources to be connected to this input. If the channel is also STANDARD, both sources will be ingested. If the channel is SINGLE_PIPELINE, only the first source will be ingested; the second source will always be ignored, even if the first source fails.\nSINGLE_PIPELINE - You can connect only one source to this input. If the ChannelClass is also  SINGLE_PIPELINE, this value is valid. If the ChannelClass is STANDARD, this value is not valid because the channel requires two sources in the input."
         },
         "InputDevices": {
           "shape": "__listOfInputDeviceSettings",
@@ -9753,7 +9803,7 @@
         "InputSourceType": {
           "shape": "InputSourceType",
           "locationName": "inputSourceType",
-          "documentation": "Certain pull input sources can be dynamic, meaning that they can have their URL's dynamically changes\nduring input switch actions. Presently, this functionality only works with MP4_FILE and TS_FILE inputs.\n"
+          "documentation": "Certain pull input sources can be dynamic, meaning that they can have their URL's dynamically changes\nduring input switch actions. Presently, this functionality only works with MP4_FILE and TS_FILE inputs."
         },
         "MediaConnectFlows": {
           "shape": "__listOfMediaConnectFlow",
@@ -9905,7 +9955,7 @@
         "Ip": {
           "shape": "__string",
           "locationName": "ip",
-          "documentation": "The system-generated static IP address of endpoint.\nIt remains fixed for the lifetime of the input.\n"
+          "documentation": "The system-generated static IP address of endpoint.\nIt remains fixed for the lifetime of the input."
         },
         "Port": {
           "shape": "__string",
@@ -9915,7 +9965,7 @@
         "Url": {
           "shape": "__string",
           "locationName": "url",
-          "documentation": "This represents the endpoint that the customer stream will be\npushed to.\n"
+          "documentation": "This represents the endpoint that the customer stream will be\npushed to."
         },
         "Vpc": {
           "shape": "InputDestinationVpc",
@@ -9930,7 +9980,7 @@
         "StreamName": {
           "shape": "__string",
           "locationName": "streamName",
-          "documentation": "A unique name for the location the RTMP stream is being pushed\nto.\n"
+          "documentation": "A unique name for the location the RTMP stream is being pushed\nto."
         }
       },
       "documentation": "Endpoint settings for a PUSH type input."
@@ -9941,12 +9991,12 @@
         "AvailabilityZone": {
           "shape": "__string",
           "locationName": "availabilityZone",
-          "documentation": "The availability zone of the Input destination.\n"
+          "documentation": "The availability zone of the Input destination."
         },
         "NetworkInterfaceId": {
           "shape": "__string",
           "locationName": "networkInterfaceId",
-          "documentation": "The network interface ID of the Input destination in the VPC.\n"
+          "documentation": "The network interface ID of the Input destination in the VPC."
         }
       },
       "documentation": "The properties for a VPC type input destination."
@@ -10606,7 +10656,7 @@
     },
     "InputPreference": {
       "type": "string",
-      "documentation": "Input preference when deciding which input to make active when a previously failed input has recovered.\nIf \\\"EQUAL_INPUT_PREFERENCE\\\", then the active input will stay active as long as it is healthy.\nIf \\\"PRIMARY_INPUT_PREFERRED\\\", then always switch back to the primary input when it is healthy.\n",
+      "documentation": "Input preference when deciding which input to make active when a previously failed input has recovered.\nIf \\\"EQUAL_INPUT_PREFERENCE\\\", then the active input will stay active as long as it is healthy.\nIf \\\"PRIMARY_INPUT_PREFERRED\\\", then always switch back to the primary input when it is healthy.",
       "enum": [
         "EQUAL_INPUT_PREFERENCE",
         "PRIMARY_INPUT_PREFERRED"
@@ -10635,7 +10685,7 @@
     },
     "InputResolution": {
       "type": "string",
-      "documentation": "Input resolution based on lines of vertical resolution in the input; SD is less than 720 lines, HD is 720 to 1080 lines, UHD is greater than 1080 lines\n",
+      "documentation": "Input resolution based on lines of vertical resolution in the input; SD is less than 720 lines, HD is 720 to 1080 lines, UHD is greater than 1080 lines",
       "enum": [
         "SD",
         "HD",
@@ -10776,7 +10826,7 @@
         "Url": {
           "shape": "__string",
           "locationName": "url",
-          "documentation": "This represents the customer's source URL where stream is\npulled from.\n"
+          "documentation": "This represents the customer's source URL where stream is\npulled from."
         },
         "Username": {
           "shape": "__string",
@@ -10805,7 +10855,7 @@
         "Url": {
           "shape": "__string",
           "locationName": "url",
-          "documentation": "This represents the customer's source URL where stream is\npulled from.\n"
+          "documentation": "This represents the customer's source URL where stream is\npulled from."
         },
         "Username": {
           "shape": "__string",
@@ -10817,7 +10867,7 @@
     },
     "InputSourceType": {
       "type": "string",
-      "documentation": "There are two types of input sources, static and dynamic. If an input source is dynamic you can\nchange the source url of the input dynamically using an input switch action. Currently, two input types\nsupport a dynamic url at this time, MP4_FILE and TS_FILE. By default all input sources are static.\n",
+      "documentation": "There are two types of input sources, static and dynamic. If an input source is dynamic you can\nchange the source url of the input dynamically using an input switch action. Currently, two input types\nsupport a dynamic url at this time, MP4_FILE and TS_FILE. By default all input sources are static.",
       "enum": [
         "STATIC",
         "DYNAMIC"
@@ -10909,15 +10959,15 @@
         "SecurityGroupIds": {
           "shape": "__listOf__string",
           "locationName": "securityGroupIds",
-          "documentation": "A list of up to 5 EC2 VPC security group IDs to attach to the Input VPC network interfaces.\nRequires subnetIds. If none are specified then the VPC default security group will be used.\n"
+          "documentation": "A list of up to 5 EC2 VPC security group IDs to attach to the Input VPC network interfaces.\nRequires subnetIds. If none are specified then the VPC default security group will be used."
         },
         "SubnetIds": {
           "shape": "__listOf__string",
           "locationName": "subnetIds",
-          "documentation": "A list of 2 VPC subnet IDs from the same VPC.\nSubnet IDs must be mapped to two unique availability zones (AZ).\n"
+          "documentation": "A list of 2 VPC subnet IDs from the same VPC.\nSubnet IDs must be mapped to two unique availability zones (AZ)."
         }
       },
-      "documentation": "Settings for a private VPC Input.\nWhen this property is specified, the input destination addresses will be created in a VPC rather than with public Internet addresses.\nThis property requires setting the roleArn property on Input creation.\nNot compatible with the inputSecurityGroups property.\n",
+      "documentation": "Settings for a private VPC Input.\nWhen this property is specified, the input destination addresses will be created in a VPC rather than with public Internet addresses.\nThis property requires setting the roleArn property on Input creation.\nNot compatible with the inputSecurityGroups property.",
       "required": [
         "SubnetIds"
       ]
@@ -11360,13 +11410,13 @@
           "shape": "__string",
           "location": "querystring",
           "locationName": "channelClass",
-          "documentation": "Filter by channel class, 'STANDARD' or 'SINGLE_PIPELINE'\n"
+          "documentation": "Filter by channel class, 'STANDARD' or 'SINGLE_PIPELINE'"
         },
         "ChannelConfiguration": {
           "shape": "__string",
           "location": "querystring",
           "locationName": "channelConfiguration",
-          "documentation": "Filter to offerings that match the configuration of an existing channel, e.g. '2345678' (a channel ID)\n"
+          "documentation": "Filter to offerings that match the configuration of an existing channel, e.g. '2345678' (a channel ID)"
         },
         "Codec": {
           "shape": "__string",
@@ -11389,7 +11439,7 @@
           "shape": "__string",
           "location": "querystring",
           "locationName": "maximumBitrate",
-          "documentation": "Filter by bitrate, 'MAX_10_MBPS', 'MAX_20_MBPS', or 'MAX_50_MBPS'\n"
+          "documentation": "Filter by bitrate, 'MAX_10_MBPS', 'MAX_20_MBPS', or 'MAX_50_MBPS'"
         },
         "MaximumFramerate": {
           "shape": "__string",
@@ -11418,13 +11468,13 @@
           "shape": "__string",
           "location": "querystring",
           "locationName": "specialFeature",
-          "documentation": "Filter by special feature, 'ADVANCED_AUDIO' or 'AUDIO_NORMALIZATION'\n"
+          "documentation": "Filter by special feature, 'ADVANCED_AUDIO' or 'AUDIO_NORMALIZATION'"
         },
         "VideoQuality": {
           "shape": "__string",
           "location": "querystring",
           "locationName": "videoQuality",
-          "documentation": "Filter by video quality, 'STANDARD', 'ENHANCED', or 'PREMIUM'\n"
+          "documentation": "Filter by video quality, 'STANDARD', 'ENHANCED', or 'PREMIUM'"
         }
       },
       "documentation": "Placeholder documentation for ListOfferingsRequest"
@@ -11468,7 +11518,7 @@
           "shape": "__string",
           "location": "querystring",
           "locationName": "channelClass",
-          "documentation": "Filter by channel class, 'STANDARD' or 'SINGLE_PIPELINE'\n"
+          "documentation": "Filter by channel class, 'STANDARD' or 'SINGLE_PIPELINE'"
         },
         "Codec": {
           "shape": "__string",
@@ -11485,7 +11535,7 @@
           "shape": "__string",
           "location": "querystring",
           "locationName": "maximumBitrate",
-          "documentation": "Filter by bitrate, 'MAX_10_MBPS', 'MAX_20_MBPS', or 'MAX_50_MBPS'\n"
+          "documentation": "Filter by bitrate, 'MAX_10_MBPS', 'MAX_20_MBPS', or 'MAX_50_MBPS'"
         },
         "MaximumFramerate": {
           "shape": "__string",
@@ -11514,13 +11564,13 @@
           "shape": "__string",
           "location": "querystring",
           "locationName": "specialFeature",
-          "documentation": "Filter by special feature, 'ADVANCED_AUDIO' or 'AUDIO_NORMALIZATION'\n"
+          "documentation": "Filter by special feature, 'ADVANCED_AUDIO' or 'AUDIO_NORMALIZATION'"
         },
         "VideoQuality": {
           "shape": "__string",
           "location": "querystring",
           "locationName": "videoQuality",
-          "documentation": "Filter by video quality, 'STANDARD', 'ENHANCED', or 'PREMIUM'\n"
+          "documentation": "Filter by video quality, 'STANDARD', 'ENHANCED', or 'PREMIUM'"
         }
       },
       "documentation": "Placeholder documentation for ListReservationsRequest"
@@ -13639,7 +13689,7 @@
     },
     "PreferredChannelPipeline": {
       "type": "string",
-      "documentation": "Indicates which pipeline is preferred by the multiplex for program ingest.\nIf set to \\\"PIPELINE_0\\\" or \\\"PIPELINE_1\\\" and an unhealthy ingest causes the multiplex to switch to the non-preferred pipeline,\nit will switch back once that ingest is healthy again. If set to \\\"CURRENTLY_ACTIVE\\\",\nit will not switch back to the other pipeline based on it recovering to a healthy state,\nit will only switch if the active pipeline becomes unhealthy.\n",
+      "documentation": "Indicates which pipeline is preferred by the multiplex for program ingest.\nIf set to \\\"PIPELINE_0\\\" or \\\"PIPELINE_1\\\" and an unhealthy ingest causes the multiplex to switch to the non-preferred pipeline,\nit will switch back once that ingest is healthy again. If set to \\\"CURRENTLY_ACTIVE\\\",\nit will not switch back to the other pipeline based on it recovering to a healthy state,\nit will only switch if the active pipeline becomes unhealthy.",
       "enum": [
         "CURRENTLY_ACTIVE",
         "PIPELINE_0",
@@ -14017,7 +14067,7 @@
     },
     "ReservationResolution": {
       "type": "string",
-      "documentation": "Resolution based on lines of vertical resolution; SD is less than 720 lines, HD is 720 to 1080 lines, FHD is 1080 lines, UHD is greater than 1080 lines\n",
+      "documentation": "Resolution based on lines of vertical resolution; SD is less than 720 lines, HD is 720 to 1080 lines, FHD is 1080 lines, UHD is greater than 1080 lines",
       "enum": [
         "SD",
         "HD",
@@ -14919,7 +14969,7 @@
         "Destinations": {
           "shape": "__listOfOutputDestination",
           "locationName": "destinations",
-          "documentation": "A list of destinations of the channel. For UDP outputs, there is one\ndestination per output. For other types (HLS, for example), there is\none destination per packager.\n"
+          "documentation": "A list of destinations of the channel. For UDP outputs, there is one\ndestination per output. For other types (HLS, for example), there is\none destination per packager."
         },
         "EgressEndpoints": {
           "shape": "__listOfChannelEgressEndpoint",
@@ -15335,7 +15385,7 @@
         "Destinations": {
           "shape": "__listOfOutputDestination",
           "locationName": "destinations",
-          "documentation": "A list of destinations of the channel. For UDP outputs, there is one\ndestination per output. For other types (HLS, for example), there is\none destination per packager.\n"
+          "documentation": "A list of destinations of the channel. For UDP outputs, there is one\ndestination per output. For other types (HLS, for example), there is\none destination per packager."
         },
         "EgressEndpoints": {
           "shape": "__listOfChannelEgressEndpoint",
@@ -16223,7 +16273,7 @@
         "MediaConnectFlows": {
           "shape": "__listOfMediaConnectFlowRequest",
           "locationName": "mediaConnectFlows",
-          "documentation": "A list of the MediaConnect Flow ARNs that you want to use as the source of the input. You can specify as few as one\nFlow and presently, as many as two. The only requirement is when you have more than one is that each Flow is in a\nseparate Availability Zone as this ensures your EML input is redundant to AZ issues.\n"
+          "documentation": "A list of the MediaConnect Flow ARNs that you want to use as the source of the input. You can specify as few as one\nFlow and presently, as many as two. The only requirement is when you have more than one is that each Flow is in a\nseparate Availability Zone as this ensures your EML input is redundant to AZ issues."
         },
         "Name": {
           "shape": "__string",
@@ -16238,7 +16288,7 @@
         "Sources": {
           "shape": "__listOfInputSourceRequest",
           "locationName": "sources",
-          "documentation": "The source URLs for a PULL-type input. Every PULL type input needs\nexactly two source URLs for redundancy.\nOnly specify sources for PULL type Inputs. Leave Destinations empty.\n"
+          "documentation": "The source URLs for a PULL-type input. Every PULL type input needs\nexactly two source URLs for redundancy.\nOnly specify sources for PULL type Inputs. Leave Destinations empty."
         }
       },
       "documentation": "Placeholder documentation for UpdateInput"
@@ -16417,7 +16467,7 @@
         "MediaConnectFlows": {
           "shape": "__listOfMediaConnectFlowRequest",
           "locationName": "mediaConnectFlows",
-          "documentation": "A list of the MediaConnect Flow ARNs that you want to use as the source of the input. You can specify as few as one\nFlow and presently, as many as two. The only requirement is when you have more than one is that each Flow is in a\nseparate Availability Zone as this ensures your EML input is redundant to AZ issues.\n"
+          "documentation": "A list of the MediaConnect Flow ARNs that you want to use as the source of the input. You can specify as few as one\nFlow and presently, as many as two. The only requirement is when you have more than one is that each Flow is in a\nseparate Availability Zone as this ensures your EML input is redundant to AZ issues."
         },
         "Name": {
           "shape": "__string",
@@ -16432,7 +16482,7 @@
         "Sources": {
           "shape": "__listOfInputSourceRequest",
           "locationName": "sources",
-          "documentation": "The source URLs for a PULL-type input. Every PULL type input needs\nexactly two source URLs for redundancy.\nOnly specify sources for PULL type Inputs. Leave Destinations empty.\n"
+          "documentation": "The source URLs for a PULL-type input. Every PULL type input needs\nexactly two source URLs for redundancy.\nOnly specify sources for PULL type Inputs. Leave Destinations empty."
         }
       },
       "documentation": "A request to update an input.",
@@ -16901,20 +16951,20 @@
         "PublicAddressAllocationIds": {
           "shape": "__listOf__string",
           "locationName": "publicAddressAllocationIds",
-          "documentation": "List of public address allocation ids to associate with ENIs that will be created in Output VPC.\nMust specify one for SINGLE_PIPELINE, two for STANDARD channels\n"
+          "documentation": "List of public address allocation ids to associate with ENIs that will be created in Output VPC.\nMust specify one for SINGLE_PIPELINE, two for STANDARD channels"
         },
         "SecurityGroupIds": {
           "shape": "__listOf__string",
           "locationName": "securityGroupIds",
-          "documentation": "A list of up to 5 EC2 VPC security group IDs to attach to the Output VPC network interfaces.\nIf none are specified then the VPC default security group will be used\n"
+          "documentation": "A list of up to 5 EC2 VPC security group IDs to attach to the Output VPC network interfaces.\nIf none are specified then the VPC default security group will be used"
         },
         "SubnetIds": {
           "shape": "__listOf__string",
           "locationName": "subnetIds",
-          "documentation": "A list of VPC subnet IDs from the same VPC.\nIf STANDARD channel, subnet IDs must be mapped to two unique availability zones (AZ).\n"
+          "documentation": "A list of VPC subnet IDs from the same VPC.\nIf STANDARD channel, subnet IDs must be mapped to two unique availability zones (AZ)."
         }
       },
-      "documentation": "The properties for a private VPC Output\nWhen this property is specified, the output egress addresses will be created in a user specified VPC\n",
+      "documentation": "The properties for a private VPC Output\nWhen this property is specified, the output egress addresses will be created in a user specified VPC",
       "required": [
         "SubnetIds"
       ]
@@ -16925,25 +16975,25 @@
         "AvailabilityZones": {
           "shape": "__listOf__string",
           "locationName": "availabilityZones",
-          "documentation": "The Availability Zones where the vpc subnets are located.\nThe first Availability Zone applies to the first subnet in the list of subnets.\nThe second Availability Zone applies to the second subnet.\n"
+          "documentation": "The Availability Zones where the vpc subnets are located.\nThe first Availability Zone applies to the first subnet in the list of subnets.\nThe second Availability Zone applies to the second subnet."
         },
         "NetworkInterfaceIds": {
           "shape": "__listOf__string",
           "locationName": "networkInterfaceIds",
-          "documentation": "A list of Elastic Network Interfaces created by MediaLive in the customer's VPC\n"
+          "documentation": "A list of Elastic Network Interfaces created by MediaLive in the customer's VPC"
         },
         "SecurityGroupIds": {
           "shape": "__listOf__string",
           "locationName": "securityGroupIds",
-          "documentation": "A list of up EC2 VPC security group IDs attached to the Output VPC network interfaces.\n"
+          "documentation": "A list of up EC2 VPC security group IDs attached to the Output VPC network interfaces."
         },
         "SubnetIds": {
           "shape": "__listOf__string",
           "locationName": "subnetIds",
-          "documentation": "A list of VPC subnet IDs from the same VPC.\nIf STANDARD channel, subnet IDs must be mapped to two unique availability zones (AZ).\n"
+          "documentation": "A list of VPC subnet IDs from the same VPC.\nIf STANDARD channel, subnet IDs must be mapped to two unique availability zones (AZ)."
         }
       },
-      "documentation": "The properties for a private VPC Output\n"
+      "documentation": "The properties for a private VPC Output"
     },
     "WavCodingMode": {
       "type": "string",
@@ -17944,6 +17994,140 @@
         "shape": "InputDeviceUhdAudioChannelPairConfig"
       },
       "documentation": "Placeholder documentation for __listOfInputDeviceUhdAudioChannelPairConfig"
+    },
+    "ChannelPipelineIdToRestart": {
+      "type": "string",
+      "documentation": "Property of RestartChannelPipelinesRequest",
+      "enum": [
+        "PIPELINE_0",
+        "PIPELINE_1"
+      ]
+    },
+    "RestartChannelPipelinesRequest": {
+      "type": "structure",
+      "members": {
+        "ChannelId": {
+          "shape": "__string",
+          "location": "uri",
+          "locationName": "channelId",
+          "documentation": "ID of channel"
+        },
+        "PipelineIds": {
+          "shape": "__listOfChannelPipelineIdToRestart",
+          "locationName": "pipelineIds",
+          "documentation": "An array of pipelines to restart in this channel. Format PIPELINE_0 or PIPELINE_1."
+        }
+      },
+      "documentation": "Pipelines to restart.",
+      "required": [
+        "ChannelId"
+      ]
+    },
+    "RestartChannelPipelinesResponse": {
+      "type": "structure",
+      "members": {
+        "Arn": {
+          "shape": "__string",
+          "locationName": "arn",
+          "documentation": "The unique arn of the channel."
+        },
+        "CdiInputSpecification": {
+          "shape": "CdiInputSpecification",
+          "locationName": "cdiInputSpecification",
+          "documentation": "Specification of CDI inputs for this channel"
+        },
+        "ChannelClass": {
+          "shape": "ChannelClass",
+          "locationName": "channelClass",
+          "documentation": "The class for this channel. STANDARD for a channel with two pipelines or SINGLE_PIPELINE for a channel with one pipeline."
+        },
+        "Destinations": {
+          "shape": "__listOfOutputDestination",
+          "locationName": "destinations",
+          "documentation": "A list of destinations of the channel. For UDP outputs, there is one\ndestination per output. For other types (HLS, for example), there is\none destination per packager."
+        },
+        "EgressEndpoints": {
+          "shape": "__listOfChannelEgressEndpoint",
+          "locationName": "egressEndpoints",
+          "documentation": "The endpoints where outgoing connections initiate from"
+        },
+        "EncoderSettings": {
+          "shape": "EncoderSettings",
+          "locationName": "encoderSettings"
+        },
+        "Id": {
+          "shape": "__string",
+          "locationName": "id",
+          "documentation": "The unique id of the channel."
+        },
+        "InputAttachments": {
+          "shape": "__listOfInputAttachment",
+          "locationName": "inputAttachments",
+          "documentation": "List of input attachments for channel."
+        },
+        "InputSpecification": {
+          "shape": "InputSpecification",
+          "locationName": "inputSpecification",
+          "documentation": "Specification of network and file inputs for this channel"
+        },
+        "LogLevel": {
+          "shape": "LogLevel",
+          "locationName": "logLevel",
+          "documentation": "The log level being written to CloudWatch Logs."
+        },
+        "Maintenance": {
+          "shape": "MaintenanceStatus",
+          "locationName": "maintenance",
+          "documentation": "Maintenance settings for this channel."
+        },
+        "MaintenanceStatus": {
+          "shape": "__string",
+          "locationName": "maintenanceStatus",
+          "documentation": "The time in milliseconds by when the PVRE restart must occur."
+        },
+        "Name": {
+          "shape": "__string",
+          "locationName": "name",
+          "documentation": "The name of the channel. (user-mutable)"
+        },
+        "PipelineDetails": {
+          "shape": "__listOfPipelineDetail",
+          "locationName": "pipelineDetails",
+          "documentation": "Runtime details for the pipelines of a running channel."
+        },
+        "PipelinesRunningCount": {
+          "shape": "__integer",
+          "locationName": "pipelinesRunningCount",
+          "documentation": "The number of currently healthy pipelines."
+        },
+        "RoleArn": {
+          "shape": "__string",
+          "locationName": "roleArn",
+          "documentation": "The Amazon Resource Name (ARN) of the role assumed when running the Channel."
+        },
+        "State": {
+          "shape": "ChannelState",
+          "locationName": "state"
+        },
+        "Tags": {
+          "shape": "Tags",
+          "locationName": "tags",
+          "documentation": "A collection of key-value pairs."
+        },
+        "Vpc": {
+          "shape": "VpcOutputSettingsDescription",
+          "locationName": "vpc",
+          "documentation": "Settings for VPC output"
+        }
+      },
+      "documentation": "Placeholder documentation for RestartChannelPipelinesResponse"
+    },
+    "__listOfChannelPipelineIdToRestart": {
+      "type": "list",
+      "member": {
+        "shape": "ChannelPipelineIdToRestart"
+      },
+      "documentation": "Placeholder documentation for __listOfChannelPipelineIdToRestart"
     }
   },
   "documentation": "API for AWS Elemental MediaLive"

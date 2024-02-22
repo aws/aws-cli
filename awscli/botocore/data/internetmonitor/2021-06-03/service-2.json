@@ -843,6 +843,10 @@
         "InternetHealth":{
           "shape":"InternetHealth",
           "documentation":"<p>The calculated health at a specific location.</p>"
+        },
+        "Ipv4Prefixes":{
+          "shape":"Ipv4PrefixList",
+          "documentation":"<p>The IPv4 prefixes at the client location that was impacted by the health event.</p>"
         }
       },
       "documentation":"<p>Information about a location impacted by a health event in Amazon CloudWatch Internet Monitor.</p> <p>Geographic regions are hierarchically categorized into country, subdivision, metro and city geographic granularities. The geographic region is identified based on the IP address used at the client locations.</p>"
@@ -896,6 +900,10 @@
         }
       },
       "documentation":"<p>Publish internet measurements to an Amazon S3 bucket in addition to CloudWatch Logs.</p>"
+    },
+    "Ipv4PrefixList":{
+      "type":"list",
+      "member":{"shape":"String"}
     },
     "LimitExceededException":{
       "type":"structure",
@@ -1036,7 +1044,7 @@
         },
         "MinTrafficImpact":{
           "shape":"Percentage",
-          "documentation":"<p>The minimum percentage of overall traffic for an application that must be impacted by an issue before Internet Monitor creates an event when a threshold is crossed for a local health score.</p> <p>If you don't set a minimum traffic impact threshold, the default value is 0.01%.</p>"
+          "documentation":"<p>The minimum percentage of overall traffic for an application that must be impacted by an issue before Internet Monitor creates an event when a threshold is crossed for a local health score.</p> <p>If you don't set a minimum traffic impact threshold, the default value is 0.1%.</p>"
         }
       },
       "documentation":"<p>A complex type with the configuration information that determines the threshold and other conditions for when Internet Monitor creates a health event for a local performance or availability issue, when scores cross a threshold for one or more city-networks.</p> <p>Defines the percentages, for performance scores or availability scores, that are the local thresholds for when Amazon CloudWatch Internet Monitor creates a health event. Also defines whether a local threshold is enabled or disabled, and the minimum percentage of overall traffic that must be impacted by an issue before Internet Monitor creates an event when a threshold is crossed for a local health score.</p> <p>If you don't set a local health event threshold, the default value is 60%.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/CloudWatch-IM-overview.html#IMUpdateThresholdFromOverview\"> Change health event thresholds</a> in the Internet Monitor section of the <i>CloudWatch User Guide</i>.</p>"
@@ -1356,7 +1364,7 @@
         },
         "QueryType":{
           "shape":"QueryType",
-          "documentation":"<p>The type of query to run. The following are the three types of queries that you can run using the Internet Monitor query interface:</p> <ul> <li> <p> <code>MEASUREMENTS</code>: TBD definition</p> </li> <li> <p> <code>TOP_LOCATIONS</code>: TBD definition</p> </li> <li> <p> <code>TOP_LOCATION_DETAILS</code>: TBD definition</p> </li> </ul> <p>For lists of the fields returned with each query type and more information about how each type of query is performed, see <a href=\"https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/CloudWatch-IM-view-cw-tools-cwim-query.html\"> Using the Amazon CloudWatch Internet Monitor query interface</a> in the Amazon CloudWatch Internet Monitor User Guide.</p>"
+          "documentation":"<p>The type of query to run. The following are the three types of queries that you can run using the Internet Monitor query interface:</p> <ul> <li> <p> <code>MEASUREMENTS</code>: Provides availability score, performance score, total traffic, and round-trip times, at 5 minute intervals.</p> </li> <li> <p> <code>TOP_LOCATIONS</code>: Provides availability score, performance score, total traffic, and time to first byte (TTFB) information, for the top location and ASN combinations that you're monitoring, by traffic volume.</p> </li> <li> <p> <code>TOP_LOCATION_DETAILS</code>: Provides TTFB for Amazon CloudFront, your current configuration, and the best performing EC2 configuration, at 1 hour intervals.</p> </li> </ul> <p>For lists of the fields returned with each query type and more information about how each type of query is performed, see <a href=\"https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/CloudWatch-IM-view-cw-tools-cwim-query.html\"> Using the Amazon CloudWatch Internet Monitor query interface</a> in the Amazon CloudWatch Internet Monitor User Guide.</p>"
         },
         "FilterParameters":{
           "shape":"FilterParameters",

@@ -6985,6 +6985,22 @@ CHANGELOG
 * feature:wizard: Added support for AWS CLI Wizards. See `#3752 <https://github.com/aws/aws-cli/issues/3752>`__.
 
 
+1.32.48
+=======
+
+* api-change:``internetmonitor``: This release adds IPv4 prefixes to health events
+* api-change:``kinesisvideo``: Increasing NextToken parameter length restriction for List APIs from 512 to 1024.
+
+
+1.32.47
+=======
+
+* api-change:``iotevents``: Increase the maximum length of descriptions for Inputs, Detector Models, and Alarm Models
+* api-change:``lookoutequipment``: This release adds a field exposing model quality to read APIs for models. It also adds a model quality field to the API response when creating an inference scheduler.
+* api-change:``medialive``: MediaLive now supports the ability to restart pipelines in a running channel.
+* api-change:``ssm``: This release adds support for sharing Systems Manager parameters with other AWS accounts.
+
+
 1.32.46
 =======
 

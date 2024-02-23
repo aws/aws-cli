@@ -2,6 +2,15 @@
 CHANGELOG
 =========
 
+1.32.49
+=======
+
+* api-change:``appsync``: Documentation only updates for AppSync
+* api-change:``qldb``: Clarify possible values for KmsKeyArn and EncryptionDescription.
+* api-change:``rds``: Add pattern and length based validations for DBShardGroupIdentifier
+* api-change:``rum``: Doc-only update for new RUM metrics that were added
+
+
 1.32.48
 =======
 

@@ -2,6 +2,15 @@
 CHANGELOG
 =========
 
+1.32.50
+=======
+
+* api-change:``apigateway``: Documentation updates for Amazon API Gateway.
+* api-change:``drs``: Added volume status to DescribeSourceServer replicated volumes.
+* api-change:``kafkaconnect``: Adds support for tagging, with new TagResource, UntagResource and ListTagsForResource APIs to manage tags and updates to existing APIs to allow tag on create. This release also adds support for the new DeleteWorkerConfiguration API.
+* api-change:``rds``: This release adds support for gp3 data volumes for Multi-AZ DB Clusters.
+
+
 1.32.49
 =======
 

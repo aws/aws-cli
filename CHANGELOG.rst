@@ -6996,6 +6996,30 @@ CHANGELOG
 * feature:wizard: Added support for AWS CLI Wizards. See `#3752 <https://github.com/aws/aws-cli/issues/3752>`__.
 
 
+1.32.51
+=======
+
+* api-change:``amplifyuibuilder``: We have added the ability to tag resources after they are created
+
+
+1.32.50
+=======
+
+* api-change:``apigateway``: Documentation updates for Amazon API Gateway.
+* api-change:``drs``: Added volume status to DescribeSourceServer replicated volumes.
+* api-change:``kafkaconnect``: Adds support for tagging, with new TagResource, UntagResource and ListTagsForResource APIs to manage tags and updates to existing APIs to allow tag on create. This release also adds support for the new DeleteWorkerConfiguration API.
+* api-change:``rds``: This release adds support for gp3 data volumes for Multi-AZ DB Clusters.
+
+
+1.32.49
+=======
+
+* api-change:``appsync``: Documentation only updates for AppSync
+* api-change:``qldb``: Clarify possible values for KmsKeyArn and EncryptionDescription.
+* api-change:``rds``: Add pattern and length based validations for DBShardGroupIdentifier
+* api-change:``rum``: Doc-only update for new RUM metrics that were added
+
+
 1.32.48
 =======
 

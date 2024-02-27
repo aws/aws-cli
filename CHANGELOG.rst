@@ -2,6 +2,12 @@
 CHANGELOG
 =========
 
+1.32.51
+=======
+
+* api-change:``amplifyuibuilder``: We have added the ability to tag resources after they are created
+
+
 1.32.50
 =======
 

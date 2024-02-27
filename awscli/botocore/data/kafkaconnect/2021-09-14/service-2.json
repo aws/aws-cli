@@ -32,7 +32,7 @@
         {"shape":"UnauthorizedException"},
         {"shape":"InternalServerErrorException"}
       ],
-      "documentation":"<p>Creates a connector using the specified properties.</p>"
+      "documentation":"<p>Creates a connector using the specified properties. </p>"
     },
     "CreateCustomPlugin":{
       "name":"CreateCustomPlugin",
@@ -116,6 +116,27 @@
         {"shape":"InternalServerErrorException"}
       ],
       "documentation":"<p>Deletes a custom plugin.</p>",
+      "idempotent":true
+    },
+    "DeleteWorkerConfiguration":{
+      "name":"DeleteWorkerConfiguration",
+      "http":{
+        "method":"DELETE",
+        "requestUri":"/v1/worker-configurations/{workerConfigurationArn}",
+        "responseCode":200
+      },
+      "input":{"shape":"DeleteWorkerConfigurationRequest"},
+      "output":{"shape":"DeleteWorkerConfigurationResponse"},
+      "errors":[
+        {"shape":"NotFoundException"},
+        {"shape":"BadRequestException"},
+        {"shape":"ForbiddenException"},
+        {"shape":"ServiceUnavailableException"},
+        {"shape":"TooManyRequestsException"},
+        {"shape":"UnauthorizedException"},
+        {"shape":"InternalServerErrorException"}
+      ],
+      "documentation":"<p>Deletes the specified worker configuration.</p>",
       "idempotent":true
     },
     "DescribeConnector":{
@@ -218,6 +239,26 @@
       ],
       "documentation":"<p>Returns a list of all of the custom plugins in this account and Region.</p>"
     },
+    "ListTagsForResource":{
+      "name":"ListTagsForResource",
+      "http":{
+        "method":"GET",
+        "requestUri":"/v1/tags/{resourceArn}",
+        "responseCode":200
+      },
+      "input":{"shape":"ListTagsForResourceRequest"},
+      "output":{"shape":"ListTagsForResourceResponse"},
+      "errors":[
+        {"shape":"NotFoundException"},
+        {"shape":"BadRequestException"},
+        {"shape":"ForbiddenException"},
+        {"shape":"ServiceUnavailableException"},
+        {"shape":"TooManyRequestsException"},
+        {"shape":"UnauthorizedException"},
+        {"shape":"InternalServerErrorException"}
+      ],
+      "documentation":"<p>Lists all the tags attached to the specified resource.</p>"
+    },
     "ListWorkerConfigurations":{
       "name":"ListWorkerConfigurations",
       "http":{
@@ -237,6 +278,49 @@
         {"shape":"InternalServerErrorException"}
       ],
       "documentation":"<p>Returns a list of all of the worker configurations in this account and Region.</p>"
+    },
+    "TagResource":{
+      "name":"TagResource",
+      "http":{
+        "method":"POST",
+        "requestUri":"/v1/tags/{resourceArn}",
+        "responseCode":200
+      },
+      "input":{"shape":"TagResourceRequest"},
+      "output":{"shape":"TagResourceResponse"},
+      "errors":[
+        {"shape":"NotFoundException"},
+        {"shape":"ConflictException"},
+        {"shape":"BadRequestException"},
+        {"shape":"ForbiddenException"},
+        {"shape":"ServiceUnavailableException"},
+        {"shape":"TooManyRequestsException"},
+        {"shape":"UnauthorizedException"},
+        {"shape":"InternalServerErrorException"}
+      ],
+      "documentation":"<p>Attaches tags to the specified resource.</p>",
+      "idempotent":true
+    },
+    "UntagResource":{
+      "name":"UntagResource",
+      "http":{
+        "method":"DELETE",
+        "requestUri":"/v1/tags/{resourceArn}",
+        "responseCode":200
+      },
+      "input":{"shape":"UntagResourceRequest"},
+      "output":{"shape":"UntagResourceResponse"},
+      "errors":[
+        {"shape":"NotFoundException"},
+        {"shape":"BadRequestException"},
+        {"shape":"ForbiddenException"},
+        {"shape":"ServiceUnavailableException"},
+        {"shape":"TooManyRequestsException"},
+        {"shape":"UnauthorizedException"},
+        {"shape":"InternalServerErrorException"}
+      ],
+      "documentation":"<p>Removes tags from the specified resource.</p>",
+      "idempotent":true
     },
     "UpdateConnector":{
       "name":"UpdateConnector",
@@ -606,11 +690,15 @@
         },
         "plugins":{
           "shape":"__listOfPlugin",
-          "documentation":"<p>Specifies which plugins to use for the connector.</p>"
+          "documentation":"<important> <p>Amazon MSK Connect does not currently support specifying multiple plugins as a list. To use more than one plugin for your connector, you can create a single custom plugin using a ZIP file that bundles multiple plugins together.</p> </important> <p>Specifies which plugin to use for the connector. You must specify a single-element list containing one <code>customPlugin</code> object.</p>"
         },
         "serviceExecutionRoleArn":{
           "shape":"__string",
           "documentation":"<p>The Amazon Resource Name (ARN) of the IAM role used by the connector to access the Amazon Web Services resources that it needs. The types of resources depends on the logic of the connector. For example, a connector that has Amazon S3 as a destination must have permissions that allow it to write to the S3 destination bucket.</p>"
+        },
+        "tags":{
+          "shape":"Tags",
+          "documentation":"<p>The tags you want to attach to the connector.</p>"
         },
         "workerConfiguration":{
           "shape":"WorkerConfiguration",
@@ -658,6 +746,10 @@
         "name":{
           "shape":"__stringMin1Max128",
           "documentation":"<p>The name of the custom plugin.</p>"
+        },
+        "tags":{
+          "shape":"Tags",
+          "documentation":"<p>The tags you want to attach to the custom plugin.</p>"
         }
       }
     },
@@ -700,6 +792,10 @@
         "propertiesFileContent":{
           "shape":"__sensitiveString",
           "documentation":"<p>Base64 encoded contents of connect-distributed.properties file.</p>"
+        },
+        "tags":{
+          "shape":"Tags",
+          "documentation":"<p>The tags you want to attach to the worker configuration.</p>"
         }
       }
     },
@@ -721,6 +817,10 @@
         "workerConfigurationArn":{
           "shape":"__string",
           "documentation":"<p>The Amazon Resource Name (ARN) that Amazon assigned to the worker configuration.</p>"
+        },
+        "workerConfigurationState":{
+          "shape":"WorkerConfigurationState",
+          "documentation":"<p>The state of the worker configuration.</p>"
         }
       }
     },
@@ -740,7 +840,7 @@
           "documentation":"<p>The revision of the custom plugin.</p>"
         }
       },
-      "documentation":"<p>A plugin is an AWS resource that contains the code that defines a connector's logic.</p>"
+      "documentation":"<p>A plugin is an Amazon Web Services resource that contains the code that defines a connector's logic.</p>"
     },
     "CustomPluginContentType":{
       "type":"string",
@@ -925,6 +1025,31 @@
         }
       }
     },
+    "DeleteWorkerConfigurationRequest":{
+      "type":"structure",
+      "required":["workerConfigurationArn"],
+      "members":{
+        "workerConfigurationArn":{
+          "shape":"__string",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the worker configuration that you want to delete.</p>",
+          "location":"uri",
+          "locationName":"workerConfigurationArn"
+        }
+      }
+    },
+    "DeleteWorkerConfigurationResponse":{
+      "type":"structure",
+      "members":{
+        "workerConfigurationArn":{
+          "shape":"__string",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the worker configuration that you requested to delete.</p>"
+        },
+        "workerConfigurationState":{
+          "shape":"WorkerConfigurationState",
+          "documentation":"<p>The state of the worker configuration.</p>"
+        }
+      }
+    },
     "DescribeConnectorRequest":{
       "type":"structure",
       "required":["connectorArn"],
@@ -1089,6 +1214,10 @@
         "workerConfigurationArn":{
           "shape":"__string",
           "documentation":"<p>The Amazon Resource Name (ARN) of the custom configuration.</p>"
+        },
+        "workerConfigurationState":{
+          "shape":"WorkerConfigurationState",
+          "documentation":"<p>The state of the worker configuration.</p>"
         }
       }
     },
@@ -1265,6 +1394,12 @@
           "location":"querystring",
           "locationName":"maxResults"
         },
+        "namePrefix":{
+          "shape":"__string",
+          "documentation":"<p>Lists custom plugin names that start with the specified text string.</p>",
+          "location":"querystring",
+          "locationName":"namePrefix"
+        },
         "nextToken":{
           "shape":"__string",
           "documentation":"<p>If the response of a ListCustomPlugins operation is truncated, it will include a NextToken. Send this NextToken in a subsequent request to continue listing from where the previous operation left off.</p>",
@@ -1286,6 +1421,27 @@
         }
       }
     },
+    "ListTagsForResourceRequest":{
+      "type":"structure",
+      "required":["resourceArn"],
+      "members":{
+        "resourceArn":{
+          "shape":"__string",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the resource for which you want to list all attached tags.</p>",
+          "location":"uri",
+          "locationName":"resourceArn"
+        }
+      }
+    },
+    "ListTagsForResourceResponse":{
+      "type":"structure",
+      "members":{
+        "tags":{
+          "shape":"Tags",
+          "documentation":"<p>Lists the tags attached to the specified resource in the corresponding request.</p>"
+        }
+      }
+    },
     "ListWorkerConfigurationsRequest":{
       "type":"structure",
       "members":{
@@ -1294,6 +1450,12 @@
           "documentation":"<p>The maximum number of worker configurations to list in one response.</p>",
           "location":"querystring",
           "locationName":"maxResults"
+        },
+        "namePrefix":{
+          "shape":"__string",
+          "documentation":"<p>Lists worker configuration names that start with the specified text string.</p>",
+          "location":"querystring",
+          "locationName":"namePrefix"
         },
         "nextToken":{
           "shape":"__string",
@@ -1363,7 +1525,7 @@
           "documentation":"<p>Details about a custom plugin.</p>"
         }
       },
-      "documentation":"<p>A plugin is an AWS resource that contains the code that defines your connector logic. </p>"
+      "documentation":"<p>A plugin is an Amazon Web Services resource that contains the code that defines your connector logic. </p>"
     },
     "PluginDescription":{
       "type":"structure",
@@ -1590,6 +1752,53 @@
       },
       "documentation":"<p>Details about the state of a resource.</p>"
     },
+    "TagKey":{
+      "type":"string",
+      "max":128,
+      "min":1
+    },
+    "TagKeyList":{
+      "type":"list",
+      "member":{"shape":"TagKey"},
+      "max":200,
+      "min":0
+    },
+    "TagResourceRequest":{
+      "type":"structure",
+      "required":[
+        "resourceArn",
+        "tags"
+      ],
+      "members":{
+        "resourceArn":{
+          "shape":"__string",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the resource to which you want to attach tags.</p>",
+          "location":"uri",
+          "locationName":"resourceArn"
+        },
+        "tags":{
+          "shape":"Tags",
+          "documentation":"<p>The tags that you want to attach to the resource.</p>"
+        }
+      }
+    },
+    "TagResourceResponse":{
+      "type":"structure",
+      "members":{
+      }
+    },
+    "TagValue":{
+      "type":"string",
+      "max":256,
+      "min":0
+    },
+    "Tags":{
+      "type":"map",
+      "key":{"shape":"TagKey"},
+      "value":{"shape":"TagValue"},
+      "max":200,
+      "min":0
+    },
     "TooManyRequestsException":{
       "type":"structure",
       "members":{
@@ -1613,6 +1822,32 @@
         "senderFault":true
       },
       "exception":true
+    },
+    "UntagResourceRequest":{
+      "type":"structure",
+      "required":[
+        "resourceArn",
+        "tagKeys"
+      ],
+      "members":{
+        "resourceArn":{
+          "shape":"__string",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the resource from which you want to remove tags.</p>",
+          "location":"uri",
+          "locationName":"resourceArn"
+        },
+        "tagKeys":{
+          "shape":"TagKeyList",
+          "documentation":"<p>The keys of the tags that you want to remove from the resource.</p>",
+          "location":"querystring",
+          "locationName":"tagKeys"
+        }
+      }
+    },
+    "UntagResourceResponse":{
+      "type":"structure",
+      "members":{
+      }
     },
     "UpdateConnectorRequest":{
       "type":"structure",
@@ -1754,6 +1989,13 @@
       },
       "documentation":"<p>The summary of a worker configuration revision.</p>"
     },
+    "WorkerConfigurationState":{
+      "type":"string",
+      "enum":[
+        "ACTIVE",
+        "DELETING"
+      ]
+    },
     "WorkerConfigurationSummary":{
       "type":"structure",
       "members":{
@@ -1776,6 +2018,10 @@
         "workerConfigurationArn":{
           "shape":"__string",
           "documentation":"<p>The Amazon Resource Name (ARN) of the worker configuration.</p>"
+        },
+        "workerConfigurationState":{
+          "shape":"WorkerConfigurationState",
+          "documentation":"<p>The state of the worker configuration.</p>"
         }
       },
       "documentation":"<p>The summary of a worker configuration.</p>"

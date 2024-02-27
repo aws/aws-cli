@@ -5644,6 +5644,10 @@
         "LimitlessDatabase":{
           "shape":"LimitlessDatabase",
           "documentation":"<p>The details for Aurora Limitless Database.</p>"
+        },
+        "StorageThroughput":{
+          "shape":"IntegerOptional",
+          "documentation":"<p>The storage throughput for the DB cluster. The throughput is automatically set based on the IOPS that you provision, and is not configurable.</p> <p>This setting is only for non-Aurora Multi-AZ DB clusters.</p>"
         }
       },
       "documentation":"<p>Contains the details of an Amazon Aurora DB cluster or Multi-AZ DB cluster.</p> <p>For an Amazon Aurora DB cluster, this data type is used as a response element in the operations <code>CreateDBCluster</code>, <code>DeleteDBCluster</code>, <code>DescribeDBClusters</code>, <code>FailoverDBCluster</code>, <code>ModifyDBCluster</code>, <code>PromoteReadReplicaDBCluster</code>, <code>RestoreDBClusterFromS3</code>, <code>RestoreDBClusterFromSnapshot</code>, <code>RestoreDBClusterToPointInTime</code>, <code>StartDBCluster</code>, and <code>StopDBCluster</code>.</p> <p>For a Multi-AZ DB cluster, this data type is used as a response element in the operations <code>CreateDBCluster</code>, <code>DeleteDBCluster</code>, <code>DescribeDBClusters</code>, <code>FailoverDBCluster</code>, <code>ModifyDBCluster</code>, <code>RebootDBCluster</code>, <code>RestoreDBClusterFromSnapshot</code>, and <code>RestoreDBClusterToPointInTime</code>.</p> <p>For more information on Amazon Aurora DB clusters, see <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/CHAP_AuroraOverview.html\"> What is Amazon Aurora?</a> in the <i>Amazon Aurora User Guide.</i> </p> <p>For more information on Multi-AZ DB clusters, see <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/multi-az-db-clusters-concepts.html\"> Multi-AZ deployments with two readable standby DB instances</a> in the <i>Amazon RDS User Guide.</i> </p>",
@@ -5756,6 +5760,10 @@
         "AwsBackupRecoveryPointArn":{
           "shape":"String",
           "documentation":"<p>The Amazon Resource Name (ARN) of the recovery point in Amazon Web Services Backup.</p>"
+        },
+        "StorageThroughput":{
+          "shape":"IntegerOptional",
+          "documentation":"<p>The storage throughput for the automated backup. The throughput is automatically set based on the IOPS that you provision, and is not configurable.</p> <p>This setting is only for non-Aurora Multi-AZ DB clusters.</p>"
         }
       },
       "documentation":"<p>An automated backup of a DB cluster. It consists of system backups, transaction logs, and the database cluster properties that existed at the time you deleted the source cluster.</p>",
@@ -6337,6 +6345,10 @@
         "DbClusterResourceId":{
           "shape":"String",
           "documentation":"<p>The resource ID of the DB cluster that this DB cluster snapshot was created from.</p>"
+        },
+        "StorageThroughput":{
+          "shape":"IntegerOptional",
+          "documentation":"<p>The storage throughput for the DB cluster snapshot. The throughput is automatically set based on the IOPS that you provision, and is not configurable.</p> <p>This setting is only for non-Aurora Multi-AZ DB clusters.</p>"
         }
       },
       "documentation":"<p>Contains the details for an Amazon RDS DB cluster snapshot</p> <p>This data type is used as a response element in the <code>DescribeDBClusterSnapshots</code> action.</p>",
@@ -8018,7 +8030,7 @@
           "documentation":"<p>The Amazon Web Services Region-unique, immutable identifier for the DB shard group.</p>"
         },
         "DBShardGroupIdentifier":{
-          "shape":"String",
+          "shape":"DBShardGroupIdentifier",
           "documentation":"<p>The name of the DB shard group.</p>"
         },
         "DBClusterIdentifier":{
@@ -8058,6 +8070,12 @@
         "senderFault":true
       },
       "exception":true
+    },
+    "DBShardGroupIdentifier":{
+      "type":"string",
+      "max":63,
+      "min":1,
+      "pattern":"[a-zA-Z][a-zA-Z0-9]*(-[a-zA-Z0-9]+)*"
     },
     "DBShardGroupNotFoundFault":{
       "type":"structure",
@@ -8776,7 +8794,7 @@
       "required":["DBShardGroupIdentifier"],
       "members":{
         "DBShardGroupIdentifier":{
-          "shape":"String",
+          "shape":"DBShardGroupIdentifier",
           "documentation":"<p>Teh name of the DB shard group to delete.</p>"
         }
       }
@@ -9618,7 +9636,7 @@
       "type":"structure",
       "members":{
         "DBShardGroupIdentifier":{
-          "shape":"String",
+          "shape":"DBShardGroupIdentifier",
           "documentation":"<p>The user-supplied DB shard group identifier or the Amazon Resource Name (ARN) of the DB shard group. If this parameter is specified, information for only the specific DB shard group is returned. This parameter isn't case-sensitive.</p> <p>Constraints:</p> <ul> <li> <p>If supplied, must match an existing DB shard group identifier.</p> </li> </ul>"
         },
         "Filters":{
@@ -12723,7 +12741,7 @@
       "required":["DBShardGroupIdentifier"],
       "members":{
         "DBShardGroupIdentifier":{
-          "shape":"String",
+          "shape":"DBShardGroupIdentifier",
           "documentation":"<p>The name of the DB shard group to modify.</p>"
         },
         "MaxACU":{
@@ -14080,7 +14098,7 @@
       "required":["DBShardGroupIdentifier"],
       "members":{
         "DBShardGroupIdentifier":{
-          "shape":"String",
+          "shape":"DBShardGroupIdentifier",
           "documentation":"<p>The name of the DB shard group to reboot.</p>"
         }
       }
@@ -15180,7 +15198,7 @@
         },
         "DBClusterSnapshotIdentifier":{
           "shape":"String",
-          "documentation":"<p>The identifier for the RDS for MySQL Multi-AZ DB cluster snapshot to restore from.</p> <p>For more information on Multi-AZ DB clusters, see <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/multi-az-db-clusters-concepts.html\"> Multi-AZ DB cluster deployments</a> in the <i>Amazon RDS User Guide</i>.</p> <p>Constraints:</p> <ul> <li> <p>Must match the identifier of an existing Multi-AZ DB cluster snapshot.</p> </li> <li> <p>Can't be specified when <code>DBSnapshotIdentifier</code> is specified.</p> </li> <li> <p>Must be specified when <code>DBSnapshotIdentifier</code> isn't specified.</p> </li> <li> <p>If you are restoring from a shared manual Multi-AZ DB cluster snapshot, the <code>DBClusterSnapshotIdentifier</code> must be the ARN of the shared snapshot.</p> </li> <li> <p>Can't be the identifier of an Aurora DB cluster snapshot.</p> </li> <li> <p>Can't be the identifier of an RDS for PostgreSQL Multi-AZ DB cluster snapshot.</p> </li> </ul>"
+          "documentation":"<p>The identifier for the Multi-AZ DB cluster snapshot to restore from.</p> <p>For more information on Multi-AZ DB clusters, see <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/multi-az-db-clusters-concepts.html\"> Multi-AZ DB cluster deployments</a> in the <i>Amazon RDS User Guide</i>.</p> <p>Constraints:</p> <ul> <li> <p>Must match the identifier of an existing Multi-AZ DB cluster snapshot.</p> </li> <li> <p>Can't be specified when <code>DBSnapshotIdentifier</code> is specified.</p> </li> <li> <p>Must be specified when <code>DBSnapshotIdentifier</code> isn't specified.</p> </li> <li> <p>If you are restoring from a shared manual Multi-AZ DB cluster snapshot, the <code>DBClusterSnapshotIdentifier</code> must be the ARN of the shared snapshot.</p> </li> <li> <p>Can't be the identifier of an Aurora DB cluster snapshot.</p> </li> </ul>"
         },
         "AllocatedStorage":{
           "shape":"IntegerOptional",

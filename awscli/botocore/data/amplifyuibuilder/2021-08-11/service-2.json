@@ -299,6 +299,24 @@
       ],
       "documentation":"<p>Retrieves a list of forms for a specified Amplify app and backend environment.</p>"
     },
+    "ListTagsForResource":{
+      "name":"ListTagsForResource",
+      "http":{
+        "method":"GET",
+        "requestUri":"/tags/{resourceArn}",
+        "responseCode":200
+      },
+      "input":{"shape":"ListTagsForResourceRequest"},
+      "output":{"shape":"ListTagsForResourceResponse"},
+      "errors":[
+        {"shape":"UnauthorizedException"},
+        {"shape":"InternalServerException"},
+        {"shape":"InvalidParameterException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p>Returns a list of tags for a specified Amazon Resource Name (ARN).</p>"
+    },
     "ListThemes":{
       "name":"ListThemes",
       "http":{
@@ -326,7 +344,8 @@
         {"shape":"UnauthorizedException"},
         {"shape":"InvalidParameterException"}
       ],
-      "documentation":"<p>Stores the metadata information about a feature on a form.</p>"
+      "documentation":"<p>Stores the metadata information about a feature on a form.</p>",
+      "idempotent":true
     },
     "RefreshToken":{
       "name":"RefreshToken",
@@ -357,6 +376,44 @@
         {"shape":"ThrottlingException"}
       ],
       "documentation":"<p>Starts a code generation job for a specified Amplify app and backend environment.</p>"
+    },
+    "TagResource":{
+      "name":"TagResource",
+      "http":{
+        "method":"POST",
+        "requestUri":"/tags/{resourceArn}",
+        "responseCode":200
+      },
+      "input":{"shape":"TagResourceRequest"},
+      "output":{"shape":"TagResourceResponse"},
+      "errors":[
+        {"shape":"UnauthorizedException"},
+        {"shape":"InternalServerException"},
+        {"shape":"InvalidParameterException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p>Tags the resource with a tag key and value.</p>",
+      "idempotent":true
+    },
+    "UntagResource":{
+      "name":"UntagResource",
+      "http":{
+        "method":"DELETE",
+        "requestUri":"/tags/{resourceArn}",
+        "responseCode":200
+      },
+      "input":{"shape":"UntagResourceRequest"},
+      "output":{"shape":"UntagResourceResponse"},
+      "errors":[
+        {"shape":"UnauthorizedException"},
+        {"shape":"InternalServerException"},
+        {"shape":"InvalidParameterException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p>Untags a resource with a specified Amazon Resource Name (ARN).</p>",
+      "idempotent":true
     },
     "UpdateComponent":{
       "name":"UpdateComponent",
@@ -2710,11 +2767,6 @@
         }
       }
     },
-    "ListComponentsLimit":{
-      "type":"integer",
-      "max":100,
-      "min":1
-    },
     "ListComponentsRequest":{
       "type":"structure",
       "required":[
@@ -2741,7 +2793,7 @@
           "locationName":"nextToken"
         },
         "maxResults":{
-          "shape":"ListComponentsLimit",
+          "shape":"ListEntityLimit",
           "documentation":"<p>The maximum number of components to retrieve.</p>",
           "location":"querystring",
           "locationName":"maxResults"
@@ -2762,8 +2814,9 @@
         }
       }
     },
-    "ListFormsLimit":{
+    "ListEntityLimit":{
       "type":"integer",
+      "box":true,
       "max":100,
       "min":1
     },
@@ -2793,7 +2846,7 @@
           "locationName":"nextToken"
         },
         "maxResults":{
-          "shape":"ListFormsLimit",
+          "shape":"ListEntityLimit",
           "documentation":"<p>The maximum number of forms to retrieve.</p>",
           "location":"querystring",
           "locationName":"maxResults"
@@ -2814,10 +2867,27 @@
         }
       }
     },
-    "ListThemesLimit":{
-      "type":"integer",
-      "max":100,
-      "min":1
+    "ListTagsForResourceRequest":{
+      "type":"structure",
+      "required":["resourceArn"],
+      "members":{
+        "resourceArn":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Resource Name (ARN) to use to list tags.</p>",
+          "location":"uri",
+          "locationName":"resourceArn"
+        }
+      }
+    },
+    "ListTagsForResourceResponse":{
+      "type":"structure",
+      "required":["tags"],
+      "members":{
+        "tags":{
+          "shape":"Tags",
+          "documentation":"<p>A list of tag key value pairs for a specified Amazon Resource Name (ARN).</p>"
+        }
+      }
     },
     "ListThemesRequest":{
       "type":"structure",
@@ -2845,7 +2915,7 @@
           "locationName":"nextToken"
         },
         "maxResults":{
-          "shape":"ListThemesLimit",
+          "shape":"ListEntityLimit",
           "documentation":"<p>The maximum number of theme results to return in the response.</p>",
           "location":"querystring",
           "locationName":"maxResults"
@@ -3277,6 +3347,36 @@
       "min":1,
       "pattern":"(?!aws:)[a-zA-Z+-=._:/]+"
     },
+    "TagKeyList":{
+      "type":"list",
+      "member":{"shape":"TagKey"},
+      "max":200,
+      "min":0
+    },
+    "TagResourceRequest":{
+      "type":"structure",
+      "required":[
+        "resourceArn",
+        "tags"
+      ],
+      "members":{
+        "resourceArn":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Resource Name (ARN) to use to tag a resource.</p>",
+          "location":"uri",
+          "locationName":"resourceArn"
+        },
+        "tags":{
+          "shape":"Tags",
+          "documentation":"<p>A list of tag key value pairs for a specified Amazon Resource Name (ARN).</p>"
+        }
+      }
+    },
+    "TagResourceResponse":{
+      "type":"structure",
+      "members":{
+      }
+    },
     "TagValue":{
       "type":"string",
       "max":256,
@@ -3437,6 +3537,32 @@
         "senderFault":true
       },
       "exception":true
+    },
+    "UntagResourceRequest":{
+      "type":"structure",
+      "required":[
+        "resourceArn",
+        "tagKeys"
+      ],
+      "members":{
+        "resourceArn":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Resource Name (ARN) to use to untag a resource.</p>",
+          "location":"uri",
+          "locationName":"resourceArn"
+        },
+        "tagKeys":{
+          "shape":"TagKeyList",
+          "documentation":"<p>The tag keys to use to untag a resource.</p>",
+          "location":"querystring",
+          "locationName":"tagKeys"
+        }
+      }
+    },
+    "UntagResourceResponse":{
+      "type":"structure",
+      "members":{
+      }
     },
     "UpdateComponentData":{
       "type":"structure",

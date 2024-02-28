@@ -1096,6 +1096,10 @@
           "shape":"VolumeToConversionMap",
           "documentation":"<p>A mapping between the volumes being converted and the converted snapshot ids</p>"
         },
+        "volumeToProductCodes":{
+          "shape":"VolumeToProductCodes",
+          "documentation":"<p>A mapping between the volumes being converted and the product codes associated with them</p>"
+        },
         "volumeToVolumeSize":{
           "shape":"VolumeToSizeMap",
           "documentation":"<p>A mapping between the volumes and their sizes</p>"
@@ -1385,6 +1389,10 @@
         "totalStorageBytes":{
           "shape":"PositiveInteger",
           "documentation":"<p>The total amount of data to be replicated in bytes.</p>"
+        },
+        "volumeStatus":{
+          "shape":"VolumeStatus",
+          "documentation":"<p>The status of the volume.</p>"
         }
       },
       "documentation":"<p>A disk that should be replicated.</p>"
@@ -3094,6 +3102,37 @@
     "PositiveInteger":{
       "type":"long",
       "min":0
+    },
+    "ProductCode":{
+      "type":"structure",
+      "members":{
+        "productCodeId":{
+          "shape":"ProductCodeId",
+          "documentation":"<p>Id of a product code associated with a volume.</p>"
+        },
+        "productCodeMode":{
+          "shape":"ProductCodeMode",
+          "documentation":"<p>Mode of a product code associated with a volume.</p>"
+        }
+      },
+      "documentation":"<p>Properties of a product code associated with a volume.</p>"
+    },
+    "ProductCodeId":{
+      "type":"string",
+      "max":25,
+      "min":25,
+      "pattern":"^([A-Za-z0-9])+$"
+    },
+    "ProductCodeMode":{
+      "type":"string",
+      "enum":[
+        "ENABLED",
+        "DISABLED"
+      ]
+    },
+    "ProductCodes":{
+      "type":"list",
+      "member":{"shape":"ProductCode"}
     },
     "PutLaunchActionRequest":{
       "type":"structure",
@@ -4879,10 +4918,24 @@
         "other"
       ]
     },
+    "VolumeStatus":{
+      "type":"string",
+      "enum":[
+        "REGULAR",
+        "CONTAINS_MARKETPLACE_PRODUCT_CODES",
+        "MISSING_VOLUME_ATTRIBUTES",
+        "MISSING_VOLUME_ATTRIBUTES_AND_PRECHECK_UNAVAILABLE"
+      ]
+    },
     "VolumeToConversionMap":{
       "type":"map",
       "key":{"shape":"LargeBoundedString"},
       "value":{"shape":"ConversionMap"}
+    },
+    "VolumeToProductCodes":{
+      "type":"map",
+      "key":{"shape":"LargeBoundedString"},
+      "value":{"shape":"ProductCodes"}
     },
     "VolumeToSizeMap":{
       "type":"map",

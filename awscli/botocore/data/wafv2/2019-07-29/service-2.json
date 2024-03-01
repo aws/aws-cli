@@ -2379,6 +2379,7 @@
     },
     "ErrorMessage":{"type":"string"},
     "ErrorReason":{"type":"string"},
+    "EvaluationWindowSec":{"type":"long"},
     "ExcludedRule":{
       "type":"structure",
       "required":["Name"],
@@ -4545,6 +4546,10 @@
         "Limit":{
           "shape":"RateLimit",
           "documentation":"<p>The limit on requests per 5-minute period for a single aggregation instance for the rate-based rule. If the rate-based statement includes a <code>ScopeDownStatement</code>, this limit is applied only to the requests that match the statement.</p> <p>Examples: </p> <ul> <li> <p>If you aggregate on just the IP address, this is the limit on requests from any single IP address. </p> </li> <li> <p>If you aggregate on the HTTP method and the query argument name \"city\", then this is the limit on requests for any single method, city pair. </p> </li> </ul>"
+        },
+        "EvaluationWindowSec":{
+          "shape":"EvaluationWindowSec",
+          "documentation":"<p>The amount of time, in seconds, that WAF should include in its request counts, looking back from the current time. For example, for a setting of 120, when WAF checks the rate, it counts the requests for the 2 minutes immediately preceding the current time. Valid settings are 60, 120, 300, and 600. </p> <p>This setting doesn't determine how often WAF checks the rate, but how far back it looks each time it checks. WAF checks the rate about every 10 seconds.</p> <p>Default: <code>300</code> (5 minutes)</p>"
         },
         "AggregateKeyType":{
           "shape":"RateBasedStatementAggregateKeyType",

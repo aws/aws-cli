@@ -2982,6 +2982,7 @@
       "type":"string",
       "enum":["UtteranceTimestamp"]
     },
+    "AnswerField":{"type":"string"},
     "AssociatedTranscript":{
       "type":"structure",
       "members":{
@@ -3294,9 +3295,26 @@
         }
       }
     },
+    "BedrockKnowledgeBaseArn":{
+      "type":"string",
+      "max":200,
+      "min":1,
+      "pattern":"^arn:aws(-[^:]+)?:bedrock:[a-z0-9-]{1,40}:[0-9]{12}:knowledge-base\\/[A-Za-z0-9]{10}$|^[A-Za-z0-9]{10}$"
+    },
+    "BedrockKnowledgeStoreConfiguration":{
+      "type":"structure",
+      "required":["bedrockKnowledgeBaseArn"],
+      "members":{
+        "bedrockKnowledgeBaseArn":{
+          "shape":"BedrockKnowledgeBaseArn",
+          "documentation":"<p>The ARN of the knowledge base used.</p>"
+        }
+      },
+      "documentation":"<p>Contains details about the configuration of a Amazon Bedrock knowledge base.</p>"
+    },
     "BedrockModelArn":{
       "type":"string",
-      "pattern":"^arn:aws(-[^:]+)?:bedrock:[a-z0-9-]{1,20}::foundation-model\\/[a-z0-9-]{1,63}[.]{1}[a-z0-9-]{1,63}$"
+      "pattern":"^arn:aws(-[^:]+)?:bedrock:[a-z0-9-]{1,20}::foundation-model\\/[a-z0-9-]{1,63}[.]{1}([a-z0-9-]{1,63}[.]){0,2}[a-z0-9-]{1,63}([:][a-z0-9-]{1,63}){0,2}$"
     },
     "BedrockModelSpecification":{
       "type":"structure",
@@ -4186,7 +4204,10 @@
           "shape":"DescriptiveBotBuilderSpecification",
           "documentation":"<p>An object containing specifications for the descriptive bot building feature.</p>"
         },
-        "sampleUtteranceGeneration":{"shape":"SampleUtteranceGenerationSpecification"}
+        "sampleUtteranceGeneration":{
+          "shape":"SampleUtteranceGenerationSpecification",
+          "documentation":"<p>Contains specifications for the sample utterance generation feature.</p>"
+        }
       },
       "documentation":"<p>Contains specifications about the Amazon Lex build time generative AI capabilities from Amazon Bedrock that you can turn on for your bot.</p>"
     },
@@ -5177,6 +5198,10 @@
         "initialResponseSetting":{
           "shape":"InitialResponseSetting",
           "documentation":"<p>Configuration settings for the response that is sent to the user at the beginning of a conversation, before eliciting slot values.</p>"
+        },
+        "qnAIntentConfiguration":{
+          "shape":"QnAIntentConfiguration",
+          "documentation":"<p>Specifies the configuration of the built-in <code>Amazon.QnAIntent</code>. The <code>AMAZON.QnAIntent</code> intent is called when Amazon Lex can't determine another intent to invoke. If you specify this field, you can't specify the <code>kendraConfiguration</code> field.</p>"
         }
       }
     },
@@ -5250,6 +5275,10 @@
         "initialResponseSetting":{
           "shape":"InitialResponseSetting",
           "documentation":"<p>Configuration settings for the response that is sent to the user at the beginning of a conversation, before eliciting slot values.</p>"
+        },
+        "qnAIntentConfiguration":{
+          "shape":"QnAIntentConfiguration",
+          "documentation":"<p>Details about the the configuration of the built-in <code>Amazon.QnAIntent</code>.</p>"
         }
       }
     },
@@ -5787,6 +5816,24 @@
         }
       },
       "documentation":"<p>By default, data stored by Amazon Lex is encrypted. The <code>DataPrivacy</code> structure provides settings that determine how Amazon Lex handles special cases of securing the data for your bot. </p>"
+    },
+    "DataSourceConfiguration":{
+      "type":"structure",
+      "members":{
+        "opensearchConfiguration":{
+          "shape":"OpensearchConfiguration",
+          "documentation":"<p>Contains details about the configuration of the Amazon OpenSearch Service database used for the <code>AMAZON.QnAIntent</code>. To create a domain, follow the steps at <a href=\"https://docs.aws.amazon.com/opensearch-service/latest/developerguide/createupdatedomains.html\">Creating and managing Amazon OpenSearch Service domains</a>.</p>"
+        },
+        "kendraConfiguration":{
+          "shape":"QnAKendraConfiguration",
+          "documentation":"<p>Contains details about the configuration of the Amazon Kendra index used for the <code>AMAZON.QnAIntent</code>. To create a Amazon Kendra index, follow the steps at <a href=\"https://docs.aws.amazon.com/kendra/latest/dg/create-index.html\">Creating an index</a>.</p>"
+        },
+        "bedrockKnowledgeStoreConfiguration":{
+          "shape":"BedrockKnowledgeStoreConfiguration",
+          "documentation":"<p>Contains details about the configuration of the Amazon Bedrock knowledge base used for the <code>AMAZON.QnAIntent</code>. To set up a knowledge base, follow the steps at <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/knowledge-base.html\">Building a knowledge base</a>.</p>"
+        }
+      },
+      "documentation":"<p>Contains details about the configuration of the knowledge store used for the <code>AMAZON.QnAIntent</code>. You must have already created the knowledge store and indexed the documents within it.</p>"
     },
     "DateRangeFilter":{
       "type":"structure",
@@ -7167,6 +7214,10 @@
         "initialResponseSetting":{
           "shape":"InitialResponseSetting",
           "documentation":"<p>Configuration setting for a response sent to the user before Amazon Lex starts eliciting slots.</p>"
+        },
+        "qnAIntentConfiguration":{
+          "shape":"QnAIntentConfiguration",
+          "documentation":"<p>Details about the configuration of the built-in <code>Amazon.QnAIntent</code>.</p>"
         }
       }
     },
@@ -7722,6 +7773,10 @@
       },
       "documentation":"<p>The current state of the conversation with the user.</p>"
     },
+    "DomainEndpoint":{
+      "type":"string",
+      "pattern":"^(http|https):\\/\\/+[^\\s]+[\\w]"
+    },
     "DraftBotVersion":{
       "type":"string",
       "max":5,
@@ -7779,6 +7834,24 @@
       ]
     },
     "ErrorMessage":{"type":"string"},
+    "ExactResponseFields":{
+      "type":"structure",
+      "required":[
+        "questionField",
+        "answerField"
+      ],
+      "members":{
+        "questionField":{
+          "shape":"QuestionField",
+          "documentation":"<p>The name of the field that contains the query made to the OpenSearch Service database.</p>"
+        },
+        "answerField":{
+          "shape":"AnswerField",
+          "documentation":"<p>The name of the field that contains the answer to the query made to the OpenSearch Service database.</p>"
+        }
+      },
+      "documentation":"<p>Contains the names of the fields used for an exact response to the user.</p>"
+    },
     "ExceptionMessage":{"type":"string"},
     "ExecutionErrorDetails":{
       "type":"structure",
@@ -8463,6 +8536,7 @@
       "min":5,
       "pattern":"^([0-9a-zA-Z_])+$"
     },
+    "IncludeField":{"type":"string"},
     "InitialResponseSetting":{
       "type":"structure",
       "members":{
@@ -10705,6 +10779,18 @@
       "min":1,
       "pattern":"^[0-9]+$"
     },
+    "OSIncludeFields":{
+      "type":"list",
+      "member":{"shape":"IncludeField"},
+      "max":5,
+      "min":1
+    },
+    "OSIndexName":{
+      "type":"string",
+      "max":255,
+      "min":1,
+      "pattern":"^(?![_-])[a-z0-9][a-z0-9_\\-]{0,254}$"
+    },
     "ObfuscationSetting":{
       "type":"structure",
       "required":["obfuscationSettingType"],
@@ -10733,6 +10819,36 @@
       "member":{"shape":"ObjectPrefix"},
       "max":2,
       "min":1
+    },
+    "OpensearchConfiguration":{
+      "type":"structure",
+      "required":[
+        "domainEndpoint",
+        "indexName"
+      ],
+      "members":{
+        "domainEndpoint":{
+          "shape":"DomainEndpoint",
+          "documentation":"<p>The endpoint of the Amazon OpenSearch Service domain.</p>"
+        },
+        "indexName":{
+          "shape":"OSIndexName",
+          "documentation":"<p>The name of the Amazon OpenSearch Service index.</p>"
+        },
+        "exactResponse":{
+          "shape":"Boolean",
+          "documentation":"<p>Specifies whether to return an exact response or to return an answer generated by the model using the fields you specify from the database.</p>"
+        },
+        "exactResponseFields":{
+          "shape":"ExactResponseFields",
+          "documentation":"<p>Contains the names of the fields used for an exact response to the user.</p>"
+        },
+        "includeFields":{
+          "shape":"OSIncludeFields",
+          "documentation":"<p>Contains a list of fields from the Amazon OpenSearch Service that the model can use to generate the answer to the query.</p>"
+        }
+      },
+      "documentation":"<p>Contains details about the configuration of the Amazon OpenSearch Service database used for the <code>AMAZON.QnAIntent</code>.</p>"
     },
     "Operation":{
       "type":"string",
@@ -11058,11 +11174,46 @@
       },
       "documentation":"<p>Specifies a list of message groups that Amazon Lex sends to a user to elicit a response.</p>"
     },
+    "QnAIntentConfiguration":{
+      "type":"structure",
+      "members":{
+        "dataSourceConfiguration":{
+          "shape":"DataSourceConfiguration",
+          "documentation":"<p>Contains details about the configuration of the data source used for the <code>AMAZON.QnAIntent</code>.</p>"
+        },
+        "bedrockModelConfiguration":{"shape":"BedrockModelSpecification"}
+      },
+      "documentation":"<p>Details about the the configuration of the built-in <code>Amazon.QnAIntent</code>.</p>"
+    },
+    "QnAKendraConfiguration":{
+      "type":"structure",
+      "required":["kendraIndex"],
+      "members":{
+        "kendraIndex":{
+          "shape":"KendraIndexArn",
+          "documentation":"<p>The ARN of the Amazon Kendra index to use.</p>"
+        },
+        "queryFilterStringEnabled":{
+          "shape":"Boolean",
+          "documentation":"<p>Specifies whether to enable an Amazon Kendra filter string or not.</p>"
+        },
+        "queryFilterString":{
+          "shape":"QueryFilterString",
+          "documentation":"<p>Contains the Amazon Kendra filter string to use if enabled. For more information on the Amazon Kendra search filter JSON format, see <a href=\"https://docs.aws.amazon.com/kendra/latest/dg/filtering.html#search-filtering\">Using document attributes to filter search results</a>.</p>"
+        },
+        "exactResponse":{
+          "shape":"Boolean",
+          "documentation":"<p>Specifies whether to return an exact response from the Amazon Kendra index or to let the Amazon Bedrock model you select generate a response based on the results. To use this feature, you must first add FAQ questions to your index by following the steps at <a href=\"https://docs.aws.amazon.com/kendra/latest/dg/in-creating-faq.html\">Adding frequently asked questions (FAQs) to an index</a>.</p>"
+        }
+      },
+      "documentation":"<p>Contains details about the configuration of the Amazon Kendra index used for the <code>AMAZON.QnAIntent</code>.</p>"
+    },
     "QueryFilterString":{
       "type":"string",
       "max":5000,
       "min":1
     },
+    "QuestionField":{"type":"string"},
     "RecommendedAction":{"type":"string"},
     "RecommendedActions":{
       "type":"list",
@@ -13869,6 +14020,10 @@
         "initialResponseSetting":{
           "shape":"InitialResponseSetting",
           "documentation":"<p>Configuration settings for a response sent to the user before Amazon Lex starts eliciting slots.</p>"
+        },
+        "qnAIntentConfiguration":{
+          "shape":"QnAIntentConfiguration",
+          "documentation":"<p>Specifies the configuration of the built-in <code>Amazon.QnAIntent</code>. The <code>AMAZON.QnAIntent</code> intent is called when Amazon Lex can't determine another intent to invoke. If you specify this field, you can't specify the <code>kendraConfiguration</code> field.</p>"
         }
       }
     },
@@ -13950,6 +14105,10 @@
         "initialResponseSetting":{
           "shape":"InitialResponseSetting",
           "documentation":"<p>Configuration settings for a response sent to the user before Amazon Lex starts eliciting slots.</p>"
+        },
+        "qnAIntentConfiguration":{
+          "shape":"QnAIntentConfiguration",
+          "documentation":"<p>Details about the configuration of the built-in <code>Amazon.QnAIntent</code>.</p>"
         }
       }
     },

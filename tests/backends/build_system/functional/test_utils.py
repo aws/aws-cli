@@ -63,8 +63,8 @@ def utils():
             Requirement("awscrt", ">=0.12.4", "<=0.14.0"),
         ),
         (
-            "python-dateutil>=2.1,<3.0.0",
-            Requirement("python-dateutil", ">=2.1", "<3.0.0"),
+            "python-dateutil>=2.1,<=2.8.2",
+            Requirement("python-dateutil", ">=2.1", "<=2.8.2"),
         ),
         (
             "jmespath>=0.7.1,<1.1.0",

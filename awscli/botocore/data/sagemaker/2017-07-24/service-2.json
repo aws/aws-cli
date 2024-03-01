@@ -486,7 +486,7 @@
       "errors":[
         {"shape":"ResourceLimitExceeded"}
       ],
-      "documentation":"<p>Creates a model in SageMaker. In the request, you name the model and describe a primary container. For the primary container, you specify the Docker image that contains inference code, artifacts (from prior training), and a custom environment map that the inference code uses when you deploy the model for predictions.</p> <p>Use this API to create a model if you want to use SageMaker hosting services or run a batch transform job.</p> <p>To host your model, you create an endpoint configuration with the <code>CreateEndpointConfig</code> API, and then create an endpoint with the <code>CreateEndpoint</code> API. SageMaker then deploys all of the containers that you defined for the model in the hosting environment. </p> <p>For an example that calls this method when deploying a model to SageMaker hosting services, see <a href=\"https://docs.aws.amazon.com/sagemaker/latest/dg/realtime-endpoints-deployment.html#realtime-endpoints-deployment-create-model\">Create a Model (Amazon Web Services SDK for Python (Boto 3)).</a> </p> <p>To run a batch transform using your model, you start a job with the <code>CreateTransformJob</code> API. SageMaker uses your model and your dataset to get inferences which are then saved to a specified S3 location.</p> <p>In the request, you also provide an IAM role that SageMaker can assume to access model artifacts and docker image for deployment on ML compute hosting instances or for batch transform jobs. In addition, you also use the IAM role to manage permissions the inference code needs. For example, if the inference code access any other Amazon Web Services resources, you grant necessary permissions via this role.</p>"
+      "documentation":"<p>Creates a model in SageMaker. In the request, you name the model and describe a primary container. For the primary container, you specify the Docker image that contains inference code, artifacts (from prior training), and a custom environment map that the inference code uses when you deploy the model for predictions.</p> <p>Use this API to create a model if you want to use SageMaker hosting services or run a batch transform job.</p> <p>To host your model, you create an endpoint configuration with the <code>CreateEndpointConfig</code> API, and then create an endpoint with the <code>CreateEndpoint</code> API. SageMaker then deploys all of the containers that you defined for the model in the hosting environment. </p> <p>To run a batch transform using your model, you start a job with the <code>CreateTransformJob</code> API. SageMaker uses your model and your dataset to get inferences which are then saved to a specified S3 location.</p> <p>In the request, you also provide an IAM role that SageMaker can assume to access model artifacts and docker image for deployment on ML compute hosting instances or for batch transform jobs. In addition, you also use the IAM role to manage permissions the inference code needs. For example, if the inference code access any other Amazon Web Services resources, you grant necessary permissions via this role.</p>"
     },
     "CreateModelBiasJobDefinition":{
       "name":"CreateModelBiasJobDefinition",
@@ -3607,7 +3607,7 @@
         {"shape":"ResourceNotFound"},
         {"shape":"ResourceLimitExceeded"}
       ],
-      "documentation":"<p>Updates the feature group by either adding features or updating the online store configuration. Use one of the following request parameters at a time while using the <code>UpdateFeatureGroup</code> API.</p> <p>You can add features for your feature group using the <code>FeatureAdditions</code> request parameter. Features cannot be removed from a feature group.</p> <p>You can update the online store configuration by using the <code>OnlineStoreConfig</code> request parameter. If a <code>TtlDuration</code> is specified, the default <code>TtlDuration</code> applies for all records added to the feature group <i>after the feature group is updated</i>. If a record level <code>TtlDuration</code> exists from using the <code>PutRecord</code> API, the record level <code>TtlDuration</code> applies to that record instead of the default <code>TtlDuration</code>.</p>"
+      "documentation":"<p>Updates the feature group by either adding features or updating the online store configuration. Use one of the following request parameters at a time while using the <code>UpdateFeatureGroup</code> API.</p> <p>You can add features for your feature group using the <code>FeatureAdditions</code> request parameter. Features cannot be removed from a feature group.</p> <p>You can update the online store configuration by using the <code>OnlineStoreConfig</code> request parameter. If a <code>TtlDuration</code> is specified, the default <code>TtlDuration</code> applies for all records added to the feature group <i>after the feature group is updated</i>. If a record level <code>TtlDuration</code> exists from using the <code>PutRecord</code> API, the record level <code>TtlDuration</code> applies to that record instead of the default <code>TtlDuration</code>. To remove the default <code>TtlDuration</code> from an existing feature group, use the <code>UpdateFeatureGroup</code> API and set the <code>TtlDuration</code> <code>Unit</code> and <code>Value</code> to <code>null</code>.</p>"
     },
     "UpdateFeatureMetadata":{
       "name":"UpdateFeatureMetadata",
@@ -5363,7 +5363,7 @@
       "members":{
         "MetricName":{
           "shape":"AutoMLMetricEnum",
-          "documentation":"<p>The name of the objective metric used to measure the predictive quality of a machine learning system. During training, the model's parameters are updated iteratively to optimize its performance based on the feedback provided by the objective metric when evaluating the model on the validation dataset.</p> <p>The list of available metrics supported by Autopilot and the default metric applied when you do not specify a metric name explicitly depend on the problem type.</p> <ul> <li> <p>For tabular problem types:</p> <ul> <li> <p>List of available metrics: </p> <ul> <li> <p> Regression: <code>InferenceLatency</code>, <code>MAE</code>, <code>MSE</code>, <code>R2</code>, <code>RMSE</code> </p> </li> <li> <p> Binary classification: <code>Accuracy</code>, <code>AUC</code>, <code>BalancedAccuracy</code>, <code>F1</code>, <code>InferenceLatency</code>, <code>LogLoss</code>, <code>Precision</code>, <code>Recall</code> </p> </li> <li> <p> Multiclass classification: <code>Accuracy</code>, <code>BalancedAccuracy</code>, <code>F1macro</code>, <code>InferenceLatency</code>, <code>LogLoss</code>, <code>PrecisionMacro</code>, <code>RecallMacro</code> </p> </li> </ul> <p>For a description of each metric, see <a href=\"https://docs.aws.amazon.com/sagemaker/latest/dg/autopilot-metrics-validation.html#autopilot-metrics\">Autopilot metrics for classification and regression</a>.</p> </li> <li> <p>Default objective metrics:</p> <ul> <li> <p>Regression: <code>MSE</code>.</p> </li> <li> <p>Binary classification: <code>F1</code>.</p> </li> <li> <p>Multiclass classification: <code>Accuracy</code>.</p> </li> </ul> </li> </ul> </li> <li> <p>For image or text classification problem types:</p> <ul> <li> <p>List of available metrics: <code>Accuracy</code> </p> <p>For a description of each metric, see <a href=\"https://docs.aws.amazon.com/sagemaker/latest/dg/text-classification-data-format-and-metric.html\">Autopilot metrics for text and image classification</a>.</p> </li> <li> <p>Default objective metrics: <code>Accuracy</code> </p> </li> </ul> </li> <li> <p>For time-series forecasting problem types:</p> <ul> <li> <p>List of available metrics: <code>RMSE</code>, <code>wQL</code>, <code>Average wQL</code>, <code>MASE</code>, <code>MAPE</code>, <code>WAPE</code> </p> <p>For a description of each metric, see <a href=\"https://docs.aws.amazon.com/sagemaker/latest/dg/timeseries-objective-metric.html\">Autopilot metrics for time-series forecasting</a>.</p> </li> <li> <p>Default objective metrics: <code>AverageWeightedQuantileLoss</code> </p> </li> </ul> </li> <li> <p>For text generation problem types (LLMs fine-tuning): Fine-tuning language models in Autopilot does not require setting the <code>AutoMLJobObjective</code> field. Autopilot fine-tunes LLMs without requiring multiple candidates to be trained and evaluated. Instead, using your dataset, Autopilot directly fine-tunes your target model to enhance a default objective metric, the cross-entropy loss. After fine-tuning a language model, you can evaluate the quality of its generated text using different metrics. For a list of the available metrics, see <a href=\"https://docs.aws.amazon.com/sagemaker/latest/dg/autopilot-llms-finetuning-metrics.html\">Metrics for fine-tuning LLMs in Autopilot</a>.</p> </li> </ul>"
+          "documentation":"<p>The name of the objective metric used to measure the predictive quality of a machine learning system. During training, the model's parameters are updated iteratively to optimize its performance based on the feedback provided by the objective metric when evaluating the model on the validation dataset.</p> <p>The list of available metrics supported by Autopilot and the default metric applied when you do not specify a metric name explicitly depend on the problem type.</p> <ul> <li> <p>For tabular problem types:</p> <ul> <li> <p>List of available metrics: </p> <ul> <li> <p> Regression: <code>MAE</code>, <code>MSE</code>, <code>R2</code>, <code>RMSE</code> </p> </li> <li> <p> Binary classification: <code>Accuracy</code>, <code>AUC</code>, <code>BalancedAccuracy</code>, <code>F1</code>, <code>Precision</code>, <code>Recall</code> </p> </li> <li> <p> Multiclass classification: <code>Accuracy</code>, <code>BalancedAccuracy</code>, <code>F1macro</code>, <code>PrecisionMacro</code>, <code>RecallMacro</code> </p> </li> </ul> <p>For a description of each metric, see <a href=\"https://docs.aws.amazon.com/sagemaker/latest/dg/autopilot-metrics-validation.html#autopilot-metrics\">Autopilot metrics for classification and regression</a>.</p> </li> <li> <p>Default objective metrics:</p> <ul> <li> <p>Regression: <code>MSE</code>.</p> </li> <li> <p>Binary classification: <code>F1</code>.</p> </li> <li> <p>Multiclass classification: <code>Accuracy</code>.</p> </li> </ul> </li> </ul> </li> <li> <p>For image or text classification problem types:</p> <ul> <li> <p>List of available metrics: <code>Accuracy</code> </p> <p>For a description of each metric, see <a href=\"https://docs.aws.amazon.com/sagemaker/latest/dg/text-classification-data-format-and-metric.html\">Autopilot metrics for text and image classification</a>.</p> </li> <li> <p>Default objective metrics: <code>Accuracy</code> </p> </li> </ul> </li> <li> <p>For time-series forecasting problem types:</p> <ul> <li> <p>List of available metrics: <code>RMSE</code>, <code>wQL</code>, <code>Average wQL</code>, <code>MASE</code>, <code>MAPE</code>, <code>WAPE</code> </p> <p>For a description of each metric, see <a href=\"https://docs.aws.amazon.com/sagemaker/latest/dg/timeseries-objective-metric.html\">Autopilot metrics for time-series forecasting</a>.</p> </li> <li> <p>Default objective metrics: <code>AverageWeightedQuantileLoss</code> </p> </li> </ul> </li> <li> <p>For text generation problem types (LLMs fine-tuning): Fine-tuning language models in Autopilot does not require setting the <code>AutoMLJobObjective</code> field. Autopilot fine-tunes LLMs without requiring multiple candidates to be trained and evaluated. Instead, using your dataset, Autopilot directly fine-tunes your target model to enhance a default objective metric, the cross-entropy loss. After fine-tuning a language model, you can evaluate the quality of its generated text using different metrics. For a list of the available metrics, see <a href=\"https://docs.aws.amazon.com/sagemaker/latest/dg/autopilot-llms-finetuning-metrics.html\">Metrics for fine-tuning LLMs in Autopilot</a>.</p> </li> </ul>"
         }
       },
       "documentation":"<p>Specifies a metric to minimize or maximize as the objective of an AutoML job.</p>"
@@ -9476,7 +9476,7 @@
         },
         "InferenceSpecification":{
           "shape":"InferenceSpecification",
-          "documentation":"<p>Specifies details about inference jobs that can be run with models based on this model package, including the following:</p> <ul> <li> <p>The Amazon ECR paths of containers that contain the inference code and model artifacts.</p> </li> <li> <p>The instance types that the model package supports for transform jobs and real-time endpoints used for inference.</p> </li> <li> <p>The input and output content formats that the model package supports for inference.</p> </li> </ul>"
+          "documentation":"<p>Specifies details about inference jobs that you can run with models based on this model package, including the following information:</p> <ul> <li> <p>The Amazon ECR paths of containers that contain the inference code and model artifacts.</p> </li> <li> <p>The instance types that the model package supports for transform jobs and real-time endpoints used for inference.</p> </li> <li> <p>The input and output content formats that the model package supports for inference.</p> </li> </ul>"
         },
         "ValidationSpecification":{
           "shape":"ModelPackageValidationSpecification",
@@ -9535,6 +9535,10 @@
         "SkipModelValidation":{
           "shape":"SkipModelValidation",
           "documentation":"<p>Indicates if you want to skip model validation.</p>"
+        },
+        "SourceUri":{
+          "shape":"ModelPackageSourceUri",
+          "documentation":"<p>The URI of the source for the model package. If you want to clone a model package, set it to the model package Amazon Resource Name (ARN). If you want to register a model, set it to the model ARN.</p>"
         }
       }
     },
@@ -12085,7 +12089,7 @@
         },
         "CreationTime":{
           "shape":"Timestamp",
-          "documentation":"<p>The creation time.</p>"
+          "documentation":"<p>The creation time of the application.</p> <note> <p>After an application has been shut down for 24 hours, SageMaker deletes all metadata for the application. To be considered an update and retain application metadata, applications must be restarted within 24 hours after the previous application has been shut down. After this time window, creation of an application is considered a new application rather than an update of the previous application.</p> </note>"
         },
         "FailureReason":{
           "shape":"FailureReason",
@@ -14707,7 +14711,7 @@
         },
         "InferenceSpecification":{
           "shape":"InferenceSpecification",
-          "documentation":"<p>Details about inference jobs that can be run with models based on this model package.</p>"
+          "documentation":"<p>Details about inference jobs that you can run with models based on this model package.</p>"
         },
         "SourceAlgorithmSpecification":{
           "shape":"SourceAlgorithmSpecification",
@@ -14775,6 +14779,10 @@
         "SkipModelValidation":{
           "shape":"SkipModelValidation",
           "documentation":"<p>Indicates if you want to skip model validation.</p>"
+        },
+        "SourceUri":{
+          "shape":"ModelPackageSourceUri",
+          "documentation":"<p>The URI of the source for the model package.</p>"
         }
       }
     },
@@ -17472,7 +17480,7 @@
       "type":"map",
       "key":{"shape":"EnvironmentKey"},
       "value":{"shape":"EnvironmentValue"},
-      "max":16
+      "max":100
     },
     "EnvironmentParameter":{
       "type":"structure",
@@ -21029,7 +21037,7 @@
         "FileSystemConfig":{"shape":"FileSystemConfig"},
         "ContainerConfig":{"shape":"ContainerConfig"}
       },
-      "documentation":"<p>The configuration for the file system and kernels in a SageMaker image running as a JupyterLab app.</p>"
+      "documentation":"<p>The configuration for the file system and kernels in a SageMaker image running as a JupyterLab app. The <code>FileSystemConfig</code> object is not supported.</p>"
     },
     "JupyterLabAppSettings":{
       "type":"structure",
@@ -26680,7 +26688,7 @@
         },
         "Bias":{
           "shape":"Bias",
-          "documentation":"<p>Metrics that measure bais in a model.</p>"
+          "documentation":"<p>Metrics that measure bias in a model.</p>"
         },
         "Explainability":{
           "shape":"Explainability",
@@ -26794,6 +26802,10 @@
           "shape":"AdditionalInferenceSpecifications",
           "documentation":"<p>An array of additional Inference Specification objects.</p>"
         },
+        "SourceUri":{
+          "shape":"ModelPackageSourceUri",
+          "documentation":"<p>The URI of the source for the model package.</p>"
+        },
         "Tags":{
           "shape":"TagList",
           "documentation":"<p>A list of the tags associated with the model package. For more information, see <a href=\"https://docs.aws.amazon.com/general/latest/gr/aws_tagging.html\">Tagging Amazon Web Services resources</a> in the <i>Amazon Web Services General Reference Guide</i>.</p>"
@@ -26844,6 +26856,10 @@
         "ModelDataUrl":{
           "shape":"Url",
           "documentation":"<p>The Amazon S3 path where the model artifacts, which result from model training, are stored. This path must point to a single <code>gzip</code> compressed tar archive (<code>.tar.gz</code> suffix).</p> <note> <p>The model artifacts must be in an S3 bucket that is in the same region as the model package.</p> </note>"
+        },
+        "ModelDataSource":{
+          "shape":"ModelDataSource",
+          "documentation":"<p>Specifies the location of ML model data to deploy during endpoint creation.</p>"
         },
         "ProductId":{
           "shape":"ProductId",
@@ -26985,6 +27001,12 @@
         "Name",
         "CreationTime"
       ]
+    },
+    "ModelPackageSourceUri":{
+      "type":"string",
+      "max":1024,
+      "min":0,
+      "pattern":"[\\p{L}\\p{M}\\p{Z}\\p{N}\\p{P}]{0,1024}"
     },
     "ModelPackageStatus":{
       "type":"string",
@@ -32848,6 +32870,10 @@
           "shape":"Url",
           "documentation":"<p>The Amazon S3 path where the model artifacts, which result from model training, are stored. This path must point to a single <code>gzip</code> compressed tar archive (<code>.tar.gz</code> suffix).</p> <note> <p>The model artifacts must be in an S3 bucket that is in the same Amazon Web Services region as the algorithm.</p> </note>"
         },
+        "ModelDataSource":{
+          "shape":"ModelDataSource",
+          "documentation":"<p>Specifies the location of ML model data to deploy during endpoint creation.</p>"
+        },
         "AlgorithmName":{
           "shape":"ArnOrName",
           "documentation":"<p>The name of an algorithm that was used to create the model package. The algorithm must be either an algorithm resource in your SageMaker account or an algorithm in Amazon Web Services Marketplace that you are subscribed to.</p>"
@@ -36395,6 +36421,14 @@
         "AdditionalInferenceSpecificationsToAdd":{
           "shape":"AdditionalInferenceSpecifications",
           "documentation":"<p>An array of additional Inference Specification objects to be added to the existing array additional Inference Specification. Total number of additional Inference Specifications can not exceed 15. Each additional Inference Specification specifies artifacts based on this model package that can be used on inference endpoints. Generally used with SageMaker Neo to store the compiled artifacts.</p>"
+        },
+        "InferenceSpecification":{
+          "shape":"InferenceSpecification",
+          "documentation":"<p>Specifies details about inference jobs that you can run with models based on this model package, including the following information:</p> <ul> <li> <p>The Amazon ECR paths of containers that contain the inference code and model artifacts.</p> </li> <li> <p>The instance types that the model package supports for transform jobs and real-time endpoints used for inference.</p> </li> <li> <p>The input and output content formats that the model package supports for inference.</p> </li> </ul>"
+        },
+        "SourceUri":{
+          "shape":"ModelPackageSourceUri",
+          "documentation":"<p>The URI of the source for the model package.</p>"
         }
       }
     },
@@ -37200,14 +37234,14 @@
       "members":{
         "Key":{
           "shape":"VisibilityConditionsKey",
-          "documentation":"<p>The key that specifies the tag that you're using to filter the search results. It must be in the following format: <code>Tags.&lt;key&gt;/EqualsIfExists</code>.</p>"
+          "documentation":"<p>The key that specifies the tag that you're using to filter the search results. It must be in the following format: <code>Tags.&lt;key&gt;</code>.</p>"
         },
         "Value":{
           "shape":"VisibilityConditionsValue",
           "documentation":"<p>The value for the tag that you're using to filter the search results.</p>"
         }
       },
-      "documentation":"<p>The list of key-value pairs that you specify for your resources.</p>"
+      "documentation":"<p>The list of key-value pairs used to filter your search results. If a search result contains a key from your list, it is included in the final search response if the value associated with the key in the result matches the value you specified. If the value doesn't match, the result is excluded from the search response. Any resources that don't have a key from the list that you've provided will also be included in the search response.</p>"
     },
     "VisibilityConditionsKey":{
       "type":"string",

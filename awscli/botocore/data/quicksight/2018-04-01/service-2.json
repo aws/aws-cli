@@ -6320,7 +6320,7 @@
     "ColumnConfigurationList":{
       "type":"list",
       "member":{"shape":"ColumnConfiguration"},
-      "max":200
+      "max":2000
     },
     "ColumnDataRole":{
       "type":"string",
@@ -6603,6 +6603,10 @@
         "Aggregation":{
           "shape":"AggregationFunction",
           "documentation":"<p>The aggregation function of the column tooltip item.</p>"
+        },
+        "TooltipTarget":{
+          "shape":"TooltipTarget",
+          "documentation":"<p>Determines the target of the column tooltip item in a combo chart visual.</p>"
         }
       },
       "documentation":"<p>The tooltip item for the columns that are not part of a field well.</p>"
@@ -14876,6 +14880,10 @@
         "Visibility":{
           "shape":"Visibility",
           "documentation":"<p>The visibility of the tooltip item.</p>"
+        },
+        "TooltipTarget":{
+          "shape":"TooltipTarget",
+          "documentation":"<p>Determines the target of the field tooltip item in a combo chart visual.</p>"
         }
       },
       "documentation":"<p>The tooltip item for the fields.</p>"
@@ -16363,7 +16371,7 @@
         },
         "AuthorizedResourceArns":{
           "shape":"ArnList",
-          "documentation":"<p>The Amazon Resource Names (ARNs) for the Amazon QuickSight resources that the user is authorized to access during the lifetime of the session. If you choose <code>Dashboard</code> embedding experience, pass the list of dashboard ARNs in the account that you want the user to be able to view. Currently, you can pass up to 25 dashboard ARNs in each API call.</p>"
+          "documentation":"<p>The Amazon Resource Names (ARNs) for the Amazon QuickSight resources that the user is authorized to access during the lifetime of the session.</p> <p>If you choose <code>Dashboard</code> embedding experience, pass the list of dashboard ARNs in the account that you want the user to be able to view.</p> <p>Currently, you can pass up to 25 dashboard ARNs in each API call.</p>"
         },
         "ExperienceConfiguration":{
           "shape":"AnonymousUserEmbeddingExperienceConfiguration",
@@ -28250,6 +28258,14 @@
         }
       },
       "documentation":"<p>The display options for the visual tooltip.</p>"
+    },
+    "TooltipTarget":{
+      "type":"string",
+      "enum":[
+        "BOTH",
+        "BAR",
+        "LINE"
+      ]
     },
     "TooltipTitleType":{
       "type":"string",

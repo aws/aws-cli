@@ -465,17 +465,22 @@
       ],
       "members":{
         "knowledgeBaseId":{"shape":"KnowledgeBaseId"},
-        "modelArn":{"shape":"BedrockModelArn"}
+        "modelArn":{"shape":"BedrockModelArn"},
+        "retrievalConfiguration":{"shape":"KnowledgeBaseRetrievalConfiguration"}
       },
       "documentation":"<p>Configurations for retrieval and generation for knowledge base.</p>"
     },
     "KnowledgeBaseVectorSearchConfiguration":{
       "type":"structure",
-      "required":["numberOfResults"],
       "members":{
         "numberOfResults":{
           "shape":"KnowledgeBaseVectorSearchConfigurationNumberOfResultsInteger",
-          "documentation":"<p>Top-K results to retrieve from knowledge base.</p>"
+          "documentation":"<p>Top-K results to retrieve from knowledge base.</p>",
+          "box":true
+        },
+        "overrideSearchType":{
+          "shape":"SearchType",
+          "documentation":"<p>Override the type of query to be performed on data store</p>"
         }
       },
       "documentation":"<p>Knowledge base vector search configuration</p>"
@@ -483,7 +488,7 @@
     "KnowledgeBaseVectorSearchConfigurationNumberOfResultsInteger":{
       "type":"integer",
       "box":true,
-      "max":10,
+      "max":25,
       "min":1
     },
     "LambdaArn":{
@@ -748,7 +753,8 @@
           "documentation":"<p>Content of a retrieval result in text</p>"
         }
       },
-      "documentation":"<p>Content of a retrieval result.</p>"
+      "documentation":"<p>Content of a retrieval result.</p>",
+      "sensitive":true
     },
     "RetrievalResultLocation":{
       "type":"structure",
@@ -757,7 +763,8 @@
         "type":{"shape":"RetrievalResultLocationType"},
         "s3Location":{"shape":"RetrievalResultS3Location"}
       },
-      "documentation":"<p>The source location of a retrieval result.</p>"
+      "documentation":"<p>The source location of a retrieval result.</p>",
+      "sensitive":true
     },
     "RetrievalResultLocationType":{
       "type":"string",
@@ -888,6 +895,14 @@
       "member":{"shape":"RetrievedReference"},
       "documentation":"<p>list of retrieved references</p>"
     },
+    "SearchType":{
+      "type":"string",
+      "documentation":"<p>Query type to be performed on data store.</p>",
+      "enum":[
+        "HYBRID",
+        "SEMANTIC"
+      ]
+    },
     "ServiceQuotaExceededException":{
       "type":"structure",
       "members":{
@@ -985,7 +1000,8 @@
         },
         "span":{"shape":"Span"}
       },
-      "documentation":"<p>Text response part</p>"
+      "documentation":"<p>Text response part</p>",
+      "sensitive":true
     },
     "ThrottlingException":{
       "type":"structure",

@@ -12,6 +12,24 @@
     "uid":"migrationhuborchestrator-2021-08-28"
   },
   "operations":{
+    "CreateTemplate":{
+      "name":"CreateTemplate",
+      "http":{
+        "method":"POST",
+        "requestUri":"/template",
+        "responseCode":200
+      },
+      "input":{"shape":"CreateTemplateRequest"},
+      "output":{"shape":"CreateTemplateResponse"},
+      "errors":[
+        {"shape":"ThrottlingException"},
+        {"shape":"ConflictException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ValidationException"}
+      ],
+      "documentation":"<p>Creates a migration workflow template.</p>"
+    },
     "CreateWorkflow":{
       "name":"CreateWorkflow",
       "http":{
@@ -62,6 +80,25 @@
         {"shape":"ValidationException"}
       ],
       "documentation":"<p>Create a step group in a migration workflow.</p>"
+    },
+    "DeleteTemplate":{
+      "name":"DeleteTemplate",
+      "http":{
+        "method":"DELETE",
+        "requestUri":"/template/{id}",
+        "responseCode":200
+      },
+      "input":{"shape":"DeleteTemplateRequest"},
+      "output":{"shape":"DeleteTemplateResponse"},
+      "errors":[
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ValidationException"},
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p>Deletes a migration workflow template.</p>",
+      "idempotent":true
     },
     "DeleteWorkflow":{
       "name":"DeleteWorkflow",
@@ -446,6 +483,24 @@
       "documentation":"<p>Deletes the tags for a resource.</p>",
       "idempotent":true
     },
+    "UpdateTemplate":{
+      "name":"UpdateTemplate",
+      "http":{
+        "method":"POST",
+        "requestUri":"/template/{id}",
+        "responseCode":200
+      },
+      "input":{"shape":"UpdateTemplateRequest"},
+      "output":{"shape":"UpdateTemplateResponse"},
+      "errors":[
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ValidationException"},
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p>Updates a migration workflow template.</p>"
+    },
     "UpdateWorkflow":{
       "name":"UpdateWorkflow",
       "http":{
@@ -526,12 +581,31 @@
       "type":"boolean",
       "box":true
     },
+    "ClientToken":{
+      "type":"string",
+      "max":256,
+      "min":1,
+      "pattern":"[-a-zA-Z0-9]*"
+    },
+    "ConflictException":{
+      "type":"structure",
+      "required":["message"],
+      "members":{
+        "message":{"shape":"String"}
+      },
+      "documentation":"<p>This exception is thrown when an attempt to update or delete a resource would cause an inconsistent state.</p>",
+      "error":{
+        "httpStatusCode":409,
+        "senderFault":true
+      },
+      "exception":true,
+      "retryable":{"throttling":false}
+    },
     "CreateMigrationWorkflowRequest":{
       "type":"structure",
       "required":[
         "name",
         "templateId",
-        "applicationConfigurationId",
         "inputParameters"
       ],
       "members":{
@@ -568,8 +642,8 @@
     "CreateMigrationWorkflowRequestApplicationConfigurationIdString":{
       "type":"string",
       "max":100,
-      "min":1,
-      "pattern":"[-a-zA-Z0-9_.+]+[-a-zA-Z0-9_.+ ]*"
+      "min":0,
+      "pattern":"[-a-zA-Z0-9_.+]*"
     },
     "CreateMigrationWorkflowRequestDescriptionString":{
       "type":"string",
@@ -635,6 +709,65 @@
         "tags":{
           "shape":"StringMap",
           "documentation":"<p>The tags to add on a migration workflow.</p>"
+        }
+      }
+    },
+    "CreateTemplateRequest":{
+      "type":"structure",
+      "required":[
+        "templateName",
+        "templateSource"
+      ],
+      "members":{
+        "templateName":{
+          "shape":"CreateTemplateRequestTemplateNameString",
+          "documentation":"<p>The name of the migration workflow template.</p>"
+        },
+        "templateDescription":{
+          "shape":"CreateTemplateRequestTemplateDescriptionString",
+          "documentation":"<p>A description of the migration workflow template.</p>"
+        },
+        "templateSource":{
+          "shape":"TemplateSource",
+          "documentation":"<p>The source of the migration workflow template.</p>"
+        },
+        "clientToken":{
+          "shape":"ClientToken",
+          "documentation":"<p>A unique, case-sensitive identifier that you provide to ensure the idempotency of the request. For more information, see <a href=\"https://smithy.io/2.0/spec/behavior-traits.html#idempotencytoken-trait\">Idempotency</a> in the Smithy documentation.</p>",
+          "idempotencyToken":true
+        },
+        "tags":{
+          "shape":"TagMap",
+          "documentation":"<p>The tags to add to the migration workflow template.</p>"
+        }
+      }
+    },
+    "CreateTemplateRequestTemplateDescriptionString":{
+      "type":"string",
+      "max":250,
+      "min":0,
+      "pattern":".*"
+    },
+    "CreateTemplateRequestTemplateNameString":{
+      "type":"string",
+      "max":128,
+      "min":1,
+      "pattern":"[ a-zA-Z0-9]*"
+    },
+    "CreateTemplateResponse":{
+      "type":"structure",
+      "members":{
+        "templateId":{
+          "shape":"String",
+          "documentation":"<p>The ID of the migration workflow template.</p>"
+        },
+        "templateArn":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the migration workflow template. The format for an Migration Hub Orchestrator template ARN is <code>arn:aws:migrationhub-orchestrator:region:account:template/template-abcd1234</code>. For more information about ARNs, see <a href=\"https://docs.aws.amazon.com/IAM/latest/UserGuide/reference-arns.html\">Amazon Resource Names (ARNs)</a> in the <i>AWS General Reference</i>.</p>"
+        },
+        "tags":{
+          "shape":"StringMap",
+          "documentation":"<p>The tags added to the migration workflow template.</p>"
         }
       }
     },
@@ -814,6 +947,23 @@
         }
       }
     },
+    "DeleteTemplateRequest":{
+      "type":"structure",
+      "required":["id"],
+      "members":{
+        "id":{
+          "shape":"TemplateId",
+          "documentation":"<p>The ID of the request to delete a migration workflow template.</p>",
+          "location":"uri",
+          "locationName":"id"
+        }
+      }
+    },
+    "DeleteTemplateResponse":{
+      "type":"structure",
+      "members":{
+      }
+    },
     "DeleteWorkflowStepGroupRequest":{
       "type":"structure",
       "required":[
@@ -989,6 +1139,10 @@
           "shape":"String",
           "documentation":"<p>The ID of the template.</p>"
         },
+        "templateArn":{
+          "shape":"String",
+          "documentation":"<p>&gt;The Amazon Resource Name (ARN) of the migration workflow template. The format for an Migration Hub Orchestrator template ARN is <code>arn:aws:migrationhub-orchestrator:region:account:template/template-abcd1234</code>. For more information about ARNs, see <a href=\"https://docs.aws.amazon.com/IAM/latest/UserGuide/reference-arns.html\">Amazon Resource Names (ARNs)</a> in the <i>AWS General Reference</i>.</p>"
+        },
         "name":{
           "shape":"String",
           "documentation":"<p>The name of the template.</p>"
@@ -1005,13 +1159,29 @@
           "shape":"ToolsList",
           "documentation":"<p>List of AWS services utilized in a migration workflow.</p>"
         },
+        "creationTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time at which the template was last created.</p>"
+        },
+        "owner":{
+          "shape":"String",
+          "documentation":"<p>The owner of the migration workflow template.</p>"
+        },
         "status":{
           "shape":"TemplateStatus",
           "documentation":"<p>The status of the template.</p>"
         },
-        "creationTime":{
-          "shape":"Timestamp",
-          "documentation":"<p>The time at which the template was last created.</p>"
+        "statusMessage":{
+          "shape":"String",
+          "documentation":"<p>The status message of retrieving migration workflow templates.</p>"
+        },
+        "templateClass":{
+          "shape":"String",
+          "documentation":"<p>The class of the migration workflow template. The available template classes are:</p> <ul> <li> <p>A2C</p> </li> <li> <p>MGN</p> </li> <li> <p>SAP_MULTI</p> </li> <li> <p>SQL_EC2</p> </li> <li> <p>SQL_RDS</p> </li> <li> <p>VMIE</p> </li> </ul>"
+        },
+        "tags":{
+          "shape":"StringMap",
+          "documentation":"<p>The tags added to the migration workflow template.</p>"
         }
       }
     },
@@ -1248,7 +1418,7 @@
         },
         "stepGroupId":{
           "shape":"StepGroupId",
-          "documentation":"<p>desThe ID of the step group.</p>",
+          "documentation":"<p>The ID of the step group.</p>",
           "location":"querystring",
           "locationName":"stepGroupId"
         },
@@ -1693,6 +1863,15 @@
       "max":100,
       "min":0
     },
+    "MaxStringList":{
+      "type":"list",
+      "member":{"shape":"MaxStringValue"}
+    },
+    "MaxStringValue":{
+      "type":"string",
+      "max":2048,
+      "min":0
+    },
     "MigrationWorkflowDescription":{
       "type":"string",
       "max":500,
@@ -1876,7 +2055,7 @@
     },
     "ResourceArn":{
       "type":"string",
-      "pattern":"arn:aws:migrationhub-orchestrator:[a-z0-9-]+:[0-9]+:workflow/[.]*"
+      "pattern":"arn:aws:migrationhub-orchestrator:[a-z0-9-]+:[0-9]+:(template|workflow)/[.]*"
     },
     "ResourceNotFoundException":{
       "type":"structure",
@@ -2076,8 +2255,7 @@
       "members":{
         "integerValue":{
           "shape":"Integer",
-          "documentation":"<p>The value of the integer.</p>",
-          "box":true
+          "documentation":"<p>The value of the integer.</p>"
         },
         "stringValue":{
           "shape":"StringValue",
@@ -2139,6 +2317,7 @@
       "type":"string",
       "enum":[
         "AWAITING_DEPENDENCIES",
+        "SKIPPED",
         "READY",
         "IN_PROGRESS",
         "COMPLETED",
@@ -2191,7 +2370,7 @@
     },
     "StringListMember":{
       "type":"string",
-      "max":100,
+      "max":500,
       "min":0
     },
     "StringMap":{
@@ -2309,9 +2488,26 @@
       "min":1,
       "pattern":"[-a-zA-Z0-9_.+]+[-a-zA-Z0-9_.+ ]*"
     },
+    "TemplateSource":{
+      "type":"structure",
+      "members":{
+        "workflowId":{
+          "shape":"MigrationWorkflowId",
+          "documentation":"<p>The ID of the workflow from the source migration workflow template.</p>"
+        }
+      },
+      "documentation":"<p>The migration workflow template used as the source for the new template.</p>",
+      "union":true
+    },
     "TemplateStatus":{
       "type":"string",
-      "enum":["CREATED"]
+      "enum":[
+        "CREATED",
+        "READY",
+        "PENDING_CREATION",
+        "CREATING",
+        "CREATION_FAILED"
+      ]
     },
     "TemplateStepGroupSummary":{
       "type":"structure",
@@ -2559,6 +2755,60 @@
         "tags":{
           "shape":"StringMap",
           "documentation":"<p>The tags added to the migration workflow.</p>"
+        }
+      }
+    },
+    "UpdateTemplateRequest":{
+      "type":"structure",
+      "required":["id"],
+      "members":{
+        "id":{
+          "shape":"TemplateId",
+          "documentation":"<p>The ID of the request to update a migration workflow template.</p>",
+          "location":"uri",
+          "locationName":"id"
+        },
+        "templateName":{
+          "shape":"UpdateTemplateRequestTemplateNameString",
+          "documentation":"<p>The name of the migration workflow template to update.</p>"
+        },
+        "templateDescription":{
+          "shape":"UpdateTemplateRequestTemplateDescriptionString",
+          "documentation":"<p>The description of the migration workflow template to update.</p>"
+        },
+        "clientToken":{
+          "shape":"ClientToken",
+          "documentation":"<p>A unique, case-sensitive identifier that you provide to ensure the idempotency of the request.</p>",
+          "idempotencyToken":true
+        }
+      }
+    },
+    "UpdateTemplateRequestTemplateDescriptionString":{
+      "type":"string",
+      "max":250,
+      "min":0,
+      "pattern":".*"
+    },
+    "UpdateTemplateRequestTemplateNameString":{
+      "type":"string",
+      "max":128,
+      "min":1,
+      "pattern":"[ a-zA-Z0-9]*"
+    },
+    "UpdateTemplateResponse":{
+      "type":"structure",
+      "members":{
+        "templateId":{
+          "shape":"String",
+          "documentation":"<p>The ID of the migration workflow template being updated.</p>"
+        },
+        "templateArn":{
+          "shape":"String",
+          "documentation":"<p>The ARN of the migration workflow template being updated. The format for an Migration Hub Orchestrator template ARN is <code>arn:aws:migrationhub-orchestrator:region:account:template/template-abcd1234</code>. For more information about ARNs, see <a href=\"https://docs.aws.amazon.com/IAM/latest/UserGuide/reference-arns.html\">Amazon Resource Names (ARNs)</a> in the <i>AWS General Reference</i>.</p>"
+        },
+        "tags":{
+          "shape":"StringMap",
+          "documentation":"<p>The tags added to the migration workflow template.</p>"
         }
       }
     },
@@ -2828,15 +3078,14 @@
       "members":{
         "integerValue":{
           "shape":"Integer",
-          "documentation":"<p>The integer value. </p>",
-          "box":true
+          "documentation":"<p>The integer value. </p>"
         },
         "stringValue":{
-          "shape":"StringValue",
+          "shape":"MaxStringValue",
           "documentation":"<p>The string value.</p>"
         },
         "listOfStringValue":{
-          "shape":"StringList",
+          "shape":"MaxStringList",
           "documentation":"<p>The list of string value.</p>"
         }
       },
@@ -2906,5 +3155,5 @@
       "member":{"shape":"WorkflowStepSummary"}
     }
   },
-  "documentation":"<p>This API reference provides descriptions, syntax, and other details about each of the actions and data types for AWS Migration Hub Orchestrator. he topic for each action shows the API request parameters and the response. Alternatively, you can use one of the AWS SDKs to access an API that is tailored to the programming language or platform that you're using.</p>"
+  "documentation":"<p>This API reference provides descriptions, syntax, and other details about each of the actions and data types for AWS Migration Hub Orchestrator. The topic for each action shows the API request parameters and responses. Alternatively, you can use one of the AWS SDKs to access an API that is tailored to the programming language or platform that you're using.</p>"
 }

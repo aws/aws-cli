@@ -155,6 +155,20 @@
       ],
       "documentation":"<p>Retrieves the cost anomaly subscription objects for your account. You can filter using a list of cost anomaly monitor Amazon Resource Names (ARNs). </p>"
     },
+    "GetApproximateUsageRecords":{
+      "name":"GetApproximateUsageRecords",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"GetApproximateUsageRecordsRequest"},
+      "output":{"shape":"GetApproximateUsageRecordsResponse"},
+      "errors":[
+        {"shape":"LimitExceededException"},
+        {"shape":"DataUnavailableException"}
+      ],
+      "documentation":"<p>Retrieves estimated usage records for hourly granularity or resource-level data at daily granularity.</p>"
+    },
     "GetCostAndUsage":{
       "name":"GetCostAndUsage",
       "http":{
@@ -779,6 +793,18 @@
     "AnomalySubscriptions":{
       "type":"list",
       "member":{"shape":"AnomalySubscription"}
+    },
+    "ApproximateUsageRecordsPerService":{
+      "type":"map",
+      "key":{"shape":"GenericString"},
+      "value":{"shape":"NonNegativeLong"}
+    },
+    "ApproximationDimension":{
+      "type":"string",
+      "enum":[
+        "SERVICE",
+        "RESOURCE"
+      ]
     },
     "Arn":{
       "type":"string",
@@ -2063,6 +2089,44 @@
         }
       }
     },
+    "GetApproximateUsageRecordsRequest":{
+      "type":"structure",
+      "required":[
+        "Granularity",
+        "ApproximationDimension"
+      ],
+      "members":{
+        "Granularity":{
+          "shape":"Granularity",
+          "documentation":"<p>How granular you want the data to be. You can enable data at hourly or daily granularity.</p>"
+        },
+        "Services":{
+          "shape":"UsageServices",
+          "documentation":"<p>The service metadata for the service or services you want to query. If not specified, all elements are returned.</p>"
+        },
+        "ApproximationDimension":{
+          "shape":"ApproximationDimension",
+          "documentation":"<p>The service to evaluate for the usage records. You can choose resource-level data at daily granularity, or hourly granularity with or without resource-level data.</p>"
+        }
+      }
+    },
+    "GetApproximateUsageRecordsResponse":{
+      "type":"structure",
+      "members":{
+        "Services":{
+          "shape":"ApproximateUsageRecordsPerService",
+          "documentation":"<p>The service metadata for the service or services in the response.</p>"
+        },
+        "TotalRecords":{
+          "shape":"NonNegativeLong",
+          "documentation":"<p>The total number of usage records for all services in the services list.</p>"
+        },
+        "LookbackPeriod":{
+          "shape":"DateInterval",
+          "documentation":"<p>The lookback period that's used for the estimation.</p>"
+        }
+      }
+    },
     "GetCostAndUsageRequest":{
       "type":"structure",
       "required":[
@@ -3295,6 +3359,10 @@
     },
     "NonNegativeInteger":{
       "type":"integer",
+      "min":0
+    },
+    "NonNegativeLong":{
+      "type":"long",
       "min":0
     },
     "NullableNonNegativeDouble":{
@@ -4994,6 +5062,10 @@
           "documentation":"<p>The Cost Category's effective start date. It can only be a billing start date (first day of the month).</p>"
         }
       }
+    },
+    "UsageServices":{
+      "type":"list",
+      "member":{"shape":"GenericString"}
     },
     "UtilizationByTime":{
       "type":"structure",

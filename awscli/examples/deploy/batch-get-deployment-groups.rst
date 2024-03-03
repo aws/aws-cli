@@ -21,7 +21,7 @@ Output::
                 "onPremisesTagSet": {
                     "onPremisesTagSetList": []
                 },
-                "serviceRoleArn": "arn:aws:iam::123456789012:role/CodeDeloyServiceRole",
+                "serviceRoleArn": "arn:aws:iam::123456789012:role/CodeDeployServiceRole",
                 "lastAttemptedDeployment": {
                     "endTime": 1556912366.415,
                     "status": "Failed",

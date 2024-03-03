@@ -2,6 +2,61 @@
 CHANGELOG
 =========
 
+1.32.54
+=======
+
+* api-change:``accessanalyzer``: Fixed a typo in description field.
+* api-change:``autoscaling``: With this release, Amazon EC2 Auto Scaling groups, EC2 Fleet, and Spot Fleet improve the default price protection behavior of attribute-based instance type selection of Spot Instances, to consistently select from a wide range of instance types.
+* api-change:``ec2``: With this release, Amazon EC2 Auto Scaling groups, EC2 Fleet, and Spot Fleet improve the default price protection behavior of attribute-based instance type selection of Spot Instances, to consistently select from a wide range of instance types.
+
+
+1.32.53
+=======
+
+* api-change:``docdb-elastic``: Launched Elastic Clusters Readable Secondaries, Start/Stop, Configurable Shard Instance count, Automatic Backups and Snapshot Copying
+* api-change:``eks``: Added support for new AL2023 AMIs to the supported AMITypes.
+* api-change:``lexv2-models``: This release makes AMAZON.QnAIntent generally available in Amazon Lex. This generative AI feature leverages large language models available through Amazon Bedrock to automate frequently asked questions (FAQ) experience for end-users.
+* api-change:``migrationhuborchestrator``: Adds new CreateTemplate, UpdateTemplate and DeleteTemplate APIs.
+* api-change:``quicksight``: TooltipTarget for Combo chart visuals; ColumnConfiguration limit increase to 2000; Documentation Update
+* api-change:``sagemaker``: Adds support for ModelDataSource in Model Packages to support unzipped models. Adds support to specify SourceUri for models which allows registration of models without mandating a container for hosting. Using SourceUri, customers can decouple the model from hosting information during registration.
+* api-change:``securitylake``: Add capability to update the Data Lake's MetaStoreManager Role in order to perform required data lake updates to use Iceberg table format in their data lake or update the role for any other reason.
+
+
+1.32.52
+=======
+
+* api-change:``batch``: This release adds Batch support for configuration of multicontainer jobs in ECS, Fargate, and EKS. This support is available for all types of jobs, including both array jobs and multi-node parallel jobs.
+* api-change:``bedrock-agent-runtime``: This release adds support to override search strategy performed by the Retrieve and RetrieveAndGenerate APIs for Amazon Bedrock Agents
+* api-change:``ce``: This release introduces the new API 'GetApproximateUsageRecords', which retrieves estimated usage records for hourly granularity or resource-level data at daily granularity.
+* api-change:``ec2``: This release increases the range of MaxResults for GetNetworkInsightsAccessScopeAnalysisFindings to 1,000.
+* api-change:``iot``: This release reduces the maximum results returned per query invocation from 500 to 100 for the SearchIndex API. This change has no implications as long as the API is invoked until the nextToken is NULL.
+* api-change:``wafv2``: AWS WAF now supports configurable time windows for request aggregation with rate-based rules. Customers can now select time windows of 1 minute, 2 minutes or 10 minutes, in addition to the previously supported 5 minutes.
+
+
+1.32.51
+=======
+
+* api-change:``amplifyuibuilder``: We have added the ability to tag resources after they are created
+
+
+1.32.50
+=======
+
+* api-change:``apigateway``: Documentation updates for Amazon API Gateway.
+* api-change:``drs``: Added volume status to DescribeSourceServer replicated volumes.
+* api-change:``kafkaconnect``: Adds support for tagging, with new TagResource, UntagResource and ListTagsForResource APIs to manage tags and updates to existing APIs to allow tag on create. This release also adds support for the new DeleteWorkerConfiguration API.
+* api-change:``rds``: This release adds support for gp3 data volumes for Multi-AZ DB Clusters.
+
+
+1.32.49
+=======
+
+* api-change:``appsync``: Documentation only updates for AppSync
+* api-change:``qldb``: Clarify possible values for KmsKeyArn and EncryptionDescription.
+* api-change:``rds``: Add pattern and length based validations for DBShardGroupIdentifier
+* api-change:``rum``: Doc-only update for new RUM metrics that were added
+
+
 1.32.48
 =======
 

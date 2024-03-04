@@ -2,6 +2,14 @@
 CHANGELOG
 =========
 
+1.32.55
+=======
+
+* api-change:``cloudformation``: Add DetailedStatus field to DescribeStackEvents and DescribeStacks APIs
+* api-change:``fsx``: Added support for creating FSx for NetApp ONTAP file systems with up to 12 HA pairs, delivering up to 72 GB/s of read throughput and 12 GB/s of write throughput.
+* api-change:``organizations``: Documentation update for AWS Organizations
+
+
 1.32.54
 =======
 

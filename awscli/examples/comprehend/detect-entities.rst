@@ -1,4 +1,4 @@
-**To detect named entites in input text**
+**To detect named entities in input text**
 
 The following ``detect-entities`` example analyzes the input text and returns the named entities. The pre-trained model's confidence score
 is also output for each prediction. ::

@@ -78,6 +78,11 @@ class CreateCluster(Command):
          'help_text': helptext.TERMINATION_PROTECTED},
         {'name': 'no-termination-protected', 'action': 'store_true',
          'group_name': 'termination_protected'},
+        {'name': 'unhealthy-node-replacement', 'action': 'store_true',
+        'group_name': 'unhealthy_node_replacement',
+        'help_text': helptext.UNHEALTHY_NODE_REPLACEMENT},
+        {'name': 'no-unhealthy-node-replacement', 'action': 'store_true',
+        'group_name': 'unhealthy_node_replacement'},
         {'name': 'scale-down-behavior',
          'help_text': helptext.SCALE_DOWN_BEHAVIOR},
         {'name': 'visible-to-all-users', 'action': 'store_true',
@@ -250,6 +255,14 @@ class CreateCluster(Command):
                 '--termination-protected',
                 parsed_args.no_termination_protected,
                 '--no-termination-protected')
+        
+        if (parsed_args.unhealthy_node_replacement or parsed_args.no_unhealthy_node_replacement):
+            instances_config['UnhealthyNodeReplacement'] = \
+            emrutils.apply_boolean_options(
+                parsed_args.unhealthy_node_replacement,
+                '--unhealthy-node-replacement',
+                parsed_args.no_unhealthy_node_replacement,
+                '--no-unhealthy-node-replacement')
 
         if (parsed_args.visible_to_all_users is False and
                 parsed_args.no_visible_to_all_users is False):

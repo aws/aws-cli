@@ -2,6 +2,18 @@
 CHANGELOG
 =========
 
+2.15.26
+=======
+
+* api-change:``fsx``: Added support for creating FSx for NetApp ONTAP file systems with up to 12 HA pairs, delivering up to 72 GB/s of read throughput and 12 GB/s of write throughput.
+* api-change:``apigateway``: Documentation updates for Amazon API Gateway
+* api-change:``organizations``: Documentation update for AWS Organizations
+* api-change:``sesv2``: Adds support for providing custom headers within SendEmail and SendBulkEmail for SESv2.
+* api-change:``cloudformation``: Add DetailedStatus field to DescribeStackEvents and DescribeStacks APIs
+* api-change:``organizations``: This release contains an endpoint addition
+* api-change:``chatbot``: Minor update to documentation.
+
+
 2.15.25
 =======
 

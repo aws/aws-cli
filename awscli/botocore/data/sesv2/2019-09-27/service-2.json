@@ -1367,7 +1367,7 @@
         {"shape":"NotFoundException"},
         {"shape":"ConcurrentModificationException"}
       ],
-      "documentation":"<p>Updates a contact's preferences for a list. It is not necessary to specify all existing topic preferences in the TopicPreferences object, just the ones that need updating.</p>"
+      "documentation":"<p>Updates a contact's preferences for a list.</p> <note> <p>You must specify all existing topic preferences in the <code>TopicPreferences</code> object, not just the ones that need updating; otherwise, all your existing preferences will be removed.</p> </note>"
     },
     "UpdateContactList":{
       "name":"UpdateContactList",
@@ -3402,7 +3402,7 @@
         },
         "ProductionAccessEnabled":{
           "shape":"Enabled",
-          "documentation":"<p>Indicates whether or not your account has production access in the current Amazon Web Services Region.</p> <p>If the value is <code>false</code>, then your account is in the <i>sandbox</i>. When your account is in the sandbox, you can only send email to verified identities. Additionally, the maximum number of emails you can send in a 24-hour period (your sending quota) is 200, and the maximum number of emails you can send per second (your maximum sending rate) is 1.</p> <p>If the value is <code>true</code>, then your account has production access. When your account has production access, you can send email to any address. The sending quota and maximum sending rate for your account vary based on your specific use case.</p>"
+          "documentation":"<p>Indicates whether or not your account has production access in the current Amazon Web Services Region.</p> <p>If the value is <code>false</code>, then your account is in the <i>sandbox</i>. When your account is in the sandbox, you can only send email to verified identities. </p> <p>If the value is <code>true</code>, then your account has production access. When your account has production access, you can send email to any address. The sending quota and maximum sending rate for your account vary based on your specific use case.</p>"
         },
         "SendQuota":{
           "shape":"SendQuota",
@@ -5095,6 +5095,10 @@
         "Body":{
           "shape":"Body",
           "documentation":"<p>The body of the message. You can specify an HTML version of the message, a text-only version of the message, or both.</p>"
+        },
+        "Headers":{
+          "shape":"MessageHeaderList",
+          "documentation":"<p>The list of message headers that will be added to the email message.</p>"
         }
       },
       "documentation":"<p>Represents the email message that you're sending. The <code>Message</code> object consists of a subject line and a message body.</p>"
@@ -5104,6 +5108,45 @@
       "documentation":"<p>The body of an email message.</p>"
     },
     "MessageData":{"type":"string"},
+    "MessageHeader":{
+      "type":"structure",
+      "required":[
+        "Name",
+        "Value"
+      ],
+      "members":{
+        "Name":{
+          "shape":"MessageHeaderName",
+          "documentation":"<p>The name of the message header. The message header name has to meet the following criteria:</p> <ul> <li> <p>Can contain any printable ASCII character (33 - 126) except for colon (:).</p> </li> <li> <p>Can contain no more than 126 characters.</p> </li> </ul>"
+        },
+        "Value":{
+          "shape":"MessageHeaderValue",
+          "documentation":"<p>The value of the message header. The message header value has to meet the following criteria:</p> <ul> <li> <p>Can contain any printable ASCII character.</p> </li> <li> <p>Can contain no more than 870 characters.</p> </li> </ul>"
+        }
+      },
+      "documentation":"<p>Contains the name and value of a message header that you add to an email.</p>"
+    },
+    "MessageHeaderList":{
+      "type":"list",
+      "member":{"shape":"MessageHeader"},
+      "documentation":"<p>A list of message headers. The list of message headers has to meet the following criteria:</p> <ul> <li> <p>Can contain no more than 15 headers in one message.</p> </li> </ul>",
+      "max":15,
+      "min":0
+    },
+    "MessageHeaderName":{
+      "type":"string",
+      "documentation":"<p>The name of the message header. The message header name has to meet the following criteria:</p> <ul> <li> <p>Can contain any printable ASCII character (33 - 126) except for colon (:).</p> </li> <li> <p>Can contain no more than 126 characters.</p> </li> </ul>",
+      "max":126,
+      "min":1,
+      "pattern":"^[!-9;-@A-~]+$"
+    },
+    "MessageHeaderValue":{
+      "type":"string",
+      "documentation":"<p>The value of the message header. The message header value has to meet the following criteria:</p> <ul> <li> <p>Can contain any printable ASCII character.</p> </li> </ul>",
+      "max":870,
+      "min":1,
+      "pattern":"[ -~]*"
+    },
     "MessageInsightsDataSource":{
       "type":"structure",
       "required":[
@@ -5475,7 +5518,7 @@
         },
         "ProductionAccessEnabled":{
           "shape":"EnabledWrapper",
-          "documentation":"<p>Indicates whether or not your account should have production access in the current Amazon Web Services Region.</p> <p>If the value is <code>false</code>, then your account is in the <i>sandbox</i>. When your account is in the sandbox, you can only send email to verified identities. Additionally, the maximum number of emails you can send in a 24-hour period (your sending quota) is 200, and the maximum number of emails you can send per second (your maximum sending rate) is 1.</p> <p>If the value is <code>true</code>, then your account has production access. When your account has production access, you can send email to any address. The sending quota and maximum sending rate for your account vary based on your specific use case.</p>"
+          "documentation":"<p>Indicates whether or not your account should have production access in the current Amazon Web Services Region.</p> <p>If the value is <code>false</code>, then your account is in the <i>sandbox</i>. When your account is in the sandbox, you can only send email to verified identities. </p> <p>If the value is <code>true</code>, then your account has production access. When your account has production access, you can send email to any address. The sending quota and maximum sending rate for your account vary based on your specific use case.</p>"
         }
       },
       "documentation":"<p>A request to submit new account details.</p>"
@@ -6251,7 +6294,7 @@
         },
         "Content":{
           "shape":"EmailContent",
-          "documentation":"<p>An object that contains the body of the message. You can send either a Simple message Raw message or a template Message.</p>"
+          "documentation":"<p>An object that contains the body of the message. You can send either a Simple message, Raw message, or a Templated message.</p>"
         },
         "EmailTags":{
           "shape":"MessageTagList",
@@ -6273,7 +6316,7 @@
       "members":{
         "MessageId":{
           "shape":"OutboundMessageId",
-          "documentation":"<p>A unique identifier for the message that is generated when the message is accepted.</p> <note> <p>It's possible for Amazon SES to accept a message without sending it. This can happen when the message that you're trying to send has an attachment contains a virus, or when you send a templated email that contains invalid personalization content, for example.</p> </note>"
+          "documentation":"<p>A unique identifier for the message that is generated when the message is accepted.</p> <note> <p>It's possible for Amazon SES to accept a message without sending it. For example, this can happen when the message that you're trying to send has an attachment that contains a virus, or when you send a templated email that contains invalid personalization content.</p> </note>"
         }
       },
       "documentation":"<p>A unique message ID that you receive when an email is accepted for sending.</p>"
@@ -6526,6 +6569,10 @@
         "TemplateData":{
           "shape":"EmailTemplateData",
           "documentation":"<p>An object that defines the values to use for message variables in the template. This object is a set of key-value pairs. Each key defines a message variable in the template. The corresponding value defines the value to use for that variable.</p>"
+        },
+        "Headers":{
+          "shape":"MessageHeaderList",
+          "documentation":"<p>The list of message headers that will be added to the email message.</p>"
         }
       },
       "documentation":"<p>An object that defines the email template to use for an email message, and the values to use for any message variables in that template. An <i>email template</i> is a type of message template that contains content that you want to define, save, and reuse in email messages that you send.</p>"

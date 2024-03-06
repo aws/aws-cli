@@ -312,6 +312,28 @@
             }
         },
         {
+            "documentation": "For region aws-iso-global with FIPS disabled and DualStack disabled",
+            "expect": {
+                "endpoint": {
+                    "properties": {
+                        "authSchemes": [
+                            {
+                                "name": "sigv4",
+                                "signingName": "organizations",
+                                "signingRegion": "us-iso-east-1"
+                            }
+                        ]
+                    },
+                    "url": "https://organizations.us-iso-east-1.c2s.ic.gov"
+                }
+            },
+            "params": {
+                "Region": "aws-iso-global",
+                "UseFIPS": false,
+                "UseDualStack": false
+            }
+        },
+        {
             "documentation": "For region us-iso-east-1 with FIPS enabled and DualStack enabled",
             "expect": {
                 "error": "FIPS and DualStack are enabled, but this partition does not support one or both"
@@ -350,6 +372,15 @@
             "documentation": "For region us-iso-east-1 with FIPS disabled and DualStack disabled",
             "expect": {
                 "endpoint": {
+                    "properties": {
+                        "authSchemes": [
+                            {
+                                "name": "sigv4",
+                                "signingName": "organizations",
+                                "signingRegion": "us-iso-east-1"
+                            }
+                        ]
+                    },
                     "url": "https://organizations.us-iso-east-1.c2s.ic.gov"
                 }
             },

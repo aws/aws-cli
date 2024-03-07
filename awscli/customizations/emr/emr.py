@@ -64,3 +64,4 @@ def register_commands(command_table, session, **kwargs):
     command_table['socks'] = ssh.Socks(session)
     command_table['get'] = ssh.Get(session)
     command_table['put'] = ssh.Put(session)
+    command_table['set-unhealthy-node-replacement']._UNDOCUMENTED = True

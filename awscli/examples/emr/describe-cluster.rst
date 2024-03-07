@@ -30,6 +30,7 @@
 		        "ServiceRole": "EMR_DefaultRole", 
 		        "Tags": [], 
 		        "TerminationProtected": true, 
+		        "UnhealthyNodeReplacement": true, 
 		        "ReleaseLabel": "emr-4.0.0", 
 		        "NormalizedInstanceHours": 96, 
 		        "InstanceGroups": [
@@ -126,6 +127,7 @@
                 "ServiceRole": "EMR_DefaultRole",
                 "Tags": [],
                 "TerminationProtected": false,
+                "UnhealthyNodeReplacement": false, 
                 "ReleaseLabel": "emr-5.2.0",
                 "NormalizedInstanceHours": 472,
                 "InstanceCollectionType": "INSTANCE_FLEET",
@@ -200,6 +202,7 @@
 	            "Name": "My Cluster",
 	            "Tags": [],
 	            "TerminationProtected": true,
+	            "UnhealthyNodeReplacement": true, 
 	            "RunningAmiVersion": "2.5.4",
 	            "InstanceGroups": [
 	                {

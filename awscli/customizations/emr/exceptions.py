@@ -265,7 +265,8 @@ class MissingClusterAttributesError(EmrError):
     fmt = ('aws: error: Must specify one of the following boolean options: '
            '--visible-to-all-users|--no-visible-to-all-users, '
            '--termination-protected|--no-termination-protected, '
-           '--auto-terminate|--no-auto-terminate.')
+           '--auto-terminate|--no-auto-terminate, '
+           '--unhealthy-node-replacement|--no-unhealthy-node-replacement.')
 
 
 class InvalidEmrFsArgumentsError(EmrError):

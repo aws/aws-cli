@@ -2,6 +2,34 @@
 CHANGELOG
 =========
 
+1.32.57
+=======
+
+* api-change:``dynamodb``: Doc only updates for DynamoDB documentation
+* api-change:``imagebuilder``: Add PENDING status to Lifecycle Execution resource status. Add StartTime and EndTime to ListLifecycleExecutionResource API response.
+* api-change:``mwaa``: Amazon MWAA adds support for Apache Airflow v2.8.1.
+* api-change:``rds``: Updated the input of CreateDBCluster and ModifyDBCluster to support setting CA certificates. Updated the output of DescribeDBCluster to show current CA certificate setting value.
+* api-change:``redshift``: Update for documentation only. Covers port ranges, definition updates for data sharing, and definition updates to cluster-snapshot documentation.
+* api-change:``verifiedpermissions``: Deprecating details in favor of configuration for GetIdentitySource and ListIdentitySources APIs.
+
+
+1.32.56
+=======
+
+* api-change:``apigateway``: Documentation updates for Amazon API Gateway
+* api-change:``chatbot``: Minor update to documentation.
+* api-change:``organizations``: This release contains an endpoint addition
+* api-change:``sesv2``: Adds support for providing custom headers within SendEmail and SendBulkEmail for SESv2.
+
+
+1.32.55
+=======
+
+* api-change:``cloudformation``: Add DetailedStatus field to DescribeStackEvents and DescribeStacks APIs
+* api-change:``fsx``: Added support for creating FSx for NetApp ONTAP file systems with up to 12 HA pairs, delivering up to 72 GB/s of read throughput and 12 GB/s of write throughput.
+* api-change:``organizations``: Documentation update for AWS Organizations
+
+
 1.32.54
 =======
 

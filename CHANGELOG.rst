@@ -2,6 +2,26 @@
 CHANGELOG
 =========
 
+2.15.27
+=======
+
+* api-change:``mwaa``: Amazon MWAA adds support for Apache Airflow v2.8.1.
+* api-change:``lambda``: Documentation updates for AWS Lambda
+* api-change:``grafana``: Adds support for the new GrafanaToken as part of the Amazon Managed Grafana Enterprise plugins upgrade to associate your AWS account with a Grafana Labs account.
+* api-change:``verifiedpermissions``: Deprecating details in favor of configuration for GetIdentitySource and ListIdentitySources APIs.
+* api-change:``rds``: Updates Amazon RDS documentation for io2 storage for Multi-AZ DB clusters
+* api-change:``rds``: Updated the input of CreateDBCluster and ModifyDBCluster to support setting CA certificates. Updated the output of DescribeDBCluster to show current CA certificate setting value.
+* api-change:``payment-cryptography-data``: AWS Payment Cryptography EMV Decrypt Feature  Release
+* api-change:``dynamodb``: Doc only updates for DynamoDB documentation
+* api-change:``imagebuilder``: Add PENDING status to Lifecycle Execution resource status. Add StartTime and EndTime to ListLifecycleExecutionResource API response.
+* api-change:``appconfig``: AWS AppConfig now supports dynamic parameters, which enhance the functionality of AppConfig Extensions by allowing you to provide parameter values to your Extensions at the time you deploy your configuration.
+* api-change:``redshift``: Update for documentation only. Covers port ranges, definition updates for data sharing, and definition updates to cluster-snapshot documentation.
+* api-change:``ec2``: This release adds an optional parameter to RegisterImage and CopyImage APIs to support tagging AMIs at the time of creation.
+* api-change:``snowball``: Doc-only update for change to EKS-Anywhere ordering.
+* api-change:``wafv2``: You can increase the max request body inspection size for some regional resources. The size setting is in the web ACL association config. Also, the AWSManagedRulesBotControlRuleSet EnableMachineLearning setting now takes a Boolean instead of a primitive boolean type, for languages like Java.
+* api-change:``workspaces``: Added note for user decoupling
+
+
 2.15.26
 =======
 

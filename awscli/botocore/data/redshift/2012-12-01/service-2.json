@@ -2596,7 +2596,7 @@
       "members":{
         "DataShareArn":{
           "shape":"String",
-          "documentation":"<p>The Amazon Resource Name (ARN) of the datashare that the consumer is to use with the account or the namespace.</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of the datashare that the consumer is to use.</p>"
         },
         "AssociateEntireAccount":{
           "shape":"BooleanOptional",
@@ -2604,7 +2604,7 @@
         },
         "ConsumerArn":{
           "shape":"String",
-          "documentation":"<p>The Amazon Resource Name (ARN) of the consumer that is associated with the datashare.</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of the consumer namespace associated with the datashare.</p>"
         },
         "ConsumerRegion":{
           "shape":"String",
@@ -2820,7 +2820,7 @@
       "members":{
         "DataShareArn":{
           "shape":"String",
-          "documentation":"<p>The Amazon Resource Name (ARN) of the datashare that producers are to authorize sharing for.</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of the datashare namespace that producers are to authorize sharing for.</p>"
         },
         "ConsumerIdentifier":{
           "shape":"String",
@@ -2864,7 +2864,7 @@
         },
         "SnapshotClusterIdentifier":{
           "shape":"String",
-          "documentation":"<p>The identifier of the cluster the snapshot was created from. This parameter is required if your IAM user has a policy containing a snapshot resource element that specifies anything other than * for the cluster name.</p>"
+          "documentation":"<p>The identifier of the cluster the snapshot was created from.</p> <ul> <li> <p> <i>If the snapshot to access doesn't exist and the associated IAM policy doesn't allow access to all (*) snapshots</i> - This parameter is required. Otherwise, permissions aren't available to check if the snapshot exists.</p> </li> <li> <p> <i>If the snapshot to access exists</i> - This parameter isn't required. Redshift can retrieve the cluster identifier and use it to validate snapshot authorization.</p> </li> </ul>"
         },
         "AccountWithRestoreAccess":{
           "shape":"String",
@@ -4127,7 +4127,7 @@
         },
         "Port":{
           "shape":"IntegerOptional",
-          "documentation":"<p>The port number on which the cluster accepts incoming connections.</p> <p>The cluster is accessible only via the JDBC and ODBC connection strings. Part of the connection string requires the port on which the cluster will listen for incoming connections.</p> <p>Default: <code>5439</code> </p> <p>Valid Values: <code>1150-65535</code> </p>"
+          "documentation":"<p>The port number on which the cluster accepts incoming connections.</p> <p>The cluster is accessible only via the JDBC and ODBC connection strings. Part of the connection string requires the port on which the cluster will listen for incoming connections.</p> <p>Default: <code>5439</code> </p> <p>Valid Values: </p> <ul> <li> <p>For clusters with ra3 nodes - Select a port within the ranges <code>5431-5455</code> or <code>8191-8215</code>. (If you have an existing cluster with ra3 nodes, it isn't required that you change the port to these ranges.)</p> </li> <li> <p>For clusters with ds2 or dc2 nodes - Select a port within the range <code>1150-65535</code>.</p> </li> </ul>"
         },
         "ClusterVersion":{
           "shape":"String",
@@ -4815,11 +4815,11 @@
       "members":{
         "DataShareArn":{
           "shape":"String",
-          "documentation":"<p>An Amazon Resource Name (ARN) that references the datashare that is owned by a specific namespace of the producer cluster. A datashare ARN is in the <code>arn:aws:redshift:{region}:{account-id}:{datashare}:{namespace-guid}/{datashare-name}</code> format.</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of the datashare that the consumer is to use.</p>"
         },
         "ProducerArn":{
           "shape":"String",
-          "documentation":"<p>The Amazon Resource Name (ARN) of the producer.</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of the producer namespace.</p>"
         },
         "AllowPubliclyAccessibleConsumers":{
           "shape":"Boolean",
@@ -4951,7 +4951,7 @@
       "members":{
         "DataShareArn":{
           "shape":"String",
-          "documentation":"<p>The Amazon Resource Name (ARN) of the datashare to remove authorization from.</p>"
+          "documentation":"<p>The namespace Amazon Resource Name (ARN) of the datashare to remove authorization from.</p>"
         },
         "ConsumerIdentifier":{
           "shape":"String",
@@ -5581,7 +5581,7 @@
       "members":{
         "ConsumerArn":{
           "shape":"String",
-          "documentation":"<p>The Amazon Resource Name (ARN) of the consumer that returns in the list of datashares.</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of the consumer namespace that returns in the list of datashares.</p>"
         },
         "Status":{
           "shape":"DataShareStatusForConsumer",
@@ -5615,7 +5615,7 @@
       "members":{
         "ProducerArn":{
           "shape":"String",
-          "documentation":"<p>The Amazon Resource Name (ARN) of the producer that returns in the list of datashares.</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of the producer namespace that returns in the list of datashares.</p>"
         },
         "Status":{
           "shape":"DataShareStatusForProducer",
@@ -5649,7 +5649,7 @@
       "members":{
         "DataShareArn":{
           "shape":"String",
-          "documentation":"<p>The identifier of the datashare to describe details of.</p>"
+          "documentation":"<p>The Amazon resource name (ARN) of the datashare to describe details of.</p>"
         },
         "MaxRecords":{
           "shape":"IntegerOptional",
@@ -6337,7 +6337,7 @@
       "members":{
         "DataShareArn":{
           "shape":"String",
-          "documentation":"<p>The Amazon Resource Name (ARN) of the datashare to remove association for. </p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of the datashare to remove association for.</p>"
         },
         "DisassociateEntireAccount":{
           "shape":"BooleanOptional",
@@ -6345,7 +6345,7 @@
         },
         "ConsumerArn":{
           "shape":"String",
-          "documentation":"<p>The Amazon Resource Name (ARN) of the consumer that association for the datashare is removed from.</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of the consumer namespace that association for the datashare is removed from.</p>"
         },
         "ConsumerRegion":{
           "shape":"String",
@@ -8210,7 +8210,7 @@
         },
         "Port":{
           "shape":"IntegerOptional",
-          "documentation":"<p>The option to change the port of an Amazon Redshift cluster.</p>"
+          "documentation":"<p>The option to change the port of an Amazon Redshift cluster.</p> <p>Valid Values: </p> <ul> <li> <p>For clusters with ra3 nodes - Select a port within the ranges <code>5431-5455</code> or <code>8191-8215</code>. (If you have an existing cluster with ra3 nodes, it isn't required that you change the port to these ranges.)</p> </li> <li> <p>For clusters with ds2 or dc2 nodes - Select a port within the range <code>1150-65535</code>.</p> </li> </ul>"
         },
         "ManageMasterPassword":{
           "shape":"BooleanOptional",
@@ -9837,7 +9837,7 @@
         },
         "Port":{
           "shape":"IntegerOptional",
-          "documentation":"<p>The port number on which the cluster accepts connections.</p> <p>Default: The same port as the original cluster.</p> <p>Constraints: Must be between <code>1115</code> and <code>65535</code>.</p>"
+          "documentation":"<p>The port number on which the cluster accepts connections.</p> <p>Default: The same port as the original cluster.</p> <p>Valid values: For clusters with ds2 or dc2 nodes, must be within the range <code>1150</code>-<code>65535</code>. For clusters with ra3 nodes, must be within the ranges <code>5431</code>-<code>5455</code> or <code>8191</code>-<code>8215</code>.</p>"
         },
         "AvailabilityZone":{
           "shape":"String",

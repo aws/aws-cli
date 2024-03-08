@@ -498,7 +498,7 @@ class TestCreateCluster(BaseAWSCommandParamsTest):
         expected_error_msg = (
             '\naws: error: cannot use both --unhealthy-node-replacement'
             ' and --no-unhealthy-node-replacement options together.\n')
-        result = self.run_cmd(cmd, 255)
+        result = self.run_cmd(cmd, 252)
         self.assertEqual(expected_error_msg, result[1])
 
     def test_visible_to_all_users(self):

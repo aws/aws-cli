@@ -476,6 +476,31 @@ class TestCreateCluster(BaseAWSCommandParamsTest):
         result = self.run_cmd(cmd, 255)
         self.assertEqual(expected_error_msg, result[1])
 
+    def test_unhealthy_node_replacement(self):
+        cmd = DEFAULT_CMD + '--unhealthy-node-replacement'
+        result = copy.deepcopy(DEFAULT_RESULT)
+        instances = copy.deepcopy(DEFAULT_INSTANCES)
+        instances['UnhealthyNodeReplacement'] = True
+        result['Instances'] = instances
+        self.assert_params_for_cmd(cmd, result)
+
+    def test_no_unhealthy_node_replacement(self):
+        cmd = DEFAULT_CMD + '--no-unhealthy-node-replacement'
+        result = copy.deepcopy(DEFAULT_RESULT)
+        instances = copy.deepcopy(DEFAULT_INSTANCES)
+        instances['UnhealthyNodeReplacement'] = False
+        result['Instances'] = instances
+        self.assert_params_for_cmd(cmd, result)
+
+    def test_unhealthy_node_replacement_and_no_unhealthy_node_replacement(self):
+        cmd = DEFAULT_CMD + \
+            '--unhealthy-node-replacement --no-unhealthy-node-replacement'
+        expected_error_msg = (
+            '\naws: error: cannot use both --unhealthy-node-replacement'
+            ' and --no-unhealthy-node-replacement options together.\n')
+        result = self.run_cmd(cmd, 255)
+        self.assertEqual(expected_error_msg, result[1])
+
     def test_visible_to_all_users(self):
         cmd = DEFAULT_CMD + '--visible-to-all-users'
         self.assert_params_for_cmd(cmd, DEFAULT_RESULT)

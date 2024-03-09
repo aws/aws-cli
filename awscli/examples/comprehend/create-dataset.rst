@@ -9,7 +9,7 @@ The following ``create-dataset`` example creates a dataset for a flywheel. This 
         --dataset-type "TRAIN" \
         --input-data-config file://inputConfig.json
 
-Contents of ``file://inputConig.json``::
+Contents of ``file://inputConfig.json``::
 
     {
         "DataFormat": "COMPREHEND_CSV",

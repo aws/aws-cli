@@ -13,6 +13,9 @@
 """Module for processing CLI args."""
 import os
 import logging
+
+from ruamel.yaml import YAML, YAMLError
+
 from awscli.compat import six
 
 from botocore.compat import OrderedDict, json
@@ -188,6 +191,16 @@ def _unpack_complex_cli_arg(argument_model, value, cli_name):
         if isinstance(value, six.string_types):
             if value.lstrip()[0] == '[':
                 return _unpack_json_cli_arg(argument_model, value, cli_name)
+            else:
+                # Value could be yaml so try parsing as yaml
+                try:
+                    yaml = YAML(typ='safe')
+                    result = yaml.load(value)
+                    if isinstance(result, list):
+                        return result
+                except YAMLError as e:
+                    # If it's not valid yaml, then we can continue on
+                    pass
         elif isinstance(value, list) and len(value) == 1:
             single_value = value[0].strip()
             if single_value and single_value[0] == '[':
@@ -406,6 +419,20 @@ class ParamShorthandParser(ParamShorthand):
             LOG.debug("Param %s looks like JSON, not considered for "
                       "param shorthand.", cli_argument.py_name)
             return False
+        # The second short-circuit case is if the argument is yaml
+        if isinstance(check_val, six.string_types):
+            try:
+                yaml = YAML(typ='safe')
+                result = yaml.load(check_val)
+                # Yaml parsing is only supported for yaml list documents as there are currently no
+                # known use cases for yaml map documents
+                if isinstance(result, list):
+                    LOG.debug("Param %s looks like YAML, not considered for "
+                              "param shorthand.", cli_argument.py_name)
+                    return False
+            except YAMLError as e:
+                # If it's not valid yaml, then we can continue on
+                pass
         model = cli_argument.argument_model
         return _supports_shorthand_syntax(model)
 

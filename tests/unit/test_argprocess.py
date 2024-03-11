@@ -432,6 +432,10 @@ class TestParamShorthand(BaseArgProcessTest):
         with self.assertRaisesRegex(ParamError, error_msg):
             self.parse_shorthand(p, ['ParameterKey=key,ParameterValue="foo,bar\''])
 
+    def test_should_not_parse_list_based_yaml(self):
+        p = self.get_param_model('cloudformation.CreateStack.Parameters')
+        returned = self.parse_shorthand(p, ['---\n- ParameterKey: key\n  ParameterValue: foo'])
+        self.assertIsNone(returned)
 
 class TestParamShorthandCustomArguments(BaseArgProcessTest):
 
@@ -782,6 +786,17 @@ class TestDocGen(BaseArgProcessTest):
         generated_example = self.get_generated_example_for(argument)
         self.assertEqual(generated_example, '')
 
+class TestUnpackYAMLParams(BaseArgProcessTest):
+    def setUp(self):
+        super(TestUnpackYAMLParams, self).setUp()
+        self.simplify = ParamShorthandParser()
+
+    def test_yaml_list(self):
+        p = self.get_param_model('cloudformation.CreateStack.Parameters')
+        value = '---\n- ParameterKey: key\n  ParameterValue: foo'
+        returned = unpack_cli_arg(p, value)
+        self.assertEqual(returned, [{'ParameterKey': 'key',
+                                      'ParameterValue': 'foo'}])
 
 class TestUnpackJSONParams(BaseArgProcessTest):
     def setUp(self):

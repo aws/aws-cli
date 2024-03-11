@@ -32,7 +32,7 @@
         {"shape":"AccessDeniedException"},
         {"shape":"ServiceQuotaExceededException"}
       ],
-      "documentation":"<p>Invokes the specified Bedrock model to run inference using the input provided in the request body.</p>"
+      "documentation":"<p>Sends a prompt for the agent to process and respond to.</p> <note> <p>The CLI doesn't support <code>InvokeAgent</code>.</p> </note> <ul> <li> <p>To continue the same conversation with an agent, use the same <code>sessionId</code> value in the request.</p> </li> <li> <p>To activate trace enablement, turn <code>enableTrace</code> to <code>true</code>. Trace enablement helps you follow the agent's reasoning process that led it to the information it processed, the actions it took, and the final result it yielded. For more information, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/agents-test.html#trace-events\">Trace enablement</a>.</p> </li> <li> <p>End a conversation by setting <code>endSession</code> to <code>true</code>.</p> </li> <li> <p>Include attributes for the session or prompt in the <code>sessionState</code> object.</p> </li> </ul> <p>The response is returned in the <code>bytes</code> field of the <code>chunk</code> object.</p> <ul> <li> <p>The <code>attribution</code> object contains citations for parts of the response.</p> </li> <li> <p>If you set <code>enableTrace</code> to <code>true</code> in the request, you can trace the agent's steps and reasoning process that led it to the response.</p> </li> <li> <p>Errors are also surfaced in the response.</p> </li> </ul>"
     },
     "Retrieve":{
       "name":"Retrieve",
@@ -54,7 +54,7 @@
         {"shape":"AccessDeniedException"},
         {"shape":"ServiceQuotaExceededException"}
       ],
-      "documentation":"<p>Retrieve from knowledge base.</p>"
+      "documentation":"<p>Queries a knowledge base and retrieves information from it.</p>"
     },
     "RetrieveAndGenerate":{
       "name":"RetrieveAndGenerate",
@@ -76,7 +76,7 @@
         {"shape":"AccessDeniedException"},
         {"shape":"ServiceQuotaExceededException"}
       ],
-      "documentation":"<p>RetrieveAndGenerate API</p>"
+      "documentation":"<p>Queries a knowledge base and generates responses based on the retrieved results. The response cites up to five sources but only selects the ones that are relevant to the query.</p> <note> <p>The <code>numberOfResults</code> field is currently unsupported for <code>RetrieveAndGenerate</code>. Don't include it in the <a href=\"https://docs.aws.amazon.com/bedrock/latest/APIReference/API_agent-runtime_KnowledgeBaseVectorSearchConfiguration.html\">vectorSearchConfiguration</a> object.</p> </note>"
     }
   },
   "shapes":{
@@ -85,7 +85,7 @@
       "members":{
         "message":{"shape":"NonBlankString"}
       },
-      "documentation":"<p>This exception is thrown when a request is denied per access permissions</p>",
+      "documentation":"<p>The request is denied because of missing access permissions. Check your permissions and retry your request.</p>",
       "error":{
         "httpStatusCode":403,
         "senderFault":true
@@ -95,74 +95,92 @@
     "ActionGroupInvocationInput":{
       "type":"structure",
       "members":{
-        "actionGroupName":{"shape":"ActionGroupName"},
-        "verb":{"shape":"Verb"},
-        "apiPath":{"shape":"ApiPath"},
-        "parameters":{"shape":"Parameters"},
-        "requestBody":{"shape":"RequestBody"}
+        "actionGroupName":{
+          "shape":"ActionGroupName",
+          "documentation":"<p>The name of the action group.</p>"
+        },
+        "apiPath":{
+          "shape":"ApiPath",
+          "documentation":"<p>The path to the API to call, based off the action group.</p>"
+        },
+        "parameters":{
+          "shape":"Parameters",
+          "documentation":"<p>The parameters in the Lambda input event.</p>"
+        },
+        "requestBody":{
+          "shape":"RequestBody",
+          "documentation":"<p>The parameters in the request body for the Lambda input event.</p>"
+        },
+        "verb":{
+          "shape":"Verb",
+          "documentation":"<p>The API method being used, based off the action group.</p>"
+        }
       },
-      "documentation":"<p>input to lambda used in action group</p>"
+      "documentation":"<p>Contains information about the action group being invoked.</p>"
     },
     "ActionGroupInvocationOutput":{
       "type":"structure",
       "members":{
-        "text":{"shape":"ActionGroupOutputString"}
+        "text":{
+          "shape":"ActionGroupOutputString",
+          "documentation":"<p>The JSON-formatted string returned by the API invoked by the action group.</p>"
+        }
       },
-      "documentation":"<p>output from lambda used in action group</p>"
+      "documentation":"<p>Contains the JSON-formatted string returned by the API invoked by the action group.</p>"
     },
     "ActionGroupName":{
       "type":"string",
-      "documentation":"<p>Agent Trace Action Group Name</p>",
       "sensitive":true
     },
     "ActionGroupOutputString":{
       "type":"string",
-      "documentation":"<p>Agent Trace Action Group Lambda Invocation Output String</p>",
       "sensitive":true
     },
     "AgentAliasId":{
       "type":"string",
-      "documentation":"<p>Identifier of the agent alias.</p>",
       "max":10,
       "min":0,
-      "pattern":"[0-9a-zA-Z]+"
+      "pattern":"^[0-9a-zA-Z]+$"
     },
     "AgentId":{
       "type":"string",
-      "documentation":"<p>Identifier of the agent.</p>",
       "max":10,
       "min":0,
-      "pattern":"[0-9a-zA-Z]+"
+      "pattern":"^[0-9a-zA-Z]+$"
     },
     "ApiPath":{
       "type":"string",
-      "documentation":"<p>Agent Trace Action Group API path</p>",
       "sensitive":true
     },
     "Attribution":{
       "type":"structure",
       "members":{
-        "citations":{"shape":"Citations"}
+        "citations":{
+          "shape":"Citations",
+          "documentation":"<p>A list of citations and related information for a part of an agent response.</p>"
+        }
       },
-      "documentation":"<p>Citations associated with final agent response</p>"
+      "documentation":"<p>Contains citations for a part of an agent response.</p>"
     },
     "BadGatewayException":{
       "type":"structure",
       "members":{
         "message":{"shape":"NonBlankString"},
-        "resourceName":{"shape":"NonBlankString"}
+        "resourceName":{
+          "shape":"NonBlankString",
+          "documentation":"<p>The name of the dependency that caused the issue, such as Amazon Bedrock, Lambda, or STS.</p>"
+        }
       },
-      "documentation":"<p>This exception is thrown when a request fails due to dependency like Lambda, Bedrock, STS resource</p>",
+      "documentation":"<p>There was an issue with a dependency due to a server issue. Retry your request.</p>",
       "error":{"httpStatusCode":502},
       "exception":true,
       "fault":true
     },
     "BedrockModelArn":{
       "type":"string",
-      "documentation":"<p>Arn of a Bedrock model.</p>",
       "max":1011,
       "min":20,
-      "pattern":"arn:aws(-[^:]+)?:bedrock:[a-z0-9-]{1,20}:(([0-9]{12}:custom-model/[a-z0-9-]{1,63}[.]{1}[a-z0-9-]{1,63}/[a-z0-9]{12})|(:foundation-model/[a-z0-9-]{1,63}[.]{1}[a-z0-9-]{1,63}))"
+      "pattern":"^arn:aws(-[^:]+)?:bedrock:[a-z0-9-]{1,20}:(([0-9]{12}:custom-model/[a-z0-9-]{1,63}[.]{1}[a-z0-9-]{1,63}/[a-z0-9]{12})|(:foundation-model/[a-z0-9-]{1,63}[.]{1}[a-z0-9-]{1,63}))$"
     },
     "Boolean":{
       "type":"boolean",
@@ -171,22 +189,27 @@
     "Citation":{
       "type":"structure",
       "members":{
-        "generatedResponsePart":{"shape":"GeneratedResponsePart"},
-        "retrievedReferences":{"shape":"RetrievedReferences"}
+        "generatedResponsePart":{
+          "shape":"GeneratedResponsePart",
+          "documentation":"<p>Contains the generated response and metadata </p>"
+        },
+        "retrievedReferences":{
+          "shape":"RetrievedReferences",
+          "documentation":"<p>Contains metadata about the sources cited for the generated response.</p>"
+        }
       },
-      "documentation":"<p>Citation associated with the agent response</p>"
+      "documentation":"<p>An object containing a segment of the generated response that is based on a source in the knowledge base, alongside information about the source.</p>"
     },
     "Citations":{
       "type":"list",
-      "member":{"shape":"Citation"},
-      "documentation":"<p>List of citations</p>"
+      "member":{"shape":"Citation"}
     },
     "ConflictException":{
       "type":"structure",
       "members":{
         "message":{"shape":"NonBlankString"}
       },
-      "documentation":"<p>This exception is thrown when there is a conflict performing an operation</p>",
+      "documentation":"<p>There was a conflict performing an operation. Resolve the conflict and retry your request.</p>",
       "error":{
         "httpStatusCode":409,
         "senderFault":true
@@ -196,12 +219,10 @@
     "ContentMap":{
       "type":"map",
       "key":{"shape":"String"},
-      "value":{"shape":"Parameters"},
-      "documentation":"<p>Content type paramter map</p>"
+      "value":{"shape":"Parameters"}
     },
     "CreationMode":{
       "type":"string",
-      "documentation":"<p>indicates if agent uses default prompt or overriden prompt</p>",
       "enum":[
         "DEFAULT",
         "OVERRIDDEN"
@@ -211,9 +232,12 @@
       "type":"structure",
       "members":{
         "message":{"shape":"NonBlankString"},
-        "resourceName":{"shape":"NonBlankString"}
+        "resourceName":{
+          "shape":"NonBlankString",
+          "documentation":"<p>The name of the dependency that caused the issue, such as Amazon Bedrock, Lambda, or STS.</p>"
+        }
       },
-      "documentation":"<p>This exception is thrown when a request fails due to dependency like Lambda, Bedrock, STS resource due to a customer fault (i.e. bad configuration)</p>",
+      "documentation":"<p>There was an issue with a dependency. Check the resource configurations and retry the request.</p>",
       "error":{
         "httpStatusCode":424,
         "senderFault":true
@@ -226,51 +250,75 @@
     },
     "FailureReasonString":{
       "type":"string",
-      "documentation":"<p>Agent Trace Failed Reason String</p>",
       "sensitive":true
     },
     "FailureTrace":{
       "type":"structure",
       "members":{
-        "traceId":{"shape":"TraceId"},
-        "failureReason":{"shape":"FailureReasonString"}
+        "failureReason":{
+          "shape":"FailureReasonString",
+          "documentation":"<p>The reason the interaction failed.</p>"
+        },
+        "traceId":{
+          "shape":"TraceId",
+          "documentation":"<p>The unique identifier of the trace.</p>"
+        }
       },
-      "documentation":"<p>Trace Part which is emitted when agent trace could not be generated</p>",
+      "documentation":"<p>Contains information about the failure of the interaction.</p>",
       "sensitive":true
     },
     "FinalResponse":{
       "type":"structure",
       "members":{
-        "text":{"shape":"FinalResponseString"}
+        "text":{
+          "shape":"FinalResponseString",
+          "documentation":"<p>The text in the response to the user.</p>"
+        }
       },
-      "documentation":"<p>Agent finish output</p>"
+      "documentation":"<p>Contains details about the response to the user.</p>"
     },
     "FinalResponseString":{
       "type":"string",
-      "documentation":"<p>Agent Trace Action Group Lambda Invocation Output String</p>",
       "sensitive":true
     },
     "GeneratedResponsePart":{
       "type":"structure",
       "members":{
-        "textResponsePart":{"shape":"TextResponsePart"}
+        "textResponsePart":{
+          "shape":"TextResponsePart",
+          "documentation":"<p>Contains metadata about a textual part of the generated response that is accompanied by a citation.</p>"
+        }
       },
-      "documentation":"<p>Generate response part</p>"
+      "documentation":"<p>Contains metadata about a part of the generated response that is accompanied by a citation.</p>"
     },
     "InferenceConfiguration":{
       "type":"structure",
       "members":{
-        "temperature":{"shape":"Temperature"},
-        "topP":{"shape":"TopP"},
-        "topK":{"shape":"TopK"},
-        "maximumLength":{"shape":"MaximumLength"},
-        "stopSequences":{"shape":"StopSequences"}
+        "maximumLength":{
+          "shape":"MaximumLength",
+          "documentation":"<p>The maximum number of tokens allowed in the generated response.</p>"
+        },
+        "stopSequences":{
+          "shape":"StopSequences",
+          "documentation":"<p>A list of stop sequences. A stop sequence is a sequence of characters that causes the model to stop generating the response.</p>"
+        },
+        "temperature":{
+          "shape":"Temperature",
+          "documentation":"<p>The likelihood of the model selecting higher-probability options while generating a response. A lower value makes the model more likely to choose higher-probability options, while a higher value makes the model more likely to choose lower-probability options.</p>"
+        },
+        "topK":{
+          "shape":"TopK",
+          "documentation":"<p>While generating a response, the model determines the probability of the following token at each point of generation. The value that you set for <code>topK</code> is the number of most-likely candidates from which the model chooses the next token in the sequence. For example, if you set <code>topK</code> to 50, the model selects the next token from among the top 50 most likely choices.</p>"
+        },
+        "topP":{
+          "shape":"TopP",
+          "documentation":"<p>While generating a response, the model determines the probability of the following token at each point of generation. The value that you set for <code>Top P</code> determines the number of most-likely candidates from which the model chooses the next token in the sequence. For example, if you set <code>topP</code> to 80, the model only selects the next token from the top 80% of the probability distribution of next tokens.</p>"
+        }
       },
-      "documentation":"<p>Configurations for controlling the inference response of an InvokeAgent API call</p>"
+      "documentation":"<p>Specifications about the inference parameters that were provided alongside the prompt. These are specified in the <a href=\"https://docs.aws.amazon.com/bedrock/latest/APIReference/API_agent_PromptOverrideConfiguration.html\">PromptOverrideConfiguration</a> object that was set when the agent was created or updated. For more information, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/model-parameters.html\">Inference parameters for foundation models</a>.</p>"
     },
     "InputText":{
       "type":"string",
-      "documentation":"<p>Model text input</p>",
       "max":25000000,
       "min":0,
       "sensitive":true
@@ -280,7 +328,7 @@
       "members":{
         "message":{"shape":"NonBlankString"}
       },
-      "documentation":"<p>This exception is thrown if there was an unexpected error during processing of request</p>",
+      "documentation":"<p>An internal server error occurred. Retry your request.</p>",
       "error":{"httpStatusCode":500},
       "exception":true,
       "fault":true
@@ -288,17 +336,28 @@
     "InvocationInput":{
       "type":"structure",
       "members":{
-        "traceId":{"shape":"TraceId"},
-        "invocationType":{"shape":"InvocationType"},
-        "actionGroupInvocationInput":{"shape":"ActionGroupInvocationInput"},
-        "knowledgeBaseLookupInput":{"shape":"KnowledgeBaseLookupInput"}
+        "actionGroupInvocationInput":{
+          "shape":"ActionGroupInvocationInput",
+          "documentation":"<p>Contains information about the action group to be invoked.</p>"
+        },
+        "invocationType":{
+          "shape":"InvocationType",
+          "documentation":"<p>Specifies whether the agent is invoking an action group or a knowledge base.</p>"
+        },
+        "knowledgeBaseLookupInput":{
+          "shape":"KnowledgeBaseLookupInput",
+          "documentation":"<p>Contains details about the knowledge base to look up and the query to be made.</p>"
+        },
+        "traceId":{
+          "shape":"TraceId",
+          "documentation":"<p>The unique identifier of the trace.</p>"
+        }
       },
-      "documentation":"<p>Trace Part which contains input details for action group or knowledge base</p>",
+      "documentation":"<p>Contains information pertaining to the action group or knowledge base that is being invoked.</p>",
       "sensitive":true
     },
     "InvocationType":{
       "type":"string",
-      "documentation":"<p>types of invocations</p>",
       "enum":[
         "ACTION_GROUP",
         "KNOWLEDGE_BASE",
@@ -308,48 +367,47 @@
     "InvokeAgentRequest":{
       "type":"structure",
       "required":[
-        "agentId",
         "agentAliasId",
-        "sessionId",
-        "inputText"
+        "agentId",
+        "inputText",
+        "sessionId"
       ],
       "members":{
-        "sessionState":{
-          "shape":"SessionState",
-          "documentation":"<p>Session state passed by customer. Base64 encoded json string representation of SessionState.</p>"
-        },
-        "agentId":{
-          "shape":"AgentId",
-          "documentation":"<p>Identifier for Agent</p>",
-          "location":"uri",
-          "locationName":"agentId"
-        },
         "agentAliasId":{
           "shape":"AgentAliasId",
-          "documentation":"<p>Identifier for Agent Alias</p>",
+          "documentation":"<p>The alias of the agent to use.</p>",
           "location":"uri",
           "locationName":"agentAliasId"
         },
-        "sessionId":{
-          "shape":"SessionId",
-          "documentation":"<p>Identifier used for the current session</p>",
+        "agentId":{
+          "shape":"AgentId",
+          "documentation":"<p>The unique identifier of the agent to use.</p>",
           "location":"uri",
-          "locationName":"sessionId"
-        },
-        "endSession":{
-          "shape":"Boolean",
-          "documentation":"<p>End current session</p>"
+          "locationName":"agentId"
         },
         "enableTrace":{
           "shape":"Boolean",
-          "documentation":"<p>Enable agent trace events for improved debugging</p>"
+          "documentation":"<p>Specifies whether to turn on the trace or not to track the agent's reasoning process. For more information, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/agents-test.html#trace-events\">Trace enablement</a>.</p>"
+        },
+        "endSession":{
+          "shape":"Boolean",
+          "documentation":"<p>Specifies whether to end the session with the agent or not.</p>"
         },
         "inputText":{
           "shape":"InputText",
-          "documentation":"<p>Input data in the format specified in the Content-Type request header.</p>"
+          "documentation":"<p>The prompt text to send the agent.</p>"
+        },
+        "sessionId":{
+          "shape":"SessionId",
+          "documentation":"<p>The unique identifier of the session. Use the same value across requests to continue the same conversation.</p>",
+          "location":"uri",
+          "locationName":"sessionId"
+        },
+        "sessionState":{
+          "shape":"SessionState",
+          "documentation":"<p>Contains parameters that specify various attributes of the session.</p>"
         }
-      },
-      "documentation":"<p>InvokeAgent Request</p>"
+      }
     },
     "InvokeAgentResponse":{
       "type":"structure",
@@ -361,57 +419,62 @@
       "members":{
         "completion":{
           "shape":"ResponseStream",
-          "documentation":"<p>Inference response from the model in the format specified in the Content-Type response header.</p>"
+          "documentation":"<p>The agent's response to the user prompt.</p>"
         },
         "contentType":{
           "shape":"MimeType",
-          "documentation":"<p>streaming response mimetype of the model</p>",
+          "documentation":"<p>The MIME type of the input data in the request. The default value is <code>application/json</code>.</p>",
           "location":"header",
           "locationName":"x-amzn-bedrock-agent-content-type"
         },
         "sessionId":{
           "shape":"SessionId",
-          "documentation":"<p>streaming response mimetype of the model</p>",
+          "documentation":"<p>The unique identifier of the session with the agent.</p>",
           "location":"header",
           "locationName":"x-amz-bedrock-agent-session-id"
         }
       },
-      "documentation":"<p>InvokeAgent Response</p>",
       "payload":"completion"
     },
     "KmsKeyArn":{
       "type":"string",
-      "documentation":"<p>A KMS key ARN</p>",
       "max":2048,
       "min":1,
-      "pattern":"arn:aws(|-cn|-us-gov):kms:[a-zA-Z0-9-]*:[0-9]{12}:key/[a-zA-Z0-9-]{36}"
+      "pattern":"^arn:aws(|-cn|-us-gov):kms:[a-zA-Z0-9-]*:[0-9]{12}:key/[a-zA-Z0-9-]{36}$"
     },
     "KnowledgeBaseId":{
       "type":"string",
-      "documentation":"<p>Identifier of the KnowledgeBase</p>",
       "max":10,
       "min":0,
-      "pattern":"[0-9a-zA-Z]+"
+      "pattern":"^[0-9a-zA-Z]+$"
     },
     "KnowledgeBaseLookupInput":{
       "type":"structure",
       "members":{
-        "text":{"shape":"KnowledgeBaseLookupInputString"},
-        "knowledgeBaseId":{"shape":"TraceKnowledgeBaseId"}
+        "knowledgeBaseId":{
+          "shape":"TraceKnowledgeBaseId",
+          "documentation":"<p>The unique identifier of the knowledge base to look up.</p>"
+        },
+        "text":{
+          "shape":"KnowledgeBaseLookupInputString",
+          "documentation":"<p>The query made to the knowledge base.</p>"
+        }
       },
-      "documentation":"<p>Input to lambda used in action group</p>"
+      "documentation":"<p>Contains details about the knowledge base to look up and the query to be made.</p>"
     },
     "KnowledgeBaseLookupInputString":{
       "type":"string",
-      "documentation":"<p>Agent Trace Action Group Lambda Invocation Output String</p>",
       "sensitive":true
     },
     "KnowledgeBaseLookupOutput":{
       "type":"structure",
       "members":{
-        "retrievedReferences":{"shape":"RetrievedReferences"}
+        "retrievedReferences":{
+          "shape":"RetrievedReferences",
+          "documentation":"<p>Contains metadata about the sources cited for the generated response.</p>"
+        }
       },
-      "documentation":"<p>Input to lambda used in action group</p>"
+      "documentation":"<p>Contains details about the results from looking up the knowledge base.</p>"
     },
     "KnowledgeBaseQuery":{
       "type":"structure",
@@ -419,10 +482,10 @@
       "members":{
         "text":{
           "shape":"KnowledgeBaseQueryTextString",
-          "documentation":"<p>Knowledge base input query in text</p>"
+          "documentation":"<p>The text of the query made to the knowledge base.</p>"
         }
       },
-      "documentation":"<p>Knowledge base input query.</p>",
+      "documentation":"<p>Contains the query made to the knowledge base.</p>",
       "sensitive":true
     },
     "KnowledgeBaseQueryTextString":{
@@ -434,27 +497,35 @@
       "type":"structure",
       "required":["vectorSearchConfiguration"],
       "members":{
-        "vectorSearchConfiguration":{"shape":"KnowledgeBaseVectorSearchConfiguration"}
+        "vectorSearchConfiguration":{
+          "shape":"KnowledgeBaseVectorSearchConfiguration",
+          "documentation":"<p>Contains details about how the results from the vector search should be returned.</p>"
+        }
       },
-      "documentation":"<p>Search parameters for retrieving from knowledge base.</p>"
+      "documentation":"<p>Contains details about how the results should be returned.</p> <p>This data type is used in the following API operations:</p> <ul> <li> <p> <a href=\"https://docs.aws.amazon.com/bedrock/latest/APIReference/API_agent-runtime_Retrieve.html#API_agent-runtime_Retrieve_RequestSyntax\">Retrieve request body</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/bedrock/latest/APIReference/API_agent-runtime_RetrieveAndGenerate.html#API_agent-runtime_RetrieveAndGenerate_RequestSyntax\">RetrieveAndGenerate request body</a> </p> </li> </ul>"
     },
     "KnowledgeBaseRetrievalResult":{
       "type":"structure",
       "required":["content"],
       "members":{
-        "content":{"shape":"RetrievalResultContent"},
-        "location":{"shape":"RetrievalResultLocation"},
+        "content":{
+          "shape":"RetrievalResultContent",
+          "documentation":"<p>Contains a chunk of text from a data source in the knowledge base.</p>"
+        },
+        "location":{
+          "shape":"RetrievalResultLocation",
+          "documentation":"<p>Contains information about the location of the data source.</p>"
+        },
         "score":{
           "shape":"Double",
-          "documentation":"<p>The relevance score of a result.</p>"
+          "documentation":"<p>The level of relevance of the result to the query.</p>"
         }
       },
-      "documentation":"<p>Result item returned from a knowledge base retrieval.</p>"
+      "documentation":"<p>Details about a result from querying the knowledge base.</p>"
     },
     "KnowledgeBaseRetrievalResults":{
       "type":"list",
       "member":{"shape":"KnowledgeBaseRetrievalResult"},
-      "documentation":"<p>List of knowledge base retrieval results</p>",
       "sensitive":true
     },
     "KnowledgeBaseRetrieveAndGenerateConfiguration":{
@@ -464,26 +535,35 @@
         "modelArn"
       ],
       "members":{
-        "knowledgeBaseId":{"shape":"KnowledgeBaseId"},
-        "modelArn":{"shape":"BedrockModelArn"},
-        "retrievalConfiguration":{"shape":"KnowledgeBaseRetrievalConfiguration"}
+        "knowledgeBaseId":{
+          "shape":"KnowledgeBaseId",
+          "documentation":"<p>The unique identifier of the knowledge base that is queried and the foundation model used for generation.</p>"
+        },
+        "modelArn":{
+          "shape":"BedrockModelArn",
+          "documentation":"<p>The ARN of the foundation model used to generate a response.</p>"
+        },
+        "retrievalConfiguration":{
+          "shape":"KnowledgeBaseRetrievalConfiguration",
+          "documentation":"<p>Contains configurations for how to retrieve and return the knowledge base query.</p>"
+        }
       },
-      "documentation":"<p>Configurations for retrieval and generation for knowledge base.</p>"
+      "documentation":"<p>Contains details about the resource being queried.</p>"
     },
     "KnowledgeBaseVectorSearchConfiguration":{
       "type":"structure",
       "members":{
         "numberOfResults":{
           "shape":"KnowledgeBaseVectorSearchConfigurationNumberOfResultsInteger",
-          "documentation":"<p>Top-K results to retrieve from knowledge base.</p>",
+          "documentation":"<p>The number of results to return.</p> <note> <p>The <code>numberOfResults</code> field is currently unsupported for <code>RetrieveAndGenerate</code>. Don't include it in this field if you are sending a <code>RetrieveAndGenerate</code> request.</p> </note>",
           "box":true
         },
         "overrideSearchType":{
           "shape":"SearchType",
-          "documentation":"<p>Override the type of query to be performed on data store</p>"
+          "documentation":"<p>By default, Amazon Bedrock decides a search strategy for you. If you're using an Amazon OpenSearch Serverless vector store that contains a filterable text field, you can specify whether to query the knowledge base with a <code>HYBRID</code> search using both vector embeddings and raw text, or <code>SEMANTIC</code> search using only vector embeddings. For other vector store configurations, only <code>SEMANTIC</code> search is available. For more information, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/knowledge-base-test.html\">Test a knowledge base</a>.</p>"
         }
       },
-      "documentation":"<p>Knowledge base vector search configuration</p>"
+      "documentation":"<p>Configurations for how to carry out the search.</p>"
     },
     "KnowledgeBaseVectorSearchConfigurationNumberOfResultsInteger":{
       "type":"integer",
@@ -491,75 +571,116 @@
       "max":25,
       "min":1
     },
-    "LambdaArn":{
-      "type":"string",
-      "documentation":"<p>ARN of a Lambda.</p>"
-    },
+    "LambdaArn":{"type":"string"},
     "MaximumLength":{
       "type":"integer",
-      "documentation":"<p>Maximum length of output</p>",
       "box":true,
       "max":4096,
       "min":0
     },
-    "MimeType":{
-      "type":"string",
-      "documentation":"<p>Content type of the request</p>"
-    },
+    "MimeType":{"type":"string"},
     "ModelInvocationInput":{
       "type":"structure",
       "members":{
-        "traceId":{"shape":"TraceId"},
-        "text":{"shape":"PromptText"},
-        "type":{"shape":"PromptType"},
-        "inferenceConfiguration":{"shape":"InferenceConfiguration"},
-        "overrideLambda":{"shape":"LambdaArn"},
-        "promptCreationMode":{"shape":"CreationMode"},
-        "parserMode":{"shape":"CreationMode"}
+        "inferenceConfiguration":{
+          "shape":"InferenceConfiguration",
+          "documentation":"<p>Specifications about the inference parameters that were provided alongside the prompt. These are specified in the <a href=\"https://docs.aws.amazon.com/bedrock/latest/APIReference/API_agent_PromptOverrideConfiguration.html\">PromptOverrideConfiguration</a> object that was set when the agent was created or updated. For more information, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/model-parameters.html\">Inference parameters for foundation models</a>.</p>"
+        },
+        "overrideLambda":{
+          "shape":"LambdaArn",
+          "documentation":"<p>The ARN of the Lambda function to use when parsing the raw foundation model output in parts of the agent sequence.</p>"
+        },
+        "parserMode":{
+          "shape":"CreationMode",
+          "documentation":"<p>Specifies whether to override the default parser Lambda function when parsing the raw foundation model output in the part of the agent sequence defined by the <code>promptType</code>.</p>"
+        },
+        "promptCreationMode":{
+          "shape":"CreationMode",
+          "documentation":"<p>Specifies whether the default prompt template was <code>OVERRIDDEN</code>. If it was, the <code>basePromptTemplate</code> that was set in the <a href=\"https://docs.aws.amazon.com/bedrock/latest/APIReference/API_agent_PromptOverrideConfiguration.html\">PromptOverrideConfiguration</a> object when the agent was created or updated is used instead.</p>"
+        },
+        "text":{
+          "shape":"PromptText",
+          "documentation":"<p>The text that prompted the agent at this step.</p>"
+        },
+        "traceId":{
+          "shape":"TraceId",
+          "documentation":"<p>The unique identifier of the trace.</p>"
+        },
+        "type":{
+          "shape":"PromptType",
+          "documentation":"<p>The step in the agent sequence.</p>"
+        }
       },
-      "documentation":"<p>Trace Part which contains information used to call Invoke Model</p>",
+      "documentation":"<p>The input for the pre-processing step.</p> <ul> <li> <p>The <code>type</code> matches the agent step.</p> </li> <li> <p>The <code>text</code> contains the prompt.</p> </li> <li> <p>The <code>inferenceConfiguration</code>, <code>parserMode</code>, and <code>overrideLambda</code> values are set in the <a href=\"https://docs.aws.amazon.com/bedrock/latest/APIReference/API_agent_PromptOverrideConfiguration.html\">PromptOverrideConfiguration</a> object that was set when the agent was created or updated.</p> </li> </ul>",
       "sensitive":true
     },
     "NextToken":{
       "type":"string",
-      "documentation":"<p>Opaque continuation token of previous paginated response.</p>",
       "max":2048,
       "min":1,
-      "pattern":"\\S*"
+      "pattern":"^\\S*$"
     },
     "NonBlankString":{
       "type":"string",
-      "documentation":"<p>Non Blank String</p>",
-      "pattern":"[\\s\\S]*"
+      "pattern":"^[\\s\\S]*$"
     },
     "Observation":{
       "type":"structure",
       "members":{
-        "traceId":{"shape":"TraceId"},
-        "type":{"shape":"Type"},
-        "actionGroupInvocationOutput":{"shape":"ActionGroupInvocationOutput"},
-        "knowledgeBaseLookupOutput":{"shape":"KnowledgeBaseLookupOutput"},
-        "finalResponse":{"shape":"FinalResponse"},
-        "repromptResponse":{"shape":"RepromptResponse"}
+        "actionGroupInvocationOutput":{
+          "shape":"ActionGroupInvocationOutput",
+          "documentation":"<p>Contains the JSON-formatted string returned by the API invoked by the action group.</p>"
+        },
+        "finalResponse":{
+          "shape":"FinalResponse",
+          "documentation":"<p>Contains details about the response to the user.</p>"
+        },
+        "knowledgeBaseLookupOutput":{
+          "shape":"KnowledgeBaseLookupOutput",
+          "documentation":"<p>Contains details about the results from looking up the knowledge base.</p>"
+        },
+        "repromptResponse":{
+          "shape":"RepromptResponse",
+          "documentation":"<p>Contains details about the response to reprompt the input.</p>"
+        },
+        "traceId":{
+          "shape":"TraceId",
+          "documentation":"<p>The unique identifier of the trace.</p>"
+        },
+        "type":{
+          "shape":"Type",
+          "documentation":"<p>Specifies what kind of information the agent returns in the observation. The following values are possible.</p> <ul> <li> <p> <code>ACTION_GROUP</code> – The agent returns the result of an action group.</p> </li> <li> <p> <code>KNOWLEDGE_BASE</code> – The agent returns information from a knowledge base.</p> </li> <li> <p> <code>FINISH</code> – The agent returns a final response to the user with no follow-up.</p> </li> <li> <p> <code>ASK_USER</code> – The agent asks the user a question.</p> </li> <li> <p> <code>REPROMPT</code> – The agent prompts the user again for the same information.</p> </li> </ul>"
+        }
       },
-      "documentation":"<p>Trace Part which contains output details for action group or knowledge base or final response</p>",
+      "documentation":"<p>Contains the result or output of an action group or knowledge base, or the response to the user.</p>",
       "sensitive":true
     },
     "OrchestrationTrace":{
       "type":"structure",
       "members":{
-        "rationale":{"shape":"Rationale"},
-        "invocationInput":{"shape":"InvocationInput"},
-        "observation":{"shape":"Observation"},
-        "modelInvocationInput":{"shape":"ModelInvocationInput"}
+        "invocationInput":{
+          "shape":"InvocationInput",
+          "documentation":"<p>Contains information pertaining to the action group or knowledge base that is being invoked.</p>"
+        },
+        "modelInvocationInput":{
+          "shape":"ModelInvocationInput",
+          "documentation":"<p>The input for the orchestration step.</p> <ul> <li> <p>The <code>type</code> is <code>ORCHESTRATION</code>.</p> </li> <li> <p>The <code>text</code> contains the prompt.</p> </li> <li> <p>The <code>inferenceConfiguration</code>, <code>parserMode</code>, and <code>overrideLambda</code> values are set in the <a href=\"https://docs.aws.amazon.com/bedrock/latest/APIReference/API_agent_PromptOverrideConfiguration.html\">PromptOverrideConfiguration</a> object that was set when the agent was created or updated.</p> </li> </ul>"
+        },
+        "observation":{
+          "shape":"Observation",
+          "documentation":"<p>Details about the observation (the output of the action group Lambda or knowledge base) made by the agent.</p>"
+        },
+        "rationale":{
+          "shape":"Rationale",
+          "documentation":"<p>Details about the reasoning, based on the input, that the agent uses to justify carrying out an action group or getting information from a knowledge base.</p>"
+        }
       },
-      "documentation":"<p>Trace contains intermidate response during orchestration</p>",
+      "documentation":"<p>Details about the orchestration step, in which the agent determines the order in which actions are executed and which knowledge bases are retrieved.</p>",
       "sensitive":true,
       "union":true
     },
     "OutputString":{
       "type":"string",
-      "documentation":"<p>Agent Trace Output String</p>",
       "sensitive":true
     },
     "Parameter":{
@@ -567,27 +688,25 @@
       "members":{
         "name":{
           "shape":"String",
-          "documentation":"<p>Name of parameter</p>"
+          "documentation":"<p>The name of the parameter.</p>"
         },
         "type":{
           "shape":"String",
-          "documentation":"<p>Type of parameter</p>"
+          "documentation":"<p>The type of the parameter.</p>"
         },
         "value":{
           "shape":"String",
-          "documentation":"<p>Value of parameter</p>"
+          "documentation":"<p>The value of the parameter.</p>"
         }
       },
-      "documentation":"<p>parameters included in action group invocation</p>"
+      "documentation":"<p>A parameter in the Lambda input event.</p>"
     },
     "Parameters":{
       "type":"list",
-      "member":{"shape":"Parameter"},
-      "documentation":"<p>list of parameters included in action group invocation</p>"
+      "member":{"shape":"Parameter"}
     },
     "PartBody":{
       "type":"blob",
-      "documentation":"<p>PartBody of the payload in bytes</p>",
       "max":1000000,
       "min":0,
       "sensitive":true
@@ -595,85 +714,118 @@
     "PayloadPart":{
       "type":"structure",
       "members":{
-        "bytes":{"shape":"PartBody"},
-        "attribution":{"shape":"Attribution"}
+        "attribution":{
+          "shape":"Attribution",
+          "documentation":"<p>Contains citations for a part of an agent response.</p>"
+        },
+        "bytes":{
+          "shape":"PartBody",
+          "documentation":"<p>A part of the agent response in bytes.</p>"
+        }
       },
-      "documentation":"<p>Base 64 endoded byte response</p>",
+      "documentation":"<p>Contains a part of an agent response and citations for it.</p>",
       "event":true,
       "sensitive":true
     },
     "PostProcessingModelInvocationOutput":{
       "type":"structure",
       "members":{
-        "traceId":{"shape":"TraceId"},
-        "parsedResponse":{"shape":"PostProcessingParsedResponse"}
+        "parsedResponse":{
+          "shape":"PostProcessingParsedResponse",
+          "documentation":"<p>Details about the response from the Lambda parsing of the output of the post-processing step.</p>"
+        },
+        "traceId":{
+          "shape":"TraceId",
+          "documentation":"<p>The unique identifier of the trace.</p>"
+        }
       },
-      "documentation":"<p>Trace Part which contains information related to postprocessing</p>",
+      "documentation":"<p>The foundation model output from the post-processing step.</p>",
       "sensitive":true
     },
     "PostProcessingParsedResponse":{
       "type":"structure",
       "members":{
-        "text":{"shape":"OutputString"}
+        "text":{
+          "shape":"OutputString",
+          "documentation":"<p>The text returned by the parser.</p>"
+        }
       },
-      "documentation":"<p>Trace Part which contains information if preprocessing was successful</p>",
+      "documentation":"<p>Details about the response from the Lambda parsing of the output from the post-processing step.</p>",
       "sensitive":true
     },
     "PostProcessingTrace":{
       "type":"structure",
       "members":{
-        "modelInvocationInput":{"shape":"ModelInvocationInput"},
-        "modelInvocationOutput":{"shape":"PostProcessingModelInvocationOutput"}
+        "modelInvocationInput":{
+          "shape":"ModelInvocationInput",
+          "documentation":"<p>The input for the post-processing step.</p> <ul> <li> <p>The <code>type</code> is <code>POST_PROCESSING</code>.</p> </li> <li> <p>The <code>text</code> contains the prompt.</p> </li> <li> <p>The <code>inferenceConfiguration</code>, <code>parserMode</code>, and <code>overrideLambda</code> values are set in the <a href=\"https://docs.aws.amazon.com/bedrock/latest/APIReference/API_agent_PromptOverrideConfiguration.html\">PromptOverrideConfiguration</a> object that was set when the agent was created or updated.</p> </li> </ul>"
+        },
+        "modelInvocationOutput":{
+          "shape":"PostProcessingModelInvocationOutput",
+          "documentation":"<p>The foundation model output from the post-processing step.</p>"
+        }
       },
-      "documentation":"<p>Trace Part which contains information related to post processing step</p>",
+      "documentation":"<p>Details about the post-processing step, in which the agent shapes the response.</p>",
       "sensitive":true,
       "union":true
     },
     "PreProcessingModelInvocationOutput":{
       "type":"structure",
       "members":{
-        "traceId":{"shape":"TraceId"},
-        "parsedResponse":{"shape":"PreProcessingParsedResponse"}
+        "parsedResponse":{
+          "shape":"PreProcessingParsedResponse",
+          "documentation":"<p>Details about the response from the Lambda parsing of the output of the pre-processing step.</p>"
+        },
+        "traceId":{
+          "shape":"TraceId",
+          "documentation":"<p>The unique identifier of the trace.</p>"
+        }
       },
-      "documentation":"<p>Trace Part which contains information related to preprocessing</p>",
+      "documentation":"<p>The foundation model output from the pre-processing step.</p>",
       "sensitive":true
     },
     "PreProcessingParsedResponse":{
       "type":"structure",
       "members":{
-        "rationale":{"shape":"RationaleString"},
         "isValid":{
           "shape":"Boolean",
-          "documentation":"<p>Boolean value</p>"
+          "documentation":"<p>Whether the user input is valid or not. If <code>false</code>, the agent doesn't proceed to orchestration.</p>"
+        },
+        "rationale":{
+          "shape":"RationaleString",
+          "documentation":"<p>The text returned by the parsing of the pre-processing step, explaining the steps that the agent plans to take in orchestration, if the user input is valid.</p>"
         }
       },
-      "documentation":"<p>Trace Part which contains information if preprocessing was successful</p>",
+      "documentation":"<p>Details about the response from the Lambda parsing of the output from the pre-processing step.</p>",
       "sensitive":true
     },
     "PreProcessingTrace":{
       "type":"structure",
       "members":{
-        "modelInvocationInput":{"shape":"ModelInvocationInput"},
-        "modelInvocationOutput":{"shape":"PreProcessingModelInvocationOutput"}
+        "modelInvocationInput":{
+          "shape":"ModelInvocationInput",
+          "documentation":"<p>The input for the pre-processing step.</p> <ul> <li> <p>The <code>type</code> is <code>PRE_PROCESSING</code>.</p> </li> <li> <p>The <code>text</code> contains the prompt.</p> </li> <li> <p>The <code>inferenceConfiguration</code>, <code>parserMode</code>, and <code>overrideLambda</code> values are set in the <a href=\"https://docs.aws.amazon.com/bedrock/latest/APIReference/API_agent_PromptOverrideConfiguration.html\">PromptOverrideConfiguration</a> object that was set when the agent was created or updated.</p> </li> </ul>"
+        },
+        "modelInvocationOutput":{
+          "shape":"PreProcessingModelInvocationOutput",
+          "documentation":"<p>The foundation model output from the pre-processing step.</p>"
+        }
       },
-      "documentation":"<p>Trace Part which contains information related to preprocessing step</p>",
+      "documentation":"<p>Details about the pre-processing step, in which the agent contextualizes and categorizes user inputs.</p>",
       "sensitive":true,
       "union":true
     },
     "PromptSessionAttributesMap":{
       "type":"map",
       "key":{"shape":"String"},
-      "value":{"shape":"String"},
-      "documentation":"<p>Session attributes that go to the prompt</p>"
+      "value":{"shape":"String"}
     },
     "PromptText":{
       "type":"string",
-      "documentation":"<p>Prompt Message</p>",
       "sensitive":true
     },
     "PromptType":{
       "type":"string",
-      "documentation":"<p>types of prompts</p>",
       "enum":[
         "PRE_PROCESSING",
         "ORCHESTRATION",
@@ -684,42 +836,53 @@
     "Rationale":{
       "type":"structure",
       "members":{
-        "traceId":{"shape":"TraceId"},
-        "text":{"shape":"RationaleString"}
+        "text":{
+          "shape":"RationaleString",
+          "documentation":"<p>The reasoning or thought process of the agent, based on the input.</p>"
+        },
+        "traceId":{
+          "shape":"TraceId",
+          "documentation":"<p>The unique identifier of the trace step.</p>"
+        }
       },
-      "documentation":"<p>Trace Part which contains information related to reasoning</p>",
+      "documentation":"<p>Contains the reasoning, based on the input, that the agent uses to justify carrying out an action group or getting information from a knowledge base.</p>",
       "sensitive":true
     },
     "RationaleString":{
       "type":"string",
-      "documentation":"<p>Agent Trace Rationale String</p>",
       "sensitive":true
     },
     "RepromptResponse":{
       "type":"structure",
       "members":{
+        "source":{
+          "shape":"Source",
+          "documentation":"<p>Specifies what output is prompting the agent to reprompt the input.</p>"
+        },
         "text":{
           "shape":"String",
-          "documentation":"<p>Reprompt response text</p>"
-        },
-        "source":{"shape":"Source"}
+          "documentation":"<p>The text reprompting the input.</p>"
+        }
       },
-      "documentation":"<p>Observation information if there were reprompts</p>",
+      "documentation":"<p>Contains details about the agent's response to reprompt the input.</p>",
       "sensitive":true
     },
     "RequestBody":{
       "type":"structure",
       "members":{
-        "content":{"shape":"ContentMap"}
+        "content":{
+          "shape":"ContentMap",
+          "documentation":"<p>The content in the request body.</p>"
+        }
       },
-      "documentation":"<p>Request Body Content Map</p>"
+      "documentation":"<p>The parameters in the request body for the Lambda input event.</p>"
     },
     "ResourceNotFoundException":{
       "type":"structure",
       "members":{
         "message":{"shape":"NonBlankString"}
       },
-      "documentation":"<p>This exception is thrown when a resource referenced by the operation does not exist</p>",
+      "documentation":"<p>The specified resource ARN was not found. Check the ARN and try your request again.</p>",
       "error":{
         "httpStatusCode":404,
         "senderFault":true
@@ -729,19 +892,52 @@
     "ResponseStream":{
       "type":"structure",
       "members":{
-        "chunk":{"shape":"PayloadPart"},
-        "trace":{"shape":"TracePart"},
-        "internalServerException":{"shape":"InternalServerException"},
-        "validationException":{"shape":"ValidationException"},
-        "resourceNotFoundException":{"shape":"ResourceNotFoundException"},
-        "serviceQuotaExceededException":{"shape":"ServiceQuotaExceededException"},
-        "throttlingException":{"shape":"ThrottlingException"},
-        "accessDeniedException":{"shape":"AccessDeniedException"},
-        "conflictException":{"shape":"ConflictException"},
-        "dependencyFailedException":{"shape":"DependencyFailedException"},
-        "badGatewayException":{"shape":"BadGatewayException"}
+        "accessDeniedException":{
+          "shape":"AccessDeniedException",
+          "documentation":"<p>The request is denied because of missing access permissions. Check your permissions and retry your request.</p>"
+        },
+        "badGatewayException":{
+          "shape":"BadGatewayException",
+          "documentation":"<p>There was an issue with a dependency due to a server issue. Retry your request.</p>"
+        },
+        "chunk":{
+          "shape":"PayloadPart",
+          "documentation":"<p>Contains a part of an agent response and citations for it.</p>"
+        },
+        "conflictException":{
+          "shape":"ConflictException",
+          "documentation":"<p>There was a conflict performing an operation. Resolve the conflict and retry your request.</p>"
+        },
+        "dependencyFailedException":{
+          "shape":"DependencyFailedException",
+          "documentation":"<p>There was an issue with a dependency. Check the resource configurations and retry the request.</p>"
+        },
+        "internalServerException":{
+          "shape":"InternalServerException",
+          "documentation":"<p>An internal server error occurred. Retry your request.</p>"
+        },
+        "resourceNotFoundException":{
+          "shape":"ResourceNotFoundException",
+          "documentation":"<p>The specified resource ARN was not found. Check the ARN and try your request again.</p>"
+        },
+        "serviceQuotaExceededException":{
+          "shape":"ServiceQuotaExceededException",
+          "documentation":"<p>The number of requests exceeds the service quota. Resubmit your request later.</p>"
+        },
+        "throttlingException":{
+          "shape":"ThrottlingException",
+          "documentation":"<p>The number of requests exceeds the limit. Resubmit your request later.</p>"
+        },
+        "trace":{
+          "shape":"TracePart",
+          "documentation":"<p>Contains information about the agent and session, alongside the agent's reasoning process and results from calling API actions and querying knowledge bases and metadata about the trace. You can use the trace to understand how the agent arrived at the response it provided the customer. For more information, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/trace-events.html\">Trace events</a>.</p>"
+        },
+        "validationException":{
+          "shape":"ValidationException",
+          "documentation":"<p>Input validation failed. Check your request parameters and retry the request.</p>"
+        }
       },
-      "documentation":"<p>Response body of is a stream</p>",
+      "documentation":"<p>The response from invoking the agent and associated citations and trace information.</p>",
       "eventstream":true
     },
     "RetrievalResultContent":{
@@ -750,25 +946,30 @@
       "members":{
         "text":{
           "shape":"String",
-          "documentation":"<p>Content of a retrieval result in text</p>"
+          "documentation":"<p>The cited text from the data source.</p>"
         }
       },
-      "documentation":"<p>Content of a retrieval result.</p>",
+      "documentation":"<p>Contains the cited text from the data source.</p>",
       "sensitive":true
     },
     "RetrievalResultLocation":{
       "type":"structure",
       "required":["type"],
       "members":{
-        "type":{"shape":"RetrievalResultLocationType"},
-        "s3Location":{"shape":"RetrievalResultS3Location"}
+        "s3Location":{
+          "shape":"RetrievalResultS3Location",
+          "documentation":"<p>Contains the S3 location of the data source.</p>"
+        },
+        "type":{
+          "shape":"RetrievalResultLocationType",
+          "documentation":"<p>The type of the location of the data source.</p>"
+        }
       },
-      "documentation":"<p>The source location of a retrieval result.</p>",
+      "documentation":"<p>Contains information about the location of the data source.</p>",
       "sensitive":true
     },
     "RetrievalResultLocationType":{
       "type":"string",
-      "documentation":"<p>The location type of a retrieval result.</p>",
       "enum":["S3"]
     },
     "RetrievalResultS3Location":{
@@ -776,19 +977,25 @@
       "members":{
         "uri":{
           "shape":"String",
-          "documentation":"<p>URI of S3 location</p>"
+          "documentation":"<p>The S3 URI of the data source.</p>"
         }
       },
-      "documentation":"<p>The S3 location of a retrieval result.</p>"
+      "documentation":"<p>Contains the S3 location of the data source.</p>"
     },
     "RetrieveAndGenerateConfiguration":{
       "type":"structure",
       "required":["type"],
       "members":{
-        "type":{"shape":"RetrieveAndGenerateType"},
-        "knowledgeBaseConfiguration":{"shape":"KnowledgeBaseRetrieveAndGenerateConfiguration"}
+        "knowledgeBaseConfiguration":{
+          "shape":"KnowledgeBaseRetrieveAndGenerateConfiguration",
+          "documentation":"<p>Contains details about the resource being queried.</p>"
+        },
+        "type":{
+          "shape":"RetrieveAndGenerateType",
+          "documentation":"<p>The type of resource that is queried by the request.</p>"
+        }
       },
-      "documentation":"<p>Configures the retrieval and generation for the session.</p>"
+      "documentation":"<p>Contains details about the resource being queried.</p>"
     },
     "RetrieveAndGenerateInput":{
       "type":"structure",
@@ -796,10 +1003,10 @@
       "members":{
         "text":{
           "shape":"RetrieveAndGenerateInputTextString",
-          "documentation":"<p>Customer input of the turn in text</p>"
+          "documentation":"<p>The query made to the knowledge base.</p>"
         }
       },
-      "documentation":"<p>Customer input of the turn</p>",
+      "documentation":"<p>Contains the query made to the knowledge base.</p>",
       "sensitive":true
     },
     "RetrieveAndGenerateInputTextString":{
@@ -813,32 +1020,53 @@
       "members":{
         "text":{
           "shape":"String",
-          "documentation":"<p>Service response of the turn in text</p>"
+          "documentation":"<p>The response generated from querying the knowledge base.</p>"
         }
       },
-      "documentation":"<p>Service response of the turn</p>",
+      "documentation":"<p>Contains the response generated from querying the knowledge base.</p>",
       "sensitive":true
     },
     "RetrieveAndGenerateRequest":{
       "type":"structure",
       "required":["input"],
       "members":{
-        "sessionId":{"shape":"SessionId"},
-        "input":{"shape":"RetrieveAndGenerateInput"},
-        "retrieveAndGenerateConfiguration":{"shape":"RetrieveAndGenerateConfiguration"},
-        "sessionConfiguration":{"shape":"RetrieveAndGenerateSessionConfiguration"}
+        "input":{
+          "shape":"RetrieveAndGenerateInput",
+          "documentation":"<p>Contains the query made to the knowledge base.</p>"
+        },
+        "retrieveAndGenerateConfiguration":{
+          "shape":"RetrieveAndGenerateConfiguration",
+          "documentation":"<p>Contains details about the resource being queried and the foundation model used for generation.</p>"
+        },
+        "sessionConfiguration":{
+          "shape":"RetrieveAndGenerateSessionConfiguration",
+          "documentation":"<p>Contains details about the session with the knowledge base.</p>"
+        },
+        "sessionId":{
+          "shape":"SessionId",
+          "documentation":"<p>The unique identifier of the session. Reuse the same value to continue the same session with the knowledge base.</p>"
+        }
       }
     },
     "RetrieveAndGenerateResponse":{
       "type":"structure",
       "required":[
-        "sessionId",
-        "output"
+        "output",
+        "sessionId"
       ],
       "members":{
-        "sessionId":{"shape":"SessionId"},
-        "output":{"shape":"RetrieveAndGenerateOutput"},
-        "citations":{"shape":"Citations"}
+        "citations":{
+          "shape":"Citations",
+          "documentation":"<p>A list of segments of the generated response that are based on sources in the knowledge base, alongside information about the sources.</p>"
+        },
+        "output":{
+          "shape":"RetrieveAndGenerateOutput",
+          "documentation":"<p>Contains the response generated from querying the knowledge base.</p>"
+        },
+        "sessionId":{
+          "shape":"SessionId",
+          "documentation":"<p>The unique identifier of the session. Reuse the same value to continue the same session with the knowledge base.</p>"
+        }
       }
     },
     "RetrieveAndGenerateSessionConfiguration":{
@@ -847,14 +1075,13 @@
       "members":{
         "kmsKeyArn":{
           "shape":"KmsKeyArn",
-          "documentation":"<p>The KMS key arn to encrypt the customer data of the session.</p>"
+          "documentation":"<p>The ARN of the KMS key encrypting the session.</p>"
         }
       },
-      "documentation":"<p>Configures common parameters of the session.</p>"
+      "documentation":"<p>Contains configuration about the session with the knowledge base.</p>"
     },
     "RetrieveAndGenerateType":{
       "type":"string",
-      "documentation":"<p>The type of RetrieveAndGenerate.</p>",
       "enum":["KNOWLEDGE_BASE"]
     },
     "RetrieveRequest":{
@@ -866,38 +1093,58 @@
       "members":{
         "knowledgeBaseId":{
           "shape":"KnowledgeBaseId",
+          "documentation":"<p>The unique identifier of the knowledge base to query.</p>",
           "location":"uri",
           "locationName":"knowledgeBaseId"
         },
-        "retrievalQuery":{"shape":"KnowledgeBaseQuery"},
-        "retrievalConfiguration":{"shape":"KnowledgeBaseRetrievalConfiguration"},
-        "nextToken":{"shape":"NextToken"}
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>If there are more results than can fit in the response, the response returns a <code>nextToken</code>. Use this token in the <code>nextToken</code> field of another request to retrieve the next batch of results.</p>"
+        },
+        "retrievalConfiguration":{
+          "shape":"KnowledgeBaseRetrievalConfiguration",
+          "documentation":"<p>Contains details about how the results should be returned.</p>"
+        },
+        "retrievalQuery":{
+          "shape":"KnowledgeBaseQuery",
+          "documentation":"<p>The query to send the knowledge base.</p>"
+        }
       }
     },
     "RetrieveResponse":{
       "type":"structure",
       "required":["retrievalResults"],
       "members":{
-        "retrievalResults":{"shape":"KnowledgeBaseRetrievalResults"},
-        "nextToken":{"shape":"NextToken"}
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>If there are more results than can fit in the response, the response returns a <code>nextToken</code>. Use this token in the <code>nextToken</code> field of another request to retrieve the next batch of results.</p>"
+        },
+        "retrievalResults":{
+          "shape":"KnowledgeBaseRetrievalResults",
+          "documentation":"<p>A list of results from querying the knowledge base.</p>"
+        }
       }
     },
     "RetrievedReference":{
       "type":"structure",
       "members":{
-        "content":{"shape":"RetrievalResultContent"},
-        "location":{"shape":"RetrievalResultLocation"}
+        "content":{
+          "shape":"RetrievalResultContent",
+          "documentation":"<p>Contains the cited text from the data source.</p>"
+        },
+        "location":{
+          "shape":"RetrievalResultLocation",
+          "documentation":"<p>Contains information about the location of the data source.</p>"
+        }
       },
-      "documentation":"<p>Retrieved reference</p>"
+      "documentation":"<p>Contains metadata about a sources cited for the generated response.</p>"
     },
     "RetrievedReferences":{
       "type":"list",
-      "member":{"shape":"RetrievedReference"},
-      "documentation":"<p>list of retrieved references</p>"
+      "member":{"shape":"RetrievedReference"}
     },
     "SearchType":{
       "type":"string",
-      "documentation":"<p>Query type to be performed on data store.</p>",
       "enum":[
         "HYBRID",
         "SEMANTIC"
@@ -908,7 +1155,7 @@
       "members":{
         "message":{"shape":"NonBlankString"}
       },
-      "documentation":"<p>This exception is thrown when a request is made beyond the service quota</p>",
+      "documentation":"<p>The number of requests exceeds the service quota. Resubmit your request later.</p>",
       "error":{
         "httpStatusCode":400,
         "senderFault":true
@@ -918,33 +1165,30 @@
     "SessionAttributesMap":{
       "type":"map",
       "key":{"shape":"String"},
-      "value":{"shape":"String"},
-      "documentation":"<p>Session attributes are pass through attributes passed to the action group</p>"
+      "value":{"shape":"String"}
     },
     "SessionId":{
       "type":"string",
-      "documentation":"<p>Identifier of the session.</p>",
       "max":100,
       "min":2,
-      "pattern":"[0-9a-zA-Z._:-]+"
+      "pattern":"^[0-9a-zA-Z._:-]+$"
     },
     "SessionState":{
       "type":"structure",
       "members":{
-        "sessionAttributes":{
-          "shape":"SessionAttributesMap",
-          "documentation":"<p>Session Attributes</p>"
-        },
         "promptSessionAttributes":{
           "shape":"PromptSessionAttributesMap",
-          "documentation":"<p>Prompt Session Attributes</p>"
+          "documentation":"<p>Contains attributes that persist across a prompt and the values of those attributes. These attributes replace the $prompt_session_attributes$ placeholder variable in the orchestration prompt template. For more information, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/prompt-placeholders.html\">Prompt template placeholder variables</a>.</p>"
+        },
+        "sessionAttributes":{
+          "shape":"SessionAttributesMap",
+          "documentation":"<p>Contains attributes that persist across a session and the values of those attributes.</p>"
         }
       },
-      "documentation":"<p>Session state provided</p>"
+      "documentation":"<p>Contains parameters that specify various attributes that persist across a session or prompt. You can define session state attributes as key-value pairs when writing a <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/agents-lambda.html\">Lambda function</a> for an action group or pass them when making an <a href=\"https://docs.aws.amazon.com/bedrock/latest/APIReference/API_agent-runtime_InvokeAgent.html\">InvokeAgent</a> request. Use session state attributes to control and provide conversational context for your agent and to help customize your agent's behavior. For more information, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/sessionstate.html\">Session context</a>.</p>"
     },
     "Source":{
       "type":"string",
-      "documentation":"<p>Parsing error source</p>",
       "enum":[
         "ACTION_GROUP",
         "KNOWLEDGE_BASE",
@@ -955,16 +1199,16 @@
     "Span":{
       "type":"structure",
       "members":{
-        "start":{
-          "shape":"SpanStartInteger",
-          "documentation":"<p>Start of span</p>"
-        },
         "end":{
           "shape":"SpanEndInteger",
-          "documentation":"<p>End of span</p>"
+          "documentation":"<p>Where the text with a citation ends in the generated output.</p>"
+        },
+        "start":{
+          "shape":"SpanStartInteger",
+          "documentation":"<p>Where the text with a citation starts in the generated output.</p>"
         }
       },
-      "documentation":"<p>Span of text</p>"
+      "documentation":"<p>Contains information about where the text with a citation begins and ends in the generated output.</p>"
     },
     "SpanEndInteger":{
       "type":"integer",
@@ -979,14 +1223,12 @@
     "StopSequences":{
       "type":"list",
       "member":{"shape":"String"},
-      "documentation":"<p>List of stop sequences</p>",
       "max":4,
       "min":0
     },
     "String":{"type":"string"},
     "Temperature":{
       "type":"float",
-      "documentation":"<p>Controls randomness, higher values increase diversity</p>",
       "box":true,
       "max":1,
       "min":0
@@ -994,13 +1236,16 @@
     "TextResponsePart":{
       "type":"structure",
       "members":{
+        "span":{
+          "shape":"Span",
+          "documentation":"<p>Contains information about where the text with a citation begins and ends in the generated output.</p>"
+        },
         "text":{
           "shape":"String",
-          "documentation":"<p>Response part in text</p>"
-        },
-        "span":{"shape":"Span"}
+          "documentation":"<p>The part of the generated text that contains a citation.</p>"
+        }
       },
-      "documentation":"<p>Text response part</p>",
+      "documentation":"<p>Contains the part of the generated text that contains a citation, alongside where it begins and ends.</p>",
       "sensitive":true
     },
     "ThrottlingException":{
@@ -1008,7 +1253,7 @@
       "members":{
         "message":{"shape":"NonBlankString"}
       },
-      "documentation":"<p>This exception is thrown when the number of requests exceeds the limit</p>",
+      "documentation":"<p>The number of requests exceeds the limit. Resubmit your request later.</p>",
       "error":{
         "httpStatusCode":429,
         "senderFault":true
@@ -1017,14 +1262,12 @@
     },
     "TopK":{
       "type":"integer",
-      "documentation":"<p>Sample from the k most likely next tokens</p>",
       "box":true,
       "max":500,
       "min":0
     },
     "TopP":{
       "type":"float",
-      "documentation":"<p>Cumulative probability cutoff for token selection</p>",
       "box":true,
       "max":1,
       "min":0
@@ -1032,41 +1275,62 @@
     "Trace":{
       "type":"structure",
       "members":{
-        "preProcessingTrace":{"shape":"PreProcessingTrace"},
-        "orchestrationTrace":{"shape":"OrchestrationTrace"},
-        "postProcessingTrace":{"shape":"PostProcessingTrace"},
-        "failureTrace":{"shape":"FailureTrace"}
+        "failureTrace":{
+          "shape":"FailureTrace",
+          "documentation":"<p>Contains information about the failure of the interaction.</p>"
+        },
+        "orchestrationTrace":{
+          "shape":"OrchestrationTrace",
+          "documentation":"<p>Details about the orchestration step, in which the agent determines the order in which actions are executed and which knowledge bases are retrieved.</p>"
+        },
+        "postProcessingTrace":{
+          "shape":"PostProcessingTrace",
+          "documentation":"<p>Details about the post-processing step, in which the agent shapes the response..</p>"
+        },
+        "preProcessingTrace":{
+          "shape":"PreProcessingTrace",
+          "documentation":"<p>Details about the pre-processing step, in which the agent contextualizes and categorizes user inputs.</p>"
+        }
       },
-      "documentation":"<p>Trace contains intermidate response for customer</p>",
+      "documentation":"<p>Contains one part of the agent's reasoning process and results from calling API actions and querying knowledge bases. You can use the trace to understand how the agent arrived at the response it provided the customer. For more information, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/agents-test.html#trace-enablement\">Trace enablement</a>.</p>",
       "sensitive":true,
       "union":true
     },
     "TraceId":{
       "type":"string",
-      "documentation":"<p>Identifier for trace</p>",
       "max":16,
       "min":2
     },
     "TraceKnowledgeBaseId":{
       "type":"string",
-      "documentation":"<p>Agent Trace Action Group Knowledge Base Id</p>",
       "sensitive":true
     },
     "TracePart":{
       "type":"structure",
       "members":{
-        "agentId":{"shape":"AgentId"},
-        "agentAliasId":{"shape":"AgentAliasId"},
-        "sessionId":{"shape":"SessionId"},
-        "trace":{"shape":"Trace"}
+        "agentAliasId":{
+          "shape":"AgentAliasId",
+          "documentation":"<p>The unique identifier of the alias of the agent.</p>"
+        },
+        "agentId":{
+          "shape":"AgentId",
+          "documentation":"<p>The unique identifier of the agent.</p>"
+        },
+        "sessionId":{
+          "shape":"SessionId",
+          "documentation":"<p>The unique identifier of the session with the agent.</p>"
+        },
+        "trace":{
+          "shape":"Trace",
+          "documentation":"<p>Contains one part of the agent's reasoning process and results from calling API actions and querying knowledge bases. You can use the trace to understand how the agent arrived at the response it provided the customer. For more information, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/agents-test.html#trace-enablement\">Trace enablement</a>.</p>"
+        }
       },
-      "documentation":"<p>Trace Part which contains intermidate response for customer</p>",
+      "documentation":"<p>Contains information about the agent and session, alongside the agent's reasoning process and results from calling API actions and querying knowledge bases and metadata about the trace. You can use the trace to understand how the agent arrived at the response it provided the customer. For more information, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/agents-test.html#trace-enablement\">Trace enablement</a>.</p>",
       "event":true,
       "sensitive":true
     },
     "Type":{
       "type":"string",
-      "documentation":"<p>types of observations</p>",
       "enum":[
         "ACTION_GROUP",
         "KNOWLEDGE_BASE",
@@ -1080,7 +1344,7 @@
       "members":{
         "message":{"shape":"NonBlankString"}
       },
-      "documentation":"<p>This exception is thrown when the request's input validation fails</p>",
+      "documentation":"<p>Input validation failed. Check your request parameters and retry the request.</p>",
       "error":{
         "httpStatusCode":400,
         "senderFault":true
@@ -1089,9 +1353,8 @@
     },
     "Verb":{
       "type":"string",
-      "documentation":"<p>Agent Trace Action Group Action verb</p>",
       "sensitive":true
     }
   },
-  "documentation":"<p>Amazon Bedrock Agent</p>"
+  "documentation":"<p>Contains APIs related to model invocation and querying of knowledge bases.</p>"
 }

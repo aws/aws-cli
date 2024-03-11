@@ -10,7 +10,7 @@ Output::
         "FlywheelSummaryList": [
             {
                 "FlywheelArn": "arn:aws:comprehend:us-west-2:111122223333:flywheel/example-flywheel-1",
-                "ActiveModelArn": "arn:aws:comprehend:us-west-2:111122223333:document-classifier/exampleclassifer/version/1",
+                "ActiveModelArn": "arn:aws:comprehend:us-west-2:111122223333:document-classifier/exampleclassifier/version/1",
                 "DataLakeS3Uri": "s3://DOC-EXAMPLE-BUCKET/example-flywheel-1/schemaVersion=1/20230616T200543Z/",
                 "Status": "ACTIVE",
                 "ModelType": "DOCUMENT_CLASSIFIER",
@@ -20,7 +20,7 @@ Output::
             },
             {
                 "FlywheelArn": "arn:aws:comprehend:us-west-2:111122223333:flywheel/example-flywheel-2",
-                "ActiveModelArn": "arn:aws:comprehend:us-west-2:111122223333:document-classifier/exampleclassifer2/version/1",
+                "ActiveModelArn": "arn:aws:comprehend:us-west-2:111122223333:document-classifier/exampleclassifier2/version/1",
                 "DataLakeS3Uri": "s3://DOC-EXAMPLE-BUCKET/example-flywheel-2/schemaVersion=1/20220616T200543Z/",
                 "Status": "ACTIVE",
                 "ModelType": "DOCUMENT_CLASSIFIER",

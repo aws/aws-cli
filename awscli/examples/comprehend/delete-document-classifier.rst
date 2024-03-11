@@ -3,7 +3,7 @@
 The following ``delete-document-classifier`` example deletes a custom document classifier model. ::
 
     aws comprehend delete-document-classifier \
-        --document-classifier-arn arn:aws:comprehend:us-west-2:111122223333:document-classifier/example-classifer-1
+        --document-classifier-arn arn:aws:comprehend:us-west-2:111122223333:document-classifier/example-classifier-1
 
 This command produces no output.
 

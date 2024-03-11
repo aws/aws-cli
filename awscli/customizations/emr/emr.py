@@ -64,11 +64,3 @@ def register_commands(command_table, session, **kwargs):
     command_table['socks'] = ssh.Socks(session)
     command_table['get'] = ssh.Get(session)
     command_table['put'] = ssh.Put(session)
-    
-    # Usually, unwanted EMR API commands are removed through awscli/customizations/removals.py at
-    # launch time. However, the SetUnhealthyNodeReplacement API was launched without the removal
-    # in-place. To avoid breaking potential usage, it is undocumented here instead of being removed.
-    # Assuming there is no usage of the 'set-unhealthy-node-replacement' command, it may be moved to
-    # awscli/customizations/removals.py in the future. No future API commands should be undocumented
-    # here; add to awscli/customizations/removals.py at launch time instead.
-    command_table['set-unhealthy-node-replacement']._UNDOCUMENTED = True

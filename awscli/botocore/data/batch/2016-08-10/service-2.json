@@ -1160,6 +1160,10 @@
         "tags":{
           "shape":"TagrisTagsMap",
           "documentation":"<p>The tags that you apply to the job queue to help you categorize and organize your resources. Each tag consists of a key and an optional value. For more information, see <a href=\"https://docs.aws.amazon.com/batch/latest/userguide/using-tags.html\">Tagging your Batch resources</a> in <i>Batch User Guide</i>.</p>"
+        },
+        "jobStateTimeLimitActions":{
+          "shape":"JobStateTimeLimitActions",
+          "documentation":"<p>The set of actions that Batch performs on jobs that remain at the head of the job queue in the specified state longer than specified times. Batch will perform each action after <code>maxTimeSeconds</code> has passed.</p>"
         }
       },
       "documentation":"<p>Contains the parameters for <code>CreateJobQueue</code>.</p>"
@@ -2443,7 +2447,7 @@
         },
         "statusReason":{
           "shape":"String",
-          "documentation":"<p>A short, human-readable string to provide more details for the current status of the job.</p>"
+          "documentation":"<p>A short, human-readable string to provide more details for the current status of the job.</p> <ul> <li> <p> <code>CAPACITY:INSUFFICIENT_INSTANCE_CAPACITY</code> - All compute environments have insufficient capacity to service the job.</p> </li> <li> <p> <code>MISCONFIGURATION:COMPUTE_ENVIRONMENT_MAX_RESOURCE</code> - All compute environments have a <code>maxVcpu</code> setting that is smaller than the job requirements.</p> </li> <li> <p> <code>MISCONFIGURATION:JOB_RESOURCE_REQUIREMENT</code> - All compute environments have no connected instances that meet the job requirements.</p> </li> <li> <p> <code>MISCONFIGURATION:SERVICE_ROLE_PERMISSIONS</code> - All compute environments have problems with the service role permissions.</p> </li> </ul>"
         },
         "createdAt":{
           "shape":"Long",
@@ -2582,6 +2586,10 @@
         "tags":{
           "shape":"TagrisTagsMap",
           "documentation":"<p>The tags that are applied to the job queue. For more information, see <a href=\"https://docs.aws.amazon.com/batch/latest/userguide/using-tags.html\">Tagging your Batch resources</a> in <i>Batch User Guide</i>.</p>"
+        },
+        "jobStateTimeLimitActions":{
+          "shape":"JobStateTimeLimitActions",
+          "documentation":"<p>The set of actions that Batch perform on jobs that remain at the head of the job queue in the specified state longer than specified times. Batch will perform each action after <code>maxTimeSeconds</code> has passed.</p>"
         }
       },
       "documentation":"<p>An object that represents the details for an Batch job queue.</p>"
@@ -2589,6 +2597,46 @@
     "JobQueueDetailList":{
       "type":"list",
       "member":{"shape":"JobQueueDetail"}
+    },
+    "JobStateTimeLimitAction":{
+      "type":"structure",
+      "required":[
+        "reason",
+        "state",
+        "maxTimeSeconds",
+        "action"
+      ],
+      "members":{
+        "reason":{
+          "shape":"String",
+          "documentation":"<p>The reason to log for the action being taken.</p>"
+        },
+        "state":{
+          "shape":"JobStateTimeLimitActionsState",
+          "documentation":"<p>The state of the job needed to trigger the action. The only supported value is \"<code>RUNNABLE</code>\".</p>"
+        },
+        "maxTimeSeconds":{
+          "shape":"Integer",
+          "documentation":"<p>The approximate amount of time, in seconds, that must pass with the job in the specified state before the action is taken. The minimum value is 600 (10 minutes) and the maximum value is 86,400 (24 hours).</p>"
+        },
+        "action":{
+          "shape":"JobStateTimeLimitActionsAction",
+          "documentation":"<p>The action to take when a job is at the head of the job queue in the specified state for the specified period of time. The only supported value is \"<code>CANCEL</code>\", which will cancel the job.</p>"
+        }
+      },
+      "documentation":"<p>Specifies an action that Batch will take after the job has remained at the head of the queue in the specified state for longer than the specified time.</p>"
+    },
+    "JobStateTimeLimitActions":{
+      "type":"list",
+      "member":{"shape":"JobStateTimeLimitAction"}
+    },
+    "JobStateTimeLimitActionsAction":{
+      "type":"string",
+      "enum":["CANCEL"]
+    },
+    "JobStateTimeLimitActionsState":{
+      "type":"string",
+      "enum":["RUNNABLE"]
     },
     "JobStatus":{
       "type":"string",
@@ -3566,7 +3614,7 @@
         },
         "essential":{
           "shape":"Boolean",
-          "documentation":"<p>If the essential parameter of a container is marked as <code>true</code>, and that container fails or stops for any reason, all other containers that are part of the task are stopped. If the <code>essential</code> parameter of a container is marked as false, its failure doesn't affect the rest of the containers in a task. If this parameter is omitted, a container is assumed to be essential.</p> <p>All tasks must have at least one essential container. If you have an application that's composed of multiple containers, group containers that are used for a common purpose into components, and separate the different components into multiple task definitions. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonECS/latest/developerguide/application_architecture.html\">Application Architecture</a> in the <i>Amazon Elastic Container Service Developer Guide</i>.</p>"
+          "documentation":"<p>If the essential parameter of a container is marked as <code>true</code>, and that container fails or stops for any reason, all other containers that are part of the task are stopped. If the <code>essential</code> parameter of a container is marked as false, its failure doesn't affect the rest of the containers in a task. If this parameter is omitted, a container is assumed to be essential.</p> <p>All jobs must have at least one essential container. If you have an application that's composed of multiple containers, group containers that are used for a common purpose into components, and separate the different components into multiple task definitions. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonECS/latest/developerguide/application_architecture.html\">Application Architecture</a> in the <i>Amazon Elastic Container Service Developer Guide</i>.</p>"
         },
         "image":{
           "shape":"String",
@@ -3675,7 +3723,7 @@
         },
         "essential":{
           "shape":"Boolean",
-          "documentation":"<p>If the essential parameter of a container is marked as <code>true</code>, and that container fails or stops for any reason, all other containers that are part of the task are stopped. If the <code>essential</code> parameter of a container is marked as false, its failure doesn't affect the rest of the containers in a task. If this parameter is omitted, a container is assumed to be essential.</p> <p>All tasks must have at least one essential container. If you have an application that's composed of multiple containers, group containers that are used for a common purpose into components, and separate the different components into multiple task definitions. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonECS/latest/developerguide/application_architecture.html\">Application Architecture</a> in the <i>Amazon Elastic Container Service Developer Guide</i>.</p>"
+          "documentation":"<p>If the essential parameter of a container is marked as <code>true</code>, and that container fails or stops for any reason, all other containers that are part of the task are stopped. If the <code>essential</code> parameter of a container is marked as false, its failure doesn't affect the rest of the containers in a task. If this parameter is omitted, a container is assumed to be essential.</p> <p>All jobs must have at least one essential container. If you have an application that's composed of multiple containers, group containers that are used for a common purpose into components, and separate the different components into multiple task definitions. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonECS/latest/developerguide/application_architecture.html\">Application Architecture</a> in the <i>Amazon Elastic Container Service Developer Guide</i>.</p>"
         },
         "image":{
           "shape":"String",
@@ -3908,6 +3956,10 @@
         "computeEnvironmentOrder":{
           "shape":"ComputeEnvironmentOrders",
           "documentation":"<p>Details the set of compute environments mapped to a job queue and their order relative to each other. This is one of the parameters used by the job scheduler to determine which compute environment runs a given job. Compute environments must be in the <code>VALID</code> state before you can associate them with a job queue. All of the compute environments must be either EC2 (<code>EC2</code> or <code>SPOT</code>) or Fargate (<code>FARGATE</code> or <code>FARGATE_SPOT</code>). EC2 and Fargate compute environments can't be mixed.</p> <note> <p>All compute environments that are associated with a job queue must share the same architecture. Batch doesn't support mixing compute environment architecture types in a single job queue.</p> </note>"
+        },
+        "jobStateTimeLimitActions":{
+          "shape":"JobStateTimeLimitActions",
+          "documentation":"<p>The set of actions that Batch perform on jobs that remain at the head of the job queue in the specified state longer than specified times. Batch will perform each action after <code>maxTimeSeconds</code> has passed.</p>"
         }
       },
       "documentation":"<p>Contains the parameters for <code>UpdateJobQueue</code>.</p>"

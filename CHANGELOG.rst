@@ -2,6 +2,14 @@
 CHANGELOG
 =========
 
+1.32.60
+=======
+
+* api-change:``codestar-connections``: Added a sync configuration enum to disable publishing of deployment status to source providers (PublishDeploymentStatus). Added a sync configuration enum (TriggerStackUpdateOn) to only trigger changes.
+* api-change:``elasticache``: Revisions to API text that are now to be carried over to SDK text, changing usages of "SFO" in code examples to "us-west-1", and some other typos.
+* api-change:``mediapackagev2``: This release enables customers to safely update their MediaPackage v2 channel groups, channels and origin endpoints using entity tags.
+
+
 1.32.59
 =======
 

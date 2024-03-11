@@ -1,6 +1,6 @@
 **To describe deployments**
 
-The following ``describe-deployments`` commmand describes the deployments in a specified stack. ::
+The following ``describe-deployments`` command describes the deployments in a specified stack. ::
 
   aws opsworks --region us-east-1 describe-deployments --stack-id 38ee91e2-abdc-4208-a107-0b7168b3cc7a
 

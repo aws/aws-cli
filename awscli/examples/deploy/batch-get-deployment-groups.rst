@@ -58,7 +58,7 @@ Output::
                 "onPremisesTagSet": {
                     "onPremisesTagSetList": []
                 },
-                "serviceRoleArn": "arn:aws:iam::123456789012:role/CodeDeloyServiceRole",
+                "serviceRoleArn": "arn:aws:iam::123456789012:role/CodeDeployServiceRole",
                 "autoScalingGroups": [],
                 "deploymentGroupName": "my-deployment-group-2",
                 "ec2TagSet": {

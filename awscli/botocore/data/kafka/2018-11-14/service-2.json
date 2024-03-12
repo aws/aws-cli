@@ -5481,6 +5481,22 @@
       },
       "documentation": "<p>Summarized information of replication between clusters.</p>"
     },
+    "ReplicationStartingPosition" : {
+      "type" : "structure",
+      "members" : {
+        "Type" : {
+          "shape" : "ReplicationStartingPositionType",
+          "locationName" : "type",
+          "documentation": "<p>The type of replication starting position.</p>"
+        }
+      },
+      "documentation": "<p>Configuration for specifying the position in the topics to start replicating from.</p>"
+    },
+    "ReplicationStartingPositionType" : {
+      "type" : "string",
+      "enum" : [ "LATEST", "EARLIEST" ],
+      "documentation": "<p>The type of replication starting position.</p>"
+    },
     "ReplicationStateInfo" : {
       "type" : "structure",
       "members" : {
@@ -5691,6 +5707,11 @@
           "shape": "__boolean",
           "locationName": "detectAndCopyNewTopics",
           "documentation": "<p>Whether to periodically check for new topics and partitions.</p>"
+        },
+        "StartingPosition" : {
+          "shape" : "ReplicationStartingPosition",
+          "locationName" : "startingPosition",
+          "documentation": "<p>Configuration for specifying the position in the topics to start replicating from.</p>"
         },
         "TopicsToExclude": {
           "shape": "__listOf__stringMax249",

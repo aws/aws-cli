@@ -33,8 +33,10 @@ EXAMPLES_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)),
 GLOBAL_OPTIONS_FILE = os.path.join(EXAMPLES_DIR, 'global_options.rst')
 GLOBAL_OPTIONS_SYNOPSIS_FILE = os.path.join(EXAMPLES_DIR,
                                             'global_synopsis.rst')
-
-
+# Global constants for document sections
+DESCRIPTION = 'Desription'
+SYNOPSIS = 'Synopsis'
+OPTIONS = 'Options'
 class CLIDocumentEventHandler(object):
 
     def __init__(self, help_command):
@@ -44,24 +46,32 @@ class CLIDocumentEventHandler(object):
         self._documented_arg_groups = []
 
     def _build_arg_table_groups(self, help_command):
+        """ Builds a dictionary of argument groups for the given help command."""
         arg_groups = {}
         for arg in help_command.arg_table.values():
             if arg.group_name is not None:
                 arg_groups.setdefault(arg.group_name, []).append(arg)
-        return arg_groups
+        return arg_groups 
 
+from enum import Enum
+
+class ArgumentType(Enum):
+    JSON = 'JSON'
+    DOCUMENT = 'document'
+    STREAMING_BLOB = 'streaming blob'
+    TAGGED_UNION = 'tagged union structure'
     def _get_argument_type_name(self, shape, default):
         if is_json_value_header(shape):
-            return 'JSON'
+            return ArgumentType.JSON.value # Replace local constants with global constants
         if is_document_type(shape):
-            return 'document'
+            return ArgumentType.DOCUMENT.value # Replace local constants with global constants
         if is_streaming_blob_type(shape):
-            return 'streaming blob'
+            return ArgumentType.STREAMING_BLOB.value # Replace local constants with global constants
         if is_tagged_union_type(shape):
-            return 'tagged union structure'
+            return ArgumentType.TAGGED_UNION.value  # Replace local constants with global constants
         return default
 
-    def _map_handlers(self, session, event_class, mapfn):
+    def _map_event_handlers(self, session, event_class, mapfn): 
         for event in DOC_EVENTS:
             event_handler_name = event.replace('-', '_')
             if hasattr(self, event_handler_name):
@@ -81,8 +91,12 @@ class CLIDocumentEventHandler(object):
         handler method will be registered for the all events of
         that type for the specified ``event_class``.
         """
-        self._map_handlers(session, event_class, session.register)
-
+        try:
+           self._map_handlers(session, event_class, session.register)
+        except Exception as e:
+              LOG.debug("Error registering event handlers for %s: %s",
+                        event_class, e, exc_info=True) 
+              
     def unregister(self):
         """
         The default unregister iterates through all of the
@@ -96,9 +110,10 @@ class CLIDocumentEventHandler(object):
                            self.help_command.session.unregister)
 
     # These are default doc handlers that apply in the general case.
-
+    def get_doc(self, help_command):
+        return help_command.doc
     def doc_breadcrumbs(self, help_command, **kwargs):
-        doc = help_command.doc
+        doc = self.get_doc(help_command)
         if doc.target != 'man':
             cmd_names = help_command.event_class.split('.')
             doc.write('[ ')
@@ -112,29 +127,29 @@ class CLIDocumentEventHandler(object):
             doc.write(' ]')
 
     def doc_title(self, help_command, **kwargs):
-        doc = help_command.doc
-        doc.style.new_paragraph()
+        doc = self.get_doc(help_command)
+        doc.style.new_paragraph() 
         reference = help_command.event_class.replace('.', ' ')
         if reference != 'aws':
             reference = 'aws ' + reference
-        doc.writeln('.. _cli:%s:' % reference)
+        doc.writeln(f'.. _cli: {reference}') # f-string formatting.  
         doc.style.h1(help_command.name)
 
     def doc_description(self, help_command, **kwargs):
-        doc = help_command.doc
-        doc.style.h2('Description')
-        doc.include_doc_string(help_command.description)
+        doc = self.get_doc(help_command)
+        doc.style.h2(DESCRIPTION) # Replace local constants with global constants
+        doc.include_doc_string(help_command.description) 
         doc.style.new_paragraph()
 
     def doc_synopsis_start(self, help_command, **kwargs):
         self._documented_arg_groups = []
-        doc = help_command.doc
-        doc.style.h2('Synopsis')
+        doc = self.get_doc(help_command)
+        doc.style.h2(SYNOPSIS) # Replace local constants with global constants
         doc.style.start_codeblock()
         doc.writeln('%s' % help_command.name)
 
     def doc_synopsis_option(self, arg_name, help_command, **kwargs):
-        doc = help_command.doc
+        doc = self.get_doc(help_command)
         argument = help_command.arg_table[arg_name]
         if argument.group_name in self._arg_groups:
             if argument.group_name in self._documented_arg_groups:
@@ -154,7 +169,7 @@ class CLIDocumentEventHandler(object):
         doc.writeln('%s' % option_str)
 
     def doc_synopsis_end(self, help_command, **kwargs):
-        doc = help_command.doc
+        doc = self.get_doc(help_command)
         # Append synopsis for global options.
         doc.write_from_file(GLOBAL_OPTIONS_SYNOPSIS_FILE)
         doc.style.end_codeblock()
@@ -164,50 +179,33 @@ class CLIDocumentEventHandler(object):
         self._documented_arg_groups = []
 
     def doc_options_start(self, help_command, **kwargs):
-        doc = help_command.doc
-        doc.style.h2('Options')
+        doc = self.get_doc(help_command)
+        doc.style.h2(OPTIONS)  # Replace local constants with global constants
         if not help_command.arg_table:
             doc.write('*None*\n')
-
     def doc_option(self, arg_name, help_command, **kwargs):
-        doc = help_command.doc
+        doc = self.get_doc(help_command)
         argument = help_command.arg_table[arg_name]
-        if argument.group_name in self._arg_groups:
-            if argument.group_name in self._documented_arg_groups:
-                # This arg is already documented so we can move on.
-                return
-            name = ' | '.join(
-                ['``%s``' % a.cli_name for a in
-                 self._arg_groups[argument.group_name]])
-            self._documented_arg_groups.append(argument.group_name)
-        else:
-            name = '``%s``' % argument.cli_name
-        doc.write('%s (%s)\n' % (name, self._get_argument_type_name(
-            argument.argument_model, argument.cli_type_name)))
-        doc.style.indent()
-        doc.include_doc_string(argument.documentation)
-        if is_streaming_blob_type(argument.argument_model):
-            self._add_streaming_blob_note(doc)
-        if is_tagged_union_type(argument.argument_model):
-            self._add_tagged_union_note(argument.argument_model, doc)
-        if hasattr(argument, 'argument_model'):
-            self._document_enums(argument.argument_model, doc)
-            self._document_nested_structure(argument.argument_model, doc)
+        self._document_arg_group(argument, doc)
+        self._document_individual_arg(argument, doc)
+        self._add_notes(argument, doc)
+        self._document_model(argument, doc)
         doc.style.dedent()
-        doc.style.new_paragraph()
+        doc.style.new_paragraph() 
+   
 
     def doc_global_option(self, help_command, **kwargs):
-        doc = help_command.doc
+        doc = self.get_doc(help_command)
         doc.style.h2('Global Options')
         doc.write_from_file(GLOBAL_OPTIONS_FILE)
 
     def doc_relateditems_start(self, help_command, **kwargs):
         if help_command.related_items:
-            doc = help_command.doc
+            doc = self.get_doc(help_command)
             doc.style.h2('See Also')
 
     def doc_relateditem(self, help_command, related_item, **kwargs):
-        doc = help_command.doc
+        doc = self.get_doc(help_command)
         doc.write('* ')
         doc.style.sphinx_reference_label(
             label='cli:%s' % related_item,
@@ -295,7 +293,7 @@ class CLIDocumentEventHandler(object):
                "(e.g. ``path/to/file``) and must **not** "
                "be prefixed with ``file://`` or ``fileb://``")
         doc.writeln(msg)
-        doc.style.end_note()
+        doc.style.end_note() 
 
     def _add_tagged_union_note(self, shape, doc):
         doc.style.start_note()
@@ -306,16 +304,29 @@ class CLIDocumentEventHandler(object):
                f"following top level keys can be set: {members_str}.")
         doc.writeln(msg)
         doc.style.end_note()
-
-
+ # Global constants for document sections
+SYNOPSIS = 'Synopsis'
+AVAILABLE_SERVICES = 'Available Services'
+AVAILABLE_COMMANDS = 'Available Commands'
 class ProviderDocumentEventHandler(CLIDocumentEventHandler):
 
     def doc_breadcrumbs(self, help_command, event_name, **kwargs):
+        """
+        This method generates breadcrumbs for the documentation of a command.
+
+        Args:
+            help_command (str): The command for which breadcrumbs are generated.
+            event_name (str): The event name associated with the command.
+            **kwargs: Additional keyword arguments.
+
+        Returns:
+            None
+        """
         pass
 
     def doc_synopsis_start(self, help_command, **kwargs):
-        doc = help_command.doc
-        doc.style.h2('Synopsis')
+        doc = help_command.doc 
+        doc.style.h2(SYNOPSIS) # Replace local constants with global constants
         doc.style.codeblock(help_command.synopsis)
         doc.include_doc_string(help_command.help_usage)
 
@@ -334,15 +345,16 @@ class ProviderDocumentEventHandler(CLIDocumentEventHandler):
 
     def doc_subitems_start(self, help_command, **kwargs):
         doc = help_command.doc
-        doc.style.h2('Available Services')
+        doc.style.h2(AVAILABLE_SERVICES) # Replace magic string with global constant
         doc.style.toctree()
 
     def doc_subitem(self, command_name, help_command, **kwargs):
         doc = help_command.doc
-        file_name = '%s/index' % command_name
+        file_name = f'{command_name}/index' # f-string formatting.
         doc.style.tocitem(command_name, file_name=file_name)
 
-
+#Global constants for document sections
+DESCRIPTION = 'Description'
 class ServiceDocumentEventHandler(CLIDocumentEventHandler):
 
     # A service document has no synopsis.
@@ -374,13 +386,13 @@ class ServiceDocumentEventHandler(CLIDocumentEventHandler):
     def doc_description(self, help_command, **kwargs):
         doc = help_command.doc
         service_model = help_command.obj
-        doc.style.h2('Description')
+        doc.style.h2(DESCRIPTION) # Replace local constants with global constants
         # TODO: need a documentation attribute.
         doc.include_doc_string(service_model.documentation)
 
     def doc_subitems_start(self, help_command, **kwargs):
         doc = help_command.doc
-        doc.style.h2('Available Commands')
+        doc.style.h2(AVAILABLE_COMMANDS) # Replace magic string with global constant
         doc.style.toctree()
 
     def doc_subitem(self, command_name, help_command, **kwargs):
@@ -391,26 +403,29 @@ class ServiceDocumentEventHandler(CLIDocumentEventHandler):
         # direct the subitem to the command's index because
         # it has more subcommands to be documented.
         if (len(subcommand_table) > 0):
-            file_name = '%s/index' % command_name
+            file_name = f"{command_name}/index" # f-string formatting.
             doc.style.tocitem(command_name, file_name=file_name)
         else:
             doc.style.tocitem(command_name)
 
+#Global constants for document sections
+DESCRIPTION = 'Description'
+OUTPUT = 'Output'
 
+AWS_DOC_BASE = 'https://docs.aws.amazon.com/goto/WebAPI' #Now global 
 class OperationDocumentEventHandler(CLIDocumentEventHandler):
-
-    AWS_DOC_BASE = 'https://docs.aws.amazon.com/goto/WebAPI'
 
     def doc_description(self, help_command, **kwargs):
         doc = help_command.doc
         operation_model = help_command.obj
-        doc.style.h2('Description')
+        doc.style.h2(DESCRIPTION) # Replace local constants with global constants
         doc.include_doc_string(operation_model.documentation)
         self._add_webapi_crosslink(help_command)
         self._add_note_for_document_types_if_used(help_command)
 
 
     def _add_webapi_crosslink(self, help_command):
+        """ Adds a crosslink to the AWS API documentation for the operation."""
         doc = help_command.doc
         operation_model = help_command.obj
         service_model = operation_model.service_model
@@ -419,7 +434,7 @@ class OperationDocumentEventHandler(CLIDocumentEventHandler):
             # If there's no service_uid in the model, we can't
             # be certain if the generated cross link will work
             # so we don't generate any crosslink info.
-            return
+            raise ValueError("Missing service_uid in service_model metadata") #Add error message for missing service_uid
         doc.style.new_paragraph()
         doc.write("See also: ")
         link = '%s/%s/%s' % (self.AWS_DOC_BASE, service_uid,
@@ -597,7 +612,7 @@ class OperationDocumentEventHandler(CLIDocumentEventHandler):
 
     def doc_output(self, help_command, event_name, **kwargs):
         doc = help_command.doc
-        doc.style.h2('Output')
+        doc.style.h2(OUTPUT) # Replace local constants with global constants
         operation_model = help_command.obj
         output_shape = operation_model.output_shape
         if output_shape is None or not output_shape.members:
@@ -606,7 +621,9 @@ class OperationDocumentEventHandler(CLIDocumentEventHandler):
             for member_name, member_shape in output_shape.members.items():
                 self._doc_member(doc, member_name, member_shape, stack=[])
 
-
+#Global constants for document sections
+DESCRIPTION = 'Description'
+AVAILABLE_TOPICS = 'Available Topics'
 class TopicListerDocumentEventHandler(CLIDocumentEventHandler):
     DESCRIPTION = (
         'This is the AWS CLI Topic Guide. It gives access to a set '
@@ -635,11 +652,12 @@ class TopicListerDocumentEventHandler(CLIDocumentEventHandler):
         doc.style.link_target_definition(
             refname='cli:aws help %s' % self.help_command.name,
             link='')
+        f"cli:aws help {self.help_command.name}" # f-string formatting.
         doc.style.h1('AWS CLI Topic Guide')
 
     def doc_description(self, help_command, **kwargs):
         doc = help_command.doc
-        doc.style.h2('Description')
+        doc.style.h2(DESCRIPTION) # Replace local constants with global constants
         doc.include_doc_string(self.DESCRIPTION)
         doc.style.new_paragraph()
 
@@ -660,7 +678,7 @@ class TopicListerDocumentEventHandler(CLIDocumentEventHandler):
 
     def doc_subitems_start(self, help_command, **kwargs):
         doc = help_command.doc
-        doc.style.h2('Available Topics')
+        doc.style.h2(AVAILABLE_TOPICS) # Replace magic string with global constant
 
         categories = self._topic_tag_db.query('category')
         topic_names = self._topic_tag_db.get_all_topic_names()
@@ -692,9 +710,10 @@ class TopicDocumentEventHandler(TopicListerDocumentEventHandler):
 
     def doc_breadcrumbs(self, help_command, **kwargs):
         doc = help_command.doc
+        CLI_AWS = 'cli:aws'
         if doc.target != 'man':
             doc.write('[ ')
-            doc.style.sphinx_reference_label(label='cli:aws', text='aws')
+            doc.style.sphinx_reference_label(label=CLI_AWS, text='aws')
             doc.write(' . ')
             doc.style.sphinx_reference_label(
                 label='cli:aws help topics',
@@ -721,19 +740,54 @@ class TopicDocumentEventHandler(TopicListerDocumentEventHandler):
         doc.style.new_paragraph()
 
     def _remove_tags_from_content(self, filename):
-        with open(filename, 'r') as f:
-            lines = f.readlines()
+        def _remove_tags_from_content(self, filename):
+            """Removes tags from the content of the given file."""
+            try:
+                with open(filename, 'r') as f:
+                    lines = f.readlines()
+            except IOError:
+                print(f"Error opening file {filename}")
 
-        content_begin_index = 0
-        for i, line in enumerate(lines):
-            # If a line is encountered that does not begin with the tag
-            # end the search for tags and mark where tags end.
-            if not self._line_has_tag(line):
-                content_begin_index = i
-                break
+            content_begin_index = 0
+            for i, line in enumerate(lines):
+                # If a line is encountered that does not begin with the tag,
+                # end the search for tags and mark where tags end.
+                if not self._line_has_tag(line):
+                    content_begin_index = i
+                    break
+            # Join all of the non-tagged lines back together.
+            return ''.join(lines[content_begin_index:])
 
-        # Join all of the non-tagged lines back together.
-        return ''.join(lines[content_begin_index:])
+
+        def _line_has_tag(self, line):
+            for tag in self._topic_tag_db.valid_tags:
+                if line.startswith(':' + tag + ':'):
+                    return True
+            return False
+
+
+        def doc_subitems_start(self, help_command, **kwargs):
+            pass
+
+
+        class GlobalOptionsDocumenter:
+            """Documenter used to pre-generate global options docs."""
+
+            def __init__(self, help_command):
+                self._help_command = help_command
+
+            def _remove_multilines(self, s):
+                return re.sub(r'\n+', '\n', s)
+
+            def doc_global_options(self):
+                help_command = self._help_command
+                # Fix 1: Define the 'lines' variable
+                lines = []
+                # Fix 2: Define the 'content_begin_index' variable
+                content_begin_index = 0
+
+                # Join all of the non-tagged lines back together.
+                return ''.join(lines[content_begin_index:])
 
     def _line_has_tag(self, line):
         for tag in self._topic_tag_db.valid_tags:

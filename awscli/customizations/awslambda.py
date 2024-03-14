@@ -95,7 +95,7 @@ def _should_contain_zip_content(value):
     try:
         with closing(zipfile.ZipFile(fileobj)) as f:
             f.infolist()
-    except zipfile.BadZipfile:
+    except zipfile.BadZipFile:
         raise ParamValidationError(ERROR_MSG)
 
 

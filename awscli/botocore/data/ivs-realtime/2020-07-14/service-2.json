@@ -1242,9 +1242,29 @@
         "featuredParticipantAttribute":{
           "shape":"AttributeKey",
           "documentation":"<p>This attribute name identifies the featured slot. A participant with this attribute set to <code>\"true\"</code> (as a string value) in <a>ParticipantTokenConfiguration</a> is placed in the featured slot.</p>"
+        },
+        "gridGap":{
+          "shape":"GridGap",
+          "documentation":"<p>Specifies the spacing between participant tiles in pixels. Default: <code>2</code>.</p>"
+        },
+        "omitStoppedVideo":{
+          "shape":"OmitStoppedVideo",
+          "documentation":"<p>Determines whether to omit participants with stopped video in the composition. Default: <code>false</code>.</p>"
+        },
+        "videoAspectRatio":{
+          "shape":"VideoAspectRatio",
+          "documentation":"<p>Sets the non-featured participant display mode. Default: <code>VIDEO</code>.</p>"
+        },
+        "videoFillMode":{
+          "shape":"VideoFillMode",
+          "documentation":"<p>Defines how video fits within the participant tile. When not set, <code>videoFillMode</code> defaults to <code>COVER</code> fill mode for participants in the grid and to <code>CONTAIN</code> fill mode for featured participants.</p>"
         }
       },
       "documentation":"<p>Configuration information specific to Grid layout, for server-side composition. See \"Layouts\" in <a href=\"https://docs.aws.amazon.com/ivs/latest/RealTimeUserGuide/server-side-composition.html\">Server-Side Composition</a>.</p>"
+    },
+    "GridGap":{
+      "type":"integer",
+      "min":0
     },
     "Height":{
       "type":"integer",
@@ -1271,6 +1291,10 @@
         "grid":{
           "shape":"GridConfiguration",
           "documentation":"<p>Configuration related to grid layout. Default: Grid layout.</p>"
+        },
+        "pip":{
+          "shape":"PipConfiguration",
+          "documentation":"<p>Configuration related to PiP layout.</p>"
         }
       },
       "documentation":"<p>Configuration information of supported layouts for server-side composition.</p>"
@@ -1582,6 +1606,7 @@
       "max":100,
       "min":1
     },
+    "OmitStoppedVideo":{"type":"boolean"},
     "PaginationToken":{
       "type":"string",
       "max":1024,
@@ -1814,6 +1839,82 @@
         "senderFault":true
       },
       "exception":true
+    },
+    "PipBehavior":{
+      "type":"string",
+      "enum":[
+        "STATIC",
+        "DYNAMIC"
+      ]
+    },
+    "PipConfiguration":{
+      "type":"structure",
+      "members":{
+        "featuredParticipantAttribute":{
+          "shape":"AttributeKey",
+          "documentation":"<p>This attribute name identifies the featured slot. A participant with this attribute set to <code>\"true\"</code> (as a string value) in <a>ParticipantTokenConfiguration</a> is placed in the featured slot.</p>"
+        },
+        "gridGap":{
+          "shape":"GridGap",
+          "documentation":"<p>Specifies the spacing between participant tiles in pixels. Default: <code>0</code>.</p>"
+        },
+        "omitStoppedVideo":{
+          "shape":"OmitStoppedVideo",
+          "documentation":"<p>Determines whether to omit participants with stopped video in the composition. Default: <code>false</code>.</p>"
+        },
+        "pipBehavior":{
+          "shape":"PipBehavior",
+          "documentation":"<p>Defines PiP behavior when all participants have left. Default: <code>STATIC</code>.</p>"
+        },
+        "pipHeight":{
+          "shape":"PipHeight",
+          "documentation":"<p>Specifies the height of the PiP window in pixels. When this is not set explicitly, <code>pipHeight</code>’s value will be based on the size of the composition and the aspect ratio of the participant’s video.</p>"
+        },
+        "pipOffset":{
+          "shape":"PipOffset",
+          "documentation":"<p>Sets the PiP window’s offset position in pixels from the closest edges determined by <code>PipPosition</code>. Default: <code>0</code>.</p>"
+        },
+        "pipParticipantAttribute":{
+          "shape":"AttributeKey",
+          "documentation":"<p>Identifies the PiP slot. A participant with this attribute set to <code>\"true\"</code> (as a string value) in <a>ParticipantTokenConfiguration</a> is placed in the PiP slot.</p>"
+        },
+        "pipPosition":{
+          "shape":"PipPosition",
+          "documentation":"<p>Determines the corner position of the PiP window. Default: <code>BOTTOM_RIGHT</code>.</p>"
+        },
+        "pipWidth":{
+          "shape":"PipWidth",
+          "documentation":"<p>Specifies the width of the PiP window in pixels. When this is not set explicitly, <code>pipWidth</code>’s value will be based on the size of the composition and the aspect ratio of the participant’s video.</p>"
+        },
+        "videoFillMode":{
+          "shape":"VideoFillMode",
+          "documentation":"<p>Defines how video fits within the participant tile. Default: <code>COVER</code>. </p>"
+        }
+      },
+      "documentation":"<p>Configuration information specific to Picture-in-Picture (PiP) layout, for <a href=\"https://docs.aws.amazon.com/ivs/latest/RealTimeUserGuide/server-side-composition.html\">server-side composition</a>. </p>"
+    },
+    "PipHeight":{
+      "type":"integer",
+      "box":true,
+      "min":1
+    },
+    "PipOffset":{
+      "type":"integer",
+      "min":0
+    },
+    "PipPosition":{
+      "type":"string",
+      "enum":[
+        "TOP_LEFT",
+        "TOP_RIGHT",
+        "BOTTOM_LEFT",
+        "BOTTOM_RIGHT"
+      ]
+    },
+    "PipWidth":{
+      "type":"integer",
+      "box":true,
+      "min":1
     },
     "Published":{"type":"boolean"},
     "RecordingConfiguration":{
@@ -2282,6 +2383,23 @@
         }
       },
       "documentation":"<p>Settings for video.</p>"
+    },
+    "VideoAspectRatio":{
+      "type":"string",
+      "enum":[
+        "AUTO",
+        "VIDEO",
+        "SQUARE",
+        "PORTRAIT"
+      ]
+    },
+    "VideoFillMode":{
+      "type":"string",
+      "enum":[
+        "FILL",
+        "COVER",
+        "CONTAIN"
+      ]
     },
     "Width":{
       "type":"integer",

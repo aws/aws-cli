@@ -129,7 +129,7 @@
         {"shape":"InvalidRequestException"},
         {"shape":"InternalServiceError"}
       ],
-      "documentation":"<p>Generates a random password. We recommend that you specify the maximum length and include every character type that the system you are generating a password for can support. By default, Secrets Manager uses uppercase and lowercase letters, numbers, and the following characters in passwords: <code>!\\\"#$%&amp;'()*+,-./:;&lt;=&gt;?@[\\\\]^_`{|}~</code> </p> <p>Secrets Manager generates a CloudTrail log entry when you call this action. Do not include sensitive information in request parameters because it might be logged. For more information, see <a href=\"https://docs.aws.amazon.com/secretsmanager/latest/userguide/retrieve-ct-entries.html\">Logging Secrets Manager events with CloudTrail</a>.</p> <p> <b>Required permissions: </b> <code>secretsmanager:GetRandomPassword</code>. For more information, see <a href=\"https://docs.aws.amazon.com/secretsmanager/latest/userguide/reference_iam-permissions.html#reference_iam-permissions_actions\"> IAM policy actions for Secrets Manager</a> and <a href=\"https://docs.aws.amazon.com/secretsmanager/latest/userguide/auth-and-access.html\">Authentication and access control in Secrets Manager</a>. </p>"
+      "documentation":"<p>Generates a random password. We recommend that you specify the maximum length and include every character type that the system you are generating a password for can support. By default, Secrets Manager uses uppercase and lowercase letters, numbers, and the following characters in passwords: <code>!\\\"#$%&amp;'()*+,-./:;&lt;=&gt;?@[\\\\]^_`{|}~</code> </p> <p>Secrets Manager generates a CloudTrail log entry when you call this action.</p> <p> <b>Required permissions: </b> <code>secretsmanager:GetRandomPassword</code>. For more information, see <a href=\"https://docs.aws.amazon.com/secretsmanager/latest/userguide/reference_iam-permissions.html#reference_iam-permissions_actions\"> IAM policy actions for Secrets Manager</a> and <a href=\"https://docs.aws.amazon.com/secretsmanager/latest/userguide/auth-and-access.html\">Authentication and access control in Secrets Manager</a>. </p>"
     },
     "GetResourcePolicy":{
       "name":"GetResourcePolicy",
@@ -447,7 +447,7 @@
         },
         "MaxResults":{
           "shape":"MaxResultsBatchType",
-          "documentation":"<p>The number of results to include in the response.</p> <p>If there are more results available, in the response, Secrets Manager includes <code>NextToken</code>. To get the next results, call <code>BatchGetSecretValue</code> again with the value from <code>NextToken</code>.</p>",
+          "documentation":"<p>The number of results to include in the response.</p> <p>If there are more results available, in the response, Secrets Manager includes <code>NextToken</code>. To get the next results, call <code>BatchGetSecretValue</code> again with the value from <code>NextToken</code>. To use this parameter, you must also use the <code>Filters</code> parameter.</p>",
           "box":true
         },
         "NextToken":{
@@ -706,7 +706,7 @@
         },
         "NextRotationDate":{
           "shape":"NextRotationDateType",
-          "documentation":"<p>The next rotation is scheduled to occur on or before this date. If the secret isn't configured for rotation or rotation has been disabled, Secrets Manager returns null. If rotation fails, Secrets Manager retries the entire rotation process multiple times. If rotation is unsuccessful, this date may be in the past.</p>"
+          "documentation":"<p>The next rotation is scheduled to occur on or before this date. If the secret isn't configured for rotation or rotation has been disabled, Secrets Manager returns null. If rotation fails, Secrets Manager retries the entire rotation process multiple times. If rotation is unsuccessful, this date may be in the past.</p> <p>This date represents the latest date that rotation will occur, but it is not an approximate rotation date. In some cases, for example if you turn off automatic rotation and then turn it back on, the next rotation may occur much sooner than this date.</p>"
         },
         "Tags":{
           "shape":"TagListType",

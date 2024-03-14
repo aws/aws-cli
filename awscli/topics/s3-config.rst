@@ -22,7 +22,7 @@ Configuration Values
 These are the configuration values you can set specifically for the ``aws s3``
 command set:
 
-* ``preferred_transfer_client`` - Determines the underlying Amazon S3 transfer client to use for transferring files to and from S3. For most workloads, choosing ``crt`` will enable faster uploads and downloads.
+* ``preferred_transfer_client`` - This determines the underlying Amazon S3 transfer client to use for transferring files to and from S3. For most workloads, choosing ``crt`` will enable faster uploads and downloads.
 * ``max_concurrent_requests`` - The maximum number of concurrent requests.
 * ``max_queue_size`` - The maximum number of tasks in the task queue.
 * ``multipart_threshold`` - The size threshold the CLI uses for multipart

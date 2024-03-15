@@ -7090,6 +7090,26 @@ CHANGELOG
 * feature:wizard: Added support for AWS CLI Wizards. See `#3752 <https://github.com/aws/aws-cli/issues/3752>`__.
 
 
+1.32.63
+=======
+
+* api-change:``amplify``: Documentation updates for Amplify. Identifies the APIs available only to apps created using Amplify Gen 1.
+* api-change:``ec2-instance-connect``: This release includes a new exception type "SerialConsoleSessionUnsupportedException" for SendSerialConsoleSSHPublicKey API.
+* api-change:``elbv2``: This release allows you to configure HTTP client keep-alive duration for communication between clients and Application Load Balancers.
+* api-change:``fis``: This release adds support for previewing target resources before running a FIS experiment. It also adds resource ARNs for actions, experiments, and experiment templates to API responses.
+* api-change:``rds``: Updates Amazon RDS documentation for EBCDIC collation for RDS for Db2.
+* api-change:``secretsmanager``: Doc only update for Secrets Manager
+* api-change:``timestream-influxdb``: This is the initial SDK release for Amazon Timestream for InfluxDB. Amazon Timestream for InfluxDB is a new time-series database engine that makes it easy for application developers and DevOps teams to run InfluxDB databases on AWS for near real-time time-series applications using open source APIs.
+
+
+1.32.62
+=======
+
+* api-change:``ivs-realtime``: adds support for multiple new composition layout configuration options (grid, pip)
+* api-change:``kinesisanalyticsv2``: Support new RuntimeEnvironmentUpdate parameter within UpdateApplication API allowing callers to change the Flink version upon which their application runs.
+* api-change:``s3``: This release makes the default option for S3 on Outposts request signing to use the SigV4A algorithm when using AWS Common Runtime (CRT).
+
+
 1.32.61
 =======
 

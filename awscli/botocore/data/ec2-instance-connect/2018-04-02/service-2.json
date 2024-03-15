@@ -51,7 +51,8 @@
         {"shape":"SerialConsoleSessionLimitExceededException"},
         {"shape":"SerialConsoleSessionUnavailableException"},
         {"shape":"EC2InstanceStateInvalidException"},
-        {"shape":"EC2InstanceUnavailableException"}
+        {"shape":"EC2InstanceUnavailableException"},
+        {"shape":"SerialConsoleSessionUnsupportedException"}
       ],
       "documentation":"<p>Pushes an SSH public key to the specified EC2 instance. The key remains for 60 seconds, which gives you 60 seconds to establish a serial console connection to the instance using SSH. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-serial-console.html\">EC2 Serial Console</a> in the <i>Amazon EC2 User Guide</i>.</p>"
     }
@@ -113,7 +114,7 @@
       "type":"string",
       "max":32,
       "min":1,
-      "pattern":"^[A-Za-z_][A-Za-z0-9\\@\\._-]{0,30}[A-Za-z0-9\\$_-]?$"
+      "pattern":"(^[A-Za-z_][A-Za-z0-9\\@\\._-]{0,30}[A-Za-z0-9\\$_-]?$)|(^(?=.{2,32}$)[0-9]{1,32}[A-Za-z\\@\\._-][A-Za-z0-9\\@\\._-]*[A-Za-z0-9\\$_-]?$)"
     },
     "InvalidArgsException":{
       "type":"structure",
@@ -227,6 +228,14 @@
       "exception":true,
       "fault":true
     },
+    "SerialConsoleSessionUnsupportedException":{
+      "type":"structure",
+      "members":{
+        "Message":{"shape":"String"}
+      },
+      "documentation":"<p>Your instance's BIOS version is unsupported for serial console connection. Reboot your instance to update its BIOS, and then try again to connect.</p>",
+      "exception":true
+    },
     "SerialPort":{
       "type":"integer",
       "max":0,
@@ -252,5 +261,5 @@
       "exception":true
     }
   },
-  "documentation":"<p>Amazon EC2 Instance Connect enables system administrators to publish one-time use SSH public keys to EC2, providing users a simple and secure way to connect to their instances.</p>"
+  "documentation":"<p>This is the <i> Amazon EC2 Instance Connect API Reference</i>. It provides descriptions, syntax, and usage examples for each of the actions for Amazon EC2 Instance Connect. Amazon EC2 Instance Connect enables system administrators to publish one-time use SSH public keys to EC2, providing users a simple and secure way to connect to their instances.</p> <p>To view the Amazon EC2 Instance Connect content in the <i> Amazon EC2 User Guide</i>, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/Connect-using-EC2-Instance-Connect.html\">Connect to your Linux instance using EC2 Instance Connect</a>.</p> <p>For Amazon EC2 APIs, see the <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/APIReference/Welcome.html\">Amazon EC2 API Reference</a>.</p>"
 }

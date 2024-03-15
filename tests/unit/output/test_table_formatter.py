@@ -11,6 +11,7 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 import unittest
+import jmespath
 from awscli.compat import six
 
 from awscli.formatter import TableFormatter
@@ -62,6 +63,19 @@ SIMPLE_DICT_TABLE = """\
 |+---+---------+----+--------+--------------+-----+|
 """
 
+JMESPATH_QUERY_SIMPLE_DICT = '{Attributes:Attributes.{b:b,a:a,c:c,d:d,f:f,e:e}}'
+
+JMESPATH_FILTERED_SIMPLE_DICT_TABLE = """\
+----------------------------------------------------
+|                   OperationName                  |
++--------------------------------------------------+
+||                   Attributes                   ||
+|+--------+----+----+--------+----+---------------+|
+||    b   | a  | c  |   d    | f  |       e       ||
+|+--------+----+----+--------+----+---------------+|
+||  345600|  0 |  0 |  65536 |  0 |  1351044153   ||
+|+--------+----+----+--------+----+---------------+|
+"""
 
 LIST_OF_DICTS = {
     "OrderableDBInstanceOptions": [
@@ -165,6 +179,43 @@ LIST_OF_DICTS_TABLE = """\
 ||+----------------------------------------+------------------------------------------------------------------------------+||
 """
 
+JMESPATH_QUERY_LIST_OF_DICT = 'OrderableDBInstanceOptions[].{AvailabilityZones:AvailabilityZones[].Name,Engine:Engine,DBInstanceClass:DBInstanceClass}'
+
+JMESPATH_FILTERED_LIST_OF_DICTS_TABLE = """\
+-------------------------------
+|        OperationName        |
++---------+-------------------+
+| Engine  |  DBInstanceClass  |
++---------+-------------------+
+|  mysql  |  db.m1.large      |
++---------+-------------------+
+||     AvailabilityZones     ||
+|+---------------------------+|
+||  us-east-1a               ||
+||  us-east-1d               ||
+|+---------------------------+|
+|        OperationName        |
++---------+-------------------+
+| Engine  |  DBInstanceClass  |
++---------+-------------------+
+|  mysql  |  db.m1.xlarge     |
++---------+-------------------+
+||     AvailabilityZones     ||
+|+---------------------------+|
+||  us-west-2a               ||
+||  us-west-2b               ||
+|+---------------------------+|
+|        OperationName        |
++---------+-------------------+
+| Engine  |  DBInstanceClass  |
++---------+-------------------+
+|  mysql  |  db.m1.xlarge     |
++---------+-------------------+
+||     AvailabilityZones     ||
+|+---------------------------+|
+||  us-west-2a               ||
+|+---------------------------+|
+"""
 
 # First record has "Tags" scalar, second record does not.
 INNER_LIST = {
@@ -217,6 +268,30 @@ INNER_LIST_TABLE = """\
 |+------------------------------------------------------------+----------+-----------+-------------+---------------------------+------------+---------------+--------------+|
 """
 
+JMESPATH_QUERY_INNER_LIST = 'Snapshots[].{Description:Description,Tags:Tags,VolumeId:VolumeId,State:State,VolumeSize:VolumeSize,Progress:Progress,StartTime:StartTime,SnapshotId:SnapshotId,OwnerId:OwnerId}'
+
+JMESPATH_FILTERED_INNER_LIST_TABLE = """\
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+|                                                                                  OperationName                                                                                  |
++--------------+-------------+-------------+--------------+------------+-----------------------------+----------------+-----------+-----------------------------------------------+
+|  Description |  VolumeId   |    State    | VolumeSize   | Progress   |          StartTime          |  SnapshotId    |  OwnerId  |                     Tags                      |
++--------------+-------------+-------------+--------------+------------+-----------------------------+----------------+-----------+-----------------------------------------------+
+|  TestVolume1 |  vol-12345  |  completed  |  8           |  100%      |  2012-05-23T21:46:41.000Z   |  snap-1234567  |  12345    |  [{'Value': 'TestVolume', 'Key': 'Name'}]     |
++--------------+-------------+-------------+--------------+------------+-----------------------------+----------------+-----------+-----------------------------------------------+
+||                                                                                     Tags                                                                                      ||
+|+---------------------------------------------------------------------------------------------------------------+---------------------------------------------------------------+|
+||                                                     Value                                                     |                              Key                              ||
+|+---------------------------------------------------------------------------------------------------------------+---------------------------------------------------------------+|
+||  TestVolume                                                                                                   |  Name                                                         ||
+|+---------------------------------------------------------------------------------------------------------------+---------------------------------------------------------------+|
+|                                                                                  OperationName                                                                                  |
++------------------------------------------------------------+---------------+------------+-------------+-----------+---------------------------+-------------+----------+--------+
+|                         Description                        |   VolumeId    |   State    | VolumeSize  | Progress  |         StartTime         | SnapshotId  | OwnerId  | Tags   |
++------------------------------------------------------------+---------------+------------+-------------+-----------+---------------------------+-------------+----------+--------+
+|  Created by CreateImage(i-1234) for ami-1234 from vol-1234 |  vol-e543b98b |  completed |  8          |  100%     |  2012-05-25T00:07:20.000Z |  snap-23456 |  12345   |  None  |
++------------------------------------------------------------+---------------+------------+-------------+-----------+---------------------------+-------------+----------+--------+
+"""
+
 LIST_WITH_MISSING_KEYS = {
     "Snapshots": [
         {
@@ -254,6 +329,19 @@ LIST_WITH_MISSING_KEYS_TABLE = """\
 ||  TestVolume1|  12345   |  100%     |  snap-1234567 |  2012-05-23T21:46:41.000Z |  completed |  foo  |  vol-12345     |  8           ||
 ||  description|  12345   |  100%     |  snap-23456   |  2012-05-25T00:07:20.000Z |  completed |       |  vol-e543b98b  |  8           ||
 |+-------------+----------+-----------+---------------+---------------------------+------------+-------+----------------+--------------+|
+"""
+
+JMESPATH_QUERY_LIST_WITH_MISSING_KEYS = 'Snapshots[].{Description:Description,Tags:Tags,VolumeId:VolumeId,State:State,VolumeSize:VolumeSize,Progress:Progress,StartTime:StartTime,SnapshotId:SnapshotId,OwnerId:OwnerId}'
+
+JMESPATH_FILTERED_LIST_WITH_MISSING_KEYS_TABLE = """\
+---------------------------------------------------------------------------------------------------------------------------------------
+|                                                            OperationName                                                            |
++-------------+-------+---------------+------------+-------------+-----------+---------------------------+----------------+-----------+
+| Description | Tags  |   VolumeId    |   State    | VolumeSize  | Progress  |         StartTime         |  SnapshotId    |  OwnerId  |
++-------------+-------+---------------+------------+-------------+-----------+---------------------------+----------------+-----------+
+|  TestVolume1|  foo  |  vol-12345    |  completed |  8          |  100%     |  2012-05-23T21:46:41.000Z |  snap-1234567  |  12345    |
+|  description|  None |  vol-e543b98b |  completed |  8          |  100%     |  2012-05-25T00:07:20.000Z |  snap-23456    |  12345    |
++-------------+-------+---------------+------------+-------------+-----------+---------------------------+----------------+-----------+
 """
 
 KEYS_NOT_FROM_FIRST_ROW = {
@@ -294,6 +382,21 @@ KEYS_NOT_FROM_FIRST_ROW_TABLE = """\
 ||  TestVolume1|           |  12345   |  100%     |  snap-1234567 |  start_time |  completed |  foo  |  vol-12345  |  8           ||
 ||  description|  end_time |  12345   |  100%     |  snap-23456   |             |  completed |       |             |  8           ||
 |+-------------+-----------+----------+-----------+---------------+-------------+------------+-------+-------------+--------------+|
+"""
+
+JMESPATH_QUERY_KEYS_NOT_FROM_FIRST_ROW = '{Snapshots:Snapshots[].{Description:Description,Tags:Tags,VolumeId:VolumeId,State:State,VolumeSize:VolumeSize,Progress:Progress,StartTime:StartTime,EndTime:EndTime,SnapshotId:SnapshotId,OwnerId:OwnerId}}'
+
+JMESPATH_FILTERED_KEYS_NOT_FROM_FIRST_ROW_TABLE = """\
+------------------------------------------------------------------------------------------------------------------------------------
+|                                                           OperationName                                                          |
++----------------------------------------------------------------------------------------------------------------------------------+
+||                                                            Snapshots                                                           ||
+|+-------------+-------+------------+------------+-------------+-----------+-------------+-----------+----------------+-----------+|
+|| Description | Tags  | VolumeId   |   State    | VolumeSize  | Progress  |  StartTime  |  EndTime  |  SnapshotId    |  OwnerId  ||
+|+-------------+-------+------------+------------+-------------+-----------+-------------+-----------+----------------+-----------+|
+||  TestVolume1|  foo  |  vol-12345 |  completed |  8          |  100%     |  start_time |  None     |  snap-1234567  |  12345    ||
+||  description|  None |  None      |  completed |  8          |  100%     |  None       |  end_time |  snap-23456    |  12345    ||
+|+-------------+-------+------------+------------+-------------+-----------+-------------+-----------+----------------+-----------+|
 """
 
 JMESPATH_FILTERED_RESPONSE = [
@@ -365,7 +468,6 @@ JMESPATH_FILTERED_RESPONSE_DICT_TABLE = """\
 class Object(object):
     def __init__(self, **kwargs):
         self.__dict__.update(kwargs)
-        self.query = None
 
 
 class TestTableFormatter(unittest.TestCase):
@@ -376,13 +478,15 @@ class TestTableFormatter(unittest.TestCase):
         self.table = MultiTable(initial_section=False,
                                 column_separator='|', styler=styler,
                                 auto_reformat=False)
-        self.formatter = TableFormatter(Object(color='off'))
-        self.formatter.table = self.table
-        self.stream = six.StringIO()
 
-    def assert_data_renders_to(self, data, table):
-        self.formatter('OperationName', data, stream=self.stream)
-        rendered = self.stream.getvalue()
+    def assert_data_renders_to(self, data, table, query=None):
+        if query is not None:
+            query = jmespath.compile(query)
+        formatter = TableFormatter(Object(color='off', query=query))
+        formatter.table = self.table
+        stream = six.StringIO()
+        formatter('OperationName', data, stream=stream)
+        rendered = stream.getvalue()
         if rendered != table:
             error_message = ['Expected table rendering does not match '
                              'the actual table rendering:']
@@ -398,13 +502,28 @@ class TestTableFormatter(unittest.TestCase):
     def test_dict_table(self):
         self.assert_data_renders_to(data=SIMPLE_DICT, table=SIMPLE_DICT_TABLE)
 
+    def test_jmespath_dict_table(self):
+        self.assert_data_renders_to(data=SIMPLE_DICT,
+                                    table=JMESPATH_FILTERED_SIMPLE_DICT_TABLE,
+                                    query=JMESPATH_QUERY_SIMPLE_DICT)
+
     def test_list_of_dicts(self):
         self.assert_data_renders_to(data=LIST_OF_DICTS,
                                     table=LIST_OF_DICTS_TABLE)
 
+    def test_jmespath_list_of_dicts(self):
+        self.assert_data_renders_to(data=LIST_OF_DICTS,
+                                    table=JMESPATH_FILTERED_LIST_OF_DICTS_TABLE,
+                                    query=JMESPATH_QUERY_LIST_OF_DICT)
+
     def test_inner_table(self):
         self.assert_data_renders_to(data=INNER_LIST,
                                     table=INNER_LIST_TABLE)
+
+    def test_jmespath_inner_table(self):
+        self.assert_data_renders_to(data=INNER_LIST,
+                                    table=JMESPATH_FILTERED_INNER_LIST_TABLE,
+                                    query=JMESPATH_QUERY_INNER_LIST)
 
     def test_empty_table(self):
         self.assert_data_renders_to(data={},
@@ -414,9 +533,19 @@ class TestTableFormatter(unittest.TestCase):
         self.assert_data_renders_to(data=LIST_WITH_MISSING_KEYS,
                                     table=LIST_WITH_MISSING_KEYS_TABLE)
 
+    def test_jmespath_missing_keys(self):
+        self.assert_data_renders_to(data=LIST_WITH_MISSING_KEYS,
+                                    table=JMESPATH_FILTERED_LIST_WITH_MISSING_KEYS_TABLE,
+                                    query=JMESPATH_QUERY_LIST_WITH_MISSING_KEYS)
+
     def test_new_keys_after_first_row(self):
         self.assert_data_renders_to(data=KEYS_NOT_FROM_FIRST_ROW,
                                     table=KEYS_NOT_FROM_FIRST_ROW_TABLE)
+
+    def test_jmespath_new_keys_after_first_row(self):
+        self.assert_data_renders_to(data=KEYS_NOT_FROM_FIRST_ROW,
+                                    table=JMESPATH_FILTERED_KEYS_NOT_FROM_FIRST_ROW_TABLE,
+                                    query=JMESPATH_QUERY_KEYS_NOT_FROM_FIRST_ROW)
 
     def test_jmespath_filtered_response(self):
         self.assert_data_renders_to(data=JMESPATH_FILTERED_RESPONSE,

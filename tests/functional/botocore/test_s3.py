@@ -62,22 +62,39 @@ class BaseS3ClientConfigurationTest(BaseSessionTest):
         r'(?P<signing_name>[a-z0-9-]+)/'
     )
 
+    _V4A_AUTH_REGEX = re.compile(
+        r"AWS4-ECDSA-P256-SHA256 "
+        r"Credential=\w+/\d+/"
+        r"(?P<signing_name>[a-z0-9-]+)/"
+    )
+
     def setUp(self):
         super(BaseS3ClientConfigurationTest, self).setUp()
         self.region = 'us-west-2'
 
+    def _get_auth_regex(self, auth_header):
+        if auth_header.startswith("AWS4-ECDSA"):
+            return self._V4A_AUTH_REGEX
+        return self._V4_AUTH_REGEX
+
     def assert_signing_region(self, request, expected_region):
         auth_header = request.headers['Authorization'].decode('utf-8')
         actual_region = None
-        match = self._V4_AUTH_REGEX.match(auth_header)
-        if match:
+        auth_regex = self._get_auth_regex(auth_header)
+        match = auth_regex.match(auth_header)
+        if match and auth_regex is self._V4_AUTH_REGEX:
             actual_region = match.group('signing_region')
-        self.assertEqual(expected_region, actual_region)
+            self.assertEqual(expected_region, actual_region)
+        else:
+            # SigV4a does not sign with a specific region
+            region_set = request.headers.get('X-Amz-Region-Set')
+            self.assertEqual(region_set, b'*')
 
     def assert_signing_name(self, request, expected_name):
         auth_header = request.headers['Authorization'].decode('utf-8')
         actual_name = None
-        match = self._V4_AUTH_REGEX.match(auth_header)
+        auth_regex = self._get_auth_regex(auth_header)
+        match = auth_regex.match(auth_header)
         if match:
             actual_name = match.group('signing_name')
         self.assertEqual(expected_name, actual_name)

@@ -27,6 +27,8 @@ from botocore.compat import six
 
 from botocore.compat import OrderedDict
 
+WINDOW_PLATFORM = 'win32'
+MACOS_PLATFORM = 'darwin'
 # If you ever want to import from the vendored six. Add it here and then
 # import from awscli.compat. Also try to keep it in alphabetical order.
 # This may get large.
@@ -56,9 +58,9 @@ except ImportError:
     sqlite3 = None
 
 
-is_windows = sys.platform == 'win32'
+is_windows = sys.platform == WINDOW_PLATFORM #Replace magic string with constant
 
-is_macos = sys.platform == 'darwin'
+is_macos = sys.platform == MACOS_PLATFORM #Replace magic string with constant
 
 
 if is_windows:
@@ -84,14 +86,14 @@ class NonTranslatedStdout(object):
     """
 
     def __enter__(self):
-        if sys.platform == "win32":
+        if sys.platform == WINDOW_PLATFORM:
             import msvcrt
             self.previous_mode = msvcrt.setmode(sys.stdout.fileno(),
                                                 os.O_BINARY)
         return sys.stdout
 
     def __exit__(self, type, value, traceback):
-        if sys.platform == "win32":
+        if sys.platform == WINDOW_PLATFORM:
             import msvcrt
             msvcrt.setmode(sys.stdout.fileno(), self.previous_mode)
 
@@ -104,7 +106,7 @@ def ensure_text_type(s):
     raise ValueError("Expected str, unicode or bytes, received %s." % type(s))
 
 
-if six.PY3:
+if str: #Replace magic string with constant
     import collections.abc as collections_abc
     import locale
     import urllib.parse as urlparse
@@ -249,7 +251,7 @@ def compat_shell_quote(s, platform=None):
     if platform is None:
         platform = sys.platform
 
-    if platform == "win32":
+    if platform == WINDOW_PLATFORM:
         return _windows_shell_quote(s)
     else:
         return shlex_quote(s)

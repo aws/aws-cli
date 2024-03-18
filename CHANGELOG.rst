@@ -2,6 +2,17 @@
 CHANGELOG
 =========
 
+1.32.65
+=======
+
+* api-change:``cloudformation``: This release supports for a new API ListStackSetAutoDeploymentTargets, which provider auto-deployment configuration as a describable resource. Customers can now view the specific combinations of regions and OUs that are being auto-deployed.
+* api-change:``kms``: Adds the ability to use the default policy name by omitting the policyName parameter in calls to PutKeyPolicy and GetKeyPolicy
+* api-change:``mediatailor``: This release adds support to allow customers to show different content within a channel depending on metadata associated with the viewer.
+* api-change:``rds``: This release launches the ModifyIntegration API and support for data filtering for zero-ETL Integrations.
+* api-change:``s3``: Fix two issues with response root node names.
+* api-change:``timestream-query``: Documentation updates, March 2024
+
+
 1.32.64
 =======
 

@@ -1340,7 +1340,7 @@
         {"shape":"InvalidRequestException"},
         {"shape":"ServiceUnavailableException"}
       ],
-      "documentation":"<p>Attempts to cancel a job to create a one-time backup of a resource.</p> <p>This action is not supported for the following services: Amazon FSx for Windows File Server, Amazon FSx for Lustre, FSx for ONTAP , Amazon FSx for OpenZFS, Amazon DocumentDB (with MongoDB compatibility), Amazon RDS, Amazon Aurora, and Amazon Neptune.</p>"
+      "documentation":"<p>Attempts to cancel a job to create a one-time backup of a resource.</p> <p>This action is not supported for the following services: Amazon FSx for Windows File Server, Amazon FSx for Lustre, Amazon FSx for NetApp ONTAP , Amazon FSx for OpenZFS, Amazon DocumentDB (with MongoDB compatibility), Amazon RDS, Amazon Aurora, and Amazon Neptune.</p>"
     },
     "TagResource":{
       "name":"TagResource",
@@ -3880,7 +3880,7 @@
         },
         "ControlScope":{
           "shape":"ControlScope",
-          "documentation":"<p>The scope of a control. The control scope defines what the control will evaluate. Three examples of control scopes are: a specific backup plan, all backup plans with a specific tag, or all backup plans.</p>"
+          "documentation":"<p>The scope of a control. The control scope defines what the control will evaluate. Three examples of control scopes are: a specific backup plan, all backup plans with a specific tag, or all backup plans.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/aws-backup/latest/devguide/API_ControlScope.html\"> <code>ControlScope</code>.</a> </p>"
         }
       },
       "documentation":"<p>Contains detailed information about all of the controls of a framework. Each framework must contain at least one control.</p>"
@@ -4517,7 +4517,7 @@
         },
         "State":{
           "shape":"BackupJobStatus",
-          "documentation":"<p>This parameter returns the job count for jobs with the specified state.</p> <p>The the value ANY returns count of all states.</p> <p> <code>AGGREGATE_ALL</code> aggregates job counts for all states and returns the sum.</p>",
+          "documentation":"<p>This parameter returns the job count for jobs with the specified state.</p> <p>The the value ANY returns count of all states.</p> <p> <code>AGGREGATE_ALL</code> aggregates job counts for all states and returns the sum.</p> <p> <code>Completed with issues</code> is a status found only in the Backup console. For API, this status refers to jobs with a state of <code>COMPLETED</code> and a <code>MessageCategory</code> with a value other than <code>SUCCESS</code>; that is, the status is completed but comes with a status message. To obtain the job count for <code>Completed with issues</code>, run two GET requests, and subtract the second, smaller number:</p> <p>GET /audit/backup-job-summaries?AggregationPeriod=FOURTEEN_DAYS&amp;State=COMPLETED</p> <p>GET /audit/backup-job-summaries?AggregationPeriod=FOURTEEN_DAYS&amp;MessageCategory=SUCCESS&amp;State=COMPLETED</p>",
           "location":"querystring",
           "locationName":"State"
         },
@@ -4593,7 +4593,7 @@
         },
         "ByState":{
           "shape":"BackupJobState",
-          "documentation":"<p>Returns only backup jobs that are in the specified state.</p>",
+          "documentation":"<p>Returns only backup jobs that are in the specified state.</p> <p> <code>Completed with issues</code> is a status found only in the Backup console. For API, this status refers to jobs with a state of <code>COMPLETED</code> and a <code>MessageCategory</code> with a value other than <code>SUCCESS</code>; that is, the status is completed but comes with a status message.</p> <p>To obtain the job count for <code>Completed with issues</code>, run two GET requests, and subtract the second, smaller number:</p> <p>GET /backup-jobs/?state=COMPLETED</p> <p>GET /backup-jobs/?messageCategory=SUCCESS&amp;state=COMPLETED</p>",
           "location":"querystring",
           "locationName":"state"
         },
@@ -5282,6 +5282,12 @@
           "documentation":"<p>The maximum number of items to be returned.</p> <note> <p>Amazon RDS requires a value of at least 20.</p> </note>",
           "location":"querystring",
           "locationName":"maxResults"
+        },
+        "ManagedByAWSBackupOnly":{
+          "shape":"boolean",
+          "documentation":"<p>This attribute filters recovery points based on ownership.</p> <p>If this is set to <code>TRUE</code>, the response will contain recovery points associated with the selected resources that are managed by Backup.</p> <p>If this is set to <code>FALSE</code>, the response will contain all recovery points associated with the selected resource.</p> <p>Type: Boolean</p>",
+          "location":"querystring",
+          "locationName":"managedByAWSBackupOnly"
         }
       }
     },
@@ -6009,6 +6015,10 @@
         "ResourceName":{
           "shape":"string",
           "documentation":"<p>This is the non-unique name of the resource that belongs to the specified backup.</p>"
+        },
+        "VaultType":{
+          "shape":"VaultType",
+          "documentation":"<p>This is the type of vault in which the described recovery point is stored.</p>"
         }
       },
       "documentation":"<p>Contains detailed information about a saved recovery point.</p>"

@@ -2262,6 +2262,24 @@
       ],
       "documentation":"<p>Modifies a setting for an Amazon Aurora global database cluster. You can change one or more database configuration parameters by specifying these parameters and the new values in the request. For more information on Amazon Aurora, see <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/CHAP_AuroraOverview.html\"> What is Amazon Aurora?</a> in the <i>Amazon Aurora User Guide</i>.</p> <note> <p>This operation only applies to Aurora global database clusters.</p> </note>"
     },
+    "ModifyIntegration":{
+      "name":"ModifyIntegration",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"ModifyIntegrationMessage"},
+      "output":{
+        "shape":"Integration",
+        "resultWrapper":"ModifyIntegrationResult"
+      },
+      "errors":[
+        {"shape":"IntegrationNotFoundFault"},
+        {"shape":"InvalidIntegrationStateFault"},
+        {"shape":"IntegrationConflictOperationFault"}
+      ],
+      "documentation":"<p>Modifies a zero-ETL integration with Amazon Redshift.</p> <note> <p>Currently, you can only modify integrations that have Aurora MySQL source DB clusters. Integrations with Aurora PostgreSQL and RDS sources currently don't support modifying the integration.</p> </note>"
+    },
     "ModifyOptionGroup":{
       "name":"ModifyOptionGroup",
       "http":{
@@ -5177,7 +5195,15 @@
           "shape":"EncryptionContextMap",
           "documentation":"<p>An optional set of non-secret key–value pairs that contains additional contextual information about the data. For more information, see <a href=\"https://docs.aws.amazon.com/kms/latest/developerguide/concepts.html#encrypt_context\">Encryption context</a> in the <i>Amazon Web Services Key Management Service Developer Guide</i>.</p> <p>You can only include this parameter if you specify the <code>KMSKeyId</code> parameter.</p>"
         },
-        "Tags":{"shape":"TagList"}
+        "Tags":{"shape":"TagList"},
+        "DataFilter":{
+          "shape":"DataFilter",
+          "documentation":"<p>Data filtering options for the integration. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/zero-etl.filtering.html\">Data filtering for Aurora zero-ETL integrations with Amazon Redshift</a>. </p> <p>Valid for: Integrations with Aurora MySQL source DB clusters only</p>"
+        },
+        "Description":{
+          "shape":"IntegrationDescription",
+          "documentation":"<p>A description of the integration.</p>"
+        }
       }
     },
     "CreateOptionGroupMessage":{
@@ -8560,6 +8586,12 @@
       },
       "exception":true
     },
+    "DataFilter":{
+      "type":"string",
+      "max":25600,
+      "min":1,
+      "pattern":"[a-zA-Z0-9_ \"\\\\\\-$,*.:?+\\/]*"
+    },
     "DatabaseArn":{
       "type":"string",
       "max":2048,
@@ -11287,6 +11319,14 @@
         "Errors":{
           "shape":"IntegrationErrorList",
           "documentation":"<p>Any errors associated with the integration.</p>"
+        },
+        "DataFilter":{
+          "shape":"DataFilter",
+          "documentation":"<p>Data filters for the integration. These filters determine which tables from the source database are sent to the target Amazon Redshift data warehouse. </p>"
+        },
+        "Description":{
+          "shape":"IntegrationDescription",
+          "documentation":"<p>A description of the integration.</p>"
         }
       },
       "documentation":"<p>A zero-ETL integration with Amazon Redshift.</p>"
@@ -11307,7 +11347,7 @@
       "type":"string",
       "max":255,
       "min":1,
-      "pattern":"arn:aws[a-z\\-]*:rds(-[a-z]*)?:[a-z0-9\\-]*:[0-9]*:integration:[a-z][a-z0-9]*(-[a-zA-Z0-9]+)*\\/[a-zA-Z0-9_:\\-\\/]+"
+      "pattern":"arn:aws[a-z\\-]*:rds(-[a-z]*)?:[a-z0-9\\-]*:[0-9]*:integration:[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}"
     },
     "IntegrationConflictOperationFault":{
       "type":"structure",
@@ -11320,6 +11360,12 @@
         "senderFault":true
       },
       "exception":true
+    },
+    "IntegrationDescription":{
+      "type":"string",
+      "max":1000,
+      "min":0,
+      "pattern":".*"
     },
     "IntegrationError":{
       "type":"structure",
@@ -12906,6 +12952,28 @@
       "type":"structure",
       "members":{
         "GlobalCluster":{"shape":"GlobalCluster"}
+      }
+    },
+    "ModifyIntegrationMessage":{
+      "type":"structure",
+      "required":["IntegrationIdentifier"],
+      "members":{
+        "IntegrationIdentifier":{
+          "shape":"IntegrationIdentifier",
+          "documentation":"<p>The unique identifier of the integration to modify.</p>"
+        },
+        "IntegrationName":{
+          "shape":"IntegrationName",
+          "documentation":"<p>A new name for the integration.</p>"
+        },
+        "DataFilter":{
+          "shape":"DataFilter",
+          "documentation":"<p>A new data filter for the integration. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/USER_Zero_ETL_Filtering.html\">Data filtering for Aurora zero-ETL integrations with Amazon Redshift</a>.</p>"
+        },
+        "Description":{
+          "shape":"IntegrationDescription",
+          "documentation":"<p>A new description for the integration.</p>"
+        }
       }
     },
     "ModifyOptionGroupMessage":{

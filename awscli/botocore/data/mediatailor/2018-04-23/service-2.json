@@ -666,6 +666,55 @@
         "INFO"
       ]
     },
+    "AlternateMedia":{
+      "type":"structure",
+      "members":{
+        "AdBreaks":{
+          "shape":"__listOfAdBreak",
+          "documentation":"<p>Ad break configuration parameters defined in AlternateMedia.</p>"
+        },
+        "ClipRange":{"shape":"ClipRange"},
+        "DurationMillis":{
+          "shape":"__long",
+          "documentation":"<p>The duration of the alternateMedia in milliseconds.</p>"
+        },
+        "LiveSourceName":{
+          "shape":"__string",
+          "documentation":"<p>The name of the live source for alternateMedia.</p>"
+        },
+        "ScheduledStartTimeMillis":{
+          "shape":"__long",
+          "documentation":"<p>The date and time that the alternateMedia is scheduled to start, in epoch milliseconds.</p>"
+        },
+        "SourceLocationName":{
+          "shape":"__string",
+          "documentation":"<p>The name of the source location for alternateMedia.</p>"
+        },
+        "VodSourceName":{
+          "shape":"__string",
+          "documentation":"<p>The name of the VOD source for alternateMedia.</p>"
+        }
+      },
+      "documentation":"<p>A playlist of media (VOD and/or live) to be played instead of the default media on a particular program.</p>"
+    },
+    "AudienceMedia":{
+      "type":"structure",
+      "members":{
+        "AlternateMedia":{
+          "shape":"__listOfAlternateMedia",
+          "documentation":"<p>The list of AlternateMedia defined in AudienceMedia.</p>"
+        },
+        "Audience":{
+          "shape":"__string",
+          "documentation":"<p>The Audience defined in AudienceMedia.</p>"
+        }
+      },
+      "documentation":"<p>An AudienceMedia object contains an Audience and a list of AlternateMedia.</p>"
+    },
+    "Audiences":{
+      "type":"list",
+      "member":{"shape":"String"}
+    },
     "AvailMatchingCriteria":{
       "type":"structure",
       "required":[
@@ -758,6 +807,10 @@
           "shape":"__string",
           "documentation":"<p>The ARN of the channel.</p>"
         },
+        "Audiences":{
+          "shape":"Audiences",
+          "documentation":"<p>The list of audiences defined in channel.</p>"
+        },
         "ChannelName":{
           "shape":"__string",
           "documentation":"<p>The name of the channel.</p>"
@@ -811,11 +864,15 @@
     },
     "ClipRange":{
       "type":"structure",
-      "required":["EndOffsetMillis"],
       "members":{
         "EndOffsetMillis":{
           "shape":"__long",
-          "documentation":"<p>The end offset of the clip range, in milliseconds, starting from the beginning of the VOD source associated with the program.</p>"
+          "documentation":"<p>The end offset of the clip range, in milliseconds, starting from the beginning of the VOD source associated with the program.</p>",
+          "box":true
+        },
+        "StartOffsetMillis":{
+          "shape":"__long",
+          "documentation":"<p>The start offset of the clip range, in milliseconds. This offset truncates the start at the number of milliseconds into the duration of the VOD source.</p>"
         }
       },
       "documentation":"<p>Clip range configuration for the VOD source associated with the program.</p>"
@@ -914,6 +971,10 @@
         "PlaybackMode"
       ],
       "members":{
+        "Audiences":{
+          "shape":"Audiences",
+          "documentation":"<p>The list of audiences defined in channel.</p>"
+        },
         "ChannelName":{
           "shape":"__string",
           "documentation":"<p>The name of the channel.</p>",
@@ -953,6 +1014,10 @@
         "Arn":{
           "shape":"__string",
           "documentation":"<p>The Amazon Resource Name (ARN) to assign to the channel.</p>"
+        },
+        "Audiences":{
+          "shape":"Audiences",
+          "documentation":"<p>The list of audiences defined in channel.</p>"
         },
         "ChannelName":{
           "shape":"__string",
@@ -1139,6 +1204,10 @@
           "shape":"__listOfAdBreak",
           "documentation":"<p>The ad break configuration settings.</p>"
         },
+        "AudienceMedia":{
+          "shape":"__listOfAudienceMedia",
+          "documentation":"<p>The list of AudienceMedia defined in program.</p>"
+        },
         "ChannelName":{
           "shape":"__string",
           "documentation":"<p>The name of the channel for this Program.</p>",
@@ -1179,6 +1248,10 @@
         "Arn":{
           "shape":"__string",
           "documentation":"<p>The ARN to assign to the program.</p>"
+        },
+        "AudienceMedia":{
+          "shape":"__listOfAudienceMedia",
+          "documentation":"<p>The list of AudienceMedia defined in program.</p>"
         },
         "ChannelName":{
           "shape":"__string",
@@ -1617,6 +1690,10 @@
           "shape":"__string",
           "documentation":"<p>The ARN of the channel.</p>"
         },
+        "Audiences":{
+          "shape":"Audiences",
+          "documentation":"<p>The list of audiences defined in channel.</p>"
+        },
         "ChannelName":{
           "shape":"__string",
           "documentation":"<p>The name of the channel.</p>"
@@ -1750,6 +1827,10 @@
         "Arn":{
           "shape":"__string",
           "documentation":"<p>The ARN of the program.</p>"
+        },
+        "AudienceMedia":{
+          "shape":"__listOfAudienceMedia",
+          "documentation":"<p>The list of AudienceMedia defined in program.</p>"
         },
         "ChannelName":{
           "shape":"__string",
@@ -1934,6 +2015,12 @@
       "type":"structure",
       "required":["ChannelName"],
       "members":{
+        "Audience":{
+          "shape":"__string",
+          "documentation":"<p>The single audience for GetChannelScheduleRequest.</p>",
+          "location":"querystring",
+          "locationName":"audience"
+        },
         "ChannelName":{
           "shape":"__string",
           "documentation":"<p>The name of the channel associated with this Channel Schedule.</p>",
@@ -3057,6 +3144,10 @@
           "shape":"__string",
           "documentation":"<p>The ARN of the program.</p>"
         },
+        "Audiences":{
+          "shape":"Audiences",
+          "documentation":"<p>The list of audiences defined in ScheduleEntry.</p>"
+        },
         "ChannelName":{
           "shape":"__string",
           "documentation":"<p>The name of the channel that uses this schedule.</p>"
@@ -3092,7 +3183,8 @@
       "type":"string",
       "enum":[
         "PROGRAM",
-        "FILLER_SLATE"
+        "FILLER_SLATE",
+        "ALTERNATE_MEDIA"
       ]
     },
     "SecretsManagerAccessTokenConfiguration":{
@@ -3401,6 +3493,10 @@
         "Outputs"
       ],
       "members":{
+        "Audiences":{
+          "shape":"Audiences",
+          "documentation":"<p>The list of audiences defined in channel.</p>"
+        },
         "ChannelName":{
           "shape":"__string",
           "documentation":"<p>The name of the channel.</p>",
@@ -3427,6 +3523,10 @@
         "Arn":{
           "shape":"__string",
           "documentation":"<p>The Amazon Resource Name (ARN) associated with the channel.</p>"
+        },
+        "Audiences":{
+          "shape":"Audiences",
+          "documentation":"<p>The list of audiences defined in channel.</p>"
         },
         "ChannelName":{
           "shape":"__string",
@@ -3543,6 +3643,10 @@
           "shape":"__listOfAdBreak",
           "documentation":"<p>The ad break configuration settings.</p>"
         },
+        "AudienceMedia":{
+          "shape":"__listOfAudienceMedia",
+          "documentation":"<p>The list of AudienceMedia defined in program.</p>"
+        },
         "ChannelName":{
           "shape":"__string",
           "documentation":"<p>The name of the channel for this Program.</p>",
@@ -3571,6 +3675,10 @@
         "Arn":{
           "shape":"__string",
           "documentation":"<p>The ARN to assign to the program.</p>"
+        },
+        "AudienceMedia":{
+          "shape":"__listOfAudienceMedia",
+          "documentation":"<p>The list of AudienceMedia defined in program.</p>"
         },
         "ChannelName":{
           "shape":"__string",
@@ -3838,6 +3946,14 @@
     "__listOfAlert":{
       "type":"list",
       "member":{"shape":"Alert"}
+    },
+    "__listOfAlternateMedia":{
+      "type":"list",
+      "member":{"shape":"AlternateMedia"}
+    },
+    "__listOfAudienceMedia":{
+      "type":"list",
+      "member":{"shape":"AudienceMedia"}
     },
     "__listOfAvailMatchingCriteria":{
       "type":"list",

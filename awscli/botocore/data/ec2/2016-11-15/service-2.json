@@ -2905,6 +2905,16 @@
       "output":{"shape":"DescribeLockedSnapshotsResult"},
       "documentation":"<p>Describes the lock status for a snapshot.</p>"
     },
+    "DescribeMacHosts":{
+      "name":"DescribeMacHosts",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DescribeMacHostsRequest"},
+      "output":{"shape":"DescribeMacHostsResult"},
+      "documentation":"<p>Describes the specified EC2 Mac Dedicated Host or all of your EC2 Mac Dedicated Hosts.</p>"
+    },
     "DescribeManagedPrefixLists":{
       "name":"DescribeManagedPrefixLists",
       "http":{
@@ -21974,6 +21984,49 @@
         }
       }
     },
+    "DescribeMacHostsRequest":{
+      "type":"structure",
+      "members":{
+        "Filters":{
+          "shape":"FilterList",
+          "documentation":"<p>The filters.</p> <ul> <li> <p> <code>availability-zone</code> - The Availability Zone of the EC2 Mac Dedicated Host.</p> </li> <li> <p> <code>instance-type</code> - The instance type size that the EC2 Mac Dedicated Host is configured to support.</p> </li> </ul>",
+          "locationName":"Filter"
+        },
+        "HostIds":{
+          "shape":"RequestHostIdList",
+          "documentation":"<p> The IDs of the EC2 Mac Dedicated Hosts. </p>",
+          "locationName":"HostId"
+        },
+        "MaxResults":{
+          "shape":"DescribeMacHostsRequestMaxResults",
+          "documentation":"<p>The maximum number of results to return for the request in a single page. The remaining results can be seen by sending another request with the returned <code>nextToken</code> value. This value can be between 5 and 500. If <code>maxResults</code> is given a larger value than 500, you receive an error.</p>"
+        },
+        "NextToken":{
+          "shape":"String",
+          "documentation":"<p>The token to use to retrieve the next page of results.</p>"
+        }
+      }
+    },
+    "DescribeMacHostsRequestMaxResults":{
+      "type":"integer",
+      "max":500,
+      "min":5
+    },
+    "DescribeMacHostsResult":{
+      "type":"structure",
+      "members":{
+        "MacHosts":{
+          "shape":"MacHostList",
+          "documentation":"<p> Information about the EC2 Mac Dedicated Hosts. </p>",
+          "locationName":"macHostSet"
+        },
+        "NextToken":{
+          "shape":"String",
+          "documentation":"<p>The token to use to retrieve the next page of results.</p>",
+          "locationName":"nextToken"
+        }
+      }
+    },
     "DescribeManagedPrefixListsRequest":{
       "type":"structure",
       "members":{
@@ -36947,6 +37000,16 @@
           "shape":"NitroTpmInfo",
           "documentation":"<p>Describes the supported NitroTPM versions for the instance type.</p>",
           "locationName":"nitroTpmInfo"
+        },
+        "MediaAcceleratorInfo":{
+          "shape":"MediaAcceleratorInfo",
+          "documentation":"<p>Describes the media accelerator settings for the instance type.</p>",
+          "locationName":"mediaAcceleratorInfo"
+        },
+        "NeuronInfo":{
+          "shape":"NeuronInfo",
+          "documentation":"<p>Describes the Neuron accelerator settings for the instance type.</p>",
+          "locationName":"neuronInfo"
         }
       },
       "documentation":"<p>Describes the instance type.</p>"
@@ -41200,6 +41263,36 @@
       ]
     },
     "Long":{"type":"long"},
+    "MacHost":{
+      "type":"structure",
+      "members":{
+        "HostId":{
+          "shape":"DedicatedHostId",
+          "documentation":"<p> The EC2 Mac Dedicated Host ID. </p>",
+          "locationName":"hostId"
+        },
+        "MacOSLatestSupportedVersions":{
+          "shape":"MacOSVersionStringList",
+          "documentation":"<p> The latest macOS versions that the EC2 Mac Dedicated Host can launch without being upgraded. </p>",
+          "locationName":"macOSLatestSupportedVersionSet"
+        }
+      },
+      "documentation":"<p> Information about the EC2 Mac Dedicated Host. </p>"
+    },
+    "MacHostList":{
+      "type":"list",
+      "member":{
+        "shape":"MacHost",
+        "locationName":"item"
+      }
+    },
+    "MacOSVersionStringList":{
+      "type":"list",
+      "member":{
+        "shape":"String",
+        "locationName":"item"
+      }
+    },
     "MaintenanceDetails":{
       "type":"structure",
       "members":{
@@ -41305,6 +41398,70 @@
     "MaximumIops":{"type":"integer"},
     "MaximumNetworkCards":{"type":"integer"},
     "MaximumThroughputInMBps":{"type":"double"},
+    "MediaAcceleratorInfo":{
+      "type":"structure",
+      "members":{
+        "Accelerators":{
+          "shape":"MediaDeviceInfoList",
+          "documentation":"<p>Describes the media accelerators for the instance type.</p>",
+          "locationName":"accelerators"
+        },
+        "TotalMediaMemoryInMiB":{
+          "shape":"TotalMediaMemory",
+          "documentation":"<p>The total size of the memory for the media accelerators for the instance type, in MiB.</p>",
+          "locationName":"totalMediaMemoryInMiB"
+        }
+      },
+      "documentation":"<p>Describes the media accelerators for the instance type.</p>"
+    },
+    "MediaDeviceCount":{"type":"integer"},
+    "MediaDeviceInfo":{
+      "type":"structure",
+      "members":{
+        "Count":{
+          "shape":"MediaDeviceCount",
+          "documentation":"<p>The number of media accelerators for the instance type.</p>",
+          "locationName":"count"
+        },
+        "Name":{
+          "shape":"MediaDeviceName",
+          "documentation":"<p>The name of the media accelerator.</p>",
+          "locationName":"name"
+        },
+        "Manufacturer":{
+          "shape":"MediaDeviceManufacturerName",
+          "documentation":"<p>The manufacturer of the media accelerator.</p>",
+          "locationName":"manufacturer"
+        },
+        "MemoryInfo":{
+          "shape":"MediaDeviceMemoryInfo",
+          "documentation":"<p>Describes the memory available to the media accelerator.</p>",
+          "locationName":"memoryInfo"
+        }
+      },
+      "documentation":"<p>Describes the media accelerators for the instance type.</p>"
+    },
+    "MediaDeviceInfoList":{
+      "type":"list",
+      "member":{
+        "shape":"MediaDeviceInfo",
+        "locationName":"item"
+      }
+    },
+    "MediaDeviceManufacturerName":{"type":"string"},
+    "MediaDeviceMemoryInfo":{
+      "type":"structure",
+      "members":{
+        "SizeInMiB":{
+          "shape":"MediaDeviceMemorySize",
+          "documentation":"<p>The size of the memory available to each media accelerator, in MiB.</p>",
+          "locationName":"sizeInMiB"
+        }
+      },
+      "documentation":"<p>Describes the memory available to the media accelerator.</p>"
+    },
+    "MediaDeviceMemorySize":{"type":"integer"},
+    "MediaDeviceName":{"type":"string"},
     "MembershipType":{
       "type":"string",
       "enum":[
@@ -45735,6 +45892,87 @@
       }
     },
     "NetworkPerformance":{"type":"string"},
+    "NeuronDeviceCoreCount":{"type":"integer"},
+    "NeuronDeviceCoreInfo":{
+      "type":"structure",
+      "members":{
+        "Count":{
+          "shape":"NeuronDeviceCoreCount",
+          "documentation":"<p>The number of cores available to the neuron accelerator.</p>",
+          "locationName":"count"
+        },
+        "Version":{
+          "shape":"NeuronDeviceCoreVersion",
+          "documentation":"<p>The version of the neuron accelerator.</p>",
+          "locationName":"version"
+        }
+      },
+      "documentation":"<p>Describes the cores available to the neuron accelerator.</p>"
+    },
+    "NeuronDeviceCoreVersion":{"type":"integer"},
+    "NeuronDeviceCount":{"type":"integer"},
+    "NeuronDeviceInfo":{
+      "type":"structure",
+      "members":{
+        "Count":{
+          "shape":"NeuronDeviceCount",
+          "documentation":"<p>The number of neuron accelerators for the instance type.</p>",
+          "locationName":"count"
+        },
+        "Name":{
+          "shape":"NeuronDeviceName",
+          "documentation":"<p>The name of the neuron accelerator.</p>",
+          "locationName":"name"
+        },
+        "CoreInfo":{
+          "shape":"NeuronDeviceCoreInfo",
+          "documentation":"<p>Describes the cores available to each neuron accelerator.</p>",
+          "locationName":"coreInfo"
+        },
+        "MemoryInfo":{
+          "shape":"NeuronDeviceMemoryInfo",
+          "documentation":"<p>Describes the memory available to each neuron accelerator.</p>",
+          "locationName":"memoryInfo"
+        }
+      },
+      "documentation":"<p>Describes the neuron accelerators for the instance type.</p>"
+    },
+    "NeuronDeviceInfoList":{
+      "type":"list",
+      "member":{
+        "shape":"NeuronDeviceInfo",
+        "locationName":"item"
+      }
+    },
+    "NeuronDeviceMemoryInfo":{
+      "type":"structure",
+      "members":{
+        "SizeInMiB":{
+          "shape":"NeuronDeviceMemorySize",
+          "documentation":"<p>The size of the memory available to the neuron accelerator, in MiB.</p>",
+          "locationName":"sizeInMiB"
+        }
+      },
+      "documentation":"<p>Describes the memory available to the neuron accelerator.</p>"
+    },
+    "NeuronDeviceMemorySize":{"type":"integer"},
+    "NeuronDeviceName":{"type":"string"},
+    "NeuronInfo":{
+      "type":"structure",
+      "members":{
+        "NeuronDevices":{
+          "shape":"NeuronDeviceInfoList",
+          "documentation":"<p>Describes the neuron accelerators for the instance type.</p>",
+          "locationName":"neuronDevices"
+        },
+        "TotalNeuronDeviceMemoryInMiB":{
+          "shape":"TotalNeuronMemory",
+          "documentation":"<p>The total size of the memory for the neuron accelerators for the instance type, in MiB.</p>",
+          "locationName":"totalNeuronDeviceMemoryInMiB"
+        }
+      },
+      "documentation":"<p>Describes the neuron accelerators for the instance type.</p>"
+    },
     "NewDhcpConfiguration":{
       "type":"structure",
       "members":{
@@ -53499,7 +53737,7 @@
         },
         "LaunchSpecifications":{
           "shape":"LaunchSpecsList",
-          "documentation":"<p>The launch specifications for the Spot Fleet request. If you specify <code>LaunchSpecifications</code>, you can't specify <code>LaunchTemplateConfigs</code>. If you include On-Demand capacity in your request, you must use <code>LaunchTemplateConfigs</code>.</p>",
+          "documentation":"<p>The launch specifications for the Spot Fleet request. If you specify <code>LaunchSpecifications</code>, you can't specify <code>LaunchTemplateConfigs</code>. If you include On-Demand capacity in your request, you must use <code>LaunchTemplateConfigs</code>.</p> <note> <p>If an AMI specified in a launch specification is deregistered or disabled, no new instances can be launched from the AMI. For fleets of type <code>maintain</code>, the target capacity will not be maintained.</p> </note>",
           "locationName":"launchSpecifications"
         },
         "LaunchTemplateConfigs":{
@@ -55326,6 +55564,8 @@
       },
       "documentation":"<p>The minimum and maximum amount of total local storage, in GB.</p>"
     },
+    "TotalMediaMemory":{"type":"integer"},
+    "TotalNeuronMemory":{"type":"integer"},
     "TpmSupportValues":{
       "type":"string",
       "enum":["v2.0"]

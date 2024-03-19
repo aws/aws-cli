@@ -5103,10 +5103,25 @@
       },
       "documentation":"<p>A toggle for an individual feature at the instance level.</p>"
     },
+    "AttributeAndCondition":{
+      "type":"structure",
+      "members":{
+        "TagConditions":{
+          "shape":"TagAndConditionList",
+          "documentation":"<p>A leaf node condition which can be used to specify a tag condition.</p>"
+        },
+        "HierarchyGroupCondition":{"shape":"HierarchyGroupCondition"}
+      },
+      "documentation":"<p>A list of conditions which would be applied together with an <code>AND</code> condition.</p>"
+    },
     "AttributeName":{
       "type":"string",
       "max":32767,
       "min":1
+    },
+    "AttributeOrConditionList":{
+      "type":"list",
+      "member":{"shape":"AttributeAndCondition"}
     },
     "AttributeValue":{
       "type":"string",
@@ -6134,6 +6149,22 @@
       },
       "documentation":"<p>An object that can be used to specify Tag conditions inside the <code>SearchFilter</code>. This accepts an <code>OR</code> of <code>AND</code> (List of List) input where: </p> <ul> <li> <p>Top level list specifies conditions that need to be applied with <code>OR</code> operator</p> </li> <li> <p>Inner list specifies conditions that need to be applied with <code>AND</code> operator.</p> </li> </ul>"
     },
+    "ControlPlaneUserAttributeFilter":{
+      "type":"structure",
+      "members":{
+        "OrConditions":{
+          "shape":"AttributeOrConditionList",
+          "documentation":"<p>A list of conditions which would be applied together with an <code>OR</code> condition.</p>"
+        },
+        "AndCondition":{
+          "shape":"AttributeAndCondition",
+          "documentation":"<p>A list of conditions which would be applied together with an <code>AND</code> condition.</p>"
+        },
+        "TagCondition":{"shape":"TagCondition"},
+        "HierarchyGroupCondition":{"shape":"HierarchyGroupCondition"}
+      },
+      "documentation":"<p>An object that can be used to specify Tag conditions or Hierarchy Group conditions inside the <code>SearchFilter</code>.</p> <p>This accepts an <code>OR</code> of <code>AND</code> (List of List) input where:</p> <ul> <li> <p>The top level list specifies conditions that need to be applied with <code>OR</code> operator</p> </li> <li> <p>The inner list specifies conditions that need to be applied with <code>AND</code> operator.</p> </li> </ul> <note> <p>Only one field can be populated. Maximum number of allowed Tag conditions is 25. Maximum number of allowed Hierarchy Group conditions is 20. </p> </note>"
+    },
     "CreateAgentStatusRequest":{
       "type":"structure",
       "required":[
@@ -6932,6 +6963,14 @@
         "Applications":{
           "shape":"Applications",
           "documentation":"<p>This API is in preview release for Amazon Connect and is subject to change.</p> <p>A list of third-party applications that the security profile will give access to.</p>"
+        },
+        "HierarchyRestrictedResources":{
+          "shape":"HierarchyRestrictedResourceList",
+          "documentation":"<p>The list of resources that a security profile applies hierarchy restrictions to in Amazon Connect. Following are acceptable ResourceNames: <code>User</code>.</p>"
+        },
+        "AllowedAccessControlHierarchyGroupId":{
+          "shape":"HierarchyGroupId",
+          "documentation":"<p>The identifier of the hierarchy group that a security profile uses to restrict access to resources in Amazon Connect.</p>"
         }
       }
     },
@@ -11166,6 +11205,15 @@
         }
       },
       "documentation":"<p>Information about the levels in the hierarchy group.</p>"
+    },
+    "HierarchyRestrictedResourceList":{
+      "type":"list",
+      "member":{"shape":"HierarchyRestrictedResourceName"}
+    },
+    "HierarchyRestrictedResourceName":{
+      "type":"string",
+      "max":128,
+      "min":1
     },
     "HierarchyStructure":{
       "type":"structure",
@@ -17705,6 +17753,14 @@
         "LastModifiedRegion":{
           "shape":"RegionName",
           "documentation":"<p>The Amazon Web Services Region where this resource was last modified.</p>"
+        },
+        "HierarchyRestrictedResources":{
+          "shape":"HierarchyRestrictedResourceList",
+          "documentation":"<p>The list of resources that a security profile applies hierarchy restrictions to in Amazon Connect. Following are acceptable ResourceNames: <code>User</code>.</p>"
+        },
+        "AllowedAccessControlHierarchyGroupId":{
+          "shape":"HierarchyGroupId",
+          "documentation":"<p>The identifier of the hierarchy group that a security profile uses to restrict access to resources in Amazon Connect.</p>"
         }
       },
       "documentation":"<p>Contains information about a security profile.</p>"
@@ -20610,6 +20666,14 @@
         "Applications":{
           "shape":"Applications",
           "documentation":"<p>This API is in preview release for Amazon Connect and is subject to change.</p> <p>A list of the third-party application's metadata.</p>"
+        },
+        "HierarchyRestrictedResources":{
+          "shape":"HierarchyRestrictedResourceList",
+          "documentation":"<p>The list of resources that a security profile applies hierarchy restrictions to in Amazon Connect. Following are acceptable ResourceNames: <code>User</code>.</p>"
+        },
+        "AllowedAccessControlHierarchyGroupId":{
+          "shape":"HierarchyGroupId",
+          "documentation":"<p>The identifier of the hierarchy group that a security profile uses to restrict access to resources in Amazon Connect.</p>"
         }
       }
     },
@@ -21386,7 +21450,11 @@
     "UserSearchFilter":{
       "type":"structure",
       "members":{
-        "TagFilter":{"shape":"ControlPlaneTagFilter"}
+        "TagFilter":{"shape":"ControlPlaneTagFilter"},
+        "UserAttributeFilter":{
+          "shape":"ControlPlaneUserAttributeFilter",
+          "documentation":"<p>An object that can be used to specify Tag conditions or Hierarchy Group conditions inside the SearchFilter.</p> <p>This accepts an <code>OR</code> of <code>AND</code> (List of List) input where:</p> <ul> <li> <p>The top level list specifies conditions that need to be applied with <code>OR</code> operator.</p> </li> <li> <p>The inner list specifies conditions that need to be applied with <code>AND</code> operator.</p> </li> </ul> <note> <p>Only one field can be populated. This object can’t be used along with TagFilter. Request can either contain TagFilter or UserAttributeFilter if SearchFilter is specified, combination of both is not supported and such request will throw AccessDeniedException.</p> </note>"
+        }
       },
       "documentation":"<p>Filters to be applied to search results.</p>"
     },

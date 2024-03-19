@@ -7106,6 +7106,40 @@ CHANGELOG
 * feature:wizard: Added support for AWS CLI Wizards. See `#3752 <https://github.com/aws/aws-cli/issues/3752>`__.
 
 
+1.32.66
+=======
+
+* api-change:``cloudformation``: Documentation update, March 2024. Corrects some formatting.
+* api-change:``ec2``: This release adds the new DescribeMacHosts API operation for getting information about EC2 Mac Dedicated Hosts. Users can now see the latest macOS versions that their underlying Apple Mac can support without needing to be updated.
+* api-change:``finspace``: Adding new attributes readWrite and onDemand to dataview models for Database Maintenance operations.
+* api-change:``logs``: Update LogSamples field in Anomaly model to be a list of LogEvent
+* api-change:``managedblockchain-query``: Introduces a new API for Amazon Managed Blockchain Query: ListFilteredTransactionEvents.
+
+
+1.32.65
+=======
+
+* api-change:``cloudformation``: This release supports for a new API ListStackSetAutoDeploymentTargets, which provider auto-deployment configuration as a describable resource. Customers can now view the specific combinations of regions and OUs that are being auto-deployed.
+* api-change:``kms``: Adds the ability to use the default policy name by omitting the policyName parameter in calls to PutKeyPolicy and GetKeyPolicy
+* api-change:``mediatailor``: This release adds support to allow customers to show different content within a channel depending on metadata associated with the viewer.
+* api-change:``rds``: This release launches the ModifyIntegration API and support for data filtering for zero-ETL Integrations.
+* api-change:``s3``: Fix two issues with response root node names.
+* api-change:``timestream-query``: Documentation updates, March 2024
+
+
+1.32.64
+=======
+
+* api-change:``backup``: This release introduces a boolean attribute ManagedByAWSBackupOnly as part of ListRecoveryPointsByResource api to filter the recovery points based on ownership. This attribute can be used to filter out the recovery points protected by AWSBackup.
+* api-change:``codebuild``: AWS CodeBuild now supports overflow behavior on Reserved Capacity.
+* api-change:``connect``: This release adds Hierarchy based Access Control fields to Security Profile public APIs and adds support for UserAttributeFilter to SearchUsers API.
+* api-change:``ec2``: Add media accelerator and neuron device information on the describe instance types API.
+* api-change:``kinesisanalyticsv2``: Support for Flink 1.18 in Managed Service for Apache Flink
+* api-change:``s3``: Documentation updates for Amazon S3.
+* api-change:``sagemaker``: Adds m6i, m6id, m7i, c6i, c6id, c7i, r6i r6id, r7i, p5 instance type support to Sagemaker Notebook Instances and miscellaneous wording fixes for previous Sagemaker documentation.
+* api-change:``workspaces-thin-client``: Removed unused parameter kmsKeyArn from UpdateDeviceRequest
+
+
 1.32.63
 =======
 

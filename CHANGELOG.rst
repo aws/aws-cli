@@ -2,6 +2,16 @@
 CHANGELOG
 =========
 
+1.32.66
+=======
+
+* api-change:``cloudformation``: Documentation update, March 2024. Corrects some formatting.
+* api-change:``ec2``: This release adds the new DescribeMacHosts API operation for getting information about EC2 Mac Dedicated Hosts. Users can now see the latest macOS versions that their underlying Apple Mac can support without needing to be updated.
+* api-change:``finspace``: Adding new attributes readWrite and onDemand to dataview models for Database Maintenance operations.
+* api-change:``logs``: Update LogSamples field in Anomaly model to be a list of LogEvent
+* api-change:``managedblockchain-query``: Introduces a new API for Amazon Managed Blockchain Query: ListFilteredTransactionEvents.
+
+
 1.32.65
 =======
 

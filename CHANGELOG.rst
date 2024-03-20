@@ -2,6 +2,17 @@
 CHANGELOG
 =========
 
+1.32.67
+=======
+
+* api-change:``accessanalyzer``: This release adds support for policy validation and external access findings for DynamoDB tables and streams. IAM Access Analyzer helps you author functional and secure resource-based policies and identify cross-account access. Updated service API, documentation, and paginators.
+* api-change:``codebuild``: This release adds support for new webhook events (RELEASED and PRERELEASED) and filter types (TAG_NAME and RELEASE_NAME).
+* api-change:``connect``: This release updates the *InstanceStorageConfig APIs to support a new ResourceType: REAL_TIME_CONTACT_ANALYSIS_CHAT_SEGMENTS. Use this resource type to enable streaming for real-time analysis of chat contacts and to associate a Kinesis stream where real-time analysis chat segments will be published.
+* api-change:``dynamodb``: This release introduces 3 new APIs ('GetResourcePolicy', 'PutResourcePolicy' and 'DeleteResourcePolicy') and modifies the existing 'CreateTable' API for the resource-based policy support. It also modifies several APIs to accept a 'TableArn' for the 'TableName' parameter.
+* api-change:``managedblockchain-query``: AMB Query: update GetTransaction to include transactionId as input
+* api-change:``savingsplans``: Introducing the Savings Plans Return feature enabling customers to return their Savings Plans within 7 days of purchase.
+
+
 1.32.66
 =======
 

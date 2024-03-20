@@ -601,8 +601,10 @@ class RequestParamsMapper(object):
     def _set_sse_request_params(cls, request_params, cli_params):
         if cli_params.get('sse'):
             request_params['ServerSideEncryption'] = cli_params['sse']
-        if  cli_params.get('sse_kms_key_id'):
+        if cli_params.get('sse_kms_key_id'):
             request_params['SSEKMSKeyId'] = cli_params['sse_kms_key_id']
+        if cli_params.get('sse_kms_encryption_context'):
+            request_params['SSEKMSEncryptionContext'] = cli_params['sse_kms_encryption_context']
 
     @classmethod
     def _set_sse_c_request_params(cls, request_params, cli_params):

@@ -86,7 +86,7 @@ NOTE: JSON arguments must include options and values as their own items in the l
 
 - Command::
 
-    aws emr add-steps --cluster-id j-XXXXXXXX  --steps file://./multiplefiles.json
+    aws emr add-steps --cluster-id j-XXXXXXXX --steps file://./multiplefiles.json
 
 - Required parameters::
 

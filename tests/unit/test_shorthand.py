@@ -127,6 +127,10 @@ PARSING_TEST_CASES = (
         'Name=[{foo=[a,b]}, {bar=[c,d]}]',
         {'Name': [{'foo': ['a', 'b']}, {'bar': ['c', 'd']}]}
     ),
+    (
+        "Args=[\"SELECT * FROM prod.log WHERE date = '2022-01-01' LIMIT 10\"]",
+        {'Args': ["SELECT * FROM prod.log WHERE date = '2022-01-01' LIMIT 10"]}
+    )
 )
 
 

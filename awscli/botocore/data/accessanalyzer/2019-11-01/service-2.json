@@ -1305,6 +1305,14 @@
         "s3ExpressDirectoryBucket":{
           "shape":"S3ExpressDirectoryBucketConfiguration",
           "documentation":"<p>The access control configuration is for an Amazon S3 directory bucket.</p>"
+        },
+        "dynamodbStream":{
+          "shape":"DynamodbStreamConfiguration",
+          "documentation":"<p>The access control configuration is for a DynamoDB stream.</p>"
+        },
+        "dynamodbTable":{
+          "shape":"DynamodbTableConfiguration",
+          "documentation":"<p>The access control configuration is for a DynamoDB table or index.</p>"
         }
       },
       "documentation":"<p>Access control configuration structures for your resource. You specify the configuration as a type-value pair. You can specify only one type of access control configuration.</p>",
@@ -1519,6 +1527,28 @@
       },
       "documentation":"<p>Deletes an archive rule.</p>"
     },
+    "DynamodbStreamConfiguration":{
+      "type":"structure",
+      "members":{
+        "streamPolicy":{
+          "shape":"DynamodbStreamPolicy",
+          "documentation":"<p>The proposed resource policy defining who can access or manage the DynamoDB stream.</p>"
+        }
+      },
+      "documentation":"<p>The proposed access control configuration for a DynamoDB stream. You can propose a configuration for a new DynamoDB stream or an existing DynamoDB stream that you own by specifying the policy for the DynamoDB stream. For more information, see <a href=\"https://docs.aws.amazon.com/amazondynamodb/latest/APIReference/API_PutResourcePolicy.html\">PutResourcePolicy</a>.</p> <ul> <li> <p>If the configuration is for an existing DynamoDB stream and you do not specify the DynamoDB policy, then the access preview uses the existing DynamoDB policy for the stream.</p> </li> <li> <p>If the access preview is for a new resource and you do not specify the policy, then the access preview assumes a DynamoDB stream without a policy.</p> </li> <li> <p>To propose deletion of an existing DynamoDB stream policy, you can specify an empty string for the DynamoDB policy.</p> </li> </ul>"
+    },
+    "DynamodbStreamPolicy":{"type":"string"},
+    "DynamodbTableConfiguration":{
+      "type":"structure",
+      "members":{
+        "tablePolicy":{
+          "shape":"DynamodbTablePolicy",
+          "documentation":"<p>The proposed resource policy defining who can access or manage the DynamoDB table.</p>"
+        }
+      },
+      "documentation":"<p>The proposed access control configuration for a DynamoDB table or index. You can propose a configuration for a new DynamoDB table or index or an existing DynamoDB table or index that you own by specifying the policy for the DynamoDB table or index. For more information, see <a href=\"https://docs.aws.amazon.com/amazondynamodb/latest/APIReference/API_PutResourcePolicy.html\">PutResourcePolicy</a>.</p> <ul> <li> <p>If the configuration is for an existing DynamoDB table or index and you do not specify the DynamoDB policy, then the access preview uses the existing DynamoDB policy for the table or index.</p> </li> <li> <p>If the access preview is for a new resource and you do not specify the policy, then the access preview assumes a DynamoDB table without a policy.</p> </li> <li> <p>To propose deletion of an existing DynamoDB table or index policy, you can specify an empty string for the DynamoDB policy.</p> </li> </ul>"
+    },
+    "DynamodbTablePolicy":{"type":"string"},
     "EbsGroup":{"type":"string"},
     "EbsGroupList":{
       "type":"list",
@@ -3176,7 +3206,9 @@
         "AWS::RDS::DBSnapshot",
         "AWS::RDS::DBClusterSnapshot",
         "AWS::SNS::Topic",
-        "AWS::S3Express::DirectoryBucket"
+        "AWS::S3Express::DirectoryBucket",
+        "AWS::DynamoDB::Table",
+        "AWS::DynamoDB::Stream"
       ]
     },
     "RetiringPrincipal":{"type":"string"},
@@ -3858,7 +3890,8 @@
         "AWS::S3::AccessPoint",
         "AWS::S3::MultiRegionAccessPoint",
         "AWS::S3ObjectLambda::AccessPoint",
-        "AWS::IAM::AssumeRolePolicyDocument"
+        "AWS::IAM::AssumeRolePolicyDocument",
+        "AWS::DynamoDB::Table"
       ]
     },
     "ValidatePolicyResponse":{

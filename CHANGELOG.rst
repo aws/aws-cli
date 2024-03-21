@@ -2,6 +2,12 @@
 CHANGELOG
 =========
 
+1.32.68
+=======
+
+* api-change:``codeartifact``: This release adds Package groups to CodeArtifact so you can more conveniently configure package origin controls for multiple packages.
+
+
 1.32.67
 =======
 

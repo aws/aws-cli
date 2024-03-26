@@ -414,6 +414,20 @@
       ],
       "documentation":"<p>Retrieves a forecast for how much Amazon Web Services predicts that you will use over the forecast time period that you select, based on your past usage. </p>"
     },
+    "ListCostAllocationTagBackfillHistory":{
+      "name":"ListCostAllocationTagBackfillHistory",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"ListCostAllocationTagBackfillHistoryRequest"},
+      "output":{"shape":"ListCostAllocationTagBackfillHistoryResponse"},
+      "errors":[
+        {"shape":"LimitExceededException"},
+        {"shape":"InvalidNextTokenException"}
+      ],
+      "documentation":"<p> Retrieves a list of your historical cost allocation tag backfill requests. </p>"
+    },
     "ListCostAllocationTags":{
       "name":"ListCostAllocationTags",
       "http":{
@@ -482,6 +496,20 @@
         {"shape":"LimitExceededException"}
       ],
       "documentation":"<p>Modifies the feedback property of a given cost anomaly. </p>"
+    },
+    "StartCostAllocationTagBackfill":{
+      "name":"StartCostAllocationTagBackfill",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"StartCostAllocationTagBackfillRequest"},
+      "output":{"shape":"StartCostAllocationTagBackfillResponse"},
+      "errors":[
+        {"shape":"LimitExceededException"},
+        {"shape":"BackfillLimitExceededException"}
+      ],
+      "documentation":"<p> Request a cost allocation tag backfill. This will backfill the activation status (either <code>active</code> or <code>inactive</code>) for all tag keys from <code>para:BackfillFrom</code> up to the when this request is made.</p> <p>You can request a backfill once every 24 hours. </p>"
     },
     "StartSavingsPlansPurchaseRecommendationGeneration":{
       "name":"StartSavingsPlansPurchaseRecommendationGeneration",
@@ -819,6 +847,14 @@
       "key":{"shape":"AttributeType"},
       "value":{"shape":"AttributeValue"}
     },
+    "BackfillLimitExceededException":{
+      "type":"structure",
+      "members":{
+        "Message":{"shape":"ErrorMessage"}
+      },
+      "documentation":"<p> A request to backfill is already in progress. Once the previous request is complete, you can create another request. </p>",
+      "exception":true
+    },
     "BillExpirationException":{
       "type":"structure",
       "members":{
@@ -865,6 +901,46 @@
         }
       },
       "documentation":"<p>The cost allocation tag structure. This includes detailed metadata for the <code>CostAllocationTag</code> object. </p>"
+    },
+    "CostAllocationTagBackfillRequest":{
+      "type":"structure",
+      "members":{
+        "BackfillFrom":{
+          "shape":"ZonedDateTime",
+          "documentation":"<p> The date the backfill starts from. </p>"
+        },
+        "RequestedAt":{
+          "shape":"ZonedDateTime",
+          "documentation":"<p> The time when the backfill was requested. </p>"
+        },
+        "CompletedAt":{
+          "shape":"ZonedDateTime",
+          "documentation":"<p> The backfill completion time. </p>"
+        },
+        "BackfillStatus":{
+          "shape":"CostAllocationTagBackfillStatus",
+          "documentation":"<p> The status of the cost allocation tag backfill request. </p>"
+        },
+        "LastUpdatedAt":{
+          "shape":"ZonedDateTime",
+          "documentation":"<p> The time when the backfill status was last updated. </p>"
+        }
+      },
+      "documentation":"<p> The cost allocation tag backfill request structure that contains metadata and details of a certain backfill.</p>"
+    },
+    "CostAllocationTagBackfillRequestList":{
+      "type":"list",
+      "member":{"shape":"CostAllocationTagBackfillRequest"},
+      "max":1000,
+      "min":0
+    },
+    "CostAllocationTagBackfillStatus":{
+      "type":"string",
+      "enum":[
+        "SUCCEEDED",
+        "PROCESSING",
+        "FAILED"
+      ]
     },
     "CostAllocationTagKeyList":{
       "type":"list",
@@ -3078,6 +3154,33 @@
       "documentation":"<p>You made too many calls in a short period of time. Try again later.</p>",
       "exception":true
     },
+    "ListCostAllocationTagBackfillHistoryRequest":{
+      "type":"structure",
+      "members":{
+        "NextToken":{
+          "shape":"NextPageToken",
+          "documentation":"<p> The token to retrieve the next set of results. Amazon Web Services provides the token when the response from a previous call has more results than the maximum page size. </p>"
+        },
+        "MaxResults":{
+          "shape":"CostAllocationTagsMaxResults",
+          "documentation":"<p> The maximum number of objects that are returned for this request. </p>",
+          "box":true
+        }
+      }
+    },
+    "ListCostAllocationTagBackfillHistoryResponse":{
+      "type":"structure",
+      "members":{
+        "BackfillRequests":{
+          "shape":"CostAllocationTagBackfillRequestList",
+          "documentation":"<p> The list of historical cost allocation tag backfill requests. </p>"
+        },
+        "NextToken":{
+          "shape":"NextPageToken",
+          "documentation":"<p> The token to retrieve the next set of results. Amazon Web Services provides the token when the response from a previous call has more results than the maximum page size. </p>"
+        }
+      }
+    },
     "ListCostAllocationTagsRequest":{
       "type":"structure",
       "members":{
@@ -4637,6 +4740,25 @@
         "ASCENDING",
         "DESCENDING"
       ]
+    },
+    "StartCostAllocationTagBackfillRequest":{
+      "type":"structure",
+      "required":["BackfillFrom"],
+      "members":{
+        "BackfillFrom":{
+          "shape":"ZonedDateTime",
+          "documentation":"<p> The date you want the backfill to start from. The date can only be a first day of the month (a billing start date). Dates can't precede the previous twelve months, or in the future.</p>"
+        }
+      }
+    },
+    "StartCostAllocationTagBackfillResponse":{
+      "type":"structure",
+      "members":{
+        "BackfillRequest":{
+          "shape":"CostAllocationTagBackfillRequest",
+          "documentation":"<p> An object containing detailed metadata of your new backfill request. </p>"
+        }
+      }
     },
     "StartSavingsPlansPurchaseRecommendationGenerationRequest":{
       "type":"structure",

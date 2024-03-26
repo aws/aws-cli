@@ -8964,6 +8964,36 @@
           "shape": "TimecodeBurninSettings",
           "locationName": "timecodeBurninSettings",
           "documentation": "Timecode burn-in settings"
+        },
+        "MvOverPictureBoundaries": {
+          "shape": "H265MvOverPictureBoundaries",
+          "locationName": "mvOverPictureBoundaries",
+          "documentation": "If you are setting up the picture as a tile, you must set this to \"disabled\". In all other configurations, you typically enter \"enabled\"."
+        },
+        "MvTemporalPredictor": {
+          "shape": "H265MvTemporalPredictor",
+          "locationName": "mvTemporalPredictor",
+          "documentation": "If you are setting up the picture as a tile, you must set this to \"disabled\". In other configurations, you typically enter \"enabled\"."
+        },
+        "TileHeight": {
+          "shape": "__integerMin64Max2160",
+          "locationName": "tileHeight",
+          "documentation": "Set this field to set up the picture as a tile. You must also set tileWidth.\nThe tile height must result in 22 or fewer rows in the frame. The tile width\nmust result in 20 or fewer columns in the frame. And finally, the product of the\ncolumn count and row count must be 64 of less.\nIf the tile width and height are specified, MediaLive will override the video\ncodec slices field with a value that MediaLive calculates"
+        },
+        "TilePadding": {
+          "shape": "H265TilePadding",
+          "locationName": "tilePadding",
+          "documentation": "Set to \"padded\" to force MediaLive to add padding to the frame, to obtain a frame that is a whole multiple of the tile size.\nIf you are setting up the picture as a tile, you must enter \"padded\".\nIn all other configurations, you typically enter \"none\"."
+        },
+        "TileWidth": {
+          "shape": "__integerMin256Max3840",
+          "locationName": "tileWidth",
+          "documentation": "Set this field to set up the picture as a tile. See tileHeight for more information."
+        },
+        "TreeblockSize": {
+          "shape": "H265TreeblockSize",
+          "locationName": "treeblockSize",
+          "documentation": "Select the tree block size used for encoding. If you enter \"auto\", the encoder will pick the best size. If you are setting up the picture as a tile, you must set this to 32x32. In all other configurations, you typically enter \"auto\"."
         }
       },
       "documentation": "H265 Settings",
@@ -18128,6 +18158,50 @@
         "shape": "ChannelPipelineIdToRestart"
       },
       "documentation": "Placeholder documentation for __listOfChannelPipelineIdToRestart"
+    },
+    "H265MvOverPictureBoundaries": {
+      "type": "string",
+      "documentation": "H265 Mv Over Picture Boundaries",
+      "enum": [
+        "DISABLED",
+        "ENABLED"
+      ]
+    },
+    "H265MvTemporalPredictor": {
+      "type": "string",
+      "documentation": "H265 Mv Temporal Predictor",
+      "enum": [
+        "DISABLED",
+        "ENABLED"
+      ]
+    },
+    "H265TilePadding": {
+      "type": "string",
+      "documentation": "H265 Tile Padding",
+      "enum": [
+        "NONE",
+        "PADDED"
+      ]
+    },
+    "H265TreeblockSize": {
+      "type": "string",
+      "documentation": "H265 Treeblock Size",
+      "enum": [
+        "AUTO",
+        "TREE_SIZE_32X32"
+      ]
+    },
+    "__integerMin256Max3840": {
+      "type": "integer",
+      "min": 256,
+      "max": 3840,
+      "documentation": "Placeholder documentation for __integerMin256Max3840"
+    },
+    "__integerMin64Max2160": {
+      "type": "integer",
+      "min": 64,
+      "max": 2160,
+      "documentation": "Placeholder documentation for __integerMin64Max2160"
     }
   },
   "documentation": "API for AWS Elemental MediaLive"

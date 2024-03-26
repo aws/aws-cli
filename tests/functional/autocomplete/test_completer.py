@@ -152,7 +152,8 @@ class TestShorthandCompleter(unittest.TestCase):
 
         self.assert_command_generates_suggestions(
             'aws codebuild create-project --source auth={type=',
-            expected_suggestions=['OAUTH', 'Autoclose brackets'])
+            expected_suggestions=['OAUTH', 'CODECONNECTIONS',
+                                  'Autoclose brackets'])
 
         self.assert_command_generates_suggestions(
             'aws codebuild create-project '
@@ -188,7 +189,8 @@ class TestShorthandCompleter(unittest.TestCase):
             '--source auth={type=a},location=foo,type=',
             expected_suggestions=[
                 'CODECOMMIT', 'CODEPIPELINE', 'GITHUB',
-                'S3', 'BITBUCKET', 'GITHUB_ENTERPRISE', 'NO_SOURCE'])
+                'S3', 'BITBUCKET', 'GITHUB_ENTERPRISE', 'NO_SOURCE',
+                'GITLAB', 'GITLAB_SELF_MANAGED',])
 
         self.assert_command_generates_suggestions(
             'aws codebuild create-project '

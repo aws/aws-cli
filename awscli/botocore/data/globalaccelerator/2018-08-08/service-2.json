@@ -111,7 +111,7 @@
         {"shape":"AccessDeniedException"},
         {"shape":"TransactionInProgressException"}
       ],
-      "documentation":"<p>Create a cross-account attachment in Global Accelerator. You create a cross-account attachment to specify the <i>principals</i> who have permission to add to accelerators in their own account the resources in your account that you also list in the attachment.</p> <p>A principal can be an Amazon Web Services account number or the Amazon Resource Name (ARN) for an accelerator. For account numbers that are listed as principals, to add a resource listed in the attachment to an accelerator, you must sign in to an account specified as a principal. Then you can add the resources that are listed to any of your accelerators. If an accelerator ARN is listed in the cross-account attachment as a principal, anyone with permission to make updates to the accelerator can add as endpoints resources that are listed in the attachment. </p>"
+      "documentation":"<p>Create a cross-account attachment in Global Accelerator. You create a cross-account attachment to specify the <i>principals</i> who have permission to work with <i>resources</i> in accelerators in their own account. You specify, in the same attachment, the resources that are shared.</p> <p>A principal can be an Amazon Web Services account number or the Amazon Resource Name (ARN) for an accelerator. For account numbers that are listed as principals, to work with a resource listed in the attachment, you must sign in to an account specified as a principal. Then, you can work with resources that are listed, with any of your accelerators. If an accelerator ARN is listed in the cross-account attachment as a principal, anyone with permission to make updates to the accelerator can work with resources that are listed in the attachment. </p> <p>Specify each principal and resource separately. To specify two CIDR address pools, list them individually under <code>Resources</code>, and so on. For a command line operation, for example, you might use a statement like the following:</p> <p> <code> \"Resources\": [{\"Cidr\": \"169.254.60.0/24\"},{\"Cidr\": \"169.254.59.0/24\"}]</code> </p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/global-accelerator/latest/dg/cross-account-resources.html\"> Working with cross-account attachments and resources in Global Accelerator</a> in the <i> Global Accelerator Developer Guide</i>.</p>"
     },
     "CreateCustomRoutingAccelerator":{
       "name":"CreateCustomRoutingAccelerator",
@@ -232,7 +232,7 @@
         {"shape":"InvalidArgumentException"},
         {"shape":"TransactionInProgressException"}
       ],
-      "documentation":"<p>Delete a cross-account attachment. When you delete an attachment, Global Accelerator revokes the permission to use the resources in the attachment from all principals in the list of principals. Global Accelerator revokes the permission for specific resources by doing the following:</p> <ul> <li> <p>If the principal is an account ID, Global Accelerator reviews every accelerator in the account and removes cross-account endpoints from all accelerators.</p> </li> <li> <p>If the principal is an accelerator, Global Accelerator reviews just that accelerator and removes cross-account endpoints from it.</p> </li> </ul> <p>If there are overlapping permissions provided by multiple cross-account attachments, Global Accelerator only removes endpoints if there are no current cross-account attachments that provide access permission. For example, if you delete a cross-account attachment that lists an accelerator as a principal, but another cross-account attachment includes the account ID that owns that accelerator, endpoints will not be removed from the accelerator.</p>"
+      "documentation":"<p>Delete a cross-account attachment. When you delete an attachment, Global Accelerator revokes the permission to use the resources in the attachment from all principals in the list of principals. Global Accelerator revokes the permission for specific resources.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/global-accelerator/latest/dg/cross-account-resources.html\"> Working with cross-account attachments and resources in Global Accelerator</a> in the <i> Global Accelerator Developer Guide</i>.</p>"
     },
     "DeleteCustomRoutingAccelerator":{
       "name":"DeleteCustomRoutingAccelerator",
@@ -534,7 +534,7 @@
         {"shape":"AccessDeniedException"},
         {"shape":"InternalServiceErrorException"}
       ],
-      "documentation":"<p>List the accounts that have cross-account endpoints.</p>"
+      "documentation":"<p>List the accounts that have cross-account resources.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/global-accelerator/latest/dg/cross-account-resources.html\"> Working with cross-account attachments and resources in Global Accelerator</a> in the <i> Global Accelerator Developer Guide</i>.</p>"
     },
     "ListCrossAccountResources":{
       "name":"ListCrossAccountResources",
@@ -551,7 +551,7 @@
         {"shape":"AccessDeniedException"},
         {"shape":"AcceleratorNotFoundException"}
       ],
-      "documentation":"<p>List the cross-account endpoints available to add to an accelerator.</p>"
+      "documentation":"<p>List the cross-account resources available to work with.</p>"
     },
     "ListCustomRoutingAccelerators":{
       "name":"ListCustomRoutingAccelerators",
@@ -808,7 +808,7 @@
         {"shape":"LimitExceededException"},
         {"shape":"TransactionInProgressException"}
       ],
-      "documentation":"<p>Update a cross-account attachment to add or remove principals or resources. When you update an attachment to remove a principal (account ID or accelerator) or a resource, Global Accelerator revokes the permission for specific resources by doing the following:</p> <ul> <li> <p>If the principal is an account ID, Global Accelerator reviews every accelerator in the account and removes cross-account endpoints from all accelerators.</p> </li> <li> <p>If the principal is an accelerator, Global Accelerator reviews just that accelerator and removes cross-account endpoints from it.</p> </li> </ul> <p>If there are overlapping permissions provided by multiple cross-account attachments, Global Accelerator only removes endpoints if there are no current cross-account attachments that provide access permission. For example, if you delete a cross-account attachment that lists an accelerator as a principal, but another cross-account attachment includes the account ID that owns that accelerator, endpoints will not be removed from the accelerator.</p>"
+      "documentation":"<p>Update a cross-account attachment to add or remove principals or resources. When you update an attachment to remove a principal (account ID or accelerator) or a resource, Global Accelerator revokes the permission for specific resources. </p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/global-accelerator/latest/dg/cross-account-resources.html\"> Working with cross-account attachments and resources in Global Accelerator</a> in the <i> Global Accelerator Developer Guide</i>.</p>"
     },
     "UpdateCustomRoutingAccelerator":{
       "name":"UpdateCustomRoutingAccelerator",
@@ -1098,7 +1098,7 @@
       "members":{
         "Cidr":{
           "shape":"GenericString",
-          "documentation":"<p>The address range, in CIDR notation. This must be the exact range that you provisioned. You can't advertise only a portion of the provisioned range.</p>"
+          "documentation":"<p>The address range, in CIDR notation. This must be the exact range that you provisioned. You can't advertise only a portion of the provisioned range.</p> <p> For more information, see <a href=\"https://docs.aws.amazon.com/global-accelerator/latest/dg/using-byoip.html\">Bring your own IP addresses (BYOIP)</a> in the Global Accelerator Developer Guide.</p>"
         }
       }
     },
@@ -1184,7 +1184,7 @@
           "documentation":"<p>The date and time that the cross-account attachment was created.</p>"
         }
       },
-      "documentation":"<p>A cross-account attachment in Global Accelerator. A cross-account attachment specifies the <i>principals</i> who have permission to add to accelerators in their own account the resources in your account that you also list in the attachment.</p>"
+      "documentation":"<p>A cross-account attachment in Global Accelerator. A cross-account attachment specifies the <i>principals</i> who have permission to work with <i>resources</i> in your account, which you also list in the attachment.</p>"
     },
     "AttachmentName":{
       "type":"string",
@@ -1218,7 +1218,7 @@
       "members":{
         "Cidr":{
           "shape":"GenericString",
-          "documentation":"<p>The address range, in CIDR notation.</p>"
+          "documentation":"<p>The address range, in CIDR notation.</p> <p> For more information, see <a href=\"https://docs.aws.amazon.com/global-accelerator/latest/dg/using-byoip.html\">Bring your own IP addresses (BYOIP)</a> in the Global Accelerator Developer Guide.</p>"
         },
         "State":{
           "shape":"ByoipCidrState",
@@ -1366,11 +1366,11 @@
         },
         "Principals":{
           "shape":"Principals",
-          "documentation":"<p>The principals to list in the cross-account attachment. A principal can be an Amazon Web Services account number or the Amazon Resource Name (ARN) for an accelerator. </p>"
+          "documentation":"<p>The principals to include in the cross-account attachment. A principal can be an Amazon Web Services account number or the Amazon Resource Name (ARN) for an accelerator. </p>"
         },
         "Resources":{
           "shape":"Resources",
-          "documentation":"<p>The Amazon Resource Names (ARNs) for the resources to list in the cross-account attachment. A resource can be any supported Amazon Web Services resource type for Global Accelerator. </p>"
+          "documentation":"<p>The Amazon Resource Names (ARNs) for the resources to include in the cross-account attachment. A resource can be any supported Amazon Web Services resource type for Global Accelerator or a CIDR range for a bring your own IP address (BYOIP) address pool. </p>"
         },
         "IdempotencyToken":{
           "shape":"IdempotencyToken",
@@ -1379,7 +1379,7 @@
         },
         "Tags":{
           "shape":"Tags",
-          "documentation":"<p>Create tags for cross-account attachment.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/global-accelerator/latest/dg/tagging-in-global-accelerator.html\">Tagging in Global Accelerator</a> in the <i>Global Accelerator Developer Guide</i>.</p>"
+          "documentation":"<p>Add tags for a cross-account attachment.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/global-accelerator/latest/dg/tagging-in-global-accelerator.html\">Tagging in Global Accelerator</a> in the <i>Global Accelerator Developer Guide</i>.</p>"
         }
       }
     },
@@ -1616,12 +1616,16 @@
           "shape":"GenericString",
           "documentation":"<p>The endpoint ID for the endpoint that is listed in a cross-account attachment and can be added to an accelerator by specified principals.</p>"
         },
+        "Cidr":{
+          "shape":"GenericString",
+          "documentation":"<p>An IP address range, in CIDR format, that is specified as an Amazon Web Services resource. The address must be provisioned and advertised in Global Accelerator by following the bring your own IP address (BYOIP) process for Global Accelerator.</p> <p> For more information, see <a href=\"https://docs.aws.amazon.com/global-accelerator/latest/dg/using-byoip.html\">Bring your own IP addresses (BYOIP)</a> in the Global Accelerator Developer Guide.</p>"
+        },
         "AttachmentArn":{
           "shape":"GenericString",
-          "documentation":"<p>The Amazon Resource Name (ARN) of the cross-account attachment that specifies the endpoints (resources) that can be added to accelerators and principals that have permission to add the endpoints to accelerators.</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of the cross-account attachment that specifies the resources (endpoints or CIDR range) that can be added to accelerators and principals that have permission to add them.</p>"
         }
       },
-      "documentation":"<p>An endpoint (Amazon Web Services resource) that is listed in a cross-account attachment and can be added to an accelerator by specified principals, that are also listed in the attachment.</p>"
+      "documentation":"<p>An endpoint (Amazon Web Services resource) or an IP address range, in CIDR format, that is listed in a cross-account attachment. A cross-account resource can be added to an accelerator by specified principals, which are also listed in the attachment.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/global-accelerator/latest/dg/cross-account-resources.html\"> Working with cross-account attachments and resources in Global Accelerator</a> in the <i> Global Accelerator Developer Guide</i>.</p>"
     },
     "CrossAccountResources":{
       "type":"list",
@@ -1765,7 +1769,7 @@
         },
         "AttachmentArn":{
           "shape":"GenericString",
-          "documentation":"<p>The Amazon Resource Name (ARN) of the cross-account attachment that specifies the endpoints (resources) that can be added to accelerators and principals that have permission to add the endpoints to accelerators.</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of the cross-account attachment that specifies the endpoints (resources) that can be added to accelerators and principals that have permission to add the endpoints.</p>"
         }
       },
       "documentation":"<p>The list of endpoint objects. For custom routing, this is a list of virtual private cloud (VPC) subnet IDs.</p>"
@@ -1952,7 +1956,7 @@
       "members":{
         "Cidr":{
           "shape":"GenericString",
-          "documentation":"<p>The address range, in CIDR notation. The prefix must be the same prefix that you specified when you provisioned the address range.</p>"
+          "documentation":"<p>The address range, in CIDR notation. The prefix must be the same prefix that you specified when you provisioned the address range.</p> <p> For more information, see <a href=\"https://docs.aws.amazon.com/global-accelerator/latest/dg/using-byoip.html\">Bring your own IP addresses (BYOIP)</a> in the Global Accelerator Developer Guide.</p>"
         }
       }
     },
@@ -2201,7 +2205,7 @@
       "members":{
         "EndpointId":{
           "shape":"GenericString",
-          "documentation":"<p>An ID for the endpoint. If the endpoint is a Network Load Balancer or Application Load Balancer, this is the Amazon Resource Name (ARN) of the resource. If the endpoint is an Elastic IP address, this is the Elastic IP address allocation ID. For Amazon EC2 instances, this is the EC2 instance ID. A resource must be valid and active when you add it as an endpoint.</p> <p>An Application Load Balancer can be either internal or internet-facing.</p>"
+          "documentation":"<p>An ID for the endpoint. If the endpoint is a Network Load Balancer or Application Load Balancer, this is the Amazon Resource Name (ARN) of the resource. If the endpoint is an Elastic IP address, this is the Elastic IP address allocation ID. For Amazon EC2 instances, this is the EC2 instance ID. A resource must be valid and active when you add it as an endpoint.</p> <p>For cross-account endpoints, this must be the ARN of the resource.</p>"
         },
         "Weight":{
           "shape":"EndpointWeight",
@@ -2213,7 +2217,7 @@
         },
         "AttachmentArn":{
           "shape":"GenericString",
-          "documentation":"<p>The Amazon Resource Name (ARN) of the cross-account attachment that specifies the endpoints (resources) that can be added to accelerators and principals that have permission to add the endpoints to accelerators.</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of the cross-account attachment that specifies the endpoints (resources) that can be added to accelerators and principals that have permission to add the endpoints.</p>"
         }
       },
       "documentation":"<p>A complex type for endpoints. A resource must be valid and active when you add it as an endpoint.</p>"
@@ -2583,7 +2587,7 @@
       "members":{
         "ResourceOwnerAwsAccountIds":{
           "shape":"AwsAccountIds",
-          "documentation":"<p>The account IDs of principals (resource owners) in a cross-account attachment who can add endpoints (resources) listed in the same attachment.</p>"
+          "documentation":"<p>The account IDs of principals (resource owners) in a cross-account attachment who can work with resources listed in the same attachment.</p>"
         }
       }
     },
@@ -2601,7 +2605,7 @@
         },
         "MaxResults":{
           "shape":"MaxResults",
-          "documentation":"<p>The number of cross-account endpoints objects that you want to return with this call. The default value is 10.</p>"
+          "documentation":"<p>The number of cross-account resource objects that you want to return with this call. The default value is 10.</p>"
         },
         "NextToken":{
           "shape":"GenericString",
@@ -2614,7 +2618,7 @@
       "members":{
         "CrossAccountResources":{
           "shape":"CrossAccountResources",
-          "documentation":"<p>The endpoints attached to an accelerator in a cross-account attachment.</p>"
+          "documentation":"<p>The cross-account resources used with an accelerator.</p>"
         },
         "NextToken":{
           "shape":"GenericString",
@@ -3016,7 +3020,7 @@
       "members":{
         "Cidr":{
           "shape":"GenericString",
-          "documentation":"<p>The public IPv4 address range, in CIDR notation. The most specific IP prefix that you can specify is /24. The address range cannot overlap with another address range that you've brought to this or another Region.</p>"
+          "documentation":"<p>The public IPv4 address range, in CIDR notation. The most specific IP prefix that you can specify is /24. The address range cannot overlap with another address range that you've brought to this Amazon Web Services Region or another Region.</p> <p> For more information, see <a href=\"https://docs.aws.amazon.com/global-accelerator/latest/dg/using-byoip.html\">Bring your own IP addresses (BYOIP)</a> in the Global Accelerator Developer Guide.</p>"
         },
         "CidrAuthorizationContext":{
           "shape":"CidrAuthorizationContext",
@@ -3069,18 +3073,21 @@
     },
     "Resource":{
       "type":"structure",
-      "required":["EndpointId"],
       "members":{
         "EndpointId":{
           "shape":"GenericString",
-          "documentation":"<p>The endpoint ID for the endpoint (Amazon Web Services resource).</p>"
+          "documentation":"<p>The endpoint ID for the endpoint that is specified as a Amazon Web Services resource. </p> <p>An endpoint ID for the cross-account feature is the ARN of an Amazon Web Services resource, such as a Network Load Balancer, that Global Accelerator supports as an endpoint for an accelerator.</p>"
+        },
+        "Cidr":{
+          "shape":"GenericString",
+          "documentation":"<p>An IP address range, in CIDR format, that is specified as resource. The address must be provisioned and advertised in Global Accelerator by following the bring your own IP address (BYOIP) process for Global Accelerator</p> <p> For more information, see <a href=\"https://docs.aws.amazon.com/global-accelerator/latest/dg/using-byoip.html\">Bring your own IP addresses (BYOIP)</a> in the Global Accelerator Developer Guide.</p>"
         },
         "Region":{
           "shape":"GenericString",
-          "documentation":"<p>The Amazon Web Services Region where a resource is located.</p>"
+          "documentation":"<p>The Amazon Web Services Region where a shared endpoint resource is located.</p>"
         }
       },
-      "documentation":"<p>An Amazon Web Services resource that is supported by Global Accelerator and can be added as an endpoint for an accelerator.</p>"
+      "documentation":"<p>A resource is one of the following: the ARN for an Amazon Web Services resource that is supported by Global Accelerator to be added as an endpoint, or a CIDR range that specifies a bring your own IP (BYOIP) address pool.</p>"
     },
     "ResourceArn":{
       "type":"string",
@@ -3286,19 +3293,19 @@
         },
         "AddPrincipals":{
           "shape":"Principals",
-          "documentation":"<p>The principals to add to the cross-account attachment. A principal is an account or the Amazon Resource Name (ARN) of an accelerator that the attachment gives permission to add the resources from another account, listed in the attachment.</p> <p>To add more than one principal, separate the account numbers or accelerator ARNs, or both, with commas.</p>"
+          "documentation":"<p>The principals to add to the cross-account attachment. A principal is an account or the Amazon Resource Name (ARN) of an accelerator that the attachment gives permission to work with resources from another account. The resources are also listed in the attachment.</p> <p>To add more than one principal, separate the account numbers or accelerator ARNs, or both, with commas.</p>"
         },
         "RemovePrincipals":{
           "shape":"Principals",
-          "documentation":"<p>The principals to remove from the cross-account attachment. A principal is an account or the Amazon Resource Name (ARN) of an accelerator that is given permission to add the resources from another account, listed in the cross-account attachment.</p> <p>To remove more than one principal, separate the account numbers or accelerator ARNs, or both, with commas.</p>"
+          "documentation":"<p>The principals to remove from the cross-account attachment. A principal is an account or the Amazon Resource Name (ARN) of an accelerator that the attachment gives permission to work with resources from another account. The resources are also listed in the attachment.</p> <p>To remove more than one principal, separate the account numbers or accelerator ARNs, or both, with commas.</p>"
         },
         "AddResources":{
           "shape":"Resources",
-          "documentation":"<p>The resources to add to the cross-account attachment. A resource listed in a cross-account attachment can be added to an accelerator by the principals that are listed in the attachment.</p> <p>To add more than one resource, separate the resource ARNs with commas.</p>"
+          "documentation":"<p>The resources to add to the cross-account attachment. A resource listed in a cross-account attachment can be used with an accelerator by the principals that are listed in the attachment.</p> <p>To add more than one resource, separate the resource ARNs with commas.</p>"
         },
         "RemoveResources":{
           "shape":"Resources",
-          "documentation":"<p>The resources to remove from the cross-account attachment. A resource listed in a cross-account attachment can be added to an accelerator fy principals that are listed in the cross-account attachment.</p> <p>To remove more than one resource, separate the resource ARNs with commas.</p>"
+          "documentation":"<p>The resources to remove from the cross-account attachment. A resource listed in a cross-account attachment can be used with an accelerator by the principals that are listed in the attachment.</p> <p>To remove more than one resource, separate the resource ARNs with commas.</p>"
         }
       }
     },
@@ -3487,7 +3494,7 @@
       "members":{
         "Cidr":{
           "shape":"GenericString",
-          "documentation":"<p>The address range, in CIDR notation.</p>"
+          "documentation":"<p>The address range, in CIDR notation.</p> <p> For more information, see <a href=\"https://docs.aws.amazon.com/global-accelerator/latest/dg/using-byoip.html\">Bring your own IP addresses (BYOIP)</a> in the Global Accelerator Developer Guide.</p>"
         }
       }
     },
@@ -3496,7 +3503,7 @@
       "members":{
         "ByoipCidr":{
           "shape":"ByoipCidr",
-          "documentation":"<p>Information about the address pool.</p>"
+          "documentation":"<p>Information about the BYOIP address pool.</p>"
         }
       }
     }

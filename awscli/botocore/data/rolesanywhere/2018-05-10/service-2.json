@@ -253,7 +253,7 @@
         {"shape":"ValidationException"},
         {"shape":"AccessDeniedException"}
       ],
-      "documentation":"<p>Imports the certificate revocation list (CRL). A CRL is a list of certificates that have been revoked by the issuing certificate Authority (CA). IAM Roles Anywhere validates against the CRL before issuing credentials. </p> <p> <b>Required permissions: </b> <code>rolesanywhere:ImportCrl</code>. </p>"
+      "documentation":"<p>Imports the certificate revocation list (CRL). A CRL is a list of certificates that have been revoked by the issuing certificate Authority (CA).In order to be properly imported, a CRL must be in PEM format. IAM Roles Anywhere validates against the CRL before issuing credentials. </p> <p> <b>Required permissions: </b> <code>rolesanywhere:ImportCrl</code>. </p>"
     },
     "ListCrls":{
       "name":"ListCrls",
@@ -479,7 +479,7 @@
       "members":{
         "durationSeconds":{
           "shape":"CreateProfileRequestDurationSecondsInteger",
-          "documentation":"<p> The number of seconds the vended session credentials are valid for. </p>"
+          "documentation":"<p> Used to determine how long sessions vended using this profile are valid for. See the <code>Expiration</code> section of the <a href=\"https://docs.aws.amazon.com/rolesanywhere/latest/userguide/authentication-create-session.html#credentials-object\">CreateSession API documentation</a> page for more details. </p>"
         },
         "enabled":{
           "shape":"Boolean",
@@ -514,7 +514,7 @@
     "CreateProfileRequestDurationSecondsInteger":{
       "type":"integer",
       "box":true,
-      "max":3600,
+      "max":43200,
       "min":900
     },
     "CreateTrustAnchorRequest":{
@@ -952,7 +952,7 @@
         },
         "durationSeconds":{
           "shape":"Integer",
-          "documentation":"<p> The number of seconds the vended session credentials are valid for. </p>"
+          "documentation":"<p> Used to determine how long sessions vended using this profile are valid for. See the <code>Expiration</code> section of the <a href=\"https://docs.aws.amazon.com/rolesanywhere/latest/userguide/authentication-create-session.html#credentials-object\">CreateSession API documentation</a> page for more details. </p>"
         },
         "enabled":{
           "shape":"Boolean",
@@ -1457,7 +1457,7 @@
       "members":{
         "durationSeconds":{
           "shape":"UpdateProfileRequestDurationSecondsInteger",
-          "documentation":"<p> The number of seconds the vended session credentials are valid for. </p>"
+          "documentation":"<p> Used to determine how long sessions vended using this profile are valid for. See the <code>Expiration</code> section of the <a href=\"https://docs.aws.amazon.com/rolesanywhere/latest/userguide/authentication-create-session.html#credentials-object\">CreateSession API documentation</a> page for more details. </p>"
         },
         "managedPolicyArns":{
           "shape":"ManagedPolicyList",
@@ -1486,7 +1486,7 @@
     "UpdateProfileRequestDurationSecondsInteger":{
       "type":"integer",
       "box":true,
-      "max":3600,
+      "max":43200,
       "min":900
     },
     "UpdateProfileRequestSessionPolicyString":{

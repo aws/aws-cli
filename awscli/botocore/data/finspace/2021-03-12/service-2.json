@@ -230,6 +230,23 @@
       ],
       "documentation":"<p>Deletes a kdb cluster.</p>"
     },
+    "DeleteKxClusterNode":{
+      "name":"DeleteKxClusterNode",
+      "http":{
+        "method":"DELETE",
+        "requestUri":"/kx/environments/{environmentId}/clusters/{clusterName}/nodes/{nodeId}"
+      },
+      "input":{"shape":"DeleteKxClusterNodeRequest"},
+      "output":{"shape":"DeleteKxClusterNodeResponse"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"},
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p>Deletes the specified nodes from a cluster. </p>"
+    },
     "DeleteKxDatabase":{
       "name":"DeleteKxDatabase",
       "http":{
@@ -1176,7 +1193,7 @@
         },
         "changeRequests":{
           "shape":"ChangeRequests",
-          "documentation":"<p>A list of change request objects that are run in order. A change request object consists of <code>changeType</code> , <code>s3Path</code>, and <code>dbPath</code>. A changeType can has the following values: </p> <ul> <li> <p>PUT – Adds or updates files in a database.</p> </li> <li> <p>DELETE – Deletes files in a database.</p> </li> </ul> <p>All the change requests require a mandatory <code>dbPath</code> attribute that defines the path within the database directory. All database paths must start with a leading / and end with a trailing /. The <code>s3Path</code> attribute defines the s3 source file path and is required for a PUT change type. The <code>s3path</code> must end with a trailing / if it is a directory and must end without a trailing / if it is a file. </p> <p>Here are few examples of how you can use the change request object:</p> <ol> <li> <p>This request adds a single sym file at database root location. </p> <p> <code>{ \"changeType\": \"PUT\", \"s3Path\":\"s3://bucket/db/sym\", \"dbPath\":\"/\"}</code> </p> </li> <li> <p>This request adds files in the given <code>s3Path</code> under the 2020.01.02 partition of the database.</p> <p> <code>{ \"changeType\": \"PUT\", \"s3Path\":\"s3://bucket/db/2020.01.02/\", \"dbPath\":\"/2020.01.02/\"}</code> </p> </li> <li> <p>This request adds files in the given <code>s3Path</code> under the <i>taq</i> table partition of the database.</p> <p> <code>[ { \"changeType\": \"PUT\", \"s3Path\":\"s3://bucket/db/2020.01.02/taq/\", \"dbPath\":\"/2020.01.02/taq/\"}]</code> </p> </li> <li> <p>This request deletes the 2020.01.02 partition of the database.</p> <p> <code>[{ \"changeType\": \"DELETE\", \"dbPath\": \"/2020.01.02/\"} ]</code> </p> </li> <li> <p>The <i>DELETE</i> request allows you to delete the existing files under the 2020.01.02 partition of the database, and the <i>PUT</i> request adds a new taq table under it.</p> <p> <code>[ {\"changeType\": \"DELETE\", \"dbPath\":\"/2020.01.02/\"}, {\"changeType\": \"PUT\", \"s3Path\":\"s3://bucket/db/2020.01.02/taq/\", \"dbPath\":\"/2020.01.02/taq/\"}]</code> </p> </li> </ol>"
+          "documentation":"<p>A list of change request objects that are run in order. A change request object consists of <code>changeType</code> , <code>s3Path</code>, and <code>dbPath</code>. A changeType can have the following values: </p> <ul> <li> <p>PUT – Adds or updates files in a database.</p> </li> <li> <p>DELETE – Deletes files in a database.</p> </li> </ul> <p>All the change requests require a mandatory <code>dbPath</code> attribute that defines the path within the database directory. All database paths must start with a leading / and end with a trailing /. The <code>s3Path</code> attribute defines the s3 source file path and is required for a PUT change type. The <code>s3path</code> must end with a trailing / if it is a directory and must end without a trailing / if it is a file. </p> <p>Here are few examples of how you can use the change request object:</p> <ol> <li> <p>This request adds a single sym file at database root location. </p> <p> <code>{ \"changeType\": \"PUT\", \"s3Path\":\"s3://bucket/db/sym\", \"dbPath\":\"/\"}</code> </p> </li> <li> <p>This request adds files in the given <code>s3Path</code> under the 2020.01.02 partition of the database.</p> <p> <code>{ \"changeType\": \"PUT\", \"s3Path\":\"s3://bucket/db/2020.01.02/\", \"dbPath\":\"/2020.01.02/\"}</code> </p> </li> <li> <p>This request adds files in the given <code>s3Path</code> under the <i>taq</i> table partition of the database.</p> <p> <code>[ { \"changeType\": \"PUT\", \"s3Path\":\"s3://bucket/db/2020.01.02/taq/\", \"dbPath\":\"/2020.01.02/taq/\"}]</code> </p> </li> <li> <p>This request deletes the 2020.01.02 partition of the database.</p> <p> <code>[{ \"changeType\": \"DELETE\", \"dbPath\": \"/2020.01.02/\"} ]</code> </p> </li> <li> <p>The <i>DELETE</i> request allows you to delete the existing files under the 2020.01.02 partition of the database, and the <i>PUT</i> request adds a new taq table under it.</p> <p> <code>[ {\"changeType\": \"DELETE\", \"dbPath\":\"/2020.01.02/\"}, {\"changeType\": \"PUT\", \"s3Path\":\"s3://bucket/db/2020.01.02/taq/\", \"dbPath\":\"/2020.01.02/taq/\"}]</code> </p> </li> </ol>"
         },
         "clientToken":{
           "shape":"ClientTokenString",
@@ -1956,6 +1973,39 @@
       }
     },
     "DeleteEnvironmentResponse":{
+      "type":"structure",
+      "members":{
+      }
+    },
+    "DeleteKxClusterNodeRequest":{
+      "type":"structure",
+      "required":[
+        "clusterName",
+        "nodeId",
+        "environmentId"
+      ],
+      "members":{
+        "environmentId":{
+          "shape":"KxEnvironmentId",
+          "documentation":"<p>A unique identifier for the kdb environment.</p>",
+          "location":"uri",
+          "locationName":"environmentId"
+        },
+        "clusterName":{
+          "shape":"KxClusterName",
+          "documentation":"<p>The name of the cluster, for which you want to delete the nodes.</p>",
+          "location":"uri",
+          "locationName":"clusterName"
+        },
+        "nodeId":{
+          "shape":"KxClusterNodeIdString",
+          "documentation":"<p>A unique identifier for the node that you want to delete.</p>",
+          "location":"uri",
+          "locationName":"nodeId"
+        }
+      }
+    },
+    "DeleteKxClusterNodeResponse":{
       "type":"structure",
       "members":{
       }
@@ -3751,7 +3801,7 @@
         },
         "size":{
           "shape":"KxNAS1Size",
-          "documentation":"<p> The size of the network attached storage.</p>"
+          "documentation":"<p> The size of the network attached storage. For storage type <code>SSD_1000</code> and <code>SSD_250</code> you can select the minimum size as 1200 GB or increments of 2400 GB. For storage type <code>HDD_12</code> you can select the minimum size as 6000 GB or increments of 6000 GB.</p>"
         }
       },
       "documentation":"<p> The structure containing the size and type of the network attached storage (NAS_1) file system volume. </p>"
@@ -3782,9 +3832,20 @@
         "launchTime":{
           "shape":"Timestamp",
           "documentation":"<p>The time when a particular node is started. The value is determined as epoch time in milliseconds. For example, the value for Monday, November 1, 2021 12:00:00 PM UTC is specified as 1635768000000.</p>"
+        },
+        "status":{
+          "shape":"KxNodeStatus",
+          "documentation":"<p> Specifies the status of the cluster nodes. </p> <ul> <li> <p> <code>RUNNING</code> – The node is actively serving.</p> </li> <li> <p> <code>PROVISIONING</code> – The node is being prepared.</p> </li> </ul>"
         }
       },
       "documentation":"<p>A structure that stores metadata for a kdb node.</p>"
+    },
+    "KxNodeStatus":{
+      "type":"string",
+      "enum":[
+        "RUNNING",
+        "PROVISIONING"
+      ]
     },
     "KxNodeSummaries":{
       "type":"list",

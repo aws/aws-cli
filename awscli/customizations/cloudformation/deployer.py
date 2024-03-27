@@ -30,10 +30,12 @@ ChangeSetResult = collections.namedtuple(
 
 class Deployer(object):
 
-    def __init__(self, cloudformation_client,
+    def __init__(self, cloudformation_client, wait_delay, wait_max_attempts,
                  changeset_prefix="awscli-cloudformation-package-deploy-"):
         self._client = cloudformation_client
         self.changeset_prefix = changeset_prefix
+        self.wait_delay = wait_delay
+        self.wait_max_attempts = wait_max_attempts
 
     def has_stack(self, stack_name):
         """
@@ -206,11 +208,11 @@ class Deployer(object):
             raise RuntimeError("Invalid changeset type {0}"
                                .format(changeset_type))
 
-        # Poll every 30 seconds. Polling too frequently risks hitting rate limits
-        # on CloudFormation's DescribeStacks API
+        # Default delay to 30 seconds. Polling too frequently risks hitting rate
+        # limits on CloudFormation's DescribeStacks API
         waiter_config = {
-            'Delay': 30,
-            'MaxAttempts': 120,
+            'Delay': self.wait_delay,
+            'MaxAttempts': self.wait_max_attempts,
         }
 
         try:

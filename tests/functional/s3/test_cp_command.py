@@ -11,11 +11,12 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
+import base64
 import os
 
 from awscli.testutils import BaseAWSCommandParamsTest
 from awscli.testutils import capture_input
-from awscli.testutils import mock 
+from awscli.testutils import mock
 from awscli.compat import six
 from tests.functional.s3 import BaseS3TransferCommandTest
 from tests import requires_crt
@@ -552,11 +553,12 @@ class TestCPCommand(BaseCPCommandTest):
     # Note ideally the kms sse with a key id would be integration tests
     # However, you cannot delete kms keys so there would be no way to clean
     # up the tests
-    def test_cp_upload_with_sse_kms_and_key_id(self):
+    def test_cp_upload_with_sse_kms_and_key_id_and_encryption_context(self):
         full_path = self.files.create_file('foo.txt', 'contents')
+        encryption_context = base64.standard_b64encode(b'{"key":"value"}').decode('ascii')
         cmdline = (
-            '%s %s s3://bucket/key.txt --sse aws:kms --sse-kms-key-id foo' % (
-                self.prefix, full_path))
+            '%s %s s3://bucket/key.txt --sse aws:kms --sse-kms-key-id foo --sse-kms-encryption-context %s' % (
+                self.prefix, full_path, encryption_context))
         self.run_cmd(cmdline, expected_rc=0)
         self.assertEqual(len(self.operations_called), 1)
         self.assertEqual(self.operations_called[0][0].name, 'PutObject')
@@ -564,10 +566,11 @@ class TestCPCommand(BaseCPCommandTest):
             self.operations_called[0][1],
             {'Key': 'key.txt', 'Bucket': 'bucket',
              'ContentType': 'text/plain', 'Body': mock.ANY,
-             'SSEKMSKeyId': 'foo', 'ServerSideEncryption': 'aws:kms'}
+             'SSEKMSKeyId': 'foo', 'ServerSideEncryption': 'aws:kms',
+             'SSEKMSEncryptionContext': encryption_context}
         )
 
-    def test_cp_upload_large_file_with_sse_kms_and_key_id(self):
+    def test_cp_upload_large_file_with_sse_kms_and_key_id_and_encryption_context(self):
         self.parsed_responses = [
             {'UploadId': 'foo'},  # CreateMultipartUpload
             {'ETag': '"foo"'},  # UploadPart
@@ -575,9 +578,10 @@ class TestCPCommand(BaseCPCommandTest):
             {}  # CompleteMultipartUpload
         ]
         full_path = self.files.create_file('foo.txt', 'a' * 10 * (1024 ** 2))
+        encryption_context = base64.standard_b64encode(b'{"key":"value"}').decode('ascii')
         cmdline = (
-            '%s %s s3://bucket/key.txt --sse aws:kms --sse-kms-key-id foo' % (
-                self.prefix, full_path))
+            '%s %s s3://bucket/key.txt --sse aws:kms --sse-kms-key-id foo --sse-kms-encryption-context %s' % (
+                self.prefix, full_path, encryption_context))
         self.run_cmd(cmdline, expected_rc=0)
         self.assertEqual(len(self.operations_called), 4)
 
@@ -589,17 +593,20 @@ class TestCPCommand(BaseCPCommandTest):
             self.operations_called[0][1],
             {'Key': 'key.txt', 'Bucket': 'bucket',
              'ContentType': 'text/plain',
-             'SSEKMSKeyId': 'foo', 'ServerSideEncryption': 'aws:kms'}
+             'SSEKMSKeyId': 'foo', 'ServerSideEncryption': 'aws:kms',
+             'SSEKMSEncryptionContext': encryption_context}
         )
 
-    def test_cp_copy_with_sse_kms_and_key_id(self):
+    def test_cp_copy_with_sse_kms_and_key_id_and_encryption_context(self):
         self.parsed_responses = [
             {'ContentLength': 5, 'LastModified': '00:00:00Z'},  # HeadObject
             {}  # CopyObject
         ]
+        encryption_context = base64.standard_b64encode(b'{"key":"value"}').decode('ascii')
         cmdline = (
             '%s s3://bucket/key1.txt s3://bucket/key2.txt '
-            '--sse aws:kms --sse-kms-key-id foo' % self.prefix)
+            '--sse aws:kms --sse-kms-key-id foo --sse-kms-encryption-context %s' % (
+                self.prefix, encryption_context))
         self.run_cmd(cmdline, expected_rc=0)
         self.assertEqual(len(self.operations_called), 2)
         self.assertEqual(self.operations_called[1][0].name, 'CopyObject')
@@ -614,11 +621,12 @@ class TestCPCommand(BaseCPCommandTest):
                     'Key': 'key1.txt'
                 },
                 'SSEKMSKeyId': 'foo',
-                'ServerSideEncryption': 'aws:kms'
+                'ServerSideEncryption': 'aws:kms',
+                'SSEKMSEncryptionContext': encryption_context
             }
         )
 
-    def test_cp_copy_large_file_with_sse_kms_and_key_id(self):
+    def test_cp_copy_large_file_with_sse_kms_and_key_id_and_encryption_context(self):
         self.parsed_responses = [
             {'ContentLength': 10 * (1024 ** 2),
              'LastModified': '00:00:00Z'},  # HeadObject
@@ -627,9 +635,11 @@ class TestCPCommand(BaseCPCommandTest):
             {'CopyPartResult': {'ETag': '"foo"'}},  # UploadPartCopy
             {}  # CompleteMultipartUpload
         ]
+        encryption_context = base64.standard_b64encode(b'{"key":"value"}').decode('ascii')
         cmdline = (
             '%s s3://bucket/key1.txt s3://bucket/key2.txt '
-            '--sse aws:kms --sse-kms-key-id foo' % self.prefix)
+            '--sse aws:kms --sse-kms-key-id foo --sse-kms-encryption-context %s' % (
+                self.prefix, encryption_context))
         self.run_cmd(cmdline, expected_rc=0)
         self.assertEqual(len(self.operations_called), 5)
 
@@ -641,7 +651,8 @@ class TestCPCommand(BaseCPCommandTest):
             self.operations_called[1][1],
             {'Key': 'key2.txt', 'Bucket': 'bucket',
              'ContentType': 'text/plain',
-             'SSEKMSKeyId': 'foo', 'ServerSideEncryption': 'aws:kms'}
+             'SSEKMSKeyId': 'foo', 'ServerSideEncryption': 'aws:kms',
+             'SSEKMSEncryptionContext': encryption_context}
         )
 
     def test_cannot_use_recursive_with_stream(self):

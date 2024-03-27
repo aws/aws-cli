@@ -2,6 +2,28 @@
 CHANGELOG
 =========
 
+2.15.33
+=======
+
+* api-change:``ecs``: Documentation only update for Amazon ECS.
+* api-change:``kendra``: Documentation update, March 2024. Corrects some docs for Amazon Kendra.
+* api-change:``ec2``: Added support for ModifyInstanceMetadataDefaults and GetInstanceMetadataDefaults to set Instance Metadata Service account defaults
+* api-change:``finspace``: Add new operation delete-kx-cluster-node and add status parameter to list-kx-cluster-node operation.
+* api-change:``sagemaker``: Introduced support for the following new instance types on SageMaker Studio for JupyterLab and CodeEditor applications: m6i, m6id, m7i, c6i, c6id, c7i, r6i, r6id, r7i, and p5
+* api-change:``ec2``: Documentation updates for Elastic Compute Cloud (EC2).
+* api-change:``ecs``: This is a documentation update for Amazon ECS.
+* api-change:``firehose``: Updates Amazon Firehose documentation for message regarding Enforcing Tags IAM Policy.
+* api-change:``ce``: Adds support for backfill of cost allocation tags, with new StartCostAllocationTagBackfill and ListCostAllocationTagBackfillHistory API.
+* api-change:``medialive``: Exposing TileMedia H265 options
+* api-change:``rolesanywhere``: This release relaxes constraints on the durationSeconds request parameter for the *Profile APIs that support it. This parameter can now take on values that go up to 43200.
+* api-change:``bedrock-agent-runtime``: This release adds support to customize prompts sent through the RetrieveAndGenerate API in Agents for Amazon Bedrock.
+* api-change:``pricing``: Add ResourceNotFoundException to ListPriceLists and GetPriceListFileUrl APIs
+* api-change:``codebuild``: Supporting GitLab and GitLab Self Managed as source types in AWS CodeBuild.
+* api-change:``globalaccelerator``: AWS Global Accelerator now supports cross-account sharing for bring your own IP addresses.
+* api-change:``securityhub``: Added new resource detail object to ASFF, including resource for LastKnownExploitAt
+* api-change:``emr-containers``: This release increases the number of supported job template parameters from 20 to 100.
+
+
 2.15.32
 =======
 

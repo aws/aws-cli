@@ -778,23 +778,27 @@
       "enum":[
         "PERCENT_30",
         "PERCENT_20",
+        "PERCENT_10",
         "PERCENT_0"
       ]
     },
     "CustomizableMetricName":{
       "type":"string",
-      "enum":["CpuUtilization"]
+      "enum":[
+        "CpuUtilization",
+        "MemoryUtilization"
+      ]
     },
     "CustomizableMetricParameters":{
       "type":"structure",
       "members":{
         "threshold":{
           "shape":"CustomizableMetricThreshold",
-          "documentation":"<p> The threshold value used for the specified metric parameter. </p>"
+          "documentation":"<p> The threshold value used for the specified metric parameter. </p> <note> <p>You can only specify the threshold value for CPU utilization.</p> </note>"
         },
         "headroom":{
           "shape":"CustomizableMetricHeadroom",
-          "documentation":"<p> The headroom threshold value in percentage used for the specified metric parameter. </p>"
+          "documentation":"<p> The headroom value in percentage used for the specified metric parameter. </p> <p>The following lists the valid values for CPU and memory utilization.</p> <ul> <li> <p>CPU utilization: <code>PERCENT_30 | PERCENT_20 | PERCENT_0</code> </p> </li> <li> <p>Memory utilization: <code>PERCENT_30 | PERCENT_20 | PERCENT_10</code> </p> </li> </ul>"
         }
       },
       "documentation":"<p> Defines the various metric parameters that can be customized, such as threshold and headroom. </p>"
@@ -1350,7 +1354,7 @@
         },
         "utilizationPreferences":{
           "shape":"UtilizationPreferences",
-          "documentation":"<p> The resource’s CPU utilization threshold preferences, such as threshold and headroom, that are used to generate rightsizing recommendations. </p> <note> <p>This preference is only available for the Amazon EC2 instance resource type.</p> </note>"
+          "documentation":"<p> The resource’s CPU and memory utilization preferences, such as threshold and headroom, that are used to generate rightsizing recommendations. </p> <note> <p>This preference is only available for the Amazon EC2 instance resource type.</p> </note>"
         },
         "preferredResources":{
           "shape":"EffectivePreferredResources",
@@ -2362,7 +2366,7 @@
         },
         "utilizationPreferences":{
           "shape":"UtilizationPreferences",
-          "documentation":"<p> The resource’s CPU utilization threshold preferences, such as threshold and headroom, that were used to generate rightsizing recommendations. It considers all applicable preferences that you set at the resource, account, and organization level. </p> <p>To validate that the preference is applied to your last generated set of recommendations, review the <code>effectiveRecommendationPreferences</code> value in the response of the GetAutoScalingGroupRecommendations or GetEC2InstanceRecommendations actions.</p>"
+          "documentation":"<p> The resource’s CPU and memory utilization preferences, such as threshold and headroom, that were used to generate rightsizing recommendations. It considers all applicable preferences that you set at the resource, account, and organization level. </p> <p>To validate that the preference is applied to your last generated set of recommendations, review the <code>effectiveRecommendationPreferences</code> value in the response of the GetAutoScalingGroupRecommendations or GetEC2InstanceRecommendations actions.</p>"
         },
         "preferredResources":{
           "shape":"EffectivePreferredResources",
@@ -3653,7 +3657,7 @@
         },
         "utilizationPreferences":{
           "shape":"UtilizationPreferences",
-          "documentation":"<p> The preference to control the resource’s CPU utilization thresholds - threshold and headroom. When this preference isn't specified, we use the following default values: </p> <ul> <li> <p> <code>P99_5</code> for threshold</p> </li> <li> <p> <code>PERCENT_17</code> for headroom</p> </li> </ul> <note> <p>You can only set this preference for the Amazon EC2 instance resource type.</p> </note>"
+          "documentation":"<p> The preference to control the resource’s CPU utilization threshold, CPU utilization headroom, and memory utilization headroom. When this preference isn't specified, we use the following default values. </p> <p>CPU utilization:</p> <ul> <li> <p> <code>P99_5</code> for threshold</p> </li> <li> <p> <code>PERCENT_20</code> for headroom</p> </li> </ul> <p>Memory utilization:</p> <ul> <li> <p> <code>PERCENT_20</code> for headroom</p> </li> </ul> <note> <ul> <li> <p>You can only set CPU and memory utilization preferences for the Amazon EC2 instance resource type.</p> </li> <li> <p>The threshold setting isn’t available for memory utilization.</p> </li> </ul> </note>"
         },
         "preferredResources":{
           "shape":"PreferredResources",
@@ -3785,7 +3789,7 @@
         },
         "utilizationPreferences":{
           "shape":"UtilizationPreferences",
-          "documentation":"<p> The preference to control the resource’s CPU utilization thresholds - threshold and headroom. If the preference isn’t set, this object is null. </p> <note> <p>This preference is only available for the Amazon EC2 instance resource type.</p> </note>"
+          "documentation":"<p> The preference to control the resource’s CPU utilization threshold, CPU utilization headroom, and memory utilization headroom. If the preference isn’t set, this object is null. </p> <note> <p>This preference is only available for the Amazon EC2 instance resource type.</p> </note>"
         },
         "preferredResources":{
           "shape":"EffectivePreferredResources",
@@ -4157,7 +4161,7 @@
       "members":{
         "metricName":{
           "shape":"CustomizableMetricName",
-          "documentation":"<p> The name of the resource utilization metric name to customize. </p> <note> <p>Compute Optimizer only supports <code>CpuUtilization</code>.</p> </note>"
+          "documentation":"<p> The name of the resource utilization metric name to customize. </p>"
         },
         "metricParameters":{
           "shape":"CustomizableMetricParameters",

@@ -2946,7 +2946,7 @@
         {"shape":"ResourceNotFoundException"},
         {"shape":"InternalFailureException"}
       ],
-      "documentation":"<p>Updates the content and status of IP rules. To use this operation, you must provide the entire map of rules. You can use the <code>DescribeIpRestriction</code> operation to get the current rule map.</p>"
+      "documentation":"<p>Updates the content and status of IP rules. Traffic from a source is allowed when the source satisfies either the <code>IpRestrictionRule</code>, <code>VpcIdRestrictionRule</code>, or <code>VpcEndpointIdRestrictionRule</code>. To use this operation, you must provide the entire map of rules. You can use the <code>DescribeIpRestriction</code> operation to get the current rule map.</p>"
     },
     "UpdatePublicSharingSettings":{
       "name":"UpdatePublicSharingSettings",
@@ -10412,7 +10412,7 @@
           "documentation":"<p>A date time parameter that is created in the dataset.</p>"
         }
       },
-      "documentation":"<p>A dataset parameter.</p>"
+      "documentation":"<p>A parameter that is created in a dataset. The parameter can be a string, integer, decimal, or datetime data type.</p>"
     },
     "DatasetParameterId":{
       "type":"string",
@@ -10434,6 +10434,7 @@
     },
     "DatasetParameterValueType":{
       "type":"string",
+      "documentation":"<p>The value type of the parameter. The value type is used to validate the parameter before it is evaluated.</p>",
       "enum":[
         "MULTI_VALUED",
         "SINGLE_VALUED"
@@ -13527,6 +13528,14 @@
           "shape":"IpRestrictionRuleMap",
           "documentation":"<p>A map that describes the IP rules with CIDR range and description.</p>"
         },
+        "VpcIdRestrictionRuleMap":{
+          "shape":"VpcIdRestrictionRuleMap",
+          "documentation":"<p>A map of allowed VPC IDs and their rule descriptions.</p>"
+        },
+        "VpcEndpointIdRestrictionRuleMap":{
+          "shape":"VpcEndpointIdRestrictionRuleMap",
+          "documentation":"<p>A map of allowed VPC endpoint IDs and their rule descriptions.</p>"
+        },
         "Enabled":{
           "shape":"NullableBoolean",
           "documentation":"<p>A value that specifies whether IP rules are turned on.</p>"
@@ -16371,7 +16380,7 @@
         },
         "AuthorizedResourceArns":{
           "shape":"ArnList",
-          "documentation":"<p>The Amazon Resource Names (ARNs) for the Amazon QuickSight resources that the user is authorized to access during the lifetime of the session.</p> <p>If you choose <code>Dashboard</code> embedding experience, pass the list of dashboard ARNs in the account that you want the user to be able to view.</p> <p>Currently, you can pass up to 25 dashboard ARNs in each API call.</p>"
+          "documentation":"<p>The Amazon Resource Names (ARNs) for the Amazon QuickSight resources that the user is authorized to access during the lifetime of the session.</p> <p>If you choose <code>Dashboard</code> embedding experience, pass the list of dashboard ARNs in the account that you want the user to be able to view.</p> <p>If you want to make changes to the theme of your embedded content, pass a list of theme ARNs that the anonymous users need access to.</p> <p>Currently, you can pass up to 25 theme ARNs in each API call.</p>"
         },
         "ExperienceConfiguration":{
           "shape":"AnonymousUserEmbeddingExperienceConfiguration",
@@ -26251,7 +26260,7 @@
     },
     "SqlQuery":{
       "type":"string",
-      "max":65536,
+      "max":168000,
       "min":1
     },
     "SqlServerParameters":{
@@ -30535,6 +30544,14 @@
           "shape":"IpRestrictionRuleMap",
           "documentation":"<p>A map that describes the updated IP rules with CIDR ranges and descriptions.</p>"
         },
+        "VpcIdRestrictionRuleMap":{
+          "shape":"VpcIdRestrictionRuleMap",
+          "documentation":"<p>A map of VPC IDs and their corresponding rules. When you configure this parameter, traffic from all VPC endpoints that are present in the specified VPC is allowed.</p>"
+        },
+        "VpcEndpointIdRestrictionRuleMap":{
+          "shape":"VpcEndpointIdRestrictionRuleMap",
+          "documentation":"<p>A map of allowed VPC endpoint IDs and their corresponding rule descriptions.</p>"
+        },
         "Enabled":{
           "shape":"NullableBoolean",
           "documentation":"<p>A value that specifies whether IP rules are turned on.</p>"
@@ -31939,6 +31956,38 @@
         }
       },
       "documentation":"<p>VPC connection properties.</p>"
+    },
+    "VpcEndpointId":{
+      "type":"string",
+      "max":255,
+      "min":1,
+      "pattern":"^vpce-[0-9a-z]*$"
+    },
+    "VpcEndpointIdRestrictionRuleDescription":{
+      "type":"string",
+      "max":150,
+      "min":0
+    },
+    "VpcEndpointIdRestrictionRuleMap":{
+      "type":"map",
+      "key":{"shape":"VpcEndpointId"},
+      "value":{"shape":"VpcEndpointIdRestrictionRuleDescription"}
+    },
+    "VpcId":{
+      "type":"string",
+      "max":255,
+      "min":1,
+      "pattern":"^vpc-[0-9a-z]*$"
+    },
+    "VpcIdRestrictionRuleDescription":{
+      "type":"string",
+      "max":150,
+      "min":0
+    },
+    "VpcIdRestrictionRuleMap":{
+      "type":"map",
+      "key":{"shape":"VpcId"},
+      "value":{"shape":"VpcIdRestrictionRuleDescription"}
     },
     "Warehouse":{
       "type":"string",

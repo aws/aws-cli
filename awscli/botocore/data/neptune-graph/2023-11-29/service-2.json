@@ -140,7 +140,7 @@
         {"shape":"InternalServerException"},
         {"shape":"ResourceNotFoundException"}
       ],
-      "documentation":"<p>Create a private graph endpoint to allow private access from to the graph from within a VPC. You can attach security groups to the private graph endpoint. VPC endpoint charges apply.</p>",
+      "documentation":"<p>Create a private graph endpoint to allow private access from to the graph from within a VPC. You can attach security groups to the private graph endpoint.</p> <note> <p>VPC endpoint charges apply.</p> </note>",
       "staticContextParams":{
         "ApiType":{"value":"ControlPlane"}
       }
@@ -225,7 +225,7 @@
         {"shape":"AccessDeniedException"},
         {"shape":"InternalServerException"}
       ],
-      "documentation":"<p>Execute an openCypher query. Currently, the SDK does not support parameterized queries. If you want to make a parameterized query call, you can use an HTTP request. </p> <p> When invoking this operation in a Neptune Analytics cluster, the IAM user or role making the request must have a policy attached that allows one of the following IAM actions in that cluster, depending on the query: </p> <ul> <li> <p>neptune-graph:ReadDataViaQuery</p> </li> <li> <p>neptune-graph:WriteDataViaQuery</p> </li> <li> <p>neptune-graph:DeleteDataViaQuery</p> </li> </ul> <note> <p> Non-parametrized queries are not considered for plan caching. You can force plan caching with <code>planCache=enabled</code>. The plan cache will be reused only for the same exact query. Slight variations in the query will not be able to reuse the query plan cache. </p> </note>",
+      "documentation":"<p>Execute an openCypher query.</p> <p> When invoking this operation in a Neptune Analytics cluster, the IAM user or role making the request must have a policy attached that allows one of the following IAM actions in that cluster, depending on the query: </p> <ul> <li> <p>neptune-graph:ReadDataViaQuery</p> </li> <li> <p>neptune-graph:WriteDataViaQuery</p> </li> <li> <p>neptune-graph:DeleteDataViaQuery</p> </li> </ul>",
       "endpoint":{
         "hostPrefix":"{graphIdentifier}."
       },
@@ -785,7 +785,7 @@
         },
         "provisionedMemory":{
           "shape":"ProvisionedMemory",
-          "documentation":"<p>The provisioned memory-optimized Neptune Capacity Units (m-NCUs) to use for the graph. Min = 128</p>"
+          "documentation":"<p>The provisioned memory-optimized Neptune Capacity Units (m-NCUs) to use for the graph.</p> <p>Min = 128</p>"
         },
         "endpoint":{
           "shape":"String",
@@ -793,7 +793,7 @@
         },
         "publicConnectivity":{
           "shape":"Boolean",
-          "documentation":"<p>Specifies whether or not the graph can be reachable over the internet. All access to graphs is IAM authenticated.</p>"
+          "documentation":"<p>Specifies whether or not the graph can be reachable over the internet. All access to graphs is IAM authenticated.</p> <note> <p>If enabling public connectivity for the first time, there will be a delay while it is enabled.</p> </note>"
         },
         "vectorSearchConfiguration":{
           "shape":"VectorSearchConfiguration",
@@ -801,7 +801,7 @@
         },
         "replicaCount":{
           "shape":"ReplicaCount",
-          "documentation":"<p>The number of replicas in other AZs.</p>"
+          "documentation":"<p>The number of replicas in other AZs.</p> <p>Default: If not specified, the default value is 1.</p>"
         },
         "kmsKeyIdentifier":{
           "shape":"KmsKeyArn",
@@ -1775,7 +1775,8 @@
         "RESETTING",
         "UPDATING",
         "SNAPSHOTTING",
-        "FAILED"
+        "FAILED",
+        "IMPORTING"
       ]
     },
     "GraphSummary":{
@@ -2504,7 +2505,7 @@
         },
         "provisionedMemory":{
           "shape":"ProvisionedMemory",
-          "documentation":"<p>The provisioned memory-optimized Neptune Capacity Units (m-NCUs) to use for the graph. Min = 128</p>"
+          "documentation":"<p>The provisioned memory-optimized Neptune Capacity Units (m-NCUs) to use for the graph.</p> <p>Min = 128</p>"
         },
         "deletionProtection":{
           "shape":"Boolean",
@@ -2814,7 +2815,7 @@
         },
         "provisionedMemory":{
           "shape":"ProvisionedMemory",
-          "documentation":"<p>The provisioned memory-optimized Neptune Capacity Units (m-NCUs) to use for the graph. Min = 128</p>"
+          "documentation":"<p>The provisioned memory-optimized Neptune Capacity Units (m-NCUs) to use for the graph.</p> <p>Min = 128</p>"
         },
         "deletionProtection":{
           "shape":"Boolean",

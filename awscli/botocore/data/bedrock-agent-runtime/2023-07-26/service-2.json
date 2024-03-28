@@ -76,7 +76,7 @@
         {"shape":"AccessDeniedException"},
         {"shape":"ServiceQuotaExceededException"}
       ],
-      "documentation":"<p>Queries a knowledge base and generates responses based on the retrieved results. The response cites up to five sources but only selects the ones that are relevant to the query.</p>"
+      "documentation":"<p>Queries a knowledge base and generates responses based on the retrieved results. The response only cites sources that are relevant to the query.</p>"
     }
   },
   "shapes":{
@@ -266,6 +266,35 @@
       },
       "documentation":"<p>Contains information about the failure of the interaction.</p>",
       "sensitive":true
+    },
+    "FilterAttribute":{
+      "type":"structure",
+      "required":[
+        "key",
+        "value"
+      ],
+      "members":{
+        "key":{
+          "shape":"FilterKey",
+          "documentation":"<p>The name that the metadata attribute must match.</p>"
+        },
+        "value":{
+          "shape":"FilterValue",
+          "documentation":"<p>The value to whcih to compare the value of the metadata attribute.</p>"
+        }
+      },
+      "documentation":"<p>Specifies the name that the metadata attribute must match and the value to which to compare the value of the metadata attribute. For more information, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/kb-test-config.html\">Query configurations</a>.</p> <p>This data type is used in the following API operations:</p> <ul> <li> <p> <a href=\"https://docs.aws.amazon.com/bedrock/latest/APIReference/API_agent-runtime_RetrieveAndGenerate.html#API_agent-runtime_RetrieveAndGenerate_RequestSyntax\">RetrieveAndGenerate request</a> </p> </li> </ul>"
+    },
+    "FilterKey":{
+      "type":"string",
+      "max":100,
+      "min":1
+    },
+    "FilterValue":{
+      "type":"structure",
+      "members":{
+      },
+      "document":true
     },
     "FinalResponse":{
       "type":"structure",
@@ -526,6 +555,10 @@
           "shape":"RetrievalResultLocation",
           "documentation":"<p>Contains information about the location of the data source.</p>"
         },
+        "metadata":{
+          "shape":"RetrievalResultMetadata",
+          "documentation":"<p>Contains metadata attributes and their values for the file in the data source. For more information, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/knowledge-base-ds.html#kb-ds-metadata\">Metadata and filtering</a>.</p>"
+        },
         "score":{
           "shape":"Double",
           "documentation":"<p>The level of relevance of the result to the query.</p>"
@@ -567,6 +600,10 @@
     "KnowledgeBaseVectorSearchConfiguration":{
       "type":"structure",
       "members":{
+        "filter":{
+          "shape":"RetrievalFilter",
+          "documentation":"<p>Specifies the filters to use on the metadata in the knowledge base data sources before returning results. For more information, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/kb-test-config.html\">Query configurations</a>.</p>"
+        },
         "numberOfResults":{
           "shape":"KnowledgeBaseVectorSearchConfigurationNumberOfResultsInteger",
           "documentation":"<p>The number of source chunks to retrieve.</p>",
@@ -842,7 +879,7 @@
           "documentation":"<p>The template for the prompt that's sent to the model for response generation. You can include prompt placeholders, which become replaced before the prompt is sent to the model to provide instructions and context to the model. In addition, you can include XML tags to delineate meaningful sections of the prompt template.</p> <p>For more information, see the following resources:</p> <ul> <li> <p> <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/kb-test-config.html#kb-test-config-sysprompt\">Knowledge base prompt templates</a> </p> </li> <li> <p> <a href=\"https://docs.anthropic.com/claude/docs/use-xml-tags\">Use XML tags with Anthropic Claude models</a> </p> </li> </ul>"
         }
       },
-      "documentation":"<p>Contains the template for the prompt that's sent to the model for response generation. For more information, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/kb-test-config.html#kb-test-config-sysprompt\">Knowledge base prompt templates</a>.</p> <p>This data type is used in the following API operations:</p> <ul> <li> <p> <a href=\"https://docs.aws.amazon.com/bedrock/latest/APIReference/API_agent-runtime_RetrieveAndGenerate.html#API_agent-runtime_RetrieveAndGenerate_RequestSyntax\">RetrieveAndGenerate request</a> </p> </li> </ul>"
+      "documentation":"<p>Contains the template for the prompt that's sent to the model for response generation. For more information, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/kb-test-config.html#kb-test-config-sysprompt\">Knowledge base prompt templates</a>.</p> <p>This data type is used in the following API operations:</p> <ul> <li> <p> <a href=\"https://docs.aws.amazon.com/bedrock/latest/APIReference/API_agent-runtime_RetrieveAndGenerate.html#API_agent-runtime_RetrieveAndGenerate_RequestSyntax\">RetrieveAndGenerate request</a> – in the <code>filter</code> field</p> </li> </ul>"
     },
     "PromptText":{
       "type":"string",
@@ -964,6 +1001,64 @@
       "documentation":"<p>The response from invoking the agent and associated citations and trace information.</p>",
       "eventstream":true
     },
+    "RetrievalFilter":{
+      "type":"structure",
+      "members":{
+        "andAll":{
+          "shape":"RetrievalFilterList",
+          "documentation":"<p>Knowledge base data sources whose metadata attributes fulfill all the filter conditions inside this list are returned.</p>"
+        },
+        "equals":{
+          "shape":"FilterAttribute",
+          "documentation":"<p>Knowledge base data sources that contain a metadata attribute whose name matches the <code>key</code> and whose value matches the <code>value</code> in this object are returned.</p>"
+        },
+        "greaterThan":{
+          "shape":"FilterAttribute",
+          "documentation":"<p>Knowledge base data sources that contain a metadata attribute whose name matches the <code>key</code> and whose value is greater than the <code>value</code> in this object are returned.</p>"
+        },
+        "greaterThanOrEquals":{
+          "shape":"FilterAttribute",
+          "documentation":"<p>Knowledge base data sources that contain a metadata attribute whose name matches the <code>key</code> and whose value is greater than or equal to the <code>value</code> in this object are returned.</p>"
+        },
+        "in":{
+          "shape":"FilterAttribute",
+          "documentation":"<p>Knowledge base data sources that contain a metadata attribute whose name matches the <code>key</code> and whose value is in the list specified in the <code>value</code> in this object are returned.</p>"
+        },
+        "lessThan":{
+          "shape":"FilterAttribute",
+          "documentation":"<p>Knowledge base data sources that contain a metadata attribute whose name matches the <code>key</code> and whose value is less than the <code>value</code> in this object are returned.</p>"
+        },
+        "lessThanOrEquals":{
+          "shape":"FilterAttribute",
+          "documentation":"<p>Knowledge base data sources that contain a metadata attribute whose name matches the <code>key</code> and whose value is less than or equal to the <code>value</code> in this object are returned.</p>"
+        },
+        "notEquals":{
+          "shape":"FilterAttribute",
+          "documentation":"<p>Knowledge base data sources that contain a metadata attribute whose name matches the <code>key</code> and whose value doesn't match the <code>value</code> in this object are returned.</p>"
+        },
+        "notIn":{
+          "shape":"FilterAttribute",
+          "documentation":"<p>Knowledge base data sources that contain a metadata attribute whose name matches the <code>key</code> and whose value isn't in the list specified in the <code>value</code> in this object are returned.</p>"
+        },
+        "orAll":{
+          "shape":"RetrievalFilterList",
+          "documentation":"<p>Knowledge base data sources whose metadata attributes fulfill at least one of the filter conditions inside this list are returned.</p>"
+        },
+        "startsWith":{
+          "shape":"FilterAttribute",
+          "documentation":"<p>Knowledge base data sources that contain a metadata attribute whose name matches the <code>key</code> and whose value starts with the <code>value</code> in this object are returned. This filter is currently only supported for Amazon OpenSearch Serverless vector stores.</p>"
+        }
+      },
+      "documentation":"<p>Specifies the filters to use on the metadata attributes in the knowledge base data sources before returning results. For more information, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/kb-test-config.html\">Query configurations</a>.</p> <p>This data type is used in the following API operations:</p> <ul> <li> <p> <a href=\"https://docs.aws.amazon.com/bedrock/latest/APIReference/API_agent-runtime_Retrieve.html#API_agent-runtime_Retrieve_RequestSyntax\">Retrieve request</a> – in the <code>filter</code> field</p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/bedrock/latest/APIReference/API_agent-runtime_RetrieveAndGenerate.html#API_agent-runtime_RetrieveAndGenerate_RequestSyntax\">RetrieveAndGenerate request</a> – in the <code>filter</code> field</p> </li> </ul>",
+      "sensitive":true,
+      "union":true
+    },
+    "RetrievalFilterList":{
+      "type":"list",
+      "member":{"shape":"RetrievalFilter"},
+      "max":5,
+      "min":2
+    },
     "RetrievalResultContent":{
       "type":"structure",
       "required":["text"],
@@ -995,6 +1090,24 @@
     "RetrievalResultLocationType":{
       "type":"string",
       "enum":["S3"]
+    },
+    "RetrievalResultMetadata":{
+      "type":"map",
+      "key":{"shape":"RetrievalResultMetadataKey"},
+      "value":{"shape":"RetrievalResultMetadataValue"},
+      "min":1,
+      "sensitive":true
+    },
+    "RetrievalResultMetadataKey":{
+      "type":"string",
+      "max":100,
+      "min":1
+    },
+    "RetrievalResultMetadataValue":{
+      "type":"structure",
+      "members":{
+      },
+      "document":true
     },
     "RetrievalResultS3Location":{
       "type":"structure",
@@ -1159,6 +1272,10 @@
         "location":{
           "shape":"RetrievalResultLocation",
           "documentation":"<p>Contains information about the location of the data source.</p>"
+        },
+        "metadata":{
+          "shape":"RetrievalResultMetadata",
+          "documentation":"<p>Contains metadata attributes and their values for the file in the data source. For more information, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/knowledge-base-ds.html#kb-ds-metadata\">Metadata and filtering</a>.</p>"
         }
       },
       "documentation":"<p>Contains metadata about a source cited for the generated response.</p> <p>This data type is used in the following API operations:</p> <ul> <li> <p> <a href=\"https://docs.aws.amazon.com/bedrock/latest/APIReference/API_agent-runtime_RetrieveAndGenerate.html#API_agent-runtime_RetrieveAndGenerate_ResponseSyntax\">RetrieveAndGenerate response</a> – in the <code>retrievedReferences</code> field</p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/bedrock/latest/APIReference/API_agent-runtime_Retrieve.html#API_agent-runtime_Retrieve_ResponseSyntax\">Retrieve response</a> – in the <code>retrievedReferences</code> field</p> </li> </ul>"

@@ -931,7 +931,7 @@
         },
         "vpcConnectionName":{
           "shape":"NameString",
-          "documentation":"<p>The name of the connection to use connect to a Amazon VPC.</p>"
+          "documentation":"<p>The name of the connection that will be used to connect to Amazon VPC, if any.</p>"
         }
       }
     },
@@ -2001,6 +2001,14 @@
         "awsAccountName":{
           "shape":"NameString",
           "documentation":"<p>The display name of the Amazon Web Services account used for billing for the space.</p>"
+        },
+        "pendingSubscriptionType":{
+          "shape":"String",
+          "documentation":"<p>The type of the billing plan that the space will be changed to at the start of the next billing cycle. This applies only to changes that reduce the functionality available for the space. Billing plan changes that increase functionality are applied immediately. For more information, see <a href=\"https://codecatalyst.aws/explore/pricing\">Pricing</a>.</p>"
+        },
+        "pendingSubscriptionStartTime":{
+          "shape":"SyntheticTimestamp_date_time",
+          "documentation":"<p>The day and time the pending change will be applied to the space, in coordinated universal time (UTC) timestamp format as specified in <a href=\"https://www.rfc-editor.org/rfc/rfc3339#section-5.6\">RFC 3339</a>.</p>"
         }
       }
     },
@@ -2030,7 +2038,7 @@
       "type":"string",
       "max":100,
       "min":3,
-      "pattern":"[a-zA-Z0-9]{3,100}"
+      "pattern":"[a-zA-Z0-9_.-]{3,100}"
     },
     "GetUserDetailsResponse":{
       "type":"structure",

@@ -1923,6 +1923,10 @@
           "shape":"Boolean",
           "documentation":"<p>When this parameter is <code>true</code>, the container is given elevated permissions on the host container instance. The level of permissions are similar to the <code>root</code> user permissions. The default value is <code>false</code>. This parameter maps to <code>privileged</code> policy in the <a href=\"https://kubernetes.io/docs/concepts/security/pod-security-policy/#privileged\">Privileged pod security policies</a> in the <i>Kubernetes documentation</i>.</p>"
         },
+        "allowPrivilegeEscalation":{
+          "shape":"Boolean",
+          "documentation":"<p>Whether or not a container or a Kubernetes pod is allowed to gain more privileges than its parent process. The default value is <code>false</code>.</p>"
+        },
         "readOnlyRootFilesystem":{
           "shape":"Boolean",
           "documentation":"<p>When this parameter is <code>true</code>, the container is given read-only access to its root file system. The default value is <code>false</code>. This parameter maps to <code>ReadOnlyRootFilesystem</code> policy in the <a href=\"https://kubernetes.io/docs/concepts/security/pod-security-policy/#volumes-and-file-systems\">Volumes and file systems pod security policies</a> in the <i>Kubernetes documentation</i>.</p>"
@@ -2019,6 +2023,10 @@
           "shape":"String",
           "documentation":"<p>The DNS policy for the pod. The default value is <code>ClusterFirst</code>. If the <code>hostNetwork</code> parameter is not specified, the default is <code>ClusterFirstWithHostNet</code>. <code>ClusterFirst</code> indicates that any DNS query that does not match the configured cluster domain suffix is forwarded to the upstream nameserver inherited from the node. For more information, see <a href=\"https://kubernetes.io/docs/concepts/services-networking/dns-pod-service/#pod-s-dns-policy\">Pod's DNS policy</a> in the <i>Kubernetes documentation</i>.</p> <p>Valid values: <code>Default</code> | <code>ClusterFirst</code> | <code>ClusterFirstWithHostNet</code> </p>"
         },
+        "imagePullSecrets":{
+          "shape":"ImagePullSecrets",
+          "documentation":"<p>References a Kubernetes secret resource. This object must start and end with an alphanumeric character, is required to be lowercase, can include periods (.) and hyphens (-), and can't contain more than 253 characters.</p> <p> <code>ImagePullSecret$name</code> is required when this object is used.</p>"
+        },
         "containers":{
           "shape":"EksContainers",
           "documentation":"<p>The properties of the container that's used on the Amazon EKS pod.</p>"
@@ -2056,6 +2064,10 @@
         "dnsPolicy":{
           "shape":"String",
           "documentation":"<p>The DNS policy for the pod. The default value is <code>ClusterFirst</code>. If the <code>hostNetwork</code> parameter is not specified, the default is <code>ClusterFirstWithHostNet</code>. <code>ClusterFirst</code> indicates that any DNS query that does not match the configured cluster domain suffix is forwarded to the upstream nameserver inherited from the node. If no value was specified for <code>dnsPolicy</code> in the <a href=\"https://docs.aws.amazon.com/batch/latest/APIReference/API_RegisterJobDefinition.html\">RegisterJobDefinition</a> API operation, then no value will be returned for <code>dnsPolicy</code> by either of <a href=\"https://docs.aws.amazon.com/batch/latest/APIReference/API_DescribeJobDefinitions.html\">DescribeJobDefinitions</a> or <a href=\"https://docs.aws.amazon.com/batch/latest/APIReference/API_DescribeJobs.html\">DescribeJobs</a> API operations. The pod spec setting will contain either <code>ClusterFirst</code> or <code>ClusterFirstWithHostNet</code>, depending on the value of the <code>hostNetwork</code> parameter. For more information, see <a href=\"https://kubernetes.io/docs/concepts/services-networking/dns-pod-service/#pod-s-dns-policy\">Pod's DNS policy</a> in the <i>Kubernetes documentation</i>.</p> <p>Valid values: <code>Default</code> | <code>ClusterFirst</code> | <code>ClusterFirstWithHostNet</code> </p>"
+        },
+        "imagePullSecrets":{
+          "shape":"ImagePullSecrets",
+          "documentation":"<p>Displays the reference pointer to the Kubernetes secret resource.</p>"
         },
         "containers":{
           "shape":"EksContainerDetails",
@@ -2268,6 +2280,21 @@
       "type":"string",
       "max":256,
       "min":1
+    },
+    "ImagePullSecret":{
+      "type":"structure",
+      "required":["name"],
+      "members":{
+        "name":{
+          "shape":"String",
+          "documentation":"<p>Provides a unique identifier for the <code>ImagePullSecret</code>. This object is required when <code>EksPodProperties$imagePullSecrets</code> is used.</p>"
+        }
+      },
+      "documentation":"<p>References a Kubernetes configuration resource that holds a list of secrets. These secrets help to gain access to pull an image from a private registry.</p>"
+    },
+    "ImagePullSecrets":{
+      "type":"list",
+      "member":{"shape":"ImagePullSecret"}
     },
     "ImageType":{
       "type":"string",

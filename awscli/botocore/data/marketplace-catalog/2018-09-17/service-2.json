@@ -1660,6 +1660,10 @@
           "shape":"OfferProductIdFilter",
           "documentation":"<p>Allows filtering on the <code>ProductId</code> of an offer.</p>"
         },
+        "ResaleAuthorizationId":{
+          "shape":"OfferResaleAuthorizationIdFilter",
+          "documentation":"<p>Allows filtering on the <code>ResaleAuthorizationId</code> of an offer.</p> <note> <p>Not all offers have a <code>ResaleAuthorizationId</code>. The response will only include offers for which you have permissions.</p> </note>"
+        },
         "ReleaseDate":{
           "shape":"OfferReleaseDateFilter",
           "documentation":"<p>Allows filtering on the <code>ReleaseDate</code> of an offer.</p>"
@@ -1783,6 +1787,28 @@
       },
       "documentation":"<p>Allows filtering on the <code>ReleaseDate</code> of an offer with date range as input.</p>"
     },
+    "OfferResaleAuthorizationIdFilter":{
+      "type":"structure",
+      "members":{
+        "ValueList":{
+          "shape":"OfferResaleAuthorizationIdFilterValueList",
+          "documentation":"<p>Allows filtering on the <code>ResaleAuthorizationId</code> of an offer with list input.</p>"
+        }
+      },
+      "documentation":"<p>Allows filtering on the <code>ResaleAuthorizationId</code> of an offer.</p> <note> <p>Not all offers have a <code>ResaleAuthorizationId</code>. The response will only include offers for which you have permissions.</p> </note>"
+    },
+    "OfferResaleAuthorizationIdFilterValueList":{
+      "type":"list",
+      "member":{"shape":"OfferResaleAuthorizationIdString"},
+      "max":10,
+      "min":1
+    },
+    "OfferResaleAuthorizationIdString":{
+      "type":"string",
+      "max":255,
+      "min":1,
+      "pattern":"^[a-zA-Z0-9][.a-zA-Z0-9/-]+[a-zA-Z0-9]$"
+    },
     "OfferSort":{
       "type":"structure",
       "members":{
@@ -1803,6 +1829,7 @@
         "EntityId",
         "Name",
         "ProductId",
+        "ResaleAuthorizationId",
         "ReleaseDate",
         "AvailabilityEndDate",
         "BuyerAccounts",
@@ -1844,6 +1871,10 @@
         "ProductId":{
           "shape":"OfferProductIdString",
           "documentation":"<p>The product ID of the offer.</p>"
+        },
+        "ResaleAuthorizationId":{
+          "shape":"OfferResaleAuthorizationIdString",
+          "documentation":"<p>The ResaleAuthorizationId of the offer.</p>"
         },
         "ReleaseDate":{
           "shape":"DateTimeISO8601",

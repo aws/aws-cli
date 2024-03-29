@@ -798,6 +798,43 @@
       ],
       "documentation":"<p>Returns current default log levels or log levels by resource types. Based on resource types, log levels can be for wireless device log options or wireless gateway log options.</p>"
     },
+    "GetMetricConfiguration":{
+      "name":"GetMetricConfiguration",
+      "http":{
+        "method":"GET",
+        "requestUri":"/metric-configuration",
+        "responseCode":200
+      },
+      "input":{"shape":"GetMetricConfigurationRequest"},
+      "output":{"shape":"GetMetricConfigurationResponse"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ConflictException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Get the metric configuration status for this account.</p>"
+    },
+    "GetMetrics":{
+      "name":"GetMetrics",
+      "http":{
+        "method":"POST",
+        "requestUri":"/metrics"
+      },
+      "input":{"shape":"GetMetricsRequest"},
+      "output":{"shape":"GetMetricsResponse"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ConflictException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Get metrics.</p>"
+    },
     "GetMulticastGroup":{
       "name":"GetMulticastGroup",
       "http":{
@@ -1794,6 +1831,26 @@
       ],
       "documentation":"<p>Set default log level, or log levels by resource types. This can be for wireless device log options or wireless gateways log options and is used to control the log messages that'll be displayed in CloudWatch.</p>"
     },
+    "UpdateMetricConfiguration":{
+      "name":"UpdateMetricConfiguration",
+      "http":{
+        "method":"PUT",
+        "requestUri":"/metric-configuration",
+        "responseCode":204
+      },
+      "input":{"shape":"UpdateMetricConfigurationRequest"},
+      "output":{"shape":"UpdateMetricConfigurationResponse"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ConflictException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Update the metric configuration.</p>",
+      "idempotent":true
+    },
     "UpdateMulticastGroup":{
       "name":"UpdateMulticastGroup",
       "http":{
@@ -2028,6 +2085,14 @@
       "min":0
     },
     "AddGwMetadata":{"type":"boolean"},
+    "AggregationPeriod":{
+      "type":"string",
+      "enum":[
+        "OneHour",
+        "OneDay",
+        "OneWeek"
+      ]
+    },
     "AmazonId":{
       "type":"string",
       "documentation":"<p>The Sidewalk Amazon ID.</p>",
@@ -2266,6 +2331,7 @@
       }
     },
     "AutoCreateTasks":{"type":"boolean"},
+    "Avg":{"type":"double"},
     "BCCH":{
       "type":"integer",
       "max":1023,
@@ -3410,6 +3476,36 @@
       "type":"string",
       "max":2048
     },
+    "Dimension":{
+      "type":"structure",
+      "members":{
+        "name":{
+          "shape":"DimensionName",
+          "documentation":"<p>The name of the dimension.</p>"
+        },
+        "value":{
+          "shape":"DimensionValue",
+          "documentation":"<p>The dimension's value.</p>"
+        }
+      },
+      "documentation":"<p>The required list of dimensions for the metric.</p>"
+    },
+    "DimensionName":{
+      "type":"string",
+      "enum":[
+        "DeviceId",
+        "GatewayId"
+      ],
+      "max":256
+    },
+    "DimensionValue":{
+      "type":"string",
+      "max":256
+    },
+    "Dimensions":{
+      "type":"list",
+      "member":{"shape":"Dimension"}
+    },
     "DisassociateAwsAccountFromPartnerAccountRequest":{
       "type":"structure",
       "required":[
@@ -4071,6 +4167,38 @@
         "DefaultLogLevel":{"shape":"LogLevel"},
         "WirelessGatewayLogOptions":{"shape":"WirelessGatewayLogOptionList"},
         "WirelessDeviceLogOptions":{"shape":"WirelessDeviceLogOptionList"}
+      }
+    },
+    "GetMetricConfigurationRequest":{
+      "type":"structure",
+      "members":{
+      }
+    },
+    "GetMetricConfigurationResponse":{
+      "type":"structure",
+      "members":{
+        "SummaryMetric":{
+          "shape":"SummaryMetricConfiguration",
+          "documentation":"<p>The account's configuration status for summary metric aggregation.</p>"
+        }
+      }
+    },
+    "GetMetricsRequest":{
+      "type":"structure",
+      "members":{
+        "SummaryMetricQueries":{
+          "shape":"SummaryMetricQueries",
+          "documentation":"<p>The list of queries to retrieve summary metrics.</p>"
+        }
+      }
+    },
+    "GetMetricsResponse":{
+      "type":"structure",
+      "members":{
+        "SummaryMetricQueryResults":{
+          "shape":"SummaryMetricQueryResults",
+          "documentation":"<p>The list of retrieved metrics.</p>"
+        }
       }
     },
     "GetMulticastGroupRequest":{
@@ -6400,6 +6528,7 @@
       "type":"string",
       "max":64
     },
+    "Max":{"type":"double"},
     "MaxAllowedSignature":{"type":"integer"},
     "MaxDutyCycle":{
       "type":"integer",
@@ -6456,6 +6585,103 @@
         "CUSTOM_COMMAND_ID_RESP"
       ]
     },
+    "MetricName":{
+      "type":"string",
+      "enum":[
+        "DeviceRSSI",
+        "DeviceSNR",
+        "DeviceUplinkCount",
+        "DeviceDownlinkCount",
+        "DeviceUplinkLostCount",
+        "DeviceUplinkLostRate",
+        "DeviceJoinRequestCount",
+        "DeviceJoinAcceptCount",
+        "DeviceRoamingUplinkCount",
+        "DeviceRoamingDownlinkCount",
+        "GatewayUpTime",
+        "GatewayDownTime",
+        "GatewayRSSI",
+        "GatewaySNR",
+        "GatewayUplinkCount",
+        "GatewayDownlinkCount",
+        "GatewayJoinRequestCount",
+        "GatewayJoinAcceptCount",
+        "AwsAccountUplinkCount",
+        "AwsAccountDownlinkCount",
+        "AwsAccountUplinkLostCount",
+        "AwsAccountUplinkLostRate",
+        "AwsAccountJoinRequestCount",
+        "AwsAccountJoinAcceptCount",
+        "AwsAccountRoamingUplinkCount",
+        "AwsAccountRoamingDownlinkCount",
+        "AwsAccountDeviceCount",
+        "AwsAccountGatewayCount",
+        "AwsAccountActiveDeviceCount",
+        "AwsAccountActiveGatewayCount"
+      ],
+      "max":256
+    },
+    "MetricQueryEndTimestamp":{"type":"timestamp"},
+    "MetricQueryError":{
+      "type":"string",
+      "max":256
+    },
+    "MetricQueryId":{
+      "type":"string",
+      "max":256
+    },
+    "MetricQueryStartTimestamp":{"type":"timestamp"},
+    "MetricQueryStatus":{
+      "type":"string",
+      "enum":[
+        "Succeeded",
+        "Failed"
+      ]
+    },
+    "MetricQueryTimestamp":{"type":"timestamp"},
+    "MetricQueryTimestamps":{
+      "type":"list",
+      "member":{"shape":"MetricQueryTimestamp"}
+    },
+    "MetricQueryValue":{
+      "type":"structure",
+      "members":{
+        "Min":{
+          "shape":"Min",
+          "documentation":"<p>The minimum of the values of the all data points collected during the period.</p>"
+        },
+        "Max":{
+          "shape":"Max",
+          "documentation":"<p>The maximum of the values of the all data points collected during the period.</p>"
+        },
+        "Sum":{
+          "shape":"Sum",
+          "documentation":"<p>The sum of the values of the all data points collected during the period.</p>"
+        },
+        "Avg":{
+          "shape":"Avg",
+          "documentation":"<p>The average of the values of the all data points collected during the period.</p>"
+        },
+        "Std":{
+          "shape":"Std",
+          "documentation":"<p>The standard deviation of the values of the all data points collected during the period.</p>"
+        },
+        "P90":{
+          "shape":"P90",
+          "documentation":"<p>The 90th percentile of the values of the all data points collected during the period.</p>"
+        }
+      },
+      "documentation":"<p>The aggregated values of the metric.</p>"
+    },
+    "MetricQueryValues":{
+      "type":"list",
+      "member":{"shape":"MetricQueryValue"}
+    },
+    "MetricUnit":{
+      "type":"string",
+      "max":256
+    },
+    "Min":{"type":"double"},
     "MinGwDiversity":{
       "type":"integer",
       "max":100,
@@ -6630,11 +6856,11 @@
         },
         "AppEui":{
           "shape":"AppEui",
-          "documentation":"<p>The AppEUI value.</p>"
+          "documentation":"<p>The AppEUI value. You specify this value when using LoRaWAN versions v1.0.2 or v1.0.3.</p>"
         },
         "JoinEui":{
           "shape":"JoinEui",
-          "documentation":"<p>The JoinEUI value.</p>"
+          "documentation":"<p>The JoinEUI value. You specify this value instead of the AppEUI when using LoRaWAN version v1.0.4.</p>"
         },
         "GenAppKey":{
           "shape":"GenAppKey",
@@ -6661,6 +6887,7 @@
       },
       "documentation":"<p>OTAA device object for v1.1</p>"
     },
+    "P90":{"type":"double"},
     "PCI":{
       "type":"integer",
       "max":503,
@@ -7703,6 +7930,7 @@
       "min":1
     },
     "StatusReason":{"type":"string"},
+    "Std":{"type":"double"},
     "SubBand":{
       "type":"integer",
       "documentation":"<p>A subset of supported frequency channels in a certain RFRegion.</p>",
@@ -7715,6 +7943,112 @@
       "documentation":"<p>A list of integer indicating which sub bands are supported by LoRa gateway.</p>",
       "max":8,
       "min":0
+    },
+    "Sum":{"type":"double"},
+    "SummaryMetricConfiguration":{
+      "type":"structure",
+      "members":{
+        "Status":{
+          "shape":"SummaryMetricConfigurationStatus",
+          "documentation":"<p>The configuration of summary metric.</p>"
+        }
+      },
+      "documentation":"<p>The configuration of summary metric.</p>"
+    },
+    "SummaryMetricConfigurationStatus":{
+      "type":"string",
+      "enum":[
+        "Enabled",
+        "Disabled"
+      ]
+    },
+    "SummaryMetricQueries":{
+      "type":"list",
+      "member":{"shape":"SummaryMetricQuery"}
+    },
+    "SummaryMetricQuery":{
+      "type":"structure",
+      "members":{
+        "QueryId":{
+          "shape":"MetricQueryId",
+          "documentation":"<p>The id of the query.</p>"
+        },
+        "MetricName":{
+          "shape":"MetricName",
+          "documentation":"<p>The name of the metric.</p>"
+        },
+        "Dimensions":{
+          "shape":"Dimensions",
+          "documentation":"<p>The dimensions of the metric.</p>"
+        },
+        "AggregationPeriod":{
+          "shape":"AggregationPeriod",
+          "documentation":"<p>The aggregation period of the metric.</p>"
+        },
+        "StartTimestamp":{
+          "shape":"MetricQueryStartTimestamp",
+          "documentation":"<p>The start timestamp for summary metric query.</p>"
+        },
+        "EndTimestamp":{
+          "shape":"MetricQueryEndTimestamp",
+          "documentation":"<p>The end timestamp for summary metric query.</p>"
+        }
+      },
+      "documentation":"<p>The metric query object.</p>"
+    },
+    "SummaryMetricQueryResult":{
+      "type":"structure",
+      "members":{
+        "QueryId":{
+          "shape":"MetricQueryId",
+          "documentation":"<p>The id of the query.</p>"
+        },
+        "QueryStatus":{
+          "shape":"MetricQueryStatus",
+          "documentation":"<p>The status of the metric query.</p>"
+        },
+        "Error":{
+          "shape":"MetricQueryError",
+          "documentation":"<p>The error message for the summary metric query.</p>"
+        },
+        "MetricName":{
+          "shape":"MetricName",
+          "documentation":"<p>The name of the metric.</p>"
+        },
+        "Dimensions":{
+          "shape":"Dimensions",
+          "documentation":"<p>The dimensions of the metric.</p>"
+        },
+        "AggregationPeriod":{
+          "shape":"AggregationPeriod",
+          "documentation":"<p>The aggregation period of the metric.</p>"
+        },
+        "StartTimestamp":{
+          "shape":"MetricQueryStartTimestamp",
+          "documentation":"<p>The start timestamp for summary metric query.</p>"
+        },
+        "EndTimestamp":{
+          "shape":"MetricQueryEndTimestamp",
+          "documentation":"<p>The end timestamp for summary metric query.</p>"
+        },
+        "Timestamps":{
+          "shape":"MetricQueryTimestamps",
+          "documentation":"<p>The timestamp of each aggregation result.</p>"
+        },
+        "Values":{
+          "shape":"MetricQueryValues",
+          "documentation":"<p>The list of aggregated metrics.</p>"
+        },
+        "Unit":{
+          "shape":"MetricUnit",
+          "documentation":"<p>The units of measurement to be used for interpreting the aggregation result.</p>"
+        }
+      },
+      "documentation":"<p>The result of metrics aggregation operation.</p>"
+    },
+    "SummaryMetricQueryResults":{
+      "type":"list",
+      "member":{"shape":"SummaryMetricQueryResult"}
     },
     "SupportedRfRegion":{
       "type":"string",
@@ -8180,6 +8514,20 @@
       }
     },
     "UpdateLogLevelsByResourceTypesResponse":{
+      "type":"structure",
+      "members":{
+      }
+    },
+    "UpdateMetricConfigurationRequest":{
+      "type":"structure",
+      "members":{
+        "SummaryMetric":{
+          "shape":"SummaryMetricConfiguration",
+          "documentation":"<p>The value to be used to set summary metric configuration.</p>"
+        }
+      }
+    },
+    "UpdateMetricConfigurationResponse":{
       "type":"structure",
       "members":{
       }
@@ -9027,5 +9375,5 @@
       "documentation":"<p>WirelessMetadata object.</p>"
     }
   },
-  "documentation":"<p>AWS IoT Wireless provides bi-directional communication between internet-connected wireless devices and the AWS Cloud. To onboard both LoRaWAN and Sidewalk devices to AWS IoT, use the IoT Wireless API. These wireless devices use the Low Power Wide Area Networking (LPWAN) communication protocol to communicate with AWS IoT.</p> <p>Using the API, you can perform create, read, update, and delete operations for your wireless devices, gateways, destinations, and profiles. After onboarding your devices, you can use the API operations to set log levels and monitor your devices with CloudWatch.</p> <p>You can also use the API operations to create multicast groups and schedule a multicast session for sending a downlink message to devices in the group. By using Firmware Updates Over-The-Air (FUOTA) API operations, you can create a FUOTA task and schedule a session to update the firmware of individual devices or an entire group of devices in a multicast group.</p>"
+  "documentation":"<p>AWS IoT Wireless provides bi-directional communication between internet-connected wireless devices and the AWS Cloud. To onboard both LoRaWAN and Sidewalk devices to AWS IoT, use the IoT Wireless API. These wireless devices use the Low Power Wide Area Networking (LPWAN) communication protocol to communicate with AWS IoT.</p> <p>Using the API, you can perform create, read, update, and delete operations for your wireless devices, gateways, destinations, and profiles. After onboarding your devices, you can use the API operations to set log levels and monitor your devices with CloudWatch.</p> <p>You can also use the API operations to create multicast groups and schedule a multicast session for sending a downlink message to devices in the group. By using Firmware Updates Over-The-Air (FUOTA) API operations, you can create a FUOTA task and schedule a session to update the firmware of individual devices or an entire group of devices in a multicast group.</p> <p>To connect to the AWS IoT Wireless Service, use the Service endpoints as described in <a href=\"https://docs.aws.amazon.com/general/latest/gr/iot-lorawan.html#iot-wireless_region\">IoT Wireless Service endpoints</a> in the <i>AWS General Reference</i>.</p>"
 }

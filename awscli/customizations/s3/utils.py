@@ -721,7 +721,7 @@ class S3PathResolver:
         if bucket.endswith('-s3alias'):
             return self._resolve_accesspoint_alias(bucket, key)
         if bucket.endswith('--op-s3'):
-            raise ValueError(
+            raise ParamValidationError(
                 "Can't resolve underlying bucket name of s3 outposts "
                 "access point alias. Use arn instead to resolve the "
                 "bucket name and validate the mv command."
@@ -766,7 +766,7 @@ class S3PathResolver:
                     ]
             next_token = response.get('NextToken')
             if not next_token:
-                raise ValueError(
+                raise ParamValidationError(
                     "Couldn't find multi-region access point "
                     f"with alias {alias} in account {account}"
                 )

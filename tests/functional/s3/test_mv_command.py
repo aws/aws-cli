@@ -299,7 +299,7 @@ class TestMvCommandWithValidateSameS3Paths(BaseS3TransferCommandTest):
     prefix = 's3 mv '
 
     def assert_validates_cannot_mv_onto_itself(self, cmd):
-        stderr = self.run_cmd(cmd, expected_rc=255)[1]
+        stderr = self.run_cmd(cmd, expected_rc=252)[1]
         self.assertIn('Cannot mv a file onto itself', stderr)
 
     def assert_runs_mv_without_validation(self, cmd):

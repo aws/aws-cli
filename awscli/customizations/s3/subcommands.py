@@ -1342,7 +1342,7 @@ class CommandParameters(object):
 
     def _raise_if_mv_same_paths(self, src, dest):
         if self._same_path(src, dest):
-            raise ValueError(
+            raise ParamValidationError(
                 "Cannot mv a file onto itself: "
                 f"{self.parameters['src']} - {self.parameters['dest']}"
             )

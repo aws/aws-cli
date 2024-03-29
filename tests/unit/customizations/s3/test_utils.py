@@ -809,7 +809,7 @@ class TestS3PathResolver:
     ):
         resolved_paths = s3_path_resolver.resolve_underlying_s3_paths(path)
         assert resolved_paths == [resolved]
-        sts_client.get_caller_identity.assert_called_once()
+        sts_client.get_caller_identity.assert_called_once_with()
         s3control_client.get_access_point.assert_called_with(
             AccountId="123456789012",
             Name="myaccesspoint-foobar12345-s3alias"
@@ -826,7 +826,7 @@ class TestS3PathResolver:
     def test_outpost_accesspoint_alias_raises_exception(
         self, path, s3_path_resolver
     ):
-        with pytest.raises(ValueError) as e:
+        with pytest.raises(ParamValidationError) as e:
             s3_path_resolver.resolve_underlying_s3_paths(path)
         assert "Can't resolve underlying bucket name" in str(e.value)
 

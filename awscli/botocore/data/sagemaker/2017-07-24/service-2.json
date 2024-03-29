@@ -4477,6 +4477,10 @@
         "JupyterLabAppImageConfig":{
           "shape":"JupyterLabAppImageConfig",
           "documentation":"<p>The configuration for the file system and the runtime, such as the environment variables and entry point.</p>"
+        },
+        "CodeEditorAppImageConfig":{
+          "shape":"CodeEditorAppImageConfig",
+          "documentation":"<p>The configuration for the file system and the runtime, such as the environment variables and entry point.</p>"
         }
       },
       "documentation":"<p>The configuration for running a SageMaker image as a KernelGateway app.</p>"
@@ -7231,10 +7235,22 @@
       "max":2,
       "min":1
     },
+    "CodeEditorAppImageConfig":{
+      "type":"structure",
+      "members":{
+        "FileSystemConfig":{"shape":"FileSystemConfig"},
+        "ContainerConfig":{"shape":"ContainerConfig"}
+      },
+      "documentation":"<p>The configuration for the file system and kernels in a SageMaker image running as a Code Editor app. The <code>FileSystemConfig</code> object is not supported.</p>"
+    },
     "CodeEditorAppSettings":{
       "type":"structure",
       "members":{
         "DefaultResourceSpec":{"shape":"ResourceSpec"},
+        "CustomImages":{
+          "shape":"CustomImages",
+          "documentation":"<p>A list of custom SageMaker images that are configured to run as a Code Editor app.</p>"
+        },
         "LifecycleConfigArns":{
           "shape":"LifecycleConfigArns",
           "documentation":"<p>The Amazon Resource Name (ARN) of the Code Editor application lifecycle configuration.</p>"
@@ -7962,6 +7978,10 @@
         "JupyterLabAppImageConfig":{
           "shape":"JupyterLabAppImageConfig",
           "documentation":"<p>The <code>JupyterLabAppImageConfig</code>. You can only specify one image kernel in the <code>AppImageConfig</code> API. This kernel is shown to users before the image starts. After the image runs, all kernels are visible in JupyterLab.</p>"
+        },
+        "CodeEditorAppImageConfig":{
+          "shape":"CodeEditorAppImageConfig",
+          "documentation":"<p>The <code>CodeEditorAppImageConfig</code>. You can only specify one image kernel in the AppImageConfig API. This kernel is shown to users before the image starts. After the image runs, all kernels are visible in Code Editor.</p>"
         }
       }
     },
@@ -12097,6 +12117,10 @@
         "JupyterLabAppImageConfig":{
           "shape":"JupyterLabAppImageConfig",
           "documentation":"<p>The configuration of the JupyterLab app.</p>"
+        },
+        "CodeEditorAppImageConfig":{
+          "shape":"CodeEditorAppImageConfig",
+          "documentation":"<p>The configuration of the Code Editor app.</p>"
         }
       }
     },
@@ -21327,7 +21351,7 @@
     "KmsKeyId":{
       "type":"string",
       "max":2048,
-      "pattern":".*"
+      "pattern":"^[a-zA-Z0-9:/_-]*$"
     },
     "LabelAttributeName":{
       "type":"string",
@@ -35916,6 +35940,10 @@
         "JupyterLabAppImageConfig":{
           "shape":"JupyterLabAppImageConfig",
           "documentation":"<p>The JupyterLab app running on the image.</p>"
+        },
+        "CodeEditorAppImageConfig":{
+          "shape":"CodeEditorAppImageConfig",
+          "documentation":"<p>The Code Editor app running on the image.</p>"
         }
       }
     },

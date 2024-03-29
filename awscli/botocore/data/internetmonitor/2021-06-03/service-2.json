@@ -280,6 +280,11 @@
       },
       "exception":true
     },
+    "AccountId":{
+      "type":"string",
+      "max":12,
+      "min":12
+    },
     "Arn":{
       "type":"string",
       "max":2048,
@@ -315,6 +320,10 @@
         "senderFault":true
       },
       "exception":true
+    },
+    "Boolean":{
+      "type":"boolean",
+      "box":true
     },
     "ConflictException":{
       "type":"structure",
@@ -449,6 +458,12 @@
           "documentation":"<p>The internally-generated identifier of a health event. Because <code>EventID</code> contains the forward slash (“/”) character, you must URL-encode the <code>EventID</code> field in the request URL.</p>",
           "location":"uri",
           "locationName":"EventId"
+        },
+        "LinkedAccountId":{
+          "shape":"AccountId",
+          "documentation":"<p>TBD </p>",
+          "location":"querystring",
+          "locationName":"LinkedAccountId"
         }
       }
     },
@@ -519,6 +534,12 @@
           "documentation":"<p>The name of the monitor.</p>",
           "location":"uri",
           "locationName":"MonitorName"
+        },
+        "LinkedAccountId":{
+          "shape":"AccountId",
+          "documentation":"<p>TBD </p>",
+          "location":"querystring",
+          "locationName":"LinkedAccountId"
         }
       }
     },
@@ -956,6 +977,12 @@
           "documentation":"<p>The status of a health event.</p>",
           "location":"querystring",
           "locationName":"EventStatus"
+        },
+        "LinkedAccountId":{
+          "shape":"AccountId",
+          "documentation":"<p>TBD </p>",
+          "location":"querystring",
+          "locationName":"LinkedAccountId"
         }
       }
     },
@@ -993,6 +1020,12 @@
           "documentation":"<p>The status of a monitor. This includes the status of the data processing for the monitor and the status of the monitor itself.</p> <p>For information about the statuses for a monitor, see <a href=\"https://docs.aws.amazon.com/internet-monitor/latest/api/API_Monitor.html\"> Monitor</a>.</p>",
           "location":"querystring",
           "locationName":"MonitorStatus"
+        },
+        "IncludeLinkedAccounts":{
+          "shape":"Boolean",
+          "documentation":"<p>TBD </p>",
+          "location":"querystring",
+          "locationName":"IncludeLinkedAccounts"
         }
       }
     },
@@ -1369,6 +1402,10 @@
         "FilterParameters":{
           "shape":"FilterParameters",
           "documentation":"<p>The <code>FilterParameters</code> field that you use with Amazon CloudWatch Internet Monitor queries is a string the defines how you want a query to be filtered. The filter parameters that you can specify depend on the query type, since each query type returns a different set of Internet Monitor data.</p> <p>For more information about specifying filter parameters, see <a href=\"https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/CloudWatch-IM-view-cw-tools-cwim-query.html\">Using the Amazon CloudWatch Internet Monitor query interface</a> in the Amazon CloudWatch Internet Monitor User Guide.</p>"
+        },
+        "LinkedAccountId":{
+          "shape":"AccountId",
+          "documentation":"<p>TBD </p>"
         }
       }
     },

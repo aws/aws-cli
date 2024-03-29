@@ -2,6 +2,33 @@
 CHANGELOG
 =========
 
+2.15.34
+=======
+
+* api-change:``codebuild``: Add new fleet status code for Reserved Capacity.
+* api-change:``codeconnections``: Duplicating the CodeStar Connections service into the new, rebranded AWS CodeConnections service.
+* api-change:``oam``: This release adds support for sharing AWS::InternetMonitor::Monitor resources.
+* api-change:``internetmonitor``: This release adds support to allow customers to track cross account monitors through ListMonitor, GetMonitor, ListHealthEvents, GetHealthEvent, StartQuery APIs.
+* api-change:``elasticache``: Added minimum capacity to  Amazon ElastiCache Serverless. This feature allows customer to ensure minimum capacity even without current load
+* api-change:``compute-optimizer``: This release enables AWS Compute Optimizer to analyze and generate recommendations with a new customization preference, Memory Utilization.
+* api-change:``batch``: This feature allows AWS Batch to support configuration of imagePullSecrets and allowPrivilegeEscalation for jobs running on EKS
+* api-change:``eks``: Add multiple customer error code to handle customer caused failure when managing EKS node groups
+* api-change:``b2bi``: Supporting new EDI X12 transaction sets for X12 versions 4010, 4030, and 5010.
+* api-change:``iotwireless``: Add support for retrieving key historical and live metrics for LoRaWAN devices and gateways
+* api-change:``codecatalyst``: This release adds support for understanding pending changes to subscriptions by including two new response parameters for the GetSubscription API for Amazon CodeCatalyst.
+* api-change:``guardduty``: Add EC2 support for GuardDuty Runtime Monitoring auto management.
+* api-change:``sagemaker``: This release adds support for custom images for the CodeEditor App on SageMaker Studio
+* api-change:``bedrock-agent-runtime``: This release introduces filtering support on Retrieve and RetrieveAndGenerate APIs.
+* api-change:``bedrock-agent``: This changes introduces metadata documents statistics and also updates the documentation for bedrock agent.
+* enhancement:``s3``: Add parameter to validate source and destination S3 URIs to the ``mv`` command.
+* api-change:``neptune-graph``: Add the new API Start-Import-Task for Amazon Neptune Analytics.
+* api-change:``quicksight``: Amazon QuickSight: Adds support for setting up VPC Endpoint restrictions for accessing QuickSight Website.
+* api-change:``ec2``: Amazon EC2 C7gd, M7gd and R7gd metal instances with up to 3.8 TB of local NVMe-based SSD block-level storage have up to 45% improved real-time NVMe storage performance than comparable Graviton2-based instances.
+* api-change:``secretsmanager``: Documentation updates for Secrets Manager
+* api-change:``marketplace-catalog``: This release enhances the ListEntities API to support ResaleAuthorizationId filter and sort for OfferEntity in the request and the addition of a ResaleAuthorizationId field in the response of OfferSummary.
+* api-change:``neptune-graph``: Update ImportTaskCancelled waiter to evaluate task state correctly and minor documentation changes.
+
+
 2.15.33
 =======
 

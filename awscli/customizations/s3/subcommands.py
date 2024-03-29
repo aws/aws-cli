@@ -15,7 +15,7 @@ import logging
 import sys
 
 from botocore.client import Config
-from botocore.utils import is_s3express_bucket
+from botocore.utils import is_s3express_bucket, ensure_boolean
 from dateutil.parser import parse
 from dateutil.tz import tzlocal
 
@@ -31,7 +31,8 @@ from awscli.customizations.s3.filters import create_filter
 from awscli.customizations.s3.s3handler import S3TransferHandlerFactory
 from awscli.customizations.s3.utils import find_bucket_key, AppendFilter, \
     find_dest_path_comp_key, human_readable_size, \
-    RequestParamsMapper, split_s3_bucket_key, block_unsupported_resources
+    RequestParamsMapper, split_s3_bucket_key, block_unsupported_resources, \
+    S3PathResolver
 from awscli.customizations.utils import uni_print
 from awscli.customizations.s3.syncstrategy.base import MissingFileSync, \
     SizeAndLastModifiedSync, NeverSync
@@ -430,6 +431,27 @@ REQUEST_PAYER = {
     )
 }
 
+VALIDATE_SAME_S3_PATHS = {
+    'name': 'validate-same-s3-paths', 'action': 'store_true',
+    'help_text': (
+        'Resolves the source and destination S3 URIs to their '
+        'underlying buckets and verifies that the file or object '
+        'is not being moved onto itself. If you are using any type '
+        'of access point ARNs or access point aliases in your S3 URIs, '
+        'we strongly recommended using this parameter to help prevent '
+        'accidental deletions of the source file or object. This '
+        'parameter resolves the underlying buckets of S3 access point '
+        'ARNs and aliases, S3 on Outposts access point ARNs, and '
+        'Multi-Region Access Point ARNs. S3 on Outposts access point '
+        'aliases are not supported. Instead of using this parameter, '
+        'you can set the environment variable '
+        '``AWS_CLI_S3_MV_VALIDATE_SAME_S3_PATHS`` to ``true``. '
+        'NOTE: Path validation requires making additional API calls. '
+        'Future updates to this path-validation mechanism might change '
+        'which API calls are made.'
+    )
+}
+
 TRANSFER_ARGS = [DRYRUN, QUIET, INCLUDE, EXCLUDE, ACL,
                  FOLLOW_SYMLINKS, NO_FOLLOW_SYMLINKS, NO_GUESS_MIME_TYPE,
                  SSE, SSE_C, SSE_C_KEY, SSE_KMS_KEY_ID, SSE_C_COPY_SOURCE,
@@ -685,7 +707,9 @@ class S3TransferCommand(S3Command):
         self._convert_path_args(parsed_args)
         params = self._build_call_parameters(parsed_args, {})
         cmd_params = CommandParameters(self.NAME, params,
-                                       self.USAGE)
+                                       self.USAGE,
+                                       self._session,
+                                       parsed_globals)
         cmd_params.add_region(parsed_globals)
         cmd_params.add_endpoint_url(parsed_globals)
         cmd_params.add_verify_ssl(parsed_globals)
@@ -735,13 +759,13 @@ class CpCommand(S3TransferCommand):
 
 class MvCommand(S3TransferCommand):
     NAME = 'mv'
-    DESCRIPTION = "Moves a local file or S3 object to " \
-                  "another location locally or in S3."
+    DESCRIPTION = BasicCommand.FROM_FILE('s3', 'mv', '_description.rst')
     USAGE = "<LocalPath> <S3Uri> or <S3Uri> <LocalPath> " \
             "or <S3Uri> <S3Uri>"
     ARG_TABLE = [{'name': 'paths', 'nargs': 2, 'positional_arg': True,
                   'synopsis': USAGE}] + TRANSFER_ARGS +\
-                [METADATA, METADATA_DIRECTIVE, RECURSIVE]
+                [METADATA, METADATA_DIRECTIVE, RECURSIVE, VALIDATE_SAME_S3_PATHS]
+
 
 class RmCommand(S3TransferCommand):
     NAME = 'rm'
@@ -1123,7 +1147,8 @@ class CommandParameters(object):
     This class is used to do some initial error based on the
     parameters and arguments passed to the command line.
     """
-    def __init__(self, cmd, parameters, usage):
+    def __init__(self, cmd, parameters, usage,
+                 session=None, parsed_globals=None):
         """
         Stores command name and parameters.  Ensures that the ``dir_op`` flag
         is true if a certain command is being used.
@@ -1136,6 +1161,8 @@ class CommandParameters(object):
         self.cmd = cmd
         self.parameters = parameters
         self.usage = usage
+        self._session = session
+        self._parsed_globals = parsed_globals
         if 'dir_op' not in parameters:
             self.parameters['dir_op'] = False
         if 'follow_symlinks' not in parameters:
@@ -1198,9 +1225,12 @@ class CommandParameters(object):
     def _validate_path_args(self):
         # If we're using a mv command, you can't copy the object onto itself.
         params = self.parameters
-        if self.cmd == 'mv' and self._same_path(params['src'], params['dest']):
-            raise ValueError("Cannot mv a file onto itself: '%s' - '%s'" % (
-                params['src'], params['dest']))
+        if self.cmd == 'mv' and params['paths_type']=='s3s3':
+            self._raise_if_mv_same_paths(params['src'], params['dest'])
+            if self._should_validate_same_underlying_s3_paths():
+                self._validate_same_underlying_s3_paths()
+            if self._should_emit_validate_s3_paths_warning():
+                self._emit_validate_s3_paths_warning()
 
         # If the user provided local path does not exist, hard fail because
         # we know that we will not be able to upload the file.
@@ -1224,6 +1254,66 @@ class CommandParameters(object):
         elif dest.endswith('/'):
             src_base = os.path.basename(src)
             return src == os.path.join(dest, src_base)
+
+    def _same_key(self, src, dest):
+        _, src_key = split_s3_bucket_key(src)
+        _, dest_key = split_s3_bucket_key(dest)
+        return self._same_path(f'/{src_key}', f'/{dest_key}')
+
+    def _validate_same_s3_paths_enabled(self):
+        validate_env_var = ensure_boolean(
+            os.environ.get('AWS_CLI_S3_MV_VALIDATE_SAME_S3_PATHS'))
+        return (self.parameters.get('validate_same_s3_paths') or
+                validate_env_var)
+
+    def _should_emit_validate_s3_paths_warning(self):
+        is_same_key = self._same_key(
+            self.parameters['src'], self.parameters['dest'])
+        src_has_underlying_path = S3PathResolver.has_underlying_s3_path(
+            self.parameters['src'])
+        dest_has_underlying_path = S3PathResolver.has_underlying_s3_path(
+            self.parameters['dest'])
+        return (is_same_key and not self._validate_same_s3_paths_enabled() and
+                (src_has_underlying_path or dest_has_underlying_path))
+
+    def _emit_validate_s3_paths_warning(self):
+        msg = (
+            "warning: Provided s3 paths may resolve to same underlying "
+            "s3 object(s) and result in deletion instead of being moved. "
+            "To resolve and validate underlying s3 paths are not the same, "
+            "specify the --validate-same-s3-paths flag or set the "
+            "AWS_CLI_S3_MV_VALIDATE_SAME_S3_PATHS environment variable to true. "
+            "To resolve s3 outposts access point path, the arn must be "
+            "used instead of the alias.\n"
+        )
+        uni_print(msg, sys.stderr)
+
+    def _should_validate_same_underlying_s3_paths(self):
+        is_same_key = self._same_key(
+            self.parameters['src'], self.parameters['dest'])
+        return is_same_key and self._validate_same_s3_paths_enabled()
+
+    def _validate_same_underlying_s3_paths(self):
+        src_paths = S3PathResolver.from_session(
+            self._session,
+            self.parameters.get('source_region', self._parsed_globals.region),
+            self._parsed_globals.verify_ssl
+        ).resolve_underlying_s3_paths(self.parameters['src'])
+        dest_paths = S3PathResolver.from_session(
+            self._session,
+            self._parsed_globals.region,
+            self._parsed_globals.verify_ssl
+        ).resolve_underlying_s3_paths(self.parameters['dest'])
+        for src_path in src_paths:
+            for dest_path in dest_paths:
+                self._raise_if_mv_same_paths(src_path, dest_path)
+
+    def _raise_if_mv_same_paths(self, src, dest):
+        if self._same_path(src, dest):
+            raise ValueError(
+                "Cannot mv a file onto itself: "
+                f"{self.parameters['src']} - {self.parameters['dest']}"
+            )
 
     def _normalize_s3_trailing_slash(self, paths):
         for i, path in enumerate(paths):

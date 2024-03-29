@@ -553,6 +553,11 @@ class CommandParametersTest(unittest.TestCase):
         self.file_creator = FileCreator()
         self.loc_files = make_loc_files(self.file_creator)
         self.bucket = 's3testbucket'
+        self.session = mock.Mock()
+        self.parsed_global = FakeArgs(
+            region='us-west-2',
+            endpoint_url=None,
+            verify_ssl=False)
 
     def tearDown(self):
         self.environ_patch.stop()
@@ -577,7 +582,8 @@ class CommandParametersTest(unittest.TestCase):
                   'locallocal': [local_file, local_file]}
 
         for cmd in cmds.keys():
-            cmd_param = CommandParameters(cmd, {}, '')
+            cmd_param = CommandParameters(cmd, {}, '',
+                                          self.session, self.parsed_global)
             cmd_param.add_region(mock.Mock())
             correct_paths = cmds[cmd]
             for path_args in correct_paths:
@@ -605,7 +611,8 @@ class CommandParametersTest(unittest.TestCase):
                   'locallocal': [local_file, local_file]}
 
         for cmd in cmds.keys():
-            cmd_param = CommandParameters(cmd, {}, '')
+            cmd_param = CommandParameters(cmd, {}, '',
+                                          self.session, self.parsed_global)
             cmd_param.add_region(mock.Mock())
             wrong_paths = cmds[cmd]
             for path_args in wrong_paths:
@@ -696,7 +703,9 @@ class CommandParametersTest(unittest.TestCase):
 
     def test_adds_is_move(self):
         params = {}
-        CommandParameters('mv', params, '')
+        CommandParameters('mv', params, '',
+                          session=self.session,
+                          parsed_globals=self.parsed_global)
         self.assertTrue(params.get('is_move'))
 
         # is_move should only be true for mv

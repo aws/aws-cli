@@ -1,1 +1,7 @@
 pyinstaller==5.12.0
+# pyinstaller takes a dependency on importlib_metadata,
+# conditional on the Python version. This generates lockfiles
+# that fail to install on some Python versions supported by v2.
+# To avoid managing an additional dimension of lockfiles based on
+# Python versions, we take an explicit dependency on importlib_metadata.
+importlib_metadata>=7.0,<=7.1.0

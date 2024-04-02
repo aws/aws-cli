@@ -2,6 +2,16 @@
 CHANGELOG
 =========
 
+1.32.76
+=======
+
+* api-change:``ecs``: Documentation only update for Amazon ECS.
+* api-change:``glue``: Adding View related fields to responses of read-only Table APIs.
+* api-change:``ivschat``: Doc-only update. Changed "Resources" to "Key Concepts" in docs and updated text.
+* api-change:``rolesanywhere``: This release increases the limit on the roleArns request parameter for the *Profile APIs that support it. This parameter can now take up to 250 role ARNs.
+* api-change:``securityhub``: Documentation updates for AWS Security Hub
+
+
 1.32.75
 =======
 

@@ -2,6 +2,20 @@
 CHANGELOG
 =========
 
+1.32.77
+=======
+
+* api-change:``cleanroomsml``: The release includes a public SDK for AWS Clean Rooms ML APIs, making them globally available to developers worldwide.
+* api-change:``cloudformation``: This release would return a new field - PolicyAction in cloudformation's existed DescribeChangeSetResponse, showing actions we are going to apply on the physical resource (e.g., Delete, Retain) according to the user's template
+* api-change:``datazone``: This release supports the feature of dataQuality to enrich asset with dataQualityResult in Amazon DataZone.
+* api-change:``docdb``: This release adds Global Cluster Switchover capability which enables you to change your global cluster's primary AWS Region, the region that serves writes, while preserving the replication between all regions in the global cluster.
+* api-change:``groundstation``: This release adds visibilityStartTime and visibilityEndTime to DescribeContact and ListContacts responses.
+* api-change:``lambda``: Add Ruby 3.3 (ruby3.3) support to AWS Lambda
+* api-change:``medialive``: Cmaf Ingest outputs are now supported in Media Live
+* api-change:``medical-imaging``: SearchImageSets API now supports following enhancements - Additional support for searching on UpdatedAt and SeriesInstanceUID - Support for searching existing filters between dates/times - Support for sorting the search result by Ascending/Descending - Additional parameters returned in the response
+* api-change:``transfer``: Add ability to specify Security Policies for SFTP Connectors
+
+
 1.32.76
 =======
 

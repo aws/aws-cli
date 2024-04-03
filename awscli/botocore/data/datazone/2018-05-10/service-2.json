@@ -54,6 +54,26 @@
       "documentation":"<p>Accepts a subscription request to a specific asset. </p>",
       "idempotent":true
     },
+    "CancelMetadataGenerationRun":{
+      "name":"CancelMetadataGenerationRun",
+      "http":{
+        "method":"POST",
+        "requestUri":"/v2/domains/{domainIdentifier}/metadata-generation-runs/{identifier}/cancel",
+        "responseCode":200
+      },
+      "input":{"shape":"CancelMetadataGenerationRunInput"},
+      "output":{"shape":"CancelMetadataGenerationRunOutput"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ConflictException"},
+        {"shape":"ValidationException"},
+        {"shape":"UnauthorizedException"}
+      ],
+      "documentation":"<p>Cancels the metadata generation run.</p>"
+    },
     "CancelSubscription":{
       "name":"CancelSubscription",
       "http":{
@@ -325,7 +345,7 @@
         {"shape":"ValidationException"},
         {"shape":"UnauthorizedException"}
       ],
-      "documentation":"<p/>"
+      "documentation":"<p>Publishes a listing (a record of an asset at a given time) or removes a listing from the catalog. </p>"
     },
     "CreateProject":{
       "name":"CreateProject",
@@ -667,7 +687,7 @@
         {"shape":"ValidationException"},
         {"shape":"UnauthorizedException"}
       ],
-      "documentation":"<p/>",
+      "documentation":"<p>Deletes a listing (a record of an asset at a given time).</p>",
       "idempotent":true
     },
     "DeleteProject":{
@@ -1058,7 +1078,26 @@
         {"shape":"ValidationException"},
         {"shape":"UnauthorizedException"}
       ],
-      "documentation":"<p/>"
+      "documentation":"<p>Gets a listing (a record of an asset at a given time).</p>"
+    },
+    "GetMetadataGenerationRun":{
+      "name":"GetMetadataGenerationRun",
+      "http":{
+        "method":"GET",
+        "requestUri":"/v2/domains/{domainIdentifier}/metadata-generation-runs/{identifier}",
+        "responseCode":200
+      },
+      "input":{"shape":"GetMetadataGenerationRunInput"},
+      "output":{"shape":"GetMetadataGenerationRunOutput"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ValidationException"},
+        {"shape":"UnauthorizedException"}
+      ],
+      "documentation":"<p>Gets a metadata generation run in Amazon DataZone.</p>"
     },
     "GetProject":{
       "name":"GetProject",
@@ -1351,6 +1390,25 @@
       ],
       "documentation":"<p>Lists Amazon DataZone environments.</p>"
     },
+    "ListMetadataGenerationRuns":{
+      "name":"ListMetadataGenerationRuns",
+      "http":{
+        "method":"GET",
+        "requestUri":"/v2/domains/{domainIdentifier}/metadata-generation-runs",
+        "responseCode":200
+      },
+      "input":{"shape":"ListMetadataGenerationRunsInput"},
+      "output":{"shape":"ListMetadataGenerationRunsOutput"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ValidationException"},
+        {"shape":"UnauthorizedException"}
+      ],
+      "documentation":"<p>Lists all metadata generation runs.</p>"
+    },
     "ListNotifications":{
       "name":"ListNotifications",
       "http":{
@@ -1537,6 +1595,7 @@
         {"shape":"ResourceNotFoundException"},
         {"shape":"AccessDeniedException"},
         {"shape":"ThrottlingException"},
+        {"shape":"ConflictException"},
         {"shape":"ValidationException"},
         {"shape":"UnauthorizedException"}
       ],
@@ -1638,7 +1697,7 @@
         {"shape":"ValidationException"},
         {"shape":"UnauthorizedException"}
       ],
-      "documentation":"<p>Searches listings in Amazon DataZone.</p>"
+      "documentation":"<p>Searches listings (records of an asset at a given time) in Amazon DataZone.</p>"
     },
     "SearchTypes":{
       "name":"SearchTypes",
@@ -1697,6 +1756,28 @@
         {"shape":"UnauthorizedException"}
       ],
       "documentation":"<p>Start the run of the specified data source in Amazon DataZone.</p>",
+      "idempotent":true
+    },
+    "StartMetadataGenerationRun":{
+      "name":"StartMetadataGenerationRun",
+      "http":{
+        "method":"POST",
+        "requestUri":"/v2/domains/{domainIdentifier}/metadata-generation-runs",
+        "responseCode":200
+      },
+      "input":{"shape":"StartMetadataGenerationRunInput"},
+      "output":{"shape":"StartMetadataGenerationRunOutput"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ServiceQuotaExceededException"},
+        {"shape":"ConflictException"},
+        {"shape":"ValidationException"},
+        {"shape":"UnauthorizedException"}
+      ],
+      "documentation":"<p>Starts the metadata generation run.</p>",
       "idempotent":true
     },
     "TagResource":{
@@ -1991,7 +2072,12 @@
   "shapes":{
     "AcceptChoice":{
       "type":"structure",
+      "required":["predictionTarget"],
       "members":{
+        "editedValue":{
+          "shape":"EditedValue",
+          "documentation":"<p>The edit of the prediction.</p>"
+        },
         "predictionChoice":{
           "shape":"Integer",
           "documentation":"<p>Specifies the prediction (aka, the automatically generated piece of metadata) that can be accepted.</p>"
@@ -2016,7 +2102,7 @@
       "members":{
         "acceptChoices":{
           "shape":"AcceptChoices",
-          "documentation":"<p/>"
+          "documentation":"<p>Specifies the prediction (aka, the automatically generated piece of metadata) and the target (for example, a column name) that can be accepted.</p>"
         },
         "acceptRule":{
           "shape":"AcceptRule",
@@ -2035,13 +2121,13 @@
         },
         "identifier":{
           "shape":"AssetIdentifier",
-          "documentation":"<p/>",
+          "documentation":"<p>The identifier of the asset.</p>",
           "location":"uri",
           "locationName":"identifier"
         },
         "revision":{
           "shape":"Revision",
-          "documentation":"<p/>",
+          "documentation":"<p>The revision that is to be made to the asset.</p>",
           "location":"querystring",
           "locationName":"revision"
         }
@@ -2057,15 +2143,15 @@
       "members":{
         "assetId":{
           "shape":"AssetId",
-          "documentation":"<p/>"
+          "documentation":"<p>The ID of the asset.</p>"
         },
         "domainId":{
           "shape":"DomainId",
-          "documentation":"<p/>"
+          "documentation":"<p>The identifier of the Amazon DataZone domain.</p>"
         },
         "revision":{
           "shape":"Revision",
-          "documentation":"<p/>"
+          "documentation":"<p>The revision that is to be made to the asset.</p>"
         }
       }
     },
@@ -2476,7 +2562,7 @@
           "documentation":"<p>The target name in the asset target name map.</p>"
         }
       },
-      "documentation":"<p/>"
+      "documentation":"<p>The name map for assets.</p>"
     },
     "AssetTargetNames":{
       "type":"list",
@@ -2484,7 +2570,7 @@
     },
     "AssetTypeIdentifier":{
       "type":"string",
-      "max":385,
+      "max":513,
       "min":1,
       "pattern":"^(?!\\.)[\\w\\.]*\\w$"
     },
@@ -2592,6 +2678,32 @@
         }
       },
       "documentation":"<p>The configuration of the business name generation.</p>"
+    },
+    "CancelMetadataGenerationRunInput":{
+      "type":"structure",
+      "required":[
+        "domainIdentifier",
+        "identifier"
+      ],
+      "members":{
+        "domainIdentifier":{
+          "shape":"DomainId",
+          "documentation":"<p>The ID of the Amazon DataZone domain in which the metadata generation run is to be cancelled.</p>",
+          "location":"uri",
+          "locationName":"domainIdentifier"
+        },
+        "identifier":{
+          "shape":"MetadataGenerationRunIdentifier",
+          "documentation":"<p>The ID of the metadata generation run.</p>",
+          "location":"uri",
+          "locationName":"identifier"
+        }
+      }
+    },
+    "CancelMetadataGenerationRunOutput":{
+      "type":"structure",
+      "members":{
+      }
     },
     "CancelSubscriptionInput":{
       "type":"structure",
@@ -2783,7 +2895,7 @@
         },
         "externalIdentifier":{
           "shape":"ExternalIdentifier",
-          "documentation":"<p/>"
+          "documentation":"<p>The external identifier of the asset.</p>"
         },
         "formsInput":{
           "shape":"FormInputList",
@@ -2846,7 +2958,7 @@
         },
         "externalIdentifier":{
           "shape":"ExternalIdentifier",
-          "documentation":"<p/>"
+          "documentation":"<p>The external identifier of the asset.</p>"
         },
         "firstRevisionCreatedAt":{
           "shape":"CreatedAt",
@@ -2870,7 +2982,7 @@
         },
         "listing":{
           "shape":"AssetListingDetails",
-          "documentation":"<p/>"
+          "documentation":"<p>The details of an asset published in an Amazon DataZone catalog.</p>"
         },
         "name":{
           "shape":"AssetName",
@@ -2984,7 +3096,7 @@
         },
         "externalIdentifier":{
           "shape":"ExternalIdentifier",
-          "documentation":"<p/>"
+          "documentation":"<p>The external identifier of the asset.</p>"
         },
         "firstRevisionCreatedAt":{
           "shape":"CreatedAt",
@@ -3008,7 +3120,7 @@
         },
         "listing":{
           "shape":"AssetListingDetails",
-          "documentation":"<p/>"
+          "documentation":"<p>The details of an asset published in an Amazon DataZone catalog. </p>"
         },
         "name":{
           "shape":"AssetName",
@@ -3910,30 +4022,30 @@
       "members":{
         "action":{
           "shape":"ChangeAction",
-          "documentation":"<p/>"
+          "documentation":"<p>Specifies whether to publish or unpublish a listing.</p>"
         },
         "clientToken":{
           "shape":"ClientToken",
-          "documentation":"<p/>",
+          "documentation":"<p>A unique, case-sensitive identifier that is provided to ensure the idempotency of the request.</p>",
           "idempotencyToken":true
         },
         "domainIdentifier":{
           "shape":"DomainId",
-          "documentation":"<p/>",
+          "documentation":"<p>The ID of the Amazon DataZone domain.</p>",
           "location":"uri",
           "locationName":"domainIdentifier"
         },
         "entityIdentifier":{
           "shape":"EntityId",
-          "documentation":"<p/>"
+          "documentation":"<p>The ID of the asset.</p>"
         },
         "entityRevision":{
           "shape":"Revision",
-          "documentation":"<p/>"
+          "documentation":"<p>The revision of an asset.</p>"
         },
         "entityType":{
           "shape":"EntityType",
-          "documentation":"<p/>"
+          "documentation":"<p>The type of an entity.</p>"
         }
       }
     },
@@ -3947,15 +4059,15 @@
       "members":{
         "listingId":{
           "shape":"ListingId",
-          "documentation":"<p/>"
+          "documentation":"<p>The ID of the listing (a record of an asset at a given time).</p>"
         },
         "listingRevision":{
           "shape":"Revision",
-          "documentation":"<p/>"
+          "documentation":"<p>The revision of a listing.</p>"
         },
         "status":{
           "shape":"ListingStatus",
-          "documentation":"<p/>"
+          "documentation":"<p>Specifies the status of the listing.</p>"
         }
       }
     },
@@ -4049,7 +4161,7 @@
         },
         "failureReasons":{
           "shape":"FailureReasons",
-          "documentation":"<p>Reasons for failed project deletion</p>"
+          "documentation":"<p>Specifies the error message that is returned if the operation cannot be successfully completed.</p>"
         },
         "glossaryTerms":{
           "shape":"GlossaryTerms",
@@ -4069,7 +4181,7 @@
         },
         "projectStatus":{
           "shape":"ProjectStatus",
-          "documentation":"<p>Status of the project</p>"
+          "documentation":"<p>The status of the Amazon DataZone project that was created.</p>"
         }
       }
     },
@@ -4196,7 +4308,7 @@
         },
         "subscribedListings":{
           "shape":"SubscribedListingInputs",
-          "documentation":"<p/>"
+          "documentation":"<p>The published asset for which the subscription grant is to be created.</p>"
         },
         "subscribedPrincipals":{
           "shape":"SubscribedPrincipalInputs",
@@ -4252,7 +4364,7 @@
         },
         "subscribedListings":{
           "shape":"CreateSubscriptionRequestOutputSubscribedListingsList",
-          "documentation":"<p/>"
+          "documentation":"<p>The published asset for which the subscription grant is to be created.</p>"
         },
         "subscribedPrincipals":{
           "shape":"CreateSubscriptionRequestOutputSubscribedPrincipalsList",
@@ -5103,7 +5215,7 @@
         },
         "skipDeletionCheck":{
           "shape":"Boolean",
-          "documentation":"<p>Optional flag to delete all child entities within the domain</p>",
+          "documentation":"<p>Specifies the optional flag to delete all child entities within the domain.</p>",
           "location":"querystring",
           "locationName":"skipDeletionCheck"
         }
@@ -5274,13 +5386,13 @@
       "members":{
         "domainIdentifier":{
           "shape":"DomainId",
-          "documentation":"<p/>",
+          "documentation":"<p>The ID of the Amazon DataZone domain.</p>",
           "location":"uri",
           "locationName":"domainIdentifier"
         },
         "identifier":{
           "shape":"ListingId",
-          "documentation":"<p/>",
+          "documentation":"<p>The ID of the listing to be deleted.</p>",
           "location":"uri",
           "locationName":"identifier"
         }
@@ -5312,7 +5424,7 @@
         },
         "skipDeletionCheck":{
           "shape":"Boolean",
-          "documentation":"<p>Optional flag to asynchronously delete child entities within the project</p>",
+          "documentation":"<p>Specifies the optional flag to delete all child entities within the project.</p>",
           "location":"querystring",
           "locationName":"skipDeletionCheck"
         }
@@ -5661,6 +5773,12 @@
         }
       },
       "documentation":"<p>A summary of a Amazon DataZone domain.</p>"
+    },
+    "EditedValue":{
+      "type":"string",
+      "max":5000,
+      "min":1,
+      "sensitive":true
     },
     "EnableSetting":{
       "type":"string",
@@ -6168,7 +6286,7 @@
     },
     "FormInputContentString":{
       "type":"string",
-      "max":75000,
+      "max":150000,
       "min":0
     },
     "FormInputList":{
@@ -6365,7 +6483,7 @@
         },
         "externalIdentifier":{
           "shape":"ExternalIdentifier",
-          "documentation":"<p/>"
+          "documentation":"<p>The external ID of the asset.</p>"
         },
         "firstRevisionCreatedAt":{
           "shape":"CreatedAt",
@@ -6389,7 +6507,7 @@
         },
         "listing":{
           "shape":"AssetListingDetails",
-          "documentation":"<p/>"
+          "documentation":"<p>The listing of the asset.</p>"
         },
         "name":{
           "shape":"AssetName",
@@ -6601,7 +6719,7 @@
         },
         "recommendation":{
           "shape":"RecommendationConfiguration",
-          "documentation":"<p/>"
+          "documentation":"<p>The recommendation configuration of the data source.</p>"
         },
         "schedule":{
           "shape":"ScheduleConfiguration",
@@ -7429,19 +7547,19 @@
       "members":{
         "domainIdentifier":{
           "shape":"DomainId",
-          "documentation":"<p/>",
+          "documentation":"<p>The ID of the Amazon DataZone domain.</p>",
           "location":"uri",
           "locationName":"domainIdentifier"
         },
         "identifier":{
           "shape":"ListingId",
-          "documentation":"<p/>",
+          "documentation":"<p>The ID of the listing.</p>",
           "location":"uri",
           "locationName":"identifier"
         },
         "listingRevision":{
           "shape":"Revision",
-          "documentation":"<p/>",
+          "documentation":"<p>The revision of the listing.</p>",
           "location":"querystring",
           "locationName":"listingRevision"
         }
@@ -7457,7 +7575,7 @@
       "members":{
         "createdAt":{
           "shape":"CreatedAt",
-          "documentation":"<p/>"
+          "documentation":"<p>The timestamp of when the listing was created.</p>"
         },
         "createdBy":{
           "shape":"CreatedBy",
@@ -7465,31 +7583,31 @@
         },
         "description":{
           "shape":"Description",
-          "documentation":"<p/>"
+          "documentation":"<p>The description of the listing.</p>"
         },
         "domainId":{
           "shape":"DomainId",
-          "documentation":"<p/>"
+          "documentation":"<p>The ID of the Amazon DataZone domain.</p>"
         },
         "id":{
           "shape":"ListingId",
-          "documentation":"<p/>"
+          "documentation":"<p>The ID of the listing.</p>"
         },
         "item":{
           "shape":"ListingItem",
-          "documentation":"<p/>"
+          "documentation":"<p>The details of a listing.</p>"
         },
         "listingRevision":{
           "shape":"Revision",
-          "documentation":"<p/>"
+          "documentation":"<p>The revision of a listing.</p>"
         },
         "name":{
           "shape":"ListingName",
-          "documentation":"<p/>"
+          "documentation":"<p>The name of the listing.</p>"
         },
         "status":{
           "shape":"ListingStatus",
-          "documentation":"<p/>"
+          "documentation":"<p>The status of the listing.</p>"
         },
         "updatedAt":{
           "shape":"UpdatedAt",
@@ -7498,6 +7616,69 @@
         "updatedBy":{
           "shape":"UpdatedBy",
           "documentation":"<p>The Amazon DataZone user who updated the listing.</p>"
+        }
+      }
+    },
+    "GetMetadataGenerationRunInput":{
+      "type":"structure",
+      "required":[
+        "domainIdentifier",
+        "identifier"
+      ],
+      "members":{
+        "domainIdentifier":{
+          "shape":"DomainId",
+          "documentation":"<p>The ID of the Amazon DataZone domain the metadata generation run of which you want to get.</p>",
+          "location":"uri",
+          "locationName":"domainIdentifier"
+        },
+        "identifier":{
+          "shape":"MetadataGenerationRunIdentifier",
+          "documentation":"<p>The identifier of the metadata generation run.</p>",
+          "location":"uri",
+          "locationName":"identifier"
+        }
+      }
+    },
+    "GetMetadataGenerationRunOutput":{
+      "type":"structure",
+      "required":[
+        "domainId",
+        "id",
+        "owningProjectId"
+      ],
+      "members":{
+        "createdAt":{
+          "shape":"CreatedAt",
+          "documentation":"<p>The timestamp of when the metadata generation run was start.</p>"
+        },
+        "createdBy":{
+          "shape":"CreatedBy",
+          "documentation":"<p>The Amazon DataZone user who started the metadata generation run.</p>"
+        },
+        "domainId":{
+          "shape":"DomainId",
+          "documentation":"<p>The ID of the Amazon DataZone domain the metadata generation run of which you want to get.</p>"
+        },
+        "id":{
+          "shape":"MetadataGenerationRunIdentifier",
+          "documentation":"<p>The ID of the metadata generation run.</p>"
+        },
+        "owningProjectId":{
+          "shape":"ProjectId",
+          "documentation":"<p>The ID of the project that owns the assets for which you're running metadata generation.</p>"
+        },
+        "status":{
+          "shape":"MetadataGenerationRunStatus",
+          "documentation":"<p>The status of the metadata generation run.</p>"
+        },
+        "target":{
+          "shape":"MetadataGenerationRunTarget",
+          "documentation":"<p>The asset for which you're generating metadata.</p>"
+        },
+        "type":{
+          "shape":"MetadataGenerationRunType",
+          "documentation":"<p>The type of metadata generation run.</p>"
         }
       }
     },
@@ -7549,7 +7730,7 @@
         },
         "failureReasons":{
           "shape":"FailureReasons",
-          "documentation":"<p>Reasons for failed project deletion</p>"
+          "documentation":"<p>Specifies the error message that is returned if the operation cannot be successfully completed.</p>"
         },
         "glossaryTerms":{
           "shape":"GlossaryTerms",
@@ -7569,7 +7750,7 @@
         },
         "projectStatus":{
           "shape":"ProjectStatus",
-          "documentation":"<p>Status of the project</p>"
+          "documentation":"<p>The status of the project.</p>"
         }
       }
     },
@@ -7713,7 +7894,7 @@
         },
         "subscribedListing":{
           "shape":"SubscribedListing",
-          "documentation":"<p/>"
+          "documentation":"<p>The details of the published asset for which the subscription grant is created.</p>"
         },
         "subscribedPrincipal":{
           "shape":"SubscribedPrincipal",
@@ -8827,7 +9008,7 @@
         },
         "name":{
           "shape":"String",
-          "documentation":"<p/>",
+          "documentation":"<p>The name of the environment.</p>",
           "location":"querystring",
           "locationName":"name"
         },
@@ -8868,6 +9049,55 @@
         "nextToken":{
           "shape":"PaginationToken",
           "documentation":"<p>When the number of environments is greater than the default value for the <code>MaxResults</code> parameter, or if you explicitly specify a value for <code>MaxResults</code> that is less than the number of environments, the response includes a pagination token named <code>NextToken</code>. You can specify this <code>NextToken</code> value in a subsequent call to <code>ListEnvironments</code> to list the next set of environments.</p>"
+        }
+      }
+    },
+    "ListMetadataGenerationRunsInput":{
+      "type":"structure",
+      "required":["domainIdentifier"],
+      "members":{
+        "domainIdentifier":{
+          "shape":"DomainId",
+          "documentation":"<p>The ID of the Amazon DataZone domain where you want to list metadata generation runs.</p>",
+          "location":"uri",
+          "locationName":"domainIdentifier"
+        },
+        "maxResults":{
+          "shape":"MaxResults",
+          "documentation":"<p>The maximum number of metadata generation runs to return in a single call to ListMetadataGenerationRuns. When the number of metadata generation runs to be listed is greater than the value of MaxResults, the response contains a NextToken value that you can use in a subsequent call to ListMetadataGenerationRuns to list the next set of revisions.</p>",
+          "location":"querystring",
+          "locationName":"maxResults"
+        },
+        "nextToken":{
+          "shape":"PaginationToken",
+          "documentation":"<p>When the number of metadata generation runs is greater than the default value for the MaxResults parameter, or if you explicitly specify a value for MaxResults that is less than the number of metadata generation runs, the response includes a pagination token named NextToken. You can specify this NextToken value in a subsequent call to ListMetadataGenerationRuns to list the next set of revisions.</p>",
+          "location":"querystring",
+          "locationName":"nextToken"
+        },
+        "status":{
+          "shape":"MetadataGenerationRunStatus",
+          "documentation":"<p>The status of the metadata generation runs.</p>",
+          "location":"querystring",
+          "locationName":"status"
+        },
+        "type":{
+          "shape":"MetadataGenerationRunType",
+          "documentation":"<p>The type of the metadata generation runs.</p>",
+          "location":"querystring",
+          "locationName":"type"
+        }
+      }
+    },
+    "ListMetadataGenerationRunsOutput":{
+      "type":"structure",
+      "members":{
+        "items":{
+          "shape":"MetadataGenerationRuns",
+          "documentation":"<p>The results of the ListMetadataGenerationRuns action.</p>"
+        },
+        "nextToken":{
+          "shape":"PaginationToken",
+          "documentation":"<p>When the number of metadata generation runs is greater than the default value for the MaxResults parameter, or if you explicitly specify a value for MaxResults that is less than the number of metadata generation runs, the response includes a pagination token named NextToken. You can specify this NextToken value in a subsequent call to ListMetadataGenerationRuns to list the next set of revisions.</p>"
         }
       }
     },
@@ -9024,7 +9254,7 @@
         },
         "name":{
           "shape":"ProjectName",
-          "documentation":"<p/>",
+          "documentation":"<p>The name of the project.</p>",
           "location":"querystring",
           "locationName":"name"
         },
@@ -9481,6 +9711,97 @@
       "min":0,
       "sensitive":true
     },
+    "MetadataGenerationRunIdentifier":{
+      "type":"string",
+      "pattern":"^[a-zA-Z0-9_-]{1,36}$"
+    },
+    "MetadataGenerationRunItem":{
+      "type":"structure",
+      "required":[
+        "domainId",
+        "id",
+        "owningProjectId"
+      ],
+      "members":{
+        "createdAt":{
+          "shape":"CreatedAt",
+          "documentation":"<p>The timestamp at which the metadata generation run was created.</p>"
+        },
+        "createdBy":{
+          "shape":"CreatedBy",
+          "documentation":"<p>The user who created the metadata generation run.</p>"
+        },
+        "domainId":{
+          "shape":"DomainId",
+          "documentation":"<p>The ID of the Amazon DataZone domain in which the metadata generation run was created.</p>"
+        },
+        "id":{
+          "shape":"MetadataGenerationRunIdentifier",
+          "documentation":"<p>The ID of the metadata generation run.</p>"
+        },
+        "owningProjectId":{
+          "shape":"ProjectId",
+          "documentation":"<p>The ID of the project that owns the asset for which the metadata generation was ran.</p>"
+        },
+        "status":{
+          "shape":"MetadataGenerationRunStatus",
+          "documentation":"<p>The status of the metadata generation run.</p>"
+        },
+        "target":{
+          "shape":"MetadataGenerationRunTarget",
+          "documentation":"<p>The asset for which metadata was generated.</p>"
+        },
+        "type":{
+          "shape":"MetadataGenerationRunType",
+          "documentation":"<p>The type of the metadata generation run.</p>"
+        }
+      },
+      "documentation":"<p>The metadata generation run.</p>"
+    },
+    "MetadataGenerationRunStatus":{
+      "type":"string",
+      "enum":[
+        "SUBMITTED",
+        "IN_PROGRESS",
+        "CANCELED",
+        "SUCCEEDED",
+        "FAILED"
+      ]
+    },
+    "MetadataGenerationRunTarget":{
+      "type":"structure",
+      "required":[
+        "identifier",
+        "type"
+      ],
+      "members":{
+        "identifier":{
+          "shape":"String",
+          "documentation":"<p>The ID of the metadata generation run's target.</p>"
+        },
+        "revision":{
+          "shape":"Revision",
+          "documentation":"<p>The revision of the asset for which metadata was generated.</p>"
+        },
+        "type":{
+          "shape":"MetadataGenerationTargetType",
+          "documentation":"<p>The type of the asset for which metadata was generated.</p>"
+        }
+      },
+      "documentation":"<p>The asset for which metadata was generated.</p>"
+    },
+    "MetadataGenerationRunType":{
+      "type":"string",
+      "enum":["BUSINESS_DESCRIPTIONS"]
+    },
+    "MetadataGenerationRuns":{
+      "type":"list",
+      "member":{"shape":"MetadataGenerationRunItem"}
+    },
+    "MetadataGenerationTargetType":{
+      "type":"string",
+      "enum":["ASSET"]
+    },
     "MetadataMap":{
       "type":"map",
       "key":{"shape":"String"},
@@ -9491,10 +9812,10 @@
       "members":{
         "smithy":{
           "shape":"Smithy",
-          "documentation":"<p/>"
+          "documentation":"<p>Indicates the smithy model of the API.</p>"
         }
       },
-      "documentation":"<p/>",
+      "documentation":"<p>The model of the API.</p>",
       "sensitive":true,
       "union":true
     },
@@ -9640,14 +9961,14 @@
       "members":{
         "code":{
           "shape":"String",
-          "documentation":"<p>Project Deletion Error Code</p>"
+          "documentation":"<p>The code of the project deletion error.</p>"
         },
         "message":{
           "shape":"String",
-          "documentation":"<p>Project Deletion Error Message</p>"
+          "documentation":"<p>The message of the project deletion error.</p>"
         }
       },
-      "documentation":"<p>Error that occurred during project deletion</p>"
+      "documentation":"<p>Specifies the error message that is returned if the operation cannot be successfully completed.</p>"
     },
     "ProjectId":{
       "type":"string",
@@ -9721,7 +10042,7 @@
         },
         "failureReasons":{
           "shape":"FailureReasons",
-          "documentation":"<p>Reasons for failed project deletion</p>"
+          "documentation":"<p>Specifies the error message that is returned if the operation cannot be successfully completed.</p>"
         },
         "id":{
           "shape":"ProjectId",
@@ -9733,7 +10054,7 @@
         },
         "projectStatus":{
           "shape":"ProjectStatus",
-          "documentation":"<p>Status of the project</p>"
+          "documentation":"<p>The status of the project.</p>"
         },
         "updatedAt":{
           "shape":"SyntheticTimestamp_date_time",
@@ -9996,6 +10317,7 @@
     },
     "RejectChoice":{
       "type":"structure",
+      "required":["predictionTarget"],
       "members":{
         "predictionChoices":{
           "shape":"PredictionChoices",
@@ -10038,15 +10360,15 @@
         },
         "rejectChoices":{
           "shape":"RejectChoices",
-          "documentation":"<p/>"
+          "documentation":"<p>Specifies the prediction (aka, the automatically generated piece of metadata) and the target (for example, a column name) that can be rejected.</p>"
         },
         "rejectRule":{
           "shape":"RejectRule",
-          "documentation":"<p/>"
+          "documentation":"<p>Specifies the rule (or the conditions) under which a prediction can be rejected.</p>"
         },
         "revision":{
           "shape":"Revision",
-          "documentation":"<p/>",
+          "documentation":"<p>The revision that is to be made to the asset.</p>",
           "location":"querystring",
           "locationName":"revision"
         }
@@ -10062,15 +10384,15 @@
       "members":{
         "assetId":{
           "shape":"AssetId",
-          "documentation":"<p/>"
+          "documentation":"<p>The ID of the asset.</p>"
         },
         "assetRevision":{
           "shape":"Revision",
-          "documentation":"<p/>"
+          "documentation":"<p>The revision that is to be made to the asset.</p>"
         },
         "domainId":{
           "shape":"DomainId",
-          "documentation":"<p/>"
+          "documentation":"<p>The ID of the Amazon DataZone domain.</p>"
         }
       }
     },
@@ -10508,7 +10830,7 @@
         },
         "searchIn":{
           "shape":"SearchInList",
-          "documentation":"<p/>"
+          "documentation":"<p>The details of the search.</p>"
         },
         "searchScope":{
           "shape":"InventorySearchScope",
@@ -10579,7 +10901,7 @@
         },
         "searchIn":{
           "shape":"SearchInList",
-          "documentation":"<p/>"
+          "documentation":"<p>The details of the search.</p>"
         },
         "searchText":{
           "shape":"String",
@@ -10688,7 +11010,7 @@
         },
         "managed":{
           "shape":"Boolean",
-          "documentation":"<p/>"
+          "documentation":"<p>Specifies whether the search is managed.</p>"
         },
         "maxResults":{
           "shape":"MaxResults",
@@ -10700,7 +11022,7 @@
         },
         "searchIn":{
           "shape":"SearchInList",
-          "documentation":"<p/>"
+          "documentation":"<p>The details of the search.</p>"
         },
         "searchScope":{
           "shape":"TypesSearchScope",
@@ -10960,6 +11282,77 @@
         "updatedAt":{
           "shape":"DateTime",
           "documentation":"<p>The timestamp of when the data source run was updated.</p>"
+        }
+      }
+    },
+    "StartMetadataGenerationRunInput":{
+      "type":"structure",
+      "required":[
+        "domainIdentifier",
+        "owningProjectIdentifier",
+        "target",
+        "type"
+      ],
+      "members":{
+        "clientToken":{
+          "shape":"ClientToken",
+          "documentation":"<p>A unique, case-sensitive identifier to ensure idempotency of the request. This field is automatically populated if not provided.</p>",
+          "idempotencyToken":true
+        },
+        "domainIdentifier":{
+          "shape":"DomainId",
+          "documentation":"<p>The ID of the Amazon DataZone domain where you want to start a metadata generation run.</p>",
+          "location":"uri",
+          "locationName":"domainIdentifier"
+        },
+        "owningProjectIdentifier":{
+          "shape":"ProjectId",
+          "documentation":"<p>The ID of the project that owns the asset for which you want to start a metadata generation run.</p>"
+        },
+        "target":{
+          "shape":"MetadataGenerationRunTarget",
+          "documentation":"<p>The asset for which you want to start a metadata generation run.</p>"
+        },
+        "type":{
+          "shape":"MetadataGenerationRunType",
+          "documentation":"<p>The type of the metadata generation run.</p>"
+        }
+      }
+    },
+    "StartMetadataGenerationRunOutput":{
+      "type":"structure",
+      "required":[
+        "domainId",
+        "id"
+      ],
+      "members":{
+        "createdAt":{
+          "shape":"CreatedAt",
+          "documentation":"<p>The timestamp at which the metadata generation run was started.</p>"
+        },
+        "createdBy":{
+          "shape":"CreatedBy",
+          "documentation":"<p>The ID of the user who started the metadata generation run.</p>"
+        },
+        "domainId":{
+          "shape":"DomainId",
+          "documentation":"<p>The ID of the Amazon DataZone domain in which the metadata generation run was started.</p>"
+        },
+        "id":{
+          "shape":"MetadataGenerationRunIdentifier",
+          "documentation":"<p>The ID of the metadata generation run.</p>"
+        },
+        "owningProjectId":{
+          "shape":"ProjectId",
+          "documentation":"<p>The ID of the project that owns the asset for which the metadata generation run was started.</p>"
+        },
+        "status":{
+          "shape":"MetadataGenerationRunStatus",
+          "documentation":"<p>The status of the metadata generation run.</p>"
+        },
+        "type":{
+          "shape":"MetadataGenerationRunType",
+          "documentation":"<p>The type of the metadata generation run.</p>"
         }
       }
     },
@@ -12491,7 +12884,7 @@
         },
         "failureReasons":{
           "shape":"FailureReasons",
-          "documentation":"<p>Reasons for failed project deletion</p>"
+          "documentation":"<p>Specifies the error message that is returned if the operation cannot be successfully completed.</p>"
         },
         "glossaryTerms":{
           "shape":"GlossaryTerms",
@@ -12511,7 +12904,7 @@
         },
         "projectStatus":{
           "shape":"ProjectStatus",
-          "documentation":"<p>Status of the project</p>"
+          "documentation":"<p>The status of the project.</p>"
         }
       }
     },
@@ -12571,7 +12964,7 @@
       "members":{
         "assets":{
           "shape":"SubscribedAssets",
-          "documentation":"<p/>"
+          "documentation":"<p>The details of the asset for which the subscription grant is created.</p>"
         },
         "createdAt":{
           "shape":"CreatedAt",

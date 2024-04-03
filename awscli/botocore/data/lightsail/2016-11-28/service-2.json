@@ -5153,6 +5153,14 @@
         "tags":{
           "shape":"TagList",
           "documentation":"<p>The tag keys and optional values to add to the distribution during create.</p> <p>Use the <code>TagResource</code> action to tag a resource after it's created.</p>"
+        },
+        "certificateName":{
+          "shape":"ResourceName",
+          "documentation":"<p>The name of the SSL/TLS certificate that you want to attach to the distribution.</p> <p>Use the <a href=\"https://docs.aws.amazon.com/lightsail/2016-11-28/api-reference/API_GetCertificates.html\">GetCertificates</a> action to get a list of certificate names that you can specify.</p>"
+        },
+        "viewerMinimumTlsProtocolVersion":{
+          "shape":"ViewerMinimumTlsProtocolVersionEnum",
+          "documentation":"<p>The minimum TLS protocol version for the SSL/TLS certificate.</p>"
         }
       }
     },
@@ -8740,6 +8748,10 @@
         "protocolPolicy":{
           "shape":"OriginProtocolPolicyEnum",
           "documentation":"<p>The protocol that your Amazon Lightsail distribution uses when establishing a connection with your origin to pull content.</p>"
+        },
+        "responseTimeout":{
+          "shape":"integer",
+          "documentation":"<p>The amount of time, in seconds, that the distribution waits for a response after forwarding a request to the origin. The minimum timeout is 1 second, the maximum is 60 seconds, and the default (if you don't specify otherwise) is 30 seconds.</p>"
         }
       },
       "documentation":"<p>Describes the origin resource of an Amazon Lightsail content delivery network (CDN) distribution.</p> <p>An origin can be a Lightsail instance, bucket, container service, or load balancer. A distribution pulls content from an origin, caches it, and serves it to viewers via a worldwide network of edge servers.</p>"
@@ -9447,6 +9459,10 @@
         "tags":{
           "shape":"TagList",
           "documentation":"<p>The tag keys and optional values for the resource. For more information about tags in Lightsail, see the <a href=\"https://lightsail.aws.amazon.com/ls/docs/en_us/articles/amazon-lightsail-tags\">Amazon Lightsail Developer Guide</a>.</p>"
+        },
+        "viewerMinimumTlsProtocolVersion":{
+          "shape":"string",
+          "documentation":"<p>The minimum TLS protocol version that the distribution can use to communicate with viewers.</p>"
         }
       },
       "documentation":"<p>Describes an Amazon Lightsail content delivery network (CDN) distribution.</p>"
@@ -10314,6 +10330,10 @@
         "protocolPolicy":{
           "shape":"OriginProtocolPolicyEnum",
           "documentation":"<p>The protocol that your Amazon Lightsail distribution uses when establishing a connection with your origin to pull content.</p>"
+        },
+        "responseTimeout":{
+          "shape":"integer",
+          "documentation":"<p>The amount of time, in seconds, that the distribution waits for a response after forwarding a request to the origin. The minimum timeout is 1 second, the maximum is 60 seconds, and the default (if you don't specify otherwise) is 30 seconds.</p>"
         }
       },
       "documentation":"<p>Describes the origin resource of an Amazon Lightsail content delivery network (CDN) distribution.</p> <p>An origin can be a Lightsail instance, bucket, or load balancer. A distribution pulls content from an origin, caches it, and serves it to viewers via a worldwide network of edge servers.</p>"
@@ -12183,6 +12203,18 @@
         "isEnabled":{
           "shape":"boolean",
           "documentation":"<p>Indicates whether to enable the distribution.</p>"
+        },
+        "viewerMinimumTlsProtocolVersion":{
+          "shape":"ViewerMinimumTlsProtocolVersionEnum",
+          "documentation":"<p>Use this parameter to update the minimum TLS protocol version for the SSL/TLS certificate that's attached to the distribution.</p>"
+        },
+        "certificateName":{
+          "shape":"ResourceName",
+          "documentation":"<p>The name of the SSL/TLS certificate that you want to attach to the distribution.</p> <p>Only certificates with a status of <code>ISSUED</code> can be attached to a distribution.</p> <p>Use the <a href=\"https://docs.aws.amazon.com/lightsail/2016-11-28/api-reference/API_GetCertificates.html\">GetCertificates</a> action to get a list of certificate names that you can specify.</p>"
+        },
+        "useDefaultCertificate":{
+          "shape":"boolean",
+          "documentation":"<p>Indicates whether the default SSL/TLS certificate is attached to the distribution. The default value is <code>true</code>. When <code>true</code>, the distribution uses the default domain name such as <code>d111111abcdef8.cloudfront.net</code>.</p> <p> Set this value to <code>false</code> to attach a new certificate to the distribution.</p>"
         }
       }
     },
@@ -12371,6 +12403,15 @@
           "documentation":"<p>An array of objects that describe the result of the action, such as the status of the request, the timestamp of the request, and the resources affected by the request.</p>"
         }
       }
+    },
+    "ViewerMinimumTlsProtocolVersionEnum":{
+      "type":"string",
+      "enum":[
+        "TLSv1.1_2016",
+        "TLSv1.2_2018",
+        "TLSv1.2_2019",
+        "TLSv1.2_2021"
+      ]
     },
     "boolean":{"type":"boolean"},
     "double":{"type":"double"},

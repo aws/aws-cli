@@ -7191,6 +7191,26 @@ CHANGELOG
 * feature:wizard: Added support for AWS CLI Wizards. See `#3752 <https://github.com/aws/aws-cli/issues/3752>`__.
 
 
+1.32.76
+=======
+
+* api-change:``ecs``: Documentation only update for Amazon ECS.
+* api-change:``glue``: Adding View related fields to responses of read-only Table APIs.
+* api-change:``ivschat``: Doc-only update. Changed "Resources" to "Key Concepts" in docs and updated text.
+* api-change:``rolesanywhere``: This release increases the limit on the roleArns request parameter for the *Profile APIs that support it. This parameter can now take up to 250 role ARNs.
+* api-change:``securityhub``: Documentation updates for AWS Security Hub
+
+
+1.32.75
+=======
+
+* api-change:``cloudwatch``: This release adds support for CloudWatch Anomaly Detection on cross-account metrics. SingleMetricAnomalyDetector and MetricDataQuery inputs to Anomaly Detection APIs now take an optional AccountId field.
+* api-change:``datazone``: This release supports the feature of AI recommendations for descriptions to enrich the business data catalog in Amazon DataZone.
+* api-change:``deadline``: AWS Deadline Cloud is a new fully managed service that helps customers set up, deploy, and scale rendering projects in minutes, so they can improve the efficiency of their rendering pipelines and take on more projects.
+* api-change:``emr``: This release fixes a broken link in the documentation.
+* api-change:``lightsail``: This release adds support to upgrade the TLS version of the distribution.
+
+
 1.32.74
 =======
 

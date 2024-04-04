@@ -3567,6 +3567,16 @@
           "shape": "__string",
           "locationName": "streamName",
           "documentation": "Used for MS Smooth and Apple HLS outputs. Indicates the name displayed by the player (eg. English, or Director Commentary)."
+        },
+        "AudioDashRoles": {
+          "shape": "__listOfDashRoleAudio",
+          "locationName": "audioDashRoles",
+          "documentation": "Identifies the DASH roles to assign to this audio output. Applies only when the audio output is configured for DVB DASH accessibility signaling."
+        },
+        "DvbDashAccessibility": {
+          "shape": "DvbDashAccessibility",
+          "locationName": "dvbDashAccessibility",
+          "documentation": "Identifies DVB DASH accessibility signaling in this audio output. Used in Microsoft Smooth Streaming outputs to signal accessibility information to packagers."
         }
       },
       "documentation": "Audio Description",
@@ -4600,6 +4610,16 @@
           "shape": "__string",
           "locationName": "name",
           "documentation": "Name of the caption description.  Used to associate a caption description with an output.  Names must be unique within an event."
+        },
+        "CaptionDashRoles": {
+          "shape": "__listOfDashRoleCaption",
+          "locationName": "captionDashRoles",
+          "documentation": "Identifies the DASH roles to assign to this captions output. Applies only when the captions output is configured for DVB DASH accessibility signaling."
+        },
+        "DvbDashAccessibility": {
+          "shape": "DvbDashAccessibility",
+          "locationName": "dvbDashAccessibility",
+          "documentation": "Identifies DVB DASH accessibility signaling in this captions output. Used in Microsoft Smooth Streaming outputs to signal accessibility information to packagers."
         }
       },
       "documentation": "Caption Description",
@@ -13576,6 +13596,10 @@
         "UdpGroupSettings": {
           "shape": "UdpGroupSettings",
           "locationName": "udpGroupSettings"
+        },
+        "CmafIngestGroupSettings": {
+          "shape": "CmafIngestGroupSettings",
+          "locationName": "cmafIngestGroupSettings"
         }
       },
       "documentation": "Output Group Settings"
@@ -13638,6 +13662,10 @@
         "UdpOutputSettings": {
           "shape": "UdpOutputSettings",
           "locationName": "udpOutputSettings"
+        },
+        "CmafIngestOutputSettings": {
+          "shape": "CmafIngestOutputSettings",
+          "locationName": "cmafIngestOutputSettings"
         }
       },
       "documentation": "Output Settings"
@@ -18202,6 +18230,141 @@
       "min": 64,
       "max": 2160,
       "documentation": "Placeholder documentation for __integerMin64Max2160"
+    },
+    "CmafIngestGroupSettings": {
+      "type": "structure",
+      "members": {
+        "Destination": {
+          "shape": "OutputLocationRef",
+          "locationName": "destination",
+          "documentation": "A HTTP destination for the tracks"
+        },
+        "NielsenId3Behavior": {
+          "shape": "CmafNielsenId3Behavior",
+          "locationName": "nielsenId3Behavior",
+          "documentation": "If set to passthrough, Nielsen inaudible tones for media tracking will be detected in the input audio and an equivalent ID3 tag will be inserted in the output."
+        },
+        "Scte35Type": {
+          "shape": "Scte35Type",
+          "locationName": "scte35Type",
+          "documentation": "Type of scte35 track to add. none or scte35WithoutSegmentation"
+        },
+        "SegmentLength": {
+          "shape": "__integerMin1",
+          "locationName": "segmentLength",
+          "documentation": "The nominal duration of segments. The units are specified in SegmentLengthUnits. The segments will end on the next keyframe after the specified duration, so the actual segment length might be longer, and it might be a fraction of the units."
+        },
+        "SegmentLengthUnits": {
+          "shape": "CmafIngestSegmentLengthUnits",
+          "locationName": "segmentLengthUnits",
+          "documentation": "Time unit for segment length parameter."
+        },
+        "SendDelayMs": {
+          "shape": "__integerMin0Max2000",
+          "locationName": "sendDelayMs",
+          "documentation": "Number of milliseconds to delay the output from the second pipeline."
+        }
+      },
+      "documentation": "Cmaf Ingest Group Settings",
+      "required": [
+        "Destination"
+      ]
+    },
+    "CmafIngestOutputSettings": {
+      "type": "structure",
+      "members": {
+        "NameModifier": {
+          "shape": "__string",
+          "locationName": "nameModifier",
+          "documentation": "String concatenated to the end of the destination filename.  Required for multiple outputs of the same type."
+        }
+      },
+      "documentation": "Cmaf Ingest Output Settings"
+    },
+    "CmafIngestSegmentLengthUnits": {
+      "type": "string",
+      "documentation": "Cmaf Ingest Segment Length Units",
+      "enum": [
+        "MILLISECONDS",
+        "SECONDS"
+      ]
+    },
+    "CmafNielsenId3Behavior": {
+      "type": "string",
+      "documentation": "Cmaf Nielsen Id3 Behavior",
+      "enum": [
+        "NO_PASSTHROUGH",
+        "PASSTHROUGH"
+      ]
+    },
+    "DashRoleAudio": {
+      "type": "string",
+      "documentation": "Dash Role Audio",
+      "enum": [
+        "ALTERNATE",
+        "COMMENTARY",
+        "DESCRIPTION",
+        "DUB",
+        "EMERGENCY",
+        "ENHANCED-AUDIO-INTELLIGIBILITY",
+        "KARAOKE",
+        "MAIN",
+        "SUPPLEMENTARY"
+      ]
+    },
+    "DashRoleCaption": {
+      "type": "string",
+      "documentation": "Dash Role Caption",
+      "enum": [
+        "ALTERNATE",
+        "CAPTION",
+        "COMMENTARY",
+        "DESCRIPTION",
+        "DUB",
+        "EASYREADER",
+        "EMERGENCY",
+        "FORCED-SUBTITLE",
+        "KARAOKE",
+        "MAIN",
+        "METADATA",
+        "SUBTITLE",
+        "SUPPLEMENTARY"
+      ]
+    },
+    "DvbDashAccessibility": {
+      "type": "string",
+      "documentation": "Dvb Dash Accessibility",
+      "enum": [
+        "DVBDASH_1_VISUALLY_IMPAIRED",
+        "DVBDASH_2_HARD_OF_HEARING",
+        "DVBDASH_3_SUPPLEMENTAL_COMMENTARY",
+        "DVBDASH_4_DIRECTORS_COMMENTARY",
+        "DVBDASH_5_EDUCATIONAL_NOTES",
+        "DVBDASH_6_MAIN_PROGRAM",
+        "DVBDASH_7_CLEAN_FEED"
+      ]
+    },
+    "__listOfDashRoleAudio": {
+      "type": "list",
+      "member": {
+        "shape": "DashRoleAudio"
+      },
+      "documentation": "Placeholder documentation for __listOfDashRoleAudio"
+    },
+    "__listOfDashRoleCaption": {
+      "type": "list",
+      "member": {
+        "shape": "DashRoleCaption"
+      },
+      "documentation": "Placeholder documentation for __listOfDashRoleCaption"
+    },
+    "Scte35Type": {
+      "type": "string",
+      "documentation": "Scte35 Type",
+      "enum": [
+        "NONE",
+        "SCTE_35_WITHOUT_SEGMENTATION"
+      ]
     }
   },
   "documentation": "API for AWS Elemental MediaLive"

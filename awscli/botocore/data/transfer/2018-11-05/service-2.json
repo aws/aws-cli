@@ -418,7 +418,7 @@
         {"shape":"InternalServiceError"},
         {"shape":"ServiceUnavailableException"}
       ],
-      "documentation":"<p>Describes the security policy that is attached to your file transfer protocol-enabled server. The response contains a description of the security policy's properties. For more information about security policies, see <a href=\"https://docs.aws.amazon.com/transfer/latest/userguide/security-policies.html\">Working with security policies</a>.</p>"
+      "documentation":"<p>Describes the security policy that is attached to your server or SFTP connector. The response contains a description of the security policy's properties. For more information about security policies, see <a href=\"https://docs.aws.amazon.com/transfer/latest/userguide/security-policies.html\">Working with security policies for servers</a> or <a href=\"https://docs.aws.amazon.com/transfer/latest/userguide/security-policies-connectors.html\">Working with security policies for SFTP connectors</a>.</p>"
     },
     "DescribeServer":{
       "name":"DescribeServer",
@@ -653,7 +653,7 @@
         {"shape":"ServiceUnavailableException"},
         {"shape":"InvalidNextTokenException"}
       ],
-      "documentation":"<p>Lists the security policies that are attached to your file transfer protocol-enabled servers.</p>"
+      "documentation":"<p>Lists the security policies that are attached to your servers and SFTP connectors. For more information about security policies, see <a href=\"https://docs.aws.amazon.com/transfer/latest/userguide/security-policies.html\">Working with security policies for servers</a> or <a href=\"https://docs.aws.amazon.com/transfer/latest/userguide/security-policies-connectors.html\">Working with security policies for SFTP connectors</a>.</p>"
     },
     "ListServers":{
       "name":"ListServers",
@@ -1174,6 +1174,12 @@
       "min":19,
       "pattern":"c-([0-9a-f]{17})"
     },
+    "ConnectorSecurityPolicyName":{
+      "type":"string",
+      "max":100,
+      "min":0,
+      "pattern":"TransferSFTPConnectorSecurityPolicy-[A-Za-z0-9-]+"
+    },
     "CopyStepDetails":{
       "type":"structure",
       "members":{
@@ -1336,6 +1342,10 @@
         "SftpConfig":{
           "shape":"SftpConnectorConfig",
           "documentation":"<p>A structure that contains the parameters for an SFTP connector object.</p>"
+        },
+        "SecurityPolicyName":{
+          "shape":"ConnectorSecurityPolicyName",
+          "documentation":"<p>Specifies the name of the security policy for the connector.</p>"
         }
       }
     },
@@ -1437,7 +1447,7 @@
         },
         "SecurityPolicyName":{
           "shape":"SecurityPolicyName",
-          "documentation":"<p>Specifies the name of the security policy that is attached to the server.</p>"
+          "documentation":"<p>Specifies the name of the security policy for the server.</p>"
         },
         "Tags":{
           "shape":"Tags",
@@ -1980,7 +1990,7 @@
       "members":{
         "SecurityPolicyName":{
           "shape":"SecurityPolicyName",
-          "documentation":"<p>Specifies the name of the security policy that is attached to the server.</p>"
+          "documentation":"<p>Specify the text name of the security policy for which you want the details.</p>"
         }
       }
     },
@@ -2248,6 +2258,10 @@
         "ServiceManagedEgressIpAddresses":{
           "shape":"ServiceManagedEgressIpAddresses",
           "documentation":"<p>The list of egress IP addresses of this connector. These IP addresses are assigned automatically when you create the connector.</p>"
+        },
+        "SecurityPolicyName":{
+          "shape":"ConnectorSecurityPolicyName",
+          "documentation":"<p>The text name of the security policy for the specified connector.</p>"
         }
       },
       "documentation":"<p>Describes the parameters for the connector, as identified by the <code>ConnectorId</code>.</p>"
@@ -2359,30 +2373,42 @@
       "members":{
         "Fips":{
           "shape":"Fips",
-          "documentation":"<p>Specifies whether this policy enables Federal Information Processing Standards (FIPS).</p>"
+          "documentation":"<p>Specifies whether this policy enables Federal Information Processing Standards (FIPS). This parameter applies to both server and connector security policies.</p>"
         },
         "SecurityPolicyName":{
           "shape":"SecurityPolicyName",
-          "documentation":"<p>Specifies the name of the security policy that is attached to the server.</p>"
+          "documentation":"<p>The text name of the specified security policy.</p>"
         },
         "SshCiphers":{
           "shape":"SecurityPolicyOptions",
-          "documentation":"<p>Specifies the enabled Secure Shell (SSH) cipher encryption algorithms in the security policy that is attached to the server.</p>"
+          "documentation":"<p>Lists the enabled Secure Shell (SSH) cipher encryption algorithms in the security policy that is attached to the server or connector. This parameter applies to both server and connector security policies.</p>"
         },
         "SshKexs":{
           "shape":"SecurityPolicyOptions",
-          "documentation":"<p>Specifies the enabled SSH key exchange (KEX) encryption algorithms in the security policy that is attached to the server.</p>"
+          "documentation":"<p>Lists the enabled SSH key exchange (KEX) encryption algorithms in the security policy that is attached to the server or connector. This parameter applies to both server and connector security policies.</p>"
         },
         "SshMacs":{
           "shape":"SecurityPolicyOptions",
-          "documentation":"<p>Specifies the enabled SSH message authentication code (MAC) encryption algorithms in the security policy that is attached to the server.</p>"
+          "documentation":"<p>Lists the enabled SSH message authentication code (MAC) encryption algorithms in the security policy that is attached to the server or connector. This parameter applies to both server and connector security policies.</p>"
         },
         "TlsCiphers":{
           "shape":"SecurityPolicyOptions",
-          "documentation":"<p>Specifies the enabled Transport Layer Security (TLS) cipher encryption algorithms in the security policy that is attached to the server.</p>"
+          "documentation":"<p>Lists the enabled Transport Layer Security (TLS) cipher encryption algorithms in the security policy that is attached to the server.</p> <note> <p>This parameter only applies to security policies for servers.</p> </note>"
+        },
+        "SshHostKeyAlgorithms":{
+          "shape":"SecurityPolicyOptions",
+          "documentation":"<p>Lists the host key algorithms for the security policy.</p> <note> <p>This parameter only applies to security policies for connectors.</p> </note>"
+        },
+        "Type":{
+          "shape":"SecurityPolicyResourceType",
+          "documentation":"<p>The resource type to which the security policy applies, either server or connector.</p>"
+        },
+        "Protocols":{
+          "shape":"SecurityPolicyProtocols",
+          "documentation":"<p>Lists the file transfer protocols that the security policy applies to.</p>"
         }
       },
-      "documentation":"<p>Describes the properties of a security policy that was specified. For more information about security policies, see <a href=\"https://docs.aws.amazon.com/transfer/latest/userguide/security-policies.html\">Working with security policies</a>.</p>"
+      "documentation":"<p>Describes the properties of a security policy that you specify. For more information about security policies, see <a href=\"https://docs.aws.amazon.com/transfer/latest/userguide/security-policies.html\">Working with security policies for servers</a> or <a href=\"https://docs.aws.amazon.com/transfer/latest/userguide/security-policies-connectors.html\">Working with security policies for SFTP connectors</a>.</p>"
     },
     "DescribedServer":{
       "type":"structure",
@@ -2442,7 +2468,7 @@
         },
         "SecurityPolicyName":{
           "shape":"SecurityPolicyName",
-          "documentation":"<p>Specifies the name of the security policy that is attached to the server.</p>"
+          "documentation":"<p>Specifies the name of the security policy for the server.</p>"
         },
         "ServerId":{
           "shape":"ServerId",
@@ -4144,7 +4170,7 @@
       "type":"string",
       "max":100,
       "min":0,
-      "pattern":"TransferSecurityPolicy-.+"
+      "pattern":"Transfer[A-Za-z0-9]*SecurityPolicy-[A-Za-z0-9-]+"
     },
     "SecurityPolicyNames":{
       "type":"list",
@@ -4158,6 +4184,26 @@
     "SecurityPolicyOptions":{
       "type":"list",
       "member":{"shape":"SecurityPolicyOption"}
+    },
+    "SecurityPolicyProtocol":{
+      "type":"string",
+      "enum":[
+        "SFTP",
+        "FTPS"
+      ]
+    },
+    "SecurityPolicyProtocols":{
+      "type":"list",
+      "member":{"shape":"SecurityPolicyProtocol"},
+      "max":5,
+      "min":1
+    },
+    "SecurityPolicyResourceType":{
+      "type":"string",
+      "enum":[
+        "SERVER",
+        "CONNECTOR"
+      ]
     },
     "SendWorkflowStepStateRequest":{
       "type":"structure",
@@ -4785,6 +4831,10 @@
         "SftpConfig":{
           "shape":"SftpConnectorConfig",
           "documentation":"<p>A structure that contains the parameters for an SFTP connector object.</p>"
+        },
+        "SecurityPolicyName":{
+          "shape":"ConnectorSecurityPolicyName",
+          "documentation":"<p>Specifies the name of the security policy for the connector.</p>"
         }
       }
     },
@@ -4907,7 +4957,7 @@
         },
         "SecurityPolicyName":{
           "shape":"SecurityPolicyName",
-          "documentation":"<p>Specifies the name of the security policy that is attached to the server.</p>"
+          "documentation":"<p>Specifies the name of the security policy for the server.</p>"
         },
         "ServerId":{
           "shape":"ServerId",

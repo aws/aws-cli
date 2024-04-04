@@ -789,6 +789,26 @@
       ],
       "documentation":"<p>Deletes a subscription target in Amazon DataZone.</p>"
     },
+    "DeleteTimeSeriesDataPoints":{
+      "name":"DeleteTimeSeriesDataPoints",
+      "http":{
+        "method":"DELETE",
+        "requestUri":"/v2/domains/{domainIdentifier}/entities/{entityType}/{entityIdentifier}/time-series-data-points",
+        "responseCode":204
+      },
+      "input":{"shape":"DeleteTimeSeriesDataPointsInput"},
+      "output":{"shape":"DeleteTimeSeriesDataPointsOutput"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ValidationException"},
+        {"shape":"UnauthorizedException"}
+      ],
+      "documentation":"<p>Deletes the specified time series form for the specified asset. </p>",
+      "idempotent":true
+    },
     "GetAsset":{
       "name":"GetAsset",
       "http":{
@@ -1194,6 +1214,25 @@
       ],
       "documentation":"<p>Gets the subscription target in Amazon DataZone.</p>"
     },
+    "GetTimeSeriesDataPoint":{
+      "name":"GetTimeSeriesDataPoint",
+      "http":{
+        "method":"GET",
+        "requestUri":"/v2/domains/{domainIdentifier}/entities/{entityType}/{entityIdentifier}/time-series-data-points/{identifier}",
+        "responseCode":200
+      },
+      "input":{"shape":"GetTimeSeriesDataPointInput"},
+      "output":{"shape":"GetTimeSeriesDataPointOutput"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ValidationException"},
+        {"shape":"UnauthorizedException"}
+      ],
+      "documentation":"<p>Gets the existing data point for the asset.</p>"
+    },
     "GetUserProfile":{
       "name":"GetUserProfile",
       "http":{
@@ -1559,6 +1598,47 @@
         {"shape":"UnauthorizedException"}
       ],
       "documentation":"<p>Lists tags for the specified resource in Amazon DataZone.</p>"
+    },
+    "ListTimeSeriesDataPoints":{
+      "name":"ListTimeSeriesDataPoints",
+      "http":{
+        "method":"GET",
+        "requestUri":"/v2/domains/{domainIdentifier}/entities/{entityType}/{entityIdentifier}/time-series-data-points",
+        "responseCode":200
+      },
+      "input":{"shape":"ListTimeSeriesDataPointsInput"},
+      "output":{"shape":"ListTimeSeriesDataPointsOutput"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ValidationException"},
+        {"shape":"UnauthorizedException"}
+      ],
+      "documentation":"<p>Lists time series data points.</p>"
+    },
+    "PostTimeSeriesDataPoints":{
+      "name":"PostTimeSeriesDataPoints",
+      "http":{
+        "method":"POST",
+        "requestUri":"/v2/domains/{domainIdentifier}/entities/{entityType}/{entityIdentifier}/time-series-data-points",
+        "responseCode":201
+      },
+      "input":{"shape":"PostTimeSeriesDataPointsInput"},
+      "output":{"shape":"PostTimeSeriesDataPointsOutput"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ServiceQuotaExceededException"},
+        {"shape":"ConflictException"},
+        {"shape":"ValidationException"},
+        {"shape":"UnauthorizedException"}
+      ],
+      "documentation":"<p>Posts time series data points to Amazon DataZone for the specified asset.</p>",
+      "idempotent":true
     },
     "PutEnvironmentBlueprintConfiguration":{
       "name":"PutEnvironmentBlueprintConfiguration",
@@ -2383,6 +2463,10 @@
           "shape":"FormOutputList",
           "documentation":"<p>The forms included in the additional attributes of an inventory asset.</p>"
         },
+        "latestTimeSeriesDataPointFormsOutput":{
+          "shape":"TimeSeriesDataPointSummaryFormOutputList",
+          "documentation":"<p>The latest time series data points forms included in the additional attributes of an asset.</p>"
+        },
         "readOnlyFormsOutput":{
           "shape":"FormOutputList",
           "documentation":"<p>The read-only forms included in the additional attributes of an inventory asset.</p>"
@@ -2416,6 +2500,10 @@
         "glossaryTerms":{
           "shape":"DetailedGlossaryTerms",
           "documentation":"<p>The glossary terms attached to an asset published in an Amazon DataZone catalog. </p>"
+        },
+        "latestTimeSeriesDataPointForms":{
+          "shape":"TimeSeriesDataPointSummaryFormOutputList",
+          "documentation":"<p>The latest time series data points forms included in the additional attributes of an asset.</p>"
         },
         "owningProjectId":{
           "shape":"ProjectId",
@@ -2506,6 +2594,10 @@
         "forms":{
           "shape":"Forms",
           "documentation":"<p>The metadata forms that form additional attributes of the metadata asset.</p>"
+        },
+        "latestTimeSeriesDataPointForms":{
+          "shape":"TimeSeriesDataPointSummaryFormOutputList",
+          "documentation":"<p>The latest time series data points forms included in the additional attributes of an asset.</p>"
         }
       },
       "documentation":"<p>Additional attributes of an inventory asset.</p>"
@@ -2980,6 +3072,10 @@
           "shape":"AssetId",
           "documentation":"<p>The unique identifier of the created asset.</p>"
         },
+        "latestTimeSeriesDataPointFormsOutput":{
+          "shape":"TimeSeriesDataPointSummaryFormOutputList",
+          "documentation":"<p>The latest data point that was imported into the time series form for the asset. </p>"
+        },
         "listing":{
           "shape":"AssetListingDetails",
           "documentation":"<p>The details of an asset published in an Amazon DataZone catalog.</p>"
@@ -3117,6 +3213,10 @@
         "id":{
           "shape":"AssetId",
           "documentation":"<p>The unique identifier of the asset revision.</p>"
+        },
+        "latestTimeSeriesDataPointFormsOutput":{
+          "shape":"TimeSeriesDataPointSummaryFormOutputList",
+          "documentation":"<p>The latest data point that was imported into the time series form for the asset. </p>"
         },
         "listing":{
           "shape":"AssetListingDetails",
@@ -4036,7 +4136,7 @@
           "locationName":"domainIdentifier"
         },
         "entityIdentifier":{
-          "shape":"EntityId",
+          "shape":"EntityIdentifier",
           "documentation":"<p>The ID of the asset.</p>"
         },
         "entityRevision":{
@@ -4644,6 +4744,10 @@
         "SKIPPED_NO_ACCESS",
         "UNCHANGED"
       ]
+    },
+    "DataPointIdentifier":{
+      "type":"string",
+      "pattern":"^[a-zA-Z0-9_-]{0,36}$"
     },
     "DataProductDescription":{
       "type":"string",
@@ -5595,6 +5699,53 @@
         }
       }
     },
+    "DeleteTimeSeriesDataPointsInput":{
+      "type":"structure",
+      "required":[
+        "domainIdentifier",
+        "entityIdentifier",
+        "entityType",
+        "formName"
+      ],
+      "members":{
+        "clientToken":{
+          "shape":"ClientToken",
+          "documentation":"<p>A unique, case-sensitive identifier to ensure idempotency of the request. This field is automatically populated if not provided.</p>",
+          "idempotencyToken":true,
+          "location":"querystring",
+          "locationName":"clientToken"
+        },
+        "domainIdentifier":{
+          "shape":"DomainId",
+          "documentation":"<p>The ID of the Amazon DataZone domain that houses the asset for which you want to delete a time series form.</p>",
+          "location":"uri",
+          "locationName":"domainIdentifier"
+        },
+        "entityIdentifier":{
+          "shape":"EntityIdentifier",
+          "documentation":"<p>The ID of the asset for which you want to delete a time series form.</p>",
+          "location":"uri",
+          "locationName":"entityIdentifier"
+        },
+        "entityType":{
+          "shape":"TimeSeriesEntityType",
+          "documentation":"<p>The type of the asset for which you want to delete a time series form.</p>",
+          "location":"uri",
+          "locationName":"entityType"
+        },
+        "formName":{
+          "shape":"TimeSeriesFormName",
+          "documentation":"<p>The name of the time series form that you want to delete.</p>",
+          "location":"querystring",
+          "locationName":"formName"
+        }
+      }
+    },
+    "DeleteTimeSeriesDataPointsOutput":{
+      "type":"structure",
+      "members":{
+      }
+    },
     "Deployment":{
       "type":"structure",
       "members":{
@@ -5792,7 +5943,14 @@
       "member":{"shape":"RegionName"},
       "min":0
     },
-    "EntityId":{"type":"string"},
+    "EntityId":{
+      "type":"string",
+      "pattern":"^[a-zA-Z0-9_-]{1,36}$"
+    },
+    "EntityIdentifier":{
+      "type":"string",
+      "pattern":"^[a-zA-Z0-9_-]{1,36}$"
+    },
     "EntityType":{
       "type":"string",
       "enum":["ASSET"]
@@ -6504,6 +6662,10 @@
         "id":{
           "shape":"AssetId",
           "documentation":"<p>The ID of the asset.</p>"
+        },
+        "latestTimeSeriesDataPointFormsOutput":{
+          "shape":"TimeSeriesDataPointSummaryFormOutputList",
+          "documentation":"<p>The latest data point that was imported into the time series form for the asset. </p>"
         },
         "listing":{
           "shape":"AssetListingDetails",
@@ -8119,6 +8281,73 @@
         }
       }
     },
+    "GetTimeSeriesDataPointInput":{
+      "type":"structure",
+      "required":[
+        "domainIdentifier",
+        "entityIdentifier",
+        "entityType",
+        "formName",
+        "identifier"
+      ],
+      "members":{
+        "domainIdentifier":{
+          "shape":"DomainId",
+          "documentation":"<p>The ID of the Amazon DataZone domain that houses the asset for which you want to get the data point.</p>",
+          "location":"uri",
+          "locationName":"domainIdentifier"
+        },
+        "entityIdentifier":{
+          "shape":"EntityIdentifier",
+          "documentation":"<p>The ID of the asset for which you want to get the data point.</p>",
+          "location":"uri",
+          "locationName":"entityIdentifier"
+        },
+        "entityType":{
+          "shape":"TimeSeriesEntityType",
+          "documentation":"<p>The type of the asset for which you want to get the data point.</p>",
+          "location":"uri",
+          "locationName":"entityType"
+        },
+        "formName":{
+          "shape":"TimeSeriesFormName",
+          "documentation":"<p>The name of the time series form that houses the data point that you want to get.</p>",
+          "location":"querystring",
+          "locationName":"formName"
+        },
+        "identifier":{
+          "shape":"TimeSeriesDataPointIdentifier",
+          "documentation":"<p>The ID of the data point that you want to get.</p>",
+          "location":"uri",
+          "locationName":"identifier"
+        }
+      }
+    },
+    "GetTimeSeriesDataPointOutput":{
+      "type":"structure",
+      "members":{
+        "domainId":{
+          "shape":"DomainId",
+          "documentation":"<p>The ID of the Amazon DataZone domain that houses the asset data point that you want to get.</p>"
+        },
+        "entityId":{
+          "shape":"EntityId",
+          "documentation":"<p>The ID of the asset for which you want to get the data point.</p>"
+        },
+        "entityType":{
+          "shape":"TimeSeriesEntityType",
+          "documentation":"<p>The type of the asset for which you want to get the data point.</p>"
+        },
+        "form":{
+          "shape":"TimeSeriesDataPointFormOutput",
+          "documentation":"<p>The time series form that houses the data point that you want to get.</p>"
+        },
+        "formName":{
+          "shape":"TimeSeriesFormName",
+          "documentation":"<p>The name of the time series form that houses the data point that you want to get.</p>"
+        }
+      }
+    },
     "GetUserProfileInput":{
       "type":"structure",
       "required":[
@@ -8332,6 +8561,10 @@
       "type":"structure",
       "required":["relationalFilterConfigurations"],
       "members":{
+        "autoImportDataQualityResult":{
+          "shape":"Boolean",
+          "documentation":"<p>Specifies whether to automatically import data quality metrics as part of the data source run.</p>"
+        },
         "dataAccessRole":{
           "shape":"GlueRunConfigurationInputDataAccessRoleString",
           "documentation":"<p>The data access role included in the configuration details of the Amazon Web Services Glue data source.</p>"
@@ -8354,6 +8587,10 @@
         "accountId":{
           "shape":"GlueRunConfigurationOutputAccountIdString",
           "documentation":"<p>The Amazon Web Services account ID included in the configuration details of the Amazon Web Services Glue data source. </p>"
+        },
+        "autoImportDataQualityResult":{
+          "shape":"Boolean",
+          "documentation":"<p>Specifies whether to automatically import data quality metrics as part of the data source run.</p>"
         },
         "dataAccessRole":{
           "shape":"GlueRunConfigurationOutputDataAccessRoleString",
@@ -9593,6 +9830,78 @@
         }
       }
     },
+    "ListTimeSeriesDataPointsInput":{
+      "type":"structure",
+      "required":[
+        "domainIdentifier",
+        "entityIdentifier",
+        "entityType",
+        "formName"
+      ],
+      "members":{
+        "domainIdentifier":{
+          "shape":"DomainId",
+          "documentation":"<p>The ID of the Amazon DataZone domain that houses the assets for which you want to list time series data points.</p>",
+          "location":"uri",
+          "locationName":"domainIdentifier"
+        },
+        "endedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp at which the data points that you wanted to list ended.</p>",
+          "location":"querystring",
+          "locationName":"endedAt"
+        },
+        "entityIdentifier":{
+          "shape":"EntityIdentifier",
+          "documentation":"<p>The ID of the asset for which you want to list data points.</p>",
+          "location":"uri",
+          "locationName":"entityIdentifier"
+        },
+        "entityType":{
+          "shape":"TimeSeriesEntityType",
+          "documentation":"<p>The type of the asset for which you want to list data points.</p>",
+          "location":"uri",
+          "locationName":"entityType"
+        },
+        "formName":{
+          "shape":"TimeSeriesFormName",
+          "documentation":"<p>The name of the time series data points form.</p>",
+          "location":"querystring",
+          "locationName":"formName"
+        },
+        "maxResults":{
+          "shape":"MaxResults",
+          "documentation":"<p>The maximum number of data points to return in a single call to ListTimeSeriesDataPoints. When the number of data points to be listed is greater than the value of MaxResults, the response contains a NextToken value that you can use in a subsequent call to ListTimeSeriesDataPoints to list the next set of data points.</p>",
+          "location":"querystring",
+          "locationName":"maxResults"
+        },
+        "nextToken":{
+          "shape":"PaginationToken",
+          "documentation":"<p>When the number of data points is greater than the default value for the MaxResults parameter, or if you explicitly specify a value for MaxResults that is less than the number of data points, the response includes a pagination token named NextToken. You can specify this NextToken value in a subsequent call to ListTimeSeriesDataPoints to list the next set of data points.</p>",
+          "location":"querystring",
+          "locationName":"nextToken"
+        },
+        "startedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp at which the data points that you want to list started.</p>",
+          "location":"querystring",
+          "locationName":"startedAt"
+        }
+      }
+    },
+    "ListTimeSeriesDataPointsOutput":{
+      "type":"structure",
+      "members":{
+        "items":{
+          "shape":"TimeSeriesDataPointSummaryFormOutputList",
+          "documentation":"<p>The results of the ListTimeSeriesDataPoints action. </p>"
+        },
+        "nextToken":{
+          "shape":"PaginationToken",
+          "documentation":"<p>When the number of data points is greater than the default value for the MaxResults parameter, or if you explicitly specify a value for MaxResults that is less than the number of data points, the response includes a pagination token named NextToken. You can specify this NextToken value in a subsequent call to ListTimeSeriesDataPoints to list the next set of data points.</p>"
+        }
+      }
+    },
     "ListingId":{
       "type":"string",
       "pattern":"^[a-zA-Z0-9_-]{1,36}$"
@@ -9941,6 +10250,65 @@
       "type":"string",
       "max":8192,
       "min":1
+    },
+    "PostTimeSeriesDataPointsInput":{
+      "type":"structure",
+      "required":[
+        "domainIdentifier",
+        "entityIdentifier",
+        "entityType",
+        "forms"
+      ],
+      "members":{
+        "clientToken":{
+          "shape":"ClientToken",
+          "documentation":"<p>A unique, case-sensitive identifier that is provided to ensure the idempotency of the request.</p>",
+          "idempotencyToken":true
+        },
+        "domainIdentifier":{
+          "shape":"DomainId",
+          "documentation":"<p>The ID of the Amazon DataZone domain in which you want to post time series data points.</p>",
+          "location":"uri",
+          "locationName":"domainIdentifier"
+        },
+        "entityIdentifier":{
+          "shape":"EntityIdentifier",
+          "documentation":"<p>The ID of the asset for which you want to post time series data points.</p>",
+          "location":"uri",
+          "locationName":"entityIdentifier"
+        },
+        "entityType":{
+          "shape":"TimeSeriesEntityType",
+          "documentation":"<p>The type of the asset for which you want to post data points.</p>",
+          "location":"uri",
+          "locationName":"entityType"
+        },
+        "forms":{
+          "shape":"TimeSeriesDataPointFormInputList",
+          "documentation":"<p>The forms that contain the data points that you want to post.</p>"
+        }
+      }
+    },
+    "PostTimeSeriesDataPointsOutput":{
+      "type":"structure",
+      "members":{
+        "domainId":{
+          "shape":"DomainId",
+          "documentation":"<p>The ID of the Amazon DataZone domain in which you want to post time series data points.</p>"
+        },
+        "entityId":{
+          "shape":"EntityId",
+          "documentation":"<p>The ID of the asset for which you want to post time series data points.</p>"
+        },
+        "entityType":{
+          "shape":"TimeSeriesEntityType",
+          "documentation":"<p>The type of the asset for which you want to post data points.</p>"
+        },
+        "forms":{
+          "shape":"TimeSeriesDataPointFormOutputList",
+          "documentation":"<p>The forms that contain the data points that you have posted.</p>"
+        }
+      }
     },
     "PredictionChoices":{
       "type":"list",
@@ -10949,7 +11317,10 @@
     },
     "SearchOutputAdditionalAttribute":{
       "type":"string",
-      "enum":["FORMS"]
+      "enum":[
+        "FORMS",
+        "TIME_SERIES_DATA_POINT_FORMS"
+      ]
     },
     "SearchOutputAdditionalAttributes":{
       "type":"list",
@@ -12025,6 +12396,150 @@
       },
       "exception":true,
       "retryable":{"throttling":false}
+    },
+    "TimeSeriesDataPointFormInput":{
+      "type":"structure",
+      "required":[
+        "formName",
+        "timestamp",
+        "typeIdentifier"
+      ],
+      "members":{
+        "content":{
+          "shape":"TimeSeriesDataPointFormInputContentString",
+          "documentation":"<p>The content of the time series data points form.</p>"
+        },
+        "formName":{
+          "shape":"TimeSeriesFormName",
+          "documentation":"<p>The name of the time series data points form.</p>"
+        },
+        "timestamp":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp of the time series data points form.</p>"
+        },
+        "typeIdentifier":{
+          "shape":"FormTypeIdentifier",
+          "documentation":"<p>The ID of the type of the time series data points form.</p>"
+        },
+        "typeRevision":{
+          "shape":"Revision",
+          "documentation":"<p>The revision type of the time series data points form.</p>"
+        }
+      },
+      "documentation":"<p>The time series data points form.</p>"
+    },
+    "TimeSeriesDataPointFormInputContentString":{
+      "type":"string",
+      "max":500000,
+      "min":0
+    },
+    "TimeSeriesDataPointFormInputList":{
+      "type":"list",
+      "member":{"shape":"TimeSeriesDataPointFormInput"}
+    },
+    "TimeSeriesDataPointFormOutput":{
+      "type":"structure",
+      "required":[
+        "formName",
+        "timestamp",
+        "typeIdentifier"
+      ],
+      "members":{
+        "content":{
+          "shape":"TimeSeriesDataPointFormOutputContentString",
+          "documentation":"<p>The content of the time series data points form.</p>"
+        },
+        "formName":{
+          "shape":"TimeSeriesFormName",
+          "documentation":"<p>The name of the time series data points form.</p>"
+        },
+        "id":{
+          "shape":"DataPointIdentifier",
+          "documentation":"<p>The ID of the time series data points form.</p>"
+        },
+        "timestamp":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp of the time series data points form.</p>"
+        },
+        "typeIdentifier":{
+          "shape":"FormTypeIdentifier",
+          "documentation":"<p>The ID of the type of the time series data points form.</p>"
+        },
+        "typeRevision":{
+          "shape":"Revision",
+          "documentation":"<p>The revision type of the time series data points form.</p>"
+        }
+      },
+      "documentation":"<p>The time series data points form.</p>"
+    },
+    "TimeSeriesDataPointFormOutputContentString":{
+      "type":"string",
+      "max":500000,
+      "min":0
+    },
+    "TimeSeriesDataPointFormOutputList":{
+      "type":"list",
+      "member":{"shape":"TimeSeriesDataPointFormOutput"}
+    },
+    "TimeSeriesDataPointIdentifier":{
+      "type":"string",
+      "pattern":"^[a-zA-Z0-9_-]{1,36}$"
+    },
+    "TimeSeriesDataPointSummaryFormOutput":{
+      "type":"structure",
+      "required":[
+        "formName",
+        "timestamp",
+        "typeIdentifier"
+      ],
+      "members":{
+        "contentSummary":{
+          "shape":"TimeSeriesDataPointSummaryFormOutputContentSummaryString",
+          "documentation":"<p>The content of the summary of the time series data points form.</p>"
+        },
+        "formName":{
+          "shape":"TimeSeriesFormName",
+          "documentation":"<p>The name of the time series data points summary form.</p>"
+        },
+        "id":{
+          "shape":"DataPointIdentifier",
+          "documentation":"<p>The ID of the time series data points summary form.</p>"
+        },
+        "timestamp":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp of the time series data points summary form.</p>"
+        },
+        "typeIdentifier":{
+          "shape":"FormTypeIdentifier",
+          "documentation":"<p>The type ID of the time series data points summary form.</p>"
+        },
+        "typeRevision":{
+          "shape":"Revision",
+          "documentation":"<p>The type revision of the time series data points summary form.</p>"
+        }
+      },
+      "documentation":"<p>The summary of the time series data points form.</p>"
+    },
+    "TimeSeriesDataPointSummaryFormOutputContentSummaryString":{
+      "type":"string",
+      "max":20000,
+      "min":0
+    },
+    "TimeSeriesDataPointSummaryFormOutputList":{
+      "type":"list",
+      "member":{"shape":"TimeSeriesDataPointSummaryFormOutput"}
+    },
+    "TimeSeriesEntityType":{
+      "type":"string",
+      "enum":[
+        "ASSET",
+        "LISTING"
+      ]
+    },
+    "TimeSeriesFormName":{
+      "type":"string",
+      "max":128,
+      "min":1
     },
     "Timestamp":{"type":"timestamp"},
     "Timezone":{

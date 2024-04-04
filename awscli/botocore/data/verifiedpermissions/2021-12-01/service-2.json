@@ -570,11 +570,11 @@
         },
         "action":{
           "shape":"ActionIdentifier",
-          "documentation":"<p>Specifies the requested action to be authorized. For example, is the principal authorized to perform this action on the resource?</p>"
+          "documentation":"<p>Specifies the requested action to be authorized. For example, <code>PhotoFlash::ReadPhoto</code>.</p>"
         },
         "resource":{
           "shape":"EntityIdentifier",
-          "documentation":"<p>Specifies the resource for which the authorization decision is to be made.</p>"
+          "documentation":"<p>Specifies the resource that you want an authorization decision for. For example, <code>PhotoFlash::Photo</code>.</p>"
         },
         "context":{
           "shape":"ContextDefinition",
@@ -621,7 +621,7 @@
         },
         "errors":{
           "shape":"EvaluationErrorList",
-          "documentation":"<p>Errors that occurred while making an authorization decision, for example, a policy references an Entity or entity Attribute that does not exist in the slice.</p>"
+          "documentation":"<p>Errors that occurred while making an authorization decision. For example, a policy might reference an entity or attribute that doesn't exist in the request.</p>"
         }
       },
       "documentation":"<p>The decision, based on policy evaluation, from an individual authorization request in a <code>BatchIsAuthorized</code> API request.</p>"
@@ -652,6 +652,37 @@
       "max":1000,
       "min":0
     },
+    "CognitoGroupConfiguration":{
+      "type":"structure",
+      "required":["groupEntityType"],
+      "members":{
+        "groupEntityType":{
+          "shape":"GroupEntityType",
+          "documentation":"<p>The name of the schema entity type that's mapped to the user pool group. Defaults to <code>AWS::CognitoGroup</code>.</p>"
+        }
+      },
+      "documentation":"<p>The type of entity that a policy store maps to groups from an Amazon Cognito user pool identity source.</p> <p>This data type is part of a <a href=\"https://docs.aws.amazon.com/verifiedpermissions/latest/apireference/API_CognitoUserPoolConfiguration.html\">CognitoUserPoolConfiguration</a> structure and is a request parameter in <a href=\"https://docs.aws.amazon.com/verifiedpermissions/latest/apireference/API_CreateIdentitySource.html\">CreateIdentitySource</a>.</p>"
+    },
+    "CognitoGroupConfigurationDetail":{
+      "type":"structure",
+      "members":{
+        "groupEntityType":{
+          "shape":"GroupEntityType",
+          "documentation":"<p>The name of the schema entity type that's mapped to the user pool group. Defaults to <code>AWS::CognitoGroup</code>.</p>"
+        }
+      },
+      "documentation":"<p>The type of entity that a policy store maps to groups from an Amazon Cognito user pool identity source.</p> <p>This data type is part of an <a href=\"https://docs.aws.amazon.com/verifiedpermissions/latest/apireference/API_CognitoUserPoolConfigurationItem.html\">CognitoUserPoolConfigurationDetail</a> structure and is a response parameter to <a href=\"https://docs.aws.amazon.com/verifiedpermissions/latest/apireference/API_GetIdentitySource.html\">GetIdentitySource</a>.</p>"
+    },
+    "CognitoGroupConfigurationItem":{
+      "type":"structure",
+      "members":{
+        "groupEntityType":{
+          "shape":"GroupEntityType",
+          "documentation":"<p>The name of the schema entity type that's mapped to the user pool group. Defaults to <code>AWS::CognitoGroup</code>.</p>"
+        }
+      },
+      "documentation":"<p>The type of entity that a policy store maps to groups from an Amazon Cognito user pool identity source.</p> <p>This data type is part of an <a href=\"https://docs.aws.amazon.com/verifiedpermissions/latest/apireference/API_CognitoUserPoolConfigurationDetail.html\">CognitoUserPoolConfigurationItem</a> structure and is a response parameter to <a href=\"http://forums.aws.amazon.com/verifiedpermissions/latest/apireference/API_ListIdentitySources.html\">ListIdentitySources</a>.</p>"
+    },
     "CognitoUserPoolConfiguration":{
       "type":"structure",
       "required":["userPoolArn"],
@@ -663,9 +694,13 @@
         "clientIds":{
           "shape":"ClientIds",
           "documentation":"<p>The unique application client IDs that are associated with the specified Amazon Cognito user pool.</p> <p>Example: <code>\"ClientIds\": [\"&amp;ExampleCogClientId;\"]</code> </p>"
+        },
+        "groupConfiguration":{
+          "shape":"CognitoGroupConfiguration",
+          "documentation":"<p>The type of entity that a policy store maps to groups from an Amazon Cognito user pool identity source.</p>"
         }
       },
-      "documentation":"<p>The configuration for an identity source that represents a connection to an Amazon Cognito user pool used as an identity provider for Verified Permissions.</p> <p>This data type is used as a field that is part of an <a href=\"https://docs.aws.amazon.com/verifiedpermissions/latest/apireference/API_Configuration.html\">Configuration</a> structure that is used as a parameter to <a href=\"https://docs.aws.amazon.com/verifiedpermissions/latest/apireference/API_CreateIdentitySource.html\">CreateIdentitySource</a>.</p> <p>Example:<code>\"CognitoUserPoolConfiguration\":{\"UserPoolArn\":\"arn:aws:cognito-idp:us-east-1:123456789012:userpool/us-east-1_1a2b3c4d5\",\"ClientIds\": [\"a1b2c3d4e5f6g7h8i9j0kalbmc\"]}</code> </p>"
+      "documentation":"<p>The configuration for an identity source that represents a connection to an Amazon Cognito user pool used as an identity provider for Verified Permissions.</p> <p>This data type is used as a field that is part of an <a href=\"https://docs.aws.amazon.com/verifiedpermissions/latest/apireference/API_Configuration.html\">Configuration</a> structure that is used as a parameter to <a href=\"https://docs.aws.amazon.com/verifiedpermissions/latest/apireference/API_CreateIdentitySource.html\">CreateIdentitySource</a>.</p> <p>Example:<code>\"CognitoUserPoolConfiguration\":{\"UserPoolArn\":\"arn:aws:cognito-idp:us-east-1:123456789012:userpool/us-east-1_1a2b3c4d5\",\"ClientIds\": [\"a1b2c3d4e5f6g7h8i9j0kalbmc\"],\"groupConfiguration\": {\"groupEntityType\": \"MyCorp::Group\"}}</code> </p>"
     },
     "CognitoUserPoolConfigurationDetail":{
       "type":"structure",
@@ -686,9 +721,13 @@
         "issuer":{
           "shape":"Issuer",
           "documentation":"<p>The OpenID Connect (OIDC) <code>issuer</code> ID of the Amazon Cognito user pool that contains the identities to be authorized.</p> <p>Example: <code>\"issuer\": \"https://cognito-idp.us-east-1.amazonaws.com/us-east-1_1a2b3c4d5\"</code> </p>"
+        },
+        "groupConfiguration":{
+          "shape":"CognitoGroupConfigurationDetail",
+          "documentation":"<p>The type of entity that a policy store maps to groups from an Amazon Cognito user pool identity source.</p>"
         }
       },
-      "documentation":"<p>The configuration for an identity source that represents a connection to an Amazon Cognito user pool used as an identity provider for Verified Permissions.</p> <p>This data type is used as a field that is part of an <a href=\"https://docs.aws.amazon.com/verifiedpermissions/latest/apireference/API_ConfigurationDetail.html\">ConfigurationDetail</a> structure that is part of the response to <a href=\"https://docs.aws.amazon.com/verifiedpermissions/latest/apireference/API_GetIdentitySource.html\">GetIdentitySource</a>.</p> <p>Example:<code>\"CognitoUserPoolConfiguration\":{\"UserPoolArn\":\"arn:aws:cognito-idp:us-east-1:123456789012:userpool/us-east-1_1a2b3c4d5\",\"ClientIds\": [\"a1b2c3d4e5f6g7h8i9j0kalbmc\"]}</code> </p>"
+      "documentation":"<p>The configuration for an identity source that represents a connection to an Amazon Cognito user pool used as an identity provider for Verified Permissions.</p> <p>This data type is used as a field that is part of an <a href=\"https://docs.aws.amazon.com/verifiedpermissions/latest/apireference/API_ConfigurationDetail.html\">ConfigurationDetail</a> structure that is part of the response to <a href=\"https://docs.aws.amazon.com/verifiedpermissions/latest/apireference/API_GetIdentitySource.html\">GetIdentitySource</a>.</p> <p>Example:<code>\"CognitoUserPoolConfiguration\":{\"UserPoolArn\":\"arn:aws:cognito-idp:us-east-1:123456789012:userpool/us-east-1_1a2b3c4d5\",\"ClientIds\": [\"a1b2c3d4e5f6g7h8i9j0kalbmc\"],\"groupConfiguration\": {\"groupEntityType\": \"MyCorp::Group\"}}</code> </p>"
     },
     "CognitoUserPoolConfigurationItem":{
       "type":"structure",
@@ -709,19 +748,23 @@
         "issuer":{
           "shape":"Issuer",
           "documentation":"<p>The OpenID Connect (OIDC) <code>issuer</code> ID of the Amazon Cognito user pool that contains the identities to be authorized.</p> <p>Example: <code>\"issuer\": \"https://cognito-idp.us-east-1.amazonaws.com/us-east-1_1a2b3c4d5\"</code> </p>"
+        },
+        "groupConfiguration":{
+          "shape":"CognitoGroupConfigurationItem",
+          "documentation":"<p>The type of entity that a policy store maps to groups from an Amazon Cognito user pool identity source.</p>"
         }
       },
-      "documentation":"<p>The configuration for an identity source that represents a connection to an Amazon Cognito user pool used as an identity provider for Verified Permissions.</p> <p>This data type is used as a field that is part of the <a href=\"https://docs.aws.amazon.com/verifiedpermissions/latest/apireference/API_ConfigurationItem.html\">ConfigurationItem</a> structure that is part of the response to <a href=\"https://docs.aws.amazon.com/verifiedpermissions/latest/apireference/API_ListIdentitySources.html\">ListIdentitySources</a>.</p> <p>Example:<code>\"CognitoUserPoolConfiguration\":{\"UserPoolArn\":\"arn:aws:cognito-idp:us-east-1:123456789012:userpool/us-east-1_1a2b3c4d5\",\"ClientIds\": [\"a1b2c3d4e5f6g7h8i9j0kalbmc\"]}</code> </p>"
+      "documentation":"<p>The configuration for an identity source that represents a connection to an Amazon Cognito user pool used as an identity provider for Verified Permissions.</p> <p>This data type is used as a field that is part of the <a href=\"https://docs.aws.amazon.com/verifiedpermissions/latest/apireference/API_ConfigurationItem.html\">ConfigurationItem</a> structure that is part of the response to <a href=\"https://docs.aws.amazon.com/verifiedpermissions/latest/apireference/API_ListIdentitySources.html\">ListIdentitySources</a>.</p> <p>Example:<code>\"CognitoUserPoolConfiguration\":{\"UserPoolArn\":\"arn:aws:cognito-idp:us-east-1:123456789012:userpool/us-east-1_1a2b3c4d5\",\"ClientIds\": [\"a1b2c3d4e5f6g7h8i9j0kalbmc\"],\"groupConfiguration\": {\"groupEntityType\": \"MyCorp::Group\"}}</code> </p>"
     },
     "Configuration":{
       "type":"structure",
       "members":{
         "cognitoUserPoolConfiguration":{
           "shape":"CognitoUserPoolConfiguration",
-          "documentation":"<p>Contains configuration details of a Amazon Cognito user pool that Verified Permissions can use as a source of authenticated identities as entities. It specifies the <a href=\"https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html\">Amazon Resource Name (ARN)</a> of a Amazon Cognito user pool and one or more application client IDs.</p> <p>Example: <code>\"configuration\":{\"cognitoUserPoolConfiguration\":{\"userPoolArn\":\"arn:aws:cognito-idp:us-east-1:123456789012:userpool/us-east-1_1a2b3c4d5\",\"clientIds\": [\"a1b2c3d4e5f6g7h8i9j0kalbmc\"]}}</code> </p>"
+          "documentation":"<p>Contains configuration details of a Amazon Cognito user pool that Verified Permissions can use as a source of authenticated identities as entities. It specifies the <a href=\"https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html\">Amazon Resource Name (ARN)</a> of a Amazon Cognito user pool and one or more application client IDs.</p> <p>Example: <code>\"configuration\":{\"cognitoUserPoolConfiguration\":{\"userPoolArn\":\"arn:aws:cognito-idp:us-east-1:123456789012:userpool/us-east-1_1a2b3c4d5\",\"clientIds\": [\"a1b2c3d4e5f6g7h8i9j0kalbmc\"],\"groupConfiguration\": {\"groupEntityType\": \"MyCorp::Group\"}}}</code> </p>"
         }
       },
-      "documentation":"<p>Contains configuration information used when creating a new identity source.</p> <note> <p>At this time, the only valid member of this structure is a Amazon Cognito user pool configuration.</p> <p>You must specify a <code>userPoolArn</code>, and optionally, a <code>ClientId</code>.</p> </note> <p>This data type is used as a request parameter for the <a href=\"https://docs.aws.amazon.com/verifiedpermissions/latest/apireference/API_CreateIdentitySource.html\">CreateIdentitySource</a> operation.</p>",
+      "documentation":"<p>Contains configuration information used when creating a new identity source.</p> <note> <p>At this time, the only valid member of this structure is a Amazon Cognito user pool configuration.</p> <p>Specifies a <code>userPoolArn</code>, a <code>groupConfiguration</code>, and a <code>ClientId</code>.</p> </note> <p>This data type is used as a request parameter for the <a href=\"https://docs.aws.amazon.com/verifiedpermissions/latest/apireference/API_CreateIdentitySource.html\">CreateIdentitySource</a> operation.</p>",
       "union":true
     },
     "ConfigurationDetail":{
@@ -729,7 +772,7 @@
       "members":{
         "cognitoUserPoolConfiguration":{
           "shape":"CognitoUserPoolConfigurationDetail",
-          "documentation":"<p>Contains configuration details of a Amazon Cognito user pool that Verified Permissions can use as a source of authenticated identities as entities. It specifies the <a href=\"https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html\">Amazon Resource Name (ARN)</a> of a Amazon Cognito user pool and one or more application client IDs.</p> <p>Example: <code>\"configuration\":{\"cognitoUserPoolConfiguration\":{\"userPoolArn\":\"arn:aws:cognito-idp:us-east-1:123456789012:userpool/us-east-1_1a2b3c4d5\",\"clientIds\": [\"a1b2c3d4e5f6g7h8i9j0kalbmc\"]}}</code> </p>"
+          "documentation":"<p>Contains configuration details of a Amazon Cognito user pool that Verified Permissions can use as a source of authenticated identities as entities. It specifies the <a href=\"https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html\">Amazon Resource Name (ARN)</a> of a Amazon Cognito user pool, the policy store entity that you want to assign to user groups, and one or more application client IDs.</p> <p>Example: <code>\"configuration\":{\"cognitoUserPoolConfiguration\":{\"userPoolArn\":\"arn:aws:cognito-idp:us-east-1:123456789012:userpool/us-east-1_1a2b3c4d5\",\"clientIds\": [\"a1b2c3d4e5f6g7h8i9j0kalbmc\"],\"groupConfiguration\": {\"groupEntityType\": \"MyCorp::Group\"}}}</code> </p>"
         }
       },
       "documentation":"<p>Contains configuration information about an identity source.</p> <p>This data type is a response parameter to the <a href=\"https://docs.aws.amazon.com/verifiedpermissions/latest/apireference/API_GetIdentitySource.html\">GetIdentitySource</a> operation.</p>",
@@ -740,7 +783,7 @@
       "members":{
         "cognitoUserPoolConfiguration":{
           "shape":"CognitoUserPoolConfigurationItem",
-          "documentation":"<p>Contains configuration details of a Amazon Cognito user pool that Verified Permissions can use as a source of authenticated identities as entities. It specifies the <a href=\"https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html\">Amazon Resource Name (ARN)</a> of a Amazon Cognito user pool and one or more application client IDs.</p> <p>Example: <code>\"configuration\":{\"cognitoUserPoolConfiguration\":{\"userPoolArn\":\"arn:aws:cognito-idp:us-east-1:123456789012:userpool/us-east-1_1a2b3c4d5\",\"clientIds\": [\"a1b2c3d4e5f6g7h8i9j0kalbmc\"]}}</code> </p>"
+          "documentation":"<p>Contains configuration details of a Amazon Cognito user pool that Verified Permissions can use as a source of authenticated identities as entities. It specifies the <a href=\"https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html\">Amazon Resource Name (ARN)</a> of a Amazon Cognito user pool, the policy store entity that you want to assign to user groups, and one or more application client IDs.</p> <p>Example: <code>\"configuration\":{\"cognitoUserPoolConfiguration\":{\"userPoolArn\":\"arn:aws:cognito-idp:us-east-1:123456789012:userpool/us-east-1_1a2b3c4d5\",\"clientIds\": [\"a1b2c3d4e5f6g7h8i9j0kalbmc\"],\"groupConfiguration\": {\"groupEntityType\": \"MyCorp::Group\"}}}</code> </p>"
         }
       },
       "documentation":"<p>Contains configuration information about an identity source.</p> <p>This data type is a response parameter to the <a href=\"https://docs.aws.amazon.com/verifiedpermissions/latest/apireference/API_ListIdentitySources.html\">ListIdentitySources</a> operation.</p>",
@@ -1464,6 +1507,13 @@
         }
       }
     },
+    "GroupEntityType":{
+      "type":"string",
+      "max":200,
+      "min":1,
+      "pattern":"([_a-zA-Z][_a-zA-Z0-9]*::)*[_a-zA-Z][_a-zA-Z0-9]*",
+      "sensitive":true
+    },
     "IdempotencyToken":{
       "type":"string",
       "max":64,
@@ -1719,6 +1769,10 @@
         "errors":{
           "shape":"EvaluationErrorList",
           "documentation":"<p>Errors that occurred while making an authorization decision. For example, a policy references an entity or entity attribute that does not exist in the slice.</p>"
+        },
+        "principal":{
+          "shape":"EntityIdentifier",
+          "documentation":"<p>The identifier of the principal in the ID or access token.</p>"
         }
       }
     },
@@ -1753,7 +1807,6 @@
     "ListIdentitySourcesMaxResults":{
       "type":"integer",
       "box":true,
-      "max":200,
       "min":1
     },
     "ListIdentitySourcesOutput":{
@@ -1873,7 +1926,6 @@
     "MaxResults":{
       "type":"integer",
       "box":true,
-      "max":50,
       "min":1
     },
     "Namespace":{
@@ -2435,6 +2487,17 @@
       "pattern":"[A-Za-z0-9-_=]+.[A-Za-z0-9-_=]+.[A-Za-z0-9-_=]+",
       "sensitive":true
     },
+    "UpdateCognitoGroupConfiguration":{
+      "type":"structure",
+      "required":["groupEntityType"],
+      "members":{
+        "groupEntityType":{
+          "shape":"GroupEntityType",
+          "documentation":"<p>The name of the schema entity type that's mapped to the user pool group. Defaults to <code>AWS::CognitoGroup</code>.</p>"
+        }
+      },
+      "documentation":"<p>The user group entities from an Amazon Cognito user pool identity source.</p>"
+    },
     "UpdateCognitoUserPoolConfiguration":{
       "type":"structure",
       "required":["userPoolArn"],
@@ -2446,6 +2509,10 @@
         "clientIds":{
           "shape":"ClientIds",
           "documentation":"<p>The client ID of an app client that is configured for the specified Amazon Cognito user pool.</p>"
+        },
+        "groupConfiguration":{
+          "shape":"UpdateCognitoGroupConfiguration",
+          "documentation":"<p>The configuration of the user groups from an Amazon Cognito user pool identity source.</p>"
         }
       },
       "documentation":"<p>Contains configuration details of a Amazon Cognito user pool for use with an identity source.</p>"

@@ -48,6 +48,24 @@
       ],
       "documentation":"<p>Retrieves multiple schemas by their identifiers.</p>"
     },
+    "BatchGetSchemaAnalysisRule":{
+      "name":"BatchGetSchemaAnalysisRule",
+      "http":{
+        "method":"POST",
+        "requestUri":"/collaborations/{collaborationIdentifier}/batch-schema-analysis-rule",
+        "responseCode":200
+      },
+      "input":{"shape":"BatchGetSchemaAnalysisRuleInput"},
+      "output":{"shape":"BatchGetSchemaAnalysisRuleOutput"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ValidationException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Retrieves multiple analysis rule schemas.</p>"
+    },
     "CreateAnalysisTemplate":{
       "name":"CreateAnalysisTemplate",
       "http":{
@@ -1391,11 +1409,11 @@
       "members":{
         "allowedAnalyses":{
           "shape":"AnalysisRuleCustomAllowedAnalysesList",
-          "documentation":"<p>The analysis templates that are allowed by the custom analysis rule.</p>"
+          "documentation":"<p>The ARN of the analysis templates that are allowed by the custom analysis rule.</p>"
         },
         "allowedAnalysisProviders":{
           "shape":"AnalysisRuleCustomAllowedAnalysisProvidersList",
-          "documentation":"<p>The Amazon Web Services accounts that are allowed to query by the custom analysis rule. Required when <code>allowedAnalyses</code> is <code>ANY_QUERY</code>.</p>"
+          "documentation":"<p>The IDs of the Amazon Web Services accounts that are allowed to query by the custom analysis rule. Required when <code>allowedAnalyses</code> is <code>ANY_QUERY</code>.</p>"
         },
         "differentialPrivacy":{
           "shape":"DifferentialPrivacyConfiguration",
@@ -1736,6 +1754,76 @@
         }
       }
     },
+    "BatchGetSchemaAnalysisRuleError":{
+      "type":"structure",
+      "required":[
+        "name",
+        "type",
+        "code",
+        "message"
+      ],
+      "members":{
+        "name":{
+          "shape":"TableAlias",
+          "documentation":"<p>An error name for the error.</p>"
+        },
+        "type":{
+          "shape":"AnalysisRuleType",
+          "documentation":"<p>The analysis rule type.</p>"
+        },
+        "code":{
+          "shape":"String",
+          "documentation":"<p>An error code for the error.</p>"
+        },
+        "message":{
+          "shape":"String",
+          "documentation":"<p>A description of why the call failed.</p>"
+        }
+      },
+      "documentation":"<p>An error that describes why a schema could not be fetched.</p>"
+    },
+    "BatchGetSchemaAnalysisRuleErrorList":{
+      "type":"list",
+      "member":{"shape":"BatchGetSchemaAnalysisRuleError"},
+      "max":25,
+      "min":0
+    },
+    "BatchGetSchemaAnalysisRuleInput":{
+      "type":"structure",
+      "required":[
+        "collaborationIdentifier",
+        "schemaAnalysisRuleRequests"
+      ],
+      "members":{
+        "collaborationIdentifier":{
+          "shape":"CollaborationIdentifier",
+          "documentation":"<p>The unique identifier of the collaboration that contains the schema analysis rule.</p>",
+          "location":"uri",
+          "locationName":"collaborationIdentifier"
+        },
+        "schemaAnalysisRuleRequests":{
+          "shape":"SchemaAnalysisRuleRequestList",
+          "documentation":"<p>The information that's necessary to retrieve a schema analysis rule.</p>"
+        }
+      }
+    },
+    "BatchGetSchemaAnalysisRuleOutput":{
+      "type":"structure",
+      "required":[
+        "analysisRules",
+        "errors"
+      ],
+      "members":{
+        "analysisRules":{
+          "shape":"SchemaAnalysisRuleList",
+          "documentation":"<p>The retrieved list of analysis rules.</p>"
+        },
+        "errors":{
+          "shape":"BatchGetSchemaAnalysisRuleErrorList",
+          "documentation":"<p>Error reasons for schemas that could not be retrieved. One error is returned for every schema that could not be retrieved.</p>"
+        }
+      }
+    },
     "BatchGetSchemaError":{
       "type":"structure",
       "required":[
@@ -1780,7 +1868,7 @@
         },
         "names":{
           "shape":"TableAliasList",
-          "documentation":"<p>The names for the schema objects to retrieve.&gt;</p>"
+          "documentation":"<p>The names for the schema objects to retrieve.</p>"
         }
       }
     },
@@ -5950,19 +6038,30 @@
     "ScalarFunctions":{
       "type":"string",
       "enum":[
-        "TRUNC",
         "ABS",
+        "CAST",
         "CEILING",
+        "COALESCE",
+        "CONVERT",
+        "CURRENT_DATE",
+        "DATEADD",
+        "EXTRACT",
         "FLOOR",
+        "GETDATE",
         "LN",
         "LOG",
-        "ROUND",
-        "SQRT",
-        "CAST",
         "LOWER",
+        "ROUND",
         "RTRIM",
-        "UPPER",
-        "COALESCE"
+        "SQRT",
+        "SUBSTRING",
+        "TO_CHAR",
+        "TO_DATE",
+        "TO_NUMBER",
+        "TO_TIMESTAMP",
+        "TRIM",
+        "TRUNC",
+        "UPPER"
       ]
     },
     "ScalarFunctionsList":{
@@ -5982,7 +6081,8 @@
         "description",
         "createTime",
         "updateTime",
-        "type"
+        "type",
+        "schemaStatusDetails"
       ],
       "members":{
         "columns":{
@@ -6032,15 +6132,122 @@
         "type":{
           "shape":"SchemaType",
           "documentation":"<p>The type of schema. The only valid value is currently `TABLE`.</p>"
+        },
+        "schemaStatusDetails":{
+          "shape":"SchemaStatusDetailList",
+          "documentation":"<p>Details about the status of the schema. Currently, only one entry is present.</p>"
         }
       },
       "documentation":"<p>A schema is a relation within a collaboration.</p>"
+    },
+    "SchemaAnalysisRuleList":{
+      "type":"list",
+      "member":{"shape":"AnalysisRule"},
+      "max":25,
+      "min":0
+    },
+    "SchemaAnalysisRuleRequest":{
+      "type":"structure",
+      "required":[
+        "name",
+        "type"
+      ],
+      "members":{
+        "name":{
+          "shape":"TableAlias",
+          "documentation":"<p>The name of the analysis rule schema that you are requesting.</p>"
+        },
+        "type":{
+          "shape":"AnalysisRuleType",
+          "documentation":"<p>The type of analysis rule schema that you are requesting.</p>"
+        }
+      },
+      "documentation":"<p>Defines the information that's necessary to retrieve an analysis rule schema. Schema analysis rules are uniquely identiﬁed by a combination of the schema name and the analysis rule type for a given collaboration.</p>"
+    },
+    "SchemaAnalysisRuleRequestList":{
+      "type":"list",
+      "member":{"shape":"SchemaAnalysisRuleRequest"},
+      "max":25,
+      "min":1
+    },
+    "SchemaConfiguration":{
+      "type":"string",
+      "enum":["DIFFERENTIAL_PRIVACY"]
+    },
+    "SchemaConfigurationList":{
+      "type":"list",
+      "member":{"shape":"SchemaConfiguration"}
     },
     "SchemaList":{
       "type":"list",
       "member":{"shape":"Schema"},
       "max":25,
       "min":0
+    },
+    "SchemaStatus":{
+      "type":"string",
+      "enum":[
+        "READY",
+        "NOT_READY"
+      ]
+    },
+    "SchemaStatusDetail":{
+      "type":"structure",
+      "required":["status"],
+      "members":{
+        "status":{
+          "shape":"SchemaStatus",
+          "documentation":"<p>The status of the schema.</p>"
+        },
+        "reasons":{
+          "shape":"SchemaStatusReasonList",
+          "documentation":"<p>The reasons why the schema status is set to its current state.</p>"
+        },
+        "analysisRuleType":{
+          "shape":"AnalysisRuleType",
+          "documentation":"<p>The analysis rule type for which the schema status has been evaluated.</p>"
+        },
+        "configurations":{
+          "shape":"SchemaConfigurationList",
+          "documentation":"<p>The configuration details of the schema analysis rule for the given type.</p>"
+        }
+      },
+      "documentation":"<p>Information about the schema status.</p> <p>A status of <code>READY</code> means that based on the schema analysis rule, queries of the given analysis rule type are properly configured to run queries on this schema.</p>"
+    },
+    "SchemaStatusDetailList":{
+      "type":"list",
+      "member":{"shape":"SchemaStatusDetail"}
+    },
+    "SchemaStatusReason":{
+      "type":"structure",
+      "required":[
+        "code",
+        "message"
+      ],
+      "members":{
+        "code":{
+          "shape":"SchemaStatusReasonCode",
+          "documentation":"<p>The schema status reason code.</p>"
+        },
+        "message":{
+          "shape":"String",
+          "documentation":"<p>An explanation of the schema status reason code.</p>"
+        }
+      },
+      "documentation":"<p>A reason why the schema status is set to its current value.</p>"
+    },
+    "SchemaStatusReasonCode":{
+      "type":"string",
+      "enum":[
+        "ANALYSIS_RULE_MISSING",
+        "ANALYSIS_TEMPLATES_NOT_CONFIGURED",
+        "ANALYSIS_PROVIDERS_NOT_CONFIGURED",
+        "DIFFERENTIAL_PRIVACY_POLICY_NOT_CONFIGURED"
+      ]
+    },
+    "SchemaStatusReasonList":{
+      "type":"list",
+      "member":{"shape":"SchemaStatusReason"}
     },
     "SchemaSummary":{
       "type":"structure",

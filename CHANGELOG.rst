@@ -2,6 +2,26 @@
 CHANGELOG
 =========
 
+2.15.36
+=======
+
+* api-change:``emr-containers``: This release adds support for integration with EKS AccessEntry APIs to enable automatic Cluster Access for EMR on EKS.
+* api-change:``verifiedpermissions``: Adds GroupConfiguration field to Identity Source API's
+* api-change:``cleanroomsml``: The release includes a public SDK for AWS Clean Rooms ML APIs, making them globally available to developers worldwide.
+* api-change:``datazone``: This release supports the feature of dataQuality to enrich asset with dataQualityResult in Amazon DataZone.
+* api-change:``groundstation``: This release adds visibilityStartTime and visibilityEndTime to DescribeContact and ListContacts responses.
+* api-change:``cleanrooms``: Feature: New schemaStatusDetails field to the existing Schema object that displays a status on Schema API responses to show whether a schema is queryable or not. New BatchGetSchemaAnalysisRule API to retrieve multiple schemaAnalysisRules using a single API call.
+* api-change:``b2bi``: Adding support for X12 5010 HIPAA EDI version and associated transaction sets.
+* api-change:``transfer``: Add ability to specify Security Policies for SFTP Connectors
+* api-change:``ivs``: API update to include an SRT ingest endpoint and passphrase for all channels.
+* api-change:``docdb``: This release adds Global Cluster Switchover capability which enables you to change your global cluster's primary AWS Region, the region that serves writes, while preserving the replication between all regions in the global cluster.
+* api-change:``cloudformation``: This release would return a new field - PolicyAction in cloudformation's existed DescribeChangeSetResponse, showing actions we are going to apply on the physical resource (e.g., Delete, Retain) according to the user's template
+* api-change:``ec2``: Amazon EC2 G6 instances powered by NVIDIA L4 Tensor Core GPUs can be used for a wide range of graphics-intensive and machine learning use cases. Gr6 instances also feature NVIDIA L4 GPUs and can be used for graphics workloads with higher memory requirements.
+* api-change:``medialive``: Cmaf Ingest outputs are now supported in Media Live
+* api-change:``lambda``: Add Ruby 3.3 (ruby3.3) support to AWS Lambda
+* api-change:``medical-imaging``: SearchImageSets API now supports following enhancements - Additional support for searching on UpdatedAt and SeriesInstanceUID - Support for searching existing filters between dates/times - Support for sorting the search result by Ascending/Descending - Additional parameters returned in the response
+
+
 2.15.35
 =======
 

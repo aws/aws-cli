@@ -16,6 +16,7 @@ import platform
 import sys
 import copy
 import logging
+import re
 
 import distro
 import botocore.session
@@ -54,6 +55,10 @@ from awscli.alias import AliasCommandInjector
 from awscli.logger import (
     set_stream_logger, remove_stream_logger, enable_crt_logging,
     disable_crt_logging,
+)
+from awscli.utils import (
+    add_metadata_component_to_user_agent_extra,
+    add_command_lineage_to_user_agent_extra
 )
 from awscli.utils import emit_top_level_args_parsed_event
 from awscli.utils import OutputStreamFactory
@@ -134,18 +139,28 @@ def _get_linux_distribution():
     return linux_distribution
 
 
+def _add_distribution_source_to_user_agent(session):
+    add_metadata_component_to_user_agent_extra(
+        session,
+        'installer',
+        _get_distribution_source()
+    )
+
+
+def _add_linux_distribution_to_user_agent(session):
+    if linux_distribution := _get_distribution():
+        add_metadata_component_to_user_agent_extra(
+            session,
+            'distrib', 
+            linux_distribution,
+        )
+
+
 def _set_user_agent_for_session(session):
     session.user_agent_name = 'aws-cli'
     session.user_agent_version = __version__
-    # user_agent_extra on linux will look like "rpm/x86_64.Ubuntu.18"
-    # on mac and windows like "sources/x86_64"
-    session.user_agent_extra = '%s/%s' % (
-        _get_distribution_source(),
-        platform.machine()
-    )
-    linux_distribution = _get_distribution()
-    if linux_distribution:
-        session.user_agent_extra += ".%s" % linux_distribution
+    _add_distribution_source_to_user_agent(session)
+    _add_linux_distribution_to_user_agent(session)
 
 
 def no_pager_handler(session, parsed_args, **kwargs):
@@ -175,8 +190,15 @@ class AWSCLIEntryPoint:
         HISTORY_RECORDER.record('CLI_RC', rc, 'CLI')
         return rc
 
+    def _add_autoprompt_to_user_agent(self, driver, prompt_mode):
+        add_metadata_component_to_user_agent_extra(
+            driver.session,
+            "prompt",
+            prompt_mode,
+        )
+
     def _run_driver(self, driver, args, prompt_mode):
-        driver.session.user_agent_extra += " prompt/%s" % prompt_mode
+        self._add_autoprompt_to_user_agent(driver, prompt_mode)
         return driver.main(args)
 
     def _do_main(self, args):
@@ -422,12 +444,29 @@ class CLIDriver(object):
                                    cli_data.get('synopsis', None),
                                    cli_data.get('help_usage', None))
 
+    def _cli_version(self):
+        version_string = (
+            f'{self.session.user_agent_name}/{self.session.user_agent_version}'
+            f' Python/{platform.python_version()}'
+            f' {platform.system()}/{platform.release()}'
+        )
+
+        if execution_env := os.environ.get('AWS_EXECUTION_ENV') is not None:
+            version_string += f' exec-env/{execution_env}'
+        
+        version_string += f' {_get_distribution_source()}/{platform.machine()}'
+
+        if linux_distribution := _get_distribution():
+            version_string += f'.{linux_distribution}'
+
+        return version_string
+
     def create_parser(self, command_table):
         # Also add a 'help' command.
         command_table['help'] = self.create_help_command()
         cli_data = self._get_cli_data()
         parser = MainArgParser(
-            command_table, self.session.user_agent(),
+            command_table, self._cli_version(),
             cli_data.get('description', None),
             self._get_argument_table(),
             prog="aws")
@@ -455,7 +494,7 @@ class CLIDriver(object):
             self._handle_top_level_args(parsed_args)
             self._emit_session_event(parsed_args)
             HISTORY_RECORDER.record(
-                'CLI_VERSION', self.session.user_agent(), 'CLI')
+                'CLI_VERSION', self._cli_version(), 'CLI')
             HISTORY_RECORDER.record('CLI_ARGUMENTS', args, 'CLI')
             return command_table[parsed_args.command](remaining, parsed_args)
         except BaseException as e:
@@ -500,7 +539,7 @@ class CLIDriver(object):
                 set_stream_logger(logger_name, logging.DEBUG,
                                   format_string=LOG_FORMAT)
             enable_crt_logging()
-            LOG.debug("CLI version: %s", self.session.user_agent())
+            LOG.debug("CLI version: %s", self._cli_version())
             LOG.debug("Arguments entered to CLI: %s", sys.argv[1:])
         else:
             # In case user set --debug before entering prompt mode and removed
@@ -882,12 +921,7 @@ class ServiceOperation(object):
         return parser
 
     def _add_customization_to_user_agent(self):
-        if ' command/' in self._session.user_agent_extra:
-            self._session.user_agent_extra += '.%s' % self.lineage_names[-1]
-        else:
-            self._session.user_agent_extra += ' command/%s' % '.'.join(
-                self.lineage_names
-            )
+        add_command_lineage_to_user_agent_extra(self._session, self.lineage_names)
 
 
 class CLIOperationCaller(object):

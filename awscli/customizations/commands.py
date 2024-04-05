@@ -15,6 +15,7 @@ from awscli.commands import CLICommand
 from awscli.bcdoc import docevents
 from awscli.help import HelpCommand
 from awscli.schema import SchemaTransformer
+from awscli.utils import add_command_lineage_to_user_agent_extra
 from awscli.customizations.exceptions import ParamValidationError
 
 LOG = logging.getLogger(__name__)
@@ -324,12 +325,7 @@ class BasicCommand(CLICommand):
         raise ParamValidationError(error_msg)
 
     def _add_customization_to_user_agent(self):
-        if ' command/' in self._session.user_agent_extra:
-            self._session.user_agent_extra += '.%s' % self.lineage_names[-1]
-        else:
-            self._session.user_agent_extra += ' command/%s' % '.'.join(
-                self.lineage_names
-            )
+        add_command_lineage_to_user_agent_extra(self._session, self.lineage_names)
 
 
 class BasicHelp(HelpCommand):

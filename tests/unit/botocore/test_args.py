@@ -24,14 +24,31 @@ from botocore.config import Config
 from botocore.configprovider import ConfigValueStore
 from botocore.hooks import HierarchicalEmitter
 from botocore.model import ServiceModel
+from botocore.useragent import UserAgentString
 
 
 class TestCreateClientArgs(unittest.TestCase):
     def setUp(self):
         self.event_emitter = mock.Mock(HierarchicalEmitter)
         self.config_store = ConfigValueStore()
+        user_agent_creator = UserAgentString(
+            platform_name=None,
+            platform_version=None,
+            platform_machine=None,
+            python_version=None,
+            python_implementation=None,
+            execution_env=None,
+            crt_version=None,
+        )
         self.args_create = args.ClientArgsCreator(
-            self.event_emitter, None, None, None, None, self.config_store)
+            event_emitter=self.event_emitter,
+            user_agent=None,
+            response_parser_factory=None,
+            loader=None,
+            exceptions_factory=None,
+            config_store=self.config_store,
+            user_agent_creator=user_agent_creator,
+        )
         self.service_name = 'ec2'
         self.region = 'us-west-2'
         self.endpoint_url = 'https://ec2/'
@@ -439,6 +456,15 @@ class TestEndpointResolverBuiltins(unittest.TestCase):
     def setUp(self):
         event_emitter = mock.Mock(HierarchicalEmitter)
         self.config_store = ConfigValueStore()
+        user_agent_creator = UserAgentString(
+            platform_name=None,
+            platform_version=None,
+            platform_machine=None,
+            python_version=None,
+            python_implementation=None,
+            execution_env=None,
+            crt_version=None,
+        )
         self.args_create = args.ClientArgsCreator(
             event_emitter=event_emitter,
             user_agent=None,
@@ -446,6 +472,7 @@ class TestEndpointResolverBuiltins(unittest.TestCase):
             loader=None,
             exceptions_factory=None,
             config_store=self.config_store,
+            user_agent_creator=user_agent_creator,
         )
         self.bridge = ClientEndpointBridge(
             endpoint_resolver=mock.Mock(),

@@ -27,20 +27,28 @@ from botocore.endpoint import EndpointCreator
 from botocore.regions import EndpointResolverBuiltins as EPRBuiltins
 from botocore.regions import EndpointRulesetResolver
 from botocore.signers import RequestSigner
+from botocore.useragent import UserAgentString
 from botocore.utils import ensure_boolean, is_s3_accelerate_url
 
 logger = logging.getLogger(__name__)
 
+# Maximum allowed length of the ``user_agent_appid`` config field. Longer
+# values result in a warning-level log message.
+USERAGENT_APPID_MAXLEN = 50
+
 
 class ClientArgsCreator(object):
     def __init__(self, event_emitter, user_agent, response_parser_factory,
-                 loader, exceptions_factory, config_store):
+                 loader, exceptions_factory, config_store, user_agent_creator=None):
         self._event_emitter = event_emitter
-        self._user_agent = user_agent
         self._response_parser_factory = response_parser_factory
         self._loader = loader
         self._exceptions_factory = exceptions_factory
         self._config_store = config_store
+        if user_agent_creator is None:
+            self._session_ua_creator = UserAgentString.from_environment()
+        else:
+            self._session_ua_creator = user_agent_creator
 
     def get_client_args(
             self,
@@ -114,6 +122,13 @@ class ClientArgsCreator(object):
             event_emitter,
         )
 
+        # Copy the session's user agent factory and adds client configuration.
+        client_ua_creator = self._session_ua_creator.with_client_config(
+            new_config
+        )
+        supplied_ua = client_config.user_agent if client_config else None
+        new_config._supplied_user_agent = supplied_ua
+
         return {
             'serializer': serializer,
             'endpoint': endpoint,
@@ -126,6 +141,7 @@ class ClientArgsCreator(object):
             'partition': partition,
             'exceptions_factory': self._exceptions_factory,
             'endpoint_ruleset_resolver': ruleset_resolver,
+            'user_agent_creator': client_ua_creator,
         }
 
     def compute_client_args(self, service_model, client_config,
@@ -141,13 +157,6 @@ class ClientArgsCreator(object):
             if raw_value is not None:
                 parameter_validation = ensure_boolean(raw_value)
 
-        # Override the user agent if specified in the client config.
-        user_agent = self._user_agent
-        if client_config is not None:
-            if client_config.user_agent is not None:
-                user_agent = client_config.user_agent
-            if client_config.user_agent_extra is not None:
-                user_agent += ' %s' % client_config.user_agent_extra
 
         s3_config = self.compute_s3_config(client_config)
 
@@ -165,13 +174,24 @@ class ClientArgsCreator(object):
             s3_config=s3_config,
         )
         endpoint_variant_tags = endpoint_config['metadata'].get('tags', [])
+
+        # Some third-party libraries expect the final user-agent string in
+        # ``client.meta.config.user_agent``. To maintain backwards
+        # compatibility, the preliminary user-agent string (before any Config
+        # object modifications and without request-specific user-agent
+        # components) is stored in the new Config object's ``user_agent``
+        # property but not used by Botocore itself.
+        preliminary_ua_string = self._session_ua_creator.with_client_config(
+            client_config
+        ).to_string()
+
         # Create a new client config to be passed to the client based
         # on the final values. We do not want the user to be able
         # to try to modify an existing client with a client config.
         config_kwargs = dict(
             region_name=endpoint_config['region_name'],
             signature_version=endpoint_config['signature_version'],
-            user_agent=user_agent)
+            user_agent=preliminary_ua_string)
         if 'dualstack' in endpoint_variant_tags:
             config_kwargs.update(use_dualstack_endpoint=True)
         if 'fips' in endpoint_variant_tags:
@@ -192,9 +212,12 @@ class ClientArgsCreator(object):
                 disable_request_compression=(
                     client_config.disable_request_compression
                 ),
+                user_agent_extra=client_config.user_agent_extra,
+                user_agent_appid=client_config.user_agent_appid,
             )
         self._compute_retry_config(config_kwargs)
         self._compute_request_compression_config(config_kwargs)
+        self._compute_user_agent_appid_config(config_kwargs)
         s3_config = self.compute_s3_config(client_config)
 
         is_s3_service = self._is_s3_service(service_name)
@@ -207,7 +230,6 @@ class ClientArgsCreator(object):
         return {
             'service_name': service_name,
             'parameter_validation': parameter_validation,
-            'user_agent': user_agent,
             'configured_endpoint_url': configured_endpoint_url,
             'endpoint_config': endpoint_config,
             'protocol': protocol,
@@ -538,3 +560,19 @@ class ClientArgsCreator(object):
             ),
             EPRBuiltins.SDK_ENDPOINT: given_endpoint,
         }
+
+    def _compute_user_agent_appid_config(self, config_kwargs):
+        user_agent_appid = config_kwargs.get('user_agent_appid')
+        if user_agent_appid is None:
+            user_agent_appid = self._config_store.get_config_variable(
+                'user_agent_appid'
+            )
+        if (
+            user_agent_appid is not None
+            and len(user_agent_appid) > USERAGENT_APPID_MAXLEN
+        ):
+            logger.warning(
+                'The configured value for user_agent_appid exceeds the '
+                f'maximum length of {USERAGENT_APPID_MAXLEN} characters.'
+            )
+        config_kwargs['user_agent_appid'] = user_agent_appid

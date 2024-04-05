@@ -109,7 +109,7 @@ class ECSDeploy(BasicCommand):
     MSG_SUCCESS = ("Successfully deployed {task_def} to "
                    "service '{service}'\n")
 
-    USER_AGENT_EXTRA = 'customization/ecs-deploy'
+    USER_AGENT_EXTRA = 'md/customization#ecs-deploy'
 
     def _run_main(self, parsed_args, parsed_globals):
 

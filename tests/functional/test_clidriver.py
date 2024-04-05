@@ -110,7 +110,10 @@ class TestSession(BaseCLIDriverTest):
             'aws-cli' in
             self._send.call_args[0][0].headers['User-Agent'].decode('utf-8'))
         self.assertTrue(
-            'Python' in
+            'md/installer' in
+            self._send.call_args[0][0].headers['User-Agent'].decode('utf-8'))
+        self.assertTrue(
+            'md/command' in
             self._send.call_args[0][0].headers['User-Agent'].decode('utf-8'))
 
 

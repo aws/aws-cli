@@ -207,6 +207,8 @@ class FakeSession(object):
         self.credentials = 'fakecredentials'
         self.session_vars = {}
         self.config_store = self._register_config_store()
+        self.user_agent_name = 'aws-cli'
+        self.user_agent_version = '100.100.100'
 
     def _register_config_store(self):
         chain_builder = ConfigChainFactory(session=self)
@@ -766,18 +768,18 @@ class TestAWSCommand(BaseAWSCommandParamsTest):
     @mock.patch('awscli.clidriver.distro.major_version', return_value='1')
     def test_user_agent_for_linux(self, *args):
         driver = create_clidriver()
-        expected_user_agent = 'source/x86_64.amzn.1'
+        expected_user_agent = 'md/installer#source md/distrib#amzn.1'
         self.assertEqual(expected_user_agent,
                          driver.session.user_agent_extra)
 
     def test_user_agent(self, *args):
-        machine = platform.machine()
         driver = create_clidriver()
         user_agent_extra_pattern = re.compile(
-            fr'^source/{machine}(\.[a-z_]+)?(\.[0-9]+)?$'
+            r'^md/installer#source'
         )
-        self.assertIsNotNone(user_agent_extra_pattern.match(
-            driver.session.user_agent_extra))
+        self.assertIsNotNone(
+            user_agent_extra_pattern.match(driver.session.user_agent_extra)
+        )
         # check that distro didn't fail
         self.assertFalse('unknown' in driver.session.user_agent_extra)
 
@@ -1100,14 +1102,14 @@ class TestAWSCLIEntryPoint(unittest.TestCase):
         self.driver.main.return_value = 252
         entry_point = awscli.clidriver.AWSCLIEntryPoint()
         entry_point.main([])
-        self.assertEqual(self.driver.session.user_agent_extra, ' prompt/on')
+        self.assertEqual(self.driver.session.user_agent_extra, 'md/prompt#on')
 
     def test_not_update_user_agent_in_off_mode(self):
         self.prompt_driver.resolve_mode.return_value = 'off'
         self.driver.main.return_value = 252
         entry_point = awscli.clidriver.AWSCLIEntryPoint()
         entry_point.main([])
-        self.assertEqual(self.driver.session.user_agent_extra, ' prompt/off')
+        self.assertEqual(self.driver.session.user_agent_extra, 'md/prompt#off')
 
     def test_update_user_agent_in_partial_mode_on_param_err(self):
         self.prompt_driver.resolve_mode.return_value = 'on-partial'
@@ -1115,14 +1117,14 @@ class TestAWSCLIEntryPoint(unittest.TestCase):
         entry_point = awscli.clidriver.AWSCLIEntryPoint()
         entry_point.main([])
         self.assertEqual(self.driver.session.user_agent_extra,
-                         ' prompt/partial')
+                         'md/prompt#partial')
 
     def test_not_update_user_agent_in_partial_mode_on_success(self):
         self.prompt_driver.resolve_mode.return_value = 'on-partial'
         self.driver.main.return_value = 0
         entry_point = awscli.clidriver.AWSCLIEntryPoint()
         entry_point.main([])
-        self.assertEqual(self.driver.session.user_agent_extra, ' prompt/off')
+        self.assertEqual(self.driver.session.user_agent_extra, 'md/prompt#off')
 
 
 class TextCreateCLIDriver(unittest.TestCase):

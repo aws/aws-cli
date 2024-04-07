@@ -1,7 +1,7 @@
 **To create a flywheel**
 
 The following ``create-flywheel`` example creates a flywheel to orchestrate the ongoing training of either a document classification or entity
-recgonition model. The flywheel in this example is created to manage an existing trained model specified by the ``--active-model-arn`` tag. 
+recognition model. The flywheel in this example is created to manage an existing trained model specified by the ``--active-model-arn`` tag.
 When the flywheel is created, a data lake is created at the ``--input-data-lake`` tag. ::
 
     aws comprehend create-flywheel \

@@ -75,7 +75,7 @@ class TestCanHandleNoCompletionData(unittest.TestCase):
     def _disable_cli_loaders(self, event_name, session, **kwargs):
         loader = session.get_component('data_loader')
         for path in loader.search_paths[::]:
-            if path.endswith(os.path.join('awscli', 'data')):
+            if path.endswith(os.path.join('awscli', 'botocore', 'data')):
                 loader.search_paths.remove(path)
 
     def test_no_errors_when_missing_completion_data(self):

@@ -26,7 +26,8 @@ from awscli.autocomplete.autogen import BasicSingularize
 
 # The awscli/__init__.py file sets the AWS_DATA_PATH env var, so as long
 # as we import from awscli we're ensured this env var exists.
-AWS_DATA_PATH = os.environ['AWS_DATA_PATH']
+AWSCLI_PATH = os.path.dirname(os.environ['AWS_DATA_PATH'])
+BOTOCORE_DATA_PATH = os.path.join(AWSCLI_PATH, 'botocore', 'data')
 
 
 def generate_completion_data(args):
@@ -36,7 +37,7 @@ def generate_completion_data(args):
         model = session.get_service_model(service_name)
         completion_data = gen.generate_completion_descriptions(model)
         out_filename = os.path.join(
-            AWS_DATA_PATH, service_name,
+            BOTOCORE_DATA_PATH, service_name,
             model.api_version, 'completions-1.json'
         )
         to_json = _pretty_json_dump(completion_data)

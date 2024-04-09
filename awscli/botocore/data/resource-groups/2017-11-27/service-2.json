@@ -368,7 +368,7 @@
       "members":{
         "Name":{
           "shape":"GroupName",
-          "documentation":"<p>The name of the group, which is the identifier of the group in other operations. You can't change the name of a resource group after you create it. A resource group name can consist of letters, numbers, hyphens, periods, and underscores. The name cannot start with <code>AWS</code> or <code>aws</code>; these are reserved. A resource group name must be unique within each Amazon Web Services Region in your Amazon Web Services account.</p>"
+          "documentation":"<p>The name of the group, which is the identifier of the group in other operations. You can't change the name of a resource group after you create it. A resource group name can consist of letters, numbers, hyphens, periods, and underscores. The name cannot start with <code>AWS</code>, <code>aws</code>, or any other possible capitalization; these are reserved. A resource group name must be unique within each Amazon Web Services Region in your Amazon Web Services account.</p>"
         },
         "Description":{
           "shape":"Description",
@@ -916,7 +916,7 @@
         },
         "QueryErrors":{
           "shape":"QueryErrorList",
-          "documentation":"<p>A list of <code>QueryError</code> objects. Each error is an object that contains <code>ErrorCode</code> and <code>Message</code> structures. Possible values for <code>ErrorCode</code> are <code>CLOUDFORMATION_STACK_INACTIVE</code> and <code>CLOUDFORMATION_STACK_NOT_EXISTING</code>.</p>"
+          "documentation":"<p>A list of <code>QueryError</code> objects. Each error contains an <code>ErrorCode</code> and <code>Message</code>. Possible values for ErrorCode are <code>CLOUDFORMATION_STACK_INACTIVE</code>, <code>CLOUDFORMATION_STACK_NOT_EXISTING</code>, <code>CLOUDFORMATION_STACK_UNASSUMABLE_ROLE</code> and <code>RESOURCE_TYPE_NOT_SUPPORTED</code>. </p>"
         }
       }
     },
@@ -925,7 +925,7 @@
       "members":{
         "Filters":{
           "shape":"GroupFilterList",
-          "documentation":"<p>Filters, formatted as <a>GroupFilter</a> objects, that you want to apply to a <code>ListGroups</code> operation.</p> <ul> <li> <p> <code>resource-type</code> - Filter the results to include only those of the specified resource types. Specify up to five resource types in the format <code>AWS::<i>ServiceCode</i>::<i>ResourceType</i> </code>. For example, <code>AWS::EC2::Instance</code>, or <code>AWS::S3::Bucket</code>.</p> </li> <li> <p> <code>configuration-type</code> - Filter the results to include only those groups that have the specified configuration types attached. The current supported values are:</p> <ul> <li> <p> <code>AWS::EC2::CapacityReservationPool</code> </p> </li> <li> <p> <code>AWS::EC2::HostManagement</code> </p> </li> </ul> </li> </ul>"
+          "documentation":"<p>Filters, formatted as <a>GroupFilter</a> objects, that you want to apply to a <code>ListGroups</code> operation.</p> <ul> <li> <p> <code>resource-type</code> - Filter the results to include only those resource groups that have the specified resource type in their <code>ResourceTypeFilter</code>. For example, <code>AWS::EC2::Instance</code> would return any resource group with a <code>ResourceTypeFilter</code> that includes <code>AWS::EC2::Instance</code>.</p> </li> <li> <p> <code>configuration-type</code> - Filter the results to include only those groups that have the specified configuration types attached. The current supported values are:</p> <ul> <li> <p> <code>AWS::AppRegistry::Application</code> </p> </li> <li> <p> <code>AWS::AppRegistry::ApplicationResourceGroups</code> </p> </li> <li> <p> <code>AWS::CloudFormation::Stack</code> </p> </li> <li> <p> <code>AWS::EC2::CapacityReservationPool</code> </p> </li> <li> <p> <code>AWS::EC2::HostManagement</code> </p> </li> <li> <p> <code>AWS::NetworkFirewall::RuleGroup</code> </p> </li> </ul> </li> </ul>"
         },
         "MaxResults":{
           "shape":"MaxResults",
@@ -1035,17 +1035,18 @@
         },
         "Message":{
           "shape":"QueryErrorMessage",
-          "documentation":"<p>A message that explains the <code>ErrorCode</code> value. Messages might state that the specified CloudFront stack does not exist (or no longer exists). For <code>CLOUDFORMATION_STACK_INACTIVE</code>, the message typically states that the CloudFront stack has a status that is not (or no longer) active, such as <code>CREATE_FAILED</code>.</p>"
+          "documentation":"<p>A message that explains the <code>ErrorCode</code>. </p>"
         }
       },
-      "documentation":"<p>A two-part error structure that can occur in <code>ListGroupResources</code> or <code>SearchResources</code> operations on CloudFront stack-based queries. The error occurs if the CloudFront stack on which the query is based either does not exist, or has a status that renders the stack inactive. A <code>QueryError</code> occurrence does not necessarily mean that Resource Groups could not complete the operation, but the resulting group might have no member resources.</p>"
+      "documentation":"<p>A two-part error structure that can occur in <code>ListGroupResources</code> or <code>SearchResources</code>. </p>"
     },
     "QueryErrorCode":{
       "type":"string",
       "enum":[
         "CLOUDFORMATION_STACK_INACTIVE",
         "CLOUDFORMATION_STACK_NOT_EXISTING",
-        "CLOUDFORMATION_STACK_UNASSUMABLE_ROLE"
+        "CLOUDFORMATION_STACK_UNASSUMABLE_ROLE",
+        "RESOURCE_TYPE_NOT_SUPPORTED"
       ]
     },
     "QueryErrorList":{
@@ -1196,7 +1197,7 @@
         },
         "QueryErrors":{
           "shape":"QueryErrorList",
-          "documentation":"<p>A list of <code>QueryError</code> objects. Each error is an object that contains <code>ErrorCode</code> and <code>Message</code> structures.</p> <p>Possible values for <code>ErrorCode</code>:</p> <ul> <li> <p> <code>CLOUDFORMATION_STACK_INACTIVE</code> </p> </li> <li> <p> <code>CLOUDFORMATION_STACK_NOT_EXISTING</code> </p> </li> </ul>"
+          "documentation":"<p>A list of <code>QueryError</code> objects. Each error contains an <code>ErrorCode</code> and <code>Message</code>.</p> <p>Possible values for <code>ErrorCode</code>:</p> <ul> <li> <p> <code>CLOUDFORMATION_STACK_INACTIVE</code> </p> </li> <li> <p> <code>CLOUDFORMATION_STACK_NOT_EXISTING</code> </p> </li> <li> <p> <code>CLOUDFORMATION_STACK_UNASSUMABLE_ROLE </code> </p> </li> </ul>"
         }
       }
     },

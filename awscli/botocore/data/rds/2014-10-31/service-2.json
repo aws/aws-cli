@@ -457,7 +457,8 @@
         {"shape":"KMSKeyNotAccessibleFault"},
         {"shape":"DomainNotFoundFault"},
         {"shape":"NetworkTypeNotSupported"},
-        {"shape":"TenantDatabaseQuotaExceededFault"}
+        {"shape":"TenantDatabaseQuotaExceededFault"},
+        {"shape":"CertificateNotFoundFault"}
       ],
       "documentation":"<p>Creates a new DB instance that acts as a read replica for an existing source DB instance or Multi-AZ DB cluster. You can create a read replica for a DB instance running Db2, MariaDB, MySQL, Oracle, PostgreSQL, or SQL Server. You can create a read replica for a Multi-AZ DB cluster running MySQL or PostgreSQL. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_ReadRepl.html\">Working with read replicas</a> and <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/multi-az-db-clusters-concepts.html#multi-az-db-clusters-migrating-to-instance-with-read-replica\">Migrating from a Multi-AZ DB cluster to a DB instance using a read replica</a> in the <i>Amazon RDS User Guide</i>.</p> <p>Amazon Aurora doesn't support this operation. To create a DB instance for an Aurora DB cluster, use the <code>CreateDBInstance</code> operation.</p> <p>All read replica DB instances are created with backups disabled. All other attributes (including DB security groups and DB parameter groups) are inherited from the source DB instance or cluster, except as specified.</p> <important> <p>Your source DB instance or cluster must have backup retention enabled.</p> </important>"
     },
@@ -2697,6 +2698,7 @@
         {"shape":"BackupPolicyNotFoundFault"},
         {"shape":"NetworkTypeNotSupported"},
         {"shape":"DBClusterSnapshotNotFoundFault"},
+        {"shape":"CertificateNotFoundFault"},
         {"shape":"TenantDatabaseQuotaExceededFault"}
       ],
       "documentation":"<p>Creates a new DB instance from a DB snapshot. The target database is created from the source database restore point with most of the source's original configuration, including the default security group and DB parameter group. By default, the new DB instance is created as a Single-AZ deployment, except when the instance is a SQL Server instance that has an option group associated with mirroring. In this case, the instance becomes a Multi-AZ deployment, not a Single-AZ deployment.</p> <p>If you want to replace your original DB instance with the new, restored DB instance, then rename your original DB instance before you call the <code>RestoreDBInstanceFromDBSnapshot</code> operation. RDS doesn't allow two DB instances with the same name. After you have renamed your original DB instance with a different identifier, then you can pass the original name of the DB instance as the <code>DBInstanceIdentifier</code> in the call to the <code>RestoreDBInstanceFromDBSnapshot</code> operation. The result is that you replace the original DB instance with the DB instance created from the snapshot.</p> <p>If you are restoring from a shared manual DB snapshot, the <code>DBSnapshotIdentifier</code> must be the ARN of the shared DB snapshot.</p> <note> <p>This command doesn't apply to Aurora MySQL and Aurora PostgreSQL. For Aurora, use <code>RestoreDBClusterFromSnapshot</code>.</p> </note>"
@@ -2730,7 +2732,8 @@
         {"shape":"AuthorizationNotFoundFault"},
         {"shape":"KMSKeyNotAccessibleFault"},
         {"shape":"BackupPolicyNotFoundFault"},
-        {"shape":"NetworkTypeNotSupported"}
+        {"shape":"NetworkTypeNotSupported"},
+        {"shape":"CertificateNotFoundFault"}
       ],
       "documentation":"<p>Amazon Relational Database Service (Amazon RDS) supports importing MySQL databases by using backup files. You can create a backup of your on-premises database, store it on Amazon Simple Storage Service (Amazon S3), and then restore the backup file onto a new Amazon RDS DB instance running MySQL. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/MySQL.Procedural.Importing.html\">Importing Data into an Amazon RDS MySQL DB Instance</a> in the <i>Amazon RDS User Guide.</i> </p> <p>This operation doesn't apply to RDS Custom.</p>"
     },
@@ -2769,7 +2772,8 @@
         {"shape":"DBParameterGroupNotFoundFault"},
         {"shape":"DBInstanceAutomatedBackupNotFoundFault"},
         {"shape":"NetworkTypeNotSupported"},
-        {"shape":"TenantDatabaseQuotaExceededFault"}
+        {"shape":"TenantDatabaseQuotaExceededFault"},
+        {"shape":"CertificateNotFoundFault"}
       ],
       "documentation":"<p>Restores a DB instance to an arbitrary point in time. You can restore to any point in time before the time identified by the <code>LatestRestorableTime</code> property. You can restore to a point up to the number of days specified by the <code>BackupRetentionPeriod</code> property.</p> <p>The target database is created with most of the original configuration, but in a system-selected Availability Zone, with the default security group, the default subnet group, and the default DB parameter group. By default, the new DB instance is created as a single-AZ deployment except when the instance is a SQL Server instance that has an option group that is associated with mirroring; in this case, the instance becomes a mirrored deployment and not a single-AZ deployment.</p> <note> <p>This operation doesn't apply to Aurora MySQL and Aurora PostgreSQL. For Aurora, use <code>RestoreDBClusterToPointInTime</code>.</p> </note>"
     },
@@ -4206,7 +4210,7 @@
         },
         "EngineMode":{
           "shape":"String",
-          "documentation":"<p>The DB engine mode of the DB cluster, either <code>provisioned</code> or <code>serverless</code>.</p> <p>The <code>serverless</code> engine mode only applies for Aurora Serverless v1 DB clusters.</p> <p>For information about limitations and requirements for Serverless DB clusters, see the following sections in the <i>Amazon Aurora User Guide</i>:</p> <ul> <li> <p> <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/aurora-serverless.html#aurora-serverless.limitations\">Limitations of Aurora Serverless v1</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/aurora-serverless-v2.requirements.html\">Requirements for Aurora Serverless v2</a> </p> </li> </ul> <p>Valid for Cluster Type: Aurora DB clusters only</p>"
+          "documentation":"<p>The DB engine mode of the DB cluster, either <code>provisioned</code> or <code>serverless</code>.</p> <p>The <code>serverless</code> engine mode only applies for Aurora Serverless v1 DB clusters. Aurora Serverless v2 DB clusters use the <code>provisioned</code> engine mode.</p> <p>For information about limitations and requirements for Serverless DB clusters, see the following sections in the <i>Amazon Aurora User Guide</i>:</p> <ul> <li> <p> <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/aurora-serverless.html#aurora-serverless.limitations\">Limitations of Aurora Serverless v1</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/aurora-serverless-v2.requirements.html\">Requirements for Aurora Serverless v2</a> </p> </li> </ul> <p>Valid for Cluster Type: Aurora DB clusters only</p>"
         },
         "ScalingConfiguration":{
           "shape":"ScalingConfiguration",
@@ -4822,6 +4826,10 @@
         "UpgradeStorageConfig":{
           "shape":"BooleanOptional",
           "documentation":"<p>Whether to upgrade the storage file system configuration on the read replica. This option migrates the read replica from the old storage file system layout to the preferred layout.</p>"
+        },
+        "CACertificateIdentifier":{
+          "shape":"String",
+          "documentation":"<p>The CA certificate identifier to use for the read replica's server certificate.</p> <p>This setting doesn't apply to RDS Custom DB instances.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/UsingWithRDS.SSL.html\">Using SSL/TLS to encrypt a connection to a DB instance</a> in the <i>Amazon RDS User Guide</i> and <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/UsingWithRDS.SSL.html\"> Using SSL/TLS to encrypt a connection to a DB cluster</a> in the <i>Amazon Aurora User Guide</i>.</p>"
         }
       }
     },
@@ -15285,6 +15293,10 @@
         "DedicatedLogVolume":{
           "shape":"BooleanOptional",
           "documentation":"<p>Specifies whether to enable a dedicated log volume (DLV) for the DB instance.</p>"
+        },
+        "CACertificateIdentifier":{
+          "shape":"String",
+          "documentation":"<p>The CA certificate identifier to use for the DB instance's server certificate.</p> <p>This setting doesn't apply to RDS Custom DB instances.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/UsingWithRDS.SSL.html\">Using SSL/TLS to encrypt a connection to a DB instance</a> in the <i>Amazon RDS User Guide</i> and <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/UsingWithRDS.SSL.html\"> Using SSL/TLS to encrypt a connection to a DB cluster</a> in the <i>Amazon Aurora User Guide</i>.</p>"
         }
       },
       "documentation":"<p/>"
@@ -15502,6 +15514,10 @@
         "DedicatedLogVolume":{
           "shape":"BooleanOptional",
           "documentation":"<p>Specifies whether to enable a dedicated log volume (DLV) for the DB instance.</p>"
+        },
+        "CACertificateIdentifier":{
+          "shape":"String",
+          "documentation":"<p>The CA certificate identifier to use for the DB instance's server certificate.</p> <p>This setting doesn't apply to RDS Custom DB instances.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/UsingWithRDS.SSL.html\">Using SSL/TLS to encrypt a connection to a DB instance</a> in the <i>Amazon RDS User Guide</i> and <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/UsingWithRDS.SSL.html\"> Using SSL/TLS to encrypt a connection to a DB cluster</a> in the <i>Amazon Aurora User Guide</i>.</p>"
         }
       }
     },
@@ -15687,6 +15703,10 @@
         "DedicatedLogVolume":{
           "shape":"BooleanOptional",
           "documentation":"<p>Specifies whether to enable a dedicated log volume (DLV) for the DB instance.</p>"
+        },
+        "CACertificateIdentifier":{
+          "shape":"String",
+          "documentation":"<p>The CA certificate identifier to use for the DB instance's server certificate.</p> <p>This setting doesn't apply to RDS Custom DB instances.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/UsingWithRDS.SSL.html\">Using SSL/TLS to encrypt a connection to a DB instance</a> in the <i>Amazon RDS User Guide</i> and <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/UsingWithRDS.SSL.html\"> Using SSL/TLS to encrypt a connection to a DB cluster</a> in the <i>Amazon Aurora User Guide</i>.</p>"
         }
       },
       "documentation":"<p/>"

@@ -1,0 +1,464 @@
+{
+  "version":"2.0",
+  "metadata":{
+    "apiVersion":"2018-05-10",
+    "endpointPrefix":"controlcatalog",
+    "jsonVersion":"1.1",
+    "protocol":"rest-json",
+    "serviceFullName":"AWS Control Catalog",
+    "serviceId":"ControlCatalog",
+    "signatureVersion":"v4",
+    "signingName":"controlcatalog",
+    "uid":"controlcatalog-2018-05-10"
+  },
+  "operations":{
+    "ListCommonControls":{
+      "name":"ListCommonControls",
+      "http":{
+        "method":"POST",
+        "requestUri":"/common-controls",
+        "responseCode":200
+      },
+      "input":{"shape":"ListCommonControlsRequest"},
+      "output":{"shape":"ListCommonControlsResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ValidationException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Returns a paginated list of common controls from the Amazon Web Services Control Catalog.</p> <p>You can apply an optional filter to see common controls that have a specific objective. If you don’t provide a filter, the operation returns all common controls. </p>"
+    },
+    "ListDomains":{
+      "name":"ListDomains",
+      "http":{
+        "method":"POST",
+        "requestUri":"/domains",
+        "responseCode":200
+      },
+      "input":{"shape":"ListDomainsRequest"},
+      "output":{"shape":"ListDomainsResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ValidationException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Returns a paginated list of domains from the Amazon Web Services Control Catalog.</p>"
+    },
+    "ListObjectives":{
+      "name":"ListObjectives",
+      "http":{
+        "method":"POST",
+        "requestUri":"/objectives",
+        "responseCode":200
+      },
+      "input":{"shape":"ListObjectivesRequest"},
+      "output":{"shape":"ListObjectivesResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ValidationException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Returns a paginated list of objectives from the Amazon Web Services Control Catalog.</p> <p>You can apply an optional filter to see the objectives that belong to a specific domain. If you don’t provide a filter, the operation returns all objectives. </p>"
+    }
+  },
+  "shapes":{
+    "AccessDeniedException":{
+      "type":"structure",
+      "members":{
+        "Message":{"shape":"String"}
+      },
+      "documentation":"<p>You do not have sufficient access to perform this action.</p>",
+      "error":{
+        "httpStatusCode":403,
+        "senderFault":true
+      },
+      "exception":true
+    },
+    "AssociatedDomainSummary":{
+      "type":"structure",
+      "members":{
+        "Arn":{
+          "shape":"DomainArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the related domain.</p>"
+        },
+        "Name":{
+          "shape":"String",
+          "documentation":"<p>The name of the related domain.</p>"
+        }
+      },
+      "documentation":"<p>A summary of the domain that a common control or an objective belongs to.</p>"
+    },
+    "AssociatedObjectiveSummary":{
+      "type":"structure",
+      "members":{
+        "Arn":{
+          "shape":"ObjectiveArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the related objective.</p>"
+        },
+        "Name":{
+          "shape":"String",
+          "documentation":"<p>The name of the related objective.</p>"
+        }
+      },
+      "documentation":"<p>A summary of the objective that a common control supports.</p>"
+    },
+    "CommonControlArn":{
+      "type":"string",
+      "max":2048,
+      "min":41,
+      "pattern":"^arn:(aws(?:[-a-z]*)?):controlcatalog:::common-control/[0-9a-z]+$"
+    },
+    "CommonControlFilter":{
+      "type":"structure",
+      "members":{
+        "Objectives":{
+          "shape":"ObjectiveResourceFilterList",
+          "documentation":"<p>The objective that's used as filter criteria.</p> <p>You can use this parameter to specify one objective ARN at a time. Passing multiple ARNs in the <code>CommonControlFilter</code> isn’t currently supported.</p>"
+        }
+      },
+      "documentation":"<p>An optional filter that narrows the results to a specific objective.</p>"
+    },
+    "CommonControlSummary":{
+      "type":"structure",
+      "required":[
+        "Arn",
+        "CreateTime",
+        "Description",
+        "Domain",
+        "LastUpdateTime",
+        "Name",
+        "Objective"
+      ],
+      "members":{
+        "Arn":{
+          "shape":"CommonControlArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) that identifies the common control.</p>"
+        },
+        "CreateTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time when the common control was created.</p>"
+        },
+        "Description":{
+          "shape":"String",
+          "documentation":"<p>The description of the common control.</p>"
+        },
+        "Domain":{
+          "shape":"AssociatedDomainSummary",
+          "documentation":"<p>The domain that the common control belongs to.</p>"
+        },
+        "LastUpdateTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time when the common control was most recently updated.</p>"
+        },
+        "Name":{
+          "shape":"String",
+          "documentation":"<p>The name of the common control.</p>"
+        },
+        "Objective":{
+          "shape":"AssociatedObjectiveSummary",
+          "documentation":"<p>The objective that the common control belongs to.</p>"
+        }
+      },
+      "documentation":"<p>A summary of metadata for a common control.</p>"
+    },
+    "CommonControlSummaryList":{
+      "type":"list",
+      "member":{"shape":"CommonControlSummary"}
+    },
+    "DomainArn":{
+      "type":"string",
+      "max":2048,
+      "min":33,
+      "pattern":"^arn:(aws(?:[-a-z]*)?):controlcatalog:::domain/[0-9a-z]+$"
+    },
+    "DomainResourceFilter":{
+      "type":"structure",
+      "members":{
+        "Arn":{
+          "shape":"DomainArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the domain.</p>"
+        }
+      },
+      "documentation":"<p>The domain resource that's being used as a filter.</p>"
+    },
+    "DomainResourceFilterList":{
+      "type":"list",
+      "member":{"shape":"DomainResourceFilter"}
+    },
+    "DomainSummary":{
+      "type":"structure",
+      "required":[
+        "Arn",
+        "CreateTime",
+        "Description",
+        "LastUpdateTime",
+        "Name"
+      ],
+      "members":{
+        "Arn":{
+          "shape":"DomainArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) that identifies the domain.</p>"
+        },
+        "CreateTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time when the domain was created.</p>"
+        },
+        "Description":{
+          "shape":"String",
+          "documentation":"<p>The description of the domain.</p>"
+        },
+        "LastUpdateTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time when the domain was most recently updated.</p>"
+        },
+        "Name":{
+          "shape":"String",
+          "documentation":"<p>The name of the domain.</p>"
+        }
+      },
+      "documentation":"<p>A summary of metadata for a domain.</p>"
+    },
+    "DomainSummaryList":{
+      "type":"list",
+      "member":{"shape":"DomainSummary"}
+    },
+    "InternalServerException":{
+      "type":"structure",
+      "members":{
+        "Message":{"shape":"String"}
+      },
+      "documentation":"<p>An internal service error occurred during the processing of your request. Try again later.</p>",
+      "error":{"httpStatusCode":500},
+      "exception":true,
+      "fault":true,
+      "retryable":{"throttling":false}
+    },
+    "ListCommonControlsRequest":{
+      "type":"structure",
+      "members":{
+        "CommonControlFilter":{
+          "shape":"CommonControlFilter",
+          "documentation":"<p>An optional filter that narrows the results to a specific objective.</p> <p>This filter allows you to specify one objective ARN at a time. Passing multiple ARNs in the <code>CommonControlFilter</code> isn’t currently supported.</p>"
+        },
+        "MaxResults":{
+          "shape":"MaxListCommonControlsResults",
+          "documentation":"<p>The maximum number of results on a page or for an API request call.</p>",
+          "location":"querystring",
+          "locationName":"maxResults"
+        },
+        "NextToken":{
+          "shape":"PaginationToken",
+          "documentation":"<p>The pagination token that's used to fetch the next set of results.</p>",
+          "location":"querystring",
+          "locationName":"nextToken"
+        }
+      }
+    },
+    "ListCommonControlsResponse":{
+      "type":"structure",
+      "required":["CommonControls"],
+      "members":{
+        "CommonControls":{
+          "shape":"CommonControlSummaryList",
+          "documentation":"<p>The list of common controls that the <code>ListCommonControls</code> API returns.</p>"
+        },
+        "NextToken":{
+          "shape":"PaginationToken",
+          "documentation":"<p>The pagination token that's used to fetch the next set of results.</p>"
+        }
+      }
+    },
+    "ListDomainsRequest":{
+      "type":"structure",
+      "members":{
+        "MaxResults":{
+          "shape":"MaxListDomainsResults",
+          "documentation":"<p>The maximum number of results on a page or for an API request call.</p>",
+          "location":"querystring",
+          "locationName":"maxResults"
+        },
+        "NextToken":{
+          "shape":"PaginationToken",
+          "documentation":"<p>The pagination token that's used to fetch the next set of results.</p>",
+          "location":"querystring",
+          "locationName":"nextToken"
+        }
+      }
+    },
+    "ListDomainsResponse":{
+      "type":"structure",
+      "required":["Domains"],
+      "members":{
+        "Domains":{
+          "shape":"DomainSummaryList",
+          "documentation":"<p>The list of domains that the <code>ListDomains</code> API returns.</p>"
+        },
+        "NextToken":{
+          "shape":"PaginationToken",
+          "documentation":"<p>The pagination token that's used to fetch the next set of results.</p>"
+        }
+      }
+    },
+    "ListObjectivesRequest":{
+      "type":"structure",
+      "members":{
+        "MaxResults":{
+          "shape":"MaxListObjectivesResults",
+          "documentation":"<p>The maximum number of results on a page or for an API request call.</p>",
+          "location":"querystring",
+          "locationName":"maxResults"
+        },
+        "NextToken":{
+          "shape":"PaginationToken",
+          "documentation":"<p>The pagination token that's used to fetch the next set of results.</p>",
+          "location":"querystring",
+          "locationName":"nextToken"
+        },
+        "ObjectiveFilter":{
+          "shape":"ObjectiveFilter",
+          "documentation":"<p>An optional filter that narrows the results to a specific domain.</p> <p>This filter allows you to specify one domain ARN at a time. Passing multiple ARNs in the <code>ObjectiveFilter</code> isn’t currently supported.</p>"
+        }
+      }
+    },
+    "ListObjectivesResponse":{
+      "type":"structure",
+      "required":["Objectives"],
+      "members":{
+        "NextToken":{
+          "shape":"PaginationToken",
+          "documentation":"<p>The pagination token that's used to fetch the next set of results.</p>"
+        },
+        "Objectives":{
+          "shape":"ObjectiveSummaryList",
+          "documentation":"<p>The list of objectives that the <code>ListObjectives</code> API returns.</p>"
+        }
+      }
+    },
+    "MaxListCommonControlsResults":{
+      "type":"integer",
+      "box":true,
+      "max":100,
+      "min":1
+    },
+    "MaxListDomainsResults":{
+      "type":"integer",
+      "box":true,
+      "max":100,
+      "min":1
+    },
+    "MaxListObjectivesResults":{
+      "type":"integer",
+      "box":true,
+      "max":100,
+      "min":1
+    },
+    "ObjectiveArn":{
+      "type":"string",
+      "max":2048,
+      "min":36,
+      "pattern":"^arn:(aws(?:[-a-z]*)?):controlcatalog:::objective/[0-9a-z]+$"
+    },
+    "ObjectiveFilter":{
+      "type":"structure",
+      "members":{
+        "Domains":{
+          "shape":"DomainResourceFilterList",
+          "documentation":"<p>The domain that's used as filter criteria.</p> <p>You can use this parameter to specify one domain ARN at a time. Passing multiple ARNs in the <code>ObjectiveFilter</code> isn’t currently supported.</p>"
+        }
+      },
+      "documentation":"<p>An optional filter that narrows the list of objectives to a specific domain.</p>"
+    },
+    "ObjectiveResourceFilter":{
+      "type":"structure",
+      "members":{
+        "Arn":{
+          "shape":"ObjectiveArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the objective.</p>"
+        }
+      },
+      "documentation":"<p>The objective resource that's being used as a filter.</p>"
+    },
+    "ObjectiveResourceFilterList":{
+      "type":"list",
+      "member":{"shape":"ObjectiveResourceFilter"}
+    },
+    "ObjectiveSummary":{
+      "type":"structure",
+      "required":[
+        "Arn",
+        "CreateTime",
+        "Description",
+        "Domain",
+        "LastUpdateTime",
+        "Name"
+      ],
+      "members":{
+        "Arn":{
+          "shape":"ObjectiveArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) that identifies the objective.</p>"
+        },
+        "CreateTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time when the objective was created.</p>"
+        },
+        "Description":{
+          "shape":"String",
+          "documentation":"<p>The description of the objective.</p>"
+        },
+        "Domain":{
+          "shape":"AssociatedDomainSummary",
+          "documentation":"<p>The domain that the objective belongs to.</p>"
+        },
+        "LastUpdateTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time when the objective was most recently updated.</p>"
+        },
+        "Name":{
+          "shape":"String",
+          "documentation":"<p>The name of the objective.</p>"
+        }
+      },
+      "documentation":"<p>A summary of metadata for an objective.</p>"
+    },
+    "ObjectiveSummaryList":{
+      "type":"list",
+      "member":{"shape":"ObjectiveSummary"}
+    },
+    "PaginationToken":{
+      "type":"string",
+      "max":1024,
+      "min":0
+    },
+    "String":{"type":"string"},
+    "ThrottlingException":{
+      "type":"structure",
+      "members":{
+        "Message":{"shape":"String"}
+      },
+      "documentation":"<p>The request was denied due to request throttling.</p>",
+      "error":{
+        "httpStatusCode":429,
+        "senderFault":true
+      },
+      "exception":true,
+      "retryable":{"throttling":true}
+    },
+    "Timestamp":{"type":"timestamp"},
+    "ValidationException":{
+      "type":"structure",
+      "members":{
+        "Message":{"shape":"String"}
+      },
+      "documentation":"<p>The request has invalid or missing parameters.</p>",
+      "error":{
+        "httpStatusCode":400,
+        "senderFault":true
+      },
+      "exception":true
+    }
+  },
+  "documentation":"<p>Welcome to the Amazon Web Services Control Catalog API reference. This guide is for developers who need detailed information about how to programmatically identify and filter the common controls and related metadata that are available to Amazon Web Services customers. This API reference provides descriptions, syntax, and usage examples for each of the actions and data types that are supported by Amazon Web Services Control Catalog. </p> <p>Use the following links to get started with the Amazon Web Services Control Catalog API:</p> <ul> <li> <p> <a href=\"https://docs.aws.amazon.com/controlcatalog/latest/APIReference/API_Operations.html\">Actions</a>: An alphabetical list of all Control Catalog API operations.</p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/controlcatalog/latest/APIReference/API_Types.html\">Data types</a>: An alphabetical list of all Control Catalog data types.</p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/controlcatalog/latest/APIReference/CommonParameters.html\">Common parameters</a>: Parameters that all operations can use.</p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/controlcatalog/latest/APIReference/CommonErrors.html\">Common errors</a>: Client and server errors that all operations can return.</p> </li> </ul>"
+}

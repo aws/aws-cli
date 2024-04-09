@@ -83,7 +83,7 @@ Output::
         "NextToken": ""
     }
 
-Configure the JSON file. You must provide values for ``ArchitectureTypes``, ``VirtualizationTypes``, ``VCpuCount``, and ``MemoryMiB``. You can omit the other attributes. When omitted, default values are used. For a description of each attribute and their default values, see `get-instance-types-from-instance-requirements <https://docs.aws.amazon.com/cli/latest/reference/ec2/get-instance-types-from-instance-requirements.html>`.
+Configure the JSON file. You must provide values for ``ArchitectureTypes``, ``VirtualizationTypes``, ``VCpuCount``, and ``MemoryMiB``. You can omit the other attributes. When omitted, default values are used. For a description of each attribute and their default values, see `get-instance-types-from-instance-requirements <https://awscli.amazonaws.com/v2/documentation/api/latest/reference/ec2/get-instance-types-from-instance-requirements.html>`.
 
 Preview the instance types that have the attributes specified in ``attributes.json``. Specify the name and path to your JSON file by using the ``--cli-input-json`` parameter. In the following request, the output is formatted as a table. ::
 

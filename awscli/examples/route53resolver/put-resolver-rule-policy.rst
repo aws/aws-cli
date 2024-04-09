@@ -32,6 +32,6 @@ After you run ``put-resolver-rule-policy``, you can run the following two Resour
 
 For more information, see the following documentation:
 
-- `get-resource-share-invitations <https://docs.aws.amazon.com/cli/latest/reference/ram/get-resource-share-invitations.html>`__
-- `accept-resource-share-invitations <https://docs.aws.amazon.com/cli/latest/reference/ram/accept-resource-share-invitation.html>`__
+- `get-resource-share-invitations <https://awscli.amazonaws.com/v2/documentation/api/latest/reference/ram/get-resource-share-invitations.html>`__
+- `accept-resource-share-invitations <https://awscli.amazonaws.com/v2/documentation/api/latest/reference/ram/accept-resource-share-invitation.html>`__
 - `Sharing Forwarding Rules with Other AWS Accounts and Using Shared Rules <https://docs.aws.amazon.com/Route53/latest/DeveloperGuide/resolver-rules-managing.html#resolver-rules-managing-sharing>`__ in the *Amazon Route 53 Developer Guide*

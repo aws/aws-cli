@@ -2,7 +2,7 @@ This section explains prominent concepts and notations in the set of high-level 
 
 If you are looking for the low level S3 commands for the CLI, please see the
 ``s3api`` command `reference page
-<https://docs.aws.amazon.com/cli/latest/reference/s3api/index.html>`_.
+<https://awscli.amazonaws.com/v2/documentation/api/latest/reference/s3api/index.html>`_.
 
 Path Argument Type
 ++++++++++++++++++

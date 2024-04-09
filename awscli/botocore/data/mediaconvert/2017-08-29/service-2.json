@@ -438,27 +438,27 @@
       "errors": [
         {
           "shape": "BadRequestException",
-          "documentation": "BadRequestException"
+          "documentation": "The service can't process your request because of a problem in the request. Please check your request form and syntax."
         },
         {
           "shape": "InternalServerErrorException",
-          "documentation": "InternalServiceException"
+          "documentation": "The service encountered an unexpected condition and can't fulfill your request."
         },
         {
           "shape": "ForbiddenException",
-          "documentation": "AccessDeniedException"
+          "documentation": "You don't have permissions for this action with the credentials you sent."
         },
         {
           "shape": "NotFoundException",
-          "documentation": "ResourceNotFoundException"
+          "documentation": "The resource you requested doesn't exist."
         },
         {
           "shape": "TooManyRequestsException",
-          "documentation": "LimitExceededException"
+          "documentation": "Too many requests have been sent in too short of a time. The service limits the rate at which it will accept requests."
         },
         {
           "shape": "ConflictException",
-          "documentation": "ResourceInUseException"
+          "documentation": "The service couldn't complete your request because there is a conflict with the current state of the resource."
         }
       ],
       "documentation": "Send an request with an empty body to the regional API endpoint to get your account API endpoint.",
@@ -2423,7 +2423,7 @@
     },
     "BurnInSubtitleStylePassthrough": {
       "type": "string",
-      "documentation": "Set Style passthrough to ENABLED to use the available style, color, and position information from your input captions. MediaConvert uses default settings for any missing style and position information in your input captions. Set Style passthrough to DISABLED, or leave blank, to ignore the style and position information from your input captions and use default settings: white text with black outlining, bottom-center positioning, and automatic sizing. Whether you set Style passthrough to enabled or not, you can also choose to manually override any of the individual style and position settings.",
+      "documentation": "To use the available style, color, and position information from your input captions: Set Style passthrough to Enabled. Note that MediaConvert uses default settings for any missing style or position information in your input captions To ignore the style and position information from your input captions and use default settings: Leave blank or keep the default value, Disabled. Default settings include white text with black outlining, bottom-center positioning, and automatic sizing. Whether you set Style passthrough to enabled or not, you can also choose to manually override any of the individual style and position settings. You can also override any fonts by manually specifying custom font files.",
       "enum": [
         "ENABLED",
         "DISABLED"
@@ -2461,6 +2461,26 @@
           "shape": "BurninSubtitleFontColor",
           "locationName": "fontColor",
           "documentation": "Specify the color of the burned-in captions text. Leave Font color blank and set Style passthrough to enabled to use the font color data from your input captions, if present."
+        },
+        "FontFileBold": {
+          "shape": "__stringPatternS3TtfHttpsTtf",
+          "locationName": "fontFileBold",
+          "documentation": "Specify a bold TrueType font file to use when rendering your output captions. Enter an S3, HTTP, or HTTPS URL. When you do, you must also separately specify a regular, an italic, and a bold italic font file."
+        },
+        "FontFileBoldItalic": {
+          "shape": "__string",
+          "locationName": "fontFileBoldItalic",
+          "documentation": "Specify a bold italic TrueType font file to use when rendering your output captions.\nEnter an S3, HTTP, or HTTPS URL.\nWhen you do, you must also separately specify a regular, a bold, and an italic font file."
+        },
+        "FontFileItalic": {
+          "shape": "__stringPatternS3TtfHttpsTtf",
+          "locationName": "fontFileItalic",
+          "documentation": "Specify an italic TrueType font file to use when rendering your output captions. Enter an S3, HTTP, or HTTPS URL. When you do, you must also separately specify a regular, a bold, and a bold italic font file."
+        },
+        "FontFileRegular": {
+          "shape": "__stringPatternS3TtfHttpsTtf",
+          "locationName": "fontFileRegular",
+          "documentation": "Specify a regular TrueType font file to use when rendering your output captions. Enter an S3, HTTP, or HTTPS URL. When you do, you must also separately specify a bold, an italic, and a bold italic font file."
         },
         "FontOpacity": {
           "shape": "__integerMin0Max255",
@@ -2520,7 +2540,7 @@
         "StylePassthrough": {
           "shape": "BurnInSubtitleStylePassthrough",
           "locationName": "stylePassthrough",
-          "documentation": "Set Style passthrough to ENABLED to use the available style, color, and position information from your input captions. MediaConvert uses default settings for any missing style and position information in your input captions. Set Style passthrough to DISABLED, or leave blank, to ignore the style and position information from your input captions and use default settings: white text with black outlining, bottom-center positioning, and automatic sizing. Whether you set Style passthrough to enabled or not, you can also choose to manually override any of the individual style and position settings."
+          "documentation": "To use the available style, color, and position information from your input captions: Set Style passthrough to Enabled. Note that MediaConvert uses default settings for any missing style or position information in your input captions To ignore the style and position information from your input captions and use default settings: Leave blank or keep the default value, Disabled. Default settings include white text with black outlining, bottom-center positioning, and automatic sizing. Whether you set Style passthrough to enabled or not, you can also choose to manually override any of the individual style and position settings. You can also override any fonts by manually specifying custom font files."
         },
         "TeletextSpacing": {
           "shape": "BurninSubtitleTeletextSpacing",
@@ -4391,7 +4411,6 @@
           "documentation": "Use this string, provided with the response to a previous request, to request the next batch of endpoints."
         }
       },
-      "documentation": "DescribeEndpointsRequest",
       "deprecated": true,
       "deprecatedMessage": "DescribeEndpoints and account specific endpoints are no longer required. We recommend that you send your requests directly to the regional endpoint instead."
     },
@@ -4612,6 +4631,26 @@
           "locationName": "fontColor",
           "documentation": "Specify the color of the captions text. Leave Font color blank and set Style passthrough to enabled to use the font color data from your input captions, if present. Within your job settings, all of your DVB-Sub settings must be identical."
         },
+        "FontFileBold": {
+          "shape": "__stringPatternS3TtfHttpsTtf",
+          "locationName": "fontFileBold",
+          "documentation": "Specify a bold TrueType font file to use when rendering your output captions. Enter an S3, HTTP, or HTTPS URL. When you do, you must also separately specify a regular, an italic, and a bold italic font file."
+        },
+        "FontFileBoldItalic": {
+          "shape": "__stringPatternS3TtfHttpsTtf",
+          "locationName": "fontFileBoldItalic",
+          "documentation": "Specify a bold italic TrueType font file to use when rendering your output captions.\nEnter an S3, HTTP, or HTTPS URL.\nWhen you do, you must also separately specify a regular, a bold, and an italic font file."
+        },
+        "FontFileItalic": {
+          "shape": "__stringPatternS3TtfHttpsTtf",
+          "locationName": "fontFileItalic",
+          "documentation": "Specify an italic TrueType font file to use when rendering your output captions. Enter an S3, HTTP, or HTTPS URL. When you do, you must also separately specify a regular, a bold, and a bold italic font file."
+        },
+        "FontFileRegular": {
+          "shape": "__stringPatternS3TtfHttpsTtf",
+          "locationName": "fontFileRegular",
+          "documentation": "Specify a regular TrueType font file to use when rendering your output captions. Enter an S3, HTTP, or HTTPS URL. When you do, you must also separately specify a bold, an italic, and a bold italic font file."
+        },
         "FontOpacity": {
           "shape": "__integerMin0Max255",
           "locationName": "fontOpacity",
@@ -4675,7 +4714,7 @@
         "StylePassthrough": {
           "shape": "DvbSubtitleStylePassthrough",
           "locationName": "stylePassthrough",
-          "documentation": "Set Style passthrough to ENABLED to use the available style, color, and position information from your input captions. MediaConvert uses default settings for any missing style and position information in your input captions. Set Style passthrough to DISABLED, or leave blank, to ignore the style and position information from your input captions and use default settings: white text with black outlining, bottom-center positioning, and automatic sizing. Whether you set Style passthrough to enabled or not, you can also choose to manually override any of the individual style and position settings."
+          "documentation": "To use the available style, color, and position information from your input captions: Set Style passthrough to Enabled. Note that MediaConvert uses default settings for any missing style or position information in your input captions To ignore the style and position information from your input captions and use default settings: Leave blank or keep the default value, Disabled. Default settings include white text with black outlining, bottom-center positioning, and automatic sizing. Whether you set Style passthrough to enabled or not, you can also choose to manually override any of the individual style and position settings. You can also override any fonts by manually specifying custom font files."
         },
         "SubtitlingType": {
           "shape": "DvbSubtitlingType",
@@ -4793,7 +4832,7 @@
     },
     "DvbSubtitleStylePassthrough": {
       "type": "string",
-      "documentation": "Set Style passthrough to ENABLED to use the available style, color, and position information from your input captions. MediaConvert uses default settings for any missing style and position information in your input captions. Set Style passthrough to DISABLED, or leave blank, to ignore the style and position information from your input captions and use default settings: white text with black outlining, bottom-center positioning, and automatic sizing. Whether you set Style passthrough to enabled or not, you can also choose to manually override any of the individual style and position settings.",
+      "documentation": "To use the available style, color, and position information from your input captions: Set Style passthrough to Enabled. Note that MediaConvert uses default settings for any missing style or position information in your input captions To ignore the style and position information from your input captions and use default settings: Leave blank or keep the default value, Disabled. Default settings include white text with black outlining, bottom-center positioning, and automatic sizing. Whether you set Style passthrough to enabled or not, you can also choose to manually override any of the individual style and position settings. You can also override any fonts by manually specifying custom font files.",
       "enum": [
         "ENABLED",
         "DISABLED"
@@ -8027,7 +8066,7 @@
         "ColorConversion3DLUTSettings": {
           "shape": "__listOfColorConversion3DLUTSetting",
           "locationName": "colorConversion3DLUTSettings",
-          "documentation": "Use 3D LUTs to specify custom color mapping behavior when you convert from one color space into another. You can include up to 8 different 3D LUTs."
+          "documentation": "Use 3D LUTs to specify custom color mapping behavior when you convert from one color space into another. You can include up to 8 different 3D LUTs. For more information, see: https://docs.aws.amazon.com/mediaconvert/latest/ug/3d-luts.html"
         },
         "Esam": {
           "shape": "EsamSettings",
@@ -8198,7 +8237,7 @@
         "ColorConversion3DLUTSettings": {
           "shape": "__listOfColorConversion3DLUTSetting",
           "locationName": "colorConversion3DLUTSettings",
-          "documentation": "Use 3D LUTs to specify custom color mapping behavior when you convert from one color space into another. You can include up to 8 different 3D LUTs."
+          "documentation": "Use 3D LUTs to specify custom color mapping behavior when you convert from one color space into another. You can include up to 8 different 3D LUTs. For more information, see: https://docs.aws.amazon.com/mediaconvert/latest/ug/3d-luts.html"
         },
         "Esam": {
           "shape": "EsamSettings",
@@ -8833,6 +8872,14 @@
         "CONFIGURED_PCR_PERIOD"
       ]
     },
+    "M2tsPreventBufferUnderflow": {
+      "type": "string",
+      "documentation": "Specify whether MediaConvert automatically attempts to prevent decoder buffer underflows in your transport stream output. Use if you are seeing decoder buffer underflows in your output and are unable to increase your transport stream's bitrate. For most workflows: We recommend that you keep the default value, Disabled. To prevent decoder buffer underflows in your output, when possible: Choose Enabled. Note that if MediaConvert prevents a decoder buffer underflow in your output, output video quality is reduced and your job will take longer to complete.",
+      "enum": [
+        "DISABLED",
+        "ENABLED"
+      ]
+    },
     "M2tsRateMode": {
       "type": "string",
       "documentation": "When set to CBR, inserts null packets into transport stream to fill specified bitrate. When set to VBR, the bitrate setting acts as the maximum bitrate, but the output will not be padded up to that bitrate.",
@@ -9017,6 +9064,11 @@
           "shape": "__integerMin32Max8182",
           "locationName": "pmtPid",
           "documentation": "Specify the packet identifier (PID) for the program map table (PMT) itself. Default is 480."
+        },
+        "PreventBufferUnderflow": {
+          "shape": "M2tsPreventBufferUnderflow",
+          "locationName": "preventBufferUnderflow",
+          "documentation": "Specify whether MediaConvert automatically attempts to prevent decoder buffer underflows in your transport stream output. Use if you are seeing decoder buffer underflows in your output and are unable to increase your transport stream's bitrate. For most workflows: We recommend that you keep the default value, Disabled. To prevent decoder buffer underflows in your output, when possible: Choose Enabled. Note that if MediaConvert prevents a decoder buffer underflow in your output, output video quality is reduced and your job will take longer to complete."
         },
         "PrivateMetadataPid": {
           "shape": "__integerMin32Max8182",
@@ -14295,6 +14347,10 @@
     "__stringPatternS3Https": {
       "type": "string",
       "pattern": "^s3://([^\\/]+\\/+)+((([^\\/]*)))|^https?://[^\\/].*[^&]$"
+    },
+    "__stringPatternS3TtfHttpsTtf": {
+      "type": "string",
+      "pattern": "^((s3://(.*?)\\.(ttf))|(https?://(.*?)\\.(ttf)(\\?([^&=]+=[^&]+&)*[^&=]+=[^&]+)?))$"
     },
     "__stringPatternSNManifestConfirmConditionNotificationNS": {
       "type": "string",

@@ -2,6 +2,21 @@
 CHANGELOG
 =========
 
+2.15.37
+=======
+
+* api-change:``mgn``: Added USE_SOURCE as default option to LaunchConfigurationTemplate bootMode parameter.
+* api-change:``pinpoint``: The OrchestrationSendingRoleArn has been added to the email channel and is used to send emails from campaigns or journeys.
+* api-change:``controlcatalog``: This is the initial SDK release for AWS Control Catalog, a central catalog for AWS managed controls. This release includes 3 new APIs - ListDomains, ListObjectives, and ListCommonControls - that vend high-level data to categorize controls across the AWS platform.
+* api-change:``rds``: This release adds support for specifying the CA certificate to use for the new db instance when restoring from db snapshot, restoring from s3, restoring to point in time, and creating a db instance read replica.
+* api-change:``resource-groups``: Added a new QueryErrorCode RESOURCE_TYPE_NOT_SUPPORTED that is returned by the ListGroupResources operation if the group query contains unsupported resource types.
+* api-change:``quicksight``: Adding IAMIdentityCenterInstanceArn parameter to CreateAccountSubscription
+* api-change:``verifiedpermissions``: Adding BatchIsAuthorizedWithToken API which supports multiple authorization requests against a PolicyStore given a bearer token.
+* api-change:``mediaconvert``: This release includes support for bringing your own fonts to use for burn-in or DVB-Sub captioning workflows.
+* api-change:``networkmonitor``: Updated the allowed monitorName length for CloudWatch Network Monitor.
+* api-change:``codebuild``: Add new webhook filter types for GitHub webhooks
+
+
 2.15.36
 =======
 

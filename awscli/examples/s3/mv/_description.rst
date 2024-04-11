@@ -1,4 +1,6 @@
-Moves a local file or S3 object to another location locally or in S3.
+Moves a local file or S3 object to another location locally or in S3. 
+The ``mv`` command copies the source object or file to the specified 
+destination and then deletes the source object or file.
 
 .. WARNING::
     If you are using any type of access point ARNs or access point aliases 

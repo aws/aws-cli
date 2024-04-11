@@ -2053,6 +2053,10 @@
         "DurationMillis":{
           "shape":"ULong",
           "documentation":"<p> The time duration of a segment in milliseconds, I.e. time elapsed from StartTimestampMillis to EndTimestampMillis. </p>"
+        },
+        "ContentTypes":{
+          "shape":"ContentTypes",
+          "documentation":"<p>A list of predicted results for the type of content an image contains. For example, the image content might be from animation, sports, or a video game.</p>"
         }
       },
       "documentation":"<p>Information about an inappropriate, unwanted, or offensive content label detection in a stored video.</p>"
@@ -2249,7 +2253,7 @@
       "members":{
         "SessionId":{
           "shape":"LivenessSessionId",
-          "documentation":"<p>A unique 128-bit UUID identifying a Face Liveness session.</p>"
+          "documentation":"<p>A unique 128-bit UUID identifying a Face Liveness session. A new sessionID must be used for every Face Liveness check. If a given sessionID is used for subsequent Face Liveness checks, the checks will fail. Additionally, a SessionId expires 3 minutes after it's sent, making all Liveness data associated with the session (e.g., sessionID, reference image, audit images, etc.) unavailable. </p>"
         }
       }
     },

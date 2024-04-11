@@ -781,7 +781,11 @@
         },
         "StateValue":{
           "shape":"AnomalyDetectorStateValue",
-          "documentation":"<p>The current status of the anomaly detector's training. The possible values are <code>TRAINED | PENDING_TRAINING | TRAINED_INSUFFICIENT_DATA</code> </p>"
+          "documentation":"<p>The current status of the anomaly detector's training.</p>"
+        },
+        "MetricCharacteristics":{
+          "shape":"MetricCharacteristics",
+          "documentation":"<p>This object includes parameters that you can use to provide information about your metric to CloudWatch to help it build more accurate anomaly detection models. Currently, it includes the <code>PeriodicSpikes</code> parameter.</p>"
         },
         "SingleMetricAnomalyDetector":{
           "shape":"SingleMetricAnomalyDetector",
@@ -2662,6 +2666,16 @@
       "type":"list",
       "member":{"shape":"MetricAlarm"}
     },
+    "MetricCharacteristics":{
+      "type":"structure",
+      "members":{
+        "PeriodicSpikes":{
+          "shape":"PeriodicSpikes",
+          "documentation":"<p>Set this parameter to <code>true</code> if values for this metric consistently include spikes that should not be considered to be anomalies. With this set to <code>true</code>, CloudWatch will expect to see spikes that occurred consistently during the model training period, and won't flag future similar spikes as anomalies.</p>"
+        }
+      },
+      "documentation":"<p>This object includes parameters that you can use to provide information to CloudWatch to help it build more accurate anomaly detection models.</p>"
+    },
     "MetricData":{
       "type":"list",
       "member":{"shape":"MetricDatum"}
@@ -3029,6 +3043,7 @@
       "type":"integer",
       "min":1
     },
+    "PeriodicSpikes":{"type":"boolean"},
     "PutAnomalyDetectorInput":{
       "type":"structure",
       "members":{
@@ -3059,6 +3074,10 @@
         "Configuration":{
           "shape":"AnomalyDetectorConfiguration",
           "documentation":"<p>The configuration specifies details about how the anomaly detection model is to be trained, including time ranges to exclude when training and updating the model. You can specify as many as 10 time ranges.</p> <p>The configuration can also include the time zone to use for the metric.</p>"
+        },
+        "MetricCharacteristics":{
+          "shape":"MetricCharacteristics",
+          "documentation":"<p>Use this object to include parameters to provide information about your metric to CloudWatch to help it build more accurate anomaly detection models. Currently, it includes the <code>PeriodicSpikes</code> parameter.</p>"
         },
         "SingleMetricAnomalyDetector":{
           "shape":"SingleMetricAnomalyDetector",

@@ -31,7 +31,7 @@
         {"shape":"AccessDeniedException"},
         {"shape":"RequestTimeoutException"}
       ],
-      "documentation":"<p> Stops a multipart upload. </p>",
+      "documentation":"<p>Stops a multipart upload.</p>",
       "endpoint":{"hostPrefix":"control-storage-"}
     },
     "AcceptShare":{
@@ -156,7 +156,7 @@
         {"shape":"AccessDeniedException"},
         {"shape":"RequestTimeoutException"}
       ],
-      "documentation":"<p> Concludes a multipart upload once you have uploaded all the components. </p>",
+      "documentation":"<p>Concludes a multipart upload once you have uploaded all the components.</p>",
       "endpoint":{"hostPrefix":"storage-"}
     },
     "CreateAnnotationStore":{
@@ -220,7 +220,7 @@
         {"shape":"AccessDeniedException"},
         {"shape":"RequestTimeoutException"}
       ],
-      "documentation":"<p> Begins a multipart read set upload. </p>",
+      "documentation":"<p>Begins a multipart read set upload.</p>",
       "endpoint":{"hostPrefix":"control-storage-"}
     },
     "CreateReferenceStore":{
@@ -1049,7 +1049,7 @@
         {"shape":"AccessDeniedException"},
         {"shape":"RequestTimeoutException"}
       ],
-      "documentation":"<p> Lists multipart read set uploads and for in progress uploads. Once the upload is completed, a read set is created and the upload will no longer be returned in the respone. </p>",
+      "documentation":"<p>Lists multipart read set uploads and for in progress uploads. Once the upload is completed, a read set is created and the upload will no longer be returned in the response.</p>",
       "endpoint":{"hostPrefix":"control-storage-"}
     },
     "ListReadSetActivationJobs":{
@@ -1131,7 +1131,7 @@
         {"shape":"AccessDeniedException"},
         {"shape":"RequestTimeoutException"}
       ],
-      "documentation":"<p> This operation will list all parts in a requested multipart upload for a sequence store. </p>",
+      "documentation":"<p>This operation will list all parts in a requested multipart upload for a sequence store.</p>",
       "endpoint":{"hostPrefix":"control-storage-"}
     },
     "ListReadSets":{
@@ -1710,7 +1710,7 @@
         {"shape":"AccessDeniedException"},
         {"shape":"RequestTimeoutException"}
       ],
-      "documentation":"<p> This operation uploads a specific part of a read set. If you upload a new part using a previously used part number, the previously uploaded part will be overwritten. </p>",
+      "documentation":"<p>This operation uploads a specific part of a read set. If you upload a new part using a previously used part number, the previously uploaded part will be overwritten.</p>",
       "authtype":"v4-unsigned-body",
       "endpoint":{"hostPrefix":"storage-"}
     }
@@ -1725,13 +1725,13 @@
       "members":{
         "sequenceStoreId":{
           "shape":"SequenceStoreId",
-          "documentation":"<p> The sequence store ID for the store involved in the multipart upload. </p>",
+          "documentation":"<p>The sequence store ID for the store involved in the multipart upload.</p>",
           "location":"uri",
           "locationName":"sequenceStoreId"
         },
         "uploadId":{
           "shape":"UploadId",
-          "documentation":"<p> The ID for the multipart upload. </p>",
+          "documentation":"<p>The ID for the multipart upload.</p>",
           "location":"uri",
           "locationName":"uploadId"
         }
@@ -2245,19 +2245,19 @@
       "members":{
         "sequenceStoreId":{
           "shape":"SequenceStoreId",
-          "documentation":"<p> The sequence store ID for the store involved in the multipart upload. </p>",
+          "documentation":"<p>The sequence store ID for the store involved in the multipart upload.</p>",
           "location":"uri",
           "locationName":"sequenceStoreId"
         },
         "uploadId":{
           "shape":"UploadId",
-          "documentation":"<p> The ID for the multipart upload. </p>",
+          "documentation":"<p>The ID for the multipart upload.</p>",
           "location":"uri",
           "locationName":"uploadId"
         },
         "parts":{
           "shape":"CompleteReadSetUploadPartList",
-          "documentation":"<p> The individual uploads or parts of a multipart upload. </p>"
+          "documentation":"<p>The individual uploads or parts of a multipart upload.</p>"
         }
       }
     },
@@ -2267,7 +2267,7 @@
       "members":{
         "readSetId":{
           "shape":"ReadSetId",
-          "documentation":"<p> The read set ID created for an uploaded read set. </p>"
+          "documentation":"<p>The read set ID created for an uploaded read set.</p>"
         }
       }
     },
@@ -2292,11 +2292,17 @@
           "documentation":"<p> The source file of the part being uploaded. </p>"
         },
         "checksum":{
-          "shape":"String",
+          "shape":"CompleteReadSetUploadPartListItemChecksumString",
           "documentation":"<p> A unique identifier used to confirm that parts are being added to the correct upload. </p>"
         }
       },
       "documentation":"<p> Part of the response to the CompleteReadSetUpload API, including metadata. </p>"
+    },
+    "CompleteReadSetUploadPartListItemChecksumString":{
+      "type":"string",
+      "max":100,
+      "min":1,
+      "pattern":"[\\p{L}||\\p{M}||\\p{Z}||\\p{S}||\\p{N}||\\p{P}]+"
     },
     "CompleteReadSetUploadPartListItemPartNumberInteger":{
       "type":"integer",
@@ -2487,45 +2493,45 @@
       "members":{
         "sequenceStoreId":{
           "shape":"SequenceStoreId",
-          "documentation":"<p> The sequence store ID for the store that is the destination of the multipart uploads. </p>",
+          "documentation":"<p>The sequence store ID for the store that is the destination of the multipart uploads.</p>",
           "location":"uri",
           "locationName":"sequenceStoreId"
         },
         "clientToken":{
           "shape":"ClientToken",
-          "documentation":"<p> An idempotency token that can be used to avoid triggering multiple multipart uploads. </p>"
+          "documentation":"<p>An idempotency token that can be used to avoid triggering multiple multipart uploads.</p>"
         },
         "sourceFileType":{
           "shape":"FileType",
-          "documentation":"<p> The type of file being uploaded. </p>"
+          "documentation":"<p>The type of file being uploaded.</p>"
         },
         "subjectId":{
           "shape":"SubjectId",
-          "documentation":"<p> The source's subject ID. </p>"
+          "documentation":"<p>The source's subject ID.</p>"
         },
         "sampleId":{
           "shape":"SampleId",
-          "documentation":"<p> The source's sample ID. </p>"
+          "documentation":"<p>The source's sample ID.</p>"
         },
         "generatedFrom":{
           "shape":"GeneratedFrom",
-          "documentation":"<p> Where the source originated. </p>"
+          "documentation":"<p>Where the source originated.</p>"
         },
         "referenceArn":{
           "shape":"ReferenceArn",
-          "documentation":"<p> The ARN of the reference. </p>"
+          "documentation":"<p>The ARN of the reference.</p>"
         },
         "name":{
           "shape":"ReadSetName",
-          "documentation":"<p> The name of the read set. </p>"
+          "documentation":"<p>The name of the read set.</p>"
         },
         "description":{
           "shape":"ReadSetDescription",
-          "documentation":"<p> The description of the read set. </p>"
+          "documentation":"<p>The description of the read set.</p>"
         },
         "tags":{
           "shape":"TagMap",
-          "documentation":"<p> Any tags to add to the read set. </p>"
+          "documentation":"<p>Any tags to add to the read set.</p>"
         }
       }
     },
@@ -2543,47 +2549,47 @@
       "members":{
         "sequenceStoreId":{
           "shape":"SequenceStoreId",
-          "documentation":"<p> The sequence store ID for the store that the read set will be created in. </p>"
+          "documentation":"<p>The sequence store ID for the store that the read set will be created in.</p>"
         },
         "uploadId":{
           "shape":"UploadId",
-          "documentation":"<p> he ID for the initiated multipart upload. </p>"
+          "documentation":"<p>The ID for the initiated multipart upload.</p>"
         },
         "sourceFileType":{
           "shape":"FileType",
-          "documentation":"<p> The file type of the read set source. </p>"
+          "documentation":"<p>The file type of the read set source.</p>"
         },
         "subjectId":{
           "shape":"SubjectId",
-          "documentation":"<p> The source's subject ID. </p>"
+          "documentation":"<p>The source's subject ID.</p>"
         },
         "sampleId":{
           "shape":"SampleId",
-          "documentation":"<p> The source's sample ID. </p>"
+          "documentation":"<p>The source's sample ID.</p>"
         },
         "generatedFrom":{
           "shape":"GeneratedFrom",
-          "documentation":"<p> The source of the read set. </p>"
+          "documentation":"<p>The source of the read set.</p>"
         },
         "referenceArn":{
           "shape":"ReferenceArn",
-          "documentation":"<p> The read set source's reference ARN. </p>"
+          "documentation":"<p>The read set source's reference ARN.</p>"
         },
         "name":{
           "shape":"ReadSetName",
-          "documentation":"<p> The name of the read set. </p>"
+          "documentation":"<p>The name of the read set.</p>"
         },
         "description":{
           "shape":"ReadSetDescription",
-          "documentation":"<p> The description of the read set. </p>"
+          "documentation":"<p>The description of the read set.</p>"
         },
         "tags":{
           "shape":"TagMap",
-          "documentation":"<p> The tags to add to the read set. </p>"
+          "documentation":"<p>The tags to add to the read set.</p>"
         },
         "creationTime":{
           "shape":"SyntheticTimestamp_date_time",
-          "documentation":"<p> The creation time of the multipart upload. </p>"
+          "documentation":"<p>The creation time of the multipart upload.</p>"
         }
       }
     },
@@ -2678,7 +2684,7 @@
         },
         "maxGpus":{
           "shape":"CreateRunGroupRequestMaxGpusInteger",
-          "documentation":"<p> The maximum GPUs that can be used by a run group. </p>"
+          "documentation":"<p>The maximum GPUs that can be used by a run group.</p>"
         }
       }
     },
@@ -2749,7 +2755,11 @@
         },
         "fallbackLocation":{
           "shape":"S3Destination",
-          "documentation":"<p> An S3 location that is used to store files that have failed a direct upload. </p>"
+          "documentation":"<p>An S3 location that is used to store files that have failed a direct upload.</p>"
+        },
+        "eTagAlgorithmFamily":{
+          "shape":"ETagAlgorithmFamily",
+          "documentation":"<p>The ETag algorithm family to use for ingested read sets.</p>"
         }
       }
     },
@@ -2787,7 +2797,11 @@
         },
         "fallbackLocation":{
           "shape":"S3Destination",
-          "documentation":"<p> An S3 location that is used to store files that have failed a direct upload. </p>"
+          "documentation":"<p>An S3 location that is used to store files that have failed a direct upload.</p>"
+        },
+        "eTagAlgorithmFamily":{
+          "shape":"ETagAlgorithmFamily",
+          "documentation":"<p>The algorithm family of the ETag.</p>"
         }
       }
     },
@@ -2933,7 +2947,7 @@
         },
         "accelerators":{
           "shape":"Accelerators",
-          "documentation":"<p> The computational accelerator specified to run the workflow. </p>"
+          "documentation":"<p>The computational accelerator specified to run the workflow.</p>"
         }
       }
     },
@@ -3192,25 +3206,39 @@
       "members":{
         "algorithm":{
           "shape":"ETagAlgorithm",
-          "documentation":"<p> The algorithm used to calculate the read set’s ETag(s). </p>"
+          "documentation":"<p>The algorithm used to calculate the read set’s ETag(s).</p>"
         },
         "source1":{
           "shape":"String",
-          "documentation":"<p> The ETag hash calculated on Source1 of the read set. </p>"
+          "documentation":"<p>The ETag hash calculated on Source1 of the read set.</p>"
         },
         "source2":{
           "shape":"String",
-          "documentation":"<p> The ETag hash calculated on Source2 of the read set. </p>"
+          "documentation":"<p>The ETag hash calculated on Source2 of the read set.</p>"
         }
       },
-      "documentation":"<p> The entity tag (ETag) is a hash of the object representing its semantic content. </p>"
+      "documentation":"<p>The entity tag (ETag) is a hash of the object representing its semantic content.</p>"
     },
     "ETagAlgorithm":{
       "type":"string",
       "enum":[
         "FASTQ_MD5up",
         "BAM_MD5up",
-        "CRAM_MD5up"
+        "CRAM_MD5up",
+        "FASTQ_SHA256up",
+        "BAM_SHA256up",
+        "CRAM_SHA256up",
+        "FASTQ_SHA512up",
+        "BAM_SHA512up",
+        "CRAM_SHA512up"
+      ]
+    },
+    "ETagAlgorithmFamily":{
+      "type":"string",
+      "enum":[
+        "MD5up",
+        "SHA256up",
+        "SHA512up"
       ]
     },
     "Encoding":{
@@ -3348,6 +3376,10 @@
         "contentLength":{
           "shape":"FileInformationContentLengthLong",
           "documentation":"<p>The file's content length.</p>"
+        },
+        "s3Access":{
+          "shape":"ReadSetS3Access",
+          "documentation":"<p>The S3 URI metadata of a sequence store.</p>"
         }
       },
       "documentation":"<p>Details about a file.</p>"
@@ -3511,7 +3543,7 @@
         "formatOptions":{"shape":"FormatOptions"},
         "annotationFields":{
           "shape":"AnnotationFieldMap",
-          "documentation":"<p> The annotation schema generated by the parsed annotation data. </p>"
+          "documentation":"<p>The annotation schema generated by the parsed annotation data.</p>"
         }
       }
     },
@@ -3976,7 +4008,7 @@
         },
         "statusMessage":{
           "shape":"ReadSetStatusMessage",
-          "documentation":"<p> The status message for a read set. It provides more detail as to why the read set has a status. </p>"
+          "documentation":"<p>The status message for a read set. It provides more detail as to why the read set has a status. </p>"
         },
         "creationType":{
           "shape":"CreationType",
@@ -3984,7 +4016,7 @@
         },
         "etag":{
           "shape":"ETag",
-          "documentation":"<p> The entity tag (ETag) is a hash of the object meant to represent its semantic content. </p>"
+          "documentation":"<p>The entity tag (ETag) is a hash of the object meant to represent its semantic content.</p>"
         }
       }
     },
@@ -4329,7 +4361,7 @@
         },
         "maxGpus":{
           "shape":"GetRunGroupResponseMaxGpusInteger",
-          "documentation":"<p> The maximum GPUs that can be used by a run group. </p>"
+          "documentation":"<p>The maximum GPUs that can be used by a run group.</p>"
         }
       }
     },
@@ -4472,7 +4504,7 @@
         },
         "accelerators":{
           "shape":"Accelerators",
-          "documentation":"<p> The computational accelerator used to run the workflow. </p>"
+          "documentation":"<p>The computational accelerator used to run the workflow.</p>"
         },
         "retentionMode":{
           "shape":"RunRetentionMode",
@@ -4480,19 +4512,19 @@
         },
         "failureReason":{
           "shape":"RunFailureReason",
-          "documentation":"<p> The reason a run has failed. </p>"
+          "documentation":"<p>The reason a run has failed.</p>"
         },
         "logLocation":{
           "shape":"RunLogLocation",
-          "documentation":"<p> The location of the run log. </p>"
+          "documentation":"<p>The location of the run log.</p>"
         },
         "uuid":{
           "shape":"RunUuid",
-          "documentation":"<p> The universally unique identifier for a run. </p>"
+          "documentation":"<p>The universally unique identifier for a run.</p>"
         },
         "runOutputUri":{
           "shape":"RunOutputUri",
-          "documentation":"<p> The destination for workflow outputs. </p>"
+          "documentation":"<p>The destination for workflow outputs.</p>"
         }
       }
     },
@@ -4574,15 +4606,15 @@
         },
         "gpus":{
           "shape":"GetRunTaskResponseGpusInteger",
-          "documentation":"<p> The number of Graphics Processing Units (GPU) specified in the task. </p>"
+          "documentation":"<p>The number of Graphics Processing Units (GPU) specified in the task.</p>"
         },
         "instanceType":{
           "shape":"TaskInstanceType",
-          "documentation":"<p> The instance type for a task. </p>"
+          "documentation":"<p>The instance type for a task.</p>"
         },
         "failureReason":{
           "shape":"TaskFailureReason",
-          "documentation":"<p> The reason a task has failed. </p>"
+          "documentation":"<p>The reason a task has failed.</p>"
         }
       }
     },
@@ -4647,7 +4679,15 @@
         },
         "fallbackLocation":{
           "shape":"S3Destination",
-          "documentation":"<p> An S3 location that is used to store files that have failed a direct upload. </p>"
+          "documentation":"<p>An S3 location that is used to store files that have failed a direct upload.</p>"
+        },
+        "s3Access":{
+          "shape":"SequenceStoreS3Access",
+          "documentation":"<p>The S3 metadata of a sequence store, including the ARN and S3 URI of the S3 bucket.</p>"
+        },
+        "eTagAlgorithmFamily":{
+          "shape":"ETagAlgorithmFamily",
+          "documentation":"<p>The algorithm family of the ETag.</p>"
         }
       }
     },
@@ -4740,7 +4780,7 @@
         },
         "annotationFields":{
           "shape":"AnnotationFieldMap",
-          "documentation":"<p> The annotation schema generated by the parsed annotation data. </p>"
+          "documentation":"<p>The annotation schema generated by the parsed annotation data.</p>"
         }
       }
     },
@@ -4912,11 +4952,11 @@
         },
         "metadata":{
           "shape":"WorkflowMetadata",
-          "documentation":"<p> Gets metadata for workflow. </p>"
+          "documentation":"<p>Gets metadata for workflow.</p>"
         },
         "accelerators":{
           "shape":"Accelerators",
-          "documentation":"<p> The computational accelerator specified to run the workflow. </p>"
+          "documentation":"<p>The computational accelerator specified to run the workflow. </p>"
         }
       }
     },
@@ -5388,19 +5428,19 @@
       "members":{
         "sequenceStoreId":{
           "shape":"SequenceStoreId",
-          "documentation":"<p> The Sequence Store ID used for the multipart uploads. </p>",
+          "documentation":"<p>The Sequence Store ID used for the multipart uploads.</p>",
           "location":"uri",
           "locationName":"sequenceStoreId"
         },
         "maxResults":{
           "shape":"ListMultipartReadSetUploadsRequestMaxResultsInteger",
-          "documentation":"<p> The maximum number of multipart uploads returned in a page. </p>",
+          "documentation":"<p>The maximum number of multipart uploads returned in a page.</p>",
           "location":"querystring",
           "locationName":"maxResults"
         },
         "nextToken":{
           "shape":"NextToken",
-          "documentation":"<p> Next token returned in the response of a previous ListMultipartReadSetUploads call. Used to get the next page of results. </p>",
+          "documentation":"<p>Next token returned in the response of a previous ListMultipartReadSetUploads call. Used to get the next page of results.</p>",
           "location":"querystring",
           "locationName":"nextToken"
         }
@@ -5417,11 +5457,11 @@
       "members":{
         "nextToken":{
           "shape":"NextToken",
-          "documentation":"<p> Next token returned in the response of a previous ListMultipartReadSetUploads call. Used to get the next page of results. </p>"
+          "documentation":"<p>Next token returned in the response of a previous ListMultipartReadSetUploads call. Used to get the next page of results.</p>"
         },
         "uploads":{
           "shape":"MultipartReadSetUploadList",
-          "documentation":"<p> An array of multipart uploads. </p>"
+          "documentation":"<p>An array of multipart uploads.</p>"
         }
       }
     },
@@ -5576,35 +5616,35 @@
       "members":{
         "sequenceStoreId":{
           "shape":"SequenceStoreId",
-          "documentation":"<p> The Sequence Store ID used for the multipart uploads. </p>",
+          "documentation":"<p>The Sequence Store ID used for the multipart uploads.</p>",
           "location":"uri",
           "locationName":"sequenceStoreId"
         },
         "uploadId":{
           "shape":"UploadId",
-          "documentation":"<p> The ID for the initiated multipart upload. </p>",
+          "documentation":"<p>The ID for the initiated multipart upload.</p>",
           "location":"uri",
           "locationName":"uploadId"
         },
         "partSource":{
           "shape":"ReadSetPartSource",
-          "documentation":"<p> The source file for the upload part. </p>"
+          "documentation":"<p>The source file for the upload part.</p>"
         },
         "maxResults":{
           "shape":"ListReadSetUploadPartsRequestMaxResultsInteger",
-          "documentation":"<p> The maximum number of read set upload parts returned in a page. </p>",
+          "documentation":"<p>The maximum number of read set upload parts returned in a page.</p>",
           "location":"querystring",
           "locationName":"maxResults"
         },
         "nextToken":{
           "shape":"NextToken",
-          "documentation":"<p> Next token returned in the response of a previous ListReadSetUploadPartsRequest call. Used to get the next page of results. </p>",
+          "documentation":"<p>Next token returned in the response of a previous ListReadSetUploadPartsRequest call. Used to get the next page of results.</p>",
           "location":"querystring",
           "locationName":"nextToken"
         },
         "filter":{
           "shape":"ReadSetUploadPartListFilter",
-          "documentation":"<p> Attributes used to filter for a specific subset of read set part uploads. </p>"
+          "documentation":"<p>Attributes used to filter for a specific subset of read set part uploads.</p>"
         }
       }
     },
@@ -5619,11 +5659,11 @@
       "members":{
         "nextToken":{
           "shape":"NextToken",
-          "documentation":"<p> Next token returned in the response of a previous ListReadSetUploadParts call. Used to get the next page of results. </p>"
+          "documentation":"<p>Next token returned in the response of a previous ListReadSetUploadParts call. Used to get the next page of results.</p>"
         },
         "parts":{
           "shape":"ReadSetUploadPartList",
-          "documentation":"<p> An array of upload parts. </p>"
+          "documentation":"<p>An array of upload parts.</p>"
         }
       }
     },
@@ -5931,7 +5971,7 @@
         },
         "status":{
           "shape":"RunStatus",
-          "documentation":"<p> The status of a run. </p>",
+          "documentation":"<p>The status of a run.</p>",
           "location":"querystring",
           "locationName":"status"
         }
@@ -6655,7 +6695,7 @@
         },
         "etag":{
           "shape":"ETag",
-          "documentation":"<p> The entity tag (ETag) is a hash of the object representing its semantic content. </p>"
+          "documentation":"<p>The entity tag (ETag) is a hash of the object representing its semantic content.</p>"
         }
       },
       "documentation":"<p>A read set.</p>"
@@ -6677,6 +6717,16 @@
       "type":"blob",
       "requiresLength":true,
       "streaming":true
+    },
+    "ReadSetS3Access":{
+      "type":"structure",
+      "members":{
+        "s3Uri":{
+          "shape":"S3Uri",
+          "documentation":"<p>The S3 URI for each read set file.</p>"
+        }
+      },
+      "documentation":"<p>The S3 URI for each read set file.</p>"
     },
     "ReadSetStatus":{
       "type":"string",
@@ -7281,14 +7331,14 @@
       "members":{
         "engineLogStream":{
           "shape":"EngineLogStream",
-          "documentation":"<p> The log stream ARN for the engine log. </p>"
+          "documentation":"<p>The log stream ARN for the engine log.</p>"
         },
         "runLogStream":{
           "shape":"RunLogStream",
-          "documentation":"<p> The log stream ARN for the run log. </p>"
+          "documentation":"<p>The log stream ARN for the run log.</p>"
         }
       },
-      "documentation":"<p> The URI for the run log. </p>"
+      "documentation":"<p>The URI for the run log.</p>"
     },
     "RunLogStream":{
       "type":"string",
@@ -7383,6 +7433,12 @@
       "max":128,
       "min":1,
       "pattern":"[\\p{L}||\\p{M}||\\p{Z}||\\p{S}||\\p{N}||\\p{P}]+"
+    },
+    "S3AccessPointArn":{
+      "type":"string",
+      "max":1024,
+      "min":1,
+      "pattern":"arn:[^:]*:s3:[^:]*:[^:]*:accesspoint/.*"
     },
     "S3Destination":{
       "type":"string",
@@ -7494,6 +7550,10 @@
         "fallbackLocation":{
           "shape":"S3Destination",
           "documentation":"<p> An S3 location that is used to store files that have failed a direct upload. </p>"
+        },
+        "eTagAlgorithmFamily":{
+          "shape":"ETagAlgorithmFamily",
+          "documentation":"<p>The algorithm family of the ETag.</p>"
         }
       },
       "documentation":"<p>Details about a sequence store.</p>"
@@ -7531,6 +7591,20 @@
       "max":127,
       "min":1,
       "pattern":"[\\p{L}||\\p{M}||\\p{Z}||\\p{S}||\\p{N}||\\p{P}]+"
+    },
+    "SequenceStoreS3Access":{
+      "type":"structure",
+      "members":{
+        "s3Uri":{
+          "shape":"S3Uri",
+          "documentation":"<p>The S3 URI of the sequence store.</p>"
+        },
+        "s3AccessPointArn":{
+          "shape":"S3AccessPointArn",
+          "documentation":"<p>This is ARN of the access point associated with the S3 bucket storing read sets.</p>"
+        }
+      },
+      "documentation":"<p>The S3 access metadata of the sequence store.</p>"
     },
     "ServiceQuotaExceededException":{
       "type":"structure",
@@ -7678,7 +7752,7 @@
         },
         "annotationFields":{
           "shape":"AnnotationFieldMap",
-          "documentation":"<p> The annotation schema generated by the parsed annotation data. </p>"
+          "documentation":"<p>The annotation schema generated by the parsed annotation data.</p>"
         }
       }
     },
@@ -8077,7 +8151,7 @@
         },
         "storageCapacity":{
           "shape":"StartRunRequestStorageCapacityInteger",
-          "documentation":"<p>A storage capacity for the run in gigabytes.</p>"
+          "documentation":"<p>A storage capacity for the run in gibibytes.</p>"
         },
         "outputUri":{
           "shape":"RunOutputUri",
@@ -8135,11 +8209,11 @@
         },
         "uuid":{
           "shape":"RunUuid",
-          "documentation":"<p> The universally unique identifier for a run. </p>"
+          "documentation":"<p>The universally unique identifier for a run.</p>"
         },
         "runOutputUri":{
           "shape":"RunOutputUri",
-          "documentation":"<p> The destination for workflow outputs. </p>"
+          "documentation":"<p>The destination for workflow outputs.</p>"
         }
       }
     },
@@ -8169,7 +8243,7 @@
         },
         "annotationFields":{
           "shape":"AnnotationFieldMap",
-          "documentation":"<p> The annotation schema generated by the parsed annotation data. </p>"
+          "documentation":"<p>The annotation schema generated by the parsed annotation data.</p>"
         }
       }
     },
@@ -8357,7 +8431,7 @@
         },
         "instanceType":{
           "shape":"TaskInstanceType",
-          "documentation":"<p> The instance type for a task. </p>"
+          "documentation":"<p> The instance type for a task.</p>"
         }
       },
       "documentation":"<p>A workflow run task.</p>"
@@ -8678,7 +8752,7 @@
         },
         "maxGpus":{
           "shape":"UpdateRunGroupRequestMaxGpusInteger",
-          "documentation":"<p> The maximum GPUs that can be used by a run group. </p>"
+          "documentation":"<p>The maximum GPUs that can be used by a run group.</p>"
         }
       }
     },
@@ -8806,31 +8880,31 @@
       "members":{
         "sequenceStoreId":{
           "shape":"SequenceStoreId",
-          "documentation":"<p> The Sequence Store ID used for the multipart upload. </p>",
+          "documentation":"<p>The Sequence Store ID used for the multipart upload.</p>",
           "location":"uri",
           "locationName":"sequenceStoreId"
         },
         "uploadId":{
           "shape":"UploadId",
-          "documentation":"<p> The ID for the initiated multipart upload. </p>",
+          "documentation":"<p>The ID for the initiated multipart upload.</p>",
           "location":"uri",
           "locationName":"uploadId"
         },
         "partSource":{
           "shape":"ReadSetPartSource",
-          "documentation":"<p> The source file for an upload part. </p>",
+          "documentation":"<p>The source file for an upload part.</p>",
           "location":"querystring",
           "locationName":"partSource"
         },
         "partNumber":{
           "shape":"UploadReadSetPartRequestPartNumberInteger",
-          "documentation":"<p> The number of the part being uploaded. </p>",
+          "documentation":"<p>The number of the part being uploaded.</p>",
           "location":"querystring",
           "locationName":"partNumber"
         },
         "payload":{
           "shape":"ReadSetPartStreamingBlob",
-          "documentation":"<p> The read set data to upload for a part. </p>"
+          "documentation":"<p>The read set data to upload for a part.</p>"
         }
       },
       "payload":"payload"
@@ -8847,7 +8921,7 @@
       "members":{
         "checksum":{
           "shape":"String",
-          "documentation":"<p> An identifier used to confirm that parts are being added to the intended upload. </p>"
+          "documentation":"<p>An identifier used to confirm that parts are being added to the intended upload.</p>"
         }
       }
     },

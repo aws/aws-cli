@@ -1595,6 +1595,10 @@
         "analysisParameters":{
           "shape":"AnalysisParameterList",
           "documentation":"<p>The parameters of the analysis template.</p>"
+        },
+        "validations":{
+          "shape":"AnalysisTemplateValidationStatusDetailList",
+          "documentation":"<p>Information about the validations performed on the analysis template.</p>"
         }
       },
       "documentation":"<p>The analysis template.</p>"
@@ -1688,6 +1692,59 @@
       "type":"string",
       "max":90000,
       "min":0
+    },
+    "AnalysisTemplateValidationStatus":{
+      "type":"string",
+      "enum":[
+        "VALID",
+        "INVALID",
+        "UNABLE_TO_VALIDATE"
+      ]
+    },
+    "AnalysisTemplateValidationStatusDetail":{
+      "type":"structure",
+      "required":[
+        "type",
+        "status"
+      ],
+      "members":{
+        "type":{
+          "shape":"AnalysisTemplateValidationType",
+          "documentation":"<p>The type of validation that was performed.</p>"
+        },
+        "status":{
+          "shape":"AnalysisTemplateValidationStatus",
+          "documentation":"<p>The status of the validation.</p>"
+        },
+        "reasons":{
+          "shape":"AnalysisTemplateValidationStatusReasonList",
+          "documentation":"<p>The reasons for the validation results.</p>"
+        }
+      },
+      "documentation":"<p>The status details of the analysis template validation. Clean Rooms Differential Privacy uses a general-purpose query structure to support complex SQL queries and validates whether an analysis template fits that general-purpose query structure. Validation is performed when analysis templates are created and fetched. Because analysis templates are immutable by design, we recommend that you create analysis templates after you associate the configured tables with their analysis rule to your collaboration.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/clean-rooms/latest/userguide/analysis-rules-custom.html#custom-diff-privacy\">https://docs.aws.amazon.com/clean-rooms/latest/userguide/analysis-rules-custom.html#custom-diff-privacy</a>.</p>"
+    },
+    "AnalysisTemplateValidationStatusDetailList":{
+      "type":"list",
+      "member":{"shape":"AnalysisTemplateValidationStatusDetail"}
+    },
+    "AnalysisTemplateValidationStatusReason":{
+      "type":"structure",
+      "required":["message"],
+      "members":{
+        "message":{
+          "shape":"String",
+          "documentation":"<p>The validation message.</p>"
+        }
+      },
+      "documentation":"<p>The reasons for the validation results.</p>"
+    },
+    "AnalysisTemplateValidationStatusReasonList":{
+      "type":"list",
+      "member":{"shape":"AnalysisTemplateValidationStatusReason"}
+    },
+    "AnalysisTemplateValidationType":{
+      "type":"string",
+      "enum":["DIFFERENTIAL_PRIVACY"]
     },
     "BatchGetCollaborationAnalysisTemplateError":{
       "type":"structure",
@@ -2035,6 +2092,10 @@
         "analysisParameters":{
           "shape":"AnalysisParameterList",
           "documentation":"<p>The analysis parameters that have been specified in the analysis template.</p>"
+        },
+        "validations":{
+          "shape":"AnalysisTemplateValidationStatusDetailList",
+          "documentation":"<p>The validations that were performed.</p>"
         }
       },
       "documentation":"<p>The analysis template within a collaboration.</p>"

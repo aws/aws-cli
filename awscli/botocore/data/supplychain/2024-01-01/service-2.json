@@ -52,6 +52,27 @@
         {"shape":"ConflictException"}
       ],
       "documentation":"<p>Get status and details of a BillOfMaterialsImportJob.</p>"
+    },
+    "SendDataIntegrationEvent":{
+      "name":"SendDataIntegrationEvent",
+      "http":{
+        "method":"POST",
+        "requestUri":"/api-data/data-integration/instance/{instanceId}/data-integration-events",
+        "responseCode":200
+      },
+      "input":{"shape":"SendDataIntegrationEventRequest"},
+      "output":{"shape":"SendDataIntegrationEventResponse"},
+      "errors":[
+        {"shape":"ServiceQuotaExceededException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ConflictException"}
+      ],
+      "documentation":"<p>Send transactional data events with real-time data for analysis or monitoring.</p>",
+      "idempotent":true
     }
   },
   "shapes":{
@@ -169,6 +190,37 @@
       },
       "documentation":"<p>The response parameters of CreateBillOfMaterialsImportJob.</p>"
     },
+    "DataIntegrationEventData":{
+      "type":"string",
+      "max":1048576,
+      "min":1,
+      "sensitive":true
+    },
+    "DataIntegrationEventGroupId":{
+      "type":"string",
+      "max":255,
+      "min":1
+    },
+    "DataIntegrationEventType":{
+      "type":"string",
+      "enum":[
+        "scn.data.forecast",
+        "scn.data.inventorylevel",
+        "scn.data.inboundorder",
+        "scn.data.inboundorderline",
+        "scn.data.inboundorderlineschedule",
+        "scn.data.outboundorderline",
+        "scn.data.outboundshipment",
+        "scn.data.processheader",
+        "scn.data.processoperation",
+        "scn.data.processproduct",
+        "scn.data.reservation",
+        "scn.data.shipment",
+        "scn.data.shipmentstop",
+        "scn.data.shipmentstoporder",
+        "scn.data.supplyplan"
+      ]
+    },
     "GetBillOfMaterialsImportJobRequest":{
       "type":"structure",
       "required":[
@@ -225,6 +277,56 @@
       },
       "exception":true
     },
+    "SendDataIntegrationEventRequest":{
+      "type":"structure",
+      "required":[
+        "instanceId",
+        "eventType",
+        "data",
+        "eventGroupId"
+      ],
+      "members":{
+        "instanceId":{
+          "shape":"UUID",
+          "documentation":"<p>The AWS Supply Chain instance identifier.</p>",
+          "location":"uri",
+          "locationName":"instanceId"
+        },
+        "eventType":{
+          "shape":"DataIntegrationEventType",
+          "documentation":"<p>The data event type.</p>"
+        },
+        "data":{
+          "shape":"DataIntegrationEventData",
+          "documentation":"<p>The data payload of the event.</p>"
+        },
+        "eventGroupId":{
+          "shape":"DataIntegrationEventGroupId",
+          "documentation":"<p>Event identifier (for example, orderId for InboundOrder) used for data sharing or partitioning.</p>"
+        },
+        "eventTimestamp":{
+          "shape":"SyntheticTimestamp_epoch_seconds",
+          "documentation":"<p>The event timestamp (in epoch seconds).</p>"
+        },
+        "clientToken":{
+          "shape":"ClientToken",
+          "documentation":"<p>The idempotent client token.</p>",
+          "idempotencyToken":true
+        }
+      },
+      "documentation":"<p>The request parameters for SendDataIntegrationEvent.</p>"
+    },
+    "SendDataIntegrationEventResponse":{
+      "type":"structure",
+      "required":["eventId"],
+      "members":{
+        "eventId":{
+          "shape":"UUID",
+          "documentation":"<p>The unique event identifier.</p>"
+        }
+      },
+      "documentation":"<p>The response parameters for SendDataIntegrationEvent.</p>"
+    },
     "ServiceQuotaExceededException":{
       "type":"structure",
       "members":{
@@ -238,6 +340,10 @@
       "exception":true
     },
     "String":{"type":"string"},
+    "SyntheticTimestamp_epoch_seconds":{
+      "type":"timestamp",
+      "timestampFormat":"unixTimestamp"
+    },
     "ThrottlingException":{
       "type":"structure",
       "members":{

@@ -65,7 +65,7 @@
         {"shape":"AccessDeniedException"},
         {"shape":"ResourceNotFoundException"}
       ],
-      "documentation":"<p>Creates Amazon Q content. Before to calling this API, use <a href=\"https://docs.aws.amazon.com/amazon-q-connect/latest/APIReference/API_StartContentUpload.html\">StartContentUpload</a> to upload an asset.</p>",
+      "documentation":"<p>Creates Amazon Q in Connect content. Before to calling this API, use <a href=\"https://docs.aws.amazon.com/amazon-q-connect/latest/APIReference/API_StartContentUpload.html\">StartContentUpload</a> to upload an asset.</p>",
       "idempotent":true
     },
     "CreateKnowledgeBase":{
@@ -102,7 +102,7 @@
         {"shape":"AccessDeniedException"},
         {"shape":"ResourceNotFoundException"}
       ],
-      "documentation":"<p>Creates an Amazon Q quick response.</p>",
+      "documentation":"<p>Creates an Amazon Q in Connect quick response.</p>",
       "idempotent":true
     },
     "CreateSession":{
@@ -117,9 +117,10 @@
       "errors":[
         {"shape":"ConflictException"},
         {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
         {"shape":"ResourceNotFoundException"}
       ],
-      "documentation":"<p>Creates a session. A session is a contextual container used for generating recommendations. Amazon Connect creates a new Amazon Q session for each contact on which Amazon Q is enabled.</p>",
+      "documentation":"<p>Creates a session. A session is a contextual container used for generating recommendations. Amazon Connect creates a new Amazon Q in Connect session for each contact on which Amazon Q in Connect is enabled.</p>",
       "idempotent":true
     },
     "DeleteAssistant":{
@@ -352,7 +353,7 @@
         {"shape":"AccessDeniedException"},
         {"shape":"ResourceNotFoundException"}
       ],
-      "documentation":"<p>Retrieves recommendations for the specified session. To avoid retrieving the same recommendations in subsequent calls, use <a href=\"https://docs.aws.amazon.com/amazon-q-connect/latest/APIReference/API_NotifyRecommendationsReceived.html\">NotifyRecommendationsReceived</a>. This API supports long-polling behavior with the <code>waitTimeSeconds</code> parameter. Short poll is the default behavior and only returns recommendations already available. To perform a manual query against an assistant, use <a href=\"https://docs.aws.amazon.com/amazon-q-connect/latest/APIReference/API_QueryAssistant.html\">QueryAssistant</a>.</p>",
+      "documentation":"<important> <p>This API will be discontinued starting June 1, 2024. To receive generative responses after March 1, 2024, you will need to create a new Assistant in the Amazon Connect console and integrate the Amazon Q in Connect JavaScript library (amazon-q-connectjs) into your applications.</p> </important> <p>Retrieves recommendations for the specified session. To avoid retrieving the same recommendations in subsequent calls, use <a href=\"https://docs.aws.amazon.com/amazon-q-connect/latest/APIReference/API_NotifyRecommendationsReceived.html\">NotifyRecommendationsReceived</a>. This API supports long-polling behavior with the <code>waitTimeSeconds</code> parameter. Short poll is the default behavior and only returns recommendations already available. To perform a manual query against an assistant, use <a href=\"https://docs.aws.amazon.com/amazon-q-connect/latest/APIReference/API_QueryAssistant.html\">QueryAssistant</a>.</p>",
       "deprecated":true,
       "deprecatedMessage":"GetRecommendations API will be discontinued starting June 1, 2024. To receive generative responses after March 1, 2024 you will need to create a new Assistant in the Connect console and integrate the Amazon Q in Connect JavaScript library (amazon-q-connectjs) into your applications."
     },
@@ -528,7 +529,7 @@
         {"shape":"AccessDeniedException"},
         {"shape":"ResourceNotFoundException"}
       ],
-      "documentation":"<p>Performs a manual search against the specified assistant. To retrieve recommendations for an assistant, use <a href=\"https://docs.aws.amazon.com/amazon-q-connect/latest/APIReference/API_GetRecommendations.html\">GetRecommendations</a>. </p>",
+      "documentation":"<important> <p>This API will be discontinued starting June 1, 2024. To receive generative responses after March 1, 2024, you will need to create a new Assistant in the Amazon Connect console and integrate the Amazon Q in Connect JavaScript library (amazon-q-connectjs) into your applications.</p> </important> <p>Performs a manual search against the specified assistant. To retrieve recommendations for an assistant, use <a href=\"https://docs.aws.amazon.com/amazon-q-connect/latest/APIReference/API_GetRecommendations.html\">GetRecommendations</a>. </p>",
       "deprecated":true,
       "deprecatedMessage":"QueryAssistant API will be discontinued starting June 1, 2024. To receive generative responses after March 1, 2024 you will need to create a new Assistant in the Connect console and integrate the Amazon Q in Connect JavaScript library (amazon-q-connectjs) into your applications."
     },
@@ -579,7 +580,7 @@
         {"shape":"AccessDeniedException"},
         {"shape":"ResourceNotFoundException"}
       ],
-      "documentation":"<p>Searches existing Amazon Q quick responses in an Amazon Q knowledge base.</p>"
+      "documentation":"<p>Searches existing Amazon Q in Connect quick responses in an Amazon Q in Connect knowledge base.</p>"
     },
     "SearchSessions":{
       "name":"SearchSessions",
@@ -629,7 +630,7 @@
         {"shape":"AccessDeniedException"},
         {"shape":"ResourceNotFoundException"}
       ],
-      "documentation":"<p>Start an asynchronous job to import Amazon Q resources from an uploaded source file. Before calling this API, use <a href=\"https://docs.aws.amazon.com/wisdom/latest/APIReference/API_StartContentUpload.html\">StartContentUpload</a> to upload an asset that contains the resource data.</p> <ul> <li> <p>For importing Amazon Q quick responses, you need to upload a csv file including the quick responses. For information about how to format the csv file for importing quick responses, see <a href=\"https://docs.aws.amazon.com/console/connect/quick-responses/add-data\">Import quick responses</a>.</p> </li> </ul>",
+      "documentation":"<p>Start an asynchronous job to import Amazon Q in Connect resources from an uploaded source file. Before calling this API, use <a href=\"https://docs.aws.amazon.com/wisdom/latest/APIReference/API_StartContentUpload.html\">StartContentUpload</a> to upload an asset that contains the resource data.</p> <ul> <li> <p>For importing Amazon Q in Connect quick responses, you need to upload a csv file including the quick responses. For information about how to format the csv file for importing quick responses, see <a href=\"https://docs.aws.amazon.com/console/connect/quick-responses/add-data\">Import quick responses</a>.</p> </li> </ul>",
       "idempotent":true
     },
     "TagResource":{
@@ -694,7 +695,7 @@
         {"shape":"AccessDeniedException"},
         {"shape":"ResourceNotFoundException"}
       ],
-      "documentation":"<p>Updates the template URI of a knowledge base. This is only supported for knowledge bases of type EXTERNAL. Include a single variable in <code>${variable}</code> format; this interpolated by Amazon Q using ingested content. For example, if you ingest a Salesforce article, it has an <code>Id</code> value, and you can set the template URI to <code>https://myInstanceName.lightning.force.com/lightning/r/Knowledge__kav/*${Id}*/view</code>. </p>"
+      "documentation":"<p>Updates the template URI of a knowledge base. This is only supported for knowledge bases of type EXTERNAL. Include a single variable in <code>${variable}</code> format; this interpolated by Amazon Q in Connect using ingested content. For example, if you ingest a Salesforce article, it has an <code>Id</code> value, and you can set the template URI to <code>https://myInstanceName.lightning.force.com/lightning/r/Knowledge__kav/*${Id}*/view</code>. </p>"
     },
     "UpdateQuickResponse":{
       "name":"UpdateQuickResponse",
@@ -712,7 +713,23 @@
         {"shape":"PreconditionFailedException"},
         {"shape":"ResourceNotFoundException"}
       ],
-      "documentation":"<p>Updates an existing Amazon Q quick response.</p>"
+      "documentation":"<p>Updates an existing Amazon Q in Connect quick response.</p>"
+    },
+    "UpdateSession":{
+      "name":"UpdateSession",
+      "http":{
+        "method":"POST",
+        "requestUri":"/assistants/{assistantId}/sessions/{sessionId}",
+        "responseCode":200
+      },
+      "input":{"shape":"UpdateSessionRequest"},
+      "output":{"shape":"UpdateSessionResponse"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p>Updates a session. A session is a contextual container used for generating recommendations. Amazon Connect updates the existing Amazon Q in Connect session for each contact on which Amazon Q in Connect is enabled.</p>"
     }
   },
   "shapes":{
@@ -728,6 +745,10 @@
       },
       "exception":true
     },
+    "AndConditions":{
+      "type":"list",
+      "member":{"shape":"TagCondition"}
+    },
     "AppIntegrationsConfiguration":{
       "type":"structure",
       "required":["appIntegrationArn"],
@@ -738,7 +759,7 @@
         },
         "objectFields":{
           "shape":"ObjectFieldsList",
-          "documentation":"<p>The fields from the source that are made available to your agents in Amazon Q. Optional if ObjectConfiguration is included in the provided DataIntegration. </p> <ul> <li> <p> For <a href=\"https://developer.salesforce.com/docs/atlas.en-us.knowledge_dev.meta/knowledge_dev/sforce_api_objects_knowledge__kav.htm\"> Salesforce</a>, you must include at least <code>Id</code>, <code>ArticleNumber</code>, <code>VersionNumber</code>, <code>Title</code>, <code>PublishStatus</code>, and <code>IsDeleted</code>. </p> </li> <li> <p>For <a href=\"https://developer.servicenow.com/dev.do#!/reference/api/rome/rest/knowledge-management-api\"> ServiceNow</a>, you must include at least <code>number</code>, <code>short_description</code>, <code>sys_mod_count</code>, <code>workflow_state</code>, and <code>active</code>. </p> </li> <li> <p>For <a href=\"https://developer.zendesk.com/api-reference/help_center/help-center-api/articles/\"> Zendesk</a>, you must include at least <code>id</code>, <code>title</code>, <code>updated_at</code>, and <code>draft</code>. </p> </li> </ul> <p>Make sure to include additional fields. These fields are indexed and used to source recommendations. </p>"
+          "documentation":"<p>The fields from the source that are made available to your agents in Amazon Q in Connect. Optional if ObjectConfiguration is included in the provided DataIntegration. </p> <ul> <li> <p> For <a href=\"https://developer.salesforce.com/docs/atlas.en-us.knowledge_dev.meta/knowledge_dev/sforce_api_objects_knowledge__kav.htm\"> Salesforce</a>, you must include at least <code>Id</code>, <code>ArticleNumber</code>, <code>VersionNumber</code>, <code>Title</code>, <code>PublishStatus</code>, and <code>IsDeleted</code>. </p> </li> <li> <p>For <a href=\"https://developer.servicenow.com/dev.do#!/reference/api/rome/rest/knowledge-management-api\"> ServiceNow</a>, you must include at least <code>number</code>, <code>short_description</code>, <code>sys_mod_count</code>, <code>workflow_state</code>, and <code>active</code>. </p> </li> <li> <p>For <a href=\"https://developer.zendesk.com/api-reference/help_center/help-center-api/articles/\"> Zendesk</a>, you must include at least <code>id</code>, <code>title</code>, <code>updated_at</code>, and <code>draft</code>. </p> </li> </ul> <p>Make sure to include additional fields. These fields are indexed and used to source recommendations. </p>"
         }
       },
       "documentation":"<p>Configuration information for Amazon AppIntegrations to automatically ingest content.</p>"
@@ -760,7 +781,7 @@
       "members":{
         "assistantArn":{
           "shape":"Arn",
-          "documentation":"<p>The Amazon Resource Name (ARN) of the Amazon Q assistant.</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of the Amazon Q in Connect assistant.</p>"
         },
         "assistantAssociationArn":{
           "shape":"Arn",
@@ -772,7 +793,7 @@
         },
         "assistantId":{
           "shape":"Uuid",
-          "documentation":"<p>The identifier of the Amazon Q assistant.</p>"
+          "documentation":"<p>The identifier of the Amazon Q in Connect assistant.</p>"
         },
         "associationData":{
           "shape":"AssistantAssociationOutputData",
@@ -794,10 +815,10 @@
       "members":{
         "knowledgeBaseId":{
           "shape":"Uuid",
-          "documentation":"<p>The identifier of the knowledge base. This should not be a QUICK_RESPONSES type knowledge base if you're storing Amazon Q Content resource to it.</p>"
+          "documentation":"<p>The identifier of the knowledge base. This should not be a QUICK_RESPONSES type knowledge base.</p>"
         }
       },
-      "documentation":"<p>The data that is input into Amazon Q as a result of the assistant association.</p>",
+      "documentation":"<p>The data that is input into Amazon Q in Connect as a result of the assistant association.</p>",
       "union":true
     },
     "AssistantAssociationOutputData":{
@@ -824,7 +845,7 @@
       "members":{
         "assistantArn":{
           "shape":"Arn",
-          "documentation":"<p>The Amazon Resource Name (ARN) of the Amazon Q assistant.</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of the Amazon Q in Connect assistant.</p>"
         },
         "assistantAssociationArn":{
           "shape":"Arn",
@@ -836,7 +857,7 @@
         },
         "assistantId":{
           "shape":"Uuid",
-          "documentation":"<p>The identifier of the Amazon Q assistant.</p>"
+          "documentation":"<p>The identifier of the Amazon Q in Connect assistant.</p>"
         },
         "associationData":{
           "shape":"AssistantAssociationOutputData",
@@ -862,10 +883,10 @@
       "members":{
         "type":{
           "shape":"AssistantCapabilityType",
-          "documentation":"<p>The type of Amazon Q assistant capability. </p>"
+          "documentation":"<p>The type of Amazon Q in Connect assistant capability. </p>"
         }
       },
-      "documentation":"<p>The capability configuration for an Amazon Q assistant. </p>"
+      "documentation":"<p>The capability configuration for an Amazon Q in Connect assistant. </p>"
     },
     "AssistantCapabilityType":{
       "type":"string",
@@ -886,15 +907,15 @@
       "members":{
         "assistantArn":{
           "shape":"Arn",
-          "documentation":"<p>The Amazon Resource Name (ARN) of the Amazon Q assistant.</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of the Amazon Q in Connect assistant.</p>"
         },
         "assistantId":{
           "shape":"Uuid",
-          "documentation":"<p>The identifier of the Amazon Q assistant.</p>"
+          "documentation":"<p>The identifier of the Amazon Q in Connect assistant.</p>"
         },
         "capabilityConfiguration":{
           "shape":"AssistantCapabilityConfiguration",
-          "documentation":"<p>The configuration information for the Amazon Q assistant capability. </p>"
+          "documentation":"<p>The configuration information for the Amazon Q in Connect assistant capability. </p>"
         },
         "description":{
           "shape":"Description",
@@ -902,7 +923,7 @@
         },
         "integrationConfiguration":{
           "shape":"AssistantIntegrationConfiguration",
-          "documentation":"<p>The configuration information for the Amazon Q assistant integration.</p>"
+          "documentation":"<p>The configuration information for the Amazon Q in Connect assistant integration.</p>"
         },
         "name":{
           "shape":"Name",
@@ -910,7 +931,7 @@
         },
         "serverSideEncryptionConfiguration":{
           "shape":"ServerSideEncryptionConfiguration",
-          "documentation":"<p>The configuration information for the customer managed key used for encryption. </p> <p>This KMS key must have a policy that allows <code>kms:CreateGrant</code>, <code>kms:DescribeKey</code>, <code>kms:Decrypt</code>, and <code>kms:GenerateDataKey*</code> permissions to the IAM identity using the key to invoke Amazon Q. To use Amazon Q with chat, the key policy must also allow <code>kms:Decrypt</code>, <code>kms:GenerateDataKey*</code>, and <code>kms:DescribeKey</code> permissions to the <code>connect.amazonaws.com</code> service principal. </p> <p>For more information about setting up a customer managed key for Amazon Q, see <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/enable-q.html\">Enable Amazon Q in Connect for your instance</a>.</p>"
+          "documentation":"<p>The configuration information for the customer managed key used for encryption. </p> <p>This KMS key must have a policy that allows <code>kms:CreateGrant</code>, <code>kms:DescribeKey</code>, <code>kms:Decrypt</code>, and <code>kms:GenerateDataKey*</code> permissions to the IAM identity using the key to invoke Amazon Q in Connect. To use Amazon Q in Connect with chat, the key policy must also allow <code>kms:Decrypt</code>, <code>kms:GenerateDataKey*</code>, and <code>kms:DescribeKey</code> permissions to the <code>connect.amazonaws.com</code> service principal. </p> <p>For more information about setting up a customer managed key for Amazon Q in Connect, see <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/enable-q.html\">Enable Amazon Q in Connect for your instance</a>.</p>"
         },
         "status":{
           "shape":"AssistantStatus",
@@ -935,7 +956,7 @@
           "documentation":"<p>The Amazon Resource Name (ARN) of the integrated Amazon SNS topic used for streaming chat messages.</p>"
         }
       },
-      "documentation":"<p>The configuration information for the Amazon Q assistant integration.</p>"
+      "documentation":"<p>The configuration information for the Amazon Q in Connect assistant integration.</p>"
     },
     "AssistantList":{
       "type":"list",
@@ -964,15 +985,15 @@
       "members":{
         "assistantArn":{
           "shape":"Arn",
-          "documentation":"<p>The Amazon Resource Name (ARN) of the Amazon Q assistant.</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of the Amazon Q in Connect assistant.</p>"
         },
         "assistantId":{
           "shape":"Uuid",
-          "documentation":"<p>The identifier of the Amazon Q assistant.</p>"
+          "documentation":"<p>The identifier of the Amazon Q in Connect assistant.</p>"
         },
         "capabilityConfiguration":{
           "shape":"AssistantCapabilityConfiguration",
-          "documentation":"<p>The configuration information for the Amazon Q assistant capability. </p>"
+          "documentation":"<p>The configuration information for the Amazon Q in Connect assistant capability. </p>"
         },
         "description":{
           "shape":"Description",
@@ -980,7 +1001,7 @@
         },
         "integrationConfiguration":{
           "shape":"AssistantIntegrationConfiguration",
-          "documentation":"<p>The configuration information for the Amazon Q assistant integration.</p>"
+          "documentation":"<p>The configuration information for the Amazon Q in Connect assistant integration.</p>"
         },
         "name":{
           "shape":"Name",
@@ -988,7 +1009,7 @@
         },
         "serverSideEncryptionConfiguration":{
           "shape":"ServerSideEncryptionConfiguration",
-          "documentation":"<p>The configuration information for the customer managed key used for encryption. </p> <p>This KMS key must have a policy that allows <code>kms:CreateGrant</code>, <code>kms:DescribeKey</code>, <code>kms:Decrypt</code>, and <code>kms:GenerateDataKey*</code> permissions to the IAM identity using the key to invoke Amazon Q. To use Amazon Q with chat, the key policy must also allow <code>kms:Decrypt</code>, <code>kms:GenerateDataKey*</code>, and <code>kms:DescribeKey</code> permissions to the <code>connect.amazonaws.com</code> service principal. </p> <p>For more information about setting up a customer managed key for Amazon Q, see <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/enable-q.html\">Enable Amazon Q in Connect for your instance</a>.</p>"
+          "documentation":"<p>The configuration information for the customer managed key used for encryption. </p> <p>This KMS key must have a policy that allows <code>kms:CreateGrant</code>, <code>kms:DescribeKey</code>, <code>kms:Decrypt</code>, and <code>kms:GenerateDataKey*</code> permissions to the IAM identity using the key to invoke Amazon Q in Connect. To use Amazon Q in Connect with chat, the key policy must also allow <code>kms:Decrypt</code>, <code>kms:GenerateDataKey*</code>, and <code>kms:DescribeKey</code> permissions to the <code>connect.amazonaws.com</code> service principal. </p> <p>For more information about setting up a customer managed key for Amazon Q in Connect, see <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/enable-q.html\">Enable Amazon Q in Connect for your instance</a>.</p>"
         },
         "status":{
           "shape":"AssistantStatus",
@@ -1113,7 +1134,7 @@
         },
         "knowledgeBaseId":{
           "shape":"Uuid",
-          "documentation":"<p>The identifier of the knowledge base. This should not be a QUICK_RESPONSES type knowledge base if you're storing Amazon Q Content resource to it.</p>"
+          "documentation":"<p>The identifier of the knowledge base.</p>"
         },
         "linkOutUri":{
           "shape":"Uri",
@@ -1121,7 +1142,7 @@
         },
         "metadata":{
           "shape":"ContentMetadata",
-          "documentation":"<p>A key/value map to store attributes without affecting tagging or recommendations. For example, when synchronizing data between an external system and Amazon Q, you can store an external version identifier as metadata to utilize for determining drift.</p>"
+          "documentation":"<p>A key/value map to store attributes without affecting tagging or recommendations. For example, when synchronizing data between an external system and Amazon Q in Connect, you can store an external version identifier as metadata to utilize for determining drift.</p>"
         },
         "name":{
           "shape":"Name",
@@ -1207,7 +1228,7 @@
         },
         "knowledgeBaseId":{
           "shape":"Uuid",
-          "documentation":"<p>The identifier of the knowledge base. This should not be a QUICK_RESPONSES type knowledge base if you're storing Amazon Q Content resource to it.</p>"
+          "documentation":"<p>The identifier of the knowledge base. This should not be a QUICK_RESPONSES type knowledge base.</p>"
         }
       },
       "documentation":"<p>Reference information about the content.</p>"
@@ -1257,11 +1278,11 @@
         },
         "knowledgeBaseId":{
           "shape":"Uuid",
-          "documentation":"<p>The identifier of the knowledge base. This should not be a QUICK_RESPONSES type knowledge base if you're storing Amazon Q Content resource to it.</p>"
+          "documentation":"<p>The identifier of the knowledge base. This should not be a QUICK_RESPONSES type knowledge base.</p>"
         },
         "metadata":{
           "shape":"ContentMetadata",
-          "documentation":"<p>A key/value map to store attributes without affecting tagging or recommendations. For example, when synchronizing data between an external system and Amazon Q, you can store an external version identifier as metadata to utilize for determining drift.</p>"
+          "documentation":"<p>A key/value map to store attributes without affecting tagging or recommendations. For example, when synchronizing data between an external system and Amazon Q in Connect, you can store an external version identifier as metadata to utilize for determining drift.</p>"
         },
         "name":{
           "shape":"Name",
@@ -1309,7 +1330,7 @@
       "members":{
         "assistantId":{
           "shape":"UuidOrArn",
-          "documentation":"<p>The identifier of the Amazon Q assistant. Can be either the ID or the ARN. URLs cannot contain the ARN.</p>",
+          "documentation":"<p>The identifier of the Amazon Q in Connect assistant. Can be either the ID or the ARN. URLs cannot contain the ARN.</p>",
           "location":"uri",
           "locationName":"assistantId"
         },
@@ -1363,7 +1384,7 @@
         },
         "serverSideEncryptionConfiguration":{
           "shape":"ServerSideEncryptionConfiguration",
-          "documentation":"<p>The configuration information for the customer managed key used for encryption. </p> <p>The customer managed key must have a policy that allows <code>kms:CreateGrant</code>, <code> kms:DescribeKey</code>, <code>kms:Decrypt</code>, and <code>kms:GenerateDataKey*</code> permissions to the IAM identity using the key to invoke Amazon Q. To use Amazon Q with chat, the key policy must also allow <code>kms:Decrypt</code>, <code>kms:GenerateDataKey*</code>, and <code>kms:DescribeKey</code> permissions to the <code>connect.amazonaws.com</code> service principal. </p> <p>For more information about setting up a customer managed key for Amazon Q, see <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/enable-q.html\">Enable Amazon Q in Connect for your instance</a>.</p>"
+          "documentation":"<p>The configuration information for the customer managed key used for encryption. </p> <p>The customer managed key must have a policy that allows <code>kms:CreateGrant</code>, <code> kms:DescribeKey</code>, <code>kms:Decrypt</code>, and <code>kms:GenerateDataKey*</code> permissions to the IAM identity using the key to invoke Amazon Q in Connect. To use Amazon Q in Connect with chat, the key policy must also allow <code>kms:Decrypt</code>, <code>kms:GenerateDataKey*</code>, and <code>kms:DescribeKey</code> permissions to the <code>connect.amazonaws.com</code> service principal. </p> <p>For more information about setting up a customer managed key for Amazon Q in Connect, see <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/enable-q.html\">Enable Amazon Q in Connect for your instance</a>.</p>"
         },
         "tags":{
           "shape":"Tags",
@@ -1399,13 +1420,13 @@
         },
         "knowledgeBaseId":{
           "shape":"UuidOrArn",
-          "documentation":"<p>The identifier of the knowledge base. This should not be a QUICK_RESPONSES type knowledge base if you're storing Amazon Q Content resource to it. Can be either the ID or the ARN. URLs cannot contain the ARN.</p>",
+          "documentation":"<p>The identifier of the knowledge base. This should not be a QUICK_RESPONSES type knowledge base. Can be either the ID or the ARN. URLs cannot contain the ARN.</p>",
           "location":"uri",
           "locationName":"knowledgeBaseId"
         },
         "metadata":{
           "shape":"ContentMetadata",
-          "documentation":"<p>A key/value map to store attributes without affecting tagging or recommendations. For example, when synchronizing data between an external system and Amazon Q, you can store an external version identifier as metadata to utilize for determining drift.</p>"
+          "documentation":"<p>A key/value map to store attributes without affecting tagging or recommendations. For example, when synchronizing data between an external system and Amazon Q in Connect, you can store an external version identifier as metadata to utilize for determining drift.</p>"
         },
         "name":{
           "shape":"Name",
@@ -1468,7 +1489,7 @@
         },
         "serverSideEncryptionConfiguration":{
           "shape":"ServerSideEncryptionConfiguration",
-          "documentation":"<p>The configuration information for the customer managed key used for encryption. </p> <p>This KMS key must have a policy that allows <code>kms:CreateGrant</code>, <code>kms:DescribeKey</code>, <code>kms:Decrypt</code>, and <code>kms:GenerateDataKey*</code> permissions to the IAM identity using the key to invoke Amazon Q.</p> <p>For more information about setting up a customer managed key for Amazon Q, see <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/enable-q.html\">Enable Amazon Q in Connect for your instance</a>.</p>"
+          "documentation":"<p>The configuration information for the customer managed key used for encryption. </p> <p>This KMS key must have a policy that allows <code>kms:CreateGrant</code>, <code>kms:DescribeKey</code>, <code>kms:Decrypt</code>, and <code>kms:GenerateDataKey*</code> permissions to the IAM identity using the key to invoke Amazon Q in Connect.</p> <p>For more information about setting up a customer managed key for Amazon Q in Connect, see <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/enable-q.html\">Enable Amazon Q in Connect for your instance</a>.</p>"
         },
         "sourceConfiguration":{
           "shape":"SourceConfiguration",
@@ -1528,7 +1549,7 @@
         },
         "knowledgeBaseId":{
           "shape":"UuidOrArn",
-          "documentation":"<p>The identifier of the knowledge base. This should not be a QUICK_RESPONSES type knowledge base if you're storing Amazon Q Content resource to it. Can be either the ID or the ARN. URLs cannot contain the ARN.</p>",
+          "documentation":"<p>The identifier of the knowledge base. Can be either the ID or the ARN. URLs cannot contain the ARN.</p>",
           "location":"uri",
           "locationName":"knowledgeBaseId"
         },
@@ -1568,7 +1589,7 @@
       "members":{
         "assistantId":{
           "shape":"UuidOrArn",
-          "documentation":"<p>The identifier of the Amazon Q assistant. Can be either the ID or the ARN. URLs cannot contain the ARN.</p>",
+          "documentation":"<p>The identifier of the Amazon Q in Connect assistant. Can be either the ID or the ARN. URLs cannot contain the ARN.</p>",
           "location":"uri",
           "locationName":"assistantId"
         },
@@ -1584,6 +1605,10 @@
         "name":{
           "shape":"Name",
           "documentation":"<p>The name of the session.</p>"
+        },
+        "tagFilter":{
+          "shape":"TagFilter",
+          "documentation":"<p>An object that can be used to specify Tag conditions. </p>"
         },
         "tags":{
           "shape":"Tags",
@@ -1668,7 +1693,7 @@
         },
         "assistantId":{
           "shape":"UuidOrArn",
-          "documentation":"<p>The identifier of the Amazon Q assistant. Can be either the ID or the ARN. URLs cannot contain the ARN.</p>",
+          "documentation":"<p>The identifier of the Amazon Q in Connect assistant. Can be either the ID or the ARN. URLs cannot contain the ARN.</p>",
           "location":"uri",
           "locationName":"assistantId"
         }
@@ -1685,7 +1710,7 @@
       "members":{
         "assistantId":{
           "shape":"UuidOrArn",
-          "documentation":"<p>The identifier of the Amazon Q assistant. Can be either the ID or the ARN. URLs cannot contain the ARN.</p>",
+          "documentation":"<p>The identifier of the Amazon Q in Connect assistant. Can be either the ID or the ARN. URLs cannot contain the ARN.</p>",
           "location":"uri",
           "locationName":"assistantId"
         }
@@ -1711,7 +1736,7 @@
         },
         "knowledgeBaseId":{
           "shape":"UuidOrArn",
-          "documentation":"<p>The identifier of the knowledge base. This should not be a QUICK_RESPONSES type knowledge base if you're storing Amazon Q Content resource to it. Can be either the ID or the ARN. URLs cannot contain the ARN.</p>",
+          "documentation":"<p>The identifier of the knowledge base. Can be either the ID or the ARN. URLs cannot contain the ARN.</p>",
           "location":"uri",
           "locationName":"knowledgeBaseId"
         }
@@ -1737,7 +1762,7 @@
         },
         "knowledgeBaseId":{
           "shape":"UuidOrArn",
-          "documentation":"<p>The identifier of the knowledge base. This should not be a QUICK_RESPONSES type knowledge base if you're storing Amazon Q Content resource to it.</p>",
+          "documentation":"<p>The identifier of the knowledge base.</p>",
           "location":"uri",
           "locationName":"knowledgeBaseId"
         }
@@ -1774,7 +1799,7 @@
       "members":{
         "knowledgeBaseId":{
           "shape":"UuidOrArn",
-          "documentation":"<p>The knowledge base from which the quick response is deleted. The identifier of the knowledge base. This should not be a QUICK_RESPONSES type knowledge base if you're storing Amazon Q Content resource to it.</p>",
+          "documentation":"<p>The knowledge base from which the quick response is deleted. The identifier of the knowledge base.</p>",
           "location":"uri",
           "locationName":"knowledgeBaseId"
         },
@@ -1956,7 +1981,7 @@
         },
         "assistantId":{
           "shape":"UuidOrArn",
-          "documentation":"<p>The identifier of the Amazon Q assistant. Can be either the ID or the ARN. URLs cannot contain the ARN.</p>",
+          "documentation":"<p>The identifier of the Amazon Q in Connect assistant. Can be either the ID or the ARN. URLs cannot contain the ARN.</p>",
           "location":"uri",
           "locationName":"assistantId"
         }
@@ -1977,7 +2002,7 @@
       "members":{
         "assistantId":{
           "shape":"UuidOrArn",
-          "documentation":"<p>The identifier of the Amazon Q assistant. Can be either the ID or the ARN. URLs cannot contain the ARN.</p>",
+          "documentation":"<p>The identifier of the Amazon Q in Connect assistant. Can be either the ID or the ARN. URLs cannot contain the ARN.</p>",
           "location":"uri",
           "locationName":"assistantId"
         }
@@ -2007,7 +2032,7 @@
         },
         "knowledgeBaseId":{
           "shape":"UuidOrArn",
-          "documentation":"<p>The identifier of the knowledge base. This should not be a QUICK_RESPONSES type knowledge base if you're storing Amazon Q Content resource to it. Can be either the ID or the ARN. URLs cannot contain the ARN.</p>",
+          "documentation":"<p>The identifier of the knowledge base. This should not be a QUICK_RESPONSES type knowledge base. Can be either the ID or the ARN. URLs cannot contain the ARN.</p>",
           "location":"uri",
           "locationName":"knowledgeBaseId"
         }
@@ -2037,7 +2062,7 @@
         },
         "knowledgeBaseId":{
           "shape":"UuidOrArn",
-          "documentation":"<p>The identifier of the knowledge base. This should not be a QUICK_RESPONSES type knowledge base if you're storing Amazon Q Content resource to it. Can be either the ID or the ARN. URLs cannot contain the ARN.</p>",
+          "documentation":"<p>The identifier of the knowledge base. Can be either the ID or the ARN. URLs cannot contain the ARN.</p>",
           "location":"uri",
           "locationName":"knowledgeBaseId"
         }
@@ -2088,7 +2113,7 @@
       "members":{
         "knowledgeBaseId":{
           "shape":"UuidOrArn",
-          "documentation":"<p>The identifier of the knowledge base. This should not be a QUICK_RESPONSES type knowledge base if you're storing Amazon Q Content resource to it. Can be either the ID or the ARN. URLs cannot contain the ARN.</p>",
+          "documentation":"<p>The identifier of the knowledge base. Can be either the ID or the ARN. URLs cannot contain the ARN.</p>",
           "location":"uri",
           "locationName":"knowledgeBaseId"
         }
@@ -2142,7 +2167,7 @@
       "members":{
         "assistantId":{
           "shape":"UuidOrArn",
-          "documentation":"<p>The identifier of the Amazon Q assistant. Can be either the ID or the ARN. URLs cannot contain the ARN.</p>",
+          "documentation":"<p>The identifier of the Amazon Q in Connect assistant. Can be either the ID or the ARN. URLs cannot contain the ARN.</p>",
           "location":"uri",
           "locationName":"assistantId"
         },
@@ -2189,7 +2214,7 @@
       "members":{
         "assistantId":{
           "shape":"UuidOrArn",
-          "documentation":"<p>The identifier of the Amazon Q assistant. Can be either the ID or the ARN. URLs cannot contain the ARN.</p>",
+          "documentation":"<p>The identifier of the Amazon Q in Connect assistant. Can be either the ID or the ARN. URLs cannot contain the ARN.</p>",
           "location":"uri",
           "locationName":"assistantId"
         },
@@ -2215,14 +2240,14 @@
       "members":{
         "criteria":{
           "shape":"GroupingCriteria",
-          "documentation":"<p>The criteria used for grouping Amazon Q users.</p> <p>The following is the list of supported criteria values.</p> <ul> <li> <p> <code>RoutingProfileArn</code>: Grouping the users by their <a href=\"https://docs.aws.amazon.com/connect/latest/APIReference/API_RoutingProfile.html\">Amazon Connect routing profile ARN</a>. User should have <a href=\"https://docs.aws.amazon.com/connect/latest/APIReference/API_SearchRoutingProfiles.html\">SearchRoutingProfile</a> and <a href=\"https://docs.aws.amazon.com/connect/latest/APIReference/API_DescribeRoutingProfile.html\">DescribeRoutingProfile</a> permissions when setting criteria to this value.</p> </li> </ul>"
+          "documentation":"<p>The criteria used for grouping Amazon Q in Connect users.</p> <p>The following is the list of supported criteria values.</p> <ul> <li> <p> <code>RoutingProfileArn</code>: Grouping the users by their <a href=\"https://docs.aws.amazon.com/connect/latest/APIReference/API_RoutingProfile.html\">Amazon Connect routing profile ARN</a>. User should have <a href=\"https://docs.aws.amazon.com/connect/latest/APIReference/API_SearchRoutingProfiles.html\">SearchRoutingProfile</a> and <a href=\"https://docs.aws.amazon.com/connect/latest/APIReference/API_DescribeRoutingProfile.html\">DescribeRoutingProfile</a> permissions when setting criteria to this value.</p> </li> </ul>"
         },
         "values":{
           "shape":"GroupingValues",
-          "documentation":"<p>The list of values that define different groups of Amazon Q users.</p> <ul> <li> <p>When setting <code>criteria</code> to <code>RoutingProfileArn</code>, you need to provide a list of ARNs of <a href=\"https://docs.aws.amazon.com/connect/latest/APIReference/API_RoutingProfile.html\">Amazon Connect routing profiles</a> as values of this parameter.</p> </li> </ul>"
+          "documentation":"<p>The list of values that define different groups of Amazon Q in Connect users.</p> <ul> <li> <p>When setting <code>criteria</code> to <code>RoutingProfileArn</code>, you need to provide a list of ARNs of <a href=\"https://docs.aws.amazon.com/connect/latest/APIReference/API_RoutingProfile.html\">Amazon Connect routing profiles</a> as values of this parameter.</p> </li> </ul>"
         }
       },
-      "documentation":"<p>The configuration information of the grouping of Amazon Q users.</p>"
+      "documentation":"<p>The configuration information of the grouping of Amazon Q in Connect users.</p>"
     },
     "GroupingCriteria":{
       "type":"string",
@@ -2302,7 +2327,7 @@
         },
         "knowledgeBaseId":{
           "shape":"Uuid",
-          "documentation":"<p>The identifier of the knowledge base. This should not be a QUICK_RESPONSES type knowledge base if you're storing Amazon Q Content resource to it.</p>"
+          "documentation":"<p>The identifier of the knowledge base.</p>"
         },
         "lastModifiedTime":{
           "shape":"SyntheticTimestamp_epoch_seconds",
@@ -2310,7 +2335,7 @@
         },
         "metadata":{
           "shape":"ContentMetadata",
-          "documentation":"<p>The metadata fields of the imported Amazon Q resources.</p>"
+          "documentation":"<p>The metadata fields of the imported Amazon Q in Connect resources.</p>"
         },
         "status":{
           "shape":"ImportJobStatus",
@@ -2381,7 +2406,7 @@
         },
         "knowledgeBaseId":{
           "shape":"Uuid",
-          "documentation":"<p>The identifier of the knowledge base. This should not be a QUICK_RESPONSES type knowledge base if you're storing Amazon Q Content resource to it.</p>"
+          "documentation":"<p>The identifier of the knowledge base.</p>"
         },
         "lastModifiedTime":{
           "shape":"SyntheticTimestamp_epoch_seconds",
@@ -2389,7 +2414,7 @@
         },
         "metadata":{
           "shape":"ContentMetadata",
-          "documentation":"<p>The metadata fields of the imported Amazon Q resources.</p>"
+          "documentation":"<p>The metadata fields of the imported Amazon Q in Connect resources.</p>"
         },
         "status":{
           "shape":"ImportJobStatus",
@@ -2415,7 +2440,7 @@
         },
         "knowledgeBaseId":{
           "shape":"Uuid",
-          "documentation":"<p>The identifier of the knowledge base. This should not be a QUICK_RESPONSES type knowledge base if you're storing Amazon Q Content resource to it.</p>"
+          "documentation":"<p>The identifier of the knowledge base.</p>"
         }
       },
       "documentation":"<p>Association information about the knowledge base.</p>"
@@ -2440,7 +2465,7 @@
         },
         "knowledgeBaseId":{
           "shape":"Uuid",
-          "documentation":"<p>The identifier of the knowledge base. This should not be a QUICK_RESPONSES type knowledge base if you're storing Amazon Q Content resource to it.</p>"
+          "documentation":"<p>The identifier of the knowledge base.</p>"
         },
         "knowledgeBaseType":{
           "shape":"KnowledgeBaseType",
@@ -2460,7 +2485,7 @@
         },
         "serverSideEncryptionConfiguration":{
           "shape":"ServerSideEncryptionConfiguration",
-          "documentation":"<p>The configuration information for the customer managed key used for encryption. </p> <p>This KMS key must have a policy that allows <code>kms:CreateGrant</code>, <code>kms:DescribeKey</code>, <code>kms:Decrypt</code>, and <code>kms:GenerateDataKey*</code> permissions to the IAM identity using the key to invoke Amazon Q. </p> <p>For more information about setting up a customer managed key for Amazon Q, see <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/enable-q.html\">Enable Amazon Q in Connect for your instance</a>.</p>"
+          "documentation":"<p>The configuration information for the customer managed key used for encryption. </p> <p>This KMS key must have a policy that allows <code>kms:CreateGrant</code>, <code>kms:DescribeKey</code>, <code>kms:Decrypt</code>, and <code>kms:GenerateDataKey*</code> permissions to the IAM identity using the key to invoke Amazon Q in Connect. </p> <p>For more information about setting up a customer managed key for Amazon Q in Connect, see <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/enable-q.html\">Enable Amazon Q in Connect for your instance</a>.</p>"
         },
         "sourceConfiguration":{
           "shape":"SourceConfiguration",
@@ -2512,7 +2537,7 @@
         },
         "knowledgeBaseId":{
           "shape":"Uuid",
-          "documentation":"<p>The identifier of the knowledge base. This should not be a QUICK_RESPONSES type knowledge base if you're storing Amazon Q Content resource to it.</p>"
+          "documentation":"<p>The identifier of the knowledge base.</p>"
         },
         "knowledgeBaseType":{
           "shape":"KnowledgeBaseType",
@@ -2528,7 +2553,7 @@
         },
         "serverSideEncryptionConfiguration":{
           "shape":"ServerSideEncryptionConfiguration",
-          "documentation":"<p>The configuration information for the customer managed key used for encryption. </p> <p>This KMS key must have a policy that allows <code>kms:CreateGrant</code>, <code>kms:DescribeKey</code>, <code>kms:Decrypt</code>, and <code>kms:GenerateDataKey*</code> permissions to the IAM identity using the key to invoke Amazon Q. </p> <p>For more information about setting up a customer managed key for Amazon Q, see <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/enable-q.html\">Enable Amazon Q in Connect for your instance</a>.</p>"
+          "documentation":"<p>The configuration information for the customer managed key used for encryption. </p> <p>This KMS key must have a policy that allows <code>kms:CreateGrant</code>, <code>kms:DescribeKey</code>, <code>kms:Decrypt</code>, and <code>kms:GenerateDataKey*</code> permissions to the IAM identity using the key to invoke Amazon Q in Connect. </p> <p>For more information about setting up a customer managed key for Amazon Q in Connect, see <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/enable-q.html\">Enable Amazon Q in Connect for your instance</a>.</p>"
         },
         "sourceConfiguration":{
           "shape":"SourceConfiguration",
@@ -2564,7 +2589,7 @@
       "members":{
         "assistantId":{
           "shape":"UuidOrArn",
-          "documentation":"<p>The identifier of the Amazon Q assistant. Can be either the ID or the ARN. URLs cannot contain the ARN.</p>",
+          "documentation":"<p>The identifier of the Amazon Q in Connect assistant. Can be either the ID or the ARN. URLs cannot contain the ARN.</p>",
           "location":"uri",
           "locationName":"assistantId"
         },
@@ -2633,7 +2658,7 @@
       "members":{
         "knowledgeBaseId":{
           "shape":"UuidOrArn",
-          "documentation":"<p>The identifier of the knowledge base. This should not be a QUICK_RESPONSES type knowledge base if you're storing Amazon Q Content resource to it. Can be either the ID or the ARN. URLs cannot contain the ARN.</p>",
+          "documentation":"<p>The identifier of the knowledge base. This should not be a QUICK_RESPONSES type knowledge base. Can be either the ID or the ARN. URLs cannot contain the ARN.</p>",
           "location":"uri",
           "locationName":"knowledgeBaseId"
         },
@@ -2671,7 +2696,7 @@
       "members":{
         "knowledgeBaseId":{
           "shape":"UuidOrArn",
-          "documentation":"<p>The identifier of the knowledge base. This should not be a QUICK_RESPONSES type knowledge base if you're storing Amazon Q Content resource to it. Can be either the ID or the ARN. URLs cannot contain the ARN.</p>",
+          "documentation":"<p>The identifier of the knowledge base. Can be either the ID or the ARN. URLs cannot contain the ARN.</p>",
           "location":"uri",
           "locationName":"knowledgeBaseId"
         },
@@ -2740,7 +2765,7 @@
       "members":{
         "knowledgeBaseId":{
           "shape":"UuidOrArn",
-          "documentation":"<p>The identifier of the knowledge base. This should not be a QUICK_RESPONSES type knowledge base if you're storing Amazon Q Content resource to it. Can be either the ID or the ARN. URLs cannot contain the ARN.</p>",
+          "documentation":"<p>The identifier of the knowledge base. Can be either the ID or the ARN. URLs cannot contain the ARN.</p>",
           "location":"uri",
           "locationName":"knowledgeBaseId"
         },
@@ -2849,7 +2874,7 @@
       "members":{
         "assistantId":{
           "shape":"UuidOrArn",
-          "documentation":"<p>The identifier of the Amazon Q assistant. Can be either the ID or the ARN. URLs cannot contain the ARN.</p>",
+          "documentation":"<p>The identifier of the Amazon Q in Connect assistant. Can be either the ID or the ARN. URLs cannot contain the ARN.</p>",
           "location":"uri",
           "locationName":"assistantId"
         },
@@ -2883,6 +2908,25 @@
       "member":{"shape":"NonEmptyString"},
       "max":100,
       "min":1
+    },
+    "OrCondition":{
+      "type":"structure",
+      "members":{
+        "andConditions":{
+          "shape":"AndConditions",
+          "documentation":"<p>A list of conditions which would be applied together with an <code>AND</code> condition.</p>"
+        },
+        "tagCondition":{
+          "shape":"TagCondition",
+          "documentation":"<p>A leaf node condition which can be used to specify a tag condition.</p>"
+        }
+      },
+      "documentation":"<p>A list of conditions which would be applied together with an <code>OR</code> condition.</p>",
+      "union":true
+    },
+    "OrConditions":{
+      "type":"list",
+      "member":{"shape":"OrCondition"}
     },
     "Order":{
       "type":"string",
@@ -2922,7 +2966,7 @@
       "members":{
         "assistantId":{
           "shape":"UuidOrArn",
-          "documentation":"<p>The identifier of the Amazon Q assistant.</p>",
+          "documentation":"<p>The identifier of the Amazon Q in Connect assistant.</p>",
           "location":"uri",
           "locationName":"assistantId"
         },
@@ -2952,11 +2996,11 @@
       "members":{
         "assistantArn":{
           "shape":"UuidOrArn",
-          "documentation":"<p>The Amazon Resource Name (ARN) of the Amazon Q assistant.</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of the Amazon Q in Connect assistant.</p>"
         },
         "assistantId":{
           "shape":"Uuid",
-          "documentation":"<p>The identifier of the Amazon Q assistant.</p>"
+          "documentation":"<p>The identifier of the Amazon Q in Connect assistant.</p>"
         },
         "contentFeedback":{
           "shape":"ContentFeedbackData",
@@ -2981,7 +3025,7 @@
       "members":{
         "assistantId":{
           "shape":"UuidOrArn",
-          "documentation":"<p>The identifier of the Amazon Q assistant. Can be either the ID or the ARN. URLs cannot contain the ARN.</p>",
+          "documentation":"<p>The identifier of the Amazon Q in Connect assistant. Can be either the ID or the ARN. URLs cannot contain the ARN.</p>",
           "location":"uri",
           "locationName":"assistantId"
         },
@@ -3003,7 +3047,7 @@
         },
         "sessionId":{
           "shape":"UuidOrArn",
-          "documentation":"<p>The identifier of the Amazon Q session. Can be either the ID or the ARN. URLs cannot contain the ARN.</p>"
+          "documentation":"<p>The identifier of the Amazon Q in Connect session. Can be either the ID or the ARN. URLs cannot contain the ARN.</p>"
         }
       }
     },
@@ -3169,7 +3213,7 @@
         },
         "knowledgeBaseId":{
           "shape":"Uuid",
-          "documentation":"<p>The identifier of the knowledge base. This should not be a QUICK_RESPONSES type knowledge base if you're storing Amazon Q Content resource to it. Can be either the ID or the ARN. URLs cannot contain the ARN.</p>"
+          "documentation":"<p>The identifier of the knowledge base. Can be either the ID or the ARN. URLs cannot contain the ARN.</p>"
         },
         "language":{
           "shape":"LanguageCode",
@@ -3427,7 +3471,7 @@
         },
         "knowledgeBaseId":{
           "shape":"Uuid",
-          "documentation":"<p>The identifier of the knowledge base. This should not be a QUICK_RESPONSES type knowledge base if you're storing Amazon Q Content resource to it. Can be either the ID or the ARN. URLs cannot contain the ARN.</p>"
+          "documentation":"<p>The identifier of the knowledge base. Can be either the ID or the ARN. URLs cannot contain the ARN.</p>"
         },
         "language":{
           "shape":"LanguageCode",
@@ -3525,7 +3569,7 @@
         },
         "knowledgeBaseId":{
           "shape":"Uuid",
-          "documentation":"<p>The identifier of the knowledge base. This should not be a QUICK_RESPONSES type knowledge base if you're storing Amazon Q Content resource to it.</p>"
+          "documentation":"<p>The identifier of the knowledge base.</p>"
         },
         "lastModifiedBy":{
           "shape":"GenericArn",
@@ -3722,7 +3766,7 @@
       "members":{
         "knowledgeBaseId":{
           "shape":"UuidOrArn",
-          "documentation":"<p>The identifier of the knowledge base. This should not be a QUICK_RESPONSES type knowledge base if you're storing Amazon Q Content resource to it. Can be either the ID or the ARN. URLs cannot contain the ARN.</p>",
+          "documentation":"<p>The identifier of the knowledge base. Can be either the ID or the ARN. URLs cannot contain the ARN.</p>",
           "location":"uri",
           "locationName":"knowledgeBaseId"
         }
@@ -3808,7 +3852,7 @@
       "members":{
         "knowledgeBaseId":{
           "shape":"UuidOrArn",
-          "documentation":"<p>The identifier of the knowledge base. This should not be a QUICK_RESPONSES type knowledge base if you're storing Amazon Q Content resource to it. Can be either the ID or the ARN. URLs cannot contain the ARN.</p>",
+          "documentation":"<p>The identifier of the knowledge base. This should not be a QUICK_RESPONSES type knowledge base. Can be either the ID or the ARN. URLs cannot contain the ARN.</p>",
           "location":"uri",
           "locationName":"knowledgeBaseId"
         },
@@ -3913,7 +3957,7 @@
       "members":{
         "assistantId":{
           "shape":"UuidOrArn",
-          "documentation":"<p>The identifier of the Amazon Q assistant. Can be either the ID or the ARN. URLs cannot contain the ARN.</p>",
+          "documentation":"<p>The identifier of the Amazon Q in Connect assistant. Can be either the ID or the ARN. URLs cannot contain the ARN.</p>",
           "location":"uri",
           "locationName":"assistantId"
         },
@@ -3958,7 +4002,7 @@
       "members":{
         "kmsKeyId":{
           "shape":"NonEmptyString",
-          "documentation":"<p>The customer managed key used for encryption. For more information about setting up a customer managed key for Amazon Q, see <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/enable-q.html\">Enable Amazon Q in Connect for your instance</a>. For information about valid ID values, see <a href=\"https://docs.aws.amazon.com/kms/latest/developerguide/concepts.html#key-id\">Key identifiers (KeyId)</a>.</p>"
+          "documentation":"<p>The customer managed key used for encryption. For more information about setting up a customer managed key for Amazon Q in Connect, see <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/enable-q.html\">Enable Amazon Q in Connect for your instance</a>. For information about valid ID values, see <a href=\"https://docs.aws.amazon.com/kms/latest/developerguide/concepts.html#key-id\">Key identifiers (KeyId)</a>.</p>"
         }
       },
       "documentation":"<p>The configuration information for the customer managed key used for encryption.</p>"
@@ -4003,6 +4047,10 @@
           "shape":"Uuid",
           "documentation":"<p>The identifier of the session.</p>"
         },
+        "tagFilter":{
+          "shape":"TagFilter",
+          "documentation":"<p>An object that can be used to specify Tag conditions.</p>"
+        },
         "tags":{
           "shape":"Tags",
           "documentation":"<p>The tags used to organize, track, or control access for this resource.</p>"
@@ -4035,11 +4083,11 @@
       "members":{
         "assistantArn":{
           "shape":"Arn",
-          "documentation":"<p>The Amazon Resource Name (ARN) of the Amazon Q assistant.</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of the Amazon Q in Connect assistant.</p>"
         },
         "assistantId":{
           "shape":"Uuid",
-          "documentation":"<p>The identifier of the Amazon Q assistant.</p>"
+          "documentation":"<p>The identifier of the Amazon Q in Connect assistant.</p>"
         },
         "sessionArn":{
           "shape":"Arn",
@@ -4113,7 +4161,7 @@
         },
         "knowledgeBaseId":{
           "shape":"UuidOrArn",
-          "documentation":"<p>The identifier of the knowledge base. This should not be a QUICK_RESPONSES type knowledge base if you're storing Amazon Q Content resource to it. Can be either the ID or the ARN. URLs cannot contain the ARN.</p>",
+          "documentation":"<p>The identifier of the knowledge base. Can be either the ID or the ARN. URLs cannot contain the ARN.</p>",
           "location":"uri",
           "locationName":"knowledgeBaseId"
         },
@@ -4173,13 +4221,13 @@
         },
         "knowledgeBaseId":{
           "shape":"UuidOrArn",
-          "documentation":"<p>The identifier of the knowledge base. This should not be a QUICK_RESPONSES type knowledge base if you're storing Amazon Q Content resource to it. Can be either the ID or the ARN. URLs cannot contain the ARN.</p> <ul> <li> <p>For importing Amazon Q quick responses, this should be a <code>QUICK_RESPONSES</code> type knowledge base.</p> </li> </ul>",
+          "documentation":"<p>The identifier of the knowledge base. Can be either the ID or the ARN. URLs cannot contain the ARN.</p> <ul> <li> <p>For importing Amazon Q in Connect quick responses, this should be a <code>QUICK_RESPONSES</code> type knowledge base.</p> </li> </ul>",
           "location":"uri",
           "locationName":"knowledgeBaseId"
         },
         "metadata":{
           "shape":"ContentMetadata",
-          "documentation":"<p>The metadata fields of the imported Amazon Q resources.</p>"
+          "documentation":"<p>The metadata fields of the imported Amazon Q in Connect resources.</p>"
         },
         "uploadId":{
           "shape":"UploadId",
@@ -4200,6 +4248,40 @@
     "SyntheticTimestamp_epoch_seconds":{
       "type":"timestamp",
       "timestampFormat":"unixTimestamp"
+    },
+    "TagCondition":{
+      "type":"structure",
+      "required":["key"],
+      "members":{
+        "key":{
+          "shape":"TagKey",
+          "documentation":"<p>The tag key in the tag condition.</p>"
+        },
+        "value":{
+          "shape":"TagValue",
+          "documentation":"<p>The tag value in the tag condition.</p>"
+        }
+      },
+      "documentation":"<p>A leaf node condition which can be used to specify a tag condition. </p>"
+    },
+    "TagFilter":{
+      "type":"structure",
+      "members":{
+        "andConditions":{
+          "shape":"AndConditions",
+          "documentation":"<p>A list of conditions which would be applied together with an <code>AND</code> condition.</p>"
+        },
+        "orConditions":{
+          "shape":"OrConditions",
+          "documentation":"<p>A list of conditions which would be applied together with an <code>OR</code> condition.</p>"
+        },
+        "tagCondition":{
+          "shape":"TagCondition",
+          "documentation":"<p>A leaf node condition which can be used to specify a tag condition.</p>"
+        }
+      },
+      "documentation":"<p>An object that can be used to specify Tag conditions.</p>",
+      "union":true
     },
     "TagKey":{
       "type":"string",
@@ -4326,13 +4408,13 @@
         },
         "knowledgeBaseId":{
           "shape":"UuidOrArn",
-          "documentation":"<p>The identifier of the knowledge base. This should not be a QUICK_RESPONSES type knowledge base if you're storing Amazon Q Content resource to it. Can be either the ID or the ARN</p>",
+          "documentation":"<p>The identifier of the knowledge base. This should not be a QUICK_RESPONSES type knowledge base. Can be either the ID or the ARN</p>",
           "location":"uri",
           "locationName":"knowledgeBaseId"
         },
         "metadata":{
           "shape":"ContentMetadata",
-          "documentation":"<p>A key/value map to store attributes without affecting tagging or recommendations. For example, when synchronizing data between an external system and Amazon Q, you can store an external version identifier as metadata to utilize for determining drift.</p>"
+          "documentation":"<p>A key/value map to store attributes without affecting tagging or recommendations. For example, when synchronizing data between an external system and Amazon Q in Connect, you can store an external version identifier as metadata to utilize for determining drift.</p>"
         },
         "overrideLinkOutUri":{
           "shape":"Uri",
@@ -4374,7 +4456,7 @@
       "members":{
         "knowledgeBaseId":{
           "shape":"UuidOrArn",
-          "documentation":"<p>The identifier of the knowledge base. This should not be a QUICK_RESPONSES type knowledge base if you're storing Amazon Q Content resource to it. Can be either the ID or the ARN. URLs cannot contain the ARN.</p>",
+          "documentation":"<p>The identifier of the knowledge base. This should not be a QUICK_RESPONSES type knowledge base. Can be either the ID or the ARN. URLs cannot contain the ARN.</p>",
           "location":"uri",
           "locationName":"knowledgeBaseId"
         },
@@ -4426,7 +4508,7 @@
         },
         "knowledgeBaseId":{
           "shape":"UuidOrArn",
-          "documentation":"<p>The identifier of the knowledge base. This should not be a QUICK_RESPONSES type knowledge base if you're storing Amazon Q Content resource to it. Can be either the ID or the ARN. URLs cannot contain the ARN.</p>",
+          "documentation":"<p>The identifier of the knowledge base. Can be either the ID or the ARN. URLs cannot contain the ARN.</p>",
           "location":"uri",
           "locationName":"knowledgeBaseId"
         },
@@ -4471,6 +4553,41 @@
         }
       }
     },
+    "UpdateSessionRequest":{
+      "type":"structure",
+      "required":[
+        "assistantId",
+        "sessionId"
+      ],
+      "members":{
+        "assistantId":{
+          "shape":"UuidOrArn",
+          "documentation":"<p>The identifier of the Amazon Q in Connect assistant. Can be either the ID or the ARN. URLs cannot contain the ARN.</p>",
+          "location":"uri",
+          "locationName":"assistantId"
+        },
+        "description":{
+          "shape":"Description",
+          "documentation":"<p>The description.</p>"
+        },
+        "sessionId":{
+          "shape":"UuidOrArn",
+          "documentation":"<p>The identifier of the session. Can be either the ID or the ARN. URLs cannot contain the ARN.</p>",
+          "location":"uri",
+          "locationName":"sessionId"
+        },
+        "tagFilter":{
+          "shape":"TagFilter",
+          "documentation":"<p>An object that can be used to specify Tag conditions.</p>"
+        }
+      }
+    },
+    "UpdateSessionResponse":{
+      "type":"structure",
+      "members":{
+        "session":{"shape":"SessionData"}
+      }
+    },
     "UploadId":{
       "type":"string",
       "max":1200,
@@ -4513,5 +4630,5 @@
       "min":0
     }
   },
-  "documentation":"<note> <p> <b>Powered by Amazon Bedrock</b>: Amazon Web Services implements <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/abuse-detection.html\">automated abuse detection</a>. Because Amazon Q in Connect is built on Amazon Bedrock, users can take full advantage of the controls implemented in Amazon Bedrock to enforce safety, security, and the responsible use of artificial intelligence (AI).</p> </note> <p>Amazon Q in Connect is a generative AI customer service assistant. It is an LLM-enhanced evolution of Amazon Connect Wisdom that delivers real-time recommendations to help contact center agents resolve customer issues quickly and accurately.</p> <p>Amazon Q automatically detects customer intent during calls and chats using conversational analytics and natural language understanding (NLU). It then provides agents with immediate, real-time generative responses and suggested actions, and links to relevant documents and articles. Agents can also query Amazon Q directly using natural language or keywords to answer customer requests.</p> <p>Use the Amazon Q in Connect APIs to create an assistant and a knowledge base, for example, or manage content by uploading custom files.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/amazon-q-connect.html\">Use Amazon Q in Connect for generative AI powered agent assistance in real-time</a> in the <i>Amazon Connect Administrator Guide</i>.</p>"
+  "documentation":"<note> <p> <b>Powered by Amazon Bedrock</b>: Amazon Web Services implements <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/abuse-detection.html\">automated abuse detection</a>. Because Amazon Q in Connect is built on Amazon Bedrock, users can take full advantage of the controls implemented in Amazon Bedrock to enforce safety, security, and the responsible use of artificial intelligence (AI).</p> </note> <p>Amazon Q in Connect is a generative AI customer service assistant. It is an LLM-enhanced evolution of Amazon Connect Wisdom that delivers real-time recommendations to help contact center agents resolve customer issues quickly and accurately.</p> <p>Amazon Q in Connect automatically detects customer intent during calls and chats using conversational analytics and natural language understanding (NLU). It then provides agents with immediate, real-time generative responses and suggested actions, and links to relevant documents and articles. Agents can also query Amazon Q in Connect directly using natural language or keywords to answer customer requests.</p> <p>Use the Amazon Q in Connect APIs to create an assistant and a knowledge base, for example, or manage content by uploading custom files.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/amazon-q-connect.html\">Use Amazon Q in Connect for generative AI powered agent assistance in real-time</a> in the <i>Amazon Connect Administrator Guide</i>.</p>"
 }

@@ -293,6 +293,134 @@
           "expected": 500
         }
       ]
+    },
+    "SignalMapCreated": {
+      "description": "Wait until a signal map has been created",
+      "delay": 5,
+      "maxAttempts": 60,
+      "operation": "GetSignalMap",
+      "acceptors": [
+        {
+          "matcher": "path",
+          "argument": "Status",
+          "state": "success",
+          "expected": "CREATE_COMPLETE"
+        },
+        {
+          "matcher": "path",
+          "argument": "Status",
+          "state": "retry",
+          "expected": "CREATE_IN_PROGRESS"
+        },
+        {
+          "matcher": "path",
+          "argument": "Status",
+          "state": "failure",
+          "expected": "CREATE_FAILED"
+        }
+      ]
+    },
+    "SignalMapMonitorDeleted": {
+      "description": "Wait until a signal map's monitor has been deleted",
+      "delay": 5,
+      "maxAttempts": 120,
+      "operation": "GetSignalMap",
+      "acceptors": [
+        {
+          "matcher": "path",
+          "argument": "MonitorDeployment.Status",
+          "state": "success",
+          "expected": "DELETE_COMPLETE"
+        },
+        {
+          "matcher": "path",
+          "argument": "MonitorDeployment.Status",
+          "state": "retry",
+          "expected": "DELETE_IN_PROGRESS"
+        },
+        {
+          "matcher": "path",
+          "argument": "MonitorDeployment.Status",
+          "state": "failure",
+          "expected": "DELETE_FAILED"
+        }
+      ]
+    },
+    "SignalMapMonitorDeployed": {
+      "description": "Wait until a signal map's monitor has been deployed",
+      "delay": 5,
+      "maxAttempts": 120,
+      "operation": "GetSignalMap",
+      "acceptors": [
+        {
+          "matcher": "path",
+          "argument": "MonitorDeployment.Status",
+          "state": "success",
+          "expected": "DRY_RUN_DEPLOYMENT_COMPLETE"
+        },
+        {
+          "matcher": "path",
+          "argument": "MonitorDeployment.Status",
+          "state": "success",
+          "expected": "DEPLOYMENT_COMPLETE"
+        },
+        {
+          "matcher": "path",
+          "argument": "MonitorDeployment.Status",
+          "state": "retry",
+          "expected": "DRY_RUN_DEPLOYMENT_IN_PROGRESS"
+        },
+        {
+          "matcher": "path",
+          "argument": "MonitorDeployment.Status",
+          "state": "retry",
+          "expected": "DEPLOYMENT_IN_PROGRESS"
+        },
+        {
+          "matcher": "path",
+          "argument": "MonitorDeployment.Status",
+          "state": "failure",
+          "expected": "DRY_RUN_DEPLOYMENT_FAILED"
+        },
+        {
+          "matcher": "path",
+          "argument": "MonitorDeployment.Status",
+          "state": "failure",
+          "expected": "DEPLOYMENT_FAILED"
+        }
+      ]
+    },
+    "SignalMapUpdated": {
+      "description": "Wait until a signal map has been updated",
+      "delay": 5,
+      "maxAttempts": 60,
+      "operation": "GetSignalMap",
+      "acceptors": [
+        {
+          "matcher": "path",
+          "argument": "Status",
+          "state": "success",
+          "expected": "UPDATE_COMPLETE"
+        },
+        {
+          "matcher": "path",
+          "argument": "Status",
+          "state": "retry",
+          "expected": "UPDATE_IN_PROGRESS"
+        },
+        {
+          "matcher": "path",
+          "argument": "Status",
+          "state": "failure",
+          "expected": "UPDATE_FAILED"
+        },
+        {
+          "matcher": "path",
+          "argument": "Status",
+          "state": "failure",
+          "expected": "UPDATE_REVERTED"
+        }
+      ]
     }
   }
 }

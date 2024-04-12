@@ -2,6 +2,28 @@
 CHANGELOG
 =========
 
+2.15.38
+=======
+
+* api-change:``networkmonitor``: Examples were added to CloudWatch Network Monitor commands.
+* api-change:``omics``: This release adds support for retrieval of S3 direct access metadata on sequence stores and read sets, and adds support for SHA256up and SHA512up HealthOmics ETags.
+* api-change:``medialive``: AWS Elemental MediaLive introduces workflow monitor, a new feature that enables the visualization and monitoring of your media workflows. Create signal maps of your existing workflows and monitor them by creating notification and monitoring template groups.
+* api-change:``supplychain``: This release includes API SendDataIntegrationEvent for AWS Supply Chain
+* api-change:``connect``: This release adds new Submit Auto Evaluation Action for Amazon Connect Rules.
+* api-change:``codebuild``: Support access tokens for Bitbucket sources
+* api-change:``cleanrooms``: AWS Clean Rooms Differential Privacy is now fully available. Differential privacy protects against user-identification attempts.
+* api-change:``s3control``: Documentation updates for Amazon S3-control.
+* api-change:``rekognition``: Added support for ContentType to content moderation detections.
+* api-change:``qconnect``: This release adds a new QiC public API updateSession and updates an existing QiC public API createSession
+* api-change:``rds``: Updates Amazon RDS documentation for Standard Edition 2 support in RDS Custom for Oracle.
+* api-change:``pipes``: LogConfiguration ARN validation fixes
+* api-change:``workspaces-thin-client``: Adding tags field to SoftwareSet. Removing tags fields from Summary objects. Changing the list of exceptions in tagging APIs. Fixing an issue where the SDK returns empty tags in Get APIs.
+* api-change:``cloudfront``: CloudFront origin access control extends support to AWS Lambda function URLs and AWS Elemental MediaPackage v2 origins.
+* api-change:``iam``: For CreateOpenIDConnectProvider API, the ThumbprintList parameter is no longer required.
+* api-change:``cloudwatch``: This release adds support for Metric Characteristics for CloudWatch Anomaly Detection. Anomaly Detector now takes Metric Characteristics object with Periodic Spikes boolean field that tells Anomaly Detection that spikes that repeat at the same time every week are part of the expected pattern.
+* api-change:``batch``: This release adds the task properties field to attempt details and the name field on EKS container detail.
+
+
 2.15.37
 =======
 

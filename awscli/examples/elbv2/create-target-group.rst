@@ -109,7 +109,7 @@ For more information, see `Create a target group <https://docs.aws.amazon.com/el
 
 **Example 4: To create a target group to route traffic from a Network Load Balancer to an Application Load Balancer**
 
-The following ``create-target-group`` example creates a target group for a Network Load Balancer where you register an Application Load Balazncer as a target (the target type is ``alb``).
+The following ``create-target-group`` example creates a target group for a Network Load Balancer where you register an Application Load Balancer as a target (the target type is ``alb``).
 
     aws elbv2 create-target-group \
         --name my-alb-target \

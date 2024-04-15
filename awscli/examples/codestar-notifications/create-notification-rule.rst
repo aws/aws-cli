@@ -1,6 +1,6 @@
 **To create a notification rule**
 
-The following ``create-notification-rule`` example uses a JSON file named ``rule.json`` to create a notification rule named ``MyNotificationRule`` for a repository named ``MyDemoRepo`` in the specified AWS acccount. Notifications with the ``FULL`` detail type are sent to the specified target Amazon SNS topic when branches and tags are created. ::
+The following ``create-notification-rule`` example uses a JSON file named ``rule.json`` to create a notification rule named ``MyNotificationRule`` for a repository named ``MyDemoRepo`` in the specified AWS account. Notifications with the ``FULL`` detail type are sent to the specified target Amazon SNS topic when branches and tags are created. ::
 
     aws codestar-notifications create-notification-rule \
         --cli-input-json file://rule.json

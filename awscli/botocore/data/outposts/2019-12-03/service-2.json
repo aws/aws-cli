@@ -13,6 +13,23 @@
     "uid":"outposts-2019-12-03"
   },
   "operations":{
+    "CancelCapacityTask":{
+      "name":"CancelCapacityTask",
+      "http":{
+        "method":"POST",
+        "requestUri":"/outposts/{OutpostId}/capacity/{CapacityTaskId}"
+      },
+      "input":{"shape":"CancelCapacityTaskInput"},
+      "output":{"shape":"CancelCapacityTaskOutput"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"NotFoundException"},
+        {"shape":"ConflictException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Cancels the capacity task.</p>"
+    },
     "CancelOrder":{
       "name":"CancelOrder",
       "http":{
@@ -117,6 +134,22 @@
       ],
       "documentation":"<p>Deletes the specified site.</p>"
     },
+    "GetCapacityTask":{
+      "name":"GetCapacityTask",
+      "http":{
+        "method":"GET",
+        "requestUri":"/outposts/{OutpostId}/capacity/{CapacityTaskId}"
+      },
+      "input":{"shape":"GetCapacityTaskInput"},
+      "output":{"shape":"GetCapacityTaskOutput"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"NotFoundException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Gets details of the specified capacity task.</p>"
+    },
     "GetCatalogItem":{
       "name":"GetCatalogItem",
       "http":{
@@ -195,6 +228,22 @@
       ],
       "documentation":"<p>Gets the instance types for the specified Outpost.</p>"
     },
+    "GetOutpostSupportedInstanceTypes":{
+      "name":"GetOutpostSupportedInstanceTypes",
+      "http":{
+        "method":"GET",
+        "requestUri":"/outposts/{OutpostId}/supportedInstanceTypes"
+      },
+      "input":{"shape":"GetOutpostSupportedInstanceTypesInput"},
+      "output":{"shape":"GetOutpostSupportedInstanceTypesOutput"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"NotFoundException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Gets the instance types that an Outpost can support in <code>InstanceTypeCapacity</code>. This will generally include instance types that are not currently configured and therefore cannot be launched with the current Outpost capacity configuration.</p>"
+    },
     "GetSite":{
       "name":"GetSite",
       "http":{
@@ -242,6 +291,22 @@
         {"shape":"InternalServerException"}
       ],
       "documentation":"<p>Lists the hardware assets for the specified Outpost.</p> <p>Use filters to return specific results. If you specify multiple filters, the results include only the resources that match all of the specified filters. For a filter where you can specify multiple values, the results include items that match any of the values that you specify for the filter.</p>"
+    },
+    "ListCapacityTasks":{
+      "name":"ListCapacityTasks",
+      "http":{
+        "method":"GET",
+        "requestUri":"/capacity/tasks"
+      },
+      "input":{"shape":"ListCapacityTasksInput"},
+      "output":{"shape":"ListCapacityTasksOutput"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"NotFoundException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Lists the capacity tasks for your Amazon Web Services account.</p> <p>Use filters to return specific results. If you specify multiple filters, the results include only the resources that match all of the specified filters. For a filter where you can specify multiple values, the results include items that match any of the values that you specify for the filter.</p>"
     },
     "ListCatalogItems":{
       "name":"ListCatalogItems",
@@ -318,6 +383,23 @@
         {"shape":"NotFoundException"}
       ],
       "documentation":"<p>Lists the tags for the specified resource.</p>"
+    },
+    "StartCapacityTask":{
+      "name":"StartCapacityTask",
+      "http":{
+        "method":"POST",
+        "requestUri":"/outposts/{OutpostId}/capacity"
+      },
+      "input":{"shape":"StartCapacityTaskInput"},
+      "output":{"shape":"StartCapacityTaskOutput"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"NotFoundException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ConflictException"}
+      ],
+      "documentation":"<p>Starts the specified capacity task. You can have one active capacity task for an order.</p>"
     },
     "StartConnection":{
       "name":"StartConnection",
@@ -632,6 +714,32 @@
       "type":"list",
       "member":{"shape":"CIDR"}
     },
+    "CancelCapacityTaskInput":{
+      "type":"structure",
+      "required":[
+        "CapacityTaskId",
+        "OutpostIdentifier"
+      ],
+      "members":{
+        "CapacityTaskId":{
+          "shape":"CapacityTaskId",
+          "documentation":"<p>ID of the capacity task that you want to cancel.</p>",
+          "location":"uri",
+          "locationName":"CapacityTaskId"
+        },
+        "OutpostIdentifier":{
+          "shape":"OutpostIdentifier",
+          "documentation":"<p>ID or ARN of the Outpost associated with the capacity task that you want to cancel.</p>",
+          "location":"uri",
+          "locationName":"OutpostId"
+        }
+      }
+    },
+    "CancelCapacityTaskOutput":{
+      "type":"structure",
+      "members":{
+      }
+    },
     "CancelOrderInput":{
       "type":"structure",
       "required":["OrderId"],
@@ -648,6 +756,87 @@
       "type":"structure",
       "members":{
       }
+    },
+    "CapacityTaskFailure":{
+      "type":"structure",
+      "required":["Reason"],
+      "members":{
+        "Reason":{
+          "shape":"CapacityTaskStatusReason",
+          "documentation":"<p>The reason that the specified capacity task failed.</p>"
+        },
+        "Type":{
+          "shape":"CapacityTaskFailureType",
+          "documentation":"<p>The type of failure.</p>"
+        }
+      },
+      "documentation":"<p>The capacity tasks that failed.</p>"
+    },
+    "CapacityTaskFailureType":{
+      "type":"string",
+      "enum":["UNSUPPORTED_CAPACITY_CONFIGURATION"]
+    },
+    "CapacityTaskId":{
+      "type":"string",
+      "max":21,
+      "min":21,
+      "pattern":"^cap-[a-f0-9]{17}$"
+    },
+    "CapacityTaskList":{
+      "type":"list",
+      "member":{"shape":"CapacityTaskSummary"}
+    },
+    "CapacityTaskStatus":{
+      "type":"string",
+      "enum":[
+        "REQUESTED",
+        "IN_PROGRESS",
+        "FAILED",
+        "COMPLETED",
+        "CANCELLED"
+      ]
+    },
+    "CapacityTaskStatusList":{
+      "type":"list",
+      "member":{"shape":"CapacityTaskStatus"}
+    },
+    "CapacityTaskStatusReason":{
+      "type":"string",
+      "max":128
+    },
+    "CapacityTaskSummary":{
+      "type":"structure",
+      "members":{
+        "CapacityTaskId":{
+          "shape":"CapacityTaskId",
+          "documentation":"<p>The ID of the specified capacity task.</p>"
+        },
+        "OutpostId":{
+          "shape":"OutpostId",
+          "documentation":"<p>The ID of the Outpost associated with the specified capacity task.</p>"
+        },
+        "OrderId":{
+          "shape":"OrderId",
+          "documentation":"<p>The ID of the Amazon Web Services Outposts order of the host associated with the capacity task.</p>"
+        },
+        "CapacityTaskStatus":{
+          "shape":"CapacityTaskStatus",
+          "documentation":"<p>The status of the capacity task.</p>"
+        },
+        "CreationDate":{
+          "shape":"ISO8601Timestamp",
+          "documentation":"<p>The date that the specified capacity task was created.</p>"
+        },
+        "CompletionDate":{
+          "shape":"ISO8601Timestamp",
+          "documentation":"<p>The date that the specified capacity task successfully ran.</p>"
+        },
+        "LastModifiedDate":{
+          "shape":"ISO8601Timestamp",
+          "documentation":"<p>The date that the specified capacity was last modified.</p>"
+        }
+      },
+      "documentation":"<p>The summary of the capacity task.</p>"
     },
     "CatalogItem":{
       "type":"structure",
@@ -930,7 +1119,7 @@
       "members":{
         "OutpostId":{
           "shape":"OutpostId",
-          "documentation":"<p> The ID or the Amazon Resource Name (ARN) of the Outpost. </p>",
+          "documentation":"<p> The ID or ARN of the Outpost. </p>",
           "location":"uri",
           "locationName":"OutpostId"
         }
@@ -970,6 +1159,7 @@
       "min":1,
       "pattern":"^\\S[\\S ]*"
     },
+    "DryRun":{"type":"boolean"},
     "EC2Capacity":{
       "type":"structure",
       "members":{
@@ -1014,6 +1204,72 @@
         "SINGLE_MODE",
         "MULTI_MODE"
       ]
+    },
+    "GetCapacityTaskInput":{
+      "type":"structure",
+      "required":[
+        "CapacityTaskId",
+        "OutpostIdentifier"
+      ],
+      "members":{
+        "CapacityTaskId":{
+          "shape":"CapacityTaskId",
+          "documentation":"<p>ID of the capacity task.</p>",
+          "location":"uri",
+          "locationName":"CapacityTaskId"
+        },
+        "OutpostIdentifier":{
+          "shape":"OutpostIdentifier",
+          "documentation":"<p>ID or ARN of the Outpost associated with the specified capacity task.</p>",
+          "location":"uri",
+          "locationName":"OutpostId"
+        }
+      }
+    },
+    "GetCapacityTaskOutput":{
+      "type":"structure",
+      "members":{
+        "CapacityTaskId":{
+          "shape":"CapacityTaskId",
+          "documentation":"<p>ID of the capacity task.</p>"
+        },
+        "OutpostId":{
+          "shape":"OutpostId",
+          "documentation":"<p>ID of the Outpost associated with the specified capacity task.</p>"
+        },
+        "OrderId":{
+          "shape":"OrderId",
+          "documentation":"<p>ID of the Amazon Web Services Outposts order associated with the specified capacity task.</p>"
+        },
+        "RequestedInstancePools":{
+          "shape":"RequestedInstancePools",
+          "documentation":"<p>List of instance pools requested in the capacity task.</p>"
+        },
+        "DryRun":{
+          "shape":"DryRun",
+          "documentation":"<p>Performs a dry run to determine if you are above or below instance capacity.</p>"
+        },
+        "CapacityTaskStatus":{
+          "shape":"CapacityTaskStatus",
+          "documentation":"<p>Status of the capacity task.</p> <p>A capacity task can have one of the following statuses:</p> <ul> <li> <p> <code>REQUESTED</code> - The capacity task was created and is awaiting the next step by Amazon Web Services Outposts.</p> </li> <li> <p> <code>IN_PROGRESS</code> - The capacity task is running and cannot be cancelled.</p> </li> <li> <p> <code>WAITING_FOR_EVACUATION</code> - The capacity task requires capacity to run. You must stop the recommended EC2 running instances to free up capacity for the task to run.</p> </li> </ul>"
+        },
+        "Failed":{
+          "shape":"CapacityTaskFailure",
+          "documentation":"<p>Reason why the capacity task failed.</p>"
+        },
+        "CreationDate":{
+          "shape":"ISO8601Timestamp",
+          "documentation":"<p>The date the capacity task was created.</p>"
+        },
+        "CompletionDate":{
+          "shape":"ISO8601Timestamp",
+          "documentation":"<p>The date the capacity task ran successfully.</p>"
+        },
+        "LastModifiedDate":{
+          "shape":"ISO8601Timestamp",
+          "documentation":"<p>The date the capacity task was last modified.</p>"
+        }
+      }
     },
     "GetCatalogItemInput":{
       "type":"structure",
@@ -1085,7 +1341,7 @@
       "members":{
         "OutpostId":{
           "shape":"OutpostId",
-          "documentation":"<p> The ID or the Amazon Resource Name (ARN) of the Outpost. </p>",
+          "documentation":"<p> The ID or ARN of the Outpost. </p>",
           "location":"uri",
           "locationName":"OutpostId"
         }
@@ -1097,7 +1353,7 @@
       "members":{
         "OutpostId":{
           "shape":"OutpostId",
-          "documentation":"<p> The ID or the Amazon Resource Name (ARN) of the Outpost. </p>",
+          "documentation":"<p> The ID or ARN of the Outpost. </p>",
           "location":"uri",
           "locationName":"OutpostId"
         },
@@ -1129,6 +1385,44 @@
       "type":"structure",
       "members":{
         "Outpost":{"shape":"Outpost"}
+      }
+    },
+    "GetOutpostSupportedInstanceTypesInput":{
+      "type":"structure",
+      "required":[
+        "OutpostIdentifier",
+        "OrderId"
+      ],
+      "members":{
+        "OutpostIdentifier":{
+          "shape":"OutpostIdentifier",
+          "documentation":"<p>The ID or ARN of the Outpost.</p>",
+          "location":"uri",
+          "locationName":"OutpostId"
+        },
+        "OrderId":{
+          "shape":"OrderId",
+          "documentation":"<p>The ID for the Amazon Web Services Outposts order.</p>",
+          "location":"querystring",
+          "locationName":"OrderId"
+        },
+        "MaxResults":{
+          "shape":"MaxResults1000",
+          "location":"querystring",
+          "locationName":"MaxResults"
+        },
+        "NextToken":{
+          "shape":"Token",
+          "location":"querystring",
+          "locationName":"NextToken"
+        }
+      }
+    },
+    "GetOutpostSupportedInstanceTypesOutput":{
+      "type":"structure",
+      "members":{
+        "InstanceTypes":{"shape":"InstanceTypeListDefinition"},
+        "NextToken":{"shape":"Token"}
       }
     },
     "GetSiteAddressInput":{
@@ -1209,6 +1503,29 @@
       "type":"string",
       "documentation":"<p>The instance type.</p>"
     },
+    "InstanceTypeCapacity":{
+      "type":"structure",
+      "required":[
+        "InstanceType",
+        "Count"
+      ],
+      "members":{
+        "InstanceType":{
+          "shape":"InstanceTypeName",
+          "documentation":"<p>The instance type of the hosts.</p>"
+        },
+        "Count":{
+          "shape":"InstanceTypeCount",
+          "documentation":"<p>The number of instances for the specified instance type.</p>"
+        }
+      },
+      "documentation":"<p>The instance type that you specify determines the combination of CPU, memory, storage, and networking capacity.</p>"
+    },
+    "InstanceTypeCount":{
+      "type":"integer",
+      "max":9999,
+      "min":0
+    },
     "InstanceTypeItem":{
       "type":"structure",
       "members":{
@@ -1220,6 +1537,12 @@
       "type":"list",
       "member":{"shape":"InstanceTypeItem"},
       "documentation":"<p>Information about the instance types.</p>"
+    },
+    "InstanceTypeName":{
+      "type":"string",
+      "max":64,
+      "min":1,
+      "pattern":"^[a-z0-9\\-]+\\.[a-z0-9\\-]+$"
     },
     "InternalServerException":{
       "type":"structure",
@@ -1390,6 +1713,43 @@
         "Assets":{
           "shape":"AssetListDefinition",
           "documentation":"<p>Information about the hardware assets.</p>"
+        },
+        "NextToken":{"shape":"Token"}
+      }
+    },
+    "ListCapacityTasksInput":{
+      "type":"structure",
+      "members":{
+        "OutpostIdentifierFilter":{
+          "shape":"OutpostIdentifier",
+          "documentation":"<p>Filters the results by an Outpost ID or an Outpost ARN.</p>",
+          "location":"querystring",
+          "locationName":"OutpostIdentifierFilter"
+        },
+        "MaxResults":{
+          "shape":"MaxResults1000",
+          "location":"querystring",
+          "locationName":"MaxResults"
+        },
+        "NextToken":{
+          "shape":"Token",
+          "location":"querystring",
+          "locationName":"NextToken"
+        },
+        "CapacityTaskStatusFilter":{
+          "shape":"CapacityTaskStatusList",
+          "documentation":"<p>A list of statuses. For example, <code>REQUESTED</code> or <code>WAITING_FOR_EVACUATION</code>.</p>",
+          "location":"querystring",
+          "locationName":"CapacityTaskStatusFilter"
+        }
+      }
+    },
+    "ListCapacityTasksOutput":{
+      "type":"structure",
+      "members":{
+        "CapacityTasks":{
+          "shape":"CapacityTaskList",
+          "documentation":"<p>Lists all the capacity tasks.</p>"
         },
         "NextToken":{"shape":"Token"}
       }
@@ -1924,6 +2284,10 @@
       },
       "documentation":"<p> Information about the physical and logistical details for racks at sites. For more information about hardware requirements for racks, see <a href=\"https://docs.aws.amazon.com/outposts/latest/userguide/outposts-requirements.html#checklist\">Network readiness checklist</a> in the Amazon Web Services Outposts User Guide. </p>"
     },
+    "RequestedInstancePools":{
+      "type":"list",
+      "member":{"shape":"InstanceTypeCapacity"}
+    },
     "ResourceType":{
       "type":"string",
       "enum":[
@@ -1952,7 +2316,8 @@
         "DHL",
         "DBS",
         "FEDEX",
-        "UPS"
+        "UPS",
+        "EXPEDITORS"
       ]
     },
     "ShipmentInformation":{
@@ -2043,6 +2408,79 @@
       "max":10,
       "min":1,
       "pattern":"OR-[A-Z0-9]{7}"
+    },
+    "StartCapacityTaskInput":{
+      "type":"structure",
+      "required":[
+        "OutpostIdentifier",
+        "OrderId",
+        "InstancePools"
+      ],
+      "members":{
+        "OutpostIdentifier":{
+          "shape":"OutpostIdentifier",
+          "documentation":"<p>The ID or ARN of the Outposts associated with the specified capacity task.</p>",
+          "location":"uri",
+          "locationName":"OutpostId"
+        },
+        "OrderId":{
+          "shape":"OrderId",
+          "documentation":"<p>The ID of the Amazon Web Services Outposts order associated with the specified capacity task.</p>"
+        },
+        "InstancePools":{
+          "shape":"RequestedInstancePools",
+          "documentation":"<p>The instance pools specified in the capacity task.</p>"
+        },
+        "DryRun":{
+          "shape":"DryRun",
+          "documentation":"<p>You can request a dry run to determine if the instance type and instance size changes is above or below available instance capacity. Requesting a dry run does not make any changes to your plan.</p>"
+        }
+      }
+    },
+    "StartCapacityTaskOutput":{
+      "type":"structure",
+      "members":{
+        "CapacityTaskId":{
+          "shape":"CapacityTaskId",
+          "documentation":"<p>ID of the capacity task that you want to start.</p>"
+        },
+        "OutpostId":{
+          "shape":"OutpostId",
+          "documentation":"<p>ID of the Outpost associated with the capacity task.</p>"
+        },
+        "OrderId":{
+          "shape":"OrderId",
+          "documentation":"<p>ID of the Amazon Web Services Outposts order of the host associated with the capacity task.</p>"
+        },
+        "RequestedInstancePools":{
+          "shape":"RequestedInstancePools",
+          "documentation":"<p>List of the instance pools requested in the specified capacity task.</p>"
+        },
+        "DryRun":{
+          "shape":"DryRun",
+          "documentation":"<p>Results of the dry run showing if the specified capacity task is above or below the available instance capacity.</p>"
+        },
+        "CapacityTaskStatus":{
+          "shape":"CapacityTaskStatus",
+          "documentation":"<p>Status of the specified capacity task.</p>"
+        },
+        "Failed":{
+          "shape":"CapacityTaskFailure",
+          "documentation":"<p>Reason that the specified capacity task failed.</p>"
+        },
+        "CreationDate":{
+          "shape":"ISO8601Timestamp",
+          "documentation":"<p>Date that the specified capacity task was created.</p>"
+        },
+        "CompletionDate":{
+          "shape":"ISO8601Timestamp",
+          "documentation":"<p>Date that the specified capacity task ran successfully.</p>"
+        },
+        "LastModifiedDate":{
+          "shape":"ISO8601Timestamp",
+          "documentation":"<p>Date that the specified capacity task was last modified.</p>"
+        }
+      }
     },
     "StartConnectionRequest":{
       "type":"structure",
@@ -2227,7 +2665,7 @@
       "members":{
         "OutpostId":{
           "shape":"OutpostId",
-          "documentation":"<p> The ID or the Amazon Resource Name (ARN) of the Outpost. </p>",
+          "documentation":"<p> The ID or ARN of the Outpost. </p>",
           "location":"uri",
           "locationName":"OutpostId"
         },

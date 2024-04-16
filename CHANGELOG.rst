@@ -2,6 +2,20 @@
 CHANGELOG
 =========
 
+1.32.85
+=======
+
+* api-change:``bedrock-agent``: For Create Agent API, the agentResourceRoleArn parameter is no longer required.
+* api-change:``emr-serverless``: This release adds support for shuffle optimized disks that allow larger disk sizes and higher IOPS to efficiently run shuffle heavy workloads.
+* api-change:``entityresolution``: Cross Account Resource Support .
+* api-change:``iotwireless``: Add PublicGateways in the GetWirelessStatistics call response, indicating the LoRaWAN public network accessed by the device.
+* api-change:``lakeformation``: This release adds Lake Formation managed RAM support for the 4 APIs - "DescribeLakeFormationIdentityCenterConfiguration", "CreateLakeFormationIdentityCenterConfiguration", "DescribeLakeFormationIdentityCenterConfiguration", and "DeleteLakeFormationIdentityCenterConfiguration"
+* api-change:``m2``: Adding new ListBatchJobRestartPoints API and support for restart batch job.
+* api-change:``mediapackagev2``: Dash v2 is a MediaPackage V2 feature to support egressing on DASH manifest format.
+* api-change:``outposts``: This release adds new APIs to allow customers to configure their Outpost capacity at order-time.
+* api-change:``wellarchitected``: AWS Well-Architected now has a Connector for Jira to allow customers to efficiently track workload risks and improvement efforts and create closed-loop mechanisms.
+
+
 1.32.84
 =======
 

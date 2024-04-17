@@ -50,7 +50,7 @@
         {"shape":"ConflictException"},
         {"shape":"ServiceQuotaExceededException"}
       ],
-      "documentation":"<p>Creates an agent that orchestrates interactions between foundation models, data sources, software applications, user conversations, and APIs to carry out tasks to help customers.</p> <ul> <li> <p>Specify the following fields for security purposes.</p> <ul> <li> <p> <code>agentResourceRoleArn</code> – The ARN of the role with permissions to create an agent.</p> </li> <li> <p>(Optional) <code>customerEncryptionKeyArn</code> – The ARN of a KMS key to encrypt the creation of the agent.</p> </li> <li> <p>(Optional) <code>idleSessionTTLinSeconds</code> – Specify the number of seconds for which the agent should maintain session information. After this time expires, the subsequent <code>InvokeAgent</code> request begins a new session.</p> </li> </ul> </li> <li> <p>To override the default prompt behavior for agent orchestration and to use advanced prompts, include a <code>promptOverrideConfiguration</code> object. For more information, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/advanced-prompts.html\">Advanced prompts</a>.</p> </li> <li> <p>If you agent fails to be created, the response returns a list of <code>failureReasons</code> alongside a list of <code>recommendedActions</code> for you to troubleshoot.</p> </li> </ul>",
+      "documentation":"<p>Creates an agent that orchestrates interactions between foundation models, data sources, software applications, user conversations, and APIs to carry out tasks to help customers.</p> <ul> <li> <p>Specify the following fields for security purposes.</p> <ul> <li> <p> <code>agentResourceRoleArn</code> – The Amazon Resource Name (ARN) of the role with permissions to invoke API operations on an agent.</p> </li> <li> <p>(Optional) <code>customerEncryptionKeyArn</code> – The Amazon Resource Name (ARN) of a KMS key to encrypt the creation of the agent.</p> </li> <li> <p>(Optional) <code>idleSessionTTLinSeconds</code> – Specify the number of seconds for which the agent should maintain session information. After this time expires, the subsequent <code>InvokeAgent</code> request begins a new session.</p> </li> </ul> </li> <li> <p>To override the default prompt behavior for agent orchestration and to use advanced prompts, include a <code>promptOverrideConfiguration</code> object. For more information, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/advanced-prompts.html\">Advanced prompts</a>.</p> </li> <li> <p>If you agent fails to be created, the response returns a list of <code>failureReasons</code> alongside a list of <code>recommendedActions</code> for you to troubleshoot.</p> </li> </ul>",
       "idempotent":true
     },
     "CreateAgentActionGroup":{
@@ -133,7 +133,7 @@
         {"shape":"ConflictException"},
         {"shape":"ServiceQuotaExceededException"}
       ],
-      "documentation":"<p>Creates a knowledge base that contains data sources from which information can be queried and used by LLMs. To create a knowledge base, you must first set up your data sources and configure a supported vector store. For more information, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/knowledge-base-setup.html\">Set up your data for ingestion</a>.</p> <note> <p>If you prefer to let Amazon Bedrock create and manage a vector store for you in Amazon OpenSearch Service, use the console. For more information, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/knowledge-base-create\">Create a knowledge base</a>.</p> </note> <ul> <li> <p>Provide the <code>name</code> and an optional <code>description</code>.</p> </li> <li> <p>Provide the ARN with permissions to create a knowledge base in the <code>roleArn</code> field.</p> </li> <li> <p>Provide the embedding model to use in the <code>embeddingModelArn</code> field in the <code>knowledgeBaseConfiguration</code> object.</p> </li> <li> <p>Provide the configuration for your vector store in the <code>storageConfiguration</code> object.</p> <ul> <li> <p>For an Amazon OpenSearch Service database, use the <code>opensearchServerlessConfiguration</code> object. For more information, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/knowledge-base-setup-oss.html\">Create a vector store in Amazon OpenSearch Service</a>.</p> </li> <li> <p>For an Amazon Aurora database, use the <code>RdsConfiguration</code> object. For more information, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/knowledge-base-setup-rds.html\">Create a vector store in Amazon Aurora</a>.</p> </li> <li> <p>For a Pinecone database, use the <code>pineconeConfiguration</code> object. For more information, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/knowledge-base-setup-pinecone.html\">Create a vector store in Pinecone</a>.</p> </li> <li> <p>For a Redis Enterprise Cloud database, use the <code>redisEnterpriseCloudConfiguration</code> object. For more information, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/knowledge-base-setup-redis.html\">Create a vector store in Redis Enterprise Cloud</a>.</p> </li> </ul> </li> </ul>",
+      "documentation":"<p>Creates a knowledge base that contains data sources from which information can be queried and used by LLMs. To create a knowledge base, you must first set up your data sources and configure a supported vector store. For more information, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/knowledge-base-setup.html\">Set up your data for ingestion</a>.</p> <note> <p>If you prefer to let Amazon Bedrock create and manage a vector store for you in Amazon OpenSearch Service, use the console. For more information, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/knowledge-base-create\">Create a knowledge base</a>.</p> </note> <ul> <li> <p>Provide the <code>name</code> and an optional <code>description</code>.</p> </li> <li> <p>Provide the Amazon Resource Name (ARN) with permissions to create a knowledge base in the <code>roleArn</code> field.</p> </li> <li> <p>Provide the embedding model to use in the <code>embeddingModelArn</code> field in the <code>knowledgeBaseConfiguration</code> object.</p> </li> <li> <p>Provide the configuration for your vector store in the <code>storageConfiguration</code> object.</p> <ul> <li> <p>For an Amazon OpenSearch Service database, use the <code>opensearchServerlessConfiguration</code> object. For more information, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/knowledge-base-setup-oss.html\">Create a vector store in Amazon OpenSearch Service</a>.</p> </li> <li> <p>For an Amazon Aurora database, use the <code>RdsConfiguration</code> object. For more information, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/knowledge-base-setup-rds.html\">Create a vector store in Amazon Aurora</a>.</p> </li> <li> <p>For a Pinecone database, use the <code>pineconeConfiguration</code> object. For more information, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/knowledge-base-setup-pinecone.html\">Create a vector store in Pinecone</a>.</p> </li> <li> <p>For a Redis Enterprise Cloud database, use the <code>redisEnterpriseCloudConfiguration</code> object. For more information, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/knowledge-base-setup-redis.html\">Create a vector store in Redis Enterprise Cloud</a>.</p> </li> </ul> </li> </ul>",
       "idempotent":true
     },
     "DeleteAgent":{
@@ -815,7 +815,7 @@
       "members":{
         "lambda":{
           "shape":"LambdaArn",
-          "documentation":"<p>The ARN of the Lambda function containing the business logic that is carried out upon invoking the action.</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of the Lambda function containing the business logic that is carried out upon invoking the action.</p>"
         }
       },
       "documentation":"<p>Contains details about the Lambda function containing the business logic that is carried out upon invoking the action.</p>",
@@ -886,7 +886,7 @@
       "members":{
         "agentArn":{
           "shape":"AgentArn",
-          "documentation":"<p>The ARN of the agent.</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of the agent.</p>"
         },
         "agentId":{
           "shape":"Id",
@@ -898,7 +898,7 @@
         },
         "agentResourceRoleArn":{
           "shape":"AgentRoleArn",
-          "documentation":"<p>The ARN of the IAM role with permissions to call API operations on the agent. The ARN must begin with <code>AmazonBedrockExecutionRoleForAgents_</code>.</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of the IAM role with permissions to invoke API operations on the agent.</p>"
         },
         "agentStatus":{
           "shape":"AgentStatus",
@@ -918,7 +918,7 @@
         },
         "customerEncryptionKeyArn":{
           "shape":"KmsKeyArn",
-          "documentation":"<p>The ARN of the KMS key that encrypts the agent.</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of the KMS key that encrypts the agent.</p>"
         },
         "description":{
           "shape":"Description",
@@ -973,7 +973,7 @@
       "members":{
         "actionGroupExecutor":{
           "shape":"ActionGroupExecutor",
-          "documentation":"<p>The ARN of the Lambda function containing the business logic that is carried out upon invoking the action.</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of the Lambda function containing the business logic that is carried out upon invoking the action.</p>"
         },
         "actionGroupId":{
           "shape":"Id",
@@ -1037,7 +1037,7 @@
       "members":{
         "agentAliasArn":{
           "shape":"AgentAliasArn",
-          "documentation":"<p>The ARN of the alias of the agent.</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of the alias of the agent.</p>"
         },
         "agentAliasHistoryEvents":{
           "shape":"AgentAliasHistoryEvents",
@@ -1351,7 +1351,7 @@
       "members":{
         "agentArn":{
           "shape":"AgentArn",
-          "documentation":"<p>The ARN of the agent that the version belongs to.</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of the agent that the version belongs to.</p>"
         },
         "agentId":{
           "shape":"Id",
@@ -1363,7 +1363,7 @@
         },
         "agentResourceRoleArn":{
           "shape":"AgentRoleArn",
-          "documentation":"<p>The ARN of the IAM role with permissions to invoke API operations on the agent. The ARN must begin with <code>AmazonBedrockExecutionRoleForAgents_</code>.</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of the IAM role with permissions to invoke API operations on the agent.</p>"
         },
         "agentStatus":{
           "shape":"AgentStatus",
@@ -1375,7 +1375,7 @@
         },
         "customerEncryptionKeyArn":{
           "shape":"KmsKeyArn",
-          "documentation":"<p>The ARN of the KMS key that encrypts the agent.</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of the KMS key that encrypts the agent.</p>"
         },
         "description":{
           "shape":"Description",
@@ -1575,7 +1575,7 @@
       "members":{
         "actionGroupExecutor":{
           "shape":"ActionGroupExecutor",
-          "documentation":"<p>The ARN of the Lambda function containing the business logic that is carried out upon invoking the action.</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of the Lambda function containing the business logic that is carried out upon invoking the action.</p>"
         },
         "actionGroupName":{
           "shape":"Name",
@@ -1674,10 +1674,7 @@
     },
     "CreateAgentRequest":{
       "type":"structure",
-      "required":[
-        "agentName",
-        "agentResourceRoleArn"
-      ],
+      "required":["agentName"],
       "members":{
         "agentName":{
           "shape":"Name",
@@ -1685,7 +1682,7 @@
         },
         "agentResourceRoleArn":{
           "shape":"AgentRoleArn",
-          "documentation":"<p>The ARN of the IAM role with permissions to create the agent. The ARN must begin with <code>AmazonBedrockExecutionRoleForAgents_</code>.</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of the IAM role with permissions to invoke API operations on the agent.</p>"
         },
         "clientToken":{
           "shape":"ClientToken",
@@ -1694,7 +1691,7 @@
         },
         "customerEncryptionKeyArn":{
           "shape":"KmsKeyArn",
-          "documentation":"<p>The ARN of the KMS key with which to encrypt the agent.</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of the KMS key with which to encrypt the agent.</p>"
         },
         "description":{
           "shape":"Description",
@@ -1811,7 +1808,7 @@
         },
         "roleArn":{
           "shape":"KnowledgeBaseRoleArn",
-          "documentation":"<p>The ARN of the IAM role with permissions to create the knowledge base.</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of the IAM role with permissions to invoke API operations on the knowledge base.</p>"
         },
         "storageConfiguration":{
           "shape":"StorageConfiguration",
@@ -2842,7 +2839,7 @@
         },
         "knowledgeBaseArn":{
           "shape":"KnowledgeBaseArn",
-          "documentation":"<p>The ARN of the knowledge base.</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of the knowledge base.</p>"
         },
         "knowledgeBaseConfiguration":{
           "shape":"KnowledgeBaseConfiguration",
@@ -2858,7 +2855,7 @@
         },
         "roleArn":{
           "shape":"KnowledgeBaseRoleArn",
-          "documentation":"<p>The ARN of the IAM role with permissions to invoke API operations on the knowledge base. The ARN must begin with <code>AmazonBedrockExecutionRoleForKnowledgeBase_</code>.</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of the IAM role with permissions to invoke API operations on the knowledge base.</p>"
         },
         "status":{
           "shape":"KnowledgeBaseStatus",
@@ -3273,7 +3270,7 @@
       "members":{
         "resourceArn":{
           "shape":"TaggableResourcesArn",
-          "documentation":"<p>The ARN of the resource for which to list tags.</p>",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the resource for which to list tags.</p>",
           "location":"uri",
           "locationName":"resourceArn"
         }
@@ -3340,7 +3337,7 @@
       "members":{
         "collectionArn":{
           "shape":"OpenSearchServerlessCollectionArn",
-          "documentation":"<p>The ARN of the OpenSearch Service vector store.</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of the OpenSearch Service vector store.</p>"
         },
         "fieldMapping":{
           "shape":"OpenSearchServerlessFieldMapping",
@@ -3400,7 +3397,7 @@
         },
         "credentialsSecretArn":{
           "shape":"SecretArn",
-          "documentation":"<p>The ARN of the secret that you created in Secrets Manager that is linked to your Pinecone API key.</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of the secret that you created in Secrets Manager that is linked to your Pinecone API key.</p>"
         },
         "fieldMapping":{
           "shape":"PineconeFieldMapping",
@@ -3567,7 +3564,7 @@
       "members":{
         "credentialsSecretArn":{
           "shape":"SecretArn",
-          "documentation":"<p>The ARN of the secret that you created in Secrets Manager that is linked to your Amazon RDS database.</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of the secret that you created in Secrets Manager that is linked to your Amazon RDS database.</p>"
         },
         "databaseName":{
           "shape":"RdsDatabaseName",
@@ -3579,7 +3576,7 @@
         },
         "resourceArn":{
           "shape":"RdsArn",
-          "documentation":"<p>The ARN of the vector store.</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of the vector store.</p>"
         },
         "tableName":{
           "shape":"RdsTableName",
@@ -3650,7 +3647,7 @@
       "members":{
         "credentialsSecretArn":{
           "shape":"SecretArn",
-          "documentation":"<p>The ARN of the secret that you created in Secrets Manager that is linked to your Redis Enterprise Cloud database.</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of the secret that you created in Secrets Manager that is linked to your Redis Enterprise Cloud database.</p>"
         },
         "endpoint":{
           "shape":"RedisEnterpriseCloudEndpoint",
@@ -3707,7 +3704,7 @@
       "members":{
         "message":{"shape":"NonBlankString"}
       },
-      "documentation":"<p>The specified resource ARN was not found. Check the ARN and try your request again.</p>",
+      "documentation":"<p>The specified resource Amazon Resource Name (ARN) was not found. Check the Amazon Resource Name (ARN) and try your request again.</p>",
       "error":{
         "httpStatusCode":404,
         "senderFault":true
@@ -3732,7 +3729,7 @@
       "members":{
         "bucketArn":{
           "shape":"S3BucketArn",
-          "documentation":"<p>The ARN of the bucket that contains the data source.</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of the bucket that contains the data source.</p>"
         },
         "inclusionPrefixes":{
           "shape":"S3Prefixes",
@@ -3781,7 +3778,7 @@
       "members":{
         "kmsKeyArn":{
           "shape":"KmsKeyArn",
-          "documentation":"<p>The ARN of the KMS key used to encrypt the resource.</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of the KMS key used to encrypt the resource.</p>"
         }
       },
       "documentation":"<p>Contains the configuration for server-side encryption.</p>"
@@ -3906,7 +3903,7 @@
       "members":{
         "resourceArn":{
           "shape":"TaggableResourcesArn",
-          "documentation":"<p>The ARN of the resource to tag.</p>",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the resource to tag.</p>",
           "location":"uri",
           "locationName":"resourceArn"
         },
@@ -3977,7 +3974,7 @@
       "members":{
         "resourceArn":{
           "shape":"TaggableResourcesArn",
-          "documentation":"<p>The ARN of the resource from which to remove tags.</p>",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the resource from which to remove tags.</p>",
           "location":"uri",
           "locationName":"resourceArn"
         },
@@ -4005,7 +4002,7 @@
       "members":{
         "actionGroupExecutor":{
           "shape":"ActionGroupExecutor",
-          "documentation":"<p>The ARN of the Lambda function containing the business logic that is carried out upon invoking the action.</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of the Lambda function containing the business logic that is carried out upon invoking the action.</p>"
         },
         "actionGroupId":{
           "shape":"Id",
@@ -4168,11 +4165,11 @@
         },
         "agentResourceRoleArn":{
           "shape":"AgentRoleArn",
-          "documentation":"<p>The ARN of the IAM role with permissions to update the agent. The ARN must begin with <code>AmazonBedrockExecutionRoleForAgents_</code>.</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of the IAM role with permissions to invoke API operations on the agent.</p>"
         },
         "customerEncryptionKeyArn":{
           "shape":"KmsKeyArn",
-          "documentation":"<p>The ARN of the KMS key with which to encrypt the agent.</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of the KMS key with which to encrypt the agent.</p>"
         },
         "description":{
           "shape":"Description",
@@ -4289,7 +4286,7 @@
         },
         "roleArn":{
           "shape":"KnowledgeBaseRoleArn",
-          "documentation":"<p>Specifies a different Amazon Resource Name (ARN) of the IAM role with permissions to modify the knowledge base.</p>"
+          "documentation":"<p>Specifies a different Amazon Resource Name (ARN) of the IAM role with permissions to invoke API operations on the knowledge base.</p>"
         },
         "storageConfiguration":{
           "shape":"StorageConfiguration",
@@ -4361,7 +4358,7 @@
       "members":{
         "embeddingModelArn":{
           "shape":"BedrockEmbeddingModelArn",
-          "documentation":"<p>The ARN of the model used to create vector embeddings for the knowledge base.</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of the model used to create vector embeddings for the knowledge base.</p>"
         }
       },
       "documentation":"<p>Contains details about the model used to create vector embeddings for the knowledge base.</p>"

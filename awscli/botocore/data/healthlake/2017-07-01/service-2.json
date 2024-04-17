@@ -422,6 +422,10 @@
         "IdentityProviderConfiguration":{
           "shape":"IdentityProviderConfiguration",
           "documentation":"<p>The identity provider that you selected when you created the data store.</p>"
+        },
+        "ErrorCause":{
+          "shape":"ErrorCause",
+          "documentation":"<p>The error cause for the current data store operation.</p>"
         }
       },
       "documentation":"<p>Displays the properties of the data store, including the ID, ARN, name, and the status of the data store.</p>"
@@ -436,7 +440,8 @@
         "CREATING",
         "ACTIVE",
         "DELETING",
-        "DELETED"
+        "DELETED",
+        "CREATE_FAILED"
       ]
     },
     "DeleteFHIRDatastoreRequest":{
@@ -555,6 +560,32 @@
       "max":400,
       "min":1,
       "pattern":"(arn:aws((-us-gov)|(-iso)|(-iso-b)|(-cn))?:kms:)?([a-z]{2}-[a-z]+(-[a-z]+)?-\\d:)?(\\d{12}:)?(((key/)?[a-zA-Z0-9-_]+)|(alias/[a-zA-Z0-9:/_-]+))"
+    },
+    "ErrorCategory":{
+      "type":"string",
+      "enum":[
+        "RETRYABLE_ERROR",
+        "NON_RETRYABLE_ERROR"
+      ]
+    },
+    "ErrorCause":{
+      "type":"structure",
+      "members":{
+        "ErrorMessage":{
+          "shape":"ErrorMessage",
+          "documentation":"<p>The text of the error message.</p>"
+        },
+        "ErrorCategory":{
+          "shape":"ErrorCategory",
+          "documentation":"<p>The error category of the create/delete data store operation. Possible statuses are RETRYABLE_ERROR or NON_RETRYABLE_ERROR.</p>"
+        }
+      },
+      "documentation":"<p>The error info of the create/delete data store operation.</p>"
+    },
+    "ErrorMessage":{
+      "type":"string",
+      "max":4096,
+      "min":1
     },
     "ExportJobProperties":{
       "type":"structure",

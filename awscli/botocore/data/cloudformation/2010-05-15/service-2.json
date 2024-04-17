@@ -1447,6 +1447,8 @@
         }
       }
     },
+    "AfterContext":{"type":"string"},
+    "AfterValue":{"type":"string"},
     "AllowedValue":{"type":"string"},
     "AllowedValues":{
       "type":"list",
@@ -1465,6 +1467,14 @@
       "exception":true
     },
     "Arn":{"type":"string"},
+    "AttributeChangeType":{
+      "type":"string",
+      "enum":[
+        "Add",
+        "Remove",
+        "Modify"
+      ]
+    },
     "AutoDeployment":{
       "type":"structure",
       "members":{
@@ -1530,6 +1540,8 @@
         }
       }
     },
+    "BeforeContext":{"type":"string"},
+    "BeforeValue":{"type":"string"},
     "BoxedInteger":{
       "type":"integer",
       "box":true
@@ -1606,7 +1618,7 @@
       "members":{
         "Type":{
           "shape":"ChangeType",
-          "documentation":"<p>The type of entity that CloudFormation changes. Currently, the only entity type is <code>Resource</code>.</p>"
+          "documentation":"<p>The type of entity that CloudFormation changes.</p> <ul> <li> <p> <code>Resource</code> This change is for a resource.</p> </li> </ul>"
         },
         "HookInvocationCount":{
           "shape":"HookInvocationCount",
@@ -2572,6 +2584,10 @@
         "NextToken":{
           "shape":"NextToken",
           "documentation":"<p>A string (provided by the <a>DescribeChangeSet</a> response output) that identifies the next page of information that you want to retrieve.</p>"
+        },
+        "IncludePropertyValues":{
+          "shape":"IncludePropertyValues",
+          "documentation":"<p>If <code>true</code>, the returned changes include detailed changes in the property values.</p>"
         }
       },
       "documentation":"<p>The input for the <a>DescribeChangeSet</a> action.</p>"
@@ -3890,6 +3906,7 @@
       "min":0
     },
     "IncludeNestedStacks":{"type":"boolean"},
+    "IncludePropertyValues":{"type":"boolean"},
     "InsufficientCapabilitiesException":{
       "type":"structure",
       "members":{
@@ -5371,6 +5388,14 @@
         "ModuleInfo":{
           "shape":"ModuleInfo",
           "documentation":"<p>Contains information about the module from which the resource was created, if the resource was created from a module included in the stack template.</p>"
+        },
+        "BeforeContext":{
+          "shape":"BeforeContext",
+          "documentation":"<p>An encoded JSON string containing the context of the resource before the change is executed.</p>"
+        },
+        "AfterContext":{
+          "shape":"AfterContext",
+          "documentation":"<p>An encoded JSON string containing the context of the resource after the change is executed.</p>"
         }
       },
       "documentation":"<p>The <code>ResourceChange</code> structure describes the resource and the action that CloudFormation will perform on it if you execute this change set.</p>"
@@ -5515,6 +5540,7 @@
       "min":1
     },
     "ResourceProperties":{"type":"string"},
+    "ResourcePropertyPath":{"type":"string"},
     "ResourceScanId":{"type":"string"},
     "ResourceScanInProgressException":{
       "type":"structure",
@@ -5654,6 +5680,22 @@
         "RequiresRecreation":{
           "shape":"RequiresRecreation",
           "documentation":"<p>If the <code>Attribute</code> value is <code>Properties</code>, indicates whether a change to this property causes the resource to be recreated. The value can be <code>Never</code>, <code>Always</code>, or <code>Conditionally</code>. To determine the conditions for a <code>Conditionally</code> recreation, see the update behavior for that <a href=\"https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-template-resource-type-ref.html\">property</a> in the <i>CloudFormation User Guide</i>.</p>"
+        },
+        "Path":{
+          "shape":"ResourcePropertyPath",
+          "documentation":"<p>The property path of the property.</p>"
+        },
+        "BeforeValue":{
+          "shape":"BeforeValue",
+          "documentation":"<p>The value of the property before the change is executed. Large values can be truncated.</p>"
+        },
+        "AfterValue":{
+          "shape":"AfterValue",
+          "documentation":"<p>The value of the property after the change is executed. Large values can be truncated.</p>"
+        },
+        "AttributeChangeType":{
+          "shape":"AttributeChangeType",
+          "documentation":"<p>The type of change to be made to the property if the change is executed.</p> <ul> <li> <p> <code>Add</code> The item will be added.</p> </li> <li> <p> <code>Remove</code> The item will be removed.</p> </li> <li> <p> <code>Modify</code> The item will be modified.</p> </li> </ul>"
         }
       },
       "documentation":"<p>The field that CloudFormation will change, such as the name of a resource's property, and whether the resource will be recreated.</p>"

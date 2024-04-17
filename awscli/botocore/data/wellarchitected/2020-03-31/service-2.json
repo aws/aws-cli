@@ -438,6 +438,21 @@
       ],
       "documentation":"<p>Get a consolidated report of your workloads.</p> <p>You can optionally choose to include workloads that have been shared with you.</p>"
     },
+    "GetGlobalSettings":{
+      "name":"GetGlobalSettings",
+      "http":{
+        "method":"GET",
+        "requestUri":"/global-settings"
+      },
+      "output":{"shape":"GetGlobalSettingsOutput"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"InternalServerException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Global settings for all workloads.</p>"
+    },
     "GetLens":{
       "name":"GetLens",
       "http":{
@@ -710,7 +725,7 @@
         {"shape":"AccessDeniedException"},
         {"shape":"ThrottlingException"}
       ],
-      "documentation":"<p>List lens review improvements.</p>"
+      "documentation":"<p>List the improvements of a particular lens review.</p>"
     },
     "ListLensReviews":{
       "name":"ListLensReviews",
@@ -1017,7 +1032,24 @@
         {"shape":"AccessDeniedException"},
         {"shape":"ThrottlingException"}
       ],
-      "documentation":"<p>Updates whether the Amazon Web Services account is opted into organization sharing and discovery integration features.</p>"
+      "documentation":"<p>Update whether the Amazon Web Services account is opted into organization sharing and discovery integration features.</p>"
+    },
+    "UpdateIntegration":{
+      "name":"UpdateIntegration",
+      "http":{
+        "method":"POST",
+        "requestUri":"/workloads/{WorkloadId}/updateIntegration"
+      },
+      "input":{"shape":"UpdateIntegrationInput"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"ConflictException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Update integration features.</p>"
     },
     "UpdateLensReview":{
       "name":"UpdateLensReview",
@@ -1176,7 +1208,8 @@
         {"shape":"ConflictException"},
         {"shape":"InternalServerException"},
         {"shape":"AccessDeniedException"},
-        {"shape":"ThrottlingException"}
+        {"shape":"ThrottlingException"},
+        {"shape":"ServiceQuotaExceededException"}
       ],
       "documentation":"<p>Upgrade lens review for a particular workload.</p>"
     },
@@ -1193,7 +1226,8 @@
         {"shape":"ConflictException"},
         {"shape":"InternalServerException"},
         {"shape":"AccessDeniedException"},
-        {"shape":"ThrottlingException"}
+        {"shape":"ThrottlingException"},
+        {"shape":"ServiceQuotaExceededException"}
       ],
       "documentation":"<p>Upgrade a profile.</p>"
     },
@@ -1225,6 +1259,65 @@
       "documentation":"<p>User does not have sufficient access to perform this action.</p>",
       "error":{"httpStatusCode":403},
       "exception":true
+    },
+    "AccountJiraConfigurationInput":{
+      "type":"structure",
+      "members":{
+        "IssueManagementStatus":{
+          "shape":"AccountJiraIssueManagementStatus",
+          "documentation":"<p>Account-level: Jira issue management status.</p>"
+        },
+        "IssueManagementType":{
+          "shape":"IssueManagementType",
+          "documentation":"<p>Account-level: Jira issue management type.</p>"
+        },
+        "JiraProjectKey":{
+          "shape":"JiraProjectKey",
+          "documentation":"<p>Account-level: Jira project key to sync workloads to.</p>"
+        },
+        "IntegrationStatus":{
+          "shape":"IntegrationStatusInput",
+          "documentation":"<p>Account-level: Configuration status of the Jira integration.</p>"
+        }
+      },
+      "documentation":"<p>Account-level: Input for the Jira configuration.</p>"
+    },
+    "AccountJiraConfigurationOutput":{
+      "type":"structure",
+      "members":{
+        "IntegrationStatus":{
+          "shape":"IntegrationStatus",
+          "documentation":"<p>Account-level: Configuration status of the Jira integration.</p>"
+        },
+        "IssueManagementStatus":{
+          "shape":"AccountJiraIssueManagementStatus",
+          "documentation":"<p>Account-level: Jira issue management status.</p>"
+        },
+        "IssueManagementType":{
+          "shape":"IssueManagementType",
+          "documentation":"<p>Account-level: Jira issue management type.</p>"
+        },
+        "Subdomain":{
+          "shape":"Subdomain",
+          "documentation":"<p>Account-level: Jira subdomain URL.</p>"
+        },
+        "JiraProjectKey":{
+          "shape":"JiraProjectKey",
+          "documentation":"<p>Account-level: Jira project key to sync workloads to.</p>"
+        },
+        "StatusMessage":{
+          "shape":"StatusMessage",
+          "documentation":"<p>Account-level: Status message on configuration of the Jira integration.</p>"
+        }
+      },
+      "documentation":"<p>Account-level: Output configuration of the Jira integration.</p>"
+    },
+    "AccountJiraIssueManagementStatus":{
+      "type":"string",
+      "enum":[
+        "ENABLED",
+        "DISABLED"
+      ]
     },
     "AccountSummary":{
       "type":"map",
@@ -1282,6 +1375,10 @@
         "Reason":{
           "shape":"AnswerReason",
           "documentation":"<p>The reason why the question is not applicable to your workload.</p>"
+        },
+        "JiraConfiguration":{
+          "shape":"JiraConfiguration",
+          "documentation":"<p>Configuration of the Jira integration.</p>"
         }
       },
       "documentation":"<p>An answer of the question.</p>"
@@ -1322,6 +1419,10 @@
         "QuestionType":{
           "shape":"QuestionType",
           "documentation":"<p>The type of the question.</p>"
+        },
+        "JiraConfiguration":{
+          "shape":"JiraConfiguration",
+          "documentation":"<p>Configuration of the Jira integration.</p>"
         }
       },
       "documentation":"<p>An answer summary of a lens review in a workload.</p>"
@@ -2027,6 +2128,10 @@
         "ReviewTemplateArns":{
           "shape":"ReviewTemplateArns",
           "documentation":"<p>The list of review template ARNs to associate with the workload.</p>"
+        },
+        "JiraConfiguration":{
+          "shape":"WorkloadJiraConfigurationInput",
+          "documentation":"<p>Jira configuration settings when creating a workload.</p>"
         }
       },
       "documentation":"<p>Input for workload creation.</p>"
@@ -2461,6 +2566,23 @@
         "Base64String":{"shape":"Base64String"}
       }
     },
+    "GetGlobalSettingsOutput":{
+      "type":"structure",
+      "members":{
+        "OrganizationSharingStatus":{
+          "shape":"OrganizationSharingStatus",
+          "documentation":"<p>Amazon Web Services Organizations sharing status.</p>"
+        },
+        "DiscoveryIntegrationStatus":{
+          "shape":"DiscoveryIntegrationStatus",
+          "documentation":"<p>Discovery integration status.</p>"
+        },
+        "JiraConfiguration":{
+          "shape":"AccountJiraConfigurationOutput",
+          "documentation":"<p>Jira configuration status.</p>"
+        }
+      }
+    },
     "GetLensInput":{
       "type":"structure",
       "required":["LensAlias"],
@@ -2854,11 +2976,30 @@
         "ImprovementPlans":{
           "shape":"ChoiceImprovementPlans",
           "documentation":"<p>The improvement plan details.</p>"
+        },
+        "JiraConfiguration":{
+          "shape":"JiraConfiguration",
+          "documentation":"<p>Configuration of the Jira integration.</p>"
         }
       },
       "documentation":"<p>An improvement summary of a lens review in a workload.</p>"
     },
     "IncludeSharedResources":{"type":"boolean"},
+    "IntegratingService":{
+      "type":"string",
+      "enum":["JIRA"]
+    },
+    "IntegrationStatus":{
+      "type":"string",
+      "enum":[
+        "CONFIGURED",
+        "NOT_CONFIGURED"
+      ]
+    },
+    "IntegrationStatusInput":{
+      "type":"string",
+      "enum":["NOT_CONFIGURED"]
+    },
     "InternalServerException":{
       "type":"structure",
       "required":["Message"],
@@ -2876,6 +3017,45 @@
     },
     "IsMajorVersion":{"type":"boolean"},
     "IsReviewOwnerUpdateAcknowledged":{"type":"boolean"},
+    "IssueManagementType":{
+      "type":"string",
+      "enum":[
+        "AUTO",
+        "MANUAL"
+      ]
+    },
+    "JiraConfiguration":{
+      "type":"structure",
+      "members":{
+        "JiraIssueUrl":{
+          "shape":"JiraIssueUrl",
+          "documentation":"<p>The URL of the associated Jira issue.</p>"
+        },
+        "LastSyncedTime":{"shape":"Timestamp"}
+      },
+      "documentation":"<p>Configuration of the Jira integration.</p>"
+    },
+    "JiraIssueUrl":{
+      "type":"string",
+      "max":2048,
+      "min":1
+    },
+    "JiraProjectKey":{
+      "type":"string",
+      "max":100,
+      "min":1,
+      "pattern":"^[A-Z][A-Z0-9_]*$"
+    },
+    "JiraSelectedQuestionConfiguration":{
+      "type":"structure",
+      "members":{
+        "SelectedPillars":{
+          "shape":"SelectedPillars",
+          "documentation":"<p>Selected pillars in the workload.</p>"
+        }
+      },
+      "documentation":"<p>Selected questions in the workload.</p>"
+    },
     "Lens":{
       "type":"structure",
       "members":{
@@ -2976,6 +3156,10 @@
           "documentation":"<p>The status of the lens.</p>"
         },
         "PillarReviewSummaries":{"shape":"PillarReviewSummaries"},
+        "JiraConfiguration":{
+          "shape":"JiraSelectedQuestionConfiguration",
+          "documentation":"<p>Jira configuration status of the Lens review.</p>"
+        },
         "UpdatedAt":{"shape":"Timestamp"},
         "Notes":{"shape":"Notes"},
         "RiskCounts":{"shape":"RiskCounts"},
@@ -4161,19 +4345,16 @@
     "ProfileDescription":{
       "type":"string",
       "max":100,
-      "min":3,
-      "pattern":"^[A-Za-z0-9-_.,:/()@!&?#+'’\\s]+$"
+      "min":3
     },
     "ProfileName":{
       "type":"string",
       "max":100,
-      "min":3,
-      "pattern":"^[A-Za-z0-9-_.,:/()@!&?#+'’\\s]+$"
+      "min":3
     },
     "ProfileNamePrefix":{
       "type":"string",
-      "max":100,
-      "pattern":"^[A-Za-z0-9-_.,:/()@!&?#+'’\\s]+$"
+      "max":100
     },
     "ProfileNotificationSummaries":{
       "type":"list",
@@ -4720,9 +4901,29 @@
       "member":{"shape":"ChoiceId"},
       "documentation":"<p>List of selected choice IDs in a question answer.</p> <p>The values entered replace the previously selected choices.</p>"
     },
+    "SelectedPillar":{
+      "type":"structure",
+      "members":{
+        "PillarId":{"shape":"PillarId"},
+        "SelectedQuestionIds":{
+          "shape":"SelectedQuestionIds",
+          "documentation":"<p>Selected question IDs in the selected pillar.</p>"
+        }
+      },
+      "documentation":"<p>The selected pillar.</p>"
+    },
+    "SelectedPillars":{
+      "type":"list",
+      "member":{"shape":"SelectedPillar"}
+    },
     "SelectedProfileChoiceIds":{
       "type":"list",
       "member":{"shape":"ChoiceId"}
+    },
+    "SelectedQuestionId":{"type":"string"},
+    "SelectedQuestionIds":{
+      "type":"list",
+      "member":{"shape":"SelectedQuestionId"}
     },
     "ServiceCode":{
       "type":"string",
@@ -4871,6 +5072,11 @@
     "StatusMessage":{
       "type":"string",
       "max":512,
+      "min":1
+    },
+    "Subdomain":{
+      "type":"string",
+      "max":100,
       "min":1
     },
     "TagKey":{
@@ -5071,6 +5277,33 @@
         "DiscoveryIntegrationStatus":{
           "shape":"DiscoveryIntegrationStatus",
           "documentation":"<p>The status of discovery support settings.</p>"
+        },
+        "JiraConfiguration":{
+          "shape":"AccountJiraConfigurationInput",
+          "documentation":"<p>The status of Jira integration settings.</p>"
+        }
+      }
+    },
+    "UpdateIntegrationInput":{
+      "type":"structure",
+      "required":[
+        "WorkloadId",
+        "ClientRequestToken",
+        "IntegratingService"
+      ],
+      "members":{
+        "WorkloadId":{
+          "shape":"WorkloadId",
+          "location":"uri",
+          "locationName":"WorkloadId"
+        },
+        "ClientRequestToken":{
+          "shape":"ClientRequestToken",
+          "idempotencyToken":true
+        },
+        "IntegratingService":{
+          "shape":"IntegratingService",
+          "documentation":"<p>Which integrated service to update.</p>"
         }
       }
     },
@@ -5092,7 +5325,11 @@
           "locationName":"LensAlias"
         },
         "LensNotes":{"shape":"Notes"},
-        "PillarNotes":{"shape":"PillarNotes"}
+        "PillarNotes":{"shape":"PillarNotes"},
+        "JiraConfiguration":{
+          "shape":"JiraSelectedQuestionConfiguration",
+          "documentation":"<p>Configuration of the Jira integration.</p>"
+        }
       },
       "documentation":"<p>Input for update lens review.</p>"
     },
@@ -5316,6 +5553,10 @@
         "Applications":{
           "shape":"WorkloadApplications",
           "documentation":"<p>List of AppRegistry application ARNs to associate to the workload.</p>"
+        },
+        "JiraConfiguration":{
+          "shape":"WorkloadJiraConfigurationInput",
+          "documentation":"<p>Configuration of the Jira integration.</p>"
         }
       },
       "documentation":"<p>Input to update a workload.</p>"
@@ -5529,7 +5770,11 @@
           "shape":"WorkloadProfiles",
           "documentation":"<p>Profile associated with a workload.</p>"
         },
-        "PrioritizedRiskCounts":{"shape":"RiskCounts"}
+        "PrioritizedRiskCounts":{"shape":"RiskCounts"},
+        "JiraConfiguration":{
+          "shape":"WorkloadJiraConfigurationOutput",
+          "documentation":"<p>Jira configuration for a specific workload.</p>"
+        }
       },
       "documentation":"<p>A workload return object.</p>"
     },
@@ -5615,6 +5860,54 @@
       "type":"string",
       "documentation":"<p>The industry type for the workload.</p> <p>If specified, must be one of the following:</p> <ul> <li> <p> <code>Agriculture</code> </p> </li> <li> <p> <code>Automobile</code> </p> </li> <li> <p> <code>Defense</code> </p> </li> <li> <p> <code>Design and Engineering</code> </p> </li> <li> <p> <code>Digital Advertising</code> </p> </li> <li> <p> <code>Education</code> </p> </li> <li> <p> <code>Environmental Protection</code> </p> </li> <li> <p> <code>Financial Services</code> </p> </li> <li> <p> <code>Gaming</code> </p> </li> <li> <p> <code>General Public Services</code> </p> </li> <li> <p> <code>Healthcare</code> </p> </li> <li> <p> <code>Hospitality</code> </p> </li> <li> <p> <code>InfoTech</code> </p> </li> <li> <p> <code>Justice and Public Safety</code> </p> </li> <li> <p> <code>Life Sciences</code> </p> </li> <li> <p> <code>Manufacturing</code> </p> </li> <li> <p> <code>Media &amp; Entertainment</code> </p> </li> <li> <p> <code>Mining &amp; Resources</code> </p> </li> <li> <p> <code>Oil &amp; Gas</code> </p> </li> <li> <p> <code>Power &amp; Utilities</code> </p> </li> <li> <p> <code>Professional Services</code> </p> </li> <li> <p> <code>Real Estate &amp; Construction</code> </p> </li> <li> <p> <code>Retail &amp; Wholesale</code> </p> </li> <li> <p> <code>Social Protection</code> </p> </li> <li> <p> <code>Telecommunications</code> </p> </li> <li> <p> <code>Travel, Transportation &amp; Logistics</code> </p> </li> <li> <p> <code>Other</code> </p> </li> </ul>",
       "max":100
+    },
+    "WorkloadIssueManagementStatus":{
+      "type":"string",
+      "enum":[
+        "ENABLED",
+        "DISABLED",
+        "INHERIT"
+      ]
+    },
+    "WorkloadJiraConfigurationInput":{
+      "type":"structure",
+      "members":{
+        "IssueManagementStatus":{
+          "shape":"WorkloadIssueManagementStatus",
+          "documentation":"<p>Workload-level: Jira issue management status.</p>"
+        },
+        "IssueManagementType":{
+          "shape":"IssueManagementType",
+          "documentation":"<p>Workload-level: Jira issue management type.</p>"
+        },
+        "JiraProjectKey":{
+          "shape":"JiraProjectKey",
+          "documentation":"<p>Workload-level: Jira project key to sync workloads to.</p>"
+        }
+      },
+      "documentation":"<p>Workload-level: Input for the Jira configuration.</p>"
+    },
+    "WorkloadJiraConfigurationOutput":{
+      "type":"structure",
+      "members":{
+        "IssueManagementStatus":{
+          "shape":"WorkloadIssueManagementStatus",
+          "documentation":"<p>Workload-level: Jira issue management status.</p>"
+        },
+        "IssueManagementType":{
+          "shape":"IssueManagementType",
+          "documentation":"<p>Workload-level: Jira issue management type.</p>"
+        },
+        "JiraProjectKey":{
+          "shape":"JiraProjectKey",
+          "documentation":"<p>Workload-level: Jira project key to sync workloads to.</p>"
+        },
+        "StatusMessage":{
+          "shape":"StatusMessage",
+          "documentation":"<p>Workload-level: Status message on configuration of the Jira integration.</p>"
+        }
+      },
+      "documentation":"<p>Workload-level: Output configuration of the Jira integration.</p>"
     },
     "WorkloadLenses":{
       "type":"list",

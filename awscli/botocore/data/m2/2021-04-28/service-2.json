@@ -385,6 +385,25 @@
       ],
       "documentation":"<p>Lists historical, current, and scheduled batch job executions for a specific application.</p>"
     },
+    "ListBatchJobRestartPoints":{
+      "name":"ListBatchJobRestartPoints",
+      "http":{
+        "method":"GET",
+        "requestUri":"/applications/{applicationId}/batch-job-executions/{executionId}/steps",
+        "responseCode":200
+      },
+      "input":{"shape":"ListBatchJobRestartPointsRequest"},
+      "output":{"shape":"ListBatchJobRestartPointsResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ConflictException"},
+        {"shape":"ValidationException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Lists all the job steps for JCL files to restart a batch job. This is only applicable for Micro Focus engine with versions 8.0.6 and above.</p>"
+    },
     "ListDataSetImportHistory":{
       "name":"ListDataSetImportHistory",
       "http":{
@@ -844,6 +863,7 @@
         "Cancelled",
         "Succeeded",
         "Failed",
+        "Purged",
         "Succeeded With Warning"
       ]
     },
@@ -910,6 +930,10 @@
           "shape":"FileBatchJobIdentifier",
           "documentation":"<p>Specifies a file associated with a specific batch job.</p>"
         },
+        "restartBatchJobIdentifier":{
+          "shape":"RestartBatchJobIdentifier",
+          "documentation":"<p>Specifies the required information for restart, including execution ID and jobsteprestartmarker.</p>"
+        },
         "s3BatchJobIdentifier":{
           "shape":"S3BatchJobIdentifier",
           "documentation":"<p>Specifies an Amazon S3 location that identifies the batch jobs that you want to run. Use this identifier to run ad hoc batch jobs.</p>"
@@ -929,6 +953,10 @@
       "documentation":"<p>Job parameters are optional. Can contain up to 500 entries.</p>",
       "max":500,
       "min":0
+    },
+    "BatchJobStepList":{
+      "type":"list",
+      "member":{"shape":"JobStep"}
     },
     "BatchJobType":{
       "type":"string",
@@ -2046,6 +2074,10 @@
           "shape":"String100",
           "documentation":"<p>The name of this batch job.</p>"
         },
+        "jobStepRestartMarker":{
+          "shape":"JobStepRestartMarker",
+          "documentation":"<p>The restart steps information for the most recent restart operation.</p>"
+        },
         "jobType":{
           "shape":"BatchJobType",
           "documentation":"<p>The type of job.</p>"
@@ -2424,6 +2456,59 @@
       "documentation":"<p>Identifies a specific batch job.</p>",
       "union":true
     },
+    "JobStep":{
+      "type":"structure",
+      "members":{
+        "procStepName":{
+          "shape":"String",
+          "documentation":"<p>The name of a procedure step.</p>"
+        },
+        "procStepNumber":{
+          "shape":"Integer",
+          "documentation":"<p>The number of a procedure step.</p>"
+        },
+        "stepCondCode":{
+          "shape":"String",
+          "documentation":"<p>The condition code of a step.</p>"
+        },
+        "stepName":{
+          "shape":"String",
+          "documentation":"<p>The name of a step.</p>"
+        },
+        "stepNumber":{
+          "shape":"Integer",
+          "documentation":"<p>The number of a step.</p>"
+        },
+        "stepRestartable":{
+          "shape":"Boolean",
+          "documentation":"<p>Specifies if a step can be restarted or not.</p>"
+        }
+      },
+      "documentation":"<p>Provides information related to a job step.</p>"
+    },
+    "JobStepRestartMarker":{
+      "type":"structure",
+      "required":["fromStep"],
+      "members":{
+        "fromProcStep":{
+          "shape":"String",
+          "documentation":"<p>The procedure step name that a job was restarted from.</p>"
+        },
+        "fromStep":{
+          "shape":"String",
+          "documentation":"<p>The step name that a batch job restart was from.</p>"
+        },
+        "toProcStep":{
+          "shape":"String",
+          "documentation":"<p>The procedure step name that a batch job was restarted to.</p>"
+        },
+        "toStep":{
+          "shape":"String",
+          "documentation":"<p>The step name that a job was restarted to.</p>"
+        }
+      },
+      "documentation":"<p>Provides restart step information for the most recent restart operation.</p>"
+    },
     "ListApplicationVersionsRequest":{
       "type":"structure",
       "required":["applicationId"],
@@ -2614,6 +2699,36 @@
         "nextToken":{
           "shape":"NextToken",
           "documentation":"<p>A pagination token that's returned when the response doesn't contain all batch job executions.</p>"
+        }
+      }
+    },
+    "ListBatchJobRestartPointsRequest":{
+      "type":"structure",
+      "required":[
+        "applicationId",
+        "executionId"
+      ],
+      "members":{
+        "applicationId":{
+          "shape":"Identifier",
+          "documentation":"<p>The unique identifier of the application.</p>",
+          "location":"uri",
+          "locationName":"applicationId"
+        },
+        "executionId":{
+          "shape":"Identifier",
+          "documentation":"<p>The unique identifier of each batch job execution.</p>",
+          "location":"uri",
+          "locationName":"executionId"
+        }
+      }
+    },
+    "ListBatchJobRestartPointsResponse":{
+      "type":"structure",
+      "members":{
+        "batchJobSteps":{
+          "shape":"BatchJobStepList",
+          "documentation":"<p>Returns all the batch job steps and related information for a batch job that previously ran.</p>"
         }
       }
     },
@@ -3052,6 +3167,24 @@
         "senderFault":true
       },
       "exception":true
+    },
+    "RestartBatchJobIdentifier":{
+      "type":"structure",
+      "required":[
+        "executionId",
+        "jobStepRestartMarker"
+      ],
+      "members":{
+        "executionId":{
+          "shape":"Identifier",
+          "documentation":"<p>The executionId from the StartBatchJob response when the job ran for the first time.</p>"
+        },
+        "jobStepRestartMarker":{
+          "shape":"JobStepRestartMarker",
+          "documentation":"<p>The restart step information for the most recent restart operation.</p>"
+        }
+      },
+      "documentation":"<p>An identifier for the StartBatchJob API to show that it is a restart operation.</p>"
     },
     "S3BatchJobIdentifier":{
       "type":"structure",
@@ -3496,6 +3629,8 @@
       "enum":[
         "unknownOperation",
         "cannotParse",
+        "featureNotAvailable",
+        "unsupportedEngineVersion",
         "fieldValidationFailed",
         "other"
       ]

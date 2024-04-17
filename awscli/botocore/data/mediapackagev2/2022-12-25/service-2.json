@@ -469,6 +469,13 @@
       },
       "exception":true
     },
+    "AdMarkerDash":{
+      "type":"string",
+      "enum":[
+        "BINARY",
+        "XML"
+      ]
+    },
     "AdMarkerHls":{
       "type":"string",
       "enum":["DATERANGE"]
@@ -743,6 +750,81 @@
         }
       }
     },
+    "CreateDashManifestConfiguration":{
+      "type":"structure",
+      "required":["ManifestName"],
+      "members":{
+        "ManifestName":{
+          "shape":"ManifestName",
+          "documentation":"<p>A short string that's appended to the endpoint URL. The child manifest name creates a unique path to this endpoint.</p>"
+        },
+        "ManifestWindowSeconds":{
+          "shape":"CreateDashManifestConfigurationManifestWindowSecondsInteger",
+          "documentation":"<p>The total duration (in seconds) of the manifest's content.</p>"
+        },
+        "FilterConfiguration":{"shape":"FilterConfiguration"},
+        "MinUpdatePeriodSeconds":{
+          "shape":"CreateDashManifestConfigurationMinUpdatePeriodSecondsInteger",
+          "documentation":"<p>Minimum amount of time (in seconds) that the player should wait before requesting updates to the manifest.</p>"
+        },
+        "MinBufferTimeSeconds":{
+          "shape":"CreateDashManifestConfigurationMinBufferTimeSecondsInteger",
+          "documentation":"<p>Minimum amount of content (in seconds) that a player must keep available in the buffer.</p>"
+        },
+        "SuggestedPresentationDelaySeconds":{
+          "shape":"CreateDashManifestConfigurationSuggestedPresentationDelaySecondsInteger",
+          "documentation":"<p>The amount of time (in seconds) that the player should be from the end of the manifest.</p>"
+        },
+        "SegmentTemplateFormat":{
+          "shape":"DashSegmentTemplateFormat",
+          "documentation":"<p>Determines the type of variable used in the <code>media</code> URL of the <code>SegmentTemplate</code> tag in the manifest. Also specifies if segment timeline information is included in <code>SegmentTimeline</code> or <code>SegmentTemplate</code>.</p> <p>Value description:</p> <ul> <li> <p> <code>NUMBER_WITH_TIMELINE</code> - The <code>$Number$</code> variable is used in the <code>media</code> URL. The value of this variable is the sequential number of the segment. A full <code>SegmentTimeline</code> object is presented in each <code>SegmentTemplate</code>.</p> </li> </ul>"
+        },
+        "PeriodTriggers":{
+          "shape":"DashPeriodTriggers",
+          "documentation":"<p>A list of triggers that controls when AWS Elemental MediaPackage separates the MPEG-DASH manifest into multiple periods. Type <code>ADS</code> to indicate that AWS Elemental MediaPackage must create periods in the output manifest that correspond to SCTE-35 ad markers in the input source. Leave this value empty to indicate that the manifest is contained all in one period. For more information about periods in the DASH manifest, see <a href=\"https://docs.aws.amazon.com/mediapackage/latest/userguide/multi-period.html\">Multi-period DASH in AWS Elemental MediaPackage</a>.</p>"
+        },
+        "ScteDash":{
+          "shape":"ScteDash",
+          "documentation":"<p>The SCTE configuration.</p>"
+        },
+        "DrmSignaling":{
+          "shape":"DashDrmSignaling",
+          "documentation":"<p>Determines how the DASH manifest signals the DRM content.</p>"
+        },
+        "UtcTiming":{
+          "shape":"DashUtcTiming",
+          "documentation":"<p>Determines the type of UTC timing included in the DASH Media Presentation Description (MPD).</p>"
+        }
+      },
+      "documentation":"<p>Create a DASH manifest configuration.</p>"
+    },
+    "CreateDashManifestConfigurationManifestWindowSecondsInteger":{
+      "type":"integer",
+      "box":true,
+      "min":30
+    },
+    "CreateDashManifestConfigurationMinBufferTimeSecondsInteger":{
+      "type":"integer",
+      "box":true,
+      "max":3600,
+      "min":0
+    },
+    "CreateDashManifestConfigurationMinUpdatePeriodSecondsInteger":{
+      "type":"integer",
+      "box":true,
+      "max":3600,
+      "min":1
+    },
+    "CreateDashManifestConfigurationSuggestedPresentationDelaySecondsInteger":{
+      "type":"integer",
+      "box":true,
+      "max":3600,
+      "min":0
+    },
+    "CreateDashManifests":{
+      "type":"list",
+      "member":{"shape":"CreateDashManifestConfiguration"}
+    },
     "CreateHlsManifestConfiguration":{
       "type":"structure",
       "required":["ManifestName"],
@@ -879,6 +961,10 @@
           "shape":"CreateLowLatencyHlsManifests",
           "documentation":"<p>A low-latency HLS manifest configuration.</p>"
         },
+        "DashManifests":{
+          "shape":"CreateDashManifests",
+          "documentation":"<p>A DASH manifest configuration.</p>"
+        },
         "Tags":{
           "shape":"TagMap",
           "documentation":"<p>A comma-separated list of tag key:value pairs that you define. For example:</p> <p> <code>\"Key1\": \"Value1\",</code> </p> <p> <code>\"Key2\": \"Value2\"</code> </p>"
@@ -952,6 +1038,10 @@
           "shape":"GetLowLatencyHlsManifests",
           "documentation":"<p>A low-latency HLS manifest configuration.</p>"
         },
+        "DashManifests":{
+          "shape":"GetDashManifests",
+          "documentation":"<p>A DASH manifest configuration.</p>"
+        },
         "ETag":{
           "shape":"EntityTag",
           "documentation":"<p>The current Entity Tag (ETag) associated with this resource. The entity tag can be used to safely make concurrent updates to the resource.</p>"
@@ -961,6 +1051,61 @@
           "documentation":"<p>The comma-separated list of tag key:value pairs assigned to the origin endpoint.</p>"
         }
       }
+    },
+    "DashDrmSignaling":{
+      "type":"string",
+      "enum":[
+        "INDIVIDUAL",
+        "REFERENCED"
+      ]
+    },
+    "DashPeriodTrigger":{
+      "type":"string",
+      "enum":[
+        "AVAILS",
+        "DRM_KEY_ROTATION",
+        "SOURCE_CHANGES",
+        "SOURCE_DISRUPTIONS",
+        "NONE"
+      ]
+    },
+    "DashPeriodTriggers":{
+      "type":"list",
+      "member":{"shape":"DashPeriodTrigger"},
+      "max":100,
+      "min":0
+    },
+    "DashSegmentTemplateFormat":{
+      "type":"string",
+      "enum":["NUMBER_WITH_TIMELINE"]
+    },
+    "DashUtcTiming":{
+      "type":"structure",
+      "members":{
+        "TimingMode":{
+          "shape":"DashUtcTimingMode",
+          "documentation":"<p>The UTC timing mode.</p>"
+        },
+        "TimingSource":{
+          "shape":"DashUtcTimingTimingSourceString",
+          "documentation":"<p>The the method that the player uses to synchronize to coordinated universal time (UTC) wall clock time.</p>"
+        }
+      },
+      "documentation":"<p>Determines the type of UTC timing included in the DASH Media Presentation Description (MPD).</p>"
+    },
+    "DashUtcTimingMode":{
+      "type":"string",
+      "enum":[
+        "HTTP_HEAD",
+        "HTTP_ISO",
+        "HTTP_XSDATE",
+        "UTC_DIRECT"
+      ]
+    },
+    "DashUtcTimingTimingSourceString":{
+      "type":"string",
+      "max":1024,
+      "min":1
     },
     "DeleteChannelGroupRequest":{
       "type":"structure",
@@ -1381,6 +1526,65 @@
         }
       }
     },
+    "GetDashManifestConfiguration":{
+      "type":"structure",
+      "required":[
+        "ManifestName",
+        "Url"
+      ],
+      "members":{
+        "ManifestName":{
+          "shape":"ResourceName",
+          "documentation":"<p>A short string that's appended to the endpoint URL. The manifest name creates a unique path to this endpoint. If you don't enter a value, MediaPackage uses the default manifest name, index. </p>"
+        },
+        "Url":{
+          "shape":"String",
+          "documentation":"<p>The egress domain URL for stream delivery from MediaPackage.</p>"
+        },
+        "ManifestWindowSeconds":{
+          "shape":"Integer",
+          "documentation":"<p>The total duration (in seconds) of the manifest's content.</p>"
+        },
+        "FilterConfiguration":{"shape":"FilterConfiguration"},
+        "MinUpdatePeriodSeconds":{
+          "shape":"Integer",
+          "documentation":"<p>Minimum amount of time (in seconds) that the player should wait before requesting updates to the manifest.</p>"
+        },
+        "MinBufferTimeSeconds":{
+          "shape":"Integer",
+          "documentation":"<p>Minimum amount of content (in seconds) that a player must keep available in the buffer.</p>"
+        },
+        "SuggestedPresentationDelaySeconds":{
+          "shape":"Integer",
+          "documentation":"<p>The amount of time (in seconds) that the player should be from the end of the manifest.</p>"
+        },
+        "SegmentTemplateFormat":{
+          "shape":"DashSegmentTemplateFormat",
+          "documentation":"<p>Determines the type of variable used in the <code>media</code> URL of the <code>SegmentTemplate</code> tag in the manifest. Also specifies if segment timeline information is included in <code>SegmentTimeline</code> or <code>SegmentTemplate</code>.</p> <p>Value description:</p> <ul> <li> <p> <code>NUMBER_WITH_TIMELINE</code> - The <code>$Number$</code> variable is used in the <code>media</code> URL. The value of this variable is the sequential number of the segment. A full <code>SegmentTimeline</code> object is presented in each <code>SegmentTemplate</code>.</p> </li> </ul>"
+        },
+        "PeriodTriggers":{
+          "shape":"DashPeriodTriggers",
+          "documentation":"<p>A list of triggers that controls when AWS Elemental MediaPackage separates the MPEG-DASH manifest into multiple periods. Leave this value empty to indicate that the manifest is contained all in one period. For more information about periods in the DASH manifest, see <a href=\"https://docs.aws.amazon.com/mediapackage/latest/userguide/multi-period.html\">Multi-period DASH in AWS Elemental MediaPackage</a>.</p>"
+        },
+        "ScteDash":{
+          "shape":"ScteDash",
+          "documentation":"<p>The SCTE configuration.</p>"
+        },
+        "DrmSignaling":{
+          "shape":"DashDrmSignaling",
+          "documentation":"<p>Determines how the DASH manifest signals the DRM content.</p>"
+        },
+        "UtcTiming":{
+          "shape":"DashUtcTiming",
+          "documentation":"<p>Determines the type of UTC timing included in the DASH Media Presentation Description (MPD).</p>"
+        }
+      },
+      "documentation":"<p>Retrieve the DASH manifest configuration.</p>"
+    },
+    "GetDashManifests":{
+      "type":"list",
+      "member":{"shape":"GetDashManifestConfiguration"}
+    },
     "GetHlsManifestConfiguration":{
       "type":"structure",
       "required":[
@@ -1601,6 +1805,10 @@
         "Tags":{
           "shape":"TagMap",
           "documentation":"<p>The comma-separated list of tag key:value pairs assigned to the origin endpoint.</p>"
+        },
+        "DashManifests":{
+          "shape":"GetDashManifests",
+          "documentation":"<p>A DASH manifest configuration.</p>"
         }
       }
     },
@@ -1709,6 +1917,25 @@
           "documentation":"<p>The pagination token from the GET list request.</p>"
         }
       }
+    },
+    "ListDashManifestConfiguration":{
+      "type":"structure",
+      "required":["ManifestName"],
+      "members":{
+        "ManifestName":{
+          "shape":"ResourceName",
+          "documentation":"<p>A short string that's appended to the endpoint URL. The manifest name creates a unique path to this endpoint. If you don't enter a value, MediaPackage uses the default manifest name, index. </p>"
+        },
+        "Url":{
+          "shape":"String",
+          "documentation":"<p>The egress domain URL for stream delivery from MediaPackage.</p>"
+        }
+      },
+      "documentation":"<p>List the DASH manifest configuration.</p>"
+    },
+    "ListDashManifests":{
+      "type":"list",
+      "member":{"shape":"ListDashManifestConfiguration"}
     },
     "ListHlsManifestConfiguration":{
       "type":"structure",
@@ -1885,6 +2112,10 @@
         "LowLatencyHlsManifests":{
           "shape":"ListLowLatencyHlsManifests",
           "documentation":"<p>A low-latency HLS manifest configuration.</p>"
+        },
+        "DashManifests":{
+          "shape":"ListDashManifests",
+          "documentation":"<p>A DASH manifest configuration.</p>"
         }
       },
       "documentation":"<p>The configuration of the origin endpoint.</p>"
@@ -2033,6 +2264,16 @@
         "ScteFilter":{
           "shape":"ScteFilterList",
           "documentation":"<p>The SCTE-35 message types that you want to be treated as ad markers in the output.</p>"
+        }
+      },
+      "documentation":"<p>The SCTE configuration.</p>"
+    },
+    "ScteDash":{
+      "type":"structure",
+      "members":{
+        "AdMarkerDash":{
+          "shape":"AdMarkerDash",
+          "documentation":"<p>Choose how ad markers are included in the packaged content. If you include ad markers in the content stream in your upstream encoders, then you need to inform MediaPackage what to do with the ad markers in the output.</p> <p>Value description:</p> <ul> <li> <p> <code>Binary</code> - The SCTE-35 marker is expressed as a hex-string (Base64 string) rather than full XML.</p> </li> <li> <p> <code>XML</code> - The SCTE marker is expressed fully in XML.</p> </li> </ul>"
         }
       },
       "documentation":"<p>The SCTE configuration.</p>"
@@ -2446,6 +2687,10 @@
           "shape":"CreateLowLatencyHlsManifests",
           "documentation":"<p>A low-latency HLS manifest configuration.</p>"
         },
+        "DashManifests":{
+          "shape":"CreateDashManifests",
+          "documentation":"<p>A DASH manifest configuration.</p>"
+        },
         "ETag":{
           "shape":"EntityTag",
           "documentation":"<p>The expected current Entity Tag (ETag) for the resource. If the specified ETag does not match the resource's current entity tag, the update request will be rejected.</p>",
@@ -2529,6 +2774,10 @@
           "shape":"TagMap",
           "documentation":"<p>The comma-separated list of tag key:value pairs assigned to the origin endpoint.</p>",
           "locationName":"tags"
+        },
+        "DashManifests":{
+          "shape":"GetDashManifests",
+          "documentation":"<p>A DASH manifest configuration.</p>"
         }
       }
     },
@@ -2560,6 +2809,7 @@
         "ENCRYPTION_CONTRACT_SHARED",
         "NUM_MANIFESTS_LOW",
         "NUM_MANIFESTS_HIGH",
+        "MANIFEST_DRM_SYSTEMS_INCOMPATIBLE",
         "DRM_SYSTEMS_ENCRYPTION_METHOD_INCOMPATIBLE",
         "ROLE_ARN_NOT_ASSUMABLE",
         "ROLE_ARN_LENGTH_OUT_OF_RANGE",
@@ -2583,7 +2833,14 @@
         "MEMBER_DOES_NOT_MATCH_PATTERN",
         "INVALID_MANIFEST_FILTER",
         "INVALID_TIME_DELAY_SECONDS",
-        "END_TIME_EARLIER_THAN_START_TIME"
+        "END_TIME_EARLIER_THAN_START_TIME",
+        "TS_CONTAINER_TYPE_WITH_DASH_MANIFEST",
+        "DIRECT_MODE_WITH_TIMING_SOURCE",
+        "NONE_MODE_WITH_TIMING_SOURCE",
+        "TIMING_SOURCE_MISSING",
+        "UPDATE_PERIOD_SMALLER_THAN_SEGMENT_DURATION",
+        "PERIOD_TRIGGERS_NONE_SPECIFIED_WITH_ADDITIONAL_VALUES",
+        "DRM_SIGNALING_MISMATCH_SEGMENT_ENCRYPTION_STATUS"
       ]
     }
   },

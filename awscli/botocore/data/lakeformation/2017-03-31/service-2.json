@@ -1377,6 +1377,10 @@
         "ExternalFiltering":{
           "shape":"ExternalFilteringConfiguration",
           "documentation":"<p>A list of the account IDs of Amazon Web Services accounts of third-party applications that are allowed to access data managed by Lake Formation.</p>"
+        },
+        "ShareRecipients":{
+          "shape":"DataLakePrincipalList",
+          "documentation":"<p>A list of Amazon Web Services account IDs and/or Amazon Web Services organization/organizational unit ARNs that are allowed to access data managed by Lake Formation. </p> <p>If the <code>ShareRecipients</code> list includes valid values, a resource share is created with the principals you want to have access to the resources.</p> <p>If the <code>ShareRecipients</code> value is null or the list is empty, no resource share is created.</p>"
         }
       }
     },
@@ -1385,7 +1389,7 @@
       "members":{
         "ApplicationArn":{
           "shape":"ApplicationArn",
-          "documentation":"<p>The Amazon Resource Name (ARN) of the integrated application.</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of the Lake Formation application integrated with IAM Identity Center.</p>"
         }
       }
     },
@@ -1766,11 +1770,19 @@
         },
         "ApplicationArn":{
           "shape":"ApplicationArn",
-          "documentation":"<p>The Amazon Resource Name (ARN) of the integrated application.</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of the Lake Formation application integrated with IAM Identity Center.</p>"
         },
         "ExternalFiltering":{
           "shape":"ExternalFilteringConfiguration",
           "documentation":"<p>Indicates if external filtering is enabled.</p>"
+        },
+        "ShareRecipients":{
+          "shape":"DataLakePrincipalList",
+          "documentation":"<p>A list of Amazon Web Services account IDs or Amazon Web Services organization/organizational unit ARNs that are allowed to access data managed by Lake Formation. </p> <p>If the <code>ShareRecipients</code> list includes valid values, a resource share is created with the principals you want to have access to the resources as the <code>ShareRecipients</code>.</p> <p>If the <code>ShareRecipients</code> value is null or the list is empty, no resource share is created.</p>"
+        },
+        "ResourceShare":{
+          "shape":"RAMResourceShareArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the RAM share.</p>"
         }
       }
     },
@@ -3998,6 +4010,10 @@
         "CatalogId":{
           "shape":"CatalogIdString",
           "documentation":"<p>The identifier for the Data Catalog. By default, the account ID. The Data Catalog is the persistent metadata store. It contains database definitions, table definitions, view definitions, and other control information to manage your Lake Formation environment.</p>"
+        },
+        "ShareRecipients":{
+          "shape":"DataLakePrincipalList",
+          "documentation":"<p>A list of Amazon Web Services account IDs or Amazon Web Services organization/organizational unit ARNs that are allowed to access to access data managed by Lake Formation. </p> <p>If the <code>ShareRecipients</code> list includes valid values, then the resource share is updated with the principals you want to have access to the resources.</p> <p>If the <code>ShareRecipients</code> value is null, both the list of share recipients and the resource share remain unchanged.</p> <p>If the <code>ShareRecipients</code> value is an empty list, then the existing share recipients list will be cleared, and the resource share will be deleted.</p>"
         },
         "ApplicationStatus":{
           "shape":"ApplicationStatus",

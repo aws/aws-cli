@@ -2190,7 +2190,7 @@
         {"shape":"FederationSourceException"},
         {"shape":"FederationSourceRetryableException"}
       ],
-      "documentation":"<p>Retrieves table metadata from the Data Catalog that contains unfiltered metadata.</p> <p>For IAM authorization, the public IAM action associated with this API is <code>glue:GetTable</code>.</p>"
+      "documentation":"<p>Allows a third-party analytical engine to retrieve unfiltered table metadata from the Data Catalog.</p> <p>For IAM authorization, the public IAM action associated with this API is <code>glue:GetTable</code>.</p>"
     },
     "GetUserDefinedFunction":{
       "name":"GetUserDefinedFunction",
@@ -13026,7 +13026,15 @@
         },
         "SupportedPermissionTypes":{
           "shape":"PermissionTypeList",
-          "documentation":"<p>(Required) A list of supported permission types. </p>"
+          "documentation":"<p>Indicates the level of filtering a third-party analytical engine is capable of enforcing when calling the <code>GetUnfilteredTableMetadata</code> API operation. Accepted values are:</p> <ul> <li> <p> <code>COLUMN_PERMISSION</code> - Column permissions ensure that users can access only specific columns in the table. If there are particular columns contain sensitive data, data lake administrators can define column filters that exclude access to specific columns.</p> </li> <li> <p> <code>CELL_FILTER_PERMISSION</code> - Cell-level filtering combines column filtering (include or exclude columns) and row filter expressions to restrict access to individual elements in the table.</p> </li> <li> <p> <code>NESTED_PERMISSION</code> - Nested permissions combines cell-level filtering and nested column filtering to restrict access to columns and/or nested columns in specific rows based on row filter expressions.</p> </li> <li> <p> <code>NESTED_CELL_PERMISSION</code> - Nested cell permissions combines nested permission with nested cell-level filtering. This allows different subsets of nested columns to be restricted based on an array of row filter expressions. </p> </li> </ul> <p>Note: Each of these permission types follows a hierarchical order where each subsequent permission type includes all permission of the previous type.</p> <p>Important: If you provide a supported permission type that doesn't match the user's level of permissions on the table, then Lake Formation raises an exception. For example, if the third-party engine calling the <code>GetUnfilteredTableMetadata</code> operation can enforce only column-level filtering, and the user has nested cell filtering applied on the table, Lake Formation throws an exception, and will not return unfiltered table metadata and data access credentials.</p>"
+        },
+        "ParentResourceArn":{
+          "shape":"ArnString",
+          "documentation":"<p>The resource ARN of the view.</p>"
+        },
+        "RootResourceArn":{
+          "shape":"ArnString",
+          "documentation":"<p>The resource ARN of the root view in a chain of nested views.</p>"
         },
         "SupportedDialect":{
           "shape":"SupportedDialect",
@@ -14604,11 +14612,11 @@
         },
         "MaxFetchTimeInMs":{
           "shape":"BoxedNonNegativeLong",
-          "documentation":"<p>The maximum time spent in the job executor to fetch a record from the Kinesis data stream per shard, specified in milliseconds (ms). The default value is <code>1000</code>.</p>"
+          "documentation":"<p>The maximum time spent for the job executor to read records for the current batch from the Kinesis data stream, specified in milliseconds (ms). Multiple <code>GetRecords</code> API calls may be made within this time. The default value is <code>1000</code>.</p>"
         },
         "MaxFetchRecordsPerShard":{
           "shape":"BoxedNonNegativeLong",
-          "documentation":"<p>The maximum number of records to fetch per shard in the Kinesis data stream. The default value is <code>100000</code>.</p>"
+          "documentation":"<p>The maximum number of records to fetch per shard in the Kinesis data stream per microbatch. Note: The client can exceed this limit if the streaming job has already read extra records from Kinesis (in the same get-records call). If <code>MaxFetchRecordsPerShard</code> needs to be strict then it needs to be a multiple of <code>MaxRecordPerRead</code>. The default value is <code>100000</code>.</p>"
         },
         "MaxRecordPerRead":{
           "shape":"BoxedNonNegativeLong",

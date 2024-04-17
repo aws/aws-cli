@@ -308,7 +308,7 @@
         {"shape":"InternalServerException"},
         {"shape":"ThrottlingException"}
       ],
-      "documentation":"<p>Provisions a wireless gateway.</p>"
+      "documentation":"<p>Provisions a wireless gateway.</p> <note> <p>When provisioning a wireless gateway, you might run into duplication errors for the following reasons.</p> <ul> <li> <p>If you specify a <code>GatewayEui</code> value that already exists.</p> </li> <li> <p>If you used a <code>ClientRequestToken</code> with the same parameters within the last 10 minutes.</p> </li> </ul> <p>To avoid this error, make sure that you use unique identifiers and parameters for each request within the specified time period.</p> </note>"
     },
     "CreateWirelessGatewayTask":{
       "name":"CreateWirelessGatewayTask",
@@ -532,7 +532,7 @@
         {"shape":"InternalServerException"},
         {"shape":"ThrottlingException"}
       ],
-      "documentation":"<p>Deletes a wireless gateway.</p>"
+      "documentation":"<p>Deletes a wireless gateway.</p> <note> <p>When deleting a wireless gateway, you might run into duplication errors for the following reasons.</p> <ul> <li> <p>If you specify a <code>GatewayEui</code> value that already exists.</p> </li> <li> <p>If you used a <code>ClientRequestToken</code> with the same parameters within the last 10 minutes.</p> </li> </ul> <p>To avoid this error, make sure that you use unique identifiers and parameters for each request within the specified time period.</p> </note>"
     },
     "DeleteWirelessGatewayTask":{
       "name":"DeleteWirelessGatewayTask",
@@ -815,7 +815,7 @@
         {"shape":"InternalServerException"},
         {"shape":"ThrottlingException"}
       ],
-      "documentation":"<p>Get the metric configuration status for this account.</p>"
+      "documentation":"<p>Get the metric configuration status for this AWS account.</p>"
     },
     "GetMetrics":{
       "name":"GetMetrics",
@@ -833,7 +833,7 @@
         {"shape":"InternalServerException"},
         {"shape":"ThrottlingException"}
       ],
-      "documentation":"<p>Get metrics.</p>"
+      "documentation":"<p>Get the summary metrics for this AWS account.</p>"
     },
     "GetMulticastGroup":{
       "name":"GetMulticastGroup",
@@ -1848,7 +1848,7 @@
         {"shape":"InternalServerException"},
         {"shape":"ThrottlingException"}
       ],
-      "documentation":"<p>Update the metric configuration.</p>",
+      "documentation":"<p>Update the summary metric configuration.</p>",
       "idempotent":true
     },
     "UpdateMulticastGroup":{
@@ -2172,7 +2172,7 @@
         },
         "ClientRequestToken":{
           "shape":"ClientRequestToken",
-          "documentation":"<p>Each resource must have a unique client request token. If you try to create a new resource with the same token as a resource that already exists, an exception occurs. If you omit this value, AWS SDKs will automatically generate a unique client request. </p>",
+          "documentation":"<p>Each resource must have a unique client request token. The client token is used to implement idempotency. It ensures that the request completes no more than one time. If you retry a request with the same token and the same parameters, the request will complete successfully. However, if you try to create a new resource using the same token but different parameters, an HTTP 409 conflict occurs. If you omit this value, AWS SDKs will automatically generate a unique client request. For more information about idempotency, see <a href=\"https://docs.aws.amazon.com/ec2/latest/devguide/ec2-api-idempotency.html\">Ensuring idempotency in Amazon EC2 API requests</a>.</p>",
           "idempotencyToken":true
         },
         "Tags":{
@@ -2598,7 +2598,7 @@
     },
     "ClientRequestToken":{
       "type":"string",
-      "documentation":"<p>Each resource must have a unique client request token. If you try to create a new resource with the same token as a resource that already exists, an exception occurs. If you omit this value, AWS SDKs will automatically generate a unique client request.</p>",
+      "documentation":"<p>Each resource must have a unique client request token. The client token is used to implement idempotency. It ensures that the request completes no more than one time. If you retry a request with the same token and the same parameters, the request will complete successfully. However, if you try to create a new resource using the same token but different parameters, an HTTP 409 conflict occurs. If you omit this value, AWS SDKs will automatically generate a unique client request. For more information about idempotency, see <a href=\"https://docs.aws.amazon.com/ec2/latest/devguide/ec2-api-idempotency.html\">Ensuring idempotency in Amazon EC2 API requests</a>.</p>",
       "max":64,
       "min":1,
       "pattern":"^[a-zA-Z0-9-_]+$"
@@ -2692,7 +2692,7 @@
         },
         "ClientRequestToken":{
           "shape":"ClientRequestToken",
-          "documentation":"<p>Each resource must have a unique client request token. If you try to create a new resource with the same token as a resource that already exists, an exception occurs. If you omit this value, AWS SDKs will automatically generate a unique client request. </p>",
+          "documentation":"<p>Each resource must have a unique client request token. The client token is used to implement idempotency. It ensures that the request completes no more than one time. If you retry a request with the same token and the same parameters, the request will complete successfully. However, if you try to create a new resource using the same token but different parameters, an HTTP 409 conflict occurs. If you omit this value, AWS SDKs will automatically generate a unique client request. For more information about idempotency, see <a href=\"https://docs.aws.amazon.com/ec2/latest/devguide/ec2-api-idempotency.html\">Ensuring idempotency in Amazon EC2 API requests</a>.</p>",
           "idempotencyToken":true
         }
       }
@@ -2727,7 +2727,7 @@
         },
         "ClientRequestToken":{
           "shape":"ClientRequestToken",
-          "documentation":"<p>Each resource must have a unique client request token. If you try to create a new resource with the same token as a resource that already exists, an exception occurs. If you omit this value, AWS SDKs will automatically generate a unique client request. </p>",
+          "documentation":"<p>Each resource must have a unique client request token. The client token is used to implement idempotency. It ensures that the request completes no more than one time. If you retry a request with the same token and the same parameters, the request will complete successfully. However, if you try to create a new resource using the same token but different parameters, an HTTP 409 conflict occurs. If you omit this value, AWS SDKs will automatically generate a unique client request. For more information about idempotency, see <a href=\"https://docs.aws.amazon.com/ec2/latest/devguide/ec2-api-idempotency.html\">Ensuring idempotency in Amazon EC2 API requests</a>.</p>",
           "idempotencyToken":true
         },
         "Sidewalk":{
@@ -2789,7 +2789,7 @@
         },
         "ClientRequestToken":{
           "shape":"ClientRequestToken",
-          "documentation":"<p>Each resource must have a unique client request token. If you try to create a new resource with the same token as a resource that already exists, an exception occurs. If you omit this value, AWS SDKs will automatically generate a unique client request. </p>",
+          "documentation":"<p>Each resource must have a unique client request token. The client token is used to implement idempotency. It ensures that the request completes no more than one time. If you retry a request with the same token and the same parameters, the request will complete successfully. However, if you try to create a new resource using the same token but different parameters, an HTTP 409 conflict occurs. If you omit this value, AWS SDKs will automatically generate a unique client request. For more information about idempotency, see <a href=\"https://docs.aws.amazon.com/ec2/latest/devguide/ec2-api-idempotency.html\">Ensuring idempotency in Amazon EC2 API requests</a>.</p>",
           "idempotencyToken":true
         },
         "LoRaWAN":{"shape":"LoRaWANMulticast"},
@@ -2856,7 +2856,7 @@
         },
         "ClientRequestToken":{
           "shape":"ClientRequestToken",
-          "documentation":"<p>Each resource must have a unique client request token. If you try to create a new resource with the same token as a resource that already exists, an exception occurs. If you omit this value, AWS SDKs will automatically generate a unique client request. </p>",
+          "documentation":"<p>Each resource must have a unique client request token. The client token is used to implement idempotency. It ensures that the request completes no more than one time. If you retry a request with the same token and the same parameters, the request will complete successfully. However, if you try to create a new resource using the same token but different parameters, an HTTP 409 conflict occurs. If you omit this value, AWS SDKs will automatically generate a unique client request. For more information about idempotency, see <a href=\"https://docs.aws.amazon.com/ec2/latest/devguide/ec2-api-idempotency.html\">Ensuring idempotency in Amazon EC2 API requests</a>.</p>",
           "idempotencyToken":true
         }
       }
@@ -2899,7 +2899,7 @@
         },
         "ClientRequestToken":{
           "shape":"ClientRequestToken",
-          "documentation":"<p>Each resource must have a unique client request token. If you try to create a new resource with the same token as a resource that already exists, an exception occurs. If you omit this value, AWS SDKs will automatically generate a unique client request. </p>",
+          "documentation":"<p>Each resource must have a unique client request token. The client token is used to implement idempotency. It ensures that the request completes no more than one time. If you retry a request with the same token and the same parameters, the request will complete successfully. However, if you try to create a new resource using the same token but different parameters, an HTTP 409 conflict occurs. If you omit this value, AWS SDKs will automatically generate a unique client request. For more information about idempotency, see <a href=\"https://docs.aws.amazon.com/ec2/latest/devguide/ec2-api-idempotency.html\">Ensuring idempotency in Amazon EC2 API requests</a>.</p>",
           "idempotencyToken":true
         },
         "LoRaWAN":{
@@ -2955,7 +2955,7 @@
         },
         "ClientRequestToken":{
           "shape":"ClientRequestToken",
-          "documentation":"<p>Each resource must have a unique client request token. If you try to create a new resource with the same token as a resource that already exists, an exception occurs. If you omit this value, AWS SDKs will automatically generate a unique client request. </p>",
+          "documentation":"<p>Each resource must have a unique client request token. The client token is used to implement idempotency. It ensures that the request completes no more than one time. If you retry a request with the same token and the same parameters, the request will complete successfully. However, if you try to create a new resource using the same token but different parameters, an HTTP 409 conflict occurs. If you omit this value, AWS SDKs will automatically generate a unique client request. For more information about idempotency, see <a href=\"https://docs.aws.amazon.com/ec2/latest/devguide/ec2-api-idempotency.html\">Ensuring idempotency in Amazon EC2 API requests</a>.</p>",
           "idempotencyToken":true
         }
       }
@@ -2991,7 +2991,7 @@
         },
         "ClientRequestToken":{
           "shape":"ClientRequestToken",
-          "documentation":"<p>Each resource must have a unique client request token. If you try to create a new resource with the same token as a resource that already exists, an exception occurs. If you omit this value, AWS SDKs will automatically generate a unique client request. </p>",
+          "documentation":"<p>Each resource must have a unique client request token. The client token is used to implement idempotency. It ensures that the request completes no more than one time. If you retry a request with the same token and the same parameters, the request will complete successfully. However, if you try to create a new resource using the same token but different parameters, an HTTP 409 conflict occurs. If you omit this value, AWS SDKs will automatically generate a unique client request. For more information about idempotency, see <a href=\"https://docs.aws.amazon.com/ec2/latest/devguide/ec2-api-idempotency.html\">Ensuring idempotency in Amazon EC2 API requests</a>.</p>",
           "idempotencyToken":true
         },
         "Tags":{
@@ -3655,6 +3655,7 @@
       "members":{
       }
     },
+    "DlAllowed":{"type":"boolean"},
     "DlBucketSize":{
       "type":"integer",
       "max":2147483647,
@@ -4179,7 +4180,7 @@
       "members":{
         "SummaryMetric":{
           "shape":"SummaryMetricConfiguration",
-          "documentation":"<p>The account's configuration status for summary metric aggregation.</p>"
+          "documentation":"<p>The configuration status of the AWS account for summary metric aggregation.</p>"
         }
       }
     },
@@ -4188,7 +4189,7 @@
       "members":{
         "SummaryMetricQueries":{
           "shape":"SummaryMetricQueries",
-          "documentation":"<p>The list of queries to retrieve summary metrics.</p>"
+          "documentation":"<p>The list of queries to retrieve the summary metrics.</p>"
         }
       }
     },
@@ -4197,7 +4198,7 @@
       "members":{
         "SummaryMetricQueryResults":{
           "shape":"SummaryMetricQueryResults",
-          "documentation":"<p>The list of retrieved metrics.</p>"
+          "documentation":"<p>The list of summary metrics that were retrieved.</p>"
         }
       }
     },
@@ -5138,6 +5139,10 @@
       "type":"string",
       "pattern":"^([\\+-]?\\d{4}(?!\\d{2}\\b))((-?)((0[1-9]|1[0-2])(\\3([12]\\d|0[1-9]|3[01]))?|W([0-4]\\d|5[0-2])(-?[1-7])?|(00[1-9]|0[1-9]\\d|[12]\\d{2}|3([0-5]\\d|6[1-6])))([T\\s]((([01]\\d|2[0-3])((:?)[0-5]\\d)?|24\\:?00)([\\.,]\\d+(?!:))?)?(\\17[0-5]\\d([\\.,]\\d+)?)?([zZ]|([\\+-])([01]\\d|2[0-3]):?([0-5]\\d)?)?)?)?$"
     },
+    "Id":{
+      "type":"string",
+      "max":256
+    },
     "Identifier":{
       "type":"string",
       "max":256
@@ -5949,6 +5954,10 @@
         "Gateways":{
           "shape":"LoRaWANGatewayMetadataList",
           "documentation":"<p>Information about the gateways accessed by the device.</p>"
+        },
+        "PublicGateways":{
+          "shape":"LoRaWANPublicGatewayMetadataList",
+          "documentation":"<p>Information about the LoRaWAN public network accessed by the device.</p>"
         }
       },
       "documentation":"<p>LoRaWAN device metatdata.</p>"
@@ -6275,6 +6284,37 @@
         }
       },
       "documentation":"<p>The LoRaWAN information used with the multicast session.</p>"
+    },
+    "LoRaWANPublicGatewayMetadata":{
+      "type":"structure",
+      "members":{
+        "ProviderNetId":{
+          "shape":"ProviderNetId",
+          "documentation":"<p>The ID of the LoRaWAN public network provider.</p>"
+        },
+        "Id":{
+          "shape":"Id",
+          "documentation":"<p>The ID of the gateways that are operated by the network provider.</p>"
+        },
+        "Rssi":{
+          "shape":"Double",
+          "documentation":"<p>The RSSI (received signal strength indicator) value.</p>"
+        },
+        "Snr":{
+          "shape":"Double",
+          "documentation":"<p>The SNR (signal to noise ratio) value.</p>"
+        },
+        "RfRegion":{"shape":"RfRegion"},
+        "DlAllowed":{
+          "shape":"DlAllowed",
+          "documentation":"<p>Boolean that indicates whether downlink is allowed using the network.</p>"
+        }
+      },
+      "documentation":"<p>LoRaWAN public gateway metadata.</p>"
+    },
+    "LoRaWANPublicGatewayMetadataList":{
+      "type":"list",
+      "member":{"shape":"LoRaWANPublicGatewayMetadata"}
     },
     "LoRaWANSendDataToDevice":{
       "type":"structure",
@@ -6648,27 +6688,27 @@
       "members":{
         "Min":{
           "shape":"Min",
-          "documentation":"<p>The minimum of the values of the all data points collected during the period.</p>"
+          "documentation":"<p>The minimum of the values of all data points collected during the aggregation period.</p>"
         },
         "Max":{
           "shape":"Max",
-          "documentation":"<p>The maximum of the values of the all data points collected during the period.</p>"
+          "documentation":"<p>The maximum of the values of all the data points collected during the aggregation period.</p>"
         },
         "Sum":{
           "shape":"Sum",
-          "documentation":"<p>The sum of the values of the all data points collected during the period.</p>"
+          "documentation":"<p>The sum of the values of all data points collected during the aggregation period.</p>"
         },
         "Avg":{
           "shape":"Avg",
-          "documentation":"<p>The average of the values of the all data points collected during the period.</p>"
+          "documentation":"<p>The average of the values of all data points collected during the aggregation period.</p>"
         },
         "Std":{
           "shape":"Std",
-          "documentation":"<p>The standard deviation of the values of the all data points collected during the period.</p>"
+          "documentation":"<p>The standard deviation of the values of all data points collected during the aggregation period.</p>"
         },
         "P90":{
           "shape":"P90",
-          "documentation":"<p>The 90th percentile of the values of the all data points collected during the period.</p>"
+          "documentation":"<p>The 90th percentile of the values of all data points collected during the aggregation period.</p>"
         }
       },
       "documentation":"<p>The aggregated values of the metric.</p>"
@@ -7085,6 +7125,10 @@
     "PrivateKeysList":{
       "type":"list",
       "member":{"shape":"CertificateList"}
+    },
+    "ProviderNetId":{
+      "type":"string",
+      "max":256
     },
     "ProximityEventConfiguration":{
       "type":"structure",
@@ -7950,10 +7994,10 @@
       "members":{
         "Status":{
           "shape":"SummaryMetricConfigurationStatus",
-          "documentation":"<p>The configuration of summary metric.</p>"
+          "documentation":"<p>The status of the configuration of summary metrics.</p>"
         }
       },
-      "documentation":"<p>The configuration of summary metric.</p>"
+      "documentation":"<p>The configuration of summary metrics.</p>"
     },
     "SummaryMetricConfigurationStatus":{
       "type":"string",
@@ -7971,7 +8015,7 @@
       "members":{
         "QueryId":{
           "shape":"MetricQueryId",
-          "documentation":"<p>The id of the query.</p>"
+          "documentation":"<p>The id of the summary metric query.</p>"
         },
         "MetricName":{
           "shape":"MetricName",
@@ -7979,41 +8023,41 @@
         },
         "Dimensions":{
           "shape":"Dimensions",
-          "documentation":"<p>The dimensions of the metric.</p>"
+          "documentation":"<p>The dimensions of the summary metric.</p>"
         },
         "AggregationPeriod":{
           "shape":"AggregationPeriod",
-          "documentation":"<p>The aggregation period of the metric.</p>"
+          "documentation":"<p>The aggregation period of the summary metric.</p>"
         },
         "StartTimestamp":{
           "shape":"MetricQueryStartTimestamp",
-          "documentation":"<p>The start timestamp for summary metric query.</p>"
+          "documentation":"<p>The start timestamp for the summary metric query.</p>"
         },
         "EndTimestamp":{
           "shape":"MetricQueryEndTimestamp",
-          "documentation":"<p>The end timestamp for summary metric query.</p>"
+          "documentation":"<p>The end timestamp for the summary metric query.</p>"
         }
       },
-      "documentation":"<p>The metric query object.</p>"
+      "documentation":"<p>The summary metric query object.</p>"
     },
     "SummaryMetricQueryResult":{
       "type":"structure",
       "members":{
         "QueryId":{
           "shape":"MetricQueryId",
-          "documentation":"<p>The id of the query.</p>"
+          "documentation":"<p>The ID of the summary metric results query operation.</p>"
         },
         "QueryStatus":{
           "shape":"MetricQueryStatus",
-          "documentation":"<p>The status of the metric query.</p>"
+          "documentation":"<p>The status of the summary metric query result.</p>"
         },
         "Error":{
           "shape":"MetricQueryError",
-          "documentation":"<p>The error message for the summary metric query.</p>"
+          "documentation":"<p>The error message for the summary metric query result.</p>"
         },
         "MetricName":{
           "shape":"MetricName",
-          "documentation":"<p>The name of the metric.</p>"
+          "documentation":"<p>The name of the summary metric query result.</p>"
         },
         "Dimensions":{
           "shape":"Dimensions",
@@ -8025,11 +8069,11 @@
         },
         "StartTimestamp":{
           "shape":"MetricQueryStartTimestamp",
-          "documentation":"<p>The start timestamp for summary metric query.</p>"
+          "documentation":"<p>The start timestamp for the summary metric query.</p>"
         },
         "EndTimestamp":{
           "shape":"MetricQueryEndTimestamp",
-          "documentation":"<p>The end timestamp for summary metric query.</p>"
+          "documentation":"<p>The end timestamp for the summary metric query.</p>"
         },
         "Timestamps":{
           "shape":"MetricQueryTimestamps",
@@ -8037,14 +8081,14 @@
         },
         "Values":{
           "shape":"MetricQueryValues",
-          "documentation":"<p>The list of aggregated metrics.</p>"
+          "documentation":"<p>The list of aggregated summary metric query results.</p>"
         },
         "Unit":{
           "shape":"MetricUnit",
           "documentation":"<p>The units of measurement to be used for interpreting the aggregation result.</p>"
         }
       },
-      "documentation":"<p>The result of metrics aggregation operation.</p>"
+      "documentation":"<p>The result of the summary metrics aggregation operation.</p>"
     },
     "SummaryMetricQueryResults":{
       "type":"list",

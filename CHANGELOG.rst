@@ -2,6 +2,31 @@
 CHANGELOG
 =========
 
+2.15.39
+=======
+
+* api-change:``transfer``: This change releases support for importing self signed certificates to the Transfer Family for sending outbound file transfers over TLS/HTTPS.
+* api-change:``kms``: This feature supports the ability to specify a custom rotation period for automatic key rotations, the ability to perform on-demand key rotations, and visibility into your key material rotations.
+* api-change:``outposts``: This release adds new APIs to allow customers to configure their Outpost capacity at order-time.
+* api-change:``healthlake``: Added new CREATE_FAILED status for data stores. Added new errorCause to DescribeFHIRDatastore API and ListFHIRDatastores API response for additional insights into data store creation and deletion workflows.
+* api-change:``config``: Updates documentation for AWS Config
+* api-change:``cloudformation``: Adding support for the new parameter "IncludePropertyValues" in the CloudFormation DescribeChangeSet API. When this parameter is included, the DescribeChangeSet response will include more detailed information such as before and after values for the resource properties that will change.
+* api-change:``entityresolution``: Cross Account Resource Support .
+* api-change:``mediatailor``: Added InsertionMode to PlaybackConfigurations. This setting controls whether players can use stitched or guided ad insertion. The default for players that do not specify an insertion mode is stitched.
+* api-change:``emr-serverless``: This release adds support for shuffle optimized disks that allow larger disk sizes and higher IOPS to efficiently run shuffle heavy workloads.
+* api-change:``glue``: Modifying request for GetUnfilteredTableMetadata for view-related fields.
+* api-change:``m2``: Adding new ListBatchJobRestartPoints API and support for restart batch job.
+* api-change:``wellarchitected``: AWS Well-Architected now has a Connector for Jira to allow customers to efficiently track workload risks and improvement efforts and create closed-loop mechanisms.
+* api-change:``redshift``: Adds support for Amazon Redshift DescribeClusterSnapshots API to include Snapshot ARN response field.
+* api-change:``outposts``: This release adds EXPEDITORS as a valid shipment carrier.
+* api-change:``neptune-graph``: Update to API documentation to resolve customer reported issues.
+* api-change:``bedrock-agent``: For Create Agent API, the agentResourceRoleArn parameter is no longer required.
+* api-change:``iotfleethub``: Documentation updates for AWS IoT Fleet Hub to clarify that Fleet Hub supports organization instance of IAM Identity Center.
+* api-change:``iotwireless``: Add PublicGateways in the GetWirelessStatistics call response, indicating the LoRaWAN public network accessed by the device.
+* api-change:``lakeformation``: This release adds Lake Formation managed RAM support for the 4 APIs - "DescribeLakeFormationIdentityCenterConfiguration", "CreateLakeFormationIdentityCenterConfiguration", "DescribeLakeFormationIdentityCenterConfiguration", and "DeleteLakeFormationIdentityCenterConfiguration"
+* api-change:``mediapackagev2``: Dash v2 is a MediaPackage V2 feature to support egressing on DASH manifest format.
+
+
 2.15.38
 =======
 

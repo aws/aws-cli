@@ -600,6 +600,18 @@
       },
       "documentation":"<p>A configuration specification to be used to override existing configurations.</p>"
     },
+    "ConfigurationPropertyKey":{
+      "type":"string",
+      "max":1024,
+      "min":1,
+      "pattern":".*\\S.*"
+    },
+    "ConfigurationPropertyValue":{
+      "type":"string",
+      "max":1024,
+      "min":0,
+      "pattern":".*\\S.*"
+    },
     "ConflictException":{
       "type":"structure",
       "required":["message"],
@@ -1395,6 +1407,10 @@
         "cloudWatchLoggingConfiguration":{
           "shape":"CloudWatchLoggingConfiguration",
           "documentation":"<p>The Amazon CloudWatch configuration for monitoring logs. You can configure your jobs to send log information to CloudWatch.</p>"
+        },
+        "prometheusMonitoringConfiguration":{
+          "shape":"PrometheusMonitoringConfiguration",
+          "documentation":"<p>The monitoring configuration object you can configure to send metrics to Amazon Managed Service for Prometheus for a job run.</p>"
         }
       },
       "documentation":"<p>The configuration setting for monitoring.</p>"
@@ -1418,6 +1434,22 @@
       "max":1024,
       "min":1,
       "pattern":"[A-Za-z0-9_=-]+"
+    },
+    "PrometheusMonitoringConfiguration":{
+      "type":"structure",
+      "members":{
+        "remoteWriteUrl":{
+          "shape":"PrometheusUrlString",
+          "documentation":"<p>The remote write URL in the Amazon Managed Service for Prometheus workspace to send metrics to.</p>"
+        }
+      },
+      "documentation":"<p>The monitoring configuration object you can configure to send metrics to Amazon Managed Service for Prometheus for a job run.</p>"
+    },
+    "PrometheusUrlString":{
+      "type":"string",
+      "max":10280,
+      "min":1,
+      "pattern":"https://aps-workspaces.([a-z]{2}-[a-z-]{1,20}-[1-9]).amazonaws(.[0-9A-Za-z]{2,4})+/workspaces/[-_.0-9A-Za-z]{1,100}/api/v1/remote_write"
     },
     "Query":{
       "type":"string",
@@ -1503,8 +1535,8 @@
     },
     "SensitivePropertiesMap":{
       "type":"map",
-      "key":{"shape":"String1024"},
-      "value":{"shape":"String1024"},
+      "key":{"shape":"ConfigurationPropertyKey"},
+      "value":{"shape":"ConfigurationPropertyValue"},
       "max":100,
       "min":0,
       "sensitive":true

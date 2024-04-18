@@ -42,6 +42,23 @@
       ],
       "documentation":"<p>Creates a trust anchor to establish trust between IAM Roles Anywhere and your certificate authority (CA). You can define a trust anchor as a reference to an Private Certificate Authority (Private CA) or by uploading a CA certificate. Your Amazon Web Services workloads can authenticate with the trust anchor using certificates issued by the CA in exchange for temporary Amazon Web Services credentials.</p> <p> <b>Required permissions: </b> <code>rolesanywhere:CreateTrustAnchor</code>. </p>"
     },
+    "DeleteAttributeMapping":{
+      "name":"DeleteAttributeMapping",
+      "http":{
+        "method":"DELETE",
+        "requestUri":"/profiles/{profileId}/mappings",
+        "responseCode":200
+      },
+      "input":{"shape":"DeleteAttributeMappingRequest"},
+      "output":{"shape":"DeleteAttributeMappingResponse"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Delete an entry from the attribute mapping rules enforced by a given profile.</p>",
+      "idempotent":true
+    },
     "DeleteCrl":{
       "name":"DeleteCrl",
       "http":{
@@ -331,6 +348,23 @@
       ],
       "documentation":"<p>Lists the trust anchors in the authenticated account and Amazon Web Services Region.</p> <p> <b>Required permissions: </b> <code>rolesanywhere:ListTrustAnchors</code>. </p>"
     },
+    "PutAttributeMapping":{
+      "name":"PutAttributeMapping",
+      "http":{
+        "method":"PUT",
+        "requestUri":"/profiles/{profileId}/mappings",
+        "responseCode":200
+      },
+      "input":{"shape":"PutAttributeMappingRequest"},
+      "output":{"shape":"PutAttributeMappingResponse"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Put an entry in the attribute mapping rules that will be enforced by a given profile. A mapping specifies a certificate field and one or more specifiers that have contextual meanings.</p>",
+      "idempotent":true
+    },
     "PutNotificationSettings":{
       "name":"PutNotificationSettings",
       "http":{
@@ -465,10 +499,36 @@
       "max":1011,
       "min":1
     },
+    "AttributeMapping":{
+      "type":"structure",
+      "members":{
+        "certificateField":{
+          "shape":"CertificateField",
+          "documentation":"<p>Fields (x509Subject, x509Issuer and x509SAN) within X.509 certificates.</p>"
+        },
+        "mappingRules":{
+          "shape":"MappingRules",
+          "documentation":"<p>A list of mapping entries for every supported specifier or sub-field.</p>"
+        }
+      },
+      "documentation":"<p>A mapping applied to the authenticating end-entity certificate.</p>"
+    },
+    "AttributeMappings":{
+      "type":"list",
+      "member":{"shape":"AttributeMapping"}
+    },
     "Blob":{"type":"blob"},
     "Boolean":{
       "type":"boolean",
       "box":true
+    },
+    "CertificateField":{
+      "type":"string",
+      "enum":[
+        "x509Subject",
+        "x509Issuer",
+        "x509SAN"
+      ]
     },
     "CreateProfileRequest":{
       "type":"structure",
@@ -631,6 +691,43 @@
     "CrlDetails":{
       "type":"list",
       "member":{"shape":"CrlDetail"}
+    },
+    "DeleteAttributeMappingRequest":{
+      "type":"structure",
+      "required":[
+        "certificateField",
+        "profileId"
+      ],
+      "members":{
+        "certificateField":{
+          "shape":"CertificateField",
+          "documentation":"<p>Fields (x509Subject, x509Issuer and x509SAN) within X.509 certificates.</p>",
+          "location":"querystring",
+          "locationName":"certificateField"
+        },
+        "profileId":{
+          "shape":"Uuid",
+          "documentation":"<p>The unique identifier of the profile.</p>",
+          "location":"uri",
+          "locationName":"profileId"
+        },
+        "specifiers":{
+          "shape":"SpecifierList",
+          "documentation":"<p>A list of specifiers of a certificate field; for example, CN, OU, UID from a Subject.</p>",
+          "location":"querystring",
+          "locationName":"specifiers"
+        }
+      }
+    },
+    "DeleteAttributeMappingResponse":{
+      "type":"structure",
+      "required":["profile"],
+      "members":{
+        "profile":{
+          "shape":"ProfileDetail",
+          "documentation":"<p>The state of the profile after a read or write operation.</p>"
+        }
+      }
     },
     "ImportCrlRequest":{
       "type":"structure",
@@ -816,6 +913,26 @@
       "max":200,
       "min":1
     },
+    "MappingRule":{
+      "type":"structure",
+      "required":["specifier"],
+      "members":{
+        "specifier":{
+          "shape":"MappingRuleSpecifierString",
+          "documentation":"<p>Specifier within a certificate field, such as CN, OU, or UID from the Subject field.</p>"
+        }
+      },
+      "documentation":"<p>A single mapping entry for each supported specifier or sub-field.</p>"
+    },
+    "MappingRuleSpecifierString":{
+      "type":"string",
+      "max":60,
+      "min":0
+    },
+    "MappingRules":{
+      "type":"list",
+      "member":{"shape":"MappingRule"}
+    },
     "NotificationChannel":{
       "type":"string",
       "enum":["ALL"]
@@ -942,6 +1059,10 @@
     "ProfileDetail":{
       "type":"structure",
       "members":{
+        "attributeMappings":{
+          "shape":"AttributeMappings",
+          "documentation":"<p>A mapping applied to the authenticating end-entity certificate.</p>"
+        },
         "createdAt":{
           "shape":"SyntheticTimestamp_date_time",
           "documentation":"<p>The ISO-8601 timestamp when the profile was created. </p>"
@@ -1005,6 +1126,40 @@
     "ProfileDetails":{
       "type":"list",
       "member":{"shape":"ProfileDetail"}
+    },
+    "PutAttributeMappingRequest":{
+      "type":"structure",
+      "required":[
+        "certificateField",
+        "mappingRules",
+        "profileId"
+      ],
+      "members":{
+        "certificateField":{
+          "shape":"CertificateField",
+          "documentation":"<p>Fields (x509Subject, x509Issuer and x509SAN) within X.509 certificates.</p>"
+        },
+        "mappingRules":{
+          "shape":"MappingRules",
+          "documentation":"<p>A list of mapping entries for every supported specifier or sub-field.</p>"
+        },
+        "profileId":{
+          "shape":"Uuid",
+          "documentation":"<p>The unique identifier of the profile.</p>",
+          "location":"uri",
+          "locationName":"profileId"
+        }
+      }
+    },
+    "PutAttributeMappingResponse":{
+      "type":"structure",
+      "required":["profile"],
+      "members":{
+        "profile":{
+          "shape":"ProfileDetail",
+          "documentation":"<p>The state of the profile after a read or write operation.</p>"
+        }
+      }
     },
     "PutNotificationSettingsRequest":{
       "type":"structure",
@@ -1165,6 +1320,10 @@
       "type":"string",
       "max":8000,
       "min":1
+    },
+    "SpecifierList":{
+      "type":"list",
+      "member":{"shape":"String"}
     },
     "String":{"type":"string"},
     "SubjectDetail":{

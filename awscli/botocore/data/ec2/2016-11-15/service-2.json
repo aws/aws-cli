@@ -506,7 +506,7 @@
       },
       "input":{"shape":"CancelSpotFleetRequestsRequest"},
       "output":{"shape":"CancelSpotFleetRequestsResponse"},
-      "documentation":"<p>Cancels the specified Spot Fleet requests.</p> <p>After you cancel a Spot Fleet request, the Spot Fleet launches no new instances.</p> <p>You must also specify whether a canceled Spot Fleet request should terminate its instances. If you choose to terminate the instances, the Spot Fleet request enters the <code>cancelled_terminating</code> state. Otherwise, the Spot Fleet request enters the <code>cancelled_running</code> state and the instances continue to run until they are interrupted or you terminate them manually.</p>"
+      "documentation":"<p>Cancels the specified Spot Fleet requests.</p> <p>After you cancel a Spot Fleet request, the Spot Fleet launches no new instances.</p> <p>You must also specify whether a canceled Spot Fleet request should terminate its instances. If you choose to terminate the instances, the Spot Fleet request enters the <code>cancelled_terminating</code> state. Otherwise, the Spot Fleet request enters the <code>cancelled_running</code> state and the instances continue to run until they are interrupted or you terminate them manually.</p> <p class=\"title\"> <b>Restrictions</b> </p> <ul> <li> <p>You can delete up to 100 fleets in a single request. If you exceed the specified number, no fleets are deleted.</p> </li> </ul>"
     },
     "CancelSpotInstanceRequests":{
       "name":"CancelSpotInstanceRequests",
@@ -1461,7 +1461,7 @@
       },
       "input":{"shape":"DeleteFleetsRequest"},
       "output":{"shape":"DeleteFleetsResult"},
-      "documentation":"<p>Deletes the specified EC2 Fleets.</p> <p>After you delete an EC2 Fleet, it launches no new instances.</p> <p>You must also specify whether a deleted EC2 Fleet should terminate its instances. If you choose to terminate the instances, the EC2 Fleet enters the <code>deleted_terminating</code> state. Otherwise, the EC2 Fleet enters the <code>deleted_running</code> state, and the instances continue to run until they are interrupted or you terminate them manually.</p> <p>For <code>instant</code> fleets, EC2 Fleet must terminate the instances when the fleet is deleted. A deleted <code>instant</code> fleet with running instances is not supported.</p> <p class=\"title\"> <b>Restrictions</b> </p> <ul> <li> <p>You can delete up to 25 <code>instant</code> fleets in a single request. If you exceed this number, no <code>instant</code> fleets are deleted and an error is returned. There is no restriction on the number of fleets of type <code>maintain</code> or <code>request</code> that can be deleted in a single request.</p> </li> <li> <p>Up to 1000 instances can be terminated in a single request to delete <code>instant</code> fleets.</p> </li> </ul> <p>For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/manage-ec2-fleet.html#delete-fleet\">Delete an EC2 Fleet</a> in the <i>Amazon EC2 User Guide</i>.</p>"
+      "documentation":"<p>Deletes the specified EC2 Fleets.</p> <p>After you delete an EC2 Fleet, it launches no new instances.</p> <p>You must also specify whether a deleted EC2 Fleet should terminate its instances. If you choose to terminate the instances, the EC2 Fleet enters the <code>deleted_terminating</code> state. Otherwise, the EC2 Fleet enters the <code>deleted_running</code> state, and the instances continue to run until they are interrupted or you terminate them manually.</p> <p>For <code>instant</code> fleets, EC2 Fleet must terminate the instances when the fleet is deleted. Up to 1000 instances can be terminated in a single request to delete <code>instant</code> fleets. A deleted <code>instant</code> fleet with running instances is not supported.</p> <p class=\"title\"> <b>Restrictions</b> </p> <ul> <li> <p>You can delete up to 25 fleets of type <code>instant</code> in a single request.</p> </li> <li> <p>You can delete up to 100 fleets of type <code>maintain</code> or <code>request</code> in a single request.</p> </li> <li> <p>You can delete up to 125 fleets in a single request, provided you do not exceed the quota for each fleet type, as specified above.</p> </li> <li> <p>If you exceed the specified number of fleets to delete, no fleets are deleted.</p> </li> </ul> <p>For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/manage-ec2-fleet.html#delete-fleet\">Delete an EC2 Fleet</a> in the <i>Amazon EC2 User Guide</i>.</p>"
     },
     "DeleteFlowLogs":{
       "name":"DeleteFlowLogs",
@@ -2703,7 +2703,7 @@
       },
       "input":{"shape":"DescribeInstanceTypeOfferingsRequest"},
       "output":{"shape":"DescribeInstanceTypeOfferingsResult"},
-      "documentation":"<p>Returns a list of all instance types offered. The results can be filtered by location (Region or Availability Zone). If no location is specified, the instance types offered in the current Region are returned.</p>"
+      "documentation":"<p>Lists the instance types that are offered for the specified location. If no location is specified, the default is to list the instance types that are offered in the current Region.</p>"
     },
     "DescribeInstanceTypes":{
       "name":"DescribeInstanceTypes",
@@ -2713,7 +2713,7 @@
       },
       "input":{"shape":"DescribeInstanceTypesRequest"},
       "output":{"shape":"DescribeInstanceTypesResult"},
-      "documentation":"<p>Describes the details of the instance types that are offered in a location. The results can be filtered by the attributes of the instance types.</p>"
+      "documentation":"<p>Describes the specified instance types. By default, all instance types for the current Region are described. Alternatively, you can filter the results.</p>"
     },
     "DescribeInstances":{
       "name":"DescribeInstances",
@@ -4305,7 +4305,7 @@
       },
       "input":{"shape":"GetConsoleScreenshotRequest"},
       "output":{"shape":"GetConsoleScreenshotResult"},
-      "documentation":"<p>Retrieve a JPG-format screenshot of a running instance to help with troubleshooting.</p> <p>The returned content is Base64-encoded.</p>"
+      "documentation":"<p>Retrieve a JPG-format screenshot of a running instance to help with troubleshooting.</p> <p>The returned content is Base64-encoded.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/troubleshoot-unreachable-instance.html#instance-console-console-output\">Instance console output</a> in the <i>Amazon EC2 User Guide</i>.</p>"
     },
     "GetDefaultCreditSpecification":{
       "name":"GetDefaultCreditSpecification",
@@ -5001,7 +5001,7 @@
       },
       "input":{"shape":"ModifyInstanceMetadataDefaultsRequest"},
       "output":{"shape":"ModifyInstanceMetadataDefaultsResult"},
-      "documentation":"<p>Modifies the default instance metadata service (IMDS) settings at the account level in the specified Amazon Web Services&#x2028; Region.</p> <note> <p>To remove a parameter's account-level default setting, specify <code>no-preference</code>. At instance launch, the value will come from the AMI, or from the launch parameter if specified. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/configuring-instance-metadata-options.html#instance-metadata-options-order-of-precedence\">Order of precedence for instance metadata options</a> in the <i>Amazon EC2 User Guide</i>.</p> </note>"
+      "documentation":"<p>Modifies the default instance metadata service (IMDS) settings at the account level in the specified Amazon Web Services&#x2028; Region.</p> <note> <p>To remove a parameter's account-level default setting, specify <code>no-preference</code>. If an account-level setting is cleared with <code>no-preference</code>, then the instance launch considers the other instance metadata settings. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/configuring-instance-metadata-options.html#instance-metadata-options-order-of-precedence\">Order of precedence for instance metadata options</a> in the <i>Amazon EC2 User Guide</i>.</p> </note>"
     },
     "ModifyInstanceMetadataOptions":{
       "name":"ModifyInstanceMetadataOptions",
@@ -9951,7 +9951,7 @@
         },
         "SpotFleetRequestIds":{
           "shape":"SpotFleetRequestIdList",
-          "documentation":"<p>The IDs of the Spot Fleet requests.</p>",
+          "documentation":"<p>The IDs of the Spot Fleet requests.</p> <p>Constraint: You can specify up to 100 IDs in a single request.</p>",
           "locationName":"spotFleetRequestId"
         },
         "TerminateInstances":{
@@ -12679,12 +12679,12 @@
         },
         "ErrorCode":{
           "shape":"String",
-          "documentation":"<p>The error code that indicates why the instance could not be launched. For more information about error codes, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/APIReference/errors-overview.html.html\">Error codes</a>.</p>",
+          "documentation":"<p>The error code that indicates why the instance could not be launched. For more information about error codes, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/APIReference/errors-overview.html\">Error codes</a>.</p>",
           "locationName":"errorCode"
         },
         "ErrorMessage":{
           "shape":"String",
-          "documentation":"<p>The error message that describes why the instance could not be launched. For more information about error messages, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/APIReference/errors-overview.html.html\">Error codes</a>.</p>",
+          "documentation":"<p>The error message that describes why the instance could not be launched. For more information about error messages, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/APIReference/errors-overview.html\">Error codes</a>.</p>",
           "locationName":"errorMessage"
         }
       },
@@ -16845,7 +16845,7 @@
         },
         "FleetIds":{
           "shape":"FleetIdSet",
-          "documentation":"<p>The IDs of the EC2 Fleets.</p>",
+          "documentation":"<p>The IDs of the EC2 Fleets.</p> <p>Constraints: In a single request, you can specify up to 25 <code>instant</code> fleet IDs and up to 100 <code>maintain</code> or <code>request</code> fleet IDs. </p>",
           "locationName":"FleetId"
         },
         "TerminateInstances":{
@@ -21113,11 +21113,11 @@
         },
         "LocationType":{
           "shape":"LocationType",
-          "documentation":"<p>The location type.</p>"
+          "documentation":"<p>The location type.</p> <ul> <li> <p> <code>availability-zone</code> - The Availability Zone. When you specify a location filter, it must be an Availability Zone for the current Region.</p> </li> <li> <p> <code>availability-zone-id</code> - The AZ ID. When you specify a location filter, it must be an AZ ID for the current Region.</p> </li> <li> <p> <code>outpost</code> - The Outpost ARN. When you specify a location filter, it must be an Outpost ARN for the current Region.</p> </li> <li> <p> <code>region</code> - The current Region. If you specify a location filter, it must match the current Region.</p> </li> </ul>"
         },
         "Filters":{
           "shape":"FilterList",
-          "documentation":"<p>One or more filters. Filter names and values are case-sensitive.</p> <ul> <li> <p> <code>location</code> - This depends on the location type. For example, if the location type is <code>region</code> (default), the location is the Region code (for example, <code>us-east-2</code>.)</p> </li> <li> <p> <code>instance-type</code> - The instance type. For example, <code>c5.2xlarge</code>.</p> </li> </ul>",
+          "documentation":"<p>One or more filters. Filter names and values are case-sensitive.</p> <ul> <li> <p> <code>instance-type</code> - The instance type. For a list of possible values, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/APIReference/API_Instance.html\">Instance</a>.</p> </li> <li> <p> <code>location</code> - The location. For a list of possible identifiers, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/using-regions-availability-zones.html\">Regions and Zones</a>.</p> </li> </ul>",
           "locationName":"Filter"
         },
         "MaxResults":{
@@ -21135,7 +21135,7 @@
       "members":{
         "InstanceTypeOfferings":{
           "shape":"InstanceTypeOfferingsList",
-          "documentation":"<p>The instance types offered.</p>",
+          "documentation":"<p>The instance types offered in the location.</p>",
           "locationName":"instanceTypeOfferingSet"
         },
         "NextToken":{
@@ -21154,7 +21154,7 @@
         },
         "InstanceTypes":{
           "shape":"RequestInstanceTypeList",
-          "documentation":"<p>The instance types. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/instance-types.html\">Instance types</a> in the <i>Amazon EC2 User Guide</i>.</p>",
+          "documentation":"<p>The instance types.</p>",
           "locationName":"InstanceType"
         },
         "Filters":{
@@ -21177,7 +21177,7 @@
       "members":{
         "InstanceTypes":{
           "shape":"InstanceTypeInfoList",
-          "documentation":"<p>The instance type. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/instance-types.html\">Instance types</a> in the <i>Amazon EC2 User Guide</i>.</p>",
+          "documentation":"<p>The instance type.</p>",
           "locationName":"instanceTypeSet"
         },
         "NextToken":{
@@ -42479,7 +42479,7 @@
         },
         "HttpPutResponseHopLimit":{
           "shape":"BoxedInteger",
-          "documentation":"<p>The maximum number of hops that the metadata token can travel.</p> <p>Minimum: <code>1</code> </p> <p>Maximum: <code>64</code> </p>"
+          "documentation":"<p>The maximum number of hops that the metadata token can travel. To indicate no preference, specify <code>-1</code>.</p> <p>Possible values: Integers from <code>1</code> to <code>64</code>, and <code>-1</code> to indicate no preference</p>"
         },
         "HttpEndpoint":{
           "shape":"DefaultInstanceMetadataEndpointState",
@@ -49444,7 +49444,7 @@
         },
         "NetworkInterfaces":{
           "shape":"LaunchTemplateInstanceNetworkInterfaceSpecificationRequestList",
-          "documentation":"<p>One or more network interfaces. If you specify a network interface, you must specify any security groups and subnets as part of the network interface.</p>",
+          "documentation":"<p>The network interfaces for the instance.</p>",
           "locationName":"NetworkInterface"
         },
         "ImageId":{
@@ -49500,12 +49500,12 @@
         },
         "SecurityGroupIds":{
           "shape":"SecurityGroupIdStringList",
-          "documentation":"<p>One or more security group IDs. You can create a security group using <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/APIReference/API_CreateSecurityGroup.html\">CreateSecurityGroup</a>.</p>",
+          "documentation":"<p>The IDs of the security groups.</p> <p>If you specify a network interface, you must specify any security groups as part of the network interface instead of using this parameter.</p>",
           "locationName":"SecurityGroupId"
         },
         "SecurityGroups":{
           "shape":"SecurityGroupStringList",
-          "documentation":"<p>One or more security group names. For a nondefault VPC, you must use security group IDs instead.</p>",
+          "documentation":"<p>The names of the security groups. For a nondefault VPC, you must use security group IDs instead.</p> <p>If you specify a network interface, you must specify any security groups as part of the network interface instead of using this parameter.</p>",
           "locationName":"SecurityGroup"
         },
         "InstanceMarketOptions":{
@@ -51652,17 +51652,17 @@
         },
         "SecurityGroupIds":{
           "shape":"SecurityGroupIdStringList",
-          "documentation":"<p>The IDs of the security groups. You can create a security group using <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/APIReference/API_CreateSecurityGroup.html\">CreateSecurityGroup</a>.</p> <p>If you specify a network interface, you must specify any security groups as part of the network interface.</p>",
+          "documentation":"<p>The IDs of the security groups. You can create a security group using <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/APIReference/API_CreateSecurityGroup.html\">CreateSecurityGroup</a>.</p> <p>If you specify a network interface, you must specify any security groups as part of the network interface instead of using this parameter.</p>",
           "locationName":"SecurityGroupId"
         },
         "SecurityGroups":{
           "shape":"SecurityGroupStringList",
-          "documentation":"<p>[Default VPC] The names of the security groups.</p> <p>If you specify a network interface, you must specify any security groups as part of the network interface.</p> <p>Default: Amazon EC2 uses the default security group.</p>",
+          "documentation":"<p>[Default VPC] The names of the security groups.</p> <p>If you specify a network interface, you must specify any security groups as part of the network interface instead of using this parameter.</p> <p>Default: Amazon EC2 uses the default security group.</p>",
           "locationName":"SecurityGroup"
         },
         "SubnetId":{
           "shape":"SubnetId",
-          "documentation":"<p>The ID of the subnet to launch the instance into.</p> <p>If you specify a network interface, you must specify any subnets as part of the network interface.</p>"
+          "documentation":"<p>The ID of the subnet to launch the instance into.</p> <p>If you specify a network interface, you must specify any subnets as part of the network interface instead of using this parameter.</p>"
         },
         "UserData":{
           "shape":"RunInstancesUserData",
@@ -51706,7 +51706,7 @@
         },
         "NetworkInterfaces":{
           "shape":"InstanceNetworkInterfaceSpecificationList",
-          "documentation":"<p>The network interfaces to associate with the instance. If you specify a network interface, you must specify any security groups and subnets as part of the network interface.</p>",
+          "documentation":"<p>The network interfaces to associate with the instance.</p>",
           "locationName":"networkInterface"
         },
         "PrivateIpAddress":{
@@ -51716,11 +51716,11 @@
         },
         "ElasticGpuSpecification":{
           "shape":"ElasticGpuSpecifications",
-          "documentation":"<p>Deprecated.</p> <note> <p>Amazon Elastic Graphics reached end of life on January 8, 2024. For workloads that require graphics acceleration, we recommend that you use Amazon EC2 G4ad, G4dn, or G5 instances.</p> </note>"
+          "documentation":"<p>An elastic GPU to associate with the instance.</p> <note> <p>Amazon Elastic Graphics reached end of life on January 8, 2024.</p> </note>"
         },
         "ElasticInferenceAccelerators":{
           "shape":"ElasticInferenceAccelerators",
-          "documentation":"<p>An elastic inference accelerator to associate with the instance. Elastic inference accelerators are a resource you can attach to your Amazon EC2 instances to accelerate your Deep Learning (DL) inference workloads.</p> <p>You cannot specify accelerators from different generations in the same request.</p> <note> <p>Starting April 15, 2023, Amazon Web Services will not onboard new customers to Amazon Elastic Inference (EI), and will help current customers migrate their workloads to options that offer better price and performance. After April 15, 2023, new customers will not be able to launch instances with Amazon EI accelerators in Amazon SageMaker, Amazon ECS, or Amazon EC2. However, customers who have used Amazon EI at least once during the past 30-day period are considered current customers and will be able to continue using the service.</p> </note>",
+          "documentation":"<p>An elastic inference accelerator to associate with the instance.</p> <note> <p>Amazon Elastic Inference (EI) is no longer available to new customers. For more information, see <a href=\"http://aws.amazon.com/machine-learning/elastic-inference/faqs/\">Amazon Elastic Inference FAQs</a>.</p> </note>",
           "locationName":"ElasticInferenceAccelerator"
         },
         "TagSpecifications":{
@@ -52496,7 +52496,7 @@
         },
         "MaxResults":{
           "shape":"TransitGatewayMaxResults",
-          "documentation":"<p>The maximum number of routes to return.</p>"
+          "documentation":"<p>The maximum number of routes to return. If a value is not provided, the default is 1000.</p>"
         },
         "DryRun":{
           "shape":"Boolean",
@@ -53685,7 +53685,7 @@
       "members":{
         "SecurityGroups":{
           "shape":"GroupIdentifierList",
-          "documentation":"<p>The security groups.</p>",
+          "documentation":"<p>The security groups.</p> <p>If you specify a network interface, you must specify any security groups as part of the network interface instead of using this parameter.</p>",
           "locationName":"groupSet"
         },
         "AddressingType":{
@@ -53735,7 +53735,7 @@
         },
         "NetworkInterfaces":{
           "shape":"InstanceNetworkInterfaceSpecificationList",
-          "documentation":"<p>One or more network interfaces. If you specify a network interface, you must specify subnet IDs and security group IDs using the network interface.</p> <note> <p> <code>SpotFleetLaunchSpecification</code> currently does not support Elastic Fabric Adapter (EFA). To specify an EFA, you must use <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/APIReference/API_LaunchTemplateConfig.html\">LaunchTemplateConfig</a>.</p> </note>",
+          "documentation":"<p>The network interfaces.</p> <note> <p> <code>SpotFleetLaunchSpecification</code> does not support Elastic Fabric Adapter (EFA). You must use <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/APIReference/API_LaunchTemplateConfig.html\">LaunchTemplateConfig</a> instead.</p> </note>",
           "locationName":"networkInterfaceSet"
         },
         "Placement":{
@@ -53755,7 +53755,7 @@
         },
         "SubnetId":{
           "shape":"SubnetId",
-          "documentation":"<p>The IDs of the subnets in which to launch the instances. To specify multiple subnets, separate them using commas; for example, \"subnet-1234abcdeexample1, subnet-0987cdef6example2\".</p>",
+          "documentation":"<p>The IDs of the subnets in which to launch the instances. To specify multiple subnets, separate them using commas; for example, \"subnet-1234abcdeexample1, subnet-0987cdef6example2\".</p> <p>If you specify a network interface, you must specify any subnets as part of the network interface instead of using this parameter.</p>",
           "locationName":"subnetId"
         },
         "UserData":{

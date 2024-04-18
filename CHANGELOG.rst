@@ -2,6 +2,18 @@
 CHANGELOG
 =========
 
+1.32.87
+=======
+
+* api-change:``drs``: Outpost ARN added to Source Server and Recovery Instance
+* api-change:``emr-serverless``: This release adds the capability to publish detailed Spark engine metrics to Amazon Managed Service for Prometheus (AMP) for  enhanced monitoring for Spark jobs.
+* api-change:``guardduty``: Added IPv6Address fields for local and remote IP addresses
+* api-change:``quicksight``: This release adds support for the Cross Sheet Filter and Control features, and support for warnings in asset imports for any permitted errors encountered during execution
+* api-change:``rolesanywhere``: This release introduces the PutAttributeMapping and DeleteAttributeMapping APIs. IAM Roles Anywhere now provides the capability to define a set of mapping rules, allowing customers to specify which data is extracted from their X.509 end-entity certificates.
+* api-change:``sagemaker``: Removed deprecated enum values and updated API documentation.
+* api-change:``workspaces``: Adds new APIs for managing and sharing WorkSpaces BYOL configuration across accounts.
+
+
 1.32.86
 =======
 

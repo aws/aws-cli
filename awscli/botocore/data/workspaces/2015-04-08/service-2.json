@@ -12,6 +12,23 @@
     "uid":"workspaces-2015-04-08"
   },
   "operations":{
+    "AcceptAccountLinkInvitation":{
+      "name":"AcceptAccountLinkInvitation",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"AcceptAccountLinkInvitationRequest"},
+      "output":{"shape":"AcceptAccountLinkInvitationResult"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ConflictException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Accepts the account link invitation.</p> <important> <p>There's currently no unlinking capability after you accept the account linking invitation.</p> </important>"
+    },
     "AssociateConnectionAlias":{
       "name":"AssociateConnectionAlias",
       "http":{
@@ -105,6 +122,22 @@
         {"shape":"InvalidParameterValuesException"}
       ],
       "documentation":"<p>Copies the specified image from the specified Region to the current Region. For more information about copying images, see <a href=\"https://docs.aws.amazon.com/workspaces/latest/adminguide/copy-custom-image.html\"> Copy a Custom WorkSpaces Image</a>.</p> <p>In the China (Ningxia) Region, you can copy images only within the same Region.</p> <p>In Amazon Web Services GovCloud (US), to copy images to and from other Regions, contact Amazon Web Services Support.</p> <important> <p>Before copying a shared image, be sure to verify that it has been shared from the correct Amazon Web Services account. To determine if an image has been shared and to see the ID of the Amazon Web Services account that owns an image, use the <a href=\"https://docs.aws.amazon.com/workspaces/latest/api/API_DescribeWorkspaceImages.html\">DescribeWorkSpaceImages</a> and <a href=\"https://docs.aws.amazon.com/workspaces/latest/api/API_DescribeWorkspaceImagePermissions.html\">DescribeWorkspaceImagePermissions</a> API operations. </p> </important>"
+    },
+    "CreateAccountLinkInvitation":{
+      "name":"CreateAccountLinkInvitation",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"CreateAccountLinkInvitationRequest"},
+      "output":{"shape":"CreateAccountLinkInvitationResult"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ConflictException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Creates the account link invitation.</p>"
     },
     "CreateConnectClientAddIn":{
       "name":"CreateConnectClientAddIn",
@@ -259,6 +292,23 @@
         {"shape":"InvalidParameterValuesException"}
       ],
       "documentation":"<p>Creates one or more WorkSpaces.</p> <p>This operation is asynchronous and returns before the WorkSpaces are created.</p> <note> <ul> <li> <p>The <code>MANUAL</code> running mode value is only supported by Amazon WorkSpaces Core. Contact your account team to be allow-listed to use this value. For more information, see <a href=\"http://aws.amazon.com/workspaces/core/\">Amazon WorkSpaces Core</a>.</p> </li> <li> <p>You don't need to specify the <code>PCOIP</code> protocol for Linux bundles because <code>WSP</code> is the default protocol for those bundles.</p> </li> <li> <p>User-decoupled WorkSpaces are only supported by Amazon WorkSpaces Core.</p> </li> </ul> </note>"
+    },
+    "DeleteAccountLinkInvitation":{
+      "name":"DeleteAccountLinkInvitation",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DeleteAccountLinkInvitationRequest"},
+      "output":{"shape":"DeleteAccountLinkInvitationResult"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ConflictException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Deletes the account link invitation.</p>"
     },
     "DeleteClientBranding":{
       "name":"DeleteClientBranding",
@@ -759,6 +809,22 @@
       ],
       "documentation":"<p>Disassociates the specified application from a WorkSpace.</p>"
     },
+    "GetAccountLink":{
+      "name":"GetAccountLink",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"GetAccountLinkRequest"},
+      "output":{"shape":"GetAccountLinkResult"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Retrieves account link information.</p>"
+    },
     "ImportClientBranding":{
       "name":"ImportClientBranding",
       "http":{
@@ -792,6 +858,21 @@
         {"shape":"InvalidParameterValuesException"}
       ],
       "documentation":"<p>Imports the specified Windows 10 or 11 Bring Your Own License (BYOL) image into Amazon WorkSpaces. The image must be an already licensed Amazon EC2 image that is in your Amazon Web Services account, and you must own the image. For more information about creating BYOL images, see <a href=\"https://docs.aws.amazon.com/workspaces/latest/adminguide/byol-windows-images.html\"> Bring Your Own Windows Desktop Licenses</a>.</p>"
+    },
+    "ListAccountLinks":{
+      "name":"ListAccountLinks",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"ListAccountLinksRequest"},
+      "output":{"shape":"ListAccountLinksResult"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Lists all account links.</p>"
     },
     "ListAvailableManagementCidrRanges":{
       "name":"ListAvailableManagementCidrRanges",
@@ -1015,6 +1096,23 @@
       ],
       "documentation":"<p>Registers the specified directory. This operation is asynchronous and returns before the WorkSpace directory is registered. If this is the first time you are registering a directory, you will need to create the workspaces_DefaultRole role before you can register a directory. For more information, see <a href=\"https://docs.aws.amazon.com/workspaces/latest/adminguide/workspaces-access-control.html#create-default-role\"> Creating the workspaces_DefaultRole Role</a>.</p>"
     },
+    "RejectAccountLinkInvitation":{
+      "name":"RejectAccountLinkInvitation",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"RejectAccountLinkInvitationRequest"},
+      "output":{"shape":"RejectAccountLinkInvitationResult"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ConflictException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Rejects the account link invitation.</p>"
+    },
     "RestoreWorkspace":{
       "name":"RestoreWorkspace",
       "http":{
@@ -1168,6 +1266,29 @@
       "type":"string",
       "pattern":"^arn:aws:[A-Za-z0-9][A-za-z0-9_/.-]{0,62}:[A-za-z0-9_/.-]{0,63}:[A-za-z0-9_/.-]{0,63}:[A-Za-z0-9][A-za-z0-9_/.-]{0,127}$"
     },
+    "AcceptAccountLinkInvitationRequest":{
+      "type":"structure",
+      "required":["LinkId"],
+      "members":{
+        "LinkId":{
+          "shape":"LinkId",
+          "documentation":"<p>The identifier of the account link.</p>"
+        },
+        "ClientToken":{
+          "shape":"ClientToken",
+          "documentation":"<p>A string of up to 64 ASCII characters that Amazon EFS uses to ensure idempotent creation.</p>"
+        }
+      }
+    },
+    "AcceptAccountLinkInvitationResult":{
+      "type":"structure",
+      "members":{
+        "AccountLink":{
+          "shape":"AccountLink",
+          "documentation":"<p>Information about the account link.</p>"
+        }
+      }
+    },
     "AccessDeniedException":{
       "type":"structure",
       "members":{
@@ -1181,6 +1302,42 @@
       "enum":[
         "ALLOW",
         "DENY"
+      ]
+    },
+    "AccountLink":{
+      "type":"structure",
+      "members":{
+        "AccountLinkId":{
+          "shape":"LinkId",
+          "documentation":"<p>The identifier of the account link.</p>"
+        },
+        "AccountLinkStatus":{
+          "shape":"AccountLinkStatusEnum",
+          "documentation":"<p>The status of the account link.</p>"
+        },
+        "SourceAccountId":{
+          "shape":"AwsAccount",
+          "documentation":"<p>The identifier of the source account.</p>"
+        },
+        "TargetAccountId":{
+          "shape":"AwsAccount",
+          "documentation":"<p>The identifier of the target account.</p>"
+        }
+      },
+      "documentation":"<p>Information about about the account link.</p>"
+    },
+    "AccountLinkList":{
+      "type":"list",
+      "member":{"shape":"AccountLink"}
+    },
+    "AccountLinkStatusEnum":{
+      "type":"string",
+      "enum":[
+        "LINKED",
+        "LINKING_FAILED",
+        "LINK_NOT_FOUND",
+        "PENDING_ACCEPTANCE_BY_TARGET_ACCOUNT",
+        "REJECTED"
       ]
     },
     "AccountModification":{
@@ -1617,6 +1774,10 @@
       },
       "documentation":"<p>Information about the Amazon WorkSpaces client.</p>"
     },
+    "ClientToken":{
+      "type":"string",
+      "pattern":"^.{1,64}$"
+    },
     "ClientUrl":{
       "type":"string",
       "max":200,
@@ -1659,6 +1820,14 @@
       "documentation":"<p>Describes the compute type of the bundle.</p>"
     },
     "ComputerName":{"type":"string"},
+    "ConflictException":{
+      "type":"structure",
+      "members":{
+        "message":{"shape":"ExceptionMessage"}
+      },
+      "documentation":"<p>The <code>TargetAccountId</code> is already linked or invited.</p>",
+      "exception":true
+    },
     "ConnectClientAddIn":{
       "type":"structure",
       "members":{
@@ -1845,6 +2014,29 @@
         "ImageId":{
           "shape":"WorkspaceImageId",
           "documentation":"<p>The identifier of the image.</p>"
+        }
+      }
+    },
+    "CreateAccountLinkInvitationRequest":{
+      "type":"structure",
+      "required":["TargetAccountId"],
+      "members":{
+        "TargetAccountId":{
+          "shape":"AwsAccount",
+          "documentation":"<p>The identifier of the target account.</p>"
+        },
+        "ClientToken":{
+          "shape":"ClientToken",
+          "documentation":"<p>A string of up to 64 ASCII characters that Amazon EFS uses to ensure idempotent creation.</p>"
+        }
+      }
+    },
+    "CreateAccountLinkInvitationResult":{
+      "type":"structure",
+      "members":{
+        "AccountLink":{
+          "shape":"AccountLink",
+          "documentation":"<p>Information about the account link.</p>"
         }
       }
     },
@@ -2164,6 +2356,13 @@
       },
       "documentation":"<p>Describes the data replication settings.</p>"
     },
+    "DedicatedTenancyAccountType":{
+      "type":"string",
+      "enum":[
+        "SOURCE_ACCOUNT",
+        "TARGET_ACCOUNT"
+      ]
+    },
     "DedicatedTenancyCidrRangeList":{
       "type":"list",
       "member":{"shape":"DedicatedTenancyManagementCidrRange"}
@@ -2297,6 +2496,29 @@
         "SAML_PROPERTIES_USER_ACCESS_URL",
         "SAML_PROPERTIES_RELAY_STATE_PARAMETER_NAME"
       ]
+    },
+    "DeleteAccountLinkInvitationRequest":{
+      "type":"structure",
+      "required":["LinkId"],
+      "members":{
+        "LinkId":{
+          "shape":"LinkId",
+          "documentation":"<p>The identifier of the account link.</p>"
+        },
+        "ClientToken":{
+          "shape":"ClientToken",
+          "documentation":"<p>A string of up to 64 ASCII characters that Amazon EFS uses to ensure idempotent creation.</p>"
+        }
+      }
+    },
+    "DeleteAccountLinkInvitationResult":{
+      "type":"structure",
+      "members":{
+        "AccountLink":{
+          "shape":"AccountLink",
+          "documentation":"<p>Information about the account link.</p>"
+        }
+      }
     },
     "DeleteClientBrandingRequest":{
       "type":"structure",
@@ -2498,6 +2720,10 @@
         "DedicatedTenancyManagementCidrRange":{
           "shape":"DedicatedTenancyManagementCidrRange",
           "documentation":"<p>The IP address range, specified as an IPv4 CIDR block, used for the management network interface.</p> <p>The management network interface is connected to a secure Amazon WorkSpaces management network. It is used for interactive streaming of the WorkSpace desktop to Amazon WorkSpaces clients, and to allow Amazon WorkSpaces to manage the WorkSpace.</p>"
+        },
+        "DedicatedTenancyAccountType":{
+          "shape":"DedicatedTenancyAccountType",
+          "documentation":"<p>The type of linked account.</p>"
         }
       }
     },
@@ -3286,6 +3512,28 @@
       },
       "documentation":"<p>Describes a WorkSpace that could not be rebooted. (<a>RebootWorkspaces</a>), rebuilt (<a>RebuildWorkspaces</a>), restored (<a>RestoreWorkspace</a>), terminated (<a>TerminateWorkspaces</a>), started (<a>StartWorkspaces</a>), or stopped (<a>StopWorkspaces</a>).</p>"
     },
+    "GetAccountLinkRequest":{
+      "type":"structure",
+      "members":{
+        "LinkId":{
+          "shape":"LinkId",
+          "documentation":"<p>The identifier of the account to link.</p>"
+        },
+        "LinkedAccountId":{
+          "shape":"AwsAccount",
+          "documentation":"<p>The identifier of the account link</p>"
+        }
+      }
+    },
+    "GetAccountLinkResult":{
+      "type":"structure",
+      "members":{
+        "AccountLink":{
+          "shape":"AccountLink",
+          "documentation":"<p>The account link of the account link to retrieve.</p>"
+        }
+      }
+    },
     "ImageAssociatedResourceType":{
       "type":"string",
       "enum":["APPLICATION"]
@@ -3467,6 +3715,14 @@
       "documentation":"<p>The specified application is not compatible with the resource.</p>",
       "exception":true
     },
+    "InternalServerException":{
+      "type":"structure",
+      "members":{
+        "message":{"shape":"ExceptionMessage"}
+      },
+      "documentation":"<p>Unexpected server error occured.</p>",
+      "exception":true
+    },
     "InvalidParameterValuesException":{
       "type":"structure",
       "members":{
@@ -3608,6 +3864,44 @@
       "type":"integer",
       "max":25,
       "min":1
+    },
+    "LinkId":{
+      "type":"string",
+      "pattern":"^link-.{8,24}$"
+    },
+    "LinkStatusFilterList":{
+      "type":"list",
+      "member":{"shape":"AccountLinkStatusEnum"}
+    },
+    "ListAccountLinksRequest":{
+      "type":"structure",
+      "members":{
+        "LinkStatusFilter":{
+          "shape":"LinkStatusFilterList",
+          "documentation":"<p>Filters the account based on their link status.</p>"
+        },
+        "NextToken":{
+          "shape":"PaginationToken",
+          "documentation":"<p>The token to use to retrieve the next page of results. This value is null when there are no more results to return.</p>"
+        },
+        "MaxResults":{
+          "shape":"Limit",
+          "documentation":"<p>The maximum number of accounts to return.</p>"
+        }
+      }
+    },
+    "ListAccountLinksResult":{
+      "type":"structure",
+      "members":{
+        "AccountLinks":{
+          "shape":"AccountLinkList",
+          "documentation":"<p>Information about the account links.</p>"
+        },
+        "NextToken":{
+          "shape":"PaginationToken",
+          "documentation":"<p>The token to use to retrieve the next page of results. This value is null when there are no more results to return.</p>"
+        }
+      }
     },
     "ListAvailableManagementCidrRangesRequest":{
       "type":"structure",
@@ -4161,6 +4455,29 @@
       "type":"string",
       "max":20,
       "min":1
+    },
+    "RejectAccountLinkInvitationRequest":{
+      "type":"structure",
+      "required":["LinkId"],
+      "members":{
+        "LinkId":{
+          "shape":"LinkId",
+          "documentation":"<p>The identifier of the account link</p>"
+        },
+        "ClientToken":{
+          "shape":"ClientToken",
+          "documentation":"<p>The client token of the account link invitation to reject.</p>"
+        }
+      }
+    },
+    "RejectAccountLinkInvitationResult":{
+      "type":"structure",
+      "members":{
+        "AccountLink":{
+          "shape":"AccountLink",
+          "documentation":"<p>Information about the account link.</p>"
+        }
+      }
     },
     "RelatedWorkspaceProperties":{
       "type":"structure",
@@ -4809,6 +5126,14 @@
       "documentation":"<p>Describes the user volume for a WorkSpace bundle.</p>"
     },
     "UserVolumeSizeGib":{"type":"integer"},
+    "ValidationException":{
+      "type":"structure",
+      "members":{
+        "message":{"shape":"ExceptionMessage"}
+      },
+      "documentation":"<p>You either haven't provided a <code>TargetAccountId</code> or are using the same value for <code>TargetAccountId</code> and <code>SourceAccountId</code>.</p>",
+      "exception":true
+    },
     "VolumeEncryptionKey":{"type":"string"},
     "WorkSpaceApplication":{
       "type":"structure",

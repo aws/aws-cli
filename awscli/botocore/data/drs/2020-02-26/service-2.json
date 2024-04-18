@@ -1363,6 +1363,10 @@
         "stagingAvailabilityZone":{
           "shape":"AwsAvailabilityZone",
           "documentation":"<p>AWS Availability zone into which data is being replicated.</p>"
+        },
+        "stagingOutpostArn":{
+          "shape":"OutpostARN",
+          "documentation":"<p>The ARN of the staging Outpost</p>"
         }
       },
       "documentation":"<p>Information about Data Replication</p>"
@@ -2994,6 +2998,12 @@
         "AWS"
       ]
     },
+    "OutpostARN":{
+      "type":"string",
+      "max":255,
+      "min":20,
+      "pattern":"^arn:aws([a-z-]+)?:outposts:[a-z\\d-]+:\\d{12}:outpost/op-[a-f0-9]{17}$"
+    },
     "PITPolicy":{
       "type":"list",
       "member":{"shape":"PITPolicyRule"},
@@ -3255,6 +3265,10 @@
           "shape":"RecoveryInstanceProperties",
           "documentation":"<p>Properties of the Recovery Instance machine.</p>"
         },
+        "sourceOutpostArn":{
+          "shape":"OutpostARN",
+          "documentation":"<p>The ARN of the source Outpost</p>"
+        },
         "sourceServerID":{
           "shape":"SourceServerID",
           "documentation":"<p>The Source Server ID that this Recovery Instance is associated with.</p>"
@@ -3310,6 +3324,10 @@
         "stagingAvailabilityZone":{
           "shape":"AwsAvailabilityZone",
           "documentation":"<p>AWS Availability zone into which data is being replicated.</p>"
+        },
+        "stagingOutpostArn":{
+          "shape":"OutpostARN",
+          "documentation":"<p>The ARN of the staging Outpost</p>"
         }
       },
       "documentation":"<p>Information about Data Replication</p>"
@@ -3998,6 +4016,10 @@
         "originRegion":{
           "shape":"AwsRegion",
           "documentation":"<p>AWS Region for an EC2-originated Source Server.</p>"
+        },
+        "sourceOutpostArn":{
+          "shape":"OutpostARN",
+          "documentation":"<p>The ARN of the source Outpost</p>"
         }
       },
       "documentation":"<p>Properties of the cloud environment where this Source Server originated from.</p>"
@@ -4924,7 +4946,8 @@
         "REGULAR",
         "CONTAINS_MARKETPLACE_PRODUCT_CODES",
         "MISSING_VOLUME_ATTRIBUTES",
-        "MISSING_VOLUME_ATTRIBUTES_AND_PRECHECK_UNAVAILABLE"
+        "MISSING_VOLUME_ATTRIBUTES_AND_PRECHECK_UNAVAILABLE",
+        "PENDING"
       ]
     },
     "VolumeToConversionMap":{

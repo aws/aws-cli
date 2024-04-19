@@ -2,6 +2,14 @@
 CHANGELOG
 =========
 
+1.32.88
+=======
+
+* api-change:``glue``: Adding RowFilter in the response for GetUnfilteredTableMetadata API
+* api-change:``internetmonitor``: This update introduces the GetInternetEvent and ListInternetEvents APIs, which provide access to internet events displayed on the Amazon CloudWatch Internet Weather Map.
+* api-change:``personalize``: This releases auto training capability while creating a solution and automatically syncing latest solution versions when creating/updating a campaign
+
+
 1.32.87
 =======
 

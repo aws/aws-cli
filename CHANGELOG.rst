@@ -2,6 +2,20 @@
 CHANGELOG
 =========
 
+2.15.40
+=======
+
+* api-change:``workspaces``: Adds new APIs for managing and sharing WorkSpaces BYOL configuration across accounts.
+* api-change:``rolesanywhere``: This release introduces the PutAttributeMapping and DeleteAttributeMapping APIs. IAM Roles Anywhere now provides the capability to define a set of mapping rules, allowing customers to specify which data is extracted from their X.509 end-entity certificates.
+* api-change:``guardduty``: Added IPv6Address fields for local and remote IP addresses
+* api-change:``emr-serverless``: This release adds the capability to publish detailed Spark engine metrics to Amazon Managed Service for Prometheus (AMP) for  enhanced monitoring for Spark jobs.
+* api-change:``qbusiness``: This release adds support for IAM Identity Center (IDC) as the identity gateway for Q Business. It also allows users to provide an explicit intent for Q Business to identify how the Chat request should be handled.
+* api-change:``drs``: Outpost ARN added to Source Server and Recovery Instance
+* api-change:``ec2``: Documentation updates for Elastic Compute Cloud (EC2).
+* api-change:``sagemaker``: Removed deprecated enum values and updated API documentation.
+* api-change:``quicksight``: This release adds support for the Cross Sheet Filter and Control features, and support for warnings in asset imports for any permitted errors encountered during execution
+
+
 2.15.39
 =======
 

@@ -7302,6 +7302,41 @@ CHANGELOG
 * feature:wizard: Added support for AWS CLI Wizards. See `#3752 <https://github.com/aws/aws-cli/issues/3752>`__.
 
 
+1.32.90
+=======
+
+* api-change:``bedrock``: This release introduces Model Evaluation and Guardrails for Amazon Bedrock.
+* api-change:``bedrock-agent``: Introducing the ability to create multiple data sources per knowledge base, specify S3 buckets as data sources from external accounts, and exposing levers to define the deletion behavior of the underlying vector store data.
+* api-change:``bedrock-agent-runtime``: This release introduces zero-setup file upload support for the RetrieveAndGenerate API. This allows you to chat with your data without setting up a Knowledge Base.
+* api-change:``bedrock-runtime``: This release introduces Guardrails for Amazon Bedrock.
+* api-change:``ce``: Added additional metadata that might be applicable to your reservation recommendations.
+* api-change:``ec2``: This release introduces EC2 AMI Deregistration Protection, a new AMI property that can be enabled by customers to protect an AMI against an unintended deregistration. This release also enables the AMI owners to view the AMI 'LastLaunchedTime' in DescribeImages API.
+* api-change:``pi``: Clarifies how aggregation works for GetResourceMetrics in the Performance Insights API.
+* api-change:``rds``: Fix the example ARN for ModifyActivityStreamRequest
+* api-change:``workspaces-web``: Added InstanceType and MaxConcurrentSessions parameters on CreatePortal and UpdatePortal Operations as well as the ability to read Customer Managed Key & Additional Encryption Context parameters on supported resources (Portal, BrowserSettings, UserSettings, IPAccessSettings)
+
+
+1.32.89
+=======
+
+* api-change:``bedrock-agent``: Releasing the support for simplified configuration and return of control
+* api-change:``bedrock-agent-runtime``: Releasing the support for simplified configuration and return of control
+* api-change:``payment-cryptography``: Adding support to TR-31/TR-34 exports for optional headers, allowing customers to add additional metadata (such as key version and KSN) when exporting keys from the service.
+* api-change:``redshift-serverless``: Updates description of schedule field for scheduled actions.
+* api-change:``route53profiles``: Route 53 Profiles allows you to apply a central DNS configuration across many VPCs regardless of account.
+* api-change:``sagemaker``: This release adds support for Real-Time Collaboration and Shared Space for JupyterLab App on SageMaker Studio.
+* api-change:``servicediscovery``: This release adds examples to several Cloud Map actions.
+* api-change:``transfer``: Adding new API to support remote directory listing using SFTP connector
+
+
+1.32.88
+=======
+
+* api-change:``glue``: Adding RowFilter in the response for GetUnfilteredTableMetadata API
+* api-change:``internetmonitor``: This update introduces the GetInternetEvent and ListInternetEvents APIs, which provide access to internet events displayed on the Amazon CloudWatch Internet Weather Map.
+* api-change:``personalize``: This releases auto training capability while creating a solution and automatically syncing latest solution versions when creating/updating a campaign
+
+
 1.32.87
 =======
 

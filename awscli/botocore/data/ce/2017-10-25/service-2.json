@@ -201,7 +201,7 @@
         {"shape":"InvalidNextTokenException"},
         {"shape":"RequestChangedException"}
       ],
-      "documentation":"<p>Retrieves cost and usage metrics with resources for your account. You can specify which cost and usage-related metric, such as <code>BlendedCosts</code> or <code>UsageQuantity</code>, that you want the request to return. You can also filter and group your data by various dimensions, such as <code>SERVICE</code> or <code>AZ</code>, in a specific time range. For a complete list of valid dimensions, see the <a href=\"https://docs.aws.amazon.com/aws-cost-management/latest/APIReference/API_GetDimensionValues.html\">GetDimensionValues</a> operation. Management account in an organization in Organizations have access to all member accounts. This API is currently available for the Amazon Elastic Compute Cloud – Compute service only.</p> <note> <p>This is an opt-in only feature. You can enable this feature from the Cost Explorer Settings page. For information about how to access the Settings page, see <a href=\"https://docs.aws.amazon.com/awsaccountbilling/latest/aboutv2/ce-access.html\">Controlling Access for Cost Explorer</a> in the <i>Billing and Cost Management User Guide</i>.</p> </note>"
+      "documentation":"<p>Retrieves cost and usage metrics with resources for your account. You can specify which cost and usage-related metric, such as <code>BlendedCosts</code> or <code>UsageQuantity</code>, that you want the request to return. You can also filter and group your data by various dimensions, such as <code>SERVICE</code> or <code>AZ</code>, in a specific time range. For a complete list of valid dimensions, see the <a href=\"https://docs.aws.amazon.com/aws-cost-management/latest/APIReference/API_GetDimensionValues.html\">GetDimensionValues</a> operation. Management account in an organization in Organizations have access to all member accounts.</p> <p>Hourly granularity is only available for EC2-Instances (Elastic Compute Cloud) resource-level data. All other resource-level data is available at daily granularity.</p> <note> <p>This is an opt-in only feature. You can enable this feature from the Cost Explorer Settings page. For information about how to access the Settings page, see <a href=\"https://docs.aws.amazon.com/awsaccountbilling/latest/aboutv2/ce-access.html\">Controlling Access for Cost Explorer</a> in the <i>Billing and Cost Management User Guide</i>.</p> </note>"
     },
     "GetCostCategories":{
       "name":"GetCostCategories",
@@ -4013,14 +4013,18 @@
       "members":{
         "RecommendationId":{
           "shape":"GenericString",
-          "documentation":"<p>The ID for this specific recommendation.</p>"
+          "documentation":"<p>The ID for the recommendation.</p>"
         },
         "GenerationTimestamp":{
           "shape":"GenericString",
-          "documentation":"<p>The timestamp for when Amazon Web Services made this recommendation.</p>"
+          "documentation":"<p>The timestamp for when Amazon Web Services made the recommendation.</p>"
+        },
+        "AdditionalMetadata":{
+          "shape":"GenericString",
+          "documentation":"<p>Additional metadata that might be applicable to the recommendation.</p>"
         }
       },
-      "documentation":"<p>Information about this specific recommendation, such as the timestamp for when Amazon Web Services made a specific recommendation.</p>"
+      "documentation":"<p>Information about a recommendation, such as the timestamp for when Amazon Web Services made a specific recommendation.</p>"
     },
     "ReservationPurchaseRecommendationSummary":{
       "type":"structure",
@@ -4226,22 +4230,22 @@
       "members":{
         "RecommendationId":{
           "shape":"GenericString",
-          "documentation":"<p>The ID for this specific recommendation.</p>"
+          "documentation":"<p>The ID for the recommendation.</p>"
         },
         "GenerationTimestamp":{
           "shape":"GenericString",
-          "documentation":"<p>The timestamp for when Amazon Web Services made this recommendation.</p>"
+          "documentation":"<p>The timestamp for when Amazon Web Services made the recommendation.</p>"
         },
         "LookbackPeriodInDays":{
           "shape":"LookbackPeriodInDays",
-          "documentation":"<p>The number of days of previous usage that Amazon Web Services considers when making this recommendation.</p>"
+          "documentation":"<p>The number of days of previous usage that Amazon Web Services considers when making the recommendation.</p>"
         },
         "AdditionalMetadata":{
           "shape":"GenericString",
           "documentation":"<p>Additional metadata that might be applicable to the recommendation.</p>"
         }
       },
-      "documentation":"<p>Metadata for this recommendation set.</p>"
+      "documentation":"<p>Metadata for a recommendation set.</p>"
     },
     "RightsizingRecommendationSummary":{
       "type":"structure",

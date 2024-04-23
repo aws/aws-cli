@@ -65,7 +65,24 @@
         {"shape":"ThrottlingException"},
         {"shape":"ValidationException"}
       ],
-      "documentation":"<p>Gets information the Amazon CloudWatch Internet Monitor has created and stored about a health event for a specified monitor. This information includes the impacted locations, and all the information related to the event, by location.</p> <p>The information returned includes the impact on performance, availability, and round-trip time, information about the network providers (ASNs), the event type, and so on.</p> <p>Information rolled up at the global traffic level is also returned, including the impact type and total traffic impact.</p>"
+      "documentation":"<p>Gets information that Amazon CloudWatch Internet Monitor has created and stored about a health event for a specified monitor. This information includes the impacted locations, and all the information related to the event, by location.</p> <p>The information returned includes the impact on performance, availability, and round-trip time, information about the network providers (ASNs), the event type, and so on.</p> <p>Information rolled up at the global traffic level is also returned, including the impact type and total traffic impact.</p>"
+    },
+    "GetInternetEvent":{
+      "name":"GetInternetEvent",
+      "http":{
+        "method":"GET",
+        "requestUri":"/v20210603/InternetEvents/{EventId}",
+        "responseCode":200
+      },
+      "input":{"shape":"GetInternetEventInput"},
+      "output":{"shape":"GetInternetEventOutput"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ValidationException"}
+      ],
+      "documentation":"<p>Gets information that Amazon CloudWatch Internet Monitor has generated about an internet event. Internet Monitor displays information about recent global health events, called internet events, on a global outages map that is available to all Amazon Web Services customers. </p> <p>The information returned here includes the impacted location, when the event started and (if the event is over) ended, the type of event (<code>PERFORMANCE</code> or <code>AVAILABILITY</code>), and the status (<code>ACTIVE</code> or <code>RESOLVED</code>).</p>"
     },
     "GetMonitor":{
       "name":"GetMonitor",
@@ -135,7 +152,24 @@
         {"shape":"ThrottlingException"},
         {"shape":"ValidationException"}
       ],
-      "documentation":"<p>Lists all health events for a monitor in Amazon CloudWatch Internet Monitor. Returns information for health events including the event start and end time and the status.</p> <note> <p>Health events that have start times during the time frame that is requested are not included in the list of health events.</p> </note>"
+      "documentation":"<p>Lists all health events for a monitor in Amazon CloudWatch Internet Monitor. Returns information for health events including the event start and end times, and the status.</p> <note> <p>Health events that have start times during the time frame that is requested are not included in the list of health events.</p> </note>"
+    },
+    "ListInternetEvents":{
+      "name":"ListInternetEvents",
+      "http":{
+        "method":"GET",
+        "requestUri":"/v20210603/InternetEvents",
+        "responseCode":200
+      },
+      "input":{"shape":"ListInternetEventsInput"},
+      "output":{"shape":"ListInternetEventsOutput"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ValidationException"}
+      ],
+      "documentation":"<p>Lists internet events that cause performance or availability issues for client locations. Amazon CloudWatch Internet Monitor displays information about recent global health events, called internet events, on a global outages map that is available to all Amazon Web Services customers. </p> <p>You can constrain the list of internet events returned by providing a start time and end time to define a total time frame for events you want to list. Both start time and end time specify the time when an event started. End time is optional. If you don't include it, the default end time is the current time.</p> <p>You can also limit the events returned to a specific status (<code>ACTIVE</code> or <code>RESOLVED</code>) or type (<code>PERFORMANCE</code> or <code>AVAILABILITY</code>).</p>"
     },
     "ListMonitors":{
       "name":"ListMonitors",
@@ -325,6 +359,52 @@
       "type":"boolean",
       "box":true
     },
+    "ClientLocation":{
+      "type":"structure",
+      "required":[
+        "ASName",
+        "ASNumber",
+        "Country",
+        "City",
+        "Latitude",
+        "Longitude"
+      ],
+      "members":{
+        "ASName":{
+          "shape":"String",
+          "documentation":"<p>The name of the internet service provider (ISP) or network (ASN).</p>"
+        },
+        "ASNumber":{
+          "shape":"Long",
+          "documentation":"<p>The Autonomous System Number (ASN) of the network at an impacted location.</p>"
+        },
+        "Country":{
+          "shape":"String",
+          "documentation":"<p>The name of the country where the internet event is located.</p>"
+        },
+        "Subdivision":{
+          "shape":"String",
+          "documentation":"<p>The subdivision location where the health event is located. The subdivision usually maps to states in most countries (including the United States). For United Kingdom, it maps to a country (England, Scotland, Wales) or province (Northern Ireland).</p>"
+        },
+        "Metro":{
+          "shape":"String",
+          "documentation":"<p>The metro area where the health event is located.</p> <p>Metro indicates a metropolitan region in the United States, such as the region around New York City. In non-US countries, this is a second-level subdivision. For example, in the United Kingdom, it could be a county, a London borough, a unitary authority, council area, and so on.</p>"
+        },
+        "City":{
+          "shape":"String",
+          "documentation":"<p>The name of the city where the internet event is located.</p>"
+        },
+        "Latitude":{
+          "shape":"Double",
+          "documentation":"<p>The latitude where the internet event is located.</p>"
+        },
+        "Longitude":{
+          "shape":"Double",
+          "documentation":"<p>The longitude where the internet event is located.</p>"
+        }
+      },
+      "documentation":"<p>The impacted location, such as a city, that Amazon Web Services clients access application resources from.</p>"
+    },
     "ConflictException":{
       "type":"structure",
       "members":{
@@ -461,7 +541,7 @@
         },
         "LinkedAccountId":{
           "shape":"AccountId",
-          "documentation":"<p>TBD </p>",
+          "documentation":"<p>The account ID for an account that you've set up cross-account sharing for in Amazon CloudWatch Internet Monitor. You configure cross-account sharing by using Amazon CloudWatch Observability Access Manager. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/cwim-cross-account.html\">Internet Monitor cross-account observability</a> in the Amazon CloudWatch Internet Monitor User Guide.</p>",
           "location":"querystring",
           "locationName":"LinkedAccountId"
         }
@@ -525,6 +605,59 @@
         }
       }
     },
+    "GetInternetEventInput":{
+      "type":"structure",
+      "required":["EventId"],
+      "members":{
+        "EventId":{
+          "shape":"InternetEventId",
+          "documentation":"<p>The <code>EventId</code> of the internet event to return information for. </p>",
+          "location":"uri",
+          "locationName":"EventId"
+        }
+      }
+    },
+    "GetInternetEventOutput":{
+      "type":"structure",
+      "required":[
+        "EventId",
+        "EventArn",
+        "StartedAt",
+        "ClientLocation",
+        "EventType",
+        "EventStatus"
+      ],
+      "members":{
+        "EventId":{
+          "shape":"InternetEventId",
+          "documentation":"<p>The internally-generated identifier of an internet event.</p>"
+        },
+        "EventArn":{
+          "shape":"Arn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the internet event.</p>"
+        },
+        "StartedAt":{
+          "shape":"SyntheticTimestamp_date_time",
+          "documentation":"<p>The time when the internet event started.</p>"
+        },
+        "EndedAt":{
+          "shape":"SyntheticTimestamp_date_time",
+          "documentation":"<p>The time when the internet event ended. If the event hasn't ended yet, this value is empty.</p>"
+        },
+        "ClientLocation":{
+          "shape":"ClientLocation",
+          "documentation":"<p>The impacted location, such as a city, where clients access Amazon Web Services application resources.</p>"
+        },
+        "EventType":{
+          "shape":"InternetEventType",
+          "documentation":"<p>The type of network impairment.</p>"
+        },
+        "EventStatus":{
+          "shape":"InternetEventStatus",
+          "documentation":"<p>The status of the internet event.</p>"
+        }
+      }
+    },
     "GetMonitorInput":{
       "type":"structure",
       "required":["MonitorName"],
@@ -537,7 +670,7 @@
         },
         "LinkedAccountId":{
           "shape":"AccountId",
-          "documentation":"<p>TBD </p>",
+          "documentation":"<p>The account ID for an account that you've set up cross-account sharing for in Amazon CloudWatch Internet Monitor. You configure cross-account sharing by using Amazon CloudWatch Observability Access Manager. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/cwim-cross-account.html\">Internet Monitor cross-account observability</a> in the Amazon CloudWatch Internet Monitor User Guide.</p>",
           "location":"querystring",
           "locationName":"LinkedAccountId"
         }
@@ -735,7 +868,7 @@
         },
         "Status":{
           "shape":"HealthEventStatus",
-          "documentation":"<p>Health event list member.</p>"
+          "documentation":"<p>The status of a health event.</p>"
         },
         "PercentOfTotalTrafficImpacted":{
           "shape":"Double",
@@ -811,7 +944,7 @@
       "members":{
         "ASName":{
           "shape":"String",
-          "documentation":"<p>The name of the network at an impacted location.</p>"
+          "documentation":"<p>The name of the internet service provider (ISP) or network (ASN).</p>"
         },
         "ASNumber":{
           "shape":"Long",
@@ -898,6 +1031,78 @@
       "fault":true,
       "retryable":{"throttling":false}
     },
+    "InternetEventId":{
+      "type":"string",
+      "max":255,
+      "min":1,
+      "pattern":"[a-zA-Z0-9-]+"
+    },
+    "InternetEventMaxResults":{
+      "type":"integer",
+      "box":true,
+      "max":100,
+      "min":1
+    },
+    "InternetEventStatus":{
+      "type":"string",
+      "enum":[
+        "ACTIVE",
+        "RESOLVED"
+      ]
+    },
+    "InternetEventSummary":{
+      "type":"structure",
+      "required":[
+        "EventId",
+        "EventArn",
+        "StartedAt",
+        "ClientLocation",
+        "EventType",
+        "EventStatus"
+      ],
+      "members":{
+        "EventId":{
+          "shape":"InternetEventId",
+          "documentation":"<p>The internally-generated identifier of an internet event.</p>"
+        },
+        "EventArn":{
+          "shape":"Arn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the internet event.</p>"
+        },
+        "StartedAt":{
+          "shape":"SyntheticTimestamp_date_time",
+          "documentation":"<p>The time when an internet event started.</p>"
+        },
+        "EndedAt":{
+          "shape":"SyntheticTimestamp_date_time",
+          "documentation":"<p>The time when an internet event ended. If the event hasn't ended yet, this value is empty.</p>"
+        },
+        "ClientLocation":{
+          "shape":"ClientLocation",
+          "documentation":"<p>The impacted location, such as a city, that Amazon Web Services clients access application resources from.</p>"
+        },
+        "EventType":{
+          "shape":"InternetEventType",
+          "documentation":"<p>The type of network impairment.</p>"
+        },
+        "EventStatus":{
+          "shape":"InternetEventStatus",
+          "documentation":"<p>The status of an internet event.</p>"
+        }
+      },
+      "documentation":"<p>A summary of information about an internet event in Amazon CloudWatch Internet Monitor. Internet events are issues that cause performance degradation or availability problems for impacted Amazon Web Services client locations. Internet Monitor displays information about recent global health events, called internet events, on a global outages map that is available to all Amazon Web Services customers. </p>"
+    },
+    "InternetEventType":{
+      "type":"string",
+      "enum":[
+        "AVAILABILITY",
+        "PERFORMANCE"
+      ]
+    },
+    "InternetEventsList":{
+      "type":"list",
+      "member":{"shape":"InternetEventSummary"}
+    },
     "InternetHealth":{
       "type":"structure",
       "members":{
@@ -980,7 +1185,7 @@
         },
         "LinkedAccountId":{
           "shape":"AccountId",
-          "documentation":"<p>TBD </p>",
+          "documentation":"<p>The account ID for an account that you've set up cross-account sharing for in Amazon CloudWatch Internet Monitor. You configure cross-account sharing by using Amazon CloudWatch Observability Access Manager. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/cwim-cross-account.html\">Internet Monitor cross-account observability</a> in the Amazon CloudWatch Internet Monitor User Guide.</p>",
           "location":"querystring",
           "locationName":"LinkedAccountId"
         }
@@ -993,6 +1198,61 @@
         "HealthEvents":{
           "shape":"HealthEventList",
           "documentation":"<p>A list of health events.</p>"
+        },
+        "NextToken":{
+          "shape":"String",
+          "documentation":"<p>The token for the next set of results. You receive this token from a previous call.</p>"
+        }
+      }
+    },
+    "ListInternetEventsInput":{
+      "type":"structure",
+      "members":{
+        "NextToken":{
+          "shape":"String",
+          "documentation":"<p>The token for the next set of results. You receive this token from a previous call.</p>",
+          "location":"querystring",
+          "locationName":"NextToken"
+        },
+        "MaxResults":{
+          "shape":"InternetEventMaxResults",
+          "documentation":"<p>The number of query results that you want to return with this call.</p>",
+          "location":"querystring",
+          "locationName":"InternetEventMaxResults"
+        },
+        "StartTime":{
+          "shape":"SyntheticTimestamp_date_time",
+          "documentation":"<p>The start time of the time window that you want to get a list of internet events for.</p>",
+          "location":"querystring",
+          "locationName":"StartTime"
+        },
+        "EndTime":{
+          "shape":"SyntheticTimestamp_date_time",
+          "documentation":"<p>The end time of the time window that you want to get a list of internet events for.</p>",
+          "location":"querystring",
+          "locationName":"EndTime"
+        },
+        "EventStatus":{
+          "shape":"String",
+          "documentation":"<p>The status of an internet event.</p>",
+          "location":"querystring",
+          "locationName":"EventStatus"
+        },
+        "EventType":{
+          "shape":"String",
+          "documentation":"<p>The type of network impairment.</p>",
+          "location":"querystring",
+          "locationName":"EventType"
+        }
+      }
+    },
+    "ListInternetEventsOutput":{
+      "type":"structure",
+      "required":["InternetEvents"],
+      "members":{
+        "InternetEvents":{
+          "shape":"InternetEventsList",
+          "documentation":"<p>A set of internet events returned for the list operation.</p>"
         },
         "NextToken":{
           "shape":"String",
@@ -1023,7 +1283,7 @@
         },
         "IncludeLinkedAccounts":{
           "shape":"Boolean",
-          "documentation":"<p>TBD </p>",
+          "documentation":"<p>A boolean option that you can set to <code>TRUE</code> to include monitors for linked accounts in a list of monitors, when you've set up cross-account sharing in Amazon CloudWatch Internet Monitor. You configure cross-account sharing by using Amazon CloudWatch Observability Access Manager. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/cwim-cross-account.html\">Internet Monitor cross-account observability</a> in the Amazon CloudWatch Internet Monitor User Guide.</p>",
           "location":"querystring",
           "locationName":"IncludeLinkedAccounts"
         }
@@ -1178,14 +1438,14 @@
       "members":{
         "ASName":{
           "shape":"String",
-          "documentation":"<p>The internet provider name or network name.</p>"
+          "documentation":"<p>The name of the internet service provider (ISP) or network (ASN).</p>"
         },
         "ASNumber":{
           "shape":"Long",
           "documentation":"<p>The Autonomous System Number (ASN) of the internet provider or network.</p>"
         }
       },
-      "documentation":"<p>An internet service provider (ISP) or network in Amazon CloudWatch Internet Monitor.</p>"
+      "documentation":"<p>An internet service provider (ISP) or network (ASN) in Amazon CloudWatch Internet Monitor.</p>"
     },
     "NetworkImpairment":{
       "type":"structure",
@@ -1205,7 +1465,7 @@
         },
         "NetworkEventType":{
           "shape":"TriangulationEventType",
-          "documentation":"<p>Type of network impairment.</p>"
+          "documentation":"<p>The type of network impairment.</p>"
         }
       },
       "documentation":"<p>Information about the network impairment for a specific network measured by Amazon CloudWatch Internet Monitor.</p>"
@@ -1405,7 +1665,7 @@
         },
         "LinkedAccountId":{
           "shape":"AccountId",
-          "documentation":"<p>TBD </p>"
+          "documentation":"<p>The account ID for an account that you've set up cross-account sharing for in Amazon CloudWatch Internet Monitor. You configure cross-account sharing by using Amazon CloudWatch Observability Access Manager. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/cwim-cross-account.html\">Internet Monitor cross-account observability</a> in the Amazon CloudWatch Internet Monitor User Guide.</p>"
         }
       }
     },

@@ -11033,14 +11033,14 @@
       "members":{
         "DefaultEbsVolumeSizeInGb":{
           "shape":"SpaceEbsVolumeSizeInGb",
-          "documentation":"<p>The default size of the EBS storage volume for a private space.</p>"
+          "documentation":"<p>The default size of the EBS storage volume for a space.</p>"
         },
         "MaximumEbsVolumeSizeInGb":{
           "shape":"SpaceEbsVolumeSizeInGb",
-          "documentation":"<p>The maximum size of the EBS storage volume for a private space.</p>"
+          "documentation":"<p>The maximum size of the EBS storage volume for a space.</p>"
         }
       },
-      "documentation":"<p>A collection of default EBS storage settings that applies to private spaces created within a domain or user profile.</p>"
+      "documentation":"<p>A collection of default EBS storage settings that apply to spaces created within a domain or user profile.</p>"
     },
     "DefaultGid":{
       "type":"integer",
@@ -11059,7 +11059,14 @@
           "documentation":"<p>The security group IDs for the Amazon VPC that the space uses for communication.</p>"
         },
         "JupyterServerAppSettings":{"shape":"JupyterServerAppSettings"},
-        "KernelGatewayAppSettings":{"shape":"KernelGatewayAppSettings"}
+        "KernelGatewayAppSettings":{"shape":"KernelGatewayAppSettings"},
+        "JupyterLabAppSettings":{"shape":"JupyterLabAppSettings"},
+        "SpaceStorageSettings":{"shape":"DefaultSpaceStorageSettings"},
+        "CustomPosixUserConfig":{"shape":"CustomPosixUserConfig"},
+        "CustomFileSystemConfigs":{
+          "shape":"CustomFileSystemConfigs",
+          "documentation":"<p>The settings for assigning a custom file system to a domain. Permitted users can access this file system in Amazon SageMaker Studio.</p>"
+        }
       },
       "documentation":"<p>A collection of settings that apply to spaces created in the domain.</p>"
     },
@@ -11068,10 +11075,10 @@
       "members":{
         "DefaultEbsStorageSettings":{
           "shape":"DefaultEbsStorageSettings",
-          "documentation":"<p>The default EBS storage settings for a private space.</p>"
+          "documentation":"<p>The default EBS storage settings for a space.</p>"
         }
       },
-      "documentation":"<p>The default storage settings for a private space.</p>"
+      "documentation":"<p>The default storage settings for a space.</p>"
     },
     "DefaultUid":{
       "type":"integer",
@@ -16818,10 +16825,10 @@
       "members":{
         "EbsVolumeSizeInGb":{
           "shape":"SpaceEbsVolumeSizeInGb",
-          "documentation":"<p>The size of an EBS storage volume for a private space.</p>"
+          "documentation":"<p>The size of an EBS storage volume for a space.</p>"
         }
       },
-      "documentation":"<p>A collection of EBS storage settings that applies to private spaces.</p>"
+      "documentation":"<p>A collection of EBS storage settings that apply to both private and shared spaces.</p>"
     },
     "Edge":{
       "type":"structure",
@@ -28980,7 +28987,7 @@
       "members":{
         "OwnerUserProfileName":{
           "shape":"UserProfileName",
-          "documentation":"<p>The user profile who is the owner of the private space.</p>"
+          "documentation":"<p>The user profile who is the owner of the space.</p>"
         }
       },
       "documentation":"<p>The collection of ownership settings for a space.</p>"
@@ -28990,7 +28997,7 @@
       "members":{
         "OwnerUserProfileName":{
           "shape":"UserProfileName",
-          "documentation":"<p>The user profile who is the owner of the private space.</p>"
+          "documentation":"<p>The user profile who is the owner of the space.</p>"
         }
       },
       "documentation":"<p>Specifies summary information about the ownership settings.</p>"
@@ -33202,7 +33209,7 @@
         },
         "SpaceStorageSettings":{
           "shape":"SpaceStorageSettings",
-          "documentation":"<p>The storage settings for a private space.</p>"
+          "documentation":"<p>The storage settings for a space.</p>"
         },
         "CustomFileSystems":{
           "shape":"CustomFileSystems",
@@ -33220,7 +33227,7 @@
         },
         "SpaceStorageSettings":{
           "shape":"SpaceStorageSettings",
-          "documentation":"<p>The storage settings for a private space.</p>"
+          "documentation":"<p>The storage settings for a space.</p>"
         }
       },
       "documentation":"<p>Specifies summary information about the space settings.</p>"
@@ -33270,10 +33277,10 @@
       "members":{
         "EbsStorageSettings":{
           "shape":"EbsStorageSettings",
-          "documentation":"<p>A collection of EBS storage settings for a private space.</p>"
+          "documentation":"<p>A collection of EBS storage settings for a space.</p>"
         }
       },
-      "documentation":"<p>The storage settings for a private space.</p>"
+      "documentation":"<p>The storage settings for a space.</p>"
     },
     "SpawnRate":{
       "type":"integer",
@@ -37276,7 +37283,7 @@
         },
         "SpaceStorageSettings":{
           "shape":"DefaultSpaceStorageSettings",
-          "documentation":"<p>The storage settings for a private space.</p>"
+          "documentation":"<p>The storage settings for a space.</p>"
         },
         "DefaultLandingUri":{
           "shape":"LandingUri",

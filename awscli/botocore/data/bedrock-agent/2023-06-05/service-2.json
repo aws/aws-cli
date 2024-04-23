@@ -813,6 +813,10 @@
     "ActionGroupExecutor":{
       "type":"structure",
       "members":{
+        "customControl":{
+          "shape":"CustomControlMethod",
+          "documentation":"<p>To return the action group invocation results directly in the <code>InvokeAgent</code> response, specify <code>RETURN_CONTROL</code>.</p>"
+        },
         "lambda":{
           "shape":"LambdaArn",
           "documentation":"<p>The Amazon Resource Name (ARN) of the Lambda function containing the business logic that is carried out upon invoking the action.</p>"
@@ -1010,6 +1014,10 @@
         "description":{
           "shape":"Description",
           "documentation":"<p>The description of the action group.</p>"
+        },
+        "functionSchema":{
+          "shape":"FunctionSchema",
+          "documentation":"<p>Defines functions that each define parameters that the agent needs to invoke from the user. Each function represents an action in an action group.</p>"
         },
         "parentActionSignature":{
           "shape":"ActionGroupSignature",
@@ -1519,6 +1527,12 @@
       "type":"boolean",
       "box":true
     },
+    "BucketOwnerAccountId":{
+      "type":"string",
+      "max":12,
+      "min":12,
+      "pattern":"^[0-9]{12}$"
+    },
     "ChunkingConfiguration":{
       "type":"structure",
       "required":["chunkingStrategy"],
@@ -1609,6 +1623,10 @@
         "description":{
           "shape":"Description",
           "documentation":"<p>A description of the action group.</p>"
+        },
+        "functionSchema":{
+          "shape":"FunctionSchema",
+          "documentation":"<p>Contains details about the function schema for the action group or the JSON or YAML-formatted payload defining the schema.</p>"
         },
         "parentActionGroupSignature":{
           "shape":"ActionGroupSignature",
@@ -1742,6 +1760,10 @@
           "documentation":"<p>A unique, case-sensitive identifier to ensure that the API request completes no more than one time. If this token matches a previous request, Amazon Bedrock ignores the request, but does not return an error. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/APIReference/Run_Instance_Idempotency.html\">Ensuring idempotency</a>.</p>",
           "idempotencyToken":true
         },
+        "dataDeletionPolicy":{
+          "shape":"DataDeletionPolicy",
+          "documentation":"<p>The deletion policy for the requested data source</p>"
+        },
         "dataSourceConfiguration":{
           "shape":"DataSourceConfiguration",
           "documentation":"<p>Contains metadata about where the data source is stored.</p>"
@@ -1837,6 +1859,17 @@
         "OVERRIDDEN"
       ]
     },
+    "CustomControlMethod":{
+      "type":"string",
+      "enum":["RETURN_CONTROL"]
+    },
+    "DataDeletionPolicy":{
+      "type":"string",
+      "enum":[
+        "RETAIN",
+        "DELETE"
+      ]
+    },
     "DataSource":{
       "type":"structure",
       "required":[
@@ -1853,6 +1886,10 @@
           "shape":"DateTimestamp",
           "documentation":"<p>The time at which the data source was created.</p>"
         },
+        "dataDeletionPolicy":{
+          "shape":"DataDeletionPolicy",
+          "documentation":"<p>The deletion policy for the data source.</p>"
+        },
         "dataSourceConfiguration":{
           "shape":"DataSourceConfiguration",
           "documentation":"<p>Contains details about how the data source is stored.</p>"
@@ -1864,6 +1901,10 @@
         "description":{
           "shape":"Description",
           "documentation":"<p>The description of the data source.</p>"
+        },
+        "failureReasons":{
+          "shape":"FailureReasons",
+          "documentation":"<p>The details of the failure reasons related to the data source.</p>"
         },
         "knowledgeBaseId":{
           "shape":"Id",
@@ -1911,7 +1952,8 @@
       "type":"string",
       "enum":[
         "AVAILABLE",
-        "DELETING"
+        "DELETING",
+        "DELETE_UNSUCCESSFUL"
       ]
     },
     "DataSourceSummaries":{
@@ -2291,6 +2333,45 @@
       "max":99,
       "min":1
     },
+    "Function":{
+      "type":"structure",
+      "required":["name"],
+      "members":{
+        "description":{
+          "shape":"FunctionDescription",
+          "documentation":"<p>A description of the function and its purpose.</p>"
+        },
+        "name":{
+          "shape":"Name",
+          "documentation":"<p>A name for the function.</p>"
+        },
+        "parameters":{
+          "shape":"ParameterMap",
+          "documentation":"<p>The parameters that the agent elicits from the user to fulfill the function.</p>"
+        }
+      },
+      "documentation":"<p>Defines parameters that the agent needs to invoke from the user to complete the function. Corresponds to an action in an action group.</p> <p>This data type is used in the following API operations:</p> <ul> <li> <p> <a href=\"https://docs.aws.amazon.com/bedrock/latest/APIReference/API_agent_CreateAgentActionGroup.html#API_agent_CreateAgentActionGroup_RequestSyntax\">CreateAgentActionGroup request</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/bedrock/latest/APIReference/API_agent_CreateAgentActionGroup.html#API_agent_CreateAgentActionGroup_ResponseSyntax\">CreateAgentActionGroup response</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/bedrock/latest/APIReference/API_agent_UpdateAgentActionGroup.html#API_agent_UpdateAgentActionGroup_RequestSyntax\">UpdateAgentActionGroup request</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/bedrock/latest/APIReference/API_agent_UpdateAgentActionGroup.html#API_agent_UpdateAgentActionGroup_ResponseSyntax\">UpdateAgentActionGroup response</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/bedrock/latest/APIReference/API_agent_GetAgentActionGroup.html#API_agent_GetAgentActionGroup_ResponseSyntax\">GetAgentActionGroup response</a> </p> </li> </ul>"
+    },
+    "FunctionDescription":{
+      "type":"string",
+      "max":1200,
+      "min":1
+    },
+    "FunctionSchema":{
+      "type":"structure",
+      "members":{
+        "functions":{
+          "shape":"Functions",
+          "documentation":"<p>A list of functions that each define an action in the action group.</p>"
+        }
+      },
+      "documentation":"<p>Defines functions that each define parameters that the agent needs to invoke from the user. Each function represents an action in an action group.</p> <p>This data type is used in the following API operations:</p> <ul> <li> <p> <a href=\"https://docs.aws.amazon.com/bedrock/latest/APIReference/API_agent_CreateAgentActionGroup.html#API_agent_CreateAgentActionGroup_RequestSyntax\">CreateAgentActionGroup request</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/bedrock/latest/APIReference/API_agent_CreateAgentActionGroup.html#API_agent_CreateAgentActionGroup_ResponseSyntax\">CreateAgentActionGroup response</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/bedrock/latest/APIReference/API_agent_UpdateAgentActionGroup.html#API_agent_UpdateAgentActionGroup_RequestSyntax\">UpdateAgentActionGroup request</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/bedrock/latest/APIReference/API_agent_UpdateAgentActionGroup.html#API_agent_UpdateAgentActionGroup_ResponseSyntax\">UpdateAgentActionGroup response</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/bedrock/latest/APIReference/API_agent_GetAgentActionGroup.html#API_agent_GetAgentActionGroup_ResponseSyntax\">GetAgentActionGroup response</a> </p> </li> </ul>",
+      "union":true
+    },
+    "Functions":{
+      "type":"list",
+      "member":{"shape":"Function"}
+    },
     "GetAgentActionGroupRequest":{
       "type":"structure",
       "required":[
@@ -2620,7 +2701,7 @@
           "documentation":"<p>The time at which the ingestion job was last updated.</p>"
         }
       },
-      "documentation":"<p>Contains details about an ingestion job, which converts a data source to embeddings for a vector store in knowledge base.</p> <p>This data type is used in the following API operations:</p> <ul> <li> <p> <a href=\"https://docs.aws.amazon.com/bedrock/latest/APIReference/API_agent_StartIngestionJob.html#API_agent_StartIngestionJob_ResponseSyntax\">StartIngestionJob response</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/bedrock/latest/APIReference/API_agent_GetIngestionJob.html#API_agent_GetIngestionJob_ResponseSyntax\">GetIngestionJob response</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/bedrock/latest/APIReference/API_agent_ListIngestionJob.html#API_agent_ListIngestionJob_ResponseSyntax\">ListIngestionJob response</a> </p> </li> </ul>"
+      "documentation":"<p>Contains details about an ingestion job, which converts a data source to embeddings for a vector store in knowledge base.</p> <p>This data type is used in the following API operations:</p> <ul> <li> <p> <a href=\"https://docs.aws.amazon.com/bedrock/latest/APIReference/API_agent_StartIngestionJob.html#API_agent_StartIngestionJob_ResponseSyntax\">StartIngestionJob response</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/bedrock/latest/APIReference/API_agent_GetIngestionJob.html#API_agent_GetIngestionJob_ResponseSyntax\">GetIngestionJob response</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/bedrock/latest/APIReference/API_agent_ListIngestionJobs.html#API_agent_ListIngestionJobs_ResponseSyntax\">ListIngestionJob response</a> </p> </li> </ul>"
     },
     "IngestionJobFilter":{
       "type":"structure",
@@ -2913,7 +2994,8 @@
         "ACTIVE",
         "DELETING",
         "UPDATING",
-        "FAILED"
+        "FAILED",
+        "DELETE_UNSUCCESSFUL"
       ]
     },
     "KnowledgeBaseStorageType":{
@@ -3379,6 +3461,35 @@
       "min":0,
       "pattern":"^.*$"
     },
+    "ParameterDescription":{
+      "type":"string",
+      "max":500,
+      "min":1
+    },
+    "ParameterDetail":{
+      "type":"structure",
+      "required":["type"],
+      "members":{
+        "description":{
+          "shape":"ParameterDescription",
+          "documentation":"<p>A description of the parameter. Helps the foundation model determine how to elicit the parameters from the user.</p>"
+        },
+        "required":{
+          "shape":"Boolean",
+          "documentation":"<p>Whether the parameter is required for the agent to complete the function for action group invocation.</p>"
+        },
+        "type":{
+          "shape":"Type",
+          "documentation":"<p>The data type of the parameter.</p>"
+        }
+      },
+      "documentation":"<p>Contains details about a parameter in a function for an action group.</p> <p>This data type is used in the following API operations:</p> <ul> <li> <p> <a href=\"https://docs.aws.amazon.com/bedrock/latest/APIReference/API_agent_CreateAgentActionGroup.html#API_agent_CreateAgentActionGroup_RequestSyntax\">CreateAgentActionGroup request</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/bedrock/latest/APIReference/API_agent_CreateAgentActionGroup.html#API_agent_CreateAgentActionGroup_ResponseSyntax\">CreateAgentActionGroup response</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/bedrock/latest/APIReference/API_agent_UpdateAgentActionGroup.html#API_agent_UpdateAgentActionGroup_RequestSyntax\">UpdateAgentActionGroup request</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/bedrock/latest/APIReference/API_agent_UpdateAgentActionGroup.html#API_agent_UpdateAgentActionGroup_ResponseSyntax\">UpdateAgentActionGroup response</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/bedrock/latest/APIReference/API_agent_GetAgentActionGroup.html#API_agent_GetAgentActionGroup_ResponseSyntax\">GetAgentActionGroup response</a> </p> </li> </ul>"
+    },
+    "ParameterMap":{
+      "type":"map",
+      "key":{"shape":"Name"},
+      "value":{"shape":"ParameterDetail"}
+    },
     "Payload":{
       "type":"string",
       "sensitive":true
@@ -3731,6 +3842,10 @@
           "shape":"S3BucketArn",
           "documentation":"<p>The Amazon Resource Name (ARN) of the bucket that contains the data source.</p>"
         },
+        "bucketOwnerAccountId":{
+          "shape":"BucketOwnerAccountId",
+          "documentation":"<p>The account ID for the owner of the S3 bucket.</p>"
+        },
         "inclusionPrefixes":{
           "shape":"S3Prefixes",
           "documentation":"<p>A list of S3 prefixes that define the object containing the data sources. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/using-prefixes.html\">Organizing objects using prefixes</a>.</p>"
@@ -3965,6 +4080,16 @@
       "max":1,
       "min":0
     },
+    "Type":{
+      "type":"string",
+      "enum":[
+        "string",
+        "number",
+        "integer",
+        "boolean",
+        "array"
+      ]
+    },
     "UntagResourceRequest":{
       "type":"structure",
       "required":[
@@ -4037,6 +4162,10 @@
         "description":{
           "shape":"Description",
           "documentation":"<p>Specifies a new name for the action group.</p>"
+        },
+        "functionSchema":{
+          "shape":"FunctionSchema",
+          "documentation":"<p>Contains details about the function schema for the action group or the JSON or YAML-formatted payload defining the schema.</p>"
         },
         "parentActionGroupSignature":{
           "shape":"ActionGroupSignature",
@@ -4212,6 +4341,10 @@
         "name"
       ],
       "members":{
+        "dataDeletionPolicy":{
+          "shape":"DataDeletionPolicy",
+          "documentation":"<p>The data deletion policy of the updated data source.</p>"
+        },
         "dataSourceConfiguration":{
           "shape":"DataSourceConfiguration",
           "documentation":"<p>Contains details about the storage configuration of the data source.</p>"

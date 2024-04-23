@@ -12,6 +12,68 @@
     "uid":"bedrock-2023-04-20"
   },
   "operations":{
+    "CreateEvaluationJob":{
+      "name":"CreateEvaluationJob",
+      "http":{
+        "method":"POST",
+        "requestUri":"/evaluation-jobs",
+        "responseCode":202
+      },
+      "input":{"shape":"CreateEvaluationJobRequest"},
+      "output":{"shape":"CreateEvaluationJobResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"},
+        {"shape":"ConflictException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ServiceQuotaExceededException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>API operation for creating and managing Amazon Bedrock automatic model evaluation jobs and model evaluation jobs that use human workers. To learn more about the requirements for creating a model evaluation job see, <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/model-evaluation.html\">Model evaluations</a>.</p>",
+      "idempotent":true
+    },
+    "CreateGuardrail":{
+      "name":"CreateGuardrail",
+      "http":{
+        "method":"POST",
+        "requestUri":"/guardrails",
+        "responseCode":202
+      },
+      "input":{"shape":"CreateGuardrailRequest"},
+      "output":{"shape":"CreateGuardrailResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"},
+        {"shape":"ConflictException"},
+        {"shape":"InternalServerException"},
+        {"shape":"TooManyTagsException"},
+        {"shape":"ServiceQuotaExceededException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Creates a guardrail to block topics and to filter out harmful content.</p> <ul> <li> <p>Specify a <code>name</code> and optional <code>description</code>.</p> </li> <li> <p>Specify messages for when the guardrail successfully blocks a prompt or a model response in the <code>blockedInputMessaging</code> and <code>blockedOutputsMessaging</code> fields.</p> </li> <li> <p>Specify topics for the guardrail to deny in the <code>topicPolicyConfig</code> object. Each <a href=\"https://docs.aws.amazon.com/bedrock/latest/APIReference/API_GuardrailTopicConfig.html\">GuardrailTopicConfig</a> object in the <code>topicsConfig</code> list pertains to one topic.</p> <ul> <li> <p>Give a <code>name</code> and <code>description</code> so that the guardrail can properly identify the topic.</p> </li> <li> <p>Specify <code>DENY</code> in the <code>type</code> field.</p> </li> <li> <p>(Optional) Provide up to five prompts that you would categorize as belonging to the topic in the <code>examples</code> list.</p> </li> </ul> </li> <li> <p>Specify filter strengths for the harmful categories defined in Amazon Bedrock in the <code>contentPolicyConfig</code> object. Each <a href=\"https://docs.aws.amazon.com/bedrock/latest/APIReference/API_GuardrailContentFilterConfig.html\">GuardrailContentFilterConfig</a> object in the <code>filtersConfig</code> list pertains to a harmful category. For more information, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/guardrails-filters\">Content filters</a>. For more information about the fields in a content filter, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/APIReference/API_GuardrailContentFilterConfig.html\">GuardrailContentFilterConfig</a>.</p> <ul> <li> <p>Specify the category in the <code>type</code> field.</p> </li> <li> <p>Specify the strength of the filter for prompts in the <code>inputStrength</code> field and for model responses in the <code>strength</code> field of the <a href=\"https://docs.aws.amazon.com/bedrock/latest/APIReference/API_GuardrailContentFilterConfig.html\">GuardrailContentFilterConfig</a>.</p> </li> </ul> </li> <li> <p>(Optional) For security, include the ARN of a KMS key in the <code>kmsKeyId</code> field.</p> </li> <li> <p>(Optional) Attach any tags to the guardrail in the <code>tags</code> object. For more information, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/tagging\">Tag resources</a>.</p> </li> </ul>"
+    },
+    "CreateGuardrailVersion":{
+      "name":"CreateGuardrailVersion",
+      "http":{
+        "method":"POST",
+        "requestUri":"/guardrails/{guardrailIdentifier}",
+        "responseCode":202
+      },
+      "input":{"shape":"CreateGuardrailVersionRequest"},
+      "output":{"shape":"CreateGuardrailVersionResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"},
+        {"shape":"ConflictException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ServiceQuotaExceededException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Creates a version of the guardrail. Use this API to create a snapshot of the guardrail when you are satisfied with a configuration, or to compare the configuration with another version.</p>"
+    },
     "CreateModelCustomizationJob":{
       "name":"CreateModelCustomizationJob",
       "http":{
@@ -31,7 +93,7 @@
         {"shape":"ServiceQuotaExceededException"},
         {"shape":"ThrottlingException"}
       ],
-      "documentation":"<p>Creates a fine-tuning job to customize a base model.</p> <p>You specify the base foundation model and the location of the training data. After the model-customization job completes successfully, your custom model resource will be ready to use. Training data contains input and output text for each record in a JSONL format. Optionally, you can specify validation data in the same format as the training data. Amazon Bedrock returns validation loss metrics and output generations after the job completes. </p> <p> Model-customization jobs are asynchronous and the completion time depends on the base model and the training/validation data size. To monitor a job, use the <code>GetModelCustomizationJob</code> operation to retrieve the job status.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/custom-models.html\">Custom models</a> in the Bedrock User Guide.</p>",
+      "documentation":"<p>Creates a fine-tuning job to customize a base model.</p> <p>You specify the base foundation model and the location of the training data. After the model-customization job completes successfully, your custom model resource will be ready to use. Amazon Bedrock returns validation loss metrics and output generations after the job completes. </p> <p>For information on the format of training and validation data, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/model-customization-prepare.html\">Prepare the datasets</a>.</p> <p> Model-customization jobs are asynchronous and the completion time depends on the base model and the training/validation data size. To monitor a job, use the <code>GetModelCustomizationJob</code> operation to retrieve the job status.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/custom-models.html\">Custom models</a> in the Amazon Bedrock User Guide.</p>",
       "idempotent":true
     },
     "CreateProvisionedModelThroughput":{
@@ -52,7 +114,7 @@
         {"shape":"ServiceQuotaExceededException"},
         {"shape":"ThrottlingException"}
       ],
-      "documentation":"<p>Creates a provisioned throughput with dedicated capacity for a foundation model or a fine-tuned model.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/what-is-service.html\">Provisioned throughput</a> in the Bedrock User Guide.</p>",
+      "documentation":"<p>Creates dedicated throughput for a base or custom model with the model units and for the duration that you specify. For pricing details, see <a href=\"http://aws.amazon.com/bedrock/pricing/\">Amazon Bedrock Pricing</a>. For more information, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/prov-throughput.html\">Provisioned Throughput</a> in the Amazon Bedrock User Guide.</p>",
       "idempotent":true
     },
     "DeleteCustomModel":{
@@ -72,7 +134,27 @@
         {"shape":"InternalServerException"},
         {"shape":"ThrottlingException"}
       ],
-      "documentation":"<p>Deletes a custom model that you created earlier. For more information, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/custom-models.html\">Custom models</a> in the Bedrock User Guide.</p>",
+      "documentation":"<p>Deletes a custom model that you created earlier. For more information, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/custom-models.html\">Custom models</a> in the Amazon Bedrock User Guide.</p>",
+      "idempotent":true
+    },
+    "DeleteGuardrail":{
+      "name":"DeleteGuardrail",
+      "http":{
+        "method":"DELETE",
+        "requestUri":"/guardrails/{guardrailIdentifier}",
+        "responseCode":202
+      },
+      "input":{"shape":"DeleteGuardrailRequest"},
+      "output":{"shape":"DeleteGuardrailResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"},
+        {"shape":"ConflictException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Deletes a guardrail.</p> <ul> <li> <p>To delete a guardrail, only specify the ARN of the guardrail in the <code>guardrailIdentifier</code> field. If you delete a guardrail, all of its versions will be deleted.</p> </li> <li> <p>To delete a version of a guardrail, specify the ARN of the guardrail in the <code>guardrailIdentifier</code> field and the version in the <code>guardrailVersion</code> field.</p> </li> </ul>",
       "idempotent":true
     },
     "DeleteModelInvocationLoggingConfiguration":{
@@ -109,7 +191,7 @@
         {"shape":"InternalServerException"},
         {"shape":"ThrottlingException"}
       ],
-      "documentation":"<p>Deletes a provisioned throughput. For more information, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/what-is-service.html\">Provisioned throughput</a> in the Bedrock User Guide.</p>",
+      "documentation":"<p>Deletes a Provisioned Throughput. You can't delete a Provisioned Throughput before the commitment term is over. For more information, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/prov-throughput.html\">Provisioned Throughput</a> in the Amazon Bedrock User Guide.</p>",
       "idempotent":true
     },
     "GetCustomModel":{
@@ -128,7 +210,25 @@
         {"shape":"InternalServerException"},
         {"shape":"ThrottlingException"}
       ],
-      "documentation":"<p>Get the properties associated with a Amazon Bedrock custom model that you have created.For more information, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/custom-models.html\">Custom models</a> in the Bedrock User Guide.</p>"
+      "documentation":"<p>Get the properties associated with a Amazon Bedrock custom model that you have created.For more information, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/custom-models.html\">Custom models</a> in the Amazon Bedrock User Guide.</p>"
+    },
+    "GetEvaluationJob":{
+      "name":"GetEvaluationJob",
+      "http":{
+        "method":"GET",
+        "requestUri":"/evaluation-jobs/{jobIdentifier}",
+        "responseCode":200
+      },
+      "input":{"shape":"GetEvaluationJobRequest"},
+      "output":{"shape":"GetEvaluationJobResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Retrieves the properties associated with a model evaluation job, including the status of the job. For more information, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/latest/userguide/model-evaluation.html\">Model evaluations</a>.</p>"
     },
     "GetFoundationModel":{
       "name":"GetFoundationModel",
@@ -148,6 +248,24 @@
       ],
       "documentation":"<p>Get details about a Amazon Bedrock foundation model.</p>"
     },
+    "GetGuardrail":{
+      "name":"GetGuardrail",
+      "http":{
+        "method":"GET",
+        "requestUri":"/guardrails/{guardrailIdentifier}",
+        "responseCode":200
+      },
+      "input":{"shape":"GetGuardrailRequest"},
+      "output":{"shape":"GetGuardrailResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Gets details about a guardrail. If you don't specify a version, the response returns details for the <code>DRAFT</code> version.</p>"
+    },
     "GetModelCustomizationJob":{
       "name":"GetModelCustomizationJob",
       "http":{
@@ -164,7 +282,7 @@
         {"shape":"InternalServerException"},
         {"shape":"ThrottlingException"}
       ],
-      "documentation":"<p>Retrieves the properties associated with a model-customization job, including the status of the job. For more information, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/custom-models.html\">Custom models</a> in the Bedrock User Guide.</p>"
+      "documentation":"<p>Retrieves the properties associated with a model-customization job, including the status of the job. For more information, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/custom-models.html\">Custom models</a> in the Amazon Bedrock User Guide.</p>"
     },
     "GetModelInvocationLoggingConfiguration":{
       "name":"GetModelInvocationLoggingConfiguration",
@@ -198,7 +316,7 @@
         {"shape":"InternalServerException"},
         {"shape":"ThrottlingException"}
       ],
-      "documentation":"<p>Get details for a provisioned throughput. For more information, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/what-is-service.html\">Provisioned throughput</a> in the Bedrock User Guide.</p>"
+      "documentation":"<p>Returns details for a Provisioned Throughput. For more information, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/prov-throughput.html\">Provisioned Throughput</a> in the Amazon Bedrock User Guide.</p>"
     },
     "ListCustomModels":{
       "name":"ListCustomModels",
@@ -215,7 +333,24 @@
         {"shape":"InternalServerException"},
         {"shape":"ThrottlingException"}
       ],
-      "documentation":"<p>Returns a list of the custom models that you have created with the <code>CreateModelCustomizationJob</code> operation.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/custom-models.html\">Custom models</a> in the Bedrock User Guide.</p>"
+      "documentation":"<p>Returns a list of the custom models that you have created with the <code>CreateModelCustomizationJob</code> operation.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/custom-models.html\">Custom models</a> in the Amazon Bedrock User Guide.</p>"
+    },
+    "ListEvaluationJobs":{
+      "name":"ListEvaluationJobs",
+      "http":{
+        "method":"GET",
+        "requestUri":"/evaluation-jobs",
+        "responseCode":200
+      },
+      "input":{"shape":"ListEvaluationJobsRequest"},
+      "output":{"shape":"ListEvaluationJobsResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Lists model evaluation jobs.</p>"
     },
     "ListFoundationModels":{
       "name":"ListFoundationModels",
@@ -232,7 +367,25 @@
         {"shape":"InternalServerException"},
         {"shape":"ThrottlingException"}
       ],
-      "documentation":"<p>List of Amazon Bedrock foundation models that you can use. For more information, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/foundation-models.html\">Foundation models</a> in the Bedrock User Guide.</p>"
+      "documentation":"<p>Lists Amazon Bedrock foundation models that you can use. You can filter the results with the request parameters. For more information, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/foundation-models.html\">Foundation models</a> in the Amazon Bedrock User Guide.</p>"
+    },
+    "ListGuardrails":{
+      "name":"ListGuardrails",
+      "http":{
+        "method":"GET",
+        "requestUri":"/guardrails",
+        "responseCode":200
+      },
+      "input":{"shape":"ListGuardrailsRequest"},
+      "output":{"shape":"ListGuardrailsResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Lists details about all the guardrails in an account. To list the <code>DRAFT</code> version of all your guardrails, don't specify the <code>guardrailIdentifier</code> field. To list all versions of a guardrail, specify the ARN of the guardrail in the <code>guardrailIdentifier</code> field.</p> <p>You can set the maximum number of results to return in a response in the <code>maxResults</code> field. If there are more results than the number you set, the response returns a <code>nextToken</code> that you can send in another <code>ListGuardrails</code> request to see the next batch of results.</p>"
     },
     "ListModelCustomizationJobs":{
       "name":"ListModelCustomizationJobs",
@@ -249,7 +402,7 @@
         {"shape":"InternalServerException"},
         {"shape":"ThrottlingException"}
       ],
-      "documentation":"<p>Returns a list of model customization jobs that you have submitted. You can filter the jobs to return based on one or more criteria.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/custom-models.html\">Custom models</a> in the Bedrock User Guide.</p>"
+      "documentation":"<p>Returns a list of model customization jobs that you have submitted. You can filter the jobs to return based on one or more criteria.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/custom-models.html\">Custom models</a> in the Amazon Bedrock User Guide.</p>"
     },
     "ListProvisionedModelThroughputs":{
       "name":"ListProvisionedModelThroughputs",
@@ -266,7 +419,7 @@
         {"shape":"InternalServerException"},
         {"shape":"ThrottlingException"}
       ],
-      "documentation":"<p>List the provisioned capacities. For more information, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/what-is-service.html\">Provisioned throughput</a> in the Bedrock User Guide.</p>"
+      "documentation":"<p>Lists the Provisioned Throughputs in the account. For more information, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/prov-throughput.html\">Provisioned Throughput</a> in the Amazon Bedrock User Guide.</p>"
     },
     "ListTagsForResource":{
       "name":"ListTagsForResource",
@@ -284,7 +437,7 @@
         {"shape":"InternalServerException"},
         {"shape":"ThrottlingException"}
       ],
-      "documentation":"<p>List the tags associated with the specified resource.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/what-is-service.html\">Tagging resources</a> in the Bedrock User Guide.</p>"
+      "documentation":"<p>List the tags associated with the specified resource.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/tagging.html\">Tagging resources</a> in the Amazon Bedrock User Guide.</p>"
     },
     "PutModelInvocationLoggingConfiguration":{
       "name":"PutModelInvocationLoggingConfiguration",
@@ -304,6 +457,25 @@
       "documentation":"<p>Set the configuration values for model invocation logging.</p>",
       "idempotent":true
     },
+    "StopEvaluationJob":{
+      "name":"StopEvaluationJob",
+      "http":{
+        "method":"POST",
+        "requestUri":"/evaluation-job/{jobIdentifier}/stop",
+        "responseCode":200
+      },
+      "input":{"shape":"StopEvaluationJobRequest"},
+      "output":{"shape":"StopEvaluationJobResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"},
+        {"shape":"ConflictException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Stops an in progress model evaluation job.</p>"
+    },
     "StopModelCustomizationJob":{
       "name":"StopModelCustomizationJob",
       "http":{
@@ -321,7 +493,7 @@
         {"shape":"InternalServerException"},
         {"shape":"ThrottlingException"}
       ],
-      "documentation":"<p>Stops an active model customization job. For more information, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/custom-models.html\">Custom models</a> in the Bedrock User Guide.</p>",
+      "documentation":"<p>Stops an active model customization job. For more information, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/custom-models.html\">Custom models</a> in the Amazon Bedrock User Guide.</p>",
       "idempotent":true
     },
     "TagResource":{
@@ -341,7 +513,7 @@
         {"shape":"TooManyTagsException"},
         {"shape":"ThrottlingException"}
       ],
-      "documentation":"<p>Associate tags with a resource. For more information, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/what-is-service.html\">Tagging resources</a> in the Bedrock User Guide.</p>"
+      "documentation":"<p>Associate tags with a resource. For more information, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/tagging.html\">Tagging resources</a> in the Amazon Bedrock User Guide.</p>"
     },
     "UntagResource":{
       "name":"UntagResource",
@@ -359,7 +531,28 @@
         {"shape":"InternalServerException"},
         {"shape":"ThrottlingException"}
       ],
-      "documentation":"<p>Remove one or more tags from a resource. For more information, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/what-is-service.html\">Tagging resources</a> in the Bedrock User Guide.</p>"
+      "documentation":"<p>Remove one or more tags from a resource. For more information, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/tagging.html\">Tagging resources</a> in the Amazon Bedrock User Guide.</p>"
+    },
+    "UpdateGuardrail":{
+      "name":"UpdateGuardrail",
+      "http":{
+        "method":"PUT",
+        "requestUri":"/guardrails/{guardrailIdentifier}",
+        "responseCode":202
+      },
+      "input":{"shape":"UpdateGuardrailRequest"},
+      "output":{"shape":"UpdateGuardrailResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"},
+        {"shape":"ConflictException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ServiceQuotaExceededException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Updates a guardrail with the values you specify.</p> <ul> <li> <p>Specify a <code>name</code> and optional <code>description</code>.</p> </li> <li> <p>Specify messages for when the guardrail successfully blocks a prompt or a model response in the <code>blockedInputMessaging</code> and <code>blockedOutputsMessaging</code> fields.</p> </li> <li> <p>Specify topics for the guardrail to deny in the <code>topicPolicyConfig</code> object. Each <a href=\"https://docs.aws.amazon.com/bedrock/latest/APIReference/API_GuardrailTopicConfig.html\">GuardrailTopicConfig</a> object in the <code>topicsConfig</code> list pertains to one topic.</p> <ul> <li> <p>Give a <code>name</code> and <code>description</code> so that the guardrail can properly identify the topic.</p> </li> <li> <p>Specify <code>DENY</code> in the <code>type</code> field.</p> </li> <li> <p>(Optional) Provide up to five prompts that you would categorize as belonging to the topic in the <code>examples</code> list.</p> </li> </ul> </li> <li> <p>Specify filter strengths for the harmful categories defined in Amazon Bedrock in the <code>contentPolicyConfig</code> object. Each <a href=\"https://docs.aws.amazon.com/bedrock/latest/APIReference/API_GuardrailContentFilterConfig.html\">GuardrailContentFilterConfig</a> object in the <code>filtersConfig</code> list pertains to a harmful category. For more information, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/guardrails-filters\">Content filters</a>. For more information about the fields in a content filter, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/APIReference/API_GuardrailContentFilterConfig.html\">GuardrailContentFilterConfig</a>.</p> <ul> <li> <p>Specify the category in the <code>type</code> field.</p> </li> <li> <p>Specify the strength of the filter for prompts in the <code>inputStrength</code> field and for model responses in the <code>strength</code> field of the <a href=\"https://docs.aws.amazon.com/bedrock/latest/APIReference/API_GuardrailContentFilterConfig.html\">GuardrailContentFilterConfig</a>.</p> </li> </ul> </li> <li> <p>(Optional) For security, include the ARN of a KMS key in the <code>kmsKeyId</code> field.</p> </li> <li> <p>(Optional) Attach any tags to the guardrail in the <code>tags</code> object. For more information, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/tagging\">Tag resources</a>.</p> </li> </ul>",
+      "idempotent":true
     },
     "UpdateProvisionedModelThroughput":{
       "name":"UpdateProvisionedModelThroughput",
@@ -377,7 +570,7 @@
         {"shape":"InternalServerException"},
         {"shape":"ThrottlingException"}
       ],
-      "documentation":"<p>Update a provisioned throughput. For more information, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/what-is-service.html\">Provisioned throughput</a> in the Bedrock User Guide.</p>",
+      "documentation":"<p>Updates the name or associated model for a Provisioned Throughput. For more information, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/prov-throughput.html\">Provisioned Throughput</a> in the Amazon Bedrock User Guide.</p>",
       "idempotent":true
     }
   },
@@ -393,6 +586,17 @@
         "senderFault":true
       },
       "exception":true
+    },
+    "AutomatedEvaluationConfig":{
+      "type":"structure",
+      "required":["datasetMetricConfigs"],
+      "members":{
+        "datasetMetricConfigs":{
+          "shape":"EvaluationDatasetMetricConfigs",
+          "documentation":"<p>Specifies the required elements for an automatic model evaluation job.</p>"
+        }
+      },
+      "documentation":"<p>Use to specify a automatic model evaluation job. The <code>EvaluationDatasetMetricConfig</code> object is used to specify the prompt datasets, task type, and metric names.</p>"
     },
     "BaseModelIdentifier":{
       "type":"string",
@@ -434,7 +638,7 @@
         },
         "roleArn":{
           "shape":"RoleArn",
-          "documentation":"<p>The role ARN.</p>"
+          "documentation":"<p>The role Amazon Resource Name (ARN).</p>"
         },
         "largeDataDeliveryS3Config":{
           "shape":"S3Config",
@@ -462,6 +666,185 @@
       },
       "exception":true
     },
+    "CreateEvaluationJobRequest":{
+      "type":"structure",
+      "required":[
+        "jobName",
+        "roleArn",
+        "evaluationConfig",
+        "inferenceConfig",
+        "outputDataConfig"
+      ],
+      "members":{
+        "jobName":{
+          "shape":"EvaluationJobName",
+          "documentation":"<p>The name of the model evaluation job. Model evaluation job names must unique with your AWS account, and your account's AWS region.</p>"
+        },
+        "jobDescription":{
+          "shape":"EvaluationJobDescription",
+          "documentation":"<p>A description of the model evaluation job.</p>"
+        },
+        "clientRequestToken":{
+          "shape":"IdempotencyToken",
+          "documentation":"<p>A unique, case-sensitive identifier to ensure that the API request completes no more than one time. If this token matches a previous request, Amazon Bedrock ignores the request, but does not return an error. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/APIReference/Run_Instance_Idempotency.html\">Ensuring idempotency</a>.</p>",
+          "idempotencyToken":true
+        },
+        "roleArn":{
+          "shape":"RoleArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of an IAM service role that Amazon Bedrock can assume to perform tasks on your behalf. The service role must have Amazon Bedrock as the service principal, and provide access to any Amazon S3 buckets specified in the <code>EvaluationConfig</code> object. To pass this role to Amazon Bedrock, the caller of this API must have the <code>iam:PassRole</code> permission. To learn more about the required permissions, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/model-evaluation-security.html\">Required permissions</a>.</p>"
+        },
+        "customerEncryptionKeyId":{
+          "shape":"KmsKeyId",
+          "documentation":"<p>Specify your customer managed key ARN that will be used to encrypt your model evaluation job.</p>"
+        },
+        "jobTags":{
+          "shape":"TagList",
+          "documentation":"<p>Tags to attach to the model evaluation job.</p>"
+        },
+        "evaluationConfig":{
+          "shape":"EvaluationConfig",
+          "documentation":"<p>Specifies whether the model evaluation job is automatic or uses human worker.</p>"
+        },
+        "inferenceConfig":{
+          "shape":"EvaluationInferenceConfig",
+          "documentation":"<p>Specify the models you want to use in your model evaluation job. Automatic model evaluation jobs support a single model, and model evaluation job that use human workers support two models.</p>"
+        },
+        "outputDataConfig":{
+          "shape":"EvaluationOutputDataConfig",
+          "documentation":"<p>An object that defines where the results of model evaluation job will be saved in Amazon S3.</p>"
+        }
+      }
+    },
+    "CreateEvaluationJobResponse":{
+      "type":"structure",
+      "required":["jobArn"],
+      "members":{
+        "jobArn":{
+          "shape":"EvaluationJobArn",
+          "documentation":"<p>The ARN of the model evaluation job.</p>"
+        }
+      }
+    },
+    "CreateGuardrailRequest":{
+      "type":"structure",
+      "required":[
+        "name",
+        "blockedInputMessaging",
+        "blockedOutputsMessaging"
+      ],
+      "members":{
+        "name":{
+          "shape":"GuardrailName",
+          "documentation":"<p>The name to give the guardrail.</p>"
+        },
+        "description":{
+          "shape":"GuardrailDescription",
+          "documentation":"<p>A description of the guardrail.</p>"
+        },
+        "topicPolicyConfig":{
+          "shape":"GuardrailTopicPolicyConfig",
+          "documentation":"<p>The topic policies to configure for the guardrail.</p>"
+        },
+        "contentPolicyConfig":{
+          "shape":"GuardrailContentPolicyConfig",
+          "documentation":"<p>The content filter policies to configure for the guardrail.</p>"
+        },
+        "wordPolicyConfig":{
+          "shape":"GuardrailWordPolicyConfig",
+          "documentation":"<p>The word policy you configure for the guardrail.</p>"
+        },
+        "sensitiveInformationPolicyConfig":{
+          "shape":"GuardrailSensitiveInformationPolicyConfig",
+          "documentation":"<p>The sensitive information policy to configure for the guardrail.</p>"
+        },
+        "blockedInputMessaging":{
+          "shape":"GuardrailBlockedMessaging",
+          "documentation":"<p>The message to return when the guardrail blocks a prompt.</p>"
+        },
+        "blockedOutputsMessaging":{
+          "shape":"GuardrailBlockedMessaging",
+          "documentation":"<p>The message to return when the guardrail blocks a model response.</p>"
+        },
+        "kmsKeyId":{
+          "shape":"KmsKeyId",
+          "documentation":"<p>The ARN of the KMS key that you use to encrypt the guardrail.</p>"
+        },
+        "tags":{
+          "shape":"TagList",
+          "documentation":"<p>The tags that you want to attach to the guardrail. </p>"
+        },
+        "clientRequestToken":{
+          "shape":"IdempotencyToken",
+          "documentation":"<p>A unique, case-sensitive identifier to ensure that the API request completes no more than once. If this token matches a previous request, Amazon Bedrock ignores the request, but does not return an error. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/APIReference/Run_Instance_Idempotency.html\">Ensuring idempotency</a> in the <i>Amazon S3 User Guide</i>.</p>",
+          "idempotencyToken":true
+        }
+      }
+    },
+    "CreateGuardrailResponse":{
+      "type":"structure",
+      "required":[
+        "guardrailId",
+        "guardrailArn",
+        "version",
+        "createdAt"
+      ],
+      "members":{
+        "guardrailId":{
+          "shape":"GuardrailId",
+          "documentation":"<p>The unique identifier of the guardrail that was created.</p>"
+        },
+        "guardrailArn":{
+          "shape":"GuardrailArn",
+          "documentation":"<p>The ARN of the guardrail that was created.</p>"
+        },
+        "version":{
+          "shape":"GuardrailDraftVersion",
+          "documentation":"<p>The version of the guardrail that was created. This value should be 1.</p>"
+        },
+        "createdAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time at which the guardrail was created.</p>"
+        }
+      }
+    },
+    "CreateGuardrailVersionRequest":{
+      "type":"structure",
+      "required":["guardrailIdentifier"],
+      "members":{
+        "guardrailIdentifier":{
+          "shape":"GuardrailIdentifier",
+          "documentation":"<p>The unique identifier of the guardrail.</p>",
+          "location":"uri",
+          "locationName":"guardrailIdentifier"
+        },
+        "description":{
+          "shape":"GuardrailDescription",
+          "documentation":"<p>A description of the guardrail version.</p>"
+        },
+        "clientRequestToken":{
+          "shape":"IdempotencyToken",
+          "documentation":"<p>A unique, case-sensitive identifier to ensure that the API request completes no more than once. If this token matches a previous request, Amazon Bedrock ignores the request, but does not return an error. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/APIReference/Run_Instance_Idempotency.html\">Ensuring idempotency</a> in the <i>Amazon S3 User Guide</i>.</p>",
+          "idempotencyToken":true
+        }
+      }
+    },
+    "CreateGuardrailVersionResponse":{
+      "type":"structure",
+      "required":[
+        "guardrailId",
+        "version"
+      ],
+      "members":{
+        "guardrailId":{
+          "shape":"GuardrailId",
+          "documentation":"<p>The unique identifier of the guardrail.</p>"
+        },
+        "version":{
+          "shape":"GuardrailNumericalVersion",
+          "documentation":"<p>The number of the version of the guardrail.</p>"
+        }
+      }
+    },
     "CreateModelCustomizationJobRequest":{
       "type":"structure",
       "required":[
@@ -476,19 +859,19 @@
       "members":{
         "jobName":{
           "shape":"JobName",
-          "documentation":"<p>Enter a unique name for the fine-tuning job.</p>"
+          "documentation":"<p>A name for the fine-tuning job.</p>"
         },
         "customModelName":{
           "shape":"CustomModelName",
-          "documentation":"<p>Enter a name for the custom model.</p>"
+          "documentation":"<p>A name for the resulting custom model.</p>"
         },
         "roleArn":{
           "shape":"RoleArn",
-          "documentation":"<p>The Amazon Resource Name (ARN) of an IAM role that Amazon Bedrock can assume to perform tasks on your behalf. For example, during model training, Amazon Bedrock needs your permission to read input data from an S3 bucket, write model artifacts to an S3 bucket. To pass this role to Amazon Bedrock, the caller of this API must have the <code>iam:PassRole</code> permission. </p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of an IAM service role that Amazon Bedrock can assume to perform tasks on your behalf. For example, during model training, Amazon Bedrock needs your permission to read input data from an S3 bucket, write model artifacts to an S3 bucket. To pass this role to Amazon Bedrock, the caller of this API must have the <code>iam:PassRole</code> permission. </p>"
         },
         "clientRequestToken":{
           "shape":"IdempotencyToken",
-          "documentation":"<p>Unique token value that you can provide. The GetModelCustomizationJob response includes the same token value.</p>",
+          "documentation":"<p>A unique, case-sensitive identifier to ensure that the API request completes no more than one time. If this token matches a previous request, Amazon Bedrock ignores the request, but does not return an error. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/APIReference/Run_Instance_Idempotency.html\">Ensuring idempotency</a>.</p>",
           "idempotencyToken":true
         },
         "baseModelIdentifier":{
@@ -505,11 +888,11 @@
         },
         "jobTags":{
           "shape":"TagList",
-          "documentation":"<p>Assign tags to the job.</p>"
+          "documentation":"<p>Tags to attach to the job.</p>"
         },
         "customModelTags":{
           "shape":"TagList",
-          "documentation":"<p>Assign tags to the custom model.</p>"
+          "documentation":"<p>Tags to attach to the resulting custom model.</p>"
         },
         "trainingDataConfig":{
           "shape":"TrainingDataConfig",
@@ -525,7 +908,7 @@
         },
         "hyperParameters":{
           "shape":"ModelCustomizationHyperParameters",
-          "documentation":"<p>Parameters related to tuning the model.</p>"
+          "documentation":"<p>Parameters related to tuning the model. For details on the format for different models, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/custom-models-hp.html\">Custom model hyperparameters</a>.</p>"
         },
         "vpcConfig":{
           "shape":"VpcConfig",
@@ -539,7 +922,7 @@
       "members":{
         "jobArn":{
           "shape":"ModelCustomizationJobArn",
-          "documentation":"<p>ARN of the fine tuning job</p>"
+          "documentation":"<p>Amazon Resource Name (ARN) of the fine tuning job</p>"
         }
       }
     },
@@ -553,28 +936,28 @@
       "members":{
         "clientRequestToken":{
           "shape":"IdempotencyToken",
-          "documentation":"<p>Unique token value that you can provide. If this token matches a previous request, Amazon Bedrock ignores the request, but does not return an error.</p>",
+          "documentation":"<p>A unique, case-sensitive identifier to ensure that the API request completes no more than one time. If this token matches a previous request, Amazon Bedrock ignores the request, but does not return an error. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/APIReference/Run_Instance_Idempotency.html\">Ensuring idempotency</a> in the Amazon S3 User Guide.</p>",
           "idempotencyToken":true
         },
         "modelUnits":{
           "shape":"PositiveInteger",
-          "documentation":"<p>Number of model units to allocate.</p>"
+          "documentation":"<p>Number of model units to allocate. A model unit delivers a specific throughput level for the specified model. The throughput level of a model unit specifies the total number of input and output tokens that it can process and generate within a span of one minute. By default, your account has no model units for purchasing Provisioned Throughputs with commitment. You must first visit the <a href=\"https://console.aws.amazon.com/support/home#/case/create?issueType=service-limit-increase\">Amazon Web Services support center</a> to request MUs.</p> <p>For model unit quotas, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/quotas.html#prov-thru-quotas\">Provisioned Throughput quotas</a> in the Amazon Bedrock User Guide.</p> <p>For more information about what an MU specifies, contact your Amazon Web Services account manager.</p>"
         },
         "provisionedModelName":{
           "shape":"ProvisionedModelName",
-          "documentation":"<p>Unique name for this provisioned throughput.</p>"
+          "documentation":"<p>The name for this Provisioned Throughput.</p>"
         },
         "modelId":{
           "shape":"ModelIdentifier",
-          "documentation":"<p>Name or ARN of the model to associate with this provisioned throughput.</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) or name of the model to associate with this Provisioned Throughput. For a list of models for which you can purchase Provisioned Throughput, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/model-ids.html#prov-throughput-models\">Amazon Bedrock model IDs for purchasing Provisioned Throughput</a> in the Amazon Bedrock User Guide.</p>"
         },
         "commitmentDuration":{
           "shape":"CommitmentDuration",
-          "documentation":"<p>Commitment duration requested for the provisioned throughput.</p>"
+          "documentation":"<p>The commitment duration requested for the Provisioned Throughput. Billing occurs hourly and is discounted for longer commitment terms. To request a no-commit Provisioned Throughput, omit this field.</p> <p>Custom models support all levels of commitment. To see which base models support no commitment, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/pt-supported.html\">Supported regions and models for Provisioned Throughput</a> in the Amazon Bedrock User Guide</p>"
         },
         "tags":{
           "shape":"TagList",
-          "documentation":"<p>Tags to associate with this provisioned throughput.</p>"
+          "documentation":"<p>Tags to associate with this Provisioned Throughput.</p>"
         }
       }
     },
@@ -584,7 +967,7 @@
       "members":{
         "provisionedModelArn":{
           "shape":"ProvisionedModelArn",
-          "documentation":"<p>The ARN for this provisioned throughput.</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) for this Provisioned Throughput.</p>"
         }
       }
     },
@@ -612,7 +995,7 @@
       "members":{
         "modelArn":{
           "shape":"CustomModelArn",
-          "documentation":"<p>The ARN of the custom model.</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of the custom model.</p>"
         },
         "modelName":{
           "shape":"CustomModelName",
@@ -624,7 +1007,7 @@
         },
         "baseModelArn":{
           "shape":"ModelArn",
-          "documentation":"<p>The base model ARN.</p>"
+          "documentation":"<p>The base model Amazon Resource Name (ARN).</p>"
         },
         "baseModelName":{
           "shape":"ModelName",
@@ -665,6 +1048,29 @@
       "members":{
       }
     },
+    "DeleteGuardrailRequest":{
+      "type":"structure",
+      "required":["guardrailIdentifier"],
+      "members":{
+        "guardrailIdentifier":{
+          "shape":"GuardrailIdentifier",
+          "documentation":"<p>The unique identifier of the guardrail.</p>",
+          "location":"uri",
+          "locationName":"guardrailIdentifier"
+        },
+        "guardrailVersion":{
+          "shape":"GuardrailNumericalVersion",
+          "documentation":"<p>The version of the guardrail.</p>",
+          "location":"querystring",
+          "locationName":"guardrailVersion"
+        }
+      }
+    },
+    "DeleteGuardrailResponse":{
+      "type":"structure",
+      "members":{
+      }
+    },
     "DeleteModelInvocationLoggingConfigurationRequest":{
       "type":"structure",
       "members":{
@@ -681,7 +1087,7 @@
       "members":{
         "provisionedModelId":{
           "shape":"ProvisionedModelId",
-          "documentation":"<p>The ARN or name of the provisioned throughput.</p>",
+          "documentation":"<p>The Amazon Resource Name (ARN) or name of the Provisioned Throughput.</p>",
           "location":"uri",
           "locationName":"provisionedModelId"
         }
@@ -696,6 +1102,301 @@
       "type":"string",
       "max":2048,
       "min":0
+    },
+    "ErrorMessages":{
+      "type":"list",
+      "member":{"shape":"ErrorMessage"},
+      "max":20,
+      "min":0
+    },
+    "EvaluationBedrockModel":{
+      "type":"structure",
+      "required":[
+        "modelIdentifier",
+        "inferenceParams"
+      ],
+      "members":{
+        "modelIdentifier":{
+          "shape":"EvaluationModelIdentifier",
+          "documentation":"<p>The ARN of the Amazon Bedrock model specified.</p>"
+        },
+        "inferenceParams":{
+          "shape":"EvaluationModelInferenceParams",
+          "documentation":"<p>Each Amazon Bedrock support different inference parameters that change how the model behaves during inference.</p>"
+        }
+      },
+      "documentation":"<p>Contains the ARN of the Amazon Bedrock models specified in your model evaluation job. Each Amazon Bedrock model supports different <code>inferenceParams</code>. To learn more about supported inference parameters for Amazon Bedrock models, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/model-evaluation-prompt-datasets-custom.html\">Inference parameters for foundation models</a>.</p> <p>The <code>inferenceParams</code> are specified using JSON. To successfully insert JSON as string make sure that all quotations are properly escaped. For example, <code>\"temperature\":\"0.25\"</code> key value pair would need to be formatted as <code>\\\"temperature\\\":\\\"0.25\\\"</code> to successfully accepted in the request.</p>"
+    },
+    "EvaluationConfig":{
+      "type":"structure",
+      "members":{
+        "automated":{
+          "shape":"AutomatedEvaluationConfig",
+          "documentation":"<p>Used to specify an automated model evaluation job. See <code>AutomatedEvaluationConfig</code> to view the required parameters.</p>"
+        },
+        "human":{
+          "shape":"HumanEvaluationConfig",
+          "documentation":"<p>Used to specify a model evaluation job that uses human workers.See <code>HumanEvaluationConfig</code> to view the required parameters.</p>"
+        }
+      },
+      "documentation":"<p>Used to specify either a <code>AutomatedEvaluationConfig</code> or <code>HumanEvaluationConfig</code> object.</p>",
+      "union":true
+    },
+    "EvaluationDataset":{
+      "type":"structure",
+      "required":["name"],
+      "members":{
+        "name":{
+          "shape":"EvaluationDatasetName",
+          "documentation":"<p>Used to specify supported built-in prompt datasets. Valid values are <code>Builtin.Bold</code>, <code>Builtin.BoolQ</code>, <code>Builtin.NaturalQuestions</code>, <code>Builtin.Gigaword</code>, <code>Builtin.RealToxicityPrompts</code>, <code>Builtin.TriviaQa</code>, <code>Builtin.T-Rex</code>, <code>Builtin.WomensEcommerceClothingReviews</code> and <code>Builtin.Wikitext2</code>.</p>"
+        },
+        "datasetLocation":{
+          "shape":"EvaluationDatasetLocation",
+          "documentation":"<p>For custom prompt datasets, you must specify the location in Amazon S3 where the prompt dataset is saved.</p>"
+        }
+      },
+      "documentation":"<p>Used to specify the name of a built-in prompt dataset and optionally, the Amazon S3 bucket where a custom prompt dataset is saved.</p>"
+    },
+    "EvaluationDatasetLocation":{
+      "type":"structure",
+      "members":{
+        "s3Uri":{
+          "shape":"S3Uri",
+          "documentation":"<p>The S3 URI of the S3 bucket specified in the job.</p>"
+        }
+      },
+      "documentation":"<p>The location in Amazon S3 where your prompt dataset is stored.</p>",
+      "union":true
+    },
+    "EvaluationDatasetMetricConfig":{
+      "type":"structure",
+      "required":[
+        "taskType",
+        "dataset",
+        "metricNames"
+      ],
+      "members":{
+        "taskType":{
+          "shape":"EvaluationTaskType",
+          "documentation":"<p>The task type you want the model to carry out. </p>"
+        },
+        "dataset":{
+          "shape":"EvaluationDataset",
+          "documentation":"<p>Specifies the prompt dataset.</p>"
+        },
+        "metricNames":{
+          "shape":"EvaluationMetricNames",
+          "documentation":"<p>The names of the metrics used. For automated model evaluation jobs valid values are <code>\"Builtin.Accuracy\"</code>, <code>\"Builtin.Robustness\"</code>, and <code>\"Builtin.Toxicity\"</code>. In human-based model evaluation jobs the array of strings must match the <code>name</code> parameter specified in <code>HumanEvaluationCustomMetric</code>. </p>"
+        }
+      },
+      "documentation":"<p>Defines the built-in prompt datasets, built-in metric names and custom metric names, and the task type.</p>"
+    },
+    "EvaluationDatasetMetricConfigs":{
+      "type":"list",
+      "member":{"shape":"EvaluationDatasetMetricConfig"},
+      "max":5,
+      "min":1
+    },
+    "EvaluationDatasetName":{
+      "type":"string",
+      "max":63,
+      "min":1,
+      "pattern":"[0-9a-zA-Z-_.]+",
+      "sensitive":true
+    },
+    "EvaluationInferenceConfig":{
+      "type":"structure",
+      "members":{
+        "models":{
+          "shape":"EvaluationModelConfigs",
+          "documentation":"<p>Used to specify the models.</p>"
+        }
+      },
+      "documentation":"<p>Used to define the models you want used in your model evaluation job. Automated model evaluation jobs support only a single model. In a human-based model evaluation job, your annotator can compare the responses for up to two different models.</p>",
+      "union":true
+    },
+    "EvaluationJobArn":{
+      "type":"string",
+      "max":1011,
+      "min":0,
+      "pattern":"arn:aws(-[^:]+)?:bedrock:[a-z0-9-]{1,20}:[0-9]{12}:evaluation-job/[a-z0-9]{12}"
+    },
+    "EvaluationJobDescription":{
+      "type":"string",
+      "max":200,
+      "min":1,
+      "pattern":".+",
+      "sensitive":true
+    },
+    "EvaluationJobIdentifier":{
+      "type":"string",
+      "max":1011,
+      "min":0,
+      "pattern":"(arn:aws(-[^:]+)?:bedrock:[a-z0-9-]{1,20}:[0-9]{12}:evaluation-job/[a-z0-9]{12})",
+      "sensitive":true
+    },
+    "EvaluationJobName":{
+      "type":"string",
+      "max":63,
+      "min":1,
+      "pattern":"[a-z0-9](-*[a-z0-9]){0,62}"
+    },
+    "EvaluationJobStatus":{
+      "type":"string",
+      "enum":[
+        "InProgress",
+        "Completed",
+        "Failed",
+        "Stopping",
+        "Stopped"
+      ]
+    },
+    "EvaluationJobType":{
+      "type":"string",
+      "enum":[
+        "Human",
+        "Automated"
+      ]
+    },
+    "EvaluationMetricDescription":{
+      "type":"string",
+      "max":63,
+      "min":1,
+      "pattern":".+",
+      "sensitive":true
+    },
+    "EvaluationMetricName":{
+      "type":"string",
+      "max":63,
+      "min":1,
+      "pattern":"[0-9a-zA-Z-_.]+",
+      "sensitive":true
+    },
+    "EvaluationMetricNames":{
+      "type":"list",
+      "member":{"shape":"EvaluationMetricName"},
+      "max":10,
+      "min":1
+    },
+    "EvaluationModelConfig":{
+      "type":"structure",
+      "members":{
+        "bedrockModel":{
+          "shape":"EvaluationBedrockModel",
+          "documentation":"<p>Defines the Amazon Bedrock model and inference parameters you want used.</p>"
+        }
+      },
+      "documentation":"<p>Defines the models used in the model evaluation job.</p>",
+      "union":true
+    },
+    "EvaluationModelConfigs":{
+      "type":"list",
+      "member":{"shape":"EvaluationModelConfig"},
+      "max":2,
+      "min":1
+    },
+    "EvaluationModelIdentifier":{
+      "type":"string",
+      "max":2048,
+      "min":1,
+      "pattern":"arn:aws(-[^:]+)?:bedrock:[a-z0-9-]{1,20}:(([0-9]{12}:custom-model/[a-z0-9-]{1,63}[.]{1}[a-z0-9-]{1,63}(([:][a-z0-9-]{1,63}){0,2})?/[a-z0-9]{12})|(:foundation-model/([a-z0-9-]{1,63}[.]{1}[a-z0-9-]{1,63}([.]?[a-z0-9-]{1,63})([:][a-z0-9-]{1,63}){0,2})))|(([a-z0-9-]{1,63}[.]{1}[a-z0-9-]{1,63}([.]?[a-z0-9-]{1,63})([:][a-z0-9-]{1,63}){0,2}))|(([0-9a-zA-Z][_-]?)+)"
+    },
+    "EvaluationModelIdentifiers":{
+      "type":"list",
+      "member":{"shape":"EvaluationModelIdentifier"},
+      "max":2,
+      "min":1
+    },
+    "EvaluationModelInferenceParams":{
+      "type":"string",
+      "max":1023,
+      "min":1,
+      "sensitive":true
+    },
+    "EvaluationOutputDataConfig":{
+      "type":"structure",
+      "required":["s3Uri"],
+      "members":{
+        "s3Uri":{
+          "shape":"S3Uri",
+          "documentation":"<p>The Amazon S3 URI where the results of model evaluation job are saved.</p>"
+        }
+      },
+      "documentation":"<p>The Amazon S3 location where the results of your model evaluation job are saved.</p>"
+    },
+    "EvaluationRatingMethod":{
+      "type":"string",
+      "max":100,
+      "min":1,
+      "pattern":"[0-9a-zA-Z-_]+"
+    },
+    "EvaluationSummaries":{
+      "type":"list",
+      "member":{"shape":"EvaluationSummary"},
+      "max":5,
+      "min":1
+    },
+    "EvaluationSummary":{
+      "type":"structure",
+      "required":[
+        "jobArn",
+        "jobName",
+        "status",
+        "creationTime",
+        "jobType",
+        "evaluationTaskTypes",
+        "modelIdentifiers"
+      ],
+      "members":{
+        "jobArn":{
+          "shape":"EvaluationJobArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the model evaluation job.</p>"
+        },
+        "jobName":{
+          "shape":"EvaluationJobName",
+          "documentation":"<p>The name of the model evaluation job.</p>"
+        },
+        "status":{
+          "shape":"EvaluationJobStatus",
+          "documentation":"<p>The current status of the model evaluation job. </p>"
+        },
+        "creationTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>When the model evaluation job was created.</p>"
+        },
+        "jobType":{
+          "shape":"EvaluationJobType",
+          "documentation":"<p>The type, either human or automatic, of model evaluation job.</p>"
+        },
+        "evaluationTaskTypes":{
+          "shape":"EvaluationTaskTypes",
+          "documentation":"<p>What task type was used in the model evaluation job.</p>"
+        },
+        "modelIdentifiers":{
+          "shape":"EvaluationModelIdentifiers",
+          "documentation":"<p>The Amazon Resource Names (ARNs) of the model(s) used in the model evaluation job.</p>"
+        }
+      },
+      "documentation":"<p>A summary of the model evaluation job.</p>"
+    },
+    "EvaluationTaskType":{
+      "type":"string",
+      "enum":[
+        "Summarization",
+        "Classification",
+        "QuestionAndAnswer",
+        "Generation",
+        "Custom"
+      ],
+      "max":63,
+      "min":1,
+      "pattern":"[A-Za-z0-9]+"
+    },
+    "EvaluationTaskTypes":{
+      "type":"list",
+      "member":{"shape":"EvaluationTaskType"},
+      "max":5,
+      "min":1
     },
     "FineTuningJobStatus":{
       "type":"string",
@@ -720,7 +1421,7 @@
       "members":{
         "modelArn":{
           "shape":"FoundationModelArn",
-          "documentation":"<p>The model ARN.</p>"
+          "documentation":"<p>The model Amazon Resource Name (ARN).</p>"
         },
         "modelId":{
           "shape":"BedrockModelId",
@@ -732,7 +1433,7 @@
         },
         "providerName":{
           "shape":"BrandedName",
-          "documentation":"<p>he model's provider name.</p>"
+          "documentation":"<p>The model's provider name.</p>"
         },
         "inputModalities":{
           "shape":"ModelModalityList",
@@ -788,11 +1489,11 @@
       "members":{
         "modelArn":{
           "shape":"FoundationModelArn",
-          "documentation":"<p>The ARN of the foundation model.</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of the foundation model.</p>"
         },
         "modelId":{
           "shape":"BedrockModelId",
-          "documentation":"<p>The model Id of the foundation model.</p>"
+          "documentation":"<p>The model ID of the foundation model.</p>"
         },
         "modelName":{
           "shape":"BrandedName",
@@ -839,7 +1540,7 @@
       "members":{
         "modelIdentifier":{
           "shape":"ModelIdentifier",
-          "documentation":"<p>Name or ARN of the custom model.</p>",
+          "documentation":"<p>Name or Amazon Resource Name (ARN) of the custom model.</p>",
           "location":"uri",
           "locationName":"modelIdentifier"
         }
@@ -859,7 +1560,7 @@
       "members":{
         "modelArn":{
           "shape":"ModelArn",
-          "documentation":"<p>ARN associated with this model.</p>"
+          "documentation":"<p>Amazon Resource Name (ARN) associated with this model.</p>"
         },
         "modelName":{
           "shape":"CustomModelName",
@@ -871,11 +1572,11 @@
         },
         "jobArn":{
           "shape":"ModelCustomizationJobArn",
-          "documentation":"<p>Job ARN associated with this model.</p>"
+          "documentation":"<p>Job Amazon Resource Name (ARN) associated with this model.</p>"
         },
         "baseModelArn":{
           "shape":"ModelArn",
-          "documentation":"<p>ARN of the base model.</p>"
+          "documentation":"<p>Amazon Resource Name (ARN) of the base model.</p>"
         },
         "customizationType":{
           "shape":"CustomizationType",
@@ -887,20 +1588,23 @@
         },
         "hyperParameters":{
           "shape":"ModelCustomizationHyperParameters",
-          "documentation":"<p>Hyperparameter values associated with this model.</p>"
+          "documentation":"<p>Hyperparameter values associated with this model. For details on the format for different models, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/custom-models-hp.html\">Custom model hyperparameters</a>.</p>"
         },
         "trainingDataConfig":{
           "shape":"TrainingDataConfig",
-          "documentation":"<p>Information about the training dataset.</p>"
+          "documentation":"<p>Contains information about the training dataset.</p>"
         },
-        "validationDataConfig":{"shape":"ValidationDataConfig"},
+        "validationDataConfig":{
+          "shape":"ValidationDataConfig",
+          "documentation":"<p>Contains information about the validation dataset.</p>"
+        },
         "outputDataConfig":{
           "shape":"OutputDataConfig",
           "documentation":"<p>Output data configuration associated with this custom model.</p>"
         },
         "trainingMetrics":{
           "shape":"TrainingMetrics",
-          "documentation":"<p>The training metrics from the job creation.</p>"
+          "documentation":"<p>Contains training metrics from the job creation.</p>"
         },
         "validationMetrics":{
           "shape":"ValidationMetrics",
@@ -909,6 +1613,86 @@
         "creationTime":{
           "shape":"Timestamp",
           "documentation":"<p>Creation time of the model.</p>"
+        }
+      }
+    },
+    "GetEvaluationJobRequest":{
+      "type":"structure",
+      "required":["jobIdentifier"],
+      "members":{
+        "jobIdentifier":{
+          "shape":"EvaluationJobIdentifier",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the model evaluation job.</p>",
+          "location":"uri",
+          "locationName":"jobIdentifier"
+        }
+      }
+    },
+    "GetEvaluationJobResponse":{
+      "type":"structure",
+      "required":[
+        "jobName",
+        "status",
+        "jobArn",
+        "roleArn",
+        "jobType",
+        "evaluationConfig",
+        "inferenceConfig",
+        "outputDataConfig",
+        "creationTime"
+      ],
+      "members":{
+        "jobName":{
+          "shape":"EvaluationJobName",
+          "documentation":"<p>The name of the model evaluation job.</p>"
+        },
+        "status":{
+          "shape":"EvaluationJobStatus",
+          "documentation":"<p>The status of the model evaluation job.</p>"
+        },
+        "jobArn":{
+          "shape":"EvaluationJobArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the model evaluation job.</p>"
+        },
+        "jobDescription":{
+          "shape":"EvaluationJobDescription",
+          "documentation":"<p>The description of the model evaluation job.</p>"
+        },
+        "roleArn":{
+          "shape":"RoleArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the IAM service role used in the model evaluation job.</p>"
+        },
+        "customerEncryptionKeyId":{
+          "shape":"KmsKeyId",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the customer managed key specified when the model evaluation job was created.</p>"
+        },
+        "jobType":{
+          "shape":"EvaluationJobType",
+          "documentation":"<p>The type of model evaluation job.</p>"
+        },
+        "evaluationConfig":{
+          "shape":"EvaluationConfig",
+          "documentation":"<p>Contains details about the type of model evaluation job, the metrics used, the task type selected, the datasets used, and any custom metrics you defined.</p>"
+        },
+        "inferenceConfig":{
+          "shape":"EvaluationInferenceConfig",
+          "documentation":"<p>Details about the models you specified in your model evaluation job.</p>"
+        },
+        "outputDataConfig":{
+          "shape":"EvaluationOutputDataConfig",
+          "documentation":"<p>Amazon S3 location for where output data is saved.</p>"
+        },
+        "creationTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>When the model evaluation job was created.</p>"
+        },
+        "lastModifiedTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>When the model evaluation job was last modified.</p>"
+        },
+        "failureMessages":{
+          "shape":"ErrorMessages",
+          "documentation":"<p>An array of strings the specify why the model evaluation job has failed.</p>"
         }
       }
     },
@@ -930,6 +1714,108 @@
         "modelDetails":{
           "shape":"FoundationModelDetails",
           "documentation":"<p>Information about the foundation model.</p>"
+        }
+      }
+    },
+    "GetGuardrailRequest":{
+      "type":"structure",
+      "required":["guardrailIdentifier"],
+      "members":{
+        "guardrailIdentifier":{
+          "shape":"GuardrailIdentifier",
+          "documentation":"<p>The unique identifier of the guardrail for which to get details.</p>",
+          "location":"uri",
+          "locationName":"guardrailIdentifier"
+        },
+        "guardrailVersion":{
+          "shape":"GuardrailVersion",
+          "documentation":"<p>The version of the guardrail for which to get details. If you don't specify a version, the response returns details for the <code>DRAFT</code> version.</p>",
+          "location":"querystring",
+          "locationName":"guardrailVersion"
+        }
+      }
+    },
+    "GetGuardrailResponse":{
+      "type":"structure",
+      "required":[
+        "name",
+        "guardrailId",
+        "guardrailArn",
+        "version",
+        "status",
+        "createdAt",
+        "updatedAt",
+        "blockedInputMessaging",
+        "blockedOutputsMessaging"
+      ],
+      "members":{
+        "name":{
+          "shape":"GuardrailName",
+          "documentation":"<p>The name of the guardrail.</p>"
+        },
+        "description":{
+          "shape":"GuardrailDescription",
+          "documentation":"<p>The description of the guardrail.</p>"
+        },
+        "guardrailId":{
+          "shape":"GuardrailId",
+          "documentation":"<p>The unique identifier of the guardrail.</p>"
+        },
+        "guardrailArn":{
+          "shape":"GuardrailArn",
+          "documentation":"<p>The ARN of the guardrail that was created.</p>"
+        },
+        "version":{
+          "shape":"GuardrailVersion",
+          "documentation":"<p>The version of the guardrail.</p>"
+        },
+        "status":{
+          "shape":"GuardrailStatus",
+          "documentation":"<p>The status of the guardrail.</p>"
+        },
+        "topicPolicy":{
+          "shape":"GuardrailTopicPolicy",
+          "documentation":"<p>The topic policy that was configured for the guardrail.</p>"
+        },
+        "contentPolicy":{
+          "shape":"GuardrailContentPolicy",
+          "documentation":"<p>The content policy that was configured for the guardrail.</p>"
+        },
+        "wordPolicy":{
+          "shape":"GuardrailWordPolicy",
+          "documentation":"<p>The word policy that was configured for the guardrail.</p>"
+        },
+        "sensitiveInformationPolicy":{
+          "shape":"GuardrailSensitiveInformationPolicy",
+          "documentation":"<p>The sensitive information policy that was configured for the guardrail.</p>"
+        },
+        "createdAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The date and time at which the guardrail was created.</p>"
+        },
+        "updatedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The date and time at which the guardrail was updated.</p>"
+        },
+        "statusReasons":{
+          "shape":"GuardrailStatusReasons",
+          "documentation":"<p>Appears if the <code>status</code> is <code>FAILED</code>. A list of reasons for why the guardrail failed to be created, updated, versioned, or deleted.</p>"
+        },
+        "failureRecommendations":{
+          "shape":"GuardrailFailureRecommendations",
+          "documentation":"<p>Appears if the <code>status</code> of the guardrail is <code>FAILED</code>. A list of recommendations to carry out before retrying the request.</p>"
+        },
+        "blockedInputMessaging":{
+          "shape":"GuardrailBlockedMessaging",
+          "documentation":"<p>The message that the guardrail returns when it blocks a prompt.</p>"
+        },
+        "blockedOutputsMessaging":{
+          "shape":"GuardrailBlockedMessaging",
+          "documentation":"<p>The message that the guardrail returns when it blocks a model response.</p>"
+        },
+        "kmsKeyArn":{
+          "shape":"KmsKeyArn",
+          "documentation":"<p>The ARN of the KMS key that encrypts the guardrail.</p>"
         }
       }
     },
@@ -962,7 +1848,7 @@
       "members":{
         "jobArn":{
           "shape":"ModelCustomizationJobArn",
-          "documentation":"<p>The ARN of the customization job.</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of the customization job.</p>"
         },
         "jobName":{
           "shape":"JobName",
@@ -974,15 +1860,15 @@
         },
         "outputModelArn":{
           "shape":"CustomModelArn",
-          "documentation":"<p>The ARN of the output model.</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of the output model.</p>"
         },
         "clientRequestToken":{
           "shape":"IdempotencyToken",
-          "documentation":"<p>The token that you specified in the CreateCustomizationJob request.</p>"
+          "documentation":"<p>The token that you specified in the <code>CreateCustomizationJob</code> request.</p>"
         },
         "roleArn":{
           "shape":"RoleArn",
-          "documentation":"<p>The ARN of the IAM role.</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of the IAM role.</p>"
         },
         "status":{
           "shape":"ModelCustomizationJobStatus",
@@ -1006,14 +1892,20 @@
         },
         "baseModelArn":{
           "shape":"FoundationModelArn",
-          "documentation":"<p>ARN of the base model.</p>"
+          "documentation":"<p>Amazon Resource Name (ARN) of the base model.</p>"
         },
         "hyperParameters":{
           "shape":"ModelCustomizationHyperParameters",
-          "documentation":"<p>The hyperparameter values for the job. For information about hyperparameters for specific models, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/model-customization-guidelines.html\">Guidelines for model customization</a>.</p>"
+          "documentation":"<p>The hyperparameter values for the job. For details on the format for different models, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/custom-models-hp.html\">Custom model hyperparameters</a>.</p>"
         },
-        "trainingDataConfig":{"shape":"TrainingDataConfig"},
-        "validationDataConfig":{"shape":"ValidationDataConfig"},
+        "trainingDataConfig":{
+          "shape":"TrainingDataConfig",
+          "documentation":"<p>Contains information about the training dataset.</p>"
+        },
+        "validationDataConfig":{
+          "shape":"ValidationDataConfig",
+          "documentation":"<p>Contains information about the validation dataset.</p>"
+        },
         "outputDataConfig":{
           "shape":"OutputDataConfig",
           "documentation":"<p>Output data configuration </p>"
@@ -1026,7 +1918,10 @@
           "shape":"KmsKeyArn",
           "documentation":"<p>The custom model is encrypted at rest using this key.</p>"
         },
-        "trainingMetrics":{"shape":"TrainingMetrics"},
+        "trainingMetrics":{
+          "shape":"TrainingMetrics",
+          "documentation":"<p>Contains training metrics from the job creation.</p>"
+        },
         "validationMetrics":{
           "shape":"ValidationMetrics",
           "documentation":"<p>The loss metric for each validator that you provided in the createjob request.</p>"
@@ -1057,7 +1952,7 @@
       "members":{
         "provisionedModelId":{
           "shape":"ProvisionedModelId",
-          "documentation":"<p>The ARN or name of the provisioned throughput.</p>",
+          "documentation":"<p>The Amazon Resource Name (ARN) or name of the Provisioned Throughput.</p>",
           "location":"uri",
           "locationName":"provisionedModelId"
         }
@@ -1080,57 +1975,797 @@
       "members":{
         "modelUnits":{
           "shape":"PositiveInteger",
-          "documentation":"<p>The current number of model units requested to be available for this provisioned throughput.</p>"
+          "documentation":"<p>The number of model units allocated to this Provisioned Throughput.</p>"
         },
         "desiredModelUnits":{
           "shape":"PositiveInteger",
-          "documentation":"<p>The desired number of model units that was requested to be available for this provisioned throughput.</p>"
+          "documentation":"<p>The number of model units that was requested for this Provisioned Throughput.</p>"
         },
         "provisionedModelName":{
           "shape":"ProvisionedModelName",
-          "documentation":"<p>The name of the provisioned throughput.</p>"
+          "documentation":"<p>The name of the Provisioned Throughput.</p>"
         },
         "provisionedModelArn":{
           "shape":"ProvisionedModelArn",
-          "documentation":"<p>The ARN of the provisioned throughput.</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of the Provisioned Throughput.</p>"
         },
         "modelArn":{
           "shape":"ModelArn",
-          "documentation":"<p>The ARN or name of the model associated with this provisioned throughput.</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of the model associated with this Provisioned Throughput.</p>"
         },
         "desiredModelArn":{
           "shape":"ModelArn",
-          "documentation":"<p>The ARN of the new model to asssociate with this provisioned throughput.</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of the model requested to be associated to this Provisioned Throughput. This value differs from the <code>modelArn</code> if updating hasn't completed.</p>"
         },
         "foundationModelArn":{
           "shape":"FoundationModelArn",
-          "documentation":"<p>ARN of the foundation model.</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of the base model for which the Provisioned Throughput was created, or of the base model that the custom model for which the Provisioned Throughput was created was customized.</p>"
         },
         "status":{
           "shape":"ProvisionedModelStatus",
-          "documentation":"<p>Status of the provisioned throughput. </p>"
+          "documentation":"<p>The status of the Provisioned Throughput. </p>"
         },
         "creationTime":{
           "shape":"Timestamp",
-          "documentation":"<p>The timestamp of the creation time for this provisioned throughput. </p>"
+          "documentation":"<p>The timestamp of the creation time for this Provisioned Throughput. </p>"
         },
         "lastModifiedTime":{
           "shape":"Timestamp",
-          "documentation":"<p>The timestamp of the last modified time of this provisioned throughput. </p>"
+          "documentation":"<p>The timestamp of the last time that this Provisioned Throughput was modified. </p>"
         },
         "failureMessage":{
           "shape":"ErrorMessage",
-          "documentation":"<p>Failure message for any issues that the create operation encounters.</p>"
+          "documentation":"<p>A failure message for any issues that occurred during creation, updating, or deletion of the Provisioned Throughput.</p>"
         },
         "commitmentDuration":{
           "shape":"CommitmentDuration",
-          "documentation":"<p>Commitment duration of the provisioned throughput.</p>"
+          "documentation":"<p>Commitment duration of the Provisioned Throughput.</p>"
         },
         "commitmentExpirationTime":{
           "shape":"Timestamp",
-          "documentation":"<p>Commitment expiration time for the provisioned throughput.</p>"
+          "documentation":"<p>The timestamp for when the commitment term for the Provisioned Throughput expires.</p>"
         }
       }
+    },
+    "GuardrailArn":{
+      "type":"string",
+      "max":2048,
+      "min":0,
+      "pattern":"arn:aws(-[^:]+)?:bedrock:[a-z0-9-]{1,20}:[0-9]{12}:guardrail/[a-z0-9]+"
+    },
+    "GuardrailBlockedMessaging":{
+      "type":"string",
+      "max":500,
+      "min":1,
+      "sensitive":true
+    },
+    "GuardrailContentFilter":{
+      "type":"structure",
+      "required":[
+        "type",
+        "inputStrength",
+        "outputStrength"
+      ],
+      "members":{
+        "type":{
+          "shape":"GuardrailContentFilterType",
+          "documentation":"<p>The harmful category that the content filter is applied to.</p>"
+        },
+        "inputStrength":{
+          "shape":"GuardrailFilterStrength",
+          "documentation":"<p>The strength of the content filter to apply to prompts. As you increase the filter strength, the likelihood of filtering harmful content increases and the probability of seeing harmful content in your application reduces.</p>"
+        },
+        "outputStrength":{
+          "shape":"GuardrailFilterStrength",
+          "documentation":"<p>The strength of the content filter to apply to model responses. As you increase the filter strength, the likelihood of filtering harmful content increases and the probability of seeing harmful content in your application reduces.</p>"
+        }
+      },
+      "documentation":"<p>Contains filter strengths for harmful content. Guardrails support the following content filters to detect and filter harmful user inputs and FM-generated outputs.</p> <ul> <li> <p> <b>Hate</b> – Describes language or a statement that discriminates, criticizes, insults, denounces, or dehumanizes a person or group on the basis of an identity (such as race, ethnicity, gender, religion, sexual orientation, ability, and national origin).</p> </li> <li> <p> <b>Insults</b> – Describes language or a statement that includes demeaning, humiliating, mocking, insulting, or belittling language. This type of language is also labeled as bullying.</p> </li> <li> <p> <b>Sexual</b> – Describes language or a statement that indicates sexual interest, activity, or arousal using direct or indirect references to body parts, physical traits, or sex.</p> </li> <li> <p> <b>Violence</b> – Describes language or a statement that includes glorification of or threats to inflict physical pain, hurt, or injury toward a person, group or thing.</p> </li> </ul> <p>Content filtering depends on the confidence classification of user inputs and FM responses across each of the four harmful categories. All input and output statements are classified into one of four confidence levels (NONE, LOW, MEDIUM, HIGH) for each harmful category. For example, if a statement is classified as <i>Hate</i> with HIGH confidence, the likelihood of the statement representing hateful content is high. A single statement can be classified across multiple categories with varying confidence levels. For example, a single statement can be classified as <i>Hate</i> with HIGH confidence, <i>Insults</i> with LOW confidence, <i>Sexual</i> with NONE confidence, and <i>Violence</i> with MEDIUM confidence.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/guardrails-filters.html\">Guardrails content filters</a>.</p> <p>This data type is used in the following API operations:</p> <ul> <li> <p> <a href=\"https://docs.aws.amazon.com/bedrock/latest/APIReference/API_GetGuardrail.html#API_GetGuardrail_ResponseSyntax\">GetGuardrail response body</a> </p> </li> </ul>"
+    },
+    "GuardrailContentFilterConfig":{
+      "type":"structure",
+      "required":[
+        "type",
+        "inputStrength",
+        "outputStrength"
+      ],
+      "members":{
+        "type":{
+          "shape":"GuardrailContentFilterType",
+          "documentation":"<p>The harmful category that the content filter is applied to.</p>"
+        },
+        "inputStrength":{
+          "shape":"GuardrailFilterStrength",
+          "documentation":"<p>The strength of the content filter to apply to prompts. As you increase the filter strength, the likelihood of filtering harmful content increases and the probability of seeing harmful content in your application reduces.</p>"
+        },
+        "outputStrength":{
+          "shape":"GuardrailFilterStrength",
+          "documentation":"<p>The strength of the content filter to apply to model responses. As you increase the filter strength, the likelihood of filtering harmful content increases and the probability of seeing harmful content in your application reduces.</p>"
+        }
+      },
+      "documentation":"<p>Contains filter strengths for harmful content. Guardrails support the following content filters to detect and filter harmful user inputs and FM-generated outputs.</p> <ul> <li> <p> <b>Hate</b> – Describes language or a statement that discriminates, criticizes, insults, denounces, or dehumanizes a person or group on the basis of an identity (such as race, ethnicity, gender, religion, sexual orientation, ability, and national origin).</p> </li> <li> <p> <b>Insults</b> – Describes language or a statement that includes demeaning, humiliating, mocking, insulting, or belittling language. This type of language is also labeled as bullying.</p> </li> <li> <p> <b>Sexual</b> – Describes language or a statement that indicates sexual interest, activity, or arousal using direct or indirect references to body parts, physical traits, or sex.</p> </li> <li> <p> <b>Violence</b> – Describes language or a statement that includes glorification of or threats to inflict physical pain, hurt, or injury toward a person, group or thing.</p> </li> </ul> <p>Content filtering depends on the confidence classification of user inputs and FM responses across each of the four harmful categories. All input and output statements are classified into one of four confidence levels (NONE, LOW, MEDIUM, HIGH) for each harmful category. For example, if a statement is classified as <i>Hate</i> with HIGH confidence, the likelihood of the statement representing hateful content is high. A single statement can be classified across multiple categories with varying confidence levels. For example, a single statement can be classified as <i>Hate</i> with HIGH confidence, <i>Insults</i> with LOW confidence, <i>Sexual</i> with NONE confidence, and <i>Violence</i> with MEDIUM confidence.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/guardrails-filters.html\">Guardrails content filters</a>.</p> <p>This data type is used in the following API operations:</p> <ul> <li> <p> <a href=\"https://docs.aws.amazon.com/bedrock/latest/APIReference/API_CreateGuardrail.html#API_CreateGuardrail_RequestSyntax\">CreateGuardrail request body</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/bedrock/latest/APIReference/API_UpdateGuardrail.html#API_UpdateGuardrail_RequestSyntax\">UpdateGuardrail request body</a> </p> </li> </ul>"
+    },
+    "GuardrailContentFilterType":{
+      "type":"string",
+      "enum":[
+        "SEXUAL",
+        "VIOLENCE",
+        "HATE",
+        "INSULTS",
+        "MISCONDUCT",
+        "PROMPT_ATTACK"
+      ]
+    },
+    "GuardrailContentFilters":{
+      "type":"list",
+      "member":{"shape":"GuardrailContentFilter"},
+      "max":6,
+      "min":1
+    },
+    "GuardrailContentFiltersConfig":{
+      "type":"list",
+      "member":{"shape":"GuardrailContentFilterConfig"},
+      "max":6,
+      "min":1
+    },
+    "GuardrailContentPolicy":{
+      "type":"structure",
+      "members":{
+        "filters":{
+          "shape":"GuardrailContentFilters",
+          "documentation":"<p>Contains the type of the content filter and how strongly it should apply to prompts and model responses.</p>"
+        }
+      },
+      "documentation":"<p>Contains details about how to handle harmful content.</p> <p>This data type is used in the following API operations:</p> <ul> <li> <p> <a href=\"https://docs.aws.amazon.com/bedrock/latest/APIReference/API_GetGuardrail.html#API_GetGuardrail_ResponseSyntax\">GetGuardrail response body</a> </p> </li> </ul>"
+    },
+    "GuardrailContentPolicyConfig":{
+      "type":"structure",
+      "required":["filtersConfig"],
+      "members":{
+        "filtersConfig":{
+          "shape":"GuardrailContentFiltersConfig",
+          "documentation":"<p>Contains the type of the content filter and how strongly it should apply to prompts and model responses.</p>"
+        }
+      },
+      "documentation":"<p>Contains details about how to handle harmful content.</p> <p>This data type is used in the following API operations:</p> <ul> <li> <p> <a href=\"https://docs.aws.amazon.com/bedrock/latest/APIReference/API_CreateGuardrail.html#API_CreateGuardrail_RequestSyntax\">CreateGuardrail request body</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/bedrock/latest/APIReference/API_UpdateGuardrail.html#API_UpdateGuardrail_RequestSyntax\">UpdateGuardrail request body</a> </p> </li> </ul>"
+    },
+    "GuardrailDescription":{
+      "type":"string",
+      "max":200,
+      "min":1,
+      "sensitive":true
+    },
+    "GuardrailDraftVersion":{
+      "type":"string",
+      "max":5,
+      "min":5,
+      "pattern":"DRAFT"
+    },
+    "GuardrailFailureRecommendation":{
+      "type":"string",
+      "max":200,
+      "min":1,
+      "sensitive":true
+    },
+    "GuardrailFailureRecommendations":{
+      "type":"list",
+      "member":{"shape":"GuardrailFailureRecommendation"},
+      "max":100,
+      "min":0
+    },
+    "GuardrailFilterStrength":{
+      "type":"string",
+      "enum":[
+        "NONE",
+        "LOW",
+        "MEDIUM",
+        "HIGH"
+      ]
+    },
+    "GuardrailId":{
+      "type":"string",
+      "max":64,
+      "min":0,
+      "pattern":"[a-z0-9]+"
+    },
+    "GuardrailIdentifier":{
+      "type":"string",
+      "max":2048,
+      "min":0,
+      "pattern":"(([a-z0-9]+)|(arn:aws(-[^:]+)?:bedrock:[a-z0-9-]{1,20}:[0-9]{12}:guardrail/[a-z0-9]+))"
+    },
+    "GuardrailManagedWordLists":{
+      "type":"list",
+      "member":{"shape":"GuardrailManagedWords"}
+    },
+    "GuardrailManagedWordListsConfig":{
+      "type":"list",
+      "member":{"shape":"GuardrailManagedWordsConfig"}
+    },
+    "GuardrailManagedWords":{
+      "type":"structure",
+      "required":["type"],
+      "members":{
+        "type":{
+          "shape":"GuardrailManagedWordsType",
+          "documentation":"<p>ManagedWords$type The managed word type that was configured for the guardrail. (For now, we only offer profanity word list)</p>"
+        }
+      },
+      "documentation":"<p>The managed word list that was configured for the guardrail. (This is a list of words that are pre-defined and managed by Guardrails only.)</p>"
+    },
+    "GuardrailManagedWordsConfig":{
+      "type":"structure",
+      "required":["type"],
+      "members":{
+        "type":{
+          "shape":"GuardrailManagedWordsType",
+          "documentation":"<p>The managed word type to configure for the guardrail.</p>"
+        }
+      },
+      "documentation":"<p>The managed word list to configure for the guardrail.</p>"
+    },
+    "GuardrailManagedWordsType":{
+      "type":"string",
+      "enum":["PROFANITY"]
+    },
+    "GuardrailName":{
+      "type":"string",
+      "max":50,
+      "min":1,
+      "pattern":"[0-9a-zA-Z-_]+",
+      "sensitive":true
+    },
+    "GuardrailNumericalVersion":{
+      "type":"string",
+      "pattern":"[1-9][0-9]{0,7}"
+    },
+    "GuardrailPiiEntities":{
+      "type":"list",
+      "member":{"shape":"GuardrailPiiEntity"},
+      "min":1
+    },
+    "GuardrailPiiEntitiesConfig":{
+      "type":"list",
+      "member":{"shape":"GuardrailPiiEntityConfig"},
+      "min":1
+    },
+    "GuardrailPiiEntity":{
+      "type":"structure",
+      "required":[
+        "type",
+        "action"
+      ],
+      "members":{
+        "type":{
+          "shape":"GuardrailPiiEntityType",
+          "documentation":"<p>The type of PII entity. For example, Social Security Number.</p>"
+        },
+        "action":{
+          "shape":"GuardrailSensitiveInformationAction",
+          "documentation":"<p>The configured guardrail action when PII entity is detected.</p>"
+        }
+      },
+      "documentation":"<p>The PII entity configured for the guardrail.</p>"
+    },
+    "GuardrailPiiEntityConfig":{
+      "type":"structure",
+      "required":[
+        "type",
+        "action"
+      ],
+      "members":{
+        "type":{
+          "shape":"GuardrailPiiEntityType",
+          "documentation":"<p>Configure guardrail type when the PII entity is detected.</p>"
+        },
+        "action":{
+          "shape":"GuardrailSensitiveInformationAction",
+          "documentation":"<p>Configure guardrail action when the PII entity is detected.</p>"
+        }
+      },
+      "documentation":"<p>The PII entity to configure for the guardrail.</p>"
+    },
+    "GuardrailPiiEntityType":{
+      "type":"string",
+      "enum":[
+        "ADDRESS",
+        "AGE",
+        "AWS_ACCESS_KEY",
+        "AWS_SECRET_KEY",
+        "CA_HEALTH_NUMBER",
+        "CA_SOCIAL_INSURANCE_NUMBER",
+        "CREDIT_DEBIT_CARD_CVV",
+        "CREDIT_DEBIT_CARD_EXPIRY",
+        "CREDIT_DEBIT_CARD_NUMBER",
+        "DRIVER_ID",
+        "EMAIL",
+        "INTERNATIONAL_BANK_ACCOUNT_NUMBER",
+        "IP_ADDRESS",
+        "LICENSE_PLATE",
+        "MAC_ADDRESS",
+        "NAME",
+        "PASSWORD",
+        "PHONE",
+        "PIN",
+        "SWIFT_CODE",
+        "UK_NATIONAL_HEALTH_SERVICE_NUMBER",
+        "UK_NATIONAL_INSURANCE_NUMBER",
+        "UK_UNIQUE_TAXPAYER_REFERENCE_NUMBER",
+        "URL",
+        "USERNAME",
+        "US_BANK_ACCOUNT_NUMBER",
+        "US_BANK_ROUTING_NUMBER",
+        "US_INDIVIDUAL_TAX_IDENTIFICATION_NUMBER",
+        "US_PASSPORT_NUMBER",
+        "US_SOCIAL_SECURITY_NUMBER",
+        "VEHICLE_IDENTIFICATION_NUMBER"
+      ]
+    },
+    "GuardrailRegex":{
+      "type":"structure",
+      "required":[
+        "name",
+        "pattern",
+        "action"
+      ],
+      "members":{
+        "name":{
+          "shape":"GuardrailRegexNameString",
+          "documentation":"<p>The name of the regular expression for the guardrail.</p>"
+        },
+        "description":{
+          "shape":"GuardrailRegexDescriptionString",
+          "documentation":"<p>The description of the regular expression for the guardrail.</p>"
+        },
+        "pattern":{
+          "shape":"GuardrailRegexPatternString",
+          "documentation":"<p>The pattern of the regular expression configured for the guardrail.</p>"
+        },
+        "action":{
+          "shape":"GuardrailSensitiveInformationAction",
+          "documentation":"<p>The action taken when a match to the regular expression is detected.</p>"
+        }
+      },
+      "documentation":"<p>The regular expression configured for the guardrail.</p>"
+    },
+    "GuardrailRegexConfig":{
+      "type":"structure",
+      "required":[
+        "name",
+        "pattern",
+        "action"
+      ],
+      "members":{
+        "name":{
+          "shape":"GuardrailRegexConfigNameString",
+          "documentation":"<p>The name of the regular expression to configure for the guardrail.</p>"
+        },
+        "description":{
+          "shape":"GuardrailRegexConfigDescriptionString",
+          "documentation":"<p>The description of the regular expression to configure for the guardrail.</p>"
+        },
+        "pattern":{
+          "shape":"GuardrailRegexConfigPatternString",
+          "documentation":"<p>The regular expression pattern to configure for the guardrail.</p>"
+        },
+        "action":{
+          "shape":"GuardrailSensitiveInformationAction",
+          "documentation":"<p>The guardrail action to configure when matching regular expression is detected.</p>"
+        }
+      },
+      "documentation":"<p>The regular expression to configure for the guardrail.</p>"
+    },
+    "GuardrailRegexConfigDescriptionString":{
+      "type":"string",
+      "max":1000,
+      "min":1
+    },
+    "GuardrailRegexConfigNameString":{
+      "type":"string",
+      "max":100,
+      "min":1
+    },
+    "GuardrailRegexConfigPatternString":{
+      "type":"string",
+      "max":500,
+      "min":1
+    },
+    "GuardrailRegexDescriptionString":{
+      "type":"string",
+      "max":1000,
+      "min":1
+    },
+    "GuardrailRegexNameString":{
+      "type":"string",
+      "max":100,
+      "min":1
+    },
+    "GuardrailRegexPatternString":{
+      "type":"string",
+      "max":500,
+      "min":1
+    },
+    "GuardrailRegexes":{
+      "type":"list",
+      "member":{"shape":"GuardrailRegex"}
+    },
+    "GuardrailRegexesConfig":{
+      "type":"list",
+      "member":{"shape":"GuardrailRegexConfig"},
+      "max":10,
+      "min":1
+    },
+    "GuardrailSensitiveInformationAction":{
+      "type":"string",
+      "enum":[
+        "BLOCK",
+        "ANONYMIZE"
+      ]
+    },
+    "GuardrailSensitiveInformationPolicy":{
+      "type":"structure",
+      "members":{
+        "piiEntities":{
+          "shape":"GuardrailPiiEntities",
+          "documentation":"<p>The list of PII entities configured for the guardrail.</p>"
+        },
+        "regexes":{
+          "shape":"GuardrailRegexes",
+          "documentation":"<p>The list of regular expressions configured for the guardrail.</p>"
+        }
+      },
+      "documentation":"<p>Contains details about PII entities and regular expressions configured for the guardrail.</p>"
+    },
+    "GuardrailSensitiveInformationPolicyConfig":{
+      "type":"structure",
+      "members":{
+        "piiEntitiesConfig":{
+          "shape":"GuardrailPiiEntitiesConfig",
+          "documentation":"<p>A list of PII entities to configure to the guardrail.</p>"
+        },
+        "regexesConfig":{
+          "shape":"GuardrailRegexesConfig",
+          "documentation":"<p>A list of regular expressions to configure to the guardrail.</p>"
+        }
+      },
+      "documentation":"<p>Contains details about PII entities and regular expressions to configure for the guardrail.</p>"
+    },
+    "GuardrailStatus":{
+      "type":"string",
+      "enum":[
+        "CREATING",
+        "UPDATING",
+        "VERSIONING",
+        "READY",
+        "FAILED",
+        "DELETING"
+      ]
+    },
+    "GuardrailStatusReason":{
+      "type":"string",
+      "max":200,
+      "min":1,
+      "sensitive":true
+    },
+    "GuardrailStatusReasons":{
+      "type":"list",
+      "member":{"shape":"GuardrailStatusReason"},
+      "max":100,
+      "min":0
+    },
+    "GuardrailSummaries":{
+      "type":"list",
+      "member":{"shape":"GuardrailSummary"},
+      "max":1000,
+      "min":0
+    },
+    "GuardrailSummary":{
+      "type":"structure",
+      "required":[
+        "id",
+        "arn",
+        "status",
+        "name",
+        "version",
+        "createdAt",
+        "updatedAt"
+      ],
+      "members":{
+        "id":{
+          "shape":"GuardrailId",
+          "documentation":"<p>The unique identifier of the guardrail.</p>"
+        },
+        "arn":{
+          "shape":"GuardrailArn",
+          "documentation":"<p>The ARN of the guardrail.</p>"
+        },
+        "status":{
+          "shape":"GuardrailStatus",
+          "documentation":"<p>The status of the guardrail.</p>"
+        },
+        "name":{
+          "shape":"GuardrailName",
+          "documentation":"<p>The name of the guardrail.</p>"
+        },
+        "description":{
+          "shape":"GuardrailDescription",
+          "documentation":"<p>A description of the guardrail.</p>"
+        },
+        "version":{
+          "shape":"GuardrailVersion",
+          "documentation":"<p>The version of the guardrail.</p>"
+        },
+        "createdAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The date and time at which the guardrail was created.</p>"
+        },
+        "updatedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The date and time at which the guardrail was last updated.</p>"
+        }
+      },
+      "documentation":"<p>Contains details about a guardrail.</p> <p>This data type is used in the following API operations:</p> <ul> <li> <p> <a href=\"https://docs.aws.amazon.com/bedrock/latest/APIReference/API_ListGuardrails.html#API_ListGuardrails_ResponseSyntax\">ListGuardrails response body</a> </p> </li> </ul>"
+    },
+    "GuardrailTopic":{
+      "type":"structure",
+      "required":[
+        "name",
+        "definition"
+      ],
+      "members":{
+        "name":{
+          "shape":"GuardrailTopicName",
+          "documentation":"<p>The name of the topic to deny.</p>"
+        },
+        "definition":{
+          "shape":"GuardrailTopicDefinition",
+          "documentation":"<p>A definition of the topic to deny.</p>"
+        },
+        "examples":{
+          "shape":"GuardrailTopicExamples",
+          "documentation":"<p>A list of prompts, each of which is an example of a prompt that can be categorized as belonging to the topic.</p>"
+        },
+        "type":{
+          "shape":"GuardrailTopicType",
+          "documentation":"<p>Specifies to deny the topic.</p>"
+        }
+      },
+      "documentation":"<p>Details about topics for the guardrail to identify and deny.</p> <p>This data type is used in the following API operations:</p> <ul> <li> <p> <a href=\"https://docs.aws.amazon.com/bedrock/latest/APIReference/API_GetGuardrail.html#API_GetGuardrail_ResponseSyntax\">GetGuardrail response body</a> </p> </li> </ul>"
+    },
+    "GuardrailTopicConfig":{
+      "type":"structure",
+      "required":[
+        "name",
+        "definition",
+        "type"
+      ],
+      "members":{
+        "name":{
+          "shape":"GuardrailTopicName",
+          "documentation":"<p>The name of the topic to deny.</p>"
+        },
+        "definition":{
+          "shape":"GuardrailTopicDefinition",
+          "documentation":"<p>A definition of the topic to deny.</p>"
+        },
+        "examples":{
+          "shape":"GuardrailTopicExamples",
+          "documentation":"<p>A list of prompts, each of which is an example of a prompt that can be categorized as belonging to the topic.</p>"
+        },
+        "type":{
+          "shape":"GuardrailTopicType",
+          "documentation":"<p>Specifies to deny the topic.</p>"
+        }
+      },
+      "documentation":"<p>Details about topics for the guardrail to identify and deny.</p> <p>This data type is used in the following API operations:</p> <ul> <li> <p> <a href=\"https://docs.aws.amazon.com/bedrock/latest/APIReference/API_CreateGuardrail.html#API_CreateGuardrail_RequestSyntax\">CreateGuardrail request body</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/bedrock/latest/APIReference/API_UpdateGuardrail.html#API_UpdateGuardrail_RequestSyntax\">UpdateGuardrail request body</a> </p> </li> </ul>"
+    },
+    "GuardrailTopicDefinition":{
+      "type":"string",
+      "max":200,
+      "min":1,
+      "sensitive":true
+    },
+    "GuardrailTopicExample":{
+      "type":"string",
+      "max":100,
+      "min":1,
+      "sensitive":true
+    },
+    "GuardrailTopicExamples":{
+      "type":"list",
+      "member":{"shape":"GuardrailTopicExample"},
+      "max":5,
+      "min":0
+    },
+    "GuardrailTopicName":{
+      "type":"string",
+      "max":100,
+      "min":1,
+      "pattern":"[0-9a-zA-Z-_ !?.]+",
+      "sensitive":true
+    },
+    "GuardrailTopicPolicy":{
+      "type":"structure",
+      "required":["topics"],
+      "members":{
+        "topics":{
+          "shape":"GuardrailTopics",
+          "documentation":"<p>A list of policies related to topics that the guardrail should deny.</p>"
+        }
+      },
+      "documentation":"<p>Contains details about topics that the guardrail should identify and deny.</p> <p>This data type is used in the following API operations:</p> <ul> <li> <p> <a href=\"https://docs.aws.amazon.com/bedrock/latest/APIReference/API_GetGuardrail.html#API_GetGuardrail_ResponseSyntax\">GetGuardrail response body</a> </p> </li> </ul>"
+    },
+    "GuardrailTopicPolicyConfig":{
+      "type":"structure",
+      "required":["topicsConfig"],
+      "members":{
+        "topicsConfig":{
+          "shape":"GuardrailTopicsConfig",
+          "documentation":"<p>A list of policies related to topics that the guardrail should deny.</p>"
+        }
+      },
+      "documentation":"<p>Contains details about topics that the guardrail should identify and deny.</p> <p>This data type is used in the following API operations:</p> <ul> <li> <p> <a href=\"https://docs.aws.amazon.com/bedrock/latest/APIReference/API_CreateGuardrail.html#API_CreateGuardrail_RequestSyntax\">CreateGuardrail request body</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/bedrock/latest/APIReference/API_UpdateGuardrail.html#API_UpdateGuardrail_RequestSyntax\">UpdateGuardrail request body</a> </p> </li> </ul>"
+    },
+    "GuardrailTopicType":{
+      "type":"string",
+      "enum":["DENY"]
+    },
+    "GuardrailTopics":{
+      "type":"list",
+      "member":{"shape":"GuardrailTopic"},
+      "max":30,
+      "min":1
+    },
+    "GuardrailTopicsConfig":{
+      "type":"list",
+      "member":{"shape":"GuardrailTopicConfig"},
+      "max":30,
+      "min":1
+    },
+    "GuardrailVersion":{
+      "type":"string",
+      "pattern":"(([1-9][0-9]{0,7})|(DRAFT))"
+    },
+    "GuardrailWord":{
+      "type":"structure",
+      "required":["text"],
+      "members":{
+        "text":{
+          "shape":"GuardrailWordTextString",
+          "documentation":"<p>Text of the word configured for the guardrail to block.</p>"
+        }
+      },
+      "documentation":"<p>A word configured for the guardrail.</p>"
+    },
+    "GuardrailWordConfig":{
+      "type":"structure",
+      "required":["text"],
+      "members":{
+        "text":{
+          "shape":"GuardrailWordConfigTextString",
+          "documentation":"<p>Text of the word configured for the guardrail to block.</p>"
+        }
+      },
+      "documentation":"<p>A word to configure for the guardrail.</p>"
+    },
+    "GuardrailWordConfigTextString":{
+      "type":"string",
+      "max":100,
+      "min":1
+    },
+    "GuardrailWordPolicy":{
+      "type":"structure",
+      "members":{
+        "words":{
+          "shape":"GuardrailWords",
+          "documentation":"<p>A list of words configured for the guardrail.</p>"
+        },
+        "managedWordLists":{
+          "shape":"GuardrailManagedWordLists",
+          "documentation":"<p>A list of managed words configured for the guardrail.</p>"
+        }
+      },
+      "documentation":"<p>Contains details about the word policy configured for the guardrail.</p>"
+    },
+    "GuardrailWordPolicyConfig":{
+      "type":"structure",
+      "members":{
+        "wordsConfig":{
+          "shape":"GuardrailWordsConfig",
+          "documentation":"<p>A list of words to configure for the guardrail.</p>"
+        },
+        "managedWordListsConfig":{
+          "shape":"GuardrailManagedWordListsConfig",
+          "documentation":"<p>A list of managed words to configure for the guardrail.</p>"
+        }
+      },
+      "documentation":"<p>Contains details about the word policy to configured for the guardrail.</p>"
+    },
+    "GuardrailWordTextString":{
+      "type":"string",
+      "max":100,
+      "min":1
+    },
+    "GuardrailWords":{
+      "type":"list",
+      "member":{"shape":"GuardrailWord"},
+      "max":10000,
+      "min":1
+    },
+    "GuardrailWordsConfig":{
+      "type":"list",
+      "member":{"shape":"GuardrailWordConfig"},
+      "max":10000,
+      "min":1
+    },
+    "HumanEvaluationConfig":{
+      "type":"structure",
+      "required":["datasetMetricConfigs"],
+      "members":{
+        "humanWorkflowConfig":{
+          "shape":"HumanWorkflowConfig",
+          "documentation":"<p>The parameters of the human workflow.</p>"
+        },
+        "customMetrics":{
+          "shape":"HumanEvaluationCustomMetrics",
+          "documentation":"<p>A <code>HumanEvaluationCustomMetric</code> object. It contains the names the metrics, how the metrics are to be evaluated, an optional description.</p>"
+        },
+        "datasetMetricConfigs":{
+          "shape":"EvaluationDatasetMetricConfigs",
+          "documentation":"<p>Use to specify the metrics, task, and prompt dataset to be used in your model evaluation job.</p>"
+        }
+      },
+      "documentation":"<p>Specifies the custom metrics, how tasks will be rated, the flow definition ARN, and your custom prompt datasets. Model evaluation jobs use human workers <i>only</i> support the use of custom prompt datasets. To learn more about custom prompt datasets and the required format, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/model-evaluation-prompt-datasets-custom.html\">Custom prompt datasets</a>.</p> <p>When you create custom metrics in <code>HumanEvaluationCustomMetric</code> you must specify the metric's <code>name</code>. The list of <code>names</code> specified in the <code>HumanEvaluationCustomMetric</code> array, must match the <code>metricNames</code> array of strings specified in <code>EvaluationDatasetMetricConfig</code>. For example, if in the <code>HumanEvaluationCustomMetric</code> array your specified the names <code>\"accuracy\", \"toxicity\", \"readability\"</code> as custom metrics <i>then</i> the <code>metricNames</code> array would need to look like the following <code>[\"accuracy\", \"toxicity\", \"readability\"]</code> in <code>EvaluationDatasetMetricConfig</code>.</p>"
+    },
+    "HumanEvaluationCustomMetric":{
+      "type":"structure",
+      "required":[
+        "name",
+        "ratingMethod"
+      ],
+      "members":{
+        "name":{
+          "shape":"EvaluationMetricName",
+          "documentation":"<p>The name of the metric. Your human evaluators will see this name in the evaluation UI.</p>"
+        },
+        "description":{
+          "shape":"EvaluationMetricDescription",
+          "documentation":"<p>An optional description of the metric. Use this parameter to provide more details about the metric.</p>"
+        },
+        "ratingMethod":{
+          "shape":"EvaluationRatingMethod",
+          "documentation":"<p>Choose how you want your human workers to evaluation your model. Valid values for rating methods are <code>ThumbsUpDown</code>, <code>IndividualLikertScale</code>,<code>ComparisonLikertScale</code>, <code>ComparisonChoice</code>, and <code>ComparisonRank</code> </p>"
+        }
+      },
+      "documentation":"<p>In a model evaluation job that uses human workers you must define the name of the metric, and how you want that metric rated <code>ratingMethod</code>, and an optional description of the metric.</p>"
+    },
+    "HumanEvaluationCustomMetrics":{
+      "type":"list",
+      "member":{"shape":"HumanEvaluationCustomMetric"},
+      "max":10,
+      "min":1
+    },
+    "HumanTaskInstructions":{
+      "type":"string",
+      "max":5000,
+      "min":1,
+      "pattern":"[\\S\\s]+",
+      "sensitive":true
+    },
+    "HumanWorkflowConfig":{
+      "type":"structure",
+      "required":["flowDefinitionArn"],
+      "members":{
+        "flowDefinitionArn":{
+          "shape":"SageMakerFlowDefinitionArn",
+          "documentation":"<p>The Amazon Resource Number (ARN) for the flow definition</p>"
+        },
+        "instructions":{
+          "shape":"HumanTaskInstructions",
+          "documentation":"<p>Instructions for the flow definition</p>"
+        }
+      },
+      "documentation":"<p>Contains <code>SageMakerFlowDefinition</code> object. The object is used to specify the prompt dataset, task type, rating method and metric names.</p>"
     },
     "IdempotencyToken":{
       "type":"string",
@@ -1205,13 +2840,13 @@
         },
         "baseModelArnEquals":{
           "shape":"ModelArn",
-          "documentation":"<p>Return custom models only if the base model ARN matches this parameter.</p>",
+          "documentation":"<p>Return custom models only if the base model Amazon Resource Name (ARN) matches this parameter.</p>",
           "location":"querystring",
           "locationName":"baseModelArnEquals"
         },
         "foundationModelArnEquals":{
           "shape":"FoundationModelArn",
-          "documentation":"<p>Return custom models only if the foundation model ARN matches this parameter.</p>",
+          "documentation":"<p>Return custom models only if the foundation model Amazon Resource Name (ARN) matches this parameter.</p>",
           "location":"querystring",
           "locationName":"foundationModelArnEquals"
         },
@@ -1254,30 +2889,96 @@
         }
       }
     },
+    "ListEvaluationJobsRequest":{
+      "type":"structure",
+      "members":{
+        "creationTimeAfter":{
+          "shape":"Timestamp",
+          "documentation":"<p>A filter that includes model evaluation jobs created after the time specified.</p>",
+          "location":"querystring",
+          "locationName":"creationTimeAfter"
+        },
+        "creationTimeBefore":{
+          "shape":"Timestamp",
+          "documentation":"<p>A filter that includes model evaluation jobs created prior to the time specified.</p>",
+          "location":"querystring",
+          "locationName":"creationTimeBefore"
+        },
+        "statusEquals":{
+          "shape":"EvaluationJobStatus",
+          "documentation":"<p>Only return jobs where the status condition is met.</p>",
+          "location":"querystring",
+          "locationName":"statusEquals"
+        },
+        "nameContains":{
+          "shape":"EvaluationJobName",
+          "documentation":"<p>Query parameter string for model evaluation job names.</p>",
+          "location":"querystring",
+          "locationName":"nameContains"
+        },
+        "maxResults":{
+          "shape":"MaxResults",
+          "documentation":"<p>The maximum number of results to return.</p>",
+          "location":"querystring",
+          "locationName":"maxResults"
+        },
+        "nextToken":{
+          "shape":"PaginationToken",
+          "documentation":"<p>Continuation token from the previous response, for Amazon Bedrock to list the next set of results.</p>",
+          "location":"querystring",
+          "locationName":"nextToken"
+        },
+        "sortBy":{
+          "shape":"SortJobsBy",
+          "documentation":"<p>Allows you to sort model evaluation jobs by when they were created.</p>",
+          "location":"querystring",
+          "locationName":"sortBy"
+        },
+        "sortOrder":{
+          "shape":"SortOrder",
+          "documentation":"<p>How you want the order of jobs sorted.</p>",
+          "location":"querystring",
+          "locationName":"sortOrder"
+        }
+      }
+    },
+    "ListEvaluationJobsResponse":{
+      "type":"structure",
+      "members":{
+        "nextToken":{
+          "shape":"PaginationToken",
+          "documentation":"<p>Continuation token from the previous response, for Amazon Bedrock to list the next set of results.</p>"
+        },
+        "jobSummaries":{
+          "shape":"EvaluationSummaries",
+          "documentation":"<p>A summary of the model evaluation jobs.</p>"
+        }
+      }
+    },
     "ListFoundationModelsRequest":{
       "type":"structure",
       "members":{
         "byProvider":{
           "shape":"Provider",
-          "documentation":"<p>A Amazon Bedrock model provider.</p>",
+          "documentation":"<p>Return models belonging to the model provider that you specify.</p>",
           "location":"querystring",
           "locationName":"byProvider"
         },
         "byCustomizationType":{
           "shape":"ModelCustomization",
-          "documentation":"<p>List by customization type.</p>",
+          "documentation":"<p>Return models that support the customization type that you specify. For more information, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/custom-models.html\">Custom models</a> in the Amazon Bedrock User Guide.</p>",
           "location":"querystring",
           "locationName":"byCustomizationType"
         },
         "byOutputModality":{
           "shape":"ModelModality",
-          "documentation":"<p>List by output modality type.</p>",
+          "documentation":"<p>Return models that support the output modality that you specify.</p>",
           "location":"querystring",
           "locationName":"byOutputModality"
         },
         "byInferenceType":{
           "shape":"InferenceType",
-          "documentation":"<p>List by inference type.</p>",
+          "documentation":"<p>Return models that support the inference type that you specify. For more information, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/prov-throughput.html\">Provisioned Throughput</a> in the Amazon Bedrock User Guide.</p>",
           "location":"querystring",
           "locationName":"byInferenceType"
         }
@@ -1289,6 +2990,43 @@
         "modelSummaries":{
           "shape":"FoundationModelSummaryList",
           "documentation":"<p>A list of Amazon Bedrock foundation models.</p>"
+        }
+      }
+    },
+    "ListGuardrailsRequest":{
+      "type":"structure",
+      "members":{
+        "guardrailIdentifier":{
+          "shape":"GuardrailIdentifier",
+          "documentation":"<p>The unique identifier of the guardrail.</p>",
+          "location":"querystring",
+          "locationName":"guardrailIdentifier"
+        },
+        "maxResults":{
+          "shape":"MaxResults",
+          "documentation":"<p>The maximum number of results to return in the response.</p>",
+          "location":"querystring",
+          "locationName":"maxResults"
+        },
+        "nextToken":{
+          "shape":"PaginationToken",
+          "documentation":"<p>If there are more results than were returned in the response, the response returns a <code>nextToken</code> that you can send in another <code>ListGuardrails</code> request to see the next batch of results.</p>",
+          "location":"querystring",
+          "locationName":"nextToken"
+        }
+      }
+    },
+    "ListGuardrailsResponse":{
+      "type":"structure",
+      "required":["guardrails"],
+      "members":{
+        "guardrails":{
+          "shape":"GuardrailSummaries",
+          "documentation":"<p>A list of objects, each of which contains details about a guardrail.</p>"
+        },
+        "nextToken":{
+          "shape":"PaginationToken",
+          "documentation":"<p>If there are more results than were returned in the response, the response returns a <code>nextToken</code> that you can send in another <code>ListGuardrails</code> request to see the next batch of results.</p>"
         }
       }
     },
@@ -1363,49 +3101,49 @@
       "members":{
         "creationTimeAfter":{
           "shape":"Timestamp",
-          "documentation":"<p>Return provisioned capacities created after the specified time. </p>",
+          "documentation":"<p>A filter that returns Provisioned Throughputs created after the specified time. </p>",
           "location":"querystring",
           "locationName":"creationTimeAfter"
         },
         "creationTimeBefore":{
           "shape":"Timestamp",
-          "documentation":"<p>Return provisioned capacities created before the specified time. </p>",
+          "documentation":"<p>A filter that returns Provisioned Throughputs created before the specified time. </p>",
           "location":"querystring",
           "locationName":"creationTimeBefore"
         },
         "statusEquals":{
           "shape":"ProvisionedModelStatus",
-          "documentation":"<p>Return the list of provisioned capacities that match the specified status.</p>",
+          "documentation":"<p>A filter that returns Provisioned Throughputs if their statuses matches the value that you specify.</p>",
           "location":"querystring",
           "locationName":"statusEquals"
         },
         "modelArnEquals":{
           "shape":"ModelArn",
-          "documentation":"<p>Return the list of provisioned capacities where their model ARN is equal to this parameter.</p>",
+          "documentation":"<p>A filter that returns Provisioned Throughputs whose model Amazon Resource Name (ARN) is equal to the value that you specify.</p>",
           "location":"querystring",
           "locationName":"modelArnEquals"
         },
         "nameContains":{
           "shape":"ProvisionedModelName",
-          "documentation":"<p>Return the list of provisioned capacities if their name contains these characters.</p>",
+          "documentation":"<p>A filter that returns Provisioned Throughputs if their name contains the expression that you specify.</p>",
           "location":"querystring",
           "locationName":"nameContains"
         },
         "maxResults":{
           "shape":"MaxResults",
-          "documentation":"<p>THe maximum number of results to return in the response.</p>",
+          "documentation":"<p>THe maximum number of results to return in the response. If there are more results than the number you specified, the response returns a <code>nextToken</code> value. To see the next batch of results, send the <code>nextToken</code> value in another list request.</p>",
           "location":"querystring",
           "locationName":"maxResults"
         },
         "nextToken":{
           "shape":"PaginationToken",
-          "documentation":"<p>Continuation token from the previous response, for Amazon Bedrock to list the next set of results.</p>",
+          "documentation":"<p>If there are more results than the number you specified in the <code>maxResults</code> field, the response returns a <code>nextToken</code> value. To see the next batch of results, specify the <code>nextToken</code> value in this field.</p>",
           "location":"querystring",
           "locationName":"nextToken"
         },
         "sortBy":{
           "shape":"SortByProvisionedModels",
-          "documentation":"<p>The field to sort by in the returned list of provisioned capacities.</p>",
+          "documentation":"<p>The field by which to sort the returned list of Provisioned Throughputs.</p>",
           "location":"querystring",
           "locationName":"sortBy"
         },
@@ -1422,11 +3160,11 @@
       "members":{
         "nextToken":{
           "shape":"PaginationToken",
-          "documentation":"<p>Continuation token for the next request to list the next set of results.</p>"
+          "documentation":"<p>If there are more results than the number you specified in the <code>maxResults</code> field, this value is returned. To see the next batch of results, include this value in the <code>nextToken</code> field in another list request.</p>"
         },
         "provisionedModelSummaries":{
           "shape":"ProvisionedModelSummaries",
-          "documentation":"<p>List of summaries, one for each provisioned throughput in the response.</p>"
+          "documentation":"<p>A list of summaries, one for each Provisioned Throughput in the response.</p>"
         }
       }
     },
@@ -1436,7 +3174,7 @@
       "members":{
         "resourceARN":{
           "shape":"TaggableResourcesArn",
-          "documentation":"<p>The ARN of the resource.</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of the resource.</p>"
         }
       }
     },
@@ -1478,7 +3216,7 @@
           "documentation":"<p>Set to include embeddings data in the log delivery.</p>"
         }
       },
-      "documentation":"<p>Configuration fields for invokation logging.</p>"
+      "documentation":"<p>Configuration fields for invocation logging.</p>"
     },
     "MaxResults":{
       "type":"integer",
@@ -1546,11 +3284,11 @@
       "members":{
         "jobArn":{
           "shape":"ModelCustomizationJobArn",
-          "documentation":"<p>ARN of the customization job.</p>"
+          "documentation":"<p>Amazon Resource Name (ARN) of the customization job.</p>"
         },
         "baseModelArn":{
           "shape":"ModelArn",
-          "documentation":"<p>ARN of the base model.</p>"
+          "documentation":"<p>Amazon Resource Name (ARN) of the base model.</p>"
         },
         "jobName":{
           "shape":"JobName",
@@ -1574,7 +3312,7 @@
         },
         "customModelArn":{
           "shape":"CustomModelArn",
-          "documentation":"<p>ARN of the custom model.</p>"
+          "documentation":"<p>Amazon Resource Name (ARN) of the custom model.</p>"
         },
         "customModelName":{
           "shape":"CustomModelName",
@@ -1689,54 +3427,54 @@
       "members":{
         "provisionedModelName":{
           "shape":"ProvisionedModelName",
-          "documentation":"<p>The name of the provisioned throughput.</p>"
+          "documentation":"<p>The name of the Provisioned Throughput.</p>"
         },
         "provisionedModelArn":{
           "shape":"ProvisionedModelArn",
-          "documentation":"<p>The ARN of the provisioned throughput.</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of the Provisioned Throughput.</p>"
         },
         "modelArn":{
           "shape":"ModelArn",
-          "documentation":"<p>The ARN of the model associated with this provisioned throughput.</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of the model associated with the Provisioned Throughput.</p>"
         },
         "desiredModelArn":{
           "shape":"ModelArn",
-          "documentation":"<p>Desired model ARN.</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of the model requested to be associated to this Provisioned Throughput. This value differs from the <code>modelArn</code> if updating hasn't completed.</p>"
         },
         "foundationModelArn":{
           "shape":"FoundationModelArn",
-          "documentation":"<p>Foundation model ARN.</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of the base model for which the Provisioned Throughput was created, or of the base model that the custom model for which the Provisioned Throughput was created was customized.</p>"
         },
         "modelUnits":{
           "shape":"PositiveInteger",
-          "documentation":"<p>The number of model units allocated.</p>"
+          "documentation":"<p>The number of model units allocated to the Provisioned Throughput.</p>"
         },
         "desiredModelUnits":{
           "shape":"PositiveInteger",
-          "documentation":"<p>Desired model units.</p>"
+          "documentation":"<p>The number of model units that was requested to be allocated to the Provisioned Throughput.</p>"
         },
         "status":{
           "shape":"ProvisionedModelStatus",
-          "documentation":"<p>Status of the provisioned throughput.</p>"
+          "documentation":"<p>The status of the Provisioned Throughput.</p>"
         },
         "commitmentDuration":{
           "shape":"CommitmentDuration",
-          "documentation":"<p>Commitment duration for the provisioned throughput.</p>"
+          "documentation":"<p>The duration for which the Provisioned Throughput was committed.</p>"
         },
         "commitmentExpirationTime":{
           "shape":"Timestamp",
-          "documentation":"<p>Commitment expiration time for the provisioned throughput.</p>"
+          "documentation":"<p>The timestamp for when the commitment term of the Provisioned Throughput expires.</p>"
         },
         "creationTime":{
           "shape":"Timestamp",
-          "documentation":"<p>The time that this provisioned throughput was created. </p>"
+          "documentation":"<p>The time that the Provisioned Throughput was created. </p>"
         },
         "lastModifiedTime":{
           "shape":"Timestamp",
-          "documentation":"<p>The time that this provisioned throughput was last modified. </p>"
+          "documentation":"<p>The time that the Provisioned Throughput was last modified. </p>"
         }
       },
-      "documentation":"<p>Set of fields associated with a provisioned throughput.</p>"
+      "documentation":"<p>A summary of information about a Provisioned Throughput.</p> <p>This data type is used in the following API operations:</p> <ul> <li> <p> <a href=\"https://docs.aws.amazon.com/bedrock/latest/APIReference/API_ListProvisionedModelThroughputs.html#API_ListProvisionedModelThroughputs_ResponseSyntax\">ListProvisionedThroughputs response</a> </p> </li> </ul>"
     },
     "PutModelInvocationLoggingConfigurationRequest":{
       "type":"structure",
@@ -1758,7 +3496,7 @@
       "members":{
         "message":{"shape":"NonBlankString"}
       },
-      "documentation":"<p>The specified resource ARN was not found. Check the ARN and try your request again.</p>",
+      "documentation":"<p>The specified resource Amazon Resource Name (ARN) was not found. Check the Amazon Resource Name (ARN) and try your request again.</p>",
       "error":{
         "httpStatusCode":404,
         "senderFault":true
@@ -1791,6 +3529,12 @@
       "max":1024,
       "min":1,
       "pattern":"s3://[a-z0-9][\\.\\-a-z0-9]{1,61}[a-z0-9](/.*)?"
+    },
+    "SageMakerFlowDefinitionArn":{
+      "type":"string",
+      "max":1024,
+      "min":0,
+      "pattern":"arn:aws(-[^:]+)?:sagemaker:[a-z0-9-]{1,20}:[0-9]{12}:flow-definition/.*"
     },
     "SecurityGroupId":{
       "type":"string",
@@ -1834,6 +3578,23 @@
         "Ascending",
         "Descending"
       ]
+    },
+    "StopEvaluationJobRequest":{
+      "type":"structure",
+      "required":["jobIdentifier"],
+      "members":{
+        "jobIdentifier":{
+          "shape":"EvaluationJobIdentifier",
+          "documentation":"<p>The ARN of the model evaluation job you want to stop.</p>",
+          "location":"uri",
+          "locationName":"jobIdentifier"
+        }
+      }
+    },
+    "StopEvaluationJobResponse":{
+      "type":"structure",
+      "members":{
+      }
     },
     "StopModelCustomizationJobRequest":{
       "type":"structure",
@@ -1910,7 +3671,7 @@
       "members":{
         "resourceARN":{
           "shape":"TaggableResourcesArn",
-          "documentation":"<p>The ARN of the resource to tag.</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of the resource to tag.</p>"
         },
         "tags":{
           "shape":"TagList",
@@ -1933,7 +3694,7 @@
       "type":"string",
       "max":1011,
       "min":20,
-      "pattern":".*(^[a-zA-Z0-9][a-zA-Z0-9\\-]*$)|(^arn:aws(-[^:]+)?:bedrock:[a-z0-9-]{1,20}:([0-9]{12}|)((:(fine-tuning-job|model-customization-job|custom-model)/[a-z0-9-]{1,63}[.]{1}[a-z0-9-]{1,63}([a-z0-9-]{1,63}[.]){0,2}[a-z0-9-]{1,63}([:][a-z0-9-]{1,63}){0,2}(/[a-z0-9]{12})$)|(:provisioned-model/[a-z0-9]{12}$))).*"
+      "pattern":".*(^[a-zA-Z0-9][a-zA-Z0-9\\-]*$)|(^arn:aws(-[^:]+)?:bedrock:[a-z0-9-]{1,20}:([0-9]{12}|)((:(fine-tuning-job|model-customization-job|custom-model)/[a-z0-9-]{1,63}[.]{1}[a-z0-9-]{1,63}([a-z0-9-]{1,63}[.]){0,2}[a-z0-9-]{1,63}([:][a-z0-9-]{1,63}){0,2}(/[a-z0-9]{12})$)|(:provisioned-model/[a-z0-9]{12}$)|(:guardrail/[a-z0-9]+$)|(:evaluation-job/[a-z0-9]{12}$))).*"
     },
     "ThrottlingException":{
       "type":"structure",
@@ -1997,7 +3758,7 @@
       "members":{
         "resourceARN":{
           "shape":"TaggableResourcesArn",
-          "documentation":"<p>The ARN of the resource to untag.</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of the resource to untag.</p>"
         },
         "tagKeys":{
           "shape":"TagKeyList",
@@ -2010,23 +3771,103 @@
       "members":{
       }
     },
+    "UpdateGuardrailRequest":{
+      "type":"structure",
+      "required":[
+        "guardrailIdentifier",
+        "name",
+        "blockedInputMessaging",
+        "blockedOutputsMessaging"
+      ],
+      "members":{
+        "guardrailIdentifier":{
+          "shape":"GuardrailIdentifier",
+          "documentation":"<p>The unique identifier of the guardrail</p>",
+          "location":"uri",
+          "locationName":"guardrailIdentifier"
+        },
+        "name":{
+          "shape":"GuardrailName",
+          "documentation":"<p>A name for the guardrail.</p>"
+        },
+        "description":{
+          "shape":"GuardrailDescription",
+          "documentation":"<p>A description of the guardrail.</p>"
+        },
+        "topicPolicyConfig":{
+          "shape":"GuardrailTopicPolicyConfig",
+          "documentation":"<p>The topic policy to configure for the guardrail.</p>"
+        },
+        "contentPolicyConfig":{
+          "shape":"GuardrailContentPolicyConfig",
+          "documentation":"<p>The content policy to configure for the guardrail.</p>"
+        },
+        "wordPolicyConfig":{
+          "shape":"GuardrailWordPolicyConfig",
+          "documentation":"<p>The word policy to configure for the guardrail.</p>"
+        },
+        "sensitiveInformationPolicyConfig":{
+          "shape":"GuardrailSensitiveInformationPolicyConfig",
+          "documentation":"<p>The sensitive information policy to configure for the guardrail.</p>"
+        },
+        "blockedInputMessaging":{
+          "shape":"GuardrailBlockedMessaging",
+          "documentation":"<p>The message to return when the guardrail blocks a prompt.</p>"
+        },
+        "blockedOutputsMessaging":{
+          "shape":"GuardrailBlockedMessaging",
+          "documentation":"<p>The message to return when the guardrail blocks a model response.</p>"
+        },
+        "kmsKeyId":{
+          "shape":"KmsKeyId",
+          "documentation":"<p>The ARN of the KMS key with which to encrypt the guardrail.</p>"
+        }
+      }
+    },
+    "UpdateGuardrailResponse":{
+      "type":"structure",
+      "required":[
+        "guardrailId",
+        "guardrailArn",
+        "version",
+        "updatedAt"
+      ],
+      "members":{
+        "guardrailId":{
+          "shape":"GuardrailId",
+          "documentation":"<p>The unique identifier of the guardrail</p>"
+        },
+        "guardrailArn":{
+          "shape":"GuardrailArn",
+          "documentation":"<p>The ARN of the guardrail that was created.</p>"
+        },
+        "version":{
+          "shape":"GuardrailDraftVersion",
+          "documentation":"<p>The version of the guardrail.</p>"
+        },
+        "updatedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The date and time at which the guardrail was updated.</p>"
+        }
+      }
+    },
     "UpdateProvisionedModelThroughputRequest":{
       "type":"structure",
       "required":["provisionedModelId"],
       "members":{
         "provisionedModelId":{
           "shape":"ProvisionedModelId",
-          "documentation":"<p>The ARN or name of the provisioned throughput to update.</p>",
+          "documentation":"<p>The Amazon Resource Name (ARN) or name of the Provisioned Throughput to update.</p>",
           "location":"uri",
           "locationName":"provisionedModelId"
         },
         "desiredProvisionedModelName":{
           "shape":"ProvisionedModelName",
-          "documentation":"<p>The new name for this provisioned throughput.</p>"
+          "documentation":"<p>The new name for this Provisioned Throughput.</p>"
         },
         "desiredModelId":{
           "shape":"ModelIdentifier",
-          "documentation":"<p>The ARN of the new model to associate with this provisioned throughput.</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of the new model to associate with this Provisioned Throughput. You can't specify this field if this Provisioned Throughput is associated with a base model.</p> <p>If this Provisioned Throughput is associated with a custom model, you can specify one of the following options:</p> <ul> <li> <p>The base model from which the custom model was customized.</p> </li> <li> <p>Another custom model that was customized from the same base model as the custom model.</p> </li> </ul>"
         }
       }
     },
@@ -2108,5 +3949,5 @@
       "documentation":"<p>VPC configuration.</p>"
     }
   },
-  "documentation":"<p>Describes the API operations for creating and managing Amazon Bedrock models.</p>"
+  "documentation":"<p>Describes the API operations for creating, managing, fine-turning, and evaluating Amazon Bedrock models.</p>"
 }

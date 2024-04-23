@@ -738,6 +738,23 @@
       ],
       "documentation":"<p>Sends a callback for asynchronous custom steps.</p> <p> The <code>ExecutionId</code>, <code>WorkflowId</code>, and <code>Token</code> are passed to the target resource during execution of a custom step of a workflow. You must include those with their callback as well as providing a status. </p>"
     },
+    "StartDirectoryListing":{
+      "name":"StartDirectoryListing",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"StartDirectoryListingRequest"},
+      "output":{"shape":"StartDirectoryListingResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InvalidRequestException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServiceError"},
+        {"shape":"ServiceUnavailableException"}
+      ],
+      "documentation":"<p>Retrieves a list of the contents of a directory from a remote SFTP server. You specify the connector ID, the output path, and the remote directory path. You can also specify the optional <code>MaxItems</code> value to control the maximum number of items that are listed from the remote directory. This API returns a list of all files and directories in the remote directory (up to the maximum value), but does not return files or folders in sub-directories. That is, it only returns a list of files and directories one-level deep.</p> <p>After you receive the listing file, you can provide the files that you want to transfer to the <code>RetrieveFilePaths</code> parameter of the <code>StartFileTransfer</code> API call.</p> <p>The naming convention for the output file is <code> <i>connector-ID</i>-<i>listing-ID</i>.json</code>. The output file contains the following information:</p> <ul> <li> <p> <code>filePath</code>: the complete path of a remote file, relative to the directory of the listing request for your SFTP connector on the remote server.</p> </li> <li> <p> <code>modifiedTimestamp</code>: the last time the file was modified, in UTC time format. This field is optional. If the remote file attributes don't contain a timestamp, it is omitted from the file listing.</p> </li> <li> <p> <code>size</code>: the size of the file, in bytes. This field is optional. If the remote file attributes don't contain a file size, it is omitted from the file listing.</p> </li> <li> <p> <code>path</code>: the complete path of a remote directory, relative to the directory of the listing request for your SFTP connector on the remote server.</p> </li> <li> <p> <code>truncated</code>: a flag indicating whether the list output contains all of the items contained in the remote directory or not. If your <code>Truncated</code> output value is true, you can increase the value provided in the optional <code>max-items</code> input attribute to be able to list more items (up to the maximum allowed list size of 10,000 items).</p> </li> </ul>"
+    },
     "StartFileTransfer":{
       "name":"StartFileTransfer",
       "http":{
@@ -753,7 +770,7 @@
         {"shape":"InternalServiceError"},
         {"shape":"ServiceUnavailableException"}
       ],
-      "documentation":"<p>Begins a file transfer between local Amazon Web Services storage and a remote AS2 or SFTP server.</p> <ul> <li> <p>For an AS2 connector, you specify the <code>ConnectorId</code> and one or more <code>SendFilePaths</code> to identify the files you want to transfer.</p> </li> <li> <p>For an SFTP connector, the file transfer can be either outbound or inbound. In both cases, you specify the <code>ConnectorId</code>. Depending on the direction of the transfer, you also specify the following items:</p> <ul> <li> <p>If you are transferring file from a partner's SFTP server to Amazon Web Services storage, you specify one or more <code>RetreiveFilePaths</code> to identify the files you want to transfer, and a <code>LocalDirectoryPath</code> to specify the destination folder.</p> </li> <li> <p>If you are transferring file to a partner's SFTP server from Amazon Web Services storage, you specify one or more <code>SendFilePaths</code> to identify the files you want to transfer, and a <code>RemoteDirectoryPath</code> to specify the destination folder.</p> </li> </ul> </li> </ul>"
+      "documentation":"<p>Begins a file transfer between local Amazon Web Services storage and a remote AS2 or SFTP server.</p> <ul> <li> <p>For an AS2 connector, you specify the <code>ConnectorId</code> and one or more <code>SendFilePaths</code> to identify the files you want to transfer.</p> </li> <li> <p>For an SFTP connector, the file transfer can be either outbound or inbound. In both cases, you specify the <code>ConnectorId</code>. Depending on the direction of the transfer, you also specify the following items:</p> <ul> <li> <p>If you are transferring file from a partner's SFTP server to Amazon Web Services storage, you specify one or more <code>RetrieveFilePaths</code> to identify the files you want to transfer, and a <code>LocalDirectoryPath</code> to specify the destination folder.</p> </li> <li> <p>If you are transferring file to a partner's SFTP server from Amazon Web Services storage, you specify one or more <code>SendFilePaths</code> to identify the files you want to transfer, and a <code>RemoteDirectoryPath</code> to specify the destination folder.</p> </li> </ul> </li> </ul>"
     },
     "StartServer":{
       "name":"StartServer",
@@ -2171,7 +2188,7 @@
         },
         "Usage":{
           "shape":"CertificateUsageType",
-          "documentation":"<p>Specifies how this certificate is used. It can be used in the following ways:</p> <ul> <li> <p> <code>SIGNING</code>: For signing AS2 messages</p> </li> <li> <p> <code>ENCRYPTION</code>: For encrypting AS2 messages</p> </li> <li> <p> <code>TLS</code>: For securing AS2 communications sent over HTTPS</p> </li> </ul>"
+          "documentation":"<p>Specifies whether this certificate is used for signing or encryption.</p>"
         },
         "Status":{
           "shape":"CertificateStatusType",
@@ -2918,7 +2935,7 @@
       "members":{
         "Usage":{
           "shape":"CertificateUsageType",
-          "documentation":"<p>Specifies how this certificate is used. It can be used in the following ways:</p> <ul> <li> <p> <code>SIGNING</code>: For signing AS2 messages</p> </li> <li> <p> <code>ENCRYPTION</code>: For encrypting AS2 messages</p> </li> <li> <p> <code>TLS</code>: For securing AS2 communications sent over HTTPS</p> </li> </ul>"
+          "documentation":"<p>Specifies whether this certificate is used for signing or encryption.</p>"
         },
         "Certificate":{
           "shape":"CertificateBodyType",
@@ -3555,7 +3572,7 @@
         },
         "Usage":{
           "shape":"CertificateUsageType",
-          "documentation":"<p>Specifies how this certificate is used. It can be used in the following ways:</p> <ul> <li> <p> <code>SIGNING</code>: For signing AS2 messages</p> </li> <li> <p> <code>ENCRYPTION</code>: For encrypting AS2 messages</p> </li> <li> <p> <code>TLS</code>: For securing AS2 communications sent over HTTPS</p> </li> </ul>"
+          "documentation":"<p>Specifies whether this certificate is used for signing or encryption.</p>"
         },
         "Status":{
           "shape":"CertificateStatusType",
@@ -3793,6 +3810,12 @@
       "type":"list",
       "member":{"shape":"ListedWorkflow"}
     },
+    "ListingId":{
+      "type":"string",
+      "max":512,
+      "min":1,
+      "pattern":"[0-9a-zA-Z./-]+"
+    },
     "LogGroupName":{
       "type":"string",
       "max":512,
@@ -3831,6 +3854,12 @@
         "FILE",
         "DIRECTORY"
       ]
+    },
+    "MaxItems":{
+      "type":"integer",
+      "box":true,
+      "max":10000,
+      "min":1
     },
     "MaxResults":{
       "type":"integer",
@@ -3885,6 +3914,12 @@
       "member":{"shape":"WorkflowDetail"},
       "max":1,
       "min":0
+    },
+    "OutputFileName":{
+      "type":"string",
+      "max":537,
+      "min":26,
+      "pattern":"c-([0-9a-f]{17})-[0-9a-zA-Z./-]+.json"
     },
     "OverwriteExisting":{
       "type":"string",
@@ -4385,6 +4420,49 @@
       "member":{"shape":"SshPublicKey"},
       "max":5,
       "min":0
+    },
+    "StartDirectoryListingRequest":{
+      "type":"structure",
+      "required":[
+        "ConnectorId",
+        "RemoteDirectoryPath",
+        "OutputDirectoryPath"
+      ],
+      "members":{
+        "ConnectorId":{
+          "shape":"ConnectorId",
+          "documentation":"<p>The unique identifier for the connector.</p>"
+        },
+        "RemoteDirectoryPath":{
+          "shape":"FilePath",
+          "documentation":"<p>Specifies the directory on the remote SFTP server for which you want to list its contents.</p>"
+        },
+        "MaxItems":{
+          "shape":"MaxItems",
+          "documentation":"<p>An optional parameter where you can specify the maximum number of file/directory names to retrieve. The default value is 1,000.</p>"
+        },
+        "OutputDirectoryPath":{
+          "shape":"FilePath",
+          "documentation":"<p>Specifies the path (bucket and prefix) in Amazon S3 storage to store the results of the directory listing.</p>"
+        }
+      }
+    },
+    "StartDirectoryListingResponse":{
+      "type":"structure",
+      "required":[
+        "ListingId",
+        "OutputFileName"
+      ],
+      "members":{
+        "ListingId":{
+          "shape":"ListingId",
+          "documentation":"<p>Returns a unique identifier for the directory listing call.</p>"
+        },
+        "OutputFileName":{
+          "shape":"OutputFileName",
+          "documentation":"<p>Returns the file name where the results are stored. This is a combination of the connector ID and the listing ID: <code>&lt;connector-id&gt;-&lt;listing-id&gt;.json</code>.</p>"
+        }
+      }
     },
     "StartFileTransferRequest":{
       "type":"structure",

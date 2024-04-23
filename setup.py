@@ -28,7 +28,7 @@ install_requires = [
     'docutils>=0.10,<0.17',
     's3transfer>=0.10.0,<0.11.0',
     'PyYAML>=3.10,<6.1',
-    'colorama>=0.2.5,<0.4.5',
+    'colorama>=0.2.5,<0.4.7',
     'rsa>=3.1.2,<4.8',
 ]
 

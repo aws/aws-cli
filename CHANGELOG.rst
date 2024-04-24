@@ -2,6 +2,17 @@
 CHANGELOG
 =========
 
+1.32.91
+=======
+
+* api-change:``datasync``: This change allows users to disable and enable the schedules associated with their tasks.
+* api-change:``ec2``: Launching capability for customers to enable or disable automatic assignment of public IPv4 addresses to their network interface
+* api-change:``emr-containers``: EMRonEKS Service support for SecurityConfiguration enforcement for Spark Jobs.
+* api-change:``entityresolution``: Support Batch Unique IDs Deletion.
+* api-change:``gamelift``: Amazon GameLift releases container fleets support for public preview. Deploy Linux-based containerized game server software for hosting on Amazon GameLift.
+* api-change:``ssm``: Add SSM DescribeInstanceProperties API to public AWS SDK.
+
+
 1.32.90
 =======
 

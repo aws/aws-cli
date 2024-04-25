@@ -5,6 +5,7 @@
     "endpointPrefix":"ssm",
     "jsonVersion":"1.1",
     "protocol":"json",
+    "protocols":["json"],
     "serviceAbbreviation":"Amazon SSM",
     "serviceFullName":"Amazon Simple Systems Manager (SSM)",
     "serviceId":"SSM",
@@ -726,6 +727,25 @@
         {"shape":"InvalidNextToken"}
       ],
       "documentation":"<p>Retrieves information about the patches on the specified managed node and their state relative to the patch baseline being used for the node.</p>"
+    },
+    "DescribeInstanceProperties":{
+      "name":"DescribeInstanceProperties",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DescribeInstancePropertiesRequest"},
+      "output":{"shape":"DescribeInstancePropertiesResult"},
+      "errors":[
+        {"shape":"InvalidNextToken"},
+        {"shape":"InvalidFilterKey"},
+        {"shape":"InvalidInstanceId"},
+        {"shape":"InvalidActivationId"},
+        {"shape":"InvalidInstancePropertyFilterValue"},
+        {"shape":"InternalServerError"},
+        {"shape":"InvalidDocument"}
+      ],
+      "documentation":"<p>An API operation used by the Systems Manager console to display information about Systems Manager managed nodes.</p>"
     },
     "DescribeInventoryDeletions":{
       "name":"DescribeInventoryDeletions",
@@ -2419,6 +2439,10 @@
       "type":"integer",
       "max":360,
       "min":0
+    },
+    "Architecture":{
+      "type":"string",
+      "max":120
     },
     "AssociateOpsItemRelatedItemRequest":{
       "type":"structure",
@@ -4730,7 +4754,7 @@
         },
         "Name":{
           "shape":"DocumentName",
-          "documentation":"<p>A name for the SSM document.</p> <important> <p>You can't use the following strings as document name prefixes. These are reserved by Amazon Web Services for use as document name prefixes:</p> <ul> <li> <p> <code>aws</code> </p> </li> <li> <p> <code>amazon</code> </p> </li> <li> <p> <code>amzn</code> </p> </li> </ul> </important>"
+          "documentation":"<p>A name for the SSM document.</p> <important> <p>You can't use the following strings as document name prefixes. These are reserved by Amazon Web Services for use as document name prefixes:</p> <ul> <li> <p> <code>aws</code> </p> </li> <li> <p> <code>amazon</code> </p> </li> <li> <p> <code>amzn</code> </p> </li> <li> <p> <code>AWSEC2</code> </p> </li> <li> <p> <code>AWSConfigRemediation</code> </p> </li> <li> <p> <code>AWSSupport</code> </p> </li> </ul> </important>"
         },
         "DisplayName":{
           "shape":"DocumentDisplayName",
@@ -4787,7 +4811,7 @@
         },
         "StartDate":{
           "shape":"MaintenanceWindowStringDateTime",
-          "documentation":"<p>The date and time, in ISO-8601 Extended format, for when you want the maintenance window to become active. <code>StartDate</code> allows you to delay activation of the maintenance window until the specified future date.</p>"
+          "documentation":"<p>The date and time, in ISO-8601 Extended format, for when you want the maintenance window to become active. <code>StartDate</code> allows you to delay activation of the maintenance window until the specified future date.</p> <note> <p>When using a rate schedule, if you provide a start date that occurs in the past, the current date and time are used as the start date. </p> </note>"
         },
         "EndDate":{
           "shape":"MaintenanceWindowStringDateTime",
@@ -6003,6 +6027,47 @@
         "NextToken":{
           "shape":"NextToken",
           "documentation":"<p>The token to use when requesting the next set of items. If there are no additional items to return, the string is empty.</p>"
+        }
+      }
+    },
+    "DescribeInstancePropertiesMaxResults":{
+      "type":"integer",
+      "box":true,
+      "max":1000,
+      "min":5
+    },
+    "DescribeInstancePropertiesRequest":{
+      "type":"structure",
+      "members":{
+        "InstancePropertyFilterList":{
+          "shape":"InstancePropertyFilterList",
+          "documentation":"<p>An array of instance property filters.</p>"
+        },
+        "FiltersWithOperator":{
+          "shape":"InstancePropertyStringFilterList",
+          "documentation":"<p>The request filters to use with the operator.</p>"
+        },
+        "MaxResults":{
+          "shape":"DescribeInstancePropertiesMaxResults",
+          "documentation":"<p>The maximum number of items to return for the call. The call also returns a token that you can specify in a subsequent call to get the next set of results.</p>",
+          "box":true
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The token provided by a previous request to use to return the next set of properties.</p>"
+        }
+      }
+    },
+    "DescribeInstancePropertiesResult":{
+      "type":"structure",
+      "members":{
+        "InstanceProperties":{
+          "shape":"InstanceProperties",
+          "documentation":"<p>Properties for the managed instances.</p>"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The token for the next set of properties to return. Use this token to get the next set of results.</p>"
         }
       }
     },
@@ -8382,7 +8447,7 @@
       "members":{
         "Names":{
           "shape":"ParameterNameList",
-          "documentation":"<p>The names or Amazon Resource Names (ARNs) of the parameters that you want to query. For parameters shared with you from another account, you must use the full ARNs.</p> <p>To query by parameter label, use <code>\"Name\": \"name:label\"</code>. To query by parameter version, use <code>\"Name\": \"name:version\"</code>.</p> <p>For more information about shared parameters, see <a href=\"https://docs.aws.amazon.com/systems-manager/latest/userguide/parameter-store-shared-parameters.html\">Working with shared parameters</a> in the <i>Amazon Web Services Systems Manager User Guide</i>.</p>"
+          "documentation":"<p>The names or Amazon Resource Names (ARNs) of the parameters that you want to query. For parameters shared with you from another account, you must use the full ARNs.</p> <p>To query by parameter label, use <code>\"Name\": \"name:label\"</code>. To query by parameter version, use <code>\"Name\": \"name:version\"</code>.</p> <note> <p>The results for <code>GetParameters</code> requests are listed in alphabetical order in query responses.</p> </note> <p>For information about shared parameters, see <a href=\"https://docs.aws.amazon.com/systems-manager/latest/userguide/parameter-store-shared-parameters.html\">Working with shared parameters</a> in the <i>Amazon Web Services Systems Manager User Guide</i>.</p>"
         },
         "WithDecryption":{
           "shape":"Boolean",
@@ -8954,6 +9019,10 @@
       "member":{"shape":"InstanceInformationStringFilter"},
       "min":0
     },
+    "InstanceName":{
+      "type":"string",
+      "max":255
+    },
     "InstancePatchState":{
       "type":"structure",
       "required":[
@@ -9122,9 +9191,226 @@
       "max":5,
       "min":1
     },
+    "InstanceProperties":{
+      "type":"list",
+      "member":{"shape":"InstanceProperty"}
+    },
+    "InstanceProperty":{
+      "type":"structure",
+      "members":{
+        "Name":{
+          "shape":"InstanceName",
+          "documentation":"<p>The value of the EC2 <code>Name</code> tag associated with the node. If a <code>Name</code> tag hasn't been applied to the node, this value is blank.</p>"
+        },
+        "InstanceId":{
+          "shape":"InstanceId",
+          "documentation":"<p>The ID of the managed node.</p>"
+        },
+        "InstanceType":{
+          "shape":"InstanceType",
+          "documentation":"<p>The instance type of the managed node. For example, t3.large.</p>"
+        },
+        "InstanceRole":{
+          "shape":"InstanceRole",
+          "documentation":"<p>The instance profile attached to the node. If an instance profile isn't attached to the node, this value is blank.</p>"
+        },
+        "KeyName":{
+          "shape":"KeyName",
+          "documentation":"<p>The name of the key pair associated with the node. If a key pair isnt't associated with the node, this value is blank.</p>"
+        },
+        "InstanceState":{
+          "shape":"InstanceState",
+          "documentation":"<p>The current state of the node.</p>"
+        },
+        "Architecture":{
+          "shape":"Architecture",
+          "documentation":"<p>The CPU architecture of the node. For example, x86_64.</p>"
+        },
+        "IPAddress":{
+          "shape":"IPAddress",
+          "documentation":"<p>The public IPv4 address assigned to the node. If a public IPv4 address isn't assigned to the node, this value is blank.</p>"
+        },
+        "LaunchTime":{
+          "shape":"DateTime",
+          "documentation":"<p>The timestamp for when the node was launched.</p>"
+        },
+        "PingStatus":{
+          "shape":"PingStatus",
+          "documentation":"<p>Connection status of the SSM Agent on the managed node.</p>"
+        },
+        "LastPingDateTime":{
+          "shape":"DateTime",
+          "documentation":"<p>The date and time when the SSM Agent last pinged the Systems Manager service.</p>"
+        },
+        "AgentVersion":{
+          "shape":"Version",
+          "documentation":"<p>The version of SSM Agent running on your managed node.</p>"
+        },
+        "PlatformType":{
+          "shape":"PlatformType",
+          "documentation":"<p>The operating system platform type of the managed node. For example, Windows.</p>"
+        },
+        "PlatformName":{
+          "shape":"PlatformName",
+          "documentation":"<p>The name of the operating system platform running on your managed node.</p>"
+        },
+        "PlatformVersion":{
+          "shape":"PlatformVersion",
+          "documentation":"<p>The version of the OS platform running on your managed node.</p>"
+        },
+        "ActivationId":{
+          "shape":"ActivationId",
+          "documentation":"<p>The activation ID created by Systems Manager when the server or virtual machine (VM) was registered</p>"
+        },
+        "IamRole":{
+          "shape":"IamRole",
+          "documentation":"<p>The IAM role used in the hybrid activation to register the node with Systems Manager.</p>"
+        },
+        "RegistrationDate":{
+          "shape":"DateTime",
+          "documentation":"<p>The date the node was registered with Systems Manager.</p>"
+        },
+        "ResourceType":{
+          "shape":"String",
+          "documentation":"<p>The type of managed node.</p>"
+        },
+        "ComputerName":{
+          "shape":"ComputerName",
+          "documentation":"<p>The fully qualified host name of the managed node.</p>"
+        },
+        "AssociationStatus":{
+          "shape":"StatusName",
+          "documentation":"<p>The status of the State Manager association applied to the managed node.</p>"
+        },
+        "LastAssociationExecutionDate":{
+          "shape":"DateTime",
+          "documentation":"<p>The date the association was last run.</p>"
+        },
+        "LastSuccessfulAssociationExecutionDate":{
+          "shape":"DateTime",
+          "documentation":"<p>The last date the association was successfully run.</p>"
+        },
+        "AssociationOverview":{"shape":"InstanceAggregatedAssociationOverview"},
+        "SourceId":{
+          "shape":"SourceId",
+          "documentation":"<p>The ID of the source resource.</p>"
+        },
+        "SourceType":{
+          "shape":"SourceType",
+          "documentation":"<p>The type of the source resource.</p>"
+        }
+      },
+      "documentation":"<p>An object containing various properties of a managed node.</p>"
+    },
+    "InstancePropertyFilter":{
+      "type":"structure",
+      "required":[
+        "key",
+        "valueSet"
+      ],
+      "members":{
+        "key":{
+          "shape":"InstancePropertyFilterKey",
+          "documentation":"<p>The name of the filter.</p>"
+        },
+        "valueSet":{
+          "shape":"InstancePropertyFilterValueSet",
+          "documentation":"<p>The filter values.</p>"
+        }
+      },
+      "documentation":"<p>Describes a filter for a specific list of managed nodes. You can filter node information by using tags. You specify tags by using a key-value mapping.</p>"
+    },
+    "InstancePropertyFilterKey":{
+      "type":"string",
+      "enum":[
+        "InstanceIds",
+        "AgentVersion",
+        "PingStatus",
+        "PlatformTypes",
+        "DocumentName",
+        "ActivationIds",
+        "IamRole",
+        "ResourceType",
+        "AssociationStatus"
+      ]
+    },
+    "InstancePropertyFilterList":{
+      "type":"list",
+      "member":{"shape":"InstancePropertyFilter"},
+      "max":40,
+      "min":1
+    },
+    "InstancePropertyFilterOperator":{
+      "type":"string",
+      "enum":[
+        "Equal",
+        "NotEqual",
+        "BeginWith",
+        "LessThan",
+        "GreaterThan"
+      ]
+    },
+    "InstancePropertyFilterValue":{
+      "type":"string",
+      "max":100000,
+      "min":1,
+      "pattern":"^.{1,100000}$"
+    },
+    "InstancePropertyFilterValueSet":{
+      "type":"list",
+      "member":{"shape":"InstancePropertyFilterValue"},
+      "max":40,
+      "min":1
+    },
+    "InstancePropertyStringFilter":{
+      "type":"structure",
+      "required":[
+        "Key",
+        "Values"
+      ],
+      "members":{
+        "Key":{
+          "shape":"InstancePropertyStringFilterKey",
+          "documentation":"<p>The filter key name to describe your managed nodes.</p>"
+        },
+        "Values":{
+          "shape":"InstancePropertyFilterValueSet",
+          "documentation":"<p>The filter key name to describe your managed nodes.</p>"
+        },
+        "Operator":{
+          "shape":"InstancePropertyFilterOperator",
+          "documentation":"<p>The operator used by the filter call.</p>"
+        }
+      },
+      "documentation":"<p>The filters to describe or get information about your managed nodes.</p>"
+    },
+    "InstancePropertyStringFilterKey":{
+      "type":"string",
+      "max":100000,
+      "min":1,
+      "pattern":"^.{1,100000}$"
+    },
+    "InstancePropertyStringFilterList":{
+      "type":"list",
+      "member":{"shape":"InstancePropertyStringFilter"},
+      "max":40,
+      "min":1
+    },
+    "InstanceRole":{
+      "type":"string",
+      "max":120
+    },
+    "InstanceState":{
+      "type":"string",
+      "max":120
+    },
     "InstanceTagName":{
       "type":"string",
       "max":255
+    },
+    "InstanceType":{
+      "type":"string",
+      "max":120
     },
     "InstancesCount":{"type":"integer"},
     "Integer":{"type":"integer"},
@@ -9332,6 +9618,14 @@
       "exception":true
     },
     "InvalidInstanceInformationFilterValue":{
+      "type":"structure",
+      "members":{
+        "message":{"shape":"String"}
+      },
+      "documentation":"<p>The specified filter value isn't valid.</p>",
+      "exception":true
+    },
+    "InvalidInstancePropertyFilterValue":{
       "type":"structure",
       "members":{
         "message":{"shape":"String"}
@@ -9975,6 +10269,10 @@
     "KeyList":{
       "type":"list",
       "member":{"shape":"TagKey"}
+    },
+    "KeyName":{
+      "type":"string",
+      "max":255
     },
     "LabelParameterVersionRequest":{
       "type":"structure",
@@ -13532,6 +13830,10 @@
         "Inactive"
       ]
     },
+    "PlatformName":{
+      "type":"string",
+      "max":120
+    },
     "PlatformType":{
       "type":"string",
       "enum":[
@@ -13543,6 +13845,10 @@
     "PlatformTypeList":{
       "type":"list",
       "member":{"shape":"PlatformType"}
+    },
+    "PlatformVersion":{
+      "type":"string",
+      "max":120
     },
     "PoliciesLimitExceededException":{
       "type":"structure",
@@ -13897,7 +14203,7 @@
         },
         "ServiceRoleArn":{
           "shape":"ServiceRole",
-          "documentation":"<p>The Amazon Resource Name (ARN) of the IAM service role for Amazon Web Services Systems Manager to assume when running a maintenance window task. If you do not specify a service role ARN, Systems Manager uses your account's service-linked role. If no service-linked role for Systems Manager exists in your account, it is created when you run <code>RegisterTaskWithMaintenanceWindow</code>.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/systems-manager/latest/userguide/using-service-linked-roles.html#slr-permissions\">Using service-linked roles for Systems Manager</a> in the in the <i>Amazon Web Services Systems Manager User Guide</i>:</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of the IAM service role for Amazon Web Services Systems Manager to assume when running a maintenance window task. If you do not specify a service role ARN, Systems Manager uses a service-linked role in your account. If no appropriate service-linked role for Systems Manager exists in your account, it is created when you run <code>RegisterTaskWithMaintenanceWindow</code>.</p> <p>However, for an improved security posture, we strongly recommend creating a custom policy and custom service role for running your maintenance window tasks. The policy can be crafted to provide only the permissions needed for your particular maintenance window tasks. For more information, see <a href=\"https://docs.aws.amazon.com/systems-manager/latest/userguide/sysman-maintenance-permissions.html\">Setting up maintenance windows</a> in the in the <i>Amazon Web Services Systems Manager User Guide</i>.</p>"
         },
         "TaskType":{
           "shape":"MaintenanceWindowTaskType",
@@ -15623,7 +15929,7 @@
           "documentation":"<p>User-defined criteria that maps to <code>Key</code>. For example, if you specified <code>tag:ServerRole</code>, you could specify <code>value:WebServer</code> to run a command on instances that include EC2 tags of <code>ServerRole,WebServer</code>. </p> <p>Depending on the type of target, the maximum number of values for a key might be lower than the global maximum of 50.</p>"
         }
       },
-      "documentation":"<p>An array of search criteria that targets managed nodes using a key-value pair that you specify.</p> <note> <p> One or more targets must be specified for maintenance window Run Command-type tasks. Depending on the task, targets are optional for other maintenance window task types (Automation, Lambda, and Step Functions). For more information about running tasks that don't specify targets, see <a href=\"https://docs.aws.amazon.com/systems-manager/latest/userguide/maintenance-windows-targetless-tasks.html\">Registering maintenance window tasks without targets</a> in the <i>Amazon Web Services Systems Manager User Guide</i>.</p> </note> <p>Supported formats include the following.</p> <ul> <li> <p> <code>Key=InstanceIds,Values=&lt;instance-id-1&gt;,&lt;instance-id-2&gt;,&lt;instance-id-3&gt;</code> </p> </li> <li> <p> <code>Key=tag:&lt;my-tag-key&gt;,Values=&lt;my-tag-value-1&gt;,&lt;my-tag-value-2&gt;</code> </p> </li> <li> <p> <code>Key=tag-key,Values=&lt;my-tag-key-1&gt;,&lt;my-tag-key-2&gt;</code> </p> </li> <li> <p> <b>Run Command and Maintenance window targets only</b>: <code>Key=resource-groups:Name,Values=&lt;resource-group-name&gt;</code> </p> </li> <li> <p> <b>Maintenance window targets only</b>: <code>Key=resource-groups:ResourceTypeFilters,Values=&lt;resource-type-1&gt;,&lt;resource-type-2&gt;</code> </p> </li> <li> <p> <b>Automation targets only</b>: <code>Key=ResourceGroup;Values=&lt;resource-group-name&gt;</code> </p> </li> </ul> <p>For example:</p> <ul> <li> <p> <code>Key=InstanceIds,Values=i-02573cafcfEXAMPLE,i-0471e04240EXAMPLE,i-07782c72faEXAMPLE</code> </p> </li> <li> <p> <code>Key=tag:CostCenter,Values=CostCenter1,CostCenter2,CostCenter3</code> </p> </li> <li> <p> <code>Key=tag-key,Values=Name,Instance-Type,CostCenter</code> </p> </li> <li> <p> <b>Run Command and Maintenance window targets only</b>: <code>Key=resource-groups:Name,Values=ProductionResourceGroup</code> </p> <p>This example demonstrates how to target all resources in the resource group <b>ProductionResourceGroup</b> in your maintenance window.</p> </li> <li> <p> <b>Maintenance window targets only</b>: <code>Key=resource-groups:ResourceTypeFilters,Values=AWS::EC2::INSTANCE,AWS::EC2::VPC</code> </p> <p>This example demonstrates how to target only Amazon Elastic Compute Cloud (Amazon EC2) instances and VPCs in your maintenance window.</p> </li> <li> <p> <b>Automation targets only</b>: <code>Key=ResourceGroup,Values=MyResourceGroup</code> </p> </li> <li> <p> <b>State Manager association targets only</b>: <code>Key=InstanceIds,Values=*</code> </p> <p>This example demonstrates how to target all managed instances in the Amazon Web Services Region where the association was created.</p> </li> </ul> <p>For more information about how to send commands that target managed nodes using <code>Key,Value</code> parameters, see <a href=\"https://docs.aws.amazon.com/systems-manager/latest/userguide/send-commands-multiple.html#send-commands-targeting\">Targeting multiple managed nodes</a> in the <i>Amazon Web Services Systems Manager User Guide</i>.</p>"
+      "documentation":"<p>An array of search criteria that targets managed nodes using a key-value pair that you specify.</p> <note> <p> One or more targets must be specified for maintenance window Run Command-type tasks. Depending on the task, targets are optional for other maintenance window task types (Automation, Lambda, and Step Functions). For more information about running tasks that don't specify targets, see <a href=\"https://docs.aws.amazon.com/systems-manager/latest/userguide/maintenance-windows-targetless-tasks.html\">Registering maintenance window tasks without targets</a> in the <i>Amazon Web Services Systems Manager User Guide</i>.</p> </note> <p>Supported formats include the following.</p> <p> <b>For all Systems Manager capabilities:</b> </p> <ul> <li> <p> <code>Key=tag-key,Values=tag-value-1,tag-value-2</code> </p> </li> </ul> <p> <b>For Automation and Change Manager:</b> </p> <ul> <li> <p> <code>Key=tag:tag-key,Values=tag-value</code> </p> </li> <li> <p> <code>Key=ResourceGroup,Values=resource-group-name</code> </p> </li> <li> <p> <code>Key=ParameterValues,Values=value-1,value-2,value-3</code> </p> </li> <li> <p>To target all instances in the Amazon Web Services Region:</p> <ul> <li> <p> <code>Key=AWS::EC2::Instance,Values=*</code> </p> </li> <li> <p> <code>Key=InstanceIds,Values=*</code> </p> </li> </ul> </li> </ul> <p> <b>For Run Command and Maintenance Windows:</b> </p> <ul> <li> <p> <code>Key=InstanceIds,Values=instance-id-1,instance-id-2,instance-id-3</code> </p> </li> <li> <p> <code>Key=tag:tag-key,Values=tag-value-1,tag-value-2</code> </p> </li> <li> <p> <code>Key=resource-groups:Name,Values=resource-group-name</code> </p> </li> <li> <p>Additionally, Maintenance Windows support targeting resource types:</p> <ul> <li> <p> <code>Key=resource-groups:ResourceTypeFilters,Values=resource-type-1,resource-type-2</code> </p> </li> </ul> </li> </ul> <p> <b>For State Manager:</b> </p> <ul> <li> <p> <code>Key=InstanceIds,Values=instance-id-1,instance-id-2,instance-id-3</code> </p> </li> <li> <p> <code>Key=tag:tag-key,Values=tag-value-1,tag-value-2</code> </p> </li> <li> <p>To target all instances in the Amazon Web Services Region:</p> <ul> <li> <p> <code>Key=InstanceIds,Values=*</code> </p> </li> </ul> </li> </ul> <p>For more information about how to send commands that target managed nodes using <code>Key,Value</code> parameters, see <a href=\"https://docs.aws.amazon.com/systems-manager/latest/userguide/send-commands-multiple.html#send-commands-targeting\">Targeting multiple managed nodes</a> in the <i>Amazon Web Services Systems Manager User Guide</i>.</p>"
     },
     "TargetCount":{"type":"integer"},
     "TargetInUseException":{
@@ -16138,7 +16444,7 @@
         },
         "StartDate":{
           "shape":"MaintenanceWindowStringDateTime",
-          "documentation":"<p>The date and time, in ISO-8601 Extended format, for when you want the maintenance window to become active. <code>StartDate</code> allows you to delay activation of the maintenance window until the specified future date.</p>"
+          "documentation":"<p>The date and time, in ISO-8601 Extended format, for when you want the maintenance window to become active. <code>StartDate</code> allows you to delay activation of the maintenance window until the specified future date.</p> <note> <p>When using a rate schedule, if you provide a start date that occurs in the past, the current date and time are used as the start date. </p> </note>"
         },
         "EndDate":{
           "shape":"MaintenanceWindowStringDateTime",
@@ -16330,7 +16636,7 @@
         },
         "ServiceRoleArn":{
           "shape":"ServiceRole",
-          "documentation":"<p>The Amazon Resource Name (ARN) of the IAM service role for Amazon Web Services Systems Manager to assume when running a maintenance window task. If you do not specify a service role ARN, Systems Manager uses your account's service-linked role. If no service-linked role for Systems Manager exists in your account, it is created when you run <code>RegisterTaskWithMaintenanceWindow</code>.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/systems-manager/latest/userguide/using-service-linked-roles.html#slr-permissions\">Using service-linked roles for Systems Manager</a> in the in the <i>Amazon Web Services Systems Manager User Guide</i>:</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of the IAM service role for Amazon Web Services Systems Manager to assume when running a maintenance window task. If you do not specify a service role ARN, Systems Manager uses a service-linked role in your account. If no appropriate service-linked role for Systems Manager exists in your account, it is created when you run <code>RegisterTaskWithMaintenanceWindow</code>.</p> <p>However, for an improved security posture, we strongly recommend creating a custom policy and custom service role for running your maintenance window tasks. The policy can be crafted to provide only the permissions needed for your particular maintenance window tasks. For more information, see <a href=\"https://docs.aws.amazon.com/systems-manager/latest/userguide/sysman-maintenance-permissions.html\">Setting up maintenance windows</a> in the in the <i>Amazon Web Services Systems Manager User Guide</i>.</p>"
         },
         "TaskParameters":{
           "shape":"MaintenanceWindowTaskParameters",

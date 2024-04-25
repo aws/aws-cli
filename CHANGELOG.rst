@@ -7327,6 +7327,28 @@ CHANGELOG
 * feature:wizard: Added support for AWS CLI Wizards. See `#3752 <https://github.com/aws/aws-cli/issues/3752>`__.
 
 
+1.32.92
+=======
+
+* api-change:``appsync``: UpdateGraphQLAPI documentation update and datasource introspection secret arn update
+* api-change:``fms``: AWS Firewall Manager adds support for network ACL policies to manage Amazon Virtual Private Cloud (VPC) network access control lists (ACLs) for accounts in your organization.
+* api-change:``ivs``: Bug Fix: IVS does not support arns with the `svs` prefix
+* api-change:``ivs-realtime``: Bug Fix: IVS Real Time does not support ARNs using the `svs` prefix.
+* api-change:``rds``: Updates Amazon RDS documentation for setting local time zones for RDS for Db2 DB instances.
+* api-change:``stepfunctions``: Add new ValidateStateMachineDefinition operation, which performs syntax checking on the definition of a Amazon States Language (ASL) state machine.
+
+
+1.32.91
+=======
+
+* api-change:``datasync``: This change allows users to disable and enable the schedules associated with their tasks.
+* api-change:``ec2``: Launching capability for customers to enable or disable automatic assignment of public IPv4 addresses to their network interface
+* api-change:``emr-containers``: EMRonEKS Service support for SecurityConfiguration enforcement for Spark Jobs.
+* api-change:``entityresolution``: Support Batch Unique IDs Deletion.
+* api-change:``gamelift``: Amazon GameLift releases container fleets support for public preview. Deploy Linux-based containerized game server software for hosting on Amazon GameLift.
+* api-change:``ssm``: Add SSM DescribeInstanceProperties API to public AWS SDK.
+
+
 1.32.90
 =======
 

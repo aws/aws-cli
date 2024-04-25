@@ -5,6 +5,7 @@
     "endpointPrefix":"states",
     "jsonVersion":"1.0",
     "protocol":"json",
+    "protocols":["json"],
     "serviceAbbreviation":"AWS SFN",
     "serviceFullName":"AWS Step Functions",
     "serviceId":"SFN",
@@ -382,7 +383,8 @@
         {"shape":"ExecutionDoesNotExist"},
         {"shape":"ExecutionNotRedrivable"},
         {"shape":"ExecutionLimitExceeded"},
-        {"shape":"InvalidArn"}
+        {"shape":"InvalidArn"},
+        {"shape":"ValidationException"}
       ],
       "documentation":"<p>Restarts unsuccessful executions of Standard workflows that didn't complete successfully in the last 14 days. These include failed, aborted, or timed out executions. When you <a href=\"https://docs.aws.amazon.com/step-functions/latest/dg/redrive-executions.html\">redrive</a> an execution, it continues the failed execution from the unsuccessful step and uses the same input. Step Functions preserves the results and execution history of the successful steps, and doesn't rerun these steps when you redrive an execution. Redriven executions use the same state machine definition and execution ARN as the original execution attempt.</p> <p>For workflows that include an <a href=\"https://docs.aws.amazon.com/step-functions/latest/dg/amazon-states-language-map-state.html\">Inline Map</a> or <a href=\"https://docs.aws.amazon.com/step-functions/latest/dg/amazon-states-language-parallel-state.html\">Parallel</a> state, <code>RedriveExecution</code> API action reschedules and redrives only the iterations and branches that failed or aborted.</p> <p>To redrive a workflow that includes a Distributed Map state whose Map Run failed, you must redrive the <a href=\"https://docs.aws.amazon.com/step-functions/latest/dg/use-dist-map-orchestrate-large-scale-parallel-workloads.html#dist-map-orchestrate-parallel-workloads-key-terms\">parent workflow</a>. The parent workflow redrives all the unsuccessful states, including a failed Map Run. If a Map Run was not started in the original execution attempt, the redriven parent workflow starts the Map Run.</p> <note> <p>This API action is not supported by <code>EXPRESS</code> state machines.</p> <p>However, you can restart the unsuccessful executions of Express child workflows in a Distributed Map by redriving its Map Run. When you redrive a Map Run, the Express child workflows are rerun using the <a>StartExecution</a> API action. For more information, see <a href=\"https://docs.aws.amazon.com/step-functions/latest/dg/redrive-map-run.html\">Redriving Map Runs</a>.</p> </note> <p>You can redrive executions if your original execution meets the following conditions:</p> <ul> <li> <p>The execution status isn't <code>SUCCEEDED</code>.</p> </li> <li> <p>Your workflow execution has not exceeded the redrivable period of 14 days. Redrivable period refers to the time during which you can redrive a given execution. This period starts from the day a state machine completes its execution.</p> </li> <li> <p>The workflow execution has not exceeded the maximum open time of one year. For more information about state machine quotas, see <a href=\"https://docs.aws.amazon.com/step-functions/latest/dg/limits-overview.html#service-limits-state-machine-executions\">Quotas related to state machine executions</a>.</p> </li> <li> <p>The execution event history count is less than 24,999. Redriven executions append their event history to the existing event history. Make sure your workflow execution contains less than 24,999 events to accommodate the <code>ExecutionRedriven</code> history event and at least one other history event.</p> </li> </ul>",
       "idempotent":true
@@ -588,6 +590,19 @@
         {"shape":"StateMachineDeleting"}
       ],
       "documentation":"<p>Updates the configuration of an existing state machine <a href=\"https://docs.aws.amazon.com/step-functions/latest/dg/concepts-state-machine-alias.html\">alias</a> by modifying its <code>description</code> or <code>routingConfiguration</code>.</p> <p>You must specify at least one of the <code>description</code> or <code>routingConfiguration</code> parameters to update a state machine alias.</p> <note> <p> <code>UpdateStateMachineAlias</code> is an idempotent API. Step Functions bases the idempotency check on the <code>stateMachineAliasArn</code>, <code>description</code>, and <code>routingConfiguration</code> parameters. Requests with the same parameters return an idempotent response.</p> </note> <note> <p>This operation is eventually consistent. All <a>StartExecution</a> requests made within a few seconds use the latest alias configuration. Executions started immediately after calling <code>UpdateStateMachineAlias</code> may use the previous routing configuration.</p> </note> <p> <b>Related operations:</b> </p> <ul> <li> <p> <a>CreateStateMachineAlias</a> </p> </li> <li> <p> <a>DescribeStateMachineAlias</a> </p> </li> <li> <p> <a>ListStateMachineAliases</a> </p> </li> <li> <p> <a>DeleteStateMachineAlias</a> </p> </li> </ul>"
+    },
+    "ValidateStateMachineDefinition":{
+      "name":"ValidateStateMachineDefinition",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"ValidateStateMachineDefinitionInput"},
+      "output":{"shape":"ValidateStateMachineDefinitionOutput"},
+      "errors":[
+        {"shape":"ValidationException"}
+      ],
+      "documentation":"<p>Validates the syntax of a state machine definition.</p> <p>You can validate that a state machine definition is correct without creating a state machine resource. Step Functions will implicitly perform the same syntax check when you invoke <code>CreateStateMachine</code> and <code>UpdateStateMachine</code>. State machine definitions are specified using a JSON-based, structured language. For more information on Amazon States Language see <a href=\"https://docs.aws.amazon.com/step-functions/latest/dg/concepts-amazon-states-language.html\">Amazon States Language</a> (ASL). </p> <p>Suggested uses for <code>ValidateStateMachineDefinition</code>:</p> <ul> <li> <p>Integrate automated checks into your code review or Continuous Integration (CI) process to validate state machine definitions before starting deployments.</p> </li> <li> <p>Run the validation from a Git pre-commit hook to check your state machine definitions before committing them to your source repository.</p> </li> </ul> <note> <p>Errors found in the state machine definition will be returned in the response as a list of <b>diagnostic elements</b>, rather than raise an exception.</p> </note>"
     }
   },
   "shapes":{
@@ -3725,6 +3740,82 @@
           "documentation":"<p>The Amazon Resource Name (ARN) of the published state machine version.</p> <p>If the <code>publish</code> parameter isn't set to <code>true</code>, this field returns null.</p>"
         }
       }
+    },
+    "ValidateStateMachineDefinitionCode":{"type":"string"},
+    "ValidateStateMachineDefinitionDiagnostic":{
+      "type":"structure",
+      "required":[
+        "severity",
+        "code",
+        "message"
+      ],
+      "members":{
+        "severity":{
+          "shape":"ValidateStateMachineDefinitionSeverity",
+          "documentation":"<p>A value of <code>ERROR</code> means that you cannot create or update a state machine with this definition.</p>"
+        },
+        "code":{
+          "shape":"ValidateStateMachineDefinitionCode",
+          "documentation":"<p>Identifying code for the diagnostic.</p>"
+        },
+        "message":{
+          "shape":"ValidateStateMachineDefinitionMessage",
+          "documentation":"<p>Message describing the diagnostic condition.</p>"
+        },
+        "location":{
+          "shape":"ValidateStateMachineDefinitionLocation",
+          "documentation":"<p>Location of the issue in the state machine, if available.</p> <p>For errors specific to a field, the location could be in the format: <code>/States/&lt;StateName&gt;/&lt;FieldName&gt;</code>, for example: <code>/States/FailState/ErrorPath</code>.</p>"
+        }
+      },
+      "documentation":"<p>Describes an error found during validation. Validation errors found in the definition return in the response as <b>diagnostic elements</b>, rather than raise an exception.</p>"
+    },
+    "ValidateStateMachineDefinitionDiagnosticList":{
+      "type":"list",
+      "member":{"shape":"ValidateStateMachineDefinitionDiagnostic"}
+    },
+    "ValidateStateMachineDefinitionInput":{
+      "type":"structure",
+      "required":["definition"],
+      "members":{
+        "definition":{
+          "shape":"Definition",
+          "documentation":"<p>The Amazon States Language definition of the state machine. For more information, see <a href=\"https://docs.aws.amazon.com/step-functions/latest/dg/concepts-amazon-states-language.html\">Amazon States Language</a> (ASL).</p>"
+        },
+        "type":{
+          "shape":"StateMachineType",
+          "documentation":"<p>The target type of state machine for this definition. The default is <code>STANDARD</code>.</p>"
+        }
+      }
+    },
+    "ValidateStateMachineDefinitionLocation":{"type":"string"},
+    "ValidateStateMachineDefinitionMessage":{"type":"string"},
+    "ValidateStateMachineDefinitionOutput":{
+      "type":"structure",
+      "required":[
+        "result",
+        "diagnostics"
+      ],
+      "members":{
+        "result":{
+          "shape":"ValidateStateMachineDefinitionResultCode",
+          "documentation":"<p>The result value will be <code>OK</code> when no syntax errors are found, or <code>FAIL</code> if the workflow definition does not pass verification.</p>"
+        },
+        "diagnostics":{
+          "shape":"ValidateStateMachineDefinitionDiagnosticList",
+          "documentation":"<p>If the result is <code>OK</code>, this field will be empty. When there are errors, this field will contain an array of <b>Diagnostic</b> objects to help you troubleshoot.</p>"
+        }
+      }
+    },
+    "ValidateStateMachineDefinitionResultCode":{
+      "type":"string",
+      "enum":[
+        "OK",
+        "FAIL"
+      ]
+    },
+    "ValidateStateMachineDefinitionSeverity":{
+      "type":"string",
+      "enum":["ERROR"]
     },
     "ValidationException":{
       "type":"structure",

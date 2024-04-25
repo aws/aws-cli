@@ -33,6 +33,22 @@
       "documentation":"<p>Adds a policy statement object. To retrieve a list of existing policy statements, use the <code>GetPolicy</code> API.</p>",
       "idempotent":true
     },
+    "BatchDeleteUniqueId":{
+      "name":"BatchDeleteUniqueId",
+      "http":{
+        "method":"DELETE",
+        "requestUri":"/matchingworkflows/{workflowName}/uniqueids",
+        "responseCode":200
+      },
+      "input":{"shape":"BatchDeleteUniqueIdInput"},
+      "output":{"shape":"BatchDeleteUniqueIdOutput"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ValidationException"}
+      ],
+      "documentation":"<p>Deletes multiple unique IDs in a matching workflow.</p>"
+    },
     "CreateIdMappingWorkflow":{
       "name":"CreateIdMappingWorkflow",
       "http":{
@@ -768,6 +784,64 @@
       "type":"list",
       "member":{"shape":"AwsAccountId"}
     },
+    "BatchDeleteUniqueIdInput":{
+      "type":"structure",
+      "required":[
+        "uniqueIds",
+        "workflowName"
+      ],
+      "members":{
+        "inputSource":{
+          "shape":"BatchDeleteUniqueIdInputInputSourceString",
+          "documentation":"<p>The input source for the batch delete unique ID operation.</p>",
+          "location":"header",
+          "locationName":"inputSource"
+        },
+        "uniqueIds":{
+          "shape":"UniqueIdList",
+          "documentation":"<p>The unique IDs to delete.</p>",
+          "location":"header",
+          "locationName":"uniqueIds"
+        },
+        "workflowName":{
+          "shape":"EntityName",
+          "documentation":"<p>The name of the workflow.</p>",
+          "location":"uri",
+          "locationName":"workflowName"
+        }
+      }
+    },
+    "BatchDeleteUniqueIdInputInputSourceString":{
+      "type":"string",
+      "pattern":"^arn:(aws|aws-us-gov|aws-cn):glue:[a-z]{2}-[a-z]{1,10}-[0-9]:[0-9]{12}:(table/[a-zA-Z_0-9-]{1,255}/[a-zA-Z_0-9-]{1,255})$"
+    },
+    "BatchDeleteUniqueIdOutput":{
+      "type":"structure",
+      "required":[
+        "deleted",
+        "disconnectedUniqueIds",
+        "errors",
+        "status"
+      ],
+      "members":{
+        "deleted":{
+          "shape":"DeletedUniqueIdList",
+          "documentation":"<p>The unique IDs that were deleted.</p>"
+        },
+        "disconnectedUniqueIds":{
+          "shape":"DisconnectedUniqueIdsList",
+          "documentation":"<p>The unique IDs that were disconnected.</p>"
+        },
+        "errors":{
+          "shape":"DeleteUniqueIdErrorsList",
+          "documentation":"<p> The errors from deleting multiple unique IDs.</p>"
+        },
+        "status":{
+          "shape":"DeleteUniqueIdStatus",
+          "documentation":"<p>The status of the batch delete unique ID operation.</p>"
+        }
+      }
+    },
     "Boolean":{
       "type":"boolean",
       "box":true
@@ -1223,10 +1297,65 @@
         }
       }
     },
+    "DeleteUniqueIdError":{
+      "type":"structure",
+      "required":[
+        "errorType",
+        "uniqueId"
+      ],
+      "members":{
+        "errorType":{
+          "shape":"DeleteUniqueIdErrorType",
+          "documentation":"<p> The error type for the batch delete unique ID operation.</p>"
+        },
+        "uniqueId":{
+          "shape":"UniqueId",
+          "documentation":"<p>The unique ID that could not be deleted.</p>"
+        }
+      },
+      "documentation":"<p>The Delete Unique Id error.</p>"
+    },
+    "DeleteUniqueIdErrorType":{
+      "type":"string",
+      "enum":[
+        "SERVICE_ERROR",
+        "VALIDATION_ERROR"
+      ]
+    },
+    "DeleteUniqueIdErrorsList":{
+      "type":"list",
+      "member":{"shape":"DeleteUniqueIdError"}
+    },
+    "DeleteUniqueIdStatus":{
+      "type":"string",
+      "enum":[
+        "COMPLETED",
+        "ACCEPTED"
+      ]
+    },
+    "DeletedUniqueId":{
+      "type":"structure",
+      "required":["uniqueId"],
+      "members":{
+        "uniqueId":{
+          "shape":"UniqueId",
+          "documentation":"<p> The unique ID of the deleted item.</p>"
+        }
+      },
+      "documentation":"<p>The deleted unique ID.</p>"
+    },
+    "DeletedUniqueIdList":{
+      "type":"list",
+      "member":{"shape":"DeletedUniqueId"}
+    },
     "Description":{
       "type":"string",
       "max":255,
       "min":0
+    },
+    "DisconnectedUniqueIdsList":{
+      "type":"list",
+      "member":{"shape":"UniqueId"}
     },
     "Document":{
       "type":"structure",
@@ -2890,7 +3019,7 @@
       "type":"string",
       "max":255,
       "min":0,
-      "pattern":"^[a-zA-Z_0-9-.@ ()+\\t]*$"
+      "pattern":"^[a-zA-Z_0-9-./@ ()+\\t]*$"
     },
     "RequiredBucketActionsList":{
       "type":"list",
@@ -2980,7 +3109,7 @@
     "RuleBasedPropertiesRulesList":{
       "type":"list",
       "member":{"shape":"Rule"},
-      "max":15,
+      "max":25,
       "min":1
     },
     "RuleMatchingKeysList":{
@@ -3272,6 +3401,16 @@
       "retryable":{"throttling":true}
     },
     "Timestamp":{"type":"timestamp"},
+    "UniqueId":{
+      "type":"string",
+      "max":760,
+      "min":1,
+      "pattern":"^[a-zA-Z_0-9-,]*$"
+    },
+    "UniqueIdList":{
+      "type":"list",
+      "member":{"shape":"UniqueId"}
+    },
     "UntagResourceInput":{
       "type":"structure",
       "required":[

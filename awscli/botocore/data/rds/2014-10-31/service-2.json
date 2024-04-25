@@ -4,6 +4,7 @@
     "apiVersion":"2014-10-31",
     "endpointPrefix":"rds",
     "protocol":"query",
+    "protocols":["query"],
     "serviceAbbreviation":"Amazon RDS",
     "serviceFullName":"Amazon Relational Database Service",
     "serviceId":"RDS",
@@ -4569,7 +4570,7 @@
         },
         "Timezone":{
           "shape":"String",
-          "documentation":"<p>The time zone of the DB instance. The time zone parameter is currently supported only by <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/CHAP_SQLServer.html#SQLServer.Concepts.General.TimeZone\">Microsoft SQL Server</a>.</p>"
+          "documentation":"<p>The time zone of the DB instance. The time zone parameter is currently supported only by <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/db2-time-zone\">RDS for Db2</a> and <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/CHAP_SQLServer.html#SQLServer.Concepts.General.TimeZone\">RDS for SQL Server</a>.</p>"
         },
         "EnableIAMDatabaseAuthentication":{
           "shape":"BooleanOptional",
@@ -6865,7 +6866,7 @@
         },
         "Timezone":{
           "shape":"String",
-          "documentation":"<p>The time zone of the DB instance. In most cases, the <code>Timezone</code> element is empty. <code>Timezone</code> content appears only for Microsoft SQL Server DB instances that were created with a time zone specified.</p>"
+          "documentation":"<p>The time zone of the DB instance. In most cases, the <code>Timezone</code> element is empty. <code>Timezone</code> content appears only for RDS for Db2 and RDS for SQL Server DB instances that were created with a time zone specified.</p>"
         },
         "IAMDatabaseAuthenticationEnabled":{
           "shape":"Boolean",
@@ -12417,7 +12418,7 @@
         },
         "DBSubnetGroupName":{
           "shape":"String",
-          "documentation":"<p>The new DB subnet group for the DB instance. You can use this parameter to move your DB instance to a different VPC. If your DB instance isn't in a VPC, you can also use this parameter to move your DB instance into a VPC. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_VPC.WorkingWithRDSInstanceinaVPC.html#USER_VPC.Non-VPC2VPC\">Working with a DB instance in a VPC</a> in the <i>Amazon RDS User Guide</i>.</p> <p>Changing the subnet group causes an outage during the change. The change is applied during the next maintenance window, unless you enable <code>ApplyImmediately</code>.</p> <p>This parameter doesn't apply to RDS Custom DB instances.</p> <p>Constraints:</p> <ul> <li> <p>If supplied, must match existing DB subnet group.</p> </li> </ul> <p>Example: <code>mydbsubnetgroup</code> </p>"
+          "documentation":"<p>The new DB subnet group for the DB instance. You can use this parameter to move your DB instance to a different VPC. If your DB instance isn't in a VPC, you can also use this parameter to move your DB instance into a VPC. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_VPC.WorkingWithRDSInstanceinaVPC.html#USER_VPC.Non-VPC2VPC\">Working with a DB instance in a VPC</a> in the <i>Amazon RDS User Guide</i>.</p> <p>Changing the subnet group causes an outage during the change. The change is applied during the next maintenance window, unless you enable <code>ApplyImmediately</code>.</p> <p>This setting doesn't apply to RDS Custom DB instances.</p> <p>Constraints:</p> <ul> <li> <p>If supplied, must match existing DB subnet group.</p> </li> </ul> <p>Example: <code>mydbsubnetgroup</code> </p>"
         },
         "DBSecurityGroups":{
           "shape":"DBSecurityGroupNameList",
@@ -12581,7 +12582,7 @@
         },
         "DeletionProtection":{
           "shape":"BooleanOptional",
-          "documentation":"<p>Specifies whether the DB instance has deletion protection enabled. The database can't be deleted when deletion protection is enabled. By default, deletion protection isn't enabled. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_DeleteInstance.html\"> Deleting a DB Instance</a>.</p>"
+          "documentation":"<p>Specifies whether the DB instance has deletion protection enabled. The database can't be deleted when deletion protection is enabled. By default, deletion protection isn't enabled. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_DeleteInstance.html\"> Deleting a DB Instance</a>.</p> <p>This setting doesn't apply to Amazon Aurora DB instances. You can enable or disable deletion protection for the DB cluster. For more information, see <code>ModifyDBCluster</code>. DB instances in a DB cluster can be deleted even when deletion protection is enabled for the DB cluster.</p>"
         },
         "MaxAllocatedStorage":{
           "shape":"IntegerOptional",

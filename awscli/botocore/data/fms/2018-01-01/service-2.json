@@ -5,6 +5,7 @@
     "endpointPrefix":"fms",
     "jsonVersion":"1.1",
     "protocol":"json",
+    "protocols":["json"],
     "serviceAbbreviation":"FMS",
     "serviceFullName":"Firewall Management Service",
     "serviceId":"FMS",
@@ -211,7 +212,7 @@
         {"shape":"InternalErrorException"},
         {"shape":"LimitExceededException"}
       ],
-      "documentation":"<p>Returns information about the specified account's administrative scope. The admistrative scope defines the resources that an Firewall Manager administrator can manage.</p>"
+      "documentation":"<p>Returns information about the specified account's administrative scope. The administrative scope defines the resources that an Firewall Manager administrator can manage.</p>"
     },
     "GetAppsList":{
       "name":"GetAppsList",
@@ -242,7 +243,7 @@
         {"shape":"InvalidInputException"},
         {"shape":"InvalidOperationException"}
       ],
-      "documentation":"<p>Returns detailed compliance information about the specified member account. Details include resources that are in and out of compliance with the specified policy. </p> <ul> <li> <p>Resources are considered noncompliant for WAF and Shield Advanced policies if the specified policy has not been applied to them.</p> </li> <li> <p>Resources are considered noncompliant for security group policies if they are in scope of the policy, they violate one or more of the policy rules, and remediation is disabled or not possible.</p> </li> <li> <p>Resources are considered noncompliant for Network Firewall policies if a firewall is missing in the VPC, if the firewall endpoint isn't set up in an expected Availability Zone and subnet, if a subnet created by the Firewall Manager doesn't have the expected route table, and for modifications to a firewall policy that violate the Firewall Manager policy's rules.</p> </li> <li> <p>Resources are considered noncompliant for DNS Firewall policies if a DNS Firewall rule group is missing from the rule group associations for the VPC. </p> </li> </ul>"
+      "documentation":"<p>Returns detailed compliance information about the specified member account. Details include resources that are in and out of compliance with the specified policy. </p> <p>The reasons for resources being considered compliant depend on the Firewall Manager policy type. </p>"
     },
     "GetNotificationChannel":{
       "name":"GetNotificationChannel",
@@ -598,7 +599,7 @@
         {"shape":"InternalErrorException"},
         {"shape":"InvalidTypeException"}
       ],
-      "documentation":"<p>Creates an Firewall Manager policy.</p> <p>A Firewall Manager policy is specific to the individual policy type. If you want to enforce multiple policy types across accounts, you can create multiple policies. You can create more than one policy for each type. </p> <p>If you add a new account to an organization that you created with Organizations, Firewall Manager automatically applies the policy to the resources in that account that are within scope of the policy. </p> <p>Firewall Manager provides the following types of policies: </p> <ul> <li> <p> <b>Shield Advanced policy</b> - This policy applies Shield Advanced protection to specified accounts and resources. </p> </li> <li> <p> <b>Security Groups policy</b> - This type of policy gives you control over security groups that are in use throughout your organization in Organizations and lets you enforce a baseline set of rules across your organization. </p> </li> <li> <p> <b>Network Firewall policy</b> - This policy applies Network Firewall protection to your organization's VPCs. </p> </li> <li> <p> <b>DNS Firewall policy</b> - This policy applies Amazon Route 53 Resolver DNS Firewall protections to your organization's VPCs. </p> </li> <li> <p> <b>Third-party firewall policy</b> - This policy applies third-party firewall protections. Third-party firewalls are available by subscription through the Amazon Web Services Marketplace console at <a href=\"https://aws.amazon.com/marketplace\">Amazon Web Services Marketplace</a>.</p> <ul> <li> <p> <b>Palo Alto Networks Cloud NGFW policy</b> - This policy applies Palo Alto Networks Cloud Next Generation Firewall (NGFW) protections and Palo Alto Networks Cloud NGFW rulestacks to your organization's VPCs.</p> </li> <li> <p> <b>Fortigate CNF policy</b> - This policy applies Fortigate Cloud Native Firewall (CNF) protections. Fortigate CNF is a cloud-centered solution that blocks Zero-Day threats and secures cloud infrastructures with industry-leading advanced threat prevention, smart web application firewalls (WAF), and API protection.</p> </li> </ul> </li> </ul>"
+      "documentation":"<p>Creates an Firewall Manager policy.</p> <p>A Firewall Manager policy is specific to the individual policy type. If you want to enforce multiple policy types across accounts, you can create multiple policies. You can create more than one policy for each type. </p> <p>If you add a new account to an organization that you created with Organizations, Firewall Manager automatically applies the policy to the resources in that account that are within scope of the policy. </p> <p>Firewall Manager provides the following types of policies: </p> <ul> <li> <p> <b>WAF policy</b> - This policy applies WAF web ACL protections to specified accounts and resources. </p> </li> <li> <p> <b>Shield Advanced policy</b> - This policy applies Shield Advanced protection to specified accounts and resources. </p> </li> <li> <p> <b>Security Groups policy</b> - This type of policy gives you control over security groups that are in use throughout your organization in Organizations and lets you enforce a baseline set of rules across your organization. </p> </li> <li> <p> <b>Network ACL policy</b> - This type of policy gives you control over the network ACLs that are in use throughout your organization in Organizations and lets you enforce a baseline set of first and last network ACL rules across your organization. </p> </li> <li> <p> <b>Network Firewall policy</b> - This policy applies Network Firewall protection to your organization's VPCs. </p> </li> <li> <p> <b>DNS Firewall policy</b> - This policy applies Amazon Route 53 Resolver DNS Firewall protections to your organization's VPCs. </p> </li> <li> <p> <b>Third-party firewall policy</b> - This policy applies third-party firewall protections. Third-party firewalls are available by subscription through the Amazon Web Services Marketplace console at <a href=\"https://aws.amazon.com/marketplace\">Amazon Web Services Marketplace</a>.</p> <ul> <li> <p> <b>Palo Alto Networks Cloud NGFW policy</b> - This policy applies Palo Alto Networks Cloud Next Generation Firewall (NGFW) protections and Palo Alto Networks Cloud NGFW rulestacks to your organization's VPCs.</p> </li> <li> <p> <b>Fortigate CNF policy</b> - This policy applies Fortigate Cloud Native Firewall (CNF) protections. Fortigate CNF is a cloud-centered solution that blocks Zero-Day threats and secures cloud infrastructures with industry-leading advanced threat prevention, smart web application firewalls (WAF), and API protection.</p> </li> </ul> </li> </ul>"
     },
     "PutProtocolsList":{
       "name":"PutProtocolsList",
@@ -749,7 +750,7 @@
         },
         "Status":{
           "shape":"OrganizationStatus",
-          "documentation":"<p>The current status of the request to onboard a member account as an Firewall Manager administator.</p> <ul> <li> <p> <code>ONBOARDING</code> - The account is onboarding to Firewall Manager as an administrator.</p> </li> <li> <p> <code>ONBOARDING_COMPLETE</code> - Firewall Manager The account is onboarded to Firewall Manager as an administrator, and can perform actions on the resources defined in their <a>AdminScope</a>.</p> </li> <li> <p> <code>OFFBOARDING</code> - The account is being removed as an Firewall Manager administrator.</p> </li> <li> <p> <code>OFFBOARDING_COMPLETE</code> - The account has been removed as an Firewall Manager administrator.</p> </li> </ul>"
+          "documentation":"<p>The current status of the request to onboard a member account as an Firewall Manager administrator.</p> <ul> <li> <p> <code>ONBOARDING</code> - The account is onboarding to Firewall Manager as an administrator.</p> </li> <li> <p> <code>ONBOARDING_COMPLETE</code> - Firewall Manager The account is onboarded to Firewall Manager as an administrator, and can perform actions on the resources defined in their <a>AdminScope</a>.</p> </li> <li> <p> <code>OFFBOARDING</code> - The account is being removed as an Firewall Manager administrator.</p> </li> <li> <p> <code>OFFBOARDING_COMPLETE</code> - The account has been removed as an Firewall Manager administrator.</p> </li> </ul>"
         }
       },
       "documentation":"<p>Contains high level information about the Firewall Manager administrator account.</p>"
@@ -1034,6 +1035,7 @@
       }
     },
     "Boolean":{"type":"boolean"},
+    "BooleanObject":{"type":"boolean"},
     "CIDR":{
       "type":"string",
       "max":256,
@@ -1070,6 +1072,46 @@
     "ComplianceViolators":{
       "type":"list",
       "member":{"shape":"ComplianceViolator"}
+    },
+    "CreateNetworkAclAction":{
+      "type":"structure",
+      "members":{
+        "Description":{
+          "shape":"LengthBoundedString",
+          "documentation":"<p>Brief description of this remediation action. </p>"
+        },
+        "Vpc":{
+          "shape":"ActionTarget",
+          "documentation":"<p>The VPC that's associated with the remediation action.</p>"
+        },
+        "FMSCanRemediate":{
+          "shape":"Boolean",
+          "documentation":"<p>Indicates whether it is possible for Firewall Manager to perform this remediation action. A false value indicates that auto remediation is disabled or Firewall Manager is unable to perform the action due to a conflict of some kind.</p>"
+        }
+      },
+      "documentation":"<p>Information about the <code>CreateNetworkAcl</code> action in Amazon EC2. This is a remediation option in <code>RemediationAction</code>.</p>"
+    },
+    "CreateNetworkAclEntriesAction":{
+      "type":"structure",
+      "members":{
+        "Description":{
+          "shape":"LengthBoundedString",
+          "documentation":"<p>Brief description of this remediation action. </p>"
+        },
+        "NetworkAclId":{
+          "shape":"ActionTarget",
+          "documentation":"<p>The network ACL that's associated with the remediation action.</p>"
+        },
+        "NetworkAclEntriesToBeCreated":{
+          "shape":"EntriesDescription",
+          "documentation":"<p>Lists the entries that the remediation action would create.</p>"
+        },
+        "FMSCanRemediate":{
+          "shape":"Boolean",
+          "documentation":"<p>Indicates whether it is possible for Firewall Manager to perform this remediation action. A false value indicates that auto remediation is disabled or Firewall Manager is unable to perform the action due to a conflict of some kind.</p>"
+        }
+      },
+      "documentation":"<p>Information about the <code>CreateNetworkAclEntries</code> action in Amazon EC2. This is a remediation option in <code>RemediationAction</code>.</p>"
     },
     "CustomerPolicyScopeId":{
       "type":"string",
@@ -1109,6 +1151,28 @@
           "documentation":"<p>The ID of the applications list that you want to delete. You can retrieve this ID from <code>PutAppsList</code>, <code>ListAppsLists</code>, and <code>GetAppsList</code>.</p>"
         }
       }
+    },
+    "DeleteNetworkAclEntriesAction":{
+      "type":"structure",
+      "members":{
+        "Description":{
+          "shape":"LengthBoundedString",
+          "documentation":"<p>Brief description of this remediation action. </p>"
+        },
+        "NetworkAclId":{
+          "shape":"ActionTarget",
+          "documentation":"<p>The network ACL that's associated with the remediation action.</p>"
+        },
+        "NetworkAclEntriesToBeDeleted":{
+          "shape":"EntriesDescription",
+          "documentation":"<p>Lists the entries that the remediation action would delete.</p>"
+        },
+        "FMSCanRemediate":{
+          "shape":"Boolean",
+          "documentation":"<p>Indicates whether it is possible for Firewall Manager to perform this remediation action. A false value indicates that auto remediation is disabled or Firewall Manager is unable to perform the action due to a conflict of some kind.</p>"
+        }
+      },
+      "documentation":"<p>Information about the <code>DeleteNetworkAclEntries</code> action in Amazon EC2. This is a remediation option in <code>RemediationAction</code>. </p>"
     },
     "DeleteNotificationChannelRequest":{
       "type":"structure",
@@ -1469,6 +1533,86 @@
       },
       "documentation":"<p>Information about the ReplaceRouteTableAssociation action in Amazon EC2.</p>"
     },
+    "EntriesDescription":{
+      "type":"list",
+      "member":{"shape":"EntryDescription"}
+    },
+    "EntriesWithConflicts":{
+      "type":"list",
+      "member":{"shape":"EntryDescription"}
+    },
+    "EntryDescription":{
+      "type":"structure",
+      "members":{
+        "EntryDetail":{
+          "shape":"NetworkAclEntry",
+          "documentation":"<p>Describes a rule in a network ACL.</p> <p>Each network ACL has a set of numbered ingress rules and a separate set of numbered egress rules. When determining whether a packet should be allowed in or out of a subnet associated with the network ACL, Amazon Web Services processes the entries in the network ACL according to the rule numbers, in ascending order. </p> <p>When you manage an individual network ACL, you explicitly specify the rule numbers. When you specify the network ACL rules in a Firewall Manager policy, you provide the rules to run first, in the order that you want them to run, and the rules to run last, in the order that you want them to run. Firewall Manager assigns the rule numbers for you when you save the network ACL policy specification.</p>"
+        },
+        "EntryRuleNumber":{
+          "shape":"IntegerObjectMinimum0",
+          "documentation":"<p>The rule number for the entry. ACL entries are processed in ascending order by rule number. In a Firewall Manager network ACL policy, Firewall Manager assigns rule numbers. </p>"
+        },
+        "EntryType":{
+          "shape":"EntryType",
+          "documentation":"<p>Specifies whether the entry is managed by Firewall Manager or by a user, and, for Firewall Manager-managed entries, specifies whether the entry is among those that run first in the network ACL or those that run last. </p>"
+        }
+      },
+      "documentation":"<p>Describes a single rule in a network ACL.</p>"
+    },
+    "EntryType":{
+      "type":"string",
+      "enum":[
+        "FMS_MANAGED_FIRST_ENTRY",
+        "FMS_MANAGED_LAST_ENTRY",
+        "CUSTOM_ENTRY"
+      ]
+    },
+    "EntryViolation":{
+      "type":"structure",
+      "members":{
+        "ExpectedEntry":{
+          "shape":"EntryDescription",
+          "documentation":"<p>The Firewall Manager-managed network ACL entry that is involved in the entry violation. </p>"
+        },
+        "ExpectedEvaluationOrder":{
+          "shape":"LengthBoundedString",
+          "documentation":"<p>The evaluation location within the ordered list of entries where the <code>ExpectedEntry</code> should be, according to the network ACL policy specifications. </p>"
+        },
+        "ActualEvaluationOrder":{
+          "shape":"LengthBoundedString",
+          "documentation":"<p>The evaluation location within the ordered list of entries where the <code>ExpectedEntry</code> is currently located. </p>"
+        },
+        "EntryAtExpectedEvaluationOrder":{
+          "shape":"EntryDescription",
+          "documentation":"<p>The entry that's currently in the <code>ExpectedEvaluationOrder</code> location, in place of the expected entry. </p>"
+        },
+        "EntriesWithConflicts":{
+          "shape":"EntriesWithConflicts",
+          "documentation":"<p>The list of entries that are in conflict with <code>ExpectedEntry</code>. </p>"
+        },
+        "EntryViolationReasons":{
+          "shape":"EntryViolationReasons",
+          "documentation":"<p>Descriptions of the violations that Firewall Manager found for these entries. </p>"
+        }
+      },
+      "documentation":"<p>Detailed information about an entry violation in a network ACL. The violation is against the network ACL specification inside the Firewall Manager network ACL policy. This data object is part of <code>InvalidNetworkAclEntriesViolation</code>.</p>"
+    },
+    "EntryViolationReason":{
+      "type":"string",
+      "enum":[
+        "MISSING_EXPECTED_ENTRY",
+        "INCORRECT_ENTRY_ORDER",
+        "ENTRY_CONFLICT"
+      ]
+    },
+    "EntryViolationReasons":{
+      "type":"list",
+      "member":{"shape":"EntryViolationReason"}
+    },
+    "EntryViolations":{
+      "type":"list",
+      "member":{"shape":"EntryViolation"}
+    },
     "ErrorMessage":{"type":"string"},
     "EvaluationResult":{
       "type":"structure",
@@ -1660,7 +1804,7 @@
       "members":{
         "AdminAccount":{
           "shape":"AWSAccountId",
-          "documentation":"<p>The administator account that you want to get the details for.</p>"
+          "documentation":"<p>The administrator account that you want to get the details for.</p>"
         }
       }
     },
@@ -1673,7 +1817,7 @@
         },
         "Status":{
           "shape":"OrganizationStatus",
-          "documentation":"<p>The current status of the request to onboard a member account as an Firewall Manager administator.</p> <ul> <li> <p> <code>ONBOARDING</code> - The account is onboarding to Firewall Manager as an administrator.</p> </li> <li> <p> <code>ONBOARDING_COMPLETE</code> - Firewall Manager The account is onboarded to Firewall Manager as an administrator, and can perform actions on the resources defined in their <a>AdminScope</a>.</p> </li> <li> <p> <code>OFFBOARDING</code> - The account is being removed as an Firewall Manager administrator.</p> </li> <li> <p> <code>OFFBOARDING_COMPLETE</code> - The account has been removed as an Firewall Manager administrator.</p> </li> </ul>"
+          "documentation":"<p>The current status of the request to onboard a member account as an Firewall Manager administrator.</p> <ul> <li> <p> <code>ONBOARDING</code> - The account is onboarding to Firewall Manager as an administrator.</p> </li> <li> <p> <code>ONBOARDING_COMPLETE</code> - Firewall Manager The account is onboarded to Firewall Manager as an administrator, and can perform actions on the resources defined in their <a>AdminScope</a>.</p> </li> <li> <p> <code>OFFBOARDING</code> - The account is being removed as an Firewall Manager administrator.</p> </li> <li> <p> <code>OFFBOARDING_COMPLETE</code> - The account has been removed as an Firewall Manager administrator.</p> </li> </ul>"
         }
       }
     },
@@ -1910,7 +2054,7 @@
       "members":{
         "PolicyId":{
           "shape":"PolicyId",
-          "documentation":"<p>The ID of the Firewall Manager policy that you want the details for. You can get violation details for the following policy types:</p> <ul> <li> <p>DNS Firewall</p> </li> <li> <p>Imported Network Firewall</p> </li> <li> <p>Network Firewall</p> </li> <li> <p>Security group content audit</p> </li> <li> <p>Third-party firewall</p> </li> </ul>"
+          "documentation":"<p>The ID of the Firewall Manager policy that you want the details for. You can get violation details for the following policy types:</p> <ul> <li> <p>DNS Firewall</p> </li> <li> <p>Imported Network Firewall</p> </li> <li> <p>Network Firewall</p> </li> <li> <p>Security group content audit</p> </li> <li> <p>Network ACL</p> </li> <li> <p>Third-party firewall</p> </li> </ul>"
         },
         "MemberAccount":{
           "shape":"AWSAccountId",
@@ -1940,6 +2084,11 @@
       "max":65535,
       "min":0
     },
+    "IPPortNumberInteger":{
+      "type":"integer",
+      "max":65535,
+      "min":0
+    },
     "Identifier":{
       "type":"string",
       "max":2048,
@@ -1949,6 +2098,16 @@
     "IdentifierList":{
       "type":"list",
       "member":{"shape":"Identifier"}
+    },
+    "IntegerObject":{
+      "type":"integer",
+      "max":2147483647,
+      "min":-2147483648
+    },
+    "IntegerObjectMinimum0":{
+      "type":"integer",
+      "max":2147483647,
+      "min":0
     },
     "InternalErrorException":{
       "type":"structure",
@@ -1965,6 +2124,32 @@
       },
       "documentation":"<p>The parameters of the request were invalid.</p>",
       "exception":true
+    },
+    "InvalidNetworkAclEntriesViolation":{
+      "type":"structure",
+      "members":{
+        "Vpc":{
+          "shape":"ResourceId",
+          "documentation":"<p>The VPC where the violation was found. </p>"
+        },
+        "Subnet":{
+          "shape":"ResourceId",
+          "documentation":"<p>The subnet that's associated with the network ACL.</p>"
+        },
+        "SubnetAvailabilityZone":{
+          "shape":"LengthBoundedString",
+          "documentation":"<p>The Availability Zone where the network ACL is in use. </p>"
+        },
+        "CurrentAssociatedNetworkAcl":{
+          "shape":"ResourceId",
+          "documentation":"<p>The network ACL containing the entry violations. </p>"
+        },
+        "EntryViolations":{
+          "shape":"EntryViolations",
+          "documentation":"<p>Detailed information about the entry violations in the network ACL. </p>"
+        }
+      },
+      "documentation":"<p>Violation detail for the entries in a network ACL resource.</p>"
     },
     "InvalidOperationException":{
       "type":"structure",
@@ -1986,6 +2171,11 @@
       "type":"map",
       "key":{"shape":"DependentServiceName"},
       "value":{"shape":"DetailedInfo"}
+    },
+    "LengthBoundedNonEmptyString":{
+      "type":"string",
+      "max":1024,
+      "min":1
     },
     "LengthBoundedString":{
       "type":"string",
@@ -2379,6 +2569,121 @@
       "max":128,
       "min":1,
       "pattern":"^([\\p{L}\\p{Z}\\p{N}_.:/=+\\-@]*)$"
+    },
+    "NetworkAclCommonPolicy":{
+      "type":"structure",
+      "required":["NetworkAclEntrySet"],
+      "members":{
+        "NetworkAclEntrySet":{
+          "shape":"NetworkAclEntrySet",
+          "documentation":"<p>The definition of the first and last rules for the network ACL policy. </p>"
+        }
+      },
+      "documentation":"<p>Defines a Firewall Manager network ACL policy. This is used in the <code>PolicyOption</code> of a <code>SecurityServicePolicyData</code> for a <code>Policy</code>, when the <code>SecurityServicePolicyData</code> type is set to <code>NETWORK_ACL_COMMON</code>. </p> <p>For information about network ACLs, see <a href=\"https://docs.aws.amazon.com/vpc/latest/userguide/vpc-network-acls.html\">Control traffic to subnets using network ACLs</a> in the <i>Amazon Virtual Private Cloud User Guide</i>. </p>"
+    },
+    "NetworkAclEntries":{
+      "type":"list",
+      "member":{"shape":"NetworkAclEntry"}
+    },
+    "NetworkAclEntry":{
+      "type":"structure",
+      "required":[
+        "Protocol",
+        "RuleAction",
+        "Egress"
+      ],
+      "members":{
+        "IcmpTypeCode":{
+          "shape":"NetworkAclIcmpTypeCode",
+          "documentation":"<p>ICMP protocol: The ICMP type and code.</p>"
+        },
+        "Protocol":{
+          "shape":"LengthBoundedString",
+          "documentation":"<p>The protocol number. A value of \"-1\" means all protocols. </p>"
+        },
+        "PortRange":{
+          "shape":"NetworkAclPortRange",
+          "documentation":"<p>TCP or UDP protocols: The range of ports the rule applies to.</p>"
+        },
+        "CidrBlock":{
+          "shape":"LengthBoundedNonEmptyString",
+          "documentation":"<p>The IPv4 network range to allow or deny, in CIDR notation.</p>"
+        },
+        "Ipv6CidrBlock":{
+          "shape":"LengthBoundedNonEmptyString",
+          "documentation":"<p>The IPv6 network range to allow or deny, in CIDR notation.</p>"
+        },
+        "RuleAction":{
+          "shape":"NetworkAclRuleAction",
+          "documentation":"<p>Indicates whether to allow or deny the traffic that matches the rule.</p>"
+        },
+        "Egress":{
+          "shape":"BooleanObject",
+          "documentation":"<p>Indicates whether the rule is an egress, or outbound, rule (applied to traffic leaving the subnet). If it's not an egress rule, then it's an ingress, or inbound, rule.</p>"
+        }
+      },
+      "documentation":"<p>Describes a rule in a network ACL.</p> <p>Each network ACL has a set of numbered ingress rules and a separate set of numbered egress rules. When determining whether a packet should be allowed in or out of a subnet associated with the network ACL, Amazon Web Services processes the entries in the network ACL according to the rule numbers, in ascending order. </p> <p>When you manage an individual network ACL, you explicitly specify the rule numbers. When you specify the network ACL rules in a Firewall Manager policy, you provide the rules to run first, in the order that you want them to run, and the rules to run last, in the order that you want them to run. Firewall Manager assigns the rule numbers for you when you save the network ACL policy specification.</p>"
+    },
+    "NetworkAclEntrySet":{
+      "type":"structure",
+      "required":[
+        "ForceRemediateForFirstEntries",
+        "ForceRemediateForLastEntries"
+      ],
+      "members":{
+        "FirstEntries":{
+          "shape":"NetworkAclEntries",
+          "documentation":"<p>The rules that you want to run first in the Firewall Manager managed network ACLs. </p> <note> <p>Provide these in the order in which you want them to run. Firewall Manager will assign the specific rule numbers for you, in the network ACLs that it creates. </p> </note>"
+        },
+        "ForceRemediateForFirstEntries":{
+          "shape":"BooleanObject",
+          "documentation":"<p>Applies only when remediation is enabled for the policy as a whole. Firewall Manager uses this setting when it finds policy violations that involve conflicts between the custom entries and the policy entries. </p> <p>If forced remediation is disabled, Firewall Manager marks the network ACL as noncompliant and does not try to remediate. For more information about the remediation behavior, see <a href=\"https://docs.aws.amazon.com/waf/latest/developerguide/network-acl-policies.html\">Network access control list (ACL) policies</a> in the <i>Firewall Manager Developer Guide</i>.</p>"
+        },
+        "LastEntries":{
+          "shape":"NetworkAclEntries",
+          "documentation":"<p>The rules that you want to run last in the Firewall Manager managed network ACLs. </p> <note> <p>Provide these in the order in which you want them to run. Firewall Manager will assign the specific rule numbers for you, in the network ACLs that it creates. </p> </note>"
+        },
+        "ForceRemediateForLastEntries":{
+          "shape":"BooleanObject",
+          "documentation":"<p>Applies only when remediation is enabled for the policy as a whole. Firewall Manager uses this setting when it finds policy violations that involve conflicts between the custom entries and the policy entries. </p> <p>If forced remediation is disabled, Firewall Manager marks the network ACL as noncompliant and does not try to remediate. For more information about the remediation behavior, see <a href=\"https://docs.aws.amazon.com/waf/latest/developerguide/network-acl-policies.html\">Network access control list (ACL) policies</a> in the <i>Firewall Manager Developer Guide</i>.</p>"
+        }
+      },
+      "documentation":"<p>The configuration of the first and last rules for the network ACL policy, and the remediation settings for each. </p>"
+    },
+    "NetworkAclIcmpTypeCode":{
+      "type":"structure",
+      "members":{
+        "Code":{
+          "shape":"IntegerObject",
+          "documentation":"<p>ICMP code. </p>"
+        },
+        "Type":{
+          "shape":"IntegerObject",
+          "documentation":"<p>ICMP type. </p>"
+        }
+      },
+      "documentation":"<p>ICMP protocol: The ICMP type and code.</p>"
+    },
+    "NetworkAclPortRange":{
+      "type":"structure",
+      "members":{
+        "From":{
+          "shape":"IPPortNumberInteger",
+          "documentation":"<p>The beginning port number of the range. </p>"
+        },
+        "To":{
+          "shape":"IPPortNumberInteger",
+          "documentation":"<p>The ending port number of the range. </p>"
+        }
+      },
+      "documentation":"<p>TCP or UDP protocols: The range of ports the rule applies to.</p>"
+    },
+    "NetworkAclRuleAction":{
+      "type":"string",
+      "enum":[
+        "allow",
+        "deny"
+      ]
     },
     "NetworkFirewallAction":{
       "type":"string",
@@ -2864,7 +3169,7 @@
         },
         "ResourceType":{
           "shape":"ResourceType",
-          "documentation":"<p>The type of resource protected by or in scope of the policy. This is in the format shown in the <a href=\"https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-template-resource-type-ref.html\">Amazon Web Services Resource Types Reference</a>. To apply this policy to multiple resource types, specify a resource type of <code>ResourceTypeList</code> and then specify the resource types in a <code>ResourceTypeList</code>.</p> <p>The following are valid resource types for each Firewall Manager policy type:</p> <ul> <li> <p>Amazon Web Services WAF Classic - <code>AWS::ApiGateway::Stage</code>, <code>AWS::CloudFront::Distribution</code>, and <code>AWS::ElasticLoadBalancingV2::LoadBalancer</code>.</p> </li> <li> <p>WAF - <code>AWS::ApiGateway::Stage</code>, <code>AWS::ElasticLoadBalancingV2::LoadBalancer</code>, and <code>AWS::CloudFront::Distribution</code>.</p> </li> <li> <p> DNS Firewall, Network Firewall, and third-party firewall - <code>AWS::EC2::VPC</code>.</p> </li> <li> <p>Shield Advanced - <code>AWS::ElasticLoadBalancingV2::LoadBalancer</code>, <code>AWS::ElasticLoadBalancing::LoadBalancer</code>, <code>AWS::EC2::EIP</code>, and <code>AWS::CloudFront::Distribution</code>.</p> </li> <li> <p>Security group content audit - <code>AWS::EC2::SecurityGroup</code>, <code>AWS::EC2::NetworkInterface</code>, and <code>AWS::EC2::Instance</code>.</p> </li> <li> <p>Security group usage audit - <code>AWS::EC2::SecurityGroup</code>.</p> </li> </ul>"
+          "documentation":"<p>The type of resource protected by or in scope of the policy. This is in the format shown in the <a href=\"https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-template-resource-type-ref.html\">Amazon Web Services Resource Types Reference</a>. To apply this policy to multiple resource types, specify a resource type of <code>ResourceTypeList</code> and then specify the resource types in a <code>ResourceTypeList</code>.</p> <p>The following are valid resource types for each Firewall Manager policy type:</p> <ul> <li> <p>Amazon Web Services WAF Classic - <code>AWS::ApiGateway::Stage</code>, <code>AWS::CloudFront::Distribution</code>, and <code>AWS::ElasticLoadBalancingV2::LoadBalancer</code>.</p> </li> <li> <p>WAF - <code>AWS::ApiGateway::Stage</code>, <code>AWS::ElasticLoadBalancingV2::LoadBalancer</code>, and <code>AWS::CloudFront::Distribution</code>.</p> </li> <li> <p>Shield Advanced - <code>AWS::ElasticLoadBalancingV2::LoadBalancer</code>, <code>AWS::ElasticLoadBalancing::LoadBalancer</code>, <code>AWS::EC2::EIP</code>, and <code>AWS::CloudFront::Distribution</code>.</p> </li> <li> <p>Network ACL - <code>AWS::EC2::Subnet</code>.</p> </li> <li> <p>Security group usage audit - <code>AWS::EC2::SecurityGroup</code>.</p> </li> <li> <p>Security group content audit - <code>AWS::EC2::SecurityGroup</code>, <code>AWS::EC2::NetworkInterface</code>, and <code>AWS::EC2::Instance</code>.</p> </li> <li> <p>DNS Firewall, Network Firewall, and third-party firewall - <code>AWS::EC2::VPC</code>.</p> </li> </ul>"
         },
         "ResourceTypeList":{
           "shape":"ResourceTypeList",
@@ -3004,9 +3309,13 @@
         "ThirdPartyFirewallPolicy":{
           "shape":"ThirdPartyFirewallPolicy",
           "documentation":"<p>Defines the policy options for a third-party firewall policy.</p>"
+        },
+        "NetworkAclCommonPolicy":{
+          "shape":"NetworkAclCommonPolicy",
+          "documentation":"<p>Defines a Firewall Manager network ACL policy. </p>"
         }
       },
-      "documentation":"<p>Contains the Network Firewall firewall policy options to configure the policy's deployment model and third-party firewall policy settings.</p>"
+      "documentation":"<p>Contains the settings to configure a network ACL policy, a Network Firewall firewall policy deployment model, or a third-party firewall policy.</p>"
     },
     "PolicySummary":{
       "type":"structure",
@@ -3025,7 +3334,7 @@
         },
         "ResourceType":{
           "shape":"ResourceType",
-          "documentation":"<p>The type of resource protected by or in scope of the policy. This is in the format shown in the <a href=\"https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-template-resource-type-ref.html\">Amazon Web Services Resource Types Reference</a>. For WAF and Shield Advanced, examples include <code>AWS::ElasticLoadBalancingV2::LoadBalancer</code> and <code>AWS::CloudFront::Distribution</code>. For a security group common policy, valid values are <code>AWS::EC2::NetworkInterface</code> and <code>AWS::EC2::Instance</code>. For a security group content audit policy, valid values are <code>AWS::EC2::SecurityGroup</code>, <code>AWS::EC2::NetworkInterface</code>, and <code>AWS::EC2::Instance</code>. For a security group usage audit policy, the value is <code>AWS::EC2::SecurityGroup</code>. For an Network Firewall policy or DNS Firewall policy, the value is <code>AWS::EC2::VPC</code>.</p>"
+          "documentation":"<p>The type of resource protected by or in scope of the policy. This is in the format shown in the <a href=\"https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-template-resource-type-ref.html\">Amazon Web Services Resource Types Reference</a>. </p>"
         },
         "SecurityServiceType":{
           "shape":"SecurityServiceType",
@@ -3395,6 +3704,22 @@
         "FMSPolicyUpdateFirewallCreationConfigAction":{
           "shape":"FMSPolicyUpdateFirewallCreationConfigAction",
           "documentation":"<p>The remedial action to take when updating a firewall configuration.</p>"
+        },
+        "CreateNetworkAclAction":{
+          "shape":"CreateNetworkAclAction",
+          "documentation":"<p>Information about the <code>CreateNetworkAcl</code> action in Amazon EC2.</p>"
+        },
+        "ReplaceNetworkAclAssociationAction":{
+          "shape":"ReplaceNetworkAclAssociationAction",
+          "documentation":"<p>Information about the <code>ReplaceNetworkAclAssociation</code> action in Amazon EC2. </p>"
+        },
+        "CreateNetworkAclEntriesAction":{
+          "shape":"CreateNetworkAclEntriesAction",
+          "documentation":"<p>Information about the <code>CreateNetworkAclEntries</code> action in Amazon EC2.</p>"
+        },
+        "DeleteNetworkAclEntriesAction":{
+          "shape":"DeleteNetworkAclEntriesAction",
+          "documentation":"<p>Information about the <code>DeleteNetworkAclEntries</code> action in Amazon EC2.</p>"
         }
       },
       "documentation":"<p>Information about an individual action you can take to remediate a violation.</p>"
@@ -3425,6 +3750,25 @@
         }
       },
       "documentation":"<p>An ordered list of actions you can take to remediate a violation.</p>"
+    },
+    "ReplaceNetworkAclAssociationAction":{
+      "type":"structure",
+      "members":{
+        "Description":{
+          "shape":"LengthBoundedString",
+          "documentation":"<p>Brief description of this remediation action. </p>"
+        },
+        "AssociationId":{"shape":"ActionTarget"},
+        "NetworkAclId":{
+          "shape":"ActionTarget",
+          "documentation":"<p>The network ACL that's associated with the remediation action.</p>"
+        },
+        "FMSCanRemediate":{
+          "shape":"Boolean",
+          "documentation":"<p>Indicates whether it is possible for Firewall Manager to perform this remediation action. A false value indicates that auto remediation is disabled or Firewall Manager is unable to perform the action due to a conflict of some kind.</p>"
+        }
+      },
+      "documentation":"<p>Information about the <code>ReplaceNetworkAclAssociation</code> action in Amazon EC2. This is a remediation option in <code>RemediationAction</code>.</p>"
     },
     "Resource":{
       "type":"structure",
@@ -3592,7 +3936,7 @@
     "ResourceTags":{
       "type":"list",
       "member":{"shape":"ResourceTag"},
-      "max":8,
+      "max":50,
       "min":0
     },
     "ResourceType":{
@@ -3669,10 +4013,6 @@
           "shape":"DnsRuleGroupLimitExceededViolation",
           "documentation":"<p>Violation detail for a DNS Firewall policy that indicates that the VPC reached the limit for associated DNS Firewall rule groups. Firewall Manager tried to associate another rule group with the VPC and failed. </p>"
         },
-        "PossibleRemediationActions":{
-          "shape":"PossibleRemediationActions",
-          "documentation":"<p>A list of possible remediation action lists. Each individual possible remediation action is a list of individual remediation actions.</p>"
-        },
         "FirewallSubnetIsOutOfScopeViolation":{
           "shape":"FirewallSubnetIsOutOfScopeViolation",
           "documentation":"<p>Contains details about the firewall subnet that violates the policy scope.</p>"
@@ -3696,6 +4036,14 @@
         "FirewallSubnetMissingVPCEndpointViolation":{
           "shape":"FirewallSubnetMissingVPCEndpointViolation",
           "documentation":"<p>The violation details for a third-party firewall's VPC endpoint subnet that was deleted.</p>"
+        },
+        "InvalidNetworkAclEntriesViolation":{
+          "shape":"InvalidNetworkAclEntriesViolation",
+          "documentation":"<p>Violation detail for the entries in a network ACL resource.</p>"
+        },
+        "PossibleRemediationActions":{
+          "shape":"PossibleRemediationActions",
+          "documentation":"<p>A list of possible remediation action lists. Each individual possible remediation action is a list of individual remediation actions.</p>"
         }
       },
       "documentation":"<p>Violation detail based on resource type.</p>"
@@ -3857,11 +4205,11 @@
         },
         "ManagedServiceData":{
           "shape":"ManagedServiceData",
-          "documentation":"<p>Details about the service that are specific to the service type, in JSON format. </p> <ul> <li> <p>Example: <code>DNS_FIREWALL</code> </p> <p> <code>\"{\\\"type\\\":\\\"DNS_FIREWALL\\\",\\\"preProcessRuleGroups\\\":[{\\\"ruleGroupId\\\":\\\"rslvr-frg-1\\\",\\\"priority\\\":10}],\\\"postProcessRuleGroups\\\":[{\\\"ruleGroupId\\\":\\\"rslvr-frg-2\\\",\\\"priority\\\":9911}]}\"</code> </p> <note> <p>Valid values for <code>preProcessRuleGroups</code> are between 1 and 99. Valid values for <code>postProcessRuleGroups</code> are between 9901 and 10000.</p> </note> </li> <li> <p>Example: <code>IMPORT_NETWORK_FIREWALL</code> </p> <p> <code>\"{\\\"type\\\":\\\"IMPORT_NETWORK_FIREWALL\\\",\\\"awsNetworkFirewallConfig\\\":{\\\"networkFirewallStatelessRuleGroupReferences\\\":[{\\\"resourceARN\\\":\\\"arn:aws:network-firewall:us-west-2:000000000000:stateless-rulegroup\\/rg1\\\",\\\"priority\\\":1}],\\\"networkFirewallStatelessDefaultActions\\\":[\\\"aws:drop\\\"],\\\"networkFirewallStatelessFragmentDefaultActions\\\":[\\\"aws:pass\\\"],\\\"networkFirewallStatelessCustomActions\\\":[],\\\"networkFirewallStatefulRuleGroupReferences\\\":[{\\\"resourceARN\\\":\\\"arn:aws:network-firewall:us-west-2:aws-managed:stateful-rulegroup\\/ThreatSignaturesEmergingEventsStrictOrder\\\",\\\"priority\\\":8}],\\\"networkFirewallStatefulEngineOptions\\\":{\\\"ruleOrder\\\":\\\"STRICT_ORDER\\\"},\\\"networkFirewallStatefulDefaultActions\\\":[\\\"aws:drop_strict\\\"]}}\"</code> </p> <p> <code>\"{\\\"type\\\":\\\"DNS_FIREWALL\\\",\\\"preProcessRuleGroups\\\":[{\\\"ruleGroupId\\\":\\\"rslvr-frg-1\\\",\\\"priority\\\":10}],\\\"postProcessRuleGroups\\\":[{\\\"ruleGroupId\\\":\\\"rslvr-frg-2\\\",\\\"priority\\\":9911}]}\"</code> </p> <note> <p>Valid values for <code>preProcessRuleGroups</code> are between 1 and 99. Valid values for <code>postProcessRuleGroups</code> are between 9901 and 10000.</p> </note> </li> <li> <p>Example: <code>NETWORK_FIREWALL</code> - Centralized deployment model</p> <p> <code>\"{\\\"type\\\":\\\"NETWORK_FIREWALL\\\",\\\"awsNetworkFirewallConfig\\\":{\\\"networkFirewallStatelessRuleGroupReferences\\\":[{\\\"resourceARN\\\":\\\"arn:aws:network-firewall:us-east-1:123456789011:stateless-rulegroup/test\\\",\\\"priority\\\":1}],\\\"networkFirewallStatelessDefaultActions\\\":[\\\"aws:forward_to_sfe\\\",\\\"customActionName\\\"],\\\"networkFirewallStatelessFragmentDefaultActions\\\":[\\\"aws:forward_to_sfe\\\",\\\"customActionName\\\"],\\\"networkFirewallStatelessCustomActions\\\":[{\\\"actionName\\\":\\\"customActionName\\\",\\\"actionDefinition\\\":{\\\"publishMetricAction\\\":{\\\"dimensions\\\":[{\\\"value\\\":\\\"metricdimensionvalue\\\"}]}}}],\\\"networkFirewallStatefulRuleGroupReferences\\\":[{\\\"resourceARN\\\":\\\"arn:aws:network-firewall:us-east-1:123456789011:stateful-rulegroup/test\\\"}],\\\"networkFirewallLoggingConfiguration\\\":{\\\"logDestinationConfigs\\\":[{\\\"logDestinationType\\\":\\\"S3\\\",\\\"logType\\\":\\\"ALERT\\\",\\\"logDestination\\\":{\\\"bucketName\\\":\\\"s3-bucket-name\\\"}},{\\\"logDestinationType\\\":\\\"S3\\\",\\\"logType\\\":\\\"FLOW\\\",\\\"logDestination\\\":{\\\"bucketName\\\":\\\"s3-bucket-name\\\"}}],\\\"overrideExistingConfig\\\":true}},\\\"firewallDeploymentModel\\\":{\\\"centralizedFirewallDeploymentModel\\\":{\\\"centralizedFirewallOrchestrationConfig\\\":{\\\"inspectionVpcIds\\\":[{\\\"resourceId\\\":\\\"vpc-1234\\\",\\\"accountId\\\":\\\"123456789011\\\"}],\\\"firewallCreationConfig\\\":{\\\"endpointLocation\\\":{\\\"availabilityZoneConfigList\\\":[{\\\"availabilityZoneId\\\":null,\\\"availabilityZoneName\\\":\\\"us-east-1a\\\",\\\"allowedIPV4CidrList\\\":[\\\"10.0.0.0/28\\\"]}]}},\\\"allowedIPV4CidrList\\\":[]}}}}\"</code> </p> <p> To use the centralized deployment model, you must set <a href=\"https://docs.aws.amazon.com/fms/2018-01-01/APIReference/API_PolicyOption.html\">PolicyOption</a> to <code>CENTRALIZED</code>. </p> </li> <li> <p>Example: <code>NETWORK_FIREWALL</code> - Distributed deployment model with automatic Availability Zone configuration</p> <p> <code> \"{\\\"type\\\":\\\"NETWORK_FIREWALL\\\",\\\"networkFirewallStatelessRuleGroupReferences\\\":[{\\\"resourceARN\\\":\\\"arn:aws:network-firewall:us-east-1:123456789011:stateless-rulegroup/test\\\",\\\"priority\\\":1}],\\\"networkFirewallStatelessDefaultActions\\\":[\\\"aws:forward_to_sfe\\\",\\\"customActionName\\\"],\\\"networkFirewallStatelessFragmentDefaultActions\\\":[\\\"aws:forward_to_sfe\\\",\\\"customActionName\\\"],\\\"networkFirewallStatelessCustomActions\\\":[{\\\"actionName\\\":\\\"customActionName\\\",\\\"actionDefinition\\\":{\\\"publishMetricAction\\\":{\\\"dimensions\\\":[{\\\"value\\\":\\\"metricdimensionvalue\\\"}]}}}],\\\"networkFirewallStatefulRuleGroupReferences\\\":[{\\\"resourceARN\\\":\\\"arn:aws:network-firewall:us-east-1:123456789011:stateful-rulegroup/test\\\"}],\\\"networkFirewallOrchestrationConfig\\\":{\\\"singleFirewallEndpointPerVPC\\\":false,\\\"allowedIPV4CidrList\\\":[\\\"10.0.0.0/28\\\",\\\"192.168.0.0/28\\\"],\\\"routeManagementAction\\\":\\\"OFF\\\"},\\\"networkFirewallLoggingConfiguration\\\":{\\\"logDestinationConfigs\\\":[{\\\"logDestinationType\\\":\\\"S3\\\",\\\"logType\\\":\\\"ALERT\\\",\\\"logDestination\\\":{\\\"bucketName\\\":\\\"s3-bucket-name\\\"}},{\\\"logDestinationType\\\":\\\"S3\\\",\\\"logType\\\":\\\"FLOW\\\",\\\"logDestination\\\":{\\\"bucketName\\\":\\\"s3-bucket-name\\\"}}],\\\"overrideExistingConfig\\\":true}}\" </code> </p> <p> With automatic Availbility Zone configuration, Firewall Manager chooses which Availability Zones to create the endpoints in. To use the distributed deployment model, you must set <a href=\"https://docs.aws.amazon.com/fms/2018-01-01/APIReference/API_PolicyOption.html\">PolicyOption</a> to <code>NULL</code>. </p> </li> <li> <p>Example: <code>NETWORK_FIREWALL</code> - Distributed deployment model with automatic Availability Zone configuration and route management</p> <p> <code> \"{\\\"type\\\":\\\"NETWORK_FIREWALL\\\",\\\"networkFirewallStatelessRuleGroupReferences\\\":[{\\\"resourceARN\\\":\\\"arn:aws:network-firewall:us-east-1:123456789011:stateless-rulegroup/test\\\",\\\"priority\\\":1}],\\\"networkFirewallStatelessDefaultActions\\\":[\\\"aws:forward_to_sfe\\\",\\\"customActionName\\\"],\\\"networkFirewallStatelessFragmentDefaultActions\\\":[\\\"aws:forward_to_sfe\\\",\\\"customActionName\\\"],\\\"networkFirewallStatelessCustomActions\\\":[{\\\"actionName\\\":\\\"customActionName\\\",\\\"actionDefinition\\\":{\\\"publishMetricAction\\\":{\\\"dimensions\\\":[{\\\"value\\\":\\\"metricdimensionvalue\\\"}]}}}],\\\"networkFirewallStatefulRuleGroupReferences\\\":[{\\\"resourceARN\\\":\\\"arn:aws:network-firewall:us-east-1:123456789011:stateful-rulegroup/test\\\"}],\\\"networkFirewallOrchestrationConfig\\\":{\\\"singleFirewallEndpointPerVPC\\\":false,\\\"allowedIPV4CidrList\\\":[\\\"10.0.0.0/28\\\",\\\"192.168.0.0/28\\\"],\\\"routeManagementAction\\\":\\\"MONITOR\\\",\\\"routeManagementTargetTypes\\\":[\\\"InternetGateway\\\"]},\\\"networkFirewallLoggingConfiguration\\\":{\\\"logDestinationConfigs\\\":[{\\\"logDestinationType\\\":\\\"S3\\\",\\\"logType\\\":\\\"ALERT\\\",\\\"logDestination\\\":{\\\"bucketName\\\":\\\"s3-bucket-name\\\"}},{\\\"logDestinationType\\\":\\\"S3\\\",\\\"logType\\\": \\\"FLOW\\\",\\\"logDestination\\\":{\\\"bucketName\\\":\\\"s3-bucket-name\\\"}}],\\\"overrideExistingConfig\\\":true}}\" </code> </p> <p>To use the distributed deployment model, you must set <a href=\"https://docs.aws.amazon.com/fms/2018-01-01/APIReference/API_PolicyOption.html\">PolicyOption</a> to <code>NULL</code>. </p> </li> <li> <p>Example: <code>NETWORK_FIREWALL</code> - Distributed deployment model with custom Availability Zone configuration</p> <p> <code>\"{\\\"type\\\":\\\"NETWORK_FIREWALL\\\",\\\"networkFirewallStatelessRuleGroupReferences\\\":[{\\\"resourceARN\\\":\\\"arn:aws:network-firewall:us-east-1:123456789011:stateless-rulegroup/test\\\",\\\"priority\\\":1}],\\\"networkFirewallStatelessDefaultActions\\\":[\\\"aws:forward_to_sfe\\\",\\\"customActionName\\\"],\\\"networkFirewallStatelessFragmentDefaultActions\\\":[\\\"aws:forward_to_sfe\\\",\\\"fragmentcustomactionname\\\"],\\\"networkFirewallStatelessCustomActions\\\":[{\\\"actionName\\\":\\\"customActionName\\\", \\\"actionDefinition\\\":{\\\"publishMetricAction\\\":{\\\"dimensions\\\":[{\\\"value\\\":\\\"metricdimensionvalue\\\"}]}}},{\\\"actionName\\\":\\\"fragmentcustomactionname\\\",\\\"actionDefinition\\\":{\\\"publishMetricAction\\\":{\\\"dimensions\\\":[{\\\"value\\\":\\\"fragmentmetricdimensionvalue\\\"}]}}}],\\\"networkFirewallStatefulRuleGroupReferences\\\":[{\\\"resourceARN\\\":\\\"arn:aws:network-firewall:us-east-1:123456789011:stateful-rulegroup/test\\\"}],\\\"networkFirewallOrchestrationConfig\\\":{\\\"firewallCreationConfig\\\":{ \\\"endpointLocation\\\":{\\\"availabilityZoneConfigList\\\":[{\\\"availabilityZoneName\\\":\\\"us-east-1a\\\",\\\"allowedIPV4CidrList\\\":[\\\"10.0.0.0/28\\\"]},{\\\"availabilityZoneName\\\":\\\"us-east-1b\\\",\\\"allowedIPV4CidrList\\\":[ \\\"10.0.0.0/28\\\"]}]} },\\\"singleFirewallEndpointPerVPC\\\":false,\\\"allowedIPV4CidrList\\\":null,\\\"routeManagementAction\\\":\\\"OFF\\\",\\\"networkFirewallLoggingConfiguration\\\":{\\\"logDestinationConfigs\\\":[{\\\"logDestinationType\\\":\\\"S3\\\",\\\"logType\\\":\\\"ALERT\\\",\\\"logDestination\\\":{\\\"bucketName\\\":\\\"s3-bucket-name\\\"}},{\\\"logDestinationType\\\":\\\"S3\\\",\\\"logType\\\":\\\"FLOW\\\",\\\"logDestination\\\":{\\\"bucketName\\\":\\\"s3-bucket-name\\\"}}],\\\"overrideExistingConfig\\\":boolean}}\" </code> </p> <p> With custom Availability Zone configuration, you define which specific Availability Zones to create endpoints in by configuring <code>firewallCreationConfig</code>. To configure the Availability Zones in <code>firewallCreationConfig</code>, specify either the <code>availabilityZoneName</code> or <code>availabilityZoneId</code> parameter, not both parameters. </p> <p>To use the distributed deployment model, you must set <a href=\"https://docs.aws.amazon.com/fms/2018-01-01/APIReference/API_PolicyOption.html\">PolicyOption</a> to <code>NULL</code>. </p> </li> <li> <p>Example: <code>NETWORK_FIREWALL</code> - Distributed deployment model with custom Availability Zone configuration and route management</p> <p> <code>\"{\\\"type\\\":\\\"NETWORK_FIREWALL\\\",\\\"networkFirewallStatelessRuleGroupReferences\\\":[{\\\"resourceARN\\\":\\\"arn:aws:network-firewall:us-east-1:123456789011:stateless-rulegroup/test\\\",\\\"priority\\\":1}],\\\"networkFirewallStatelessDefaultActions\\\":[\\\"aws:forward_to_sfe\\\",\\\"customActionName\\\"],\\\"networkFirewallStatelessFragmentDefaultActions\\\":[\\\"aws:forward_to_sfe\\\",\\\"fragmentcustomactionname\\\"],\\\"networkFirewallStatelessCustomActions\\\":[{\\\"actionName\\\":\\\"customActionName\\\",\\\"actionDefinition\\\":{\\\"publishMetricAction\\\":{\\\"dimensions\\\":[{\\\"value\\\":\\\"metricdimensionvalue\\\"}]}}},{\\\"actionName\\\":\\\"fragmentcustomactionname\\\",\\\"actionDefinition\\\":{\\\"publishMetricAction\\\":{\\\"dimensions\\\":[{\\\"value\\\":\\\"fragmentmetricdimensionvalue\\\"}]}}}],\\\"networkFirewallStatefulRuleGroupReferences\\\":[{\\\"resourceARN\\\":\\\"arn:aws:network-firewall:us-east-1:123456789011:stateful-rulegroup/test\\\"}],\\\"networkFirewallOrchestrationConfig\\\":{\\\"firewallCreationConfig\\\":{\\\"endpointLocation\\\":{\\\"availabilityZoneConfigList\\\":[{\\\"availabilityZoneName\\\":\\\"us-east-1a\\\",\\\"allowedIPV4CidrList\\\":[\\\"10.0.0.0/28\\\"]},{\\\"availabilityZoneName\\\":\\\"us-east-1b\\\",\\\"allowedIPV4CidrList\\\":[\\\"10.0.0.0/28\\\"]}]}},\\\"singleFirewallEndpointPerVPC\\\":false,\\\"allowedIPV4CidrList\\\":null,\\\"routeManagementAction\\\":\\\"MONITOR\\\",\\\"routeManagementTargetTypes\\\":[\\\"InternetGateway\\\"],\\\"routeManagementConfig\\\":{\\\"allowCrossAZTrafficIfNoEndpoint\\\":true}},\\\"networkFirewallLoggingConfiguration\\\":{\\\"logDestinationConfigs\\\":[{\\\"logDestinationType\\\":\\\"S3\\\",\\\"logType\\\":\\\"ALERT\\\",\\\"logDestination\\\":{\\\"bucketName\\\":\\\"s3-bucket-name\\\"}},{\\\"logDestinationType\\\":\\\"S3\\\",\\\"logType\\\":\\\"FLOW\\\",\\\"logDestination\\\":{\\\"bucketName\\\":\\\"s3-bucket-name\\\"}}],\\\"overrideExistingConfig\\\":boolean}}\" </code> </p> <p>To use the distributed deployment model, you must set <a href=\"https://docs.aws.amazon.com/fms/2018-01-01/APIReference/API_PolicyOption.html\">PolicyOption</a> to <code>NULL</code>. </p> </li> <li> <p>Example: <code>SECURITY_GROUPS_COMMON</code> </p> <p> <code>\"{\\\"type\\\":\\\"SECURITY_GROUPS_COMMON\\\",\\\"revertManualSecurityGroupChanges\\\":false,\\\"exclusiveResourceSecurityGroupManagement\\\":false, \\\"applyToAllEC2InstanceENIs\\\":false,\\\"securityGroups\\\":[{\\\"id\\\":\\\" sg-000e55995d61a06bd\\\"}]}\"</code> </p> </li> <li> <p>Example: <code>SECURITY_GROUPS_COMMON</code> - Security group tag distribution </p> <p> <code>\"\"{\\\"type\\\":\\\"SECURITY_GROUPS_COMMON\\\",\\\"securityGroups\\\":[{\\\"id\\\":\\\"sg-000e55995d61a06bd\\\"}],\\\"revertManualSecurityGroupChanges\\\":true,\\\"exclusiveResourceSecurityGroupManagement\\\":false,\\\"applyToAllEC2InstanceENIs\\\":false,\\\"includeSharedVPC\\\":false,\\\"enableTagDistribution\\\":true}\"\"</code> </p> <p> Firewall Manager automatically distributes tags from the primary group to the security groups created by this policy. To use security group tag distribution, you must also set <code>revertManualSecurityGroupChanges</code> to <code>true</code>, otherwise Firewall Manager won't be able to create the policy. When you enable <code>revertManualSecurityGroupChanges</code>, Firewall Manager identifies and reports when the security groups created by this policy become non-compliant. </p> <p> Firewall Manager won't distrubute system tags added by Amazon Web Services services into the replica security groups. System tags begin with the <code>aws:</code> prefix. </p> </li> <li> <p>Example: Shared VPCs. Apply the preceding policy to resources in shared VPCs as well as to those in VPCs that the account owns </p> <p> <code>\"{\\\"type\\\":\\\"SECURITY_GROUPS_COMMON\\\",\\\"revertManualSecurityGroupChanges\\\":false,\\\"exclusiveResourceSecurityGroupManagement\\\":false, \\\"applyToAllEC2InstanceENIs\\\":false,\\\"includeSharedVPC\\\":true,\\\"securityGroups\\\":[{\\\"id\\\":\\\" sg-000e55995d61a06bd\\\"}]}\"</code> </p> </li> <li> <p>Example: <code>SECURITY_GROUPS_CONTENT_AUDIT</code> </p> <p> <code>\"{\\\"type\\\":\\\"SECURITY_GROUPS_CONTENT_AUDIT\\\",\\\"securityGroups\\\":[{\\\"id\\\":\\\"sg-000e55995d61a06bd\\\"}],\\\"securityGroupAction\\\":{\\\"type\\\":\\\"ALLOW\\\"}}\"</code> </p> <p>The security group action for content audit can be <code>ALLOW</code> or <code>DENY</code>. For <code>ALLOW</code>, all in-scope security group rules must be within the allowed range of the policy's security group rules. For <code>DENY</code>, all in-scope security group rules must not contain a value or a range that matches a rule value or range in the policy security group.</p> </li> <li> <p>Example: <code>SECURITY_GROUPS_USAGE_AUDIT</code> </p> <p> <code>\"{\\\"type\\\":\\\"SECURITY_GROUPS_USAGE_AUDIT\\\",\\\"deleteUnusedSecurityGroups\\\":true,\\\"coalesceRedundantSecurityGroups\\\":true}\"</code> </p> </li> <li> <p>Example: <code>SHIELD_ADVANCED</code> with web ACL management</p> <p> <code>\"{\\\"type\\\":\\\"SHIELD_ADVANCED\\\",\\\"optimizeUnassociatedWebACL\\\":true}\"</code> </p> <p>If you set <code>optimizeUnassociatedWebACL</code> to <code>true</code>, Firewall Manager creates web ACLs in accounts within the policy scope if the web ACLs will be used by at least one resource. Firewall Manager creates web ACLs in the accounts within policy scope only if the web ACLs will be used by at least one resource. If at any time an account comes into policy scope, Firewall Manager automatically creates a web ACL in the account if at least one resource will use the web ACL.</p> <p>Upon enablement, Firewall Manager performs a one-time cleanup of unused web ACLs in your account. The cleanup process can take several hours. If a resource leaves policy scope after Firewall Manager creates a web ACL, Firewall Manager doesn't disassociate the resource from the web ACL. If you want Firewall Manager to clean up the web ACL, you must first manually disassociate the resources from the web ACL, and then enable the manage unused web ACLs option in your policy.</p> <p>If you set <code>optimizeUnassociatedWebACL</code> to <code>false</code>, and Firewall Manager automatically creates an empty web ACL in each account that's within policy scope.</p> </li> <li> <p>Specification for <code>SHIELD_ADVANCED</code> for Amazon CloudFront distributions </p> <p> <code>\"{\\\"type\\\":\\\"SHIELD_ADVANCED\\\",\\\"automaticResponseConfiguration\\\": {\\\"automaticResponseStatus\\\":\\\"ENABLED|IGNORED|DISABLED\\\", \\\"automaticResponseAction\\\":\\\"BLOCK|COUNT\\\"}, \\\"overrideCustomerWebaclClassic\\\":true|false, \\\"optimizeUnassociatedWebACL\\\":true|false}\"</code> </p> <p>For example: <code>\"{\\\"type\\\":\\\"SHIELD_ADVANCED\\\",\\\"automaticResponseConfiguration\\\": {\\\"automaticResponseStatus\\\":\\\"ENABLED\\\", \\\"automaticResponseAction\\\":\\\"COUNT\\\"}}\"</code> </p> <p>The default value for <code>automaticResponseStatus</code> is <code>IGNORED</code>. The value for <code>automaticResponseAction</code> is only required when <code>automaticResponseStatus</code> is set to <code>ENABLED</code>. The default value for <code>overrideCustomerWebaclClassic</code> is <code>false</code>.</p> <p>For other resource types that you can protect with a Shield Advanced policy, this <code>ManagedServiceData</code> configuration is an empty string.</p> </li> <li> <p>Example: <code>THIRD_PARTY_FIREWALL</code> </p> <p>Replace <code>THIRD_PARTY_FIREWALL_NAME</code> with the name of the third-party firewall.</p> <p> <code>\"{ \"type\":\"THIRD_PARTY_FIREWALL\", \"thirdPartyFirewall\":\"THIRD_PARTY_FIREWALL_NAME\", \"thirdPartyFirewallConfig\":{ \"thirdPartyFirewallPolicyList\":[\"global-1\"] }, \"firewallDeploymentModel\":{ \"distributedFirewallDeploymentModel\":{ \"distributedFirewallOrchestrationConfig\":{ \"firewallCreationConfig\":{ \"endpointLocation\":{ \"availabilityZoneConfigList\":[ { \"availabilityZoneName\":\"${AvailabilityZone}\" } ] } }, \"allowedIPV4CidrList\":[ ] } } } }\"</code> </p> </li> <li> <p>Example: <code>WAFV2</code> - Account takeover prevention, Bot Control managed rule groups, optimize unassociated web ACL, and rule action override </p> <p> <code>\"{\\\"type\\\":\\\"WAFV2\\\",\\\"preProcessRuleGroups\\\":[{\\\"ruleGroupArn\\\":null,\\\"overrideAction\\\":{\\\"type\\\":\\\"NONE\\\"},\\\"managedRuleGroupIdentifier\\\":{\\\"versionEnabled\\\":null,\\\"version\\\":null,\\\"vendorName\\\":\\\"AWS\\\",\\\"managedRuleGroupName\\\":\\\"AWSManagedRulesATPRuleSet\\\",\\\"managedRuleGroupConfigs\\\":[{\\\"awsmanagedRulesATPRuleSet\\\":{\\\"loginPath\\\":\\\"/loginpath\\\",\\\"requestInspection\\\":{\\\"payloadType\\\":\\\"FORM_ENCODED|JSON\\\",\\\"usernameField\\\":{\\\"identifier\\\":\\\"/form/username\\\"},\\\"passwordField\\\":{\\\"identifier\\\":\\\"/form/password\\\"}}}}]},\\\"ruleGroupType\\\":\\\"ManagedRuleGroup\\\",\\\"excludeRules\\\":[],\\\"sampledRequestsEnabled\\\":true},{\\\"ruleGroupArn\\\":null,\\\"overrideAction\\\":{\\\"type\\\":\\\"NONE\\\"},\\\"managedRuleGroupIdentifier\\\":{\\\"versionEnabled\\\":null,\\\"version\\\":null,\\\"vendorName\\\":\\\"AWS\\\",\\\"managedRuleGroupName\\\":\\\"AWSManagedRulesBotControlRuleSet\\\",\\\"managedRuleGroupConfigs\\\":[{\\\"awsmanagedRulesBotControlRuleSet\\\":{\\\"inspectionLevel\\\":\\\"TARGETED|COMMON\\\"}}]},\\\"ruleGroupType\\\":\\\"ManagedRuleGroup\\\",\\\"excludeRules\\\":[],\\\"sampledRequestsEnabled\\\":true,\\\"ruleActionOverrides\\\":[{\\\"name\\\":\\\"Rule1\\\",\\\"actionToUse\\\":{\\\"allow|block|count|captcha|challenge\\\":{}}},{\\\"name\\\":\\\"Rule2\\\",\\\"actionToUse\\\":{\\\"allow|block|count|captcha|challenge\\\":{}}}]}],\\\"postProcessRuleGroups\\\":[],\\\"defaultAction\\\":{\\\"type\\\":\\\"ALLOW\\\"},\\\"customRequestHandling\\\":null,\\\"customResponse\\\":null,\\\"overrideCustomerWebACLAssociation\\\":false,\\\"loggingConfiguration\\\":null,\\\"sampledRequestsEnabledForDefaultActions\\\":true,\\\"optimizeUnassociatedWebACL\\\":true}\"</code> </p> <ul> <li> <p>Bot Control - For information about <code>AWSManagedRulesBotControlRuleSet</code> managed rule groups, see <a href=\"https://docs.aws.amazon.com/waf/latest/APIReference/API_AWSManagedRulesBotControlRuleSet.html\">AWSManagedRulesBotControlRuleSet</a> in the <i>WAF API Reference</i>.</p> </li> <li> <p>Fraud Control account takeover prevention (ATP) - For information about the properties available for <code>AWSManagedRulesATPRuleSet</code> managed rule groups, see <a href=\"https://docs.aws.amazon.com/waf/latest/APIReference/API_AWSManagedRulesATPRuleSet.html\">AWSManagedRulesATPRuleSet</a> in the <i>WAF API Reference</i>.</p> </li> <li> <p>Optimize unassociated web ACL - If you set <code>optimizeUnassociatedWebACL</code> to <code>true</code>, Firewall Manager creates web ACLs in accounts within the policy scope if the web ACLs will be used by at least one resource. Firewall Manager creates web ACLs in the accounts within policy scope only if the web ACLs will be used by at least one resource. If at any time an account comes into policy scope, Firewall Manager automatically creates a web ACL in the account if at least one resource will use the web ACL.</p> <p>Upon enablement, Firewall Manager performs a one-time cleanup of unused web ACLs in your account. The cleanup process can take several hours. If a resource leaves policy scope after Firewall Manager creates a web ACL, Firewall Manager disassociates the resource from the web ACL, but won't clean up the unused web ACL. Firewall Manager only cleans up unused web ACLs when you first enable management of unused web ACLs in a policy.</p> <p>If you set <code>optimizeUnassociatedWebACL</code> to <code>false</code> Firewall Manager doesn't manage unused web ACLs, and Firewall Manager automatically creates an empty web ACL in each account that's within policy scope.</p> </li> <li> <p>Rule action overrides - Firewall Manager supports rule action overrides only for managed rule groups. To configure a <code>RuleActionOverrides</code> add the <code>Name</code> of the rule to override, and <code>ActionToUse</code>, which is the new action to use for the rule. For information about using rule action override, see <a href=\"https://docs.aws.amazon.com/waf/latest/APIReference/API_RuleActionOverride.html\">RuleActionOverride</a> in the <i>WAF API Reference</i>.</p> </li> </ul> </li> <li> <p>Example: <code>WAFV2</code> - <code>CAPTCHA</code> and <code>Challenge</code> configs </p> <p> <code>\"{\\\"type\\\":\\\"WAFV2\\\",\\\"preProcessRuleGroups\\\":[{\\\"ruleGroupArn\\\":null,\\\"overrideAction\\\":{\\\"type\\\":\\\"NONE\\\"},\\\"managedRuleGroupIdentifier\\\":{\\\"versionEnabled\\\":null,\\\"version\\\":null,\\\"vendorName\\\":\\\"AWS\\\",\\\"managedRuleGroupName\\\":\\\"AWSManagedRulesAdminProtectionRuleSet\\\"},\\\"ruleGroupType\\\":\\\"ManagedRuleGroup\\\",\\\"excludeRules\\\":[],\\\"sampledRequestsEnabled\\\":true}],\\\"postProcessRuleGroups\\\":[],\\\"defaultAction\\\":{\\\"type\\\":\\\"ALLOW\\\"},\\\"customRequestHandling\\\":null,\\\"customResponse\\\":null,\\\"overrideCustomerWebACLAssociation\\\":false,\\\"loggingConfiguration\\\":null,\\\"sampledRequestsEnabledForDefaultActions\\\":true,\\\"captchaConfig\\\":{\\\"immunityTimeProperty\\\":{\\\"immunityTime\\\":500}},\\\"challengeConfig\\\":{\\\"immunityTimeProperty\\\":{\\\"immunityTime\\\":800}},\\\"tokenDomains\\\":[\\\"google.com\\\",\\\"amazon.com\\\"],\\\"associationConfig\\\":{\\\"requestBody\\\":{\\\"CLOUDFRONT\\\":{\\\"defaultSizeInspectionLimit\\\":\\\"KB_16\\\"}}}}\"</code> </p> <ul> <li> <p> <code>CAPTCHA</code> and <code>Challenge</code> configs - If you update the policy's values for <code>associationConfig</code>, <code>captchaConfig</code>, <code>challengeConfig</code>, or <code>tokenDomains</code>, Firewall Manager will overwrite your local web ACLs to contain the new value(s). However, if you don't update the policy's <code>associationConfig</code>, <code>captchaConfig</code>, <code>challengeConfig</code>, or <code>tokenDomains</code> values, the values in your local web ACLs will remain unchanged. For information about association configs, see <a href=\"https://docs.aws.amazon.com/waf/latest/APIReference/API_AssociationConfig.html\">AssociationConfig</a>. For information about CAPTCHA and Challenge configs, see <a href=\"https://docs.aws.amazon.com/waf/latest/APIReference/API_CaptchaConfig.html\">CaptchaConfig</a> and <a href=\"https://docs.aws.amazon.com/waf/latest/APIReference/API_ChallengeConfig.html\">ChallengeConfig</a> in the <i>WAF API Reference</i>.</p> </li> <li> <p> <code>defaultSizeInspectionLimit</code> - Specifies the maximum size of the web request body component that an associated Amazon CloudFront distribution should send to WAF for inspection. For more information, see <a href=\"https://docs.aws.amazon.com/waf/latest/APIReference/API_RequestBodyAssociatedResourceTypeConfig.html#WAF-Type-RequestBodyAssociatedResourceTypeConfig-DefaultSizeInspectionLimit\">DefaultSizeInspectionLimit</a> in the <i>WAF API Reference</i>.</p> </li> </ul> </li> <li> <p>Example: <code>WAFV2</code> - Firewall Manager support for WAF managed rule group versioning </p> <p> <code>\"{\\\"type\\\":\\\"WAFV2\\\",\\\"preProcessRuleGroups\\\":[{\\\"ruleGroupArn\\\":null,\\\"overrideAction\\\":{\\\"type\\\":\\\"NONE\\\"},\\\"managedRuleGroupIdentifier\\\":{\\\"versionEnabled\\\":true,\\\"version\\\":\\\"Version_2.0\\\",\\\"vendorName\\\":\\\"AWS\\\",\\\"managedRuleGroupName\\\":\\\"AWSManagedRulesCommonRuleSet\\\"},\\\"ruleGroupType\\\":\\\"ManagedRuleGroup\\\",\\\"excludeRules\\\":[{\\\"name\\\":\\\"NoUserAgent_HEADER\\\"}]}],\\\"postProcessRuleGroups\\\":[],\\\"defaultAction\\\":{\\\"type\\\":\\\"ALLOW\\\"},\\\"overrideCustomerWebACLAssociation\\\":false,\\\"loggingConfiguration\\\":{\\\"logDestinationConfigs\\\":[\\\"arn:aws:firehose:us-west-2:12345678912:deliverystream/aws-waf-logs-fms-admin-destination\\\"],\\\"redactedFields\\\":[{\\\"redactedFieldType\\\":\\\"SingleHeader\\\",\\\"redactedFieldValue\\\":\\\"Cookies\\\"},{\\\"redactedFieldType\\\":\\\"Method\\\"}]}}\"</code> </p> <p> To use a specific version of a WAF managed rule group in your Firewall Manager policy, you must set <code>versionEnabled</code> to <code>true</code>, and set <code>version</code> to the version you'd like to use. If you don't set <code>versionEnabled</code> to <code>true</code>, or if you omit <code>versionEnabled</code>, then Firewall Manager uses the default version of the WAF managed rule group. </p> </li> <li> <p>Example: <code>WAFV2</code> - Logging configurations </p> <p> <code>\"{\\\"type\\\":\\\"WAFV2\\\",\\\"preProcessRuleGroups\\\":[{\\\"ruleGroupArn\\\":null, \\\"overrideAction\\\":{\\\"type\\\":\\\"NONE\\\"},\\\"managedRuleGroupIdentifier\\\": {\\\"versionEnabled\\\":null,\\\"version\\\":null,\\\"vendorName\\\":\\\"AWS\\\", \\\"managedRuleGroupName\\\":\\\"AWSManagedRulesAdminProtectionRuleSet\\\"} ,\\\"ruleGroupType\\\":\\\"ManagedRuleGroup\\\",\\\"excludeRules\\\":[], \\\"sampledRequestsEnabled\\\":true}],\\\"postProcessRuleGroups\\\":[], \\\"defaultAction\\\":{\\\"type\\\":\\\"ALLOW\\\"},\\\"customRequestHandling\\\" :null,\\\"customResponse\\\":null,\\\"overrideCustomerWebACLAssociation\\\" :false,\\\"loggingConfiguration\\\":{\\\"logDestinationConfigs\\\": [\\\"arn:aws:s3:::aws-waf-logs-example-bucket\\\"] ,\\\"redactedFields\\\":[],\\\"loggingFilterConfigs\\\":{\\\"defaultBehavior\\\":\\\"KEEP\\\", \\\"filters\\\":[{\\\"behavior\\\":\\\"KEEP\\\",\\\"requirement\\\":\\\"MEETS_ALL\\\", \\\"conditions\\\":[{\\\"actionCondition\\\":\\\"CAPTCHA\\\"},{\\\"actionCondition\\\": \\\"CHALLENGE\\\"}, {\\\"actionCondition\\\":\\\"EXCLUDED_AS_COUNT\\\"}]}]}},\\\"sampledRequestsEnabledForDefaultActions\\\":true}\"</code> </p> <p>Firewall Manager supports Amazon Kinesis Data Firehose and Amazon S3 as the <code>logDestinationConfigs</code> in your <code>loggingConfiguration</code>. For information about WAF logging configurations, see <a href=\"https://docs.aws.amazon.com/waf/latest/APIReference/API_LoggingConfiguration.html\">LoggingConfiguration</a> in the <i>WAF API Reference</i> </p> <p>In the <code>loggingConfiguration</code>, you can specify one <code>logDestinationConfigs</code>. Optionally provide as many as 20 <code>redactedFields</code>. The <code>RedactedFieldType</code> must be one of <code>URI</code>, <code>QUERY_STRING</code>, <code>HEADER</code>, or <code>METHOD</code>.</p> </li> <li> <p>Example: <code>WAF Classic</code> </p> <p> <code>\"{\\\"type\\\": \\\"WAF\\\", \\\"ruleGroups\\\": [{\\\"id\\\":\\\"12345678-1bcd-9012-efga-0987654321ab\\\", \\\"overrideAction\\\" : {\\\"type\\\": \\\"COUNT\\\"}}], \\\"defaultAction\\\": {\\\"type\\\": \\\"BLOCK\\\"}}\"</code> </p> </li> </ul>"
+          "documentation":"<p>Details about the service that are specific to the service type, in JSON format. </p> <ul> <li> <p>Example: <code>DNS_FIREWALL</code> </p> <p> <code>\"{\\\"type\\\":\\\"DNS_FIREWALL\\\",\\\"preProcessRuleGroups\\\":[{\\\"ruleGroupId\\\":\\\"rslvr-frg-1\\\",\\\"priority\\\":10}],\\\"postProcessRuleGroups\\\":[{\\\"ruleGroupId\\\":\\\"rslvr-frg-2\\\",\\\"priority\\\":9911}]}\"</code> </p> <note> <p>Valid values for <code>preProcessRuleGroups</code> are between 1 and 99. Valid values for <code>postProcessRuleGroups</code> are between 9901 and 10000.</p> </note> </li> <li> <p>Example: <code>IMPORT_NETWORK_FIREWALL</code> </p> <p> <code>\"{\\\"type\\\":\\\"IMPORT_NETWORK_FIREWALL\\\",\\\"awsNetworkFirewallConfig\\\":{\\\"networkFirewallStatelessRuleGroupReferences\\\":[{\\\"resourceARN\\\":\\\"arn:aws:network-firewall:us-west-2:000000000000:stateless-rulegroup\\/rg1\\\",\\\"priority\\\":1}],\\\"networkFirewallStatelessDefaultActions\\\":[\\\"aws:drop\\\"],\\\"networkFirewallStatelessFragmentDefaultActions\\\":[\\\"aws:pass\\\"],\\\"networkFirewallStatelessCustomActions\\\":[],\\\"networkFirewallStatefulRuleGroupReferences\\\":[{\\\"resourceARN\\\":\\\"arn:aws:network-firewall:us-west-2:aws-managed:stateful-rulegroup\\/ThreatSignaturesEmergingEventsStrictOrder\\\",\\\"priority\\\":8}],\\\"networkFirewallStatefulEngineOptions\\\":{\\\"ruleOrder\\\":\\\"STRICT_ORDER\\\"},\\\"networkFirewallStatefulDefaultActions\\\":[\\\"aws:drop_strict\\\"]}}\"</code> </p> <p> <code>\"{\\\"type\\\":\\\"DNS_FIREWALL\\\",\\\"preProcessRuleGroups\\\":[{\\\"ruleGroupId\\\":\\\"rslvr-frg-1\\\",\\\"priority\\\":10}],\\\"postProcessRuleGroups\\\":[{\\\"ruleGroupId\\\":\\\"rslvr-frg-2\\\",\\\"priority\\\":9911}]}\"</code> </p> <note> <p>Valid values for <code>preProcessRuleGroups</code> are between 1 and 99. Valid values for <code>postProcessRuleGroups</code> are between 9901 and 10000.</p> </note> </li> <li> <p>Example: <code>NETWORK_FIREWALL</code> - Centralized deployment model</p> <p> <code>\"{\\\"type\\\":\\\"NETWORK_FIREWALL\\\",\\\"awsNetworkFirewallConfig\\\":{\\\"networkFirewallStatelessRuleGroupReferences\\\":[{\\\"resourceARN\\\":\\\"arn:aws:network-firewall:us-east-1:123456789011:stateless-rulegroup/test\\\",\\\"priority\\\":1}],\\\"networkFirewallStatelessDefaultActions\\\":[\\\"aws:forward_to_sfe\\\",\\\"customActionName\\\"],\\\"networkFirewallStatelessFragmentDefaultActions\\\":[\\\"aws:forward_to_sfe\\\",\\\"customActionName\\\"],\\\"networkFirewallStatelessCustomActions\\\":[{\\\"actionName\\\":\\\"customActionName\\\",\\\"actionDefinition\\\":{\\\"publishMetricAction\\\":{\\\"dimensions\\\":[{\\\"value\\\":\\\"metricdimensionvalue\\\"}]}}}],\\\"networkFirewallStatefulRuleGroupReferences\\\":[{\\\"resourceARN\\\":\\\"arn:aws:network-firewall:us-east-1:123456789011:stateful-rulegroup/test\\\"}],\\\"networkFirewallLoggingConfiguration\\\":{\\\"logDestinationConfigs\\\":[{\\\"logDestinationType\\\":\\\"S3\\\",\\\"logType\\\":\\\"ALERT\\\",\\\"logDestination\\\":{\\\"bucketName\\\":\\\"s3-bucket-name\\\"}},{\\\"logDestinationType\\\":\\\"S3\\\",\\\"logType\\\":\\\"FLOW\\\",\\\"logDestination\\\":{\\\"bucketName\\\":\\\"s3-bucket-name\\\"}}],\\\"overrideExistingConfig\\\":true}},\\\"firewallDeploymentModel\\\":{\\\"centralizedFirewallDeploymentModel\\\":{\\\"centralizedFirewallOrchestrationConfig\\\":{\\\"inspectionVpcIds\\\":[{\\\"resourceId\\\":\\\"vpc-1234\\\",\\\"accountId\\\":\\\"123456789011\\\"}],\\\"firewallCreationConfig\\\":{\\\"endpointLocation\\\":{\\\"availabilityZoneConfigList\\\":[{\\\"availabilityZoneId\\\":null,\\\"availabilityZoneName\\\":\\\"us-east-1a\\\",\\\"allowedIPV4CidrList\\\":[\\\"10.0.0.0/28\\\"]}]}},\\\"allowedIPV4CidrList\\\":[]}}}}\"</code> </p> <p> To use the centralized deployment model, you must set <a href=\"https://docs.aws.amazon.com/fms/2018-01-01/APIReference/API_PolicyOption.html\">PolicyOption</a> to <code>CENTRALIZED</code>. </p> </li> <li> <p>Example: <code>NETWORK_FIREWALL</code> - Distributed deployment model with automatic Availability Zone configuration</p> <p> <code> \"{\\\"type\\\":\\\"NETWORK_FIREWALL\\\",\\\"networkFirewallStatelessRuleGroupReferences\\\":[{\\\"resourceARN\\\":\\\"arn:aws:network-firewall:us-east-1:123456789011:stateless-rulegroup/test\\\",\\\"priority\\\":1}],\\\"networkFirewallStatelessDefaultActions\\\":[\\\"aws:forward_to_sfe\\\",\\\"customActionName\\\"],\\\"networkFirewallStatelessFragmentDefaultActions\\\":[\\\"aws:forward_to_sfe\\\",\\\"customActionName\\\"],\\\"networkFirewallStatelessCustomActions\\\":[{\\\"actionName\\\":\\\"customActionName\\\",\\\"actionDefinition\\\":{\\\"publishMetricAction\\\":{\\\"dimensions\\\":[{\\\"value\\\":\\\"metricdimensionvalue\\\"}]}}}],\\\"networkFirewallStatefulRuleGroupReferences\\\":[{\\\"resourceARN\\\":\\\"arn:aws:network-firewall:us-east-1:123456789011:stateful-rulegroup/test\\\"}],\\\"networkFirewallOrchestrationConfig\\\":{\\\"singleFirewallEndpointPerVPC\\\":false,\\\"allowedIPV4CidrList\\\":[\\\"10.0.0.0/28\\\",\\\"192.168.0.0/28\\\"],\\\"routeManagementAction\\\":\\\"OFF\\\"},\\\"networkFirewallLoggingConfiguration\\\":{\\\"logDestinationConfigs\\\":[{\\\"logDestinationType\\\":\\\"S3\\\",\\\"logType\\\":\\\"ALERT\\\",\\\"logDestination\\\":{\\\"bucketName\\\":\\\"s3-bucket-name\\\"}},{\\\"logDestinationType\\\":\\\"S3\\\",\\\"logType\\\":\\\"FLOW\\\",\\\"logDestination\\\":{\\\"bucketName\\\":\\\"s3-bucket-name\\\"}}],\\\"overrideExistingConfig\\\":true}}\" </code> </p> <p> With automatic Availbility Zone configuration, Firewall Manager chooses which Availability Zones to create the endpoints in. To use the distributed deployment model, you must set <a href=\"https://docs.aws.amazon.com/fms/2018-01-01/APIReference/API_PolicyOption.html\">PolicyOption</a> to <code>NULL</code>. </p> </li> <li> <p>Example: <code>NETWORK_FIREWALL</code> - Distributed deployment model with automatic Availability Zone configuration and route management</p> <p> <code> \"{\\\"type\\\":\\\"NETWORK_FIREWALL\\\",\\\"networkFirewallStatelessRuleGroupReferences\\\":[{\\\"resourceARN\\\":\\\"arn:aws:network-firewall:us-east-1:123456789011:stateless-rulegroup/test\\\",\\\"priority\\\":1}],\\\"networkFirewallStatelessDefaultActions\\\":[\\\"aws:forward_to_sfe\\\",\\\"customActionName\\\"],\\\"networkFirewallStatelessFragmentDefaultActions\\\":[\\\"aws:forward_to_sfe\\\",\\\"customActionName\\\"],\\\"networkFirewallStatelessCustomActions\\\":[{\\\"actionName\\\":\\\"customActionName\\\",\\\"actionDefinition\\\":{\\\"publishMetricAction\\\":{\\\"dimensions\\\":[{\\\"value\\\":\\\"metricdimensionvalue\\\"}]}}}],\\\"networkFirewallStatefulRuleGroupReferences\\\":[{\\\"resourceARN\\\":\\\"arn:aws:network-firewall:us-east-1:123456789011:stateful-rulegroup/test\\\"}],\\\"networkFirewallOrchestrationConfig\\\":{\\\"singleFirewallEndpointPerVPC\\\":false,\\\"allowedIPV4CidrList\\\":[\\\"10.0.0.0/28\\\",\\\"192.168.0.0/28\\\"],\\\"routeManagementAction\\\":\\\"MONITOR\\\",\\\"routeManagementTargetTypes\\\":[\\\"InternetGateway\\\"]},\\\"networkFirewallLoggingConfiguration\\\":{\\\"logDestinationConfigs\\\":[{\\\"logDestinationType\\\":\\\"S3\\\",\\\"logType\\\":\\\"ALERT\\\",\\\"logDestination\\\":{\\\"bucketName\\\":\\\"s3-bucket-name\\\"}},{\\\"logDestinationType\\\":\\\"S3\\\",\\\"logType\\\": \\\"FLOW\\\",\\\"logDestination\\\":{\\\"bucketName\\\":\\\"s3-bucket-name\\\"}}],\\\"overrideExistingConfig\\\":true}}\" </code> </p> <p>To use the distributed deployment model, you must set <a href=\"https://docs.aws.amazon.com/fms/2018-01-01/APIReference/API_PolicyOption.html\">PolicyOption</a> to <code>NULL</code>. </p> </li> <li> <p>Example: <code>NETWORK_FIREWALL</code> - Distributed deployment model with custom Availability Zone configuration</p> <p> <code>\"{\\\"type\\\":\\\"NETWORK_FIREWALL\\\",\\\"networkFirewallStatelessRuleGroupReferences\\\":[{\\\"resourceARN\\\":\\\"arn:aws:network-firewall:us-east-1:123456789011:stateless-rulegroup/test\\\",\\\"priority\\\":1}],\\\"networkFirewallStatelessDefaultActions\\\":[\\\"aws:forward_to_sfe\\\",\\\"customActionName\\\"],\\\"networkFirewallStatelessFragmentDefaultActions\\\":[\\\"aws:forward_to_sfe\\\",\\\"fragmentcustomactionname\\\"],\\\"networkFirewallStatelessCustomActions\\\":[{\\\"actionName\\\":\\\"customActionName\\\", \\\"actionDefinition\\\":{\\\"publishMetricAction\\\":{\\\"dimensions\\\":[{\\\"value\\\":\\\"metricdimensionvalue\\\"}]}}},{\\\"actionName\\\":\\\"fragmentcustomactionname\\\",\\\"actionDefinition\\\":{\\\"publishMetricAction\\\":{\\\"dimensions\\\":[{\\\"value\\\":\\\"fragmentmetricdimensionvalue\\\"}]}}}],\\\"networkFirewallStatefulRuleGroupReferences\\\":[{\\\"resourceARN\\\":\\\"arn:aws:network-firewall:us-east-1:123456789011:stateful-rulegroup/test\\\"}],\\\"networkFirewallOrchestrationConfig\\\":{\\\"firewallCreationConfig\\\":{ \\\"endpointLocation\\\":{\\\"availabilityZoneConfigList\\\":[{\\\"availabilityZoneName\\\":\\\"us-east-1a\\\",\\\"allowedIPV4CidrList\\\":[\\\"10.0.0.0/28\\\"]},{\\\"availabilityZoneName\\\":\\\"us-east-1b\\\",\\\"allowedIPV4CidrList\\\":[ \\\"10.0.0.0/28\\\"]}]} },\\\"singleFirewallEndpointPerVPC\\\":false,\\\"allowedIPV4CidrList\\\":null,\\\"routeManagementAction\\\":\\\"OFF\\\",\\\"networkFirewallLoggingConfiguration\\\":{\\\"logDestinationConfigs\\\":[{\\\"logDestinationType\\\":\\\"S3\\\",\\\"logType\\\":\\\"ALERT\\\",\\\"logDestination\\\":{\\\"bucketName\\\":\\\"s3-bucket-name\\\"}},{\\\"logDestinationType\\\":\\\"S3\\\",\\\"logType\\\":\\\"FLOW\\\",\\\"logDestination\\\":{\\\"bucketName\\\":\\\"s3-bucket-name\\\"}}],\\\"overrideExistingConfig\\\":boolean}}\" </code> </p> <p> With custom Availability Zone configuration, you define which specific Availability Zones to create endpoints in by configuring <code>firewallCreationConfig</code>. To configure the Availability Zones in <code>firewallCreationConfig</code>, specify either the <code>availabilityZoneName</code> or <code>availabilityZoneId</code> parameter, not both parameters. </p> <p>To use the distributed deployment model, you must set <a href=\"https://docs.aws.amazon.com/fms/2018-01-01/APIReference/API_PolicyOption.html\">PolicyOption</a> to <code>NULL</code>. </p> </li> <li> <p>Example: <code>NETWORK_FIREWALL</code> - Distributed deployment model with custom Availability Zone configuration and route management</p> <p> <code>\"{\\\"type\\\":\\\"NETWORK_FIREWALL\\\",\\\"networkFirewallStatelessRuleGroupReferences\\\":[{\\\"resourceARN\\\":\\\"arn:aws:network-firewall:us-east-1:123456789011:stateless-rulegroup/test\\\",\\\"priority\\\":1}],\\\"networkFirewallStatelessDefaultActions\\\":[\\\"aws:forward_to_sfe\\\",\\\"customActionName\\\"],\\\"networkFirewallStatelessFragmentDefaultActions\\\":[\\\"aws:forward_to_sfe\\\",\\\"fragmentcustomactionname\\\"],\\\"networkFirewallStatelessCustomActions\\\":[{\\\"actionName\\\":\\\"customActionName\\\",\\\"actionDefinition\\\":{\\\"publishMetricAction\\\":{\\\"dimensions\\\":[{\\\"value\\\":\\\"metricdimensionvalue\\\"}]}}},{\\\"actionName\\\":\\\"fragmentcustomactionname\\\",\\\"actionDefinition\\\":{\\\"publishMetricAction\\\":{\\\"dimensions\\\":[{\\\"value\\\":\\\"fragmentmetricdimensionvalue\\\"}]}}}],\\\"networkFirewallStatefulRuleGroupReferences\\\":[{\\\"resourceARN\\\":\\\"arn:aws:network-firewall:us-east-1:123456789011:stateful-rulegroup/test\\\"}],\\\"networkFirewallOrchestrationConfig\\\":{\\\"firewallCreationConfig\\\":{\\\"endpointLocation\\\":{\\\"availabilityZoneConfigList\\\":[{\\\"availabilityZoneName\\\":\\\"us-east-1a\\\",\\\"allowedIPV4CidrList\\\":[\\\"10.0.0.0/28\\\"]},{\\\"availabilityZoneName\\\":\\\"us-east-1b\\\",\\\"allowedIPV4CidrList\\\":[\\\"10.0.0.0/28\\\"]}]}},\\\"singleFirewallEndpointPerVPC\\\":false,\\\"allowedIPV4CidrList\\\":null,\\\"routeManagementAction\\\":\\\"MONITOR\\\",\\\"routeManagementTargetTypes\\\":[\\\"InternetGateway\\\"],\\\"routeManagementConfig\\\":{\\\"allowCrossAZTrafficIfNoEndpoint\\\":true}},\\\"networkFirewallLoggingConfiguration\\\":{\\\"logDestinationConfigs\\\":[{\\\"logDestinationType\\\":\\\"S3\\\",\\\"logType\\\":\\\"ALERT\\\",\\\"logDestination\\\":{\\\"bucketName\\\":\\\"s3-bucket-name\\\"}},{\\\"logDestinationType\\\":\\\"S3\\\",\\\"logType\\\":\\\"FLOW\\\",\\\"logDestination\\\":{\\\"bucketName\\\":\\\"s3-bucket-name\\\"}}],\\\"overrideExistingConfig\\\":boolean}}\" </code> </p> <p>To use the distributed deployment model, you must set <a href=\"https://docs.aws.amazon.com/fms/2018-01-01/APIReference/API_PolicyOption.html\">PolicyOption</a> to <code>NULL</code>. </p> </li> <li> <p>Example: <code>SECURITY_GROUPS_COMMON</code> </p> <p> <code>\"{\\\"type\\\":\\\"SECURITY_GROUPS_COMMON\\\",\\\"revertManualSecurityGroupChanges\\\":false,\\\"exclusiveResourceSecurityGroupManagement\\\":false, \\\"applyToAllEC2InstanceENIs\\\":false,\\\"securityGroups\\\":[{\\\"id\\\":\\\" sg-000e55995d61a06bd\\\"}]}\"</code> </p> </li> <li> <p>Example: <code>SECURITY_GROUPS_COMMON</code> - Security group tag distribution </p> <p> <code>\"\"{\\\"type\\\":\\\"SECURITY_GROUPS_COMMON\\\",\\\"securityGroups\\\":[{\\\"id\\\":\\\"sg-000e55995d61a06bd\\\"}],\\\"revertManualSecurityGroupChanges\\\":true,\\\"exclusiveResourceSecurityGroupManagement\\\":false,\\\"applyToAllEC2InstanceENIs\\\":false,\\\"includeSharedVPC\\\":false,\\\"enableTagDistribution\\\":true}\"\"</code> </p> <p> Firewall Manager automatically distributes tags from the primary group to the security groups created by this policy. To use security group tag distribution, you must also set <code>revertManualSecurityGroupChanges</code> to <code>true</code>, otherwise Firewall Manager won't be able to create the policy. When you enable <code>revertManualSecurityGroupChanges</code>, Firewall Manager identifies and reports when the security groups created by this policy become non-compliant. </p> <p> Firewall Manager won't distribute system tags added by Amazon Web Services services into the replica security groups. System tags begin with the <code>aws:</code> prefix. </p> </li> <li> <p>Example: Shared VPCs. Apply the preceding policy to resources in shared VPCs as well as to those in VPCs that the account owns </p> <p> <code>\"{\\\"type\\\":\\\"SECURITY_GROUPS_COMMON\\\",\\\"revertManualSecurityGroupChanges\\\":false,\\\"exclusiveResourceSecurityGroupManagement\\\":false, \\\"applyToAllEC2InstanceENIs\\\":false,\\\"includeSharedVPC\\\":true,\\\"securityGroups\\\":[{\\\"id\\\":\\\" sg-000e55995d61a06bd\\\"}]}\"</code> </p> </li> <li> <p>Example: <code>SECURITY_GROUPS_CONTENT_AUDIT</code> </p> <p> <code>\"{\\\"type\\\":\\\"SECURITY_GROUPS_CONTENT_AUDIT\\\",\\\"securityGroups\\\":[{\\\"id\\\":\\\"sg-000e55995d61a06bd\\\"}],\\\"securityGroupAction\\\":{\\\"type\\\":\\\"ALLOW\\\"}}\"</code> </p> <p>The security group action for content audit can be <code>ALLOW</code> or <code>DENY</code>. For <code>ALLOW</code>, all in-scope security group rules must be within the allowed range of the policy's security group rules. For <code>DENY</code>, all in-scope security group rules must not contain a value or a range that matches a rule value or range in the policy security group.</p> </li> <li> <p>Example: <code>SECURITY_GROUPS_USAGE_AUDIT</code> </p> <p> <code>\"{\\\"type\\\":\\\"SECURITY_GROUPS_USAGE_AUDIT\\\",\\\"deleteUnusedSecurityGroups\\\":true,\\\"coalesceRedundantSecurityGroups\\\":true}\"</code> </p> </li> <li> <p>Example: <code>SHIELD_ADVANCED</code> with web ACL management</p> <p> <code>\"{\\\"type\\\":\\\"SHIELD_ADVANCED\\\",\\\"optimizeUnassociatedWebACL\\\":true}\"</code> </p> <p>If you set <code>optimizeUnassociatedWebACL</code> to <code>true</code>, Firewall Manager creates web ACLs in accounts within the policy scope if the web ACLs will be used by at least one resource. Firewall Manager creates web ACLs in the accounts within policy scope only if the web ACLs will be used by at least one resource. If at any time an account comes into policy scope, Firewall Manager automatically creates a web ACL in the account if at least one resource will use the web ACL.</p> <p>Upon enablement, Firewall Manager performs a one-time cleanup of unused web ACLs in your account. The cleanup process can take several hours. If a resource leaves policy scope after Firewall Manager creates a web ACL, Firewall Manager doesn't disassociate the resource from the web ACL. If you want Firewall Manager to clean up the web ACL, you must first manually disassociate the resources from the web ACL, and then enable the manage unused web ACLs option in your policy.</p> <p>If you set <code>optimizeUnassociatedWebACL</code> to <code>false</code>, and Firewall Manager automatically creates an empty web ACL in each account that's within policy scope.</p> </li> <li> <p>Specification for <code>SHIELD_ADVANCED</code> for Amazon CloudFront distributions </p> <p> <code>\"{\\\"type\\\":\\\"SHIELD_ADVANCED\\\",\\\"automaticResponseConfiguration\\\": {\\\"automaticResponseStatus\\\":\\\"ENABLED|IGNORED|DISABLED\\\", \\\"automaticResponseAction\\\":\\\"BLOCK|COUNT\\\"}, \\\"overrideCustomerWebaclClassic\\\":true|false, \\\"optimizeUnassociatedWebACL\\\":true|false}\"</code> </p> <p>For example: <code>\"{\\\"type\\\":\\\"SHIELD_ADVANCED\\\",\\\"automaticResponseConfiguration\\\": {\\\"automaticResponseStatus\\\":\\\"ENABLED\\\", \\\"automaticResponseAction\\\":\\\"COUNT\\\"}}\"</code> </p> <p>The default value for <code>automaticResponseStatus</code> is <code>IGNORED</code>. The value for <code>automaticResponseAction</code> is only required when <code>automaticResponseStatus</code> is set to <code>ENABLED</code>. The default value for <code>overrideCustomerWebaclClassic</code> is <code>false</code>.</p> <p>For other resource types that you can protect with a Shield Advanced policy, this <code>ManagedServiceData</code> configuration is an empty string.</p> </li> <li> <p>Example: <code>THIRD_PARTY_FIREWALL</code> </p> <p>Replace <code>THIRD_PARTY_FIREWALL_NAME</code> with the name of the third-party firewall.</p> <p> <code>\"{ \"type\":\"THIRD_PARTY_FIREWALL\", \"thirdPartyFirewall\":\"THIRD_PARTY_FIREWALL_NAME\", \"thirdPartyFirewallConfig\":{ \"thirdPartyFirewallPolicyList\":[\"global-1\"] }, \"firewallDeploymentModel\":{ \"distributedFirewallDeploymentModel\":{ \"distributedFirewallOrchestrationConfig\":{ \"firewallCreationConfig\":{ \"endpointLocation\":{ \"availabilityZoneConfigList\":[ { \"availabilityZoneName\":\"${AvailabilityZone}\" } ] } }, \"allowedIPV4CidrList\":[ ] } } } }\"</code> </p> </li> <li> <p>Example: <code>WAFV2</code> - Account takeover prevention, Bot Control managed rule groups, optimize unassociated web ACL, and rule action override </p> <p> <code>\"{\\\"type\\\":\\\"WAFV2\\\",\\\"preProcessRuleGroups\\\":[{\\\"ruleGroupArn\\\":null,\\\"overrideAction\\\":{\\\"type\\\":\\\"NONE\\\"},\\\"managedRuleGroupIdentifier\\\":{\\\"versionEnabled\\\":null,\\\"version\\\":null,\\\"vendorName\\\":\\\"AWS\\\",\\\"managedRuleGroupName\\\":\\\"AWSManagedRulesATPRuleSet\\\",\\\"managedRuleGroupConfigs\\\":[{\\\"awsmanagedRulesATPRuleSet\\\":{\\\"loginPath\\\":\\\"/loginpath\\\",\\\"requestInspection\\\":{\\\"payloadType\\\":\\\"FORM_ENCODED|JSON\\\",\\\"usernameField\\\":{\\\"identifier\\\":\\\"/form/username\\\"},\\\"passwordField\\\":{\\\"identifier\\\":\\\"/form/password\\\"}}}}]},\\\"ruleGroupType\\\":\\\"ManagedRuleGroup\\\",\\\"excludeRules\\\":[],\\\"sampledRequestsEnabled\\\":true},{\\\"ruleGroupArn\\\":null,\\\"overrideAction\\\":{\\\"type\\\":\\\"NONE\\\"},\\\"managedRuleGroupIdentifier\\\":{\\\"versionEnabled\\\":null,\\\"version\\\":null,\\\"vendorName\\\":\\\"AWS\\\",\\\"managedRuleGroupName\\\":\\\"AWSManagedRulesBotControlRuleSet\\\",\\\"managedRuleGroupConfigs\\\":[{\\\"awsmanagedRulesBotControlRuleSet\\\":{\\\"inspectionLevel\\\":\\\"TARGETED|COMMON\\\"}}]},\\\"ruleGroupType\\\":\\\"ManagedRuleGroup\\\",\\\"excludeRules\\\":[],\\\"sampledRequestsEnabled\\\":true,\\\"ruleActionOverrides\\\":[{\\\"name\\\":\\\"Rule1\\\",\\\"actionToUse\\\":{\\\"allow|block|count|captcha|challenge\\\":{}}},{\\\"name\\\":\\\"Rule2\\\",\\\"actionToUse\\\":{\\\"allow|block|count|captcha|challenge\\\":{}}}]}],\\\"postProcessRuleGroups\\\":[],\\\"defaultAction\\\":{\\\"type\\\":\\\"ALLOW\\\"},\\\"customRequestHandling\\\":null,\\\"customResponse\\\":null,\\\"overrideCustomerWebACLAssociation\\\":false,\\\"loggingConfiguration\\\":null,\\\"sampledRequestsEnabledForDefaultActions\\\":true,\\\"optimizeUnassociatedWebACL\\\":true}\"</code> </p> <ul> <li> <p>Bot Control - For information about <code>AWSManagedRulesBotControlRuleSet</code> managed rule groups, see <a href=\"https://docs.aws.amazon.com/waf/latest/APIReference/API_AWSManagedRulesBotControlRuleSet.html\">AWSManagedRulesBotControlRuleSet</a> in the <i>WAF API Reference</i>.</p> </li> <li> <p>Fraud Control account takeover prevention (ATP) - For information about the properties available for <code>AWSManagedRulesATPRuleSet</code> managed rule groups, see <a href=\"https://docs.aws.amazon.com/waf/latest/APIReference/API_AWSManagedRulesATPRuleSet.html\">AWSManagedRulesATPRuleSet</a> in the <i>WAF API Reference</i>.</p> </li> <li> <p>Optimize unassociated web ACL - If you set <code>optimizeUnassociatedWebACL</code> to <code>true</code>, Firewall Manager creates web ACLs in accounts within the policy scope if the web ACLs will be used by at least one resource. Firewall Manager creates web ACLs in the accounts within policy scope only if the web ACLs will be used by at least one resource. If at any time an account comes into policy scope, Firewall Manager automatically creates a web ACL in the account if at least one resource will use the web ACL.</p> <p>Upon enablement, Firewall Manager performs a one-time cleanup of unused web ACLs in your account. The cleanup process can take several hours. If a resource leaves policy scope after Firewall Manager creates a web ACL, Firewall Manager disassociates the resource from the web ACL, but won't clean up the unused web ACL. Firewall Manager only cleans up unused web ACLs when you first enable management of unused web ACLs in a policy.</p> <p>If you set <code>optimizeUnassociatedWebACL</code> to <code>false</code> Firewall Manager doesn't manage unused web ACLs, and Firewall Manager automatically creates an empty web ACL in each account that's within policy scope.</p> </li> <li> <p>Rule action overrides - Firewall Manager supports rule action overrides only for managed rule groups. To configure a <code>RuleActionOverrides</code> add the <code>Name</code> of the rule to override, and <code>ActionToUse</code>, which is the new action to use for the rule. For information about using rule action override, see <a href=\"https://docs.aws.amazon.com/waf/latest/APIReference/API_RuleActionOverride.html\">RuleActionOverride</a> in the <i>WAF API Reference</i>.</p> </li> </ul> </li> <li> <p>Example: <code>WAFV2</code> - <code>CAPTCHA</code> and <code>Challenge</code> configs </p> <p> <code>\"{\\\"type\\\":\\\"WAFV2\\\",\\\"preProcessRuleGroups\\\":[{\\\"ruleGroupArn\\\":null,\\\"overrideAction\\\":{\\\"type\\\":\\\"NONE\\\"},\\\"managedRuleGroupIdentifier\\\":{\\\"versionEnabled\\\":null,\\\"version\\\":null,\\\"vendorName\\\":\\\"AWS\\\",\\\"managedRuleGroupName\\\":\\\"AWSManagedRulesAdminProtectionRuleSet\\\"},\\\"ruleGroupType\\\":\\\"ManagedRuleGroup\\\",\\\"excludeRules\\\":[],\\\"sampledRequestsEnabled\\\":true}],\\\"postProcessRuleGroups\\\":[],\\\"defaultAction\\\":{\\\"type\\\":\\\"ALLOW\\\"},\\\"customRequestHandling\\\":null,\\\"customResponse\\\":null,\\\"overrideCustomerWebACLAssociation\\\":false,\\\"loggingConfiguration\\\":null,\\\"sampledRequestsEnabledForDefaultActions\\\":true,\\\"captchaConfig\\\":{\\\"immunityTimeProperty\\\":{\\\"immunityTime\\\":500}},\\\"challengeConfig\\\":{\\\"immunityTimeProperty\\\":{\\\"immunityTime\\\":800}},\\\"tokenDomains\\\":[\\\"google.com\\\",\\\"amazon.com\\\"],\\\"associationConfig\\\":{\\\"requestBody\\\":{\\\"CLOUDFRONT\\\":{\\\"defaultSizeInspectionLimit\\\":\\\"KB_16\\\"}}}}\"</code> </p> <ul> <li> <p> <code>CAPTCHA</code> and <code>Challenge</code> configs - If you update the policy's values for <code>associationConfig</code>, <code>captchaConfig</code>, <code>challengeConfig</code>, or <code>tokenDomains</code>, Firewall Manager will overwrite your local web ACLs to contain the new value(s). However, if you don't update the policy's <code>associationConfig</code>, <code>captchaConfig</code>, <code>challengeConfig</code>, or <code>tokenDomains</code> values, the values in your local web ACLs will remain unchanged. For information about association configs, see <a href=\"https://docs.aws.amazon.com/waf/latest/APIReference/API_AssociationConfig.html\">AssociationConfig</a>. For information about CAPTCHA and Challenge configs, see <a href=\"https://docs.aws.amazon.com/waf/latest/APIReference/API_CaptchaConfig.html\">CaptchaConfig</a> and <a href=\"https://docs.aws.amazon.com/waf/latest/APIReference/API_ChallengeConfig.html\">ChallengeConfig</a> in the <i>WAF API Reference</i>.</p> </li> <li> <p> <code>defaultSizeInspectionLimit</code> - Specifies the maximum size of the web request body component that an associated Amazon CloudFront distribution should send to WAF for inspection. For more information, see <a href=\"https://docs.aws.amazon.com/waf/latest/APIReference/API_RequestBodyAssociatedResourceTypeConfig.html#WAF-Type-RequestBodyAssociatedResourceTypeConfig-DefaultSizeInspectionLimit\">DefaultSizeInspectionLimit</a> in the <i>WAF API Reference</i>.</p> </li> </ul> </li> <li> <p>Example: <code>WAFV2</code> - Firewall Manager support for WAF managed rule group versioning </p> <p> <code>\"{\\\"type\\\":\\\"WAFV2\\\",\\\"preProcessRuleGroups\\\":[{\\\"ruleGroupArn\\\":null,\\\"overrideAction\\\":{\\\"type\\\":\\\"NONE\\\"},\\\"managedRuleGroupIdentifier\\\":{\\\"versionEnabled\\\":true,\\\"version\\\":\\\"Version_2.0\\\",\\\"vendorName\\\":\\\"AWS\\\",\\\"managedRuleGroupName\\\":\\\"AWSManagedRulesCommonRuleSet\\\"},\\\"ruleGroupType\\\":\\\"ManagedRuleGroup\\\",\\\"excludeRules\\\":[{\\\"name\\\":\\\"NoUserAgent_HEADER\\\"}]}],\\\"postProcessRuleGroups\\\":[],\\\"defaultAction\\\":{\\\"type\\\":\\\"ALLOW\\\"},\\\"overrideCustomerWebACLAssociation\\\":false,\\\"loggingConfiguration\\\":{\\\"logDestinationConfigs\\\":[\\\"arn:aws:firehose:us-west-2:12345678912:deliverystream/aws-waf-logs-fms-admin-destination\\\"],\\\"redactedFields\\\":[{\\\"redactedFieldType\\\":\\\"SingleHeader\\\",\\\"redactedFieldValue\\\":\\\"Cookies\\\"},{\\\"redactedFieldType\\\":\\\"Method\\\"}]}}\"</code> </p> <p> To use a specific version of a WAF managed rule group in your Firewall Manager policy, you must set <code>versionEnabled</code> to <code>true</code>, and set <code>version</code> to the version you'd like to use. If you don't set <code>versionEnabled</code> to <code>true</code>, or if you omit <code>versionEnabled</code>, then Firewall Manager uses the default version of the WAF managed rule group. </p> </li> <li> <p>Example: <code>WAFV2</code> - Logging configurations </p> <p> <code>\"{\\\"type\\\":\\\"WAFV2\\\",\\\"preProcessRuleGroups\\\":[{\\\"ruleGroupArn\\\":null, \\\"overrideAction\\\":{\\\"type\\\":\\\"NONE\\\"},\\\"managedRuleGroupIdentifier\\\": {\\\"versionEnabled\\\":null,\\\"version\\\":null,\\\"vendorName\\\":\\\"AWS\\\", \\\"managedRuleGroupName\\\":\\\"AWSManagedRulesAdminProtectionRuleSet\\\"} ,\\\"ruleGroupType\\\":\\\"ManagedRuleGroup\\\",\\\"excludeRules\\\":[], \\\"sampledRequestsEnabled\\\":true}],\\\"postProcessRuleGroups\\\":[], \\\"defaultAction\\\":{\\\"type\\\":\\\"ALLOW\\\"},\\\"customRequestHandling\\\" :null,\\\"customResponse\\\":null,\\\"overrideCustomerWebACLAssociation\\\" :false,\\\"loggingConfiguration\\\":{\\\"logDestinationConfigs\\\": [\\\"arn:aws:s3:::aws-waf-logs-example-bucket\\\"] ,\\\"redactedFields\\\":[],\\\"loggingFilterConfigs\\\":{\\\"defaultBehavior\\\":\\\"KEEP\\\", \\\"filters\\\":[{\\\"behavior\\\":\\\"KEEP\\\",\\\"requirement\\\":\\\"MEETS_ALL\\\", \\\"conditions\\\":[{\\\"actionCondition\\\":\\\"CAPTCHA\\\"},{\\\"actionCondition\\\": \\\"CHALLENGE\\\"}, {\\\"actionCondition\\\":\\\"EXCLUDED_AS_COUNT\\\"}]}]}},\\\"sampledRequestsEnabledForDefaultActions\\\":true}\"</code> </p> <p>Firewall Manager supports Amazon Kinesis Data Firehose and Amazon S3 as the <code>logDestinationConfigs</code> in your <code>loggingConfiguration</code>. For information about WAF logging configurations, see <a href=\"https://docs.aws.amazon.com/waf/latest/APIReference/API_LoggingConfiguration.html\">LoggingConfiguration</a> in the <i>WAF API Reference</i> </p> <p>In the <code>loggingConfiguration</code>, you can specify one <code>logDestinationConfigs</code>. Optionally provide as many as 20 <code>redactedFields</code>. The <code>RedactedFieldType</code> must be one of <code>URI</code>, <code>QUERY_STRING</code>, <code>HEADER</code>, or <code>METHOD</code>.</p> </li> <li> <p>Example: <code>WAF Classic</code> </p> <p> <code>\"{\\\"type\\\": \\\"WAF\\\", \\\"ruleGroups\\\": [{\\\"id\\\":\\\"12345678-1bcd-9012-efga-0987654321ab\\\", \\\"overrideAction\\\" : {\\\"type\\\": \\\"COUNT\\\"}}], \\\"defaultAction\\\": {\\\"type\\\": \\\"BLOCK\\\"}}\"</code> </p> </li> </ul>"
         },
         "PolicyOption":{
           "shape":"PolicyOption",
-          "documentation":"<p>Contains the Network Firewall firewall policy options to configure a centralized deployment model.</p>"
+          "documentation":"<p>Contains the settings to configure a network ACL policy, a Network Firewall firewall policy deployment model, or a third-party firewall policy.</p>"
         }
       },
       "documentation":"<p>Details about the security service that is being used to protect the resources.</p>"
@@ -3878,7 +4226,8 @@
         "NETWORK_FIREWALL",
         "DNS_FIREWALL",
         "THIRD_PARTY_FIREWALL",
-        "IMPORT_NETWORK_FIREWALL"
+        "IMPORT_NETWORK_FIREWALL",
+        "NETWORK_ACL_COMMON"
       ]
     },
     "SecurityServiceTypeList":{
@@ -4254,7 +4603,8 @@
         "BLACK_HOLE_ROUTE_DETECTED_IN_FIREWALL_SUBNET",
         "RESOURCE_MISSING_DNS_FIREWALL",
         "ROUTE_HAS_OUT_OF_SCOPE_ENDPOINT",
-        "FIREWALL_SUBNET_MISSING_VPCE_ENDPOINT"
+        "FIREWALL_SUBNET_MISSING_VPCE_ENDPOINT",
+        "INVALID_NETWORK_ACL_ENTRY"
       ]
     },
     "ViolationTarget":{

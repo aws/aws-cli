@@ -26,6 +26,12 @@ EXTRA_RUNTIME_DEPS = [
     ('virtualenv', '16.7.8'),
     ('jmespath', '0.10.0'),
 ]
+PINNED_RUNTIME_DEPS = [
+    # The CLI has a relaxed pin for colorama, but versions >0.4.5
+    # require extra build time dependencies. We are pinning it to
+    # a version that does not need those.
+    ('colorama', '0.4.5'),
+]
 BUILDTIME_DEPS = [
     ('setuptools-scm', '3.3.3'),
     ('wheel', '0.33.6'),
@@ -78,12 +84,17 @@ def download_package_tarballs(dirname, packages):
             ))
 
 
-def download_cli_deps(scratch_dir):
+def download_cli_deps(scratch_dir, packages):
+    # pip download will always download a more recent version of a package
+    # even if one exists locally. The list of packages supplied in `packages`
+    # forces the use of a specific runtime dependency.
     awscli_dir = os.path.dirname(
         os.path.dirname(os.path.abspath(__file__)))
+    pinned_packages = " ".join(
+        f"{name}=={version}" for (name, version) in packages
+    )
     with cd(scratch_dir):
-        run('pip download %s %s' % (
-            PIP_DOWNLOAD_ARGS, awscli_dir))
+        run(f"pip download {PIP_DOWNLOAD_ARGS} {pinned_packages} {awscli_dir}")
 
 
 def _remove_cli_zip(scratch_dir):
@@ -169,7 +180,7 @@ def main():
         setup_dir,
         packages=BUILDTIME_DEPS,
     )
-    download_cli_deps(package_dir)
+    download_cli_deps(package_dir, packages=PINNED_RUNTIME_DEPS)
     add_cli_sdist(package_dir)
     create_bootstrap_script(scratch_dir)
     zip_filename = zip_dir(scratch_dir)

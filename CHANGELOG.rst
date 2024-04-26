@@ -2,6 +2,23 @@
 CHANGELOG
 =========
 
+2.15.42
+=======
+
+* api-change:``ivs``: Bug Fix: IVS does not support arns with the `svs` prefix
+* api-change:``fms``: AWS Firewall Manager adds support for network ACL policies to manage Amazon Virtual Private Cloud (VPC) network access control lists (ACLs) for accounts in your organization.
+* api-change:``stepfunctions``: Add new ValidateStateMachineDefinition operation, which performs syntax checking on the definition of a Amazon States Language (ASL) state machine.
+* api-change:``gamelift``: Amazon GameLift releases container fleets support for public preview. Deploy Linux-based containerized game server software for hosting on Amazon GameLift.
+* api-change:``ec2``: Launching capability for customers to enable or disable automatic assignment of public IPv4 addresses to their network interface
+* api-change:``ssm``: Add SSM DescribeInstanceProperties API to public AWS SDK.
+* api-change:``entityresolution``: Support Batch Unique IDs Deletion.
+* api-change:``emr-containers``: EMRonEKS Service support for SecurityConfiguration enforcement for Spark Jobs.
+* api-change:``datasync``: This change allows users to disable and enable the schedules associated with their tasks.
+* api-change:``appsync``: UpdateGraphQLAPI documentation update and datasource introspection secret arn update
+* api-change:``ivs-realtime``: Bug Fix: IVS Real Time does not support ARNs using the `svs` prefix.
+* api-change:``rds``: Updates Amazon RDS documentation for setting local time zones for RDS for Db2 DB instances.
+
+
 2.15.41
 =======
 

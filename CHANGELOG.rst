@@ -7342,6 +7342,18 @@ CHANGELOG
 * feature:region: Added support for pulling the default region from IMDS when running on an EC2 instance. See `#3680 <https://github.com/aws/aws-cli/issues/3680>`__.
 * feature:s3: Added support for the ``--copy-props`` parameter to the high level S3 commands. This new parameter configures how additional metadata, tags, etc. should be copied for S3 to S3 transfers. See `#4840 <https://github.com/aws/aws-cli/issues/4840>`__.
 * feature:wizard: Added support for AWS CLI Wizards. See `#3752 <https://github.com/aws/aws-cli/issues/3752>`__.
+=======
+1.32.93
+=======
+
+* api-change:``codepipeline``: Add ability to manually and automatically roll back a pipeline stage to a previously successful execution.
+* api-change:``cognito-idp``: Add LimitExceededException to SignUp errors
+* api-change:``connectcampaigns``: This release adds support for specifying if Answering Machine should wait for prompt sound.
+* api-change:``marketplace-entitlement``: Releasing minor endpoint updates.
+* api-change:``oam``: This release introduces support for Source Accounts to define which Metrics and Logs to share with the Monitoring Account
+* api-change:``rds``: SupportsLimitlessDatabase field added to describe-db-engine-versions to indicate whether the DB engine version supports Aurora Limitless Database.
+* api-change:``support``: Releasing minor endpoint updates.
+* enhancement:dependency: Bump upper bound of colorama to <0.4.7; fixes `#7086 <https://github.com/aws/aws-cli/issues/7086>`__
 
 
 1.32.92

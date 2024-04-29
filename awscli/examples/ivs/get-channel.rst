@@ -16,6 +16,10 @@ Output::
             "playbackRestrictionPolicyArn": "",
             "preset": "",
             "recordingConfigurationArn": "arn:aws:ivs:us-west-2:123456789012:recording-configuration/ABCD12cdEFgh",
+            "srt": {
+                "endpoint": "a1b2c3d4e5f6.srt.live-video.net",
+                "passphrase": "AB1C2defGHijkLMNo3PqQRstUvwxyzaBCDEfghh4ijklMN5opqrStuVWxyzAbCDEfghIJ"
+            },
             "ingestEndpoint": "a1b2c3d4e5f6.global-contribute.live-video.net",
             "insecureIngest": false,
             "playbackUrl": "https://a1b2c3d4e5f6.us-west-2.playback.live-video.net/api/video/v1/us-west-2.123456789012.channel.abcdEFGH.m3u8",

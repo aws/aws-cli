@@ -5,6 +5,7 @@
     "endpointPrefix":"oam",
     "jsonVersion":"1.1",
     "protocol":"rest-json",
+    "protocols":["rest-json"],
     "serviceFullName":"CloudWatch Observability Access Manager",
     "serviceId":"OAM",
     "signatureVersion":"v4",
@@ -28,7 +29,7 @@
         {"shape":"ServiceQuotaExceededException"},
         {"shape":"InvalidParameterException"}
       ],
-      "documentation":"<p>Creates a link between a source account and a sink that you have created in a monitoring account.</p> <p>Before you create a link, you must create a sink in the monitoring account and create a sink policy in that account. The sink policy must permit the source account to link to it. You can grant permission to source accounts by granting permission to an entire organization or to individual accounts.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/OAM/latest/APIReference/API_CreateSink.html\">CreateSink</a> and <a href=\"https://docs.aws.amazon.com/OAM/latest/APIReference/API_PutSinkPolicy.html\">PutSinkPolicy</a>.</p> <p>Each monitoring account can be linked to as many as 100,000 source accounts.</p> <p>Each source account can be linked to as many as five monitoring accounts.</p>"
+      "documentation":"<p>Creates a link between a source account and a sink that you have created in a monitoring account. After the link is created, data is sent from the source account to the monitoring account. When you create a link, you can optionally specify filters that specify which metric namespaces and which log groups are shared from the source account to the monitoring account.</p> <p>Before you create a link, you must create a sink in the monitoring account and create a sink policy in that account. The sink policy must permit the source account to link to it. You can grant permission to source accounts by granting permission to an entire organization or to individual accounts.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/OAM/latest/APIReference/API_CreateSink.html\">CreateSink</a> and <a href=\"https://docs.aws.amazon.com/OAM/latest/APIReference/API_PutSinkPolicy.html\">PutSinkPolicy</a>.</p> <p>Each monitoring account can be linked to as many as 100,000 source accounts.</p> <p>Each source account can be linked to as many as five monitoring accounts.</p>"
     },
     "CreateSink":{
       "name":"CreateSink",
@@ -46,7 +47,7 @@
         {"shape":"ServiceQuotaExceededException"},
         {"shape":"InvalidParameterException"}
       ],
-      "documentation":"<p>Use this to create a <i>sink</i> in the current account, so that it can be used as a monitoring account in CloudWatch cross-account observability. A sink is a resource that represents an attachment point in a monitoring account. Source accounts can link to the sink to send observability data.</p> <p>After you create a sink, you must create a sink policy that allows source accounts to attach to it. For more information, see <a href=\"https://docs.aws.amazon.com/OAM/latest/APIReference/API_PutSinkPolicy.html\">PutSinkPolicy</a>.</p> <p>Each account can contain one sink. If you delete a sink, you can then create a new one in that account.</p>"
+      "documentation":"<p>Use this to create a <i>sink</i> in the current account, so that it can be used as a monitoring account in CloudWatch cross-account observability. A sink is a resource that represents an attachment point in a monitoring account. Source accounts can link to the sink to send observability data.</p> <p>After you create a sink, you must create a sink policy that allows source accounts to attach to it. For more information, see <a href=\"https://docs.aws.amazon.com/OAM/latest/APIReference/API_PutSinkPolicy.html\">PutSinkPolicy</a>.</p> <p>Each account can contain one sink per Region. If you delete a sink, you can then create a new one in that Region.</p>"
     },
     "DeleteLink":{
       "name":"DeleteLink",
@@ -261,13 +262,13 @@
         {"shape":"InvalidParameterException"},
         {"shape":"ResourceNotFoundException"}
       ],
-      "documentation":"<p>Use this operation to change what types of data are shared from a source account to its linked monitoring account sink. You can't change the sink or change the monitoring account with this operation.</p> <p>To update the list of tags associated with the sink, use <a href=\"https://docs.aws.amazon.com/OAM/latest/APIReference/API_TagResource.html\">TagResource</a>.</p>"
+      "documentation":"<p>Use this operation to change what types of data are shared from a source account to its linked monitoring account sink. You can't change the sink or change the monitoring account with this operation.</p> <p>When you update a link, you can optionally specify filters that specify which metric namespaces and which log groups are shared from the source account to the monitoring account.</p> <p>To update the list of tags associated with the sink, use <a href=\"https://docs.aws.amazon.com/OAM/latest/APIReference/API_TagResource.html\">TagResource</a>.</p>"
     }
   },
   "shapes":{
     "Arn":{
       "type":"string",
-      "pattern":"arn:(\\w|-)+:oam:.+:.+:.+.*"
+      "pattern":"^arn:(\\w|-)+:oam:.+:.+:.+"
     },
     "ConflictException":{
       "type":"structure",
@@ -298,6 +299,10 @@
         "LabelTemplate":{
           "shape":"LabelTemplate",
           "documentation":"<p>Specify a friendly human-readable name to use to identify this source account when you are viewing data from it in the monitoring account.</p> <p>You can use a custom label or use the following variables:</p> <ul> <li> <p> <code>$AccountName</code> is the name of the account</p> </li> <li> <p> <code>$AccountEmail</code> is the globally unique email address of the account</p> </li> <li> <p> <code>$AccountEmailNoDomain</code> is the email address of the account without the domain name</p> </li> </ul>"
+        },
+        "LinkConfiguration":{
+          "shape":"LinkConfiguration",
+          "documentation":"<p>Use this structure to optionally create filters that specify that only some metric namespaces or log groups are to be shared from the source account to the monitoring account.</p>"
         },
         "ResourceTypes":{
           "shape":"ResourceTypesInput",
@@ -331,6 +336,10 @@
         "LabelTemplate":{
           "shape":"String",
           "documentation":"<p>The exact label template that you specified, with the variables not resolved.</p>"
+        },
+        "LinkConfiguration":{
+          "shape":"LinkConfiguration",
+          "documentation":"<p>This structure includes filters that specify which metric namespaces and which log groups are shared from the source account to the monitoring account.</p>"
         },
         "ResourceTypes":{
           "shape":"ResourceTypesOutput",
@@ -440,6 +449,10 @@
           "shape":"String",
           "documentation":"<p>The exact label template that was specified when the link was created, with the template variables not resolved.</p>"
         },
+        "LinkConfiguration":{
+          "shape":"LinkConfiguration",
+          "documentation":"<p>This structure includes filters that specify which metric namespaces and which log groups are shared from the source account to the monitoring account.</p>"
+        },
         "ResourceTypes":{
           "shape":"ResourceTypesOutput",
           "documentation":"<p>The resource types supported by this link.</p>"
@@ -498,6 +511,10 @@
     "GetSinkPolicyOutput":{
       "type":"structure",
       "members":{
+        "Policy":{
+          "shape":"String",
+          "documentation":"<p>The policy that you specified, in JSON format.</p>"
+        },
         "SinkArn":{
           "shape":"String",
           "documentation":"<p>The ARN of the sink.</p>"
@@ -505,10 +522,6 @@
         "SinkId":{
           "shape":"String",
           "documentation":"<p>The random ID string that Amazon Web Services generated as part of the sink ARN.</p>"
-        },
-        "Policy":{
-          "shape":"String",
-          "documentation":"<p>The policy that you specified, in JSON format.</p>"
         }
       }
     },
@@ -531,13 +544,13 @@
     "InvalidParameterException":{
       "type":"structure",
       "members":{
-        "message":{"shape":"String"},
         "amznErrorType":{
           "shape":"String",
           "documentation":"<p>The name of the exception.</p>",
           "location":"header",
           "locationName":"x-amzn-ErrorType"
-        }
+        },
+        "message":{"shape":"String"}
       },
       "documentation":"<p>A parameter is specified incorrectly.</p>",
       "error":{
@@ -550,6 +563,20 @@
       "type":"string",
       "max":64,
       "min":1
+    },
+    "LinkConfiguration":{
+      "type":"structure",
+      "members":{
+        "LogGroupConfiguration":{
+          "shape":"LogGroupConfiguration",
+          "documentation":"<p>Use this structure to filter which log groups are to send log events from the source account to the monitoring account.</p>"
+        },
+        "MetricConfiguration":{
+          "shape":"MetricConfiguration",
+          "documentation":"<p>Use this structure to filter which metric namespaces are to be shared from the source account to the monitoring account.</p>"
+        }
+      },
+      "documentation":"<p>Use this structure to optionally create filters that specify that only some metric namespaces or log groups are to be shared from the source account to the monitoring account.</p>"
     },
     "ListAttachedLinksInput":{
       "type":"structure",
@@ -750,16 +777,48 @@
         }
       }
     },
+    "LogGroupConfiguration":{
+      "type":"structure",
+      "required":["Filter"],
+      "members":{
+        "Filter":{
+          "shape":"LogsFilter",
+          "documentation":"<p>Use this field to specify which log groups are to share their log events with the monitoring account. Use the term <code>LogGroupName</code> and one or more of the following operands. Use single quotation marks (') around log group names. The matching of log group names is case sensitive. Each filter has a limit of five conditional operands. Conditional operands are <code>AND</code> and <code>OR</code>.</p> <ul> <li> <p> <code>=</code> and <code>!=</code> </p> </li> <li> <p> <code>AND</code> </p> </li> <li> <p> <code>OR</code> </p> </li> <li> <p> <code>LIKE</code> and <code>NOT LIKE</code>. These can be used only as prefix searches. Include a <code>%</code> at the end of the string that you want to search for and include.</p> </li> <li> <p> <code>IN</code> and <code>NOT IN</code>, using parentheses <code>( )</code> </p> </li> </ul> <p>Examples:</p> <ul> <li> <p> <code>LogGroupName IN ('This-Log-Group', 'Other-Log-Group')</code> includes only the log groups with names <code>This-Log-Group</code> and <code>Other-Log-Group</code>.</p> </li> <li> <p> <code>LogGroupName NOT IN ('Private-Log-Group', 'Private-Log-Group-2')</code> includes all log groups except the log groups with names <code>Private-Log-Group</code> and <code>Private-Log-Group-2</code>.</p> </li> <li> <p> <code>LogGroupName LIKE 'aws/lambda/%' OR LogGroupName LIKE 'AWSLogs%'</code> includes all log groups that have names that start with <code>aws/lambda/</code> or <code>AWSLogs</code>.</p> </li> </ul> <note> <p>If you are updating a link that uses filters, you can specify <code>*</code> as the only value for the <code>filter</code> parameter to delete the filter and share all log groups with the monitoring account.</p> </note>"
+        }
+      },
+      "documentation":"<p>This structure contains the <code>Filter</code> parameter which you can use to specify which log groups are to share log events from this source account to the monitoring account.</p>"
+    },
+    "LogsFilter":{
+      "type":"string",
+      "max":2000,
+      "min":1
+    },
+    "MetricConfiguration":{
+      "type":"structure",
+      "required":["Filter"],
+      "members":{
+        "Filter":{
+          "shape":"MetricsFilter",
+          "documentation":"<p>Use this field to specify which metrics are to be shared with the monitoring account. Use the term <code>Namespace</code> and one or more of the following operands. Use single quotation marks (') around namespace names. The matching of namespace names is case sensitive. Each filter has a limit of five conditional operands. Conditional operands are <code>AND</code> and <code>OR</code>.</p> <ul> <li> <p> <code>=</code> and <code>!=</code> </p> </li> <li> <p> <code>AND</code> </p> </li> <li> <p> <code>OR</code> </p> </li> <li> <p> <code>LIKE</code> and <code>NOT LIKE</code>. These can be used only as prefix searches. Include a <code>%</code> at the end of the string that you want to search for and include.</p> </li> <li> <p> <code>IN</code> and <code>NOT IN</code>, using parentheses <code>( )</code> </p> </li> </ul> <p>Examples:</p> <ul> <li> <p> <code>Namespace NOT LIKE 'AWS/%'</code> includes only namespaces that don't start with <code>AWS/</code>, such as custom namespaces.</p> </li> <li> <p> <code>Namespace IN ('AWS/EC2', 'AWS/ELB', 'AWS/S3')</code> includes only the metrics in the EC2, Elastic Load Balancing, and Amazon S3 namespaces. </p> </li> <li> <p> <code>Namespace = 'AWS/EC2' OR Namespace NOT LIKE 'AWS/%'</code> includes only the EC2 namespace and your custom namespaces.</p> </li> </ul> <note> <p>If you are updating a link that uses filters, you can specify <code>*</code> as the only value for the <code>filter</code> parameter to delete the filter and share all metric namespaces with the monitoring account.</p> </note>"
+        }
+      },
+      "documentation":"<p>This structure contains the <code>Filter</code> parameter which you can use to specify which metric namespaces are to be shared from this source account to the monitoring account.</p>"
+    },
+    "MetricsFilter":{
+      "type":"string",
+      "max":2000,
+      "min":1
+    },
     "MissingRequiredParameterException":{
       "type":"structure",
       "members":{
-        "message":{"shape":"String"},
         "amznErrorType":{
           "shape":"String",
           "documentation":"<p>The name of the exception.</p>",
           "location":"header",
           "locationName":"x-amzn-ErrorType"
-        }
+        },
+        "message":{"shape":"String"}
       },
       "documentation":"<p>A required parameter is missing from the request.</p>",
       "error":{
@@ -772,23 +831,27 @@
     "PutSinkPolicyInput":{
       "type":"structure",
       "required":[
-        "SinkIdentifier",
-        "Policy"
+        "Policy",
+        "SinkIdentifier"
       ],
       "members":{
-        "SinkIdentifier":{
-          "shape":"ResourceIdentifier",
-          "documentation":"<p>The ARN of the sink to attach this policy to.</p>"
-        },
         "Policy":{
           "shape":"SinkPolicy",
           "documentation":"<p>The JSON policy to use. If you are updating an existing policy, the entire existing policy is replaced by what you specify here.</p> <p>The policy must be in JSON string format with quotation marks escaped and no newlines.</p> <p>For examples of different types of policies, see the <b>Examples</b> section on this page.</p>"
+        },
+        "SinkIdentifier":{
+          "shape":"ResourceIdentifier",
+          "documentation":"<p>The ARN of the sink to attach this policy to.</p>"
         }
       }
     },
     "PutSinkPolicyOutput":{
       "type":"structure",
       "members":{
+        "Policy":{
+          "shape":"String",
+          "documentation":"<p>The policy that you specified.</p>"
+        },
         "SinkArn":{
           "shape":"String",
           "documentation":"<p>The ARN of the sink.</p>"
@@ -796,16 +859,12 @@
         "SinkId":{
           "shape":"String",
           "documentation":"<p>The random ID string that Amazon Web Services generated as part of the sink ARN.</p>"
-        },
-        "Policy":{
-          "shape":"String",
-          "documentation":"<p>The policy that you specified.</p>"
         }
       }
     },
     "ResourceIdentifier":{
       "type":"string",
-      "pattern":"[a-zA-Z0-9][a-zA-Z0-9_:\\.\\-\\/]{0,2047}"
+      "pattern":"^[a-zA-Z0-9][a-zA-Z0-9_:\\.\\-\\/]{0,2047}$"
     },
     "ResourceNotFoundException":{
       "type":"structure",
@@ -865,7 +924,7 @@
     },
     "SinkName":{
       "type":"string",
-      "pattern":"[a-zA-Z0-9_\\.\\-]{1,255}"
+      "pattern":"^[a-zA-Z0-9_\\.\\-]{1,255}$"
     },
     "SinkPolicy":{"type":"string"},
     "String":{"type":"string"},
@@ -968,6 +1027,10 @@
           "shape":"ResourceIdentifier",
           "documentation":"<p>The ARN of the link that you want to update.</p>"
         },
+        "LinkConfiguration":{
+          "shape":"LinkConfiguration",
+          "documentation":"<p>Use this structure to filter which metric namespaces and which log groups are to be shared from the source account to the monitoring account.</p>"
+        },
         "ResourceTypes":{
           "shape":"ResourceTypesInput",
           "documentation":"<p>An array of strings that define which types of data that the source account will send to the monitoring account.</p> <p>Your input here replaces the current set of data types that are shared.</p>"
@@ -992,6 +1055,10 @@
         "LabelTemplate":{
           "shape":"LabelTemplate",
           "documentation":"<p>The exact label template that was specified when the link was created, with the template variables not resolved.</p>"
+        },
+        "LinkConfiguration":{
+          "shape":"LinkConfiguration",
+          "documentation":"<p>This structure includes filters that specify which metric namespaces and which log groups are shared from the source account to the monitoring account.</p>"
         },
         "ResourceTypes":{
           "shape":"ResourceTypesOutput",

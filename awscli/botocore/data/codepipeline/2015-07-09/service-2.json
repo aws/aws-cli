@@ -5,6 +5,7 @@
     "endpointPrefix":"codepipeline",
     "jsonVersion":"1.1",
     "protocol":"json",
+    "protocols":["json"],
     "serviceAbbreviation":"CodePipeline",
     "serviceFullName":"AWS CodePipeline",
     "serviceId":"CodePipeline",
@@ -514,6 +515,25 @@
         {"shape":"NotLatestPipelineExecutionException"}
       ],
       "documentation":"<p>You can retry a stage that has failed without having to run a pipeline again from the beginning. You do this by either retrying the failed actions in a stage or by retrying all actions in the stage starting from the first action in the stage. When you retry the failed actions in a stage, all actions that are still in progress continue working, and failed actions are triggered again. When you retry a failed stage from the first action in the stage, the stage cannot have any actions in progress. Before a stage can be retried, it must either have all actions failed or some actions failed and some succeeded.</p>"
+    },
+    "RollbackStage":{
+      "name":"RollbackStage",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"RollbackStageInput"},
+      "output":{"shape":"RollbackStageOutput"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"ConflictException"},
+        {"shape":"PipelineNotFoundException"},
+        {"shape":"PipelineExecutionNotFoundException"},
+        {"shape":"PipelineExecutionOutdatedException"},
+        {"shape":"StageNotFoundException"},
+        {"shape":"UnableToRollbackStageException"}
+      ],
+      "documentation":"<p>Rolls back a stage execution.</p>"
     },
     "StartPipelineExecution":{
       "name":"StartPipelineExecution",
@@ -2079,6 +2099,13 @@
       },
       "documentation":"<p>The interaction or event that started a pipeline execution.</p>"
     },
+    "ExecutionType":{
+      "type":"string",
+      "enum":[
+        "STANDARD",
+        "ROLLBACK"
+      ]
+    },
     "ExecutorConfiguration":{
       "type":"structure",
       "members":{
@@ -2102,6 +2129,16 @@
     },
     "ExternalExecutionId":{"type":"string"},
     "ExternalExecutionSummary":{"type":"string"},
+    "FailureConditions":{
+      "type":"structure",
+      "members":{
+        "result":{
+          "shape":"Result",
+          "documentation":"<p>The specified result for when the failure conditions are met, such as rolling back the stage.</p>"
+        }
+      },
+      "documentation":"<p>The configuration that specifies the result, such as rollback, to occur upon stage failure. </p>"
+    },
     "FailureDetails":{
       "type":"structure",
       "required":[
@@ -2841,6 +2878,10 @@
           "shape":"MaxResults",
           "documentation":"<p>The maximum number of results to return in a single call. To retrieve the remaining results, make another call with the returned nextToken value. Pipeline history is limited to the most recent 12 months, based on pipeline execution start times. Default value is 100.</p>"
         },
+        "filter":{
+          "shape":"PipelineExecutionFilter",
+          "documentation":"<p>The pipeline execution to filter on.</p>"
+        },
         "nextToken":{
           "shape":"NextToken",
           "documentation":"<p>The token that was returned from the previous <code>ListPipelineExecutions</code> call, which can be used to return the next set of pipeline executions in the list.</p>"
@@ -3200,9 +3241,27 @@
         "executionMode":{
           "shape":"ExecutionMode",
           "documentation":"<p>The method that the pipeline will use to handle multiple executions. The default mode is SUPERSEDED.</p>"
+        },
+        "executionType":{
+          "shape":"ExecutionType",
+          "documentation":"<p>The type of the pipeline execution.</p>"
+        },
+        "rollbackMetadata":{
+          "shape":"PipelineRollbackMetadata",
+          "documentation":"<p>The metadata about the execution pertaining to stage rollback.</p>"
         }
       },
       "documentation":"<p>Represents information about an execution of a pipeline.</p>"
+    },
+    "PipelineExecutionFilter":{
+      "type":"structure",
+      "members":{
+        "succeededInStage":{
+          "shape":"SucceededInStageFilter",
+          "documentation":"<p>Filter for pipeline executions where the stage was successful in the current pipeline version.</p>"
+        }
+      },
+      "documentation":"<p>The pipeline execution to filter on.</p>"
     },
     "PipelineExecutionId":{
       "type":"string",
@@ -3221,6 +3280,14 @@
         "message":{"shape":"Message"}
       },
       "documentation":"<p>Unable to stop the pipeline execution. The execution might already be in a <code>Stopped</code> state, or it might no longer be in progress.</p>",
+      "exception":true
+    },
+    "PipelineExecutionOutdatedException":{
+      "type":"structure",
+      "members":{
+        "message":{"shape":"Message"}
+      },
+      "documentation":"<p>The specified pipeline execution is outdated and cannot be used as a target pipeline execution for rollback.</p>",
       "exception":true
     },
     "PipelineExecutionStatus":{
@@ -3247,6 +3314,10 @@
           "shape":"PipelineExecutionStatus",
           "documentation":"<p>The status of the pipeline execution.</p> <ul> <li> <p>InProgress: The pipeline execution is currently running.</p> </li> <li> <p>Stopped: The pipeline execution was manually stopped. For more information, see <a href=\"https://docs.aws.amazon.com/codepipeline/latest/userguide/concepts.html#concepts-executions-stopped\">Stopped Executions</a>.</p> </li> <li> <p>Stopping: The pipeline execution received a request to be manually stopped. Depending on the selected stop mode, the execution is either completing or abandoning in-progress actions. For more information, see <a href=\"https://docs.aws.amazon.com/codepipeline/latest/userguide/concepts.html#concepts-executions-stopped\">Stopped Executions</a>.</p> </li> <li> <p>Succeeded: The pipeline execution was completed successfully. </p> </li> <li> <p>Superseded: While this pipeline execution was waiting for the next stage to be completed, a newer pipeline execution advanced and continued through the pipeline instead. For more information, see <a href=\"https://docs.aws.amazon.com/codepipeline/latest/userguide/concepts.html#concepts-superseded\">Superseded Executions</a>.</p> </li> <li> <p>Failed: The pipeline execution was not completed successfully.</p> </li> </ul>"
         },
+        "statusSummary":{
+          "shape":"PipelineExecutionStatusSummary",
+          "documentation":"<p>Status summary for the pipeline.</p>"
+        },
         "startTime":{
           "shape":"Timestamp",
           "documentation":"<p>The date and time when the pipeline execution began, in timestamp format.</p>"
@@ -3270,6 +3341,14 @@
         "executionMode":{
           "shape":"ExecutionMode",
           "documentation":"<p>The method that the pipeline will use to handle multiple executions. The default mode is SUPERSEDED.</p>"
+        },
+        "executionType":{
+          "shape":"ExecutionType",
+          "documentation":"<p>Type of the pipeline execution.</p>"
+        },
+        "rollbackMetadata":{
+          "shape":"PipelineRollbackMetadata",
+          "documentation":"<p>The metadata for the stage execution to be rolled back.</p>"
         }
       },
       "documentation":"<p>Summary information about a pipeline execution.</p>"
@@ -3323,6 +3402,16 @@
       },
       "documentation":"<p>The pipeline was specified in an invalid format or cannot be found.</p>",
       "exception":true
+    },
+    "PipelineRollbackMetadata":{
+      "type":"structure",
+      "members":{
+        "rollbackTargetPipelineExecutionId":{
+          "shape":"PipelineExecutionId",
+          "documentation":"<p>The pipeline execution ID to which the stage will be rolled back.</p>"
+        }
+      },
+      "documentation":"<p>The metadata for the stage execution to be rolled back.</p>"
     },
     "PipelineStageDeclarationList":{
       "type":"list",
@@ -3814,6 +3903,10 @@
       "documentation":"<p>The resource was specified in an invalid format.</p>",
       "exception":true
     },
+    "Result":{
+      "type":"string",
+      "enum":["ROLLBACK"]
+    },
     "RetryStageExecutionInput":{
       "type":"structure",
       "required":[
@@ -3871,6 +3964,38 @@
       "type":"string",
       "max":1024,
       "pattern":"arn:aws(-[\\w]+)*:iam::[0-9]{12}:role/.*"
+    },
+    "RollbackStageInput":{
+      "type":"structure",
+      "required":[
+        "pipelineName",
+        "stageName",
+        "targetPipelineExecutionId"
+      ],
+      "members":{
+        "pipelineName":{
+          "shape":"PipelineName",
+          "documentation":"<p>The name of the pipeline for which the stage will be rolled back. </p>"
+        },
+        "stageName":{
+          "shape":"StageName",
+          "documentation":"<p>The name of the stage in the pipeline to be rolled back. </p>"
+        },
+        "targetPipelineExecutionId":{
+          "shape":"PipelineExecutionId",
+          "documentation":"<p>The pipeline execution ID for the stage to be rolled back to. </p>"
+        }
+      }
+    },
+    "RollbackStageOutput":{
+      "type":"structure",
+      "required":["pipelineExecutionId"],
+      "members":{
+        "pipelineExecutionId":{
+          "shape":"PipelineExecutionId",
+          "documentation":"<p>The execution ID of the pipeline execution for the stage that has been rolled back.</p>"
+        }
+      }
     },
     "S3ArtifactLocation":{
       "type":"structure",
@@ -4029,6 +4154,10 @@
         "actions":{
           "shape":"StageActionDeclarationList",
           "documentation":"<p>The actions included in a stage.</p>"
+        },
+        "onFailure":{
+          "shape":"FailureConditions",
+          "documentation":"<p>The method to use when a stage has not completed successfully. For example, configuring this field for rollback will roll back a failed stage automatically to the last successful pipeline execution in the stage.</p>"
         }
       },
       "documentation":"<p>Represents information about a stage and its definition.</p>"
@@ -4047,6 +4176,10 @@
         "status":{
           "shape":"StageExecutionStatus",
           "documentation":"<p>The status of the stage, or for a completed stage, the last status of the stage.</p> <note> <p>A status of cancelled means that the pipeline’s definition was updated before the stage execution could be completed.</p> </note>"
+        },
+        "type":{
+          "shape":"ExecutionType",
+          "documentation":"<p>The type of pipeline execution for the stage, such as a rollback pipeline execution.</p>"
         }
       },
       "documentation":"<p>Represents information about the run of a stage.</p>"
@@ -4221,6 +4354,16 @@
       "max":200
     },
     "String":{"type":"string"},
+    "SucceededInStageFilter":{
+      "type":"structure",
+      "members":{
+        "stageName":{
+          "shape":"StageName",
+          "documentation":"<p>The name of the stage for filtering for pipeline executions where the stage was successful in the current pipeline version.</p>"
+        }
+      },
+      "documentation":"<p>Filter for pipeline executions that have successfully completed the stage in the current pipeline version.</p>"
+    },
     "Tag":{
       "type":"structure",
       "required":[
@@ -4404,8 +4547,18 @@
         "Webhook",
         "CloudWatchEvent",
         "PutActionRevision",
-        "WebhookV2"
+        "WebhookV2",
+        "ManualRollback",
+        "AutomatedRollback"
       ]
+    },
+    "UnableToRollbackStageException":{
+      "type":"structure",
+      "members":{
+        "message":{"shape":"String"}
+      },
+      "documentation":"<p>Unable to roll back the stage. The cause might be if the pipeline version has changed since the target pipeline execution was deployed, the stage is currently running, or an incorrect target pipeline execution ID was provided.</p>",
+      "exception":true
     },
     "UntagResourceInput":{
       "type":"structure",

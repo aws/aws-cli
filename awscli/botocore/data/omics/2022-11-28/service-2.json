@@ -52,7 +52,7 @@
         {"shape":"ResourceNotFoundException"},
         {"shape":"AccessDeniedException"}
       ],
-      "documentation":"<p> Accepts a share for an analytics store. </p>",
+      "documentation":"<p>Accept a resource share request.</p>",
       "endpoint":{"hostPrefix":"analytics-"}
     },
     "BatchDeleteReadSet":{
@@ -303,7 +303,7 @@
         {"shape":"ResourceNotFoundException"},
         {"shape":"AccessDeniedException"}
       ],
-      "documentation":"<p> Creates a share offer that can be accepted outside the account by a subscriber. The share is created by the owner and accepted by the principal subscriber. </p>",
+      "documentation":"<p>Creates a cross-account shared resource. The resource owner makes an offer to share the resource with the principal subscriber (an AWS user with a different account than the resource owner).</p> <p>The following resources support cross-account sharing:</p> <ul> <li> <p>Healthomics variant stores</p> </li> <li> <p>Healthomics annotation stores</p> </li> <li> <p>Private workflows</p> </li> </ul>",
       "endpoint":{"hostPrefix":"analytics-"}
     },
     "CreateVariantStore":{
@@ -519,7 +519,7 @@
         {"shape":"ResourceNotFoundException"},
         {"shape":"AccessDeniedException"}
       ],
-      "documentation":"<p> Deletes a share of an analytics store. </p>",
+      "documentation":"<p>Deletes a resource share. If you are the resource owner, the subscriber will no longer have access to the shared resource. If you are the subscriber, this operation deletes your access to the share.</p>",
       "endpoint":{"hostPrefix":"analytics-"},
       "idempotent":true
     },
@@ -825,7 +825,7 @@
         {"shape":"AccessDeniedException"},
         {"shape":"RequestTimeoutException"}
       ],
-      "documentation":"<p>Gets information about a workflow run.</p>",
+      "documentation":"<p>Gets information about a workflow run.</p> <p>If a workflow is shared with you, you cannot export information about the run.</p>",
       "endpoint":{"hostPrefix":"workflows-"}
     },
     "GetRunGroup":{
@@ -910,7 +910,7 @@
         {"shape":"ResourceNotFoundException"},
         {"shape":"AccessDeniedException"}
       ],
-      "documentation":"<p> Retrieves the metadata for a share. </p>",
+      "documentation":"<p>Retrieves the metadata for the specified resource share.</p>",
       "endpoint":{"hostPrefix":"analytics-"}
     },
     "GetVariantImportJob":{
@@ -970,7 +970,7 @@
         {"shape":"AccessDeniedException"},
         {"shape":"RequestTimeoutException"}
       ],
-      "documentation":"<p>Gets information about a workflow.</p>",
+      "documentation":"<p>Gets information about a workflow.</p> <p>If a workflow is shared with you, you cannot export the workflow.</p>",
       "endpoint":{"hostPrefix":"workflows-"}
     },
     "ListAnnotationImportJobs":{
@@ -1316,7 +1316,7 @@
         {"shape":"ResourceNotFoundException"},
         {"shape":"AccessDeniedException"}
       ],
-      "documentation":"<p> Lists all shares associated with an account. </p>",
+      "documentation":"<p>Retrieves the resource shares associated with an account. Use the filter parameter to retrieve a specific subset of the shares.</p>",
       "endpoint":{"hostPrefix":"analytics-"}
     },
     "ListTagsForResource":{
@@ -1524,7 +1524,7 @@
         {"shape":"AccessDeniedException"},
         {"shape":"RequestTimeoutException"}
       ],
-      "documentation":"<p>Starts a workflow run. To duplicate a run, specify the run's ID and a role ARN. The remaining parameters are copied from the previous run.</p> <p>The total number of runs in your account is subject to a quota per Region. To avoid needing to delete runs manually, you can set the retention mode to <code>REMOVE</code>. Runs with this setting are deleted automatically when the run quoata is exceeded.</p>",
+      "documentation":"<p>Starts a workflow run. To duplicate a run, specify the run's ID and a role ARN. The remaining parameters are copied from the previous run.</p> <p>StartRun will not support re-run for a workflow that is shared with you.</p> <p>The total number of runs in your account is subject to a quota per Region. To avoid needing to delete runs manually, you can set the retention mode to <code>REMOVE</code>. Runs with this setting are deleted automatically when the run quoata is exceeded.</p> <p>By default, the run uses STATIC storage. For STATIC storage, set the <code>storageCapacity</code> field. You can set the storage type to DYNAMIC. You do not set <code>storageCapacity</code>, because HealthOmics dynamically scales the storage up or down as required. For more information about static and dynamic storage, see <a href=\"https://docs.aws.amazon.com/omics/latest/dev/Using-workflows.html\">Running workflows</a> in the <i>AWS HealthOmics User Guide</i>.</p>",
       "endpoint":{"hostPrefix":"workflows-"}
     },
     "StartVariantImportJob":{
@@ -1754,7 +1754,7 @@
       "members":{
         "shareId":{
           "shape":"String",
-          "documentation":"<p> The ID for a share offer for analytics store data. </p>",
+          "documentation":"<p>The ID of the resource share.</p>",
           "location":"uri",
           "locationName":"shareId"
         }
@@ -1765,7 +1765,7 @@
       "members":{
         "status":{
           "shape":"ShareStatus",
-          "documentation":"<p> The status of an analytics store share. </p>"
+          "documentation":"<p>The status of the resource share.</p>"
         }
       }
     },
@@ -2814,15 +2814,15 @@
       "members":{
         "resourceArn":{
           "shape":"String",
-          "documentation":"<p> The resource ARN for the analytics store to be shared. </p>"
+          "documentation":"<p>The ARN of the resource to be shared.</p>"
         },
         "principalSubscriber":{
           "shape":"String",
-          "documentation":"<p> The principal subscriber is the account being given access to the analytics store data through the share offer. </p>"
+          "documentation":"<p>The principal subscriber is the account being offered shared access to the resource. </p>"
         },
         "shareName":{
           "shape":"ShareName",
-          "documentation":"<p> A name given to the share. </p>"
+          "documentation":"<p>A name that the owner defines for the share.</p>"
         }
       }
     },
@@ -2831,15 +2831,15 @@
       "members":{
         "shareId":{
           "shape":"String",
-          "documentation":"<p> An ID generated for the share. </p>"
+          "documentation":"<p>The ID that HealthOmics generates for the share.</p>"
         },
         "status":{
           "shape":"ShareStatus",
-          "documentation":"<p> The status of a share. </p>"
+          "documentation":"<p>The status of the share.</p>"
         },
         "shareName":{
           "shape":"ShareName",
-          "documentation":"<p> A name given to the share. </p>"
+          "documentation":"<p>The name of the share.</p>"
         }
       }
     },
@@ -2934,7 +2934,7 @@
         },
         "storageCapacity":{
           "shape":"CreateWorkflowRequestStorageCapacityInteger",
-          "documentation":"<p>A storage capacity for the workflow in gibibytes.</p>"
+          "documentation":"<p>The storage capacity for the workflow in gibibytes.</p>"
         },
         "tags":{
           "shape":"TagMap",
@@ -3141,7 +3141,7 @@
       "members":{
         "shareId":{
           "shape":"String",
-          "documentation":"<p> The ID for the share request to be deleted. </p>",
+          "documentation":"<p>The ID for the resource share to be deleted.</p>",
           "location":"uri",
           "locationName":"shareId"
         }
@@ -3152,7 +3152,7 @@
       "members":{
         "status":{
           "shape":"ShareStatus",
-          "documentation":"<p> The status of the share being deleted. </p>"
+          "documentation":"<p>The status of the share being deleted.</p>"
         }
       }
     },
@@ -3416,14 +3416,18 @@
       "members":{
         "resourceArns":{
           "shape":"ArnList",
-          "documentation":"<p> The Amazon Resource Number (Arn) for an analytics store. </p>"
+          "documentation":"<p>Filter based on the Amazon Resource Number (ARN) of the resource. You can specify up to 10 values.</p>"
         },
         "status":{
           "shape":"StatusList",
-          "documentation":"<p> The status of an annotation store version. </p>"
+          "documentation":"<p>Filter based on the resource status. You can specify up to 10 values.</p>"
+        },
+        "type":{
+          "shape":"TypeList",
+          "documentation":"<p>The type of resources to be filtered. You can specify one or more of the resource types.</p>"
         }
       },
-      "documentation":"<p> Use filters to focus the returned annotation store versions on a specific parameter, such as the status of the annotation store. </p>"
+      "documentation":"<p>Use filters to return a subset of resources. You can define filters for specific parameters, such as the resource status.</p>"
     },
     "FormatOptions":{
       "type":"structure",
@@ -4464,7 +4468,7 @@
         },
         "storageCapacity":{
           "shape":"GetRunResponseStorageCapacityInteger",
-          "documentation":"<p>The run's storage capacity in gigabytes.</p>"
+          "documentation":"<p>The run's storage capacity in gibibytes. For dynamic storage, after the run has completed, this value is the maximum amount of storage used during the run.</p>"
         },
         "outputUri":{
           "shape":"RunOutputUri",
@@ -4525,6 +4529,14 @@
         "runOutputUri":{
           "shape":"RunOutputUri",
           "documentation":"<p>The destination for workflow outputs.</p>"
+        },
+        "storageType":{
+          "shape":"StorageType",
+          "documentation":"<p>The run's storage type.</p>"
+        },
+        "workflowOwnerId":{
+          "shape":"WorkflowOwnerId",
+          "documentation":"<p>The ID of the workflow owner.</p>"
         }
       }
     },
@@ -4697,7 +4709,7 @@
       "members":{
         "shareId":{
           "shape":"String",
-          "documentation":"<p> The generated ID for a share. </p>",
+          "documentation":"<p>The ID of the share.</p>",
           "location":"uri",
           "locationName":"shareId"
         }
@@ -4708,7 +4720,7 @@
       "members":{
         "share":{
           "shape":"ShareDetails",
-          "documentation":"<p> An analytic store share details object. contains status, resourceArn, ownerId, etc. </p>"
+          "documentation":"<p>A resource share details object. The object includes the status, the resourceArn, and ownerId.</p>"
         }
       }
     },
@@ -4884,6 +4896,12 @@
           "documentation":"<p>The export format for the workflow.</p>",
           "location":"querystring",
           "locationName":"export"
+        },
+        "workflowOwnerId":{
+          "shape":"WorkflowOwnerId",
+          "documentation":"<p>The ID of the workflow owner.</p>",
+          "location":"querystring",
+          "locationName":"workflowOwnerId"
         }
       }
     },
@@ -4936,7 +4954,7 @@
         },
         "storageCapacity":{
           "shape":"GetWorkflowResponseStorageCapacityInteger",
-          "documentation":"<p>The workflow's storage capacity in gigabytes.</p>"
+          "documentation":"<p>The workflow's storage capacity in gibibytes.</p>"
         },
         "creationTime":{
           "shape":"WorkflowTimestamp",
@@ -5300,10 +5318,10 @@
       "members":{
         "status":{
           "shape":"VersionStatus",
-          "documentation":"<p> The status of an annotation store version. </p>"
+          "documentation":"<p>The status of an annotation store version.</p>"
         }
       },
-      "documentation":"<p> Use filters to focus the returned annotation store versions on a specific parameter, such as the status of the annotation store. </p>"
+      "documentation":"<p>Use filters to focus the returned annotation store versions on a specific parameter, such as the status of the annotation store.</p>"
     },
     "ListAnnotationStoreVersionsRequest":{
       "type":"structure",
@@ -6043,21 +6061,21 @@
       "members":{
         "resourceOwner":{
           "shape":"ResourceOwner",
-          "documentation":"<p> The account that owns the analytics store shared. </p>"
+          "documentation":"<p>The account that owns the resource shares.</p>"
         },
         "filter":{
           "shape":"Filter",
-          "documentation":"<p> Attributes used to filter for a specific subset of shares. </p>"
+          "documentation":"<p>Attributes that you use to filter for a specific subset of resource shares.</p>"
         },
         "nextToken":{
           "shape":"String",
-          "documentation":"<p> Next token returned in the response of a previous ListReadSetUploadPartsRequest call. Used to get the next page of results. </p>",
+          "documentation":"<p>Next token returned in the response of a previous ListReadSetUploadPartsRequest call. Used to get the next page of results.</p>",
           "location":"querystring",
           "locationName":"nextToken"
         },
         "maxResults":{
           "shape":"Integer",
-          "documentation":"<p> The maximum number of shares to return in one page of results. </p>",
+          "documentation":"<p>The maximum number of shares to return in one page of results.</p>",
           "location":"querystring",
           "locationName":"maxResults"
         }
@@ -6069,7 +6087,7 @@
       "members":{
         "shares":{
           "shape":"ShareDetailsList",
-          "documentation":"<p> The shares available and their meta details. </p>"
+          "documentation":"<p>The shares available and their metadata details.</p>"
         },
         "nextToken":{
           "shape":"String",
@@ -6238,13 +6256,13 @@
       "members":{
         "type":{
           "shape":"WorkflowType",
-          "documentation":"<p>The workflows' type.</p>",
+          "documentation":"<p>Filter the list by workflow type.</p>",
           "location":"querystring",
           "locationName":"type"
         },
         "name":{
           "shape":"WorkflowName",
-          "documentation":"<p>The workflows' name.</p>",
+          "documentation":"<p>Filter the list by workflow name.</p>",
           "location":"querystring",
           "locationName":"name"
         },
@@ -6273,7 +6291,7 @@
       "members":{
         "items":{
           "shape":"WorkflowList",
-          "documentation":"<p>The workflows' items.</p>"
+          "documentation":"<p>A list of workflow items.</p>"
         },
         "nextToken":{
           "shape":"WorkflowListToken",
@@ -7280,7 +7298,7 @@
         },
         "storageCapacity":{
           "shape":"RunListItemStorageCapacityInteger",
-          "documentation":"<p>The run's storage capacity.</p>"
+          "documentation":"<p>The run's storage capacity in gibibytes. For dynamic storage, after the run has completed, this value is the maximum amount of storage used during the run.</p>"
         },
         "creationTime":{
           "shape":"RunTimestamp",
@@ -7293,6 +7311,10 @@
         "stopTime":{
           "shape":"RunTimestamp",
           "documentation":"<p>When the run stopped.</p>"
+        },
+        "storageType":{
+          "shape":"StorageType",
+          "documentation":"<p>The run's storage type.</p>"
         }
       },
       "documentation":"<p>A workflow run.</p>"
@@ -7624,42 +7646,46 @@
       "members":{
         "shareId":{
           "shape":"String",
-          "documentation":"<p> The ID for a share offer for an analytics store . </p>"
+          "documentation":"<p>The ID of the resource share.</p>"
         },
         "resourceArn":{
           "shape":"String",
-          "documentation":"<p> The resource Arn of the analytics store being shared. </p>"
+          "documentation":"<p>The Arn of the shared resource. </p>"
+        },
+        "resourceId":{
+          "shape":"String",
+          "documentation":"<p>The ID of the shared resource. </p>"
         },
         "principalSubscriber":{
           "shape":"String",
-          "documentation":"<p> The principal subscriber is the account the analytics store data is being shared with. </p>"
+          "documentation":"<p>The principal subscriber is the account that is sharing the resource.</p>"
         },
         "ownerId":{
           "shape":"String",
-          "documentation":"<p> The account ID for the data owner. The owner creates the share offer. </p>"
+          "documentation":"<p>The account ID for the data owner. The owner creates the resource share.</p>"
         },
         "status":{
           "shape":"ShareStatus",
-          "documentation":"<p> The status of a share. </p>"
+          "documentation":"<p>The status of the share.</p>"
         },
         "statusMessage":{
           "shape":"StatusMessage",
-          "documentation":"<p> The status message for a share. It provides more details on the status of the share. </p>"
+          "documentation":"<p>The status message for a resource share. It provides additional details about the share status.</p>"
         },
         "shareName":{
           "shape":"ShareName",
-          "documentation":"<p> The name of the share. </p>"
+          "documentation":"<p>The name of the resource share.</p>"
         },
         "creationTime":{
           "shape":"CreationTime",
-          "documentation":"<p> The timestamp for when the share was created. </p>"
+          "documentation":"<p>The timestamp of when the resource share was created.</p>"
         },
         "updateTime":{
           "shape":"UpdateTime",
-          "documentation":"<p> The timestamp of the share update. </p>"
+          "documentation":"<p>The timestamp of the resource share update.</p>"
         }
       },
-      "documentation":"<p> The details of a share. </p>"
+      "documentation":"<p>The details of a resource share.</p>"
     },
     "ShareDetailsList":{
       "type":"list",
@@ -7670,6 +7696,14 @@
       "max":256,
       "min":1,
       "pattern":"[a-zA-Z0-9_-]+"
+    },
+    "ShareResourceType":{
+      "type":"string",
+      "enum":[
+        "VARIANT_STORE",
+        "ANNOTATION_STORE",
+        "WORKFLOW"
+      ]
     },
     "ShareStatus":{
       "type":"string",
@@ -8151,7 +8185,7 @@
         },
         "storageCapacity":{
           "shape":"StartRunRequestStorageCapacityInteger",
-          "documentation":"<p>A storage capacity for the run in gibibytes.</p>"
+          "documentation":"<p>A storage capacity for the run in gibibytes. This field is not required if the storage type is dynamic (the system ignores any value that you enter).</p>"
         },
         "outputUri":{
           "shape":"RunOutputUri",
@@ -8173,6 +8207,14 @@
         "retentionMode":{
           "shape":"RunRetentionMode",
           "documentation":"<p>The retention mode for the run.</p>"
+        },
+        "storageType":{
+          "shape":"StorageType",
+          "documentation":"<p>The run's storage type. By default, the run uses STATIC storage type, which allocates a fixed amount of storage. If you set the storage type to DYNAMIC, HealthOmics dynamically scales the storage up or down, based on file system utilization.</p>"
+        },
+        "workflowOwnerId":{
+          "shape":"WorkflowOwnerId",
+          "documentation":"<p>The ID of the workflow owner. </p>"
         }
       }
     },
@@ -8259,12 +8301,23 @@
     },
     "StatusList":{
       "type":"list",
-      "member":{"shape":"ShareStatus"}
+      "member":{"shape":"ShareStatus"},
+      "max":10,
+      "min":1
     },
     "StatusMessage":{
       "type":"string",
       "max":1000,
       "min":0
+    },
+    "StorageType":{
+      "type":"string",
+      "enum":[
+        "STATIC",
+        "DYNAMIC"
+      ],
+      "max":64,
+      "min":1
     },
     "StoreFormat":{
       "type":"string",
@@ -8558,6 +8611,12 @@
       "type":"list",
       "member":{"shape":"SchemaItem"},
       "max":5000,
+      "min":1
+    },
+    "TypeList":{
+      "type":"list",
+      "member":{"shape":"ShareResourceType"},
+      "max":10,
       "min":1
     },
     "UntagResourceRequest":{
@@ -9296,6 +9355,10 @@
       "max":128,
       "min":1,
       "pattern":"[\\p{L}||\\p{M}||\\p{Z}||\\p{S}||\\p{N}||\\p{P}]+"
+    },
+    "WorkflowOwnerId":{
+      "type":"string",
+      "pattern":"[0-9]{12}"
     },
     "WorkflowParameter":{
       "type":"structure",

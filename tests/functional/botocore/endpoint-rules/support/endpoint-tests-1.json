@@ -189,6 +189,28 @@
             }
         },
         {
+            "documentation": "For region aws-us-gov-global with FIPS enabled and DualStack disabled",
+            "expect": {
+                "endpoint": {
+                    "properties": {
+                        "authSchemes": [
+                            {
+                                "name": "sigv4",
+                                "signingName": "support",
+                                "signingRegion": "us-gov-west-1"
+                            }
+                        ]
+                    },
+                    "url": "https://support.us-gov-west-1.amazonaws.com"
+                }
+            },
+            "params": {
+                "Region": "aws-us-gov-global",
+                "UseFIPS": true,
+                "UseDualStack": false
+            }
+        },
+        {
             "documentation": "For region us-gov-east-1 with FIPS enabled and DualStack enabled",
             "expect": {
                 "endpoint": {
@@ -205,7 +227,16 @@
             "documentation": "For region us-gov-east-1 with FIPS enabled and DualStack disabled",
             "expect": {
                 "endpoint": {
-                    "url": "https://support-fips.us-gov-east-1.amazonaws.com"
+                    "properties": {
+                        "authSchemes": [
+                            {
+                                "name": "sigv4",
+                                "signingName": "support",
+                                "signingRegion": "us-gov-west-1"
+                            }
+                        ]
+                    },
+                    "url": "https://support.us-gov-west-1.amazonaws.com"
                 }
             },
             "params": {

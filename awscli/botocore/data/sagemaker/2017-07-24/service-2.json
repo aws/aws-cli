@@ -5,6 +5,7 @@
     "endpointPrefix":"api.sagemaker",
     "jsonVersion":"1.1",
     "protocol":"json",
+    "protocols":["json"],
     "serviceAbbreviation":"SageMaker",
     "serviceFullName":"Amazon SageMaker Service",
     "serviceId":"SageMaker",
@@ -10246,6 +10247,10 @@
         "InfraCheckConfig":{
           "shape":"InfraCheckConfig",
           "documentation":"<p>Contains information about the infrastructure health check configuration for the training job.</p>"
+        },
+        "SessionChainingConfig":{
+          "shape":"SessionChainingConfig",
+          "documentation":"<p>Contains information about attribute-based access control (ABAC) for the training job.</p>"
         }
       }
     },
@@ -17222,6 +17227,7 @@
       "members":{
       }
     },
+    "EnableSessionTagChaining":{"type":"boolean"},
     "Endpoint":{
       "type":"structure",
       "required":[
@@ -30366,6 +30372,14 @@
         "ml.g5.16xlarge",
         "ml.g5.24xlarge",
         "ml.g5.48xlarge",
+        "ml.g6.xlarge",
+        "ml.g6.2xlarge",
+        "ml.g6.4xlarge",
+        "ml.g6.8xlarge",
+        "ml.g6.12xlarge",
+        "ml.g6.16xlarge",
+        "ml.g6.24xlarge",
+        "ml.g6.48xlarge",
         "ml.p4d.24xlarge",
         "ml.c7g.large",
         "ml.c7g.xlarge",
@@ -32857,6 +32871,16 @@
         }
       },
       "documentation":"<p>Details that you specify to provision a service catalog product. For information about service catalog, see <a href=\"https://docs.aws.amazon.com/servicecatalog/latest/adminguide/introduction.html\">What is Amazon Web Services Service Catalog</a>. </p>"
+    },
+    "SessionChainingConfig":{
+      "type":"structure",
+      "members":{
+        "EnableSessionTagChaining":{
+          "shape":"EnableSessionTagChaining",
+          "documentation":"<p>Set to <code>True</code> to allow SageMaker to extract session tags from a training job creation role and reuse these tags when assuming the training job execution role.</p>"
+        }
+      },
+      "documentation":"<p>Contains information about attribute-based access control (ABAC) for a training job. </p>"
     },
     "SessionExpirationDurationInSeconds":{
       "type":"integer",

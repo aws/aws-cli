@@ -5,6 +5,7 @@
     "endpointPrefix":"quicksight",
     "jsonVersion":"1.0",
     "protocol":"rest-json",
+    "protocols":["rest-json"],
     "serviceFullName":"Amazon QuickSight",
     "serviceId":"QuickSight",
     "signatureVersion":"v4",
@@ -3004,6 +3005,23 @@
       ],
       "documentation":"<p>Updates the custom permissions that are associated with a role.</p>"
     },
+    "UpdateSPICECapacityConfiguration":{
+      "name":"UpdateSPICECapacityConfiguration",
+      "http":{
+        "method":"POST",
+        "requestUri":"/accounts/{AwsAccountId}/spice-capacity-configuration"
+      },
+      "input":{"shape":"UpdateSPICECapacityConfigurationRequest"},
+      "output":{"shape":"UpdateSPICECapacityConfigurationResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"InvalidParameterValueException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalFailureException"}
+      ],
+      "documentation":"<p>Updates the SPICE capacity configuration for a Amazon QuickSight account.</p>"
+    },
     "UpdateTemplate":{
       "name":"UpdateTemplate",
       "http":{
@@ -3730,9 +3748,24 @@
         "QSearchBar":{
           "shape":"AnonymousUserQSearchBarEmbeddingConfiguration",
           "documentation":"<p>The Q search bar that you want to use for anonymous user embedding.</p>"
+        },
+        "GenerativeQnA":{
+          "shape":"AnonymousUserGenerativeQnAEmbeddingConfiguration",
+          "documentation":"<p>The Generative Q&amp;A experience that you want to use for anonymous user embedding.</p>"
         }
       },
       "documentation":"<p>The type of experience you want to embed. For anonymous users, you can embed Amazon QuickSight dashboards.</p>"
+    },
+    "AnonymousUserGenerativeQnAEmbeddingConfiguration":{
+      "type":"structure",
+      "required":["InitialTopicId"],
+      "members":{
+        "InitialTopicId":{
+          "shape":"RestrictiveResourceId",
+          "documentation":"<p>The Amazon QuickSight Q topic ID of the new reader experience topic that you want the anonymous user to see first. This ID is included in the output URL. When the URL in response is accessed, Amazon QuickSight renders the Generative Q&amp;A experience with this new reader experience topic pre selected.</p> <p>The Amazon Resource Name (ARN) of this Q new reader experience topic must be included in the <code>AuthorizedResourceArns</code> parameter. Otherwise, the request fails with an <code>InvalidParameterValueException</code> error.</p>"
+        }
+      },
+      "documentation":"<p>The settings that you want to use for the Generative Q&amp;A experience.</p>"
     },
     "AnonymousUserQSearchBarEmbeddingConfiguration":{
       "type":"structure",
@@ -3740,7 +3773,7 @@
       "members":{
         "InitialTopicId":{
           "shape":"RestrictiveResourceId",
-          "documentation":"<p>The QuickSight Q topic ID of the topic that you want the anonymous user to see first. This ID is included in the output URL. When the URL in response is accessed, Amazon QuickSight renders the Q search bar with this topic pre-selected.</p> <p>The Amazon Resource Name (ARN) of this Q topic must be included in the <code>AuthorizedResourceArns</code> parameter. Otherwise, the request will fail with <code>InvalidParameterValueException</code>.</p>"
+          "documentation":"<p>The Amazon QuickSight Q topic ID of the legacy topic that you want the anonymous user to see first. This ID is included in the output URL. When the URL in response is accessed, Amazon QuickSight renders the Q search bar with this legacy topic pre-selected.</p> <p>The Amazon Resource Name (ARN) of this Q legacy topic must be included in the <code>AuthorizedResourceArns</code> parameter. Otherwise, the request fails with an <code>InvalidParameterValueException</code> error.</p>"
         }
       },
       "documentation":"<p>The settings that you want to use with the Q search bar.</p>"
@@ -7182,7 +7215,6 @@
     "CreateAccountSubscriptionRequest":{
       "type":"structure",
       "required":[
-        "Edition",
         "AuthenticationMethod",
         "AwsAccountId",
         "AccountName",
@@ -7225,7 +7257,7 @@
         },
         "AdminGroup":{
           "shape":"GroupsList",
-          "documentation":"<p>The admin group associated with your Active Directory or IAM Identity Center account. This field is required if <code>ACTIVE_DIRECTORY</code> or <code>IAM_IDENTITY_CENTER</code> is the selected authentication method of the new Amazon QuickSight account.</p> <p>For more information about using IAM Identity Center in Amazon QuickSight, see <a href=\"https://docs.aws.amazon.com/quicksight/latest/user/sec-identity-management-identity-center.html\">Using IAM Identity Center with Amazon QuickSight Enterprise Edition</a> in the Amazon QuickSight User Guide. For more information about using Active Directory in Amazon QuickSight, see <a href=\"https://docs.aws.amazon.com/quicksight/latest/user/aws-directory-service.html\">Using Active Directory with Amazon QuickSight Enterprise Edition</a> in the Amazon QuickSight User Guide.</p>"
+          "documentation":"<p>The admin group associated with your Active Directory or IAM Identity Center account. Either this field or the <code>AdminProGroup</code> field is required if <code>ACTIVE_DIRECTORY</code> or <code>IAM_IDENTITY_CENTER</code> is the selected authentication method of the new Amazon QuickSight account.</p> <p>For more information about using IAM Identity Center in Amazon QuickSight, see <a href=\"https://docs.aws.amazon.com/quicksight/latest/user/sec-identity-management-identity-center.html\">Using IAM Identity Center with Amazon QuickSight Enterprise Edition</a> in the Amazon QuickSight User Guide. For more information about using Active Directory in Amazon QuickSight, see <a href=\"https://docs.aws.amazon.com/quicksight/latest/user/aws-directory-service.html\">Using Active Directory with Amazon QuickSight Enterprise Edition</a> in the Amazon QuickSight User Guide.</p>"
         },
         "AuthorGroup":{
           "shape":"GroupsList",
@@ -7234,6 +7266,18 @@
         "ReaderGroup":{
           "shape":"GroupsList",
           "documentation":"<p>The reader group associated with your Active Directory or IAM Identity Center account.</p> <p>For more information about using IAM Identity Center in Amazon QuickSight, see <a href=\"https://docs.aws.amazon.com/quicksight/latest/user/sec-identity-management-identity-center.html\">Using IAM Identity Center with Amazon QuickSight Enterprise Edition</a> in the Amazon QuickSight User Guide. For more information about using Active Directory in Amazon QuickSight, see <a href=\"https://docs.aws.amazon.com/quicksight/latest/user/aws-directory-service.html\">Using Active Directory with Amazon QuickSight Enterprise Edition</a> in the Amazon QuickSight User Guide.</p>"
+        },
+        "AdminProGroup":{
+          "shape":"GroupsList",
+          "documentation":"<p>The admin pro group associated with your Active Directory or IAM Identity Center account. Either this field or the <code>AdminGroup</code> field is required if <code>ACTIVE_DIRECTORY</code> or <code>IAM_IDENTITY_CENTER</code> is the selected authentication method of the new Amazon QuickSight account.</p> <p>For more information about using IAM Identity Center in Amazon QuickSight, see <a href=\"https://docs.aws.amazon.com/quicksight/latest/user/sec-identity-management-identity-center.html\">Using IAM Identity Center with Amazon QuickSight Enterprise Edition</a> in the Amazon QuickSight User Guide. For more information about using Active Directory in Amazon QuickSight, see <a href=\"https://docs.aws.amazon.com/quicksight/latest/user/aws-directory-service.html\">Using Active Directory with Amazon QuickSight Enterprise Edition</a> in the Amazon QuickSight User Guide.</p>"
+        },
+        "AuthorProGroup":{
+          "shape":"GroupsList",
+          "documentation":"<p>The author pro group associated with your Active Directory or IAM Identity Center account.</p> <p>For more information about using IAM Identity Center in Amazon QuickSight, see <a href=\"https://docs.aws.amazon.com/quicksight/latest/user/sec-identity-management-identity-center.html\">Using IAM Identity Center with Amazon QuickSight Enterprise Edition</a> in the Amazon QuickSight User Guide. For more information about using Active Directory in Amazon QuickSight, see <a href=\"https://docs.aws.amazon.com/quicksight/latest/user/aws-directory-service.html\">Using Active Directory with Amazon QuickSight Enterprise Edition</a> in the Amazon QuickSight User Guide.</p>"
+        },
+        "ReaderProGroup":{
+          "shape":"GroupsList",
+          "documentation":"<p>The reader pro group associated with your Active Directory or IAM Identity Center account.</p> <p>For more information about using IAM Identity Center in Amazon QuickSight, see <a href=\"https://docs.aws.amazon.com/quicksight/latest/user/sec-identity-management-identity-center.html\">Using IAM Identity Center with Amazon QuickSight Enterprise Edition</a> in the Amazon QuickSight User Guide. For more information about using Active Directory in Amazon QuickSight, see <a href=\"https://docs.aws.amazon.com/quicksight/latest/user/aws-directory-service.html\">Using Active Directory with Amazon QuickSight Enterprise Edition</a> in the Amazon QuickSight User Guide.</p>"
         },
         "FirstName":{
           "shape":"String",
@@ -16431,6 +16475,20 @@
       },
       "documentation":"<p>The options that determine the presentation of the arc of a <code>GaugeChartVisual</code>.</p>"
     },
+    "GaugeChartColorConfiguration":{
+      "type":"structure",
+      "members":{
+        "ForegroundColor":{
+          "shape":"HexColor",
+          "documentation":"<p>The foreground color configuration of a <code>GaugeChartVisual</code>.</p>"
+        },
+        "BackgroundColor":{
+          "shape":"HexColor",
+          "documentation":"<p>The background color configuration of a <code>GaugeChartVisual</code>.</p>"
+        }
+      },
+      "documentation":"<p>The color configuration of a <code>GaugeChartVisual</code>.</p>"
+    },
     "GaugeChartConditionalFormatting":{
       "type":"structure",
       "members":{
@@ -16482,6 +16540,10 @@
         "VisualPalette":{
           "shape":"VisualPalette",
           "documentation":"<p>The visual palette configuration of a <code>GaugeChartVisual</code>.</p>"
+        },
+        "ColorConfiguration":{
+          "shape":"GaugeChartColorConfiguration",
+          "documentation":"<p>The color configuration of a <code>GaugeChartVisual</code>.</p>"
         },
         "Interactions":{
           "shape":"VisualInteractionOptions",
@@ -16668,7 +16730,7 @@
         },
         "ExperienceConfiguration":{
           "shape":"RegisteredUserEmbeddingExperienceConfiguration",
-          "documentation":"<p>The experience you are embedding. For registered users, you can embed Amazon QuickSight dashboards, Amazon QuickSight visuals, the Amazon QuickSight Q search bar, or the entire Amazon QuickSight console.</p>"
+          "documentation":"<p>The experience that you want to embed. For registered users, you can embed Amazon QuickSight dashboards, Amazon QuickSight visuals, the Amazon QuickSight Q search bar, the Amazon QuickSight Generative Q&amp;A experience, or the entire Amazon QuickSight console.</p>"
         },
         "AllowedDomains":{
           "shape":"StringList",
@@ -16686,7 +16748,7 @@
       "members":{
         "EmbedUrl":{
           "shape":"EmbeddingUrl",
-          "documentation":"<p>The embed URL for the Amazon QuickSight dashboard, visual, Q search bar, or console.</p>"
+          "documentation":"<p>The embed URL for the Amazon QuickSight dashboard, visual, Q search bar, Generative Q&amp;A experience, or console.</p>"
         },
         "Status":{
           "shape":"StatusCode",
@@ -22617,7 +22679,7 @@
     "PivotTableConditionalFormattingOptionList":{
       "type":"list",
       "member":{"shape":"PivotTableConditionalFormattingOption"},
-      "max":100
+      "max":500
     },
     "PivotTableConditionalFormattingScope":{
       "type":"structure",
@@ -23228,6 +23290,13 @@
         "INHERIT",
         "DIMENSION",
         "MEASURE"
+      ]
+    },
+    "PurchaseMode":{
+      "type":"string",
+      "enum":[
+        "MANUAL",
+        "AUTO_PURCHASE"
       ]
     },
     "PutDataSetRefreshPropertiesRequest":{
@@ -23900,7 +23969,7 @@
       "members":{
         "IdentityType":{
           "shape":"IdentityType",
-          "documentation":"<p>Amazon QuickSight supports several ways of managing the identity of users. This parameter accepts two values:</p> <ul> <li> <p> <code>IAM</code>: A user whose identity maps to an existing IAM user or role. </p> </li> <li> <p> <code>QUICKSIGHT</code>: A user whose identity is owned and managed internally by Amazon QuickSight. </p> </li> </ul>"
+          "documentation":"<p>The identity type that your Amazon QuickSight account uses to manage the identity of users.</p>"
         },
         "Email":{
           "shape":"String",
@@ -23936,7 +24005,7 @@
         },
         "CustomPermissionsName":{
           "shape":"RoleName",
-          "documentation":"<p>(Enterprise edition only) The name of the custom permissions profile that you want to assign to this user. Customized permissions allows you to control a user's access by restricting access the following operations:</p> <ul> <li> <p>Create and update data sources</p> </li> <li> <p>Create and update datasets</p> </li> <li> <p>Create and update email reports</p> </li> <li> <p>Subscribe to email reports</p> </li> </ul> <p>To add custom permissions to an existing user, use <code> <a href=\"https://docs.aws.amazon.com/quicksight/latest/APIReference/API_UpdateUser.html\">UpdateUser</a> </code> instead.</p> <p>A set of custom permissions includes any combination of these restrictions. Currently, you need to create the profile names for custom permission sets by using the Amazon QuickSight console. Then, you use the <code>RegisterUser</code> API operation to assign the named set of permissions to a Amazon QuickSight user. </p> <p>Amazon QuickSight custom permissions are applied through IAM policies. Therefore, they override the permissions typically granted by assigning Amazon QuickSight users to one of the default security cohorts in Amazon QuickSight (admin, author, reader).</p> <p>This feature is available only to Amazon QuickSight Enterprise edition subscriptions.</p>"
+          "documentation":"<p>(Enterprise edition only) The name of the custom permissions profile that you want to assign to this user. Customized permissions allows you to control a user's access by restricting access the following operations:</p> <ul> <li> <p>Create and update data sources</p> </li> <li> <p>Create and update datasets</p> </li> <li> <p>Create and update email reports</p> </li> <li> <p>Subscribe to email reports</p> </li> </ul> <p>To add custom permissions to an existing user, use <code> <a href=\"https://docs.aws.amazon.com/quicksight/latest/APIReference/API_UpdateUser.html\">UpdateUser</a> </code> instead.</p> <p>A set of custom permissions includes any combination of these restrictions. Currently, you need to create the profile names for custom permission sets by using the Amazon QuickSight console. Then, you use the <code>RegisterUser</code> API operation to assign the named set of permissions to a Amazon QuickSight user. </p> <p>Amazon QuickSight custom permissions are applied through IAM policies. Therefore, they override the permissions typically granted by assigning Amazon QuickSight users to one of the default security cohorts in Amazon QuickSight (admin, author, reader, admin pro, author pro, reader pro).</p> <p>This feature is available only to Amazon QuickSight Enterprise edition subscriptions.</p>"
         },
         "ExternalLoginFederationProviderType":{
           "shape":"String",
@@ -24046,16 +24115,30 @@
         "DashboardVisual":{
           "shape":"RegisteredUserDashboardVisualEmbeddingConfiguration",
           "documentation":"<p>The type of embedding experience. In this case, Amazon QuickSight visuals.</p>"
+        },
+        "GenerativeQnA":{
+          "shape":"RegisteredUserGenerativeQnAEmbeddingConfiguration",
+          "documentation":"<p>The configuration details for embedding the Generative Q&amp;A experience.</p> <p>For more information about embedding the Generative Q&amp;A experience, see <a href=\"https://docs.aws.amazon.com/quicksight/latest/user/embedding-overview.html\">Embedding Overview</a> in the <i>Amazon QuickSight User Guide</i>.</p>"
         }
       },
       "documentation":"<p>The type of experience you want to embed. For registered users, you can embed Amazon QuickSight dashboards or the Amazon QuickSight console.</p> <note> <p>Exactly one of the experience configurations is required. You can choose <code>Dashboard</code> or <code>QuickSightConsole</code>. You cannot choose more than one experience configuration.</p> </note>"
+    },
+    "RegisteredUserGenerativeQnAEmbeddingConfiguration":{
+      "type":"structure",
+      "members":{
+        "InitialTopicId":{
+          "shape":"RestrictiveResourceId",
+          "documentation":"<p>The ID of the new Q reader experience topic that you want to make the starting topic in the Generative Q&amp;A experience. You can find a topic ID by navigating to the Topics pane in the Amazon QuickSight application and opening a topic. The ID is in the URL for the topic that you open.</p> <p>If you don't specify an initial topic or you specify a legacy topic, a list of all shared new reader experience topics is shown in the Generative Q&amp;A experience for your readers. When you select an initial new reader experience topic, you can specify whether or not readers are allowed to select other new reader experience topics from the available ones in the list.</p>"
+        }
+      },
+      "documentation":"<p>An object that provides information about the configuration of a Generative Q&amp;A experience.</p>"
     },
     "RegisteredUserQSearchBarEmbeddingConfiguration":{
       "type":"structure",
       "members":{
         "InitialTopicId":{
           "shape":"RestrictiveResourceId",
-          "documentation":"<p>The ID of the Q topic that you want to make the starting topic in the Q search bar. You can find a topic ID by navigating to the Topics pane in the Amazon QuickSight application and opening a topic. The ID is in the URL for the topic that you open.</p> <p>If you don't specify an initial topic, a list of all shared topics is shown in the Q bar for your readers. When you select an initial topic, you can specify whether or not readers are allowed to select other topics from the available ones in the list.</p>"
+          "documentation":"<p>The ID of the legacy Q topic that you want to use as the starting topic in the Q search bar. To locate the topic ID of the topic that you want to use, open the <a href=\"https://quicksight.aws.amazon.com/\">Amazon QuickSight console</a>, navigate to the <b>Topics</b> pane, and choose thre topic that you want to use. The <code>TopicID</code> is located in the URL of the topic that opens. When you select an initial topic, you can specify whether or not readers are allowed to select other topics from the list of available topics.</p> <p>If you don't specify an initial topic or if you specify a new reader experience topic, a list of all shared legacy topics is shown in the Q bar. </p>"
         }
       },
       "documentation":"<p>Information about the Q search bar embedding experience.</p>"
@@ -24387,7 +24470,10 @@
       "enum":[
         "ADMIN",
         "AUTHOR",
-        "READER"
+        "READER",
+        "ADMIN_PRO",
+        "AUTHOR_PRO",
+        "READER_PRO"
       ]
     },
     "RoleArn":{
@@ -25548,7 +25634,7 @@
     "SeriesItemList":{
       "type":"list",
       "member":{"shape":"SeriesItem"},
-      "max":10
+      "max":2000
     },
     "ServiceNowParameters":{
       "type":"structure",
@@ -27141,7 +27227,7 @@
     "TableConditionalFormattingOptionList":{
       "type":"list",
       "member":{"shape":"TableConditionalFormattingOption"},
-      "max":100
+      "max":500
     },
     "TableConfiguration":{
       "type":"structure",
@@ -29211,6 +29297,10 @@
         "Name":{
           "shape":"ResourceName",
           "documentation":"<p>The name of the topic.</p>"
+        },
+        "UserExperienceVersion":{
+          "shape":"TopicUserExperienceVersion",
+          "documentation":"<p>The user experience version of the topic.</p>"
         }
       },
       "documentation":"<p>A topic summary.</p>"
@@ -30958,6 +31048,39 @@
         }
       }
     },
+    "UpdateSPICECapacityConfigurationRequest":{
+      "type":"structure",
+      "required":[
+        "AwsAccountId",
+        "PurchaseMode"
+      ],
+      "members":{
+        "AwsAccountId":{
+          "shape":"AwsAccountId",
+          "documentation":"<p>The ID of the Amazon Web Services account that contains the SPICE configuration that you want to update.</p>",
+          "location":"uri",
+          "locationName":"AwsAccountId"
+        },
+        "PurchaseMode":{
+          "shape":"PurchaseMode",
+          "documentation":"<p>Determines how SPICE capacity can be purchased. The following options are available. </p> <ul> <li> <p> <code>MANUAL</code>: SPICE capacity can only be purchased manually.</p> </li> <li> <p> <code>AUTO_PURCHASE</code>: Extra SPICE capacity is automatically purchased on your behalf as needed. SPICE capacity can also be purchased manually with this option.</p> </li> </ul>"
+        }
+      }
+    },
+    "UpdateSPICECapacityConfigurationResponse":{
+      "type":"structure",
+      "members":{
+        "RequestId":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Web Services request ID for this operation.</p>"
+        },
+        "Status":{
+          "shape":"StatusCode",
+          "documentation":"<p>The HTTP status of the request.</p>",
+          "location":"statusCode"
+        }
+      }
+    },
     "UpdateTemplateAliasRequest":{
       "type":"structure",
       "required":[
@@ -31509,7 +31632,7 @@
         },
         "Role":{
           "shape":"UserRole",
-          "documentation":"<p>The Amazon QuickSight role of the user. The role can be one of the following default security cohorts:</p> <ul> <li> <p> <code>READER</code>: A user who has read-only access to dashboards.</p> </li> <li> <p> <code>AUTHOR</code>: A user who can create data sources, datasets, analyses, and dashboards.</p> </li> <li> <p> <code>ADMIN</code>: A user who is an author, who can also manage Amazon QuickSight settings.</p> </li> </ul> <p>The name of the Amazon QuickSight role is invisible to the user except for the console screens dealing with permissions.</p>"
+          "documentation":"<p>The Amazon QuickSight role of the user. The role can be one of the following default security cohorts:</p> <ul> <li> <p> <code>READER</code>: A user who has read-only access to dashboards.</p> </li> <li> <p> <code>AUTHOR</code>: A user who can create data sources, datasets, analyses, and dashboards.</p> </li> <li> <p> <code>ADMIN</code>: A user who is an author, who can also manage Amazon QuickSight settings.</p> </li> <li> <p> <code>READER_PRO</code>: Reader Pro adds Generative BI capabilities to the Reader role. Reader Pros have access to Amazon Q Business, can build stories with Amazon Q, and can generate executive summaries from dashboards.</p> </li> <li> <p> <code>AUTHOR_PRO</code>: Author Pro adds Generative BI capabilities to the Author role. Author Pros can author dashboards with natural language with Amazon Q, build stories with Amazon Q, create Topics for Q&amp;A, and generate executive summaries from dashboards.</p> </li> <li> <p> <code>ADMIN_PRO</code>: Admin Pros are Author Pros who can also manage Amazon QuickSight administrative settings. Admin Pro users are billed at Author Pro pricing.</p> </li> </ul> <p>The name of the Amazon QuickSight role is invisible to the user except for the console screens dealing with permissions.</p>"
         },
         "CustomPermissionsName":{
           "shape":"RoleName",
@@ -31671,7 +31794,7 @@
         },
         "Role":{
           "shape":"UserRole",
-          "documentation":"<p>The Amazon QuickSight role for the user. The user role can be one of the following:.</p> <ul> <li> <p> <code>READER</code>: A user who has read-only access to dashboards.</p> </li> <li> <p> <code>AUTHOR</code>: A user who can create data sources, datasets, analyses, and dashboards.</p> </li> <li> <p> <code>ADMIN</code>: A user who is an author, who can also manage Amazon Amazon QuickSight settings.</p> </li> <li> <p> <code>RESTRICTED_READER</code>: This role isn't currently available for use.</p> </li> <li> <p> <code>RESTRICTED_AUTHOR</code>: This role isn't currently available for use.</p> </li> </ul>"
+          "documentation":"<p>The Amazon QuickSight role for the user. The user role can be one of the following:.</p> <ul> <li> <p> <code>READER</code>: A user who has read-only access to dashboards.</p> </li> <li> <p> <code>AUTHOR</code>: A user who can create data sources, datasets, analyses, and dashboards.</p> </li> <li> <p> <code>ADMIN</code>: A user who is an author, who can also manage Amazon Amazon QuickSight settings.</p> </li> <li> <p> <code>READER_PRO</code>: Reader Pro adds Generative BI capabilities to the Reader role. Reader Pros have access to Amazon Q Business, can build stories with Amazon Q, and can generate executive summaries from dashboards.</p> </li> <li> <p> <code>AUTHOR_PRO</code>: Author Pro adds Generative BI capabilities to the Author role. Author Pros can author dashboards with natural language with Amazon Q, build stories with Amazon Q, create Topics for Q&amp;A, and generate executive summaries from dashboards.</p> </li> <li> <p> <code>ADMIN_PRO</code>: Admin Pros are Author Pros who can also manage Amazon QuickSight administrative settings. Admin Pro users are billed at Author Pro pricing.</p> </li> <li> <p> <code>RESTRICTED_READER</code>: This role isn't currently available for use.</p> </li> <li> <p> <code>RESTRICTED_AUTHOR</code>: This role isn't currently available for use.</p> </li> </ul>"
         },
         "IdentityType":{
           "shape":"IdentityType",
@@ -31720,7 +31843,10 @@
         "AUTHOR",
         "READER",
         "RESTRICTED_AUTHOR",
-        "RESTRICTED_READER"
+        "RESTRICTED_READER",
+        "ADMIN_PRO",
+        "AUTHOR_PRO",
+        "READER_PRO"
       ]
     },
     "VPCConnection":{

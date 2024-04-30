@@ -56,6 +56,8 @@ def register_removals(event_handler):
                          remove_commands=['invoke-agent'])
     cmd_remover.remove(on_event='building-command-table.logs',
                          remove_commands=['start-live-tail'])
+    cmd_remover.remove(on_event='building-command-table.qbusiness',
+                        remove_commands=['chat'])
 
 
 class CommandRemover(object):

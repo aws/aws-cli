@@ -2,6 +2,22 @@
 CHANGELOG
 =========
 
+1.32.95
+=======
+
+* api-change:``chime-sdk-voice``: Due to changes made by the Amazon Alexa service, GetSipMediaApplicationAlexaSkillConfiguration and PutSipMediaApplicationAlexaSkillConfiguration APIs are no longer available for use. For more information, refer to the Alexa Smart Properties page.
+* api-change:``codeartifact``: Add support for the Ruby package format.
+* api-change:``fms``: AWS Firewall Manager now supports the network firewall service stream exception policy feature for accounts within your organization.
+* api-change:``omics``: Add support for workflow sharing and dynamic run storage
+* api-change:``opensearch``: This release enables customers to create Route53 A and AAAA alias record types to point custom endpoint domain to OpenSearch domain's dualstack search endpoint.
+* api-change:``pinpoint-sms-voice-v2``: Amazon Pinpoint has added two new features Multimedia services (MMS) and protect configurations. Use the three new MMS APIs to send media messages to a mobile phone which includes image, audio, text, or video files. Use the ten new protect configurations APIs to block messages to specific countries.
+* api-change:``qbusiness``: This is a general availability (GA) release of Amazon Q Business. Q Business enables employees in an enterprise to get comprehensive answers to complex questions and take actions through a unified, intuitive web-based chat experience - using an enterprise's existing content, data, and systems.
+* api-change:``quicksight``: New Q embedding supporting Generative Q&A
+* api-change:``route53resolver``: Release of FirewallDomainRedirectionAction parameter on the Route 53 DNS Firewall Rule.  This allows customers to configure a DNS Firewall rule to inspect all the domains in the DNS redirection chain (default) , such as CNAME, ALIAS, DNAME, etc., or just the first domain and trust the rest.
+* api-change:``sagemaker``: Amazon SageMaker Training now supports the use of attribute-based access control (ABAC) roles for training job execution roles. Amazon SageMaker Inference now supports G6 instance types.
+* api-change:``signer``: Documentation updates for AWS Signer. Adds cross-account signing constraint and definitions for cross-account actions.
+
+
 1.32.94
 =======
 

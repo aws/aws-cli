@@ -2,6 +2,35 @@
 CHANGELOG
 =========
 
+2.15.43
+=======
+
+* api-change:``pinpoint-sms-voice-v2``: Amazon Pinpoint has added two new features Multimedia services (MMS) and protect configurations. Use the three new MMS APIs to send media messages to a mobile phone which includes image, audio, text, or video files. Use the ten new protect configurations APIs to block messages to specific countries.
+* api-change:``trustedadvisor``: This release adds the BatchUpdateRecommendationResourceExclusion API to support batch updates of Recommendation Resource exclusion statuses and introduces a new exclusion status filter to the ListRecommendationResources and ListOrganizationRecommendationResources APIs.
+* api-change:``sagemaker``: Amazon SageMaker Training now supports the use of attribute-based access control (ABAC) roles for training job execution roles. Amazon SageMaker Inference now supports G6 instance types.
+* api-change:``codepipeline``: Add ability to manually and automatically roll back a pipeline stage to a previously successful execution.
+* api-change:``inspector2``: Update Inspector2 to include new Agentless API parameters.
+* api-change:``transcribe``: This update provides error messaging for generative call summarization in Transcribe Call Analytics
+* api-change:``rds``: SupportsLimitlessDatabase field added to describe-db-engine-versions to indicate whether the DB engine version supports Aurora Limitless Database.
+* api-change:``oam``: This release introduces support for Source Accounts to define which Metrics and Logs to share with the Monitoring Account
+* api-change:``amplify``: Updating max results limit for listing any resources (Job, Artifacts, Branch, BackendResources, DomainAssociation) to 50 with the exception of list apps that where max results can be up to 100.
+* api-change:``qbusiness``: This is a general availability (GA) release of Amazon Q Business. Q Business enables employees in an enterprise to get comprehensive answers to complex questions and take actions through a unified, intuitive web-based chat experience - using an enterprise's existing content, data, and systems.
+* api-change:``quicksight``: New Q embedding supporting Generative Q&A
+* api-change:``chime-sdk-voice``: Due to changes made by the Amazon Alexa service, GetSipMediaApplicationAlexaSkillConfiguration and PutSipMediaApplicationAlexaSkillConfiguration APIs are no longer available for use. For more information, refer to the Alexa Smart Properties page.
+* api-change:``marketplace-entitlement``: Releasing minor endpoint updates.
+* api-change:``omics``: Add support for workflow sharing and dynamic run storage
+* api-change:``connectcampaigns``: This release adds support for specifying if Answering Machine should wait for prompt sound.
+* api-change:``support``: Releasing minor endpoint updates.
+* api-change:``signer``: Documentation updates for AWS Signer. Adds cross-account signing constraint and definitions for cross-account actions.
+* api-change:``opensearch``: This release enables customers to create Route53 A and AAAA alias record types to point custom endpoint domain to OpenSearch domain's dualstack search endpoint.
+* api-change:``route53resolver``: Release of FirewallDomainRedirectionAction parameter on the Route 53 DNS Firewall Rule.  This allows customers to configure a DNS Firewall rule to inspect all the domains in the DNS redirection chain (default) , such as CNAME, ALIAS, DNAME, etc., or just the first domain and trust the rest.
+* api-change:``timestream-query``: This change allows users to update and describe account settings associated with their accounts.
+* api-change:``connectcases``: This feature releases DeleteField, DeletedLayout, and DeleteTemplate API's
+* api-change:``cognito-idp``: Add LimitExceededException to SignUp errors
+* api-change:``fms``: AWS Firewall Manager now supports the network firewall service stream exception policy feature for accounts within your organization.
+* api-change:``codeartifact``: Add support for the Ruby package format.
+
+
 2.15.42
 =======
 

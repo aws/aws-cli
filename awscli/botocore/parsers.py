@@ -343,13 +343,15 @@ class ResponseParser(object):
 
     def _has_unknown_tagged_union_member(self, shape, value):
         if shape.is_tagged_union:
-            if len(value) != 1:
+            cleaned_value = value.copy()
+            cleaned_value.pop("__type", None)
+            if len(cleaned_value) != 1:
                 error_msg = (
                     "Invalid service response: %s must have one and only "
                     "one member set."
                 )
                 raise ResponseParserError(error_msg % shape.name)
-            tag = self._get_first_key(value)
+            tag = self._get_first_key(cleaned_value)
             if tag not in shape.members:
                 msg = (
                     "Received a tagged union response with member "

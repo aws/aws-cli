@@ -519,6 +519,35 @@ class TestTaggedUnions(unittest.TestCase):
         with self.assertRaises(parsers.ResponseParserError):
             parser.parse(response, output_shape)
 
+    def test_parser_accepts_type_metadata_with_union(self):
+        parser = parsers.JSONParser()
+        response = b'{"Foo": "mystring", "__type": "mytype"}'
+        headers = {'x-amzn-requestid': 'request-id'}
+        output_shape = model.StructureShape(
+            'OutputShape',
+            {
+                'type': 'structure',
+                'union': True,
+                'members': {
+                    'Foo': {
+                        'shape': 'StringType',
+                    },
+                    'Bar': {
+                        'shape': 'StringType',
+                    },
+                },
+            },
+            model.ShapeResolver({'StringType': {'type': 'string'}}),
+        )
+
+        response = {
+            'body': response,
+            'headers': headers,
+            'status_code': 200,
+        }
+        parsed = parser.parse(response, output_shape)
+        self.assertEqual(parsed['Foo'], 'mystring')
+
 
 class TestHeaderResponseInclusion(unittest.TestCase):
     def create_parser(self):

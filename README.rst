@@ -111,7 +111,7 @@ The AWS CLI can also be installed on Windows via an `MSI
 Installer <https://docs.aws.amazon.com/cli/latest/userguide/install-windows.html#msi-on-windows>`__.
 
 If you want to run the ``develop`` branch of the AWS CLI, see the
-`Development Version <CONTRIBUTING.md#cli-development-version>`__ section of
+`Development Version <https://github.com/KPCOFGS/aws-cli_fork/blob/develop/CONTRIBUTING.md#cli-development-version>`__ section of
 the contributing guide.
 
 See the

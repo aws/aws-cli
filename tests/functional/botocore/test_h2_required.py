@@ -17,6 +17,7 @@ from botocore.session import get_session
 _H2_REQUIRED = object()
 # Service names to list of known HTTP 2 operations
 _KNOWN_SERVICES = {
+    'qbusiness': ['Chat'],
     'kinesis': ['SubscribeToShard'],
     'lexv2-runtime': ['StartConversation'],
 }

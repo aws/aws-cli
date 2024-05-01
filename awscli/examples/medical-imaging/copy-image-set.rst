@@ -13,7 +13,7 @@ Output::
 
     {
         "destinationImageSetProperties": {
-            "latestVersionId": "1",
+            "latestVersionId": "2",
             "imageSetWorkflowStatus": "COPYING",
             "updatedAt": 1680042357.432,
             "imageSetId": "b9a06fef182a5f992842f77f8e0868e5",
@@ -21,9 +21,10 @@ Output::
             "createdAt": 1680042357.432
         },
         "sourceImageSetProperties": {
-            "latestVersionId": "5",
+            "latestVersionId": "1",
             "imageSetWorkflowStatus": "COPYING_WITH_READ_ONLY_ACCESS",
             "updatedAt": 1680042357.432,
+            "imageSetId": "ea92b0d8838c72a3f25d00d13616f87e",
             "imageSetState": "LOCKED",
             "createdAt": 1680027126.436
         },
@@ -37,7 +38,7 @@ The following ``copy-image-set`` code example makes a duplicate copy of an image
     aws medical-imaging copy-image-set \
         --datastore-id 12345678901234567890123456789012 \
         --source-image-set-id ea92b0d8838c72a3f25d00d13616f87e \
-        --copy-image-set-information '{"sourceImageSet": {"latestVersionId": "5" }, "destinationImageSet": { "imageSetId": "ea92b0d8838c72a3f25d00d13616f87e", "latestVersionId": "1"} }'
+        --copy-image-set-information '{"sourceImageSet": {"latestVersionId": "1" }, "destinationImageSet": { "imageSetId": "b9a06fef182a5f992842f77f8e0868e5", "latestVersionId": "1"} }'
 
 
 
@@ -54,7 +55,7 @@ Output::
             "createdAt": 1680042357.432
         },
         "sourceImageSetProperties": {
-            "latestVersionId": "5",
+            "latestVersionId": "1",
             "imageSetWorkflowStatus": "COPYING_WITH_READ_ONLY_ACCESS",
             "updatedAt": 1680042505.135,
             "imageSetId": "ea92b0d8838c72a3f25d00d13616f87e",

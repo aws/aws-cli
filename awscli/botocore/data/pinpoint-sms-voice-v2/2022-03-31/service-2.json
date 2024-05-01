@@ -32,6 +32,24 @@
       ],
       "documentation":"<p>Associates the specified origination identity with a pool.</p> <p>If the origination identity is a phone number and is already associated with another pool, an error is returned. A sender ID can be associated with multiple pools.</p> <p>If the origination identity configuration doesn't match the pool's configuration, an error is returned.</p>"
     },
+    "AssociateProtectConfiguration":{
+      "name":"AssociateProtectConfiguration",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"AssociateProtectConfigurationRequest"},
+      "output":{"shape":"AssociateProtectConfigurationResult"},
+      "errors":[
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ValidationException"},
+        {"shape":"ConflictException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Associate a protect configuration with a configuration set. This replaces the configuration sets current protect configuration. A configuration set can only be associated with one protect configuration at a time. A protect configuration can be associated with multiple configuration sets.</p>"
+    },
     "CreateConfigurationSet":{
       "name":"CreateConfigurationSet",
       "http":{
@@ -105,6 +123,23 @@
         {"shape":"InternalServerException"}
       ],
       "documentation":"<p>Creates a new pool and associates the specified origination identity to the pool. A pool can include one or more phone numbers and SenderIds that are associated with your Amazon Web Services account.</p> <p>The new pool inherits its configuration from the specified origination identity. This includes keywords, message type, opt-out list, two-way configuration, and self-managed opt-out configuration. Deletion protection isn't inherited from the origination identity and defaults to false.</p> <p>If the origination identity is a phone number and is already associated with another pool, an error is returned. A sender ID can be associated with multiple pools.</p>"
+    },
+    "CreateProtectConfiguration":{
+      "name":"CreateProtectConfiguration",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"CreateProtectConfigurationRequest"},
+      "output":{"shape":"CreateProtectConfigurationResult"},
+      "errors":[
+        {"shape":"ServiceQuotaExceededException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Create a new protect configuration. By default all country rule sets for each capability are set to <code>ALLOW</code>. Update the country rule sets using <code>UpdateProtectConfigurationCountryRuleSet</code>. A protect configurations name is stored as a Tag with the key set to <code>Name</code> and value as the name of the protect configuration.</p>"
     },
     "CreateRegistration":{
       "name":"CreateRegistration",
@@ -198,6 +233,23 @@
       ],
       "documentation":"<p>You can only send messages to verified destination numbers when your account is in the sandbox. You can add up to 10 verified destination numbers.</p>"
     },
+    "DeleteAccountDefaultProtectConfiguration":{
+      "name":"DeleteAccountDefaultProtectConfiguration",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DeleteAccountDefaultProtectConfigurationRequest"},
+      "output":{"shape":"DeleteAccountDefaultProtectConfigurationResult"},
+      "errors":[
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ValidationException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Removes the current account default protect configuration.</p>"
+    },
     "DeleteConfigurationSet":{
       "name":"DeleteConfigurationSet",
       "http":{
@@ -284,6 +336,22 @@
       ],
       "documentation":"<p>Deletes an existing keyword from an origination phone number or pool.</p> <p>A keyword is a word that you can search for on a particular phone number or pool. It is also a specific word or phrase that an end user can send to your number to elicit a response, such as an informational message or a special offer. When your number receives a message that begins with a keyword, Amazon Pinpoint responds with a customizable message.</p> <p>Keywords \"HELP\" and \"STOP\" can't be deleted or modified.</p>"
     },
+    "DeleteMediaMessageSpendLimitOverride":{
+      "name":"DeleteMediaMessageSpendLimitOverride",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DeleteMediaMessageSpendLimitOverrideRequest"},
+      "output":{"shape":"DeleteMediaMessageSpendLimitOverrideResult"},
+      "errors":[
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Deletes an account-level monthly spending limit override for sending multimedia messages (MMS). Deleting a spend limit override will set the <code>EnforcedLimit</code> to equal the <code>MaxLimit</code>, which is controlled by Amazon Web Services. For more information on spend limits (quotas) see <a href=\"https://docs.aws.amazon.com/sms-voice/latest/userguide/quotas.html\">Quotas for Server Migration Service</a> in the <i>Server Migration Service User Guide</i>.</p>"
+    },
     "DeleteOptOutList":{
       "name":"DeleteOptOutList",
       "http":{
@@ -337,6 +405,24 @@
         {"shape":"InternalServerException"}
       ],
       "documentation":"<p>Deletes an existing pool. Deleting a pool disassociates all origination identities from that pool.</p> <p>If the pool status isn't active or if deletion protection is enabled, an error is returned.</p> <p>A pool is a collection of phone numbers and SenderIds. A pool can include one or more phone numbers and SenderIds that are associated with your Amazon Web Services account.</p>"
+    },
+    "DeleteProtectConfiguration":{
+      "name":"DeleteProtectConfiguration",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DeleteProtectConfigurationRequest"},
+      "output":{"shape":"DeleteProtectConfigurationResult"},
+      "errors":[
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ValidationException"},
+        {"shape":"ConflictException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Permanently delete the protect configuration. The protect configuration must have deletion protection disabled and must not be associated as the account default protect configuration or associated with a configuration set.</p>"
     },
     "DeleteRegistration":{
       "name":"DeleteRegistration",
@@ -576,6 +662,23 @@
       ],
       "documentation":"<p>Retrieves the specified pools or all pools associated with your Amazon Web Services account.</p> <p>If you specify pool IDs, the output includes information for only the specified pools. If you specify filters, the output includes information for only those pools that meet the filter criteria. If you don't specify pool IDs or filters, the output includes information for all pools.</p> <p>If you specify a pool ID that isn't valid, an error is returned.</p> <p>A pool is a collection of phone numbers and SenderIds. A pool can include one or more phone numbers and SenderIds that are associated with your Amazon Web Services account.</p>"
     },
+    "DescribeProtectConfigurations":{
+      "name":"DescribeProtectConfigurations",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DescribeProtectConfigurationsRequest"},
+      "output":{"shape":"DescribeProtectConfigurationsResult"},
+      "errors":[
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ValidationException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Retrieves the protect configurations that match any of filters. If a filter isn’t provided then all protect configurations are returned.</p>"
+    },
     "DescribeRegistrationAttachments":{
       "name":"DescribeRegistrationAttachments",
       "http":{
@@ -760,6 +863,24 @@
       ],
       "documentation":"<p>Removes the specified origination identity from an existing pool.</p> <p>If the origination identity isn't associated with the specified pool, an error is returned.</p>"
     },
+    "DisassociateProtectConfiguration":{
+      "name":"DisassociateProtectConfiguration",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DisassociateProtectConfigurationRequest"},
+      "output":{"shape":"DisassociateProtectConfigurationResult"},
+      "errors":[
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ValidationException"},
+        {"shape":"ConflictException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Disassociate a protect configuration from a configuration set.</p>"
+    },
     "DiscardRegistrationVersion":{
       "name":"DiscardRegistrationVersion",
       "http":{
@@ -777,6 +898,23 @@
         {"shape":"InternalServerException"}
       ],
       "documentation":"<p>Discard the current version of the registration.</p>"
+    },
+    "GetProtectConfigurationCountryRuleSet":{
+      "name":"GetProtectConfigurationCountryRuleSet",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"GetProtectConfigurationCountryRuleSetRequest"},
+      "output":{"shape":"GetProtectConfigurationCountryRuleSetResult"},
+      "errors":[
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ValidationException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Retrieve the CountryRuleSet for the specified NumberCapability from a protect configuration.</p>"
     },
     "ListPoolOriginationIdentities":{
       "name":"ListPoolOriginationIdentities",
@@ -975,6 +1113,25 @@
       ],
       "documentation":"<p>Before you can send test messages to a verified destination phone number you need to opt-in the verified destination phone number. Creates a new text message with a verification code and send it to a verified destination phone number. Once you have the verification code use <a>VerifyDestinationNumber</a> to opt-in the verified destination phone number to receive messages.</p>"
     },
+    "SendMediaMessage":{
+      "name":"SendMediaMessage",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"SendMediaMessageRequest"},
+      "output":{"shape":"SendMediaMessageResult"},
+      "errors":[
+        {"shape":"ServiceQuotaExceededException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ValidationException"},
+        {"shape":"ConflictException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Creates a new multimedia message (MMS) and sends it to a recipient's phone number. </p>"
+    },
     "SendTextMessage":{
       "name":"SendTextMessage",
       "http":{
@@ -1013,6 +1170,23 @@
       ],
       "documentation":"<p>Allows you to send a request that sends a voice message through Amazon Pinpoint. This operation uses <a href=\"http://aws.amazon.com/polly/\">Amazon Polly</a> to convert a text script into a voice message.</p>"
     },
+    "SetAccountDefaultProtectConfiguration":{
+      "name":"SetAccountDefaultProtectConfiguration",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"SetAccountDefaultProtectConfigurationRequest"},
+      "output":{"shape":"SetAccountDefaultProtectConfigurationResult"},
+      "errors":[
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ValidationException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Set a protect configuration as your account default. You can only have one account default protect configuration at a time. The current account default protect configuration is replaced with the provided protect configuration.</p>"
+    },
     "SetDefaultMessageType":{
       "name":"SetDefaultMessageType",
       "http":{
@@ -1046,6 +1220,22 @@
         {"shape":"InternalServerException"}
       ],
       "documentation":"<p>Sets default sender ID on a configuration set.</p> <p>When sending a text message to a destination country that supports sender IDs, the default sender ID on the configuration set specified will be used if no dedicated origination phone numbers or registered sender IDs are available in your account.</p>"
+    },
+    "SetMediaMessageSpendLimitOverride":{
+      "name":"SetMediaMessageSpendLimitOverride",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"SetMediaMessageSpendLimitOverrideRequest"},
+      "output":{"shape":"SetMediaMessageSpendLimitOverrideResult"},
+      "errors":[
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Sets an account level monthly spend limit override for sending MMS messages. The requested spend limit must be less than or equal to the <code>MaxLimit</code>, which is set by Amazon Web Services. </p>"
     },
     "SetTextMessageSpendLimitOverride":{
       "name":"SetTextMessageSpendLimitOverride",
@@ -1186,6 +1376,40 @@
       ],
       "documentation":"<p>Updates the configuration of an existing pool. You can update the opt-out list, enable or disable two-way messaging, change the <code>TwoWayChannelArn</code>, enable or disable self-managed opt-outs, enable or disable deletion protection, and enable or disable shared routes.</p>"
     },
+    "UpdateProtectConfiguration":{
+      "name":"UpdateProtectConfiguration",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"UpdateProtectConfigurationRequest"},
+      "output":{"shape":"UpdateProtectConfigurationResult"},
+      "errors":[
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ValidationException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Update the setting for an existing protect configuration.</p>"
+    },
+    "UpdateProtectConfigurationCountryRuleSet":{
+      "name":"UpdateProtectConfigurationCountryRuleSet",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"UpdateProtectConfigurationCountryRuleSetRequest"},
+      "output":{"shape":"UpdateProtectConfigurationCountryRuleSetResult"},
+      "errors":[
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ValidationException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Update a country rule set to <code>ALLOW</code> or <code>BLOCK</code> messages to be sent to the specified destination counties. You can update one or multiple countries at a time. The updates are only applied to the specified NumberCapability type.</p>"
+    },
     "UpdateSenderId":{
       "name":"UpdateSenderId",
       "http":{
@@ -1266,7 +1490,10 @@
     },
     "AccountAttributeName":{
       "type":"string",
-      "enum":["ACCOUNT_TIER"]
+      "enum":[
+        "ACCOUNT_TIER",
+        "DEFAULT_PROTECT_CONFIGURATION_ID"
+      ]
     },
     "AccountLimit":{
       "type":"structure",
@@ -1366,6 +1593,50 @@
         }
       }
     },
+    "AssociateProtectConfigurationRequest":{
+      "type":"structure",
+      "required":[
+        "ProtectConfigurationId",
+        "ConfigurationSetName"
+      ],
+      "members":{
+        "ProtectConfigurationId":{
+          "shape":"ProtectConfigurationIdOrArn",
+          "documentation":"<p>The unique identifier for the protect configuration.</p>"
+        },
+        "ConfigurationSetName":{
+          "shape":"ConfigurationSetNameOrArn",
+          "documentation":"<p>The name of the ConfigurationSet.</p>"
+        }
+      }
+    },
+    "AssociateProtectConfigurationResult":{
+      "type":"structure",
+      "required":[
+        "ConfigurationSetArn",
+        "ConfigurationSetName",
+        "ProtectConfigurationArn",
+        "ProtectConfigurationId"
+      ],
+      "members":{
+        "ConfigurationSetArn":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the configuration set.</p>"
+        },
+        "ConfigurationSetName":{
+          "shape":"ConfigurationSetName",
+          "documentation":"<p>The name of the ConfigurationSet.</p>"
+        },
+        "ProtectConfigurationArn":{
+          "shape":"ProtectConfigurationArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the protect configuration.</p>"
+        },
+        "ProtectConfigurationId":{
+          "shape":"ProtectConfigurationId",
+          "documentation":"<p>The unique identifier for the protect configuration.</p>"
+        }
+      }
+    },
     "AttachmentBody":{
       "type":"blob",
       "max":1572864,
@@ -1409,7 +1680,7 @@
       "members":{
         "IamRoleArn":{
           "shape":"IamRoleArn",
-          "documentation":"<p>The Amazon Resource Name (ARN) of an Amazon Identity and Access Management (IAM) role that is able to write event data to an Amazon CloudWatch destination.</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of an Identity and Access Management role that is able to write event data to an Amazon CloudWatch destination.</p>"
         },
         "LogGroupArn":{
           "shape":"LogGroupArn",
@@ -1448,7 +1719,8 @@
         "event-destination-name",
         "matching-event-types",
         "default-message-type",
-        "default-sender-id"
+        "default-sender-id",
+        "protect-configuration-id"
       ]
     },
     "ConfigurationSetInformation":{
@@ -1483,6 +1755,10 @@
         "CreatedTimestamp":{
           "shape":"Timestamp",
           "documentation":"<p>The time when the ConfigurationSet was created, in <a href=\"https://www.epochconverter.com/\">UNIX epoch time</a> format.</p>"
+        },
+        "ProtectConfigurationId":{
+          "shape":"ProtectConfigurationIdOrArn",
+          "documentation":"<p>The unique identifier for the protect configuration.</p>"
         }
       },
       "documentation":"<p>Information related to a given configuration set in your Amazon Web Services account.</p>"
@@ -1562,7 +1838,11 @@
         "SUBMIT_REGISTRATION_VERSION_NOT_ALLOWED",
         "TWO_WAY_CONFIG_MISMATCH",
         "VERIFICATION_CODE_EXPIRED",
-        "VERIFICATION_ALREADY_COMPLETE"
+        "VERIFICATION_ALREADY_COMPLETE",
+        "PROTECT_CONFIGURATION_IS_ACCOUNT_DEFAULT",
+        "PROTECT_CONFIGURATION_ASSOCIATED_WITH_CONFIGURATION_SET",
+        "PROTECT_CONFIGURATION_NOT_ASSOCIATED_WITH_CONFIGURATION_SET",
+        "DESTINATION_COUNTRY_BLOCKED_BY_PROTECT_CONFIGURATION"
       ]
     },
     "ContextKey":{
@@ -1646,7 +1926,7 @@
         },
         "CloudWatchLogsDestination":{
           "shape":"CloudWatchLogsDestination",
-          "documentation":"<p>An object that contains information about an event destination for logging to Amazon CloudWatch logs.</p>"
+          "documentation":"<p>An object that contains information about an event destination for logging to Amazon CloudWatch Logs.</p>"
         },
         "KinesisFirehoseDestination":{
           "shape":"KinesisFirehoseDestination",
@@ -1809,6 +2089,60 @@
         "CreatedTimestamp":{
           "shape":"Timestamp",
           "documentation":"<p>The time when the pool was created, in <a href=\"https://www.epochconverter.com/\">UNIX epoch time</a> format.</p>"
+        }
+      }
+    },
+    "CreateProtectConfigurationRequest":{
+      "type":"structure",
+      "members":{
+        "ClientToken":{
+          "shape":"ClientToken",
+          "documentation":"<p>Unique, case-sensitive identifier that you provide to ensure the idempotency of the request. If you don't specify a client token, a randomly generated token is used for the request to ensure idempotency.</p>",
+          "idempotencyToken":true
+        },
+        "DeletionProtectionEnabled":{
+          "shape":"Boolean",
+          "documentation":"<p>When set to true deletion protection is enabled. By default this is set to false. </p>"
+        },
+        "Tags":{
+          "shape":"TagList",
+          "documentation":"<p>An array of key and value pair tags that are associated with the resource.</p>"
+        }
+      }
+    },
+    "CreateProtectConfigurationResult":{
+      "type":"structure",
+      "required":[
+        "ProtectConfigurationArn",
+        "ProtectConfigurationId",
+        "CreatedTimestamp",
+        "AccountDefault",
+        "DeletionProtectionEnabled"
+      ],
+      "members":{
+        "ProtectConfigurationArn":{
+          "shape":"ProtectConfigurationArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the protect configuration.</p>"
+        },
+        "ProtectConfigurationId":{
+          "shape":"ProtectConfigurationId",
+          "documentation":"<p>The unique identifier for the protect configuration.</p>"
+        },
+        "CreatedTimestamp":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time when the protect configuration was created, in <a href=\"https://www.epochconverter.com/\">UNIX epoch time</a> format.</p>"
+        },
+        "AccountDefault":{
+          "shape":"PrimitiveBoolean",
+          "documentation":"<p>This is true if the protect configuration is set as your account default protect configuration.</p>"
+        },
+        "DeletionProtectionEnabled":{
+          "shape":"PrimitiveBoolean",
+          "documentation":"<p>When set to true deletion protection is enabled. By default this is set to false. </p>"
+        },
+        "Tags":{
+          "shape":"TagList",
+          "documentation":"<p>An array of key and value pair tags that are associated with the resource.</p>"
         }
       }
     },
@@ -2088,6 +2422,28 @@
         }
       }
     },
+    "DeleteAccountDefaultProtectConfigurationRequest":{
+      "type":"structure",
+      "members":{
+      }
+    },
+    "DeleteAccountDefaultProtectConfigurationResult":{
+      "type":"structure",
+      "required":[
+        "DefaultProtectConfigurationArn",
+        "DefaultProtectConfigurationId"
+      ],
+      "members":{
+        "DefaultProtectConfigurationArn":{
+          "shape":"ProtectConfigurationArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the account default protect configuration.</p>"
+        },
+        "DefaultProtectConfigurationId":{
+          "shape":"ProtectConfigurationId",
+          "documentation":"<p>The unique identifier of the account default protect configuration.</p>"
+        }
+      }
+    },
     "DeleteConfigurationSetRequest":{
       "type":"structure",
       "required":["ConfigurationSetName"],
@@ -2257,6 +2613,20 @@
         }
       }
     },
+    "DeleteMediaMessageSpendLimitOverrideRequest":{
+      "type":"structure",
+      "members":{
+      }
+    },
+    "DeleteMediaMessageSpendLimitOverrideResult":{
+      "type":"structure",
+      "members":{
+        "MonthlyLimit":{
+          "shape":"MonthlyLimit",
+          "documentation":"<p>The current monthly limit, in US dollars.</p>"
+        }
+      }
+    },
     "DeleteOptOutListRequest":{
       "type":"structure",
       "required":["OptOutListName"],
@@ -2382,6 +2752,48 @@
         "CreatedTimestamp":{
           "shape":"Timestamp",
           "documentation":"<p>The time when the pool was created, in <a href=\"https://www.epochconverter.com/\">UNIX epoch time</a> format.</p>"
+        }
+      }
+    },
+    "DeleteProtectConfigurationRequest":{
+      "type":"structure",
+      "required":["ProtectConfigurationId"],
+      "members":{
+        "ProtectConfigurationId":{
+          "shape":"ProtectConfigurationIdOrArn",
+          "documentation":"<p>The unique identifier for the protect configuration.</p>"
+        }
+      }
+    },
+    "DeleteProtectConfigurationResult":{
+      "type":"structure",
+      "required":[
+        "ProtectConfigurationArn",
+        "ProtectConfigurationId",
+        "CreatedTimestamp",
+        "AccountDefault",
+        "DeletionProtectionEnabled"
+      ],
+      "members":{
+        "ProtectConfigurationArn":{
+          "shape":"ProtectConfigurationArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the protect configuration.</p>"
+        },
+        "ProtectConfigurationId":{
+          "shape":"ProtectConfigurationId",
+          "documentation":"<p>The unique identifier for the protect configuration.</p>"
+        },
+        "CreatedTimestamp":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time when the protect configuration was created, in <a href=\"https://www.epochconverter.com/\">UNIX epoch time</a> format.</p>"
+        },
+        "AccountDefault":{
+          "shape":"PrimitiveBoolean",
+          "documentation":"<p>This is true if the protect configuration is set as your account default protect configuration.</p>"
+        },
+        "DeletionProtectionEnabled":{
+          "shape":"PrimitiveBoolean",
+          "documentation":"<p>The status of deletion protection for the protect configuration. When set to true deletion protection is enabled. By default this is set to false. </p>"
         }
       }
     },
@@ -2890,6 +3302,40 @@
         }
       }
     },
+    "DescribeProtectConfigurationsRequest":{
+      "type":"structure",
+      "members":{
+        "ProtectConfigurationIds":{
+          "shape":"ProtectConfigurationIdList",
+          "documentation":"<p>An array of protect configuration identifiers to search for.</p>"
+        },
+        "Filters":{
+          "shape":"ProtectConfigurationFilterList",
+          "documentation":"<p>An array of ProtectConfigurationFilter objects to filter the results.</p>"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The token to be used for the next set of paginated results. You don't need to supply a value for this field in the initial request.</p>"
+        },
+        "MaxResults":{
+          "shape":"MaxResults",
+          "documentation":"<p>The maximum number of results to return per each request.</p>"
+        }
+      }
+    },
+    "DescribeProtectConfigurationsResult":{
+      "type":"structure",
+      "members":{
+        "ProtectConfigurations":{
+          "shape":"ProtectConfigurationInformationList",
+          "documentation":"<p>An array of ProtectConfigurationInformation objects that contain the details for the request. </p>"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The token to be used for the next set of paginated results. You don't need to supply a value for this field in the initial request.</p>"
+        }
+      }
+    },
     "DescribeRegistrationAttachmentsRequest":{
       "type":"structure",
       "members":{
@@ -3375,6 +3821,50 @@
         }
       }
     },
+    "DisassociateProtectConfigurationRequest":{
+      "type":"structure",
+      "required":[
+        "ProtectConfigurationId",
+        "ConfigurationSetName"
+      ],
+      "members":{
+        "ProtectConfigurationId":{
+          "shape":"ProtectConfigurationIdOrArn",
+          "documentation":"<p>The unique identifier for the protect configuration.</p>"
+        },
+        "ConfigurationSetName":{
+          "shape":"ConfigurationSetNameOrArn",
+          "documentation":"<p>The name of the ConfigurationSet.</p>"
+        }
+      }
+    },
+    "DisassociateProtectConfigurationResult":{
+      "type":"structure",
+      "required":[
+        "ConfigurationSetArn",
+        "ConfigurationSetName",
+        "ProtectConfigurationArn",
+        "ProtectConfigurationId"
+      ],
+      "members":{
+        "ConfigurationSetArn":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the configuration set.</p>"
+        },
+        "ConfigurationSetName":{
+          "shape":"ConfigurationSetName",
+          "documentation":"<p>The name of the ConfigurationSet.</p>"
+        },
+        "ProtectConfigurationArn":{
+          "shape":"ProtectConfigurationArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the protect configuration.</p>"
+        },
+        "ProtectConfigurationId":{
+          "shape":"ProtectConfigurationId",
+          "documentation":"<p>The unique identifier for the protect configuration.</p>"
+        }
+      }
+    },
     "DiscardRegistrationVersionRequest":{
       "type":"structure",
       "required":["RegistrationId"],
@@ -3450,7 +3940,7 @@
           "documentation":"<p>An object that contains information about an event destination that sends logging events to Amazon SNS.</p>"
         }
       },
-      "documentation":"<p>Contains information about an event destination.</p> <p>Event destinations are associated with configuration sets, which enable you to publish message sending events to CloudWatch, Kinesis Data Firehose,or Amazon SNS.</p>"
+      "documentation":"<p>Contains information about an event destination.</p> <p>Event destinations are associated with configuration sets, which enable you to publish message sending events to CloudWatch, Kinesis Data Firehose, or Amazon SNS.</p>"
     },
     "EventDestinationList":{
       "type":"list",
@@ -3489,13 +3979,30 @@
         "VOICE_BUSY",
         "VOICE_NO_ANSWER",
         "VOICE_FAILED",
-        "VOICE_TTL_EXPIRED"
+        "VOICE_TTL_EXPIRED",
+        "MEDIA_ALL",
+        "MEDIA_PENDING",
+        "MEDIA_QUEUED",
+        "MEDIA_SUCCESSFUL",
+        "MEDIA_DELIVERED",
+        "MEDIA_INVALID",
+        "MEDIA_INVALID_MESSAGE",
+        "MEDIA_UNREACHABLE",
+        "MEDIA_CARRIER_UNREACHABLE",
+        "MEDIA_BLOCKED",
+        "MEDIA_CARRIER_BLOCKED",
+        "MEDIA_SPAM",
+        "MEDIA_UNKNOWN",
+        "MEDIA_TTL_EXPIRED",
+        "MEDIA_FILE_INACCESSIBLE",
+        "MEDIA_FILE_TYPE_UNSUPPORTED",
+        "MEDIA_FILE_SIZE_EXCEEDED"
       ]
     },
     "EventTypeList":{
       "type":"list",
       "member":{"shape":"EventType"},
-      "max":25,
+      "max":43,
       "min":1
     },
     "FieldPath":{
@@ -3528,15 +4035,59 @@
     },
     "FilterValue":{
       "type":"string",
-      "max":100,
+      "max":128,
       "min":1,
-      "pattern":"[\\.:A-Za-z0-9_-]+"
+      "pattern":"[/\\.:A-Za-z0-9_-]+"
     },
     "FilterValueList":{
       "type":"list",
       "member":{"shape":"FilterValue"},
       "max":20,
       "min":1
+    },
+    "GetProtectConfigurationCountryRuleSetRequest":{
+      "type":"structure",
+      "required":[
+        "ProtectConfigurationId",
+        "NumberCapability"
+      ],
+      "members":{
+        "ProtectConfigurationId":{
+          "shape":"ProtectConfigurationIdOrArn",
+          "documentation":"<p>The unique identifier for the protect configuration.</p>"
+        },
+        "NumberCapability":{
+          "shape":"NumberCapability",
+          "documentation":"<p>The capability type to return the CountryRuleSet for. Valid values are <code>SMS</code>, <code>VOICE</code>, or <code>MMS</code>.</p>"
+        }
+      }
+    },
+    "GetProtectConfigurationCountryRuleSetResult":{
+      "type":"structure",
+      "required":[
+        "ProtectConfigurationArn",
+        "ProtectConfigurationId",
+        "NumberCapability",
+        "CountryRuleSet"
+      ],
+      "members":{
+        "ProtectConfigurationArn":{
+          "shape":"ProtectConfigurationArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the protect configuration.</p>"
+        },
+        "ProtectConfigurationId":{
+          "shape":"ProtectConfigurationId",
+          "documentation":"<p>The unique identifier for the protect configuration.</p>"
+        },
+        "NumberCapability":{
+          "shape":"NumberCapability",
+          "documentation":"<p>The capability type associated with the returned ProtectConfigurationCountryRuleSetInformation objects.</p>"
+        },
+        "CountryRuleSet":{
+          "shape":"ProtectConfigurationCountryRuleSet",
+          "documentation":"<p>A map of ProtectConfigurationCountryRuleSetInformation objects that contain the details for the requested NumberCapability. The Key is the two-letter ISO country code. For a list of supported ISO country codes, see <a href=\"https://docs.aws.amazon.com/sms-voice/latest/userguide/phone-numbers-sms-by-country.html\">Supported countries and regions (SMS channel)</a> in the Amazon Pinpoint SMS user guide.</p>"
+        }
+      }
     },
     "IamRoleArn":{
       "type":"string",
@@ -3658,14 +4209,14 @@
       "members":{
         "IamRoleArn":{
           "shape":"IamRoleArn",
-          "documentation":"<p>The ARN of an Amazon Identity and Access Management (IAM) role that is able to write event data to an Amazon Firehose destination.</p>"
+          "documentation":"<p>The ARN of an Identity and Access Management role that is able to write event data to an Amazon Kinesis Data Firehose destination.</p>"
         },
         "DeliveryStreamArn":{
           "shape":"DeliveryStreamArn",
           "documentation":"<p>The Amazon Resource Name (ARN) of the delivery stream.</p>"
         }
       },
-      "documentation":"<p>Contains the delivery stream Amazon Resource Name (ARN), and the ARN of the Identity and Access Management (IAM) role associated with an Kinesis Data Firehose event destination.</p> <p>Event destinations, such as Kinesis Data Firehose, are associated with configuration sets, which enable you to publish message sending events.</p>"
+      "documentation":"<p>Contains the delivery stream Amazon Resource Name (ARN), and the ARN of the Identity and Access Management (IAM) role associated with a Kinesis Data Firehose event destination.</p> <p>Event destinations, such as Kinesis Data Firehose, are associated with configuration sets, which enable you to publish message sending events.</p>"
     },
     "LanguageCode":{
       "type":"string",
@@ -3822,6 +4373,24 @@
       "max":100,
       "min":1
     },
+    "MediaMessageOriginationIdentity":{
+      "type":"string",
+      "max":256,
+      "min":1,
+      "pattern":"[A-Za-z0-9_:/\\+-]+"
+    },
+    "MediaUrlList":{
+      "type":"list",
+      "member":{"shape":"MediaUrlValue"},
+      "max":1,
+      "min":1
+    },
+    "MediaUrlValue":{
+      "type":"string",
+      "max":2048,
+      "min":1,
+      "pattern":"s3://([a-z0-9\\.-]{3,63})/(.+)"
+    },
     "MessageType":{
       "type":"string",
       "enum":[
@@ -3857,13 +4426,14 @@
       "type":"string",
       "enum":[
         "SMS",
-        "VOICE"
+        "VOICE",
+        "MMS"
       ]
     },
     "NumberCapabilityList":{
       "type":"list",
       "member":{"shape":"NumberCapability"},
-      "max":2,
+      "max":3,
       "min":1
     },
     "NumberStatus":{
@@ -4354,6 +4924,125 @@
     },
     "PrimitiveBoolean":{"type":"boolean"},
     "PrimitiveLong":{"type":"long"},
+    "ProtectConfigurationArn":{
+      "type":"string",
+      "max":256,
+      "min":1,
+      "pattern":"arn:\\S+"
+    },
+    "ProtectConfigurationCountryRuleSet":{
+      "type":"map",
+      "key":{"shape":"IsoCountryCode"},
+      "value":{"shape":"ProtectConfigurationCountryRuleSetInformation"},
+      "max":300,
+      "min":1
+    },
+    "ProtectConfigurationCountryRuleSetInformation":{
+      "type":"structure",
+      "required":["ProtectStatus"],
+      "members":{
+        "ProtectStatus":{
+          "shape":"ProtectStatus",
+          "documentation":"<p>The types of protection that can be used.</p>"
+        }
+      },
+      "documentation":"<p>The types of statuses that can be used.</p>"
+    },
+    "ProtectConfigurationFilter":{
+      "type":"structure",
+      "required":[
+        "Name",
+        "Values"
+      ],
+      "members":{
+        "Name":{
+          "shape":"ProtectConfigurationFilterName",
+          "documentation":"<p>The name of the attribute to filter on.</p>"
+        },
+        "Values":{
+          "shape":"FilterValueList",
+          "documentation":"<p>An array of values to filter for.</p>"
+        }
+      },
+      "documentation":"<p>The filter definition for filtering protect configurations that meet a specified criteria.</p>"
+    },
+    "ProtectConfigurationFilterList":{
+      "type":"list",
+      "member":{"shape":"ProtectConfigurationFilter"},
+      "max":20,
+      "min":0
+    },
+    "ProtectConfigurationFilterName":{
+      "type":"string",
+      "enum":[
+        "account-default",
+        "deletion-protection-enabled"
+      ]
+    },
+    "ProtectConfigurationId":{
+      "type":"string",
+      "max":64,
+      "min":1,
+      "pattern":"[A-Za-z0-9_-]+"
+    },
+    "ProtectConfigurationIdList":{
+      "type":"list",
+      "member":{"shape":"ProtectConfigurationIdOrArn"},
+      "max":5,
+      "min":0
+    },
+    "ProtectConfigurationIdOrArn":{
+      "type":"string",
+      "max":256,
+      "min":1,
+      "pattern":"[A-Za-z0-9_:/-]+"
+    },
+    "ProtectConfigurationInformation":{
+      "type":"structure",
+      "required":[
+        "ProtectConfigurationArn",
+        "ProtectConfigurationId",
+        "CreatedTimestamp",
+        "AccountDefault",
+        "DeletionProtectionEnabled"
+      ],
+      "members":{
+        "ProtectConfigurationArn":{
+          "shape":"ProtectConfigurationArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the protect configuration.</p>"
+        },
+        "ProtectConfigurationId":{
+          "shape":"ProtectConfigurationId",
+          "documentation":"<p>The unique identifier for the protect configuration.</p>"
+        },
+        "CreatedTimestamp":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time when the protect configuration was created, in <a href=\"https://www.epochconverter.com/\">UNIX epoch time</a> format.</p>"
+        },
+        "AccountDefault":{
+          "shape":"PrimitiveBoolean",
+          "documentation":"<p>This is true if the protect configuration is set as your account default protect configuration.</p>"
+        },
+        "DeletionProtectionEnabled":{
+          "shape":"PrimitiveBoolean",
+          "documentation":"<p>The status of deletion protection for the protect configuration. When set to true deletion protection is enabled. By default this is set to false. </p>"
+        }
+      },
+      "documentation":"<p>Provides information on the specified protect configuration.</p>"
+    },
+    "ProtectConfigurationInformationList":{
+      "type":"list",
+      "member":{"shape":"ProtectConfigurationInformation"},
+      "max":100,
+      "min":1
+    },
+    "ProtectStatus":{
+      "type":"string",
+      "enum":[
+        "ALLOW",
+        "BLOCK"
+      ]
+    },
     "PutKeywordRequest":{
       "type":"structure",
       "required":[
@@ -5601,7 +6290,8 @@
         "opted-out-number",
         "registration",
         "registration-attachment",
-        "verified-destination-number"
+        "verified-destination-number",
+        "protect-configuration"
       ]
     },
     "SectionPath":{
@@ -5720,6 +6410,64 @@
         }
       }
     },
+    "SendMediaMessageRequest":{
+      "type":"structure",
+      "required":[
+        "DestinationPhoneNumber",
+        "OriginationIdentity"
+      ],
+      "members":{
+        "DestinationPhoneNumber":{
+          "shape":"PhoneNumber",
+          "documentation":"<p>The destination phone number in E.164 format.</p>"
+        },
+        "OriginationIdentity":{
+          "shape":"MediaMessageOriginationIdentity",
+          "documentation":"<p>The origination identity of the message. This can be either the PhoneNumber, PhoneNumberId, PhoneNumberArn, SenderId, SenderIdArn, PoolId, or PoolArn.</p>"
+        },
+        "MessageBody":{
+          "shape":"TextMessageBody",
+          "documentation":"<p>The text body of the message.</p>"
+        },
+        "MediaUrls":{
+          "shape":"MediaUrlList",
+          "documentation":"<p>An array of URLs to each media file to send. </p> <p>The media files have to be stored in a publicly available S3 bucket. Supported media file formats are listed in <a href=\"https://docs.aws.amazon.com/sms-voice/latest/userguide/mms-limitations-character.html\">MMS file types, size and character limits</a>. For more information on creating an S3 bucket and managing objects, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/create-bucket-overview.html\">Creating a bucket</a> and <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/upload-objects.html\">Uploading objects</a> in the S3 user guide.</p>"
+        },
+        "ConfigurationSetName":{
+          "shape":"ConfigurationSetNameOrArn",
+          "documentation":"<p>The name of the configuration set to use. This can be either the ConfigurationSetName or ConfigurationSetArn.</p>"
+        },
+        "MaxPrice":{
+          "shape":"MaxPrice",
+          "documentation":"<p>The maximum amount that you want to spend, in US dollars, per each MMS message.</p>"
+        },
+        "TimeToLive":{
+          "shape":"TimeToLive",
+          "documentation":"<p>How long the text message is valid for. By default this is 72 hours.</p>"
+        },
+        "Context":{
+          "shape":"ContextMap",
+          "documentation":"<p>You can specify custom data in this field. If you do, that data is logged to the event destination.</p>"
+        },
+        "DryRun":{
+          "shape":"PrimitiveBoolean",
+          "documentation":"<p>When set to true, the message is checked and validated, but isn't sent to the end recipient.</p>"
+        },
+        "ProtectConfigurationId":{
+          "shape":"ProtectConfigurationIdOrArn",
+          "documentation":"<p>The unique identifier of the protect configuration to use.</p>"
+        }
+      }
+    },
+    "SendMediaMessageResult":{
+      "type":"structure",
+      "members":{
+        "MessageId":{
+          "shape":"String",
+          "documentation":"<p>The unique identifier for the message.</p>"
+        }
+      }
+    },
     "SendTextMessageRequest":{
       "type":"structure",
       "required":["DestinationPhoneNumber"],
@@ -5767,6 +6515,10 @@
         "DryRun":{
           "shape":"PrimitiveBoolean",
           "documentation":"<p>When set to true, the message is checked and validated, but isn't sent to the end recipient.</p>"
+        },
+        "ProtectConfigurationId":{
+          "shape":"ProtectConfigurationIdOrArn",
+          "documentation":"<p>The unique identifier for the protect configuration.</p>"
         }
       }
     },
@@ -5825,6 +6577,10 @@
         "DryRun":{
           "shape":"PrimitiveBoolean",
           "documentation":"<p>When set to true, the message is checked and validated, but isn't sent to the end recipient.</p>"
+        },
+        "ProtectConfigurationId":{
+          "shape":"ProtectConfigurationIdOrArn",
+          "documentation":"<p>The unique identifier for the protect configuration.</p>"
         }
       }
     },
@@ -5979,6 +6735,7 @@
         "EVENT_DESTINATIONS_PER_CONFIGURATION_SET",
         "KEYWORDS_PER_PHONE_NUMBER",
         "KEYWORDS_PER_POOL",
+        "MONTHLY_SPEND_LIMIT_REACHED_FOR_MEDIA",
         "MONTHLY_SPEND_LIMIT_REACHED_FOR_TEXT",
         "MONTHLY_SPEND_LIMIT_REACHED_FOR_VOICE",
         "OPT_OUT_LISTS_PER_ACCOUNT",
@@ -5993,8 +6750,36 @@
         "SENDER_IDS_PER_ACCOUNT",
         "TAGS_PER_RESOURCE",
         "VERIFIED_DESTINATION_NUMBERS_PER_ACCOUNT",
-        "VERIFICATION_ATTEMPTS_PER_DAY"
+        "VERIFICATION_ATTEMPTS_PER_DAY",
+        "PROTECT_CONFIGURATIONS_PER_ACCOUNT"
       ]
+    },
+    "SetAccountDefaultProtectConfigurationRequest":{
+      "type":"structure",
+      "required":["ProtectConfigurationId"],
+      "members":{
+        "ProtectConfigurationId":{
+          "shape":"ProtectConfigurationIdOrArn",
+          "documentation":"<p>The unique identifier for the protect configuration.</p>"
+        }
+      }
+    },
+    "SetAccountDefaultProtectConfigurationResult":{
+      "type":"structure",
+      "required":[
+        "DefaultProtectConfigurationArn",
+        "DefaultProtectConfigurationId"
+      ],
+      "members":{
+        "DefaultProtectConfigurationArn":{
+          "shape":"ProtectConfigurationArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the account default protect configuration.</p>"
+        },
+        "DefaultProtectConfigurationId":{
+          "shape":"ProtectConfigurationId",
+          "documentation":"<p>The unique identifier of the account default protect configuration.</p>"
+        }
+      }
     },
     "SetDefaultMessageTypeRequest":{
       "type":"structure",
@@ -6061,6 +6846,25 @@
         "SenderId":{
           "shape":"SenderId",
           "documentation":"<p>The default sender ID to set for the ConfigurationSet.</p>"
+        }
+      }
+    },
+    "SetMediaMessageSpendLimitOverrideRequest":{
+      "type":"structure",
+      "required":["MonthlyLimit"],
+      "members":{
+        "MonthlyLimit":{
+          "shape":"MonthlyLimit",
+          "documentation":"<p>The new monthly limit to enforce on text messages.</p>"
+        }
+      }
+    },
+    "SetMediaMessageSpendLimitOverrideResult":{
+      "type":"structure",
+      "members":{
+        "MonthlyLimit":{
+          "shape":"MonthlyLimit",
+          "documentation":"<p>The current monthly limit to enforce on sending text messages.</p>"
         }
       }
     },
@@ -6155,7 +6959,8 @@
       "type":"string",
       "enum":[
         "TEXT_MESSAGE_MONTHLY_SPEND_LIMIT",
-        "VOICE_MESSAGE_MONTHLY_SPEND_LIMIT"
+        "VOICE_MESSAGE_MONTHLY_SPEND_LIMIT",
+        "MEDIA_MESSAGE_MONTHLY_SPEND_LIMIT"
       ]
     },
     "String":{"type":"string"},
@@ -6641,6 +7446,101 @@
         }
       }
     },
+    "UpdateProtectConfigurationCountryRuleSetRequest":{
+      "type":"structure",
+      "required":[
+        "ProtectConfigurationId",
+        "NumberCapability",
+        "CountryRuleSetUpdates"
+      ],
+      "members":{
+        "ProtectConfigurationId":{
+          "shape":"ProtectConfigurationIdOrArn",
+          "documentation":"<p>The unique identifier for the protect configuration.</p>"
+        },
+        "NumberCapability":{
+          "shape":"NumberCapability",
+          "documentation":"<p>The number capability to apply the CountryRuleSetUpdates updates to.</p>"
+        },
+        "CountryRuleSetUpdates":{
+          "shape":"ProtectConfigurationCountryRuleSet",
+          "documentation":"<p>A map of ProtectConfigurationCountryRuleSetInformation objects that contain the details for the requested NumberCapability. The Key is the two-letter ISO country code. For a list of supported ISO country codes, see <a href=\"https://docs.aws.amazon.com/sms-voice/latest/userguide/phone-numbers-sms-by-country.html\">Supported countries and regions (SMS channel)</a> in the Amazon Pinpoint SMS user guide.</p>"
+        }
+      }
+    },
+    "UpdateProtectConfigurationCountryRuleSetResult":{
+      "type":"structure",
+      "required":[
+        "ProtectConfigurationArn",
+        "ProtectConfigurationId",
+        "NumberCapability",
+        "CountryRuleSet"
+      ],
+      "members":{
+        "ProtectConfigurationArn":{
+          "shape":"ProtectConfigurationArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the protect configuration.</p>"
+        },
+        "ProtectConfigurationId":{
+          "shape":"ProtectConfigurationId",
+          "documentation":"<p>The unique identifier for the protect configuration.</p>"
+        },
+        "NumberCapability":{
+          "shape":"NumberCapability",
+          "documentation":"<p>The number capability that was updated</p>"
+        },
+        "CountryRuleSet":{
+          "shape":"ProtectConfigurationCountryRuleSet",
+          "documentation":"<p>An array of ProtectConfigurationCountryRuleSetInformation containing the rules for the NumberCapability.</p>"
+        }
+      }
+    },
+    "UpdateProtectConfigurationRequest":{
+      "type":"structure",
+      "required":["ProtectConfigurationId"],
+      "members":{
+        "ProtectConfigurationId":{
+          "shape":"ProtectConfigurationIdOrArn",
+          "documentation":"<p>The unique identifier for the protect configuration.</p>"
+        },
+        "DeletionProtectionEnabled":{
+          "shape":"Boolean",
+          "documentation":"<p>When set to true deletion protection is enabled. By default this is set to false. </p>"
+        }
+      }
+    },
+    "UpdateProtectConfigurationResult":{
+      "type":"structure",
+      "required":[
+        "ProtectConfigurationArn",
+        "ProtectConfigurationId",
+        "CreatedTimestamp",
+        "AccountDefault",
+        "DeletionProtectionEnabled"
+      ],
+      "members":{
+        "ProtectConfigurationArn":{
+          "shape":"ProtectConfigurationArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the protect configuration.</p>"
+        },
+        "ProtectConfigurationId":{
+          "shape":"ProtectConfigurationId",
+          "documentation":"<p>The unique identifier for the protect configuration.</p>"
+        },
+        "CreatedTimestamp":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time when the protect configuration was created, in <a href=\"https://www.epochconverter.com/\">UNIX epoch time</a> format.</p>"
+        },
+        "AccountDefault":{
+          "shape":"PrimitiveBoolean",
+          "documentation":"<p>This is true if the protect configuration is set as your account default protect configuration.</p>"
+        },
+        "DeletionProtectionEnabled":{
+          "shape":"PrimitiveBoolean",
+          "documentation":"<p>The status of deletion protection for the protect configuration. When set to true deletion protection is enabled. By default this is set to false. </p>"
+        }
+      }
+    },
     "UpdateSenderIdRequest":{
       "type":"structure",
       "required":[
@@ -6763,6 +7663,7 @@
         "INVALID_REQUEST",
         "INVALID_REGISTRATION_ASSOCIATION",
         "MAXIMUM_SIZE_EXCEEDED",
+        "MEDIA_TYPE_NOT_SUPPORTED",
         "MISSING_PARAMETER",
         "PARAMETERS_CANNOT_BE_USED_TOGETHER",
         "PHONE_NUMBER_CANNOT_BE_OPTED_IN",
@@ -7025,5 +7926,5 @@
       "pattern":"[A-Za-z0-9_:/\\+-]+"
     }
   },
-  "documentation":"<p>Welcome to the <i>Amazon Pinpoint SMS and Voice, version 2 API Reference</i>. This guide provides information about Amazon Pinpoint SMS and Voice, version 2 API resources, including supported HTTP methods, parameters, and schemas.</p> <p>Amazon Pinpoint is an Amazon Web Services service that you can use to engage with your recipients across multiple messaging channels. The Amazon Pinpoint SMS and Voice, version 2 API provides programmatic access to options that are unique to the SMS and voice channels and supplements the resources provided by the Amazon Pinpoint API.</p> <p>If you're new to Amazon Pinpoint, it's also helpful to review the <a href=\"https://docs.aws.amazon.com/pinpoint/latest/developerguide/welcome.html\"> Amazon Pinpoint Developer Guide</a>. The <i>Amazon Pinpoint Developer Guide</i> provides tutorials, code samples, and procedures that demonstrate how to use Amazon Pinpoint features programmatically and how to integrate Amazon Pinpoint functionality into mobile apps and other types of applications. The guide also provides key information, such as Amazon Pinpoint integration with other Amazon Web Services services, and the quotas that apply to use of the service.</p> <p> <b>Regional availability</b> </p> <p>The <i>Amazon Pinpoint SMS and Voice, version 2 API Reference</i> is available in several Amazon Web Services Regions and it provides an endpoint for each of these Regions. For a list of all the Regions and endpoints where the API is currently available, see <a href=\"https://docs.aws.amazon.com/general/latest/gr/rande.html#pinpoint_region\">Amazon Web Services Service Endpoints</a> and <a href=\"https://docs.aws.amazon.com/general/latest/gr/pinpoint.html\">Amazon Pinpoint endpoints and quotas</a> in the Amazon Web Services General Reference. To learn more about Amazon Web Services Regions, see <a href=\"https://docs.aws.amazon.com/general/latest/gr/rande-manage.html\">Managing Amazon Web Services Regions</a> in the Amazon Web Services General Reference.</p> <p>In each Region, Amazon Web Services maintains multiple Availability Zones. These Availability Zones are physically isolated from each other, but are united by private, low-latency, high-throughput, and highly redundant network connections. These Availability Zones enable us to provide very high levels of availability and redundancy, while also minimizing latency. To learn more about the number of Availability Zones that are available in each Region, see <a href=\"https://aws.amazon.com/about-aws/global-infrastructure/\">Amazon Web Services Global Infrastructure.</a> </p>"
+  "documentation":"<p>Welcome to the <i>Amazon Pinpoint SMS and Voice, version 2 API Reference</i>. This guide provides information about Amazon Pinpoint SMS and Voice, version 2 API resources, including supported HTTP methods, parameters, and schemas.</p> <p>Amazon Pinpoint is an Amazon Web Services service that you can use to engage with your recipients across multiple messaging channels. The Amazon Pinpoint SMS and Voice, version 2 API provides programmatic access to options that are unique to the SMS and voice channels. Amazon Pinpoint SMS and Voice, version 2 resources such as phone numbers, sender IDs, and opt-out lists can be used by the Amazon Pinpoint API.</p> <p>If you're new to Amazon Pinpoint SMS, it's also helpful to review the <a href=\"https://docs.aws.amazon.com/sms-voice/latest/userguide/what-is-service.html\"> Amazon Pinpoint SMS User Guide</a>. The <i>Amazon Pinpoint Developer Guide</i> provides tutorials, code samples, and procedures that demonstrate how to use Amazon Pinpoint SMS features programmatically and how to integrate Amazon Pinpoint functionality into mobile apps and other types of applications. The guide also provides key information, such as Amazon Pinpoint integration with other Amazon Web Services services, and the quotas that apply to use of the service.</p> <p> <b>Regional availability</b> </p> <p>The <i>Amazon Pinpoint SMS and Voice, version 2 API Reference</i> is available in several Amazon Web Services Regions and it provides an endpoint for each of these Regions. For a list of all the Regions and endpoints where the API is currently available, see <a href=\"https://docs.aws.amazon.com/general/latest/gr/rande.html#pinpoint_region\">Amazon Web Services Service Endpoints</a> and <a href=\"https://docs.aws.amazon.com/general/latest/gr/pinpoint.html\">Amazon Pinpoint endpoints and quotas</a> in the Amazon Web Services General Reference. To learn more about Amazon Web Services Regions, see <a href=\"https://docs.aws.amazon.com/general/latest/gr/rande-manage.html\">Managing Amazon Web Services Regions</a> in the Amazon Web Services General Reference.</p> <p>In each Region, Amazon Web Services maintains multiple Availability Zones. These Availability Zones are physically isolated from each other, but are united by private, low-latency, high-throughput, and highly redundant network connections. These Availability Zones enable us to provide very high levels of availability and redundancy, while also minimizing latency. To learn more about the number of Availability Zones that are available in each Region, see <a href=\"https://aws.amazon.com/about-aws/global-infrastructure/\">Amazon Web Services Global Infrastructure.</a> </p>"
 }

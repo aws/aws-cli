@@ -5,6 +5,7 @@
     "endpointPrefix":"query.timestream",
     "jsonVersion":"1.0",
     "protocol":"json",
+    "protocols":["json"],
     "serviceAbbreviation":"Timestream Query",
     "serviceFullName":"Amazon Timestream Query",
     "serviceId":"Timestream Query",
@@ -72,6 +73,23 @@
       "documentation":"<p>Deletes a given scheduled query. This is an irreversible operation. </p>",
       "endpointdiscovery":{"required":true},
       "idempotent":true
+    },
+    "DescribeAccountSettings":{
+      "name":"DescribeAccountSettings",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DescribeAccountSettingsRequest"},
+      "output":{"shape":"DescribeAccountSettingsResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InvalidEndpointException"}
+      ],
+      "documentation":"<p>Describes the settings for your account that include the query pricing model and the configured maximum TCUs the service can use for your query workload.</p> <p>You're charged only for the duration of compute units used for your workloads.</p>",
+      "endpointdiscovery":{"required":true}
     },
     "DescribeEndpoints":{
       "name":"DescribeEndpoints",
@@ -236,6 +254,25 @@
       ],
       "documentation":"<p>Removes the association of tags from a Timestream query resource.</p>",
       "endpointdiscovery":{"required":true}
+    },
+    "UpdateAccountSettings":{
+      "name":"UpdateAccountSettings",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"UpdateAccountSettingsRequest"},
+      "output":{"shape":"UpdateAccountSettingsResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ValidationException"},
+        {"shape":"InvalidEndpointException"}
+      ],
+      "documentation":"<p>Transitions your account to use TCUs for query pricing and modifies the maximum query compute units that you've configured. If you reduce the value of <code>MaxQueryTCU</code> to a desired configuration, the new value can take up to 24 hours to be effective.</p> <note> <p>After you've transitioned your account to use TCUs for query pricing, you can't transition to using bytes scanned for query pricing.</p> </note>",
+      "endpointdiscovery":{"required":true},
+      "idempotent":true
     },
     "UpdateScheduledQuery":{
       "name":"UpdateScheduledQuery",
@@ -433,6 +470,24 @@
         }
       }
     },
+    "DescribeAccountSettingsRequest":{
+      "type":"structure",
+      "members":{
+      }
+    },
+    "DescribeAccountSettingsResponse":{
+      "type":"structure",
+      "members":{
+        "MaxQueryTCU":{
+          "shape":"MaxQueryCapacity",
+          "documentation":"<p>The maximum number of <a href=\"https://docs.aws.amazon.com/timestream/latest/developerguide/tcu.html\">Timestream compute units</a> (TCUs) the service will use at any point in time to serve your queries.</p>"
+        },
+        "QueryPricingModel":{
+          "shape":"QueryPricingModel",
+          "documentation":"<p>The pricing model for queries in your account.</p>"
+        }
+      }
+    },
     "DescribeEndpointsRequest":{
       "type":"structure",
       "members":{
@@ -576,6 +631,10 @@
           "shape":"Long",
           "documentation":"<p>Bytes metered for a single scheduled query run.</p>"
         },
+        "CumulativeBytesScanned":{
+          "shape":"Long",
+          "documentation":"<p>Bytes scanned for a single scheduled query run.</p>"
+        },
         "RecordsIngested":{
           "shape":"Long",
           "documentation":"<p>The number of records ingested for a single scheduled query run. </p>"
@@ -592,7 +651,7 @@
       "members":{
         "Message":{"shape":"ErrorMessage"}
       },
-      "documentation":"<p> Timestream was unable to fully process this request because of an internal server error. </p>",
+      "documentation":"<p> The service was unable to fully process this request because of an internal server error. </p>",
       "exception":true
     },
     "InvalidEndpointException":{
@@ -663,6 +722,7 @@
       }
     },
     "Long":{"type":"long"},
+    "MaxQueryCapacity":{"type":"integer"},
     "MaxQueryResults":{
       "type":"integer",
       "box":true,
@@ -855,6 +915,13 @@
       "max":64,
       "min":1,
       "pattern":"[a-zA-Z0-9]+"
+    },
+    "QueryPricingModel":{
+      "type":"string",
+      "enum":[
+        "BYTES_SCANNED",
+        "COMPUTE_UNITS"
+      ]
     },
     "QueryRequest":{
       "type":"structure",
@@ -1186,7 +1253,7 @@
       "type":"string",
       "max":64,
       "min":1,
-      "pattern":"[a-zA-Z0-9_.-]+"
+      "pattern":"[a-zA-Z0-9|!\\-_*'\\(\\)]([a-zA-Z0-9]|[!\\-_*'\\(\\)\\/.])+"
     },
     "ScheduledQueryRunStatus":{
       "type":"string",
@@ -1503,6 +1570,32 @@
     "UntagResourceResponse":{
       "type":"structure",
       "members":{
+      }
+    },
+    "UpdateAccountSettingsRequest":{
+      "type":"structure",
+      "members":{
+        "MaxQueryTCU":{
+          "shape":"MaxQueryCapacity",
+          "documentation":"<p>The maximum number of compute units the service will use at any point in time to serve your queries. To run queries, you must set a minimum capacity of 4 TCU. You can set the maximum number of TCU in multiples of 4, for example, 4, 8, 16, 32, and so on.</p> <p>The maximum value supported for <code>MaxQueryTCU</code> is 1000. To request an increase to this soft limit, contact Amazon Web Services Support. For information about the default quota for maxQueryTCU, see <a href=\"https://docs.aws.amazon.com/timestream/latest/developerguide/ts-limits.html#limits.default\">Default quotas</a>.</p>"
+        },
+        "QueryPricingModel":{
+          "shape":"QueryPricingModel",
+          "documentation":"<p>The pricing model for queries in an account.</p>"
+        }
+      }
+    },
+    "UpdateAccountSettingsResponse":{
+      "type":"structure",
+      "members":{
+        "MaxQueryTCU":{
+          "shape":"MaxQueryCapacity",
+          "documentation":"<p>The configured maximum number of compute units the service will use at any point in time to serve your queries.</p>"
+        },
+        "QueryPricingModel":{
+          "shape":"QueryPricingModel",
+          "documentation":"<p>The pricing model for an account.</p>"
+        }
       }
     },
     "UpdateScheduledQueryRequest":{

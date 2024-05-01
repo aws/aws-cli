@@ -5,6 +5,7 @@
     "endpointPrefix":"inspector2",
     "jsonVersion":"1.1",
     "protocol":"rest-json",
+    "protocols":["rest-json"],
     "serviceAbbreviation":"Inspector2",
     "serviceFullName":"Inspector2",
     "serviceId":"Inspector2",
@@ -3029,6 +3030,10 @@
           "shape":"CoverageStringFilterList",
           "documentation":"<p>An array of Amazon Web Services resource types to return coverage statistics for. The values can be <code>AWS_EC2_INSTANCE</code>, <code>AWS_LAMBDA_FUNCTION</code>, <code>AWS_ECR_CONTAINER_IMAGE</code>, <code>AWS_ECR_REPOSITORY</code> or <code>AWS_ACCOUNT</code>.</p>"
         },
+        "scanMode":{
+          "shape":"CoverageStringFilterList",
+          "documentation":"<p>The filter to search for Amazon EC2 instance coverage by scan mode. Valid values are <code>EC2_SSM_AGENT_BASED</code> and <code>EC2_HYBRID</code>.</p>"
+        },
         "scanStatusCode":{
           "shape":"CoverageStringFilterList",
           "documentation":"<p>The scan status code to filter on. Valid values are: <code>ValidationException</code>, <code>InternalServerException</code>, <code>ResourceNotFoundException</code>, <code>BadRequestException</code>, and <code>ThrottlingException</code>.</p>"
@@ -3149,6 +3154,10 @@
         "resourceType":{
           "shape":"CoverageResourceType",
           "documentation":"<p>The type of the covered resource.</p>"
+        },
+        "scanMode":{
+          "shape":"ScanMode",
+          "documentation":"<p>The scan method that is applied to the instance.</p>"
         },
         "scanStatus":{
           "shape":"ScanStatus",
@@ -3731,6 +3740,27 @@
       "type":"double",
       "box":true
     },
+    "Ec2Configuration":{
+      "type":"structure",
+      "required":["scanMode"],
+      "members":{
+        "scanMode":{
+          "shape":"Ec2ScanMode",
+          "documentation":"<p>The scan method that is applied to the instance.</p>"
+        }
+      },
+      "documentation":"<p>Enables agent-based scanning, which scans instances that are not managed by SSM.</p>"
+    },
+    "Ec2ConfigurationState":{
+      "type":"structure",
+      "members":{
+        "scanModeState":{
+          "shape":"Ec2ScanModeState",
+          "documentation":"<p>An object that contains details about the state of the Amazon EC2 scan mode.</p>"
+        }
+      },
+      "documentation":"<p>Details about the state of the EC2 scan configuration for your environment.</p>"
+    },
     "Ec2DeepInspectionStatus":{
       "type":"string",
       "enum":[
@@ -3839,6 +3869,34 @@
         "LINUX",
         "UNKNOWN",
         "MACOS"
+      ]
+    },
+    "Ec2ScanMode":{
+      "type":"string",
+      "enum":[
+        "EC2_SSM_AGENT_BASED",
+        "EC2_HYBRID"
+      ]
+    },
+    "Ec2ScanModeState":{
+      "type":"structure",
+      "members":{
+        "scanMode":{
+          "shape":"Ec2ScanMode",
+          "documentation":"<p>The scan method that is applied to the instance.</p>"
+        },
+        "scanModeStatus":{
+          "shape":"Ec2ScanModeStatus",
+          "documentation":"<p>The status of the Amazon EC2 scan mode setting.</p>"
+        }
+      },
+      "documentation":"<p>The state of your Amazon EC2 scan mode configuration.</p>"
+    },
+    "Ec2ScanModeStatus":{
+      "type":"string",
+      "enum":[
+        "SUCCESS",
+        "PENDING"
       ]
     },
     "EcrConfiguration":{
@@ -4533,7 +4591,7 @@
         },
         "lastObservedAt":{
           "shape":"DateTimeTimestamp",
-          "documentation":"<p>The date and time that the finding was last observed.</p>"
+          "documentation":"<p> The date and time the finding was last observed. This timestamp for this field remains unchanged until a finding is updated. </p>"
         },
         "networkReachabilityDetails":{
           "shape":"NetworkReachabilityDetails",
@@ -4883,7 +4941,7 @@
         },
         "url":{
           "shape":"String",
-          "documentation":"<p> The URL where the CIS scan report PDF can be downloaded. </p>"
+          "documentation":"<p> The URL where a PDF of the CIS scan report can be downloaded. </p>"
         }
       }
     },
@@ -4956,6 +5014,10 @@
     "GetConfigurationResponse":{
       "type":"structure",
       "members":{
+        "ec2Configuration":{
+          "shape":"Ec2ConfigurationState",
+          "documentation":"<p>Specifies how the Amazon EC2 automated scan mode is currently configured for your environment.</p>"
+        },
         "ecrConfiguration":{
           "shape":"EcrConfigurationState",
           "documentation":"<p>Specifies how the ECR automated re-scan duration is currently configured for your environment.</p>"
@@ -7098,6 +7160,13 @@
         "SPDX_2_3"
       ]
     },
+    "ScanMode":{
+      "type":"string",
+      "enum":[
+        "EC2_SSM_AGENT_BASED",
+        "EC2_AGENTLESS"
+      ]
+    },
     "ScanStatus":{
       "type":"structure",
       "required":[
@@ -8026,8 +8095,11 @@
     },
     "UpdateConfigurationRequest":{
       "type":"structure",
-      "required":["ecrConfiguration"],
       "members":{
+        "ec2Configuration":{
+          "shape":"Ec2Configuration",
+          "documentation":"<p>Specifies how the Amazon EC2 automated scan will be updated for your environment.</p>"
+        },
         "ecrConfiguration":{
           "shape":"EcrConfiguration",
           "documentation":"<p>Specifies how the ECR automated re-scan will be updated for your environment.</p>"

@@ -193,6 +193,67 @@
       "documentation":"<p>Deletes a Cases domain.</p> <pre><code> &lt;note&gt; &lt;p&gt;After deleting your domain you must disassociate the deleted domain from your Amazon Connect instance with another API call before being able to use Cases again with this Amazon Connect instance. See &lt;a href=&quot;https://docs.aws.amazon.com/connect/latest/APIReference/API_DeleteIntegrationAssociation.html&quot;&gt;DeleteIntegrationAssociation&lt;/a&gt;.&lt;/p&gt; &lt;/note&gt; </code></pre>",
       "idempotent":true
     },
+    "DeleteField":{
+      "name":"DeleteField",
+      "http":{
+        "method":"DELETE",
+        "requestUri":"/domains/{domainId}/fields/{fieldId}",
+        "responseCode":200
+      },
+      "input":{"shape":"DeleteFieldRequest"},
+      "output":{"shape":"DeleteFieldResponse"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ValidationException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ConflictException"},
+        {"shape":"ServiceQuotaExceededException"}
+      ],
+      "documentation":"<p>Deletes a field from a cases template. You can delete up to 100 fields per domain.</p> <p>After a field is deleted:</p> <ul> <li> <p>You can still retrieve the field by calling <code>BatchGetField</code>.</p> </li> <li> <p>You cannot update a deleted field by calling <code>UpdateField</code>; it throws a <code>ValidationException</code>.</p> </li> <li> <p>Deleted fields are not included in the <code>ListFields</code> response.</p> </li> <li> <p>Calling <code>CreateCase</code> with a deleted field throws a <code>ValidationException</code> denoting which field IDs in the request have been deleted.</p> </li> <li> <p>Calling <code>GetCase</code> with a deleted field ID returns the deleted field's value if one exists.</p> </li> <li> <p>Calling <code>UpdateCase</code> with a deleted field ID throws a <code>ValidationException</code> if the case does not already contain a value for the deleted field. Otherwise it succeeds, allowing you to update or remove (using <code>emptyValue: {}</code>) the field's value from the case.</p> </li> <li> <p> <code>GetTemplate</code> does not return field IDs for deleted fields.</p> </li> <li> <p> <code>GetLayout</code> does not return field IDs for deleted fields.</p> </li> <li> <p>Calling <code>SearchCases</code> with the deleted field ID as a filter returns any cases that have a value for the deleted field that matches the filter criteria.</p> </li> <li> <p>Calling <code>SearchCases</code> with a <code>searchTerm</code> value that matches a deleted field's value on a case returns the case in the response.</p> </li> <li> <p>Calling <code>BatchPutFieldOptions</code> with a deleted field ID throw a <code>ValidationException</code>.</p> </li> <li> <p>Calling <code>GetCaseEventConfiguration</code> does not return field IDs for deleted fields.</p> </li> </ul>",
+      "idempotent":true
+    },
+    "DeleteLayout":{
+      "name":"DeleteLayout",
+      "http":{
+        "method":"DELETE",
+        "requestUri":"/domains/{domainId}/layouts/{layoutId}",
+        "responseCode":200
+      },
+      "input":{"shape":"DeleteLayoutRequest"},
+      "output":{"shape":"DeleteLayoutResponse"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ValidationException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ConflictException"}
+      ],
+      "documentation":"<p>Deletes a layout from a cases template. You can delete up to 100 layouts per domain.</p> <pre><code> &lt;p&gt;After a layout is deleted:&lt;/p&gt; &lt;ul&gt; &lt;li&gt; &lt;p&gt;You can still retrieve the layout by calling &lt;code&gt;GetLayout&lt;/code&gt;.&lt;/p&gt; &lt;/li&gt; &lt;li&gt; &lt;p&gt;You cannot update a deleted layout by calling &lt;code&gt;UpdateLayout&lt;/code&gt;; it throws a &lt;code&gt;ValidationException&lt;/code&gt;.&lt;/p&gt; &lt;/li&gt; &lt;li&gt; &lt;p&gt;Deleted layouts are not included in the &lt;code&gt;ListLayouts&lt;/code&gt; response.&lt;/p&gt; &lt;/li&gt; &lt;/ul&gt; </code></pre>",
+      "idempotent":true
+    },
+    "DeleteTemplate":{
+      "name":"DeleteTemplate",
+      "http":{
+        "method":"DELETE",
+        "requestUri":"/domains/{domainId}/templates/{templateId}",
+        "responseCode":200
+      },
+      "input":{"shape":"DeleteTemplateRequest"},
+      "output":{"shape":"DeleteTemplateResponse"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ValidationException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ConflictException"}
+      ],
+      "documentation":"<p>Deletes a cases template. You can delete up to 100 templates per domain.</p> <pre><code> &lt;p&gt;After a cases template is deleted:&lt;/p&gt; &lt;ul&gt; &lt;li&gt; &lt;p&gt;You can still retrieve the template by calling &lt;code&gt;GetTemplate&lt;/code&gt;.&lt;/p&gt; &lt;/li&gt; &lt;li&gt; &lt;p&gt;You cannot update the template. &lt;/p&gt; &lt;/li&gt; &lt;li&gt; &lt;p&gt;You cannot create a case by using the deleted template.&lt;/p&gt; &lt;/li&gt; &lt;li&gt; &lt;p&gt;Deleted templates are not included in the &lt;code&gt;ListTemplates&lt;/code&gt; response.&lt;/p&gt; &lt;/li&gt; &lt;/ul&gt; </code></pre>",
+      "idempotent":true
+    },
     "GetCase":{
       "name":"GetCase",
       "http":{
@@ -712,7 +773,7 @@
           "documentation":"<p>Can be either null, or have a String value type formatted as an ARN. Only one value can be provided.</p>"
         }
       },
-      "documentation":"<p>Object to store union of Field values.</p> <important> <p>This data type is a UNION, so only one of the following members can be specified when used or returned.</p> </important>",
+      "documentation":"<p>Object to store union of Field values.</p>",
       "union":true
     },
     "AuditEventFieldValueUnionStringValueString":{
@@ -1356,6 +1417,85 @@
       "members":{
       }
     },
+    "DeleteFieldRequest":{
+      "type":"structure",
+      "required":[
+        "domainId",
+        "fieldId"
+      ],
+      "members":{
+        "domainId":{
+          "shape":"DomainId",
+          "documentation":"<p>The unique identifier of the Cases domain. </p>",
+          "location":"uri",
+          "locationName":"domainId"
+        },
+        "fieldId":{
+          "shape":"FieldId",
+          "documentation":"<p>The unique identifier of a field.</p>",
+          "location":"uri",
+          "locationName":"fieldId"
+        }
+      }
+    },
+    "DeleteFieldResponse":{
+      "type":"structure",
+      "members":{
+      }
+    },
+    "DeleteLayoutRequest":{
+      "type":"structure",
+      "required":[
+        "domainId",
+        "layoutId"
+      ],
+      "members":{
+        "domainId":{
+          "shape":"DomainId",
+          "documentation":"<p>The unique identifier of the Cases domain. </p>",
+          "location":"uri",
+          "locationName":"domainId"
+        },
+        "layoutId":{
+          "shape":"LayoutId",
+          "documentation":"<p>The unique identifier of the layout.</p>",
+          "location":"uri",
+          "locationName":"layoutId"
+        }
+      }
+    },
+    "DeleteLayoutResponse":{
+      "type":"structure",
+      "members":{
+      }
+    },
+    "DeleteTemplateRequest":{
+      "type":"structure",
+      "required":[
+        "domainId",
+        "templateId"
+      ],
+      "members":{
+        "domainId":{
+          "shape":"DomainId",
+          "documentation":"<p>The unique identifier of the Cases domain. </p>",
+          "location":"uri",
+          "locationName":"domainId"
+        },
+        "templateId":{
+          "shape":"TemplateId",
+          "documentation":"<p>A unique identifier of a template.</p>",
+          "location":"uri",
+          "locationName":"templateId"
+        }
+      }
+    },
+    "DeleteTemplateResponse":{
+      "type":"structure",
+      "members":{
+      }
+    },
+    "Deleted":{"type":"boolean"},
     "DomainArn":{
       "type":"string",
       "max":500,
@@ -1934,6 +2074,14 @@
         "type"
       ],
       "members":{
+        "createdTime":{
+          "shape":"CreatedTime",
+          "documentation":"<p>The timestamp for when the resource was created.</p>"
+        },
+        "deleted":{
+          "shape":"Deleted",
+          "documentation":"<p>Indicates whether the resource has been deleted.</p>"
+        },
         "description":{
           "shape":"FieldDescription",
           "documentation":"<p>Description of the field.</p>"
@@ -1945,6 +2093,10 @@
         "fieldId":{
           "shape":"FieldId",
           "documentation":"<p>Unique identifier of the field.</p>"
+        },
+        "lastModifiedTime":{
+          "shape":"LastModifiedTime",
+          "documentation":"<p>The timestamp for when the resource was created or last modified.</p>"
         },
         "name":{
           "shape":"FieldName",
@@ -1999,6 +2151,18 @@
           "shape":"LayoutContent",
           "documentation":"<p>Information about which fields will be present in the layout, the order of the fields, and read-only attribute of the field. </p>"
         },
+        "createdTime":{
+          "shape":"CreatedTime",
+          "documentation":"<p>The timestamp for when the resource was created.</p>"
+        },
+        "deleted":{
+          "shape":"Deleted",
+          "documentation":"<p>Indicates whether the resource has been deleted.</p>"
+        },
+        "lastModifiedTime":{
+          "shape":"LastModifiedTime",
+          "documentation":"<p>The timestamp for when the resource was created or last modified.</p>"
+        },
         "layoutArn":{
           "shape":"LayoutArn",
           "documentation":"<p>The Amazon Resource Name (ARN) of the newly created layout.</p>"
@@ -2047,9 +2211,21 @@
         "templateId"
       ],
       "members":{
+        "createdTime":{
+          "shape":"CreatedTime",
+          "documentation":"<p>The timestamp for when the resource was created.</p>"
+        },
+        "deleted":{
+          "shape":"Deleted",
+          "documentation":"<p>Indicates whether the resource has been deleted.</p>"
+        },
         "description":{
           "shape":"TemplateDescription",
           "documentation":"<p>A brief description of the template.</p>"
+        },
+        "lastModifiedTime":{
+          "shape":"LastModifiedTime",
+          "documentation":"<p>The timestamp for when the resource was created or last modified.</p>"
         },
         "layoutConfiguration":{
           "shape":"LayoutConfiguration",
@@ -2107,6 +2283,10 @@
       "exception":true,
       "fault":true,
       "retryable":{"throttling":false}
+    },
+    "LastModifiedTime":{
+      "type":"timestamp",
+      "timestampFormat":"iso8601"
     },
     "LayoutArn":{
       "type":"string",

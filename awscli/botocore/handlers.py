@@ -962,6 +962,12 @@ def remove_lex_v2_start_conversation(class_attributes, **kwargs):
         del class_attributes['start_conversation']
 
 
+def remove_qbusiness_chat(class_attributes, **kwargs):
+    """Operation requires h2 which is currently unsupported in Python"""
+    if 'chat' in class_attributes:
+        del class_attributes['chat']
+
+
 def remove_bucket_from_url_paths_from_model(params, model, context, **kwargs):
     """Strips leading `{Bucket}/` from any operations that have it.
 
@@ -1067,6 +1073,7 @@ BUILTIN_HANDLERS = [
     ('creating-client-class.iot-data-plane',
      check_openssl_supports_tls_version_1_2),
     ('creating-client-class.lex-runtime-v2', remove_lex_v2_start_conversation),
+    ('creating-client-class.qbusiness', remove_qbusiness_chat),
     ('after-call.iam', json_decode_policies),
 
     ('after-call.ec2.GetConsoleOutput', decode_console_output),

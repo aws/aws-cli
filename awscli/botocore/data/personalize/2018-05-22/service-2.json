@@ -5,6 +5,7 @@
     "endpointPrefix":"personalize",
     "jsonVersion":"1.1",
     "protocol":"json",
+    "protocols":["json"],
     "serviceFullName":"Amazon Personalize",
     "serviceId":"Personalize",
     "signatureVersion":"v4",
@@ -67,6 +68,24 @@
       ],
       "documentation":"<important> <p> You incur campaign costs while it is active. To avoid unnecessary costs, make sure to delete the campaign when you are finished. For information about campaign costs, see <a href=\"https://aws.amazon.com/personalize/pricing/\">Amazon Personalize pricing</a>.</p> </important> <p>Creates a campaign that deploys a solution version. When a client calls the <a href=\"https://docs.aws.amazon.com/personalize/latest/dg/API_RS_GetRecommendations.html\">GetRecommendations</a> and <a href=\"https://docs.aws.amazon.com/personalize/latest/dg/API_RS_GetPersonalizedRanking.html\">GetPersonalizedRanking</a> APIs, a campaign is specified in the request.</p> <p> <b>Minimum Provisioned TPS and Auto-Scaling</b> </p> <important> <p> A high <code>minProvisionedTPS</code> will increase your cost. We recommend starting with 1 for <code>minProvisionedTPS</code> (the default). Track your usage using Amazon CloudWatch metrics, and increase the <code>minProvisionedTPS</code> as necessary.</p> </important> <p> When you create an Amazon Personalize campaign, you can specify the minimum provisioned transactions per second (<code>minProvisionedTPS</code>) for the campaign. This is the baseline transaction throughput for the campaign provisioned by Amazon Personalize. It sets the minimum billing charge for the campaign while it is active. A transaction is a single <code>GetRecommendations</code> or <code>GetPersonalizedRanking</code> request. The default <code>minProvisionedTPS</code> is 1.</p> <p> If your TPS increases beyond the <code>minProvisionedTPS</code>, Amazon Personalize auto-scales the provisioned capacity up and down, but never below <code>minProvisionedTPS</code>. There's a short time delay while the capacity is increased that might cause loss of transactions. When your traffic reduces, capacity returns to the <code>minProvisionedTPS</code>. </p> <p>You are charged for the the minimum provisioned TPS or, if your requests exceed the <code>minProvisionedTPS</code>, the actual TPS. The actual TPS is the total number of recommendation requests you make. We recommend starting with a low <code>minProvisionedTPS</code>, track your usage using Amazon CloudWatch metrics, and then increase the <code>minProvisionedTPS</code> as necessary.</p> <p>For more information about campaign costs, see <a href=\"https://aws.amazon.com/personalize/pricing/\">Amazon Personalize pricing</a>.</p> <p> <b>Status</b> </p> <p>A campaign can be in one of the following states:</p> <ul> <li> <p>CREATE PENDING &gt; CREATE IN_PROGRESS &gt; ACTIVE -or- CREATE FAILED</p> </li> <li> <p>DELETE PENDING &gt; DELETE IN_PROGRESS</p> </li> </ul> <p>To get the campaign status, call <a href=\"https://docs.aws.amazon.com/personalize/latest/dg/API_DescribeCampaign.html\">DescribeCampaign</a>.</p> <note> <p>Wait until the <code>status</code> of the campaign is <code>ACTIVE</code> before asking the campaign for recommendations.</p> </note> <p class=\"title\"> <b>Related APIs</b> </p> <ul> <li> <p> <a href=\"https://docs.aws.amazon.com/personalize/latest/dg/API_ListCampaigns.html\">ListCampaigns</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/personalize/latest/dg/API_DescribeCampaign.html\">DescribeCampaign</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/personalize/latest/dg/API_UpdateCampaign.html\">UpdateCampaign</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/personalize/latest/dg/API_DeleteCampaign.html\">DeleteCampaign</a> </p> </li> </ul>",
       "idempotent":true
+    },
+    "CreateDataDeletionJob":{
+      "name":"CreateDataDeletionJob",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"CreateDataDeletionJobRequest"},
+      "output":{"shape":"CreateDataDeletionJobResponse"},
+      "errors":[
+        {"shape":"InvalidInputException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ResourceAlreadyExistsException"},
+        {"shape":"LimitExceededException"},
+        {"shape":"ResourceInUseException"},
+        {"shape":"TooManyTagsException"}
+      ],
+      "documentation":"<p>Creates a batch job that deletes all references to specific users from an Amazon Personalize dataset group in batches. You specify the users to delete in a CSV file of userIds in an Amazon S3 bucket. After a job completes, Amazon Personalize no longer trains on the users’ data and no longer considers the users when generating user segments. For more information about creating a data deletion job, see <a href=\"https://docs.aws.amazon.com/personalize/latest/dg/delete-records.html\">Deleting users</a>.</p> <ul> <li> <p>Your input file must be a CSV file with a single USER_ID column that lists the users IDs. For more information about preparing the CSV file, see <a href=\"https://docs.aws.amazon.com/personalize/latest/dg/prepare-deletion-input-file.html\">Preparing your data deletion file and uploading it to Amazon S3</a>.</p> </li> <li> <p>To give Amazon Personalize permission to access your input CSV file of userIds, you must specify an IAM service role that has permission to read from the data source. This role needs <code>GetObject</code> and <code>ListBucket</code> permissions for the bucket and its content. These permissions are the same as importing data. For information on granting access to your Amazon S3 bucket, see <a href=\"https://docs.aws.amazon.com/personalize/latest/dg/granting-personalize-s3-access.html\">Giving Amazon Personalize Access to Amazon S3 Resources</a>. </p> </li> </ul> <p> After you create a job, it can take up to a day to delete all references to the users from datasets and models. Until the job completes, Amazon Personalize continues to use the data when training. And if you use a User Segmentation recipe, the users might appear in user segments. </p> <p> <b>Status</b> </p> <p>A data deletion job can have one of the following statuses:</p> <ul> <li> <p>PENDING &gt; IN_PROGRESS &gt; COMPLETED -or- FAILED</p> </li> </ul> <p>To get the status of the data deletion job, call <a href=\"https://docs.aws.amazon.com/personalize/latest/dg/API_DescribeDataDeletionJob.html\">DescribeDataDeletionJob</a> API operation and specify the Amazon Resource Name (ARN) of the job. If the status is FAILED, the response includes a <code>failureReason</code> key, which describes why the job failed.</p> <p class=\"title\"> <b>Related APIs</b> </p> <ul> <li> <p> <a href=\"https://docs.aws.amazon.com/personalize/latest/dg/API_ListDataDeletionJobs.html\">ListDataDeletionJobs</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/personalize/latest/dg/API_DescribeDataDeletionJob.html\">DescribeDataDeletionJob</a> </p> </li> </ul>"
     },
     "CreateDataset":{
       "name":"CreateDataset",
@@ -458,6 +477,21 @@
       "documentation":"<p>Describes the given campaign, including its status.</p> <p>A campaign can be in one of the following states:</p> <ul> <li> <p>CREATE PENDING &gt; CREATE IN_PROGRESS &gt; ACTIVE -or- CREATE FAILED</p> </li> <li> <p>DELETE PENDING &gt; DELETE IN_PROGRESS</p> </li> </ul> <p>When the <code>status</code> is <code>CREATE FAILED</code>, the response includes the <code>failureReason</code> key, which describes why.</p> <p>For more information on campaigns, see <a href=\"https://docs.aws.amazon.com/personalize/latest/dg/API_CreateCampaign.html\">CreateCampaign</a>.</p>",
       "idempotent":true
     },
+    "DescribeDataDeletionJob":{
+      "name":"DescribeDataDeletionJob",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DescribeDataDeletionJobRequest"},
+      "output":{"shape":"DescribeDataDeletionJobResponse"},
+      "errors":[
+        {"shape":"InvalidInputException"},
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p>Describes the data deletion job created by <a href=\"https://docs.aws.amazon.com/personalize/latest/dg/API_CreateDataDeletionJob.html\">CreateDataDeletionJob</a>, including the job status.</p>",
+      "idempotent":true
+    },
     "DescribeDataset":{
       "name":"DescribeDataset",
       "http":{
@@ -710,6 +744,21 @@
         {"shape":"InvalidNextTokenException"}
       ],
       "documentation":"<p>Returns a list of campaigns that use the given solution. When a solution is not specified, all the campaigns associated with the account are listed. The response provides the properties for each campaign, including the Amazon Resource Name (ARN). For more information on campaigns, see <a href=\"https://docs.aws.amazon.com/personalize/latest/dg/API_CreateCampaign.html\">CreateCampaign</a>.</p>",
+      "idempotent":true
+    },
+    "ListDataDeletionJobs":{
+      "name":"ListDataDeletionJobs",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"ListDataDeletionJobsRequest"},
+      "output":{"shape":"ListDataDeletionJobsResponse"},
+      "errors":[
+        {"shape":"InvalidInputException"},
+        {"shape":"InvalidNextTokenException"}
+      ],
+      "documentation":"<p>Returns a list of data deletion jobs for a dataset group ordered by creation time, with the most recent first. When a dataset group is not specified, all the data deletion jobs associated with the account are listed. The response provides the properties for each job, including the Amazon Resource Name (ARN). For more information on data deletion jobs, see <a href=\"https://docs.aws.amazon.com/personalize/latest/dg/delete-records.html\">Deleting users</a>.</p>",
       "idempotent":true
     },
     "ListDatasetExportJobs":{
@@ -1789,6 +1838,46 @@
         }
       }
     },
+    "CreateDataDeletionJobRequest":{
+      "type":"structure",
+      "required":[
+        "jobName",
+        "datasetGroupArn",
+        "dataSource",
+        "roleArn"
+      ],
+      "members":{
+        "jobName":{
+          "shape":"Name",
+          "documentation":"<p>The name for the data deletion job.</p>"
+        },
+        "datasetGroupArn":{
+          "shape":"Arn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the dataset group that has the datasets you want to delete records from.</p>"
+        },
+        "dataSource":{
+          "shape":"DataSource",
+          "documentation":"<p>The Amazon S3 bucket that contains the list of userIds of the users to delete.</p>"
+        },
+        "roleArn":{
+          "shape":"RoleArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the IAM role that has permissions to read from the Amazon S3 data source.</p>"
+        },
+        "tags":{
+          "shape":"Tags",
+          "documentation":"<p>A list of <a href=\"https://docs.aws.amazon.com/personalize/latest/dg/tagging-resources.html\">tags</a> to apply to the data deletion job.</p>"
+        }
+      }
+    },
+    "CreateDataDeletionJobResponse":{
+      "type":"structure",
+      "members":{
+        "dataDeletionJobArn":{
+          "shape":"Arn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the data deletion job.</p>"
+        }
+      }
+    },
     "CreateDatasetExportJobRequest":{
       "type":"structure",
       "required":[
@@ -2219,15 +2308,97 @@
         }
       }
     },
+    "DataDeletionJob":{
+      "type":"structure",
+      "members":{
+        "jobName":{
+          "shape":"Name",
+          "documentation":"<p>The name of the data deletion job.</p>"
+        },
+        "dataDeletionJobArn":{
+          "shape":"Arn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the data deletion job.</p>"
+        },
+        "datasetGroupArn":{
+          "shape":"Arn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the dataset group the job deletes records from.</p>"
+        },
+        "dataSource":{"shape":"DataSource"},
+        "roleArn":{
+          "shape":"RoleArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the IAM role that has permissions to read from the Amazon S3 data source.</p>"
+        },
+        "status":{
+          "shape":"Status",
+          "documentation":"<p>The status of the data deletion job.</p> <p>A data deletion job can have one of the following statuses:</p> <ul> <li> <p>PENDING &gt; IN_PROGRESS &gt; COMPLETED -or- FAILED</p> </li> </ul>"
+        },
+        "numDeleted":{
+          "shape":"Integer",
+          "documentation":"<p>The number of records deleted by a COMPLETED job.</p>"
+        },
+        "creationDateTime":{
+          "shape":"Date",
+          "documentation":"<p>The creation date and time (in Unix time) of the data deletion job.</p>"
+        },
+        "lastUpdatedDateTime":{
+          "shape":"Date",
+          "documentation":"<p>The date and time (in Unix time) the data deletion job was last updated.</p>"
+        },
+        "failureReason":{
+          "shape":"FailureReason",
+          "documentation":"<p>If a data deletion job fails, provides the reason why.</p>"
+        }
+      },
+      "documentation":"<p>Describes a job that deletes all references to specific users from an Amazon Personalize dataset group in batches. For information about creating a data deletion job, see <a href=\"https://docs.aws.amazon.com/personalize/latest/dg/delete-records.html\">Deleting users</a>.</p>"
+    },
+    "DataDeletionJobSummary":{
+      "type":"structure",
+      "members":{
+        "dataDeletionJobArn":{
+          "shape":"Arn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the data deletion job.</p>"
+        },
+        "datasetGroupArn":{
+          "shape":"Arn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the dataset group the job deleted records from.</p>"
+        },
+        "jobName":{
+          "shape":"Name",
+          "documentation":"<p>The name of the data deletion job.</p>"
+        },
+        "status":{
+          "shape":"Status",
+          "documentation":"<p>The status of the data deletion job.</p> <p>A data deletion job can have one of the following statuses:</p> <ul> <li> <p>PENDING &gt; IN_PROGRESS &gt; COMPLETED -or- FAILED</p> </li> </ul>"
+        },
+        "creationDateTime":{
+          "shape":"Date",
+          "documentation":"<p>The creation date and time (in Unix time) of the data deletion job.</p>"
+        },
+        "lastUpdatedDateTime":{
+          "shape":"Date",
+          "documentation":"<p>The date and time (in Unix time) the data deletion job was last updated.</p>"
+        },
+        "failureReason":{
+          "shape":"FailureReason",
+          "documentation":"<p>If a data deletion job fails, provides the reason why.</p>"
+        }
+      },
+      "documentation":"<p>Provides a summary of the properties of a data deletion job. For a complete listing, call the <a href=\"https://docs.aws.amazon.com/personalize/latest/dg/API_DescribeDataDeletionJob.html\">DescribeDataDeletionJob</a> API operation.</p>"
+    },
+    "DataDeletionJobs":{
+      "type":"list",
+      "member":{"shape":"DataDeletionJobSummary"},
+      "max":100
+    },
     "DataSource":{
       "type":"structure",
       "members":{
         "dataLocation":{
           "shape":"S3Location",
-          "documentation":"<p>The path to the Amazon S3 bucket where the data that you want to upload to your dataset is stored. For example: </p> <p> <code>s3://bucket-name/folder-name/</code> </p>"
+          "documentation":"<p>For dataset import jobs, the path to the Amazon S3 bucket where the data that you want to upload to your dataset is stored. For data deletion jobs, the path to the Amazon S3 bucket that stores the list of records to delete. </p> <p> For example: </p> <p> <code>s3://bucket-name/folder-name/fileName.csv</code> </p> <p>If your CSV files are in a folder in your Amazon S3 bucket and you want your import job or data deletion job to consider multiple files, you can specify the path to the folder. With a data deletion job, Amazon Personalize uses all files in the folder and any sub folder. Use the following syntax with a <code>/</code> after the folder name:</p> <p> <code>s3://bucket-name/folder-name/</code> </p>"
         }
       },
-      "documentation":"<p>Describes the data source that contains the data to upload to a dataset.</p>"
+      "documentation":"<p>Describes the data source that contains the data to upload to a dataset, or the list of records to delete from Amazon Personalize.</p>"
     },
     "Dataset":{
       "type":"structure",
@@ -2917,6 +3088,25 @@
         }
       }
     },
+    "DescribeDataDeletionJobRequest":{
+      "type":"structure",
+      "required":["dataDeletionJobArn"],
+      "members":{
+        "dataDeletionJobArn":{
+          "shape":"Arn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the data deletion job.</p>"
+        }
+      }
+    },
+    "DescribeDataDeletionJobResponse":{
+      "type":"structure",
+      "members":{
+        "dataDeletionJob":{
+          "shape":"DataDeletionJob",
+          "documentation":"<p>Information about the data deletion job, including the status.</p> <p>The status is one of the following values:</p> <ul> <li> <p>PENDING</p> </li> <li> <p>IN_PROGRESS</p> </li> <li> <p>COMPLETED</p> </li> <li> <p>FAILED</p> </li> </ul>"
+        }
+      }
+    },
     "DescribeDatasetExportJobRequest":{
       "type":"structure",
       "required":["datasetExportJobArn"],
@@ -3517,6 +3707,7 @@
         "ALL"
       ]
     },
+    "Integer":{"type":"integer"},
     "IntegerHyperParameterRange":{
       "type":"structure",
       "members":{
@@ -3669,6 +3860,36 @@
         "nextToken":{
           "shape":"NextToken",
           "documentation":"<p>A token for getting the next set of campaigns (if they exist).</p>"
+        }
+      }
+    },
+    "ListDataDeletionJobsRequest":{
+      "type":"structure",
+      "members":{
+        "datasetGroupArn":{
+          "shape":"Arn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the dataset group to list data deletion jobs for.</p>"
+        },
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>A token returned from the previous call to <code>ListDataDeletionJobs</code> for getting the next set of jobs (if they exist).</p>"
+        },
+        "maxResults":{
+          "shape":"MaxResults",
+          "documentation":"<p>The maximum number of data deletion jobs to return.</p>"
+        }
+      }
+    },
+    "ListDataDeletionJobsResponse":{
+      "type":"structure",
+      "members":{
+        "dataDeletionJobs":{
+          "shape":"DataDeletionJobs",
+          "documentation":"<p>The list of data deletion jobs.</p>"
+        },
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>A token for getting the next set of data deletion jobs (if they exist).</p>"
         }
       }
     },

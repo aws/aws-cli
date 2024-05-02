@@ -1949,7 +1949,7 @@
       },
       "input":{"shape":"DeleteTransitGatewayRouteTableRequest"},
       "output":{"shape":"DeleteTransitGatewayRouteTableResult"},
-      "documentation":"<p>Deletes the specified transit gateway route table. You must disassociate the route table from any transit gateway route tables before you can delete it.</p>"
+      "documentation":"<p>Deletes the specified transit gateway route table. If there are any route tables associated with the transit gateway route table, you must first run <a>DisassociateRouteTable</a> before you can delete the transit gateway route table. This removes any route tables associated with the transit gateway route table.</p>"
     },
     "DeleteTransitGatewayRouteTableAnnouncement":{
       "name":"DeleteTransitGatewayRouteTableAnnouncement",
@@ -24460,7 +24460,7 @@
         },
         "Filters":{
           "shape":"FilterList",
-          "documentation":"<p>One or more filters. The possible values are:</p> <ul> <li> <p> <code>options.propagation-default-route-table-id</code> - The ID of the default propagation route table.</p> </li> <li> <p> <code>options.amazon-side-asn</code> - The private ASN for the Amazon side of a BGP session.</p> </li> <li> <p> <code>options.association-default-route-table-id</code> - The ID of the default association route table.</p> </li> <li> <p> <code>options.auto-accept-shared-attachments</code> - Indicates whether there is automatic acceptance of attachment requests (<code>enable</code> | <code>disable</code>).</p> </li> <li> <p> <code>options.default-route-table-association</code> - Indicates whether resource attachments are automatically associated with the default association route table (<code>enable</code> | <code>disable</code>).</p> </li> <li> <p> <code>options.default-route-table-propagation</code> - Indicates whether resource attachments automatically propagate routes to the default propagation route table (<code>enable</code> | <code>disable</code>).</p> </li> <li> <p> <code>options.dns-support</code> - Indicates whether DNS support is enabled (<code>enable</code> | <code>disable</code>).</p> </li> <li> <p> <code>options.vpn-ecmp-support</code> - Indicates whether Equal Cost Multipath Protocol support is enabled (<code>enable</code> | <code>disable</code>).</p> </li> <li> <p> <code>owner-id</code> - The ID of the Amazon Web Services account that owns the transit gateway.</p> </li> <li> <p> <code>state</code> - The state of the transit gateway (<code>available</code> | <code>deleted</code> | <code>deleting</code> | <code>modifying</code> | <code>pending</code>).</p> </li> <li> <p> <code>transit-gateway-id</code> - The ID of the transit gateway.</p> </li> </ul>",
+          "documentation":"<p>One or more filters. The possible values are:</p> <ul> <li> <p> <code>options.propagation-default-route-table-id</code> - The ID of the default propagation route table.</p> </li> <li> <p> <code>options.amazon-side-asn</code> - The private ASN for the Amazon side of a BGP session.</p> </li> <li> <p> <code>options.association-default-route-table-id</code> - The ID of the default association route table.</p> </li> <li> <p> <code>options.auto-accept-shared-attachments</code> - Indicates whether there is automatic acceptance of attachment requests (<code>enable</code> | <code>disable</code>).</p> </li> <li> <p> <code>options.default-route-table-association</code> - Indicates whether resource attachments are automatically associated with the default association route table (<code>enable</code> | <code>disable</code>).</p> </li> <li> <p> <code>options.default-route-table-propagation</code> - Indicates whether resource attachments automatically propagate routes to the default propagation route table (<code>enable</code> | <code>disable</code>).</p> </li> <li> <p> <code>options.dns-support</code> - Indicates whether DNS support is enabled (<code>enable</code> | <code>disable</code>).</p> </li> <li> <p> <code>options.vpn-ecmp-support</code> - Indicates whether Equal Cost Multipath Protocol support is enabled (<code>enable</code> | <code>disable</code>).</p> </li> <li> <p> <code>owner-id</code> - The ID of the Amazon Web Services account that owns the transit gateway.</p> </li> <li> <p> <code>state</code> - The state of the transit gateway (<code>available</code> | <code>deleted</code> | <code>deleting</code> | <code>modifying</code> | <code>pending</code>).</p> </li> <li> <p> <code>transit-gateway-id</code> - The ID of the transit gateway.</p> </li> <li> <p> <code>tag-key </code>- The key/value combination of a tag assigned to the resource. Use the tag key in the filter name and the tag value as the filter value. For example, to find all resources that have a tag with the key <code>Owner</code> and the value <code>TeamA</code>, specify <code>tag:Owner</code> for the filter name and <code>TeamA</code> for the filter value.</p> </li> </ul>",
           "locationName":"Filter"
         },
         "MaxResults":{
@@ -40091,7 +40091,7 @@
         },
         "DeviceIndex":{
           "shape":"Integer",
-          "documentation":"<p>The device index for the network interface attachment.</p>"
+          "documentation":"<p>The device index for the network interface attachment. Each network interface requires a device index. If you create a launch template that includes secondary network interfaces but not a primary network interface, then you must add a primary network interface as a launch parameter when you launch an instance from the template.</p>"
         },
         "Groups":{
           "shape":"SecurityGroupIdStringList",
@@ -59429,7 +59429,7 @@
       "members":{
         "Attachments":{
           "shape":"VolumeAttachmentList",
-          "documentation":"<p>Information about the volume attachments.</p>",
+          "documentation":"<note> <p>This parameter is not returned by CreateVolume.</p> </note> <p>Information about the volume attachments.</p>",
           "locationName":"attachmentSet"
         },
         "AvailabilityZone":{
@@ -59494,7 +59494,7 @@
         },
         "FastRestored":{
           "shape":"Boolean",
-          "documentation":"<p>Indicates whether the volume was created using fast snapshot restore.</p>",
+          "documentation":"<note> <p>This parameter is not returned by CreateVolume.</p> </note> <p>Indicates whether the volume was created using fast snapshot restore.</p>",
           "locationName":"fastRestored"
         },
         "MultiAttachEnabled":{
@@ -59509,7 +59509,7 @@
         },
         "SseType":{
           "shape":"SSEType",
-          "documentation":"<p>Reserved for future use.</p>",
+          "documentation":"<note> <p>This parameter is not returned by CreateVolume.</p> </note> <p>Reserved for future use.</p>",
           "locationName":"sseType"
         }
       },

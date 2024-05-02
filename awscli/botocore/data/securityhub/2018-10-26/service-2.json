@@ -1262,7 +1262,7 @@
         {"shape":"InvalidAccessException"},
         {"shape":"ResourceNotFoundException"}
       ],
-      "documentation":"<p> <code>UpdateFindings</code> is deprecated. Instead of <code>UpdateFindings</code>, use <code>BatchUpdateFindings</code>.</p> <p>Updates the <code>Note</code> and <code>RecordState</code> of the Security Hub-aggregated findings that the filter attributes specify. Any member account that can view the finding also sees the update to the finding.</p>"
+      "documentation":"<p> <code>UpdateFindings</code> is a deprecated operation. Instead of <code>UpdateFindings</code>, use the <code>BatchUpdateFindings</code> operation.</p> <p>Updates the <code>Note</code> and <code>RecordState</code> of the Security Hub-aggregated findings that the filter attributes specify. Any member account that can view the finding also sees the update to the finding.</p> <p>Finding updates made with <code>UpdateFindings</code> might not be persisted if the same finding is later updated by the finding provider through the <code>BatchImportFindings</code> operation.</p>"
     },
     "UpdateInsight":{
       "name":"UpdateInsight",
@@ -1429,7 +1429,9 @@
     },
     "AccountDetailsList":{
       "type":"list",
-      "member":{"shape":"AccountDetails"}
+      "member":{"shape":"AccountDetails"},
+      "max":50,
+      "min":1
     },
     "AccountId":{"type":"string"},
     "AccountIdList":{
@@ -20812,7 +20814,7 @@
       "members":{
         "ConfigurationPolicyIdentifier":{
           "shape":"NonEmptyString",
-          "documentation":"<p> The Amazon Resource Name (ARN) or universally unique identifier (UUID) of the configuration policy. </p>"
+          "documentation":"<p> The Amazon Resource Name (ARN) of a configuration policy, the universally unique identifier (UUID) of a configuration policy, or a value of <code>SELF_MANAGED_SECURITY_HUB</code> for a self-managed configuration. </p>"
         },
         "Target":{
           "shape":"Target",
@@ -20863,7 +20865,7 @@
         },
         "ConfigurationPolicyIdentifier":{
           "shape":"NonEmptyString",
-          "documentation":"<p> The Amazon Resource Name (ARN) or universally unique identifier (UUID) of the configuration policy. </p>"
+          "documentation":"<p> The Amazon Resource Name (ARN) of a configuration policy, the universally unique identifier (UUID) of a configuration policy, or a value of <code>SELF_MANAGED_SECURITY_HUB</code> for a self-managed configuration. </p>"
         }
       }
     },

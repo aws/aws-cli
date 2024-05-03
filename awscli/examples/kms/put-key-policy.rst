@@ -4,7 +4,7 @@ The following ``put-key-policy`` example changes the key policy for a customer m
 
 To begin, create a key policy and save it in a local JSON file. In this example, the file is ``key_policy.json``. You can also specify the key policy as a string value of the ``policy`` parameter. 
 
-The first statement in this key policy gives the AWS account permission to use IAM policies to control access to the KMS key. The second statement gives the ``test-user`` user permission to run the ``describe-key`` and ``list-keys`` commands on the KMS key.  
+The first statement in this key policy gives the AWS account permission to use IAM policies to control access to the KMS key. The second statement gives the ``test-user`` user permission to run the ``describe-key`` and ``list-keys`` commands on the KMS key.
 
 Contents of ``key_policy.json``::
 
@@ -36,7 +36,7 @@ Contents of ``key_policy.json``::
         ]
     }
 
-To identify the KMS key, this example uses the key ID, but you can also usa key ARN. To specify the key policy, the command uses the ``policy`` parameter. To indicate that the policy is in a file, it uses the required ``file://`` prefix. This prefix is required to identify files on all supported operating systems. Finally, the command uses the ``policy-name`` parameter with a value of ``default``. This parameter is required, even though ``default`` is the only valid value. ::
+To identify the KMS key, this example uses the key ID, but you can also use a key ARN. To specify the key policy, the command uses the ``policy`` parameter. To indicate that the policy is in a file, it uses the required ``file://`` prefix. This prefix is required to identify files on all supported operating systems. Finally, the command uses the ``policy-name`` parameter with a value of ``default``. If no policy name is specified, the default value is ``default``. The only valid value is ``default``. ::
 
     aws kms put-key-policy \
         --policy-name default \

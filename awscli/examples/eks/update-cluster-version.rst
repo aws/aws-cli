@@ -1,29 +1,31 @@
-**To update a cluster Kubernetes version**
+**To updates an Amazon EKS cluster named `my-eks-cluster` to the specified Kubernetes version**
 
-This example command updates a cluster named ``example`` from Kubernetes 1.12 to 1.13.
+The following ``update-cluster-version`` example updates an Amazon EKS cluster to the specified Kubernetes version. ::
 
-Command::
-
-  aws eks update-cluster-version --name example --kubernetes-version 1.13
+    aws eks update-cluster-version \
+        --name my-eks-cluster \
+        --kubernetes-version 1.27
 
 Output::
 
-  {
-      "update": {
-          "id": "161a74d1-7e8c-4224-825d-b32af149f23a",
-          "status": "InProgress",
-          "type": "VersionUpdate",
-          "params": [
-              {
-                  "type": "Version",
-                  "value": "1.13"
-              },
-              {
-                  "type": "PlatformVersion",
-                  "value": "eks.2"
-              }
-          ],
-          "createdAt": 1565807633.514,
-          "errors": []
-      }
-  }
+    {
+        "update": {
+            "id": "e4091a28-ea14-48fd-a8c7-975aeb469e8a",
+            "status": "InProgress",
+            "type": "VersionUpdate",
+            "params": [
+                {
+                    "type": "Version",
+                    "value": "1.27"
+                },
+                {
+                    "type": "PlatformVersion",
+                    "value": "eks.16"
+                }
+            ],
+            "createdAt": "2024-04-12T16:56:01.082000-04:00",
+            "errors": []
+        }
+    }
+
+For more information, see `Updating an Amazon EKS cluster Kubernetes version <https://docs.aws.amazon.com/eks/latest/userguide/update-cluster.html>`__ in the *Amazon EKS User Guide*.

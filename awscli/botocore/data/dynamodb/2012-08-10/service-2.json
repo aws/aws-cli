@@ -513,7 +513,7 @@
         {"shape":"InternalServerError"},
         {"shape":"PolicyNotFoundException"}
       ],
-      "documentation":"<p>Returns the resource-based policy document attached to the resource, which can be a table or stream, in JSON format.</p> <p> <code>GetResourcePolicy</code> follows an <a href=\"https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/HowItWorks.ReadConsistency.html\"> <i>eventually consistent</i> </a> model. The following list describes the outcomes when you issue the <code>GetResourcePolicy</code> request immediately after issuing another request:</p> <ul> <li> <p>If you issue a <code>GetResourcePolicy</code> request immediately after a <code>PutResourcePolicy</code> request, DynamoDB might return a <code>PolicyNotFoundException</code>.</p> </li> <li> <p>If you issue a <code>GetResourcePolicy</code>request immediately after a <code>DeleteResourcePolicy</code> request, DynamoDB might return the policy that was present before the deletion request.</p> </li> <li> <p>If you issue a <code>GetResourcePolicy</code> request immediately after a <code>CreateTable</code> request, which includes a resource-based policy, DynamoDB might return a <code>ResourceNotFoundException</code> or a <code>PolicyNotFoundException</code>.</p> </li> </ul> <p>Because <code>GetResourcePolicy</code> uses an <i>eventually consistent</i> query, the metadata for your policy or table might not be available at that moment. Wait for a few seconds, and then retry the <code>GetResourcePolicy</code> request.</p> <p>After a <code>GetResourcePolicy</code> request returns a policy created using the <code>PutResourcePolicy</code> request, you can assume the policy will start getting applied in the authorization of requests to the resource. Because this process is eventually consistent, it will take some time to apply the policy to all requests to a resource. Policies that you attach while creating a table using the <code>CreateTable</code> request will always be applied to all requests for that table.</p>",
+      "documentation":"<p>Returns the resource-based policy document attached to the resource, which can be a table or stream, in JSON format.</p> <p> <code>GetResourcePolicy</code> follows an <a href=\"https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/HowItWorks.ReadConsistency.html\"> <i>eventually consistent</i> </a> model. The following list describes the outcomes when you issue the <code>GetResourcePolicy</code> request immediately after issuing another request:</p> <ul> <li> <p>If you issue a <code>GetResourcePolicy</code> request immediately after a <code>PutResourcePolicy</code> request, DynamoDB might return a <code>PolicyNotFoundException</code>.</p> </li> <li> <p>If you issue a <code>GetResourcePolicy</code>request immediately after a <code>DeleteResourcePolicy</code> request, DynamoDB might return the policy that was present before the deletion request.</p> </li> <li> <p>If you issue a <code>GetResourcePolicy</code> request immediately after a <code>CreateTable</code> request, which includes a resource-based policy, DynamoDB might return a <code>ResourceNotFoundException</code> or a <code>PolicyNotFoundException</code>.</p> </li> </ul> <p>Because <code>GetResourcePolicy</code> uses an <i>eventually consistent</i> query, the metadata for your policy or table might not be available at that moment. Wait for a few seconds, and then retry the <code>GetResourcePolicy</code> request.</p> <p>After a <code>GetResourcePolicy</code> request returns a policy created using the <code>PutResourcePolicy</code> request, the policy will be applied in the authorization of requests to the resource. Because this process is eventually consistent, it will take some time to apply the policy to all requests to a resource. Policies that you attach while creating a table using the <code>CreateTable</code> request will always be applied to all requests for that table.</p>",
       "endpointdiscovery":{
       }
     },
@@ -670,7 +670,7 @@
         {"shape":"PolicyNotFoundException"},
         {"shape":"ResourceInUseException"}
       ],
-      "documentation":"<p>Attaches a resource-based policy document to the resource, which can be a table or stream. When you attach a resource-based policy using this API, the policy application is <a href=\"https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/HowItWorks.ReadConsistency.html\"> <i>eventually consistent</i> </a>.</p> <p> <code>PutResourcePolicy</code> is an idempotent operation; running it multiple times on the same resource using the same policy document will return the same revision ID. If you specify an <code>ExpectedRevisionId</code> which doesn't match the current policy's <code>RevisionId</code>, the <code>PolicyNotFoundException</code> will be returned.</p> <note> <p> <code>PutResourcePolicy</code> is an asynchronous operation. If you issue a <code>GetResourcePolicy</code> request immediately after a <code>PutResourcePolicy</code> request, DynamoDB might return your previous policy, if there was one, or return the <code>PolicyNotFoundException</code>. This is because <code>GetResourcePolicy</code> uses an eventually consistent query, and the metadata for your policy or table might not be available at that moment. Wait for a few seconds, and then try the <code>GetResourcePolicy</code> request again.</p> </note>",
+      "documentation":"<p>Attaches a resource-based policy document to the resource, which can be a table or stream. When you attach a resource-based policy using this API, the policy application is <a href=\"https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/HowItWorks.ReadConsistency.html\"> <i>eventually consistent</i> </a>.</p> <p> <code>PutResourcePolicy</code> is an idempotent operation; running it multiple times on the same resource using the same policy document will return the same revision ID. If you specify an <code>ExpectedRevisionId</code> that doesn't match the current policy's <code>RevisionId</code>, the <code>PolicyNotFoundException</code> will be returned.</p> <note> <p> <code>PutResourcePolicy</code> is an asynchronous operation. If you issue a <code>GetResourcePolicy</code> request immediately after a <code>PutResourcePolicy</code> request, DynamoDB might return your previous policy, if there was one, or return the <code>PolicyNotFoundException</code>. This is because <code>GetResourcePolicy</code> uses an eventually consistent query, and the metadata for your policy or table might not be available at that moment. Wait for a few seconds, and then try the <code>GetResourcePolicy</code> request again.</p> </note>",
       "endpointdiscovery":{
       }
     },
@@ -1971,6 +1971,10 @@
         "ProvisionedThroughput":{
           "shape":"ProvisionedThroughput",
           "documentation":"<p>Represents the provisioned throughput settings for the specified global secondary index.</p> <p>For current minimum and maximum provisioned throughput values, see <a href=\"https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/Limits.html\">Service, Account, and Table Quotas</a> in the <i>Amazon DynamoDB Developer Guide</i>.</p>"
+        },
+        "OnDemandThroughput":{
+          "shape":"OnDemandThroughput",
+          "documentation":"<p>The maximum number of read and write units for the global secondary index being created. If you use this parameter, you must specify <code>MaxReadRequestUnits</code>, <code>MaxWriteRequestUnits</code>, or both.</p>"
         }
       },
       "documentation":"<p>Represents a new global secondary index to be added to an existing table.</p>"
@@ -2027,6 +2031,10 @@
         "ProvisionedThroughputOverride":{
           "shape":"ProvisionedThroughputOverride",
           "documentation":"<p>Replica-specific provisioned throughput. If not specified, uses the source table's provisioned throughput settings.</p>"
+        },
+        "OnDemandThroughputOverride":{
+          "shape":"OnDemandThroughputOverride",
+          "documentation":"<p>The maximum on-demand throughput settings for the specified replica table being created. You can only modify <code>MaxReadRequestUnits</code>, because you can't modify <code>MaxWriteRequestUnits</code> for individual replica tables. </p>"
         },
         "GlobalSecondaryIndexes":{
           "shape":"ReplicaGlobalSecondaryIndexList",
@@ -2097,7 +2105,11 @@
         },
         "ResourcePolicy":{
           "shape":"ResourcePolicy",
-          "documentation":"<p>An Amazon Web Services resource-based policy document in JSON format that will be attached to the table.</p> <p>When you attach a resource-based policy while creating a table, the policy creation is <i>strongly consistent</i>.</p> <p>The maximum size supported for a resource-based policy document is 20 KB. DynamoDB counts whitespaces when calculating the size of a policy against this limit. You can’t request an increase for this limit. For a full list of all considerations that you should keep in mind while attaching a resource-based policy, see <a href=\"https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/rbac-considerations.html\">Resource-based policy considerations</a>.</p>"
+          "documentation":"<p>An Amazon Web Services resource-based policy document in JSON format that will be attached to the table.</p> <p>When you attach a resource-based policy while creating a table, the policy application is <i>strongly consistent</i>.</p> <p>The maximum size supported for a resource-based policy document is 20 KB. DynamoDB counts whitespaces when calculating the size of a policy against this limit. For a full list of all considerations that apply for resource-based policies, see <a href=\"https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/rbac-considerations.html\">Resource-based policy considerations</a>.</p>"
+        },
+        "OnDemandThroughput":{
+          "shape":"OnDemandThroughput",
+          "documentation":"<p>Sets the maximum number of read and write units for the specified table in on-demand capacity mode. If you use this parameter, you must specify <code>MaxReadRequestUnits</code>, <code>MaxWriteRequestUnits</code>, or both.</p>"
         }
       },
       "documentation":"<p>Represents the input of a <code>CreateTable</code> operation.</p>"
@@ -2330,7 +2342,7 @@
       "members":{
         "RevisionId":{
           "shape":"PolicyRevisionId",
-          "documentation":"<p>A unique string that represents the revision ID of the policy. If you are comparing revision IDs, make sure to always use string comparison logic.</p> <p>This value will be empty if you make a request against a resource without a policy.</p>"
+          "documentation":"<p>A unique string that represents the revision ID of the policy. If you're comparing revision IDs, make sure to always use string comparison logic.</p> <p>This value will be empty if you make a request against a resource without a policy.</p>"
         }
       }
     },
@@ -3169,7 +3181,7 @@
         },
         "RevisionId":{
           "shape":"PolicyRevisionId",
-          "documentation":"<p>A unique string that represents the revision ID of the policy. If you are comparing revision IDs, make sure to always use string comparison logic.</p>"
+          "documentation":"<p>A unique string that represents the revision ID of the policy. If you're comparing revision IDs, make sure to always use string comparison logic.</p>"
         }
       }
     },
@@ -3196,6 +3208,10 @@
         "ProvisionedThroughput":{
           "shape":"ProvisionedThroughput",
           "documentation":"<p>Represents the provisioned throughput settings for the specified global secondary index.</p> <p>For current minimum and maximum provisioned throughput values, see <a href=\"https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/Limits.html\">Service, Account, and Table Quotas</a> in the <i>Amazon DynamoDB Developer Guide</i>.</p>"
+        },
+        "OnDemandThroughput":{
+          "shape":"OnDemandThroughput",
+          "documentation":"<p>The maximum number of read and write units for the specified global secondary index. If you use this parameter, you must specify <code>MaxReadRequestUnits</code>, <code>MaxWriteRequestUnits</code>, or both.</p>"
         }
       },
       "documentation":"<p>Represents the properties of a global secondary index.</p>"
@@ -3254,6 +3270,10 @@
         "IndexArn":{
           "shape":"String",
           "documentation":"<p>The Amazon Resource Name (ARN) that uniquely identifies the index.</p>"
+        },
+        "OnDemandThroughput":{
+          "shape":"OnDemandThroughput",
+          "documentation":"<p>The maximum number of read and write units for the specified global secondary index. If you use this parameter, you must specify <code>MaxReadRequestUnits</code>, <code>MaxWriteRequestUnits</code>, or both.</p>"
         }
       },
       "documentation":"<p>Represents the properties of a global secondary index.</p>"
@@ -3280,7 +3300,8 @@
         "ProvisionedThroughput":{
           "shape":"ProvisionedThroughput",
           "documentation":"<p>Represents the provisioned throughput settings for the specified global secondary index. </p>"
-        }
+        },
+        "OnDemandThroughput":{"shape":"OnDemandThroughput"}
       },
       "documentation":"<p>Represents the properties of a global secondary index for the table when the backup was created.</p>"
     },
@@ -4308,6 +4329,30 @@
       "type":"list",
       "member":{"shape":"NumberAttributeValue"}
     },
+    "OnDemandThroughput":{
+      "type":"structure",
+      "members":{
+        "MaxReadRequestUnits":{
+          "shape":"LongObject",
+          "documentation":"<p>Maximum number of read request units for the specified table.</p> <p>To specify a maximum <code>OnDemandThroughput</code> on your table, set the value of <code>MaxReadRequestUnits</code> as greater than or equal to 1. To remove the maximum <code>OnDemandThroughput</code> that is currently set on your table, set the value of <code>MaxReadRequestUnits</code> to -1.</p>"
+        },
+        "MaxWriteRequestUnits":{
+          "shape":"LongObject",
+          "documentation":"<p>Maximum number of write request units for the specified table.</p> <p>To specify a maximum <code>OnDemandThroughput</code> on your table, set the value of <code>MaxWriteRequestUnits</code> as greater than or equal to 1. To remove the maximum <code>OnDemandThroughput</code> that is currently set on your table, set the value of <code>MaxWriteRequestUnits</code> to -1.</p>"
+        }
+      },
+      "documentation":"<p>Sets the maximum number of read and write units for the specified on-demand table. If you use this parameter, you must specify <code>MaxReadRequestUnits</code>, <code>MaxWriteRequestUnits</code>, or both.</p>"
+    },
+    "OnDemandThroughputOverride":{
+      "type":"structure",
+      "members":{
+        "MaxReadRequestUnits":{
+          "shape":"LongObject",
+          "documentation":"<p>Maximum number of read request units for the specified replica table.</p>"
+        }
+      },
+      "documentation":"<p>Overrides the on-demand throughput settings for this replica table. If you don't specify a value for this parameter, it uses the source table's on-demand throughput settings.</p>"
+    },
     "ParameterizedStatement":{
       "type":"structure",
       "required":["Statement"],
@@ -4647,11 +4692,11 @@
         },
         "Policy":{
           "shape":"ResourcePolicy",
-          "documentation":"<p>An Amazon Web Services resource-based policy document in JSON format.</p> <p>The maximum size supported for a resource-based policy document is 20 KB. DynamoDB counts whitespaces when calculating the size of a policy against this limit. For a full list of all considerations that you should keep in mind while attaching a resource-based policy, see <a href=\"https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/rbac-considerations.html\">Resource-based policy considerations</a>.</p>"
+          "documentation":"<p>An Amazon Web Services resource-based policy document in JSON format.</p> <ul> <li> <p>The maximum size supported for a resource-based policy document is 20 KB. DynamoDB counts whitespaces when calculating the size of a policy against this limit.</p> </li> <li> <p>Within a resource-based policy, if the action for a DynamoDB service-linked role (SLR) to replicate data for a global table is denied, adding or deleting a replica will fail with an error.</p> </li> </ul> <p>For a full list of all considerations that apply while attaching a resource-based policy, see <a href=\"https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/rbac-considerations.html\">Resource-based policy considerations</a>.</p>"
         },
         "ExpectedRevisionId":{
           "shape":"PolicyRevisionId",
-          "documentation":"<p>A string value that you can use to conditionally update your policy. You can provide the revision ID of your existing policy to make mutating requests against that policy. When you provide an expected revision ID, if the revision ID of the existing policy on the resource doesn't match or if there's no policy attached to the resource, your request will be rejected with a <code>PolicyNotFoundException</code>.</p> <p>To conditionally put a policy when no policy exists for the resource, specify <code>NO_POLICY</code> for the revision ID.</p>"
+          "documentation":"<p>A string value that you can use to conditionally update your policy. You can provide the revision ID of your existing policy to make mutating requests against that policy.</p> <note> <p>When you provide an expected revision ID, if the revision ID of the existing policy on the resource doesn't match or if there's no policy attached to the resource, your request will be rejected with a <code>PolicyNotFoundException</code>.</p> </note> <p>To conditionally attach a policy when no policy exists for the resource, specify <code>NO_POLICY</code> for the revision ID.</p>"
         },
         "ConfirmRemoveSelfResourceAccess":{
           "shape":"ConfirmRemoveSelfResourceAccess",
@@ -4664,7 +4709,7 @@
       "members":{
         "RevisionId":{
           "shape":"PolicyRevisionId",
-          "documentation":"<p>A unique string that represents the revision ID of the policy. If you are comparing revision IDs, make sure to always use string comparison logic.</p>"
+          "documentation":"<p>A unique string that represents the revision ID of the policy. If you're comparing revision IDs, make sure to always use string comparison logic.</p>"
         }
       }
     },
@@ -4857,6 +4902,10 @@
           "shape":"ProvisionedThroughputOverride",
           "documentation":"<p>Replica-specific provisioned throughput. If not described, uses the source table's provisioned throughput settings.</p>"
         },
+        "OnDemandThroughputOverride":{
+          "shape":"OnDemandThroughputOverride",
+          "documentation":"<p>Overrides the maximum on-demand throughput settings for the specified replica table.</p>"
+        },
         "GlobalSecondaryIndexes":{
           "shape":"ReplicaGlobalSecondaryIndexDescriptionList",
           "documentation":"<p>Replica-specific global secondary index settings.</p>"
@@ -4884,6 +4933,10 @@
         "ProvisionedThroughputOverride":{
           "shape":"ProvisionedThroughputOverride",
           "documentation":"<p>Replica table GSI-specific provisioned throughput. If not specified, uses the source table GSI's read capacity settings.</p>"
+        },
+        "OnDemandThroughputOverride":{
+          "shape":"OnDemandThroughputOverride",
+          "documentation":"<p>Overrides the maximum on-demand throughput settings for the specified global secondary index in the specified replica table.</p>"
         }
       },
       "documentation":"<p>Represents the properties of a replica global secondary index.</p>"
@@ -4933,6 +4986,10 @@
         "ProvisionedThroughputOverride":{
           "shape":"ProvisionedThroughputOverride",
           "documentation":"<p>If not described, uses the source table GSI's read capacity settings.</p>"
+        },
+        "OnDemandThroughputOverride":{
+          "shape":"OnDemandThroughputOverride",
+          "documentation":"<p>Overrides the maximum on-demand throughput for the specified global secondary index in the specified replica table.</p>"
         }
       },
       "documentation":"<p>Represents the properties of a replica global secondary index.</p>"
@@ -5244,6 +5301,7 @@
           "shape":"ProvisionedThroughput",
           "documentation":"<p>Provisioned throughput settings for the restored table.</p>"
         },
+        "OnDemandThroughputOverride":{"shape":"OnDemandThroughput"},
         "SSESpecificationOverride":{
           "shape":"SSESpecification",
           "documentation":"<p>The new server-side encryption settings for the restored table.</p>"
@@ -5299,6 +5357,7 @@
           "shape":"ProvisionedThroughput",
           "documentation":"<p>Provisioned throughput settings for the restored table.</p>"
         },
+        "OnDemandThroughputOverride":{"shape":"OnDemandThroughput"},
         "SSESpecificationOverride":{
           "shape":"SSESpecification",
           "documentation":"<p>The new server-side encryption settings for the restored table.</p>"
@@ -5613,6 +5672,7 @@
           "shape":"ProvisionedThroughput",
           "documentation":"<p>Read IOPs and Write IOPS on the table when the backup was created.</p>"
         },
+        "OnDemandThroughput":{"shape":"OnDemandThroughput"},
         "ItemCount":{
           "shape":"ItemCount",
           "documentation":"<p>Number of items in the table. Note that this is an approximate value. </p>"
@@ -5764,6 +5824,7 @@
           "documentation":"<p> The billing mode for provisioning the table created as part of the import operation. </p>"
         },
         "ProvisionedThroughput":{"shape":"ProvisionedThroughput"},
+        "OnDemandThroughput":{"shape":"OnDemandThroughput"},
         "SSESpecification":{"shape":"SSESpecification"},
         "GlobalSecondaryIndexes":{
           "shape":"GlobalSecondaryIndexList",
@@ -5866,6 +5927,10 @@
         "DeletionProtectionEnabled":{
           "shape":"DeletionProtectionEnabled",
           "documentation":"<p>Indicates whether deletion protection is enabled (true) or disabled (false) on the table.</p>"
+        },
+        "OnDemandThroughput":{
+          "shape":"OnDemandThroughput",
+          "documentation":"<p>The maximum number of read and write units for the specified on-demand table. If you use this parameter, you must specify <code>MaxReadRequestUnits</code>, <code>MaxWriteRequestUnits</code>, or both.</p>"
         }
       },
       "documentation":"<p>Represents the properties of a table.</p>"
@@ -6270,10 +6335,7 @@
     "UpdateExpression":{"type":"string"},
     "UpdateGlobalSecondaryIndexAction":{
       "type":"structure",
-      "required":[
-        "IndexName",
-        "ProvisionedThroughput"
-      ],
+      "required":["IndexName"],
       "members":{
         "IndexName":{
           "shape":"IndexName",
@@ -6282,6 +6344,10 @@
         "ProvisionedThroughput":{
           "shape":"ProvisionedThroughput",
           "documentation":"<p>Represents the provisioned throughput settings for the specified global secondary index.</p> <p>For current minimum and maximum provisioned throughput values, see <a href=\"https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/Limits.html\">Service, Account, and Table Quotas</a> in the <i>Amazon DynamoDB Developer Guide</i>.</p>"
+        },
+        "OnDemandThroughput":{
+          "shape":"OnDemandThroughput",
+          "documentation":"<p>Updates the maximum number of read and write units for the specified global secondary index. If you use this parameter, you must specify <code>MaxReadRequestUnits</code>, <code>MaxWriteRequestUnits</code>, or both.</p>"
         }
       },
       "documentation":"<p>Represents the new provisioned throughput settings to be applied to a global secondary index.</p>"
@@ -6500,6 +6566,10 @@
           "shape":"ProvisionedThroughputOverride",
           "documentation":"<p>Replica-specific provisioned throughput. If not specified, uses the source table's provisioned throughput settings.</p>"
         },
+        "OnDemandThroughputOverride":{
+          "shape":"OnDemandThroughputOverride",
+          "documentation":"<p>Overrides the maximum on-demand throughput for the replica table.</p>"
+        },
         "GlobalSecondaryIndexes":{
           "shape":"ReplicaGlobalSecondaryIndexList",
           "documentation":"<p>Replica-specific global secondary index settings.</p>"
@@ -6554,6 +6624,10 @@
         "DeletionProtectionEnabled":{
           "shape":"DeletionProtectionEnabled",
           "documentation":"<p>Indicates whether deletion protection is to be enabled (true) or disabled (false) on the table.</p>"
+        },
+        "OnDemandThroughput":{
+          "shape":"OnDemandThroughput",
+          "documentation":"<p>Updates the maximum number of read and write units for the specified table in on-demand capacity mode. If you use this parameter, you must specify <code>MaxReadRequestUnits</code>, <code>MaxWriteRequestUnits</code>, or both.</p>"
         }
       },
       "documentation":"<p>Represents the input of an <code>UpdateTable</code> operation.</p>"

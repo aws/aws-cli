@@ -1762,7 +1762,7 @@
         },
         "dataDeletionPolicy":{
           "shape":"DataDeletionPolicy",
-          "documentation":"<p>The deletion policy for the requested data source</p>"
+          "documentation":"<p>The data deletion policy assigned to the data source.</p>"
         },
         "dataSourceConfiguration":{
           "shape":"DataSourceConfiguration",
@@ -1888,7 +1888,7 @@
         },
         "dataDeletionPolicy":{
           "shape":"DataDeletionPolicy",
-          "documentation":"<p>The deletion policy for the data source.</p>"
+          "documentation":"<p>The data deletion policy for a data source.</p>"
         },
         "dataSourceConfiguration":{
           "shape":"DataSourceConfiguration",
@@ -1904,7 +1904,7 @@
         },
         "failureReasons":{
           "shape":"FailureReasons",
-          "documentation":"<p>The details of the failure reasons related to the data source.</p>"
+          "documentation":"<p>The detailed reasons on the failure to delete a data source.</p>"
         },
         "knowledgeBaseId":{
           "shape":"Id",
@@ -3004,7 +3004,8 @@
         "OPENSEARCH_SERVERLESS",
         "PINECONE",
         "REDIS_ENTERPRISE_CLOUD",
-        "RDS"
+        "RDS",
+        "MONGO_DB_ATLAS"
       ]
     },
     "KnowledgeBaseSummaries":{
@@ -3384,6 +3385,101 @@
       "max":2048,
       "min":1,
       "pattern":"^arn:aws(-[^:]+)?:bedrock:[a-z0-9-]{1,20}:(([0-9]{12}:custom-model/[a-z0-9-]{1,63}[.]{1}[a-z0-9-]{1,63}(([:][a-z0-9-]{1,63}){0,2})?/[a-z0-9]{12})|(:foundation-model/([a-z0-9-]{1,63}[.]{1}[a-z0-9-]{1,63}([.]?[a-z0-9-]{1,63})([:][a-z0-9-]{1,63}){0,2})))|(([a-z0-9-]{1,63}[.]{1}[a-z0-9-]{1,63}([.]?[a-z0-9-]{1,63})([:][a-z0-9-]{1,63}){0,2}))|(([0-9a-zA-Z][_-]?)+)$"
+    },
+    "MongoDbAtlasCollectionName":{
+      "type":"string",
+      "max":63,
+      "min":0,
+      "pattern":"^.*$"
+    },
+    "MongoDbAtlasConfiguration":{
+      "type":"structure",
+      "required":[
+        "collectionName",
+        "credentialsSecretArn",
+        "databaseName",
+        "endpoint",
+        "fieldMapping",
+        "vectorIndexName"
+      ],
+      "members":{
+        "collectionName":{
+          "shape":"MongoDbAtlasCollectionName",
+          "documentation":"<p>The collection name of the knowledge base in MongoDB Atlas.</p>"
+        },
+        "credentialsSecretArn":{
+          "shape":"SecretArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the secret that you created in Secrets Manager that contains user credentials for your MongoDB Atlas cluster.</p>"
+        },
+        "databaseName":{
+          "shape":"MongoDbAtlasDatabaseName",
+          "documentation":"<p>The database name in your MongoDB Atlas cluster for your knowledge base.</p>"
+        },
+        "endpoint":{
+          "shape":"MongoDbAtlasEndpoint",
+          "documentation":"<p>The endpoint URL of your MongoDB Atlas cluster for your knowledge base.</p>"
+        },
+        "endpointServiceName":{
+          "shape":"MongoDbAtlasEndpointServiceName",
+          "documentation":"<p>The name of the VPC endpoint service in your account that is connected to your MongoDB Atlas cluster.</p>"
+        },
+        "fieldMapping":{
+          "shape":"MongoDbAtlasFieldMapping",
+          "documentation":"<p>Contains the names of the fields to which to map information about the vector store.</p>"
+        },
+        "vectorIndexName":{
+          "shape":"MongoDbAtlasIndexName",
+          "documentation":"<p>The name of the MongoDB Atlas vector search index.</p>"
+        }
+      },
+      "documentation":"<p>Contains details about the storage configuration of the knowledge base in MongoDB Atlas. </p>"
+    },
+    "MongoDbAtlasDatabaseName":{
+      "type":"string",
+      "max":63,
+      "min":0,
+      "pattern":"^.*$"
+    },
+    "MongoDbAtlasEndpoint":{
+      "type":"string",
+      "max":2048,
+      "min":0,
+      "pattern":"^.*$"
+    },
+    "MongoDbAtlasEndpointServiceName":{
+      "type":"string",
+      "max":255,
+      "min":1,
+      "pattern":"^(?:arn:aws(?:-us-gov|-cn|-iso|-iso-[a-z])*:.+:.*:\\d+:.+/.+$|[a-zA-Z0-9*]+[a-zA-Z0-9._-]*)$"
+    },
+    "MongoDbAtlasFieldMapping":{
+      "type":"structure",
+      "required":[
+        "metadataField",
+        "textField",
+        "vectorField"
+      ],
+      "members":{
+        "metadataField":{
+          "shape":"FieldName",
+          "documentation":"<p>The name of the field in which Amazon Bedrock stores metadata about the vector store.</p>"
+        },
+        "textField":{
+          "shape":"FieldName",
+          "documentation":"<p>The name of the field in which Amazon Bedrock stores the raw text from your data. The text is split according to the chunking strategy you choose.</p>"
+        },
+        "vectorField":{
+          "shape":"FieldName",
+          "documentation":"<p>The name of the field in which Amazon Bedrock stores the vector embeddings for your data sources.</p>"
+        }
+      },
+      "documentation":"<p>Contains the names of the fields to which to map information about the vector store.</p>"
+    },
+    "MongoDbAtlasIndexName":{
+      "type":"string",
+      "max":2048,
+      "min":0,
+      "pattern":"^.*$"
     },
     "Name":{
       "type":"string",
@@ -3844,7 +3940,7 @@
         },
         "bucketOwnerAccountId":{
           "shape":"BucketOwnerAccountId",
-          "documentation":"<p>The account ID for the owner of the S3 bucket.</p>"
+          "documentation":"<p>The bucket account owner ID for the S3 bucket.</p>"
         },
         "inclusionPrefixes":{
           "shape":"S3Prefixes",
@@ -3973,6 +4069,10 @@
       "type":"structure",
       "required":["type"],
       "members":{
+        "mongoDbAtlasConfiguration":{
+          "shape":"MongoDbAtlasConfiguration",
+          "documentation":"<p>Contains the storage configuration of the knowledge base in MongoDB Atlas.</p>"
+        },
         "opensearchServerlessConfiguration":{
           "shape":"OpenSearchServerlessConfiguration",
           "documentation":"<p>Contains the storage configuration of the knowledge base in Amazon OpenSearch Service.</p>"
@@ -4343,7 +4443,7 @@
       "members":{
         "dataDeletionPolicy":{
           "shape":"DataDeletionPolicy",
-          "documentation":"<p>The data deletion policy of the updated data source.</p>"
+          "documentation":"<p>The data deletion policy assigned to the data source.</p>"
         },
         "dataSourceConfiguration":{
           "shape":"DataSourceConfiguration",

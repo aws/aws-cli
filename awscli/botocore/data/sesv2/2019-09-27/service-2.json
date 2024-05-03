@@ -5,6 +5,7 @@
     "endpointPrefix":"email",
     "jsonVersion":"1.1",
     "protocol":"rest-json",
+    "protocols":["rest-json"],
     "serviceAbbreviation":"Amazon SES V2",
     "serviceFullName":"Amazon Simple Email Service",
     "serviceId":"SESv2",
@@ -747,8 +748,8 @@
     "ListContacts":{
       "name":"ListContacts",
       "http":{
-        "method":"GET",
-        "requestUri":"/v2/email/contact-lists/{ContactListName}/contacts"
+        "method":"POST",
+        "requestUri":"/v2/email/contact-lists/{ContactListName}/contacts/list"
       },
       "input":{"shape":"ListContactsRequest"},
       "output":{"shape":"ListContactsResponse"},
@@ -862,8 +863,8 @@
     "ListImportJobs":{
       "name":"ListImportJobs",
       "http":{
-        "method":"GET",
-        "requestUri":"/v2/email/import-jobs"
+        "method":"POST",
+        "requestUri":"/v2/email/import-jobs/list"
       },
       "input":{"shape":"ListImportJobsRequest"},
       "output":{"shape":"ListImportJobsResponse"},
@@ -4557,15 +4558,11 @@
         },
         "PageSize":{
           "shape":"MaxItems",
-          "documentation":"<p>The number of contacts that may be returned at once, which is dependent on if there are more or less contacts than the value of the PageSize. Use this parameter to paginate results. If additional contacts exist beyond the specified limit, the <code>NextToken</code> element is sent in the response. Use the <code>NextToken</code> value in subsequent requests to retrieve additional contacts.</p>",
-          "location":"querystring",
-          "locationName":"PageSize"
+          "documentation":"<p>The number of contacts that may be returned at once, which is dependent on if there are more or less contacts than the value of the PageSize. Use this parameter to paginate results. If additional contacts exist beyond the specified limit, the <code>NextToken</code> element is sent in the response. Use the <code>NextToken</code> value in subsequent requests to retrieve additional contacts.</p>"
         },
         "NextToken":{
           "shape":"NextToken",
-          "documentation":"<p>A string token indicating that there might be additional contacts available to be listed. Use the token provided in the Response to use in the subsequent call to ListContacts with the same parameters to retrieve the next page of contacts.</p>",
-          "location":"querystring",
-          "locationName":"NextToken"
+          "documentation":"<p>A string token indicating that there might be additional contacts available to be listed. Use the token provided in the Response to use in the subsequent call to ListContacts with the same parameters to retrieve the next page of contacts.</p>"
         }
       }
     },
@@ -4844,15 +4841,11 @@
         },
         "NextToken":{
           "shape":"NextToken",
-          "documentation":"<p>A string token indicating that there might be additional import jobs available to be listed. Copy this token to a subsequent call to <code>ListImportJobs</code> with the same parameters to retrieve the next page of import jobs.</p>",
-          "location":"querystring",
-          "locationName":"NextToken"
+          "documentation":"<p>A string token indicating that there might be additional import jobs available to be listed. Copy this token to a subsequent call to <code>ListImportJobs</code> with the same parameters to retrieve the next page of import jobs.</p>"
         },
         "PageSize":{
           "shape":"MaxItems",
-          "documentation":"<p>Maximum number of import jobs to return at once. Use this parameter to paginate results. If additional import jobs exist beyond the specified limit, the <code>NextToken</code> element is sent in the response. Use the <code>NextToken</code> value in subsequent requests to retrieve additional addresses.</p>",
-          "location":"querystring",
-          "locationName":"PageSize"
+          "documentation":"<p>Maximum number of import jobs to return at once. Use this parameter to paginate results. If additional import jobs exist beyond the specified limit, the <code>NextToken</code> element is sent in the response. Use the <code>NextToken</code> value in subsequent requests to retrieve additional addresses.</p>"
         }
       },
       "documentation":"<p>Represents a request to list all of the import jobs for a data destination within the specified maximum number of import jobs.</p>"

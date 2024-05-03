@@ -2,6 +2,18 @@
 CHANGELOG
 =========
 
+1.32.98
+=======
+
+* api-change:``bedrock-agent``: This release adds support for using Provisioned Throughput with Bedrock Agents.
+* api-change:``connect``: This release adds 5 new APIs for managing attachments: StartAttachedFileUpload, CompleteAttachedFileUpload, GetAttachedFile, BatchGetAttachedFileMetadata, DeleteAttachedFile. These APIs can be used to programmatically upload and download attachments to Connect resources, like cases.
+* api-change:``connectcases``: This feature supports the release of Files related items
+* api-change:``datasync``: Updated guidance on using private or self-signed certificate authorities (CAs) with AWS DataSync object storage locations.
+* api-change:``inspector2``: This release adds CSV format to GetCisScanReport for Inspector v2
+* api-change:``sagemaker``: Amazon SageMaker Inference now supports m6i, c6i, r6i, m7i, c7i, r7i and g5 instance types for Batch Transform Jobs
+* api-change:``sesv2``: Adds support for specifying replacement headers per BulkEmailEntry in SendBulkEmail in SESv2.
+
+
 1.32.97
 =======
 

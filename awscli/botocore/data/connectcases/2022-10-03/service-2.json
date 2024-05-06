@@ -1426,13 +1426,13 @@
       "members":{
         "domainId":{
           "shape":"DomainId",
-          "documentation":"<p>The unique identifier of the Cases domain. </p>",
+          "documentation":"<p>The unique identifier of the Cases domain.</p>",
           "location":"uri",
           "locationName":"domainId"
         },
         "fieldId":{
           "shape":"FieldId",
-          "documentation":"<p>The unique identifier of a field.</p>",
+          "documentation":"<p>Unique identifier of the field.</p>",
           "location":"uri",
           "locationName":"fieldId"
         }
@@ -1452,7 +1452,7 @@
       "members":{
         "domainId":{
           "shape":"DomainId",
-          "documentation":"<p>The unique identifier of the Cases domain. </p>",
+          "documentation":"<p>The unique identifier of the Cases domain.</p>",
           "location":"uri",
           "locationName":"domainId"
         },
@@ -1478,7 +1478,7 @@
       "members":{
         "domainId":{
           "shape":"DomainId",
-          "documentation":"<p>The unique identifier of the Cases domain. </p>",
+          "documentation":"<p>The unique identifier of the Cases domain.</p>",
           "location":"uri",
           "locationName":"domainId"
         },
@@ -1872,6 +1872,32 @@
       "max":1500,
       "min":0
     },
+    "FileArn":{
+      "type":"string",
+      "max":500,
+      "min":1
+    },
+    "FileContent":{
+      "type":"structure",
+      "required":["fileArn"],
+      "members":{
+        "fileArn":{
+          "shape":"FileArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of a File in Amazon Connect.</p>"
+        }
+      },
+      "documentation":"<p>An object that represents a content of an Amazon Connect file object.</p>"
+    },
+    "FileFilter":{
+      "type":"structure",
+      "members":{
+        "fileArn":{
+          "shape":"FileArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the file.</p>"
+        }
+      },
+      "documentation":"<p>A filter for related items of type <code>File</code>.</p>"
+    },
     "GetCaseAuditEventsRequest":{
       "type":"structure",
       "required":[
@@ -2076,11 +2102,11 @@
       "members":{
         "createdTime":{
           "shape":"CreatedTime",
-          "documentation":"<p>The timestamp for when the resource was created.</p>"
+          "documentation":"<p>Timestamp at which the resource was created.</p>"
         },
         "deleted":{
           "shape":"Deleted",
-          "documentation":"<p>Indicates whether the resource has been deleted.</p>"
+          "documentation":"<p>Denotes whether or not the resource has been deleted.</p>"
         },
         "description":{
           "shape":"FieldDescription",
@@ -2096,7 +2122,7 @@
         },
         "lastModifiedTime":{
           "shape":"LastModifiedTime",
-          "documentation":"<p>The timestamp for when the resource was created or last modified.</p>"
+          "documentation":"<p>Timestamp at which the resource was created or last modified.</p>"
         },
         "name":{
           "shape":"FieldName",
@@ -2153,15 +2179,15 @@
         },
         "createdTime":{
           "shape":"CreatedTime",
-          "documentation":"<p>The timestamp for when the resource was created.</p>"
+          "documentation":"<p>Timestamp at which the resource was created.</p>"
         },
         "deleted":{
           "shape":"Deleted",
-          "documentation":"<p>Indicates whether the resource has been deleted.</p>"
+          "documentation":"<p>Denotes whether or not the resource has been deleted.</p>"
         },
         "lastModifiedTime":{
           "shape":"LastModifiedTime",
-          "documentation":"<p>The timestamp for when the resource was created or last modified.</p>"
+          "documentation":"<p>Timestamp at which the resource was created or last modified.</p>"
         },
         "layoutArn":{
           "shape":"LayoutArn",
@@ -2213,11 +2239,11 @@
       "members":{
         "createdTime":{
           "shape":"CreatedTime",
-          "documentation":"<p>The timestamp for when the resource was created.</p>"
+          "documentation":"<p>Timestamp at which the resource was created.</p>"
         },
         "deleted":{
           "shape":"Deleted",
-          "documentation":"<p>Indicates whether the resource has been deleted.</p>"
+          "documentation":"<p>Denotes whether or not the resource has been deleted.</p>"
         },
         "description":{
           "shape":"TemplateDescription",
@@ -2225,7 +2251,7 @@
         },
         "lastModifiedTime":{
           "shape":"LastModifiedTime",
-          "documentation":"<p>The timestamp for when the resource was created or last modified.</p>"
+          "documentation":"<p>Timestamp at which the resource was created or last modified.</p>"
         },
         "layoutConfiguration":{
           "shape":"LayoutConfiguration",
@@ -2712,6 +2738,10 @@
         "contact":{
           "shape":"ContactContent",
           "documentation":"<p>Represents the content of a contact to be returned to agents.</p>"
+        },
+        "file":{
+          "shape":"FileContent",
+          "documentation":"<p>Represents the content of a File to be returned to agents.</p>"
         }
       },
       "documentation":"<p>Represents the content of a particular type of related item.</p>",
@@ -2743,6 +2773,10 @@
         "contact":{
           "shape":"Contact",
           "documentation":"<p>Object representing a contact in Amazon Connect as an API request field.</p>"
+        },
+        "file":{
+          "shape":"FileContent",
+          "documentation":"<p>A file of related items.</p>"
         }
       },
       "documentation":"<p>Represents the content of a related item to be created.</p>",
@@ -2752,7 +2786,8 @@
       "type":"string",
       "enum":[
         "Contact",
-        "Comment"
+        "Comment",
+        "File"
       ]
     },
     "RelatedItemTypeFilter":{
@@ -2765,6 +2800,10 @@
         "contact":{
           "shape":"ContactFilter",
           "documentation":"<p>A filter for related items of type <code>Contact</code>.</p>"
+        },
+        "file":{
+          "shape":"FileFilter",
+          "documentation":"<p>A filter for related items of this type of <code>File</code>.</p>"
         }
       },
       "documentation":"<p>The list of types of related items and their parameters to use for filtering.</p>",

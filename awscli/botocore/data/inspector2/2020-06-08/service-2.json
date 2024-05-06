@@ -401,6 +401,7 @@
         {"shape":"ValidationException"},
         {"shape":"AccessDeniedException"},
         {"shape":"ThrottlingException"},
+        {"shape":"ResourceNotFoundException"},
         {"shape":"InternalServerException"}
       ],
       "documentation":"<p>Retrieves a CIS scan report.</p>"
@@ -2046,6 +2047,13 @@
     "CisOwnerId":{
       "type":"string",
       "pattern":"^\\d{12}|o-[a-z0-9]{10,32}$"
+    },
+    "CisReportFormat":{
+      "type":"string",
+      "enum":[
+        "PDF",
+        "CSV"
+      ]
     },
     "CisReportStatus":{
       "type":"string",
@@ -4922,6 +4930,10 @@
       "type":"structure",
       "required":["scanArn"],
       "members":{
+        "reportFormat":{
+          "shape":"CisReportFormat",
+          "documentation":"<p> The format of the report. Valid values are <code>PDF</code> and <code>CSV</code>. If no value is specified, the report format defaults to <code>PDF</code>. </p>"
+        },
         "scanArn":{
           "shape":"CisScanArn",
           "documentation":"<p>The scan ARN.</p>"
@@ -4941,7 +4953,7 @@
         },
         "url":{
           "shape":"String",
-          "documentation":"<p> The URL where a PDF of the CIS scan report can be downloaded. </p>"
+          "documentation":"<p> The URL where a PDF or CSV of the CIS scan report can be downloaded. </p>"
         }
       }
     },

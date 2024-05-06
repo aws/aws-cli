@@ -44,7 +44,7 @@ Output::
 
 **Example 3: To create a user-decoupled WorkSpace**
 
-The following ``create-workspaces`` example creates a user-decoupled WorkSpace by setting the username to ``[UNDEFINED]``, and specifying a WorkSpace name, directory ID, and bundle ID. 
+The following ``create-workspaces`` example creates a user-decoupled WorkSpace by setting the username to ``[UNDEFINED]``, and specifying a WorkSpace name, directory ID, and bundle ID. ::
 
     aws workspaces create-workspaces \
         --workspaces DirectoryId=d-926722edaf,UserName='"[UNDEFINED]"',WorkspaceName=MaryWorkspace1,BundleId=wsb-0zsvgp8fc,WorkspaceProperties={RunningMode=ALWAYS_ON}

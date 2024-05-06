@@ -822,7 +822,7 @@
           "documentation":"<p>The Amazon Resource Name (ARN) of the Lambda function containing the business logic that is carried out upon invoking the action.</p>"
         }
       },
-      "documentation":"<p>Contains details about the Lambda function containing the business logic that is carried out upon invoking the action.</p>",
+      "documentation":"<p>Contains details about the Lambda function containing the business logic that is carried out upon invoking the action or the custom control method for handling the information elicited from the user.</p>",
       "union":true
     },
     "ActionGroupSignature":{
@@ -977,7 +977,7 @@
       "members":{
         "actionGroupExecutor":{
           "shape":"ActionGroupExecutor",
-          "documentation":"<p>The Amazon Resource Name (ARN) of the Lambda function containing the business logic that is carried out upon invoking the action.</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of the Lambda function containing the business logic that is carried out upon invoking the action or the custom control method for handling the information elicited from the user.</p>"
         },
         "actionGroupId":{
           "shape":"Id",
@@ -1079,6 +1079,10 @@
           "shape":"Description",
           "documentation":"<p>The description of the alias of the agent.</p>"
         },
+        "failureReasons":{
+          "shape":"FailureReasons",
+          "documentation":"<p>Information on the failure of Provisioned Throughput assigned to an agent alias.</p>"
+        },
         "routingConfiguration":{
           "shape":"AgentAliasRoutingConfiguration",
           "documentation":"<p>Contains details about the routing configuration of the alias.</p>"
@@ -1134,11 +1138,14 @@
     },
     "AgentAliasRoutingConfigurationListItem":{
       "type":"structure",
-      "required":["agentVersion"],
       "members":{
         "agentVersion":{
           "shape":"Version",
           "documentation":"<p>The version of the agent with which the alias is associated.</p>"
+        },
+        "provisionedThroughput":{
+          "shape":"ProvisionedModelIdentifier",
+          "documentation":"<p>Information on the Provisioned Throughput assigned to an agent alias.</p>"
         }
       },
       "documentation":"<p>Contains details about the routing configuration of the alias.</p>"
@@ -1589,7 +1596,7 @@
       "members":{
         "actionGroupExecutor":{
           "shape":"ActionGroupExecutor",
-          "documentation":"<p>The Amazon Resource Name (ARN) of the Lambda function containing the business logic that is carried out upon invoking the action.</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of the Lambda function containing the business logic that is carried out upon invoking the action or the custom control method for handling the information elicited from the user.</p>"
         },
         "actionGroupName":{
           "shape":"Name",
@@ -3755,6 +3762,12 @@
         "KNOWLEDGE_BASE_RESPONSE_GENERATION"
       ]
     },
+    "ProvisionedModelIdentifier":{
+      "type":"string",
+      "max":2048,
+      "min":1,
+      "pattern":"^((([0-9a-zA-Z][_-]?){1,63})|(arn:aws(-[^:]+)?:bedrock:[a-z0-9-]{1,20}:[0-9]{12}:provisioned-model/[a-z0-9]{12}))$"
+    },
     "RdsArn":{
       "type":"string",
       "pattern":"^arn:aws(|-cn|-us-gov):rds:[a-zA-Z0-9-]*:[0-9]{12}:cluster:[a-zA-Z0-9-]{1,63}$"
@@ -4443,7 +4456,7 @@
       "members":{
         "dataDeletionPolicy":{
           "shape":"DataDeletionPolicy",
-          "documentation":"<p>The data deletion policy assigned to the data source.</p>"
+          "documentation":"<p>The data deletion policy of the updated data source.</p>"
         },
         "dataSourceConfiguration":{
           "shape":"DataSourceConfiguration",

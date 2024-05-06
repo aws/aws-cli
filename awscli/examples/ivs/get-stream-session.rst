@@ -18,6 +18,10 @@ Output::
                 "latencyMode": "LOW",
                 "type": "STANDARD",
                 "recordingConfigurationArn": "arn:aws:ivs:us-west-2:123456789012:recording-configuration/ABcdef34ghIJ",
+                "srt": {
+                    "endpoint": "a1b2c3d4e5f6.srt.live-video.net",
+                    "passphrase": "AB1C2defGHijkLMNo3PqQRstUvwxyzaBCDEfghh4ijklMN5opqrStuVWxyzAbCDEfghIJ"
+                },
                 "ingestEndpoint": "a1b2c3d4e5f6.global-contribute.live-video.net",
                 "playbackUrl": "url-string",
                 "authorized": false,

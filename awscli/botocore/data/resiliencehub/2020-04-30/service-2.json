@@ -5,6 +5,7 @@
     "endpointPrefix":"resiliencehub",
     "jsonVersion":"1.1",
     "protocol":"rest-json",
+    "protocols":["rest-json"],
     "serviceFullName":"AWS Resilience Hub",
     "serviceId":"resiliencehub",
     "signatureVersion":"v4",
@@ -497,6 +498,23 @@
         {"shape":"AccessDeniedException"}
       ],
       "documentation":"<p>List of compliance drifts that were detected while running an assessment.</p>"
+    },
+    "ListAppAssessmentResourceDrifts":{
+      "name":"ListAppAssessmentResourceDrifts",
+      "http":{
+        "method":"POST",
+        "requestUri":"/list-app-assessment-resource-drifts",
+        "responseCode":200
+      },
+      "input":{"shape":"ListAppAssessmentResourceDriftsRequest"},
+      "output":{"shape":"ListAppAssessmentResourceDriftsResponse"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Indicates the list of resource drifts that were detected while running an assessment.</p>"
     },
     "ListAppAssessments":{
       "name":"ListAppAssessments",
@@ -2854,7 +2872,11 @@
     },
     "DifferenceType":{
       "type":"string",
-      "enum":["NotEqual"]
+      "enum":[
+        "NotEqual",
+        "Added",
+        "Removed"
+      ]
     },
     "DisruptionCompliance":{
       "type":"structure",
@@ -2938,7 +2960,10 @@
     },
     "DriftType":{
       "type":"string",
-      "enum":["ApplicationCompliance"]
+      "enum":[
+        "ApplicationCompliance",
+        "AppComponentResiliencyComplianceStatus"
+      ]
     },
     "EksNamespace":{
       "type":"string",
@@ -3246,6 +3271,38 @@
         "nextToken":{
           "shape":"NextToken",
           "documentation":"<p>Token number of the next application to be checked for compliance and regulatory requirements from the list of applications.</p>"
+        }
+      }
+    },
+    "ListAppAssessmentResourceDriftsRequest":{
+      "type":"structure",
+      "required":["assessmentArn"],
+      "members":{
+        "assessmentArn":{
+          "shape":"Arn",
+          "documentation":"<p>Amazon Resource Name (ARN) of the assessment. The format for this ARN is: arn:<code>partition</code>:resiliencehub:<code>region</code>:<code>account</code>:app-assessment/<code>app-id</code>. For more information about ARNs, see <a href=\"https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html\"> Amazon Resource Names (ARNs)</a> in the <i>Amazon Web Services General Reference</i> guide.</p>"
+        },
+        "maxResults":{
+          "shape":"MaxResults",
+          "documentation":"<p>Indicates the maximum number of drift results to include in the response. If more results exist than the specified <code>MaxResults</code> value, a token is included in the response so that the remaining results can be retrieved.</p>"
+        },
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>Null, or the token from a previous call to get the next set of results.</p>"
+        }
+      }
+    },
+    "ListAppAssessmentResourceDriftsResponse":{
+      "type":"structure",
+      "required":["resourceDrifts"],
+      "members":{
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>Null, or the token from a previous call to get the next set of results.</p>"
+        },
+        "resourceDrifts":{
+          "shape":"ResourceDriftList",
+          "documentation":"<p>Indicates all the resource drifts detected for an assessed entity.</p>"
         }
       }
     },
@@ -3661,7 +3718,6 @@
     },
     "ListRecommendationTemplatesRequest":{
       "type":"structure",
-      "required":["assessmentArn"],
       "members":{
         "assessmentArn":{
           "shape":"Arn",
@@ -4036,7 +4092,7 @@
         },
         "resourceType":{
           "shape":"String255",
-          "documentation":"<p>The type of resource.</p>"
+          "documentation":"<p>Type of resource.</p>"
         },
         "sourceType":{
           "shape":"ResourceSourceType",
@@ -4512,6 +4568,36 @@
         }
       }
     },
+    "ResourceDrift":{
+      "type":"structure",
+      "members":{
+        "appArn":{
+          "shape":"Arn",
+          "documentation":"<p>Amazon Resource Name (ARN) of the application whose resources have drifted. The format for this ARN is: arn:<code>partition</code>:resiliencehub:<code>region</code>:<code>account</code>:app-assessment/<code>app-id</code>. For more information about ARNs, see <a href=\"https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html\"> Amazon Resource Names (ARNs)</a> in the <i>Amazon Web Services General Reference</i> guide.</p>"
+        },
+        "appVersion":{
+          "shape":"EntityVersion",
+          "documentation":"<p>Version of the application whose resources have drifted.</p>"
+        },
+        "diffType":{
+          "shape":"DifferenceType",
+          "documentation":"<p>Indicates if the resource was added or removed.</p>"
+        },
+        "referenceId":{
+          "shape":"EntityId",
+          "documentation":"<p>Reference identifier of the resource drift.</p>"
+        },
+        "resourceIdentifier":{
+          "shape":"ResourceIdentifier",
+          "documentation":"<p>Identifier of the drifted resource.</p>"
+        }
+      },
+      "documentation":"<p>Indicates the resources that have drifted in the current application version.</p>"
+    },
+    "ResourceDriftList":{
+      "type":"list",
+      "member":{"shape":"ResourceDrift"}
+    },
     "ResourceError":{
       "type":"structure",
       "members":{
@@ -4552,6 +4638,20 @@
       "type":"string",
       "pattern":".*"
     },
+    "ResourceIdentifier":{
+      "type":"structure",
+      "members":{
+        "logicalResourceId":{
+          "shape":"LogicalResourceId",
+          "documentation":"<p>Logical identifier of the drifted resource.</p>"
+        },
+        "resourceType":{
+          "shape":"String255",
+          "documentation":"<p>Type of the drifted resource.</p>"
+        }
+      },
+      "documentation":"<p>Defines a resource identifier for the drifted resource.</p>"
+    },
     "ResourceImportStatusType":{
       "type":"string",
       "enum":[
@@ -4577,19 +4677,19 @@
       "members":{
         "appRegistryAppName":{
           "shape":"EntityName",
-          "documentation":"<p>The name of the application this resource is mapped to.</p>"
+          "documentation":"<p>Name of the application this resource is mapped to when the <code>mappingType</code> is <code>AppRegistryApp</code>.</p>"
         },
         "eksSourceName":{
           "shape":"String255",
-          "documentation":"<p>Name of the Amazon Elastic Kubernetes Service cluster and namespace this resource belongs to.</p> <note> <p>This parameter accepts values in \"eks-cluster/namespace\" format.</p> </note>"
+          "documentation":"<p>Name of the Amazon Elastic Kubernetes Service cluster and namespace that this resource is mapped to when the <code>mappingType</code> is <code>EKS</code>.</p> <note> <p>This parameter accepts values in \"eks-cluster/namespace\" format.</p> </note>"
         },
         "logicalStackName":{
           "shape":"String255",
-          "documentation":"<p>The name of the CloudFormation stack this resource is mapped to.</p>"
+          "documentation":"<p>Name of the CloudFormation stack this resource is mapped to when the <code>mappingType</code> is <code>CfnStack</code>.</p>"
         },
         "mappingType":{
           "shape":"ResourceMappingType",
-          "documentation":"<p>Specifies the type of resource mapping.</p> <dl> <dt>AppRegistryApp</dt> <dd> <p>The resource is mapped to another application. The name of the application is contained in the <code>appRegistryAppName</code> property.</p> </dd> <dt>CfnStack</dt> <dd> <p>The resource is mapped to a CloudFormation stack. The name of the CloudFormation stack is contained in the <code>logicalStackName</code> property.</p> </dd> <dt>Resource</dt> <dd> <p>The resource is mapped to another resource. The name of the resource is contained in the <code>resourceName</code> property.</p> </dd> <dt>ResourceGroup</dt> <dd> <p>The resource is mapped to Resource Groups. The name of the resource group is contained in the <code>resourceGroupName</code> property.</p> </dd> </dl>"
+          "documentation":"<p>Specifies the type of resource mapping.</p>"
         },
         "physicalResourceId":{
           "shape":"PhysicalResourceId",
@@ -4597,15 +4697,15 @@
         },
         "resourceGroupName":{
           "shape":"EntityName",
-          "documentation":"<p>Name of the resource group that the resource is mapped to.</p>"
+          "documentation":"<p>Name of the Resource Groups that this resource is mapped to when the <code>mappingType</code> is <code>ResourceGroup</code>.</p>"
         },
         "resourceName":{
           "shape":"EntityName",
-          "documentation":"<p>Name of the resource that the resource is mapped to.</p>"
+          "documentation":"<p>Name of the resource that this resource is mapped to when the <code>mappingType</code> is <code>Resource</code>.</p>"
         },
         "terraformSourceName":{
           "shape":"String255",
-          "documentation":"<p> The short name of the Terraform source. </p>"
+          "documentation":"<p>Name of the Terraform source that this resource is mapped to when the <code>mappingType</code> is <code>Terraform</code>.</p>"
         }
       },
       "documentation":"<p>Defines a resource mapping.</p>"
@@ -4694,19 +4794,19 @@
       "members":{
         "excludedCount":{
           "shape":"Long",
-          "documentation":"<p>Number of recommendations that were excluded from the assessment.</p> <p>For example, if the <code>Excluded count</code> for Resilience Hub recommended Amazon CloudWatch alarms is 7, it indicates that 7 Amazon CloudWatch alarms are excluded from the assessment.</p>"
+          "documentation":"<p>Number of recommendations that were excluded from the assessment.</p> <p>For example, if the <code>excludedCount</code> for Alarms coverage scoring component is 7, it indicates that 7 Amazon CloudWatch alarms are excluded from the assessment.</p>"
         },
         "outstandingCount":{
           "shape":"Long",
-          "documentation":"<p>Number of issues that must be resolved to obtain the maximum possible score for the scoring component. For SOPs, alarms, and FIS experiments, these are the number of recommendations that must be implemented. For compliance, it is the number of Application Components that has breached the resiliency policy.</p> <p>For example, if the <code>Outstanding count</code> for Resilience Hub recommended Amazon CloudWatch alarms is 5, it indicates that 5 Amazon CloudWatch alarms must be fixed to achieve the maximum possible score.</p>"
+          "documentation":"<p>Number of recommendations that must be implemented to obtain the maximum possible score for the scoring component. For SOPs, alarms, and tests, these are the number of recommendations that must be implemented. For compliance, these are the number of Application Components that have breached the resiliency policy.</p> <p>For example, if the <code>outstandingCount</code> for Alarms coverage scoring component is 5, it indicates that 5 Amazon CloudWatch alarms need to be implemented to achieve the maximum possible score.</p>"
         },
         "possibleScore":{
           "shape":"Double",
-          "documentation":"<p>Maximum possible score that can be obtained for the scoring component. If the <code>Possible score</code> is 20 points, it indicates the maximum possible score you can achieve for your application when you run a new assessment after implementing all the Resilience Hub recommendations.</p>"
+          "documentation":"<p>Maximum possible score that can be obtained for the scoring component. </p> <p>For example, if the <code>possibleScore</code> is 20 points, it indicates the maximum possible score you can achieve for the scoring component when you run a new assessment after implementing all the Resilience Hub recommendations.</p>"
         },
         "score":{
           "shape":"Double",
-          "documentation":"<p>Resiliency score of your application.</p>"
+          "documentation":"<p>Resiliency score points given for the scoring component. The score is always less than or equal to the <code>possibleScore</code>.</p>"
         }
       },
       "documentation":"<p>Resiliency score of each scoring component. For more information about scoring component, see <a href=\"https://docs.aws.amazon.com/resilience-hub/latest/userguide/calculate-score.html\">Calculating resiliency score</a>.</p>"
@@ -4869,7 +4969,7 @@
       "type":"string",
       "max":128,
       "min":1,
-      "pattern":"^(?!aws:)[^\\x00-\\x1f\\x22]+$"
+      "pattern":"^[^\\x00-\\x1f\\x22]+$"
     },
     "TagKeyList":{
       "type":"list",

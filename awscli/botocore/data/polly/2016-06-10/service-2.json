@@ -199,7 +199,7 @@
       "members":{
         "Engine":{
           "shape":"Engine",
-          "documentation":"<p>Specifies the engine (<code>standard</code>, <code>neural</code> or <code>long-form</code>) used by Amazon Polly when processing input text for speech synthesis. </p>",
+          "documentation":"<p>Specifies the engine (<code>standard</code>, <code>neural</code>, <code>long-form</code> or <code>generative</code>) used by Amazon Polly when processing input text for speech synthesis. </p>",
           "location":"querystring",
           "locationName":"Engine"
         },
@@ -241,7 +241,8 @@
       "enum":[
         "standard",
         "neural",
-        "long-form"
+        "long-form",
+        "generative"
       ]
     },
     "EngineList":{
@@ -692,7 +693,7 @@
     "Size":{"type":"integer"},
     "SnsTopicArn":{
       "type":"string",
-      "pattern":"^arn:aws(-(cn|iso(-b)?|us-gov))?:sns:[a-z0-9_-]{1,50}:\\d{12}:[a-zA-Z0-9_-]{1,256}$"
+      "pattern":"^arn:aws(-(cn|iso(-b)?|us-gov))?:sns:[a-z0-9_-]{1,50}:\\d{12}:[a-zA-Z0-9_-]{1,251}([a-zA-Z0-9_-]{0,5}|\\.fifo)$"
     },
     "SpeechMarkType":{
       "type":"string",
@@ -728,7 +729,7 @@
       "members":{
         "Engine":{
           "shape":"Engine",
-          "documentation":"<p>Specifies the engine (<code>standard</code>, <code>neural</code> or <code>long-form</code>) for Amazon Polly to use when processing input text for speech synthesis. Using a voice that is not supported for the engine selected will result in an error.</p>"
+          "documentation":"<p>Specifies the engine (<code>standard</code>, <code>neural</code>, <code>long-form</code> or <code>generative</code>) for Amazon Polly to use when processing input text for speech synthesis. Using a voice that is not supported for the engine selected will result in an error.</p>"
         },
         "LanguageCode":{
           "shape":"LanguageCode",
@@ -752,7 +753,7 @@
         },
         "SampleRate":{
           "shape":"SampleRate",
-          "documentation":"<p>The audio frequency specified in Hz.</p> <p>The valid values for mp3 and ogg_vorbis are \"8000\", \"16000\", \"22050\", and \"24000\". The default value for standard voices is \"22050\". The default value for neural voices is \"24000\". The default value for long-form voices is \"24000\".</p> <p>Valid values for pcm are \"8000\" and \"16000\" The default value is \"16000\". </p>"
+          "documentation":"<p>The audio frequency specified in Hz.</p> <p>The valid values for mp3 and ogg_vorbis are \"8000\", \"16000\", \"22050\", and \"24000\". The default value for standard voices is \"22050\". The default value for neural voices is \"24000\". The default value for long-form voices is \"24000\". The default value for generative voices is \"24000\".</p> <p>Valid values for pcm are \"8000\" and \"16000\" The default value is \"16000\". </p>"
         },
         "SnsTopicArn":{
           "shape":"SnsTopicArn",
@@ -790,7 +791,7 @@
       "members":{
         "Engine":{
           "shape":"Engine",
-          "documentation":"<p>Specifies the engine (<code>standard</code>, <code>neural</code> or <code>long-form</code>) for Amazon Polly to use when processing input text for speech synthesis. Using a voice that is not supported for the engine selected will result in an error.</p>"
+          "documentation":"<p>Specifies the engine (<code>standard</code>, <code>neural</code>, <code>long-form</code> or <code>generative</code>) for Amazon Polly to use when processing input text for speech synthesis. Using a voice that is not supported for the engine selected will result in an error.</p>"
         },
         "TaskId":{
           "shape":"TaskId",
@@ -830,7 +831,7 @@
         },
         "SampleRate":{
           "shape":"SampleRate",
-          "documentation":"<p>The audio frequency specified in Hz.</p> <p>The valid values for mp3 and ogg_vorbis are \"8000\", \"16000\", \"22050\", and \"24000\". The default value for standard voices is \"22050\". The default value for neural voices is \"24000\". The default value for long-form voices is \"24000\".</p> <p>Valid values for pcm are \"8000\" and \"16000\" The default value is \"16000\". </p>"
+          "documentation":"<p>The audio frequency specified in Hz.</p> <p>The valid values for mp3 and ogg_vorbis are \"8000\", \"16000\", \"22050\", and \"24000\". The default value for standard voices is \"22050\". The default value for neural voices is \"24000\". The default value for long-form voices is \"24000\". The default value for generative voices is \"24000\".</p> <p>Valid values for pcm are \"8000\" and \"16000\" The default value is \"16000\". </p>"
         },
         "SpeechMarkTypes":{
           "shape":"SpeechMarkTypeList",
@@ -874,7 +875,7 @@
       "members":{
         "Engine":{
           "shape":"Engine",
-          "documentation":"<p>Specifies the engine (<code>standard</code>, <code>neural</code> or <code>long-form</code>) for Amazon Polly to use when processing input text for speech synthesis. For information on Amazon Polly voices and which voices are available for each engine, see <a href=\"https://docs.aws.amazon.com/polly/latest/dg/voicelist.html\">Available Voices</a>.</p> <p> <b>NTTS-only voices</b> </p> <p>When using NTTS-only voices such as Kevin (en-US), this parameter is required and must be set to <code>neural</code>. If the engine is not specified, or is set to <code>standard</code>, this will result in an error. </p> <p> <b>long-form-only voices</b> </p> <p>When using long-form-only voices such as Danielle (en-US), this parameter is required and must be set to <code>long-form</code>. If the engine is not specified, or is set to <code>standard</code> or <code>neural</code>, this will result in an error. </p> <p>Type: String</p> <p>Valid Values: <code>standard</code> | <code>neural</code> | <code>long-form</code> </p> <p>Required: Yes</p> <p> <b>Standard voices</b> </p> <p>For standard voices, this is not required; the engine parameter defaults to <code>standard</code>. If the engine is not specified, or is set to <code>standard</code> and an NTTS-only voice is selected, this will result in an error. </p>"
+          "documentation":"<p>Specifies the engine (<code>standard</code>, <code>neural</code>, <code>long-form</code>, or <code>generative</code>) for Amazon Polly to use when processing input text for speech synthesis. Provide an engine that is supported by the voice you select. If you don't provide an engine, the standard engine is selected by default. If a chosen voice isn't supported by the standard engine, this will result in an error. For information on Amazon Polly voices and which voices are available for each engine, see <a href=\"https://docs.aws.amazon.com/polly/latest/dg/voicelist.html\">Available Voices</a>.</p> <p>Type: String</p> <p>Valid Values: <code>standard</code> | <code>neural</code> | <code>long-form</code> | <code>generative</code> </p> <p>Required: Yes</p>"
         },
         "LanguageCode":{
           "shape":"LanguageCode",
@@ -890,7 +891,7 @@
         },
         "SampleRate":{
           "shape":"SampleRate",
-          "documentation":"<p>The audio frequency specified in Hz.</p> <p>The valid values for mp3 and ogg_vorbis are \"8000\", \"16000\", \"22050\", and \"24000\". The default value for standard voices is \"22050\". The default value for neural voices is \"24000\". The default value for long-form voices is \"24000\".</p> <p>Valid values for pcm are \"8000\" and \"16000\" The default value is \"16000\". </p>"
+          "documentation":"<p>The audio frequency specified in Hz.</p> <p>The valid values for mp3 and ogg_vorbis are \"8000\", \"16000\", \"22050\", and \"24000\". The default value for standard voices is \"22050\". The default value for neural voices is \"24000\". The default value for long-form voices is \"24000\". The default value for generative voices is \"24000\".</p> <p>Valid values for pcm are \"8000\" and \"16000\" The default value is \"16000\". </p>"
         },
         "SpeechMarkTypes":{
           "shape":"SpeechMarkTypeList",
@@ -1010,7 +1011,7 @@
         },
         "SupportedEngines":{
           "shape":"EngineList",
-          "documentation":"<p>Specifies which engines (<code>standard</code>, <code>neural</code> or <code>long-form</code>) are supported by a given voice.</p>"
+          "documentation":"<p>Specifies which engines (<code>standard</code>, <code>neural</code>, <code>long-form</code> or <code>generative</code>) are supported by a given voice.</p>"
         }
       },
       "documentation":"<p>Description of the voice.</p>"

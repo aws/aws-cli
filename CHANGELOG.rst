@@ -7409,6 +7409,17 @@ CHANGELOG
 * feature:wizard: Added support for AWS CLI Wizards. See `#3752 <https://github.com/aws/aws-cli/issues/3752>`__.
 
 
+1.32.101
+========
+
+* api-change:``cognito-idp``: Add EXTERNAL_PROVIDER enum value to UserStatusType.
+* api-change:``ec2``: Adding Precision Hardware Clock (PHC) to public API DescribeInstanceTypes
+* api-change:``ecr``: This release adds pull through cache rules support for GitLab container registry in Amazon ECR.
+* api-change:``fms``: The policy scope resource tag is always a string value, either a non-empty string or an empty string.
+* api-change:``polly``: Add new engine - generative - that builds the most expressive conversational voices.
+* api-change:``sqs``: This release adds MessageSystemAttributeNames to ReceiveMessageRequest to replace AttributeNames.
+
+
 1.32.100
 ========
 

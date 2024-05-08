@@ -7400,6 +7400,15 @@ CHANGELOG
 * feature:wizard: Added support for AWS CLI Wizards. See `#3752 <https://github.com/aws/aws-cli/issues/3752>`__.
 
 
+1.32.100
+========
+
+* api-change:``b2bi``: Documentation update to clarify the MappingTemplate definition.
+* api-change:``budgets``: This release adds tag support for budgets and budget actions.
+* api-change:``resiliencehub``: AWS Resilience Hub has expanded its drift detection capabilities by introducing a new type of drift detection - application resource drift. This new enhancement detects changes, such as the addition or deletion of resources within the application's input sources.
+* api-change:``route53profiles``: Doc only update for Route 53 profiles that fixes some link  issues
+
+
 1.32.99
 =======
 

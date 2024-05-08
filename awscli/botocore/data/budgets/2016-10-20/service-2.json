@@ -5,6 +5,7 @@
     "endpointPrefix":"budgets",
     "jsonVersion":"1.1",
     "protocol":"json",
+    "protocols":["json"],
     "serviceAbbreviation":"AWSBudgets",
     "serviceFullName":"AWS Budgets",
     "serviceId":"Budgets",
@@ -27,7 +28,8 @@
         {"shape":"CreationLimitExceededException"},
         {"shape":"DuplicateRecordException"},
         {"shape":"AccessDeniedException"},
-        {"shape":"ThrottlingException"}
+        {"shape":"ThrottlingException"},
+        {"shape":"ServiceQuotaExceededException"}
       ],
       "documentation":"<p>Creates a budget and, if included, notifications and subscribers. </p> <important> <p>Only one of <code>BudgetLimit</code> or <code>PlannedBudgetLimits</code> can be present in the syntax at one time. Use the syntax that matches your case. The Request Syntax section shows the <code>BudgetLimit</code> syntax. For <code>PlannedBudgetLimits</code>, see the <a href=\"https://docs.aws.amazon.com/aws-cost-management/latest/APIReference/API_budgets_CreateBudget.html#API_CreateBudget_Examples\">Examples</a> section. </p> </important>"
     },
@@ -46,7 +48,8 @@
         {"shape":"DuplicateRecordException"},
         {"shape":"NotFoundException"},
         {"shape":"AccessDeniedException"},
-        {"shape":"ThrottlingException"}
+        {"shape":"ThrottlingException"},
+        {"shape":"ServiceQuotaExceededException"}
       ],
       "documentation":"<p> Creates a budget action. </p>"
     },
@@ -357,6 +360,58 @@
       ],
       "documentation":"<p> Executes a budget action. </p>"
     },
+    "ListTagsForResource":{
+      "name":"ListTagsForResource",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"ListTagsForResourceRequest"},
+      "output":{"shape":"ListTagsForResourceResponse"},
+      "errors":[
+        {"shape":"ThrottlingException"},
+        {"shape":"NotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalErrorException"},
+        {"shape":"InvalidParameterException"}
+      ],
+      "documentation":"<p>Lists tags associated with a budget or budget action resource.</p>"
+    },
+    "TagResource":{
+      "name":"TagResource",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"TagResourceRequest"},
+      "output":{"shape":"TagResourceResponse"},
+      "errors":[
+        {"shape":"ThrottlingException"},
+        {"shape":"ServiceQuotaExceededException"},
+        {"shape":"NotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalErrorException"},
+        {"shape":"InvalidParameterException"}
+      ],
+      "documentation":"<p>Creates tags for a budget or budget action resource.</p>"
+    },
+    "UntagResource":{
+      "name":"UntagResource",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"UntagResourceRequest"},
+      "output":{"shape":"UntagResourceResponse"},
+      "errors":[
+        {"shape":"ThrottlingException"},
+        {"shape":"NotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalErrorException"},
+        {"shape":"InvalidParameterException"}
+      ],
+      "documentation":"<p>Deletes tags associated with a budget or budget action resource.</p>"
+    },
     "UpdateBudget":{
       "name":"UpdateBudget",
       "http":{
@@ -600,6 +655,11 @@
       "max":60,
       "min":1
     },
+    "AmazonResourceName":{
+      "type":"string",
+      "max":1011,
+      "min":1
+    },
     "ApprovalModel":{
       "type":"string",
       "enum":[
@@ -655,7 +715,7 @@
         },
         "CostFilters":{
           "shape":"CostFilters",
-          "documentation":"<p>The cost filters, such as <code>Region</code>, <code>Service</code>, <code>member account</code>, <code>Tag</code>, or <code>Cost Category</code>, that are applied to a budget.</p> <p>Amazon Web Services Budgets supports the following services as a <code>Service</code> filter for RI budgets:</p> <ul> <li> <p>Amazon EC2</p> </li> <li> <p>Amazon Redshift</p> </li> <li> <p>Amazon Relational Database Service</p> </li> <li> <p>Amazon ElastiCache</p> </li> <li> <p>Amazon OpenSearch Service</p> </li> </ul>"
+          "documentation":"<p>The cost filters, such as <code>Region</code>, <code>Service</code>, <code>LinkedAccount</code>, <code>Tag</code>, or <code>CostCategory</code>, that are applied to a budget.</p> <p>Amazon Web Services Budgets supports the following services as a <code>Service</code> filter for RI budgets:</p> <ul> <li> <p>Amazon EC2</p> </li> <li> <p>Amazon Redshift</p> </li> <li> <p>Amazon Relational Database Service</p> </li> <li> <p>Amazon ElastiCache</p> </li> <li> <p>Amazon OpenSearch Service</p> </li> </ul>"
         },
         "CostTypes":{
           "shape":"CostTypes",
@@ -693,7 +753,7 @@
       "documentation":"<p> A string that represents the budget name. The \":\" and \"\\\" characters, and the \"/action/\" substring, aren't allowed.</p>",
       "max":100,
       "min":1,
-      "pattern":"^(?![^:\\\\]*/action/)[^:\\\\]+$"
+      "pattern":"^(?![^:\\\\]*/action/|(?i).*<script>.*</script>.*)[^:\\\\]+$"
     },
     "BudgetNotificationsForAccount":{
       "type":"structure",
@@ -879,7 +939,11 @@
           "shape":"ApprovalModel",
           "documentation":"<p> This specifies if the action needs manual or automatic approval. </p>"
         },
-        "Subscribers":{"shape":"Subscribers"}
+        "Subscribers":{"shape":"Subscribers"},
+        "ResourceTags":{
+          "shape":"ResourceTagList",
+          "documentation":"<p>An optional list of tags to associate with the specified budget action. Each tag consists of a key and a value, and each key must be unique for the resource.</p>"
+        }
       }
     },
     "CreateBudgetActionResponse":{
@@ -916,6 +980,10 @@
         "NotificationsWithSubscribers":{
           "shape":"NotificationWithSubscribersList",
           "documentation":"<p>A notification that you want to associate with a budget. A budget can have up to five notifications, and each notification can have one SNS subscriber and up to 10 email subscribers. If you include notifications and subscribers in your <code>CreateBudget</code> call, Amazon Web Services creates the notifications and subscribers for you.</p>"
+        },
+        "ResourceTags":{
+          "shape":"ResourceTagList",
+          "documentation":"<p>An optional list of tags to associate with the specified budget. Each tag consists of a key and a value, and each key must be unique for the resource.</p>"
         }
       },
       "documentation":"<p> Request of CreateBudget </p>"
@@ -1621,6 +1689,25 @@
       "documentation":"<p>An error on the client occurred. Typically, the cause is an invalid input value.</p>",
       "exception":true
     },
+    "ListTagsForResourceRequest":{
+      "type":"structure",
+      "required":["ResourceARN"],
+      "members":{
+        "ResourceARN":{
+          "shape":"AmazonResourceName",
+          "documentation":"<p>The unique identifier for the resource.</p>"
+        }
+      }
+    },
+    "ListTagsForResourceResponse":{
+      "type":"structure",
+      "members":{
+        "ResourceTags":{
+          "shape":"ResourceTagList",
+          "documentation":"<p>The tags associated with the resource.</p>"
+        }
+      }
+    },
     "MaxResults":{
       "type":"integer",
       "documentation":"<p> An integer that represents how many entries a paginated response contains. The maximum is 100.</p>",
@@ -1768,8 +1855,48 @@
       "members":{
         "Message":{"shape":"errorMessage"}
       },
-      "documentation":"<p> The request was received and recognized by the server, but the server rejected that particular method for the requested resource. </p>",
+      "documentation":"<p>The request was received and recognized by the server, but the server rejected that particular method for the requested resource.</p>",
       "exception":true
+    },
+    "ResourceTag":{
+      "type":"structure",
+      "required":[
+        "Key",
+        "Value"
+      ],
+      "members":{
+        "Key":{
+          "shape":"ResourceTagKey",
+          "documentation":"<p>The key that's associated with the tag.</p>"
+        },
+        "Value":{
+          "shape":"ResourceTagValue",
+          "documentation":"<p>The value that's associated with the tag.</p>"
+        }
+      },
+      "documentation":"<p>The tag structure that contains a tag key and value.</p>"
+    },
+    "ResourceTagKey":{
+      "type":"string",
+      "max":128,
+      "min":1
+    },
+    "ResourceTagKeyList":{
+      "type":"list",
+      "member":{"shape":"ResourceTagKey"},
+      "max":200,
+      "min":0
+    },
+    "ResourceTagList":{
+      "type":"list",
+      "member":{"shape":"ResourceTag"},
+      "max":200,
+      "min":0
+    },
+    "ResourceTagValue":{
+      "type":"string",
+      "max":256,
+      "min":0
     },
     "Role":{
       "type":"string",
@@ -1806,6 +1933,14 @@
         }
       },
       "documentation":"<p>The service control policies (SCP) action definition details. </p>"
+    },
+    "ServiceQuotaExceededException":{
+      "type":"structure",
+      "members":{
+        "Message":{"shape":"errorMessage"}
+      },
+      "documentation":"<p>You've reached the limit on the number of tags you can associate with a resource.</p>",
+      "exception":true
     },
     "Spend":{
       "type":"structure",
@@ -1889,6 +2024,28 @@
         "EMAIL"
       ]
     },
+    "TagResourceRequest":{
+      "type":"structure",
+      "required":[
+        "ResourceARN",
+        "ResourceTags"
+      ],
+      "members":{
+        "ResourceARN":{
+          "shape":"AmazonResourceName",
+          "documentation":"<p>The unique identifier for the resource.</p>"
+        },
+        "ResourceTags":{
+          "shape":"ResourceTagList",
+          "documentation":"<p>The tags associated with the resource.</p>"
+        }
+      }
+    },
+    "TagResourceResponse":{
+      "type":"structure",
+      "members":{
+      }
+    },
     "TargetId":{
       "type":"string",
       "max":68,
@@ -1947,6 +2104,28 @@
       "max":2147483647,
       "min":1,
       "pattern":".*"
+    },
+    "UntagResourceRequest":{
+      "type":"structure",
+      "required":[
+        "ResourceARN",
+        "ResourceTagKeys"
+      ],
+      "members":{
+        "ResourceARN":{
+          "shape":"AmazonResourceName",
+          "documentation":"<p>The unique identifier for the resource.</p>"
+        },
+        "ResourceTagKeys":{
+          "shape":"ResourceTagKeyList",
+          "documentation":"<p>The key that's associated with the tag.</p>"
+        }
+      }
+    },
+    "UntagResourceResponse":{
+      "type":"structure",
+      "members":{
+      }
     },
     "UpdateBudgetActionRequest":{
       "type":"structure",

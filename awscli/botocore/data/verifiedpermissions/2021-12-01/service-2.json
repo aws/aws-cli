@@ -5,6 +5,7 @@
     "endpointPrefix":"verifiedpermissions",
     "jsonVersion":"1.0",
     "protocol":"json",
+    "protocols":["json"],
     "serviceFullName":"Amazon Verified Permissions",
     "serviceId":"VerifiedPermissions",
     "signatureVersion":"v4",
@@ -519,6 +520,10 @@
       },
       "documentation":"<p>Contains information about an action for a request for which an authorization decision is made.</p> <p>This data type is used as a request parameter to the <a href=\"https://docs.aws.amazon.com/verifiedpermissions/latest/apireference/API_IsAuthorized.html\">IsAuthorized</a>, <a href=\"https://docs.aws.amazon.com/verifiedpermissions/latest/apireference/API_BatchIsAuthorized.html\">BatchIsAuthorized</a>, and <a href=\"https://docs.aws.amazon.com/verifiedpermissions/latest/apireference/API_IsAuthorizedWithToken.html\">IsAuthorizedWithToken</a> operations.</p> <p>Example: <code>{ \"actionId\": \"&lt;action name&gt;\", \"actionType\": \"Action\" }</code> </p>"
     },
+    "ActionIdentifierList":{
+      "type":"list",
+      "member":{"shape":"ActionIdentifier"}
+    },
     "ActionType":{
       "type":"string",
       "max":200,
@@ -776,7 +781,7 @@
           "documentation":"<p>The name of the schema entity type that's mapped to the user pool group. Defaults to <code>AWS::CognitoGroup</code>.</p>"
         }
       },
-      "documentation":"<p>A list of user groups and entities from an Amazon Cognito user pool identity source.</p> <p>This data type is part of a <a href=\"https://docs.aws.amazon.com/verifiedpermissions/latest/apireference/API_CognitoUserPoolConfiguration.html\">CognitoUserPoolConfiguration</a> structure and is a request parameter in <a href=\"https://docs.aws.amazon.com/verifiedpermissions/latest/apireference/API_CreateIdentitySource.html\">CreateIdentitySource</a>.</p>"
+      "documentation":"<p>The type of entity that a policy store maps to groups from an Amazon Cognito user pool identity source.</p> <p>This data type is part of a <a href=\"https://docs.aws.amazon.com/verifiedpermissions/latest/apireference/API_CognitoUserPoolConfiguration.html\">CognitoUserPoolConfiguration</a> structure and is a request parameter in <a href=\"https://docs.aws.amazon.com/verifiedpermissions/latest/apireference/API_CreateIdentitySource.html\">CreateIdentitySource</a>.</p>"
     },
     "CognitoGroupConfigurationDetail":{
       "type":"structure",
@@ -786,7 +791,7 @@
           "documentation":"<p>The name of the schema entity type that's mapped to the user pool group. Defaults to <code>AWS::CognitoGroup</code>.</p>"
         }
       },
-      "documentation":"<p>A list of user groups and entities from an Amazon Cognito user pool identity source.</p> <p>This data type is part of an <a href=\"https://docs.aws.amazon.com/verifiedpermissions/latest/apireference/API_CognitoUserPoolConfigurationItem.html\">CognitoUserPoolConfigurationDetail</a> structure and is a response parameter to <a href=\"https://docs.aws.amazon.com/verifiedpermissions/latest/apireference/API_GetIdentitySource.html\">GetIdentitySource</a>.</p>"
+      "documentation":"<p>The type of entity that a policy store maps to groups from an Amazon Cognito user pool identity source.</p> <p>This data type is part of an <a href=\"https://docs.aws.amazon.com/verifiedpermissions/latest/apireference/API_CognitoUserPoolConfigurationItem.html\">CognitoUserPoolConfigurationDetail</a> structure and is a response parameter to <a href=\"https://docs.aws.amazon.com/verifiedpermissions/latest/apireference/API_GetIdentitySource.html\">GetIdentitySource</a>.</p>"
     },
     "CognitoGroupConfigurationItem":{
       "type":"structure",
@@ -796,7 +801,7 @@
           "documentation":"<p>The name of the schema entity type that's mapped to the user pool group. Defaults to <code>AWS::CognitoGroup</code>.</p>"
         }
       },
-      "documentation":"<p>A list of user groups and entities from an Amazon Cognito user pool identity source.</p> <p>This data type is part of an <a href=\"https://docs.aws.amazon.com/verifiedpermissions/latest/apireference/API_CognitoUserPoolConfigurationDetail.html\">CognitoUserPoolConfigurationItem</a> structure and is a response parameter to <a href=\"http://forums.aws.amazon.com/verifiedpermissions/latest/apireference/API_ListIdentitySources.html\">ListIdentitySources</a>.</p>"
+      "documentation":"<p>The type of entity that a policy store maps to groups from an Amazon Cognito user pool identity source.</p> <p>This data type is part of an <a href=\"https://docs.aws.amazon.com/verifiedpermissions/latest/apireference/API_CognitoUserPoolConfigurationDetail.html\">CognitoUserPoolConfigurationItem</a> structure and is a response parameter to <a href=\"http://forums.aws.amazon.com/verifiedpermissions/latest/apireference/API_ListIdentitySources.html\">ListIdentitySources</a>.</p>"
     },
     "CognitoUserPoolConfiguration":{
       "type":"structure",
@@ -812,10 +817,10 @@
         },
         "groupConfiguration":{
           "shape":"CognitoGroupConfiguration",
-          "documentation":"<p>The configuration of the user groups from an Amazon Cognito user pool identity source.</p>"
+          "documentation":"<p>The type of entity that a policy store maps to groups from an Amazon Cognito user pool identity source.</p>"
         }
       },
-      "documentation":"<p>The configuration for an identity source that represents a connection to an Amazon Cognito user pool used as an identity provider for Verified Permissions.</p> <p>This data type is used as a field that is part of an <a href=\"https://docs.aws.amazon.com/verifiedpermissions/latest/apireference/API_Configuration.html\">Configuration</a> structure that is used as a parameter to <a href=\"https://docs.aws.amazon.com/verifiedpermissions/latest/apireference/API_CreateIdentitySource.html\">CreateIdentitySource</a>.</p> <p>Example:<code>\"CognitoUserPoolConfiguration\":{\"UserPoolArn\":\"arn:aws:cognito-idp:us-east-1:123456789012:userpool/us-east-1_1a2b3c4d5\",\"ClientIds\": [\"a1b2c3d4e5f6g7h8i9j0kalbmc\"]}</code> </p>"
+      "documentation":"<p>The configuration for an identity source that represents a connection to an Amazon Cognito user pool used as an identity provider for Verified Permissions.</p> <p>This data type is used as a field that is part of an <a href=\"https://docs.aws.amazon.com/verifiedpermissions/latest/apireference/API_Configuration.html\">Configuration</a> structure that is used as a parameter to <a href=\"https://docs.aws.amazon.com/verifiedpermissions/latest/apireference/API_CreateIdentitySource.html\">CreateIdentitySource</a>.</p> <p>Example:<code>\"CognitoUserPoolConfiguration\":{\"UserPoolArn\":\"arn:aws:cognito-idp:us-east-1:123456789012:userpool/us-east-1_1a2b3c4d5\",\"ClientIds\": [\"a1b2c3d4e5f6g7h8i9j0kalbmc\"],\"groupConfiguration\": {\"groupEntityType\": \"MyCorp::Group\"}}</code> </p>"
     },
     "CognitoUserPoolConfigurationDetail":{
       "type":"structure",
@@ -839,10 +844,10 @@
         },
         "groupConfiguration":{
           "shape":"CognitoGroupConfigurationDetail",
-          "documentation":"<p>The configuration of the user groups from an Amazon Cognito user pool identity source.</p>"
+          "documentation":"<p>The type of entity that a policy store maps to groups from an Amazon Cognito user pool identity source.</p>"
         }
       },
-      "documentation":"<p>The configuration for an identity source that represents a connection to an Amazon Cognito user pool used as an identity provider for Verified Permissions.</p> <p>This data type is used as a field that is part of an <a href=\"https://docs.aws.amazon.com/verifiedpermissions/latest/apireference/API_ConfigurationDetail.html\">ConfigurationDetail</a> structure that is part of the response to <a href=\"https://docs.aws.amazon.com/verifiedpermissions/latest/apireference/API_GetIdentitySource.html\">GetIdentitySource</a>.</p> <p>Example:<code>\"CognitoUserPoolConfiguration\":{\"UserPoolArn\":\"arn:aws:cognito-idp:us-east-1:123456789012:userpool/us-east-1_1a2b3c4d5\",\"ClientIds\": [\"a1b2c3d4e5f6g7h8i9j0kalbmc\"]}</code> </p>"
+      "documentation":"<p>The configuration for an identity source that represents a connection to an Amazon Cognito user pool used as an identity provider for Verified Permissions.</p> <p>This data type is used as a field that is part of an <a href=\"https://docs.aws.amazon.com/verifiedpermissions/latest/apireference/API_ConfigurationDetail.html\">ConfigurationDetail</a> structure that is part of the response to <a href=\"https://docs.aws.amazon.com/verifiedpermissions/latest/apireference/API_GetIdentitySource.html\">GetIdentitySource</a>.</p> <p>Example:<code>\"CognitoUserPoolConfiguration\":{\"UserPoolArn\":\"arn:aws:cognito-idp:us-east-1:123456789012:userpool/us-east-1_1a2b3c4d5\",\"ClientIds\": [\"a1b2c3d4e5f6g7h8i9j0kalbmc\"],\"groupConfiguration\": {\"groupEntityType\": \"MyCorp::Group\"}}</code> </p>"
     },
     "CognitoUserPoolConfigurationItem":{
       "type":"structure",
@@ -866,10 +871,10 @@
         },
         "groupConfiguration":{
           "shape":"CognitoGroupConfigurationItem",
-          "documentation":"<p>The configuration of the user groups from an Amazon Cognito user pool identity source.</p>"
+          "documentation":"<p>The type of entity that a policy store maps to groups from an Amazon Cognito user pool identity source.</p>"
         }
       },
-      "documentation":"<p>The configuration for an identity source that represents a connection to an Amazon Cognito user pool used as an identity provider for Verified Permissions.</p> <p>This data type is used as a field that is part of the <a href=\"https://docs.aws.amazon.com/verifiedpermissions/latest/apireference/API_ConfigurationItem.html\">ConfigurationItem</a> structure that is part of the response to <a href=\"https://docs.aws.amazon.com/verifiedpermissions/latest/apireference/API_ListIdentitySources.html\">ListIdentitySources</a>.</p> <p>Example:<code>\"CognitoUserPoolConfiguration\":{\"UserPoolArn\":\"arn:aws:cognito-idp:us-east-1:123456789012:userpool/us-east-1_1a2b3c4d5\",\"ClientIds\": [\"a1b2c3d4e5f6g7h8i9j0kalbmc\"]}</code> </p>"
+      "documentation":"<p>The configuration for an identity source that represents a connection to an Amazon Cognito user pool used as an identity provider for Verified Permissions.</p> <p>This data type is used as a field that is part of the <a href=\"https://docs.aws.amazon.com/verifiedpermissions/latest/apireference/API_ConfigurationItem.html\">ConfigurationItem</a> structure that is part of the response to <a href=\"https://docs.aws.amazon.com/verifiedpermissions/latest/apireference/API_ListIdentitySources.html\">ListIdentitySources</a>.</p> <p>Example:<code>\"CognitoUserPoolConfiguration\":{\"UserPoolArn\":\"arn:aws:cognito-idp:us-east-1:123456789012:userpool/us-east-1_1a2b3c4d5\",\"ClientIds\": [\"a1b2c3d4e5f6g7h8i9j0kalbmc\"],\"groupConfiguration\": {\"groupEntityType\": \"MyCorp::Group\"}}</code> </p>"
     },
     "Configuration":{
       "type":"structure",
@@ -879,7 +884,7 @@
           "documentation":"<p>Contains configuration details of a Amazon Cognito user pool that Verified Permissions can use as a source of authenticated identities as entities. It specifies the <a href=\"https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html\">Amazon Resource Name (ARN)</a> of a Amazon Cognito user pool and one or more application client IDs.</p> <p>Example: <code>\"configuration\":{\"cognitoUserPoolConfiguration\":{\"userPoolArn\":\"arn:aws:cognito-idp:us-east-1:123456789012:userpool/us-east-1_1a2b3c4d5\",\"clientIds\": [\"a1b2c3d4e5f6g7h8i9j0kalbmc\"],\"groupConfiguration\": {\"groupEntityType\": \"MyCorp::Group\"}}}</code> </p>"
         }
       },
-      "documentation":"<p>Contains configuration information used when creating a new identity source.</p> <note> <p>At this time, the only valid member of this structure is a Amazon Cognito user pool configuration.</p> <p>You must specify a <code>userPoolArn</code>, and optionally, a <code>ClientId</code>.</p> </note> <p>This data type is used as a request parameter for the <a href=\"https://docs.aws.amazon.com/verifiedpermissions/latest/apireference/API_CreateIdentitySource.html\">CreateIdentitySource</a> operation.</p>",
+      "documentation":"<p>Contains configuration information used when creating a new identity source.</p> <note> <p>At this time, the only valid member of this structure is a Amazon Cognito user pool configuration.</p> <p>Specifies a <code>userPoolArn</code>, a <code>groupConfiguration</code>, and a <code>ClientId</code>.</p> </note> <p>This data type is used as a request parameter for the <a href=\"https://docs.aws.amazon.com/verifiedpermissions/latest/apireference/API_CreateIdentitySource.html\">CreateIdentitySource</a> operation.</p>",
       "union":true
     },
     "ConfigurationDetail":{
@@ -887,7 +892,7 @@
       "members":{
         "cognitoUserPoolConfiguration":{
           "shape":"CognitoUserPoolConfigurationDetail",
-          "documentation":"<p>Contains configuration details of a Amazon Cognito user pool that Verified Permissions can use as a source of authenticated identities as entities. It specifies the <a href=\"https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html\">Amazon Resource Name (ARN)</a> of a Amazon Cognito user pool and one or more application client IDs.</p> <p>Example: <code>\"configuration\":{\"cognitoUserPoolConfiguration\":{\"userPoolArn\":\"arn:aws:cognito-idp:us-east-1:123456789012:userpool/us-east-1_1a2b3c4d5\",\"clientIds\": [\"a1b2c3d4e5f6g7h8i9j0kalbmc\"],\"groupConfiguration\": {\"groupEntityType\": \"MyCorp::Group\"}}}</code> </p>"
+          "documentation":"<p>Contains configuration details of a Amazon Cognito user pool that Verified Permissions can use as a source of authenticated identities as entities. It specifies the <a href=\"https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html\">Amazon Resource Name (ARN)</a> of a Amazon Cognito user pool, the policy store entity that you want to assign to user groups, and one or more application client IDs.</p> <p>Example: <code>\"configuration\":{\"cognitoUserPoolConfiguration\":{\"userPoolArn\":\"arn:aws:cognito-idp:us-east-1:123456789012:userpool/us-east-1_1a2b3c4d5\",\"clientIds\": [\"a1b2c3d4e5f6g7h8i9j0kalbmc\"],\"groupConfiguration\": {\"groupEntityType\": \"MyCorp::Group\"}}}</code> </p>"
         }
       },
       "documentation":"<p>Contains configuration information about an identity source.</p> <p>This data type is a response parameter to the <a href=\"https://docs.aws.amazon.com/verifiedpermissions/latest/apireference/API_GetIdentitySource.html\">GetIdentitySource</a> operation.</p>",
@@ -898,7 +903,7 @@
       "members":{
         "cognitoUserPoolConfiguration":{
           "shape":"CognitoUserPoolConfigurationItem",
-          "documentation":"<p>Contains configuration details of a Amazon Cognito user pool that Verified Permissions can use as a source of authenticated identities as entities. It specifies the <a href=\"https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html\">Amazon Resource Name (ARN)</a> of a Amazon Cognito user pool and one or more application client IDs.</p> <p>Example: <code>\"configuration\":{\"cognitoUserPoolConfiguration\":{\"userPoolArn\":\"arn:aws:cognito-idp:us-east-1:123456789012:userpool/us-east-1_1a2b3c4d5\",\"clientIds\": [\"a1b2c3d4e5f6g7h8i9j0kalbmc\"],\"groupConfiguration\": {\"groupEntityType\": \"MyCorp::Group\"}}}</code> </p>"
+          "documentation":"<p>Contains configuration details of a Amazon Cognito user pool that Verified Permissions can use as a source of authenticated identities as entities. It specifies the <a href=\"https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html\">Amazon Resource Name (ARN)</a> of a Amazon Cognito user pool, the policy store entity that you want to assign to user groups, and one or more application client IDs.</p> <p>Example: <code>\"configuration\":{\"cognitoUserPoolConfiguration\":{\"userPoolArn\":\"arn:aws:cognito-idp:us-east-1:123456789012:userpool/us-east-1_1a2b3c4d5\",\"clientIds\": [\"a1b2c3d4e5f6g7h8i9j0kalbmc\"],\"groupConfiguration\": {\"groupEntityType\": \"MyCorp::Group\"}}}</code> </p>"
         }
       },
       "documentation":"<p>Contains configuration information about an identity source.</p> <p>This data type is a response parameter to the <a href=\"https://docs.aws.amazon.com/verifiedpermissions/latest/apireference/API_ListIdentitySources.html\">ListIdentitySources</a> operation.</p>",
@@ -1041,6 +1046,10 @@
           "shape":"EntityIdentifier",
           "documentation":"<p>The resource specified in the new policy's scope. This response element isn't present when the <code>resource</code> isn't specified in the policy content.</p>"
         },
+        "actions":{
+          "shape":"ActionIdentifierList",
+          "documentation":"<p>The action that a policy permits or forbids. For example, <code>{\"actions\": [{\"actionId\": \"ViewPhoto\", \"actionType\": \"PhotoFlash::Action\"}, {\"entityID\": \"SharePhoto\", \"entityType\": \"PhotoFlash::Action\"}]}</code>.</p>"
+        },
         "createdDate":{
           "shape":"TimestampFormat",
           "documentation":"<p>The date and time the policy was originally created.</p>"
@@ -1048,6 +1057,10 @@
         "lastUpdatedDate":{
           "shape":"TimestampFormat",
           "documentation":"<p>The date and time the policy was last updated.</p>"
+        },
+        "effect":{
+          "shape":"PolicyEffect",
+          "documentation":"<p>The effect of the decision that a policy returns to an authorization request. For example, <code>\"effect\": \"Permit\"</code>.</p>"
         }
       }
     },
@@ -1468,6 +1481,10 @@
           "shape":"EntityIdentifier",
           "documentation":"<p>The resource specified in the policy's scope. This element isn't included in the response when <code>Resource</code> isn't present in the policy content.</p>"
         },
+        "actions":{
+          "shape":"ActionIdentifierList",
+          "documentation":"<p>The action that a policy permits or forbids. For example, <code>{\"actions\": [{\"actionId\": \"ViewPhoto\", \"actionType\": \"PhotoFlash::Action\"}, {\"entityID\": \"SharePhoto\", \"entityType\": \"PhotoFlash::Action\"}]}</code>.</p>"
+        },
         "definition":{
           "shape":"PolicyDefinitionDetail",
           "documentation":"<p>The definition of the requested policy.</p>"
@@ -1479,6 +1496,10 @@
         "lastUpdatedDate":{
           "shape":"TimestampFormat",
           "documentation":"<p>The date and time that the policy was last updated.</p>"
+        },
+        "effect":{
+          "shape":"PolicyEffect",
+          "documentation":"<p>The effect of the decision that a policy returns to an authorization request. For example, <code>\"effect\": \"Permit\"</code>.</p>"
         }
       }
     },
@@ -1911,7 +1932,7 @@
         },
         "maxResults":{
           "shape":"ListIdentitySourcesMaxResults",
-          "documentation":"<p>Specifies the total number of results that you want included in each response. If additional items exist beyond the number you specify, the <code>NextToken</code> response element is returned with a value (not null). Include the specified value as the <code>NextToken</code> request parameter in the next call to the operation to get the next set of results. Note that the service might return fewer results than the maximum even when there are more results available. You should check <code>NextToken</code> after every operation to ensure that you receive all of the results.</p> <p>If you do not specify this parameter, the operation defaults to 10 identity sources per response. You can specify a maximum of 200 identity sources per response.</p>"
+          "documentation":"<p>Specifies the total number of results that you want included in each response. If additional items exist beyond the number you specify, the <code>NextToken</code> response element is returned with a value (not null). Include the specified value as the <code>NextToken</code> request parameter in the next call to the operation to get the next set of results. Note that the service might return fewer results than the maximum even when there are more results available. You should check <code>NextToken</code> after every operation to ensure that you receive all of the results.</p> <p>If you do not specify this parameter, the operation defaults to 10 identity sources per response. You can specify a maximum of 50 identity sources per response.</p>"
         },
         "filters":{
           "shape":"IdentitySourceFilters",
@@ -2115,6 +2136,13 @@
       "documentation":"<p>A structure that describes a <a href=\"https://docs.aws.amazon.com/verifiedpermissions/latest/apireference/API_PolicyDefinintion.html\">PolicyDefinintion</a>. It will always have either an <code>StaticPolicy</code> or a <code>TemplateLinkedPolicy</code> element.</p> <p>This data type is used as a response parameter for the <a href=\"https://docs.aws.amazon.com/verifiedpermissions/latest/apireference/API_CreatePolicy.html\">CreatePolicy</a> and <a href=\"https://docs.aws.amazon.com/verifiedpermissions/latest/apireference/API_ListPolicies.html\">ListPolicies</a> operations. </p>",
       "union":true
     },
+    "PolicyEffect":{
+      "type":"string",
+      "enum":[
+        "Permit",
+        "Forbid"
+      ]
+    },
     "PolicyFilter":{
       "type":"structure",
       "members":{
@@ -2174,6 +2202,10 @@
           "shape":"EntityIdentifier",
           "documentation":"<p>The resource associated with the policy.</p>"
         },
+        "actions":{
+          "shape":"ActionIdentifierList",
+          "documentation":"<p>The action that a policy permits or forbids. For example, <code>{\"actions\": [{\"actionId\": \"ViewPhoto\", \"actionType\": \"PhotoFlash::Action\"}, {\"entityID\": \"SharePhoto\", \"entityType\": \"PhotoFlash::Action\"}]}</code>.</p>"
+        },
         "definition":{
           "shape":"PolicyDefinitionItem",
           "documentation":"<p>The policy definition of an item in the list of policies returned.</p>"
@@ -2185,6 +2217,10 @@
         "lastUpdatedDate":{
           "shape":"TimestampFormat",
           "documentation":"<p>The date and time the policy was most recently updated.</p>"
+        },
+        "effect":{
+          "shape":"PolicyEffect",
+          "documentation":"<p>The effect of the decision that a policy returns to an authorization request. For example, <code>\"effect\": \"Permit\"</code>.</p>"
         }
       },
       "documentation":"<p>Contains information about a policy.</p> <p>This data type is used as a response parameter for the <a href=\"https://docs.aws.amazon.com/verifiedpermissions/latest/apireference/API_ListPolicies.html\">ListPolicies</a> operation.</p>"
@@ -2611,7 +2647,7 @@
           "documentation":"<p>The name of the schema entity type that's mapped to the user pool group. Defaults to <code>AWS::CognitoGroup</code>.</p>"
         }
       },
-      "documentation":"<p>A list of user groups and entities from an Amazon Cognito user pool identity source.</p>"
+      "documentation":"<p>The user group entities from an Amazon Cognito user pool identity source.</p>"
     },
     "UpdateCognitoUserPoolConfiguration":{
       "type":"structure",
@@ -2759,6 +2795,10 @@
           "shape":"EntityIdentifier",
           "documentation":"<p>The resource specified in the policy's scope. This element isn't included in the response when <code>Resource</code> isn't present in the policy content.</p>"
         },
+        "actions":{
+          "shape":"ActionIdentifierList",
+          "documentation":"<p>The action that a policy permits or forbids. For example, <code>{\"actions\": [{\"actionId\": \"ViewPhoto\", \"actionType\": \"PhotoFlash::Action\"}, {\"entityID\": \"SharePhoto\", \"entityType\": \"PhotoFlash::Action\"}]}</code>.</p>"
+        },
         "createdDate":{
           "shape":"TimestampFormat",
           "documentation":"<p>The date and time that the policy was originally created.</p>"
@@ -2766,6 +2806,10 @@
         "lastUpdatedDate":{
           "shape":"TimestampFormat",
           "documentation":"<p>The date and time that the policy was most recently updated.</p>"
+        },
+        "effect":{
+          "shape":"PolicyEffect",
+          "documentation":"<p>The effect of the decision that a policy returns to an authorization request. For example, <code>\"effect\": \"Permit\"</code>.</p>"
         }
       }
     },

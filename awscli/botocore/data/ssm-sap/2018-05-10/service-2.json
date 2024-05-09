@@ -171,6 +171,21 @@
       ],
       "documentation":"<p>Lists the SAP HANA databases of an application registered with AWS Systems Manager for SAP.</p>"
     },
+    "ListOperationEvents":{
+      "name":"ListOperationEvents",
+      "http":{
+        "method":"POST",
+        "requestUri":"/list-operation-events",
+        "responseCode":200
+      },
+      "input":{"shape":"ListOperationEventsInput"},
+      "output":{"shape":"ListOperationEventsOutput"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Returns a list of operations events.</p> <p>Available parameters include <code>OperationID</code>, as well as optional parameters <code>MaxResults</code>, <code>NextToken</code>, and <code>Filters</code>.</p>"
+    },
     "ListOperations":{
       "name":"ListOperations",
       "http":{
@@ -235,6 +250,23 @@
       ],
       "documentation":"<p>Register an SAP application with AWS Systems Manager for SAP. You must meet the following requirements before registering. </p> <p>The SAP application you want to register with AWS Systems Manager for SAP is running on Amazon EC2.</p> <p>AWS Systems Manager Agent must be setup on an Amazon EC2 instance along with the required IAM permissions.</p> <p>Amazon EC2 instance(s) must have access to the secrets created in AWS Secrets Manager to manage SAP applications and components.</p>"
     },
+    "StartApplication":{
+      "name":"StartApplication",
+      "http":{
+        "method":"POST",
+        "requestUri":"/start-application",
+        "responseCode":200
+      },
+      "input":{"shape":"StartApplicationInput"},
+      "output":{"shape":"StartApplicationOutput"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ValidationException"},
+        {"shape":"ConflictException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Request is an operation which starts an application.</p> <p>Parameter <code>ApplicationId</code> is required.</p>"
+    },
     "StartApplicationRefresh":{
       "name":"StartApplicationRefresh",
       "http":{
@@ -252,6 +284,23 @@
         {"shape":"InternalServerException"}
       ],
       "documentation":"<p>Refreshes a registered application.</p>"
+    },
+    "StopApplication":{
+      "name":"StopApplication",
+      "http":{
+        "method":"POST",
+        "requestUri":"/stop-application",
+        "responseCode":200
+      },
+      "input":{"shape":"StopApplicationInput"},
+      "output":{"shape":"StopApplicationOutput"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ValidationException"},
+        {"shape":"ConflictException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Request is an operation to stop an application.</p> <p>Parameter <code>ApplicationId</code> is required. Parameters <code>StopConnectedEntity</code> and <code>IncludeEc2InstanceShutdown</code> are optional.</p>"
     },
     "TagResource":{
       "name":"TagResource",
@@ -680,6 +729,10 @@
         "senderFault":true
       },
       "exception":true
+    },
+    "ConnectedEntityType":{
+      "type":"string",
+      "enum":["DBMS"]
     },
     "CredentialType":{
       "type":"string",
@@ -1148,7 +1201,7 @@
         },
         "MaxResults":{
           "shape":"MaxResults",
-          "documentation":"<p>The maximum number of results to return with a single call. To retrieve the remaining results, make another call with the returned nextToken value. </p>"
+          "documentation":"<p>The maximum number of results to return with a single call. To retrieve the remaining results, make another call with the returned nextToken value.</p>"
         },
         "Filters":{
           "shape":"FilterList",
@@ -1226,6 +1279,41 @@
         "Databases":{
           "shape":"DatabaseSummaryList",
           "documentation":"<p>The SAP HANA databases of an application.</p>"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The token to use to retrieve the next page of results. This value is null when there are no more results to return.</p>"
+        }
+      }
+    },
+    "ListOperationEventsInput":{
+      "type":"structure",
+      "required":["OperationId"],
+      "members":{
+        "OperationId":{
+          "shape":"OperationId",
+          "documentation":"<p>The ID of the operation.</p>"
+        },
+        "MaxResults":{
+          "shape":"MaxResults",
+          "documentation":"<p>The maximum number of results to return with a single call. To retrieve the remaining results, make another call with the returned nextToken value.</p> <p>If you do not specify a value for <code>MaxResults</code>, the request returns 50 items per page by default.</p>"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The token to use to retrieve the next page of results. This value is null when there are no more results to return.</p>"
+        },
+        "Filters":{
+          "shape":"FilterList",
+          "documentation":"<p>Optionally specify filters to narrow the returned operation event items.</p> <p>Valid filter names include <code>status</code>, <code>resourceID</code>, and <code>resourceType</code>. The valid operator for all three filters is <code>Equals</code>.</p>"
+        }
+      }
+    },
+    "ListOperationEventsOutput":{
+      "type":"structure",
+      "members":{
+        "OperationEvents":{
+          "shape":"OperationEventList",
+          "documentation":"<p>A returned list of operation events that meet the filter criteria.</p>"
         },
         "NextToken":{
           "shape":"NextToken",
@@ -1348,6 +1436,48 @@
         }
       },
       "documentation":"<p>The operations performed by AWS Systems Manager for SAP.</p>"
+    },
+    "OperationEvent":{
+      "type":"structure",
+      "members":{
+        "Description":{
+          "shape":"String",
+          "documentation":"<p>A description of the operation event. For example, \"Stop the EC2 instance i-abcdefgh987654321\".</p>"
+        },
+        "Resource":{
+          "shape":"Resource",
+          "documentation":"<p>The resource involved in the operations event.</p> <p>Contains <code>ResourceArn</code> ARN and <code>ResourceType</code>.</p>"
+        },
+        "Status":{
+          "shape":"OperationEventStatus",
+          "documentation":"<p>The status of the operation event. The possible statuses are: <code>IN_PROGRESS</code>, <code>COMPLETED</code>, and <code>FAILED</code>.</p>"
+        },
+        "StatusMessage":{
+          "shape":"String",
+          "documentation":"<p>The status message relating to a specific operation event.</p>"
+        },
+        "Timestamp":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp of the specified operation event.</p>"
+        }
+      },
+      "documentation":"<p>An operation event returns details for an operation, including key milestones which can be used to monitor and track operations in progress.</p> <p>Operation events contain:</p> <ul> <li> <p>Description string</p> </li> <li> <p>Resource, including its ARN and type</p> </li> <li> <p>Status</p> </li> <li> <p>StatusMessage string</p> </li> <li> <p>TimeStamp</p> </li> </ul> <p>Operation event examples include StartApplication or StopApplication.</p>"
+    },
+    "OperationEventList":{
+      "type":"list",
+      "member":{"shape":"OperationEvent"}
+    },
+    "OperationEventResourceType":{
+      "type":"string",
+      "pattern":"[\\w]+::[\\w]+::[\\w]+"
+    },
+    "OperationEventStatus":{
+      "type":"string",
+      "enum":[
+        "IN_PROGRESS",
+        "COMPLETED",
+        "FAILED"
+      ]
     },
     "OperationId":{
       "type":"string",
@@ -1511,6 +1641,20 @@
       },
       "documentation":"<p>Details of the SAP HANA system replication for the instance.</p>"
     },
+    "Resource":{
+      "type":"structure",
+      "members":{
+        "ResourceArn":{
+          "shape":"Arn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the source resource.</p> <p>Example of <code>ResourceArn</code>: \"<code>arn:aws:ec2:us-east-1:111111111111:instance/i-abcdefgh987654321</code>\"</p>"
+        },
+        "ResourceType":{
+          "shape":"OperationEventResourceType",
+          "documentation":"<p>The resource type.</p> <p>Example of <code>ResourceType</code>: \"<code>AWS::SystemsManagerSAP::Component</code>\" or \"<code>AWS::EC2::Instance</code>\".</p>"
+        }
+      },
+      "documentation":"<p>The resource contains a <code>ResourceArn</code> and the <code>ResourceType</code>.</p>"
+    },
     "ResourceId":{
       "type":"string",
       "max":64,
@@ -1551,6 +1695,25 @@
       "type":"string",
       "pattern":"arn:(.+:){2,4}.+$|^arn:(.+:){1,3}.+\\/.+"
     },
+    "StartApplicationInput":{
+      "type":"structure",
+      "required":["ApplicationId"],
+      "members":{
+        "ApplicationId":{
+          "shape":"ApplicationId",
+          "documentation":"<p>The ID of the application.</p>"
+        }
+      }
+    },
+    "StartApplicationOutput":{
+      "type":"structure",
+      "members":{
+        "OperationId":{
+          "shape":"OperationId",
+          "documentation":"<p>The ID of the operation.</p>"
+        }
+      }
+    },
     "StartApplicationRefreshInput":{
       "type":"structure",
       "required":["ApplicationId"],
@@ -1562,6 +1725,33 @@
       }
     },
     "StartApplicationRefreshOutput":{
+      "type":"structure",
+      "members":{
+        "OperationId":{
+          "shape":"OperationId",
+          "documentation":"<p>The ID of the operation.</p>"
+        }
+      }
+    },
+    "StopApplicationInput":{
+      "type":"structure",
+      "required":["ApplicationId"],
+      "members":{
+        "ApplicationId":{
+          "shape":"ApplicationId",
+          "documentation":"<p>The ID of the application.</p>"
+        },
+        "StopConnectedEntity":{
+          "shape":"ConnectedEntityType",
+          "documentation":"<p>Specify the <code>ConnectedEntityType</code>. Accepted type is <code>DBMS</code>.</p> <p>If this parameter is included, the connected DBMS (Database Management System) will be stopped.</p>"
+        },
+        "IncludeEc2InstanceShutdown":{
+          "shape":"Boolean",
+          "documentation":"<p>Boolean. If included and if set to <code>True</code>, the StopApplication operation will shut down the associated Amazon EC2 instance in addition to the application.</p>"
+        }
+      }
+    },
+    "StopApplicationOutput":{
       "type":"structure",
       "members":{
         "OperationId":{

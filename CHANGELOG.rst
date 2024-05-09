@@ -2,6 +2,22 @@
 CHANGELOG
 =========
 
+2.15.47
+=======
+
+* api-change:``ec2``: Adding Precision Hardware Clock (PHC) to public API DescribeInstanceTypes
+* api-change:``cognito-idp``: Add EXTERNAL_PROVIDER enum value to UserStatusType.
+* api-change:``polly``: Add new engine - generative - that builds the most expressive conversational voices.
+* api-change:``ssm-sap``: Added support for application-aware start/stop of SAP applications running on EC2 instances, with SSM for SAP
+* api-change:``fms``: The policy scope resource tag is always a string value, either a non-empty string or an empty string.
+* api-change:``ecr``: This release adds pull through cache rules support for GitLab container registry in Amazon ECR.
+* api-change:``sqs``: This release adds MessageSystemAttributeNames to ReceiveMessageRequest to replace AttributeNames.
+* api-change:``bedrock-agent-runtime``: This release adds support to provide guardrail configuration and modify inference parameters that are then used in RetrieveAndGenerate API in Agents for Amazon Bedrock.
+* api-change:``verifiedpermissions``: Adds policy effect and actions fields to Policy API's.
+* api-change:``route53resolver``: Update the DNS Firewall settings to correct a spelling issue.
+* api-change:``pinpoint``: This release adds support for specifying email message headers for Email Templates, Campaigns, Journeys and Send Messages.
+
+
 2.15.46
 =======
 

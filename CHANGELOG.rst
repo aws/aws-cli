@@ -2,6 +2,16 @@
 CHANGELOG
 =========
 
+1.32.102
+========
+
+* api-change:``bedrock-agent-runtime``: This release adds support to provide guardrail configuration and modify inference parameters that are then used in RetrieveAndGenerate API in Agents for Amazon Bedrock.
+* api-change:``pinpoint``: This release adds support for specifying email message headers for Email Templates, Campaigns, Journeys and Send Messages.
+* api-change:``route53resolver``: Update the DNS Firewall settings to correct a spelling issue.
+* api-change:``ssm-sap``: Added support for application-aware start/stop of SAP applications running on EC2 instances, with SSM for SAP
+* api-change:``verifiedpermissions``: Adds policy effect and actions fields to Policy API's.
+
+
 1.32.101
 ========
 

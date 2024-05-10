@@ -2,6 +2,15 @@
 CHANGELOG
 =========
 
+1.32.103
+========
+
+* api-change:``discovery``: add v2 smoke tests and smithy smokeTests trait for SDK testing
+* api-change:``greengrassv2``: Mark ComponentVersion in ComponentDeploymentSpecification as required.
+* api-change:``sagemaker``: Introduced support for G6 instance types on Sagemaker Notebook Instances and on SageMaker Studio for JupyterLab and CodeEditor applications.
+* api-change:``sso-oidc``: Updated request parameters for PKCE support.
+
+
 1.32.102
 ========
 

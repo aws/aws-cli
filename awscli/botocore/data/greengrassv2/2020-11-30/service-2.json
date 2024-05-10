@@ -4,6 +4,7 @@
     "apiVersion":"2020-11-30",
     "endpointPrefix":"greengrass",
     "protocol":"rest-json",
+    "protocols":["rest-json"],
     "serviceAbbreviation":"AWS GreengrassV2",
     "serviceFullName":"AWS IoT Greengrass V2",
     "serviceId":"GreengrassV2",
@@ -98,7 +99,7 @@
         {"shape":"InternalServerException"},
         {"shape":"RequestAlreadyInProgressException"}
       ],
-      "documentation":"<p>Creates a component. Components are software that run on Greengrass core devices. After you develop and test a component on your core device, you can use this operation to upload your component to IoT Greengrass. Then, you can deploy the component to other core devices.</p> <p>You can use this operation to do the following:</p> <ul> <li> <p> <b>Create components from recipes</b> </p> <p>Create a component from a recipe, which is a file that defines the component's metadata, parameters, dependencies, lifecycle, artifacts, and platform capability. For more information, see <a href=\"https://docs.aws.amazon.com/greengrass/v2/developerguide/component-recipe-reference.html\">IoT Greengrass component recipe reference</a> in the <i>IoT Greengrass V2 Developer Guide</i>.</p> <p>To create a component from a recipe, specify <code>inlineRecipe</code> when you call this operation.</p> </li> <li> <p> <b>Create components from Lambda functions</b> </p> <p>Create a component from an Lambda function that runs on IoT Greengrass. This creates a recipe and artifacts from the Lambda function's deployment package. You can use this operation to migrate Lambda functions from IoT Greengrass V1 to IoT Greengrass V2.</p> <p>This function only accepts Lambda functions that use the following runtimes:</p> <ul> <li> <p>Python 2.7 – <code>python2.7</code> </p> </li> <li> <p>Python 3.7 – <code>python3.7</code> </p> </li> <li> <p>Python 3.8 – <code>python3.8</code> </p> </li> <li> <p>Python 3.9 – <code>python3.9</code> </p> </li> <li> <p>Java 8 – <code>java8</code> </p> </li> <li> <p>Java 11 – <code>java11</code> </p> </li> <li> <p>Node.js 10 – <code>nodejs10.x</code> </p> </li> <li> <p>Node.js 12 – <code>nodejs12.x</code> </p> </li> <li> <p>Node.js 14 – <code>nodejs14.x</code> </p> </li> </ul> <p>To create a component from a Lambda function, specify <code>lambdaFunction</code> when you call this operation.</p> <note> <p>IoT Greengrass currently supports Lambda functions on only Linux core devices.</p> </note> </li> </ul>"
+      "documentation":"<p>Creates a component. Components are software that run on Greengrass core devices. After you develop and test a component on your core device, you can use this operation to upload your component to IoT Greengrass. Then, you can deploy the component to other core devices.</p> <p>You can use this operation to do the following:</p> <ul> <li> <p> <b>Create components from recipes</b> </p> <p>Create a component from a recipe, which is a file that defines the component's metadata, parameters, dependencies, lifecycle, artifacts, and platform capability. For more information, see <a href=\"https://docs.aws.amazon.com/greengrass/v2/developerguide/component-recipe-reference.html\">IoT Greengrass component recipe reference</a> in the <i>IoT Greengrass V2 Developer Guide</i>.</p> <p>To create a component from a recipe, specify <code>inlineRecipe</code> when you call this operation.</p> </li> <li> <p> <b>Create components from Lambda functions</b> </p> <p>Create a component from an Lambda function that runs on IoT Greengrass. This creates a recipe and artifacts from the Lambda function's deployment package. You can use this operation to migrate Lambda functions from IoT Greengrass V1 to IoT Greengrass V2.</p> <p>This function accepts Lambda functions in all supported versions of Python, Node.js, and Java runtimes. IoT Greengrass doesn't apply any additional restrictions on deprecated Lambda runtime versions.</p> <p>To create a component from a Lambda function, specify <code>lambdaFunction</code> when you call this operation.</p> <note> <p>IoT Greengrass currently supports Lambda functions on only Linux core devices.</p> </note> </li> </ul>"
     },
     "CreateDeployment":{
       "name":"CreateDeployment",
@@ -808,6 +809,7 @@
     },
     "ComponentDeploymentSpecification":{
       "type":"structure",
+      "required":["componentVersion"],
       "members":{
         "componentVersion":{
           "shape":"ComponentVersionString",
@@ -1619,6 +1621,18 @@
           "documentation":"<p>The name of the artifact.</p> <p>You can use the <a href=\"https://docs.aws.amazon.com/greengrass/v2/APIReference/API_GetComponent.html\">GetComponent</a> operation to download the component recipe, which includes the URI of the artifact. The artifact name is the section of the URI after the scheme. For example, in the artifact URI <code>greengrass:SomeArtifact.zip</code>, the artifact name is <code>SomeArtifact.zip</code>.</p>",
           "location":"uri",
           "locationName":"artifactName"
+        },
+        "s3EndpointType":{
+          "shape":"S3EndpointType",
+          "documentation":"<p>Specifies the endpoint to use when getting Amazon S3 pre-signed URLs.</p> <p>All Amazon Web Services Regions except US East (N. Virginia) use <code>REGIONAL</code> in all cases. In the US East (N. Virginia) Region the default is <code>GLOBAL</code>, but you can change it to <code>REGIONAL</code> with this parameter.</p>",
+          "location":"querystring",
+          "locationName":"s3EndpointType"
+        },
+        "iotEndpointType":{
+          "shape":"IotEndpointType",
+          "documentation":"<p>Determines if the Amazon S3 URL returned is a FIPS pre-signed URL endpoint. Specify <code>fips</code> if you want the returned Amazon S3 pre-signed URL to point to an Amazon S3 FIPS endpoint. If you don't specify a value, the default is <code>standard</code>.</p>",
+          "location":"header",
+          "locationName":"x-amz-iot-endpoint-type"
         }
       }
     },
@@ -1830,7 +1844,7 @@
         },
         "lastInstallationSource":{
           "shape":"NonEmptyString",
-          "documentation":"<p>The most recent deployment source that brought the component to the Greengrass core device. For a thing group deployment or thing deployment, the source will be the The ID of the deployment. and for local deployments it will be <code>LOCAL</code>.</p> <note> <p>Any deployment will attempt to reinstall currently broken components on the device, which will update the last installation source.</p> </note>"
+          "documentation":"<p>The most recent deployment source that brought the component to the Greengrass core device. For a thing group deployment or thing deployment, the source will be the ID of the last deployment that contained the component. For local deployments it will be <code>LOCAL</code>.</p> <note> <p>Any deployment will attempt to reinstall currently broken components on the device, which will update the last installation source.</p> </note>"
         },
         "lifecycleStatusCodes":{
           "shape":"InstalledComponentLifecycleStatusCodeList",
@@ -2052,6 +2066,13 @@
       "type":"string",
       "max":128,
       "min":1
+    },
+    "IotEndpointType":{
+      "type":"string",
+      "enum":[
+        "fips",
+        "standard"
+      ]
     },
     "IsLatestForTarget":{"type":"boolean"},
     "IsRoot":{"type":"boolean"},
@@ -2484,7 +2505,7 @@
         },
         "maxResults":{
           "shape":"DefaultMaxResults",
-          "documentation":"<p>The maximum number of results to be returned per paginated request.</p>",
+          "documentation":"<p>The maximum number of results to be returned per paginated request.</p> <p>Default: <code>50</code> </p>",
           "box":true,
           "location":"querystring",
           "locationName":"maxResults"
@@ -2739,6 +2760,13 @@
       "exception":true
     },
     "RetryAfterSeconds":{"type":"integer"},
+    "S3EndpointType":{
+      "type":"string",
+      "enum":[
+        "REGIONAL",
+        "GLOBAL"
+      ]
+    },
     "ServiceQuotaExceededException":{
       "type":"structure",
       "required":[

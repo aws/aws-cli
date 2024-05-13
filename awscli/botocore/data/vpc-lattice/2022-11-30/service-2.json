@@ -29,7 +29,7 @@
         {"shape":"ConflictException"},
         {"shape":"InternalServerException"}
       ],
-      "documentation":"<p>Updates the listener rules in a batch. You can use this operation to change the priority of listener rules. This can be useful when bulk updating or swapping rule priority. </p>",
+      "documentation":"<p>Updates the listener rules in a batch. You can use this operation to change the priority of listener rules. This can be useful when bulk updating or swapping rule priority.</p> <p> <b>Required permissions:</b> <code>vpc-lattice:UpdateRule</code> </p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/vpc-lattice/latest/ug/security_iam_service-with-iam.html\">How Amazon VPC Lattice works with IAM</a> in the <i>Amazon VPC Lattice User Guide</i>.</p>",
       "idempotent":true
     },
     "CreateAccessLogSubscription":{
@@ -49,7 +49,7 @@
         {"shape":"ConflictException"},
         {"shape":"InternalServerException"}
       ],
-      "documentation":"<p>Enables access logs to be sent to Amazon CloudWatch, Amazon S3, and Amazon Kinesis Data Firehose. The service network owner can use the access logs to audit the services in the network. The service network owner will only see access logs from clients and services that are associated with their service network. Access log entries represent traffic originated from VPCs associated with that network. For more information, see <a href=\"https://docs.aws.amazon.com/vpc-lattice/latest/ug/monitoring-access-logs.html\">Access logs</a> in the <i>Amazon VPC Lattice User Guide</i>.</p>",
+      "documentation":"<p>Enables access logs to be sent to Amazon CloudWatch, Amazon S3, and Amazon Kinesis Data Firehose. The service network owner can use the access logs to audit the services in the network. The service network owner can only see access logs from clients and services that are associated with their service network. Access log entries represent traffic originated from VPCs associated with that network. For more information, see <a href=\"https://docs.aws.amazon.com/vpc-lattice/latest/ug/monitoring-access-logs.html\">Access logs</a> in the <i>Amazon VPC Lattice User Guide</i>.</p>",
       "idempotent":true
     },
     "CreateListener":{
@@ -154,7 +154,7 @@
         {"shape":"ServiceQuotaExceededException"},
         {"shape":"InternalServerException"}
       ],
-      "documentation":"<p>Associates a service with a service network.</p> <p>You can't use this operation if the service and service network are already associated or if there is a disassociation or deletion in progress. If the association fails, you can retry the operation by deleting the association and recreating it.</p> <p>You cannot associate a service and service network that are shared with a caller. The caller must own either the service or the service network.</p> <p>As a result of this operation, the association is created in the service network account and the association owner account.</p>",
+      "documentation":"<p>Associates a service with a service network. For more information, see <a href=\"https://docs.aws.amazon.com/vpc-lattice/latest/ug/service-network-associations.html#service-network-service-associations\">Manage service associations</a> in the <i>Amazon VPC Lattice User Guide</i>.</p> <p>You can't use this operation if the service and service network are already associated or if there is a disassociation or deletion in progress. If the association fails, you can retry the operation by deleting the association and recreating it.</p> <p>You cannot associate a service and service network that are shared with a caller. The caller must own either the service or the service network.</p> <p>As a result of this operation, the association is created in the service network account and the association owner account.</p>",
       "idempotent":true
     },
     "CreateServiceNetworkVpcAssociation":{
@@ -175,7 +175,7 @@
         {"shape":"ServiceQuotaExceededException"},
         {"shape":"InternalServerException"}
       ],
-      "documentation":"<p>Associates a VPC with a service network. When you associate a VPC with the service network, it enables all the resources within that VPC to be clients and communicate with other services in the service network. For more information, see <a href=\"https://docs.aws.amazon.com/vpc-lattice/latest/ug/service-network-associations.html#service-network-vpc-associations\">Manage VPC associations</a> in the <i>Amazon VPC Lattice User Guide</i>.</p> <p>You can't use this operation if there is a disassociation in progress. If the association fails, retry by deleting the association and recreating it.</p> <p>As a result of this operation, the association gets created in the service network account and the VPC owner account.</p> <p>Once a security group is added to the VPC association it cannot be removed. You can add or update the security groups being used for the VPC association once a security group is attached. To remove all security groups you must reassociate the VPC.</p>",
+      "documentation":"<p>Associates a VPC with a service network. When you associate a VPC with the service network, it enables all the resources within that VPC to be clients and communicate with other services in the service network. For more information, see <a href=\"https://docs.aws.amazon.com/vpc-lattice/latest/ug/service-network-associations.html#service-network-vpc-associations\">Manage VPC associations</a> in the <i>Amazon VPC Lattice User Guide</i>.</p> <p>You can't use this operation if there is a disassociation in progress. If the association fails, retry by deleting the association and recreating it.</p> <p>As a result of this operation, the association gets created in the service network account and the VPC owner account.</p> <p>If you add a security group to the service network and VPC association, the association must continue to always have at least one security group. You can add or edit security groups at any time. However, to remove all security groups, you must first delete the association and recreate it without security groups.</p>",
       "idempotent":true
     },
     "CreateTargetGroup":{
@@ -234,7 +234,7 @@
         {"shape":"ResourceNotFoundException"},
         {"shape":"InternalServerException"}
       ],
-      "documentation":"<p>Deletes the specified auth policy. If an auth is set to <code>Amazon Web Services_IAM</code> and the auth policy is deleted, all requests will be denied by default. If you are trying to remove the auth policy completely, you must set the auth_type to <code>NONE</code>. If auth is enabled on the resource, but no auth policy is set, all requests will be denied.</p>",
+      "documentation":"<p>Deletes the specified auth policy. If an auth is set to <code>AWS_IAM</code> and the auth policy is deleted, all requests are denied. If you are trying to remove the auth policy completely, you must set the auth type to <code>NONE</code>. If auth is enabled on the resource, but no auth policy is set, all requests are denied.</p>",
       "idempotent":true
     },
     "DeleteListener":{
@@ -353,7 +353,7 @@
         {"shape":"ConflictException"},
         {"shape":"InternalServerException"}
       ],
-      "documentation":"<p>Deletes the association between a specified service and the specific service network. This request will fail if an association is still in progress.</p>",
+      "documentation":"<p>Deletes the association between a specified service and the specific service network. This operation fails if an association is still in progress.</p>",
       "idempotent":true
     },
     "DeleteServiceNetworkVpcAssociation":{
@@ -485,7 +485,7 @@
         {"shape":"ResourceNotFoundException"},
         {"shape":"InternalServerException"}
       ],
-      "documentation":"<p>Retrieves information about the resource policy. The resource policy is an IAM policy created by AWS RAM on behalf of the resource owner when they share a resource.</p>"
+      "documentation":"<p>Retrieves information about the resource policy. The resource policy is an IAM policy created on behalf of the resource owner when they share a resource.</p>"
     },
     "GetRule":{
       "name":"GetRule",
@@ -663,7 +663,7 @@
         {"shape":"ThrottlingException"},
         {"shape":"InternalServerException"}
       ],
-      "documentation":"<p>Lists the associations between the service network and the service. You can filter the list either by service or service network. You must provide either the service network identifier or the service identifier.</p> <p>Every association in Amazon VPC Lattice is given a unique Amazon Resource Name (ARN), such as when a service network is associated with a VPC or when a service is associated with a service network. If the association is for a resource that is shared with another account, the association will include the local account ID as the prefix in the ARN for each account the resource is shared with.</p>"
+      "documentation":"<p>Lists the associations between the service network and the service. You can filter the list either by service or service network. You must provide either the service network identifier or the service identifier.</p> <p>Every association in Amazon VPC Lattice is given a unique Amazon Resource Name (ARN), such as when a service network is associated with a VPC or when a service is associated with a service network. If the association is for a resource that is shared with another account, the association includes the local account ID as the prefix in the ARN for each account the resource is shared with.</p>"
     },
     "ListServiceNetworkVpcAssociations":{
       "name":"ListServiceNetworkVpcAssociations",
@@ -766,7 +766,7 @@
         {"shape":"ResourceNotFoundException"},
         {"shape":"InternalServerException"}
       ],
-      "documentation":"<p>Lists the targets for the target group. By default, all targets are included. You can use this API to check the health status of targets. You can also ﬁlter the results by target. </p>"
+      "documentation":"<p>Lists the targets for the target group. By default, all targets are included. You can use this API to check the health status of targets. You can also ﬁlter the results by target.</p>"
     },
     "PutAuthPolicy":{
       "name":"PutAuthPolicy",
@@ -784,7 +784,7 @@
         {"shape":"ResourceNotFoundException"},
         {"shape":"InternalServerException"}
       ],
-      "documentation":"<p>Creates or updates the auth policy.</p>"
+      "documentation":"<p>Creates or updates the auth policy. The policy string in JSON must not contain newlines or blank lines.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/vpc-lattice/latest/ug/auth-policies.html\">Auth policies</a> in the <i>Amazon VPC Lattice User Guide</i>.</p>"
     },
     "PutResourcePolicy":{
       "name":"PutResourcePolicy",
@@ -977,7 +977,7 @@
         {"shape":"ConflictException"},
         {"shape":"InternalServerException"}
       ],
-      "documentation":"<p>Updates the service network and VPC association. Once you add a security group, it cannot be removed.</p>",
+      "documentation":"<p>Updates the service network and VPC association. If you add a security group to the service network and VPC association, the association must continue to always have at least one security group. You can add or edit security groups at any time. However, to remove all security groups, you must first delete the association and recreate it without security groups.</p>",
       "idempotent":true
     },
     "UpdateTargetGroup":{
@@ -1271,7 +1271,7 @@
         },
         "defaultAction":{
           "shape":"RuleAction",
-          "documentation":"<p>The action for the default rule. Each listener has a default rule. Each rule consists of a priority, one or more actions, and one or more conditions. The default rule is the rule that's used if no other rules match. Each rule must include exactly one of the following types of actions: <code>forward </code>or <code>fixed-response</code>, and it must be the last action to be performed. </p>"
+          "documentation":"<p>The action for the default rule. Each listener has a default rule. The default rule is used if no other rules match.</p>"
         },
         "name":{
           "shape":"ListenerName",
@@ -1279,11 +1279,11 @@
         },
         "port":{
           "shape":"Port",
-          "documentation":"<p>The listener port. You can specify a value from <code>1</code> to <code>65535</code>. For HTTP, the default is <code>80</code>. For HTTPS, the default is <code>443</code>.</p>"
+          "documentation":"<p>The listener port. You can specify a value from 1 to 65535. For HTTP, the default is 80. For HTTPS, the default is 443.</p>"
         },
         "protocol":{
           "shape":"ListenerProtocol",
-          "documentation":"<p>The listener protocol HTTP or HTTPS.</p>"
+          "documentation":"<p>The listener protocol.</p>"
         },
         "serviceIdentifier":{
           "shape":"ServiceIdentifier",
@@ -1389,7 +1389,7 @@
       "members":{
         "action":{
           "shape":"RuleAction",
-          "documentation":"<p>The rule action. Each rule must include exactly one of the following types of actions: <code>forward </code>or <code>fixed-response</code>, and it must be the last action to be performed.</p>"
+          "documentation":"<p>The rule action.</p>"
         },
         "arn":{
           "shape":"RuleArn",
@@ -1508,7 +1508,7 @@
         },
         "status":{
           "shape":"ServiceNetworkServiceAssociationStatus",
-          "documentation":"<p>The operation's status.</p>"
+          "documentation":"<p>The association status.</p>"
         }
       }
     },
@@ -1569,7 +1569,7 @@
         },
         "status":{
           "shape":"ServiceNetworkVpcAssociationStatus",
-          "documentation":"<p>The operation's status.</p>"
+          "documentation":"<p>The association status.</p>"
         }
       }
     },
@@ -1637,7 +1637,7 @@
         },
         "status":{
           "shape":"ServiceStatus",
-          "documentation":"<p>The status. If the status is <code>CREATE_FAILED</code>, you will have to delete and recreate the service.</p>"
+          "documentation":"<p>The status. If the status is <code>CREATE_FAILED</code>, you must delete and recreate the service.</p>"
         }
       }
     },
@@ -1655,7 +1655,7 @@
         },
         "config":{
           "shape":"TargetGroupConfig",
-          "documentation":"<p>The target group configuration. If <code>type</code> is set to <code>LAMBDA</code>, this parameter doesn't apply.</p>"
+          "documentation":"<p>The target group configuration.</p>"
         },
         "name":{
           "shape":"TargetGroupName",
@@ -1680,7 +1680,7 @@
         },
         "config":{
           "shape":"TargetGroupConfig",
-          "documentation":"<p>The target group configuration. If <code>type</code> is set to <code>LAMBDA</code>, this parameter doesn't apply.</p>"
+          "documentation":"<p>The target group configuration.</p>"
         },
         "id":{
           "shape":"TargetGroupId",
@@ -1692,7 +1692,7 @@
         },
         "status":{
           "shape":"TargetGroupStatus",
-          "documentation":"<p>The operation's status. You can retry the operation if the status is <code>CREATE_FAILED</code>. However, if you retry it while the status is <code>CREATE_IN_PROGRESS</code>, there is no change in the status. </p>"
+          "documentation":"<p>The status. You can retry the operation if the status is <code>CREATE_FAILED</code>. However, if you retry it while the status is <code>CREATE_IN_PROGRESS</code>, there is no change in the status.</p>"
         },
         "type":{
           "shape":"TargetGroupType",
@@ -1852,7 +1852,7 @@
         },
         "status":{
           "shape":"ServiceNetworkServiceAssociationStatus",
-          "documentation":"<p>The operation's status. You can retry the operation if the status is <code>DELETE_FAILED</code>. However, if you retry it when the status is <code>DELETE_IN_PROGRESS</code>, there is no change in the status.</p>"
+          "documentation":"<p>The status. You can retry the operation if the status is <code>DELETE_FAILED</code>. However, if you retry it when the status is <code>DELETE_IN_PROGRESS</code>, there is no change in the status.</p>"
         }
       }
     },
@@ -1881,7 +1881,7 @@
         },
         "status":{
           "shape":"ServiceNetworkVpcAssociationStatus",
-          "documentation":"<p>The status. You can retry the operation if the status is <code>DELETE_FAILED</code>. However, if you retry it when the status is <code>DELETE_IN_PROGRESS</code>, there is no change in the status.</p>"
+          "documentation":"<p>The status. You can retry the operation if the status is <code>DELETE_FAILED</code>. However, if you retry it while the status is <code>DELETE_IN_PROGRESS</code>, there is no change in the status.</p>"
         }
       }
     },
@@ -2010,7 +2010,7 @@
           "documentation":"<p>The HTTP response code.</p>"
         }
       },
-      "documentation":"<p>Information about an action that returns a custom HTTP response. </p>"
+      "documentation":"<p>Describes an action that returns a custom HTTP response.</p>"
     },
     "ForwardAction":{
       "type":"structure",
@@ -2018,7 +2018,7 @@
       "members":{
         "targetGroups":{
           "shape":"WeightedTargetGroupList",
-          "documentation":"<p>The target groups. Traffic matching the rule is forwarded to the specified target groups. With forward actions, you can assign a weight that controls the prioritization and selection of each target group. This means that requests are distributed to individual target groups based on their weights. For example, if two target groups have the same weight, each target group receives half of the traffic.</p> <p>The default value is 1. This means that if only one target group is provided, there is no need to set the weight; 100% of traffic will go to that target group.</p>"
+          "documentation":"<p>The target groups. Traffic matching the rule is forwarded to the specified target groups. With forward actions, you can assign a weight that controls the prioritization and selection of each target group. This means that requests are distributed to individual target groups based on their weights. For example, if two target groups have the same weight, each target group receives half of the traffic.</p> <p>The default value is 1. This means that if only one target group is provided, there is no need to set the weight; 100% of the traffic goes to that target group.</p>"
         }
       },
       "documentation":"<p>Describes a forward action. You can use forward actions to route requests to one or more target groups. </p>"
@@ -2106,7 +2106,7 @@
         },
         "state":{
           "shape":"AuthPolicyState",
-          "documentation":"<p>The state of the auth policy. The auth policy is only active when the auth type is set to <code>Amazon Web Services_IAM</code>. If you provide a policy, then authentication and authorization decisions are made based on this policy and the client's IAM policy. If the auth type is <code>NONE</code>, then any auth policy you provide will remain inactive. For more information, see <a href=\"https://docs.aws.amazon.com/vpc-lattice/latest/ug/service-networks.html#create-service-network\">Create a service network</a> in the <i>Amazon VPC Lattice User Guide</i>.</p>"
+          "documentation":"<p>The state of the auth policy. The auth policy is only active when the auth type is set to <code>AWS_IAM</code>. If you provide a policy, then authentication and authorization decisions are made based on this policy and the client's IAM policy. If the auth type is <code>NONE</code>, then any auth policy that you provide remains inactive. For more information, see <a href=\"https://docs.aws.amazon.com/vpc-lattice/latest/ug/service-networks.html#create-service-network\">Create a service network</a> in the <i>Amazon VPC Lattice User Guide</i>.</p>"
         }
       }
     },
@@ -2182,7 +2182,7 @@
       "members":{
         "resourceArn":{
           "shape":"ResourceArn",
-          "documentation":"<p>An IAM policy.</p>",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the service network or service.</p>",
           "location":"uri",
           "locationName":"resourceArn"
         }
@@ -2193,7 +2193,7 @@
       "members":{
         "policy":{
           "shape":"PolicyString",
-          "documentation":"<p>The Amazon Resource Name (ARN) of the service network or service.</p>"
+          "documentation":"<p>An IAM policy.</p>"
         }
       }
     },
@@ -2344,7 +2344,7 @@
         },
         "customDomainName":{
           "shape":"ServiceCustomDomainName",
-          "documentation":"<p>The custom domain name of the service. </p>"
+          "documentation":"<p>The custom domain name of the service.</p>"
         },
         "dnsEntry":{
           "shape":"DnsEntry",
@@ -2596,7 +2596,7 @@
       "members":{
         "caseSensitive":{
           "shape":"Boolean",
-          "documentation":"<p>Indicates whether the match is case sensitive. Defaults to false.</p>"
+          "documentation":"<p>Indicates whether the match is case sensitive.</p>"
         },
         "match":{
           "shape":"HeaderMatchType",
@@ -2640,18 +2640,18 @@
       "members":{
         "contains":{
           "shape":"HeaderMatchContains",
-          "documentation":"<p>Specifies a contains type match.</p>"
+          "documentation":"<p>A contains type match.</p>"
         },
         "exact":{
           "shape":"HeaderMatchExact",
-          "documentation":"<p>Specifies an exact type match.</p>"
+          "documentation":"<p>An exact type match.</p>"
         },
         "prefix":{
           "shape":"HeaderMatchPrefix",
-          "documentation":"<p>Specifies a prefix type match. Matches the value with the prefix.</p>"
+          "documentation":"<p>A prefix type match. Matches the value with the prefix.</p>"
         }
       },
-      "documentation":"<p>Describes a header match type. Only one can be provided.</p>",
+      "documentation":"<p>Describes a header match type.</p>",
       "union":true
     },
     "HealthCheckConfig":{
@@ -2675,7 +2675,7 @@
         },
         "matcher":{
           "shape":"Matcher",
-          "documentation":"<p>The codes to use when checking for a successful response from a target. These are called <i>Success codes</i> in the console.</p>"
+          "documentation":"<p>The codes to use when checking for a successful response from a target.</p>"
         },
         "path":{
           "shape":"HealthCheckPath",
@@ -2698,7 +2698,7 @@
           "documentation":"<p>The number of consecutive failed health checks required before considering a target unhealthy. The range is 2–10. The default is 2.</p>"
         }
       },
-      "documentation":"<p>The health check configuration of a target group. Health check configurations aren't used for <code>LAMBDA</code> and <code>ALB</code> target groups.</p>"
+      "documentation":"<p>Describes the health check configuration of a target group. Health check configurations aren't used for target groups of type <code>LAMBDA</code> or <code>ALB</code>.</p>"
     },
     "HealthCheckIntervalSeconds":{
       "type":"integer",
@@ -2838,7 +2838,7 @@
       "members":{
         "items":{
           "shape":"AccessLogSubscriptionList",
-          "documentation":"<p>The access log subscriptions.</p>"
+          "documentation":"<p>Information about the access log subscriptions.</p>"
         },
         "nextToken":{
           "shape":"NextToken",
@@ -3070,7 +3070,7 @@
       "members":{
         "items":{
           "shape":"ServiceList",
-          "documentation":"<p>The services.</p>"
+          "documentation":"<p>Information about the services.</p>"
         },
         "nextToken":{
           "shape":"NextToken",
@@ -3095,7 +3095,7 @@
       "members":{
         "tags":{
           "shape":"TagMap",
-          "documentation":"<p>The tags.</p>"
+          "documentation":"<p>Information about the tags.</p>"
         }
       }
     },
@@ -3122,7 +3122,7 @@
         },
         "vpcIdentifier":{
           "shape":"VpcId",
-          "documentation":"<p>The ID or Amazon Resource Name (ARN) of the service.</p>",
+          "documentation":"<p>The ID or Amazon Resource Name (ARN) of the VPC.</p>",
           "location":"querystring",
           "locationName":"vpcIdentifier"
         }
@@ -3165,7 +3165,7 @@
         },
         "targets":{
           "shape":"ListTargetsRequestTargetsList",
-          "documentation":"<p>The targets to list.</p>"
+          "documentation":"<p>The targets.</p>"
         }
       }
     },
@@ -3217,7 +3217,8 @@
       "type":"string",
       "enum":[
         "HTTP",
-        "HTTPS"
+        "HTTPS",
+        "TLS_PASSTHROUGH"
       ]
     },
     "ListenerSummary":{
@@ -3270,7 +3271,7 @@
           "documentation":"<p>The HTTP code to use when checking for a successful response from a target.</p>"
         }
       },
-      "documentation":"<p>The codes to use when checking for a successful response from a target for health checks.</p>",
+      "documentation":"<p>Describes the codes to use when checking for a successful response from a target for health checks.</p>",
       "union":true
     },
     "MaxResults":{
@@ -3290,7 +3291,7 @@
       "members":{
         "caseSensitive":{
           "shape":"Boolean",
-          "documentation":"<p>Indicates whether the match is case sensitive. Defaults to false.</p>"
+          "documentation":"<p>Indicates whether the match is case sensitive.</p>"
         },
         "match":{
           "shape":"PathMatchType",
@@ -3347,7 +3348,7 @@
       "members":{
         "policy":{
           "shape":"AuthPolicyString",
-          "documentation":"<p>The auth policy.</p>"
+          "documentation":"<p>The auth policy. The policy string in JSON must not contain newlines or blank lines.</p>"
         },
         "resourceIdentifier":{
           "shape":"ResourceIdentifier",
@@ -3362,11 +3363,11 @@
       "members":{
         "policy":{
           "shape":"AuthPolicyString",
-          "documentation":"<p>The auth policy.</p>"
+          "documentation":"<p>The auth policy. The policy string in JSON must not contain newlines or blank lines.</p>"
         },
         "state":{
           "shape":"AuthPolicyState",
-          "documentation":"<p>The state of the auth policy. The auth policy is only active when the auth type is set to <code>Amazon Web Services_IAM</code>. If you provide a policy, then authentication and authorization decisions are made based on this policy and the client's IAM policy. If the Auth type is <code>NONE</code>, then, any auth policy you provide will remain inactive. For more information, see <a href=\"https://docs.aws.amazon.com/vpc-lattice/latest/ug/service-networks.html#create-service-network\">Create a service network</a> in the <i>Amazon VPC Lattice User Guide</i>.</p>"
+          "documentation":"<p>The state of the auth policy. The auth policy is only active when the auth type is set to <code>AWS_IAM</code>. If you provide a policy, then authentication and authorization decisions are made based on this policy and the client's IAM policy. If the Auth type is <code>NONE</code>, then, any auth policy that you provide remains inactive. For more information, see <a href=\"https://docs.aws.amazon.com/vpc-lattice/latest/ug/service-networks.html#create-service-network\">Create a service network</a> in the <i>Amazon VPC Lattice User Guide</i>.</p>"
         }
       }
     },
@@ -3379,7 +3380,7 @@
       "members":{
         "policy":{
           "shape":"PolicyString",
-          "documentation":"<p>An IAM policy.</p>"
+          "documentation":"<p>An IAM policy. The policy string in JSON must not contain newlines or blank lines.</p>"
         },
         "resourceArn":{
           "shape":"ResourceArn",
@@ -3480,14 +3481,14 @@
       "members":{
         "fixedResponse":{
           "shape":"FixedResponseAction",
-          "documentation":"<p> Describes the rule action that returns a custom HTTP response. </p>"
+          "documentation":"<p>The fixed response action. The rule returns a custom HTTP response.</p>"
         },
         "forward":{
           "shape":"ForwardAction",
           "documentation":"<p>The forward action. Traffic that matches the rule is forwarded to the specified target groups.</p>"
         }
       },
-      "documentation":"<p>Describes the action for a rule. Each rule must include exactly one of the following types of actions: <code>forward </code>or <code>fixed-response</code>, and it must be the last action to be performed.</p>",
+      "documentation":"<p>Describes the action for a rule.</p>",
       "union":true
     },
     "RuleArn":{
@@ -3548,7 +3549,7 @@
         },
         "isDefault":{
           "shape":"Boolean",
-          "documentation":"<p>Indicates whether this is the default rule. Listener rules are created when you create a listener. Each listener has a default rule for checking connection requests. </p>"
+          "documentation":"<p>Indicates whether this is the default listener rule.</p>"
         },
         "lastUpdatedAt":{
           "shape":"Timestamp",
@@ -3560,7 +3561,7 @@
         },
         "priority":{
           "shape":"RulePriority",
-          "documentation":"<p> The priority of the rule. </p>"
+          "documentation":"<p>The priority of the rule.</p>"
         }
       },
       "documentation":"<p>Summary information about the listener rule.</p>"
@@ -3590,7 +3591,7 @@
           "documentation":"<p>The ID or Amazon Resource Name (ARN) of the rule.</p>"
         }
       },
-      "documentation":"<p>Represents an object when updating a rule.</p>"
+      "documentation":"<p>Describes a rule update.</p>"
     },
     "RuleUpdateFailure":{
       "type":"structure",
@@ -3625,7 +3626,7 @@
       "members":{
         "action":{
           "shape":"RuleAction",
-          "documentation":"<p>The action for the default rule.</p>"
+          "documentation":"<p>The action for the rule.</p>"
         },
         "arn":{
           "shape":"RuleArn",
@@ -3776,11 +3777,11 @@
         },
         "customDomainName":{
           "shape":"ServiceCustomDomainName",
-          "documentation":"<p> The custom domain name of the service. </p>"
+          "documentation":"<p>The custom domain name of the service.</p>"
         },
         "dnsEntry":{
           "shape":"DnsEntry",
-          "documentation":"<p>DNS information about the service.</p>"
+          "documentation":"<p>The DNS information.</p>"
         },
         "id":{
           "shape":"ServiceNetworkServiceAssociationIdentifier",
@@ -3988,11 +3989,11 @@
         },
         "customDomainName":{
           "shape":"ServiceCustomDomainName",
-          "documentation":"<p> The custom domain name of the service. </p>"
+          "documentation":"<p>The custom domain name of the service.</p>"
         },
         "dnsEntry":{
           "shape":"DnsEntry",
-          "documentation":"<p>DNS information about the service.</p>"
+          "documentation":"<p>The DNS information.</p>"
         },
         "id":{
           "shape":"ServiceId",
@@ -4073,11 +4074,11 @@
       "members":{
         "id":{
           "shape":"TargetIdString",
-          "documentation":"<p>The ID of the target. If the target type of the target group is <code>INSTANCE</code>, this is an instance ID. If the target type is <code>IP</code> , this is an IP address. If the target type is <code>LAMBDA</code>, this is the ARN of the Lambda function. If the target type is <code>ALB</code>, this is the ARN of the Application Load Balancer.</p>"
+          "documentation":"<p>The ID of the target. If the target group type is <code>INSTANCE</code>, this is an instance ID. If the target group type is <code>IP</code>, this is an IP address. If the target group type is <code>LAMBDA</code>, this is the ARN of a Lambda function. If the target group type is <code>ALB</code>, this is the ARN of an Application Load Balancer.</p>"
         },
         "port":{
           "shape":"Port",
-          "documentation":"<p>The port on which the target is listening. For HTTP, the default is <code>80</code>. For HTTPS, the default is <code>443</code>.</p>"
+          "documentation":"<p>The port on which the target is listening. For HTTP, the default is 80. For HTTPS, the default is 443.</p>"
         }
       },
       "documentation":"<p>Describes a target.</p>"
@@ -4095,7 +4096,7 @@
         },
         "id":{
           "shape":"String",
-          "documentation":"<p>The ID of the target. If the target type of the target group is <code>INSTANCE</code>, this is an instance ID. If the target type is <code>IP</code> , this is an IP address. If the target type is <code>LAMBDA</code>, this is the ARN of the Lambda function. If the target type is <code>ALB</code>, this is the ARN of the Application Load Balancer.</p>"
+          "documentation":"<p>The ID of the target. If the target group type is <code>INSTANCE</code>, this is an instance ID. If the target group type is <code>IP</code>, this is an IP address. If the target group type is <code>LAMBDA</code>, this is the ARN of a Lambda function. If the target group type is <code>ALB</code>, this is the ARN of an Application Load Balancer.</p>"
         },
         "port":{
           "shape":"Port",
@@ -4119,34 +4120,34 @@
       "members":{
         "healthCheck":{
           "shape":"HealthCheckConfig",
-          "documentation":"<p>The health check configuration.</p>"
+          "documentation":"<p>The health check configuration. Not supported if the target group type is <code>LAMBDA</code> or <code>ALB</code>.</p>"
         },
         "ipAddressType":{
           "shape":"IpAddressType",
-          "documentation":"<p>The type of IP address used for the target group. The possible values are <code>ipv4</code> and <code>ipv6</code>. This is an optional parameter. If not specified, the IP address type defaults to <code>ipv4</code>.</p>"
+          "documentation":"<p>The type of IP address used for the target group. Supported only if the target group type is <code>IP</code>. The default is <code>IPV4</code>.</p>"
         },
         "lambdaEventStructureVersion":{
           "shape":"LambdaEventStructureVersion",
-          "documentation":"<p>Lambda event structure version</p>"
+          "documentation":"<p>The version of the event structure that your Lambda function receives. Supported only if the target group type is <code>LAMBDA</code>. The default is <code>V1</code>.</p>"
         },
         "port":{
           "shape":"Port",
-          "documentation":"<p>The port on which the targets are listening. For HTTP, the default is <code>80</code>. For HTTPS, the default is <code>443</code> </p>"
+          "documentation":"<p>The port on which the targets are listening. For HTTP, the default is 80. For HTTPS, the default is 443. Not supported if the target group type is <code>LAMBDA</code>.</p>"
         },
         "protocol":{
           "shape":"TargetGroupProtocol",
-          "documentation":"<p>The protocol to use for routing traffic to the targets. Default is the protocol of a target group.</p>"
+          "documentation":"<p>The protocol to use for routing traffic to the targets. The default is the protocol of the target group. Not supported if the target group type is <code>LAMBDA</code>.</p>"
         },
         "protocolVersion":{
           "shape":"TargetGroupProtocolVersion",
-          "documentation":"<p>The protocol version. Default value is <code>HTTP1</code>.</p>"
+          "documentation":"<p>The protocol version. The default is <code>HTTP1</code>. Not supported if the target group type is <code>LAMBDA</code>.</p>"
         },
         "vpcIdentifier":{
           "shape":"VpcId",
-          "documentation":"<p>The ID of the VPC.</p>"
+          "documentation":"<p>The ID of the VPC. Not supported if the target group type is <code>LAMBDA</code>.</p>"
         }
       },
-      "documentation":"<p>Describes the configuration of a target group. Lambda functions don't support target group configuration.</p>"
+      "documentation":"<p>Describes the configuration of a target group.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/vpc-lattice/latest/ug/target-groups.html\">Target groups</a> in the <i>Amazon VPC Lattice User Guide</i>.</p>"
     },
     "TargetGroupId":{
       "type":"string",
@@ -4174,7 +4175,8 @@
       "type":"string",
       "enum":[
         "HTTP",
-        "HTTPS"
+        "HTTPS",
+        "TCP"
       ]
     },
     "TargetGroupProtocolVersion":{
@@ -4212,11 +4214,11 @@
         },
         "ipAddressType":{
           "shape":"IpAddressType",
-          "documentation":"<p>The type of IP address used for the target group. The possible values are <code>ipv4</code> and <code>ipv6</code>. This is an optional parameter. If not specified, the IP address type defaults to <code>ipv4</code>.</p>"
+          "documentation":"<p>The type of IP address used for the target group. The possible values are <code>IPV4</code> and <code>IPV6</code>. This is an optional parameter. If not specified, the default is <code>IPV4</code>.</p>"
         },
         "lambdaEventStructureVersion":{
           "shape":"LambdaEventStructureVersion",
-          "documentation":"<p>Lambda event structure version</p>"
+          "documentation":"<p>The version of the event structure that your Lambda function receives. Supported only if the target group type is <code>LAMBDA</code>.</p>"
         },
         "lastUpdatedAt":{
           "shape":"Timestamp",
@@ -4236,7 +4238,7 @@
         },
         "serviceArns":{
           "shape":"ServiceArnList",
-          "documentation":"<p>The list of Amazon Resource Names (ARNs) of the service.</p>"
+          "documentation":"<p>The Amazon Resource Names (ARNs) of the service.</p>"
         },
         "status":{
           "shape":"TargetGroupStatus",
@@ -4251,7 +4253,7 @@
           "documentation":"<p>The ID of the VPC of the target group.</p>"
         }
       },
-      "documentation":"<p>Summary information about a target group.</p>"
+      "documentation":"<p>Summary information about a target group.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/vpc-lattice/latest/ug/target-groups.html\">Target groups</a> in the <i>Amazon VPC Lattice User Guide</i>.</p>"
     },
     "TargetGroupType":{
       "type":"string",
@@ -4293,7 +4295,7 @@
       "members":{
         "id":{
           "shape":"String",
-          "documentation":"<p>The ID of the target. If the target type of the target group is <code>INSTANCE</code>, this is an instance ID. If the target type is <code>IP</code> , this is an IP address. If the target type is <code>LAMBDA</code>, this is the ARN of the Lambda function. If the target type is <code>ALB</code>, this is the ARN of the Application Load Balancer.</p>"
+          "documentation":"<p>The ID of the target. If the target group type is <code>INSTANCE</code>, this is an instance ID. If the target group type is <code>IP</code>, this is an IP address. If the target group type is <code>LAMBDA</code>, this is the ARN of a Lambda function. If the target type is <code>ALB</code>, this is the ARN of an Application Load Balancer.</p>"
         },
         "port":{
           "shape":"Port",
@@ -4305,7 +4307,7 @@
         },
         "status":{
           "shape":"TargetStatus",
-          "documentation":"<p>The status of the target.</p> <ul> <li> <p> <code>Draining</code>: The target is being deregistered. No new connections will be sent to this target while current connections are being drained. Default draining time is 5 minutes.</p> </li> <li> <p> <code>Unavailable</code>: Health checks are unavailable for the target group.</p> </li> <li> <p> <code>Healthy</code>: The target is healthy. </p> </li> <li> <p> <code>Unhealthy</code>: The target is unhealthy.</p> </li> <li> <p> <code>Initial</code>: Initial health checks on the target are being performed.</p> </li> <li> <p> <code>Unused</code>: Target group is not used in a service.</p> </li> </ul>"
+          "documentation":"<p>The status of the target.</p> <ul> <li> <p> <code>DRAINING</code>: The target is being deregistered. No new connections are sent to this target while current connections are being drained. The default draining time is 5 minutes.</p> </li> <li> <p> <code>UNAVAILABLE</code>: Health checks are unavailable for the target group.</p> </li> <li> <p> <code>HEALTHY</code>: The target is healthy.</p> </li> <li> <p> <code>UNHEALTHY</code>: The target is unhealthy.</p> </li> <li> <p> <code>INITIAL</code>: Initial health checks on the target are being performed.</p> </li> <li> <p> <code>UNUSED</code>: Target group is not used in a service.</p> </li> </ul>"
         }
       },
       "documentation":"<p>Summary information about a target.</p>"
@@ -4614,7 +4616,7 @@
       "members":{
         "securityGroupIds":{
           "shape":"UpdateServiceNetworkVpcAssociationRequestSecurityGroupIdsList",
-          "documentation":"<p>The IDs of the security groups. Once you add a security group, it cannot be removed.</p>"
+          "documentation":"<p>The IDs of the security groups.</p>"
         },
         "serviceNetworkVpcAssociationIdentifier":{
           "shape":"ServiceNetworkVpcAssociationIdentifier",
@@ -4665,7 +4667,7 @@
         },
         "certificateArn":{
           "shape":"CertificateArn",
-          "documentation":"<p>The Amazon Resource Name (ARN) of the certificate. </p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of the certificate.</p>"
         },
         "serviceIdentifier":{
           "shape":"ServiceIdentifier",
@@ -4688,7 +4690,7 @@
         },
         "certificateArn":{
           "shape":"CertificateArn",
-          "documentation":"<p>The Amazon Resource Name (ARN) of the certificate. </p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of the certificate.</p>"
         },
         "customDomainName":{
           "shape":"ServiceCustomDomainName",
@@ -4785,7 +4787,7 @@
       "members":{
         "message":{
           "shape":"String",
-          "documentation":"<p>Additional details about why the validation failed.</p>"
+          "documentation":"<p>Additional information about why the validation failed.</p>"
         },
         "name":{
           "shape":"String",
@@ -4823,7 +4825,7 @@
         },
         "weight":{
           "shape":"TargetGroupWeight",
-          "documentation":"<p>Only required if you specify multiple target groups for a forward action. The \"weight\" determines how requests are distributed to the target group. For example, if you specify two target groups, each with a weight of 10, each target group receives half the requests. If you specify two target groups, one with a weight of 10 and the other with a weight of 20, the target group with a weight of 20 receives twice as many requests as the other target group. If there's only one target group specified, then the default value is 100.</p>"
+          "documentation":"<p>Only required if you specify multiple target groups for a forward action. The weight determines how requests are distributed to the target group. For example, if you specify two target groups, each with a weight of 10, each target group receives half the requests. If you specify two target groups, one with a weight of 10 and the other with a weight of 20, the target group with a weight of 20 receives twice as many requests as the other target group. If there's only one target group specified, then the default value is 100.</p>"
         }
       },
       "documentation":"<p>Describes the weight of a target group.</p>"
@@ -4831,7 +4833,7 @@
     "WeightedTargetGroupList":{
       "type":"list",
       "member":{"shape":"WeightedTargetGroup"},
-      "max":2,
+      "max":10,
       "min":1
     }
   },

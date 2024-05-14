@@ -24,6 +24,7 @@ from awscli.compat import six
 from awscli.compat import get_stdout_text_writer
 from awscli.compat import get_popen_kwargs_for_pager_cmd
 from awscli.compat import StringIO
+from botocore.useragent import UserAgentComponent
 from botocore.utils import resolve_imds_endpoint_mode
 from botocore.utils import IMDSFetcher
 from botocore.configprovider import BaseProvider
@@ -539,3 +540,22 @@ class ShapeRecordingVisitor(BaseShapeVisitor):
 
     def visit_shape(self, shape):
         self.visited.append(shape)
+
+
+def add_component_to_user_agent_extra(session, component):
+    if session.user_agent_extra and not session.user_agent_extra.endswith(" "):
+        session.user_agent_extra += " "
+    session.user_agent_extra += f"{component.to_string()}"
+
+
+def add_metadata_component_to_user_agent_extra(session, name, value=None):
+    add_component_to_user_agent_extra(
+        session,
+        UserAgentComponent("md", name, value)
+    )
+
+
+def add_command_lineage_to_user_agent_extra(session, lineage):
+    # Only add a command lineage if one is not already present in the user agent extra.
+    if not re.search(r'md\/command#[\w\.]*', session.user_agent_extra):
+        add_metadata_component_to_user_agent_extra(session, "command", ".".join(lineage))

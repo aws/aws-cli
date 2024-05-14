@@ -213,30 +213,30 @@ class TestUserAgentCommandSection(BaseAWSCommandParamsTest):
     def test_customization_in_user_agent_s3_cp(self):
         cmd = 's3 cp s3://foo s3://bar'
         self.run_cmd(cmd)
-        self._assert_customization_in_user_agent(' command/s3.cp')
+        self._assert_customization_in_user_agent(' md/command#s3.cp')
 
     def test_customization_in_user_agent_s3_ls(self):
         cmd = 's3 ls'
         # it should fail but the user_agent should be correct
         self.run_cmd(cmd, expected_rc=255)
-        self._assert_customization_in_user_agent(' command/s3.ls')
+        self._assert_customization_in_user_agent(' md/command#s3.ls')
 
     def test_customization_in_user_agent_logs_tail(self):
         cmd = 'logs tail foo'
         # it should fail but the user_agent should be correct
         self.run_cmd(cmd, expected_rc=255)
-        self._assert_customization_in_user_agent(' command/logs.tail')
+        self._assert_customization_in_user_agent(' md/command#logs.tail')
 
     def test_service_operation_in_user_agent(self):
         cmd = 'ec2 describe-instances'
         self.run_cmd(cmd)
         self._assert_customization_in_user_agent(
-            ' command/ec2.describe-instances'
+            ' md/command#ec2.describe-instances'
         )
 
     def test_custom_service_operation_in_user_agent(self):
         cmd = 'rds add-option-to-option-group --option-group-name foo'
         self.run_cmd(cmd)
         self._assert_customization_in_user_agent(
-            ' command/rds.add-option-to-option-group'
+            ' md/command#rds.add-option-to-option-group'
         )

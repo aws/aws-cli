@@ -38,6 +38,12 @@ class Config(object):
     :param user_agent_extra: The value to append to the current User-Agent
         header value.
 
+    :type user_agent_appid: str
+    :param user_agent_appid: A value that gets included in the User-Agent
+        string in the format "app/<user_agent_appid>". Allowed characters are
+        ASCII alphanumerics and ``!$%&'*+-.^_`|~``. All other characters will
+        be replaced by a ``-``.
+
     :type connect_timeout: float or int
     :param connect_timeout: The time in seconds till a timeout exception is
         thrown when attempting to make a connection. The default is 60
@@ -189,6 +195,7 @@ class Config(object):
         ('signature_version', None),
         ('user_agent', None),
         ('user_agent_extra', None),
+        ('user_agent_appid', None),
         ('connect_timeout', DEFAULT_TIMEOUT),
         ('read_timeout', DEFAULT_TIMEOUT),
         ('parameter_validation', True),

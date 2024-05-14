@@ -15,6 +15,7 @@ import signal
 import os
 import tempfile
 import random
+import re
 import shutil
 
 import botocore.session
@@ -270,11 +271,22 @@ class TestBasicCommandFunctionality(unittest.TestCase):
     def test_version(self):
         p = aws('--version')
         self.assertEqual(p.rc, 0)
-        # The version is wrote to standard out for Python 3.4 and
-        # standard error for other Python versions.
-        version_output = p.stderr.startswith('aws-cli') or \
-            p.stdout.startswith('aws-cli')
-        self.assertTrue(version_output, p.stderr)
+        version_output = p.stdout
+
+        # There should be four components: aws-cli version, Python version,
+        # platform version, and installation source. The CLI and Python
+        # version have fixed format; the platform and install source can
+        # change based on the system they are invoked.
+        # Example: "aws-cli/2.15.45 Python/3.11.3 Darwin/22.6.0 source/x86_64"
+        user_agent_regex = (
+            r'aws-cli/\d+\.\d+\.\d+ ' # aws-cli/2.15.45
+            r'Python/\d+\.\d+\.\d+ ' # Python/3.11.3
+            r'.+/.+? ' # Darwin/22.6.0
+            r'.+/.+\n' # source/x86_64
+        )
+        self.assertTrue(
+            re.fullmatch(user_agent_regex, version_output)
+        )
 
     def test_traceback_printed_when_debug_on(self):
         p = aws('ec2 describe-instances --filters BADKEY=foo --debug')

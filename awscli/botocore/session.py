@@ -57,6 +57,8 @@ from botocore.loaders import create_loader
 from botocore.model import ServiceModel
 from botocore.parsers import ResponseParserFactory
 from botocore.regions import EndpointResolver
+from botocore.useragent import UserAgentString
+
 
 logger = logging.getLogger(__name__)
 
@@ -144,6 +146,7 @@ class Session(object):
         self._register_exceptions_factory()
         self._register_config_store()
         self._register_monitor()
+        self._register_user_agent_creator()
 
     def _register_event_emitter(self):
         self._components.register_component('event_emitter', self._events)
@@ -210,6 +213,10 @@ class Session(object):
         self._internal_components.lazy_register_component(
             'monitor', self._create_csm_monitor)
 
+    def _register_user_agent_creator(self):
+        uas = UserAgentString.from_environment()
+        self._components.register_component('user_agent_creator', uas)
+
     def _create_csm_monitor(self):
         if self.get_config_variable('csm_enabled'):
             client_id = self.get_config_variable('csm_client_id')
@@ -227,6 +234,10 @@ class Session(object):
             )
             return handler
         return None
+
+    def _get_crt_version(self):
+        user_agent_creator = self.get_component('user_agent_creator')
+        return user_agent_creator._crt_version or 'Unknown'
 
     @property
     def available_profiles(self):
@@ -841,6 +852,15 @@ class Session(object):
         endpoint_resolver = self._get_internal_component('endpoint_resolver')
         exceptions_factory = self._get_internal_component('exceptions_factory')
         config_store = copy.copy(self.get_component('config_store'))
+        user_agent_creator = self.get_component('user_agent_creator')
+        # Session configuration values for the user agent string are applied
+        # just before each client creation because they may have been modified
+        # at any time between session creation and client creation.
+        user_agent_creator.set_session_config(
+            session_user_agent_name=self.user_agent_name,
+            session_user_agent_version=self.user_agent_version,
+            session_user_agent_extra=self.user_agent_extra,
+        )
         self._add_configured_endpoint_provider(
             client_name=service_name,
             config_store=config_store,
@@ -848,7 +868,8 @@ class Session(object):
 
         client_creator = botocore.client.ClientCreator(
             loader, endpoint_resolver, self.user_agent(), event_emitter,
-            response_parser_factory, exceptions_factory, config_store)
+            response_parser_factory, exceptions_factory, config_store,
+            user_agent_creator=user_agent_creator)
         client = client_creator.create_client(
             service_name=service_name, region_name=region_name,
             is_secure=use_ssl, endpoint_url=endpoint_url, verify=verify,

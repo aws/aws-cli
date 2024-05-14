@@ -118,6 +118,7 @@ BOTOCORE_DEFAUT_SESSION_VARIABLES = {
         'auto', None),
     'retry_mode': ('retry_mode', 'AWS_RETRY_MODE', 'standard', None),
     'max_attempts': ('max_attempts', 'AWS_MAX_ATTEMPTS', 3, int),
+    'user_agent_appid': ('sdk_ua_app_id', 'AWS_SDK_UA_APP_ID', None, None),
     'request_min_compression_size_bytes': (
         'request_min_compression_size_bytes',
         'AWS_REQUEST_MIN_COMPRESSION_SIZE_BYTES',

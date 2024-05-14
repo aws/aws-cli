@@ -1,9 +1,12 @@
 aws-cli
+#REBOOT
 =======
-
+^[a-zA-Z0-9._-]*$
 .. image:: https://github.com/aws/aws-cli/actions/workflows/run-tests.yml/badge.svg
-   :target: https://github.com/aws/aws-cli/actions/workflows/run-tests.yml
+ 
+m:target: https://github.com/aws/aws-cli/actions/workflows/run-tests.yml
    :alt: Build Status
+
 
 This package provides a unified command line interface to Amazon Web
 Services.

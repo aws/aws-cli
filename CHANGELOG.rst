@@ -2,6 +2,13 @@
 CHANGELOG
 =========
 
+2.15.50
+=======
+
+* api-change:``s3``: Updated a few x-id in the http uri traits
+* api-change:``connect``: Amazon Connect provides enhanced search capabilities for flows & flow modules on the Connect admin website and programmatically using APIs. You can search for flows and flow modules by name, description, type, status, and tags, to filter and identify a specific flow in your Connect instances.
+
+
 2.15.49
 =======
 

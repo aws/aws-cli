@@ -288,6 +288,13 @@ class TestBasicCommandFunctionality(unittest.TestCase):
             re.fullmatch(user_agent_regex, version_output)
         )
 
+    def test_version_with_exec_env(self):
+        base_env_vars = os.environ.copy()
+        base_env_vars['AWS_EXECUTION_ENV'] = 'an_execution_env'
+        p = aws('--version', env_vars=base_env_vars)
+        version_output = p.stdout
+        self.assertTrue(f' exec-env/an_execution_env' in version_output)
+
     def test_traceback_printed_when_debug_on(self):
         p = aws('ec2 describe-instances --filters BADKEY=foo --debug')
         self.assertIn('Traceback (most recent call last):', p.stderr, p.stderr)

@@ -451,8 +451,8 @@ class CLIDriver(object):
             f' {platform.system()}/{platform.release()}'
         )
 
-        if execution_env := os.environ.get('AWS_EXECUTION_ENV') is not None:
-            version_string += f' exec-env/{execution_env}'
+        if 'AWS_EXECUTION_ENV' in os.environ:
+            version_string += f' exec-env/{os.environ.get("AWS_EXECUTION_ENV")}'
         
         version_string += f' {_get_distribution_source()}/{platform.machine()}'
 

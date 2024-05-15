@@ -3,8 +3,8 @@
   "metadata":{
     "apiVersion":"2023-07-19",
     "endpointPrefix":"medical-imaging",
-    "jsonVersion":"1.1",
     "protocol":"rest-json",
+    "protocols":["rest-json"],
     "serviceFullName":"AWS Health Imaging",
     "serviceId":"Medical Imaging",
     "signatureVersion":"v4",
@@ -282,7 +282,7 @@
         {"shape":"InternalServerException"},
         {"shape":"ResourceNotFoundException"}
       ],
-      "documentation":"<p>Search image sets based on defined input attributes.</p> <note> <p> <code>SearchImageSets</code> accepts a single search query parameter and returns a paginated response of all image sets that have the matching criteria. All range queries must be input as <code>(lowerBound, upperBound)</code>.</p> <p> <code>SearchImageSets</code> uses the <code>updatedAt</code> field for sorting in decreasing order from latest to oldest.</p> </note>",
+      "documentation":"<p>Search image sets based on defined input attributes.</p> <note> <p> <code>SearchImageSets</code> accepts a single search query parameter and returns a paginated response of all image sets that have the matching criteria. All date range queries must be input as <code>(lowerBound, upperBound)</code>.</p> <p>By default, <code>SearchImageSets</code> uses the <code>updatedAt</code> field for sorting in descending order from newest to oldest.</p> </note>",
       "endpoint":{"hostPrefix":"runtime-"}
     },
     "StartDICOMImportJob":{
@@ -383,6 +383,12 @@
     "Arn":{
       "type":"string",
       "pattern":"arn:aws((-us-gov)|(-iso)|(-iso-b)|(-cn))?:medical-imaging:[a-z0-9-]+:[0-9]{12}:datastore/[0-9a-z]{32}(/imageset/[0-9a-z]{32})?"
+    },
+    "AwsAccountId":{
+      "type":"string",
+      "max":12,
+      "min":12,
+      "pattern":"\\d+"
     },
     "ClientToken":{
       "type":"string",
@@ -1934,6 +1940,10 @@
         "outputS3Uri":{
           "shape":"S3Uri",
           "documentation":"<p>The output prefix of the S3 bucket to upload the results of the DICOM import job.</p>"
+        },
+        "inputOwnerAccountId":{
+          "shape":"AwsAccountId",
+          "documentation":"<p>The account ID of the source S3 bucket owner.</p>"
         }
       }
     },

@@ -5,6 +5,7 @@
     "endpointPrefix":"grafana",
     "jsonVersion":"1.1",
     "protocol":"rest-json",
+    "protocols":["rest-json"],
     "serviceFullName":"Amazon Managed Grafana",
     "serviceId":"grafana",
     "signatureVersion":"v4",
@@ -28,7 +29,7 @@
         {"shape":"AccessDeniedException"},
         {"shape":"InternalServerException"}
       ],
-      "documentation":"<p>Assigns a Grafana Enterprise license to a workspace. Upgrading to Grafana Enterprise incurs additional fees. For more information, see <a href=\"https://docs.aws.amazon.com/grafana/latest/userguide/upgrade-to-Grafana-Enterprise.html\">Upgrade a workspace to Grafana Enterprise</a>.</p>"
+      "documentation":"<p>Assigns a Grafana Enterprise license to a workspace. To upgrade, you must use <code>ENTERPRISE</code> for the <code>licenseType</code>, and pass in a valid Grafana Labs token for the <code>grafanaToken</code>. Upgrading to Grafana Enterprise incurs additional fees. For more information, see <a href=\"https://docs.aws.amazon.com/grafana/latest/userguide/upgrade-to-Grafana-Enterprise.html\">Upgrade a workspace to Grafana Enterprise</a>.</p>"
     },
     "CreateWorkspace":{
       "name":"CreateWorkspace",
@@ -68,7 +69,47 @@
         {"shape":"InternalServerException"},
         {"shape":"ServiceQuotaExceededException"}
       ],
-      "documentation":"<p>Creates a Grafana API key for the workspace. This key can be used to authenticate requests sent to the workspace's HTTP API. See <a href=\"https://docs.aws.amazon.com/grafana/latest/userguide/Using-Grafana-APIs.html\">https://docs.aws.amazon.com/grafana/latest/userguide/Using-Grafana-APIs.html</a> for available APIs and example requests.</p>"
+      "documentation":"<p>Creates a Grafana API key for the workspace. This key can be used to authenticate requests sent to the workspace's HTTP API. See <a href=\"https://docs.aws.amazon.com/grafana/latest/userguide/Using-Grafana-APIs.html\">https://docs.aws.amazon.com/grafana/latest/userguide/Using-Grafana-APIs.html</a> for available APIs and example requests.</p> <note> <p>In workspaces compatible with Grafana version 9 or above, use workspace service accounts instead of API keys. API keys will be removed in a future release.</p> </note>"
+    },
+    "CreateWorkspaceServiceAccount":{
+      "name":"CreateWorkspaceServiceAccount",
+      "http":{
+        "method":"POST",
+        "requestUri":"/workspaces/{workspaceId}/serviceaccounts",
+        "responseCode":200
+      },
+      "input":{"shape":"CreateWorkspaceServiceAccountRequest"},
+      "output":{"shape":"CreateWorkspaceServiceAccountResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ConflictException"},
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ServiceQuotaExceededException"}
+      ],
+      "documentation":"<p>Creates a service account for the workspace. A service account can be used to call Grafana HTTP APIs, and run automated workloads. After creating the service account with the correct <code>GrafanaRole</code> for your use case, use <code>CreateWorkspaceServiceAccountToken</code> to create a token that can be used to authenticate and authorize Grafana HTTP API calls.</p> <p>You can only create service accounts for workspaces that are compatible with Grafana version 9 and above.</p> <note> <p>For more information about service accounts, see <a href=\"https://docs.aws.amazon.com/grafana/latest/userguide/service-accounts.html\">Service accounts</a> in the <i>Amazon Managed Grafana User Guide</i>.</p> <p>For more information about the Grafana HTTP APIs, see <a href=\"https://docs.aws.amazon.com/grafana/latest/userguide/Using-Grafana-APIs.html\">Using Grafana HTTP APIs</a> in the <i>Amazon Managed Grafana User Guide</i>.</p> </note>"
+    },
+    "CreateWorkspaceServiceAccountToken":{
+      "name":"CreateWorkspaceServiceAccountToken",
+      "http":{
+        "method":"POST",
+        "requestUri":"/workspaces/{workspaceId}/serviceaccounts/{serviceAccountId}/tokens",
+        "responseCode":200
+      },
+      "input":{"shape":"CreateWorkspaceServiceAccountTokenRequest"},
+      "output":{"shape":"CreateWorkspaceServiceAccountTokenResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ConflictException"},
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ServiceQuotaExceededException"}
+      ],
+      "documentation":"<p>Creates a token that can be used to authenticate and authorize Grafana HTTP API operations for the given <a href=\"https://docs.aws.amazon.com/grafana/latest/userguide/service-accounts.html\">workspace service account</a>. The service account acts as a user for the API operations, and defines the permissions that are used by the API.</p> <important> <p>When you create the service account token, you will receive a key that is used when calling Grafana APIs. Do not lose this key, as it will not be retrievable again.</p> <p>If you do lose the key, you can delete the token and recreate it to receive a new key. This will disable the initial key.</p> </important> <p>Service accounts are only available for workspaces that are compatible with Grafana version 9 and above.</p>"
     },
     "DeleteWorkspace":{
       "name":"DeleteWorkspace",
@@ -107,7 +148,45 @@
         {"shape":"AccessDeniedException"},
         {"shape":"InternalServerException"}
       ],
-      "documentation":"<p>Deletes a Grafana API key for the workspace.</p>"
+      "documentation":"<p>Deletes a Grafana API key for the workspace.</p> <note> <p>In workspaces compatible with Grafana version 9 or above, use workspace service accounts instead of API keys. API keys will be removed in a future release.</p> </note>"
+    },
+    "DeleteWorkspaceServiceAccount":{
+      "name":"DeleteWorkspaceServiceAccount",
+      "http":{
+        "method":"DELETE",
+        "requestUri":"/workspaces/{workspaceId}/serviceaccounts/{serviceAccountId}",
+        "responseCode":200
+      },
+      "input":{"shape":"DeleteWorkspaceServiceAccountRequest"},
+      "output":{"shape":"DeleteWorkspaceServiceAccountResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ConflictException"},
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Deletes a workspace service account from the workspace.</p> <p>This will delete any tokens created for the service account, as well. If the tokens are currently in use, the will fail to authenticate / authorize after they are deleted.</p> <p>Service accounts are only available for workspaces that are compatible with Grafana version 9 and above.</p>"
+    },
+    "DeleteWorkspaceServiceAccountToken":{
+      "name":"DeleteWorkspaceServiceAccountToken",
+      "http":{
+        "method":"DELETE",
+        "requestUri":"/workspaces/{workspaceId}/serviceaccounts/{serviceAccountId}/tokens/{tokenId}",
+        "responseCode":200
+      },
+      "input":{"shape":"DeleteWorkspaceServiceAccountTokenRequest"},
+      "output":{"shape":"DeleteWorkspaceServiceAccountTokenResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ConflictException"},
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Deletes a token for the workspace service account.</p> <p>This will disable the key associated with the token. If any automation is currently using the key, it will no longer be authenticated or authorized to perform actions with the Grafana HTTP APIs.</p> <p>Service accounts are only available for workspaces that are compatible with Grafana version 9 and above.</p>"
     },
     "DescribeWorkspace":{
       "name":"DescribeWorkspace",
@@ -139,6 +218,7 @@
       "errors":[
         {"shape":"ResourceNotFoundException"},
         {"shape":"ThrottlingException"},
+        {"shape":"ConflictException"},
         {"shape":"ValidationException"},
         {"shape":"AccessDeniedException"},
         {"shape":"InternalServerException"}
@@ -233,6 +313,44 @@
         {"shape":"InternalServerException"}
       ],
       "documentation":"<p>Lists available versions of Grafana. These are available when calling <code>CreateWorkspace</code>. Optionally, include a workspace to list the versions to which it can be upgraded.</p>"
+    },
+    "ListWorkspaceServiceAccountTokens":{
+      "name":"ListWorkspaceServiceAccountTokens",
+      "http":{
+        "method":"GET",
+        "requestUri":"/workspaces/{workspaceId}/serviceaccounts/{serviceAccountId}/tokens",
+        "responseCode":200
+      },
+      "input":{"shape":"ListWorkspaceServiceAccountTokensRequest"},
+      "output":{"shape":"ListWorkspaceServiceAccountTokensResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ConflictException"},
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Returns a list of tokens for a workspace service account.</p> <note> <p>This does not return the key for each token. You cannot access keys after they are created. To create a new key, delete the token and recreate it.</p> </note> <p>Service accounts are only available for workspaces that are compatible with Grafana version 9 and above.</p>"
+    },
+    "ListWorkspaceServiceAccounts":{
+      "name":"ListWorkspaceServiceAccounts",
+      "http":{
+        "method":"GET",
+        "requestUri":"/workspaces/{workspaceId}/serviceaccounts",
+        "responseCode":200
+      },
+      "input":{"shape":"ListWorkspaceServiceAccountsRequest"},
+      "output":{"shape":"ListWorkspaceServiceAccountsResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ConflictException"},
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Returns a list of service accounts for a workspace.</p> <p>Service accounts are only available for workspaces that are compatible with Grafana version 9 and above.</p>"
     },
     "ListWorkspaces":{
       "name":"ListWorkspaces",
@@ -446,7 +564,7 @@
       "members":{
         "grafanaToken":{
           "shape":"GrafanaToken",
-          "documentation":"<p>A token from Grafana Labs that ties your Amazon Web Services account with a Grafana Labs account. For more information, see <a href=\"https://docs.aws.amazon.com/grafana/latest/userguide/upgrade-to-Grafana-Enterprise.html#AMG-workspace-register-enterprise\">Register with Grafana Labs</a>.</p>",
+          "documentation":"<p>A token from Grafana Labs that ties your Amazon Web Services account with a Grafana Labs account. For more information, see <a href=\"https://docs.aws.amazon.com/grafana/latest/userguide/upgrade-to-Grafana-Enterprise.html#AMG-workspace-register-enterprise\">Link your account with Grafana Labs</a>.</p>",
           "location":"header",
           "locationName":"Grafana-Token"
         },
@@ -580,7 +698,7 @@
         },
         "keyRole":{
           "shape":"String",
-          "documentation":"<p>Specifies the permission level of the key.</p> <p> Valid values: <code>VIEWER</code>|<code>EDITOR</code>|<code>ADMIN</code> </p>"
+          "documentation":"<p>Specifies the permission level of the key.</p> <p> Valid values: <code>ADMIN</code>|<code>EDITOR</code>|<code>VIEWER</code> </p>"
         },
         "secondsToLive":{
           "shape":"CreateWorkspaceApiKeyRequestSecondsToLiveInteger",
@@ -650,7 +768,7 @@
         },
         "grafanaVersion":{
           "shape":"GrafanaVersion",
-          "documentation":"<p>Specifies the version of Grafana to support in the new workspace. If not specified, defaults to the latest version (for example, 9.4).</p> <p>To get a list of supported versions, use the <code>ListVersions</code> operation.</p>"
+          "documentation":"<p>Specifies the version of Grafana to support in the new workspace. If not specified, defaults to the latest version (for example, 10.4).</p> <p>To get a list of supported versions, use the <code>ListVersions</code> operation.</p>"
         },
         "networkAccessControl":{
           "shape":"NetworkAccessConfiguration",
@@ -709,6 +827,116 @@
         "workspace":{
           "shape":"WorkspaceDescription",
           "documentation":"<p>A structure containing data about the workspace that was created.</p>"
+        }
+      }
+    },
+    "CreateWorkspaceServiceAccountRequest":{
+      "type":"structure",
+      "required":[
+        "grafanaRole",
+        "name",
+        "workspaceId"
+      ],
+      "members":{
+        "grafanaRole":{
+          "shape":"Role",
+          "documentation":"<p>The permission level to use for this service account.</p> <note> <p>For more information about the roles and the permissions each has, see <a href=\"https://docs.aws.amazon.com/grafana/latest/userguide/Grafana-user-roles.html\">User roles</a> in the <i>Amazon Managed Grafana User Guide</i>.</p> </note>"
+        },
+        "name":{
+          "shape":"ServiceAccountName",
+          "documentation":"<p>A name for the service account. The name must be unique within the workspace, as it determines the ID associated with the service account.</p>"
+        },
+        "workspaceId":{
+          "shape":"WorkspaceId",
+          "documentation":"<p>The ID of the workspace within which to create the service account.</p>",
+          "location":"uri",
+          "locationName":"workspaceId"
+        }
+      }
+    },
+    "CreateWorkspaceServiceAccountResponse":{
+      "type":"structure",
+      "required":[
+        "grafanaRole",
+        "id",
+        "name",
+        "workspaceId"
+      ],
+      "members":{
+        "grafanaRole":{
+          "shape":"Role",
+          "documentation":"<p>The permission level given to the service account.</p>"
+        },
+        "id":{
+          "shape":"String",
+          "documentation":"<p>The ID of the service account.</p>"
+        },
+        "name":{
+          "shape":"String",
+          "documentation":"<p>The name of the service account.</p>"
+        },
+        "workspaceId":{
+          "shape":"WorkspaceId",
+          "documentation":"<p>The workspace with which the service account is associated.</p>"
+        }
+      }
+    },
+    "CreateWorkspaceServiceAccountTokenRequest":{
+      "type":"structure",
+      "required":[
+        "name",
+        "secondsToLive",
+        "serviceAccountId",
+        "workspaceId"
+      ],
+      "members":{
+        "name":{
+          "shape":"ServiceAccountTokenName",
+          "documentation":"<p>A name for the token to create.</p>"
+        },
+        "secondsToLive":{
+          "shape":"CreateWorkspaceServiceAccountTokenRequestSecondsToLiveInteger",
+          "documentation":"<p>Sets how long the token will be valid, in seconds. You can set the time up to 30 days in the future.</p>"
+        },
+        "serviceAccountId":{
+          "shape":"String",
+          "documentation":"<p>The ID of the service account for which to create a token.</p>",
+          "location":"uri",
+          "locationName":"serviceAccountId"
+        },
+        "workspaceId":{
+          "shape":"WorkspaceId",
+          "documentation":"<p>The ID of the workspace the service account resides within.</p>",
+          "location":"uri",
+          "locationName":"workspaceId"
+        }
+      }
+    },
+    "CreateWorkspaceServiceAccountTokenRequestSecondsToLiveInteger":{
+      "type":"integer",
+      "box":true,
+      "max":2592000,
+      "min":1
+    },
+    "CreateWorkspaceServiceAccountTokenResponse":{
+      "type":"structure",
+      "required":[
+        "serviceAccountId",
+        "serviceAccountToken",
+        "workspaceId"
+      ],
+      "members":{
+        "serviceAccountId":{
+          "shape":"String",
+          "documentation":"<p>The ID of the service account where the token was created.</p>"
+        },
+        "serviceAccountToken":{
+          "shape":"ServiceAccountTokenSummaryWithKey",
+          "documentation":"<p>Information about the created token, including the key. Be sure to store the key securely.</p>"
+        },
+        "workspaceId":{
+          "shape":"WorkspaceId",
+          "documentation":"<p>The ID of the workspace where the token was created.</p>"
         }
       }
     },
@@ -787,6 +1015,94 @@
         "workspace":{
           "shape":"WorkspaceDescription",
           "documentation":"<p>A structure containing information about the workspace that was deleted.</p>"
+        }
+      }
+    },
+    "DeleteWorkspaceServiceAccountRequest":{
+      "type":"structure",
+      "required":[
+        "serviceAccountId",
+        "workspaceId"
+      ],
+      "members":{
+        "serviceAccountId":{
+          "shape":"String",
+          "documentation":"<p>The ID of the service account to delete.</p>",
+          "location":"uri",
+          "locationName":"serviceAccountId"
+        },
+        "workspaceId":{
+          "shape":"WorkspaceId",
+          "documentation":"<p>The ID of the workspace where the service account resides.</p>",
+          "location":"uri",
+          "locationName":"workspaceId"
+        }
+      }
+    },
+    "DeleteWorkspaceServiceAccountResponse":{
+      "type":"structure",
+      "required":[
+        "serviceAccountId",
+        "workspaceId"
+      ],
+      "members":{
+        "serviceAccountId":{
+          "shape":"String",
+          "documentation":"<p>The ID of the service account deleted.</p>"
+        },
+        "workspaceId":{
+          "shape":"WorkspaceId",
+          "documentation":"<p>The ID of the workspace where the service account was deleted.</p>"
+        }
+      }
+    },
+    "DeleteWorkspaceServiceAccountTokenRequest":{
+      "type":"structure",
+      "required":[
+        "serviceAccountId",
+        "tokenId",
+        "workspaceId"
+      ],
+      "members":{
+        "serviceAccountId":{
+          "shape":"String",
+          "documentation":"<p>The ID of the service account from which to delete the token.</p>",
+          "location":"uri",
+          "locationName":"serviceAccountId"
+        },
+        "tokenId":{
+          "shape":"String",
+          "documentation":"<p>The ID of the token to delete.</p>",
+          "location":"uri",
+          "locationName":"tokenId"
+        },
+        "workspaceId":{
+          "shape":"WorkspaceId",
+          "documentation":"<p>The ID of the workspace from which to delete the token.</p>",
+          "location":"uri",
+          "locationName":"workspaceId"
+        }
+      }
+    },
+    "DeleteWorkspaceServiceAccountTokenResponse":{
+      "type":"structure",
+      "required":[
+        "serviceAccountId",
+        "tokenId",
+        "workspaceId"
+      ],
+      "members":{
+        "serviceAccountId":{
+          "shape":"String",
+          "documentation":"<p>The ID of the service account where the token was deleted.</p>"
+        },
+        "tokenId":{
+          "shape":"String",
+          "documentation":"<p>The ID of the token that was deleted.</p>"
+        },
+        "workspaceId":{
+          "shape":"WorkspaceId",
+          "documentation":"<p>The ID of the workspace where the token was deleted.</p>"
         }
       }
     },
@@ -1100,6 +1416,122 @@
         }
       }
     },
+    "ListWorkspaceServiceAccountTokensRequest":{
+      "type":"structure",
+      "required":[
+        "serviceAccountId",
+        "workspaceId"
+      ],
+      "members":{
+        "maxResults":{
+          "shape":"ListWorkspaceServiceAccountTokensRequestMaxResultsInteger",
+          "documentation":"<p>The maximum number of tokens to include in the results.</p>",
+          "location":"querystring",
+          "locationName":"maxResults"
+        },
+        "nextToken":{
+          "shape":"PaginationToken",
+          "documentation":"<p>The token for the next set of service accounts to return. (You receive this token from a previous <code>ListWorkspaceServiceAccountTokens</code> operation.)</p>",
+          "location":"querystring",
+          "locationName":"nextToken"
+        },
+        "serviceAccountId":{
+          "shape":"String",
+          "documentation":"<p>The ID of the service account for which to return tokens.</p>",
+          "location":"uri",
+          "locationName":"serviceAccountId"
+        },
+        "workspaceId":{
+          "shape":"WorkspaceId",
+          "documentation":"<p>The ID of the workspace for which to return tokens.</p>",
+          "location":"uri",
+          "locationName":"workspaceId"
+        }
+      }
+    },
+    "ListWorkspaceServiceAccountTokensRequestMaxResultsInteger":{
+      "type":"integer",
+      "box":true,
+      "max":100,
+      "min":1
+    },
+    "ListWorkspaceServiceAccountTokensResponse":{
+      "type":"structure",
+      "required":[
+        "serviceAccountId",
+        "serviceAccountTokens",
+        "workspaceId"
+      ],
+      "members":{
+        "nextToken":{
+          "shape":"PaginationToken",
+          "documentation":"<p>The token to use when requesting the next set of service accounts.</p>"
+        },
+        "serviceAccountId":{
+          "shape":"String",
+          "documentation":"<p>The ID of the service account where the tokens reside.</p>"
+        },
+        "serviceAccountTokens":{
+          "shape":"ServiceAccountTokenList",
+          "documentation":"<p>An array of structures containing information about the tokens.</p>"
+        },
+        "workspaceId":{
+          "shape":"WorkspaceId",
+          "documentation":"<p>The ID of the workspace where the tokens reside.</p>"
+        }
+      }
+    },
+    "ListWorkspaceServiceAccountsRequest":{
+      "type":"structure",
+      "required":["workspaceId"],
+      "members":{
+        "maxResults":{
+          "shape":"ListWorkspaceServiceAccountsRequestMaxResultsInteger",
+          "documentation":"<p>The maximum number of service accounts to include in the results.</p>",
+          "location":"querystring",
+          "locationName":"maxResults"
+        },
+        "nextToken":{
+          "shape":"PaginationToken",
+          "documentation":"<p>The token for the next set of service accounts to return. (You receive this token from a previous <code>ListWorkspaceServiceAccounts</code> operation.)</p>",
+          "location":"querystring",
+          "locationName":"nextToken"
+        },
+        "workspaceId":{
+          "shape":"WorkspaceId",
+          "documentation":"<p>The workspace for which to list service accounts.</p>",
+          "location":"uri",
+          "locationName":"workspaceId"
+        }
+      }
+    },
+    "ListWorkspaceServiceAccountsRequestMaxResultsInteger":{
+      "type":"integer",
+      "box":true,
+      "max":100,
+      "min":1
+    },
+    "ListWorkspaceServiceAccountsResponse":{
+      "type":"structure",
+      "required":[
+        "serviceAccounts",
+        "workspaceId"
+      ],
+      "members":{
+        "nextToken":{
+          "shape":"PaginationToken",
+          "documentation":"<p>The token to use when requesting the next set of service accounts.</p>"
+        },
+        "serviceAccounts":{
+          "shape":"ServiceAccountList",
+          "documentation":"<p>An array of structures containing information about the service accounts.</p>"
+        },
+        "workspaceId":{
+          "shape":"WorkspaceId",
+          "documentation":"<p>The workspace to which the service accounts are associated.</p>"
+        }
+      }
+    },
     "ListWorkspacesRequest":{
       "type":"structure",
       "members":{
@@ -1340,6 +1772,111 @@
       "member":{"shape":"SecurityGroupId"},
       "max":5,
       "min":1
+    },
+    "ServiceAccountList":{
+      "type":"list",
+      "member":{"shape":"ServiceAccountSummary"}
+    },
+    "ServiceAccountName":{
+      "type":"string",
+      "max":128,
+      "min":1
+    },
+    "ServiceAccountSummary":{
+      "type":"structure",
+      "required":[
+        "grafanaRole",
+        "id",
+        "isDisabled",
+        "name"
+      ],
+      "members":{
+        "grafanaRole":{
+          "shape":"Role",
+          "documentation":"<p>The role of the service account, which sets the permission level used when calling Grafana APIs.</p>"
+        },
+        "id":{
+          "shape":"String",
+          "documentation":"<p>The unique ID of the service account.</p>"
+        },
+        "isDisabled":{
+          "shape":"String",
+          "documentation":"<p>Returns true if the service account is disabled. Service accounts can be disabled and enabled in the Amazon Managed Grafana console.</p>"
+        },
+        "name":{
+          "shape":"String",
+          "documentation":"<p>The name of the service account.</p>"
+        }
+      },
+      "documentation":"<p>A structure that contains the information about one service account.</p>"
+    },
+    "ServiceAccountTokenKey":{
+      "type":"string",
+      "sensitive":true
+    },
+    "ServiceAccountTokenList":{
+      "type":"list",
+      "member":{"shape":"ServiceAccountTokenSummary"}
+    },
+    "ServiceAccountTokenName":{
+      "type":"string",
+      "max":128,
+      "min":1
+    },
+    "ServiceAccountTokenSummary":{
+      "type":"structure",
+      "required":[
+        "createdAt",
+        "expiresAt",
+        "id",
+        "name"
+      ],
+      "members":{
+        "createdAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>When the service account token was created.</p>"
+        },
+        "expiresAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>When the service account token will expire.</p>"
+        },
+        "id":{
+          "shape":"String",
+          "documentation":"<p>The unique ID of the service account token.</p>"
+        },
+        "lastUsedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The last time the token was used to authorize a Grafana HTTP API.</p>"
+        },
+        "name":{
+          "shape":"String",
+          "documentation":"<p>The name of the service account token.</p>"
+        }
+      },
+      "documentation":"<p>A structure that contains the information about a service account token.</p>"
+    },
+    "ServiceAccountTokenSummaryWithKey":{
+      "type":"structure",
+      "required":[
+        "id",
+        "key",
+        "name"
+      ],
+      "members":{
+        "id":{
+          "shape":"String",
+          "documentation":"<p>The unique ID of the service account token.</p>"
+        },
+        "key":{
+          "shape":"ServiceAccountTokenKey",
+          "documentation":"<p>The key for the service account token. Used when making calls to the Grafana HTTP APIs to authenticate and authorize the requests.</p>"
+        },
+        "name":{
+          "shape":"String",
+          "documentation":"<p>The name of the service account token.</p>"
+        }
+      },
+      "documentation":"<p>A structure that contains the information about a service account token.</p> <p>This structure is returned when creating the token. It is important to store the <code>key</code> that is returned, as it is not retrievable at a later time.</p> <p>If you lose the key, you can delete and recreate the token, which will create a new key.</p>"
     },
     "ServiceQuotaExceededException":{
       "type":"structure",
@@ -1899,7 +2436,7 @@
         },
         "grafanaToken":{
           "shape":"GrafanaToken",
-          "documentation":"<p>The token that ties this workspace to a Grafana Labs account. For more information, see <a href=\"https://docs.aws.amazon.com/grafana/latest/userguide/upgrade-to-Grafana-Enterprise.html#AMG-workspace-register-enterprise\">Register with Grafana Labs</a>.</p>"
+          "documentation":"<p>The token that ties this workspace to a Grafana Labs account. For more information, see <a href=\"https://docs.aws.amazon.com/grafana/latest/userguide/upgrade-to-Grafana-Enterprise.html#AMG-workspace-register-enterprise\">Link your account with Grafana Labs</a>.</p>"
         },
         "grafanaVersion":{
           "shape":"GrafanaVersion",
@@ -2029,7 +2566,7 @@
         },
         "grafanaToken":{
           "shape":"GrafanaToken",
-          "documentation":"<p>The token that ties this workspace to a Grafana Labs account. For more information, see <a href=\"https://docs.aws.amazon.com/grafana/latest/userguide/upgrade-to-Grafana-Enterprise.html#AMG-workspace-register-enterprise\">Register with Grafana Labs</a>.</p>"
+          "documentation":"<p>The token that ties this workspace to a Grafana Labs account. For more information, see <a href=\"https://docs.aws.amazon.com/grafana/latest/userguide/upgrade-to-Grafana-Enterprise.html#AMG-workspace-register-enterprise\">Link your account with Grafana Labs</a>.</p>"
         },
         "grafanaVersion":{
           "shape":"GrafanaVersion",

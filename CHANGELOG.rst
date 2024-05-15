@@ -2,6 +2,17 @@
 CHANGELOG
 =========
 
+1.32.106
+========
+
+* api-change:``bedrock-agent-runtime``: Updating Bedrock Knowledge Base Metadata & Filters feature with two new filters listContains and stringContains
+* api-change:``codebuild``: CodeBuild Reserved Capacity VPC Support
+* api-change:``datasync``: Task executions now display a CANCELLING status when an execution is in the process of being cancelled.
+* api-change:``grafana``: This release adds new ServiceAccount and ServiceAccountToken APIs.
+* api-change:``medical-imaging``: Added support for importing medical imaging data from Amazon S3 buckets across accounts and regions.
+* api-change:``securityhub``: Documentation-only update for AWS Security Hub
+
+
 1.32.105
 ========
 

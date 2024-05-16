@@ -2,6 +2,18 @@
 CHANGELOG
 =========
 
+1.32.107
+========
+
+* api-change:``acm-pca``: This release adds support for waiters to fail on AccessDeniedException when having insufficient permissions
+* api-change:``connect``: Adding Contact Flow metrics to the GetMetricDataV2 API
+* api-change:``kafka``: AWS MSK support for Broker Removal.
+* api-change:``mwaa``: Amazon MWAA now supports Airflow web server auto scaling to automatically handle increased demand from REST APIs, Command Line Interface (CLI), or more Airflow User Interface (UI) users. Customers can specify maximum and minimum web server instances during environment creation and update workflow.
+* api-change:``quicksight``: This release adds DescribeKeyRegistration and UpdateKeyRegistration APIs to manage QuickSight Customer Managed Keys (CMK).
+* api-change:``sagemaker``: Introduced WorkerAccessConfiguration to SageMaker Workteam. This allows customers to configure resource access for workers in a workteam.
+* api-change:``secretsmanager``: Documentation updates for AWS Secrets Manager
+
+
 1.32.106
 ========
 

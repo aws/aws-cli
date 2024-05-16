@@ -705,7 +705,7 @@
         {"shape":"ResourceLimitExceeded"},
         {"shape":"ResourceInUse"}
       ],
-      "documentation":"<p>Creates a space used for real time collaboration in a domain.</p>"
+      "documentation":"<p>Creates a private space or a space used for real time collaboration in a domain.</p>"
     },
     "CreateStudioLifecycleConfig":{
       "name":"CreateStudioLifecycleConfig",
@@ -6998,7 +6998,7 @@
     "ClusterInstanceGroupSpecifications":{
       "type":"list",
       "member":{"shape":"ClusterInstanceGroupSpecification"},
-      "max":5,
+      "max":20,
       "min":1
     },
     "ClusterInstanceStatus":{
@@ -10541,6 +10541,10 @@
           "shape":"NotificationConfiguration",
           "documentation":"<p>Configures notification of workers regarding available or expiring work items.</p>"
         },
+        "WorkerAccessConfiguration":{
+          "shape":"WorkerAccessConfiguration",
+          "documentation":"<p>Use this optional parameter to constrain access to an Amazon S3 resource based on the IP address using supported IAM global condition keys. The Amazon S3 resource is accessed in the worker portal using a Amazon S3 presigned URL.</p>"
+        },
         "Tags":{
           "shape":"TagList",
           "documentation":"<p>An array of key-value pairs.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-resource-tags.html\">Resource Tag</a> and <a href=\"https://docs.aws.amazon.com/awsaccountbilling/latest/aboutv2/cost-alloc-tags.html#allocation-what\">Using Cost Allocation Tags</a> in the <i> Amazon Web Services Billing and Cost Management User Guide</i>.</p>"
@@ -10601,12 +10605,12 @@
     "CustomFileSystemConfigs":{
       "type":"list",
       "member":{"shape":"CustomFileSystemConfig"},
-      "max":2
+      "max":10
     },
     "CustomFileSystems":{
       "type":"list",
       "member":{"shape":"CustomFileSystem"},
-      "max":1
+      "max":5
     },
     "CustomImage":{
       "type":"structure",
@@ -17236,6 +17240,13 @@
       }
     },
     "EnableSessionTagChaining":{"type":"boolean"},
+    "EnabledOrDisabled":{
+      "type":"string",
+      "enum":[
+        "Enabled",
+        "Disabled"
+      ]
+    },
     "Endpoint":{
       "type":"structure",
       "required":[
@@ -19914,6 +19925,20 @@
       },
       "documentation":"<p>The IAM Identity details associated with the user. These details are associated with model package groups, model packages and project entities only.</p>"
     },
+    "IamPolicyConstraints":{
+      "type":"structure",
+      "members":{
+        "SourceIp":{
+          "shape":"EnabledOrDisabled",
+          "documentation":"<p>When <code>SourceIp</code> is <code>Enabled</code> the worker's IP address when a task is rendered in the worker portal is added to the IAM policy as a <code>Condition</code> used to generate the Amazon S3 presigned URL. This IP address is checked by Amazon S3 and must match in order for the Amazon S3 resource to be rendered in the worker portal.</p>"
+        },
+        "VpcSourceIp":{
+          "shape":"EnabledOrDisabled",
+          "documentation":"<p>When <code>VpcSourceIp</code> is <code>Enabled</code> the worker's IP address when a task is rendered in private worker portal inside the VPC is added to the IAM policy as a <code>Condition</code> used to generate the Amazon S3 presigned URL. To render the task successfully Amazon S3 checks that the presigned URL is being accessed over an Amazon S3 VPC Endpoint, and that the worker's IP address matches the IP address in the IAM policy. To learn more about configuring private worker portal, see <a href=\"https://docs.aws.amazon.com/sagemaker/latest/dg/samurai-vpc-worker-portal.html\">Use Amazon VPC mode from a private worker portal</a>.</p>"
+        }
+      },
+      "documentation":"<p>Use this parameter to specify a supported global condition key that is added to the IAM policy.</p>"
+    },
     "IdempotencyToken":{
       "type":"string",
       "max":128,
@@ -22012,7 +22037,7 @@
         },
         "MaxResults":{
           "shape":"MaxResults",
-          "documentation":"<p>The total number of items to return in the response. If the total number of items available is more than the value specified, a <code>NextToken</code> is provided in the response. To resume pagination, provide the <code>NextToken</code> value in the as part of a subsequent call. The default value is 10.</p>"
+          "documentation":"<p>This parameter defines the maximum number of results that can be returned in a single response. The <code>MaxResults</code> parameter is an upper bound, not a target. If there are more results available than the value specified, a <code>NextToken</code> is provided in the response. The <code>NextToken</code> indicates that the user should get the next set of results by providing this token as a part of a subsequent call. The default value for <code>MaxResults</code> is 10.</p>"
         },
         "SortOrder":{
           "shape":"SortOrder",
@@ -22712,7 +22737,7 @@
         },
         "MaxResults":{
           "shape":"MaxResults",
-          "documentation":"<p>The total number of items to return in the response. If the total number of items available is more than the value specified, a <code>NextToken</code> is provided in the response. To resume pagination, provide the <code>NextToken</code> value in the as part of a subsequent call. The default value is 10.</p>"
+          "documentation":"<p>This parameter defines the maximum number of results that can be returned in a single response. The <code>MaxResults</code> parameter is an upper bound, not a target. If there are more results available than the value specified, a <code>NextToken</code> is provided in the response. The <code>NextToken</code> indicates that the user should get the next set of results by providing this token as a part of a subsequent call. The default value for <code>MaxResults</code> is 10.</p>"
         }
       }
     },
@@ -25096,7 +25121,7 @@
         },
         "MaxResults":{
           "shape":"MaxResults",
-          "documentation":"<p>The total number of items to return in the response. If the total number of items available is more than the value specified, a <code>NextToken</code> is provided in the response. To resume pagination, provide the <code>NextToken</code> value in the as part of a subsequent call. The default value is 10.</p>"
+          "documentation":"<p>This parameter defines the maximum number of results that can be returned in a single response. The <code>MaxResults</code> parameter is an upper bound, not a target. If there are more results available than the value specified, a <code>NextToken</code> is provided in the response. The <code>NextToken</code> indicates that the user should get the next set of results by providing this token as a part of a subsequent call. The default value for <code>MaxResults</code> is 10.</p>"
         },
         "SortOrder":{
           "shape":"SortOrder",
@@ -25583,7 +25608,7 @@
         },
         "MaxResults":{
           "shape":"MaxResults",
-          "documentation":"<p>The total number of items to return in the response. If the total number of items available is more than the value specified, a <code>NextToken</code> is provided in the response. To resume pagination, provide the <code>NextToken</code> value in the as part of a subsequent call. The default value is 10.</p>"
+          "documentation":"<p>This parameter defines the maximum number of results that can be returned in a single response. The <code>MaxResults</code> parameter is an upper bound, not a target. If there are more results available than the value specified, a <code>NextToken</code> is provided in the response. The <code>NextToken</code> indicates that the user should get the next set of results by providing this token as a part of a subsequent call. The default value for <code>MaxResults</code> is 10.</p>"
         },
         "SortOrder":{
           "shape":"SortOrder",
@@ -32385,6 +32410,16 @@
       "max":1024,
       "pattern":"^(https|s3)://([^/]+)/?(.*)$"
     },
+    "S3Presign":{
+      "type":"structure",
+      "members":{
+        "IamPolicyConstraints":{
+          "shape":"IamPolicyConstraints",
+          "documentation":"<p>Use this parameter to specify the allowed request source. Possible sources are either <code>SourceIp</code> or <code>VpcSourceIp</code>.</p>"
+        }
+      },
+      "documentation":"<p>This object defines the access restrictions to Amazon S3 resources that are included in custom worker task templates using the Liquid filter, <code>grant_read_access</code>.</p> <p>To learn more about how custom templates are created, see <a href=\"https://docs.aws.amazon.com/sagemaker/latest/dg/a2i-custom-templates.html\">Create custom worker task templates</a>.</p>"
+    },
     "S3StorageConfig":{
       "type":"structure",
       "required":["S3Uri"],
@@ -37237,6 +37272,10 @@
         "NotificationConfiguration":{
           "shape":"NotificationConfiguration",
           "documentation":"<p>Configures SNS topic notifications for available or expiring work items</p>"
+        },
+        "WorkerAccessConfiguration":{
+          "shape":"WorkerAccessConfiguration",
+          "documentation":"<p>Use this optional parameter to constrain access to an Amazon S3 resource based on the IP address using supported IAM global condition keys. The Amazon S3 resource is accessed in the worker portal using a Amazon S3 presigned URL.</p>"
         }
       }
     },
@@ -37630,6 +37669,16 @@
       },
       "documentation":"<p>Status and billing information about the warm pool.</p>"
     },
+    "WorkerAccessConfiguration":{
+      "type":"structure",
+      "members":{
+        "S3Presign":{
+          "shape":"S3Presign",
+          "documentation":"<p>Defines any Amazon S3 resource constraints.</p>"
+        }
+      },
+      "documentation":"<p>Use this optional parameter to constrain access to an Amazon S3 resource based on the IP address using supported IAM global condition keys. The Amazon S3 resource is accessed in the worker portal using a Amazon S3 presigned URL.</p>"
+    },
     "Workforce":{
       "type":"structure",
       "required":[
@@ -37855,6 +37904,10 @@
         "NotificationConfiguration":{
           "shape":"NotificationConfiguration",
           "documentation":"<p>Configures SNS notifications of available or expiring work items for work teams.</p>"
+        },
+        "WorkerAccessConfiguration":{
+          "shape":"WorkerAccessConfiguration",
+          "documentation":"<p>Describes any access constraints that have been defined for Amazon S3 resources.</p>"
         }
       },
       "documentation":"<p>Provides details about a labeling work team.</p>"

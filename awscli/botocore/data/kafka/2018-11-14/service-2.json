@@ -2104,6 +2104,22 @@
         "DEFAULT"
       ]
     },
+    "BrokerCountUpdateInfo" : {
+      "type" : "structure",
+      "members" : {
+        "CreatedBrokerIds" : {
+          "shape" : "__listOf__double",
+          "locationName" : "createdBrokerIds",
+          "documentation": "\n            <p>Kafka Broker IDs of brokers being created.</p>\n         "
+        },
+        "DeletedBrokerIds" : {
+          "shape" : "__listOf__double",
+          "locationName" : "deletedBrokerIds",
+          "documentation": "\n            <p>Kafka Broker IDs of brokers being deleted.</p>\n         "
+        }
+      },
+      "documentation": "\n            <p>Information regarding UpdateBrokerCount.</p>\n         "
+    },
     "BrokerEBSVolumeInfo": {
       "type": "structure",
       "members": {
@@ -5030,6 +5046,11 @@
           "shape" : "StorageMode",
           "locationName" : "storageMode",
           "documentation" : "\n            <p>This controls storage mode for supported storage tiers.</p>\n         "
+        },
+        "BrokerCountUpdateInfo" : {
+          "shape": "BrokerCountUpdateInfo",
+          "locationName" : "brokerCountUpdateInfo",
+          "documentation" : "\n            <p>Describes brokers being changed during a broker count update.</p>\n         "
         }
       },
       "documentation": "\n            <p>Information about cluster attributes that can be updated via update APIs.</p>\n         "
@@ -6589,6 +6610,12 @@
       "type" : "list",
       "member" : {
         "shape" : "UnprocessedScramSecret"
+      }
+    },
+    "__listOf__double" : {
+      "type" : "list",
+      "member" : {
+        "shape" : "__double"
       }
     },
     "__listOf__string": {

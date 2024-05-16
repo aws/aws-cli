@@ -1421,6 +1421,22 @@
       ],
       "documentation":"<p>Provides a summary and status of IP rules.</p>"
     },
+    "DescribeKeyRegistration":{
+      "name":"DescribeKeyRegistration",
+      "http":{
+        "method":"GET",
+        "requestUri":"/accounts/{AwsAccountId}/key-registration"
+      },
+      "input":{"shape":"DescribeKeyRegistrationRequest"},
+      "output":{"shape":"DescribeKeyRegistrationResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"InvalidParameterValueException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalFailureException"}
+      ],
+      "documentation":"<p>Describes all customer managed key registrations in a Amazon QuickSight account.</p>"
+    },
     "DescribeNamespace":{
       "name":"DescribeNamespace",
       "http":{
@@ -2948,6 +2964,22 @@
         {"shape":"InternalFailureException"}
       ],
       "documentation":"<p>Updates the content and status of IP rules. Traffic from a source is allowed when the source satisfies either the <code>IpRestrictionRule</code>, <code>VpcIdRestrictionRule</code>, or <code>VpcEndpointIdRestrictionRule</code>. To use this operation, you must provide the entire map of rules. You can use the <code>DescribeIpRestriction</code> operation to get the current rule map.</p>"
+    },
+    "UpdateKeyRegistration":{
+      "name":"UpdateKeyRegistration",
+      "http":{
+        "method":"POST",
+        "requestUri":"/accounts/{AwsAccountId}/key-registration"
+      },
+      "input":{"shape":"UpdateKeyRegistrationRequest"},
+      "output":{"shape":"UpdateKeyRegistrationResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"InvalidParameterValueException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalFailureException"}
+      ],
+      "documentation":"<p>Updates a customer managed key in a Amazon QuickSight account.</p>"
     },
     "UpdatePublicSharingSettings":{
       "name":"UpdatePublicSharingSettings",
@@ -13793,6 +13825,45 @@
         }
       }
     },
+    "DescribeKeyRegistrationRequest":{
+      "type":"structure",
+      "required":["AwsAccountId"],
+      "members":{
+        "AwsAccountId":{
+          "shape":"AwsAccountId",
+          "documentation":"<p>The ID of the Amazon Web Services account that contains the customer managed key registration that you want to describe.</p>",
+          "location":"uri",
+          "locationName":"AwsAccountId"
+        },
+        "DefaultKeyOnly":{
+          "shape":"Boolean",
+          "documentation":"<p>Determines whether the request returns the default key only.</p>",
+          "location":"querystring",
+          "locationName":"default-key-only"
+        }
+      }
+    },
+    "DescribeKeyRegistrationResponse":{
+      "type":"structure",
+      "members":{
+        "AwsAccountId":{
+          "shape":"AwsAccountId",
+          "documentation":"<p>The ID of the Amazon Web Services account that contains the customer managed key registration specified in the request.</p>"
+        },
+        "KeyRegistration":{
+          "shape":"KeyRegistration",
+          "documentation":"<p>A list of <code>RegisteredCustomerManagedKey</code> objects in a Amazon QuickSight account.</p>"
+        },
+        "RequestId":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>The Amazon Web Services request ID for this operation.</p>"
+        },
+        "Status":{
+          "shape":"StatusCode",
+          "documentation":"<p>The HTTP status of the request.</p>"
+        }
+      }
+    },
     "DescribeNamespaceRequest":{
       "type":"structure",
       "required":[
@@ -14986,6 +15057,37 @@
       "max":4096,
       "min":1,
       "sensitive":true
+    },
+    "FailedKeyRegistrationEntries":{
+      "type":"list",
+      "member":{"shape":"FailedKeyRegistrationEntry"}
+    },
+    "FailedKeyRegistrationEntry":{
+      "type":"structure",
+      "required":[
+        "Message",
+        "StatusCode",
+        "SenderFault"
+      ],
+      "members":{
+        "KeyArn":{
+          "shape":"String",
+          "documentation":"<p>The ARN of the KMS key that failed to update.</p>"
+        },
+        "Message":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>A message that provides information about why a <code>FailedKeyRegistrationEntry</code> error occurred.</p>"
+        },
+        "StatusCode":{
+          "shape":"StatusCode",
+          "documentation":"<p>The HTTP status of a <code>FailedKeyRegistrationEntry</code> error.</p>"
+        },
+        "SenderFault":{
+          "shape":"Boolean",
+          "documentation":"<p>A boolean that indicates whether a <code>FailedKeyRegistrationEntry</code> resulted from user error. If the value of this property is <code>True</code>, the error was caused by user error. If the value of this property is <code>False</code>, the error occurred on the backend. If your job continues fail and with a <code>False</code> <code>SenderFault</code> value, contact Amazon Web Services Support.</p>"
+        }
+      },
+      "documentation":"<p>An entry that appears when a <code>KeyRegistration</code> update to Amazon QuickSight fails.</p>"
     },
     "FieldBasedTooltip":{
       "type":"structure",
@@ -18697,6 +18799,10 @@
         "CLASSIC",
         "VERTICAL"
       ]
+    },
+    "KeyRegistration":{
+      "type":"list",
+      "member":{"shape":"RegisteredCustomerManagedKey"}
     },
     "LabelOptions":{
       "type":"structure",
@@ -23630,10 +23736,7 @@
     },
     "RedshiftIAMParameters":{
       "type":"structure",
-      "required":[
-        "RoleArn",
-        "DatabaseUser"
-      ],
+      "required":["RoleArn"],
       "members":{
         "RoleArn":{
           "shape":"RoleArn",
@@ -23977,7 +24080,7 @@
         },
         "UserRole":{
           "shape":"UserRole",
-          "documentation":"<p>The Amazon QuickSight role for the user. The user role can be one of the following:</p> <ul> <li> <p> <code>READER</code>: A user who has read-only access to dashboards.</p> </li> <li> <p> <code>AUTHOR</code>: A user who can create data sources, datasets, analyses, and dashboards.</p> </li> <li> <p> <code>ADMIN</code>: A user who is an author, who can also manage Amazon QuickSight settings.</p> </li> <li> <p> <code>RESTRICTED_READER</code>: This role isn't currently available for use.</p> </li> <li> <p> <code>RESTRICTED_AUTHOR</code>: This role isn't currently available for use.</p> </li> </ul>"
+          "documentation":"<p>The Amazon QuickSight role for the user. The user role can be one of the following:</p> <ul> <li> <p> <code>READER</code>: A user who has read-only access to dashboards.</p> </li> <li> <p> <code>AUTHOR</code>: A user who can create data sources, datasets, analyses, and dashboards.</p> </li> <li> <p> <code>ADMIN</code>: A user who is an author, who can also manage Amazon QuickSight settings.</p> </li> <li> <p> <code>READER_PRO</code>: Reader Pro adds Generative BI capabilities to the Reader role. Reader Pros have access to Amazon Q in Amazon QuickSight, can build stories with Amazon Q, and can generate executive summaries from dashboards.</p> </li> <li> <p> <code>AUTHOR_PRO</code>: Author Pro adds Generative BI capabilities to the Author role. Author Pros can author dashboards with natural language with Amazon Q, build stories with Amazon Q, create Topics for Q&amp;A, and generate executive summaries from dashboards.</p> </li> <li> <p> <code>ADMIN_PRO</code>: Admin Pros are Author Pros who can also manage Amazon QuickSight administrative settings. Admin Pro users are billed at Author Pro pricing.</p> </li> <li> <p> <code>RESTRICTED_READER</code>: This role isn't currently available for use.</p> </li> <li> <p> <code>RESTRICTED_AUTHOR</code>: This role isn't currently available for use.</p> </li> </ul>"
         },
         "IamArn":{
           "shape":"String",
@@ -24046,6 +24149,20 @@
           "location":"statusCode"
         }
       }
+    },
+    "RegisteredCustomerManagedKey":{
+      "type":"structure",
+      "members":{
+        "KeyArn":{
+          "shape":"String",
+          "documentation":"<p>The ARN of the KMS key that is registered to a Amazon QuickSight account for encryption and decryption use.</p>"
+        },
+        "DefaultKey":{
+          "shape":"Boolean",
+          "documentation":"<p>Indicates whether a <code>RegisteredCustomerManagedKey</code> is set as the default key for encryption and decryption use.</p>"
+        }
+      },
+      "documentation":"<p>A customer managed key structure that contains the information listed below: </p> <ul> <li> <p> <code>KeyArn</code> - The ARN of a KMS key that is registered to a Amazon QuickSight account for encryption and decryption use.</p> </li> <li> <p> <code>DefaultKey</code> - Indicates whether the current key is set as the default key for encryption and decryption use.</p> </li> </ul>"
     },
     "RegisteredUserConsoleFeatureConfigurations":{
       "type":"structure",
@@ -27074,6 +27191,28 @@
         }
       },
       "documentation":"<p>The subtotal options.</p>"
+    },
+    "SuccessfulKeyRegistrationEntries":{
+      "type":"list",
+      "member":{"shape":"SuccessfulKeyRegistrationEntry"}
+    },
+    "SuccessfulKeyRegistrationEntry":{
+      "type":"structure",
+      "required":[
+        "KeyArn",
+        "StatusCode"
+      ],
+      "members":{
+        "KeyArn":{
+          "shape":"String",
+          "documentation":"<p>The ARN of the KMS key that is associated with the <code>SuccessfulKeyRegistrationEntry</code> entry.</p>"
+        },
+        "StatusCode":{
+          "shape":"StatusCode",
+          "documentation":"<p>The HTTP status of a <code>SuccessfulKeyRegistrationEntry</code> entry.</p>"
+        }
+      },
+      "documentation":"<p>A success entry that occurs when a <code>KeyRegistration</code> job is successfully applied to the Amazon QuickSight account.</p>"
     },
     "Suffix":{
       "type":"string",
@@ -30914,6 +31053,42 @@
         }
       }
     },
+    "UpdateKeyRegistrationRequest":{
+      "type":"structure",
+      "required":[
+        "AwsAccountId",
+        "KeyRegistration"
+      ],
+      "members":{
+        "AwsAccountId":{
+          "shape":"AwsAccountId",
+          "documentation":"<p>The ID of the Amazon Web Services account that contains the customer managed key registration that you want to update.</p>",
+          "location":"uri",
+          "locationName":"AwsAccountId"
+        },
+        "KeyRegistration":{
+          "shape":"KeyRegistration",
+          "documentation":"<p>A list of <code>RegisteredCustomerManagedKey</code> objects to be updated to the Amazon QuickSight account.</p>"
+        }
+      }
+    },
+    "UpdateKeyRegistrationResponse":{
+      "type":"structure",
+      "members":{
+        "FailedKeyRegistration":{
+          "shape":"FailedKeyRegistrationEntries",
+          "documentation":"<p>A list of all customer managed key registrations that failed to update.</p>"
+        },
+        "SuccessfulKeyRegistration":{
+          "shape":"SuccessfulKeyRegistrationEntries",
+          "documentation":"<p>A list of all customer managed key registrations that were successfully updated.</p>"
+        },
+        "RequestId":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>The Amazon Web Services request ID for this operation.</p>"
+        }
+      }
+    },
     "UpdateLinkPermissionList":{
       "type":"list",
       "member":{"shape":"ResourcePermission"},
@@ -31632,7 +31807,7 @@
         },
         "Role":{
           "shape":"UserRole",
-          "documentation":"<p>The Amazon QuickSight role of the user. The role can be one of the following default security cohorts:</p> <ul> <li> <p> <code>READER</code>: A user who has read-only access to dashboards.</p> </li> <li> <p> <code>AUTHOR</code>: A user who can create data sources, datasets, analyses, and dashboards.</p> </li> <li> <p> <code>ADMIN</code>: A user who is an author, who can also manage Amazon QuickSight settings.</p> </li> <li> <p> <code>READER_PRO</code>: Reader Pro adds Generative BI capabilities to the Reader role. Reader Pros have access to Amazon Q Business, can build stories with Amazon Q, and can generate executive summaries from dashboards.</p> </li> <li> <p> <code>AUTHOR_PRO</code>: Author Pro adds Generative BI capabilities to the Author role. Author Pros can author dashboards with natural language with Amazon Q, build stories with Amazon Q, create Topics for Q&amp;A, and generate executive summaries from dashboards.</p> </li> <li> <p> <code>ADMIN_PRO</code>: Admin Pros are Author Pros who can also manage Amazon QuickSight administrative settings. Admin Pro users are billed at Author Pro pricing.</p> </li> </ul> <p>The name of the Amazon QuickSight role is invisible to the user except for the console screens dealing with permissions.</p>"
+          "documentation":"<p>The Amazon QuickSight role of the user. The role can be one of the following default security cohorts:</p> <ul> <li> <p> <code>READER</code>: A user who has read-only access to dashboards.</p> </li> <li> <p> <code>AUTHOR</code>: A user who can create data sources, datasets, analyses, and dashboards.</p> </li> <li> <p> <code>ADMIN</code>: A user who is an author, who can also manage Amazon QuickSight settings.</p> </li> <li> <p> <code>READER_PRO</code>: Reader Pro adds Generative BI capabilities to the Reader role. Reader Pros have access to Amazon Q in Amazon QuickSight, can build stories with Amazon Q, and can generate executive summaries from dashboards.</p> </li> <li> <p> <code>AUTHOR_PRO</code>: Author Pro adds Generative BI capabilities to the Author role. Author Pros can author dashboards with natural language with Amazon Q, build stories with Amazon Q, create Topics for Q&amp;A, and generate executive summaries from dashboards.</p> </li> <li> <p> <code>ADMIN_PRO</code>: Admin Pros are Author Pros who can also manage Amazon QuickSight administrative settings. Admin Pro users are billed at Author Pro pricing.</p> </li> </ul> <p>The name of the Amazon QuickSight role is invisible to the user except for the console screens dealing with permissions.</p>"
         },
         "CustomPermissionsName":{
           "shape":"RoleName",
@@ -31794,7 +31969,7 @@
         },
         "Role":{
           "shape":"UserRole",
-          "documentation":"<p>The Amazon QuickSight role for the user. The user role can be one of the following:.</p> <ul> <li> <p> <code>READER</code>: A user who has read-only access to dashboards.</p> </li> <li> <p> <code>AUTHOR</code>: A user who can create data sources, datasets, analyses, and dashboards.</p> </li> <li> <p> <code>ADMIN</code>: A user who is an author, who can also manage Amazon Amazon QuickSight settings.</p> </li> <li> <p> <code>READER_PRO</code>: Reader Pro adds Generative BI capabilities to the Reader role. Reader Pros have access to Amazon Q Business, can build stories with Amazon Q, and can generate executive summaries from dashboards.</p> </li> <li> <p> <code>AUTHOR_PRO</code>: Author Pro adds Generative BI capabilities to the Author role. Author Pros can author dashboards with natural language with Amazon Q, build stories with Amazon Q, create Topics for Q&amp;A, and generate executive summaries from dashboards.</p> </li> <li> <p> <code>ADMIN_PRO</code>: Admin Pros are Author Pros who can also manage Amazon QuickSight administrative settings. Admin Pro users are billed at Author Pro pricing.</p> </li> <li> <p> <code>RESTRICTED_READER</code>: This role isn't currently available for use.</p> </li> <li> <p> <code>RESTRICTED_AUTHOR</code>: This role isn't currently available for use.</p> </li> </ul>"
+          "documentation":"<p>The Amazon QuickSight role for the user. The user role can be one of the following:.</p> <ul> <li> <p> <code>READER</code>: A user who has read-only access to dashboards.</p> </li> <li> <p> <code>AUTHOR</code>: A user who can create data sources, datasets, analyses, and dashboards.</p> </li> <li> <p> <code>ADMIN</code>: A user who is an author, who can also manage Amazon Amazon QuickSight settings.</p> </li> <li> <p> <code>READER_PRO</code>: Reader Pro adds Generative BI capabilities to the Reader role. Reader Pros have access to Amazon Q in Amazon QuickSight, can build stories with Amazon Q, and can generate executive summaries from dashboards.</p> </li> <li> <p> <code>AUTHOR_PRO</code>: Author Pro adds Generative BI capabilities to the Author role. Author Pros can author dashboards with natural language with Amazon Q, build stories with Amazon Q, create Topics for Q&amp;A, and generate executive summaries from dashboards.</p> </li> <li> <p> <code>ADMIN_PRO</code>: Admin Pros are Author Pros who can also manage Amazon QuickSight administrative settings. Admin Pro users are billed at Author Pro pricing.</p> </li> <li> <p> <code>RESTRICTED_READER</code>: This role isn't currently available for use.</p> </li> <li> <p> <code>RESTRICTED_AUTHOR</code>: This role isn't currently available for use.</p> </li> </ul>"
         },
         "IdentityType":{
           "shape":"IdentityType",

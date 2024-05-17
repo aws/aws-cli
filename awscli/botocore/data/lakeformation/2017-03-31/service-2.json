@@ -5,6 +5,7 @@
     "endpointPrefix":"lakeformation",
     "jsonVersion":"1.1",
     "protocol":"rest-json",
+    "protocols":["rest-json"],
     "serviceFullName":"AWS Lake Formation",
     "serviceId":"LakeFormation",
     "signatureVersion":"v4",
@@ -375,6 +376,21 @@
         {"shape":"AccessDeniedException"}
       ],
       "documentation":"<p>Returns a data cells filter.</p>"
+    },
+    "GetDataLakePrincipal":{
+      "name":"GetDataLakePrincipal",
+      "http":{
+        "method":"POST",
+        "requestUri":"/GetDataLakePrincipal"
+      },
+      "input":{"shape":"GetDataLakePrincipalRequest"},
+      "output":{"shape":"GetDataLakePrincipalResponse"},
+      "errors":[
+        {"shape":"InternalServiceException"},
+        {"shape":"OperationTimeoutException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Returns the identity of the invoking principal.</p>"
     },
     "GetDataLakeSettings":{
       "name":"GetDataLakeSettings",
@@ -2017,6 +2033,20 @@
         }
       }
     },
+    "GetDataLakePrincipalRequest":{
+      "type":"structure",
+      "members":{
+      }
+    },
+    "GetDataLakePrincipalResponse":{
+      "type":"structure",
+      "members":{
+        "Identity":{
+          "shape":"IdentityString",
+          "documentation":"<p>A unique identifier of the invoking principal.</p>"
+        }
+      }
+    },
     "GetDataLakeSettingsRequest":{
       "type":"structure",
       "members":{
@@ -2518,6 +2548,7 @@
       "min":1
     },
     "IdentityCenterInstanceArn":{"type":"string"},
+    "IdentityString":{"type":"string"},
     "Integer":{
       "type":"integer",
       "box":true

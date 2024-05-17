@@ -5,6 +5,7 @@
     "endpointPrefix":"transfer",
     "jsonVersion":"1.1",
     "protocol":"json",
+    "protocols":["json"],
     "serviceAbbreviation":"AWS Transfer",
     "serviceFullName":"AWS Transfer Family",
     "serviceId":"Transfer",
@@ -118,7 +119,8 @@
         {"shape":"ServiceUnavailableException"},
         {"shape":"ResourceExistsException"}
       ],
-      "documentation":"<p>Creates a user and associates them with an existing file transfer protocol-enabled server. You can only create and associate users with servers that have the <code>IdentityProviderType</code> set to <code>SERVICE_MANAGED</code>. Using parameters for <code>CreateUser</code>, you can specify the user name, set the home directory, store the user's public key, and assign the user's Identity and Access Management (IAM) role. You can also optionally add a session policy, and assign metadata with tags that can be used to group and search for users.</p>"
+      "documentation":"<p>Creates a user and associates them with an existing file transfer protocol-enabled server. You can only create and associate users with servers that have the <code>IdentityProviderType</code> set to <code>SERVICE_MANAGED</code>. Using parameters for <code>CreateUser</code>, you can specify the user name, set the home directory, store the user's public key, and assign the user's Identity and Access Management (IAM) role. You can also optionally add a session policy, and assign metadata with tags that can be used to group and search for users.</p>",
+      "idempotent":true
     },
     "CreateWorkflow":{
       "name":"CreateWorkflow",
@@ -166,7 +168,8 @@
         {"shape":"InternalServiceError"},
         {"shape":"ServiceUnavailableException"}
       ],
-      "documentation":"<p>Delete the agreement that's specified in the provided <code>AgreementId</code>.</p>"
+      "documentation":"<p>Delete the agreement that's specified in the provided <code>AgreementId</code>.</p>",
+      "idempotent":true
     },
     "DeleteCertificate":{
       "name":"DeleteCertificate",
@@ -181,7 +184,8 @@
         {"shape":"InternalServiceError"},
         {"shape":"ServiceUnavailableException"}
       ],
-      "documentation":"<p>Deletes the certificate that's specified in the <code>CertificateId</code> parameter.</p>"
+      "documentation":"<p>Deletes the certificate that's specified in the <code>CertificateId</code> parameter.</p>",
+      "idempotent":true
     },
     "DeleteConnector":{
       "name":"DeleteConnector",
@@ -196,7 +200,8 @@
         {"shape":"InternalServiceError"},
         {"shape":"ServiceUnavailableException"}
       ],
-      "documentation":"<p>Deletes the connector that's specified in the provided <code>ConnectorId</code>.</p>"
+      "documentation":"<p>Deletes the connector that's specified in the provided <code>ConnectorId</code>.</p>",
+      "idempotent":true
     },
     "DeleteHostKey":{
       "name":"DeleteHostKey",
@@ -227,7 +232,8 @@
         {"shape":"InternalServiceError"},
         {"shape":"ServiceUnavailableException"}
       ],
-      "documentation":"<p>Deletes the profile that's specified in the <code>ProfileId</code> parameter.</p>"
+      "documentation":"<p>Deletes the profile that's specified in the <code>ProfileId</code> parameter.</p>",
+      "idempotent":true
     },
     "DeleteServer":{
       "name":"DeleteServer",
@@ -243,7 +249,8 @@
         {"shape":"ServiceUnavailableException"},
         {"shape":"AccessDeniedException"}
       ],
-      "documentation":"<p>Deletes the file transfer protocol-enabled server that you specify.</p> <p>No response returns from this operation.</p>"
+      "documentation":"<p>Deletes the file transfer protocol-enabled server that you specify.</p> <p>No response returns from this operation.</p>",
+      "idempotent":true
     },
     "DeleteSshPublicKey":{
       "name":"DeleteSshPublicKey",
@@ -274,7 +281,8 @@
         {"shape":"InternalServiceError"},
         {"shape":"ServiceUnavailableException"}
       ],
-      "documentation":"<p>Deletes the user belonging to a file transfer protocol-enabled server you specify.</p> <p>No response returns from this operation.</p> <note> <p>When you delete a user from a server, the user's information is lost.</p> </note>"
+      "documentation":"<p>Deletes the user belonging to a file transfer protocol-enabled server you specify.</p> <p>No response returns from this operation.</p> <note> <p>When you delete a user from a server, the user's information is lost.</p> </note>",
+      "idempotent":true
     },
     "DeleteWorkflow":{
       "name":"DeleteWorkflow",
@@ -290,7 +298,8 @@
         {"shape":"ServiceUnavailableException"},
         {"shape":"AccessDeniedException"}
       ],
-      "documentation":"<p>Deletes the specified workflow.</p>"
+      "documentation":"<p>Deletes the specified workflow.</p>",
+      "idempotent":true
     },
     "DescribeAccess":{
       "name":"DescribeAccess",
@@ -2188,7 +2197,7 @@
         },
         "Usage":{
           "shape":"CertificateUsageType",
-          "documentation":"<p>Specifies whether this certificate is used for signing or encryption.</p>"
+          "documentation":"<p>Specifies how this certificate is used. It can be used in the following ways:</p> <ul> <li> <p> <code>SIGNING</code>: For signing AS2 messages</p> </li> <li> <p> <code>ENCRYPTION</code>: For encrypting AS2 messages</p> </li> <li> <p> <code>TLS</code>: For securing AS2 communications sent over HTTPS</p> </li> </ul>"
         },
         "Status":{
           "shape":"CertificateStatusType",
@@ -2446,7 +2455,7 @@
         },
         "Domain":{
           "shape":"Domain",
-          "documentation":"<p>Specifies the domain of the storage system that is used for file transfers.</p>"
+          "documentation":"<p>Specifies the domain of the storage system that is used for file transfers. There are two domains available: Amazon Simple Storage Service (Amazon S3) and Amazon Elastic File System (Amazon EFS). The default value is S3.</p>"
         },
         "EndpointDetails":{
           "shape":"EndpointDetails",
@@ -2935,7 +2944,7 @@
       "members":{
         "Usage":{
           "shape":"CertificateUsageType",
-          "documentation":"<p>Specifies whether this certificate is used for signing or encryption.</p>"
+          "documentation":"<p>Specifies how this certificate is used. It can be used in the following ways:</p> <ul> <li> <p> <code>SIGNING</code>: For signing AS2 messages</p> </li> <li> <p> <code>ENCRYPTION</code>: For encrypting AS2 messages</p> </li> <li> <p> <code>TLS</code>: For securing AS2 communications sent over HTTPS</p> </li> </ul>"
         },
         "Certificate":{
           "shape":"CertificateBodyType",
@@ -3572,7 +3581,7 @@
         },
         "Usage":{
           "shape":"CertificateUsageType",
-          "documentation":"<p>Specifies whether this certificate is used for signing or encryption.</p>"
+          "documentation":"<p>Specifies how this certificate is used. It can be used in the following ways:</p> <ul> <li> <p> <code>SIGNING</code>: For signing AS2 messages</p> </li> <li> <p> <code>ENCRYPTION</code>: For encrypting AS2 messages</p> </li> <li> <p> <code>TLS</code>: For securing AS2 communications sent over HTTPS</p> </li> </ul>"
         },
         "Status":{
           "shape":"CertificateStatusType",
@@ -3720,7 +3729,7 @@
         },
         "Domain":{
           "shape":"Domain",
-          "documentation":"<p>Specifies the domain of the storage system that is used for file transfers.</p>"
+          "documentation":"<p>Specifies the domain of the storage system that is used for file transfers. There are two domains available: Amazon Simple Storage Service (Amazon S3) and Amazon Elastic File System (Amazon EFS). The default value is S3.</p>"
         },
         "IdentityProviderType":{
           "shape":"IdentityProviderType",
@@ -4286,7 +4295,8 @@
     },
     "ServiceManagedEgressIpAddresses":{
       "type":"list",
-      "member":{"shape":"ServiceManagedEgressIpAddress"}
+      "member":{"shape":"ServiceManagedEgressIpAddress"},
+      "documentation":"<p>The list of egress IP addresses of this server. These IP addresses are only relevant for servers that use the AS2 protocol. They are used for sending asynchronous MDNs. These IP addresses are assigned automatically when you create an AS2 server. Additionally, if you update an existing server and add the AS2 protocol, static IP addresses are assigned as well.</p>"
     },
     "ServiceMetadata":{
       "type":"structure",
@@ -4403,7 +4413,8 @@
     "SshPublicKeyBody":{
       "type":"string",
       "max":2048,
-      "min":0
+      "min":0,
+      "pattern":"\\s*(ssh|ecdsa)-[a-z0-9-]+[ \\t]+(([A-Za-z0-9+/]{4})*([A-Za-z0-9+/]{1,3})?(={0,3})?)(\\s*|[ \\t]+[\\S \\t]*\\s*)"
     },
     "SshPublicKeyCount":{
       "type":"integer",

@@ -1014,7 +1014,7 @@
         },
         "timeoutInMinutes":{
           "shape":"WrapperInt",
-          "documentation":"<p>How long, in minutes, from 5 to 480 (8 hours), for CodeBuild to wait before timing out this build if it does not get marked as completed.</p>"
+          "documentation":"<p>How long, in minutes, from 5 to 2160 (36 hours), for CodeBuild to wait before timing out this build if it does not get marked as completed.</p>"
         },
         "queuedTimeoutInMinutes":{
           "shape":"WrapperInt",
@@ -1424,6 +1424,11 @@
       },
       "documentation":"<p>Contains summary information about a batch build group.</p>"
     },
+    "BuildTimeOut":{
+      "type":"integer",
+      "max":2160,
+      "min":5
+    },
     "Builds":{
       "type":"list",
       "member":{"shape":"Build"}
@@ -1674,8 +1679,8 @@
           "documentation":"<p>The ARN of the IAM role that enables CodeBuild to interact with dependent Amazon Web Services services on behalf of the Amazon Web Services account.</p>"
         },
         "timeoutInMinutes":{
-          "shape":"TimeOut",
-          "documentation":"<p>How long, in minutes, from 5 to 480 (8 hours), for CodeBuild to wait before it times out any build that has not been marked as completed. The default is 60 minutes.</p>"
+          "shape":"BuildTimeOut",
+          "documentation":"<p>How long, in minutes, from 5 to 2160 (36 hours), for CodeBuild to wait before it times out any build that has not been marked as completed. The default is 60 minutes.</p>"
         },
         "queuedTimeoutInMinutes":{
           "shape":"TimeOut",
@@ -3051,8 +3056,8 @@
           "documentation":"<p>The ARN of the IAM role that enables CodeBuild to interact with dependent Amazon Web Services services on behalf of the Amazon Web Services account.</p>"
         },
         "timeoutInMinutes":{
-          "shape":"TimeOut",
-          "documentation":"<p>How long, in minutes, from 5 to 480 (8 hours), for CodeBuild to wait before timing out any related build that did not get marked as completed. The default is 60 minutes.</p>"
+          "shape":"BuildTimeOut",
+          "documentation":"<p>How long, in minutes, from 5 to 2160 (36 hours), for CodeBuild to wait before timing out any related build that did not get marked as completed. The default is 60 minutes.</p>"
         },
         "queuedTimeoutInMinutes":{
           "shape":"TimeOut",
@@ -4099,7 +4104,7 @@
           "documentation":"<p>Enable this flag to override privileged mode in the batch build project.</p>"
         },
         "buildTimeoutInMinutesOverride":{
-          "shape":"TimeOut",
+          "shape":"BuildTimeOut",
           "documentation":"<p>Overrides the build timeout specified in the batch build project.</p>"
         },
         "queuedTimeoutInMinutesOverride":{
@@ -4242,8 +4247,8 @@
           "documentation":"<p>Enable this flag to override privileged mode in the build project.</p>"
         },
         "timeoutInMinutesOverride":{
-          "shape":"TimeOut",
-          "documentation":"<p>The number of build timeout minutes, from 5 to 480 (8 hours), that overrides, for this build only, the latest setting already defined in the build project.</p>"
+          "shape":"BuildTimeOut",
+          "documentation":"<p>The number of build timeout minutes, from 5 to 2160 (36 hours), that overrides, for this build only, the latest setting already defined in the build project.</p>"
         },
         "queuedTimeoutInMinutesOverride":{
           "shape":"TimeOut",
@@ -4560,8 +4565,8 @@
           "documentation":"<p>The replacement ARN of the IAM role that enables CodeBuild to interact with dependent Amazon Web Services services on behalf of the Amazon Web Services account.</p>"
         },
         "timeoutInMinutes":{
-          "shape":"TimeOut",
-          "documentation":"<p>The replacement value in minutes, from 5 to 480 (8 hours), for CodeBuild to wait before timing out any related build that did not get marked as completed.</p>"
+          "shape":"BuildTimeOut",
+          "documentation":"<p>The replacement value in minutes, from 5 to 2160 (36 hours), for CodeBuild to wait before timing out any related build that did not get marked as completed.</p>"
         },
         "queuedTimeoutInMinutes":{
           "shape":"TimeOut",

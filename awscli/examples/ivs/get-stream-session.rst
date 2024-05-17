@@ -18,6 +18,10 @@ Output::
                 "latencyMode": "LOW",
                 "type": "STANDARD",
                 "recordingConfigurationArn": "arn:aws:ivs:us-west-2:123456789012:recording-configuration/ABcdef34ghIJ",
+                "srt": {
+                    "endpoint": "a1b2c3d4e5f6.srt.live-video.net",
+                    "passphrase": "AB1C2defGHijkLMNo3PqQRstUvwxyzaBCDEfghh4ijklMN5opqrStuVWxyzAbCDEfghIJ"
+                },
                 "ingestEndpoint": "a1b2c3d4e5f6.global-contribute.live-video.net",
                 "playbackUrl": "url-string",
                 "authorized": false,
@@ -91,4 +95,4 @@ Output::
         }
     }
 
-For more information, see `Create a Channel <https://docs.aws.amazon.com/ivs/latest/userguide/GSIVS-create-channel.html>`__ in the *Amazon Interactive Video Service User Guide*.
+For more information, see `Create a Channel <https://docs.aws.amazon.com/ivs/latest/LowLatencyUserGuide/getting-started-create-channel.html>`__ in the *IVS Low-Latency User Guide*.

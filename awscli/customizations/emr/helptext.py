@@ -518,3 +518,7 @@ EXECUTION_ROLE_ARN = (
     'to access the same IAM resources that the step can access. '
     'The execution role can be a cross-account IAM Role.</p> '
 )
+
+UNHEALTHY_NODE_REPLACEMENT = (
+    '<p>Unhealthy node replacement for an Amazon EMR cluster.</p> '
+)

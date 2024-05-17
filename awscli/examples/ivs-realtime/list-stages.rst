@@ -1,6 +1,6 @@
 **To get summary information about all stages**
 
-The following ``list-stages`` example lists all channels for your AWS account, in the AWS region where the API request is processed. ::
+The following ``list-stages`` example lists all stages for your AWS account, in the AWS region where the API request is processed. ::
 
     aws ivs-realtime list-stages
 
@@ -29,4 +29,4 @@ Output::
         ]
     }
 
-For more information, see `Enabling Multiple Hosts on an Amazon IVS Stream <https://docs.aws.amazon.com/ivs/latest/userguide/multiple-hosts.html>`__ in the *Amazon Interactive Video Service User Guide*.
+For more information, see `Enabling Multiple Hosts on an Amazon IVS Stream <https://docs.aws.amazon.com/ivs/latest/LowLatencyUserGuide/multiple-hosts.html>`__ in the *Amazon Interactive Video Service User Guide*.

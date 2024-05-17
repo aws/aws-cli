@@ -65,7 +65,7 @@ class TestBasicCommandFunctionality(unittest.TestCase):
     def test_service_help_output(self):
         p = aws('ec2 help')
         self.assertEqual(p.rc, 0)
-        self.assertIn('Amazon EC2', p.stdout)
+        self.assertRegex(p.stdout, r'Amazon\s+EC2')
 
     def test_operation_help_output(self):
         p = aws('ec2 describe-instances help')

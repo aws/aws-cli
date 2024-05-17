@@ -39,7 +39,9 @@ def register_removals(event_handler):
                                         'list-bootstrap-actions',
                                         'list-instance-groups',
                                         'set-termination-protection',
-                                        'set-visible-to-all-users'])
+                                        'set-keep-job-flow-alive-when-no-steps',
+                                        'set-visible-to-all-users',
+                                        'set-unhealthy-node-replacement'])
     cmd_remover.remove(on_event='building-command-table.kinesis',
                        remove_commands=['subscribe-to-shard'])
     cmd_remover.remove(on_event='building-command-table.lexv2-runtime',
@@ -52,6 +54,10 @@ def register_removals(event_handler):
                          remove_commands=['invoke-model-with-response-stream'])
     cmd_remover.remove(on_event='building-command-table.bedrock-agent-runtime',
                          remove_commands=['invoke-agent'])
+    cmd_remover.remove(on_event='building-command-table.logs',
+                         remove_commands=['start-live-tail'])
+    cmd_remover.remove(on_event='building-command-table.qbusiness',
+                        remove_commands=['chat'])
 
 
 class CommandRemover(object):

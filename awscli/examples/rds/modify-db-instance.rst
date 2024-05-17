@@ -1,4 +1,4 @@
-**To modify a DB instance**
+**Example 1: To modify a DB instance**
 
 The following ``modify-db-instance`` example associates an option group and a parameter group with a compatible Microsoft SQL Server DB instance. The ``--apply-immediately`` parameter causes the option and parameter groups to be associated immediately, instead of waiting until the next maintenance window. ::
 
@@ -54,3 +54,49 @@ Output::
     }
 
 For more information, see `Modifying an Amazon RDS DB Instance <https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/Overview.DBInstance.Modifying.html>`__ in the *Amazon RDS User Guide*.
+
+**Example 2: To associate VPC security group with a DB instance**
+
+The following ``modify-db-instance`` example associates a specific VPC security group and removes DB security groups from a DB instance::
+
+    aws rds modify-db-instance \
+        --db-instance-identifier dbName \
+        --vpc-security-group-ids sg-ID
+
+Output::
+
+    {
+    "DBInstance": {
+        "DBInstanceIdentifier": "dbName",
+        "DBInstanceClass": "db.t3.micro",
+        "Engine": "mysql",
+        "DBInstanceStatus": "available",
+        "MasterUsername": "admin",
+        "Endpoint": {
+            "Address": "dbName.abcdefghijk.us-west-2.rds.amazonaws.com",
+            "Port": 3306,
+            "HostedZoneId": "ABCDEFGHIJK1234"
+        },
+        "AllocatedStorage": 20,
+        "InstanceCreateTime": "2024-02-15T00:37:58.793000+00:00",
+        "PreferredBackupWindow": "11:57-12:27",
+        "BackupRetentionPeriod": 7,
+        "DBSecurityGroups": [],
+        "VpcSecurityGroups": [
+            {
+                "VpcSecurityGroupId": "sg-ID",
+                "Status": "active"
+            }
+        ],
+        ... output omitted ...
+        "MultiAZ": false,
+        "EngineVersion": "8.0.35",
+        "AutoMinorVersionUpgrade": true,
+        "ReadReplicaDBInstanceIdentifiers": [],
+        "LicenseModel": "general-public-license",
+        
+        ... output ommited ...
+        }
+    }
+
+For more information, see `Controlling access with security groups <https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/Overview.RDSSecurityGroups.html>`__ in the *Amazon RDS User Guide*.

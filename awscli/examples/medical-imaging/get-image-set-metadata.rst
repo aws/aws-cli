@@ -39,6 +39,4 @@ Output::
         "contentEncoding": "gzip"
     }
 
-For more information, see `Getting image set metadata`_ in the *AWS HealthImaging Developers Guide*.
-
-.. _`Getting image set metadata`: https://docs.aws.amazon.com/healthimaging/latest/devguide/get-image-set-metadata.html
+For more information, see `Getting image set metadata <https://docs.aws.amazon.com/healthimaging/latest/devguide/get-image-set-metadata.html>`__ in the *AWS HealthImaging Developer Guide*.

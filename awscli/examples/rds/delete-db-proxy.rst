@@ -31,7 +31,7 @@ Output::
                     "IAMAuth": "DISABLED"
                     } ],
                 "RoleArn": "arn:aws:iam::12345678912:role/ProxyPostgreSQLRole",
-                "Endpoint": "proxyeExample.proxy-ab0cd1efghij.us-east-1.rds.amazonaws.com",
+                "Endpoint": "proxyExample.proxy-ab0cd1efghij.us-east-1.rds.amazonaws.com",
                 "RequireTLS": false,
                 "IdleClientTimeout": 1800,
                 "DebuggingLogging": false,

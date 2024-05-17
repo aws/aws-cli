@@ -45,6 +45,4 @@ Output::
         ]
     }
 
-For more information, see `Listing image set versions`_ in the *AWS HealthImaging Developers Guide*.
-
-.. _`Listing image set versions`: https://docs.aws.amazon.com/healthimaging/latest/devguide/list-image-set-versions.html
+For more information, see `Listing image set versions <https://docs.aws.amazon.com/healthimaging/latest/devguide/list-image-set-versions.html>`__ in the *AWS HealthImaging Developer Guide*.

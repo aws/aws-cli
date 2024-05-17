@@ -2,6 +2,16 @@
 CHANGELOG
 =========
 
+1.32.108
+========
+
+* api-change:``application-autoscaling``: add v2 smoke tests and smithy smokeTests trait for SDK testing.
+* api-change:``codebuild``: Aws CodeBuild now supports 36 hours build timeout
+* api-change:``elbv2``: This release adds dualstack-without-public-ipv4 IP address type for ALB.
+* api-change:``lakeformation``: Introduces a new API, GetDataLakePrincipal, that returns the identity of the invoking principal
+* api-change:``transfer``: Enable use of CloudFormation traits in Smithy model to improve generated CloudFormation schema from the Smithy API model.
+
+
 1.32.107
 ========
 

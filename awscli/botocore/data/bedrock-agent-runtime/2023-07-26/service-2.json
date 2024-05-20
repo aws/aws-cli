@@ -657,6 +657,40 @@
         "NONE"
       ]
     },
+    "GuardrailAction":{
+      "type":"string",
+      "enum":[
+        "INTERVENED",
+        "NONE"
+      ]
+    },
+    "GuardrailAssessment":{
+      "type":"structure",
+      "members":{
+        "contentPolicy":{
+          "shape":"GuardrailContentPolicyAssessment",
+          "documentation":"<p>Content policy details of the Guardrail.</p>"
+        },
+        "sensitiveInformationPolicy":{
+          "shape":"GuardrailSensitiveInformationPolicyAssessment",
+          "documentation":"<p>Sensitive Information policy details of Guardrail.</p>"
+        },
+        "topicPolicy":{
+          "shape":"GuardrailTopicPolicyAssessment",
+          "documentation":"<p>Topic policy details of the Guardrail.</p>"
+        },
+        "wordPolicy":{
+          "shape":"GuardrailWordPolicyAssessment",
+          "documentation":"<p>Word policy details of the Guardrail.</p>"
+        }
+      },
+      "documentation":"<p>Assessment details of the content analyzed by Guardrails.</p>",
+      "sensitive":true
+    },
+    "GuardrailAssessmentList":{
+      "type":"list",
+      "member":{"shape":"GuardrailAssessment"}
+    },
     "GuardrailConfiguration":{
       "type":"structure",
       "required":[
@@ -686,6 +720,308 @@
       "max":5,
       "min":1,
       "pattern":"^(([1-9][0-9]{0,7})|(DRAFT))$"
+    },
+    "GuardrailContentFilter":{
+      "type":"structure",
+      "members":{
+        "action":{
+          "shape":"GuardrailContentPolicyAction",
+          "documentation":"<p>The action placed on the content by the Guardrail filter.</p>"
+        },
+        "confidence":{
+          "shape":"GuardrailContentFilterConfidence",
+          "documentation":"<p>The confidence level regarding the content detected in the filter by the Guardrail.</p>"
+        },
+        "type":{
+          "shape":"GuardrailContentFilterType",
+          "documentation":"<p>The type of content detected in the filter by the Guardrail.</p>"
+        }
+      },
+      "documentation":"<p>Details of the content filter used in the Guardrail.</p>",
+      "sensitive":true
+    },
+    "GuardrailContentFilterConfidence":{
+      "type":"string",
+      "enum":[
+        "NONE",
+        "LOW",
+        "MEDIUM",
+        "HIGH"
+      ]
+    },
+    "GuardrailContentFilterList":{
+      "type":"list",
+      "member":{"shape":"GuardrailContentFilter"},
+      "sensitive":true
+    },
+    "GuardrailContentFilterType":{
+      "type":"string",
+      "enum":[
+        "INSULTS",
+        "HATE",
+        "SEXUAL",
+        "VIOLENCE",
+        "MISCONDUCT",
+        "PROMPT_ATTACK"
+      ]
+    },
+    "GuardrailContentPolicyAction":{
+      "type":"string",
+      "enum":["BLOCKED"]
+    },
+    "GuardrailContentPolicyAssessment":{
+      "type":"structure",
+      "members":{
+        "filters":{
+          "shape":"GuardrailContentFilterList",
+          "documentation":"<p>The filter details of the policy assessment used in the Guardrails filter.</p>"
+        }
+      },
+      "documentation":"<p>The details of the policy assessment in the Guardrails filter.</p>",
+      "sensitive":true
+    },
+    "GuardrailCustomWord":{
+      "type":"structure",
+      "members":{
+        "action":{
+          "shape":"GuardrailWordPolicyAction",
+          "documentation":"<p>The action details for the custom word filter in the Guardrail.</p>"
+        },
+        "match":{
+          "shape":"String",
+          "documentation":"<p>The match details for the custom word filter in the Guardrail.</p>"
+        }
+      },
+      "documentation":"<p>The custom word details for the filter in the Guardrail.</p>",
+      "sensitive":true
+    },
+    "GuardrailCustomWordList":{
+      "type":"list",
+      "member":{"shape":"GuardrailCustomWord"},
+      "sensitive":true
+    },
+    "GuardrailManagedWord":{
+      "type":"structure",
+      "members":{
+        "action":{
+          "shape":"GuardrailWordPolicyAction",
+          "documentation":"<p>The action details for the managed word filter in the Guardrail.</p>"
+        },
+        "match":{
+          "shape":"String",
+          "documentation":"<p>The match details for the managed word filter in the Guardrail.</p>"
+        },
+        "type":{
+          "shape":"GuardrailManagedWordType",
+          "documentation":"<p>The type details for the managed word filter in the Guardrail.</p>"
+        }
+      },
+      "documentation":"<p>The managed word details for the filter in the Guardrail.</p>",
+      "sensitive":true
+    },
+    "GuardrailManagedWordList":{
+      "type":"list",
+      "member":{"shape":"GuardrailManagedWord"},
+      "sensitive":true
+    },
+    "GuardrailManagedWordType":{
+      "type":"string",
+      "enum":["PROFANITY"]
+    },
+    "GuardrailPiiEntityFilter":{
+      "type":"structure",
+      "members":{
+        "action":{
+          "shape":"GuardrailSensitiveInformationPolicyAction",
+          "documentation":"<p>The action of the Guardrail filter to identify and remove PII.</p>"
+        },
+        "match":{
+          "shape":"String",
+          "documentation":"<p>The match to settings in the Guardrail filter to identify and remove PII.</p>"
+        },
+        "type":{
+          "shape":"GuardrailPiiEntityType",
+          "documentation":"<p>The type of PII the Guardrail filter has identified and removed.</p>"
+        }
+      },
+      "documentation":"<p>The Guardrail filter to identify and remove personally identifiable information (PII).</p>",
+      "sensitive":true
+    },
+    "GuardrailPiiEntityFilterList":{
+      "type":"list",
+      "member":{"shape":"GuardrailPiiEntityFilter"},
+      "sensitive":true
+    },
+    "GuardrailPiiEntityType":{
+      "type":"string",
+      "enum":[
+        "ADDRESS",
+        "AGE",
+        "AWS_ACCESS_KEY",
+        "AWS_SECRET_KEY",
+        "CA_HEALTH_NUMBER",
+        "CA_SOCIAL_INSURANCE_NUMBER",
+        "CREDIT_DEBIT_CARD_CVV",
+        "CREDIT_DEBIT_CARD_EXPIRY",
+        "CREDIT_DEBIT_CARD_NUMBER",
+        "DRIVER_ID",
+        "EMAIL",
+        "INTERNATIONAL_BANK_ACCOUNT_NUMBER",
+        "IP_ADDRESS",
+        "LICENSE_PLATE",
+        "MAC_ADDRESS",
+        "NAME",
+        "PASSWORD",
+        "PHONE",
+        "PIN",
+        "SWIFT_CODE",
+        "UK_NATIONAL_HEALTH_SERVICE_NUMBER",
+        "UK_NATIONAL_INSURANCE_NUMBER",
+        "UK_UNIQUE_TAXPAYER_REFERENCE_NUMBER",
+        "URL",
+        "USERNAME",
+        "US_BANK_ACCOUNT_NUMBER",
+        "US_BANK_ROUTING_NUMBER",
+        "US_INDIVIDUAL_TAX_IDENTIFICATION_NUMBER",
+        "US_PASSPORT_NUMBER",
+        "US_SOCIAL_SECURITY_NUMBER",
+        "VEHICLE_IDENTIFICATION_NUMBER"
+      ]
+    },
+    "GuardrailRegexFilter":{
+      "type":"structure",
+      "members":{
+        "action":{
+          "shape":"GuardrailSensitiveInformationPolicyAction",
+          "documentation":"<p>The action details for the regex filter used in the Guardrail.</p>"
+        },
+        "match":{
+          "shape":"String",
+          "documentation":"<p>The match details for the regex filter used in the Guardrail.</p>"
+        },
+        "name":{
+          "shape":"String",
+          "documentation":"<p>The name details for the regex filter used in the Guardrail.</p>"
+        },
+        "regex":{
+          "shape":"String",
+          "documentation":"<p>The regex details for the regex filter used in the Guardrail.</p>"
+        }
+      },
+      "documentation":"<p>The details for the regex filter used in the Guardrail.</p>",
+      "sensitive":true
+    },
+    "GuardrailRegexFilterList":{
+      "type":"list",
+      "member":{"shape":"GuardrailRegexFilter"},
+      "sensitive":true
+    },
+    "GuardrailSensitiveInformationPolicyAction":{
+      "type":"string",
+      "enum":[
+        "BLOCKED",
+        "ANONYMIZED"
+      ]
+    },
+    "GuardrailSensitiveInformationPolicyAssessment":{
+      "type":"structure",
+      "members":{
+        "piiEntities":{
+          "shape":"GuardrailPiiEntityFilterList",
+          "documentation":"<p>The details of the PII entities used in the sensitive policy assessment for the Guardrail.</p>"
+        },
+        "regexes":{
+          "shape":"GuardrailRegexFilterList",
+          "documentation":"<p>The details of the regexes used in the sensitive policy assessment for the Guardrail.</p>"
+        }
+      },
+      "documentation":"<p>The details of the sensitive policy assessment used in the Guardrail.</p>",
+      "sensitive":true
+    },
+    "GuardrailTopic":{
+      "type":"structure",
+      "members":{
+        "action":{
+          "shape":"GuardrailTopicPolicyAction",
+          "documentation":"<p>The action details on a specific topic in the Guardrail.</p>"
+        },
+        "name":{
+          "shape":"String",
+          "documentation":"<p>The name details on a specific topic in the Guardrail.</p>"
+        },
+        "type":{
+          "shape":"GuardrailTopicType",
+          "documentation":"<p>The type details on a specific topic in the Guardrail.</p>"
+        }
+      },
+      "documentation":"<p>The details for a specific topic defined in the Guardrail.</p>",
+      "sensitive":true
+    },
+    "GuardrailTopicList":{
+      "type":"list",
+      "member":{"shape":"GuardrailTopic"},
+      "sensitive":true
+    },
+    "GuardrailTopicPolicyAction":{
+      "type":"string",
+      "enum":["BLOCKED"]
+    },
+    "GuardrailTopicPolicyAssessment":{
+      "type":"structure",
+      "members":{
+        "topics":{
+          "shape":"GuardrailTopicList",
+          "documentation":"<p>The topic details of the policy assessment used in the Guardrail.</p>"
+        }
+      },
+      "documentation":"<p>The details of the policy assessment used in the Guardrail.</p>",
+      "sensitive":true
+    },
+    "GuardrailTopicType":{
+      "type":"string",
+      "enum":["DENY"]
+    },
+    "GuardrailTrace":{
+      "type":"structure",
+      "members":{
+        "action":{
+          "shape":"GuardrailAction",
+          "documentation":"<p>The trace action details used with the Guardrail.</p>"
+        },
+        "inputAssessments":{
+          "shape":"GuardrailAssessmentList",
+          "documentation":"<p>The details of the input assessments used in the Guardrail Trace.</p>"
+        },
+        "outputAssessments":{
+          "shape":"GuardrailAssessmentList",
+          "documentation":"<p>The details of the output assessments used in the Guardrail Trace.</p>"
+        },
+        "traceId":{
+          "shape":"TraceId",
+          "documentation":"<p>The details of the trace Id used in the Guardrail Trace.</p>"
+        }
+      },
+      "documentation":"<p>The trace details used in the Guardrail.</p>",
+      "sensitive":true
+    },
+    "GuardrailWordPolicyAction":{
+      "type":"string",
+      "enum":["BLOCKED"]
+    },
+    "GuardrailWordPolicyAssessment":{
+      "type":"structure",
+      "members":{
+        "customWords":{
+          "shape":"GuardrailCustomWordList",
+          "documentation":"<p>The custom word details for words defined in the Guardrail filter.</p>"
+        },
+        "managedWordLists":{
+          "shape":"GuardrailManagedWordList",
+          "documentation":"<p>The managed word lists for words defined in the Guardrail filter.</p>"
+        }
+      },
+      "documentation":"<p>The assessment details for words defined in the Guardrail filter.</p>",
+      "sensitive":true
     },
     "Identifier":{
       "type":"string",
@@ -1972,6 +2308,10 @@
         "failureTrace":{
           "shape":"FailureTrace",
           "documentation":"<p>Contains information about the failure of the interaction.</p>"
+        },
+        "guardrailTrace":{
+          "shape":"GuardrailTrace",
+          "documentation":"<p>The trace details for a trace defined in the Guardrail filter.</p>"
         },
         "orchestrationTrace":{
           "shape":"OrchestrationTrace",

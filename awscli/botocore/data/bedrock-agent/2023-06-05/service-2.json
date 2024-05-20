@@ -936,6 +936,10 @@
           "shape":"ModelIdentifier",
           "documentation":"<p>The foundation model used for orchestration by the agent.</p>"
         },
+        "guardrailConfiguration":{
+          "shape":"GuardrailConfiguration",
+          "documentation":"<p>The guardrails configuration assigned to the agent.</p>"
+        },
         "idleSessionTTLInSeconds":{
           "shape":"SessionTTL",
           "documentation":"<p>The number of seconds for which Amazon Bedrock keeps information about a user's conversation with the agent.</p> <p>A user interaction remains active for the amount of time specified. If no conversation occurs during this time, the session expires and Amazon Bedrock deletes any data provided before the timeout.</p>"
@@ -1293,7 +1297,7 @@
       "type":"string",
       "max":2048,
       "min":0,
-      "pattern":"^arn:aws(-[^:]+)?:iam::([0-9]{12})?:role/(service-role/)?AmazonBedrockExecutionRoleForAgents_.+$"
+      "pattern":"^arn:aws(-[^:]+)?:iam::([0-9]{12})?:role/.+$"
     },
     "AgentStatus":{
       "type":"string",
@@ -1338,6 +1342,10 @@
         "description":{
           "shape":"Description",
           "documentation":"<p>The description of the agent.</p>"
+        },
+        "guardrailConfiguration":{
+          "shape":"GuardrailConfiguration",
+          "documentation":"<p>The details of the guardrails configuration in the agent summary.</p>"
         },
         "latestAgentVersion":{
           "shape":"Version",
@@ -1404,6 +1412,10 @@
           "shape":"ModelIdentifier",
           "documentation":"<p>The foundation model that the version invokes.</p>"
         },
+        "guardrailConfiguration":{
+          "shape":"GuardrailConfiguration",
+          "documentation":"<p>The guardrails configuration assigned to the agent version.</p>"
+        },
         "idleSessionTTLInSeconds":{
           "shape":"SessionTTL",
           "documentation":"<p>The number of seconds for which Amazon Bedrock keeps information about a user's conversation with the agent.</p> <p>A user interaction remains active for the amount of time specified. If no conversation occurs during this time, the session expires and Amazon Bedrock deletes any data provided before the timeout.</p>"
@@ -1467,6 +1479,10 @@
           "shape":"Description",
           "documentation":"<p>The description of the version of the agent.</p>"
         },
+        "guardrailConfiguration":{
+          "shape":"GuardrailConfiguration",
+          "documentation":"<p>The details of the guardrails configuration in the agent version summary.</p>"
+        },
         "updatedAt":{
           "shape":"DateTimestamp",
           "documentation":"<p>The time at which the version was last updated.</p>"
@@ -1526,9 +1542,9 @@
     },
     "BedrockEmbeddingModelArn":{
       "type":"string",
-      "max":1011,
+      "max":2048,
       "min":20,
-      "pattern":"^arn:aws(-[^:]+)?:bedrock:[a-z0-9-]{1,20}:(([0-9]{12}:custom-model/[a-z0-9-]{1,63}[.]{1}[a-z0-9-]{1,63}/[a-z0-9]{12})|(:foundation-model/[a-z0-9-]{1,63}[.]{1}[a-z0-9-]{1,63}))$"
+      "pattern":"^(arn:aws(-[^:]+)?:bedrock:[a-z0-9-]{1,20}:(([0-9]{12}:custom-model/[a-z0-9-]{1,63}[.]{1}[a-z0-9-]{1,63}/[a-z0-9]{12})|(:foundation-model/[a-z0-9-]{1,63}[.]{1}[a-z0-9-]{1,63}([.:]?[a-z0-9-]{1,63}))|([0-9]{12}:provisioned-model/[a-z0-9]{12})))|([a-z0-9-]{1,63}[.]{1}[a-z0-9-]{1,63}([.:]?[a-z0-9-]{1,63}))|(([0-9a-zA-Z][_-]?)+)$"
     },
     "Boolean":{
       "type":"boolean",
@@ -1725,6 +1741,10 @@
         "foundationModel":{
           "shape":"ModelIdentifier",
           "documentation":"<p>The foundation model to be used for orchestration by the agent you create.</p>"
+        },
+        "guardrailConfiguration":{
+          "shape":"GuardrailConfiguration",
+          "documentation":"<p>The unique Guardrail configuration assigned to the agent when it is created.</p>"
         },
         "idleSessionTTLInSeconds":{
           "shape":"SessionTTL",
@@ -2630,6 +2650,30 @@
         }
       }
     },
+    "GuardrailConfiguration":{
+      "type":"structure",
+      "members":{
+        "guardrailIdentifier":{
+          "shape":"GuardrailIdentifier",
+          "documentation":"<p>The guardrails identifier assigned to the guardrails configuration.</p>"
+        },
+        "guardrailVersion":{
+          "shape":"GuardrailVersion",
+          "documentation":"<p>The guardrails version assigned to the guardrails configuration.</p>"
+        }
+      },
+      "documentation":"<p>The details of the guardrails configuration.</p>"
+    },
+    "GuardrailIdentifier":{
+      "type":"string",
+      "max":2048,
+      "min":0,
+      "pattern":"^(([a-z0-9]+)|(arn:aws(-[^:]+)?:bedrock:[a-z0-9-]{1,20}:[0-9]{12}:guardrail/[a-z0-9]+))$"
+    },
+    "GuardrailVersion":{
+      "type":"string",
+      "pattern":"^(([0-9]{1,8})|(DRAFT))$"
+    },
     "Id":{
       "type":"string",
       "pattern":"^[0-9a-zA-Z]{10}$"
@@ -2879,7 +2923,7 @@
     },
     "Instruction":{
       "type":"string",
-      "max":1200,
+      "max":4000,
       "min":40,
       "sensitive":true
     },
@@ -3699,7 +3743,7 @@
       "members":{
         "basePromptTemplate":{
           "shape":"BasePromptTemplate",
-          "documentation":"<p>Defines the prompt template with which to replace the default prompt template. You can use placeholder variables in the base prompt template to customize the prompt. For more information, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/prompt-placeholders.html\">Prompt template placeholder variables</a>.</p>"
+          "documentation":"<p>Defines the prompt template with which to replace the default prompt template. You can use placeholder variables in the base prompt template to customize the prompt. For more information, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/prompt-placeholders.html\">Prompt template placeholder variables</a>. For more information, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/advanced-prompts-configure.html\">Configure the prompt templates</a>.</p>"
         },
         "inferenceConfiguration":{
           "shape":"InferenceConfiguration",
@@ -3736,7 +3780,7 @@
       "members":{
         "overrideLambda":{
           "shape":"LambdaArn",
-          "documentation":"<p>The ARN of the Lambda function to use when parsing the raw foundation model output in parts of the agent sequence. If you specify this field, at least one of the <code>promptConfigurations</code> must contain a <code>parserMode</code> value that is set to <code>OVERRIDDEN</code>.</p>"
+          "documentation":"<p>The ARN of the Lambda function to use when parsing the raw foundation model output in parts of the agent sequence. If you specify this field, at least one of the <code>promptConfigurations</code> must contain a <code>parserMode</code> value that is set to <code>OVERRIDDEN</code>. For more information, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/lambda-parser.html\">Parser Lambda function in Agents for Amazon Bedrock</a>.</p>"
         },
         "promptConfigurations":{
           "shape":"PromptConfigurations",
@@ -4420,6 +4464,10 @@
         "foundationModel":{
           "shape":"ModelIdentifier",
           "documentation":"<p>Specifies a new foundation model to be used for orchestration by the agent.</p>"
+        },
+        "guardrailConfiguration":{
+          "shape":"GuardrailConfiguration",
+          "documentation":"<p>The unique Guardrail configuration assigned to the agent when it is updated.</p>"
         },
         "idleSessionTTLInSeconds":{
           "shape":"SessionTTL",

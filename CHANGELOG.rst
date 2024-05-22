@@ -2,6 +2,16 @@
 CHANGELOG
 =========
 
+1.32.111
+========
+
+* api-change:``chatbot``: This change adds support for tagging Chatbot configurations.
+* api-change:``cloudformation``: Added DeletionMode FORCE_DELETE_STACK for deleting a stack that is stuck in DELETE_FAILED state due to resource deletion failure.
+* api-change:``kms``: This release includes feature to import customer's asymmetric (RSA, ECC and SM2) and HMAC keys into KMS in China.
+* api-change:``opensearch``: This release adds support for enabling or disabling a data source configured as part of Zero-ETL integration with Amazon S3, by setting its status.
+* api-change:``wafv2``: You can now use Security Lake to collect web ACL traffic data.
+
+
 1.32.110
 ========
 

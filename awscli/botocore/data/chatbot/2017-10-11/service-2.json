@@ -5,6 +5,7 @@
     "endpointPrefix":"chatbot",
     "jsonVersion":"1.1",
     "protocol":"rest-json",
+    "protocols":["rest-json"],
     "serviceFullName":"AWS Chatbot",
     "serviceId":"chatbot",
     "signatureVersion":"v4",
@@ -321,6 +322,55 @@
       ],
       "documentation":"Lists all Microsoft Teams user identities with a mapped role."
     },
+    "ListTagsForResource":{
+      "name":"ListTagsForResource",
+      "http":{
+        "method":"POST",
+        "requestUri":"/list-tags-for-resource",
+        "responseCode":200
+      },
+      "input":{"shape":"ListTagsForResourceRequest"},
+      "output":{"shape":"ListTagsForResourceResponse"},
+      "errors":[
+        {"shape":"InternalServiceError"},
+        {"shape":"ServiceUnavailableException"},
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"Retrieves the list of tags applied to a configuration."
+    },
+    "TagResource":{
+      "name":"TagResource",
+      "http":{
+        "method":"POST",
+        "requestUri":"/tag-resource",
+        "responseCode":200
+      },
+      "input":{"shape":"TagResourceRequest"},
+      "output":{"shape":"TagResourceResponse"},
+      "errors":[
+        {"shape":"InternalServiceError"},
+        {"shape":"ServiceUnavailableException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"TooManyTagsException"}
+      ],
+      "documentation":"Applies the supplied tags to a configuration."
+    },
+    "UntagResource":{
+      "name":"UntagResource",
+      "http":{
+        "method":"POST",
+        "requestUri":"/untag-resource",
+        "responseCode":200
+      },
+      "input":{"shape":"UntagResourceRequest"},
+      "output":{"shape":"UntagResourceResponse"},
+      "errors":[
+        {"shape":"InternalServiceError"},
+        {"shape":"ServiceUnavailableException"},
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"Removes the supplied tags from a configuration"
+    },
     "UpdateAccountPreferences":{
       "name":"UpdateAccountPreferences",
       "http":{
@@ -404,6 +454,12 @@
       },
       "documentation":"Preferences which apply for AWS Chatbot usage in the calling AWS account."
     },
+    "AmazonResourceName":{
+      "type":"string",
+      "max":1011,
+      "min":1,
+      "pattern":"^arn:aws:(wheatley|chatbot):[A-Za-z0-9_/.-]{0,63}:[A-Za-z0-9_/.-]{0,63}:[A-Za-z0-9][A-Za-z0-9:_/+=,@.-]{0,1023}$"
+    },
     "Arn":{
       "type":"string",
       "max":1224,
@@ -455,6 +511,10 @@
         "LoggingLevel":{
           "shape":"CustomerCwLogLevel",
           "documentation":"Specifies the logging level for this configuration. This property affects the log entries pushed to Amazon CloudWatch Logs.Logging levels include ERROR, INFO, or NONE."
+        },
+        "Tags":{
+          "shape":"Tags",
+          "documentation":"A list of tags applied to the configuration."
         }
       },
       "documentation":"An AWS Chatbot configuration for Amazon Chime."
@@ -557,6 +617,10 @@
         "LoggingLevel":{
           "shape":"CustomerCwLogLevel",
           "documentation":"Logging levels include ERROR, INFO, or NONE."
+        },
+        "Tags":{
+          "shape":"Tags",
+          "documentation":"A list of tags to apply to the configuration."
         }
       }
     },
@@ -622,6 +686,10 @@
         "UserAuthorizationRequired":{
           "shape":"BooleanAccountPreference",
           "documentation":"Enables use of a user role requirement in your chat configuration."
+        },
+        "Tags":{
+          "shape":"Tags",
+          "documentation":"A list of tags to apply to the configuration."
         }
       }
     },
@@ -696,6 +764,10 @@
         "UserAuthorizationRequired":{
           "shape":"BooleanAccountPreference",
           "documentation":"Enables use of a user role requirement in your chat configuration."
+        },
+        "Tags":{
+          "shape":"Tags",
+          "documentation":"A list of tags to apply to the configuration."
         }
       }
     },
@@ -1120,6 +1192,14 @@
       "type":"list",
       "member":{"shape":"GuardrailPolicyArn"}
     },
+    "InternalServiceError":{
+      "type":"structure",
+      "members":{
+      },
+      "documentation":"Customer/consumer-facing internal service exception. https://w.amazon.com/index.php/AWS/API_Standards/Exceptions#InternalServiceError",
+      "error":{"httpStatusCode":500},
+      "exception":true
+    },
     "InvalidParameterException":{
       "type":"structure",
       "members":{
@@ -1218,6 +1298,25 @@
         }
       }
     },
+    "ListTagsForResourceRequest":{
+      "type":"structure",
+      "required":["ResourceARN"],
+      "members":{
+        "ResourceARN":{
+          "shape":"AmazonResourceName",
+          "documentation":"The ARN of the configuration."
+        }
+      }
+    },
+    "ListTagsForResourceResponse":{
+      "type":"structure",
+      "members":{
+        "Tags":{
+          "shape":"TagList",
+          "documentation":"A list of tags applied to the configuration."
+        }
+      }
+    },
     "ListTeamsChannelConfigurationsException":{
       "type":"structure",
       "members":{
@@ -1279,6 +1378,14 @@
       "error":{"httpStatusCode":404},
       "exception":true
     },
+    "ServiceUnavailableException":{
+      "type":"structure",
+      "members":{
+      },
+      "documentation":"We can’t process your request right now because of a server issue. Try again later.",
+      "error":{"httpStatusCode":429},
+      "exception":true
+    },
     "SlackChannelConfiguration":{
       "type":"structure",
       "required":[
@@ -1335,6 +1442,10 @@
         "UserAuthorizationRequired":{
           "shape":"BooleanAccountPreference",
           "documentation":"Enables use of a user role requirement in your chat configuration."
+        },
+        "Tags":{
+          "shape":"Tags",
+          "documentation":"A list of tags applied to the configuration."
         }
       },
       "documentation":"An AWS Chatbot configuration for Slack."
@@ -1434,6 +1545,72 @@
       "member":{"shape":"Arn"}
     },
     "String":{"type":"string"},
+    "Tag":{
+      "type":"structure",
+      "required":[
+        "TagKey",
+        "TagValue"
+      ],
+      "members":{
+        "TagKey":{
+          "shape":"TagKey",
+          "documentation":"The tag key."
+        },
+        "TagValue":{
+          "shape":"TagValue",
+          "documentation":"The tag value."
+        }
+      },
+      "documentation":"A tag applied to the configuration."
+    },
+    "TagKey":{
+      "type":"string",
+      "max":128,
+      "min":1
+    },
+    "TagKeyList":{
+      "type":"list",
+      "member":{"shape":"TagKey"},
+      "max":200,
+      "min":0
+    },
+    "TagList":{
+      "type":"list",
+      "member":{"shape":"Tag"},
+      "max":200,
+      "min":0
+    },
+    "TagResourceRequest":{
+      "type":"structure",
+      "required":[
+        "ResourceARN",
+        "Tags"
+      ],
+      "members":{
+        "ResourceARN":{
+          "shape":"AmazonResourceName",
+          "documentation":"The ARN of the configuration."
+        },
+        "Tags":{
+          "shape":"TagList",
+          "documentation":"A list of tags to apply to the configuration."
+        }
+      }
+    },
+    "TagResourceResponse":{
+      "type":"structure",
+      "members":{
+      }
+    },
+    "TagValue":{
+      "type":"string",
+      "max":256,
+      "min":1
+    },
+    "Tags":{
+      "type":"list",
+      "member":{"shape":"Tag"}
+    },
     "TeamChannelConfigurationsList":{
       "type":"list",
       "member":{"shape":"TeamsChannelConfiguration"}
@@ -1503,6 +1680,10 @@
         "UserAuthorizationRequired":{
           "shape":"BooleanAccountPreference",
           "documentation":"Enables use of a user role requirement in your chat configuration."
+        },
+        "Tags":{
+          "shape":"Tags",
+          "documentation":"A list of tags applied to the configuration."
         }
       },
       "documentation":"An AWS Chatbot configuration for Microsoft Teams."
@@ -1562,11 +1743,41 @@
       },
       "documentation":"Identifes a user level permission for a channel configuration."
     },
+    "TooManyTagsException":{
+      "type":"structure",
+      "members":{
+      },
+      "documentation":"The supplied list of tags contains too many tags.",
+      "error":{"httpStatusCode":400},
+      "exception":true
+    },
     "UUID":{
       "type":"string",
       "max":36,
       "min":36,
       "pattern":"^[0-9A-Fa-f]{8}(?:-[0-9A-Fa-f]{4}){3}-[0-9A-Fa-f]{12}$"
+    },
+    "UntagResourceRequest":{
+      "type":"structure",
+      "required":[
+        "ResourceARN",
+        "TagKeys"
+      ],
+      "members":{
+        "ResourceARN":{
+          "shape":"AmazonResourceName",
+          "documentation":"The ARN of the configuration."
+        },
+        "TagKeys":{
+          "shape":"TagKeyList",
+          "documentation":"A list of tag keys to remove from the configuration."
+        }
+      }
+    },
+    "UntagResourceResponse":{
+      "type":"structure",
+      "members":{
+      }
     },
     "UpdateAccountPreferencesException":{
       "type":"structure",

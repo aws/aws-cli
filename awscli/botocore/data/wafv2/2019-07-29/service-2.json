@@ -5,6 +5,7 @@
     "endpointPrefix":"wafv2",
     "jsonVersion":"1.1",
     "protocol":"json",
+    "protocols":["json"],
     "serviceAbbreviation":"WAFV2",
     "serviceFullName":"AWS WAFV2",
     "serviceId":"WAFV2",
@@ -1217,7 +1218,7 @@
       "members":{
         "SearchString":{
           "shape":"SearchString",
-          "documentation":"<p>A string value that you want WAF to search for. WAF searches only in the part of web requests that you designate for inspection in <a>FieldToMatch</a>. The maximum length of the value is 200 bytes.</p> <p>Valid values depend on the component that you specify for inspection in <code>FieldToMatch</code>:</p> <ul> <li> <p> <code>Method</code>: The HTTP method that you want WAF to search for. This indicates the type of operation specified in the request. </p> </li> <li> <p> <code>UriPath</code>: The value that you want WAF to search for in the URI path, for example, <code>/images/daily-ad.jpg</code>. </p> </li> <li> <p> <code>JA3Fingerprint</code>: Match against the request's JA3 fingerprint. The JA3 fingerprint is a 32-character hash derived from the TLS Client Hello of an incoming request. This fingerprint serves as a unique identifier for the client's TLS configuration. You can use this choice only with a string match <code>ByteMatchStatement</code> with the <code>PositionalConstraint</code> set to <code>EXACTLY</code>. </p> <p>You can obtain the JA3 fingerprint for client requests from the web ACL logs. If WAF is able to calculate the fingerprint, it includes it in the logs. For information about the logging fields, see <a href=\"https://docs.aws.amazon.com/waf/latest/developerguide/logging-fields.html\">Log fields</a> in the <i>WAF Developer Guide</i>. </p> </li> <li> <p> <code>HeaderOrder</code>: The list of header names to match for. WAF creates a string that contains the ordered list of header names, from the headers in the web request, and then matches against that string. </p> </li> </ul> <p>If <code>SearchString</code> includes alphabetic characters A-Z and a-z, note that the value is case sensitive.</p> <p> <b>If you're using the WAF API</b> </p> <p>Specify a base64-encoded version of the value. The maximum length of the value before you base64-encode it is 200 bytes.</p> <p>For example, suppose the value of <code>Type</code> is <code>HEADER</code> and the value of <code>Data</code> is <code>User-Agent</code>. If you want to search the <code>User-Agent</code> header for the value <code>BadBot</code>, you base64-encode <code>BadBot</code> using MIME base64-encoding and include the resulting value, <code>QmFkQm90</code>, in the value of <code>SearchString</code>.</p> <p> <b>If you're using the CLI or one of the Amazon Web Services SDKs</b> </p> <p>The value that you want WAF to search for. The SDK automatically base64 encodes the value.</p>"
+          "documentation":"<p>A string value that you want WAF to search for. WAF searches only in the part of web requests that you designate for inspection in <a>FieldToMatch</a>. The maximum length of the value is 200 bytes.</p> <p>Valid values depend on the component that you specify for inspection in <code>FieldToMatch</code>:</p> <ul> <li> <p> <code>Method</code>: The HTTP method that you want WAF to search for. This indicates the type of operation specified in the request. </p> </li> <li> <p> <code>UriPath</code>: The value that you want WAF to search for in the URI path, for example, <code>/images/daily-ad.jpg</code>. </p> </li> <li> <p> <code>JA3Fingerprint</code>: Available for use with Amazon CloudFront distributions and Application Load Balancers. Match against the request's JA3 fingerprint. The JA3 fingerprint is a 32-character hash derived from the TLS Client Hello of an incoming request. This fingerprint serves as a unique identifier for the client's TLS configuration. You can use this choice only with a string match <code>ByteMatchStatement</code> with the <code>PositionalConstraint</code> set to <code>EXACTLY</code>. </p> <p>You can obtain the JA3 fingerprint for client requests from the web ACL logs. If WAF is able to calculate the fingerprint, it includes it in the logs. For information about the logging fields, see <a href=\"https://docs.aws.amazon.com/waf/latest/developerguide/logging-fields.html\">Log fields</a> in the <i>WAF Developer Guide</i>. </p> </li> <li> <p> <code>HeaderOrder</code>: The list of header names to match for. WAF creates a string that contains the ordered list of header names, from the headers in the web request, and then matches against that string. </p> </li> </ul> <p>If <code>SearchString</code> includes alphabetic characters A-Z and a-z, note that the value is case sensitive.</p> <p> <b>If you're using the WAF API</b> </p> <p>Specify a base64-encoded version of the value. The maximum length of the value before you base64-encode it is 200 bytes.</p> <p>For example, suppose the value of <code>Type</code> is <code>HEADER</code> and the value of <code>Data</code> is <code>User-Agent</code>. If you want to search the <code>User-Agent</code> header for the value <code>BadBot</code>, you base64-encode <code>BadBot</code> using MIME base64-encoding and include the resulting value, <code>QmFkQm90</code>, in the value of <code>SearchString</code>.</p> <p> <b>If you're using the CLI or one of the Amazon Web Services SDKs</b> </p> <p>The value that you want WAF to search for. The SDK automatically base64 encodes the value.</p>"
         },
         "FieldToMatch":{
           "shape":"FieldToMatch",
@@ -2117,6 +2118,14 @@
         "ResourceArn":{
           "shape":"ResourceArn",
           "documentation":"<p>The Amazon Resource Name (ARN) of the web ACL from which you want to delete the <a>LoggingConfiguration</a>.</p>"
+        },
+        "LogType":{
+          "shape":"LogType",
+          "documentation":"<p>Used to distinguish between various logging options. Currently, there is one option.</p> <p>Default: <code>WAF_LOGS</code> </p>"
+        },
+        "LogScope":{
+          "shape":"LogScope",
+          "documentation":"<p>The owner of the logging configuration, which must be set to <code>CUSTOMER</code> for the configurations that you manage. </p> <p>The log scope <code>SECURITY_LAKE</code> indicates a configuration that is managed through Amazon Security Lake. You can use Security Lake to collect log and event data from various sources for normalization, analysis, and management. For information, see <a href=\"https://docs.aws.amazon.com/security-lake/latest/userguide/internal-sources.html\">Collecting data from Amazon Web Services services</a> in the <i>Amazon Security Lake user guide</i>. </p> <p>Default: <code>CUSTOMER</code> </p>"
         }
       }
     },
@@ -2487,10 +2496,10 @@
         },
         "JA3Fingerprint":{
           "shape":"JA3Fingerprint",
-          "documentation":"<p>Match against the request's JA3 fingerprint. The JA3 fingerprint is a 32-character hash derived from the TLS Client Hello of an incoming request. This fingerprint serves as a unique identifier for the client's TLS configuration. WAF calculates and logs this fingerprint for each request that has enough TLS Client Hello information for the calculation. Almost all web requests include this information.</p> <note> <p>You can use this choice only with a string match <code>ByteMatchStatement</code> with the <code>PositionalConstraint</code> set to <code>EXACTLY</code>. </p> </note> <p>You can obtain the JA3 fingerprint for client requests from the web ACL logs. If WAF is able to calculate the fingerprint, it includes it in the logs. For information about the logging fields, see <a href=\"https://docs.aws.amazon.com/waf/latest/developerguide/logging-fields.html\">Log fields</a> in the <i>WAF Developer Guide</i>. </p> <p>Provide the JA3 fingerprint string from the logs in your string match statement specification, to match with any future requests that have the same TLS configuration.</p>"
+          "documentation":"<p>Available for use with Amazon CloudFront distributions and Application Load Balancers. Match against the request's JA3 fingerprint. The JA3 fingerprint is a 32-character hash derived from the TLS Client Hello of an incoming request. This fingerprint serves as a unique identifier for the client's TLS configuration. WAF calculates and logs this fingerprint for each request that has enough TLS Client Hello information for the calculation. Almost all web requests include this information.</p> <note> <p>You can use this choice only with a string match <code>ByteMatchStatement</code> with the <code>PositionalConstraint</code> set to <code>EXACTLY</code>. </p> </note> <p>You can obtain the JA3 fingerprint for client requests from the web ACL logs. If WAF is able to calculate the fingerprint, it includes it in the logs. For information about the logging fields, see <a href=\"https://docs.aws.amazon.com/waf/latest/developerguide/logging-fields.html\">Log fields</a> in the <i>WAF Developer Guide</i>. </p> <p>Provide the JA3 fingerprint string from the logs in your string match statement specification, to match with any future requests that have the same TLS configuration.</p>"
         }
       },
-      "documentation":"<p>Specifies a web request component to be used in a rule match statement or in a logging configuration. </p> <ul> <li> <p>In a rule statement, this is the part of the web request that you want WAF to inspect. Include the single <code>FieldToMatch</code> type that you want to inspect, with additional specifications as needed, according to the type. You specify a single request component in <code>FieldToMatch</code> for each rule statement that requires it. To inspect more than one component of the web request, create a separate rule statement for each component.</p> <p>Example JSON for a <code>QueryString</code> field to match: </p> <p> <code> \"FieldToMatch\": { \"QueryString\": {} }</code> </p> <p>Example JSON for a <code>Method</code> field to match specification:</p> <p> <code> \"FieldToMatch\": { \"Method\": { \"Name\": \"DELETE\" } }</code> </p> </li> <li> <p>In a logging configuration, this is used in the <code>RedactedFields</code> property to specify a field to redact from the logging records. For this use case, note the following: </p> <ul> <li> <p>Even though all <code>FieldToMatch</code> settings are available, the only valid settings for field redaction are <code>UriPath</code>, <code>QueryString</code>, <code>SingleHeader</code>, and <code>Method</code>.</p> </li> <li> <p>In this documentation, the descriptions of the individual fields talk about specifying the web request component to inspect, but for field redaction, you are specifying the component type to redact from the logs. </p> </li> </ul> </li> </ul>"
+      "documentation":"<p>Specifies a web request component to be used in a rule match statement or in a logging configuration. </p> <ul> <li> <p>In a rule statement, this is the part of the web request that you want WAF to inspect. Include the single <code>FieldToMatch</code> type that you want to inspect, with additional specifications as needed, according to the type. You specify a single request component in <code>FieldToMatch</code> for each rule statement that requires it. To inspect more than one component of the web request, create a separate rule statement for each component.</p> <p>Example JSON for a <code>QueryString</code> field to match: </p> <p> <code> \"FieldToMatch\": { \"QueryString\": {} }</code> </p> <p>Example JSON for a <code>Method</code> field to match specification:</p> <p> <code> \"FieldToMatch\": { \"Method\": { \"Name\": \"DELETE\" } }</code> </p> </li> <li> <p>In a logging configuration, this is used in the <code>RedactedFields</code> property to specify a field to redact from the logging records. For this use case, note the following: </p> <ul> <li> <p>Even though all <code>FieldToMatch</code> settings are available, the only valid settings for field redaction are <code>UriPath</code>, <code>QueryString</code>, <code>SingleHeader</code>, and <code>Method</code>.</p> </li> <li> <p>In this documentation, the descriptions of the individual fields talk about specifying the web request component to inspect, but for field redaction, you are specifying the component type to redact from the logs. </p> </li> <li> <p>If you have request sampling enabled, the redacted fields configuration for logging has no impact on sampling. The only way to exclude fields from request sampling is by disabling sampling in the web ACL visibility configuration. </p> </li> </ul> </li> </ul>"
     },
     "FieldToMatchData":{
       "type":"string",
@@ -2735,6 +2744,14 @@
         "ResourceArn":{
           "shape":"ResourceArn",
           "documentation":"<p>The Amazon Resource Name (ARN) of the web ACL for which you want to get the <a>LoggingConfiguration</a>.</p>"
+        },
+        "LogType":{
+          "shape":"LogType",
+          "documentation":"<p>Used to distinguish between various logging options. Currently, there is one option.</p> <p>Default: <code>WAF_LOGS</code> </p>"
+        },
+        "LogScope":{
+          "shape":"LogScope",
+          "documentation":"<p>The owner of the logging configuration, which must be set to <code>CUSTOMER</code> for the configurations that you manage. </p> <p>The log scope <code>SECURITY_LAKE</code> indicates a configuration that is managed through Amazon Security Lake. You can use Security Lake to collect log and event data from various sources for normalization, analysis, and management. For information, see <a href=\"https://docs.aws.amazon.com/security-lake/latest/userguide/internal-sources.html\">Collecting data from Amazon Web Services services</a> in the <i>Amazon Security Lake user guide</i>. </p> <p>Default: <code>CUSTOMER</code> </p>"
         }
       }
     },
@@ -3307,7 +3324,7 @@
           "documentation":"<p>The match status to assign to the web request if the request doesn't have a JA3 fingerprint. </p> <p>You can specify the following fallback behaviors:</p> <ul> <li> <p> <code>MATCH</code> - Treat the web request as matching the rule statement. WAF applies the rule action to the request.</p> </li> <li> <p> <code>NO_MATCH</code> - Treat the web request as not matching the rule statement.</p> </li> </ul>"
         }
       },
-      "documentation":"<p>Match against the request's JA3 fingerprint. The JA3 fingerprint is a 32-character hash derived from the TLS Client Hello of an incoming request. This fingerprint serves as a unique identifier for the client's TLS configuration. WAF calculates and logs this fingerprint for each request that has enough TLS Client Hello information for the calculation. Almost all web requests include this information.</p> <note> <p>You can use this choice only with a string match <code>ByteMatchStatement</code> with the <code>PositionalConstraint</code> set to <code>EXACTLY</code>. </p> </note> <p>You can obtain the JA3 fingerprint for client requests from the web ACL logs. If WAF is able to calculate the fingerprint, it includes it in the logs. For information about the logging fields, see <a href=\"https://docs.aws.amazon.com/waf/latest/developerguide/logging-fields.html\">Log fields</a> in the <i>WAF Developer Guide</i>. </p> <p>Provide the JA3 fingerprint string from the logs in your string match statement specification, to match with any future requests that have the same TLS configuration.</p>"
+      "documentation":"<p>Available for use with Amazon CloudFront distributions and Application Load Balancers. Match against the request's JA3 fingerprint. The JA3 fingerprint is a 32-character hash derived from the TLS Client Hello of an incoming request. This fingerprint serves as a unique identifier for the client's TLS configuration. WAF calculates and logs this fingerprint for each request that has enough TLS Client Hello information for the calculation. Almost all web requests include this information.</p> <note> <p>You can use this choice only with a string match <code>ByteMatchStatement</code> with the <code>PositionalConstraint</code> set to <code>EXACTLY</code>. </p> </note> <p>You can obtain the JA3 fingerprint for client requests from the web ACL logs. If WAF is able to calculate the fingerprint, it includes it in the logs. For information about the logging fields, see <a href=\"https://docs.aws.amazon.com/waf/latest/developerguide/logging-fields.html\">Log fields</a> in the <i>WAF Developer Guide</i>. </p> <p>Provide the JA3 fingerprint string from the logs in your string match statement specification, to match with any future requests that have the same TLS configuration.</p>"
     },
     "JsonBody":{
       "type":"structure",
@@ -3610,6 +3627,10 @@
         "Limit":{
           "shape":"PaginationLimit",
           "documentation":"<p>The maximum number of objects that you want WAF to return for this request. If more objects are available, in the response, WAF provides a <code>NextMarker</code> value that you can use in a subsequent call to get the next batch of objects.</p>"
+        },
+        "LogScope":{
+          "shape":"LogScope",
+          "documentation":"<p>The owner of the logging configuration, which must be set to <code>CUSTOMER</code> for the configurations that you manage. </p> <p>The log scope <code>SECURITY_LAKE</code> indicates a configuration that is managed through Amazon Security Lake. You can use Security Lake to collect log and event data from various sources for normalization, analysis, and management. For information, see <a href=\"https://docs.aws.amazon.com/security-lake/latest/userguide/internal-sources.html\">Collecting data from Amazon Web Services services</a> in the <i>Amazon Security Lake user guide</i>. </p> <p>Default: <code>CUSTOMER</code> </p>"
         }
       }
     },
@@ -3852,6 +3873,17 @@
       "max":100,
       "min":1
     },
+    "LogScope":{
+      "type":"string",
+      "enum":[
+        "CUSTOMER",
+        "SECURITY_LAKE"
+      ]
+    },
+    "LogType":{
+      "type":"string",
+      "enum":["WAF_LOGS"]
+    },
     "LoggingConfiguration":{
       "type":"structure",
       "required":[
@@ -3869,7 +3901,7 @@
         },
         "RedactedFields":{
           "shape":"RedactedFields",
-          "documentation":"<p>The parts of the request that you want to keep out of the logs.</p> <p>For example, if you redact the <code>SingleHeader</code> field, the <code>HEADER</code> field in the logs will be <code>REDACTED</code> for all rules that use the <code>SingleHeader</code> <code>FieldToMatch</code> setting. </p> <p>Redaction applies only to the component that's specified in the rule's <code>FieldToMatch</code> setting, so the <code>SingleHeader</code> redaction doesn't apply to rules that use the <code>Headers</code> <code>FieldToMatch</code>.</p> <note> <p>You can specify only the following fields for redaction: <code>UriPath</code>, <code>QueryString</code>, <code>SingleHeader</code>, and <code>Method</code>.</p> </note>"
+          "documentation":"<p>The parts of the request that you want to keep out of the logs.</p> <p>For example, if you redact the <code>SingleHeader</code> field, the <code>HEADER</code> field in the logs will be <code>REDACTED</code> for all rules that use the <code>SingleHeader</code> <code>FieldToMatch</code> setting. </p> <p>Redaction applies only to the component that's specified in the rule's <code>FieldToMatch</code> setting, so the <code>SingleHeader</code> redaction doesn't apply to rules that use the <code>Headers</code> <code>FieldToMatch</code>.</p> <note> <p>You can specify only the following fields for redaction: <code>UriPath</code>, <code>QueryString</code>, <code>SingleHeader</code>, and <code>Method</code>.</p> </note> <note> <p>This setting has no impact on request sampling. With request sampling, the only way to exclude fields is by disabling sampling in the web ACL visibility configuration. </p> </note>"
         },
         "ManagedByFirewallManager":{
           "shape":"Boolean",
@@ -3878,6 +3910,14 @@
         "LoggingFilter":{
           "shape":"LoggingFilter",
           "documentation":"<p>Filtering that specifies which web requests are kept in the logs and which are dropped. You can filter on the rule action and on the web request labels that were applied by matching rules during web ACL evaluation. </p>"
+        },
+        "LogType":{
+          "shape":"LogType",
+          "documentation":"<p>Used to distinguish between various logging options. Currently, there is one option.</p> <p>Default: <code>WAF_LOGS</code> </p>"
+        },
+        "LogScope":{
+          "shape":"LogScope",
+          "documentation":"<p>The owner of the logging configuration, which must be set to <code>CUSTOMER</code> for the configurations that you manage. </p> <p>The log scope <code>SECURITY_LAKE</code> indicates a configuration that is managed through Amazon Security Lake. You can use Security Lake to collect log and event data from various sources for normalization, analysis, and management. For information, see <a href=\"https://docs.aws.amazon.com/security-lake/latest/userguide/internal-sources.html\">Collecting data from Amazon Web Services services</a> in the <i>Amazon Security Lake user guide</i>. </p> <p>Default: <code>CUSTOMER</code> </p>"
         }
       },
       "documentation":"<p>Defines an association between logging destinations and a web ACL resource, for logging from WAF. As part of the association, you can specify parts of the standard logging fields to keep out of the logs and you can specify filters so that you log only a subset of the logging records. </p> <note> <p>You can define one logging destination per web ACL.</p> </note> <p>You can access information about the traffic that WAF inspects using the following steps:</p> <ol> <li> <p>Create your logging destination. You can use an Amazon CloudWatch Logs log group, an Amazon Simple Storage Service (Amazon S3) bucket, or an Amazon Kinesis Data Firehose. </p> <p>The name that you give the destination must start with <code>aws-waf-logs-</code>. Depending on the type of destination, you might need to configure additional settings or permissions. </p> <p>For configuration requirements and pricing information for each destination type, see <a href=\"https://docs.aws.amazon.com/waf/latest/developerguide/logging.html\">Logging web ACL traffic</a> in the <i>WAF Developer Guide</i>.</p> </li> <li> <p>Associate your logging destination to your web ACL using a <code>PutLoggingConfiguration</code> request.</p> </li> </ol> <p>When you successfully enable logging using a <code>PutLoggingConfiguration</code> request, WAF creates an additional role or policy that is required to write logs to the logging destination. For an Amazon CloudWatch Logs log group, WAF creates a resource policy on the log group. For an Amazon S3 bucket, WAF creates a bucket policy. For an Amazon Kinesis Data Firehose, WAF creates a service-linked role.</p> <p>For additional information about web ACL logging, see <a href=\"https://docs.aws.amazon.com/waf/latest/developerguide/logging.html\">Logging web ACL traffic information</a> in the <i>WAF Developer Guide</i>.</p>"
@@ -6181,7 +6221,7 @@
       "members":{
         "SampledRequestsEnabled":{
           "shape":"Boolean",
-          "documentation":"<p>Indicates whether WAF should store a sampling of the web requests that match the rules. You can view the sampled requests through the WAF console. </p>"
+          "documentation":"<p>Indicates whether WAF should store a sampling of the web requests that match the rules. You can view the sampled requests through the WAF console. </p> <note> <p>Request sampling doesn't provide a field redaction option, and any field redaction that you specify in your logging configuration doesn't affect sampling. The only way to exclude fields from request sampling is by disabling sampling in the web ACL visibility configuration. </p> </note>"
         },
         "CloudWatchMetricsEnabled":{
           "shape":"Boolean",

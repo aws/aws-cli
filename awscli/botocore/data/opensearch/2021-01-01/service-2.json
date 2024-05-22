@@ -4,6 +4,7 @@
     "apiVersion":"2021-01-01",
     "endpointPrefix":"es",
     "protocol":"rest-json",
+    "protocols":["rest-json"],
     "serviceFullName":"Amazon OpenSearch Service",
     "serviceId":"OpenSearch",
     "signatureVersion":"v4",
@@ -2321,6 +2322,10 @@
         "Description":{
           "shape":"DataSourceDescription",
           "documentation":"<p>A description of the data source.</p>"
+        },
+        "Status":{
+          "shape":"DataSourceStatus",
+          "documentation":"<p>The status of the data source.</p>"
         }
       },
       "documentation":"<p>Details about a direct-query data source.</p>"
@@ -2334,6 +2339,13 @@
       "max":80,
       "min":3,
       "pattern":"[a-z][a-z0-9_]+"
+    },
+    "DataSourceStatus":{
+      "type":"string",
+      "enum":[
+        "ACTIVE",
+        "DISABLED"
+      ]
     },
     "DataSourceType":{
       "type":"structure",
@@ -3500,7 +3512,7 @@
         },
         "DomainEndpointV2HostedZoneId":{
           "shape":"HostedZoneId",
-          "documentation":"<p>The DualStack Hosted Zone Id for the domain. </p>"
+          "documentation":"<p>The dual stack hosted zone ID for the domain. </p>"
         },
         "Processing":{
           "shape":"Boolean",
@@ -3889,6 +3901,10 @@
         "Description":{
           "shape":"DataSourceDescription",
           "documentation":"<p>A description of the data source.</p>"
+        },
+        "Status":{
+          "shape":"DataSourceStatus",
+          "documentation":"<p>The status of the data source response.</p>"
         }
       },
       "documentation":"<p>The result of a <code>GetDataSource</code> operation.</p>"
@@ -6243,6 +6259,10 @@
         "Description":{
           "shape":"DataSourceDescription",
           "documentation":"<p>A new description of the data source.</p>"
+        },
+        "Status":{
+          "shape":"DataSourceStatus",
+          "documentation":"<p>The status of the data source update request.</p>"
         }
       },
       "documentation":"<p>Container for the parameters to the <code>UpdateDataSource</code> operation.</p>"

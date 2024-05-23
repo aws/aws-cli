@@ -330,7 +330,7 @@ def test_client_context_param_sent_to_endpoint_resolver(
         ),
     )
 
-    # Stub client to prevent a request from getting sent and asceertain that
+    # Stub client to prevent a request from getting sent and ascertain that
     # only a single request would get sent. Wrap the EndpointProvider's
     # resolve_endpoint method for inspecting the arguments it gets called with.
     with ClientHTTPStubber(client, strict=True) as http_stubber:
@@ -475,3 +475,37 @@ def test_dynamic_context_param_sent_to_endpoint_resolver(
         )
     else:
         mock_resolve_endpoint.assert_called_once_with(Region='us-east-1')
+
+def test_dynamic_context_param_from_event_handler_sent_to_endpoint_resolver(
+    monkeypatch,
+    patched_session,
+):
+    # patch loader to return fake service model and fake endpoint ruleset
+    patch_load_service_model(
+        patched_session,
+        monkeypatch,
+        FAKE_MODEL_WITH_DYNAMIC_CONTEXT_PARAM,
+        FAKE_RULESET_WITH_DYNAMIC_CONTEXT_PARAM,
+    )
+    # event handler for provide-client-params that modifies the value of the
+    # MockOpParam parameter
+    def change_param(params, **kwargs):
+        params['MockOpParam'] = 'mock-op-param-value-2'
+    client = patched_session.create_client(
+        'otherservice', region_name='us-east-1'
+    )
+    client.meta.events.register_last(
+        'provide-client-params.other-service.*', change_param
+    )
+    with ClientHTTPStubber(client, strict=True) as http_stubber:
+        http_stubber.add_response(status=200)
+        with mock.patch.object(
+            client._ruleset_resolver._provider,
+            'resolve_endpoint',
+            wraps=client._ruleset_resolver._provider.resolve_endpoint,
+        ) as mock_resolve_endpoint:
+            client.mock_operation(MockOpParam='mock-op-param-value-1')
+    mock_resolve_endpoint.assert_called_once_with(
+        Region='us-east-1',
+        FooDynamicContextParamName='mock-op-param-value-2',
+    )

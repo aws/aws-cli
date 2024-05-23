@@ -868,6 +868,33 @@ class TestGenerateUrl(unittest.TestCase):
                 'the following kwargs emitted: %s' % kwargs
             )
 
+    def test_context_param_from_event_handler_sent_to_endpoint_resolver(self):
+        def change_bucket_param(params, **kwargs):
+            params['Bucket'] = 'mybucket-bar'
+        self.client.meta.events.register_last(
+            'provide-client-params.s3.*', change_bucket_param
+        )
+        self.client.generate_presigned_url(
+            'get_object', Params={'Bucket': 'mybucket-foo', 'Key': self.key}
+        )
+        ref_request_dict = {
+            'body': b'',
+            # If the bucket name set in the provide-client-params event handler
+            # was correctly passed to the endpoint provider as a dynamic context
+            # parameter, it will appear in the URL and the auth_path:
+            'url': 'https://mybucket-bar.s3.us-east-1.amazonaws.com/mykey',
+            'headers': {},
+            'auth_path': '/mybucket-bar/mykey',
+            'query_string': {},
+            'url_path': '/mykey',
+            'method': 'GET',
+            'context': mock.ANY,
+        }
+        self.generate_url_mock.assert_called_with(
+            request_dict=ref_request_dict,
+            expires_in=3600,
+            operation_name='GetObject',
+        )
 
 class TestGeneratePresignedPost(unittest.TestCase):
     def setUp(self):

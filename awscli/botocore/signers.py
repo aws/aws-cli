@@ -614,6 +614,11 @@ def generate_presigned_url(self, ClientMethod, Params=None, ExpiresIn=3600,
 
     operation_model = self.meta.service_model.operation_model(
         operation_name)
+    params = self._emit_api_params(
+        api_params=params,
+        operation_model=operation_model,
+        context=context,
+    )
     bucket_is_arn = ArnParser.is_arn(params.get('Bucket', ''))
     (
         endpoint_url,
@@ -738,7 +743,11 @@ def generate_presigned_post(self, Bucket, Key, Fields=None, Conditions=None,
     # serialized to what a presign post requires.
     operation_model = self.meta.service_model.operation_model(
         'CreateBucket')
-    params = {'Bucket': bucket}
+    params = self._emit_api_params(
+        api_params={'Bucket': bucket},
+        operation_model=operation_model,
+        context=context,
+    )
     bucket_is_arn = ArnParser.is_arn(params.get('Bucket', ''))
     (
         endpoint_url,

@@ -2,6 +2,13 @@
 CHANGELOG
 =========
 
+2.15.57
+=======
+
+* api-change:``emr-serverless``: This release adds the capability to run interactive workloads using Apache Livy Endpoint.
+* api-change:``opsworks``: Documentation-only update for OpsWorks Stacks.
+
+
 2.15.56
 =======
 

@@ -3,8 +3,8 @@
   "metadata":{
     "apiVersion":"2021-07-13",
     "endpointPrefix":"emr-serverless",
-    "jsonVersion":"1.1",
     "protocol":"rest-json",
+    "protocols":["rest-json"],
     "serviceFullName":"EMR Serverless",
     "serviceId":"EMR Serverless",
     "signatureVersion":"v4",
@@ -350,7 +350,11 @@
           "shape":"ConfigurationList",
           "documentation":"<p>The <a href=\"https://docs.aws.amazon.com/emr-serverless/latest/APIReference/API_Configuration.html\">Configuration</a> specifications of an application. Each configuration consists of a classification and properties. You use this parameter when creating or updating an application. To see the runtimeConfiguration object of an application, run the <a href=\"https://docs.aws.amazon.com/emr-serverless/latest/APIReference/API_GetApplication.html\">GetApplication</a> API operation.</p>"
         },
-        "monitoringConfiguration":{"shape":"MonitoringConfiguration"}
+        "monitoringConfiguration":{"shape":"MonitoringConfiguration"},
+        "interactiveConfiguration":{
+          "shape":"InteractiveConfiguration",
+          "documentation":"<p>The interactive configuration object that enables the interactive use cases for an application.</p>"
+        }
       },
       "documentation":"<p>Information about an application. Amazon EMR Serverless uses applications to run jobs.</p>"
     },
@@ -699,6 +703,10 @@
         "monitoringConfiguration":{
           "shape":"MonitoringConfiguration",
           "documentation":"<p>The configuration setting for monitoring.</p>"
+        },
+        "interactiveConfiguration":{
+          "shape":"InteractiveConfiguration",
+          "documentation":"<p>The interactive configuration object that enables the interactive use cases to use when running an application.</p>"
         }
       }
     },
@@ -971,6 +979,20 @@
     "Integer":{
       "type":"integer",
       "box":true
+    },
+    "InteractiveConfiguration":{
+      "type":"structure",
+      "members":{
+        "studioEnabled":{
+          "shape":"Boolean",
+          "documentation":"<p>Enables you to connect an application to Amazon EMR Studio to run interactive workloads in a notebook.</p>"
+        },
+        "livyEndpointEnabled":{
+          "shape":"Boolean",
+          "documentation":"<p>Enables an Apache Livy endpoint that you can connect to and run interactive jobs.</p>"
+        }
+      },
+      "documentation":"<p>The configuration to use to enable the different types of interactive use cases in an application.</p>"
     },
     "InternalServerException":{
       "type":"structure",
@@ -1845,6 +1867,10 @@
         "workerTypeSpecifications":{
           "shape":"WorkerTypeSpecificationInputMap",
           "documentation":"<p>The key-value pairs that specify worker type to <code>WorkerTypeSpecificationInput</code>. This parameter must contain all valid worker types for a Spark or Hive application. Valid worker types include <code>Driver</code> and <code>Executor</code> for Spark applications and <code>HiveDriver</code> and <code>TezTask</code> for Hive applications. You can either set image details in this parameter for each worker type, or in <code>imageConfiguration</code> for all worker types.</p>"
+        },
+        "interactiveConfiguration":{
+          "shape":"InteractiveConfiguration",
+          "documentation":"<p>The interactive configuration object that contains new interactive use cases when the application is updated.</p>"
         },
         "releaseLabel":{
           "shape":"ReleaseLabel",

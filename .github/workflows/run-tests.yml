@@ -12,7 +12,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        python-version: ["3.8", "3.9", "3.10", "3.11", "3.12"]
+        python-version: ["3.8", "3.9", "3.10", "3.11", "3.12", "3.13"]
         os: [ubuntu-latest, macOS-latest, windows-latest]
         # Python 3.8 and 3.9 do not run on m1 hardware which is now standard for
         # macOS-latest.
@@ -30,6 +30,8 @@ jobs:
       uses: actions/setup-python@v5
       with:
         python-version: ${{ matrix.python-version }}
+        cache: 'pip'
+        allow-prereleases: true
     - name: Install dependencies
       run: |
         python scripts/ci/install

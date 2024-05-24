@@ -1419,7 +1419,7 @@
         },
         "signalCatalogArn":{
           "shape":"arn",
-          "documentation":"<p>(Optional) The Amazon Resource Name (ARN) of the signal catalog to associate with the campaign. </p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of the signal catalog to associate with the campaign. </p>"
         },
         "targetArn":{
           "shape":"arn",
@@ -3251,6 +3251,14 @@
           "shape":"arn",
           "documentation":"<p> The Amazon Resource Name (ARN) of a vehicle model (model manifest). You can use this optional parameter to list only the vehicles created from a certain vehicle model. </p>"
         },
+        "attributeNames":{
+          "shape":"attributeNamesList",
+          "documentation":"<p>The fully qualified names of the attributes. For example, the fully qualified name of an attribute might be <code>Vehicle.Body.Engine.Type</code>.</p>"
+        },
+        "attributeValues":{
+          "shape":"attributeValuesList",
+          "documentation":"<p>Static information about a vehicle attribute value in string format. For example:</p> <p> <code>\"1.3 L R2\"</code> </p>"
+        },
         "nextToken":{
           "shape":"nextToken",
           "documentation":"<p>A pagination token for the next set of results.</p> <p>If the results of a search are large, only a portion of the results are returned, and a <code>nextToken</code> pagination token is returned in the response. To retrieve the next set of results, reissue the search request and include the returned token. When all results have been returned, the response does not contain a pagination token value. </p>"
@@ -4884,7 +4892,19 @@
       "min":1,
       "pattern":"[a-zA-Z0-9_.-]+"
     },
+    "attributeNamesList":{
+      "type":"list",
+      "member":{"shape":"attributeName"},
+      "max":5,
+      "min":1
+    },
     "attributeValue":{"type":"string"},
+    "attributeValuesList":{
+      "type":"list",
+      "member":{"shape":"attributeValue"},
+      "max":5,
+      "min":1
+    },
     "attributesMap":{
       "type":"map",
       "key":{"shape":"attributeName"},

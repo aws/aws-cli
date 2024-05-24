@@ -2,6 +2,15 @@
 CHANGELOG
 =========
 
+2.15.58
+=======
+
+* api-change:``dynamodb``: Documentation only updates for DynamoDB.
+* bugfix:endpoints: Include params set in provide-client-param event handlers in dynamic context params for endpoint resolution.
+* api-change:``iotfleetwise``: AWS IoT FleetWise now supports listing vehicles with attributes filter, ListVehicles API is updated to support additional attributes filter.
+* api-change:``managedblockchain``: This is a minor documentation update to address the impact of the shut down of the Goerli and Polygon networks.
+
+
 2.15.57
 =======
 

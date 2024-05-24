@@ -74,6 +74,19 @@ class TestConfigureGetCommand(unittest.TestCase):
         rendered = stream.getvalue()
         self.assertEqual(rendered.strip(), 'access_key')
 
+    def test_get_from_session(self):
+        """Validate config items from an sso-session can be read."""
+        session = FakeSession({})
+        session.full_config = {
+            'sso-sessions': {'testing-sso': {'sso_start_url': 'https://dummy-sso-url'}}}
+        stream, error_stream, config_get = self.create_command(session)
+        config_get = ConfigureGetCommand(session, stream)
+        config_get(args=['sso-session.testing-sso.sso_start_url'],
+                   parsed_globals=None)
+        rendered = stream.getvalue()
+        self.assertEqual(rendered.strip(), 'https://dummy-sso-url')
+
+
     def test_get_nested_attribute(self):
         session = FakeSession({})
         session.full_config = {

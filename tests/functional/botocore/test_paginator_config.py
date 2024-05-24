@@ -27,11 +27,6 @@ MEMBER_NAME_CHARS = set(string.ascii_letters + string.digits)
 # to reference all the extra output keys. Nothing should ever be added to this
 # list, it represents all the current released paginators that fail this test.
 KNOWN_EXTRA_OUTPUT_KEYS = [
-    'alexaforbusiness.SearchUsers.TotalCount',
-    'alexaforbusiness.SearchProfiles.TotalCount',
-    'alexaforbusiness.SearchSkillGroups.TotalCount',
-    'alexaforbusiness.SearchDevices.TotalCount',
-    'alexaforbusiness.SearchRooms.TotalCount',
     'apigateway.GetApiKeys.warnings',
     'apigateway.GetUsage.usagePlanId',
     'apigateway.GetUsage.startDate',

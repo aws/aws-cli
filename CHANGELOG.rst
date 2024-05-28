@@ -2,6 +2,15 @@
 CHANGELOG
 =========
 
+1.32.114
+========
+
+* api-change:``dynamodb``: Doc-only update for DynamoDB. Specified the IAM actions needed to authorize a user to create a table with a resource-based policy.
+* api-change:``ec2``: Providing support to accept BgpAsnExtended attribute
+* api-change:``kafka``: Adds ControllerNodeInfo in ListNodes response to support Raft mode for MSK
+* api-change:``swf``: This release adds new APIs for deleting activity type and workflow type resources.
+
+
 1.32.113
 ========
 

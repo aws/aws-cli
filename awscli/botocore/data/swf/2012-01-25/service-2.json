@@ -5,6 +5,7 @@
     "endpointPrefix":"swf",
     "jsonVersion":"1.0",
     "protocol":"json",
+    "protocols":["json"],
     "serviceAbbreviation":"Amazon SWF",
     "serviceFullName":"Amazon Simple Workflow Service",
     "serviceId":"SWF",
@@ -69,6 +70,34 @@
       ],
       "documentation":"<p>Returns the estimated number of decision tasks in the specified task list. The count returned is an approximation and isn't guaranteed to be exact. If you specify a task list that no decision task was ever scheduled in then <code>0</code> is returned.</p> <p> <b>Access Control</b> </p> <p>You can use IAM policies to control this action's access to Amazon SWF resources as follows:</p> <ul> <li> <p>Use a <code>Resource</code> element with the domain name to limit the action to only specified domains.</p> </li> <li> <p>Use an <code>Action</code> element to allow or deny permission to call this action.</p> </li> <li> <p>Constrain the <code>taskList.name</code> parameter by using a <code>Condition</code> element with the <code>swf:taskList.name</code> key to allow the action to access only certain task lists.</p> </li> </ul> <p>If the caller doesn't have sufficient permissions to invoke the action, or the parameter values fall outside the specified constraints, the action fails. The associated event attribute's <code>cause</code> parameter is set to <code>OPERATION_NOT_PERMITTED</code>. For details and example IAM policies, see <a href=\"https://docs.aws.amazon.com/amazonswf/latest/developerguide/swf-dev-iam.html\">Using IAM to Manage Access to Amazon SWF Workflows</a> in the <i>Amazon SWF Developer Guide</i>.</p>"
     },
+    "DeleteActivityType":{
+      "name":"DeleteActivityType",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DeleteActivityTypeInput"},
+      "errors":[
+        {"shape":"UnknownResourceFault"},
+        {"shape":"TypeNotDeprecatedFault"},
+        {"shape":"OperationNotPermittedFault"}
+      ],
+      "documentation":"<p>Deletes the specified <i>activity type</i>.</p> <p>Note: Prior to deletion, activity types must first be <b>deprecated</b>. </p> <p> After an activity type has been deleted, you cannot schedule new activities of that type. Activities that started before the type was deleted will continue to run. </p> <p> <b>Access Control</b> </p> <p>You can use IAM policies to control this action's access to Amazon SWF resources as follows:</p> <ul> <li> <p>Use a <code>Resource</code> element with the domain name to limit the action to only specified domains.</p> </li> <li> <p>Use an <code>Action</code> element to allow or deny permission to call this action.</p> </li> <li> <p>Constrain the following parameters by using a <code>Condition</code> element with the appropriate keys.</p> <ul> <li> <p> <code>activityType.name</code>: String constraint. The key is <code>swf:activityType.name</code>.</p> </li> <li> <p> <code>activityType.version</code>: String constraint. The key is <code>swf:activityType.version</code>.</p> </li> </ul> </li> </ul> <p>If the caller doesn't have sufficient permissions to invoke the action, or the parameter values fall outside the specified constraints, the action fails. The associated event attribute's <code>cause</code> parameter is set to <code>OPERATION_NOT_PERMITTED</code>. For details and example IAM policies, see <a href=\"https://docs.aws.amazon.com/amazonswf/latest/developerguide/swf-dev-iam.html\">Using IAM to Manage Access to Amazon SWF Workflows</a> in the <i>Amazon SWF Developer Guide</i>.</p>"
+    },
+    "DeleteWorkflowType":{
+      "name":"DeleteWorkflowType",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DeleteWorkflowTypeInput"},
+      "errors":[
+        {"shape":"UnknownResourceFault"},
+        {"shape":"TypeNotDeprecatedFault"},
+        {"shape":"OperationNotPermittedFault"}
+      ],
+      "documentation":"<p>Deletes the specified <i>workflow type</i>.</p> <p>Note: Prior to deletion, workflow types must first be <b>deprecated</b>.</p> <p> After a workflow type has been deleted, you cannot create new executions of that type. Executions that started before the type was deleted will continue to run. </p> <p> <b>Access Control</b> </p> <p>You can use IAM policies to control this action's access to Amazon SWF resources as follows:</p> <ul> <li> <p>Use a <code>Resource</code> element with the domain name to limit the action to only specified domains.</p> </li> <li> <p>Use an <code>Action</code> element to allow or deny permission to call this action.</p> </li> <li> <p>Constrain the following parameters by using a <code>Condition</code> element with the appropriate keys.</p> <ul> <li> <p> <code>workflowType.name</code>: String constraint. The key is <code>swf:workflowType.name</code>.</p> </li> <li> <p> <code>workflowType.version</code>: String constraint. The key is <code>swf:workflowType.version</code>.</p> </li> </ul> </li> </ul> <p>If the caller doesn't have sufficient permissions to invoke the action, or the parameter values fall outside the specified constraints, the action fails. The associated event attribute's <code>cause</code> parameter is set to <code>OPERATION_NOT_PERMITTED</code>. For details and example IAM policies, see <a href=\"https://docs.aws.amazon.com/amazonswf/latest/developerguide/swf-dev-iam.html\">Using IAM to Manage Access to Amazon SWF Workflows</a> in the <i>Amazon SWF Developer Guide</i>.</p>"
+    },
     "DeprecateActivityType":{
       "name":"DeprecateActivityType",
       "http":{
@@ -81,7 +110,7 @@
         {"shape":"TypeDeprecatedFault"},
         {"shape":"OperationNotPermittedFault"}
       ],
-      "documentation":"<p>Deprecates the specified <i>activity type</i>. After an activity type has been deprecated, you cannot create new tasks of that activity type. Tasks of this type that were scheduled before the type was deprecated continue to run.</p> <note> <p>This operation is eventually consistent. The results are best effort and may not exactly reflect recent updates and changes.</p> </note> <p> <b>Access Control</b> </p> <p>You can use IAM policies to control this action's access to Amazon SWF resources as follows:</p> <ul> <li> <p>Use a <code>Resource</code> element with the domain name to limit the action to only specified domains.</p> </li> <li> <p>Use an <code>Action</code> element to allow or deny permission to call this action.</p> </li> <li> <p>Constrain the following parameters by using a <code>Condition</code> element with the appropriate keys.</p> <ul> <li> <p> <code>activityType.name</code>: String constraint. The key is <code>swf:activityType.name</code>.</p> </li> <li> <p> <code>activityType.version</code>: String constraint. The key is <code>swf:activityType.version</code>.</p> </li> </ul> </li> </ul> <p>If the caller doesn't have sufficient permissions to invoke the action, or the parameter values fall outside the specified constraints, the action fails. The associated event attribute's <code>cause</code> parameter is set to <code>OPERATION_NOT_PERMITTED</code>. For details and example IAM policies, see <a href=\"https://docs.aws.amazon.com/amazonswf/latest/developerguide/swf-dev-iam.html\">Using IAM to Manage Access to Amazon SWF Workflows</a> in the <i>Amazon SWF Developer Guide</i>.</p>"
+      "documentation":"<p>Deprecates the specified <i>activity type</i>. After an activity type has been deprecated, you cannot create new tasks of that activity type. Tasks of this type that were scheduled before the type was deprecated continue to run.</p> <p> <b>Access Control</b> </p> <p>You can use IAM policies to control this action's access to Amazon SWF resources as follows:</p> <ul> <li> <p>Use a <code>Resource</code> element with the domain name to limit the action to only specified domains.</p> </li> <li> <p>Use an <code>Action</code> element to allow or deny permission to call this action.</p> </li> <li> <p>Constrain the following parameters by using a <code>Condition</code> element with the appropriate keys.</p> <ul> <li> <p> <code>activityType.name</code>: String constraint. The key is <code>swf:activityType.name</code>.</p> </li> <li> <p> <code>activityType.version</code>: String constraint. The key is <code>swf:activityType.version</code>.</p> </li> </ul> </li> </ul> <p>If the caller doesn't have sufficient permissions to invoke the action, or the parameter values fall outside the specified constraints, the action fails. The associated event attribute's <code>cause</code> parameter is set to <code>OPERATION_NOT_PERMITTED</code>. For details and example IAM policies, see <a href=\"https://docs.aws.amazon.com/amazonswf/latest/developerguide/swf-dev-iam.html\">Using IAM to Manage Access to Amazon SWF Workflows</a> in the <i>Amazon SWF Developer Guide</i>.</p>"
     },
     "DeprecateDomain":{
       "name":"DeprecateDomain",
@@ -1646,6 +1675,40 @@
       },
       "documentation":"<p>The <code>StartWorkflowExecution</code> API action was called without the required parameters set.</p> <p>Some workflow execution parameters, such as the decision <code>taskList</code>, must be set to start the execution. However, these parameters might have been set as defaults when the workflow type was registered. In this case, you can omit these parameters from the <code>StartWorkflowExecution</code> call and Amazon SWF uses the values defined in the workflow type.</p> <note> <p>If these parameters aren't set and no default parameters were defined in the workflow type, this error is displayed.</p> </note>",
       "exception":true
+    },
+    "DeleteActivityTypeInput":{
+      "type":"structure",
+      "required":[
+        "domain",
+        "activityType"
+      ],
+      "members":{
+        "domain":{
+          "shape":"DomainName",
+          "documentation":"<p>The name of the domain in which the activity type is registered.</p>"
+        },
+        "activityType":{
+          "shape":"ActivityType",
+          "documentation":"<p>The activity type to delete.</p>"
+        }
+      }
+    },
+    "DeleteWorkflowTypeInput":{
+      "type":"structure",
+      "required":[
+        "domain",
+        "workflowType"
+      ],
+      "members":{
+        "domain":{
+          "shape":"DomainName",
+          "documentation":"<p>The name of the domain in which the workflow type is registered.</p>"
+        },
+        "workflowType":{
+          "shape":"WorkflowType",
+          "documentation":"<p>The workflow type to delete.</p>"
+        }
+      }
     },
     "DeprecateActivityTypeInput":{
       "type":"structure",
@@ -4052,6 +4115,14 @@
         }
       },
       "documentation":"<p>Returned when the specified activity or workflow type was already deprecated.</p>",
+      "exception":true
+    },
+    "TypeNotDeprecatedFault":{
+      "type":"structure",
+      "members":{
+        "message":{"shape":"ErrorMessage"}
+      },
+      "documentation":"<p>Returned when the resource type has not been deprecated.</p>",
       "exception":true
     },
     "UndeprecateActivityTypeInput":{

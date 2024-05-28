@@ -12532,7 +12532,7 @@
       "members":{
         "BgpAsn":{
           "shape":"Integer",
-          "documentation":"<p>For devices that support BGP, the customer gateway's BGP ASN.</p> <p>Default: 65000</p>"
+          "documentation":"<p>For customer gateway devices that support BGP, specify the device's ASN. You must specify either <code>BgpAsn</code> or <code>BgpAsnExtended</code> when creating the customer gateway. If the ASN is larger than <code>2,147,483,647</code>, you must use <code>BgpAsnExtended</code>.</p> <p>Default: 65000</p> <p>Valid values: <code>1</code> to <code>2,147,483,647</code> </p>"
         },
         "PublicIp":{
           "shape":"String",
@@ -12557,12 +12557,16 @@
         },
         "IpAddress":{
           "shape":"String",
-          "documentation":"<p> IPv4 address for the customer gateway device's outside interface. The address must be static. </p>"
+          "documentation":"<p>IPv4 address for the customer gateway device's outside interface. The address must be static. If <code>OutsideIpAddressType</code> in your VPN connection options is set to <code>PrivateIpv4</code>, you can use an RFC6598 or RFC1918 private IPv4 address. If <code>OutsideIpAddressType</code> is set to <code>PublicIpv4</code>, you can use a public IPv4 address. </p>"
         },
         "DryRun":{
           "shape":"Boolean",
           "documentation":"<p>Checks whether you have the required permissions for the action, without actually making the request, and provides an error response. If you have the required permissions, the error response is <code>DryRunOperation</code>. Otherwise, it is <code>UnauthorizedOperation</code>.</p>",
           "locationName":"dryRun"
+        },
+        "BgpAsnExtended":{
+          "shape":"Long",
+          "documentation":"<p>For customer gateway devices that support BGP, specify the device's ASN. You must specify either <code>BgpAsn</code> or <code>BgpAsnExtended</code> when creating the customer gateway. If the ASN is larger than <code>2,147,483,647</code>, you must use <code>BgpAsnExtended</code>.</p> <p>Valid values: <code>2,147,483,648</code> to <code>4,294,967,295</code> </p>"
         }
       },
       "documentation":"<p>Contains the parameters for CreateCustomerGateway.</p>"
@@ -16388,7 +16392,7 @@
       "members":{
         "BgpAsn":{
           "shape":"String",
-          "documentation":"<p>The customer gateway's Border Gateway Protocol (BGP) Autonomous System Number (ASN).</p>",
+          "documentation":"<p>The customer gateway device's Border Gateway Protocol (BGP) Autonomous System Number (ASN).</p> <p>Valid values: <code>1</code> to <code>2,147,483,647</code> </p>",
           "locationName":"bgpAsn"
         },
         "CustomerGatewayId":{
@@ -16398,7 +16402,7 @@
         },
         "IpAddress":{
           "shape":"String",
-          "documentation":"<p>The IP address of the customer gateway device's outside interface.</p>",
+          "documentation":"<p> IPv4 address for the customer gateway device's outside interface. The address must be static. If <code>OutsideIpAddressType</code> in your VPN connection options is set to <code>PrivateIpv4</code>, you can use an RFC6598 or RFC1918 private IPv4 address. If <code>OutsideIpAddressType</code> is set to <code>PublicIpv4</code>, you can use a public IPv4 address. </p>",
           "locationName":"ipAddress"
         },
         "CertificateArn":{
@@ -16425,6 +16429,11 @@
           "shape":"TagList",
           "documentation":"<p>Any tags assigned to the customer gateway.</p>",
           "locationName":"tagSet"
+        },
+        "BgpAsnExtended":{
+          "shape":"String",
+          "documentation":"<p>The customer gateway device's Border Gateway Protocol (BGP) Autonomous System Number (ASN).</p> <p>Valid values: <code>2,147,483,648</code> to <code>4,294,967,295</code> </p>",
+          "locationName":"bgpAsnExtended"
         }
       },
       "documentation":"<p>Describes a customer gateway.</p>"

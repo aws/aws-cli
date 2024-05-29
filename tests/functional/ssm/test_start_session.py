@@ -13,6 +13,7 @@
 import errno
 import json
 
+from awscli.clidriver import AWSCLIEntryPoint
 from awscli.testutils import BaseAWSCommandParamsTest
 from awscli.testutils import BaseAWSHelpOutputTest
 from awscli.testutils import create_clidriver, mock, temporary_file
@@ -140,6 +141,7 @@ class TestSessionManager(BaseAWSCommandParamsTest):
             expected_env.update({ssm_env_name: json.dumps(expected_response)})
 
             self.driver = create_clidriver()
+            self.entry_point = AWSCLIEntryPoint(self.driver)
             self.run_cmd(cmdline, expected_rc=0)
 
         self.assertEqual(self.operations_called[0][0].name,
@@ -198,6 +200,7 @@ class TestSessionManager(BaseAWSCommandParamsTest):
             expected_env.update({ssm_env_name: json.dumps(expected_response)})
 
             self.driver = create_clidriver()
+            self.entry_point = AWSCLIEntryPoint(self.driver)
             self.run_cmd(cmdline, expected_rc=0)
 
         self.assertEqual(self.operations_called[0][0].name,
@@ -253,6 +256,7 @@ class TestSessionManager(BaseAWSCommandParamsTest):
             expected_env.update({ssm_env_name: json.dumps(expected_response)})
 
             self.driver = create_clidriver()
+            self.entry_point = AWSCLIEntryPoint(self.driver)
             self.run_cmd(cmdline, expected_rc=0)
 
         self.assertEqual(self.operations_called[0][0].name,
@@ -292,6 +296,7 @@ class TestSessionManager(BaseAWSCommandParamsTest):
 
             try:
                 self.driver = create_clidriver()
+                self.entry_point = AWSCLIEntryPoint(self.driver)
                 self.run_cmd(cmdline, expected_rc=255)
             except ProfileNotFound as e:
                 self.assertIn(

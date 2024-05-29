@@ -5,6 +5,7 @@
     "endpointPrefix":"athena",
     "jsonVersion":"1.1",
     "protocol":"json",
+    "protocols":["json"],
     "serviceFullName":"Amazon Athena",
     "serviceId":"Athena",
     "signatureVersion":"v4",
@@ -462,7 +463,7 @@
         {"shape":"InternalServerException"},
         {"shape":"InvalidRequestException"}
       ],
-      "documentation":"<p>Returns query execution runtime statistics related to a single execution of a query if you have access to the workgroup in which the query ran. Query execution runtime statistics are returned only when <a>QueryExecutionStatus$State</a> is in a SUCCEEDED or FAILED state. Stage-level input and output row count and data size statistics are not shown when a query has row-level filters defined in Lake Formation.</p>"
+      "documentation":"<p>Returns query execution runtime statistics related to a single execution of a query if you have access to the workgroup in which the query ran. Statistics from the <code>Timeline</code> section of the response object are available as soon as <a>QueryExecutionStatus$State</a> is in a SUCCEEDED or FAILED state. The remaining non-timeline statistics in the response (like stage-level input and output row count and data size) are updated asynchronously and may not be available immediately after a query completes. The non-timeline statistics are also not included when a query has row-level filters defined in Lake Formation.</p>"
     },
     "GetSession":{
       "name":"GetSession",
@@ -3453,7 +3454,7 @@
       "type":"string",
       "max":255,
       "min":1,
-      "pattern":"[\\u0020-\\uD7FF\\uE000-\\uFFFD\\uD800\\uDC00-\\uDBFF\\uDFFF\\t]+"
+      "pattern":"(?!.*[/:\\\\])[\\u0020-\\uD7FF\\uE000-\\uFFFD\\uD800\\uDC00-\\uDBFF\\uDFFF\\t]+"
     },
     "NotebookSessionSummary":{
       "type":"structure",
@@ -3916,7 +3917,7 @@
       "members":{
         "OutputLocation":{
           "shape":"ResultOutputLocation",
-          "documentation":"<p>The location in Amazon S3 where your query and calculation results are stored, such as <code>s3://path/to/query/bucket/</code>. To run the query, you must specify the query results location using one of the ways: either for individual queries using either this setting (client-side), or in the workgroup, using <a>WorkGroupConfiguration</a>. If none of them is set, Athena issues an error that no output location is provided. For more information, see <a href=\"https://docs.aws.amazon.com/athena/latest/ug/querying.html\">Working with query results, recent queries, and output files</a>. If workgroup settings override client-side settings, then the query uses the settings specified for the workgroup. See <a>WorkGroupConfiguration$EnforceWorkGroupConfiguration</a>.</p>"
+          "documentation":"<p>The location in Amazon S3 where your query and calculation results are stored, such as <code>s3://path/to/query/bucket/</code>. To run the query, you must specify the query results location using one of the ways: either for individual queries using either this setting (client-side), or in the workgroup, using <a>WorkGroupConfiguration</a>. If none of them is set, Athena issues an error that no output location is provided. If workgroup settings override client-side settings, then the query uses the settings specified for the workgroup. See <a>WorkGroupConfiguration$EnforceWorkGroupConfiguration</a>.</p>"
         },
         "EncryptionConfiguration":{
           "shape":"EncryptionConfiguration",
@@ -3938,7 +3939,7 @@
       "members":{
         "OutputLocation":{
           "shape":"ResultOutputLocation",
-          "documentation":"<p>The location in Amazon S3 where your query and calculation results are stored, such as <code>s3://path/to/query/bucket/</code>. For more information, see <a href=\"https://docs.aws.amazon.com/athena/latest/ug/querying.html\">Working with query results, recent queries, and output files</a>. If workgroup settings override client-side settings, then the query uses the location for the query results and the encryption configuration that are specified for the workgroup. The \"workgroup settings override\" is specified in <code>EnforceWorkGroupConfiguration</code> (true/false) in the <code>WorkGroupConfiguration</code>. See <a>WorkGroupConfiguration$EnforceWorkGroupConfiguration</a>.</p>"
+          "documentation":"<p>The location in Amazon S3 where your query and calculation results are stored, such as <code>s3://path/to/query/bucket/</code>. If workgroup settings override client-side settings, then the query uses the location for the query results and the encryption configuration that are specified for the workgroup. The \"workgroup settings override\" is specified in <code>EnforceWorkGroupConfiguration</code> (true/false) in the <code>WorkGroupConfiguration</code>. See <a>WorkGroupConfiguration$EnforceWorkGroupConfiguration</a>.</p>"
         },
         "RemoveOutputLocation":{
           "shape":"BoxedBoolean",
@@ -4850,7 +4851,7 @@
       "members":{
         "ResultConfiguration":{
           "shape":"ResultConfiguration",
-          "documentation":"<p>The configuration for the workgroup, which includes the location in Amazon S3 where query and calculation results are stored and the encryption option, if any, used for query and calculation results. To run the query, you must specify the query results location using one of the ways: either in the workgroup using this setting, or for individual queries (client-side), using <a>ResultConfiguration$OutputLocation</a>. If none of them is set, Athena issues an error that no output location is provided. For more information, see <a href=\"https://docs.aws.amazon.com/athena/latest/ug/querying.html\">Working with query results, recent queries, and output files</a>.</p>"
+          "documentation":"<p>The configuration for the workgroup, which includes the location in Amazon S3 where query and calculation results are stored and the encryption option, if any, used for query and calculation results. To run the query, you must specify the query results location using one of the ways: either in the workgroup using this setting, or for individual queries (client-side), using <a>ResultConfiguration$OutputLocation</a>. If none of them is set, Athena issues an error that no output location is provided.</p>"
         },
         "EnforceWorkGroupConfiguration":{
           "shape":"BoxedBoolean",

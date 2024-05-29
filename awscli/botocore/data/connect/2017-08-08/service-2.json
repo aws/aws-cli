@@ -380,7 +380,7 @@
         {"shape":"IdempotencyException"},
         {"shape":"AccessDeniedException"}
       ],
-      "documentation":"<p>Claims an available phone number to your Amazon Connect instance or traffic distribution group. You can call this API only in the same Amazon Web Services Region where the Amazon Connect instance or traffic distribution group was created.</p> <p>For more information about how to use this operation, see <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/claim-phone-number.html\">Claim a phone number in your country</a> and <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/claim-phone-numbers-traffic-distribution-groups.html\">Claim phone numbers to traffic distribution groups</a> in the <i>Amazon Connect Administrator Guide</i>. </p> <important> <p>You can call the <a href=\"https://docs.aws.amazon.com/connect/latest/APIReference/API_SearchAvailablePhoneNumbers.html\">SearchAvailablePhoneNumbers</a> API for available phone numbers that you can claim. Call the <a href=\"https://docs.aws.amazon.com/connect/latest/APIReference/API_DescribePhoneNumber.html\">DescribePhoneNumber</a> API to verify the status of a previous <a href=\"https://docs.aws.amazon.com/connect/latest/APIReference/API_ClaimPhoneNumber.html\">ClaimPhoneNumber</a> operation.</p> </important> <p>If you plan to claim and release numbers frequently during a 30 day period, contact us for a service quota exception. Otherwise, it is possible you will be blocked from claiming and releasing any more numbers until 30 days past the oldest number released has expired.</p> <p>By default you can claim and release up to 200% of your maximum number of active phone numbers during any 30 day period. If you claim and release phone numbers using the UI or API during a rolling 30 day cycle that exceeds 200% of your phone number service level quota, you will be blocked from claiming any more numbers until 30 days past the oldest number released has expired. </p> <p>For example, if you already have 99 claimed numbers and a service level quota of 99 phone numbers, and in any 30 day period you release 99, claim 99, and then release 99, you will have exceeded the 200% limit. At that point you are blocked from claiming any more numbers until you open an Amazon Web Services support ticket.</p>"
+      "documentation":"<p>Claims an available phone number to your Amazon Connect instance or traffic distribution group. You can call this API only in the same Amazon Web Services Region where the Amazon Connect instance or traffic distribution group was created.</p> <p>For more information about how to use this operation, see <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/claim-phone-number.html\">Claim a phone number in your country</a> and <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/claim-phone-numbers-traffic-distribution-groups.html\">Claim phone numbers to traffic distribution groups</a> in the <i>Amazon Connect Administrator Guide</i>. </p> <important> <p>You can call the <a href=\"https://docs.aws.amazon.com/connect/latest/APIReference/API_SearchAvailablePhoneNumbers.html\">SearchAvailablePhoneNumbers</a> API for available phone numbers that you can claim. Call the <a href=\"https://docs.aws.amazon.com/connect/latest/APIReference/API_DescribePhoneNumber.html\">DescribePhoneNumber</a> API to verify the status of a previous <a href=\"https://docs.aws.amazon.com/connect/latest/APIReference/API_ClaimPhoneNumber.html\">ClaimPhoneNumber</a> operation.</p> </important> <p>If you plan to claim and release numbers frequently, contact us for a service quota exception. Otherwise, it is possible you will be blocked from claiming and releasing any more numbers until up to 180 days past the oldest number released has expired.</p> <p>By default you can claim and release up to 200% of your maximum number of active phone numbers. If you claim and release phone numbers using the UI or API during a rolling 180 day cycle that exceeds 200% of your phone number service level quota, you will be blocked from claiming any more numbers until 180 days past the oldest number released has expired. </p> <p>For example, if you already have 99 claimed numbers and a service level quota of 99 phone numbers, and in any 180 day period you release 99, claim 99, and then release 99, you will have exceeded the 200% limit. At that point you are blocked from claiming any more numbers until you open an Amazon Web Services support ticket.</p>"
     },
     "CompleteAttachedFileUpload":{
       "name":"CompleteAttachedFileUpload",
@@ -2915,7 +2915,7 @@
         {"shape":"IdempotencyException"},
         {"shape":"AccessDeniedException"}
       ],
-      "documentation":"<p>Releases a phone number previously claimed to an Amazon Connect instance or traffic distribution group. You can call this API only in the Amazon Web Services Region where the number was claimed.</p> <important> <p>To release phone numbers from a traffic distribution group, use the <code>ReleasePhoneNumber</code> API, not the Amazon Connect admin website.</p> <p>After releasing a phone number, the phone number enters into a cooldown period of 30 days. It cannot be searched for or claimed again until the period has ended. If you accidentally release a phone number, contact Amazon Web Services Support.</p> </important> <p>If you plan to claim and release numbers frequently during a 30 day period, contact us for a service quota exception. Otherwise, it is possible you will be blocked from claiming and releasing any more numbers until 30 days past the oldest number released has expired.</p> <p>By default you can claim and release up to 200% of your maximum number of active phone numbers during any 30 day period. If you claim and release phone numbers using the UI or API during a rolling 30 day cycle that exceeds 200% of your phone number service level quota, you will be blocked from claiming any more numbers until 30 days past the oldest number released has expired. </p> <p>For example, if you already have 99 claimed numbers and a service level quota of 99 phone numbers, and in any 30 day period you release 99, claim 99, and then release 99, you will have exceeded the 200% limit. At that point you are blocked from claiming any more numbers until you open an Amazon Web Services support ticket.</p>"
+      "documentation":"<p>Releases a phone number previously claimed to an Amazon Connect instance or traffic distribution group. You can call this API only in the Amazon Web Services Region where the number was claimed.</p> <important> <p>To release phone numbers from a traffic distribution group, use the <code>ReleasePhoneNumber</code> API, not the Amazon Connect admin website.</p> <p>After releasing a phone number, the phone number enters into a cooldown period for up to 180 days. It cannot be searched for or claimed again until the period has ended. If you accidentally release a phone number, contact Amazon Web Services Support.</p> </important> <p>If you plan to claim and release numbers frequently, contact us for a service quota exception. Otherwise, it is possible you will be blocked from claiming and releasing any more numbers until up to 180 days past the oldest number released has expired.</p> <p>By default you can claim and release up to 200% of your maximum number of active phone numbers. If you claim and release phone numbers using the UI or API during a rolling 180 day cycle that exceeds 200% of your phone number service level quota, you will be blocked from claiming any more numbers until 180 days past the oldest number released has expired. </p> <p>For example, if you already have 99 claimed numbers and a service level quota of 99 phone numbers, and in any 180 day period you release 99, claim 99, and then release 99, you will have exceeded the 200% limit. At that point you are blocked from claiming any more numbers until you open an Amazon Web Services support ticket.</p>"
     },
     "ReplicateInstance":{
       "name":"ReplicateInstance",
@@ -3381,7 +3381,7 @@
         {"shape":"ResourceNotFoundException"},
         {"shape":"InternalServiceException"}
       ],
-      "documentation":"<p>Ends the specified contact. Use this API to stop queued callbacks. It does not work for voice contacts that use the following initiation methods:</p> <ul> <li> <p>DISCONNECT</p> </li> <li> <p>TRANSFER</p> </li> <li> <p>QUEUE_TRANSFER</p> </li> </ul> <p>Chat and task contacts can be terminated in any state, regardless of initiation method.</p>"
+      "documentation":"<p>Ends the specified contact. Use this API to stop queued callbacks. It does not work for voice contacts that use the following initiation methods:</p> <ul> <li> <p>DISCONNECT</p> </li> <li> <p>TRANSFER</p> </li> <li> <p>QUEUE_TRANSFER</p> </li> <li> <p>EXTERNAL_OUTBOUND</p> </li> <li> <p>MONITOR</p> </li> </ul> <p>Chat and task contacts can be terminated in any state, regardless of initiation method.</p>"
     },
     "StopContactRecording":{
       "name":"StopContactRecording",
@@ -3708,7 +3708,7 @@
         {"shape":"ThrottlingException"},
         {"shape":"AccessDeniedException"}
       ],
-      "documentation":"<p>This API is in preview release for Amazon Connect and is subject to change.</p> <p>Updates routing priority and age on the contact (<b>QueuePriority</b> and <b>QueueTimeAdjustmentInSeconds</b>). These properties can be used to change a customer's position in the queue. For example, you can move a contact to the back of the queue by setting a lower routing priority relative to other contacts in queue; or you can move a contact to the front of the queue by increasing the routing age which will make the contact look artificially older and therefore higher up in the first-in-first-out routing order. Note that adjusting the routing age of a contact affects only its position in queue, and not its actual queue wait time as reported through metrics. These properties can also be updated by using <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/change-routing-priority.html\">the Set routing priority / age flow block</a>.</p>"
+      "documentation":"<p>Updates routing priority and age on the contact (<b>QueuePriority</b> and <b>QueueTimeAdjustmentInSeconds</b>). These properties can be used to change a customer's position in the queue. For example, you can move a contact to the back of the queue by setting a lower routing priority relative to other contacts in queue; or you can move a contact to the front of the queue by increasing the routing age which will make the contact look artificially older and therefore higher up in the first-in-first-out routing order. Note that adjusting the routing age of a contact affects only its position in queue, and not its actual queue wait time as reported through metrics. These properties can also be updated by using <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/change-routing-priority.html\">the Set routing priority / age flow block</a>.</p> <note> <p>Either <b>QueuePriority</b> or <b>QueueTimeAdjustmentInSeconds</b> should be provided within the request body, but not both.</p> </note>"
     },
     "UpdateContactSchedule":{
       "name":"UpdateContactSchedule",
@@ -4469,6 +4469,16 @@
       "min":1,
       "sensitive":true
     },
+    "AgentHierarchyGroup":{
+      "type":"structure",
+      "members":{
+        "Arn":{
+          "shape":"ARN",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the group.</p>"
+        }
+      },
+      "documentation":"<p>Information about an agent hierarchy group.</p>"
+    },
     "AgentHierarchyGroups":{
       "type":"structure",
       "members":{
@@ -4509,7 +4519,16 @@
         "AgentPauseDurationInSeconds":{
           "shape":"AgentPauseDurationInSeconds",
           "documentation":"<p>Agent pause duration for a contact in seconds.</p>"
-        }
+        },
+        "HierarchyGroups":{
+          "shape":"HierarchyGroups",
+          "documentation":"<p>The agent hierarchy groups for the agent.</p>"
+        },
+        "DeviceInfo":{
+          "shape":"DeviceInfo",
+          "documentation":"<p>Information regarding Agent’s device.</p>"
+        },
+        "Capabilities":{"shape":"ParticipantCapabilities"}
       },
       "documentation":"<p>Information about the agent who accepted the contact.</p>"
     },
@@ -4522,6 +4541,16 @@
     "AgentPauseDurationInSeconds":{
       "type":"integer",
       "min":0
+    },
+    "AgentQualityMetrics":{
+      "type":"structure",
+      "members":{
+        "Audio":{
+          "shape":"AudioQualityMetricsInfo",
+          "documentation":"<p>Information about the audio quality of the Agent</p>"
+        }
+      },
+      "documentation":"<p>Information about the quality of the Agent's media connection</p>"
     },
     "AgentResourceId":{
       "type":"string",
@@ -4748,6 +4777,25 @@
         }
       },
       "documentation":"<p>Configuration of the answering machine detection.</p>"
+    },
+    "AnsweringMachineDetectionStatus":{
+      "type":"string",
+      "enum":[
+        "ANSWERED",
+        "UNDETECTED",
+        "ERROR",
+        "HUMAN_ANSWERED",
+        "SIT_TONE_DETECTED",
+        "SIT_TONE_BUSY",
+        "SIT_TONE_INVALID_NUMBER",
+        "FAX_MACHINE_DETECTED",
+        "VOICEMAIL_BEEP",
+        "VOICEMAIL_NO_BEEP",
+        "AMD_UNRESOLVED",
+        "AMD_UNANSWERED",
+        "AMD_ERROR",
+        "AMD_NOT_APPLICABLE"
+      ]
     },
     "Application":{
       "type":"structure",
@@ -5325,6 +5373,28 @@
       },
       "documentation":"<p>A list of conditions which would be applied together with an <code>AND</code> condition.</p>"
     },
+    "AttributeCondition":{
+      "type":"structure",
+      "members":{
+        "Name":{
+          "shape":"PredefinedAttributeName",
+          "documentation":"<p>The name of predefined attribute.</p>"
+        },
+        "Value":{
+          "shape":"ProficiencyValue",
+          "documentation":"<p>The value of predefined attribute.</p>"
+        },
+        "ProficiencyLevel":{
+          "shape":"ProficiencyLevel",
+          "documentation":"<p>The proficiency level of the condition.</p>"
+        },
+        "ComparisonOperator":{
+          "shape":"ComparisonOperator",
+          "documentation":"<p>The operator of the condition.</p>"
+        }
+      },
+      "documentation":"<p>An object to specify the predefined attribute condition.</p>"
+    },
     "AttributeName":{
       "type":"string",
       "max":32767,
@@ -5358,6 +5428,21 @@
       },
       "documentation":"<p>Has audio-specific configurations as the operating parameter for Echo Reduction.</p>"
     },
+    "AudioQualityMetricsInfo":{
+      "type":"structure",
+      "members":{
+        "QualityScore":{
+          "shape":"AudioQualityScore",
+          "documentation":"<p>Number measuring the estimated quality of the media connection.</p>"
+        },
+        "PotentialQualityIssues":{
+          "shape":"PotentialAudioQualityIssues",
+          "documentation":"<p>List of potential issues causing degradation of quality on a media connection. If the service did not detect any potential quality issues the list is empty.</p> <p>Valid values: <code>HighPacketLoss</code> | <code>HighRoundTripTime</code> | <code>HighJitterBuffer</code> </p>"
+        }
+      },
+      "documentation":"<p>Contains information for score and potential quality issues for Audio</p>"
+    },
+    "AudioQualityScore":{"type":"float"},
     "AutoAccept":{"type":"boolean"},
     "AvailableNumberSummary":{
       "type":"structure",
@@ -5816,6 +5901,11 @@
       "type":"string",
       "enum":["LT"]
     },
+    "ComparisonOperator":{
+      "type":"string",
+      "max":127,
+      "min":1
+    },
     "CompleteAttachedFileUploadRequest":{
       "type":"structure",
       "required":[
@@ -5973,6 +6063,39 @@
         "Tags":{
           "shape":"ContactTagMap",
           "documentation":"<p>Tags associated with the contact. This contains both Amazon Web Services generated and user-defined tags.</p>"
+        },
+        "ConnectedToSystemTimestamp":{
+          "shape":"timestamp",
+          "documentation":"<p>The timestamp when customer endpoint connected to Amazon Connect.</p>"
+        },
+        "RoutingCriteria":{
+          "shape":"RoutingCriteria",
+          "documentation":"<p>Latest routing criteria on the contact.</p>"
+        },
+        "Customer":{
+          "shape":"Customer",
+          "documentation":"<p>Information about the Customer on the contact.</p>"
+        },
+        "Campaign":{"shape":"Campaign"},
+        "AnsweringMachineDetectionStatus":{
+          "shape":"AnsweringMachineDetectionStatus",
+          "documentation":"<p>Indicates how an <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/how-to-create-campaigns.html\">outbound campaign</a> call is actually disposed if the contact is connected to Amazon Connect.</p>"
+        },
+        "CustomerVoiceActivity":{
+          "shape":"CustomerVoiceActivity",
+          "documentation":"<p>Information about customer’s voice activity.</p>"
+        },
+        "QualityMetrics":{
+          "shape":"QualityMetrics",
+          "documentation":"<p>Information about the quality of the participant's media connection.</p>"
+        },
+        "DisconnectDetails":{
+          "shape":"DisconnectDetails",
+          "documentation":"<p>Information about the call disconnect experience.</p>"
+        },
+        "SegmentAttributes":{
+          "shape":"SegmentAttributes",
+          "documentation":"<p>A set of system defined key-value pairs stored on individual contact segments using an attribute map. The attributes are standard Amazon Connect attributes and can be accessed in flows. Attribute keys can include only alphanumeric, -, and _ characters. This field can be used to show channel subtype. For example, <code>connect:Guide</code> or <code>connect:SMS</code>.</p>"
         }
       },
       "documentation":"<p>Contains information about a contact.</p>"
@@ -7910,6 +8033,41 @@
       "type":"list",
       "member":{"shape":"CurrentMetric"}
     },
+    "Customer":{
+      "type":"structure",
+      "members":{
+        "DeviceInfo":{
+          "shape":"DeviceInfo",
+          "documentation":"<p>Information regarding Customer’s device.</p>"
+        },
+        "Capabilities":{"shape":"ParticipantCapabilities"}
+      },
+      "documentation":"<p>Information about the Customer on the contact.</p>"
+    },
+    "CustomerQualityMetrics":{
+      "type":"structure",
+      "members":{
+        "Audio":{
+          "shape":"AudioQualityMetricsInfo",
+          "documentation":"<p>Information about the audio quality of the Customer</p>"
+        }
+      },
+      "documentation":"<p>Information about the quality of the Customer's media connection</p>"
+    },
+    "CustomerVoiceActivity":{
+      "type":"structure",
+      "members":{
+        "GreetingStartTimestamp":{
+          "shape":"timestamp",
+          "documentation":"<p>Timestamp that measures the beginning of the customer greeting from an outbound voice call.</p>"
+        },
+        "GreetingEndTimestamp":{
+          "shape":"timestamp",
+          "documentation":"<p>Timestamp that measures the end of the customer greeting from an outbound voice call.</p>"
+        }
+      },
+      "documentation":"<p>Information about customer’s voice activity.</p>"
+    },
     "DataSetId":{
       "type":"string",
       "max":255,
@@ -9308,6 +9466,24 @@
       "error":{"httpStatusCode":403},
       "exception":true
     },
+    "DeviceInfo":{
+      "type":"structure",
+      "members":{
+        "PlatformName":{
+          "shape":"PlatformName",
+          "documentation":"<p>Name of the platform that the participant used for the call.</p>"
+        },
+        "PlatformVersion":{
+          "shape":"PlatformVersion",
+          "documentation":"<p>Version of the platform that the participant used for the call.</p>"
+        },
+        "OperatingSystem":{
+          "shape":"OperatingSystem",
+          "documentation":"<p>Operating system that the participant used for the call.</p>"
+        }
+      },
+      "documentation":"<p>Information regarding the device.</p>"
+    },
     "Dimensions":{
       "type":"structure",
       "members":{
@@ -9680,6 +9856,16 @@
         }
       }
     },
+    "DisconnectDetails":{
+      "type":"structure",
+      "members":{
+        "PotentialDisconnectIssue":{
+          "shape":"PotentialDisconnectIssue",
+          "documentation":"<p>Indicates the potential disconnection issues for a call. This field is not populated if the service does not detect potential issues.</p>"
+        }
+      },
+      "documentation":"<p>Information about the call disconnect experience.</p>"
+    },
     "DisconnectReason":{
       "type":"structure",
       "members":{
@@ -9773,6 +9959,7 @@
       "error":{"httpStatusCode":409},
       "exception":true
     },
+    "DurationInSeconds":{"type":"integer"},
     "Email":{
       "type":"string",
       "sensitive":true
@@ -10756,6 +10943,42 @@
         "OnCaseUpdate"
       ]
     },
+    "Expiry":{
+      "type":"structure",
+      "members":{
+        "DurationInSeconds":{
+          "shape":"DurationInSeconds",
+          "documentation":"<p>The number of seconds to wait before expiring the routing step.</p>"
+        },
+        "ExpiryTimestamp":{
+          "shape":"timestamp",
+          "documentation":"<p>The timestamp indicating when the routing step expires.</p>"
+        }
+      },
+      "documentation":"<p>An object to specify the expiration of a routing step.</p>"
+    },
+    "Expression":{
+      "type":"structure",
+      "members":{
+        "AttributeCondition":{
+          "shape":"AttributeCondition",
+          "documentation":"<p>An object to specify the predefined attribute condition.</p>"
+        },
+        "AndExpression":{
+          "shape":"Expressions",
+          "documentation":"<p>List of routing expressions which will be AND-ed together.</p>"
+        },
+        "OrExpression":{
+          "shape":"Expressions",
+          "documentation":"<p>List of routing expressions which will be OR-ed together.</p>"
+        }
+      },
+      "documentation":"<p>A tagged union to specify expression for a routing step.</p>"
+    },
+    "Expressions":{
+      "type":"list",
+      "member":{"shape":"Expression"}
+    },
     "FailedRequest":{
       "type":"structure",
       "members":{
@@ -11683,6 +11906,32 @@
       },
       "documentation":"<p>Information about the hierarchy group.</p>"
     },
+    "HierarchyGroups":{
+      "type":"structure",
+      "members":{
+        "Level1":{
+          "shape":"AgentHierarchyGroup",
+          "documentation":"<p>The group at level one of the agent hierarchy.</p>"
+        },
+        "Level2":{
+          "shape":"AgentHierarchyGroup",
+          "documentation":"<p>The group at level two of the agent hierarchy.</p>"
+        },
+        "Level3":{
+          "shape":"AgentHierarchyGroup",
+          "documentation":"<p>The group at level three of the agent hierarchy.</p>"
+        },
+        "Level4":{
+          "shape":"AgentHierarchyGroup",
+          "documentation":"<p>The group at level four of the agent hierarchy.</p>"
+        },
+        "Level5":{
+          "shape":"AgentHierarchyGroup",
+          "documentation":"<p>The group at level five of the agent hierarchy.</p>"
+        }
+      },
+      "documentation":"<p>Information about the agent hierarchy. Hierarchies can be configured with up to five levels.</p>"
+    },
     "HierarchyLevel":{
       "type":"structure",
       "members":{
@@ -12167,6 +12416,7 @@
       }
     },
     "InboundCallsEnabled":{"type":"boolean"},
+    "Index":{"type":"integer"},
     "InitiationMethodList":{
       "type":"list",
       "member":{"shape":"ContactInitiationMethod"}
@@ -15074,6 +15324,11 @@
       },
       "documentation":"<p>Information about the property value used in automation of a numeric questions. Label values are associated with minimum and maximum values for the numeric question.</p> <ul> <li> <p>Sentiment scores have a minimum value of -5 and maximum value of 5.</p> </li> <li> <p> Duration labels, such as <code>NON_TALK_TIME</code>, <code>CONTACT_DURATION</code>, <code>AGENT_INTERACTION_DURATION</code>, <code>CUSTOMER_HOLD_TIME</code> have a minimum value of 0 and maximum value of 28800.</p> </li> <li> <p>Percentages have a minimum value of 0 and maximum value of 100. </p> </li> <li> <p> <code>NUMBER_OF_INTERRUPTIONS</code> has a minimum value of 0 and maximum value of 1000.</p> </li> </ul>"
     },
+    "OperatingSystem":{
+      "type":"string",
+      "max":128,
+      "min":0
+    },
     "Origin":{
       "type":"string",
       "max":267
@@ -15676,6 +15931,32 @@
         "DESK_PHONE"
       ]
     },
+    "PlatformName":{
+      "type":"string",
+      "max":128,
+      "min":0
+    },
+    "PlatformVersion":{
+      "type":"string",
+      "max":128,
+      "min":0
+    },
+    "PotentialAudioQualityIssue":{
+      "type":"string",
+      "max":128,
+      "min":0
+    },
+    "PotentialAudioQualityIssues":{
+      "type":"list",
+      "member":{"shape":"PotentialAudioQualityIssue"},
+      "max":3,
+      "min":0
+    },
+    "PotentialDisconnectIssue":{
+      "type":"string",
+      "max":128,
+      "min":0
+    },
     "PredefinedAttribute":{
       "type":"structure",
       "members":{
@@ -15806,6 +16087,11 @@
       "box":true,
       "max":5.0,
       "min":1.0
+    },
+    "ProficiencyValue":{
+      "type":"string",
+      "max":128,
+      "min":1
     },
     "Prompt":{
       "type":"structure",
@@ -16003,6 +16289,20 @@
       "type":"structure",
       "members":{
       }
+    },
+    "QualityMetrics":{
+      "type":"structure",
+      "members":{
+        "Agent":{
+          "shape":"AgentQualityMetrics",
+          "documentation":"<p>Information about the quality of Agent media connection.</p>"
+        },
+        "Customer":{
+          "shape":"CustomerQualityMetrics",
+          "documentation":"<p>Information about the quality of Customer media connection.</p>"
+        }
+      },
+      "documentation":"<p>Information about the quality of the participant's media connection.</p>"
     },
     "Queue":{
       "type":"structure",
@@ -17117,6 +17417,33 @@
       "type":"structure",
       "members":{
       }
+    },
+    "RoutingCriteria":{
+      "type":"structure",
+      "members":{
+        "Steps":{
+          "shape":"Steps",
+          "documentation":"<p>List of routing steps. When Amazon Connect does not find an available agent meeting the requirements in a step for a given step duration, the routing criteria will move on to the next step sequentially until a join is completed with an agent. When all steps are exhausted, the contact will be offered to any agent in the queue.</p>"
+        },
+        "ActivationTimestamp":{
+          "shape":"timestamp",
+          "documentation":"<p>The timestamp indicating when the routing criteria is set to active. A routing criteria is activated when contact is transferred to a queue. ActivationTimestamp will be set on routing criteria for contacts in agent queue even though Routing criteria is never activated for contacts in agent queue.</p>"
+        },
+        "Index":{
+          "shape":"Index",
+          "documentation":"<p>Information about the index of the routing criteria.</p>"
+        }
+      },
+      "documentation":"<p>Latest routing criteria on the contact.</p>"
+    },
+    "RoutingCriteriaStepStatus":{
+      "type":"string",
+      "enum":[
+        "ACTIVE",
+        "INACTIVE",
+        "JOINED",
+        "EXPIRED"
+      ]
     },
     "RoutingExpression":{
       "type":"string",
@@ -19292,6 +19619,28 @@
         "MAX",
         "AVG"
       ]
+    },
+    "Step":{
+      "type":"structure",
+      "members":{
+        "Expiry":{
+          "shape":"Expiry",
+          "documentation":"<p>An object to specify the expiration of a routing step.</p>"
+        },
+        "Expression":{
+          "shape":"Expression",
+          "documentation":"<p>A tagged union to specify expression for a routing step.</p>"
+        },
+        "Status":{
+          "shape":"RoutingCriteriaStepStatus",
+          "documentation":"<p>Represents status of the Routing step.</p>"
+        }
+      },
+      "documentation":"<p>Step signifies the criteria to be used for routing to an agent</p>"
+    },
+    "Steps":{
+      "type":"list",
+      "member":{"shape":"Step"}
     },
     "StopContactRecordingRequest":{
       "type":"structure",

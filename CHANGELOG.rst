@@ -2,6 +2,73 @@
 CHANGELOG
 =========
 
+1.32.114
+========
+
+* api-change:``dynamodb``: Doc-only update for DynamoDB. Specified the IAM actions needed to authorize a user to create a table with a resource-based policy.
+* api-change:``ec2``: Providing support to accept BgpAsnExtended attribute
+* api-change:``kafka``: Adds ControllerNodeInfo in ListNodes response to support Raft mode for MSK
+* api-change:``swf``: This release adds new APIs for deleting activity type and workflow type resources.
+
+
+1.32.113
+========
+
+* api-change:``dynamodb``: Documentation only updates for DynamoDB.
+* api-change:``iotfleetwise``: AWS IoT FleetWise now supports listing vehicles with attributes filter, ListVehicles API is updated to support additional attributes filter.
+* api-change:``managedblockchain``: This is a minor documentation update to address the impact of the shut down of the Goerli and Polygon networks.
+
+
+1.32.112
+========
+
+* api-change:``emr-serverless``: This release adds the capability to run interactive workloads using Apache Livy Endpoint.
+* api-change:``opsworks``: Documentation-only update for OpsWorks Stacks.
+
+
+1.32.111
+========
+
+* api-change:``chatbot``: This change adds support for tagging Chatbot configurations.
+* api-change:``cloudformation``: Added DeletionMode FORCE_DELETE_STACK for deleting a stack that is stuck in DELETE_FAILED state due to resource deletion failure.
+* api-change:``kms``: This release includes feature to import customer's asymmetric (RSA, ECC and SM2) and HMAC keys into KMS in China.
+* api-change:``opensearch``: This release adds support for enabling or disabling a data source configured as part of Zero-ETL integration with Amazon S3, by setting its status.
+* api-change:``wafv2``: You can now use Security Lake to collect web ACL traffic data.
+
+
+1.32.110
+========
+
+* api-change:``cloudfront``: Model update; no change to SDK functionality.
+* api-change:``glue``: Add Maintenance window to CreateJob and UpdateJob APIs and JobRun response. Add a new Job Run State for EXPIRED.
+* api-change:``lightsail``: This release adds support for Amazon Lightsail instances to switch between dual-stack or IPv4 only and IPv6-only public IP address types.
+* api-change:``mailmanager``: This release includes a new Amazon SES feature called Mail Manager, which is a set of email gateway capabilities designed to help customers strengthen their organization's email infrastructure, simplify email workflow management, and streamline email compliance control.
+* api-change:``pi``: Performance Insights added a new input parameter called AuthorizedActions to support the fine-grained access feature. Performance Insights also restricted the acceptable input characters.
+* api-change:``rds``: Updates Amazon RDS documentation for Db2 license through AWS Marketplace.
+* api-change:``storagegateway``: Added new SMBSecurityStrategy enum named MandatoryEncryptionNoAes128, new mode enforces encryption and disables AES 128-bit algorithums.
+
+
+1.32.109
+========
+
+* api-change:``bedrock-agent``: This release adds support for using Guardrails with Bedrock Agents.
+* api-change:``bedrock-agent-runtime``: This release adds support for using Guardrails with Bedrock Agents.
+* api-change:``controltower``: Added ListControlOperations API and filtering support for ListEnabledControls API. Updates also includes added metadata for enabled controls and control operations.
+* api-change:``osis``: Add support for creating an OpenSearch Ingestion pipeline that is attached to a provided VPC. Add information about the destinations of an OpenSearch Ingestion pipeline to the GetPipeline and ListPipelines APIs.
+* api-change:``rds``: This release adds support for EngineLifecycleSupport on DBInstances, DBClusters, and GlobalClusters.
+* api-change:``secretsmanager``: add v2 smoke tests and smithy smokeTests trait for SDK testing
+
+
+1.32.108
+========
+
+* api-change:``application-autoscaling``: add v2 smoke tests and smithy smokeTests trait for SDK testing.
+* api-change:``codebuild``: Aws CodeBuild now supports 36 hours build timeout
+* api-change:``elbv2``: This release adds dualstack-without-public-ipv4 IP address type for ALB.
+* api-change:``lakeformation``: Introduces a new API, GetDataLakePrincipal, that returns the identity of the invoking principal
+* api-change:``transfer``: Enable use of CloudFormation traits in Smithy model to improve generated CloudFormation schema from the Smithy API model.
+
+
 1.32.107
 ========
 

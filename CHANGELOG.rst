@@ -2,6 +2,20 @@
 CHANGELOG
 =========
 
+1.32.116
+========
+
+* api-change:``acm``: add v2 smoke tests and smithy smokeTests trait for SDK testing.
+* api-change:``bedrock-agent``: With this release, Knowledge bases for Bedrock adds support for Titan Text Embedding v2.
+* api-change:``bedrock-runtime``: This release adds Converse and ConverseStream APIs to Bedrock Runtime
+* api-change:``cloudtrail``: CloudTrail Lake returns PartitionKeys in the GetEventDataStore API response. Events are grouped into partitions based on these keys for better query performance. For example, the calendarday key groups events by day, while combining the calendarday key with the hour key groups them by day and hour.
+* api-change:``connect``: Adding associatedQueueIds as a SearchCriteria and response field to the SearchRoutingProfiles API
+* api-change:``emr-serverless``: The release adds support for spark structured streaming.
+* api-change:``rds``: Updates Amazon RDS documentation for Aurora Postgres DBname.
+* api-change:``sagemaker``: Adds Model Card information as a new component to Model Package. Autopilot launches algorithm selection for TimeSeries modality to generate AutoML candidates per algorithm.
+* bugfix:``ssm start-session``: Only provide profile name to session-manager-plugin if provided using --profile flag
+
+
 1.32.115
 ========
 

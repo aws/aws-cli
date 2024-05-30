@@ -1920,7 +1920,7 @@
       },
       "input":{"shape":"DescribeModelPackageInput"},
       "output":{"shape":"DescribeModelPackageOutput"},
-      "documentation":"<p>Returns a description of the specified model package, which is used to create SageMaker models or list them on Amazon Web Services Marketplace.</p> <p>To create models in SageMaker, buyers can subscribe to model packages listed on Amazon Web Services Marketplace.</p>"
+      "documentation":"<p>Returns a description of the specified model package, which is used to create SageMaker models or list them on Amazon Web Services Marketplace.</p> <important> <p>If you provided a KMS Key ID when you created your model package, you will see the <a href=\"https://docs.aws.amazon.com/kms/latest/APIReference/API_Decrypt.html\">KMS Decrypt</a> API call in your CloudTrail logs when you use this API.</p> </important> <p>To create models in SageMaker, buyers can subscribe to model packages listed on Amazon Web Services Marketplace.</p>"
     },
     "DescribeModelPackageGroup":{
       "name":"DescribeModelPackageGroup",
@@ -5121,7 +5121,13 @@
         "randomforest",
         "extra-trees",
         "nn-torch",
-        "fastai"
+        "fastai",
+        "cnn-qr",
+        "deepar",
+        "prophet",
+        "npts",
+        "arima",
+        "ets"
       ]
     },
     "AutoMLAlgorithmConfig":{
@@ -5130,10 +5136,10 @@
       "members":{
         "AutoMLAlgorithms":{
           "shape":"AutoMLAlgorithms",
-          "documentation":"<p>The selection of algorithms run on a dataset to train the model candidates of an Autopilot job. </p> <note> <p>Selected algorithms must belong to the list corresponding to the training mode set in <a href=\"https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_AutoMLJobConfig.html#sagemaker-Type-AutoMLJobConfig-Mode\">AutoMLJobConfig.Mode</a> (<code>ENSEMBLING</code> or <code>HYPERPARAMETER_TUNING</code>). Choose a minimum of 1 algorithm. </p> </note> <ul> <li> <p>In <code>ENSEMBLING</code> mode:</p> <ul> <li> <p>\"catboost\"</p> </li> <li> <p>\"extra-trees\"</p> </li> <li> <p>\"fastai\"</p> </li> <li> <p>\"lightgbm\"</p> </li> <li> <p>\"linear-learner\"</p> </li> <li> <p>\"nn-torch\"</p> </li> <li> <p>\"randomforest\"</p> </li> <li> <p>\"xgboost\"</p> </li> </ul> </li> <li> <p>In <code>HYPERPARAMETER_TUNING</code> mode:</p> <ul> <li> <p>\"linear-learner\"</p> </li> <li> <p>\"mlp\"</p> </li> <li> <p>\"xgboost\"</p> </li> </ul> </li> </ul>"
+          "documentation":"<p>The selection of algorithms trained on your dataset to generate the model candidates for an Autopilot job.</p> <ul> <li> <p> <b>For the tabular problem type <code>TabularJobConfig</code>:</b> </p> <note> <p>Selected algorithms must belong to the list corresponding to the training mode set in <a href=\"https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_AutoMLJobConfig.html#sagemaker-Type-AutoMLJobConfig-Mode\">AutoMLJobConfig.Mode</a> (<code>ENSEMBLING</code> or <code>HYPERPARAMETER_TUNING</code>). Choose a minimum of 1 algorithm.</p> </note> <ul> <li> <p>In <code>ENSEMBLING</code> mode:</p> <ul> <li> <p>\"catboost\"</p> </li> <li> <p>\"extra-trees\"</p> </li> <li> <p>\"fastai\"</p> </li> <li> <p>\"lightgbm\"</p> </li> <li> <p>\"linear-learner\"</p> </li> <li> <p>\"nn-torch\"</p> </li> <li> <p>\"randomforest\"</p> </li> <li> <p>\"xgboost\"</p> </li> </ul> </li> <li> <p>In <code>HYPERPARAMETER_TUNING</code> mode:</p> <ul> <li> <p>\"linear-learner\"</p> </li> <li> <p>\"mlp\"</p> </li> <li> <p>\"xgboost\"</p> </li> </ul> </li> </ul> </li> <li> <p> <b>For the time-series forecasting problem type <code>TimeSeriesForecastingJobConfig</code>:</b> </p> <ul> <li> <p>Choose your algorithms from this list.</p> <ul> <li> <p>\"cnn-qr\"</p> </li> <li> <p>\"deepar\"</p> </li> <li> <p>\"prophet\"</p> </li> <li> <p>\"arima\"</p> </li> <li> <p>\"npts\"</p> </li> <li> <p>\"ets\"</p> </li> </ul> </li> </ul> </li> </ul>"
         }
       },
-      "documentation":"<p>The collection of algorithms run on a dataset for training the model candidates of an Autopilot job.</p>"
+      "documentation":"<p>The selection of algorithms trained on your dataset to generate the model candidates for an Autopilot job.</p>"
     },
     "AutoMLAlgorithms":{
       "type":"list",
@@ -5213,7 +5219,7 @@
         },
         "AlgorithmsConfig":{
           "shape":"AutoMLAlgorithmsConfig",
-          "documentation":"<p>Stores the configuration information for the selection of algorithms used to train the model candidates.</p> <p>The list of available algorithms to choose from depends on the training mode set in <a href=\"https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_AutoMLJobConfig.html\"> <code>AutoMLJobConfig.Mode</code> </a>.</p> <ul> <li> <p> <code>AlgorithmsConfig</code> should not be set in <code>AUTO</code> training mode.</p> </li> <li> <p>When <code>AlgorithmsConfig</code> is provided, one <code>AutoMLAlgorithms</code> attribute must be set and one only.</p> <p>If the list of algorithms provided as values for <code>AutoMLAlgorithms</code> is empty, <code>AutoMLCandidateGenerationConfig</code> uses the full set of algorithms for the given training mode.</p> </li> <li> <p>When <code>AlgorithmsConfig</code> is not provided, <code>AutoMLCandidateGenerationConfig</code> uses the full set of algorithms for the given training mode.</p> </li> </ul> <p>For the list of all algorithms per training mode, see <a href=\"https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_AutoMLAlgorithmConfig.html\"> AutoMLAlgorithmConfig</a>.</p> <p>For more information on each algorithm, see the <a href=\"https://docs.aws.amazon.com/sagemaker/latest/dg/autopilot-model-support-validation.html#autopilot-algorithm-support\">Algorithm support</a> section in Autopilot developer guide.</p>"
+          "documentation":"<p>Stores the configuration information for the selection of algorithms trained on tabular data.</p> <p>The list of available algorithms to choose from depends on the training mode set in <a href=\"https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_TabularJobConfig.html\"> <code>TabularJobConfig.Mode</code> </a>.</p> <ul> <li> <p> <code>AlgorithmsConfig</code> should not be set if the training mode is set on <code>AUTO</code>.</p> </li> <li> <p>When <code>AlgorithmsConfig</code> is provided, one <code>AutoMLAlgorithms</code> attribute must be set and one only.</p> <p>If the list of algorithms provided as values for <code>AutoMLAlgorithms</code> is empty, <code>CandidateGenerationConfig</code> uses the full set of algorithms for the given training mode.</p> </li> <li> <p>When <code>AlgorithmsConfig</code> is not provided, <code>CandidateGenerationConfig</code> uses the full set of algorithms for the given training mode.</p> </li> </ul> <p>For the list of all algorithms per problem type and training mode, see <a href=\"https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_AutoMLAlgorithmConfig.html\"> AutoMLAlgorithmConfig</a>.</p> <p>For more information on each algorithm, see the <a href=\"https://docs.aws.amazon.com/sagemaker/latest/dg/autopilot-model-support-validation.html#autopilot-algorithm-support\">Algorithm support</a> section in Autopilot developer guide.</p>"
         }
       },
       "documentation":"<p>Stores the configuration information for how a candidate is generated (optional).</p>"
@@ -6181,7 +6187,7 @@
       "members":{
         "AlgorithmsConfig":{
           "shape":"AutoMLAlgorithmsConfig",
-          "documentation":"<p>Stores the configuration information for the selection of algorithms used to train model candidates on tabular data.</p> <p>The list of available algorithms to choose from depends on the training mode set in <a href=\"https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_TabularJobConfig.html\"> <code>TabularJobConfig.Mode</code> </a>.</p> <ul> <li> <p> <code>AlgorithmsConfig</code> should not be set in <code>AUTO</code> training mode.</p> </li> <li> <p>When <code>AlgorithmsConfig</code> is provided, one <code>AutoMLAlgorithms</code> attribute must be set and one only.</p> <p>If the list of algorithms provided as values for <code>AutoMLAlgorithms</code> is empty, <code>CandidateGenerationConfig</code> uses the full set of algorithms for the given training mode.</p> </li> <li> <p>When <code>AlgorithmsConfig</code> is not provided, <code>CandidateGenerationConfig</code> uses the full set of algorithms for the given training mode.</p> </li> </ul> <p>For the list of all algorithms per problem type and training mode, see <a href=\"https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_AutoMLAlgorithmConfig.html\"> AutoMLAlgorithmConfig</a>.</p> <p>For more information on each algorithm, see the <a href=\"https://docs.aws.amazon.com/sagemaker/latest/dg/autopilot-model-support-validation.html#autopilot-algorithm-support\">Algorithm support</a> section in Autopilot developer guide.</p>"
+          "documentation":"<p>Your Autopilot job trains a default set of algorithms on your dataset. For tabular and time-series data, you can customize the algorithm list by selecting a subset of algorithms for your problem type.</p> <p> <code>AlgorithmsConfig</code> stores the customized selection of algorithms to train on your data.</p> <ul> <li> <p> <b>For the tabular problem type <code>TabularJobConfig</code>,</b> the list of available algorithms to choose from depends on the training mode set in <a href=\"https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_AutoMLJobConfig.html\"> <code>AutoMLJobConfig.Mode</code> </a>.</p> <ul> <li> <p> <code>AlgorithmsConfig</code> should not be set when the training mode <code>AutoMLJobConfig.Mode</code> is set to <code>AUTO</code>.</p> </li> <li> <p>When <code>AlgorithmsConfig</code> is provided, one <code>AutoMLAlgorithms</code> attribute must be set and one only.</p> <p>If the list of algorithms provided as values for <code>AutoMLAlgorithms</code> is empty, <code>CandidateGenerationConfig</code> uses the full set of algorithms for the given training mode.</p> </li> <li> <p>When <code>AlgorithmsConfig</code> is not provided, <code>CandidateGenerationConfig</code> uses the full set of algorithms for the given training mode.</p> </li> </ul> <p>For the list of all algorithms per training mode, see <a href=\"https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_AutoMLAlgorithmConfig.html\"> AlgorithmConfig</a>.</p> <p>For more information on each algorithm, see the <a href=\"https://docs.aws.amazon.com/sagemaker/latest/dg/autopilot-model-support-validation.html#autopilot-algorithm-support\">Algorithm support</a> section in the Autopilot developer guide.</p> </li> <li> <p> <b>For the time-series forecasting problem type <code>TimeSeriesForecastingJobConfig</code>,</b> choose your algorithms from the list provided in <a href=\"https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_AutoMLAlgorithmConfig.html\"> AlgorithmConfig</a>.</p> <p>For more information on each algorithm, see the <a href=\"https://docs.aws.amazon.com/sagemaker/latest/dg/timeseries-forecasting-algorithms.html\">Algorithms support for time-series forecasting</a> section in the Autopilot developer guide.</p> <ul> <li> <p>When <code>AlgorithmsConfig</code> is provided, one <code>AutoMLAlgorithms</code> attribute must be set and one only.</p> <p>If the list of algorithms provided as values for <code>AutoMLAlgorithms</code> is empty, <code>CandidateGenerationConfig</code> uses the full set of algorithms for time-series forecasting.</p> </li> <li> <p>When <code>AlgorithmsConfig</code> is not provided, <code>CandidateGenerationConfig</code> uses the full set of algorithms for time-series forecasting.</p> </li> </ul> </li> </ul>"
         }
       },
       "documentation":"<p>Stores the configuration information for how model candidates are generated using an AutoML job V2.</p>"
@@ -9647,6 +9653,14 @@
         "SourceUri":{
           "shape":"ModelPackageSourceUri",
           "documentation":"<p>The URI of the source for the model package. If you want to clone a model package, set it to the model package Amazon Resource Name (ARN). If you want to register a model, set it to the model ARN.</p>"
+        },
+        "SecurityConfig":{
+          "shape":"ModelPackageSecurityConfig",
+          "documentation":"<p>The KMS Key ID (<code>KMSKeyId</code>) used for encryption of model package information.</p>"
+        },
+        "ModelCard":{
+          "shape":"ModelPackageModelCard",
+          "documentation":"<p>The model card associated with the model package. Since <code>ModelPackageModelCard</code> is tied to a model package, it is a specific usage of a model card and its schema is simplified compared to the schema of <code>ModelCard</code>. The <code>ModelPackageModelCard</code> schema does not include <code>model_package_details</code>, and <code>model_overview</code> is composed of the <code>model_creator</code> and <code>model_artifact</code> properties. For more information about the model card associated with the model package, see <a href=\"https://docs.aws.amazon.com/sagemaker/latest/dg/model-registry-details.html\">View the Details of a Model Version</a>.</p>"
         }
       }
     },
@@ -14910,6 +14924,14 @@
         "SourceUri":{
           "shape":"ModelPackageSourceUri",
           "documentation":"<p>The URI of the source for the model package.</p>"
+        },
+        "SecurityConfig":{
+          "shape":"ModelPackageSecurityConfig",
+          "documentation":"<p>The KMS Key ID (<code>KMSKeyId</code>) used for encryption of model package information.</p>"
+        },
+        "ModelCard":{
+          "shape":"ModelPackageModelCard",
+          "documentation":"<p>The model card associated with the model package. Since <code>ModelPackageModelCard</code> is tied to a model package, it is a specific usage of a model card and its schema is simplified compared to the schema of <code>ModelCard</code>. The <code>ModelPackageModelCard</code> schema does not include <code>model_package_details</code>, and <code>model_overview</code> is composed of the <code>model_creator</code> and <code>model_artifact</code> properties. For more information about the model card associated with the model package, see <a href=\"https://docs.aws.amazon.com/sagemaker/latest/dg/model-registry-details.html\">View the Details of a Model Version</a>.</p>"
         }
       }
     },
@@ -22037,7 +22059,7 @@
         },
         "MaxResults":{
           "shape":"MaxResults",
-          "documentation":"<p>This parameter defines the maximum number of results that can be returned in a single response. The <code>MaxResults</code> parameter is an upper bound, not a target. If there are more results available than the value specified, a <code>NextToken</code> is provided in the response. The <code>NextToken</code> indicates that the user should get the next set of results by providing this token as a part of a subsequent call. The default value for <code>MaxResults</code> is 10.</p>"
+          "documentation":"<p>This parameter defines the maximum number of results that can be return in a single response. The <code>MaxResults</code> parameter is an upper bound, not a target. If there are more results available than the value specified, a <code>NextToken</code> is provided in the response. The <code>NextToken</code> indicates that the user should get the next set of results by providing this token as a part of a subsequent call. The default value for <code>MaxResults</code> is 10.</p>"
         },
         "SortOrder":{
           "shape":"SortOrder",
@@ -22737,7 +22759,7 @@
         },
         "MaxResults":{
           "shape":"MaxResults",
-          "documentation":"<p>This parameter defines the maximum number of results that can be returned in a single response. The <code>MaxResults</code> parameter is an upper bound, not a target. If there are more results available than the value specified, a <code>NextToken</code> is provided in the response. The <code>NextToken</code> indicates that the user should get the next set of results by providing this token as a part of a subsequent call. The default value for <code>MaxResults</code> is 10.</p>"
+          "documentation":"<p>This parameter defines the maximum number of results that can be return in a single response. The <code>MaxResults</code> parameter is an upper bound, not a target. If there are more results available than the value specified, a <code>NextToken</code> is provided in the response. The <code>NextToken</code> indicates that the user should get the next set of results by providing this token as a part of a subsequent call. The default value for <code>MaxResults</code> is 10.</p>"
         }
       }
     },
@@ -25121,7 +25143,7 @@
         },
         "MaxResults":{
           "shape":"MaxResults",
-          "documentation":"<p>This parameter defines the maximum number of results that can be returned in a single response. The <code>MaxResults</code> parameter is an upper bound, not a target. If there are more results available than the value specified, a <code>NextToken</code> is provided in the response. The <code>NextToken</code> indicates that the user should get the next set of results by providing this token as a part of a subsequent call. The default value for <code>MaxResults</code> is 10.</p>"
+          "documentation":"<p>This parameter defines the maximum number of results that can be return in a single response. The <code>MaxResults</code> parameter is an upper bound, not a target. If there are more results available than the value specified, a <code>NextToken</code> is provided in the response. The <code>NextToken</code> indicates that the user should get the next set of results by providing this token as a part of a subsequent call. The default value for <code>MaxResults</code> is 10.</p>"
         },
         "SortOrder":{
           "shape":"SortOrder",
@@ -25608,7 +25630,7 @@
         },
         "MaxResults":{
           "shape":"MaxResults",
-          "documentation":"<p>This parameter defines the maximum number of results that can be returned in a single response. The <code>MaxResults</code> parameter is an upper bound, not a target. If there are more results available than the value specified, a <code>NextToken</code> is provided in the response. The <code>NextToken</code> indicates that the user should get the next set of results by providing this token as a part of a subsequent call. The default value for <code>MaxResults</code> is 10.</p>"
+          "documentation":"<p>This parameter defines the maximum number of results that can be return in a single response. The <code>MaxResults</code> parameter is an upper bound, not a target. If there are more results available than the value specified, a <code>NextToken</code> is provided in the response. The <code>NextToken</code> indicates that the user should get the next set of results by providing this token as a part of a subsequent call. The default value for <code>MaxResults</code> is 10.</p>"
         },
         "SortOrder":{
           "shape":"SortOrder",
@@ -27045,6 +27067,8 @@
           "shape":"ModelPackageSourceUri",
           "documentation":"<p>The URI of the source for the model package.</p>"
         },
+        "SecurityConfig":{"shape":"ModelPackageSecurityConfig"},
+        "ModelCard":{"shape":"ModelPackageModelCard"},
         "Tags":{
           "shape":"TagList",
           "documentation":"<p>A list of the tags associated with the model package. For more information, see <a href=\"https://docs.aws.amazon.com/general/latest/gr/aws_tagging.html\">Tagging Amazon Web Services resources</a> in the <i>Amazon Web Services General Reference Guide</i>.</p>"
@@ -27233,6 +27257,31 @@
     "ModelPackageGroupSummaryList":{
       "type":"list",
       "member":{"shape":"ModelPackageGroupSummary"}
+    },
+    "ModelPackageModelCard":{
+      "type":"structure",
+      "members":{
+        "ModelCardContent":{
+          "shape":"ModelCardContent",
+          "documentation":"<p>The content of the model card.</p>"
+        },
+        "ModelCardStatus":{
+          "shape":"ModelCardStatus",
+          "documentation":"<p>The approval status of the model card within your organization. Different organizations might have different criteria for model card review and approval.</p> <ul> <li> <p> <code>Draft</code>: The model card is a work in progress.</p> </li> <li> <p> <code>PendingReview</code>: The model card is pending review.</p> </li> <li> <p> <code>Approved</code>: The model card is approved.</p> </li> <li> <p> <code>Archived</code>: The model card is archived. No more updates can be made to the model card content. If you try to update the model card content, you will receive the message <code>Model Card is in Archived state</code>.</p> </li> </ul>"
+        }
+      },
+      "documentation":"<p>The model card associated with the model package. Since <code>ModelPackageModelCard</code> is tied to a model package, it is a specific usage of a model card and its schema is simplified compared to the schema of <code>ModelCard</code>. The <code>ModelPackageModelCard</code> schema does not include <code>model_package_details</code>, and <code>model_overview</code> is composed of the <code>model_creator</code> and <code>model_artifact</code> properties. For more information about the model card associated with the model package, see <a href=\"https://docs.aws.amazon.com/sagemaker/latest/dg/model-registry-details.html\">View the Details of a Model Version</a>.</p>"
+    },
+    "ModelPackageSecurityConfig":{
+      "type":"structure",
+      "required":["KmsKeyId"],
+      "members":{
+        "KmsKeyId":{
+          "shape":"KmsKeyId",
+          "documentation":"<p>The KMS Key ID (<code>KMSKeyId</code>) used for encryption of model package information.</p>"
+        }
+      },
+      "documentation":"<p>An optional Key Management Service key to encrypt, decrypt, and re-encrypt model package information for regulated workloads with highly sensitive data.</p>"
     },
     "ModelPackageSortBy":{
       "type":"string",
@@ -34438,7 +34487,8 @@
         "HolidayConfig":{
           "shape":"HolidayConfig",
           "documentation":"<p>The collection of holiday featurization attributes used to incorporate national holiday information into your forecasting model.</p>"
-        }
+        },
+        "CandidateGenerationConfig":{"shape":"CandidateGenerationConfig"}
       },
       "documentation":"<p>The collection of settings used by an AutoML job V2 for the time-series forecasting problem type.</p>"
     },
@@ -36762,6 +36812,10 @@
         "SourceUri":{
           "shape":"ModelPackageSourceUri",
           "documentation":"<p>The URI of the source for the model package.</p>"
+        },
+        "ModelCard":{
+          "shape":"ModelPackageModelCard",
+          "documentation":"<p>The model card associated with the model package. Since <code>ModelPackageModelCard</code> is tied to a model package, it is a specific usage of a model card and its schema is simplified compared to the schema of <code>ModelCard</code>. The <code>ModelPackageModelCard</code> schema does not include <code>model_package_details</code>, and <code>model_overview</code> is composed of the <code>model_creator</code> and <code>model_artifact</code> properties. For more information about the model card associated with the model package, see <a href=\"https://docs.aws.amazon.com/sagemaker/latest/dg/model-registry-details.html\">View the Details of a Model Version</a>.</p>"
         }
       }
     },

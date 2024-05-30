@@ -3,8 +3,8 @@
   "metadata":{
     "apiVersion":"2021-07-13",
     "endpointPrefix":"emr-serverless",
+    "jsonVersion":"1.1",
     "protocol":"rest-json",
-    "protocols":["rest-json"],
     "serviceFullName":"EMR Serverless",
     "serviceId":"EMR Serverless",
     "signatureVersion":"v4",
@@ -126,6 +126,22 @@
         {"shape":"InternalServerException"}
       ],
       "documentation":"<p>Lists applications based on a set of parameters.</p>"
+    },
+    "ListJobRunAttempts":{
+      "name":"ListJobRunAttempts",
+      "http":{
+        "method":"GET",
+        "requestUri":"/applications/{applicationId}/jobruns/{jobRunId}/attempts",
+        "responseCode":200
+      },
+      "input":{"shape":"ListJobRunAttemptsRequest"},
+      "output":{"shape":"ListJobRunAttemptsResponse"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Lists all attempt of a job run.</p>"
     },
     "ListJobRuns":{
       "name":"ListJobRuns",
@@ -459,6 +475,11 @@
         "ARM64",
         "X86_64"
       ]
+    },
+    "AttemptNumber":{
+      "type":"integer",
+      "box":true,
+      "min":1
     },
     "AutoStartConfig":{
       "type":"structure",
@@ -837,6 +858,12 @@
           "documentation":"<p>The ID of the job run.</p>",
           "location":"uri",
           "locationName":"jobRunId"
+        },
+        "attempt":{
+          "shape":"AttemptNumber",
+          "documentation":"<p>An optimal parameter that indicates the amount of attempts for the job. If not specified, this value defaults to the attempt of the latest job.</p>",
+          "location":"querystring",
+          "locationName":"attempt"
         }
       }
     },
@@ -867,6 +894,12 @@
           "documentation":"<p>The ID of the job run.</p>",
           "location":"uri",
           "locationName":"jobRunId"
+        },
+        "attempt":{
+          "shape":"AttemptNumber",
+          "documentation":"<p>An optimal parameter that indicates the amount of attempts for the job. If not specified, this value defaults to the attempt of the latest job.</p>",
+          "location":"querystring",
+          "locationName":"attempt"
         }
       }
     },
@@ -1115,15 +1148,125 @@
         "billedResourceUtilization":{
           "shape":"ResourceUtilization",
           "documentation":"<p>The aggregate vCPU, memory, and storage that Amazon Web Services has billed for the job run. The billed resources include a 1-minute minimum usage for workers, plus additional storage over 20 GB per worker. Note that billed resources do not include usage for idle pre-initialized workers.</p>"
+        },
+        "mode":{
+          "shape":"JobRunMode",
+          "documentation":"<p>The mode of the job run.</p>"
+        },
+        "retryPolicy":{
+          "shape":"RetryPolicy",
+          "documentation":"<p>The retry policy of the job run.</p>"
+        },
+        "attempt":{
+          "shape":"AttemptNumber",
+          "documentation":"<p>The attempt of the job run.</p>"
+        },
+        "attemptCreatedAt":{
+          "shape":"Date",
+          "documentation":"<p>The date and time of when the job run attempt was created.</p>"
+        },
+        "attemptUpdatedAt":{
+          "shape":"Date",
+          "documentation":"<p>The date and time of when the job run attempt was last updated.</p>"
         }
       },
       "documentation":"<p>Information about a job run. A job run is a unit of work, such as a Spark JAR, Hive query, or SparkSQL query, that you submit to an Amazon EMR Serverless application.</p>"
+    },
+    "JobRunAttemptSummary":{
+      "type":"structure",
+      "required":[
+        "applicationId",
+        "id",
+        "arn",
+        "createdBy",
+        "jobCreatedAt",
+        "createdAt",
+        "updatedAt",
+        "executionRole",
+        "state",
+        "stateDetails",
+        "releaseLabel"
+      ],
+      "members":{
+        "applicationId":{
+          "shape":"ApplicationId",
+          "documentation":"<p>The ID of the application the job is running on.</p>"
+        },
+        "id":{
+          "shape":"JobRunId",
+          "documentation":"<p>The ID of the job run attempt.</p>"
+        },
+        "name":{
+          "shape":"String256",
+          "documentation":"<p>The name of the job run attempt.</p>"
+        },
+        "mode":{
+          "shape":"JobRunMode",
+          "documentation":"<p>The mode of the job run attempt.</p>"
+        },
+        "arn":{
+          "shape":"JobArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the job run.</p>"
+        },
+        "createdBy":{
+          "shape":"RequestIdentityUserArn",
+          "documentation":"<p>The user who created the job run.</p>"
+        },
+        "jobCreatedAt":{
+          "shape":"Date",
+          "documentation":"<p>The date and time of when the job run was created.</p>"
+        },
+        "createdAt":{
+          "shape":"Date",
+          "documentation":"<p>The date and time when the job run attempt was created.</p>"
+        },
+        "updatedAt":{
+          "shape":"Date",
+          "documentation":"<p>The date and time of when the job run attempt was last updated.</p>"
+        },
+        "executionRole":{
+          "shape":"IAMRoleArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the execution role of the job run..</p>"
+        },
+        "state":{
+          "shape":"JobRunState",
+          "documentation":"<p>The state of the job run attempt.</p>"
+        },
+        "stateDetails":{
+          "shape":"String256",
+          "documentation":"<p>The state details of the job run attempt.</p>"
+        },
+        "releaseLabel":{
+          "shape":"ReleaseLabel",
+          "documentation":"<p>The Amazon EMR release label of the job run attempt.</p>"
+        },
+        "type":{
+          "shape":"JobRunType",
+          "documentation":"<p>The type of the job run, such as Spark or Hive.</p>"
+        },
+        "attempt":{
+          "shape":"AttemptNumber",
+          "documentation":"<p>The attempt number of the job run execution.</p>"
+        }
+      },
+      "documentation":"<p>The summary of attributes associated with a job run attempt.</p>"
+    },
+    "JobRunAttempts":{
+      "type":"list",
+      "member":{"shape":"JobRunAttemptSummary"}
     },
     "JobRunId":{
       "type":"string",
       "max":64,
       "min":1,
       "pattern":"[0-9a-z]+"
+    },
+    "JobRunMode":{
+      "type":"string",
+      "enum":[
+        "BATCH",
+        "STREAMING"
+      ]
     },
     "JobRunState":{
       "type":"string",
@@ -1171,6 +1314,10 @@
           "shape":"String256",
           "documentation":"<p>The optional job run name. This doesn't have to be unique.</p>"
         },
+        "mode":{
+          "shape":"JobRunMode",
+          "documentation":"<p>The mode of the job run.</p>"
+        },
         "arn":{
           "shape":"JobArn",
           "documentation":"<p>The ARN of the job run.</p>"
@@ -1206,6 +1353,18 @@
         "type":{
           "shape":"JobRunType",
           "documentation":"<p>The type of job run, such as Spark or Hive.</p>"
+        },
+        "attempt":{
+          "shape":"AttemptNumber",
+          "documentation":"<p>The attempt number of the job run execution.</p>"
+        },
+        "attemptCreatedAt":{
+          "shape":"Date",
+          "documentation":"<p>The date and time of when the job run attempt was created.</p>"
+        },
+        "attemptUpdatedAt":{
+          "shape":"Date",
+          "documentation":"<p>The date and time of when the job run attempt was last updated.</p>"
         }
       },
       "documentation":"<p>The summary of attributes associated with a job run.</p>"
@@ -1258,6 +1417,59 @@
         }
       }
     },
+    "ListJobRunAttemptsRequest":{
+      "type":"structure",
+      "required":[
+        "applicationId",
+        "jobRunId"
+      ],
+      "members":{
+        "applicationId":{
+          "shape":"ApplicationId",
+          "documentation":"<p>The ID of the application for which to list job runs.</p>",
+          "location":"uri",
+          "locationName":"applicationId"
+        },
+        "jobRunId":{
+          "shape":"JobRunId",
+          "documentation":"<p>The ID of the job run to list.</p>",
+          "location":"uri",
+          "locationName":"jobRunId"
+        },
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The token for the next set of job run attempt results.</p>",
+          "location":"querystring",
+          "locationName":"nextToken"
+        },
+        "maxResults":{
+          "shape":"ListJobRunAttemptsRequestMaxResultsInteger",
+          "documentation":"<p>The maximum number of job run attempts to list.</p>",
+          "location":"querystring",
+          "locationName":"maxResults"
+        }
+      }
+    },
+    "ListJobRunAttemptsRequestMaxResultsInteger":{
+      "type":"integer",
+      "box":true,
+      "max":50,
+      "min":1
+    },
+    "ListJobRunAttemptsResponse":{
+      "type":"structure",
+      "required":["jobRunAttempts"],
+      "members":{
+        "jobRunAttempts":{
+          "shape":"JobRunAttempts",
+          "documentation":"<p>The array of the listed job run attempt objects.</p>"
+        },
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The output displays the token for the next set of application results. This is required for pagination and is available as a response of the previous request.</p>"
+        }
+      }
+    },
     "ListJobRunsRequest":{
       "type":"structure",
       "required":["applicationId"],
@@ -1297,6 +1509,12 @@
           "documentation":"<p>An optional filter for job run states. Note that if this filter contains multiple states, the resulting list will be grouped by the state.</p>",
           "location":"querystring",
           "locationName":"states"
+        },
+        "mode":{
+          "shape":"JobRunMode",
+          "documentation":"<p>The mode of the job runs to list.</p>",
+          "location":"querystring",
+          "locationName":"mode"
         }
       }
     },
@@ -1529,6 +1747,25 @@
       },
       "documentation":"<p>The resource utilization for memory, storage, and vCPU for jobs.</p>"
     },
+    "RetryPolicy":{
+      "type":"structure",
+      "members":{
+        "maxAttempts":{
+          "shape":"AttemptNumber",
+          "documentation":"<p>Maximum number of attempts for the job run. This parameter is only applicable for <code>BATCH</code> mode.</p>"
+        },
+        "maxFailedAttemptsPerHour":{
+          "shape":"RetryPolicyMaxFailedAttemptsPerHourInteger",
+          "documentation":"<p>Maximum number of failed attempts per hour. This [arameter is only applicable for <code>STREAMING</code> mode.</p>"
+        }
+      },
+      "documentation":"<p>The retry policy to use for a job run.</p>"
+    },
+    "RetryPolicyMaxFailedAttemptsPerHourInteger":{
+      "type":"integer",
+      "box":true,
+      "min":1
+    },
     "S3MonitoringConfiguration":{
       "type":"structure",
       "members":{
@@ -1662,6 +1899,14 @@
         "name":{
           "shape":"String256",
           "documentation":"<p>The optional job run name. This doesn't have to be unique.</p>"
+        },
+        "mode":{
+          "shape":"JobRunMode",
+          "documentation":"<p>The mode of the job run when it starts.</p>"
+        },
+        "retryPolicy":{
+          "shape":"RetryPolicy",
+          "documentation":"<p>The retry policy when job run starts.</p>"
         }
       }
     },

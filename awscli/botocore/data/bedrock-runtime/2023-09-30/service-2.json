@@ -12,6 +12,48 @@
     "uid":"bedrock-runtime-2023-09-30"
   },
   "operations":{
+    "Converse":{
+      "name":"Converse",
+      "http":{
+        "method":"POST",
+        "requestUri":"/model/{modelId}/converse",
+        "responseCode":200
+      },
+      "input":{"shape":"ConverseRequest"},
+      "output":{"shape":"ConverseResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ModelTimeoutException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ValidationException"},
+        {"shape":"ModelNotReadyException"},
+        {"shape":"ModelErrorException"}
+      ],
+      "documentation":"<p>Sends messages to the specified Amazon Bedrock model. <code>Converse</code> provides a consistent interface that works with all models that support messages. This allows you to write code once and use it with different models. Should a model have unique inference parameters, you can also pass those unique parameters to the model. For more information, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/api-methods-run.html\">Run inference</a> in the Bedrock User Guide.</p> <p>This operation requires permission for the <code>bedrock:InvokeModel</code> action. </p>"
+    },
+    "ConverseStream":{
+      "name":"ConverseStream",
+      "http":{
+        "method":"POST",
+        "requestUri":"/model/{modelId}/converse-stream",
+        "responseCode":200
+      },
+      "input":{"shape":"ConverseStreamRequest"},
+      "output":{"shape":"ConverseStreamResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ModelTimeoutException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ValidationException"},
+        {"shape":"ModelNotReadyException"},
+        {"shape":"ModelErrorException"}
+      ],
+      "documentation":"<p>Sends messages to the specified Amazon Bedrock model and returns the response in a stream. <code>ConverseStream</code> provides a consistent API that works with all Amazon Bedrock models that support messages. This allows you to write code once and use it with different models. Should a model have unique inference parameters, you can also pass those unique parameters to the model. For more information, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/api-methods-run.html\">Run inference</a> in the Bedrock User Guide.</p> <p>To find out if a model supports streaming, call <a href=\"https://docs.aws.amazon.com/bedrock/latest/APIReference/API_GetFoundationModel.html\">GetFoundationModel</a> and check the <code>responseStreamingSupported</code> field in the response.</p> <p>For example code, see <i>Invoke model with streaming code example</i> in the <i>Amazon Bedrock User Guide</i>. </p> <p>This operation requires permission for the <code>bedrock:InvokeModelWithResponseStream</code> action.</p>"
+    },
     "InvokeModel":{
       "name":"InvokeModel",
       "http":{
@@ -71,11 +113,385 @@
       },
       "exception":true
     },
+    "AnyToolChoice":{
+      "type":"structure",
+      "members":{
+      },
+      "documentation":"<p>The model must request at least one tool (no text is generated).</p>"
+    },
+    "AutoToolChoice":{
+      "type":"structure",
+      "members":{
+      },
+      "documentation":"<p>The Model automatically decides if a tool should be called or to whether to generate text instead.</p>"
+    },
     "Body":{
       "type":"blob",
       "max":25000000,
       "min":0,
       "sensitive":true
+    },
+    "ContentBlock":{
+      "type":"structure",
+      "members":{
+        "text":{
+          "shape":"String",
+          "documentation":"<p>Text to include in the message.</p>"
+        },
+        "image":{
+          "shape":"ImageBlock",
+          "documentation":"<p>Image to include in the message. </p> <note> <p>This field is only supported by Anthropic Claude 3 models.</p> </note>"
+        },
+        "toolUse":{
+          "shape":"ToolUseBlock",
+          "documentation":"<p>Information about a tool use request from a model. </p>"
+        },
+        "toolResult":{
+          "shape":"ToolResultBlock",
+          "documentation":"<p>The result for a tool request that a model makes.</p>"
+        }
+      },
+      "documentation":"<p>A block of content for a message.</p>",
+      "union":true
+    },
+    "ContentBlockDelta":{
+      "type":"structure",
+      "members":{
+        "text":{
+          "shape":"String",
+          "documentation":"<p>The content text.</p>"
+        },
+        "toolUse":{
+          "shape":"ToolUseBlockDelta",
+          "documentation":"<p>Information about a tool that the model is requesting to use.</p>"
+        }
+      },
+      "documentation":"<p>A bock of content in a streaming response.</p>",
+      "union":true
+    },
+    "ContentBlockDeltaEvent":{
+      "type":"structure",
+      "required":[
+        "delta",
+        "contentBlockIndex"
+      ],
+      "members":{
+        "delta":{
+          "shape":"ContentBlockDelta",
+          "documentation":"<p>The delta for a content block delta event.</p>"
+        },
+        "contentBlockIndex":{
+          "shape":"NonNegativeInteger",
+          "documentation":"<p>The block index for a content block delta event. </p>"
+        }
+      },
+      "documentation":"<p>The content block delta event.</p>",
+      "event":true
+    },
+    "ContentBlockStart":{
+      "type":"structure",
+      "members":{
+        "toolUse":{
+          "shape":"ToolUseBlockStart",
+          "documentation":"<p>Information about a tool that the model is requesting to use.</p>"
+        }
+      },
+      "documentation":"<p>Content block start information.</p>",
+      "union":true
+    },
+    "ContentBlockStartEvent":{
+      "type":"structure",
+      "required":[
+        "start",
+        "contentBlockIndex"
+      ],
+      "members":{
+        "start":{
+          "shape":"ContentBlockStart",
+          "documentation":"<p>Start information about a content block start event. </p>"
+        },
+        "contentBlockIndex":{
+          "shape":"NonNegativeInteger",
+          "documentation":"<p>The index for a content block start event.</p>"
+        }
+      },
+      "documentation":"<p>Content block start event.</p>",
+      "event":true
+    },
+    "ContentBlockStopEvent":{
+      "type":"structure",
+      "required":["contentBlockIndex"],
+      "members":{
+        "contentBlockIndex":{
+          "shape":"NonNegativeInteger",
+          "documentation":"<p>The index for a content block.</p>"
+        }
+      },
+      "documentation":"<p>A content block stop event.</p>",
+      "event":true
+    },
+    "ContentBlocks":{
+      "type":"list",
+      "member":{"shape":"ContentBlock"}
+    },
+    "ConversationRole":{
+      "type":"string",
+      "enum":[
+        "user",
+        "assistant"
+      ]
+    },
+    "ConversationalModelId":{
+      "type":"string",
+      "max":2048,
+      "min":1,
+      "pattern":"(arn:aws(-[^:]+)?:bedrock:[a-z0-9-]{1,20}:(([0-9]{12}:custom-model/[a-z0-9-]{1,63}[.]{1}[a-z0-9-]{1,63}/[a-z0-9]{12})|(:foundation-model/[a-z0-9-]{1,63}[.]{1}[a-z0-9-]{1,63}([.:]?[a-z0-9-]{1,63}))|([0-9]{12}:provisioned-model/[a-z0-9]{12})))|([a-z0-9-]{1,63}[.]{1}[a-z0-9-]{1,63}([.:]?[a-z0-9-]{1,63}))|(([0-9a-zA-Z][_-]?)+)"
+    },
+    "ConverseMetrics":{
+      "type":"structure",
+      "required":["latencyMs"],
+      "members":{
+        "latencyMs":{
+          "shape":"Long",
+          "documentation":"<p>The latency of the call to <code>Converse</code>, in milliseconds. </p>"
+        }
+      },
+      "documentation":"<p>Metrics for a call to <a href=\"https://docs.aws.amazon.com/bedrock/latest/APIReference/API_runtime_Converse.html\">Converse</a>.</p>"
+    },
+    "ConverseOutput":{
+      "type":"structure",
+      "members":{
+        "message":{
+          "shape":"Message",
+          "documentation":"<p>The message that the model generates.</p>"
+        }
+      },
+      "documentation":"<p>The output from a call to <a href=\"https://docs.aws.amazon.com/bedrock/latest/APIReference/API_runtime_Converse.html\">Converse</a>.</p>",
+      "union":true
+    },
+    "ConverseRequest":{
+      "type":"structure",
+      "required":[
+        "modelId",
+        "messages"
+      ],
+      "members":{
+        "modelId":{
+          "shape":"ConversationalModelId",
+          "documentation":"<p>The identifier for the model that you want to call.</p> <p>The <code>modelId</code> to provide depends on the type of model that you use:</p> <ul> <li> <p>If you use a base model, specify the model ID or its ARN. For a list of model IDs for base models, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/model-ids.html#model-ids-arns\">Amazon Bedrock base model IDs (on-demand throughput)</a> in the Amazon Bedrock User Guide.</p> </li> <li> <p>If you use a provisioned model, specify the ARN of the Provisioned Throughput. For more information, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/prov-thru-use.html\">Run inference using a Provisioned Throughput</a> in the Amazon Bedrock User Guide.</p> </li> <li> <p>If you use a custom model, first purchase Provisioned Throughput for it. Then specify the ARN of the resulting provisioned model. For more information, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/model-customization-use.html\">Use a custom model in Amazon Bedrock</a> in the Amazon Bedrock User Guide.</p> </li> </ul>",
+          "location":"uri",
+          "locationName":"modelId"
+        },
+        "messages":{
+          "shape":"Messages",
+          "documentation":"<p>The messages that you want to send to the model.</p>"
+        },
+        "system":{
+          "shape":"SystemContentBlocks",
+          "documentation":"<p>A system prompt to pass to the model.</p>"
+        },
+        "inferenceConfig":{
+          "shape":"InferenceConfiguration",
+          "documentation":"<p>Inference parameters to pass to the model. <code>Converse</code> supports a base set of inference parameters. If you need to pass additional parameters that the model supports, use the <code>additionalModelRequestFields</code> request field.</p>"
+        },
+        "toolConfig":{
+          "shape":"ToolConfiguration",
+          "documentation":"<p>Configuration information for the tools that the model can use when generating a response. </p> <note> <p>This field is only supported by Anthropic Claude 3, Cohere Command R, Cohere Command R+, and Mistral Large models.</p> </note>"
+        },
+        "additionalModelRequestFields":{
+          "shape":"Document",
+          "documentation":"<p>Additional inference parameters that the model supports, beyond the base set of inference parameters that <code>Converse</code> supports in the <code>inferenceConfig</code> field. For more information, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/model-parameters.html\">Model parameters</a>.</p>"
+        },
+        "additionalModelResponseFieldPaths":{
+          "shape":"ConverseRequestAdditionalModelResponseFieldPathsList",
+          "documentation":"<p>Additional model parameters field paths to return in the response. <code>Converse</code> returns the requested fields as a JSON Pointer object in the <code>additionalModelResultFields</code> field. The following is example JSON for <code>additionalModelResponseFieldPaths</code>.</p> <p> <code>[ \"/stop_sequence\" ]</code> </p> <p>For information about the JSON Pointer syntax, see the <a href=\"https://datatracker.ietf.org/doc/html/rfc6901\">Internet Engineering Task Force (IETF)</a> documentation.</p> <p> <code>Converse</code> rejects an empty JSON Pointer or incorrectly structured JSON Pointer with a <code>400</code> error code. if the JSON Pointer is valid, but the requested field is not in the model response, it is ignored by <code>Converse</code>.</p>"
+        }
+      }
+    },
+    "ConverseRequestAdditionalModelResponseFieldPathsList":{
+      "type":"list",
+      "member":{"shape":"ConverseRequestAdditionalModelResponseFieldPathsListMemberString"},
+      "max":10,
+      "min":0
+    },
+    "ConverseRequestAdditionalModelResponseFieldPathsListMemberString":{
+      "type":"string",
+      "max":256,
+      "min":1
+    },
+    "ConverseResponse":{
+      "type":"structure",
+      "required":[
+        "output",
+        "stopReason",
+        "usage",
+        "metrics"
+      ],
+      "members":{
+        "output":{
+          "shape":"ConverseOutput",
+          "documentation":"<p>The result from the call to <code>Converse</code>.</p>"
+        },
+        "stopReason":{
+          "shape":"StopReason",
+          "documentation":"<p>The reason why the model stopped generating output.</p>"
+        },
+        "usage":{
+          "shape":"TokenUsage",
+          "documentation":"<p>The total number of tokens used in the call to <code>Converse</code>. The total includes the tokens input to the model and the tokens generated by the model.</p>"
+        },
+        "metrics":{
+          "shape":"ConverseMetrics",
+          "documentation":"<p>Metrics for the call to <code>Converse</code>.</p>"
+        },
+        "additionalModelResponseFields":{
+          "shape":"Document",
+          "documentation":"<p>Additional fields in the response that are unique to the model. </p>"
+        }
+      }
+    },
+    "ConverseStreamMetadataEvent":{
+      "type":"structure",
+      "required":[
+        "usage",
+        "metrics"
+      ],
+      "members":{
+        "usage":{
+          "shape":"TokenUsage",
+          "documentation":"<p>Usage information for the conversation stream event.</p>"
+        },
+        "metrics":{
+          "shape":"ConverseStreamMetrics",
+          "documentation":"<p>The metrics for the conversation stream metadata event.</p>"
+        }
+      },
+      "documentation":"<p>A conversation stream metadata event.</p>",
+      "event":true
+    },
+    "ConverseStreamMetrics":{
+      "type":"structure",
+      "required":["latencyMs"],
+      "members":{
+        "latencyMs":{
+          "shape":"Long",
+          "documentation":"<p>The latency for the streaming request, in milliseconds.</p>"
+        }
+      },
+      "documentation":"<p>Metrics for the stream.</p>"
+    },
+    "ConverseStreamOutput":{
+      "type":"structure",
+      "members":{
+        "messageStart":{
+          "shape":"MessageStartEvent",
+          "documentation":"<p>Message start information.</p>"
+        },
+        "contentBlockStart":{
+          "shape":"ContentBlockStartEvent",
+          "documentation":"<p>Start information for a content block.</p>"
+        },
+        "contentBlockDelta":{
+          "shape":"ContentBlockDeltaEvent",
+          "documentation":"<p>The messages output content block delta.</p>"
+        },
+        "contentBlockStop":{
+          "shape":"ContentBlockStopEvent",
+          "documentation":"<p>Stop information for a content block.</p>"
+        },
+        "messageStop":{
+          "shape":"MessageStopEvent",
+          "documentation":"<p>Message stop information.</p>"
+        },
+        "metadata":{
+          "shape":"ConverseStreamMetadataEvent",
+          "documentation":"<p>Metadata for the converse output stream.</p>"
+        },
+        "internalServerException":{
+          "shape":"InternalServerException",
+          "documentation":"<p>An internal server error occurred. Retry your request.</p>"
+        },
+        "modelStreamErrorException":{
+          "shape":"ModelStreamErrorException",
+          "documentation":"<p>A streaming error occurred. Retry your request.</p>"
+        },
+        "validationException":{
+          "shape":"ValidationException",
+          "documentation":"<p>Input validation failed. Check your request parameters and retry the request.</p>"
+        },
+        "throttlingException":{
+          "shape":"ThrottlingException",
+          "documentation":"<p>The number of requests exceeds the limit. Resubmit your request later.</p>"
+        }
+      },
+      "documentation":"<p>The messages output stream</p>",
+      "eventstream":true
+    },
+    "ConverseStreamRequest":{
+      "type":"structure",
+      "required":[
+        "modelId",
+        "messages"
+      ],
+      "members":{
+        "modelId":{
+          "shape":"ConversationalModelId",
+          "documentation":"<p>The ID for the model.</p> <p>The <code>modelId</code> to provide depends on the type of model that you use:</p> <ul> <li> <p>If you use a base model, specify the model ID or its ARN. For a list of model IDs for base models, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/model-ids.html#model-ids-arns\">Amazon Bedrock base model IDs (on-demand throughput)</a> in the Amazon Bedrock User Guide.</p> </li> <li> <p>If you use a provisioned model, specify the ARN of the Provisioned Throughput. For more information, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/prov-thru-use.html\">Run inference using a Provisioned Throughput</a> in the Amazon Bedrock User Guide.</p> </li> <li> <p>If you use a custom model, first purchase Provisioned Throughput for it. Then specify the ARN of the resulting provisioned model. For more information, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/model-customization-use.html\">Use a custom model in Amazon Bedrock</a> in the Amazon Bedrock User Guide.</p> </li> </ul>",
+          "location":"uri",
+          "locationName":"modelId"
+        },
+        "messages":{
+          "shape":"Messages",
+          "documentation":"<p>The messages that you want to send to the model.</p>"
+        },
+        "system":{
+          "shape":"SystemContentBlocks",
+          "documentation":"<p>A system prompt to send to the model.</p>"
+        },
+        "inferenceConfig":{
+          "shape":"InferenceConfiguration",
+          "documentation":"<p>Inference parameters to pass to the model. <code>ConverseStream</code> supports a base set of inference parameters. If you need to pass additional parameters that the model supports, use the <code>additionalModelRequestFields</code> request field.</p>"
+        },
+        "toolConfig":{
+          "shape":"ToolConfiguration",
+          "documentation":"<p>Configuration information for the tools that the model can use when generating a response.</p> <note> <p>This field is only supported by Anthropic Claude 3 models.</p> </note>"
+        },
+        "additionalModelRequestFields":{
+          "shape":"Document",
+          "documentation":"<p>Additional inference parameters that the model supports, beyond the base set of inference parameters that <code>ConverseStream</code> supports in the <code>inferenceConfig</code> field.</p>"
+        },
+        "additionalModelResponseFieldPaths":{
+          "shape":"ConverseStreamRequestAdditionalModelResponseFieldPathsList",
+          "documentation":"<p>Additional model parameters field paths to return in the response. <code>ConverseStream</code> returns the requested fields as a JSON Pointer object in the <code>additionalModelResultFields</code> field. The following is example JSON for <code>additionalModelResponseFieldPaths</code>.</p> <p> <code>[ \"/stop_sequence\" ]</code> </p> <p>For information about the JSON Pointer syntax, see the <a href=\"https://datatracker.ietf.org/doc/html/rfc6901\">Internet Engineering Task Force (IETF)</a> documentation.</p> <p> <code>ConverseStream</code> rejects an empty JSON Pointer or incorrectly structured JSON Pointer with a <code>400</code> error code. if the JSON Pointer is valid, but the requested field is not in the model response, it is ignored by <code>ConverseStream</code>.</p>"
+        }
+      }
+    },
+    "ConverseStreamRequestAdditionalModelResponseFieldPathsList":{
+      "type":"list",
+      "member":{"shape":"ConverseStreamRequestAdditionalModelResponseFieldPathsListMemberString"},
+      "max":10,
+      "min":0
+    },
+    "ConverseStreamRequestAdditionalModelResponseFieldPathsListMemberString":{
+      "type":"string",
+      "max":256,
+      "min":1
+    },
+    "ConverseStreamResponse":{
+      "type":"structure",
+      "members":{
+        "stream":{
+          "shape":"ConverseStreamOutput",
+          "documentation":"<p>The output stream that the model generated.</p>"
+        }
+      },
+      "payload":"stream"
+    },
+    "Document":{
+      "type":"structure",
+      "members":{
+      },
+      "document":true
     },
     "GuardrailIdentifier":{
       "type":"string",
@@ -86,6 +502,93 @@
     "GuardrailVersion":{
       "type":"string",
       "pattern":"(([1-9][0-9]{0,7})|(DRAFT))"
+    },
+    "ImageBlock":{
+      "type":"structure",
+      "required":[
+        "format",
+        "source"
+      ],
+      "members":{
+        "format":{
+          "shape":"ImageFormat",
+          "documentation":"<p>The format of the image.</p>"
+        },
+        "source":{
+          "shape":"ImageSource",
+          "documentation":"<p>The source for the image.</p>"
+        }
+      },
+      "documentation":"<p>Image content for a message.</p>"
+    },
+    "ImageFormat":{
+      "type":"string",
+      "enum":[
+        "png",
+        "jpeg",
+        "gif",
+        "webp"
+      ]
+    },
+    "ImageSource":{
+      "type":"structure",
+      "members":{
+        "bytes":{
+          "shape":"ImageSourceBytesBlob",
+          "documentation":"<p>The raw image bytes for the image. If you use an AWS SDK, you don't need to base64 encode the image bytes.</p>"
+        }
+      },
+      "documentation":"<p>The source for an image.</p>",
+      "union":true
+    },
+    "ImageSourceBytesBlob":{
+      "type":"blob",
+      "min":1
+    },
+    "InferenceConfiguration":{
+      "type":"structure",
+      "members":{
+        "maxTokens":{
+          "shape":"InferenceConfigurationMaxTokensInteger",
+          "documentation":"<p>The maximum number of tokens to allow in the generated response. The default value is the maximum allowed value for the model that you are using. For more information, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/model-parameters.html\">Inference parameters for foundatio{ \"messages\": [ { \"role\": \"user\", \"content\": [ { \"text\": \"what's the weather in Queens, NY and Austin, TX?\" } ] }, { \"role\": \"assistant\", \"content\": [ { \"toolUse\": { \"toolUseId\": \"1\", \"name\": \"get_weather\", \"input\": { \"city\": \"Queens\", \"state\": \"NY\" } } }, { \"toolUse\": { \"toolUseId\": \"2\", \"name\": \"get_weather\", \"input\": { \"city\": \"Austin\", \"state\": \"TX\" } } } ] }, { \"role\": \"user\", \"content\": [ { \"toolResult\": { \"toolUseId\": \"2\", \"content\": [ { \"json\": { \"weather\": \"40\" } } ] } }, { \"text\": \"...\" }, { \"toolResult\": { \"toolUseId\": \"1\", \"content\": [ { \"text\": \"result text\" } ] } } ] } ], \"toolConfig\": { \"tools\": [ { \"name\": \"get_weather\", \"description\": \"Get weather\", \"inputSchema\": { \"type\": \"object\", \"properties\": { \"city\": { \"type\": \"string\", \"description\": \"City of location\" }, \"state\": { \"type\": \"string\", \"description\": \"State of location\" } }, \"required\": [\"city\", \"state\"] } } ] } } n models</a>. </p>"
+        },
+        "temperature":{
+          "shape":"InferenceConfigurationTemperatureFloat",
+          "documentation":"<p>The likelihood of the model selecting higher-probability options while generating a response. A lower value makes the model more likely to choose higher-probability options, while a higher value makes the model more likely to choose lower-probability options.</p> <p>The default value is the default value for the model that you are using. For more information, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/model-parameters.html\">Inference parameters for foundation models</a>. </p>"
+        },
+        "topP":{
+          "shape":"InferenceConfigurationTopPFloat",
+          "documentation":"<p>The percentage of most-likely candidates that the model considers for the next token. For example, if you choose a value of 0.8 for <code>topP</code>, the model selects from the top 80% of the probability distribution of tokens that could be next in the sequence.</p> <p>The default value is the default value for the model that you are using. For more information, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/model-parameters.html\">Inference parameters for foundation models</a>. </p>"
+        },
+        "stopSequences":{
+          "shape":"InferenceConfigurationStopSequencesList",
+          "documentation":"<p>A list of stop sequences. A stop sequence is a sequence of characters that causes the model to stop generating the response. </p>"
+        }
+      },
+      "documentation":"<p>Base inference parameters to pass to a model in a call to <a href=\"https://docs.aws.amazon.com/bedrock/latest/APIReference/API_runtime_Converse.html\">Converse</a> or <a href=\"https://docs.aws.amazon.com/bedrock/latest/APIReference/API_runtime_ConverseStream.html\">ConverseStream</a>. For more information, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/model-parameters.html\">Inference parameters for foundation models</a>.</p> <p>If you need to pass additional parameters that the model supports, use the <code>additionalModelRequestFields</code> request field in the call to <code>Converse</code> or <code>ConverseStream</code>. For more information, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/model-parameters.html\">Model parameters</a>.</p>"
+    },
+    "InferenceConfigurationMaxTokensInteger":{
+      "type":"integer",
+      "box":true,
+      "min":1
+    },
+    "InferenceConfigurationStopSequencesList":{
+      "type":"list",
+      "member":{"shape":"NonEmptyString"},
+      "max":4,
+      "min":0
+    },
+    "InferenceConfigurationTemperatureFloat":{
+      "type":"float",
+      "box":true,
+      "max":1,
+      "min":0
+    },
+    "InferenceConfigurationTopPFloat":{
+      "type":"float",
+      "box":true,
+      "max":1,
+      "min":0
     },
     "InternalServerException":{
       "type":"structure",
@@ -243,6 +746,60 @@
       },
       "payload":"body"
     },
+    "Long":{
+      "type":"long",
+      "box":true
+    },
+    "Message":{
+      "type":"structure",
+      "required":[
+        "role",
+        "content"
+      ],
+      "members":{
+        "role":{
+          "shape":"ConversationRole",
+          "documentation":"<p>The role that the message plays in the message.</p>"
+        },
+        "content":{
+          "shape":"ContentBlocks",
+          "documentation":"<p>The message content.</p>"
+        }
+      },
+      "documentation":"<p>A message in the <a href=\"https://docs.aws.amazon.com/bedrock/latest/APIReference/API_runtime_Message.html\">Message</a> field. Use to send a message in a call to <a href=\"https://docs.aws.amazon.com/bedrock/latest/APIReference/API_runtime_Converse.html\">Converse</a>. </p>"
+    },
+    "MessageStartEvent":{
+      "type":"structure",
+      "required":["role"],
+      "members":{
+        "role":{
+          "shape":"ConversationRole",
+          "documentation":"<p>The role for the message.</p>"
+        }
+      },
+      "documentation":"<p>The start of a message.</p>",
+      "event":true
+    },
+    "MessageStopEvent":{
+      "type":"structure",
+      "required":["stopReason"],
+      "members":{
+        "stopReason":{
+          "shape":"StopReason",
+          "documentation":"<p>The reason why the model stopped generating output.</p>"
+        },
+        "additionalModelResponseFields":{
+          "shape":"Document",
+          "documentation":"<p>The additional model response fields.</p>"
+        }
+      },
+      "documentation":"<p>The stop event for a message.</p>",
+      "event":true
+    },
+    "Messages":{
+      "type":"list",
+      "member":{"shape":"Message"}
+    },
     "MimeType":{"type":"string"},
     "ModelErrorException":{
       "type":"structure",
@@ -311,6 +868,15 @@
     "NonBlankString":{
       "type":"string",
       "pattern":"[\\s\\S]*"
+    },
+    "NonEmptyString":{
+      "type":"string",
+      "min":1
+    },
+    "NonNegativeInteger":{
+      "type":"integer",
+      "box":true,
+      "min":0
     },
     "PartBody":{
       "type":"blob",
@@ -385,11 +951,48 @@
       },
       "exception":true
     },
+    "SpecificToolChoice":{
+      "type":"structure",
+      "required":["name"],
+      "members":{
+        "name":{
+          "shape":"ToolName",
+          "documentation":"<p>The name of the tool that the model must request. </p>"
+        }
+      },
+      "documentation":"<p>The model must request a specific tool.</p> <note> <p>This field is only supported by Anthropic Claude 3 models.</p> </note>"
+    },
     "StatusCode":{
       "type":"integer",
       "box":true,
       "max":599,
       "min":100
+    },
+    "StopReason":{
+      "type":"string",
+      "enum":[
+        "end_turn",
+        "tool_use",
+        "max_tokens",
+        "stop_sequence",
+        "content_filtered"
+      ]
+    },
+    "String":{"type":"string"},
+    "SystemContentBlock":{
+      "type":"structure",
+      "members":{
+        "text":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>A system prompt for the model. </p>"
+        }
+      },
+      "documentation":"<p>A system content block</p>",
+      "union":true
+    },
+    "SystemContentBlocks":{
+      "type":"list",
+      "member":{"shape":"SystemContentBlock"}
     },
     "ThrottlingException":{
       "type":"structure",
@@ -402,6 +1005,243 @@
         "senderFault":true
       },
       "exception":true
+    },
+    "TokenUsage":{
+      "type":"structure",
+      "required":[
+        "inputTokens",
+        "outputTokens",
+        "totalTokens"
+      ],
+      "members":{
+        "inputTokens":{
+          "shape":"TokenUsageInputTokensInteger",
+          "documentation":"<p>The number of tokens sent in the request to the model.</p>"
+        },
+        "outputTokens":{
+          "shape":"TokenUsageOutputTokensInteger",
+          "documentation":"<p>The number of tokens that the model generated for the request.</p>"
+        },
+        "totalTokens":{
+          "shape":"TokenUsageTotalTokensInteger",
+          "documentation":"<p>The total of input tokens and tokens generated by the model.</p>"
+        }
+      },
+      "documentation":"<p>The tokens used in a message API inference call. </p>"
+    },
+    "TokenUsageInputTokensInteger":{
+      "type":"integer",
+      "box":true,
+      "min":0
+    },
+    "TokenUsageOutputTokensInteger":{
+      "type":"integer",
+      "box":true,
+      "min":0
+    },
+    "TokenUsageTotalTokensInteger":{
+      "type":"integer",
+      "box":true,
+      "min":0
+    },
+    "Tool":{
+      "type":"structure",
+      "members":{
+        "toolSpec":{
+          "shape":"ToolSpecification",
+          "documentation":"<p>The specfication for the tool.</p>"
+        }
+      },
+      "documentation":"<p>Information about a tool that you can use with the Converse API. </p>",
+      "union":true
+    },
+    "ToolChoice":{
+      "type":"structure",
+      "members":{
+        "auto":{
+          "shape":"AutoToolChoice",
+          "documentation":"<p>The Model automatically decides if a tool should be called or to whether to generate text instead.</p>"
+        },
+        "any":{
+          "shape":"AnyToolChoice",
+          "documentation":"<p>The model must request at least one tool (no text is generated).</p>"
+        },
+        "tool":{
+          "shape":"SpecificToolChoice",
+          "documentation":"<p>The Model must request the specified tool.</p>"
+        }
+      },
+      "documentation":"<p>Forces a model to use a tool.</p>",
+      "union":true
+    },
+    "ToolConfiguration":{
+      "type":"structure",
+      "required":["tools"],
+      "members":{
+        "tools":{
+          "shape":"ToolConfigurationToolsList",
+          "documentation":"<p>An array of tools that you want to pass to a model.</p>"
+        },
+        "toolChoice":{
+          "shape":"ToolChoice",
+          "documentation":"<p>If supported by model, forces the model to request a tool.</p>"
+        }
+      },
+      "documentation":"<p>Configuration information for the tools that you pass to a model.</p> <note> <p>This field is only supported by Anthropic Claude 3, Cohere Command R, Cohere Command R+, and Mistral Large models.</p> </note>"
+    },
+    "ToolConfigurationToolsList":{
+      "type":"list",
+      "member":{"shape":"Tool"},
+      "min":1
+    },
+    "ToolInputSchema":{
+      "type":"structure",
+      "members":{
+        "json":{
+          "shape":"Document",
+          "documentation":"<p>The JSON schema for the tool. For more information, see <a href=\"https://json-schema.org/understanding-json-schema/reference\">JSON Schema Reference</a>.</p>"
+        }
+      },
+      "documentation":"<p>The schema for the tool. The top level schema type must be <code>object</code>. </p>",
+      "union":true
+    },
+    "ToolName":{
+      "type":"string",
+      "max":64,
+      "min":1,
+      "pattern":"[a-zA-Z][a-zA-Z0-9_]*"
+    },
+    "ToolResultBlock":{
+      "type":"structure",
+      "required":[
+        "toolUseId",
+        "content"
+      ],
+      "members":{
+        "toolUseId":{
+          "shape":"ToolUseId",
+          "documentation":"<p>The ID of the tool request that this is the result for.</p>"
+        },
+        "content":{
+          "shape":"ToolResultContentBlocks",
+          "documentation":"<p>The content for tool result content block.</p>"
+        },
+        "status":{
+          "shape":"ToolResultStatus",
+          "documentation":"<p>The status for the tool result content block.</p> <note> <p>This field is only supported Anthropic Claude 3 models.</p> </note>"
+        }
+      },
+      "documentation":"<p>A tool result block that contains the results for a tool request that the model previously made.</p>"
+    },
+    "ToolResultContentBlock":{
+      "type":"structure",
+      "members":{
+        "json":{
+          "shape":"Document",
+          "documentation":"<p>A tool result that is JSON format data.</p>"
+        },
+        "text":{
+          "shape":"String",
+          "documentation":"<p>A tool result that is text.</p>"
+        },
+        "image":{
+          "shape":"ImageBlock",
+          "documentation":"<p>A tool result that is an image.</p> <note> <p>This field is only supported by Anthropic Claude 3 models.</p> </note>"
+        }
+      },
+      "documentation":"<p>The tool result content block.</p>",
+      "union":true
+    },
+    "ToolResultContentBlocks":{
+      "type":"list",
+      "member":{"shape":"ToolResultContentBlock"}
+    },
+    "ToolResultStatus":{
+      "type":"string",
+      "enum":[
+        "success",
+        "error"
+      ]
+    },
+    "ToolSpecification":{
+      "type":"structure",
+      "required":[
+        "name",
+        "inputSchema"
+      ],
+      "members":{
+        "name":{
+          "shape":"ToolName",
+          "documentation":"<p>The name for the tool.</p>"
+        },
+        "description":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>The description for the tool.</p>"
+        },
+        "inputSchema":{
+          "shape":"ToolInputSchema",
+          "documentation":"<p>The input schema for the tool in JSON format.</p>"
+        }
+      },
+      "documentation":"<p>The specification for the tool.</p>"
+    },
+    "ToolUseBlock":{
+      "type":"structure",
+      "required":[
+        "toolUseId",
+        "name",
+        "input"
+      ],
+      "members":{
+        "toolUseId":{
+          "shape":"ToolUseId",
+          "documentation":"<p>The ID for the tool request.</p>"
+        },
+        "name":{
+          "shape":"ToolName",
+          "documentation":"<p>The name of the tool that the model wants to use.</p>"
+        },
+        "input":{
+          "shape":"Document",
+          "documentation":"<p>The input to pass to the tool. </p>"
+        }
+      },
+      "documentation":"<p>A tool use content block. Contains information about a tool that the model is requesting be run., The model uses the result from the tool to generate a response. </p>"
+    },
+    "ToolUseBlockDelta":{
+      "type":"structure",
+      "required":["input"],
+      "members":{
+        "input":{
+          "shape":"String",
+          "documentation":"<p>The input for a requested tool.</p>"
+        }
+      },
+      "documentation":"<p>The delta for a tool use block.</p>"
+    },
+    "ToolUseBlockStart":{
+      "type":"structure",
+      "required":[
+        "toolUseId",
+        "name"
+      ],
+      "members":{
+        "toolUseId":{
+          "shape":"ToolUseId",
+          "documentation":"<p>The ID for the tool request.</p>"
+        },
+        "name":{
+          "shape":"ToolName",
+          "documentation":"<p>The name of the tool that the model is requesting to use.</p>"
+        }
+      },
+      "documentation":"<p>The start of a tool use block.</p>"
+    },
+    "ToolUseId":{
+      "type":"string",
+      "max":64,
+      "min":1,
+      "pattern":"[a-zA-Z0-9_-]+"
     },
     "Trace":{
       "type":"string",

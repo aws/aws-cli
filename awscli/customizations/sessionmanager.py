@@ -104,11 +104,12 @@ class StartSessionCaller(CLIOperationCaller):
         response = client.start_session(**parameters)
         session_id = response['SessionId']
         region_name = client.meta.region_name
-        # profile_name is used to passed on to session manager plugin
+        # Profile_name is used to passed on to session manager plugin
         # to fetch same profile credentials to make an api call in the plugin.
-        # If no profile is passed then pass on empty string
-        profile_name = self._session.profile \
-            if self._session.profile is not None else ''
+        # If --profile flag is configured, pass it to Session Manager plugin.
+        # If not, set empty string.
+        profile_name = parsed_globals.profile \
+            if parsed_globals.profile is not None else ''
         endpoint_url = client.meta.endpoint_url
         ssm_env_name = self.DEFAULT_SSM_ENV_NAME
 

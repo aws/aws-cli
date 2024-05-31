@@ -5,6 +5,7 @@
     "endpointPrefix":"launchwizard",
     "jsonVersion":"1.1",
     "protocol":"rest-json",
+    "protocols":["rest-json"],
     "serviceFullName":"AWS Launch Wizard",
     "serviceId":"Launch Wizard",
     "signatureVersion":"v4",
@@ -39,6 +40,7 @@
       "input":{"shape":"DeleteDeploymentInput"},
       "output":{"shape":"DeleteDeploymentOutput"},
       "errors":[
+        {"shape":"ResourceLimitException"},
         {"shape":"InternalServerException"},
         {"shape":"ValidationException"},
         {"shape":"ResourceNotFoundException"}
@@ -78,6 +80,22 @@
       ],
       "documentation":"<p>Returns information about a workload.</p>"
     },
+    "GetWorkloadDeploymentPattern":{
+      "name":"GetWorkloadDeploymentPattern",
+      "http":{
+        "method":"POST",
+        "requestUri":"/getWorkloadDeploymentPattern",
+        "responseCode":200
+      },
+      "input":{"shape":"GetWorkloadDeploymentPatternInput"},
+      "output":{"shape":"GetWorkloadDeploymentPatternOutput"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"ValidationException"},
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p>Returns details for a given workload and deployment pattern, including the available specifications. You can use the <a href=\"https://docs.aws.amazon.com/launchwizard/latest/APIReference/API_ListWorkloads.html\">ListWorkloads</a> operation to discover the available workload names and the <a href=\"https://docs.aws.amazon.com/launchwizard/latest/APIReference/API_ListWorkloadDeploymentPatterns.html\">ListWorkloadDeploymentPatterns</a> operation to discover the available deployment pattern names of a given workload.</p>"
+    },
     "ListDeploymentEvents":{
       "name":"ListDeploymentEvents",
       "http":{
@@ -109,6 +127,22 @@
       ],
       "documentation":"<p>Lists the deployments that have been created.</p>"
     },
+    "ListTagsForResource":{
+      "name":"ListTagsForResource",
+      "http":{
+        "method":"GET",
+        "requestUri":"/tags/{resourceArn}",
+        "responseCode":200
+      },
+      "input":{"shape":"ListTagsForResourceInput"},
+      "output":{"shape":"ListTagsForResourceOutput"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"ValidationException"},
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p>Lists the tags associated with a specified resource.</p>"
+    },
     "ListWorkloadDeploymentPatterns":{
       "name":"ListWorkloadDeploymentPatterns",
       "http":{
@@ -123,7 +157,7 @@
         {"shape":"ValidationException"},
         {"shape":"ResourceNotFoundException"}
       ],
-      "documentation":"<p>Lists the workload deployment patterns.</p>"
+      "documentation":"<p>Lists the workload deployment patterns for a given workload name. You can use the <a href=\"https://docs.aws.amazon.com/launchwizard/latest/APIReference/API_ListWorkloads.html\">ListWorkloads</a> operation to discover the available workload names.</p>"
     },
     "ListWorkloads":{
       "name":"ListWorkloads",
@@ -138,10 +172,47 @@
         {"shape":"InternalServerException"},
         {"shape":"ValidationException"}
       ],
-      "documentation":"<p>Lists the workloads.</p>"
+      "documentation":"<p>Lists the available workload names. You can use the <a href=\"https://docs.aws.amazon.com/launchwizard/latest/APIReference/API_ListWorkloadDeploymentPatterns.html\">ListWorkloadDeploymentPatterns</a> operation to discover the available deployment patterns for a given workload.</p>"
+    },
+    "TagResource":{
+      "name":"TagResource",
+      "http":{
+        "method":"POST",
+        "requestUri":"/tags/{resourceArn}",
+        "responseCode":200
+      },
+      "input":{"shape":"TagResourceInput"},
+      "output":{"shape":"TagResourceOutput"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"ValidationException"},
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p>Adds the specified tags to the given resource.</p>"
+    },
+    "UntagResource":{
+      "name":"UntagResource",
+      "http":{
+        "method":"DELETE",
+        "requestUri":"/tags/{resourceArn}",
+        "responseCode":200
+      },
+      "input":{"shape":"UntagResourceInput"},
+      "output":{"shape":"UntagResourceOutput"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"ValidationException"},
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p>Removes the specified tags from the given resource.</p>",
+      "idempotent":true
     }
   },
   "shapes":{
+    "AllowedValues":{
+      "type":"list",
+      "member":{"shape":"ValueString"}
+    },
     "Boolean":{
       "type":"boolean",
       "box":true
@@ -169,11 +240,15 @@
         },
         "specifications":{
           "shape":"DeploymentSpecifications",
-          "documentation":"<p>The settings specified for the deployment. For more information on the specifications required for creating a deployment, see <a href=\"https://docs.aws.amazon.com/launchwizard/latest/APIReference/launch-wizard-specifications.html\">Workload specifications</a>.</p>"
+          "documentation":"<p>The settings specified for the deployment. These settings define how to deploy and configure your resources created by the deployment. For more information about the specifications required for creating a deployment for a SAP workload, see <a href=\"https://docs.aws.amazon.com/launchwizard/latest/APIReference/launch-wizard-specifications-sap.html\">SAP deployment specifications</a>. To retrieve the specifications required to create a deployment for other workloads, use the <a href=\"https://docs.aws.amazon.com/launchwizard/latest/APIReference/API_GetWorkloadDeploymentPattern.html\"> <code>GetWorkloadDeploymentPattern</code> </a> operation.</p>"
+        },
+        "tags":{
+          "shape":"Tags",
+          "documentation":"<p>The tags to add to the deployment.</p>"
         },
         "workloadName":{
           "shape":"WorkloadName",
-          "documentation":"<p>The name of the workload. You can use the <a href=\"https://docs.aws.amazon.com/launchwizard/latest/APIReference/API_ListWorkloadDeploymentPatterns.html\"> <code>ListWorkloadDeploymentPatterns</code> </a> operation to discover supported values for this parameter.</p>"
+          "documentation":"<p>The name of the workload. You can use the <a href=\"https://docs.aws.amazon.com/launchwizard/latest/APIReference/API_ListWorkloads.html\"> <code>ListWorkloads</code> </a> operation to discover supported values for this parameter.</p>"
         }
       }
     },
@@ -209,6 +284,24 @@
         }
       }
     },
+    "DeploymentConditionalField":{
+      "type":"structure",
+      "members":{
+        "comparator":{
+          "shape":"String",
+          "documentation":"<p>The comparator of the condition.</p> <p>Valid values: <code>Equal | NotEqual</code> </p>"
+        },
+        "name":{
+          "shape":"String",
+          "documentation":"<p>The name of the deployment condition.</p>"
+        },
+        "value":{
+          "shape":"String",
+          "documentation":"<p>The value of the condition.</p>"
+        }
+      },
+      "documentation":"<p>A field that details a condition of the specifications for a deployment.</p>"
+    },
     "DeploymentData":{
       "type":"structure",
       "members":{
@@ -219,6 +312,10 @@
         "deletedAt":{
           "shape":"Timestamp",
           "documentation":"<p>The time the deployment was deleted.</p>"
+        },
+        "deploymentArn":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the deployment.</p>"
         },
         "id":{
           "shape":"DeploymentId",
@@ -238,11 +335,15 @@
         },
         "specifications":{
           "shape":"DeploymentSpecifications",
-          "documentation":"<p>The specifications of the deployment. For more information on specifications for each deployment, see <a href=\"https://docs.aws.amazon.com/launchwizard/latest/APIReference/launch-wizard-specifications.html\">Workload specifications</a>.</p>"
+          "documentation":"<p>The settings specified for the deployment. These settings define how to deploy and configure your resources created by the deployment. For more information about the specifications required for creating a deployment for a SAP workload, see <a href=\"https://docs.aws.amazon.com/launchwizard/latest/APIReference/launch-wizard-specifications-sap.html\">SAP deployment specifications</a>. To retrieve the specifications required to create a deployment for other workloads, use the <a href=\"https://docs.aws.amazon.com/launchwizard/latest/APIReference/API_GetWorkloadDeploymentPattern.html\"> <code>GetWorkloadDeploymentPattern</code> </a> operation.</p>"
         },
         "status":{
           "shape":"DeploymentStatus",
           "documentation":"<p>The status of the deployment.</p>"
+        },
+        "tags":{
+          "shape":"Tags",
+          "documentation":"<p>Information about the tags attached to a deployment.</p>"
         },
         "workloadName":{
           "shape":"WorkloadName",
@@ -358,15 +459,15 @@
     },
     "DeploymentName":{
       "type":"string",
-      "max":25,
+      "max":50,
       "min":1,
-      "pattern":"^[A-Za-z0-9_\\s\\.-]+$"
+      "pattern":"^[A-Za-z0-9_\\.-]+$"
     },
     "DeploymentPatternName":{
       "type":"string",
       "max":256,
       "min":1,
-      "pattern":"^[a-zA-Z0-9-]+$"
+      "pattern":"^[A-Za-z0-9][a-zA-Z0-9-]*$"
     },
     "DeploymentSpecifications":{
       "type":"map",
@@ -375,6 +476,38 @@
       "max":100,
       "min":1,
       "sensitive":true
+    },
+    "DeploymentSpecificationsData":{
+      "type":"list",
+      "member":{"shape":"DeploymentSpecificationsField"},
+      "max":100,
+      "min":1
+    },
+    "DeploymentSpecificationsField":{
+      "type":"structure",
+      "members":{
+        "allowedValues":{
+          "shape":"AllowedValues",
+          "documentation":"<p>The allowed values of the deployment specification.</p>"
+        },
+        "conditionals":{
+          "shape":"SpecificationsConditionalData",
+          "documentation":"<p>The conditionals used for the deployment specification.</p>"
+        },
+        "description":{
+          "shape":"String",
+          "documentation":"<p>The description of the deployment specification.</p>"
+        },
+        "name":{
+          "shape":"String",
+          "documentation":"<p>The name of the deployment specification.</p>"
+        },
+        "required":{
+          "shape":"String",
+          "documentation":"<p>Indicates if the deployment specification is required.</p>"
+        }
+      },
+      "documentation":"<p>A field that details a specification of a deployment pattern.</p>"
     },
     "DeploymentStatus":{
       "type":"string",
@@ -419,6 +552,32 @@
         "deployment":{
           "shape":"DeploymentData",
           "documentation":"<p>An object that details the deployment.</p>"
+        }
+      }
+    },
+    "GetWorkloadDeploymentPatternInput":{
+      "type":"structure",
+      "required":[
+        "deploymentPatternName",
+        "workloadName"
+      ],
+      "members":{
+        "deploymentPatternName":{
+          "shape":"DeploymentPatternName",
+          "documentation":"<p>The name of the deployment pattern.</p>"
+        },
+        "workloadName":{
+          "shape":"WorkloadName",
+          "documentation":"<p>The name of the workload.</p>"
+        }
+      }
+    },
+    "GetWorkloadDeploymentPatternOutput":{
+      "type":"structure",
+      "members":{
+        "workloadDeploymentPattern":{
+          "shape":"WorkloadDeploymentPatternData",
+          "documentation":"<p>Details about the workload deployment pattern.</p>"
         }
       }
     },
@@ -493,7 +652,7 @@
       "members":{
         "filters":{
           "shape":"DeploymentFilterList",
-          "documentation":"<p>Filters to scope the results. The following filters are supported:</p> <ul> <li> <p> <code>WORKLOAD_NAME</code> </p> </li> <li> <p> <code>DEPLOYMENT_STATUS</code> </p> </li> </ul>"
+          "documentation":"<p>Filters to scope the results. The following filters are supported:</p> <ul> <li> <p> <code>WORKLOAD_NAME</code> - The name used in deployments.</p> </li> <li> <p> <code>DEPLOYMENT_STATUS</code> - <code>COMPLETED</code> | <code>CREATING</code> | <code>DELETE_IN_PROGRESS</code> | <code>DELETE_INITIATING</code> | <code>DELETE_FAILED</code> | <code>DELETED</code> | <code>FAILED</code> | <code>IN_PROGRESS</code> | <code>VALIDATING</code> </p> </li> </ul>"
         },
         "maxResults":{
           "shape":"MaxDeploymentResults",
@@ -515,6 +674,27 @@
         "nextToken":{
           "shape":"NextToken",
           "documentation":"<p>The token to include in another request to get the next page of items. This value is <code>null</code> when there are no more items to return.</p>"
+        }
+      }
+    },
+    "ListTagsForResourceInput":{
+      "type":"structure",
+      "required":["resourceArn"],
+      "members":{
+        "resourceArn":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the resource.</p>",
+          "location":"uri",
+          "locationName":"resourceArn"
+        }
+      }
+    },
+    "ListTagsForResourceOutput":{
+      "type":"structure",
+      "members":{
+        "tags":{
+          "shape":"Tags",
+          "documentation":"<p>Information about the tags.</p>"
         }
       }
     },
@@ -628,8 +808,88 @@
       },
       "exception":true
     },
+    "SpecificationsConditionalData":{
+      "type":"list",
+      "member":{"shape":"DeploymentConditionalField"},
+      "max":5,
+      "min":1
+    },
     "String":{"type":"string"},
+    "TagKey":{
+      "type":"string",
+      "max":128,
+      "min":1,
+      "pattern":"^(?!aws:)[a-zA-Z+-=._:/]+$"
+    },
+    "TagKeyList":{
+      "type":"list",
+      "member":{"shape":"TagKey"},
+      "max":200,
+      "min":1
+    },
+    "TagResourceInput":{
+      "type":"structure",
+      "required":[
+        "resourceArn",
+        "tags"
+      ],
+      "members":{
+        "resourceArn":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the resource.</p>",
+          "location":"uri",
+          "locationName":"resourceArn"
+        },
+        "tags":{
+          "shape":"Tags",
+          "documentation":"<p>One or more tags to attach to the resource.</p>"
+        }
+      }
+    },
+    "TagResourceOutput":{
+      "type":"structure",
+      "members":{
+      }
+    },
+    "TagValue":{
+      "type":"string",
+      "max":256,
+      "min":0
+    },
+    "Tags":{
+      "type":"map",
+      "key":{"shape":"TagKey"},
+      "value":{"shape":"TagValue"},
+      "max":200,
+      "min":1
+    },
     "Timestamp":{"type":"timestamp"},
+    "UntagResourceInput":{
+      "type":"structure",
+      "required":[
+        "resourceArn",
+        "tagKeys"
+      ],
+      "members":{
+        "resourceArn":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the resource.</p>",
+          "location":"uri",
+          "locationName":"resourceArn"
+        },
+        "tagKeys":{
+          "shape":"TagKeyList",
+          "documentation":"<p>Keys identifying the tags to remove.</p>",
+          "location":"querystring",
+          "locationName":"tagKeys"
+        }
+      }
+    },
+    "UntagResourceOutput":{
+      "type":"structure",
+      "members":{
+      }
+    },
     "ValidationException":{
       "type":"structure",
       "members":{
@@ -699,6 +959,44 @@
       "type":"list",
       "member":{"shape":"WorkloadDataSummary"}
     },
+    "WorkloadDeploymentPatternData":{
+      "type":"structure",
+      "members":{
+        "deploymentPatternName":{
+          "shape":"DeploymentPatternName",
+          "documentation":"<p>The name of the deployment pattern.</p>"
+        },
+        "description":{
+          "shape":"String",
+          "documentation":"<p>The description of the deployment pattern.</p>"
+        },
+        "displayName":{
+          "shape":"String",
+          "documentation":"<p>The display name of the deployment pattern.</p>"
+        },
+        "specifications":{
+          "shape":"DeploymentSpecificationsData",
+          "documentation":"<p>The settings specified for the deployment. These settings define how to deploy and configure your resources created by the deployment. For more information about the specifications required for creating a deployment for a SAP workload, see <a href=\"https://docs.aws.amazon.com/launchwizard/latest/APIReference/launch-wizard-specifications-sap.html\">SAP deployment specifications</a>. To retrieve the specifications required to create a deployment for other workloads, use the <a href=\"https://docs.aws.amazon.com/launchwizard/latest/APIReference/API_GetWorkloadDeploymentPattern.html\"> <code>GetWorkloadDeploymentPattern</code> </a> operation.</p>"
+        },
+        "status":{
+          "shape":"WorkloadDeploymentPatternStatus",
+          "documentation":"<p>The status of the deployment pattern.</p>"
+        },
+        "statusMessage":{
+          "shape":"String",
+          "documentation":"<p>The status message of the deployment pattern.</p>"
+        },
+        "workloadName":{
+          "shape":"WorkloadName",
+          "documentation":"<p>The workload name of the deployment pattern.</p>"
+        },
+        "workloadVersionName":{
+          "shape":"WorkloadVersionName",
+          "documentation":"<p>The workload version name of the deployment pattern.</p>"
+        }
+      },
+      "documentation":"<p>The data that details a workload deployment pattern.</p>"
+    },
     "WorkloadDeploymentPatternDataSummary":{
       "type":"structure",
       "members":{
@@ -748,9 +1046,9 @@
     },
     "WorkloadName":{
       "type":"string",
-      "max":256,
+      "max":100,
       "min":1,
-      "pattern":"^[a-zA-Z0-9-]+$"
+      "pattern":"^[A-Za-z][a-zA-Z0-9-_]*$"
     },
     "WorkloadStatus":{
       "type":"string",
@@ -765,7 +1063,7 @@
       "type":"string",
       "max":30,
       "min":5,
-      "pattern":"^[a-zA-Z0-9-]+$"
+      "pattern":"^[A-Za-z0-9][a-zA-Z0-9-]*$"
     }
   },
   "documentation":"<p>Launch Wizard offers a guided way of sizing, configuring, and deploying Amazon Web Services resources for third party applications, such as Microsoft SQL Server Always On and HANA based SAP systems, without the need to manually identify and provision individual Amazon Web Services resources.</p>"

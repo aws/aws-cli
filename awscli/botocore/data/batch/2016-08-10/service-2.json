@@ -5,6 +5,7 @@
     "endpointPrefix":"batch",
     "jsonVersion":"1.1",
     "protocol":"rest-json",
+    "protocols":["rest-json"],
     "serviceAbbreviation":"AWS Batch",
     "serviceFullName":"AWS Batch",
     "serviceId":"Batch",
@@ -193,6 +194,20 @@
         {"shape":"ServerException"}
       ],
       "documentation":"<p>Describes one or more of your scheduling policies.</p>"
+    },
+    "GetJobQueueSnapshot":{
+      "name":"GetJobQueueSnapshot",
+      "http":{
+        "method":"POST",
+        "requestUri":"/v1/getjobqueuesnapshot"
+      },
+      "input":{"shape":"GetJobQueueSnapshotRequest"},
+      "output":{"shape":"GetJobQueueSnapshotResponse"},
+      "errors":[
+        {"shape":"ClientException"},
+        {"shape":"ServerException"}
+      ],
+      "documentation":"<p>Provides a list of the first 100 <code>RUNNABLE</code> jobs associated to a single job queue.</p>"
     },
     "ListJobs":{
       "name":"ListJobs",
@@ -2318,6 +2333,57 @@
       "documentation":"<p>The platform configuration for jobs that are running on Fargate resources. Jobs that run on Amazon EC2 resources must not specify this parameter.</p>"
     },
     "Float":{"type":"float"},
+    "FrontOfQueueDetail":{
+      "type":"structure",
+      "members":{
+        "jobs":{
+          "shape":"FrontOfQueueJobSummaryList",
+          "documentation":"<p>The Amazon Resource Names (ARNs) of the first 100 <code>RUNNABLE</code> jobs in a named job queue. For first-in-first-out (FIFO) job queues, jobs are ordered based on their submission time. For fair share scheduling (FSS) job queues, jobs are ordered based on their job priority and share usage.</p>"
+        },
+        "lastUpdatedAt":{
+          "shape":"Long",
+          "documentation":"<p>The Unix timestamp (in milliseconds) for when each of the first 100 <code>RUNNABLE</code> jobs were last updated. </p>"
+        }
+      },
+      "documentation":"<p>Contains a list of the first 100 <code>RUNNABLE</code> jobs associated to a single job queue.</p>"
+    },
+    "FrontOfQueueJobSummary":{
+      "type":"structure",
+      "members":{
+        "jobArn":{
+          "shape":"String",
+          "documentation":"<p>The ARN for a job in a named job queue.</p>"
+        },
+        "earliestTimeAtPosition":{
+          "shape":"Long",
+          "documentation":"<p>The Unix timestamp (in milliseconds) for when the job transitioned to its current position in the job queue.</p>"
+        }
+      },
+      "documentation":"<p>An object that represents summary details for the first 100 <code>RUNNABLE</code> jobs in a job queue.</p>"
+    },
+    "FrontOfQueueJobSummaryList":{
+      "type":"list",
+      "member":{"shape":"FrontOfQueueJobSummary"}
+    },
+    "GetJobQueueSnapshotRequest":{
+      "type":"structure",
+      "required":["jobQueue"],
+      "members":{
+        "jobQueue":{
+          "shape":"String",
+          "documentation":"<p>The job queue’s name or full queue Amazon Resource Name (ARN).</p>"
+        }
+      }
+    },
+    "GetJobQueueSnapshotResponse":{
+      "type":"structure",
+      "members":{
+        "frontOfQueue":{
+          "shape":"FrontOfQueueDetail",
+          "documentation":"<p>The list of the first 100 <code>RUNNABLE</code> jobs in each job queue. For first-in-first-out (FIFO) job queues, jobs are ordered based on their submission time. For fair share scheduling (FSS) job queues, jobs are ordered based on their job priority and share usage.</p>"
+        }
+      }
+    },
     "Host":{
       "type":"structure",
       "members":{
@@ -2923,7 +2989,7 @@
         },
         "maxResults":{
           "shape":"Integer",
-          "documentation":"<p>The maximum number of results returned by <code>ListJobs</code> in paginated output. When this parameter is used, <code>ListJobs</code> only returns <code>maxResults</code> results in a single page and a <code>nextToken</code> response element. The remaining results of the initial request can be seen by sending another <code>ListJobs</code> request with the returned <code>nextToken</code> value. This value can be between 1 and 100. If this parameter isn't used, then <code>ListJobs</code> returns up to 100 results and a <code>nextToken</code> value if applicable.</p>"
+          "documentation":"<p>The maximum number of results returned by <code>ListJobs</code> in a paginated output. When this parameter is used, <code>ListJobs</code> returns up to <code>maxResults</code> results in a single page and a <code>nextToken</code> response element, if applicable. The remaining results of the initial request can be seen by sending another <code>ListJobs</code> request with the returned <code>nextToken</code> value.</p> <p>The following outlines key parameters and limitations:</p> <ul> <li> <p>The minimum value is 1. </p> </li> <li> <p>When <code>--job-status</code> is used, Batch returns up to 1000 values. </p> </li> <li> <p>When <code>--filters</code> is used, Batch returns up to 100 values.</p> </li> <li> <p>If neither parameter is used, then <code>ListJobs</code> returns up to 1000 results (jobs that are in the <code>RUNNING</code> status) and a <code>nextToken</code> value, if applicable.</p> </li> </ul>"
         },
         "nextToken":{
           "shape":"String",

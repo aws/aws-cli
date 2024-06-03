@@ -2,6 +2,16 @@
 CHANGELOG
 =========
 
+2.16.0
+======
+
+* api-change:``amplify``: This doc-only update identifies fields that are specific to Gen 1 and Gen 2 applications.
+* api-change:``iottwinmaker``: Support RESET_VALUE UpdateType for PropertyUpdates to reset property value to default or null
+* api-change:``batch``: This release adds support for the AWS Batch GetJobQueueSnapshot API operation.
+* feature:logs start-live-tail: Adds support for starting a live tail streaming session for one or more log groups.
+* api-change:``eks``: Adds support for EKS add-ons pod identity associations integration
+
+
 2.15.62
 =======
 

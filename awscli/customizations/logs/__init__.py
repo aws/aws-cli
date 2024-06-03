@@ -11,12 +11,17 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 from awscli.customizations.logs.tail import TailCommand
+from awscli.customizations.logs.startlivetail import StartLiveTailCommand
 
 
 def register_logs_commands(event_emitter):
     event_emitter.register('building-command-table.logs', inject_tail_command)
+    event_emitter.register('building-command-table.logs', inject_start_live_tail_command)
 
 
 def inject_tail_command(command_table, session, **kwargs):
     command_table['tail'] = TailCommand(session)
 
+
+def inject_start_live_tail_command(command_table, session, **kwargs):
+    command_table['start-live-tail'] = StartLiveTailCommand(session)

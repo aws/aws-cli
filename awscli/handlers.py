@@ -96,6 +96,7 @@ from awscli.customizations.kinesis import \
     register_kinesis_list_streams_pagination_backcompat
 from awscli.customizations.quicksight import \
     register_quicksight_asset_bundle_customizations
+from awscli.customizations.logs import register_logs_commands
 
 
 def awscli_initialize(event_handlers):
@@ -191,3 +192,4 @@ def awscli_initialize(event_handlers):
     register_override_ssl_common_name(event_handlers)
     register_kinesis_list_streams_pagination_backcompat(event_handlers)
     register_quicksight_asset_bundle_customizations(event_handlers)
+    register_logs_commands(event_handlers)

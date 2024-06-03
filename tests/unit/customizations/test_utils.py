@@ -46,7 +46,7 @@ class TestCommandTableRenames(BaseAWSHelpOutputTest):
 class TestCommandTableAlias(BaseAWSHelpOutputTest):
 
     def test_alias_command_table(self):
-        old_name = 'alexaforbusiness'
+        old_name = 'cloudhsmv2'
         new_name = 'nopossiblewaythisisalreadythere'
 
         def handler(command_table, **kwargs):
@@ -67,8 +67,8 @@ class TestCommandTableAlias(BaseAWSHelpOutputTest):
         self.assert_contains(command_name)
 
         # We can also see subcommands help as well.
-        self.driver.main([command_name, 'get-room', 'help'])
-        self.assert_contains('get-room')
+        self.driver.main([command_name, 'describe-clusters', 'help'])
+        self.assert_contains('describe-clusters')
 
 
 class TestHiddenAlias(unittest.TestCase):

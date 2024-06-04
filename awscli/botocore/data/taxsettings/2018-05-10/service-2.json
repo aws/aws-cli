@@ -1,0 +1,1529 @@
+{
+  "version":"2.0",
+  "metadata":{
+    "apiVersion":"2018-05-10",
+    "endpointPrefix":"tax",
+    "jsonVersion":"1.1",
+    "protocol":"rest-json",
+    "protocols":["rest-json"],
+    "serviceFullName":"Tax Settings",
+    "serviceId":"TaxSettings",
+    "signatureVersion":"v4",
+    "signingName":"tax",
+    "uid":"taxsettings-2018-05-10"
+  },
+  "operations":{
+    "BatchDeleteTaxRegistration":{
+      "name":"BatchDeleteTaxRegistration",
+      "http":{
+        "method":"POST",
+        "requestUri":"/BatchDeleteTaxRegistration",
+        "responseCode":200
+      },
+      "input":{"shape":"BatchDeleteTaxRegistrationRequest"},
+      "output":{"shape":"BatchDeleteTaxRegistrationResponse"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"ConflictException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Deletes tax registration for multiple accounts in batch. This can be used to delete tax registrations for up to five accounts in one batch. </p> <note> <p>This API operation can't be used to delete your tax registration in Brazil. Use the <a href=\"https://console.aws.amazon.com/billing/home#/paymentpreferences/paymentmethods\">Payment preferences</a> page in the Billing and Cost Management console instead.</p> </note>"
+    },
+    "BatchPutTaxRegistration":{
+      "name":"BatchPutTaxRegistration",
+      "http":{
+        "method":"POST",
+        "requestUri":"/BatchPutTaxRegistration",
+        "responseCode":200
+      },
+      "input":{"shape":"BatchPutTaxRegistrationRequest"},
+      "output":{"shape":"BatchPutTaxRegistrationResponse"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"ConflictException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Adds or updates tax registration for multiple accounts in batch. This can be used to add or update tax registrations for up to five accounts in one batch. You can't set a TRN if there's a pending TRN. You'll need to delete the pending TRN first.</p> <p>To call this API operation for specific countries, see the following country-specific requirements.</p> <p> <b>Bangladesh</b> </p> <ul> <li> <p>You must specify the tax registration certificate document in the <code>taxRegistrationDocuments</code> field of the <code>VerificationDetails</code> object.</p> </li> </ul> <p> <b>Brazil</b> </p> <ul> <li> <p>You must complete the tax registration process in the <a href=\"https://console.aws.amazon.com/billing/home#/paymentpreferences/paymentmethods\">Payment preferences</a> page in the Billing and Cost Management console. After your TRN and billing address are verified, you can call this API operation.</p> </li> <li> <p>For Amazon Web Services accounts created through Organizations, you can call this API operation when you don't have a billing address.</p> </li> </ul> <p> <b>Georgia</b> </p> <ul> <li> <p>The valid <code>personType</code> values are <code>Physical Person</code> and <code>Business</code>.</p> </li> </ul> <p> <b>Kenya</b> </p> <ul> <li> <p>You must specify the <code>personType</code> in the <code>kenyaAdditionalInfo</code> field of the <code>additionalTaxInformation</code> object.</p> </li> <li> <p>If the <code>personType</code> is <code>Physical Person</code>, you must specify the tax registration certificate document in the <code>taxRegistrationDocuments</code> field of the <code>VerificationDetails</code> object.</p> </li> </ul> <p> <b>Malaysia</b> </p> <ul> <li> <p>If you use this operation to set a tax registration number (TRN) in Malaysia, only resellers with a valid sales and service tax (SST) number are required to provide tax registration information.</p> </li> <li> <p>By using this API operation to set a TRN in Malaysia, Amazon Web Services will regard you as self-declaring that you're an authorized business reseller registered with the Royal Malaysia Customs Department (RMCD) and have a valid SST number.</p> </li> <li> <p>Amazon Web Services reserves the right to seek additional information and/or take other actions to support your self-declaration as appropriate.</p> </li> <li> <p>If you're not a reseller of Amazon Web Services, we don't recommend that you use this operation to set the TRN in Malaysia.</p> </li> <li> <p>Only use this API operation to upload the TRNs for accounts through which you're reselling Amazon Web Services.</p> </li> <li> <p>Amazon Web Services is currently registered under the following service tax codes. You must include at least one of the service tax codes in the service tax code strings to declare yourself as an authorized registered business reseller.</p> <p>Taxable service and service tax codes:</p> <p>Consultancy - 9907061674</p> <p>Training or coaching service - 9907071685</p> <p>IT service - 9907101676</p> <p>Digital services and electronic medium - 9907121690</p> </li> </ul> <p> <b>Nepal</b> </p> <ul> <li> <p>The sector valid values are <code>Business</code> and <code>Individual</code>.</p> </li> </ul> <p> <b>Saudi Arabia</b> </p> <ul> <li> <p>For <code>address</code>, you must specify <code>addressLine3</code>.</p> </li> </ul> <p> <b>South Korea</b> </p> <ul> <li> <p>You must specify the <code>certifiedEmailId</code> and <code>legalName</code> in the <code>TaxRegistrationEntry</code> object. Use Korean characters for <code>legalName</code>.</p> </li> <li> <p>You must specify the <code>businessRepresentativeName</code>, <code>itemOfBusiness</code>, and <code>lineOfBusiness</code> in the <code>southKoreaAdditionalInfo</code> field of the <code>additionalTaxInformation</code> object. Use Korean characters for these fields.</p> </li> <li> <p>You must specify the tax registration certificate document in the <code>taxRegistrationDocuments</code> field of the <code>VerificationDetails</code> object.</p> </li> <li> <p>For the <code>address</code> object, use Korean characters for <code>addressLine1</code>, <code>addressLine2</code> <code>city</code>, <code>postalCode</code>, and <code>stateOrRegion</code>.</p> </li> </ul> <p> <b>Spain</b> </p> <ul> <li> <p>You must specify the <code>registrationType</code> in the <code>spainAdditionalInfo</code> field of the <code>additionalTaxInformation</code> object.</p> </li> <li> <p>If the <code>registrationType</code> is <code>Local</code>, you must specify the tax registration certificate document in the <code>taxRegistrationDocuments</code> field of the <code>VerificationDetails</code> object.</p> </li> </ul> <p> <b>Turkey</b> </p> <ul> <li> <p>You must specify the <code>sector</code> in the <code>taxRegistrationEntry</code> object.</p> </li> <li> <p>If your <code>sector</code> is <code>Business</code>, <code>Individual</code>, or <code>Government</code>:</p> <ul> <li> <p>Specify the <code>taxOffice</code>. If your <code>sector</code> is <code>Individual</code>, don't enter this value.</p> </li> <li> <p>(Optional) Specify the <code>kepEmailId</code>. If your <code>sector</code> is <code>Individual</code>, don't enter this value.</p> </li> <li> <p> <b>Note:</b> In the <b>Tax Settings</b> page of the Billing console, <code>Government</code> appears as <b>Public institutions</b> </p> </li> </ul> </li> <li> <p>If your <code>sector</code> is <code>Business</code> and you're subject to KDV tax, you must specify your industry in the <code>industries</code> field.</p> </li> <li> <p>For <code>address</code>, you must specify <code>districtOrCounty</code>.</p> </li> </ul> <p> <b>Ukraine</b> </p> <ul> <li> <p>The sector valid values are <code>Business</code> and <code>Individual</code>.</p> </li> </ul>"
+    },
+    "DeleteTaxRegistration":{
+      "name":"DeleteTaxRegistration",
+      "http":{
+        "method":"POST",
+        "requestUri":"/DeleteTaxRegistration",
+        "responseCode":200
+      },
+      "input":{"shape":"DeleteTaxRegistrationRequest"},
+      "output":{"shape":"DeleteTaxRegistrationResponse"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"ConflictException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Deletes tax registration for a single account. </p> <note> <p>This API operation can't be used to delete your tax registration in Brazil. Use the <a href=\"https://console.aws.amazon.com/billing/home#/paymentpreferences/paymentmethods\">Payment preferences</a> page in the Billing and Cost Management console instead.</p> </note>"
+    },
+    "GetTaxRegistration":{
+      "name":"GetTaxRegistration",
+      "http":{
+        "method":"POST",
+        "requestUri":"/GetTaxRegistration",
+        "responseCode":200
+      },
+      "input":{"shape":"GetTaxRegistrationRequest"},
+      "output":{"shape":"GetTaxRegistrationResponse"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Retrieves tax registration for a single account.</p>"
+    },
+    "GetTaxRegistrationDocument":{
+      "name":"GetTaxRegistrationDocument",
+      "http":{
+        "method":"POST",
+        "requestUri":"/GetTaxRegistrationDocument",
+        "responseCode":200
+      },
+      "input":{"shape":"GetTaxRegistrationDocumentRequest"},
+      "output":{"shape":"GetTaxRegistrationDocumentResponse"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Downloads your tax documents to the Amazon S3 bucket that you specify in your request.</p>"
+    },
+    "ListTaxRegistrations":{
+      "name":"ListTaxRegistrations",
+      "http":{
+        "method":"POST",
+        "requestUri":"/ListTaxRegistrations",
+        "responseCode":200
+      },
+      "input":{"shape":"ListTaxRegistrationsRequest"},
+      "output":{"shape":"ListTaxRegistrationsResponse"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Retrieves the tax registration of accounts listed in a consolidated billing family. This can be used to retrieve up to 100 accounts' tax registrations in one call (default 50). </p>"
+    },
+    "PutTaxRegistration":{
+      "name":"PutTaxRegistration",
+      "http":{
+        "method":"POST",
+        "requestUri":"/PutTaxRegistration",
+        "responseCode":200
+      },
+      "input":{"shape":"PutTaxRegistrationRequest"},
+      "output":{"shape":"PutTaxRegistrationResponse"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"ConflictException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Adds or updates tax registration for a single account. You can't set a TRN if there's a pending TRN. You'll need to delete the pending TRN first.</p> <p>To call this API operation for specific countries, see the following country-specific requirements.</p> <p> <b>Bangladesh</b> </p> <ul> <li> <p>You must specify the tax registration certificate document in the <code>taxRegistrationDocuments</code> field of the <code>VerificationDetails</code> object.</p> </li> </ul> <p> <b>Brazil</b> </p> <ul> <li> <p>You must complete the tax registration process in the <a href=\"https://console.aws.amazon.com/billing/home#/paymentpreferences/paymentmethods\">Payment preferences</a> page in the Billing and Cost Management console. After your TRN and billing address are verified, you can call this API operation.</p> </li> <li> <p>For Amazon Web Services accounts created through Organizations, you can call this API operation when you don't have a billing address.</p> </li> </ul> <p> <b>Georgia</b> </p> <ul> <li> <p>The valid <code>personType</code> values are <code>Physical Person</code> and <code>Business</code>.</p> </li> </ul> <p> <b>Kenya</b> </p> <ul> <li> <p>You must specify the <code>personType</code> in the <code>kenyaAdditionalInfo</code> field of the <code>additionalTaxInformation</code> object.</p> </li> <li> <p>If the <code>personType</code> is <code>Physical Person</code>, you must specify the tax registration certificate document in the <code>taxRegistrationDocuments</code> field of the <code>VerificationDetails</code> object.</p> </li> </ul> <p> <b>Malaysia</b> </p> <ul> <li> <p>If you use this operation to set a tax registration number (TRN) in Malaysia, only resellers with a valid sales and service tax (SST) number are required to provide tax registration information.</p> </li> <li> <p>By using this API operation to set a TRN in Malaysia, Amazon Web Services will regard you as self-declaring that you're an authorized business reseller registered with the Royal Malaysia Customs Department (RMCD) and have a valid SST number.</p> </li> <li> <p>Amazon Web Services reserves the right to seek additional information and/or take other actions to support your self-declaration as appropriate.</p> </li> <li> <p>If you're not a reseller of Amazon Web Services, we don't recommend that you use this operation to set the TRN in Malaysia.</p> </li> <li> <p>Only use this API operation to upload the TRNs for accounts through which you're reselling Amazon Web Services.</p> </li> <li> <p>Amazon Web Services is currently registered under the following service tax codes. You must include at least one of the service tax codes in the service tax code strings to declare yourself as an authorized registered business reseller.</p> <p>Taxable service and service tax codes:</p> <p>Consultancy - 9907061674</p> <p>Training or coaching service - 9907071685</p> <p>IT service - 9907101676</p> <p>Digital services and electronic medium - 9907121690</p> </li> </ul> <p> <b>Nepal</b> </p> <ul> <li> <p>The sector valid values are <code>Business</code> and <code>Individual</code>.</p> </li> </ul> <p> <b>Saudi Arabia</b> </p> <ul> <li> <p>For <code>address</code>, you must specify <code>addressLine3</code>.</p> </li> </ul> <p> <b>South Korea</b> </p> <ul> <li> <p>You must specify the <code>certifiedEmailId</code> and <code>legalName</code> in the <code>TaxRegistrationEntry</code> object. Use Korean characters for <code>legalName</code>.</p> </li> <li> <p>You must specify the <code>businessRepresentativeName</code>, <code>itemOfBusiness</code>, and <code>lineOfBusiness</code> in the <code>southKoreaAdditionalInfo</code> field of the <code>additionalTaxInformation</code> object. Use Korean characters for these fields.</p> </li> <li> <p>You must specify the tax registration certificate document in the <code>taxRegistrationDocuments</code> field of the <code>VerificationDetails</code> object.</p> </li> <li> <p>For the <code>address</code> object, use Korean characters for <code>addressLine1</code>, <code>addressLine2</code> <code>city</code>, <code>postalCode</code>, and <code>stateOrRegion</code>.</p> </li> </ul> <p> <b>Spain</b> </p> <ul> <li> <p>You must specify the <code>registrationType</code> in the <code>spainAdditionalInfo</code> field of the <code>additionalTaxInformation</code> object.</p> </li> <li> <p>If the <code>registrationType</code> is <code>Local</code>, you must specify the tax registration certificate document in the <code>taxRegistrationDocuments</code> field of the <code>VerificationDetails</code> object.</p> </li> </ul> <p> <b>Turkey</b> </p> <ul> <li> <p>You must specify the <code>sector</code> in the <code>taxRegistrationEntry</code> object.</p> </li> <li> <p>If your <code>sector</code> is <code>Business</code>, <code>Individual</code>, or <code>Government</code>:</p> <ul> <li> <p>Specify the <code>taxOffice</code>. If your <code>sector</code> is <code>Individual</code>, don't enter this value.</p> </li> <li> <p>(Optional) Specify the <code>kepEmailId</code>. If your <code>sector</code> is <code>Individual</code>, don't enter this value.</p> </li> <li> <p> <b>Note:</b> In the <b>Tax Settings</b> page of the Billing console, <code>Government</code> appears as <b>Public institutions</b> </p> </li> </ul> </li> <li> <p>If your <code>sector</code> is <code>Business</code> and you're subject to KDV tax, you must specify your industry in the <code>industries</code> field.</p> </li> <li> <p>For <code>address</code>, you must specify <code>districtOrCounty</code>.</p> </li> </ul> <p> <b>Ukraine</b> </p> <ul> <li> <p>The sector valid values are <code>Business</code> and <code>Individual</code>.</p> </li> </ul>"
+    }
+  },
+  "shapes":{
+    "AccountDetails":{
+      "type":"structure",
+      "members":{
+        "accountId":{
+          "shape":"AccountId",
+          "documentation":"<p>List of unique account identifiers. </p>"
+        },
+        "accountMetaData":{
+          "shape":"AccountMetaData",
+          "documentation":"<p> The meta data information associated with the account. </p>"
+        },
+        "taxInheritanceDetails":{
+          "shape":"TaxInheritanceDetails",
+          "documentation":"<p> Tax inheritance information associated with the account. </p>"
+        },
+        "taxRegistration":{
+          "shape":"TaxRegistrationWithJurisdiction",
+          "documentation":"<p>Your TRN information. Instead of having full legal address, here TRN information will have jurisdiction details (for example, country code and state/region/province if applicable). </p>"
+        }
+      },
+      "documentation":"<p> An object with your <code>accountId</code> and TRN information. </p>",
+      "sensitive":true
+    },
+    "AccountDetailsList":{
+      "type":"list",
+      "member":{"shape":"AccountDetails"}
+    },
+    "AccountId":{
+      "type":"string",
+      "max":12,
+      "min":12,
+      "pattern":"^\\d+$"
+    },
+    "AccountIds":{
+      "type":"list",
+      "member":{"shape":"AccountId"},
+      "max":5,
+      "min":1
+    },
+    "AccountMetaData":{
+      "type":"structure",
+      "members":{
+        "accountName":{
+          "shape":"AccountName",
+          "documentation":"<p> The Amazon Web Services accounts name. </p>"
+        },
+        "address":{"shape":"Address"},
+        "addressRoleMap":{
+          "shape":"AddressRoleMap",
+          "documentation":"<p> Address roles associated with the account containing country code information. </p>"
+        },
+        "addressType":{
+          "shape":"AddressRoleType",
+          "documentation":"<p> The type of address associated with the legal profile. </p>"
+        },
+        "seller":{
+          "shape":"Seller",
+          "documentation":"<p> Seller information associated with the account. </p>"
+        }
+      },
+      "documentation":"<p> The meta data information associated with the account. </p>",
+      "sensitive":true
+    },
+    "AccountName":{
+      "type":"string",
+      "pattern":"^[\\s\\S]*$"
+    },
+    "AdditionalInfoRequest":{
+      "type":"structure",
+      "members":{
+        "canadaAdditionalInfo":{
+          "shape":"CanadaAdditionalInfo",
+          "documentation":"<p> Additional tax information associated with your TRN in Canada.</p>"
+        },
+        "estoniaAdditionalInfo":{
+          "shape":"EstoniaAdditionalInfo",
+          "documentation":"<p> Additional tax information to specify for a TRN in Estonia.</p>"
+        },
+        "georgiaAdditionalInfo":{
+          "shape":"GeorgiaAdditionalInfo",
+          "documentation":"<p> Additional tax information to specify for a TRN in Georgia. </p>"
+        },
+        "israelAdditionalInfo":{
+          "shape":"IsraelAdditionalInfo",
+          "documentation":"<p> Additional tax information to specify for a TRN in Israel.</p>"
+        },
+        "italyAdditionalInfo":{
+          "shape":"ItalyAdditionalInfo",
+          "documentation":"<p> Additional tax information to specify for a TRN in Italy. </p>"
+        },
+        "kenyaAdditionalInfo":{
+          "shape":"KenyaAdditionalInfo",
+          "documentation":"<p>Additional tax information to specify for a TRN in Kenya.</p>"
+        },
+        "malaysiaAdditionalInfo":{
+          "shape":"MalaysiaAdditionalInfo",
+          "documentation":"<p> Additional tax information to specify for a TRN in Malaysia.</p>"
+        },
+        "polandAdditionalInfo":{
+          "shape":"PolandAdditionalInfo",
+          "documentation":"<p> Additional tax information associated with your TRN in Poland. </p>"
+        },
+        "romaniaAdditionalInfo":{
+          "shape":"RomaniaAdditionalInfo",
+          "documentation":"<p>Additional tax information to specify for a TRN in Romania.</p>"
+        },
+        "saudiArabiaAdditionalInfo":{
+          "shape":"SaudiArabiaAdditionalInfo",
+          "documentation":"<p> Additional tax information associated with your TRN in Saudi Arabia. </p>"
+        },
+        "southKoreaAdditionalInfo":{
+          "shape":"SouthKoreaAdditionalInfo",
+          "documentation":"<p>Additional tax information to specify for a TRN in South Korea.</p>"
+        },
+        "spainAdditionalInfo":{
+          "shape":"SpainAdditionalInfo",
+          "documentation":"<p>Additional tax information to specify for a TRN in Spain.</p>"
+        },
+        "turkeyAdditionalInfo":{
+          "shape":"TurkeyAdditionalInfo",
+          "documentation":"<p>Additional tax information to specify for a TRN in Turkey.</p>"
+        },
+        "ukraineAdditionalInfo":{
+          "shape":"UkraineAdditionalInfo",
+          "documentation":"<p> Additional tax information associated with your TRN in Ukraine. </p>"
+        }
+      },
+      "documentation":"<p>Additional tax information associated with your tax registration number (TRN). Depending on the TRN for a specific country, you might need to specify this information when you set your TRN. </p> <p>You can only specify one of the following parameters and the value can't be empty. </p> <note> <p>The parameter that you specify must match the country for the TRN, if available. For example, if you set a TRN in Canada for specific provinces, you must also specify the <code>canadaAdditionalInfo</code> parameter.</p> </note>"
+    },
+    "AdditionalInfoResponse":{
+      "type":"structure",
+      "members":{
+        "brazilAdditionalInfo":{
+          "shape":"BrazilAdditionalInfo",
+          "documentation":"<p>Additional tax information associated with your TRN in Brazil. The Tax Settings API returns this information in your response when any additional information is present with your TRN in Brazil.</p>"
+        },
+        "canadaAdditionalInfo":{
+          "shape":"CanadaAdditionalInfo",
+          "documentation":"<p>Additional tax information associated with your TRN in Canada. </p>"
+        },
+        "estoniaAdditionalInfo":{
+          "shape":"EstoniaAdditionalInfo",
+          "documentation":"<p> Additional tax information associated with your TRN in Estonia. </p>"
+        },
+        "georgiaAdditionalInfo":{
+          "shape":"GeorgiaAdditionalInfo",
+          "documentation":"<p> Additional tax information associated with your TRN in Georgia. </p>"
+        },
+        "indiaAdditionalInfo":{
+          "shape":"IndiaAdditionalInfo",
+          "documentation":"<p> Additional tax information in India. </p>"
+        },
+        "israelAdditionalInfo":{
+          "shape":"IsraelAdditionalInfo",
+          "documentation":"<p> Additional tax information associated with your TRN in Israel.</p>"
+        },
+        "italyAdditionalInfo":{
+          "shape":"ItalyAdditionalInfo",
+          "documentation":"<p> Additional tax information associated with your TRN in Italy. </p>"
+        },
+        "kenyaAdditionalInfo":{
+          "shape":"KenyaAdditionalInfo",
+          "documentation":"<p>Additional tax information associated with your TRN in Kenya.</p>"
+        },
+        "malaysiaAdditionalInfo":{
+          "shape":"MalaysiaAdditionalInfo",
+          "documentation":"<p> Additional tax information associated with your TRN in Malaysia. </p>"
+        },
+        "polandAdditionalInfo":{
+          "shape":"PolandAdditionalInfo",
+          "documentation":"<p> Additional tax information associated with your TRN in Poland. </p>"
+        },
+        "romaniaAdditionalInfo":{
+          "shape":"RomaniaAdditionalInfo",
+          "documentation":"<p>Additional tax information to specify for a TRN in Romania.</p>"
+        },
+        "saudiArabiaAdditionalInfo":{
+          "shape":"SaudiArabiaAdditionalInfo",
+          "documentation":"<p> Additional tax information associated with your TRN in Saudi Arabia. </p>"
+        },
+        "southKoreaAdditionalInfo":{
+          "shape":"SouthKoreaAdditionalInfo",
+          "documentation":"<p>Additional tax information associated with your TRN in South Korea.</p>"
+        },
+        "spainAdditionalInfo":{
+          "shape":"SpainAdditionalInfo",
+          "documentation":"<p>Additional tax information associated with your TRN in Spain.</p>"
+        },
+        "turkeyAdditionalInfo":{
+          "shape":"TurkeyAdditionalInfo",
+          "documentation":"<p>Additional tax information associated with your TRN in Turkey.</p>"
+        },
+        "ukraineAdditionalInfo":{
+          "shape":"UkraineAdditionalInfo",
+          "documentation":"<p> Additional tax information associated with your TRN in Ukraine. </p>"
+        }
+      },
+      "documentation":"<p> Additional tax information associated with your TRN. The Tax Settings API returns country-specific information in the response when any additional information is present with your TRN for the following countries.</p>"
+    },
+    "Address":{
+      "type":"structure",
+      "required":[
+        "addressLine1",
+        "city",
+        "countryCode",
+        "postalCode"
+      ],
+      "members":{
+        "addressLine1":{
+          "shape":"AddressLine1",
+          "documentation":"<p>The first line of the address. </p>"
+        },
+        "addressLine2":{
+          "shape":"AddressLine2",
+          "documentation":"<p>The second line of the address, if applicable. </p>"
+        },
+        "addressLine3":{
+          "shape":"AddressLine3",
+          "documentation":"<p> The third line of the address, if applicable. Currently, the Tax Settings API accepts the <code>addressLine3</code> parameter only for Saudi Arabia. When you specify a TRN in Saudi Arabia, you must enter the <code>addressLine3</code> and specify the building number for the address. For example, you might enter <code>1234</code>.</p>"
+        },
+        "city":{
+          "shape":"City",
+          "documentation":"<p>The city that the address is in. </p>"
+        },
+        "countryCode":{
+          "shape":"CountryCode",
+          "documentation":"<p>The country code for the country that the address is in. </p>"
+        },
+        "districtOrCounty":{
+          "shape":"District",
+          "documentation":"<p>The district or county the address is located. </p> <note> <p>For addresses in Brazil, this parameter uses the name of the neighborhood. When you set a TRN in Brazil, use <code>districtOrCounty</code> for the neighborhood name.</p> </note>"
+        },
+        "postalCode":{
+          "shape":"PostalCode",
+          "documentation":"<p> The postal code associated with the address. </p>"
+        },
+        "stateOrRegion":{
+          "shape":"State",
+          "documentation":"<p>The state, region, or province that the address is located.</p> <p>If this is required for tax settings, use the same name as shown on the <b>Tax Settings</b> page.</p>"
+        }
+      },
+      "documentation":"<p> The details of the address associated with the TRN information. </p>"
+    },
+    "AddressLine1":{
+      "type":"string",
+      "max":180,
+      "min":1,
+      "pattern":"^(?!\\s*$)[\\s\\S]+$"
+    },
+    "AddressLine2":{
+      "type":"string",
+      "max":60,
+      "min":1,
+      "pattern":"^(?!\\s*$)[\\s\\S]+$"
+    },
+    "AddressLine3":{
+      "type":"string",
+      "max":60,
+      "min":1,
+      "pattern":"^(?!\\s*$)[\\s\\S]+$"
+    },
+    "AddressRoleMap":{
+      "type":"map",
+      "key":{"shape":"AddressRoleType"},
+      "value":{"shape":"Jurisdiction"}
+    },
+    "AddressRoleType":{
+      "type":"string",
+      "enum":[
+        "TaxAddress",
+        "BillingAddress",
+        "ContactAddress"
+      ]
+    },
+    "BatchDeleteTaxRegistrationError":{
+      "type":"structure",
+      "required":[
+        "accountId",
+        "message"
+      ],
+      "members":{
+        "accountId":{
+          "shape":"AccountId",
+          "documentation":"<p> The unique account identifier for the account whose tax registration couldn't be deleted during the <code>BatchDeleteTaxRegistration</code> operation. </p>"
+        },
+        "code":{
+          "shape":"ErrorCode",
+          "documentation":"<p> The error code for an individual failure in BatchDeleteTaxRegistration operation. </p>"
+        },
+        "message":{
+          "shape":"ErrorMessage",
+          "documentation":"<p> The error message for an individual failure in the <code>BatchDeleteTaxRegistration</code> operation. </p>"
+        }
+      },
+      "documentation":"<p> The error object for representing failures in the <code>BatchDeleteTaxRegistration</code> operation. </p>"
+    },
+    "BatchDeleteTaxRegistrationErrors":{
+      "type":"list",
+      "member":{"shape":"BatchDeleteTaxRegistrationError"}
+    },
+    "BatchDeleteTaxRegistrationRequest":{
+      "type":"structure",
+      "required":["accountIds"],
+      "members":{
+        "accountIds":{
+          "shape":"AccountIds",
+          "documentation":"<p>List of unique account identifiers. </p>"
+        }
+      }
+    },
+    "BatchDeleteTaxRegistrationResponse":{
+      "type":"structure",
+      "required":["errors"],
+      "members":{
+        "errors":{
+          "shape":"BatchDeleteTaxRegistrationErrors",
+          "documentation":"<p>The list of errors for the accounts the TRN information could not be deleted for. </p>"
+        }
+      }
+    },
+    "BatchPutTaxRegistrationError":{
+      "type":"structure",
+      "required":[
+        "accountId",
+        "message"
+      ],
+      "members":{
+        "accountId":{
+          "shape":"AccountId",
+          "documentation":"<p> The unique account identifier for the account that the tax registration couldn't be added, or updated during the <code>BatchPutTaxRegistration</code> operation. </p>"
+        },
+        "code":{
+          "shape":"ErrorCode",
+          "documentation":"<p> The error code for an individual failure in the <code>BatchPutTaxRegistration</code> operation. </p>"
+        },
+        "message":{
+          "shape":"ErrorMessage",
+          "documentation":"<p> The error message for an individual failure in the <code>BatchPutTaxRegistration</code> operation. </p>"
+        }
+      },
+      "documentation":"<p> The error object for representing failures in the <code>BatchPutTaxRegistration</code> operation. </p>"
+    },
+    "BatchPutTaxRegistrationErrors":{
+      "type":"list",
+      "member":{"shape":"BatchPutTaxRegistrationError"}
+    },
+    "BatchPutTaxRegistrationRequest":{
+      "type":"structure",
+      "required":[
+        "accountIds",
+        "taxRegistrationEntry"
+      ],
+      "members":{
+        "accountIds":{
+          "shape":"AccountIds",
+          "documentation":"<p> List of unique account identifiers.</p>"
+        },
+        "taxRegistrationEntry":{
+          "shape":"TaxRegistrationEntry",
+          "documentation":"<p>Your TRN information that will be stored to the accounts mentioned in <code>putEntries</code>. </p>"
+        }
+      }
+    },
+    "BatchPutTaxRegistrationResponse":{
+      "type":"structure",
+      "required":["errors"],
+      "members":{
+        "errors":{
+          "shape":"BatchPutTaxRegistrationErrors",
+          "documentation":"<p>List of errors for the accounts the TRN information could not be added or updated to. </p>"
+        },
+        "status":{
+          "shape":"TaxRegistrationStatus",
+          "documentation":"<p>The status of your TRN stored in the system after processing. Based on the validation occurring on the TRN, the status can be <code>Verified</code>, <code>Pending</code> or <code>Rejected</code>. </p>"
+        }
+      }
+    },
+    "Boolean":{
+      "type":"boolean",
+      "box":true
+    },
+    "BrazilAdditionalInfo":{
+      "type":"structure",
+      "members":{
+        "ccmCode":{
+          "shape":"CcmCode",
+          "documentation":"<p>The Cadastro de Contribuintes Mobiliários (CCM) code for your TRN in Brazil. This only applies for a CNPJ tax type for the São Paulo municipality.</p>"
+        },
+        "legalNatureCode":{
+          "shape":"LegalNatureCode",
+          "documentation":"<p>Legal nature of business, based on your TRN in Brazil. This only applies for a CNPJ tax type.</p>"
+        }
+      },
+      "documentation":"<p>Additional tax information associated with your TRN in Brazil.</p>"
+    },
+    "BusinessRepresentativeName":{
+      "type":"string",
+      "max":200,
+      "min":1,
+      "pattern":"^[0-9\\u3130-\\u318F\\uAC00-\\uD7AF,.( )-\\\\s]*$"
+    },
+    "CanadaAdditionalInfo":{
+      "type":"structure",
+      "members":{
+        "canadaQuebecSalesTaxNumber":{
+          "shape":"CanadaQuebecSalesTaxNumberString",
+          "documentation":"<p> The Quebec Sales Tax ID number. Leave blank if you do not have a Quebec Sales Tax ID number. </p>"
+        },
+        "canadaRetailSalesTaxNumber":{
+          "shape":"CanadaRetailSalesTaxNumberString",
+          "documentation":"<p> Manitoba Retail Sales Tax ID number. Customers purchasing Amazon Web Services for resale in Manitoba must provide a valid Retail Sales Tax ID number for Manitoba. Leave this blank if you do not have a Retail Sales Tax ID number in Manitoba or are not purchasing Amazon Web Services for resale. </p>"
+        },
+        "isResellerAccount":{
+          "shape":"Boolean",
+          "documentation":"<p> The value for this parameter must be <code>true</code> if the <code>provincialSalesTaxId</code> value is provided for a TRN in British Columbia, Saskatchewan, or Manitoba provinces. </p> <p>To claim a provincial sales tax (PST) and retail sales tax (RST) reseller exemption, you must confirm that purchases from this account were made for resale. Otherwise, remove the PST or RST number from the <code>provincialSalesTaxId</code> parameter from your request.</p>"
+        },
+        "provincialSalesTaxId":{
+          "shape":"CanadaProvincialSalesTaxIdString",
+          "documentation":"<p> The provincial sales tax ID for your TRN in Canada. This parameter can represent the following: </p> <ul> <li> <p>Provincial sales tax ID number for British Columbia and Saskatchewan provinces</p> </li> <li> <p>Manitoba retail sales tax ID number for Manitoba province</p> </li> <li> <p>Quebec sales tax ID number for Quebec province</p> </li> </ul> <p>The Tax Setting API only accepts this parameter if the TRN is specified for the previous provinces. For other provinces, the Tax Settings API doesn't accept this parameter. </p>"
+        }
+      },
+      "documentation":"<p> Additional tax information associated with your TRN in Canada .</p>"
+    },
+    "CanadaProvincialSalesTaxIdString":{
+      "type":"string",
+      "max":16,
+      "min":7,
+      "pattern":"^([0-9A-Z/-]+)$"
+    },
+    "CanadaQuebecSalesTaxNumberString":{
+      "type":"string",
+      "pattern":"^([0-9]{10})(TQ[0-9]{4})?$"
+    },
+    "CanadaRetailSalesTaxNumberString":{
+      "type":"string",
+      "pattern":"^([0-9]{6}-[0-9]{1})$"
+    },
+    "CcmCode":{
+      "type":"string",
+      "max":1024,
+      "min":0,
+      "pattern":"^\\d+$"
+    },
+    "CertifiedEmailId":{
+      "type":"string",
+      "pattern":"^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,20}$"
+    },
+    "CigNumber":{
+      "type":"string",
+      "pattern":"^([0-9A-Z]{1,15})$"
+    },
+    "City":{
+      "type":"string",
+      "max":50,
+      "min":1,
+      "pattern":"^(?!\\s*$)[\\s\\S]+$"
+    },
+    "ConflictException":{
+      "type":"structure",
+      "required":[
+        "errorCode",
+        "message"
+      ],
+      "members":{
+        "errorCode":{
+          "shape":"ErrorCode",
+          "documentation":"<p>409</p>"
+        },
+        "message":{"shape":"ErrorMessage"}
+      },
+      "documentation":"<p>The exception when the input is creating conflict with the given state.</p>",
+      "error":{
+        "httpStatusCode":409,
+        "senderFault":true
+      },
+      "exception":true
+    },
+    "CountryCode":{
+      "type":"string",
+      "max":2,
+      "min":2,
+      "pattern":"^[a-zA-Z]+$"
+    },
+    "CupNumber":{
+      "type":"string",
+      "pattern":"^([0-9A-Z]{1,15})$"
+    },
+    "DateOfBirth":{
+      "type":"string",
+      "max":10,
+      "min":10,
+      "pattern":"^(\\d{4}-(0[0-9]|1[0-2])-([0-2][0-9]|3[0-1]))$"
+    },
+    "DeleteTaxRegistrationRequest":{
+      "type":"structure",
+      "members":{
+        "accountId":{
+          "shape":"AccountId",
+          "documentation":"<p>Unique account identifier for the TRN information that needs to be deleted. If this isn't passed, the account ID corresponding to the credentials of the API caller will be used for this parameter.</p>"
+        }
+      }
+    },
+    "DeleteTaxRegistrationResponse":{
+      "type":"structure",
+      "members":{
+      }
+    },
+    "DestinationFilePath":{
+      "type":"string",
+      "pattern":"^[\\s\\S]*$"
+    },
+    "DestinationS3Location":{
+      "type":"structure",
+      "required":["bucket"],
+      "members":{
+        "bucket":{
+          "shape":"S3BucketName",
+          "documentation":"<p>The name of your Amazon S3 bucket that you specify to download your tax documents to.</p>"
+        },
+        "prefix":{
+          "shape":"S3Prefix",
+          "documentation":"<p>The Amazon S3 object prefix that you specify for your tax document file.</p>"
+        }
+      },
+      "documentation":"<p>The location of the Amazon S3 bucket that you specify to download your tax documents to.</p>"
+    },
+    "District":{
+      "type":"string",
+      "max":50,
+      "min":1,
+      "pattern":"^(?!\\s*$)[\\s\\S]+$"
+    },
+    "ErrorCode":{
+      "type":"string",
+      "max":50,
+      "min":0,
+      "pattern":"^[\\s\\S]*$"
+    },
+    "ErrorMessage":{
+      "type":"string",
+      "max":1024,
+      "min":0,
+      "pattern":"^[\\s\\S]*$",
+      "sensitive":true
+    },
+    "EstoniaAdditionalInfo":{
+      "type":"structure",
+      "required":["registryCommercialCode"],
+      "members":{
+        "registryCommercialCode":{
+          "shape":"RegistryCommercialCode",
+          "documentation":"<p> Registry commercial code (RCC) for your TRN in Estonia. This value is an eight-numeric string, such as <code>12345678</code>.</p>"
+        }
+      },
+      "documentation":"<p> Additional tax information associated with your TRN in Estonia.</p>"
+    },
+    "FieldName":{
+      "type":"string",
+      "pattern":"^(?!\\s*$)[\\s\\S]+$"
+    },
+    "GeorgiaAdditionalInfo":{
+      "type":"structure",
+      "required":["personType"],
+      "members":{
+        "personType":{
+          "shape":"PersonType",
+          "documentation":"<p> The legal person or physical person assigned to this TRN in Georgia. </p>"
+        }
+      },
+      "documentation":"<p> Additional tax information associated with your TRN in Georgia. </p>"
+    },
+    "GetTaxRegistrationDocumentRequest":{
+      "type":"structure",
+      "required":[
+        "destinationS3Location",
+        "taxDocumentMetadata"
+      ],
+      "members":{
+        "destinationS3Location":{
+          "shape":"DestinationS3Location",
+          "documentation":"<p>The Amazon S3 bucket that you specify to download your tax documents to.</p>"
+        },
+        "taxDocumentMetadata":{
+          "shape":"TaxDocumentMetadata",
+          "documentation":"<p>The metadata for your tax document.</p>"
+        }
+      }
+    },
+    "GetTaxRegistrationDocumentResponse":{
+      "type":"structure",
+      "members":{
+        "destinationFilePath":{
+          "shape":"DestinationFilePath",
+          "documentation":"<p>The file path of the Amazon S3 bucket where you want to download your tax document to.</p>"
+        }
+      }
+    },
+    "GetTaxRegistrationRequest":{
+      "type":"structure",
+      "members":{
+        "accountId":{
+          "shape":"AccountId",
+          "documentation":"<p>Your unique account identifier.</p>"
+        }
+      }
+    },
+    "GetTaxRegistrationResponse":{
+      "type":"structure",
+      "members":{
+        "taxRegistration":{
+          "shape":"TaxRegistration",
+          "documentation":"<p>TRN information of the account mentioned in the request. </p>"
+        }
+      }
+    },
+    "IndiaAdditionalInfo":{
+      "type":"structure",
+      "members":{
+        "pan":{
+          "shape":"Pan",
+          "documentation":"<p> India pan information associated with the account. </p>"
+        }
+      },
+      "documentation":"<p> Additional tax information in India. </p>"
+    },
+    "IndividualRegistrationNumber":{
+      "type":"string",
+      "pattern":"^([0-9]{10})$"
+    },
+    "Industries":{
+      "type":"string",
+      "enum":[
+        "CirculatingOrg",
+        "ProfessionalOrg",
+        "Banks",
+        "Insurance",
+        "PensionAndBenefitFunds",
+        "DevelopmentAgencies"
+      ]
+    },
+    "InheritanceObtainedReason":{
+      "type":"string",
+      "pattern":"^[\\s\\S]*$"
+    },
+    "InternalServerException":{
+      "type":"structure",
+      "required":[
+        "errorCode",
+        "message"
+      ],
+      "members":{
+        "errorCode":{
+          "shape":"ErrorCode",
+          "documentation":"<p>500</p>"
+        },
+        "message":{"shape":"ErrorMessage"}
+      },
+      "documentation":"<p>The exception thrown when an unexpected error occurs when processing a request.</p>",
+      "error":{"httpStatusCode":500},
+      "exception":true,
+      "fault":true
+    },
+    "IsraelAdditionalInfo":{
+      "type":"structure",
+      "required":[
+        "customerType",
+        "dealerType"
+      ],
+      "members":{
+        "customerType":{
+          "shape":"IsraelCustomerType",
+          "documentation":"<p> Customer type for your TRN in Israel. The value can be <code>Business</code> or <code>Individual</code>. Use <code>Business</code>for entities such as not-for-profit and financial institutions.</p>"
+        },
+        "dealerType":{
+          "shape":"IsraelDealerType",
+          "documentation":"<p> Dealer type for your TRN in Israel. If you're not a local authorized dealer with an Israeli VAT ID, specify your tax identification number so that Amazon Web Services can send you a compliant tax invoice.</p>"
+        }
+      },
+      "documentation":"<p> Additional tax information associated with your TRN in Israel.</p>"
+    },
+    "IsraelCustomerType":{
+      "type":"string",
+      "enum":[
+        "Business",
+        "Individual"
+      ]
+    },
+    "IsraelDealerType":{
+      "type":"string",
+      "enum":[
+        "Authorized",
+        "Non-authorized"
+      ]
+    },
+    "ItalyAdditionalInfo":{
+      "type":"structure",
+      "members":{
+        "cigNumber":{
+          "shape":"CigNumber",
+          "documentation":"<p> The tender procedure identification code. </p>"
+        },
+        "cupNumber":{
+          "shape":"CupNumber",
+          "documentation":"<p> Additional tax information to specify for a TRN in Italy. This is managed by the Interministerial Committee for Economic Planning (CIPE) which characterizes every public investment project (Individual Project Code). </p>"
+        },
+        "sdiAccountId":{
+          "shape":"SdiAccountId",
+          "documentation":"<p> Additional tax information to specify for a TRN in Italy. Use CodiceDestinatario to receive your invoices via web service (API) or FTP. </p>"
+        },
+        "taxCode":{
+          "shape":"TaxCode",
+          "documentation":"<p>List of service tax codes for your TRN in Italy. You can use your customer tax code as part of a VAT Group. </p>"
+        }
+      },
+      "documentation":"<p> Additional tax information associated with your TRN in Italy. </p>"
+    },
+    "ItemOfBusiness":{
+      "type":"string",
+      "max":100,
+      "min":1,
+      "pattern":"^[0-9\\u3130-\\u318F\\uAC00-\\uD7AF,.( )-\\\\s]*$"
+    },
+    "Jurisdiction":{
+      "type":"structure",
+      "required":["countryCode"],
+      "members":{
+        "countryCode":{
+          "shape":"CountryCode",
+          "documentation":"<p> The country code of the jurisdiction. </p>"
+        },
+        "stateOrRegion":{
+          "shape":"State",
+          "documentation":"<p> The state, region, or province associated with the country of the jurisdiction, if applicable. </p>"
+        }
+      },
+      "documentation":"<p>The jurisdiction details of the TRN information of the customers. This doesn't contain full legal address, and contains only country code and state/region/province. </p>"
+    },
+    "KenyaAdditionalInfo":{
+      "type":"structure",
+      "required":["personType"],
+      "members":{
+        "personType":{
+          "shape":"PersonType",
+          "documentation":"<p>The legal person or physical person assigned to this TRN in Kenya.</p>"
+        }
+      },
+      "documentation":"<p>Additional tax information associated with your TRN in Kenya.</p>"
+    },
+    "KepEmailId":{
+      "type":"string",
+      "pattern":"^[\\s\\S]*$"
+    },
+    "LegalName":{
+      "type":"string",
+      "max":200,
+      "min":1,
+      "pattern":"^(?!\\s*$)[\\s\\S]+$"
+    },
+    "LegalNatureCode":{
+      "type":"string",
+      "max":1024,
+      "min":0,
+      "pattern":"^\\d+$"
+    },
+    "LineOfBusiness":{
+      "type":"string",
+      "max":100,
+      "min":1,
+      "pattern":"^[0-9\\u3130-\\u318F\\uAC00-\\uD7AF,.( )-\\\\s]*$"
+    },
+    "ListTaxRegistrationsRequest":{
+      "type":"structure",
+      "members":{
+        "maxResults":{
+          "shape":"MaxResults",
+          "documentation":"<p>Number of <code>accountDetails</code> results you want in one response. </p>"
+        },
+        "nextToken":{
+          "shape":"PaginationTokenString",
+          "documentation":"<p>The token to retrieve the next set of results. </p>"
+        }
+      }
+    },
+    "ListTaxRegistrationsResponse":{
+      "type":"structure",
+      "required":["accountDetails"],
+      "members":{
+        "accountDetails":{
+          "shape":"AccountDetailsList",
+          "documentation":"<p>The list of account details. This contains account Ids and TRN Information for each of the linked accounts. </p>"
+        },
+        "nextToken":{
+          "shape":"PaginationTokenString",
+          "documentation":"<p> The token to retrieve the next set of results. </p>"
+        }
+      }
+    },
+    "MalaysiaAdditionalInfo":{
+      "type":"structure",
+      "required":["serviceTaxCodes"],
+      "members":{
+        "serviceTaxCodes":{
+          "shape":"MalaysiaServiceTaxCodesList",
+          "documentation":"<p>List of service tax codes for your TRN in Malaysia.</p>"
+        }
+      },
+      "documentation":"<p> Additional tax information associated with your TRN in Malaysia.</p>"
+    },
+    "MalaysiaServiceTaxCode":{
+      "type":"string",
+      "enum":[
+        "Consultancy",
+        "Digital Service And Electronic Medium",
+        "IT Services",
+        "Training Or Coaching"
+      ]
+    },
+    "MalaysiaServiceTaxCodesList":{
+      "type":"list",
+      "member":{"shape":"MalaysiaServiceTaxCode"},
+      "max":4,
+      "min":1
+    },
+    "MaxResults":{
+      "type":"integer",
+      "box":true,
+      "max":1000,
+      "min":1
+    },
+    "PaginationTokenString":{
+      "type":"string",
+      "max":2000,
+      "min":1,
+      "pattern":"^[-A-Za-z0-9_+\\=\\/]+$"
+    },
+    "Pan":{
+      "type":"string",
+      "pattern":"^[A-Z]{5}[0-9]{4}[A-Z]{1}$"
+    },
+    "PersonType":{
+      "type":"string",
+      "enum":[
+        "Legal Person",
+        "Physical Person",
+        "Business"
+      ]
+    },
+    "PolandAdditionalInfo":{
+      "type":"structure",
+      "members":{
+        "individualRegistrationNumber":{
+          "shape":"IndividualRegistrationNumber",
+          "documentation":"<p> The individual tax registration number (NIP). Individual NIP is valid for other taxes excluding VAT purposes. </p>"
+        },
+        "isGroupVatEnabled":{
+          "shape":"Boolean",
+          "documentation":"<p> True if your business is a member of a VAT group with a NIP active for VAT purposes. Otherwise, this is false. </p>"
+        }
+      },
+      "documentation":"<p> Additional tax information associated with your TRN in Poland. </p>"
+    },
+    "PostalCode":{
+      "type":"string",
+      "max":20,
+      "min":1,
+      "pattern":"^(?!\\s*$)[\\s\\S]+$"
+    },
+    "PutTaxRegistrationRequest":{
+      "type":"structure",
+      "required":["taxRegistrationEntry"],
+      "members":{
+        "accountId":{
+          "shape":"AccountId",
+          "documentation":"<p>Your unique account identifier. </p>"
+        },
+        "taxRegistrationEntry":{
+          "shape":"TaxRegistrationEntry",
+          "documentation":"<p> Your TRN information that will be stored to the account mentioned in <code>accountId</code>. </p>"
+        }
+      }
+    },
+    "PutTaxRegistrationResponse":{
+      "type":"structure",
+      "members":{
+        "status":{
+          "shape":"TaxRegistrationStatus",
+          "documentation":"<p>The status of your TRN stored in the system after processing. Based on the validation occurring on the TRN, the status can be <code>Verified</code>, <code>Pending</code> or <code>Rejected</code>. </p>"
+        }
+      }
+    },
+    "RegistrationId":{
+      "type":"string",
+      "max":20,
+      "min":1,
+      "pattern":"^(?!\\s*$)[\\s\\S]+$"
+    },
+    "RegistrationType":{
+      "type":"string",
+      "enum":[
+        "Intra-EU",
+        "Local"
+      ]
+    },
+    "RegistryCommercialCode":{
+      "type":"string",
+      "max":8,
+      "min":8,
+      "pattern":"^\\d+$"
+    },
+    "ResourceNotFoundException":{
+      "type":"structure",
+      "required":[
+        "errorCode",
+        "message"
+      ],
+      "members":{
+        "errorCode":{
+          "shape":"ErrorCode",
+          "documentation":"<p>404</p>"
+        },
+        "message":{"shape":"ErrorMessage"}
+      },
+      "documentation":"<p>The exception thrown when the input doesn't have a resource associated to it.</p>",
+      "error":{
+        "httpStatusCode":404,
+        "senderFault":true
+      },
+      "exception":true
+    },
+    "RomaniaAdditionalInfo":{
+      "type":"structure",
+      "required":["taxRegistrationNumberType"],
+      "members":{
+        "taxRegistrationNumberType":{
+          "shape":"TaxRegistrationNumberType",
+          "documentation":"<p> The tax registration number type. The value can be <code>TaxRegistrationNumber</code> or <code>LocalRegistrationNumber</code>. </p>"
+        }
+      },
+      "documentation":"<p>Additional tax information to specify for a TRN in Romania. </p>"
+    },
+    "S3BucketName":{
+      "type":"string",
+      "max":63,
+      "min":3,
+      "pattern":"^(?=^.{3,63}$)(?!^(\\d+\\.)+\\d+$)(^(([a-z0-9]|[a-z0-9][a-z0-9\\-]*[a-z0-9])\\.)*([a-z0-9]|[a-z0-9][a-z0-9\\-]*[a-z0-9])$)$"
+    },
+    "S3Key":{
+      "type":"string",
+      "max":1024,
+      "min":1,
+      "pattern":"^.*\\S.*$"
+    },
+    "S3Prefix":{
+      "type":"string",
+      "max":512,
+      "min":0,
+      "pattern":"^.*\\S.*$"
+    },
+    "SaudiArabiaAdditionalInfo":{
+      "type":"structure",
+      "members":{
+        "taxRegistrationNumberType":{
+          "shape":"SaudiArabiaTaxRegistrationNumberType",
+          "documentation":"<p> The tax registration number type. </p>"
+        }
+      },
+      "documentation":"<p> Additional tax information associated with your TRN in Saudi Arabia. </p>"
+    },
+    "SaudiArabiaTaxRegistrationNumberType":{
+      "type":"string",
+      "enum":[
+        "TaxRegistrationNumber",
+        "TaxIdentificationNumber",
+        "CommercialRegistrationNumber"
+      ]
+    },
+    "SdiAccountId":{
+      "type":"string",
+      "pattern":"^[0-9A-Z]{6,7}$"
+    },
+    "SecondaryTaxId":{
+      "type":"string",
+      "pattern":"^([0-9]{10})$"
+    },
+    "Sector":{
+      "type":"string",
+      "enum":[
+        "Business",
+        "Individual",
+        "Government"
+      ]
+    },
+    "Seller":{
+      "type":"string",
+      "pattern":"^[\\s\\S]*$"
+    },
+    "SourceS3Location":{
+      "type":"structure",
+      "required":[
+        "bucket",
+        "key"
+      ],
+      "members":{
+        "bucket":{
+          "shape":"S3BucketName",
+          "documentation":"<p>The name of your Amazon S3 bucket that your tax document is located.</p>"
+        },
+        "key":{
+          "shape":"S3Key",
+          "documentation":"<p>The object key of your tax document object in Amazon S3.</p>"
+        }
+      },
+      "documentation":"<p>The Amazon S3 bucket in your account where your tax document is located.</p>"
+    },
+    "SouthKoreaAdditionalInfo":{
+      "type":"structure",
+      "required":[
+        "businessRepresentativeName",
+        "itemOfBusiness",
+        "lineOfBusiness"
+      ],
+      "members":{
+        "businessRepresentativeName":{
+          "shape":"BusinessRepresentativeName",
+          "documentation":"<p>The business legal name based on the most recently uploaded tax registration certificate.</p>"
+        },
+        "itemOfBusiness":{
+          "shape":"ItemOfBusiness",
+          "documentation":"<p>Item of business based on the most recently uploaded tax registration certificate.</p>"
+        },
+        "lineOfBusiness":{
+          "shape":"LineOfBusiness",
+          "documentation":"<p>Line of business based on the most recently uploaded tax registration certificate.</p>"
+        }
+      },
+      "documentation":"<p>Additional tax information associated with your TRN in South Korea.</p>"
+    },
+    "SpainAdditionalInfo":{
+      "type":"structure",
+      "required":["registrationType"],
+      "members":{
+        "registrationType":{
+          "shape":"RegistrationType",
+          "documentation":"<p>The registration type in Spain.</p>"
+        }
+      },
+      "documentation":"<p>Additional tax information associated with your TRN in Spain.</p>"
+    },
+    "State":{
+      "type":"string",
+      "max":50,
+      "min":1,
+      "pattern":"^(?!\\s*$)[\\s\\S]+$"
+    },
+    "TaxCode":{
+      "type":"string",
+      "pattern":"^([0-9]{11}|[A-Z]{6}[0-9]{2}[A-Z][0-9]{2}[A-Z][0-9]{3}[A-Z])$"
+    },
+    "TaxDocumentAccessToken":{
+      "type":"string",
+      "pattern":"^[\\s\\S]*$"
+    },
+    "TaxDocumentMetadata":{
+      "type":"structure",
+      "required":[
+        "taxDocumentAccessToken",
+        "taxDocumentName"
+      ],
+      "members":{
+        "taxDocumentAccessToken":{
+          "shape":"TaxDocumentAccessToken",
+          "documentation":"<p>The tax document access token, which contains information that the Tax Settings API uses to locate the tax document.</p> <note> <p>If you update your tax registration, the existing <code>taxDocumentAccessToken</code> won't be valid. To get the latest token, call the <code>GetTaxRegistration</code> or <code>ListTaxRegistrations</code> API operation. This token is valid for 24 hours.</p> </note>"
+        },
+        "taxDocumentName":{
+          "shape":"TaxDocumentName",
+          "documentation":"<p>The name of your tax document.</p>"
+        }
+      },
+      "documentation":"<p>The metadata for your tax document.</p>"
+    },
+    "TaxDocumentMetadatas":{
+      "type":"list",
+      "member":{"shape":"TaxDocumentMetadata"},
+      "max":5,
+      "min":1
+    },
+    "TaxDocumentName":{
+      "type":"string",
+      "pattern":"^[\\s\\S]*$"
+    },
+    "TaxInheritanceDetails":{
+      "type":"structure",
+      "members":{
+        "inheritanceObtainedReason":{
+          "shape":"InheritanceObtainedReason",
+          "documentation":"<p> Tax inheritance reason information associated with the account. </p>"
+        },
+        "parentEntityId":{
+          "shape":"AccountId",
+          "documentation":"<p> Tax inheritance parent account information associated with the account. </p>"
+        }
+      },
+      "documentation":"<p> Tax inheritance information associated with the account. </p>"
+    },
+    "TaxOffice":{
+      "type":"string",
+      "pattern":"^[\\s\\S]*$"
+    },
+    "TaxRegistration":{
+      "type":"structure",
+      "required":[
+        "legalAddress",
+        "legalName",
+        "registrationId",
+        "registrationType",
+        "status"
+      ],
+      "members":{
+        "additionalTaxInformation":{
+          "shape":"AdditionalInfoResponse",
+          "documentation":"<p> Additional tax information associated with your TRN. </p>"
+        },
+        "certifiedEmailId":{
+          "shape":"CertifiedEmailId",
+          "documentation":"<p>The email address to receive VAT invoices.</p>"
+        },
+        "legalAddress":{
+          "shape":"Address",
+          "documentation":"<p> The legal address associated with your TRN registration. </p>"
+        },
+        "legalName":{
+          "shape":"LegalName",
+          "documentation":"<p> The legal name associated with your TRN registration. </p>"
+        },
+        "registrationId":{
+          "shape":"RegistrationId",
+          "documentation":"<p> Your tax registration unique identifier. </p>"
+        },
+        "registrationType":{
+          "shape":"TaxRegistrationType",
+          "documentation":"<p>Type of your tax registration. This can be either <code>VAT</code> or <code>GST</code>. </p>"
+        },
+        "sector":{
+          "shape":"Sector",
+          "documentation":"<p>The industry that describes your business. For business-to-business (B2B) customers, specify Business. For business-to-consumer (B2C) customers, specify Individual. For business-to-government (B2G), specify Government. Note that certain values may not applicable for the request country. Please refer to country specific information in API document. </p>"
+        },
+        "status":{
+          "shape":"TaxRegistrationStatus",
+          "documentation":"<p> The status of your TRN. This can be either <code>Verified</code>, <code>Pending</code>, <code>Deleted</code>, or <code>Rejected</code>. </p>"
+        },
+        "taxDocumentMetadatas":{
+          "shape":"TaxDocumentMetadatas",
+          "documentation":"<p>The metadata for your tax document.</p>"
+        }
+      },
+      "documentation":"<p>Your TRN information. </p>",
+      "sensitive":true
+    },
+    "TaxRegistrationDocument":{
+      "type":"structure",
+      "required":["s3Location"],
+      "members":{
+        "s3Location":{
+          "shape":"SourceS3Location",
+          "documentation":"<p>The Amazon S3 location where your tax registration document is stored.</p>"
+        }
+      },
+      "documentation":"<p>Tax registration document information.</p>"
+    },
+    "TaxRegistrationDocuments":{
+      "type":"list",
+      "member":{"shape":"TaxRegistrationDocument"},
+      "max":5,
+      "min":1
+    },
+    "TaxRegistrationEntry":{
+      "type":"structure",
+      "required":[
+        "registrationId",
+        "registrationType"
+      ],
+      "members":{
+        "additionalTaxInformation":{
+          "shape":"AdditionalInfoRequest",
+          "documentation":"<p> Additional tax information associated with your TRN. You only need to specify this parameter if Amazon Web Services collects any additional information for your country within <a>AdditionalInfoRequest</a>.</p>"
+        },
+        "certifiedEmailId":{
+          "shape":"CertifiedEmailId",
+          "documentation":"<p>The email address to receive VAT invoices.</p>"
+        },
+        "legalAddress":{
+          "shape":"Address",
+          "documentation":"<p>The legal address associated with your TRN.</p> <note> <p>If you're setting a TRN in Brazil for the CNPJ tax type, you don't need to specify the legal address. </p> <p>For TRNs in other countries and for CPF tax types Brazil, you must specify the legal address.</p> </note>"
+        },
+        "legalName":{
+          "shape":"LegalName",
+          "documentation":"<p>The legal name associated with your TRN. </p> <note> <p>If you're setting a TRN in Brazil, you don't need to specify the legal name. For TRNs in other countries, you must specify the legal name.</p> </note>"
+        },
+        "registrationId":{
+          "shape":"RegistrationId",
+          "documentation":"<p>Your tax registration unique identifier. </p>"
+        },
+        "registrationType":{
+          "shape":"TaxRegistrationType",
+          "documentation":"<p> Your tax registration type. This can be either <code>VAT</code> or <code>GST</code>. </p>"
+        },
+        "sector":{
+          "shape":"Sector",
+          "documentation":"<p>The industry that describes your business. For business-to-business (B2B) customers, specify Business. For business-to-consumer (B2C) customers, specify Individual. For business-to-government (B2G), specify Government.Note that certain values may not applicable for the request country. Please refer to country specific information in API document. </p>"
+        },
+        "verificationDetails":{
+          "shape":"VerificationDetails",
+          "documentation":"<p>Additional details needed to verify your TRN information in Brazil. You only need to specify this parameter when you set a TRN in Brazil that is the CPF tax type.</p> <note> <p>Don't specify this parameter to set a TRN in Brazil of the CNPJ tax type or to set a TRN for another country. </p> </note>"
+        }
+      },
+      "documentation":"<p>The TRN information you provide when you add a new TRN, or update. </p>",
+      "sensitive":true
+    },
+    "TaxRegistrationNumberType":{
+      "type":"string",
+      "enum":[
+        "TaxRegistrationNumber",
+        "LocalRegistrationNumber"
+      ]
+    },
+    "TaxRegistrationStatus":{
+      "type":"string",
+      "enum":[
+        "Verified",
+        "Pending",
+        "Deleted",
+        "Rejected"
+      ]
+    },
+    "TaxRegistrationType":{
+      "type":"string",
+      "enum":[
+        "VAT",
+        "GST",
+        "CPF",
+        "CNPJ",
+        "SST"
+      ]
+    },
+    "TaxRegistrationWithJurisdiction":{
+      "type":"structure",
+      "required":[
+        "jurisdiction",
+        "legalName",
+        "registrationId",
+        "registrationType",
+        "status"
+      ],
+      "members":{
+        "additionalTaxInformation":{
+          "shape":"AdditionalInfoResponse",
+          "documentation":"<p>Additional tax information associated with your TRN. </p>"
+        },
+        "certifiedEmailId":{
+          "shape":"CertifiedEmailId",
+          "documentation":"<p>The email address to receive VAT invoices.</p>"
+        },
+        "jurisdiction":{
+          "shape":"Jurisdiction",
+          "documentation":"<p> The jurisdiction associated with your TRN information. </p>"
+        },
+        "legalName":{
+          "shape":"LegalName",
+          "documentation":"<p>The legal name associated with your TRN information. </p>"
+        },
+        "registrationId":{
+          "shape":"RegistrationId",
+          "documentation":"<p>Your tax registration unique identifier. </p>"
+        },
+        "registrationType":{
+          "shape":"TaxRegistrationType",
+          "documentation":"<p> The type of your tax registration. This can be either <code>VAT</code> or <code>GST</code>. </p>"
+        },
+        "sector":{
+          "shape":"Sector",
+          "documentation":"<p>The industry that describes your business. For business-to-business (B2B) customers, specify Business. For business-to-consumer (B2C) customers, specify Individual. For business-to-government (B2G), specify Government.Note that certain values may not applicable for the request country. Please refer to country specific information in API document. </p>"
+        },
+        "status":{
+          "shape":"TaxRegistrationStatus",
+          "documentation":"<p>The status of your TRN. This can be either <code>Verified</code>, <code>Pending</code>, <code>Deleted</code>, or <code>Rejected</code>. </p>"
+        },
+        "taxDocumentMetadatas":{
+          "shape":"TaxDocumentMetadatas",
+          "documentation":"<p>The metadata for your tax document.</p>"
+        }
+      },
+      "documentation":"<p>Your TRN information with jurisdiction details. This doesn't contain the full legal address associated with the TRN information.</p>",
+      "sensitive":true
+    },
+    "TurkeyAdditionalInfo":{
+      "type":"structure",
+      "members":{
+        "industries":{
+          "shape":"Industries",
+          "documentation":"<p>The industry information that tells the Tax Settings API if you're subject to additional withholding taxes. This information required for business-to-business (B2B) customers. This information is conditionally mandatory for B2B customers who are subject to KDV tax.</p>"
+        },
+        "kepEmailId":{
+          "shape":"KepEmailId",
+          "documentation":"<p>The Registered Electronic Mail (REM) that is used to send notarized communication. This parameter is optional for business-to-business (B2B) and business-to-government (B2G) customers. It's not required for business-to-consumer (B2C) customers.</p>"
+        },
+        "secondaryTaxId":{
+          "shape":"SecondaryTaxId",
+          "documentation":"<p> Secondary tax ID (“harcama birimi VKN”si”). If one isn't provided, we will use your VKN as the secondary ID. </p>"
+        },
+        "taxOffice":{
+          "shape":"TaxOffice",
+          "documentation":"<p>The tax office where you're registered. You can enter this information as a string. The Tax Settings API will add this information to your invoice. This parameter is required for business-to-business (B2B) and business-to-government customers. It's not required for business-to-consumer (B2C) customers.</p>"
+        }
+      },
+      "documentation":"<p>Additional tax information associated with your TRN in Turkey.</p>"
+    },
+    "UkraineAdditionalInfo":{
+      "type":"structure",
+      "required":["ukraineTrnType"],
+      "members":{
+        "ukraineTrnType":{
+          "shape":"UkraineTrnType",
+          "documentation":"<p> The tax registration type. </p>"
+        }
+      },
+      "documentation":"<p> Additional tax information associated with your TRN in Ukraine. </p>"
+    },
+    "UkraineTrnType":{
+      "type":"string",
+      "enum":[
+        "Business",
+        "Individual"
+      ]
+    },
+    "ValidationException":{
+      "type":"structure",
+      "required":[
+        "errorCode",
+        "message"
+      ],
+      "members":{
+        "errorCode":{
+          "shape":"ValidationExceptionErrorCode",
+          "documentation":"<p>400</p>"
+        },
+        "fieldList":{
+          "shape":"ValidationExceptionFieldList",
+          "documentation":"<p>400</p>"
+        },
+        "message":{"shape":"ErrorMessage"}
+      },
+      "documentation":"<p>The exception when the input doesn't pass validation for at least one of the input parameters. </p>",
+      "error":{
+        "httpStatusCode":400,
+        "senderFault":true
+      },
+      "exception":true
+    },
+    "ValidationExceptionErrorCode":{
+      "type":"string",
+      "enum":[
+        "MalformedToken",
+        "ExpiredToken",
+        "InvalidToken",
+        "FieldValidationFailed",
+        "MissingInput"
+      ]
+    },
+    "ValidationExceptionField":{
+      "type":"structure",
+      "required":["name"],
+      "members":{
+        "name":{
+          "shape":"FieldName",
+          "documentation":"<p>The name of the parameter that caused a <code>ValidationException</code> error.</p>"
+        }
+      },
+      "documentation":"<p>The information about the specified parameter in the request that caused an error.</p>"
+    },
+    "ValidationExceptionFieldList":{
+      "type":"list",
+      "member":{"shape":"ValidationExceptionField"}
+    },
+    "VerificationDetails":{
+      "type":"structure",
+      "members":{
+        "dateOfBirth":{
+          "shape":"DateOfBirth",
+          "documentation":"<p>Date of birth to verify your submitted TRN. Use the <code>YYYY-MM-DD</code> format.</p>"
+        },
+        "taxRegistrationDocuments":{
+          "shape":"TaxRegistrationDocuments",
+          "documentation":"<p>The tax registration document, which is required for specific countries such as Bangladesh, Kenya, South Korea and Spain.</p>"
+        }
+      },
+      "documentation":"<p>Required information to verify your TRN.</p>"
+    }
+  },
+  "documentation":"<p>You can use the tax setting API to programmatically set, modify, and delete the tax registration number (TRN), associated business legal name, and address (Collectively referred to as \"TRN information\"). You can also programmatically view TRN information and tax addresses (\"Tax profiles\"). </p> <p>You can use this API to automate your TRN information settings instead of manually using the console.</p> <p>Service Endpoint</p> <ul> <li> <p>https://tax.us-east-1.amazonaws.com</p> </li> </ul>"
+}

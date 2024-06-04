@@ -12,7 +12,8 @@
     "signatureVersion":"v4",
     "signingName":"sagemaker",
     "targetPrefix":"SageMaker",
-    "uid":"sagemaker-2017-07-24"
+    "uid":"sagemaker-2017-07-24",
+    "auth":["aws.auth#sigv4"]
   },
   "operations":{
     "AddAssociation":{
@@ -1522,7 +1523,7 @@
       "errors":[
         {"shape":"ResourceNotFound"}
       ],
-      "documentation":"<p>Retrieves information of an instance (also called a <i>node</i> interchangeably) of a SageMaker HyperPod cluster.</p>"
+      "documentation":"<p>Retrieves information of a node (also called a <i>instance</i> interchangeably) of a SageMaker HyperPod cluster.</p>"
     },
     "DescribeCodeRepository":{
       "name":"DescribeCodeRepository",
@@ -6916,6 +6917,14 @@
       "max":256,
       "pattern":"^arn:aws[a-z\\-]*:sagemaker:[a-z0-9\\-]*:[0-9]{12}:cluster/[a-z0-9]{12}$"
     },
+    "ClusterAvailabilityZone":{
+      "type":"string",
+      "pattern":"^[a-z]{2}-[a-z]+-\\d[a-z]$"
+    },
+    "ClusterAvailabilityZoneId":{
+      "type":"string",
+      "pattern":"^[a-z]{3}\\d-az\\d$"
+    },
     "ClusterInstanceCount":{
       "type":"integer",
       "min":1
@@ -7006,6 +7015,20 @@
       "member":{"shape":"ClusterInstanceGroupSpecification"},
       "max":20,
       "min":1
+    },
+    "ClusterInstancePlacement":{
+      "type":"structure",
+      "members":{
+        "AvailabilityZone":{
+          "shape":"ClusterAvailabilityZone",
+          "documentation":"<p>The Availability Zone where the node in the SageMaker HyperPod cluster is launched.</p>"
+        },
+        "AvailabilityZoneId":{
+          "shape":"ClusterAvailabilityZoneId",
+          "documentation":"<p>The unique identifier (ID) of the Availability Zone where the node in the SageMaker HyperPod cluster is launched.</p>"
+        }
+      },
+      "documentation":"<p>Specifies the placement details for the node in the SageMaker HyperPod cluster, including the Availability Zone and the unique identifier (ID) of the Availability Zone.</p>"
     },
     "ClusterInstanceStatus":{
       "type":"string",
@@ -7140,6 +7163,18 @@
         "ThreadsPerCore":{
           "shape":"ClusterThreadsPerCore",
           "documentation":"<p>The number of threads per CPU core you specified under <code>CreateCluster</code>.</p>"
+        },
+        "PrivatePrimaryIp":{
+          "shape":"ClusterPrivatePrimaryIp",
+          "documentation":"<p>The private primary IP address of the SageMaker HyperPod cluster node.</p>"
+        },
+        "PrivateDnsHostname":{
+          "shape":"ClusterPrivateDnsHostname",
+          "documentation":"<p>The private DNS hostname of the SageMaker HyperPod cluster node.</p>"
+        },
+        "Placement":{
+          "shape":"ClusterInstancePlacement",
+          "documentation":"<p>The placement details of the SageMaker HyperPod cluster node.</p>"
         }
       },
       "documentation":"<p>Details of an instance (also called a <i>node</i> interchangeably) in a SageMaker HyperPod cluster.</p>"
@@ -7190,6 +7225,14 @@
     "ClusterNonNegativeInstanceCount":{
       "type":"integer",
       "min":0
+    },
+    "ClusterPrivateDnsHostname":{
+      "type":"string",
+      "pattern":"^ip-((25[0-5]|(2[0-4]|1\\d|[1-9]|)\\d)-?\\b){4}\\..*$"
+    },
+    "ClusterPrivatePrimaryIp":{
+      "type":"string",
+      "pattern":"^((25[0-5]|(2[0-4]|1\\d|[1-9]|)\\d)\\.?\\b){4}$"
     },
     "ClusterSortBy":{
       "type":"string",
@@ -12522,11 +12565,11 @@
       "members":{
         "ClusterName":{
           "shape":"ClusterNameOrArn",
-          "documentation":"<p>The string name or the Amazon Resource Name (ARN) of the SageMaker HyperPod cluster in which the instance is.</p>"
+          "documentation":"<p>The string name or the Amazon Resource Name (ARN) of the SageMaker HyperPod cluster in which the node is.</p>"
         },
         "NodeId":{
           "shape":"ClusterNodeId",
-          "documentation":"<p>The ID of the instance.</p>"
+          "documentation":"<p>The ID of the SageMaker HyperPod cluster node.</p>"
         }
       }
     },
@@ -12536,7 +12579,7 @@
       "members":{
         "NodeDetails":{
           "shape":"ClusterNodeDetails",
-          "documentation":"<p>The details of the instance.</p>"
+          "documentation":"<p>The details of the SageMaker HyperPod cluster node.</p>"
         }
       }
     },

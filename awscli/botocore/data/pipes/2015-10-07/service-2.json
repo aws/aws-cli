@@ -3,8 +3,8 @@
   "metadata":{
     "apiVersion":"2015-10-07",
     "endpointPrefix":"pipes",
-    "jsonVersion":"1.1",
     "protocol":"rest-json",
+    "protocols":["rest-json"],
     "serviceFullName":"Amazon EventBridge Pipes",
     "serviceId":"Pipes",
     "signatureVersion":"v4",
@@ -195,19 +195,19 @@
       "type":"string",
       "max":1600,
       "min":1,
-      "pattern":"^arn:(aws[a-zA-Z0-9-]*):([a-zA-Z0-9\\-]+):([a-z]{2}((-gov)|(-iso(b?)))?-[a-z]+-\\d{1})?:(\\d{12})?:(.+)$"
+      "pattern":"arn:(aws[a-zA-Z0-9-]*):([a-zA-Z0-9\\-]+):([a-z]{2}((-gov)|(-iso(b?)))?-[a-z]+-\\d{1})?:(\\d{12})?:(.+)"
     },
     "ArnOrJsonPath":{
       "type":"string",
       "max":1600,
       "min":1,
-      "pattern":"^arn:(aws[a-zA-Z0-9-]*):([a-zA-Z0-9\\-]+):([a-z]{2}((-gov)|(-iso(b?)))?-[a-z]+-\\d{1})?:(\\d{12})?:(.+)|(\\$(\\.[\\w/_-]+(\\[(\\d+|\\*)\\])*)*)$"
+      "pattern":"arn:(aws[a-zA-Z0-9-]*):([a-zA-Z0-9\\-]+):([a-z]{2}((-gov)|(-iso(b?)))?-[a-z]+-\\d{1})?:(\\d{12})?:(.+)|(\\$(\\.[\\w/_-]+(\\[(\\d+|\\*)\\])*)*)"
     },
     "ArnOrUrl":{
       "type":"string",
       "max":1600,
       "min":1,
-      "pattern":"^smk://(([a-zA-Z0-9]|[a-zA-Z0-9][a-zA-Z0-9\\-]*[a-zA-Z0-9])\\.)*([A-Za-z0-9]|[A-Za-z0-9][A-Za-z0-9\\-]*[A-Za-z0-9]):[0-9]{1,5}|arn:(aws[a-zA-Z0-9-]*):([a-zA-Z0-9\\-]+):([a-z]{2}((-gov)|(-iso(b?)))?-[a-z]+-\\d{1})?:(\\d{12})?:(.+)$"
+      "pattern":"smk://(([a-zA-Z0-9]|[a-zA-Z0-9][a-zA-Z0-9\\-]*[a-zA-Z0-9])\\.)*([A-Za-z0-9]|[A-Za-z0-9][A-Za-z0-9\\-]*[A-Za-z0-9]):[0-9]{1,5}|arn:(aws[a-zA-Z0-9-]*):([a-zA-Z0-9\\-]+):([a-z]{2}((-gov)|(-iso(b?)))?-[a-z]+-\\d{1})?:(\\d{12})?:(.+)"
     },
     "AssignPublicIp":{
       "type":"string",
@@ -220,17 +220,17 @@
       "type":"structure",
       "required":["Subnets"],
       "members":{
-        "AssignPublicIp":{
-          "shape":"AssignPublicIp",
-          "documentation":"<p>Specifies whether the task's elastic network interface receives a public IP address. You can specify <code>ENABLED</code> only when <code>LaunchType</code> in <code>EcsParameters</code> is set to <code>FARGATE</code>.</p>"
+        "Subnets":{
+          "shape":"Subnets",
+          "documentation":"<p>Specifies the subnets associated with the task. These subnets must all be in the same VPC. You can specify as many as 16 subnets.</p>"
         },
         "SecurityGroups":{
           "shape":"SecurityGroups",
           "documentation":"<p>Specifies the security groups associated with the task. These security groups must all be in the same VPC. You can specify as many as five security groups. If you do not specify a security group, the default security group for the VPC is used.</p>"
         },
-        "Subnets":{
-          "shape":"Subnets",
-          "documentation":"<p>Specifies the subnets associated with the task. These subnets must all be in the same VPC. You can specify as many as 16 subnets.</p>"
+        "AssignPublicIp":{
+          "shape":"AssignPublicIp",
+          "documentation":"<p>Specifies whether the task's elastic network interface receives a public IP address. You can specify <code>ENABLED</code> only when <code>LaunchType</code> in <code>EcsParameters</code> is set to <code>FARGATE</code>.</p>"
         }
       },
       "documentation":"<p>This structure specifies the VPC subnets and security groups for the task, and whether a public IP address is to be used. This structure is relevant only for ECS tasks that use the <code>awsvpc</code> network mode.</p>"
@@ -386,10 +386,6 @@
       "type":"structure",
       "required":["capacityProvider"],
       "members":{
-        "base":{
-          "shape":"CapacityProviderStrategyItemBase",
-          "documentation":"<p>The base value designates how many tasks, at a minimum, to run on the specified capacity provider. Only one capacity provider in a capacity provider strategy can have a base defined. If no value is specified, the default value of 0 is used. </p>"
-        },
         "capacityProvider":{
           "shape":"CapacityProvider",
           "documentation":"<p>The short name of the capacity provider.</p>"
@@ -397,6 +393,10 @@
         "weight":{
           "shape":"CapacityProviderStrategyItemWeight",
           "documentation":"<p>The weight value designates the relative percentage of the total number of tasks launched that should use the specified capacity provider. The weight value is taken into consideration after the base value, if defined, is satisfied.</p>"
+        },
+        "base":{
+          "shape":"CapacityProviderStrategyItemBase",
+          "documentation":"<p>The base value designates how many tasks, at a minimum, to run on the specified capacity provider. Only one capacity provider in a capacity provider strategy can have a base defined. If no value is specified, the default value of 0 is used. </p>"
         }
       },
       "documentation":"<p>The details of a capacity provider strategy. To learn more, see <a href=\"https://docs.aws.amazon.com/AmazonECS/latest/APIReference/API_CapacityProviderStrategyItem.html\">CapacityProviderStrategyItem</a> in the Amazon ECS API Reference.</p>"
@@ -415,7 +415,7 @@
       "type":"string",
       "max":1600,
       "min":1,
-      "pattern":"^(^arn:aws([a-z]|\\-)*:logs:([a-z]{2}((-gov)|(-iso(b?)))?-[a-z]+-\\d{1}):(\\d{12}):log-group:[\\.\\-_/#A-Za-z0-9]{1,512}(:\\*)?)$"
+      "pattern":"(^arn:aws([a-z]|\\-)*:logs:([a-z]{2}((-gov)|(-iso(b?)))?-[a-z]+-\\d{1}):(\\d{12}):log-group:[\\.\\-_/#A-Za-z0-9]{1,512}(:\\*)?)"
     },
     "CloudwatchLogsLogDestination":{
       "type":"structure",
@@ -467,11 +467,17 @@
       "type":"structure",
       "required":[
         "Name",
-        "RoleArn",
         "Source",
-        "Target"
+        "Target",
+        "RoleArn"
       ],
       "members":{
+        "Name":{
+          "shape":"PipeName",
+          "documentation":"<p>The name of the pipe.</p>",
+          "location":"uri",
+          "locationName":"Name"
+        },
         "Description":{
           "shape":"PipeDescription",
           "documentation":"<p>A description of the pipe.</p>"
@@ -479,28 +485,6 @@
         "DesiredState":{
           "shape":"RequestedPipeState",
           "documentation":"<p>The state the pipe should be in.</p>"
-        },
-        "Enrichment":{
-          "shape":"OptionalArn",
-          "documentation":"<p>The ARN of the enrichment resource.</p>"
-        },
-        "EnrichmentParameters":{
-          "shape":"PipeEnrichmentParameters",
-          "documentation":"<p>The parameters required to set up enrichment on your pipe.</p>"
-        },
-        "LogConfiguration":{
-          "shape":"PipeLogConfigurationParameters",
-          "documentation":"<p>The logging configuration settings for the pipe.</p>"
-        },
-        "Name":{
-          "shape":"PipeName",
-          "documentation":"<p>The name of the pipe.</p>",
-          "location":"uri",
-          "locationName":"Name"
-        },
-        "RoleArn":{
-          "shape":"RoleArn",
-          "documentation":"<p>The ARN of the role that allows the pipe to send data to the target.</p>"
         },
         "Source":{
           "shape":"ArnOrUrl",
@@ -510,9 +494,13 @@
           "shape":"PipeSourceParameters",
           "documentation":"<p>The parameters required to set up a source for your pipe.</p>"
         },
-        "Tags":{
-          "shape":"TagMap",
-          "documentation":"<p>The list of key-value pairs to associate with the pipe.</p>"
+        "Enrichment":{
+          "shape":"OptionalArn",
+          "documentation":"<p>The ARN of the enrichment resource.</p>"
+        },
+        "EnrichmentParameters":{
+          "shape":"PipeEnrichmentParameters",
+          "documentation":"<p>The parameters required to set up enrichment on your pipe.</p>"
         },
         "Target":{
           "shape":"Arn",
@@ -521,6 +509,18 @@
         "TargetParameters":{
           "shape":"PipeTargetParameters",
           "documentation":"<p>The parameters required to set up a target for your pipe.</p> <p>For more information about pipe target parameters, including how to use dynamic path parameters, see <a href=\"https://docs.aws.amazon.com/eventbridge/latest/userguide/eb-pipes-event-target.html\">Target parameters</a> in the <i>Amazon EventBridge User Guide</i>.</p>"
+        },
+        "RoleArn":{
+          "shape":"RoleArn",
+          "documentation":"<p>The ARN of the role that allows the pipe to send data to the target.</p>"
+        },
+        "Tags":{
+          "shape":"TagMap",
+          "documentation":"<p>The list of key-value pairs to associate with the pipe.</p>"
+        },
+        "LogConfiguration":{
+          "shape":"PipeLogConfigurationParameters",
+          "documentation":"<p>The logging configuration settings for the pipe.</p>"
         }
       }
     },
@@ -531,25 +531,25 @@
           "shape":"PipeArn",
           "documentation":"<p>The ARN of the pipe.</p>"
         },
-        "CreationTime":{
-          "shape":"Timestamp",
-          "documentation":"<p>The time the pipe was created.</p>"
-        },
-        "CurrentState":{
-          "shape":"PipeState",
-          "documentation":"<p>The state the pipe is in.</p>"
+        "Name":{
+          "shape":"PipeName",
+          "documentation":"<p>The name of the pipe.</p>"
         },
         "DesiredState":{
           "shape":"RequestedPipeState",
           "documentation":"<p>The state the pipe should be in.</p>"
         },
+        "CurrentState":{
+          "shape":"PipeState",
+          "documentation":"<p>The state the pipe is in.</p>"
+        },
+        "CreationTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time the pipe was created.</p>"
+        },
         "LastModifiedTime":{
           "shape":"Timestamp",
           "documentation":"<p>When the pipe was last updated, in <a href=\"https://www.w3.org/TR/NOTE-datetime\">ISO-8601 format</a> (YYYY-MM-DDThh:mm:ss.sTZD).</p>"
-        },
-        "Name":{
-          "shape":"PipeName",
-          "documentation":"<p>The name of the pipe.</p>"
         }
       }
     },
@@ -596,25 +596,25 @@
           "shape":"PipeArn",
           "documentation":"<p>The ARN of the pipe.</p>"
         },
-        "CreationTime":{
-          "shape":"Timestamp",
-          "documentation":"<p>The time the pipe was created.</p>"
-        },
-        "CurrentState":{
-          "shape":"PipeState",
-          "documentation":"<p>The state the pipe is in.</p>"
+        "Name":{
+          "shape":"PipeName",
+          "documentation":"<p>The name of the pipe.</p>"
         },
         "DesiredState":{
           "shape":"RequestedPipeStateDescribeResponse",
           "documentation":"<p>The state the pipe should be in.</p>"
         },
+        "CurrentState":{
+          "shape":"PipeState",
+          "documentation":"<p>The state the pipe is in.</p>"
+        },
+        "CreationTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time the pipe was created.</p>"
+        },
         "LastModifiedTime":{
           "shape":"Timestamp",
           "documentation":"<p>When the pipe was last updated, in <a href=\"https://www.w3.org/TR/NOTE-datetime\">ISO-8601 format</a> (YYYY-MM-DDThh:mm:ss.sTZD).</p>"
-        },
-        "Name":{
-          "shape":"PipeName",
-          "documentation":"<p>The name of the pipe.</p>"
         }
       }
     },
@@ -637,13 +637,9 @@
           "shape":"PipeArn",
           "documentation":"<p>The ARN of the pipe.</p>"
         },
-        "CreationTime":{
-          "shape":"Timestamp",
-          "documentation":"<p>The time the pipe was created.</p>"
-        },
-        "CurrentState":{
-          "shape":"PipeState",
-          "documentation":"<p>The state the pipe is in.</p>"
+        "Name":{
+          "shape":"PipeName",
+          "documentation":"<p>The name of the pipe.</p>"
         },
         "Description":{
           "shape":"PipeDescription",
@@ -653,29 +649,13 @@
           "shape":"RequestedPipeStateDescribeResponse",
           "documentation":"<p>The state the pipe should be in.</p>"
         },
-        "Enrichment":{
-          "shape":"OptionalArn",
-          "documentation":"<p>The ARN of the enrichment resource.</p>"
+        "CurrentState":{
+          "shape":"PipeState",
+          "documentation":"<p>The state the pipe is in.</p>"
         },
-        "EnrichmentParameters":{
-          "shape":"PipeEnrichmentParameters",
-          "documentation":"<p>The parameters required to set up enrichment on your pipe.</p>"
-        },
-        "LastModifiedTime":{
-          "shape":"Timestamp",
-          "documentation":"<p>When the pipe was last updated, in <a href=\"https://www.w3.org/TR/NOTE-datetime\">ISO-8601 format</a> (YYYY-MM-DDThh:mm:ss.sTZD).</p>"
-        },
-        "LogConfiguration":{
-          "shape":"PipeLogConfiguration",
-          "documentation":"<p>The logging configuration settings for the pipe.</p>"
-        },
-        "Name":{
-          "shape":"PipeName",
-          "documentation":"<p>The name of the pipe.</p>"
-        },
-        "RoleArn":{
-          "shape":"RoleArn",
-          "documentation":"<p>The ARN of the role that allows the pipe to send data to the target.</p>"
+        "StateReason":{
+          "shape":"PipeStateReason",
+          "documentation":"<p>The reason the pipe is in its current state.</p>"
         },
         "Source":{
           "shape":"ArnOrUrl",
@@ -685,13 +665,13 @@
           "shape":"PipeSourceParameters",
           "documentation":"<p>The parameters required to set up a source for your pipe.</p>"
         },
-        "StateReason":{
-          "shape":"PipeStateReason",
-          "documentation":"<p>The reason the pipe is in its current state.</p>"
+        "Enrichment":{
+          "shape":"OptionalArn",
+          "documentation":"<p>The ARN of the enrichment resource.</p>"
         },
-        "Tags":{
-          "shape":"TagMap",
-          "documentation":"<p>The list of key-value pairs to associate with the pipe.</p>"
+        "EnrichmentParameters":{
+          "shape":"PipeEnrichmentParameters",
+          "documentation":"<p>The parameters required to set up enrichment on your pipe.</p>"
         },
         "Target":{
           "shape":"Arn",
@@ -700,8 +680,71 @@
         "TargetParameters":{
           "shape":"PipeTargetParameters",
           "documentation":"<p>The parameters required to set up a target for your pipe.</p> <p>For more information about pipe target parameters, including how to use dynamic path parameters, see <a href=\"https://docs.aws.amazon.com/eventbridge/latest/userguide/eb-pipes-event-target.html\">Target parameters</a> in the <i>Amazon EventBridge User Guide</i>.</p>"
+        },
+        "RoleArn":{
+          "shape":"RoleArn",
+          "documentation":"<p>The ARN of the role that allows the pipe to send data to the target.</p>"
+        },
+        "Tags":{
+          "shape":"TagMap",
+          "documentation":"<p>The list of key-value pairs to associate with the pipe.</p>"
+        },
+        "CreationTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time the pipe was created.</p>"
+        },
+        "LastModifiedTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>When the pipe was last updated, in <a href=\"https://www.w3.org/TR/NOTE-datetime\">ISO-8601 format</a> (YYYY-MM-DDThh:mm:ss.sTZD).</p>"
+        },
+        "LogConfiguration":{
+          "shape":"PipeLogConfiguration",
+          "documentation":"<p>The logging configuration settings for the pipe.</p>"
         }
       }
+    },
+    "DimensionMapping":{
+      "type":"structure",
+      "required":[
+        "DimensionValue",
+        "DimensionValueType",
+        "DimensionName"
+      ],
+      "members":{
+        "DimensionValue":{
+          "shape":"DimensionValue",
+          "documentation":"<p>Dynamic path to the dimension value in the source event.</p>"
+        },
+        "DimensionValueType":{
+          "shape":"DimensionValueType",
+          "documentation":"<p>The data type of the dimension for the time-series data.</p>"
+        },
+        "DimensionName":{
+          "shape":"DimensionName",
+          "documentation":"<p>The metadata attributes of the time series. For example, the name and Availability Zone of an Amazon EC2 instance or the name of the manufacturer of a wind turbine are dimensions.</p>"
+        }
+      },
+      "documentation":"<p>Maps source data to a dimension in the target Timestream for LiveAnalytics table.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/timestream/latest/developerguide/concepts.html\">Amazon Timestream for LiveAnalytics concepts</a> </p>"
+    },
+    "DimensionMappings":{
+      "type":"list",
+      "member":{"shape":"DimensionMapping"},
+      "max":128,
+      "min":1
+    },
+    "DimensionName":{
+      "type":"string",
+      "max":256,
+      "min":1
+    },
+    "DimensionValue":{
+      "type":"string",
+      "max":2048,
+      "min":1
+    },
+    "DimensionValueType":{
+      "type":"string",
+      "enum":["VARCHAR"]
     },
     "DynamoDBStreamStartPosition":{
       "type":"string",
@@ -892,7 +935,7 @@
       "type":"string",
       "max":300,
       "min":1,
-      "pattern":"^(([a-zA-Z0-9]|[a-zA-Z0-9][a-zA-Z0-9\\-]*[a-zA-Z0-9])\\.)*([A-Za-z0-9]|[A-Za-z0-9][A-Za-z0-9\\-]*[A-Za-z0-9]):[0-9]{1,5}$",
+      "pattern":"(([a-zA-Z0-9]|[a-zA-Z0-9][a-zA-Z0-9\\-]*[a-zA-Z0-9])\\.)*([A-Za-z0-9]|[A-Za-z0-9][A-Za-z0-9\\-]*[A-Za-z0-9]):[0-9]{1,5}",
       "sensitive":true
     },
     "EphemeralStorageSize":{
@@ -900,6 +943,15 @@
       "box":true,
       "max":200,
       "min":21
+    },
+    "EpochTimeUnit":{
+      "type":"string",
+      "enum":[
+        "MILLISECONDS",
+        "SECONDS",
+        "MICROSECONDS",
+        "NANOSECONDS"
+      ]
     },
     "ErrorMessage":{"type":"string"},
     "EventBridgeDetailType":{
@@ -912,7 +964,7 @@
       "type":"string",
       "max":50,
       "min":1,
-      "pattern":"^[A-Za-z0-9\\-]+[\\.][A-Za-z0-9\\-]+$",
+      "pattern":"[A-Za-z0-9\\-]+[\\.][A-Za-z0-9\\-]+",
       "sensitive":true
     },
     "EventBridgeEventResourceList":{
@@ -925,7 +977,7 @@
       "type":"string",
       "max":256,
       "min":1,
-      "pattern":"(?=[/\\.\\-_A-Za-z0-9]+)((?!aws\\.).*)|(\\$(\\.[\\w/_-]+(\\[(\\d+|\\*)\\])*)*)",
+      "pattern":".*(?=[/\\.\\-_A-Za-z0-9]+)((?!aws\\.).*)|(\\$(\\.[\\w/_-]+(\\[(\\d+|\\*)\\])*)*).*",
       "sensitive":true
     },
     "EventPattern":{
@@ -964,17 +1016,17 @@
       "type":"string",
       "max":1600,
       "min":1,
-      "pattern":"^(^arn:aws([a-z]|\\-)*:firehose:([a-z]{2}((-gov)|(-iso(b?)))?-[a-z]+-\\d{1}):(\\d{12}):deliverystream/[a-zA-Z0-9_.-]{1,64})$"
+      "pattern":"(^arn:aws([a-z]|\\-)*:firehose:([a-z]{2}((-gov)|(-iso(b?)))?-[a-z]+-\\d{1}):(\\d{12}):deliverystream/[a-zA-Z0-9_.-]{1,64})"
     },
     "FirehoseLogDestination":{
       "type":"structure",
       "members":{
         "DeliveryStreamArn":{
           "shape":"FirehoseArn",
-          "documentation":"<p>The Amazon Resource Name (ARN) of the Kinesis Data Firehose delivery stream to which EventBridge delivers the pipe log records.</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of the Firehose delivery stream to which EventBridge delivers the pipe log records.</p>"
         }
       },
-      "documentation":"<p>The Amazon Kinesis Data Firehose logging configuration settings for the pipe.</p>"
+      "documentation":"<p>The Amazon Data Firehose logging configuration settings for the pipe.</p>"
     },
     "FirehoseLogDestinationParameters":{
       "type":"structure",
@@ -982,16 +1034,16 @@
       "members":{
         "DeliveryStreamArn":{
           "shape":"FirehoseArn",
-          "documentation":"<p>Specifies the Amazon Resource Name (ARN) of the Kinesis Data Firehose delivery stream to which EventBridge delivers the pipe log records.</p>"
+          "documentation":"<p>Specifies the Amazon Resource Name (ARN) of the Firehose delivery stream to which EventBridge delivers the pipe log records.</p>"
         }
       },
-      "documentation":"<p>The Amazon Kinesis Data Firehose logging configuration settings for the pipe.</p>"
+      "documentation":"<p>The Amazon Data Firehose logging configuration settings for the pipe.</p>"
     },
     "HeaderKey":{
       "type":"string",
       "max":512,
       "min":0,
-      "pattern":"^[!#$%&'*+-.^_`|~0-9a-zA-Z]+|(\\$(\\.[\\w/_-]+(\\[(\\d+|\\*)\\])*)*)$"
+      "pattern":"[!#$%&'*+-.^_`|~0-9a-zA-Z]+|(\\$(\\.[\\w/_-]+(\\[(\\d+|\\*)\\])*)*)"
     },
     "HeaderParametersMap":{
       "type":"map",
@@ -1002,7 +1054,7 @@
       "type":"string",
       "max":512,
       "min":0,
-      "pattern":"^[ \\t]*[\\x20-\\x7E]+([ \\t]+[\\x20-\\x7E]+)*[ \\t]*|(\\$(\\.[\\w/_-]+(\\[(\\d+|\\*)\\])*)*)$",
+      "pattern":"[ \\t]*[\\x20-\\x7E]+([ \\t]+[\\x20-\\x7E]+)*[ \\t]*|(\\$(\\.[\\w/_-]+(\\[(\\d+|\\*)\\])*)*)",
       "sensitive":true
     },
     "IncludeExecutionData":{
@@ -1044,7 +1096,7 @@
       "type":"string",
       "max":256,
       "min":1,
-      "pattern":"^\\$(\\.[\\w/_-]+(\\[(\\d+|\\*)\\])*)*$"
+      "pattern":"\\$(\\.[\\w/_-]+(\\[(\\d+|\\*)\\])*)*"
     },
     "KafkaBootstrapServers":{
       "type":"list",
@@ -1056,7 +1108,7 @@
       "type":"string",
       "max":249,
       "min":1,
-      "pattern":"^[^.]([a-zA-Z0-9\\-_.]+)$",
+      "pattern":"[^.]([a-zA-Z0-9\\-_.]+)",
       "sensitive":true
     },
     "KinesisPartitionKey":{
@@ -1107,11 +1159,11 @@
     "ListPipesRequest":{
       "type":"structure",
       "members":{
-        "CurrentState":{
-          "shape":"PipeState",
-          "documentation":"<p>The state the pipe is in.</p>",
+        "NamePrefix":{
+          "shape":"PipeName",
+          "documentation":"<p>A value that will return a subset of the pipes associated with this account. For example, <code>\"NamePrefix\": \"ABC\"</code> will return all endpoints with \"ABC\" in the name.</p>",
           "location":"querystring",
-          "locationName":"CurrentState"
+          "locationName":"NamePrefix"
         },
         "DesiredState":{
           "shape":"RequestedPipeState",
@@ -1119,23 +1171,11 @@
           "location":"querystring",
           "locationName":"DesiredState"
         },
-        "Limit":{
-          "shape":"LimitMax100",
-          "documentation":"<p>The maximum number of pipes to include in the response.</p>",
+        "CurrentState":{
+          "shape":"PipeState",
+          "documentation":"<p>The state the pipe is in.</p>",
           "location":"querystring",
-          "locationName":"Limit"
-        },
-        "NamePrefix":{
-          "shape":"PipeName",
-          "documentation":"<p>A value that will return a subset of the pipes associated with this account. For example, <code>\"NamePrefix\": \"ABC\"</code> will return all endpoints with \"ABC\" in the name.</p>",
-          "location":"querystring",
-          "locationName":"NamePrefix"
-        },
-        "NextToken":{
-          "shape":"NextToken",
-          "documentation":"<p>If <code>nextToken</code> is returned, there are more results available. The value of <code>nextToken</code> is a unique pagination token for each page. Make the call again using the returned token to retrieve the next page. Keep all other arguments unchanged. Each pagination token expires after 24 hours. Using an expired pagination token will return an HTTP 400 InvalidToken error.</p>",
-          "location":"querystring",
-          "locationName":"NextToken"
+          "locationName":"CurrentState"
         },
         "SourcePrefix":{
           "shape":"ResourceArn",
@@ -1148,19 +1188,31 @@
           "documentation":"<p>The prefix matching the pipe target.</p>",
           "location":"querystring",
           "locationName":"TargetPrefix"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>If <code>nextToken</code> is returned, there are more results available. The value of <code>nextToken</code> is a unique pagination token for each page. Make the call again using the returned token to retrieve the next page. Keep all other arguments unchanged. Each pagination token expires after 24 hours. Using an expired pagination token will return an HTTP 400 InvalidToken error.</p>",
+          "location":"querystring",
+          "locationName":"NextToken"
+        },
+        "Limit":{
+          "shape":"LimitMax100",
+          "documentation":"<p>The maximum number of pipes to include in the response.</p>",
+          "location":"querystring",
+          "locationName":"Limit"
         }
       }
     },
     "ListPipesResponse":{
       "type":"structure",
       "members":{
-        "NextToken":{
-          "shape":"NextToken",
-          "documentation":"<p>If <code>nextToken</code> is returned, there are more results available. The value of <code>nextToken</code> is a unique pagination token for each page. Make the call again using the returned token to retrieve the next page. Keep all other arguments unchanged. Each pagination token expires after 24 hours. Using an expired pagination token will return an HTTP 400 InvalidToken error.</p>"
-        },
         "Pipes":{
           "shape":"PipeList",
           "documentation":"<p>The pipes returned by the call.</p>"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>If <code>nextToken</code> is returned, there are more results available. The value of <code>nextToken</code> is a unique pagination token for each page. Make the call again using the returned token to retrieve the next page. Keep all other arguments unchanged. Each pagination token expires after 24 hours. Using an expired pagination token will return an HTTP 400 InvalidToken error.</p>"
         }
       }
     },
@@ -1214,17 +1266,17 @@
       "type":"string",
       "max":1000,
       "min":1,
-      "pattern":"^[\\s\\S]*$",
+      "pattern":"[\\s\\S]*",
       "sensitive":true
     },
     "MSKAccessCredentials":{
       "type":"structure",
       "members":{
-        "ClientCertificateTlsAuth":{
+        "SaslScram512Auth":{
           "shape":"SecretManagerArn",
           "documentation":"<p>The ARN of the Secrets Manager secret.</p>"
         },
-        "SaslScram512Auth":{
+        "ClientCertificateTlsAuth":{
           "shape":"SecretManagerArn",
           "documentation":"<p>The ARN of the Secrets Manager secret.</p>"
         }
@@ -1257,6 +1309,26 @@
       "max":10000,
       "min":-1
     },
+    "MeasureName":{
+      "type":"string",
+      "max":1024,
+      "min":1
+    },
+    "MeasureValue":{
+      "type":"string",
+      "max":2048,
+      "min":1
+    },
+    "MeasureValueType":{
+      "type":"string",
+      "enum":[
+        "DOUBLE",
+        "BIGINT",
+        "VARCHAR",
+        "BOOLEAN",
+        "TIMESTAMP"
+      ]
+    },
     "MessageDeduplicationId":{
       "type":"string",
       "max":100,
@@ -1268,6 +1340,69 @@
       "max":100,
       "min":0,
       "sensitive":true
+    },
+    "MultiMeasureAttributeMapping":{
+      "type":"structure",
+      "required":[
+        "MeasureValue",
+        "MeasureValueType",
+        "MultiMeasureAttributeName"
+      ],
+      "members":{
+        "MeasureValue":{
+          "shape":"MeasureValue",
+          "documentation":"<p>Dynamic path to the measurement attribute in the source event.</p>"
+        },
+        "MeasureValueType":{
+          "shape":"MeasureValueType",
+          "documentation":"<p>Data type of the measurement attribute in the source event.</p>"
+        },
+        "MultiMeasureAttributeName":{
+          "shape":"MultiMeasureAttributeName",
+          "documentation":"<p>Target measure name to be used.</p>"
+        }
+      },
+      "documentation":"<p>A mapping of a source event data field to a measure in a Timestream for LiveAnalytics record.</p>"
+    },
+    "MultiMeasureAttributeMappings":{
+      "type":"list",
+      "member":{"shape":"MultiMeasureAttributeMapping"},
+      "max":256,
+      "min":1
+    },
+    "MultiMeasureAttributeName":{
+      "type":"string",
+      "max":256,
+      "min":1
+    },
+    "MultiMeasureMapping":{
+      "type":"structure",
+      "required":[
+        "MultiMeasureName",
+        "MultiMeasureAttributeMappings"
+      ],
+      "members":{
+        "MultiMeasureName":{
+          "shape":"MultiMeasureName",
+          "documentation":"<p>The name of the multiple measurements per record (multi-measure).</p>"
+        },
+        "MultiMeasureAttributeMappings":{
+          "shape":"MultiMeasureAttributeMappings",
+          "documentation":"<p>Mappings that represent multiple source event fields mapped to measures in the same Timestream for LiveAnalytics record.</p>"
+        }
+      },
+      "documentation":"<p>Maps multiple measures from the source event to the same Timestream for LiveAnalytics record.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/timestream/latest/developerguide/concepts.html\">Amazon Timestream for LiveAnalytics concepts</a> </p>"
+    },
+    "MultiMeasureMappings":{
+      "type":"list",
+      "member":{"shape":"MultiMeasureMapping"},
+      "max":1024,
+      "min":0
+    },
+    "MultiMeasureName":{
+      "type":"string",
+      "max":256,
+      "min":1
     },
     "NetworkConfiguration":{
       "type":"structure",
@@ -1305,11 +1440,11 @@
       "type":"string",
       "max":1600,
       "min":0,
-      "pattern":"^$|arn:(aws[a-zA-Z0-9-]*):([a-zA-Z0-9\\-]+):([a-z]{2}((-gov)|(-iso(b?)))?-[a-z]+-\\d{1})?:(\\d{12})?:(.+)$"
+      "pattern":"$|arn:(aws[a-zA-Z0-9-]*):([a-zA-Z0-9\\-]+):([a-z]{2}((-gov)|(-iso(b?)))?-[a-z]+-\\d{1})?:(\\d{12})?:(.+)"
     },
     "PathParameter":{
       "type":"string",
-      "pattern":"^(?!\\s*$).+|(\\$(\\.[\\w/_-]+(\\[(\\d+|\\*)\\])*)*)$",
+      "pattern":"(?!\\s*$).+|(\\$(\\.[\\w/_-]+(\\[(\\d+|\\*)\\])*)*)",
       "sensitive":true
     },
     "PathParameterList":{
@@ -1319,45 +1454,45 @@
     "Pipe":{
       "type":"structure",
       "members":{
+        "Name":{
+          "shape":"PipeName",
+          "documentation":"<p>The name of the pipe.</p>"
+        },
         "Arn":{
           "shape":"PipeArn",
           "documentation":"<p>The ARN of the pipe.</p>"
-        },
-        "CreationTime":{
-          "shape":"Timestamp",
-          "documentation":"<p>The time the pipe was created.</p>"
-        },
-        "CurrentState":{
-          "shape":"PipeState",
-          "documentation":"<p>The state the pipe is in.</p>"
         },
         "DesiredState":{
           "shape":"RequestedPipeState",
           "documentation":"<p>The state the pipe should be in.</p>"
         },
-        "Enrichment":{
-          "shape":"OptionalArn",
-          "documentation":"<p>The ARN of the enrichment resource.</p>"
-        },
-        "LastModifiedTime":{
-          "shape":"Timestamp",
-          "documentation":"<p>When the pipe was last updated, in <a href=\"https://www.w3.org/TR/NOTE-datetime\">ISO-8601 format</a> (YYYY-MM-DDThh:mm:ss.sTZD).</p>"
-        },
-        "Name":{
-          "shape":"PipeName",
-          "documentation":"<p>The name of the pipe.</p>"
-        },
-        "Source":{
-          "shape":"ArnOrUrl",
-          "documentation":"<p>The ARN of the source resource.</p>"
+        "CurrentState":{
+          "shape":"PipeState",
+          "documentation":"<p>The state the pipe is in.</p>"
         },
         "StateReason":{
           "shape":"PipeStateReason",
           "documentation":"<p>The reason the pipe is in its current state.</p>"
         },
+        "CreationTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time the pipe was created.</p>"
+        },
+        "LastModifiedTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>When the pipe was last updated, in <a href=\"https://www.w3.org/TR/NOTE-datetime\">ISO-8601 format</a> (YYYY-MM-DDThh:mm:ss.sTZD).</p>"
+        },
+        "Source":{
+          "shape":"ArnOrUrl",
+          "documentation":"<p>The ARN of the source resource.</p>"
+        },
         "Target":{
           "shape":"Arn",
           "documentation":"<p>The ARN of the target resource.</p>"
+        },
+        "Enrichment":{
+          "shape":"OptionalArn",
+          "documentation":"<p>The ARN of the enrichment resource.</p>"
         }
       },
       "documentation":"<p>An object that represents a pipe. Amazon EventBridgePipes connect event sources to targets and reduces the need for specialized knowledge and integration code.</p>"
@@ -1366,25 +1501,25 @@
       "type":"string",
       "max":1600,
       "min":1,
-      "pattern":"^arn:aws([a-z]|\\-)*:([a-zA-Z0-9\\-]+):([a-z]|\\d|\\-)*:([0-9]{12})?:(.+)$"
+      "pattern":"arn:aws([a-z]|\\-)*:([a-zA-Z0-9\\-]+):([a-z]|\\d|\\-)*:([0-9]{12})?:(.+)"
     },
     "PipeDescription":{
       "type":"string",
       "max":512,
       "min":0,
-      "pattern":"^.*$",
+      "pattern":".*",
       "sensitive":true
     },
     "PipeEnrichmentHttpParameters":{
       "type":"structure",
       "members":{
-        "HeaderParameters":{
-          "shape":"HeaderParametersMap",
-          "documentation":"<p>The headers that need to be sent as part of request invoking the API Gateway REST API or EventBridge ApiDestination.</p>"
-        },
         "PathParameterValues":{
           "shape":"PathParameterList",
           "documentation":"<p>The path parameter values to be used to populate API Gateway REST API or EventBridge ApiDestination path wildcards (\"*\").</p>"
+        },
+        "HeaderParameters":{
+          "shape":"HeaderParametersMap",
+          "documentation":"<p>The headers that need to be sent as part of request invoking the API Gateway REST API or EventBridge ApiDestination.</p>"
         },
         "QueryStringParameters":{
           "shape":"QueryStringParametersMap",
@@ -1396,13 +1531,13 @@
     "PipeEnrichmentParameters":{
       "type":"structure",
       "members":{
-        "HttpParameters":{
-          "shape":"PipeEnrichmentHttpParameters",
-          "documentation":"<p>Contains the HTTP parameters to use when the target is a API Gateway REST endpoint or EventBridge ApiDestination.</p> <p>If you specify an API Gateway REST API or EventBridge ApiDestination as a target, you can use this parameter to specify headers, path parameters, and query string keys/values as part of your target invoking request. If you're using ApiDestinations, the corresponding Connection can also have these values configured. In case of any conflicting keys, values from the Connection take precedence.</p>"
-        },
         "InputTemplate":{
           "shape":"InputTemplate",
           "documentation":"<p>Valid JSON text passed to the enrichment. In this case, nothing from the event itself is passed to the enrichment. For more information, see <a href=\"http://www.rfc-editor.org/rfc/rfc7159.txt\">The JavaScript Object Notation (JSON) Data Interchange Format</a>.</p> <p>To remove an input template, specify an empty string.</p>"
+        },
+        "HttpParameters":{
+          "shape":"PipeEnrichmentHttpParameters",
+          "documentation":"<p>Contains the HTTP parameters to use when the target is a API Gateway REST endpoint or EventBridge ApiDestination.</p> <p>If you specify an API Gateway REST API or EventBridge ApiDestination as a target, you can use this parameter to specify headers, path parameters, and query string keys/values as part of your target invoking request. If you're using ApiDestinations, the corresponding Connection can also have these values configured. In case of any conflicting keys, values from the Connection take precedence.</p>"
         }
       },
       "documentation":"<p>The parameters required to set up enrichment on your pipe.</p>"
@@ -1414,25 +1549,25 @@
     "PipeLogConfiguration":{
       "type":"structure",
       "members":{
-        "CloudwatchLogsLogDestination":{
-          "shape":"CloudwatchLogsLogDestination",
-          "documentation":"<p>The Amazon CloudWatch Logs logging configuration settings for the pipe.</p>"
+        "S3LogDestination":{
+          "shape":"S3LogDestination",
+          "documentation":"<p>The Amazon S3 logging configuration settings for the pipe.</p>"
         },
         "FirehoseLogDestination":{
           "shape":"FirehoseLogDestination",
-          "documentation":"<p>The Amazon Kinesis Data Firehose logging configuration settings for the pipe.</p>"
+          "documentation":"<p>The Amazon Data Firehose logging configuration settings for the pipe.</p>"
         },
-        "IncludeExecutionData":{
-          "shape":"IncludeExecutionData",
-          "documentation":"<p>Whether the execution data (specifically, the <code>payload</code>, <code>awsRequest</code>, and <code>awsResponse</code> fields) is included in the log messages for this pipe.</p> <p>This applies to all log destinations for the pipe.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/eventbridge/latest/userguide/eb-pipes-logs.html#eb-pipes-logs-execution-data\">Including execution data in logs</a> in the <i>Amazon EventBridge User Guide</i>.</p>"
+        "CloudwatchLogsLogDestination":{
+          "shape":"CloudwatchLogsLogDestination",
+          "documentation":"<p>The Amazon CloudWatch Logs logging configuration settings for the pipe.</p>"
         },
         "Level":{
           "shape":"LogLevel",
           "documentation":"<p>The level of logging detail to include. This applies to all log destinations for the pipe.</p>"
         },
-        "S3LogDestination":{
-          "shape":"S3LogDestination",
-          "documentation":"<p>The Amazon S3 logging configuration settings for the pipe.</p>"
+        "IncludeExecutionData":{
+          "shape":"IncludeExecutionData",
+          "documentation":"<p>Whether the execution data (specifically, the <code>payload</code>, <code>awsRequest</code>, and <code>awsResponse</code> fields) is included in the log messages for this pipe.</p> <p>This applies to all log destinations for the pipe.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/eventbridge/latest/userguide/eb-pipes-logs.html#eb-pipes-logs-execution-data\">Including execution data in logs</a> in the <i>Amazon EventBridge User Guide</i>.</p>"
         }
       },
       "documentation":"<p>The logging configuration settings for the pipe.</p>"
@@ -1441,34 +1576,34 @@
       "type":"structure",
       "required":["Level"],
       "members":{
-        "CloudwatchLogsLogDestination":{
-          "shape":"CloudwatchLogsLogDestinationParameters",
-          "documentation":"<p>The Amazon CloudWatch Logs logging configuration settings for the pipe.</p>"
+        "S3LogDestination":{
+          "shape":"S3LogDestinationParameters",
+          "documentation":"<p>The Amazon S3 logging configuration settings for the pipe.</p>"
         },
         "FirehoseLogDestination":{
           "shape":"FirehoseLogDestinationParameters",
-          "documentation":"<p>The Amazon Kinesis Data Firehose logging configuration settings for the pipe.</p>"
+          "documentation":"<p>The Amazon Data Firehose logging configuration settings for the pipe.</p>"
         },
-        "IncludeExecutionData":{
-          "shape":"IncludeExecutionData",
-          "documentation":"<p>Specify <code>ON</code> to include the execution data (specifically, the <code>payload</code> and <code>awsRequest</code> fields) in the log messages for this pipe.</p> <p>This applies to all log destinations for the pipe.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/eventbridge/latest/userguide/eb-pipes-logs.html#eb-pipes-logs-execution-data\">Including execution data in logs</a> in the <i>Amazon EventBridge User Guide</i>.</p> <p>The default is <code>OFF</code>.</p>"
+        "CloudwatchLogsLogDestination":{
+          "shape":"CloudwatchLogsLogDestinationParameters",
+          "documentation":"<p>The Amazon CloudWatch Logs logging configuration settings for the pipe.</p>"
         },
         "Level":{
           "shape":"LogLevel",
           "documentation":"<p>The level of logging detail to include. This applies to all log destinations for the pipe.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/eventbridge/latest/userguide/eb-pipes-logs.html#eb-pipes-logs-level\">Specifying EventBridge Pipes log level</a> in the <i>Amazon EventBridge User Guide</i>.</p>"
         },
-        "S3LogDestination":{
-          "shape":"S3LogDestinationParameters",
-          "documentation":"<p>The Amazon S3 logging configuration settings for the pipe.</p>"
+        "IncludeExecutionData":{
+          "shape":"IncludeExecutionData",
+          "documentation":"<p>Specify <code>ALL</code> to include the execution data (specifically, the <code>payload</code>, <code>awsRequest</code>, and <code>awsResponse</code> fields) in the log messages for this pipe.</p> <p>This applies to all log destinations for the pipe.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/eventbridge/latest/userguide/eb-pipes-logs.html#eb-pipes-logs-execution-data\">Including execution data in logs</a> in the <i>Amazon EventBridge User Guide</i>.</p> <p>By default, execution data is not included.</p>"
         }
       },
-      "documentation":"<p>Specifies the logging configuration settings for the pipe.</p> <p>When you call <code>UpdatePipe</code>, EventBridge updates the fields in the <code>PipeLogConfigurationParameters</code> object atomically as one and overrides existing values. This is by design. If you don't specify an optional field in any of the Amazon Web Services service parameters objects (<code>CloudwatchLogsLogDestinationParameters</code>, <code>FirehoseLogDestinationParameters</code>, or <code>S3LogDestinationParameters</code>), EventBridge sets that field to its system-default value during the update. </p> <p>For example, suppose when you created the pipe you specified a Kinesis Data Firehose stream log destination. You then update the pipe to add an Amazon S3 log destination. In addition to specifying the <code>S3LogDestinationParameters</code> for the new log destination, you must also specify the fields in the <code>FirehoseLogDestinationParameters</code> object in order to retain the Kinesis Data Firehose stream log destination. </p> <p>For more information on generating pipe log records, see <a href=\"eventbridge/latest/userguide/eb-pipes-logs.html\">Log EventBridge Pipes</a> in the <i>Amazon EventBridge User Guide</i>.</p>"
+      "documentation":"<p>Specifies the logging configuration settings for the pipe.</p> <p>When you call <code>UpdatePipe</code>, EventBridge updates the fields in the <code>PipeLogConfigurationParameters</code> object atomically as one and overrides existing values. This is by design. If you don't specify an optional field in any of the Amazon Web Services service parameters objects (<code>CloudwatchLogsLogDestinationParameters</code>, <code>FirehoseLogDestinationParameters</code>, or <code>S3LogDestinationParameters</code>), EventBridge sets that field to its system-default value during the update. </p> <p>For example, suppose when you created the pipe you specified a Firehose stream log destination. You then update the pipe to add an Amazon S3 log destination. In addition to specifying the <code>S3LogDestinationParameters</code> for the new log destination, you must also specify the fields in the <code>FirehoseLogDestinationParameters</code> object in order to retain the Firehose stream log destination. </p> <p>For more information on generating pipe log records, see <a href=\"eventbridge/latest/userguide/eb-pipes-logs.html\">Log EventBridge Pipes</a> in the <i>Amazon EventBridge User Guide</i>.</p>"
     },
     "PipeName":{
       "type":"string",
       "max":64,
       "min":1,
-      "pattern":"^[\\.\\-_A-Za-z0-9]+$"
+      "pattern":"[\\.\\-_A-Za-z0-9]+"
     },
     "PipeSourceActiveMQBrokerParameters":{
       "type":"structure",
@@ -1477,21 +1612,21 @@
         "QueueName"
       ],
       "members":{
-        "BatchSize":{
-          "shape":"LimitMax10000",
-          "documentation":"<p>The maximum number of records to include in each batch.</p>"
-        },
         "Credentials":{
           "shape":"MQBrokerAccessCredentials",
           "documentation":"<p>The credentials needed to access the resource.</p>"
         },
-        "MaximumBatchingWindowInSeconds":{
-          "shape":"MaximumBatchingWindowInSeconds",
-          "documentation":"<p>The maximum length of a time to wait for events.</p>"
-        },
         "QueueName":{
           "shape":"MQBrokerQueueName",
           "documentation":"<p>The name of the destination queue to consume.</p>"
+        },
+        "BatchSize":{
+          "shape":"LimitMax10000",
+          "documentation":"<p>The maximum number of records to include in each batch.</p>"
+        },
+        "MaximumBatchingWindowInSeconds":{
+          "shape":"MaximumBatchingWindowInSeconds",
+          "documentation":"<p>The maximum length of a time to wait for events.</p>"
         }
       },
       "documentation":"<p>The parameters for using an Active MQ broker as a source.</p>"
@@ -1508,6 +1643,10 @@
           "shape":"DeadLetterConfig",
           "documentation":"<p>Define the target queue to send dead-letter queue events to.</p>"
         },
+        "OnPartialBatchItemFailure":{
+          "shape":"OnPartialBatchItemFailureStreams",
+          "documentation":"<p>(Streams only) Define how to handle item process failures. <code>AUTOMATIC_BISECT</code> halves each batch and retry each half until all the records are processed or there is one failed message left in the batch.</p>"
+        },
         "MaximumBatchingWindowInSeconds":{
           "shape":"MaximumBatchingWindowInSeconds",
           "documentation":"<p>The maximum length of a time to wait for events.</p>"
@@ -1519,10 +1658,6 @@
         "MaximumRetryAttempts":{
           "shape":"MaximumRetryAttemptsESM",
           "documentation":"<p>(Streams only) Discard records after the specified number of retries. The default value is -1, which sets the maximum number of retries to infinite. When MaximumRetryAttempts is infinite, EventBridge retries failed records until the record expires in the event source.</p>"
-        },
-        "OnPartialBatchItemFailure":{
-          "shape":"OnPartialBatchItemFailureStreams",
-          "documentation":"<p>(Streams only) Define how to handle item process failures. <code>AUTOMATIC_BISECT</code> halves each batch and retry each half until all the records are processed or there is one failed message left in the batch.</p>"
         },
         "ParallelizationFactor":{
           "shape":"LimitMax10",
@@ -1547,6 +1682,10 @@
           "shape":"DeadLetterConfig",
           "documentation":"<p>Define the target queue to send dead-letter queue events to.</p>"
         },
+        "OnPartialBatchItemFailure":{
+          "shape":"OnPartialBatchItemFailureStreams",
+          "documentation":"<p>(Streams only) Define how to handle item process failures. <code>AUTOMATIC_BISECT</code> halves each batch and retry each half until all the records are processed or there is one failed message left in the batch.</p>"
+        },
         "MaximumBatchingWindowInSeconds":{
           "shape":"MaximumBatchingWindowInSeconds",
           "documentation":"<p>The maximum length of a time to wait for events.</p>"
@@ -1558,10 +1697,6 @@
         "MaximumRetryAttempts":{
           "shape":"MaximumRetryAttemptsESM",
           "documentation":"<p>(Streams only) Discard records after the specified number of retries. The default value is -1, which sets the maximum number of retries to infinite. When MaximumRetryAttempts is infinite, EventBridge retries failed records until the record expires in the event source.</p>"
-        },
-        "OnPartialBatchItemFailure":{
-          "shape":"OnPartialBatchItemFailureStreams",
-          "documentation":"<p>(Streams only) Define how to handle item process failures. <code>AUTOMATIC_BISECT</code> halves each batch and retry each half until all the records are processed or there is one failed message left in the batch.</p>"
         },
         "ParallelizationFactor":{
           "shape":"LimitMax10",
@@ -1582,9 +1717,21 @@
       "type":"structure",
       "required":["TopicName"],
       "members":{
+        "TopicName":{
+          "shape":"KafkaTopicName",
+          "documentation":"<p>The name of the topic that the pipe will read from.</p>"
+        },
+        "StartingPosition":{
+          "shape":"MSKStartPosition",
+          "documentation":"<p>(Streams only) The position in a stream from which to start reading.</p>"
+        },
         "BatchSize":{
           "shape":"LimitMax10000",
           "documentation":"<p>The maximum number of records to include in each batch.</p>"
+        },
+        "MaximumBatchingWindowInSeconds":{
+          "shape":"MaximumBatchingWindowInSeconds",
+          "documentation":"<p>The maximum length of a time to wait for events.</p>"
         },
         "ConsumerGroupID":{
           "shape":"URI",
@@ -1593,18 +1740,6 @@
         "Credentials":{
           "shape":"MSKAccessCredentials",
           "documentation":"<p>The credentials needed to access the resource.</p>"
-        },
-        "MaximumBatchingWindowInSeconds":{
-          "shape":"MaximumBatchingWindowInSeconds",
-          "documentation":"<p>The maximum length of a time to wait for events.</p>"
-        },
-        "StartingPosition":{
-          "shape":"MSKStartPosition",
-          "documentation":"<p>(Streams only) The position in a stream from which to start reading.</p>"
-        },
-        "TopicName":{
-          "shape":"KafkaTopicName",
-          "documentation":"<p>The name of the topic that the pipe will read from.</p>"
         }
       },
       "documentation":"<p>The parameters for using an MSK stream as a source.</p>"
@@ -1612,14 +1747,6 @@
     "PipeSourceParameters":{
       "type":"structure",
       "members":{
-        "ActiveMQBrokerParameters":{
-          "shape":"PipeSourceActiveMQBrokerParameters",
-          "documentation":"<p>The parameters for using an Active MQ broker as a source.</p>"
-        },
-        "DynamoDBStreamParameters":{
-          "shape":"PipeSourceDynamoDBStreamParameters",
-          "documentation":"<p>The parameters for using a DynamoDB stream as a source.</p>"
-        },
         "FilterCriteria":{
           "shape":"FilterCriteria",
           "documentation":"<p>The collection of event patterns used to filter events.</p> <p>To remove a filter, specify a <code>FilterCriteria</code> object with an empty array of <code>Filter</code> objects.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/eventbridge/latest/userguide/eventbridge-and-event-patterns.html\">Events and Event Patterns</a> in the <i>Amazon EventBridge User Guide</i>.</p>"
@@ -1628,21 +1755,29 @@
           "shape":"PipeSourceKinesisStreamParameters",
           "documentation":"<p>The parameters for using a Kinesis stream as a source.</p>"
         },
-        "ManagedStreamingKafkaParameters":{
-          "shape":"PipeSourceManagedStreamingKafkaParameters",
-          "documentation":"<p>The parameters for using an MSK stream as a source.</p>"
+        "DynamoDBStreamParameters":{
+          "shape":"PipeSourceDynamoDBStreamParameters",
+          "documentation":"<p>The parameters for using a DynamoDB stream as a source.</p>"
+        },
+        "SqsQueueParameters":{
+          "shape":"PipeSourceSqsQueueParameters",
+          "documentation":"<p>The parameters for using a Amazon SQS stream as a source.</p>"
+        },
+        "ActiveMQBrokerParameters":{
+          "shape":"PipeSourceActiveMQBrokerParameters",
+          "documentation":"<p>The parameters for using an Active MQ broker as a source.</p>"
         },
         "RabbitMQBrokerParameters":{
           "shape":"PipeSourceRabbitMQBrokerParameters",
           "documentation":"<p>The parameters for using a Rabbit MQ broker as a source.</p>"
         },
+        "ManagedStreamingKafkaParameters":{
+          "shape":"PipeSourceManagedStreamingKafkaParameters",
+          "documentation":"<p>The parameters for using an MSK stream as a source.</p>"
+        },
         "SelfManagedKafkaParameters":{
           "shape":"PipeSourceSelfManagedKafkaParameters",
-          "documentation":"<p>The parameters for using a self-managed Apache Kafka stream as a source.</p>"
-        },
-        "SqsQueueParameters":{
-          "shape":"PipeSourceSqsQueueParameters",
-          "documentation":"<p>The parameters for using a Amazon SQS stream as a source.</p>"
+          "documentation":"<p>The parameters for using a self-managed Apache Kafka stream as a source.</p> <p>A <i>self managed</i> cluster refers to any Apache Kafka cluster not hosted by Amazon Web Services. This includes both clusters you manage yourself, as well as those hosted by a third-party provider, such as <a href=\"https://www.confluent.io/\">Confluent Cloud</a>, <a href=\"https://www.cloudkarafka.com/\">CloudKarafka</a>, or <a href=\"https://redpanda.com/\">Redpanda</a>. For more information, see <a href=\"https://docs.aws.amazon.com/eventbridge/latest/userguide/eb-pipes-kafka.html\">Apache Kafka streams as a source</a> in the <i>Amazon EventBridge User Guide</i>.</p>"
         }
       },
       "documentation":"<p>The parameters required to set up a source for your pipe.</p>"
@@ -1654,17 +1789,9 @@
         "QueueName"
       ],
       "members":{
-        "BatchSize":{
-          "shape":"LimitMax10000",
-          "documentation":"<p>The maximum number of records to include in each batch.</p>"
-        },
         "Credentials":{
           "shape":"MQBrokerAccessCredentials",
           "documentation":"<p>The credentials needed to access the resource.</p>"
-        },
-        "MaximumBatchingWindowInSeconds":{
-          "shape":"MaximumBatchingWindowInSeconds",
-          "documentation":"<p>The maximum length of a time to wait for events.</p>"
         },
         "QueueName":{
           "shape":"MQBrokerQueueName",
@@ -1673,6 +1800,14 @@
         "VirtualHost":{
           "shape":"URI",
           "documentation":"<p>The name of the virtual host associated with the source broker.</p>"
+        },
+        "BatchSize":{
+          "shape":"LimitMax10000",
+          "documentation":"<p>The maximum number of records to include in each batch.</p>"
+        },
+        "MaximumBatchingWindowInSeconds":{
+          "shape":"MaximumBatchingWindowInSeconds",
+          "documentation":"<p>The maximum length of a time to wait for events.</p>"
         }
       },
       "documentation":"<p>The parameters for using a Rabbit MQ broker as a source.</p>"
@@ -1681,6 +1816,14 @@
       "type":"structure",
       "required":["TopicName"],
       "members":{
+        "TopicName":{
+          "shape":"KafkaTopicName",
+          "documentation":"<p>The name of the topic that the pipe will read from.</p>"
+        },
+        "StartingPosition":{
+          "shape":"SelfManagedKafkaStartPosition",
+          "documentation":"<p>(Streams only) The position in a stream from which to start reading.</p>"
+        },
         "AdditionalBootstrapServers":{
           "shape":"KafkaBootstrapServers",
           "documentation":"<p>An array of server URLs.</p>"
@@ -1688,6 +1831,10 @@
         "BatchSize":{
           "shape":"LimitMax10000",
           "documentation":"<p>The maximum number of records to include in each batch.</p>"
+        },
+        "MaximumBatchingWindowInSeconds":{
+          "shape":"MaximumBatchingWindowInSeconds",
+          "documentation":"<p>The maximum length of a time to wait for events.</p>"
         },
         "ConsumerGroupID":{
           "shape":"URI",
@@ -1697,28 +1844,16 @@
           "shape":"SelfManagedKafkaAccessConfigurationCredentials",
           "documentation":"<p>The credentials needed to access the resource.</p>"
         },
-        "MaximumBatchingWindowInSeconds":{
-          "shape":"MaximumBatchingWindowInSeconds",
-          "documentation":"<p>The maximum length of a time to wait for events.</p>"
-        },
         "ServerRootCaCertificate":{
           "shape":"SecretManagerArn",
           "documentation":"<p>The ARN of the Secrets Manager secret used for certification.</p>"
-        },
-        "StartingPosition":{
-          "shape":"SelfManagedKafkaStartPosition",
-          "documentation":"<p>(Streams only) The position in a stream from which to start reading.</p>"
-        },
-        "TopicName":{
-          "shape":"KafkaTopicName",
-          "documentation":"<p>The name of the topic that the pipe will read from.</p>"
         },
         "Vpc":{
           "shape":"SelfManagedKafkaAccessConfigurationVpc",
           "documentation":"<p>This structure specifies the VPC subnets and security groups for the stream, and whether a public IP address is to be used.</p>"
         }
       },
-      "documentation":"<p>The parameters for using a self-managed Apache Kafka stream as a source.</p>"
+      "documentation":"<p>The parameters for using a self-managed Apache Kafka stream as a source.</p> <p>A <i>self managed</i> cluster refers to any Apache Kafka cluster not hosted by Amazon Web Services. This includes both clusters you manage yourself, as well as those hosted by a third-party provider, such as <a href=\"https://www.confluent.io/\">Confluent Cloud</a>, <a href=\"https://www.cloudkarafka.com/\">CloudKarafka</a>, or <a href=\"https://redpanda.com/\">Redpanda</a>. For more information, see <a href=\"https://docs.aws.amazon.com/eventbridge/latest/userguide/eb-pipes-kafka.html\">Apache Kafka streams as a source</a> in the <i>Amazon EventBridge User Guide</i>.</p>"
     },
     "PipeSourceSqsQueueParameters":{
       "type":"structure",
@@ -1758,7 +1893,7 @@
       "type":"string",
       "max":512,
       "min":0,
-      "pattern":"^.*$"
+      "pattern":".*"
     },
     "PipeTargetBatchJobParameters":{
       "type":"structure",
@@ -1767,9 +1902,21 @@
         "JobName"
       ],
       "members":{
+        "JobDefinition":{
+          "shape":"String",
+          "documentation":"<p>The job definition used by this job. This value can be one of <code>name</code>, <code>name:revision</code>, or the Amazon Resource Name (ARN) for the job definition. If name is specified without a revision then the latest active revision is used.</p>"
+        },
+        "JobName":{
+          "shape":"String",
+          "documentation":"<p>The name of the job. It can be up to 128 letters long. The first character must be alphanumeric, can contain uppercase and lowercase letters, numbers, hyphens (-), and underscores (_).</p>"
+        },
         "ArrayProperties":{
           "shape":"BatchArrayProperties",
           "documentation":"<p>The array properties for the submitted job, such as the size of the array. The array size can be between 2 and 10,000. If you specify array properties for a job, it becomes an array job. This parameter is used only if the target is an Batch job.</p>"
+        },
+        "RetryStrategy":{
+          "shape":"BatchRetryStrategy",
+          "documentation":"<p>The retry strategy to use for failed jobs. When a retry strategy is specified here, it overrides the retry strategy defined in the job definition.</p>"
         },
         "ContainerOverrides":{
           "shape":"BatchContainerOverrides",
@@ -1779,21 +1926,9 @@
           "shape":"BatchDependsOn",
           "documentation":"<p>A list of dependencies for the job. A job can depend upon a maximum of 20 jobs. You can specify a <code>SEQUENTIAL</code> type dependency without specifying a job ID for array jobs so that each child array job completes sequentially, starting at index 0. You can also specify an <code>N_TO_N</code> type dependency with a job ID for array jobs. In that case, each index child of this job must wait for the corresponding index child of each dependency to complete before it can begin.</p>"
         },
-        "JobDefinition":{
-          "shape":"String",
-          "documentation":"<p>The job definition used by this job. This value can be one of <code>name</code>, <code>name:revision</code>, or the Amazon Resource Name (ARN) for the job definition. If name is specified without a revision then the latest active revision is used.</p>"
-        },
-        "JobName":{
-          "shape":"String",
-          "documentation":"<p>The name of the job. It can be up to 128 letters long. The first character must be alphanumeric, can contain uppercase and lowercase letters, numbers, hyphens (-), and underscores (_).</p>"
-        },
         "Parameters":{
           "shape":"BatchParametersMap",
           "documentation":"<p>Additional parameters passed to the job that replace parameter substitution placeholders that are set in the job definition. Parameters are specified as a key and value pair mapping. Parameters included here override any corresponding parameter defaults from the job definition.</p>"
-        },
-        "RetryStrategy":{
-          "shape":"BatchRetryStrategy",
-          "documentation":"<p>The retry strategy to use for failed jobs. When a retry strategy is specified here, it overrides the retry strategy defined in the job definition.</p>"
         }
       },
       "documentation":"<p>The parameters for using an Batch job as a target.</p>"
@@ -1816,6 +1951,30 @@
       "type":"structure",
       "required":["TaskDefinitionArn"],
       "members":{
+        "TaskDefinitionArn":{
+          "shape":"ArnOrJsonPath",
+          "documentation":"<p>The ARN of the task definition to use if the event target is an Amazon ECS task. </p>"
+        },
+        "TaskCount":{
+          "shape":"LimitMin1",
+          "documentation":"<p>The number of tasks to create based on <code>TaskDefinition</code>. The default is 1.</p>"
+        },
+        "LaunchType":{
+          "shape":"LaunchType",
+          "documentation":"<p>Specifies the launch type on which your task is running. The launch type that you specify here must match one of the launch type (compatibilities) of the target task. The <code>FARGATE</code> value is supported only in the Regions where Fargate with Amazon ECS is supported. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonECS/latest/developerguide/AWS-Fargate.html\">Fargate on Amazon ECS</a> in the <i>Amazon Elastic Container Service Developer Guide</i>.</p>"
+        },
+        "NetworkConfiguration":{
+          "shape":"NetworkConfiguration",
+          "documentation":"<p>Use this structure if the Amazon ECS task uses the <code>awsvpc</code> network mode. This structure specifies the VPC subnets and security groups associated with the task, and whether a public IP address is to be used. This structure is required if <code>LaunchType</code> is <code>FARGATE</code> because the <code>awsvpc</code> mode is required for Fargate tasks.</p> <p>If you specify <code>NetworkConfiguration</code> when the target ECS task does not use the <code>awsvpc</code> network mode, the task fails.</p>"
+        },
+        "PlatformVersion":{
+          "shape":"String",
+          "documentation":"<p>Specifies the platform version for the task. Specify only the numeric portion of the platform version, such as <code>1.1.0</code>.</p> <p>This structure is used only if <code>LaunchType</code> is <code>FARGATE</code>. For more information about valid platform versions, see <a href=\"https://docs.aws.amazon.com/AmazonECS/latest/developerguide/platform_versions.html\">Fargate Platform Versions</a> in the <i>Amazon Elastic Container Service Developer Guide</i>.</p>"
+        },
+        "Group":{
+          "shape":"String",
+          "documentation":"<p>Specifies an Amazon ECS task group for the task. The maximum length is 255 characters.</p>"
+        },
         "CapacityProviderStrategy":{
           "shape":"CapacityProviderStrategy",
           "documentation":"<p>The capacity provider strategy to use for the task.</p> <p>If a <code>capacityProviderStrategy</code> is specified, the <code>launchType</code> parameter must be omitted. If no <code>capacityProviderStrategy</code> or launchType is specified, the <code>defaultCapacityProviderStrategy</code> for the cluster is used. </p>"
@@ -1828,22 +1987,6 @@
           "shape":"Boolean",
           "documentation":"<p>Whether or not to enable the execute command functionality for the containers in this task. If true, this enables execute command functionality on all containers in the task.</p>"
         },
-        "Group":{
-          "shape":"String",
-          "documentation":"<p>Specifies an Amazon ECS task group for the task. The maximum length is 255 characters.</p>"
-        },
-        "LaunchType":{
-          "shape":"LaunchType",
-          "documentation":"<p>Specifies the launch type on which your task is running. The launch type that you specify here must match one of the launch type (compatibilities) of the target task. The <code>FARGATE</code> value is supported only in the Regions where Fargate with Amazon ECS is supported. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonECS/latest/developerguide/AWS-Fargate.html\">Fargate on Amazon ECS</a> in the <i>Amazon Elastic Container Service Developer Guide</i>.</p>"
-        },
-        "NetworkConfiguration":{
-          "shape":"NetworkConfiguration",
-          "documentation":"<p>Use this structure if the Amazon ECS task uses the <code>awsvpc</code> network mode. This structure specifies the VPC subnets and security groups associated with the task, and whether a public IP address is to be used. This structure is required if <code>LaunchType</code> is <code>FARGATE</code> because the <code>awsvpc</code> mode is required for Fargate tasks.</p> <p>If you specify <code>NetworkConfiguration</code> when the target ECS task does not use the <code>awsvpc</code> network mode, the task fails.</p>"
-        },
-        "Overrides":{
-          "shape":"EcsTaskOverride",
-          "documentation":"<p>The overrides that are associated with a task.</p>"
-        },
         "PlacementConstraints":{
           "shape":"PlacementConstraints",
           "documentation":"<p>An array of placement constraint objects to use for the task. You can specify up to 10 constraints per task (including constraints in the task definition and those specified at runtime).</p>"
@@ -1851,10 +1994,6 @@
         "PlacementStrategy":{
           "shape":"PlacementStrategies",
           "documentation":"<p>The placement strategy objects to use for the task. You can specify a maximum of five strategy rules per task. </p>"
-        },
-        "PlatformVersion":{
-          "shape":"String",
-          "documentation":"<p>Specifies the platform version for the task. Specify only the numeric portion of the platform version, such as <code>1.1.0</code>.</p> <p>This structure is used only if <code>LaunchType</code> is <code>FARGATE</code>. For more information about valid platform versions, see <a href=\"https://docs.aws.amazon.com/AmazonECS/latest/developerguide/platform_versions.html\">Fargate Platform Versions</a> in the <i>Amazon Elastic Container Service Developer Guide</i>.</p>"
         },
         "PropagateTags":{
           "shape":"PropagateTags",
@@ -1864,17 +2003,13 @@
           "shape":"ReferenceId",
           "documentation":"<p>The reference ID to use for the task.</p>"
         },
+        "Overrides":{
+          "shape":"EcsTaskOverride",
+          "documentation":"<p>The overrides that are associated with a task.</p>"
+        },
         "Tags":{
           "shape":"TagList",
           "documentation":"<p>The metadata that you apply to the task to help you categorize and organize them. Each tag consists of a key and an optional value, both of which you define. To learn more, see <a href=\"https://docs.aws.amazon.com/AmazonECS/latest/APIReference/API_RunTask.html#ECS-RunTask-request-tags\">RunTask</a> in the Amazon ECS API Reference.</p>"
-        },
-        "TaskCount":{
-          "shape":"LimitMin1",
-          "documentation":"<p>The number of tasks to create based on <code>TaskDefinition</code>. The default is 1.</p>"
-        },
-        "TaskDefinitionArn":{
-          "shape":"ArnOrJsonPath",
-          "documentation":"<p>The ARN of the task definition to use if the event target is an Amazon ECS task. </p>"
         }
       },
       "documentation":"<p>The parameters for using an Amazon ECS task as a target.</p>"
@@ -1882,21 +2017,21 @@
     "PipeTargetEventBridgeEventBusParameters":{
       "type":"structure",
       "members":{
-        "DetailType":{
-          "shape":"EventBridgeDetailType",
-          "documentation":"<p>A free-form string, with a maximum of 128 characters, used to decide what fields to expect in the event detail.</p>"
-        },
         "EndpointId":{
           "shape":"EventBridgeEndpointId",
           "documentation":"<p>The URL subdomain of the endpoint. For example, if the URL for Endpoint is https://abcde.veo.endpoints.event.amazonaws.com, then the EndpointId is <code>abcde.veo</code>.</p>"
         },
-        "Resources":{
-          "shape":"EventBridgeEventResourceList",
-          "documentation":"<p>Amazon Web Services resources, identified by Amazon Resource Name (ARN), which the event primarily concerns. Any number, including zero, may be present.</p>"
+        "DetailType":{
+          "shape":"EventBridgeDetailType",
+          "documentation":"<p>A free-form string, with a maximum of 128 characters, used to decide what fields to expect in the event detail.</p>"
         },
         "Source":{
           "shape":"EventBridgeEventSource",
           "documentation":"<p>The source of the event.</p>"
+        },
+        "Resources":{
+          "shape":"EventBridgeEventResourceList",
+          "documentation":"<p>Amazon Web Services resources, identified by Amazon Resource Name (ARN), which the event primarily concerns. Any number, including zero, may be present.</p>"
         },
         "Time":{
           "shape":"JsonPath",
@@ -1908,13 +2043,13 @@
     "PipeTargetHttpParameters":{
       "type":"structure",
       "members":{
-        "HeaderParameters":{
-          "shape":"HeaderParametersMap",
-          "documentation":"<p>The headers that need to be sent as part of request invoking the API Gateway REST API or EventBridge ApiDestination.</p>"
-        },
         "PathParameterValues":{
           "shape":"PathParameterList",
           "documentation":"<p>The path parameter values to be used to populate API Gateway REST API or EventBridge ApiDestination path wildcards (\"*\").</p>"
+        },
+        "HeaderParameters":{
+          "shape":"HeaderParametersMap",
+          "documentation":"<p>The headers that need to be sent as part of request invoking the API Gateway REST API or EventBridge ApiDestination.</p>"
         },
         "QueryStringParameters":{
           "shape":"QueryStringParametersMap",
@@ -1954,37 +2089,37 @@
     "PipeTargetParameters":{
       "type":"structure",
       "members":{
-        "BatchJobParameters":{
-          "shape":"PipeTargetBatchJobParameters",
-          "documentation":"<p>The parameters for using an Batch job as a target.</p>"
-        },
-        "CloudWatchLogsParameters":{
-          "shape":"PipeTargetCloudWatchLogsParameters",
-          "documentation":"<p>The parameters for using an CloudWatch Logs log stream as a target.</p>"
-        },
-        "EcsTaskParameters":{
-          "shape":"PipeTargetEcsTaskParameters",
-          "documentation":"<p>The parameters for using an Amazon ECS task as a target.</p>"
-        },
-        "EventBridgeEventBusParameters":{
-          "shape":"PipeTargetEventBridgeEventBusParameters",
-          "documentation":"<p>The parameters for using an EventBridge event bus as a target.</p>"
-        },
-        "HttpParameters":{
-          "shape":"PipeTargetHttpParameters",
-          "documentation":"<p>These are custom parameter to be used when the target is an API Gateway REST APIs or EventBridge ApiDestinations.</p>"
-        },
         "InputTemplate":{
           "shape":"InputTemplate",
           "documentation":"<p>Valid JSON text passed to the target. In this case, nothing from the event itself is passed to the target. For more information, see <a href=\"http://www.rfc-editor.org/rfc/rfc7159.txt\">The JavaScript Object Notation (JSON) Data Interchange Format</a>.</p> <p>To remove an input template, specify an empty string.</p>"
+        },
+        "LambdaFunctionParameters":{
+          "shape":"PipeTargetLambdaFunctionParameters",
+          "documentation":"<p>The parameters for using a Lambda function as a target.</p>"
+        },
+        "StepFunctionStateMachineParameters":{
+          "shape":"PipeTargetStateMachineParameters",
+          "documentation":"<p>The parameters for using a Step Functions state machine as a target.</p>"
         },
         "KinesisStreamParameters":{
           "shape":"PipeTargetKinesisStreamParameters",
           "documentation":"<p>The parameters for using a Kinesis stream as a target.</p>"
         },
-        "LambdaFunctionParameters":{
-          "shape":"PipeTargetLambdaFunctionParameters",
-          "documentation":"<p>The parameters for using a Lambda function as a target.</p>"
+        "EcsTaskParameters":{
+          "shape":"PipeTargetEcsTaskParameters",
+          "documentation":"<p>The parameters for using an Amazon ECS task as a target.</p>"
+        },
+        "BatchJobParameters":{
+          "shape":"PipeTargetBatchJobParameters",
+          "documentation":"<p>The parameters for using an Batch job as a target.</p>"
+        },
+        "SqsQueueParameters":{
+          "shape":"PipeTargetSqsQueueParameters",
+          "documentation":"<p>The parameters for using a Amazon SQS stream as a target.</p>"
+        },
+        "HttpParameters":{
+          "shape":"PipeTargetHttpParameters",
+          "documentation":"<p>These are custom parameter to be used when the target is an API Gateway REST APIs or EventBridge ApiDestinations.</p>"
         },
         "RedshiftDataParameters":{
           "shape":"PipeTargetRedshiftDataParameters",
@@ -1994,13 +2129,17 @@
           "shape":"PipeTargetSageMakerPipelineParameters",
           "documentation":"<p>The parameters for using a SageMaker pipeline as a target.</p>"
         },
-        "SqsQueueParameters":{
-          "shape":"PipeTargetSqsQueueParameters",
-          "documentation":"<p>The parameters for using a Amazon SQS stream as a target.</p>"
+        "EventBridgeEventBusParameters":{
+          "shape":"PipeTargetEventBridgeEventBusParameters",
+          "documentation":"<p>The parameters for using an EventBridge event bus as a target.</p>"
         },
-        "StepFunctionStateMachineParameters":{
-          "shape":"PipeTargetStateMachineParameters",
-          "documentation":"<p>The parameters for using a Step Functions state machine as a target.</p>"
+        "CloudWatchLogsParameters":{
+          "shape":"PipeTargetCloudWatchLogsParameters",
+          "documentation":"<p>The parameters for using an CloudWatch Logs log stream as a target.</p>"
+        },
+        "TimestreamParameters":{
+          "shape":"PipeTargetTimestreamParameters",
+          "documentation":"<p>The parameters for using a Timestream for LiveAnalytics table as a target.</p>"
         }
       },
       "documentation":"<p>The parameters required to set up a target for your pipe.</p> <p>For more information about pipe target parameters, including how to use dynamic path parameters, see <a href=\"https://docs.aws.amazon.com/eventbridge/latest/userguide/eb-pipes-event-target.html\">Target parameters</a> in the <i>Amazon EventBridge User Guide</i>.</p>"
@@ -2012,6 +2151,10 @@
         "Sqls"
       ],
       "members":{
+        "SecretManagerArn":{
+          "shape":"SecretManagerArnOrJsonPath",
+          "documentation":"<p>The name or ARN of the secret that enables access to the database. Required when authenticating using Secrets Manager.</p>"
+        },
         "Database":{
           "shape":"Database",
           "documentation":"<p>The name of the database. Required when authenticating using temporary credentials.</p>"
@@ -2020,14 +2163,6 @@
           "shape":"DbUser",
           "documentation":"<p>The database user name. Required when authenticating using temporary credentials.</p>"
         },
-        "SecretManagerArn":{
-          "shape":"SecretManagerArnOrJsonPath",
-          "documentation":"<p>The name or ARN of the secret that enables access to the database. Required when authenticating using Secrets Manager.</p>"
-        },
-        "Sqls":{
-          "shape":"Sqls",
-          "documentation":"<p>The SQL statement text to run.</p>"
-        },
         "StatementName":{
           "shape":"StatementName",
           "documentation":"<p>The name of the SQL statement. You can name the SQL statement when you create it to identify the query.</p>"
@@ -2035,6 +2170,10 @@
         "WithEvent":{
           "shape":"Boolean",
           "documentation":"<p>Indicates whether to send an event back to EventBridge after the SQL statement runs.</p>"
+        },
+        "Sqls":{
+          "shape":"Sqls",
+          "documentation":"<p>The SQL statement text to run.</p>"
         }
       },
       "documentation":"<p>These are custom parameters to be used when the target is a Amazon Redshift cluster to invoke the Amazon Redshift Data API BatchExecuteStatement.</p>"
@@ -2052,13 +2191,13 @@
     "PipeTargetSqsQueueParameters":{
       "type":"structure",
       "members":{
-        "MessageDeduplicationId":{
-          "shape":"MessageDeduplicationId",
-          "documentation":"<p>This parameter applies only to FIFO (first-in-first-out) queues.</p> <p>The token used for deduplication of sent messages.</p>"
-        },
         "MessageGroupId":{
           "shape":"MessageGroupId",
           "documentation":"<p>The FIFO message group ID to use as the target.</p>"
+        },
+        "MessageDeduplicationId":{
+          "shape":"MessageDeduplicationId",
+          "documentation":"<p>This parameter applies only to FIFO (first-in-first-out) queues.</p> <p>The token used for deduplication of sent messages.</p>"
         }
       },
       "documentation":"<p>The parameters for using a Amazon SQS stream as a target.</p>"
@@ -2073,16 +2212,59 @@
       },
       "documentation":"<p>The parameters for using a Step Functions state machine as a target.</p>"
     },
+    "PipeTargetTimestreamParameters":{
+      "type":"structure",
+      "required":[
+        "TimeValue",
+        "VersionValue",
+        "DimensionMappings"
+      ],
+      "members":{
+        "TimeValue":{
+          "shape":"TimeValue",
+          "documentation":"<p>Dynamic path to the source data field that represents the time value for your data.</p>"
+        },
+        "EpochTimeUnit":{
+          "shape":"EpochTimeUnit",
+          "documentation":"<p>The granularity of the time units used. Default is <code>MILLISECONDS</code>.</p> <p>Required if <code>TimeFieldType</code> is specified as <code>EPOCH</code>.</p>"
+        },
+        "TimeFieldType":{
+          "shape":"TimeFieldType",
+          "documentation":"<p>The type of time value used.</p> <p>The default is <code>EPOCH</code>.</p>"
+        },
+        "TimestampFormat":{
+          "shape":"TimestampFormat",
+          "documentation":"<p>How to format the timestamps. For example, <code>YYYY-MM-DDThh:mm:ss.sssTZD</code>.</p> <p>Required if <code>TimeFieldType</code> is specified as <code>TIMESTAMP_FORMAT</code>.</p>"
+        },
+        "VersionValue":{
+          "shape":"VersionValue",
+          "documentation":"<p>64 bit version value or source data field that represents the version value for your data.</p> <p>Write requests with a higher version number will update the existing measure values of the record and version. In cases where the measure value is the same, the version will still be updated. </p> <p>Default value is 1. </p> <p>Timestream for LiveAnalytics does not support updating partial measure values in a record.</p> <p>Write requests for duplicate data with a higher version number will update the existing measure value and version. In cases where the measure value is the same, <code>Version</code> will still be updated. Default value is <code>1</code>.</p> <note> <p> <code>Version</code> must be <code>1</code> or greater, or you will receive a <code>ValidationException</code> error.</p> </note>"
+        },
+        "DimensionMappings":{
+          "shape":"DimensionMappings",
+          "documentation":"<p>Map source data to dimensions in the target Timestream for LiveAnalytics table.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/timestream/latest/developerguide/concepts.html\">Amazon Timestream for LiveAnalytics concepts</a> </p>"
+        },
+        "SingleMeasureMappings":{
+          "shape":"SingleMeasureMappings",
+          "documentation":"<p>Mappings of single source data fields to individual records in the specified Timestream for LiveAnalytics table.</p>"
+        },
+        "MultiMeasureMappings":{
+          "shape":"MultiMeasureMappings",
+          "documentation":"<p>Maps multiple measures from the source event to the same record in the specified Timestream for LiveAnalytics table.</p>"
+        }
+      },
+      "documentation":"<p>The parameters for using a Timestream for LiveAnalytics table as a target.</p>"
+    },
     "PlacementConstraint":{
       "type":"structure",
       "members":{
-        "expression":{
-          "shape":"PlacementConstraintExpression",
-          "documentation":"<p>A cluster query language expression to apply to the constraint. You cannot specify an expression if the constraint type is <code>distinctInstance</code>. To learn more, see <a href=\"https://docs.aws.amazon.com/AmazonECS/latest/developerguide/cluster-query-language.html\">Cluster Query Language</a> in the Amazon Elastic Container Service Developer Guide. </p>"
-        },
         "type":{
           "shape":"PlacementConstraintType",
           "documentation":"<p>The type of constraint. Use distinctInstance to ensure that each task in a particular group is running on a different container instance. Use memberOf to restrict the selection to a group of valid candidates. </p>"
+        },
+        "expression":{
+          "shape":"PlacementConstraintExpression",
+          "documentation":"<p>A cluster query language expression to apply to the constraint. You cannot specify an expression if the constraint type is <code>distinctInstance</code>. To learn more, see <a href=\"https://docs.aws.amazon.com/AmazonECS/latest/developerguide/cluster-query-language.html\">Cluster Query Language</a> in the Amazon Elastic Container Service Developer Guide. </p>"
         }
       },
       "documentation":"<p>An object representing a constraint on task placement. To learn more, see <a href=\"https://docs.aws.amazon.com/AmazonECS/latest/developerguide/task-placement-constraints.html\">Task Placement Constraints</a> in the Amazon Elastic Container Service Developer Guide.</p>"
@@ -2115,13 +2297,13 @@
     "PlacementStrategy":{
       "type":"structure",
       "members":{
-        "field":{
-          "shape":"PlacementStrategyField",
-          "documentation":"<p>The field to apply the placement strategy against. For the spread placement strategy, valid values are instanceId (or host, which has the same effect), or any platform or custom attribute that is applied to a container instance, such as attribute:ecs.availability-zone. For the binpack placement strategy, valid values are cpu and memory. For the random placement strategy, this field is not used. </p>"
-        },
         "type":{
           "shape":"PlacementStrategyType",
           "documentation":"<p>The type of placement strategy. The random placement strategy randomly places tasks on available candidates. The spread placement strategy spreads placement across available candidates evenly based on the field parameter. The binpack strategy places tasks on available candidates that have the least available amount of the resource that is specified with the field parameter. For example, if you binpack on memory, a task is placed on the instance with the least amount of remaining memory (but still enough to run the task). </p>"
+        },
+        "field":{
+          "shape":"PlacementStrategyField",
+          "documentation":"<p>The field to apply the placement strategy against. For the spread placement strategy, valid values are instanceId (or host, which has the same effect), or any platform or custom attribute that is applied to a container instance, such as attribute:ecs.availability-zone. For the binpack placement strategy, valid values are cpu and memory. For the random placement strategy, this field is not used. </p>"
         }
       },
       "documentation":"<p>The task placement strategy for a task or service. To learn more, see <a href=\"https://docs.aws.amazon.com/AmazonECS/latest/developerguide/task-placement-strategies.html\">Task Placement Strategies</a> in the Amazon Elastic Container Service Service Developer Guide.</p>"
@@ -2148,7 +2330,7 @@
       "type":"string",
       "max":512,
       "min":0,
-      "pattern":"^[^\\x00-\\x1F\\x7F]+|(\\$(\\.[\\w/_-]+(\\[(\\d+|\\*)\\])*)*)$"
+      "pattern":"[^\\x00-\\x1F\\x7F]+|(\\$(\\.[\\w/_-]+(\\[(\\d+|\\*)\\])*)*)"
     },
     "QueryStringParametersMap":{
       "type":"map",
@@ -2159,7 +2341,7 @@
       "type":"string",
       "max":512,
       "min":0,
-      "pattern":"^[^\\x00-\\x09\\x0B\\x0C\\x0E-\\x1F\\x7F]+|(\\$(\\.[\\w/_-]+(\\[(\\d+|\\*)\\])*)*)$",
+      "pattern":"[^\\x00-\\x09\\x0B\\x0C\\x0E-\\x1F\\x7F]+|(\\$(\\.[\\w/_-]+(\\[(\\d+|\\*)\\])*)*)",
       "sensitive":true
     },
     "ReferenceId":{
@@ -2192,7 +2374,7 @@
       "type":"string",
       "max":1600,
       "min":1,
-      "pattern":"^arn:(aws[a-zA-Z-]*)?:iam::\\d{12}:role/?[a-zA-Z0-9+=,.@\\-_/]+$"
+      "pattern":"arn:(aws[a-zA-Z-]*)?:iam::\\d{12}:role/?[a-zA-Z0-9+=,.@\\-_/]+"
     },
     "S3LogDestination":{
       "type":"structure",
@@ -2201,6 +2383,10 @@
           "shape":"String",
           "documentation":"<p>The name of the Amazon S3 bucket to which EventBridge delivers the log records for the pipe.</p>"
         },
+        "Prefix":{
+          "shape":"String",
+          "documentation":"<p>The prefix text with which to begin Amazon S3 log object names.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/using-prefixes.html\">Organizing objects using prefixes</a> in the <i>Amazon Simple Storage Service User Guide</i>.</p>"
+        },
         "BucketOwner":{
           "shape":"String",
           "documentation":"<p>The Amazon Web Services account that owns the Amazon S3 bucket to which EventBridge delivers the log records for the pipe.</p>"
@@ -2208,10 +2394,6 @@
         "OutputFormat":{
           "shape":"S3OutputFormat",
           "documentation":"<p>The format EventBridge uses for the log records.</p> <ul> <li> <p> <code>json</code>: JSON </p> </li> <li> <p> <code>plain</code>: Plain text</p> </li> <li> <p> <code>w3c</code>: <a href=\"https://www.w3.org/TR/WD-logfile\">W3C extended logging file format</a> </p> </li> </ul>"
-        },
-        "Prefix":{
-          "shape":"String",
-          "documentation":"<p>The prefix text with which to begin Amazon S3 log object names.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/using-prefixes.html\">Organizing objects using prefixes</a> in the <i>Amazon Simple Storage Service User Guide</i>.</p>"
         }
       },
       "documentation":"<p>The Amazon S3 logging configuration settings for the pipe.</p>"
@@ -2249,7 +2431,7 @@
     },
     "S3LogDestinationParametersBucketOwnerString":{
       "type":"string",
-      "pattern":"^\\d{12}$"
+      "pattern":"\\d{12}"
     },
     "S3LogDestinationParametersPrefixString":{
       "type":"string",
@@ -2292,7 +2474,7 @@
       "type":"string",
       "max":256,
       "min":1,
-      "pattern":"^[a-zA-Z0-9](-*[a-zA-Z0-9])*|(\\$(\\.[\\w/_-]+(\\[(\\d+|\\*)\\])*)*)$",
+      "pattern":"[a-zA-Z0-9](-*[a-zA-Z0-9])*|(\\$(\\.[\\w/_-]+(\\[(\\d+|\\*)\\])*)*)",
       "sensitive":true
     },
     "SageMakerPipelineParameterValue":{
@@ -2306,27 +2488,27 @@
       "documentation":"<p>// Optional SecretManager ARN which stores the database credentials</p>",
       "max":1600,
       "min":1,
-      "pattern":"^(^arn:aws([a-z]|\\-)*:secretsmanager:([a-z]{2}((-gov)|(-iso(b?)))?-[a-z]+-\\d{1}):(\\d{12}):secret:.+)$"
+      "pattern":"(^arn:aws([a-z]|\\-)*:secretsmanager:([a-z]{2}((-gov)|(-iso(b?)))?-[a-z]+-\\d{1}):(\\d{12}):secret:.+)"
     },
     "SecretManagerArnOrJsonPath":{
       "type":"string",
       "documentation":"<p>// For targets, can either specify an ARN or a jsonpath pointing to the ARN.</p>",
       "max":1600,
       "min":1,
-      "pattern":"^(^arn:aws([a-z]|\\-)*:secretsmanager:([a-z]{2}((-gov)|(-iso(b?)))?-[a-z]+-\\d{1}):(\\d{12}):secret:.+)|(\\$(\\.[\\w/_-]+(\\[(\\d+|\\*)\\])*)*)$"
+      "pattern":"(^arn:aws([a-z]|\\-)*:secretsmanager:([a-z]{2}((-gov)|(-iso(b?)))?-[a-z]+-\\d{1}):(\\d{12}):secret:.+)|(\\$(\\.[\\w/_-]+(\\[(\\d+|\\*)\\])*)*)"
     },
     "SecurityGroup":{
       "type":"string",
       "max":1024,
       "min":1,
-      "pattern":"^sg-[0-9a-zA-Z]*|(\\$(\\.[\\w/_-]+(\\[(\\d+|\\*)\\])*)*)$",
+      "pattern":"sg-[0-9a-zA-Z]*|(\\$(\\.[\\w/_-]+(\\[(\\d+|\\*)\\])*)*)",
       "sensitive":true
     },
     "SecurityGroupId":{
       "type":"string",
       "max":1024,
       "min":1,
-      "pattern":"^sg-[0-9a-zA-Z]*$",
+      "pattern":"sg-[0-9a-zA-Z]*",
       "sensitive":true
     },
     "SecurityGroupIds":{
@@ -2349,7 +2531,7 @@
           "shape":"SecretManagerArn",
           "documentation":"<p>The ARN of the Secrets Manager secret.</p>"
         },
-        "ClientCertificateTlsAuth":{
+        "SaslScram512Auth":{
           "shape":"SecretManagerArn",
           "documentation":"<p>The ARN of the Secrets Manager secret.</p>"
         },
@@ -2357,7 +2539,7 @@
           "shape":"SecretManagerArn",
           "documentation":"<p>The ARN of the Secrets Manager secret.</p>"
         },
-        "SaslScram512Auth":{
+        "ClientCertificateTlsAuth":{
           "shape":"SecretManagerArn",
           "documentation":"<p>The ARN of the Secrets Manager secret.</p>"
         }
@@ -2368,13 +2550,13 @@
     "SelfManagedKafkaAccessConfigurationVpc":{
       "type":"structure",
       "members":{
-        "SecurityGroup":{
-          "shape":"SecurityGroupIds",
-          "documentation":"<p>Specifies the security groups associated with the stream. These security groups must all be in the same VPC. You can specify as many as five security groups. If you do not specify a security group, the default security group for the VPC is used.</p>"
-        },
         "Subnets":{
           "shape":"SubnetIds",
           "documentation":"<p>Specifies the subnets associated with the stream. These subnets must all be in the same VPC. You can specify as many as 16 subnets.</p>"
+        },
+        "SecurityGroup":{
+          "shape":"SecurityGroupIds",
+          "documentation":"<p>Specifies the security groups associated with the stream. These security groups must all be in the same VPC. You can specify as many as five security groups. If you do not specify a security group, the default security group for the VPC is used.</p>"
         }
       },
       "documentation":"<p>This structure specifies the VPC subnets and security groups for the stream, and whether a public IP address is to be used.</p>"
@@ -2390,17 +2572,13 @@
       "type":"structure",
       "required":[
         "message",
-        "quotaCode",
         "resourceId",
         "resourceType",
-        "serviceCode"
+        "serviceCode",
+        "quotaCode"
       ],
       "members":{
         "message":{"shape":"String"},
-        "quotaCode":{
-          "shape":"String",
-          "documentation":"<p>The identifier of the quota that caused the exception.</p>"
-        },
         "resourceId":{
           "shape":"String",
           "documentation":"<p>The ID of the resource that caused the exception.</p>"
@@ -2412,6 +2590,10 @@
         "serviceCode":{
           "shape":"String",
           "documentation":"<p>The identifier of the service that caused the exception.</p>"
+        },
+        "quotaCode":{
+          "shape":"String",
+          "documentation":"<p>The identifier of the quota that caused the exception.</p>"
         }
       },
       "documentation":"<p>A quota has been exceeded.</p>",
@@ -2420,6 +2602,35 @@
         "senderFault":true
       },
       "exception":true
+    },
+    "SingleMeasureMapping":{
+      "type":"structure",
+      "required":[
+        "MeasureValue",
+        "MeasureValueType",
+        "MeasureName"
+      ],
+      "members":{
+        "MeasureValue":{
+          "shape":"MeasureValue",
+          "documentation":"<p>Dynamic path of the source field to map to the measure in the record.</p>"
+        },
+        "MeasureValueType":{
+          "shape":"MeasureValueType",
+          "documentation":"<p>Data type of the source field.</p>"
+        },
+        "MeasureName":{
+          "shape":"MeasureName",
+          "documentation":"<p>Target measure name for the measurement attribute in the Timestream table.</p>"
+        }
+      },
+      "documentation":"<p>Maps a single source data field to a single record in the specified Timestream for LiveAnalytics table.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/timestream/latest/developerguide/concepts.html\">Amazon Timestream for LiveAnalytics concepts</a> </p>"
+    },
+    "SingleMeasureMappings":{
+      "type":"list",
+      "member":{"shape":"SingleMeasureMapping"},
+      "max":8192,
+      "min":0
     },
     "Sql":{
       "type":"string",
@@ -2454,25 +2665,25 @@
           "shape":"PipeArn",
           "documentation":"<p>The ARN of the pipe.</p>"
         },
-        "CreationTime":{
-          "shape":"Timestamp",
-          "documentation":"<p>The time the pipe was created.</p>"
-        },
-        "CurrentState":{
-          "shape":"PipeState",
-          "documentation":"<p>The state the pipe is in.</p>"
+        "Name":{
+          "shape":"PipeName",
+          "documentation":"<p>The name of the pipe.</p>"
         },
         "DesiredState":{
           "shape":"RequestedPipeState",
           "documentation":"<p>The state the pipe should be in.</p>"
         },
+        "CurrentState":{
+          "shape":"PipeState",
+          "documentation":"<p>The state the pipe is in.</p>"
+        },
+        "CreationTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time the pipe was created.</p>"
+        },
         "LastModifiedTime":{
           "shape":"Timestamp",
           "documentation":"<p>When the pipe was last updated, in <a href=\"https://www.w3.org/TR/NOTE-datetime\">ISO-8601 format</a> (YYYY-MM-DDThh:mm:ss.sTZD).</p>"
-        },
-        "Name":{
-          "shape":"PipeName",
-          "documentation":"<p>The name of the pipe.</p>"
         }
       }
     },
@@ -2502,25 +2713,25 @@
           "shape":"PipeArn",
           "documentation":"<p>The ARN of the pipe.</p>"
         },
-        "CreationTime":{
-          "shape":"Timestamp",
-          "documentation":"<p>The time the pipe was created.</p>"
-        },
-        "CurrentState":{
-          "shape":"PipeState",
-          "documentation":"<p>The state the pipe is in.</p>"
+        "Name":{
+          "shape":"PipeName",
+          "documentation":"<p>The name of the pipe.</p>"
         },
         "DesiredState":{
           "shape":"RequestedPipeState",
           "documentation":"<p>The state the pipe should be in.</p>"
         },
+        "CurrentState":{
+          "shape":"PipeState",
+          "documentation":"<p>The state the pipe is in.</p>"
+        },
+        "CreationTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time the pipe was created.</p>"
+        },
         "LastModifiedTime":{
           "shape":"Timestamp",
           "documentation":"<p>When the pipe was last updated, in <a href=\"https://www.w3.org/TR/NOTE-datetime\">ISO-8601 format</a> (YYYY-MM-DDThh:mm:ss.sTZD).</p>"
-        },
-        "Name":{
-          "shape":"PipeName",
-          "documentation":"<p>The name of the pipe.</p>"
         }
       }
     },
@@ -2533,14 +2744,14 @@
       "type":"string",
       "max":1024,
       "min":1,
-      "pattern":"^subnet-[0-9a-z]*|(\\$(\\.[\\w/_-]+(\\[(\\d+|\\*)\\])*)*)$",
+      "pattern":"subnet-[0-9a-z]*|(\\$(\\.[\\w/_-]+(\\[(\\d+|\\*)\\])*)*)",
       "sensitive":true
     },
     "SubnetId":{
       "type":"string",
       "max":1024,
       "min":1,
-      "pattern":"^subnet-[0-9a-z]*$",
+      "pattern":"subnet-[0-9a-z]*",
       "sensitive":true
     },
     "SubnetIds":{
@@ -2631,6 +2842,10 @@
       "required":["message"],
       "members":{
         "message":{"shape":"String"},
+        "serviceCode":{
+          "shape":"String",
+          "documentation":"<p>The identifier of the service that caused the exception.</p>"
+        },
         "quotaCode":{
           "shape":"String",
           "documentation":"<p>The identifier of the quota that caused the exception.</p>"
@@ -2640,10 +2855,6 @@
           "documentation":"<p>The number of seconds to wait before retrying the action that caused the exception.</p>",
           "location":"header",
           "locationName":"Retry-After"
-        },
-        "serviceCode":{
-          "shape":"String",
-          "documentation":"<p>The identifier of the service that caused the exception.</p>"
         }
       },
       "documentation":"<p>An action was throttled.</p>",
@@ -2653,12 +2864,29 @@
       },
       "exception":true
     },
+    "TimeFieldType":{
+      "type":"string",
+      "enum":[
+        "EPOCH",
+        "TIMESTAMP_FORMAT"
+      ]
+    },
+    "TimeValue":{
+      "type":"string",
+      "max":256,
+      "min":1
+    },
     "Timestamp":{"type":"timestamp"},
+    "TimestampFormat":{
+      "type":"string",
+      "max":256,
+      "min":1
+    },
     "URI":{
       "type":"string",
       "max":200,
       "min":1,
-      "pattern":"^[a-zA-Z0-9-\\/*:_+=.@-]*$",
+      "pattern":"[a-zA-Z0-9-\\/*:_+=.@-]*",
       "sensitive":true
     },
     "UntagResourceRequest":{
@@ -2694,6 +2922,12 @@
         "RoleArn"
       ],
       "members":{
+        "Name":{
+          "shape":"PipeName",
+          "documentation":"<p>The name of the pipe.</p>",
+          "location":"uri",
+          "locationName":"Name"
+        },
         "Description":{
           "shape":"PipeDescription",
           "documentation":"<p>A description of the pipe.</p>"
@@ -2701,6 +2935,10 @@
         "DesiredState":{
           "shape":"RequestedPipeState",
           "documentation":"<p>The state the pipe should be in.</p>"
+        },
+        "SourceParameters":{
+          "shape":"UpdatePipeSourceParameters",
+          "documentation":"<p>The parameters required to set up a source for your pipe.</p>"
         },
         "Enrichment":{
           "shape":"OptionalArn",
@@ -2710,24 +2948,6 @@
           "shape":"PipeEnrichmentParameters",
           "documentation":"<p>The parameters required to set up enrichment on your pipe.</p>"
         },
-        "LogConfiguration":{
-          "shape":"PipeLogConfigurationParameters",
-          "documentation":"<p>The logging configuration settings for the pipe.</p>"
-        },
-        "Name":{
-          "shape":"PipeName",
-          "documentation":"<p>The name of the pipe.</p>",
-          "location":"uri",
-          "locationName":"Name"
-        },
-        "RoleArn":{
-          "shape":"RoleArn",
-          "documentation":"<p>The ARN of the role that allows the pipe to send data to the target.</p>"
-        },
-        "SourceParameters":{
-          "shape":"UpdatePipeSourceParameters",
-          "documentation":"<p>The parameters required to set up a source for your pipe.</p>"
-        },
         "Target":{
           "shape":"Arn",
           "documentation":"<p>The ARN of the target resource.</p>"
@@ -2735,6 +2955,14 @@
         "TargetParameters":{
           "shape":"PipeTargetParameters",
           "documentation":"<p>The parameters required to set up a target for your pipe.</p> <p>For more information about pipe target parameters, including how to use dynamic path parameters, see <a href=\"https://docs.aws.amazon.com/eventbridge/latest/userguide/eb-pipes-event-target.html\">Target parameters</a> in the <i>Amazon EventBridge User Guide</i>.</p>"
+        },
+        "RoleArn":{
+          "shape":"RoleArn",
+          "documentation":"<p>The ARN of the role that allows the pipe to send data to the target.</p>"
+        },
+        "LogConfiguration":{
+          "shape":"PipeLogConfigurationParameters",
+          "documentation":"<p>The logging configuration settings for the pipe.</p>"
         }
       }
     },
@@ -2745,25 +2973,25 @@
           "shape":"PipeArn",
           "documentation":"<p>The ARN of the pipe.</p>"
         },
-        "CreationTime":{
-          "shape":"Timestamp",
-          "documentation":"<p>The time the pipe was created.</p>"
-        },
-        "CurrentState":{
-          "shape":"PipeState",
-          "documentation":"<p>The state the pipe is in.</p>"
+        "Name":{
+          "shape":"PipeName",
+          "documentation":"<p>The name of the pipe.</p>"
         },
         "DesiredState":{
           "shape":"RequestedPipeState",
           "documentation":"<p>The state the pipe should be in.</p>"
         },
+        "CurrentState":{
+          "shape":"PipeState",
+          "documentation":"<p>The state the pipe is in.</p>"
+        },
+        "CreationTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time the pipe was created.</p>"
+        },
         "LastModifiedTime":{
           "shape":"Timestamp",
           "documentation":"<p>When the pipe was last updated, in <a href=\"https://www.w3.org/TR/NOTE-datetime\">ISO-8601 format</a> (YYYY-MM-DDThh:mm:ss.sTZD).</p>"
-        },
-        "Name":{
-          "shape":"PipeName",
-          "documentation":"<p>The name of the pipe.</p>"
         }
       }
     },
@@ -2771,13 +2999,13 @@
       "type":"structure",
       "required":["Credentials"],
       "members":{
-        "BatchSize":{
-          "shape":"LimitMax10000",
-          "documentation":"<p>The maximum number of records to include in each batch.</p>"
-        },
         "Credentials":{
           "shape":"MQBrokerAccessCredentials",
           "documentation":"<p>The credentials needed to access the resource.</p>"
+        },
+        "BatchSize":{
+          "shape":"LimitMax10000",
+          "documentation":"<p>The maximum number of records to include in each batch.</p>"
         },
         "MaximumBatchingWindowInSeconds":{
           "shape":"MaximumBatchingWindowInSeconds",
@@ -2797,6 +3025,10 @@
           "shape":"DeadLetterConfig",
           "documentation":"<p>Define the target queue to send dead-letter queue events to.</p>"
         },
+        "OnPartialBatchItemFailure":{
+          "shape":"OnPartialBatchItemFailureStreams",
+          "documentation":"<p>(Streams only) Define how to handle item process failures. <code>AUTOMATIC_BISECT</code> halves each batch and retry each half until all the records are processed or there is one failed message left in the batch.</p>"
+        },
         "MaximumBatchingWindowInSeconds":{
           "shape":"MaximumBatchingWindowInSeconds",
           "documentation":"<p>The maximum length of a time to wait for events.</p>"
@@ -2808,10 +3040,6 @@
         "MaximumRetryAttempts":{
           "shape":"MaximumRetryAttemptsESM",
           "documentation":"<p>(Streams only) Discard records after the specified number of retries. The default value is -1, which sets the maximum number of retries to infinite. When MaximumRetryAttempts is infinite, EventBridge retries failed records until the record expires in the event source.</p>"
-        },
-        "OnPartialBatchItemFailure":{
-          "shape":"OnPartialBatchItemFailureStreams",
-          "documentation":"<p>(Streams only) Define how to handle item process failures. <code>AUTOMATIC_BISECT</code> halves each batch and retry each half until all the records are processed or there is one failed message left in the batch.</p>"
         },
         "ParallelizationFactor":{
           "shape":"LimitMax10",
@@ -2831,6 +3059,10 @@
           "shape":"DeadLetterConfig",
           "documentation":"<p>Define the target queue to send dead-letter queue events to.</p>"
         },
+        "OnPartialBatchItemFailure":{
+          "shape":"OnPartialBatchItemFailureStreams",
+          "documentation":"<p>(Streams only) Define how to handle item process failures. <code>AUTOMATIC_BISECT</code> halves each batch and retry each half until all the records are processed or there is one failed message left in the batch.</p>"
+        },
         "MaximumBatchingWindowInSeconds":{
           "shape":"MaximumBatchingWindowInSeconds",
           "documentation":"<p>The maximum length of a time to wait for events.</p>"
@@ -2842,10 +3074,6 @@
         "MaximumRetryAttempts":{
           "shape":"MaximumRetryAttemptsESM",
           "documentation":"<p>(Streams only) Discard records after the specified number of retries. The default value is -1, which sets the maximum number of retries to infinite. When MaximumRetryAttempts is infinite, EventBridge retries failed records until the record expires in the event source.</p>"
-        },
-        "OnPartialBatchItemFailure":{
-          "shape":"OnPartialBatchItemFailureStreams",
-          "documentation":"<p>(Streams only) Define how to handle item process failures. <code>AUTOMATIC_BISECT</code> halves each batch and retry each half until all the records are processed or there is one failed message left in the batch.</p>"
         },
         "ParallelizationFactor":{
           "shape":"LimitMax10",
@@ -2875,14 +3103,6 @@
     "UpdatePipeSourceParameters":{
       "type":"structure",
       "members":{
-        "ActiveMQBrokerParameters":{
-          "shape":"UpdatePipeSourceActiveMQBrokerParameters",
-          "documentation":"<p>The parameters for using an Active MQ broker as a source.</p>"
-        },
-        "DynamoDBStreamParameters":{
-          "shape":"UpdatePipeSourceDynamoDBStreamParameters",
-          "documentation":"<p>The parameters for using a DynamoDB stream as a source.</p>"
-        },
         "FilterCriteria":{
           "shape":"FilterCriteria",
           "documentation":"<p>The collection of event patterns used to filter events.</p> <p>To remove a filter, specify a <code>FilterCriteria</code> object with an empty array of <code>Filter</code> objects.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/eventbridge/latest/userguide/eventbridge-and-event-patterns.html\">Events and Event Patterns</a> in the <i>Amazon EventBridge User Guide</i>.</p>"
@@ -2891,21 +3111,29 @@
           "shape":"UpdatePipeSourceKinesisStreamParameters",
           "documentation":"<p>The parameters for using a Kinesis stream as a source.</p>"
         },
-        "ManagedStreamingKafkaParameters":{
-          "shape":"UpdatePipeSourceManagedStreamingKafkaParameters",
-          "documentation":"<p>The parameters for using an MSK stream as a source.</p>"
+        "DynamoDBStreamParameters":{
+          "shape":"UpdatePipeSourceDynamoDBStreamParameters",
+          "documentation":"<p>The parameters for using a DynamoDB stream as a source.</p>"
+        },
+        "SqsQueueParameters":{
+          "shape":"UpdatePipeSourceSqsQueueParameters",
+          "documentation":"<p>The parameters for using a Amazon SQS stream as a source.</p>"
+        },
+        "ActiveMQBrokerParameters":{
+          "shape":"UpdatePipeSourceActiveMQBrokerParameters",
+          "documentation":"<p>The parameters for using an Active MQ broker as a source.</p>"
         },
         "RabbitMQBrokerParameters":{
           "shape":"UpdatePipeSourceRabbitMQBrokerParameters",
           "documentation":"<p>The parameters for using a Rabbit MQ broker as a source.</p>"
         },
+        "ManagedStreamingKafkaParameters":{
+          "shape":"UpdatePipeSourceManagedStreamingKafkaParameters",
+          "documentation":"<p>The parameters for using an MSK stream as a source.</p>"
+        },
         "SelfManagedKafkaParameters":{
           "shape":"UpdatePipeSourceSelfManagedKafkaParameters",
-          "documentation":"<p>The parameters for using a self-managed Apache Kafka stream as a source.</p>"
-        },
-        "SqsQueueParameters":{
-          "shape":"UpdatePipeSourceSqsQueueParameters",
-          "documentation":"<p>The parameters for using a Amazon SQS stream as a source.</p>"
+          "documentation":"<p>The parameters for using a self-managed Apache Kafka stream as a source.</p> <p>A <i>self managed</i> cluster refers to any Apache Kafka cluster not hosted by Amazon Web Services. This includes both clusters you manage yourself, as well as those hosted by a third-party provider, such as <a href=\"https://www.confluent.io/\">Confluent Cloud</a>, <a href=\"https://www.cloudkarafka.com/\">CloudKarafka</a>, or <a href=\"https://redpanda.com/\">Redpanda</a>. For more information, see <a href=\"https://docs.aws.amazon.com/eventbridge/latest/userguide/eb-pipes-kafka.html\">Apache Kafka streams as a source</a> in the <i>Amazon EventBridge User Guide</i>.</p>"
         }
       },
       "documentation":"<p>The parameters required to set up a source for your pipe.</p>"
@@ -2914,13 +3142,13 @@
       "type":"structure",
       "required":["Credentials"],
       "members":{
-        "BatchSize":{
-          "shape":"LimitMax10000",
-          "documentation":"<p>The maximum number of records to include in each batch.</p>"
-        },
         "Credentials":{
           "shape":"MQBrokerAccessCredentials",
           "documentation":"<p>The credentials needed to access the resource.</p>"
+        },
+        "BatchSize":{
+          "shape":"LimitMax10000",
+          "documentation":"<p>The maximum number of records to include in each batch.</p>"
         },
         "MaximumBatchingWindowInSeconds":{
           "shape":"MaximumBatchingWindowInSeconds",
@@ -2936,13 +3164,13 @@
           "shape":"LimitMax10000",
           "documentation":"<p>The maximum number of records to include in each batch.</p>"
         },
-        "Credentials":{
-          "shape":"SelfManagedKafkaAccessConfigurationCredentials",
-          "documentation":"<p>The credentials needed to access the resource.</p>"
-        },
         "MaximumBatchingWindowInSeconds":{
           "shape":"MaximumBatchingWindowInSeconds",
           "documentation":"<p>The maximum length of a time to wait for events.</p>"
+        },
+        "Credentials":{
+          "shape":"SelfManagedKafkaAccessConfigurationCredentials",
+          "documentation":"<p>The credentials needed to access the resource.</p>"
         },
         "ServerRootCaCertificate":{
           "shape":"SecretManagerArn",
@@ -2953,7 +3181,7 @@
           "documentation":"<p>This structure specifies the VPC subnets and security groups for the stream, and whether a public IP address is to be used.</p>"
         }
       },
-      "documentation":"<p>The parameters for using a self-managed Apache Kafka stream as a source.</p>"
+      "documentation":"<p>The parameters for using a self-managed Apache Kafka stream as a source.</p> <p>A <i>self managed</i> cluster refers to any Apache Kafka cluster not hosted by Amazon Web Services. This includes both clusters you manage yourself, as well as those hosted by a third-party provider, such as <a href=\"https://www.confluent.io/\">Confluent Cloud</a>, <a href=\"https://www.cloudkarafka.com/\">CloudKarafka</a>, or <a href=\"https://redpanda.com/\">Redpanda</a>. For more information, see <a href=\"https://docs.aws.amazon.com/eventbridge/latest/userguide/eb-pipes-kafka.html\">Apache Kafka streams as a source</a> in the <i>Amazon EventBridge User Guide</i>.</p>"
     },
     "UpdatePipeSourceSqsQueueParameters":{
       "type":"structure",
@@ -2972,11 +3200,11 @@
     "ValidationException":{
       "type":"structure",
       "members":{
+        "message":{"shape":"ErrorMessage"},
         "fieldList":{
           "shape":"ValidationExceptionFieldList",
           "documentation":"<p>The list of fields for which validation failed and the corresponding failure messages.</p>"
-        },
-        "message":{"shape":"ErrorMessage"}
+        }
       },
       "documentation":"<p>Indicates that an error has occurred while performing a validate operation.</p>",
       "error":{
@@ -2988,17 +3216,17 @@
     "ValidationExceptionField":{
       "type":"structure",
       "required":[
-        "message",
-        "name"
+        "name",
+        "message"
       ],
       "members":{
-        "message":{
-          "shape":"ErrorMessage",
-          "documentation":"<p>The message of the exception.</p>"
-        },
         "name":{
           "shape":"String",
           "documentation":"<p>The name of the exception.</p>"
+        },
+        "message":{
+          "shape":"ErrorMessage",
+          "documentation":"<p>The message of the exception.</p>"
         }
       },
       "documentation":"<p>Indicates that an error has occurred while performing a validate operation.</p>"
@@ -3006,8 +3234,12 @@
     "ValidationExceptionFieldList":{
       "type":"list",
       "member":{"shape":"ValidationExceptionField"}
+    },
+    "VersionValue":{
+      "type":"string",
+      "max":256,
+      "min":1
     }
   },
-  "documentation":"<p>Amazon EventBridge Pipes connects event sources to targets. Pipes reduces the need for specialized knowledge and integration code when developing event driven architectures. This helps ensures consistency across your company’s applications. With Pipes, the target can be any available EventBridge target. To set up a pipe, you select the event source, add optional event filtering, define optional enrichment, and select the target for the event data. </p>",
-  "xmlNamespace":"http://events.amazonaws.com/doc/2015-10-07"
+  "documentation":"<p>Amazon EventBridge Pipes connects event sources to targets. Pipes reduces the need for specialized knowledge and integration code when developing event driven architectures. This helps ensures consistency across your company’s applications. With Pipes, the target can be any available EventBridge target. To set up a pipe, you select the event source, add optional event filtering, define optional enrichment, and select the target for the event data. </p>"
 }

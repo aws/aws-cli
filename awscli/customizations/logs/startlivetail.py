@@ -50,7 +50,7 @@ DESCRIPTION = (
     "A session can go on for a maximum of 3 hours.\n\n"
     "By default, this command start a native tailing session "
     "where recent log events appear from the bottom, "
-    "the log events are output as-is in Plain text.  You can run this command with --interactive flag, "
+    "the log events are output as-is in Plain text.  You can run this command in interactive mode, "
     "which starting an interactive tailing session. Interactive tailing provides the ability to "
     "highlight up to 5 terms in your logs. "
     "The severity codes are highlighted by default. The logs are output in JSON format if possible, "
@@ -780,7 +780,7 @@ class InteractiveUI(BaseLiveTailUI):
         is_sampled = "Yes" if self._log_events_printer.is_sampled else "No"
 
         self._metadata.text = ANSI(
-            f"Higlighted Terms: {{{keyword_count_map}}}, {events_per_second} events/sec, Sampled: {is_sampled} | {hours}:{minutes}:{seconds}"
+            f"Highlighted Terms: {{{keyword_count_map}}}, {events_per_second} events/sec, Sampled: {is_sampled} | {hours}:{minutes}:{seconds}"
         )
 
     async def highlight_term_in_buffer(self, keyword: Keyword):

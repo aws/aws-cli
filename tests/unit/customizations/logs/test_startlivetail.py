@@ -570,7 +570,7 @@ class LiveTailKeyBindingsTest(unittest.TestCase):
 
         self.ui._application.exit.assert_called_once_with()
 
-        # if in higlight mode, escape gets you out of highlight
+        # if in highlight mode, escape gets you out of highlight
         self.key_bindings._input_state = InputState.HIGHLIGHT
 
         self.key_bindings.bindings[10].handler(escape_event)

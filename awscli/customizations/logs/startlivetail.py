@@ -753,7 +753,7 @@ class InteractiveUI(BaseLiveTailUI):
 
     def _create_metadata(self):
         self._metadata = FormattedTextControl(
-            text="Higlighted Terms: {}, 0 events/sec, Sampled: No | 00:00:00"
+            text="Highlighted Terms: {}, 0 events/sec, Sampled: No | 00:00:00"
         )
         return Window(
             self._metadata,

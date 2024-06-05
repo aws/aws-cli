@@ -2,6 +2,15 @@
 CHANGELOG
 =========
 
+1.33.2
+======
+
+* api-change:``globalaccelerator``: This release contains a new optional ip-addresses input field for the update accelerator and update custom routing accelerator apis. This input enables consumers to replace IPv4 addresses on existing accelerators with addresses provided in the input.
+* api-change:``glue``: AWS Glue now supports native SaaS connectivity: Salesforce connector available now
+* api-change:``s3``: Added new params copySource and key to copyObject API for supporting S3 Access Grants plugin. These changes will not change any of the existing S3 API functionality.
+* bugfix:emr customization: Update the EC2 service principal when creating the trust policy for EMR default roles to always be ec2.amazonaws.com.
+
+
 1.33.1
 ======
 

@@ -24,6 +24,7 @@ from awscli.customizations.emr import exceptions
 from awscli.customizations.emr.command import Command
 from awscli.customizations.emr.constants import EC2
 from awscli.customizations.emr.constants import EC2_ROLE_NAME
+from awscli.customizations.emr.constants import EC2_SERVICE_PRINCIPAL
 from awscli.customizations.emr.constants import ROLE_ARN_PATTERN
 from awscli.customizations.emr.constants import EMR
 from awscli.customizations.emr.constants import EMR_ROLE_NAME
@@ -64,6 +65,9 @@ def get_role_policy_arn(region, policy_name):
 
 
 def get_service_principal(service, endpoint_host, session=None):
+    if service == EC2:
+        return EC2_SERVICE_PRINCIPAL
+
     suffix, region = _get_suffix_and_region_from_endpoint_host(endpoint_host)
     if session is None:
         session = botocore.session.Session()
@@ -277,7 +281,7 @@ class CreateDefaultRoles(Command):
                 service_principal.append(get_service_principal(
                     service, self.emr_endpoint_url, self._session))
 
-        LOG.debug(service_principal)
+        LOG.debug(f'Adding service principal(s) to trust policy: {service_principal}')
 
         parameters = {'RoleName': role_name}
         _assume_role_policy = \

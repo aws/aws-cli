@@ -112,7 +112,7 @@ class TestCreateDefaultRole(BaseAWSCommandParamsTest):
             {
                 "Sid": "",
                 "Effect": "Allow",
-                "Principal": {"Service": "ec2.amazonaws.com.cn"},
+                "Principal": {"Service": "ec2.amazonaws.com"},
                 "Action": "sts:AssumeRole"
             }
         ]

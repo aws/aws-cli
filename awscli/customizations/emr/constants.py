@@ -22,6 +22,7 @@ EMR_ROLE_POLICY_NAME = "AmazonElasticMapReduceRole"
 EMR_AUTOSCALING_ROLE_POLICY_NAME = "AmazonElasticMapReduceforAutoScalingRole"
 EMR_AUTOSCALING_SERVICE_NAME = "application-autoscaling"
 EMR_AUTOSCALING_SERVICE_PRINCIPAL = "application-autoscaling.amazonaws.com"
+EC2_SERVICE_PRINCIPAL = "ec2.amazonaws.com"
 
 # Action on failure
 CONTINUE = 'CONTINUE'

@@ -10,7 +10,8 @@
     "serviceId":"Glue",
     "signatureVersion":"v4",
     "targetPrefix":"AWSGlue",
-    "uid":"glue-2017-03-31"
+    "uid":"glue-2017-03-31",
+    "auth":["aws.auth#sigv4"]
   },
   "operations":{
     "BatchCreatePartition":{
@@ -3540,6 +3541,11 @@
     }
   },
   "shapes":{
+    "AWSManagedClientApplicationReference":{
+      "type":"string",
+      "max":2048,
+      "pattern":"\\S+"
+    },
     "AccessDeniedException":{
       "type":"structure",
       "members":{
@@ -3957,6 +3963,70 @@
       "max":255,
       "min":1,
       "pattern":"[\\u0020-\\uD7FF\\uE000-\\uFFFD\\uD800\\uDC00-\\uDBFF\\uDFFF\\t]*"
+    },
+    "AuthenticationConfiguration":{
+      "type":"structure",
+      "members":{
+        "AuthenticationType":{
+          "shape":"AuthenticationType",
+          "documentation":"<p>A structure containing the authentication configuration.</p>"
+        },
+        "SecretArn":{
+          "shape":"SecretArn",
+          "documentation":"<p>The secret manager ARN to store credentials.</p>"
+        },
+        "OAuth2Properties":{
+          "shape":"OAuth2Properties",
+          "documentation":"<p>The properties for OAuth2 authentication.</p>"
+        }
+      },
+      "documentation":"<p>A structure containing the authentication configuration.</p>"
+    },
+    "AuthenticationConfigurationInput":{
+      "type":"structure",
+      "members":{
+        "AuthenticationType":{
+          "shape":"AuthenticationType",
+          "documentation":"<p>A structure containing the authentication configuration in the CreateConnection request.</p>"
+        },
+        "SecretArn":{
+          "shape":"SecretArn",
+          "documentation":"<p>The secret manager ARN to store credentials in the CreateConnection request.</p>"
+        },
+        "OAuth2Properties":{
+          "shape":"OAuth2PropertiesInput",
+          "documentation":"<p>The properties for OAuth2 authentication in the CreateConnection request.</p>"
+        }
+      },
+      "documentation":"<p>A structure containing the authentication configuration in the CreateConnection request.</p>"
+    },
+    "AuthenticationType":{
+      "type":"string",
+      "enum":[
+        "BASIC",
+        "OAUTH2",
+        "CUSTOM"
+      ]
+    },
+    "AuthorizationCode":{
+      "type":"string",
+      "max":4096,
+      "min":1,
+      "pattern":"\\S+"
+    },
+    "AuthorizationCodeProperties":{
+      "type":"structure",
+      "members":{
+        "AuthorizationCode":{
+          "shape":"AuthorizationCode",
+          "documentation":"<p>An authorization code to be used in the third leg of the <code>AUTHORIZATION_CODE</code> grant workflow. This is a single-use code which becomes invalid once exchanged for an access token, thus it is acceptable to have this value as a request parameter.</p>"
+        },
+        "RedirectUri":{
+          "shape":"RedirectUri",
+          "documentation":"<p>The redirect URI where the user gets redirected to by authorization server when issuing an authorization code. The URI is subsequently used when the authorization code is exchanged for an access token.</p>"
+        }
+      },
+      "documentation":"<p>The set of properties required for the the OAuth2 <code>AUTHORIZATION_CODE</code> grant type workflow.</p>"
     },
     "BackfillError":{
       "type":"structure",
@@ -6279,19 +6349,35 @@
         },
         "PhysicalConnectionRequirements":{
           "shape":"PhysicalConnectionRequirements",
-          "documentation":"<p>A map of physical connection requirements, such as virtual private cloud (VPC) and <code>SecurityGroup</code>, that are needed to make this connection successfully.</p>"
+          "documentation":"<p>The physical connection requirements, such as virtual private cloud (VPC) and <code>SecurityGroup</code>, that are needed to make this connection successfully.</p>"
         },
         "CreationTime":{
           "shape":"Timestamp",
-          "documentation":"<p>The time that this connection definition was created.</p>"
+          "documentation":"<p>The timestamp of the time that this connection definition was created.</p>"
         },
         "LastUpdatedTime":{
           "shape":"Timestamp",
-          "documentation":"<p>The last time that this connection definition was updated.</p>"
+          "documentation":"<p>The timestamp of the last time the connection definition was updated.</p>"
         },
         "LastUpdatedBy":{
           "shape":"NameString",
           "documentation":"<p>The user, group, or role that last updated this connection definition.</p>"
+        },
+        "Status":{
+          "shape":"ConnectionStatus",
+          "documentation":"<p>The status of the connection. Can be one of: <code>READY</code>, <code>IN_PROGRESS</code>, or <code>FAILED</code>.</p>"
+        },
+        "StatusReason":{
+          "shape":"LongValueString",
+          "documentation":"<p>The reason for the connection status.</p>"
+        },
+        "LastConnectionValidationTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>A timestamp of the time this connection was last validated.</p>"
+        },
+        "AuthenticationConfiguration":{
+          "shape":"AuthenticationConfiguration",
+          "documentation":"<p>The authentication properties of the connection.</p>"
         }
       },
       "documentation":"<p>Defines a connection to a data source.</p>"
@@ -6306,7 +6392,7 @@
       "members":{
         "Name":{
           "shape":"NameString",
-          "documentation":"<p>The name of the connection. Connection will not function as expected without a name.</p>"
+          "documentation":"<p>The name of the connection.</p>"
         },
         "Description":{
           "shape":"DescriptionString",
@@ -6314,7 +6400,7 @@
         },
         "ConnectionType":{
           "shape":"ConnectionType",
-          "documentation":"<p>The type of the connection. Currently, these types are supported:</p> <ul> <li> <p> <code>JDBC</code> - Designates a connection to a database through Java Database Connectivity (JDBC).</p> <p> <code>JDBC</code> Connections use the following ConnectionParameters.</p> <ul> <li> <p>Required: All of (<code>HOST</code>, <code>PORT</code>, <code>JDBC_ENGINE</code>) or <code>JDBC_CONNECTION_URL</code>.</p> </li> <li> <p>Required: All of (<code>USERNAME</code>, <code>PASSWORD</code>) or <code>SECRET_ID</code>.</p> </li> <li> <p>Optional: <code>JDBC_ENFORCE_SSL</code>, <code>CUSTOM_JDBC_CERT</code>, <code>CUSTOM_JDBC_CERT_STRING</code>, <code>SKIP_CUSTOM_JDBC_CERT_VALIDATION</code>. These parameters are used to configure SSL with JDBC.</p> </li> </ul> </li> <li> <p> <code>KAFKA</code> - Designates a connection to an Apache Kafka streaming platform.</p> <p> <code>KAFKA</code> Connections use the following ConnectionParameters.</p> <ul> <li> <p>Required: <code>KAFKA_BOOTSTRAP_SERVERS</code>.</p> </li> <li> <p>Optional: <code>KAFKA_SSL_ENABLED</code>, <code>KAFKA_CUSTOM_CERT</code>, <code>KAFKA_SKIP_CUSTOM_CERT_VALIDATION</code>. These parameters are used to configure SSL with <code>KAFKA</code>.</p> </li> <li> <p>Optional: <code>KAFKA_CLIENT_KEYSTORE</code>, <code>KAFKA_CLIENT_KEYSTORE_PASSWORD</code>, <code>KAFKA_CLIENT_KEY_PASSWORD</code>, <code>ENCRYPTED_KAFKA_CLIENT_KEYSTORE_PASSWORD</code>, <code>ENCRYPTED_KAFKA_CLIENT_KEY_PASSWORD</code>. These parameters are used to configure TLS client configuration with SSL in <code>KAFKA</code>.</p> </li> <li> <p>Optional: <code>KAFKA_SASL_MECHANISM</code>. Can be specified as <code>SCRAM-SHA-512</code>, <code>GSSAPI</code>, or <code>AWS_MSK_IAM</code>.</p> </li> <li> <p>Optional: <code>KAFKA_SASL_SCRAM_USERNAME</code>, <code>KAFKA_SASL_SCRAM_PASSWORD</code>, <code>ENCRYPTED_KAFKA_SASL_SCRAM_PASSWORD</code>. These parameters are used to configure SASL/SCRAM-SHA-512 authentication with <code>KAFKA</code>.</p> </li> <li> <p>Optional: <code>KAFKA_SASL_GSSAPI_KEYTAB</code>, <code>KAFKA_SASL_GSSAPI_KRB5_CONF</code>, <code>KAFKA_SASL_GSSAPI_SERVICE</code>, <code>KAFKA_SASL_GSSAPI_PRINCIPAL</code>. These parameters are used to configure SASL/GSSAPI authentication with <code>KAFKA</code>.</p> </li> </ul> </li> <li> <p> <code>MONGODB</code> - Designates a connection to a MongoDB document database.</p> <p> <code>MONGODB</code> Connections use the following ConnectionParameters.</p> <ul> <li> <p>Required: <code>CONNECTION_URL</code>.</p> </li> <li> <p>Required: All of (<code>USERNAME</code>, <code>PASSWORD</code>) or <code>SECRET_ID</code>.</p> </li> </ul> </li> <li> <p> <code>NETWORK</code> - Designates a network connection to a data source within an Amazon Virtual Private Cloud environment (Amazon VPC).</p> <p> <code>NETWORK</code> Connections do not require ConnectionParameters. Instead, provide a PhysicalConnectionRequirements.</p> </li> <li> <p> <code>MARKETPLACE</code> - Uses configuration settings contained in a connector purchased from Amazon Web Services Marketplace to read from and write to data stores that are not natively supported by Glue.</p> <p> <code>MARKETPLACE</code> Connections use the following ConnectionParameters.</p> <ul> <li> <p>Required: <code>CONNECTOR_TYPE</code>, <code>CONNECTOR_URL</code>, <code>CONNECTOR_CLASS_NAME</code>, <code>CONNECTION_URL</code>.</p> </li> <li> <p>Required for <code>JDBC</code> <code>CONNECTOR_TYPE</code> connections: All of (<code>USERNAME</code>, <code>PASSWORD</code>) or <code>SECRET_ID</code>.</p> </li> </ul> </li> <li> <p> <code>CUSTOM</code> - Uses configuration settings contained in a custom connector to read from and write to data stores that are not natively supported by Glue.</p> </li> </ul> <p> <code>SFTP</code> is not supported.</p> <p>For more information about how optional ConnectionProperties are used to configure features in Glue, consult <a href=\"https://docs.aws.amazon.com/glue/latest/dg/connection-defining.html\">Glue connection properties</a>.</p> <p>For more information about how optional ConnectionProperties are used to configure features in Glue Studio, consult <a href=\"https://docs.aws.amazon.com/glue/latest/ug/connectors-chapter.html\">Using connectors and connections</a>.</p>"
+          "documentation":"<p>The type of the connection. Currently, these types are supported:</p> <ul> <li> <p> <code>JDBC</code> - Designates a connection to a database through Java Database Connectivity (JDBC).</p> <p> <code>JDBC</code> Connections use the following ConnectionParameters.</p> <ul> <li> <p>Required: All of (<code>HOST</code>, <code>PORT</code>, <code>JDBC_ENGINE</code>) or <code>JDBC_CONNECTION_URL</code>.</p> </li> <li> <p>Required: All of (<code>USERNAME</code>, <code>PASSWORD</code>) or <code>SECRET_ID</code>.</p> </li> <li> <p>Optional: <code>JDBC_ENFORCE_SSL</code>, <code>CUSTOM_JDBC_CERT</code>, <code>CUSTOM_JDBC_CERT_STRING</code>, <code>SKIP_CUSTOM_JDBC_CERT_VALIDATION</code>. These parameters are used to configure SSL with JDBC.</p> </li> </ul> </li> <li> <p> <code>KAFKA</code> - Designates a connection to an Apache Kafka streaming platform.</p> <p> <code>KAFKA</code> Connections use the following ConnectionParameters.</p> <ul> <li> <p>Required: <code>KAFKA_BOOTSTRAP_SERVERS</code>.</p> </li> <li> <p>Optional: <code>KAFKA_SSL_ENABLED</code>, <code>KAFKA_CUSTOM_CERT</code>, <code>KAFKA_SKIP_CUSTOM_CERT_VALIDATION</code>. These parameters are used to configure SSL with <code>KAFKA</code>.</p> </li> <li> <p>Optional: <code>KAFKA_CLIENT_KEYSTORE</code>, <code>KAFKA_CLIENT_KEYSTORE_PASSWORD</code>, <code>KAFKA_CLIENT_KEY_PASSWORD</code>, <code>ENCRYPTED_KAFKA_CLIENT_KEYSTORE_PASSWORD</code>, <code>ENCRYPTED_KAFKA_CLIENT_KEY_PASSWORD</code>. These parameters are used to configure TLS client configuration with SSL in <code>KAFKA</code>.</p> </li> <li> <p>Optional: <code>KAFKA_SASL_MECHANISM</code>. Can be specified as <code>SCRAM-SHA-512</code>, <code>GSSAPI</code>, or <code>AWS_MSK_IAM</code>.</p> </li> <li> <p>Optional: <code>KAFKA_SASL_SCRAM_USERNAME</code>, <code>KAFKA_SASL_SCRAM_PASSWORD</code>, <code>ENCRYPTED_KAFKA_SASL_SCRAM_PASSWORD</code>. These parameters are used to configure SASL/SCRAM-SHA-512 authentication with <code>KAFKA</code>.</p> </li> <li> <p>Optional: <code>KAFKA_SASL_GSSAPI_KEYTAB</code>, <code>KAFKA_SASL_GSSAPI_KRB5_CONF</code>, <code>KAFKA_SASL_GSSAPI_SERVICE</code>, <code>KAFKA_SASL_GSSAPI_PRINCIPAL</code>. These parameters are used to configure SASL/GSSAPI authentication with <code>KAFKA</code>.</p> </li> </ul> </li> <li> <p> <code>MONGODB</code> - Designates a connection to a MongoDB document database.</p> <p> <code>MONGODB</code> Connections use the following ConnectionParameters.</p> <ul> <li> <p>Required: <code>CONNECTION_URL</code>.</p> </li> <li> <p>Required: All of (<code>USERNAME</code>, <code>PASSWORD</code>) or <code>SECRET_ID</code>.</p> </li> </ul> </li> <li> <p> <code>SALESFORCE</code> - Designates a connection to Salesforce using OAuth authencation.</p> <ul> <li> <p>Requires the <code>AuthenticationConfiguration</code> member to be configured.</p> </li> </ul> </li> <li> <p> <code>NETWORK</code> - Designates a network connection to a data source within an Amazon Virtual Private Cloud environment (Amazon VPC).</p> <p> <code>NETWORK</code> Connections do not require ConnectionParameters. Instead, provide a PhysicalConnectionRequirements.</p> </li> <li> <p> <code>MARKETPLACE</code> - Uses configuration settings contained in a connector purchased from Amazon Web Services Marketplace to read from and write to data stores that are not natively supported by Glue.</p> <p> <code>MARKETPLACE</code> Connections use the following ConnectionParameters.</p> <ul> <li> <p>Required: <code>CONNECTOR_TYPE</code>, <code>CONNECTOR_URL</code>, <code>CONNECTOR_CLASS_NAME</code>, <code>CONNECTION_URL</code>.</p> </li> <li> <p>Required for <code>JDBC</code> <code>CONNECTOR_TYPE</code> connections: All of (<code>USERNAME</code>, <code>PASSWORD</code>) or <code>SECRET_ID</code>.</p> </li> </ul> </li> <li> <p> <code>CUSTOM</code> - Uses configuration settings contained in a custom connector to read from and write to data stores that are not natively supported by Glue.</p> </li> </ul> <p> <code>SFTP</code> is not supported.</p> <p>For more information about how optional ConnectionProperties are used to configure features in Glue, consult <a href=\"https://docs.aws.amazon.com/glue/latest/dg/connection-defining.html\">Glue connection properties</a>.</p> <p>For more information about how optional ConnectionProperties are used to configure features in Glue Studio, consult <a href=\"https://docs.aws.amazon.com/glue/latest/ug/connectors-chapter.html\">Using connectors and connections</a>.</p>"
         },
         "MatchCriteria":{
           "shape":"MatchCriteria",
@@ -6326,7 +6412,15 @@
         },
         "PhysicalConnectionRequirements":{
           "shape":"PhysicalConnectionRequirements",
-          "documentation":"<p>A map of physical connection requirements, such as virtual private cloud (VPC) and <code>SecurityGroup</code>, that are needed to successfully make this connection.</p>"
+          "documentation":"<p>The physical connection requirements, such as virtual private cloud (VPC) and <code>SecurityGroup</code>, that are needed to successfully make this connection.</p>"
+        },
+        "AuthenticationConfiguration":{
+          "shape":"AuthenticationConfigurationInput",
+          "documentation":"<p>The authentication properties of the connection. Used for a Salesforce connection.</p>"
+        },
+        "ValidateCredentials":{
+          "shape":"Boolean",
+          "documentation":"<p>A flag to validate the credentials during create connection. Used for a Salesforce connection. Default is true. </p>"
         }
       },
       "documentation":"<p>A structure that is used to specify a connection to create or update.</p>"
@@ -6402,7 +6496,16 @@
         "KAFKA_SASL_GSSAPI_KEYTAB",
         "KAFKA_SASL_GSSAPI_KRB5_CONF",
         "KAFKA_SASL_GSSAPI_SERVICE",
-        "KAFKA_SASL_GSSAPI_PRINCIPAL"
+        "KAFKA_SASL_GSSAPI_PRINCIPAL",
+        "ROLE_ARN"
+      ]
+    },
+    "ConnectionStatus":{
+      "type":"string",
+      "enum":[
+        "READY",
+        "IN_PROGRESS",
+        "FAILED"
       ]
     },
     "ConnectionType":{
@@ -6414,7 +6517,8 @@
         "KAFKA",
         "NETWORK",
         "MARKETPLACE",
-        "CUSTOM"
+        "CUSTOM",
+        "SALESFORCE"
       ]
     },
     "ConnectionsList":{
@@ -6950,6 +7054,10 @@
     "CreateConnectionResponse":{
       "type":"structure",
       "members":{
+        "CreateConnectionStatus":{
+          "shape":"ConnectionStatus",
+          "documentation":"<p>The status of the connection creation request. The request can take some time for certain authentication types, for example when creating an OAuth connection with token exchange over VPC.</p>"
+        }
       }
     },
     "CreateCrawlerRequest":{
@@ -7410,7 +7518,7 @@
         },
         "Timeout":{
           "shape":"Timeout",
-          "documentation":"<p>The job timeout in minutes. This is the maximum time that a job run can consume resources before it is terminated and enters <code>TIMEOUT</code> status. The default is 2,880 minutes (48 hours).</p>"
+          "documentation":"<p>The job timeout in minutes. This is the maximum time that a job run can consume resources before it is terminated and enters <code>TIMEOUT</code> status. The default is 2,880 minutes (48 hours) for batch jobs.</p> <p>Streaming jobs must have timeout values less than 7 days or 10080 minutes. When the value is left blank, the job will be restarted after 7 days based if you have not setup a maintenance window. If you have setup maintenance window, it will be restarted during the maintenance window after 7 days.</p>"
         },
         "MaxCapacity":{
           "shape":"NullableDouble",
@@ -10482,10 +10590,15 @@
     "FederationSourceErrorCode":{
       "type":"string",
       "enum":[
+        "AccessDeniedException",
+        "EntityNotFoundException",
+        "InvalidCredentialsException",
+        "InvalidInputException",
         "InvalidResponseException",
         "OperationTimeoutException",
         "OperationNotSupportedException",
         "InternalServiceException",
+        "PartialFailureException",
         "ThrottlingException"
       ]
     },
@@ -14046,7 +14159,7 @@
         },
         "Timeout":{
           "shape":"Timeout",
-          "documentation":"<p>The job timeout in minutes. This is the maximum time that a job run can consume resources before it is terminated and enters <code>TIMEOUT</code> status. The default is 2,880 minutes (48 hours).</p>"
+          "documentation":"<p>The job timeout in minutes. This is the maximum time that a job run can consume resources before it is terminated and enters <code>TIMEOUT</code> status. The default is 2,880 minutes (48 hours) for batch jobs.</p> <p>Streaming jobs must have timeout values less than 7 days or 10080 minutes. When the value is left blank, the job will be restarted after 7 days based if you have not setup a maintenance window. If you have setup maintenance window, it will be restarted during the maintenance window after 7 days.</p>"
         },
         "MaxCapacity":{
           "shape":"NullableDouble",
@@ -14262,7 +14375,7 @@
         },
         "Timeout":{
           "shape":"Timeout",
-          "documentation":"<p>The <code>JobRun</code> timeout in minutes. This is the maximum time that a job run can consume resources before it is terminated and enters <code>TIMEOUT</code> status. This value overrides the timeout value set in the parent job.</p> <p>The maximum value for timeout for batch jobs is 7 days or 10080 minutes. The default is 2880 minutes (48 hours) for batch jobs.</p> <p>Any existing Glue jobs that have a greater timeout value are defaulted to 7 days. For instance you have specified a timeout of 20 days for a batch job, it will be stopped on the 7th day.</p> <p>Streaming jobs must have timeout values less than 7 days or 10080 minutes. When the value is left blank, the job will be restarted after 7 days based if you have not setup a maintenance window. If you have setup maintenance window, it will be restarted during the maintenance window after 7 days.</p>"
+          "documentation":"<p>The <code>JobRun</code> timeout in minutes. This is the maximum time that a job run can consume resources before it is terminated and enters <code>TIMEOUT</code> status. This value overrides the timeout value set in the parent job.</p> <p>Streaming jobs must have timeout values less than 7 days or 10080 minutes. When the value is left blank, the job will be restarted after 7 days based if you have not setup a maintenance window. If you have setup maintenance window, it will be restarted during the maintenance window after 7 days.</p>"
         },
         "MaxCapacity":{
           "shape":"NullableDouble",
@@ -14377,7 +14490,7 @@
         },
         "Timeout":{
           "shape":"Timeout",
-          "documentation":"<p>The job timeout in minutes. This is the maximum time that a job run can consume resources before it is terminated and enters <code>TIMEOUT</code> status. The default is 2,880 minutes (48 hours).</p>"
+          "documentation":"<p>The job timeout in minutes. This is the maximum time that a job run can consume resources before it is terminated and enters <code>TIMEOUT</code> status. The default is 2,880 minutes (48 hours) for batch jobs.</p> <p>Streaming jobs must have timeout values less than 7 days or 10080 minutes. When the value is left blank, the job will be restarted after 7 days based if you have not setup a maintenance window. If you have setup maintenance window, it will be restarted during the maintenance window after 7 days.</p>"
         },
         "MaxCapacity":{
           "shape":"NullableDouble",
@@ -15577,6 +15690,11 @@
       "documentation":"<p>Defines column statistics supported for integer data columns.</p>"
     },
     "LongValue":{"type":"long"},
+    "LongValueString":{
+      "type":"string",
+      "max":16384,
+      "min":1
+    },
     "MLTransform":{
       "type":"structure",
       "members":{
@@ -16200,6 +16318,76 @@
       "type":"string",
       "box":true
     },
+    "OAuth2ClientApplication":{
+      "type":"structure",
+      "members":{
+        "UserManagedClientApplicationClientId":{
+          "shape":"UserManagedClientApplicationClientId",
+          "documentation":"<p>The client application clientID if the ClientAppType is <code>USER_MANAGED</code>.</p>"
+        },
+        "AWSManagedClientApplicationReference":{
+          "shape":"AWSManagedClientApplicationReference",
+          "documentation":"<p>The reference to the SaaS-side client app that is Amazon Web Services managed.</p>"
+        }
+      },
+      "documentation":"<p>The OAuth2 client app used for the connection.</p>"
+    },
+    "OAuth2GrantType":{
+      "type":"string",
+      "enum":[
+        "AUTHORIZATION_CODE",
+        "CLIENT_CREDENTIALS",
+        "JWT_BEARER"
+      ]
+    },
+    "OAuth2Properties":{
+      "type":"structure",
+      "members":{
+        "OAuth2GrantType":{
+          "shape":"OAuth2GrantType",
+          "documentation":"<p>The OAuth2 grant type. For example, <code>AUTHORIZATION_CODE</code>, <code>JWT_BEARER</code>, or <code>CLIENT_CREDENTIALS</code>.</p>"
+        },
+        "OAuth2ClientApplication":{
+          "shape":"OAuth2ClientApplication",
+          "documentation":"<p>The client application type. For example, AWS_MANAGED or USER_MANAGED.</p>"
+        },
+        "TokenUrl":{
+          "shape":"TokenUrl",
+          "documentation":"<p>The URL of the provider's authentication server, to exchange an authorization code for an access token.</p>"
+        },
+        "TokenUrlParametersMap":{
+          "shape":"TokenUrlParametersMap",
+          "documentation":"<p>A map of parameters that are added to the token <code>GET</code> request.</p>"
+        }
+      },
+      "documentation":"<p>A structure containing properties for OAuth2 authentication.</p>"
+    },
+    "OAuth2PropertiesInput":{
+      "type":"structure",
+      "members":{
+        "OAuth2GrantType":{
+          "shape":"OAuth2GrantType",
+          "documentation":"<p>The OAuth2 grant type in the CreateConnection request. For example, <code>AUTHORIZATION_CODE</code>, <code>JWT_BEARER</code>, or <code>CLIENT_CREDENTIALS</code>.</p>"
+        },
+        "OAuth2ClientApplication":{
+          "shape":"OAuth2ClientApplication",
+          "documentation":"<p>The client application type in the CreateConnection request. For example, <code>AWS_MANAGED</code> or <code>USER_MANAGED</code>.</p>"
+        },
+        "TokenUrl":{
+          "shape":"TokenUrl",
+          "documentation":"<p>The URL of the provider's authentication server, to exchange an authorization code for an access token.</p>"
+        },
+        "TokenUrlParametersMap":{
+          "shape":"TokenUrlParametersMap",
+          "documentation":"<p>A map of parameters that are added to the token <code>GET</code> request.</p>"
+        },
+        "AuthorizationCodeProperties":{
+          "shape":"AuthorizationCodeProperties",
+          "documentation":"<p>The set of properties required for the the OAuth2 <code>AUTHORIZATION_CODE</code> grant type.</p>"
+        }
+      },
+      "documentation":"<p>A structure containing properties for OAuth2 in the CreateConnection request.</p>"
+    },
     "OneInput":{
       "type":"list",
       "member":{"shape":"NodeId"},
@@ -16715,10 +16903,10 @@
         },
         "AvailabilityZone":{
           "shape":"NameString",
-          "documentation":"<p>The connection's Availability Zone. This field is redundant because the specified subnet implies the Availability Zone to be used. Currently the field must be populated, but it will be deprecated in the future.</p>"
+          "documentation":"<p>The connection's Availability Zone.</p>"
         }
       },
-      "documentation":"<p>Specifies the physical requirements for a connection.</p>"
+      "documentation":"<p>The OAuth client app in GetConnection response.</p>"
     },
     "PiiType":{
       "type":"string",
@@ -17189,6 +17377,11 @@
         }
       },
       "documentation":"<p>When crawling an Amazon S3 data source after the first crawl is complete, specifies whether to crawl the entire dataset again or to crawl only folders that were added since the last crawler run. For more information, see <a href=\"https://docs.aws.amazon.com/glue/latest/dg/incremental-crawls.html\">Incremental Crawls in Glue</a> in the developer guide.</p>"
+    },
+    "RedirectUri":{
+      "type":"string",
+      "max":512,
+      "pattern":"^(https?):\\/\\/[^\\s/$.?#].[^\\s]*$"
     },
     "RedshiftSource":{
       "type":"structure",
@@ -18721,6 +18914,10 @@
         }
       }
     },
+    "SecretArn":{
+      "type":"string",
+      "pattern":"^arn:aws(-(cn|us-gov|iso(-[bef])?))?:secretsmanager:.*$"
+    },
     "SecurityConfiguration":{
       "type":"structure",
       "members":{
@@ -19665,7 +19862,7 @@
         },
         "Timeout":{
           "shape":"Timeout",
-          "documentation":"<p>The <code>JobRun</code> timeout in minutes. This is the maximum time that a job run can consume resources before it is terminated and enters <code>TIMEOUT</code> status. This value overrides the timeout value set in the parent job.</p> <p>Streaming jobs do not have a timeout. The default for non-streaming jobs is 2,880 minutes (48 hours).</p>"
+          "documentation":"<p>The <code>JobRun</code> timeout in minutes. This is the maximum time that a job run can consume resources before it is terminated and enters <code>TIMEOUT</code> status. This value overrides the timeout value set in the parent job. </p> <p>Streaming jobs must have timeout values less than 7 days or 10080 minutes. When the value is left blank, the job will be restarted after 7 days based if you have not setup a maintenance window. If you have setup maintenance window, it will be restarted during the maintenance window after 7 days.</p>"
         },
         "MaxCapacity":{
           "shape":"NullableDouble",
@@ -20674,6 +20871,26 @@
     "Timestamp":{"type":"timestamp"},
     "TimestampValue":{"type":"timestamp"},
     "Token":{"type":"string"},
+    "TokenUrl":{
+      "type":"string",
+      "max":256,
+      "pattern":"^(https?)://[-a-zA-Z0-9+&@#/%?=~_|!:,.;]*[-a-zA-Z0-9+&@#/%=~_|]"
+    },
+    "TokenUrlParameterKey":{
+      "type":"string",
+      "max":128,
+      "min":1
+    },
+    "TokenUrlParameterValue":{
+      "type":"string",
+      "max":512,
+      "min":1
+    },
+    "TokenUrlParametersMap":{
+      "type":"map",
+      "key":{"shape":"TokenUrlParameterKey"},
+      "value":{"shape":"TokenUrlParameterValue"}
+    },
     "Topk":{
       "type":"integer",
       "box":true,
@@ -22077,6 +22294,11 @@
       "type":"list",
       "member":{"shape":"UserDefinedFunction"}
     },
+    "UserManagedClientApplicationClientId":{
+      "type":"string",
+      "max":2048,
+      "pattern":"\\S+"
+    },
     "ValidationException":{
       "type":"structure",
       "members":{
@@ -22177,7 +22399,7 @@
         },
         "ViewExpandedText":{
           "shape":"ViewTextString",
-          "documentation":"<p>The expanded SQL for the view. This SQL is used by engines while processing a query on a view. Engines may perform operations during view creation to transform <code>ViewOriginalText</code> to <code>ViewExpandedText</code>. For example:</p> <ul> <li> <p>Fully qualify identifiers: <code>SELECT * from table1 → SELECT * from db1.table1</code> </p> </li> </ul>"
+          "documentation":"<p>The expanded SQL for the view. This SQL is used by engines while processing a query on a view. Engines may perform operations during view creation to transform <code>ViewOriginalText</code> to <code>ViewExpandedText</code>. For example:</p> <ul> <li> <p>Fully qualified identifiers: <code>SELECT * from table1 -&gt; SELECT * from db1.table1</code> </p> </li> </ul>"
         },
         "IsStale":{
           "shape":"NullableBoolean",

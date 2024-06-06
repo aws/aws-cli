@@ -5,6 +5,7 @@
     "endpointPrefix":"fsx",
     "jsonVersion":"1.1",
     "protocol":"json",
+    "protocols":["json"],
     "serviceFullName":"Amazon FSx",
     "serviceId":"FSx",
     "signatureVersion":"v4",
@@ -187,7 +188,7 @@
         {"shape":"InternalServerError"},
         {"shape":"MissingFileSystemConfiguration"}
       ],
-      "documentation":"<p>Creates a new, empty Amazon FSx file system. You can create the following supported Amazon FSx file systems using the <code>CreateFileSystem</code> API operation:</p> <ul> <li> <p>Amazon FSx for Lustre</p> </li> <li> <p>Amazon FSx for NetApp ONTAP</p> </li> <li> <p>Amazon FSx for OpenZFS</p> </li> <li> <p>Amazon FSx for Windows File Server</p> </li> </ul> <p>This operation requires a client request token in the request that Amazon FSx uses to ensure idempotent creation. This means that calling the operation multiple times with the same client request token has no effect. By using the idempotent operation, you can retry a <code>CreateFileSystem</code> operation without the risk of creating an extra file system. This approach can be useful when an initial call fails in a way that makes it unclear whether a file system was created. Examples are if a transport level timeout occurred, or your connection was reset. If you use the same client request token and the initial call created a file system, the client receives success as long as the parameters are the same.</p> <p>If a file system with the specified client request token exists and the parameters match, <code>CreateFileSystem</code> returns the description of the existing file system. If a file system with the specified client request token exists and the parameters don't match, this call returns <code>IncompatibleParameterError</code>. If a file system with the specified client request token doesn't exist, <code>CreateFileSystem</code> does the following: </p> <ul> <li> <p>Creates a new, empty Amazon FSx file system with an assigned ID, and an initial lifecycle state of <code>CREATING</code>.</p> </li> <li> <p>Returns the description of the file system in JSON format.</p> </li> </ul> <note> <p>The <code>CreateFileSystem</code> call returns while the file system's lifecycle state is still <code>CREATING</code>. You can check the file-system creation status by calling the <a href=\"https://docs.aws.amazon.com/fsx/latest/APIReference/API_DescribeFileSystems.html\">DescribeFileSystems</a> operation, which returns the file system state along with other information.</p> </note>"
+      "documentation":"<p>Creates a new, empty Amazon FSx file system. You can create the following supported Amazon FSx file systems using the <code>CreateFileSystem</code> API operation:</p> <ul> <li> <p>Amazon FSx for Lustre</p> </li> <li> <p>Amazon FSx for NetApp ONTAP</p> </li> <li> <p>Amazon FSx for OpenZFS</p> </li> <li> <p>Amazon FSx for Windows File Server</p> </li> </ul> <p>This operation requires a client request token in the request that Amazon FSx uses to ensure idempotent creation. This means that calling the operation multiple times with the same client request token has no effect. By using the idempotent operation, you can retry a <code>CreateFileSystem</code> operation without the risk of creating an extra file system. This approach can be useful when an initial call fails in a way that makes it unclear whether a file system was created. Examples are if a transport level timeout occurred, or your connection was reset. If you use the same client request token and the initial call created a file system, the client receives success as long as the parameters are the same.</p> <p>If a file system with the specified client request token exists and the parameters match, <code>CreateFileSystem</code> returns the description of the existing file system. If a file system with the specified client request token exists and the parameters don't match, this call returns <code>IncompatibleParameterError</code>. If a file system with the specified client request token doesn't exist, <code>CreateFileSystem</code> does the following:</p> <ul> <li> <p>Creates a new, empty Amazon FSx file system with an assigned ID, and an initial lifecycle state of <code>CREATING</code>.</p> </li> <li> <p>Returns the description of the file system in JSON format.</p> </li> </ul> <note> <p>The <code>CreateFileSystem</code> call returns while the file system's lifecycle state is still <code>CREATING</code>. You can check the file-system creation status by calling the <a href=\"https://docs.aws.amazon.com/fsx/latest/APIReference/API_DescribeFileSystems.html\">DescribeFileSystems</a> operation, which returns the file system state along with other information.</p> </note>"
     },
     "CreateFileSystemFromBackup":{
       "name":"CreateFileSystemFromBackup",
@@ -357,7 +358,7 @@
         {"shape":"ServiceLimitExceeded"},
         {"shape":"InternalServerError"}
       ],
-      "documentation":"<p>Deletes a file system. After deletion, the file system no longer exists, and its data is gone. Any existing automatic backups and snapshots are also deleted.</p> <p>To delete an Amazon FSx for NetApp ONTAP file system, first delete all the volumes and storage virtual machines (SVMs) on the file system. Then provide a <code>FileSystemId</code> value to the <code>DeleFileSystem</code> operation.</p> <p>By default, when you delete an Amazon FSx for Windows File Server file system, a final backup is created upon deletion. This final backup isn't subject to the file system's retention policy, and must be manually deleted.</p> <p>To delete an Amazon FSx for Lustre file system, first <a href=\"https://docs.aws.amazon.com/fsx/latest/LustreGuide/unmounting-fs.html\">unmount</a> it from every connected Amazon EC2 instance, then provide a <code>FileSystemId</code> value to the <code>DeleFileSystem</code> operation. By default, Amazon FSx will not take a final backup when the <code>DeleteFileSystem</code> operation is invoked. On file systems not linked to an Amazon S3 bucket, set <code>SkipFinalBackup</code> to <code>false</code> to take a final backup of the file system you are deleting. Backups cannot be enabled on S3-linked file systems. To ensure all of your data is written back to S3 before deleting your file system, you can either monitor for the <a href=\"https://docs.aws.amazon.com/fsx/latest/LustreGuide/monitoring-cloudwatch.html#auto-import-export-metrics\">AgeOfOldestQueuedMessage</a> metric to be zero (if using automatic export) or you can run an <a href=\"https://docs.aws.amazon.com/fsx/latest/LustreGuide/export-data-repo-task-dra.html\">export data repository task</a>. If you have automatic export enabled and want to use an export data repository task, you have to disable automatic export before executing the export data repository task.</p> <p>The <code>DeleteFileSystem</code> operation returns while the file system has the <code>DELETING</code> status. You can check the file system deletion status by calling the <a href=\"https://docs.aws.amazon.com/fsx/latest/APIReference/API_DescribeFileSystems.html\">DescribeFileSystems</a> operation, which returns a list of file systems in your account. If you pass the file system ID for a deleted file system, the <code>DescribeFileSystems</code> operation returns a <code>FileSystemNotFound</code> error.</p> <note> <p>If a data repository task is in a <code>PENDING</code> or <code>EXECUTING</code> state, deleting an Amazon FSx for Lustre file system will fail with an HTTP status code 400 (Bad Request).</p> </note> <important> <p>The data in a deleted file system is also deleted and can't be recovered by any means.</p> </important>",
+      "documentation":"<p>Deletes a file system. After deletion, the file system no longer exists, and its data is gone. Any existing automatic backups and snapshots are also deleted.</p> <p>To delete an Amazon FSx for NetApp ONTAP file system, first delete all the volumes and storage virtual machines (SVMs) on the file system. Then provide a <code>FileSystemId</code> value to the <code>DeleteFileSystem</code> operation.</p> <p>By default, when you delete an Amazon FSx for Windows File Server file system, a final backup is created upon deletion. This final backup isn't subject to the file system's retention policy, and must be manually deleted.</p> <p>To delete an Amazon FSx for Lustre file system, first <a href=\"https://docs.aws.amazon.com/fsx/latest/LustreGuide/unmounting-fs.html\">unmount</a> it from every connected Amazon EC2 instance, then provide a <code>FileSystemId</code> value to the <code>DeleteFileSystem</code> operation. By default, Amazon FSx will not take a final backup when the <code>DeleteFileSystem</code> operation is invoked. On file systems not linked to an Amazon S3 bucket, set <code>SkipFinalBackup</code> to <code>false</code> to take a final backup of the file system you are deleting. Backups cannot be enabled on S3-linked file systems. To ensure all of your data is written back to S3 before deleting your file system, you can either monitor for the <a href=\"https://docs.aws.amazon.com/fsx/latest/LustreGuide/monitoring-cloudwatch.html#auto-import-export-metrics\">AgeOfOldestQueuedMessage</a> metric to be zero (if using automatic export) or you can run an <a href=\"https://docs.aws.amazon.com/fsx/latest/LustreGuide/export-data-repo-task-dra.html\">export data repository task</a>. If you have automatic export enabled and want to use an export data repository task, you have to disable automatic export before executing the export data repository task.</p> <p>The <code>DeleteFileSystem</code> operation returns while the file system has the <code>DELETING</code> status. You can check the file system deletion status by calling the <a href=\"https://docs.aws.amazon.com/fsx/latest/APIReference/API_DescribeFileSystems.html\">DescribeFileSystems</a> operation, which returns a list of file systems in your account. If you pass the file system ID for a deleted file system, the <code>DescribeFileSystems</code> operation returns a <code>FileSystemNotFound</code> error.</p> <note> <p>If a data repository task is in a <code>PENDING</code> or <code>EXECUTING</code> state, deleting an Amazon FSx for Lustre file system will fail with an HTTP status code 400 (Bad Request).</p> </note> <important> <p>The data in a deleted file system is also deleted and can't be recovered by any means.</p> </important>",
       "idempotent":true
     },
     "DeleteSnapshot":{
@@ -738,7 +739,7 @@
         {"shape":"MissingFileSystemConfiguration"},
         {"shape":"ServiceLimitExceeded"}
       ],
-      "documentation":"<p>Use this operation to update the configuration of an existing Amazon FSx file system. You can update multiple properties in a single request.</p> <p>For FSx for Windows File Server file systems, you can update the following properties:</p> <ul> <li> <p> <code>AuditLogConfiguration</code> </p> </li> <li> <p> <code>AutomaticBackupRetentionDays</code> </p> </li> <li> <p> <code>DailyAutomaticBackupStartTime</code> </p> </li> <li> <p> <code>SelfManagedActiveDirectoryConfiguration</code> </p> </li> <li> <p> <code>StorageCapacity</code> </p> </li> <li> <p> <code>StorageType</code> </p> </li> <li> <p> <code>ThroughputCapacity</code> </p> </li> <li> <p> <code>DiskIopsConfiguration</code> </p> </li> <li> <p> <code>WeeklyMaintenanceStartTime</code> </p> </li> </ul> <p>For FSx for Lustre file systems, you can update the following properties:</p> <ul> <li> <p> <code>AutoImportPolicy</code> </p> </li> <li> <p> <code>AutomaticBackupRetentionDays</code> </p> </li> <li> <p> <code>DailyAutomaticBackupStartTime</code> </p> </li> <li> <p> <code>DataCompressionType</code> </p> </li> <li> <p> <code>LogConfiguration</code> </p> </li> <li> <p> <code>LustreRootSquashConfiguration</code> </p> </li> <li> <p> <code>PerUnitStorageThroughput</code> </p> </li> <li> <p> <code>StorageCapacity</code> </p> </li> <li> <p> <code>WeeklyMaintenanceStartTime</code> </p> </li> </ul> <p>For FSx for ONTAP file systems, you can update the following properties:</p> <ul> <li> <p> <code>AddRouteTableIds</code> </p> </li> <li> <p> <code>AutomaticBackupRetentionDays</code> </p> </li> <li> <p> <code>DailyAutomaticBackupStartTime</code> </p> </li> <li> <p> <code>DiskIopsConfiguration</code> </p> </li> <li> <p> <code>FsxAdminPassword</code> </p> </li> <li> <p> <code>HAPairs</code> </p> </li> <li> <p> <code>RemoveRouteTableIds</code> </p> </li> <li> <p> <code>StorageCapacity</code> </p> </li> <li> <p> <code>ThroughputCapacity</code> </p> </li> <li> <p> <code>ThroughputCapacityPerHAPair</code> </p> </li> <li> <p> <code>WeeklyMaintenanceStartTime</code> </p> </li> </ul> <p>For FSx for OpenZFS file systems, you can update the following properties:</p> <ul> <li> <p> <code>AddRouteTableIds</code> </p> </li> <li> <p> <code>AutomaticBackupRetentionDays</code> </p> </li> <li> <p> <code>CopyTagsToBackups</code> </p> </li> <li> <p> <code>CopyTagsToVolumes</code> </p> </li> <li> <p> <code>DailyAutomaticBackupStartTime</code> </p> </li> <li> <p> <code>DiskIopsConfiguration</code> </p> </li> <li> <p> <code>RemoveRouteTableIds</code> </p> </li> <li> <p> <code>StorageCapacity</code> </p> </li> <li> <p> <code>ThroughputCapacity</code> </p> </li> <li> <p> <code>WeeklyMaintenanceStartTime</code> </p> </li> </ul>"
+      "documentation":"<p>Use this operation to update the configuration of an existing Amazon FSx file system. You can update multiple properties in a single request.</p> <p>For FSx for Windows File Server file systems, you can update the following properties:</p> <ul> <li> <p> <code>AuditLogConfiguration</code> </p> </li> <li> <p> <code>AutomaticBackupRetentionDays</code> </p> </li> <li> <p> <code>DailyAutomaticBackupStartTime</code> </p> </li> <li> <p> <code>SelfManagedActiveDirectoryConfiguration</code> </p> </li> <li> <p> <code>StorageCapacity</code> </p> </li> <li> <p> <code>StorageType</code> </p> </li> <li> <p> <code>ThroughputCapacity</code> </p> </li> <li> <p> <code>DiskIopsConfiguration</code> </p> </li> <li> <p> <code>WeeklyMaintenanceStartTime</code> </p> </li> </ul> <p>For FSx for Lustre file systems, you can update the following properties:</p> <ul> <li> <p> <code>AutoImportPolicy</code> </p> </li> <li> <p> <code>AutomaticBackupRetentionDays</code> </p> </li> <li> <p> <code>DailyAutomaticBackupStartTime</code> </p> </li> <li> <p> <code>DataCompressionType</code> </p> </li> <li> <p> <code>LogConfiguration</code> </p> </li> <li> <p> <code>LustreRootSquashConfiguration</code> </p> </li> <li> <p> <code>MetadataConfiguration</code> </p> </li> <li> <p> <code>PerUnitStorageThroughput</code> </p> </li> <li> <p> <code>StorageCapacity</code> </p> </li> <li> <p> <code>WeeklyMaintenanceStartTime</code> </p> </li> </ul> <p>For FSx for ONTAP file systems, you can update the following properties:</p> <ul> <li> <p> <code>AddRouteTableIds</code> </p> </li> <li> <p> <code>AutomaticBackupRetentionDays</code> </p> </li> <li> <p> <code>DailyAutomaticBackupStartTime</code> </p> </li> <li> <p> <code>DiskIopsConfiguration</code> </p> </li> <li> <p> <code>FsxAdminPassword</code> </p> </li> <li> <p> <code>HAPairs</code> </p> </li> <li> <p> <code>RemoveRouteTableIds</code> </p> </li> <li> <p> <code>StorageCapacity</code> </p> </li> <li> <p> <code>ThroughputCapacity</code> </p> </li> <li> <p> <code>ThroughputCapacityPerHAPair</code> </p> </li> <li> <p> <code>WeeklyMaintenanceStartTime</code> </p> </li> </ul> <p>For FSx for OpenZFS file systems, you can update the following properties:</p> <ul> <li> <p> <code>AddRouteTableIds</code> </p> </li> <li> <p> <code>AutomaticBackupRetentionDays</code> </p> </li> <li> <p> <code>CopyTagsToBackups</code> </p> </li> <li> <p> <code>CopyTagsToVolumes</code> </p> </li> <li> <p> <code>DailyAutomaticBackupStartTime</code> </p> </li> <li> <p> <code>DiskIopsConfiguration</code> </p> </li> <li> <p> <code>RemoveRouteTableIds</code> </p> </li> <li> <p> <code>StorageCapacity</code> </p> </li> <li> <p> <code>ThroughputCapacity</code> </p> </li> <li> <p> <code>WeeklyMaintenanceStartTime</code> </p> </li> </ul>"
     },
     "UpdateSharedVpcConfiguration":{
       "name":"UpdateSharedVpcConfiguration",
@@ -1718,7 +1719,7 @@
         },
         "DeploymentType":{
           "shape":"LustreDeploymentType",
-          "documentation":"<p>(Optional) Choose <code>SCRATCH_1</code> and <code>SCRATCH_2</code> deployment types when you need temporary storage and shorter-term processing of data. The <code>SCRATCH_2</code> deployment type provides in-transit encryption of data and higher burst throughput capacity than <code>SCRATCH_1</code>.</p> <p>Choose <code>PERSISTENT_1</code> for longer-term storage and for throughput-focused workloads that aren’t latency-sensitive. <code>PERSISTENT_1</code> supports encryption of data in transit, and is available in all Amazon Web Services Regions in which FSx for Lustre is available.</p> <p>Choose <code>PERSISTENT_2</code> for longer-term storage and for latency-sensitive workloads that require the highest levels of IOPS/throughput. <code>PERSISTENT_2</code> supports SSD storage, and offers higher <code>PerUnitStorageThroughput</code> (up to 1000 MB/s/TiB). <code>PERSISTENT_2</code> is available in a limited number of Amazon Web Services Regions. For more information, and an up-to-date list of Amazon Web Services Regions in which <code>PERSISTENT_2</code> is available, see <a href=\"https://docs.aws.amazon.com/fsx/latest/LustreGuide/using-fsx-lustre.html#lustre-deployment-types\">File system deployment options for FSx for Lustre</a> in the <i>Amazon FSx for Lustre User Guide</i>.</p> <note> <p>If you choose <code>PERSISTENT_2</code>, and you set <code>FileSystemTypeVersion</code> to <code>2.10</code>, the <code>CreateFileSystem</code> operation fails.</p> </note> <p>Encryption of data in transit is automatically turned on when you access <code>SCRATCH_2</code>, <code>PERSISTENT_1</code> and <code>PERSISTENT_2</code> file systems from Amazon EC2 instances that support automatic encryption in the Amazon Web Services Regions where they are available. For more information about encryption in transit for FSx for Lustre file systems, see <a href=\"https://docs.aws.amazon.com/fsx/latest/LustreGuide/encryption-in-transit-fsxl.html\">Encrypting data in transit</a> in the <i>Amazon FSx for Lustre User Guide</i>. </p> <p>(Default = <code>SCRATCH_1</code>)</p>"
+          "documentation":"<p>(Optional) Choose <code>SCRATCH_1</code> and <code>SCRATCH_2</code> deployment types when you need temporary storage and shorter-term processing of data. The <code>SCRATCH_2</code> deployment type provides in-transit encryption of data and higher burst throughput capacity than <code>SCRATCH_1</code>.</p> <p>Choose <code>PERSISTENT_1</code> for longer-term storage and for throughput-focused workloads that aren’t latency-sensitive. <code>PERSISTENT_1</code> supports encryption of data in transit, and is available in all Amazon Web Services Regions in which FSx for Lustre is available.</p> <p>Choose <code>PERSISTENT_2</code> for longer-term storage and for latency-sensitive workloads that require the highest levels of IOPS/throughput. <code>PERSISTENT_2</code> supports SSD storage, and offers higher <code>PerUnitStorageThroughput</code> (up to 1000 MB/s/TiB). You can optionally specify a metadata configuration mode for <code>PERSISTENT_2</code> which supports increasing metadata performance. <code>PERSISTENT_2</code> is available in a limited number of Amazon Web Services Regions. For more information, and an up-to-date list of Amazon Web Services Regions in which <code>PERSISTENT_2</code> is available, see <a href=\"https://docs.aws.amazon.com/fsx/latest/LustreGuide/using-fsx-lustre.html#lustre-deployment-types\">File system deployment options for FSx for Lustre</a> in the <i>Amazon FSx for Lustre User Guide</i>.</p> <note> <p>If you choose <code>PERSISTENT_2</code>, and you set <code>FileSystemTypeVersion</code> to <code>2.10</code>, the <code>CreateFileSystem</code> operation fails.</p> </note> <p>Encryption of data in transit is automatically turned on when you access <code>SCRATCH_2</code>, <code>PERSISTENT_1</code>, and <code>PERSISTENT_2</code> file systems from Amazon EC2 instances that support automatic encryption in the Amazon Web Services Regions where they are available. For more information about encryption in transit for FSx for Lustre file systems, see <a href=\"https://docs.aws.amazon.com/fsx/latest/LustreGuide/encryption-in-transit-fsxl.html\">Encrypting data in transit</a> in the <i>Amazon FSx for Lustre User Guide</i>.</p> <p>(Default = <code>SCRATCH_1</code>)</p>"
         },
         "AutoImportPolicy":{
           "shape":"AutoImportPolicyType",
@@ -1752,9 +1753,28 @@
         "RootSquashConfiguration":{
           "shape":"LustreRootSquashConfiguration",
           "documentation":"<p>The Lustre root squash configuration used when creating an Amazon FSx for Lustre file system. When enabled, root squash restricts root-level access from clients that try to access your file system as a root user.</p>"
+        },
+        "MetadataConfiguration":{
+          "shape":"CreateFileSystemLustreMetadataConfiguration",
+          "documentation":"<p>The Lustre metadata performance configuration for the creation of an FSx for Lustre file system using a <code>PERSISTENT_2</code> deployment type.</p>"
         }
       },
       "documentation":"<p>The Lustre configuration for the file system being created.</p> <note> <p>The following parameters are not supported for file systems with a data repository association created with .</p> <ul> <li> <p> <code>AutoImportPolicy</code> </p> </li> <li> <p> <code>ExportPath</code> </p> </li> <li> <p> <code>ImportedFileChunkSize</code> </p> </li> <li> <p> <code>ImportPath</code> </p> </li> </ul> </note>"
+    },
+    "CreateFileSystemLustreMetadataConfiguration":{
+      "type":"structure",
+      "required":["Mode"],
+      "members":{
+        "Iops":{
+          "shape":"MetadataIops",
+          "documentation":"<p>(USER_PROVISIONED mode only) Specifies the number of Metadata IOPS to provision for the file system. This parameter sets the maximum rate of metadata disk IOPS supported by the file system. Valid values are <code>1500</code>, <code>3000</code>, <code>6000</code>, <code>12000</code>, and multiples of <code>12000</code> up to a maximum of <code>192000</code>.</p> <note> <p>Iops doesn’t have a default value. If you're using USER_PROVISIONED mode, you can choose to specify a valid value. If you're using AUTOMATIC mode, you cannot specify a value because FSx for Lustre automatically sets the value based on your file system storage capacity. </p> </note>"
+        },
+        "Mode":{
+          "shape":"MetadataConfigurationMode",
+          "documentation":"<p>The metadata configuration mode for provisioning Metadata IOPS for an FSx for Lustre file system using a <code>PERSISTENT_2</code> deployment type.</p> <ul> <li> <p>In AUTOMATIC mode, FSx for Lustre automatically provisions and scales the number of Metadata IOPS for your file system based on your file system storage capacity.</p> </li> <li> <p>In USER_PROVISIONED mode, you specify the number of Metadata IOPS to provision for your file system.</p> </li> </ul>"
+        }
+      },
+      "documentation":"<p>The Lustre metadata performance configuration for the creation of an Amazon FSx for Lustre file system using a <code>PERSISTENT_2</code> deployment type. The configuration uses a Metadata IOPS value to set the maximum rate of metadata disk IOPS supported by the file system.</p> <p>After creation, the file system supports increasing metadata performance. For more information on Metadata IOPS, see <a href=\"https://docs.aws.amazon.com/fsx/latest/LustreGuide/managing-metadata-performance.html#metadata-configuration\">Lustre metadata performance configuration</a> in the <i>Amazon FSx for Lustre User Guide</i>.</p>"
     },
     "CreateFileSystemOntapConfiguration":{
       "type":"structure",
@@ -1793,7 +1813,7 @@
         "WeeklyMaintenanceStartTime":{"shape":"WeeklyTime"},
         "HAPairs":{
           "shape":"HAPairs",
-          "documentation":"<p>Specifies how many high-availability (HA) pairs of file servers will power your file system. Scale-up file systems are powered by 1 HA pair. The default value is 1. FSx for ONTAP scale-out file systems are powered by up to 12 HA pairs. The value of this property affects the values of <code>StorageCapacity</code>, <code>Iops</code>, and <code>ThroughputCapacity</code>. For more information, see <a href=\"https://docs.aws.amazon.com/fsx/latest/ONTAPGuide/HA-pairs.html\">High-availability (HA) pairs</a> in the FSx for ONTAP user guide.</p> <p>Amazon FSx responds with an HTTP status code 400 (Bad Request) for the following conditions:</p> <ul> <li> <p>The value of <code>HAPairs</code> is less than 1 or greater than 12.</p> </li> <li> <p>The value of <code>HAPairs</code> is greater than 1 and the value of <code>DeploymentType</code> is <code>SINGLE_AZ_1</code> or <code>MULTI_AZ_1</code>.</p> </li> </ul>"
+          "documentation":"<p>Specifies how many high-availability (HA) pairs of file servers will power your file system. Scale-up file systems are powered by 1 HA pair. The default value is 1. FSx for ONTAP scale-out file systems are powered by up to 12 HA pairs. The value of this property affects the values of <code>StorageCapacity</code>, <code>Iops</code>, and <code>ThroughputCapacity</code>. For more information, see <a href=\"https://docs.aws.amazon.com/fsx/latest/ONTAPGuide/administering-file-systems.html#HA-pairs\">High-availability (HA) pairs</a> in the FSx for ONTAP user guide.</p> <p>Amazon FSx responds with an HTTP status code 400 (Bad Request) for the following conditions:</p> <ul> <li> <p>The value of <code>HAPairs</code> is less than 1 or greater than 12.</p> </li> <li> <p>The value of <code>HAPairs</code> is greater than 1 and the value of <code>DeploymentType</code> is <code>SINGLE_AZ_1</code> or <code>MULTI_AZ_1</code>.</p> </li> </ul>"
         },
         "ThroughputCapacityPerHAPair":{
           "shape":"ThroughputCapacityPerHAPair",
@@ -1867,11 +1887,11 @@
         },
         "StorageCapacity":{
           "shape":"StorageCapacity",
-          "documentation":"<p>Sets the storage capacity of the file system that you're creating, in gibibytes (GiB).</p> <p> <b>FSx for Lustre file systems</b> - The amount of storage capacity that you can configure depends on the value that you set for <code>StorageType</code> and the Lustre <code>DeploymentType</code>, as follows:</p> <ul> <li> <p>For <code>SCRATCH_2</code>, <code>PERSISTENT_2</code> and <code>PERSISTENT_1</code> deployment types using SSD storage type, the valid values are 1200 GiB, 2400 GiB, and increments of 2400 GiB.</p> </li> <li> <p>For <code>PERSISTENT_1</code> HDD file systems, valid values are increments of 6000 GiB for 12 MB/s/TiB file systems and increments of 1800 GiB for 40 MB/s/TiB file systems.</p> </li> <li> <p>For <code>SCRATCH_1</code> deployment type, valid values are 1200 GiB, 2400 GiB, and increments of 3600 GiB.</p> </li> </ul> <p> <b>FSx for ONTAP file systems</b> - The amount of storage capacity that you can configure depends on the value of the <code>HAPairs</code> property. The minimum value is calculated as 1,024 * <code>HAPairs</code> and the maximum is calculated as 524,288 * <code>HAPairs</code>. </p> <p> <b>FSx for OpenZFS file systems</b> - The amount of storage capacity that you can configure is from 64 GiB up to 524,288 GiB (512 TiB).</p> <p> <b>FSx for Windows File Server file systems</b> - The amount of storage capacity that you can configure depends on the value that you set for <code>StorageType</code> as follows:</p> <ul> <li> <p>For SSD storage, valid values are 32 GiB-65,536 GiB (64 TiB).</p> </li> <li> <p>For HDD storage, valid values are 2000 GiB-65,536 GiB (64 TiB).</p> </li> </ul>"
+          "documentation":"<p>Sets the storage capacity of the file system that you're creating, in gibibytes (GiB).</p> <p> <b>FSx for Lustre file systems</b> - The amount of storage capacity that you can configure depends on the value that you set for <code>StorageType</code> and the Lustre <code>DeploymentType</code>, as follows:</p> <ul> <li> <p>For <code>SCRATCH_2</code>, <code>PERSISTENT_2</code>, and <code>PERSISTENT_1</code> deployment types using SSD storage type, the valid values are 1200 GiB, 2400 GiB, and increments of 2400 GiB.</p> </li> <li> <p>For <code>PERSISTENT_1</code> HDD file systems, valid values are increments of 6000 GiB for 12 MB/s/TiB file systems and increments of 1800 GiB for 40 MB/s/TiB file systems.</p> </li> <li> <p>For <code>SCRATCH_1</code> deployment type, valid values are 1200 GiB, 2400 GiB, and increments of 3600 GiB.</p> </li> </ul> <p> <b>FSx for ONTAP file systems</b> - The amount of storage capacity that you can configure depends on the value of the <code>HAPairs</code> property. The minimum value is calculated as 1,024 * <code>HAPairs</code> and the maximum is calculated as 524,288 * <code>HAPairs</code>. </p> <p> <b>FSx for OpenZFS file systems</b> - The amount of storage capacity that you can configure is from 64 GiB up to 524,288 GiB (512 TiB).</p> <p> <b>FSx for Windows File Server file systems</b> - The amount of storage capacity that you can configure depends on the value that you set for <code>StorageType</code> as follows:</p> <ul> <li> <p>For SSD storage, valid values are 32 GiB-65,536 GiB (64 TiB).</p> </li> <li> <p>For HDD storage, valid values are 2000 GiB-65,536 GiB (64 TiB).</p> </li> </ul>"
         },
         "StorageType":{
           "shape":"StorageType",
-          "documentation":"<p>Sets the storage type for the file system that you're creating. Valid values are <code>SSD</code> and <code>HDD</code>.</p> <ul> <li> <p>Set to <code>SSD</code> to use solid state drive storage. SSD is supported on all Windows, Lustre, ONTAP, and OpenZFS deployment types.</p> </li> <li> <p>Set to <code>HDD</code> to use hard disk drive storage. HDD is supported on <code>SINGLE_AZ_2</code> and <code>MULTI_AZ_1</code> Windows file system deployment types, and on <code>PERSISTENT_1</code> Lustre file system deployment types. </p> </li> </ul> <p>Default value is <code>SSD</code>. For more information, see <a href=\"https://docs.aws.amazon.com/fsx/latest/WindowsGuide/optimize-fsx-costs.html#storage-type-options\"> Storage type options</a> in the <i>FSx for Windows File Server User Guide</i> and <a href=\"https://docs.aws.amazon.com/fsx/latest/LustreGuide/what-is.html#storage-options\">Multiple storage options</a> in the <i>FSx for Lustre User Guide</i>. </p>"
+          "documentation":"<p>Sets the storage type for the file system that you're creating. Valid values are <code>SSD</code> and <code>HDD</code>.</p> <ul> <li> <p>Set to <code>SSD</code> to use solid state drive storage. SSD is supported on all Windows, Lustre, ONTAP, and OpenZFS deployment types.</p> </li> <li> <p>Set to <code>HDD</code> to use hard disk drive storage. HDD is supported on <code>SINGLE_AZ_2</code> and <code>MULTI_AZ_1</code> Windows file system deployment types, and on <code>PERSISTENT_1</code> Lustre file system deployment types.</p> </li> </ul> <p>Default value is <code>SSD</code>. For more information, see <a href=\"https://docs.aws.amazon.com/fsx/latest/WindowsGuide/optimize-fsx-costs.html#storage-type-options\"> Storage type options</a> in the <i>FSx for Windows File Server User Guide</i> and <a href=\"https://docs.aws.amazon.com/fsx/latest/LustreGuide/what-is.html#storage-options\">Multiple storage options</a> in the <i>FSx for Lustre User Guide</i>. </p>"
         },
         "SubnetIds":{
           "shape":"SubnetIds",
@@ -1894,7 +1914,7 @@
         "OntapConfiguration":{"shape":"CreateFileSystemOntapConfiguration"},
         "FileSystemTypeVersion":{
           "shape":"FileSystemTypeVersion",
-          "documentation":"<p>(Optional) For FSx for Lustre file systems, sets the Lustre version for the file system that you're creating. Valid values are <code>2.10</code>, <code>2.12</code>, and <code>2.15</code>:</p> <ul> <li> <p>2.10 is supported by the Scratch and Persistent_1 Lustre deployment types.</p> </li> <li> <p>2.12 and 2.15 are supported by all Lustre deployment types. <code>2.12</code> or <code>2.15</code> is required when setting FSx for Lustre <code>DeploymentType</code> to <code>PERSISTENT_2</code>.</p> </li> </ul> <p>Default value = <code>2.10</code>, except when <code>DeploymentType</code> is set to <code>PERSISTENT_2</code>, then the default is <code>2.12</code>.</p> <note> <p>If you set <code>FileSystemTypeVersion</code> to <code>2.10</code> for a <code>PERSISTENT_2</code> Lustre deployment type, the <code>CreateFileSystem</code> operation fails.</p> </note>"
+          "documentation":"<p>For FSx for Lustre file systems, sets the Lustre version for the file system that you're creating. Valid values are <code>2.10</code>, <code>2.12</code>, and <code>2.15</code>:</p> <ul> <li> <p> <code>2.10</code> is supported by the Scratch and Persistent_1 Lustre deployment types.</p> </li> <li> <p> <code>2.12</code> is supported by all Lustre deployment types, except for <code>PERSISTENT_2</code> with a metadata configuration mode.</p> </li> <li> <p> <code>2.15</code> is supported by all Lustre deployment types and is recommended for all new file systems.</p> </li> </ul> <p>Default value is <code>2.10</code>, except for the following deployments:</p> <ul> <li> <p>Default value is <code>2.12</code> when <code>DeploymentType</code> is set to <code>PERSISTENT_2</code> without a metadata configuration mode.</p> </li> <li> <p>Default value is <code>2.15</code> when <code>DeploymentType</code> is set to <code>PERSISTENT_2</code> with a metadata configuration mode.</p> </li> </ul>"
         },
         "OpenZFSConfiguration":{
           "shape":"CreateFileSystemOpenZFSConfiguration",
@@ -1975,7 +1995,7 @@
         },
         "SecurityStyle":{
           "shape":"SecurityStyle",
-          "documentation":"<p>Specifies the security style for the volume. If a volume's security style is not specified, it is automatically set to the root volume's security style. The security style determines the type of permissions that FSx for ONTAP uses to control data access. For more information, see <a href=\"https://docs.aws.amazon.com/fsx/latest/ONTAPGuide/volume-security-style\">Volume security style</a> in the <i>Amazon FSx for NetApp ONTAP User Guide</i>. Specify one of the following values:</p> <ul> <li> <p> <code>UNIX</code> if the file system is managed by a UNIX administrator, the majority of users are NFS clients, and an application accessing the data uses a UNIX user as the service account. </p> </li> <li> <p> <code>NTFS</code> if the file system is managed by a Windows administrator, the majority of users are SMB clients, and an application accessing the data uses a Windows user as the service account.</p> </li> <li> <p> <code>MIXED</code> This is an advanced setting. For more information, see the topic <a href=\"https://docs.netapp.com/us-en/ontap/nfs-admin/security-styles-their-effects-concept.html\">What the security styles and their effects are</a> in the NetApp Documentation Center.</p> </li> </ul> <p>For more information, see <a href=\"https://docs.aws.amazon.com/fsx/latest/ONTAPGuide/volume-security-style.html\">Volume security style</a> in the FSx for ONTAP User Guide.</p>"
+          "documentation":"<p>Specifies the security style for the volume. If a volume's security style is not specified, it is automatically set to the root volume's security style. The security style determines the type of permissions that FSx for ONTAP uses to control data access. Specify one of the following values:</p> <ul> <li> <p> <code>UNIX</code> if the file system is managed by a UNIX administrator, the majority of users are NFS clients, and an application accessing the data uses a UNIX user as the service account. </p> </li> <li> <p> <code>NTFS</code> if the file system is managed by a Windows administrator, the majority of users are SMB clients, and an application accessing the data uses a Windows user as the service account.</p> </li> <li> <p> <code>MIXED</code> This is an advanced setting. For more information, see the topic <a href=\"https://docs.netapp.com/us-en/ontap/nfs-admin/security-styles-their-effects-concept.html\">What the security styles and their effects are</a> in the NetApp Documentation Center.</p> </li> </ul> <p>For more information, see <a href=\"https://docs.aws.amazon.com/fsx/latest/ONTAPGuide/managing-volumes.html#volume-security-style\">Volume security style</a> in the FSx for ONTAP User Guide.</p>"
         },
         "SizeInMegabytes":{
           "shape":"VolumeCapacity",
@@ -1994,7 +2014,7 @@
         "TieringPolicy":{"shape":"TieringPolicy"},
         "OntapVolumeType":{
           "shape":"InputOntapVolumeType",
-          "documentation":"<p>Specifies the type of volume you are creating. Valid values are the following:</p> <ul> <li> <p> <code>RW</code> specifies a read/write volume. <code>RW</code> is the default.</p> </li> <li> <p> <code>DP</code> specifies a data-protection volume. A <code>DP</code> volume is read-only and can be used as the destination of a NetApp SnapMirror relationship.</p> </li> </ul> <p>For more information, see <a href=\"https://docs.aws.amazon.com/fsx/latest/ONTAPGuide/volume-types\">Volume types</a> in the Amazon FSx for NetApp ONTAP User Guide.</p>"
+          "documentation":"<p>Specifies the type of volume you are creating. Valid values are the following:</p> <ul> <li> <p> <code>RW</code> specifies a read/write volume. <code>RW</code> is the default.</p> </li> <li> <p> <code>DP</code> specifies a data-protection volume. A <code>DP</code> volume is read-only and can be used as the destination of a NetApp SnapMirror relationship.</p> </li> </ul> <p>For more information, see <a href=\"https://docs.aws.amazon.com/fsx/latest/ONTAPGuide/managing-volumes.html#volume-types\">Volume types</a> in the Amazon FSx for NetApp ONTAP User Guide.</p>"
         },
         "SnapshotPolicy":{
           "shape":"SnapshotPolicy",
@@ -2010,7 +2030,7 @@
         },
         "VolumeStyle":{
           "shape":"VolumeStyle",
-          "documentation":"<p>Use to specify the style of an ONTAP volume. FSx for ONTAP offers two styles of volumes that you can use for different purposes, FlexVol and FlexGroup volumes. For more information, see <a href=\"https://docs.aws.amazon.com/fsx/latest/ONTAPGuide/volume-styles.html\">Volume styles</a> in the Amazon FSx for NetApp ONTAP User Guide.</p>"
+          "documentation":"<p>Use to specify the style of an ONTAP volume. FSx for ONTAP offers two styles of volumes that you can use for different purposes, FlexVol and FlexGroup volumes. For more information, see <a href=\"https://docs.aws.amazon.com/fsx/latest/ONTAPGuide/managing-volumes.html#volume-styles\">Volume styles</a> in the Amazon FSx for NetApp ONTAP User Guide.</p>"
         },
         "AggregateConfiguration":{
           "shape":"CreateAggregateConfiguration",
@@ -2174,7 +2194,7 @@
         "Tags":{"shape":"Tags"},
         "RootVolumeSecurityStyle":{
           "shape":"StorageVirtualMachineRootVolumeSecurityStyle",
-          "documentation":"<p>The security style of the root volume of the SVM. Specify one of the following values:</p> <ul> <li> <p> <code>UNIX</code> if the file system is managed by a UNIX administrator, the majority of users are NFS clients, and an application accessing the data uses a UNIX user as the service account.</p> </li> <li> <p> <code>NTFS</code> if the file system is managed by a Microsoft Windows administrator, the majority of users are SMB clients, and an application accessing the data uses a Microsoft Windows user as the service account.</p> </li> <li> <p> <code>MIXED</code> This is an advanced setting. For more information, see <a href=\"fsx/latest/ONTAPGuide/volume-security-style.html\">Volume security style</a> in the Amazon FSx for NetApp ONTAP User Guide.</p> </li> </ul> <p/>"
+          "documentation":"<p>The security style of the root volume of the SVM. Specify one of the following values:</p> <ul> <li> <p> <code>UNIX</code> if the file system is managed by a UNIX administrator, the majority of users are NFS clients, and an application accessing the data uses a UNIX user as the service account.</p> </li> <li> <p> <code>NTFS</code> if the file system is managed by a Microsoft Windows administrator, the majority of users are SMB clients, and an application accessing the data uses a Microsoft Windows user as the service account.</p> </li> <li> <p> <code>MIXED</code> This is an advanced setting. For more information, see <a href=\"https://docs.aws.amazon.com/fsx/latest/ONTAPGuide/volume-security-style.html\">Volume security style</a> in the Amazon FSx for NetApp ONTAP User Guide.</p> </li> </ul> <p/>"
         }
       }
     },
@@ -3487,7 +3507,7 @@
         },
         "DataRepositoryPath":{
           "shape":"ArchivePath",
-          "documentation":"<p>The path to the S3 or NFS data repository that links to the cache. You must provide one of the following paths:</p> <ul> <li> <p>The path can be an NFS data repository that links to the cache. The path can be in one of two formats:</p> <ul> <li> <p>If you are not using the <code>DataRepositorySubdirectories</code> parameter, the path is to an NFS Export directory (or one of its subdirectories) in the format <code>nsf://nfs-domain-name/exportpath</code>. You can therefore link a single NFS Export to a single data repository association.</p> </li> <li> <p>If you are using the <code>DataRepositorySubdirectories</code> parameter, the path is the domain name of the NFS file system in the format <code>nfs://filer-domain-name</code>, which indicates the root of the subdirectories specified with the <code>DataRepositorySubdirectories</code> parameter.</p> </li> </ul> </li> <li> <p>The path can be an S3 bucket or prefix in the format <code>s3://myBucket/myPrefix/</code>.</p> </li> </ul>"
+          "documentation":"<p>The path to the S3 or NFS data repository that links to the cache. You must provide one of the following paths:</p> <ul> <li> <p>The path can be an NFS data repository that links to the cache. The path can be in one of two formats:</p> <ul> <li> <p>If you are not using the <code>DataRepositorySubdirectories</code> parameter, the path is to an NFS Export directory (or one of its subdirectories) in the format <code>nfs://nfs-domain-name/exportpath</code>. You can therefore link a single NFS Export to a single data repository association.</p> </li> <li> <p>If you are using the <code>DataRepositorySubdirectories</code> parameter, the path is the domain name of the NFS file system in the format <code>nfs://filer-domain-name</code>, which indicates the root of the subdirectories specified with the <code>DataRepositorySubdirectories</code> parameter.</p> </li> </ul> </li> <li> <p>The path can be an S3 bucket or prefix in the format <code>s3://myBucket/myPrefix/</code>.</p> </li> </ul>"
         },
         "DataRepositorySubdirectories":{
           "shape":"SubDirectoriesPaths",
@@ -3755,6 +3775,21 @@
         "UPDATING",
         "MISCONFIGURED_UNAVAILABLE"
       ]
+    },
+    "FileSystemLustreMetadataConfiguration":{
+      "type":"structure",
+      "required":["Mode"],
+      "members":{
+        "Iops":{
+          "shape":"MetadataIops",
+          "documentation":"<p>The number of Metadata IOPS provisioned for the file system. Valid values are <code>1500</code>, <code>3000</code>, <code>6000</code>, <code>12000</code>, and multiples of <code>12000</code> up to a maximum of <code>192000</code>.</p>"
+        },
+        "Mode":{
+          "shape":"MetadataConfigurationMode",
+          "documentation":"<p>The metadata configuration mode for provisioning Metadata IOPS for the file system.</p> <ul> <li> <p>In AUTOMATIC mode, FSx for Lustre automatically provisions and scales the number of Metadata IOPS on your file system based on your file system storage capacity.</p> </li> <li> <p>In USER_PROVISIONED mode, you can choose to specify the number of Metadata IOPS to provision for your file system.</p> </li> </ul>"
+        }
+      },
+      "documentation":"<p>The Lustre metadata performance configuration of an Amazon FSx for Lustre file system using a <code>PERSISTENT_2</code> deployment type. The configuration enables the file system to support increasing metadata performance.</p>"
     },
     "FileSystemMaintenanceOperation":{
       "type":"string",
@@ -4133,6 +4168,10 @@
         "RootSquashConfiguration":{
           "shape":"LustreRootSquashConfiguration",
           "documentation":"<p>The Lustre root squash configuration for an Amazon FSx for Lustre file system. When enabled, root squash restricts root-level access from clients that try to access your file system as a root user.</p>"
+        },
+        "MetadataConfiguration":{
+          "shape":"FileSystemLustreMetadataConfiguration",
+          "documentation":"<p>The Lustre metadata performance configuration for an Amazon FSx for Lustre file system using a <code>PERSISTENT_2</code> deployment type.</p>"
         }
       },
       "documentation":"<p>The configuration for the Amazon FSx for Lustre file system.</p>"
@@ -4220,6 +4259,18 @@
       "documentation":"<p>The sustained throughput of an Amazon FSx file system in Megabytes per second (MBps).</p>",
       "max":100000,
       "min":8
+    },
+    "MetadataConfigurationMode":{
+      "type":"string",
+      "enum":[
+        "AUTOMATIC",
+        "USER_PROVISIONED"
+      ]
+    },
+    "MetadataIops":{
+      "type":"integer",
+      "max":192000,
+      "min":1500
     },
     "MetadataStorageCapacity":{
       "type":"integer",
@@ -5054,30 +5105,30 @@
       "members":{
         "UserName":{
           "shape":"DirectoryUserName",
-          "documentation":"<p>Specifies the updated user name for the service account on your self-managed AD domain. Amazon FSx uses this account to join to your self-managed AD domain.</p> <p>This account must have the permissions required to join computers to the domain in the organizational unit provided in <code>OrganizationalUnitDistinguishedName</code>.</p>"
+          "documentation":"<p>Specifies the updated user name for the service account on your self-managed Active Directory domain. Amazon FSx uses this account to join to your self-managed Active Directory domain.</p> <p>This account must have the permissions required to join computers to the domain in the organizational unit provided in <code>OrganizationalUnitDistinguishedName</code>.</p>"
         },
         "Password":{
           "shape":"DirectoryPassword",
-          "documentation":"<p>Specifies the updated password for the service account on your self-managed AD domain. Amazon FSx uses this account to join to your self-managed AD domain.</p>"
+          "documentation":"<p>Specifies the updated password for the service account on your self-managed Active Directory domain. Amazon FSx uses this account to join to your self-managed Active Directory domain.</p>"
         },
         "DnsIps":{
           "shape":"DnsIps",
-          "documentation":"<p>A list of up to three DNS server or domain controller IP addresses in your self-managed AD domain.</p>"
+          "documentation":"<p>A list of up to three DNS server or domain controller IP addresses in your self-managed Active Directory domain.</p>"
         },
         "DomainName":{
           "shape":"ActiveDirectoryFullyQualifiedName",
-          "documentation":"<p>Specifies an updated fully qualified domain name of your self-managed AD configuration.</p>"
+          "documentation":"<p>Specifies an updated fully qualified domain name of your self-managed Active Directory configuration.</p>"
         },
         "OrganizationalUnitDistinguishedName":{
           "shape":"OrganizationalUnitDistinguishedName",
-          "documentation":"<p>Specifies an updated fully qualified distinguished name of the organization unit within your self-managed AD.</p>"
+          "documentation":"<p>Specifies an updated fully qualified distinguished name of the organization unit within your self-managed Active Directory.</p>"
         },
         "FileSystemAdministratorsGroup":{
           "shape":"FileSystemAdministratorsGroupName",
-          "documentation":"<p>Specifies the updated name of the self-managed AD domain group whose members are granted administrative privileges for the Amazon FSx resource.</p>"
+          "documentation":"<p>For FSx for ONTAP file systems only - Specifies the updated name of the self-managed Active Directory domain group whose members are granted administrative privileges for the Amazon FSx resource.</p>"
         }
       },
-      "documentation":"<p>Specifies changes you are making to the self-managed Microsoft Active Directory (AD) configuration to which an FSx for Windows File Server file system or an FSx for ONTAP SVM is joined.</p>"
+      "documentation":"<p>Specifies changes you are making to the self-managed Microsoft Active Directory configuration to which an FSx for Windows File Server file system or an FSx for ONTAP SVM is joined.</p>"
     },
     "ServiceLimit":{
       "type":"string",
@@ -5793,9 +5844,27 @@
         "PerUnitStorageThroughput":{
           "shape":"PerUnitStorageThroughput",
           "documentation":"<p>The throughput of an Amazon FSx for Lustre Persistent SSD-based file system, measured in megabytes per second per tebibyte (MB/s/TiB). You can increase or decrease your file system's throughput. Valid values depend on the deployment type of the file system, as follows:</p> <ul> <li> <p>For <code>PERSISTENT_1</code> SSD-based deployment types, valid values are 50, 100, and 200 MB/s/TiB.</p> </li> <li> <p>For <code>PERSISTENT_2</code> SSD-based deployment types, valid values are 125, 250, 500, and 1000 MB/s/TiB.</p> </li> </ul> <p>For more information, see <a href=\"https://docs.aws.amazon.com/fsx/latest/LustreGuide/managing-throughput-capacity.html\"> Managing throughput capacity</a>.</p>"
+        },
+        "MetadataConfiguration":{
+          "shape":"UpdateFileSystemLustreMetadataConfiguration",
+          "documentation":"<p>The Lustre metadata performance configuration for an Amazon FSx for Lustre file system using a <code>PERSISTENT_2</code> deployment type. When this configuration is enabled, the file system supports increasing metadata performance.</p>"
         }
       },
       "documentation":"<p>The configuration object for Amazon FSx for Lustre file systems used in the <code>UpdateFileSystem</code> operation.</p>"
+    },
+    "UpdateFileSystemLustreMetadataConfiguration":{
+      "type":"structure",
+      "members":{
+        "Iops":{
+          "shape":"MetadataIops",
+          "documentation":"<p>(USER_PROVISIONED mode only) Specifies the number of Metadata IOPS to provision for your file system. Valid values are <code>1500</code>, <code>3000</code>, <code>6000</code>, <code>12000</code>, and multiples of <code>12000</code> up to a maximum of <code>192000</code>.</p> <p>The value you provide must be greater than or equal to the current number of Metadata IOPS provisioned for the file system.</p>"
+        },
+        "Mode":{
+          "shape":"MetadataConfigurationMode",
+          "documentation":"<p>The metadata configuration mode for provisioning Metadata IOPS for an FSx for Lustre file system using a <code>PERSISTENT_2</code> deployment type.</p> <ul> <li> <p>To increase the Metadata IOPS or to switch from AUTOMATIC mode, specify <code>USER_PROVISIONED</code> as the value for this parameter. Then use the Iops parameter to provide a Metadata IOPS value that is greater than or equal to the current number of Metadata IOPS provisioned for the file system.</p> </li> <li> <p>To switch from USER_PROVISIONED mode, specify <code>AUTOMATIC</code> as the value for this parameter, but do not input a value for Iops.</p> <note> <p>If you request to switch from USER_PROVISIONED to AUTOMATIC mode and the current Metadata IOPS value is greater than the automated default, FSx for Lustre rejects the request because downscaling Metadata IOPS is not supported.</p> </note> </li> </ul>"
+        }
+      },
+      "documentation":"<p>The Lustre metadata performance configuration update for an Amazon FSx for Lustre file system using a <code>PERSISTENT_2</code> deployment type. You can request an increase in your file system's Metadata IOPS and/or switch your file system's metadata configuration mode. For more information, see <a href=\"https://docs.aws.amazon.com/fsx/latest/LustreGuide/managing-metadata-performance.html\">Managing metadata performance</a> in the <i>Amazon FSx for Lustre User Guide</i>.</p>"
     },
     "UpdateFileSystemOntapConfiguration":{
       "type":"structure",

@@ -5,6 +5,7 @@
     "endpointPrefix":"firehose",
     "jsonVersion":"1.1",
     "protocol":"json",
+    "protocols":["json"],
     "serviceAbbreviation":"Firehose",
     "serviceFullName":"Amazon Kinesis Firehose",
     "serviceId":"Firehose",
@@ -130,7 +131,7 @@
         {"shape":"LimitExceededException"},
         {"shape":"InvalidKMSResourceException"}
       ],
-      "documentation":"<p>Enables server-side encryption (SSE) for the delivery stream. </p> <p>This operation is asynchronous. It returns immediately. When you invoke it, Firehose first sets the encryption status of the stream to <code>ENABLING</code>, and then to <code>ENABLED</code>. The encryption status of a delivery stream is the <code>Status</code> property in <a>DeliveryStreamEncryptionConfiguration</a>. If the operation fails, the encryption status changes to <code>ENABLING_FAILED</code>. You can continue to read and write data to your delivery stream while the encryption status is <code>ENABLING</code>, but the data is not encrypted. It can take up to 5 seconds after the encryption status changes to <code>ENABLED</code> before all records written to the delivery stream are encrypted. To find out whether a record or a batch of records was encrypted, check the response elements <a>PutRecordOutput$Encrypted</a> and <a>PutRecordBatchOutput$Encrypted</a>, respectively.</p> <p>To check the encryption status of a delivery stream, use <a>DescribeDeliveryStream</a>.</p> <p>Even if encryption is currently enabled for a delivery stream, you can still invoke this operation on it to change the ARN of the CMK or both its type and ARN. If you invoke this method to change the CMK, and the old CMK is of type <code>CUSTOMER_MANAGED_CMK</code>, Firehose schedules the grant it had on the old CMK for retirement. If the new CMK is of type <code>CUSTOMER_MANAGED_CMK</code>, Firehose creates a grant that enables it to use the new CMK to encrypt and decrypt data and to manage the grant.</p> <p>For the KMS grant creation to be successful, Firehose APIs <code>StartDeliveryStreamEncryption</code> and <code>CreateDeliveryStream</code> should not be called with session credentials that are more than 6 hours old.</p> <p>If a delivery stream already has encryption enabled and then you invoke this operation to change the ARN of the CMK or both its type and ARN and you get <code>ENABLING_FAILED</code>, this only means that the attempt to change the CMK failed. In this case, encryption remains enabled with the old CMK.</p> <p>If the encryption status of your delivery stream is <code>ENABLING_FAILED</code>, you can invoke this operation again with a valid CMK. The CMK must be enabled and the key policy mustn't explicitly deny the permission for Firehose to invoke KMS encrypt and decrypt operations.</p> <p>You can enable SSE for a delivery stream only if it's a delivery stream that uses <code>DirectPut</code> as its source. </p> <p>The <code>StartDeliveryStreamEncryption</code> and <code>StopDeliveryStreamEncryption</code> operations have a combined limit of 25 calls per delivery stream per 24 hours. For example, you reach the limit if you call <code>StartDeliveryStreamEncryption</code> 13 times and <code>StopDeliveryStreamEncryption</code> 12 times for the same delivery stream in a 24-hour period.</p>"
+      "documentation":"<p>Enables server-side encryption (SSE) for the delivery stream. </p> <p>This operation is asynchronous. It returns immediately. When you invoke it, Firehose first sets the encryption status of the stream to <code>ENABLING</code>, and then to <code>ENABLED</code>. The encryption status of a delivery stream is the <code>Status</code> property in <a>DeliveryStreamEncryptionConfiguration</a>. If the operation fails, the encryption status changes to <code>ENABLING_FAILED</code>. You can continue to read and write data to your delivery stream while the encryption status is <code>ENABLING</code>, but the data is not encrypted. It can take up to 5 seconds after the encryption status changes to <code>ENABLED</code> before all records written to the delivery stream are encrypted. To find out whether a record or a batch of records was encrypted, check the response elements <a>PutRecordOutput$Encrypted</a> and <a>PutRecordBatchOutput$Encrypted</a>, respectively.</p> <p>To check the encryption status of a delivery stream, use <a>DescribeDeliveryStream</a>.</p> <p>Even if encryption is currently enabled for a delivery stream, you can still invoke this operation on it to change the ARN of the CMK or both its type and ARN. If you invoke this method to change the CMK, and the old CMK is of type <code>CUSTOMER_MANAGED_CMK</code>, Firehose schedules the grant it had on the old CMK for retirement. If the new CMK is of type <code>CUSTOMER_MANAGED_CMK</code>, Firehose creates a grant that enables it to use the new CMK to encrypt and decrypt data and to manage the grant.</p> <p>For the KMS grant creation to be successful, the Firehose API operations <code>StartDeliveryStreamEncryption</code> and <code>CreateDeliveryStream</code> should not be called with session credentials that are more than 6 hours old.</p> <p>If a delivery stream already has encryption enabled and then you invoke this operation to change the ARN of the CMK or both its type and ARN and you get <code>ENABLING_FAILED</code>, this only means that the attempt to change the CMK failed. In this case, encryption remains enabled with the old CMK.</p> <p>If the encryption status of your delivery stream is <code>ENABLING_FAILED</code>, you can invoke this operation again with a valid CMK. The CMK must be enabled and the key policy mustn't explicitly deny the permission for Firehose to invoke KMS encrypt and decrypt operations.</p> <p>You can enable SSE for a delivery stream only if it's a delivery stream that uses <code>DirectPut</code> as its source. </p> <p>The <code>StartDeliveryStreamEncryption</code> and <code>StopDeliveryStreamEncryption</code> operations have a combined limit of 25 calls per delivery stream per 24 hours. For example, you reach the limit if you call <code>StartDeliveryStreamEncryption</code> 13 times and <code>StopDeliveryStreamEncryption</code> 12 times for the same delivery stream in a 24-hour period.</p>"
     },
     "StopDeliveryStreamEncryption":{
       "name":"StopDeliveryStreamEncryption",
@@ -1842,7 +1843,7 @@
         "CloudWatchLoggingOptions":{"shape":"CloudWatchLoggingOptions"},
         "RequestConfiguration":{
           "shape":"HttpEndpointRequestConfiguration",
-          "documentation":"<p>The configuration of the requeste sent to the HTTP endpoint specified as the destination.</p>"
+          "documentation":"<p>The configuration of the request sent to the HTTP endpoint that is specified as the destination.</p>"
         },
         "ProcessingConfiguration":{"shape":"ProcessingConfiguration"},
         "RoleARN":{
@@ -1857,7 +1858,11 @@
           "shape":"HttpEndpointS3BackupMode",
           "documentation":"<p>Describes the S3 bucket backup options for the data that Firehose delivers to the HTTP endpoint destination. You can back up all documents (<code>AllData</code>) or only the documents that Firehose could not deliver to the specified HTTP endpoint destination (<code>FailedDataOnly</code>).</p>"
         },
-        "S3Configuration":{"shape":"S3DestinationConfiguration"}
+        "S3Configuration":{"shape":"S3DestinationConfiguration"},
+        "SecretsManagerConfiguration":{
+          "shape":"SecretsManagerConfiguration",
+          "documentation":"<p> The configuration that defines how you access secrets for HTTP Endpoint destination. </p>"
+        }
       },
       "documentation":"<p>Describes the configuration of the HTTP endpoint destination.</p>"
     },
@@ -1890,7 +1895,11 @@
           "shape":"HttpEndpointS3BackupMode",
           "documentation":"<p>Describes the S3 bucket backup options for the data that Kinesis Firehose delivers to the HTTP endpoint destination. You can back up all documents (<code>AllData</code>) or only the documents that Firehose could not deliver to the specified HTTP endpoint destination (<code>FailedDataOnly</code>).</p>"
         },
-        "S3DestinationDescription":{"shape":"S3DestinationDescription"}
+        "S3DestinationDescription":{"shape":"S3DestinationDescription"},
+        "SecretsManagerConfiguration":{
+          "shape":"SecretsManagerConfiguration",
+          "documentation":"<p> The configuration that defines how you access secrets for HTTP Endpoint destination. </p>"
+        }
       },
       "documentation":"<p>Describes the HTTP endpoint destination.</p>"
     },
@@ -1923,7 +1932,11 @@
           "shape":"HttpEndpointS3BackupMode",
           "documentation":"<p>Describes the S3 bucket backup options for the data that Kinesis Firehose delivers to the HTTP endpoint destination. You can back up all documents (<code>AllData</code>) or only the documents that Firehose could not deliver to the specified HTTP endpoint destination (<code>FailedDataOnly</code>).</p>"
         },
-        "S3Update":{"shape":"S3DestinationUpdate"}
+        "S3Update":{"shape":"S3DestinationUpdate"},
+        "SecretsManagerConfiguration":{
+          "shape":"SecretsManagerConfiguration",
+          "documentation":"<p> The configuration that defines how you access secrets for HTTP Endpoint destination. </p>"
+        }
       },
       "documentation":"<p>Updates the specified HTTP endpoint destination.</p>"
     },
@@ -2404,7 +2417,7 @@
           "documentation":"<p>Indicates the version of row format to output. The possible values are <code>V1</code> and <code>V2</code>. The default is <code>V1</code>.</p>"
         }
       },
-      "documentation":"<p>A serializer to use for converting data to the Parquet format before storing it in Amazon S3. For more information, see <a href=\"https://parquet.apache.org/documentation/latest/\">Apache Parquet</a>.</p>"
+      "documentation":"<p>A serializer to use for converting data to the Parquet format before storing it in Amazon S3. For more information, see <a href=\"https://parquet.apache.org/docs/\">Apache Parquet</a>.</p>"
     },
     "ParquetWriterVersion":{
       "type":"string",
@@ -2639,8 +2652,6 @@
         "RoleARN",
         "ClusterJDBCURL",
         "CopyCommand",
-        "Username",
-        "Password",
         "S3Configuration"
       ],
       "members":{
@@ -2687,6 +2698,10 @@
         "CloudWatchLoggingOptions":{
           "shape":"CloudWatchLoggingOptions",
           "documentation":"<p>The CloudWatch logging options for your delivery stream.</p>"
+        },
+        "SecretsManagerConfiguration":{
+          "shape":"SecretsManagerConfiguration",
+          "documentation":"<p> The configuration that defines how you access secrets for Amazon Redshift. </p>"
         }
       },
       "documentation":"<p>Describes the configuration of a destination in Amazon Redshift.</p>"
@@ -2697,7 +2712,6 @@
         "RoleARN",
         "ClusterJDBCURL",
         "CopyCommand",
-        "Username",
         "S3DestinationDescription"
       ],
       "members":{
@@ -2740,6 +2754,10 @@
         "CloudWatchLoggingOptions":{
           "shape":"CloudWatchLoggingOptions",
           "documentation":"<p>The Amazon CloudWatch logging options for your delivery stream.</p>"
+        },
+        "SecretsManagerConfiguration":{
+          "shape":"SecretsManagerConfiguration",
+          "documentation":"<p> The configuration that defines how you access secrets for Amazon Redshift. </p>"
         }
       },
       "documentation":"<p>Describes a destination in Amazon Redshift.</p>"
@@ -2790,6 +2808,10 @@
         "CloudWatchLoggingOptions":{
           "shape":"CloudWatchLoggingOptions",
           "documentation":"<p>The Amazon CloudWatch logging options for your delivery stream.</p>"
+        },
+        "SecretsManagerConfiguration":{
+          "shape":"SecretsManagerConfiguration",
+          "documentation":"<p> The configuration that defines how you access secrets for Amazon Redshift. </p>"
         }
       },
       "documentation":"<p>Describes an update for a destination in Amazon Redshift.</p>"
@@ -3021,6 +3043,31 @@
       },
       "documentation":"<p>Specifies the schema to which you want Firehose to configure your data before it writes it to Amazon S3. This parameter is required if <code>Enabled</code> is set to true.</p>"
     },
+    "SecretARN":{
+      "type":"string",
+      "max":2048,
+      "min":1,
+      "pattern":"arn:.*"
+    },
+    "SecretsManagerConfiguration":{
+      "type":"structure",
+      "required":["Enabled"],
+      "members":{
+        "SecretARN":{
+          "shape":"SecretARN",
+          "documentation":"<p>The ARN of the secret that stores your credentials. It must be in the same region as the Firehose stream and the role. The secret ARN can reside in a different account than the delivery stream and role as Firehose supports cross-account secret access. This parameter is required when <b>Enabled</b> is set to <code>True</code>.</p>"
+        },
+        "RoleARN":{
+          "shape":"RoleARN",
+          "documentation":"<p> Specifies the role that Firehose assumes when calling the Secrets Manager API operation. When you provide the role, it overrides any destination specific role defined in the destination configuration. If you do not provide the then we use the destination specific role. This parameter is required for Splunk. </p>"
+        },
+        "Enabled":{
+          "shape":"BooleanObject",
+          "documentation":"<p>Specifies whether you want to use the the secrets manager feature. When set as <code>True</code> the secrets manager configuration overwrites the existing secrets in the destination configuration. When it's set to <code>False</code> Firehose falls back to the credentials in the destination configuration.</p>"
+        }
+      },
+      "documentation":"<p>The structure that defines how Firehose accesses the secret.</p>"
+    },
     "SecurityGroupIdList":{
       "type":"list",
       "member":{"shape":"NonEmptyStringWithoutWhitespace"},
@@ -3089,8 +3136,6 @@
       "type":"structure",
       "required":[
         "AccountUrl",
-        "PrivateKey",
-        "User",
         "Database",
         "Schema",
         "Table",
@@ -3160,7 +3205,11 @@
           "shape":"SnowflakeS3BackupMode",
           "documentation":"<p>Choose an S3 backup mode</p>"
         },
-        "S3Configuration":{"shape":"S3DestinationConfiguration"}
+        "S3Configuration":{"shape":"S3DestinationConfiguration"},
+        "SecretsManagerConfiguration":{
+          "shape":"SecretsManagerConfiguration",
+          "documentation":"<p> The configuration that defines how you access secrets for Snowflake. </p>"
+        }
       },
       "documentation":"<p>Configure Snowflake destination</p>"
     },
@@ -3221,7 +3270,11 @@
           "shape":"SnowflakeS3BackupMode",
           "documentation":"<p>Choose an S3 backup mode</p>"
         },
-        "S3DestinationDescription":{"shape":"S3DestinationDescription"}
+        "S3DestinationDescription":{"shape":"S3DestinationDescription"},
+        "SecretsManagerConfiguration":{
+          "shape":"SecretsManagerConfiguration",
+          "documentation":"<p> The configuration that defines how you access secrets for Snowflake. </p>"
+        }
       },
       "documentation":"<p>Optional Snowflake destination description</p>"
     },
@@ -3286,7 +3339,11 @@
           "shape":"SnowflakeS3BackupMode",
           "documentation":"<p>Choose an S3 backup mode</p>"
         },
-        "S3Update":{"shape":"S3DestinationUpdate"}
+        "S3Update":{"shape":"S3DestinationUpdate"},
+        "SecretsManagerConfiguration":{
+          "shape":"SecretsManagerConfiguration",
+          "documentation":"<p> Describes the Secrets Manager configuration in Snowflake. </p>"
+        }
       },
       "documentation":"<p>Update to configuration settings</p>"
     },
@@ -3430,7 +3487,6 @@
       "required":[
         "HECEndpoint",
         "HECEndpointType",
-        "HECToken",
         "S3Configuration"
       ],
       "members":{
@@ -3473,6 +3529,10 @@
         "BufferingHints":{
           "shape":"SplunkBufferingHints",
           "documentation":"<p>The buffering options. If no value is specified, the default values for Splunk are used.</p>"
+        },
+        "SecretsManagerConfiguration":{
+          "shape":"SecretsManagerConfiguration",
+          "documentation":"<p> The configuration that defines how you access secrets for Splunk. </p>"
         }
       },
       "documentation":"<p>Describes the configuration of a destination in Splunk.</p>"
@@ -3519,6 +3579,10 @@
         "BufferingHints":{
           "shape":"SplunkBufferingHints",
           "documentation":"<p>The buffering options. If no value is specified, the default values for Splunk are used.</p>"
+        },
+        "SecretsManagerConfiguration":{
+          "shape":"SecretsManagerConfiguration",
+          "documentation":"<p> The configuration that defines how you access secrets for Splunk. </p>"
         }
       },
       "documentation":"<p>Describes a destination in Splunk.</p>"
@@ -3565,6 +3629,10 @@
         "BufferingHints":{
           "shape":"SplunkBufferingHints",
           "documentation":"<p>The buffering options. If no value is specified, the default values for Splunk are used.</p>"
+        },
+        "SecretsManagerConfiguration":{
+          "shape":"SecretsManagerConfiguration",
+          "documentation":"<p> The configuration that defines how you access secrets for Splunk. </p>"
         }
       },
       "documentation":"<p>Describes an update for a destination in Splunk.</p>"
@@ -3776,7 +3844,7 @@
         },
         "SnowflakeDestinationUpdate":{
           "shape":"SnowflakeDestinationUpdate",
-          "documentation":"<p>Update to the Snowflake destination condiguration settings</p>"
+          "documentation":"<p>Update to the Snowflake destination configuration settings.</p>"
         }
       }
     },
@@ -3844,5 +3912,5 @@
       "documentation":"<p>The details of the VPC of the Amazon ES destination.</p>"
     }
   },
-  "documentation":"<fullname>Amazon Data Firehose</fullname> <note> <p>Amazon Data Firehose was previously known as Amazon Kinesis Data Firehose.</p> </note> <p>Amazon Data Firehose is a fully managed service that delivers real-time streaming data to destinations such as Amazon Simple Storage Service (Amazon S3), Amazon OpenSearch Service, Amazon Redshift, Splunk, and various other supportd destinations.</p>"
+  "documentation":"<fullname>Amazon Data Firehose</fullname> <note> <p>Amazon Data Firehose was previously known as Amazon Kinesis Data Firehose.</p> </note> <p>Amazon Data Firehose is a fully managed service that delivers real-time streaming data to destinations such as Amazon Simple Storage Service (Amazon S3), Amazon OpenSearch Service, Amazon Redshift, Splunk, and various other supported destinations.</p>"
 }

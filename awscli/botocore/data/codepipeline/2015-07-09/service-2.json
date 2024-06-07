@@ -11,7 +11,8 @@
     "serviceId":"CodePipeline",
     "signatureVersion":"v4",
     "targetPrefix":"CodePipeline_20150709",
-    "uid":"codepipeline-2015-07-09"
+    "uid":"codepipeline-2015-07-09",
+    "auth":["aws.auth#sigv4"]
   },
   "operations":{
     "AcknowledgeJob":{
@@ -297,7 +298,7 @@
         {"shape":"PipelineNotFoundException"},
         {"shape":"InvalidNextTokenException"}
       ],
-      "documentation":"<p>Gets a summary of the most recent executions for a pipeline.</p>"
+      "documentation":"<p>Gets a summary of the most recent executions for a pipeline.</p> <note> <p>When applying the filter for pipeline executions that have succeeded in the stage, the operation returns all executions in the current pipeline version beginning on February 1, 2024.</p> </note>"
     },
     "ListPipelines":{
       "name":"ListPipelines",
@@ -2812,7 +2813,7 @@
         },
         "maxResults":{
           "shape":"MaxResults",
-          "documentation":"<p>The maximum number of results to return in a single call. To retrieve the remaining results, make another call with the returned nextToken value. Action execution history is retained for up to 12 months, based on action execution start times. Default value is 100. </p> <note> <p>Detailed execution history is available for executions run on or after February 21, 2019.</p> </note>"
+          "documentation":"<p>The maximum number of results to return in a single call. To retrieve the remaining results, make another call with the returned nextToken value. Action execution history is retained for up to 12 months, based on action execution start times. Default value is 100. </p>"
         },
         "nextToken":{
           "shape":"NextToken",
@@ -4102,7 +4103,7 @@
           "documentation":"<p>The source revision, or version of your source artifact, with the changes that you want to run in the pipeline execution.</p>"
         }
       },
-      "documentation":"<p>A list that allows you to specify, or override, the source revision for a pipeline execution that's being started. A source revision is the version with all the changes to your application code, or source artifact, for the pipeline execution.</p>"
+      "documentation":"<p>A list that allows you to specify, or override, the source revision for a pipeline execution that's being started. A source revision is the version with all the changes to your application code, or source artifact, for the pipeline execution.</p> <note> <p>For the <code>S3_OBJECT_VERSION_ID</code> and <code>S3_OBJECT_KEY</code> types of source revisions, either of the types can be used independently, or they can be used together to override the source with a specific ObjectKey and VersionID.</p> </note>"
     },
     "SourceRevisionOverrideList":{
       "type":"list",
@@ -4115,7 +4116,8 @@
       "enum":[
         "COMMIT_ID",
         "IMAGE_DIGEST",
-        "S3_OBJECT_VERSION_ID"
+        "S3_OBJECT_VERSION_ID",
+        "S3_OBJECT_KEY"
       ]
     },
     "StageActionDeclarationList":{

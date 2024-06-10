@@ -2,6 +2,14 @@
 CHANGELOG
 =========
 
+2.16.5
+======
+
+* api-change:``ecs``: This release introduces a new cluster configuration to support the customer-managed keys for ECS managed storage encryption.
+* api-change:``imagebuilder``: This release updates the regex pattern for Image Builder ARNs.
+* api-change:``application-signals``: This is the initial SDK release for Amazon CloudWatch Application Signals. Amazon CloudWatch Application Signals provides curated application performance monitoring for developers to monitor and troubleshoot application health using pre-built dashboards and Service Level Objectives.
+
+
 2.16.4
 ======
 

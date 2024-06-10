@@ -21,6 +21,7 @@ _ALLOWED_COMMANDS = [
 ]
 
 
+@pytest.mark.validates_models
 def test_no_event_stream_unless_allowed():
     driver = create_clidriver()
     help_command = driver.create_help_command()

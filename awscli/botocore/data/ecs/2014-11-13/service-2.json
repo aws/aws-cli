@@ -5,12 +5,14 @@
     "endpointPrefix":"ecs",
     "jsonVersion":"1.1",
     "protocol":"json",
+    "protocols":["json"],
     "serviceAbbreviation":"Amazon ECS",
     "serviceFullName":"Amazon EC2 Container Service",
     "serviceId":"ECS",
     "signatureVersion":"v4",
     "targetPrefix":"AmazonEC2ContainerServiceV20141113",
-    "uid":"ecs-2014-11-13"
+    "uid":"ecs-2014-11-13",
+    "auth":["aws.auth#sigv4"]
   },
   "operations":{
     "CreateCapacityProvider":{
@@ -706,7 +708,7 @@
         {"shape":"InvalidParameterException"},
         {"shape":"ClusterNotFoundException"}
       ],
-      "documentation":"<p>Stops a running task. Any tags associated with the task will be deleted.</p> <p>When <a>StopTask</a> is called on a task, the equivalent of <code>docker stop</code> is issued to the containers running in the task. This results in a <code>SIGTERM</code> value and a default 30-second timeout, after which the <code>SIGKILL</code> value is sent and the containers are forcibly stopped. If the container handles the <code>SIGTERM</code> value gracefully and exits within 30 seconds from receiving it, no <code>SIGKILL</code> value is sent.</p> <note> <p>The default 30-second timeout can be configured on the Amazon ECS container agent with the <code>ECS_CONTAINER_STOP_TIMEOUT</code> variable. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonECS/latest/developerguide/ecs-agent-config.html\">Amazon ECS Container Agent Configuration</a> in the <i>Amazon Elastic Container Service Developer Guide</i>.</p> </note>"
+      "documentation":"<p>Stops a running task. Any tags associated with the task will be deleted.</p> <p>When <a>StopTask</a> is called on a task, the equivalent of <code>docker stop</code> is issued to the containers running in the task. This results in a <code>SIGTERM</code> value and a default 30-second timeout, after which the <code>SIGKILL</code> value is sent and the containers are forcibly stopped. If the container handles the <code>SIGTERM</code> value gracefully and exits within 30 seconds from receiving it, no <code>SIGKILL</code> value is sent.</p> <p>For Windows containers, POSIX signals do not work and runtime stops the container by sending a <code>CTRL_SHUTDOWN_EVENT</code>. For more information, see <a href=\"https://github.com/moby/moby/issues/25982\">Unable to react to graceful shutdown of (Windows) container #25982</a> on GitHub.</p> <note> <p>The default 30-second timeout can be configured on the Amazon ECS container agent with the <code>ECS_CONTAINER_STOP_TIMEOUT</code> variable. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonECS/latest/developerguide/ecs-agent-config.html\">Amazon ECS Container Agent Configuration</a> in the <i>Amazon Elastic Container Service Developer Guide</i>.</p> </note>"
     },
     "SubmitAttachmentStateChanges":{
       "name":"SubmitAttachmentStateChanges",
@@ -1230,7 +1232,7 @@
           "documentation":"<p>The <i>base</i> value designates how many tasks, at a minimum, to run on the specified capacity provider. Only one capacity provider in a capacity provider strategy can have a <i>base</i> defined. If no value is specified, the default value of <code>0</code> is used.</p>"
         }
       },
-      "documentation":"<p>The details of a capacity provider strategy. A capacity provider strategy can be set when using the <a>RunTask</a> or <a>CreateCluster</a> APIs or as the default capacity provider strategy for a cluster with the <a>CreateCluster</a> API.</p> <p>Only capacity providers that are already associated with a cluster and have an <code>ACTIVE</code> or <code>UPDATING</code> status can be used in a capacity provider strategy. The <a>PutClusterCapacityProviders</a> API is used to associate a capacity provider with a cluster.</p> <p>If specifying a capacity provider that uses an Auto Scaling group, the capacity provider must already be created. New Auto Scaling group capacity providers can be created with the <a>CreateCapacityProvider</a> API operation.</p> <p>To use a Fargate capacity provider, specify either the <code>FARGATE</code> or <code>FARGATE_SPOT</code> capacity providers. The Fargate capacity providers are available to all accounts and only need to be associated with a cluster to be used in a capacity provider strategy.</p> <p>A capacity provider strategy may contain a maximum of 6 capacity providers.</p>"
+      "documentation":"<p>The details of a capacity provider strategy. A capacity provider strategy can be set when using the <a>RunTask</a> or <a>CreateCluster</a> APIs or as the default capacity provider strategy for a cluster with the <a>CreateCluster</a> API.</p> <p>Only capacity providers that are already associated with a cluster and have an <code>ACTIVE</code> or <code>UPDATING</code> status can be used in a capacity provider strategy. The <a>PutClusterCapacityProviders</a> API is used to associate a capacity provider with a cluster.</p> <p>If specifying a capacity provider that uses an Auto Scaling group, the capacity provider must already be created. New Auto Scaling group capacity providers can be created with the <a>CreateCapacityProvider</a> API operation.</p> <p>To use a Fargate capacity provider, specify either the <code>FARGATE</code> or <code>FARGATE_SPOT</code> capacity providers. The Fargate capacity providers are available to all accounts and only need to be associated with a cluster to be used in a capacity provider strategy.</p> <p>With <code>FARGATE_SPOT</code>, you can run interruption tolerant tasks at a rate that's discounted compared to the <code>FARGATE</code> price. <code>FARGATE_SPOT</code> runs tasks on spare compute capacity. When Amazon Web Services needs the capacity back, your tasks are interrupted with a two-minute warning. <code>FARGATE_SPOT</code> only supports Linux tasks with the X86_64 architecture on platform version 1.3.0 or later.</p> <p>A capacity provider strategy may contain a maximum of 6 capacity providers.</p>"
     },
     "CapacityProviderStrategyItemBase":{
       "type":"integer",
@@ -1344,9 +1346,13 @@
         "executeCommandConfiguration":{
           "shape":"ExecuteCommandConfiguration",
           "documentation":"<p>The details of the execute command configuration.</p>"
+        },
+        "managedStorageConfiguration":{
+          "shape":"ManagedStorageConfiguration",
+          "documentation":"<p>The details of the managed storage configuration.</p>"
         }
       },
-      "documentation":"<p>The execute command configuration for the cluster.</p>"
+      "documentation":"<p>The execute command and managed storage configuration for the cluster.</p>"
     },
     "ClusterContainsContainerInstancesException":{
       "type":"structure",
@@ -2444,6 +2450,10 @@
         "volumeConfigurations":{
           "shape":"ServiceVolumeConfigurations",
           "documentation":"<p>The details of the volume that was <code>configuredAtLaunch</code>. You can configure different settings like the size, throughput, volumeType, and ecryption in <a href=\"https://docs.aws.amazon.com/AmazonECS/latest/APIReference/API_ServiceManagedEBSVolumeConfiguration.html\">ServiceManagedEBSVolumeConfiguration</a>. The <code>name</code> of the volume must match the <code>name</code> from the task definition.</p>"
+        },
+        "fargateEphemeralStorage":{
+          "shape":"DeploymentEphemeralStorage",
+          "documentation":"<p>The Fargate ephemeral storage settings for the deployment.</p>"
         }
       },
       "documentation":"<p>The details of an Amazon ECS service deployment. This is used only when a service uses the <code>ECS</code> deployment controller type.</p>"
@@ -2529,6 +2539,16 @@
         "CODE_DEPLOY",
         "EXTERNAL"
       ]
+    },
+    "DeploymentEphemeralStorage":{
+      "type":"structure",
+      "members":{
+        "kmsKeyId":{
+          "shape":"String",
+          "documentation":"<p>Specify an Key Management Service key ID to encrypt the ephemeral storage for deployment.</p>"
+        }
+      },
+      "documentation":"<p>The amount of ephemeral storage to allocate for the deployment.</p>"
     },
     "DeploymentRolloutState":{
       "type":"string",
@@ -3304,7 +3324,7 @@
           "documentation":"<p>The optional grace period to provide containers time to bootstrap before failed health checks count towards the maximum number of retries. You can specify between 0 and 300 seconds. By default, the <code>startPeriod</code> is off.</p> <note> <p>If a health check succeeds within the <code>startPeriod</code>, then the container is considered healthy and any subsequent failures count toward the maximum number of retries.</p> </note>"
         }
       },
-      "documentation":"<p>An object representing a container health check. Health check parameters that are specified in a container definition override any Docker health checks that exist in the container image (such as those specified in a parent image or from the image's Dockerfile). This configuration maps to the <code>HEALTHCHECK</code> parameter of <a href=\"https://docs.docker.com/engine/reference/run/\">docker run</a>.</p> <note> <p>The Amazon ECS container agent only monitors and reports on the health checks specified in the task definition. Amazon ECS does not monitor Docker health checks that are embedded in a container image and not specified in the container definition. Health check parameters that are specified in a container definition override any Docker health checks that exist in the container image.</p> </note> <p>You can view the health status of both individual containers and a task with the DescribeTasks API operation or when viewing the task details in the console.</p> <p>The health check is designed to make sure that your containers survive agent restarts, upgrades, or temporary unavailability.</p> <p>Amazon ECS performs health checks on containers with the default that launched the container instance or the task.</p> <p>The following describes the possible <code>healthStatus</code> values for a container:</p> <ul> <li> <p> <code>HEALTHY</code>-The container health check has passed successfully.</p> </li> <li> <p> <code>UNHEALTHY</code>-The container health check has failed.</p> </li> <li> <p> <code>UNKNOWN</code>-The container health check is being evaluated, there's no container health check defined, or Amazon ECS doesn't have the health status of the container.</p> </li> </ul> <p>The following describes the possible <code>healthStatus</code> values based on the container health checker status of essential containers in the task with the following priority order (high to low):</p> <ul> <li> <p> <code>UNHEALTHY</code>-One or more essential containers have failed their health check.</p> </li> <li> <p> <code>UNKNOWN</code>-Any essential container running within the task is in an <code>UNKNOWN</code> state and no other essential containers have an <code>UNHEALTHY</code> state.</p> </li> <li> <p> <code>HEALTHY</code>-All essential containers within the task have passed their health checks.</p> </li> </ul> <p>Consider the following task health example with 2 containers.</p> <ul> <li> <p>If Container1 is <code>UNHEALTHY</code> and Container2 is <code>UNKNOWN</code>, the task health is <code>UNHEALTHY</code>.</p> </li> <li> <p>If Container1 is <code>UNHEALTHY</code> and Container2 is <code>HEALTHY</code>, the task health is <code>UNHEALTHY</code>.</p> </li> <li> <p>If Container1 is <code>HEALTHY</code> and Container2 is <code>UNKNOWN</code>, the task health is <code>UNKNOWN</code>.</p> </li> <li> <p>If Container1 is <code>HEALTHY</code> and Container2 is <code>HEALTHY</code>, the task health is <code>HEALTHY</code>.</p> </li> </ul> <p>Consider the following task health example with 3 containers.</p> <ul> <li> <p>If Container1 is <code>UNHEALTHY</code> and Container2 is <code>UNKNOWN</code>, and Container3 is <code>UNKNOWN</code>, the task health is <code>UNHEALTHY</code>.</p> </li> <li> <p>If Container1 is <code>UNHEALTHY</code> and Container2 is <code>UNKNOWN</code>, and Container3 is <code>HEALTHY</code>, the task health is <code>UNHEALTHY</code>.</p> </li> <li> <p>If Container1 is <code>UNHEALTHY</code> and Container2 is <code>HEALTHY</code>, and Container3 is <code>HEALTHY</code>, the task health is <code>UNHEALTHY</code>.</p> </li> <li> <p>If Container1 is <code>HEALTHY</code> and Container2 is <code>UNKNOWN</code>, and Container3 is <code>HEALTHY</code>, the task health is <code>UNKNOWN</code>.</p> </li> <li> <p>If Container1 is <code>HEALTHY</code> and Container2 is <code>UNKNOWN</code>, and Container3 is <code>UNKNOWN</code>, the task health is <code>UNKNOWN</code>.</p> </li> <li> <p>If Container1 is <code>HEALTHY</code> and Container2 is <code>HEALTHY</code>, and Container3 is <code>HEALTHY</code>, the task health is <code>HEALTHY</code>.</p> </li> </ul> <p>If a task is run manually, and not as part of a service, the task will continue its lifecycle regardless of its health status. For tasks that are part of a service, if the task reports as unhealthy then the task will be stopped and the service scheduler will replace it.</p> <p>The following are notes about container health check support:</p> <ul> <li> <p>When the Amazon ECS agent cannot connect to the Amazon ECS service, the service reports the container as <code>UNHEALTHY</code>. </p> </li> <li> <p>The health check statuses are the \"last heard from\" response from the Amazon ECS agent. There are no assumptions made about the status of the container health checks.</p> </li> <li> <p>Container health checks require version 1.17.0 or greater of the Amazon ECS container agent. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonECS/latest/developerguide/ecs-agent-update.html\">Updating the Amazon ECS container agent</a>.</p> </li> <li> <p>Container health checks are supported for Fargate tasks if you're using platform version <code>1.1.0</code> or greater. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonECS/latest/developerguide/platform_versions.html\">Fargate platform versions</a>.</p> </li> <li> <p>Container health checks aren't supported for tasks that are part of a service that's configured to use a Classic Load Balancer.</p> </li> </ul>"
+      "documentation":"<p>An object representing a container health check. Health check parameters that are specified in a container definition override any Docker health checks that exist in the container image (such as those specified in a parent image or from the image's Dockerfile). This configuration maps to the <code>HEALTHCHECK</code> parameter of <a href=\"https://docs.docker.com/engine/reference/run/\">docker run</a>.</p> <note> <p>The Amazon ECS container agent only monitors and reports on the health checks specified in the task definition. Amazon ECS does not monitor Docker health checks that are embedded in a container image and not specified in the container definition. Health check parameters that are specified in a container definition override any Docker health checks that exist in the container image.</p> </note> <p>You can view the health status of both individual containers and a task with the DescribeTasks API operation or when viewing the task details in the console.</p> <p>The health check is designed to make sure that your containers survive agent restarts, upgrades, or temporary unavailability.</p> <p>Amazon ECS performs health checks on containers with the default that launched the container instance or the task.</p> <p>The following describes the possible <code>healthStatus</code> values for a container:</p> <ul> <li> <p> <code>HEALTHY</code>-The container health check has passed successfully.</p> </li> <li> <p> <code>UNHEALTHY</code>-The container health check has failed.</p> </li> <li> <p> <code>UNKNOWN</code>-The container health check is being evaluated, there's no container health check defined, or Amazon ECS doesn't have the health status of the container.</p> </li> </ul> <p>The following describes the possible <code>healthStatus</code> values based on the container health checker status of essential containers in the task with the following priority order (high to low):</p> <ul> <li> <p> <code>UNHEALTHY</code>-One or more essential containers have failed their health check.</p> </li> <li> <p> <code>UNKNOWN</code>-Any essential container running within the task is in an <code>UNKNOWN</code> state and no other essential containers have an <code>UNHEALTHY</code> state.</p> </li> <li> <p> <code>HEALTHY</code>-All essential containers within the task have passed their health checks.</p> </li> </ul> <p>Consider the following task health example with 2 containers.</p> <ul> <li> <p>If Container1 is <code>UNHEALTHY</code> and Container2 is <code>UNKNOWN</code>, the task health is <code>UNHEALTHY</code>.</p> </li> <li> <p>If Container1 is <code>UNHEALTHY</code> and Container2 is <code>HEALTHY</code>, the task health is <code>UNHEALTHY</code>.</p> </li> <li> <p>If Container1 is <code>HEALTHY</code> and Container2 is <code>UNKNOWN</code>, the task health is <code>UNKNOWN</code>.</p> </li> <li> <p>If Container1 is <code>HEALTHY</code> and Container2 is <code>HEALTHY</code>, the task health is <code>HEALTHY</code>.</p> </li> </ul> <p>Consider the following task health example with 3 containers.</p> <ul> <li> <p>If Container1 is <code>UNHEALTHY</code> and Container2 is <code>UNKNOWN</code>, and Container3 is <code>UNKNOWN</code>, the task health is <code>UNHEALTHY</code>.</p> </li> <li> <p>If Container1 is <code>UNHEALTHY</code> and Container2 is <code>UNKNOWN</code>, and Container3 is <code>HEALTHY</code>, the task health is <code>UNHEALTHY</code>.</p> </li> <li> <p>If Container1 is <code>UNHEALTHY</code> and Container2 is <code>HEALTHY</code>, and Container3 is <code>HEALTHY</code>, the task health is <code>UNHEALTHY</code>.</p> </li> <li> <p>If Container1 is <code>HEALTHY</code> and Container2 is <code>UNKNOWN</code>, and Container3 is <code>HEALTHY</code>, the task health is <code>UNKNOWN</code>.</p> </li> <li> <p>If Container1 is <code>HEALTHY</code> and Container2 is <code>UNKNOWN</code>, and Container3 is <code>UNKNOWN</code>, the task health is <code>UNKNOWN</code>.</p> </li> <li> <p>If Container1 is <code>HEALTHY</code> and Container2 is <code>HEALTHY</code>, and Container3 is <code>HEALTHY</code>, the task health is <code>HEALTHY</code>.</p> </li> </ul> <p>If a task is run manually, and not as part of a service, the task will continue its lifecycle regardless of its health status. For tasks that are part of a service, if the task reports as unhealthy then the task will be stopped and the service scheduler will replace it.</p> <p>The following are notes about container health check support:</p> <ul> <li> <p>If the Amazon ECS container agent becomes disconnected from the Amazon ECS service, this won't cause a container to transition to an <code>UNHEALTHY</code> status. This is by design, to ensure that containers remain running during agent restarts or temporary unavailability. The health check status is the \"last heard from\" response from the Amazon ECS agent, so if the container was considered <code>HEALTHY</code> prior to the disconnect, that status will remain until the agent reconnects and another health check occurs. There are no assumptions made about the status of the container health checks.</p> </li> <li> <p>Container health checks require version <code>1.17.0</code> or greater of the Amazon ECS container agent. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonECS/latest/developerguide/ecs-agent-update.html\">Updating the Amazon ECS container agent</a>.</p> </li> <li> <p>Container health checks are supported for Fargate tasks if you're using platform version <code>1.1.0</code> or greater. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonECS/latest/developerguide/platform_versions.html\">Fargate platform versions</a>.</p> </li> <li> <p>Container health checks aren't supported for tasks that are part of a service that's configured to use a Classic Load Balancer.</p> </li> </ul>"
     },
     "HealthStatus":{
       "type":"string",
@@ -4062,6 +4082,20 @@
       "max":100,
       "min":1
     },
+    "ManagedStorageConfiguration":{
+      "type":"structure",
+      "members":{
+        "kmsKeyId":{
+          "shape":"String",
+          "documentation":"<p>Specify a Key Management Service key ID to encrypt the managed storage.</p>"
+        },
+        "fargateEphemeralStorageKmsKeyId":{
+          "shape":"String",
+          "documentation":"<p>Specify the Key Management Service key ID for the Fargate ephemeral storage.</p>"
+        }
+      },
+      "documentation":"<p>The managed storage configuration for the cluster.</p>"
+    },
     "ManagedTerminationProtection":{
       "type":"string",
       "enum":[
@@ -4628,7 +4662,7 @@
         },
         "runtimePlatform":{
           "shape":"RuntimePlatform",
-          "documentation":"<p>The operating system that your tasks definitions run on. A platform family is specified only for tasks using the Fargate launch type. </p> <p>When you specify a task definition in a service, this value must match the <code>runtimePlatform</code> value of the service.</p>"
+          "documentation":"<p>The operating system that your tasks definitions run on. A platform family is specified only for tasks using the Fargate launch type. </p>"
         }
       }
     },
@@ -4717,11 +4751,11 @@
       "members":{
         "value":{
           "shape":"String",
-          "documentation":"<p>The value for the specified resource type.</p> <p>If the <code>GPU</code> type is used, the value is the number of physical <code>GPUs</code> the Amazon ECS container agent reserves for the container. The number of GPUs that's reserved for all containers in a task can't exceed the number of available GPUs on the container instance that the task is launched on.</p> <p>If the <code>InferenceAccelerator</code> type is used, the <code>value</code> matches the <code>deviceName</code> for an <a href=\"https://docs.aws.amazon.com/AmazonECS/latest/APIReference/API_InferenceAccelerator.html\">InferenceAccelerator</a> specified in a task definition.</p>"
+          "documentation":"<p>The value for the specified resource type.</p> <p>When the type is <code>GPU</code>, the value is the number of physical <code>GPUs</code> the Amazon ECS container agent reserves for the container. The number of GPUs that's reserved for all containers in a task can't exceed the number of available GPUs on the container instance that the task is launched on.</p> <p>When the type is <code>InferenceAccelerator</code>, the <code>value</code> matches the <code>deviceName</code> for an <a href=\"https://docs.aws.amazon.com/AmazonECS/latest/APIReference/API_InferenceAccelerator.html\">InferenceAccelerator</a> specified in a task definition.</p>"
         },
         "type":{
           "shape":"ResourceType",
-          "documentation":"<p>The type of resource to assign to a container. The supported values are <code>GPU</code> or <code>InferenceAccelerator</code>.</p>"
+          "documentation":"<p>The type of resource to assign to a container. </p>"
         }
       },
       "documentation":"<p>The type and amount of a resource to assign to a container. The supported resource types are GPUs and Elastic Inference accelerators. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonECS/latest/developerguide/ecs-gpu.html\">Working with GPUs on Amazon ECS</a> or <a href=\"https://docs.aws.amazon.com/AmazonECS/latest/developerguide/ecs-inference.html\">Working with Amazon Elastic Inference on Amazon ECS</a> in the <i>Amazon Elastic Container Service Developer Guide</i> </p>"
@@ -5151,7 +5185,7 @@
           "documentation":"<p>The ARN of the Amazon Web Services Private Certificate Authority certificate.</p>"
         }
       },
-      "documentation":"<p>An object that represents the Amazon Web Services Private Certificate Authority certificate.</p>"
+      "documentation":"<p>The certificate root authority that secures your service.</p>"
     },
     "ServiceConnectTlsConfiguration":{
       "type":"structure",
@@ -5170,7 +5204,7 @@
           "documentation":"<p>The Amazon Resource Name (ARN) of the IAM role that's associated with the Service Connect TLS.</p>"
         }
       },
-      "documentation":"<p>An object that represents the configuration for Service Connect TLS.</p>"
+      "documentation":"<p>The key that encrypts and decrypts your resources for Service Connect TLS.</p>"
     },
     "ServiceEvent":{
       "type":"structure",
@@ -5869,6 +5903,10 @@
         "ephemeralStorage":{
           "shape":"EphemeralStorage",
           "documentation":"<p>The ephemeral storage settings for the task.</p>"
+        },
+        "fargateEphemeralStorage":{
+          "shape":"TaskEphemeralStorage",
+          "documentation":"<p>The Fargate ephemeral storage settings for the task.</p>"
         }
       },
       "documentation":"<p>Details on a task in a cluster.</p>"
@@ -6024,6 +6062,20 @@
         "INACTIVE",
         "DELETE_IN_PROGRESS"
       ]
+    },
+    "TaskEphemeralStorage":{
+      "type":"structure",
+      "members":{
+        "sizeInGiB":{
+          "shape":"Integer",
+          "documentation":"<p>The total amount, in GiB, of the ephemeral storage to set for the task. The minimum supported value is <code>20</code> GiB and the maximum supported value is&#x2028; <code>200</code> GiB.</p>"
+        },
+        "kmsKeyId":{
+          "shape":"String",
+          "documentation":"<p>Specify an Key Management Service key ID to encrypt the ephemeral storage for the task.</p>"
+        }
+      },
+      "documentation":"<p>The amount of ephemeral storage to allocate for the task.</p>"
     },
     "TaskField":{
       "type":"string",
@@ -6235,6 +6287,10 @@
         "tags":{
           "shape":"Tags",
           "documentation":"<p>The metadata that you apply to the task set to help you categorize and organize them. Each tag consists of a key and an optional value. You define both.</p> <p>The following basic restrictions apply to tags:</p> <ul> <li> <p>Maximum number of tags per resource - 50</p> </li> <li> <p>For each resource, each tag key must be unique, and each tag key can have only one value.</p> </li> <li> <p>Maximum key length - 128 Unicode characters in UTF-8</p> </li> <li> <p>Maximum value length - 256 Unicode characters in UTF-8</p> </li> <li> <p>If your tagging schema is used across multiple services and resources, remember that other services may have restrictions on allowed characters. Generally allowed characters are: letters, numbers, and spaces representable in UTF-8, and the following characters: + - = . _ : / @.</p> </li> <li> <p>Tag keys and values are case-sensitive.</p> </li> <li> <p>Do not use <code>aws:</code>, <code>AWS:</code>, or any upper or lowercase combination of such as a prefix for either keys or values as it is reserved for Amazon Web Services use. You cannot edit or delete tag keys or values with this prefix. Tags with this prefix do not count against your tags per resource limit.</p> </li> </ul>"
+        },
+        "fargateEphemeralStorage":{
+          "shape":"DeploymentEphemeralStorage",
+          "documentation":"<p>The Fargate ephemeral storage settings for the task set.</p>"
         }
       },
       "documentation":"<p>Information about a set of Amazon ECS tasks in either an CodeDeploy or an <code>EXTERNAL</code> deployment. An Amazon ECS task set includes details such as the desired number of tasks, how many tasks are running, and whether the task set serves production traffic.</p>"

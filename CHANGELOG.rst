@@ -2,6 +2,17 @@
 CHANGELOG
 =========
 
+2.16.6
+======
+
+* api-change:``sagemaker``: Introduced Scope and AuthenticationRequestExtraParams to SageMaker Workforce OIDC configuration; this allows customers to modify these options for their private Workforce IdP integration. Model Registry Cross-account model package groups are discoverable.
+* api-change:``pca-connector-scep``: Connector for SCEP allows you to use a managed, cloud CA to enroll mobile devices and networking gear. SCEP is a widely-adopted protocol used by mobile device management (MDM) solutions for enrolling mobile devices. With the connector, you can use AWS Private CA with popular MDM solutions.
+* api-change:``networkmanager``: This is model changes & documentation update for Service Insertion feature for AWS Cloud WAN. This feature allows insertion of AWS/3rd party security services on Cloud WAN. This allows to steer inter/intra segment traffic via security appliances and provide visibility to the route updates.
+* api-change:``accessanalyzer``: IAM Access Analyzer now provides policy recommendations to help resolve unused permissions for IAM roles and users. Additionally, IAM Access Analyzer now extends its custom policy checks to detect when IAM policies grant public access or access to critical resources ahead of deployments.
+* enhancement:awscrt: Update ``awscrt`` version range ceiling to 0.20.11
+* api-change:``guardduty``: Added API support for GuardDuty Malware Protection for S3.
+
+
 2.16.5
 ======
 
@@ -7634,4 +7645,3 @@ CHANGELOG
 * feature:s3: Added support for the ``--copy-props`` parameter to the high level S3 commands. This new parameter configures how additional metadata, tags, etc. should be copied for S3 to S3 transfers. See `#4840 <https://github.com/aws/aws-cli/issues/4840>`__.
 * feature:wizard: Added support for AWS CLI Wizards. See `#3752 <https://github.com/aws/aws-cli/issues/3752>`__.
 
-For CLI v1.x information, see the `CLI v1 Changelog <https://github.com/aws/aws-cli/blob/develop/CHANGELOG.rst>`__.

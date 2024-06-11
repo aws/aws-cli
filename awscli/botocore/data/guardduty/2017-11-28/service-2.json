@@ -5,11 +5,13 @@
     "endpointPrefix":"guardduty",
     "jsonVersion":"1.1",
     "protocol":"rest-json",
+    "protocols":["rest-json"],
     "serviceFullName":"Amazon GuardDuty",
     "serviceId":"GuardDuty",
     "signatureVersion":"v4",
     "signingName":"guardduty",
-    "uid":"guardduty-2017-11-28"
+    "uid":"guardduty-2017-11-28",
+    "auth":["aws.auth#sigv4"]
   },
   "operations":{
     "AcceptAdministratorInvitation":{
@@ -103,6 +105,23 @@
         {"shape":"InternalServerErrorException"}
       ],
       "documentation":"<p>Creates a new IPSet, which is called a trusted IP list in the console user interface. An IPSet is a list of IP addresses that are trusted for secure communication with Amazon Web Services infrastructure and applications. GuardDuty doesn't generate findings for IP addresses that are included in IPSets. Only users from the administrator account can use this operation.</p>"
+    },
+    "CreateMalwareProtectionPlan":{
+      "name":"CreateMalwareProtectionPlan",
+      "http":{
+        "method":"POST",
+        "requestUri":"/malware-protection-plan",
+        "responseCode":200
+      },
+      "input":{"shape":"CreateMalwareProtectionPlanRequest"},
+      "output":{"shape":"CreateMalwareProtectionPlanResponse"},
+      "errors":[
+        {"shape":"BadRequestException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ConflictException"},
+        {"shape":"InternalServerErrorException"}
+      ],
+      "documentation":"<p>Creates a new Malware Protection plan for the protected resource.</p> <p>When you create a Malware Protection plan, the Amazon Web Services service terms for GuardDuty Malware Protection apply. For more information, see <a href=\"http://aws.amazon.com/service-terms/#87._Amazon_GuardDuty\">Amazon Web Services service terms for GuardDuty Malware Protection</a>.</p>"
     },
     "CreateMembers":{
       "name":"CreateMembers",
@@ -238,6 +257,22 @@
         {"shape":"InternalServerErrorException"}
       ],
       "documentation":"<p>Deletes invitations sent to the current member account by Amazon Web Services accounts specified by their account IDs.</p>"
+    },
+    "DeleteMalwareProtectionPlan":{
+      "name":"DeleteMalwareProtectionPlan",
+      "http":{
+        "method":"DELETE",
+        "requestUri":"/malware-protection-plan/{malwareProtectionPlanId}",
+        "responseCode":200
+      },
+      "input":{"shape":"DeleteMalwareProtectionPlanRequest"},
+      "errors":[
+        {"shape":"BadRequestException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalServerErrorException"},
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p>Deletes the Malware Protection plan ID associated with the Malware Protection plan resource. Use this API only when you no longer want to protect the resource associated with this Malware Protection plan ID.</p>"
     },
     "DeleteMembers":{
       "name":"DeleteMembers",
@@ -526,6 +561,23 @@
       ],
       "documentation":"<p>Returns the count of all GuardDuty membership invitations that were sent to the current member account except the currently accepted invitation.</p>"
     },
+    "GetMalwareProtectionPlan":{
+      "name":"GetMalwareProtectionPlan",
+      "http":{
+        "method":"GET",
+        "requestUri":"/malware-protection-plan/{malwareProtectionPlanId}",
+        "responseCode":200
+      },
+      "input":{"shape":"GetMalwareProtectionPlanRequest"},
+      "output":{"shape":"GetMalwareProtectionPlanResponse"},
+      "errors":[
+        {"shape":"BadRequestException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalServerErrorException"},
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p>Retrieves the Malware Protection plan details associated with a Malware Protection plan ID.</p>"
+    },
     "GetMalwareScanSettings":{
       "name":"GetMalwareScanSettings",
       "http":{
@@ -751,6 +803,22 @@
         {"shape":"InternalServerErrorException"}
       ],
       "documentation":"<p>Lists all GuardDuty membership invitations that were sent to the current Amazon Web Services account.</p>"
+    },
+    "ListMalwareProtectionPlans":{
+      "name":"ListMalwareProtectionPlans",
+      "http":{
+        "method":"GET",
+        "requestUri":"/malware-protection-plan",
+        "responseCode":200
+      },
+      "input":{"shape":"ListMalwareProtectionPlansRequest"},
+      "output":{"shape":"ListMalwareProtectionPlansResponse"},
+      "errors":[
+        {"shape":"BadRequestException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalServerErrorException"}
+      ],
+      "documentation":"<p>Lists the Malware Protection plan IDs associated with the protected resources in your Amazon Web Services account.</p>"
     },
     "ListMembers":{
       "name":"ListMembers",
@@ -980,6 +1048,22 @@
         {"shape":"InternalServerErrorException"}
       ],
       "documentation":"<p>Updates the IPSet specified by the IPSet ID.</p>"
+    },
+    "UpdateMalwareProtectionPlan":{
+      "name":"UpdateMalwareProtectionPlan",
+      "http":{
+        "method":"PATCH",
+        "requestUri":"/malware-protection-plan/{malwareProtectionPlanId}",
+        "responseCode":200
+      },
+      "input":{"shape":"UpdateMalwareProtectionPlanRequest"},
+      "errors":[
+        {"shape":"BadRequestException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServerErrorException"}
+      ],
+      "documentation":"<p>Updates an existing Malware Protection plan resource.</p>"
     },
     "UpdateMalwareScanSettings":{
       "name":"UpdateMalwareScanSettings",
@@ -2312,6 +2396,51 @@
         }
       }
     },
+    "CreateMalwareProtectionPlanRequest":{
+      "type":"structure",
+      "required":[
+        "Role",
+        "ProtectedResource"
+      ],
+      "members":{
+        "ClientToken":{
+          "shape":"ClientToken",
+          "documentation":"<p>The idempotency token for the create request.</p>",
+          "idempotencyToken":true,
+          "locationName":"clientToken"
+        },
+        "Role":{
+          "shape":"String",
+          "documentation":"<p>IAM role with permissions required to scan and add tags to the associated protected resource.</p>",
+          "locationName":"role"
+        },
+        "ProtectedResource":{
+          "shape":"CreateProtectedResource",
+          "documentation":"<p>Information about the protected resource that is associated with the created Malware Protection plan. Presently, <code>S3Bucket</code> is the only supported protected resource.</p>",
+          "locationName":"protectedResource"
+        },
+        "Actions":{
+          "shape":"MalwareProtectionPlanActions",
+          "documentation":"<p>Information about whether the tags will be added to the S3 object after scanning.</p>",
+          "locationName":"actions"
+        },
+        "Tags":{
+          "shape":"TagMap",
+          "documentation":"<p>Tags added to the Malware Protection plan resource. </p>",
+          "locationName":"tags"
+        }
+      }
+    },
+    "CreateMalwareProtectionPlanResponse":{
+      "type":"structure",
+      "members":{
+        "MalwareProtectionPlanId":{
+          "shape":"String",
+          "documentation":"<p>A unique identifier associated with the Malware Protection plan resource.</p>",
+          "locationName":"malwareProtectionPlanId"
+        }
+      }
+    },
     "CreateMembersRequest":{
       "type":"structure",
       "required":[
@@ -2342,6 +2471,17 @@
           "locationName":"unprocessedAccounts"
         }
       }
+    },
+    "CreateProtectedResource":{
+      "type":"structure",
+      "members":{
+        "S3Bucket":{
+          "shape":"CreateS3BucketResource",
+          "documentation":"<p>Information about the protected S3 bucket resource.</p>",
+          "locationName":"s3Bucket"
+        }
+      },
+      "documentation":"<p>Information about the protected resource that is associated with the created Malware Protection plan. Presently, <code>S3Bucket</code> is the only supported protected resource.</p>"
     },
     "CreatePublishingDestinationRequest":{
       "type":"structure",
@@ -2385,6 +2525,22 @@
           "locationName":"destinationId"
         }
       }
+    },
+    "CreateS3BucketResource":{
+      "type":"structure",
+      "members":{
+        "BucketName":{
+          "shape":"String",
+          "documentation":"<p>Name of the S3 bucket.</p>",
+          "locationName":"bucketName"
+        },
+        "ObjectPrefixes":{
+          "shape":"MalwareProtectionPlanObjectPrefixesList",
+          "documentation":"<p>Information about the specified object prefixes. The S3 object will be scanned only if it belongs to any of the specified object prefixes.</p>",
+          "locationName":"objectPrefixes"
+        }
+      },
+      "documentation":"<p>Information about the protected S3 bucket resource.</p>"
     },
     "CreateSampleFindingsRequest":{
       "type":"structure",
@@ -2757,6 +2913,18 @@
           "shape":"UnprocessedAccounts",
           "documentation":"<p>A list of objects that contain the unprocessed account and a result string that explains why it was unprocessed.</p>",
           "locationName":"unprocessedAccounts"
+        }
+      }
+    },
+    "DeleteMalwareProtectionPlanRequest":{
+      "type":"structure",
+      "required":["MalwareProtectionPlanId"],
+      "members":{
+        "MalwareProtectionPlanId":{
+          "shape":"String",
+          "documentation":"<p>A unique identifier associated with Malware Protection plan resource.</p>",
+          "location":"uri",
+          "locationName":"malwareProtectionPlanId"
         }
       }
     },
@@ -4284,6 +4452,63 @@
         }
       }
     },
+    "GetMalwareProtectionPlanRequest":{
+      "type":"structure",
+      "required":["MalwareProtectionPlanId"],
+      "members":{
+        "MalwareProtectionPlanId":{
+          "shape":"String",
+          "documentation":"<p>A unique identifier associated with Malware Protection plan resource.</p>",
+          "location":"uri",
+          "locationName":"malwareProtectionPlanId"
+        }
+      }
+    },
+    "GetMalwareProtectionPlanResponse":{
+      "type":"structure",
+      "members":{
+        "Arn":{
+          "shape":"String",
+          "documentation":"<p>Amazon Resource Name (ARN) of the protected resource.</p>",
+          "locationName":"arn"
+        },
+        "Role":{
+          "shape":"String",
+          "documentation":"<p>IAM role that includes the permissions required to scan and add tags to the associated protected resource.</p>",
+          "locationName":"role"
+        },
+        "ProtectedResource":{
+          "shape":"CreateProtectedResource",
+          "documentation":"<p>Information about the protected resource that is associated with the created Malware Protection plan. Presently, <code>S3Bucket</code> is the only supported protected resource.</p>",
+          "locationName":"protectedResource"
+        },
+        "Actions":{
+          "shape":"MalwareProtectionPlanActions",
+          "documentation":"<p>Information about whether the tags will be added to the S3 object after scanning.</p>",
+          "locationName":"actions"
+        },
+        "CreatedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp when the Malware Protection plan resource was created.</p>",
+          "locationName":"createdAt"
+        },
+        "Status":{
+          "shape":"MalwareProtectionPlanStatus",
+          "documentation":"<p>Malware Protection plan status.</p>",
+          "locationName":"status"
+        },
+        "StatusReasons":{
+          "shape":"MalwareProtectionPlanStatusReasonsList",
+          "documentation":"<p>Information about the issue code and message associated to the status of your Malware Protection plan.</p>",
+          "locationName":"statusReasons"
+        },
+        "Tags":{
+          "shape":"TagMap",
+          "documentation":"<p>Tags added to the Malware Protection plan resource.</p>",
+          "locationName":"tags"
+        }
+      }
+    },
     "GetMalwareScanSettingsRequest":{
       "type":"structure",
       "required":["DetectorId"],
@@ -4857,6 +5082,26 @@
       "member":{"shape":"String"},
       "max":50,
       "min":0
+    },
+    "ItemPath":{
+      "type":"structure",
+      "members":{
+        "NestedItemPath":{
+          "shape":"String",
+          "documentation":"<p>The nested item path where the infected file was found.</p>",
+          "locationName":"nestedItemPath"
+        },
+        "Hash":{
+          "shape":"String",
+          "documentation":"<p>The hash value of the infected resource.</p>",
+          "locationName":"hash"
+        }
+      },
+      "documentation":"<p>Information about the nested item path and hash of the protected resource.</p>"
+    },
+    "ItemPaths":{
+      "type":"list",
+      "member":{"shape":"ItemPath"}
     },
     "KubernetesApiCallAction":{
       "type":"structure",
@@ -5505,6 +5750,32 @@
         }
       }
     },
+    "ListMalwareProtectionPlansRequest":{
+      "type":"structure",
+      "members":{
+        "NextToken":{
+          "shape":"String",
+          "documentation":"<p>You can use this parameter when paginating results. Set the value of this parameter to null on your first call to the list action. For subsequent calls to the action, fill nextToken in the request with the value of <code>NextToken</code> from the previous response to continue listing data.</p>",
+          "location":"querystring",
+          "locationName":"nextToken"
+        }
+      }
+    },
+    "ListMalwareProtectionPlansResponse":{
+      "type":"structure",
+      "members":{
+        "MalwareProtectionPlans":{
+          "shape":"MalwareProtectionPlansSummary",
+          "documentation":"<p>A list of unique identifiers associated with each Malware Protection plan.</p>",
+          "locationName":"malwareProtectionPlans"
+        },
+        "NextToken":{
+          "shape":"String",
+          "documentation":"<p>You can use this parameter when paginating results. Set the value of this parameter to null on your first call to the list action. For subsequent calls to the action, fill nextToken in the request with the value of <code>NextToken</code> from the previous response to continue listing data.</p>",
+          "locationName":"nextToken"
+        }
+      }
+    },
     "ListMembersRequest":{
       "type":"structure",
       "required":["DetectorId"],
@@ -5790,6 +6061,97 @@
         }
       },
       "documentation":"<p>Provides details about Malware Protection when it is enabled as a data source.</p>"
+    },
+    "MalwareProtectionPlanActions":{
+      "type":"structure",
+      "members":{
+        "Tagging":{
+          "shape":"MalwareProtectionPlanTaggingAction",
+          "documentation":"<p>Indicates whether the scanned S3 object will have tags about the scan result.</p>",
+          "locationName":"tagging"
+        }
+      },
+      "documentation":"<p>Information about whether the tags will be added to the S3 object after scanning.</p>"
+    },
+    "MalwareProtectionPlanObjectPrefixesList":{
+      "type":"list",
+      "member":{"shape":"String"},
+      "max":5,
+      "min":0
+    },
+    "MalwareProtectionPlanStatus":{
+      "type":"string",
+      "enum":[
+        "ACTIVE",
+        "WARNING",
+        "ERROR"
+      ]
+    },
+    "MalwareProtectionPlanStatusReason":{
+      "type":"structure",
+      "members":{
+        "Code":{
+          "shape":"String",
+          "documentation":"<p>Issue code.</p>",
+          "locationName":"code"
+        },
+        "Message":{
+          "shape":"String",
+          "documentation":"<p>Issue message that specifies the reason. For information about potential troubleshooting steps, see <a href=\"https://docs.aws.amazon.com/guardduty/latest/ug/troubleshoot-s3-malware-protection-status-errors.html\">Troubleshooting Malware Protection for S3 status issues</a> in the <i>GuardDuty User Guide</i>.</p>",
+          "locationName":"message"
+        }
+      },
+      "documentation":"<p>Information about the issue code and message associated to the status of your Malware Protection plan.</p>"
+    },
+    "MalwareProtectionPlanStatusReasonsList":{
+      "type":"list",
+      "member":{"shape":"MalwareProtectionPlanStatusReason"},
+      "max":50,
+      "min":0
+    },
+    "MalwareProtectionPlanSummary":{
+      "type":"structure",
+      "members":{
+        "MalwareProtectionPlanId":{
+          "shape":"String",
+          "documentation":"<p>A unique identifier associated with Malware Protection plan.</p>",
+          "locationName":"malwareProtectionPlanId"
+        }
+      },
+      "documentation":"<p>Information about the Malware Protection plan resource.</p>"
+    },
+    "MalwareProtectionPlanTaggingAction":{
+      "type":"structure",
+      "members":{
+        "Status":{
+          "shape":"MalwareProtectionPlanTaggingActionStatus",
+          "documentation":"<p>Indicates whether or not the tags will added.</p>",
+          "locationName":"status"
+        }
+      },
+      "documentation":"<p>Information about adding tags to the scanned S3 object after the scan result.</p>"
+    },
+    "MalwareProtectionPlanTaggingActionStatus":{
+      "type":"string",
+      "enum":[
+        "ENABLED",
+        "DISABLED"
+      ]
+    },
+    "MalwareProtectionPlansSummary":{
+      "type":"list",
+      "member":{"shape":"MalwareProtectionPlanSummary"}
+    },
+    "MalwareScanDetails":{
+      "type":"structure",
+      "members":{
+        "Threats":{
+          "shape":"Threats",
+          "documentation":"<p>Information about the detected threats associated with the generated GuardDuty finding.</p>",
+          "locationName":"threats"
+        }
+      },
+      "documentation":"<p>Information about the malware scan that generated a GuardDuty finding.</p>"
     },
     "ManagementType":{
       "type":"string",
@@ -7031,7 +7393,7 @@
       "members":{
         "InstanceArn":{
           "shape":"InstanceArn",
-          "documentation":"<p>InstanceArn that was scanned in the scan entry.</p>",
+          "documentation":"<p>Instance ARN that was scanned in the scan entry.</p>",
           "locationName":"instanceArn"
         }
       },
@@ -7040,6 +7402,24 @@
     "ResourceList":{
       "type":"list",
       "member":{"shape":"String"}
+    },
+    "ResourceNotFoundException":{
+      "type":"structure",
+      "members":{
+        "Message":{
+          "shape":"String",
+          "documentation":"<p>The error message.</p>",
+          "locationName":"message"
+        },
+        "Type":{
+          "shape":"String",
+          "documentation":"<p>The error type.</p>",
+          "locationName":"__type"
+        }
+      },
+      "documentation":"<p>The requested resource can't be found.</p>",
+      "error":{"httpStatusCode":404},
+      "exception":true
     },
     "ResourceType":{
       "type":"string",
@@ -7238,6 +7618,11 @@
           "shape":"PublicAccess",
           "documentation":"<p>Describes the public access policies that apply to the S3 bucket.</p>",
           "locationName":"publicAccess"
+        },
+        "S3ObjectDetails":{
+          "shape":"S3ObjectDetails",
+          "documentation":"<p>Information about the S3 object that was scanned.</p>",
+          "locationName":"s3ObjectDetails"
         }
       },
       "documentation":"<p>Contains information on the S3 bucket.</p>"
@@ -7269,6 +7654,41 @@
         }
       },
       "documentation":"<p>Describes whether S3 data event logs will be enabled as a data source.</p>"
+    },
+    "S3ObjectDetail":{
+      "type":"structure",
+      "members":{
+        "ObjectArn":{
+          "shape":"String",
+          "documentation":"<p>Amazon Resource Name (ARN) of the S3 object.</p>",
+          "locationName":"objectArn"
+        },
+        "Key":{
+          "shape":"String",
+          "documentation":"<p>Key of the S3 object.</p>",
+          "locationName":"key"
+        },
+        "ETag":{
+          "shape":"String",
+          "documentation":"<p>The entity tag is a hash of the S3 object. The ETag reflects changes only to the contents of an object, and not its metadata.</p>",
+          "locationName":"eTag"
+        },
+        "Hash":{
+          "shape":"String",
+          "documentation":"<p>Hash of the threat detected in this finding.</p>",
+          "locationName":"hash"
+        },
+        "VersionId":{
+          "shape":"String",
+          "documentation":"<p>Version ID of the object.</p>",
+          "locationName":"versionId"
+        }
+      },
+      "documentation":"<p>Information about the S3 object that was scanned</p>"
+    },
+    "S3ObjectDetails":{
+      "type":"list",
+      "member":{"shape":"S3ObjectDetail"}
     },
     "Scan":{
       "type":"structure",
@@ -7449,7 +7869,7 @@
         },
         "VolumeArn":{
           "shape":"String",
-          "documentation":"<p>EBS volume Arn details of the infected file.</p>",
+          "documentation":"<p>EBS volume ARN details of the infected file.</p>",
           "locationName":"volumeArn"
         },
         "Hash":{
@@ -7687,6 +8107,11 @@
           "shape":"Detection",
           "documentation":"<p>Contains information about the detected unusual behavior.</p>",
           "locationName":"detection"
+        },
+        "MalwareScanDetails":{
+          "shape":"MalwareScanDetails",
+          "documentation":"<p>Returns details from the malware scan that generated a GuardDuty finding.</p>",
+          "locationName":"malwareScanDetails"
         }
       },
       "documentation":"<p>Contains additional information about the generated finding.</p>"
@@ -7891,6 +8316,27 @@
       "type":"list",
       "member":{"shape":"Tag"}
     },
+    "Threat":{
+      "type":"structure",
+      "members":{
+        "Name":{
+          "shape":"String",
+          "documentation":"<p>Name of the detected threat that caused GuardDuty to generate this finding.</p>",
+          "locationName":"name"
+        },
+        "Source":{
+          "shape":"String",
+          "documentation":"<p>Source of the threat that generated this finding.</p>",
+          "locationName":"source"
+        },
+        "ItemPaths":{
+          "shape":"ItemPaths",
+          "documentation":"<p>Information about the nested item path and hash of the protected resource.</p>",
+          "locationName":"itemPaths"
+        }
+      },
+      "documentation":"<p>Information about the detected threats associated with the generated finding.</p>"
+    },
     "ThreatDetectedByName":{
       "type":"structure",
       "members":{
@@ -7978,6 +8424,10 @@
     "ThreatNames":{
       "type":"list",
       "member":{"shape":"String"}
+    },
+    "Threats":{
+      "type":"list",
+      "member":{"shape":"Threat"}
     },
     "ThreatsDetectedItemCount":{
       "type":"structure",
@@ -8278,6 +8728,33 @@
       "members":{
       }
     },
+    "UpdateMalwareProtectionPlanRequest":{
+      "type":"structure",
+      "required":["MalwareProtectionPlanId"],
+      "members":{
+        "MalwareProtectionPlanId":{
+          "shape":"String",
+          "documentation":"<p>A unique identifier associated with the Malware Protection plan.</p>",
+          "location":"uri",
+          "locationName":"malwareProtectionPlanId"
+        },
+        "Role":{
+          "shape":"String",
+          "documentation":"<p>IAM role with permissions required to scan and add tags to the associated protected resource.</p>",
+          "locationName":"role"
+        },
+        "Actions":{
+          "shape":"MalwareProtectionPlanActions",
+          "documentation":"<p>Information about whether the tags will be added to the S3 object after scanning.</p>",
+          "locationName":"actions"
+        },
+        "ProtectedResource":{
+          "shape":"UpdateProtectedResource",
+          "documentation":"<p>Information about the protected resource that is associated with the created Malware Protection plan. Presently, <code>S3Bucket</code> is the only supported protected resource.</p>",
+          "locationName":"protectedResource"
+        }
+      }
+    },
     "UpdateMalwareScanSettingsRequest":{
       "type":"structure",
       "required":["DetectorId"],
@@ -8389,6 +8866,17 @@
       "members":{
       }
     },
+    "UpdateProtectedResource":{
+      "type":"structure",
+      "members":{
+        "S3Bucket":{
+          "shape":"UpdateS3BucketResource",
+          "documentation":"<p>Information about the protected S3 bucket resource.</p>",
+          "locationName":"s3Bucket"
+        }
+      },
+      "documentation":"<p>Information about the protected resource that is associated with the created Malware Protection plan. Presently, <code>S3Bucket</code> is the only supported protected resource.</p>"
+    },
     "UpdatePublishingDestinationRequest":{
       "type":"structure",
       "required":[
@@ -8419,6 +8907,17 @@
       "type":"structure",
       "members":{
       }
+    },
+    "UpdateS3BucketResource":{
+      "type":"structure",
+      "members":{
+        "ObjectPrefixes":{
+          "shape":"MalwareProtectionPlanObjectPrefixesList",
+          "documentation":"<p>Information about the specified object prefixes. The S3 object will be scanned only if it belongs to any of the specified object prefixes.</p>",
+          "locationName":"objectPrefixes"
+        }
+      },
+      "documentation":"<p>Information about the protected S3 bucket resource.</p>"
     },
     "UpdateThreatIntelSetRequest":{
       "type":"structure",
@@ -8697,7 +9196,7 @@
       "members":{
         "VolumeArn":{
           "shape":"String",
-          "documentation":"<p>EBS volume Arn information.</p>",
+          "documentation":"<p>EBS volume ARN information.</p>",
           "locationName":"volumeArn"
         },
         "VolumeType":{
@@ -8722,12 +9221,12 @@
         },
         "SnapshotArn":{
           "shape":"String",
-          "documentation":"<p>Snapshot Arn of the EBS volume.</p>",
+          "documentation":"<p>Snapshot ARN of the EBS volume.</p>",
           "locationName":"snapshotArn"
         },
         "KmsKeyArn":{
           "shape":"String",
-          "documentation":"<p>KMS key Arn used to encrypt the EBS volume.</p>",
+          "documentation":"<p>KMS key ARN used to encrypt the EBS volume.</p>",
           "locationName":"kmsKeyArn"
         }
       },

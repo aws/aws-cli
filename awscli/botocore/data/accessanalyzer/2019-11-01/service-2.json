@@ -3,8 +3,8 @@
   "metadata":{
     "apiVersion":"2019-11-01",
     "endpointPrefix":"access-analyzer",
-    "jsonVersion":"1.1",
     "protocol":"rest-json",
+    "protocols":["rest-json"],
     "serviceFullName":"Access Analyzer",
     "serviceId":"AccessAnalyzer",
     "signatureVersion":"v4",
@@ -85,6 +85,25 @@
         {"shape":"AccessDeniedException"}
       ],
       "documentation":"<p>Checks whether new access is allowed for an updated policy when compared to the existing policy.</p> <p>You can find examples for reference policies and learn how to set up and run a custom policy check for new access in the <a href=\"https://github.com/aws-samples/iam-access-analyzer-custom-policy-check-samples\">IAM Access Analyzer custom policy checks samples</a> repository on GitHub. The reference policies in this repository are meant to be passed to the <code>existingPolicyDocument</code> request parameter.</p>"
+    },
+    "CheckNoPublicAccess":{
+      "name":"CheckNoPublicAccess",
+      "http":{
+        "method":"POST",
+        "requestUri":"/policy/check-no-public-access",
+        "responseCode":200
+      },
+      "input":{"shape":"CheckNoPublicAccessRequest"},
+      "output":{"shape":"CheckNoPublicAccessResponse"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"InternalServerException"},
+        {"shape":"InvalidParameterException"},
+        {"shape":"UnprocessableEntityException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Checks whether a resource policy can grant public access to the specified resource type.</p>"
     },
     "CreateAccessPreview":{
       "name":"CreateAccessPreview",
@@ -183,6 +202,22 @@
       "documentation":"<p>Deletes the specified archive rule.</p>",
       "idempotent":true
     },
+    "GenerateFindingRecommendation":{
+      "name":"GenerateFindingRecommendation",
+      "http":{
+        "method":"POST",
+        "requestUri":"/recommendation/{id}",
+        "responseCode":200
+      },
+      "input":{"shape":"GenerateFindingRecommendationRequest"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Creates a recommendation for an unused permissions finding.</p>"
+    },
     "GetAccessPreview":{
       "name":"GetAccessPreview",
       "http":{
@@ -272,6 +307,24 @@
         {"shape":"AccessDeniedException"}
       ],
       "documentation":"<p>Retrieves information about the specified finding. GetFinding and GetFindingV2 both use <code>access-analyzer:GetFinding</code> in the <code>Action</code> element of an IAM policy statement. You must have permission to perform the <code>access-analyzer:GetFinding</code> action.</p>"
+    },
+    "GetFindingRecommendation":{
+      "name":"GetFindingRecommendation",
+      "http":{
+        "method":"GET",
+        "requestUri":"/recommendation/{id}",
+        "responseCode":200
+      },
+      "input":{"shape":"GetFindingRecommendationRequest"},
+      "output":{"shape":"GetFindingRecommendationResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ValidationException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Retrieves information about a finding recommendation for the specified analyzer.</p>"
     },
     "GetFindingV2":{
       "name":"GetFindingV2",
@@ -600,14 +653,17 @@
   "shapes":{
     "Access":{
       "type":"structure",
-      "required":["actions"],
       "members":{
         "actions":{
           "shape":"AccessActionsList",
           "documentation":"<p>A list of actions for the access permissions. Any strings that can be used as an action in an IAM policy can be used in the list of actions to check.</p>"
+        },
+        "resources":{
+          "shape":"AccessResourcesList",
+          "documentation":"<p>A list of resources for the access permissions. Any strings that can be used as a resource in an IAM policy can be used in the list of resources to check.</p>"
         }
       },
-      "documentation":"<p>Contains information about actions that define permissions to check against a policy.</p>"
+      "documentation":"<p>Contains information about actions and resources that define permissions to check against a policy.</p>"
     },
     "AccessActionsList":{
       "type":"list",
@@ -624,6 +680,29 @@
       "enum":[
         "IDENTITY_POLICY",
         "RESOURCE_POLICY"
+      ]
+    },
+    "AccessCheckResourceType":{
+      "type":"string",
+      "enum":[
+        "AWS::DynamoDB::Table",
+        "AWS::DynamoDB::Stream",
+        "AWS::EFS::FileSystem",
+        "AWS::OpenSearchService::Domain",
+        "AWS::Kinesis::Stream",
+        "AWS::Kinesis::StreamConsumer",
+        "AWS::KMS::Key",
+        "AWS::Lambda::Function",
+        "AWS::S3::Bucket",
+        "AWS::S3::AccessPoint",
+        "AWS::S3Express::DirectoryBucket",
+        "AWS::S3::Glacier",
+        "AWS::S3Outposts::Bucket",
+        "AWS::S3Outposts::AccessPoint",
+        "AWS::SecretsManager::Secret",
+        "AWS::SNS::Topic",
+        "AWS::SQS::Queue",
+        "AWS::IAM::AssumeRolePolicyDocument"
       ]
     },
     "AccessDeniedException":{
@@ -822,6 +901,12 @@
     "AccessPreviewsList":{
       "type":"list",
       "member":{"shape":"AccessPreviewSummary"}
+    },
+    "AccessResourcesList":{
+      "type":"list",
+      "member":{"shape":"Resource"},
+      "max":100,
+      "min":0
     },
     "AclCanonicalId":{"type":"string"},
     "AclGrantee":{
@@ -1112,7 +1197,7 @@
         },
         "access":{
           "shape":"CheckAccessNotGrantedRequestAccessList",
-          "documentation":"<p>An access object containing the permissions that shouldn't be granted by the specified policy.</p>"
+          "documentation":"<p>An access object containing the permissions that shouldn't be granted by the specified policy. If only actions are specified, IAM Access Analyzer checks for access of the actions on all resources in the policy. If only resources are specified, then IAM Access Analyzer checks which actions have access to the specified resources. If both actions and resources are specified, then IAM Access Analyzer checks which of the specified actions have access to the specified resources.</p>"
         },
         "policyType":{
           "shape":"AccessCheckPolicyType",
@@ -1190,6 +1275,47 @@
       }
     },
     "CheckNoNewAccessResult":{
+      "type":"string",
+      "enum":[
+        "PASS",
+        "FAIL"
+      ]
+    },
+    "CheckNoPublicAccessRequest":{
+      "type":"structure",
+      "required":[
+        "policyDocument",
+        "resourceType"
+      ],
+      "members":{
+        "policyDocument":{
+          "shape":"AccessCheckPolicyDocument",
+          "documentation":"<p>The JSON policy document to evaluate for public access.</p>"
+        },
+        "resourceType":{
+          "shape":"AccessCheckResourceType",
+          "documentation":"<p>The type of resource to evaluate for public access. For example, to check for public access to Amazon S3 buckets, you can choose <code>AWS::S3::Bucket</code> for the resource type.</p> <p>For resource types not supported as valid values, IAM Access Analyzer will return an error.</p>"
+        }
+      }
+    },
+    "CheckNoPublicAccessResponse":{
+      "type":"structure",
+      "members":{
+        "result":{
+          "shape":"CheckNoPublicAccessResult",
+          "documentation":"<p>The result of the check for public access to the specified resource type. If the result is <code>PASS</code>, the policy doesn't allow public access to the specified resource type. If the result is <code>FAIL</code>, the policy might allow public access to the specified resource type.</p>"
+        },
+        "message":{
+          "shape":"String",
+          "documentation":"<p>The message indicating whether the specified policy allows public access to resources.</p>"
+        },
+        "reasons":{
+          "shape":"ReasonSummaryList",
+          "documentation":"<p>A list of reasons why the specified resource policy grants public access for the resource type.</p>"
+        }
+      }
+    },
+    "CheckNoPublicAccessResult":{
       "type":"string",
       "enum":[
         "PASS",
@@ -1950,6 +2076,32 @@
       "type":"list",
       "member":{"shape":"FindingSummaryV2"}
     },
+    "GenerateFindingRecommendationRequest":{
+      "type":"structure",
+      "required":[
+        "analyzerArn",
+        "id"
+      ],
+      "members":{
+        "analyzerArn":{
+          "shape":"AnalyzerArn",
+          "documentation":"<p>The <a href=\"https://docs.aws.amazon.com/IAM/latest/UserGuide/access-analyzer-getting-started.html#permission-resources\">ARN of the analyzer</a> used to generate the finding recommendation.</p>",
+          "location":"querystring",
+          "locationName":"analyzerArn"
+        },
+        "id":{
+          "shape":"GenerateFindingRecommendationRequestIdString",
+          "documentation":"<p>The unique ID for the finding recommendation.</p>",
+          "location":"uri",
+          "locationName":"id"
+        }
+      }
+    },
+    "GenerateFindingRecommendationRequestIdString":{
+      "type":"string",
+      "max":2048,
+      "min":1
+    },
     "GeneratedPolicy":{
       "type":"structure",
       "required":["policy"],
@@ -2115,6 +2267,93 @@
         "archiveRule":{"shape":"ArchiveRuleSummary"}
       },
       "documentation":"<p>The response to the request.</p>"
+    },
+    "GetFindingRecommendationRequest":{
+      "type":"structure",
+      "required":[
+        "analyzerArn",
+        "id"
+      ],
+      "members":{
+        "analyzerArn":{
+          "shape":"AnalyzerArn",
+          "documentation":"<p>The <a href=\"https://docs.aws.amazon.com/IAM/latest/UserGuide/access-analyzer-getting-started.html#permission-resources\">ARN of the analyzer</a> used to generate the finding recommendation.</p>",
+          "location":"querystring",
+          "locationName":"analyzerArn"
+        },
+        "id":{
+          "shape":"GetFindingRecommendationRequestIdString",
+          "documentation":"<p>The unique ID for the finding recommendation.</p>",
+          "location":"uri",
+          "locationName":"id"
+        },
+        "maxResults":{
+          "shape":"GetFindingRecommendationRequestMaxResultsInteger",
+          "documentation":"<p>The maximum number of results to return in the response.</p>",
+          "location":"querystring",
+          "locationName":"maxResults"
+        },
+        "nextToken":{
+          "shape":"Token",
+          "documentation":"<p>A token used for pagination of results returned.</p>",
+          "location":"querystring",
+          "locationName":"nextToken"
+        }
+      }
+    },
+    "GetFindingRecommendationRequestIdString":{
+      "type":"string",
+      "max":2048,
+      "min":1
+    },
+    "GetFindingRecommendationRequestMaxResultsInteger":{
+      "type":"integer",
+      "box":true,
+      "max":1000,
+      "min":1
+    },
+    "GetFindingRecommendationResponse":{
+      "type":"structure",
+      "required":[
+        "startedAt",
+        "resourceArn",
+        "recommendationType",
+        "status"
+      ],
+      "members":{
+        "startedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time at which the retrieval of the finding recommendation was started.</p>"
+        },
+        "completedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time at which the retrieval of the finding recommendation was completed.</p>"
+        },
+        "nextToken":{
+          "shape":"Token",
+          "documentation":"<p>A token used for pagination of results returned.</p>"
+        },
+        "error":{
+          "shape":"RecommendationError",
+          "documentation":"<p>Detailed information about the reason that the retrieval of a recommendation for the finding failed.</p>"
+        },
+        "resourceArn":{
+          "shape":"ResourceArn",
+          "documentation":"<p>The ARN of the resource of the finding.</p>"
+        },
+        "recommendedSteps":{
+          "shape":"RecommendedStepList",
+          "documentation":"<p>A group of recommended steps for the finding.</p>"
+        },
+        "recommendationType":{
+          "shape":"RecommendationType",
+          "documentation":"<p>The type of recommendation for the finding.</p>"
+        },
+        "status":{
+          "shape":"Status",
+          "documentation":"<p>The status of the retrieval of the finding recommendation.</p>"
+        }
+      }
     },
     "GetFindingRequest":{
       "type":"structure",
@@ -3157,9 +3396,58 @@
       "type":"list",
       "member":{"shape":"ReasonSummary"}
     },
+    "RecommendationError":{
+      "type":"structure",
+      "required":[
+        "code",
+        "message"
+      ],
+      "members":{
+        "code":{
+          "shape":"String",
+          "documentation":"<p>The error code for a failed retrieval of a recommendation for a finding.</p>"
+        },
+        "message":{
+          "shape":"String",
+          "documentation":"<p>The error message for a failed retrieval of a recommendation for a finding.</p>"
+        }
+      },
+      "documentation":"<p>Contains information about the reason that the retrieval of a recommendation for a finding failed.</p>"
+    },
+    "RecommendationType":{
+      "type":"string",
+      "enum":["UnusedPermissionRecommendation"]
+    },
+    "RecommendedRemediationAction":{
+      "type":"string",
+      "enum":[
+        "CREATE_POLICY",
+        "DETACH_POLICY"
+      ]
+    },
+    "RecommendedStep":{
+      "type":"structure",
+      "members":{
+        "unusedPermissionsRecommendedStep":{
+          "shape":"UnusedPermissionsRecommendedStep",
+          "documentation":"<p>A recommended step for an unused permissions finding.</p>"
+        }
+      },
+      "documentation":"<p>Contains information about a recommended step for an unused access analyzer finding.</p>",
+      "union":true
+    },
+    "RecommendedStepList":{
+      "type":"list",
+      "member":{"shape":"RecommendedStep"}
+    },
     "RegionList":{
       "type":"list",
       "member":{"shape":"String"}
+    },
+    "Resource":{
+      "type":"string",
+      "max":2048,
+      "min":0
     },
     "ResourceArn":{
       "type":"string",
@@ -3467,6 +3755,14 @@
       },
       "documentation":"<p>Starts a scan of the policies applied to the specified resource.</p>"
     },
+    "Status":{
+      "type":"string",
+      "enum":[
+        "SUCCEEDED",
+        "FAILED",
+        "IN_PROGRESS"
+      ]
+    },
     "StatusReason":{
       "type":"structure",
       "required":["code"],
@@ -3732,10 +4028,33 @@
         },
         "lastAccessed":{
           "shape":"Timestamp",
-          "documentation":"<p>The time at which the permission last accessed.</p>"
+          "documentation":"<p>The time at which the permission was last accessed.</p>"
         }
       },
       "documentation":"<p>Contains information about an unused access finding for a permission. IAM Access Analyzer charges for unused access analysis based on the number of IAM roles and users analyzed per month. For more details on pricing, see <a href=\"https://aws.amazon.com/iam/access-analyzer/pricing\">IAM Access Analyzer pricing</a>.</p>"
+    },
+    "UnusedPermissionsRecommendedStep":{
+      "type":"structure",
+      "required":["recommendedAction"],
+      "members":{
+        "policyUpdatedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time at which the existing policy for the unused permissions finding was last updated.</p>"
+        },
+        "recommendedAction":{
+          "shape":"RecommendedRemediationAction",
+          "documentation":"<p>A recommendation of whether to create or detach a policy for an unused permissions finding.</p>"
+        },
+        "recommendedPolicy":{
+          "shape":"String",
+          "documentation":"<p>If the recommended action for the unused permissions finding is to replace the existing policy, the contents of the recommended policy to replace the policy specified in the <code>existingPolicyId</code> field.</p>"
+        },
+        "existingPolicyId":{
+          "shape":"String",
+          "documentation":"<p>If the recommended action for the unused permissions finding is to detach a policy, the ID of an existing policy to be detached.</p>"
+        }
+      },
+      "documentation":"<p>Contains information about the action to take for a policy in an unused permissions finding.</p>"
     },
     "UpdateArchiveRuleRequest":{
       "type":"structure",
@@ -3960,7 +4279,8 @@
         "unknownOperation",
         "cannotParse",
         "fieldValidationFailed",
-        "other"
+        "other",
+        "notSupported"
       ]
     },
     "ValueList":{

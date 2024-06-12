@@ -725,6 +725,22 @@ def percent_encode(input_str, safe=SAFE_CHARS):
     return quote(input_str, safe=safe)
 
 
+def _epoch_seconds_to_datetime(value, tzinfo):
+    """Parse numerical epoch timestamps (seconds since 1970) into a
+    ``datetime.datetime`` in UTC using ``datetime.timedelta``. This is intended
+    as fallback when ``fromtimestamp`` raises ``OverflowError`` or ``OSError``.
+
+    :type value: float or int
+    :param value: The Unix timestamps as number.
+
+    :type tzinfo: callable
+    :param tzinfo: A ``datetime.tzinfo`` class or compatible callable.
+    """
+    epoch_zero = datetime.datetime(1970, 1, 1, 0, 0, 0, tzinfo=tzutc())
+    epoch_zero_localized = epoch_zero.astimezone(tzinfo())
+    return epoch_zero_localized + datetime.timedelta(seconds=value)
+
+
 def _parse_timestamp_with_tzinfo(value, tzinfo):
     """Parse timestamp with pluggable tzinfo options."""
     if isinstance(value, (int, float)):
@@ -756,14 +772,40 @@ def parse_timestamp(value):
     This will return a ``datetime.datetime`` object.
 
     """
-    for tzinfo in get_tzinfo_options():
+    tzinfo_options = get_tzinfo_options()
+    for tzinfo in tzinfo_options:
         try:
             return _parse_timestamp_with_tzinfo(value, tzinfo)
-        except OSError as e:
-            logger.debug('Unable to parse timestamp with "%s" timezone info.',
-                         tzinfo.__name__, exc_info=e)
-    raise RuntimeError('Unable to calculate correct timezone offset for '
-                       '"%s"' % value)
+        except (OSError, OverflowError) as e:
+            logger.debug(
+                'Unable to parse timestamp with "%s" timezone info.',
+                tzinfo.__name__,
+                exc_info=e,
+            )
+    # For numeric values attempt fallback to using fromtimestamp-free method.
+    # From Python's ``datetime.datetime.fromtimestamp`` documentation: "This
+    # may raise ``OverflowError``, if the timestamp is out of the range of
+    # values supported by the platform C localtime() function, and ``OSError``
+    # on localtime() failure. It's common for this to be restricted to years
+    # from 1970 through 2038."
+    try:
+        numeric_value = float(value)
+    except (TypeError, ValueError):
+        pass
+    else:
+        try:
+            for tzinfo in tzinfo_options:
+                return _epoch_seconds_to_datetime(numeric_value, tzinfo=tzinfo)
+        except (OSError, OverflowError) as e:
+            logger.debug(
+                'Unable to parse timestamp using fallback method with "%s" '
+                'timezone info.',
+                tzinfo.__name__,
+                exc_info=e,
+            )
+    raise RuntimeError(
+        'Unable to calculate correct timezone offset for "%s"' % value
+    )
 
 
 def parse_to_aware_datetime(value):

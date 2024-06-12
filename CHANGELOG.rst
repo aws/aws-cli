@@ -2,6 +2,19 @@
 CHANGELOG
 =========
 
+2.16.7
+======
+
+* api-change:``securitylake``: This release updates request validation regex to account for non-commercial aws partitions.
+* api-change:``apptest``: AWS Mainframe Modernization Application Testing is an AWS Mainframe Modernization service feature that automates functional equivalence testing for mainframe application modernization and migration to AWS, and regression testing.
+* api-change:``osis``: SDK changes for self-managed vpc endpoint to OpenSearch ingestion pipelines.
+* api-change:``sesv2``: This release adds support for Amazon EventBridge as an email sending events destination.
+* api-change:``ec2``: Tagging support for Traffic Mirroring FilterRule resource
+* api-change:``redshift``: Updates to remove DC1 and DS2 node types.
+* api-change:``backupstorage``: The backupstorage client has been removed following the deprecation of the service.
+* api-change:``secretsmanager``: Introducing RotationToken parameter for PutSecretValue API
+
+
 2.16.6
 ======
 

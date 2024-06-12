@@ -33,7 +33,11 @@ DESCRIPTION = (
     "If you are using CloudWatch cross-account observability, "
     "you can use this operation in a monitoring account and start tailing on "
     "Log Group(s) present in the linked source accounts. "
-    'For more information, see <a href="https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/CloudWatch-Unified-Cross-Account.html">CloudWatch cross-account observability</a>.'
+    "For more information, see "
+    "https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/CloudWatch-Unified-Cross-Account.html.\n\n"
+    "Live Tail sessions incur charges by session usage time, per minute. "
+    "For pricing details, please refer to "
+    "https://aws.amazon.com/cloudwatch/pricing/."
 )
 
 LIST_SCHEMA = {"type": "array", "items": {"type": "string"}}

@@ -11,7 +11,8 @@
     "signatureVersion":"v4",
     "signingName":"secretsmanager",
     "targetPrefix":"secretsmanager",
-    "uid":"secretsmanager-2017-10-17"
+    "uid":"secretsmanager-2017-10-17",
+    "auth":["aws.auth#sigv4"]
   },
   "operations":{
     "BatchGetSecretValue":{
@@ -233,7 +234,7 @@
         {"shape":"InternalServiceError"},
         {"shape":"DecryptionFailure"}
       ],
-      "documentation":"<p>Creates a new version with a new encrypted secret value and attaches it to the secret. The version can contain a new <code>SecretString</code> value or a new <code>SecretBinary</code> value. </p> <p>We recommend you avoid calling <code>PutSecretValue</code> at a sustained rate of more than once every 10 minutes. When you update the secret value, Secrets Manager creates a new version of the secret. Secrets Manager removes outdated versions when there are more than 100, but it does not remove versions created less than 24 hours ago. If you call <code>PutSecretValue</code> more than once every 10 minutes, you create more versions than Secrets Manager removes, and you will reach the quota for secret versions.</p> <p>You can specify the staging labels to attach to the new version in <code>VersionStages</code>. If you don't include <code>VersionStages</code>, then Secrets Manager automatically moves the staging label <code>AWSCURRENT</code> to this version. If this operation creates the first version for the secret, then Secrets Manager automatically attaches the staging label <code>AWSCURRENT</code> to it. If this operation moves the staging label <code>AWSCURRENT</code> from another version to this version, then Secrets Manager also automatically moves the staging label <code>AWSPREVIOUS</code> to the version that <code>AWSCURRENT</code> was removed from.</p> <p>This operation is idempotent. If you call this operation with a <code>ClientRequestToken</code> that matches an existing version's VersionId, and you specify the same secret data, the operation succeeds but does nothing. However, if the secret data is different, then the operation fails because you can't modify an existing version; you can only create new ones.</p> <p>Secrets Manager generates a CloudTrail log entry when you call this action. Do not include sensitive information in request parameters except <code>SecretBinary</code> or <code>SecretString</code> because it might be logged. For more information, see <a href=\"https://docs.aws.amazon.com/secretsmanager/latest/userguide/retrieve-ct-entries.html\">Logging Secrets Manager events with CloudTrail</a>.</p> <p> <b>Required permissions: </b> <code>secretsmanager:PutSecretValue</code>. For more information, see <a href=\"https://docs.aws.amazon.com/secretsmanager/latest/userguide/reference_iam-permissions.html#reference_iam-permissions_actions\"> IAM policy actions for Secrets Manager</a> and <a href=\"https://docs.aws.amazon.com/secretsmanager/latest/userguide/auth-and-access.html\">Authentication and access control in Secrets Manager</a>. </p>"
+      "documentation":"<p>Creates a new version with a new encrypted secret value and attaches it to the secret. The version can contain a new <code>SecretString</code> value or a new <code>SecretBinary</code> value. </p> <p>We recommend you avoid calling <code>PutSecretValue</code> at a sustained rate of more than once every 10 minutes. When you update the secret value, Secrets Manager creates a new version of the secret. Secrets Manager removes outdated versions when there are more than 100, but it does not remove versions created less than 24 hours ago. If you call <code>PutSecretValue</code> more than once every 10 minutes, you create more versions than Secrets Manager removes, and you will reach the quota for secret versions.</p> <p>You can specify the staging labels to attach to the new version in <code>VersionStages</code>. If you don't include <code>VersionStages</code>, then Secrets Manager automatically moves the staging label <code>AWSCURRENT</code> to this version. If this operation creates the first version for the secret, then Secrets Manager automatically attaches the staging label <code>AWSCURRENT</code> to it. If this operation moves the staging label <code>AWSCURRENT</code> from another version to this version, then Secrets Manager also automatically moves the staging label <code>AWSPREVIOUS</code> to the version that <code>AWSCURRENT</code> was removed from.</p> <p>This operation is idempotent. If you call this operation with a <code>ClientRequestToken</code> that matches an existing version's VersionId, and you specify the same secret data, the operation succeeds but does nothing. However, if the secret data is different, then the operation fails because you can't modify an existing version; you can only create new ones.</p> <p>Secrets Manager generates a CloudTrail log entry when you call this action. Do not include sensitive information in request parameters except <code>SecretBinary</code>, <code>SecretString</code>, or <code>RotationToken</code> because it might be logged. For more information, see <a href=\"https://docs.aws.amazon.com/secretsmanager/latest/userguide/retrieve-ct-entries.html\">Logging Secrets Manager events with CloudTrail</a>.</p> <p> <b>Required permissions: </b> <code>secretsmanager:PutSecretValue</code>. For more information, see <a href=\"https://docs.aws.amazon.com/secretsmanager/latest/userguide/reference_iam-permissions.html#reference_iam-permissions_actions\"> IAM policy actions for Secrets Manager</a> and <a href=\"https://docs.aws.amazon.com/secretsmanager/latest/userguide/auth-and-access.html\">Authentication and access control in Secrets Manager</a>. </p>"
     },
     "RemoveRegionsFromReplication":{
       "name":"RemoveRegionsFromReplication",
@@ -530,11 +531,11 @@
         },
         "SecretBinary":{
           "shape":"SecretBinaryType",
-          "documentation":"<p>The binary data to encrypt and store in the new version of the secret. We recommend that you store your binary data in a file and then pass the contents of the file as a parameter.</p> <p>Either <code>SecretString</code> or <code>SecretBinary</code> must have a value, but not both.</p> <p>This parameter is not available in the Secrets Manager console.</p>"
+          "documentation":"<p>The binary data to encrypt and store in the new version of the secret. We recommend that you store your binary data in a file and then pass the contents of the file as a parameter.</p> <p>Either <code>SecretString</code> or <code>SecretBinary</code> must have a value, but not both.</p> <p>This parameter is not available in the Secrets Manager console.</p> <p>Sensitive: This field contains sensitive information, so the service does not include it in CloudTrail log entries. If you create your own log entries, you must also avoid logging the information in this field.</p>"
         },
         "SecretString":{
           "shape":"SecretStringType",
-          "documentation":"<p>The text data to encrypt and store in this new version of the secret. We recommend you use a JSON structure of key/value pairs for your secret value.</p> <p>Either <code>SecretString</code> or <code>SecretBinary</code> must have a value, but not both.</p> <p>If you create a secret by using the Secrets Manager console then Secrets Manager puts the protected secret text in only the <code>SecretString</code> parameter. The Secrets Manager console stores the information as a JSON structure of key/value pairs that a Lambda rotation function can parse.</p>"
+          "documentation":"<p>The text data to encrypt and store in this new version of the secret. We recommend you use a JSON structure of key/value pairs for your secret value.</p> <p>Either <code>SecretString</code> or <code>SecretBinary</code> must have a value, but not both.</p> <p>If you create a secret by using the Secrets Manager console then Secrets Manager puts the protected secret text in only the <code>SecretString</code> parameter. The Secrets Manager console stores the information as a JSON structure of key/value pairs that a Lambda rotation function can parse.</p> <p>Sensitive: This field contains sensitive information, so the service does not include it in CloudTrail log entries. If you create your own log entries, you must also avoid logging the information in this field.</p>"
         },
         "Tags":{
           "shape":"TagListType",
@@ -674,7 +675,7 @@
         },
         "RotationEnabled":{
           "shape":"RotationEnabledType",
-          "documentation":"<p>Specifies whether automatic rotation is turned on for this secret.</p> <p>To turn on rotation, use <a>RotateSecret</a>. To turn off rotation, use <a>CancelRotateSecret</a>.</p>",
+          "documentation":"<p>Specifies whether automatic rotation is turned on for this secret. If the secret has never been configured for rotation, Secrets Manager returns null.</p> <p>To turn on rotation, use <a>RotateSecret</a>. To turn off rotation, use <a>CancelRotateSecret</a>.</p>",
           "box":true
         },
         "RotationLambdaARN":{
@@ -893,7 +894,7 @@
       "members":{
         "SecretId":{
           "shape":"SecretIdType",
-          "documentation":"<p>The ARN or name of the secret to retrieve.</p> <p>For an ARN, we recommend that you specify a complete ARN rather than a partial ARN. See <a href=\"https://docs.aws.amazon.com/secretsmanager/latest/userguide/troubleshoot.html#ARN_secretnamehyphen\">Finding a secret from a partial ARN</a>.</p>"
+          "documentation":"<p>The ARN or name of the secret to retrieve. To retrieve a secret from another account, you must use an ARN.</p> <p>For an ARN, we recommend that you specify a complete ARN rather than a partial ARN. See <a href=\"https://docs.aws.amazon.com/secretsmanager/latest/userguide/troubleshoot.html#ARN_secretnamehyphen\">Finding a secret from a partial ARN</a>.</p>"
         },
         "VersionId":{
           "shape":"SecretVersionIdType",
@@ -922,11 +923,11 @@
         },
         "SecretBinary":{
           "shape":"SecretBinaryType",
-          "documentation":"<p>The decrypted secret value, if the secret value was originally provided as binary data in the form of a byte array. When you retrieve a <code>SecretBinary</code> using the HTTP API, the Python SDK, or the Amazon Web Services CLI, the value is Base64-encoded. Otherwise, it is not encoded.</p> <p>If the secret was created by using the Secrets Manager console, or if the secret value was originally provided as a string, then this field is omitted. The secret value appears in <code>SecretString</code> instead.</p>"
+          "documentation":"<p>The decrypted secret value, if the secret value was originally provided as binary data in the form of a byte array. When you retrieve a <code>SecretBinary</code> using the HTTP API, the Python SDK, or the Amazon Web Services CLI, the value is Base64-encoded. Otherwise, it is not encoded.</p> <p>If the secret was created by using the Secrets Manager console, or if the secret value was originally provided as a string, then this field is omitted. The secret value appears in <code>SecretString</code> instead.</p> <p>Sensitive: This field contains sensitive information, so the service does not include it in CloudTrail log entries. If you create your own log entries, you must also avoid logging the information in this field.</p>"
         },
         "SecretString":{
           "shape":"SecretStringType",
-          "documentation":"<p>The decrypted secret value, if the secret value was originally provided as a string or through the Secrets Manager console.</p> <p>If this secret was created by using the console, then Secrets Manager stores the information as a JSON structure of key/value pairs. </p>"
+          "documentation":"<p>The decrypted secret value, if the secret value was originally provided as a string or through the Secrets Manager console.</p> <p>If this secret was created by using the console, then Secrets Manager stores the information as a JSON structure of key/value pairs. </p> <p>Sensitive: This field contains sensitive information, so the service does not include it in CloudTrail log entries. If you create your own log entries, you must also avoid logging the information in this field.</p>"
         },
         "VersionStages":{
           "shape":"SecretVersionStagesType",
@@ -1189,15 +1190,19 @@
         },
         "SecretBinary":{
           "shape":"SecretBinaryType",
-          "documentation":"<p>The binary data to encrypt and store in the new version of the secret. To use this parameter in the command-line tools, we recommend that you store your binary data in a file and then pass the contents of the file as a parameter. </p> <p>You must include <code>SecretBinary</code> or <code>SecretString</code>, but not both.</p> <p>You can't access this value from the Secrets Manager console.</p>"
+          "documentation":"<p>The binary data to encrypt and store in the new version of the secret. To use this parameter in the command-line tools, we recommend that you store your binary data in a file and then pass the contents of the file as a parameter. </p> <p>You must include <code>SecretBinary</code> or <code>SecretString</code>, but not both.</p> <p>You can't access this value from the Secrets Manager console.</p> <p>Sensitive: This field contains sensitive information, so the service does not include it in CloudTrail log entries. If you create your own log entries, you must also avoid logging the information in this field.</p>"
         },
         "SecretString":{
           "shape":"SecretStringType",
-          "documentation":"<p>The text to encrypt and store in the new version of the secret. </p> <p>You must include <code>SecretBinary</code> or <code>SecretString</code>, but not both.</p> <p>We recommend you create the secret string as JSON key/value pairs, as shown in the example.</p>"
+          "documentation":"<p>The text to encrypt and store in the new version of the secret. </p> <p>You must include <code>SecretBinary</code> or <code>SecretString</code>, but not both.</p> <p>We recommend you create the secret string as JSON key/value pairs, as shown in the example.</p> <p>Sensitive: This field contains sensitive information, so the service does not include it in CloudTrail log entries. If you create your own log entries, you must also avoid logging the information in this field.</p>"
         },
         "VersionStages":{
           "shape":"SecretVersionStagesType",
           "documentation":"<p>A list of staging labels to attach to this version of the secret. Secrets Manager uses staging labels to track versions of a secret through the rotation process.</p> <p>If you specify a staging label that's already associated with a different version of the same secret, then Secrets Manager removes the label from the other version and attaches it to this version. If you specify <code>AWSCURRENT</code>, and it is already attached to another version, then Secrets Manager also moves the staging label <code>AWSPREVIOUS</code> to the version that <code>AWSCURRENT</code> was removed from.</p> <p>If you don't include <code>VersionStages</code>, then Secrets Manager automatically moves the staging label <code>AWSCURRENT</code> to this version.</p>"
+        },
+        "RotationToken":{
+          "shape":"RotationTokenType",
+          "documentation":"<p>A unique identifier that indicates the source of the request. For cross-account rotation (when you rotate a secret in one account by using a Lambda rotation function in another account) and the Lambda rotation function assumes an IAM role to call Secrets Manager, Secrets Manager validates the identity with the rotation token. For more information, see <a href=\"https://docs.aws.amazon.com/secretsmanager/latest/userguide/rotating-secrets.html\">How rotation works</a>.</p> <p>Sensitive: This field contains sensitive information, so the service does not include it in CloudTrail log entries. If you create your own log entries, you must also avoid logging the information in this field.</p>"
         }
       }
     },
@@ -1458,6 +1463,13 @@
         }
       },
       "documentation":"<p>A structure that defines the rotation configuration for the secret.</p>"
+    },
+    "RotationTokenType":{
+      "type":"string",
+      "max":256,
+      "min":36,
+      "pattern":"^[a-zA-Z0-9\\-]+$",
+      "sensitive":true
     },
     "ScheduleExpressionType":{
       "type":"string",
@@ -1802,11 +1814,11 @@
         },
         "SecretBinary":{
           "shape":"SecretBinaryType",
-          "documentation":"<p>The binary data to encrypt and store in the new version of the secret. We recommend that you store your binary data in a file and then pass the contents of the file as a parameter. </p> <p>Either <code>SecretBinary</code> or <code>SecretString</code> must have a value, but not both.</p> <p>You can't access this parameter in the Secrets Manager console.</p>"
+          "documentation":"<p>The binary data to encrypt and store in the new version of the secret. We recommend that you store your binary data in a file and then pass the contents of the file as a parameter. </p> <p>Either <code>SecretBinary</code> or <code>SecretString</code> must have a value, but not both.</p> <p>You can't access this parameter in the Secrets Manager console.</p> <p>Sensitive: This field contains sensitive information, so the service does not include it in CloudTrail log entries. If you create your own log entries, you must also avoid logging the information in this field.</p>"
         },
         "SecretString":{
           "shape":"SecretStringType",
-          "documentation":"<p>The text data to encrypt and store in the new version of the secret. We recommend you use a JSON structure of key/value pairs for your secret value. </p> <p>Either <code>SecretBinary</code> or <code>SecretString</code> must have a value, but not both. </p>"
+          "documentation":"<p>The text data to encrypt and store in the new version of the secret. We recommend you use a JSON structure of key/value pairs for your secret value. </p> <p>Either <code>SecretBinary</code> or <code>SecretString</code> must have a value, but not both. </p> <p>Sensitive: This field contains sensitive information, so the service does not include it in CloudTrail log entries. If you create your own log entries, you must also avoid logging the information in this field.</p>"
         }
       }
     },
@@ -1873,7 +1885,7 @@
       "members":{
         "SecretId":{
           "shape":"SecretIdType",
-          "documentation":"<p>This field is reserved for internal use.</p>"
+          "documentation":"<p>The ARN or name of the secret with the resource-based policy you want to validate.</p>"
         },
         "ResourcePolicy":{
           "shape":"NonEmptyResourcePolicyType",

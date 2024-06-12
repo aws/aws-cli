@@ -11,7 +11,8 @@
     "serviceId":"SESv2",
     "signatureVersion":"v4",
     "signingName":"ses",
-    "uid":"sesv2-2019-09-27"
+    "uid":"sesv2-2019-09-27",
+    "auth":["aws.auth#sigv4"]
   },
   "operations":{
     "BatchGetMetricData":{
@@ -78,7 +79,7 @@
         {"shape":"TooManyRequestsException"},
         {"shape":"BadRequestException"}
       ],
-      "documentation":"<p>Create an event destination. <i>Events</i> include message sends, deliveries, opens, clicks, bounces, and complaints. <i>Event destinations</i> are places that you can send information about these events to. For example, you can send event data to Amazon SNS to receive notifications when you receive bounces or complaints, or you can use Amazon Kinesis Data Firehose to stream data to Amazon S3 for long-term storage.</p> <p>A single configuration set can include more than one event destination.</p>"
+      "documentation":"<p>Create an event destination. <i>Events</i> include message sends, deliveries, opens, clicks, bounces, and complaints. <i>Event destinations</i> are places that you can send information about these events to. For example, you can send event data to Amazon EventBridge and associate a rule to send the event to the specified target.</p> <p>A single configuration set can include more than one event destination.</p>"
     },
     "CreateContact":{
       "name":"CreateContact",
@@ -278,7 +279,7 @@
         {"shape":"TooManyRequestsException"},
         {"shape":"BadRequestException"}
       ],
-      "documentation":"<p>Delete an event destination.</p> <p> <i>Events</i> include message sends, deliveries, opens, clicks, bounces, and complaints. <i>Event destinations</i> are places that you can send information about these events to. For example, you can send event data to Amazon SNS to receive notifications when you receive bounces or complaints, or you can use Amazon Kinesis Data Firehose to stream data to Amazon S3 for long-term storage.</p>"
+      "documentation":"<p>Delete an event destination.</p> <p> <i>Events</i> include message sends, deliveries, opens, clicks, bounces, and complaints. <i>Event destinations</i> are places that you can send information about these events to. For example, you can send event data to Amazon EventBridge and associate a rule to send the event to the specified target.</p>"
     },
     "DeleteContact":{
       "name":"DeleteContact",
@@ -460,7 +461,7 @@
         {"shape":"TooManyRequestsException"},
         {"shape":"BadRequestException"}
       ],
-      "documentation":"<p>Retrieve a list of event destinations that are associated with a configuration set.</p> <p> <i>Events</i> include message sends, deliveries, opens, clicks, bounces, and complaints. <i>Event destinations</i> are places that you can send information about these events to. For example, you can send event data to Amazon SNS to receive notifications when you receive bounces or complaints, or you can use Amazon Kinesis Data Firehose to stream data to Amazon S3 for long-term storage.</p>"
+      "documentation":"<p>Retrieve a list of event destinations that are associated with a configuration set.</p> <p> <i>Events</i> include message sends, deliveries, opens, clicks, bounces, and complaints. <i>Event destinations</i> are places that you can send information about these events to. For example, you can send event data to Amazon EventBridge and associate a rule to send the event to the specified target.</p>"
     },
     "GetContact":{
       "name":"GetContact",
@@ -1352,7 +1353,7 @@
         {"shape":"TooManyRequestsException"},
         {"shape":"BadRequestException"}
       ],
-      "documentation":"<p>Update the configuration of an event destination for a configuration set.</p> <p> <i>Events</i> include message sends, deliveries, opens, clicks, bounces, and complaints. <i>Event destinations</i> are places that you can send information about these events to. For example, you can send event data to Amazon SNS to receive notifications when you receive bounces or complaints, or you can use Amazon Kinesis Data Firehose to stream data to Amazon S3 for long-term storage.</p>"
+      "documentation":"<p>Update the configuration of an event destination for a configuration set.</p> <p> <i>Events</i> include message sends, deliveries, opens, clicks, bounces, and complaints. <i>Event destinations</i> are places that you can send information about these events to. For example, you can send event data to Amazon EventBridge and associate a rule to send the event to the specified target.</p>"
     },
     "UpdateContact":{
       "name":"UpdateContact",
@@ -3145,6 +3146,17 @@
       "type":"list",
       "member":{"shape":"Esp"}
     },
+    "EventBridgeDestination":{
+      "type":"structure",
+      "required":["EventBusArn"],
+      "members":{
+        "EventBusArn":{
+          "shape":"AmazonResourceName",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the Amazon EventBridge bus to publish email events to. Only the default bus is supported. </p>"
+        }
+      },
+      "documentation":"<p>An object that defines an Amazon EventBridge destination for email events. You can use Amazon EventBridge to send notifications when certain email events occur.</p>"
+    },
     "EventDestination":{
       "type":"structure",
       "required":[
@@ -3174,7 +3186,11 @@
         },
         "SnsDestination":{
           "shape":"SnsDestination",
-          "documentation":"<p>An object that defines an Amazon SNS destination for email events. You can use Amazon SNS to send notification when certain email events occur.</p>"
+          "documentation":"<p>An object that defines an Amazon SNS destination for email events. You can use Amazon SNS to send notifications when certain email events occur.</p>"
+        },
+        "EventBridgeDestination":{
+          "shape":"EventBridgeDestination",
+          "documentation":"<p>An object that defines an Amazon EventBridge destination for email events. You can use Amazon EventBridge to send notifications when certain email events occur.</p>"
         },
         "PinpointDestination":{
           "shape":"PinpointDestination",
@@ -3204,7 +3220,11 @@
         },
         "SnsDestination":{
           "shape":"SnsDestination",
-          "documentation":"<p>An object that defines an Amazon SNS destination for email events. You can use Amazon SNS to send notification when certain email events occur.</p>"
+          "documentation":"<p>An object that defines an Amazon SNS destination for email events. You can use Amazon SNS to send notifications when certain email events occur.</p>"
+        },
+        "EventBridgeDestination":{
+          "shape":"EventBridgeDestination",
+          "documentation":"<p>An object that defines an Amazon EventBridge destination for email events. You can use Amazon EventBridge to send notifications when certain email events occur.</p>"
         },
         "PinpointDestination":{
           "shape":"PinpointDestination",
@@ -6369,7 +6389,7 @@
           "documentation":"<p>The Amazon Resource Name (ARN) of the Amazon SNS topic to publish email events to. For more information about Amazon SNS topics, see the <a href=\"https://docs.aws.amazon.com/sns/latest/dg/CreateTopic.html\">Amazon SNS Developer Guide</a>.</p>"
         }
       },
-      "documentation":"<p>An object that defines an Amazon SNS destination for email events. You can use Amazon SNS to send notification when certain email events occur.</p>"
+      "documentation":"<p>An object that defines an Amazon SNS destination for email events. You can use Amazon SNS to send notifications when certain email events occur.</p>"
     },
     "Subject":{"type":"string"},
     "SubscriptionStatus":{

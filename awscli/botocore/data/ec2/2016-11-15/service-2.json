@@ -10,7 +10,8 @@
     "serviceId":"EC2",
     "signatureVersion":"v4",
     "uid":"ec2-2016-11-15",
-    "xmlNamespace":"http://ec2.amazonaws.com/doc/2016-11-15"
+    "xmlNamespace":"http://ec2.amazonaws.com/doc/2016-11-15",
+    "auth":["aws.auth#sigv4"]
   },
   "operations":{
     "AcceptAddressTransfer":{
@@ -3315,6 +3316,16 @@
       "input":{"shape":"DescribeTagsRequest"},
       "output":{"shape":"DescribeTagsResult"},
       "documentation":"<p>Describes the specified tags for your EC2 resources.</p> <p>For more information about tags, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/Using_Tags.html\">Tag your Amazon EC2 resources</a> in the <i>Amazon Elastic Compute Cloud User Guide</i>.</p> <important> <p>We strongly recommend using only paginated requests. Unpaginated requests are susceptible to throttling and timeouts.</p> </important> <note> <p>The order of the elements in the response, including those within nested structures, might vary. Applications should not assume the elements appear in a particular order.</p> </note>"
+    },
+    "DescribeTrafficMirrorFilterRules":{
+      "name":"DescribeTrafficMirrorFilterRules",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DescribeTrafficMirrorFilterRulesRequest"},
+      "output":{"shape":"DescribeTrafficMirrorFilterRulesResult"},
+      "documentation":"<p>Describe traffic mirror filters that determine the traffic that is mirrored.</p>"
     },
     "DescribeTrafficMirrorFilters":{
       "name":"DescribeTrafficMirrorFilters",
@@ -14831,7 +14842,7 @@
         },
         "ClientToken":{
           "shape":"String",
-          "documentation":"<p>Unique, case-sensitive identifier that you provide to ensure the idempotency of the request. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/APIReference/Run_Instance_Idempotency.html\">How to ensure idempotency</a>.</p>",
+          "documentation":"<p>Unique, case-sensitive identifier that you provide to ensure the idempotency of the request. For more information, see <a href=\"https://docs.aws.amazon.com/ec2/latest/devguide/ec2-api-idempotency.html\">How to ensure idempotency</a>.</p>",
           "idempotencyToken":true
         }
       }
@@ -14846,7 +14857,7 @@
         },
         "ClientToken":{
           "shape":"String",
-          "documentation":"<p>Unique, case-sensitive identifier that you provide to ensure the idempotency of the request. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/APIReference/Run_Instance_Idempotency.html\">How to ensure idempotency</a>.</p>",
+          "documentation":"<p>Unique, case-sensitive identifier that you provide to ensure the idempotency of the request. For more information, see <a href=\"https://docs.aws.amazon.com/ec2/latest/devguide/ec2-api-idempotency.html\">How to ensure idempotency</a>.</p>",
           "locationName":"clientToken"
         }
       }
@@ -14908,8 +14919,13 @@
         },
         "ClientToken":{
           "shape":"String",
-          "documentation":"<p>Unique, case-sensitive identifier that you provide to ensure the idempotency of the request. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/APIReference/Run_Instance_Idempotency.html\">How to ensure idempotency</a>.</p>",
+          "documentation":"<p>Unique, case-sensitive identifier that you provide to ensure the idempotency of the request. For more information, see <a href=\"https://docs.aws.amazon.com/ec2/latest/devguide/ec2-api-idempotency.html\">How to ensure idempotency</a>.</p>",
           "idempotencyToken":true
+        },
+        "TagSpecifications":{
+          "shape":"TagSpecificationList",
+          "documentation":"<p>Traffic Mirroring tags specifications.</p>",
+          "locationName":"TagSpecification"
         }
       }
     },
@@ -14923,7 +14939,7 @@
         },
         "ClientToken":{
           "shape":"String",
-          "documentation":"<p>Unique, case-sensitive identifier that you provide to ensure the idempotency of the request. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/APIReference/Run_Instance_Idempotency.html\">How to ensure idempotency</a>.</p>",
+          "documentation":"<p>Unique, case-sensitive identifier that you provide to ensure the idempotency of the request. For more information, see <a href=\"https://docs.aws.amazon.com/ec2/latest/devguide/ec2-api-idempotency.html\">How to ensure idempotency</a>.</p>",
           "locationName":"clientToken"
         }
       }
@@ -14959,7 +14975,7 @@
         },
         "VirtualNetworkId":{
           "shape":"Integer",
-          "documentation":"<p>The VXLAN ID for the Traffic Mirror session. For more information about the VXLAN protocol, see <a href=\"https://tools.ietf.org/html/rfc7348\">RFC 7348</a>. If you do not specify a <code>VirtualNetworkId</code>, an account-wide unique id is chosen at random.</p>"
+          "documentation":"<p>The VXLAN ID for the Traffic Mirror session. For more information about the VXLAN protocol, see <a href=\"https://datatracker.ietf.org/doc/html/rfc7348\">RFC 7348</a>. If you do not specify a <code>VirtualNetworkId</code>, an account-wide unique ID is chosen at random.</p>"
         },
         "Description":{
           "shape":"String",
@@ -14976,7 +14992,7 @@
         },
         "ClientToken":{
           "shape":"String",
-          "documentation":"<p>Unique, case-sensitive identifier that you provide to ensure the idempotency of the request. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/APIReference/Run_Instance_Idempotency.html\">How to ensure idempotency</a>.</p>",
+          "documentation":"<p>Unique, case-sensitive identifier that you provide to ensure the idempotency of the request. For more information, see <a href=\"https://docs.aws.amazon.com/ec2/latest/devguide/ec2-api-idempotency.html\">How to ensure idempotency</a>.</p>",
           "idempotencyToken":true
         }
       }
@@ -14991,7 +15007,7 @@
         },
         "ClientToken":{
           "shape":"String",
-          "documentation":"<p>Unique, case-sensitive identifier that you provide to ensure the idempotency of the request. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/APIReference/Run_Instance_Idempotency.html\">How to ensure idempotency</a>.</p>",
+          "documentation":"<p>Unique, case-sensitive identifier that you provide to ensure the idempotency of the request. For more information, see <a href=\"https://docs.aws.amazon.com/ec2/latest/devguide/ec2-api-idempotency.html\">How to ensure idempotency</a>.</p>",
           "locationName":"clientToken"
         }
       }
@@ -15022,7 +15038,7 @@
         },
         "ClientToken":{
           "shape":"String",
-          "documentation":"<p>Unique, case-sensitive identifier that you provide to ensure the idempotency of the request. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/APIReference/Run_Instance_Idempotency.html\">How to ensure idempotency</a>.</p>",
+          "documentation":"<p>Unique, case-sensitive identifier that you provide to ensure the idempotency of the request. For more information, see <a href=\"https://docs.aws.amazon.com/ec2/latest/devguide/ec2-api-idempotency.html\">How to ensure idempotency</a>.</p>",
           "idempotencyToken":true
         },
         "GatewayLoadBalancerEndpointId":{
@@ -15041,7 +15057,7 @@
         },
         "ClientToken":{
           "shape":"String",
-          "documentation":"<p>Unique, case-sensitive identifier that you provide to ensure the idempotency of the request. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/APIReference/Run_Instance_Idempotency.html\">How to ensure idempotency</a>.</p>",
+          "documentation":"<p>Unique, case-sensitive identifier that you provide to ensure the idempotency of the request. For more information, see <a href=\"https://docs.aws.amazon.com/ec2/latest/devguide/ec2-api-idempotency.html\">How to ensure idempotency</a>.</p>",
           "locationName":"clientToken"
         }
       }
@@ -23973,6 +23989,52 @@
           "shape":"TagDescriptionList",
           "documentation":"<p>The tags.</p>",
           "locationName":"tagSet"
+        }
+      }
+    },
+    "DescribeTrafficMirrorFilterRulesRequest":{
+      "type":"structure",
+      "members":{
+        "TrafficMirrorFilterRuleIds":{
+          "shape":"TrafficMirrorFilterRuleIdList",
+          "documentation":"<p>Traffic filter rule IDs.</p>",
+          "locationName":"TrafficMirrorFilterRuleId"
+        },
+        "TrafficMirrorFilterId":{
+          "shape":"TrafficMirrorFilterId",
+          "documentation":"<p>Traffic filter ID.</p>"
+        },
+        "DryRun":{
+          "shape":"Boolean",
+          "documentation":"<p>Checks whether you have the required permissions for the action, without actually making the request, and provides an error response. If you have the required permissions, the error response is <code>DryRunOperation</code>. Otherwise, it is <code>UnauthorizedOperation</code>.</p>"
+        },
+        "Filters":{
+          "shape":"FilterList",
+          "documentation":"<p>Traffic mirror filters.</p> <ul> <li> <p> <code>traffic-mirror-filter-rule-id</code>: The ID of the Traffic Mirror rule.</p> </li> <li> <p> <code>traffic-mirror-filter-id</code>: The ID of the filter that this rule is associated with.</p> </li> <li> <p> <code>rule-number</code>: The number of the Traffic Mirror rule.</p> </li> <li> <p> <code>rule-action</code>: The action taken on the filtered traffic. Possible actions are <code>accept</code> and <code>reject</code>.</p> </li> <li> <p> <code>traffic-direction</code>: The traffic direction. Possible directions are <code>ingress</code> and <code>egress</code>.</p> </li> <li> <p> <code>protocol</code>: The protocol, for example UDP, assigned to the Traffic Mirror rule.</p> </li> <li> <p> <code>source-cidr-block</code>: The source CIDR block assigned to the Traffic Mirror rule.</p> </li> <li> <p> <code>destination-cidr-block</code>: The destination CIDR block assigned to the Traffic Mirror rule.</p> </li> <li> <p> <code>description</code>: The description of the Traffic Mirror rule.</p> </li> </ul>",
+          "locationName":"Filter"
+        },
+        "MaxResults":{
+          "shape":"TrafficMirroringMaxResults",
+          "documentation":"<p>The maximum number of results to return with a single call. To retrieve the remaining results, make another call with the returned <code>nextToken</code> value.</p>"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The token for the next page of results.</p>"
+        }
+      }
+    },
+    "DescribeTrafficMirrorFilterRulesResult":{
+      "type":"structure",
+      "members":{
+        "TrafficMirrorFilterRules":{
+          "shape":"TrafficMirrorFilterRuleSet",
+          "documentation":"<p>Traffic mirror rules.</p>",
+          "locationName":"trafficMirrorFilterRuleSet"
+        },
+        "NextToken":{
+          "shape":"String",
+          "documentation":"<p>The token to use to retrieve the next page of results. The value is <code>null</code> when there are no more results to return.</p>",
+          "locationName":"nextToken"
         }
       }
     },
@@ -43558,7 +43620,7 @@
       "members":{
         "TrafficMirrorFilterRule":{
           "shape":"TrafficMirrorFilterRule",
-          "documentation":"<p>Modifies a Traffic Mirror rule.</p>",
+          "documentation":"<note> <p>Tags are not returned for ModifyTrafficMirrorFilterRule.</p> </note> <p>A Traffic Mirror rule.</p>",
           "locationName":"trafficMirrorFilterRule"
         }
       }
@@ -50863,6 +50925,7 @@
         "verified-access-trust-provider",
         "vpn-connection-device-type",
         "vpc-block-public-access-exclusion",
+        "vpc-encryption-control",
         "ipam-resource-discovery",
         "ipam-resource-discovery-association",
         "instance-connect-endpoint"
@@ -56026,6 +56089,11 @@
           "shape":"String",
           "documentation":"<p>The description of the Traffic Mirror rule.</p>",
           "locationName":"description"
+        },
+        "Tags":{
+          "shape":"TagList",
+          "documentation":"<p>Tags on Traffic Mirroring filter rules.</p>",
+          "locationName":"tagSet"
         }
       },
       "documentation":"<p>Describes the Traffic Mirror rule.</p>"
@@ -56043,8 +56111,22 @@
       "type":"list",
       "member":{"shape":"TrafficMirrorFilterRuleField"}
     },
+    "TrafficMirrorFilterRuleIdList":{
+      "type":"list",
+      "member":{
+        "shape":"TrafficMirrorFilterRuleIdWithResolver",
+        "locationName":"item"
+      }
+    },
     "TrafficMirrorFilterRuleIdWithResolver":{"type":"string"},
     "TrafficMirrorFilterRuleList":{
+      "type":"list",
+      "member":{
+        "shape":"TrafficMirrorFilterRule",
+        "locationName":"item"
+      }
+    },
+    "TrafficMirrorFilterRuleSet":{
       "type":"list",
       "member":{
         "shape":"TrafficMirrorFilterRule",

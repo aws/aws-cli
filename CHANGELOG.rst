@@ -2,6 +2,18 @@
 CHANGELOG
 =========
 
+1.33.7
+======
+
+* api-change:``apptest``: AWS Mainframe Modernization Application Testing is an AWS Mainframe Modernization service feature that automates functional equivalence testing for mainframe application modernization and migration to AWS, and regression testing.
+* api-change:``ec2``: Tagging support for Traffic Mirroring FilterRule resource
+* api-change:``osis``: SDK changes for self-managed vpc endpoint to OpenSearch ingestion pipelines.
+* api-change:``redshift``: Updates to remove DC1 and DS2 node types.
+* api-change:``secretsmanager``: Introducing RotationToken parameter for PutSecretValue API
+* api-change:``securitylake``: This release updates request validation regex to account for non-commercial aws partitions.
+* api-change:``sesv2``: This release adds support for Amazon EventBridge as an email sending events destination.
+
+
 1.33.6
 ======
 

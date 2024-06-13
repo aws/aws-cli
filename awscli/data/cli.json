@@ -35,7 +35,7 @@
             "help": "<p>Use a specific profile from your credential file.</p>"
         },
         "region": {
-	        "help": "<p>The region to use.  Overrides config/env settings.</p>"
+	    "help": "<p>The region to use.  Overrides config/env settings.</p>"
         },
         "version": {
             "action": "version",
@@ -64,6 +64,25 @@
             "dest": "connect_timeout",
             "type": "int",
             "help": "<p>The maximum socket connect time in seconds. If the value is set to 0, the socket connect will be blocking and not timeout. The default value is 60 seconds.</p>"
-        }
+        },
+	"cmd-regions": {
+	    "dest": "cmd_regions",
+	    "type": "string",
+	    "help": "<p>If specified, executes command in all listed regions. Results of execution are returned as key/value pairs, with the region name of execution as the key. This overrides the region parameter and ignores the endpoint-url parameter</p>"
+	},
+	"role": {
+	    "help": "<p>If provided, the AWS CLI will invoke the specified subcommand in each account specified in the accounts parameter via sts:AssumeRole. The value of this parameter will be passed to sts:AssumeRole as the role in the RoleArn parameter. If not provided, the specified subcommand will be executed using the current profile.</p>"
+	},
+	"session": {
+	    "help":"<p>Specifies the RoleSessionName used when calling sts:AssumeRole. Defaults to aws-cli if not specified</p>"
+	},
+	"role-id": {
+	    "dest": "role_id",
+	    "help": "<p>Only valid if role is specified. If provided, specifes the ExternalId passed to sts:AssumeRole.</p>"
+	},
+	"accounts": {
+	    "type": "string",
+	    "help": "<p>Only valid if role is specified. If provided, enumerates set of accounts to switch to using specified switch role. The default value is every account in the organization as reported by organization:ListAccounts.</p>"
+	}
     }
 }

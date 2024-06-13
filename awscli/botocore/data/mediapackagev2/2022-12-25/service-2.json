@@ -2,9 +2,10 @@
   "version":"2.0",
   "metadata":{
     "apiVersion":"2022-12-25",
+    "auth":["aws.auth#sigv4"],
     "endpointPrefix":"mediapackagev2",
-    "jsonVersion":"1.1",
     "protocol":"rest-json",
+    "protocols":["rest-json"],
     "serviceAbbreviation":"mediapackagev2",
     "serviceFullName":"AWS Elemental MediaPackage v2",
     "serviceId":"MediaPackageV2",
@@ -557,6 +558,10 @@
         "Description":{
           "shape":"ResourceDescription",
           "documentation":"<p>Any descriptive information that you want to add to the channel for future identification purposes.</p>"
+        },
+        "InputType":{
+          "shape":"InputType",
+          "documentation":"<p>The input type will be an immutable field which will be used to define whether the channel will allow CMAF ingest or HLS ingest. If unprovided, it will default to HLS to preserve current behavior.</p> <p>The allowed values are:</p> <ul> <li> <p> <code>HLS</code> - The HLS streaming specification (which defines M3U8 manifests and TS segments).</p> </li> <li> <p> <code>CMAF</code> - The DASH-IF CMAF Ingest specification (which defines CMAF segments with optional DASH manifests).</p> </li> </ul>"
         }
       },
       "documentation":"<p>The configuration of the channel.</p>"
@@ -694,6 +699,10 @@
           "location":"header",
           "locationName":"x-amzn-client-token"
         },
+        "InputType":{
+          "shape":"InputType",
+          "documentation":"<p>The input type will be an immutable field which will be used to define whether the channel will allow CMAF ingest or HLS ingest. If unprovided, it will default to HLS to preserve current behavior.</p> <p>The allowed values are:</p> <ul> <li> <p> <code>HLS</code> - The HLS streaming specification (which defines M3U8 manifests and TS segments).</p> </li> <li> <p> <code>CMAF</code> - The DASH-IF CMAF Ingest specification (which defines CMAF segments with optional DASH manifests).</p> </li> </ul>"
+        },
         "Description":{
           "shape":"ResourceDescription",
           "documentation":"<p>Enter any descriptive text that helps you to identify the channel.</p>"
@@ -740,6 +749,10 @@
           "documentation":"<p>The description for your channel.</p>"
         },
         "IngestEndpoints":{"shape":"IngestEndpointList"},
+        "InputType":{
+          "shape":"InputType",
+          "documentation":"<p>The input type will be an immutable field which will be used to define whether the channel will allow CMAF ingest or HLS ingest. If unprovided, it will default to HLS to preserve current behavior.</p> <p>The allowed values are:</p> <ul> <li> <p> <code>HLS</code> - The HLS streaming specification (which defines M3U8 manifests and TS segments).</p> </li> <li> <p> <code>CMAF</code> - The DASH-IF CMAF Ingest specification (which defines CMAF segments with optional DASH manifests).</p> </li> </ul>"
+        },
         "ETag":{
           "shape":"EntityTag",
           "documentation":"<p>The current Entity Tag (ETag) associated with this resource. The entity tag can be used to safely make concurrent updates to the resource.</p>"
@@ -965,6 +978,10 @@
           "shape":"CreateDashManifests",
           "documentation":"<p>A DASH manifest configuration.</p>"
         },
+        "ForceEndpointErrorConfiguration":{
+          "shape":"ForceEndpointErrorConfiguration",
+          "documentation":"<p>The failover settings for the endpoint.</p>"
+        },
         "Tags":{
           "shape":"TagMap",
           "documentation":"<p>A comma-separated list of tag key:value pairs that you define. For example:</p> <p> <code>\"Key1\": \"Value1\",</code> </p> <p> <code>\"Key2\": \"Value2\"</code> </p>"
@@ -1041,6 +1058,10 @@
         "DashManifests":{
           "shape":"GetDashManifests",
           "documentation":"<p>A DASH manifest configuration.</p>"
+        },
+        "ForceEndpointErrorConfiguration":{
+          "shape":"ForceEndpointErrorConfiguration",
+          "documentation":"<p>The failover settings for the endpoint.</p>"
         },
         "ETag":{
           "shape":"EntityTag",
@@ -1321,6 +1342,19 @@
       },
       "documentation":"<p>The encryption type.</p>"
     },
+    "EndpointErrorCondition":{
+      "type":"string",
+      "enum":[
+        "STALE_MANIFEST",
+        "INCOMPLETE_MANIFEST",
+        "MISSING_DRM_KEY",
+        "SLATE_INPUT"
+      ]
+    },
+    "EndpointErrorConditions":{
+      "type":"list",
+      "member":{"shape":"EndpointErrorCondition"}
+    },
     "EntityTag":{
       "type":"string",
       "max":256,
@@ -1359,6 +1393,16 @@
       "box":true,
       "max":1209600,
       "min":0
+    },
+    "ForceEndpointErrorConfiguration":{
+      "type":"structure",
+      "members":{
+        "EndpointErrorConditions":{
+          "shape":"EndpointErrorConditions",
+          "documentation":"<p>The failover conditions for the endpoint. The options are:</p> <ul> <li> <p> <code>STALE_MANIFEST</code> - The manifest stalled and there are no new segments or parts.</p> </li> <li> <p> <code>INCOMPLETE_MANIFEST</code> - There is a gap in the manifest.</p> </li> <li> <p> <code>MISSING_DRM_KEY</code> - Key rotation is enabled but we're unable to fetch the key for the current key period.</p> </li> <li> <p> <code>SLATE_INPUT</code> - The segments which contain slate content are considered to be missing content.</p> </li> </ul>"
+        }
+      },
+      "documentation":"<p>The failover settings for the endpoint.</p>"
     },
     "GetChannelGroupRequest":{
       "type":"structure",
@@ -1516,6 +1560,10 @@
           "documentation":"<p>The description for your channel.</p>"
         },
         "IngestEndpoints":{"shape":"IngestEndpointList"},
+        "InputType":{
+          "shape":"InputType",
+          "documentation":"<p>The input type will be an immutable field which will be used to define whether the channel will allow CMAF ingest or HLS ingest. If unprovided, it will default to HLS to preserve current behavior.</p> <p>The allowed values are:</p> <ul> <li> <p> <code>HLS</code> - The HLS streaming specification (which defines M3U8 manifests and TS segments).</p> </li> <li> <p> <code>CMAF</code> - The DASH-IF CMAF Ingest specification (which defines CMAF segments with optional DASH manifests).</p> </li> </ul>"
+        },
         "ETag":{
           "shape":"EntityTag",
           "documentation":"<p>The current Entity Tag (ETag) associated with this resource. The entity tag can be used to safely make concurrent updates to the resource.</p>"
@@ -1798,6 +1846,14 @@
           "shape":"GetLowLatencyHlsManifests",
           "documentation":"<p>A low-latency HLS manifest configuration.</p>"
         },
+        "DashManifests":{
+          "shape":"GetDashManifests",
+          "documentation":"<p>A DASH manifest configuration.</p>"
+        },
+        "ForceEndpointErrorConfiguration":{
+          "shape":"ForceEndpointErrorConfiguration",
+          "documentation":"<p>The failover settings for the endpoint.</p>"
+        },
         "ETag":{
           "shape":"EntityTag",
           "documentation":"<p>The current Entity Tag (ETag) associated with this resource. The entity tag can be used to safely make concurrent updates to the resource.</p>"
@@ -1805,10 +1861,6 @@
         "Tags":{
           "shape":"TagMap",
           "documentation":"<p>The comma-separated list of tag key:value pairs assigned to the origin endpoint.</p>"
-        },
-        "DashManifests":{
-          "shape":"GetDashManifests",
-          "documentation":"<p>A DASH manifest configuration.</p>"
         }
       }
     },
@@ -1836,6 +1888,13 @@
       "type":"list",
       "member":{"shape":"IngestEndpoint"},
       "documentation":"<p>The list of ingest endpoints.</p>"
+    },
+    "InputType":{
+      "type":"string",
+      "enum":[
+        "HLS",
+        "CMAF"
+      ]
     },
     "Integer":{
       "type":"integer",
@@ -2116,6 +2175,10 @@
         "DashManifests":{
           "shape":"ListDashManifests",
           "documentation":"<p>A DASH manifest configuration.</p>"
+        },
+        "ForceEndpointErrorConfiguration":{
+          "shape":"ForceEndpointErrorConfiguration",
+          "documentation":"<p>The failover settings for the endpoint.</p>"
         }
       },
       "documentation":"<p>The configuration of the origin endpoint.</p>"
@@ -2625,6 +2688,10 @@
           "documentation":"<p>The description for your channel.</p>"
         },
         "IngestEndpoints":{"shape":"IngestEndpointList"},
+        "InputType":{
+          "shape":"InputType",
+          "documentation":"<p>The input type will be an immutable field which will be used to define whether the channel will allow CMAF ingest or HLS ingest. If unprovided, it will default to HLS to preserve current behavior.</p> <p>The allowed values are:</p> <ul> <li> <p> <code>HLS</code> - The HLS streaming specification (which defines M3U8 manifests and TS segments).</p> </li> <li> <p> <code>CMAF</code> - The DASH-IF CMAF Ingest specification (which defines CMAF segments with optional DASH manifests).</p> </li> </ul>"
+        },
         "ETag":{
           "shape":"EntityTag",
           "documentation":"<p>The current Entity Tag (ETag) associated with this resource. The entity tag can be used to safely make concurrent updates to the resource.</p>"
@@ -2690,6 +2757,10 @@
         "DashManifests":{
           "shape":"CreateDashManifests",
           "documentation":"<p>A DASH manifest configuration.</p>"
+        },
+        "ForceEndpointErrorConfiguration":{
+          "shape":"ForceEndpointErrorConfiguration",
+          "documentation":"<p>The failover settings for the endpoint.</p>"
         },
         "ETag":{
           "shape":"EntityTag",
@@ -2766,6 +2837,10 @@
           "shape":"GetLowLatencyHlsManifests",
           "documentation":"<p>A low-latency HLS manifest configuration.</p>"
         },
+        "ForceEndpointErrorConfiguration":{
+          "shape":"ForceEndpointErrorConfiguration",
+          "documentation":"<p>The failover settings for the endpoint.</p>"
+        },
         "ETag":{
           "shape":"EntityTag",
           "documentation":"<p>The current Entity Tag (ETag) associated with this resource. The entity tag can be used to safely make concurrent updates to the resource.</p>"
@@ -2840,7 +2915,9 @@
         "TIMING_SOURCE_MISSING",
         "UPDATE_PERIOD_SMALLER_THAN_SEGMENT_DURATION",
         "PERIOD_TRIGGERS_NONE_SPECIFIED_WITH_ADDITIONAL_VALUES",
-        "DRM_SIGNALING_MISMATCH_SEGMENT_ENCRYPTION_STATUS"
+        "DRM_SIGNALING_MISMATCH_SEGMENT_ENCRYPTION_STATUS",
+        "ONLY_CMAF_INPUT_TYPE_ALLOW_FORCE_ENDPOINT_ERROR_CONFIGURATION",
+        "SOURCE_DISRUPTIONS_ENABLED_INCORRECTLY"
       ]
     }
   },

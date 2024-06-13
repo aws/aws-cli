@@ -5,6 +5,7 @@
     "endpointPrefix":"cloudhsmv2",
     "jsonVersion":"1.1",
     "protocol":"json",
+    "protocols":["json"],
     "serviceAbbreviation":"CloudHSM V2",
     "serviceFullName":"AWS CloudHSM V2",
     "serviceId":"CloudHSM V2",
@@ -325,6 +326,14 @@
         "TagList":{
           "shape":"TagList",
           "documentation":"<p>The list of tags for the backup.</p>"
+        },
+        "HsmType":{
+          "shape":"HsmType",
+          "documentation":"<p>The HSM type of the cluster that was backed up.</p>"
+        },
+        "Mode":{
+          "shape":"ClusterMode",
+          "documentation":"<p>The mode of the cluster that was backed up.</p>"
         }
       },
       "documentation":"<p>Contains information about a backup of an AWS CloudHSM cluster. All backup objects contain the <code>BackupId</code>, <code>BackupState</code>, <code>ClusterId</code>, and <code>CreateTimestamp</code> parameters. Backups that were copied into a destination region additionally contain the <code>CopyTimestamp</code>, <code>SourceBackup</code>, <code>SourceCluster</code>, and <code>SourceRegion</code> parameters. A backup that is pending deletion will include the <code>DeleteTimestamp</code> parameter.</p>"
@@ -382,7 +391,7 @@
     "Boolean":{"type":"boolean"},
     "Cert":{
       "type":"string",
-      "max":5000,
+      "max":20000,
       "pattern":"[a-zA-Z0-9+-/=\\s]*"
     },
     "Certificates":{
@@ -522,6 +531,10 @@
         "TagList":{
           "shape":"TagList",
           "documentation":"<p>The list of tags for the cluster.</p>"
+        },
+        "Mode":{
+          "shape":"ClusterMode",
+          "documentation":"<p>The mode of the cluster.</p>"
         }
       },
       "documentation":"<p>Contains information about an AWS CloudHSM cluster.</p>"
@@ -529,6 +542,13 @@
     "ClusterId":{
       "type":"string",
       "pattern":"cluster-[2-7a-zA-Z]{11,16}"
+    },
+    "ClusterMode":{
+      "type":"string",
+      "enum":[
+        "FIPS",
+        "NON_FIPS"
+      ]
     },
     "ClusterState":{
       "type":"string",
@@ -596,7 +616,7 @@
         },
         "HsmType":{
           "shape":"HsmType",
-          "documentation":"<p>The type of HSM to use in the cluster. Currently the only allowed value is <code>hsm1.medium</code>.</p>"
+          "documentation":"<p>The type of HSM to use in the cluster. The allowed values are <code>hsm1.medium</code> and <code>hsm2m.medium</code>.</p>"
         },
         "SourceBackupId":{
           "shape":"BackupId",
@@ -609,6 +629,10 @@
         "TagList":{
           "shape":"TagList",
           "documentation":"<p>Tags to apply to the CloudHSM cluster during creation.</p>"
+        },
+        "Mode":{
+          "shape":"ClusterMode",
+          "documentation":"<p>The mode to use in the cluster. The allowed values are <code>FIPS</code> and <code>NON_FIPS</code>.</p>"
         }
       }
     },
@@ -826,7 +850,8 @@
     "Filters":{
       "type":"map",
       "key":{"shape":"Field"},
-      "value":{"shape":"Strings"}
+      "value":{"shape":"Strings"},
+      "max":30
     },
     "Hsm":{
       "type":"structure",
@@ -883,7 +908,8 @@
     },
     "HsmType":{
       "type":"string",
-      "pattern":"(hsm1\\.medium)"
+      "max":32,
+      "pattern":"((p|)hsm[0-9][a-z.]*\\.[a-zA-Z]+)"
     },
     "Hsms":{
       "type":"list",

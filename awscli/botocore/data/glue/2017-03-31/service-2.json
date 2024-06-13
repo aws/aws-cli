@@ -8393,6 +8393,13 @@
       "key":{"shape":"AdditionalOptionKeys"},
       "value":{"shape":"GenericString"}
     },
+    "DQCompositeRuleEvaluationMethod":{
+      "type":"string",
+      "enum":[
+        "COLUMN",
+        "ROW"
+      ]
+    },
     "DQDLAliases":{
       "type":"map",
       "key":{"shape":"NodeName"},
@@ -8533,6 +8540,10 @@
         "ResultsS3Prefix":{
           "shape":"UriString",
           "documentation":"<p>Prefix for Amazon S3 to store results.</p>"
+        },
+        "CompositeRuleEvaluationMethod":{
+          "shape":"DQCompositeRuleEvaluationMethod",
+          "documentation":"<p>Set the evaluation method for composite rules in the ruleset to ROW/COLUMN</p>"
         }
       },
       "documentation":"<p>Additional run options you can specify for an evaluation run.</p>"
@@ -11570,7 +11581,7 @@
         },
         "RulesetNames":{
           "shape":"RulesetNames",
-          "documentation":"<p>A list of ruleset names for the run.</p>"
+          "documentation":"<p>A list of ruleset names for the run. Currently, this parameter takes only one Ruleset name.</p>"
         },
         "ResultIds":{
           "shape":"DataQualityResultIdList",

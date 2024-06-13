@@ -2,6 +2,16 @@
 CHANGELOG
 =========
 
+1.33.8
+======
+
+* api-change:``cloudhsmv2``: Added support for hsm type hsm2m.medium. Added supported for creating a cluster in FIPS or NON_FIPS mode.
+* api-change:``glue``: This release adds support for configuration of evaluation method for composite rules in Glue Data Quality rulesets.
+* api-change:``iotwireless``: Add RoamingDeviceSNR and RoamingDeviceRSSI to Customer Metrics.
+* api-change:``kms``: This feature allows customers to use their keys stored in KMS to derive a shared secret which can then be used to establish a secured channel for communication, provide proof of possession, or establish trust with other parties.
+* api-change:``mediapackagev2``: This release adds support for CMAF ingest (DASH-IF live media ingest protocol interface 1)
+
+
 1.33.7
 ======
 

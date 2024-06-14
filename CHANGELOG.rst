@@ -2,6 +2,16 @@
 CHANGELOG
 =========
 
+1.33.9
+======
+
+* api-change:``datazone``: This release introduces a new default service blueprint for custom environment creation.
+* api-change:``ec2``: Documentation updates for Amazon EC2.
+* api-change:``macie2``: This release adds support for managing the status of automated sensitive data discovery for individual accounts in an organization, and determining whether individual S3 buckets are included in the scope of the analyses.
+* api-change:``mediaconvert``: This release adds the ability to search for historical job records within the management console using a search box and/or via the SDK/CLI with partial string matching search on input file name.
+* api-change:``route53domains``: Add v2 smoke tests and smithy smokeTests trait for SDK testing.
+
+
 1.33.8
 ======
 

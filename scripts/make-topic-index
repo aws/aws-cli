@@ -1,23 +1,61 @@
-#!/usr/bin/env python
-"""This is a script to generate a JSON index for the CLI Topic Guide
+#!/usr/bin/env python3
+
+"""
+This script generates a JSON index for the CLI Topic Guide.
 
 Whenever a new topic is added to the awscli/topics directory or a tag
-has been modified in a current topic in that directory, this script
-**must** be run. The script will scan through all of the topics in the
-directory and generate a JSON index that is used by the CLI to link related
-topics and commands.
+has been modified in a current topic in that directory, this script must be run.
+
+The script scans through all of the topics in the directory and generates a JSON
+index that is used by the CLI to link related topics and commands.
 """
 
-import awscli
+import argparse
+import logging
+
+from awscli import __version__ as awscli_version
 from awscli.topictags import TopicTagDB
 
 
-def main():
+def main(source_dir, output_file):
+    """
+    Generate a JSON index for the CLI Topic Guide.
+
+    :param source_dir: The directory containing the AWS CLI topic files.
+    :param output_file: The output file for the generated JSON index.
+    """
+
+    # Initialize the TopicTagDB.
     topic_tag_db = TopicTagDB()
-    src_files = topic_tag_db.get_all_topic_src_files()
+
+    # Get a list of all the topic files.
+    src_files = topic_tag_db.get_all_topic_src_files(source_dir)
+
+    # Scan the source files and generate the JSON index.
     topic_tag_db.scan(src_files)
-    topic_tag_db.save_to_json_index()
+    topic_tag_db.save_to_json_index(output_file)
+
+    logging.info(f"Successfully generated JSON index at {output_file}.")
 
 
-if __name__ == '__main__':
-    main()
+if __name__ == "__main__":
+    # Set up logging to a file.
+    logging.basicConfig(
+        filename="awscli_topic_guide.log",
+        filemode="a",
+        format="%(asctime)s - %(levelname)s - %(message)s",
+        level=logging.INFO,
+    )
+
+    # Parse command-line arguments.
+    parser = argparse.ArgumentParser(description="Generate a JSON index for the CLI Topic Guide.")
+    parser.add_argument("--source-dir", default="awscli/topics", help="The directory containing the AWS CLI topic files.")
+    parser.add_argument("--output-file", default="awscli_topic_guide.json", help="The output file for the generated JSON index.")
+    args = parser.parse_args()
+
+    try:
+        # Generate the JSON index.
+        main(args.source_dir, args.output_file)
+    except Exception as e:
+        logging.error(f"Error generating JSON index: {e}")
+        print(f"Error: {e}")

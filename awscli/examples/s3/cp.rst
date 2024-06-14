@@ -1,4 +1,4 @@
-**Copying a local file to S3**
+**Example 1: Copying a local file to S3**
 
 The following ``cp`` command copies a single file to a specified
 bucket and key::
@@ -9,19 +9,19 @@ Output::
 
     upload: test.txt to s3://mybucket/test2.txt
 
-**Copying a local file to S3 with an expiration date**
+**Example 2: Copying a local file to S3 with an expiration date**
 
 The following ``cp`` command copies a single file to a specified
 bucket and key that expires at the specified ISO 8601 timestamp::
 
-    aws s3 cp test.txt s3://mybucket/test2.txt --expires 2014-10-01T20:30:00Z
+    aws s3 cp test.txt s3://mybucket/test2.txt \
+        --expires 2014-10-01T20:30:00Z
 
 Output::
 
     upload: test.txt to s3://mybucket/test2.txt
 
-
-**Copying a file from S3 to S3**
+**Example 3: Copying a file from S3 to S3**
 
 The following ``cp`` command copies a single s3 object to a specified bucket and key::
 
@@ -31,8 +31,7 @@ Output::
 
     copy: s3://mybucket/test.txt to s3://mybucket/test2.txt
 
-
-**Copying an S3 object to a local file**
+**Example 4: Copying an S3 object to a local file**
 
 The following ``cp`` command copies a single object to a specified file locally::
 
@@ -42,8 +41,7 @@ Output::
 
     download: s3://mybucket/test.txt to test2.txt
 
-
-**Copying an S3 object from one bucket to another**
+**Example 5: Copying an S3 object from one bucket to another**
 
 The following ``cp`` command copies a single object to a specified bucket while retaining its original name::
 
@@ -53,38 +51,43 @@ Output::
 
     copy: s3://mybucket/test.txt to s3://mybucket2/test.txt
 
-**Recursively copying S3 objects to a local directory**
+**Example 6: Recursively copying S3 objects to a local directory**
 
 When passed with the parameter ``--recursive``, the following ``cp`` command recursively copies all objects under a
 specified prefix and bucket to a specified directory.  In this example, the bucket ``mybucket`` has the objects
 ``test1.txt`` and ``test2.txt``::
 
-    aws s3 cp s3://mybucket . --recursive
+    aws s3 cp s3://mybucket . \
+        --recursive
 
 Output::
 
     download: s3://mybucket/test1.txt to test1.txt
     download: s3://mybucket/test2.txt to test2.txt
 
-**Recursively copying local files to S3**
+**Example 7: Recursively copying local files to S3**
 
 When passed with the parameter ``--recursive``, the following ``cp`` command recursively copies all files under a
 specified directory to a specified bucket and prefix while excluding some files by using an ``--exclude`` parameter.  In
 this example, the directory ``myDir`` has the files ``test1.txt`` and ``test2.jpg``::
 
-    aws s3 cp myDir s3://mybucket/ --recursive --exclude "*.jpg"
+    aws s3 cp myDir s3://mybucket/ \
+        --recursive \
+        --exclude "*.jpg"
 
 Output::
 
     upload: myDir/test1.txt to s3://mybucket/test1.txt
 
-**Recursively copying S3 objects to another bucket**
+**Example 8: Recursively copying S3 objects to another bucket**
 
 When passed with the parameter ``--recursive``, the following ``cp`` command recursively copies all objects under a
 specified bucket to another bucket while excluding some objects by using an ``--exclude`` parameter.  In this example,
 the bucket ``mybucket`` has the objects ``test1.txt`` and ``another/test1.txt``::
 
-    aws s3 cp s3://mybucket/ s3://mybucket2/ --recursive --exclude "another/*"
+    aws s3 cp s3://mybucket/ s3://mybucket2/ \
+        --recursive \
+        --exclude "another/*"
 
 Output::
 
@@ -92,19 +95,23 @@ Output::
 
 You can combine ``--exclude`` and ``--include`` options to copy only objects that match a pattern, excluding all others::
 
-    aws s3 cp s3://mybucket/logs/ s3://mybucket2/logs/ --recursive --exclude "*" --include "*.log"
+    aws s3 cp s3://mybucket/logs/ s3://mybucket2/logs/ \
+        --recursive \
+        --exclude "*" \
+        --include "*.log"
 
 Output::
 
     copy: s3://mybucket/logs/test/test.log to s3://mybucket2/logs/test/test.log
     copy: s3://mybucket/logs/test3.log to s3://mybucket2/logs/test3.log
 
-**Setting the Access Control List (ACL) while copying an S3 object**
+**Example 9: Setting the Access Control List (ACL) while copying an S3 object**
 
 The following ``cp`` command copies a single object to a specified bucket and key while setting the ACL to
 ``public-read-write``::
 
-    aws s3 cp s3://mybucket/test.txt s3://mybucket/test2.txt --acl public-read-write
+    aws s3 cp s3://mybucket/test.txt s3://mybucket/test2.txt \
+        --acl public-read-write
 
 Output::
 
@@ -113,7 +120,9 @@ Output::
 Note that if you're using the ``--acl`` option, ensure that any associated IAM
 policies include the ``"s3:PutObjectAcl"`` action::
 
-    aws iam get-user-policy --user-name myuser --policy-name mypolicy
+    aws iam get-user-policy \
+        --user-name myuser \
+        --policy-name mypolicy
 
 Output::
 
@@ -138,7 +147,7 @@ Output::
         }
     }
 
-**Granting permissions for an S3 object**
+**Example 10: Granting permissions for an S3 object**
 
 The following ``cp`` command illustrates the use of the ``--grants`` option to grant read access to all users identified
 by URI and full control to a specific user identified by their Canonical ID::
@@ -149,7 +158,7 @@ Output::
 
     upload: file.txt to s3://mybucket/file.txt
 
-**Uploading a local file stream to S3**
+**Example 11: Uploading a local file stream to S3**
 
 .. WARNING:: PowerShell may alter the encoding of or add a CRLF to piped input.
 
@@ -157,13 +166,13 @@ The following ``cp`` command uploads a local file stream from standard input to 
 
     aws s3 cp - s3://mybucket/stream.txt
 
-**Uploading a local file stream that is larger than 50GB to S3**
+**Example 12: Uploading a local file stream that is larger than 50GB to S3**
 
 The following ``cp`` command uploads a 51GB local file stream from standard input to a specified bucket and key.  The ``--expected-size`` option must be provided, or the upload may fail when it reaches the default part limit of 10,000::
 
     aws s3 cp - s3://mybucket/stream.txt --expected-size 54760833024
 
-**Downloading an S3 object as a local file stream**
+**Example 13: Downloading an S3 object as a local file stream**
 
 .. WARNING:: PowerShell may alter the encoding of or add a CRLF to piped or redirected output.
 
@@ -171,7 +180,7 @@ The following ``cp`` command downloads an S3 object locally as a stream to stand
 
     aws s3 cp s3://mybucket/stream.txt -
 
-**Uploading to an S3 access point**
+**Example 14: Uploading to an S3 access point**
 
 The following ``cp`` command uploads a single file (``mydoc.txt``) to the access point (``myaccesspoint``) at the key (``mykey``)::
 
@@ -182,7 +191,7 @@ Output::
     upload: mydoc.txt to s3://arn:aws:s3:us-west-2:123456789012:accesspoint/myaccesspoint/mykey
 
 
-**Downloading from an S3 access point**
+**Example 15: Downloading from an S3 access point**
 
 The following ``cp`` command downloads a single object (``mykey``) from the access point (``myaccesspoint``) to the local file (``mydoc.txt``)::
 

@@ -1,9 +1,10 @@
 **To add a tag to a role**
 
-The following ``tag-role`` command adds a tag with a Department name to the specified role. This command produces no output. ::
+The following ``tag-role`` command adds a tag with a Department name to the specified role. ::
 
-    aws iam tag-role --role-name my-role --tags '{"Key": "Department", "Value": "Accounting"}'
+    aws iam tag-role --role-name my-role \
+        --tags '{"Key": "Department", "Value": "Accounting"}'
 
-For more information, see `Tagging IAM Entities`_ in the *AWS IAM User Guide*
+This command produces no output.
 
-.. _`Tagging IAM Entities`: https://docs.aws.amazon.com/IAM/latest/UserGuide/id_tags.html
+For more information, see `Tagging IAM resources <https://docs.aws.amazon.com/IAM/latest/UserGuide/id_tags.html>`__ in the *AWS IAM User Guide*.

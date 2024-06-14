@@ -368,6 +368,17 @@ EBS_ROOT_VOLUME_SIZE = (
     ' in GiB, of the EBS root device volume of the Amazon Linux AMI'
     ' that is used for each EC2 instance in the cluster. </p>')
 
+EBS_ROOT_VOLUME_IOPS = (
+    '<p>This option is available only with Amazon EMR version 6.15.0 and later. Specifies the IOPS,'
+    ' of the EBS root device volume of the Amazon Linux AMI'
+    ' that is used for each EC2 instance in the cluster. </p>')
+
+EBS_ROOT_VOLUME_THROUGHPUT = (
+    '<p>This option is available only with Amazon EMR version 6.15.0 and later. Specifies the throughput,'
+    ' in MiB/s, of the EBS root device volume of the Amazon Linux AMI'
+    ' that is used for each EC2 instance in the cluster. </p>')
+
+
 SECURITY_CONFIG = (
     '<p>Specifies the name of a security configuration to use for the cluster.'
     ' A security configuration defines data encryption settings and'
@@ -506,4 +517,8 @@ EXECUTION_ROLE_ARN = (
     '<p>You must grant the execution role the permissions needed '
     'to access the same IAM resources that the step can access. '
     'The execution role can be a cross-account IAM Role.</p> '
+)
+
+UNHEALTHY_NODE_REPLACEMENT = (
+    '<p>Unhealthy node replacement for an Amazon EMR cluster.</p> '
 )

@@ -2,7 +2,7 @@
 
 The following ``create-transit-virtual-interface`` example creates a transit virtual interface for the specified connection. ::
 
-    ws directconnect create-transit-virtual-interface \
+    aws directconnect create-transit-virtual-interface \
         --connection-id dxlag-fEXAMPLE \
         --new-transit-virtual-interface "virtualInterfaceName=Example Transit Virtual Interface,vlan=126,asn=65110,mtu=1500,authKey=0xzxgA9YoW9h58u8SvEXAMPLE,amazonAddress=192.168.1.1/30,customerAddress=192.168.1.2/30,addressFamily=ipv4,directConnectGatewayId=8384da05-13ce-4a91-aada-5a1baEXAMPLE,tags=[{key=Tag,value=Example}]"
 

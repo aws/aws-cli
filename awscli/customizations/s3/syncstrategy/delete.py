@@ -21,7 +21,8 @@ LOG = logging.getLogger(__name__)
 DELETE = {'name': 'delete', 'action': 'store_true',
           'help_text': (
               "Files that exist in the destination but not in the source are "
-              "deleted during sync.")}
+              "deleted during sync. Note that files excluded by filters are "
+              "excluded from deletion.")}
 
 
 class DeleteSync(BaseSync):

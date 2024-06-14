@@ -1,16 +1,16 @@
-**To list your available clusters**
+**To list all the installed add-ons in your Amazon EKS cluster named `my-eks-cluster`**
 
-This example command lists all of your available clusters in your default region.
+The following ``list-clusters`` example lists all the installed add-ons in your Amazon EKS cluster named `my-eks-cluster`. ::
 
-Command::
-
-  aws eks list-clusters
+    aws eks list-clusters
 
 Output::
 
     {
         "clusters": [
-            "devel",
-            "prod"
+            "prod",
+            "qa",
+            "stage",
+            "my-eks-cluster"
         ]
     }

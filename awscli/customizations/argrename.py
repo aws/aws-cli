@@ -106,6 +106,11 @@ ARGUMENT_RENAMES = {
     'codepipeline.get-action-type.version': 'action-version',
     'ecs.*.no-enable-execute-command': 'disable-execute-command',
     'ecs.execute-command.no-interactive': 'non-interactive',
+    'controltower.create-landing-zone.version': 'landing-zone-version',
+    'controltower.update-landing-zone.version': 'landing-zone-version',
+    'glue.get-unfiltered-partition-metadata.region': 'resource-region',
+    'glue.get-unfiltered-partitions-metadata.region': 'resource-region',
+    'glue.get-unfiltered-table-metadata.region': 'resource-region',
 }
 
 # Same format as ARGUMENT_RENAMES, but instead of renaming the arguments,

@@ -533,3 +533,18 @@ The following ``create-cluster`` example creates an Amazon EMR cluster that uses
         --service-role EMR_DefaultRole \
         --ec2-attributes InstanceProfile=EMR_EC2_DefaultRole \
         --instance-groups InstanceGroupType=MASTER,InstanceCount=1,InstanceType=m4.large InstanceGroupType=CORE,InstanceCount=1,InstanceType=m4.large
+
+**Example 24: To specify an EBS root volume attributes: size, iops and throughput for cluster instances created with EMR releases 6.15.0 and later**
+
+The following ``create-cluster`` example creates an Amazon EMR cluster that uses root volume attributes to configure root volumes specifications for the EC2 instances. ::
+
+    aws emr create-cluster \
+        --name "Cluster with My Custom AMI" \
+        --custom-ami-id ami-a518e6df \
+        --ebs-root-volume-size 20 \
+        --ebs-root-volume-iops 3000 \
+        --ebs-root-volume-throughput 125 \
+        --release-label emr-6.15.0 \
+        --use-default-roles \
+        --instance-count 2 \
+        --instance-type m4.large

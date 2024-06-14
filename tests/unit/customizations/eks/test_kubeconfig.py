@@ -65,6 +65,31 @@ class TestKubeconfig(unittest.TestCase):
         config = Kubeconfig(self._path, self._content)
         self.assertFalse(config.has_cluster("clustername"))
 
+    def test_has_cluster_with_none_clusters(self):
+        self._content["clusters"] = None
+
+        config = Kubeconfig(self._path, self._content)
+        self.assertFalse(config.has_cluster("anyclustername"))
+
+    def test_has_cluster_with_cluster_no_name(self):
+        self._content["clusters"] = [
+            OrderedDict([
+                ("cluster", None),
+                ("name", "clustername")
+            ]),
+            OrderedDict([
+                ("cluster", None),
+                ("name", None),
+            ]),
+            OrderedDict([
+                ("cluster", None),
+            ]),
+        ]
+
+        config = Kubeconfig(self._path, self._content)
+        self.assertTrue(config.has_cluster("clustername"))
+        self.assertFalse(config.has_cluster("othercluster"))
+
 
 class TestKubeconfigWriter(unittest.TestCase):
 
@@ -251,6 +276,45 @@ class TestKubeconfigAppender(unittest.TestCase):
                     ("name", "clustername")
                 ])
             ])
+        ])
+        updated = self._appender.insert_entry(Kubeconfig(None, initial),
+                                              "clusters",
+                                              cluster)
+        self.assertDictEqual(updated.content, correct)
+
+    def test_key_none(self):
+        initial = OrderedDict([
+            ("apiVersion", "v1"),
+            ("clusters", None),
+            ("contexts", []),
+            ("current-context", None),
+            ("kind", "Config"),
+            ("preferences", OrderedDict()),
+            ("users", [])
+        ])
+        cluster = OrderedDict([
+            ("cluster", OrderedDict([
+                ("certificate-authority-data", "data"),
+                ("server", "endpoint")
+            ])),
+            ("name", "clustername")
+        ])
+        correct = OrderedDict([
+            ("apiVersion", "v1"),
+            ("clusters", [
+                OrderedDict([
+                    ("cluster", OrderedDict([
+                        ("certificate-authority-data", "data"),
+                        ("server", "endpoint")
+                    ])),
+                    ("name", "clustername")
+                ])
+            ]),
+            ("contexts", []),
+            ("current-context", None),
+            ("kind", "Config"),
+            ("preferences", OrderedDict()),
+            ("users", []),
         ])
         updated = self._appender.insert_entry(Kubeconfig(None, initial),
                                               "clusters",

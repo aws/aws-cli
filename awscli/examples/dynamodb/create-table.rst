@@ -573,3 +573,172 @@ Output::
     }
 
 For more information, see `Basic Operations for Tables <https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/WorkingWithTables.Basics.html>`__ in the *Amazon DynamoDB Developer Guide*.
+
+**Example 8: To create a table with Keys-Only Stream enabled**
+
+The following example creates a table called ``GameScores`` with DynamoDB Streams enabled. Only the key attributes of modified items are written to the stream. ::
+
+    aws dynamodb create-table \
+        --table-name GameScores \
+        --attribute-definitions AttributeName=UserId,AttributeType=S AttributeName=GameTitle,AttributeType=S \
+        --key-schema AttributeName=UserId,KeyType=HASH AttributeName=GameTitle,KeyType=RANGE \
+        --provisioned-throughput ReadCapacityUnits=10,WriteCapacityUnits=5 \
+        --stream-specification StreamEnabled=TRUE,StreamViewType=KEYS_ONLY  
+
+Output:: 
+
+    {
+        "TableDescription": {
+            "AttributeDefinitions": [
+                {
+                    "AttributeName": "GameTitle",
+                    "AttributeType": "S"
+                },
+                {
+                    "AttributeName": "UserId",
+                    "AttributeType": "S"
+                }
+            ],
+            "TableName": "GameScores",
+            "KeySchema": [
+                {
+                    "AttributeName": "UserId",
+                    "KeyType": "HASH"
+                },
+                {
+                    "AttributeName": "GameTitle",
+                    "KeyType": "RANGE"
+                }
+            ],
+            "TableStatus": "CREATING",
+            "CreationDateTime": "2023-05-25T18:45:34.140000+00:00",
+            "ProvisionedThroughput": {
+                "NumberOfDecreasesToday": 0,
+                "ReadCapacityUnits": 10,
+                "WriteCapacityUnits": 5
+            },
+            "TableSizeBytes": 0,
+            "ItemCount": 0,
+            "TableArn": "arn:aws:dynamodb:us-west-2:123456789012:table/GameScores",
+            "TableId": "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
+            "StreamSpecification": {
+                "StreamEnabled": true,
+                "StreamViewType": "KEYS_ONLY"
+            },
+            "LatestStreamLabel": "2023-05-25T18:45:34.140",
+            "LatestStreamArn": "arn:aws:dynamodb:us-west-2:123456789012:table/GameScores/stream/2023-05-25T18:45:34.140",
+            "DeletionProtectionEnabled": false
+        }
+    }
+
+For more information, see `Change data capture for DynamoDB Streams <https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/Streams.html>`__ in the *Amazon DynamoDB Developer Guide*.
+
+**Example 9: To create a table with the Standard Infrequent Access class**
+
+The following example creates a table called ``GameScores`` and assigns the Standard-Infrequent Access (DynamoDB Standard-IA) table class. This table class is optimized for storage being the dominant cost. ::
+    
+    aws dynamodb create-table \
+        --table-name GameScores \
+        --attribute-definitions AttributeName=UserId,AttributeType=S AttributeName=GameTitle,AttributeType=S \
+        --key-schema AttributeName=UserId,KeyType=HASH AttributeName=GameTitle,KeyType=RANGE \
+        --provisioned-throughput ReadCapacityUnits=10,WriteCapacityUnits=5 \
+        --table-class STANDARD_INFREQUENT_ACCESS
+
+Output:: 
+
+    {
+        "TableDescription": {
+            "AttributeDefinitions": [
+                {
+                    "AttributeName": "GameTitle",
+                    "AttributeType": "S"
+                },
+                {
+                    "AttributeName": "UserId",
+                    "AttributeType": "S"
+                }
+            ],
+            "TableName": "GameScores",
+            "KeySchema": [
+                {
+                    "AttributeName": "UserId",
+                    "KeyType": "HASH"
+                },
+                {
+                    "AttributeName": "GameTitle",
+                    "KeyType": "RANGE"
+                }
+            ],
+            "TableStatus": "CREATING",
+            "CreationDateTime": "2023-05-25T18:33:07.581000+00:00",
+            "ProvisionedThroughput": {
+                "NumberOfDecreasesToday": 0,
+                "ReadCapacityUnits": 10,
+                "WriteCapacityUnits": 5
+            },
+            "TableSizeBytes": 0,
+            "ItemCount": 0,
+            "TableArn": "arn:aws:dynamodb:us-west-2:123456789012:table/GameScores",
+            "TableId": "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
+            "TableClassSummary": {
+                "TableClass": "STANDARD_INFREQUENT_ACCESS"
+            },
+            "DeletionProtectionEnabled": false
+        }
+    }
+
+
+For more information, see `Table classes <https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/HowItWorks.TableClasses.html>`__ in the *Amazon DynamoDB Developer Guide*.
+
+**Example 10: To Create a table with Delete Protection enabled**
+
+The following example creates a table called ``GameScores`` and enables deletion protection. ::
+
+    aws dynamodb create-table \
+        --table-name GameScores \
+        --attribute-definitions AttributeName=UserId,AttributeType=S AttributeName=GameTitle,AttributeType=S \
+        --key-schema AttributeName=UserId,KeyType=HASH AttributeName=GameTitle,KeyType=RANGE \
+        --provisioned-throughput ReadCapacityUnits=10,WriteCapacityUnits=5 \
+        --deletion-protection-enabled 
+
+Output::
+
+    {
+        "TableDescription": {
+            "AttributeDefinitions": [
+                {
+                    "AttributeName": "GameTitle",
+                    "AttributeType": "S"
+                },
+                {
+                    "AttributeName": "UserId",
+                    "AttributeType": "S"
+                }
+            ],
+            "TableName": "GameScores",
+            "KeySchema": [
+                {
+                    "AttributeName": "UserId",
+                    "KeyType": "HASH"
+                },
+                {
+                    "AttributeName": "GameTitle",
+                    "KeyType": "RANGE"
+                }
+            ],
+            "TableStatus": "CREATING",
+            "CreationDateTime": "2023-05-25T23:02:17.093000+00:00",
+            "ProvisionedThroughput": {
+                "NumberOfDecreasesToday": 0,
+                "ReadCapacityUnits": 10,
+                "WriteCapacityUnits": 5
+            },
+            "TableSizeBytes": 0,
+            "ItemCount": 0,
+            "TableArn": "arn:aws:dynamodb:us-west-2:123456789012:table/GameScores",
+            "TableId": "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
+            "DeletionProtectionEnabled": true
+        }
+    }
+
+For more information, see `Using deletion protection <https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/WorkingWithTables.Basics.html#WorkingWithTables.Basics.DeletionProtection>`__ in the *Amazon DynamoDB Developer Guide*.

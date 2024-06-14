@@ -32,11 +32,6 @@ Similar to bucket names, you can also use prefixes with access point ARNs for
 the ``S3Uri``. For example:
 ``s3://arn:aws:s3:us-west-2:123456789012:accesspoint/myaccesspoint/myprefix/``
 
-The higher level ``s3`` commands do **not** support access point object ARNs.
-For example, if the following was specified:
-``s3://arn:aws:s3:us-west-2:123456789012:accesspoint/myaccesspoint/object/mykey``
-the ``S3URI`` will resolve to the object key ``object/mykey``
-
 
 
 Order of Path Arguments

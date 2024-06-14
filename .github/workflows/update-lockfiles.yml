@@ -1,0 +1,85 @@
+name: Update lockfiles
+
+on:
+  workflow_dispatch:
+    inputs:
+      ref:
+        description: |
+          Branch or ref to clone. This is where the lockfiles will be added and
+          ultimately committed.
+        required: true
+
+      dry-run:
+        type: choice
+        options:
+          - "yes"
+          - "no"
+        default: "yes"
+        description: |
+          Dry run mode when enabled with the "yes" option will not commit or push
+          the generated files.
+
+
+jobs:
+
+  update-lockfiles:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ["3.11"]
+        os: [macOS-latest, windows-latest]
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.inputs.ref }}
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Install dependencies
+        run: |
+          python -m pip install -r requirements-test.txt
+      # Windows and posix have different syntax for setting the env vars
+      # in github actions so we need to duplicate the next step one for windows and
+      # one for macOS. In order to do that we need to write variables by either using
+      # >> $env:GITHUB_ENV or >>GITHUB_ENV depending on the OS.
+      # In addition, on macOS writing a multiline value to $GITHUB_ENV
+      # will result in failure. We need to use the multiline pattern:
+      # echo VAR_NAME<<EOF >> $GITHUB_ENV
+      # echo "multiline values" >> $GIHTUB_ENV
+      # echo "EOF" >> $GITHUB_ENV
+      - name: Regenerate windows files
+        if: runner.os == 'Windows'
+        run: |
+          python scripts/regenerate-lock-files --show-files
+          echo "CHANGES=$(git status --porcelain=v1)" >> $env:GITHUB_ENV
+      - name: Regenerate lock files
+        if: runner.os != 'Windows'
+        run: |
+          python scripts/regenerate-lock-files --show-files
+          echo "CHANGES<<EOF" >> $GITHUB_ENV
+          echo "CHANGES=$(git status --porcelain=v1)" >> $GITHUB_ENV
+          echo "EOF" >> $GITHUB_ENV
+      # If changes were created when running the regenerate-lock-files script
+      # then the new lock files need to be commited and pushed to the branch.
+      - name: Windows commit message
+        if: runner.os == 'Windows'
+        run: |
+          echo "PLATFORMS=Windows" >> $env:GITHUB_ENV
+      - name: Posix commit message
+        if: runner.os != 'Windows'
+        run: |
+          echo "PLATFORMS=macOS and Linux" >> $GITHUB_ENV
+      - name: git commit and push updated lock files
+        if: github.event.inputs.dry-run == 'no' && env.CHANGES
+        run: |
+          git config --global user.name "Github Actions"
+          git config --global user.email "<>"
+          git fetch
+          git add requirements
+          git commit -m "Regenerate lock files for ${{ env.PLATFORMS }}"
+          git pull --rebase
+          git push

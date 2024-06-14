@@ -54,6 +54,26 @@
       "documentation":"<p>Accepts a subscription request to a specific asset. </p>",
       "idempotent":true
     },
+    "AssociateEnvironmentRole":{
+      "name":"AssociateEnvironmentRole",
+      "http":{
+        "method":"PUT",
+        "requestUri":"/v2/domains/{domainIdentifier}/environments/{environmentIdentifier}/roles/{environmentRoleArn}",
+        "responseCode":200
+      },
+      "input":{"shape":"AssociateEnvironmentRoleInput"},
+      "output":{"shape":"AssociateEnvironmentRoleOutput"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ConflictException"},
+        {"shape":"ValidationException"},
+        {"shape":"UnauthorizedException"}
+      ],
+      "documentation":"<p>Associates the environment role in Amazon DataZone.</p>"
+    },
     "CancelMetadataGenerationRun":{
       "name":"CancelMetadataGenerationRun",
       "http":{
@@ -221,6 +241,26 @@
         {"shape":"UnauthorizedException"}
       ],
       "documentation":"<p>Create an Amazon DataZone environment.</p>"
+    },
+    "CreateEnvironmentAction":{
+      "name":"CreateEnvironmentAction",
+      "http":{
+        "method":"POST",
+        "requestUri":"/v2/domains/{domainIdentifier}/environments/{environmentIdentifier}/actions",
+        "responseCode":201
+      },
+      "input":{"shape":"CreateEnvironmentActionInput"},
+      "output":{"shape":"CreateEnvironmentActionOutput"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ConflictException"},
+        {"shape":"ValidationException"},
+        {"shape":"UnauthorizedException"}
+      ],
+      "documentation":"<p>Creates an action for the environment, for example, creates a console link for an analytics tool that is available in this environment.</p>"
     },
     "CreateEnvironmentProfile":{
       "name":"CreateEnvironmentProfile",
@@ -569,6 +609,26 @@
       "documentation":"<p>Deletes an environment in Amazon DataZone.</p>",
       "idempotent":true
     },
+    "DeleteEnvironmentAction":{
+      "name":"DeleteEnvironmentAction",
+      "http":{
+        "method":"DELETE",
+        "requestUri":"/v2/domains/{domainIdentifier}/environments/{environmentIdentifier}/actions/{identifier}",
+        "responseCode":204
+      },
+      "input":{"shape":"DeleteEnvironmentActionInput"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ConflictException"},
+        {"shape":"ValidationException"},
+        {"shape":"UnauthorizedException"}
+      ],
+      "documentation":"<p>Deletes an action for the environment, for example, deletes a console link for an analytics tool that is available in this environment.</p>",
+      "idempotent":true
+    },
     "DeleteEnvironmentBlueprintConfiguration":{
       "name":"DeleteEnvironmentBlueprintConfiguration",
       "http":{
@@ -809,6 +869,26 @@
       "documentation":"<p>Deletes the specified time series form for the specified asset. </p>",
       "idempotent":true
     },
+    "DisassociateEnvironmentRole":{
+      "name":"DisassociateEnvironmentRole",
+      "http":{
+        "method":"DELETE",
+        "requestUri":"/v2/domains/{domainIdentifier}/environments/{environmentIdentifier}/roles/{environmentRoleArn}",
+        "responseCode":200
+      },
+      "input":{"shape":"DisassociateEnvironmentRoleInput"},
+      "output":{"shape":"DisassociateEnvironmentRoleOutput"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ConflictException"},
+        {"shape":"ValidationException"},
+        {"shape":"UnauthorizedException"}
+      ],
+      "documentation":"<p>Disassociates the environment role in Amazon DataZone.</p>"
+    },
     "GetAsset":{
       "name":"GetAsset",
       "http":{
@@ -927,6 +1007,25 @@
         {"shape":"UnauthorizedException"}
       ],
       "documentation":"<p>Gets an Amazon DataZone environment.</p>"
+    },
+    "GetEnvironmentAction":{
+      "name":"GetEnvironmentAction",
+      "http":{
+        "method":"GET",
+        "requestUri":"/v2/domains/{domainIdentifier}/environments/{environmentIdentifier}/actions/{identifier}",
+        "responseCode":200
+      },
+      "input":{"shape":"GetEnvironmentActionInput"},
+      "output":{"shape":"GetEnvironmentActionOutput"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ValidationException"},
+        {"shape":"UnauthorizedException"}
+      ],
+      "documentation":"<p>Gets the specified environment action.</p>"
     },
     "GetEnvironmentBlueprint":{
       "name":"GetEnvironmentBlueprint",
@@ -1354,6 +1453,24 @@
         {"shape":"UnauthorizedException"}
       ],
       "documentation":"<p>Lists Amazon DataZone domains.</p>"
+    },
+    "ListEnvironmentActions":{
+      "name":"ListEnvironmentActions",
+      "http":{
+        "method":"GET",
+        "requestUri":"/v2/domains/{domainIdentifier}/environments/{environmentIdentifier}/actions",
+        "responseCode":200
+      },
+      "input":{"shape":"ListEnvironmentActionsInput"},
+      "output":{"shape":"ListEnvironmentActionsOutput"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ValidationException"},
+        {"shape":"UnauthorizedException"}
+      ],
+      "documentation":"<p>Lists existing environment actions.</p>"
     },
     "ListEnvironmentBlueprintConfigurations":{
       "name":"ListEnvironmentBlueprintConfigurations",
@@ -1962,6 +2079,26 @@
       ],
       "documentation":"<p>Updates the specified environment in Amazon DataZone.</p>"
     },
+    "UpdateEnvironmentAction":{
+      "name":"UpdateEnvironmentAction",
+      "http":{
+        "method":"PATCH",
+        "requestUri":"/v2/domains/{domainIdentifier}/environments/{environmentIdentifier}/actions/{identifier}",
+        "responseCode":200
+      },
+      "input":{"shape":"UpdateEnvironmentActionInput"},
+      "output":{"shape":"UpdateEnvironmentActionOutput"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ConflictException"},
+        {"shape":"ValidationException"},
+        {"shape":"UnauthorizedException"}
+      ],
+      "documentation":"<p>Updates an environment action.</p>"
+    },
     "UpdateEnvironmentProfile":{
       "name":"UpdateEnvironmentProfile",
       "http":{
@@ -2374,6 +2511,17 @@
       "type":"string",
       "sensitive":true
     },
+    "ActionParameters":{
+      "type":"structure",
+      "members":{
+        "awsConsoleLink":{
+          "shape":"AwsConsoleLinkParameters",
+          "documentation":"<p>The console link specified as part of the environment action.</p>"
+        }
+      },
+      "documentation":"<p>The parameters of the environment action.</p>",
+      "union":true
+    },
     "ApplicableAssetTypes":{
       "type":"list",
       "member":{"shape":"TypeName"}
@@ -2727,6 +2875,39 @@
       },
       "documentation":"<p>The details of the asset type.</p>"
     },
+    "AssociateEnvironmentRoleInput":{
+      "type":"structure",
+      "required":[
+        "domainIdentifier",
+        "environmentIdentifier",
+        "environmentRoleArn"
+      ],
+      "members":{
+        "domainIdentifier":{
+          "shape":"DomainId",
+          "documentation":"<p>The ID of the Amazon DataZone domain in which the environment role is associated.</p>",
+          "location":"uri",
+          "locationName":"domainIdentifier"
+        },
+        "environmentIdentifier":{
+          "shape":"EnvironmentId",
+          "documentation":"<p>The ID of the Amazon DataZone environment.</p>",
+          "location":"uri",
+          "locationName":"environmentIdentifier"
+        },
+        "environmentRoleArn":{
+          "shape":"String",
+          "documentation":"<p>The ARN of the environment role.</p>",
+          "location":"uri",
+          "locationName":"environmentRoleArn"
+        }
+      }
+    },
+    "AssociateEnvironmentRoleOutput":{
+      "type":"structure",
+      "members":{
+      }
+    },
     "Attribute":{
       "type":"string",
       "max":128,
@@ -2752,6 +2933,16 @@
     "AwsAccountId":{
       "type":"string",
       "pattern":"^\\d{12}$"
+    },
+    "AwsConsoleLinkParameters":{
+      "type":"structure",
+      "members":{
+        "uri":{
+          "shape":"String",
+          "documentation":"<p>The URI of the console link specified as part of the environment action.</p>"
+        }
+      },
+      "documentation":"<p>The parameters of the console link specified as part of the environment action.</p>"
     },
     "AwsRegion":{
       "type":"string",
@@ -3587,6 +3778,77 @@
         }
       }
     },
+    "CreateEnvironmentActionInput":{
+      "type":"structure",
+      "required":[
+        "domainIdentifier",
+        "environmentIdentifier",
+        "name",
+        "parameters"
+      ],
+      "members":{
+        "description":{
+          "shape":"String",
+          "documentation":"<p>The description of the environment action that is being created in the environment.</p>"
+        },
+        "domainIdentifier":{
+          "shape":"DomainId",
+          "documentation":"<p>The ID of the Amazon DataZone domain in which the environment action is created.</p>",
+          "location":"uri",
+          "locationName":"domainIdentifier"
+        },
+        "environmentIdentifier":{
+          "shape":"EnvironmentId",
+          "documentation":"<p>The ID of the environment in which the environment action is created.</p>",
+          "location":"uri",
+          "locationName":"environmentIdentifier"
+        },
+        "name":{
+          "shape":"String",
+          "documentation":"<p>The name of the environment action.</p>"
+        },
+        "parameters":{
+          "shape":"ActionParameters",
+          "documentation":"<p>The parameters of the environment action.</p>"
+        }
+      }
+    },
+    "CreateEnvironmentActionOutput":{
+      "type":"structure",
+      "required":[
+        "domainId",
+        "environmentId",
+        "id",
+        "name",
+        "parameters"
+      ],
+      "members":{
+        "description":{
+          "shape":"String",
+          "documentation":"<p>The description of the environment action.</p>"
+        },
+        "domainId":{
+          "shape":"DomainId",
+          "documentation":"<p>The ID of the domain in which the environment action is created.</p>"
+        },
+        "environmentId":{
+          "shape":"EnvironmentId",
+          "documentation":"<p>The ID of the environment in which the environment is created.</p>"
+        },
+        "id":{
+          "shape":"EnvironmentActionId",
+          "documentation":"<p>The ID of the environment action.</p>"
+        },
+        "name":{
+          "shape":"String",
+          "documentation":"<p>The name of the environment action.</p>"
+        },
+        "parameters":{
+          "shape":"ActionParameters",
+          "documentation":"<p>The parameters of the environment action.</p>"
+        }
+      }
+    },
     "CreateEnvironmentInput":{
       "type":"structure",
       "required":[
@@ -3605,6 +3867,18 @@
           "documentation":"<p>The identifier of the Amazon DataZone domain in which the environment is created.</p>",
           "location":"uri",
           "locationName":"domainIdentifier"
+        },
+        "environmentAccountIdentifier":{
+          "shape":"String",
+          "documentation":"<p>The ID of the account in which the environment is being created.</p>"
+        },
+        "environmentAccountRegion":{
+          "shape":"String",
+          "documentation":"<p>The region of the account in which the environment is being created.</p>"
+        },
+        "environmentBlueprintIdentifier":{
+          "shape":"String",
+          "documentation":"<p>The ID of the blueprint with which the environment is being created.</p>"
         },
         "environmentProfileIdentifier":{
           "shape":"EnvironmentProfileId",
@@ -3633,7 +3907,6 @@
       "required":[
         "createdBy",
         "domainId",
-        "environmentProfileId",
         "name",
         "projectId",
         "provider"
@@ -5209,6 +5482,12 @@
           "documentation":"<p>The identifier of the data source that is deleted.</p>",
           "location":"uri",
           "locationName":"identifier"
+        },
+        "retainPermissionsOnRevokeFailure":{
+          "shape":"Boolean",
+          "documentation":"<p>Specifies that the granted permissions are retained in case of a self-subscribe functionality failure for a data source.</p>",
+          "location":"querystring",
+          "locationName":"retainPermissionsOnRevokeFailure"
         }
       }
     },
@@ -5282,9 +5561,17 @@
           "shape":"Boolean",
           "documentation":"<p>Specifies whether the assets that this data source creates in the inventory are to be also automatically published to the catalog.</p>"
         },
+        "retainPermissionsOnRevokeFailure":{
+          "shape":"Boolean",
+          "documentation":"<p>Specifies that the granted permissions are retained in case of a self-subscribe functionality failure for a data source.</p>"
+        },
         "schedule":{
           "shape":"ScheduleConfiguration",
           "documentation":"<p>The schedule of runs for this data source.</p>"
+        },
+        "selfGrantStatus":{
+          "shape":"SelfGrantStatusOutput",
+          "documentation":"<p>Specifies the status of the self-granting functionality.</p>"
         },
         "status":{
           "shape":"DataSourceStatus",
@@ -5332,6 +5619,34 @@
         "status":{
           "shape":"DomainStatus",
           "documentation":"<p>The status of the domain.</p>"
+        }
+      }
+    },
+    "DeleteEnvironmentActionInput":{
+      "type":"structure",
+      "required":[
+        "domainIdentifier",
+        "environmentIdentifier",
+        "identifier"
+      ],
+      "members":{
+        "domainIdentifier":{
+          "shape":"DomainId",
+          "documentation":"<p>The ID of the Amazon DataZone domain in which an environment action is deleted.</p>",
+          "location":"uri",
+          "locationName":"domainIdentifier"
+        },
+        "environmentIdentifier":{
+          "shape":"EnvironmentId",
+          "documentation":"<p>The ID of the environment where an environment action is deleted.</p>",
+          "location":"uri",
+          "locationName":"environmentIdentifier"
+        },
+        "identifier":{
+          "shape":"String",
+          "documentation":"<p>The ID of the environment action that is deleted.</p>",
+          "location":"uri",
+          "locationName":"identifier"
         }
       }
     },
@@ -5848,6 +6163,39 @@
       "type":"list",
       "member":{"shape":"DetailedGlossaryTerm"}
     },
+    "DisassociateEnvironmentRoleInput":{
+      "type":"structure",
+      "required":[
+        "domainIdentifier",
+        "environmentIdentifier",
+        "environmentRoleArn"
+      ],
+      "members":{
+        "domainIdentifier":{
+          "shape":"DomainId",
+          "documentation":"<p>The ID of the Amazon DataZone domain in which an environment role is disassociated.</p>",
+          "location":"uri",
+          "locationName":"domainIdentifier"
+        },
+        "environmentIdentifier":{
+          "shape":"EnvironmentId",
+          "documentation":"<p>The ID of the environment.</p>",
+          "location":"uri",
+          "locationName":"environmentIdentifier"
+        },
+        "environmentRoleArn":{
+          "shape":"String",
+          "documentation":"<p>The ARN of the environment role.</p>",
+          "location":"uri",
+          "locationName":"environmentRoleArn"
+        }
+      }
+    },
+    "DisassociateEnvironmentRoleOutput":{
+      "type":"structure",
+      "members":{
+      }
+    },
     "DomainDescription":{
       "type":"string",
       "sensitive":true
@@ -5955,9 +6303,50 @@
       "type":"string",
       "enum":["ASSET"]
     },
+    "EnvironmentActionId":{
+      "type":"string",
+      "pattern":"^[a-zA-Z0-9_-]{1,36}$"
+    },
     "EnvironmentActionList":{
       "type":"list",
       "member":{"shape":"ConfigurableEnvironmentAction"}
+    },
+    "EnvironmentActionSummary":{
+      "type":"structure",
+      "required":[
+        "domainId",
+        "environmentId",
+        "id",
+        "name",
+        "parameters"
+      ],
+      "members":{
+        "description":{
+          "shape":"String",
+          "documentation":"<p>The environment action description.</p>"
+        },
+        "domainId":{
+          "shape":"DomainId",
+          "documentation":"<p>The Amazon DataZone domain ID of the environment action.</p>"
+        },
+        "environmentId":{
+          "shape":"EnvironmentId",
+          "documentation":"<p>The environment ID of the environment action.</p>"
+        },
+        "id":{
+          "shape":"EnvironmentActionId",
+          "documentation":"<p>The ID of the environment action.</p>"
+        },
+        "name":{
+          "shape":"String",
+          "documentation":"<p>The name of the environment action.</p>"
+        },
+        "parameters":{
+          "shape":"ActionParameters",
+          "documentation":"<p>The parameters of the environment action.</p>"
+        }
+      },
+      "documentation":"<p>The details about the specified action configured for an environment. For example, the details of the specified console links for an analytics tool that is available in this environment.</p>"
     },
     "EnvironmentBlueprintConfigurationItem":{
       "type":"structure",
@@ -6105,7 +6494,7 @@
     },
     "EnvironmentProfileId":{
       "type":"string",
-      "pattern":"^[a-zA-Z0-9_-]{1,36}$"
+      "pattern":"^[a-zA-Z0-9_-]{0,36}$"
     },
     "EnvironmentProfileName":{
       "type":"string",
@@ -6202,7 +6591,6 @@
       "required":[
         "createdBy",
         "domainId",
-        "environmentProfileId",
         "name",
         "projectId",
         "provider"
@@ -6887,6 +7275,10 @@
           "shape":"ScheduleConfiguration",
           "documentation":"<p>The schedule of the data source runs.</p>"
         },
+        "selfGrantStatus":{
+          "shape":"SelfGrantStatusOutput",
+          "documentation":"<p>Specifies the status of the self-granting functionality.</p>"
+        },
         "status":{
           "shape":"DataSourceStatus",
           "documentation":"<p>The status of the data source.</p>"
@@ -7059,6 +7451,70 @@
         }
       }
     },
+    "GetEnvironmentActionInput":{
+      "type":"structure",
+      "required":[
+        "domainIdentifier",
+        "environmentIdentifier",
+        "identifier"
+      ],
+      "members":{
+        "domainIdentifier":{
+          "shape":"DomainId",
+          "documentation":"<p>The ID of the Amazon DataZone domain in which the <code>GetEnvironmentAction</code> API is invoked. </p>",
+          "location":"uri",
+          "locationName":"domainIdentifier"
+        },
+        "environmentIdentifier":{
+          "shape":"EnvironmentId",
+          "documentation":"<p>The environment ID of the environment action.</p>",
+          "location":"uri",
+          "locationName":"environmentIdentifier"
+        },
+        "identifier":{
+          "shape":"String",
+          "documentation":"<p>The ID of the environment action</p>",
+          "location":"uri",
+          "locationName":"identifier"
+        }
+      }
+    },
+    "GetEnvironmentActionOutput":{
+      "type":"structure",
+      "required":[
+        "domainId",
+        "environmentId",
+        "id",
+        "name",
+        "parameters"
+      ],
+      "members":{
+        "description":{
+          "shape":"String",
+          "documentation":"<p>The description of the environment action.</p>"
+        },
+        "domainId":{
+          "shape":"DomainId",
+          "documentation":"<p>The ID of the Amazon DataZone domain in which the environment action lives.</p>"
+        },
+        "environmentId":{
+          "shape":"EnvironmentId",
+          "documentation":"<p>The environment ID of the environment action.</p>"
+        },
+        "id":{
+          "shape":"EnvironmentActionId",
+          "documentation":"<p>The ID of the environment action.</p>"
+        },
+        "name":{
+          "shape":"String",
+          "documentation":"<p>The name of the environment action.</p>"
+        },
+        "parameters":{
+          "shape":"ActionParameters",
+          "documentation":"<p>The parameters of the environment action.</p>"
+        }
+      }
+    },
     "GetEnvironmentBlueprintConfigurationInput":{
       "type":"structure",
       "required":[
@@ -7219,7 +7675,6 @@
       "required":[
         "createdBy",
         "domainId",
-        "environmentProfileId",
         "name",
         "projectId",
         "provider"
@@ -8623,6 +9078,17 @@
       "min":4,
       "pattern":"[a-z]{2}-?(iso|gov)?-{1}[a-z]*-{1}[0-9]"
     },
+    "GlueSelfGrantStatusOutput":{
+      "type":"structure",
+      "required":["selfGrantStatusDetails"],
+      "members":{
+        "selfGrantStatusDetails":{
+          "shape":"SelfGrantStatusDetails",
+          "documentation":"<p>The details for the self granting status for a Glue data source.</p>"
+        }
+      },
+      "documentation":"<p>The details of the self granting status.</p>"
+    },
     "GrantedEntity":{
       "type":"structure",
       "members":{
@@ -9042,6 +9508,56 @@
         "nextToken":{
           "shape":"PaginationToken",
           "documentation":"<p>When the number of domains is greater than the default value for the <code>MaxResults</code> parameter, or if you explicitly specify a value for <code>MaxResults</code> that is less than the number of domains, the response includes a pagination token named <code>NextToken</code>. You can specify this <code>NextToken</code> value in a subsequent call to <code>ListDomains</code> to list the next set of domains.</p>"
+        }
+      }
+    },
+    "ListEnvironmentActionSummaries":{
+      "type":"list",
+      "member":{"shape":"EnvironmentActionSummary"}
+    },
+    "ListEnvironmentActionsInput":{
+      "type":"structure",
+      "required":[
+        "domainIdentifier",
+        "environmentIdentifier"
+      ],
+      "members":{
+        "domainIdentifier":{
+          "shape":"DomainId",
+          "documentation":"<p>The ID of the Amazon DataZone domain in which the environment actions are listed.</p>",
+          "location":"uri",
+          "locationName":"domainIdentifier"
+        },
+        "environmentIdentifier":{
+          "shape":"EnvironmentId",
+          "documentation":"<p>The ID of the envrironment whose environment actions are listed.</p>",
+          "location":"uri",
+          "locationName":"environmentIdentifier"
+        },
+        "maxResults":{
+          "shape":"MaxResults",
+          "documentation":"<p>The maximum number of environment actions to return in a single call to <code>ListEnvironmentActions</code>. When the number of environment actions to be listed is greater than the value of <code>MaxResults</code>, the response contains a <code>NextToken</code> value that you can use in a subsequent call to <code>ListEnvironmentActions</code> to list the next set of environment actions.</p>",
+          "location":"querystring",
+          "locationName":"maxResults"
+        },
+        "nextToken":{
+          "shape":"PaginationToken",
+          "documentation":"<p>When the number of environment actions is greater than the default value for the <code>MaxResults</code> parameter, or if you explicitly specify a value for <code>MaxResults</code> that is less than the number of environment actions, the response includes a pagination token named <code>NextToken</code>. You can specify this <code>NextToken</code> value in a subsequent call to <code>ListEnvironmentActions</code> to list the next set of environment actions.</p>",
+          "location":"querystring",
+          "locationName":"nextToken"
+        }
+      }
+    },
+    "ListEnvironmentActionsOutput":{
+      "type":"structure",
+      "members":{
+        "items":{
+          "shape":"ListEnvironmentActionSummaries",
+          "documentation":"<p>The results of <code>ListEnvironmentActions</code>.</p>"
+        },
+        "nextToken":{
+          "shape":"PaginationToken",
+          "documentation":"<p>When the number of environment actions is greater than the default value for the <code>MaxResults</code> parameter, or if you explicitly specify a value for <code>MaxResults</code> that is less than the number of environment actions, the response includes a pagination token named <code>NextToken</code>. You can specify this <code>NextToken</code> value in a subsequent call to <code>ListEnvironmentActions</code> to list the next set of environment actions.</p>"
         }
       }
     },
@@ -10635,6 +11151,17 @@
       "min":4,
       "pattern":"[a-z]{2}-?(iso|gov)?-{1}[a-z]*-{1}[0-9]"
     },
+    "RedshiftSelfGrantStatusOutput":{
+      "type":"structure",
+      "required":["selfGrantStatusDetails"],
+      "members":{
+        "selfGrantStatusDetails":{
+          "shape":"SelfGrantStatusDetails",
+          "documentation":"<p>The details for the self granting status for an Amazon Redshift data source.</p>"
+        }
+      },
+      "documentation":"<p>The details for the self granting status for an Amazon Redshift data source.</p>"
+    },
     "RedshiftServerlessStorage":{
       "type":"structure",
       "required":["workgroupName"],
@@ -11489,6 +12016,73 @@
         }
       }
     },
+    "SelfGrantStatus":{
+      "type":"string",
+      "enum":[
+        "GRANT_PENDING",
+        "REVOKE_PENDING",
+        "GRANT_IN_PROGRESS",
+        "REVOKE_IN_PROGRESS",
+        "GRANTED",
+        "GRANT_FAILED",
+        "REVOKE_FAILED"
+      ]
+    },
+    "SelfGrantStatusDetail":{
+      "type":"structure",
+      "required":[
+        "databaseName",
+        "status"
+      ],
+      "members":{
+        "databaseName":{
+          "shape":"SelfGrantStatusDetailDatabaseNameString",
+          "documentation":"<p>The name of the database used for the data source.</p>"
+        },
+        "failureCause":{
+          "shape":"String",
+          "documentation":"<p>The reason for why the operation failed.</p>"
+        },
+        "schemaName":{
+          "shape":"SelfGrantStatusDetailSchemaNameString",
+          "documentation":"<p>The name of the schema used in the data source.</p>"
+        },
+        "status":{
+          "shape":"SelfGrantStatus",
+          "documentation":"<p>The self granting status of the data source.</p>"
+        }
+      },
+      "documentation":"<p>The details for the self granting status.</p>"
+    },
+    "SelfGrantStatusDetailDatabaseNameString":{
+      "type":"string",
+      "max":128,
+      "min":1
+    },
+    "SelfGrantStatusDetailSchemaNameString":{
+      "type":"string",
+      "max":128,
+      "min":1
+    },
+    "SelfGrantStatusDetails":{
+      "type":"list",
+      "member":{"shape":"SelfGrantStatusDetail"}
+    },
+    "SelfGrantStatusOutput":{
+      "type":"structure",
+      "members":{
+        "glueSelfGrantStatus":{
+          "shape":"GlueSelfGrantStatusOutput",
+          "documentation":"<p>The details for the self granting status for a Glue data source.</p>"
+        },
+        "redshiftSelfGrantStatus":{
+          "shape":"RedshiftSelfGrantStatusOutput",
+          "documentation":"<p>The details for the self granting status for an Amazon Redshift data source.</p>"
+        }
+      },
+      "documentation":"<p>The details for the self granting status for a data source.</p>",
+      "union":true
+    },
     "ServiceQuotaExceededException":{
       "type":"structure",
       "required":["message"],
@@ -11524,7 +12118,7 @@
     },
     "Smithy":{
       "type":"string",
-      "max":10000,
+      "max":100000,
       "min":1
     },
     "SortFieldProject":{
@@ -12736,6 +13330,10 @@
           "shape":"RecommendationConfiguration",
           "documentation":"<p>The recommendation to be updated as part of the <code>UpdateDataSource</code> action.</p>"
         },
+        "retainPermissionsOnRevokeFailure":{
+          "shape":"Boolean",
+          "documentation":"<p>Specifies that the granted permissions are retained in case of a self-subscribe functionality failure for a data source.</p>"
+        },
         "schedule":{
           "shape":"ScheduleConfiguration",
           "documentation":"<p>The schedule to be updated as part of the <code>UpdateDataSource</code> action.</p>"
@@ -12816,9 +13414,17 @@
           "shape":"RecommendationConfiguration",
           "documentation":"<p>The recommendation to be updated as part of the <code>UpdateDataSource</code> action.</p>"
         },
+        "retainPermissionsOnRevokeFailure":{
+          "shape":"Boolean",
+          "documentation":"<p>Specifies that the granted permissions are retained in case of a self-subscribe functionality failure for a data source.</p>"
+        },
         "schedule":{
           "shape":"ScheduleConfiguration",
           "documentation":"<p>The schedule to be updated as part of the <code>UpdateDataSource</code> action.</p>"
+        },
+        "selfGrantStatus":{
+          "shape":"SelfGrantStatusOutput",
+          "documentation":"<p>Specifies the status of the self-granting functionality.</p>"
         },
         "status":{
           "shape":"DataSourceStatus",
@@ -12899,6 +13505,82 @@
         }
       }
     },
+    "UpdateEnvironmentActionInput":{
+      "type":"structure",
+      "required":[
+        "domainIdentifier",
+        "environmentIdentifier",
+        "identifier"
+      ],
+      "members":{
+        "description":{
+          "shape":"String",
+          "documentation":"<p>The description of the environment action.</p>"
+        },
+        "domainIdentifier":{
+          "shape":"DomainId",
+          "documentation":"<p>The domain ID of the environment action.</p>",
+          "location":"uri",
+          "locationName":"domainIdentifier"
+        },
+        "environmentIdentifier":{
+          "shape":"EnvironmentId",
+          "documentation":"<p>The environment ID of the environment action.</p>",
+          "location":"uri",
+          "locationName":"environmentIdentifier"
+        },
+        "identifier":{
+          "shape":"String",
+          "documentation":"<p>The ID of the environment action.</p>",
+          "location":"uri",
+          "locationName":"identifier"
+        },
+        "name":{
+          "shape":"String",
+          "documentation":"<p>The name of the environment action.</p>"
+        },
+        "parameters":{
+          "shape":"ActionParameters",
+          "documentation":"<p>The parameters of the environment action.</p>"
+        }
+      }
+    },
+    "UpdateEnvironmentActionOutput":{
+      "type":"structure",
+      "required":[
+        "domainId",
+        "environmentId",
+        "id",
+        "name",
+        "parameters"
+      ],
+      "members":{
+        "description":{
+          "shape":"String",
+          "documentation":"<p>The description of the environment action.</p>"
+        },
+        "domainId":{
+          "shape":"DomainId",
+          "documentation":"<p>The domain ID of the environment action.</p>"
+        },
+        "environmentId":{
+          "shape":"EnvironmentId",
+          "documentation":"<p>The environment ID of the environment action.</p>"
+        },
+        "id":{
+          "shape":"EnvironmentActionId",
+          "documentation":"<p>The ID of the environment action.</p>"
+        },
+        "name":{
+          "shape":"String",
+          "documentation":"<p>The name of the environment action.</p>"
+        },
+        "parameters":{
+          "shape":"ActionParameters",
+          "documentation":"<p>The parameters of the environment action.</p>"
+        }
+      }
+    },
     "UpdateEnvironmentInput":{
       "type":"structure",
       "required":[
@@ -12937,7 +13619,6 @@
       "required":[
         "createdBy",
         "domainId",
-        "environmentProfileId",
         "name",
         "projectId",
         "provider"

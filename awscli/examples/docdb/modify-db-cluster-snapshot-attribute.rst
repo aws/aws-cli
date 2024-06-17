@@ -5,7 +5,7 @@ The following ``modify-db-cluster-snapshot-attribute`` example adds four attribu
     aws docdb modify-db-cluster-snapshot-attribute \
         --db-cluster-snapshot-identifier sample-cluster-snapshot \
         --attribute-name restore \
-        --values-to-add all 123456789011 123456789012 123456789013
+        --values-to-add 123456789011 123456789012 123456789013
 
 Output::
 
@@ -15,7 +15,6 @@ Output::
                 {
                     "AttributeName": "restore",
                     "AttributeValues": [
-                        "all",
                         "123456789011",
                         "123456789012",
                         "123456789013"
@@ -33,7 +32,7 @@ The following ``modify-db-cluster-snapshot-attribute`` example removes two attri
     aws docdb modify-db-cluster-snapshot-attribute \
         --db-cluster-snapshot-identifier sample-cluster-snapshot \
         --attribute-name restore \
-        --values-to-remove 123456789012 all
+        --values-to-remove 123456789012
 
 Output::
 

@@ -10,10 +10,10 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
+import io
 from argparse import Namespace
 
 from awscli.testutils import mock, unittest
-from awscli.compat import six
 from awscli.customizations.configure.list import ConfigureListCommand
 
 from . import FakeSession
@@ -27,7 +27,7 @@ class TestConfigureListCommand(unittest.TestCase):
             all_variables={'config_file': '/config/location'})
         session.full_config = {
             'profiles': {'default': {'region': 'AWS_DEFAULT_REGION'}}}
-        stream = six.StringIO()
+        stream = io.StringIO()
         self.configure_list = ConfigureListCommand(session, stream)
         self.configure_list(args=[], parsed_globals=None)
         rendered = stream.getvalue()
@@ -46,7 +46,7 @@ class TestConfigureListCommand(unittest.TestCase):
         session.session_var_map = {'profile': (None, "PROFILE_ENV_VAR")}
         session.full_config = {
             'profiles': {'default': {'region': 'AWS_DEFAULT_REGION'}}}
-        stream = six.StringIO()
+        stream = io.StringIO()
         self.configure_list = ConfigureListCommand(session, stream)
         self.configure_list(args=[], parsed_globals=None)
         rendered = stream.getvalue()
@@ -63,7 +63,7 @@ class TestConfigureListCommand(unittest.TestCase):
         session.session_var_map = {'region': ('region', "AWS_DEFAULT_REGION")}
         session.full_config = {
             'profiles': {'default': {'region': 'AWS_DEFAULT_REGION'}}}
-        stream = six.StringIO()
+        stream = io.StringIO()
         self.configure_list = ConfigureListCommand(session, stream)
         self.configure_list(args=[], parsed_globals=None)
         rendered = stream.getvalue()
@@ -94,7 +94,7 @@ class TestConfigureListCommand(unittest.TestCase):
             'profile': ('profile', 'AWS_DEFAULT_PROFILE')}
         session.full_config = {
             'profiles': {'default': {'region': 'AWS_DEFAULT_REGION'}}}
-        stream = six.StringIO()
+        stream = io.StringIO()
         self.configure_list = ConfigureListCommand(session, stream)
         self.configure_list(args=[], parsed_globals=None)
         rendered = stream.getvalue()
@@ -123,7 +123,7 @@ class TestConfigureListCommand(unittest.TestCase):
         session.session_var_map = {'profile': (None, ['AWS_PROFILE'])}
         session.full_config = {
             'profiles': {'foo': {'region': 'AWS_REGION'}}}
-        stream = six.StringIO()
+        stream = io.StringIO()
         self.configure_list = ConfigureListCommand(session, stream)
         self.configure_list(args=[], parsed_globals=parsed_globals)
         rendered = stream.getvalue()

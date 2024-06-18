@@ -10,11 +10,11 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
+import io
 
 import difflib
 
 from awscli.testutils import mock, unittest
-from awscli.compat import six
 from awscli.customizations.datapipeline.listrunsformatter \
     import ListRunsFormatter
 
@@ -22,7 +22,7 @@ from awscli.customizations.datapipeline.listrunsformatter \
 class TestListRunsFormatter(unittest.TestCase):
     def setUp(self):
         self.formatter = ListRunsFormatter(mock.Mock(query=None))
-        self.stream = six.StringIO()
+        self.stream = io.StringIO()
 
     def assert_data_renders_to(self, data, table):
         self.formatter('list-runs', data, stream=self.stream)

@@ -11,13 +11,13 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 from awscli.testutils import mock, unittest, skip_if_windows, FileCreator
+import io
 import signal
 import platform
 import json
 import sys
 import os
 
-from awscli.compat import six
 from awscli.help import PosixHelpRenderer, ExecutableNotFoundError
 from awscli.help import WindowsHelpRenderer, ProviderHelpCommand, HelpCommand
 from awscli.help import TopicListerCommand, TopicHelpCommand
@@ -106,7 +106,7 @@ class TestHelpPager(unittest.TestCase):
 
     @skip_if_windows('Requires POSIX system.')
     def test_renderer_falls_back_to_mandoc(self):
-        stdout = six.StringIO()
+        stdout = io.StringIO()
         renderer = FakePosixHelpRenderer(output_stream=stdout)
 
         renderer.exists_on_path['groff'] = False
@@ -119,7 +119,7 @@ class TestHelpPager(unittest.TestCase):
     def test_no_pager_exists(self):
         fake_pager = 'foobar'
         os.environ['MANPAGER'] = fake_pager
-        stdout = six.StringIO()
+        stdout = io.StringIO()
         renderer = FakePosixHelpRenderer(output_stream=stdout)
         renderer.exists_on_path[fake_pager] = False
 

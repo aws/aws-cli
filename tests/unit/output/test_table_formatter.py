@@ -10,8 +10,8 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
+import io
 import unittest
-from awscli.compat import six
 
 from awscli.formatter import TableFormatter
 from awscli.table import MultiTable, Styler
@@ -378,7 +378,7 @@ class TestTableFormatter(unittest.TestCase):
                                 auto_reformat=False)
         self.formatter = TableFormatter(Object(color='off'))
         self.formatter.table = self.table
-        self.stream = six.StringIO()
+        self.stream = io.StringIO()
 
     def assert_data_renders_to(self, data, table):
         self.formatter('OperationName', data, stream=self.stream)

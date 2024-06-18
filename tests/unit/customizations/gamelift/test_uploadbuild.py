@@ -12,13 +12,13 @@
 # language governing permissions and limitations under the License.
 from argparse import Namespace
 import contextlib
+import io
 import os
 import zipfile
 
 from botocore.session import get_session
 from botocore.exceptions import ClientError
 
-from awscli.compat import six
 from awscli.testutils import unittest, mock, FileCreator
 from awscli.customizations.gamelift.uploadbuild import UploadBuildCommand
 from awscli.customizations.gamelift.uploadbuild import zip_directory
@@ -142,7 +142,7 @@ class TestGetGameSessionLogCommand(unittest.TestCase):
             OperatingSystem=operating_system)
 
     def test_error_message_when_directory_is_empty(self):
-        with mock.patch('sys.stderr', six.StringIO()) as mock_stderr:
+        with mock.patch('sys.stderr', io.StringIO()) as mock_stderr:
             self.cmd(self.args, self.global_args)
             self.assertEqual(
                 mock_stderr.getvalue(),
@@ -158,7 +158,7 @@ class TestGetGameSessionLogCommand(unittest.TestCase):
             '--build-root', ''
         ]
 
-        with mock.patch('sys.stderr', six.StringIO()) as mock_stderr:
+        with mock.patch('sys.stderr', io.StringIO()) as mock_stderr:
             self.cmd(self.args, self.global_args)
             self.assertEqual(
                 mock_stderr.getvalue(),
@@ -175,7 +175,7 @@ class TestGetGameSessionLogCommand(unittest.TestCase):
             '--build-root', dir_not_exist
         ]
 
-        with mock.patch('sys.stderr', six.StringIO()) as mock_stderr:
+        with mock.patch('sys.stderr', io.StringIO()) as mock_stderr:
             self.cmd(self.args, self.global_args)
             self.assertEqual(
                 mock_stderr.getvalue(),

@@ -314,13 +314,13 @@ class TestCliDriver(unittest.TestCase):
         self.assertEqual(rc, 130)
 
     def test_error_unicode(self):
-        # We need a different type for Py3 and Py2 because on Py3 six.StringIO
+        # We need a different type for Py3 and Py2 because on Py3 io.StringIO
         # doesn't let us set the encoding and returns a string.
         if six.PY3:
             stderr_b = io.BytesIO()
             stderr = io.TextIOWrapper(stderr_b, encoding="UTF-8")
         else:
-            stderr = stderr_b = six.StringIO()
+            stderr = stderr_b = io.StringIO()
             stderr.encoding = "UTF-8"
         driver = CLIDriver(session=self.session)
         fake_client = mock.Mock()
@@ -341,8 +341,8 @@ class TestCliDriverHooks(unittest.TestCase):
         self.session = FakeSession()
         self.emitter = mock.Mock()
         self.emitter.emit.return_value = []
-        self.stdout = six.StringIO()
-        self.stderr = six.StringIO()
+        self.stdout = io.StringIO()
+        self.stderr = io.StringIO()
         self.stdout_patch = mock.patch('sys.stdout', self.stdout)
         #self.stdout_patch.start()
         self.stderr_patch = mock.patch('sys.stderr', self.stderr)
@@ -440,7 +440,7 @@ class TestAWSCommand(BaseAWSCommandParamsTest):
     # but with the http part mocked out.
     def setUp(self):
         super(TestAWSCommand, self).setUp()
-        self.stderr = six.StringIO()
+        self.stderr = io.StringIO()
         self.stderr_patch = mock.patch('sys.stderr', self.stderr)
         self.stderr_patch.start()
 
@@ -807,7 +807,7 @@ class TestHTTPParamFileDoesNotExist(BaseAWSCommandParamsTest):
 
     def setUp(self):
         super(TestHTTPParamFileDoesNotExist, self).setUp()
-        self.stderr = six.StringIO()
+        self.stderr = io.StringIO()
         self.stderr_patch = mock.patch('sys.stderr', self.stderr)
         self.stderr_patch.start()
 

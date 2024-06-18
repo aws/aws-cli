@@ -13,6 +13,7 @@
 # language governing permissions and limitations under the License.
 from awscli.testutils import BaseAWSCommandParamsTest
 from awscli.testutils import mock, unittest
+import io
 import json
 import os
 import sys
@@ -20,7 +21,6 @@ import re
 import locale
 
 from awscli.compat import six
-from six.moves import cStringIO
 
 from awscli.formatter import Formatter
 
@@ -164,7 +164,7 @@ class TestDefaultStream(BaseAWSCommandParamsTest):
     @unittest.skipIf(six.PY3, "Text writer only vaild on py3.")
     def test_default_stream_with_table_output(self):
         formatter = CustomFormatter(None)
-        stream = cStringIO()
+        stream = io.StringIO()
         with mock.patch('sys.stdout', stream):
             formatter(None, None)
             formatter.stream.write(u'\u00e9')

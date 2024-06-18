@@ -13,8 +13,7 @@
 # language governing permissions and limitations under the License.
 import base64
 import datetime
-
-from six.moves import cStringIO
+import io
 
 import awscli.customizations.ec2.bundleinstance
 from awscli.compat import six
@@ -88,7 +87,7 @@ class TestBundleInstance(BaseAWSCommandParamsTest):
         self.assert_params_for_cmd(args_list, result)
 
     def test_both(self):
-        captured = cStringIO()
+        captured = io.StringIO()
         json = """{"S3":{"Bucket":"foobar","Prefix":"fiebaz"}}"""
         args = ' --instance-id i-12345678 --owner-aki blah --owner-sak blah --storage %s' % json
         args_list = (self.prefix + args).split()

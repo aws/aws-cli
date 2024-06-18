@@ -10,12 +10,12 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
+import io
 import os
 
 from awscli.customizations.configure import configure, ConfigValue, NOT_SET
 from awscli.customizations.configure import profile_to_section
 from awscli.testutils import mock, unittest
-from awscli.compat import six
 
 from . import FakeSession
 
@@ -135,7 +135,7 @@ class TestInteractivePrompter(unittest.TestCase):
     def setUp(self):
         self.input_patch = mock.patch('awscli.compat.raw_input')
         self.mock_raw_input = self.input_patch.start()
-        self.stdout = six.StringIO()
+        self.stdout = io.StringIO()
         self.stdout_patch = mock.patch('sys.stdout', self.stdout)
         self.stdout_patch.start()
 

@@ -11,6 +11,7 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 import csv
+import io
 import signal
 import datetime
 import contextlib
@@ -29,7 +30,7 @@ def split_on_commas(value):
         return value.split(',')
     elif not any(char in value for char in ['"', "'", '[', ']']):
         # Simple escaping, let the csv module handle it.
-        return list(csv.reader(six.StringIO(value), escapechar='\\'))[0]
+        return list(csv.reader(io.StringIO(value), escapechar='\\'))[0]
     else:
         # If there's quotes for the values, we have to handle this
         # ourselves.
@@ -38,7 +39,7 @@ def split_on_commas(value):
 
 def _split_with_quotes(value):
     try:
-        parts = list(csv.reader(six.StringIO(value), escapechar='\\'))[0]
+        parts = list(csv.reader(io.StringIO(value), escapechar='\\'))[0]
     except csv.Error:
         raise ValueError("Bad csv value: %s" % value)
     iter_parts = iter(parts)

@@ -31,7 +31,7 @@
         {"shape":"ModelNotReadyException"},
         {"shape":"ModelErrorException"}
       ],
-      "documentation":"<p>Sends messages to the specified Amazon Bedrock model. <code>Converse</code> provides a consistent interface that works with all models that support messages. This allows you to write code once and use it with different models. Should a model have unique inference parameters, you can also pass those unique parameters to the model. For more information, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/api-methods-run.html\">Run inference</a> in the Bedrock User Guide.</p> <p>This operation requires permission for the <code>bedrock:InvokeModel</code> action. </p>"
+      "documentation":"<p>Sends messages to the specified Amazon Bedrock model. <code>Converse</code> provides a consistent interface that works with all models that support messages. This allows you to write code once and use it with different models. Should a model have unique inference parameters, you can also pass those unique parameters to the model.</p> <p>For information about the Converse API, see <i>Use the Converse API</i> in the <i>Amazon Bedrock User Guide</i>. To use a guardrail, see <i>Use a guardrail with the Converse API</i> in the <i>Amazon Bedrock User Guide</i>. To use a tool with a model, see <i>Tool use (Function calling)</i> in the <i>Amazon Bedrock User Guide</i> </p> <p>For example code, see <i>Converse API examples</i> in the <i>Amazon Bedrock User Guide</i>. </p> <p>This operation requires permission for the <code>bedrock:InvokeModel</code> action. </p>"
     },
     "ConverseStream":{
       "name":"ConverseStream",
@@ -52,7 +52,7 @@
         {"shape":"ModelNotReadyException"},
         {"shape":"ModelErrorException"}
       ],
-      "documentation":"<p>Sends messages to the specified Amazon Bedrock model and returns the response in a stream. <code>ConverseStream</code> provides a consistent API that works with all Amazon Bedrock models that support messages. This allows you to write code once and use it with different models. Should a model have unique inference parameters, you can also pass those unique parameters to the model. For more information, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/api-methods-run.html\">Run inference</a> in the Bedrock User Guide.</p> <p>To find out if a model supports streaming, call <a href=\"https://docs.aws.amazon.com/bedrock/latest/APIReference/API_GetFoundationModel.html\">GetFoundationModel</a> and check the <code>responseStreamingSupported</code> field in the response.</p> <p>For example code, see <i>Invoke model with streaming code example</i> in the <i>Amazon Bedrock User Guide</i>. </p> <p>This operation requires permission for the <code>bedrock:InvokeModelWithResponseStream</code> action.</p>"
+      "documentation":"<p>Sends messages to the specified Amazon Bedrock model and returns the response in a stream. <code>ConverseStream</code> provides a consistent API that works with all Amazon Bedrock models that support messages. This allows you to write code once and use it with different models. Should a model have unique inference parameters, you can also pass those unique parameters to the model. </p> <p>To find out if a model supports streaming, call <a href=\"https://docs.aws.amazon.com/bedrock/latest/APIReference/API_GetFoundationModel.html\">GetFoundationModel</a> and check the <code>responseStreamingSupported</code> field in the response.</p> <p>For information about the Converse API, see <i>Use the Converse API</i> in the <i>Amazon Bedrock User Guide</i>. To use a guardrail, see <i>Use a guardrail with the Converse API</i> in the <i>Amazon Bedrock User Guide</i>. To use a tool with a model, see <i>Tool use (Function calling)</i> in the <i>Amazon Bedrock User Guide</i> </p> <p>For example code, see <i>Conversation streaming example</i> in the <i>Amazon Bedrock User Guide</i>. </p> <p>This operation requires permission for the <code>bedrock:InvokeModelWithResponseStream</code> action.</p>"
     },
     "InvokeModel":{
       "name":"InvokeModel",
@@ -117,13 +117,13 @@
       "type":"structure",
       "members":{
       },
-      "documentation":"<p>The model must request at least one tool (no text is generated).</p>"
+      "documentation":"<p>The model must request at least one tool (no text is generated). For example, <code>{\"any\" : {}}</code>.</p>"
     },
     "AutoToolChoice":{
       "type":"structure",
       "members":{
       },
-      "documentation":"<p>The Model automatically decides if a tool should be called or to whether to generate text instead.</p>"
+      "documentation":"<p>The Model automatically decides if a tool should be called or whether to generate text instead. For example, <code>{\"auto\" : {}}</code>.</p>"
     },
     "Body":{
       "type":"blob",
@@ -149,9 +149,13 @@
         "toolResult":{
           "shape":"ToolResultBlock",
           "documentation":"<p>The result for a tool request that a model makes.</p>"
+        },
+        "guardContent":{
+          "shape":"GuardrailConverseContentBlock",
+          "documentation":"<p>Contains the content to assess with the guardrail. If you don't specify <code>guardContent</code> in a call to the Converse API, the guardrail (if passed in the Converse API) assesses the entire message.</p> <p>For more information, see <i>Use a guardrail with the Converse API</i> in the <i>Amazon Bedrock User Guide</i>. <pre><code> &lt;/p&gt; </code></pre>"
         }
       },
-      "documentation":"<p>A block of content for a message.</p>",
+      "documentation":"<p>A block of content for a message that you pass to, or receive from, a model with the Converse API (<a>Converse</a> and <a>ConverseStream</a>).</p>",
       "union":true
     },
     "ContentBlockDelta":{
@@ -298,13 +302,17 @@
           "shape":"ToolConfiguration",
           "documentation":"<p>Configuration information for the tools that the model can use when generating a response. </p> <note> <p>This field is only supported by Anthropic Claude 3, Cohere Command R, Cohere Command R+, and Mistral Large models.</p> </note>"
         },
+        "guardrailConfig":{
+          "shape":"GuardrailConfiguration",
+          "documentation":"<p>Configuration information for a guardrail that you want to use in the request. </p>"
+        },
         "additionalModelRequestFields":{
           "shape":"Document",
           "documentation":"<p>Additional inference parameters that the model supports, beyond the base set of inference parameters that <code>Converse</code> supports in the <code>inferenceConfig</code> field. For more information, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/model-parameters.html\">Model parameters</a>.</p>"
         },
         "additionalModelResponseFieldPaths":{
           "shape":"ConverseRequestAdditionalModelResponseFieldPathsList",
-          "documentation":"<p>Additional model parameters field paths to return in the response. <code>Converse</code> returns the requested fields as a JSON Pointer object in the <code>additionalModelResultFields</code> field. The following is example JSON for <code>additionalModelResponseFieldPaths</code>.</p> <p> <code>[ \"/stop_sequence\" ]</code> </p> <p>For information about the JSON Pointer syntax, see the <a href=\"https://datatracker.ietf.org/doc/html/rfc6901\">Internet Engineering Task Force (IETF)</a> documentation.</p> <p> <code>Converse</code> rejects an empty JSON Pointer or incorrectly structured JSON Pointer with a <code>400</code> error code. if the JSON Pointer is valid, but the requested field is not in the model response, it is ignored by <code>Converse</code>.</p>"
+          "documentation":"<p>Additional model parameters field paths to return in the response. <code>Converse</code> returns the requested fields as a JSON Pointer object in the <code>additionalModelResponseFields</code> field. The following is example JSON for <code>additionalModelResponseFieldPaths</code>.</p> <p> <code>[ \"/stop_sequence\" ]</code> </p> <p>For information about the JSON Pointer syntax, see the <a href=\"https://datatracker.ietf.org/doc/html/rfc6901\">Internet Engineering Task Force (IETF)</a> documentation.</p> <p> <code>Converse</code> rejects an empty JSON Pointer or incorrectly structured JSON Pointer with a <code>400</code> error code. if the JSON Pointer is valid, but the requested field is not in the model response, it is ignored by <code>Converse</code>.</p>"
         }
       }
     },
@@ -347,6 +355,10 @@
         "additionalModelResponseFields":{
           "shape":"Document",
           "documentation":"<p>Additional fields in the response that are unique to the model. </p>"
+        },
+        "trace":{
+          "shape":"ConverseTrace",
+          "documentation":"<p>A trace object that contains information about the Guardrail behavior.</p>"
         }
       }
     },
@@ -364,6 +376,10 @@
         "metrics":{
           "shape":"ConverseStreamMetrics",
           "documentation":"<p>The metrics for the conversation stream metadata event.</p>"
+        },
+        "trace":{
+          "shape":"ConverseStreamTrace",
+          "documentation":"<p>The trace object in the response from <a>ConverseStream</a> that contains information about the guardrail behavior.</p>"
         }
       },
       "documentation":"<p>A conversation stream metadata event.</p>",
@@ -456,13 +472,17 @@
           "shape":"ToolConfiguration",
           "documentation":"<p>Configuration information for the tools that the model can use when generating a response.</p> <note> <p>This field is only supported by Anthropic Claude 3 models.</p> </note>"
         },
+        "guardrailConfig":{
+          "shape":"GuardrailStreamConfiguration",
+          "documentation":"<p>Configuration information for a guardrail that you want to use in the request. </p>"
+        },
         "additionalModelRequestFields":{
           "shape":"Document",
           "documentation":"<p>Additional inference parameters that the model supports, beyond the base set of inference parameters that <code>ConverseStream</code> supports in the <code>inferenceConfig</code> field.</p>"
         },
         "additionalModelResponseFieldPaths":{
           "shape":"ConverseStreamRequestAdditionalModelResponseFieldPathsList",
-          "documentation":"<p>Additional model parameters field paths to return in the response. <code>ConverseStream</code> returns the requested fields as a JSON Pointer object in the <code>additionalModelResultFields</code> field. The following is example JSON for <code>additionalModelResponseFieldPaths</code>.</p> <p> <code>[ \"/stop_sequence\" ]</code> </p> <p>For information about the JSON Pointer syntax, see the <a href=\"https://datatracker.ietf.org/doc/html/rfc6901\">Internet Engineering Task Force (IETF)</a> documentation.</p> <p> <code>ConverseStream</code> rejects an empty JSON Pointer or incorrectly structured JSON Pointer with a <code>400</code> error code. if the JSON Pointer is valid, but the requested field is not in the model response, it is ignored by <code>ConverseStream</code>.</p>"
+          "documentation":"<p>Additional model parameters field paths to return in the response. <code>ConverseStream</code> returns the requested fields as a JSON Pointer object in the <code>additionalModelResponseFields</code> field. The following is example JSON for <code>additionalModelResponseFieldPaths</code>.</p> <p> <code>[ \"/stop_sequence\" ]</code> </p> <p>For information about the JSON Pointer syntax, see the <a href=\"https://datatracker.ietf.org/doc/html/rfc6901\">Internet Engineering Task Force (IETF)</a> documentation.</p> <p> <code>ConverseStream</code> rejects an empty JSON Pointer or incorrectly structured JSON Pointer with a <code>400</code> error code. if the JSON Pointer is valid, but the requested field is not in the model response, it is ignored by <code>ConverseStream</code>.</p>"
         }
       }
     },
@@ -487,11 +507,195 @@
       },
       "payload":"stream"
     },
+    "ConverseStreamTrace":{
+      "type":"structure",
+      "members":{
+        "guardrail":{
+          "shape":"GuardrailTraceAssessment",
+          "documentation":"<p>The guardrail trace object. </p>"
+        }
+      },
+      "documentation":"<p>The trace object in a response from <a>ConverseStream</a>. Currently, you can only trace guardrails.</p>"
+    },
+    "ConverseTrace":{
+      "type":"structure",
+      "members":{
+        "guardrail":{
+          "shape":"GuardrailTraceAssessment",
+          "documentation":"<p>The guardrail trace object. </p>"
+        }
+      },
+      "documentation":"<p>The trace object in a response from <a>Converse</a>. Currently, you can only trace guardrails.</p>"
+    },
     "Document":{
       "type":"structure",
       "members":{
       },
       "document":true
+    },
+    "GuardrailAssessment":{
+      "type":"structure",
+      "members":{
+        "topicPolicy":{
+          "shape":"GuardrailTopicPolicyAssessment",
+          "documentation":"<p>The topic policy.</p>"
+        },
+        "contentPolicy":{
+          "shape":"GuardrailContentPolicyAssessment",
+          "documentation":"<p>The content policy.</p>"
+        },
+        "wordPolicy":{
+          "shape":"GuardrailWordPolicyAssessment",
+          "documentation":"<p>The word policy.</p>"
+        },
+        "sensitiveInformationPolicy":{
+          "shape":"GuardrailSensitiveInformationPolicyAssessment",
+          "documentation":"<p>The sensitive information policy.</p>"
+        }
+      },
+      "documentation":"<p>A behavior assessment of the guardrail policies used in a call to the Converse API. </p>"
+    },
+    "GuardrailAssessmentList":{
+      "type":"list",
+      "member":{"shape":"GuardrailAssessment"}
+    },
+    "GuardrailAssessmentListMap":{
+      "type":"map",
+      "key":{"shape":"String"},
+      "value":{"shape":"GuardrailAssessmentList"}
+    },
+    "GuardrailAssessmentMap":{
+      "type":"map",
+      "key":{"shape":"String"},
+      "value":{"shape":"GuardrailAssessment"}
+    },
+    "GuardrailConfiguration":{
+      "type":"structure",
+      "required":[
+        "guardrailIdentifier",
+        "guardrailVersion"
+      ],
+      "members":{
+        "guardrailIdentifier":{
+          "shape":"GuardrailIdentifier",
+          "documentation":"<p>The identifier for the guardrail.</p>"
+        },
+        "guardrailVersion":{
+          "shape":"GuardrailVersion",
+          "documentation":"<p>The version of the guardrail.</p>"
+        },
+        "trace":{
+          "shape":"GuardrailTrace",
+          "documentation":"<p>The trace behavior for the guardrail.</p>"
+        }
+      },
+      "documentation":"<p>Configuration information for a guardrail that you use with the <a>Converse</a> action.</p>"
+    },
+    "GuardrailContentFilter":{
+      "type":"structure",
+      "required":[
+        "type",
+        "confidence",
+        "action"
+      ],
+      "members":{
+        "type":{
+          "shape":"GuardrailContentFilterType",
+          "documentation":"<p>The guardrail type.</p>"
+        },
+        "confidence":{
+          "shape":"GuardrailContentFilterConfidence",
+          "documentation":"<p>The guardrail confidence.</p>"
+        },
+        "action":{
+          "shape":"GuardrailContentPolicyAction",
+          "documentation":"<p>The guardrail action.</p>"
+        }
+      },
+      "documentation":"<p>The content filter for a guardrail.</p>"
+    },
+    "GuardrailContentFilterConfidence":{
+      "type":"string",
+      "enum":[
+        "NONE",
+        "LOW",
+        "MEDIUM",
+        "HIGH"
+      ]
+    },
+    "GuardrailContentFilterList":{
+      "type":"list",
+      "member":{"shape":"GuardrailContentFilter"}
+    },
+    "GuardrailContentFilterType":{
+      "type":"string",
+      "enum":[
+        "INSULTS",
+        "HATE",
+        "SEXUAL",
+        "VIOLENCE",
+        "MISCONDUCT",
+        "PROMPT_ATTACK"
+      ]
+    },
+    "GuardrailContentPolicyAction":{
+      "type":"string",
+      "enum":["BLOCKED"]
+    },
+    "GuardrailContentPolicyAssessment":{
+      "type":"structure",
+      "required":["filters"],
+      "members":{
+        "filters":{
+          "shape":"GuardrailContentFilterList",
+          "documentation":"<p>The content policy filters.</p>"
+        }
+      },
+      "documentation":"<p>An assessment of a content policy for a guardrail.</p>"
+    },
+    "GuardrailConverseContentBlock":{
+      "type":"structure",
+      "members":{
+        "text":{
+          "shape":"GuardrailConverseTextBlock",
+          "documentation":"<p>The text to guard.</p>"
+        }
+      },
+      "documentation":"<p/> <p>A content block for selective guarding with the Converse API (<a>Converse</a> and <a>ConverseStream</a>). </p>",
+      "union":true
+    },
+    "GuardrailConverseTextBlock":{
+      "type":"structure",
+      "required":["text"],
+      "members":{
+        "text":{
+          "shape":"String",
+          "documentation":"<p>The text that you want to guard.</p>"
+        }
+      },
+      "documentation":"<p>A text block that contains text that you want to assess with a guardrail. For more information, see <a>GuardrailConverseContentBlock</a>.</p>"
+    },
+    "GuardrailCustomWord":{
+      "type":"structure",
+      "required":[
+        "match",
+        "action"
+      ],
+      "members":{
+        "match":{
+          "shape":"String",
+          "documentation":"<p>The match for the custom word.</p>"
+        },
+        "action":{
+          "shape":"GuardrailWordPolicyAction",
+          "documentation":"<p>The action for the custom word.</p>"
+        }
+      },
+      "documentation":"<p>A custom word configured in a guardrail.</p>"
+    },
+    "GuardrailCustomWordList":{
+      "type":"list",
+      "member":{"shape":"GuardrailCustomWord"}
     },
     "GuardrailIdentifier":{
       "type":"string",
@@ -499,9 +703,282 @@
       "min":0,
       "pattern":"(([a-z0-9]+)|(arn:aws(-[^:]+)?:bedrock:[a-z0-9-]{1,20}:[0-9]{12}:guardrail/[a-z0-9]+))"
     },
+    "GuardrailManagedWord":{
+      "type":"structure",
+      "required":[
+        "match",
+        "type",
+        "action"
+      ],
+      "members":{
+        "match":{
+          "shape":"String",
+          "documentation":"<p>The match for the managed word.</p>"
+        },
+        "type":{
+          "shape":"GuardrailManagedWordType",
+          "documentation":"<p>The type for the managed word.</p>"
+        },
+        "action":{
+          "shape":"GuardrailWordPolicyAction",
+          "documentation":"<p>The action for the managed word.</p>"
+        }
+      },
+      "documentation":"<p>A managed word configured in a guardrail.</p>"
+    },
+    "GuardrailManagedWordList":{
+      "type":"list",
+      "member":{"shape":"GuardrailManagedWord"}
+    },
+    "GuardrailManagedWordType":{
+      "type":"string",
+      "enum":["PROFANITY"]
+    },
+    "GuardrailOutputText":{"type":"string"},
+    "GuardrailPiiEntityFilter":{
+      "type":"structure",
+      "required":[
+        "match",
+        "type",
+        "action"
+      ],
+      "members":{
+        "match":{
+          "shape":"String",
+          "documentation":"<p>The PII entity filter match.</p>"
+        },
+        "type":{
+          "shape":"GuardrailPiiEntityType",
+          "documentation":"<p>The PII entity filter type.</p>"
+        },
+        "action":{
+          "shape":"GuardrailSensitiveInformationPolicyAction",
+          "documentation":"<p>The PII entity filter action.</p>"
+        }
+      },
+      "documentation":"<p>A Personally Identifiable Information (PII) entity configured in a guardrail.</p>"
+    },
+    "GuardrailPiiEntityFilterList":{
+      "type":"list",
+      "member":{"shape":"GuardrailPiiEntityFilter"}
+    },
+    "GuardrailPiiEntityType":{
+      "type":"string",
+      "enum":[
+        "ADDRESS",
+        "AGE",
+        "AWS_ACCESS_KEY",
+        "AWS_SECRET_KEY",
+        "CA_HEALTH_NUMBER",
+        "CA_SOCIAL_INSURANCE_NUMBER",
+        "CREDIT_DEBIT_CARD_CVV",
+        "CREDIT_DEBIT_CARD_EXPIRY",
+        "CREDIT_DEBIT_CARD_NUMBER",
+        "DRIVER_ID",
+        "EMAIL",
+        "INTERNATIONAL_BANK_ACCOUNT_NUMBER",
+        "IP_ADDRESS",
+        "LICENSE_PLATE",
+        "MAC_ADDRESS",
+        "NAME",
+        "PASSWORD",
+        "PHONE",
+        "PIN",
+        "SWIFT_CODE",
+        "UK_NATIONAL_HEALTH_SERVICE_NUMBER",
+        "UK_NATIONAL_INSURANCE_NUMBER",
+        "UK_UNIQUE_TAXPAYER_REFERENCE_NUMBER",
+        "URL",
+        "USERNAME",
+        "US_BANK_ACCOUNT_NUMBER",
+        "US_BANK_ROUTING_NUMBER",
+        "US_INDIVIDUAL_TAX_IDENTIFICATION_NUMBER",
+        "US_PASSPORT_NUMBER",
+        "US_SOCIAL_SECURITY_NUMBER",
+        "VEHICLE_IDENTIFICATION_NUMBER"
+      ]
+    },
+    "GuardrailRegexFilter":{
+      "type":"structure",
+      "required":["action"],
+      "members":{
+        "name":{
+          "shape":"String",
+          "documentation":"<p>The regex filter name.</p>"
+        },
+        "match":{
+          "shape":"String",
+          "documentation":"<p>The regesx filter match.</p>"
+        },
+        "regex":{
+          "shape":"String",
+          "documentation":"<p>The regex query.</p>"
+        },
+        "action":{
+          "shape":"GuardrailSensitiveInformationPolicyAction",
+          "documentation":"<p>The region filter action.</p>"
+        }
+      },
+      "documentation":"<p>A Regex filter configured in a guardrail.</p>"
+    },
+    "GuardrailRegexFilterList":{
+      "type":"list",
+      "member":{"shape":"GuardrailRegexFilter"}
+    },
+    "GuardrailSensitiveInformationPolicyAction":{
+      "type":"string",
+      "enum":[
+        "ANONYMIZED",
+        "BLOCKED"
+      ]
+    },
+    "GuardrailSensitiveInformationPolicyAssessment":{
+      "type":"structure",
+      "required":[
+        "piiEntities",
+        "regexes"
+      ],
+      "members":{
+        "piiEntities":{
+          "shape":"GuardrailPiiEntityFilterList",
+          "documentation":"<p>The PII entities in the assessment.</p>"
+        },
+        "regexes":{
+          "shape":"GuardrailRegexFilterList",
+          "documentation":"<p>The regex queries in the assessment.</p>"
+        }
+      },
+      "documentation":"<p>The assessment for aPersonally Identifiable Information (PII) policy. </p>"
+    },
+    "GuardrailStreamConfiguration":{
+      "type":"structure",
+      "required":[
+        "guardrailIdentifier",
+        "guardrailVersion"
+      ],
+      "members":{
+        "guardrailIdentifier":{
+          "shape":"GuardrailIdentifier",
+          "documentation":"<p>The identifier for the guardrail.</p>"
+        },
+        "guardrailVersion":{
+          "shape":"GuardrailVersion",
+          "documentation":"<p>The version of the guardrail.</p>"
+        },
+        "trace":{
+          "shape":"GuardrailTrace",
+          "documentation":"<p>The trace behavior for the guardrail.</p>"
+        },
+        "streamProcessingMode":{
+          "shape":"GuardrailStreamProcessingMode",
+          "documentation":"<p>The processing mode. </p> <p>The processing mode. For more information, see <i>Configure streaming response behavior</i> in the <i>Amazon Bedrock User Guide</i>. </p>"
+        }
+      },
+      "documentation":"<p>Configuration information for a guardrail that you use with the <a>ConverseStream</a> action. </p>"
+    },
+    "GuardrailStreamProcessingMode":{
+      "type":"string",
+      "enum":[
+        "sync",
+        "async"
+      ]
+    },
+    "GuardrailTopic":{
+      "type":"structure",
+      "required":[
+        "name",
+        "type",
+        "action"
+      ],
+      "members":{
+        "name":{
+          "shape":"String",
+          "documentation":"<p>The name for the guardrail.</p>"
+        },
+        "type":{
+          "shape":"GuardrailTopicType",
+          "documentation":"<p>The type behavior that the guardrail should perform when the model detects the topic.</p>"
+        },
+        "action":{
+          "shape":"GuardrailTopicPolicyAction",
+          "documentation":"<p>The action the guardrail should take when it intervenes on a topic.</p>"
+        }
+      },
+      "documentation":"<p>Information about a topic guardrail.</p>"
+    },
+    "GuardrailTopicList":{
+      "type":"list",
+      "member":{"shape":"GuardrailTopic"}
+    },
+    "GuardrailTopicPolicyAction":{
+      "type":"string",
+      "enum":["BLOCKED"]
+    },
+    "GuardrailTopicPolicyAssessment":{
+      "type":"structure",
+      "required":["topics"],
+      "members":{
+        "topics":{
+          "shape":"GuardrailTopicList",
+          "documentation":"<p>The topics in the assessment.</p>"
+        }
+      },
+      "documentation":"<p>A behavior assessment of a topic policy.</p>"
+    },
+    "GuardrailTopicType":{
+      "type":"string",
+      "enum":["DENY"]
+    },
+    "GuardrailTrace":{
+      "type":"string",
+      "enum":[
+        "enabled",
+        "disabled"
+      ]
+    },
+    "GuardrailTraceAssessment":{
+      "type":"structure",
+      "members":{
+        "modelOutput":{
+          "shape":"ModelOutputs",
+          "documentation":"<p>The output from the model.</p>"
+        },
+        "inputAssessment":{
+          "shape":"GuardrailAssessmentMap",
+          "documentation":"<p>The input assessment.</p>"
+        },
+        "outputAssessments":{
+          "shape":"GuardrailAssessmentListMap",
+          "documentation":"<p>the output assessments.</p>"
+        }
+      },
+      "documentation":"<p>A Top level guardrail trace object. For more information, see <a>ConverseTrace</a>.</p>"
+    },
     "GuardrailVersion":{
       "type":"string",
       "pattern":"(([1-9][0-9]{0,7})|(DRAFT))"
+    },
+    "GuardrailWordPolicyAction":{
+      "type":"string",
+      "enum":["BLOCKED"]
+    },
+    "GuardrailWordPolicyAssessment":{
+      "type":"structure",
+      "required":[
+        "customWords",
+        "managedWordLists"
+      ],
+      "members":{
+        "customWords":{
+          "shape":"GuardrailCustomWordList",
+          "documentation":"<p>Custom words in the assessment.</p>"
+        },
+        "managedWordLists":{
+          "shape":"GuardrailManagedWordList",
+          "documentation":"<p>Managed word lists in the assessment.</p>"
+        }
+      },
+      "documentation":"<p>The word policy assessment.</p>"
     },
     "ImageBlock":{
       "type":"structure",
@@ -550,7 +1027,7 @@
       "members":{
         "maxTokens":{
           "shape":"InferenceConfigurationMaxTokensInteger",
-          "documentation":"<p>The maximum number of tokens to allow in the generated response. The default value is the maximum allowed value for the model that you are using. For more information, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/model-parameters.html\">Inference parameters for foundatio{ \"messages\": [ { \"role\": \"user\", \"content\": [ { \"text\": \"what's the weather in Queens, NY and Austin, TX?\" } ] }, { \"role\": \"assistant\", \"content\": [ { \"toolUse\": { \"toolUseId\": \"1\", \"name\": \"get_weather\", \"input\": { \"city\": \"Queens\", \"state\": \"NY\" } } }, { \"toolUse\": { \"toolUseId\": \"2\", \"name\": \"get_weather\", \"input\": { \"city\": \"Austin\", \"state\": \"TX\" } } } ] }, { \"role\": \"user\", \"content\": [ { \"toolResult\": { \"toolUseId\": \"2\", \"content\": [ { \"json\": { \"weather\": \"40\" } } ] } }, { \"text\": \"...\" }, { \"toolResult\": { \"toolUseId\": \"1\", \"content\": [ { \"text\": \"result text\" } ] } } ] } ], \"toolConfig\": { \"tools\": [ { \"name\": \"get_weather\", \"description\": \"Get weather\", \"inputSchema\": { \"type\": \"object\", \"properties\": { \"city\": { \"type\": \"string\", \"description\": \"City of location\" }, \"state\": { \"type\": \"string\", \"description\": \"State of location\" } }, \"required\": [\"city\", \"state\"] } } ] } } n models</a>. </p>"
+          "documentation":"<p>The maximum number of tokens to allow in the generated response. The default value is the maximum allowed value for the model that you are using. For more information, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/model-parameters.html\">Inference parameters for foundation models</a>. </p>"
         },
         "temperature":{
           "shape":"InferenceConfigurationTemperatureFloat",
@@ -615,11 +1092,11 @@
       "members":{
         "body":{
           "shape":"Body",
-          "documentation":"<p>The prompt and inference parameters in the format specified in the <code>contentType</code> in the header. To see the format and content of the request and response bodies for different models, refer to <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/model-parameters.html\">Inference parameters</a>. For more information, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/api-methods-run.html\">Run inference</a> in the Bedrock User Guide.</p>"
+          "documentation":"<p>The prompt and inference parameters in the format specified in the <code>contentType</code> in the header. You must provide the body in JSON format. To see the format and content of the request and response bodies for different models, refer to <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/model-parameters.html\">Inference parameters</a>. For more information, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/api-methods-run.html\">Run inference</a> in the Bedrock User Guide.</p>"
         },
         "contentType":{
           "shape":"MimeType",
-          "documentation":"<p>The MIME type of the input data in the request. The default value is <code>application/json</code>.</p>",
+          "documentation":"<p>The MIME type of the input data in the request. You must specify <code>application/json</code>.</p>",
           "location":"header",
           "locationName":"Content-Type"
         },
@@ -685,11 +1162,11 @@
       "members":{
         "body":{
           "shape":"Body",
-          "documentation":"<p>The prompt and inference parameters in the format specified in the <code>contentType</code> in the header. To see the format and content of the request and response bodies for different models, refer to <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/model-parameters.html\">Inference parameters</a>. For more information, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/api-methods-run.html\">Run inference</a> in the Bedrock User Guide.</p>"
+          "documentation":"<p>The prompt and inference parameters in the format specified in the <code>contentType</code> in the header. You must provide the body in JSON format. To see the format and content of the request and response bodies for different models, refer to <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/model-parameters.html\">Inference parameters</a>. For more information, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/api-methods-run.html\">Run inference</a> in the Bedrock User Guide.</p>"
         },
         "contentType":{
           "shape":"MimeType",
-          "documentation":"<p>The MIME type of the input data in the request. The default value is <code>application/json</code>.</p>",
+          "documentation":"<p>The MIME type of the input data in the request. You must specify <code>application/json</code>.</p>",
           "location":"header",
           "locationName":"Content-Type"
         },
@@ -766,7 +1243,7 @@
           "documentation":"<p>The message content.</p>"
         }
       },
-      "documentation":"<p>A message in the <a href=\"https://docs.aws.amazon.com/bedrock/latest/APIReference/API_runtime_Message.html\">Message</a> field. Use to send a message in a call to <a href=\"https://docs.aws.amazon.com/bedrock/latest/APIReference/API_runtime_Converse.html\">Converse</a>. </p>"
+      "documentation":"<p>A message input, or returned from, a call to <a href=\"https://docs.aws.amazon.com/bedrock/latest/APIReference/API_runtime_Converse.html\">Converse</a> or <a href=\"https://docs.aws.amazon.com/bedrock/latest/APIReference/API_runtime_ConverseStream.html\">ConverseStream</a>.</p>"
     },
     "MessageStartEvent":{
       "type":"structure",
@@ -832,6 +1309,10 @@
         "senderFault":true
       },
       "exception":true
+    },
+    "ModelOutputs":{
+      "type":"list",
+      "member":{"shape":"GuardrailOutputText"}
     },
     "ModelStreamErrorException":{
       "type":"structure",
@@ -960,7 +1441,7 @@
           "documentation":"<p>The name of the tool that the model must request. </p>"
         }
       },
-      "documentation":"<p>The model must request a specific tool.</p> <note> <p>This field is only supported by Anthropic Claude 3 models.</p> </note>"
+      "documentation":"<p>The model must request a specific tool. For example, <code>{\"tool\" : {\"name\" : \"Your tool name\"}}</code>.</p> <note> <p>This field is only supported by Anthropic Claude 3 models.</p> </note>"
     },
     "StatusCode":{
       "type":"integer",
@@ -975,6 +1456,7 @@
         "tool_use",
         "max_tokens",
         "stop_sequence",
+        "guardrail_intervened",
         "content_filtered"
       ]
     },
@@ -985,9 +1467,13 @@
         "text":{
           "shape":"NonEmptyString",
           "documentation":"<p>A system prompt for the model. </p>"
+        },
+        "guardContent":{
+          "shape":"GuardrailConverseContentBlock",
+          "documentation":"<p>A content block to assess with the guardrail. Use with the Converse API (<a>Converse</a> and <a>ConverseStream</a>). </p> <p>For more information, see <i>Use a guardrail with the Converse API</i> in the <i>Amazon Bedrock User Guide</i>.</p>"
         }
       },
-      "documentation":"<p>A system content block</p>",
+      "documentation":"<p>A system content block.</p>",
       "union":true
     },
     "SystemContentBlocks":{
@@ -1060,7 +1546,7 @@
       "members":{
         "auto":{
           "shape":"AutoToolChoice",
-          "documentation":"<p>The Model automatically decides if a tool should be called or to whether to generate text instead.</p>"
+          "documentation":"<p>(Default). The Model automatically decides if a tool should be called or whether to generate text instead. </p>"
         },
         "any":{
           "shape":"AnyToolChoice",
@@ -1068,10 +1554,10 @@
         },
         "tool":{
           "shape":"SpecificToolChoice",
-          "documentation":"<p>The Model must request the specified tool.</p>"
+          "documentation":"<p>The Model must request the specified tool. Only supported by Anthropic Claude 3 models. </p>"
         }
       },
-      "documentation":"<p>Forces a model to use a tool.</p>",
+      "documentation":"<p>Determines which tools the model should request in a call to <code>Converse</code> or <code>ConverseStream</code>. <code>ToolChoice</code> is only supported by Anthropic Claude 3 models and by Mistral AI Mistral Large.</p>",
       "union":true
     },
     "ToolConfiguration":{

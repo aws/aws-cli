@@ -477,6 +477,19 @@
       ],
       "documentation":"<p>Creates a job that uses workers to label the data objects in your input dataset. You can use the labeled data to train machine learning models. </p> <p>You can select your workforce from one of three providers:</p> <ul> <li> <p>A private workforce that you create. It can include employees, contractors, and outside experts. Use a private workforce when want the data to stay within your organization or when a specific set of skills is required.</p> </li> <li> <p>One or more vendors that you select from the Amazon Web Services Marketplace. Vendors provide expertise in specific areas. </p> </li> <li> <p>The Amazon Mechanical Turk workforce. This is the largest workforce, but it should only be used for public data or data that has been stripped of any personally identifiable information.</p> </li> </ul> <p>You can also use <i>automated data labeling</i> to reduce the number of data objects that need to be labeled by a human. Automated data labeling uses <i>active learning</i> to determine if a data object can be labeled by machine or if it needs to be sent to a human worker. For more information, see <a href=\"https://docs.aws.amazon.com/sagemaker/latest/dg/sms-automated-labeling.html\">Using Automated Data Labeling</a>.</p> <p>The data objects to be labeled are contained in an Amazon S3 bucket. You create a <i>manifest file</i> that describes the location of each object. For more information, see <a href=\"https://docs.aws.amazon.com/sagemaker/latest/dg/sms-data.html\">Using Input and Output Data</a>.</p> <p>The output can be used as the manifest file for another labeling job or as training data for your machine learning models.</p> <p>You can use this operation to create a static labeling job or a streaming labeling job. A static labeling job stops if all data objects in the input manifest file identified in <code>ManifestS3Uri</code> have been labeled. A streaming labeling job runs perpetually until it is manually stopped, or remains idle for 10 days. You can send new data objects to an active (<code>InProgress</code>) streaming labeling job in real time. To learn how to create a static labeling job, see <a href=\"https://docs.aws.amazon.com/sagemaker/latest/dg/sms-create-labeling-job-api.html\">Create a Labeling Job (API) </a> in the Amazon SageMaker Developer Guide. To learn how to create a streaming labeling job, see <a href=\"https://docs.aws.amazon.com/sagemaker/latest/dg/sms-streaming-create-job.html\">Create a Streaming Labeling Job</a>.</p>"
     },
+    "CreateMlflowTrackingServer":{
+      "name":"CreateMlflowTrackingServer",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"CreateMlflowTrackingServerRequest"},
+      "output":{"shape":"CreateMlflowTrackingServerResponse"},
+      "errors":[
+        {"shape":"ResourceLimitExceeded"}
+      ],
+      "documentation":"<p>Creates an MLflow Tracking Server using a general purpose Amazon S3 bucket as the artifact store. For more information, see <a href=\"https://docs.aws.amazon.com/sagemaker/latest/dg/mlflow-create-tracking-server.html\">Create an MLflow Tracking Server</a>.</p>"
+    },
     "CreateModel":{
       "name":"CreateModel",
       "http":{
@@ -655,6 +668,19 @@
         {"shape":"ResourceNotFound"}
       ],
       "documentation":"<p>Creates a URL for a specified UserProfile in a Domain. When accessed in a web browser, the user will be automatically signed in to the domain, and granted access to all of the Apps and files associated with the Domain's Amazon Elastic File System volume. This operation can only be called when the authentication mode equals IAM. </p> <p>The IAM role or user passed to this API defines the permissions to access the app. Once the presigned URL is created, no additional permission is required to access this URL. IAM authorization policies for this API are also enforced for every HTTP request and WebSocket frame that attempts to connect to the app.</p> <p>You can restrict access to this API and to the URL that it returns to a list of IP addresses, Amazon VPCs or Amazon VPC Endpoints that you specify. For more information, see <a href=\"https://docs.aws.amazon.com/sagemaker/latest/dg/studio-interface-endpoint.html\">Connect to Amazon SageMaker Studio Through an Interface VPC Endpoint</a> .</p> <note> <p>The URL that you get from a call to <code>CreatePresignedDomainUrl</code> has a default timeout of 5 minutes. You can configure this value using <code>ExpiresInSeconds</code>. If you try to use the URL after the timeout limit expires, you are directed to the Amazon Web Services console sign-in page.</p> </note>"
+    },
+    "CreatePresignedMlflowTrackingServerUrl":{
+      "name":"CreatePresignedMlflowTrackingServerUrl",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"CreatePresignedMlflowTrackingServerUrlRequest"},
+      "output":{"shape":"CreatePresignedMlflowTrackingServerUrlResponse"},
+      "errors":[
+        {"shape":"ResourceNotFound"}
+      ],
+      "documentation":"<p>Returns a presigned URL that you can use to connect to the MLflow UI attached to your tracking server. For more information, see <a href=\"https://docs.aws.amazon.com/sagemaker/latest/dg/mlflow-launch-ui.html\">Launch the MLflow UI using a presigned URL</a>.</p>"
     },
     "CreatePresignedNotebookInstanceUrl":{
       "name":"CreatePresignedNotebookInstanceUrl",
@@ -1157,6 +1183,19 @@
       ],
       "documentation":"<p>Deletes an inference experiment.</p> <note> <p> This operation does not delete your endpoint, variants, or any underlying resources. This operation only deletes the metadata of your experiment. </p> </note>"
     },
+    "DeleteMlflowTrackingServer":{
+      "name":"DeleteMlflowTrackingServer",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DeleteMlflowTrackingServerRequest"},
+      "output":{"shape":"DeleteMlflowTrackingServerResponse"},
+      "errors":[
+        {"shape":"ResourceNotFound"}
+      ],
+      "documentation":"<p>Deletes an MLflow Tracking Server. For more information, see <a href=\"https://docs.aws.amazon.com/sagemaker/latest/dg/mlflow-cleanup.html.html\">Clean up MLflow resources</a>.</p>"
+    },
     "DeleteModel":{
       "name":"DeleteModel",
       "http":{
@@ -1387,7 +1426,7 @@
       },
       "input":{"shape":"DeleteWorkforceRequest"},
       "output":{"shape":"DeleteWorkforceResponse"},
-      "documentation":"<p>Use this operation to delete a workforce.</p> <p>If you want to create a new workforce in an Amazon Web Services Region where a workforce already exists, use this operation to delete the existing workforce and then use <a href=\"https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_CreateWorkforce.html\">CreateWorkforce</a> to create a new workforce.</p> <important> <p>If a private workforce contains one or more work teams, you must use the <a href=\"https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_DeleteWorkteam.html\">DeleteWorkteam</a> operation to delete all work teams before you delete the workforce. If you try to delete a workforce that contains one or more work teams, you will recieve a <code>ResourceInUse</code> error.</p> </important>"
+      "documentation":"<p>Use this operation to delete a workforce.</p> <p>If you want to create a new workforce in an Amazon Web Services Region where a workforce already exists, use this operation to delete the existing workforce and then use <a href=\"https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_CreateWorkforce.html\">CreateWorkforce</a> to create a new workforce.</p> <important> <p>If a private workforce contains one or more work teams, you must use the <a href=\"https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_DeleteWorkteam.html\">DeleteWorkteam</a> operation to delete all work teams before you delete the workforce. If you try to delete a workforce that contains one or more work teams, you will receive a <code>ResourceInUse</code> error.</p> </important>"
     },
     "DeleteWorkteam":{
       "name":"DeleteWorkteam",
@@ -1851,6 +1890,19 @@
       ],
       "documentation":"<p>Provides a list of properties for the requested lineage group. For more information, see <a href=\"https://docs.aws.amazon.com/sagemaker/latest/dg/xaccount-lineage-tracking.html\"> Cross-Account Lineage Tracking </a> in the <i>Amazon SageMaker Developer Guide</i>.</p>"
     },
+    "DescribeMlflowTrackingServer":{
+      "name":"DescribeMlflowTrackingServer",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DescribeMlflowTrackingServerRequest"},
+      "output":{"shape":"DescribeMlflowTrackingServerResponse"},
+      "errors":[
+        {"shape":"ResourceNotFound"}
+      ],
+      "documentation":"<p>Returns information about an MLflow Tracking Server.</p>"
+    },
     "DescribeModel":{
       "name":"DescribeModel",
       "http":{
@@ -2161,7 +2213,7 @@
       },
       "input":{"shape":"DescribeWorkteamRequest"},
       "output":{"shape":"DescribeWorkteamResponse"},
-      "documentation":"<p>Gets information about a specific work team. You can see information such as the create date, the last updated date, membership information, and the work team's Amazon Resource Name (ARN).</p>"
+      "documentation":"<p>Gets information about a specific work team. You can see information such as the creation date, the last updated date, membership information, and the work team's Amazon Resource Name (ARN).</p>"
     },
     "DisableSagemakerServicecatalogPortfolio":{
       "name":"DisableSagemakerServicecatalogPortfolio",
@@ -2703,6 +2755,16 @@
       "output":{"shape":"ListLineageGroupsResponse"},
       "documentation":"<p>A list of lineage groups shared with your Amazon Web Services account. For more information, see <a href=\"https://docs.aws.amazon.com/sagemaker/latest/dg/xaccount-lineage-tracking.html\"> Cross-Account Lineage Tracking </a> in the <i>Amazon SageMaker Developer Guide</i>.</p>"
     },
+    "ListMlflowTrackingServers":{
+      "name":"ListMlflowTrackingServers",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"ListMlflowTrackingServersRequest"},
+      "output":{"shape":"ListMlflowTrackingServersResponse"},
+      "documentation":"<p>Lists all MLflow Tracking Servers.</p>"
+    },
     "ListModelBiasJobDefinitions":{
       "name":"ListModelBiasJobDefinitions",
       "http":{
@@ -3222,6 +3284,20 @@
       ],
       "documentation":"<p>Starts an inference experiment.</p>"
     },
+    "StartMlflowTrackingServer":{
+      "name":"StartMlflowTrackingServer",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"StartMlflowTrackingServerRequest"},
+      "output":{"shape":"StartMlflowTrackingServerResponse"},
+      "errors":[
+        {"shape":"ResourceNotFound"},
+        {"shape":"ConflictException"}
+      ],
+      "documentation":"<p>Programmatically start an MLflow Tracking Server.</p>"
+    },
     "StartMonitoringSchedule":{
       "name":"StartMonitoringSchedule",
       "http":{
@@ -3352,6 +3428,20 @@
         {"shape":"ResourceNotFound"}
       ],
       "documentation":"<p>Stops a running labeling job. A job that is stopped cannot be restarted. Any results obtained before the job is stopped are placed in the Amazon S3 output bucket.</p>"
+    },
+    "StopMlflowTrackingServer":{
+      "name":"StopMlflowTrackingServer",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"StopMlflowTrackingServerRequest"},
+      "output":{"shape":"StopMlflowTrackingServerResponse"},
+      "errors":[
+        {"shape":"ResourceNotFound"},
+        {"shape":"ConflictException"}
+      ],
+      "documentation":"<p>Programmatically stop an MLflow Tracking Server.</p>"
     },
     "StopMonitoringSchedule":{
       "name":"StopMonitoringSchedule",
@@ -3703,6 +3793,21 @@
         {"shape":"ResourceNotFound"}
       ],
       "documentation":"<p> Updates an inference experiment that you created. The status of the inference experiment has to be either <code>Created</code>, <code>Running</code>. For more information on the status of an inference experiment, see <a href=\"https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_DescribeInferenceExperiment.html\">DescribeInferenceExperiment</a>. </p>"
+    },
+    "UpdateMlflowTrackingServer":{
+      "name":"UpdateMlflowTrackingServer",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"UpdateMlflowTrackingServerRequest"},
+      "output":{"shape":"UpdateMlflowTrackingServerResponse"},
+      "errors":[
+        {"shape":"ResourceNotFound"},
+        {"shape":"ResourceLimitExceeded"},
+        {"shape":"ConflictException"}
+      ],
+      "documentation":"<p>Updates properties of an existing MLflow Tracking Server.</p>"
     },
     "UpdateModelCard":{
       "name":"UpdateModelCard",
@@ -6941,6 +7046,22 @@
       "type":"string",
       "pattern":"^[a-z]{3}\\d-az\\d$"
     },
+    "ClusterEbsVolumeConfig":{
+      "type":"structure",
+      "required":["VolumeSizeInGB"],
+      "members":{
+        "VolumeSizeInGB":{
+          "shape":"ClusterEbsVolumeSizeInGB",
+          "documentation":"<p>The size in gigabytes (GB) of the additional EBS volume to be attached to the instances in the SageMaker HyperPod cluster instance group. The additional EBS volume is attached to each instance within the SageMaker HyperPod cluster instance group and mounted to <code>/opt/sagemaker</code>.</p>"
+        }
+      },
+      "documentation":"<p>Defines the configuration for attaching an additional Amazon Elastic Block Store (EBS) volume to each instance of the SageMaker HyperPod cluster instance group.</p>"
+    },
+    "ClusterEbsVolumeSizeInGB":{
+      "type":"integer",
+      "max":16384,
+      "min":1
+    },
     "ClusterInstanceCount":{
       "type":"integer",
       "min":1
@@ -6975,6 +7096,10 @@
         "ThreadsPerCore":{
           "shape":"ClusterThreadsPerCore",
           "documentation":"<p>The number you specified to <code>TreadsPerCore</code> in <code>CreateCluster</code> for enabling or disabling multithreading. For instance types that support multithreading, you can specify 1 for disabling multithreading and 2 for enabling multithreading. For more information, see the reference table of <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/cpu-options-supported-instances-values.html\">CPU cores and threads per CPU core per instance type</a> in the <i>Amazon Elastic Compute Cloud User Guide</i>.</p>"
+        },
+        "InstanceStorageConfigs":{
+          "shape":"ClusterInstanceStorageConfigs",
+          "documentation":"<p>The additional storage configurations for the instances in the SageMaker HyperPod cluster instance group.</p>"
         }
       },
       "documentation":"<p>Details of an instance group in a SageMaker HyperPod cluster.</p>"
@@ -7022,6 +7147,10 @@
         "ThreadsPerCore":{
           "shape":"ClusterThreadsPerCore",
           "documentation":"<p>Specifies the value for <b>Threads per core</b>. For instance types that support multithreading, you can specify <code>1</code> for disabling multithreading and <code>2</code> for enabling multithreading. For instance types that doesn't support multithreading, specify <code>1</code>. For more information, see the reference table of <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/cpu-options-supported-instances-values.html\">CPU cores and threads per CPU core per instance type</a> in the <i>Amazon Elastic Compute Cloud User Guide</i>.</p>"
+        },
+        "InstanceStorageConfigs":{
+          "shape":"ClusterInstanceStorageConfigs",
+          "documentation":"<p>Specifies the additional storage configurations for the instances in the SageMaker HyperPod cluster instance group.</p>"
         }
       },
       "documentation":"<p>The specifications of an instance group that you need to define.</p>"
@@ -7070,6 +7199,22 @@
         }
       },
       "documentation":"<p>Details of an instance in a SageMaker HyperPod cluster.</p>"
+    },
+    "ClusterInstanceStorageConfig":{
+      "type":"structure",
+      "members":{
+        "EbsVolumeConfig":{
+          "shape":"ClusterEbsVolumeConfig",
+          "documentation":"<p>Defines the configuration for attaching additional Amazon Elastic Block Store (EBS) volumes to the instances in the SageMaker HyperPod cluster instance group. The additional EBS volume is attached to each instance within the SageMaker HyperPod cluster instance group and mounted to <code>/opt/sagemaker</code>.</p>"
+        }
+      },
+      "documentation":"<p>Defines the configuration for attaching additional storage to the instances in the SageMaker HyperPod cluster instance group.</p>",
+      "union":true
+    },
+    "ClusterInstanceStorageConfigs":{
+      "type":"list",
+      "member":{"shape":"ClusterInstanceStorageConfig"},
+      "max":1
     },
     "ClusterInstanceType":{
       "type":"string",
@@ -7180,6 +7325,10 @@
           "shape":"ClusterThreadsPerCore",
           "documentation":"<p>The number of threads per CPU core you specified under <code>CreateCluster</code>.</p>"
         },
+        "InstanceStorageConfigs":{
+          "shape":"ClusterInstanceStorageConfigs",
+          "documentation":"<p>The configurations of additional storage specified to the instance group where the instance (node) is launched.</p>"
+        },
         "PrivatePrimaryIp":{
           "shape":"ClusterPrivatePrimaryIp",
           "documentation":"<p>The private primary IP address of the SageMaker HyperPod cluster node.</p>"
@@ -7199,7 +7348,7 @@
       "type":"string",
       "max":256,
       "min":1,
-      "pattern":"^[a-zA-Z][-a-zA-Z0-9]*$"
+      "pattern":"^i-[a-f0-9]{8}(?:[a-f0-9]{9})?$"
     },
     "ClusterNodeSummaries":{
       "type":"list",
@@ -9372,6 +9521,57 @@
         }
       }
     },
+    "CreateMlflowTrackingServerRequest":{
+      "type":"structure",
+      "required":[
+        "TrackingServerName",
+        "ArtifactStoreUri",
+        "RoleArn"
+      ],
+      "members":{
+        "TrackingServerName":{
+          "shape":"TrackingServerName",
+          "documentation":"<p>A unique string identifying the tracking server name. This string is part of the tracking server ARN.</p>"
+        },
+        "ArtifactStoreUri":{
+          "shape":"S3Uri",
+          "documentation":"<p>The S3 URI for a general purpose bucket to use as the MLflow Tracking Server artifact store.</p>"
+        },
+        "TrackingServerSize":{
+          "shape":"TrackingServerSize",
+          "documentation":"<p>The size of the tracking server you want to create. You can choose between <code>\"Small\"</code>, <code>\"Medium\"</code>, and <code>\"Large\"</code>. The default MLflow Tracking Server configuration size is <code>\"Small\"</code>. You can choose a size depending on the projected use of the tracking server such as the volume of data logged, number of users, and frequency of use. </p> <p>We recommend using a small tracking server for teams of up to 25 users, a medium tracking server for teams of up to 50 users, and a large tracking server for teams of up to 100 users. </p>"
+        },
+        "MlflowVersion":{
+          "shape":"MlflowVersion",
+          "documentation":"<p>The version of MLflow that the tracking server uses. To see which MLflow versions are available to use, see <a href=\"https://docs.aws.amazon.com/sagemaker/latest/dg/mlflow.html#mlflow-create-tracking-server-how-it-works\">How it works</a>.</p>"
+        },
+        "RoleArn":{
+          "shape":"RoleArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) for an IAM role in your account that the MLflow Tracking Server uses to access the artifact store in Amazon S3. The role should have <code>AmazonS3FullAccess</code> permissions. For more information on IAM permissions for tracking server creation, see <a href=\"https://docs.aws.amazon.com/sagemaker/latest/dg/mlflow-create-tracking-server-iam.html\">Set up IAM permissions for MLflow</a>.</p>"
+        },
+        "AutomaticModelRegistration":{
+          "shape":"Boolean",
+          "documentation":"<p>Whether to enable or disable automatic registration of new MLflow models to the SageMaker Model Registry. To enable automatic model registration, set this value to <code>True</code>. To disable automatic model registration, set this value to <code>False</code>. If not specified, <code>AutomaticModelRegistration</code> defaults to <code>False</code>.</p>"
+        },
+        "WeeklyMaintenanceWindowStart":{
+          "shape":"WeeklyMaintenanceWindowStart",
+          "documentation":"<p>The day and time of the week in Coordinated Universal Time (UTC) 24-hour standard time that weekly maintenance updates are scheduled. For example: TUE:03:30.</p>"
+        },
+        "Tags":{
+          "shape":"TagList",
+          "documentation":"<p>Tags consisting of key-value pairs used to manage metadata for the tracking server.</p>"
+        }
+      }
+    },
+    "CreateMlflowTrackingServerResponse":{
+      "type":"structure",
+      "members":{
+        "TrackingServerArn":{
+          "shape":"TrackingServerArn",
+          "documentation":"<p>The ARN of the tracking server.</p>"
+        }
+      }
+    },
     "CreateModelBiasJobDefinitionRequest":{
       "type":"structure",
       "required":[
@@ -10023,6 +10223,33 @@
         "AuthorizedUrl":{
           "shape":"PresignedDomainUrl",
           "documentation":"<p>The presigned URL.</p>"
+        }
+      }
+    },
+    "CreatePresignedMlflowTrackingServerUrlRequest":{
+      "type":"structure",
+      "required":["TrackingServerName"],
+      "members":{
+        "TrackingServerName":{
+          "shape":"TrackingServerName",
+          "documentation":"<p>The name of the tracking server to connect to your MLflow UI.</p>"
+        },
+        "ExpiresInSeconds":{
+          "shape":"ExpiresInSeconds",
+          "documentation":"<p>The duration in seconds that your presigned URL is valid. The presigned URL can be used only once.</p>"
+        },
+        "SessionExpirationDurationInSeconds":{
+          "shape":"SessionExpirationDurationInSeconds",
+          "documentation":"<p>The duration in seconds that your MLflow UI session is valid.</p>"
+        }
+      }
+    },
+    "CreatePresignedMlflowTrackingServerUrlResponse":{
+      "type":"structure",
+      "members":{
+        "AuthorizedUrl":{
+          "shape":"TrackingServerUrl",
+          "documentation":"<p>A presigned URL with an authorization token.</p>"
         }
       }
     },
@@ -11607,6 +11834,25 @@
         "InferenceExperimentArn":{
           "shape":"InferenceExperimentArn",
           "documentation":"<p>The ARN of the deleted inference experiment.</p>"
+        }
+      }
+    },
+    "DeleteMlflowTrackingServerRequest":{
+      "type":"structure",
+      "required":["TrackingServerName"],
+      "members":{
+        "TrackingServerName":{
+          "shape":"TrackingServerName",
+          "documentation":"<p>The name of the the tracking server to delete.</p>"
+        }
+      }
+    },
+    "DeleteMlflowTrackingServerResponse":{
+      "type":"structure",
+      "members":{
+        "TrackingServerArn":{
+          "shape":"TrackingServerArn",
+          "documentation":"<p>A <code>TrackingServerArn</code> object, the ARN of the tracking server that is deleted if successfully found.</p>"
         }
       }
     },
@@ -14507,6 +14753,75 @@
         "LastModifiedTime":{
           "shape":"Timestamp",
           "documentation":"<p>The last modified time of the lineage group.</p>"
+        },
+        "LastModifiedBy":{"shape":"UserContext"}
+      }
+    },
+    "DescribeMlflowTrackingServerRequest":{
+      "type":"structure",
+      "required":["TrackingServerName"],
+      "members":{
+        "TrackingServerName":{
+          "shape":"TrackingServerName",
+          "documentation":"<p>The name of the MLflow Tracking Server to describe.</p>"
+        }
+      }
+    },
+    "DescribeMlflowTrackingServerResponse":{
+      "type":"structure",
+      "members":{
+        "TrackingServerArn":{
+          "shape":"TrackingServerArn",
+          "documentation":"<p>The ARN of the described tracking server.</p>"
+        },
+        "TrackingServerName":{
+          "shape":"TrackingServerName",
+          "documentation":"<p>The name of the described tracking server.</p>"
+        },
+        "ArtifactStoreUri":{
+          "shape":"S3Uri",
+          "documentation":"<p>The S3 URI of the general purpose bucket used as the MLflow Tracking Server artifact store.</p>"
+        },
+        "TrackingServerSize":{
+          "shape":"TrackingServerSize",
+          "documentation":"<p>The size of the described tracking server.</p>"
+        },
+        "MlflowVersion":{
+          "shape":"MlflowVersion",
+          "documentation":"<p>The MLflow version used for the described tracking server.</p>"
+        },
+        "RoleArn":{
+          "shape":"RoleArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) for an IAM role in your account that the described MLflow Tracking Server uses to access the artifact store in Amazon S3.</p>"
+        },
+        "TrackingServerStatus":{
+          "shape":"TrackingServerStatus",
+          "documentation":"<p>The current creation status of the described MLflow Tracking Server.</p>"
+        },
+        "IsActive":{
+          "shape":"IsTrackingServerActive",
+          "documentation":"<p>Whether the described MLflow Tracking Server is currently active.</p>"
+        },
+        "TrackingServerUrl":{
+          "shape":"TrackingServerUrl",
+          "documentation":"<p>The URL to connect to the MLflow user interface for the described tracking server.</p>"
+        },
+        "WeeklyMaintenanceWindowStart":{
+          "shape":"WeeklyMaintenanceWindowStart",
+          "documentation":"<p>The day and time of the week when weekly maintenance occurs on the described tracking server.</p>"
+        },
+        "AutomaticModelRegistration":{
+          "shape":"Boolean",
+          "documentation":"<p>Whether automatic registration of new MLflow models to the SageMaker Model Registry is enabled.</p>"
+        },
+        "CreationTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp of when the described MLflow Tracking Server was created.</p>"
+        },
+        "CreatedBy":{"shape":"UserContext"},
+        "LastModifiedTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp of when the described MLflow Tracking Server was last modified.</p>"
         },
         "LastModifiedBy":{"shape":"UserContext"}
       }
@@ -21299,6 +21614,13 @@
       "type":"string",
       "pattern":"^arn:aws[a-z\\-]*:iam::\\d{12}:rolealias/?[a-zA-Z_0-9+=,.@\\-_/]+$"
     },
+    "IsTrackingServerActive":{
+      "type":"string",
+      "enum":[
+        "Active",
+        "Inactive"
+      ]
+    },
     "ItemIdentifierAttributeName":{
       "type":"string",
       "max":256,
@@ -24023,6 +24345,56 @@
       "type":"integer",
       "max":100
     },
+    "ListMlflowTrackingServersRequest":{
+      "type":"structure",
+      "members":{
+        "CreatedAfter":{
+          "shape":"Timestamp",
+          "documentation":"<p>Use the <code>CreatedAfter</code> filter to only list tracking servers created after a specific date and time. Listed tracking servers are shown with a date and time such as <code>\"2024-03-16T01:46:56+00:00\"</code>. The <code>CreatedAfter</code> parameter takes in a Unix timestamp. To convert a date and time into a Unix timestamp, see <a href=\"https://www.epochconverter.com/\">EpochConverter</a>.</p>"
+        },
+        "CreatedBefore":{
+          "shape":"Timestamp",
+          "documentation":"<p>Use the <code>CreatedBefore</code> filter to only list tracking servers created before a specific date and time. Listed tracking servers are shown with a date and time such as <code>\"2024-03-16T01:46:56+00:00\"</code>. The <code>CreatedBefore</code> parameter takes in a Unix timestamp. To convert a date and time into a Unix timestamp, see <a href=\"https://www.epochconverter.com/\">EpochConverter</a>.</p>"
+        },
+        "TrackingServerStatus":{
+          "shape":"TrackingServerStatus",
+          "documentation":"<p>Filter for tracking servers with a specified creation status.</p>"
+        },
+        "MlflowVersion":{
+          "shape":"MlflowVersion",
+          "documentation":"<p>Filter for tracking servers using the specified MLflow version.</p>"
+        },
+        "SortBy":{
+          "shape":"SortTrackingServerBy",
+          "documentation":"<p>Filter for trackings servers sorting by name, creation time, or creation status.</p>"
+        },
+        "SortOrder":{
+          "shape":"SortOrder",
+          "documentation":"<p>Change the order of the listed tracking servers. By default, tracking servers are listed in <code>Descending</code> order by creation time. To change the list order, you can specify <code>SortOrder</code> to be <code>Ascending</code>.</p>"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>If the previous response was truncated, you will receive this token. Use it in your next request to receive the next set of results.</p>"
+        },
+        "MaxResults":{
+          "shape":"MaxResults",
+          "documentation":"<p>The maximum number of tracking servers to list.</p>"
+        }
+      }
+    },
+    "ListMlflowTrackingServersResponse":{
+      "type":"structure",
+      "members":{
+        "TrackingServerSummaries":{
+          "shape":"TrackingServerSummaryList",
+          "documentation":"<p>A list of tracking servers according to chosen filters.</p>"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>If the previous response was truncated, you will receive this token. Use it in your next request to receive the next set of results.</p>"
+        }
+      }
+    },
     "ListModelBiasJobDefinitionsRequest":{
       "type":"structure",
       "members":{
@@ -26123,6 +26495,11 @@
       "type":"string",
       "max":1,
       "pattern":"1|2"
+    },
+    "MlflowVersion":{
+      "type":"string",
+      "max":16,
+      "pattern":"^[0-9]*.[0-9]*.[0-9]*"
     },
     "Model":{
       "type":"structure",
@@ -33256,6 +33633,14 @@
         "CreationTime"
       ]
     },
+    "SortTrackingServerBy":{
+      "type":"string",
+      "enum":[
+        "Name",
+        "CreationTime",
+        "Status"
+      ]
+    },
     "SortTrialComponentsBy":{
       "type":"string",
       "enum":[
@@ -33315,7 +33700,7 @@
           "documentation":"<p>A list of one to ten <a href=\"https://docs.aws.amazon.com/vpc/latest/userguide/VPC_Subnets.html\">Classless Inter-Domain Routing</a> (CIDR) values.</p> <p>Maximum: Ten CIDR values</p> <note> <p>The following Length Constraints apply to individual CIDR values in the CIDR value list.</p> </note>"
         }
       },
-      "documentation":"<p>A list of IP address ranges (<a href=\"https://docs.aws.amazon.com/vpc/latest/userguide/VPC_Subnets.html\">CIDRs</a>). Used to create an allow list of IP addresses for a private workforce. Workers will only be able to login to their worker portal from an IP address within this range. By default, a workforce isn't restricted to specific IP addresses.</p>"
+      "documentation":"<p>A list of IP address ranges (<a href=\"https://docs.aws.amazon.com/vpc/latest/userguide/VPC_Subnets.html\">CIDRs</a>). Used to create an allow list of IP addresses for a private workforce. Workers will only be able to log in to their worker portal from an IP address within this range. By default, a workforce isn't restricted to specific IP addresses.</p>"
     },
     "SourceType":{
       "type":"string",
@@ -33579,6 +33964,25 @@
         }
       }
     },
+    "StartMlflowTrackingServerRequest":{
+      "type":"structure",
+      "required":["TrackingServerName"],
+      "members":{
+        "TrackingServerName":{
+          "shape":"TrackingServerName",
+          "documentation":"<p>The name of the tracking server to start.</p>"
+        }
+      }
+    },
+    "StartMlflowTrackingServerResponse":{
+      "type":"structure",
+      "members":{
+        "TrackingServerArn":{
+          "shape":"TrackingServerArn",
+          "documentation":"<p>The ARN of the started tracking server.</p>"
+        }
+      }
+    },
     "StartMonitoringScheduleRequest":{
       "type":"structure",
       "required":["MonitoringScheduleName"],
@@ -33803,6 +34207,25 @@
         "LabelingJobName":{
           "shape":"LabelingJobName",
           "documentation":"<p>The name of the labeling job to stop.</p>"
+        }
+      }
+    },
+    "StopMlflowTrackingServerRequest":{
+      "type":"structure",
+      "required":["TrackingServerName"],
+      "members":{
+        "TrackingServerName":{
+          "shape":"TrackingServerName",
+          "documentation":"<p>The name of the tracking server to stop.</p>"
+        }
+      }
+    },
+    "StopMlflowTrackingServerResponse":{
+      "type":"structure",
+      "members":{
+        "TrackingServerArn":{
+          "shape":"TrackingServerArn",
+          "documentation":"<p>The ARN of the stopped tracking server.</p>"
         }
       }
     },
@@ -34054,7 +34477,7 @@
           "documentation":"<p>Marketplace product listing ID.</p>"
         }
       },
-      "documentation":"<p>Describes a work team of a vendor that does the a labelling job.</p>"
+      "documentation":"<p>Describes a work team of a vendor that does the labelling job.</p>"
     },
     "SubscribedWorkteams":{
       "type":"list",
@@ -34617,6 +35040,91 @@
       "type":"string",
       "max":256,
       "min":1
+    },
+    "TrackingServerArn":{
+      "type":"string",
+      "max":2048,
+      "pattern":"arn:aws[a-z\\-]*:sagemaker:[a-z0-9\\-]*:[0-9]{12}:mlflow-tracking-server/.*"
+    },
+    "TrackingServerName":{
+      "type":"string",
+      "max":256,
+      "min":1,
+      "pattern":"^[a-zA-Z0-9](-*[a-zA-Z0-9]){0,255}"
+    },
+    "TrackingServerSize":{
+      "type":"string",
+      "enum":[
+        "Small",
+        "Medium",
+        "Large"
+      ]
+    },
+    "TrackingServerStatus":{
+      "type":"string",
+      "enum":[
+        "Creating",
+        "Created",
+        "CreateFailed",
+        "Updating",
+        "Updated",
+        "UpdateFailed",
+        "Deleting",
+        "DeleteFailed",
+        "Stopping",
+        "Stopped",
+        "StopFailed",
+        "Starting",
+        "Started",
+        "StartFailed",
+        "MaintenanceInProgress",
+        "MaintenanceComplete",
+        "MaintenanceFailed"
+      ]
+    },
+    "TrackingServerSummary":{
+      "type":"structure",
+      "members":{
+        "TrackingServerArn":{
+          "shape":"TrackingServerArn",
+          "documentation":"<p>The ARN of a listed tracking server.</p>"
+        },
+        "TrackingServerName":{
+          "shape":"TrackingServerName",
+          "documentation":"<p>The name of a listed tracking server.</p>"
+        },
+        "CreationTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The creation time of a listed tracking server.</p>"
+        },
+        "LastModifiedTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The last modified time of a listed tracking server.</p>"
+        },
+        "TrackingServerStatus":{
+          "shape":"TrackingServerStatus",
+          "documentation":"<p>The creation status of a listed tracking server.</p>"
+        },
+        "IsActive":{
+          "shape":"IsTrackingServerActive",
+          "documentation":"<p>The activity status of a listed tracking server.</p>"
+        },
+        "MlflowVersion":{
+          "shape":"MlflowVersion",
+          "documentation":"<p>The MLflow version used for a listed tracking server.</p>"
+        }
+      },
+      "documentation":"<p>The summary of the tracking server to list.</p>"
+    },
+    "TrackingServerSummaryList":{
+      "type":"list",
+      "member":{"shape":"TrackingServerSummary"},
+      "max":100,
+      "min":0
+    },
+    "TrackingServerUrl":{
+      "type":"string",
+      "max":2048
     },
     "TrafficDurationInSeconds":{
       "type":"integer",
@@ -36841,6 +37349,41 @@
         }
       }
     },
+    "UpdateMlflowTrackingServerRequest":{
+      "type":"structure",
+      "required":["TrackingServerName"],
+      "members":{
+        "TrackingServerName":{
+          "shape":"TrackingServerName",
+          "documentation":"<p>The name of the MLflow Tracking Server to update.</p>"
+        },
+        "ArtifactStoreUri":{
+          "shape":"S3Uri",
+          "documentation":"<p>The new S3 URI for the general purpose bucket to use as the artifact store for the MLflow Tracking Server.</p>"
+        },
+        "TrackingServerSize":{
+          "shape":"TrackingServerSize",
+          "documentation":"<p>The new size for the MLflow Tracking Server.</p>"
+        },
+        "AutomaticModelRegistration":{
+          "shape":"Boolean",
+          "documentation":"<p>Whether to enable or disable automatic registration of new MLflow models to the SageMaker Model Registry. To enable automatic model registration, set this value to <code>True</code>. To disable automatic model registration, set this value to <code>False</code>. If not specified, <code>AutomaticModelRegistration</code> defaults to <code>False</code> </p>"
+        },
+        "WeeklyMaintenanceWindowStart":{
+          "shape":"WeeklyMaintenanceWindowStart",
+          "documentation":"<p>The new weekly maintenance window start day and time to update. The maintenance window day and time should be in Coordinated Universal Time (UTC) 24-hour standard time. For example: TUE:03:30.</p>"
+        }
+      }
+    },
+    "UpdateMlflowTrackingServerResponse":{
+      "type":"structure",
+      "members":{
+        "TrackingServerArn":{
+          "shape":"TrackingServerArn",
+          "documentation":"<p>The ARN of the updated MLflow Tracking Server.</p>"
+        }
+      }
+    },
     "UpdateModelCardRequest":{
       "type":"structure",
       "required":["ModelCardName"],
@@ -37815,6 +38358,11 @@
       },
       "documentation":"<p>Status and billing information about the warm pool.</p>"
     },
+    "WeeklyMaintenanceWindowStart":{
+      "type":"string",
+      "max":9,
+      "pattern":"(Mon|Tue|Wed|Thu|Fri|Sat|Sun):([01]\\d|2[0-3]):([0-5]\\d)"
+    },
     "WorkerAccessConfiguration":{
       "type":"structure",
       "members":{
@@ -37937,7 +38485,7 @@
         },
         "SecurityGroupIds":{
           "shape":"WorkforceSecurityGroupIds",
-          "documentation":"<p>The VPC security group IDs, in the form sg-xxxxxxxx. The security groups must be for the same VPC as specified in the subnet.</p>"
+          "documentation":"<p>The VPC security group IDs, in the form <code>sg-xxxxxxxx</code>. The security groups must be for the same VPC as specified in the subnet.</p>"
         },
         "Subnets":{
           "shape":"WorkforceSubnets",

@@ -11,7 +11,8 @@
     "serviceId":"EKS",
     "signatureVersion":"v4",
     "signingName":"eks",
-    "uid":"eks-2017-11-01"
+    "uid":"eks-2017-11-01",
+    "auth":["aws.auth#sigv4"]
   },
   "operations":{
     "AssociateAccessPolicy":{
@@ -3153,9 +3154,54 @@
         "tags":{
           "shape":"TagMap",
           "documentation":"<p>Metadata that assists with categorization and organization. Each tag consists of a key and an optional value. You define both. Tags don't propagate to any other cluster or Amazon Web Services resources.</p>"
+        },
+        "health":{
+          "shape":"FargateProfileHealth",
+          "documentation":"<p>The health status of the Fargate profile. If there are issues with your Fargate profile's health, they are listed here.</p>"
         }
       },
       "documentation":"<p>An object representing an Fargate profile.</p>"
+    },
+    "FargateProfileHealth":{
+      "type":"structure",
+      "members":{
+        "issues":{
+          "shape":"FargateProfileIssueList",
+          "documentation":"<p>Any issues that are associated with the Fargate profile.</p>"
+        }
+      },
+      "documentation":"<p>The health status of the Fargate profile. If there are issues with your Fargate profile's health, they are listed here.</p>"
+    },
+    "FargateProfileIssue":{
+      "type":"structure",
+      "members":{
+        "code":{
+          "shape":"FargateProfileIssueCode",
+          "documentation":"<p>A brief description of the error.</p>"
+        },
+        "message":{
+          "shape":"String",
+          "documentation":"<p>The error message associated with the issue.</p>"
+        },
+        "resourceIds":{
+          "shape":"StringList",
+          "documentation":"<p>The Amazon Web Services resources that are affected by this issue.</p>"
+        }
+      },
+      "documentation":"<p>An issue that is associated with the Fargate profile.</p>"
+    },
+    "FargateProfileIssueCode":{
+      "type":"string",
+      "enum":[
+        "PodExecutionRoleAlreadyInUse",
+        "AccessDenied",
+        "ClusterUnreachable",
+        "InternalFailure"
+      ]
+    },
+    "FargateProfileIssueList":{
+      "type":"list",
+      "member":{"shape":"FargateProfileIssue"}
     },
     "FargateProfileLabel":{
       "type":"map",

@@ -2,6 +2,21 @@
 CHANGELOG
 =========
 
+1.33.11
+=======
+
+* api-change:``bedrock-runtime``: This release adds support for using Guardrails with the Converse and ConverseStream APIs.
+* api-change:``cloudtrail``: Add v2 smoke tests and smithy smokeTests trait for SDK testing.
+* api-change:``config``: Add v2 smoke tests and smithy smokeTests trait for SDK testing.
+* api-change:``eks``: This release adds support to surface async fargate customer errors from async path to customer through describe-fargate-profile API response.
+* api-change:``lightsail``: Add v2 smoke tests and smithy smokeTests trait for SDK testing.
+* api-change:``polly``: Add v2 smoke tests and smithy smokeTests trait for SDK testing.
+* api-change:``rekognition``: Add v2 smoke tests and smithy smokeTests trait for SDK testing.
+* api-change:``sagemaker``: Launched a new feature in SageMaker to provide managed MLflow Tracking Servers for customers to track ML experiments. This release also adds a new capability of attaching additional storage to SageMaker HyperPod cluster instances.
+* api-change:``shield``: Add v2 smoke tests and smithy smokeTests trait for SDK testing.
+* api-change:``snowball``: Add v2 smoke tests and smithy smokeTests trait for SDK testing.
+
+
 1.33.10
 =======
 

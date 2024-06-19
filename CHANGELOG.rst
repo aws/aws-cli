@@ -2,6 +2,17 @@
 CHANGELOG
 =========
 
+1.33.12
+=======
+
+* api-change:``artifact``: This release adds an acceptanceType field to the ReportSummary structure (used in the ListReports API response).
+* api-change:``athena``: Add v2 smoke tests and smithy smokeTests trait for SDK testing.
+* api-change:``cur``: Add v2 smoke tests and smithy smokeTests trait for SDK testing.
+* api-change:``directconnect``: Add v2 smoke tests and smithy smokeTests trait for SDK testing.
+* api-change:``elastictranscoder``: Add v2 smoke tests and smithy smokeTests trait for SDK testing.
+* api-change:``opensearch``: This release enables customers to use JSON Web Tokens (JWT) for authentication on their Amazon OpenSearch Service domains.
+
+
 1.33.11
 =======
 

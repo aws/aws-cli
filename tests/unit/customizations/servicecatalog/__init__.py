@@ -16,7 +16,6 @@ from awscli.testutils import mock
 from awscli.customizations.servicecatalog import \
     register_servicecatalog_commands, GenerateCommand
 from awscli.customizations.servicecatalog import inject_commands
-from mock import call
 
 
 class TestRegisterServiceCatalogCommands(unittest.TestCase):
@@ -24,7 +23,7 @@ class TestRegisterServiceCatalogCommands(unittest.TestCase):
         event_emitter = mock.Mock()
         register_servicecatalog_commands(event_emitter)
         event_emitter.register.assert_has_calls(
-            [call('building-command-table.servicecatalog', inject_commands)])
+            [mock.call('building-command-table.servicecatalog', inject_commands)])
 
 
 class TestInjectCommands(unittest.TestCase):

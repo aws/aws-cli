@@ -21,8 +21,6 @@
 #
 import json
 
-import mock
-
 from awscli.testutils import unittest, FileCreator
 from awscli.topictags import TopicTagDB
 

@@ -11,8 +11,6 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 import datetime
-import mock
-
 import pytest
 
 from botocore.exceptions import MD5UnavailableError
@@ -20,7 +18,7 @@ from botocore.compat import (
     total_seconds, unquote_str, six, ensure_bytes, get_md5,
     compat_shell_split, get_tzinfo_options
 )
-from tests import BaseEnvVar, unittest
+from tests import BaseEnvVar, mock, unittest
 
 
 class TotalSecondsTest(BaseEnvVar):

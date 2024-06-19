@@ -2,8 +2,7 @@ import select
 import socket
 import contextlib
 import threading
-import mock
-from tests import unittest
+from tests import mock, unittest
 from contextlib import contextmanager
 
 import botocore.session

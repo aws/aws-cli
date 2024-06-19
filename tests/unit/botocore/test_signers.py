@@ -10,7 +10,6 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
-import mock
 import datetime
 import json
 
@@ -31,8 +30,7 @@ from botocore.exceptions import UnsupportedSignatureVersionError
 from botocore.signers import RequestSigner, S3PostPresigner, CloudFrontSigner
 from botocore.signers import generate_db_auth_token
 
-from tests import unittest
-from tests import assert_url_equal
+from tests import assert_url_equal, mock, unittest
 
 
 class BaseSignerTest(unittest.TestCase):

@@ -10,9 +10,7 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
-from mock import Mock
-
-from awscli.testutils import unittest, BaseAWSCommandParamsTest
+from awscli.testutils import mock, unittest, BaseAWSCommandParamsTest
 from awscli.customizations.s3.s3 import awscli_initialize, add_s3
 
 
@@ -22,7 +20,7 @@ class AWSInitializeTest(unittest.TestCase):
     all of the commands can be run.
     """
     def setUp(self):
-        self.cli = Mock()
+        self.cli = mock.Mock()
 
     def test_initialize(self):
         awscli_initialize(self.cli)
@@ -39,7 +37,7 @@ class CreateTablesTest(unittest.TestCase):
         Ensures that the table for the service was created properly.
         Also ensures the original s3 service is renamed to ``s3api``.
         """
-        s3_service = Mock()
+        s3_service = mock.Mock()
         s3_service.name = 's3'
         self.services = {'s3': s3_service}
         add_s3(self.services, True)

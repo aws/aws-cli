@@ -1,10 +1,8 @@
-import mock
 import os
-
 import pytest
 
 from awscli.clidriver import create_clidriver
-from awscli.testutils import FileCreator
+from awscli.testutils import mock, FileCreator
 
 
 def set_up(config, env_var):

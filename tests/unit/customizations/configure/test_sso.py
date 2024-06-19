@@ -15,7 +15,6 @@ import dataclasses
 import json
 import typing
 
-import mock
 from datetime import datetime, timedelta
 
 import prompt_toolkit
@@ -30,7 +29,7 @@ from prompt_toolkit.validation import ValidationError
 
 from botocore.stub import Stubber
 
-from awscli.testutils import unittest
+from awscli.testutils import mock, unittest
 from awscli.customizations.configure.sso import display_account
 from awscli.customizations.configure.sso import PTKPrompt
 from awscli.customizations.configure.sso import SSOSessionConfigurationPrompter

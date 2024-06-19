@@ -11,7 +11,6 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 import os
-import mock
 import tempfile
 import shutil
 import json
@@ -20,7 +19,7 @@ from uuid import uuid4
 
 from botocore.session import Session
 from botocore.exceptions import ClientError
-from tests import BaseEnvVar, temporary_file, random_chars
+from tests import BaseEnvVar, temporary_file, random_chars, mock
 
 
 S3_READ_POLICY_ARN = 'arn:aws:iam::aws:policy/AmazonS3ReadOnlyAccess'

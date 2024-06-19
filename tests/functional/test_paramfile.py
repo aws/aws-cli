@@ -13,9 +13,7 @@
 import logging
 import os
 
-from mock import patch, ANY
-
-from awscli.testutils import FileCreator, BaseAWSCommandParamsTest
+from awscli.testutils import mock, FileCreator, BaseAWSCommandParamsTest
 from awscli.clidriver import create_clidriver
 
 logger = logging.getLogger(__name__)
@@ -40,7 +38,7 @@ class BaseTestCLIFollowParamFile(BaseAWSCommandParamsTest):
         # can't tell the difference, so we pass ANY here to ignore the rc.
         self.assert_params_for_cmd(cmd,
                                    params={'FunctionName': expected_param},
-                                   expected_rc=ANY)
+                                   expected_rc=mock.ANY)
 
 
 class TestCLIFollowParamFileDefault(BaseTestCLIFollowParamFile):

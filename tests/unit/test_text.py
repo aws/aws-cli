@@ -19,18 +19,18 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
 # IN THE SOFTWARE.
 #
-import unittest
 import sys
 
-from awscli.compat import six
-from awscli.testutils import mock
+from awscli.testutils import mock, unittest
+from awscli.compat import StringIO
+
 from awscli import text
 
 
 class TestSection(unittest.TestCase):
     def format_text(self, data, stream=None):
         if stream is None:
-            stream = six.StringIO()
+            stream = StringIO()
         text.format_text(data, stream=stream)
         return stream.getvalue()
 

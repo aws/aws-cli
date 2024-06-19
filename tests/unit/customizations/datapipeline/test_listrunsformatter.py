@@ -12,18 +12,17 @@
 # language governing permissions and limitations under the License.
 
 import difflib
-import unittest
 
-from awscli.compat import six
+from awscli.testutils import mock, unittest
 from awscli.customizations.datapipeline.listrunsformatter \
     import ListRunsFormatter
-from awscli.testutils import mock
+from awscli.compat import StringIO
 
 
 class TestListRunsFormatter(unittest.TestCase):
     def setUp(self):
         self.formatter = ListRunsFormatter(mock.Mock(query=None))
-        self.stream = six.StringIO()
+        self.stream = StringIO()
 
     def assert_data_renders_to(self, data, table):
         self.formatter('list-runs', data, stream=self.stream)

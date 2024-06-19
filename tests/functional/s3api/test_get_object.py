@@ -12,10 +12,9 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 from awscli.testutils import BaseAWSCommandParamsTest
+from awscli.compat import StringIO
 import os
 import re
-
-from awscli.compat import six
 
 import awscli.clidriver
 
@@ -26,7 +25,7 @@ class TestGetObject(BaseAWSCommandParamsTest):
 
     def setUp(self):
         super(TestGetObject, self).setUp()
-        self.parsed_response = {'Body': six.StringIO()}
+        self.parsed_response = {'Body': StringIO()}
 
     def remove_file_if_exists(self, filename):
         if os.path.isfile(filename):

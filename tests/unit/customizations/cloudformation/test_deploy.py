@@ -13,7 +13,6 @@
 import json
 
 import tempfile
-import six
 import collections
 
 from awscli.testutils import mock

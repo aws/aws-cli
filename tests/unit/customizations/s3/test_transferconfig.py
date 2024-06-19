@@ -11,9 +11,9 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 import pytest
+import sys
 
 from awscli.customizations.s3 import transferconfig
-from awscli.compat import six
 
 
 class TestTransferConfig:
@@ -67,7 +67,7 @@ class TestTransferConfig:
         # MAXSIZE is the max size of an int on python 2 and the maximum size
         # of Py_ssize_t on python 3, but notably not the maximum size of an
         # int since they are effectively unbounded.
-        long_value = six.MAXSIZE + 1
+        long_value = sys.maxsize + 1
         runtime_config = self.build_config_with(
             multipart_threshold=long_value)
         assert runtime_config['multipart_threshold'] == long_value

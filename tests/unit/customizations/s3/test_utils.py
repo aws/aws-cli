@@ -12,6 +12,7 @@
 # language governing permissions and limitations under the License.
 from awscli.testutils import mock, unittest, temporary_file
 import argparse
+import base64
 import errno
 import os
 import tempfile
@@ -584,6 +585,7 @@ class TestRequestParamsMapperSSE(unittest.TestCase):
         self.cli_params = {
             'sse': 'AES256',
             'sse_kms_key_id': 'my-kms-key',
+            'sse_kms_encryption_context': base64.standard_b64encode(b'{"key":"value"}').decode('ascii'),
             'sse_c': 'AES256',
             'sse_c_key': 'my-sse-c-key',
             'sse_c_copy_source': 'AES256',
@@ -607,6 +609,7 @@ class TestRequestParamsMapperSSE(unittest.TestCase):
             {'SSECustomerAlgorithm': 'AES256',
              'SSECustomerKey': 'my-sse-c-key',
              'SSEKMSKeyId': 'my-kms-key',
+             'SSEKMSEncryptionContext': base64.standard_b64encode(b'{"key":"value"}').decode('ascii'),
              'ServerSideEncryption': 'AES256'}
         )
 
@@ -629,6 +632,7 @@ class TestRequestParamsMapperSSE(unittest.TestCase):
              'SSECustomerAlgorithm': 'AES256',
              'SSECustomerKey': 'my-sse-c-key',
              'SSEKMSKeyId': 'my-kms-key',
+             'SSEKMSEncryptionContext': base64.standard_b64encode(b'{"key":"value"}').decode('ascii'),
              'ServerSideEncryption': 'AES256'}
         )
 
@@ -641,6 +645,7 @@ class TestRequestParamsMapperSSE(unittest.TestCase):
             {'SSECustomerAlgorithm': 'AES256',
              'SSECustomerKey': 'my-sse-c-key',
              'SSEKMSKeyId': 'my-kms-key',
+             'SSEKMSEncryptionContext': base64.standard_b64encode(b'{"key":"value"}').decode('ascii'),
              'ServerSideEncryption': 'AES256'}
         )
 

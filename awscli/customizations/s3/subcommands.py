@@ -219,6 +219,19 @@ SSE_KMS_KEY_ID = {
 }
 
 
+SSE_KMS_ENCRYPTION_CONTEXT = {
+    'name': 'sse-kms-encryption-context',
+    'help_text': (
+        'Specifies the Amazon Web Services KMS Encryption Context to use for'
+        'object encryption. The value of this header is a base64-encoded'
+        'UTF-8 string holding JSON with the encryption context key-value'
+        'pairs. This value is stored as object metadata and automatically'
+        'gets passed on to Amazon Web Services KMS for future GetObject or'
+        'CopyObject operations on this object.'
+    )
+}
+
+
 SSE_C_COPY_SOURCE = {
     'name': 'sse-c-copy-source', 'nargs': '?',
     'const': 'AES256', 'choices': ['AES256'],
@@ -454,7 +467,8 @@ VALIDATE_SAME_S3_PATHS = {
 
 TRANSFER_ARGS = [DRYRUN, QUIET, INCLUDE, EXCLUDE, ACL,
                  FOLLOW_SYMLINKS, NO_FOLLOW_SYMLINKS, NO_GUESS_MIME_TYPE,
-                 SSE, SSE_C, SSE_C_KEY, SSE_KMS_KEY_ID, SSE_C_COPY_SOURCE,
+                 SSE, SSE_C, SSE_C_KEY, SSE_KMS_KEY_ID,
+                 SSE_KMS_ENCRYPTION_CONTEXT, SSE_C_COPY_SOURCE,
                  SSE_C_COPY_SOURCE_KEY, STORAGE_CLASS, GRANTS,
                  WEBSITE_REDIRECT, CONTENT_TYPE, CACHE_CONTROL,
                  CONTENT_DISPOSITION, CONTENT_ENCODING, CONTENT_LANGUAGE,

@@ -13,11 +13,10 @@
 
 
 import os
-from mock import mock
 
 from awscli.customizations.servicecatalog.utils \
     import get_s3_path
-from awscli.testutils import BaseAWSCommandParamsTest
+from awscli.testutils import mock, BaseAWSCommandParamsTest
 
 
 class TestGenerateProvisioningArtifact(BaseAWSCommandParamsTest):

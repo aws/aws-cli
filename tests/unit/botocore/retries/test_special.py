@@ -1,6 +1,4 @@
-from tests import unittest
-
-import mock
+from tests import mock, unittest
 
 from botocore.compat import six
 from botocore.awsrequest import AWSResponse

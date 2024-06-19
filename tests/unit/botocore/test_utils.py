@@ -15,6 +15,7 @@ import io
 import pytest
 
 from tests import create_session
+from tests import mock
 from tests import unittest
 from tests import RawResponse
 from tests import FreezeTime
@@ -22,7 +23,6 @@ from dateutil.tz import tzutc, tzoffset
 from contextlib import contextmanager
 import datetime
 import copy
-import mock
 import operator
 
 import botocore

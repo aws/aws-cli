@@ -18,10 +18,9 @@ import os
 import socket
 import threading
 
-import mock
 import pytest
 
-from tests import temporary_file
+from tests import mock, temporary_file
 from tests import ClientHTTPStubber
 from botocore import xform_name
 import botocore.session

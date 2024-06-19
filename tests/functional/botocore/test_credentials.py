@@ -16,7 +16,6 @@ import threading
 import os
 import math
 import time
-import mock
 import tempfile
 import shutil
 from datetime import datetime, timedelta
@@ -27,7 +26,7 @@ from dateutil.tz import tzlocal
 from botocore.exceptions import CredentialRetrievalError
 
 from tests import (
-    unittest, IntegerRefresher, BaseEnvVar, BaseSessionTest, random_chars
+    mock, unittest, IntegerRefresher, BaseEnvVar, BaseSessionTest, random_chars
 )
 from tests import temporary_file, StubbedSession, SessionHTTPStubber
 from botocore import UNSIGNED

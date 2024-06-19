@@ -12,10 +12,9 @@
 # language governing permissions and limitations under the License.
 from collections import defaultdict
 
-import mock
 import pytest
 
-from tests import ClientHTTPStubber
+from tests import mock, ClientHTTPStubber
 from botocore.session import Session
 from botocore.exceptions import NoCredentialsError
 from botocore import xform_name

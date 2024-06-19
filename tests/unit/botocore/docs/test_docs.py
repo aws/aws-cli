@@ -14,8 +14,7 @@ import os
 import shutil
 import tempfile
 
-import mock
-
+from tests import mock
 from tests.unit.botocore.docs import BaseDocsTest
 from botocore.session import get_session
 from botocore.docs import generate_docs

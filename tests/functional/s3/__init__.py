@@ -10,7 +10,6 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
-import mock
 import os
 
 from awscrt.s3 import S3Request
@@ -18,7 +17,7 @@ from botocore.awsrequest import AWSResponse
 
 from tests import CLIRunner, SessionStubber, HTTPResponse
 from awscli.clidriver import AWSCLIEntryPoint
-from awscli.testutils import unittest, create_clidriver, temporary_file
+from awscli.testutils import unittest, create_clidriver, temporary_file, mock
 from awscli.testutils import BaseAWSCommandParamsTest, FileCreator
 from awscli.compat import six, urlparse
 

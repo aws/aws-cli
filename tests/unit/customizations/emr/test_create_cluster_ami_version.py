@@ -10,6 +10,7 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
+from awscli.testutils import mock
 
 from tests.unit.customizations.emr import EMRBaseAWSCommandParamsTest as \
     BaseAWSCommandParamsTest
@@ -20,7 +21,6 @@ from tests.unit.customizations.emr import test_constants_instance_fleets as \
 import copy
 import os
 import json
-from mock import patch
 
 
 DEFAULT_CLUSTER_NAME = "Development Cluster"
@@ -1281,7 +1281,7 @@ class TestCreateCluster(BaseAWSCommandParamsTest):
         else:
             self.assertTrue(False)
 
-    @patch('awscli.customizations.emr.emrutils.call')
+    @mock.patch('awscli.customizations.emr.emrutils.call')
     def test_constructed_result(self, call_patch):
         call_patch.return_value = CREATE_CLUSTER_RESULT
         cmd = DEFAULT_CMD

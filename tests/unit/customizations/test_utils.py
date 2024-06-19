@@ -12,14 +12,13 @@
 # language governing permissions and limitations under the License.
 import io
 import argparse
-import mock
 
 from botocore.exceptions import ClientError
 from botocore.model import Shape
 
 from awscli.customizations import utils
 from awscli.customizations.exceptions import ParamValidationError
-from awscli.testutils import unittest
+from awscli.testutils import mock, unittest
 from awscli.testutils import BaseAWSHelpOutputTest
 
 

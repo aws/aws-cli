@@ -26,7 +26,6 @@ from botocore.httpchecksum import handle_checksum_body
 from botocore.httpsession import URLLib3Session
 from botocore.response import StreamingBody
 from botocore.utils import get_environ_proxies, is_valid_endpoint_url
-from botocore.vendored import six
 
 logger = logging.getLogger(__name__)
 history_recorder = get_global_history_recorder()
@@ -119,7 +118,7 @@ class Endpoint(object):
     def _encode_headers(self, headers):
         # In place encoding of headers to utf-8 if they are unicode.
         for key, value in headers.items():
-            if isinstance(value, six.text_type):
+            if isinstance(value, str):
                 headers[key] = value.encode('utf-8')
 
     def prepare_request(self, request):

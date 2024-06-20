@@ -101,9 +101,9 @@ class NonTranslatedStdout(object):
 
 
 def ensure_text_type(s):
-    if isinstance(s, six.text_type):
+    if isinstance(s, str):
         return s
-    if isinstance(s, six.binary_type):
+    if isinstance(s, bytes):
         return s.decode('utf-8')
     raise ValueError("Expected str, unicode or bytes, received %s." % type(s))
 

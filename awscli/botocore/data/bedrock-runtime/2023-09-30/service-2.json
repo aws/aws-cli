@@ -142,6 +142,10 @@
           "shape":"ImageBlock",
           "documentation":"<p>Image to include in the message. </p> <note> <p>This field is only supported by Anthropic Claude 3 models.</p> </note>"
         },
+        "document":{
+          "shape":"DocumentBlock",
+          "documentation":"<p>A document to include in the message.</p>"
+        },
         "toolUse":{
           "shape":"ToolUseBlock",
           "documentation":"<p>Information about a tool use request from a model. </p>"
@@ -532,6 +536,63 @@
       "members":{
       },
       "document":true
+    },
+    "DocumentBlock":{
+      "type":"structure",
+      "required":[
+        "format",
+        "name",
+        "source"
+      ],
+      "members":{
+        "format":{
+          "shape":"DocumentFormat",
+          "documentation":"<p>The format of a document, or its extension.</p>"
+        },
+        "name":{
+          "shape":"DocumentBlockNameString",
+          "documentation":"<p>A name for the document.</p>"
+        },
+        "source":{
+          "shape":"DocumentSource",
+          "documentation":"<p>Contains the content of the document.</p>"
+        }
+      },
+      "documentation":"<p>A document to include in a message when sending a <a href=\"https://docs.aws.amazon.com/bedrock/latest/APIReference/API_runtime_Converse.html\">Converse</a> or <a href=\"https://docs.aws.amazon.com/bedrock/latest/APIReference/API_runtime_ConverseStream.html\">ConverseStream</a> request. You can include up to 5 documents in a request. The maximum document size is 50 MB.</p>"
+    },
+    "DocumentBlockNameString":{
+      "type":"string",
+      "max":64,
+      "min":1
+    },
+    "DocumentFormat":{
+      "type":"string",
+      "enum":[
+        "pdf",
+        "csv",
+        "doc",
+        "docx",
+        "xls",
+        "xlsx",
+        "html",
+        "txt",
+        "md"
+      ]
+    },
+    "DocumentSource":{
+      "type":"structure",
+      "members":{
+        "bytes":{
+          "shape":"DocumentSourceBytesBlob",
+          "documentation":"<p>A base64-encoded string of a UTF-8 encoded file, that is the document to include in the message.</p>"
+        }
+      },
+      "documentation":"<p>Contains the content of the document included in a message when sending a <a href=\"https://docs.aws.amazon.com/bedrock/latest/APIReference/API_runtime_Converse.html\">Converse</a> or <a href=\"https://docs.aws.amazon.com/bedrock/latest/APIReference/API_runtime_ConverseStream.html\">ConverseStream</a> request or in the response.</p>",
+      "union":true
+    },
+    "DocumentSourceBytesBlob":{
+      "type":"blob",
+      "min":1
     },
     "GuardrailAssessment":{
       "type":"structure",
@@ -1633,6 +1694,10 @@
         "image":{
           "shape":"ImageBlock",
           "documentation":"<p>A tool result that is an image.</p> <note> <p>This field is only supported by Anthropic Claude 3 models.</p> </note>"
+        },
+        "document":{
+          "shape":"DocumentBlock",
+          "documentation":"<p>A tool result that is a document.</p>"
         }
       },
       "documentation":"<p>The tool result content block.</p>",

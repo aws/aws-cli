@@ -2,9 +2,11 @@
   "version":"2.0",
   "metadata":{
     "apiVersion":"2022-07-26",
+    "auth":["aws.auth#sigv4"],
     "endpointPrefix":"cost-optimization-hub",
     "jsonVersion":"1.0",
     "protocol":"json",
+    "protocols":["json"],
     "serviceFullName":"Cost Optimization Hub",
     "serviceId":"Cost Optimization Hub",
     "signatureVersion":"v4",
@@ -144,17 +146,17 @@
           "shape":"AccountId",
           "documentation":"<p>The Amazon Web Services account ID.</p>"
         },
-        "createdTimestamp":{
-          "shape":"Timestamp",
-          "documentation":"<p>The time when the account enrollment status was created.</p>"
+        "status":{
+          "shape":"EnrollmentStatus",
+          "documentation":"<p>The account enrollment status.</p>"
         },
         "lastUpdatedTimestamp":{
           "shape":"Timestamp",
           "documentation":"<p>The time when the account enrollment status was last updated.</p>"
         },
-        "status":{
-          "shape":"EnrollmentStatus",
-          "documentation":"<p>The account enrollment status.</p>"
+        "createdTimestamp":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time when the account enrollment status was created.</p>"
         }
       },
       "documentation":"<p>Describes the enrollment status of an organization's member accounts in Cost Optimization Hub.</p>"
@@ -165,7 +167,7 @@
     },
     "AccountId":{
       "type":"string",
-      "pattern":"^[0-9]{12}$"
+      "pattern":"[0-9]{12}"
     },
     "AccountIdList":{
       "type":"list",
@@ -211,21 +213,21 @@
     "ComputeConfiguration":{
       "type":"structure",
       "members":{
-        "architecture":{
-          "shape":"String",
-          "documentation":"<p>The architecture of the resource.</p>"
+        "vCpu":{
+          "shape":"Double",
+          "documentation":"<p>The number of vCPU cores in the resource.</p>"
         },
         "memorySizeInMB":{
           "shape":"Integer",
           "documentation":"<p>The memory size of the resource.</p>"
         },
+        "architecture":{
+          "shape":"String",
+          "documentation":"<p>The architecture of the resource.</p>"
+        },
         "platform":{
           "shape":"String",
           "documentation":"<p>The platform of the resource. The platform is the specific combination of operating system, license model, and software on an instance.</p>"
-        },
-        "vCpu":{
-          "shape":"Double",
-          "documentation":"<p>The number of vCPU cores in the resource.</p>"
         }
       },
       "documentation":"<p>Describes the performance configuration for compute services such as Amazon EC2, Lambda, and ECS.</p>"
@@ -251,22 +253,32 @@
           "shape":"String",
           "documentation":"<p>The account scope that you want your recommendations for. Amazon Web Services calculates recommendations including the management account and member accounts if the value is set to <code>PAYER</code>. If the value is <code>LINKED</code>, recommendations are calculated for individual member accounts only.</p>"
         },
-        "hourlyCommitment":{
+        "term":{
           "shape":"String",
-          "documentation":"<p>The hourly commitment for the Savings Plans type.</p>"
+          "documentation":"<p>The Savings Plans recommendation term in years.</p>"
         },
         "paymentOption":{
           "shape":"String",
           "documentation":"<p>The payment option for the commitment.</p>"
         },
-        "term":{
+        "hourlyCommitment":{
           "shape":"String",
-          "documentation":"<p>The Savings Plans recommendation term in years.</p>"
+          "documentation":"<p>The hourly commitment for the Savings Plans type.</p>"
         }
       },
       "documentation":"<p>The Compute Savings Plans configuration used for recommendations.</p>"
     },
     "Datetime":{"type":"timestamp"},
+    "DbInstanceConfiguration":{
+      "type":"structure",
+      "members":{
+        "dbInstanceClass":{
+          "shape":"String",
+          "documentation":"<p>The DB instance class of the DB instance.</p>"
+        }
+      },
+      "documentation":"<p>The DB instance configuration used for recommendations.</p>"
+    },
     "Double":{
       "type":"double",
       "box":true
@@ -288,17 +300,17 @@
     "EbsVolumeConfiguration":{
       "type":"structure",
       "members":{
-        "attachmentState":{
-          "shape":"String",
-          "documentation":"<p>The Amazon Elastic Block Store attachment state.</p>"
+        "storage":{
+          "shape":"StorageConfiguration",
+          "documentation":"<p>The disk storage of the Amazon Elastic Block Store volume.</p>"
         },
         "performance":{
           "shape":"BlockStoragePerformanceConfiguration",
           "documentation":"<p>The Amazon Elastic Block Store performance configuration.</p>"
         },
-        "storage":{
-          "shape":"StorageConfiguration",
-          "documentation":"<p>The disk storage of the Amazon Elastic Block Store volume.</p>"
+        "attachmentState":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Elastic Block Store attachment state.</p>"
         }
       },
       "documentation":"<p>The Amazon Elastic Block Store volume configuration used for recommendations.</p>"
@@ -372,6 +384,14 @@
           "shape":"String",
           "documentation":"<p>The account scope that you want your recommendations for.</p>"
         },
+        "term":{
+          "shape":"String",
+          "documentation":"<p>The Savings Plans recommendation term in years.</p>"
+        },
+        "paymentOption":{
+          "shape":"String",
+          "documentation":"<p>The payment option for the commitment.</p>"
+        },
         "hourlyCommitment":{
           "shape":"String",
           "documentation":"<p>The hourly commitment for the Savings Plans type.</p>"
@@ -380,17 +400,9 @@
           "shape":"String",
           "documentation":"<p>The instance family of the recommended Savings Plan.</p>"
         },
-        "paymentOption":{
-          "shape":"String",
-          "documentation":"<p>The payment option for the commitment.</p>"
-        },
         "savingsPlansRegion":{
           "shape":"String",
           "documentation":"<p>The Amazon Web Services Region of the commitment.</p>"
-        },
-        "term":{
-          "shape":"String",
-          "documentation":"<p>The Savings Plans recommendation term in years.</p>"
         }
       },
       "documentation":"<p>The EC2 instance Savings Plans configuration used for recommendations.</p>"
@@ -416,25 +428,21 @@
           "shape":"String",
           "documentation":"<p>The account scope that you want your recommendations for.</p>"
         },
-        "currentGeneration":{
+        "service":{
           "shape":"String",
-          "documentation":"<p>Determines whether the recommendation is for a current generation instance.</p>"
-        },
-        "instanceFamily":{
-          "shape":"String",
-          "documentation":"<p>The instance family of the recommended reservation.</p>"
-        },
-        "instanceType":{
-          "shape":"String",
-          "documentation":"<p>The type of instance that Amazon Web Services recommends.</p>"
-        },
-        "monthlyRecurringCost":{
-          "shape":"String",
-          "documentation":"<p>How much purchasing reserved instances costs you on a monthly basis.</p>"
+          "documentation":"<p>The service that you want your recommendations for.</p>"
         },
         "normalizedUnitsToPurchase":{
           "shape":"String",
           "documentation":"<p>The number of normalized units that Amazon Web Services recommends that you purchase.</p>"
+        },
+        "term":{
+          "shape":"String",
+          "documentation":"<p>The reserved instances recommendation term in years.</p>"
+        },
+        "paymentOption":{
+          "shape":"String",
+          "documentation":"<p>The payment option for the commitment.</p>"
         },
         "numberOfInstancesToPurchase":{
           "shape":"String",
@@ -444,37 +452,41 @@
           "shape":"String",
           "documentation":"<p>Indicates whether the recommendation is for standard or convertible reservations.</p>"
         },
-        "paymentOption":{
+        "instanceFamily":{
           "shape":"String",
-          "documentation":"<p>The payment option for the commitment.</p>"
+          "documentation":"<p>The instance family of the recommended reservation.</p>"
         },
-        "platform":{
+        "instanceType":{
           "shape":"String",
-          "documentation":"<p>The platform of the recommended reservation. The platform is the specific combination of operating system, license model, and software on an instance.</p>"
+          "documentation":"<p>The type of instance that Amazon Web Services recommends.</p>"
         },
         "reservedInstancesRegion":{
           "shape":"String",
           "documentation":"<p>The Amazon Web Services Region of the commitment.</p>"
         },
-        "service":{
+        "currentGeneration":{
           "shape":"String",
-          "documentation":"<p>The service that you want your recommendations for.</p>"
+          "documentation":"<p>Determines whether the recommendation is for a current generation instance.</p>"
         },
-        "sizeFlexEligible":{
-          "shape":"Boolean",
-          "documentation":"<p>Determines whether the recommendation is size flexible.</p>"
+        "platform":{
+          "shape":"String",
+          "documentation":"<p>The platform of the recommended reservation. The platform is the specific combination of operating system, license model, and software on an instance.</p>"
         },
         "tenancy":{
           "shape":"String",
           "documentation":"<p>Determines whether the recommended reservation is dedicated or shared.</p>"
         },
-        "term":{
-          "shape":"String",
-          "documentation":"<p>The reserved instances recommendation term in years.</p>"
+        "sizeFlexEligible":{
+          "shape":"Boolean",
+          "documentation":"<p>Determines whether the recommendation is size flexible.</p>"
         },
         "upfrontCost":{
           "shape":"String",
           "documentation":"<p>How much purchasing this instance costs you upfront.</p>"
+        },
+        "monthlyRecurringCost":{
+          "shape":"String",
+          "documentation":"<p>How much purchasing reserved instances costs you on a monthly basis.</p>"
         }
       },
       "documentation":"<p>The EC2 reserved instances configuration used for recommendations.</p>"
@@ -524,9 +536,25 @@
           "shape":"String",
           "documentation":"<p>The account scope that you want your recommendations for.</p>"
         },
-        "currentGeneration":{
+        "service":{
           "shape":"String",
-          "documentation":"<p>Determines whether the recommendation is for a current generation instance.</p>"
+          "documentation":"<p>The service that you want your recommendations for.</p>"
+        },
+        "normalizedUnitsToPurchase":{
+          "shape":"String",
+          "documentation":"<p>The number of normalized units that Amazon Web Services recommends that you purchase.</p>"
+        },
+        "term":{
+          "shape":"String",
+          "documentation":"<p>The reserved instances recommendation term in years.</p>"
+        },
+        "paymentOption":{
+          "shape":"String",
+          "documentation":"<p>The payment option for the commitment.</p>"
+        },
+        "numberOfInstancesToPurchase":{
+          "shape":"String",
+          "documentation":"<p>The number of instances that Amazon Web Services recommends that you purchase.</p>"
         },
         "instanceFamily":{
           "shape":"String",
@@ -536,41 +564,25 @@
           "shape":"String",
           "documentation":"<p>The type of instance that Amazon Web Services recommends.</p>"
         },
-        "monthlyRecurringCost":{
-          "shape":"String",
-          "documentation":"<p>How much purchasing reserved instances costs you on a monthly basis.</p>"
-        },
-        "normalizedUnitsToPurchase":{
-          "shape":"String",
-          "documentation":"<p>The number of normalized units that Amazon Web Services recommends that you purchase.</p>"
-        },
-        "numberOfInstancesToPurchase":{
-          "shape":"String",
-          "documentation":"<p>The number of instances that Amazon Web Services recommends that you purchase.</p>"
-        },
-        "paymentOption":{
-          "shape":"String",
-          "documentation":"<p>The payment option for the commitment.</p>"
-        },
         "reservedInstancesRegion":{
           "shape":"String",
           "documentation":"<p>The Amazon Web Services Region of the commitment.</p>"
         },
-        "service":{
+        "currentGeneration":{
           "shape":"String",
-          "documentation":"<p>The service that you want your recommendations for.</p>"
+          "documentation":"<p>Determines whether the recommendation is for a current generation instance.</p>"
         },
         "sizeFlexEligible":{
           "shape":"Boolean",
           "documentation":"<p>Determines whether the recommendation is size flexible.</p>"
         },
-        "term":{
-          "shape":"String",
-          "documentation":"<p>The reserved instances recommendation term in years.</p>"
-        },
         "upfrontCost":{
           "shape":"String",
           "documentation":"<p>How much purchasing this instance costs you upfront.</p>"
+        },
+        "monthlyRecurringCost":{
+          "shape":"String",
+          "documentation":"<p>How much purchasing reserved instances costs you on a monthly basis.</p>"
         }
       },
       "documentation":"<p>The ElastiCache reserved instances configuration used for recommendations.</p>"
@@ -585,17 +597,17 @@
     "EstimatedDiscounts":{
       "type":"structure",
       "members":{
-        "otherDiscount":{
+        "savingsPlansDiscount":{
           "shape":"Double",
-          "documentation":"<p>Estimated other discounts include all discounts that are not itemized. Itemized discounts include <code>reservedInstanceDiscount</code> and <code>savingsPlansDiscount</code>.</p>"
+          "documentation":"<p>Estimated Savings Plans discounts.</p>"
         },
         "reservedInstancesDiscount":{
           "shape":"Double",
           "documentation":"<p>Estimated reserved instance discounts.</p>"
         },
-        "savingsPlansDiscount":{
+        "otherDiscount":{
           "shape":"Double",
-          "documentation":"<p>Estimated Savings Plans discounts.</p>"
+          "documentation":"<p>Estimated other discounts include all discounts that are not itemized. Itemized discounts include <code>reservedInstanceDiscount</code> and <code>savingsPlansDiscount</code>.</p>"
         }
       },
       "documentation":"<p>Estimated discount details of the current and recommended resource configuration for a recommendation.</p>"
@@ -603,38 +615,6 @@
     "Filter":{
       "type":"structure",
       "members":{
-        "accountIds":{
-          "shape":"AccountIdList",
-          "documentation":"<p>The account that the recommendation is for.</p>"
-        },
-        "actionTypes":{
-          "shape":"ActionTypeList",
-          "documentation":"<p>The type of action you can take by adopting the recommendation.</p>"
-        },
-        "implementationEfforts":{
-          "shape":"ImplementationEffortList",
-          "documentation":"<p>The effort required to implement the recommendation.</p>"
-        },
-        "recommendationIds":{
-          "shape":"RecommendationIdList",
-          "documentation":"<p>The IDs for the recommendations.</p>"
-        },
-        "regions":{
-          "shape":"RegionList",
-          "documentation":"<p>The Amazon Web Services Region of the resource.</p>"
-        },
-        "resourceArns":{
-          "shape":"ResourceArnList",
-          "documentation":"<p>The Amazon Resource Name (ARN) of the recommendation.</p>"
-        },
-        "resourceIds":{
-          "shape":"ResourceIdList",
-          "documentation":"<p>The resource ID of the recommendation.</p>"
-        },
-        "resourceTypes":{
-          "shape":"ResourceTypeList",
-          "documentation":"<p>The resource type of the recommendation.</p>"
-        },
         "restartNeeded":{
           "shape":"Boolean",
           "documentation":"<p>Whether or not implementing the recommendation requires a restart.</p>"
@@ -643,9 +623,41 @@
           "shape":"Boolean",
           "documentation":"<p>Whether or not implementing the recommendation can be rolled back.</p>"
         },
+        "implementationEfforts":{
+          "shape":"ImplementationEffortList",
+          "documentation":"<p>The effort required to implement the recommendation.</p>"
+        },
+        "accountIds":{
+          "shape":"AccountIdList",
+          "documentation":"<p>The account that the recommendation is for.</p>"
+        },
+        "regions":{
+          "shape":"RegionList",
+          "documentation":"<p>The Amazon Web Services Region of the resource.</p>"
+        },
+        "resourceTypes":{
+          "shape":"ResourceTypeList",
+          "documentation":"<p>The resource type of the recommendation.</p>"
+        },
+        "actionTypes":{
+          "shape":"ActionTypeList",
+          "documentation":"<p>The type of action you can take by adopting the recommendation.</p>"
+        },
         "tags":{
           "shape":"TagList",
           "documentation":"<p>A list of tags assigned to the recommendation.</p>"
+        },
+        "resourceIds":{
+          "shape":"ResourceIdList",
+          "documentation":"<p>The resource ID of the recommendation.</p>"
+        },
+        "resourceArns":{
+          "shape":"ResourceArnList",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the recommendation.</p>"
+        },
+        "recommendationIds":{
+          "shape":"RecommendationIdList",
+          "documentation":"<p>The IDs for the recommendations.</p>"
         }
       },
       "documentation":"<p>Describes a filter that returns a more specific list of recommendations. Filters recommendations by different dimensions.</p>"
@@ -658,13 +670,13 @@
     "GetPreferencesResponse":{
       "type":"structure",
       "members":{
-        "memberAccountDiscountVisibility":{
-          "shape":"MemberAccountDiscountVisibility",
-          "documentation":"<p>Retrieves the status of the \"member account discount visibility\" preference.</p>"
-        },
         "savingsEstimationMode":{
           "shape":"SavingsEstimationMode",
           "documentation":"<p>Retrieves the status of the \"savings estimation mode\" preference.</p>"
+        },
+        "memberAccountDiscountVisibility":{
+          "shape":"MemberAccountDiscountVisibility",
+          "documentation":"<p>Retrieves the status of the \"member account discount visibility\" preference.</p>"
         }
       }
     },
@@ -681,65 +693,45 @@
     "GetRecommendationResponse":{
       "type":"structure",
       "members":{
+        "recommendationId":{
+          "shape":"String",
+          "documentation":"<p>The ID for the recommendation.</p>"
+        },
+        "resourceId":{
+          "shape":"String",
+          "documentation":"<p>The unique identifier for the resource. This is the same as the Amazon Resource Name (ARN), if available.</p>"
+        },
+        "resourceArn":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the resource.</p>"
+        },
         "accountId":{
           "shape":"String",
           "documentation":"<p>The account that the recommendation is for.</p>"
-        },
-        "actionType":{
-          "shape":"ActionType",
-          "documentation":"<p>The type of action you can take by adopting the recommendation.</p>"
-        },
-        "costCalculationLookbackPeriodInDays":{
-          "shape":"Integer",
-          "documentation":"<p>The lookback period used to calculate cost impact for a recommendation.</p>"
         },
         "currencyCode":{
           "shape":"String",
           "documentation":"<p>The currency code used for the recommendation.</p>"
         },
-        "currentResourceDetails":{
-          "shape":"ResourceDetails",
-          "documentation":"<p>The details for the resource.</p>"
+        "recommendationLookbackPeriodInDays":{
+          "shape":"Integer",
+          "documentation":"<p>The lookback period that's used to generate the recommendation.</p>"
         },
-        "currentResourceType":{
-          "shape":"ResourceType",
-          "documentation":"<p>The type of resource.</p>"
-        },
-        "estimatedMonthlyCost":{
-          "shape":"Double",
-          "documentation":"<p>The estimated monthly cost of the recommendation.</p>"
-        },
-        "estimatedMonthlySavings":{
-          "shape":"Double",
-          "documentation":"<p>The estimated monthly savings amount for the recommendation.</p>"
-        },
-        "estimatedSavingsOverCostCalculationLookbackPeriod":{
-          "shape":"Double",
-          "documentation":"<p>The estimated savings amount over the lookback period used to calculate cost impact for a recommendation.</p>"
+        "costCalculationLookbackPeriodInDays":{
+          "shape":"Integer",
+          "documentation":"<p>The lookback period used to calculate cost impact for a recommendation.</p>"
         },
         "estimatedSavingsPercentage":{
           "shape":"Double",
           "documentation":"<p>The estimated savings percentage relative to the total cost over the cost calculation lookback period.</p>"
         },
-        "implementationEffort":{
-          "shape":"ImplementationEffort",
-          "documentation":"<p>The effort required to implement the recommendation.</p>"
+        "estimatedSavingsOverCostCalculationLookbackPeriod":{
+          "shape":"Double",
+          "documentation":"<p>The estimated savings amount over the lookback period used to calculate cost impact for a recommendation.</p>"
         },
-        "lastRefreshTimestamp":{
-          "shape":"Datetime",
-          "documentation":"<p>The time when the recommendation was last generated.</p>"
-        },
-        "recommendationId":{
-          "shape":"String",
-          "documentation":"<p>The ID for the recommendation.</p>"
-        },
-        "recommendationLookbackPeriodInDays":{
-          "shape":"Integer",
-          "documentation":"<p>The lookback period that's used to generate the recommendation.</p>"
-        },
-        "recommendedResourceDetails":{
-          "shape":"ResourceDetails",
-          "documentation":"<p>The details about the recommended resource.</p>"
+        "currentResourceType":{
+          "shape":"ResourceType",
+          "documentation":"<p>The type of resource.</p>"
         },
         "recommendedResourceType":{
           "shape":"ResourceType",
@@ -749,25 +741,45 @@
           "shape":"String",
           "documentation":"<p>The Amazon Web Services Region of the resource.</p>"
         },
-        "resourceArn":{
-          "shape":"String",
-          "documentation":"<p>The Amazon Resource Name (ARN) of the resource.</p>"
+        "source":{
+          "shape":"Source",
+          "documentation":"<p>The source of the recommendation.</p>"
         },
-        "resourceId":{
-          "shape":"String",
-          "documentation":"<p>The unique identifier for the resource. This is the same as the Amazon Resource Name (ARN), if available.</p>"
+        "lastRefreshTimestamp":{
+          "shape":"Datetime",
+          "documentation":"<p>The time when the recommendation was last generated.</p>"
+        },
+        "estimatedMonthlySavings":{
+          "shape":"Double",
+          "documentation":"<p>The estimated monthly savings amount for the recommendation.</p>"
+        },
+        "estimatedMonthlyCost":{
+          "shape":"Double",
+          "documentation":"<p>The estimated monthly cost of the current resource. For Reserved Instances and Savings Plans, it refers to the cost for eligible usage.</p>"
+        },
+        "implementationEffort":{
+          "shape":"ImplementationEffort",
+          "documentation":"<p>The effort required to implement the recommendation.</p>"
         },
         "restartNeeded":{
           "shape":"Boolean",
           "documentation":"<p>Whether or not implementing the recommendation requires a restart.</p>"
         },
+        "actionType":{
+          "shape":"ActionType",
+          "documentation":"<p>The type of action you can take by adopting the recommendation.</p>"
+        },
         "rollbackPossible":{
           "shape":"Boolean",
           "documentation":"<p>Whether or not implementing the recommendation can be rolled back.</p>"
         },
-        "source":{
-          "shape":"Source",
-          "documentation":"<p>The source of the recommendation.</p>"
+        "currentResourceDetails":{
+          "shape":"ResourceDetails",
+          "documentation":"<p>The details for the resource.</p>"
+        },
+        "recommendedResourceDetails":{
+          "shape":"ResourceDetails",
+          "documentation":"<p>The details about the recommended resource.</p>"
         },
         "tags":{
           "shape":"TagList",
@@ -842,34 +854,34 @@
     "ListEnrollmentStatusesRequest":{
       "type":"structure",
       "members":{
-        "accountId":{
-          "shape":"AccountId",
-          "documentation":"<p>The account ID of a member account in the organization.</p>"
-        },
         "includeOrganizationInfo":{
           "shape":"PrimitiveBoolean",
           "documentation":"<p>Indicates whether to return the enrollment status for the organization.</p>"
         },
-        "maxResults":{
-          "shape":"MaxResults",
-          "documentation":"<p>The maximum number of objects that are returned for the request.</p>"
+        "accountId":{
+          "shape":"AccountId",
+          "documentation":"<p>The account ID of a member account in the organization.</p>"
         },
         "nextToken":{
           "shape":"String",
           "documentation":"<p>The token to retrieve the next set of results.</p>"
+        },
+        "maxResults":{
+          "shape":"MaxResults",
+          "documentation":"<p>The maximum number of objects that are returned for the request.</p>"
         }
       }
     },
     "ListEnrollmentStatusesResponse":{
       "type":"structure",
       "members":{
-        "includeMemberAccounts":{
-          "shape":"Boolean",
-          "documentation":"<p>The enrollment status of all member accounts in the organization if the account is the management account.</p>"
-        },
         "items":{
           "shape":"AccountEnrollmentStatuses",
           "documentation":"<p>The enrollment status of a specific account ID, including creation and last updated timestamps.</p>"
+        },
+        "includeMemberAccounts":{
+          "shape":"Boolean",
+          "documentation":"<p>The enrollment status of all member accounts in the organization if the account is the management account.</p>"
         },
         "nextToken":{
           "shape":"String",
@@ -905,21 +917,21 @@
     "ListRecommendationSummariesResponse":{
       "type":"structure",
       "members":{
-        "currencyCode":{
-          "shape":"String",
-          "documentation":"<p>The currency code used for the recommendation.</p>"
-        },
         "estimatedTotalDedupedSavings":{
           "shape":"Double",
           "documentation":"<p>The total overall savings for the aggregated view.</p>"
+        },
+        "items":{
+          "shape":"RecommendationSummariesList",
+          "documentation":"<p>List of all savings recommendations.</p>"
         },
         "groupBy":{
           "shape":"String",
           "documentation":"<p>The dimension used to group the recommendations by.</p>"
         },
-        "items":{
-          "shape":"RecommendationSummariesList",
-          "documentation":"<p>List of all savings recommendations.</p>"
+        "currencyCode":{
+          "shape":"String",
+          "documentation":"<p>The currency code used for the recommendation.</p>"
         },
         "nextToken":{
           "shape":"String",
@@ -934,6 +946,10 @@
           "shape":"Filter",
           "documentation":"<p>The constraints that you want all returned recommendations to match.</p>"
         },
+        "orderBy":{
+          "shape":"OrderBy",
+          "documentation":"<p>The ordering of recommendations by a dimension.</p>"
+        },
         "includeAllRecommendations":{
           "shape":"PrimitiveBoolean",
           "documentation":"<p>List of all recommendations for a resource, or a single recommendation if de-duped by <code>resourceId</code>.</p>"
@@ -945,10 +961,6 @@
         "nextToken":{
           "shape":"String",
           "documentation":"<p>The token to retrieve the next set of results.</p>"
-        },
-        "orderBy":{
-          "shape":"OrderBy",
-          "documentation":"<p>The ordering of recommendations by a dimension.</p>"
         }
       }
     },
@@ -1005,49 +1017,49 @@
           "shape":"String",
           "documentation":"<p>The account scope that you want your recommendations for.</p>"
         },
-        "currentGeneration":{
+        "service":{
           "shape":"String",
-          "documentation":"<p>Determines whether the recommendation is for a current generation instance.</p>"
-        },
-        "instanceType":{
-          "shape":"String",
-          "documentation":"<p>The type of instance that Amazon Web Services recommends.</p>"
-        },
-        "monthlyRecurringCost":{
-          "shape":"String",
-          "documentation":"<p>How much purchasing reserved instances costs you on a monthly basis.</p>"
+          "documentation":"<p>The service that you want your recommendations for.</p>"
         },
         "normalizedUnitsToPurchase":{
           "shape":"String",
           "documentation":"<p>The number of normalized units that Amazon Web Services recommends that you purchase.</p>"
         },
-        "numberOfInstancesToPurchase":{
+        "term":{
           "shape":"String",
-          "documentation":"<p>The number of instances that Amazon Web Services recommends that you purchase.</p>"
+          "documentation":"<p>The reserved instances recommendation term in years.</p>"
         },
         "paymentOption":{
           "shape":"String",
           "documentation":"<p>The payment option for the commitment.</p>"
         },
+        "numberOfInstancesToPurchase":{
+          "shape":"String",
+          "documentation":"<p>The number of instances that Amazon Web Services recommends that you purchase.</p>"
+        },
+        "instanceType":{
+          "shape":"String",
+          "documentation":"<p>The type of instance that Amazon Web Services recommends.</p>"
+        },
         "reservedInstancesRegion":{
           "shape":"String",
           "documentation":"<p>The Amazon Web Services Region of the commitment.</p>"
         },
-        "service":{
+        "currentGeneration":{
           "shape":"String",
-          "documentation":"<p>The service that you want your recommendations for.</p>"
+          "documentation":"<p>Determines whether the recommendation is for a current generation instance.</p>"
         },
         "sizeFlexEligible":{
           "shape":"Boolean",
           "documentation":"<p>Determines whether the recommendation is size flexible.</p>"
         },
-        "term":{
-          "shape":"String",
-          "documentation":"<p>The reserved instances recommendation term in years.</p>"
-        },
         "upfrontCost":{
           "shape":"String",
           "documentation":"<p>How much purchasing this instance costs you upfront.</p>"
+        },
+        "monthlyRecurringCost":{
+          "shape":"String",
+          "documentation":"<p>How much purchasing reserved instances costs you on a monthly basis.</p>"
         }
       },
       "documentation":"<p>The OpenSearch reserved instances configuration used for recommendations.</p>"
@@ -1074,6 +1086,60 @@
       "documentation":"<p>Defines how rows will be sorted in the response.</p>"
     },
     "PrimitiveBoolean":{"type":"boolean"},
+    "RdsDbInstance":{
+      "type":"structure",
+      "members":{
+        "configuration":{
+          "shape":"RdsDbInstanceConfiguration",
+          "documentation":"<p>The Amazon RDS DB instance configuration used for recommendations.</p>"
+        },
+        "costCalculation":{"shape":"ResourceCostCalculation"}
+      },
+      "documentation":"<p>Contains the details of an Amazon RDS DB instance.</p>"
+    },
+    "RdsDbInstanceConfiguration":{
+      "type":"structure",
+      "members":{
+        "instance":{
+          "shape":"DbInstanceConfiguration",
+          "documentation":"<p>Details about the instance configuration.</p>"
+        }
+      },
+      "documentation":"<p>The Amazon RDS DB instance configuration used for recommendations.</p>"
+    },
+    "RdsDbInstanceStorage":{
+      "type":"structure",
+      "members":{
+        "configuration":{
+          "shape":"RdsDbInstanceStorageConfiguration",
+          "documentation":"<p>The Amazon RDS DB instance storage configuration used for recommendations.</p>"
+        },
+        "costCalculation":{"shape":"ResourceCostCalculation"}
+      },
+      "documentation":"<p>Contains the details of an Amazon RDS DB instance storage.</p>"
+    },
+    "RdsDbInstanceStorageConfiguration":{
+      "type":"structure",
+      "members":{
+        "storageType":{
+          "shape":"String",
+          "documentation":"<p>The storage type to associate with the DB instance.</p>"
+        },
+        "allocatedStorageInGb":{
+          "shape":"Double",
+          "documentation":"<p>The new amount of storage in GB to allocate for the DB instance.</p>"
+        },
+        "iops":{
+          "shape":"Double",
+          "documentation":"<p>The amount of Provisioned IOPS (input/output operations per second) to be initially allocated for the DB instance.</p>"
+        },
+        "storageThroughput":{
+          "shape":"Double",
+          "documentation":"<p>The storage throughput for the DB instance.</p>"
+        }
+      },
+      "documentation":"<p>The Amazon RDS DB instance storage configuration used for recommendations.</p>"
+    },
     "RdsReservedInstances":{
       "type":"structure",
       "members":{
@@ -1095,9 +1161,57 @@
           "shape":"String",
           "documentation":"<p>The account scope that you want your recommendations for.</p>"
         },
+        "service":{
+          "shape":"String",
+          "documentation":"<p>The service that you want your recommendations for.</p>"
+        },
+        "normalizedUnitsToPurchase":{
+          "shape":"String",
+          "documentation":"<p>The number of normalized units that Amazon Web Services recommends that you purchase.</p>"
+        },
+        "term":{
+          "shape":"String",
+          "documentation":"<p>The reserved instances recommendation term in years.</p>"
+        },
+        "paymentOption":{
+          "shape":"String",
+          "documentation":"<p>The payment option for the commitment.</p>"
+        },
+        "numberOfInstancesToPurchase":{
+          "shape":"String",
+          "documentation":"<p>The number of instances that Amazon Web Services recommends that you purchase.</p>"
+        },
+        "instanceFamily":{
+          "shape":"String",
+          "documentation":"<p>The instance family of the recommended reservation.</p>"
+        },
+        "instanceType":{
+          "shape":"String",
+          "documentation":"<p>The type of instance that Amazon Web Services recommends.</p>"
+        },
+        "reservedInstancesRegion":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Web Services Region of the commitment.</p>"
+        },
+        "sizeFlexEligible":{
+          "shape":"Boolean",
+          "documentation":"<p>Determines whether the recommendation is size flexible.</p>"
+        },
         "currentGeneration":{
           "shape":"String",
           "documentation":"<p>Determines whether the recommendation is for a current generation instance.</p>"
+        },
+        "upfrontCost":{
+          "shape":"String",
+          "documentation":"<p>How much purchasing this instance costs you upfront.</p>"
+        },
+        "monthlyRecurringCost":{
+          "shape":"String",
+          "documentation":"<p>How much purchasing this instance costs you on a monthly basis.</p>"
+        },
+        "licenseModel":{
+          "shape":"String",
+          "documentation":"<p>The license model that the recommended reservation supports.</p>"
         },
         "databaseEdition":{
           "shape":"String",
@@ -1110,54 +1224,6 @@
         "deploymentOption":{
           "shape":"String",
           "documentation":"<p>Determines whether the recommendation is for a reservation in a single Availability Zone or a reservation with a backup in a second Availability Zone.</p>"
-        },
-        "instanceFamily":{
-          "shape":"String",
-          "documentation":"<p>The instance family of the recommended reservation.</p>"
-        },
-        "instanceType":{
-          "shape":"String",
-          "documentation":"<p>The type of instance that Amazon Web Services recommends.</p>"
-        },
-        "licenseModel":{
-          "shape":"String",
-          "documentation":"<p>The license model that the recommended reservation supports.</p>"
-        },
-        "monthlyRecurringCost":{
-          "shape":"String",
-          "documentation":"<p>How much purchasing this instance costs you on a monthly basis.</p>"
-        },
-        "normalizedUnitsToPurchase":{
-          "shape":"String",
-          "documentation":"<p>The number of normalized units that Amazon Web Services recommends that you purchase.</p>"
-        },
-        "numberOfInstancesToPurchase":{
-          "shape":"String",
-          "documentation":"<p>The number of instances that Amazon Web Services recommends that you purchase.</p>"
-        },
-        "paymentOption":{
-          "shape":"String",
-          "documentation":"<p>The payment option for the commitment.</p>"
-        },
-        "reservedInstancesRegion":{
-          "shape":"String",
-          "documentation":"<p>The Amazon Web Services Region of the commitment.</p>"
-        },
-        "service":{
-          "shape":"String",
-          "documentation":"<p>The service that you want your recommendations for.</p>"
-        },
-        "sizeFlexEligible":{
-          "shape":"Boolean",
-          "documentation":"<p>Determines whether the recommendation is size flexible.</p>"
-        },
-        "term":{
-          "shape":"String",
-          "documentation":"<p>The reserved instances recommendation term in years.</p>"
-        },
-        "upfrontCost":{
-          "shape":"String",
-          "documentation":"<p>How much purchasing this instance costs you upfront.</p>"
         }
       },
       "documentation":"<p>The RDS reserved instances configuration used for recommendations.</p>"
@@ -1165,29 +1231,33 @@
     "Recommendation":{
       "type":"structure",
       "members":{
+        "recommendationId":{
+          "shape":"String",
+          "documentation":"<p>The ID for the recommendation.</p>"
+        },
         "accountId":{
           "shape":"String",
           "documentation":"<p>The account that the recommendation is for.</p>"
         },
-        "actionType":{
+        "region":{
           "shape":"String",
-          "documentation":"<p>The type of tasks that can be carried out by this action.</p>"
+          "documentation":"<p>The Amazon Web Services Region of the resource.</p>"
         },
-        "currencyCode":{
+        "resourceId":{
           "shape":"String",
-          "documentation":"<p>The currency code used for the recommendation.</p>"
+          "documentation":"<p>The resource ID for the recommendation.</p>"
         },
-        "currentResourceSummary":{
+        "resourceArn":{
           "shape":"String",
-          "documentation":"<p>Describes the current resource.</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) for the recommendation.</p>"
         },
         "currentResourceType":{
           "shape":"String",
           "documentation":"<p>The current resource type.</p>"
         },
-        "estimatedMonthlyCost":{
-          "shape":"Double",
-          "documentation":"<p>The estimated monthly cost for the recommendation.</p>"
+        "recommendedResourceType":{
+          "shape":"String",
+          "documentation":"<p>The recommended resource type.</p>"
         },
         "estimatedMonthlySavings":{
           "shape":"Double",
@@ -1197,49 +1267,45 @@
           "shape":"Double",
           "documentation":"<p>The estimated savings percentage relative to the total cost over the cost calculation lookback period.</p>"
         },
+        "estimatedMonthlyCost":{
+          "shape":"Double",
+          "documentation":"<p>The estimated monthly cost of the current resource. For Reserved Instances and Savings Plans, it refers to the cost for eligible usage.</p>"
+        },
+        "currencyCode":{
+          "shape":"String",
+          "documentation":"<p>The currency code used for the recommendation.</p>"
+        },
         "implementationEffort":{
           "shape":"String",
           "documentation":"<p>The effort required to implement the recommendation.</p>"
-        },
-        "lastRefreshTimestamp":{
-          "shape":"Datetime",
-          "documentation":"<p>The time when the recommendation was last generated.</p>"
-        },
-        "recommendationId":{
-          "shape":"String",
-          "documentation":"<p>The ID for the recommendation.</p>"
-        },
-        "recommendationLookbackPeriodInDays":{
-          "shape":"Integer",
-          "documentation":"<p>The lookback period that's used to generate the recommendation.</p>"
-        },
-        "recommendedResourceSummary":{
-          "shape":"String",
-          "documentation":"<p>Describes the recommended resource.</p>"
-        },
-        "recommendedResourceType":{
-          "shape":"String",
-          "documentation":"<p>The recommended resource type.</p>"
-        },
-        "region":{
-          "shape":"String",
-          "documentation":"<p>The Amazon Web Services Region of the resource.</p>"
-        },
-        "resourceArn":{
-          "shape":"String",
-          "documentation":"<p>The Amazon Resource Name (ARN) for the recommendation.</p>"
-        },
-        "resourceId":{
-          "shape":"String",
-          "documentation":"<p>The resource ID for the recommendation.</p>"
         },
         "restartNeeded":{
           "shape":"Boolean",
           "documentation":"<p>Whether or not implementing the recommendation requires a restart.</p>"
         },
+        "actionType":{
+          "shape":"String",
+          "documentation":"<p>The type of tasks that can be carried out by this action.</p>"
+        },
         "rollbackPossible":{
           "shape":"Boolean",
           "documentation":"<p>Whether or not implementing the recommendation can be rolled back.</p>"
+        },
+        "currentResourceSummary":{
+          "shape":"String",
+          "documentation":"<p>Describes the current resource.</p>"
+        },
+        "recommendedResourceSummary":{
+          "shape":"String",
+          "documentation":"<p>Describes the recommended resource.</p>"
+        },
+        "lastRefreshTimestamp":{
+          "shape":"Datetime",
+          "documentation":"<p>The time when the recommendation was last generated.</p>"
+        },
+        "recommendationLookbackPeriodInDays":{
+          "shape":"Integer",
+          "documentation":"<p>The lookback period that's used to generate the recommendation.</p>"
         },
         "source":{
           "shape":"Source",
@@ -1269,13 +1335,13 @@
     "RecommendationSummary":{
       "type":"structure",
       "members":{
-        "estimatedMonthlySavings":{
-          "shape":"Double",
-          "documentation":"<p>The estimated total savings resulting from modifications, on a monthly basis.</p>"
-        },
         "group":{
           "shape":"String",
           "documentation":"<p>The grouping of recommendations.</p>"
+        },
+        "estimatedMonthlySavings":{
+          "shape":"Double",
+          "documentation":"<p>The estimated total savings resulting from modifications, on a monthly basis.</p>"
         },
         "recommendationCount":{
           "shape":"Integer",
@@ -1305,9 +1371,25 @@
           "shape":"String",
           "documentation":"<p>The account scope that you want your recommendations for.</p>"
         },
-        "currentGeneration":{
+        "service":{
           "shape":"String",
-          "documentation":"<p>Determines whether the recommendation is for a current generation instance.</p>"
+          "documentation":"<p>The service that you want your recommendations for.</p>"
+        },
+        "normalizedUnitsToPurchase":{
+          "shape":"String",
+          "documentation":"<p>The number of normalized units that Amazon Web Services recommends that you purchase.</p>"
+        },
+        "term":{
+          "shape":"String",
+          "documentation":"<p>The reserved instances recommendation term in years.</p>"
+        },
+        "paymentOption":{
+          "shape":"String",
+          "documentation":"<p>The payment option for the commitment.</p>"
+        },
+        "numberOfInstancesToPurchase":{
+          "shape":"String",
+          "documentation":"<p>The number of instances that Amazon Web Services recommends that you purchase.</p>"
         },
         "instanceFamily":{
           "shape":"String",
@@ -1317,41 +1399,25 @@
           "shape":"String",
           "documentation":"<p>The type of instance that Amazon Web Services recommends.</p>"
         },
-        "monthlyRecurringCost":{
-          "shape":"String",
-          "documentation":"<p>How much purchasing reserved instances costs you on a monthly basis.</p>"
-        },
-        "normalizedUnitsToPurchase":{
-          "shape":"String",
-          "documentation":"<p>The number of normalized units that Amazon Web Services recommends that you purchase.</p>"
-        },
-        "numberOfInstancesToPurchase":{
-          "shape":"String",
-          "documentation":"<p>The number of instances that Amazon Web Services recommends that you purchase.</p>"
-        },
-        "paymentOption":{
-          "shape":"String",
-          "documentation":"<p>The payment option for the commitment.</p>"
-        },
         "reservedInstancesRegion":{
           "shape":"String",
           "documentation":"<p>The Amazon Web Services Region of the commitment.</p>"
-        },
-        "service":{
-          "shape":"String",
-          "documentation":"<p>The service that you want your recommendations for.</p>"
         },
         "sizeFlexEligible":{
           "shape":"Boolean",
           "documentation":"<p>Determines whether the recommendation is size flexible.</p>"
         },
-        "term":{
+        "currentGeneration":{
           "shape":"String",
-          "documentation":"<p>The reserved instances recommendation term in years.</p>"
+          "documentation":"<p>Determines whether the recommendation is for a current generation instance.</p>"
         },
         "upfrontCost":{
           "shape":"String",
           "documentation":"<p>How much purchasing this instance costs you upfront.</p>"
+        },
+        "monthlyRecurringCost":{
+          "shape":"String",
+          "documentation":"<p>How much purchasing reserved instances costs you on a monthly basis.</p>"
         }
       },
       "documentation":"<p>The Redshift reserved instances configuration used for recommendations.</p>"
@@ -1375,10 +1441,6 @@
     "ReservedInstancesPricing":{
       "type":"structure",
       "members":{
-        "estimatedMonthlyAmortizedReservationCost":{
-          "shape":"Double",
-          "documentation":"<p>The estimated cost of your recurring monthly fees for the recommended reserved instance across the month.</p>"
-        },
         "estimatedOnDemandCost":{
           "shape":"Double",
           "documentation":"<p>The remaining On-Demand cost estimated to not be covered by the recommended reserved instance, over the length of the lookback period.</p>"
@@ -1390,6 +1452,10 @@
         "savingsPercentage":{
           "shape":"Double",
           "documentation":"<p>The savings percentage relative to the total On-Demand costs that are associated with this instance.</p>"
+        },
+        "estimatedMonthlyAmortizedReservationCost":{
+          "shape":"Double",
+          "documentation":"<p>The estimated cost of your recurring monthly fees for the recommended reserved instance across the month.</p>"
         }
       },
       "documentation":"<p>Pricing details for your recommended reserved instance.</p>"
@@ -1403,13 +1469,13 @@
     "ResourceCostCalculation":{
       "type":"structure",
       "members":{
-        "pricing":{
-          "shape":"ResourcePricing",
-          "documentation":"<p>Pricing details of the resource recommendation.</p>"
-        },
         "usages":{
           "shape":"UsageList",
           "documentation":"<p>Usage details of the resource recommendation.</p>"
+        },
+        "pricing":{
+          "shape":"ResourcePricing",
+          "documentation":"<p>Pricing details of the resource recommendation.</p>"
         }
       },
       "documentation":"<p>Cost impact of the resource recommendation.</p>"
@@ -1417,9 +1483,17 @@
     "ResourceDetails":{
       "type":"structure",
       "members":{
-        "computeSavingsPlans":{
-          "shape":"ComputeSavingsPlans",
-          "documentation":"<p>The Compute Savings Plans recommendation details.</p>"
+        "lambdaFunction":{
+          "shape":"LambdaFunction",
+          "documentation":"<p>The Lambda function recommendation details.</p>"
+        },
+        "ecsService":{
+          "shape":"EcsService",
+          "documentation":"<p>The ECS service recommendation details.</p>"
+        },
+        "ec2Instance":{
+          "shape":"Ec2Instance",
+          "documentation":"<p>The EC2 instance recommendation details.</p>"
         },
         "ebsVolume":{
           "shape":"EbsVolume",
@@ -1429,45 +1503,45 @@
           "shape":"Ec2AutoScalingGroup",
           "documentation":"<p>The EC2 Auto Scaling group recommendation details.</p>"
         },
-        "ec2Instance":{
-          "shape":"Ec2Instance",
-          "documentation":"<p>The EC2 instance recommendation details.</p>"
-        },
-        "ec2InstanceSavingsPlans":{
-          "shape":"Ec2InstanceSavingsPlans",
-          "documentation":"<p>The EC2 instance Savings Plans recommendation details.</p>"
-        },
         "ec2ReservedInstances":{
           "shape":"Ec2ReservedInstances",
           "documentation":"<p>The EC2 reserved instances recommendation details.</p>"
-        },
-        "ecsService":{
-          "shape":"EcsService",
-          "documentation":"<p>The ECS service recommendation details.</p>"
-        },
-        "elastiCacheReservedInstances":{
-          "shape":"ElastiCacheReservedInstances",
-          "documentation":"<p>The ElastiCache reserved instances recommendation details.</p>"
-        },
-        "lambdaFunction":{
-          "shape":"LambdaFunction",
-          "documentation":"<p>The Lambda function recommendation details.</p>"
-        },
-        "openSearchReservedInstances":{
-          "shape":"OpenSearchReservedInstances",
-          "documentation":"<p>The OpenSearch reserved instances recommendation details.</p>"
         },
         "rdsReservedInstances":{
           "shape":"RdsReservedInstances",
           "documentation":"<p>The RDS reserved instances recommendation details.</p>"
         },
+        "elastiCacheReservedInstances":{
+          "shape":"ElastiCacheReservedInstances",
+          "documentation":"<p>The ElastiCache reserved instances recommendation details.</p>"
+        },
+        "openSearchReservedInstances":{
+          "shape":"OpenSearchReservedInstances",
+          "documentation":"<p>The OpenSearch reserved instances recommendation details.</p>"
+        },
         "redshiftReservedInstances":{
           "shape":"RedshiftReservedInstances",
           "documentation":"<p>The Redshift reserved instances recommendation details.</p>"
         },
+        "ec2InstanceSavingsPlans":{
+          "shape":"Ec2InstanceSavingsPlans",
+          "documentation":"<p>The EC2 instance Savings Plans recommendation details.</p>"
+        },
+        "computeSavingsPlans":{
+          "shape":"ComputeSavingsPlans",
+          "documentation":"<p>The Compute Savings Plans recommendation details.</p>"
+        },
         "sageMakerSavingsPlans":{
           "shape":"SageMakerSavingsPlans",
           "documentation":"<p>The SageMaker Savings Plans recommendation details.</p>"
+        },
+        "rdsDbInstance":{
+          "shape":"RdsDbInstance",
+          "documentation":"<p>The DB instance recommendation details.</p>"
+        },
+        "rdsDbInstanceStorage":{
+          "shape":"RdsDbInstanceStorage",
+          "documentation":"<p>The DB instance storage recommendation details.</p>"
         }
       },
       "documentation":"<p>Contains detailed information about the specified resource.</p>",
@@ -1498,21 +1572,21 @@
     "ResourcePricing":{
       "type":"structure",
       "members":{
-        "estimatedCostAfterDiscounts":{
-          "shape":"Double",
-          "documentation":"<p>The savings estimate incorporating all discounts with Amazon Web Services, such as Reserved Instances and Savings Plans.</p>"
-        },
         "estimatedCostBeforeDiscounts":{
           "shape":"Double",
           "documentation":"<p>The savings estimate using Amazon Web Services public pricing without incorporating any discounts.</p>"
+        },
+        "estimatedNetUnusedAmortizedCommitments":{
+          "shape":"Double",
+          "documentation":"<p>The estimated net unused amortized commitment for the recommendation.</p>"
         },
         "estimatedDiscounts":{
           "shape":"EstimatedDiscounts",
           "documentation":"<p>The estimated discounts for a recommendation.</p>"
         },
-        "estimatedNetUnusedAmortizedCommitments":{
+        "estimatedCostAfterDiscounts":{
           "shape":"Double",
-          "documentation":"<p>The estimated net unused amortized commitment for the recommendation.</p>"
+          "documentation":"<p>The savings estimate incorporating all discounts with Amazon Web Services, such as Reserved Instances and Savings Plans.</p>"
         }
       },
       "documentation":"<p>Contains pricing information about the specified resource.</p>"
@@ -1532,7 +1606,9 @@
         "RdsReservedInstances",
         "OpenSearchReservedInstances",
         "RedshiftReservedInstances",
-        "ElastiCacheReservedInstances"
+        "ElastiCacheReservedInstances",
+        "RdsDbInstanceStorage",
+        "RdsDbInstance"
       ]
     },
     "ResourceTypeList":{
@@ -1562,17 +1638,17 @@
           "shape":"String",
           "documentation":"<p>The account scope that you want your recommendations for.</p>"
         },
-        "hourlyCommitment":{
+        "term":{
           "shape":"String",
-          "documentation":"<p>The hourly commitment for the Savings Plans type.</p>"
+          "documentation":"<p>The Savings Plans recommendation term in years.</p>"
         },
         "paymentOption":{
           "shape":"String",
           "documentation":"<p>The payment option for the commitment.</p>"
         },
-        "term":{
+        "hourlyCommitment":{
           "shape":"String",
-          "documentation":"<p>The Savings Plans recommendation term in years.</p>"
+          "documentation":"<p>The hourly commitment for the Savings Plans type.</p>"
         }
       },
       "documentation":"<p>The SageMaker Savings Plans configuration used for recommendations.</p>"
@@ -1597,21 +1673,21 @@
     "SavingsPlansPricing":{
       "type":"structure",
       "members":{
-        "estimatedMonthlyCommitment":{
-          "shape":"Double",
-          "documentation":"<p>Estimated monthly commitment for the Savings Plan.</p>"
-        },
-        "estimatedOnDemandCost":{
-          "shape":"Double",
-          "documentation":"<p>Estimated On-Demand cost you will pay after buying the Savings Plan.</p>"
-        },
         "monthlySavingsPlansEligibleCost":{
           "shape":"Double",
           "documentation":"<p>The cost of paying for the recommended Savings Plan monthly.</p>"
         },
+        "estimatedMonthlyCommitment":{
+          "shape":"Double",
+          "documentation":"<p>Estimated monthly commitment for the Savings Plan.</p>"
+        },
         "savingsPercentage":{
           "shape":"Double",
           "documentation":"<p>Estimated savings as a percentage of your overall costs after buying the Savings Plan.</p>"
+        },
+        "estimatedOnDemandCost":{
+          "shape":"Double",
+          "documentation":"<p>Estimated On-Demand cost you will pay after buying the Savings Plan.</p>"
         }
       },
       "documentation":"<p>Pricing information about a Savings Plan.</p>"
@@ -1626,13 +1702,13 @@
     "StorageConfiguration":{
       "type":"structure",
       "members":{
-        "sizeInGb":{
-          "shape":"Double",
-          "documentation":"<p>The storage volume.</p>"
-        },
         "type":{
           "shape":"String",
           "documentation":"<p>The storage type.</p>"
+        },
+        "sizeInGb":{
+          "shape":"Double",
+          "documentation":"<p>The storage volume.</p>"
         }
       },
       "documentation":"<p>The storage configuration used for recommendations.</p>"
@@ -1671,13 +1747,13 @@
       "type":"structure",
       "required":["status"],
       "members":{
-        "includeMemberAccounts":{
-          "shape":"Boolean",
-          "documentation":"<p>Indicates whether to enroll member accounts of the organization if the account is the management account.</p>"
-        },
         "status":{
           "shape":"EnrollmentStatus",
           "documentation":"<p>Sets the account status.</p>"
+        },
+        "includeMemberAccounts":{
+          "shape":"Boolean",
+          "documentation":"<p>Indicates whether to enroll member accounts of the organization if the account is the management account.</p>"
         }
       }
     },
@@ -1693,32 +1769,40 @@
     "UpdatePreferencesRequest":{
       "type":"structure",
       "members":{
-        "memberAccountDiscountVisibility":{
-          "shape":"MemberAccountDiscountVisibility",
-          "documentation":"<p>Sets the \"member account discount visibility\" preference.</p>"
-        },
         "savingsEstimationMode":{
           "shape":"SavingsEstimationMode",
           "documentation":"<p>Sets the \"savings estimation mode\" preference.</p>"
+        },
+        "memberAccountDiscountVisibility":{
+          "shape":"MemberAccountDiscountVisibility",
+          "documentation":"<p>Sets the \"member account discount visibility\" preference.</p>"
         }
       }
     },
     "UpdatePreferencesResponse":{
       "type":"structure",
       "members":{
-        "memberAccountDiscountVisibility":{
-          "shape":"MemberAccountDiscountVisibility",
-          "documentation":"<p>Shows the status of the \"member account discount visibility\" preference.</p>"
-        },
         "savingsEstimationMode":{
           "shape":"SavingsEstimationMode",
           "documentation":"<p>Shows the status of the \"savings estimation mode\" preference.</p>"
+        },
+        "memberAccountDiscountVisibility":{
+          "shape":"MemberAccountDiscountVisibility",
+          "documentation":"<p>Shows the status of the \"member account discount visibility\" preference.</p>"
         }
       }
     },
     "Usage":{
       "type":"structure",
       "members":{
+        "usageType":{
+          "shape":"String",
+          "documentation":"<p>The usage type.</p>"
+        },
+        "usageAmount":{
+          "shape":"Double",
+          "documentation":"<p>The usage amount.</p>"
+        },
         "operation":{
           "shape":"String",
           "documentation":"<p>The operation value.</p>"
@@ -1730,14 +1814,6 @@
         "unit":{
           "shape":"String",
           "documentation":"<p>The usage unit.</p>"
-        },
-        "usageAmount":{
-          "shape":"Double",
-          "documentation":"<p>The usage amount.</p>"
-        },
-        "usageType":{
-          "shape":"String",
-          "documentation":"<p>The usage type.</p>"
         }
       },
       "documentation":"<p>Details about the usage.</p>"
@@ -1750,14 +1826,14 @@
       "type":"structure",
       "required":["message"],
       "members":{
-        "fields":{
-          "shape":"ValidationExceptionDetails",
-          "documentation":"<p>The list of fields that are invalid.</p>"
-        },
         "message":{"shape":"String"},
         "reason":{
           "shape":"ValidationExceptionReason",
           "documentation":"<p>The reason for the validation exception.</p>"
+        },
+        "fields":{
+          "shape":"ValidationExceptionDetails",
+          "documentation":"<p>The list of fields that are invalid.</p>"
         }
       },
       "documentation":"<p>The input fails to satisfy the constraints specified by an Amazon Web Services service.</p>",

@@ -10,7 +10,8 @@
     "serviceId":"SecurityHub",
     "signatureVersion":"v4",
     "signingName":"securityhub",
-    "uid":"securityhub-2018-10-26"
+    "uid":"securityhub-2018-10-26",
+    "auth":["aws.auth#sigv4"]
   },
   "operations":{
     "AcceptAdministratorInvitation":{
@@ -17121,7 +17122,7 @@
           "documentation":"<p>One or more finding types in the format of <code>namespace/category/classifier</code> that classify a finding.</p> <p>Valid namespace values are: Software and Configuration Checks | TTPs | Effects | Unusual Behaviors | Sensitive Data Identifications</p>"
         }
       },
-      "documentation":"<p>In a <code>BatchImportFindings</code> request, finding providers use <code>FindingProviderFields</code> to provide and update values for confidence, criticality, related findings, severity, and types.</p>"
+      "documentation":"<p>In a <a href=\"https://docs.aws.amazon.com/securityhub/1.0/APIReference/API_BatchImportFindings.html\"> <code>BatchImportFindings</code> </a> request, finding providers use <code>FindingProviderFields</code> to provide and update values for the following fields:</p> <ul> <li> <p> <code>Confidence</code> </p> </li> <li> <p> <code>Criticality</code> </p> </li> <li> <p> <code>RelatedFindings</code> </p> </li> <li> <p> <code>Severity</code> </p> </li> <li> <p> <code>Types</code> </p> </li> </ul> <p>The preceding fields are nested under the <code>FindingProviderFields</code> object, but also have analogues of the same name as top-level ASFF fields. When a new finding is sent to Security Hub by a finding provider, Security Hub populates the <code>FindingProviderFields</code> object automatically, if it is empty, based on the corresponding top-level fields.</p> <p>Finding providers can update <code>FindingProviderFields</code> only by using the <code>BatchImportFindings</code> operation. Finding providers can't update this object with the <a href=\"https://docs.aws.amazon.com/securityhub/1.0/APIReference/API_BatchUpdateFindings.html\"> <code>BatchUpdateFindings</code> </a> operation. Customers can update the top-level fields by using the <code>BatchUpdateFindings</code> operation. Customers can't update <code>FindingProviderFields</code>.</p> <p>For information about how Security Hub handles updates from <code>BatchImportFindings</code> to <code>FindingProviderFields</code> and to the corresponding top-level attributes, see <a href=\"https://docs.aws.amazon.com/securityhub/latest/userguide/finding-update-batchimportfindings.html#batchimportfindings-findingproviderfields\">Using <code>FindingProviderFields</code> </a> in the <i>Security Hub User Guide</i>.</p> <p/>"
     },
     "FindingProviderSeverity":{
       "type":"structure",
@@ -17135,7 +17136,7 @@
           "documentation":"<p>The finding provider's original value for the severity.</p> <p>Length Constraints: Minimum length of 1. Maximum length of 64.</p>"
         }
       },
-      "documentation":"<p>The severity assigned to the finding by the finding provider.</p>"
+      "documentation":"<p>The severity assigned to a finding by the finding provider. This object may include one or more of the following attributes:</p> <ul> <li> <p> <code>Label</code> </p> </li> <li> <p> <code>Normalized</code> </p> </li> <li> <p> <code>Original</code> </p> </li> <li> <p> <code>Product</code> </p> </li> </ul> <p>If a <a href=\"https://docs.aws.amazon.com/securityhub/1.0/APIReference/API_BatchImportFindings.html\"> <code>BatchImportFindings</code> </a> request for a new finding only provides <code>Label</code> or only provides <code>Normalized</code>, Security Hub automatically populates the value of the other field.</p> <p>The <code>Normalized</code> and <code>Product</code> attributes are included in the <code>FindingProviderSeverity</code> structure to preserve the historical information associated with the finding, even if the top-level <code>Severity</code> object is later modified using the <a href=\"https://docs.aws.amazon.com/securityhub/1.0/APIReference/API_BatchUpdateFindings.html\"> <code>BatchUpdateFindings</code> </a> operation.</p> <p>If the top-level <code>Finding.Severity</code> object is present, but <code>Finding.FindingProviderFields</code> isn't present, Security Hub creates the <code>FindingProviderFields.Severity</code> object and copies the entire <code>Finding.Severity</code> object into it. This ensures that the original, provider-supplied details are retained within the <code>FindingProviderFields.Severity</code> object, even if the top-level <code>Severity</code> object is overwritten. </p>"
     },
     "FirewallPolicyDetails":{
       "type":"structure",

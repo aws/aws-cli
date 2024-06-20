@@ -17,7 +17,7 @@ import logging
 from itertools import tee
 
 import jmespath
-from botocore.compat import six, zip
+from botocore.compat import zip
 from botocore.exceptions import PaginationError
 from botocore.utils import merge_dicts, set_value_from_jmespath
 
@@ -70,7 +70,7 @@ class TokenEncoder(object):
             return self._encode_dict(data, path)
         elif isinstance(data, list):
             return self._encode_list(data, path)
-        elif isinstance(data, six.binary_type):
+        elif isinstance(data, bytes):
             return self._encode_bytes(data, path)
         else:
             return data, []
@@ -366,7 +366,7 @@ class PageIterator(object):
         # and only return the truncated amount.
         starting_truncation = self._parse_starting_token()[1]
         all_data = primary_result_key.search(parsed)
-        if isinstance(all_data, (list, six.string_types)):
+        if isinstance(all_data, (list, str)):
             data = all_data[starting_truncation:]
         else:
             data = None
@@ -384,7 +384,7 @@ class PageIterator(object):
             sample = token.search(parsed)
             if isinstance(sample, list):
                 empty_value = []
-            elif isinstance(sample, six.string_types):
+            elif isinstance(sample, str):
                 empty_value = ''
             elif isinstance(sample, (int, float)):
                 empty_value = 0
@@ -476,7 +476,7 @@ class PageIterator(object):
                 # Now both result_value and existing_value contain something
                 if isinstance(result_value, list):
                     existing_value.extend(result_value)
-                elif isinstance(result_value, (int, float, six.string_types)):
+                elif isinstance(result_value, (int, float, str)):
                     # Modify the existing result with the sum or concatenation
                     set_value_from_jmespath(
                         complete_result, result_expression.expression,
@@ -636,7 +636,7 @@ class Paginator(object):
             input_members = self._model.input_shape.members
             limit_key_shape = input_members.get(self._limit_key)
             if limit_key_shape.type_name == 'string':
-                if not isinstance(page_size, six.string_types):
+                if not isinstance(page_size, str):
                     page_size = str(page_size)
             else:
                 page_size = int(page_size)

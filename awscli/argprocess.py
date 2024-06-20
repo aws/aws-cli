@@ -364,7 +364,7 @@ class ParamShorthandParser(ParamShorthand):
         model = cli_argument.argument_model
         if model.type_name == 'list' and \
            model.member.type_name == 'structure' and \
-           len(model.member.members) == 1 and \
+           len(model.member.required_members) == 1 and \
            self._uses_old_list_case(service_id, operation_name, cli_argument.name):
             # First special case is handling a list of structures
             # of a single element such as:
@@ -375,7 +375,7 @@ class ParamShorthandParser(ParamShorthand):
             #
             # [{"InstanceId": "id-1"}, {"InstanceId": "id-2"},
             #  {"InstanceId": "id-3"}]
-            key_name = list(model.member.members.keys())[0]
+            key_name = model.member.required_members[0]
             new_values = [{key_name: v} for v in value]
             return new_values
         elif model.type_name == 'structure' and \

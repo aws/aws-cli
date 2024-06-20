@@ -14,7 +14,6 @@ import sys
 import logging
 
 from awscli.customizations.commands import BasicCommand
-from awscli.compat import six
 
 from . import PREDEFINED_SECTION_NAMES
 
@@ -56,7 +55,7 @@ class ConfigureGetCommand(BasicCommand):
 
         LOG.debug(u'Config value retrieved: %s' % value)
 
-        if isinstance(value, six.string_types):
+        if isinstance(value, str):
             self._stream.write(value)
             self._stream.write('\n')
             return 0

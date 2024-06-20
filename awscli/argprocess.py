@@ -13,7 +13,6 @@
 """Module for processing CLI args."""
 import os
 import logging
-from awscli.compat import six
 
 from botocore.compat import OrderedDict, json
 
@@ -166,7 +165,7 @@ def _unpack_cli_arg(argument_model, value, cli_name):
         return _unpack_complex_cli_arg(
             argument_model, value, cli_name)
     else:
-        return six.text_type(value)
+        return str(value)
 
 
 def _unpack_json_cli_arg(argument_model, value, cli_name):
@@ -185,7 +184,7 @@ def _unpack_complex_cli_arg(argument_model, value, cli_name):
             return _unpack_json_cli_arg(argument_model, value, cli_name)
         raise ParamError(cli_name, "Invalid JSON:\n%s" % value)
     elif type_name == 'list':
-        if isinstance(value, six.string_types):
+        if isinstance(value, str):
             if value.lstrip()[0] == '[':
                 return _unpack_json_cli_arg(argument_model, value, cli_name)
         elif isinstance(value, list) and len(value) == 1:
@@ -226,7 +225,7 @@ def unpack_scalar_cli_arg(argument_model, value, cli_name=''):
             raise ParamError(cli_name, msg)
         return open(file_path, 'rb')
     elif argument_model.type_name == 'boolean':
-        if isinstance(value, six.string_types) and value.lower() == 'false':
+        if isinstance(value, str) and value.lower() == 'false':
             return False
         return bool(value)
     else:
@@ -401,7 +400,7 @@ class ParamShorthandParser(ParamShorthand):
             check_val = value[0]
         else:
             check_val = value
-        if isinstance(check_val, six.string_types) and check_val.strip().startswith(
+        if isinstance(check_val, str) and check_val.strip().startswith(
                 ('[', '{')):
             LOG.debug("Param %s looks like JSON, not considered for "
                       "param shorthand.", cli_argument.py_name)

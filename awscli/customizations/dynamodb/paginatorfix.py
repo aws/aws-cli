@@ -14,8 +14,6 @@ import base64
 import binascii
 import logging
 
-from awscli.compat import six
-
 logger = logging.getLogger(__name__)
 
 

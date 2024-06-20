@@ -1,4 +1,4 @@
-AC_DEFUN([AC_CHECK_PENDING_MACOS_END_OF_SUPPORT], [
+AC_DEFUN([AC_CHECK_MACOS_END_OF_SUPPORT], [
     min_version='$1'
     end_support_date='$2'
 
@@ -23,10 +23,10 @@ AC_DEFUN([AC_CHECK_PENDING_MACOS_END_OF_SUPPORT], [
             "$sys_version_minor" -lt "$min_version_minor"; then
             AC_MSG_RESULT([pending-end-of-support])
             AC_MSG_WARN(m4_normalize([
-                On $end_support_date, the AWS CLI v2 will drop support
+                On $end_support_date, the AWS CLI v2 dropped support
                 for macOS versions below $min_version. macOS $ac_macos_version
                 was detected for this system. Please upgrade to macOS version
-                $min_version or later to ensure compatibility with future versions
+                $min_version or later to use up-to-date versions
                 of AWS CLI v2. For more information, please visit:
                 https://aws.amazon.com/blogs/developer/macos-support-policy-updates-for-the-aws-cli-v2/
             ]))

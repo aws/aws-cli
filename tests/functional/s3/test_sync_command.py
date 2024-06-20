@@ -12,8 +12,8 @@
 # language governing permissions and limitations under the License.
 import os
 
-from awscli.compat import six
 from awscli.testutils import mock, cd
+from awscli.compat import BytesIO
 from tests.functional.s3 import BaseS3TransferCommandTest
 
 
@@ -65,7 +65,7 @@ class TestSyncCommand(BaseS3TransferCommandTest):
                 {"Key": key, "Size": 3,
                  "LastModified": "2014-01-09T20:45:49.000Z"}]},
             {'ETag': '"c8afdb36c52cf4727836669019e69222-"',
-             'Body': six.BytesIO(b'foo')}
+             'Body': BytesIO(b'foo')}
         ]
         self.run_cmd(cmdline, expected_rc=0)
         # Make sure the file now exists.
@@ -83,7 +83,7 @@ class TestSyncCommand(BaseS3TransferCommandTest):
                 ],
                 'CommonPrefixes': []
             },
-            {'ETag': '"foo-1"', 'Body': six.BytesIO(b'foo')},
+            {'ETag': '"foo-1"', 'Body': BytesIO(b'foo')},
         ]
         cmdline = '%s s3://bucket/foo %s --force-glacier-transfer' % (
             self.prefix, self.files.rootdir)

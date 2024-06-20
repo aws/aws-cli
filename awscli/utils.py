@@ -18,9 +18,9 @@ import os
 import sys
 import subprocess
 
-from awscli.compat import six
-from awscli.compat import get_binary_stdout
-from awscli.compat import get_popen_kwargs_for_pager_cmd
+from awscli.compat import (
+    BytesIO, StringIO, get_binary_stdout, get_popen_kwargs_for_pager_cmd
+)
 
 
 def split_on_commas(value):
@@ -29,7 +29,7 @@ def split_on_commas(value):
         return value.split(',')
     elif not any(char in value for char in ['"', "'", '[', ']']):
         # Simple escaping, let the csv module handle it.
-        return list(csv.reader(six.StringIO(value), escapechar='\\'))[0]
+        return list(csv.reader(StringIO(value), escapechar='\\'))[0]
     else:
         # If there's quotes for the values, we have to handle this
         # ourselves.
@@ -38,7 +38,7 @@ def split_on_commas(value):
 
 def _split_with_quotes(value):
     try:
-        parts = list(csv.reader(six.StringIO(value), escapechar='\\'))[0]
+        parts = list(csv.reader(StringIO(value), escapechar='\\'))[0]
     except csv.Error:
         raise ValueError("Bad csv value: %s" % value)
     iter_parts = iter(parts)
@@ -88,7 +88,7 @@ def _eat_items(value, iter_parts, part, end_char, replace_char=''):
     chunks = [current.replace(replace_char, '')]
     while True:
         try:
-            current = six.advance_iterator(iter_parts)
+            current = next(iter_parts)
         except StopIteration:
             raise ValueError(value)
         chunks.append(current.replace(replace_char, ''))
@@ -236,7 +236,7 @@ class OutputStreamFactory(object):
 
 def write_exception(ex, outfile):
     outfile.write("\n")
-    outfile.write(six.text_type(ex))
+    outfile.write(str(ex))
     outfile.write("\n")
 
 

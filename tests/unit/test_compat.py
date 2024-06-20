@@ -15,8 +15,6 @@ import signal
 
 import pytest
 
-from botocore.compat import six
-
 from awscli.compat import ensure_text_type
 from awscli.compat import compat_shell_quote
 from awscli.compat import compat_open
@@ -29,25 +27,25 @@ class TestEnsureText(unittest.TestCase):
     def test_string(self):
         value = 'foo'
         response = ensure_text_type(value)
-        self.assertIsInstance(response, six.text_type)
+        self.assertIsInstance(response, str)
         self.assertEqual(response, 'foo')
 
     def test_binary(self):
         value = b'bar'
         response = ensure_text_type(value)
-        self.assertIsInstance(response, six.text_type)
+        self.assertIsInstance(response, str)
         self.assertEqual(response, 'bar')
 
     def test_unicode(self):
         value = u'baz'
         response = ensure_text_type(value)
-        self.assertIsInstance(response, six.text_type)
+        self.assertIsInstance(response, str)
         self.assertEqual(response, 'baz')
 
     def test_non_ascii(self):
         value = b'\xe2\x9c\x93'
         response = ensure_text_type(value)
-        self.assertIsInstance(response, six.text_type)
+        self.assertIsInstance(response, str)
         self.assertEqual(response, u'\u2713')
 
     def test_non_string_or_bytes_raises_error(self):

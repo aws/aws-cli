@@ -11,7 +11,5 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 
-import six, unittest
-
-if six.PY3:
-    unittest.TestCase.assertItemsEqual = unittest.TestCase.assertCountEqual
+import unittest
+unittest.TestCase.assertItemsEqual = unittest.TestCase.assertCountEqual

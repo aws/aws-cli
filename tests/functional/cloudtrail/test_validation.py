@@ -12,7 +12,6 @@
 # language governing permissions and limitations under the License.
 import gzip
 
-from awscli.compat import six
 from botocore.exceptions import ClientError
 from tests.unit.customizations.cloudtrail.test_validation import \
     create_scenario, TEST_TRAIL_ARN, START_DATE, END_DATE, VALID_TEST_KEY, \
@@ -20,6 +19,7 @@ from tests.unit.customizations.cloudtrail.test_validation import \
 from awscli.testutils import mock, BaseAWSCommandParamsTest
 from awscli.customizations.cloudtrail.validation import DigestTraverser, \
     DATE_FORMAT, format_display_date, S3ClientProvider
+from awscli.compat import BytesIO
 from botocore.handlers import parse_get_bucket_location
 
 RETRIEVER_FUNCTION = 'awscli.customizations.cloudtrail.validation.create_digest_traverser'
@@ -28,7 +28,7 @@ END_TIME_ARG = END_DATE.strftime(DATE_FORMAT)
 
 
 def _gz_compress(data):
-    out = six.BytesIO()
+    out = BytesIO()
     f = gzip.GzipFile(fileobj=out, mode="wb")
     f.write(data.encode())
     f.close()
@@ -96,7 +96,7 @@ class TestCloudTrailCommand(BaseCloudTrailCommandTest):
     def test_verbose_output_shows_happy_case(self):
         self.parsed_responses = [
             {'LocationConstraint': 'us-east-1'},
-            {'Body': six.BytesIO(_gz_compress(self._logs[0]['_raw_value']))}
+            {'Body': BytesIO(_gz_compress(self._logs[0]['_raw_value']))}
         ]
         key_provider, digest_provider, validator = create_scenario(
             ['gap', 'link'], [[], [self._logs[0]]])
@@ -226,7 +226,7 @@ class TestCloudTrailCommand(BaseCloudTrailCommandTest):
             ['gap'], [[self._logs[0]]])
         self.parsed_responses = [
             {'LocationConstraint': ''},
-            {'Body': six.BytesIO(_gz_compress('does not match'))}
+            {'Body': BytesIO(_gz_compress('does not match'))}
         ]
         _setup_mock_traverser(self._mock_traverser, key_provider,
                               digest_provider, validator)
@@ -242,9 +242,9 @@ class TestCloudTrailCommand(BaseCloudTrailCommandTest):
             [[self._logs[2]], [], [self._logs[0], self._logs[1]]])
         self.parsed_responses = [
             {'LocationConstraint': ''},
-            {'Body': six.BytesIO(_gz_compress(self._logs[0]['_raw_value']))},
-            {'Body': six.BytesIO(_gz_compress(self._logs[1]['_raw_value']))},
-            {'Body': six.BytesIO(_gz_compress(self._logs[2]['_raw_value']))},
+            {'Body': BytesIO(_gz_compress(self._logs[0]['_raw_value']))},
+            {'Body': BytesIO(_gz_compress(self._logs[1]['_raw_value']))},
+            {'Body': BytesIO(_gz_compress(self._logs[2]['_raw_value']))},
         ]
         _setup_mock_traverser(self._mock_traverser, key_provider,
                               digest_provider, validator)
@@ -301,7 +301,7 @@ class TestCloudTrailCommand(BaseCloudTrailCommandTest):
         self.parsed_responses = [
             {'LocationConstraint': ''},
             {'Contents': [{'Key': key}]},
-            {'Body': six.BytesIO(_gz_compress(self._logs[0]['_raw_value'])),
+            {'Body': BytesIO(_gz_compress(self._logs[0]['_raw_value'])),
              'Metadata': {}},
         ]
         s3_client_provider = S3ClientProvider(self.driver.session, 'us-east-1')
@@ -323,7 +323,7 @@ class TestCloudTrailCommand(BaseCloudTrailCommandTest):
     def test_follows_trails_when_bucket_changes(self):
         self.parsed_responses = [
             {'LocationConstraint': 'us-east-1'},
-            {'Body': six.BytesIO(_gz_compress(self._logs[0]['_raw_value']))},
+            {'Body': BytesIO(_gz_compress(self._logs[0]['_raw_value']))},
             {'LocationConstraint': 'us-west-2'},
             {'LocationConstraint': 'eu-west-1'}
         ]

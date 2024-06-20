@@ -24,7 +24,7 @@ import textwrap
 
 from botocore.exceptions import ClientError
 
-from awscli.compat import shlex_quote, urlopen, ensure_text_type
+from awscli.compat import urlopen, ensure_text_type
 from awscli.customizations.commands import BasicCommand
 from awscli.customizations.utils import create_client_from_parsed_globals
 
@@ -475,7 +475,7 @@ class OpsWorksRegister(BasicCommand):
                 call.append(self._use_address)
 
             remote_call = ["/bin/sh", "-c", remote_script]
-            call.append(" ".join(shlex_quote(word) for word in remote_call))
+            call.append(" ".join(shlex.quote(word) for word in remote_call))
             subprocess.check_call(call)
 
     def _pre_config_document(self, args):

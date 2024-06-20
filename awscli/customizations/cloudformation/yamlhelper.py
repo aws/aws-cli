@@ -17,8 +17,6 @@ from ruamel.yaml.resolver import ScalarNode, SequenceNode
 from botocore.compat import json
 from botocore.compat import OrderedDict
 
-
-from awscli.compat import six
 from awscli.utils import dump_yaml_to_str
 
 
@@ -38,7 +36,7 @@ def intrinsics_multi_constructor(loader, tag_prefix, node):
 
     cfntag = prefix + tag
 
-    if tag == "GetAtt" and isinstance(node.value, six.string_types):
+    if tag == "GetAtt" and isinstance(node.value, str):
         # ShortHand notation for !GetAtt accepts Resource.Attribute format
         # while the standard notation is to use an array
         # [Resource, Attribute]. Convert shorthand to standard format

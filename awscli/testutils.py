@@ -36,11 +36,10 @@ from subprocess import Popen, PIPE
 from unittest import mock
 import unittest
 
-from awscli.compat import StringIO
+from awscli.compat import BytesIO, StringIO
 
 from ruamel.yaml import YAML
 
-from awscli.compat import six
 from botocore.session import Session
 from botocore.exceptions import ClientError
 from botocore.exceptions import WaiterError
@@ -295,14 +294,14 @@ class CapturedOutput(object):
 
 @contextlib.contextmanager
 def capture_output():
-    stderr = six.StringIO()
-    stdout = six.StringIO()
+    stderr = StringIO()
+    stdout = StringIO()
     with mock.patch('sys.stderr', stderr):
         with mock.patch('sys.stdout', stdout):
             yield CapturedOutput(stdout, stderr)
 
 
-class BufferedBytesIO(six.BytesIO):
+class BufferedBytesIO(BytesIO):
     def buffer(self):
         return self
 
@@ -641,8 +640,6 @@ def aws(command, collect_memory=False, env_vars=None,
         aws_command = 'python %s' % get_aws_cmd()
     full_command = '%s %s' % (aws_command, command)
     stdout_encoding = get_stdout_encoding()
-    if isinstance(full_command, six.text_type) and not six.PY3:
-        full_command = full_command.encode(stdout_encoding)
     INTEG_LOG.debug("Running command: %s", full_command)
     env = os.environ.copy()
     if 'AWS_DEFAULT_REGION' not in env:
@@ -760,7 +757,7 @@ class BaseS3CLICommand(unittest.TestCase):
 
     def assert_key_contents_equal(self, bucket, key, expected_contents):
         self.wait_until_key_exists(bucket, key)
-        if isinstance(expected_contents, six.BytesIO):
+        if isinstance(expected_contents, BytesIO):
             expected_contents = expected_contents.getvalue().decode('utf-8')
         actual_contents = self.get_key_contents(bucket, key)
         # The contents can be huge so we try to give helpful error messages

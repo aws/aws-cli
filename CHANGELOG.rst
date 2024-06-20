@@ -2,6 +2,20 @@
 CHANGELOG
 =========
 
+1.33.13
+=======
+
+* api-change:``bedrock-runtime``: This release adds document support to Converse and ConverseStream APIs
+* api-change:``codeartifact``: Add support for the Cargo package format.
+* api-change:``compute-optimizer``: This release enables AWS Compute Optimizer to analyze and generate optimization recommendations for Amazon RDS MySQL and RDS PostgreSQL.
+* api-change:``cost-optimization-hub``: This release enables AWS Cost Optimization Hub to show cost optimization recommendations for Amazon RDS MySQL and RDS PostgreSQL.
+* api-change:``dynamodb``: Doc-only update for DynamoDB. Fixed Important note in 6 Global table APIs - CreateGlobalTable, DescribeGlobalTable, DescribeGlobalTableSettings, ListGlobalTables, UpdateGlobalTable, and UpdateGlobalTableSettings.
+* api-change:``glue``: Fix Glue paginators for Jobs, JobRuns, Triggers, Blueprints and Workflows.
+* api-change:``ivs-realtime``: IVS Real-Time now offers customers the ability to record individual stage participants to S3.
+* api-change:``sagemaker``: Adds support for model references in Hub service, and adds support for cross-account access of Hubs
+* api-change:``securityhub``: Documentation updates for Security Hub
+
+
 1.33.12
 =======
 

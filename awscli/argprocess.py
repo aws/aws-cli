@@ -362,20 +362,16 @@ class ParamShorthandParser(ParamShorthand):
         # We need to handle a few special cases that the previous
         # parser handled in order to stay backwards compatible.
         model = cli_argument.argument_model
-        if model.type_name == 'list' and \
-           model.member.type_name == 'structure' and \
-           len(model.member.required_members) == 1 and \
-           self._uses_old_list_case(service_id, operation_name, cli_argument.name):
-            # First special case is handling a list of structures
-            # of a single element such as:
-            #
-            # --instance-ids id-1 id-2 id-3
-            #
-            # gets parsed as:
-            #
-            # [{"InstanceId": "id-1"}, {"InstanceId": "id-2"},
-            #  {"InstanceId": "id-3"}]
-            key_name = model.member.required_members[0]
+        if (model.type_name == "list"
+            and model.member.type_name == "structure"
+            and self._uses_old_list_case(service_id, operation_name, cli_argument.name)
+            ):
+            if len(model.member.members) == 1:
+                key_name = list(model.member.members.keys())[0]
+            elif len(model.member.required_members) == 1:
+                key_name = model.member.required_members[0]
+            else:
+                return
             new_values = [{key_name: v} for v in value]
             return new_values
         elif model.type_name == 'structure' and \

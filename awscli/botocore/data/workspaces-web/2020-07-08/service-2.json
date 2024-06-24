@@ -86,7 +86,8 @@
         {"shape":"ResourceNotFoundException"},
         {"shape":"AccessDeniedException"},
         {"shape":"ThrottlingException"},
-        {"shape":"ValidationException"}
+        {"shape":"ValidationException"},
+        {"shape":"ConflictException"}
       ],
       "documentation":"<p>Associates a trust store with a web portal.</p>",
       "idempotent":true
@@ -452,7 +453,8 @@
         {"shape":"ResourceNotFoundException"},
         {"shape":"AccessDeniedException"},
         {"shape":"ThrottlingException"},
-        {"shape":"ValidationException"}
+        {"shape":"ValidationException"},
+        {"shape":"ConflictException"}
       ],
       "documentation":"<p>Disassociates browser settings from a web portal.</p>",
       "idempotent":true
@@ -471,7 +473,8 @@
         {"shape":"ResourceNotFoundException"},
         {"shape":"AccessDeniedException"},
         {"shape":"ThrottlingException"},
-        {"shape":"ValidationException"}
+        {"shape":"ValidationException"},
+        {"shape":"ConflictException"}
       ],
       "documentation":"<p>Disassociates IP access settings from a web portal.</p>",
       "idempotent":true
@@ -490,7 +493,8 @@
         {"shape":"ResourceNotFoundException"},
         {"shape":"AccessDeniedException"},
         {"shape":"ThrottlingException"},
-        {"shape":"ValidationException"}
+        {"shape":"ValidationException"},
+        {"shape":"ConflictException"}
       ],
       "documentation":"<p>Disassociates network settings from a web portal.</p>",
       "idempotent":true
@@ -509,7 +513,8 @@
         {"shape":"ResourceNotFoundException"},
         {"shape":"AccessDeniedException"},
         {"shape":"ThrottlingException"},
-        {"shape":"ValidationException"}
+        {"shape":"ValidationException"},
+        {"shape":"ConflictException"}
       ],
       "documentation":"<p>Disassociates a trust store from a web portal.</p>",
       "idempotent":true
@@ -528,7 +533,8 @@
         {"shape":"ResourceNotFoundException"},
         {"shape":"AccessDeniedException"},
         {"shape":"ThrottlingException"},
-        {"shape":"ValidationException"}
+        {"shape":"ValidationException"},
+        {"shape":"ConflictException"}
       ],
       "documentation":"<p>Disassociates user access logging settings from a web portal.</p>",
       "idempotent":true
@@ -547,7 +553,8 @@
         {"shape":"ResourceNotFoundException"},
         {"shape":"AccessDeniedException"},
         {"shape":"ThrottlingException"},
-        {"shape":"ValidationException"}
+        {"shape":"ValidationException"},
+        {"shape":"ConflictException"}
       ],
       "documentation":"<p>Disassociates user settings from a web portal.</p>",
       "idempotent":true
@@ -1635,6 +1642,10 @@
         "portalArn":{
           "shape":"ARN",
           "documentation":"<p>The ARN of the web portal.</p>"
+        },
+        "tags":{
+          "shape":"TagList",
+          "documentation":"<p>The tags to add to the identity provider resource. A tag is a key-value pair.</p>"
         }
       }
     },
@@ -1679,7 +1690,7 @@
         },
         "tags":{
           "shape":"TagList",
-          "documentation":"<p>The tags to add to the browser settings resource. A tag is a key-value pair.</p>"
+          "documentation":"<p>The tags to add to the IP access settings resource. A tag is a key-value pair.</p>"
         }
       }
     },
@@ -1877,6 +1888,10 @@
         "customerManagedKey":{
           "shape":"keyArn",
           "documentation":"<p>The customer managed key used to encrypt sensitive information in the user settings.</p>"
+        },
+        "deepLinkAllowed":{
+          "shape":"EnabledType",
+          "documentation":"<p>Specifies whether the user can use deep links that open automatically when connecting to a session.</p>"
         },
         "disconnectTimeoutInMinutes":{
           "shape":"DisconnectTimeoutInMinutes",
@@ -3711,6 +3726,10 @@
           "shape":"EnabledType",
           "documentation":"<p>Specifies whether the user can copy text from the streaming session to the local device.</p>"
         },
+        "deepLinkAllowed":{
+          "shape":"EnabledType",
+          "documentation":"<p>Specifies whether the user can use deep links that open automatically when connecting to a session.</p>"
+        },
         "disconnectTimeoutInMinutes":{
           "shape":"DisconnectTimeoutInMinutes",
           "documentation":"<p>The amount of time that a streaming session remains active after users disconnect.</p>"
@@ -3815,6 +3834,10 @@
           "shape":"keyArn",
           "documentation":"<p>The customer managed key used to encrypt sensitive information in the user settings.</p>"
         },
+        "deepLinkAllowed":{
+          "shape":"EnabledType",
+          "documentation":"<p>Specifies whether the user can use deep links that open automatically when connecting to a session.</p>"
+        },
         "disconnectTimeoutInMinutes":{
           "shape":"DisconnectTimeoutInMinutes",
           "documentation":"<p>The amount of time that a streaming session remains active after users disconnect.</p>"
@@ -3861,6 +3884,10 @@
         "copyAllowed":{
           "shape":"EnabledType",
           "documentation":"<p>Specifies whether the user can copy text from the streaming session to the local device.</p>"
+        },
+        "deepLinkAllowed":{
+          "shape":"EnabledType",
+          "documentation":"<p>Specifies whether the user can use deep links that open automatically when connecting to a session.</p>"
         },
         "disconnectTimeoutInMinutes":{
           "shape":"DisconnectTimeoutInMinutes",
@@ -3957,5 +3984,5 @@
       "pattern":"^arn:[\\w+=\\/,.@-]+:kms:[a-zA-Z0-9\\-]*:[a-zA-Z0-9]{1,12}:key\\/[a-zA-Z0-9-]+$"
     }
   },
-  "documentation":"<p>WorkSpaces Web is a low cost, fully managed WorkSpace built specifically to facilitate secure, web-based workloads. WorkSpaces Web makes it easy for customers to safely provide their employees with access to internal websites and SaaS web applications without the administrative burden of appliances or specialized client software. WorkSpaces Web provides simple policy tools tailored for user interactions, while offloading common tasks like capacity management, scaling, and maintaining browser images.</p>"
+  "documentation":"<p>Amazon WorkSpaces Secure Browser is a low cost, fully managed WorkSpace built specifically to facilitate secure, web-based workloads. WorkSpaces Secure Browser makes it easy for customers to safely provide their employees with access to internal websites and SaaS web applications without the administrative burden of appliances or specialized client software. WorkSpaces Secure Browser provides simple policy tools tailored for user interactions, while offloading common tasks like capacity management, scaling, and maintaining browser images.</p>"
 }

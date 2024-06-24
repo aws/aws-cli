@@ -5,12 +5,14 @@
     "endpointPrefix":"profile",
     "jsonVersion":"1.1",
     "protocol":"rest-json",
+    "protocols":["rest-json"],
     "serviceAbbreviation":"Customer Profiles",
     "serviceFullName":"Amazon Connect Customer Profiles",
     "serviceId":"Customer Profiles",
     "signatureVersion":"v4",
     "signingName":"profile",
-    "uid":"customer-profiles-2020-08-15"
+    "uid":"customer-profiles-2020-08-15",
+    "auth":["aws.auth#sigv4"]
   },
   "operations":{
     "AddProfileKey":{
@@ -62,7 +64,7 @@
         {"shape":"ThrottlingException"},
         {"shape":"InternalServerException"}
       ],
-      "documentation":"<p>Creates a domain, which is a container for all customer data, such as customer profile attributes, object types, profile keys, and encryption keys. You can create multiple domains, and each domain can have multiple third-party integrations.</p> <p>Each Amazon Connect instance can be associated with only one domain. Multiple Amazon Connect instances can be associated with one domain.</p> <p>Use this API or <a href=\"https://docs.aws.amazon.com/customerprofiles/latest/APIReference/API_UpdateDomain.html\">UpdateDomain</a> to enable <a href=\"https://docs.aws.amazon.com/customerprofiles/latest/APIReference/API_GetMatches.html\">identity resolution</a>: set <code>Matching</code> to true.</p> <p>To prevent cross-service impersonation when you call this API, see <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/cross-service-confused-deputy-prevention.html\">Cross-service confused deputy prevention</a> for sample policies that you should apply. </p>"
+      "documentation":"<p>Creates a domain, which is a container for all customer data, such as customer profile attributes, object types, profile keys, and encryption keys. You can create multiple domains, and each domain can have multiple third-party integrations.</p> <p>Each Amazon Connect instance can be associated with only one domain. Multiple Amazon Connect instances can be associated with one domain.</p> <p>Use this API or <a href=\"https://docs.aws.amazon.com/customerprofiles/latest/APIReference/API_UpdateDomain.html\">UpdateDomain</a> to enable <a href=\"https://docs.aws.amazon.com/customerprofiles/latest/APIReference/API_GetMatches.html\">identity resolution</a>: set <code>Matching</code> to true.</p> <p>To prevent cross-service impersonation when you call this API, see <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/cross-service-confused-deputy-prevention.html\">Cross-service confused deputy prevention</a> for sample policies that you should apply. </p> <note> <p>It is not possible to associate a Customer Profiles domain with an Amazon Connect Instance directly from the API. If you would like to create a domain and associate a Customer Profiles domain, use the Amazon Connect admin website. For more information, see <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/enable-customer-profiles.html#enable-customer-profiles-step1\">Enable Customer Profiles</a>.</p> <p>Each Amazon Connect instance can be associated with only one domain. Multiple Amazon Connect instances can be associated with one domain.</p> </note>"
     },
     "CreateEventStream":{
       "name":"CreateEventStream",
@@ -1645,7 +1647,7 @@
         },
         "AccountNumber":{
           "shape":"sensitiveString1To255",
-          "documentation":"<p>A unique account number that you have given to the customer.</p>"
+          "documentation":"<p>An account number that you have given to the customer.</p>"
         },
         "AdditionalInformation":{
           "shape":"sensitiveString1To1000",
@@ -2946,6 +2948,14 @@
           "shape":"string1To255",
           "documentation":"<p>The format of your <code>sourceLastUpdatedTimestamp</code> that was previously set up.</p>"
         },
+        "MaxAvailableProfileObjectCount":{
+          "shape":"minSize0",
+          "documentation":"<p>The amount of provisioned profile object max count available.</p>"
+        },
+        "MaxProfileObjectCount":{
+          "shape":"minSize1",
+          "documentation":"<p>The amount of profile object max count assigned to the object type.</p>"
+        },
         "Fields":{
           "shape":"FieldMap",
           "documentation":"<p>A map of the name and ObjectType field.</p>"
@@ -3770,6 +3780,14 @@
           "shape":"timestamp",
           "documentation":"<p>The timestamp of when the domain was most recently edited.</p>"
         },
+        "MaxProfileObjectCount":{
+          "shape":"minSize1",
+          "documentation":"<p>The amount of profile object max count assigned to the object type.</p>"
+        },
+        "MaxAvailableProfileObjectCount":{
+          "shape":"minSize0",
+          "documentation":"<p>The amount of provisioned profile object max count available.</p>"
+        },
         "Tags":{
           "shape":"TagMap",
           "documentation":"<p>The tags used to organize, track, or control access for this resource.</p>"
@@ -4403,7 +4421,7 @@
         },
         "AccountNumber":{
           "shape":"sensitiveString1To255",
-          "documentation":"<p>A unique account number that you have given to the customer.</p>"
+          "documentation":"<p>An account number that you have given to the customer.</p>"
         },
         "AdditionalInformation":{
           "shape":"sensitiveString1To1000",
@@ -4688,6 +4706,10 @@
           "shape":"string1To255",
           "documentation":"<p>The format of your <code>sourceLastUpdatedTimestamp</code> that was previously set up. </p>"
         },
+        "MaxProfileObjectCount":{
+          "shape":"minSize1",
+          "documentation":"<p>The amount of profile object max count assigned to the object type</p>"
+        },
         "Fields":{
           "shape":"FieldMap",
           "documentation":"<p>A map of the name and ObjectType field.</p>"
@@ -4736,6 +4758,14 @@
         "SourceLastUpdatedTimestampFormat":{
           "shape":"string1To255",
           "documentation":"<p>The format of your <code>sourceLastUpdatedTimestamp</code> that was previously set up in fields that were parsed using <a href=\"https://docs.oracle.com/javase/10/docs/api/java/text/SimpleDateFormat.html\">SimpleDateFormat</a>. If you have <code>sourceLastUpdatedTimestamp</code> in your field, you must set up <code>sourceLastUpdatedTimestampFormat</code>.</p>"
+        },
+        "MaxProfileObjectCount":{
+          "shape":"minSize1",
+          "documentation":"<p>The amount of profile object max count assigned to the object type.</p>"
+        },
+        "MaxAvailableProfileObjectCount":{
+          "shape":"minSize0",
+          "documentation":"<p>The amount of provisioned profile object max count available.</p>"
         },
         "Fields":{
           "shape":"FieldMap",
@@ -5658,7 +5688,7 @@
         },
         "AccountNumber":{
           "shape":"sensitiveString0To255",
-          "documentation":"<p>A unique account number that you have given to the customer.</p>"
+          "documentation":"<p>An account number that you have given to the customer.</p>"
         },
         "PartyType":{
           "shape":"PartyType",
@@ -5886,6 +5916,14 @@
       "min":1
     },
     "message":{"type":"string"},
+    "minSize0":{
+      "type":"integer",
+      "min":0
+    },
+    "minSize1":{
+      "type":"integer",
+      "min":1
+    },
     "optionalBoolean":{"type":"boolean"},
     "requestValueList":{
       "type":"list",
@@ -5992,5 +6030,5 @@
       "pattern":"[a-f0-9]{32}"
     }
   },
-  "documentation":"<fullname>Amazon Connect Customer Profiles</fullname> <p>Amazon Connect Customer Profiles is a unified customer profile for your contact center that has pre-built connectors powered by AppFlow that make it easy to combine customer information from third party applications, such as Salesforce (CRM), ServiceNow (ITSM), and your enterprise resource planning (ERP), with contact history from your Amazon Connect contact center. If you're new to Amazon Connect, you might find it helpful to review the <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/\">Amazon Connect Administrator Guide</a>.</p>"
+  "documentation":"<fullname>Amazon Connect Customer Profiles</fullname> <p>Amazon Connect Customer Profiles is a unified customer profile for your contact center that has pre-built connectors powered by AppFlow that make it easy to combine customer information from third party applications, such as Salesforce (CRM), ServiceNow (ITSM), and your enterprise resource planning (ERP), with contact history from your Amazon Connect contact center. </p> <p>For more information about the Amazon Connect Customer Profiles feature, see <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/customer-profiles.html\">Use Customer Profiles</a> in the <i>Amazon Connect Administrator's Guide</i>. </p>"
 }

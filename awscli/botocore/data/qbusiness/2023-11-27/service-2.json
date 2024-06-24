@@ -2,6 +2,7 @@
   "version":"2.0",
   "metadata":{
     "apiVersion":"2023-11-27",
+    "auth":["aws.auth#sigv4"],
     "endpointPrefix":"qbusiness",
     "protocol":"rest-json",
     "protocolSettings":{"h2":"eventstream"},
@@ -110,7 +111,7 @@
         {"shape":"AccessDeniedException"},
         {"shape":"ServiceQuotaExceededException"}
       ],
-      "documentation":"<p>Creates an Amazon Q Business application.</p> <note> <p>There are new tiers for Amazon Q Business. Not all features in Amazon Q Business Pro are also available in Amazon Q Business Lite. For information on what's included in Amazon Q Business Lite and what's included in Amazon Q Business Pro, see <a href=\"https://docs.aws.amazon.com/amazonq/latest/qbusiness-ug/what-is.html#tiers\">Amazon Q Business tiers</a>. You must use the Amazon Q Business console to assign subscription tiers to users.</p> </note>",
+      "documentation":"<p>Creates an Amazon Q Business application.</p> <note> <p>There are new tiers for Amazon Q Business. Not all features in Amazon Q Business Pro are also available in Amazon Q Business Lite. For information on what's included in Amazon Q Business Lite and what's included in Amazon Q Business Pro, see <a href=\"https://docs.aws.amazon.com/amazonq/latest/qbusiness-ug/tiers.html#user-sub-tiers\">Amazon Q Business tiers</a>. You must use the Amazon Q Business console to assign subscription tiers to users.</p> </note>",
       "idempotent":true
     },
     "CreateDataSource":{
@@ -1562,7 +1563,7 @@
         },
         "containsAny":{
           "shape":"DocumentAttribute",
-          "documentation":"<p>Returns <code>true</code> when a document contains any of the specified document attributes or metadata fields. Supported for the following <a href=\"https://docs.aws.amazon.com/amazonq/latest/api-reference/API_DocumentAttributeValue.html\">document attribute value types</a>: <code>dateValue</code>, <code>longValue</code>, <code>stringListValue</code> and <code>stringValue</code>.</p>"
+          "documentation":"<p>Returns <code>true</code> when a document contains any of the specified document attributes or metadata fields. Supported for the following <a href=\"https://docs.aws.amazon.com/amazonq/latest/api-reference/API_DocumentAttributeValue.html\">document attribute value types</a>: <code>stringListValue</code>.</p>"
         },
         "greaterThan":{
           "shape":"DocumentAttribute",
@@ -1995,7 +1996,7 @@
         },
         "parentMessageId":{
           "shape":"MessageId",
-          "documentation":"<p>The identifier of the previous end user text input message in a conversation.</p>"
+          "documentation":"<p>The identifier of the previous system message in a conversation.</p>"
         },
         "attributeFilter":{
           "shape":"AttributeFilter",
@@ -2201,6 +2202,10 @@
         "attachmentsConfiguration":{
           "shape":"AttachmentsConfiguration",
           "documentation":"<p>An option to allow end users to upload files directly during chat.</p>"
+        },
+        "qAppsConfiguration":{
+          "shape":"QAppsConfiguration",
+          "documentation":"<p>An option to allow end users to create and use Amazon Q Apps in the web experience.</p>"
         }
       }
     },
@@ -2306,7 +2311,7 @@
         },
         "type":{
           "shape":"IndexType",
-          "documentation":"<p>The index type that's suitable for your needs. For more information on what's included in each type of index or index tier, see <a href=\"https://docs.aws.amazon.com/amazonq/latest/qbusiness-ug/what-is.html#tiers\">Amazon Q Business tiers</a>.</p>"
+          "documentation":"<p>The index type that's suitable for your needs. For more information on what's included in each type of index, see <a href=\"https://docs.aws.amazon.com/amazonq/latest/qbusiness-ug/tiers.html#index-tiers\">Amazon Q Business tiers</a>.</p>"
         },
         "description":{
           "shape":"Description",
@@ -3557,6 +3562,10 @@
         "attachmentsConfiguration":{
           "shape":"AppliedAttachmentsConfiguration",
           "documentation":"<p>Settings for whether end users can upload files directly during chat.</p>"
+        },
+        "qAppsConfiguration":{
+          "shape":"QAppsConfiguration",
+          "documentation":"<p>Settings for whether end users can create and use Amazon Q Apps in the web experience.</p>"
         }
       }
     },
@@ -5482,6 +5491,24 @@
       "members":{
       }
     },
+    "QAppsConfiguration":{
+      "type":"structure",
+      "required":["qAppsControlMode"],
+      "members":{
+        "qAppsControlMode":{
+          "shape":"QAppsControlMode",
+          "documentation":"<p>Status information about whether end users can create and use Amazon Q Apps in the web experience.</p>"
+        }
+      },
+      "documentation":"<p>Configuration information about Amazon Q Apps. (preview feature)</p>"
+    },
+    "QAppsControlMode":{
+      "type":"string",
+      "enum":[
+        "ENABLED",
+        "DISABLED"
+      ]
+    },
     "ReadAccessType":{
       "type":"string",
       "enum":[
@@ -6219,6 +6246,10 @@
         "attachmentsConfiguration":{
           "shape":"AttachmentsConfiguration",
           "documentation":"<p>An option to allow end users to upload files directly during chat.</p>"
+        },
+        "qAppsConfiguration":{
+          "shape":"QAppsConfiguration",
+          "documentation":"<p>An option to allow end users to create and use Amazon Q Apps in the web experience.</p>"
         }
       }
     },

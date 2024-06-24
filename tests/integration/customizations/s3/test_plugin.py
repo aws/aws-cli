@@ -30,7 +30,7 @@ import logging
 
 import pytest
 
-from awscli.compat import six, urlopen
+from awscli.compat import BytesIO, urlopen
 import botocore.session
 
 from awscli.testutils import unittest, get_stdout_encoding
@@ -188,7 +188,7 @@ class TestMoveCommand(BaseS3IntegrationTest):
     def test_mv_s3_to_s3_multipart(self):
         from_bucket = _SHARED_BUCKET
         to_bucket = self.create_bucket()
-        file_contents = six.BytesIO(b'abcd' * (1024 * 1024 * 10))
+        file_contents = BytesIO(b'abcd' * (1024 * 1024 * 10))
         self.put_object(from_bucket, 'foo.txt', file_contents)
 
         p = aws('s3 mv s3://%s/foo.txt s3://%s/foo.txt' % (from_bucket,
@@ -202,7 +202,7 @@ class TestMoveCommand(BaseS3IntegrationTest):
         from_bucket = _SHARED_BUCKET
         to_bucket = self.create_bucket()
 
-        large_file_contents = six.BytesIO(b'abcd' * (1024 * 1024 * 10))
+        large_file_contents = BytesIO(b'abcd' * (1024 * 1024 * 10))
         small_file_contents = 'small file contents'
         self.put_object(from_bucket, 'largefile', large_file_contents)
         self.put_object(from_bucket, 'smallfile', small_file_contents)
@@ -250,7 +250,7 @@ class TestMoveCommand(BaseS3IntegrationTest):
     def test_mv_with_large_file(self):
         bucket_name = _SHARED_BUCKET
         # 40MB will force a multipart upload.
-        file_contents = six.BytesIO(b'abcd' * (1024 * 1024 * 10))
+        file_contents = BytesIO(b'abcd' * (1024 * 1024 * 10))
         foo_txt = self.files.create_file(
             'foo.txt', file_contents.getvalue().decode('utf-8'))
         p = aws('s3 mv %s s3://%s/foo.txt' % (foo_txt, bucket_name))
@@ -287,7 +287,7 @@ class TestMoveCommand(BaseS3IntegrationTest):
         # but a mv command doesn't make sense because a mv is just a
         # cp + an rm of the src file.  We should be consistent and
         # not allow large files to be mv'd onto themselves.
-        file_contents = six.BytesIO(b'a' * (1024 * 1024 * 10))
+        file_contents = BytesIO(b'a' * (1024 * 1024 * 10))
         bucket_name = _SHARED_BUCKET
         self.put_object(bucket_name, key_name='key.txt',
                         contents=file_contents)
@@ -382,7 +382,7 @@ class TestCp(BaseS3IntegrationTest):
     def test_cp_s3_s3_multipart(self):
         from_bucket = _SHARED_BUCKET
         to_bucket = self.create_bucket()
-        file_contents = six.BytesIO(b'abcd' * (1024 * 1024 * 10))
+        file_contents = BytesIO(b'abcd' * (1024 * 1024 * 10))
         self.put_object(from_bucket, 'foo.txt', file_contents)
 
         p = aws('s3 cp s3://%s/foo.txt s3://%s/foo.txt' %
@@ -407,7 +407,7 @@ class TestCp(BaseS3IntegrationTest):
     def test_download_large_file(self):
         # This will force a multipart download.
         bucket_name = _SHARED_BUCKET
-        foo_contents = six.BytesIO(b'abcd' * (1024 * 1024 * 10))
+        foo_contents = BytesIO(b'abcd' * (1024 * 1024 * 10))
         self.put_object(bucket_name, key_name='foo.txt',
                         contents=foo_contents)
         local_foo_txt = self.files.full_path('foo.txt')
@@ -420,7 +420,7 @@ class TestCp(BaseS3IntegrationTest):
     @skip_if_windows('SIGINT not supported on Windows.')
     def test_download_ctrl_c_does_not_hang(self):
         bucket_name = _SHARED_BUCKET
-        foo_contents = six.BytesIO(b'abcd' * (1024 * 1024 * 40))
+        foo_contents = BytesIO(b'abcd' * (1024 * 1024 * 40))
         self.put_object(bucket_name, key_name='foo.txt',
                         contents=foo_contents)
         local_foo_txt = self.files.full_path('foo.txt')
@@ -993,7 +993,7 @@ class TestUnableToWriteToFile(BaseS3IntegrationTest):
         # which effectively disables the expect 100 continue logic.
         # This will result in a test error because we won't follow
         # the temporary redirect for the newly created bucket.
-        contents = six.BytesIO(b'a' * 10 * 1024 * 1024)
+        contents = BytesIO(b'a' * 10 * 1024 * 1024)
         self.put_object(bucket_name, 'foo.txt',
                         contents=contents)
         os.chmod(self.files.rootdir, 0o444)

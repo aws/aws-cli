@@ -15,7 +15,7 @@ import os
 from awscli.customizations.configure import configure, ConfigValue, NOT_SET
 from awscli.customizations.configure import profile_to_section
 from awscli.testutils import mock, unittest
-from awscli.compat import six
+from awscli.compat import StringIO
 
 from . import FakeSession
 
@@ -135,7 +135,7 @@ class TestInteractivePrompter(unittest.TestCase):
     def setUp(self):
         self.input_patch = mock.patch('awscli.compat.raw_input')
         self.mock_raw_input = self.input_patch.start()
-        self.stdout = six.StringIO()
+        self.stdout = StringIO()
         self.stdout_patch = mock.patch('sys.stdout', self.stdout)
         self.stdout_patch.start()
 

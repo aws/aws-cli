@@ -29,7 +29,6 @@ from awscli.compat import get_stderr_text_writer
 from awscli.formatter import get_formatter
 from awscli.plugin import load_plugins
 from awscli.commands import CLICommand
-from awscli.compat import six
 from awscli.argparser import MainArgParser
 from awscli.argparser import ServiceArgParser
 from awscli.argparser import ArgTableArgParser

@@ -19,7 +19,6 @@ from botocore.utils import is_s3express_bucket, ensure_boolean
 from dateutil.parser import parse
 from dateutil.tz import tzlocal
 
-from awscli.compat import six
 from awscli.compat import queue
 from awscli.customizations.commands import BasicCommand
 from awscli.customizations.s3.comparator import Comparator
@@ -739,7 +738,7 @@ class S3TransferCommand(S3Command):
             parsed_args.paths = [parsed_args.paths]
         for i in range(len(parsed_args.paths)):
             path = parsed_args.paths[i]
-            if isinstance(path, six.binary_type):
+            if isinstance(path, bytes):
                 dec_path = path.decode(sys.getfilesystemencoding())
                 enc_path = dec_path.encode('utf-8')
                 new_path = enc_path.decode('utf-8')

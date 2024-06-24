@@ -21,7 +21,6 @@ from dateutil import parser, tz
 import rsa
 from argparse import Namespace
 
-from awscli.compat import six
 from awscli.testutils import BaseAWSCommandParamsTest
 from awscli.customizations.cloudtrail.validation import DigestError, \
     extract_digest_key_date, normalize_date, format_date, DigestProvider, \
@@ -29,6 +28,7 @@ from awscli.customizations.cloudtrail.validation import DigestError, \
     Sha256RSADigestValidator, DATE_FORMAT, CloudTrailValidateLogs, \
     parse_date, assert_cloudtrail_arn_is_valid, DigestSignatureError, \
     InvalidDigestFormat, S3ClientProvider
+from awscli.compat import BytesIO
 from botocore.exceptions import ClientError
 from awscli.testutils import mock, unittest
 from awscli.schema import ParameterRequiredError
@@ -532,14 +532,14 @@ class TestDigestProvider(BaseAWSCommandParamsTest):
         )
 
     def test_ensures_digest_has_proper_metadata(self):
-        out = six.BytesIO()
+        out = BytesIO()
         f = gzip.GzipFile(fileobj=out, mode="wb")
         f.write('{"foo":"bar"}'.encode())
         f.close()
         gzipped_data = out.getvalue()
         s3_client = mock.Mock()
         s3_client.get_object.return_value = {
-            'Body': six.BytesIO(gzipped_data),
+            'Body': BytesIO(gzipped_data),
             'Metadata': {}}
         provider = self._get_mock_provider(s3_client)
         with self.assertRaises(DigestSignatureError):
@@ -548,7 +548,7 @@ class TestDigestProvider(BaseAWSCommandParamsTest):
     def test_ensures_digest_can_be_gzip_inflated(self):
         s3_client = mock.Mock()
         s3_client.get_object.return_value = {
-            'Body': six.BytesIO('foo'.encode()),
+            'Body': BytesIO('foo'.encode()),
             'Metadata': {}}
         provider = self._get_mock_provider(s3_client)
         with self.assertRaises(InvalidDigestFormat):
@@ -556,14 +556,14 @@ class TestDigestProvider(BaseAWSCommandParamsTest):
 
     def test_ensures_digests_can_be_json_parsed(self):
         json_str = '{{{'
-        out = six.BytesIO()
+        out = BytesIO()
         f = gzip.GzipFile(fileobj=out, mode="wb")
         f.write(json_str.encode())
         f.close()
         gzipped_data = out.getvalue()
         s3_client = mock.Mock()
         s3_client.get_object.return_value = {
-            'Body': six.BytesIO(gzipped_data),
+            'Body': BytesIO(gzipped_data),
             'Metadata': {'signature': 'abc', 'signature-algorithm': 'SHA256'}}
         provider = self._get_mock_provider(s3_client)
         with self.assertRaises(InvalidDigestFormat):
@@ -571,14 +571,14 @@ class TestDigestProvider(BaseAWSCommandParamsTest):
 
     def test_fetches_digests(self):
         json_str = '{"foo":"bar"}'
-        out = six.BytesIO()
+        out = BytesIO()
         f = gzip.GzipFile(fileobj=out, mode="wb")
         f.write(json_str.encode())
         f.close()
         gzipped_data = out.getvalue()
         s3_client = mock.Mock()
         s3_client.get_object.return_value = {
-            'Body': six.BytesIO(gzipped_data),
+            'Body': BytesIO(gzipped_data),
             'Metadata': {'signature': 'abc', 'signature-algorithm': 'SHA256'}}
         provider = self._get_mock_provider(s3_client)
         result = provider.fetch_digest('bucket', 'key')

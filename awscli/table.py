@@ -17,7 +17,6 @@ import unicodedata
 import colorama
 
 from awscli.utils import is_a_tty
-from awscli.compat import six
 
 
 # `autoreset` allows us to not have to sent reset sequences for every
@@ -35,7 +34,7 @@ def get_text_length(text):
     # * A(Ambiguous)
     # * F(Fullwidth)
     # * W(Wide)
-    text = six.text_type(text)
+    text = str(text)
     return sum(2 if unicodedata.east_asian_width(char) in 'WFA' else 1
                for char in text)
 
@@ -412,7 +411,7 @@ class Section(object):
         self._update_max_widths(row)
 
     def _format_row(self, row):
-        return [six.text_type(r) for r in row]
+        return [str(r) for r in row]
 
     def _update_max_widths(self, row):
         if not self._max_widths:

@@ -2,6 +2,17 @@
 CHANGELOG
 =========
 
+2.17.1
+======
+
+* api-change:``qbusiness``: Allow enable/disable Q Apps when creating/updating a Q application; Return the Q Apps enablement information when getting a Q application.
+* api-change:``ec2``: Fix EC2 multi-protocol info in models.
+* api-change:``ssm``: Add sensitive trait to SSM IPAddress property for CloudTrail redaction
+* api-change:``customer-profiles``: This release includes changes to ProfileObjectType APIs, adds functionality top set and get capacity for profile object types.
+* api-change:``workspaces-web``: Added ability to enable DeepLinking functionality on a Portal via UserSettings as well as added support for IdentityProvider resource tagging.
+* api-change:``bedrock-runtime``: Increases Converse API's document name length
+
+
 2.17.0
 ======
 

@@ -2,6 +2,15 @@
 CHANGELOG
 =========
 
+1.33.15
+=======
+
+* api-change:``autoscaling``: Doc only update for Auto Scaling's TargetTrackingMetricDataQuery
+* api-change:``ec2``: This release is for the launch of the new u7ib-12tb.224xlarge, R8g, c7gn.metal and mac2-m1ultra.metal instance types
+* api-change:``networkmanager``: This is model changes & documentation update for the Asynchronous Error Reporting feature for AWS Cloud WAN. This feature allows customers to view errors that occur while their resources are being provisioned, enabling customers to fix their resources without needing external support.
+* api-change:``workspaces-thin-client``: This release adds the deviceCreationTags field to CreateEnvironment API input, UpdateEnvironment API input and GetEnvironment API output.
+
+
 1.33.14
 =======
 

@@ -12,8 +12,6 @@
 # language governing permissions and limitations under the License.
 import datetime
 
-from tests import mock
-
 from dateutil.tz import tzutc
 from botocore.compat import urlparse, parse_qs
 

@@ -3,8 +3,8 @@
   "metadata":{
     "apiVersion":"2023-08-22",
     "endpointPrefix":"thinclient",
-    "jsonVersion":"1.1",
     "protocol":"rest-json",
+    "protocols":["rest-json"],
     "serviceFullName":"Amazon WorkSpaces Thin Client",
     "serviceId":"WorkSpaces Thin Client",
     "signatureVersion":"v4",
@@ -427,6 +427,10 @@
         "tags":{
           "shape":"TagsMap",
           "documentation":"<p>A map of the key-value pairs of the tag or tags to assign to the resource.</p>"
+        },
+        "deviceCreationTags":{
+          "shape":"DeviceCreationTagsMap",
+          "documentation":"<p>A map of the key-value pairs of the tag or tags to assign to the newly created devices for this environment.</p>"
         }
       }
     },
@@ -636,6 +640,26 @@
       },
       "documentation":"<p>Describes a thin client device.</p>"
     },
+    "DeviceCreationTagKey":{
+      "type":"string",
+      "max":128,
+      "min":1,
+      "pattern":"(?!aws:)[A-Za-z0-9 _=@:.+-/]+"
+    },
+    "DeviceCreationTagValue":{
+      "type":"string",
+      "max":256,
+      "min":0,
+      "pattern":"[A-Za-z0-9 _=@:.+-/]+"
+    },
+    "DeviceCreationTagsMap":{
+      "type":"map",
+      "key":{"shape":"DeviceCreationTagKey"},
+      "value":{"shape":"DeviceCreationTagValue"},
+      "max":50,
+      "min":0,
+      "sensitive":true
+    },
     "DeviceId":{
       "type":"string",
       "pattern":"[a-zA-Z0-9]{24}"
@@ -810,6 +834,10 @@
         "tags":{
           "shape":"TagsMap",
           "documentation":"<p>The tag keys and optional values for the resource.</p>"
+        },
+        "deviceCreationTags":{
+          "shape":"DeviceCreationTagsMap",
+          "documentation":"<p>\"The tag keys and optional values for the newly created devices for this environment.\"</p>"
         }
       },
       "documentation":"<p>Describes an environment.</p>"
@@ -1513,6 +1541,10 @@
         "desiredSoftwareSetId":{
           "shape":"SoftwareSetIdOrEmptyString",
           "documentation":"<p>The ID of the software set to apply.</p>"
+        },
+        "deviceCreationTags":{
+          "shape":"DeviceCreationTagsMap",
+          "documentation":"<p>A map of the key-value pairs of the tag or tags to assign to the newly created devices for this environment.</p>"
         }
       }
     },

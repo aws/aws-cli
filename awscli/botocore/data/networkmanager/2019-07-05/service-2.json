@@ -1802,9 +1802,54 @@
         "UpdatedAt":{
           "shape":"DateTime",
           "documentation":"<p>The timestamp when the attachment was last updated.</p>"
+        },
+        "LastModificationErrors":{
+          "shape":"AttachmentErrorList",
+          "documentation":"<p>Describes the error associated with the attachment request.</p>"
         }
       },
       "documentation":"<p>Describes a core network attachment.</p>"
+    },
+    "AttachmentError":{
+      "type":"structure",
+      "members":{
+        "Code":{
+          "shape":"AttachmentErrorCode",
+          "documentation":"<p>The error code for the attachment request. </p>"
+        },
+        "Message":{
+          "shape":"ServerSideString",
+          "documentation":"<p>The message associated with the error <code>code</code>.</p>"
+        },
+        "ResourceArn":{
+          "shape":"ResourceArn",
+          "documentation":"<p>The ARN of the requested attachment resource.</p>"
+        },
+        "RequestId":{
+          "shape":"ServerSideString",
+          "documentation":"<p>The ID of the attachment request.</p>"
+        }
+      },
+      "documentation":"<p>Describes the error associated with an attachment request.</p>"
+    },
+    "AttachmentErrorCode":{
+      "type":"string",
+      "enum":[
+        "VPC_NOT_FOUND",
+        "SUBNET_NOT_FOUND",
+        "SUBNET_DUPLICATED_IN_AVAILABILITY_ZONE",
+        "SUBNET_NO_FREE_ADDRESSES",
+        "SUBNET_UNSUPPORTED_AVAILABILITY_ZONE",
+        "SUBNET_NO_IPV6_CIDRS",
+        "VPN_CONNECTION_NOT_FOUND",
+        "MAXIMUM_NO_ENCAP_LIMIT_EXCEEDED"
+      ]
+    },
+    "AttachmentErrorList":{
+      "type":"list",
+      "member":{"shape":"AttachmentError"},
+      "max":20,
+      "min":0
     },
     "AttachmentId":{
       "type":"string",
@@ -2001,6 +2046,10 @@
         "SubnetArn":{
           "shape":"SubnetArn",
           "documentation":"<p>The subnet ARN for the Connect peer. This only applies only when the protocol is NO_ENCAP.</p>"
+        },
+        "LastModificationErrors":{
+          "shape":"ConnectPeerErrorList",
+          "documentation":"<p>Describes the error associated with the attachment request.</p>"
         }
       },
       "documentation":"<p>Describes a core network Connect peer.</p>"
@@ -2095,6 +2144,45 @@
         }
       },
       "documentation":"<p>Describes a core network Connect peer configuration.</p>"
+    },
+    "ConnectPeerError":{
+      "type":"structure",
+      "members":{
+        "Code":{
+          "shape":"ConnectPeerErrorCode",
+          "documentation":"<p>The error code for the Connect peer request.</p>"
+        },
+        "Message":{
+          "shape":"ServerSideString",
+          "documentation":"<p>The message associated with the error <code>code</code>.</p>"
+        },
+        "ResourceArn":{
+          "shape":"ResourceArn",
+          "documentation":"<p>The ARN of the requested Connect peer resource.</p>"
+        },
+        "RequestId":{
+          "shape":"ServerSideString",
+          "documentation":"<p>The ID of the Connect peer request.</p>"
+        }
+      },
+      "documentation":"<p>Describes an error associated with a Connect peer request</p>"
+    },
+    "ConnectPeerErrorCode":{
+      "type":"string",
+      "enum":[
+        "EDGE_LOCATION_NO_FREE_IPS",
+        "EDGE_LOCATION_PEER_DUPLICATE",
+        "SUBNET_NOT_FOUND",
+        "IP_OUTSIDE_SUBNET_CIDR_RANGE",
+        "INVALID_INSIDE_CIDR_BLOCK",
+        "NO_ASSOCIATED_CIDR_BLOCK"
+      ]
+    },
+    "ConnectPeerErrorList":{
+      "type":"list",
+      "member":{"shape":"ConnectPeerError"},
+      "max":20,
+      "min":0
     },
     "ConnectPeerId":{
       "type":"string",
@@ -5845,9 +5933,56 @@
         "CreatedAt":{
           "shape":"DateTime",
           "documentation":"<p>The timestamp when the attachment peer was created.</p>"
+        },
+        "LastModificationErrors":{
+          "shape":"PeeringErrorList",
+          "documentation":"<p>Describes the error associated with the Connect peer request.</p>"
         }
       },
       "documentation":"<p>Describes a peering connection.</p>"
+    },
+    "PeeringError":{
+      "type":"structure",
+      "members":{
+        "Code":{
+          "shape":"PeeringErrorCode",
+          "documentation":"<p>The error code for the peering request.</p>"
+        },
+        "Message":{
+          "shape":"ServerSideString",
+          "documentation":"<p>The message associated with the error <code>code</code>.</p>"
+        },
+        "ResourceArn":{
+          "shape":"ResourceArn",
+          "documentation":"<p>The ARN of the requested peering resource.</p>"
+        },
+        "RequestId":{
+          "shape":"ServerSideString",
+          "documentation":"<p>The ID of the Peering request.</p>"
+        },
+        "MissingPermissionsContext":{
+          "shape":"PermissionsErrorContext",
+          "documentation":"<p>Provides additional information about missing permissions for the peering error.</p>"
+        }
+      },
+      "documentation":"<p>Describes an error associated with a peering request.</p>"
+    },
+    "PeeringErrorCode":{
+      "type":"string",
+      "enum":[
+        "TRANSIT_GATEWAY_NOT_FOUND",
+        "TRANSIT_GATEWAY_PEERS_LIMIT_EXCEEDED",
+        "MISSING_PERMISSIONS",
+        "INTERNAL_ERROR",
+        "EDGE_LOCATION_PEER_DUPLICATE",
+        "INVALID_TRANSIT_GATEWAY_STATE"
+      ]
+    },
+    "PeeringErrorList":{
+      "type":"list",
+      "member":{"shape":"PeeringError"},
+      "max":20,
+      "min":0
     },
     "PeeringId":{
       "type":"string",
@@ -5871,6 +6006,16 @@
     "PeeringType":{
       "type":"string",
       "enum":["TRANSIT_GATEWAY"]
+    },
+    "PermissionsErrorContext":{
+      "type":"structure",
+      "members":{
+        "MissingPermission":{
+          "shape":"ServerSideString",
+          "documentation":"<p>The missing permissions.</p>"
+        }
+      },
+      "documentation":"<p>Describes additional information about missing permissions. </p>"
     },
     "ProposedNetworkFunctionGroupChange":{
       "type":"structure",

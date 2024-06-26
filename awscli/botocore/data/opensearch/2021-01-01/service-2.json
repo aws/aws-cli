@@ -1063,6 +1063,37 @@
     }
   },
   "shapes":{
+    "AIMLOptionsInput":{
+      "type":"structure",
+      "members":{
+        "NaturalLanguageQueryGenerationOptions":{
+          "shape":"NaturalLanguageQueryGenerationOptionsInput",
+          "documentation":"<p>Container for parameters required for natural language query generation on the specified domain.</p>"
+        }
+      },
+      "documentation":"<p>Container for parameters required to enable all machine learning features.</p>"
+    },
+    "AIMLOptionsOutput":{
+      "type":"structure",
+      "members":{
+        "NaturalLanguageQueryGenerationOptions":{
+          "shape":"NaturalLanguageQueryGenerationOptionsOutput",
+          "documentation":"<p>Container for parameters required for natural language query generation on the specified domain.</p>"
+        }
+      },
+      "documentation":"<p>Container for parameters representing the state of machine learning features on the specified domain.</p>"
+    },
+    "AIMLOptionsStatus":{
+      "type":"structure",
+      "members":{
+        "Options":{
+          "shape":"AIMLOptionsOutput",
+          "documentation":"<p>Machine learning options on the specified domain.</p>"
+        },
+        "Status":{"shape":"OptionStatus"}
+      },
+      "documentation":"<p>The status of machine learning options on the specified domain.</p>"
+    },
     "ARN":{
       "type":"string",
       "documentation":"<p>The Amazon Resource Name (ARN) of the domain. See <a href=\"https://docs.aws.amazon.com/IAM/latest/UserGuide/index.html\">Identifiers for IAM Entities </a> in <i>Using Amazon Web Services Identity and Access Management</i> for more information. </p>",
@@ -2155,6 +2186,10 @@
         "SoftwareUpdateOptions":{
           "shape":"SoftwareUpdateOptions",
           "documentation":"<p>Software update options for the domain.</p>"
+        },
+        "AIMLOptions":{
+          "shape":"AIMLOptionsInput",
+          "documentation":"<p>Options for all machine learning features for the specified domain.</p>"
         }
       }
     },
@@ -3207,6 +3242,10 @@
         "ModifyingProperties":{
           "shape":"ModifyingPropertiesList",
           "documentation":"<p>Information about the domain properties that are currently being modified.</p>"
+        },
+        "AIMLOptions":{
+          "shape":"AIMLOptionsStatus",
+          "documentation":"<p>Container for parameters required to enable all machine learning features.</p>"
         }
       },
       "documentation":"<p>Container for the configuration of an OpenSearch Service domain.</p>"
@@ -3614,6 +3653,10 @@
         "ModifyingProperties":{
           "shape":"ModifyingPropertiesList",
           "documentation":"<p>Information about the domain properties that are currently being modified.</p>"
+        },
+        "AIMLOptions":{
+          "shape":"AIMLOptionsOutput",
+          "documentation":"<p>Container for parameters required to enable all machine learning features.</p>"
         }
       },
       "documentation":"<p>The current status of an OpenSearch Service domain.</p>"
@@ -4933,6 +4976,49 @@
     "ModifyingPropertiesList":{
       "type":"list",
       "member":{"shape":"ModifyingProperties"}
+    },
+    "NaturalLanguageQueryGenerationCurrentState":{
+      "type":"string",
+      "enum":[
+        "NOT_ENABLED",
+        "ENABLE_COMPLETE",
+        "ENABLE_IN_PROGRESS",
+        "ENABLE_FAILED",
+        "DISABLE_COMPLETE",
+        "DISABLE_IN_PROGRESS",
+        "DISABLE_FAILED"
+      ]
+    },
+    "NaturalLanguageQueryGenerationDesiredState":{
+      "type":"string",
+      "enum":[
+        "ENABLED",
+        "DISABLED"
+      ]
+    },
+    "NaturalLanguageQueryGenerationOptionsInput":{
+      "type":"structure",
+      "members":{
+        "DesiredState":{
+          "shape":"NaturalLanguageQueryGenerationDesiredState",
+          "documentation":"<p>The desired state of the natural language query generation feature. Valid values are ENABLED and DISABLED.</p>"
+        }
+      },
+      "documentation":"<p>Container for parameters required to enable the natural language query generation feature.</p>"
+    },
+    "NaturalLanguageQueryGenerationOptionsOutput":{
+      "type":"structure",
+      "members":{
+        "DesiredState":{
+          "shape":"NaturalLanguageQueryGenerationDesiredState",
+          "documentation":"<p>The desired state of the natural language query generation feature. Valid values are ENABLED and DISABLED.</p>"
+        },
+        "CurrentState":{
+          "shape":"NaturalLanguageQueryGenerationCurrentState",
+          "documentation":"<p>The current state of the natural language query generation feature, indicating completion, in progress, or failure.</p>"
+        }
+      },
+      "documentation":"<p>Container for parameters representing the state of the natural language query generation feature on the specified domain.</p>"
     },
     "NextToken":{
       "type":"string",
@@ -6421,6 +6507,10 @@
         "SoftwareUpdateOptions":{
           "shape":"SoftwareUpdateOptions",
           "documentation":"<p>Service software update options for the domain.</p>"
+        },
+        "AIMLOptions":{
+          "shape":"AIMLOptionsInput",
+          "documentation":"<p>Options for all machine learning features for the specified domain.</p>"
         }
       },
       "documentation":"<p>Container for the request parameters to the <code>UpdateDomain</code> operation.</p>"

@@ -5,6 +5,7 @@
     "endpointPrefix":"kinesisanalytics",
     "jsonVersion":"1.1",
     "protocol":"json",
+    "protocols":["json"],
     "serviceAbbreviation":"Kinesis Analytics V2",
     "serviceFullName":"Amazon Kinesis Analytics",
     "serviceId":"Kinesis Analytics V2",
@@ -309,6 +310,21 @@
       ],
       "documentation":"<p>Returns information about a specific Managed Service for Apache Flink application.</p> <p>If you want to retrieve a list of all applications in your account, use the <a>ListApplications</a> operation.</p>"
     },
+    "DescribeApplicationOperation":{
+      "name":"DescribeApplicationOperation",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DescribeApplicationOperationRequest"},
+      "output":{"shape":"DescribeApplicationOperationResponse"},
+      "errors":[
+        {"shape":"InvalidArgumentException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"UnsupportedOperationException"}
+      ],
+      "documentation":"Returns information about a specific operation performed on a Managed Service for Apache Flink application"
+    },
     "DescribeApplicationSnapshot":{
       "name":"DescribeApplicationSnapshot",
       "http":{
@@ -356,6 +372,21 @@
         {"shape":"UnsupportedOperationException"}
       ],
       "documentation":"<p>Infers a schema for a SQL-based Kinesis Data Analytics application by evaluating sample records on the specified streaming source (Kinesis data stream or Kinesis Data Firehose delivery stream) or Amazon S3 object. In the response, the operation returns the inferred schema and also the sample records that the operation used to infer the schema.</p> <p> You can use the inferred schema when configuring a streaming source for your application. When you create an application using the Kinesis Data Analytics console, the console uses this operation to infer a schema and show it in the console user interface. </p>"
+    },
+    "ListApplicationOperations":{
+      "name":"ListApplicationOperations",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"ListApplicationOperationsRequest"},
+      "output":{"shape":"ListApplicationOperationsResponse"},
+      "errors":[
+        {"shape":"InvalidArgumentException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"UnsupportedOperationException"}
+      ],
+      "documentation":"Lists information about operations performed on a Managed Service for Apache Flink application"
     },
     "ListApplicationSnapshots":{
       "name":"ListApplicationSnapshots",
@@ -430,7 +461,7 @@
         {"shape":"ConcurrentModificationException"},
         {"shape":"UnsupportedOperationException"}
       ],
-      "documentation":"<p>Reverts the application to the previous running version. You can roll back an application if you suspect it is stuck in a transient status. </p> <p>You can roll back an application only if it is in the <code>UPDATING</code> or <code>AUTOSCALING</code> status.</p> <p>When you rollback an application, it loads state data from the last successful snapshot. If the application has no snapshots, Managed Service for Apache Flink rejects the rollback request.</p> <p>This action is not supported for Managed Service for Apache Flink for SQL applications.</p>"
+      "documentation":"<p>Reverts the application to the previous running version. You can roll back an application if you suspect it is stuck in a transient status or in the running status. </p> <p>You can roll back an application only if it is in the <code>UPDATING</code>, <code>AUTOSCALING</code>, or <code>RUNNING</code> statuses.</p> <p>When you rollback an application, it loads state data from the last successful snapshot. If the application has no snapshots, Managed Service for Apache Flink rejects the rollback request.</p>"
     },
     "StartApplication":{
       "name":"StartApplication",
@@ -579,6 +610,10 @@
         "CloudWatchLoggingOptionDescriptions":{
           "shape":"CloudWatchLoggingOptionDescriptions",
           "documentation":"<p>The descriptions of the current CloudWatch logging options for the SQL-based Kinesis Data Analytics application.</p>"
+        },
+        "OperationId":{
+          "shape":"OperationId",
+          "documentation":"Operation ID for tracking AddApplicationCloudWatchLoggingOption request"
         }
       }
     },
@@ -786,6 +821,10 @@
         "VpcConfigurationDescription":{
           "shape":"VpcConfigurationDescription",
           "documentation":"<p>The parameters of the new VPC configuration.</p>"
+        },
+        "OperationId":{
+          "shape":"OperationId",
+          "documentation":"Operation ID for tracking AddApplicationVpcConfiguration request"
         }
       }
     },
@@ -856,6 +895,7 @@
           "shape":"ApplicationSnapshotConfiguration",
           "documentation":"<p>Describes whether snapshots are enabled for a Managed Service for Apache Flink application.</p>"
         },
+        "ApplicationSystemRollbackConfiguration":{"shape":"ApplicationSystemRollbackConfiguration"},
         "VpcConfigurations":{
           "shape":"VpcConfigurations",
           "documentation":"<p>The array of descriptions of VPC configurations available to the application.</p>"
@@ -894,6 +934,7 @@
           "shape":"ApplicationSnapshotConfigurationDescription",
           "documentation":"<p>Describes whether snapshots are enabled for a Managed Service for Apache Flink application.</p>"
         },
+        "ApplicationSystemRollbackConfigurationDescription":{"shape":"ApplicationSystemRollbackConfigurationDescription"},
         "VpcConfigurationDescriptions":{
           "shape":"VpcConfigurationDescriptions",
           "documentation":"<p>The array of descriptions of VPC configurations available to the application.</p>"
@@ -928,6 +969,7 @@
           "shape":"ApplicationSnapshotConfigurationUpdate",
           "documentation":"<p>Describes whether snapshots are enabled for a Managed Service for Apache Flink application.</p>"
         },
+        "ApplicationSystemRollbackConfigurationUpdate":{"shape":"ApplicationSystemRollbackConfigurationUpdate"},
         "VpcConfigurationUpdates":{
           "shape":"VpcConfigurationUpdates",
           "documentation":"<p>Updates to the array of descriptions of VPC configurations available to the application.</p>"
@@ -1010,6 +1052,10 @@
           "shape":"ApplicationVersionId",
           "documentation":"<p>If you reverted the application using <a>RollbackApplication</a>, the application version when <code>RollbackApplication</code> was called.</p>"
         },
+        "ApplicationVersionCreateTimestamp":{
+          "shape":"Timestamp",
+          "documentation":"The current timestamp when the application version was created."
+        },
         "ConditionalToken":{
           "shape":"ConditionalToken",
           "documentation":"<p>A value you use to implement strong concurrency for application updates.</p>"
@@ -1075,9 +1121,56 @@
     },
     "ApplicationName":{
       "type":"string",
+      "documentation":"The name of the application",
       "max":128,
       "min":1,
       "pattern":"[a-zA-Z0-9_.-]+"
+    },
+    "ApplicationOperationInfo":{
+      "type":"structure",
+      "members":{
+        "Operation":{"shape":"Operation"},
+        "OperationId":{"shape":"OperationId"},
+        "StartTime":{
+          "shape":"Timestamp",
+          "documentation":"The timestamp at which the operation was created"
+        },
+        "EndTime":{
+          "shape":"Timestamp",
+          "documentation":"The timestamp at which the operation finished for the application"
+        },
+        "OperationStatus":{"shape":"OperationStatus"}
+      },
+      "documentation":"Provides a description of the operation, such as the type and status of operation"
+    },
+    "ApplicationOperationInfoDetails":{
+      "type":"structure",
+      "required":[
+        "Operation",
+        "StartTime",
+        "EndTime",
+        "OperationStatus"
+      ],
+      "members":{
+        "Operation":{"shape":"Operation"},
+        "StartTime":{
+          "shape":"Timestamp",
+          "documentation":"The timestamp at which the operation was created"
+        },
+        "EndTime":{
+          "shape":"Timestamp",
+          "documentation":"The timestamp at which the operation finished for the application"
+        },
+        "OperationStatus":{"shape":"OperationStatus"},
+        "ApplicationVersionChangeDetails":{"shape":"ApplicationVersionChangeDetails"},
+        "OperationFailureDetails":{"shape":"OperationFailureDetails"}
+      },
+      "documentation":"Provides a description of the operation, such as the operation-type and status"
+    },
+    "ApplicationOperationInfoList":{
+      "type":"list",
+      "member":{"shape":"ApplicationOperationInfo"},
+      "documentation":"List of ApplicationOperationInfo for an application"
     },
     "ApplicationRestoreConfiguration":{
       "type":"structure",
@@ -1191,6 +1284,57 @@
         }
       },
       "documentation":"<p>Provides application summary information, including the application Amazon Resource Name (ARN), name, and status.</p>"
+    },
+    "ApplicationSystemRollbackConfiguration":{
+      "type":"structure",
+      "required":["RollbackEnabled"],
+      "members":{
+        "RollbackEnabled":{
+          "shape":"BooleanObject",
+          "documentation":"Describes whether system rollbacks are enabled for a Managed Service for Apache Flink application"
+        }
+      },
+      "documentation":"Describes system rollback configuration for a Managed Service for Apache Flink application"
+    },
+    "ApplicationSystemRollbackConfigurationDescription":{
+      "type":"structure",
+      "required":["RollbackEnabled"],
+      "members":{
+        "RollbackEnabled":{
+          "shape":"BooleanObject",
+          "documentation":"Describes whether system rollbacks are enabled for a Managed Service for Apache Flink application"
+        }
+      },
+      "documentation":"Describes system rollback configuration for a Managed Service for Apache Flink application"
+    },
+    "ApplicationSystemRollbackConfigurationUpdate":{
+      "type":"structure",
+      "required":["RollbackEnabledUpdate"],
+      "members":{
+        "RollbackEnabledUpdate":{
+          "shape":"BooleanObject",
+          "documentation":"Describes whether system rollbacks are enabled for a Managed Service for Apache Flink application"
+        }
+      },
+      "documentation":"Describes system rollback configuration for a Managed Service for Apache Flink application"
+    },
+    "ApplicationVersionChangeDetails":{
+      "type":"structure",
+      "required":[
+        "ApplicationVersionUpdatedFrom",
+        "ApplicationVersionUpdatedTo"
+      ],
+      "members":{
+        "ApplicationVersionUpdatedFrom":{
+          "shape":"ApplicationVersionId",
+          "documentation":"The operation was performed on this version of the application"
+        },
+        "ApplicationVersionUpdatedTo":{
+          "shape":"ApplicationVersionId",
+          "documentation":"The operation execution resulted in the transition to the following version of the application"
+        }
+      },
+      "documentation":"Contains information about the application version changes due to an operation"
     },
     "ApplicationVersionId":{
       "type":"long",
@@ -1717,6 +1861,10 @@
         "CloudWatchLoggingOptionDescriptions":{
           "shape":"CloudWatchLoggingOptionDescriptions",
           "documentation":"<p>The descriptions of the remaining CloudWatch logging options for the application.</p>"
+        },
+        "OperationId":{
+          "shape":"OperationId",
+          "documentation":"Operation ID for tracking DeleteApplicationCloudWatchLoggingOption request"
         }
       }
     },
@@ -1909,6 +2057,10 @@
         "ApplicationVersionId":{
           "shape":"ApplicationVersionId",
           "documentation":"<p>The updated version ID of the application.</p>"
+        },
+        "OperationId":{
+          "shape":"OperationId",
+          "documentation":"Operation ID for tracking DeleteApplicationVpcConfiguration request"
         }
       }
     },
@@ -1943,6 +2095,25 @@
         }
       },
       "documentation":"<p>Updates to the configuration information required to deploy an Amazon Data Analytics Studio notebook as an application with durable state.</p>"
+    },
+    "DescribeApplicationOperationRequest":{
+      "type":"structure",
+      "required":[
+        "ApplicationName",
+        "OperationId"
+      ],
+      "members":{
+        "ApplicationName":{"shape":"ApplicationName"},
+        "OperationId":{"shape":"OperationId"}
+      },
+      "documentation":"Request for information about a specific operation performed on a Managed Service for Apache Flink application"
+    },
+    "DescribeApplicationOperationResponse":{
+      "type":"structure",
+      "members":{
+        "ApplicationOperationInfoDetails":{"shape":"ApplicationOperationInfoDetails"}
+      },
+      "documentation":"Provides details of the operation corresponding to the operation-ID on a Managed Service for Apache Flink application"
     },
     "DescribeApplicationRequest":{
       "type":"structure",
@@ -2108,7 +2279,20 @@
       },
       "documentation":"<p>Describes updates to the execution property groups for a Managed Service for Apache Flink application or a Studio notebook.</p>"
     },
+    "ErrorInfo":{
+      "type":"structure",
+      "members":{
+        "ErrorString":{"shape":"ErrorString"}
+      },
+      "documentation":"Provides a description of the operation failure error"
+    },
     "ErrorMessage":{"type":"string"},
+    "ErrorString":{
+      "type":"string",
+      "documentation":"Error message resulting in failure of the operation",
+      "max":512,
+      "min":1
+    },
     "FileKey":{
       "type":"string",
       "max":1024,
@@ -2725,6 +2909,32 @@
       "documentation":"<p>The number of allowed resources has been exceeded.</p>",
       "exception":true
     },
+    "ListApplicationOperationsInputLimit":{
+      "type":"integer",
+      "documentation":"Limit on the number of records returned in the response",
+      "max":50,
+      "min":1
+    },
+    "ListApplicationOperationsRequest":{
+      "type":"structure",
+      "required":["ApplicationName"],
+      "members":{
+        "ApplicationName":{"shape":"ApplicationName"},
+        "Limit":{"shape":"ListApplicationOperationsInputLimit"},
+        "NextToken":{"shape":"NextToken"},
+        "Operation":{"shape":"Operation"},
+        "OperationStatus":{"shape":"OperationStatus"}
+      },
+      "documentation":"Request to list operations performed on an application"
+    },
+    "ListApplicationOperationsResponse":{
+      "type":"structure",
+      "members":{
+        "ApplicationOperationInfoList":{"shape":"ApplicationOperationInfoList"},
+        "NextToken":{"shape":"NextToken"}
+      },
+      "documentation":"Response with the list of operations for an application"
+    },
     "ListApplicationSnapshotsRequest":{
       "type":"structure",
       "required":["ApplicationName"],
@@ -2988,6 +3198,7 @@
     },
     "NextToken":{
       "type":"string",
+      "documentation":"If a previous command returned a pagination token, pass it into this value to retrieve the next set of results",
       "max":512,
       "min":1
     },
@@ -2995,6 +3206,39 @@
       "type":"string",
       "max":1024,
       "min":0
+    },
+    "Operation":{
+      "type":"string",
+      "documentation":"Type of operation performed on an application",
+      "max":64,
+      "min":1
+    },
+    "OperationFailureDetails":{
+      "type":"structure",
+      "members":{
+        "RollbackOperationId":{
+          "shape":"OperationId",
+          "documentation":"Provides the operation ID of a system-rollback operation executed due to failure in the current operation"
+        },
+        "ErrorInfo":{"shape":"ErrorInfo"}
+      },
+      "documentation":"Provides a description of the operation failure"
+    },
+    "OperationId":{
+      "type":"string",
+      "documentation":"Identifier of the Operation",
+      "max":64,
+      "min":1
+    },
+    "OperationStatus":{
+      "type":"string",
+      "documentation":"Status of the operation performed on an application",
+      "enum":[
+        "IN_PROGRESS",
+        "CANCELLED",
+        "SUCCESSFUL",
+        "FAILED"
+      ]
     },
     "Output":{
       "type":"structure",
@@ -3466,7 +3710,11 @@
       "type":"structure",
       "required":["ApplicationDetail"],
       "members":{
-        "ApplicationDetail":{"shape":"ApplicationDetail"}
+        "ApplicationDetail":{"shape":"ApplicationDetail"},
+        "OperationId":{
+          "shape":"OperationId",
+          "documentation":"Operation ID for tracking RollbackApplication request"
+        }
       }
     },
     "RunConfiguration":{
@@ -3887,6 +4135,10 @@
     "StartApplicationResponse":{
       "type":"structure",
       "members":{
+        "OperationId":{
+          "shape":"OperationId",
+          "documentation":"Operation ID for tracking StartApplication request"
+        }
       }
     },
     "StopApplicationRequest":{
@@ -3906,6 +4158,10 @@
     "StopApplicationResponse":{
       "type":"structure",
       "members":{
+        "OperationId":{
+          "shape":"OperationId",
+          "documentation":"Operation ID for tracking StopApplication request"
+        }
       }
     },
     "SubnetId":{"type":"string"},
@@ -4109,6 +4365,10 @@
         "ApplicationDetail":{
           "shape":"ApplicationDetail",
           "documentation":"<p>Describes application updates.</p>"
+        },
+        "OperationId":{
+          "shape":"OperationId",
+          "documentation":"Operation ID for tracking UpdateApplication request"
         }
       }
     },

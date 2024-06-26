@@ -3,8 +3,8 @@
   "metadata":{
     "apiVersion":"2020-07-14",
     "endpointPrefix":"ivsrealtime",
-    "jsonVersion":"1.1",
     "protocol":"rest-json",
+    "protocols":["rest-json"],
     "serviceAbbreviation":"ivsrealtime",
     "serviceFullName":"Amazon Interactive Video Service RealTime",
     "serviceId":"IVS RealTime",
@@ -106,6 +106,24 @@
         {"shape":"ConflictException"}
       ],
       "documentation":"<p>Deletes an EncoderConfiguration resource. Ensures that no Compositions are using this template; otherwise, returns an error.</p>"
+    },
+    "DeletePublicKey":{
+      "name":"DeletePublicKey",
+      "http":{
+        "method":"POST",
+        "requestUri":"/DeletePublicKey",
+        "responseCode":200
+      },
+      "input":{"shape":"DeletePublicKeyRequest"},
+      "output":{"shape":"DeletePublicKeyResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ConflictException"},
+        {"shape":"PendingVerification"}
+      ],
+      "documentation":"<p>Deletes the specified public key used to sign stage participant tokens. This invalidates future participant tokens generated using the key pair’s private key. </p>"
     },
     "DeleteStage":{
       "name":"DeleteStage",
@@ -215,6 +233,22 @@
       ],
       "documentation":"<p>Gets information about the specified participant token.</p>"
     },
+    "GetPublicKey":{
+      "name":"GetPublicKey",
+      "http":{
+        "method":"POST",
+        "requestUri":"/GetPublicKey",
+        "responseCode":200
+      },
+      "input":{"shape":"GetPublicKeyRequest"},
+      "output":{"shape":"GetPublicKeyResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Gets information for the specified public key.</p>"
+    },
     "GetStage":{
       "name":"GetStage",
       "http":{
@@ -265,6 +299,24 @@
         {"shape":"ConflictException"}
       ],
       "documentation":"<p>Gets the storage configuration for the specified ARN.</p>"
+    },
+    "ImportPublicKey":{
+      "name":"ImportPublicKey",
+      "http":{
+        "method":"POST",
+        "requestUri":"/ImportPublicKey",
+        "responseCode":200
+      },
+      "input":{"shape":"ImportPublicKeyRequest"},
+      "output":{"shape":"ImportPublicKeyResponse"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ServiceQuotaExceededException"},
+        {"shape":"ConflictException"},
+        {"shape":"PendingVerification"}
+      ],
+      "documentation":"<p>Import a public key to be used for signing stage participant tokens.</p>"
     },
     "ListCompositions":{
       "name":"ListCompositions",
@@ -331,6 +383,21 @@
         {"shape":"AccessDeniedException"}
       ],
       "documentation":"<p>Lists all participants in a specified stage session.</p>"
+    },
+    "ListPublicKeys":{
+      "name":"ListPublicKeys",
+      "http":{
+        "method":"POST",
+        "requestUri":"/ListPublicKeys",
+        "responseCode":200
+      },
+      "input":{"shape":"ListPublicKeysRequest"},
+      "output":{"shape":"ListPublicKeysResponse"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Gets summary information about all public keys in your account, in the AWS region where the API request is processed.</p>"
     },
     "ListStageSessions":{
       "name":"ListStageSessions",
@@ -517,14 +584,14 @@
       "members":{
         "storageConfigurationArn":{
           "shape":"AutoParticipantRecordingStorageConfigurationArn",
-          "documentation":"<p>ARN of the <a>StorageConfiguration</a> resource to use for auto participant recording. Default: \"\" (empty string, no storage configuration is specified). Individual participant recording cannot be started unless a storage configuration is specified, when a <a>Stage</a> is created or updated.</p>"
+          "documentation":"<p>ARN of the <a>StorageConfiguration</a> resource to use for individual participant recording. Default: <code>\"\"</code> (empty string, no storage configuration is specified). Individual participant recording cannot be started unless a storage configuration is specified, when a <a>Stage</a> is created or updated.</p>"
         },
         "mediaTypes":{
           "shape":"ParticipantRecordingMediaTypeList",
           "documentation":"<p>Types of media to be recorded. Default: <code>AUDIO_VIDEO</code>.</p>"
         }
       },
-      "documentation":"<p>Object specifying an auto-participant-recording configuration.</p>"
+      "documentation":"<p>Object specifying a configuration for individual participant recording.</p>"
     },
     "AutoParticipantRecordingStorageConfigurationArn":{
       "type":"string",
@@ -763,7 +830,7 @@
         },
         "autoParticipantRecordingConfiguration":{
           "shape":"AutoParticipantRecordingConfiguration",
-          "documentation":"<p>Auto participant recording configuration object attached to the stage.</p>"
+          "documentation":"<p>Configuration object for individual participant recording, to attach to the new stage.</p>"
         }
       }
     },
@@ -818,6 +885,21 @@
       }
     },
     "DeleteEncoderConfigurationResponse":{
+      "type":"structure",
+      "members":{
+      }
+    },
+    "DeletePublicKeyRequest":{
+      "type":"structure",
+      "required":["arn"],
+      "members":{
+        "arn":{
+          "shape":"PublicKeyArn",
+          "documentation":"<p>ARN of the public key to be deleted.</p>"
+        }
+      }
+    },
+    "DeletePublicKeyResponse":{
       "type":"structure",
       "members":{
       }
@@ -1198,6 +1280,25 @@
         }
       }
     },
+    "GetPublicKeyRequest":{
+      "type":"structure",
+      "required":["arn"],
+      "members":{
+        "arn":{
+          "shape":"PublicKeyArn",
+          "documentation":"<p>ARN of the public key for which the information is to be retrieved.</p>"
+        }
+      }
+    },
+    "GetPublicKeyResponse":{
+      "type":"structure",
+      "members":{
+        "publicKey":{
+          "shape":"PublicKey",
+          "documentation":"<p>The public key that is returned.</p>"
+        }
+      }
+    },
     "GetStageRequest":{
       "type":"structure",
       "required":["arn"],
@@ -1267,7 +1368,7 @@
       "members":{
         "featuredParticipantAttribute":{
           "shape":"AttributeKey",
-          "documentation":"<p>This attribute name identifies the featured slot. A participant with this attribute set to <code>\"true\"</code> (as a string value) in <a>ParticipantTokenConfiguration</a> is placed in the featured slot.</p>"
+          "documentation":"<p>This attribute name identifies the featured slot. A participant with this attribute set to <code>\"true\"</code> (as a string value) in <a>ParticipantTokenConfiguration</a> is placed in the featured slot. Default: <code>\"\"</code> (no featured participant).</p>"
         },
         "omitStoppedVideo":{
           "shape":"OmitStoppedVideo",
@@ -1275,11 +1376,11 @@
         },
         "videoAspectRatio":{
           "shape":"VideoAspectRatio",
-          "documentation":"<p>Sets the non-featured participant display mode. Default: <code>VIDEO</code>.</p>"
+          "documentation":"<p>Sets the non-featured participant display mode, to control the aspect ratio of video tiles. <code>VIDEO</code> is 16:9, <code>SQUARE</code> is 1:1, and <code>PORTRAIT</code> is 3:4. Default: <code>VIDEO</code>.</p>"
         },
         "videoFillMode":{
           "shape":"VideoFillMode",
-          "documentation":"<p>Defines how video fits within the participant tile. When not set, <code>videoFillMode</code> defaults to <code>COVER</code> fill mode for participants in the grid and to <code>CONTAIN</code> fill mode for featured participants.</p>"
+          "documentation":"<p>Defines how video content fits within the participant tile: <code>FILL</code> (stretched), <code>COVER</code> (cropped), or <code>CONTAIN</code> (letterboxed). When not set, <code>videoFillMode</code> defaults to <code>COVER</code> fill mode for participants in the grid and to <code>CONTAIN</code> fill mode for featured participants.</p>"
         },
         "gridGap":{
           "shape":"GridGap",
@@ -1297,6 +1398,33 @@
       "box":true,
       "max":1920,
       "min":1
+    },
+    "ImportPublicKeyRequest":{
+      "type":"structure",
+      "required":["publicKeyMaterial"],
+      "members":{
+        "publicKeyMaterial":{
+          "shape":"PublicKeyMaterial",
+          "documentation":"<p>The content of the public key to be imported.</p>"
+        },
+        "name":{
+          "shape":"PublicKeyName",
+          "documentation":"<p>Name of the public key to be imported.</p>"
+        },
+        "tags":{
+          "shape":"Tags",
+          "documentation":"<p>Tags attached to the resource. Array of maps, each of the form <code>string:string (key:value)</code>. See <a href=\"https://docs.aws.amazon.com/general/latest/gr/aws_tagging.html\">Tagging AWS Resources</a> for details, including restrictions that apply to tags and \"Tag naming limits and requirements\"; Amazon IVS has no constraints on tags beyond what is documented there.</p>"
+        }
+      }
+    },
+    "ImportPublicKeyResponse":{
+      "type":"structure",
+      "members":{
+        "publicKey":{
+          "shape":"PublicKey",
+          "documentation":"<p>The public key that was imported.</p>"
+        }
+      }
     },
     "InternalServerException":{
       "type":"structure",
@@ -1486,6 +1614,33 @@
         }
       }
     },
+    "ListPublicKeysRequest":{
+      "type":"structure",
+      "members":{
+        "nextToken":{
+          "shape":"PaginationToken",
+          "documentation":"<p>The first public key to retrieve. This is used for pagination; see the <code>nextToken</code> response field.</p>"
+        },
+        "maxResults":{
+          "shape":"MaxPublicKeyResults",
+          "documentation":"<p>Maximum number of results to return. Default: 50.</p>"
+        }
+      }
+    },
+    "ListPublicKeysResponse":{
+      "type":"structure",
+      "required":["publicKeys"],
+      "members":{
+        "publicKeys":{
+          "shape":"PublicKeyList",
+          "documentation":"<p>List of the matching public keys (summary information only).</p>"
+        },
+        "nextToken":{
+          "shape":"PaginationToken",
+          "documentation":"<p>If there are more public keys than <code>maxResults</code>, use <code>nextToken</code> in the request to get the next set.</p>"
+        }
+      }
+    },
     "ListStageSessionsRequest":{
       "type":"structure",
       "required":["stageArn"],
@@ -1618,6 +1773,12 @@
       "max":100,
       "min":1
     },
+    "MaxPublicKeyResults":{
+      "type":"integer",
+      "box":true,
+      "max":100,
+      "min":1
+    },
     "MaxStageResults":{
       "type":"integer",
       "box":true,
@@ -1696,15 +1857,15 @@
         },
         "recordingS3BucketName":{
           "shape":"ParticipantRecordingS3BucketName",
-          "documentation":"<p>Name of the S3 bucket to where the participant is being recorded, if individual participant recording is enabled, or \"\" (empty string), if recording is not enabled.</p>"
+          "documentation":"<p>Name of the S3 bucket to where the participant is being recorded, if individual participant recording is enabled, or <code>\"\"</code> (empty string), if recording is not enabled.</p>"
         },
         "recordingS3Prefix":{
           "shape":"ParticipantRecordingS3Prefix",
-          "documentation":"<p>S3 prefix of the S3 bucket to where the participant is being recorded, if individual participant recording is enabled, or \"\" (empty string), if recording is not enabled.</p>"
+          "documentation":"<p>S3 prefix of the S3 bucket where the participant is being recorded, if individual participant recording is enabled, or <code>\"\"</code> (empty string), if recording is not enabled.</p>"
         },
         "recordingState":{
           "shape":"ParticipantRecordingState",
-          "documentation":"<p>Participant’s recording state.</p>"
+          "documentation":"<p>The participant’s recording state.</p>"
         }
       },
       "documentation":"<p>Object describing a participant that has joined a stage.</p>"
@@ -1808,7 +1969,7 @@
         },
         "recordingState":{
           "shape":"ParticipantRecordingState",
-          "documentation":"<p>Participant’s recording state.</p>"
+          "documentation":"<p>The participant’s recording state.</p>"
         }
       },
       "documentation":"<p>Summary object describing a participant that has joined a stage.</p>"
@@ -1944,7 +2105,7 @@
       "members":{
         "featuredParticipantAttribute":{
           "shape":"AttributeKey",
-          "documentation":"<p>This attribute name identifies the featured slot. A participant with this attribute set to <code>\"true\"</code> (as a string value) in <a>ParticipantTokenConfiguration</a> is placed in the featured slot.</p>"
+          "documentation":"<p>This attribute name identifies the featured slot. A participant with this attribute set to <code>\"true\"</code> (as a string value) in <a>ParticipantTokenConfiguration</a> is placed in the featured slot. Default: <code>\"\"</code> (no featured participant).</p>"
         },
         "omitStoppedVideo":{
           "shape":"OmitStoppedVideo",
@@ -1952,7 +2113,7 @@
         },
         "videoFillMode":{
           "shape":"VideoFillMode",
-          "documentation":"<p>Defines how video fits within the participant tile. Default: <code>COVER</code>. </p>"
+          "documentation":"<p>Defines how video content fits within the participant tile: <code>FILL</code> (stretched), <code>COVER</code> (cropped), or <code>CONTAIN</code> (letterboxed). Default: <code>COVER</code>.</p>"
         },
         "gridGap":{
           "shape":"GridGap",
@@ -1960,11 +2121,11 @@
         },
         "pipParticipantAttribute":{
           "shape":"AttributeKey",
-          "documentation":"<p>Identifies the PiP slot. A participant with this attribute set to <code>\"true\"</code> (as a string value) in <a>ParticipantTokenConfiguration</a> is placed in the PiP slot.</p>"
+          "documentation":"<p>Specifies the participant for the PiP window. A participant with this attribute set to <code>\"true\"</code> (as a string value) in <a>ParticipantTokenConfiguration</a> is placed in the PiP slot. Default: <code>\"\"</code> (no PiP participant).</p>"
         },
         "pipBehavior":{
           "shape":"PipBehavior",
-          "documentation":"<p>Defines PiP behavior when all participants have left. Default: <code>STATIC</code>.</p>"
+          "documentation":"<p>Defines PiP behavior when all participants have left: <code>STATIC</code> (maintains original position/size) or <code>DYNAMIC</code> (expands to full composition). Default: <code>STATIC</code>.</p>"
         },
         "pipOffset":{
           "shape":"PipOffset",
@@ -2007,6 +2168,71 @@
       "type":"integer",
       "box":true,
       "min":1
+    },
+    "PublicKey":{
+      "type":"structure",
+      "members":{
+        "arn":{
+          "shape":"PublicKeyArn",
+          "documentation":"<p>Public key ARN.</p>"
+        },
+        "name":{
+          "shape":"PublicKeyName",
+          "documentation":"<p>Public key name.</p>"
+        },
+        "publicKeyMaterial":{
+          "shape":"PublicKeyMaterial",
+          "documentation":"<p>Public key material.</p>"
+        },
+        "fingerprint":{
+          "shape":"PublicKeyFingerprint",
+          "documentation":"<p>The public key fingerprint, a short string used to identify or verify the full public key.</p>"
+        },
+        "tags":{
+          "shape":"Tags",
+          "documentation":"<p>Tags attached to the resource. Array of maps, each of the form <code>string:string (key:value)</code>. See <a href=\"https://docs.aws.amazon.com/general/latest/gr/aws_tagging.html\">Tagging AWS Resources</a> for details, including restrictions that apply to tags and \"Tag naming limits and requirements\"; Amazon IVS has no constraints on tags beyond what is documented there.</p>"
+        }
+      },
+      "documentation":"<p>Object specifying a public key used to sign stage participant tokens.</p>"
+    },
+    "PublicKeyArn":{
+      "type":"string",
+      "max":128,
+      "min":1,
+      "pattern":"arn:aws:ivs:[a-z0-9-]+:[0-9]+:public-key/[a-zA-Z0-9-]+"
+    },
+    "PublicKeyFingerprint":{"type":"string"},
+    "PublicKeyList":{
+      "type":"list",
+      "member":{"shape":"PublicKeySummary"}
+    },
+    "PublicKeyMaterial":{
+      "type":"string",
+      "pattern":".*-----BEGIN PUBLIC KEY-----\\r?\\n([a-zA-Z0-9+/=\\r\\n]+)\\r?\\n-----END PUBLIC KEY-----(\\r?\\n)?.*"
+    },
+    "PublicKeyName":{
+      "type":"string",
+      "max":128,
+      "min":0,
+      "pattern":"[a-zA-Z0-9-_]*"
+    },
+    "PublicKeySummary":{
+      "type":"structure",
+      "members":{
+        "arn":{
+          "shape":"PublicKeyArn",
+          "documentation":"<p>Public key ARN.</p>"
+        },
+        "name":{
+          "shape":"PublicKeyName",
+          "documentation":"<p>Public key name.</p>"
+        },
+        "tags":{
+          "shape":"Tags",
+          "documentation":"<p>Tags attached to the resource. Array of maps, each of the form <code>string:string (key:value)</code>. See <a href=\"https://docs.aws.amazon.com/general/latest/gr/aws_tagging.html\">Tagging AWS Resources</a> for details, including restrictions that apply to tags and \"Tag naming limits and requirements\"; Amazon IVS has no constraints on tags beyond what is documented there.</p>"
+        }
+      },
+      "documentation":"<p>Summary information about a public key.</p>"
     },
     "Published":{"type":"boolean"},
     "RecordingConfiguration":{
@@ -2131,7 +2357,11 @@
         },
         "autoParticipantRecordingConfiguration":{
           "shape":"AutoParticipantRecordingConfiguration",
-          "documentation":"<p>Auto-participant-recording configuration object attached to the stage.</p>"
+          "documentation":"<p>Configuration object for individual participant recording, attached to the stage.</p>"
+        },
+        "endpoints":{
+          "shape":"StageEndpoints",
+          "documentation":"<p>Summary information about various endpoints for a stage.</p>"
         }
       },
       "documentation":"<p>Object specifying a stage.</p>"
@@ -2141,6 +2371,25 @@
       "max":128,
       "min":1,
       "pattern":"arn:aws:ivs:[a-z0-9-]+:[0-9]+:stage/[a-zA-Z0-9-]+"
+    },
+    "StageEndpoint":{
+      "type":"string",
+      "max":2048,
+      "min":0
+    },
+    "StageEndpoints":{
+      "type":"structure",
+      "members":{
+        "events":{
+          "shape":"StageEndpoint",
+          "documentation":"<p>Events endpoint.</p>"
+        },
+        "whip":{
+          "shape":"StageEndpoint",
+          "documentation":"<p>WHIP endpoint.</p>"
+        }
+      },
+      "documentation":"<p>Summary information about various endpoints for a stage.</p>"
     },
     "StageName":{
       "type":"string",
@@ -2429,7 +2678,7 @@
         },
         "autoParticipantRecordingConfiguration":{
           "shape":"AutoParticipantRecordingConfiguration",
-          "documentation":"<p>Auto-participant-recording configuration object to attach to the stage. Auto-participant-recording configuration cannot be updated while recording is active.</p>"
+          "documentation":"<p>Configuration object for individual participant recording, to attach to the stage. Note that this cannot be updated while recording is active.</p>"
         }
       }
     },
@@ -2509,5 +2758,5 @@
     },
     "errorMessage":{"type":"string"}
   },
-  "documentation":"<p> <b>Introduction</b> </p> <p>The Amazon Interactive Video Service (IVS) real-time API is REST compatible, using a standard HTTP API and an AWS EventBridge event stream for responses. JSON is used for both requests and responses, including errors. </p> <p>Terminology:</p> <ul> <li> <p>A <i>stage</i> is a virtual space where participants can exchange video in real time.</p> </li> <li> <p>A <i>participant token</i> is a token that authenticates a participant when they join a stage.</p> </li> <li> <p>A <i>participant object</i> represents participants (people) in the stage and contains information about them. When a token is created, it includes a participant ID; when a participant uses that token to join a stage, the participant is associated with that participant ID. There is a 1:1 mapping between participant tokens and participants.</p> </li> <li> <p>Server-side composition: The <i>composition</i> process composites participants of a stage into a single video and forwards it to a set of outputs (e.g., IVS channels). Composition endpoints support this process.</p> </li> <li> <p>Server-side composition: A <i>composition</i> controls the look of the outputs, including how participants are positioned in the video.</p> </li> </ul> <p> <b>Resources</b> </p> <p>The following resources contain information about your IVS live stream (see <a href=\"https://docs.aws.amazon.com/ivs/latest/RealTimeUserGuide/getting-started.html\">Getting Started with Amazon IVS Real-Time Streaming</a>):</p> <ul> <li> <p> <b>Stage</b> — A stage is a virtual space where participants can exchange video in real time.</p> </li> </ul> <p> <b>Tagging</b> </p> <p>A <i>tag</i> is a metadata label that you assign to an AWS resource. A tag comprises a <i>key</i> and a <i>value</i>, both set by you. For example, you might set a tag as <code>topic:nature</code> to label a particular video category. See <a href=\"https://docs.aws.amazon.com/general/latest/gr/aws_tagging.html\">Tagging AWS Resources</a> for more information, including restrictions that apply to tags and \"Tag naming limits and requirements\"; Amazon IVS stages has no service-specific constraints beyond what is documented there.</p> <p>Tags can help you identify and organize your AWS resources. For example, you can use the same tag for different resources to indicate that they are related. You can also use tags to manage access (see <a href=\"https://docs.aws.amazon.com/IAM/latest/UserGuide/access_tags.html\">Access Tags</a>).</p> <p>The Amazon IVS real-time API has these tag-related endpoints: <a>TagResource</a>, <a>UntagResource</a>, and <a>ListTagsForResource</a>. The following resource supports tagging: Stage.</p> <p>At most 50 tags can be applied to a resource.</p> <p> <b>Stages Endpoints</b> </p> <ul> <li> <p> <a>CreateParticipantToken</a> — Creates an additional token for a specified stage. This can be done after stage creation or when tokens expire.</p> </li> <li> <p> <a>CreateStage</a> — Creates a new stage (and optionally participant tokens).</p> </li> <li> <p> <a>DeleteStage</a> — Shuts down and deletes the specified stage (disconnecting all participants).</p> </li> <li> <p> <a>DisconnectParticipant</a> — Disconnects a specified participant and revokes the participant permanently from a specified stage.</p> </li> <li> <p> <a>GetParticipant</a> — Gets information about the specified participant token.</p> </li> <li> <p> <a>GetStage</a> — Gets information for the specified stage.</p> </li> <li> <p> <a>GetStageSession</a> — Gets information for the specified stage session.</p> </li> <li> <p> <a>ListParticipantEvents</a> — Lists events for a specified participant that occurred during a specified stage session.</p> </li> <li> <p> <a>ListParticipants</a> — Lists all participants in a specified stage session.</p> </li> <li> <p> <a>ListStages</a> — Gets summary information about all stages in your account, in the AWS region where the API request is processed.</p> </li> <li> <p> <a>ListStageSessions</a> — Gets all sessions for a specified stage.</p> </li> <li> <p> <a>UpdateStage</a> — Updates a stage’s configuration.</p> </li> </ul> <p> <b>Composition Endpoints</b> </p> <ul> <li> <p> <a>GetComposition</a> — Gets information about the specified Composition resource.</p> </li> <li> <p> <a>ListCompositions</a> — Gets summary information about all Compositions in your account, in the AWS region where the API request is processed.</p> </li> <li> <p> <a>StartComposition</a> — Starts a Composition from a stage based on the configuration provided in the request.</p> </li> <li> <p> <a>StopComposition</a> — Stops and deletes a Composition resource. Any broadcast from the Composition resource is stopped.</p> </li> </ul> <p> <b>EncoderConfiguration Endpoints</b> </p> <ul> <li> <p> <a>CreateEncoderConfiguration</a> — Creates an EncoderConfiguration object.</p> </li> <li> <p> <a>DeleteEncoderConfiguration</a> — Deletes an EncoderConfiguration resource. Ensures that no Compositions are using this template; otherwise, returns an error.</p> </li> <li> <p> <a>GetEncoderConfiguration</a> — Gets information about the specified EncoderConfiguration resource.</p> </li> <li> <p> <a>ListEncoderConfigurations</a> — Gets summary information about all EncoderConfigurations in your account, in the AWS region where the API request is processed.</p> </li> </ul> <p> <b>StorageConfiguration Endpoints</b> </p> <ul> <li> <p> <a>CreateStorageConfiguration</a> — Creates a new storage configuration, used to enable recording to Amazon S3.</p> </li> <li> <p> <a>DeleteStorageConfiguration</a> — Deletes the storage configuration for the specified ARN.</p> </li> <li> <p> <a>GetStorageConfiguration</a> — Gets the storage configuration for the specified ARN.</p> </li> <li> <p> <a>ListStorageConfigurations</a> — Gets summary information about all storage configurations in your account, in the AWS region where the API request is processed.</p> </li> </ul> <p> <b>Tags Endpoints</b> </p> <ul> <li> <p> <a>ListTagsForResource</a> — Gets information about AWS tags for the specified ARN.</p> </li> <li> <p> <a>TagResource</a> — Adds or updates tags for the AWS resource with the specified ARN.</p> </li> <li> <p> <a>UntagResource</a> — Removes tags from the resource with the specified ARN.</p> </li> </ul>"
+  "documentation":"<p>The Amazon Interactive Video Service (IVS) real-time API is REST compatible, using a standard HTTP API and an AWS EventBridge event stream for responses. JSON is used for both requests and responses, including errors. </p> <p> <b>Key Concepts</b> </p> <ul> <li> <p> <b>Stage</b> — A virtual space where participants can exchange video in real time.</p> </li> <li> <p> <b>Participant token</b> — A token that authenticates a participant when they join a stage.</p> </li> <li> <p> <b>Participant object</b> — Represents participants (people) in the stage and contains information about them. When a token is created, it includes a participant ID; when a participant uses that token to join a stage, the participant is associated with that participant ID. There is a 1:1 mapping between participant tokens and participants.</p> </li> </ul> <p>For server-side composition:</p> <ul> <li> <p> <b>Composition process</b> — Composites participants of a stage into a single video and forwards it to a set of outputs (e.g., IVS channels). Composition endpoints support this process.</p> </li> <li> <p> <b>Composition</b> — Controls the look of the outputs, including how participants are positioned in the video.</p> </li> </ul> <p>For more information about your IVS live stream, also see <a href=\"https://docs.aws.amazon.com/ivs/latest/RealTimeUserGuide/getting-started.html\">Getting Started with Amazon IVS Real-Time Streaming</a>.</p> <p> <b>Tagging</b> </p> <p>A <i>tag</i> is a metadata label that you assign to an AWS resource. A tag comprises a <i>key</i> and a <i>value</i>, both set by you. For example, you might set a tag as <code>topic:nature</code> to label a particular video category. See <a href=\"https://docs.aws.amazon.com/general/latest/gr/aws_tagging.html\">Tagging AWS Resources</a> for more information, including restrictions that apply to tags and \"Tag naming limits and requirements\"; Amazon IVS stages has no service-specific constraints beyond what is documented there.</p> <p>Tags can help you identify and organize your AWS resources. For example, you can use the same tag for different resources to indicate that they are related. You can also use tags to manage access (see <a href=\"https://docs.aws.amazon.com/IAM/latest/UserGuide/access_tags.html\">Access Tags</a>).</p> <p>The Amazon IVS real-time API has these tag-related endpoints: <a>TagResource</a>, <a>UntagResource</a>, and <a>ListTagsForResource</a>. The following resource supports tagging: Stage.</p> <p>At most 50 tags can be applied to a resource.</p>"
 }

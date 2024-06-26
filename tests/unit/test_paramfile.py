@@ -48,6 +48,22 @@ class TestParamFile(unittest.TestCase):
         self.assertEqual(data, b'This is a test')
         self.assertIsInstance(data, six.binary_type)
 
+    def test_yaml_file(self):
+        contents = '- key: value'
+        filename = self.files.create_file('foo', contents)
+        prefixed_filename = 'yaml://' + filename
+        data = self.get_paramfile(prefixed_filename)
+        self.assertEqual(data, '[{"key": "value"}]')
+        self.assertIsInstance(data, six.string_types)
+
+    def test_invalid_yaml_file(self):
+        contents = '- - "key -value'
+        filename = self.files.create_file('foo', contents)
+        prefixed_filename = 'yaml://' + filename
+        with self.assertRaises(ResourceLoadingError) as e:
+            self.get_paramfile(prefixed_filename)
+
+
     @skip_if_windows('Binary content error only occurs '
                      'on non-Windows platforms.')
     def test_cannot_load_text_file(self):
@@ -60,6 +76,10 @@ class TestParamFile(unittest.TestCase):
     def test_file_does_not_exist_raises_error(self):
         with self.assertRaises(ResourceLoadingError):
             self.get_paramfile('file://file/does/not/existsasdf.txt')
+
+    def test_yaml_file_does_not_exist_raises_error(self):
+        with self.assertRaises(ResourceLoadingError):
+            self.get_paramfile('yaml://file/does/not/existsasdf.yaml')
 
     def test_no_match_uris_returns_none(self):
         self.assertIsNone(self.get_paramfile('foobar://somewhere.bar'))

@@ -10,9 +10,13 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
+import json
 import logging
 import os
 import copy
+
+import ruamel
+from ruamel.yaml import YAML
 
 from awscli.compat import six
 
@@ -79,22 +83,55 @@ def get_paramfile(path, cases):
     return data
 
 
-def get_file(prefix, path, mode):
-    file_path = os.path.expandvars(os.path.expanduser(path[len(prefix):]))
-    try:
-        with compat_open(file_path, mode) as f:
-            return f.read()
-    except UnicodeDecodeError:
-        raise ResourceLoadingError(
-            'Unable to load paramfile (%s), text contents could '
-            'not be decoded.  If this is a binary file, please use the '
-            'fileb:// prefix instead of the file:// prefix.' % file_path)
-    except (OSError, IOError) as e:
-        raise ResourceLoadingError('Unable to load paramfile %s: %s' % (
-            path, e))
+class FileLoader:
+
+    def __call__(self, prefix, path, mode):
+        return getattr(self, '_get_%s' % mode)(prefix, path)
+
+    def _get_r(self, prefix, path):
+        return self._get_file(prefix, path, 'r')
+
+    def _get_rb(self, prefix, path):
+        return self._get_file(prefix, path, 'rb')
+
+    def _get_yaml(self, prefix, path):
+        file_path = os.path.expandvars(os.path.expanduser(path[len(prefix):]))
+        yaml = YAML(typ='safe')
+        yaml.constructor.add_constructor(
+            'tag:yaml.org,2002:binary', self._load_binary
+        )
+        try:
+            with compat_open(file_path, 'r') as f:
+                return json.dumps(yaml.load(f))
+        except ruamel.yaml.scanner.ScannerError:
+            raise ResourceLoadingError(
+                'Unable to load paramfile (%s), it is not a valid YAML '
+                'file' % file_path)
+        except (OSError, IOError) as e:
+            raise ResourceLoadingError('Unable to load paramfile %s: %s' % (
+                path, e))
+
+    def _get_file(self, prefix, path, mode):
+        file_path = os.path.expandvars(os.path.expanduser(path[len(prefix):]))
+        try:
+            with compat_open(file_path, mode) as f:
+                return f.read()
+        except UnicodeDecodeError:
+            raise ResourceLoadingError(
+                'Unable to load paramfile (%s), text contents could '
+                'not be decoded.  If this is a binary file, please use the '
+                'fileb:// prefix instead of the file:// prefix.' % file_path)
+        except (OSError, IOError) as e:
+            raise ResourceLoadingError('Unable to load paramfile %s: %s' % (
+                path, e))
+
+    def _load_binary(self, loader, node):
+        # stringify the binary value
+        return node.value
 
 
 LOCAL_PREFIX_MAP = {
-    'file://': (get_file, {'mode': 'r'}),
-    'fileb://': (get_file, {'mode': 'rb'}),
+    'file://': (FileLoader(), {'mode': 'r'}),
+    'fileb://': (FileLoader(), {'mode': 'rb'}),
+    'yaml://': (FileLoader(), {'mode': 'yaml'}),
 }

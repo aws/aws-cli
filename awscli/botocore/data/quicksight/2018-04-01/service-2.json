@@ -9,7 +9,8 @@
     "serviceFullName":"Amazon QuickSight",
     "serviceId":"QuickSight",
     "signatureVersion":"v4",
-    "uid":"quicksight-2018-04-01"
+    "uid":"quicksight-2018-04-01",
+    "auth":["aws.auth#sigv4"]
   },
   "operations":{
     "CancelIngestion":{
@@ -5698,6 +5699,10 @@
         "PageBreakConfiguration":{
           "shape":"SectionPageBreakConfiguration",
           "documentation":"<p>The configuration of a page break for a section.</p>"
+        },
+        "RepeatConfiguration":{
+          "shape":"BodySectionRepeatConfiguration",
+          "documentation":"<p>Describes the configurations that are required to declare a section as repeating.</p>"
         }
       },
       "documentation":"<p>The configuration of a body section.</p>"
@@ -5716,6 +5721,94 @@
         }
       },
       "documentation":"<p>The configuration of content in a body section.</p>"
+    },
+    "BodySectionDynamicCategoryDimensionConfiguration":{
+      "type":"structure",
+      "required":["Column"],
+      "members":{
+        "Column":{"shape":"ColumnIdentifier"},
+        "Limit":{
+          "shape":"BodySectionDynamicDimensionLimit",
+          "documentation":"<p>Number of values to use from the column for repetition.</p>",
+          "box":true
+        },
+        "SortByMetrics":{
+          "shape":"BodySectionDynamicDimensionSortConfigurationList",
+          "documentation":"<p>Sort criteria on the column values that you use for repetition. </p>"
+        }
+      },
+      "documentation":"<p>Describes the <b>Category</b> dataset column and constraints for the dynamic values used to repeat the contents of a section.</p>"
+    },
+    "BodySectionDynamicDimensionLimit":{
+      "type":"integer",
+      "max":1000,
+      "min":1
+    },
+    "BodySectionDynamicDimensionSortConfigurationList":{
+      "type":"list",
+      "member":{"shape":"ColumnSort"},
+      "max":100
+    },
+    "BodySectionDynamicNumericDimensionConfiguration":{
+      "type":"structure",
+      "required":["Column"],
+      "members":{
+        "Column":{"shape":"ColumnIdentifier"},
+        "Limit":{
+          "shape":"BodySectionDynamicDimensionLimit",
+          "documentation":"<p>Number of values to use from the column for repetition.</p>",
+          "box":true
+        },
+        "SortByMetrics":{
+          "shape":"BodySectionDynamicDimensionSortConfigurationList",
+          "documentation":"<p>Sort criteria on the column values that you use for repetition. </p>"
+        }
+      },
+      "documentation":"<p>Describes the <b>Numeric</b> dataset column and constraints for the dynamic values used to repeat the contents of a section.</p>"
+    },
+    "BodySectionRepeatConfiguration":{
+      "type":"structure",
+      "members":{
+        "DimensionConfigurations":{
+          "shape":"BodySectionRepeatDimensionConfigurationList",
+          "documentation":"<p>List of <code>BodySectionRepeatDimensionConfiguration</code> values that describe the dataset column and constraints for the column used to repeat the contents of a section.</p>"
+        },
+        "PageBreakConfiguration":{
+          "shape":"BodySectionRepeatPageBreakConfiguration",
+          "documentation":"<p>Page break configuration to apply for each repeating instance.</p>"
+        },
+        "NonRepeatingVisuals":{
+          "shape":"NonRepeatingVisualsList",
+          "documentation":"<p>List of visuals to exclude from repetition in repeating sections. The visuals will render identically, and ignore the repeating configurations in all repeating instances.</p>"
+        }
+      },
+      "documentation":"<p>Describes the configurations that are required to declare a section as repeating.</p>"
+    },
+    "BodySectionRepeatDimensionConfiguration":{
+      "type":"structure",
+      "members":{
+        "DynamicCategoryDimensionConfiguration":{
+          "shape":"BodySectionDynamicCategoryDimensionConfiguration",
+          "documentation":"<p>Describes the <b>Category</b> dataset column and constraints around the dynamic values that will be used in repeating the section contents.</p>"
+        },
+        "DynamicNumericDimensionConfiguration":{
+          "shape":"BodySectionDynamicNumericDimensionConfiguration",
+          "documentation":"<p>Describes the <b>Numeric</b> dataset column and constraints around the dynamic values used to repeat the contents of a section.</p>"
+        }
+      },
+      "documentation":"<p>Describes the dataset column and constraints for the dynamic values used to repeat the contents of a section. The dataset column is either <b>Category</b> or <b>Numeric</b> column configuration</p>"
+    },
+    "BodySectionRepeatDimensionConfigurationList":{
+      "type":"list",
+      "member":{"shape":"BodySectionRepeatDimensionConfiguration"},
+      "max":3
+    },
+    "BodySectionRepeatPageBreakConfiguration":{
+      "type":"structure",
+      "members":{
+        "After":{"shape":"SectionAfterPageBreak"}
+      },
+      "documentation":"<p>The page break configuration to apply for each repeating instance.</p>"
     },
     "BookmarksConfigurations":{
       "type":"structure",
@@ -6251,6 +6344,19 @@
         "CUSTOM_FILTER_LIST",
         "FILTER_LIST"
       ]
+    },
+    "CategoryInnerFilter":{
+      "type":"structure",
+      "required":[
+        "Column",
+        "Configuration"
+      ],
+      "members":{
+        "Column":{"shape":"ColumnIdentifier"},
+        "Configuration":{"shape":"CategoryFilterConfiguration"},
+        "DefaultFilterControlConfiguration":{"shape":"DefaultFilterControlConfiguration"}
+      },
+      "documentation":"<p>A <code>CategoryInnerFilter</code> filters text values for the <code>NestedFilter</code>.</p>"
     },
     "CategoryValue":{
       "type":"string",
@@ -15442,6 +15548,10 @@
         "TopBottomFilter":{
           "shape":"TopBottomFilter",
           "documentation":"<p>A <code>TopBottomFilter</code> filters data to the top or bottom values for a given column.</p>"
+        },
+        "NestedFilter":{
+          "shape":"NestedFilter",
+          "documentation":"<p>A <code>NestedFilter</code> filters data with a subset of data that is defined by the nested inner filter.</p>"
         }
       },
       "documentation":"<p>With a <code>Filter</code>, you can remove portions of data from a particular visual or view.</p> <p>This is a union type structure. For this structure to be valid, only one of the attributes can be defined.</p>"
@@ -18151,6 +18261,16 @@
     "Ingestions":{
       "type":"list",
       "member":{"shape":"Ingestion"}
+    },
+    "InnerFilter":{
+      "type":"structure",
+      "members":{
+        "CategoryInnerFilter":{
+          "shape":"CategoryInnerFilter",
+          "documentation":"<p>A <code>CategoryInnerFilter</code> filters text values for the <code>NestedFilter</code>.</p>"
+        }
+      },
+      "documentation":"<p>The <code>InnerFilter</code> defines the subset of data to be used with the <code>NestedFilter</code>.</p>"
     },
     "InputColumn":{
       "type":"structure",
@@ -21456,6 +21576,34 @@
         "NEGATIVE"
       ]
     },
+    "NestedFilter":{
+      "type":"structure",
+      "required":[
+        "FilterId",
+        "Column",
+        "IncludeInnerSet",
+        "InnerFilter"
+      ],
+      "members":{
+        "FilterId":{
+          "shape":"ShortRestrictiveResourceId",
+          "documentation":"<p>An identifier that uniquely identifies a filter within a dashboard, analysis, or template.</p>"
+        },
+        "Column":{
+          "shape":"ColumnIdentifier",
+          "documentation":"<p>The column that the filter is applied to.</p>"
+        },
+        "IncludeInnerSet":{
+          "shape":"Boolean",
+          "documentation":"<p>A boolean condition to include or exclude the subset that is defined by the values of the nested inner filter.</p>"
+        },
+        "InnerFilter":{
+          "shape":"InnerFilter",
+          "documentation":"<p>The <code>InnerFilter</code> defines the subset of data to be used with the <code>NestedFilter</code>.</p>"
+        }
+      },
+      "documentation":"<p>A <code>NestedFilter</code> filters data with a subset of data that is defined by the nested inner filter.</p>"
+    },
     "NetworkInterface":{
       "type":"structure",
       "members":{
@@ -21531,6 +21679,11 @@
     "NonEmptyString":{
       "type":"string",
       "pattern":".*\\S.*"
+    },
+    "NonRepeatingVisualsList":{
+      "type":"list",
+      "member":{"shape":"ShortRestrictiveResourceId"},
+      "max":20
     },
     "NullString":{
       "type":"string",

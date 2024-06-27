@@ -10,7 +10,8 @@
     "serviceId":"RDS",
     "signatureVersion":"v4",
     "uid":"rds-2014-10-31",
-    "xmlNamespace":"http://rds.amazonaws.com/doc/2014-10-31/"
+    "xmlNamespace":"http://rds.amazonaws.com/doc/2014-10-31/",
+    "auth":["aws.auth#sigv4"]
   },
   "operations":{
     "AddRoleToDBCluster":{
@@ -2904,7 +2905,7 @@
         {"shape":"KMSKeyNotAccessibleFault"},
         {"shape":"InvalidExportSourceStateFault"}
       ],
-      "documentation":"<p>Starts an export of DB snapshot or DB cluster data to Amazon S3. The provided IAM role must have access to the S3 bucket.</p> <p>You can't export snapshot data from Db2 or RDS Custom DB instances.</p> <p>You can't export cluster data from Multi-AZ DB clusters.</p> <p>For more information on exporting DB snapshot data, see <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_ExportSnapshot.html\">Exporting DB snapshot data to Amazon S3</a> in the <i>Amazon RDS User Guide</i> or <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/aurora-export-snapshot.html\">Exporting DB cluster snapshot data to Amazon S3</a> in the <i>Amazon Aurora User Guide</i>.</p> <p>For more information on exporting DB cluster data, see <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/export-cluster-data.html\">Exporting DB cluster data to Amazon S3</a> in the <i>Amazon Aurora User Guide</i>.</p>"
+      "documentation":"<p>Starts an export of DB snapshot or DB cluster data to Amazon S3. The provided IAM role must have access to the S3 bucket.</p> <p>You can't export snapshot data from Db2 or RDS Custom DB instances.</p> <p>For more information on exporting DB snapshot data, see <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_ExportSnapshot.html\">Exporting DB snapshot data to Amazon S3</a> in the <i>Amazon RDS User Guide</i> or <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/aurora-export-snapshot.html\">Exporting DB cluster snapshot data to Amazon S3</a> in the <i>Amazon Aurora User Guide</i>.</p> <p>For more information on exporting DB cluster data, see <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/export-cluster-data.html\">Exporting DB cluster data to Amazon S3</a> in the <i>Amazon Aurora User Guide</i>.</p>"
     },
     "StopActivityStream":{
       "name":"StopActivityStream",
@@ -3598,7 +3599,7 @@
           "documentation":"<p>The expiration date of the DB instance’s server certificate.</p>"
         }
       },
-      "documentation":"<p>Returns the details of the DB instance’s server certificate.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/UsingWithRDS.SSL.html\">Using SSL/TLS to encrypt a connection to a DB instance</a> in the <i>Amazon RDS User Guide</i> and <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/UsingWithRDS.SSL.html\"> Using SSL/TLS to encrypt a connection to a DB cluster</a> in the <i>Amazon Aurora User Guide</i>.</p>"
+      "documentation":"<p>The details of the DB instance’s server certificate.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/UsingWithRDS.SSL.html\">Using SSL/TLS to encrypt a connection to a DB instance</a> in the <i>Amazon RDS User Guide</i> and <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/UsingWithRDS.SSL.html\"> Using SSL/TLS to encrypt a connection to a DB cluster</a> in the <i>Amazon Aurora User Guide</i>.</p>"
     },
     "CertificateList":{
       "type":"list",
@@ -4143,7 +4144,7 @@
         },
         "DBSubnetGroupName":{
           "shape":"String",
-          "documentation":"<p>A DB subnet group to associate with this DB cluster.</p> <p>This setting is required to create a Multi-AZ DB cluster.</p> <p>Valid for Cluster Type: Aurora DB clusters and Multi-AZ DB clusters</p> <p>Constraints:</p> <ul> <li> <p>Must match the name of an existing DB subnet group.</p> </li> <li> <p>Must not be <code>default</code>.</p> </li> </ul> <p>Example: <code>mydbsubnetgroup</code> </p>"
+          "documentation":"<p>A DB subnet group to associate with this DB cluster.</p> <p>This setting is required to create a Multi-AZ DB cluster.</p> <p>Valid for Cluster Type: Aurora DB clusters and Multi-AZ DB clusters</p> <p>Constraints:</p> <ul> <li> <p>Must match the name of an existing DB subnet group.</p> </li> </ul> <p>Example: <code>mydbsubnetgroup</code> </p>"
         },
         "Engine":{
           "shape":"String",
@@ -14011,10 +14012,10 @@
         },
         "Value":{
           "shape":"String",
-          "documentation":"<p>The value of a processor feature name.</p>"
+          "documentation":"<p>The value of a processor feature.</p>"
         }
       },
-      "documentation":"<p>Contains the processor features of a DB instance class.</p> <p>To specify the number of CPU cores, use the <code>coreCount</code> feature name for the <code>Name</code> parameter. To specify the number of threads per core, use the <code>threadsPerCore</code> feature name for the <code>Name</code> parameter.</p> <p>You can set the processor features of the DB instance class for a DB instance when you call one of the following actions:</p> <ul> <li> <p> <code>CreateDBInstance</code> </p> </li> <li> <p> <code>ModifyDBInstance</code> </p> </li> <li> <p> <code>RestoreDBInstanceFromDBSnapshot</code> </p> </li> <li> <p> <code>RestoreDBInstanceFromS3</code> </p> </li> <li> <p> <code>RestoreDBInstanceToPointInTime</code> </p> </li> </ul> <p>You can view the valid processor values for a particular instance class by calling the <code>DescribeOrderableDBInstanceOptions</code> action and specifying the instance class for the <code>DBInstanceClass</code> parameter.</p> <p>In addition, you can use the following actions for DB instance class processor information:</p> <ul> <li> <p> <code>DescribeDBInstances</code> </p> </li> <li> <p> <code>DescribeDBSnapshots</code> </p> </li> <li> <p> <code>DescribeValidDBInstanceModifications</code> </p> </li> </ul> <p>If you call <code>DescribeDBInstances</code>, <code>ProcessorFeature</code> returns non-null values only if the following conditions are met:</p> <ul> <li> <p>You are accessing an Oracle DB instance.</p> </li> <li> <p>Your Oracle DB instance class supports configuring the number of CPU cores and threads per core.</p> </li> <li> <p>The current number CPU cores and threads is set to a non-default value.</p> </li> </ul> <p>For more information, see <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/Concepts.DBInstanceClass.html#USER_ConfigureProcessor\">Configuring the Processor of the DB Instance Class</a> in the <i>Amazon RDS User Guide. </i> </p>"
+      "documentation":"<p>Contains the processor features of a DB instance class.</p> <p>To specify the number of CPU cores, use the <code>coreCount</code> feature name for the <code>Name</code> parameter. To specify the number of threads per core, use the <code>threadsPerCore</code> feature name for the <code>Name</code> parameter.</p> <p>You can set the processor features of the DB instance class for a DB instance when you call one of the following actions:</p> <ul> <li> <p> <code>CreateDBInstance</code> </p> </li> <li> <p> <code>ModifyDBInstance</code> </p> </li> <li> <p> <code>RestoreDBInstanceFromDBSnapshot</code> </p> </li> <li> <p> <code>RestoreDBInstanceFromS3</code> </p> </li> <li> <p> <code>RestoreDBInstanceToPointInTime</code> </p> </li> </ul> <p>You can view the valid processor values for a particular instance class by calling the <code>DescribeOrderableDBInstanceOptions</code> action and specifying the instance class for the <code>DBInstanceClass</code> parameter.</p> <p>In addition, you can use the following actions for DB instance class processor information:</p> <ul> <li> <p> <code>DescribeDBInstances</code> </p> </li> <li> <p> <code>DescribeDBSnapshots</code> </p> </li> <li> <p> <code>DescribeValidDBInstanceModifications</code> </p> </li> </ul> <p>If you call <code>DescribeDBInstances</code>, <code>ProcessorFeature</code> returns non-null values only if the following conditions are met:</p> <ul> <li> <p>You are accessing an Oracle DB instance.</p> </li> <li> <p>Your Oracle DB instance class supports configuring the number of CPU cores and threads per core.</p> </li> <li> <p>The current number CPU cores and threads is set to a non-default value.</p> </li> </ul> <p>For more information, see <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/Concepts.DBInstanceClass.html#USER_ConfigureProcessor\"> Configuring the processor for a DB instance class in RDS for Oracle</a> in the <i>Amazon RDS User Guide. </i> </p>"
     },
     "ProcessorFeatureList":{
       "type":"list",

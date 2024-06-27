@@ -7082,7 +7082,7 @@
           "documentation":"<p>The size in gigabytes (GB) of the additional EBS volume to be attached to the instances in the SageMaker HyperPod cluster instance group. The additional EBS volume is attached to each instance within the SageMaker HyperPod cluster instance group and mounted to <code>/opt/sagemaker</code>.</p>"
         }
       },
-      "documentation":"<p>Defines the configuration for attaching an additional Amazon Elastic Block Store (EBS) volume to each instance of the SageMaker HyperPod cluster instance group.</p>"
+      "documentation":"<p>Defines the configuration for attaching an additional Amazon Elastic Block Store (EBS) volume to each instance of the SageMaker HyperPod cluster instance group. To learn more, see <a href=\"https://docs.aws.amazon.com/sagemaker/latest/dg/sagemaker-hyperpod-release-notes.html#sagemaker-hyperpod-release-notes-20240620\">SageMaker HyperPod release notes: June 20, 2024</a>.</p>"
     },
     "ClusterEbsVolumeSizeInGB":{
       "type":"integer",
@@ -7235,7 +7235,7 @@
           "documentation":"<p>Defines the configuration for attaching additional Amazon Elastic Block Store (EBS) volumes to the instances in the SageMaker HyperPod cluster instance group. The additional EBS volume is attached to each instance within the SageMaker HyperPod cluster instance group and mounted to <code>/opt/sagemaker</code>.</p>"
         }
       },
-      "documentation":"<p>Defines the configuration for attaching additional storage to the instances in the SageMaker HyperPod cluster instance group.</p>",
+      "documentation":"<p>Defines the configuration for attaching additional storage to the instances in the SageMaker HyperPod cluster instance group. To learn more, see <a href=\"https://docs.aws.amazon.com/sagemaker/latest/dg/sagemaker-hyperpod-release-notes.html#sagemaker-hyperpod-release-notes-20240620\">SageMaker HyperPod release notes: June 20, 2024</a>.</p>",
       "union":true
     },
     "ClusterInstanceStorageConfigs":{
@@ -11794,7 +11794,7 @@
         },
         "HubContentType":{
           "shape":"HubContentType",
-          "documentation":"<p>The type of hub content to delete.</p>"
+          "documentation":"<p>The type of hub content reference to delete. The only supported type of hub content reference to delete is <code>ModelReference</code>.</p>"
         },
         "HubContentName":{
           "shape":"HubContentName",
@@ -19304,6 +19304,14 @@
       "max":10,
       "min":1
     },
+    "HiddenAppTypesList":{
+      "type":"list",
+      "member":{"shape":"AppType"}
+    },
+    "HiddenMlToolsList":{
+      "type":"list",
+      "member":{"shape":"MlTools"}
+    },
     "HolidayConfig":{
       "type":"list",
       "member":{"shape":"HolidayConfigAttributes"},
@@ -26635,6 +26643,24 @@
       "type":"string",
       "max":1,
       "pattern":"1|2"
+    },
+    "MlTools":{
+      "type":"string",
+      "enum":[
+        "DataWrangler",
+        "FeatureStore",
+        "EmrClusters",
+        "AutoMl",
+        "Experiments",
+        "Training",
+        "ModelEvaluation",
+        "Pipelines",
+        "Models",
+        "JumpStart",
+        "InferenceRecommender",
+        "Endpoints",
+        "Projects"
+      ]
     },
     "MlflowVersion":{
       "type":"string",
@@ -34590,6 +34616,20 @@
         "DISABLED"
       ]
     },
+    "StudioWebPortalSettings":{
+      "type":"structure",
+      "members":{
+        "HiddenMlTools":{
+          "shape":"HiddenMlToolsList",
+          "documentation":"<p>The machine learning tools that are hidden from the Studio left navigation pane.</p>"
+        },
+        "HiddenAppTypes":{
+          "shape":"HiddenAppTypesList",
+          "documentation":"<p>The <a href=\"https://docs.aws.amazon.com/sagemaker/latest/dg/studio-updated-apps.html\">Applications supported in Studio</a> that are hidden from the Studio left navigation pane.</p>"
+        }
+      },
+      "documentation":"<p>Studio settings. If these settings are applied on a user level, they take priority over the settings applied on a domain level.</p>"
+    },
     "SubnetId":{
       "type":"string",
       "max":32,
@@ -38279,6 +38319,10 @@
         "CustomFileSystemConfigs":{
           "shape":"CustomFileSystemConfigs",
           "documentation":"<p>The settings for assigning a custom file system to a user profile. Permitted users can access this file system in Amazon SageMaker Studio.</p>"
+        },
+        "StudioWebPortalSettings":{
+          "shape":"StudioWebPortalSettings",
+          "documentation":"<p>Studio settings. If these settings are applied on a user level, they take priority over the settings applied on a domain level.</p>"
         }
       },
       "documentation":"<p>A collection of settings that apply to users in a domain. These settings are specified when the <code>CreateUserProfile</code> API is called, and as <code>DefaultUserSettings</code> when the <code>CreateDomain</code> API is called.</p> <p> <code>SecurityGroups</code> is aggregated when specified in both calls. For all other settings in <code>UserSettings</code>, the values specified in <code>CreateUserProfile</code> take precedence over those specified in <code>CreateDomain</code>.</p>"

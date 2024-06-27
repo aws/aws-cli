@@ -68,6 +68,25 @@
       "documentation":"<p>Creates Amazon Q in Connect content. Before to calling this API, use <a href=\"https://docs.aws.amazon.com/amazon-q-connect/latest/APIReference/API_StartContentUpload.html\">StartContentUpload</a> to upload an asset.</p>",
       "idempotent":true
     },
+    "CreateContentAssociation":{
+      "name":"CreateContentAssociation",
+      "http":{
+        "method":"POST",
+        "requestUri":"/knowledgeBases/{knowledgeBaseId}/contents/{contentId}/associations",
+        "responseCode":200
+      },
+      "input":{"shape":"CreateContentAssociationRequest"},
+      "output":{"shape":"CreateContentAssociationResponse"},
+      "errors":[
+        {"shape":"ConflictException"},
+        {"shape":"ValidationException"},
+        {"shape":"ServiceQuotaExceededException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Creates an association between a content resource in a knowledge base and <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/step-by-step-guided-experiences.html\">step-by-step guides</a>. Step-by-step guides offer instructions to agents for resolving common customer issues. You create a content association to integrate Amazon Q in Connect and step-by-step guides. </p> <p>After you integrate Amazon Q and step-by-step guides, when Amazon Q provides a recommendation to an agent based on the intent that it's detected, it also provides them with the option to start the step-by-step guide that you have associated with the content.</p> <p>Note the following limitations:</p> <ul> <li> <p>You can create only one content association for each content resource in a knowledge base.</p> </li> <li> <p>You can associate a step-by-step guide with multiple content resources.</p> </li> </ul> <p>For more information, see <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/integrate-q-with-guides.html\">Integrate Amazon Q in Connect with step-by-step guides</a> in the <i>Amazon Connect Administrator Guide</i>. </p>"
+    },
     "CreateKnowledgeBase":{
       "name":"CreateKnowledgeBase",
       "http":{
@@ -174,6 +193,23 @@
       "documentation":"<p>Deletes the content.</p>",
       "idempotent":true
     },
+    "DeleteContentAssociation":{
+      "name":"DeleteContentAssociation",
+      "http":{
+        "method":"DELETE",
+        "requestUri":"/knowledgeBases/{knowledgeBaseId}/contents/{contentId}/associations/{contentAssociationId}",
+        "responseCode":204
+      },
+      "input":{"shape":"DeleteContentAssociationRequest"},
+      "output":{"shape":"DeleteContentAssociationResponse"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p>Deletes the content association. </p> <p>For more information about content associations--what they are and when they are used--see <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/integrate-q-with-guides.html\">Integrate Amazon Q in Connect with step-by-step guides</a> in the <i>Amazon Connect Administrator Guide</i>. </p>",
+      "idempotent":true
+    },
     "DeleteImportJob":{
       "name":"DeleteImportJob",
       "http":{
@@ -274,6 +310,22 @@
         {"shape":"ResourceNotFoundException"}
       ],
       "documentation":"<p>Retrieves content, including a pre-signed URL to download the content.</p>"
+    },
+    "GetContentAssociation":{
+      "name":"GetContentAssociation",
+      "http":{
+        "method":"GET",
+        "requestUri":"/knowledgeBases/{knowledgeBaseId}/contents/{contentId}/associations/{contentAssociationId}",
+        "responseCode":200
+      },
+      "input":{"shape":"GetContentAssociationRequest"},
+      "output":{"shape":"GetContentAssociationResponse"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p>Returns the content association.</p> <p>For more information about content associations--what they are and when they are used--see <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/integrate-q-with-guides.html\">Integrate Amazon Q in Connect with step-by-step guides</a> in the <i>Amazon Connect Administrator Guide</i>.</p>"
     },
     "GetContentSummary":{
       "name":"GetContentSummary",
@@ -403,6 +455,22 @@
         {"shape":"AccessDeniedException"}
       ],
       "documentation":"<p>Lists information about assistants.</p>"
+    },
+    "ListContentAssociations":{
+      "name":"ListContentAssociations",
+      "http":{
+        "method":"GET",
+        "requestUri":"/knowledgeBases/{knowledgeBaseId}/contents/{contentId}/associations",
+        "responseCode":200
+      },
+      "input":{"shape":"ListContentAssociationsRequest"},
+      "output":{"shape":"ListContentAssociationsResponse"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p>Lists the content associations.</p> <p>For more information about content associations--what they are and when they are used--see <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/integrate-q-with-guides.html\">Integrate Amazon Q in Connect with step-by-step guides</a> in the <i>Amazon Connect Administrator Guide</i>.</p>"
     },
     "ListContents":{
       "name":"ListContents",
@@ -745,6 +813,16 @@
       },
       "exception":true
     },
+    "AmazonConnectGuideAssociationData":{
+      "type":"structure",
+      "members":{
+        "flowId":{
+          "shape":"GenericArn",
+          "documentation":"<p> The Amazon Resource Name (ARN) of an Amazon Connect flow. Step-by-step guides are a type of flow.</p>"
+        }
+      },
+      "documentation":"<p>Content association data for a <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/step-by-step-guided-experiences.html\">step-by-step guide</a>.</p>"
+    },
     "AndConditions":{
       "type":"list",
       "member":{"shape":"TagCondition"}
@@ -766,7 +844,7 @@
     },
     "Arn":{
       "type":"string",
-      "pattern":"^arn:[a-z-]*?:wisdom:[a-z0-9-]*?:[0-9]{12}:[a-z-]*?/[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}(?:/[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12})?$"
+      "pattern":"^arn:[a-z-]*?:wisdom:[a-z0-9-]*?:[0-9]{12}:[a-z-]*?/[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}(?:/[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}){0,2}$"
     },
     "AssistantAssociationData":{
       "type":"structure",
@@ -1099,6 +1177,129 @@
       "value":{"shape":"ContactAttributeValue"},
       "sensitive":true
     },
+    "ContentAssociationContents":{
+      "type":"structure",
+      "members":{
+        "amazonConnectGuideAssociation":{
+          "shape":"AmazonConnectGuideAssociationData",
+          "documentation":"<p>The data of the step-by-step guide association.</p>"
+        }
+      },
+      "documentation":"<p>The contents of a content association.</p>",
+      "union":true
+    },
+    "ContentAssociationData":{
+      "type":"structure",
+      "required":[
+        "associationData",
+        "associationType",
+        "contentArn",
+        "contentAssociationArn",
+        "contentAssociationId",
+        "contentId",
+        "knowledgeBaseArn",
+        "knowledgeBaseId"
+      ],
+      "members":{
+        "associationData":{
+          "shape":"ContentAssociationContents",
+          "documentation":"<p>The content association.</p>"
+        },
+        "associationType":{
+          "shape":"ContentAssociationType",
+          "documentation":"<p>The type of association.</p>"
+        },
+        "contentArn":{
+          "shape":"Arn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the content.</p>"
+        },
+        "contentAssociationArn":{
+          "shape":"Arn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the content association.</p>"
+        },
+        "contentAssociationId":{
+          "shape":"Uuid",
+          "documentation":"<p>The identifier of the content association. Can be either the ID or the ARN. URLs cannot contain the ARN.</p>"
+        },
+        "contentId":{
+          "shape":"Uuid",
+          "documentation":"<p>The identifier of the content.</p>"
+        },
+        "knowledgeBaseArn":{
+          "shape":"Arn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the knowledge base.</p>"
+        },
+        "knowledgeBaseId":{
+          "shape":"Uuid",
+          "documentation":"<p>The identifier of the knowledge base.</p>"
+        },
+        "tags":{
+          "shape":"Tags",
+          "documentation":"<p>The tags used to organize, track, or control access for this resource.</p>"
+        }
+      },
+      "documentation":"<p>Information about the content association.</p>"
+    },
+    "ContentAssociationSummary":{
+      "type":"structure",
+      "required":[
+        "associationData",
+        "associationType",
+        "contentArn",
+        "contentAssociationArn",
+        "contentAssociationId",
+        "contentId",
+        "knowledgeBaseArn",
+        "knowledgeBaseId"
+      ],
+      "members":{
+        "associationData":{
+          "shape":"ContentAssociationContents",
+          "documentation":"<p>The content association.</p>"
+        },
+        "associationType":{
+          "shape":"ContentAssociationType",
+          "documentation":"<p>The type of association.</p>"
+        },
+        "contentArn":{
+          "shape":"Arn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the content.</p>"
+        },
+        "contentAssociationArn":{
+          "shape":"Arn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the content association.</p>"
+        },
+        "contentAssociationId":{
+          "shape":"Uuid",
+          "documentation":"<p>The identifier of the content association. Can be either the ID or the ARN. URLs cannot contain the ARN.</p>"
+        },
+        "contentId":{
+          "shape":"Uuid",
+          "documentation":"<p>The identifier of the content.</p>"
+        },
+        "knowledgeBaseArn":{
+          "shape":"Arn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the knowledge base.</p>"
+        },
+        "knowledgeBaseId":{
+          "shape":"Uuid",
+          "documentation":"<p>The identifier of the knowledge base.</p>"
+        },
+        "tags":{
+          "shape":"Tags",
+          "documentation":"<p>The tags used to organize, track, or control access for this resource.</p>"
+        }
+      },
+      "documentation":"<p>Summary information about a content association.</p>"
+    },
+    "ContentAssociationSummaryList":{
+      "type":"list",
+      "member":{"shape":"ContentAssociationSummary"}
+    },
+    "ContentAssociationType":{
+      "type":"string",
+      "enum":["AMAZON_CONNECT_GUIDE"]
+    },
     "ContentData":{
       "type":"structure",
       "required":[
@@ -1402,6 +1603,55 @@
         "assistant":{
           "shape":"AssistantData",
           "documentation":"<p>Information about the assistant.</p>"
+        }
+      }
+    },
+    "CreateContentAssociationRequest":{
+      "type":"structure",
+      "required":[
+        "association",
+        "associationType",
+        "contentId",
+        "knowledgeBaseId"
+      ],
+      "members":{
+        "association":{
+          "shape":"ContentAssociationContents",
+          "documentation":"<p>The identifier of the associated resource.</p>"
+        },
+        "associationType":{
+          "shape":"ContentAssociationType",
+          "documentation":"<p>The type of association.</p>"
+        },
+        "clientToken":{
+          "shape":"ClientToken",
+          "documentation":"<p>A unique, case-sensitive identifier that you provide to ensure the idempotency of the request. If not provided, the Amazon Web Services SDK populates this field. For more information about idempotency, see <a href=\"https://aws.amazon.com/builders-library/making-retries-safe-with-idempotent-APIs/\">Making retries safe with idempotent APIs</a>.</p>",
+          "idempotencyToken":true
+        },
+        "contentId":{
+          "shape":"UuidOrArn",
+          "documentation":"<p>The identifier of the content.</p>",
+          "location":"uri",
+          "locationName":"contentId"
+        },
+        "knowledgeBaseId":{
+          "shape":"UuidOrArn",
+          "documentation":"<p>The identifier of the knowledge base.</p>",
+          "location":"uri",
+          "locationName":"knowledgeBaseId"
+        },
+        "tags":{
+          "shape":"Tags",
+          "documentation":"<p>The tags used to organize, track, or control access for this resource.</p>"
+        }
+      }
+    },
+    "CreateContentAssociationResponse":{
+      "type":"structure",
+      "members":{
+        "contentAssociation":{
+          "shape":"ContentAssociationData",
+          "documentation":"<p>The association between Amazon Q in Connect content and another resource.</p>"
         }
       }
     },
@@ -1721,6 +1971,39 @@
       "members":{
       }
     },
+    "DeleteContentAssociationRequest":{
+      "type":"structure",
+      "required":[
+        "contentAssociationId",
+        "contentId",
+        "knowledgeBaseId"
+      ],
+      "members":{
+        "contentAssociationId":{
+          "shape":"UuidOrArn",
+          "documentation":"<p>The identifier of the content association. Can be either the ID or the ARN. URLs cannot contain the ARN.</p>",
+          "location":"uri",
+          "locationName":"contentAssociationId"
+        },
+        "contentId":{
+          "shape":"UuidOrArn",
+          "documentation":"<p>The identifier of the content.</p>",
+          "location":"uri",
+          "locationName":"contentId"
+        },
+        "knowledgeBaseId":{
+          "shape":"UuidOrArn",
+          "documentation":"<p>The identifier of the knowledge base.</p>",
+          "location":"uri",
+          "locationName":"knowledgeBaseId"
+        }
+      }
+    },
+    "DeleteContentAssociationResponse":{
+      "type":"structure",
+      "members":{
+      }
+    },
     "DeleteContentRequest":{
       "type":"structure",
       "required":[
@@ -2014,6 +2297,43 @@
         "assistant":{
           "shape":"AssistantData",
           "documentation":"<p>Information about the assistant.</p>"
+        }
+      }
+    },
+    "GetContentAssociationRequest":{
+      "type":"structure",
+      "required":[
+        "contentAssociationId",
+        "contentId",
+        "knowledgeBaseId"
+      ],
+      "members":{
+        "contentAssociationId":{
+          "shape":"UuidOrArn",
+          "documentation":"<p>The identifier of the content association. Can be either the ID or the ARN. URLs cannot contain the ARN.</p>",
+          "location":"uri",
+          "locationName":"contentAssociationId"
+        },
+        "contentId":{
+          "shape":"UuidOrArn",
+          "documentation":"<p>The identifier of the content.</p>",
+          "location":"uri",
+          "locationName":"contentId"
+        },
+        "knowledgeBaseId":{
+          "shape":"UuidOrArn",
+          "documentation":"<p>The identifier of the knowledge base.</p>",
+          "location":"uri",
+          "locationName":"knowledgeBaseId"
+        }
+      }
+    },
+    "GetContentAssociationResponse":{
+      "type":"structure",
+      "members":{
+        "contentAssociation":{
+          "shape":"ContentAssociationData",
+          "documentation":"<p>The association between Amazon Q in Connect content and another resource.</p>"
         }
       }
     },
@@ -2311,7 +2631,7 @@
         "externalSourceConfiguration":{"shape":"ExternalSourceConfiguration"},
         "failedRecordReport":{
           "shape":"Url",
-          "documentation":"<p>The link to donwload the information of resource data that failed to be imported.</p>"
+          "documentation":"<p>The link to download the information of resource data that failed to be imported.</p>"
         },
         "importJobId":{
           "shape":"Uuid",
@@ -2645,6 +2965,53 @@
         "assistantSummaries":{
           "shape":"AssistantList",
           "documentation":"<p>Information about the assistants.</p>"
+        },
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>If there are additional results, this is the token for the next set of results.</p>"
+        }
+      }
+    },
+    "ListContentAssociationsRequest":{
+      "type":"structure",
+      "required":[
+        "contentId",
+        "knowledgeBaseId"
+      ],
+      "members":{
+        "contentId":{
+          "shape":"UuidOrArn",
+          "documentation":"<p>The identifier of the content.</p>",
+          "location":"uri",
+          "locationName":"contentId"
+        },
+        "knowledgeBaseId":{
+          "shape":"UuidOrArn",
+          "documentation":"<p>The identifier of the knowledge base.</p>",
+          "location":"uri",
+          "locationName":"knowledgeBaseId"
+        },
+        "maxResults":{
+          "shape":"MaxResults",
+          "documentation":"<p>The maximum number of results to return per page.</p>",
+          "location":"querystring",
+          "locationName":"maxResults"
+        },
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The token for the next set of results. Use the value returned in the previous response in the next request to retrieve the next set of results.</p>",
+          "location":"querystring",
+          "locationName":"nextToken"
+        }
+      }
+    },
+    "ListContentAssociationsResponse":{
+      "type":"structure",
+      "required":["contentAssociationSummaries"],
+      "members":{
+        "contentAssociationSummaries":{
+          "shape":"ContentAssociationSummaryList",
+          "documentation":"<p>Summary information about content associations.</p>"
         },
         "nextToken":{
           "shape":"NextToken",
@@ -4344,6 +4711,19 @@
       },
       "documentation":"<p>Details about the source content text data.</p>"
     },
+    "ThrottlingException":{
+      "type":"structure",
+      "members":{
+        "message":{"shape":"String"}
+      },
+      "documentation":"<p>The throttling limit has been exceeded.</p>",
+      "error":{
+        "httpStatusCode":400,
+        "senderFault":true
+      },
+      "exception":true,
+      "retryable":{"throttling":false}
+    },
     "TimeToLive":{
       "type":"integer",
       "documentation":"<p>Expiration time in minutes</p>",
@@ -4610,7 +4990,7 @@
     },
     "UuidOrArn":{
       "type":"string",
-      "pattern":"^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$|^arn:[a-z-]*?:wisdom:[a-z0-9-]*?:[0-9]{12}:[a-z-]*?/[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}(?:/[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12})?$"
+      "pattern":"^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$|^arn:[a-z-]*?:wisdom:[a-z0-9-]*?:[0-9]{12}:[a-z-]*?/[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}(?:/[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}){0,2}$"
     },
     "ValidationException":{
       "type":"structure",

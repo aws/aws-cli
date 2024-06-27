@@ -4,11 +4,13 @@
     "apiVersion":"2021-07-15",
     "endpointPrefix":"media-pipelines-chime",
     "protocol":"rest-json",
+    "protocols":["rest-json"],
     "serviceFullName":"Amazon Chime SDK Media Pipelines",
     "serviceId":"Chime SDK Media Pipelines",
     "signatureVersion":"v4",
     "signingName":"chime",
-    "uid":"chime-sdk-media-pipelines-2021-07-15"
+    "uid":"chime-sdk-media-pipelines-2021-07-15",
+    "auth":["aws.auth#sigv4"]
   },
   "operations":{
     "CreateMediaCapturePipeline":{
@@ -132,7 +134,7 @@
         {"shape":"ServiceUnavailableException"},
         {"shape":"ServiceFailureException"}
       ],
-      "documentation":"<p>Creates an Kinesis video stream pool for the media pipeline.</p>"
+      "documentation":"<p>Creates an Amazon Kinesis Video Stream pool for use with media stream pipelines.</p> <note> <p>If a meeting uses an opt-in Region as its <a href=\"https://docs.aws.amazon.com/chime-sdk/latest/APIReference/API_meeting-chime_CreateMeeting.html#chimesdk-meeting-chime_CreateMeeting-request-MediaRegion\">MediaRegion</a>, the KVS stream must be in that same Region. For example, if a meeting uses the <code>af-south-1</code> Region, the KVS stream must also be in <code>af-south-1</code>. However, if the meeting uses a Region that AWS turns on by default, the KVS stream can be in any available Region, including an opt-in Region. For example, if the meeting uses <code>ca-central-1</code>, the KVS stream can be in <code>eu-west-2</code>, <code>us-east-1</code>, <code>af-south-1</code>, or any other Region that the Amazon Chime SDK supports.</p> <p>To learn which AWS Region a meeting uses, call the <a href=\"https://docs.aws.amazon.com/chime-sdk/latest/APIReference/API_meeting-chime_GetMeeting.html\">GetMeeting</a> API and use the <a href=\"https://docs.aws.amazon.com/chime-sdk/latest/APIReference/API_meeting-chime_CreateMeeting.html#chimesdk-meeting-chime_CreateMeeting-request-MediaRegion\">MediaRegion</a> parameter from the response.</p> <p>For more information about opt-in Regions, refer to <a href=\"https://docs.aws.amazon.com/chime-sdk/latest/dg/sdk-available-regions.html\">Available Regions</a> in the <i>Amazon Chime SDK Developer Guide</i>, and <a href=\"https://docs.aws.amazon.com/accounts/latest/reference/manage-acct-regions.html#rande-manage-enable.html\">Specify which AWS Regions your account can use</a>, in the <i>AWS Account Management Reference Guide</i>.</p> </note>"
     },
     "CreateMediaStreamPipeline":{
       "name":"CreateMediaStreamPipeline",
@@ -232,7 +234,7 @@
         {"shape":"ServiceUnavailableException"},
         {"shape":"ServiceFailureException"}
       ],
-      "documentation":"<p>Deletes an Kinesis video stream pool.</p>"
+      "documentation":"<p>Deletes an Amazon Kinesis Video Stream pool.</p>"
     },
     "GetMediaCapturePipeline":{
       "name":"GetMediaCapturePipeline",
@@ -636,7 +638,7 @@
         {"shape":"ServiceUnavailableException"},
         {"shape":"ServiceFailureException"}
       ],
-      "documentation":"<p>Updates an Kinesis video stream pool in a media pipeline.</p>"
+      "documentation":"<p>Updates an Amazon Kinesis Video Stream pool in a media pipeline.</p>"
     }
   },
   "shapes":{
@@ -779,6 +781,10 @@
           "shape":"Boolean",
           "documentation":"<p>Turns language identification on or off.</p>"
         },
+        "IdentifyMultipleLanguages":{
+          "shape":"Boolean",
+          "documentation":"<p>Turns language identification on or off for multiple languages.</p>"
+        },
         "LanguageOptions":{
           "shape":"LanguageOptions",
           "documentation":"<p>The language options for the transcription, such as automatic language detection.</p>"
@@ -796,7 +802,7 @@
           "documentation":"<p>The names of the custom vocabulary filter or filters using during transcription.</p>"
         }
       },
-      "documentation":"<p>A structure that contains the configuration settings for an Amazon Transcribe processor.</p>"
+      "documentation":"<p>A structure that contains the configuration settings for an Amazon Transcribe processor.</p> <note> <p>Calls to this API must include a <code>LanguageCode</code>, <code>IdentifyLanguage</code>, or <code>IdentifyMultipleLanguages</code> parameter. If you include more than one of those parameters, your transcription job fails.</p> </note>"
     },
     "Arn":{
       "type":"string",
@@ -1465,11 +1471,11 @@
       "members":{
         "StreamConfiguration":{
           "shape":"KinesisVideoStreamConfiguration",
-          "documentation":"<p>The configuration settings for the video stream.</p>"
+          "documentation":"<p>The configuration settings for the stream.</p>"
         },
         "PoolName":{
           "shape":"KinesisVideoStreamPoolName",
-          "documentation":"<p>The name of the video stream pool.</p>"
+          "documentation":"<p>The name of the pool.</p>"
         },
         "ClientRequestToken":{
           "shape":"ClientRequestToken",
@@ -1478,7 +1484,7 @@
         },
         "Tags":{
           "shape":"TagList",
-          "documentation":"<p>The tags assigned to the video stream pool.</p>"
+          "documentation":"<p>The tags assigned to the stream pool.</p>"
         }
       }
     },
@@ -1487,7 +1493,7 @@
       "members":{
         "KinesisVideoStreamPoolConfiguration":{
           "shape":"KinesisVideoStreamPoolConfiguration",
-          "documentation":"<p>The configuration for the Kinesis video stream pool.</p>"
+          "documentation":"<p>The configuration for applying the streams to the pool.</p> <note> <p/> </note>"
         }
       }
     },
@@ -1575,7 +1581,7 @@
       "members":{
         "Identifier":{
           "shape":"NonEmptyString",
-          "documentation":"<p>The ID of the pool being deleted.</p>",
+          "documentation":"<p>The unique identifier of the requested resource. Valid values include the name and ARN of the media pipeline Kinesis Video Stream pool.</p>",
           "location":"uri",
           "locationName":"identifier"
         }
@@ -1709,7 +1715,7 @@
       "members":{
         "Identifier":{
           "shape":"NonEmptyString",
-          "documentation":"<p>The ID of the video stream pool.</p>",
+          "documentation":"<p>The unique identifier of the requested resource. Valid values include the name and ARN of the media pipeline Kinesis Video Stream pool.</p>",
           "location":"uri",
           "locationName":"identifier"
         }
@@ -1964,7 +1970,7 @@
           "documentation":"<p>The amount of time that data is retained.</p>"
         }
       },
-      "documentation":"<p>The configuration of an Kinesis video stream.</p>"
+      "documentation":"<p>The configuration of an Kinesis video stream.</p> <note> <p>If a meeting uses an opt-in Region as its <a href=\"https://docs.aws.amazon.com/chime-sdk/latest/APIReference/API_meeting-chime_CreateMeeting.html#chimesdk-meeting-chime_CreateMeeting-request-MediaRegion\">MediaRegion</a>, the KVS stream must be in that same Region. For example, if a meeting uses the <code>af-south-1</code> Region, the KVS stream must also be in <code>af-south-1</code>. However, if the meeting uses a Region that AWS turns on by default, the KVS stream can be in any available Region, including an opt-in Region. For example, if the meeting uses <code>ca-central-1</code>, the KVS stream can be in <code>eu-west-2</code>, <code>us-east-1</code>, <code>af-south-1</code>, or any other Region that the Amazon Chime SDK supports.</p> <p>To learn which AWS Region a meeting uses, call the <a href=\"https://docs.aws.amazon.com/chime-sdk/latest/APIReference/API_meeting-chime_GetMeeting.html\">GetMeeting</a> API and use the <a href=\"https://docs.aws.amazon.com/chime-sdk/latest/APIReference/API_meeting-chime_CreateMeeting.html#chimesdk-meeting-chime_CreateMeeting-request-MediaRegion\">MediaRegion</a> parameter from the response.</p> <p>For more information about opt-in Regions, refer to <a href=\"https://docs.aws.amazon.com/chime-sdk/latest/dg/sdk-available-regions.html\">Available Regions</a> in the <i>Amazon Chime SDK Developer Guide</i>, and <a href=\"https://docs.aws.amazon.com/accounts/latest/reference/manage-acct-regions.html#rande-manage-enable.html\">Specify which AWS Regions your account can use</a>, in the <i>AWS Account Management Reference Guide</i>.</p> </note>"
     },
     "KinesisVideoStreamConfigurationUpdate":{
       "type":"structure",
@@ -2872,7 +2878,7 @@
       "members":{
         "SinkArn":{
           "shape":"Arn",
-          "documentation":"<p>The ARN of the media stream sink.</p>"
+          "documentation":"<p>The ARN of the Kinesis Video Stream pool returned by the <a>CreateMediaPipelineKinesisVideoStreamPool</a> API.</p>"
         },
         "SinkType":{
           "shape":"MediaStreamPipelineSinkType",
@@ -2908,7 +2914,7 @@
         },
         "SourceArn":{
           "shape":"Arn",
-          "documentation":"<p>The ARN of the media stream source. </p>"
+          "documentation":"<p>The ARN of the meeting.</p>"
         }
       },
       "documentation":"<p>Structure that contains the settings for media stream sources.</p>"
@@ -3104,7 +3110,7 @@
       "type":"list",
       "member":{"shape":"RecordingStreamConfiguration"},
       "max":2,
-      "min":2
+      "min":1
     },
     "ReservedStreamCapacity":{
       "type":"integer",
@@ -3704,7 +3710,7 @@
       "members":{
         "Identifier":{
           "shape":"NonEmptyString",
-          "documentation":"<p>The ID of the video stream pool.</p>",
+          "documentation":"<p>The unique identifier of the requested resource. Valid values include the name and ARN of the media pipeline Kinesis Video Stream pool.</p>",
           "location":"uri",
           "locationName":"identifier"
         },

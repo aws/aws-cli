@@ -2,6 +2,22 @@
 CHANGELOG
 =========
 
+2.17.4
+======
+
+* api-change:``datazone``: This release supports the data lineage feature of business data catalog in Amazon DataZone.
+* api-change:``qconnect``: Adds CreateContentAssociation, ListContentAssociations, GetContentAssociation, and DeleteContentAssociation APIs.
+* api-change:``elasticache``: Add v2 smoke tests and smithy smokeTests trait for SDK testing.
+* api-change:``cloudfront``: Doc only update for CloudFront that fixes customer-reported issue
+* api-change:``workspaces``: Added support for WorkSpaces Pools.
+* api-change:``chime-sdk-media-pipelines``: Added Amazon Transcribe multi language identification to Chime SDK call analytics. Enabling customers sending single stream audio to generate call recordings using Chime SDK call analytics
+* api-change:``sagemaker``: Add capability for Admins to customize Studio experience for the user by showing or hiding Apps and MLTools.
+* api-change:``mq``: This release makes the EngineVersion field optional for both broker and configuration and uses the latest available version by default. The AutoMinorVersionUpgrade field is also now optional for broker creation and defaults to 'true'.
+* api-change:``rds``: Updates Amazon RDS documentation for TAZ export to S3.
+* api-change:``quicksight``: Adding support for Repeating Sections, Nested Filters
+* api-change:``application-autoscaling``: Amazon WorkSpaces customers can now use Application Auto Scaling to automatically scale the number of virtual desktops in a WorkSpaces pool.
+
+
 2.17.3
 ======
 

@@ -104,6 +104,19 @@ class PrettyJSONLogEventsFormatter(BaseLogEventsFormatter):
         return self._color_if_configured(
             timestamp.isoformat(), self._TIMESTAMP_COLOR)
 
+class BasicEventsFormatter(BaseLogEventsFormatter):
+    def display_log_event(self, log_event):
+        self._write_log_event(json.dumps({
+            "timestamp": log_event["timestamp"].strftime("%Y-%m-%dT%H:%M:%S"),
+            "message": self._format_json(log_event["message"])
+        }))
+
+    def _format_json(self, log_message):
+        try:
+            return json.loads(log_message)
+        except json.decoder.JSONDecodeError:
+            pass
+        return log_message
 
 class TailCommand(BasicCommand):
     NAME = 'tail'
@@ -154,7 +167,7 @@ class TailCommand(BasicCommand):
         {
             'name': 'format',
             'default': 'detailed',
-            'choices': ['detailed', 'short', 'json'],
+            'choices': ['detailed', 'short', 'json', 'none'],
             'help_text': (
                 'The format to display the logs. The following formats are '
                 'supported:\n\n'
@@ -167,6 +180,8 @@ class TailCommand(BasicCommand):
                 'a shortened timestamp and the log message.'
                 '</li>'
                 '<li> json - Pretty print any messages that are entirely JSON.'
+                '</li>'
+                 '<li> none - Events are printed as single line json message'
                 '</li>'
                 '</ul>'
             )
@@ -205,6 +220,7 @@ class TailCommand(BasicCommand):
     _FORMAT_TO_FORMATTER_CLS = {
         'detailed': DetailedLogEventsFormatter,
         'short': ShortLogEventsFormatter,
+        'none': BasicEventsFormatter,
         'json': PrettyJSONLogEventsFormatter,
     }
 

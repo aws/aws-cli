@@ -76,7 +76,7 @@ FLATTEN_CONFIG = {
                 # but this is the name ("expression") of the our parent
                 # key, the top level nested param.
                 ("ExpressionName", {"name": "name"}),
-                ("ExpressionValue", {"name": "expression"}),]),
+                ("ExpressionValue", {"name": "expression"}), ]),
         }
     },
     "define-index-field": {
@@ -91,7 +91,7 @@ FLATTEN_CONFIG = {
                                              "type": "string",
                                              "hydrate": index_hydrate}),
                 ("IntOptions.FacetEnabled", {"name": "facet-enabled",
-                                             "hydrate": index_hydrate }),
+                                             "hydrate": index_hydrate}),
                 ("IntOptions.SearchEnabled", {"name": "search-enabled",
                                               "hydrate": index_hydrate}),
                 ("IntOptions.ReturnEnabled", {"name": "return-enabled",
@@ -100,11 +100,13 @@ FLATTEN_CONFIG = {
                                             "hydrate": index_hydrate}),
                 ("IntOptions.SourceField", {"name": "source-field",
                                             "type": "string",
-                                            "hydrate": index_hydrate }),
+                                            "hydrate": index_hydrate}),
                 ("TextOptions.HighlightEnabled", {"name": "highlight-enabled",
                                                   "hydrate": index_hydrate}),
                 ("TextOptions.AnalysisScheme", {"name": "analysis-scheme",
-                                                "hydrate": index_hydrate})
+                                                "hydrate": index_hydrate}),
+                ("TextArrayOptions.SourceFields", {"name": "source-field",
+                                                   "hydrate": index_hydrate})
             ])
         }
     }

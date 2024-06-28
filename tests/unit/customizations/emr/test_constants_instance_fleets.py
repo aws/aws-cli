@@ -69,6 +69,19 @@ INSTANCE_FLEETS_WITH_SPOT_ALLOCATION_STRATEGY = (
     'WeightedCapacity=4}],LaunchSpecifications={SpotSpecification={TimeoutDurationMinutes=20,'
     'TimeoutAction=TERMINATE_CLUSTER,AllocationStrategy=diversified}}')
 
+INSTANCE_FLEETS_WITH_PRIORITIZED_ALLOCATION_STRATEGY_SPOT_AND_OD = (
+    'InstanceFleetType=MASTER,TargetSpotCapacity=1,InstanceTypeConfigs=[{InstanceType=d2.xlarge,BidPrice=0.1,Priority=0.0}],'
+    'LaunchSpecifications={SpotSpecification={TimeoutDurationMinutes=30,TimeoutAction=TERMINATE_CLUSTER,'
+    'AllocationStrategy=capacity-optimized-prioritized},OnDemandSpecification={AllocationStrategy=prioritized}} '
+    'InstanceFleetType=CORE,TargetSpotCapacity=100,InstanceTypeConfigs=[{InstanceType=d2.xlarge,BidPrice=0.5,'
+    'WeightedCapacity=1,Priority=0.0},{InstanceType=m3.2xlarge,BidPrice=0.2,WeightedCapacity=2,Priority=1.0},{InstanceType=m3.4xlarge,BidPrice=0.4,'
+    'WeightedCapacity=4,Priority=99.0}],LaunchSpecifications={SpotSpecification={TimeoutDurationMinutes=32,'
+    'TimeoutAction=TERMINATE_CLUSTER,AllocationStrategy=capacity-optimized-prioritized},OnDemandSpecification={AllocationStrategy=prioritized}} '
+    'InstanceFleetType=TASK,TargetSpotCapacity=100,InstanceTypeConfigs=[{InstanceType=d2.xlarge,BidPrice=0.5,'
+    'WeightedCapacity=1,Priority=10.0},{InstanceType=m3.2xlarge,BidPrice=0.2,WeightedCapacity=2,Priority=0.0},{InstanceType=m3.4xlarge,BidPrice=0.4,'
+    'WeightedCapacity=4,Priority=100.0}],LaunchSpecifications={SpotSpecification={TimeoutDurationMinutes=77,'
+    'TimeoutAction=TERMINATE_CLUSTER,AllocationStrategy=capacity-optimized-prioritized},OnDemandSpecification={AllocationStrategy=prioritized}}')
+
 RES_INSTANCE_FLEETS_WITH_ON_DEMAND_MASTER_ONLY = \
     [{"InstanceTypeConfigs": [{"InstanceType": "d2.xlarge"}],
       "LaunchSpecifications": {
@@ -237,6 +250,40 @@ RES_INSTANCE_FLEETS_WITH_SPOT_ALLOCATION_STRATEGY = \
       "WeightedCapacity": 4}],
       "LaunchSpecifications" : {
           "SpotSpecification": {"TimeoutDurationMinutes": 20, "TimeoutAction": "TERMINATE_CLUSTER", "AllocationStrategy": "diversified"}
+      },
+      "TargetSpotCapacity": 100,
+      "InstanceFleetType": "TASK",
+      "Name": "TASK"
+    }]
+
+
+RES_INSTANCE_FLEETS_WITH_PRIORITIZED_ALLOCATION_STRATEGY_SPOT_AND_OD = \
+    [{"InstanceTypeConfigs": [{"InstanceType": "d2.xlarge","BidPrice": "0.1","Priority": 0.0}],
+      "LaunchSpecifications": {
+          "SpotSpecification": {"TimeoutDurationMinutes": 30, "TimeoutAction": "TERMINATE_CLUSTER", "AllocationStrategy": "capacity-optimized-prioritized"},
+          "OnDemandSpecification": {"AllocationStrategy": "prioritized"}
+      },
+      "TargetSpotCapacity": 1,
+      "InstanceFleetType": "MASTER",
+      "Name": "MASTER"
+    },
+    {"InstanceTypeConfigs": [{"InstanceType": "d2.xlarge","BidPrice": "0.5","WeightedCapacity": 1,"Priority": 0.0},
+      {"InstanceType": "m3.2xlarge","BidPrice": "0.2","WeightedCapacity": 2,"Priority": 1.0},{"InstanceType": "m3.4xlarge","BidPrice": "0.4",
+      "WeightedCapacity": 4,"Priority": 99.0}],
+      "LaunchSpecifications" : {
+          "SpotSpecification": {"TimeoutDurationMinutes": 32, "TimeoutAction": "TERMINATE_CLUSTER", "AllocationStrategy": "capacity-optimized-prioritized"},
+          "OnDemandSpecification": {"AllocationStrategy": "prioritized"}
+      },
+      "TargetSpotCapacity": 100,
+      "InstanceFleetType": "CORE",
+      "Name": "CORE"
+    },
+    {"InstanceTypeConfigs": [{"InstanceType": "d2.xlarge","BidPrice": "0.5","WeightedCapacity": 1,"Priority": 10.0},
+      {"InstanceType": "m3.2xlarge","BidPrice": "0.2","WeightedCapacity": 2,"Priority": 0.0},{"InstanceType": "m3.4xlarge","BidPrice": "0.4",
+      "WeightedCapacity": 4,"Priority": 100.0}],
+      "LaunchSpecifications" : {
+          "SpotSpecification": {"TimeoutDurationMinutes": 77, "TimeoutAction": "TERMINATE_CLUSTER", "AllocationStrategy": "capacity-optimized-prioritized"},
+          "OnDemandSpecification": {"AllocationStrategy": "prioritized"}
       },
       "TargetSpotCapacity": 100,
       "InstanceFleetType": "TASK",

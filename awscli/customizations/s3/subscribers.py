@@ -279,7 +279,7 @@ class SetMetadataDirectivePropsSubscriber(BaseSubscriber):
             'Bucket': copy_source['Bucket'],
             'Key': copy_source['Key'],
         }
-        utils.RequestParamsMapper.map_head_object_params(
+        utils.RequestParamsMapper.map_head_object_params_with_copy_source_sse(
             head_object_params, self._cli_params)
         return self._client.head_object(**head_object_params)
 

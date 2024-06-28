@@ -2,6 +2,20 @@
 CHANGELOG
 =========
 
+1.33.18
+=======
+
+* api-change:``acm-pca``: Added CCPC_LEVEL_1_OR_HIGHER KeyStorageSecurityStandard and SM2 KeyAlgorithm and SM3WITHSM2 SigningAlgorithm for China regions.
+* api-change:``cloudhsmv2``: Added 3 new APIs to support backup sharing: GetResourcePolicy, PutResourcePolicy, and DeleteResourcePolicy. Added BackupArn to the output of the DescribeBackups API. Added support for BackupArn in the CreateCluster API.
+* api-change:``connect``: This release supports showing PreferredAgentRouting step via DescribeContact API.
+* api-change:``emr``: This release provides the support for new allocation strategies i.e. CAPACITY_OPTIMIZED_PRIORITIZED for Spot and PRIORITIZED for On-Demand by taking input of priority value for each instance type for instance fleet clusters.
+* api-change:``glue``: Added AttributesToGet parameter to Glue GetDatabases, allowing caller to limit output to include only the database name.
+* api-change:``kinesisanalyticsv2``: Support for Flink 1.19 in Managed Service for Apache Flink
+* api-change:``opensearch``: This release removes support for enabling or disabling Natural Language Query Processing feature for Amazon OpenSearch Service domains.
+* api-change:``pi``: Noting that the filter db.sql.db_id isn't available for RDS for SQL Server DB instances.
+* api-change:``workspaces``: Added support for Red Hat Enterprise Linux 8 on Amazon WorkSpaces Personal.
+
+
 1.33.17
 =======
 

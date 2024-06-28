@@ -12,7 +12,8 @@
     "signatureVersion":"v4",
     "signingName":"cloudhsm",
     "targetPrefix":"BaldrApiService",
-    "uid":"cloudhsmv2-2017-04-28"
+    "uid":"cloudhsmv2-2017-04-28",
+    "auth":["aws.auth#sigv4"]
   },
   "operations":{
     "CopyBackupToRegion":{
@@ -31,7 +32,7 @@
         {"shape":"CloudHsmServiceException"},
         {"shape":"CloudHsmTagException"}
       ],
-      "documentation":"<p>Copy an AWS CloudHSM cluster backup to a different region.</p>"
+      "documentation":"<p>Copy an CloudHSM cluster backup to a different region.</p> <p> <b>Cross-account use:</b> No. You cannot perform this operation on an CloudHSM backup in a different Amazon Web Services account.</p>"
     },
     "CreateCluster":{
       "name":"CreateCluster",
@@ -49,7 +50,7 @@
         {"shape":"CloudHsmServiceException"},
         {"shape":"CloudHsmTagException"}
       ],
-      "documentation":"<p>Creates a new AWS CloudHSM cluster.</p>"
+      "documentation":"<p>Creates a new CloudHSM cluster.</p> <p> <b>Cross-account use:</b> Yes. To perform this operation with an CloudHSM backup in a different AWS account, specify the full backup ARN in the value of the SourceBackupId parameter.</p>"
     },
     "CreateHsm":{
       "name":"CreateHsm",
@@ -66,7 +67,7 @@
         {"shape":"CloudHsmResourceNotFoundException"},
         {"shape":"CloudHsmAccessDeniedException"}
       ],
-      "documentation":"<p>Creates a new hardware security module (HSM) in the specified AWS CloudHSM cluster.</p>"
+      "documentation":"<p>Creates a new hardware security module (HSM) in the specified CloudHSM cluster.</p> <p> <b>Cross-account use:</b> No. You cannot perform this operation on an CloudHSM cluster in a different Amazon Web Service account.</p>"
     },
     "DeleteBackup":{
       "name":"DeleteBackup",
@@ -83,7 +84,7 @@
         {"shape":"CloudHsmResourceNotFoundException"},
         {"shape":"CloudHsmServiceException"}
       ],
-      "documentation":"<p>Deletes a specified AWS CloudHSM backup. A backup can be restored up to 7 days after the DeleteBackup request is made. For more information on restoring a backup, see <a>RestoreBackup</a>.</p>"
+      "documentation":"<p>Deletes a specified CloudHSM backup. A backup can be restored up to 7 days after the DeleteBackup request is made. For more information on restoring a backup, see <a>RestoreBackup</a>.</p> <p> <b>Cross-account use:</b> No. You cannot perform this operation on an CloudHSM backup in a different Amazon Web Services account.</p>"
     },
     "DeleteCluster":{
       "name":"DeleteCluster",
@@ -101,7 +102,7 @@
         {"shape":"CloudHsmServiceException"},
         {"shape":"CloudHsmTagException"}
       ],
-      "documentation":"<p>Deletes the specified AWS CloudHSM cluster. Before you can delete a cluster, you must delete all HSMs in the cluster. To see if the cluster contains any HSMs, use <a>DescribeClusters</a>. To delete an HSM, use <a>DeleteHsm</a>.</p>"
+      "documentation":"<p>Deletes the specified CloudHSM cluster. Before you can delete a cluster, you must delete all HSMs in the cluster. To see if the cluster contains any HSMs, use <a>DescribeClusters</a>. To delete an HSM, use <a>DeleteHsm</a>.</p> <p> <b>Cross-account use:</b> No. You cannot perform this operation on an CloudHSM cluster in a different Amazon Web Services account.</p>"
     },
     "DeleteHsm":{
       "name":"DeleteHsm",
@@ -118,7 +119,24 @@
         {"shape":"CloudHsmInvalidRequestException"},
         {"shape":"CloudHsmAccessDeniedException"}
       ],
-      "documentation":"<p>Deletes the specified HSM. To specify an HSM, you can use its identifier (ID), the IP address of the HSM's elastic network interface (ENI), or the ID of the HSM's ENI. You need to specify only one of these values. To find these values, use <a>DescribeClusters</a>.</p>"
+      "documentation":"<p>Deletes the specified HSM. To specify an HSM, you can use its identifier (ID), the IP address of the HSM's elastic network interface (ENI), or the ID of the HSM's ENI. You need to specify only one of these values. To find these values, use <a>DescribeClusters</a>.</p> <p> <b>Cross-account use:</b> No. You cannot perform this operation on an CloudHSM hsm in a different Amazon Web Services account.</p>"
+    },
+    "DeleteResourcePolicy":{
+      "name":"DeleteResourcePolicy",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DeleteResourcePolicyRequest"},
+      "output":{"shape":"DeleteResourcePolicyResponse"},
+      "errors":[
+        {"shape":"CloudHsmInternalFailureException"},
+        {"shape":"CloudHsmServiceException"},
+        {"shape":"CloudHsmInvalidRequestException"},
+        {"shape":"CloudHsmResourceNotFoundException"},
+        {"shape":"CloudHsmAccessDeniedException"}
+      ],
+      "documentation":"<p> Deletes an CloudHSM resource policy. Deleting a resource policy will result in the resource being unshared and removed from any RAM resource shares. Deleting the resource policy attached to a backup will not impact any clusters created from that backup.</p> <p> <b>Cross-account use:</b> No. You cannot perform this operation on an CloudHSM resource in a different Amazon Web Services account.</p>"
     },
     "DescribeBackups":{
       "name":"DescribeBackups",
@@ -136,7 +154,7 @@
         {"shape":"CloudHsmServiceException"},
         {"shape":"CloudHsmTagException"}
       ],
-      "documentation":"<p>Gets information about backups of AWS CloudHSM clusters.</p> <p>This is a paginated operation, which means that each response might contain only a subset of all the backups. When the response contains only a subset of backups, it includes a <code>NextToken</code> value. Use this value in a subsequent <code>DescribeBackups</code> request to get more backups. When you receive a response with no <code>NextToken</code> (or an empty or null value), that means there are no more backups to get.</p>"
+      "documentation":"<p>Gets information about backups of CloudHSM clusters. Lists either the backups you own or the backups shared with you when the Shared parameter is true.</p> <p>This is a paginated operation, which means that each response might contain only a subset of all the backups. When the response contains only a subset of backups, it includes a <code>NextToken</code> value. Use this value in a subsequent <code>DescribeBackups</code> request to get more backups. When you receive a response with no <code>NextToken</code> (or an empty or null value), that means there are no more backups to get.</p> <p> <b>Cross-account use:</b> Yes. Customers can describe backups in other Amazon Web Services accounts that are shared with them.</p>"
     },
     "DescribeClusters":{
       "name":"DescribeClusters",
@@ -153,7 +171,24 @@
         {"shape":"CloudHsmServiceException"},
         {"shape":"CloudHsmTagException"}
       ],
-      "documentation":"<p>Gets information about AWS CloudHSM clusters.</p> <p>This is a paginated operation, which means that each response might contain only a subset of all the clusters. When the response contains only a subset of clusters, it includes a <code>NextToken</code> value. Use this value in a subsequent <code>DescribeClusters</code> request to get more clusters. When you receive a response with no <code>NextToken</code> (or an empty or null value), that means there are no more clusters to get.</p>"
+      "documentation":"<p>Gets information about CloudHSM clusters.</p> <p>This is a paginated operation, which means that each response might contain only a subset of all the clusters. When the response contains only a subset of clusters, it includes a <code>NextToken</code> value. Use this value in a subsequent <code>DescribeClusters</code> request to get more clusters. When you receive a response with no <code>NextToken</code> (or an empty or null value), that means there are no more clusters to get.</p> <p> <b>Cross-account use:</b> No. You cannot perform this operation on CloudHSM clusters in a different Amazon Web Services account.</p>"
+    },
+    "GetResourcePolicy":{
+      "name":"GetResourcePolicy",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"GetResourcePolicyRequest"},
+      "output":{"shape":"GetResourcePolicyResponse"},
+      "errors":[
+        {"shape":"CloudHsmInternalFailureException"},
+        {"shape":"CloudHsmServiceException"},
+        {"shape":"CloudHsmInvalidRequestException"},
+        {"shape":"CloudHsmResourceNotFoundException"},
+        {"shape":"CloudHsmAccessDeniedException"}
+      ],
+      "documentation":"<p> Retrieves the resource policy document attached to a given resource. </p> <p> <b>Cross-account use:</b> No. You cannot perform this operation on an CloudHSM resource in a different Amazon Web Services account.</p>"
     },
     "InitializeCluster":{
       "name":"InitializeCluster",
@@ -170,7 +205,7 @@
         {"shape":"CloudHsmResourceNotFoundException"},
         {"shape":"CloudHsmServiceException"}
       ],
-      "documentation":"<p>Claims an AWS CloudHSM cluster by submitting the cluster certificate issued by your issuing certificate authority (CA) and the CA's root certificate. Before you can claim a cluster, you must sign the cluster's certificate signing request (CSR) with your issuing CA. To get the cluster's CSR, use <a>DescribeClusters</a>.</p>"
+      "documentation":"<p>Claims an CloudHSM cluster by submitting the cluster certificate issued by your issuing certificate authority (CA) and the CA's root certificate. Before you can claim a cluster, you must sign the cluster's certificate signing request (CSR) with your issuing CA. To get the cluster's CSR, use <a>DescribeClusters</a>.</p> <p> <b>Cross-account use:</b> No. You cannot perform this operation on an CloudHSM cluster in a different Amazon Web Services account.</p>"
     },
     "ListTags":{
       "name":"ListTags",
@@ -188,7 +223,7 @@
         {"shape":"CloudHsmServiceException"},
         {"shape":"CloudHsmTagException"}
       ],
-      "documentation":"<p>Gets a list of tags for the specified AWS CloudHSM cluster.</p> <p>This is a paginated operation, which means that each response might contain only a subset of all the tags. When the response contains only a subset of tags, it includes a <code>NextToken</code> value. Use this value in a subsequent <code>ListTags</code> request to get more tags. When you receive a response with no <code>NextToken</code> (or an empty or null value), that means there are no more tags to get.</p>"
+      "documentation":"<p>Gets a list of tags for the specified CloudHSM cluster.</p> <p>This is a paginated operation, which means that each response might contain only a subset of all the tags. When the response contains only a subset of tags, it includes a <code>NextToken</code> value. Use this value in a subsequent <code>ListTags</code> request to get more tags. When you receive a response with no <code>NextToken</code> (or an empty or null value), that means there are no more tags to get.</p> <p> <b>Cross-account use:</b> No. You cannot perform this operation on an CloudHSM resource in a different Amazon Web Services account.</p>"
     },
     "ModifyBackupAttributes":{
       "name":"ModifyBackupAttributes",
@@ -205,7 +240,7 @@
         {"shape":"CloudHsmResourceNotFoundException"},
         {"shape":"CloudHsmServiceException"}
       ],
-      "documentation":"<p>Modifies attributes for AWS CloudHSM backup.</p>"
+      "documentation":"<p>Modifies attributes for CloudHSM backup.</p> <p> <b>Cross-account use:</b> No. You cannot perform this operation on an CloudHSM backup in a different Amazon Web Services account.</p>"
     },
     "ModifyCluster":{
       "name":"ModifyCluster",
@@ -222,7 +257,24 @@
         {"shape":"CloudHsmResourceNotFoundException"},
         {"shape":"CloudHsmServiceException"}
       ],
-      "documentation":"<p>Modifies AWS CloudHSM cluster.</p>"
+      "documentation":"<p>Modifies CloudHSM cluster.</p> <p> <b>Cross-account use:</b> No. You cannot perform this operation on an CloudHSM cluster in a different Amazon Web Services account.</p>"
+    },
+    "PutResourcePolicy":{
+      "name":"PutResourcePolicy",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"PutResourcePolicyRequest"},
+      "output":{"shape":"PutResourcePolicyResponse"},
+      "errors":[
+        {"shape":"CloudHsmInternalFailureException"},
+        {"shape":"CloudHsmServiceException"},
+        {"shape":"CloudHsmInvalidRequestException"},
+        {"shape":"CloudHsmResourceNotFoundException"},
+        {"shape":"CloudHsmAccessDeniedException"}
+      ],
+      "documentation":"<p>Creates or updates an CloudHSM resource policy. A resource policy helps you to define the IAM entity (for example, an Amazon Web Services account) that can manage your CloudHSM resources. The following resources support CloudHSM resource policies: </p> <ul> <li> <p> Backup - The resource policy allows you to describe the backup and restore a cluster from the backup in another Amazon Web Services account.</p> </li> </ul> <p>In order to share a backup, it must be in a 'READY' state and you must own it.</p> <important> <p>While you can share a backup using the CloudHSM PutResourcePolicy operation, we recommend using Resource Access Manager (RAM) instead. Using RAM provides multiple benefits as it creates the policy for you, allows multiple resources to be shared at one time, and increases the discoverability of shared resources. If you use PutResourcePolicy and want consumers to be able to describe the backups you share with them, you must promote the backup to a standard RAM Resource Share using the RAM PromoteResourceShareCreatedFromPolicy API operation. For more information, see <a href=\"https://docs.aws.amazon.com/cloudhsm/latest/userguide/sharing.html\"> Working with shared backups</a> in the CloudHSM User Guide</p> </important> <p> <b>Cross-account use:</b> No. You cannot perform this operation on an CloudHSM resource in a different Amazon Web Services account.</p>"
     },
     "RestoreBackup":{
       "name":"RestoreBackup",
@@ -239,7 +291,7 @@
         {"shape":"CloudHsmResourceNotFoundException"},
         {"shape":"CloudHsmServiceException"}
       ],
-      "documentation":"<p>Restores a specified AWS CloudHSM backup that is in the <code>PENDING_DELETION</code> state. For mor information on deleting a backup, see <a>DeleteBackup</a>.</p>"
+      "documentation":"<p>Restores a specified CloudHSM backup that is in the <code>PENDING_DELETION</code> state. For more information on deleting a backup, see <a>DeleteBackup</a>.</p> <p> <b>Cross-account use:</b> No. You cannot perform this operation on an CloudHSM backup in a different Amazon Web Services account.</p>"
     },
     "TagResource":{
       "name":"TagResource",
@@ -257,7 +309,7 @@
         {"shape":"CloudHsmServiceException"},
         {"shape":"CloudHsmTagException"}
       ],
-      "documentation":"<p>Adds or overwrites one or more tags for the specified AWS CloudHSM cluster.</p>"
+      "documentation":"<p>Adds or overwrites one or more tags for the specified CloudHSM cluster.</p> <p> <b>Cross-account use:</b> No. You cannot perform this operation on an CloudHSM resource in a different Amazon Web Services account.</p>"
     },
     "UntagResource":{
       "name":"UntagResource",
@@ -275,7 +327,7 @@
         {"shape":"CloudHsmServiceException"},
         {"shape":"CloudHsmTagException"}
       ],
-      "documentation":"<p>Removes the specified tag or tags from the specified AWS CloudHSM cluster.</p>"
+      "documentation":"<p>Removes the specified tag or tags from the specified CloudHSM cluster.</p> <p> <b>Cross-account use:</b> No. You cannot perform this operation on an CloudHSM resource in a different Amazon Web Services account.</p>"
     }
   },
   "shapes":{
@@ -286,6 +338,10 @@
         "BackupId":{
           "shape":"BackupId",
           "documentation":"<p>The identifier (ID) of the backup.</p>"
+        },
+        "BackupArn":{
+          "shape":"BackupArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the backup.</p>"
         },
         "BackupState":{
           "shape":"BackupState",
@@ -329,14 +385,18 @@
         },
         "HsmType":{
           "shape":"HsmType",
-          "documentation":"<p>The HSM type of the cluster that was backed up.</p>"
+          "documentation":"<p>The HSM type used to create the backup.</p>"
         },
         "Mode":{
           "shape":"ClusterMode",
           "documentation":"<p>The mode of the cluster that was backed up.</p>"
         }
       },
-      "documentation":"<p>Contains information about a backup of an AWS CloudHSM cluster. All backup objects contain the <code>BackupId</code>, <code>BackupState</code>, <code>ClusterId</code>, and <code>CreateTimestamp</code> parameters. Backups that were copied into a destination region additionally contain the <code>CopyTimestamp</code>, <code>SourceBackup</code>, <code>SourceCluster</code>, and <code>SourceRegion</code> parameters. A backup that is pending deletion will include the <code>DeleteTimestamp</code> parameter.</p>"
+      "documentation":"<p>Contains information about a backup of an CloudHSM cluster. All backup objects contain the <code>BackupId</code>, <code>BackupState</code>, <code>ClusterId</code>, and <code>CreateTimestamp</code> parameters. Backups that were copied into a destination region additionally contain the <code>CopyTimestamp</code>, <code>SourceBackup</code>, <code>SourceCluster</code>, and <code>SourceRegion</code> parameters. A backup that is pending deletion will include the <code>DeleteTimestamp</code> parameter.</p>"
+    },
+    "BackupArn":{
+      "type":"string",
+      "pattern":"^(arn:aws(-(us-gov))?:cloudhsm:([a-z]{2}(-(gov|isob|iso))?-(east|west|north|south|central){1,2}-[0-9]{1}):[0-9]{12}:backup/)?backup-[2-7a-zA-Z]{11,16}"
     },
     "BackupId":{
       "type":"string",
@@ -407,7 +467,7 @@
         },
         "AwsHardwareCertificate":{
           "shape":"Cert",
-          "documentation":"<p>The HSM hardware certificate issued (signed) by AWS CloudHSM.</p>"
+          "documentation":"<p>The HSM hardware certificate issued (signed) by CloudHSM.</p>"
         },
         "ManufacturerHardwareCertificate":{
           "shape":"Cert",
@@ -428,12 +488,16 @@
       "documentation":"<p>The request was rejected because the requester does not have permission to perform the requested operation.</p>",
       "exception":true
     },
+    "CloudHsmArn":{
+      "type":"string",
+      "pattern":"arn:aws(-(us-gov))?:cloudhsm:([a-z]{2}(-(gov|isob|iso))?-(east|west|north|south|central){1,2}-[0-9]{1}):[0-9]{12}:(backup/backup|cluster/cluster|hsm/hsm)-[2-7a-zA-Z]{11,16}"
+    },
     "CloudHsmInternalFailureException":{
       "type":"structure",
       "members":{
         "Message":{"shape":"errorMessage"}
       },
-      "documentation":"<p>The request was rejected because of an AWS CloudHSM internal failure. The request can be retried.</p>",
+      "documentation":"<p>The request was rejected because of an CloudHSM internal failure. The request can be retried.</p>",
       "exception":true,
       "fault":true
     },
@@ -537,7 +601,7 @@
           "documentation":"<p>The mode of the cluster.</p>"
         }
       },
-      "documentation":"<p>Contains information about an AWS CloudHSM cluster.</p>"
+      "documentation":"<p>Contains information about an CloudHSM cluster.</p>"
     },
     "ClusterId":{
       "type":"string",
@@ -619,8 +683,8 @@
           "documentation":"<p>The type of HSM to use in the cluster. The allowed values are <code>hsm1.medium</code> and <code>hsm2m.medium</code>.</p>"
         },
         "SourceBackupId":{
-          "shape":"BackupId",
-          "documentation":"<p>The identifier (ID) of the cluster backup to restore. Use this value to restore the cluster from a backup instead of creating a new cluster. To find the backup ID, use <a>DescribeBackups</a>.</p>"
+          "shape":"BackupArn",
+          "documentation":"<p>The identifier (ID) or the Amazon Resource Name (ARN) of the cluster backup to restore. Use this value to restore the cluster from a backup instead of creating a new cluster. To find the backup ID or ARN, use <a>DescribeBackups</a>. <i>If using a backup in another account, the full ARN must be supplied.</i> </p>"
         },
         "SubnetIds":{
           "shape":"SubnetIds",
@@ -744,6 +808,28 @@
         }
       }
     },
+    "DeleteResourcePolicyRequest":{
+      "type":"structure",
+      "members":{
+        "ResourceArn":{
+          "shape":"CloudHsmArn",
+          "documentation":"<p>Amazon Resource Name (ARN) of the resource from which the policy will be removed. </p>"
+        }
+      }
+    },
+    "DeleteResourcePolicyResponse":{
+      "type":"structure",
+      "members":{
+        "ResourceArn":{
+          "shape":"CloudHsmArn",
+          "documentation":"<p>Amazon Resource Name (ARN) of the resource from which the policy was deleted. </p>"
+        },
+        "Policy":{
+          "shape":"ResourcePolicy",
+          "documentation":"<p>The policy previously attached to the resource.</p>"
+        }
+      }
+    },
     "DescribeBackupsRequest":{
       "type":"structure",
       "members":{
@@ -758,6 +844,10 @@
         "Filters":{
           "shape":"Filters",
           "documentation":"<p>One or more filters to limit the items returned in the response.</p> <p>Use the <code>backupIds</code> filter to return only the specified backups. Specify backups by their backup identifier (ID).</p> <p>Use the <code>sourceBackupIds</code> filter to return only the backups created from a source backup. The <code>sourceBackupID</code> of a source backup is returned by the <a>CopyBackupToRegion</a> operation.</p> <p>Use the <code>clusterIds</code> filter to return only the backups for the specified clusters. Specify clusters by their cluster identifier (ID).</p> <p>Use the <code>states</code> filter to return only backups that match the specified state.</p> <p>Use the <code>neverExpires</code> filter to return backups filtered by the value in the <code>neverExpires</code> parameter. <code>True</code> returns all backups exempt from the backup retention policy. <code>False</code> returns all backups with a backup retention policy defined at the cluster.</p>"
+        },
+        "Shared":{
+          "shape":"Boolean",
+          "documentation":"<p>Describe backups that are shared with you.</p> <note> <p>By default when using this option, the command returns backups that have been shared using a standard Resource Access Manager resource share. In order for a backup that was shared using the PutResourcePolicy command to be returned, the share must be promoted to a standard resource share using the RAM <a href=\"https://docs.aws.amazon.com/cli/latest/reference/ram/promote-resource-share-created-from-policy.html\">PromoteResourceShareCreatedFromPolicy</a> API operation. For more information about sharing backups, see <a href=\"https://docs.aws.amazon.com/cloudhsm/latest/userguide/sharing.html\"> Working with shared backups</a> in the CloudHSM User Guide.</p> </note>"
         },
         "SortAscending":{
           "shape":"Boolean",
@@ -853,6 +943,24 @@
       "value":{"shape":"Strings"},
       "max":30
     },
+    "GetResourcePolicyRequest":{
+      "type":"structure",
+      "members":{
+        "ResourceArn":{
+          "shape":"CloudHsmArn",
+          "documentation":"<p>Amazon Resource Name (ARN) of the resource to which a policy is attached.</p>"
+        }
+      }
+    },
+    "GetResourcePolicyResponse":{
+      "type":"structure",
+      "members":{
+        "Policy":{
+          "shape":"ResourcePolicy",
+          "documentation":"<p>The policy attached to a resource.</p>"
+        }
+      }
+    },
     "Hsm":{
       "type":"structure",
       "required":["HsmId"],
@@ -890,7 +998,7 @@
           "documentation":"<p>A description of the HSM's state.</p>"
         }
       },
-      "documentation":"<p>Contains information about a hardware security module (HSM) in an AWS CloudHSM cluster.</p>"
+      "documentation":"<p>Contains information about a hardware security module (HSM) in an CloudHSM cluster.</p>"
     },
     "HsmId":{
       "type":"string",
@@ -1047,6 +1155,32 @@
       "max":32,
       "min":7
     },
+    "PutResourcePolicyRequest":{
+      "type":"structure",
+      "members":{
+        "ResourceArn":{
+          "shape":"CloudHsmArn",
+          "documentation":"<p>Amazon Resource Name (ARN) of the resource to which you want to attach a policy. </p>"
+        },
+        "Policy":{
+          "shape":"ResourcePolicy",
+          "documentation":"<p>The policy you want to associate with a resource. </p> <p>For an example policy, see <a href=\"https://docs.aws.amazon.com/cloudhsm/latest/userguide/sharing.html\"> Working with shared backups</a> in the CloudHSM User Guide</p>"
+        }
+      }
+    },
+    "PutResourcePolicyResponse":{
+      "type":"structure",
+      "members":{
+        "ResourceArn":{
+          "shape":"CloudHsmArn",
+          "documentation":"<p>Amazon Resource Name (ARN) of the resource to which a policy is attached.</p>"
+        },
+        "Policy":{
+          "shape":"ResourcePolicy",
+          "documentation":"<p>The policy attached to a resource.</p>"
+        }
+      }
+    },
     "Region":{
       "type":"string",
       "pattern":"[a-z]{2}(-(gov))?-(east|west|north|south|central){1,2}-\\d"
@@ -1054,6 +1188,11 @@
     "ResourceId":{
       "type":"string",
       "pattern":"(?:cluster|backup)-[2-7a-zA-Z]{11,16}"
+    },
+    "ResourcePolicy":{
+      "type":"string",
+      "max":20000,
+      "min":1
     },
     "RestoreBackupRequest":{
       "type":"structure",
@@ -1191,5 +1330,5 @@
     },
     "errorMessage":{"type":"string"}
   },
-  "documentation":"<p>For more information about AWS CloudHSM, see <a href=\"http://aws.amazon.com/cloudhsm/\">AWS CloudHSM</a> and the <a href=\"https://docs.aws.amazon.com/cloudhsm/latest/userguide/\">AWS CloudHSM User Guide</a>.</p>"
+  "documentation":"<p>For more information about CloudHSM, see <a href=\"http://aws.amazon.com/cloudhsm/\">CloudHSM</a> and the <a href=\"https://docs.aws.amazon.com/cloudhsm/latest/userguide/\"> CloudHSM User Guide</a>.</p>"
 }

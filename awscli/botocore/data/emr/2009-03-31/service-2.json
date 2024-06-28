@@ -5,12 +5,14 @@
     "endpointPrefix":"elasticmapreduce",
     "jsonVersion":"1.1",
     "protocol":"json",
+    "protocols":["json"],
     "serviceAbbreviation":"Amazon EMR",
     "serviceFullName":"Amazon EMR",
     "serviceId":"EMR",
     "signatureVersion":"v4",
     "targetPrefix":"ElasticMapReduce",
-    "uid":"elasticmapreduce-2009-03-31"
+    "uid":"elasticmapreduce-2009-03-31",
+    "auth":["aws.auth#sigv4"]
   },
   "operations":{
     "AddInstanceFleet":{
@@ -3123,6 +3125,10 @@
         "CustomAmiId":{
           "shape":"XmlStringMaxLen256",
           "documentation":"<p>The custom AMI ID to use for the instance type.</p>"
+        },
+        "Priority":{
+          "shape":"NonNegativeDouble",
+          "documentation":"<p>The priority at which Amazon EMR launches the Amazon EC2 instances with this instance type. Priority starts at 0, which is the highest priority. Amazon EMR considers the highest priority first.</p>"
         }
       },
       "documentation":"<p>An instance type configuration for each instance type in an instance fleet, which determines the Amazon EC2 instances Amazon EMR attempts to provision to fulfill On-Demand and Spot target capacities. When you use an allocation strategy, you can include a maximum of 30 instance type configurations for a fleet. For more information about how to use an allocation strategy, see <a href=\"https://docs.aws.amazon.com/emr/latest/ManagementGuide/emr-instance-fleet.html\">Configure Instance Fleets</a>. Without an allocation strategy, you may specify a maximum of five instance type configurations for a fleet.</p> <note> <p>The instance fleet configuration is available only in Amazon EMR releases 4.8.0 and later, excluding 5.0.x versions.</p> </note>"
@@ -3165,6 +3171,10 @@
         "CustomAmiId":{
           "shape":"XmlStringMaxLen256",
           "documentation":"<p>The custom AMI ID to use for the instance type.</p>"
+        },
+        "Priority":{
+          "shape":"NonNegativeDouble",
+          "documentation":"<p>The priority at which Amazon EMR launches the Amazon EC2 instances with this instance type. Priority starts at 0, which is the highest priority. Amazon EMR considers the highest priority first.</p>"
         }
       },
       "documentation":"<p>The configuration specification for each instance type in an instance fleet.</p> <note> <p>The instance fleet configuration is available only in Amazon EMR releases 4.8.0 and later, excluding 5.0.x versions.</p> </note>"
@@ -4217,7 +4227,10 @@
     },
     "OnDemandProvisioningAllocationStrategy":{
       "type":"string",
-      "enum":["lowest-price"]
+      "enum":[
+        "lowest-price",
+        "prioritized"
+      ]
     },
     "OnDemandProvisioningSpecification":{
       "type":"structure",
@@ -4225,7 +4238,7 @@
       "members":{
         "AllocationStrategy":{
           "shape":"OnDemandProvisioningAllocationStrategy",
-          "documentation":"<p>Specifies the strategy to use in launching On-Demand instance fleets. Currently, the only option is <code>lowest-price</code> (the default), which launches the lowest price first.</p>"
+          "documentation":"<p>Specifies the strategy to use in launching On-Demand instance fleets. Available options are <code>lowest-price</code> and <code>prioritized</code>. <code>lowest-price</code> specifies to launch the instances with the lowest price first, and <code>prioritized</code> specifies that Amazon EMR should launch the instances with the highest priority first. The default is <code>lowest-price</code>.</p>"
         },
         "CapacityReservationOptions":{
           "shape":"OnDemandCapacityReservationOptions",
@@ -5011,7 +5024,8 @@
         "capacity-optimized",
         "price-capacity-optimized",
         "lowest-price",
-        "diversified"
+        "diversified",
+        "capacity-optimized-prioritized"
       ]
     },
     "SpotProvisioningSpecification":{
@@ -5035,7 +5049,7 @@
         },
         "AllocationStrategy":{
           "shape":"SpotProvisioningAllocationStrategy",
-          "documentation":"<p>Specifies one of the following strategies to launch Spot Instance fleets: <code>price-capacity-optimized</code>, <code>capacity-optimized</code>, <code>lowest-price</code>, or <code>diversified</code>. For more information on the provisioning strategies, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-fleet-allocation-strategy.html\">Allocation strategies for Spot Instances</a> in the <i>Amazon EC2 User Guide for Linux Instances</i>.</p> <note> <p>When you launch a Spot Instance fleet with the old console, it automatically launches with the <code>capacity-optimized</code> strategy. You can't change the allocation strategy from the old console.</p> </note>"
+          "documentation":"<p>Specifies one of the following strategies to launch Spot Instance fleets: <code>capacity-optimized</code>, <code>price-capacity-optimized</code>, <code>lowest-price</code>, or <code>diversified</code>, and <code>capacity-optimized-prioritized</code>. For more information on the provisioning strategies, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-fleet-allocation-strategy.html\">Allocation strategies for Spot Instances</a> in the <i>Amazon EC2 User Guide for Linux Instances</i>.</p> <note> <p>When you launch a Spot Instance fleet with the old console, it automatically launches with the <code>capacity-optimized</code> strategy. You can't change the allocation strategy from the old console.</p> </note>"
         }
       },
       "documentation":"<p>The launch specification for Spot Instances in the instance fleet, which determines the defined duration, provisioning timeout behavior, and allocation strategy.</p> <note> <p>The instance fleet configuration is available only in Amazon EMR releases 4.8.0 and later, excluding 5.0.x versions. Spot Instance allocation strategy is available in Amazon EMR releases 5.12.1 and later.</p> </note> <note> <p>Spot Instances with a defined duration (also known as Spot blocks) are no longer available to new customers from July 1, 2021. For customers who have previously used the feature, we will continue to support Spot Instances with a defined duration until December 31, 2022. </p> </note>"

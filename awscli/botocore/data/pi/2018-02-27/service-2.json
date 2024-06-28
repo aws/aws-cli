@@ -12,7 +12,8 @@
     "signatureVersion":"v4",
     "signingName":"pi",
     "targetPrefix":"PerformanceInsightsv20180227",
-    "uid":"pi-2018-02-27"
+    "uid":"pi-2018-02-27",
+    "auth":["aws.auth#sigv4"]
   },
   "operations":{
     "CreatePerformanceAnalysisReport":{
@@ -486,7 +487,7 @@
         },
         "Filter":{
           "shape":"MetricQueryFilterMap",
-          "documentation":"<p>One or more filters to apply in the request. Restrictions:</p> <ul> <li> <p>Any number of filters by the same dimension, as specified in the <code>GroupBy</code> or <code>Partition</code> parameters.</p> </li> <li> <p>A single filter for any other dimension in this dimension group.</p> </li> </ul>"
+          "documentation":"<p>One or more filters to apply in the request. Restrictions:</p> <ul> <li> <p>Any number of filters by the same dimension, as specified in the <code>GroupBy</code> or <code>Partition</code> parameters.</p> </li> <li> <p>A single filter for any other dimension in this dimension group.</p> </li> </ul> <note> <p>The <code>db.sql.db_id</code> filter isn't available for RDS for SQL Server DB instances.</p> </note>"
         },
         "MaxResults":{
           "shape":"MaxResults",
@@ -1180,7 +1181,7 @@
         },
         "Filter":{
           "shape":"MetricQueryFilterMap",
-          "documentation":"<p>One or more filters to apply in the request. Restrictions:</p> <ul> <li> <p>Any number of filters by the same dimension, as specified in the <code>GroupBy</code> parameter.</p> </li> <li> <p>A single filter for any other dimension in this dimension group.</p> </li> </ul>"
+          "documentation":"<p>One or more filters to apply in the request. Restrictions:</p> <ul> <li> <p>Any number of filters by the same dimension, as specified in the <code>GroupBy</code> parameter.</p> </li> <li> <p>A single filter for any other dimension in this dimension group.</p> </li> </ul> <note> <p>The <code>db.sql.db_id</code> filter isn't available for RDS for SQL Server DB instances.</p> </note>"
         }
       },
       "documentation":"<p>A single query to be processed. You must provide the metric to query and append an aggregate function to the metric. For example, to find the average for the metric <code>db.load</code> you must use <code>db.load.avg</code>. Valid values for aggregate functions include <code>.avg</code>, <code>.min</code>, <code>.max</code>, and <code>.sum</code>. If no other parameters are specified, Performance Insights returns all data points for the specified metric. Optionally, you can request that the data points be aggregated by dimension group (<code>GroupBy</code>), and return only those data points that match your criteria (<code>Filter</code>).</p>"

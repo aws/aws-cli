@@ -11,13 +11,13 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
+import configparser
 import copy
 import os
 import shlex
 import sys
 
 import botocore.exceptions
-from botocore.compat import six
 
 
 def multi_file_load_config(*filenames):
@@ -143,10 +143,10 @@ def raw_config_parse(config_filename, parse_subsections=True):
         path = os.path.expanduser(path)
         if not os.path.isfile(path):
             raise botocore.exceptions.ConfigNotFound(path=_unicode_path(path))
-        cp = six.moves.configparser.RawConfigParser()
+        cp = configparser.RawConfigParser()
         try:
             cp.read([path])
-        except (six.moves.configparser.Error, UnicodeDecodeError):
+        except (configparser.Error, UnicodeDecodeError):
             raise botocore.exceptions.ConfigParseError(
                 path=_unicode_path(path))
         else:
@@ -168,7 +168,7 @@ def raw_config_parse(config_filename, parse_subsections=True):
 
 
 def _unicode_path(path):
-    if isinstance(path, six.text_type):
+    if isinstance(path, str):
         return path
     # According to the documentation getfilesystemencoding can return None
     # on unix in which case the default encoding is used instead.

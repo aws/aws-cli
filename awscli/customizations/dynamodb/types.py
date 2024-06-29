@@ -14,8 +14,6 @@ from collections.abc import Mapping, Set
 from decimal import Decimal, Context, Clamped
 from decimal import Overflow, Inexact, Underflow, Rounded
 
-from botocore.compat import six
-
 
 STRING = 'S'
 NUMBER = 'N'
@@ -35,7 +33,7 @@ DYNAMODB_CONTEXT = Context(
 )
 
 
-BINARY_TYPES = (bytearray, six.binary_type)
+BINARY_TYPES = (bytearray, bytes)
 
 
 class Binary(object):
@@ -148,7 +146,7 @@ class TypeSerializer(object):
         return False
 
     def _is_number(self, value):
-        if isinstance(value, (six.integer_types, Decimal)):
+        if isinstance(value, (int, Decimal)):
             return True
         elif isinstance(value, float):
             raise TypeError(
@@ -156,7 +154,7 @@ class TypeSerializer(object):
         return False
 
     def _is_string(self, value):
-        if isinstance(value, six.string_types):
+        if isinstance(value, str):
             return True
         return False
 
@@ -165,7 +163,7 @@ class TypeSerializer(object):
             return True
         elif isinstance(value, bytearray):
             return True
-        elif six.PY3 and isinstance(value, six.binary_type):
+        elif isinstance(value, bytes):
             return True
         return False
 

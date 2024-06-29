@@ -21,6 +21,10 @@ import signal
 import contextlib
 import collections.abc as collections_abc
 import locale
+import queue
+import io
+from urllib.request import urlopen
+from configparser import RawConfigParser
 from functools import partial
 import urllib.parse as urlparse
 from urllib.error import URLError
@@ -28,17 +32,14 @@ from urllib.error import URLError
 from botocore.compat import six
 from botocore.compat import OrderedDict
 
-# If you ever want to import from the vendored six. Add it here and then
-# import from awscli.compat. Also try to keep it in alphabetical order.
-# This may get large.
-advance_iterator = six.advance_iterator
-PY3 = six.PY3
-queue = six.moves.queue
-shlex_quote = six.moves.shlex_quote
-StringIO = six.StringIO
-BytesIO = six.BytesIO
-urlopen = six.moves.urllib.request.urlopen
-binary_type = six.binary_type
+# Backwards compatible definitions from six
+PY3 = sys.version_info[0] == 3
+advance_iterator = next
+shlex_quote = shlex.quote
+StringIO = io.StringIO
+BytesIO = io.BytesIO
+binary_type = bytes
+raw_input = input
 
 # Most, but not all, python installations will have zlib. This is required to
 # compress any files we send via a push. If we can't compress, we can still
@@ -101,9 +102,9 @@ class NonTranslatedStdout(object):
 
 
 def ensure_text_type(s):
-    if isinstance(s, six.text_type):
+    if isinstance(s, str):
         return s
-    if isinstance(s, six.binary_type):
+    if isinstance(s, bytes):
         return s.decode('utf-8')
     raise ValueError("Expected str, unicode or bytes, received %s." % type(s))
 
@@ -113,8 +114,10 @@ def get_binary_stdin():
         raise StdinMissingError()
     return sys.stdin.buffer
 
+
 def get_binary_stdout():
     return sys.stdout.buffer
+
 
 def _get_text_writer(stream, errors):
     return stream
@@ -215,7 +218,7 @@ def compat_shell_quote(s, platform=None):
     if platform == "win32":
         return _windows_shell_quote(s)
     else:
-        return shlex_quote(s)
+        return shlex.quote(s)
 
 
 def _windows_shell_quote(s):

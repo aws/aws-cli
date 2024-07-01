@@ -14,6 +14,6 @@ Output::
         "OperationId": "3f28e0ac-126a-4113-9048-cc930example"
     }
 
-To confirm that the transfer lock has been changed, you can run `get-domain-detail <https://docs.aws.amazon.com/cli/latest/reference/route53domains/get-domain-detail.html>`__ . When the transfer lock is disabled, the value of ``StatusList`` does *not* include ``clientTransferProhibited``.
+To confirm that the transfer lock has been changed, you can run `get-domain-detail <https://awscli.amazonaws.com/v2/documentation/api/latest/reference/route53domains/get-domain-detail.html>`__ . When the transfer lock is disabled, the value of ``StatusList`` does *not* include ``clientTransferProhibited``.
 
 For more information about the transfer process, see `Transferring a Domain from Amazon Route 53 to Another Registrar <https://docs.aws.amazon.com/Route53/latest/DeveloperGuide/domain-transfer-from-route-53.html>`__ in the *Amazon Route 53 Developer Guide*.

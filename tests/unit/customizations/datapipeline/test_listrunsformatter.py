@@ -12,12 +12,12 @@
 # language governing permissions and limitations under the License.
 
 import difflib
-import mock
 import unittest
 
 from awscli.compat import six
 from awscli.customizations.datapipeline.listrunsformatter \
     import ListRunsFormatter
+from awscli.testutils import mock
 
 
 class TestListRunsFormatter(unittest.TestCase):

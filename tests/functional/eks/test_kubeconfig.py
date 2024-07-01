@@ -14,11 +14,10 @@
 import os
 import shutil
 import tempfile
-import mock
 
 from botocore.compat import OrderedDict
 
-from awscli.testutils import unittest
+from awscli.testutils import mock, unittest
 from tests.functional.eks.test_util import get_testdata
 from awscli.customizations.eks.kubeconfig import (_get_new_kubeconfig_content,
                                                   KubeconfigWriter,

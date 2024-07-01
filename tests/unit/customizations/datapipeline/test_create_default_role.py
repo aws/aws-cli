@@ -1,4 +1,3 @@
-import mock
 import pytest
 
 import awscli.customizations.datapipeline.createdefaultroles \
@@ -10,7 +9,7 @@ from awscli.customizations.datapipeline.constants\
     DATAPIPELINE_DEFAULT_RESOURCE_ROLE_ASSUME_POLICY
 
 from awscli.testutils import BaseAWSCommandParamsTest,\
-    unittest
+    mock, unittest
 from awscli.customizations.datapipeline.translator import dict_to_string
 from botocore.compat import json
 

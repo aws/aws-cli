@@ -11,11 +11,10 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 import os
-import mock
 
 from awscli.customizations.configure import configure, ConfigValue, NOT_SET
 from awscli.customizations.configure import profile_to_section
-from awscli.testutils import unittest
+from awscli.testutils import mock, unittest
 from awscli.compat import six
 
 from . import FakeSession

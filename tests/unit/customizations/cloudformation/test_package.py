@@ -10,13 +10,13 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
-import mock
 import os
 import sys
 import tempfile
 
+from awscli.testutils import mock
+
 from io import StringIO
-from mock import patch, Mock, MagicMock
 from awscli.customizations.cloudformation.package import PackageCommand
 from awscli.customizations.cloudformation.artifact_exporter import Template
 from awscli.customizations.cloudformation.yamlhelper import yaml_dump
@@ -61,12 +61,12 @@ class TestPackageCommand(BaseYAMLTest):
         self.package_command = PackageCommand(self.session)
 
 
-    @patch("awscli.customizations.cloudformation.package.yaml_dump")
+    @mock.patch("awscli.customizations.cloudformation.package.yaml_dump")
     def test_main(self, mock_yaml_dump):
         exported_template_str = "hello"
 
-        self.package_command.write_output = Mock()
-        self.package_command._export = Mock()
+        self.package_command.write_output = mock.Mock()
+        self.package_command._export = mock.Mock()
         mock_yaml_dump.return_value = exported_template_str
 
         # Create a temporary file and make this my template
@@ -90,7 +90,7 @@ class TestPackageCommand(BaseYAMLTest):
 
     def test_main_error(self):
 
-        self.package_command._export = Mock()
+        self.package_command._export = mock.Mock()
         self.package_command._export.side_effect = RuntimeError()
 
         # Create a temporary file and make this my template
@@ -102,7 +102,7 @@ class TestPackageCommand(BaseYAMLTest):
                 self.package_command._run_main(self.parsed_args, self.parsed_globals)
 
 
-    @patch("awscli.customizations.cloudformation.package.sys.stdout")
+    @mock.patch("awscli.customizations.cloudformation.package.sys.stdout")
     def test_write_output_to_stdout(self, stdoutmock):
         data = u"some data"
         filename = None

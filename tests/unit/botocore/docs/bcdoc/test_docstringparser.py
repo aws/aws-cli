@@ -18,8 +18,7 @@
 # WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
 # IN THE SOFTWARE.
-import mock
-from tests import unittest
+from tests import mock, unittest
 
 import botocore.docs.bcdoc.docstringparser as parser
 from botocore.docs.bcdoc.restdoc import ReSTDocument

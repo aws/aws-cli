@@ -11,9 +11,7 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 import sys
-from awscli.testutils import unittest
-
-import mock
+from awscli.testutils import mock, unittest
 
 from awscli import plugin
 from botocore import hooks

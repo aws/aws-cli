@@ -20,7 +20,6 @@
 # distribution when running the tests.
 import os
 import sys
-import mock
 import time
 import random
 import shutil
@@ -35,6 +34,7 @@ from subprocess import Popen, PIPE
 
 from dateutil.tz import tzlocal
 import unittest
+from unittest import mock
 
 import botocore.loaders
 import botocore.session

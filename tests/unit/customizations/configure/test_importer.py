@@ -12,10 +12,9 @@
 # language governing permissions and limitations under the License.
 
 import os
-import mock
 
 from . import FakeSession
-from awscli.testutils import unittest
+from awscli.testutils import mock, unittest
 from awscli.compat import six
 from awscli.customizations.configure.importer import (
     CredentialImporter,

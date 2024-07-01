@@ -1,12 +1,13 @@
 """
 Regression test for six issue #98 (https://github.com/benjaminp/six/issues/98)
 """
-from mock import patch
 import sys
 import threading
 import time
 
 from botocore.vendored import six
+
+from tests import mock
 
 
 _original_setattr = six.moves.__class__.__setattr__
@@ -48,7 +49,7 @@ class _ExampleThread(threading.Thread):
 
 def test_six_thread_safety():
     _reload_six()
-    with patch('botocore.vendored.six.moves.__class__.__setattr__',
+    with mock.patch('botocore.vendored.six.moves.__class__.__setattr__',
                wraps=_wrapped_setattr):
         threads = []
         for i in range(2):

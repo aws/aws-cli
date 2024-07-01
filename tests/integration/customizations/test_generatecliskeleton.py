@@ -15,11 +15,11 @@ import os
 import json
 import logging
 
-import mock
 import pytest
 from ruamel.yaml import YAML
 
 from awscli.clidriver import create_clidriver
+from awscli.testutils import mock
 
 # NOTE: This should be a standalone pytest fixture.  However, fixtures cannot
 # be used outside of other fixtures or test cases, and it is needed by

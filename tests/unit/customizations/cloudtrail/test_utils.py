@@ -10,12 +10,11 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
-from mock import Mock, call
 from datetime import datetime, timedelta
 from dateutil import parser, tz
 
 from awscli.customizations.cloudtrail import utils
-from awscli.testutils import unittest
+from awscli.testutils import mock, unittest
 from awscli.customizations.cloudtrail.utils import (
     normalize_date,
     format_date,
@@ -33,7 +32,7 @@ class TestCloudTrailUtils(unittest.TestCase):
         self.assertEqual("1234", utils.get_account_id_from_arn(arn))
 
     def test_gets_trail_by_arn(self):
-        cloudtrail_client = Mock()
+        cloudtrail_client = mock.Mock()
         cloudtrail_client.describe_trails.return_value = {
             "trailList": [
                 {"TrailARN": "a", "Foo": "Baz"},
@@ -44,7 +43,7 @@ class TestCloudTrailUtils(unittest.TestCase):
         self.assertEqual("Bar", result["Foo"])
 
     def test_throws_when_unable_to_get_trail_by_arn(self):
-        cloudtrail_client = Mock()
+        cloudtrail_client = mock.Mock()
         cloudtrail_client.describe_trails.return_value = {"trailList": []}
         self.assertRaises(ValueError, utils.get_trail_by_arn, cloudtrail_client, "b")
 
@@ -71,7 +70,7 @@ class TestCloudTrailUtils(unittest.TestCase):
 
 class TestPublicKeyProvider(unittest.TestCase):
     def test_returns_public_keys_in_range(self):
-        cloudtrail_client = Mock()
+        cloudtrail_client = mock.Mock()
         cloudtrail_client.list_public_keys.return_value = {
             "PublicKeyList": [
                 {"Fingerprint": "a", "OtherData": "a", "Value": "a"},
@@ -92,11 +91,11 @@ class TestPublicKeyProvider(unittest.TestCase):
             keys,
         )
         cloudtrail_client.list_public_keys.assert_has_calls(
-            [call(EndTime=end_date, StartTime=start_date)]
+            [mock.call(EndTime=end_date, StartTime=start_date)]
         )
 
     def test_returns_public_key_in_range(self):
-        cloudtrail_client = Mock()
+        cloudtrail_client = mock.Mock()
         cloudtrail_client.list_public_keys.return_value = {
             "PublicKeyList": [
                 {"Fingerprint": "a", "OtherData": "a1", "Value": "a2"},
@@ -111,7 +110,7 @@ class TestPublicKeyProvider(unittest.TestCase):
 
     def test_key_not_found(self):
         with self.assertRaises(RuntimeError):
-            cloudtrail_client = Mock()
+            cloudtrail_client = mock.Mock()
             cloudtrail_client.list_public_keys.return_value = {
                 "PublicKeyList": [
                     {"Fingerprint": "123", "OtherData": "456", "Value": "789"},

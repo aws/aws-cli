@@ -31,7 +31,6 @@ from tests import CLIRunner
 
 from awscli.compat import six
 from awscli.alias import AliasLoader
-import mock
 
 
 class TestHelpOutput(BaseAWSHelpOutputTest):

@@ -11,9 +11,7 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 import socket
-from tests import unittest
-
-from mock import Mock, patch, sentinel
+from tests import mock, unittest
 
 from botocore.compat import six
 from botocore.awsrequest import AWSRequest
@@ -54,21 +52,21 @@ class RecordStreamResets(six.StringIO):
 class TestEndpointBase(unittest.TestCase):
 
     def setUp(self):
-        self.op = Mock()
+        self.op = mock.Mock()
         self.op.has_streaming_output = False
         self.op.has_event_stream_output = False
         self.op.metadata = {'protocol': 'json'}
-        self.event_emitter = Mock()
+        self.event_emitter = mock.Mock()
         self.event_emitter.emit.return_value = []
-        self.factory_patch = patch(
+        self.factory_patch = mock.patch(
             'botocore.parsers.ResponseParserFactory')
         self.factory = self.factory_patch.start()
         self.endpoint = Endpoint(
             'https://ec2.us-west-2.amazonaws.com/',
             endpoint_prefix='ec2',
             event_emitter=self.event_emitter)
-        self.http_session = Mock()
-        self.http_session.send.return_value = Mock(
+        self.http_session = mock.Mock()
+        self.http_session.send.return_value = mock.Mock(
             status_code=200, headers={}, content=b'{"Foo": "bar"}',
         )
         self.endpoint.http_session = self.http_session
@@ -120,24 +118,24 @@ class TestEndpointFeatures(TestEndpointBase):
     def test_make_request_with_context(self):
         r = request_dict()
         r['context'] = {'signing': {'region': 'us-west-2'}}
-        with patch('botocore.endpoint.Endpoint.prepare_request') as prepare:
+        with mock.patch('botocore.endpoint.Endpoint.prepare_request') as prepare:
             self.endpoint.make_request(self.op, r)
         request = prepare.call_args[0][0]
         self.assertEqual(request.context['signing']['region'], 'us-west-2')
 
     def test_parses_modeled_exception_fields(self):
         # Setup the service model to have exceptions to generate the mapping
-        self.service_model = Mock(spec=ServiceModel)
+        self.service_model = mock.Mock(spec=ServiceModel)
         self.op.service_model = self.service_model
-        self.exception_shape = Mock(spec=StructureShape)
+        self.exception_shape = mock.Mock(spec=StructureShape)
         shape_for_error_code = self.service_model.shape_for_error_code
         shape_for_error_code.return_value = self.exception_shape
 
         r = request_dict()
-        self.http_session.send.return_value = Mock(
+        self.http_session.send.return_value = mock.Mock(
             status_code=400, headers={}, content=b'',
         )
-        parser = Mock()
+        parser = mock.Mock()
         parser.parse.side_effect = [
             {
                 'Error': {
@@ -169,7 +167,7 @@ class TestRetryInterface(TestEndpointBase):
     def setUp(self):
         super(TestRetryInterface, self).setUp()
         self.retried_on_exception = None
-        self._operation = Mock(spec=OperationModel)
+        self._operation = mock.Mock(spec=OperationModel)
         self._operation.name = 'DescribeInstances'
         self._operation.metadata = {'protocol': 'query'}
         self._operation.service_model.service_id = ServiceId('EC2')
@@ -219,7 +217,7 @@ class TestRetryInterface(TestEndpointBase):
     def test_retry_attempts_added_to_response_metadata(self):
         self.event_emitter.emit.side_effect = self.get_emitter_responses(
             num_retries=1)
-        parser = Mock()
+        parser = mock.Mock()
         parser.parse.return_value = {'ResponseMetadata': {}}
         self.factory.return_value.create_parser.return_value = parser
         response = self.endpoint.make_request(self._operation, request_dict())
@@ -228,7 +226,7 @@ class TestRetryInterface(TestEndpointBase):
     def test_retry_attempts_is_zero_when_not_retried(self):
         self.event_emitter.emit.side_effect = self.get_emitter_responses(
             num_retries=0)
-        parser = Mock()
+        parser = mock.Mock()
         parser.parse.return_value = {'ResponseMetadata': {}}
         self.factory.return_value.create_parser.return_value = parser
         response = self.endpoint.make_request(self._operation, request_dict())
@@ -250,7 +248,7 @@ class TestS3ResetStreamOnRetry(TestEndpointBase):
             return 0
 
     def test_reset_stream_on_retry(self):
-        op = Mock()
+        op = mock.Mock()
         body = RecordStreamResets('foobar')
         op.name = 'PutObject'
         op.has_streaming_output = True
@@ -278,14 +276,14 @@ class TestEventStreamBody(TestEndpointBase):
 
 class TestEndpointCreator(unittest.TestCase):
     def setUp(self):
-        self.service_model = Mock(
+        self.service_model = mock.Mock(
             endpoint_prefix='ec2', signature_version='v2',
             signing_name='ec2')
         self.environ = {}
-        self.environ_patch = patch('os.environ', self.environ)
+        self.environ_patch = mock.patch('os.environ', self.environ)
         self.environ_patch.start()
-        self.creator = EndpointCreator(Mock())
-        self.mock_session = Mock(spec=URLLib3Session)
+        self.creator = EndpointCreator(mock.Mock())
+        self.mock_session = mock.Mock(spec=URLLib3Session)
 
     def tearDown(self):
         self.environ_patch.stop()

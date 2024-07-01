@@ -16,9 +16,8 @@ import tempfile
 import shutil
 
 from botocore.docs.bcdoc.restdoc import DocumentStructure
-import mock
 
-from tests import unittest
+from tests import mock, unittest
 from botocore.compat import OrderedDict
 from botocore.hooks import HierarchicalEmitter
 from botocore.model import ServiceModel, OperationModel

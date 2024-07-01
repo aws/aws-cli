@@ -103,7 +103,14 @@ class UpdateKubeconfigCommand(BasicCommand):
             'help_text': ("Alias for the generated user name. "
                           "Defaults to match cluster ARN."),
             'required': False
-        }
+        },
+        {
+            'name': 'exclude-profile',
+            'action': 'store_true',
+            'default': False,
+            'help_text': ("Exclude the AWS_PROFILE environment variable "
+                          "from the generated user's exec config.")
+        },
     ]
 
     def _display_entries(self, entries):
@@ -332,7 +339,7 @@ class EKSClient(object):
                 self._parsed_args.role_arn
             ])
 
-        if self._session.profile:
+        if self._session.profile and not self._parsed_args.exclude_profile:
             generated_user["user"]["exec"]["env"] = [OrderedDict([
                 ("name", "AWS_PROFILE"),
                 ("value", self._session.profile)

@@ -2,9 +2,11 @@
   "version":"2.0",
   "metadata":{
     "apiVersion":"2021-09-14",
+    "auth":["aws.auth#sigv4"],
     "endpointPrefix":"controlplane.payment-cryptography",
     "jsonVersion":"1.0",
     "protocol":"json",
+    "protocols":["json"],
     "serviceFullName":"Payment Cryptography Control Plane",
     "serviceId":"Payment Cryptography",
     "signatureVersion":"v4",
@@ -561,6 +563,12 @@
         }
       }
     },
+    "EvenHexLengthBetween16And32":{
+      "type":"string",
+      "max":32,
+      "min":16,
+      "pattern":"(?:[0-9a-fA-F][0-9a-fA-F])+"
+    },
     "ExportAttributes":{
       "type":"structure",
       "members":{
@@ -702,7 +710,7 @@
           "documentation":"<p>The format of key block that Amazon Web Services Payment Cryptography will use during key export.</p>"
         },
         "RandomNonce":{
-          "shape":"HexLength16",
+          "shape":"EvenHexLengthBetween16And32",
           "documentation":"<p>A random number value that is unique to the TR-34 key block generated using 2 pass. The operation will fail, if a random nonce value is not provided for a TR-34 key block generated using 2 pass.</p>"
         },
         "KeyBlockHeaders":{
@@ -877,12 +885,6 @@
         }
       }
     },
-    "HexLength16":{
-      "type":"string",
-      "max":16,
-      "min":16,
-      "pattern":"[0-9A-F]+"
-    },
     "HexLength20Or24":{
       "type":"string",
       "max":24,
@@ -1030,7 +1032,7 @@
           "documentation":"<p>The key block format to use during key import. The only value allowed is <code>X9_TR34_2012</code>.</p>"
         },
         "RandomNonce":{
-          "shape":"HexLength16",
+          "shape":"EvenHexLengthBetween16And32",
           "documentation":"<p>A random number value that is unique to the TR-34 key block generated using 2 pass. The operation will fail, if a random nonce value is not provided for a TR-34 key block generated using 2 pass.</p>"
         }
       },
@@ -1674,7 +1676,8 @@
       "type":"string",
       "max":9984,
       "min":56,
-      "pattern":"[0-9A-Z]+"
+      "pattern":"[0-9A-Z]+",
+      "sensitive":true
     },
     "Tr34KeyBlockFormat":{
       "type":"string",

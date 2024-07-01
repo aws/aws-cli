@@ -1276,6 +1276,23 @@
       ],
       "documentation":"<p>This API is in preview release for Amazon Connect and is subject to change.</p> <p>Describes an agent status.</p>"
     },
+    "DescribeAuthenticationProfile":{
+      "name":"DescribeAuthenticationProfile",
+      "http":{
+        "method":"GET",
+        "requestUri":"/authentication-profiles/{InstanceId}/{AuthenticationProfileId}"
+      },
+      "input":{"shape":"DescribeAuthenticationProfileRequest"},
+      "output":{"shape":"DescribeAuthenticationProfileResponse"},
+      "errors":[
+        {"shape":"InvalidRequestException"},
+        {"shape":"InvalidParameterException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServiceException"}
+      ],
+      "documentation":"<p>This API is in preview release for Amazon Connect and is subject to change. To request access to this API, contact Amazon Web Services Support.</p> <p>Describes the target authentication profile.</p>"
+    },
     "DescribeContact":{
       "name":"DescribeContact",
       "http":{
@@ -2151,6 +2168,23 @@
         {"shape":"ThrottlingException"}
       ],
       "documentation":"<p>This API is in preview release for Amazon Connect and is subject to change.</p> <p>Returns a paginated list of all approved origins associated with the instance.</p>"
+    },
+    "ListAuthenticationProfiles":{
+      "name":"ListAuthenticationProfiles",
+      "http":{
+        "method":"GET",
+        "requestUri":"/authentication-profiles-summary/{InstanceId}"
+      },
+      "input":{"shape":"ListAuthenticationProfilesRequest"},
+      "output":{"shape":"ListAuthenticationProfilesResponse"},
+      "errors":[
+        {"shape":"InvalidRequestException"},
+        {"shape":"InvalidParameterException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServiceException"}
+      ],
+      "documentation":"<p>This API is in preview release for Amazon Connect and is subject to change. To request access to this API, contact Amazon Web Services Support.</p> <p>Provides summary information about the authentication profiles in a specified Amazon Connect instance.</p>"
     },
     "ListBots":{
       "name":"ListBots",
@@ -3242,7 +3276,7 @@
         {"shape":"ResourceConflictException"},
         {"shape":"ServiceQuotaExceededException"}
       ],
-      "documentation":"<p>Provides a pre-signed Amazon S3 URL in response for uploading your content.</p> <important> <p>You may only use this API to upload attachments to a <a href=\"https://docs.aws.amazon.com/connect/latest/APIReference/API_connect-cases_CreateCase.html\">Connect Case</a>.</p> </important>"
+      "documentation":"<p>Provides a pre-signed Amazon S3 URL in response for uploading your content.</p> <important> <p>You may only use this API to upload attachments to an <a href=\"https://docs.aws.amazon.com/connect/latest/APIReference/API_connect-cases_CreateCase.html\">Amazon Connect Case</a>.</p> </important>"
     },
     "StartChatContact":{
       "name":"StartChatContact",
@@ -3551,6 +3585,22 @@
         {"shape":"InternalServiceException"}
       ],
       "documentation":"<p>This API is in preview release for Amazon Connect and is subject to change.</p> <p>Updates agent status.</p>"
+    },
+    "UpdateAuthenticationProfile":{
+      "name":"UpdateAuthenticationProfile",
+      "http":{
+        "method":"POST",
+        "requestUri":"/authentication-profiles/{InstanceId}/{AuthenticationProfileId}"
+      },
+      "input":{"shape":"UpdateAuthenticationProfileRequest"},
+      "errors":[
+        {"shape":"InvalidRequestException"},
+        {"shape":"InvalidParameterException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServiceException"}
+      ],
+      "documentation":"<p>This API is in preview release for Amazon Connect and is subject to change. To request access to this API, contact Amazon Web Services Support.</p> <p>Updates the selected authentication profile.</p>"
     },
     "UpdateContact":{
       "name":"UpdateContact",
@@ -4330,6 +4380,12 @@
       "documentation":"<p>You do not have sufficient permissions to perform this action.</p>",
       "error":{"httpStatusCode":403},
       "exception":true
+    },
+    "AccessTokenDuration":{
+      "type":"integer",
+      "box":true,
+      "max":60,
+      "min":10
     },
     "ActionSummaries":{
       "type":"list",
@@ -5470,6 +5526,109 @@
       "documentation":"<p>Contains information for score and potential quality issues for Audio</p>"
     },
     "AudioQualityScore":{"type":"float"},
+    "AuthenticationProfile":{
+      "type":"structure",
+      "members":{
+        "Id":{
+          "shape":"AuthenticationProfileId",
+          "documentation":"<p>A unique identifier for the authentication profile. </p>"
+        },
+        "Arn":{
+          "shape":"ARN",
+          "documentation":"<p>The Amazon Resource Name (ARN) for the authentication profile.</p>"
+        },
+        "Name":{
+          "shape":"AuthenticationProfileName",
+          "documentation":"<p>The name for the authentication profile.</p>"
+        },
+        "Description":{
+          "shape":"AuthenticationProfileDescription",
+          "documentation":"<p>The description for the authentication profile.</p>"
+        },
+        "AllowedIps":{
+          "shape":"IpCidrList",
+          "documentation":"<p>A list of IP address range strings that are allowed to access the Amazon Connect instance. For more information about how to configure IP addresses, see <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/authentication-profiles.html#configure-ip-based-ac\">Configure IP address based access control</a> in the <i>Amazon Connect Administrator Guide</i>.</p>"
+        },
+        "BlockedIps":{
+          "shape":"IpCidrList",
+          "documentation":"<p>A list of IP address range strings that are blocked from accessing the Amazon Connect instance. For more information about how to configure IP addresses, see <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/authentication-profiles.html#configure-ip-based-ac\">Configure IP address based access control</a> in the <i>Amazon Connect Administrator Guide</i>.</p>"
+        },
+        "IsDefault":{
+          "shape":"Boolean",
+          "documentation":"<p>Shows whether the authentication profile is the default authentication profile for the Amazon Connect instance. The default authentication profile applies to all agents in an Amazon Connect instance, unless overridden by another authentication profile.</p>"
+        },
+        "CreatedTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp when the authentication profile was created.</p>"
+        },
+        "LastModifiedTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp when the authentication profile was last modified.</p>"
+        },
+        "LastModifiedRegion":{
+          "shape":"RegionName",
+          "documentation":"<p>The Amazon Web Services Region where the authentication profile was last modified.</p>"
+        },
+        "PeriodicSessionDuration":{
+          "shape":"AccessTokenDuration",
+          "documentation":"<p>The short lived session duration configuration for users logged in to Amazon Connect, in minutes. This value determines the maximum possible time before an agent is authenticated. For more information, see <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/authentication-profiles.html#configure-session-timeouts\">Configure the session duration</a> in the <i>Amazon Connect Administrator Guide</i>.</p>"
+        },
+        "MaxSessionDuration":{
+          "shape":"RefreshTokenDuration",
+          "documentation":"<p>The long lived session duration for users logged in to Amazon Connect, in minutes. After this time period, users must log in again. For more information, see <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/authentication-profiles.html#configure-session-timeouts\">Configure the session duration</a> in the <i>Amazon Connect Administrator Guide</i>.</p>"
+        }
+      },
+      "documentation":"<p>This API is in preview release for Amazon Connect and is subject to change. To request access to this API, contact Amazon Web Services Support.</p> <p>Information about an authentication profile. An authentication profile is a resource that stores the authentication settings for users in your contact center. You use authentication profiles to set up IP address range restrictions and session timeouts. For more information, see <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/authentication-profiles.html\">Set IP address restrictions or session timeouts</a>. </p>"
+    },
+    "AuthenticationProfileDescription":{
+      "type":"string",
+      "max":250,
+      "min":1
+    },
+    "AuthenticationProfileId":{
+      "type":"string",
+      "max":100,
+      "min":1
+    },
+    "AuthenticationProfileName":{
+      "type":"string",
+      "max":128,
+      "min":1
+    },
+    "AuthenticationProfileSummary":{
+      "type":"structure",
+      "members":{
+        "Id":{
+          "shape":"AuthenticationProfileId",
+          "documentation":"<p>The unique identifier of the authentication profile.</p>"
+        },
+        "Arn":{
+          "shape":"ARN",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the authentication profile summary.</p>"
+        },
+        "Name":{
+          "shape":"AuthenticationProfileName",
+          "documentation":"<p>The name of the authentication profile summary.</p>"
+        },
+        "IsDefault":{
+          "shape":"Boolean",
+          "documentation":"<p>Shows whether the authentication profile is the default authentication profile for the Amazon Connect instance. The default authentication profile applies to all agents in an Amazon Connect instance, unless overridden by another authentication profile.</p>"
+        },
+        "LastModifiedTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp when the authentication profile summary was last modified.</p>"
+        },
+        "LastModifiedRegion":{
+          "shape":"RegionName",
+          "documentation":"<p>The Amazon Web Services Region when the authentication profile summary was last modified.</p>"
+        }
+      },
+      "documentation":"<p>This API is in preview release for Amazon Connect and is subject to change. To request access to this API, contact Amazon Web Services Support.</p> <p>A summary of a given authentication profile.</p>"
+    },
+    "AuthenticationProfileSummaryList":{
+      "type":"list",
+      "member":{"shape":"AuthenticationProfileSummary"}
+    },
     "AutoAccept":{"type":"boolean"},
     "AvailableNumberSummary":{
       "type":"structure",
@@ -5943,7 +6102,7 @@
       "members":{
         "InstanceId":{
           "shape":"InstanceId",
-          "documentation":"<p>The unique identifier of the Connect instance.</p>",
+          "documentation":"<p>The unique identifier of the Amazon Connect instance.</p>",
           "location":"uri",
           "locationName":"InstanceId"
         },
@@ -8782,6 +8941,36 @@
         "AgentStatus":{
           "shape":"AgentStatus",
           "documentation":"<p>The agent status.</p>"
+        }
+      }
+    },
+    "DescribeAuthenticationProfileRequest":{
+      "type":"structure",
+      "required":[
+        "AuthenticationProfileId",
+        "InstanceId"
+      ],
+      "members":{
+        "AuthenticationProfileId":{
+          "shape":"AuthenticationProfileId",
+          "documentation":"<p>A unique identifier for the authentication profile. </p>",
+          "location":"uri",
+          "locationName":"AuthenticationProfileId"
+        },
+        "InstanceId":{
+          "shape":"InstanceId",
+          "documentation":"<p>The identifier of the Amazon Connect instance. You can <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/find-instance-arn.html\">find the instance ID</a> in the Amazon Resource Name (ARN) of the instance.</p>",
+          "location":"uri",
+          "locationName":"InstanceId"
+        }
+      }
+    },
+    "DescribeAuthenticationProfileResponse":{
+      "type":"structure",
+      "members":{
+        "AuthenticationProfile":{
+          "shape":"AuthenticationProfile",
+          "documentation":"<p>The authentication profile object being described.</p>"
         }
       }
     },
@@ -12832,6 +13021,16 @@
       "type":"list",
       "member":{"shape":"InvisibleFieldInfo"}
     },
+    "IpCidr":{
+      "type":"string",
+      "max":50,
+      "min":2,
+      "pattern":"^[A-Za-z0-9:/]*$"
+    },
+    "IpCidrList":{
+      "type":"list",
+      "member":{"shape":"IpCidr"}
+    },
     "JoinToken":{
       "type":"string",
       "sensitive":true
@@ -13079,6 +13278,44 @@
         "Origins":{
           "shape":"OriginsList",
           "documentation":"<p>The approved origins.</p>"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>If there are additional results, this is the token for the next set of results.</p>"
+        }
+      }
+    },
+    "ListAuthenticationProfilesRequest":{
+      "type":"structure",
+      "required":["InstanceId"],
+      "members":{
+        "InstanceId":{
+          "shape":"InstanceId",
+          "documentation":"<p>The identifier of the Amazon Connect instance. You can <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/find-instance-arn.html\">find the instance ID</a> in the Amazon Resource Name (ARN) of the instance.</p>",
+          "location":"uri",
+          "locationName":"InstanceId"
+        },
+        "MaxResults":{
+          "shape":"MaxResult1000",
+          "documentation":"<p>The maximum number of results to return per page.</p>",
+          "box":true,
+          "location":"querystring",
+          "locationName":"maxResults"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The token for the next set of results. Use the value returned in the previous response in the next request to retrieve the next set of results.</p>",
+          "location":"querystring",
+          "locationName":"nextToken"
+        }
+      }
+    },
+    "ListAuthenticationProfilesResponse":{
+      "type":"structure",
+      "members":{
+        "AuthenticationProfileSummaryList":{
+          "shape":"AuthenticationProfileSummaryList",
+          "documentation":"<p>A summary of a given authentication profile.</p>"
         },
         "NextToken":{
           "shape":"NextToken",
@@ -17233,6 +17470,12 @@
       "max":4096,
       "min":0
     },
+    "RefreshTokenDuration":{
+      "type":"integer",
+      "box":true,
+      "max":720,
+      "min":360
+    },
     "RegionName":{
       "type":"string",
       "pattern":"[a-z]{2}(-[a-z]+){1,2}(-[0-9])?"
@@ -18102,7 +18345,7 @@
       "members":{
         "ContactFlows":{
           "shape":"ContactFlowSearchSummaryList",
-          "documentation":"<p>Information about the contact flows.</p>"
+          "documentation":"<p>Information about the flows.</p>"
         },
         "NextToken":{
           "shape":"NextToken2500",
@@ -19191,7 +19434,7 @@
         },
         "InstanceId":{
           "shape":"InstanceId",
-          "documentation":"<p>The unique identifier of the Connect instance.</p>",
+          "documentation":"<p>The unique identifier of the Amazon Connect instance.</p>",
           "location":"uri",
           "locationName":"InstanceId"
         },
@@ -19612,7 +19855,7 @@
         },
         "ContactFlowId":{
           "shape":"ContactFlowId",
-          "documentation":"<p>The identifier of the flow for the call. To see the ContactFlowId in the Amazon Connect admin website, on the navigation menu go to <b>Routing</b>, <b>Contact Flows</b>. Choose the flow. On the flow page, under the name of the flow, choose <b>Show additional flow information</b>. The ContactFlowId is the last part of the ARN, shown here in bold: </p> <p>arn:aws:connect:us-west-2:xxxxxxxxxxxx:instance/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx/contact-flow/<b>846ec553-a005-41c0-8341-xxxxxxxxxxxx</b> </p>"
+          "documentation":"<p>The identifier of the flow for the call. To see the ContactFlowId in the Amazon Connect admin website, on the navigation menu go to <b>Routing</b>, <b>Flows</b>. Choose the flow. On the flow page, under the name of the flow, choose <b>Show additional flow information</b>. The ContactFlowId is the last part of the ARN, shown here in bold: </p> <p>arn:aws:connect:us-west-2:xxxxxxxxxxxx:instance/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx/contact-flow/<b>846ec553-a005-41c0-8341-xxxxxxxxxxxx</b> </p>"
         },
         "InstanceId":{
           "shape":"InstanceId",
@@ -20731,6 +20974,48 @@
         "ResetOrderNumber":{
           "shape":"Boolean",
           "documentation":"<p>A number indicating the reset order of the agent status.</p>"
+        }
+      }
+    },
+    "UpdateAuthenticationProfileRequest":{
+      "type":"structure",
+      "required":[
+        "AuthenticationProfileId",
+        "InstanceId"
+      ],
+      "members":{
+        "AuthenticationProfileId":{
+          "shape":"AuthenticationProfileId",
+          "documentation":"<p>A unique identifier for the authentication profile. </p>",
+          "location":"uri",
+          "locationName":"AuthenticationProfileId"
+        },
+        "InstanceId":{
+          "shape":"InstanceId",
+          "documentation":"<p>The identifier of the Amazon Connect instance. You can <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/find-instance-arn.html\">find the instance ID</a> in the Amazon Resource Name (ARN) of the instance.</p>",
+          "location":"uri",
+          "locationName":"InstanceId"
+        },
+        "Name":{
+          "shape":"AuthenticationProfileName",
+          "documentation":"<p>The name for the authentication profile.</p>"
+        },
+        "Description":{
+          "shape":"AuthenticationProfileDescription",
+          "documentation":"<p>The description for the authentication profile.</p>"
+        },
+        "AllowedIps":{
+          "shape":"IpCidrList",
+          "documentation":"<p>A list of IP address range strings that are allowed to access the instance. For more information on how to configure IP addresses, see<a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/authentication-profiles.html#configure-session-timeouts\">Configure session timeouts</a> in the <i>Amazon Connect Administrator Guide</i>.</p>"
+        },
+        "BlockedIps":{
+          "shape":"IpCidrList",
+          "documentation":"<p>A list of IP address range strings that are blocked from accessing the instance. For more information on how to configure IP addresses, For more information on how to configure IP addresses, see <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/authentication-profiles.html#configure-ip-based-ac\">Configure IP-based access control</a> in the <i>Amazon Connect Administrator Guide</i>. </p>"
+        },
+        "PeriodicSessionDuration":{
+          "shape":"AccessTokenDuration",
+          "documentation":"<p>The short lived session duration configuration for users logged in to Amazon Connect, in minutes. This value determines the maximum possible time before an agent is authenticated. For more information, For more information on how to configure IP addresses, see <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/authentication-profiles.html#configure-session-timeouts\">Configure session timeouts</a> in the <i>Amazon Connect Administrator Guide</i>. </p>",
+          "box":true
         }
       }
     },
@@ -23184,5 +23469,5 @@
     },
     "timestamp":{"type":"timestamp"}
   },
-  "documentation":"<p>Amazon Connect is a cloud-based contact center solution that you use to set up and manage a customer contact center and provide reliable customer engagement at any scale.</p> <p>Amazon Connect provides metrics and real-time reporting that enable you to optimize contact routing. You can also resolve customer issues more efficiently by getting customers in touch with the appropriate agents.</p> <p>There are limits to the number of Amazon Connect resources that you can create. There are also limits to the number of requests that you can make per second. For more information, see <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/amazon-connect-service-limits.html\">Amazon Connect Service Quotas</a> in the <i>Amazon Connect Administrator Guide</i>.</p> <p>You can connect programmatically to an Amazon Web Services service by using an endpoint. For a list of Amazon Connect endpoints, see <a href=\"https://docs.aws.amazon.com/general/latest/gr/connect_region.html\">Amazon Connect Endpoints</a>.</p>"
+  "documentation":"<ul> <li> <p> <a href=\"https://docs.aws.amazon.com/connect/latest/APIReference/API_Operations_Amazon_Connect_Service.html\">Amazon Connect actions</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/connect/latest/APIReference/API_Types_Amazon_Connect_Service.html\">Amazon Connect data types</a> </p> </li> </ul> <p>Amazon Connect is a cloud-based contact center solution that you use to set up and manage a customer contact center and provide reliable customer engagement at any scale.</p> <p>Amazon Connect provides metrics and real-time reporting that enable you to optimize contact routing. You can also resolve customer issues more efficiently by getting customers in touch with the appropriate agents.</p> <p>There are limits to the number of Amazon Connect resources that you can create. There are also limits to the number of requests that you can make per second. For more information, see <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/amazon-connect-service-limits.html\">Amazon Connect Service Quotas</a> in the <i>Amazon Connect Administrator Guide</i>.</p> <p>You can connect programmatically to an Amazon Web Services service by using an endpoint. For a list of Amazon Connect endpoints, see <a href=\"https://docs.aws.amazon.com/general/latest/gr/connect_region.html\">Amazon Connect Endpoints</a>.</p>"
 }

@@ -1,6 +1,6 @@
 **To create an instance from a snapshot**
 
-The following ``create-instances-from-snapshot`` example creates an instance from the specified instance snapshot, in the specified AWS Region and Availability Zone, using the $10 USD bundle.
+The following ``create-instances-from-snapshot`` example creates an instance from the specified instance snapshot, in the specified AWS Region and Availability Zone, using the $12 USD bundle.
 
 **Note:** The bundle that you specify must be equal to or greater in specifications than the bundle of the original source instance used to create the snapshot. ::
 
@@ -8,7 +8,7 @@ The following ``create-instances-from-snapshot`` example creates an instance fro
         --instance-snapshot-name WordPress-1-1569866208 \
         --instance-names WordPress-2 \
         --availability-zone us-west-2a \
-        --bundle-id medium_2_0
+        --bundle-id small_3_0
 
 Output::
 

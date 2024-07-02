@@ -28,7 +28,7 @@ from awscli.customizations.exceptions import ConfigurationError
 LOG = logging.getLogger(__name__)
 
 SSO_TOKEN_DIR = os.path.expanduser(
-    os.path.join('~', '.aws', 'sso', 'cache')
+    os.getenv('AWS_SSO_CACHE_DIR', os.path.join('~', '.aws', 'sso', 'cache'))
 )
 
 LOGIN_ARGS = [

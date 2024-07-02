@@ -19,25 +19,29 @@ import platform
 import zipfile
 import signal
 import contextlib
+import queue
+import io
+import collections.abc as collections_abc
+import locale
+import urllib.parse as urlparse
+from urllib.error import URLError
+from urllib.request import urlopen
 from configparser import RawConfigParser
 from functools import partial
 
-from botocore.compat import six
-#import botocore.compat
+from urllib.error import URLError
 
+from botocore.compat import six
 from botocore.compat import OrderedDict
 
-# If you ever want to import from the vendored six. Add it here and then
-# import from awscli.compat. Also try to keep it in alphabetical order.
-# This may get large.
-advance_iterator = six.advance_iterator
-PY3 = six.PY3
-queue = six.moves.queue
-shlex_quote = six.moves.shlex_quote
-StringIO = six.StringIO
-BytesIO = six.BytesIO
-urlopen = six.moves.urllib.request.urlopen
-binary_type = six.binary_type
+# Backwards compatible definitions from six
+PY3 = sys.version_info[0] == 3
+advance_iterator = next
+shlex_quote = shlex.quote
+StringIO = io.StringIO
+BytesIO = io.BytesIO
+binary_type = bytes
+raw_input = input
 
 
 # Most, but not all, python installations will have zlib. This is required to
@@ -97,96 +101,40 @@ class NonTranslatedStdout(object):
 
 
 def ensure_text_type(s):
-    if isinstance(s, six.text_type):
+    if isinstance(s, str):
         return s
-    if isinstance(s, six.binary_type):
+    if isinstance(s, bytes):
         return s.decode('utf-8')
     raise ValueError("Expected str, unicode or bytes, received %s." % type(s))
 
 
-if six.PY3:
-    import collections.abc as collections_abc
-    import locale
-    import urllib.parse as urlparse
+def get_binary_stdin():
+    if sys.stdin is None:
+        raise StdinMissingError()
+    return sys.stdin.buffer
 
-    from urllib.error import URLError
 
-    raw_input = input
+def get_binary_stdout():
+    return sys.stdout.buffer
 
-    def get_binary_stdin():
-        if sys.stdin is None:
-            raise StdinMissingError()
-        return sys.stdin.buffer
 
-    def get_binary_stdout():
-        return sys.stdout.buffer
+def _get_text_writer(stream, errors):
+    return stream
 
-    def _get_text_writer(stream, errors):
-        return stream
 
-    def bytes_print(statement, stdout=None):
-        """
-        This function is used to write raw bytes to stdout.
-        """
-        if stdout is None:
-            stdout = sys.stdout
+def bytes_print(statement, stdout=None):
+    """
+    This function is used to write raw bytes to stdout.
+    """
+    if stdout is None:
+        stdout = sys.stdout
 
-        if getattr(stdout, 'buffer', None):
-            stdout.buffer.write(statement)
-        else:
-            # If it is not possible to write to the standard out buffer.
-            # The next best option is to decode and write to standard out.
-            stdout.write(statement.decode('utf-8'))
-
-else:
-    import codecs
-    import collections as collections_abc
-    import locale
-    import io
-    import urlparse
-
-    from urllib2 import URLError
-
-    raw_input = raw_input
-
-    def get_binary_stdin():
-        if sys.stdin is None:
-            raise StdinMissingError()
-        return sys.stdin
-
-    def get_binary_stdout():
-        return sys.stdout
-
-    def _get_text_writer(stream, errors):
-        # In python3, all the sys.stdout/sys.stderr streams are in text
-        # mode.  This means they expect unicode, and will encode the
-        # unicode automatically before actually writing to stdout/stderr.
-        # In python2, that's not the case.  In order to provide a consistent
-        # interface, we can create a wrapper around sys.stdout that will take
-        # unicode, and automatically encode it to the preferred encoding.
-        # That way consumers can just call get_text_writer(stream) and write
-        # unicode to the returned stream.  Note that get_text_writer
-        # just returns the stream in the PY3 section above because python3
-        # handles this.
-
-        # We're going to use the preferred encoding, but in cases that there is
-        # no preferred encoding we're going to fall back to assuming ASCII is
-        # what we should use. This will currently break the use of
-        # PYTHONIOENCODING, which would require checking stream.encoding first,
-        # however, the existing behavior is to only use
-        # locale.getpreferredencoding() and so in the hope of not breaking what
-        # is currently working, we will continue to only use that.
-        encoding = locale.getpreferredencoding()
-        if encoding is None:
-            encoding = "ascii"
-
-        return codecs.getwriter(encoding)(stream, errors)
-
-    def bytes_print(statement, stdout=None):
-        if stdout is None:
-            stdout = sys.stdout
-
-        stdout.write(statement)
+    if getattr(stdout, 'buffer', None):
+        stdout.buffer.write(statement)
+    else:
+        # If it is not possible to write to the standard out buffer.
+        # The next best option is to decode and write to standard out.
+        stdout.write(statement.decode('utf-8'))
 
 
 def compat_open(filename, mode='r', encoding=None, access_permissions=None):
@@ -252,7 +200,7 @@ def compat_shell_quote(s, platform=None):
     if platform == "win32":
         return _windows_shell_quote(s)
     else:
-        return shlex_quote(s)
+        return shlex.quote(s)
 
 
 def _windows_shell_quote(s):

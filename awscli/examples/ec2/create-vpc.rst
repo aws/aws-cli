@@ -4,7 +4,7 @@ The following ``create-vpc`` example creates a VPC with the specified IPv4 CIDR 
 
     aws ec2 create-vpc \
         --cidr-block 10.0.0.0/16 \
-        --tag-specification ResourceType=vpc,Tags=[{Key=Name,Value=MyVpc}]
+        --tag-specifications ResourceType=vpc,Tags=[{Key=Name,Value=MyVpc}]
 
 Output::
 
@@ -128,7 +128,7 @@ Windows::
 
 Output::
 
-   {
+    {
         "Vpc": {
             "CidrBlock": "10.0.1.0/24",
             "DhcpOptionsId": "dopt-2afccf50",

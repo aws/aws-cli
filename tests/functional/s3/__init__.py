@@ -11,7 +11,7 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 from awscli.testutils import mock, BaseAWSCommandParamsTest, FileCreator
-from awscli.compat import six
+from awscli.compat import BytesIO
 
 class BaseS3TransferCommandTest(BaseAWSCommandParamsTest):
     def setUp(self):
@@ -57,7 +57,7 @@ class BaseS3TransferCommandTest(BaseAWSCommandParamsTest):
     def get_object_response(self):
         return {
             'ETag': '"foo-1"',
-            'Body': six.BytesIO(b'foo')
+            'Body': BytesIO(b'foo')
         }
 
     def copy_object_response(self):

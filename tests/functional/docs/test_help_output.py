@@ -25,8 +25,8 @@ from awscli.testutils import BaseAWSHelpOutputTest
 from awscli.testutils import FileCreator
 from awscli.testutils import mock
 from awscli.testutils import aws
+from awscli.compat import StringIO
 
-from awscli.compat import six
 from awscli.alias import AliasLoader
 
 
@@ -204,7 +204,7 @@ class TestRemoveDeprecatedCommands(BaseAWSHelpOutputTest):
         # command verify that we get a SystemExit exception
         # and that we get something in stderr that says that
         # we made an invalid choice (because the operation is removed).
-        stderr = six.StringIO()
+        stderr = StringIO()
         with mock.patch('sys.stderr', stderr):
             with self.assertRaises(SystemExit):
                 self.driver.main([service, command, 'help'])

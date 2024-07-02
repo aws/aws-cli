@@ -17,7 +17,6 @@ import copy
 from botocore.awsrequest import AWSRequest
 from botocore.httpsession import URLLib3Session
 from botocore.exceptions import ProfileNotFound
-from awscli.compat import six
 
 from awscli.compat import compat_open
 from awscli.argprocess import ParamError
@@ -197,7 +196,7 @@ class URIArgumentHandler(object):
         try:
             return get_paramfile(value, self._prefixes)
         except ResourceLoadingError as e:
-            raise ParamError(param.cli_name, six.text_type(e))
+            raise ParamError(param.cli_name, str(e))
 
 
 def get_paramfile(path, cases):
@@ -224,7 +223,7 @@ def get_paramfile(path, cases):
 
     """
     data = None
-    if isinstance(path, six.string_types):
+    if isinstance(path, str):
         for prefix, function_spec in cases.items():
             if path.startswith(prefix):
                 function, kwargs = function_spec

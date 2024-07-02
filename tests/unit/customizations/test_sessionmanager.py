@@ -10,12 +10,11 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
+import botocore.session
 import errno
 import json
-import botocore.session
-import subprocess
-
 import pytest
+import subprocess
 
 from awscli.customizations import sessionmanager
 from awscli.testutils import mock, unittest
@@ -34,6 +33,9 @@ class TestSessionManager(unittest.TestCase):
         self.session.create_client.return_value = self.client
         self.session.profile = self.profile
         self.caller = sessionmanager.StartSessionCaller(self.session)
+
+        self.parsed_globals = mock.Mock()
+        self.parsed_globals.profile = 'user_profile'
 
     def test_start_session_when_non_custom_start_session_fails(self):
         self.client.start_session.side_effect = Exception('some exception')
@@ -62,7 +64,7 @@ class TestSessionManager(unittest.TestCase):
         self.client.start_session.return_value = start_session_response
 
         rc = self.caller.invoke('ssm', 'StartSession',
-                                start_session_params, mock.Mock())
+                                start_session_params, self.parsed_globals)
         self.assertEqual(rc, 0)
         self.client.start_session.assert_called_with(**start_session_params)
 
@@ -79,7 +81,7 @@ class TestSessionManager(unittest.TestCase):
              start_session_response,
              self.region,
              'StartSession',
-             self.profile,
+             self.parsed_globals.profile,
              json.dumps(start_session_params),
              self.endpoint_url]
         )
@@ -110,7 +112,7 @@ class TestSessionManager(unittest.TestCase):
 
         with self.assertRaises(ValueError):
             self.caller.invoke('ssm', 'StartSession',
-                               start_session_params, mock.Mock())
+                               start_session_params, self.parsed_globals)
 
             self.client.start_session.assert_called_with(
                 **start_session_params)
@@ -125,7 +127,7 @@ class TestSessionManager(unittest.TestCase):
                  start_session_response,
                  self.region,
                  'StartSession',
-                 self.profile,
+                 self.parsed_globals.profile,
                  json.dumps(start_session_params),
                  self.endpoint_url]
             )
@@ -136,7 +138,8 @@ class TestSessionManager(unittest.TestCase):
         self, mock_check_output, mock_check_call
     ):
         mock_check_output.return_value = "1.2.500.0\n"
-        self.session.profile = None
+        self.session.profile = "session_profile"
+        self.parsed_globals.profile = None
         mock_check_call.return_value = 0
 
         start_session_params = {
@@ -148,15 +151,27 @@ class TestSessionManager(unittest.TestCase):
             "TokenValue": "token-value",
             "StreamUrl": "stream-url"
         }
+        ssm_env_name = "AWS_SSM_START_SESSION_RESPONSE"
 
         self.client.start_session.return_value = start_session_response
 
         rc = self.caller.invoke('ssm', 'StartSession',
-                                start_session_params, mock.Mock())
+                                start_session_params, self.parsed_globals)
         self.assertEqual(rc, 0)
         self.client.start_session.assert_called_with(**start_session_params)
         mock_check_call_list = mock_check_call.call_args[0][0]
-        self.assertEqual(mock_check_call_list[4], '')
+        self.assertEqual(
+            mock_check_call_list,
+            [
+                "session-manager-plugin",
+                ssm_env_name,
+                self.region,
+                "StartSession",
+                "",
+                json.dumps(start_session_params),
+                self.endpoint_url,
+            ],
+        )
 
     @mock.patch("awscli.customizations.sessionmanager.check_call")
     @mock.patch("awscli.customizations.sessionmanager.check_output")
@@ -166,7 +181,10 @@ class TestSessionManager(unittest.TestCase):
         mock_check_output.return_value = "1.2.500.0\n"
         mock_check_call.return_value = 0
 
-        start_session_params = {"Target": "i-123456789"}
+        start_session_params = {
+            "Target": "i-123456789"
+        }
+
         start_session_response = {
             "SessionId": "session-id",
             "TokenValue": "token-value",
@@ -176,7 +194,7 @@ class TestSessionManager(unittest.TestCase):
 
         self.client.start_session.return_value = start_session_response
         rc = self.caller.invoke(
-            "ssm", "StartSession", start_session_params, mock.Mock()
+            "ssm", "StartSession", start_session_params, self.parsed_globals
         )
         self.assertEqual(rc, 0)
         self.client.start_session.assert_called_with(**start_session_params)
@@ -194,7 +212,7 @@ class TestSessionManager(unittest.TestCase):
                 ssm_env_name,
                 self.region,
                 "StartSession",
-                self.profile,
+                self.parsed_globals.profile,
                 json.dumps(start_session_params),
                 self.endpoint_url,
             ],
@@ -214,7 +232,9 @@ class TestSessionManager(unittest.TestCase):
             returncode=1, cmd="session-manager-plugin", output="some error"
         )
 
-        start_session_params = {"Target": "i-123456789"}
+        start_session_params = {
+            "Target": "i-123456789"
+        }
         start_session_response = {
             "SessionId": "session-id",
             "TokenValue": "token-value",
@@ -224,7 +244,10 @@ class TestSessionManager(unittest.TestCase):
         self.client.start_session.return_value = start_session_response
         with self.assertRaises(subprocess.CalledProcessError):
             self.caller.invoke(
-                "ssm", "StartSession", start_session_params, mock.Mock()
+                "ssm",
+                "StartSession",
+                start_session_params,
+                self.parsed_globals
             )
 
         self.client.start_session.assert_called_with(**start_session_params)
@@ -240,7 +263,9 @@ class TestSessionManager(unittest.TestCase):
         self, mock_check_output, mock_check_call
     ):
         mock_check_output.return_value = "1.2.500.0\n"
-        start_session_params = {"Target": "i-123456789"}
+        start_session_params = {
+            "Target": "i-123456789"
+        }
         start_session_response = {
             "SessionId": "session-id",
             "TokenValue": "token-value",
@@ -257,7 +282,7 @@ class TestSessionManager(unittest.TestCase):
 
         self.client.start_session.return_value = start_session_response
         rc = self.caller.invoke(
-            "ssm", "StartSession", start_session_params, mock.Mock()
+            "ssm", "StartSession", start_session_params, self.parsed_globals
         )
         self.assertEqual(rc, 0)
         self.client.start_session.assert_called_with(**start_session_params)
@@ -275,7 +300,7 @@ class TestSessionManager(unittest.TestCase):
                 ssm_env_name,
                 self.region,
                 "StartSession",
-                self.profile,
+                self.parsed_globals.profile,
                 json.dumps(start_session_params),
                 self.endpoint_url,
             ],
@@ -292,7 +317,9 @@ class TestSessionManager(unittest.TestCase):
     ):
         mock_check_output.return_value = "InvalidVersion"
 
-        start_session_params = {"Target": "i-123456789"}
+        start_session_params = {
+            "Target": "i-123456789"
+        }
         start_session_response = {
             "SessionId": "session-id",
             "TokenValue": "token-value",
@@ -301,7 +328,7 @@ class TestSessionManager(unittest.TestCase):
 
         self.client.start_session.return_value = start_session_response
         self.caller.invoke(
-            "ssm", "StartSession", start_session_params, mock.Mock()
+            "ssm", "StartSession", start_session_params, self.parsed_globals
         )
         self.client.start_session.assert_called_with(**start_session_params)
         self.client.terminate_session.assert_not_called()
@@ -317,7 +344,7 @@ class TestSessionManager(unittest.TestCase):
                 json.dumps(start_session_response),
                 self.region,
                 "StartSession",
-                self.profile,
+                self.parsed_globals.profile,
                 json.dumps(start_session_params),
                 self.endpoint_url,
             ],

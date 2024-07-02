@@ -343,6 +343,11 @@ INSTANCE_FLEETS_SCHEMA = {
                             "type": "string",
                             "description": "The AMI ID of a custom AMI to use when Amazon EMR provisions EC2 instances."
                         },
+                        "Priority": {
+                            "type": "double",
+                            "description": "The priority at which Amazon EMR launches the EC2 instances with this instance type. "
+                                "Priority starts at 0, which is the highest priority. Amazon EMR considers the highest priority first."
+                        },
                         "EbsConfiguration": {
                             "type": "object",
                             "description": "EBS configuration that is associated with the instance group.",
@@ -409,7 +414,7 @@ INSTANCE_FLEETS_SCHEMA = {
                             "AllocationStrategy": {
                                 "type": "string",
                                 "description": "The strategy to use in launching On-Demand instance fleets.",
-                                "enum": ["lowest-price"]
+                                "enum": ["lowest-price", "prioritized"]
                             },
                             "CapacityReservationOptions": {
                                 "type": "object",
@@ -457,7 +462,7 @@ INSTANCE_FLEETS_SCHEMA = {
                             "AllocationStrategy": {
                                 "type": "string",
                                 "description": "The strategy to use in launching Spot instance fleets.",
-                                "enum": ["capacity-optimized", "price-capacity-optimized", "lowest-price", "diversified"]
+                                "enum": ["capacity-optimized", "price-capacity-optimized", "lowest-price", "diversified", "capacity-optimized-prioritized"]
                             }
                         }
                     }

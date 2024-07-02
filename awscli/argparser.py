@@ -12,7 +12,6 @@
 # language governing permissions and limitations under the License.
 import argparse
 import sys
-from awscli.compat import six
 from difflib import get_close_matches
 
 
@@ -106,12 +105,12 @@ class CLIArgParser(argparse.ArgumentParser):
             # default to utf-8.
             terminal_encoding = 'utf-8'
         for arg, value in vars(parsed).items():
-            if isinstance(value, six.binary_type):
+            if isinstance(value, bytes):
                 setattr(parsed, arg, value.decode(terminal_encoding))
             elif isinstance(value, list):
                 encoded = []
                 for v in value:
-                    if isinstance(v, six.binary_type):
+                    if isinstance(v, bytes):
                         encoded.append(v.decode(terminal_encoding))
                     else:
                         encoded.append(v)

@@ -51,11 +51,10 @@ def register_removals(event_handler):
     cmd_remover.remove(on_event='building-command-table.sagemaker-runtime',
                          remove_commands=['invoke-endpoint-with-response-stream'])
     cmd_remover.remove(on_event='building-command-table.bedrock-runtime',
-                         remove_commands=['invoke-model-with-response-stream'])
+                         remove_commands=['invoke-model-with-response-stream',
+                                          'converse-stream'])
     cmd_remover.remove(on_event='building-command-table.bedrock-agent-runtime',
                          remove_commands=['invoke-agent'])
-    cmd_remover.remove(on_event='building-command-table.logs',
-                         remove_commands=['start-live-tail'])
     cmd_remover.remove(on_event='building-command-table.qbusiness',
                         remove_commands=['chat'])
 

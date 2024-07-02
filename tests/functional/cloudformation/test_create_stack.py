@@ -11,6 +11,8 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
+import os
+
 from awscli.testutils import BaseAWSCommandParamsTest
 
 
@@ -62,4 +64,20 @@ class TestCreateStack(BaseAWSCommandParamsTest):
         cmdline += ' --stack-name test --parameters --template-url http://foo'
         result = {'StackName': 'test', 'TemplateURL': 'http://foo',
                   'Parameters': []}
+        self.assert_params_for_cmd(cmdline, result)
+
+    def test_can_handle_yaml_parameter_file(self):
+        param_path = os.path.join(os.path.dirname(__file__), 'create-stack-example-parameters.yml')
+        cmdline = self.prefix
+        cmdline += ' --stack-name test --template-url http://foo'
+        cmdline += ' --parameters file://%s' % param_path
+        result = {'StackName': 'test', 'TemplateURL': 'http://foo',
+                  'Parameters': [
+                      {'ParameterKey': 'SecurityGroupDescription',
+                       'ParameterValue': 'Security group providing SSH access'},
+                      {'ParameterKey': 'FromPort',
+                       'ParameterValue': '22'},
+                      {'ParameterKey': 'CidrIp',
+                       'ParameterValue': '0.0.0.0/0'},
+                  ]}
         self.assert_params_for_cmd(cmdline, result)

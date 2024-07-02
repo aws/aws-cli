@@ -145,6 +145,32 @@ class AppendFilter(argparse.Action):
             filter_list = [[option_string, values[0]]]
         setattr(namespace, self.dest, filter_list)
 
+class FileAppendFilter(argparse.Action):
+    """
+    This class is used as an action when parsing the parameters.
+    Specifically it is used for actions corresponding to exclude
+    and include filters. It works similarly to ``AppendFilter``,
+    but instead of using the value of the argument as the pattern
+    it uses it as a filename of a file where each line is a pattern
+    to add to the filter.
+    """
+    def __call__(self, parser, namespace, values, option_string=None):
+        if option_string == '--include-file':
+            filter_type = '--include'
+        elif option_string == '--exclude-file':
+            filter_type = '--exclude'
+        filter_list = getattr(namespace, self.dest, [])
+        try:
+            with open(values[0]) as pfile:
+                for pattern in pfile:
+                    pattern = pattern.strip()
+                    if pattern:
+                        filter_list.append([filter_type, pattern])
+            setattr(namespace, self.dest, filter_list)
+        except (FileNotFoundError, PermissionError):
+            raise ValueError("Unable to open %s" % values[0])
+
+
 
 class CreateDirectoryError(Exception):
     pass

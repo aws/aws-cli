@@ -114,7 +114,7 @@ class TestConfigureListCommand(unittest.TestCase):
 
     def test_configure_region_from_imds(self):
         session = FakeSession(all_variables={'region': 'from-imds'})
-        stream = six.StringIO()
+        stream = StringIO()
         self.configure_list = ConfigureListCommand(session, stream)
         self.configure_list(args=[], parsed_globals=None)
         rendered = stream.getvalue()

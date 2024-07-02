@@ -26,7 +26,7 @@ from botocore.exceptions import UnseekableStreamError
 from botocore.awsrequest import AWSRequest, AWSPreparedRequest, AWSResponse
 from botocore.awsrequest import AWSHTTPConnection, AWSHTTPSConnection, HeadersDict
 from botocore.awsrequest import prepare_request_dict, create_request_object
-from botocore.compat import file_type, six
+from botocore.compat import file_type
 
 
 class IgnoreCloseBytesIO(io.BytesIO):
@@ -56,7 +56,7 @@ class FakeSocket(object):
         pass
 
 
-class BytesIOWithLen(six.BytesIO):
+class BytesIOWithLen(io.BytesIO):
     def __len__(self):
         return len(self.getvalue())
 
@@ -342,7 +342,7 @@ class TestAWSHTTPConnection(unittest.TestCase):
             conn = AWSHTTPConnection('s3.amazonaws.com', 443)
             conn.sock = s
             wait_mock.return_value = True
-            conn.request('GET', '/bucket/foo', six.BytesIO(b'body'),
+            conn.request('GET', '/bucket/foo', io.BytesIO(b'body'),
                          {'Expect': b'100-continue', 'Content-Length': b'4'})
             response = conn.getresponse()
             # Now we should verify that our final response is the 200 OK.

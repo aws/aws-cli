@@ -10,11 +10,11 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
+import io
 import os
 from tests import mock, unittest, BaseEnvVar
 
 import botocore
-from botocore.compat import six
 from botocore.exceptions import ClientError, WaiterConfigError, WaiterError
 from botocore.waiter import Waiter, WaiterModel, SingleWaiterConfig
 from botocore.waiter import create_waiter_with_client
@@ -639,7 +639,7 @@ class TestCreateWaiter(unittest.TestCase):
         waiter_name = 'WaiterName'
         waiter = create_waiter_with_client(
             waiter_name, self.waiter_model, self.client)
-        with mock.patch('sys.stdout', six.StringIO()) as mock_stdout:
+        with mock.patch('sys.stdout', io.StringIO()) as mock_stdout:
             help(waiter.wait)
         content = mock_stdout.getvalue()
         lines = [

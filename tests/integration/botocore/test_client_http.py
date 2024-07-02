@@ -2,12 +2,13 @@ import select
 import socket
 import contextlib
 import threading
+import socketserver
+from http.server import BaseHTTPServer
 from tests import mock, unittest
 from contextlib import contextmanager
 
 import botocore.session
 from botocore.config import Config
-from botocore.vendored.six.moves import BaseHTTPServer, socketserver
 from botocore.exceptions import (
     ConnectTimeoutError, ReadTimeoutError, EndpointConnectionError,
     ConnectionClosedError, ClientError, ProxyConnectionError

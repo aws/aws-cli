@@ -26,7 +26,7 @@ if os.environ.get('TESTS_REMOVE_REPO_ROOT_FROM_PATH'):
 
 import awscli
 from awscli.clidriver import create_clidriver, AWSCLIEntryPoint
-from awscli.compat import collections_abc, six
+from awscli.compat import collections_abc
 from awscli.testutils import (
     unittest, mock, capture_output, if_windows, skip_if_windows, create_bucket,
     FileCreator, ConsistencyWaiter
@@ -511,7 +511,7 @@ class S3Utils:
 
     def assert_key_contents_equal(self, bucket, key, expected_contents):
         self.wait_until_key_exists(bucket, key)
-        if isinstance(expected_contents, six.BytesIO):
+        if isinstance(expected_contents, BytesIO):
             expected_contents = expected_contents.getvalue().decode('utf-8')
         actual_contents = self.get_key_contents(bucket, key)
         # The contents can be huge so we try to give helpful error messages

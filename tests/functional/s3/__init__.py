@@ -342,7 +342,7 @@ class BaseS3CLIRunnerTest(unittest.TestCase):
 
     def add_botocore_get_object_response(self):
         self.cli_runner.add_response(
-            HTTPResponse(headers={'ETag': '"foo-1"'}, body=six.BytesIO(b'foo'))
+            HTTPResponse(headers={'ETag': '"foo-1"'}, body=BytesIO(b'foo'))
         )
 
     def add_botocore_copy_object_response(self):

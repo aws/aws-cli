@@ -16,7 +16,7 @@ from tests import unittest, random_chars
 
 import botocore.session
 from botocore.client import ClientError
-from botocore.compat import six
+from botocore.compat import StringIO
 from botocore.exceptions import EndpointConnectionError
 
 
@@ -34,7 +34,7 @@ class TestResponseLog(unittest.TestCase):
         # lose this feature.
         session = botocore.session.get_session()
         client = session.create_client('s3', region_name='us-west-2')
-        debug_log = six.StringIO()
+        debug_log = StringIO()
         session.set_stream_logger('', logging.DEBUG, debug_log)
         client.list_buckets()
         debug_log_contents = debug_log.getvalue()

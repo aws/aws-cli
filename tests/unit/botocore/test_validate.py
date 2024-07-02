@@ -1,8 +1,8 @@
+import io
 from tests import unittest
 from datetime import datetime
 import decimal
 
-from botocore.compat import six
 from botocore.model import ShapeResolver
 from botocore.validate import ParamValidator
 
@@ -665,7 +665,7 @@ class TestValidateTypeBlob(BaseTestValidate):
         self.assertEqual(error_msg, '')
 
     def test_validates_file_like_object(self):
-        value = six.BytesIO(b'foo')
+        value = io.BytesIO(b'foo')
 
         errors = self.get_validation_error_message(
             given_shapes=self.shapes,

@@ -15,6 +15,7 @@ from tests import mock, unittest, BaseSessionTest
 
 import base64
 import copy
+import io
 import os
 import json
 
@@ -27,7 +28,7 @@ from botocore.exceptions import ParamValidationError, MD5UnavailableError
 from botocore.exceptions import AliasConflictParameterError
 from botocore.exceptions import MissingServiceIdError
 from botocore.awsrequest import AWSRequest
-from botocore.compat import quote, six
+from botocore.compat import quote
 from botocore.config import Config
 from botocore.docs.bcdoc.restdoc import DocumentStructure
 from botocore.docs.params import RequestParamsDocumenter
@@ -537,7 +538,7 @@ class TestHandlers(BaseSessionTest):
 
     def test_run_instances_userdata(self):
         user_data = 'This is a test'
-        b64_user_data = base64.b64encode(six.b(user_data)).decode('utf-8')
+        b64_user_data = base64.b64encode(user_data.encode('latin-1')).decode('utf-8')
         params = dict(ImageId='img-12345678',
                       MinCount=1, MaxCount=5, UserData=user_data)
         handlers.base64_encode_user_data(params=params)
@@ -664,7 +665,7 @@ class TestHandlers(BaseSessionTest):
     def test_glacier_checksums_added(self):
         request_dict = {
             'headers': {},
-            'body': six.BytesIO(b'hello world'),
+            'body': io.BytesIO(b'hello world'),
         }
         handlers.add_glacier_checksums(request_dict)
         self.assertIn('x-amz-content-sha256', request_dict['headers'])
@@ -683,7 +684,7 @@ class TestHandlers(BaseSessionTest):
             'headers': {
                 'x-amz-sha256-tree-hash': 'pre-exists',
             },
-            'body': six.BytesIO(b'hello world'),
+            'body': io.BytesIO(b'hello world'),
         }
         handlers.add_glacier_checksums(request_dict)
         self.assertEqual(request_dict['headers']['x-amz-sha256-tree-hash'],
@@ -694,7 +695,7 @@ class TestHandlers(BaseSessionTest):
             'headers': {
                 'x-amz-content-sha256': 'pre-exists',
             },
-            'body': six.BytesIO(b'hello world'),
+            'body': io.BytesIO(b'hello world'),
         }
         handlers.add_glacier_checksums(request_dict)
         self.assertEqual(request_dict['headers']['x-amz-content-sha256'],
@@ -1035,7 +1036,7 @@ class TestConvertStringBodyToFileLikeObject(BaseSessionTest):
         handlers.convert_body_to_file_like_object(params)
         self.assertTrue(hasattr(params['Body'], 'read'))
         contents = params['Body'].read()
-        self.assertIsInstance(contents, six.binary_type)
+        self.assertIsInstance(contents, bytes)
         self.assertEqual(contents, body_bytes)
 
     def test_string(self):
@@ -1047,7 +1048,7 @@ class TestConvertStringBodyToFileLikeObject(BaseSessionTest):
         self.assert_converts_to_file_like_object_with_bytes(body, body_bytes)
 
     def test_file(self):
-        body = six.StringIO()
+        body = io.StringIO()
         params = {'Body': body}
         handlers.convert_body_to_file_like_object(params)
         self.assertEqual(params['Body'], body)
@@ -1258,7 +1259,7 @@ class TestAddMD5(BaseMD5Test):
 
     def test_add_md5_with_file_like_body(self):
         request_dict = {
-            'body': six.BytesIO(b'foobar'),
+            'body': io.BytesIO(b'foobar'),
             'headers': {}
         }
         self.md5_digest.return_value = b'8X\xf6"0\xac<\x91_0\x0cfC\x12\xc6?'
@@ -1301,7 +1302,7 @@ class TestAddMD5(BaseMD5Test):
 
     def test_skip_md5_when_flexible_checksum_context(self):
         request_dict = {
-            'body': six.BytesIO(b'foobar'),
+            'body': io.BytesIO(b'foobar'),
             'headers': {},
             'context': {
                 'checksum': {
@@ -1318,7 +1319,7 @@ class TestAddMD5(BaseMD5Test):
 
     def test_skip_md5_when_flexible_checksum_explicit_header(self):
         request_dict = {
-            'body': six.BytesIO(b'foobar'),
+            'body': io.BytesIO(b'foobar'),
             'headers': {'x-amz-checksum-crc32': 'foo'},
         }
         conditionally_calculate_md5(request_dict)

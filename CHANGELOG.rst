@@ -2,6 +2,15 @@
 CHANGELOG
 =========
 
+2.17.7
+======
+
+* api-change:``s3``: Added response overrides to Head Object requests.
+* api-change:``ec2``: Documentation updates for Elastic Compute Cloud (EC2).
+* enhancement:openssl: Update bundled OpenSSL version to 1.1.1y for Linux installers
+* api-change:``fms``: Increases Customer API's ManagedServiceData length
+
+
 2.17.6
 ======
 

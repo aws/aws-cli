@@ -18,7 +18,7 @@ import weakref
 import botocore
 import botocore.auth
 from botocore.awsrequest import create_request_object, prepare_request_dict
-from botocore.compat import OrderedDict, six
+from botocore.compat import OrderedDict
 from botocore.exceptions import (
     UnknownClientMethodError,
     UnknownSignatureVersionError,
@@ -373,7 +373,7 @@ class CloudFrontSigner(object):
         if date_less_than is not None:
             # We still need to build a canned policy for signing purpose
             policy = self.build_policy(url, date_less_than)
-        if isinstance(policy, six.text_type):
+        if isinstance(policy, str):
             policy = policy.encode('utf8')
         if date_less_than is not None:
             params = ['Expires=%s' % int(datetime2timestamp(date_less_than))]

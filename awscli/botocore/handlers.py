@@ -22,6 +22,7 @@ import logging
 import re
 import uuid
 import warnings
+from io import BytesIO
 
 import botocore
 import botocore.auth
@@ -34,7 +35,6 @@ from botocore.compat import (
     ensure_bytes,
     get_md5,
     json,
-    six,
     unquote,
     unquote_str,
     urlsplit,
@@ -218,7 +218,7 @@ def decode_console_output(parsed, **kwargs):
             # We're using 'replace' for errors because it is
             # possible that console output contains non string
             # chars we can't utf-8 decode.
-            value = base64.b64decode(six.b(parsed['Output'])).decode(
+            value = base64.b64decode(bytes(parsed['Output'], 'latin-1')).decode(
                 'utf-8', 'replace')
             parsed['Output'] = value
         except (ValueError, TypeError, AttributeError):
@@ -290,7 +290,7 @@ def _sse_md5(params, sse_member_prefix='SSECustomer'):
     sse_key_member = sse_member_prefix + 'Key'
     sse_md5_member = sse_member_prefix + 'KeyMD5'
     key_as_bytes = params[sse_key_member]
-    if isinstance(key_as_bytes, six.text_type):
+    if isinstance(key_as_bytes, str):
         key_as_bytes = key_as_bytes.encode('utf-8')
     key_md5_str = base64.b64encode(
         get_md5(key_as_bytes).digest()).decode('utf-8')
@@ -395,7 +395,7 @@ def handle_copy_source_param(params, **kwargs):
         # param validator take care of this.  It will
         # give a better error message.
         return
-    if isinstance(source, six.string_types):
+    if isinstance(source, str):
         params['CopySource'] = _quote_source_header(source)
     elif isinstance(source, dict):
         params['CopySource'] = _quote_source_header_from_dict(source)
@@ -543,7 +543,7 @@ def parse_get_bucket_location(parsed, http_response, **kwargs):
 
 def base64_encode_user_data(params, **kwargs):
     if 'UserData' in params:
-        if isinstance(params['UserData'], six.text_type):
+        if isinstance(params['UserData'], str):
             # Encode it to bytes if it is text.
             params['UserData'] = params['UserData'].encode('utf-8')
         params['UserData'] = base64.b64encode(
@@ -647,13 +647,13 @@ def add_glacier_checksums(params, **kwargs):
     request_dict = params
     headers = request_dict['headers']
     body = request_dict['body']
-    if isinstance(body, six.binary_type):
+    if isinstance(body, bytes):
         # If the user provided a bytes type instead of a file
         # like object, we're temporarily create a BytesIO object
         # so we can use the util functions to calculate the
         # checksums which assume file like objects.  Note that
         # we're not actually changing the body in the request_dict.
-        body = six.BytesIO(body)
+        body = BytesIO(body)
     starting_position = body.tell()
     if 'x-amz-content-sha256' not in headers:
         headers['x-amz-content-sha256'] = utils.calculate_sha256(
@@ -802,10 +802,10 @@ def _decode_list_object(top_level_keys, nested_keys, parsed, context):
 
 def convert_body_to_file_like_object(params, **kwargs):
     if 'Body' in params:
-        if isinstance(params['Body'], six.string_types):
-            params['Body'] = six.BytesIO(ensure_bytes(params['Body']))
-        elif isinstance(params['Body'], six.binary_type):
-            params['Body'] = six.BytesIO(params['Body'])
+        if isinstance(params['Body'], str):
+            params['Body'] = BytesIO(ensure_bytes(params['Body']))
+        elif isinstance(params['Body'], bytes):
+            params['Body'] = BytesIO(params['Body'])
 
 
 def _add_parameter_aliases(handler_list):

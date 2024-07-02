@@ -33,9 +33,9 @@ from urllib3 import exceptions
 logger = logging.getLogger(__name__)
 
 
-from botocore.vendored.six.moves import http_client
+from http.client import HTTPMessage
 
-class HTTPHeaders(http_client.HTTPMessage):
+class HTTPHeaders(HTTPMessage):
     pass
 
 from urllib.parse import (

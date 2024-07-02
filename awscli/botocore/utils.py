@@ -29,6 +29,7 @@ import weakref
 from datetime import datetime as _DatetimeClass
 from ipaddress import ip_address
 from pathlib import Path
+from urllib.request import getproxies, proxy_bypass
 
 import botocore
 import botocore.awsrequest
@@ -40,7 +41,6 @@ from botocore.compat import (
     get_tzinfo_options,
     json,
     quote,
-    six,
     total_seconds,
     urlparse,
     urlsplit,
@@ -72,7 +72,6 @@ from botocore.exceptions import (
     UnsupportedS3ControlArnError,
     UnsupportedS3ControlConfigurationError,
 )
-from botocore.vendored.six.moves.urllib.request import getproxies, proxy_bypass
 from dateutil.tz import tzutc
 from urllib3.exceptions import LocationParseError
 
@@ -717,10 +716,10 @@ def percent_encode(input_str, safe=SAFE_CHARS):
     first.
     """
     # If its not a binary or text string, make it a text string.
-    if not isinstance(input_str, (six.binary_type, six.text_type)):
-        input_str = six.text_type(input_str)
+    if not isinstance(input_str, (bytes, str)):
+        input_str = str(input_str)
     # If it's not bytes, make it bytes by UTF-8 encoding it.
-    if not isinstance(input_str, six.binary_type):
+    if not isinstance(input_str, bytes):
         input_str = input_str.encode('utf-8')
     return quote(input_str, safe=safe)
 

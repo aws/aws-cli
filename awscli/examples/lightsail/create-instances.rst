@@ -1,12 +1,12 @@
 **Example 1: To create a single instance**
 
-The following ``create-instances`` example creates an instance in the specified AWS Region and Availability Zone, using the WordPress blueprint, and the $3.50 USD bundle. ::
+The following ``create-instances`` example creates an instance in the specified AWS Region and Availability Zone, using the WordPress blueprint, and the $5.00 USD bundle. ::
 
     aws lightsail create-instances \
         --instance-names Instance-1 \
         --availability-zone us-west-2a \
-        --blueprint-id wordpress_5_1_1_2 \
-        --bundle-id nano_2_0
+        --blueprint-id wordpress \
+        --bundle-id nano_3_0
 
 Output::
 
@@ -31,13 +31,13 @@ Output::
 
 **Example 2: To create multiple instances at one time**
 
-The following ``create-instances`` example creates three instances in the specified AWS Region and Availability Zone, using the WordPress blueprint, and the $3.50 USD bundle. ::
+The following ``create-instances`` example creates three instances in the specified AWS Region and Availability Zone, using the WordPress blueprint, and the $5.00 USD bundle. ::
 
     aws lightsail create-instances \
         --instance-names {"Instance1","Instance2","Instance3"} \
         --availability-zone us-west-2a \
-        --blueprint-id wordpress_5_1_1_2 \
-        --bundle-id nano_2_0
+        --blueprint-id wordpress \
+        --bundle-id nano_3_0
 
 Output::
 

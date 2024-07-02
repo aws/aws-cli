@@ -2,6 +2,14 @@
 CHANGELOG
 =========
 
+1.33.20
+=======
+
+* api-change:``ec2``: Documentation updates for Elastic Compute Cloud (EC2).
+* api-change:``fms``: Increases Customer API's ManagedServiceData length
+* api-change:``s3``: Added response overrides to Head Object requests.
+
+
 1.33.19
 =======
 

@@ -27,7 +27,6 @@ from awscli.testutils import BaseAWSHelpOutputTest
 from awscli.testutils import FileCreator
 from awscli.testutils import mock
 from tests import CLIRunner
-from awscli.testutils import aws
 from awscli.compat import StringIO
 
 from awscli.alias import AliasLoader

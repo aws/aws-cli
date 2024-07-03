@@ -22,7 +22,6 @@ from awscli.compat import BytesIO, OrderedDict
 from tests.functional.s3 import (
     BaseS3TransferCommandTest, BaseS3CLIRunnerTest, BaseCRTTransferClientTest
 )
-from tests import requires_crt
 
 MB = 1024 ** 2
 

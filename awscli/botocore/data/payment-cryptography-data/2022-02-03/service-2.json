@@ -234,7 +234,7 @@
       "required":["CardExpiryDate"],
       "members":{
         "CardExpiryDate":{
-          "shape":"NumberLengthEquals4",
+          "shape":"CardExpiryDateType",
           "documentation":"<p>The expiry date of a payment card.</p>"
         }
       },
@@ -248,15 +248,22 @@
       ],
       "members":{
         "CardExpiryDate":{
-          "shape":"NumberLengthEquals4",
+          "shape":"CardExpiryDateType",
           "documentation":"<p>The expiry date of a payment card.</p>"
         },
         "ServiceCode":{
-          "shape":"NumberLengthEquals3",
+          "shape":"ServiceCodeType",
           "documentation":"<p>The service code of the AMEX payment card. This is different from the Card Security Code (CSC).</p>"
         }
       },
       "documentation":"<p>Card data parameters that are required to generate a Card Security Code (CSC2) for an AMEX payment card.</p>"
+    },
+    "ApplicationCryptogramType":{
+      "type":"string",
+      "max":16,
+      "min":16,
+      "pattern":"[0-9a-fA-F]+",
+      "sensitive":true
     },
     "AsymmetricEncryptionAttributes":{
       "type":"structure",
@@ -267,6 +274,27 @@
         }
       },
       "documentation":"<p>Parameters for plaintext encryption using asymmetric keys.</p>"
+    },
+    "AuthRequestCryptogramType":{
+      "type":"string",
+      "max":16,
+      "min":16,
+      "pattern":"[0-9a-fA-F]+",
+      "sensitive":true
+    },
+    "AuthResponseValueType":{
+      "type":"string",
+      "max":16,
+      "min":1,
+      "pattern":"[0-9a-fA-F]+",
+      "sensitive":true
+    },
+    "CardExpiryDateType":{
+      "type":"string",
+      "max":4,
+      "min":4,
+      "pattern":"[0-9]+",
+      "sensitive":true
     },
     "CardGenerationAttributes":{
       "type":"structure",
@@ -367,11 +395,11 @@
       ],
       "members":{
         "CardExpiryDate":{
-          "shape":"NumberLengthEquals4",
+          "shape":"CardExpiryDateType",
           "documentation":"<p>The expiry date of a payment card.</p>"
         },
         "ServiceCode":{
-          "shape":"NumberLengthEquals3",
+          "shape":"ServiceCodeType",
           "documentation":"<p>The service code of the payment card. This is different from Card Security Code (CSC).</p>"
         }
       },
@@ -382,11 +410,18 @@
       "required":["CardExpiryDate"],
       "members":{
         "CardExpiryDate":{
-          "shape":"NumberLengthEquals4",
+          "shape":"CardExpiryDateType",
           "documentation":"<p>The expiry date of a payment card.</p>"
         }
       },
       "documentation":"<p>Card data parameters that are required to verify Card Verification Value (CVV2) for the payment card.</p>"
+    },
+    "CipherTextType":{
+      "type":"string",
+      "max":4096,
+      "min":16,
+      "pattern":"(?:[0-9a-fA-F][0-9a-fA-F])+",
+      "sensitive":true
     },
     "CryptogramAuthResponse":{
       "type":"structure",
@@ -423,11 +458,18 @@
           "documentation":"<p>The data indicating whether the issuer approves or declines an online transaction using an EMV chip card.</p>"
         },
         "ProprietaryAuthenticationData":{
-          "shape":"HexLengthBetween1And16",
+          "shape":"ProprietaryAuthenticationDataType",
           "documentation":"<p>The proprietary authentication data used by issuer for communication during online transaction using an EMV chip card.</p>"
         }
       },
       "documentation":"<p>Parameters that are required for ARPC response generation using method2 after ARQC verification is successful.</p>"
+    },
+    "DecimalizationTableType":{
+      "type":"string",
+      "max":16,
+      "min":16,
+      "pattern":"[0-9]+",
+      "sensitive":true
     },
     "DecryptDataInput":{
       "type":"structure",
@@ -444,7 +486,7 @@
           "locationName":"KeyIdentifier"
         },
         "CipherText":{
-          "shape":"HexEvenLengthBetween16And4096",
+          "shape":"CipherTextType",
           "documentation":"<p>The ciphertext to decrypt.</p>"
         },
         "DecryptionAttributes":{
@@ -474,7 +516,7 @@
           "documentation":"<p>The key check value (KCV) of the encryption key. The KCV is used to check if all parties holding a given key have the same key or to detect that a key has changed.</p> <p>Amazon Web Services Payment Cryptography computes the KCV according to the CMAC specification.</p>"
         },
         "PlainText":{
-          "shape":"HexEvenLengthBetween16And4096",
+          "shape":"PlainTextOutputType",
           "documentation":"<p>The decrypted plaintext data in hexBinary format.</p>"
         }
       }
@@ -488,7 +530,7 @@
       ],
       "members":{
         "CardExpiryDate":{
-          "shape":"NumberLengthEquals4",
+          "shape":"CardExpiryDateType",
           "documentation":"<p>The expiry date of a payment card.</p>"
         },
         "UnpredictableNumber":{
@@ -570,7 +612,7 @@
           "documentation":"<p>The type of use of DUKPT, which can be incoming data decryption, outgoing data encryption, or both.</p>"
         },
         "InitializationVector":{
-          "shape":"HexLength16Or32",
+          "shape":"InitializationVectorType",
           "documentation":"<p>An input used to provide the intial state. If no value is provided, Amazon Web Services Payment Cryptography defaults it to zero.</p>"
         }
       },
@@ -613,7 +655,7 @@
           "documentation":"<p>The transaction counter value that comes from the terminal.</p>"
         },
         "TrackData":{
-          "shape":"HexLengthBetween2And160",
+          "shape":"TrackDataType",
           "documentation":"<p>The data on the two tracks of magnetic cards used for financial transactions. This includes the cardholder name, PAN, expiration date, bank ID (BIN) and several other numbers the issuing bank uses to validate the data received.</p>"
         }
       },
@@ -633,11 +675,11 @@
           "documentation":"<p>A number that identifies and differentiates payment cards with the same Primary Account Number (PAN).</p>"
         },
         "CardExpiryDate":{
-          "shape":"NumberLengthEquals4",
+          "shape":"CardExpiryDateType",
           "documentation":"<p>The expiry date of a payment card.</p>"
         },
         "ServiceCode":{
-          "shape":"NumberLengthEquals3",
+          "shape":"ServiceCodeType",
           "documentation":"<p>The service code of the payment card. This is different from Card Security Code (CSC).</p>"
         },
         "ApplicationTransactionCounter":{
@@ -661,7 +703,7 @@
           "documentation":"<p>The EMV derivation mode to use for ICC master key derivation as per EMV version 4.3 book 2.</p>"
         },
         "PrimaryAccountNumber":{
-          "shape":"NumberLengthBetween12And19",
+          "shape":"PrimaryAccountNumberType",
           "documentation":"<p>The Primary Account Number (PAN), a unique identifier for a payment credit or debit card and associates the card to a specific account holder.</p>"
         },
         "PanSequenceNumber":{
@@ -669,7 +711,7 @@
           "documentation":"<p>A number that identifies and differentiates payment cards with the same Primary Account Number (PAN).</p>"
         },
         "SessionDerivationData":{
-          "shape":"HexLengthEquals16",
+          "shape":"SessionDerivationDataType",
           "documentation":"<p>The derivation value used to derive the ICC session key. It is typically the application transaction counter value padded with zeros or previous ARQC value padded with zeros as per EMV version 4.3 book 2.</p>"
         },
         "Mode":{
@@ -677,7 +719,7 @@
           "documentation":"<p>The block cipher method to use for encryption.</p>"
         },
         "InitializationVector":{
-          "shape":"HexLength16Or32",
+          "shape":"InitializationVectorType",
           "documentation":"<p>An input used to provide the intial state. If no value is provided, Amazon Web Services Payment Cryptography defaults it to zero.</p>"
         }
       },
@@ -712,7 +754,7 @@
           "locationName":"KeyIdentifier"
         },
         "PlainText":{
-          "shape":"HexEvenLengthBetween16And4064",
+          "shape":"PlainTextType",
           "documentation":"<p>The plaintext to be encrypted.</p> <note> <p>For encryption using asymmetric keys, plaintext data length is constrained by encryption key strength that you define in <code>KeyAlgorithm</code> and padding type that you define in <code>AsymmetricEncryptionAttributes</code>. For more information, see <a href=\"https://docs.aws.amazon.com/payment-cryptography/latest/userguide/encrypt-data.html\">Encrypt data</a> in the <i>Amazon Web Services Payment Cryptography User Guide</i>.</p> </note>"
         },
         "EncryptionAttributes":{
@@ -741,10 +783,17 @@
           "documentation":"<p>The key check value (KCV) of the encryption key. The KCV is used to check if all parties holding a given key have the same key or to detect that a key has changed.</p> <p>Amazon Web Services Payment Cryptography computes the KCV according to the CMAC specification.</p>"
         },
         "CipherText":{
-          "shape":"HexEvenLengthBetween16And4096",
+          "shape":"CipherTextType",
           "documentation":"<p>The encrypted ciphertext.</p>"
         }
       }
+    },
+    "EncryptedPinBlockType":{
+      "type":"string",
+      "max":32,
+      "min":16,
+      "pattern":"[0-9a-fA-F]+",
+      "sensitive":true
     },
     "EncryptionDecryptionAttributes":{
       "type":"structure",
@@ -789,7 +838,7 @@
           "documentation":"<p>The <code>keyARN</code> of the CVK encryption key that Amazon Web Services Payment Cryptography uses to generate card data.</p>"
         },
         "PrimaryAccountNumber":{
-          "shape":"NumberLengthBetween12And19",
+          "shape":"PrimaryAccountNumberType",
           "documentation":"<p>The Primary Account Number (PAN), a unique identifier for a payment credit or debit card that associates the card with a specific account holder.</p>"
         },
         "GenerationAttributes":{
@@ -819,7 +868,7 @@
           "documentation":"<p>The key check value (KCV) of the encryption key. The KCV is used to check if all parties holding a given key have the same key or to detect that a key has changed.</p> <p>Amazon Web Services Payment Cryptography computes the KCV according to the CMAC specification.</p>"
         },
         "ValidationData":{
-          "shape":"NumberLengthBetween3And5",
+          "shape":"ValidationDataType",
           "documentation":"<p>The CVV or CSC value that Amazon Web Services Payment Cryptography generates for the card.</p>"
         }
       }
@@ -837,7 +886,7 @@
           "documentation":"<p>The <code>keyARN</code> of the MAC generation encryption key.</p>"
         },
         "MessageData":{
-          "shape":"HexEvenLengthBetween2And4096",
+          "shape":"MessageDataType",
           "documentation":"<p>The data for which a MAC is under generation. This value must be hexBinary.</p>"
         },
         "GenerationAttributes":{
@@ -867,7 +916,7 @@
           "documentation":"<p>The key check value (KCV) of the encryption key. The KCV is used to check if all parties holding a given key have the same key or to detect that a key has changed.</p> <p>Amazon Web Services Payment Cryptography computes the KCV according to the CMAC specification.</p>"
         },
         "Mac":{
-          "shape":"HexLengthBetween4And128",
+          "shape":"MacOutputType",
           "documentation":"<p>The MAC cryptogram generated within Amazon Web Services Payment Cryptography.</p>"
         }
       }
@@ -899,7 +948,7 @@
           "documentation":"<p>The length of PIN under generation.</p>"
         },
         "PrimaryAccountNumber":{
-          "shape":"NumberLengthBetween12And19",
+          "shape":"PrimaryAccountNumberType",
           "documentation":"<p>The Primary Account Number (PAN), a unique identifier for a payment credit or debit card that associates the card with a specific account holder.</p>"
         },
         "PinBlockFormat":{
@@ -936,7 +985,7 @@
           "documentation":"<p>The key check value (KCV) of the encryption key. The KCV is used to check if all parties holding a given key have the same key or to detect that a key has changed.</p> <p>Amazon Web Services Payment Cryptography computes the KCV according to the CMAC specification.</p>"
         },
         "EncryptedPinBlock":{
-          "shape":"HexLengthBetween16And32",
+          "shape":"EncryptedPinBlockType",
           "documentation":"<p>The PIN block encrypted under PEK from Amazon Web Services Payment Cryptography. The encrypted PIN block is a composite of PAN (Primary Account Number) and PIN (Personal Identification Number), generated in accordance with ISO 9564 standard.</p>"
         },
         "PinData":{
@@ -952,69 +1001,10 @@
       "pattern":"(?:[0-9a-fA-F][0-9a-fA-F])+",
       "sensitive":true
     },
-    "HexEvenLengthBetween16And4064":{
-      "type":"string",
-      "max":4064,
-      "min":16,
-      "pattern":"(?:[0-9a-fA-F][0-9a-fA-F])+",
-      "sensitive":true
-    },
-    "HexEvenLengthBetween16And4096":{
-      "type":"string",
-      "max":4096,
-      "min":16,
-      "pattern":"(?:[0-9a-fA-F][0-9a-fA-F])+",
-      "sensitive":true
-    },
-    "HexEvenLengthBetween2And4096":{
-      "type":"string",
-      "max":4096,
-      "min":2,
-      "pattern":"(?:[0-9a-fA-F][0-9a-fA-F])+",
-      "sensitive":true
-    },
-    "HexEvenLengthBetween4And128":{
-      "type":"string",
-      "max":128,
-      "min":4,
-      "pattern":"(?:[0-9a-fA-F][0-9a-fA-F])+",
-      "sensitive":true
-    },
-    "HexLength16Or32":{
-      "type":"string",
-      "max":32,
-      "min":16,
-      "pattern":"(?:[0-9a-fA-F]{16}|[0-9a-fA-F]{32})",
-      "sensitive":true
-    },
     "HexLengthBetween10And24":{
       "type":"string",
       "max":24,
       "min":10,
-      "pattern":"[0-9a-fA-F]+"
-    },
-    "HexLengthBetween16And32":{
-      "type":"string",
-      "max":32,
-      "min":16,
-      "pattern":"[0-9a-fA-F]+"
-    },
-    "HexLengthBetween1And16":{
-      "type":"string",
-      "max":16,
-      "min":1,
-      "pattern":"[0-9a-fA-F]+"
-    },
-    "HexLengthBetween2And1024":{
-      "type":"string",
-      "max":1024,
-      "min":2,
-      "pattern":"[0-9a-fA-F]+"
-    },
-    "HexLengthBetween2And160":{
-      "type":"string",
-      "max":160,
-      "min":2,
       "pattern":"[0-9a-fA-F]+"
     },
     "HexLengthBetween2And4":{
@@ -1029,23 +1019,11 @@
       "min":2,
       "pattern":"[0-9a-fA-F]+"
     },
-    "HexLengthBetween4And128":{
-      "type":"string",
-      "max":128,
-      "min":4,
-      "pattern":"[0-9a-fA-F]+"
-    },
     "HexLengthEquals1":{
       "type":"string",
       "max":1,
       "min":1,
       "pattern":"[0-9A-F]+"
-    },
-    "HexLengthEquals16":{
-      "type":"string",
-      "max":16,
-      "min":16,
-      "pattern":"[0-9a-fA-F]+"
     },
     "HexLengthEquals4":{
       "type":"string",
@@ -1068,7 +1046,7 @@
       ],
       "members":{
         "DecimalizationTable":{
-          "shape":"NumberLengthEquals16",
+          "shape":"DecimalizationTableType",
           "documentation":"<p>The decimalization table to use for IBM 3624 PIN algorithm. The table is used to convert the algorithm intermediate result from hexadecimal characters to decimal.</p>"
         },
         "PinValidationDataPadCharacter":{
@@ -1076,7 +1054,7 @@
           "documentation":"<p>The padding character for validation data.</p>"
         },
         "PinValidationData":{
-          "shape":"NumberLengthBetween4And16",
+          "shape":"PinValidationDataType",
           "documentation":"<p>The unique data for cardholder identification.</p>"
         }
       },
@@ -1092,7 +1070,7 @@
       ],
       "members":{
         "DecimalizationTable":{
-          "shape":"NumberLengthEquals16",
+          "shape":"DecimalizationTableType",
           "documentation":"<p>The decimalization table to use for IBM 3624 PIN algorithm. The table is used to convert the algorithm intermediate result from hexadecimal characters to decimal.</p>"
         },
         "PinValidationDataPadCharacter":{
@@ -1100,11 +1078,11 @@
           "documentation":"<p>The padding character for validation data.</p>"
         },
         "PinValidationData":{
-          "shape":"NumberLengthBetween4And16",
+          "shape":"PinValidationDataType",
           "documentation":"<p>The unique data for cardholder identification.</p>"
         },
         "PinOffset":{
-          "shape":"NumberLengthBetween4And12",
+          "shape":"PinOffsetType",
           "documentation":"<p>The PIN offset value.</p>"
         }
       },
@@ -1120,11 +1098,11 @@
       ],
       "members":{
         "EncryptedPinBlock":{
-          "shape":"HexLengthBetween16And32",
+          "shape":"EncryptedPinBlockType",
           "documentation":"<p>The encrypted PIN block data. According to ISO 9564 standard, a PIN Block is an encoded representation of a payment card Personal Account Number (PAN) and the cardholder Personal Identification Number (PIN).</p>"
         },
         "DecimalizationTable":{
-          "shape":"NumberLengthEquals16",
+          "shape":"DecimalizationTableType",
           "documentation":"<p>The decimalization table to use for IBM 3624 PIN algorithm. The table is used to convert the algorithm intermediate result from hexadecimal characters to decimal.</p>"
         },
         "PinValidationDataPadCharacter":{
@@ -1132,7 +1110,7 @@
           "documentation":"<p>The padding character for validation data.</p>"
         },
         "PinValidationData":{
-          "shape":"NumberLengthBetween4And16",
+          "shape":"PinValidationDataType",
           "documentation":"<p>The unique data for cardholder identification.</p>"
         }
       },
@@ -1148,7 +1126,7 @@
       ],
       "members":{
         "DecimalizationTable":{
-          "shape":"NumberLengthEquals16",
+          "shape":"DecimalizationTableType",
           "documentation":"<p>The decimalization table to use for IBM 3624 PIN algorithm. The table is used to convert the algorithm intermediate result from hexadecimal characters to decimal.</p>"
         },
         "PinValidationDataPadCharacter":{
@@ -1156,11 +1134,11 @@
           "documentation":"<p>The padding character for validation data.</p>"
         },
         "PinValidationData":{
-          "shape":"NumberLengthBetween4And16",
+          "shape":"PinValidationDataType",
           "documentation":"<p>The unique data for cardholder identification.</p>"
         },
         "PinOffset":{
-          "shape":"NumberLengthBetween4And12",
+          "shape":"PinOffsetType",
           "documentation":"<p>The PIN offset value.</p>"
         }
       },
@@ -1175,7 +1153,7 @@
       ],
       "members":{
         "DecimalizationTable":{
-          "shape":"NumberLengthEquals16",
+          "shape":"DecimalizationTableType",
           "documentation":"<p>The decimalization table to use for IBM 3624 PIN algorithm. The table is used to convert the algorithm intermediate result from hexadecimal characters to decimal.</p>"
         },
         "PinValidationDataPadCharacter":{
@@ -1183,11 +1161,18 @@
           "documentation":"<p>The padding character for validation data.</p>"
         },
         "PinValidationData":{
-          "shape":"NumberLengthBetween4And16",
+          "shape":"PinValidationDataType",
           "documentation":"<p>The unique data for cardholder identification.</p>"
         }
       },
       "documentation":"<p>Parameters that are required to generate or verify Ibm3624 random PIN.</p>"
+    },
+    "InitializationVectorType":{
+      "type":"string",
+      "max":32,
+      "min":16,
+      "pattern":"(?:[0-9a-fA-F]{16}|[0-9a-fA-F]{32})",
+      "sensitive":true
     },
     "IntegerRangeBetween0And6":{
       "type":"integer",
@@ -1297,7 +1282,7 @@
           "documentation":"<p>The method to use when deriving the master key for EMV MAC generation or verification.</p>"
         },
         "PrimaryAccountNumber":{
-          "shape":"NumberLengthBetween12And19",
+          "shape":"PrimaryAccountNumberType",
           "documentation":"<p>The Primary Account Number (PAN), a unique identifier for a payment credit or debit card and associates the card to a specific account holder.</p>"
         },
         "PanSequenceNumber":{
@@ -1342,6 +1327,20 @@
       "documentation":"<p>Parameters that are required for DUKPT, HMAC, or EMV MAC generation or verification.</p>",
       "union":true
     },
+    "MacOutputType":{
+      "type":"string",
+      "max":128,
+      "min":4,
+      "pattern":"[0-9a-fA-F]+",
+      "sensitive":true
+    },
+    "MacType":{
+      "type":"string",
+      "max":128,
+      "min":4,
+      "pattern":"(?:[0-9a-fA-F][0-9a-fA-F])+",
+      "sensitive":true
+    },
     "MajorKeyDerivationMode":{
       "type":"string",
       "enum":[
@@ -1349,53 +1348,17 @@
         "EMV_OPTION_B"
       ]
     },
-    "NumberLengthBetween12And19":{
+    "MessageDataType":{
       "type":"string",
-      "max":19,
-      "min":12,
-      "pattern":"[0-9]+",
+      "max":4096,
+      "min":2,
+      "pattern":"(?:[0-9a-fA-F][0-9a-fA-F])+",
       "sensitive":true
-    },
-    "NumberLengthBetween3And5":{
-      "type":"string",
-      "max":5,
-      "min":3,
-      "pattern":"[0-9]+"
-    },
-    "NumberLengthBetween4And12":{
-      "type":"string",
-      "max":12,
-      "min":4,
-      "pattern":"[0-9]+"
-    },
-    "NumberLengthBetween4And16":{
-      "type":"string",
-      "max":16,
-      "min":4,
-      "pattern":"[0-9]+"
-    },
-    "NumberLengthEquals16":{
-      "type":"string",
-      "max":16,
-      "min":16,
-      "pattern":"[0-9]+"
     },
     "NumberLengthEquals2":{
       "type":"string",
       "max":2,
       "min":2,
-      "pattern":"[0-9]+"
-    },
-    "NumberLengthEquals3":{
-      "type":"string",
-      "max":3,
-      "min":3,
-      "pattern":"[0-9]+"
-    },
-    "NumberLengthEquals4":{
-      "type":"string",
-      "max":4,
-      "min":4,
       "pattern":"[0-9]+"
     },
     "PaddingType":{
@@ -1418,11 +1381,11 @@
       "type":"structure",
       "members":{
         "PinOffset":{
-          "shape":"NumberLengthBetween4And12",
+          "shape":"PinOffsetType",
           "documentation":"<p>The PIN offset value.</p>"
         },
         "VerificationValue":{
-          "shape":"NumberLengthBetween4And12",
+          "shape":"VerificationValueType",
           "documentation":"<p>The unique data to identify a cardholder. In most cases, this is the same as cardholder's Primary Account Number (PAN). If a value is not provided, it defaults to PAN.</p>"
         }
       },
@@ -1460,6 +1423,20 @@
       "documentation":"<p>Parameters that are required for PIN data generation.</p>",
       "union":true
     },
+    "PinOffsetType":{
+      "type":"string",
+      "max":12,
+      "min":4,
+      "pattern":"[0-9]+",
+      "sensitive":true
+    },
+    "PinValidationDataType":{
+      "type":"string",
+      "max":16,
+      "min":4,
+      "pattern":"[0-9]+",
+      "sensitive":true
+    },
     "PinVerificationAttributes":{
       "type":"structure",
       "members":{
@@ -1474,6 +1451,34 @@
       },
       "documentation":"<p>Parameters that are required for PIN data verification.</p>",
       "union":true
+    },
+    "PlainTextOutputType":{
+      "type":"string",
+      "max":4096,
+      "min":16,
+      "pattern":"(?:[0-9a-fA-F][0-9a-fA-F])+",
+      "sensitive":true
+    },
+    "PlainTextType":{
+      "type":"string",
+      "max":4064,
+      "min":16,
+      "pattern":"(?:[0-9a-fA-F][0-9a-fA-F])+",
+      "sensitive":true
+    },
+    "PrimaryAccountNumberType":{
+      "type":"string",
+      "max":19,
+      "min":12,
+      "pattern":"[0-9]+",
+      "sensitive":true
+    },
+    "ProprietaryAuthenticationDataType":{
+      "type":"string",
+      "max":16,
+      "min":1,
+      "pattern":"[0-9a-fA-F]+",
+      "sensitive":true
     },
     "ReEncryptDataInput":{
       "type":"structure",
@@ -1496,7 +1501,7 @@
           "documentation":"<p>The <code>keyARN</code> of the encryption key of outgoing ciphertext data after encryption by Amazon Web Services Payment Cryptography.</p>"
         },
         "CipherText":{
-          "shape":"HexEvenLengthBetween16And4096",
+          "shape":"CipherTextType",
           "documentation":"<p>Ciphertext to be encrypted. The minimum allowed length is 16 bytes and maximum allowed length is 4096 bytes.</p>"
         },
         "IncomingEncryptionAttributes":{
@@ -1534,7 +1539,7 @@
           "documentation":"<p>The key check value (KCV) of the encryption key. The KCV is used to check if all parties holding a given key have the same key or to detect that a key has changed.</p> <p>Amazon Web Services Payment Cryptography computes the KCV according to the CMAC specification.</p>"
         },
         "CipherText":{
-          "shape":"HexEvenLengthBetween16And4096",
+          "shape":"CipherTextType",
           "documentation":"<p>The encrypted ciphertext.</p>"
         }
       }
@@ -1566,6 +1571,20 @@
       },
       "exception":true
     },
+    "ServiceCodeType":{
+      "type":"string",
+      "max":3,
+      "min":3,
+      "pattern":"[0-9]+",
+      "sensitive":true
+    },
+    "SessionDerivationDataType":{
+      "type":"string",
+      "max":16,
+      "min":16,
+      "pattern":"[0-9a-fA-F]+",
+      "sensitive":true
+    },
     "SessionKeyAmex":{
       "type":"structure",
       "required":[
@@ -1574,7 +1593,7 @@
       ],
       "members":{
         "PrimaryAccountNumber":{
-          "shape":"NumberLengthBetween12And19",
+          "shape":"PrimaryAccountNumberType",
           "documentation":"<p>The Primary Account Number (PAN) of the cardholder. A PAN is a unique identifier for a payment credit or debit card and associates the card to a specific account holder.</p>"
         },
         "PanSequenceNumber":{
@@ -1625,7 +1644,7 @@
       "type":"structure",
       "members":{
         "ApplicationCryptogram":{
-          "shape":"HexLengthEquals16",
+          "shape":"ApplicationCryptogramType",
           "documentation":"<p>The cryptogram provided by the terminal during transaction processing.</p>"
         },
         "ApplicationTransactionCounter":{
@@ -1645,7 +1664,7 @@
       ],
       "members":{
         "PrimaryAccountNumber":{
-          "shape":"NumberLengthBetween12And19",
+          "shape":"PrimaryAccountNumberType",
           "documentation":"<p>The Primary Account Number (PAN) of the cardholder. A PAN is a unique identifier for a payment credit or debit card and associates the card to a specific account holder.</p>"
         },
         "PanSequenceNumber":{
@@ -1668,7 +1687,7 @@
       ],
       "members":{
         "PrimaryAccountNumber":{
-          "shape":"NumberLengthBetween12And19",
+          "shape":"PrimaryAccountNumberType",
           "documentation":"<p>The Primary Account Number (PAN) of the cardholder. A PAN is a unique identifier for a payment credit or debit card and associates the card to a specific account holder.</p>"
         },
         "PanSequenceNumber":{
@@ -1692,7 +1711,7 @@
       ],
       "members":{
         "PrimaryAccountNumber":{
-          "shape":"NumberLengthBetween12And19",
+          "shape":"PrimaryAccountNumberType",
           "documentation":"<p>The Primary Account Number (PAN) of the cardholder. A PAN is a unique identifier for a payment credit or debit card and associates the card to a specific account holder.</p>"
         },
         "PanSequenceNumber":{
@@ -1718,7 +1737,7 @@
       ],
       "members":{
         "PrimaryAccountNumber":{
-          "shape":"NumberLengthBetween12And19",
+          "shape":"PrimaryAccountNumberType",
           "documentation":"<p>The Primary Account Number (PAN) of the cardholder. A PAN is a unique identifier for a payment credit or debit card and associates the card to a specific account holder.</p>"
         },
         "PanSequenceNumber":{
@@ -1738,7 +1757,7 @@
           "documentation":"<p>The block cipher method to use for encryption.</p>"
         },
         "InitializationVector":{
-          "shape":"HexLength16Or32",
+          "shape":"InitializationVectorType",
           "documentation":"<p>An input used to provide the intial state. If no value is provided, Amazon Web Services Payment Cryptography defaults it to zero.</p>"
         },
         "PaddingType":{
@@ -1765,6 +1784,20 @@
       "max":9984,
       "min":56,
       "pattern":"[0-9A-Z]+",
+      "sensitive":true
+    },
+    "TrackDataType":{
+      "type":"string",
+      "max":160,
+      "min":2,
+      "pattern":"[0-9a-fA-F]+",
+      "sensitive":true
+    },
+    "TransactionDataType":{
+      "type":"string",
+      "max":1024,
+      "min":2,
+      "pattern":"[0-9a-fA-F]+",
       "sensitive":true
     },
     "TranslatePinDataInput":{
@@ -1824,7 +1857,7 @@
       ],
       "members":{
         "PinBlock":{
-          "shape":"HexLengthBetween16And32",
+          "shape":"EncryptedPinBlockType",
           "documentation":"<p>The outgoing encrypted PIN block data after translation.</p>"
         },
         "KeyArn":{
@@ -1865,7 +1898,7 @@
       "required":["PrimaryAccountNumber"],
       "members":{
         "PrimaryAccountNumber":{
-          "shape":"NumberLengthBetween12And19",
+          "shape":"PrimaryAccountNumberType",
           "documentation":"<p>The Primary Account Number (PAN) of the cardholder. A PAN is a unique identifier for a payment credit or debit card and associates the card to a specific account holder.</p>"
         }
       },
@@ -1876,6 +1909,13 @@
       "members":{
       },
       "documentation":"<p>Parameters that are required for ISO9564 PIN format 1 tranlation.</p>"
+    },
+    "ValidationDataType":{
+      "type":"string",
+      "max":5,
+      "min":3,
+      "pattern":"[0-9]+",
+      "sensitive":true
     },
     "ValidationException":{
       "type":"structure",
@@ -1941,6 +1981,13 @@
         "INVALID_AUTH_REQUEST_CRYPTOGRAM"
       ]
     },
+    "VerificationValueType":{
+      "type":"string",
+      "max":12,
+      "min":4,
+      "pattern":"[0-9]+",
+      "sensitive":true
+    },
     "VerifyAuthRequestCryptogramInput":{
       "type":"structure",
       "required":[
@@ -1956,11 +2003,11 @@
           "documentation":"<p>The <code>keyARN</code> of the major encryption key that Amazon Web Services Payment Cryptography uses for ARQC verification.</p>"
         },
         "TransactionData":{
-          "shape":"HexLengthBetween2And1024",
+          "shape":"TransactionDataType",
           "documentation":"<p>The transaction data that Amazon Web Services Payment Cryptography uses for ARQC verification. The same transaction is used for ARQC generation outside of Amazon Web Services Payment Cryptography.</p>"
         },
         "AuthRequestCryptogram":{
-          "shape":"HexLengthEquals16",
+          "shape":"AuthRequestCryptogramType",
           "documentation":"<p>The auth request cryptogram imported into Amazon Web Services Payment Cryptography for ARQC verification using a major encryption key and transaction data.</p>"
         },
         "MajorKeyDerivationMode":{
@@ -1993,7 +2040,7 @@
           "documentation":"<p>The key check value (KCV) of the encryption key. The KCV is used to check if all parties holding a given key have the same key or to detect that a key has changed.</p> <p>Amazon Web Services Payment Cryptography computes the KCV according to the CMAC specification.</p>"
         },
         "AuthResponseValue":{
-          "shape":"HexLengthBetween1And16",
+          "shape":"AuthResponseValueType",
           "documentation":"<p>The result for ARQC verification or ARPC generation within Amazon Web Services Payment Cryptography.</p>"
         }
       }
@@ -2012,7 +2059,7 @@
           "documentation":"<p>The <code>keyARN</code> of the CVK encryption key that Amazon Web Services Payment Cryptography uses to verify card data.</p>"
         },
         "PrimaryAccountNumber":{
-          "shape":"NumberLengthBetween12And19",
+          "shape":"PrimaryAccountNumberType",
           "documentation":"<p>The Primary Account Number (PAN), a unique identifier for a payment credit or debit card that associates the card with a specific account holder.</p>"
         },
         "VerificationAttributes":{
@@ -2020,7 +2067,7 @@
           "documentation":"<p>The algorithm to use for verification of card data within Amazon Web Services Payment Cryptography.</p>"
         },
         "ValidationData":{
-          "shape":"NumberLengthBetween3And5",
+          "shape":"ValidationDataType",
           "documentation":"<p>The CVV or CSC value for use for card data verification within Amazon Web Services Payment Cryptography.</p>"
         }
       }
@@ -2056,11 +2103,11 @@
           "documentation":"<p>The <code>keyARN</code> of the encryption key that Amazon Web Services Payment Cryptography uses to verify MAC data.</p>"
         },
         "MessageData":{
-          "shape":"HexEvenLengthBetween2And4096",
+          "shape":"MessageDataType",
           "documentation":"<p>The data on for which MAC is under verification. This value must be hexBinary.</p>"
         },
         "Mac":{
-          "shape":"HexEvenLengthBetween4And128",
+          "shape":"MacType",
           "documentation":"<p>The MAC being verified.</p>"
         },
         "VerificationAttributes":{
@@ -2114,11 +2161,11 @@
           "documentation":"<p>The attributes and values for PIN data verification.</p>"
         },
         "EncryptedPinBlock":{
-          "shape":"HexLengthBetween16And32",
+          "shape":"EncryptedPinBlockType",
           "documentation":"<p>The encrypted PIN block data that Amazon Web Services Payment Cryptography verifies.</p>"
         },
         "PrimaryAccountNumber":{
-          "shape":"NumberLengthBetween12And19",
+          "shape":"PrimaryAccountNumberType",
           "documentation":"<p>The Primary Account Number (PAN), a unique identifier for a payment credit or debit card that associates the card with a specific account holder.</p>"
         },
         "PinBlockFormat":{
@@ -2185,7 +2232,7 @@
           "documentation":"<p>The value for PIN verification index. It is used in the Visa PIN algorithm to calculate the PVV (PIN Verification Value).</p>"
         },
         "VerificationValue":{
-          "shape":"NumberLengthBetween4And12",
+          "shape":"VerificationValueType",
           "documentation":"<p>Parameters that are required to generate or verify Visa PVV (PIN Verification Value).</p>"
         }
       },
@@ -2199,7 +2246,7 @@
       ],
       "members":{
         "EncryptedPinBlock":{
-          "shape":"HexLengthBetween16And32",
+          "shape":"EncryptedPinBlockType",
           "documentation":"<p>The encrypted PIN block data to verify.</p>"
         },
         "PinVerificationKeyIndex":{

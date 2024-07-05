@@ -2,6 +2,15 @@
 CHANGELOG
 =========
 
+2.17.9
+======
+
+* api-change:``acm``: Documentation updates, including fixes for xml formatting, broken links, and ListCertificates description.
+* api-change:``ecr``: This release for Amazon ECR makes change to bring the SDK into sync with the API.
+* api-change:``qbusiness``: Add personalization to Q Applications. Customers can enable or disable personalization when creating or updating a Q application with the personalization configuration.
+* api-change:``payment-cryptography-data``: Added further restrictions on logging of potentially sensitive inputs and outputs.
+
+
 2.17.8
 ======
 

@@ -3,7 +3,7 @@ import socket
 import contextlib
 import threading
 import socketserver
-from http.server import BaseHTTPServer
+from http.server import BaseHTTPRequestHandler
 from tests import mock, unittest
 from contextlib import contextmanager
 
@@ -169,7 +169,7 @@ class TestClientHTTPBehavior(unittest.TestCase):
         client = self.session.create_client('ec2', endpoint_url=self.localhost,
                                             config=config)
 
-        class BadStatusHandler(BaseHTTPServer.BaseHTTPRequestHandler):
+        class BadStatusHandler(BaseHTTPRequestHandler):
             event = threading.Event()
 
             def do_POST(self):
@@ -187,7 +187,7 @@ def unused_port():
         return sock.getsockname()[1]
 
 
-class SimpleHandler(BaseHTTPServer.BaseHTTPRequestHandler):
+class SimpleHandler(BaseHTTPRequestHandler):
     status = 200
 
     def get_length(self):
@@ -206,7 +206,7 @@ class SimpleHandler(BaseHTTPServer.BaseHTTPRequestHandler):
     do_POST = do_PUT = do_GET
 
 
-class ProxyHandler(BaseHTTPServer.BaseHTTPRequestHandler):
+class ProxyHandler(BaseHTTPRequestHandler):
     tunnel_chunk_size = 1024
     poll_limit = 10**4
 

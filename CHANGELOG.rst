@@ -2,6 +2,21 @@
 CHANGELOG
 =========
 
+1.33.23
+=======
+
+* api-change:``codedeploy``: Add v2 smoke tests and smithy smokeTests trait for SDK testing.
+* api-change:``devicefarm``: Add v2 smoke tests and smithy smokeTests trait for SDK testing.
+* api-change:``dms``: Add v2 smoke tests and smithy smokeTests trait for SDK testing.
+* api-change:``elasticbeanstalk``: Add v2 smoke tests and smithy smokeTests trait for SDK testing.
+* api-change:``es``: Add v2 smoke tests and smithy smokeTests trait for SDK testing.
+* api-change:``firehose``: Add v2 smoke tests and smithy smokeTests trait for SDK testing.
+* api-change:``gamelift``: Add v2 smoke tests and smithy smokeTests trait for SDK testing.
+* api-change:``qapps``: This is a general availability (GA) release of Amazon Q Apps, a capability of Amazon Q Business. Q Apps leverages data sources your company has provided to enable users to build, share, and customize apps within your organization.
+* api-change:``route53resolver``: Add v2 smoke tests and smithy smokeTests trait for SDK testing.
+* api-change:``ses``: Add v2 smoke tests and smithy smokeTests trait for SDK testing.
+
+
 1.33.22
 =======
 

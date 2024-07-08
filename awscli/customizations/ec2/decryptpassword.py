@@ -19,8 +19,6 @@ from cryptography.hazmat.primitives import hashes
 from cryptography.hazmat.primitives.asymmetric.padding import PKCS1v15
 from cryptography.hazmat.primitives.serialization import load_pem_private_key
 
-from awscli.compat import six
-
 from botocore import model
 
 from awscli.arguments import BaseCLIArgument

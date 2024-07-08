@@ -21,7 +21,6 @@
 # IN THE SOFTWARE.
 #
 from tests import unittest
-from botocore.compat import six
 from botocore.docs.bcdoc.restdoc import ReSTDocument, DocumentStructure
 
 
@@ -30,30 +29,30 @@ class TestReSTDocument(unittest.TestCase):
     def test_write(self):
         doc = ReSTDocument()
         doc.write('foo')
-        self.assertEqual(doc.getvalue(), six.b('foo'))
+        self.assertEqual(doc.getvalue(), b'foo')
 
     def test_writeln(self):
         doc = ReSTDocument()
         doc.writeln('foo')
-        self.assertEqual(doc.getvalue(), six.b('foo\n'))
+        self.assertEqual(doc.getvalue(), b'foo\n')
 
     def test_include_doc_string(self):
         doc = ReSTDocument()
         doc.include_doc_string('<p>this is a <code>test</code></p>')
-        self.assertEqual(doc.getvalue(), six.b('\n\nthis is a ``test`` \n\n'))
+        self.assertEqual(doc.getvalue(), b'\n\nthis is a ``test`` \n\n')
 
     def test_remove_doc_string(self):
         doc = ReSTDocument()
         doc.writeln('foo')
         doc.include_doc_string('<p>this is a <code>test</code></p>')
         doc.remove_last_doc_string()
-        self.assertEqual(doc.getvalue(), six.b('foo\n'))
+        self.assertEqual(doc.getvalue(), b'foo\n')
 
     def test_add_links(self):
         doc = ReSTDocument()
         doc.hrefs['foo'] = 'https://example.com/'
         self.assertEqual(
-            doc.getvalue(), six.b('\n\n.. _foo: https://example.com/\n'))
+            doc.getvalue(), b'\n\n.. _foo: https://example.com/\n')
 
 
 class TestDocumentStructure(unittest.TestCase):
@@ -119,7 +118,7 @@ class TestDocumentStructure(unittest.TestCase):
         contents = self.doc_structure.flush_structure()
 
         # Ensure the contents were flushed out correctly
-        self.assertEqual(contents, six.b('1\n2\n3\n4\n'))
+        self.assertEqual(contents, b'1\n2\n3\n4\n')
 
     def test_flush_structure_hrefs(self):
         section = self.doc_structure.add_new_section('mysection')
@@ -127,8 +126,8 @@ class TestDocumentStructure(unittest.TestCase):
         self.doc_structure.hrefs['foo'] = 'www.foo.com'
         section.hrefs['bar'] = 'www.bar.com'
         contents = self.doc_structure.flush_structure()
-        self.assertIn(six.b('.. _foo: www.foo.com'), contents)
-        self.assertIn(six.b('.. _bar: www.bar.com'), contents)
+        self.assertIn(b'.. _foo: www.foo.com', contents)
+        self.assertIn(b'.. _bar: www.bar.com', contents)
 
     def test_available_sections(self):
         self.doc_structure.add_new_section('mysection')
@@ -156,4 +155,4 @@ class TestDocumentStructure(unittest.TestCase):
     def test_clear_text(self):
         self.doc_structure.write('Foo')
         self.doc_structure.clear_text()
-        self.assertEqual(self.doc_structure.flush_structure(), six.b(''))
+        self.assertEqual(self.doc_structure.flush_structure(), b'')

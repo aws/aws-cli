@@ -19,7 +19,6 @@ from tests import random_chars
 from tests import BaseSessionTest
 from botocore.stub import Stubber, StubAssertionError
 from botocore.paginate import TokenDecoder, TokenEncoder
-from botocore.compat import six
 
 
 class TestRDSPagination(BaseSessionTest):
@@ -229,6 +228,6 @@ class TestCloudwatchLogsPagination(BaseSessionTest):
 )
 def test_token_encoding(token_dict):
     encoded = TokenEncoder().encode(token_dict)
-    assert isinstance(encoded, six.string_types)
+    assert isinstance(encoded, str)
     decoded = TokenDecoder().decode(encoded)
     assert decoded == token_dict

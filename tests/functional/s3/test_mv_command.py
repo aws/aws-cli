@@ -15,7 +15,7 @@ import os
 
 from awscrt.s3 import S3RequestType
 
-from awscli.compat import six
+from awscli.compat import BytesIO
 from awscli.customizations.s3.utils import S3PathResolver
 from awscli.testutils import mock
 from tests.functional.s3 import (
@@ -108,7 +108,7 @@ class TestMvCommand(BaseS3TransferCommandTest):
             # Response for HeadObject
             {"ContentLength": 100, "LastModified": "00:00:00Z"},
             # Response for GetObject
-            {'ETag': '"foo-1"', 'Body': six.BytesIO(b'foo')},
+            {'ETag': '"foo-1"', 'Body': BytesIO(b'foo')},
             # Response for DeleteObject
             {}
         ]

@@ -17,7 +17,6 @@ import decimal
 import json
 from datetime import datetime
 
-from botocore.compat import six
 from botocore.exceptions import ParamValidationError
 from botocore.utils import is_json_value_header, parse_to_aware_datetime
 
@@ -56,7 +55,7 @@ def type_check(valid_types):
 
         def _type_check(param, errors, name):
             if not isinstance(param, valid_types):
-                valid_type_names = [six.text_type(t) for t in valid_types]
+                valid_type_names = [str(t) for t in valid_types]
                 errors.report(name, 'invalid type', param=param,
                               valid_types=valid_type_names)
                 return False
@@ -208,9 +207,9 @@ class ParamValidator(object):
             for index, entity in enumerate(params):
                 self._validate_document(entity, shape, errors,
                                         '%s[%d]' % (name, index))
-        elif not isinstance(params, (six.string_types, int, bool, float)):
+        elif not isinstance(params, (str, int, bool, float)):
             valid_types = (str, int, bool, float, list, dict)
-            valid_type_names = [six.text_type(t) for t in valid_types]
+            valid_type_names = [str(t) for t in valid_types]
             errors.report(name, 'invalid type for document',
                           param=params,
                           param_type=type(params),
@@ -245,7 +244,7 @@ class ParamValidator(object):
             self._validate(params[param], shape.members[param],
                            errors, '%s.%s' % (name, param))
 
-    @type_check(valid_types=six.string_types)
+    @type_check(valid_types=(str,))
     def _validate_string(self, param, shape, errors, name):
         # Validate range.  For a string, the min/max contraints
         # are of the string length.
@@ -273,12 +272,12 @@ class ParamValidator(object):
                            % (name, key))
             self._validate(value, value_shape, errors, '%s.%s' % (name, key))
 
-    @type_check(valid_types=six.integer_types)
+    @type_check(valid_types=(int,))
     def _validate_integer(self, param, shape, errors, name):
         range_check(name, param, shape, 'invalid range', errors)
 
     def _validate_blob(self, param, shape, errors, name):
-        if isinstance(param, (bytes, bytearray, six.text_type)):
+        if isinstance(param, (bytes, bytearray, str)):
             return
         elif hasattr(param, 'read'):
             # File like objects are also allowed for blob types.
@@ -292,13 +291,13 @@ class ParamValidator(object):
     def _validate_boolean(self, param, shape, errors, name):
         pass
 
-    @type_check(valid_types=(float, decimal.Decimal) + six.integer_types)
+    @type_check(valid_types=(float, decimal.Decimal, int))
     def _validate_double(self, param, shape, errors, name):
         range_check(name, param, shape, 'invalid range', errors)
 
     _validate_float = _validate_double
 
-    @type_check(valid_types=six.integer_types)
+    @type_check(valid_types=(int,))
     def _validate_long(self, param, shape, errors, name):
         range_check(name, param, shape, 'invalid range', errors)
 
@@ -308,7 +307,7 @@ class ParamValidator(object):
         # object, or a string that parses to a datetime.
         is_valid_type = self._type_check_datetime(param)
         if not is_valid_type:
-            valid_type_names = [six.text_type(datetime), 'timestamp-string']
+            valid_type_names = [str(datetime), 'timestamp-string']
             errors.report(name, 'invalid type', param=param,
                           valid_types=valid_type_names)
 

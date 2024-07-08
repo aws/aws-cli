@@ -18,7 +18,6 @@ from botocore.paginate import PaginatorModel
 from botocore.paginate import TokenDecoder
 from botocore.paginate import TokenEncoder
 from botocore.exceptions import PaginationError
-from botocore.compat import six
 
 
 def encode_token(token):
@@ -144,7 +143,7 @@ class TestPagination(unittest.TestCase):
         result = self.paginator.paginate(PaginationConfig={'MaxItems': 1})
         result = result.build_full_result()
         token = result.get('NextToken')
-        self.assertIsInstance(token, six.string_types)
+        self.assertIsInstance(token, str)
 
     def test_any_passed_in_args_are_unmodified(self):
         responses = [{'NextToken': 'token1'},

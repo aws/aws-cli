@@ -13,7 +13,6 @@
 # language governing permissions and limitations under the License.
 from awscli.testutils import BaseAWSCommandParamsTest, unittest
 import sys
-from awscli.compat import six
 
 
 class TestUpdateConfigurationTemplate(BaseAWSCommandParamsTest):

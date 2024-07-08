@@ -12,8 +12,8 @@
 # language governing permissions and limitations under the License.
 from tests import unittest
 
+from botocore.compat import BytesIO
 from botocore.exceptions import ClientError
-from botocore.vendored import six
 import botocore.session
 
 
@@ -45,7 +45,7 @@ class TestGlacier(unittest.TestCase):
             self.client.list_vaults(accountId='asdf')
 
     def test_can_upload_archive(self):
-        body = six.BytesIO(b"bytes content")
+        body = BytesIO(b"bytes content")
         response = self.client.upload_archive(vaultName=self.VAULT_NAME,
                                               archiveDescription='test upload',
                                               body=body)

@@ -10,10 +10,10 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
+import io
 import socket
 from tests import mock, unittest
 
-from botocore.compat import six
 from botocore.awsrequest import AWSRequest
 from botocore.endpoint import Endpoint, DEFAULT_TIMEOUT
 from botocore.endpoint import EndpointCreator
@@ -39,14 +39,14 @@ def request_dict(**kwargs):
     return base
 
 
-class RecordStreamResets(six.StringIO):
+class RecordStreamResets(io.StringIO):
     def __init__(self, value):
-        six.StringIO.__init__(self, value)
+        io.StringIO.__init__(self, value)
         self.total_resets = 0
 
     def seek(self, where, whence=0):
         self.total_resets += 1
-        six.StringIO.seek(self, where, whence)
+        io.StringIO.seek(self, where, whence)
 
 
 class TestEndpointBase(unittest.TestCase):

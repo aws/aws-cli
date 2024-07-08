@@ -27,10 +27,10 @@ import socket
 import tempfile
 import copy
 
-from awscli.compat import six, urlopen
 from dateutil.tz import tzutc
 import pytest
 
+from awscli.compat import BytesIO, urlopen
 from awscli.testutils import unittest, get_stdout_encoding
 from awscli.testutils import skip_if_windows
 from awscli.testutils import aws as _aws
@@ -201,11 +201,12 @@ class TestMoveCommand(BaseParameterizedS3ClientTest):
         # And verify that the object no longer exists in the from_bucket.
         assert s3_utils.key_not_exists(from_bucket, key_name='foo.txt')
 
+    @pytest.mark.slow
     def test_mv_s3_to_s3_multipart(self, s3_utils, shared_bucket,
                                    shared_copy_bucket):
         from_bucket = shared_bucket
         to_bucket = shared_copy_bucket
-        file_contents = six.BytesIO(b'abcd' * (1024 * 1024 * 10))
+        file_contents = BytesIO(b'abcd' * (1024 * 1024 * 10))
         s3_utils.put_object(from_bucket, 'foo.txt', file_contents)
 
         p = aws('s3 mv s3://%s/foo.txt s3://%s/foo.txt' % (from_bucket,
@@ -220,7 +221,7 @@ class TestMoveCommand(BaseParameterizedS3ClientTest):
         from_bucket = shared_bucket
         to_bucket = shared_copy_bucket
 
-        large_file_contents = six.BytesIO(b'abcd' * (1024 * 1024 * 10))
+        large_file_contents = BytesIO(b'abcd' * (1024 * 1024 * 10))
         small_file_contents = 'small file contents'
         s3_utils.put_object(from_bucket, 'largefile', large_file_contents)
         s3_utils.put_object(from_bucket, 'smallfile', small_file_contents)
@@ -265,7 +266,7 @@ class TestMoveCommand(BaseParameterizedS3ClientTest):
 
     def test_mv_with_large_file(self, files, s3_utils, shared_bucket):
         # 40MB will force a multipart upload.
-        file_contents = six.BytesIO(b'abcd' * (1024 * 1024 * 10))
+        file_contents = BytesIO(b'abcd' * (1024 * 1024 * 10))
         foo_txt = files.create_file(
             'foo.txt', file_contents.getvalue().decode('utf-8'))
         p = aws('s3 mv %s s3://%s/foo.txt' % (foo_txt, shared_bucket))
@@ -303,7 +304,7 @@ class TestMoveCommand(BaseParameterizedS3ClientTest):
         # but a mv command doesn't make sense because a mv is just a
         # cp + an rm of the src file.  We should be consistent and
         # not allow large files to be mv'd onto themselves.
-        file_contents = six.BytesIO(b'a' * (1024 * 1024 * 10))
+        file_contents = BytesIO(b'a' * (1024 * 1024 * 10))
         s3_utils.put_object(shared_bucket, key_name='key.txt',
                             contents=file_contents)
         p = aws('s3 mv s3://%s/key.txt s3://%s/key.txt' %
@@ -384,11 +385,12 @@ class TestCp(BaseParameterizedS3ClientTest):
         contents = s3_utils.get_key_contents(shared_bucket, key_name='foo.txt')
         assert contents == 'this is foo.txt'
 
+    @pytest.mark.slow
     def test_cp_s3_s3_multipart(self, s3_utils, shared_bucket,
                                 shared_copy_bucket):
         from_bucket = shared_bucket
         to_bucket = shared_copy_bucket
-        file_contents = six.BytesIO(b'abcd' * (1024 * 1024 * 10))
+        file_contents = BytesIO(b'abcd' * (1024 * 1024 * 10))
         s3_utils.put_object(from_bucket, 'foo.txt', file_contents)
 
         p = aws('s3 cp s3://%s/foo.txt s3://%s/foo.txt' %
@@ -410,7 +412,7 @@ class TestCp(BaseParameterizedS3ClientTest):
 
     def test_download_large_file(self, files, s3_utils, shared_bucket):
         # This will force a multipart download.
-        foo_contents = six.BytesIO(b'abcd' * (1024 * 1024 * 10))
+        foo_contents = BytesIO(b'abcd' * (1024 * 1024 * 10))
         s3_utils.put_object(shared_bucket, key_name='foo.txt',
                             contents=foo_contents)
         local_foo_txt = files.full_path('foo.txt')
@@ -421,7 +423,7 @@ class TestCp(BaseParameterizedS3ClientTest):
     @skip_if_windows('SIGINT not supported on Windows.')
     def test_download_ctrl_c_does_not_hang(self, files, s3_utils,
                                            shared_bucket):
-        foo_contents = six.BytesIO(b'abcd' * (1024 * 1024 * 40))
+        foo_contents = BytesIO(b'abcd' * (1024 * 1024 * 40))
         s3_utils.put_object(shared_bucket, key_name='foo.txt',
                             contents=foo_contents)
         local_foo_txt = files.full_path('foo.txt')
@@ -976,7 +978,7 @@ class TestUnableToWriteToFile(BaseParameterizedS3ClientTest):
         # which effectively disables the expect 100 continue logic.
         # This will result in a test error because we won't follow
         # the temporary redirect for the newly created bucket.
-        contents = six.BytesIO(b'a' * 10 * 1024 * 1024)
+        contents = BytesIO(b'a' * 10 * 1024 * 1024)
         s3_utils.put_object(shared_bucket, 'foo.txt',
                             contents=contents)
         os.chmod(files.rootdir, 0o444)

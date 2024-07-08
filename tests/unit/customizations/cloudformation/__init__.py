@@ -12,11 +12,10 @@
 # language governing permissions and limitations under the License.
 import copy
 
-import six, unittest
+import unittest
 import ruamel.yaml as yaml
 
-if six.PY3:
-    unittest.TestCase.assertItemsEqual = unittest.TestCase.assertCountEqual
+unittest.TestCase.assertItemsEqual = unittest.TestCase.assertCountEqual
 
 
 class BaseYAMLTest(unittest.TestCase):

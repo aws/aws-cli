@@ -14,13 +14,12 @@
 import awscli
 
 from argparse import Namespace
-from six import StringIO
 from botocore.exceptions import ClientError
 
 from awscli.customizations.codedeploy.push import Push
 from awscli.customizations.exceptions import ParamValidationError
 from awscli.testutils import mock, unittest
-from awscli.compat import ZIP_COMPRESSION_MODE
+from awscli.compat import StringIO, ZIP_COMPRESSION_MODE
 
 
 class TestPush(unittest.TestCase):

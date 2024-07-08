@@ -115,11 +115,12 @@ Each call to ``parse()`` returns a dict has this form::
 
 """
 import base64
+import http.client
 import json
 import logging
 import re
 
-from botocore.compat import ETree, XMLParseError, six
+from botocore.compat import ETree, XMLParseError
 from botocore.eventstream import EventStream, NoInitialResponseError
 from botocore.utils import (
     is_json_value_header,
@@ -300,7 +301,7 @@ class ResponseParser(object):
                   "service, unable to populate error code and message.")
         return {
             'Error': {'Code': str(response['status_code']),
-                      'Message': six.moves.http_client.responses.get(
+                      'Message': http.client.responses.get(
                           response['status_code'], '')},
             'ResponseMetadata': {},
         }
@@ -1037,7 +1038,7 @@ class RestXMLParser(BaseRestParser, BaseXMLResponseParser):
         return {
             'Error': {
                 'Code': str(response['status_code']),
-                'Message': six.moves.http_client.responses.get(
+                'Message': http.client.responses.get(
                     response['status_code'], ''),
             },
             'ResponseMetadata': {

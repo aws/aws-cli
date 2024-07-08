@@ -19,8 +19,7 @@ from tests import CLIRunner, SessionStubber, HTTPResponse
 from awscli.clidriver import AWSCLIEntryPoint
 from awscli.testutils import unittest, create_clidriver, temporary_file, mock
 from awscli.testutils import BaseAWSCommandParamsTest, FileCreator
-from awscli.compat import six, urlparse
-
+from awscli.compat import urlparse, BytesIO
 
 class BaseS3TransferCommandTest(BaseAWSCommandParamsTest):
     def setUp(self):
@@ -94,7 +93,7 @@ class BaseS3TransferCommandTest(BaseAWSCommandParamsTest):
     def get_object_response(self):
         return {
             'ETag': '"foo-1"',
-            'Body': six.BytesIO(b'foo')
+            'Body': BytesIO(b'foo')
         }
 
     def copy_object_response(self):
@@ -343,7 +342,7 @@ class BaseS3CLIRunnerTest(unittest.TestCase):
 
     def add_botocore_get_object_response(self):
         self.cli_runner.add_response(
-            HTTPResponse(headers={'ETag': '"foo-1"'}, body=six.BytesIO(b'foo'))
+            HTTPResponse(headers={'ETag': '"foo-1"'}, body=BytesIO(b'foo'))
         )
 
     def add_botocore_copy_object_response(self):

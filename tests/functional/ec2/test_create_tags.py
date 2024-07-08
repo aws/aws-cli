@@ -13,7 +13,6 @@
 # language governing permissions and limitations under the License.
 import sys
 
-from awscli.compat import six
 from awscli.testutils import unittest
 from awscli.testutils import BaseAWSCommandParamsTest
 

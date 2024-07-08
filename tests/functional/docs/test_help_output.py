@@ -21,15 +21,14 @@ at the man output, we look one step before at the generated rst output
 (it's easier to verify).
 
 """
-import io
 import os
 
 from awscli.testutils import BaseAWSHelpOutputTest
 from awscli.testutils import FileCreator
 from awscli.testutils import mock
 from tests import CLIRunner
+from awscli.compat import StringIO
 
-from awscli.compat import six
 from awscli.alias import AliasLoader
 
 
@@ -207,7 +206,7 @@ class TestRemoveDeprecatedCommands(BaseAWSHelpOutputTest):
         # command verify that we get a SystemExit exception
         # and that we get something in stderr that says that
         # we made an invalid choice (because the operation is removed).
-        stderr = io.StringIO()
+        stderr = StringIO()
         with mock.patch('sys.stderr', stderr):
             cr = self.driver.main([service, command, 'help'])
         self.assertEqual(cr, 252)

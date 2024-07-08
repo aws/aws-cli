@@ -23,7 +23,6 @@ from unittest import mock  # noqa: F401
 
 import botocore.session
 from botocore.stub import Stubber
-from botocore.compat import six
 
 from s3transfer.manager import TransferConfig
 from s3transfer.futures import IN_MEMORY_UPLOAD_TAG
@@ -481,7 +480,7 @@ class BaseGeneralInterfaceTest(StubbedClientTest):
 class NonSeekableReader(io.RawIOBase):
     def __init__(self, b=b''):
         super(NonSeekableReader, self).__init__()
-        self._data = six.BytesIO(b)
+        self._data = io.BytesIO(b)
 
     def seekable(self):
         return False

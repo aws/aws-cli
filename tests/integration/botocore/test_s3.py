@@ -24,13 +24,14 @@ import threading
 import logging
 from tarfile import TarFile
 from contextlib import closing
+from io import BytesIO
 
 import pytest
 import urllib3
 
 from botocore.endpoint import Endpoint
 from botocore.exceptions import ConnectionClosedError
-from botocore.compat import BytesIO, zip_longest, OrderedDict
+from botocore.compat import zip_longest, OrderedDict
 import botocore.session
 import botocore.auth
 import botocore.credentials

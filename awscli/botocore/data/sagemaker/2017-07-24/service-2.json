@@ -656,6 +656,20 @@
       ],
       "documentation":"<p>Creates a lifecycle configuration that you can associate with a notebook instance. A <i>lifecycle configuration</i> is a collection of shell scripts that run when you create or start a notebook instance.</p> <p>Each lifecycle configuration script has a limit of 16384 characters.</p> <p>The value of the <code>$PATH</code> environment variable that is available to both scripts is <code>/sbin:bin:/usr/sbin:/usr/bin</code>.</p> <p>View Amazon CloudWatch Logs for notebook instance lifecycle configurations in log group <code>/aws/sagemaker/NotebookInstances</code> in log stream <code>[notebook-instance-name]/[LifecycleConfigHook]</code>.</p> <p>Lifecycle configuration scripts cannot run for longer than 5 minutes. If a script runs for longer than 5 minutes, it fails and the notebook instance is not created or started.</p> <p>For information about notebook instance lifestyle configurations, see <a href=\"https://docs.aws.amazon.com/sagemaker/latest/dg/notebook-lifecycle-config.html\">Step 2.1: (Optional) Customize a Notebook Instance</a>.</p>"
     },
+    "CreateOptimizationJob":{
+      "name":"CreateOptimizationJob",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"CreateOptimizationJobRequest"},
+      "output":{"shape":"CreateOptimizationJobResponse"},
+      "errors":[
+        {"shape":"ResourceInUse"},
+        {"shape":"ResourceLimitExceeded"}
+      ],
+      "documentation":"<p>Creates a job that optimizes a model for inference performance. To create the job, you provide the location of a source model, and you provide the settings for the optimization techniques that you want the job to apply. When the job completes successfully, SageMaker uploads the new optimized model to the output destination that you specify.</p> <p>For more information about how to use this action, and about the supported optimization techniques, see <a href=\"https://docs.aws.amazon.com/sagemaker/latest/dg/model-optimize.html\">Optimize model inference with Amazon SageMaker</a>.</p>"
+    },
     "CreatePipeline":{
       "name":"CreatePipeline",
       "http":{
@@ -1343,6 +1357,18 @@
       },
       "input":{"shape":"DeleteNotebookInstanceLifecycleConfigInput"},
       "documentation":"<p>Deletes a notebook instance lifecycle configuration.</p>"
+    },
+    "DeleteOptimizationJob":{
+      "name":"DeleteOptimizationJob",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DeleteOptimizationJobRequest"},
+      "errors":[
+        {"shape":"ResourceNotFound"}
+      ],
+      "documentation":"<p>Deletes an optimization job.</p>"
     },
     "DeletePipeline":{
       "name":"DeletePipeline",
@@ -2057,6 +2083,19 @@
       "input":{"shape":"DescribeNotebookInstanceLifecycleConfigInput"},
       "output":{"shape":"DescribeNotebookInstanceLifecycleConfigOutput"},
       "documentation":"<p>Returns a description of a notebook instance lifecycle configuration.</p> <p>For information about notebook instance lifestyle configurations, see <a href=\"https://docs.aws.amazon.com/sagemaker/latest/dg/notebook-lifecycle-config.html\">Step 2.1: (Optional) Customize a Notebook Instance</a>.</p>"
+    },
+    "DescribeOptimizationJob":{
+      "name":"DescribeOptimizationJob",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DescribeOptimizationJobRequest"},
+      "output":{"shape":"DescribeOptimizationJobResponse"},
+      "errors":[
+        {"shape":"ResourceNotFound"}
+      ],
+      "documentation":"<p>Provides the properties of the specified optimization job.</p>"
     },
     "DescribePipeline":{
       "name":"DescribePipeline",
@@ -2961,6 +3000,16 @@
       "output":{"shape":"ListNotebookInstancesOutput"},
       "documentation":"<p>Returns a list of the SageMaker notebook instances in the requester's account in an Amazon Web Services Region. </p>"
     },
+    "ListOptimizationJobs":{
+      "name":"ListOptimizationJobs",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"ListOptimizationJobsRequest"},
+      "output":{"shape":"ListOptimizationJobsResponse"},
+      "documentation":"<p>Lists the optimization jobs in your account and their properties.</p>"
+    },
     "ListPipelineExecutionSteps":{
       "name":"ListPipelineExecutionSteps",
       "http":{
@@ -3490,6 +3539,18 @@
       },
       "input":{"shape":"StopNotebookInstanceInput"},
       "documentation":"<p>Terminates the ML compute instance. Before terminating the instance, SageMaker disconnects the ML storage volume from it. SageMaker preserves the ML storage volume. SageMaker stops charging you for the ML compute instance when you call <code>StopNotebookInstance</code>.</p> <p>To access data on the ML storage volume for a notebook instance that has been terminated, call the <code>StartNotebookInstance</code> API. <code>StartNotebookInstance</code> launches another ML compute instance, configures it, and attaches the preserved ML storage volume so you can continue your work. </p>"
+    },
+    "StopOptimizationJob":{
+      "name":"StopOptimizationJob",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"StopOptimizationJobRequest"},
+      "errors":[
+        {"shape":"ResourceNotFound"}
+      ],
+      "documentation":"<p>Ends a running inference optimization job.</p>"
     },
     "StopPipelineExecution":{
       "name":"StopPipelineExecution",
@@ -4253,6 +4314,33 @@
       "max":15,
       "min":1
     },
+    "AdditionalModelChannelName":{
+      "type":"string",
+      "max":64,
+      "min":1,
+      "pattern":"[A-Za-z0-9\\.\\-_]+"
+    },
+    "AdditionalModelDataSource":{
+      "type":"structure",
+      "required":[
+        "ChannelName",
+        "S3DataSource"
+      ],
+      "members":{
+        "ChannelName":{
+          "shape":"AdditionalModelChannelName",
+          "documentation":"<p>A custom name for this <code>AdditionalModelDataSource</code> object.</p>"
+        },
+        "S3DataSource":{"shape":"S3ModelDataSource"}
+      },
+      "documentation":"<p>Data sources that are available to your model in addition to the one that you specify for <code>ModelDataSource</code> when you use the <code>CreateModel</code> action.</p>"
+    },
+    "AdditionalModelDataSources":{
+      "type":"list",
+      "member":{"shape":"AdditionalModelDataSource"},
+      "max":5,
+      "min":0
+    },
     "AdditionalS3DataSource":{
       "type":"structure",
       "required":[
@@ -4528,6 +4616,20 @@
         }
       },
       "documentation":"<p>Specifies configurations for one or more training jobs that SageMaker runs to test the algorithm.</p>"
+    },
+    "AmazonQSettings":{
+      "type":"structure",
+      "members":{
+        "Status":{
+          "shape":"FeatureStatus",
+          "documentation":"<p>Whether Amazon Q has been enabled within the domain.</p>"
+        },
+        "QProfileArn":{
+          "shape":"QProfileArn",
+          "documentation":"<p>The ARN of the Amazon Q profile used within the domain.</p>"
+        }
+      },
+      "documentation":"<p>A collection of settings that configure the Amazon Q experience within the domain.</p>"
     },
     "AnnotationConsolidationConfig":{
       "type":"structure",
@@ -7891,6 +7993,10 @@
           "shape":"ModelDataSource",
           "documentation":"<p>Specifies the location of ML model data to deploy.</p> <note> <p>Currently you cannot use <code>ModelDataSource</code> in conjunction with SageMaker batch transform, SageMaker serverless endpoints, SageMaker multi-model endpoints, and SageMaker Marketplace.</p> </note>"
         },
+        "AdditionalModelDataSources":{
+          "shape":"AdditionalModelDataSources",
+          "documentation":"<p>Data sources that are available to your model in addition to the one that you specify for <code>ModelDataSource</code> when you use the <code>CreateModel</code> action.</p>"
+        },
         "Environment":{
           "shape":"EnvironmentMap",
           "documentation":"<p>The environment variables to set in the Docker container.</p> <p>The maximum length of each key and value in the <code>Environment</code> map is 1024 bytes. The maximum length of all keys and values in the map, combined, is 32 KB. If you pass multiple containers to a <code>CreateModel</code> request, then the maximum length of all of their maps, combined, is also 32 KB.</p>"
@@ -10201,6 +10307,67 @@
         }
       }
     },
+    "CreateOptimizationJobRequest":{
+      "type":"structure",
+      "required":[
+        "OptimizationJobName",
+        "RoleArn",
+        "ModelSource",
+        "DeploymentInstanceType",
+        "OptimizationConfigs",
+        "OutputConfig",
+        "StoppingCondition"
+      ],
+      "members":{
+        "OptimizationJobName":{
+          "shape":"EntityName",
+          "documentation":"<p>A custom name for the new optimization job.</p>"
+        },
+        "RoleArn":{
+          "shape":"RoleArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of an IAM role that enables Amazon SageMaker to perform tasks on your behalf. </p> <p>During model optimization, Amazon SageMaker needs your permission to:</p> <ul> <li> <p>Read input data from an S3 bucket</p> </li> <li> <p>Write model artifacts to an S3 bucket</p> </li> <li> <p>Write logs to Amazon CloudWatch Logs</p> </li> <li> <p>Publish metrics to Amazon CloudWatch</p> </li> </ul> <p>You grant permissions for all of these tasks to an IAM role. To pass this role to Amazon SageMaker, the caller of this API must have the <code>iam:PassRole</code> permission. For more information, see <a href=\"https://docs.aws.amazon.com/sagemaker/latest/dg/sagemaker-roles.html\">Amazon SageMaker Roles.</a> </p>"
+        },
+        "ModelSource":{
+          "shape":"OptimizationJobModelSource",
+          "documentation":"<p>The location of the source model to optimize with an optimization job.</p>"
+        },
+        "DeploymentInstanceType":{
+          "shape":"OptimizationJobDeploymentInstanceType",
+          "documentation":"<p>The type of instance that hosts the optimized model that you create with the optimization job.</p>"
+        },
+        "OptimizationEnvironment":{
+          "shape":"OptimizationJobEnvironmentVariables",
+          "documentation":"<p>The environment variables to set in the model container.</p>"
+        },
+        "OptimizationConfigs":{
+          "shape":"OptimizationConfigs",
+          "documentation":"<p>Settings for each of the optimization techniques that the job applies.</p>"
+        },
+        "OutputConfig":{
+          "shape":"OptimizationJobOutputConfig",
+          "documentation":"<p>Details for where to store the optimized model that you create with the optimization job.</p>"
+        },
+        "StoppingCondition":{"shape":"StoppingCondition"},
+        "Tags":{
+          "shape":"TagList",
+          "documentation":"<p>A list of key-value pairs associated with the optimization job. For more information, see <a href=\"https://docs.aws.amazon.com/general/latest/gr/aws_tagging.html\">Tagging Amazon Web Services resources</a> in the <i>Amazon Web Services General Reference Guide</i>.</p>"
+        },
+        "VpcConfig":{
+          "shape":"OptimizationVpcConfig",
+          "documentation":"<p>A VPC in Amazon VPC that your optimized model has access to.</p>"
+        }
+      }
+    },
+    "CreateOptimizationJobResponse":{
+      "type":"structure",
+      "required":["OptimizationJobArn"],
+      "members":{
+        "OptimizationJobArn":{
+          "shape":"OptimizationJobArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the optimization job.</p>"
+        }
+      }
+    },
     "CreatePipelineRequest":{
       "type":"structure",
       "required":[
@@ -12058,6 +12225,16 @@
         "NotebookInstanceLifecycleConfigName":{
           "shape":"NotebookInstanceLifecycleConfigName",
           "documentation":"<p>The name of the lifecycle configuration to delete.</p>"
+        }
+      }
+    },
+    "DeleteOptimizationJobRequest":{
+      "type":"structure",
+      "required":["OptimizationJobName"],
+      "members":{
+        "OptimizationJobName":{
+          "shape":"EntityName",
+          "documentation":"<p>The name that you assigned to the optimization job.</p>"
         }
       }
     },
@@ -15681,6 +15858,99 @@
         }
       }
     },
+    "DescribeOptimizationJobRequest":{
+      "type":"structure",
+      "required":["OptimizationJobName"],
+      "members":{
+        "OptimizationJobName":{
+          "shape":"EntityName",
+          "documentation":"<p>The name that you assigned to the optimization job.</p>"
+        }
+      }
+    },
+    "DescribeOptimizationJobResponse":{
+      "type":"structure",
+      "required":[
+        "OptimizationJobArn",
+        "OptimizationJobStatus",
+        "CreationTime",
+        "LastModifiedTime",
+        "OptimizationJobName",
+        "ModelSource",
+        "DeploymentInstanceType",
+        "OptimizationConfigs",
+        "OutputConfig",
+        "RoleArn",
+        "StoppingCondition"
+      ],
+      "members":{
+        "OptimizationJobArn":{
+          "shape":"OptimizationJobArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the optimization job.</p>"
+        },
+        "OptimizationJobStatus":{
+          "shape":"OptimizationJobStatus",
+          "documentation":"<p>The current status of the optimization job.</p>"
+        },
+        "OptimizationStartTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time when the optimization job started.</p>"
+        },
+        "OptimizationEndTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time when the optimization job finished processing.</p>"
+        },
+        "CreationTime":{
+          "shape":"CreationTime",
+          "documentation":"<p>The time when you created the optimization job.</p>"
+        },
+        "LastModifiedTime":{
+          "shape":"LastModifiedTime",
+          "documentation":"<p>The time when the optimization job was last updated.</p>"
+        },
+        "FailureReason":{
+          "shape":"FailureReason",
+          "documentation":"<p>If the optimization job status is <code>FAILED</code>, the reason for the failure.</p>"
+        },
+        "OptimizationJobName":{
+          "shape":"EntityName",
+          "documentation":"<p>The name that you assigned to the optimization job.</p>"
+        },
+        "ModelSource":{
+          "shape":"OptimizationJobModelSource",
+          "documentation":"<p>The location of the source model to optimize with an optimization job.</p>"
+        },
+        "OptimizationEnvironment":{
+          "shape":"OptimizationJobEnvironmentVariables",
+          "documentation":"<p>The environment variables to set in the model container.</p>"
+        },
+        "DeploymentInstanceType":{
+          "shape":"OptimizationJobDeploymentInstanceType",
+          "documentation":"<p>The type of instance that hosts the optimized model that you create with the optimization job.</p>"
+        },
+        "OptimizationConfigs":{
+          "shape":"OptimizationConfigs",
+          "documentation":"<p>Settings for each of the optimization techniques that the job applies.</p>"
+        },
+        "OutputConfig":{
+          "shape":"OptimizationJobOutputConfig",
+          "documentation":"<p>Details for where to store the optimized model that you create with the optimization job.</p>"
+        },
+        "OptimizationOutput":{
+          "shape":"OptimizationOutput",
+          "documentation":"<p>Output values produced by an optimization job.</p>"
+        },
+        "RoleArn":{
+          "shape":"RoleArn",
+          "documentation":"<p>The ARN of the IAM role that you assigned to the optimization job.</p>"
+        },
+        "StoppingCondition":{"shape":"StoppingCondition"},
+        "VpcConfig":{
+          "shape":"OptimizationVpcConfig",
+          "documentation":"<p>A VPC in Amazon VPC that your optimized model has access to.</p>"
+        }
+      }
+    },
     "DescribePipelineDefinitionForExecutionRequest":{
       "type":"structure",
       "required":["PipelineExecutionArn"],
@@ -17143,6 +17413,10 @@
         "DockerSettings":{
           "shape":"DockerSettings",
           "documentation":"<p>A collection of settings that configure the domain's Docker interaction.</p>"
+        },
+        "AmazonQSettings":{
+          "shape":"AmazonQSettings",
+          "documentation":"<p>A collection of settings that configure the Amazon Q experience within the domain. The <code>AuthMode</code> that you use to create the domain must be <code>SSO</code>.</p>"
         }
       },
       "documentation":"<p>A collection of settings that apply to the <code>SageMaker Domain</code>. These settings are specified through the <code>CreateDomain</code> API call.</p>"
@@ -17165,6 +17439,10 @@
         "DockerSettings":{
           "shape":"DockerSettings",
           "documentation":"<p>A collection of settings that configure the domain's Docker interaction.</p>"
+        },
+        "AmazonQSettings":{
+          "shape":"AmazonQSettings",
+          "documentation":"<p>A collection of settings that configure the Amazon Q experience within the domain.</p>"
         }
       },
       "documentation":"<p>A collection of <code>Domain</code> configuration settings to update.</p>"
@@ -25406,6 +25684,78 @@
         }
       }
     },
+    "ListOptimizationJobsRequest":{
+      "type":"structure",
+      "members":{
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>A token that you use to get the next set of results following a truncated response. If the response to the previous request was truncated, that response provides the value for this token.</p>"
+        },
+        "MaxResults":{
+          "shape":"MaxResults",
+          "documentation":"<p>The maximum number of optimization jobs to return in the response. The default is 50.</p>",
+          "box":true
+        },
+        "CreationTimeAfter":{
+          "shape":"CreationTime",
+          "documentation":"<p>Filters the results to only those optimization jobs that were created after the specified time.</p>"
+        },
+        "CreationTimeBefore":{
+          "shape":"CreationTime",
+          "documentation":"<p>Filters the results to only those optimization jobs that were created before the specified time.</p>"
+        },
+        "LastModifiedTimeAfter":{
+          "shape":"LastModifiedTime",
+          "documentation":"<p>Filters the results to only those optimization jobs that were updated after the specified time.</p>"
+        },
+        "LastModifiedTimeBefore":{
+          "shape":"LastModifiedTime",
+          "documentation":"<p>Filters the results to only those optimization jobs that were updated before the specified time.</p>"
+        },
+        "OptimizationContains":{
+          "shape":"NameContains",
+          "documentation":"<p>Filters the results to only those optimization jobs that apply the specified optimization techniques. You can specify either <code>Quantization</code> or <code>Compilation</code>.</p>"
+        },
+        "NameContains":{
+          "shape":"NameContains",
+          "documentation":"<p>Filters the results to only those optimization jobs with a name that contains the specified string.</p>"
+        },
+        "StatusEquals":{
+          "shape":"OptimizationJobStatus",
+          "documentation":"<p>Filters the results to only those optimization jobs with the specified status.</p>"
+        },
+        "SortBy":{
+          "shape":"ListOptimizationJobsSortBy",
+          "documentation":"<p>The field by which to sort the optimization jobs in the response. The default is <code>CreationTime</code> </p>"
+        },
+        "SortOrder":{
+          "shape":"SortOrder",
+          "documentation":"<p>The sort order for results. The default is <code>Ascending</code> </p>"
+        }
+      }
+    },
+    "ListOptimizationJobsResponse":{
+      "type":"structure",
+      "required":["OptimizationJobSummaries"],
+      "members":{
+        "OptimizationJobSummaries":{
+          "shape":"OptimizationJobSummaries",
+          "documentation":"<p>A list of optimization jobs and their properties that matches any of the filters you specified in the request.</p>"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The token to use in a subsequent request to get the next set of results following a truncated response.</p>"
+        }
+      }
+    },
+    "ListOptimizationJobsSortBy":{
+      "type":"string",
+      "enum":[
+        "Name",
+        "CreationTime",
+        "Status"
+      ]
+    },
     "ListPipelineExecutionStepsRequest":{
       "type":"structure",
       "members":{
@@ -27111,6 +27461,20 @@
       },
       "documentation":"<p>Configures the timeout and maximum number of retries for processing a transform job invocation.</p>"
     },
+    "ModelCompilationConfig":{
+      "type":"structure",
+      "members":{
+        "Image":{
+          "shape":"OptimizationContainerImage",
+          "documentation":"<p>The URI of an LMI DLC in Amazon ECR. SageMaker uses this image to run the optimization.</p>"
+        },
+        "OverrideEnvironment":{
+          "shape":"OptimizationJobEnvironmentVariables",
+          "documentation":"<p>Environment variables that override the default ones in the model container.</p>"
+        }
+      },
+      "documentation":"<p>Settings for the model compilation technique that's applied by a model optimization job.</p>"
+    },
     "ModelCompressionType":{
       "type":"string",
       "enum":[
@@ -28134,6 +28498,20 @@
         }
       },
       "documentation":"<p>The input for the model quality monitoring job. Currently endpoints are supported for input for model quality monitoring jobs.</p>"
+    },
+    "ModelQuantizationConfig":{
+      "type":"structure",
+      "members":{
+        "Image":{
+          "shape":"OptimizationContainerImage",
+          "documentation":"<p>The URI of an LMI DLC in Amazon ECR. SageMaker uses this image to run the optimization.</p>"
+        },
+        "OverrideEnvironment":{
+          "shape":"OptimizationJobEnvironmentVariables",
+          "documentation":"<p>Environment variables that override the default ones in the model container.</p>"
+        }
+      },
+      "documentation":"<p>Settings for the model quantization technique that's applied by a model optimization job.</p>"
     },
     "ModelRegisterSettings":{
       "type":"structure",
@@ -29608,6 +29986,244 @@
         "NotExists",
         "In"
       ]
+    },
+    "OptimizationConfig":{
+      "type":"structure",
+      "members":{
+        "ModelQuantizationConfig":{
+          "shape":"ModelQuantizationConfig",
+          "documentation":"<p>Settings for the model quantization technique that's applied by a model optimization job.</p>"
+        },
+        "ModelCompilationConfig":{
+          "shape":"ModelCompilationConfig",
+          "documentation":"<p>Settings for the model compilation technique that's applied by a model optimization job.</p>"
+        }
+      },
+      "documentation":"<p>Settings for an optimization technique that you apply with a model optimization job.</p>",
+      "union":true
+    },
+    "OptimizationConfigs":{
+      "type":"list",
+      "member":{"shape":"OptimizationConfig"},
+      "max":10
+    },
+    "OptimizationContainerImage":{
+      "type":"string",
+      "max":255,
+      "pattern":"[\\S]+"
+    },
+    "OptimizationJobArn":{
+      "type":"string",
+      "max":256,
+      "pattern":"arn:aws[a-z\\-]*:sagemaker:[a-z0-9\\-]*:[0-9]{12}:optimization-job/.*"
+    },
+    "OptimizationJobDeploymentInstanceType":{
+      "type":"string",
+      "enum":[
+        "ml.p4d.24xlarge",
+        "ml.p4de.24xlarge",
+        "ml.p5.48xlarge",
+        "ml.g5.xlarge",
+        "ml.g5.2xlarge",
+        "ml.g5.4xlarge",
+        "ml.g5.8xlarge",
+        "ml.g5.12xlarge",
+        "ml.g5.16xlarge",
+        "ml.g5.24xlarge",
+        "ml.g5.48xlarge",
+        "ml.g6.xlarge",
+        "ml.g6.2xlarge",
+        "ml.g6.4xlarge",
+        "ml.g6.8xlarge",
+        "ml.g6.12xlarge",
+        "ml.g6.16xlarge",
+        "ml.g6.24xlarge",
+        "ml.g6.48xlarge",
+        "ml.inf2.xlarge",
+        "ml.inf2.8xlarge",
+        "ml.inf2.24xlarge",
+        "ml.inf2.48xlarge",
+        "ml.trn1.2xlarge",
+        "ml.trn1.32xlarge",
+        "ml.trn1n.32xlarge"
+      ]
+    },
+    "OptimizationJobEnvironmentVariables":{
+      "type":"map",
+      "key":{"shape":"NonEmptyString256"},
+      "value":{"shape":"String256"},
+      "max":25
+    },
+    "OptimizationJobModelSource":{
+      "type":"structure",
+      "members":{
+        "S3":{
+          "shape":"OptimizationJobModelSourceS3",
+          "documentation":"<p>The Amazon S3 location of a source model to optimize with an optimization job.</p>"
+        }
+      },
+      "documentation":"<p>The location of the source model to optimize with an optimization job.</p>"
+    },
+    "OptimizationJobModelSourceS3":{
+      "type":"structure",
+      "members":{
+        "S3Uri":{
+          "shape":"S3Uri",
+          "documentation":"<p>An Amazon S3 URI that locates a source model to optimize with an optimization job.</p>"
+        },
+        "ModelAccessConfig":{
+          "shape":"OptimizationModelAccessConfig",
+          "documentation":"<p>The access configuration settings for the source ML model for an optimization job, where you can accept the model end-user license agreement (EULA).</p>"
+        }
+      },
+      "documentation":"<p>The Amazon S3 location of a source model to optimize with an optimization job.</p>"
+    },
+    "OptimizationJobOutputConfig":{
+      "type":"structure",
+      "required":["S3OutputLocation"],
+      "members":{
+        "KmsKeyId":{
+          "shape":"KmsKeyId",
+          "documentation":"<p>The Amazon Resource Name (ARN) of a key in Amazon Web Services KMS. SageMaker uses they key to encrypt the artifacts of the optimized model when SageMaker uploads the model to Amazon S3.</p>"
+        },
+        "S3OutputLocation":{
+          "shape":"S3Uri",
+          "documentation":"<p>The Amazon S3 URI for where to store the optimized model that you create with an optimization job.</p>"
+        }
+      },
+      "documentation":"<p>Details for where to store the optimized model that you create with the optimization job.</p>"
+    },
+    "OptimizationJobStatus":{
+      "type":"string",
+      "enum":[
+        "INPROGRESS",
+        "COMPLETED",
+        "FAILED",
+        "STARTING",
+        "STOPPING",
+        "STOPPED"
+      ]
+    },
+    "OptimizationJobSummaries":{
+      "type":"list",
+      "member":{"shape":"OptimizationJobSummary"}
+    },
+    "OptimizationJobSummary":{
+      "type":"structure",
+      "required":[
+        "OptimizationJobName",
+        "OptimizationJobArn",
+        "CreationTime",
+        "OptimizationJobStatus",
+        "DeploymentInstanceType",
+        "OptimizationTypes"
+      ],
+      "members":{
+        "OptimizationJobName":{
+          "shape":"EntityName",
+          "documentation":"<p>The name that you assigned to the optimization job.</p>"
+        },
+        "OptimizationJobArn":{
+          "shape":"OptimizationJobArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the optimization job.</p>"
+        },
+        "CreationTime":{
+          "shape":"CreationTime",
+          "documentation":"<p>The time when you created the optimization job.</p>"
+        },
+        "OptimizationJobStatus":{
+          "shape":"OptimizationJobStatus",
+          "documentation":"<p>The current status of the optimization job.</p>"
+        },
+        "OptimizationStartTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time when the optimization job started.</p>"
+        },
+        "OptimizationEndTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time when the optimization job finished processing.</p>"
+        },
+        "LastModifiedTime":{
+          "shape":"LastModifiedTime",
+          "documentation":"<p>The time when the optimization job was last updated.</p>"
+        },
+        "DeploymentInstanceType":{
+          "shape":"OptimizationJobDeploymentInstanceType",
+          "documentation":"<p>The type of instance that hosts the optimized model that you create with the optimization job.</p>"
+        },
+        "OptimizationTypes":{
+          "shape":"OptimizationTypes",
+          "documentation":"<p>The optimization techniques that are applied by the optimization job.</p>"
+        }
+      },
+      "documentation":"<p>Summarizes an optimization job by providing some of its key properties.</p>"
+    },
+    "OptimizationModelAcceptEula":{"type":"boolean"},
+    "OptimizationModelAccessConfig":{
+      "type":"structure",
+      "required":["AcceptEula"],
+      "members":{
+        "AcceptEula":{
+          "shape":"OptimizationModelAcceptEula",
+          "documentation":"<p>Specifies agreement to the model end-user license agreement (EULA). The <code>AcceptEula</code> value must be explicitly defined as <code>True</code> in order to accept the EULA that this model requires. You are responsible for reviewing and complying with any applicable license terms and making sure they are acceptable for your use case before downloading or using a model.</p>"
+        }
+      },
+      "documentation":"<p>The access configuration settings for the source ML model for an optimization job, where you can accept the model end-user license agreement (EULA).</p>"
+    },
+    "OptimizationOutput":{
+      "type":"structure",
+      "members":{
+        "RecommendedInferenceImage":{
+          "shape":"OptimizationContainerImage",
+          "documentation":"<p>The image that SageMaker recommends that you use to host the optimized model that you created with an optimization job.</p>"
+        }
+      },
+      "documentation":"<p>Output values produced by an optimization job.</p>"
+    },
+    "OptimizationType":{"type":"string"},
+    "OptimizationTypes":{
+      "type":"list",
+      "member":{"shape":"OptimizationType"}
+    },
+    "OptimizationVpcConfig":{
+      "type":"structure",
+      "required":[
+        "SecurityGroupIds",
+        "Subnets"
+      ],
+      "members":{
+        "SecurityGroupIds":{
+          "shape":"OptimizationVpcSecurityGroupIds",
+          "documentation":"<p>The VPC security group IDs, in the form <code>sg-xxxxxxxx</code>. Specify the security groups for the VPC that is specified in the <code>Subnets</code> field.</p>"
+        },
+        "Subnets":{
+          "shape":"OptimizationVpcSubnets",
+          "documentation":"<p>The ID of the subnets in the VPC to which you want to connect your optimized model.</p>"
+        }
+      },
+      "documentation":"<p>A VPC in Amazon VPC that's accessible to an optimized that you create with an optimization job. You can control access to and from your resources by configuring a VPC. For more information, see <a href=\"https://docs.aws.amazon.com/sagemaker/latest/dg/infrastructure-give-access.html\">Give SageMaker Access to Resources in your Amazon VPC</a>. </p>"
+    },
+    "OptimizationVpcSecurityGroupId":{
+      "type":"string",
+      "max":32,
+      "pattern":"[-0-9a-zA-Z]+"
+    },
+    "OptimizationVpcSecurityGroupIds":{
+      "type":"list",
+      "member":{"shape":"OptimizationVpcSecurityGroupId"},
+      "max":5,
+      "min":1
+    },
+    "OptimizationVpcSubnetId":{
+      "type":"string",
+      "max":32,
+      "pattern":"[-0-9a-zA-Z]+"
+    },
+    "OptimizationVpcSubnets":{
+      "type":"list",
+      "member":{"shape":"OptimizationVpcSubnetId"},
+      "max":16,
+      "min":1
     },
     "OptionalDouble":{"type":"double"},
     "OptionalInteger":{"type":"integer"},
@@ -31732,6 +32348,10 @@
           "documentation":"<p>The Amazon Resource Name (ARN) of the model package group.</p>"
         }
       }
+    },
+    "QProfileArn":{
+      "type":"string",
+      "pattern":"^arn:[-.a-z0-9]{1,63}:codewhisperer:([-.a-z0-9]{0,63}:){2}([a-zA-Z0-9-_:/]){1,1023}$"
     },
     "QualityCheckStepMetadata":{
       "type":"structure",
@@ -34424,6 +35044,16 @@
         }
       }
     },
+    "StopOptimizationJobRequest":{
+      "type":"structure",
+      "required":["OptimizationJobName"],
+      "members":{
+        "OptimizationJobName":{
+          "shape":"EntityName",
+          "documentation":"<p>The name that you assigned to the optimization job.</p>"
+        }
+      }
+    },
     "StopPipelineExecutionRequest":{
       "type":"structure",
       "required":[
@@ -34497,7 +35127,7 @@
           "documentation":"<p>The maximum length of time, in seconds, that a training or compilation job can be pending before it is stopped.</p>"
         }
       },
-      "documentation":"<p>Specifies a limit to how long a model training job or model compilation job can run. It also specifies how long a managed spot training job has to complete. When the job reaches the time limit, SageMaker ends the training or compilation job. Use this API to cap model training costs.</p> <p>To stop a training job, SageMaker sends the algorithm the <code>SIGTERM</code> signal, which delays job termination for 120 seconds. Algorithms can use this 120-second window to save the model artifacts, so the results of training are not lost. </p> <p>The training algorithms provided by SageMaker automatically save the intermediate results of a model training job when possible. This attempt to save artifacts is only a best effort case as model might not be in a state from which it can be saved. For example, if training has just started, the model might not be ready to save. When saved, this intermediate data is a valid model artifact. You can use it to create a model with <code>CreateModel</code>.</p> <note> <p>The Neural Topic Model (NTM) currently does not support saving intermediate model artifacts. When training NTMs, make sure that the maximum runtime is sufficient for the training job to complete.</p> </note>"
+      "documentation":"<p>Specifies a limit to how long a job can run. When the job reaches the time limit, SageMaker ends the job. Use this API to cap costs.</p> <p>To stop a training job, SageMaker sends the algorithm the <code>SIGTERM</code> signal, which delays job termination for 120 seconds. Algorithms can use this 120-second window to save the model artifacts, so the results of training are not lost. </p> <p>The training algorithms provided by SageMaker automatically save the intermediate results of a model training job when possible. This attempt to save artifacts is only a best effort case as model might not be in a state from which it can be saved. For example, if training has just started, the model might not be ready to save. When saved, this intermediate data is a valid model artifact. You can use it to create a model with <code>CreateModel</code>.</p> <note> <p>The Neural Topic Model (NTM) currently does not support saving intermediate model artifacts. When training NTMs, make sure that the maximum runtime is sufficient for the training job to complete.</p> </note>"
     },
     "StorageType":{
       "type":"string",

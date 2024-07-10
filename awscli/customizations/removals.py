@@ -54,7 +54,8 @@ def register_removals(event_handler):
                          remove_commands=['invoke-model-with-response-stream',
                                           'converse-stream'])
     cmd_remover.remove(on_event='building-command-table.bedrock-agent-runtime',
-                         remove_commands=['invoke-agent'])
+                         remove_commands=['invoke-agent',
+                                          'invoke-flow'])
     cmd_remover.remove(on_event='building-command-table.qbusiness',
                         remove_commands=['chat'])
 

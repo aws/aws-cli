@@ -2,6 +2,21 @@
 CHANGELOG
 =========
 
+1.33.25
+=======
+
+* api-change:``batch``: This feature allows AWS Batch Jobs with EKS container orchestration type to be run as Multi-Node Parallel Jobs.
+* api-change:``bedrock``: Add support for contextual grounding check for Guardrails for Amazon Bedrock.
+* api-change:``bedrock-agent``: Introduces new data sources and chunking strategies for Knowledge bases, advanced parsing logic using FMs, session summary generation, and code interpretation (preview) for Claude V3 Sonnet and Haiku models. Also introduces Prompt Flows (preview) to link prompts, foundational models, and resources.
+* api-change:``bedrock-agent-runtime``: Introduces query decomposition, enhanced Agents integration with Knowledge bases, session summary generation, and code interpretation (preview) for Claude V3 Sonnet and Haiku models. Also introduces Prompt Flows (preview) to link prompts, foundational models, and resources for end-to-end solutions.
+* api-change:``bedrock-runtime``: Add support for contextual grounding check and ApplyGuardrail API for Guardrails for Amazon Bedrock.
+* api-change:``ec2``: Add parameters to enable provisioning IPAM BYOIPv4 space at a Local Zone Network Border Group level
+* api-change:``glue``: Add recipe step support for recipe node
+* api-change:``groundstation``: Documentation update specifying OEM ephemeris units of measurement
+* api-change:``license-manager-linux-subscriptions``: Add support for third party subscription providers, starting with RHEL subscriptions through Red Hat Subscription Manager (RHSM). Additionally, add support for tagging subscription provider resources, and detect when an instance has more than one Linux subscription and notify the customer.
+* api-change:``mediaconnect``: AWS Elemental MediaConnect introduces the ability to disable outputs. Disabling an output allows you to keep the output attached to the flow, but stop streaming to the output destination. A disabled output does not incur data transfer costs.
+
+
 1.33.24
 =======
 

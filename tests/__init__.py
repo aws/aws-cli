@@ -29,7 +29,7 @@ from awscli.clidriver import create_clidriver, AWSCLIEntryPoint
 from awscli.compat import collections_abc
 from awscli.testutils import (
     unittest, mock, capture_output, if_windows, skip_if_windows, create_bucket,
-    FileCreator, ConsistencyWaiter
+    FileCreator, ConsistencyWaiter, create_dir_bucket
 )
 
 import botocore.awsrequest
@@ -531,6 +531,15 @@ class S3Utils:
         self.wait_bucket_exists(bucket_name)
         return bucket_name
 
+    def create_dir_bucket(self, name=None, region=None, az=None):
+        if not region:
+            region = self._region
+        bucket_name = create_dir_bucket(self._session, name, region, az)
+        self._bucket_to_region[bucket_name] = region
+        # Wait for the bucket to exist before letting it be used.
+        self.wait_bucket_exists(bucket_name)
+        return bucket_name
+
     def put_object(self, bucket_name, key_name, contents='', extra_args=None):
         client = self._create_client_for_bucket(bucket_name)
         call_args = {
@@ -578,7 +587,7 @@ class S3Utils:
 
     def remove_all_objects(self, bucket_name):
         client = self._create_client_for_bucket(bucket_name)
-        paginator = client.get_paginator('list_objects')
+        paginator = client.get_paginator('list_objects_v2')
         pages = paginator.paginate(Bucket=bucket_name)
         key_names = []
         for page in pages:

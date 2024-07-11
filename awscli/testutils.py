@@ -168,6 +168,45 @@ def create_bucket(session, name=None, region=None):
     return bucket_name
 
 
+def create_dir_bucket(session, name=None, location=None):
+    """
+    Creates a S3 directory bucket
+    :returns: the name of the bucket created
+    """
+    if not location:
+        location = ('us-west-2', 'usw2-az1')
+    region, az = location
+    client = session.create_client('s3', region_name=region)
+    if name:
+        bucket_name = name
+    else:
+        bucket_name = f"{random_bucket_name()}--{az}--x-s3"
+    params = {
+        'Bucket': bucket_name,
+        'CreateBucketConfiguration': {
+            'Location': {
+                'Type': 'AvailabilityZone',
+                'Name': az
+            },
+            'Bucket': {
+                'Type': 'Directory',
+                'DataRedundancy': 'SingleAvailabilityZone'
+            }
+        }
+    }
+    try:
+        client.create_bucket(**params)
+    except ClientError as e:
+        if e.response['Error'].get('Code') == 'BucketAlreadyOwnedByYou':
+            # This can happen in the retried request, when the first one
+            # succeeded on S3 but somehow the response never comes back.
+            # We still got a bucket ready for test anyway.
+            pass
+        else:
+            raise
+    return bucket_name
+
+
 def random_chars(num_chars):
     """Returns random hex characters.
 
@@ -757,6 +796,19 @@ class BaseS3CLICommand(unittest.TestCase):
         self.delete_public_access_block(bucket_name)
         return bucket_name
 
+    def create_dir_bucket(self, name=None, location=None):
+        if location:
+            region, _ = location
+        else:
+            region = self.region
+        bucket_name = create_dir_bucket(self.session, name, location)
+        self.regions[bucket_name] = region
+        self.addCleanup(self.delete_bucket, bucket_name)
+
+        # Wait for the bucket to exist before letting it be used.
+        self.wait_bucket_exists(bucket_name)
+        return bucket_name
+
     def put_object(self, bucket_name, key_name, contents='', extra_args=None):
         client = self.create_client_for_bucket(bucket_name)
         call_args = {
@@ -805,7 +857,7 @@ class BaseS3CLICommand(unittest.TestCase):
 
     def remove_all_objects(self, bucket_name):
         client = self.create_client_for_bucket(bucket_name)
-        paginator = client.get_paginator('list_objects')
+        paginator = client.get_paginator('list_objects_v2')
         pages = paginator.paginate(Bucket=bucket_name)
         key_names = []
         for page in pages:

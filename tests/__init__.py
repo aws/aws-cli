@@ -531,10 +531,12 @@ class S3Utils:
         self.wait_bucket_exists(bucket_name)
         return bucket_name
 
-    def create_dir_bucket(self, name=None, region=None, az=None):
-        if not region:
+    def create_dir_bucket(self, name=None, location=None):
+        if location:
+            region, _ = location
+        else:
             region = self._region
-        bucket_name = create_dir_bucket(self._session, name, region, az)
+        bucket_name = create_dir_bucket(self._session, name, location)
         self._bucket_to_region[bucket_name] = region
         # Wait for the bucket to exist before letting it be used.
         self.wait_bucket_exists(bucket_name)

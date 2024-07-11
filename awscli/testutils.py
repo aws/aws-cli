@@ -181,16 +181,15 @@ def create_bucket(session, name=None, region=None):
     return bucket_name
 
 
-def create_dir_bucket(session, name=None, region=None, az=None):
+def create_dir_bucket(session, name=None, location=None):
     """
     Creates a S3 directory bucket
     :returns: the name of the bucket created
     """
-    if not region:
-        region = 'us-west-2'
+    if not location:
+        location = ('us-west-2', 'usw2-az1')
+    region, az = location
     client = session.create_client('s3', region_name=region)
-    if not az:
-        az = 'usw2-az1'
     if name:
         bucket_name = name
     else:

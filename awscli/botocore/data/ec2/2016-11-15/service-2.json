@@ -13230,7 +13230,7 @@
         },
         "Locale":{
           "shape":"String",
-          "documentation":"<p>In IPAM, the locale is the Amazon Web Services Region where you want to make an IPAM pool available for allocations. Only resources in the same Region as the locale of the pool can get IP address allocations from the pool. You can only allocate a CIDR for a VPC, for example, from an IPAM pool that shares a locale with the VPC’s Region. Note that once you choose a Locale for a pool, you cannot modify it. If you do not choose a locale, resources in Regions others than the IPAM's home region cannot use CIDRs from this pool.</p> <p>Possible values: Any Amazon Web Services Region, such as us-east-1.</p>"
+          "documentation":"<p>In IPAM, the locale is the Amazon Web Services Region or, for IPAM IPv4 pools in the public scope, the network border group for an Amazon Web Services Local Zone where you want to make an IPAM pool available for allocations (<a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-byoip.html#byoip-zone-avail\">supported Local Zones</a>). If you do not choose a locale, resources in Regions others than the IPAM's home region cannot use CIDRs from this pool.</p> <p>Possible values: Any Amazon Web Services Region, such as us-east-1.</p>"
         },
         "SourceIpamPoolId":{
           "shape":"IpamPoolId",
@@ -14227,6 +14227,10 @@
           "shape":"TagSpecificationList",
           "documentation":"<p>The key/value combination of a tag assigned to the resource. Use the tag key in the filter name and the tag value as the filter value. For example, to find all resources that have a tag with the key <code>Owner</code> and the value <code>TeamA</code>, specify <code>tag:Owner</code> for the filter name and <code>TeamA</code> for the filter value.</p>",
           "locationName":"TagSpecification"
+        },
+        "NetworkBorderGroup":{
+          "shape":"String",
+          "documentation":"<p>The Availability Zone (AZ) or Local Zone (LZ) network border group that the resource that the IP address is assigned to is in. Defaults to an AZ network border group. For more information on available Local Zones, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-byoip.html#byoip-zone-avail\">Local Zone availability</a> in the <i>Amazon EC2 User Guide</i>.</p>"
         }
       }
     },
@@ -17673,6 +17677,10 @@
         "PoolId":{
           "shape":"Ipv4PoolEc2Id",
           "documentation":"<p>The ID of the public IPv4 pool you want to delete.</p>"
+        },
+        "NetworkBorderGroup":{
+          "shape":"String",
+          "documentation":"<p>The Availability Zone (AZ) or Local Zone (LZ) network border group that the resource that the IP address is assigned to is in. Defaults to an AZ network border group. For more information on available Local Zones, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-byoip.html#byoip-zone-avail\">Local Zone availability</a> in the <i>Amazon EC2 User Guide</i>.</p>"
         }
       }
     },
@@ -38005,7 +38013,7 @@
         },
         "NetworkBorderGroup":{
           "shape":"String",
-          "documentation":"<p>The network border group that the resource that the IP address is assigned to is in.</p>",
+          "documentation":"<p>The Availability Zone (AZ) or Local Zone (LZ) network border group that the resource that the IP address is assigned to is in. Defaults to an AZ network border group. For more information on available Local Zones, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-byoip.html#byoip-zone-avail\">Local Zone availability</a> in the <i>Amazon EC2 User Guide</i>.</p>",
           "locationName":"networkBorderGroup"
         },
         "SecurityGroups":{
@@ -38076,10 +38084,20 @@
           "documentation":"<p>The VPC ID.</p>",
           "locationName":"vpcId"
         },
+        "NetworkInterfaceAttachmentStatus":{
+          "shape":"IpamNetworkInterfaceAttachmentStatus",
+          "documentation":"<p>For elastic IP addresses, this is the status of an attached network interface.</p>",
+          "locationName":"networkInterfaceAttachmentStatus"
+        },
         "SampleTime":{
           "shape":"MillisecondDateTime",
           "documentation":"<p>The last successful resource discovery time.</p>",
           "locationName":"sampleTime"
+        },
+        "AvailabilityZoneId":{
+          "shape":"String",
+          "documentation":"<p>The Availability Zone ID.</p>",
+          "locationName":"availabilityZoneId"
         }
       },
       "documentation":"<p>An IPAM discovered resource CIDR. A discovered resource is a resource CIDR monitored under a resource discovery. The following resources can be discovered: VPCs, Public IPv4 pools, VPC subnets, and Elastic IP addresses. The discovered resource CIDR is the IP address range in CIDR notation that is associated with the resource.</p>"
@@ -38133,6 +38151,13 @@
       "type":"integer",
       "max":128,
       "min":0
+    },
+    "IpamNetworkInterfaceAttachmentStatus":{
+      "type":"string",
+      "enum":[
+        "available",
+        "in-use"
+      ]
     },
     "IpamOperatingRegion":{
       "type":"structure",
@@ -38205,7 +38230,7 @@
         },
         "Locale":{
           "shape":"String",
-          "documentation":"<p>The locale of the IPAM pool. In IPAM, the locale is the Amazon Web Services Region where you want to make an IPAM pool available for allocations. Only resources in the same Region as the locale of the pool can get IP address allocations from the pool. You can only allocate a CIDR for a VPC, for example, from an IPAM pool that shares a locale with the VPC’s Region. Note that once you choose a Locale for a pool, you cannot modify it. If you choose an Amazon Web Services Region for locale that has not been configured as an operating Region for the IPAM, you'll get an error.</p>",
+          "documentation":"<p>The locale of the IPAM pool. In IPAM, the locale is the Amazon Web Services Region or, for IPAM IPv4 pools in the public scope, the network border group for an Amazon Web Services Local Zone where you want to make an IPAM pool available for allocations (<a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-byoip.html#byoip-zone-avail\">supported Local Zones</a>). If you choose an Amazon Web Services Region for locale that has not been configured as an operating Region for the IPAM, you'll get an error.</p>",
           "locationName":"locale"
         },
         "PoolDepth":{
@@ -38687,6 +38712,11 @@
           "shape":"String",
           "documentation":"<p>The ID of a VPC.</p>",
           "locationName":"vpcId"
+        },
+        "AvailabilityZoneId":{
+          "shape":"String",
+          "documentation":"<p>The Availability Zone ID.</p>",
+          "locationName":"availabilityZoneId"
         }
       },
       "documentation":"<p>The CIDR for an IPAM resource.</p>"
@@ -48157,6 +48187,10 @@
         "NetmaskLength":{
           "shape":"Integer",
           "documentation":"<p>The netmask length of the CIDR you would like to allocate to the public IPv4 pool.</p>"
+        },
+        "NetworkBorderGroup":{
+          "shape":"String",
+          "documentation":"<p>The Availability Zone (AZ) or Local Zone (LZ) network border group that the resource that the IP address is assigned to is in. Defaults to an AZ network border group. For more information on available Local Zones, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-byoip.html#byoip-zone-avail\">Local Zone availability</a> in the <i>Amazon EC2 User Guide</i>.</p>"
         }
       }
     },

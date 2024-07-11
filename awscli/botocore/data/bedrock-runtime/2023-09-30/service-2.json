@@ -12,6 +12,25 @@
     "uid":"bedrock-runtime-2023-09-30"
   },
   "operations":{
+    "ApplyGuardrail":{
+      "name":"ApplyGuardrail",
+      "http":{
+        "method":"POST",
+        "requestUri":"/guardrail/{guardrailIdentifier}/version/{guardrailVersion}/apply",
+        "responseCode":200
+      },
+      "input":{"shape":"ApplyGuardrailRequest"},
+      "output":{"shape":"ApplyGuardrailResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ValidationException"},
+        {"shape":"ServiceQuotaExceededException"}
+      ],
+      "documentation":"<p>The action to apply a guardrail.</p>"
+    },
     "Converse":{
       "name":"Converse",
       "http":{
@@ -119,6 +138,64 @@
       },
       "documentation":"<p>The model must request at least one tool (no text is generated). For example, <code>{\"any\" : {}}</code>.</p>"
     },
+    "ApplyGuardrailRequest":{
+      "type":"structure",
+      "required":[
+        "guardrailIdentifier",
+        "guardrailVersion",
+        "source",
+        "content"
+      ],
+      "members":{
+        "guardrailIdentifier":{
+          "shape":"GuardrailIdentifier",
+          "documentation":"<p>The guardrail identifier used in the request to apply the guardrail.</p>",
+          "location":"uri",
+          "locationName":"guardrailIdentifier"
+        },
+        "guardrailVersion":{
+          "shape":"GuardrailVersion",
+          "documentation":"<p>The guardrail version used in the request to apply the guardrail.</p>",
+          "location":"uri",
+          "locationName":"guardrailVersion"
+        },
+        "source":{
+          "shape":"GuardrailContentSource",
+          "documentation":"<p>The source of data used in the request to apply the guardrail.</p>"
+        },
+        "content":{
+          "shape":"GuardrailContentBlockList",
+          "documentation":"<p>The content details used in the request to apply the guardrail.</p>"
+        }
+      }
+    },
+    "ApplyGuardrailResponse":{
+      "type":"structure",
+      "required":[
+        "usage",
+        "action",
+        "outputs",
+        "assessments"
+      ],
+      "members":{
+        "usage":{
+          "shape":"GuardrailUsage",
+          "documentation":"<p>The usage details in the response from the guardrail.</p>"
+        },
+        "action":{
+          "shape":"GuardrailAction",
+          "documentation":"<p>The action taken in the response from the guardrail.</p>"
+        },
+        "outputs":{
+          "shape":"GuardrailOutputContentList",
+          "documentation":"<p>The output details in the response from the guardrail.</p>"
+        },
+        "assessments":{
+          "shape":"GuardrailAssessmentList",
+          "documentation":"<p>The assessment details in the response from the guardrail.</p>"
+        }
+      }
+    },
     "AutoToolChoice":{
       "type":"structure",
       "members":{
@@ -148,7 +225,7 @@
         },
         "toolUse":{
           "shape":"ToolUseBlock",
-          "documentation":"<p>Information about a tool use request from a model. </p>"
+          "documentation":"<p>Information about a tool use request from a model.</p>"
         },
         "toolResult":{
           "shape":"ToolResultBlock",
@@ -159,7 +236,7 @@
           "documentation":"<p>Contains the content to assess with the guardrail. If you don't specify <code>guardContent</code> in a call to the Converse API, the guardrail (if passed in the Converse API) assesses the entire message.</p> <p>For more information, see <i>Use a guardrail with the Converse API</i> in the <i>Amazon Bedrock User Guide</i>. <pre><code> &lt;/p&gt; </code></pre>"
         }
       },
-      "documentation":"<p>A block of content for a message that you pass to, or receive from, a model with the Converse API (<a>Converse</a> and <a>ConverseStream</a>).</p>",
+      "documentation":"<p>A block of content for a message that you pass to, or receive from, a model with the <a href=\"https://docs.aws.amazon.com/bedrock/latest/APIReference/API_runtime_Converse.html\">Converse</a> or <a href=\"https://docs.aws.amazon.com/bedrock/latest/APIReference/API_runtime_ConverseStream.html\">ConverseStream</a> API operations.</p>",
       "union":true
     },
     "ContentBlockDelta":{
@@ -383,7 +460,7 @@
         },
         "trace":{
           "shape":"ConverseStreamTrace",
-          "documentation":"<p>The trace object in the response from <a>ConverseStream</a> that contains information about the guardrail behavior.</p>"
+          "documentation":"<p>The trace object in the response from <a href=\"https://docs.aws.amazon.com/bedrock/latest/APIReference/API_runtime_ConverseStream.html\">ConverseStream</a> that contains information about the guardrail behavior.</p>"
         }
       },
       "documentation":"<p>A conversation stream metadata event.</p>",
@@ -519,7 +596,7 @@
           "documentation":"<p>The guardrail trace object. </p>"
         }
       },
-      "documentation":"<p>The trace object in a response from <a>ConverseStream</a>. Currently, you can only trace guardrails.</p>"
+      "documentation":"<p>The trace object in a response from <a href=\"https://docs.aws.amazon.com/bedrock/latest/APIReference/API_runtime_ConverseStream.html\">ConverseStream</a>. Currently, you can only trace guardrails.</p>"
     },
     "ConverseTrace":{
       "type":"structure",
@@ -529,7 +606,7 @@
           "documentation":"<p>The guardrail trace object. </p>"
         }
       },
-      "documentation":"<p>The trace object in a response from <a>Converse</a>. Currently, you can only trace guardrails.</p>"
+      "documentation":"<p>The trace object in a response from <a href=\"https://docs.aws.amazon.com/bedrock/latest/APIReference/API_runtime_Converse.html\">Converse</a>. Currently, you can only trace guardrails.</p>"
     },
     "Document":{
       "type":"structure",
@@ -551,14 +628,14 @@
         },
         "name":{
           "shape":"DocumentBlockNameString",
-          "documentation":"<p>A name for the document.</p>"
+          "documentation":"<p>A name for the document. The name can only contain the following characters:</p> <ul> <li> <p>Alphanumeric characters</p> </li> <li> <p>Whitespace characters (no more than one in a row)</p> </li> <li> <p>Hyphens</p> </li> <li> <p>Parentheses</p> </li> <li> <p>Square brackets</p> </li> </ul> <note> <p>This field is vulnerable to prompt injections, because the model might inadvertently interpret it as instructions. Therefore, we recommend that you specify a neutral name.</p> </note>"
         },
         "source":{
           "shape":"DocumentSource",
           "documentation":"<p>Contains the content of the document.</p>"
         }
       },
-      "documentation":"<p>A document to include in a message when sending a <a href=\"https://docs.aws.amazon.com/bedrock/latest/APIReference/API_runtime_Converse.html\">Converse</a> or <a href=\"https://docs.aws.amazon.com/bedrock/latest/APIReference/API_runtime_ConverseStream.html\">ConverseStream</a> request. You can include up to 5 documents in a request. The maximum document size is 50 MB.</p>"
+      "documentation":"<p>A document to include in a message.</p>"
     },
     "DocumentBlockNameString":{
       "type":"string",
@@ -584,15 +661,22 @@
       "members":{
         "bytes":{
           "shape":"DocumentSourceBytesBlob",
-          "documentation":"<p>A base64-encoded string of a UTF-8 encoded file, that is the document to include in the message.</p>"
+          "documentation":"<p>The raw bytes for the document. If you use an Amazon Web Services SDK, you don't need to encode the bytes in base64.</p>"
         }
       },
-      "documentation":"<p>Contains the content of the document included in a message when sending a <a href=\"https://docs.aws.amazon.com/bedrock/latest/APIReference/API_runtime_Converse.html\">Converse</a> or <a href=\"https://docs.aws.amazon.com/bedrock/latest/APIReference/API_runtime_ConverseStream.html\">ConverseStream</a> request or in the response.</p>",
+      "documentation":"<p>Contains the content of a document.</p>",
       "union":true
     },
     "DocumentSourceBytesBlob":{
       "type":"blob",
       "min":1
+    },
+    "GuardrailAction":{
+      "type":"string",
+      "enum":[
+        "NONE",
+        "GUARDRAIL_INTERVENED"
+      ]
     },
     "GuardrailAssessment":{
       "type":"structure",
@@ -612,6 +696,10 @@
         "sensitiveInformationPolicy":{
           "shape":"GuardrailSensitiveInformationPolicyAssessment",
           "documentation":"<p>The sensitive information policy.</p>"
+        },
+        "contextualGroundingPolicy":{
+          "shape":"GuardrailContextualGroundingPolicyAssessment",
+          "documentation":"<p>The contextual grounding policy used for the guardrail assessment.</p>"
         }
       },
       "documentation":"<p>A behavior assessment of the guardrail policies used in a call to the Converse API. </p>"
@@ -650,7 +738,22 @@
           "documentation":"<p>The trace behavior for the guardrail.</p>"
         }
       },
-      "documentation":"<p>Configuration information for a guardrail that you use with the <a>Converse</a> action.</p>"
+      "documentation":"<p>Configuration information for a guardrail that you use with the <a href=\"https://docs.aws.amazon.com/bedrock/latest/APIReference/API_runtime_Converse.html\">Converse</a> operation.</p>"
+    },
+    "GuardrailContentBlock":{
+      "type":"structure",
+      "members":{
+        "text":{
+          "shape":"GuardrailTextBlock",
+          "documentation":"<p>Text within content block to be evaluated by the guardrail.</p>"
+        }
+      },
+      "documentation":"<p>The content block to be evaluated by the guardrail.</p>",
+      "union":true
+    },
+    "GuardrailContentBlockList":{
+      "type":"list",
+      "member":{"shape":"GuardrailContentBlock"}
     },
     "GuardrailContentFilter":{
       "type":"structure",
@@ -714,6 +817,101 @@
       },
       "documentation":"<p>An assessment of a content policy for a guardrail.</p>"
     },
+    "GuardrailContentPolicyUnitsProcessed":{
+      "type":"integer",
+      "box":true
+    },
+    "GuardrailContentQualifier":{
+      "type":"string",
+      "enum":[
+        "grounding_source",
+        "query",
+        "guard_content"
+      ]
+    },
+    "GuardrailContentQualifierList":{
+      "type":"list",
+      "member":{"shape":"GuardrailContentQualifier"}
+    },
+    "GuardrailContentSource":{
+      "type":"string",
+      "enum":[
+        "INPUT",
+        "OUTPUT"
+      ]
+    },
+    "GuardrailContextualGroundingFilter":{
+      "type":"structure",
+      "required":[
+        "type",
+        "threshold",
+        "score",
+        "action"
+      ],
+      "members":{
+        "type":{
+          "shape":"GuardrailContextualGroundingFilterType",
+          "documentation":"<p>The contextual grounding filter type.</p>"
+        },
+        "threshold":{
+          "shape":"GuardrailContextualGroundingFilterThresholdDouble",
+          "documentation":"<p>The threshold used by contextual grounding filter to determine whether the content is grounded or not.</p>"
+        },
+        "score":{
+          "shape":"GuardrailContextualGroundingFilterScoreDouble",
+          "documentation":"<p>The score generated by contextual grounding filter.</p>"
+        },
+        "action":{
+          "shape":"GuardrailContextualGroundingPolicyAction",
+          "documentation":"<p>The action performed by the guardrails contextual grounding filter.</p>"
+        }
+      },
+      "documentation":"<p>The details for the guardrails contextual grounding filter.</p>"
+    },
+    "GuardrailContextualGroundingFilterScoreDouble":{
+      "type":"double",
+      "box":true,
+      "max":1,
+      "min":0
+    },
+    "GuardrailContextualGroundingFilterThresholdDouble":{
+      "type":"double",
+      "box":true,
+      "max":1,
+      "min":0
+    },
+    "GuardrailContextualGroundingFilterType":{
+      "type":"string",
+      "enum":[
+        "GROUNDING",
+        "RELEVANCE"
+      ]
+    },
+    "GuardrailContextualGroundingFilters":{
+      "type":"list",
+      "member":{"shape":"GuardrailContextualGroundingFilter"}
+    },
+    "GuardrailContextualGroundingPolicyAction":{
+      "type":"string",
+      "enum":[
+        "BLOCKED",
+        "NONE"
+      ]
+    },
+    "GuardrailContextualGroundingPolicyAssessment":{
+      "type":"structure",
+      "members":{
+        "filters":{
+          "shape":"GuardrailContextualGroundingFilters",
+          "documentation":"<p>The filter details for the guardrails contextual grounding filter.</p>"
+        }
+      },
+      "documentation":"<p>The policy assessment details for the guardrails contextual grounding filter.</p>"
+    },
+    "GuardrailContextualGroundingPolicyUnitsProcessed":{
+      "type":"integer",
+      "box":true
+    },
     "GuardrailConverseContentBlock":{
       "type":"structure",
       "members":{
@@ -722,8 +920,20 @@
           "documentation":"<p>The text to guard.</p>"
         }
       },
-      "documentation":"<p/> <p>A content block for selective guarding with the Converse API (<a>Converse</a> and <a>ConverseStream</a>). </p>",
+      "documentation":"<p/> <p>A content block for selective guarding with the <a href=\"https://docs.aws.amazon.com/bedrock/latest/APIReference/API_runtime_Converse.html\">Converse</a> or <a href=\"https://docs.aws.amazon.com/bedrock/latest/APIReference/API_runtime_ConverseStream.html\">ConverseStream</a> API operations. </p>",
       "union":true
+    },
+    "GuardrailConverseContentQualifier":{
+      "type":"string",
+      "enum":[
+        "grounding_source",
+        "query",
+        "guard_content"
+      ]
+    },
+    "GuardrailConverseContentQualifierList":{
+      "type":"list",
+      "member":{"shape":"GuardrailConverseContentQualifier"}
     },
     "GuardrailConverseTextBlock":{
       "type":"structure",
@@ -732,6 +942,10 @@
         "text":{
           "shape":"String",
           "documentation":"<p>The text that you want to guard.</p>"
+        },
+        "qualifiers":{
+          "shape":"GuardrailConverseContentQualifierList",
+          "documentation":"<p>The qualifier details for the guardrails contextual grounding filter.</p>"
         }
       },
       "documentation":"<p>A text block that contains text that you want to assess with a guardrail. For more information, see <a>GuardrailConverseContentBlock</a>.</p>"
@@ -794,6 +1008,20 @@
     "GuardrailManagedWordType":{
       "type":"string",
       "enum":["PROFANITY"]
+    },
+    "GuardrailOutputContent":{
+      "type":"structure",
+      "members":{
+        "text":{
+          "shape":"GuardrailOutputText",
+          "documentation":"<p>The specific text for the output content produced by the guardrail.</p>"
+        }
+      },
+      "documentation":"<p>The output content produced by the guardrail.</p>"
+    },
+    "GuardrailOutputContentList":{
+      "type":"list",
+      "member":{"shape":"GuardrailOutputContent"}
     },
     "GuardrailOutputText":{"type":"string"},
     "GuardrailPiiEntityFilter":{
@@ -911,6 +1139,14 @@
       },
       "documentation":"<p>The assessment for aPersonally Identifiable Information (PII) policy. </p>"
     },
+    "GuardrailSensitiveInformationPolicyFreeUnitsProcessed":{
+      "type":"integer",
+      "box":true
+    },
+    "GuardrailSensitiveInformationPolicyUnitsProcessed":{
+      "type":"integer",
+      "box":true
+    },
     "GuardrailStreamConfiguration":{
       "type":"structure",
       "required":[
@@ -943,6 +1179,21 @@
         "sync",
         "async"
       ]
+    },
+    "GuardrailTextBlock":{
+      "type":"structure",
+      "required":["text"],
+      "members":{
+        "text":{
+          "shape":"String",
+          "documentation":"<p>The input text details to be evaluated by the guardrail.</p>"
+        },
+        "qualifiers":{
+          "shape":"GuardrailContentQualifierList",
+          "documentation":"<p>The qualifiers describing the text block.</p>"
+        }
+      },
+      "documentation":"<p>The text block to be evaluated by the guardrail.</p>"
     },
     "GuardrailTopic":{
       "type":"structure",
@@ -986,6 +1237,10 @@
       },
       "documentation":"<p>A behavior assessment of a topic policy.</p>"
     },
+    "GuardrailTopicPolicyUnitsProcessed":{
+      "type":"integer",
+      "box":true
+    },
     "GuardrailTopicType":{
       "type":"string",
       "enum":["DENY"]
@@ -1015,6 +1270,44 @@
       },
       "documentation":"<p>A Top level guardrail trace object. For more information, see <a>ConverseTrace</a>.</p>"
     },
+    "GuardrailUsage":{
+      "type":"structure",
+      "required":[
+        "topicPolicyUnits",
+        "contentPolicyUnits",
+        "wordPolicyUnits",
+        "sensitiveInformationPolicyUnits",
+        "sensitiveInformationPolicyFreeUnits",
+        "contextualGroundingPolicyUnits"
+      ],
+      "members":{
+        "topicPolicyUnits":{
+          "shape":"GuardrailTopicPolicyUnitsProcessed",
+          "documentation":"<p>The topic policy units processed by the guardrail.</p>"
+        },
+        "contentPolicyUnits":{
+          "shape":"GuardrailContentPolicyUnitsProcessed",
+          "documentation":"<p>The content policy units processed by the guardrail.</p>"
+        },
+        "wordPolicyUnits":{
+          "shape":"GuardrailWordPolicyUnitsProcessed",
+          "documentation":"<p>The word policy units processed by the guardrail.</p>"
+        },
+        "sensitiveInformationPolicyUnits":{
+          "shape":"GuardrailSensitiveInformationPolicyUnitsProcessed",
+          "documentation":"<p>The sensitive information policy units processed by the guardrail.</p>"
+        },
+        "sensitiveInformationPolicyFreeUnits":{
+          "shape":"GuardrailSensitiveInformationPolicyFreeUnitsProcessed",
+          "documentation":"<p>The sensitive information policy free units processed by the guardrail.</p>"
+        },
+        "contextualGroundingPolicyUnits":{
+          "shape":"GuardrailContextualGroundingPolicyUnitsProcessed",
+          "documentation":"<p>The contextual grounding policy units processed by the guardrail.</p>"
+        }
+      },
+      "documentation":"<p>The details on the use of the guardrail.</p>"
+    },
     "GuardrailVersion":{
       "type":"string",
       "pattern":"(([1-9][0-9]{0,7})|(DRAFT))"
@@ -1040,6 +1333,10 @@
         }
       },
       "documentation":"<p>The word policy assessment.</p>"
+    },
+    "GuardrailWordPolicyUnitsProcessed":{
+      "type":"integer",
+      "box":true
     },
     "ImageBlock":{
       "type":"structure",
@@ -1073,7 +1370,7 @@
       "members":{
         "bytes":{
           "shape":"ImageSourceBytesBlob",
-          "documentation":"<p>The raw image bytes for the image. If you use an AWS SDK, you don't need to base64 encode the image bytes.</p>"
+          "documentation":"<p>The raw image bytes for the image. If you use an AWS SDK, you don't need to encode the image bytes in base64.</p>"
         }
       },
       "documentation":"<p>The source for an image.</p>",
@@ -1301,7 +1598,7 @@
         },
         "content":{
           "shape":"ContentBlocks",
-          "documentation":"<p>The message content.</p>"
+          "documentation":"<p>The message content. Note the following restrictions:</p> <ul> <li> <p>You can include up to 20 images. Each image's size, height, and width must be no more than 3.75 MB, 8000 px, and 8000 px, respectively.</p> </li> <li> <p>You can include up to five documents. Each document's size must be no more than 4.5 MB.</p> </li> <li> <p>If you include a <code>ContentBlock</code> with a <code>document</code> field in the array, you must also include a <code>ContentBlock</code> with a <code>text</code> field.</p> </li> <li> <p>You can only include images and documents if the <code>role</code> is <code>user</code>.</p> </li> </ul>"
         }
       },
       "documentation":"<p>A message input, or returned from, a call to <a href=\"https://docs.aws.amazon.com/bedrock/latest/APIReference/API_runtime_Converse.html\">Converse</a> or <a href=\"https://docs.aws.amazon.com/bedrock/latest/APIReference/API_runtime_ConverseStream.html\">ConverseStream</a>.</p>"
@@ -1531,7 +1828,7 @@
         },
         "guardContent":{
           "shape":"GuardrailConverseContentBlock",
-          "documentation":"<p>A content block to assess with the guardrail. Use with the Converse API (<a>Converse</a> and <a>ConverseStream</a>). </p> <p>For more information, see <i>Use a guardrail with the Converse API</i> in the <i>Amazon Bedrock User Guide</i>.</p>"
+          "documentation":"<p>A content block to assess with the guardrail. Use with the <a href=\"https://docs.aws.amazon.com/bedrock/latest/APIReference/API_runtime_Converse.html\">Converse</a> or <a href=\"https://docs.aws.amazon.com/bedrock/latest/APIReference/API_runtime_ConverseStream.html\">ConverseStream</a> API operations. </p> <p>For more information, see <i>Use a guardrail with the Converse API</i> in the <i>Amazon Bedrock User Guide</i>.</p>"
         }
       },
       "documentation":"<p>A system content block.</p>",
@@ -1599,7 +1896,7 @@
           "documentation":"<p>The specfication for the tool.</p>"
         }
       },
-      "documentation":"<p>Information about a tool that you can use with the Converse API. </p>",
+      "documentation":"<p>Information about a tool that you can use with the Converse API. For more information, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/tool-use.html\">Tool use (function calling)</a> in the Amazon Bedrock User Guide.</p>",
       "union":true
     },
     "ToolChoice":{
@@ -1634,7 +1931,7 @@
           "documentation":"<p>If supported by model, forces the model to request a tool.</p>"
         }
       },
-      "documentation":"<p>Configuration information for the tools that you pass to a model.</p> <note> <p>This field is only supported by Anthropic Claude 3, Cohere Command R, Cohere Command R+, and Mistral Large models.</p> </note>"
+      "documentation":"<p>Configuration information for the tools that you pass to a model. For more information, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/tool-use.html\">Tool use (function calling)</a> in the Amazon Bedrock User Guide.</p> <note> <p>This field is only supported by Anthropic Claude 3, Cohere Command R, Cohere Command R+, and Mistral Large models.</p> </note>"
     },
     "ToolConfigurationToolsList":{
       "type":"list",

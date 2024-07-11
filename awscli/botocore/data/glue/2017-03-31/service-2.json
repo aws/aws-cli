@@ -6376,6 +6376,32 @@
       "documentation":"<p>A specified condition was not satisfied.</p>",
       "exception":true
     },
+    "ConditionExpression":{
+      "type":"structure",
+      "required":[
+        "Condition",
+        "TargetColumn"
+      ],
+      "members":{
+        "Condition":{
+          "shape":"DatabrewCondition",
+          "documentation":"<p>The condition of the condition expression.</p>"
+        },
+        "Value":{
+          "shape":"DatabrewConditionValue",
+          "documentation":"<p>The value of the condition expression.</p>"
+        },
+        "TargetColumn":{
+          "shape":"TargetColumn",
+          "documentation":"<p>The target column of the condition expressions.</p>"
+        }
+      },
+      "documentation":"<p>Condition expression defined in the Glue Studio data preparation recipe node.</p>"
+    },
+    "ConditionExpressionList":{
+      "type":"list",
+      "member":{"shape":"ConditionExpression"}
+    },
     "ConditionList":{
       "type":"list",
       "member":{"shape":"Condition"}
@@ -9242,6 +9268,16 @@
       "member":{"shape":"Database"}
     },
     "DatabaseName":{"type":"string"},
+    "DatabrewCondition":{
+      "type":"string",
+      "max":128,
+      "min":1,
+      "pattern":"^[A-Z\\_]+$"
+    },
+    "DatabrewConditionValue":{
+      "type":"string",
+      "max":1024
+    },
     "Datatype":{
       "type":"structure",
       "required":[
@@ -10479,11 +10515,11 @@
     },
     "EnclosedInStringProperty":{
       "type":"string",
-      "pattern":"([\\u0020-\\uD7FF\\uE000-\\uFFFD\\uD800\\uDC00-\\uDBFF\\uDFFF]|[^\\S\\r\\n\"'])*"
+      "pattern":"([\\u0009\\u000B\\u000C\\u0020-\\uD7FF\\uE000-\\uFFFD\\uD800\\uDC00-\\uDBFF\\uDFFF])*"
     },
     "EnclosedInStringPropertyWithQuote":{
       "type":"string",
-      "pattern":"([\\u0020-\\uD7FF\\uE000-\\uFFFD\\uD800\\uDC00-\\uDBFF\\uDFFF]|[^\\S\\r\\n])*"
+      "pattern":"([\\u0009\\u000B\\u000C\\u0020-\\uD7FF\\uE000-\\uFFFD\\uD800\\uDC00-\\uDBFF\\uDFFF])*"
     },
     "EncryptionAtRest":{
       "type":"structure",
@@ -16482,7 +16518,7 @@
     },
     "NodeName":{
       "type":"string",
-      "pattern":"([\\u0020-\\uD7FF\\uE000-\\uFFFD\\uD800\\uDC00-\\uDBFF\\uDFFF]|[^\\r\\n])*"
+      "pattern":"([^\\r\\n])*"
     },
     "NodeType":{
       "type":"string",
@@ -16666,6 +16702,12 @@
         }
       },
       "documentation":"<p>A structure representing an open format table.</p>"
+    },
+    "Operation":{
+      "type":"string",
+      "max":128,
+      "min":1,
+      "pattern":"^[A-Z\\_]+$"
     },
     "OperationNotSupportedException":{
       "type":"structure",
@@ -16925,6 +16967,22 @@
         "list",
         "null"
       ]
+    },
+    "ParameterMap":{
+      "type":"map",
+      "key":{"shape":"ParameterName"},
+      "value":{"shape":"ParameterValue"}
+    },
+    "ParameterName":{
+      "type":"string",
+      "max":128,
+      "min":1,
+      "pattern":"^[A-Za-z0-9]+$"
+    },
+    "ParameterValue":{
+      "type":"string",
+      "max":32768,
+      "min":1
     },
     "ParametersMap":{
       "type":"map",
@@ -17602,8 +17660,7 @@
       "type":"structure",
       "required":[
         "Name",
-        "Inputs",
-        "RecipeReference"
+        "Inputs"
       ],
       "members":{
         "Name":{
@@ -17617,9 +17674,28 @@
         "RecipeReference":{
           "shape":"RecipeReference",
           "documentation":"<p>A reference to the DataBrew recipe used by the node.</p>"
+        },
+        "RecipeSteps":{
+          "shape":"RecipeSteps",
+          "documentation":"<p>Transform steps used in the recipe node.</p>"
         }
       },
       "documentation":"<p>A Glue Studio node that uses a Glue DataBrew recipe in Glue jobs.</p>"
+    },
+    "RecipeAction":{
+      "type":"structure",
+      "required":["Operation"],
+      "members":{
+        "Operation":{
+          "shape":"Operation",
+          "documentation":"<p>The operation of the recipe action.</p>"
+        },
+        "Parameters":{
+          "shape":"ParameterMap",
+          "documentation":"<p>The parameters of the recipe action.</p>"
+        }
+      },
+      "documentation":"<p>Actions defined in the Glue Studio data preparation recipe node.</p>"
     },
     "RecipeReference":{
       "type":"structure",
@@ -17638,6 +17714,25 @@
         }
       },
       "documentation":"<p>A reference to a Glue DataBrew recipe.</p>"
+    },
+    "RecipeStep":{
+      "type":"structure",
+      "required":["Action"],
+      "members":{
+        "Action":{
+          "shape":"RecipeAction",
+          "documentation":"<p>The transformation action of the recipe step.</p>"
+        },
+        "ConditionExpressions":{
+          "shape":"ConditionExpressionList",
+          "documentation":"<p>The condition expressions for the recipe step.</p>"
+        }
+      },
+      "documentation":"<p>A recipe step used in a Glue Studio data preparation recipe node.</p>"
+    },
+    "RecipeSteps":{
+      "type":"list",
+      "member":{"shape":"RecipeStep"}
     },
     "RecipeVersion":{
       "type":"string",
@@ -21000,6 +21095,11 @@
       "value":{"shape":"TagValue"},
       "max":50,
       "min":0
+    },
+    "TargetColumn":{
+      "type":"string",
+      "max":1024,
+      "min":1
     },
     "TargetFormat":{
       "type":"string",

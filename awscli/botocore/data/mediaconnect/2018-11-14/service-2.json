@@ -8,7 +8,10 @@
     "protocol": "rest-json",
     "jsonVersion": "1.1",
     "uid": "mediaconnect-2018-11-14",
-    "signatureVersion": "v4"
+    "signatureVersion": "v4",
+    "auth": [
+      "aws.auth#sigv4"
+    ]
   },
   "operations": {
     "AddBridgeOutputs": {
@@ -2641,7 +2644,7 @@
         "MinLatency": {
           "shape": "__integer",
           "locationName": "minLatency",
-          "documentation": "The minimum latency in milliseconds for SRT-based streams. In streams that use the SRT protocol, this value that you set on your MediaConnect source or output represents the minimal potential latency of that connection. The latency of the stream is set to the highest number between the sender\u2019s minimum latency and the receiver\u2019s minimum latency."
+          "documentation": "The minimum latency in milliseconds for SRT-based streams. In streams that use the SRT protocol, this value that you set on your MediaConnect source or output represents the minimal potential latency of that connection. The latency of the stream is set to the highest number between the sender’s minimum latency and the receiver’s minimum latency."
         },
         "Name": {
           "shape": "__string",
@@ -2682,6 +2685,11 @@
           "shape": "VpcInterfaceAttachment",
           "locationName": "vpcInterfaceAttachment",
           "documentation": "The name of the VPC interface attachment to use for this output."
+        },
+        "OutputStatus": {
+          "shape": "OutputStatus",
+          "locationName": "outputStatus",
+          "documentation": "An indication of whether the new output should be enabled or disabled as soon as it is created. If you don't specify the outputStatus field in your request, MediaConnect sets it to ENABLED."
         }
       },
       "documentation": "The output that you want to add to this flow.",
@@ -3904,7 +3912,7 @@
         "ScanMode": {
           "shape": "ScanMode",
           "locationName": "scanMode",
-          "documentation": "The type of compression that was used to smooth the video\u2019s appearance"
+          "documentation": "The type of compression that was used to smooth the video’s appearance"
         },
         "Tcs": {
           "shape": "Tcs",
@@ -3945,7 +3953,7 @@
         "ScanMode": {
           "shape": "ScanMode",
           "locationName": "scanMode",
-          "documentation": "The type of compression that was used to smooth the video\u2019s appearance."
+          "documentation": "The type of compression that was used to smooth the video’s appearance."
         },
         "Tcs": {
           "shape": "Tcs",
@@ -4159,7 +4167,7 @@
         "EntitlementStatus": {
           "shape": "EntitlementStatus",
           "locationName": "entitlementStatus",
-          "documentation": "An indication of whether the new entitlement should be enabled or disabled as soon as it is created. If you don\u2019t specify the entitlementStatus field in your request, MediaConnect sets it to ENABLED."
+          "documentation": "An indication of whether the new entitlement should be enabled or disabled as soon as it is created. If you don’t specify the entitlementStatus field in your request, MediaConnect sets it to ENABLED."
         },
         "Name": {
           "shape": "__string",
@@ -5237,12 +5245,24 @@
           "shape": "__listOf__integer",
           "locationName": "bridgePorts",
           "documentation": "The bridge output ports currently in use."
+        },
+        "OutputStatus": {
+          "shape": "OutputStatus",
+          "locationName": "outputStatus",
+          "documentation": "An indication of whether the output is transmitting data or not."
         }
       },
       "documentation": "The settings for an output.",
       "required": [
         "OutputArn",
         "Name"
+      ]
+    },
+    "OutputStatus": {
+      "type": "string",
+      "enum": [
+        "ENABLED",
+        "DISABLED"
       ]
     },
     "PriceUnits": {
@@ -5801,7 +5821,7 @@
         "MinLatency": {
           "shape": "__integer",
           "locationName": "minLatency",
-          "documentation": "The minimum latency in milliseconds for SRT-based streams. In streams that use the SRT protocol, this value that you set on your MediaConnect source or output represents the minimal potential latency of that connection. The latency of the stream is set to the highest number between the sender\u2019s minimum latency and the receiver\u2019s minimum latency."
+          "documentation": "The minimum latency in milliseconds for SRT-based streams. In streams that use the SRT protocol, this value that you set on your MediaConnect source or output represents the minimal potential latency of that connection. The latency of the stream is set to the highest number between the sender’s minimum latency and the receiver’s minimum latency."
         },
         "Name": {
           "shape": "__string",
@@ -6117,7 +6137,7 @@
         "MinLatency": {
           "shape": "__integer",
           "locationName": "minLatency",
-          "documentation": "The minimum latency in milliseconds for SRT-based streams. In streams that use the SRT protocol, this value that you set on your MediaConnect source or output represents the minimal potential latency of that connection. The latency of the stream is set to the highest number between the sender\u2019s minimum latency and the receiver\u2019s minimum latency."
+          "documentation": "The minimum latency in milliseconds for SRT-based streams. In streams that use the SRT protocol, this value that you set on your MediaConnect source or output represents the minimal potential latency of that connection. The latency of the stream is set to the highest number between the sender’s minimum latency and the receiver’s minimum latency."
         },
         "Protocol": {
           "shape": "Protocol",
@@ -6629,7 +6649,7 @@
         "EntitlementStatus": {
           "shape": "EntitlementStatus",
           "locationName": "entitlementStatus",
-          "documentation": "An indication of whether you want to enable the entitlement to allow access, or disable it to stop streaming content to the subscriber\u2019s flow temporarily. If you don\u2019t specify the entitlementStatus field in your request, MediaConnect leaves the value unchanged."
+          "documentation": "An indication of whether you want to enable the entitlement to allow access, or disable it to stop streaming content to the subscriber’s flow temporarily. If you don’t specify the entitlementStatus field in your request, MediaConnect leaves the value unchanged."
         },
         "FlowArn": {
           "shape": "__string",
@@ -6771,7 +6791,7 @@
         "MinLatency": {
           "shape": "__integer",
           "locationName": "minLatency",
-          "documentation": "The minimum latency in milliseconds for SRT-based streams. In streams that use the SRT protocol, this value that you set on your MediaConnect source or output represents the minimal potential latency of that connection. The latency of the stream is set to the highest number between the sender\u2019s minimum latency and the receiver\u2019s minimum latency."
+          "documentation": "The minimum latency in milliseconds for SRT-based streams. In streams that use the SRT protocol, this value that you set on your MediaConnect source or output represents the minimal potential latency of that connection. The latency of the stream is set to the highest number between the sender’s minimum latency and the receiver’s minimum latency."
         },
         "OutputArn": {
           "shape": "__string",
@@ -6819,6 +6839,11 @@
           "shape": "VpcInterfaceAttachment",
           "locationName": "vpcInterfaceAttachment",
           "documentation": "The name of the VPC interface attachment to use for this output."
+        },
+        "OutputStatus": {
+          "shape": "OutputStatus",
+          "locationName": "outputStatus",
+          "documentation": "An indication of whether the output should transmit data or not. If you don't specify the outputStatus field in your request, MediaConnect leaves the value unchanged."
         }
       },
       "documentation": "The fields that you want to update in the output.",
@@ -6929,7 +6954,7 @@
         "MinLatency": {
           "shape": "__integer",
           "locationName": "minLatency",
-          "documentation": "The minimum latency in milliseconds for SRT-based streams. In streams that use the SRT protocol, this value that you set on your MediaConnect source or output represents the minimal potential latency of that connection. The latency of the stream is set to the highest number between the sender\u2019s minimum latency and the receiver\u2019s minimum latency."
+          "documentation": "The minimum latency in milliseconds for SRT-based streams. In streams that use the SRT protocol, this value that you set on your MediaConnect source or output represents the minimal potential latency of that connection. The latency of the stream is set to the highest number between the sender’s minimum latency and the receiver’s minimum latency."
         },
         "Protocol": {
           "shape": "Protocol",

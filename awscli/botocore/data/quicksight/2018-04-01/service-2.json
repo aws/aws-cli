@@ -13,6 +13,41 @@
     "auth":["aws.auth#sigv4"]
   },
   "operations":{
+    "BatchCreateTopicReviewedAnswer":{
+      "name":"BatchCreateTopicReviewedAnswer",
+      "http":{
+        "method":"POST",
+        "requestUri":"/accounts/{AwsAccountId}/topics/{TopicId}/batch-create-reviewed-answers"
+      },
+      "input":{"shape":"BatchCreateTopicReviewedAnswerRequest"},
+      "output":{"shape":"BatchCreateTopicReviewedAnswerResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"InvalidParameterValueException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalFailureException"}
+      ],
+      "documentation":"<p>Creates new reviewed answers for a Q Topic.</p>"
+    },
+    "BatchDeleteTopicReviewedAnswer":{
+      "name":"BatchDeleteTopicReviewedAnswer",
+      "http":{
+        "method":"POST",
+        "requestUri":"/accounts/{AwsAccountId}/topics/{TopicId}/batch-delete-reviewed-answers"
+      },
+      "input":{"shape":"BatchDeleteTopicReviewedAnswerRequest"},
+      "output":{"shape":"BatchDeleteTopicReviewedAnswerResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"InvalidParameterValueException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ConflictException"},
+        {"shape":"InternalFailureException"}
+      ],
+      "documentation":"<p>Deletes reviewed answers for Q Topic.</p>"
+    },
     "CancelIngestion":{
       "name":"CancelIngestion",
       "http":{
@@ -2291,6 +2326,23 @@
       ],
       "documentation":"<p>Lists all of the refresh schedules for a topic.</p>"
     },
+    "ListTopicReviewedAnswers":{
+      "name":"ListTopicReviewedAnswers",
+      "http":{
+        "method":"GET",
+        "requestUri":"/accounts/{AwsAccountId}/topics/{TopicId}/reviewed-answers"
+      },
+      "input":{"shape":"ListTopicReviewedAnswersRequest"},
+      "output":{"shape":"ListTopicReviewedAnswersResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"InvalidParameterValueException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalFailureException"}
+      ],
+      "documentation":"<p>Lists all reviewed answers for a Q Topic.</p>"
+    },
     "ListTopics":{
       "name":"ListTopics",
       "http":{
@@ -3404,6 +3456,67 @@
       "max":20,
       "min":1
     },
+    "AggFunction":{
+      "type":"structure",
+      "members":{
+        "Aggregation":{
+          "shape":"AggType",
+          "documentation":"<p>The aggregation of an Agg function.</p>"
+        },
+        "AggregationFunctionParameters":{
+          "shape":"AggFunctionParamMap",
+          "documentation":"<p>The aggregation parameters for an Agg function.</p>"
+        },
+        "Period":{
+          "shape":"TopicTimeGranularity",
+          "documentation":"<p>The period of an Agg function.</p>"
+        },
+        "PeriodField":{
+          "shape":"LimitedString",
+          "documentation":"<p>The period field for an Agg function.</p>"
+        }
+      },
+      "documentation":"<p>The definition of an Agg function.</p>"
+    },
+    "AggFunctionParamKey":{
+      "type":"string",
+      "max":256,
+      "min":1
+    },
+    "AggFunctionParamMap":{
+      "type":"map",
+      "key":{"shape":"AggFunctionParamKey"},
+      "value":{"shape":"AggFunctionParamValue"}
+    },
+    "AggFunctionParamValue":{
+      "type":"string",
+      "max":1024
+    },
+    "AggType":{
+      "type":"string",
+      "enum":[
+        "SUM",
+        "MIN",
+        "MAX",
+        "COUNT",
+        "AVERAGE",
+        "DISTINCT_COUNT",
+        "STDEV",
+        "STDEVP",
+        "VAR",
+        "VARP",
+        "PERCENTILE",
+        "MEDIAN",
+        "PTD_SUM",
+        "PTD_MIN",
+        "PTD_MAX",
+        "PTD_COUNT",
+        "PTD_DISTINCT_COUNT",
+        "PTD_AVERAGE",
+        "COLUMN",
+        "CUSTOM"
+      ]
+    },
     "AggregationFunction":{
       "type":"structure",
       "members":{
@@ -3430,6 +3543,25 @@
       "type":"map",
       "key":{"shape":"LimitedString"},
       "value":{"shape":"LimitedString"}
+    },
+    "AggregationPartitionBy":{
+      "type":"structure",
+      "members":{
+        "FieldName":{
+          "shape":"LimitedString",
+          "documentation":"<p>The field Name for an <code>AggregationPartitionBy</code>.</p>"
+        },
+        "TimeGranularity":{
+          "shape":"TimeGranularity",
+          "documentation":"<p>The <code>TimeGranularity</code> for an <code>AggregationPartitionBy</code>.</p>"
+        }
+      },
+      "documentation":"<p>The definition of an <code>AggregationPartitionBy</code>.</p>"
+    },
+    "AggregationPartitionByList":{
+      "type":"list",
+      "member":{"shape":"AggregationPartitionBy"},
+      "max":50
     },
     "AggregationSortConfiguration":{
       "type":"structure",
@@ -3727,6 +3859,24 @@
       "member":{"shape":"AnalysisSummary"},
       "max":100
     },
+    "Anchor":{
+      "type":"structure",
+      "members":{
+        "AnchorType":{
+          "shape":"AnchorType",
+          "documentation":"<p>The <code>AnchorType</code> for the Anchor.</p>"
+        },
+        "TimeGranularity":{
+          "shape":"TimeGranularity",
+          "documentation":"<p>The <code>TimeGranularity</code> of the Anchor.</p>"
+        },
+        "Offset":{
+          "shape":"Integer",
+          "documentation":"<p>The offset of the Anchor.</p>"
+        }
+      },
+      "documentation":"<p>The definition of the Anchor.</p>"
+    },
     "AnchorDateConfiguration":{
       "type":"structure",
       "members":{
@@ -3744,6 +3894,10 @@
     "AnchorOption":{
       "type":"string",
       "enum":["NOW"]
+    },
+    "AnchorType":{
+      "type":"string",
+      "enum":["TODAY"]
     },
     "AnonymousUserDashboardEmbeddingConfiguration":{
       "type":"structure",
@@ -3824,6 +3978,15 @@
     "AnonymousUserSnapshotJobResultList":{
       "type":"list",
       "member":{"shape":"AnonymousUserSnapshotJobResult"}
+    },
+    "AnswerId":{
+      "type":"string",
+      "max":256,
+      "pattern":"^[A-Za-z0-9-_.\\\\+]*$"
+    },
+    "AnswerIds":{
+      "type":"list",
+      "member":{"shape":"AnswerId"}
     },
     "ArcAxisConfiguration":{
       "type":"structure",
@@ -5625,6 +5788,117 @@
         "IMAGERY"
       ]
     },
+    "BatchCreateTopicReviewedAnswerRequest":{
+      "type":"structure",
+      "required":[
+        "AwsAccountId",
+        "TopicId",
+        "Answers"
+      ],
+      "members":{
+        "AwsAccountId":{
+          "shape":"AwsAccountId",
+          "documentation":"<p>The ID of the Amazon Web Services account that you want to create a reviewed answer in.</p>",
+          "location":"uri",
+          "locationName":"AwsAccountId"
+        },
+        "TopicId":{
+          "shape":"TopicId",
+          "documentation":"<p>The ID for the topic reviewed answer that you want to create. This ID is unique per Amazon Web Services Region for each Amazon Web Services account.</p>",
+          "location":"uri",
+          "locationName":"TopicId"
+        },
+        "Answers":{
+          "shape":"CreateTopicReviewedAnswers",
+          "documentation":"<p>The definition of the Answers to be created.</p>"
+        }
+      }
+    },
+    "BatchCreateTopicReviewedAnswerResponse":{
+      "type":"structure",
+      "members":{
+        "TopicId":{
+          "shape":"TopicId",
+          "documentation":"<p>The ID for the topic reviewed answer that you want to create. This ID is unique per Amazon Web Services Region for each Amazon Web Services account.</p>"
+        },
+        "TopicArn":{
+          "shape":"Arn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the topic.</p>"
+        },
+        "SucceededAnswers":{
+          "shape":"SucceededTopicReviewedAnswers",
+          "documentation":"<p>The definition of Answers that are successfully created.</p>"
+        },
+        "InvalidAnswers":{
+          "shape":"InvalidTopicReviewedAnswers",
+          "documentation":"<p>The definition of Answers that are invalid and not created.</p>"
+        },
+        "Status":{
+          "shape":"StatusCode",
+          "documentation":"<p>The HTTP status of the request.</p>",
+          "location":"statusCode"
+        },
+        "RequestId":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Web Services request ID for this operation.</p>"
+        }
+      }
+    },
+    "BatchDeleteTopicReviewedAnswerRequest":{
+      "type":"structure",
+      "required":[
+        "AwsAccountId",
+        "TopicId"
+      ],
+      "members":{
+        "AwsAccountId":{
+          "shape":"AwsAccountId",
+          "documentation":"<p>The ID of the Amazon Web Services account that you want to delete a reviewed answers in.</p>",
+          "location":"uri",
+          "locationName":"AwsAccountId"
+        },
+        "TopicId":{
+          "shape":"TopicId",
+          "documentation":"<p>The ID for the topic reviewed answer that you want to delete. This ID is unique per Amazon Web Services Region for each Amazon Web Services account.</p>",
+          "location":"uri",
+          "locationName":"TopicId"
+        },
+        "AnswerIds":{
+          "shape":"AnswerIds",
+          "documentation":"<p>The Answer IDs of the Answers to be deleted.</p>"
+        }
+      }
+    },
+    "BatchDeleteTopicReviewedAnswerResponse":{
+      "type":"structure",
+      "members":{
+        "TopicId":{
+          "shape":"TopicId",
+          "documentation":"<p>The ID of the topic reviewed answer that you want to delete. This ID is unique per Amazon Web Services Region for each Amazon Web Services account.</p>"
+        },
+        "TopicArn":{
+          "shape":"Arn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the topic.</p>"
+        },
+        "SucceededAnswers":{
+          "shape":"SucceededTopicReviewedAnswers",
+          "documentation":"<p>The definition of Answers that are successfully deleted.</p>"
+        },
+        "InvalidAnswers":{
+          "shape":"InvalidTopicReviewedAnswers",
+          "documentation":"<p>The definition of Answers that are invalid and not deleted.</p>"
+        },
+        "RequestId":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Web Services request ID for this operation.</p>"
+        },
+        "Status":{
+          "shape":"StatusCode",
+          "documentation":"<p>The HTTP status of the request.</p>",
+          "location":"statusCode"
+        }
+      }
+    },
     "BigQueryParameters":{
       "type":"structure",
       "required":["ProjectId"],
@@ -6061,6 +6335,11 @@
       "min":1,
       "sensitive":true
     },
+    "CalculatedFieldReferenceList":{
+      "type":"list",
+      "member":{"shape":"Identifier"},
+      "max":250
+    },
     "CalculatedFields":{
       "type":"list",
       "member":{"shape":"CalculatedField"},
@@ -6437,6 +6716,25 @@
         }
       },
       "documentation":"<p>A structure that represents a collective constant.</p>"
+    },
+    "CollectiveConstantEntry":{
+      "type":"structure",
+      "members":{
+        "ConstantType":{
+          "shape":"ConstantType",
+          "documentation":"<p>The <code>ConstantType</code> of a <code>CollectiveConstantEntry</code>.</p>"
+        },
+        "Value":{
+          "shape":"ConstantValueString",
+          "documentation":"<p>The value of a <code>CollectiveConstantEntry</code>.</p>"
+        }
+      },
+      "documentation":"<p>The definition for a <code>CollectiveConstantEntry</code>.</p>"
+    },
+    "CollectiveConstantEntryList":{
+      "type":"list",
+      "member":{"shape":"CollectiveConstantEntry"},
+      "max":2000
     },
     "ColorFillType":{
       "type":"string",
@@ -7019,6 +7317,21 @@
         "PERCENT"
       ]
     },
+    "ComparisonMethodType":{
+      "type":"string",
+      "enum":[
+        "DIFF",
+        "PERC_DIFF",
+        "DIFF_AS_PERC",
+        "POP_CURRENT_DIFF_AS_PERC",
+        "POP_CURRENT_DIFF",
+        "POP_OVERTIME_DIFF_AS_PERC",
+        "POP_OVERTIME_DIFF",
+        "PERCENT_OF_TOTAL",
+        "RUNNING_SUM",
+        "MOVING_AVERAGE"
+      ]
+    },
     "Computation":{
       "type":"structure",
       "members":{
@@ -7247,6 +7560,10 @@
         "COLLECTIVE"
       ]
     },
+    "ConstantValueString":{
+      "type":"string",
+      "max":1024
+    },
     "ContextMenuOption":{
       "type":"structure",
       "members":{
@@ -7280,6 +7597,52 @@
       "member":{"shape":"ContributionAnalysisDefault"},
       "max":200,
       "min":1
+    },
+    "ContributionAnalysisDirection":{
+      "type":"string",
+      "enum":[
+        "INCREASE",
+        "DECREASE",
+        "NEUTRAL"
+      ]
+    },
+    "ContributionAnalysisFactor":{
+      "type":"structure",
+      "members":{
+        "FieldName":{
+          "shape":"LimitedString",
+          "documentation":"<p>The field name of the <code>ContributionAnalysisFactor</code>.</p>"
+        }
+      },
+      "documentation":"<p>The definition for the <code>ContributionAnalysisFactor</code>.</p>"
+    },
+    "ContributionAnalysisFactorsList":{
+      "type":"list",
+      "member":{"shape":"ContributionAnalysisFactor"},
+      "max":50
+    },
+    "ContributionAnalysisSortType":{
+      "type":"string",
+      "enum":[
+        "ABSOLUTE_DIFFERENCE",
+        "CONTRIBUTION_PERCENTAGE",
+        "DEVIATION_FROM_EXPECTED",
+        "PERCENTAGE_DIFFERENCE"
+      ]
+    },
+    "ContributionAnalysisTimeRanges":{
+      "type":"structure",
+      "members":{
+        "StartRange":{
+          "shape":"TopicIRFilterOption",
+          "documentation":"<p>The start range for the <code>ContributionAnalysisTimeRanges</code>.</p>"
+        },
+        "EndRange":{
+          "shape":"TopicIRFilterOption",
+          "documentation":"<p>The end range for the <code>ContributionAnalysisTimeRanges</code>.</p>"
+        }
+      },
+      "documentation":"<p>The definition for the <code>ContributionAnalysisTimeRanges</code>.</p>"
     },
     "ContributorDimensionList":{
       "type":"list",
@@ -8729,6 +9092,47 @@
           "location":"statusCode"
         }
       }
+    },
+    "CreateTopicReviewedAnswer":{
+      "type":"structure",
+      "required":[
+        "AnswerId",
+        "DatasetArn",
+        "Question"
+      ],
+      "members":{
+        "AnswerId":{
+          "shape":"AnswerId",
+          "documentation":"<p>The answer ID for the <code>CreateTopicReviewedAnswer</code>.</p>"
+        },
+        "DatasetArn":{
+          "shape":"Arn",
+          "documentation":"<p>The Dataset arn for the <code>CreateTopicReviewedAnswer</code>.</p>"
+        },
+        "Question":{
+          "shape":"LimitedString",
+          "documentation":"<p>The Question to be created.</p>"
+        },
+        "Mir":{
+          "shape":"TopicIR",
+          "documentation":"<p>The Mir for the <code>CreateTopicReviewedAnswer</code>.</p>"
+        },
+        "PrimaryVisual":{
+          "shape":"TopicVisual",
+          "documentation":"<p>The <code>PrimaryVisual</code> for the <code>CreateTopicReviewedAnswer</code>.</p>"
+        },
+        "Template":{
+          "shape":"TopicTemplate",
+          "documentation":"<p>The template for the <code>CreateTopicReviewedAnswer</code>.</p>"
+        }
+      },
+      "documentation":"<p>The definition for a <code>CreateTopicReviewedAnswer</code>.</p>"
+    },
+    "CreateTopicReviewedAnswers":{
+      "type":"list",
+      "member":{"shape":"CreateTopicReviewedAnswer"},
+      "max":100,
+      "min":0
     },
     "CreateVPCConnectionRequest":{
       "type":"structure",
@@ -10901,6 +11305,14 @@
         "InfoIconLabelOptions":{
           "shape":"SheetControlInfoIconLabelOptions",
           "documentation":"<p>The configuration of info icon label options.</p>"
+        },
+        "HelperTextVisibility":{
+          "shape":"Visibility",
+          "documentation":"<p>The helper text visibility of the <code>DateTimePickerControlDisplayOptions</code>.</p>"
+        },
+        "DateIconVisibility":{
+          "shape":"Visibility",
+          "documentation":"<p>The date icon visibility of the <code>DateTimePickerControlDisplayOptions</code>.</p>"
         }
       },
       "documentation":"<p>The display options of a control.</p>"
@@ -15556,6 +15968,29 @@
       },
       "documentation":"<p>With a <code>Filter</code>, you can remove portions of data from a particular visual or view.</p> <p>This is a union type structure. For this structure to be valid, only one of the attributes can be defined.</p>"
     },
+    "FilterAggMetrics":{
+      "type":"structure",
+      "members":{
+        "MetricOperand":{
+          "shape":"Identifier",
+          "documentation":"<p>The metric operand of the <code>FilterAggMetrics</code>.</p>"
+        },
+        "Function":{
+          "shape":"AggType",
+          "documentation":"<p>The function for the <code>FilterAggMetrics</code>.</p>"
+        },
+        "SortDirection":{
+          "shape":"TopicSortDirection",
+          "documentation":"<p>The sort direction for <code>FilterAggMetrics</code>.</p>"
+        }
+      },
+      "documentation":"<p>The definition for the <code>FilterAggMetrics</code>.</p>"
+    },
+    "FilterAggMetricsList":{
+      "type":"list",
+      "member":{"shape":"FilterAggMetrics"},
+      "max":100
+    },
     "FilterClass":{
       "type":"string",
       "enum":[
@@ -18049,6 +18484,17 @@
         "X"
       ]
     },
+    "Identifier":{
+      "type":"structure",
+      "required":["Identity"],
+      "members":{
+        "Identity":{
+          "shape":"LimitedString",
+          "documentation":"<p>The identity of the identifier.</p>"
+        }
+      },
+      "documentation":"<p>The definition for the identifier.</p>"
+    },
     "IdentityCenterConfiguration":{
       "type":"structure",
       "members":{
@@ -18553,6 +18999,24 @@
       "documentation":"<p>You don't have this feature activated for your account. To fix this issue, contact Amazon Web Services support.</p>",
       "error":{"httpStatusCode":400},
       "exception":true
+    },
+    "InvalidTopicReviewedAnswer":{
+      "type":"structure",
+      "members":{
+        "AnswerId":{
+          "shape":"AnswerId",
+          "documentation":"<p>The answer ID for the <code>InvalidTopicReviewedAnswer</code>.</p>"
+        },
+        "Error":{
+          "shape":"ReviewedAnswerErrorCode",
+          "documentation":"<p>The error that is returned for the <code>InvalidTopicReviewedAnswer</code>.</p>"
+        }
+      },
+      "documentation":"<p>The definition for a <code>InvalidTopicReviewedAnswer</code>.</p>"
+    },
+    "InvalidTopicReviewedAnswers":{
+      "type":"list",
+      "member":{"shape":"InvalidTopicReviewedAnswer"}
     },
     "IpRestrictionRuleDescription":{
       "type":"string",
@@ -20757,6 +21221,53 @@
         }
       }
     },
+    "ListTopicReviewedAnswersRequest":{
+      "type":"structure",
+      "required":[
+        "AwsAccountId",
+        "TopicId"
+      ],
+      "members":{
+        "AwsAccountId":{
+          "shape":"AwsAccountId",
+          "documentation":"<p>The ID of the Amazon Web Services account that containd the reviewed answers that you want listed.</p>",
+          "location":"uri",
+          "locationName":"AwsAccountId"
+        },
+        "TopicId":{
+          "shape":"TopicId",
+          "documentation":"<p>The ID for the topic that contains the reviewed answer that you want to list. This ID is unique per Amazon Web Services Region for each Amazon Web Services account.</p>",
+          "location":"uri",
+          "locationName":"TopicId"
+        }
+      }
+    },
+    "ListTopicReviewedAnswersResponse":{
+      "type":"structure",
+      "members":{
+        "TopicId":{
+          "shape":"TopicId",
+          "documentation":"<p>The ID for the topic that contains the reviewed answer that you want to list. This ID is unique per Amazon Web Services Region for each Amazon Web Services account.</p>"
+        },
+        "TopicArn":{
+          "shape":"Arn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the topic.</p>"
+        },
+        "Answers":{
+          "shape":"TopicReviewedAnswers",
+          "documentation":"<p>The definition of all Answers in the topic.</p>"
+        },
+        "Status":{
+          "shape":"StatusCode",
+          "documentation":"<p>The HTTP status of the request.</p>",
+          "location":"statusCode"
+        },
+        "RequestId":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Web Services request ID for this operation.</p>"
+        }
+      }
+    },
     "ListTopicsRequest":{
       "type":"structure",
       "required":["AwsAccountId"],
@@ -21443,6 +21954,16 @@
       "type":"list",
       "member":{"shape":"NamedEntityDefinition"}
     },
+    "NamedEntityRef":{
+      "type":"structure",
+      "members":{
+        "NamedEntityName":{
+          "shape":"LimitedString",
+          "documentation":"<p>The <code>NamedEntityName</code> for the <code>NamedEntityRef</code>.</p>"
+        }
+      },
+      "documentation":"<p>The definition for a <code>NamedEntityRef</code>.</p>"
+    },
     "NamedFilterAggType":{
       "type":"string",
       "enum":[
@@ -21684,6 +22205,14 @@
       "type":"list",
       "member":{"shape":"ShortRestrictiveResourceId"},
       "max":20
+    },
+    "NullFilterOption":{
+      "type":"string",
+      "enum":[
+        "ALL_VALUES",
+        "NON_NULLS_ONLY",
+        "NULLS_ONLY"
+      ]
     },
     "NullString":{
       "type":"string",
@@ -22030,6 +22559,11 @@
       "type":"string",
       "max":512,
       "min":1
+    },
+    "OperandList":{
+      "type":"list",
+      "member":{"shape":"Identifier"},
+      "max":25
     },
     "OptionalPort":{
       "type":"integer",
@@ -24735,6 +25269,18 @@
       "min":1,
       "pattern":"[\\w\\-]+"
     },
+    "ReviewedAnswerErrorCode":{
+      "type":"string",
+      "enum":[
+        "INTERNAL_ERROR",
+        "MISSING_ANSWER",
+        "DATASET_DOES_NOT_EXIST",
+        "INVALID_DATASET_ARN",
+        "DUPLICATED_ANSWER",
+        "INVALID_DATA",
+        "MISSING_REQUIRED_FIELDS"
+      ]
+    },
     "Role":{
       "type":"string",
       "enum":[
@@ -26433,6 +26979,24 @@
       },
       "documentation":"<p>The display options of a control.</p>"
     },
+    "Slot":{
+      "type":"structure",
+      "members":{
+        "SlotId":{
+          "shape":"LimitedString",
+          "documentation":"<p>The slot ID of the slot.</p>"
+        },
+        "VisualId":{
+          "shape":"LimitedString",
+          "documentation":"<p>The visual ID for the slot.</p>"
+        }
+      },
+      "documentation":"<p>The definition for the slot.</p>"
+    },
+    "Slots":{
+      "type":"list",
+      "member":{"shape":"Slot"}
+    },
     "SmallMultiplesAxisPlacement":{
       "type":"string",
       "enum":[
@@ -27344,6 +27908,20 @@
         }
       },
       "documentation":"<p>The subtotal options.</p>"
+    },
+    "SucceededTopicReviewedAnswer":{
+      "type":"structure",
+      "members":{
+        "AnswerId":{
+          "shape":"AnswerId",
+          "documentation":"<p>The answer ID for the <code>SucceededTopicReviewedAnswer</code>.</p>"
+        }
+      },
+      "documentation":"<p>The definition for a <code>SucceededTopicReviewedAnswer</code>.</p>"
+    },
+    "SucceededTopicReviewedAnswers":{
+      "type":"list",
+      "member":{"shape":"SucceededTopicReviewedAnswer"}
     },
     "SuccessfulKeyRegistrationEntries":{
       "type":"list",
@@ -29247,6 +29825,32 @@
       "type":"list",
       "member":{"shape":"TopicColumn"}
     },
+    "TopicConstantValue":{
+      "type":"structure",
+      "members":{
+        "ConstantType":{
+          "shape":"ConstantType",
+          "documentation":"<p>The constant type of a <code>TopicConstantValue</code>.</p>"
+        },
+        "Value":{
+          "shape":"ConstantValueString",
+          "documentation":"<p>The value of the <code>TopicConstantValue</code>.</p>"
+        },
+        "Minimum":{
+          "shape":"ConstantValueString",
+          "documentation":"<p>The minimum for the <code>TopicConstantValue</code>.</p>"
+        },
+        "Maximum":{
+          "shape":"ConstantValueString",
+          "documentation":"<p>The maximum for the <code>TopicConstantValue</code>.</p>"
+        },
+        "ValueList":{
+          "shape":"CollectiveConstantEntryList",
+          "documentation":"<p>The value list of the <code>TopicConstantValue</code>.</p>"
+        }
+      },
+      "documentation":"<p>The definition for a <code>TopicConstantValue</code>.</p>"
+    },
     "TopicDateRangeFilter":{
       "type":"structure",
       "members":{
@@ -29340,6 +29944,269 @@
     "TopicFilters":{
       "type":"list",
       "member":{"shape":"TopicFilter"}
+    },
+    "TopicIR":{
+      "type":"structure",
+      "members":{
+        "Metrics":{
+          "shape":"TopicIRMetricList",
+          "documentation":"<p>The metrics for the <code>TopicIR</code>.</p>"
+        },
+        "GroupByList":{
+          "shape":"TopicIRGroupByList",
+          "documentation":"<p>The GroupBy list for the <code>TopicIR</code>.</p>"
+        },
+        "Filters":{
+          "shape":"TopicIRFilterList",
+          "documentation":"<p>The filters for the <code>TopicIR</code>.</p>"
+        },
+        "Sort":{
+          "shape":"TopicSortClause",
+          "documentation":"<p>The sort for the <code>TopicIR</code>.</p>"
+        },
+        "ContributionAnalysis":{
+          "shape":"TopicIRContributionAnalysis",
+          "documentation":"<p>The contribution analysis for the <code>TopicIR</code>.</p>"
+        },
+        "Visual":{
+          "shape":"VisualOptions",
+          "documentation":"<p>The visual for the <code>TopicIR</code>.</p>"
+        }
+      },
+      "documentation":"<p>The definition for a <code>TopicIR</code>.</p>"
+    },
+    "TopicIRComparisonMethod":{
+      "type":"structure",
+      "members":{
+        "Type":{
+          "shape":"ComparisonMethodType",
+          "documentation":"<p>The type for the <code>TopicIRComparisonMethod</code>.</p>"
+        },
+        "Period":{
+          "shape":"TopicTimeGranularity",
+          "documentation":"<p>The period for the <code>TopicIRComparisonMethod</code>.</p>"
+        },
+        "WindowSize":{
+          "shape":"Integer",
+          "documentation":"<p>The window size for the <code>TopicIRComparisonMethod</code>.</p>"
+        }
+      },
+      "documentation":"<p>The definition of a <code>TopicIRComparisonMethod</code>.</p>"
+    },
+    "TopicIRContributionAnalysis":{
+      "type":"structure",
+      "members":{
+        "Factors":{
+          "shape":"ContributionAnalysisFactorsList",
+          "documentation":"<p>The factors for a <code>TopicIRContributionAnalysis</code>.</p>"
+        },
+        "TimeRanges":{
+          "shape":"ContributionAnalysisTimeRanges",
+          "documentation":"<p>The time ranges for the <code>TopicIRContributionAnalysis</code>.</p>"
+        },
+        "Direction":{
+          "shape":"ContributionAnalysisDirection",
+          "documentation":"<p>The direction for the <code>TopicIRContributionAnalysis</code>.</p>"
+        },
+        "SortType":{
+          "shape":"ContributionAnalysisSortType",
+          "documentation":"<p>The sort type for the <code>TopicIRContributionAnalysis</code>.</p>"
+        }
+      },
+      "documentation":"<p>The definition for a <code>TopicIRContributionAnalysis</code>.</p>"
+    },
+    "TopicIRFilterEntry":{
+      "type":"list",
+      "member":{"shape":"TopicIRFilterOption"},
+      "max":2000
+    },
+    "TopicIRFilterFunction":{
+      "type":"string",
+      "enum":[
+        "CONTAINS",
+        "EXACT",
+        "STARTS_WITH",
+        "ENDS_WITH",
+        "CONTAINS_STRING",
+        "PREVIOUS",
+        "THIS",
+        "LAST",
+        "NEXT",
+        "NOW"
+      ]
+    },
+    "TopicIRFilterList":{
+      "type":"list",
+      "member":{"shape":"TopicIRFilterEntry"},
+      "max":2000
+    },
+    "TopicIRFilterOption":{
+      "type":"structure",
+      "members":{
+        "FilterType":{
+          "shape":"TopicIRFilterType",
+          "documentation":"<p>The filter type for the <code>TopicIRFilterOption</code>.</p>"
+        },
+        "FilterClass":{
+          "shape":"FilterClass",
+          "documentation":"<p>The filter class for the <code>TopicIRFilterOption</code>.</p>"
+        },
+        "OperandField":{
+          "shape":"Identifier",
+          "documentation":"<p>The operand field for the <code>TopicIRFilterOption</code>.</p>"
+        },
+        "Function":{
+          "shape":"TopicIRFilterFunction",
+          "documentation":"<p>The function for the <code>TopicIRFilterOption</code>.</p>"
+        },
+        "Constant":{
+          "shape":"TopicConstantValue",
+          "documentation":"<p>The constant for the <code>TopicIRFilterOption</code>.</p>"
+        },
+        "Inverse":{
+          "shape":"Boolean",
+          "documentation":"<p>The inverse for the <code>TopicIRFilterOption</code>.</p>"
+        },
+        "NullFilter":{
+          "shape":"NullFilterOption",
+          "documentation":"<p>The null filter for the <code>TopicIRFilterOption</code>.</p>"
+        },
+        "Aggregation":{
+          "shape":"AggType",
+          "documentation":"<p>The aggregation for the <code>TopicIRFilterOption</code>.</p>"
+        },
+        "AggregationFunctionParameters":{
+          "shape":"AggFunctionParamMap",
+          "documentation":"<p>The aggregation function parameters for the <code>TopicIRFilterOption</code>.</p>"
+        },
+        "AggregationPartitionBy":{
+          "shape":"AggregationPartitionByList",
+          "documentation":"<p>The <code>AggregationPartitionBy</code> for the <code>TopicIRFilterOption</code>.</p>"
+        },
+        "Range":{
+          "shape":"TopicConstantValue",
+          "documentation":"<p>The range for the <code>TopicIRFilterOption</code>.</p>"
+        },
+        "Inclusive":{
+          "shape":"Boolean",
+          "documentation":"<p>The inclusive for the <code>TopicIRFilterOption</code>.</p>"
+        },
+        "TimeGranularity":{
+          "shape":"TimeGranularity",
+          "documentation":"<p>The time granularity for the <code>TopicIRFilterOption</code>.</p>"
+        },
+        "LastNextOffset":{
+          "shape":"TopicConstantValue",
+          "documentation":"<p>The last next offset for the <code>TopicIRFilterOption</code>.</p>"
+        },
+        "AggMetrics":{
+          "shape":"FilterAggMetricsList",
+          "documentation":"<p>The agg metrics for the <code>TopicIRFilterOption</code>.</p>"
+        },
+        "TopBottomLimit":{
+          "shape":"TopicConstantValue",
+          "documentation":"<p>The <code>TopBottomLimit</code> for the <code>TopicIRFilterOption</code>.</p>"
+        },
+        "SortDirection":{
+          "shape":"TopicSortDirection",
+          "documentation":"<p>The sort direction for the <code>TopicIRFilterOption</code>.</p>"
+        },
+        "Anchor":{
+          "shape":"Anchor",
+          "documentation":"<p>The anchor for the <code>TopicIRFilterOption</code>.</p>"
+        }
+      },
+      "documentation":"<p>The definition for a <code>TopicIRFilterOption</code>.</p>"
+    },
+    "TopicIRFilterType":{
+      "type":"string",
+      "enum":[
+        "CATEGORY_FILTER",
+        "NUMERIC_EQUALITY_FILTER",
+        "NUMERIC_RANGE_FILTER",
+        "DATE_RANGE_FILTER",
+        "RELATIVE_DATE_FILTER",
+        "TOP_BOTTOM_FILTER",
+        "EQUALS",
+        "RANK_LIMIT_FILTER",
+        "ACCEPT_ALL_FILTER"
+      ]
+    },
+    "TopicIRGroupBy":{
+      "type":"structure",
+      "members":{
+        "FieldName":{
+          "shape":"Identifier",
+          "documentation":"<p>The field name for the <code>TopicIRGroupBy</code>.</p>"
+        },
+        "TimeGranularity":{
+          "shape":"TopicTimeGranularity",
+          "documentation":"<p>The time granularity for the <code>TopicIRGroupBy</code>.</p>"
+        },
+        "Sort":{
+          "shape":"TopicSortClause",
+          "documentation":"<p>The sort for the <code>TopicIRGroupBy</code>.</p>"
+        },
+        "DisplayFormat":{
+          "shape":"DisplayFormat",
+          "documentation":"<p>The display format for the <code>TopicIRGroupBy</code>.</p>"
+        },
+        "DisplayFormatOptions":{"shape":"DisplayFormatOptions"},
+        "NamedEntity":{
+          "shape":"NamedEntityRef",
+          "documentation":"<p>The named entity for the <code>TopicIRGroupBy</code>.</p>"
+        }
+      },
+      "documentation":"<p>The definition for a <code>TopicIRGroupBy</code>.</p>"
+    },
+    "TopicIRGroupByList":{
+      "type":"list",
+      "member":{"shape":"TopicIRGroupBy"},
+      "max":2000
+    },
+    "TopicIRMetric":{
+      "type":"structure",
+      "members":{
+        "MetricId":{
+          "shape":"Identifier",
+          "documentation":"<p>The metric ID for the <code>TopicIRMetric</code>.</p>"
+        },
+        "Function":{
+          "shape":"AggFunction",
+          "documentation":"<p>The function for the <code>TopicIRMetric</code>.</p>"
+        },
+        "Operands":{
+          "shape":"OperandList",
+          "documentation":"<p>The operands for the <code>TopicIRMetric</code>.</p>"
+        },
+        "ComparisonMethod":{
+          "shape":"TopicIRComparisonMethod",
+          "documentation":"<p>The comparison method for the <code>TopicIRMetric</code>.</p>"
+        },
+        "Expression":{
+          "shape":"Expression",
+          "documentation":"<p>The expression for the <code>TopicIRMetric</code>.</p>"
+        },
+        "CalculatedFieldReferences":{
+          "shape":"CalculatedFieldReferenceList",
+          "documentation":"<p>The calculated field references for the <code>TopicIRMetric</code>.</p>"
+        },
+        "DisplayFormat":{
+          "shape":"DisplayFormat",
+          "documentation":"<p>The display format for the <code>TopicIRMetric</code>.</p>"
+        },
+        "DisplayFormatOptions":{"shape":"DisplayFormatOptions"},
+        "NamedEntity":{
+          "shape":"NamedEntityRef",
+          "documentation":"<p>The named entity for the <code>TopicIRMetric</code>.</p>"
+        }
+      },
+      "documentation":"<p>The definition for a <code>TopicIRMetric</code>.</p>"
+    },
+    "TopicIRMetricList":{
+      "type":"list",
+      "member":{"shape":"TopicIRMetric"},
+      "max":2000
     },
     "TopicId":{
       "type":"string",
@@ -29547,6 +30414,49 @@
         "NOW"
       ]
     },
+    "TopicReviewedAnswer":{
+      "type":"structure",
+      "required":[
+        "AnswerId",
+        "DatasetArn",
+        "Question"
+      ],
+      "members":{
+        "Arn":{
+          "shape":"Arn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the reviewed answer.</p>"
+        },
+        "AnswerId":{
+          "shape":"AnswerId",
+          "documentation":"<p>The answer ID of the reviewed answer.</p>"
+        },
+        "DatasetArn":{
+          "shape":"Arn",
+          "documentation":"<p>The Dataset ARN for the <code>TopicReviewedAnswer</code>.</p>"
+        },
+        "Question":{
+          "shape":"LimitedString",
+          "documentation":"<p>The question for the <code>TopicReviewedAnswer</code>.</p>"
+        },
+        "Mir":{
+          "shape":"TopicIR",
+          "documentation":"<p>The mir for the <code>TopicReviewedAnswer</code>.</p>"
+        },
+        "PrimaryVisual":{
+          "shape":"TopicVisual",
+          "documentation":"<p>The primary visual for the <code>TopicReviewedAnswer</code>.</p>"
+        },
+        "Template":{
+          "shape":"TopicTemplate",
+          "documentation":"<p>The template for the <code>TopicReviewedAnswer</code>.</p>"
+        }
+      },
+      "documentation":"<p>The deinition for a <code>TopicReviewedAnswer</code>.</p>"
+    },
+    "TopicReviewedAnswers":{
+      "type":"list",
+      "member":{"shape":"TopicReviewedAnswer"}
+    },
     "TopicScheduleType":{
       "type":"string",
       "enum":[
@@ -29570,6 +30480,27 @@
       },
       "documentation":"<p>A structure that represents a singular filter constant, used in filters to specify a single value to match against.</p>",
       "sensitive":true
+    },
+    "TopicSortClause":{
+      "type":"structure",
+      "members":{
+        "Operand":{
+          "shape":"Identifier",
+          "documentation":"<p>The operand for a <code>TopicSortClause</code>.</p>"
+        },
+        "SortDirection":{
+          "shape":"TopicSortDirection",
+          "documentation":"<p>The sort direction for the <code>TopicSortClause</code>.</p>"
+        }
+      },
+      "documentation":"<p>The definition for a <code>TopicSortClause</code>.</p>"
+    },
+    "TopicSortDirection":{
+      "type":"string",
+      "enum":[
+        "ASCENDING",
+        "DESCENDING"
+      ]
     },
     "TopicSummaries":{
       "type":"list",
@@ -29597,6 +30528,20 @@
       },
       "documentation":"<p>A topic summary.</p>"
     },
+    "TopicTemplate":{
+      "type":"structure",
+      "members":{
+        "TemplateType":{
+          "shape":"LimitedString",
+          "documentation":"<p>The template type for the <code>TopicTemplate</code>.</p>"
+        },
+        "Slots":{
+          "shape":"Slots",
+          "documentation":"<p>The slots for the <code>TopicTemplate</code>.</p>"
+        }
+      },
+      "documentation":"<p>The definition for a <code>TopicTemplate</code>.</p>"
+    },
     "TopicTimeGranularity":{
       "type":"string",
       "enum":[
@@ -29616,6 +30561,32 @@
         "LEGACY",
         "NEW_READER_EXPERIENCE"
       ]
+    },
+    "TopicVisual":{
+      "type":"structure",
+      "members":{
+        "VisualId":{
+          "shape":"LimitedString",
+          "documentation":"<p>The visual ID for the <code>TopicVisual</code>.</p>"
+        },
+        "Role":{
+          "shape":"VisualRole",
+          "documentation":"<p>The role for the <code>TopicVisual</code>.</p>"
+        },
+        "Ir":{
+          "shape":"TopicIR",
+          "documentation":"<p>The ir for the <code>TopicVisual</code>.</p>"
+        },
+        "SupportingVisuals":{
+          "shape":"TopicVisuals",
+          "documentation":"<p>The supporting visuals for the <code>TopicVisual</code>.</p>"
+        }
+      },
+      "documentation":"<p>The definition for a <code>TopicVisual</code>.</p>"
+    },
+    "TopicVisuals":{
+      "type":"list",
+      "member":{"shape":"TopicVisual"}
     },
     "TotalAggregationComputation":{
       "type":"structure",
@@ -32606,6 +33577,16 @@
       },
       "documentation":"<p>The menu options for a visual.</p>"
     },
+    "VisualOptions":{
+      "type":"structure",
+      "members":{
+        "type":{
+          "shape":"LimitedString",
+          "documentation":"<p>The type for a <code>VisualOptions</code>.</p>"
+        }
+      },
+      "documentation":"<p>The definition for a <code>VisualOptions</code>.</p>"
+    },
     "VisualPalette":{
       "type":"structure",
       "members":{
@@ -32619,6 +33600,16 @@
         }
       },
       "documentation":"<p>The visual display options for the visual palette.</p>"
+    },
+    "VisualRole":{
+      "type":"string",
+      "enum":[
+        "PRIMARY",
+        "COMPLIMENTARY",
+        "MULTI_INTENT",
+        "FALLBACK",
+        "FRAGMENT"
+      ]
     },
     "VisualSubtitleLabelOptions":{
       "type":"structure",

@@ -60,7 +60,7 @@ def setup_module():
         },
         'ObjectOwnership': 'ObjectWriter'
     }
-    express_params = {
+    dir_bucket_params = {
         'Bucket': _SHARED_DIR_BUCKET,
         'CreateBucketConfiguration': {
             'Location': {
@@ -75,7 +75,7 @@ def setup_module():
     }
     try:
         s3.create_bucket(**params)
-        s3.create_bucket(**express_params)
+        s3.create_bucket(**dir_bucket_params)
     except Exception as e:
         # A create_bucket can fail for a number of reasons.
         # We're going to defer to the waiter below to make the
@@ -165,15 +165,15 @@ class BaseS3IntegrationTest(BaseS3CLICommand):
 
 class TestMoveCommand(BaseS3IntegrationTest):
     def assert_mv_local_to_s3(self, bucket_name):
-            full_path = self.files.create_file('foo.txt', 'this is foo.txt')
-            p = aws('s3 mv %s s3://%s/foo.txt' % (full_path,
-                                                  bucket_name))
-            self.assert_no_errors(p)
-            # When we move an object, the local file is gone:
-            self.assertTrue(not os.path.exists(full_path))
-            # And now resides in s3.
-            self.assert_key_contents_equal(bucket_name, 'foo.txt',
-                                           'this is foo.txt')
+        full_path = self.files.create_file('foo.txt', 'this is foo.txt')
+        p = aws('s3 mv %s s3://%s/foo.txt' % (full_path,
+                                                bucket_name))
+        self.assert_no_errors(p)
+        # When we move an object, the local file is gone:
+        self.assertTrue(not os.path.exists(full_path))
+        # And now resides in s3.
+        self.assert_key_contents_equal(bucket_name, 'foo.txt',
+                                        'this is foo.txt')
 
     def assert_mv_s3_to_local(self, bucket_name):
         self.put_object(bucket_name, 'foo.txt', 'this is foo.txt')

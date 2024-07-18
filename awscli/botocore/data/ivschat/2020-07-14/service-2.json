@@ -2,9 +2,10 @@
   "version":"2.0",
   "metadata":{
     "apiVersion":"2020-07-14",
+    "auth":["aws.auth#sigv4"],
     "endpointPrefix":"ivschat",
-    "jsonVersion":"1.1",
     "protocol":"rest-json",
+    "protocols":["rest-json"],
     "serviceAbbreviation":"ivschat",
     "serviceFullName":"Amazon Interactive Video Service Chat",
     "serviceId":"ivschat",
@@ -321,7 +322,7 @@
       "type":"string",
       "max":63,
       "min":3,
-      "pattern":"^[a-z0-9-.]+$"
+      "pattern":"[a-z0-9-.]+"
     },
     "ChatToken":{
       "type":"string",
@@ -388,35 +389,31 @@
         "userId"
       ],
       "members":{
-        "attributes":{
-          "shape":"ChatTokenAttributes",
-          "documentation":"<p>Application-provided attributes to encode into the token and attach to a chat session. Map keys and values can contain UTF-8 encoded text. The maximum length of this field is 1 KB total.</p>"
+        "roomIdentifier":{
+          "shape":"RoomIdentifier",
+          "documentation":"<p>Identifier of the room that the client is trying to access. Currently this must be an ARN. </p>"
+        },
+        "userId":{
+          "shape":"UserID",
+          "documentation":"<p>Application-provided ID that uniquely identifies the user associated with this token. This can be any UTF-8 encoded text.</p>"
         },
         "capabilities":{
           "shape":"ChatTokenCapabilities",
           "documentation":"<p>Set of capabilities that the user is allowed to perform in the room. Default: None (the capability to view messages is implicitly included in all requests).</p>"
         },
-        "roomIdentifier":{
-          "shape":"RoomIdentifier",
-          "documentation":"<p>Identifier of the room that the client is trying to access. Currently this must be an ARN. </p>"
-        },
         "sessionDurationInMinutes":{
           "shape":"SessionDurationInMinutes",
           "documentation":"<p>Session duration (in minutes), after which the session expires. Default: 60 (1 hour).</p>"
         },
-        "userId":{
-          "shape":"UserID",
-          "documentation":"<p>Application-provided ID that uniquely identifies the user associated with this token. This can be any UTF-8 encoded text.</p>"
+        "attributes":{
+          "shape":"ChatTokenAttributes",
+          "documentation":"<p>Application-provided attributes to encode into the token and attach to a chat session. Map keys and values can contain UTF-8 encoded text. The maximum length of this field is 1 KB total.</p>"
         }
       }
     },
     "CreateChatTokenResponse":{
       "type":"structure",
       "members":{
-        "sessionExpirationTime":{
-          "shape":"Time",
-          "documentation":"<p>Time after which an end user's session is no longer valid. This is an ISO 8601 timestamp; <i>note that this is returned as a string</i>.</p>"
-        },
         "token":{
           "shape":"ChatToken",
           "documentation":"<p>The issued client token, encrypted.</p>"
@@ -424,6 +421,10 @@
         "tokenExpirationTime":{
           "shape":"Time",
           "documentation":"<p>Time after which the token is no longer valid and cannot be used to connect to a room. This is an ISO 8601 timestamp; <i>note that this is returned as a string</i>.</p>"
+        },
+        "sessionExpirationTime":{
+          "shape":"Time",
+          "documentation":"<p>Time after which an end user's session is no longer valid. This is an ISO 8601 timestamp; <i>note that this is returned as a string</i>.</p>"
         }
       }
     },
@@ -431,13 +432,13 @@
       "type":"structure",
       "required":["destinationConfiguration"],
       "members":{
-        "destinationConfiguration":{
-          "shape":"DestinationConfiguration",
-          "documentation":"<p>A complex type that contains a destination configuration for where chat content will be logged. There can be only one type of destination (<code>cloudWatchLogs</code>, <code>firehose</code>, or <code>s3</code>) in a <code>destinationConfiguration</code>.</p>"
-        },
         "name":{
           "shape":"LoggingConfigurationName",
           "documentation":"<p>Logging-configuration name. The value does not need to be unique.</p>"
+        },
+        "destinationConfiguration":{
+          "shape":"DestinationConfiguration",
+          "documentation":"<p>A complex type that contains a destination configuration for where chat content will be logged. There can be only one type of destination (<code>cloudWatchLogs</code>, <code>firehose</code>, or <code>s3</code>) in a <code>destinationConfiguration</code>.</p>"
         },
         "tags":{
           "shape":"Tags",
@@ -452,21 +453,25 @@
           "shape":"LoggingConfigurationArn",
           "documentation":"<p>Logging-configuration ARN, assigned by the system.</p>"
         },
-        "createTime":{
-          "shape":"Time",
-          "documentation":"<p>Time when the logging configuration was created. This is an ISO 8601 timestamp; <i>note that this is returned as a string</i>.</p>"
-        },
-        "destinationConfiguration":{
-          "shape":"DestinationConfiguration",
-          "documentation":"<p>A complex type that contains a destination configuration for where chat content will be logged, from the request. There is only one type of destination (<code>cloudWatchLogs</code>, <code>firehose</code>, or <code>s3</code>) in a <code>destinationConfiguration</code>.</p>"
-        },
         "id":{
           "shape":"LoggingConfigurationID",
           "documentation":"<p>Logging-configuration ID, generated by the system. This is a relative identifier, the part of the ARN that uniquely identifies the logging configuration.</p>"
         },
+        "createTime":{
+          "shape":"Time",
+          "documentation":"<p>Time when the logging configuration was created. This is an ISO 8601 timestamp; <i>note that this is returned as a string</i>.</p>"
+        },
+        "updateTime":{
+          "shape":"Time",
+          "documentation":"<p>Time of the logging configuration’s last update. This is an ISO 8601 timestamp; <i>note that this is returned as a string</i>.</p>"
+        },
         "name":{
           "shape":"LoggingConfigurationName",
           "documentation":"<p>Logging-configuration name, from the request (if specified).</p>"
+        },
+        "destinationConfiguration":{
+          "shape":"DestinationConfiguration",
+          "documentation":"<p>A complex type that contains a destination configuration for where chat content will be logged, from the request. There is only one type of destination (<code>cloudWatchLogs</code>, <code>firehose</code>, or <code>s3</code>) in a <code>destinationConfiguration</code>.</p>"
         },
         "state":{
           "shape":"CreateLoggingConfigurationState",
@@ -475,10 +480,6 @@
         "tags":{
           "shape":"Tags",
           "documentation":"<p>Tags attached to the resource, from the request (if specified). Array of maps, each of the form <code>string:string (key:value)</code>.</p>"
-        },
-        "updateTime":{
-          "shape":"Time",
-          "documentation":"<p>Time of the logging configuration’s last update. This is an ISO 8601 timestamp; <i>note that this is returned as a string</i>.</p>"
         }
       }
     },
@@ -489,29 +490,29 @@
     "CreateRoomRequest":{
       "type":"structure",
       "members":{
-        "loggingConfigurationIdentifiers":{
-          "shape":"LoggingConfigurationIdentifierList",
-          "documentation":"<p>Array of logging-configuration identifiers attached to the room.</p>"
-        },
-        "maximumMessageLength":{
-          "shape":"RoomMaxMessageLength",
-          "documentation":"<p>Maximum number of characters in a single message. Messages are expected to be UTF-8 encoded and this limit applies specifically to rune/code-point count, not number of bytes. Default: 500.</p>"
+        "name":{
+          "shape":"RoomName",
+          "documentation":"<p>Room name. The value does not need to be unique.</p>"
         },
         "maximumMessageRatePerSecond":{
           "shape":"RoomMaxMessageRatePerSecond",
           "documentation":"<p>Maximum number of messages per second that can be sent to the room (by all clients). Default: 10. </p>"
         },
+        "maximumMessageLength":{
+          "shape":"RoomMaxMessageLength",
+          "documentation":"<p>Maximum number of characters in a single message. Messages are expected to be UTF-8 encoded and this limit applies specifically to rune/code-point count, not number of bytes. Default: 500.</p>"
+        },
         "messageReviewHandler":{
           "shape":"MessageReviewHandler",
           "documentation":"<p>Configuration information for optional review of messages.</p>"
         },
-        "name":{
-          "shape":"RoomName",
-          "documentation":"<p>Room name. The value does not need to be unique.</p>"
-        },
         "tags":{
           "shape":"Tags",
           "documentation":"<p>Tags to attach to the resource. Array of maps, each of the form <code>string:string (key:value)</code>. See <a href=\"https://docs.aws.amazon.com/general/latest/gr/aws_tagging.html\">Tagging AWS Resources</a> for details, including restrictions that apply to tags and \"Tag naming limits and requirements\"; Amazon IVS Chat has no constraints beyond what is documented there.</p>"
+        },
+        "loggingConfigurationIdentifiers":{
+          "shape":"LoggingConfigurationIdentifierList",
+          "documentation":"<p>Array of logging-configuration identifiers attached to the room.</p>"
         }
       }
     },
@@ -522,41 +523,41 @@
           "shape":"RoomArn",
           "documentation":"<p>Room ARN, assigned by the system.</p>"
         },
-        "createTime":{
-          "shape":"Time",
-          "documentation":"<p>Time when the room was created. This is an ISO 8601 timestamp; <i>note that this is returned as a string</i>.</p>"
-        },
         "id":{
           "shape":"RoomID",
           "documentation":"<p>Room ID, generated by the system. This is a relative identifier, the part of the ARN that uniquely identifies the room.</p>"
-        },
-        "loggingConfigurationIdentifiers":{
-          "shape":"LoggingConfigurationIdentifierList",
-          "documentation":"<p>Array of logging configurations attached to the room, from the request (if specified).</p>"
-        },
-        "maximumMessageLength":{
-          "shape":"RoomMaxMessageLength",
-          "documentation":"<p>Maximum number of characters in a single message, from the request (if specified).</p>"
-        },
-        "maximumMessageRatePerSecond":{
-          "shape":"RoomMaxMessageRatePerSecond",
-          "documentation":"<p>Maximum number of messages per second that can be sent to the room (by all clients), from the request (if specified).</p>"
-        },
-        "messageReviewHandler":{
-          "shape":"MessageReviewHandler",
-          "documentation":"<p>Configuration information for optional review of messages.</p>"
         },
         "name":{
           "shape":"RoomName",
           "documentation":"<p>Room name, from the request (if specified).</p>"
         },
-        "tags":{
-          "shape":"Tags",
-          "documentation":"<p>Tags attached to the resource, from the request (if specified).</p>"
+        "createTime":{
+          "shape":"Time",
+          "documentation":"<p>Time when the room was created. This is an ISO 8601 timestamp; <i>note that this is returned as a string</i>.</p>"
         },
         "updateTime":{
           "shape":"Time",
           "documentation":"<p>Time of the room’s last update. This is an ISO 8601 timestamp; <i>note that this is returned as a string</i>.</p>"
+        },
+        "maximumMessageRatePerSecond":{
+          "shape":"RoomMaxMessageRatePerSecond",
+          "documentation":"<p>Maximum number of messages per second that can be sent to the room (by all clients), from the request (if specified).</p>"
+        },
+        "maximumMessageLength":{
+          "shape":"RoomMaxMessageLength",
+          "documentation":"<p>Maximum number of characters in a single message, from the request (if specified).</p>"
+        },
+        "messageReviewHandler":{
+          "shape":"MessageReviewHandler",
+          "documentation":"<p>Configuration information for optional review of messages.</p>"
+        },
+        "tags":{
+          "shape":"Tags",
+          "documentation":"<p>Tags attached to the resource, from the request (if specified).</p>"
+        },
+        "loggingConfigurationIdentifiers":{
+          "shape":"LoggingConfigurationIdentifierList",
+          "documentation":"<p>Array of logging configurations attached to the room, from the request (if specified).</p>"
         }
       }
     },
@@ -573,10 +574,14 @@
     "DeleteMessageRequest":{
       "type":"structure",
       "required":[
-        "id",
-        "roomIdentifier"
+        "roomIdentifier",
+        "id"
       ],
       "members":{
+        "roomIdentifier":{
+          "shape":"RoomIdentifier",
+          "documentation":"<p>Identifier of the room where the message should be deleted. Currently this must be an ARN. </p>"
+        },
         "id":{
           "shape":"MessageID",
           "documentation":"<p>ID of the message to be deleted. This is the <code>Id</code> field in the received message (see <a href=\"https://docs.aws.amazon.com/ivs/latest/chatmsgapireference/actions-message-subscribe.html\"> Message (Subscribe)</a> in the Chat Messaging API).</p>"
@@ -584,10 +589,6 @@
         "reason":{
           "shape":"Reason",
           "documentation":"<p>Reason for deleting the message.</p>"
-        },
-        "roomIdentifier":{
-          "shape":"RoomIdentifier",
-          "documentation":"<p>Identifier of the room where the message should be deleted. Currently this must be an ARN. </p>"
         }
       }
     },
@@ -614,11 +615,15 @@
       "type":"string",
       "max":64,
       "min":1,
-      "pattern":"^[a-zA-Z0-9_.-]+$"
+      "pattern":"[a-zA-Z0-9_.-]+"
     },
     "DestinationConfiguration":{
       "type":"structure",
       "members":{
+        "s3":{
+          "shape":"S3DestinationConfiguration",
+          "documentation":"<p>An Amazon S3 destination configuration where chat activity will be logged.</p>"
+        },
         "cloudWatchLogs":{
           "shape":"CloudWatchLogsDestinationConfiguration",
           "documentation":"<p>An Amazon CloudWatch Logs destination configuration where chat activity will be logged.</p>"
@@ -626,10 +631,6 @@
         "firehose":{
           "shape":"FirehoseDestinationConfiguration",
           "documentation":"<p>An Amazon Kinesis Data Firehose destination configuration where chat activity will be logged.</p>"
-        },
-        "s3":{
-          "shape":"S3DestinationConfiguration",
-          "documentation":"<p>An Amazon S3 destination configuration where chat activity will be logged.</p>"
         }
       },
       "documentation":"<p>A complex type that describes a location where chat logs will be stored. Each member represents the configuration of one log destination. For logging, you define only one type of destination (for CloudWatch Logs, Kinesis Firehose, or S3).</p>",
@@ -642,10 +643,6 @@
         "userId"
       ],
       "members":{
-        "reason":{
-          "shape":"Reason",
-          "documentation":"<p>Reason for disconnecting the user.</p>"
-        },
         "roomIdentifier":{
           "shape":"RoomIdentifier",
           "documentation":"<p>Identifier of the room from which the user's clients should be disconnected. Currently this must be an ARN.</p>"
@@ -653,6 +650,10 @@
         "userId":{
           "shape":"UserID",
           "documentation":"<p>ID of the user (connection) to disconnect from the room.</p>"
+        },
+        "reason":{
+          "shape":"Reason",
+          "documentation":"<p>Reason for disconnecting the user.</p>"
         }
       }
     },
@@ -708,21 +709,25 @@
           "shape":"LoggingConfigurationArn",
           "documentation":"<p>Logging-configuration ARN, from the request (if <code>identifier</code> was an ARN).</p>"
         },
-        "createTime":{
-          "shape":"Time",
-          "documentation":"<p>Time when the logging configuration was created. This is an ISO 8601 timestamp; <i>note that this is returned as a string</i>.</p>"
-        },
-        "destinationConfiguration":{
-          "shape":"DestinationConfiguration",
-          "documentation":"<p>A complex type that contains a destination configuration for where chat content will be logged. There is only one type of destination (<code>cloudWatchLogs</code>, <code>firehose</code>, or <code>s3</code>) in a <code>destinationConfiguration</code>.</p>"
-        },
         "id":{
           "shape":"LoggingConfigurationID",
           "documentation":"<p>Logging-configuration ID, generated by the system. This is a relative identifier, the part of the ARN that uniquely identifies the logging configuration.</p>"
         },
+        "createTime":{
+          "shape":"Time",
+          "documentation":"<p>Time when the logging configuration was created. This is an ISO 8601 timestamp; <i>note that this is returned as a string</i>.</p>"
+        },
+        "updateTime":{
+          "shape":"Time",
+          "documentation":"<p>Time of the logging configuration’s last update. This is an ISO 8601 timestamp; <i>note that this is returned as a string</i>.</p>"
+        },
         "name":{
           "shape":"LoggingConfigurationName",
           "documentation":"<p>Logging-configuration name. This value does not need to be unique.</p>"
+        },
+        "destinationConfiguration":{
+          "shape":"DestinationConfiguration",
+          "documentation":"<p>A complex type that contains a destination configuration for where chat content will be logged. There is only one type of destination (<code>cloudWatchLogs</code>, <code>firehose</code>, or <code>s3</code>) in a <code>destinationConfiguration</code>.</p>"
         },
         "state":{
           "shape":"LoggingConfigurationState",
@@ -731,10 +736,6 @@
         "tags":{
           "shape":"Tags",
           "documentation":"<p>Tags attached to the resource. Array of maps, each of the form <code>string:string (key:value)</code>.</p>"
-        },
-        "updateTime":{
-          "shape":"Time",
-          "documentation":"<p>Time of the logging configuration’s last update. This is an ISO 8601 timestamp; <i>note that this is returned as a string</i>.</p>"
         }
       }
     },
@@ -755,41 +756,41 @@
           "shape":"RoomArn",
           "documentation":"<p>Room ARN, from the request (if <code>identifier</code> was an ARN).</p>"
         },
-        "createTime":{
-          "shape":"Time",
-          "documentation":"<p>Time when the room was created. This is an ISO 8601 timestamp; <i>note that this is returned as a string</i>.</p>"
-        },
         "id":{
           "shape":"RoomID",
           "documentation":"<p>Room ID, generated by the system. This is a relative identifier, the part of the ARN that uniquely identifies the room.</p>"
-        },
-        "loggingConfigurationIdentifiers":{
-          "shape":"LoggingConfigurationIdentifierList",
-          "documentation":"<p>Array of logging configurations attached to the room.</p>"
-        },
-        "maximumMessageLength":{
-          "shape":"RoomMaxMessageLength",
-          "documentation":"<p>Maximum number of characters in a single message. Messages are expected to be UTF-8 encoded and this limit applies specifically to rune/code-point count, not number of bytes. Default: 500.</p>"
-        },
-        "maximumMessageRatePerSecond":{
-          "shape":"RoomMaxMessageRatePerSecond",
-          "documentation":"<p>Maximum number of messages per second that can be sent to the room (by all clients). Default: 10.</p>"
-        },
-        "messageReviewHandler":{
-          "shape":"MessageReviewHandler",
-          "documentation":"<p>Configuration information for optional review of messages.</p>"
         },
         "name":{
           "shape":"RoomName",
           "documentation":"<p>Room name. The value does not need to be unique.</p>"
         },
-        "tags":{
-          "shape":"Tags",
-          "documentation":"<p>Tags attached to the resource. Array of maps, each of the form <code>string:string (key:value)</code>.</p>"
+        "createTime":{
+          "shape":"Time",
+          "documentation":"<p>Time when the room was created. This is an ISO 8601 timestamp; <i>note that this is returned as a string</i>.</p>"
         },
         "updateTime":{
           "shape":"Time",
           "documentation":"<p>Time of the room’s last update. This is an ISO 8601 timestamp; <i>note that this is returned as a string</i>.</p>"
+        },
+        "maximumMessageRatePerSecond":{
+          "shape":"RoomMaxMessageRatePerSecond",
+          "documentation":"<p>Maximum number of messages per second that can be sent to the room (by all clients). Default: 10.</p>"
+        },
+        "maximumMessageLength":{
+          "shape":"RoomMaxMessageLength",
+          "documentation":"<p>Maximum number of characters in a single message. Messages are expected to be UTF-8 encoded and this limit applies specifically to rune/code-point count, not number of bytes. Default: 500.</p>"
+        },
+        "messageReviewHandler":{
+          "shape":"MessageReviewHandler",
+          "documentation":"<p>Configuration information for optional review of messages.</p>"
+        },
+        "tags":{
+          "shape":"Tags",
+          "documentation":"<p>Tags attached to the resource. Array of maps, each of the form <code>string:string (key:value)</code>.</p>"
+        },
+        "loggingConfigurationIdentifiers":{
+          "shape":"LoggingConfigurationIdentifierList",
+          "documentation":"<p>Array of logging configurations attached to the room.</p>"
         }
       }
     },
@@ -797,7 +798,7 @@
       "type":"string",
       "max":12,
       "min":12,
-      "pattern":"^[a-zA-Z0-9]+$"
+      "pattern":"[a-zA-Z0-9]+"
     },
     "InternalServerException":{
       "type":"structure",
@@ -814,19 +815,19 @@
       "type":"string",
       "max":170,
       "min":0,
-      "pattern":"^$|^arn:aws:lambda:[a-z0-9-]+:[0-9]{12}:function:.+"
+      "pattern":"$|^arn:aws:lambda:[a-z0-9-]+:[0-9]{12}:function:.+.*"
     },
     "Limit":{"type":"integer"},
     "ListLoggingConfigurationsRequest":{
       "type":"structure",
       "members":{
-        "maxResults":{
-          "shape":"MaxLoggingConfigurationResults",
-          "documentation":"<p>Maximum number of logging configurations to return. Default: 50.</p>"
-        },
         "nextToken":{
           "shape":"PaginationToken",
           "documentation":"<p>The first logging configurations to retrieve. This is used for pagination; see the <code>nextToken</code> response field.</p>"
+        },
+        "maxResults":{
+          "shape":"MaxLoggingConfigurationResults",
+          "documentation":"<p>Maximum number of logging configurations to return. Default: 50.</p>"
         }
       }
     },
@@ -847,9 +848,13 @@
     "ListRoomsRequest":{
       "type":"structure",
       "members":{
-        "loggingConfigurationIdentifier":{
-          "shape":"LoggingConfigurationIdentifier",
-          "documentation":"<p>Logging-configuration identifier.</p>"
+        "name":{
+          "shape":"RoomName",
+          "documentation":"<p>Filters the list to match the specified room name.</p>"
+        },
+        "nextToken":{
+          "shape":"PaginationToken",
+          "documentation":"<p>The first room to retrieve. This is used for pagination; see the <code>nextToken</code> response field.</p>"
         },
         "maxResults":{
           "shape":"MaxRoomResults",
@@ -859,13 +864,9 @@
           "shape":"LambdaArn",
           "documentation":"<p>Filters the list to match the specified message review handler URI.</p>"
         },
-        "name":{
-          "shape":"RoomName",
-          "documentation":"<p>Filters the list to match the specified room name.</p>"
-        },
-        "nextToken":{
-          "shape":"PaginationToken",
-          "documentation":"<p>The first room to retrieve. This is used for pagination; see the <code>nextToken</code> response field.</p>"
+        "loggingConfigurationIdentifier":{
+          "shape":"LoggingConfigurationIdentifier",
+          "documentation":"<p>Logging-configuration identifier.</p>"
         }
       }
     },
@@ -873,13 +874,13 @@
       "type":"structure",
       "required":["rooms"],
       "members":{
-        "nextToken":{
-          "shape":"PaginationToken",
-          "documentation":"<p>If there are more rooms than <code>maxResults</code>, use <code>nextToken</code> in the request to get the next set.</p>"
-        },
         "rooms":{
           "shape":"RoomList",
           "documentation":"<p>List of the matching rooms (summary information only).</p>"
+        },
+        "nextToken":{
+          "shape":"PaginationToken",
+          "documentation":"<p>If there are more rooms than <code>maxResults</code>, use <code>nextToken</code> in the request to get the next set.</p>"
         }
       }
     },
@@ -909,25 +910,25 @@
       "type":"string",
       "max":512,
       "min":1,
-      "pattern":"^[\\.\\-_/#A-Za-z0-9]+$"
+      "pattern":"[\\.\\-_/#A-Za-z0-9]+"
     },
     "LoggingConfigurationArn":{
       "type":"string",
       "max":128,
       "min":1,
-      "pattern":"^arn:aws:ivschat:[a-z0-9-]+:[0-9]+:logging-configuration/[a-zA-Z0-9-]+$"
+      "pattern":"arn:aws:ivschat:[a-z0-9-]+:[0-9]+:logging-configuration/[a-zA-Z0-9-]+"
     },
     "LoggingConfigurationID":{
       "type":"string",
       "max":12,
       "min":12,
-      "pattern":"^[a-zA-Z0-9]+$"
+      "pattern":"[a-zA-Z0-9]+"
     },
     "LoggingConfigurationIdentifier":{
       "type":"string",
       "max":128,
       "min":1,
-      "pattern":"^arn:aws:ivschat:[a-z0-9-]+:[0-9]+:logging-configuration/[a-zA-Z0-9-]+$"
+      "pattern":"arn:aws:ivschat:[a-z0-9-]+:[0-9]+:logging-configuration/[a-zA-Z0-9-]+"
     },
     "LoggingConfigurationIdentifierList":{
       "type":"list",
@@ -943,7 +944,7 @@
       "type":"string",
       "max":128,
       "min":0,
-      "pattern":"^[a-zA-Z0-9-_]*$"
+      "pattern":"[a-zA-Z0-9-_]*"
     },
     "LoggingConfigurationState":{
       "type":"string",
@@ -964,21 +965,25 @@
           "shape":"LoggingConfigurationArn",
           "documentation":"<p>Logging-configuration ARN.</p>"
         },
-        "createTime":{
-          "shape":"Time",
-          "documentation":"<p>Time when the logging configuration was created. This is an ISO 8601 timestamp; <i>note that this is returned as a string</i>.</p>"
-        },
-        "destinationConfiguration":{
-          "shape":"DestinationConfiguration",
-          "documentation":"<p>A complex type that contains a destination configuration for where chat content will be logged.</p>"
-        },
         "id":{
           "shape":"LoggingConfigurationID",
           "documentation":"<p>Logging-configuration ID, generated by the system. This is a relative identifier, the part of the ARN that uniquely identifies the room.</p>"
         },
+        "createTime":{
+          "shape":"Time",
+          "documentation":"<p>Time when the logging configuration was created. This is an ISO 8601 timestamp; <i>note that this is returned as a string</i>.</p>"
+        },
+        "updateTime":{
+          "shape":"Time",
+          "documentation":"<p>Time of the logging configuration’s last update. This is an ISO 8601 timestamp; <i>note that this is returned as a string</i>.</p>"
+        },
         "name":{
           "shape":"LoggingConfigurationName",
           "documentation":"<p>Logging-configuration name. The value does not need to be unique.</p>"
+        },
+        "destinationConfiguration":{
+          "shape":"DestinationConfiguration",
+          "documentation":"<p>A complex type that contains a destination configuration for where chat content will be logged.</p>"
         },
         "state":{
           "shape":"LoggingConfigurationState",
@@ -987,10 +992,6 @@
         "tags":{
           "shape":"Tags",
           "documentation":"<p>Tags to attach to the resource. Array of maps, each of the form <code>string:string (key:value)</code>. See <a href=\"https://docs.aws.amazon.com/general/latest/gr/aws_tagging.html\">Tagging AWS Resources</a> for details, including restrictions that apply to tags and \"Tag naming limits and requirements\"; Amazon IVS Chat has no constraints on tags beyond what is documented there.</p>"
-        },
-        "updateTime":{
-          "shape":"Time",
-          "documentation":"<p>Time of the logging configuration’s last update. This is an ISO 8601 timestamp; <i>note that this is returned as a string</i>.</p>"
         }
       },
       "documentation":"<p>Summary information about a logging configuration.</p>"
@@ -1011,18 +1012,18 @@
       "type":"string",
       "max":12,
       "min":12,
-      "pattern":"^[a-zA-Z0-9]+$"
+      "pattern":"[a-zA-Z0-9]+"
     },
     "MessageReviewHandler":{
       "type":"structure",
       "members":{
-        "fallbackResult":{
-          "shape":"FallbackResult",
-          "documentation":"<p>Specifies the fallback behavior (whether the message is allowed or denied) if the handler does not return a valid response, encounters an error, or times out. (For the timeout period, see <a href=\"https://docs.aws.amazon.com/ivs/latest/userguide/service-quotas.html\"> Service Quotas</a>.) If allowed, the message is delivered with returned content to all users connected to the room. If denied, the message is not delivered to any user. Default: <code>ALLOW</code>.</p>"
-        },
         "uri":{
           "shape":"LambdaArn",
           "documentation":"<p>Identifier of the message review handler. Currently this must be an ARN of a lambda function.</p>"
+        },
+        "fallbackResult":{
+          "shape":"FallbackResult",
+          "documentation":"<p>Specifies the fallback behavior (whether the message is allowed or denied) if the handler does not return a valid response, encounters an error, or times out. (For the timeout period, see <a href=\"https://docs.aws.amazon.com/ivs/latest/userguide/service-quotas.html\"> Service Quotas</a>.) If allowed, the message is delivered with returned content to all users connected to the room. If denied, the message is not delivered to any user. Default: <code>ALLOW</code>.</p>"
         }
       },
       "documentation":"<p>Configuration information for optional message review.</p>"
@@ -1054,11 +1055,11 @@
       "type":"string",
       "max":128,
       "min":1,
-      "pattern":"^arn:aws:ivschat:[a-z0-9-]+:[0-9]+:[a-z-]/[a-zA-Z0-9-]+$"
+      "pattern":"arn:aws:ivschat:[a-z0-9-]+:[0-9]+:[a-z-]/[a-zA-Z0-9-]+"
     },
     "ResourceId":{
       "type":"string",
-      "pattern":"^[a-zA-Z0-9]+$"
+      "pattern":"[a-zA-Z0-9]+"
     },
     "ResourceNotFoundException":{
       "type":"structure",
@@ -1093,19 +1094,19 @@
       "type":"string",
       "max":128,
       "min":1,
-      "pattern":"^arn:aws:ivschat:[a-z0-9-]+:[0-9]+:room/[a-zA-Z0-9-]+$"
+      "pattern":"arn:aws:ivschat:[a-z0-9-]+:[0-9]+:room/[a-zA-Z0-9-]+"
     },
     "RoomID":{
       "type":"string",
       "max":12,
       "min":12,
-      "pattern":"^[a-zA-Z0-9]+$"
+      "pattern":"[a-zA-Z0-9]+"
     },
     "RoomIdentifier":{
       "type":"string",
       "max":128,
       "min":1,
-      "pattern":"^arn:aws:ivschat:[a-z0-9-]+:[0-9]+:room/[a-zA-Z0-9-]+$"
+      "pattern":"arn:aws:ivschat:[a-z0-9-]+:[0-9]+:room/[a-zA-Z0-9-]+"
     },
     "RoomList":{
       "type":"list",
@@ -1127,7 +1128,7 @@
       "type":"string",
       "max":128,
       "min":0,
-      "pattern":"^[a-zA-Z0-9-_]*$"
+      "pattern":"[a-zA-Z0-9-_]*"
     },
     "RoomSummary":{
       "type":"structure",
@@ -1136,33 +1137,33 @@
           "shape":"RoomArn",
           "documentation":"<p>Room ARN.</p>"
         },
-        "createTime":{
-          "shape":"Time",
-          "documentation":"<p>Time when the room was created. This is an ISO 8601 timestamp; <i>note that this is returned as a string</i>. </p>"
-        },
         "id":{
           "shape":"RoomID",
           "documentation":"<p>Room ID, generated by the system. This is a relative identifier, the part of the ARN that uniquely identifies the room.</p>"
-        },
-        "loggingConfigurationIdentifiers":{
-          "shape":"LoggingConfigurationIdentifierList",
-          "documentation":"<p>List of logging-configuration identifiers attached to the room.</p>"
-        },
-        "messageReviewHandler":{
-          "shape":"MessageReviewHandler",
-          "documentation":"<p>Configuration information for optional review of messages.</p>"
         },
         "name":{
           "shape":"RoomName",
           "documentation":"<p>Room name. The value does not need to be unique.</p>"
         },
-        "tags":{
-          "shape":"Tags",
-          "documentation":"<p>Tags attached to the resource. Array of maps, each of the form <code>string:string (key:value)</code>. See <a href=\"https://docs.aws.amazon.com/general/latest/gr/aws_tagging.html\">Tagging AWS Resources</a> for details, including restrictions that apply to tags and \"Tag naming limits and requirements\"; Amazon IVS Chat has no constraints beyond what is documented there.</p>"
+        "messageReviewHandler":{
+          "shape":"MessageReviewHandler",
+          "documentation":"<p>Configuration information for optional review of messages.</p>"
+        },
+        "createTime":{
+          "shape":"Time",
+          "documentation":"<p>Time when the room was created. This is an ISO 8601 timestamp; <i>note that this is returned as a string</i>. </p>"
         },
         "updateTime":{
           "shape":"Time",
           "documentation":"<p>Time of the room’s last update. This is an ISO 8601 timestamp; <i>note that this is returned as a string</i>. </p>"
+        },
+        "tags":{
+          "shape":"Tags",
+          "documentation":"<p>Tags attached to the resource. Array of maps, each of the form <code>string:string (key:value)</code>. See <a href=\"https://docs.aws.amazon.com/general/latest/gr/aws_tagging.html\">Tagging AWS Resources</a> for details, including restrictions that apply to tags and \"Tag naming limits and requirements\"; Amazon IVS Chat has no constraints beyond what is documented there.</p>"
+        },
+        "loggingConfigurationIdentifiers":{
+          "shape":"LoggingConfigurationIdentifierList",
+          "documentation":"<p>List of logging-configuration identifiers attached to the room.</p>"
         }
       },
       "documentation":"<p>Summary information about a room.</p>"
@@ -1181,21 +1182,21 @@
     "SendEventRequest":{
       "type":"structure",
       "required":[
-        "eventName",
-        "roomIdentifier"
+        "roomIdentifier",
+        "eventName"
       ],
       "members":{
-        "attributes":{
-          "shape":"EventAttributes",
-          "documentation":"<p>Application-defined metadata to attach to the event sent to clients. The maximum length of the metadata is 1 KB total.</p>"
+        "roomIdentifier":{
+          "shape":"RoomIdentifier",
+          "documentation":"<p>Identifier of the room to which the event will be sent. Currently this must be an ARN.</p>"
         },
         "eventName":{
           "shape":"EventName",
           "documentation":"<p>Application-defined name of the event to send to clients.</p>"
         },
-        "roomIdentifier":{
-          "shape":"RoomIdentifier",
-          "documentation":"<p>Identifier of the room to which the event will be sent. Currently this must be an ARN.</p>"
+        "attributes":{
+          "shape":"EventAttributes",
+          "documentation":"<p>Application-defined metadata to attach to the event sent to clients. The maximum length of the metadata is 1 KB total.</p>"
         }
       }
     },
@@ -1211,16 +1212,12 @@
     "ServiceQuotaExceededException":{
       "type":"structure",
       "required":[
-        "limit",
         "message",
         "resourceId",
-        "resourceType"
+        "resourceType",
+        "limit"
       ],
       "members":{
-        "limit":{
-          "shape":"Limit",
-          "documentation":"<p/>"
-        },
         "message":{"shape":"ErrorMessage"},
         "resourceId":{
           "shape":"ResourceId",
@@ -1228,6 +1225,10 @@
         },
         "resourceType":{
           "shape":"ResourceType",
+          "documentation":"<p/>"
+        },
+        "limit":{
+          "shape":"Limit",
           "documentation":"<p/>"
         }
       },
@@ -1295,16 +1296,12 @@
     "ThrottlingException":{
       "type":"structure",
       "required":[
-        "limit",
         "message",
         "resourceId",
-        "resourceType"
+        "resourceType",
+        "limit"
       ],
       "members":{
-        "limit":{
-          "shape":"Limit",
-          "documentation":"<p/>"
-        },
         "message":{"shape":"ErrorMessage"},
         "resourceId":{
           "shape":"ResourceId",
@@ -1312,6 +1309,10 @@
         },
         "resourceType":{
           "shape":"ResourceType",
+          "documentation":"<p/>"
+        },
+        "limit":{
+          "shape":"Limit",
           "documentation":"<p/>"
         }
       },
@@ -1356,10 +1357,6 @@
       "type":"structure",
       "required":["identifier"],
       "members":{
-        "destinationConfiguration":{
-          "shape":"DestinationConfiguration",
-          "documentation":"<p>A complex type that contains a destination configuration for where chat content will be logged. There can be only one type of destination (<code>cloudWatchLogs</code>, <code>firehose</code>, or <code>s3</code>) in a <code>destinationConfiguration</code>.</p>"
-        },
         "identifier":{
           "shape":"LoggingConfigurationIdentifier",
           "documentation":"<p>Identifier of the logging configuration to be updated.</p>"
@@ -1367,6 +1364,10 @@
         "name":{
           "shape":"LoggingConfigurationName",
           "documentation":"<p>Logging-configuration name. The value does not need to be unique.</p>"
+        },
+        "destinationConfiguration":{
+          "shape":"DestinationConfiguration",
+          "documentation":"<p>A complex type that contains a destination configuration for where chat content will be logged. There can be only one type of destination (<code>cloudWatchLogs</code>, <code>firehose</code>, or <code>s3</code>) in a <code>destinationConfiguration</code>.</p>"
         }
       }
     },
@@ -1377,21 +1378,25 @@
           "shape":"LoggingConfigurationArn",
           "documentation":"<p>Logging-configuration ARN, from the request (if <code>identifier</code> was an ARN).</p>"
         },
-        "createTime":{
-          "shape":"Time",
-          "documentation":"<p>Time when the logging configuration was created. This is an ISO 8601 timestamp; <i>note that this is returned as a string</i>.</p>"
-        },
-        "destinationConfiguration":{
-          "shape":"DestinationConfiguration",
-          "documentation":"<p>A complex type that contains a destination configuration for where chat content will be logged, from the request. There is only one type of destination (<code>cloudWatchLogs</code>, <code>firehose</code>, or <code>s3</code>) in a <code>destinationConfiguration</code>.</p>"
-        },
         "id":{
           "shape":"LoggingConfigurationID",
           "documentation":"<p>Logging-configuration ID, generated by the system. This is a relative identifier, the part of the ARN that uniquely identifies the room.</p>"
         },
+        "createTime":{
+          "shape":"Time",
+          "documentation":"<p>Time when the logging configuration was created. This is an ISO 8601 timestamp; <i>note that this is returned as a string</i>.</p>"
+        },
+        "updateTime":{
+          "shape":"Time",
+          "documentation":"<p>Time of the logging configuration’s last update. This is an ISO 8601 timestamp; <i>note that this is returned as a string</i>.</p>"
+        },
         "name":{
           "shape":"LoggingConfigurationName",
           "documentation":"<p>Logging-configuration name, from the request (if specified).</p>"
+        },
+        "destinationConfiguration":{
+          "shape":"DestinationConfiguration",
+          "documentation":"<p>A complex type that contains a destination configuration for where chat content will be logged, from the request. There is only one type of destination (<code>cloudWatchLogs</code>, <code>firehose</code>, or <code>s3</code>) in a <code>destinationConfiguration</code>.</p>"
         },
         "state":{
           "shape":"UpdateLoggingConfigurationState",
@@ -1400,10 +1405,6 @@
         "tags":{
           "shape":"Tags",
           "documentation":"<p>Tags attached to the resource. Array of maps, each of the form <code>string:string (key:value)</code>. </p>"
-        },
-        "updateTime":{
-          "shape":"Time",
-          "documentation":"<p>Time of the logging configuration’s last update. This is an ISO 8601 timestamp; <i>note that this is returned as a string</i>.</p>"
         }
       }
     },
@@ -1419,25 +1420,25 @@
           "shape":"RoomIdentifier",
           "documentation":"<p>Identifier of the room to be updated. Currently this must be an ARN.</p>"
         },
-        "loggingConfigurationIdentifiers":{
-          "shape":"LoggingConfigurationIdentifierList",
-          "documentation":"<p>Array of logging-configuration identifiers attached to the room.</p>"
-        },
-        "maximumMessageLength":{
-          "shape":"RoomMaxMessageLength",
-          "documentation":"<p>The maximum number of characters in a single message. Messages are expected to be UTF-8 encoded and this limit applies specifically to rune/code-point count, not number of bytes. Default: 500.</p>"
+        "name":{
+          "shape":"RoomName",
+          "documentation":"<p>Room name. The value does not need to be unique.</p>"
         },
         "maximumMessageRatePerSecond":{
           "shape":"RoomMaxMessageRatePerSecond",
           "documentation":"<p>Maximum number of messages per second that can be sent to the room (by all clients). Default: 10.</p>"
         },
+        "maximumMessageLength":{
+          "shape":"RoomMaxMessageLength",
+          "documentation":"<p>The maximum number of characters in a single message. Messages are expected to be UTF-8 encoded and this limit applies specifically to rune/code-point count, not number of bytes. Default: 500.</p>"
+        },
         "messageReviewHandler":{
           "shape":"MessageReviewHandler",
           "documentation":"<p>Configuration information for optional review of messages. Specify an empty <code>uri</code> string to disassociate a message review handler from the specified room.</p>"
         },
-        "name":{
-          "shape":"RoomName",
-          "documentation":"<p>Room name. The value does not need to be unique.</p>"
+        "loggingConfigurationIdentifiers":{
+          "shape":"LoggingConfigurationIdentifierList",
+          "documentation":"<p>Array of logging-configuration identifiers attached to the room.</p>"
         }
       }
     },
@@ -1448,41 +1449,41 @@
           "shape":"RoomArn",
           "documentation":"<p>Room ARN, from the request (if <code>identifier</code> was an ARN).</p>"
         },
-        "createTime":{
-          "shape":"Time",
-          "documentation":"<p>Time when the room was created. This is an ISO 8601 timestamp; <i>note that this is returned as a string</i>.</p>"
-        },
         "id":{
           "shape":"RoomID",
           "documentation":"<p>Room ID, generated by the system. This is a relative identifier, the part of the ARN that uniquely identifies the room.</p>"
-        },
-        "loggingConfigurationIdentifiers":{
-          "shape":"LoggingConfigurationIdentifierList",
-          "documentation":"<p>Array of logging configurations attached to the room, from the request (if specified).</p>"
-        },
-        "maximumMessageLength":{
-          "shape":"RoomMaxMessageLength",
-          "documentation":"<p>Maximum number of characters in a single message, from the request (if specified).</p>"
-        },
-        "maximumMessageRatePerSecond":{
-          "shape":"RoomMaxMessageRatePerSecond",
-          "documentation":"<p>Maximum number of messages per second that can be sent to the room (by all clients), from the request (if specified).</p>"
-        },
-        "messageReviewHandler":{
-          "shape":"MessageReviewHandler",
-          "documentation":"<p>Configuration information for optional review of messages.</p>"
         },
         "name":{
           "shape":"RoomName",
           "documentation":"<p>Room name, from the request (if specified).</p>"
         },
-        "tags":{
-          "shape":"Tags",
-          "documentation":"<p>Tags attached to the resource. Array of maps, each of the form <code>string:string (key:value)</code>.</p>"
+        "createTime":{
+          "shape":"Time",
+          "documentation":"<p>Time when the room was created. This is an ISO 8601 timestamp; <i>note that this is returned as a string</i>.</p>"
         },
         "updateTime":{
           "shape":"Time",
           "documentation":"<p>Time of the room’s last update. This is an ISO 8601 timestamp; <i>note that this is returned as a string</i>.</p>"
+        },
+        "maximumMessageRatePerSecond":{
+          "shape":"RoomMaxMessageRatePerSecond",
+          "documentation":"<p>Maximum number of messages per second that can be sent to the room (by all clients), from the request (if specified).</p>"
+        },
+        "maximumMessageLength":{
+          "shape":"RoomMaxMessageLength",
+          "documentation":"<p>Maximum number of characters in a single message, from the request (if specified).</p>"
+        },
+        "messageReviewHandler":{
+          "shape":"MessageReviewHandler",
+          "documentation":"<p>Configuration information for optional review of messages.</p>"
+        },
+        "tags":{
+          "shape":"Tags",
+          "documentation":"<p>Tags attached to the resource. Array of maps, each of the form <code>string:string (key:value)</code>.</p>"
+        },
+        "loggingConfigurationIdentifiers":{
+          "shape":"LoggingConfigurationIdentifierList",
+          "documentation":"<p>Array of logging configurations attached to the room, from the request (if specified).</p>"
         }
       }
     },
@@ -1499,13 +1500,13 @@
         "reason"
       ],
       "members":{
-        "fieldList":{
-          "shape":"ValidationExceptionFieldList",
-          "documentation":"<p/>"
-        },
         "message":{"shape":"ErrorMessage"},
         "reason":{
           "shape":"ValidationExceptionReason",
+          "documentation":"<p/>"
+        },
+        "fieldList":{
+          "shape":"ValidationExceptionFieldList",
           "documentation":"<p/>"
         }
       },
@@ -1519,17 +1520,17 @@
     "ValidationExceptionField":{
       "type":"structure",
       "required":[
-        "message",
-        "name"
+        "name",
+        "message"
       ],
       "members":{
-        "message":{
-          "shape":"ErrorMessage",
-          "documentation":"<p>Explanation of the reason for the validation error.</p>"
-        },
         "name":{
           "shape":"FieldName",
           "documentation":"<p>Name of the field which failed validation.</p>"
+        },
+        "message":{
+          "shape":"ErrorMessage",
+          "documentation":"<p>Explanation of the reason for the validation error.</p>"
         }
       },
       "documentation":"<p>This object is used in the ValidationException error.</p>"
@@ -1547,5 +1548,5 @@
       ]
     }
   },
-  "documentation":"<p> <b>Introduction</b> </p> <p>The Amazon IVS Chat control-plane API enables you to create and manage Amazon IVS Chat resources. You also need to integrate with the <a href=\"https://docs.aws.amazon.com/ivs/latest/chatmsgapireference/chat-messaging-api.html\"> Amazon IVS Chat Messaging API</a>, to enable users to interact with chat rooms in real time.</p> <p>The API is an AWS regional service. For a list of supported regions and Amazon IVS Chat HTTPS service endpoints, see the Amazon IVS Chat information on the <a href=\"https://docs.aws.amazon.com/general/latest/gr/ivs.html\">Amazon IVS page</a> in the <i>AWS General Reference</i>. </p> <p> <b>Notes on terminology:</b> </p> <ul> <li> <p>You create service applications using the Amazon IVS Chat API. We refer to these as <i>applications</i>.</p> </li> <li> <p>You create front-end client applications (browser and Android/iOS apps) using the Amazon IVS Chat Messaging API. We refer to these as <i>clients</i>. </p> </li> </ul> <p> <b>Key Concepts</b> </p> <ul> <li> <p> <b>LoggingConfiguration</b> — A configuration that allows customers to store and record sent messages in a chat room.</p> </li> <li> <p> <b>Room</b> — The central Amazon IVS Chat resource through which clients connect to and exchange chat messages.</p> </li> </ul> <p> <b>Tagging</b> </p> <p>A <i>tag</i> is a metadata label that you assign to an AWS resource. A tag comprises a <i>key</i> and a <i>value</i>, both set by you. For example, you might set a tag as <code>topic:nature</code> to label a particular video category. See <a href=\"https://docs.aws.amazon.com/general/latest/gr/aws_tagging.html\">Tagging AWS Resources</a> for more information, including restrictions that apply to tags and \"Tag naming limits and requirements\"; Amazon IVS Chat has no service-specific constraints beyond what is documented there.</p> <p>Tags can help you identify and organize your AWS resources. For example, you can use the same tag for different resources to indicate that they are related. You can also use tags to manage access (see <a href=\"https://docs.aws.amazon.com/IAM/latest/UserGuide/access_tags.html\">Access Tags</a>).</p> <p>The Amazon IVS Chat API has these tag-related endpoints: <a>TagResource</a>, <a>UntagResource</a>, and <a>ListTagsForResource</a>. The following resource supports tagging: Room.</p> <p>At most 50 tags can be applied to a resource.</p> <p> <b>API Access Security</b> </p> <p>Your Amazon IVS Chat applications (service applications and clients) must be authenticated and authorized to access Amazon IVS Chat resources. Note the differences between these concepts:</p> <ul> <li> <p> <i>Authentication</i> is about verifying identity. Requests to the Amazon IVS Chat API must be signed to verify your identity.</p> </li> <li> <p> <i>Authorization</i> is about granting permissions. Your IAM roles need to have permissions for Amazon IVS Chat API requests.</p> </li> </ul> <p>Users (viewers) connect to a room using secure access tokens that you create using the <a>CreateChatToken</a> endpoint through the AWS SDK. You call CreateChatToken for every user’s chat session, passing identity and authorization information about the user.</p> <p> <b>Signing API Requests</b> </p> <p>HTTP API requests must be signed with an AWS SigV4 signature using your AWS security credentials. The AWS Command Line Interface (CLI) and the AWS SDKs take care of signing the underlying API calls for you. However, if your application calls the Amazon IVS Chat HTTP API directly, it’s your responsibility to sign the requests.</p> <p>You generate a signature using valid AWS credentials for an IAM role that has permission to perform the requested action. For example, DeleteMessage requests must be made using an IAM role that has the <code>ivschat:DeleteMessage</code> permission.</p> <p>For more information:</p> <ul> <li> <p>Authentication and generating signatures — See <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/API/sig-v4-authenticating-requests.html\">Authenticating Requests (Amazon Web Services Signature Version 4)</a> in the <i>Amazon Web Services General Reference</i>.</p> </li> <li> <p>Managing Amazon IVS permissions — See <a href=\"https://docs.aws.amazon.com/ivs/latest/userguide/security-iam.html\">Identity and Access Management</a> on the Security page of the <i>Amazon IVS User Guide</i>.</p> </li> </ul> <p> <b>Amazon Resource Names (ARNs)</b> </p> <p>ARNs uniquely identify AWS resources. An ARN is required when you need to specify a resource unambiguously across all of AWS, such as in IAM policies and API calls. For more information, see <a href=\"https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html\">Amazon Resource Names</a> in the <i>AWS General Reference</i>.</p> <p> <b>Messaging Endpoints</b> </p> <ul> <li> <p> <a>DeleteMessage</a> — Sends an event to a specific room which directs clients to delete a specific message; that is, unrender it from view and delete it from the client’s chat history. This event’s <code>EventName</code> is <code>aws:DELETE_MESSAGE</code>. This replicates the <a href=\"https://docs.aws.amazon.com/ivs/latest/chatmsgapireference/actions-deletemessage-publish.html\"> DeleteMessage</a> WebSocket operation in the Amazon IVS Chat Messaging API.</p> </li> <li> <p> <a>DisconnectUser</a> — Disconnects all connections using a specified user ID from a room. This replicates the <a href=\"https://docs.aws.amazon.com/ivs/latest/chatmsgapireference/actions-disconnectuser-publish.html\"> DisconnectUser</a> WebSocket operation in the Amazon IVS Chat Messaging API.</p> </li> <li> <p> <a>SendEvent</a> — Sends an event to a room. Use this within your application’s business logic to send events to clients of a room; e.g., to notify clients to change the way the chat UI is rendered.</p> </li> </ul> <p> <b>Chat Token Endpoint</b> </p> <ul> <li> <p> <a>CreateChatToken</a> — Creates an encrypted token that is used by a chat participant to establish an individual WebSocket chat connection to a room. When the token is used to connect to chat, the connection is valid for the session duration specified in the request. The token becomes invalid at the token-expiration timestamp included in the response.</p> </li> </ul> <p> <b>Room Endpoints</b> </p> <ul> <li> <p> <a>CreateRoom</a> — Creates a room that allows clients to connect and pass messages.</p> </li> <li> <p> <a>DeleteRoom</a> — Deletes the specified room.</p> </li> <li> <p> <a>GetRoom</a> — Gets the specified room.</p> </li> <li> <p> <a>ListRooms</a> — Gets summary information about all your rooms in the AWS region where the API request is processed. </p> </li> <li> <p> <a>UpdateRoom</a> — Updates a room’s configuration.</p> </li> </ul> <p> <b>Logging Configuration Endpoints</b> </p> <ul> <li> <p> <a>CreateLoggingConfiguration</a> — Creates a logging configuration that allows clients to store and record sent messages.</p> </li> <li> <p> <a>DeleteLoggingConfiguration</a> — Deletes the specified logging configuration.</p> </li> <li> <p> <a>GetLoggingConfiguration</a> — Gets the specified logging configuration.</p> </li> <li> <p> <a>ListLoggingConfigurations</a> — Gets summary information about all your logging configurations in the AWS region where the API request is processed.</p> </li> <li> <p> <a>UpdateLoggingConfiguration</a> — Updates a specified logging configuration.</p> </li> </ul> <p> <b>Tags Endpoints</b> </p> <ul> <li> <p> <a>ListTagsForResource</a> — Gets information about AWS tags for the specified ARN.</p> </li> <li> <p> <a>TagResource</a> — Adds or updates tags for the AWS resource with the specified ARN.</p> </li> <li> <p> <a>UntagResource</a> — Removes tags from the resource with the specified ARN.</p> </li> </ul> <p>All the above are HTTP operations. There is a separate <i>messaging</i> API for managing Chat resources; see the <a href=\"https://docs.aws.amazon.com/ivs/latest/chatmsgapireference/chat-messaging-api.html\"> Amazon IVS Chat Messaging API Reference</a>.</p>"
+  "documentation":"<p> <b>Introduction</b> </p> <p>The Amazon IVS Chat control-plane API enables you to create and manage Amazon IVS Chat resources. You also need to integrate with the <a href=\"https://docs.aws.amazon.com/ivs/latest/chatmsgapireference/chat-messaging-api.html\"> Amazon IVS Chat Messaging API</a>, to enable users to interact with chat rooms in real time.</p> <p>The API is an AWS regional service. For a list of supported regions and Amazon IVS Chat HTTPS service endpoints, see the Amazon IVS Chat information on the <a href=\"https://docs.aws.amazon.com/general/latest/gr/ivs.html\">Amazon IVS page</a> in the <i>AWS General Reference</i>. </p> <p>This document describes HTTP operations. There is a separate <i>messaging</i> API for managing Chat resources; see the <a href=\"https://docs.aws.amazon.com/ivs/latest/chatmsgapireference/chat-messaging-api.html\"> Amazon IVS Chat Messaging API Reference</a>.</p> <p> <b>Notes on terminology:</b> </p> <ul> <li> <p>You create service applications using the Amazon IVS Chat API. We refer to these as <i>applications</i>.</p> </li> <li> <p>You create front-end client applications (browser and Android/iOS apps) using the Amazon IVS Chat Messaging API. We refer to these as <i>clients</i>. </p> </li> </ul> <p> <b>Resources</b> </p> <p>The following resources are part of Amazon IVS Chat:</p> <ul> <li> <p> <b>LoggingConfiguration</b> — A configuration that allows customers to store and record sent messages in a chat room. See the Logging Configuration endpoints for more information.</p> </li> <li> <p> <b>Room</b> — The central Amazon IVS Chat resource through which clients connect to and exchange chat messages. See the Room endpoints for more information.</p> </li> </ul> <p> <b>Tagging</b> </p> <p>A <i>tag</i> is a metadata label that you assign to an AWS resource. A tag comprises a <i>key</i> and a <i>value</i>, both set by you. For example, you might set a tag as <code>topic:nature</code> to label a particular video category. See <a href=\"https://docs.aws.amazon.com/general/latest/gr/aws_tagging.html\">Tagging AWS Resources</a> for more information, including restrictions that apply to tags and \"Tag naming limits and requirements\"; Amazon IVS Chat has no service-specific constraints beyond what is documented there.</p> <p>Tags can help you identify and organize your AWS resources. For example, you can use the same tag for different resources to indicate that they are related. You can also use tags to manage access (see <a href=\"https://docs.aws.amazon.com/IAM/latest/UserGuide/access_tags.html\">Access Tags</a>).</p> <p>The Amazon IVS Chat API has these tag-related endpoints: <a>TagResource</a>, <a>UntagResource</a>, and <a>ListTagsForResource</a>. The following resource supports tagging: Room.</p> <p>At most 50 tags can be applied to a resource.</p> <p> <b>API Access Security</b> </p> <p>Your Amazon IVS Chat applications (service applications and clients) must be authenticated and authorized to access Amazon IVS Chat resources. Note the differences between these concepts:</p> <ul> <li> <p> <i>Authentication</i> is about verifying identity. Requests to the Amazon IVS Chat API must be signed to verify your identity.</p> </li> <li> <p> <i>Authorization</i> is about granting permissions. Your IAM roles need to have permissions for Amazon IVS Chat API requests.</p> </li> </ul> <p>Users (viewers) connect to a room using secure access tokens that you create using the <a>CreateChatToken</a> endpoint through the AWS SDK. You call CreateChatToken for every user’s chat session, passing identity and authorization information about the user.</p> <p> <b>Signing API Requests</b> </p> <p>HTTP API requests must be signed with an AWS SigV4 signature using your AWS security credentials. The AWS Command Line Interface (CLI) and the AWS SDKs take care of signing the underlying API calls for you. However, if your application calls the Amazon IVS Chat HTTP API directly, it’s your responsibility to sign the requests.</p> <p>You generate a signature using valid AWS credentials for an IAM role that has permission to perform the requested action. For example, DeleteMessage requests must be made using an IAM role that has the <code>ivschat:DeleteMessage</code> permission.</p> <p>For more information:</p> <ul> <li> <p>Authentication and generating signatures — See <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/API/sig-v4-authenticating-requests.html\">Authenticating Requests (Amazon Web Services Signature Version 4)</a> in the <i>Amazon Web Services General Reference</i>.</p> </li> <li> <p>Managing Amazon IVS permissions — See <a href=\"https://docs.aws.amazon.com/ivs/latest/userguide/security-iam.html\">Identity and Access Management</a> on the Security page of the <i>Amazon IVS User Guide</i>.</p> </li> </ul> <p> <b>Amazon Resource Names (ARNs)</b> </p> <p>ARNs uniquely identify AWS resources. An ARN is required when you need to specify a resource unambiguously across all of AWS, such as in IAM policies and API calls. For more information, see <a href=\"https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html\">Amazon Resource Names</a> in the <i>AWS General Reference</i>.</p>"
 }

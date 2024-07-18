@@ -639,6 +639,16 @@
       },
       "documentation":"<p>Describes hints for the buffering to perform before delivering data to the destination. These options are treated as hints, and therefore Firehose might choose to use different values when it is optimal. The <code>SizeInMBs</code> and <code>IntervalInSeconds</code> parameters are optional. However, if specify a value for one of them, you must also provide a value for the other.</p>"
     },
+    "CatalogConfiguration":{
+      "type":"structure",
+      "members":{
+        "CatalogARN":{
+          "shape":"GlueDataCatalogARN",
+          "documentation":"<p> Specifies the Glue catalog ARN indentifier of the destination Apache Iceberg Tables. You must specify the ARN in the format <code>arn:aws:glue:region:account-id:catalog</code>. </p> <p>Amazon Data Firehose is in preview release and is subject to change.</p>"
+        }
+      },
+      "documentation":"<p> Describes the containers where the destination Apache Iceberg Tables are persisted. </p> <p>Amazon Data Firehose is in preview release and is subject to change.</p>"
+    },
     "CloudWatchLoggingOptions":{
       "type":"structure",
       "members":{
@@ -789,6 +799,10 @@
         "SnowflakeDestinationConfiguration":{
           "shape":"SnowflakeDestinationConfiguration",
           "documentation":"<p>Configure Snowflake destination</p>"
+        },
+        "IcebergDestinationConfiguration":{
+          "shape":"IcebergDestinationConfiguration",
+          "documentation":"<p> Configure Apache Iceberg Tables destination. </p> <p>Amazon Data Firehose is in preview release and is subject to change.</p>"
         }
       }
     },
@@ -1133,6 +1147,10 @@
         "AmazonOpenSearchServerlessDestinationDescription":{
           "shape":"AmazonOpenSearchServerlessDestinationDescription",
           "documentation":"<p>The destination in the Serverless offering for Amazon OpenSearch Service.</p>"
+        },
+        "IcebergDestinationDescription":{
+          "shape":"IcebergDestinationDescription",
+          "documentation":"<p> Describes a destination in Apache Iceberg Tables. </p> <p>Amazon Data Firehose is in preview release and is subject to change.</p>"
         }
       },
       "documentation":"<p>Describes the destination for a delivery stream.</p>"
@@ -1146,6 +1164,36 @@
       "max":100,
       "min":1,
       "pattern":"[a-zA-Z0-9-]+"
+    },
+    "DestinationTableConfiguration":{
+      "type":"structure",
+      "required":[
+        "DestinationTableName",
+        "DestinationDatabaseName"
+      ],
+      "members":{
+        "DestinationTableName":{
+          "shape":"NonEmptyStringWithoutWhitespace",
+          "documentation":"<p> Specifies the name of the Apache Iceberg Table. </p> <p>Amazon Data Firehose is in preview release and is subject to change.</p>"
+        },
+        "DestinationDatabaseName":{
+          "shape":"NonEmptyStringWithoutWhitespace",
+          "documentation":"<p> The name of the Apache Iceberg database. </p> <p>Amazon Data Firehose is in preview release and is subject to change.</p>"
+        },
+        "UniqueKeys":{
+          "shape":"ListOfNonEmptyStringsWithoutWhitespace",
+          "documentation":"<p> A list of unique keys for a given Apache Iceberg table. Firehose will use these for running Create/Update/Delete operations on the given Iceberg table. </p> <p>Amazon Data Firehose is in preview release and is subject to change.</p>"
+        },
+        "S3ErrorOutputPrefix":{
+          "shape":"ErrorOutputPrefix",
+          "documentation":"<p> The table specific S3 error output prefix. All the errors that occurred while delivering to this table will be prefixed with this value in S3 destination. </p> <p>Amazon Data Firehose is in preview release and is subject to change.</p>"
+        }
+      },
+      "documentation":"<p> Describes the configuration of a destination in Apache Iceberg Tables. </p> <p>Amazon Data Firehose is in preview release and is subject to change.</p>"
+    },
+    "DestinationTableConfigurationList":{
+      "type":"list",
+      "member":{"shape":"DestinationTableConfiguration"}
     },
     "DocumentIdOptions":{
       "type":"structure",
@@ -1690,6 +1738,12 @@
       "min":0,
       "pattern":"^$|\\.[0-9a-z!\\-_.*'()]+"
     },
+    "GlueDataCatalogARN":{
+      "type":"string",
+      "max":512,
+      "min":1,
+      "pattern":"arn:.*"
+    },
     "HECAcknowledgmentTimeoutInSeconds":{
       "type":"integer",
       "max":600,
@@ -1990,6 +2044,99 @@
       "pattern":"https://.*",
       "sensitive":true
     },
+    "IcebergDestinationConfiguration":{
+      "type":"structure",
+      "required":[
+        "RoleARN",
+        "CatalogConfiguration",
+        "S3Configuration"
+      ],
+      "members":{
+        "DestinationTableConfigurationList":{
+          "shape":"DestinationTableConfigurationList",
+          "documentation":"<p> Provides a list of <code>DestinationTableConfigurations</code> which Firehose uses to deliver data to Apache Iceberg tables. </p> <p>Amazon Data Firehose is in preview release and is subject to change.</p>"
+        },
+        "BufferingHints":{"shape":"BufferingHints"},
+        "CloudWatchLoggingOptions":{"shape":"CloudWatchLoggingOptions"},
+        "ProcessingConfiguration":{"shape":"ProcessingConfiguration"},
+        "S3BackupMode":{
+          "shape":"IcebergS3BackupMode",
+          "documentation":"<p> Describes how Firehose will backup records. Currently,Firehose only supports <code>FailedDataOnly</code> for preview. </p> <p>Amazon Data Firehose is in preview release and is subject to change.</p>"
+        },
+        "RetryOptions":{"shape":"RetryOptions"},
+        "RoleARN":{
+          "shape":"RoleARN",
+          "documentation":"<p> The Amazon Resource Name (ARN) of the Apache Iceberg tables role. </p> <p>Amazon Data Firehose is in preview release and is subject to change.</p>"
+        },
+        "CatalogConfiguration":{
+          "shape":"CatalogConfiguration",
+          "documentation":"<p> Configuration describing where the destination Apache Iceberg Tables are persisted. </p> <p>Amazon Data Firehose is in preview release and is subject to change.</p>"
+        },
+        "S3Configuration":{"shape":"S3DestinationConfiguration"}
+      },
+      "documentation":"<p> Specifies the destination configure settings for Apache Iceberg Table. </p> <p>Amazon Data Firehose is in preview release and is subject to change.</p>"
+    },
+    "IcebergDestinationDescription":{
+      "type":"structure",
+      "members":{
+        "DestinationTableConfigurationList":{
+          "shape":"DestinationTableConfigurationList",
+          "documentation":"<p> Provides a list of <code>DestinationTableConfigurations</code> which Firehose uses to deliver data to Apache Iceberg tables. </p> <p>Amazon Data Firehose is in preview release and is subject to change.</p>"
+        },
+        "BufferingHints":{"shape":"BufferingHints"},
+        "CloudWatchLoggingOptions":{"shape":"CloudWatchLoggingOptions"},
+        "ProcessingConfiguration":{"shape":"ProcessingConfiguration"},
+        "S3BackupMode":{
+          "shape":"IcebergS3BackupMode",
+          "documentation":"<p> Describes how Firehose will backup records. Currently,Firehose only supports <code>FailedDataOnly</code> for preview. </p> <p>Amazon Data Firehose is in preview release and is subject to change.</p>"
+        },
+        "RetryOptions":{"shape":"RetryOptions"},
+        "RoleARN":{
+          "shape":"RoleARN",
+          "documentation":"<p> The Amazon Resource Name (ARN) of the Apache Iceberg Tables role. </p> <p>Amazon Data Firehose is in preview release and is subject to change.</p>"
+        },
+        "CatalogConfiguration":{
+          "shape":"CatalogConfiguration",
+          "documentation":"<p> Configuration describing where the destination Iceberg tables are persisted. </p> <p>Amazon Data Firehose is in preview release and is subject to change.</p>"
+        },
+        "S3DestinationDescription":{"shape":"S3DestinationDescription"}
+      },
+      "documentation":"<p> Describes a destination in Apache Iceberg Tables. </p> <p>Amazon Data Firehose is in preview release and is subject to change.</p>"
+    },
+    "IcebergDestinationUpdate":{
+      "type":"structure",
+      "members":{
+        "DestinationTableConfigurationList":{
+          "shape":"DestinationTableConfigurationList",
+          "documentation":"<p> Provides a list of <code>DestinationTableConfigurations</code> which Firehose uses to deliver data to Apache Iceberg tables. </p> <p>Amazon Data Firehose is in preview release and is subject to change.</p>"
+        },
+        "BufferingHints":{"shape":"BufferingHints"},
+        "CloudWatchLoggingOptions":{"shape":"CloudWatchLoggingOptions"},
+        "ProcessingConfiguration":{"shape":"ProcessingConfiguration"},
+        "S3BackupMode":{
+          "shape":"IcebergS3BackupMode",
+          "documentation":"<p> Describes how Firehose will backup records. Currently,Firehose only supports <code>FailedDataOnly</code> for preview. </p> <p>Amazon Data Firehose is in preview release and is subject to change.</p>"
+        },
+        "RetryOptions":{"shape":"RetryOptions"},
+        "RoleARN":{
+          "shape":"RoleARN",
+          "documentation":"<p> The Amazon Resource Name (ARN) of the Apache Iceberg Tables role. </p> <p>Amazon Data Firehose is in preview release and is subject to change.</p>"
+        },
+        "CatalogConfiguration":{
+          "shape":"CatalogConfiguration",
+          "documentation":"<p> Configuration describing where the destination Iceberg tables are persisted. </p> <p>Amazon Data Firehose is in preview release and is subject to change.</p>"
+        },
+        "S3Configuration":{"shape":"S3DestinationConfiguration"}
+      },
+      "documentation":"<p> Describes an update for a destination in Apache Iceberg Tables. </p> <p>Amazon Data Firehose is in preview release and is subject to change.</p>"
+    },
+    "IcebergS3BackupMode":{
+      "type":"string",
+      "enum":[
+        "FailedDataOnly",
+        "AllData"
+      ]
+    },
     "InputFormatConfiguration":{
       "type":"structure",
       "members":{
@@ -2235,6 +2382,10 @@
         "AuthenticationConfiguration":{
           "shape":"AuthenticationConfiguration",
           "documentation":"<p>The authentication configuration of the Amazon MSK cluster.</p>"
+        },
+        "ReadFromTimestamp":{
+          "shape":"ReadFromTimestamp",
+          "documentation":"<p>The start date and time in UTC for the offset position within your MSK topic from where Firehose begins to read. By default, this is set to timestamp when Firehose becomes Active. </p> <p>If you want to create a Firehose stream with Earliest start position from SDK or CLI, you need to set the <code>ReadFromTimestamp</code> parameter to Epoch (1970-01-01T00:00:00Z). </p>"
         }
       },
       "documentation":"<p>The configuration for the Amazon MSK cluster to be used as the source for a delivery stream.</p>"
@@ -2257,6 +2408,10 @@
         "DeliveryStartTimestamp":{
           "shape":"DeliveryStartTimestamp",
           "documentation":"<p>Firehose starts retrieving records from the topic within the Amazon MSK cluster starting with this timestamp.</p>"
+        },
+        "ReadFromTimestamp":{
+          "shape":"ReadFromTimestamp",
+          "documentation":"<p>The start date and time in UTC for the offset position within your MSK topic from where Firehose begins to read. By default, this is set to timestamp when Firehose becomes Active. </p> <p>If you want to create a Firehose stream with Earliest start position from SDK or CLI, you need to set the <code>ReadFromTimestampUTC</code> parameter to Epoch (1970-01-01T00:00:00Z). </p>"
         }
       },
       "documentation":"<p>Details about the Amazon MSK cluster used as the source for a Firehose delivery stream.</p>"
@@ -2636,6 +2791,7 @@
       "type":"string",
       "min":1
     },
+    "ReadFromTimestamp":{"type":"timestamp"},
     "Record":{
       "type":"structure",
       "required":["Data"],
@@ -3113,6 +3269,30 @@
       "pattern":".+?\\.snowflakecomputing\\.com",
       "sensitive":true
     },
+    "SnowflakeBufferingHints":{
+      "type":"structure",
+      "members":{
+        "SizeInMBs":{
+          "shape":"SnowflakeBufferingSizeInMBs",
+          "documentation":"<p> Buffer incoming data to the specified size, in MBs, before delivering it to the destination. The default value is 1. </p>"
+        },
+        "IntervalInSeconds":{
+          "shape":"SnowflakeBufferingIntervalInSeconds",
+          "documentation":"<p> Buffer incoming data for the specified period of time, in seconds, before delivering it to the destination. The default value is 0. </p>"
+        }
+      },
+      "documentation":"<p> Describes the buffering to perform before delivering data to the Snowflake destination. If you do not specify any value, Firehose uses the default values. </p>"
+    },
+    "SnowflakeBufferingIntervalInSeconds":{
+      "type":"integer",
+      "max":900,
+      "min":0
+    },
+    "SnowflakeBufferingSizeInMBs":{
+      "type":"integer",
+      "max":128,
+      "min":1
+    },
     "SnowflakeContentColumnName":{
       "type":"string",
       "max":255,
@@ -3210,6 +3390,10 @@
         "SecretsManagerConfiguration":{
           "shape":"SecretsManagerConfiguration",
           "documentation":"<p> The configuration that defines how you access secrets for Snowflake. </p>"
+        },
+        "BufferingHints":{
+          "shape":"SnowflakeBufferingHints",
+          "documentation":"<p> Describes the buffering to perform before delivering data to the Snowflake destination. If you do not specify any value, Firehose uses the default values. </p>"
         }
       },
       "documentation":"<p>Configure Snowflake destination</p>"
@@ -3275,6 +3459,10 @@
         "SecretsManagerConfiguration":{
           "shape":"SecretsManagerConfiguration",
           "documentation":"<p> The configuration that defines how you access secrets for Snowflake. </p>"
+        },
+        "BufferingHints":{
+          "shape":"SnowflakeBufferingHints",
+          "documentation":"<p> Describes the buffering to perform before delivering data to the Snowflake destination. If you do not specify any value, Firehose uses the default values. </p>"
         }
       },
       "documentation":"<p>Optional Snowflake destination description</p>"
@@ -3344,6 +3532,10 @@
         "SecretsManagerConfiguration":{
           "shape":"SecretsManagerConfiguration",
           "documentation":"<p> Describes the Secrets Manager configuration in Snowflake. </p>"
+        },
+        "BufferingHints":{
+          "shape":"SnowflakeBufferingHints",
+          "documentation":"<p> Describes the buffering to perform before delivering data to the Snowflake destination. </p>"
         }
       },
       "documentation":"<p>Update to configuration settings</p>"
@@ -3846,6 +4038,10 @@
         "SnowflakeDestinationUpdate":{
           "shape":"SnowflakeDestinationUpdate",
           "documentation":"<p>Update to the Snowflake destination configuration settings.</p>"
+        },
+        "IcebergDestinationUpdate":{
+          "shape":"IcebergDestinationUpdate",
+          "documentation":"<p> Describes an update for a destination in Apache Iceberg Tables. </p> <p>Amazon Data Firehose is in preview release and is subject to change.</p>"
         }
       }
     },

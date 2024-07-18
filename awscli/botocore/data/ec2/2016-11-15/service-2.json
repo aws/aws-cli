@@ -770,6 +770,16 @@
       "output":{"shape":"CreateIpamResult"},
       "documentation":"<p>Create an IPAM. Amazon VPC IP Address Manager (IPAM) is a VPC feature that you can use to automate your IP address management workflows including assigning, tracking, troubleshooting, and auditing IP addresses across Amazon Web Services Regions and accounts throughout your Amazon Web Services Organization.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/vpc/latest/ipam/create-ipam.html\">Create an IPAM</a> in the <i>Amazon VPC IPAM User Guide</i>. </p>"
     },
+    "CreateIpamExternalResourceVerificationToken":{
+      "name":"CreateIpamExternalResourceVerificationToken",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"CreateIpamExternalResourceVerificationTokenRequest"},
+      "output":{"shape":"CreateIpamExternalResourceVerificationTokenResult"},
+      "documentation":"<p>Create a verification token. A verification token is an Amazon Web Services-generated random value that you can use to prove ownership of an external resource. For example, you can use a verification token to validate that you control a public IP address range when you bring an IP address range to Amazon Web Services (BYOIP). </p>"
+    },
     "CreateIpamPool":{
       "name":"CreateIpamPool",
       "http":{
@@ -1523,6 +1533,16 @@
       "input":{"shape":"DeleteIpamRequest"},
       "output":{"shape":"DeleteIpamResult"},
       "documentation":"<p>Delete an IPAM. Deleting an IPAM removes all monitored data associated with the IPAM including the historical data for CIDRs.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/vpc/latest/ipam/delete-ipam.html\">Delete an IPAM</a> in the <i>Amazon VPC IPAM User Guide</i>. </p>"
+    },
+    "DeleteIpamExternalResourceVerificationToken":{
+      "name":"DeleteIpamExternalResourceVerificationToken",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DeleteIpamExternalResourceVerificationTokenRequest"},
+      "output":{"shape":"DeleteIpamExternalResourceVerificationTokenResult"},
+      "documentation":"<p>Delete a verification token. A verification token is an Amazon Web Services-generated random value that you can use to prove ownership of an external resource. For example, you can use a verification token to validate that you control a public IP address range when you bring an IP address range to Amazon Web Services (BYOIP). </p>"
     },
     "DeleteIpamPool":{
       "name":"DeleteIpamPool",
@@ -2747,6 +2767,16 @@
       "output":{"shape":"DescribeIpamByoasnResult"},
       "documentation":"<p>Describes your Autonomous System Numbers (ASNs), their provisioning statuses, and the BYOIP CIDRs with which they are associated. For more information, see <a href=\"https://docs.aws.amazon.com/vpc/latest/ipam/tutorials-byoasn.html\">Tutorial: Bring your ASN to IPAM</a> in the <i>Amazon VPC IPAM guide</i>.</p>"
     },
+    "DescribeIpamExternalResourceVerificationTokens":{
+      "name":"DescribeIpamExternalResourceVerificationTokens",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DescribeIpamExternalResourceVerificationTokensRequest"},
+      "output":{"shape":"DescribeIpamExternalResourceVerificationTokensResult"},
+      "documentation":"<p>Describe verification tokens. A verification token is an Amazon Web Services-generated random value that you can use to prove ownership of an external resource. For example, you can use a verification token to validate that you control a public IP address range when you bring an IP address range to Amazon Web Services (BYOIP). </p>"
+    },
     "DescribeIpamPools":{
       "name":"DescribeIpamPools",
       "http":{
@@ -3035,7 +3065,7 @@
       },
       "input":{"shape":"DescribePlacementGroupsRequest"},
       "output":{"shape":"DescribePlacementGroupsResult"},
-      "documentation":"<p>Describes the specified placement groups or all of your placement groups. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/placement-groups.html\">Placement groups</a> in the <i>Amazon EC2 User Guide</i>.</p>"
+      "documentation":"<p>Describes the specified placement groups or all of your placement groups.</p> <note> <p>To describe a specific placement group that is <i>shared</i> with your account, you must specify the ID of the placement group using the <code>GroupId</code> parameter. Specifying the name of a <i>shared</i> placement group using the <code>GroupNames</code> parameter will result in an error.</p> </note> <p>For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/placement-groups.html\">Placement groups</a> in the <i>Amazon EC2 User Guide</i>.</p>"
     },
     "DescribePrefixLists":{
       "name":"DescribePrefixLists",
@@ -3555,7 +3585,7 @@
       },
       "input":{"shape":"DescribeVolumesModificationsRequest"},
       "output":{"shape":"DescribeVolumesModificationsResult"},
-      "documentation":"<p>Describes the most recent volume modification request for the specified EBS volumes.</p> <p>If a volume has never been modified, some information in the output will be null. If a volume has been modified more than once, the output includes only the most recent modification request.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/ebs/latest/userguide/monitoring-volume-modifications.html\"> Monitor the progress of volume modifications</a> in the <i>Amazon EBS User Guide</i>.</p>"
+      "documentation":"<p>Describes the most recent volume modification request for the specified EBS volumes.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/ebs/latest/userguide/monitoring-volume-modifications.html\"> Monitor the progress of volume modifications</a> in the <i>Amazon EBS User Guide</i>.</p>"
     },
     "DescribeVpcAttribute":{
       "name":"DescribeVpcAttribute",
@@ -4327,7 +4357,7 @@
       },
       "input":{"shape":"GetConsoleOutputRequest"},
       "output":{"shape":"GetConsoleOutputResult"},
-      "documentation":"<p>Gets the console output for the specified instance. For Linux instances, the instance console output displays the exact console output that would normally be displayed on a physical monitor attached to a computer. For Windows instances, the instance console output includes the last three system event log errors.</p> <p>By default, the console output returns buffered information that was posted shortly after an instance transition state (start, stop, reboot, or terminate). This information is available for at least one hour after the most recent post. Only the most recent 64 KB of console output is available.</p> <p>You can optionally retrieve the latest serial console output at any time during the instance lifecycle. This option is supported on instance types that use the Nitro hypervisor.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/instance-console.html#instance-console-console-output\">Instance console output</a> in the <i>Amazon EC2 User Guide</i>.</p>"
+      "documentation":"<p>Gets the console output for the specified instance. For Linux instances, the instance console output displays the exact console output that would normally be displayed on a physical monitor attached to a computer. For Windows instances, the instance console output includes the last three system event log errors.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/instance-console.html#instance-console-console-output\">Instance console output</a> in the <i>Amazon EC2 User Guide</i>.</p>"
     },
     "GetConsoleScreenshot":{
       "name":"GetConsoleScreenshot",
@@ -13213,6 +13243,40 @@
         }
       }
     },
+    "CreateIpamExternalResourceVerificationTokenRequest":{
+      "type":"structure",
+      "required":["IpamId"],
+      "members":{
+        "DryRun":{
+          "shape":"Boolean",
+          "documentation":"<p>A check for whether you have the required permissions for the action without actually making the request and provides an error response. If you have the required permissions, the error response is <code>DryRunOperation</code>. Otherwise, it is <code>UnauthorizedOperation</code>.</p>"
+        },
+        "IpamId":{
+          "shape":"IpamId",
+          "documentation":"<p>The ID of the IPAM that will create the token.</p>"
+        },
+        "TagSpecifications":{
+          "shape":"TagSpecificationList",
+          "documentation":"<p>Token tags.</p>",
+          "locationName":"TagSpecification"
+        },
+        "ClientToken":{
+          "shape":"String",
+          "documentation":"<p>A unique, case-sensitive identifier that you provide to ensure the idempotency of the request. For more information, see <a href=\"https://docs.aws.amazon.com/ec2/latest/devguide/ec2-api-idempotency.html\">Ensuring idempotency</a>.</p>",
+          "idempotencyToken":true
+        }
+      }
+    },
+    "CreateIpamExternalResourceVerificationTokenResult":{
+      "type":"structure",
+      "members":{
+        "IpamExternalResourceVerificationToken":{
+          "shape":"IpamExternalResourceVerificationToken",
+          "documentation":"<p>The verification token.</p>",
+          "locationName":"ipamExternalResourceVerificationToken"
+        }
+      }
+    },
     "CreateIpamPoolRequest":{
       "type":"structure",
       "required":[
@@ -13230,7 +13294,7 @@
         },
         "Locale":{
           "shape":"String",
-          "documentation":"<p>In IPAM, the locale is the Amazon Web Services Region or, for IPAM IPv4 pools in the public scope, the network border group for an Amazon Web Services Local Zone where you want to make an IPAM pool available for allocations (<a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-byoip.html#byoip-zone-avail\">supported Local Zones</a>). If you do not choose a locale, resources in Regions others than the IPAM's home region cannot use CIDRs from this pool.</p> <p>Possible values: Any Amazon Web Services Region, such as us-east-1.</p>"
+          "documentation":"<p>The locale for the pool should be one of the following:</p> <ul> <li> <p>An Amazon Web Services Region where you want this IPAM pool to be available for allocations.</p> </li> <li> <p>The network border group for an Amazon Web Services Local Zone where you want this IPAM pool to be available for allocations (<a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-byoip.html#byoip-zone-avail\">supported Local Zones</a>). This option is only available for IPAM IPv4 pools in the public scope.</p> </li> </ul> <p>If you do not choose a locale, resources in Regions others than the IPAM's home region cannot use CIDRs from this pool.</p> <p>Possible values: Any Amazon Web Services Region or supported Amazon Web Services Local Zone.</p>"
         },
         "SourceIpamPoolId":{
           "shape":"IpamPoolId",
@@ -17043,6 +17107,30 @@
           "shape":"InternetGatewayId",
           "documentation":"<p>The ID of the internet gateway.</p>",
           "locationName":"internetGatewayId"
+        }
+      }
+    },
+    "DeleteIpamExternalResourceVerificationTokenRequest":{
+      "type":"structure",
+      "required":["IpamExternalResourceVerificationTokenId"],
+      "members":{
+        "DryRun":{
+          "shape":"Boolean",
+          "documentation":"<p>A check for whether you have the required permissions for the action without actually making the request and provides an error response. If you have the required permissions, the error response is <code>DryRunOperation</code>. Otherwise, it is <code>UnauthorizedOperation</code>.</p>"
+        },
+        "IpamExternalResourceVerificationTokenId":{
+          "shape":"IpamExternalResourceVerificationTokenId",
+          "documentation":"<p>The token ID.</p>"
+        }
+      }
+    },
+    "DeleteIpamExternalResourceVerificationTokenResult":{
+      "type":"structure",
+      "members":{
+        "IpamExternalResourceVerificationToken":{
+          "shape":"IpamExternalResourceVerificationToken",
+          "documentation":"<p>The verification token.</p>",
+          "locationName":"ipamExternalResourceVerificationToken"
         }
       }
     },
@@ -21381,6 +21469,48 @@
         }
       }
     },
+    "DescribeIpamExternalResourceVerificationTokensRequest":{
+      "type":"structure",
+      "members":{
+        "DryRun":{
+          "shape":"Boolean",
+          "documentation":"<p>A check for whether you have the required permissions for the action without actually making the request and provides an error response. If you have the required permissions, the error response is <code>DryRunOperation</code>. Otherwise, it is <code>UnauthorizedOperation</code>.</p>"
+        },
+        "Filters":{
+          "shape":"FilterList",
+          "documentation":"<p>One or more filters for the request. For more information about filtering, see <a href=\"https://docs.aws.amazon.com/cli/latest/userguide/cli-usage-filter.html\">Filtering CLI output</a>.</p> <p>Available filters:</p> <ul> <li> <p> <code>ipam-arn</code> </p> </li> <li> <p> <code>ipam-external-resource-verification-token-arn</code> </p> </li> <li> <p> <code>ipam-external-resource-verification-token-id</code> </p> </li> <li> <p> <code>ipam-id</code> </p> </li> <li> <p> <code>ipam-region</code> </p> </li> <li> <p> <code>state</code> </p> </li> <li> <p> <code>status</code> </p> </li> <li> <p> <code>token-name</code> </p> </li> <li> <p> <code>token-value</code> </p> </li> </ul>",
+          "locationName":"Filter"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The token for the next page of results.</p>"
+        },
+        "MaxResults":{
+          "shape":"IpamMaxResults",
+          "documentation":"<p>The maximum number of tokens to return in one page of results.</p>"
+        },
+        "IpamExternalResourceVerificationTokenIds":{
+          "shape":"ValueStringList",
+          "documentation":"<p>Verification token IDs.</p>",
+          "locationName":"IpamExternalResourceVerificationTokenId"
+        }
+      }
+    },
+    "DescribeIpamExternalResourceVerificationTokensResult":{
+      "type":"structure",
+      "members":{
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The token to use to retrieve the next page of results. This value is <code>null</code> when there are no more results to return.</p>",
+          "locationName":"nextToken"
+        },
+        "IpamExternalResourceVerificationTokens":{
+          "shape":"IpamExternalResourceVerificationTokenSet",
+          "documentation":"<p>Verification tokens.</p>",
+          "locationName":"ipamExternalResourceVerificationTokenSet"
+        }
+      }
+    },
     "DescribeIpamPoolsRequest":{
       "type":"structure",
       "members":{
@@ -22673,7 +22803,7 @@
         },
         "GroupNames":{
           "shape":"PlacementGroupStringList",
-          "documentation":"<p>The names of the placement groups.</p> <p>Default: Describes all your placement groups, or only those otherwise specified.</p>",
+          "documentation":"<p>The names of the placement groups.</p> <p>Constraints:</p> <ul> <li> <p>You can specify a name only if the placement group is owned by your account.</p> </li> <li> <p>If a placement group is <i>shared</i> with your account, specifying the name results in an error. You must use the <code>GroupId</code> parameter instead.</p> </li> </ul>",
           "locationName":"groupName"
         },
         "GroupIds":{
@@ -29842,7 +29972,7 @@
         },
         "WeightedCapacity":{
           "shape":"Double",
-          "documentation":"<p>The number of units provided by the specified instance type.</p> <note> <p>When specifying weights, the price used in the <code>lowest-price</code> and <code>price-capacity-optimized</code> allocation strategies is per <i>unit</i> hour (where the instance price is divided by the specified weight). However, if all the specified weights are above the requested <code>TargetCapacity</code>, resulting in only 1 instance being launched, the price used is per <i>instance</i> hour.</p> </note>",
+          "documentation":"<p>The number of units provided by the specified instance type. These are the same units that you chose to set the target capacity in terms of instances, or a performance characteristic such as vCPUs, memory, or I/O.</p> <p>If the target capacity divided by this value is not a whole number, Amazon EC2 rounds the number of instances to the next whole number. If this value is not specified, the default is 1.</p> <note> <p>When specifying weights, the price used in the <code>lowest-price</code> and <code>price-capacity-optimized</code> allocation strategies is per <i>unit</i> hour (where the instance price is divided by the specified weight). However, if all the specified weights are above the requested <code>TargetCapacity</code>, resulting in only 1 instance being launched, the price used is per <i>instance</i> hour.</p> </note>",
           "locationName":"weightedCapacity"
         },
         "Priority":{
@@ -29903,7 +30033,7 @@
         },
         "WeightedCapacity":{
           "shape":"Double",
-          "documentation":"<p>The number of units provided by the specified instance type.</p> <note> <p>When specifying weights, the price used in the <code>lowest-price</code> and <code>price-capacity-optimized</code> allocation strategies is per <i>unit</i> hour (where the instance price is divided by the specified weight). However, if all the specified weights are above the requested <code>TargetCapacity</code>, resulting in only 1 instance being launched, the price used is per <i>instance</i> hour.</p> </note>"
+          "documentation":"<p>The number of units provided by the specified instance type. These are the same units that you chose to set the target capacity in terms of instances, or a performance characteristic such as vCPUs, memory, or I/O.</p> <p>If the target capacity divided by this value is not a whole number, Amazon EC2 rounds the number of instances to the next whole number. If this value is not specified, the default is 1.</p> <note> <p>When specifying weights, the price used in the <code>lowest-price</code> and <code>price-capacity-optimized</code> allocation strategies is per <i>unit</i> hour (where the instance price is divided by the specified weight). However, if all the specified weights are above the requested <code>TargetCapacity</code>, resulting in only 1 instance being launched, the price used is per <i>instance</i> hour.</p> </note>"
         },
         "Priority":{
           "shape":"Double",
@@ -38086,7 +38216,7 @@
         },
         "NetworkInterfaceAttachmentStatus":{
           "shape":"IpamNetworkInterfaceAttachmentStatus",
-          "documentation":"<p>For elastic IP addresses, this is the status of an attached network interface.</p>",
+          "documentation":"<p>For elastic network interfaces, this is the status of whether or not the elastic network interface is attached.</p>",
           "locationName":"networkInterfaceAttachmentStatus"
         },
         "SampleTime":{
@@ -38132,6 +38262,86 @@
         }
       },
       "documentation":"<p>The discovery failure reason.</p>"
+    },
+    "IpamExternalResourceVerificationToken":{
+      "type":"structure",
+      "members":{
+        "IpamExternalResourceVerificationTokenId":{
+          "shape":"IpamExternalResourceVerificationTokenId",
+          "documentation":"<p>The ID of the token.</p>",
+          "locationName":"ipamExternalResourceVerificationTokenId"
+        },
+        "IpamExternalResourceVerificationTokenArn":{
+          "shape":"ResourceArn",
+          "documentation":"<p>Token ARN.</p>",
+          "locationName":"ipamExternalResourceVerificationTokenArn"
+        },
+        "IpamId":{
+          "shape":"IpamId",
+          "documentation":"<p>The ID of the IPAM that created the token.</p>",
+          "locationName":"ipamId"
+        },
+        "IpamArn":{
+          "shape":"ResourceArn",
+          "documentation":"<p>ARN of the IPAM that created the token.</p>",
+          "locationName":"ipamArn"
+        },
+        "IpamRegion":{
+          "shape":"String",
+          "documentation":"<p>Region of the IPAM that created the token.</p>",
+          "locationName":"ipamRegion"
+        },
+        "TokenValue":{
+          "shape":"String",
+          "documentation":"<p>Token value.</p>",
+          "locationName":"tokenValue"
+        },
+        "TokenName":{
+          "shape":"String",
+          "documentation":"<p>Token name.</p>",
+          "locationName":"tokenName"
+        },
+        "NotAfter":{
+          "shape":"MillisecondDateTime",
+          "documentation":"<p>Token expiration.</p>",
+          "locationName":"notAfter"
+        },
+        "Status":{
+          "shape":"TokenState",
+          "documentation":"<p>Token status.</p>",
+          "locationName":"status"
+        },
+        "Tags":{
+          "shape":"TagList",
+          "documentation":"<p>Token tags.</p>",
+          "locationName":"tagSet"
+        },
+        "State":{
+          "shape":"IpamExternalResourceVerificationTokenState",
+          "documentation":"<p>Token state.</p>",
+          "locationName":"state"
+        }
+      },
+      "documentation":"<p>A verification token is an Amazon Web Services-generated random value that you can use to prove ownership of an external resource. For example, you can use a verification token to validate that you control a public IP address range when you bring an IP address range to Amazon Web Services (BYOIP). </p>"
+    },
+    "IpamExternalResourceVerificationTokenId":{"type":"string"},
+    "IpamExternalResourceVerificationTokenSet":{
+      "type":"list",
+      "member":{
+        "shape":"IpamExternalResourceVerificationToken",
+        "locationName":"item"
+      }
+    },
+    "IpamExternalResourceVerificationTokenState":{
+      "type":"string",
+      "enum":[
+        "create-in-progress",
+        "create-complete",
+        "create-failed",
+        "delete-in-progress",
+        "delete-complete",
+        "delete-failed"
+      ]
     },
     "IpamId":{"type":"string"},
     "IpamManagementState":{
@@ -38230,7 +38440,7 @@
         },
         "Locale":{
           "shape":"String",
-          "documentation":"<p>The locale of the IPAM pool. In IPAM, the locale is the Amazon Web Services Region or, for IPAM IPv4 pools in the public scope, the network border group for an Amazon Web Services Local Zone where you want to make an IPAM pool available for allocations (<a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-byoip.html#byoip-zone-avail\">supported Local Zones</a>). If you choose an Amazon Web Services Region for locale that has not been configured as an operating Region for the IPAM, you'll get an error.</p>",
+          "documentation":"<p>The locale of the IPAM pool.</p> <p>The locale for the pool should be one of the following:</p> <ul> <li> <p>An Amazon Web Services Region where you want this IPAM pool to be available for allocations.</p> </li> <li> <p>The network border group for an Amazon Web Services Local Zone where you want this IPAM pool to be available for allocations (<a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-byoip.html#byoip-zone-avail\">supported Local Zones</a>). This option is only available for IPAM IPv4 pools in the public scope.</p> </li> </ul> <p>If you choose an Amazon Web Services Region for locale that has not been configured as an operating Region for the IPAM, you'll get an error.</p>",
           "locationName":"locale"
         },
         "PoolDepth":{
@@ -40458,7 +40668,7 @@
         },
         "WeightedCapacity":{
           "shape":"Double",
-          "documentation":"<p>The number of units provided by the specified instance type.</p> <note> <p>When specifying weights, the price used in the <code>lowest-price</code> and <code>price-capacity-optimized</code> allocation strategies is per <i>unit</i> hour (where the instance price is divided by the specified weight). However, if all the specified weights are above the requested <code>TargetCapacity</code>, resulting in only 1 instance being launched, the price used is per <i>instance</i> hour.</p> </note>",
+          "documentation":"<p>The number of units provided by the specified instance type. These are the same units that you chose to set the target capacity in terms of instances, or a performance characteristic such as vCPUs, memory, or I/O.</p> <p>If the target capacity divided by this value is not a whole number, Amazon EC2 rounds the number of instances to the next whole number. If this value is not specified, the default is 1.</p> <note> <p>When specifying weights, the price used in the <code>lowestPrice</code> and <code>priceCapacityOptimized</code> allocation strategies is per <i>unit</i> hour (where the instance price is divided by the specified weight). However, if all the specified weights are above the requested <code>TargetCapacity</code>, resulting in only 1 instance being launched, the price used is per <i>instance</i> hour.</p> </note>",
           "locationName":"weightedCapacity"
         },
         "Priority":{
@@ -48141,7 +48351,7 @@
         },
         "CidrAuthorizationContext":{
           "shape":"IpamCidrAuthorizationContext",
-          "documentation":"<p>A signed document that proves that you are authorized to bring a specified IP address range to Amazon using BYOIP. This option applies to public pools only.</p>"
+          "documentation":"<p>A signed document that proves that you are authorized to bring a specified IP address range to Amazon using BYOIP. This option only applies to IPv4 and IPv6 pools in the public scope.</p>"
         },
         "NetmaskLength":{
           "shape":"Integer",
@@ -48151,6 +48361,14 @@
           "shape":"String",
           "documentation":"<p>A unique, case-sensitive identifier that you provide to ensure the idempotency of the request. For more information, see <a href=\"https://docs.aws.amazon.com/ec2/latest/devguide/ec2-api-idempotency.html\">Ensuring idempotency</a>.</p>",
           "idempotencyToken":true
+        },
+        "VerificationMethod":{
+          "shape":"VerificationMethod",
+          "documentation":"<p>The method for verifying control of a public IP address range. Defaults to <code>remarks-x509</code> if not specified. This option only applies to IPv4 and IPv6 pools in the public scope.</p>"
+        },
+        "IpamExternalResourceVerificationTokenId":{
+          "shape":"IpamExternalResourceVerificationTokenId",
+          "documentation":"<p>Verification token ID. This option only applies to IPv4 and IPv6 pools in the public scope.</p>"
         }
       }
     },
@@ -50978,7 +51196,8 @@
         "vpc-encryption-control",
         "ipam-resource-discovery",
         "ipam-resource-discovery-association",
-        "instance-connect-endpoint"
+        "instance-connect-endpoint",
+        "ipam-external-resource-verification-token"
       ]
     },
     "ResponseError":{
@@ -54086,7 +54305,7 @@
         },
         "WeightedCapacity":{
           "shape":"Double",
-          "documentation":"<p>The number of units provided by the specified instance type. These are the same units that you chose to set the target capacity in terms of instances, or a performance characteristic such as vCPUs, memory, or I/O.</p> <p>If the target capacity divided by this value is not a whole number, Amazon EC2 rounds the number of instances to the next whole number. If this value is not specified, the default is 1.</p>",
+          "documentation":"<p>The number of units provided by the specified instance type. These are the same units that you chose to set the target capacity in terms of instances, or a performance characteristic such as vCPUs, memory, or I/O.</p> <p>If the target capacity divided by this value is not a whole number, Amazon EC2 rounds the number of instances to the next whole number. If this value is not specified, the default is 1.</p> <note> <p>When specifying weights, the price used in the <code>lowestPrice</code> and <code>priceCapacityOptimized</code> allocation strategies is per <i>unit</i> hour (where the instance price is divided by the specified weight). However, if all the specified weights are above the requested <code>TargetCapacity</code>, resulting in only 1 instance being launched, the price used is per <i>instance</i> hour.</p> </note>",
           "locationName":"weightedCapacity"
         },
         "TagSpecifications":{
@@ -55993,6 +56212,13 @@
         "permanent-restore-in-progress",
         "permanent-restore-completed",
         "permanent-restore-failed"
+      ]
+    },
+    "TokenState":{
+      "type":"string",
+      "enum":[
+        "valid",
+        "expired"
       ]
     },
     "TotalLocalStorageGB":{
@@ -58864,6 +59090,13 @@
         "locationName":"item"
       }
     },
+    "VerificationMethod":{
+      "type":"string",
+      "enum":[
+        "remarks-x509",
+        "dns-token"
+      ]
+    },
     "VerifiedAccessEndpoint":{
       "type":"structure",
       "members":{
@@ -59865,7 +60098,7 @@
         },
         "ModificationState":{
           "shape":"VolumeModificationState",
-          "documentation":"<p>The current modification state. The modification state is null for unmodified volumes.</p>",
+          "documentation":"<p>The current modification state.</p>",
           "locationName":"modificationState"
         },
         "StatusMessage":{
@@ -59939,7 +60172,7 @@
           "locationName":"endTime"
         }
       },
-      "documentation":"<p>Describes the modification status of an EBS volume.</p> <p>If the volume has never been modified, some element values will be null.</p>"
+      "documentation":"<p>Describes the modification status of an EBS volume.</p>"
     },
     "VolumeModificationList":{
       "type":"list",

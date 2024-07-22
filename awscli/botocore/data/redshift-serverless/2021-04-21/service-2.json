@@ -172,7 +172,8 @@
         {"shape":"ResourceNotFoundException"},
         {"shape":"ConflictException"},
         {"shape":"ValidationException"},
-        {"shape":"TooManyTagsException"}
+        {"shape":"TooManyTagsException"},
+        {"shape":"Ipv6CidrBlockNotFoundException"}
       ],
       "documentation":"<p>Creates an workgroup in Amazon Redshift Serverless.</p>",
       "idempotent":true
@@ -916,7 +917,8 @@
         {"shape":"InsufficientCapacityException"},
         {"shape":"ResourceNotFoundException"},
         {"shape":"ConflictException"},
-        {"shape":"ValidationException"}
+        {"shape":"ValidationException"},
+        {"shape":"Ipv6CidrBlockNotFoundException"}
       ],
       "documentation":"<p>Updates a workgroup with the specified configuration settings. You can't update multiple parameters in one request. For example, you can update <code>baseCapacity</code> or <code>port</code> in a single request, but you can't update both in the same request.</p>"
     }
@@ -1200,7 +1202,7 @@
         },
         "roleArn":{
           "shape":"IamRoleArn",
-          "documentation":"<p>The ARN of the IAM role to assume to run the scheduled action. This IAM role must have permission to run the Amazon Redshift Serverless API operation in the scheduled action. This IAM role must allow the Amazon Redshift scheduler to schedule creating snapshots. (Principal scheduler.redshift.amazonaws.com) to assume permissions on your behalf. For more information about the IAM role to use with the Amazon Redshift scheduler, see <a href=\"https://docs.aws.amazon.com/redshift/latest/mgmt/redshift-iam-access-control-identity-based.html\">Using Identity-Based Policies for Amazon Redshift</a> in the Amazon Redshift Cluster Management Guide</p>"
+          "documentation":"<p>The ARN of the IAM role to assume to run the scheduled action. This IAM role must have permission to run the Amazon Redshift Serverless API operation in the scheduled action. This IAM role must allow the Amazon Redshift scheduler to schedule creating snapshots. (Principal scheduler.redshift.amazonaws.com) to assume permissions on your behalf. For more information about the IAM role to use with the Amazon Redshift scheduler, see <a href=\"https://docs.aws.amazon.com/redshift/latest/mgmt/redshift-iam-access-control-identity-based.html\">Using Identity-Based Policies for Amazon Redshift</a> in the Amazon Redshift Management Guide</p>"
         },
         "schedule":{
           "shape":"Schedule",
@@ -1382,6 +1384,10 @@
         "enhancedVpcRouting":{
           "shape":"Boolean",
           "documentation":"<p>The value that specifies whether to turn on enhanced virtual private cloud (VPC) routing, which forces Amazon Redshift Serverless to route traffic through your VPC instead of over the internet.</p>"
+        },
+        "ipAddressType":{
+          "shape":"IpAddressType",
+          "documentation":"<p>The IP address type that the workgroup supports. Possible values are <code>ipv4</code> and <code>dualstack</code>.</p>"
         },
         "maxCapacity":{
           "shape":"Integer",
@@ -1999,6 +2005,19 @@
       "documentation":"<p>The provided pagination token is invalid.</p>",
       "exception":true
     },
+    "IpAddressType":{
+      "type":"string",
+      "pattern":"^(ipv4|dualstack)$"
+    },
+    "Ipv6CidrBlockNotFoundException":{
+      "type":"structure",
+      "required":["message"],
+      "members":{
+        "message":{"shape":"String"}
+      },
+      "documentation":"<p>There are no subnets in your VPC with associated IPv6 CIDR blocks. To use dual-stack mode, associate an IPv6 CIDR block with each subnet in your VPC.</p>",
+      "exception":true
+    },
     "KmsKeyId":{"type":"string"},
     "ListCustomDomainAssociationsRequest":{
       "type":"structure",
@@ -2538,6 +2557,10 @@
           "shape":"String",
           "documentation":"<p>The availability Zone.</p>"
         },
+        "ipv6Address":{
+          "shape":"String",
+          "documentation":"<p>The IPv6 address of the network interface within the subnet.</p>"
+        },
         "networkInterfaceId":{
           "shape":"String",
           "documentation":"<p>The unique identifier of the network interface.</p>"
@@ -2925,7 +2948,7 @@
         },
         "roleArn":{
           "shape":"IamRoleArn",
-          "documentation":"<p>The ARN of the IAM role to assume to run the scheduled action. This IAM role must have permission to run the Amazon Redshift Serverless API operation in the scheduled action. This IAM role must allow the Amazon Redshift scheduler to schedule creating snapshots. (Principal scheduler.redshift.amazonaws.com) to assume permissions on your behalf. For more information about the IAM role to use with the Amazon Redshift scheduler, see <a href=\"https://docs.aws.amazon.com/redshift/latest/mgmt/redshift-iam-access-control-identity-based.html\">Using Identity-Based Policies for Amazon Redshift</a> in the Amazon Redshift Cluster Management Guide</p>"
+          "documentation":"<p>The ARN of the IAM role to assume to run the scheduled action. This IAM role must have permission to run the Amazon Redshift Serverless API operation in the scheduled action. This IAM role must allow the Amazon Redshift scheduler to schedule creating snapshots. (Principal scheduler.redshift.amazonaws.com) to assume permissions on your behalf. For more information about the IAM role to use with the Amazon Redshift scheduler, see <a href=\"https://docs.aws.amazon.com/redshift/latest/mgmt/redshift-iam-access-control-identity-based.html\">Using Identity-Based Policies for Amazon Redshift</a> in the Amazon Redshift Management Guide</p>"
         },
         "schedule":{
           "shape":"Schedule",
@@ -3461,7 +3484,7 @@
         },
         "roleArn":{
           "shape":"IamRoleArn",
-          "documentation":"<p>The ARN of the IAM role to assume to run the scheduled action. This IAM role must have permission to run the Amazon Redshift Serverless API operation in the scheduled action. This IAM role must allow the Amazon Redshift scheduler to schedule creating snapshots (Principal scheduler.redshift.amazonaws.com) to assume permissions on your behalf. For more information about the IAM role to use with the Amazon Redshift scheduler, see <a href=\"https://docs.aws.amazon.com/redshift/latest/mgmt/redshift-iam-access-control-identity-based.html\">Using Identity-Based Policies for Amazon Redshift</a> in the Amazon Redshift Cluster Management Guide</p>"
+          "documentation":"<p>The ARN of the IAM role to assume to run the scheduled action. This IAM role must have permission to run the Amazon Redshift Serverless API operation in the scheduled action. This IAM role must allow the Amazon Redshift scheduler to schedule creating snapshots (Principal scheduler.redshift.amazonaws.com) to assume permissions on your behalf. For more information about the IAM role to use with the Amazon Redshift scheduler, see <a href=\"https://docs.aws.amazon.com/redshift/latest/mgmt/redshift-iam-access-control-identity-based.html\">Using Identity-Based Policies for Amazon Redshift</a> in the Amazon Redshift Management Guide</p>"
         },
         "schedule":{
           "shape":"Schedule",
@@ -3580,6 +3603,10 @@
         "enhancedVpcRouting":{
           "shape":"Boolean",
           "documentation":"<p>The value that specifies whether to turn on enhanced virtual private cloud (VPC) routing, which forces Amazon Redshift Serverless to route traffic through your VPC.</p>"
+        },
+        "ipAddressType":{
+          "shape":"IpAddressType",
+          "documentation":"<p>The IP address type that the workgroup supports. Possible values are <code>ipv4</code> and <code>dualstack</code>.</p>"
         },
         "maxCapacity":{
           "shape":"Integer",
@@ -3776,6 +3803,10 @@
         "enhancedVpcRouting":{
           "shape":"Boolean",
           "documentation":"<p>The value that specifies whether to enable enhanced virtual private cloud (VPC) routing, which forces Amazon Redshift Serverless to route traffic through your VPC.</p>"
+        },
+        "ipAddressType":{
+          "shape":"IpAddressType",
+          "documentation":"<p>The IP address type that the workgroup supports. Possible values are <code>ipv4</code> and <code>dualstack</code>.</p>"
         },
         "maxCapacity":{
           "shape":"Integer",

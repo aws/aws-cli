@@ -137,6 +137,28 @@
       "documentation":"<p>Creates an asset in Amazon DataZone catalog.</p>",
       "idempotent":true
     },
+    "CreateAssetFilter":{
+      "name":"CreateAssetFilter",
+      "http":{
+        "method":"POST",
+        "requestUri":"/v2/domains/{domainIdentifier}/assets/{assetIdentifier}/filters",
+        "responseCode":201
+      },
+      "input":{"shape":"CreateAssetFilterInput"},
+      "output":{"shape":"CreateAssetFilterOutput"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ServiceQuotaExceededException"},
+        {"shape":"ConflictException"},
+        {"shape":"ValidationException"},
+        {"shape":"UnauthorizedException"}
+      ],
+      "documentation":"<p>Creates a data asset filter.</p>",
+      "idempotent":true
+    },
     "CreateAssetRevision":{
       "name":"CreateAssetRevision",
       "http":{
@@ -527,6 +549,26 @@
       "documentation":"<p>Delets an asset in Amazon DataZone.</p>",
       "idempotent":true
     },
+    "DeleteAssetFilter":{
+      "name":"DeleteAssetFilter",
+      "http":{
+        "method":"DELETE",
+        "requestUri":"/v2/domains/{domainIdentifier}/assets/{assetIdentifier}/filters/{identifier}",
+        "responseCode":204
+      },
+      "input":{"shape":"DeleteAssetFilterInput"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ConflictException"},
+        {"shape":"ValidationException"},
+        {"shape":"UnauthorizedException"}
+      ],
+      "documentation":"<p>Deletes an asset filter.</p>",
+      "idempotent":true
+    },
     "DeleteAssetType":{
       "name":"DeleteAssetType",
       "http":{
@@ -907,6 +949,25 @@
         {"shape":"UnauthorizedException"}
       ],
       "documentation":"<p>Gets an Amazon DataZone asset.</p>"
+    },
+    "GetAssetFilter":{
+      "name":"GetAssetFilter",
+      "http":{
+        "method":"GET",
+        "requestUri":"/v2/domains/{domainIdentifier}/assets/{assetIdentifier}/filters/{identifier}",
+        "responseCode":200
+      },
+      "input":{"shape":"GetAssetFilterInput"},
+      "output":{"shape":"GetAssetFilterOutput"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ValidationException"},
+        {"shape":"UnauthorizedException"}
+      ],
+      "documentation":"<p>Gets an asset filter.</p>"
     },
     "GetAssetType":{
       "name":"GetAssetType",
@@ -1369,6 +1430,25 @@
         {"shape":"UnauthorizedException"}
       ],
       "documentation":"<p>Gets a user profile in Amazon DataZone.</p>"
+    },
+    "ListAssetFilters":{
+      "name":"ListAssetFilters",
+      "http":{
+        "method":"GET",
+        "requestUri":"/v2/domains/{domainIdentifier}/assets/{assetIdentifier}/filters",
+        "responseCode":200
+      },
+      "input":{"shape":"ListAssetFiltersInput"},
+      "output":{"shape":"ListAssetFiltersOutput"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ValidationException"},
+        {"shape":"UnauthorizedException"}
+      ],
+      "documentation":"<p>Lists asset filters.</p>"
     },
     "ListAssetRevisions":{
       "name":"ListAssetRevisions",
@@ -2075,6 +2155,27 @@
       "documentation":"<p>Untags a resource in Amazon DataZone.</p>",
       "idempotent":true
     },
+    "UpdateAssetFilter":{
+      "name":"UpdateAssetFilter",
+      "http":{
+        "method":"PATCH",
+        "requestUri":"/v2/domains/{domainIdentifier}/assets/{assetIdentifier}/filters/{identifier}",
+        "responseCode":200
+      },
+      "input":{"shape":"UpdateAssetFilterInput"},
+      "output":{"shape":"UpdateAssetFilterOutput"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ConflictException"},
+        {"shape":"ValidationException"},
+        {"shape":"UnauthorizedException"}
+      ],
+      "documentation":"<p>Updates an asset filter.</p>",
+      "idempotent":true
+    },
     "UpdateDataSource":{
       "name":"UpdateDataSource",
       "http":{
@@ -2585,6 +2686,77 @@
     "ApplicableAssetTypes":{
       "type":"list",
       "member":{"shape":"TypeName"}
+    },
+    "AssetFilterConfiguration":{
+      "type":"structure",
+      "members":{
+        "columnConfiguration":{
+          "shape":"ColumnFilterConfiguration",
+          "documentation":"<p>The column configuration of the asset filter.</p>"
+        },
+        "rowConfiguration":{
+          "shape":"RowFilterConfiguration",
+          "documentation":"<p>The row configuration of the asset filter.</p>"
+        }
+      },
+      "documentation":"<p>The configuration details of the asset filter.</p>",
+      "union":true
+    },
+    "AssetFilterSummary":{
+      "type":"structure",
+      "required":[
+        "assetId",
+        "domainId",
+        "id",
+        "name"
+      ],
+      "members":{
+        "assetId":{
+          "shape":"AssetId",
+          "documentation":"<p>The ID of the data asset.</p>"
+        },
+        "createdAt":{
+          "shape":"CreatedAt",
+          "documentation":"<p>The timestamp at which the asset filter was created.</p>"
+        },
+        "description":{
+          "shape":"Description",
+          "documentation":"<p>The description of the asset filter.</p>"
+        },
+        "domainId":{
+          "shape":"DomainId",
+          "documentation":"<p>The ID of the domain where the asset filter lives.</p>"
+        },
+        "effectiveColumnNames":{
+          "shape":"ColumnNameList",
+          "documentation":"<p>The effective column names of the asset filter.</p>"
+        },
+        "effectiveRowFilter":{
+          "shape":"String",
+          "documentation":"<p>The effective row filter of the asset filter.</p>"
+        },
+        "errorMessage":{
+          "shape":"String",
+          "documentation":"<p>The error message that is displayed if the action does not succeed.</p>"
+        },
+        "id":{
+          "shape":"FilterId",
+          "documentation":"<p>The ID of the asset filter.</p>"
+        },
+        "name":{
+          "shape":"FilterName",
+          "documentation":"<p>The name of the asset filter.</p>"
+        },
+        "status":{
+          "shape":"FilterStatus",
+          "documentation":"<p>The status of the asset filter.</p>"
+        }
+      },
+      "documentation":"<p>The summary of the asset filter.</p>"
+    },
+    "AssetFilters":{
+      "type":"list",
+      "member":{"shape":"AssetFilterSummary"}
     },
     "AssetId":{
       "type":"string",
@@ -3152,6 +3324,20 @@
       },
       "documentation":"<p>Part of the provisioning properties of the environment blueprint.</p>"
     },
+    "ColumnFilterConfiguration":{
+      "type":"structure",
+      "members":{
+        "includedColumnNames":{
+          "shape":"ColumnNameList",
+          "documentation":"<p>Specifies whether to include column names.</p>"
+        }
+      },
+      "documentation":"<p>The column configuration of the asset filter.</p>"
+    },
+    "ColumnNameList":{
+      "type":"list",
+      "member":{"shape":"String"}
+    },
     "ConfigurableActionParameter":{
       "type":"structure",
       "members":{
@@ -3211,6 +3397,102 @@
         "senderFault":true
       },
       "exception":true
+    },
+    "CreateAssetFilterInput":{
+      "type":"structure",
+      "required":[
+        "assetIdentifier",
+        "configuration",
+        "domainIdentifier",
+        "name"
+      ],
+      "members":{
+        "assetIdentifier":{
+          "shape":"AssetId",
+          "documentation":"<p>The ID of the data asset.</p>",
+          "location":"uri",
+          "locationName":"assetIdentifier"
+        },
+        "clientToken":{
+          "shape":"String",
+          "documentation":"<p>A unique, case-sensitive identifier that is provided to ensure the idempotency of the request.</p>",
+          "idempotencyToken":true
+        },
+        "configuration":{
+          "shape":"AssetFilterConfiguration",
+          "documentation":"<p>The configuration of the asset filter.</p>"
+        },
+        "description":{
+          "shape":"Description",
+          "documentation":"<p>The description of the asset filter.</p>"
+        },
+        "domainIdentifier":{
+          "shape":"DomainId",
+          "documentation":"<p>The ID of the domain in which you want to create an asset filter.</p>",
+          "location":"uri",
+          "locationName":"domainIdentifier"
+        },
+        "name":{
+          "shape":"FilterName",
+          "documentation":"<p>The name of the asset filter.</p>"
+        }
+      }
+    },
+    "CreateAssetFilterOutput":{
+      "type":"structure",
+      "required":[
+        "assetId",
+        "configuration",
+        "domainId",
+        "id",
+        "name"
+      ],
+      "members":{
+        "assetId":{
+          "shape":"AssetId",
+          "documentation":"<p>The ID of the asset.</p>"
+        },
+        "configuration":{
+          "shape":"AssetFilterConfiguration",
+          "documentation":"<p>The configuration of the asset filter.</p>"
+        },
+        "createdAt":{
+          "shape":"CreatedAt",
+          "documentation":"<p>The timestamp at which the asset filter was created.</p>"
+        },
+        "description":{
+          "shape":"Description",
+          "documentation":"<p>The description of the asset filter.</p>"
+        },
+        "domainId":{
+          "shape":"DomainId",
+          "documentation":"<p>The ID of the domain where the asset filter is created.</p>"
+        },
+        "effectiveColumnNames":{
+          "shape":"ColumnNameList",
+          "documentation":"<p>The column names in the asset filter.</p>"
+        },
+        "effectiveRowFilter":{
+          "shape":"String",
+          "documentation":"<p>The row filter in the asset filter.</p>"
+        },
+        "errorMessage":{
+          "shape":"String",
+          "documentation":"<p>The error message that is displayed if the asset filter is not created successfully.</p>"
+        },
+        "id":{
+          "shape":"FilterId",
+          "documentation":"<p>The ID of the asset filter.</p>"
+        },
+        "name":{
+          "shape":"FilterName",
+          "documentation":"<p>The name of the asset filter.</p>"
+        },
+        "status":{
+          "shape":"FilterStatus",
+          "documentation":"<p>The status of the asset filter.</p>"
+        }
+      }
     },
     "CreateAssetInput":{
       "type":"structure",
@@ -5471,6 +5753,34 @@
       "min":1,
       "sensitive":true
     },
+    "DeleteAssetFilterInput":{
+      "type":"structure",
+      "required":[
+        "assetIdentifier",
+        "domainIdentifier",
+        "identifier"
+      ],
+      "members":{
+        "assetIdentifier":{
+          "shape":"AssetId",
+          "documentation":"<p>The ID of the data asset.</p>",
+          "location":"uri",
+          "locationName":"assetIdentifier"
+        },
+        "domainIdentifier":{
+          "shape":"DomainId",
+          "documentation":"<p>The ID of the domain where you want to delete an asset filter.</p>",
+          "location":"uri",
+          "locationName":"domainIdentifier"
+        },
+        "identifier":{
+          "shape":"FilterId",
+          "documentation":"<p>The ID of the asset filter that you want to delete.</p>",
+          "location":"uri",
+          "locationName":"identifier"
+        }
+      }
+    },
     "DeleteAssetInput":{
       "type":"structure",
       "required":[
@@ -6448,6 +6758,10 @@
           "shape":"RoleArn",
           "documentation":"<p>The ARN of the manage access role specified in the environment blueprint configuration.</p>"
         },
+        "provisioningConfigurations":{
+          "shape":"ProvisioningConfigurationList",
+          "documentation":"<p>The provisioning configuration of a blueprint.</p>"
+        },
         "provisioningRoleArn":{
           "shape":"RoleArn",
           "documentation":"<p>The ARN of the provisioning role specified in the environment blueprint configuration.</p>"
@@ -6724,6 +7038,24 @@
       },
       "documentation":"<p>The details of an environment.</p>"
     },
+    "EqualToExpression":{
+      "type":"structure",
+      "required":[
+        "columnName",
+        "value"
+      ],
+      "members":{
+        "columnName":{
+          "shape":"String",
+          "documentation":"<p>The name of the column.</p>"
+        },
+        "value":{
+          "shape":"String",
+          "documentation":"<p>The value that might be equal to an expression.</p>"
+        }
+      },
+      "documentation":"<p>Specifies whether the value is equal to an expression.</p>"
+    },
     "ErrorMessage":{"type":"string"},
     "ExternalIdentifier":{
       "type":"string",
@@ -6816,11 +7148,29 @@
       "type":"list",
       "member":{"shape":"FilterExpression"}
     },
+    "FilterId":{
+      "type":"string",
+      "pattern":"^[a-zA-Z0-9_-]{1,36}$"
+    },
     "FilterList":{
       "type":"list",
       "member":{"shape":"FilterClause"},
       "max":100,
       "min":1
+    },
+    "FilterName":{
+      "type":"string",
+      "max":64,
+      "min":1,
+      "pattern":"^[\\w -]+$",
+      "sensitive":true
+    },
+    "FilterStatus":{
+      "type":"string",
+      "enum":[
+        "VALID",
+        "INVALID"
+      ]
     },
     "FilterValueString":{
       "type":"string",
@@ -7043,6 +7393,90 @@
       "value":{"shape":"FormEntryOutput"},
       "max":10,
       "min":0
+    },
+    "GetAssetFilterInput":{
+      "type":"structure",
+      "required":[
+        "assetIdentifier",
+        "domainIdentifier",
+        "identifier"
+      ],
+      "members":{
+        "assetIdentifier":{
+          "shape":"AssetId",
+          "documentation":"<p>The ID of the data asset.</p>",
+          "location":"uri",
+          "locationName":"assetIdentifier"
+        },
+        "domainIdentifier":{
+          "shape":"DomainId",
+          "documentation":"<p>The ID of the domain where you want to get an asset filter.</p>",
+          "location":"uri",
+          "locationName":"domainIdentifier"
+        },
+        "identifier":{
+          "shape":"FilterId",
+          "documentation":"<p>The ID of the asset filter.</p>",
+          "location":"uri",
+          "locationName":"identifier"
+        }
+      }
+    },
+    "GetAssetFilterOutput":{
+      "type":"structure",
+      "required":[
+        "assetId",
+        "configuration",
+        "domainId",
+        "id",
+        "name"
+      ],
+      "members":{
+        "assetId":{
+          "shape":"AssetId",
+          "documentation":"<p>The ID of the data asset.</p>"
+        },
+        "configuration":{
+          "shape":"AssetFilterConfiguration",
+          "documentation":"<p>The configuration of the asset filter.</p>"
+        },
+        "createdAt":{
+          "shape":"CreatedAt",
+          "documentation":"<p>The timestamp at which the asset filter was created.</p>"
+        },
+        "description":{
+          "shape":"Description",
+          "documentation":"<p>The description of the asset filter.</p>"
+        },
+        "domainId":{
+          "shape":"DomainId",
+          "documentation":"<p>The ID of the domain where you want to get an asset filter.</p>"
+        },
+        "effectiveColumnNames":{
+          "shape":"ColumnNameList",
+          "documentation":"<p>The column names of the asset filter.</p>"
+        },
+        "effectiveRowFilter":{
+          "shape":"String",
+          "documentation":"<p>The row filter of the asset filter.</p>"
+        },
+        "errorMessage":{
+          "shape":"String",
+          "documentation":"<p>The error message that is displayed if the action does not complete successfully.</p>"
+        },
+        "id":{
+          "shape":"FilterId",
+          "documentation":"<p>The ID of the asset filter.</p>"
+        },
+        "name":{
+          "shape":"FilterName",
+          "documentation":"<p>The name of the asset filter.</p>"
+        },
+        "status":{
+          "shape":"FilterStatus",
+          "documentation":"<p>The status of the asset filter.</p>"
+        }
+      }
     },
     "GetAssetInput":{
       "type":"structure",
@@ -7635,6 +8069,10 @@
         "manageAccessRoleArn":{
           "shape":"RoleArn",
           "documentation":"<p>The ARN of the manage access role with which this blueprint is created.</p>"
+        },
+        "provisioningConfigurations":{
+          "shape":"ProvisioningConfigurationList",
+          "documentation":"<p>The provisioning configuration of a blueprint.</p>"
         },
         "provisioningRoleArn":{
           "shape":"RoleArn",
@@ -9281,6 +9719,42 @@
       "documentation":"<p>The details of a listing for which a subscription is to be granted.</p>",
       "union":true
     },
+    "GreaterThanExpression":{
+      "type":"structure",
+      "required":[
+        "columnName",
+        "value"
+      ],
+      "members":{
+        "columnName":{
+          "shape":"String",
+          "documentation":"<p>The name of the column.</p>"
+        },
+        "value":{
+          "shape":"String",
+          "documentation":"<p>The value that might be greater than an expression.</p>"
+        }
+      },
+      "documentation":"<p>Specifies whether the value is greater than an expression.</p>"
+    },
+    "GreaterThanOrEqualToExpression":{
+      "type":"structure",
+      "required":[
+        "columnName",
+        "value"
+      ],
+      "members":{
+        "columnName":{
+          "shape":"String",
+          "documentation":"<p>The name of the column.</p>"
+        },
+        "value":{
+          "shape":"String",
+          "documentation":"<p>The value that might be greater than or equal to an expression.</p>"
+        }
+      },
+      "documentation":"<p>Specifies whether the value is greater than or equal to an expression.</p>"
+    },
     "GroupDetails":{
       "type":"structure",
       "required":["groupId"],
@@ -9387,6 +9861,24 @@
       "max":10,
       "min":1
     },
+    "InExpression":{
+      "type":"structure",
+      "required":[
+        "columnName",
+        "values"
+      ],
+      "members":{
+        "columnName":{
+          "shape":"String",
+          "documentation":"<p>The name of the column.</p>"
+        },
+        "values":{
+          "shape":"StringList",
+          "documentation":"<p>The values that might be in the expression.</p>"
+        }
+      },
+      "documentation":"<p>Specifies whether values are in the expression.</p>"
+    },
     "Integer":{
       "type":"integer",
       "box":true
@@ -9411,15 +9903,105 @@
         "GLOSSARY_TERM"
       ]
     },
+    "IsNotNullExpression":{
+      "type":"structure",
+      "required":["columnName"],
+      "members":{
+        "columnName":{
+          "shape":"String",
+          "documentation":"<p>The name of the column.</p>"
+        }
+      },
+      "documentation":"<p>Specifies that the expression is not null.</p>"
+    },
+    "IsNullExpression":{
+      "type":"structure",
+      "required":["columnName"],
+      "members":{
+        "columnName":{
+          "shape":"String",
+          "documentation":"<p>The name of the column.</p>"
+        }
+      },
+      "documentation":"<p>Specifies that the expression is null.</p>"
+    },
     "KmsKeyArn":{
       "type":"string",
       "max":1024,
       "min":1,
       "pattern":"^arn:aws(|-cn|-us-gov):kms:[a-zA-Z0-9-]*:[0-9]{12}:key/[a-zA-Z0-9-]{36}$"
     },
+    "LakeFormationConfiguration":{
+      "type":"structure",
+      "members":{
+        "locationRegistrationExcludeS3Locations":{
+          "shape":"S3LocationList",
+          "documentation":"<p>Specifies certain Amazon S3 locations if you do not want Amazon DataZone to automatically register them in hybrid mode. </p>"
+        },
+        "locationRegistrationRole":{
+          "shape":"RoleArn",
+          "documentation":"<p>The role that is used to manage read/write access to the chosen Amazon S3 bucket(s) for Data Lake using AWS Lake Formation hybrid access mode.</p>"
+        }
+      },
+      "documentation":"<p>The Lake Formation configuration of the Data Lake blueprint.</p>"
+    },
     "LastName":{
       "type":"string",
       "sensitive":true
+    },
+    "LessThanExpression":{
+      "type":"structure",
+      "required":[
+        "columnName",
+        "value"
+      ],
+      "members":{
+        "columnName":{
+          "shape":"String",
+          "documentation":"<p>The name of the column.</p>"
+        },
+        "value":{
+          "shape":"String",
+          "documentation":"<p>The value that might be less than the expression.</p>"
+        }
+      },
+      "documentation":"<p>Specifies that a value is less than an expression.</p>"
+    },
+    "LessThanOrEqualToExpression":{
+      "type":"structure",
+      "required":[
+        "columnName",
+        "value"
+      ],
+      "members":{
+        "columnName":{
+          "shape":"String",
+          "documentation":"<p>The name of the column.</p>"
+        },
+        "value":{
+          "shape":"String",
+          "documentation":"<p>The value that might be less than or equal to an expression.</p>"
+        }
+      },
+      "documentation":"<p>Specifies that a value is less than or equal to an expression.</p>"
+    },
+    "LikeExpression":{
+      "type":"structure",
+      "required":[
+        "columnName",
+        "value"
+      ],
+      "members":{
+        "columnName":{
+          "shape":"String",
+          "documentation":"<p>The name of the column.</p>"
+        },
+        "value":{
+          "shape":"String",
+          "documentation":"<p>The value that might be like the expression.</p>"
+        }
+      },
+      "documentation":"<p>Specifies that a value is like the expression.</p>"
     },
     "LineageEvent":{
       "type":"blob",
@@ -9565,6 +10147,59 @@
         }
       },
       "documentation":"<p>The details of a data lineage node type.</p>"
+    },
+    "ListAssetFiltersInput":{
+      "type":"structure",
+      "required":[
+        "assetIdentifier",
+        "domainIdentifier"
+      ],
+      "members":{
+        "assetIdentifier":{
+          "shape":"AssetId",
+          "documentation":"<p>The ID of the data asset.</p>",
+          "location":"uri",
+          "locationName":"assetIdentifier"
+        },
+        "domainIdentifier":{
+          "shape":"DomainId",
+          "documentation":"<p>The ID of the domain where you want to list asset filters.</p>",
+          "location":"uri",
+          "locationName":"domainIdentifier"
+        },
+        "maxResults":{
+          "shape":"MaxResults",
+          "documentation":"<p>The maximum number of asset filters to return in a single call to <code>ListAssetFilters</code>. When the number of asset filters to be listed is greater than the value of <code>MaxResults</code>, the response contains a <code>NextToken</code> value that you can use in a subsequent call to <code>ListAssetFilters</code> to list the next set of asset filters.</p>",
+          "location":"querystring",
+          "locationName":"maxResults"
+        },
+        "nextToken":{
+          "shape":"PaginationToken",
+          "documentation":"<p>When the number of asset filters is greater than the default value for the <code>MaxResults</code> parameter, or if you explicitly specify a value for <code>MaxResults</code> that is less than the number of asset filters, the response includes a pagination token named <code>NextToken</code>. You can specify this <code>NextToken</code> value in a subsequent call to <code>ListAssetFilters</code> to list the next set of asset filters.</p>",
+          "location":"querystring",
+          "locationName":"nextToken"
+        },
+        "status":{
+          "shape":"FilterStatus",
+          "documentation":"<p>The status of the asset filter.</p>",
+          "location":"querystring",
+          "locationName":"status"
+        }
+      }
+    },
+    "ListAssetFiltersOutput":{
+      "type":"structure",
+      "required":["items"],
+      "members":{
+        "items":{
+          "shape":"AssetFilters",
+          "documentation":"<p>The results of the <code>ListAssetFilters</code> action.</p>"
+        },
+        "nextToken":{
+          "shape":"PaginationToken",
+          "documentation":"<p>When the number of asset filters is greater than the default value for the <code>MaxResults</code> parameter, or if you explicitly specify a value for <code>MaxResults</code> that is less than the number of asset filters, the response includes a pagination token named <code>NextToken</code>. You can specify this <code>NextToken</code> value in a subsequent call to <code>ListAssetFilters</code> to list the next set of asset filters.</p>"
+        }
+      }
     },
     "ListAssetRevisionsInput":{
       "type":"structure",
@@ -11035,6 +11670,60 @@
       "min":1,
       "sensitive":true
     },
+    "NotEqualToExpression":{
+      "type":"structure",
+      "required":[
+        "columnName",
+        "value"
+      ],
+      "members":{
+        "columnName":{
+          "shape":"String",
+          "documentation":"<p>The name of the column.</p>"
+        },
+        "value":{
+          "shape":"String",
+          "documentation":"<p>The value that might not be equal to the expression.</p>"
+        }
+      },
+      "documentation":"<p>Specifies that a value is not equal to the expression.</p>"
+    },
+    "NotInExpression":{
+      "type":"structure",
+      "required":[
+        "columnName",
+        "values"
+      ],
+      "members":{
+        "columnName":{
+          "shape":"String",
+          "documentation":"<p>The name of the column.</p>"
+        },
+        "values":{
+          "shape":"StringList",
+          "documentation":"<p>The value that might not be in the expression.</p>"
+        }
+      },
+      "documentation":"<p>Specifies that a value is not in the expression.</p>"
+    },
+    "NotLikeExpression":{
+      "type":"structure",
+      "required":[
+        "columnName",
+        "value"
+      ],
+      "members":{
+        "columnName":{
+          "shape":"String",
+          "documentation":"<p>The name of the column.</p>"
+        },
+        "value":{
+          "shape":"String",
+          "documentation":"<p>The value that might not be like the expression.</p>"
+        }
+      },
+      "documentation":"<p>Specifies that a value might be not like the expression.</p>"
+    },
     "NotificationOutput":{
       "type":"structure",
       "required":[
@@ -11364,6 +12053,21 @@
       },
       "documentation":"<p>The details of a Amazon DataZone project.</p>"
     },
+    "ProvisioningConfiguration":{
+      "type":"structure",
+      "members":{
+        "lakeFormationConfiguration":{
+          "shape":"LakeFormationConfiguration",
+          "documentation":"<p>The Lake Formation configuration of the Data Lake blueprint.</p>"
+        }
+      },
+      "documentation":"<p>The provisioning configuration of the blueprint.</p>",
+      "union":true
+    },
+    "ProvisioningConfigurationList":{
+      "type":"list",
+      "member":{"shape":"ProvisioningConfiguration"}
+    },
     "ProvisioningProperties":{
       "type":"structure",
       "members":{
@@ -11403,6 +12107,10 @@
           "shape":"RoleArn",
           "documentation":"<p>The ARN of the manage access role.</p>"
         },
+        "provisioningConfigurations":{
+          "shape":"ProvisioningConfigurationList",
+          "documentation":"<p>The provisioning configuration of a blueprint.</p>"
+        },
         "provisioningRoleArn":{
           "shape":"RoleArn",
           "documentation":"<p>The ARN of the provisioning role.</p>"
@@ -11439,6 +12147,10 @@
         "manageAccessRoleArn":{
           "shape":"RoleArn",
           "documentation":"<p>The ARN of the manage access role.</p>"
+        },
+        "provisioningConfigurations":{
+          "shape":"ProvisioningConfigurationList",
+          "documentation":"<p>The provisioning configuration of a blueprint.</p>"
         },
         "provisioningRoleArn":{
           "shape":"RoleArn",
@@ -12005,6 +12717,99 @@
       "type":"string",
       "pattern":"^arn:aws[^:]*:iam::\\d{12}:(role|role/service-role)/[\\w+=,.@-]*$"
     },
+    "RowFilter":{
+      "type":"structure",
+      "members":{
+        "and":{
+          "shape":"RowFilterList",
+          "documentation":"<p>The 'and' clause of the row filter.</p>"
+        },
+        "expression":{
+          "shape":"RowFilterExpression",
+          "documentation":"<p>The expression of the row filter.</p>"
+        },
+        "or":{
+          "shape":"RowFilterList",
+          "documentation":"<p>The 'or' clause of the row filter.</p>"
+        }
+      },
+      "documentation":"<p>The row filter.</p>",
+      "union":true
+    },
+    "RowFilterConfiguration":{
+      "type":"structure",
+      "required":["rowFilter"],
+      "members":{
+        "rowFilter":{
+          "shape":"RowFilter",
+          "documentation":"<p>The row filter.</p>"
+        },
+        "sensitive":{
+          "shape":"Boolean",
+          "documentation":"<p>Specifies whether the row filter is sensitive.</p>"
+        }
+      },
+      "documentation":"<p>The row filter configuration details.</p>"
+    },
+    "RowFilterExpression":{
+      "type":"structure",
+      "members":{
+        "equalTo":{
+          "shape":"EqualToExpression",
+          "documentation":"<p>The 'equal to' clause of the row filter expression.</p>"
+        },
+        "greaterThan":{
+          "shape":"GreaterThanExpression",
+          "documentation":"<p>The 'greater than' clause of the row filter expression.</p>"
+        },
+        "greaterThanOrEqualTo":{
+          "shape":"GreaterThanOrEqualToExpression",
+          "documentation":"<p>The 'greater than or equal to' clause of the filter expression.</p>"
+        },
+        "in":{
+          "shape":"InExpression",
+          "documentation":"<p>The 'in' clause of the row filter expression.</p>"
+        },
+        "isNotNull":{
+          "shape":"IsNotNullExpression",
+          "documentation":"<p>The 'is not null' clause of the row filter expression.</p>"
+        },
+        "isNull":{
+          "shape":"IsNullExpression",
+          "documentation":"<p>The 'is null' clause of the row filter expression.</p>"
+        },
+        "lessThan":{
+          "shape":"LessThanExpression",
+          "documentation":"<p>The 'less than' clause of the row filter expression.</p>"
+        },
+        "lessThanOrEqualTo":{
+          "shape":"LessThanOrEqualToExpression",
+          "documentation":"<p>The 'less than or equal to' clause of the row filter expression.</p>"
+        },
+        "like":{
+          "shape":"LikeExpression",
+          "documentation":"<p>The 'like' clause of the row filter expression.</p>"
+        },
+        "notEqualTo":{
+          "shape":"NotEqualToExpression",
+          "documentation":"<p>The 'no equal to' clause of the row filter expression.</p>"
+        },
+        "notIn":{
+          "shape":"NotInExpression",
+          "documentation":"<p>The 'not in' clause of the row filter expression.</p>"
+        },
+        "notLike":{
+          "shape":"NotLikeExpression",
+          "documentation":"<p>The 'not like' clause of the row filter expression.</p>"
+        }
+      },
+      "documentation":"<p>The row filter expression.</p>",
+      "union":true
+    },
+    "RowFilterList":{
+      "type":"list",
+      "member":{"shape":"RowFilter"}
+    },
     "RunStatisticsForAssets":{
       "type":"structure",
       "members":{
@@ -12030,6 +12835,18 @@
         }
       },
       "documentation":"<p>The asset statistics from the data source run.</p>"
+    },
+    "S3Location":{
+      "type":"string",
+      "max":1024,
+      "min":1,
+      "pattern":"^s3://.+$"
+    },
+    "S3LocationList":{
+      "type":"list",
+      "member":{"shape":"S3Location"},
+      "max":20,
+      "min":0
     },
     "ScheduleConfiguration":{
       "type":"structure",
@@ -12745,6 +13562,10 @@
       }
     },
     "String":{"type":"string"},
+    "StringList":{
+      "type":"list",
+      "member":{"shape":"String"}
+    },
     "SubscribedAsset":{
       "type":"structure",
       "required":[
@@ -13705,6 +14526,102 @@
     "UntagResourceResponse":{
       "type":"structure",
       "members":{
+      }
+    },
+    "UpdateAssetFilterInput":{
+      "type":"structure",
+      "required":[
+        "assetIdentifier",
+        "domainIdentifier",
+        "identifier"
+      ],
+      "members":{
+        "assetIdentifier":{
+          "shape":"AssetId",
+          "documentation":"<p>The ID of the data asset.</p>",
+          "location":"uri",
+          "locationName":"assetIdentifier"
+        },
+        "configuration":{
+          "shape":"AssetFilterConfiguration",
+          "documentation":"<p>The configuration of the asset filter.</p>"
+        },
+        "description":{
+          "shape":"Description",
+          "documentation":"<p>The description of the asset filter.</p>"
+        },
+        "domainIdentifier":{
+          "shape":"DomainId",
+          "documentation":"<p>The ID of the domain where you want to update an asset filter.</p>",
+          "location":"uri",
+          "locationName":"domainIdentifier"
+        },
+        "identifier":{
+          "shape":"FilterId",
+          "documentation":"<p>The ID of the asset filter.</p>",
+          "location":"uri",
+          "locationName":"identifier"
+        },
+        "name":{
+          "shape":"String",
+          "documentation":"<p>The name of the asset filter.</p>"
+        }
+      }
+    },
+    "UpdateAssetFilterOutput":{
+      "type":"structure",
+      "required":[
+        "assetId",
+        "configuration",
+        "domainId",
+        "id",
+        "name"
+      ],
+      "members":{
+        "assetId":{
+          "shape":"AssetId",
+          "documentation":"<p>The ID of the data asset.</p>"
+        },
+        "configuration":{
+          "shape":"AssetFilterConfiguration",
+          "documentation":"<p>The configuration of the asset filter.</p>"
+        },
+        "createdAt":{
+          "shape":"CreatedAt",
+          "documentation":"<p>The timestamp at which the asset filter was created.</p>"
+        },
+        "description":{
+          "shape":"Description",
+          "documentation":"<p>The description of the asset filter.</p>"
+        },
+        "domainId":{
+          "shape":"DomainId",
+          "documentation":"<p>The ID of the domain where the asset filter was created.</p>"
+        },
+        "effectiveColumnNames":{
+          "shape":"ColumnNameList",
+          "documentation":"<p>The column names of the asset filter.</p>"
+        },
+        "effectiveRowFilter":{
+          "shape":"String",
+          "documentation":"<p>The row filter of the asset filter.</p>"
+        },
+        "errorMessage":{
+          "shape":"String",
+          "documentation":"<p>The error message that is displayed if the action is not completed successfully.</p>"
+        },
+        "id":{
+          "shape":"FilterId",
+          "documentation":"<p>The ID of the asset filter.</p>"
+        },
+        "name":{
+          "shape":"FilterName",
+          "documentation":"<p>The name of the asset filter.</p>"
+        },
+        "status":{
+          "shape":"FilterStatus",
+          "documentation":"<p>The status of the asset filter.</p>"
+        }
       }
     },
     "UpdateDataSourceInput":{

@@ -2,6 +2,16 @@
 CHANGELOG
 =========
 
+2.17.15
+=======
+
+* api-change:``ivs``: Documentation update for IVS Low Latency API Reference.
+* api-change:``datazone``: This release adds 1/ support of register S3 locations of assets in AWS Lake Formation hybrid access mode for DefaultDataLake blueprint. 2/ support of CRUD operations for Asset Filters.
+* api-change:``neptune-graph``: Amazon Neptune Analytics provides new options for customers to start with smaller graphs at a lower cost. CreateGraph, CreaateGraphImportTask, UpdateGraph and StartImportTask APIs will now allow 32 and 64 for `provisioned-memory`
+* api-change:``redshift-serverless``: Adds dualstack support for Redshift Serverless workgroup.
+* api-change:``mobile``: The mobile service has been removed following its deprecation.
+
+
 2.17.14
 =======
 

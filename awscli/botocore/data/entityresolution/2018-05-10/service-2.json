@@ -5,12 +5,14 @@
     "endpointPrefix":"entityresolution",
     "jsonVersion":"1.1",
     "protocol":"rest-json",
+    "protocols":["rest-json"],
     "serviceAbbreviation":"AWSEntityResolution",
     "serviceFullName":"AWS EntityResolution",
     "serviceId":"EntityResolution",
     "signatureVersion":"v4",
     "signingName":"entityresolution",
-    "uid":"entityresolution-2018-05-10"
+    "uid":"entityresolution-2018-05-10",
+    "auth":["aws.auth#sigv4"]
   },
   "operations":{
     "AddPolicyStatement":{
@@ -695,7 +697,7 @@
       "members":{
         "message":{"shape":"ErrorMessage"}
       },
-      "documentation":"<p>You do not have sufficient access to perform this action. <code>HTTP Status Code: 403</code> </p>",
+      "documentation":"<p>You do not have sufficient access to perform this action. </p>",
       "error":{
         "httpStatusCode":403,
         "senderFault":true
@@ -728,7 +730,7 @@
         },
         "effect":{
           "shape":"StatementEffect",
-          "documentation":"<p>Determines whether the permissions specified in the policy are to be allowed (<code>Allow</code>) or denied (<code>Deny</code>).</p>"
+          "documentation":"<p>Determines whether the permissions specified in the policy are to be allowed (<code>Allow</code>) or denied (<code>Deny</code>).</p> <important> <p> If you set the value of the <code>effect</code> parameter to <code>Deny</code> for the <code>AddPolicyStatement</code> operation, you must also set the value of the <code>effect</code> parameter in the <code>policy</code> to <code>Deny</code> for the <code>PutPolicy</code> operation.</p> </important>"
         },
         "principal":{
           "shape":"StatementPrincipalList",
@@ -851,7 +853,7 @@
       "members":{
         "message":{"shape":"ErrorMessage"}
       },
-      "documentation":"<p>The request could not be processed because of conflict in the current state of the resource. Example: Workflow already exists, Schema already exists, Workflow is currently running, etc. <code>HTTP Status Code: 400</code> </p>",
+      "documentation":"<p>The request could not be processed because of conflict in the current state of the resource. Example: Workflow already exists, Schema already exists, Workflow is currently running, etc. </p>",
       "error":{
         "httpStatusCode":400,
         "senderFault":true
@@ -863,7 +865,6 @@
       "required":[
         "idMappingTechniques",
         "inputSourceConfig",
-        "roleArn",
         "workflowName"
       ],
       "members":{
@@ -873,7 +874,7 @@
         },
         "idMappingTechniques":{
           "shape":"IdMappingTechniques",
-          "documentation":"<p>An object which defines the <code>idMappingType</code> and the <code>providerProperties</code>.</p>"
+          "documentation":"<p>An object which defines the ID mapping technique and any additional configurations.</p>"
         },
         "inputSourceConfig":{
           "shape":"IdMappingWorkflowInputSourceConfig",
@@ -884,7 +885,7 @@
           "documentation":"<p>A list of <code>IdMappingWorkflowOutputSource</code> objects, each of which contains fields <code>OutputS3Path</code> and <code>Output</code>.</p>"
         },
         "roleArn":{
-          "shape":"RoleArn",
+          "shape":"IdMappingRoleArn",
           "documentation":"<p>The Amazon Resource Name (ARN) of the IAM role. Entity Resolution assumes this role to create resources on your behalf as part of workflow execution.</p>"
         },
         "tags":{
@@ -902,7 +903,6 @@
       "required":[
         "idMappingTechniques",
         "inputSourceConfig",
-        "roleArn",
         "workflowArn",
         "workflowName"
       ],
@@ -913,7 +913,7 @@
         },
         "idMappingTechniques":{
           "shape":"IdMappingTechniques",
-          "documentation":"<p>An object which defines the <code>idMappingType</code> and the <code>providerProperties</code>.</p>"
+          "documentation":"<p>An object which defines the ID mapping technique and any additional configurations.</p>"
         },
         "inputSourceConfig":{
           "shape":"IdMappingWorkflowInputSourceConfig",
@@ -924,7 +924,7 @@
           "documentation":"<p>A list of <code>IdMappingWorkflowOutputSource</code> objects, each of which contains fields <code>OutputS3Path</code> and <code>Output</code>.</p>"
         },
         "roleArn":{
-          "shape":"RoleArn",
+          "shape":"IdMappingRoleArn",
           "documentation":"<p>The Amazon Resource Name (ARN) of the IAM role. Entity Resolution assumes this role to create resources on your behalf as part of workflow execution.</p>"
         },
         "workflowArn":{
@@ -1405,7 +1405,7 @@
           "documentation":"<p>The current quota value for the customers.</p>"
         }
       },
-      "documentation":"<p>The request was rejected because it attempted to create resources beyond the current Entity Resolution account limits. The error message describes the limit exceeded. <code>HTTP Status Code: 402</code> </p>",
+      "documentation":"<p>The request was rejected because it attempted to create resources beyond the current Entity Resolution account limits. The error message describes the limit exceeded. </p>",
       "error":{
         "httpStatusCode":402,
         "senderFault":true
@@ -1486,7 +1486,6 @@
         "createdAt",
         "idMappingTechniques",
         "inputSourceConfig",
-        "roleArn",
         "updatedAt",
         "workflowArn",
         "workflowName"
@@ -1502,7 +1501,7 @@
         },
         "idMappingTechniques":{
           "shape":"IdMappingTechniques",
-          "documentation":"<p>An object which defines the <code>idMappingType</code> and the <code>providerProperties</code>.</p>"
+          "documentation":"<p>An object which defines the ID mapping technique and any additional configurations.</p>"
         },
         "inputSourceConfig":{
           "shape":"IdMappingWorkflowInputSourceConfig",
@@ -1513,7 +1512,7 @@
           "documentation":"<p>A list of <code>OutputSource</code> objects, each of which contains fields <code>OutputS3Path</code> and <code>KMSArn</code>.</p>"
         },
         "roleArn":{
-          "shape":"RoleArn",
+          "shape":"IdMappingRoleArn",
           "documentation":"<p>The Amazon Resource Name (ARN) of the IAM role. Entity Resolution assumes this role to access Amazon Web Services resources on your behalf.</p>"
         },
         "tags":{
@@ -1947,18 +1946,30 @@
       "members":{
         "inputRecords":{
           "shape":"Integer",
-          "documentation":"<p>The total number of input records.</p>"
+          "documentation":"<p>The total number of records that were input for processing.</p>"
         },
         "recordsNotProcessed":{
           "shape":"Integer",
           "documentation":"<p>The total number of records that did not get processed.</p>"
         },
+        "totalMappedRecords":{
+          "shape":"Integer",
+          "documentation":"<p> The total number of records that were mapped.</p>"
+        },
+        "totalMappedSourceRecords":{
+          "shape":"Integer",
+          "documentation":"<p> The total number of mapped source records.</p>"
+        },
+        "totalMappedTargetRecords":{
+          "shape":"Integer",
+          "documentation":"<p> The total number of distinct mapped target records.</p>"
+        },
         "totalRecordsProcessed":{
           "shape":"Integer",
-          "documentation":"<p>The total number of records processed.</p>"
+          "documentation":"<p>The total number of records that were processed.</p>"
         }
       },
-      "documentation":"<p>An object containing <code>InputRecords</code>, <code>TotalRecordsProcessed</code>, <code>MatchIDs</code>, and <code>RecordsNotProcessed</code>.</p>"
+      "documentation":"<p>An object containing <code>InputRecords</code>, <code>RecordsNotProcessed</code>, <code>TotalRecordsProcessed</code>, <code>TotalMappedRecords</code>, <code>TotalMappedSourceRecords</code>, and <code>TotalMappedTargetRecords</code>.</p>"
     },
     "IdMappingJobOutputSource":{
       "type":"structure",
@@ -1988,6 +1999,45 @@
       "max":1,
       "min":1
     },
+    "IdMappingRoleArn":{
+      "type":"string",
+      "max":512,
+      "min":0,
+      "pattern":"^$|^arn:aws:iam::\\d{12}:role/?[a-zA-Z_0-9+=,.@\\-_/]+$"
+    },
+    "IdMappingRuleBasedProperties":{
+      "type":"structure",
+      "required":[
+        "attributeMatchingModel",
+        "recordMatchingModel",
+        "ruleDefinitionType"
+      ],
+      "members":{
+        "attributeMatchingModel":{
+          "shape":"AttributeMatchingModel",
+          "documentation":"<p>The comparison type. You can either choose <code>ONE_TO_ONE</code> or <code>MANY_TO_MANY</code> as the <code>attributeMatchingModel</code>. </p> <p>If you choose <code>MANY_TO_MANY</code>, the system can match attributes across the sub-types of an attribute type. For example, if the value of the <code>Email</code> field of Profile A matches the value of the <code>BusinessEmail</code> field of Profile B, the two profiles are matched on the <code>Email</code> attribute type. </p> <p>If you choose <code>ONE_TO_ONE</code>, the system can only match attributes if the sub-types are an exact match. For example, for the <code>Email</code> attribute type, the system will only consider it a match if the value of the <code>Email</code> field of Profile A matches the value of the <code>Email</code> field of Profile B.</p>"
+        },
+        "recordMatchingModel":{
+          "shape":"RecordMatchingModel",
+          "documentation":"<p> The type of matching record that is allowed to be used in an ID mapping workflow. </p> <p>If the value is set to <code>ONE_SOURCE_TO_ONE_TARGET</code>, only one record in the source can be matched to the same record in the target.</p> <p>If the value is set to <code>MANY_SOURCE_TO_ONE_TARGET</code>, multiple records in the source can be matched to one record in the target.</p>"
+        },
+        "ruleDefinitionType":{
+          "shape":"IdMappingWorkflowRuleDefinitionType",
+          "documentation":"<p> The set of rules you can use in an ID mapping workflow. The limitations specified for the source or target to define the match rules must be compatible.</p>"
+        },
+        "rules":{
+          "shape":"IdMappingRuleBasedPropertiesRulesList",
+          "documentation":"<p> The rules that can be used for ID mapping.</p>"
+        }
+      },
+      "documentation":"<p> An object that defines the list of matching rules to run in an ID mapping workflow.</p>"
+    },
+    "IdMappingRuleBasedPropertiesRulesList":{
+      "type":"list",
+      "member":{"shape":"Rule"},
+      "max":25,
+      "min":1
+    },
     "IdMappingTechniques":{
       "type":"structure",
       "required":["idMappingType"],
@@ -1999,13 +2049,20 @@
         "providerProperties":{
           "shape":"ProviderProperties",
           "documentation":"<p>An object which defines any additional configurations required by the provider service.</p>"
+        },
+        "ruleBasedProperties":{
+          "shape":"IdMappingRuleBasedProperties",
+          "documentation":"<p> An object which defines any additional configurations required by rule-based matching.</p>"
         }
       },
-      "documentation":"<p>An object which defines the ID mapping techniques and provider configurations.</p>"
+      "documentation":"<p>An object which defines the ID mapping technique and any additional configurations.</p>"
     },
     "IdMappingType":{
       "type":"string",
-      "enum":["PROVIDER"]
+      "enum":[
+        "PROVIDER",
+        "RULE_BASED"
+      ]
     },
     "IdMappingWorkflowArn":{
       "type":"string",
@@ -2017,7 +2074,7 @@
       "members":{
         "inputSourceARN":{
           "shape":"IdMappingWorkflowInputSourceInputSourceARNString",
-          "documentation":"<p>An Glue table ARN for the input source table.</p>"
+          "documentation":"<p>An Glue table Amazon Resource Name (ARN) or a matching workflow ARN for the input source table.</p>"
         },
         "schemaName":{
           "shape":"EntityName",
@@ -2025,7 +2082,7 @@
         },
         "type":{
           "shape":"IdNamespaceType",
-          "documentation":"<p>The type of ID namespace. There are two types: <code>SOURCE</code> and <code>TARGET</code>. </p> <p>The <code>SOURCE</code> contains configurations for <code>sourceId</code> data that will be processed in an ID mapping workflow. </p> <p>The <code>TARGET</code> contains a configuration of <code>targetId</code> to which all <code>sourceIds</code> will resolve to.</p>"
+          "documentation":"<p>The type of ID namespace. There are two types: <code>SOURCE</code> and <code>TARGET</code>. </p> <p>The <code>SOURCE</code> contains configurations for <code>sourceId</code> data that will be processed in an ID mapping workflow. </p> <p>The <code>TARGET</code> contains a configuration of <code>targetId</code> which all <code>sourceIds</code> will resolve to.</p>"
         }
       },
       "documentation":"<p>An object containing <code>InputSourceARN</code>, <code>SchemaName</code>, and <code>Type</code>.</p>"
@@ -2065,6 +2122,17 @@
       "max":1,
       "min":1
     },
+    "IdMappingWorkflowRuleDefinitionType":{
+      "type":"string",
+      "enum":[
+        "SOURCE",
+        "TARGET"
+      ]
+    },
+    "IdMappingWorkflowRuleDefinitionTypeList":{
+      "type":"list",
+      "member":{"shape":"IdMappingWorkflowRuleDefinitionType"}
+    },
     "IdMappingWorkflowSummary":{
       "type":"structure",
       "required":[
@@ -2097,6 +2165,23 @@
       "type":"string",
       "pattern":"^arn:(aws|aws-us-gov|aws-cn):entityresolution:[a-z]{2}-[a-z]{1,10}-[0-9]:[0-9]{12}:(idnamespace/[a-zA-Z_0-9-]{1,255})$"
     },
+    "IdNamespaceIdMappingWorkflowMetadata":{
+      "type":"structure",
+      "required":["idMappingType"],
+      "members":{
+        "idMappingType":{
+          "shape":"IdMappingType",
+          "documentation":"<p>The type of ID mapping.</p>"
+        }
+      },
+      "documentation":"<p>The settings for the ID namespace for the ID mapping workflow job.</p>"
+    },
+    "IdNamespaceIdMappingWorkflowMetadataList":{
+      "type":"list",
+      "member":{"shape":"IdNamespaceIdMappingWorkflowMetadata"},
+      "max":1,
+      "min":1
+    },
     "IdNamespaceIdMappingWorkflowProperties":{
       "type":"structure",
       "required":["idMappingType"],
@@ -2108,9 +2193,13 @@
         "providerProperties":{
           "shape":"NamespaceProviderProperties",
           "documentation":"<p>An object which defines any additional configurations required by the provider service.</p>"
+        },
+        "ruleBasedProperties":{
+          "shape":"NamespaceRuleBasedProperties",
+          "documentation":"<p> An object which defines any additional configurations required by rule-based matching.</p>"
         }
       },
-      "documentation":"<p>An object containing <code>IdMappingType</code> and <code>ProviderProperties</code>.</p>"
+      "documentation":"<p>An object containing <code>IdMappingType</code>, <code>ProviderProperties</code>, and <code>RuleBasedProperties</code>.</p>"
     },
     "IdNamespaceIdMappingWorkflowPropertiesList":{
       "type":"list",
@@ -2124,7 +2213,7 @@
       "members":{
         "inputSourceARN":{
           "shape":"IdNamespaceInputSourceInputSourceARNString",
-          "documentation":"<p>An Glue table ARN for the input source table.</p>"
+          "documentation":"<p>An Glue table Amazon Resource Name (ARN) or a matching workflow ARN for the input source table.</p>"
         },
         "schemaName":{
           "shape":"EntityName",
@@ -2165,6 +2254,10 @@
           "shape":"Description",
           "documentation":"<p>The description of the ID namespace.</p>"
         },
+        "idMappingWorkflowProperties":{
+          "shape":"IdNamespaceIdMappingWorkflowMetadataList",
+          "documentation":"<p>An object which defines any additional configurations required by the ID mapping workflow.</p>"
+        },
         "idNamespaceArn":{
           "shape":"IdNamespaceArn",
           "documentation":"<p>The Amazon Resource Name (ARN) of the ID namespace.</p>"
@@ -2175,7 +2268,7 @@
         },
         "type":{
           "shape":"IdNamespaceType",
-          "documentation":"<p>The type of ID namespace. There are two types: <code>SOURCE</code> and <code>TARGET</code>.</p> <p>The <code>SOURCE</code> contains configurations for <code>sourceId</code> data that will be processed in an ID mapping workflow. </p> <p>The <code>TARGET</code> contains a configuration of <code>targetId</code> to which all <code>sourceIds</code> will resolve to.</p>"
+          "documentation":"<p>The type of ID namespace. There are two types: <code>SOURCE</code> and <code>TARGET</code>.</p> <p>The <code>SOURCE</code> contains configurations for <code>sourceId</code> data that will be processed in an ID mapping workflow. </p> <p>The <code>TARGET</code> contains a configuration of <code>targetId</code> which all <code>sourceIds</code> will resolve to.</p>"
         },
         "updatedAt":{
           "shape":"Timestamp",
@@ -2218,7 +2311,7 @@
         },
         "inputSourceARN":{
           "shape":"InputSourceInputSourceARNString",
-          "documentation":"<p>An Glue table ARN for the input source table.</p>"
+          "documentation":"<p>An Glue table Amazon Resource Name (ARN) for the input source table.</p>"
         },
         "schemaName":{
           "shape":"EntityName",
@@ -2257,7 +2350,7 @@
       "members":{
         "message":{"shape":"ErrorMessage"}
       },
-      "documentation":"<p>This exception occurs when there is an internal failure in the Entity Resolution service. <code>HTTP Status Code: 500</code> </p>",
+      "documentation":"<p>This exception occurs when there is an internal failure in the Entity Resolution service. </p>",
       "error":{"httpStatusCode":500},
       "exception":true,
       "fault":true,
@@ -2651,6 +2744,13 @@
         }
       }
     },
+    "MatchPurpose":{
+      "type":"string",
+      "enum":[
+        "IDENTIFIER_GENERATION",
+        "INDEXING"
+      ]
+    },
     "MatchingWorkflowArn":{
       "type":"string",
       "pattern":"^arn:(aws|aws-us-gov|aws-cn):entityresolution:[a-z]{2}-[a-z]{1,10}-[0-9]:[0-9]{12}:(matchingworkflow/[a-zA-Z_0-9-]{1,255})$"
@@ -2706,6 +2806,34 @@
         }
       },
       "documentation":"<p>An object containing <code>ProviderConfiguration</code> and <code>ProviderServiceArn</code>.</p>"
+    },
+    "NamespaceRuleBasedProperties":{
+      "type":"structure",
+      "members":{
+        "attributeMatchingModel":{
+          "shape":"AttributeMatchingModel",
+          "documentation":"<p>The comparison type. You can either choose <code>ONE_TO_ONE</code> or <code>MANY_TO_MANY</code> as the <code>attributeMatchingModel</code>. </p> <p>If you choose <code>MANY_TO_MANY</code>, the system can match attributes across the sub-types of an attribute type. For example, if the value of the <code>Email</code> field of Profile A matches the value of <code>BusinessEmail</code> field of Profile B, the two profiles are matched on the <code>Email</code> attribute type. </p> <p>If you choose <code>ONE_TO_ONE</code>, the system can only match attributes if the sub-types are an exact match. For example, for the <code>Email</code> attribute type, the system will only consider it a match if the value of the <code>Email</code> field of Profile A matches the value of the <code>Email</code> field of Profile B.</p>"
+        },
+        "recordMatchingModels":{
+          "shape":"RecordMatchingModelList",
+          "documentation":"<p> The type of matching record that is allowed to be used in an ID mapping workflow. </p> <p>If the value is set to <code>ONE_SOURCE_TO_ONE_TARGET</code>, only one record in the source is matched to one record in the target. </p> <p>If the value is set to <code>MANY_SOURCE_TO_ONE_TARGET</code>, all matching records in the source are matched to one record in the target.</p>"
+        },
+        "ruleDefinitionTypes":{
+          "shape":"IdMappingWorkflowRuleDefinitionTypeList",
+          "documentation":"<p> The sets of rules you can use in an ID mapping workflow. The limitations specified for the source and target must be compatible.</p>"
+        },
+        "rules":{
+          "shape":"NamespaceRuleBasedPropertiesRulesList",
+          "documentation":"<p> The rules for the ID namespace.</p>"
+        }
+      },
+      "documentation":"<p> The rule-based properties of an ID namespace. These properties define how the ID namespace can be used in an ID mapping workflow.</p>"
+    },
+    "NamespaceRuleBasedPropertiesRulesList":{
+      "type":"list",
+      "member":{"shape":"Rule"},
+      "max":25,
+      "min":1
     },
     "NextToken":{
       "type":"string",
@@ -2974,7 +3102,7 @@
         },
         "policy":{
           "shape":"PolicyDocument",
-          "documentation":"<p>The resource-based policy.</p>"
+          "documentation":"<p>The resource-based policy.</p> <important> <p>If you set the value of the <code>effect</code> parameter in the <code>policy</code> to <code>Deny</code> for the <code>PutPolicy</code> operation, you must also set the value of the <code>effect</code> parameter to <code>Deny</code> for the <code>AddPolicyStatement</code> operation.</p> </important>"
         },
         "token":{
           "shape":"PolicyToken",
@@ -3021,6 +3149,17 @@
       "min":0,
       "pattern":"^[a-zA-Z_0-9-./@ ()+\\t]*$"
     },
+    "RecordMatchingModel":{
+      "type":"string",
+      "enum":[
+        "ONE_SOURCE_TO_ONE_TARGET",
+        "MANY_SOURCE_TO_ONE_TARGET"
+      ]
+    },
+    "RecordMatchingModelList":{
+      "type":"list",
+      "member":{"shape":"RecordMatchingModel"}
+    },
     "RequiredBucketActionsList":{
       "type":"list",
       "member":{"shape":"String"}
@@ -3057,7 +3196,7 @@
       "members":{
         "message":{"shape":"ErrorMessage"}
       },
-      "documentation":"<p>The resource could not be found. <code>HTTP Status Code: 404</code> </p>",
+      "documentation":"<p>The resource could not be found. </p>",
       "error":{
         "httpStatusCode":404,
         "senderFault":true
@@ -3097,14 +3236,18 @@
       "members":{
         "attributeMatchingModel":{
           "shape":"AttributeMatchingModel",
-          "documentation":"<p>The comparison type. You can either choose <code>ONE_TO_ONE</code> or <code>MANY_TO_MANY</code> as the AttributeMatchingModel. When choosing <code>MANY_TO_MANY</code>, the system can match attributes across the sub-types of an attribute type. For example, if the value of the <code>Email</code> field of Profile A and the value of <code>BusinessEmail</code> field of Profile B matches, the two profiles are matched on the <code>Email</code> type. When choosing <code>ONE_TO_ONE</code> ,the system can only match if the sub-types are exact matches. For example, only when the value of the <code>Email</code> field of Profile A and the value of the <code>Email</code> field of Profile B matches, the two profiles are matched on the <code>Email</code> type.</p>"
+          "documentation":"<p>The comparison type. You can either choose <code>ONE_TO_ONE</code> or <code>MANY_TO_MANY</code> as the <code>attributeMatchingModel</code>. </p> <p>If you choose <code>MANY_TO_MANY</code>, the system can match attributes across the sub-types of an attribute type. For example, if the value of the <code>Email</code> field of Profile A and the value of <code>BusinessEmail</code> field of Profile B matches, the two profiles are matched on the <code>Email</code> attribute type. </p> <p>If you choose <code>ONE_TO_ONE</code>, the system can only match attributes if the sub-types are an exact match. For example, for the <code>Email</code> attribute type, the system will only consider it a match if the value of the <code>Email</code> field of Profile A matches the value of the <code>Email</code> field of Profile B.</p>"
+        },
+        "matchPurpose":{
+          "shape":"MatchPurpose",
+          "documentation":"<p> An indicator of whether to generate IDs and index the data or not.</p> <p>If you choose <code>IDENTIFIER_GENERATION</code>, the process generates IDs and indexes the data.</p> <p>If you choose <code>INDEXING</code>, the process indexes the data without generating IDs.</p>"
         },
         "rules":{
           "shape":"RuleBasedPropertiesRulesList",
           "documentation":"<p>A list of <code>Rule</code> objects, each of which have fields <code>RuleName</code> and <code>MatchingKeys</code>.</p>"
         }
       },
-      "documentation":"<p>An object which defines the list of matching rules to run and has a field <code>Rules</code>, which is a list of rule objects.</p>"
+      "documentation":"<p>An object which defines the list of matching rules to run in a matching workflow. RuleBasedProperties contain a <code>Rules</code> field, which is a list of rule objects.</p>"
     },
     "RuleBasedPropertiesRulesList":{
       "type":"list",
@@ -3170,9 +3313,13 @@
           "shape":"AttributeName",
           "documentation":"<p>A string that instructs Entity Resolution to combine several columns into a unified column with the identical attribute type. </p> <p>For example, when working with columns such as <code>first_name</code>, <code>middle_name</code>, and <code>last_name</code>, assigning them a common <code>groupName</code> will prompt Entity Resolution to concatenate them into a single value.</p>"
         },
+        "hashed":{
+          "shape":"Boolean",
+          "documentation":"<p> Indicates if the column values are hashed in the schema input. If the value is set to <code>TRUE</code>, the column values are hashed. If the value is set to <code>FALSE</code>, the column values are cleartext.</p>"
+        },
         "matchKey":{
           "shape":"AttributeName",
-          "documentation":"<p>A key that allows grouping of multiple input attributes into a unified matching group. For example, consider a scenario where the source table contains various addresses, such as <code>business_address</code> and <code>shipping_address</code>. By assigning a <code>matchKey</code> called <code>address</code> to both attributes, Entity Resolution will match records across these fields to create a consolidated matching group. If no <code>matchKey</code> is specified for a column, it won't be utilized for matching purposes but will still be included in the output table.</p>"
+          "documentation":"<p>A key that allows grouping of multiple input attributes into a unified matching group. </p> <p>For example, consider a scenario where the source table contains various addresses, such as <code>business_address</code> and <code>shipping_address</code>. By assigning a <code>matchKey</code> called <code>address</code> to both attributes, Entity Resolution will match records across these fields to create a consolidated matching group.</p> <p>If no <code>matchKey</code> is specified for a column, it won't be utilized for matching purposes but will still be included in the output table.</p>"
         },
         "subType":{
           "shape":"AttributeName",
@@ -3183,7 +3330,7 @@
           "documentation":"<p>The type of the attribute, selected from a list of values.</p>"
         }
       },
-      "documentation":"<p>An object containing <code>FieldName</code>, <code>Type</code>, <code>GroupName</code>, <code>MatchKey</code>, and <code>SubType</code>.</p>"
+      "documentation":"<p>An object containing <code>FieldName</code>, <code>Type</code>, <code>GroupName</code>, <code>MatchKey</code>, <code>Hashing</code>, and <code>SubType</code>.</p>"
     },
     "SchemaInputAttributes":{
       "type":"list",
@@ -3392,7 +3539,7 @@
       "members":{
         "message":{"shape":"ErrorMessage"}
       },
-      "documentation":"<p>The request was denied due to request throttling. <code>HTTP Status Code: 429</code> </p>",
+      "documentation":"<p>The request was denied due to request throttling. </p>",
       "error":{
         "httpStatusCode":429,
         "senderFault":true
@@ -3405,7 +3552,7 @@
       "type":"string",
       "max":760,
       "min":1,
-      "pattern":"^[a-zA-Z_0-9-,]*$"
+      "pattern":"^[a-zA-Z_0-9-+=/,]*$"
     },
     "UniqueIdList":{
       "type":"list",
@@ -3442,7 +3589,6 @@
       "required":[
         "idMappingTechniques",
         "inputSourceConfig",
-        "roleArn",
         "workflowName"
       ],
       "members":{
@@ -3452,7 +3598,7 @@
         },
         "idMappingTechniques":{
           "shape":"IdMappingTechniques",
-          "documentation":"<p>An object which defines the <code>idMappingType</code> and the <code>providerProperties</code>.</p>"
+          "documentation":"<p>An object which defines the ID mapping technique and any additional configurations.</p>"
         },
         "inputSourceConfig":{
           "shape":"IdMappingWorkflowInputSourceConfig",
@@ -3463,7 +3609,7 @@
           "documentation":"<p>A list of <code>OutputSource</code> objects, each of which contains fields <code>OutputS3Path</code> and <code>KMSArn</code>.</p>"
         },
         "roleArn":{
-          "shape":"RoleArn",
+          "shape":"IdMappingRoleArn",
           "documentation":"<p>The Amazon Resource Name (ARN) of the IAM role. Entity Resolution assumes this role to access Amazon Web Services resources on your behalf.</p>"
         },
         "workflowName":{
@@ -3479,7 +3625,6 @@
       "required":[
         "idMappingTechniques",
         "inputSourceConfig",
-        "roleArn",
         "workflowArn",
         "workflowName"
       ],
@@ -3490,7 +3635,7 @@
         },
         "idMappingTechniques":{
           "shape":"IdMappingTechniques",
-          "documentation":"<p>An object which defines the <code>idMappingType</code> and the <code>providerProperties</code>.</p>"
+          "documentation":"<p>An object which defines the ID mapping technique and any additional configurations.</p>"
         },
         "inputSourceConfig":{
           "shape":"IdMappingWorkflowInputSourceConfig",
@@ -3501,7 +3646,7 @@
           "documentation":"<p>A list of <code>OutputSource</code> objects, each of which contains fields <code>OutputS3Path</code> and <code>KMSArn</code>.</p>"
         },
         "roleArn":{
-          "shape":"RoleArn",
+          "shape":"IdMappingRoleArn",
           "documentation":"<p>The Amazon Resource Name (ARN) of the IAM role. Entity Resolution assumes this role to access Amazon Web Services resources on your behalf.</p>"
         },
         "workflowArn":{
@@ -3726,7 +3871,7 @@
       "members":{
         "message":{"shape":"ErrorMessage"}
       },
-      "documentation":"<p>The input fails to satisfy the constraints specified by Entity Resolution. <code>HTTP Status Code: 400</code> </p>",
+      "documentation":"<p>The input fails to satisfy the constraints specified by Entity Resolution. </p>",
       "error":{
         "httpStatusCode":400,
         "senderFault":true

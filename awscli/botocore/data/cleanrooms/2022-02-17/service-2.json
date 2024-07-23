@@ -2,9 +2,10 @@
   "version":"2.0",
   "metadata":{
     "apiVersion":"2022-02-17",
+    "auth":["aws.auth#sigv4"],
     "endpointPrefix":"cleanrooms",
-    "jsonVersion":"1.1",
     "protocol":"rest-json",
+    "protocols":["rest-json"],
     "serviceFullName":"AWS Clean Rooms Service",
     "serviceId":"CleanRooms",
     "signatureVersion":"v4",
@@ -185,6 +186,46 @@
       ],
       "documentation":"<p>Creates a configured table association. A configured table association links a configured table with a collaboration.</p>"
     },
+    "CreateIdMappingTable":{
+      "name":"CreateIdMappingTable",
+      "http":{
+        "method":"POST",
+        "requestUri":"/memberships/{membershipIdentifier}/idmappingtables",
+        "responseCode":200
+      },
+      "input":{"shape":"CreateIdMappingTableInput"},
+      "output":{"shape":"CreateIdMappingTableOutput"},
+      "errors":[
+        {"shape":"ConflictException"},
+        {"shape":"ServiceQuotaExceededException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ValidationException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Creates an ID mapping table.</p>"
+    },
+    "CreateIdNamespaceAssociation":{
+      "name":"CreateIdNamespaceAssociation",
+      "http":{
+        "method":"POST",
+        "requestUri":"/memberships/{membershipIdentifier}/idnamespaceassociations",
+        "responseCode":200
+      },
+      "input":{"shape":"CreateIdNamespaceAssociationInput"},
+      "output":{"shape":"CreateIdNamespaceAssociationOutput"},
+      "errors":[
+        {"shape":"ConflictException"},
+        {"shape":"ServiceQuotaExceededException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ValidationException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Creates an ID namespace association.</p>"
+    },
     "CreateMembership":{
       "name":"CreateMembership",
       "http":{
@@ -340,6 +381,44 @@
       "documentation":"<p>Deletes a configured table association.</p>",
       "idempotent":true
     },
+    "DeleteIdMappingTable":{
+      "name":"DeleteIdMappingTable",
+      "http":{
+        "method":"DELETE",
+        "requestUri":"/memberships/{membershipIdentifier}/idmappingtables/{idMappingTableIdentifier}",
+        "responseCode":204
+      },
+      "input":{"shape":"DeleteIdMappingTableInput"},
+      "output":{"shape":"DeleteIdMappingTableOutput"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ValidationException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Deletes an ID mapping table.</p>",
+      "idempotent":true
+    },
+    "DeleteIdNamespaceAssociation":{
+      "name":"DeleteIdNamespaceAssociation",
+      "http":{
+        "method":"DELETE",
+        "requestUri":"/memberships/{membershipIdentifier}/idnamespaceassociations/{idNamespaceAssociationIdentifier}",
+        "responseCode":204
+      },
+      "input":{"shape":"DeleteIdNamespaceAssociationInput"},
+      "output":{"shape":"DeleteIdNamespaceAssociationOutput"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ValidationException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Deletes an ID namespace association.</p>",
+      "idempotent":true
+    },
     "DeleteMember":{
       "name":"DeleteMember",
       "http":{
@@ -470,6 +549,24 @@
       ],
       "documentation":"<p>Retrieves a configured audience model association within a collaboration.</p>"
     },
+    "GetCollaborationIdNamespaceAssociation":{
+      "name":"GetCollaborationIdNamespaceAssociation",
+      "http":{
+        "method":"GET",
+        "requestUri":"/collaborations/{collaborationIdentifier}/idnamespaceassociations/{idNamespaceAssociationIdentifier}",
+        "responseCode":200
+      },
+      "input":{"shape":"GetCollaborationIdNamespaceAssociationInput"},
+      "output":{"shape":"GetCollaborationIdNamespaceAssociationOutput"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ValidationException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Retrieves an ID namespace association from a specific collaboration.</p>"
+    },
     "GetCollaborationPrivacyBudgetTemplate":{
       "name":"GetCollaborationPrivacyBudgetTemplate",
       "http":{
@@ -559,6 +656,42 @@
         {"shape":"AccessDeniedException"}
       ],
       "documentation":"<p>Retrieves a configured table association.</p>"
+    },
+    "GetIdMappingTable":{
+      "name":"GetIdMappingTable",
+      "http":{
+        "method":"GET",
+        "requestUri":"/memberships/{membershipIdentifier}/idmappingtables/{idMappingTableIdentifier}",
+        "responseCode":200
+      },
+      "input":{"shape":"GetIdMappingTableInput"},
+      "output":{"shape":"GetIdMappingTableOutput"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ValidationException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Retrieves an ID mapping table.</p>"
+    },
+    "GetIdNamespaceAssociation":{
+      "name":"GetIdNamespaceAssociation",
+      "http":{
+        "method":"GET",
+        "requestUri":"/memberships/{membershipIdentifier}/idnamespaceassociations/{idNamespaceAssociationIdentifier}",
+        "responseCode":200
+      },
+      "input":{"shape":"GetIdNamespaceAssociationInput"},
+      "output":{"shape":"GetIdNamespaceAssociationOutput"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ValidationException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Retrieves an ID namespace association.</p>"
     },
     "GetMembership":{
       "name":"GetMembership",
@@ -704,6 +837,24 @@
       ],
       "documentation":"<p>Lists configured audience model associations within a collaboration.</p>"
     },
+    "ListCollaborationIdNamespaceAssociations":{
+      "name":"ListCollaborationIdNamespaceAssociations",
+      "http":{
+        "method":"GET",
+        "requestUri":"/collaborations/{collaborationIdentifier}/idnamespaceassociations",
+        "responseCode":200
+      },
+      "input":{"shape":"ListCollaborationIdNamespaceAssociationsInput"},
+      "output":{"shape":"ListCollaborationIdNamespaceAssociationsOutput"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ValidationException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Returns a list of the ID namespace associations in a collaboration.</p>"
+    },
     "ListCollaborationPrivacyBudgetTemplates":{
       "name":"ListCollaborationPrivacyBudgetTemplates",
       "http":{
@@ -809,6 +960,42 @@
         {"shape":"AccessDeniedException"}
       ],
       "documentation":"<p>Lists configured tables.</p>"
+    },
+    "ListIdMappingTables":{
+      "name":"ListIdMappingTables",
+      "http":{
+        "method":"GET",
+        "requestUri":"/memberships/{membershipIdentifier}/idmappingtables",
+        "responseCode":200
+      },
+      "input":{"shape":"ListIdMappingTablesInput"},
+      "output":{"shape":"ListIdMappingTablesOutput"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ValidationException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Returns a list of ID mapping tables.</p>"
+    },
+    "ListIdNamespaceAssociations":{
+      "name":"ListIdNamespaceAssociations",
+      "http":{
+        "method":"GET",
+        "requestUri":"/memberships/{membershipIdentifier}/idnamespaceassociations",
+        "responseCode":200
+      },
+      "input":{"shape":"ListIdNamespaceAssociationsInput"},
+      "output":{"shape":"ListIdNamespaceAssociationsOutput"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ValidationException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Returns a list of ID namespace associations.</p>"
     },
     "ListMembers":{
       "name":"ListMembers",
@@ -931,6 +1118,25 @@
         {"shape":"ValidationException"}
       ],
       "documentation":"<p>Lists all of the tags that have been added to a resource.</p>"
+    },
+    "PopulateIdMappingTable":{
+      "name":"PopulateIdMappingTable",
+      "http":{
+        "method":"POST",
+        "requestUri":"/memberships/{membershipIdentifier}/idmappingtables/{idMappingTableIdentifier}/populate",
+        "responseCode":200
+      },
+      "input":{"shape":"PopulateIdMappingTableInput"},
+      "output":{"shape":"PopulateIdMappingTableOutput"},
+      "errors":[
+        {"shape":"ConflictException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ValidationException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Defines the information that's necessary to populate an ID mapping table.</p>"
     },
     "PreviewPrivacyImpact":{
       "name":"PreviewPrivacyImpact",
@@ -1108,6 +1314,42 @@
         {"shape":"AccessDeniedException"}
       ],
       "documentation":"<p>Updates a configured table association.</p>"
+    },
+    "UpdateIdMappingTable":{
+      "name":"UpdateIdMappingTable",
+      "http":{
+        "method":"PATCH",
+        "requestUri":"/memberships/{membershipIdentifier}/idmappingtables/{idMappingTableIdentifier}",
+        "responseCode":200
+      },
+      "input":{"shape":"UpdateIdMappingTableInput"},
+      "output":{"shape":"UpdateIdMappingTableOutput"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ValidationException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Provides the details that are necessary to update an ID mapping table.</p>"
+    },
+    "UpdateIdNamespaceAssociation":{
+      "name":"UpdateIdNamespaceAssociation",
+      "http":{
+        "method":"PATCH",
+        "requestUri":"/memberships/{membershipIdentifier}/idnamespaceassociations/{idNamespaceAssociationIdentifier}",
+        "responseCode":200
+      },
+      "input":{"shape":"UpdateIdNamespaceAssociationInput"},
+      "output":{"shape":"UpdateIdNamespaceAssociationOutput"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ValidationException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Provides the details that are necessary to update an ID namespace association.</p>"
     },
     "UpdateMembership":{
       "name":"UpdateMembership",
@@ -1432,6 +1674,34 @@
       "member":{"shape":"AccountId"},
       "min":0
     },
+    "AnalysisRuleIdMappingTable":{
+      "type":"structure",
+      "required":[
+        "joinColumns",
+        "queryConstraints"
+      ],
+      "members":{
+        "joinColumns":{
+          "shape":"AnalysisRuleIdMappingTableJoinColumnsList",
+          "documentation":"<p>The columns that query runners are allowed to use in an INNER JOIN statement.</p>"
+        },
+        "queryConstraints":{
+          "shape":"QueryConstraintList",
+          "documentation":"<p>The query constraints of the analysis rule ID mapping table.</p>"
+        },
+        "dimensionColumns":{
+          "shape":"AnalysisRuleColumnList",
+          "documentation":"<p>The columns that query runners are allowed to select, group by, or filter by.</p>"
+        }
+      },
+      "documentation":"<p>Defines details for the analysis rule ID mapping table.</p>"
+    },
+    "AnalysisRuleIdMappingTableJoinColumnsList":{
+      "type":"list",
+      "member":{"shape":"AnalysisRuleColumnName"},
+      "max":2,
+      "min":2
+    },
     "AnalysisRuleList":{
       "type":"structure",
       "required":[
@@ -1484,6 +1754,10 @@
         "custom":{
           "shape":"AnalysisRuleCustom",
           "documentation":"<p>Analysis rule type that enables custom SQL queries on a configured table.</p>"
+        },
+        "idMappingTable":{
+          "shape":"AnalysisRuleIdMappingTable",
+          "documentation":"<p>The ID mapping table.</p>"
         }
       },
       "documentation":"<p>Controls on the query specifications that can be run on configured table.</p>",
@@ -1494,7 +1768,8 @@
       "enum":[
         "AGGREGATION",
         "LIST",
-        "CUSTOM"
+        "CUSTOM",
+        "ID_MAPPING_TABLE"
       ]
     },
     "AnalysisRuleTypeList":{
@@ -2212,7 +2487,7 @@
         },
         "creatorAccountId":{
           "shape":"AccountId",
-          "documentation":"<p>The identifier used to reference members of the collaboration. Only supports AWS account ID.</p>"
+          "documentation":"<p>The identifier used to reference members of the collaboration. Only supports Amazon Web Services account ID.</p>"
         },
         "createTime":{
           "shape":"Timestamp",
@@ -2268,7 +2543,7 @@
         },
         "creatorAccountId":{
           "shape":"AccountId",
-          "documentation":"<p>The identifier used to reference members of the collaboration. Only supports AWS account ID.</p>"
+          "documentation":"<p>The identifier used to reference members of the collaboration. Only supports Amazon Web Services account ID.</p>"
         },
         "description":{
           "shape":"ResourceDescription",
@@ -2286,6 +2561,135 @@
       "max":255,
       "min":1,
       "pattern":"(?!\\s*$)[\\u0020-\\uD7FF\\uE000-\\uFFFD\\uD800\\uDBFF-\\uDC00\\uDFFF\\t\\r\\n]*"
+    },
+    "CollaborationIdNamespaceAssociation":{
+      "type":"structure",
+      "required":[
+        "id",
+        "arn",
+        "collaborationId",
+        "collaborationArn",
+        "name",
+        "creatorAccountId",
+        "createTime",
+        "updateTime",
+        "inputReferenceConfig",
+        "inputReferenceProperties"
+      ],
+      "members":{
+        "id":{
+          "shape":"IdNamespaceAssociationIdentifier",
+          "documentation":"<p>The unique identifier of the collaboration ID namespace association.</p>"
+        },
+        "arn":{
+          "shape":"IdNamespaceAssociationArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the collaboration ID namespace association.</p>"
+        },
+        "collaborationId":{
+          "shape":"UUID",
+          "documentation":"<p>The unique identifier of the collaboration that contains the collaboration ID namespace association.</p>"
+        },
+        "collaborationArn":{
+          "shape":"CollaborationArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the collaboration that contains the collaboration ID namespace association.</p>"
+        },
+        "name":{
+          "shape":"GenericResourceName",
+          "documentation":"<p>The name of the collaboration ID namespace association.</p>"
+        },
+        "description":{
+          "shape":"ResourceDescription",
+          "documentation":"<p>The description of the collaboration ID namespace association.</p>"
+        },
+        "creatorAccountId":{
+          "shape":"AccountId",
+          "documentation":"<p>The unique identifier of the Amazon Web Services account that created the collaboration ID namespace association.</p>"
+        },
+        "createTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time at which the collaboration ID namespace association was created.</p>"
+        },
+        "updateTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The most recent time at which the collaboration ID namespace was updated.</p>"
+        },
+        "inputReferenceConfig":{
+          "shape":"IdNamespaceAssociationInputReferenceConfig",
+          "documentation":"<p>The input reference configuration that's necessary to create the collaboration ID namespace association.</p>"
+        },
+        "inputReferenceProperties":{
+          "shape":"IdNamespaceAssociationInputReferenceProperties",
+          "documentation":"<p>The input reference properties that are needed to create the collaboration ID namespace association.</p>"
+        },
+        "idMappingConfig":{"shape":"IdMappingConfig"}
+      },
+      "documentation":"<p>Defines details for the collaboration ID namespace association.</p>"
+    },
+    "CollaborationIdNamespaceAssociationSummary":{
+      "type":"structure",
+      "required":[
+        "arn",
+        "createTime",
+        "id",
+        "updateTime",
+        "collaborationArn",
+        "collaborationId",
+        "creatorAccountId",
+        "inputReferenceConfig",
+        "name",
+        "inputReferenceProperties"
+      ],
+      "members":{
+        "arn":{
+          "shape":"IdNamespaceAssociationArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the collaboration ID namespace association.</p>"
+        },
+        "createTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time at which the collaboration ID namespace association was created.</p>"
+        },
+        "id":{
+          "shape":"IdNamespaceAssociationIdentifier",
+          "documentation":"<p>The unique identifier of the collaboration ID namespace association.</p>"
+        },
+        "updateTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The most recent time at which the collaboration ID namespace association was updated.</p>"
+        },
+        "collaborationArn":{
+          "shape":"CollaborationArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the collaboration that contains this collaboration ID namespace association.</p>"
+        },
+        "collaborationId":{
+          "shape":"UUID",
+          "documentation":"<p>The unique identifier of the collaboration that contains this collaboration ID namespace association.</p>"
+        },
+        "creatorAccountId":{
+          "shape":"AccountId",
+          "documentation":"<p>The Amazon Web Services account that created this collaboration ID namespace association.</p>"
+        },
+        "inputReferenceConfig":{
+          "shape":"IdNamespaceAssociationInputReferenceConfig",
+          "documentation":"<p>The input reference configuration that's used to create the collaboration ID namespace association.</p>"
+        },
+        "name":{
+          "shape":"GenericResourceName",
+          "documentation":"<p>The name of the collaboration ID namespace association.</p>"
+        },
+        "description":{
+          "shape":"ResourceDescription",
+          "documentation":"<p>The description of the collaboration ID namepsace association.</p>"
+        },
+        "inputReferenceProperties":{
+          "shape":"IdNamespaceAssociationInputReferencePropertiesSummary",
+          "documentation":"<p>The input reference properties that are used to create the collaboration ID namespace association.</p>"
+        }
+      },
+      "documentation":"<p>Provides summary information about the collaboration ID namespace association.</p>"
+    },
+    "CollaborationIdNamespaceAssociationSummaryList":{
+      "type":"list",
+      "member":{"shape":"CollaborationIdNamespaceAssociationSummary"}
     },
     "CollaborationIdentifier":{
       "type":"string",
@@ -3366,6 +3770,98 @@
         }
       }
     },
+    "CreateIdMappingTableInput":{
+      "type":"structure",
+      "required":[
+        "membershipIdentifier",
+        "name",
+        "inputReferenceConfig"
+      ],
+      "members":{
+        "membershipIdentifier":{
+          "shape":"MembershipIdentifier",
+          "documentation":"<p>The unique identifier of the membership that contains the ID mapping table.</p>",
+          "location":"uri",
+          "locationName":"membershipIdentifier"
+        },
+        "name":{
+          "shape":"ResourceAlias",
+          "documentation":"<p>A name for the ID mapping table.</p>"
+        },
+        "description":{
+          "shape":"ResourceDescription",
+          "documentation":"<p>A description of the ID mapping table.</p>"
+        },
+        "inputReferenceConfig":{
+          "shape":"IdMappingTableInputReferenceConfig",
+          "documentation":"<p>The input reference configuration needed to create the ID mapping table.</p>"
+        },
+        "tags":{
+          "shape":"TagMap",
+          "documentation":"<p>An optional label that you can assign to a resource when you create it. Each tag consists of a key and an optional value, both of which you define. When you use tagging, you can also use tag-based access control in IAM policies to control access to this resource.</p>"
+        },
+        "kmsKeyArn":{
+          "shape":"KMSKeyArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the Amazon Web Services KMS key. This value is used to encrypt the mapping table data that is stored by Clean Rooms.</p>"
+        }
+      }
+    },
+    "CreateIdMappingTableOutput":{
+      "type":"structure",
+      "required":["idMappingTable"],
+      "members":{
+        "idMappingTable":{
+          "shape":"IdMappingTable",
+          "documentation":"<p>The ID mapping table that was created.</p>"
+        }
+      }
+    },
+    "CreateIdNamespaceAssociationInput":{
+      "type":"structure",
+      "required":[
+        "membershipIdentifier",
+        "inputReferenceConfig",
+        "name"
+      ],
+      "members":{
+        "membershipIdentifier":{
+          "shape":"MembershipIdentifier",
+          "documentation":"<p>The unique identifier of the membership that contains the ID namespace association.</p>",
+          "location":"uri",
+          "locationName":"membershipIdentifier"
+        },
+        "inputReferenceConfig":{
+          "shape":"IdNamespaceAssociationInputReferenceConfig",
+          "documentation":"<p>The input reference configuration needed to create the ID namespace association.</p>"
+        },
+        "tags":{
+          "shape":"TagMap",
+          "documentation":"<p>An optional label that you can assign to a resource when you create it. Each tag consists of a key and an optional value, both of which you define. When you use tagging, you can also use tag-based access control in IAM policies to control access to this resource.</p>"
+        },
+        "name":{
+          "shape":"GenericResourceName",
+          "documentation":"<p>The name for the ID namespace association.</p>"
+        },
+        "description":{
+          "shape":"ResourceDescription",
+          "documentation":"<p>The description of the ID namespace association.</p>"
+        },
+        "idMappingConfig":{
+          "shape":"IdMappingConfig",
+          "documentation":"<p>The configuration settings for the ID mapping table.</p>"
+        }
+      }
+    },
+    "CreateIdNamespaceAssociationOutput":{
+      "type":"structure",
+      "required":["idNamespaceAssociation"],
+      "members":{
+        "idNamespaceAssociation":{
+          "shape":"IdNamespaceAssociation",
+          "documentation":"<p>The ID namespace association that was created.</p>"
+        }
+      }
+    },
     "CreateMembershipInput":{
       "type":"structure",
       "required":[
@@ -3615,6 +4111,58 @@
       "members":{
       },
       "documentation":"<p>The empty output for a successful deletion.</p>"
+    },
+    "DeleteIdMappingTableInput":{
+      "type":"structure",
+      "required":[
+        "idMappingTableIdentifier",
+        "membershipIdentifier"
+      ],
+      "members":{
+        "idMappingTableIdentifier":{
+          "shape":"UUID",
+          "documentation":"<p>The unique identifier of the ID mapping table that you want to delete.</p>",
+          "location":"uri",
+          "locationName":"idMappingTableIdentifier"
+        },
+        "membershipIdentifier":{
+          "shape":"MembershipIdentifier",
+          "documentation":"<p>The unique identifier of the membership that contains the ID mapping table that you want to delete.</p>",
+          "location":"uri",
+          "locationName":"membershipIdentifier"
+        }
+      }
+    },
+    "DeleteIdMappingTableOutput":{
+      "type":"structure",
+      "members":{
+      }
+    },
+    "DeleteIdNamespaceAssociationInput":{
+      "type":"structure",
+      "required":[
+        "idNamespaceAssociationIdentifier",
+        "membershipIdentifier"
+      ],
+      "members":{
+        "idNamespaceAssociationIdentifier":{
+          "shape":"IdNamespaceAssociationIdentifier",
+          "documentation":"<p>The unique identifier of the ID namespace association that you want to delete.</p>",
+          "location":"uri",
+          "locationName":"idNamespaceAssociationIdentifier"
+        },
+        "membershipIdentifier":{
+          "shape":"MembershipIdentifier",
+          "documentation":"<p>The unique identifier of the membership that contains the ID namespace association that you want to delete.</p>",
+          "location":"uri",
+          "locationName":"membershipIdentifier"
+        }
+      }
+    },
+    "DeleteIdNamespaceAssociationOutput":{
+      "type":"structure",
+      "members":{
+      }
     },
     "DeleteMemberInput":{
       "type":"structure",
@@ -3945,6 +4493,12 @@
       "min":1,
       "pattern":"(?!\\s*$)[\\u0020-\\uD7FF\\uE000-\\uFFFD\\uD800\\uDBFF-\\uDC00\\uDFFF\\t]*"
     },
+    "Document":{
+      "type":"structure",
+      "members":{
+      },
+      "document":true
+    },
     "Double":{
       "type":"double",
       "box":true
@@ -3965,6 +4519,12 @@
     "Float":{
       "type":"float",
       "box":true
+    },
+    "GenericResourceName":{
+      "type":"string",
+      "max":100,
+      "min":1,
+      "pattern":"(?!\\s*$)[\\u0020-\\uD7FF\\uE000-\\uFFFD\\uD800\\uDBFF-\\uDC00\\uDFFF\\t]*"
     },
     "GetAnalysisTemplateInput":{
       "type":"structure",
@@ -4056,6 +4616,37 @@
         "collaborationConfiguredAudienceModelAssociation":{
           "shape":"CollaborationConfiguredAudienceModelAssociation",
           "documentation":"<p>The metadata of the configured audience model association.</p>"
+        }
+      }
+    },
+    "GetCollaborationIdNamespaceAssociationInput":{
+      "type":"structure",
+      "required":[
+        "collaborationIdentifier",
+        "idNamespaceAssociationIdentifier"
+      ],
+      "members":{
+        "collaborationIdentifier":{
+          "shape":"CollaborationIdentifier",
+          "documentation":"<p>The unique identifier of the collaboration that contains the ID namespace association that you want to retrieve.</p>",
+          "location":"uri",
+          "locationName":"collaborationIdentifier"
+        },
+        "idNamespaceAssociationIdentifier":{
+          "shape":"IdNamespaceAssociationIdentifier",
+          "documentation":"<p>The unique identifier of the ID namespace association that you want to retrieve.</p>",
+          "location":"uri",
+          "locationName":"idNamespaceAssociationIdentifier"
+        }
+      }
+    },
+    "GetCollaborationIdNamespaceAssociationOutput":{
+      "type":"structure",
+      "required":["collaborationIdNamespaceAssociation"],
+      "members":{
+        "collaborationIdNamespaceAssociation":{
+          "shape":"CollaborationIdNamespaceAssociation",
+          "documentation":"<p>The ID namespace association that you requested.</p>"
         }
       }
     },
@@ -4224,6 +4815,68 @@
         "configuredTable":{
           "shape":"ConfiguredTable",
           "documentation":"<p>The retrieved configured table.</p>"
+        }
+      }
+    },
+    "GetIdMappingTableInput":{
+      "type":"structure",
+      "required":[
+        "idMappingTableIdentifier",
+        "membershipIdentifier"
+      ],
+      "members":{
+        "idMappingTableIdentifier":{
+          "shape":"UUID",
+          "documentation":"<p>The unique identifier of the ID mapping table identifier that you want to retrieve.</p>",
+          "location":"uri",
+          "locationName":"idMappingTableIdentifier"
+        },
+        "membershipIdentifier":{
+          "shape":"MembershipIdentifier",
+          "documentation":"<p>The unique identifier of the membership that contains the ID mapping table that you want to retrieve.</p>",
+          "location":"uri",
+          "locationName":"membershipIdentifier"
+        }
+      }
+    },
+    "GetIdMappingTableOutput":{
+      "type":"structure",
+      "required":["idMappingTable"],
+      "members":{
+        "idMappingTable":{
+          "shape":"IdMappingTable",
+          "documentation":"<p>The ID mapping table that you requested.</p>"
+        }
+      }
+    },
+    "GetIdNamespaceAssociationInput":{
+      "type":"structure",
+      "required":[
+        "idNamespaceAssociationIdentifier",
+        "membershipIdentifier"
+      ],
+      "members":{
+        "idNamespaceAssociationIdentifier":{
+          "shape":"IdNamespaceAssociationIdentifier",
+          "documentation":"<p>The unique identifier of the ID namespace association that you want to retrieve.</p>",
+          "location":"uri",
+          "locationName":"idNamespaceAssociationIdentifier"
+        },
+        "membershipIdentifier":{
+          "shape":"MembershipIdentifier",
+          "documentation":"<p>The unique identifier of the membership that contains the ID namespace association that you want to retrieve.</p>",
+          "location":"uri",
+          "locationName":"membershipIdentifier"
+        }
+      }
+    },
+    "GetIdNamespaceAssociationOutput":{
+      "type":"structure",
+      "required":["idNamespaceAssociation"],
+      "members":{
+        "idNamespaceAssociation":{
+          "shape":"IdNamespaceAssociation",
+          "documentation":"<p>The ID namespace association that you requested.</p>"
         }
       }
     },
@@ -4410,6 +5063,448 @@
       },
       "documentation":"<p>A reference to a table within an Glue data catalog.</p>"
     },
+    "IdMappingConfig":{
+      "type":"structure",
+      "required":["allowUseAsDimensionColumn"],
+      "members":{
+        "allowUseAsDimensionColumn":{
+          "shape":"Boolean",
+          "documentation":"<p>An indicator as to whether you can use your column as a dimension column in the ID mapping table (<code>TRUE</code>) or not (<code>FALSE</code>).</p> <p>Default is <code>FALSE</code>.</p>"
+        }
+      },
+      "documentation":"<p>The configuration settings for the ID mapping table.</p>"
+    },
+    "IdMappingTable":{
+      "type":"structure",
+      "required":[
+        "id",
+        "arn",
+        "inputReferenceConfig",
+        "membershipId",
+        "membershipArn",
+        "collaborationId",
+        "collaborationArn",
+        "name",
+        "createTime",
+        "updateTime",
+        "inputReferenceProperties"
+      ],
+      "members":{
+        "id":{
+          "shape":"UUID",
+          "documentation":"<p>The unique identifier of the ID mapping table.</p>"
+        },
+        "arn":{
+          "shape":"IdMappingTableArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the ID mapping table.</p>"
+        },
+        "inputReferenceConfig":{
+          "shape":"IdMappingTableInputReferenceConfig",
+          "documentation":"<p>The input reference configuration for the ID mapping table.</p>"
+        },
+        "membershipId":{
+          "shape":"UUID",
+          "documentation":"<p>The unique identifier of the membership resource for the ID mapping table.</p>"
+        },
+        "membershipArn":{
+          "shape":"MembershipArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the membership resource for the ID mapping table.</p>"
+        },
+        "collaborationId":{
+          "shape":"UUID",
+          "documentation":"<p>The unique identifier of the collaboration that contains this ID mapping table.</p>"
+        },
+        "collaborationArn":{
+          "shape":"CollaborationArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the collaboration that contains this ID mapping table.</p>"
+        },
+        "description":{
+          "shape":"ResourceDescription",
+          "documentation":"<p>The description of the ID mapping table.</p>"
+        },
+        "name":{
+          "shape":"ResourceAlias",
+          "documentation":"<p>The name of the ID mapping table.</p>"
+        },
+        "createTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time at which the ID mapping table was created.</p>"
+        },
+        "updateTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The most recent time at which the ID mapping table was updated.</p>"
+        },
+        "inputReferenceProperties":{
+          "shape":"IdMappingTableInputReferenceProperties",
+          "documentation":"<p>The input reference properties for the ID mapping table.</p>"
+        },
+        "kmsKeyArn":{
+          "shape":"KMSKeyArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the Amazon Web Services KMS key.</p>"
+        }
+      },
+      "documentation":"<p>Describes information about the ID mapping table.</p>"
+    },
+    "IdMappingTableArn":{
+      "type":"string",
+      "max":200,
+      "min":0,
+      "pattern":"arn:aws:cleanrooms:[\\w]{2}-[\\w]{4,9}-[\\d]:[\\d]{12}:membership/[\\d\\w-]+/idmappingtable/[\\d\\w-]+"
+    },
+    "IdMappingTableInputReferenceArn":{
+      "type":"string",
+      "max":2048,
+      "min":20,
+      "pattern":"arn:(aws|aws-us-gov|aws-cn):entityresolution:.*:[0-9]+:(idmappingworkflow/.*)"
+    },
+    "IdMappingTableInputReferenceConfig":{
+      "type":"structure",
+      "required":[
+        "inputReferenceArn",
+        "manageResourcePolicies"
+      ],
+      "members":{
+        "inputReferenceArn":{
+          "shape":"IdMappingTableInputReferenceArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the referenced resource in Entity Resolution. Valid values are ID mapping workflow ARNs.</p>"
+        },
+        "manageResourcePolicies":{
+          "shape":"Boolean",
+          "documentation":"<p>When <code>TRUE</code>, Clean Rooms manages permissions for the ID mapping table resource. </p> <p>When <code>FALSE</code>, the resource owner manages permissions for the ID mapping table resource.</p>"
+        }
+      },
+      "documentation":"<p>Provides the input reference configuration for the ID mapping table.</p>"
+    },
+    "IdMappingTableInputReferenceProperties":{
+      "type":"structure",
+      "required":["idMappingTableInputSource"],
+      "members":{
+        "idMappingTableInputSource":{
+          "shape":"IdMappingTableInputSourceList",
+          "documentation":"<p>The input source of the ID mapping table.</p>"
+        }
+      },
+      "documentation":"<p>The input reference properties for the ID mapping table.</p>"
+    },
+    "IdMappingTableInputSource":{
+      "type":"structure",
+      "required":[
+        "idNamespaceAssociationId",
+        "type"
+      ],
+      "members":{
+        "idNamespaceAssociationId":{
+          "shape":"String",
+          "documentation":"<p>The unique identifier of the ID namespace association.</p>"
+        },
+        "type":{
+          "shape":"IdNamespaceType",
+          "documentation":"<p>The type of the input source of the ID mapping table.</p>"
+        }
+      },
+      "documentation":"<p>The input source of the ID mapping table.</p>"
+    },
+    "IdMappingTableInputSourceList":{
+      "type":"list",
+      "member":{"shape":"IdMappingTableInputSource"},
+      "max":2,
+      "min":2
+    },
+    "IdMappingTableSchemaTypeProperties":{
+      "type":"structure",
+      "required":["idMappingTableInputSource"],
+      "members":{
+        "idMappingTableInputSource":{
+          "shape":"IdMappingTableInputSourceList",
+          "documentation":"<p>Defines which ID namespace associations are used to create the ID mapping table.</p>"
+        }
+      },
+      "documentation":"<p>Additional properties that are specific to the type of the associated schema.</p>"
+    },
+    "IdMappingTableSummary":{
+      "type":"structure",
+      "required":[
+        "collaborationArn",
+        "collaborationId",
+        "membershipId",
+        "membershipArn",
+        "createTime",
+        "updateTime",
+        "id",
+        "arn",
+        "inputReferenceConfig",
+        "name"
+      ],
+      "members":{
+        "collaborationArn":{
+          "shape":"CollaborationArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the collaboration that contains this ID mapping table.</p>"
+        },
+        "collaborationId":{
+          "shape":"UUID",
+          "documentation":"<p>The unique identifier of the collaboration that contains this ID mapping table.</p>"
+        },
+        "membershipId":{
+          "shape":"MembershipIdentifier",
+          "documentation":"<p>The unique identifier of the membership resource for this ID mapping table.</p>"
+        },
+        "membershipArn":{
+          "shape":"MembershipArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the membership resource for this ID mapping table.</p>"
+        },
+        "createTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time at which this ID mapping table was created.</p>"
+        },
+        "updateTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The most recent time at which this ID mapping table was updated.</p>"
+        },
+        "id":{
+          "shape":"UUID",
+          "documentation":"<p>The unique identifier of this ID mapping table.</p>"
+        },
+        "arn":{
+          "shape":"IdMappingTableArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of this ID mapping table.</p>"
+        },
+        "description":{
+          "shape":"ResourceDescription",
+          "documentation":"<p>The description of this ID mapping table.</p>"
+        },
+        "inputReferenceConfig":{
+          "shape":"IdMappingTableInputReferenceConfig",
+          "documentation":"<p>The input reference configuration for the ID mapping table.</p>"
+        },
+        "name":{
+          "shape":"ResourceAlias",
+          "documentation":"<p>The name of this ID mapping table.</p>"
+        }
+      },
+      "documentation":"<p>Detailed information about the ID mapping table.</p>"
+    },
+    "IdMappingTableSummaryList":{
+      "type":"list",
+      "member":{"shape":"IdMappingTableSummary"}
+    },
+    "IdMappingWorkflowsSupported":{
+      "type":"list",
+      "member":{"shape":"Document"}
+    },
+    "IdNamespaceAssociation":{
+      "type":"structure",
+      "required":[
+        "id",
+        "arn",
+        "membershipId",
+        "membershipArn",
+        "collaborationId",
+        "collaborationArn",
+        "name",
+        "createTime",
+        "updateTime",
+        "inputReferenceConfig",
+        "inputReferenceProperties"
+      ],
+      "members":{
+        "id":{
+          "shape":"IdNamespaceAssociationIdentifier",
+          "documentation":"<p>The unique identifier for this ID namespace association.</p>"
+        },
+        "arn":{
+          "shape":"IdNamespaceAssociationArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the ID namespace association.</p>"
+        },
+        "membershipId":{
+          "shape":"UUID",
+          "documentation":"<p>The unique identifier of the membership resource for this ID namespace association.</p>"
+        },
+        "membershipArn":{
+          "shape":"MembershipArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the membership resource for this ID namespace association.</p>"
+        },
+        "collaborationId":{
+          "shape":"UUID",
+          "documentation":"<p>The unique identifier of the collaboration that contains this ID namespace association.</p>"
+        },
+        "collaborationArn":{
+          "shape":"CollaborationArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the collaboration that contains this ID namespace association.</p>"
+        },
+        "name":{
+          "shape":"GenericResourceName",
+          "documentation":"<p>The name of this ID namespace association.</p>"
+        },
+        "description":{
+          "shape":"ResourceDescription",
+          "documentation":"<p>The description of the ID namespace association.</p>"
+        },
+        "createTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time at which the ID namespace association was created.</p>"
+        },
+        "updateTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The most recent time at which the ID namespace association was updated.</p>"
+        },
+        "inputReferenceConfig":{
+          "shape":"IdNamespaceAssociationInputReferenceConfig",
+          "documentation":"<p>The input reference configuration for the ID namespace association.</p>"
+        },
+        "inputReferenceProperties":{
+          "shape":"IdNamespaceAssociationInputReferenceProperties",
+          "documentation":"<p>The input reference properties for the ID namespace association.</p>"
+        },
+        "idMappingConfig":{
+          "shape":"IdMappingConfig",
+          "documentation":"<p>The configuration settings for the ID mapping table.</p>"
+        }
+      },
+      "documentation":"<p>Provides information to create the ID namespace association.</p>"
+    },
+    "IdNamespaceAssociationArn":{
+      "type":"string",
+      "max":256,
+      "min":0,
+      "pattern":"arn:aws:cleanrooms:[\\w]{2}-[\\w]{4,9}-[\\d]:[\\d]{12}:membership/[\\d\\w-]+/idnamespaceassociation/[\\d\\w-]+"
+    },
+    "IdNamespaceAssociationIdentifier":{
+      "type":"string",
+      "max":36,
+      "min":36,
+      "pattern":"[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}"
+    },
+    "IdNamespaceAssociationInputReferenceArn":{
+      "type":"string",
+      "max":256,
+      "min":0,
+      "pattern":"arn:aws:entityresolution:[\\w]{2}-[\\w]{4,9}-[\\d]:[\\d]{12}:idnamespace/[\\d\\w-]+"
+    },
+    "IdNamespaceAssociationInputReferenceConfig":{
+      "type":"structure",
+      "required":[
+        "inputReferenceArn",
+        "manageResourcePolicies"
+      ],
+      "members":{
+        "inputReferenceArn":{
+          "shape":"IdNamespaceAssociationInputReferenceArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the Entity Resolution resource that is being associated to the collaboration. Valid resource ARNs are from the ID namespaces that you own.</p>"
+        },
+        "manageResourcePolicies":{
+          "shape":"Boolean",
+          "documentation":"<p>When <code>TRUE</code>, Clean Rooms manages permissions for the ID namespace association resource.</p> <p>When <code>FALSE</code>, the resource owner manages permissions for the ID namespace association resource.</p>"
+        }
+      },
+      "documentation":"<p>Provides the information for the ID namespace association input reference configuration.</p>"
+    },
+    "IdNamespaceAssociationInputReferenceProperties":{
+      "type":"structure",
+      "required":[
+        "idNamespaceType",
+        "idMappingWorkflowsSupported"
+      ],
+      "members":{
+        "idNamespaceType":{
+          "shape":"IdNamespaceType",
+          "documentation":"<p>The ID namespace type for this ID namespace association.</p>"
+        },
+        "idMappingWorkflowsSupported":{
+          "shape":"IdMappingWorkflowsSupported",
+          "documentation":"<p>Defines how ID mapping workflows are supported for this ID namespace association.</p>"
+        }
+      },
+      "documentation":"<p>Provides the information for the ID namespace association input reference properties.</p>"
+    },
+    "IdNamespaceAssociationInputReferencePropertiesSummary":{
+      "type":"structure",
+      "required":["idNamespaceType"],
+      "members":{
+        "idNamespaceType":{
+          "shape":"IdNamespaceType",
+          "documentation":"<p>The ID namespace type for this ID namespace association.</p>"
+        }
+      },
+      "documentation":"<p>Detailed information about the ID namespace association input reference properties.</p>"
+    },
+    "IdNamespaceAssociationSummary":{
+      "type":"structure",
+      "required":[
+        "membershipId",
+        "membershipArn",
+        "collaborationArn",
+        "collaborationId",
+        "createTime",
+        "updateTime",
+        "id",
+        "arn",
+        "inputReferenceConfig",
+        "name",
+        "inputReferenceProperties"
+      ],
+      "members":{
+        "membershipId":{
+          "shape":"MembershipIdentifier",
+          "documentation":"<p>The unique identifier of the membership resource for this ID namespace association.</p>"
+        },
+        "membershipArn":{
+          "shape":"MembershipArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the membership resource for this ID namespace association.</p>"
+        },
+        "collaborationArn":{
+          "shape":"CollaborationArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the collaboration that contains this ID namespace association.</p>"
+        },
+        "collaborationId":{
+          "shape":"UUID",
+          "documentation":"<p>The unique identifier of the collaboration that contains this ID namespace association.</p>"
+        },
+        "createTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time at which this ID namespace association was created.</p>"
+        },
+        "updateTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The most recent time at which this ID namespace association has been updated.</p>"
+        },
+        "id":{
+          "shape":"UUID",
+          "documentation":"<p>The unique identifier of this ID namespace association.</p>"
+        },
+        "arn":{
+          "shape":"IdNamespaceAssociationArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of this ID namespace association.</p>"
+        },
+        "inputReferenceConfig":{
+          "shape":"IdNamespaceAssociationInputReferenceConfig",
+          "documentation":"<p>The input reference configuration details for this ID namespace association.</p>"
+        },
+        "name":{
+          "shape":"GenericResourceName",
+          "documentation":"<p>The name of the ID namespace association.</p>"
+        },
+        "description":{
+          "shape":"ResourceDescription",
+          "documentation":"<p>The description of the ID namespace association.</p>"
+        },
+        "inputReferenceProperties":{
+          "shape":"IdNamespaceAssociationInputReferencePropertiesSummary",
+          "documentation":"<p>The input reference properties for this ID namespace association.</p>"
+        }
+      },
+      "documentation":"<p>Detailed information about the ID namespace association.</p>"
+    },
+    "IdNamespaceAssociationSummaryList":{
+      "type":"list",
+      "member":{"shape":"IdNamespaceAssociationSummary"}
+    },
+    "IdNamespaceType":{
+      "type":"string",
+      "enum":[
+        "SOURCE",
+        "TARGET"
+      ]
+    },
     "InternalServerException":{
       "type":"structure",
       "members":{
@@ -4437,6 +5532,12 @@
       "type":"string",
       "enum":["QUERY_RUNNER"]
     },
+    "KMSKeyArn":{
+      "type":"string",
+      "max":2048,
+      "min":20,
+      "pattern":"arn:aws:kms:[\\w]{2}-[\\w]{4,9}-[\\d]:[\\d]{12}:key/[a-zA-Z0-9-]+"
+    },
     "KeyPrefix":{
       "type":"string",
       "max":512,
@@ -4455,13 +5556,13 @@
         },
         "nextToken":{
           "shape":"PaginationToken",
-          "documentation":"<p>The token value retrieved from a previous call to access the next page of results.</p>",
+          "documentation":"<p>The pagination token that's used to fetch the next set of results.</p>",
           "location":"querystring",
           "locationName":"nextToken"
         },
         "maxResults":{
           "shape":"MaxResults",
-          "documentation":"<p>The maximum size of the results that is returned per call.</p>",
+          "documentation":"<p>The maximum number of results that are returned for an API request call. The service chooses a default number if you don't set one. The service might return a `nextToken` even if the `maxResults` value has not been met.</p>",
           "location":"querystring",
           "locationName":"maxResults"
         }
@@ -4473,7 +5574,7 @@
       "members":{
         "nextToken":{
           "shape":"PaginationToken",
-          "documentation":"<p>The token value retrieved from a previous call to access the next page of results.</p>"
+          "documentation":"<p>The pagination token that's used to fetch the next set of results.</p>"
         },
         "analysisTemplateSummaries":{
           "shape":"AnalysisTemplateSummaryList",
@@ -4493,13 +5594,13 @@
         },
         "nextToken":{
           "shape":"PaginationToken",
-          "documentation":"<p>The token value retrieved from a previous call to access the next page of results.</p>",
+          "documentation":"<p>The pagination token that's used to fetch the next set of results.</p>",
           "location":"querystring",
           "locationName":"nextToken"
         },
         "maxResults":{
           "shape":"MaxResults",
-          "documentation":"<p>The maximum size of the results that is returned per call.</p>",
+          "documentation":"<p>The maximum number of results that are returned for an API request call. The service chooses a default number if you don't set one. The service might return a `nextToken` even if the `maxResults` value has not been met.</p>",
           "location":"querystring",
           "locationName":"maxResults"
         }
@@ -4511,7 +5612,7 @@
       "members":{
         "nextToken":{
           "shape":"PaginationToken",
-          "documentation":"<p>The token value retrieved from a previous call to access the next page of results.</p>"
+          "documentation":"<p>The pagination token that's used to fetch the next set of results.</p>"
         },
         "collaborationAnalysisTemplateSummaries":{
           "shape":"CollaborationAnalysisTemplateSummaryList",
@@ -4531,13 +5632,13 @@
         },
         "nextToken":{
           "shape":"PaginationToken",
-          "documentation":"<p>The token value retrieved from a previous call to access the next page of results.</p>",
+          "documentation":"<p>The pagination token that's used to fetch the next set of results.</p>",
           "location":"querystring",
           "locationName":"nextToken"
         },
         "maxResults":{
           "shape":"MaxResults",
-          "documentation":"<p>The maximum size of the results that is returned per call.</p>",
+          "documentation":"<p>The maximum number of results that are returned for an API request call. The service chooses a default number if you don't set one. The service might return a `nextToken` even if the `maxResults` value has not been met.</p>",
           "location":"querystring",
           "locationName":"maxResults"
         }
@@ -4553,7 +5654,45 @@
         },
         "nextToken":{
           "shape":"PaginationToken",
-          "documentation":"<p>The token value retrieved from a previous call to access the next page of results.</p>"
+          "documentation":"<p>The pagination token that's used to fetch the next set of results.</p>"
+        }
+      }
+    },
+    "ListCollaborationIdNamespaceAssociationsInput":{
+      "type":"structure",
+      "required":["collaborationIdentifier"],
+      "members":{
+        "collaborationIdentifier":{
+          "shape":"CollaborationIdentifier",
+          "documentation":"<p>The unique identifier of the collaboration that contains the ID namespace associations that you want to retrieve.</p>",
+          "location":"uri",
+          "locationName":"collaborationIdentifier"
+        },
+        "nextToken":{
+          "shape":"PaginationToken",
+          "documentation":"<p>The pagination token that's used to fetch the next set of results.</p>",
+          "location":"querystring",
+          "locationName":"nextToken"
+        },
+        "maxResults":{
+          "shape":"MaxResults",
+          "documentation":"<p>The maximum size of the results that is returned per call. Service chooses a default if it has not been set. Service may return a nextToken even if the maximum results has not been met.&gt;</p>",
+          "location":"querystring",
+          "locationName":"maxResults"
+        }
+      }
+    },
+    "ListCollaborationIdNamespaceAssociationsOutput":{
+      "type":"structure",
+      "required":["collaborationIdNamespaceAssociationSummaries"],
+      "members":{
+        "nextToken":{
+          "shape":"PaginationToken",
+          "documentation":"<p>The token value provided to access the next page of results.</p>"
+        },
+        "collaborationIdNamespaceAssociationSummaries":{
+          "shape":"CollaborationIdNamespaceAssociationSummaryList",
+          "documentation":"<p>The summary information of the collaboration ID namespace associations that you requested.</p>"
         }
       }
     },
@@ -4569,13 +5708,13 @@
         },
         "nextToken":{
           "shape":"PaginationToken",
-          "documentation":"<p>The token value retrieved from a previous call to access the next page of results.</p>",
+          "documentation":"<p>The pagination token that's used to fetch the next set of results.</p>",
           "location":"querystring",
           "locationName":"nextToken"
         },
         "maxResults":{
           "shape":"MaxResults",
-          "documentation":"<p>The maximum size of the results that is returned per call. Service chooses a default if it has not been set. Service may return a nextToken even if the maximum results has not been met.</p>",
+          "documentation":"<p>The maximum number of results that are returned for an API request call. The service chooses a default number if you don't set one. The service might return a `nextToken` even if the `maxResults` value has not been met.</p>",
           "location":"querystring",
           "locationName":"maxResults"
         }
@@ -4587,7 +5726,7 @@
       "members":{
         "nextToken":{
           "shape":"PaginationToken",
-          "documentation":"<p>The token value retrieved from a previous call to access the next page of results.</p>"
+          "documentation":"<p>The pagination token that's used to fetch the next set of results.</p>"
         },
         "collaborationPrivacyBudgetTemplateSummaries":{
           "shape":"CollaborationPrivacyBudgetTemplateSummaryList",
@@ -4616,13 +5755,13 @@
         },
         "maxResults":{
           "shape":"MaxResults",
-          "documentation":"<p>The maximum size of the results that is returned per call. Service chooses a default if it has not been set. Service may return a nextToken even if the maximum results has not been met.</p>",
+          "documentation":"<p>The maximum number of results that are returned for an API request call. The service chooses a default number if you don't set one. The service might return a `nextToken` even if the `maxResults` value has not been met.</p>",
           "location":"querystring",
           "locationName":"maxResults"
         },
         "nextToken":{
           "shape":"PaginationToken",
-          "documentation":"<p>The token value retrieved from a previous call to access the next page of results.</p>",
+          "documentation":"<p>The pagination token that's used to fetch the next set of results.</p>",
           "location":"querystring",
           "locationName":"nextToken"
         }
@@ -4638,7 +5777,7 @@
         },
         "nextToken":{
           "shape":"PaginationToken",
-          "documentation":"<p>The token value retrieved from a previous call to access the next page of results.</p>"
+          "documentation":"<p>The pagination token that's used to fetch the next set of results.</p>"
         }
       }
     },
@@ -4647,13 +5786,13 @@
       "members":{
         "nextToken":{
           "shape":"PaginationToken",
-          "documentation":"<p>The token value retrieved from a previous call to access the next page of results.</p>",
+          "documentation":"<p>The pagination token that's used to fetch the next set of results.</p>",
           "location":"querystring",
           "locationName":"nextToken"
         },
         "maxResults":{
           "shape":"MaxResults",
-          "documentation":"<p>The maximum size of the results that is returned per call. Service chooses a default if it has not been set. Service may return a nextToken even if the maximum results has not been met.</p>",
+          "documentation":"<p>The maximum number of results that are returned for an API request call. The service chooses a default number if you don't set one. The service might return a `nextToken` even if the `maxResults` value has not been met.</p>",
           "location":"querystring",
           "locationName":"maxResults"
         },
@@ -4671,7 +5810,7 @@
       "members":{
         "nextToken":{
           "shape":"PaginationToken",
-          "documentation":"<p>The token value retrieved from a previous call to access the next page of results.</p>"
+          "documentation":"<p>The pagination token that's used to fetch the next set of results.</p>"
         },
         "collaborationList":{
           "shape":"CollaborationSummaryList",
@@ -4691,13 +5830,13 @@
         },
         "nextToken":{
           "shape":"PaginationToken",
-          "documentation":"<p>The token value retrieved from a previous call to access the next page of results.</p>",
+          "documentation":"<p>The pagination token that's used to fetch the next set of results.</p>",
           "location":"querystring",
           "locationName":"nextToken"
         },
         "maxResults":{
           "shape":"MaxResults",
-          "documentation":"<p>The maximum size of the results that is returned per call. Service chooses a default if it has not been set. Service may return a nextToken even if the maximum results has not been met.</p>",
+          "documentation":"<p>The maximum number of results that are returned for an API request call. The service chooses a default number if you don't set one. The service might return a `nextToken` even if the `maxResults` value has not been met.</p>",
           "location":"querystring",
           "locationName":"maxResults"
         }
@@ -4729,13 +5868,13 @@
         },
         "nextToken":{
           "shape":"PaginationToken",
-          "documentation":"<p>The token value retrieved from a previous call to access the next page of results.</p>",
+          "documentation":"<p>The pagination token that's used to fetch the next set of results.</p>",
           "location":"querystring",
           "locationName":"nextToken"
         },
         "maxResults":{
           "shape":"MaxResults",
-          "documentation":"<p>The maximum size of the results that is returned per call.</p>",
+          "documentation":"<p>The maximum number of results that are returned for an API request call. The service chooses a default number if you don't set one. The service might return a `nextToken` even if the `maxResults` value has not been met.</p>",
           "location":"querystring",
           "locationName":"maxResults"
         }
@@ -4751,7 +5890,7 @@
         },
         "nextToken":{
           "shape":"PaginationToken",
-          "documentation":"<p>The token value retrieved from a previous call to access the next page of results.</p>"
+          "documentation":"<p>The pagination token that's used to fetch the next set of results.</p>"
         }
       }
     },
@@ -4760,13 +5899,13 @@
       "members":{
         "nextToken":{
           "shape":"PaginationToken",
-          "documentation":"<p>The token value retrieved from a previous call to access the next page of results.</p>",
+          "documentation":"<p>The pagination token that's used to fetch the next set of results.</p>",
           "location":"querystring",
           "locationName":"nextToken"
         },
         "maxResults":{
           "shape":"MaxResults",
-          "documentation":"<p>The maximum size of the results that is returned per call.</p>",
+          "documentation":"<p>The maximum number of results that are returned for an API request call. The service chooses a default number if you don't set one. The service might return a `nextToken` even if the `maxResults` value has not been met.</p>",
           "location":"querystring",
           "locationName":"maxResults"
         }
@@ -4782,7 +5921,83 @@
         },
         "nextToken":{
           "shape":"PaginationToken",
-          "documentation":"<p>The token value retrieved from a previous call to access the next page of results.</p>"
+          "documentation":"<p>The pagination token that's used to fetch the next set of results.</p>"
+        }
+      }
+    },
+    "ListIdMappingTablesInput":{
+      "type":"structure",
+      "required":["membershipIdentifier"],
+      "members":{
+        "membershipIdentifier":{
+          "shape":"MembershipIdentifier",
+          "documentation":"<p>The unique identifier of the membership that contains the ID mapping tables that you want to view.</p>",
+          "location":"uri",
+          "locationName":"membershipIdentifier"
+        },
+        "nextToken":{
+          "shape":"PaginationToken",
+          "documentation":"<p>The pagination token that's used to fetch the next set of results.</p>",
+          "location":"querystring",
+          "locationName":"nextToken"
+        },
+        "maxResults":{
+          "shape":"MaxResults",
+          "documentation":"<p>The maximum size of the results that is returned per call. Service chooses a default if it has not been set. Service may return a nextToken even if the maximum results has not been met.</p>",
+          "location":"querystring",
+          "locationName":"maxResults"
+        }
+      }
+    },
+    "ListIdMappingTablesOutput":{
+      "type":"structure",
+      "required":["idMappingTableSummaries"],
+      "members":{
+        "idMappingTableSummaries":{
+          "shape":"IdMappingTableSummaryList",
+          "documentation":"<p>The summary information of the ID mapping tables that you requested.</p>"
+        },
+        "nextToken":{
+          "shape":"PaginationToken",
+          "documentation":"<p>The token value provided to access the next page of results.</p>"
+        }
+      }
+    },
+    "ListIdNamespaceAssociationsInput":{
+      "type":"structure",
+      "required":["membershipIdentifier"],
+      "members":{
+        "membershipIdentifier":{
+          "shape":"MembershipIdentifier",
+          "documentation":"<p>The unique identifier of the membership that contains the ID namespace association that you want to view.</p>",
+          "location":"uri",
+          "locationName":"membershipIdentifier"
+        },
+        "nextToken":{
+          "shape":"PaginationToken",
+          "documentation":"<p>The pagination token that's used to fetch the next set of results.</p>",
+          "location":"querystring",
+          "locationName":"nextToken"
+        },
+        "maxResults":{
+          "shape":"MaxResults",
+          "documentation":"<p>The maximum size of the results that is returned per call. Service chooses a default if it has not been set. Service may return a nextToken even if the maximum results has not been met.</p>",
+          "location":"querystring",
+          "locationName":"maxResults"
+        }
+      }
+    },
+    "ListIdNamespaceAssociationsOutput":{
+      "type":"structure",
+      "required":["idNamespaceAssociationSummaries"],
+      "members":{
+        "nextToken":{
+          "shape":"PaginationToken",
+          "documentation":"<p>The token value provided to access the next page of results.</p>"
+        },
+        "idNamespaceAssociationSummaries":{
+          "shape":"IdNamespaceAssociationSummaryList",
+          "documentation":"<p>The summary information of the ID namespace associations that you requested.</p>"
         }
       }
     },
@@ -4798,13 +6013,13 @@
         },
         "nextToken":{
           "shape":"PaginationToken",
-          "documentation":"<p>The token value retrieved from a previous call to access the next page of results.</p>",
+          "documentation":"<p>The pagination token that's used to fetch the next set of results.</p>",
           "location":"querystring",
           "locationName":"nextToken"
         },
         "maxResults":{
           "shape":"MaxResults",
-          "documentation":"<p>The maximum size of the results that is returned per call.</p>",
+          "documentation":"<p>The maximum number of results that are returned for an API request call. The service chooses a default number if you don't set one. The service might return a `nextToken` even if the `maxResults` value has not been met.</p>",
           "location":"querystring",
           "locationName":"maxResults"
         }
@@ -4816,7 +6031,7 @@
       "members":{
         "nextToken":{
           "shape":"PaginationToken",
-          "documentation":"<p>The token value retrieved from a previous call to access the next page of results.</p>"
+          "documentation":"<p>The pagination token that's used to fetch the next set of results.</p>"
         },
         "memberSummaries":{
           "shape":"MemberSummaryList",
@@ -4829,13 +6044,13 @@
       "members":{
         "nextToken":{
           "shape":"PaginationToken",
-          "documentation":"<p>The token value retrieved from a previous call to access the next page of results.</p>",
+          "documentation":"<p>The pagination token that's used to fetch the next set of results.</p>",
           "location":"querystring",
           "locationName":"nextToken"
         },
         "maxResults":{
           "shape":"MaxResults",
-          "documentation":"<p>The maximum size of the results that is returned per call.</p>",
+          "documentation":"<p>The maximum number of results that are returned for an API request call. The service chooses a default number if you don't set one. The service might return a `nextToken` even if the `maxResults` value has not been met.</p>",
           "location":"querystring",
           "locationName":"maxResults"
         },
@@ -4853,7 +6068,7 @@
       "members":{
         "nextToken":{
           "shape":"PaginationToken",
-          "documentation":"<p>The token value retrieved from a previous call to access the next page of results.</p>"
+          "documentation":"<p>The pagination token that's used to fetch the next set of results.</p>"
         },
         "membershipSummaries":{
           "shape":"MembershipSummaryList",
@@ -4873,13 +6088,13 @@
         },
         "nextToken":{
           "shape":"PaginationToken",
-          "documentation":"<p>The token value retrieved from a previous call to access the next page of results.</p>",
+          "documentation":"<p>The pagination token that's used to fetch the next set of results.</p>",
           "location":"querystring",
           "locationName":"nextToken"
         },
         "maxResults":{
           "shape":"MaxResults",
-          "documentation":"<p>The maximum size of the results that is returned per call. Service chooses a default if it has not been set. Service may return a nextToken even if the maximum results has not been met.</p>",
+          "documentation":"<p>The maximum number of results that are returned for an API request call. The service chooses a default number if you don't set one. The service might return a `nextToken` even if the `maxResults` value has not been met.</p>",
           "location":"querystring",
           "locationName":"maxResults"
         }
@@ -4891,7 +6106,7 @@
       "members":{
         "nextToken":{
           "shape":"PaginationToken",
-          "documentation":"<p>The token value retrieved from a previous call to access the next page of results.</p>"
+          "documentation":"<p>The pagination token that's used to fetch the next set of results.</p>"
         },
         "privacyBudgetTemplateSummaries":{
           "shape":"PrivacyBudgetTemplateSummaryList",
@@ -4920,13 +6135,13 @@
         },
         "nextToken":{
           "shape":"PaginationToken",
-          "documentation":"<p>The token value retrieved from a previous call to access the next page of results.</p>",
+          "documentation":"<p>The pagination token that's used to fetch the next set of results.</p>",
           "location":"querystring",
           "locationName":"nextToken"
         },
         "maxResults":{
           "shape":"MaxResults",
-          "documentation":"<p>The maximum size of the results that is returned per call. Service chooses a default if it has not been set. Service may return a nextToken even if the maximum results has not been met.</p>",
+          "documentation":"<p>The maximum number of results that are returned for an API request call. The service chooses a default number if you don't set one. The service might return a `nextToken` even if the `maxResults` value has not been met.</p>",
           "location":"querystring",
           "locationName":"maxResults"
         }
@@ -4942,7 +6157,7 @@
         },
         "nextToken":{
           "shape":"PaginationToken",
-          "documentation":"<p>The token value retrieved from a previous call to access the next page of results.</p>"
+          "documentation":"<p>The pagination token that's used to fetch the next set of results.</p>"
         }
       }
     },
@@ -4964,13 +6179,13 @@
         },
         "nextToken":{
           "shape":"PaginationToken",
-          "documentation":"<p>The token value retrieved from a previous call to access the next page of results.</p>",
+          "documentation":"<p>The pagination token that's used to fetch the next set of results.</p>",
           "location":"querystring",
           "locationName":"nextToken"
         },
         "maxResults":{
           "shape":"MaxResults",
-          "documentation":"<p>The maximum size of the results that is returned per call. Service chooses a default if it has not been set. Service can return a nextToken even if the maximum results has not been met. </p>",
+          "documentation":"<p>The maximum number of results that are returned for an API request call. The service chooses a default number if you don't set one. The service might return a `nextToken` even if the `maxResults` value has not been met. </p>",
           "location":"querystring",
           "locationName":"maxResults"
         }
@@ -4982,7 +6197,7 @@
       "members":{
         "nextToken":{
           "shape":"PaginationToken",
-          "documentation":"<p>The token value retrieved from a previous call to access the next page of results.</p>"
+          "documentation":"<p>The pagination token that's used to fetch the next set of results.</p>"
         },
         "protectedQueries":{
           "shape":"ProtectedQuerySummaryList",
@@ -5002,19 +6217,19 @@
         },
         "schemaType":{
           "shape":"SchemaType",
-          "documentation":"<p>If present, filter schemas by schema type. The only valid schema type is currently `TABLE`.</p>",
+          "documentation":"<p>If present, filter schemas by schema type.</p>",
           "location":"querystring",
           "locationName":"schemaType"
         },
         "nextToken":{
           "shape":"PaginationToken",
-          "documentation":"<p>The token value retrieved from a previous call to access the next page of results.</p>",
+          "documentation":"<p>The pagination token that's used to fetch the next set of results.</p>",
           "location":"querystring",
           "locationName":"nextToken"
         },
         "maxResults":{
           "shape":"MaxResults",
-          "documentation":"<p>The maximum size of the results that is returned per call.</p>",
+          "documentation":"<p>The maximum number of results that are returned for an API request call. The service chooses a default number if you don't set one. The service might return a `nextToken` even if the `maxResults` value has not been met.</p>",
           "location":"querystring",
           "locationName":"maxResults"
         }
@@ -5030,7 +6245,7 @@
         },
         "nextToken":{
           "shape":"PaginationToken",
-          "documentation":"<p>The token value retrieved from a previous call to access the next page of results.</p>"
+          "documentation":"<p>The pagination token that's used to fetch the next set of results.</p>"
         }
       }
     },
@@ -5447,6 +6662,37 @@
       },
       "documentation":"<p>An object representing the collaboration member's payment responsibilities set by the collaboration creator.</p>"
     },
+    "PopulateIdMappingTableInput":{
+      "type":"structure",
+      "required":[
+        "idMappingTableIdentifier",
+        "membershipIdentifier"
+      ],
+      "members":{
+        "idMappingTableIdentifier":{
+          "shape":"UUID",
+          "documentation":"<p>The unique identifier of the ID mapping table that you want to populate.</p>",
+          "location":"uri",
+          "locationName":"idMappingTableIdentifier"
+        },
+        "membershipIdentifier":{
+          "shape":"MembershipIdentifier",
+          "documentation":"<p>The unique identifier of the membership that contains the ID mapping table that you want to populate.</p>",
+          "location":"uri",
+          "locationName":"membershipIdentifier"
+        }
+      }
+    },
+    "PopulateIdMappingTableOutput":{
+      "type":"structure",
+      "required":["idMappingJobId"],
+      "members":{
+        "idMappingJobId":{
+          "shape":"UUID",
+          "documentation":"<p>The unique identifier of the mapping job that will populate the ID mapping table.</p>"
+        }
+      }
+    },
     "PreviewPrivacyImpactInput":{
       "type":"structure",
       "required":[
@@ -5623,7 +6869,7 @@
         },
         "parameters":{
           "shape":"PrivacyBudgetTemplateParametersOutput",
-          "documentation":"<p>Specifies the epislon and noise parameters for the privacy budget template.</p>"
+          "documentation":"<p>Specifies the epsilon and noise parameters for the privacy budget template.</p>"
         }
       },
       "documentation":"<p>An object that defines the privacy budget template.</p>"
@@ -5945,7 +7191,7 @@
     },
     "ProtectedQuerySQLParametersQueryStringString":{
       "type":"string",
-      "max":90000,
+      "max":500000,
       "min":0
     },
     "ProtectedQuerySingleMemberOutput":{
@@ -6032,6 +7278,33 @@
         }
       },
       "documentation":"<p>An object representing the collaboration member's payment responsibilities set by the collaboration creator for query compute costs.</p>"
+    },
+    "QueryConstraint":{
+      "type":"structure",
+      "members":{
+        "requireOverlap":{
+          "shape":"QueryConstraintRequireOverlap",
+          "documentation":"<p>An array of column names that specifies which columns are required in the JOIN statement.</p>"
+        }
+      },
+      "documentation":"<p>Provides any necessary query constraint information.</p>",
+      "union":true
+    },
+    "QueryConstraintList":{
+      "type":"list",
+      "member":{"shape":"QueryConstraint"},
+      "max":1,
+      "min":0
+    },
+    "QueryConstraintRequireOverlap":{
+      "type":"structure",
+      "members":{
+        "columns":{
+          "shape":"AnalysisRuleColumnList",
+          "documentation":"<p>The columns that are required to overlap.</p>"
+        }
+      },
+      "documentation":"<p>Provides the name of the columns that are required to overlap.</p>"
     },
     "QueryTables":{
       "type":"list",
@@ -6148,7 +7421,7 @@
       "members":{
         "columns":{
           "shape":"ColumnList",
-          "documentation":"<p>The columns for the relation this schema represents.</p>"
+          "documentation":"<p>The columns for the relation that this schema represents.</p>"
         },
         "partitionKeys":{
           "shape":"ColumnList",
@@ -6156,11 +7429,11 @@
         },
         "analysisRuleTypes":{
           "shape":"AnalysisRuleTypeList",
-          "documentation":"<p>The analysis rule types associated with the schema. Currently, only one entry is present.</p>"
+          "documentation":"<p>The analysis rule types that are associated with the schema. Currently, only one entry is present.</p>"
         },
         "analysisMethod":{
           "shape":"AnalysisMethod",
-          "documentation":"<p>The analysis method for the schema. The only valid value is currently DIRECT_QUERY.</p>"
+          "documentation":"<p>The analysis method for the schema. The only valid value is currently <code>DIRECT_QUERY</code>.</p>"
         },
         "creatorAccountId":{
           "shape":"AccountId",
@@ -6176,7 +7449,7 @@
         },
         "collaborationArn":{
           "shape":"CollaborationArn",
-          "documentation":"<p>The unique ARN for the collaboration that the schema belongs to.</p>"
+          "documentation":"<p>The unique Amazon Resource Name (ARN) for the collaboration that the schema belongs to.</p>"
         },
         "description":{
           "shape":"TableDescription",
@@ -6184,19 +7457,23 @@
         },
         "createTime":{
           "shape":"Timestamp",
-          "documentation":"<p>The time the schema was created.</p>"
+          "documentation":"<p>The time at which the schema was created.</p>"
         },
         "updateTime":{
           "shape":"Timestamp",
-          "documentation":"<p>The time the schema was last updated.</p>"
+          "documentation":"<p>The most recent time at which the schema was updated.</p>"
         },
         "type":{
           "shape":"SchemaType",
-          "documentation":"<p>The type of schema. The only valid value is currently `TABLE`.</p>"
+          "documentation":"<p>The type of schema.</p>"
         },
         "schemaStatusDetails":{
           "shape":"SchemaStatusDetailList",
           "documentation":"<p>Details about the status of the schema. Currently, only one entry is present.</p>"
+        },
+        "schemaTypeProperties":{
+          "shape":"SchemaTypeProperties",
+          "documentation":"<p>The schema type properties.</p>"
         }
       },
       "documentation":"<p>A schema is a relation within a collaboration.</p>"
@@ -6233,7 +7510,13 @@
     },
     "SchemaConfiguration":{
       "type":"string",
-      "enum":["DIFFERENTIAL_PRIVACY"]
+      "enum":[
+        "DIFFERENTIAL_PRIVACY",
+        "CUSTOM_ANALYSIS_NOT_ALLOWED",
+        "NO_MEMBER_ACCOUNT_ALLOWED_TO_PROVIDE_ANALYSIS",
+        "DIFFERENTIAL_PRIVACY_BUDGET_NOT_CONFIGURED",
+        "ID_MAPPING_TABLE_NOT_POPULATED"
+      ]
     },
     "SchemaConfigurationList":{
       "type":"list",
@@ -6303,7 +7586,8 @@
         "ANALYSIS_RULE_MISSING",
         "ANALYSIS_TEMPLATES_NOT_CONFIGURED",
         "ANALYSIS_PROVIDERS_NOT_CONFIGURED",
-        "DIFFERENTIAL_PRIVACY_POLICY_NOT_CONFIGURED"
+        "DIFFERENTIAL_PRIVACY_POLICY_NOT_CONFIGURED",
+        "ID_MAPPING_TABLE_NOT_POPULATED"
       ]
     },
     "SchemaStatusReasonList":{
@@ -6329,7 +7613,7 @@
         },
         "type":{
           "shape":"SchemaType",
-          "documentation":"<p>The type of schema object. The only valid schema type is currently `TABLE`.</p>"
+          "documentation":"<p>The type of schema object.</p>"
         },
         "creatorAccountId":{
           "shape":"AccountId",
@@ -6368,7 +7652,21 @@
     },
     "SchemaType":{
       "type":"string",
-      "enum":["TABLE"]
+      "enum":[
+        "TABLE",
+        "ID_MAPPING_TABLE"
+      ]
+    },
+    "SchemaTypeProperties":{
+      "type":"structure",
+      "members":{
+        "idMappingTable":{
+          "shape":"IdMappingTableSchemaTypeProperties",
+          "documentation":"<p>The ID mapping table for the schema type properties.</p>"
+        }
+      },
+      "documentation":"<p>Information about the schema type properties.</p>",
+      "union":true
     },
     "ServiceQuotaExceededException":{
       "type":"structure",
@@ -6764,6 +8062,88 @@
         "configuredTable":{
           "shape":"ConfiguredTable",
           "documentation":"<p>The updated configured table.</p>"
+        }
+      }
+    },
+    "UpdateIdMappingTableInput":{
+      "type":"structure",
+      "required":[
+        "idMappingTableIdentifier",
+        "membershipIdentifier"
+      ],
+      "members":{
+        "idMappingTableIdentifier":{
+          "shape":"UUID",
+          "documentation":"<p>The unique identifier of the ID mapping table that you want to update.</p>",
+          "location":"uri",
+          "locationName":"idMappingTableIdentifier"
+        },
+        "membershipIdentifier":{
+          "shape":"MembershipIdentifier",
+          "documentation":"<p>The unique identifier of the membership that contains the ID mapping table that you want to update.</p>",
+          "location":"uri",
+          "locationName":"membershipIdentifier"
+        },
+        "description":{
+          "shape":"ResourceDescription",
+          "documentation":"<p>A new description for the ID mapping table.</p>"
+        },
+        "kmsKeyArn":{
+          "shape":"KMSKeyArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the Amazon Web Services KMS key.</p>"
+        }
+      }
+    },
+    "UpdateIdMappingTableOutput":{
+      "type":"structure",
+      "required":["idMappingTable"],
+      "members":{
+        "idMappingTable":{
+          "shape":"IdMappingTable",
+          "documentation":"<p>The updated ID mapping table.</p>"
+        }
+      }
+    },
+    "UpdateIdNamespaceAssociationInput":{
+      "type":"structure",
+      "required":[
+        "idNamespaceAssociationIdentifier",
+        "membershipIdentifier"
+      ],
+      "members":{
+        "idNamespaceAssociationIdentifier":{
+          "shape":"IdNamespaceAssociationIdentifier",
+          "documentation":"<p>The unique identifier of the ID namespace association that you want to update.</p>",
+          "location":"uri",
+          "locationName":"idNamespaceAssociationIdentifier"
+        },
+        "membershipIdentifier":{
+          "shape":"MembershipIdentifier",
+          "documentation":"<p>The unique identifier of the membership that contains the ID namespace association that you want to update.</p>",
+          "location":"uri",
+          "locationName":"membershipIdentifier"
+        },
+        "name":{
+          "shape":"GenericResourceName",
+          "documentation":"<p>A new name for the ID namespace association.</p>"
+        },
+        "description":{
+          "shape":"ResourceDescription",
+          "documentation":"<p>A new description for the ID namespace association.</p>"
+        },
+        "idMappingConfig":{
+          "shape":"IdMappingConfig",
+          "documentation":"<p>The configuration settings for the ID mapping table.</p>"
+        }
+      }
+    },
+    "UpdateIdNamespaceAssociationOutput":{
+      "type":"structure",
+      "required":["idNamespaceAssociation"],
+      "members":{
+        "idNamespaceAssociation":{
+          "shape":"IdNamespaceAssociation",
+          "documentation":"<p>The updated ID namespace association.</p>"
         }
       }
     },

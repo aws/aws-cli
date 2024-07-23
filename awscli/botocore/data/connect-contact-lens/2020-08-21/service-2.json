@@ -5,12 +5,14 @@
     "endpointPrefix":"contact-lens",
     "jsonVersion":"1.1",
     "protocol":"rest-json",
+    "protocols":["rest-json"],
     "serviceAbbreviation":"Amazon Connect Contact Lens",
     "serviceFullName":"Amazon Connect Contact Lens",
     "serviceId":"Connect Contact Lens",
     "signatureVersion":"v4",
     "signingName":"connect",
-    "uid":"connect-contact-lens-2020-08-21"
+    "uid":"connect-contact-lens-2020-08-21",
+    "auth":["aws.auth#sigv4"]
   },
   "operations":{
     "ListRealtimeContactAnalysisSegments":{
@@ -164,7 +166,7 @@
         },
         "MaxResults":{
           "shape":"MaxResults",
-          "documentation":"<p>The maximimum number of results to return per page.</p>"
+          "documentation":"<p>The maximum number of results to return per page.</p>"
         },
         "NextToken":{
           "shape":"NextToken",
@@ -251,6 +253,47 @@
       "max":20,
       "min":0
     },
+    "PostContactSummary":{
+      "type":"structure",
+      "required":["Status"],
+      "members":{
+        "Content":{
+          "shape":"PostContactSummaryContent",
+          "documentation":"<p>The content of the summary.</p>"
+        },
+        "Status":{
+          "shape":"PostContactSummaryStatus",
+          "documentation":"<p>Whether the summary was successfully COMPLETED or FAILED to be generated.</p>"
+        },
+        "FailureCode":{
+          "shape":"PostContactSummaryFailureCode",
+          "documentation":"<p>If the summary failed to be generated, one of the following failure codes occurs:</p> <ul> <li> <p> <code>QUOTA_EXCEEDED</code>: The number of concurrent analytics jobs reached your service quota.</p> </li> <li> <p> <code>INSUFFICIENT_CONVERSATION_CONTENT</code>: The conversation needs to have at least one turn from both the participants in order to generate the summary.</p> </li> <li> <p> <code>FAILED_SAFETY_GUIDELINES</code>: The generated summary cannot be provided because it failed to meet system safety guidelines.</p> </li> <li> <p> <code>INVALID_ANALYSIS_CONFIGURATION</code>: This code occurs when, for example, you're using a <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/supported-languages.html#supported-languages-contact-lens\">language</a> that isn't supported by generative AI-powered post-contact summaries. </p> </li> <li> <p> <code>INTERNAL_ERROR</code>: Internal system error.</p> </li> </ul>"
+        }
+      },
+      "documentation":"<p>Information about the post-contact summary.</p>"
+    },
+    "PostContactSummaryContent":{
+      "type":"string",
+      "max":1762,
+      "min":1
+    },
+    "PostContactSummaryFailureCode":{
+      "type":"string",
+      "enum":[
+        "QUOTA_EXCEEDED",
+        "INSUFFICIENT_CONVERSATION_CONTENT",
+        "FAILED_SAFETY_GUIDELINES",
+        "INVALID_ANALYSIS_CONFIGURATION",
+        "INTERNAL_ERROR"
+      ]
+    },
+    "PostContactSummaryStatus":{
+      "type":"string",
+      "enum":[
+        "FAILED",
+        "COMPLETED"
+      ]
+    },
     "RealtimeContactAnalysisSegment":{
       "type":"structure",
       "members":{
@@ -261,6 +304,10 @@
         "Categories":{
           "shape":"Categories",
           "documentation":"<p>The matched category rules.</p>"
+        },
+        "PostContactSummary":{
+          "shape":"PostContactSummary",
+          "documentation":"<p>Information about the post-contact summary.</p>"
         }
       },
       "documentation":"<p>An analyzed segment for a real-time analysis session.</p>"
@@ -316,7 +363,7 @@
         },
         "ParticipantId":{
           "shape":"ParticipantId",
-          "documentation":"<p>The identifier of the participant.</p>"
+          "documentation":"<p>The identifier of the participant. Valid values are CUSTOMER or AGENT.</p>"
         },
         "ParticipantRole":{
           "shape":"ParticipantRole",
@@ -336,7 +383,7 @@
         },
         "Sentiment":{
           "shape":"SentimentValue",
-          "documentation":"<p>The sentiment of the detected for this piece of transcript.</p>"
+          "documentation":"<p>The sentiment detected for this piece of transcript.</p>"
         },
         "IssuesDetected":{
           "shape":"IssuesDetected",
@@ -357,5 +404,5 @@
       "pattern":".*\\S.*"
     }
   },
-  "documentation":"<p>Contact Lens for Amazon Connect enables you to analyze conversations between customer and agents, by using speech transcription, natural language processing, and intelligent search capabilities. It performs sentiment analysis, detects issues, and enables you to automatically categorize contacts.</p> <p>Contact Lens for Amazon Connect provides both real-time and post-call analytics of customer-agent conversations. For more information, see <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/analyze-conversations.html\">Analyze conversations using Contact Lens</a> in the <i>Amazon Connect Administrator Guide</i>. </p>"
+  "documentation":"<ul> <li> <p> <a href=\"https://docs.aws.amazon.com/connect/latest/APIReference/API_Operations_Amazon_Connect_Contact_Lens.html\">Contact Lens actions</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/connect/latest/APIReference/API_Types_Amazon_Connect_Contact_Lens.html\">Contact Lens data types</a> </p> </li> </ul> <p>Amazon Connect Contact Lens enables you to analyze conversations between customer and agents, by using speech transcription, natural language processing, and intelligent search capabilities. It performs sentiment analysis, detects issues, and enables you to automatically categorize contacts.</p> <p>Amazon Connect Contact Lens provides both real-time and post-call analytics of customer-agent conversations. For more information, see <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/analyze-conversations.html\">Analyze conversations using speech analytics</a> in the <i>Amazon Connect Administrator Guide</i>. </p>"
 }

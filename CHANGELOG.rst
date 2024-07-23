@@ -2,6 +2,18 @@
 CHANGELOG
 =========
 
+2.17.16
+=======
+
+* api-change:``cleanrooms``: This release adds AWS Entity Resolution integration to associate ID namespaces & ID mapping workflow resources as part of ID namespace association and  ID mapping table  in AWS Clean Rooms. It also introduces a new ID_MAPPING_TABLE analysis rule to manage the protection on ID mapping table.
+* api-change:``datazone``: This release removes the deprecated dataProductItem field from Search API output.
+* api-change:``connect``: Added PostContactSummary segment type on ListRealTimeContactAnalysisSegmentsV2 API
+* api-change:``entityresolution``: Support First Party ID Mapping
+* api-change:``cleanroomsml``: Adds SQL query as the source of seed audience for audience generation job.
+* api-change:``appsync``: Adding support for paginators in AppSync list APIs
+* api-change:``connect-contact-lens``: Added PostContactSummary segment type on ListRealTimeContactAnalysisSegments API
+
+
 2.17.15
 =======
 

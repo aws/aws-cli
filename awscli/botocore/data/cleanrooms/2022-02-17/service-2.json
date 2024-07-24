@@ -186,6 +186,26 @@
       ],
       "documentation":"<p>Creates a configured table association. A configured table association links a configured table with a collaboration.</p>"
     },
+    "CreateConfiguredTableAssociationAnalysisRule":{
+      "name":"CreateConfiguredTableAssociationAnalysisRule",
+      "http":{
+        "method":"POST",
+        "requestUri":"/memberships/{membershipIdentifier}/configuredTableAssociations/{configuredTableAssociationIdentifier}/analysisRule",
+        "responseCode":200
+      },
+      "input":{"shape":"CreateConfiguredTableAssociationAnalysisRuleInput"},
+      "output":{"shape":"CreateConfiguredTableAssociationAnalysisRuleOutput"},
+      "errors":[
+        {"shape":"ConflictException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ValidationException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p> Creates a new analysis rule for an associated configured table.</p>",
+      "idempotent":true
+    },
     "CreateIdMappingTable":{
       "name":"CreateIdMappingTable",
       "http":{
@@ -379,6 +399,26 @@
         {"shape":"AccessDeniedException"}
       ],
       "documentation":"<p>Deletes a configured table association.</p>",
+      "idempotent":true
+    },
+    "DeleteConfiguredTableAssociationAnalysisRule":{
+      "name":"DeleteConfiguredTableAssociationAnalysisRule",
+      "http":{
+        "method":"DELETE",
+        "requestUri":"/memberships/{membershipIdentifier}/configuredTableAssociations/{configuredTableAssociationIdentifier}/analysisRule/{analysisRuleType}",
+        "responseCode":204
+      },
+      "input":{"shape":"DeleteConfiguredTableAssociationAnalysisRuleInput"},
+      "output":{"shape":"DeleteConfiguredTableAssociationAnalysisRuleOutput"},
+      "errors":[
+        {"shape":"ConflictException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ValidationException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Deletes an analysis rule for a configured table association.</p>",
       "idempotent":true
     },
     "DeleteIdMappingTable":{
@@ -656,6 +696,24 @@
         {"shape":"AccessDeniedException"}
       ],
       "documentation":"<p>Retrieves a configured table association.</p>"
+    },
+    "GetConfiguredTableAssociationAnalysisRule":{
+      "name":"GetConfiguredTableAssociationAnalysisRule",
+      "http":{
+        "method":"GET",
+        "requestUri":"/memberships/{membershipIdentifier}/configuredTableAssociations/{configuredTableAssociationIdentifier}/analysisRule/{analysisRuleType}",
+        "responseCode":200
+      },
+      "input":{"shape":"GetConfiguredTableAssociationAnalysisRuleInput"},
+      "output":{"shape":"GetConfiguredTableAssociationAnalysisRuleOutput"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ValidationException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p> Retrieves the analysis rule for a configured table association.</p>"
     },
     "GetIdMappingTable":{
       "name":"GetIdMappingTable",
@@ -1315,6 +1373,25 @@
       ],
       "documentation":"<p>Updates a configured table association.</p>"
     },
+    "UpdateConfiguredTableAssociationAnalysisRule":{
+      "name":"UpdateConfiguredTableAssociationAnalysisRule",
+      "http":{
+        "method":"PATCH",
+        "requestUri":"/memberships/{membershipIdentifier}/configuredTableAssociations/{configuredTableAssociationIdentifier}/analysisRule/{analysisRuleType}",
+        "responseCode":200
+      },
+      "input":{"shape":"UpdateConfiguredTableAssociationAnalysisRuleInput"},
+      "output":{"shape":"UpdateConfiguredTableAssociationAnalysisRuleOutput"},
+      "errors":[
+        {"shape":"ConflictException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ValidationException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p> Updates the analysis rule for a configured table association.</p>"
+    },
     "UpdateIdMappingTable":{
       "name":"UpdateIdMappingTable",
       "http":{
@@ -1437,6 +1514,20 @@
       "min":12,
       "pattern":"\\d+"
     },
+    "AdditionalAnalyses":{
+      "type":"string",
+      "enum":[
+        "ALLOWED",
+        "REQUIRED",
+        "NOT_ALLOWED"
+      ]
+    },
+    "AdditionalAnalysesResourceArn":{
+      "type":"string",
+      "max":256,
+      "min":0,
+      "pattern":"arn:aws:cleanrooms:[\\w]{2}-[\\w]{4,9}-[\\d]:([\\d]{12}|\\*):membership/[\\*\\d\\w-]+/configuredaudiencemodelassociation/[\\*\\d\\w-]+"
+    },
     "AggregateColumn":{
       "type":"structure",
       "required":[
@@ -1508,11 +1599,21 @@
       "type":"string",
       "enum":["COUNT_DISTINCT"]
     },
+    "AllowedAdditionalAnalyses":{
+      "type":"list",
+      "member":{"shape":"AdditionalAnalysesResourceArn"},
+      "max":25,
+      "min":0
+    },
     "AllowedColumnList":{
       "type":"list",
       "member":{"shape":"ColumnName"},
       "max":225,
       "min":1
+    },
+    "AllowedResultReceivers":{
+      "type":"list",
+      "member":{"shape":"AccountId"}
     },
     "AnalysisFormat":{
       "type":"string",
@@ -1626,6 +1727,10 @@
         "outputConstraints":{
           "shape":"AggregationConstraints",
           "documentation":"<p>Columns that must meet a specific threshold value (after an aggregation function is applied to it) for each output row to be returned.</p>"
+        },
+        "additionalAnalyses":{
+          "shape":"AdditionalAnalyses",
+          "documentation":"<p> An indicator as to whether additional analyses (such as Clean Rooms ML) can be applied to the output of the direct query. </p> <p>The <code>additionalAnalyses</code> parameter is currently supported for the list analysis rule (<code>AnalysisRuleList</code>) and the custom analysis rule (<code>AnalysisRuleCustom</code>).</p>"
         }
       },
       "documentation":"<p>A type of analysis rule that enables query structure and specified queries that produce aggregate statistics.</p>"
@@ -1656,6 +1761,14 @@
         "allowedAnalysisProviders":{
           "shape":"AnalysisRuleCustomAllowedAnalysisProvidersList",
           "documentation":"<p>The IDs of the Amazon Web Services accounts that are allowed to query by the custom analysis rule. Required when <code>allowedAnalyses</code> is <code>ANY_QUERY</code>.</p>"
+        },
+        "additionalAnalyses":{
+          "shape":"AdditionalAnalyses",
+          "documentation":"<p> An indicator as to whether additional analyses (such as Clean Rooms ML) can be applied to the output of the direct query.</p>"
+        },
+        "disallowedOutputColumns":{
+          "shape":"AnalysisRuleColumnList",
+          "documentation":"<p> A list of columns that aren't allowed to be shown in the query output.</p>"
         },
         "differentialPrivacy":{
           "shape":"DifferentialPrivacyConfiguration",
@@ -1720,6 +1833,10 @@
         "listColumns":{
           "shape":"AnalysisRuleColumnList",
           "documentation":"<p>Columns that can be listed in the output.</p>"
+        },
+        "additionalAnalyses":{
+          "shape":"AdditionalAnalyses",
+          "documentation":"<p> An indicator as to whether additional analyses (such as Clean Rooms ML) can be applied to the output of the direct query.</p>"
         }
       },
       "documentation":"<p>A type of analysis rule that enables row-level analysis.</p>"
@@ -2020,6 +2137,13 @@
     "AnalysisTemplateValidationType":{
       "type":"string",
       "enum":["DIFFERENTIAL_PRIVACY"]
+    },
+    "AnalysisType":{
+      "type":"string",
+      "enum":[
+        "DIRECT_ANALYSIS",
+        "ADDITIONAL_ANALYSIS"
+      ]
     },
     "BatchGetCollaborationAnalysisTemplateError":{
       "type":"structure",
@@ -2487,7 +2611,7 @@
         },
         "creatorAccountId":{
           "shape":"AccountId",
-          "documentation":"<p>The identifier used to reference members of the collaboration. Only supports Amazon Web Services account ID.</p>"
+          "documentation":"<p>The identifier used to reference members of the collaboration. Only supports AWS account ID.</p>"
         },
         "createTime":{
           "shape":"Timestamp",
@@ -2543,7 +2667,7 @@
         },
         "creatorAccountId":{
           "shape":"AccountId",
-          "documentation":"<p>The identifier used to reference members of the collaboration. Only supports Amazon Web Services account ID.</p>"
+          "documentation":"<p>The identifier used to reference members of the collaboration. Only supports AWS account ID.</p>"
         },
         "description":{
           "shape":"ResourceDescription",
@@ -2976,6 +3100,17 @@
       "min":0,
       "pattern":"[\\u0020-\\uD7FF\\uE000-\\uFFFD\\uD800\\uDBFF-\\uDC00\\uDFFF\\t]*"
     },
+    "ConfigurationDetails":{
+      "type":"structure",
+      "members":{
+        "directAnalysisConfigurationDetails":{
+          "shape":"DirectAnalysisConfigurationDetails",
+          "documentation":"<p> The direct analysis configuration details.</p>"
+        }
+      },
+      "documentation":"<p> The configuration details.</p>",
+      "union":true
+    },
     "ConfiguredAudienceModelArn":{
       "type":"string",
       "max":2048,
@@ -3324,6 +3459,10 @@
           "shape":"TableDescription",
           "documentation":"<p>A description of the configured table association.</p>"
         },
+        "analysisRuleTypes":{
+          "shape":"ConfiguredTableAssociationAnalysisRuleTypeList",
+          "documentation":"<p> The analysis rule types for the configured table association.</p>"
+        },
         "createTime":{
           "shape":"Timestamp",
           "documentation":"<p>The time the configured table association was created.</p>"
@@ -3334,6 +3473,133 @@
         }
       },
       "documentation":"<p>A configured table association links a configured table to a collaboration.</p>"
+    },
+    "ConfiguredTableAssociationAnalysisRule":{
+      "type":"structure",
+      "required":[
+        "membershipIdentifier",
+        "configuredTableAssociationId",
+        "configuredTableAssociationArn",
+        "policy",
+        "type",
+        "createTime",
+        "updateTime"
+      ],
+      "members":{
+        "membershipIdentifier":{
+          "shape":"MembershipIdentifier",
+          "documentation":"<p> The membership identifier for the configured table association analysis rule.</p>"
+        },
+        "configuredTableAssociationId":{
+          "shape":"ConfiguredTableAssociationIdentifier",
+          "documentation":"<p> The unique identifier for the configured table association.</p>"
+        },
+        "configuredTableAssociationArn":{
+          "shape":"ConfiguredTableAssociationArn",
+          "documentation":"<p> The Amazon Resource Name (ARN) of the configured table association.</p>"
+        },
+        "policy":{
+          "shape":"ConfiguredTableAssociationAnalysisRulePolicy",
+          "documentation":"<p> The policy of the configured table association analysis rule.</p>"
+        },
+        "type":{
+          "shape":"ConfiguredTableAssociationAnalysisRuleType",
+          "documentation":"<p> The type of the configured table association analysis rule.</p>"
+        },
+        "createTime":{
+          "shape":"Timestamp",
+          "documentation":"<p> The creation time of the configured table association analysis rule.</p>"
+        },
+        "updateTime":{
+          "shape":"Timestamp",
+          "documentation":"<p> The update time of the configured table association analysis rule.</p>"
+        }
+      },
+      "documentation":"<p>An analysis rule for a configured table association. This analysis rule specifies how data from the table can be used within its associated collaboration. In the console, the <code>ConfiguredTableAssociationAnalysisRule</code> is referred to as the <i>collaboration analysis rule</i>.</p>"
+    },
+    "ConfiguredTableAssociationAnalysisRuleAggregation":{
+      "type":"structure",
+      "members":{
+        "allowedResultReceivers":{
+          "shape":"AllowedResultReceivers",
+          "documentation":"<p> The list of collaboration members who are allowed to receive results of queries run with this configured table.</p>"
+        },
+        "allowedAdditionalAnalyses":{
+          "shape":"AllowedAdditionalAnalyses",
+          "documentation":"<p> The list of resources or wildcards (ARNs) that are allowed to perform additional analysis on query output.</p> <p>The <code>allowedAdditionalAnalyses</code> parameter is currently supported for the list analysis rule (<code>AnalysisRuleList</code>) and the custom analysis rule (<code>AnalysisRuleCustom</code>).</p>"
+        }
+      },
+      "documentation":"<p> The configured table association analysis rule applied to a configured table with the aggregation analysis rule.</p>"
+    },
+    "ConfiguredTableAssociationAnalysisRuleCustom":{
+      "type":"structure",
+      "members":{
+        "allowedResultReceivers":{
+          "shape":"AllowedResultReceivers",
+          "documentation":"<p> The list of collaboration members who are allowed to receive results of queries run with this configured table.</p>"
+        },
+        "allowedAdditionalAnalyses":{
+          "shape":"AllowedAdditionalAnalyses",
+          "documentation":"<p> The list of resources or wildcards (ARNs) that are allowed to perform additional analysis on query output.</p>"
+        }
+      },
+      "documentation":"<p> The configured table association analysis rule applied to a configured table with the custom analysis rule.</p>"
+    },
+    "ConfiguredTableAssociationAnalysisRuleList":{
+      "type":"structure",
+      "members":{
+        "allowedResultReceivers":{
+          "shape":"AllowedResultReceivers",
+          "documentation":"<p> The list of collaboration members who are allowed to receive results of queries run with this configured table.</p>"
+        },
+        "allowedAdditionalAnalyses":{
+          "shape":"AllowedAdditionalAnalyses",
+          "documentation":"<p> The list of resources or wildcards (ARNs) that are allowed to perform additional analysis on query output.</p>"
+        }
+      },
+      "documentation":"<p> The configured table association analysis rule applied to a configured table with the list analysis rule.</p>"
+    },
+    "ConfiguredTableAssociationAnalysisRulePolicy":{
+      "type":"structure",
+      "members":{
+        "v1":{
+          "shape":"ConfiguredTableAssociationAnalysisRulePolicyV1",
+          "documentation":"<p> The policy for the configured table association analysis rule.</p>"
+        }
+      },
+      "documentation":"<p> Controls on the query specifications that can be run on an associated configured table.</p>",
+      "union":true
+    },
+    "ConfiguredTableAssociationAnalysisRulePolicyV1":{
+      "type":"structure",
+      "members":{
+        "list":{
+          "shape":"ConfiguredTableAssociationAnalysisRuleList",
+          "documentation":"<p> Analysis rule type that enables only list queries on a configured table.</p>"
+        },
+        "aggregation":{
+          "shape":"ConfiguredTableAssociationAnalysisRuleAggregation",
+          "documentation":"<p> Analysis rule type that enables only aggregation queries on a configured table.</p>"
+        },
+        "custom":{
+          "shape":"ConfiguredTableAssociationAnalysisRuleCustom",
+          "documentation":"<p> Analysis rule type that enables the table owner to approve custom SQL queries on their configured tables. It supports differential privacy.</p>"
+        }
+      },
+      "documentation":"<p> Controls on the query specifications that can be run on an associated configured table.</p>",
+      "union":true
+    },
+    "ConfiguredTableAssociationAnalysisRuleType":{
+      "type":"string",
+      "enum":[
+        "AGGREGATION",
+        "LIST",
+        "CUSTOM"
+      ]
+    },
+    "ConfiguredTableAssociationAnalysisRuleTypeList":{
+      "type":"list",
+      "member":{"shape":"ConfiguredTableAssociationAnalysisRuleType"}
     },
     "ConfiguredTableAssociationArn":{
       "type":"string",
@@ -3593,7 +3859,7 @@
       "members":{
         "collaboration":{
           "shape":"Collaboration",
-          "documentation":"<p>The entire created collaboration object.</p>"
+          "documentation":"<p>The collaboration.</p>"
         }
       }
     },
@@ -3664,7 +3930,7 @@
         },
         "analysisRulePolicy":{
           "shape":"ConfiguredTableAnalysisRulePolicy",
-          "documentation":"<p>The entire created configured table analysis rule object.</p>"
+          "documentation":"<p>The analysis rule policy that was created for the configured table.</p>"
         }
       }
     },
@@ -3674,7 +3940,48 @@
       "members":{
         "analysisRule":{
           "shape":"ConfiguredTableAnalysisRule",
-          "documentation":"<p>The entire created analysis rule.</p>"
+          "documentation":"<p>The analysis rule that was created for the configured table.</p>"
+        }
+      }
+    },
+    "CreateConfiguredTableAssociationAnalysisRuleInput":{
+      "type":"structure",
+      "required":[
+        "membershipIdentifier",
+        "configuredTableAssociationIdentifier",
+        "analysisRuleType",
+        "analysisRulePolicy"
+      ],
+      "members":{
+        "membershipIdentifier":{
+          "shape":"MembershipIdentifier",
+          "documentation":"<p> A unique identifier for the membership that the configured table association belongs to. Currently accepts the membership ID.</p>",
+          "location":"uri",
+          "locationName":"membershipIdentifier"
+        },
+        "configuredTableAssociationIdentifier":{
+          "shape":"ConfiguredTableAssociationIdentifier",
+          "documentation":"<p> The unique ID for the configured table association. Currently accepts the configured table association ID.</p>",
+          "location":"uri",
+          "locationName":"configuredTableAssociationIdentifier"
+        },
+        "analysisRuleType":{
+          "shape":"ConfiguredTableAssociationAnalysisRuleType",
+          "documentation":"<p> The type of analysis rule.</p>"
+        },
+        "analysisRulePolicy":{
+          "shape":"ConfiguredTableAssociationAnalysisRulePolicy",
+          "documentation":"<p>The analysis rule policy that was created for the configured table association.</p>"
+        }
+      }
+    },
+    "CreateConfiguredTableAssociationAnalysisRuleOutput":{
+      "type":"structure",
+      "required":["analysisRule"],
+      "members":{
+        "analysisRule":{
+          "shape":"ConfiguredTableAssociationAnalysisRule",
+          "documentation":"<p>The analysis rule for the conﬁgured table association. In the console, the <code>ConfiguredTableAssociationAnalysisRule</code> is referred to as the <i>collaboration analysis rule</i>.</p>"
         }
       }
     },
@@ -3721,7 +4028,7 @@
       "members":{
         "configuredTableAssociation":{
           "shape":"ConfiguredTableAssociation",
-          "documentation":"<p>The entire configured table association object.</p>"
+          "documentation":"<p>The configured table association.</p>"
         }
       }
     },
@@ -4067,6 +4374,39 @@
       "members":{
       },
       "documentation":"<p>An empty response that indicates a successful delete.</p>"
+    },
+    "DeleteConfiguredTableAssociationAnalysisRuleInput":{
+      "type":"structure",
+      "required":[
+        "membershipIdentifier",
+        "configuredTableAssociationIdentifier",
+        "analysisRuleType"
+      ],
+      "members":{
+        "membershipIdentifier":{
+          "shape":"MembershipIdentifier",
+          "documentation":"<p> A unique identifier for the membership that the configured table association belongs to. Currently accepts the membership ID.</p>",
+          "location":"uri",
+          "locationName":"membershipIdentifier"
+        },
+        "configuredTableAssociationIdentifier":{
+          "shape":"ConfiguredTableAssociationIdentifier",
+          "documentation":"<p>The identiﬁer for the conﬁgured table association that's related to the analysis rule that you want to delete.</p>",
+          "location":"uri",
+          "locationName":"configuredTableAssociationIdentifier"
+        },
+        "analysisRuleType":{
+          "shape":"ConfiguredTableAssociationAnalysisRuleType",
+          "documentation":"<p>The type of the analysis rule that you want to delete.</p>",
+          "location":"uri",
+          "locationName":"analysisRuleType"
+        }
+      }
+    },
+    "DeleteConfiguredTableAssociationAnalysisRuleOutput":{
+      "type":"structure",
+      "members":{
+      }
     },
     "DeleteConfiguredTableAssociationInput":{
       "type":"structure",
@@ -4487,6 +4827,16 @@
       },
       "documentation":"<p>The epsilon and noise parameter values that you want to update in the differential privacy template.</p>"
     },
+    "DirectAnalysisConfigurationDetails":{
+      "type":"structure",
+      "members":{
+        "receiverAccountIds":{
+          "shape":"ReceiverAccountIds",
+          "documentation":"<p> The account IDs for the member who received the results of a protected query.</p>"
+        }
+      },
+      "documentation":"<p> The direct analysis configuration details.</p>"
+    },
     "DisplayName":{
       "type":"string",
       "max":100,
@@ -4762,6 +5112,44 @@
         "analysisRule":{
           "shape":"ConfiguredTableAnalysisRule",
           "documentation":"<p>The entire analysis rule output.</p>"
+        }
+      }
+    },
+    "GetConfiguredTableAssociationAnalysisRuleInput":{
+      "type":"structure",
+      "required":[
+        "membershipIdentifier",
+        "configuredTableAssociationIdentifier",
+        "analysisRuleType"
+      ],
+      "members":{
+        "membershipIdentifier":{
+          "shape":"MembershipIdentifier",
+          "documentation":"<p> A unique identifier for the membership that the configured table association belongs to. Currently accepts the membership ID.</p>",
+          "location":"uri",
+          "locationName":"membershipIdentifier"
+        },
+        "configuredTableAssociationIdentifier":{
+          "shape":"ConfiguredTableAssociationIdentifier",
+          "documentation":"<p> The identiﬁer for the conﬁgured table association that's related to the analysis rule.</p>",
+          "location":"uri",
+          "locationName":"configuredTableAssociationIdentifier"
+        },
+        "analysisRuleType":{
+          "shape":"ConfiguredTableAssociationAnalysisRuleType",
+          "documentation":"<p> The type of analysis rule that you want to retrieve.</p>",
+          "location":"uri",
+          "locationName":"analysisRuleType"
+        }
+      }
+    },
+    "GetConfiguredTableAssociationAnalysisRuleOutput":{
+      "type":"structure",
+      "required":["analysisRule"],
+      "members":{
+        "analysisRule":{
+          "shape":"ConfiguredTableAssociationAnalysisRule",
+          "documentation":"<p>The analysis rule for the conﬁgured table association. In the console, the <code>ConfiguredTableAssociationAnalysisRule</code> is referred to as the <i>collaboration analysis rule</i>.</p>"
         }
       }
     },
@@ -5556,13 +5944,13 @@
         },
         "nextToken":{
           "shape":"PaginationToken",
-          "documentation":"<p>The pagination token that's used to fetch the next set of results.</p>",
+          "documentation":"<p>The token value retrieved from a previous call to access the next page of results.</p>",
           "location":"querystring",
           "locationName":"nextToken"
         },
         "maxResults":{
           "shape":"MaxResults",
-          "documentation":"<p>The maximum number of results that are returned for an API request call. The service chooses a default number if you don't set one. The service might return a `nextToken` even if the `maxResults` value has not been met.</p>",
+          "documentation":"<p>The maximum size of the results that is returned per call.</p>",
           "location":"querystring",
           "locationName":"maxResults"
         }
@@ -5574,7 +5962,7 @@
       "members":{
         "nextToken":{
           "shape":"PaginationToken",
-          "documentation":"<p>The pagination token that's used to fetch the next set of results.</p>"
+          "documentation":"<p>The token value retrieved from a previous call to access the next page of results.</p>"
         },
         "analysisTemplateSummaries":{
           "shape":"AnalysisTemplateSummaryList",
@@ -5594,13 +5982,13 @@
         },
         "nextToken":{
           "shape":"PaginationToken",
-          "documentation":"<p>The pagination token that's used to fetch the next set of results.</p>",
+          "documentation":"<p>The token value retrieved from a previous call to access the next page of results.</p>",
           "location":"querystring",
           "locationName":"nextToken"
         },
         "maxResults":{
           "shape":"MaxResults",
-          "documentation":"<p>The maximum number of results that are returned for an API request call. The service chooses a default number if you don't set one. The service might return a `nextToken` even if the `maxResults` value has not been met.</p>",
+          "documentation":"<p>The maximum size of the results that is returned per call.</p>",
           "location":"querystring",
           "locationName":"maxResults"
         }
@@ -5612,7 +6000,7 @@
       "members":{
         "nextToken":{
           "shape":"PaginationToken",
-          "documentation":"<p>The pagination token that's used to fetch the next set of results.</p>"
+          "documentation":"<p>The token value retrieved from a previous call to access the next page of results.</p>"
         },
         "collaborationAnalysisTemplateSummaries":{
           "shape":"CollaborationAnalysisTemplateSummaryList",
@@ -5632,13 +6020,13 @@
         },
         "nextToken":{
           "shape":"PaginationToken",
-          "documentation":"<p>The pagination token that's used to fetch the next set of results.</p>",
+          "documentation":"<p>The token value retrieved from a previous call to access the next page of results.</p>",
           "location":"querystring",
           "locationName":"nextToken"
         },
         "maxResults":{
           "shape":"MaxResults",
-          "documentation":"<p>The maximum number of results that are returned for an API request call. The service chooses a default number if you don't set one. The service might return a `nextToken` even if the `maxResults` value has not been met.</p>",
+          "documentation":"<p>The maximum size of the results that is returned per call.</p>",
           "location":"querystring",
           "locationName":"maxResults"
         }
@@ -5654,7 +6042,7 @@
         },
         "nextToken":{
           "shape":"PaginationToken",
-          "documentation":"<p>The pagination token that's used to fetch the next set of results.</p>"
+          "documentation":"<p>The token value retrieved from a previous call to access the next page of results.</p>"
         }
       }
     },
@@ -5708,13 +6096,13 @@
         },
         "nextToken":{
           "shape":"PaginationToken",
-          "documentation":"<p>The pagination token that's used to fetch the next set of results.</p>",
+          "documentation":"<p>The token value retrieved from a previous call to access the next page of results.</p>",
           "location":"querystring",
           "locationName":"nextToken"
         },
         "maxResults":{
           "shape":"MaxResults",
-          "documentation":"<p>The maximum number of results that are returned for an API request call. The service chooses a default number if you don't set one. The service might return a `nextToken` even if the `maxResults` value has not been met.</p>",
+          "documentation":"<p>The maximum size of the results that is returned per call. Service chooses a default if it has not been set. Service may return a nextToken even if the maximum results has not been met.</p>",
           "location":"querystring",
           "locationName":"maxResults"
         }
@@ -5726,7 +6114,7 @@
       "members":{
         "nextToken":{
           "shape":"PaginationToken",
-          "documentation":"<p>The pagination token that's used to fetch the next set of results.</p>"
+          "documentation":"<p>The token value retrieved from a previous call to access the next page of results.</p>"
         },
         "collaborationPrivacyBudgetTemplateSummaries":{
           "shape":"CollaborationPrivacyBudgetTemplateSummaryList",
@@ -5755,13 +6143,13 @@
         },
         "maxResults":{
           "shape":"MaxResults",
-          "documentation":"<p>The maximum number of results that are returned for an API request call. The service chooses a default number if you don't set one. The service might return a `nextToken` even if the `maxResults` value has not been met.</p>",
+          "documentation":"<p>The maximum size of the results that is returned per call. Service chooses a default if it has not been set. Service may return a nextToken even if the maximum results has not been met.</p>",
           "location":"querystring",
           "locationName":"maxResults"
         },
         "nextToken":{
           "shape":"PaginationToken",
-          "documentation":"<p>The pagination token that's used to fetch the next set of results.</p>",
+          "documentation":"<p>The token value retrieved from a previous call to access the next page of results.</p>",
           "location":"querystring",
           "locationName":"nextToken"
         }
@@ -5777,7 +6165,7 @@
         },
         "nextToken":{
           "shape":"PaginationToken",
-          "documentation":"<p>The pagination token that's used to fetch the next set of results.</p>"
+          "documentation":"<p>The token value retrieved from a previous call to access the next page of results.</p>"
         }
       }
     },
@@ -5786,13 +6174,13 @@
       "members":{
         "nextToken":{
           "shape":"PaginationToken",
-          "documentation":"<p>The pagination token that's used to fetch the next set of results.</p>",
+          "documentation":"<p>The token value retrieved from a previous call to access the next page of results.</p>",
           "location":"querystring",
           "locationName":"nextToken"
         },
         "maxResults":{
           "shape":"MaxResults",
-          "documentation":"<p>The maximum number of results that are returned for an API request call. The service chooses a default number if you don't set one. The service might return a `nextToken` even if the `maxResults` value has not been met.</p>",
+          "documentation":"<p>The maximum size of the results that is returned per call. Service chooses a default if it has not been set. Service may return a nextToken even if the maximum results has not been met.</p>",
           "location":"querystring",
           "locationName":"maxResults"
         },
@@ -5810,7 +6198,7 @@
       "members":{
         "nextToken":{
           "shape":"PaginationToken",
-          "documentation":"<p>The pagination token that's used to fetch the next set of results.</p>"
+          "documentation":"<p>The token value retrieved from a previous call to access the next page of results.</p>"
         },
         "collaborationList":{
           "shape":"CollaborationSummaryList",
@@ -5830,13 +6218,13 @@
         },
         "nextToken":{
           "shape":"PaginationToken",
-          "documentation":"<p>The pagination token that's used to fetch the next set of results.</p>",
+          "documentation":"<p>The token value retrieved from a previous call to access the next page of results.</p>",
           "location":"querystring",
           "locationName":"nextToken"
         },
         "maxResults":{
           "shape":"MaxResults",
-          "documentation":"<p>The maximum number of results that are returned for an API request call. The service chooses a default number if you don't set one. The service might return a `nextToken` even if the `maxResults` value has not been met.</p>",
+          "documentation":"<p>The maximum size of the results that is returned per call. Service chooses a default if it has not been set. Service may return a nextToken even if the maximum results has not been met.</p>",
           "location":"querystring",
           "locationName":"maxResults"
         }
@@ -5868,13 +6256,13 @@
         },
         "nextToken":{
           "shape":"PaginationToken",
-          "documentation":"<p>The pagination token that's used to fetch the next set of results.</p>",
+          "documentation":"<p>The token value retrieved from a previous call to access the next page of results.</p>",
           "location":"querystring",
           "locationName":"nextToken"
         },
         "maxResults":{
           "shape":"MaxResults",
-          "documentation":"<p>The maximum number of results that are returned for an API request call. The service chooses a default number if you don't set one. The service might return a `nextToken` even if the `maxResults` value has not been met.</p>",
+          "documentation":"<p>The maximum size of the results that is returned per call.</p>",
           "location":"querystring",
           "locationName":"maxResults"
         }
@@ -5890,7 +6278,7 @@
         },
         "nextToken":{
           "shape":"PaginationToken",
-          "documentation":"<p>The pagination token that's used to fetch the next set of results.</p>"
+          "documentation":"<p>The token value retrieved from a previous call to access the next page of results.</p>"
         }
       }
     },
@@ -5899,13 +6287,13 @@
       "members":{
         "nextToken":{
           "shape":"PaginationToken",
-          "documentation":"<p>The pagination token that's used to fetch the next set of results.</p>",
+          "documentation":"<p>The token value retrieved from a previous call to access the next page of results.</p>",
           "location":"querystring",
           "locationName":"nextToken"
         },
         "maxResults":{
           "shape":"MaxResults",
-          "documentation":"<p>The maximum number of results that are returned for an API request call. The service chooses a default number if you don't set one. The service might return a `nextToken` even if the `maxResults` value has not been met.</p>",
+          "documentation":"<p>The maximum size of the results that is returned per call.</p>",
           "location":"querystring",
           "locationName":"maxResults"
         }
@@ -5921,7 +6309,7 @@
         },
         "nextToken":{
           "shape":"PaginationToken",
-          "documentation":"<p>The pagination token that's used to fetch the next set of results.</p>"
+          "documentation":"<p>The token value retrieved from a previous call to access the next page of results.</p>"
         }
       }
     },
@@ -6013,13 +6401,13 @@
         },
         "nextToken":{
           "shape":"PaginationToken",
-          "documentation":"<p>The pagination token that's used to fetch the next set of results.</p>",
+          "documentation":"<p>The token value retrieved from a previous call to access the next page of results.</p>",
           "location":"querystring",
           "locationName":"nextToken"
         },
         "maxResults":{
           "shape":"MaxResults",
-          "documentation":"<p>The maximum number of results that are returned for an API request call. The service chooses a default number if you don't set one. The service might return a `nextToken` even if the `maxResults` value has not been met.</p>",
+          "documentation":"<p>The maximum size of the results that is returned per call.</p>",
           "location":"querystring",
           "locationName":"maxResults"
         }
@@ -6031,7 +6419,7 @@
       "members":{
         "nextToken":{
           "shape":"PaginationToken",
-          "documentation":"<p>The pagination token that's used to fetch the next set of results.</p>"
+          "documentation":"<p>The token value retrieved from a previous call to access the next page of results.</p>"
         },
         "memberSummaries":{
           "shape":"MemberSummaryList",
@@ -6044,13 +6432,13 @@
       "members":{
         "nextToken":{
           "shape":"PaginationToken",
-          "documentation":"<p>The pagination token that's used to fetch the next set of results.</p>",
+          "documentation":"<p>The token value retrieved from a previous call to access the next page of results.</p>",
           "location":"querystring",
           "locationName":"nextToken"
         },
         "maxResults":{
           "shape":"MaxResults",
-          "documentation":"<p>The maximum number of results that are returned for an API request call. The service chooses a default number if you don't set one. The service might return a `nextToken` even if the `maxResults` value has not been met.</p>",
+          "documentation":"<p>The maximum size of the results that is returned per call.</p>",
           "location":"querystring",
           "locationName":"maxResults"
         },
@@ -6068,7 +6456,7 @@
       "members":{
         "nextToken":{
           "shape":"PaginationToken",
-          "documentation":"<p>The pagination token that's used to fetch the next set of results.</p>"
+          "documentation":"<p>The token value retrieved from a previous call to access the next page of results.</p>"
         },
         "membershipSummaries":{
           "shape":"MembershipSummaryList",
@@ -6088,13 +6476,13 @@
         },
         "nextToken":{
           "shape":"PaginationToken",
-          "documentation":"<p>The pagination token that's used to fetch the next set of results.</p>",
+          "documentation":"<p>The token value retrieved from a previous call to access the next page of results.</p>",
           "location":"querystring",
           "locationName":"nextToken"
         },
         "maxResults":{
           "shape":"MaxResults",
-          "documentation":"<p>The maximum number of results that are returned for an API request call. The service chooses a default number if you don't set one. The service might return a `nextToken` even if the `maxResults` value has not been met.</p>",
+          "documentation":"<p>The maximum size of the results that is returned per call. Service chooses a default if it has not been set. Service may return a nextToken even if the maximum results has not been met.</p>",
           "location":"querystring",
           "locationName":"maxResults"
         }
@@ -6106,7 +6494,7 @@
       "members":{
         "nextToken":{
           "shape":"PaginationToken",
-          "documentation":"<p>The pagination token that's used to fetch the next set of results.</p>"
+          "documentation":"<p>The token value retrieved from a previous call to access the next page of results.</p>"
         },
         "privacyBudgetTemplateSummaries":{
           "shape":"PrivacyBudgetTemplateSummaryList",
@@ -6135,13 +6523,13 @@
         },
         "nextToken":{
           "shape":"PaginationToken",
-          "documentation":"<p>The pagination token that's used to fetch the next set of results.</p>",
+          "documentation":"<p>The token value retrieved from a previous call to access the next page of results.</p>",
           "location":"querystring",
           "locationName":"nextToken"
         },
         "maxResults":{
           "shape":"MaxResults",
-          "documentation":"<p>The maximum number of results that are returned for an API request call. The service chooses a default number if you don't set one. The service might return a `nextToken` even if the `maxResults` value has not been met.</p>",
+          "documentation":"<p>The maximum size of the results that is returned per call. Service chooses a default if it has not been set. Service may return a nextToken even if the maximum results has not been met.</p>",
           "location":"querystring",
           "locationName":"maxResults"
         }
@@ -6157,7 +6545,7 @@
         },
         "nextToken":{
           "shape":"PaginationToken",
-          "documentation":"<p>The pagination token that's used to fetch the next set of results.</p>"
+          "documentation":"<p>The token value retrieved from a previous call to access the next page of results.</p>"
         }
       }
     },
@@ -6179,13 +6567,13 @@
         },
         "nextToken":{
           "shape":"PaginationToken",
-          "documentation":"<p>The pagination token that's used to fetch the next set of results.</p>",
+          "documentation":"<p>The token value retrieved from a previous call to access the next page of results.</p>",
           "location":"querystring",
           "locationName":"nextToken"
         },
         "maxResults":{
           "shape":"MaxResults",
-          "documentation":"<p>The maximum number of results that are returned for an API request call. The service chooses a default number if you don't set one. The service might return a `nextToken` even if the `maxResults` value has not been met. </p>",
+          "documentation":"<p>The maximum size of the results that is returned per call. Service chooses a default if it has not been set. Service can return a nextToken even if the maximum results has not been met. </p>",
           "location":"querystring",
           "locationName":"maxResults"
         }
@@ -6197,7 +6585,7 @@
       "members":{
         "nextToken":{
           "shape":"PaginationToken",
-          "documentation":"<p>The pagination token that's used to fetch the next set of results.</p>"
+          "documentation":"<p>The token value retrieved from a previous call to access the next page of results.</p>"
         },
         "protectedQueries":{
           "shape":"ProtectedQuerySummaryList",
@@ -6217,19 +6605,19 @@
         },
         "schemaType":{
           "shape":"SchemaType",
-          "documentation":"<p>If present, filter schemas by schema type.</p>",
+          "documentation":"<p>If present, filter schemas by schema type. The only valid schema type is currently `TABLE`.</p>",
           "location":"querystring",
           "locationName":"schemaType"
         },
         "nextToken":{
           "shape":"PaginationToken",
-          "documentation":"<p>The pagination token that's used to fetch the next set of results.</p>",
+          "documentation":"<p>The token value retrieved from a previous call to access the next page of results.</p>",
           "location":"querystring",
           "locationName":"nextToken"
         },
         "maxResults":{
           "shape":"MaxResults",
-          "documentation":"<p>The maximum number of results that are returned for an API request call. The service chooses a default number if you don't set one. The service might return a `nextToken` even if the `maxResults` value has not been met.</p>",
+          "documentation":"<p>The maximum size of the results that is returned per call.</p>",
           "location":"querystring",
           "locationName":"maxResults"
         }
@@ -6245,7 +6633,7 @@
         },
         "nextToken":{
           "shape":"PaginationToken",
-          "documentation":"<p>The pagination token that's used to fetch the next set of results.</p>"
+          "documentation":"<p>The token value retrieved from a previous call to access the next page of results.</p>"
         }
       }
     },
@@ -7079,6 +7467,17 @@
       "min":36,
       "pattern":"[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}"
     },
+    "ProtectedQueryMemberOutputConfiguration":{
+      "type":"structure",
+      "required":["accountId"],
+      "members":{
+        "accountId":{
+          "shape":"AccountId",
+          "documentation":"<p>The unique identifier for the account.</p>"
+        }
+      },
+      "documentation":"<p> Contains configuration details for the protected query member output.</p>"
+    },
     "ProtectedQueryMemberOutputList":{
       "type":"list",
       "member":{"shape":"ProtectedQuerySingleMemberOutput"}
@@ -7103,7 +7502,11 @@
       "members":{
         "s3":{
           "shape":"ProtectedQueryS3OutputConfiguration",
-          "documentation":"<p>Required configuration for a protected query with an `S3` output type.</p>"
+          "documentation":"<p>Required configuration for a protected query with an <code>s3</code> output type.</p>"
+        },
+        "member":{
+          "shape":"ProtectedQueryMemberOutputConfiguration",
+          "documentation":"<p> Required configuration for a protected query with a <code>member</code> output type.</p>"
         }
       },
       "documentation":"<p>Contains configuration details for protected query output.</p>",
@@ -7210,7 +7613,7 @@
       "members":{
         "totalDurationInMillis":{
           "shape":"Long",
-          "documentation":"<p>The duration of the Protected Query, from creation until query completion.</p>"
+          "documentation":"<p>The duration of the protected query, from creation until query completion.</p>"
         }
       },
       "documentation":"<p>Contains statistics about the execution of the protected query.</p>"
@@ -7234,7 +7637,8 @@
         "membershipId",
         "membershipArn",
         "createTime",
-        "status"
+        "status",
+        "receiverConfigurations"
       ],
       "members":{
         "id":{
@@ -7256,6 +7660,10 @@
         "status":{
           "shape":"ProtectedQueryStatus",
           "documentation":"<p>The status of the protected query. Value values are `SUBMITTED`, `STARTED`, `CANCELLED`, `CANCELLING`, `FAILED`, `SUCCESS`, `TIMED_OUT`.</p>"
+        },
+        "receiverConfigurations":{
+          "shape":"ReceiverConfigurationsList",
+          "documentation":"<p> The receiver configuration.</p>"
         }
       },
       "documentation":"<p>The protected query summary for the objects listed by the request.</p>"
@@ -7309,6 +7717,29 @@
     "QueryTables":{
       "type":"list",
       "member":{"shape":"TableAlias"}
+    },
+    "ReceiverAccountIds":{
+      "type":"list",
+      "member":{"shape":"AccountId"}
+    },
+    "ReceiverConfiguration":{
+      "type":"structure",
+      "required":["analysisType"],
+      "members":{
+        "analysisType":{
+          "shape":"AnalysisType",
+          "documentation":"<p> The type of analysis for the protected query. The results of the query can be analyzed directly (<code>DIRECT_ANALYSIS</code>) or used as input into additional analyses (<code>ADDITIONAL_ANALYSIS</code>), such as a query that is a seed for a lookalike ML model.</p>"
+        },
+        "configurationDetails":{
+          "shape":"ConfigurationDetails",
+          "documentation":"<p> The configuration details of the receiver configuration.</p>"
+        }
+      },
+      "documentation":"<p> The receiver configuration for a protected query.</p>"
+    },
+    "ReceiverConfigurationsList":{
+      "type":"list",
+      "member":{"shape":"ReceiverConfiguration"}
     },
     "ResourceAlias":{
       "type":"string",
@@ -7421,7 +7852,7 @@
       "members":{
         "columns":{
           "shape":"ColumnList",
-          "documentation":"<p>The columns for the relation that this schema represents.</p>"
+          "documentation":"<p>The columns for the relation this schema represents.</p>"
         },
         "partitionKeys":{
           "shape":"ColumnList",
@@ -7429,11 +7860,11 @@
         },
         "analysisRuleTypes":{
           "shape":"AnalysisRuleTypeList",
-          "documentation":"<p>The analysis rule types that are associated with the schema. Currently, only one entry is present.</p>"
+          "documentation":"<p>The analysis rule types associated with the schema. Currently, only one entry is present.</p>"
         },
         "analysisMethod":{
           "shape":"AnalysisMethod",
-          "documentation":"<p>The analysis method for the schema. The only valid value is currently <code>DIRECT_QUERY</code>.</p>"
+          "documentation":"<p>The analysis method for the schema. The only valid value is currently DIRECT_QUERY.</p>"
         },
         "creatorAccountId":{
           "shape":"AccountId",
@@ -7449,7 +7880,7 @@
         },
         "collaborationArn":{
           "shape":"CollaborationArn",
-          "documentation":"<p>The unique Amazon Resource Name (ARN) for the collaboration that the schema belongs to.</p>"
+          "documentation":"<p>The unique ARN for the collaboration that the schema belongs to.</p>"
         },
         "description":{
           "shape":"TableDescription",
@@ -7457,15 +7888,15 @@
         },
         "createTime":{
           "shape":"Timestamp",
-          "documentation":"<p>The time at which the schema was created.</p>"
+          "documentation":"<p>The time the schema was created.</p>"
         },
         "updateTime":{
           "shape":"Timestamp",
-          "documentation":"<p>The most recent time at which the schema was updated.</p>"
+          "documentation":"<p>The time the schema was last updated.</p>"
         },
         "type":{
           "shape":"SchemaType",
-          "documentation":"<p>The type of schema.</p>"
+          "documentation":"<p>The type of schema. The only valid value is currently `TABLE`.</p>"
         },
         "schemaStatusDetails":{
           "shape":"SchemaStatusDetailList",
@@ -7510,13 +7941,7 @@
     },
     "SchemaConfiguration":{
       "type":"string",
-      "enum":[
-        "DIFFERENTIAL_PRIVACY",
-        "CUSTOM_ANALYSIS_NOT_ALLOWED",
-        "NO_MEMBER_ACCOUNT_ALLOWED_TO_PROVIDE_ANALYSIS",
-        "DIFFERENTIAL_PRIVACY_BUDGET_NOT_CONFIGURED",
-        "ID_MAPPING_TABLE_NOT_POPULATED"
-      ]
+      "enum":["DIFFERENTIAL_PRIVACY"]
     },
     "SchemaConfigurationList":{
       "type":"list",
@@ -7537,11 +7962,14 @@
     },
     "SchemaStatusDetail":{
       "type":"structure",
-      "required":["status"],
+      "required":[
+        "status",
+        "analysisType"
+      ],
       "members":{
         "status":{
           "shape":"SchemaStatus",
-          "documentation":"<p>The status of the schema.</p>"
+          "documentation":"<p>The status of the schema, indicating if it is ready to query.</p>"
         },
         "reasons":{
           "shape":"SchemaStatusReasonList",
@@ -7554,6 +7982,10 @@
         "configurations":{
           "shape":"SchemaConfigurationList",
           "documentation":"<p>The configuration details of the schema analysis rule for the given type.</p>"
+        },
+        "analysisType":{
+          "shape":"AnalysisType",
+          "documentation":"<p>The type of analysis that can be performed on the schema.</p> <p>A schema can have an <code>analysisType</code> of <code>DIRECT_ANALYSIS</code>, <code>ADDITIONAL_ANALYSIS_FOR_AUDIENCE_GENERATION</code>, or both.</p>"
         }
       },
       "documentation":"<p>Information about the schema status.</p> <p>A status of <code>READY</code> means that based on the schema analysis rule, queries of the given analysis rule type are properly configured to run queries on this schema.</p>"
@@ -7587,7 +8019,13 @@
         "ANALYSIS_TEMPLATES_NOT_CONFIGURED",
         "ANALYSIS_PROVIDERS_NOT_CONFIGURED",
         "DIFFERENTIAL_PRIVACY_POLICY_NOT_CONFIGURED",
-        "ID_MAPPING_TABLE_NOT_POPULATED"
+        "ID_MAPPING_TABLE_NOT_POPULATED",
+        "COLLABORATION_ANALYSIS_RULE_NOT_CONFIGURED",
+        "ADDITIONAL_ANALYSES_NOT_CONFIGURED",
+        "RESULT_RECEIVERS_NOT_CONFIGURED",
+        "ADDITIONAL_ANALYSES_NOT_ALLOWED",
+        "RESULT_RECEIVERS_NOT_ALLOWED",
+        "ANALYSIS_RULE_TYPES_NOT_COMPATIBLE"
       ]
     },
     "SchemaStatusReasonList":{
@@ -7613,7 +8051,7 @@
         },
         "type":{
           "shape":"SchemaType",
-          "documentation":"<p>The type of schema object.</p>"
+          "documentation":"<p>The type of schema object. The only valid schema type is currently `TABLE`.</p>"
         },
         "creatorAccountId":{
           "shape":"AccountId",
@@ -7993,6 +8431,49 @@
         "analysisRule":{
           "shape":"ConfiguredTableAnalysisRule",
           "documentation":"<p>The entire updated analysis rule.</p>"
+        }
+      }
+    },
+    "UpdateConfiguredTableAssociationAnalysisRuleInput":{
+      "type":"structure",
+      "required":[
+        "membershipIdentifier",
+        "configuredTableAssociationIdentifier",
+        "analysisRuleType",
+        "analysisRulePolicy"
+      ],
+      "members":{
+        "membershipIdentifier":{
+          "shape":"MembershipIdentifier",
+          "documentation":"<p> A unique identifier for the membership that the configured table association belongs to. Currently accepts the membership ID.</p>",
+          "location":"uri",
+          "locationName":"membershipIdentifier"
+        },
+        "configuredTableAssociationIdentifier":{
+          "shape":"ConfiguredTableAssociationIdentifier",
+          "documentation":"<p> The identifier for the configured table association to update.</p>",
+          "location":"uri",
+          "locationName":"configuredTableAssociationIdentifier"
+        },
+        "analysisRuleType":{
+          "shape":"ConfiguredTableAssociationAnalysisRuleType",
+          "documentation":"<p> The analysis rule type that you want to update.</p>",
+          "location":"uri",
+          "locationName":"analysisRuleType"
+        },
+        "analysisRulePolicy":{
+          "shape":"ConfiguredTableAssociationAnalysisRulePolicy",
+          "documentation":"<p> The updated analysis rule policy for the conﬁgured table association.</p>"
+        }
+      }
+    },
+    "UpdateConfiguredTableAssociationAnalysisRuleOutput":{
+      "type":"structure",
+      "required":["analysisRule"],
+      "members":{
+        "analysisRule":{
+          "shape":"ConfiguredTableAssociationAnalysisRule",
+          "documentation":"<p> The updated analysis rule for the conﬁgured table association. In the console, the <code>ConfiguredTableAssociationAnalysisRule</code> is referred to as the <i>collaboration analysis rule</i>.</p>"
         }
       }
     },

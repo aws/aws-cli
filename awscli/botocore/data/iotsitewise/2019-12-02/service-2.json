@@ -5,11 +5,13 @@
     "endpointPrefix":"iotsitewise",
     "jsonVersion":"1.1",
     "protocol":"rest-json",
+    "protocols":["rest-json"],
     "serviceFullName":"AWS IoT SiteWise",
     "serviceId":"IoTSiteWise",
     "signatureVersion":"v4",
     "signingName":"iotsitewise",
-    "uid":"iotsitewise-2019-12-02"
+    "uid":"iotsitewise-2019-12-02",
+    "auth":["aws.auth#sigv4"]
   },
   "operations":{
     "AssociateAssets":{
@@ -438,6 +440,7 @@
       "errors":[
         {"shape":"InvalidRequestException"},
         {"shape":"ResourceNotFoundException"},
+        {"shape":"ConflictingOperationException"},
         {"shape":"InternalFailureException"},
         {"shape":"ThrottlingException"}
       ],
@@ -1398,7 +1401,7 @@
         {"shape":"ThrottlingException"},
         {"shape":"ConflictingOperationException"}
       ],
-      "documentation":"<p>Updates an asset model and all of the assets that were created from the model. Each asset created from the model inherits the updated asset model's property and hierarchy definitions. For more information, see <a href=\"https://docs.aws.amazon.com/iot-sitewise/latest/userguide/update-assets-and-models.html\">Updating assets and models</a> in the <i>IoT SiteWise User Guide</i>.</p> <important> <p>This operation overwrites the existing model with the provided model. To avoid deleting your asset model's properties or hierarchies, you must include their IDs and definitions in the updated asset model payload. For more information, see <a href=\"https://docs.aws.amazon.com/iot-sitewise/latest/APIReference/API_DescribeAssetModel.html\">DescribeAssetModel</a>.</p> <p>If you remove a property from an asset model, IoT SiteWise deletes all previous data for that property. If you remove a hierarchy definition from an asset model, IoT SiteWise disassociates every asset associated with that hierarchy. You can't change the type or data type of an existing property.</p> </important>",
+      "documentation":"<p>Updates an asset model and all of the assets that were created from the model. Each asset created from the model inherits the updated asset model's property and hierarchy definitions. For more information, see <a href=\"https://docs.aws.amazon.com/iot-sitewise/latest/userguide/update-assets-and-models.html\">Updating assets and models</a> in the <i>IoT SiteWise User Guide</i>.</p> <important> <p>If you remove a property from an asset model, IoT SiteWise deletes all previous data for that property. You can’t change the type or data type of an existing property.</p> <p>To replace an existing asset model property with a new one with the same <code>name</code>, do the following:</p> <ol> <li> <p>Submit an <code>UpdateAssetModel</code> request with the entire existing property removed.</p> </li> <li> <p>Submit a second <code>UpdateAssetModel</code> request that includes the new property. The new asset property will have the same <code>name</code> as the previous one and IoT SiteWise will generate a new unique <code>id</code>.</p> </li> </ol> </important>",
       "endpoint":{"hostPrefix":"api."}
     },
     "UpdateAssetModelCompositeModel":{
@@ -2017,7 +2020,7 @@
       "members":{
         "id":{
           "shape":"ID",
-          "documentation":"<p>The ID of the the composite model that this summary describes..</p>"
+          "documentation":"<p>The ID of the composite model that this summary describes..</p>"
         },
         "externalId":{
           "shape":"ExternalId",
@@ -2025,15 +2028,15 @@
         },
         "name":{
           "shape":"Name",
-          "documentation":"<p>The name of the the composite model that this summary describes..</p>"
+          "documentation":"<p>The name of the composite model that this summary describes..</p>"
         },
         "type":{
           "shape":"Name",
-          "documentation":"<p>The type of asset model.</p> <ul> <li> <p> <b>ASSET_MODEL</b> – (default) An asset model that you can use to create assets. Can't be included as a component in another asset model.</p> </li> <li> <p> <b>COMPONENT_MODEL</b> – A reusable component that you can include in the composite models of other asset models. You can't create assets directly from this type of asset model. </p> </li> </ul>"
+          "documentation":"<p>The composite model type. Valid values are <code>AWS/ALARM</code>, <code>CUSTOM</code>, or <code> AWS/L4E_ANOMALY</code>.</p>"
         },
         "description":{
           "shape":"Description",
-          "documentation":"<p>The description of the the composite model that this summary describes..</p>"
+          "documentation":"<p>The description of the composite model that this summary describes..</p>"
         },
         "path":{
           "shape":"AssetModelCompositeModelPath",
@@ -3469,7 +3472,7 @@
     },
     "CapabilityConfiguration":{
       "type":"string",
-      "max":104857600,
+      "max":10000000,
       "min":1
     },
     "CapabilityNamespace":{
@@ -3484,7 +3487,8 @@
         "IN_SYNC",
         "OUT_OF_SYNC",
         "SYNC_FAILED",
-        "UNKNOWN"
+        "UNKNOWN",
+        "NOT_APPLICABLE"
       ]
     },
     "ClientToken":{
@@ -3690,7 +3694,8 @@
     "CoreDeviceThingName":{
       "type":"string",
       "max":128,
-      "min":1
+      "min":1,
+      "pattern":"^[a-zA-Z0-9:_-]+$"
     },
     "CreateAccessPolicyRequest":{
       "type":"structure",
@@ -3772,7 +3777,7 @@
         },
         "assetModelCompositeModelName":{
           "shape":"Name",
-          "documentation":"<p>A unique, friendly name for the composite model.</p>"
+          "documentation":"<p>A unique name for the composite model.</p>"
         },
         "assetModelCompositeModelType":{
           "shape":"Name",
@@ -3785,11 +3790,11 @@
         },
         "composedAssetModelId":{
           "shape":"CustomID",
-          "documentation":"<p>The ID of a composite model on this asset.</p>"
+          "documentation":"<p>The ID of a component model which is reused to create this composite model.</p>"
         },
         "assetModelCompositeModelProperties":{
           "shape":"AssetModelPropertyDefinitions",
-          "documentation":"<p>The property definitions of the composite model. For more information, see &lt;LINK&gt;.</p> <p>You can specify up to 200 properties per composite model. For more information, see <a href=\"https://docs.aws.amazon.com/iot-sitewise/latest/userguide/quotas.html\">Quotas</a> in the <i>IoT SiteWise User Guide</i>.</p>"
+          "documentation":"<p>The property definitions of the composite model. For more information, see <a href=\"https://docs.aws.amazon.com/iot-sitewise/latest/userguide/custom-composite-models.html#inline-composite-models\"> Inline custom composite models</a> in the <i>IoT SiteWise User Guide</i>.</p> <p>You can specify up to 200 properties per composite model. For more information, see <a href=\"https://docs.aws.amazon.com/iot-sitewise/latest/userguide/quotas.html\">Quotas</a> in the <i>IoT SiteWise User Guide</i>.</p>"
         }
       }
     },
@@ -3818,7 +3823,7 @@
       "members":{
         "assetModelName":{
           "shape":"Name",
-          "documentation":"<p>A unique, friendly name for the asset model.</p>"
+          "documentation":"<p>A unique name for the asset model.</p>"
         },
         "assetModelDescription":{
           "shape":"Description",
@@ -3834,7 +3839,7 @@
         },
         "assetModelCompositeModels":{
           "shape":"AssetModelCompositeModelDefinitions",
-          "documentation":"<p>The composite models that are part of this asset model. It groups properties (such as attributes, measurements, transforms, and metrics) and child composite models that model parts of your industrial equipment. Each composite model has a type that defines the properties that the composite model supports. Use composite models to define alarms on this asset model.</p> <note> <p>When creating custom composite models, you need to use <a href=\"https://docs.aws.amazon.com/iot-sitewise/latest/APIReference/API_CreateAssetModelCompositeModel.html\">CreateAssetModelCompositeModel</a>. For more information, see &lt;LINK&gt;.</p> </note>"
+          "documentation":"<p>The composite models that are part of this asset model. It groups properties (such as attributes, measurements, transforms, and metrics) and child composite models that model parts of your industrial equipment. Each composite model has a type that defines the properties that the composite model supports. Use composite models to define alarms on this asset model.</p> <note> <p>When creating custom composite models, you need to use <a href=\"https://docs.aws.amazon.com/iot-sitewise/latest/APIReference/API_CreateAssetModelCompositeModel.html\">CreateAssetModelCompositeModel</a>. For more information, see <a href=\"https://docs.aws.amazon.com/iot-sitewise/latest/userguide/create-custom-composite-models.html\">Creating custom composite models (Components)</a> in the <i>IoT SiteWise User Guide</i>.</p> </note>"
         },
         "clientToken":{
           "shape":"ClientToken",
@@ -4063,8 +4068,8 @@
       ],
       "members":{
         "gatewayName":{
-          "shape":"Name",
-          "documentation":"<p>A unique, friendly name for the gateway.</p>"
+          "shape":"GatewayName",
+          "documentation":"<p>A unique name for the gateway.</p>"
         },
         "gatewayPlatform":{
           "shape":"GatewayPlatform",
@@ -5276,7 +5281,7 @@
           "documentation":"<p>The ID of the gateway device.</p>"
         },
         "gatewayName":{
-          "shape":"Name",
+          "shape":"GatewayName",
           "documentation":"<p>The name of the gateway.</p>"
         },
         "gatewayArn":{
@@ -5938,6 +5943,12 @@
       },
       "documentation":"<p>Contains a summary of a gateway capability configuration.</p>"
     },
+    "GatewayName":{
+      "type":"string",
+      "max":256,
+      "min":1,
+      "pattern":"[^\\u0000-\\u001F\\u007F]+"
+    },
     "GatewayPlatform":{
       "type":"structure",
       "members":{
@@ -5948,6 +5959,10 @@
         "greengrassV2":{
           "shape":"GreengrassV2",
           "documentation":"<p>A gateway that runs on IoT Greengrass V2.</p>"
+        },
+        "siemensIE":{
+          "shape":"SiemensIE",
+          "documentation":"<p>A SiteWise Edge gateway that runs on a Siemens Industrial Edge Device.</p>"
         }
       },
       "documentation":"<p>Contains a gateway's platform information.</p>"
@@ -5970,8 +5985,8 @@
           "documentation":"<p>The ID of the gateway device.</p>"
         },
         "gatewayName":{
-          "shape":"Name",
-          "documentation":"<p>The name of the asset.</p>"
+          "shape":"GatewayName",
+          "documentation":"<p>The name of the gateway.</p>"
         },
         "gatewayPlatform":{"shape":"GatewayPlatform"},
         "gatewayCapabilitySummaries":{
@@ -6303,7 +6318,7 @@
       "members":{
         "groupArn":{
           "shape":"ARN",
-          "documentation":"<p>The <a href=\"https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html\">ARN</a> of the Greengrass group. For more information about how to find a group's ARN, see <a href=\"https://docs.aws.amazon.com/greengrass/latest/apireference/listgroups-get.html\">ListGroups</a> and <a href=\"https://docs.aws.amazon.com/greengrass/latest/apireference/getgroup-get.html\">GetGroup</a> in the <i>IoT Greengrass API Reference</i>.</p>"
+          "documentation":"<p>The <a href=\"https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html\">ARN</a> of the Greengrass group. For more information about how to find a group's ARN, see <a href=\"https://docs.aws.amazon.com/greengrass/v1/apireference/listgroups-get.html\">ListGroups</a> and <a href=\"https://docs.aws.amazon.com/greengrass/v1/apireference/getgroup-get.html\">GetGroup</a> in the <i>IoT Greengrass V1 API Reference</i>.</p>"
         }
       },
       "documentation":"<p>Contains details for a gateway that runs on IoT Greengrass. To create a gateway that runs on IoT Greengrass, you must add the IoT SiteWise connector to a Greengrass group and deploy it. Your Greengrass group must also have permissions to upload data to IoT SiteWise. For more information, see <a href=\"https://docs.aws.amazon.com/iot-sitewise/latest/userguide/gateway-connector.html\">Ingesting data using a gateway</a> in the <i>IoT SiteWise User Guide</i>.</p>"
@@ -6512,6 +6527,12 @@
       "documentation":"<p>The request isn't valid. This can occur if your request contains malformed JSON or unsupported characters. Check your request and try again.</p>",
       "error":{"httpStatusCode":400},
       "exception":true
+    },
+    "IotCoreThingName":{
+      "type":"string",
+      "max":128,
+      "min":1,
+      "pattern":"^[a-zA-Z0-9:_-]+$"
     },
     "JobConfiguration":{
       "type":"structure",
@@ -8075,6 +8096,17 @@
       "exception":true,
       "fault":true
     },
+    "SiemensIE":{
+      "type":"structure",
+      "required":["iotCoreThingName"],
+      "members":{
+        "iotCoreThingName":{
+          "shape":"IotCoreThingName",
+          "documentation":"<p>The name of the IoT Thing for your SiteWise Edge gateway.</p>"
+        }
+      },
+      "documentation":"<p>Contains details for a SiteWise Edge gateway that runs on a Siemens Industrial Edge Device.</p>"
+    },
     "StorageType":{
       "type":"string",
       "enum":[
@@ -8424,7 +8456,7 @@
         },
         "assetModelCompositeModelName":{
           "shape":"Name",
-          "documentation":"<p>A unique, friendly name for the composite model.</p>"
+          "documentation":"<p>A unique name for the composite model.</p>"
         },
         "clientToken":{
           "shape":"ClientToken",
@@ -8433,7 +8465,7 @@
         },
         "assetModelCompositeModelProperties":{
           "shape":"AssetModelProperties",
-          "documentation":"<p>The property definitions of the composite model. For more information, see &lt;LINK&gt;.</p> <p>You can specify up to 200 properties per composite model. For more information, see <a href=\"https://docs.aws.amazon.com/iot-sitewise/latest/userguide/quotas.html\">Quotas</a> in the <i>IoT SiteWise User Guide</i>.</p>"
+          "documentation":"<p>The property definitions of the composite model. For more information, see <a href=\"https://docs.aws.amazon.com/iot-sitewise/latest/userguide/custom-composite-models.html#inline-composite-models\"> Inline custom composite models</a> in the <i>IoT SiteWise User Guide</i>.</p> <p>You can specify up to 200 properties per composite model. For more information, see <a href=\"https://docs.aws.amazon.com/iot-sitewise/latest/userguide/quotas.html\">Quotas</a> in the <i>IoT SiteWise User Guide</i>.</p>"
         }
       }
     },
@@ -8466,7 +8498,7 @@
         },
         "assetModelName":{
           "shape":"Name",
-          "documentation":"<p>A unique, friendly name for the asset model.</p>"
+          "documentation":"<p>A unique name for the asset model.</p>"
         },
         "assetModelDescription":{
           "shape":"Description",
@@ -8482,7 +8514,7 @@
         },
         "assetModelCompositeModels":{
           "shape":"AssetModelCompositeModels",
-          "documentation":"<p>The composite models that are part of this asset model. It groups properties (such as attributes, measurements, transforms, and metrics) and child composite models that model parts of your industrial equipment. Each composite model has a type that defines the properties that the composite model supports. Use composite models to define alarms on this asset model.</p> <note> <p>When creating custom composite models, you need to use <a href=\"https://docs.aws.amazon.com/iot-sitewise/latest/APIReference/API_CreateAssetModelCompositeModel.html\">CreateAssetModelCompositeModel</a>. For more information, see &lt;LINK&gt;.</p> </note>"
+          "documentation":"<p>The composite models that are part of this asset model. It groups properties (such as attributes, measurements, transforms, and metrics) and child composite models that model parts of your industrial equipment. Each composite model has a type that defines the properties that the composite model supports. Use composite models to define alarms on this asset model.</p> <note> <p>When creating custom composite models, you need to use <a href=\"https://docs.aws.amazon.com/iot-sitewise/latest/APIReference/API_CreateAssetModelCompositeModel.html\">CreateAssetModelCompositeModel</a>. For more information, see <a href=\"https://docs.aws.amazon.com/iot-sitewise/latest/userguide/create-custom-composite-models.html\">Creating custom composite models (Components)</a> in the <i>IoT SiteWise User Guide</i>.</p> </note>"
         },
         "clientToken":{
           "shape":"ClientToken",
@@ -8678,8 +8710,8 @@
           "locationName":"gatewayId"
         },
         "gatewayName":{
-          "shape":"Name",
-          "documentation":"<p>A unique, friendly name for the gateway.</p>"
+          "shape":"GatewayName",
+          "documentation":"<p>A unique name for the gateway.</p>"
         }
       }
     },
@@ -8832,7 +8864,7 @@
         },
         "integerValue":{
           "shape":"PropertyValueIntegerValue",
-          "documentation":"<p>Asset property data of type integer (number that's greater than or equal to zero).</p>"
+          "documentation":"<p>Asset property data of type integer (whole number).</p>"
         },
         "doubleValue":{
           "shape":"PropertyValueDoubleValue",

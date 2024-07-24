@@ -2,6 +2,17 @@
 CHANGELOG
 =========
 
+2.17.17
+=======
+
+* api-change:``cleanrooms``: Three enhancements to the AWS Clean Rooms: Disallowed Output Columns, Flexible Result Receivers, SQL as a Seed
+* api-change:``dynamodb``: DynamoDB doc only update for July
+* api-change:``medical-imaging``: CopyImageSet API adds copying selected instances between image sets, and overriding inconsistent metadata with a force parameter. UpdateImageSetMetadata API enables reverting to prior versions; updates to Study, Series, and SOP Instance UIDs; and updates to private elements, with a force parameter.
+* api-change:``mediapackagev2``: This release adds support for Irdeto DRM encryption in DASH manifests.
+* api-change:``pinpoint-sms-voice-v2``: Update for rebrand to AWS End User Messaging SMS and Voice.
+* api-change:``iotsitewise``: Adds support for creating SiteWise Edge gateways that run on a Siemens Industrial Edge Device.
+
+
 2.17.16
 =======
 

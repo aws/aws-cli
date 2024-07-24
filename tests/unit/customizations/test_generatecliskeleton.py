@@ -10,13 +10,12 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
-from awscli.compat import six
-
 from botocore.model import DenormalizedStructureBuilder
 
 from awscli.testutils import mock, unittest
 from awscli.customizations.generatecliskeleton import \
     GenerateCliSkeletonArgument
+from awscli.compat import StringIO
 
 
 class TestGenerateCliSkeleton(unittest.TestCase):
@@ -80,7 +79,7 @@ class TestGenerateCliSkeleton(unittest.TestCase):
     def test_generate_json_skeleton(self):
         parsed_args = mock.Mock()
         parsed_args.generate_cli_skeleton = 'input'
-        with mock.patch('sys.stdout', six.StringIO()) as mock_stdout:
+        with mock.patch('sys.stdout', StringIO()) as mock_stdout:
             rc = self.argument.generate_json_skeleton(
                 service_operation=self.service_operation, call_parameters=None,
                 parsed_args=parsed_args, parsed_globals=None
@@ -93,7 +92,7 @@ class TestGenerateCliSkeleton(unittest.TestCase):
     def test_no_generate_json_skeleton(self):
         parsed_args = mock.Mock()
         parsed_args.generate_cli_skeleton = None
-        with mock.patch('sys.stdout', six.StringIO()) as mock_stdout:
+        with mock.patch('sys.stdout', StringIO()) as mock_stdout:
             rc = self.argument.generate_json_skeleton(
                 service_operation=self.service_operation, call_parameters=None,
                 parsed_args=parsed_args, parsed_globals=None
@@ -110,7 +109,7 @@ class TestGenerateCliSkeleton(unittest.TestCase):
         # Set the input shape to ``None``.
         self.argument = GenerateCliSkeletonArgument(
             self.session, mock.Mock(input_shape=None))
-        with mock.patch('sys.stdout', six.StringIO()) as mock_stdout:
+        with mock.patch('sys.stdout', StringIO()) as mock_stdout:
             rc = self.argument.generate_json_skeleton(
                 service_operation=self.service_operation, call_parameters=None,
                 parsed_args=parsed_args, parsed_globals=None
@@ -137,7 +136,7 @@ class TestGenerateCliSkeleton(unittest.TestCase):
         operation_model = mock.Mock(input_shape=shape)
         argument = GenerateCliSkeletonArgument(
             self.session, operation_model)
-        with mock.patch('sys.stdout', six.StringIO()) as mock_stdout:
+        with mock.patch('sys.stdout', StringIO()) as mock_stdout:
             rc = argument.generate_json_skeleton(
                 call_parameters=None, parsed_args=parsed_args,
                 parsed_globals=None

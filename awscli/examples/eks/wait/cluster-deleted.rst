@@ -1,11 +1,8 @@
-**To wait for an Amazon EKS cluster to become deleted**
+**To wait until Amazon EKS cluster is deleted**
 
-The following ``wait`` example command waits for an Amazon EKS cluster named ``my-eks-cluster`` to be deleted.
+The following ``wait cluster-deleted`` example command waits until ``ResourceNotFoundException`` is thrown when polling with ``describe-cluster`` for Amazon EKS cluster named ``my-eks-cluster``. ::
 
-    aws eks wait \
-        cluster-deleted \
+    aws eks wait cluster-deleted \
         --name my-eks-cluster
 
-Output::
-  
-    <No Output>
+This command produces no output.

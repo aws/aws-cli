@@ -11,8 +11,8 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
-from awscli.compat import six
 from awscli.customizations.s3.utils import S3PathResolver
+from awscli.compat import BytesIO
 from tests.functional.s3 import BaseS3TransferCommandTest
 from tests import requires_crt
 
@@ -83,7 +83,7 @@ class TestMvCommand(BaseS3TransferCommandTest):
             # Response for HeadObject
             {"ContentLength": 100, "LastModified": "00:00:00Z"},
             # Response for GetObject
-            {'ETag': '"foo-1"', 'Body': six.BytesIO(b'foo')},
+            {'ETag': '"foo-1"', 'Body': BytesIO(b'foo')},
             # Response for DeleteObject
             {}
         ]

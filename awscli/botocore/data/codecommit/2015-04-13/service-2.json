@@ -5,12 +5,14 @@
     "endpointPrefix":"codecommit",
     "jsonVersion":"1.1",
     "protocol":"json",
+    "protocols":["json"],
     "serviceAbbreviation":"CodeCommit",
     "serviceFullName":"AWS CodeCommit",
     "serviceId":"CodeCommit",
     "signatureVersion":"v4",
     "targetPrefix":"CodeCommit_20150413",
-    "uid":"codecommit-2015-04-13"
+    "uid":"codecommit-2015-04-13",
+    "auth":["aws.auth#sigv4"]
   },
   "operations":{
     "AssociateApprovalRuleTemplateWithRepository":{
@@ -327,6 +329,7 @@
         {"shape":"InvalidRepositoryNameException"},
         {"shape":"InvalidRepositoryDescriptionException"},
         {"shape":"RepositoryLimitExceededException"},
+        {"shape":"OperationNotAllowedException"},
         {"shape":"EncryptionIntegrityChecksFailedException"},
         {"shape":"EncryptionKeyAccessDeniedException"},
         {"shape":"EncryptionKeyDisabledException"},
@@ -3409,7 +3412,7 @@
         },
         "kmsKeyId":{
           "shape":"KmsKeyId",
-          "documentation":"<p>The ID of the encryption key. You can view the ID of an encryption key in the KMS console, or use the KMS APIs to programmatically retrieve a key ID. For more information about acceptable values for kmsKeyID, see <a href=\"https://docs.aws.amazon.com/APIReference/API_Decrypt.html#KMS-Decrypt-request-KeyId\">KeyId</a> in the Decrypt API description in the <i>Key Management Service API Reference</i>.</p> <p>If no key is specified, the default <code>aws/codecommit</code> Amazon Web Services managed key is used.</p>"
+          "documentation":"<p>The ID of the encryption key. You can view the ID of an encryption key in the KMS console, or use the KMS APIs to programmatically retrieve a key ID. For more information about acceptable values for kmsKeyID, see <a href=\"https://docs.aws.amazon.com/kms/latest/APIReference/API_Decrypt.html#KMS-Decrypt-request-KeyId\">KeyId</a> in the Decrypt API description in the <i>Key Management Service API Reference</i>.</p> <p>If no key is specified, the default <code>aws/codecommit</code> Amazon Web Services managed key is used.</p>"
         }
       },
       "documentation":"<p>Represents the input of a create repository operation.</p>"
@@ -6249,6 +6252,13 @@
       },
       "documentation":"<p>Information about the type of an object in a merge operation.</p>"
     },
+    "OperationNotAllowedException":{
+      "type":"structure",
+      "members":{
+      },
+      "documentation":"<p>The requested action is not allowed.</p>",
+      "exception":true
+    },
     "OrderEnum":{
       "type":"string",
       "enum":[
@@ -7983,7 +7993,7 @@
         },
         "kmsKeyId":{
           "shape":"KmsKeyId",
-          "documentation":"<p>The ID of the encryption key. You can view the ID of an encryption key in the KMS console, or use the KMS APIs to programmatically retrieve a key ID. For more information about acceptable values for keyID, see <a href=\"https://docs.aws.amazon.com/APIReference/API_Decrypt.html#KMS-Decrypt-request-KeyId\">KeyId</a> in the Decrypt API description in the <i>Key Management Service API Reference</i>.</p>"
+          "documentation":"<p>The ID of the encryption key. You can view the ID of an encryption key in the KMS console, or use the KMS APIs to programmatically retrieve a key ID. For more information about acceptable values for keyID, see <a href=\"https://docs.aws.amazon.com/kms/latest/APIReference/API_Decrypt.html#KMS-Decrypt-request-KeyId\">KeyId</a> in the Decrypt API description in the <i>Key Management Service API Reference</i>.</p>"
         }
       }
     },

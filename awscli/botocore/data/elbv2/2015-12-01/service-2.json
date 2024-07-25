@@ -10,7 +10,8 @@
     "serviceId":"Elastic Load Balancing v2",
     "signatureVersion":"v4",
     "uid":"elasticloadbalancingv2-2015-12-01",
-    "xmlNamespace":"http://elasticloadbalancing.amazonaws.com/doc/2015-12-01/"
+    "xmlNamespace":"http://elasticloadbalancing.amazonaws.com/doc/2015-12-01/",
+    "auth":["aws.auth#sigv4"]
   },
   "operations":{
     "AddListenerCertificates":{
@@ -256,6 +257,24 @@
         {"shape":"OperationNotPermittedException"}
       ],
       "documentation":"<p>Deletes the specified rule.</p> <p>You can't delete the default rule.</p>"
+    },
+    "DeleteSharedTrustStoreAssociation":{
+      "name":"DeleteSharedTrustStoreAssociation",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DeleteSharedTrustStoreAssociationInput"},
+      "output":{
+        "shape":"DeleteSharedTrustStoreAssociationOutput",
+        "resultWrapper":"DeleteSharedTrustStoreAssociationResult"
+      },
+      "errors":[
+        {"shape":"TrustStoreNotFoundException"},
+        {"shape":"DeleteAssociationSameAccountException"},
+        {"shape":"TrustStoreAssociationNotFoundException"}
+      ],
+      "documentation":"<p>Deletes a shared trust store association.</p>"
     },
     "DeleteTargetGroup":{
       "name":"DeleteTargetGroup",
@@ -522,7 +541,7 @@
         {"shape":"TrustStoreNotFoundException"},
         {"shape":"RevocationIdNotFoundException"}
       ],
-      "documentation":"<p>Describes the revocation files in use by the specified trust store arn, or revocation ID.</p>"
+      "documentation":"<p>Describes the revocation files in use by the specified trust store or revocation files.</p>"
     },
     "DescribeTrustStores":{
       "name":"DescribeTrustStores",
@@ -538,7 +557,23 @@
       "errors":[
         {"shape":"TrustStoreNotFoundException"}
       ],
-      "documentation":"<p>Describes all trust stores for a given account by trust store arn’s or name.</p>"
+      "documentation":"<p>Describes all trust stores for the specified account.</p>"
+    },
+    "GetResourcePolicy":{
+      "name":"GetResourcePolicy",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"GetResourcePolicyInput"},
+      "output":{
+        "shape":"GetResourcePolicyOutput",
+        "resultWrapper":"GetResourcePolicyResult"
+      },
+      "errors":[
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p>Retrieves the resource policy for a specified resource.</p>"
     },
     "GetTrustStoreCaCertificatesBundle":{
       "name":"GetTrustStoreCaCertificatesBundle",
@@ -700,7 +735,7 @@
         {"shape":"InvalidCaCertificatesBundleException"},
         {"shape":"CaCertificatesBundleNotFoundException"}
       ],
-      "documentation":"<p>Update the ca certificate bundle for a given trust store.</p>"
+      "documentation":"<p>Update the ca certificate bundle for the specified trust store.</p>"
     },
     "RegisterTargets":{
       "name":"RegisterTargets",
@@ -1564,6 +1599,18 @@
     },
     "DNSName":{"type":"string"},
     "Default":{"type":"boolean"},
+    "DeleteAssociationSameAccountException":{
+      "type":"structure",
+      "members":{
+      },
+      "documentation":"<p>The specified association cannot be within the same account.</p>",
+      "error":{
+        "code":"DeleteAssociationSameAccount",
+        "httpStatusCode":400,
+        "senderFault":true
+      },
+      "exception":true
+    },
     "DeleteListenerInput":{
       "type":"structure",
       "required":["ListenerArn"],
@@ -1605,6 +1652,28 @@
       }
     },
     "DeleteRuleOutput":{
+      "type":"structure",
+      "members":{
+      }
+    },
+    "DeleteSharedTrustStoreAssociationInput":{
+      "type":"structure",
+      "required":[
+        "TrustStoreArn",
+        "ResourceArn"
+      ],
+      "members":{
+        "TrustStoreArn":{
+          "shape":"TrustStoreArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the trust store.</p>"
+        },
+        "ResourceArn":{
+          "shape":"ResourceArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the resource.</p>"
+        }
+      }
+    },
+    "DeleteSharedTrustStoreAssociationOutput":{
       "type":"structure",
       "members":{
       }
@@ -1963,7 +2032,7 @@
         },
         "Include":{
           "shape":"ListOfDescribeTargetHealthIncludeOptions",
-          "documentation":"<p>Used to inclue anomaly detection information.</p>"
+          "documentation":"<p>Used to include anomaly detection information.</p>"
         }
       }
     },
@@ -2224,6 +2293,25 @@
         }
       },
       "documentation":"<p>Information about a forward action.</p>"
+    },
+    "GetResourcePolicyInput":{
+      "type":"structure",
+      "required":["ResourceArn"],
+      "members":{
+        "ResourceArn":{
+          "shape":"ResourceArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the resource.</p>"
+        }
+      }
+    },
+    "GetResourcePolicyOutput":{
+      "type":"structure",
+      "members":{
+        "Policy":{
+          "shape":"Policy",
+          "documentation":"<p>The content of the resource policy.</p>"
+        }
+      }
     },
     "GetTrustStoreCaCertificatesBundleInput":{
       "type":"structure",
@@ -2979,6 +3067,10 @@
         "IgnoreClientCertificateExpiry":{
           "shape":"IgnoreClientCertificateExpiry",
           "documentation":"<p>Indicates whether expired client certificates are ignored.</p>"
+        },
+        "TrustStoreAssociationStatus":{
+          "shape":"TrustStoreAssociationStatusEnum",
+          "documentation":"<p>Indicates a shared trust stores association status.</p>"
         }
       },
       "documentation":"<p>Information about the mutual authentication attributes of a listener.</p>"
@@ -3018,6 +3110,10 @@
         }
       },
       "documentation":"<p>Information about a path pattern condition.</p>"
+    },
+    "Policy":{
+      "type":"string",
+      "min":1
     },
     "Port":{
       "type":"integer",
@@ -3241,6 +3337,18 @@
       },
       "exception":true
     },
+    "ResourceNotFoundException":{
+      "type":"structure",
+      "members":{
+      },
+      "documentation":"<p>The specified resource does not exist.</p>",
+      "error":{
+        "code":"ResourceNotFound",
+        "httpStatusCode":400,
+        "senderFault":true
+      },
+      "exception":true
+    },
     "RevocationContent":{
       "type":"structure",
       "members":{
@@ -3445,7 +3553,7 @@
         },
         "IpAddressType":{
           "shape":"IpAddressType",
-          "documentation":"<p>Note: Internal load balancers must use the <code>ipv4</code> IP address type.</p> <p>[Application Load Balancers] The IP address type. The possible values are <code>ipv4</code> (for only IPv4 addresses), <code>dualstack</code> (for IPv4 and IPv6 addresses), and <code>dualstack-without-public-ipv4</code> (for IPv6 only public addresses, with private IPv4 and IPv6 addresses).</p> <p>[Network Load Balancers] The IP address type. The possible values are <code>ipv4</code> (for only IPv4 addresses) and <code>dualstack</code> (for IPv4 and IPv6 addresses). You can’t specify <code>dualstack</code> for a load balancer with a UDP or TCP_UDP listener.</p> <p>[Gateway Load Balancers] The IP address type. The possible values are <code>ipv4</code> (for only IPv4 addresses) and <code>dualstack</code> (for IPv4 and IPv6 addresses).</p>"
+          "documentation":"<p>Note: Internal load balancers must use the <code>ipv4</code> IP address type.</p> <p>[Application Load Balancers] The IP address type. The possible values are <code>ipv4</code> (for only IPv4 addresses), <code>dualstack</code> (for IPv4 and IPv6 addresses), and <code>dualstack-without-public-ipv4</code> (for IPv6 only public addresses, with private IPv4 and IPv6 addresses).</p> <p>Note: Application Load Balancer authentication only supports IPv4 addresses when connecting to an Identity Provider (IdP) or Amazon Cognito endpoint. Without a public IPv4 address the load balancer cannot complete the authentication process, resulting in HTTP 500 errors.</p> <p>[Network Load Balancers] The IP address type. The possible values are <code>ipv4</code> (for only IPv4 addresses) and <code>dualstack</code> (for IPv4 and IPv6 addresses). You can’t specify <code>dualstack</code> for a load balancer with a UDP or TCP_UDP listener.</p> <p>[Gateway Load Balancers] The IP address type. The possible values are <code>ipv4</code> (for only IPv4 addresses) and <code>dualstack</code> (for IPv4 and IPv6 addresses).</p>"
         }
       }
     },
@@ -4166,7 +4274,26 @@
       },
       "documentation":"<p>Information about the resources a trust store is associated with.</p>"
     },
+    "TrustStoreAssociationNotFoundException":{
+      "type":"structure",
+      "members":{
+      },
+      "documentation":"<p>The specified association does not exist.</p>",
+      "error":{
+        "code":"AssociationNotFound",
+        "httpStatusCode":400,
+        "senderFault":true
+      },
+      "exception":true
+    },
     "TrustStoreAssociationResourceArn":{"type":"string"},
+    "TrustStoreAssociationStatusEnum":{
+      "type":"string",
+      "enum":[
+        "active",
+        "removed"
+      ]
+    },
     "TrustStoreAssociations":{
       "type":"list",
       "member":{"shape":"TrustStoreAssociation"}

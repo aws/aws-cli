@@ -2,9 +2,10 @@
   "version":"2.0",
   "metadata":{
     "apiVersion":"2023-09-30",
+    "auth":["aws.auth#sigv4"],
     "endpointPrefix":"bedrock-runtime",
-    "jsonVersion":"1.1",
     "protocol":"rest-json",
+    "protocols":["rest-json"],
     "serviceFullName":"Amazon Bedrock Runtime",
     "serviceId":"Bedrock Runtime",
     "signatureVersion":"v4",
@@ -46,11 +47,12 @@
         {"shape":"ThrottlingException"},
         {"shape":"ModelTimeoutException"},
         {"shape":"InternalServerException"},
+        {"shape":"ServiceUnavailableException"},
         {"shape":"ValidationException"},
         {"shape":"ModelNotReadyException"},
         {"shape":"ModelErrorException"}
       ],
-      "documentation":"<p>Sends messages to the specified Amazon Bedrock model. <code>Converse</code> provides a consistent interface that works with all models that support messages. This allows you to write code once and use it with different models. Should a model have unique inference parameters, you can also pass those unique parameters to the model.</p> <p>For information about the Converse API, see <i>Use the Converse API</i> in the <i>Amazon Bedrock User Guide</i>. To use a guardrail, see <i>Use a guardrail with the Converse API</i> in the <i>Amazon Bedrock User Guide</i>. To use a tool with a model, see <i>Tool use (Function calling)</i> in the <i>Amazon Bedrock User Guide</i> </p> <p>For example code, see <i>Converse API examples</i> in the <i>Amazon Bedrock User Guide</i>. </p> <p>This operation requires permission for the <code>bedrock:InvokeModel</code> action. </p>"
+      "documentation":"<p>Sends messages to the specified Amazon Bedrock model. <code>Converse</code> provides a consistent interface that works with all models that support messages. This allows you to write code once and use it with different models. If a model has unique inference parameters, you can also pass those unique parameters to the model.</p> <p>Amazon Bedrock doesn't store any text, images, or documents that you provide as content. The data is only used to generate the response.</p> <p>For information about the Converse API, see <i>Use the Converse API</i> in the <i>Amazon Bedrock User Guide</i>. To use a guardrail, see <i>Use a guardrail with the Converse API</i> in the <i>Amazon Bedrock User Guide</i>. To use a tool with a model, see <i>Tool use (Function calling)</i> in the <i>Amazon Bedrock User Guide</i> </p> <p>For example code, see <i>Converse API examples</i> in the <i>Amazon Bedrock User Guide</i>. </p> <p>This operation requires permission for the <code>bedrock:InvokeModel</code> action. </p>"
     },
     "ConverseStream":{
       "name":"ConverseStream",
@@ -67,11 +69,12 @@
         {"shape":"ThrottlingException"},
         {"shape":"ModelTimeoutException"},
         {"shape":"InternalServerException"},
+        {"shape":"ServiceUnavailableException"},
         {"shape":"ValidationException"},
         {"shape":"ModelNotReadyException"},
         {"shape":"ModelErrorException"}
       ],
-      "documentation":"<p>Sends messages to the specified Amazon Bedrock model and returns the response in a stream. <code>ConverseStream</code> provides a consistent API that works with all Amazon Bedrock models that support messages. This allows you to write code once and use it with different models. Should a model have unique inference parameters, you can also pass those unique parameters to the model. </p> <p>To find out if a model supports streaming, call <a href=\"https://docs.aws.amazon.com/bedrock/latest/APIReference/API_GetFoundationModel.html\">GetFoundationModel</a> and check the <code>responseStreamingSupported</code> field in the response.</p> <p>For information about the Converse API, see <i>Use the Converse API</i> in the <i>Amazon Bedrock User Guide</i>. To use a guardrail, see <i>Use a guardrail with the Converse API</i> in the <i>Amazon Bedrock User Guide</i>. To use a tool with a model, see <i>Tool use (Function calling)</i> in the <i>Amazon Bedrock User Guide</i> </p> <p>For example code, see <i>Conversation streaming example</i> in the <i>Amazon Bedrock User Guide</i>. </p> <p>This operation requires permission for the <code>bedrock:InvokeModelWithResponseStream</code> action.</p>"
+      "documentation":"<p>Sends messages to the specified Amazon Bedrock model and returns the response in a stream. <code>ConverseStream</code> provides a consistent API that works with all Amazon Bedrock models that support messages. This allows you to write code once and use it with different models. Should a model have unique inference parameters, you can also pass those unique parameters to the model. </p> <p>To find out if a model supports streaming, call <a href=\"https://docs.aws.amazon.com/bedrock/latest/APIReference/API_GetFoundationModel.html\">GetFoundationModel</a> and check the <code>responseStreamingSupported</code> field in the response.</p> <note> <p>The CLI doesn't support streaming operations in Amazon Bedrock, including <code>ConverseStream</code>.</p> </note> <p>Amazon Bedrock doesn't store any text, images, or documents that you provide as content. The data is only used to generate the response.</p> <p>For information about the Converse API, see <i>Use the Converse API</i> in the <i>Amazon Bedrock User Guide</i>. To use a guardrail, see <i>Use a guardrail with the Converse API</i> in the <i>Amazon Bedrock User Guide</i>. To use a tool with a model, see <i>Tool use (Function calling)</i> in the <i>Amazon Bedrock User Guide</i> </p> <p>For example code, see <i>Conversation streaming example</i> in the <i>Amazon Bedrock User Guide</i>. </p> <p>This operation requires permission for the <code>bedrock:InvokeModelWithResponseStream</code> action.</p>"
     },
     "InvokeModel":{
       "name":"InvokeModel",
@@ -88,6 +91,7 @@
         {"shape":"ThrottlingException"},
         {"shape":"ModelTimeoutException"},
         {"shape":"InternalServerException"},
+        {"shape":"ServiceUnavailableException"},
         {"shape":"ValidationException"},
         {"shape":"ModelNotReadyException"},
         {"shape":"ServiceQuotaExceededException"},
@@ -110,13 +114,14 @@
         {"shape":"ThrottlingException"},
         {"shape":"ModelTimeoutException"},
         {"shape":"InternalServerException"},
+        {"shape":"ServiceUnavailableException"},
         {"shape":"ModelStreamErrorException"},
         {"shape":"ValidationException"},
         {"shape":"ModelNotReadyException"},
         {"shape":"ServiceQuotaExceededException"},
         {"shape":"ModelErrorException"}
       ],
-      "documentation":"<p>Invoke the specified Amazon Bedrock model to run inference using the prompt and inference parameters provided in the request body. The response is returned in a stream.</p> <p>To see if a model supports streaming, call <a href=\"https://docs.aws.amazon.com/bedrock/latest/APIReference/API_GetFoundationModel.html\">GetFoundationModel</a> and check the <code>responseStreamingSupported</code> field in the response.</p> <note> <p>The CLI doesn't support <code>InvokeModelWithResponseStream</code>.</p> </note> <p>For example code, see <i>Invoke model with streaming code example</i> in the <i>Amazon Bedrock User Guide</i>. </p> <p>This operation requires permissions to perform the <code>bedrock:InvokeModelWithResponseStream</code> action. </p>"
+      "documentation":"<p>Invoke the specified Amazon Bedrock model to run inference using the prompt and inference parameters provided in the request body. The response is returned in a stream.</p> <p>To see if a model supports streaming, call <a href=\"https://docs.aws.amazon.com/bedrock/latest/APIReference/API_GetFoundationModel.html\">GetFoundationModel</a> and check the <code>responseStreamingSupported</code> field in the response.</p> <note> <p>The CLI doesn't support streaming operations in Amazon Bedrock, including <code>InvokeModelWithResponseStream</code>.</p> </note> <p>For example code, see <i>Invoke model with streaming code example</i> in the <i>Amazon Bedrock User Guide</i>. </p> <p>This operation requires permissions to perform the <code>bedrock:InvokeModelWithResponseStream</code> action. </p>"
     }
   },
   "shapes":{
@@ -519,6 +524,10 @@
         "throttlingException":{
           "shape":"ThrottlingException",
           "documentation":"<p>The number of requests exceeds the limit. Resubmit your request later.</p>"
+        },
+        "serviceUnavailableException":{
+          "shape":"ServiceUnavailableException",
+          "documentation":"<p>The service isn't currently available. Try again later.</p>"
         }
       },
       "documentation":"<p>The messages output stream</p>",
@@ -1768,12 +1777,13 @@
         },
         "throttlingException":{
           "shape":"ThrottlingException",
-          "documentation":"<p>The number or frequency of requests exceeds the limit. Resubmit your request later.</p>"
+          "documentation":"<p>Your request was throttled because of service-wide limitations. Resubmit your request later or in a different region. You can also purchase <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/prov-throughput.html\">Provisioned Throughput</a> to increase the rate or number of tokens you can process.</p>"
         },
         "modelTimeoutException":{
           "shape":"ModelTimeoutException",
           "documentation":"<p>The request took too long to process. Processing time exceeded the model timeout length.</p>"
-        }
+        },
+        "serviceUnavailableException":{"shape":"ServiceUnavailableException"}
       },
       "documentation":"<p>Definition of content in the response stream.</p>",
       "eventstream":true
@@ -1783,12 +1793,22 @@
       "members":{
         "message":{"shape":"NonBlankString"}
       },
-      "documentation":"<p>The number of requests exceeds the service quota. Resubmit your request later.</p>",
+      "documentation":"<p>Your request exceeds the service quota for your account. You can view your quotas at <a href=\"https://docs.aws.amazon.com/servicequotas/latest/userguide/gs-request-quota.html\">Viewing service quotas</a>. You can resubmit your request later.</p>",
       "error":{
         "httpStatusCode":400,
         "senderFault":true
       },
       "exception":true
+    },
+    "ServiceUnavailableException":{
+      "type":"structure",
+      "members":{
+        "message":{"shape":"NonBlankString"}
+      },
+      "documentation":"<p>The service isn't currently available. Try again later.</p>",
+      "error":{"httpStatusCode":503},
+      "exception":true,
+      "fault":true
     },
     "SpecificToolChoice":{
       "type":"structure",
@@ -1843,7 +1863,7 @@
       "members":{
         "message":{"shape":"NonBlankString"}
       },
-      "documentation":"<p>The number of requests exceeds the limit. Resubmit your request later.</p>",
+      "documentation":"<p>Your request was throttled because of service-wide limitations. Resubmit your request later or in a different region. You can also purchase <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/prov-throughput.html\">Provisioned Throughput</a> to increase the rate or number of tokens you can process.</p>",
       "error":{
         "httpStatusCode":429,
         "senderFault":true

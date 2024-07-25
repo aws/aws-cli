@@ -1126,6 +1126,25 @@
       ],
       "documentation":"<p>Gets the blueprint configuration in Amazon DataZone.</p>"
     },
+    "GetEnvironmentCredentials":{
+      "name":"GetEnvironmentCredentials",
+      "http":{
+        "method":"GET",
+        "requestUri":"/v2/domains/{domainIdentifier}/environments/{environmentIdentifier}/credentials",
+        "responseCode":200
+      },
+      "input":{"shape":"GetEnvironmentCredentialsInput"},
+      "output":{"shape":"GetEnvironmentCredentialsOutput"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ValidationException"},
+        {"shape":"UnauthorizedException"}
+      ],
+      "documentation":"<p>Gets the credentials of an environment in Amazon DataZone.</p>"
+    },
     "GetEnvironmentProfile":{
       "name":"GetEnvironmentProfile",
       "http":{
@@ -8061,6 +8080,49 @@
           "documentation":"<p>The user parameters of this blueprint.</p>"
         }
       }
+    },
+    "GetEnvironmentCredentialsInput":{
+      "type":"structure",
+      "required":[
+        "domainIdentifier",
+        "environmentIdentifier"
+      ],
+      "members":{
+        "domainIdentifier":{
+          "shape":"DomainId",
+          "documentation":"<p>The ID of the Amazon DataZone domain in which this environment and its credentials exist.</p>",
+          "location":"uri",
+          "locationName":"domainIdentifier"
+        },
+        "environmentIdentifier":{
+          "shape":"EnvironmentId",
+          "documentation":"<p>The ID of the environment whose credentials this operation gets.</p>",
+          "location":"uri",
+          "locationName":"environmentIdentifier"
+        }
+      }
+    },
+    "GetEnvironmentCredentialsOutput":{
+      "type":"structure",
+      "members":{
+        "accessKeyId":{
+          "shape":"String",
+          "documentation":"<p>The access key ID of the environment.</p>"
+        },
+        "expiration":{
+          "shape":"SyntheticTimestamp_date_time",
+          "documentation":"<p>The expiration timestamp of the environment credentials.</p>"
+        },
+        "secretAccessKey":{
+          "shape":"String",
+          "documentation":"<p>The secret access key of the environment credentials.</p>"
+        },
+        "sessionToken":{
+          "shape":"String",
+          "documentation":"<p>The session token of the environment credentials.</p>"
+        }
+      },
+      "sensitive":true
     },
     "GetEnvironmentInput":{
       "type":"structure",

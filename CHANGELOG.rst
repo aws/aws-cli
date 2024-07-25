@@ -2,6 +2,23 @@
 CHANGELOG
 =========
 
+1.33.31
+=======
+
+* api-change:``application-autoscaling``: Application Auto Scaling is now more responsive to the changes in demand of your SageMaker Inference endpoints. To get started, create or update a Target Tracking policy based on High Resolution CloudWatch metrics.
+* api-change:``application-signals``: CloudWatch Application Signals now supports application logs correlation with traces and operational health metrics of applications running on EC2 instances. Users can view the most relevant telemetry to troubleshoot application health anomalies such as spikes in latency, errors, and availability.
+* api-change:``bedrock-runtime``: Provides ServiceUnavailableException error message
+* api-change:``codecommit``: CreateRepository API now throws OperationNotAllowedException when the account has been restricted from creating a repository.
+* api-change:``datazone``: Introduces GetEnvironmentCredentials operation to SDK
+* api-change:``ec2``: EC2 Fleet now supports using custom identifiers to reference Amazon Machine Images (AMI) in launch requests that are configured to choose from a diversified list of instance types.
+* api-change:``ecr``: API and documentation updates for Amazon ECR, adding support for creating, updating, describing and deleting ECR Repository Creation Template.
+* api-change:``eks``: This release adds support for EKS cluster to manage extended support.
+* api-change:``elbv2``: This release adds support for sharing trust stores across accounts and organizations through integration with AWS Resource Access Manager.
+* api-change:``network-firewall``: You can now log events that are related to TLS inspection, in addition to the existing alert and flow logging.
+* api-change:``outposts``: Adding default vCPU information to GetOutpostSupportedInstanceTypes and GetOutpostInstanceTypes responses
+* api-change:``stepfunctions``: This release adds support to customer managed KMS key encryption in AWS Step Functions.
+
+
 1.33.30
 =======
 

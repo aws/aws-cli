@@ -47,6 +47,20 @@ def shared_copy_bucket(s3_utils):
     s3_utils.delete_bucket(bucket_name)
 
 
+@pytest.fixture(scope='package')
+def shared_dir_bucket(s3_utils):
+    bucket_name = s3_utils.create_dir_bucket()
+    yield bucket_name
+    s3_utils.delete_bucket(bucket_name)
+
+
+@pytest.fixture(scope='package')
+def shared_copy_dir_bucket(s3_utils):
+    bucket_name = s3_utils.create_dir_bucket()
+    yield bucket_name
+    s3_utils.delete_bucket(bucket_name)
+
+
 # Bucket for cross-region, cross-S3 copies
 @pytest.fixture(scope='package')
 def shared_cross_region_bucket(s3_utils):
@@ -75,12 +89,15 @@ def shared_non_dns_compatible_us_east_1_bucket(s3_utils):
 def clean_shared_buckets(s3_utils, shared_bucket, shared_copy_bucket,
                          shared_cross_region_bucket,
                          shared_non_dns_compatible_bucket,
-                         shared_non_dns_compatible_us_east_1_bucket):
+                         shared_non_dns_compatible_us_east_1_bucket,
+                         shared_dir_bucket, shared_copy_dir_bucket,):
     s3_utils.remove_all_objects(shared_bucket)
     s3_utils.remove_all_objects(shared_copy_bucket)
     s3_utils.remove_all_objects(shared_cross_region_bucket)
     s3_utils.remove_all_objects(shared_non_dns_compatible_bucket)
     s3_utils.remove_all_objects(shared_non_dns_compatible_us_east_1_bucket)
+    s3_utils.remove_all_objects(shared_dir_bucket)
+    s3_utils.remove_all_objects(shared_copy_dir_bucket)
 
 
 @pytest.fixture

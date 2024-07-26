@@ -181,6 +181,45 @@ def create_bucket(session, name=None, region=None):
     return bucket_name
 
 
+def create_dir_bucket(session, name=None, location=None):
+    """
+    Creates a S3 directory bucket
+    :returns: the name of the bucket created
+    """
+    if not location:
+        location = ('us-west-2', 'usw2-az1')
+    region, az = location
+    client = session.create_client('s3', region_name=region)
+    if name:
+        bucket_name = name
+    else:
+        bucket_name = f"{random_bucket_name()}--{az}--x-s3"
+    params = {
+        'Bucket': bucket_name,
+        'CreateBucketConfiguration': {
+            'Location': {
+                'Type': 'AvailabilityZone',
+                'Name': az
+            },
+            'Bucket': {
+                'Type': 'Directory',
+                'DataRedundancy': 'SingleAvailabilityZone'
+            }
+        }
+    }
+    try:
+        client.create_bucket(**params)
+    except ClientError as e:
+        if e.response['Error'].get('Code') == 'BucketAlreadyOwnedByYou':
+            # This can happen in the retried request, when the first one
+            # succeeded on S3 but somehow the response never comes back.
+            # We still got a bucket ready for test anyway.
+            pass
+        else:
+            raise
+    return bucket_name
+
+
 def random_chars(num_chars):
     """Returns random hex characters.
 

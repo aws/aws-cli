@@ -27,6 +27,13 @@ def run(command):
 if __name__ == "__main__":
     with cd(REPO_ROOT):
         if sys.version_info[:2] >= (3, 12):
-            run("pip install setuptools==67.8.0")
+            # Python 3.12+ no longer includes setuptools by default.
+
+            # Setuptools 71+ now prefers already installed versions
+            # of packaging _and_ broke the API for packaging<22.0.
+            # We'll pin to match what's in requirements-dev.txt.
+            run(
+                "pip install setuptools==71.1.0 packaging==24.1"
+            )
 
         run("pip install -r requirements-dev-lock.txt")

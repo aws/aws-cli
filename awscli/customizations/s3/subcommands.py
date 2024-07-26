@@ -849,6 +849,11 @@ class MbCommand(S3Command):
             )
         bucket, _ = split_s3_bucket_key(parsed_args.path)
 
+        if is_s3express_bucket(bucket):
+            raise ParamValidationError(
+                "Cannot use mb command with a directory bucket."
+            )
+
         bucket_config = {'LocationConstraint': self.client.meta.region_name}
         params = {'Bucket': bucket}
         if self.client.meta.region_name != 'us-east-1':

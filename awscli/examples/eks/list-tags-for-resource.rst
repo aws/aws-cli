@@ -99,4 +99,3 @@ Output::
             "my-identity-provider": "test"
         }
     }
-

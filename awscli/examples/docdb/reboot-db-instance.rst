@@ -3,7 +3,7 @@
 The following ``reboot-db-instance`` example reboots the Amazon DocumentDB instance ``sample-cluster2``. ::
 
     aws docdb reboot-db-instance \
-        --db-instance-identifier sample-cluster2 
+        --db-instance-identifier sample-cluster2
 
 This command produces no output.
 Output::

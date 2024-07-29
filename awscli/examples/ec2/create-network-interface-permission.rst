@@ -12,10 +12,10 @@ Output::
     "InterfacePermission": {
         "PermissionState": {
             "State": "GRANTED"
-        }, 
-        "NetworkInterfacePermissionId": "eni-perm-06fd19020ede149ea", 
-        "NetworkInterfaceId": "eni-1a2b3c4d", 
-        "Permission": "INSTANCE-ATTACH", 
+        },
+        "NetworkInterfacePermissionId": "eni-perm-06fd19020ede149ea",
+        "NetworkInterfaceId": "eni-1a2b3c4d",
+        "Permission": "INSTANCE-ATTACH",
         "AwsAccountId": "123456789012"
     }
   }

@@ -4,7 +4,7 @@ The following ``describe-job`` example gets detailed status for the job whose ID
 
     aws iot describe-job \
         --job-id "example-job-01"
-        
+
 Output::
 
    {

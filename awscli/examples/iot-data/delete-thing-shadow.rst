@@ -11,4 +11,3 @@ The command produces no output on the display, but ``output.txt`` contains infor
     {"version":2,"timestamp":1560270384}
 
 For more information, see `Using Shadows <https://docs.aws.amazon.com/iot/latest/developerguide/using-device-shadows.html>`__ in the *AWS IoT Developers Guide*.
-

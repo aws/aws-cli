@@ -61,13 +61,13 @@ The following example registers an existing on-premises instance with a specifie
 The command logs into the instance using a custom SSH command string that specifies
 the SSH password and the instance's IP address. ::
 
-  aws opsworks register --infrastructure-class on-premises --stack-id 935450cc-61e0-4b03-a3e0-160ac817d2bb --override-ssh "sshpass -p 'mypassword' ssh your-user@192.0.2.3" 
+  aws opsworks register --infrastructure-class on-premises --stack-id 935450cc-61e0-4b03-a3e0-160ac817d2bb --override-ssh "sshpass -p 'mypassword' ssh your-user@192.0.2.3"
 
 The following example registers the on-premises instance that is running the ``register`` command.
 Log in to the instance with SSH and run ``register`` with the ``--local`` argument instead of an instance ID or hostname. ::
 
   aws opsworks register --infrastructure-class on-premises --stack-id 935450cc-61e0-4b03-a3e0-160ac817d2bb --local
-  
+
 *Output*: The following is typical output for registering an EC2 instance.
 
 ::
@@ -100,6 +100,3 @@ Log in to the instance with SSH and run ``register`` with the ``--local`` argume
 For more information, see `Registering an Instance with an AWS OpsWorks Stack`_ in the *AWS OpsWorks User Guide*.
 
 .. _`Registering an Instance with an AWS OpsWorks Stack`: http://docs.aws.amazon.com/opsworks/latest/userguide/registered-instances-register.html
-
-
-

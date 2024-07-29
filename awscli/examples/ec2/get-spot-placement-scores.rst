@@ -112,7 +112,7 @@ Output if ``SingleAvailabilityZone`` is set to ``false`` or omitted (if omitted,
         {
             "Region": "us-west-1",
             "Score": 5
-        },  
+        },
        ...
 
 Output if ``SingleAvailabilityZone`` is set to ``true``. A scored list of SingleAvailability Zones is returned. ::

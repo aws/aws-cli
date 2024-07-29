@@ -9,7 +9,7 @@ The following ``untag-resource`` example removes the specified tags from the res
 Contents of ``pressureInput.untag.json``::
 
     {
-        "resourceArn": "arn:aws:iotevents:us-west-2:123456789012:input/PressureInput", 
+        "resourceArn": "arn:aws:iotevents:us-west-2:123456789012:input/PressureInput",
         "tagKeys": [
                 "deviceType"
         ]
@@ -18,4 +18,3 @@ Contents of ``pressureInput.untag.json``::
 This command produces no output.
 
 For more information, see `UntagResource <https://docs.aws.amazon.com/iotevents/latest/developerguide/iotevents-commands.html#api-iotevents-UntagResource>`__ in the *AWS IoT Events Developer Guide**.
-

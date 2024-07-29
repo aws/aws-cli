@@ -9,8 +9,8 @@ Output::
   {
       "items": [
           {
-              "createdDate": 1438884790, 
-              "id": "12s44z21rb", 
+              "createdDate": 1438884790,
+              "id": "12s44z21rb",
               "name": "My First API"
           }
       ]

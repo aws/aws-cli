@@ -4,7 +4,7 @@ The following ``modify-instance-maintenance-options`` example disables simplifie
 
     aws ec2 modify-instance-maintenance-options \
         --instance-id i-0abcdef1234567890 \
-        --auto-recovery disabled 
+        --auto-recovery disabled
 
 Output::
 
@@ -21,7 +21,7 @@ The following ``modify-instance-maintenance-options`` example sets the automatic
 
     aws ec2 modify-instance-maintenance-options \
         --instance-id i-0abcdef1234567890 \
-        --auto-recovery default 
+        --auto-recovery default
 
 Output::
 

@@ -14,4 +14,3 @@ Output::
     }
 
 For more information, see `Tagging support for Application Auto Scaling <https://docs.aws.amazon.com/autoscaling/application/userguide/resource-tagging-support.html>`__ in the *Application Auto Scaling User Guide*.
-

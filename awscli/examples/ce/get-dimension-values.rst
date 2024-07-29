@@ -5,7 +5,7 @@ This example retrieves the tags for the dimension SERVICE, with a value of "Elas
 Command::
 
   aws ce get-dimension-values --search-string Elastic --time-period Start=2017-01-01,End=2017-05-18 --dimension SERVICE
- 
+
 Output::
 
  {
@@ -37,4 +37,4 @@ Output::
         }
     ],
     "ReturnSize": 6
- }	
+ }

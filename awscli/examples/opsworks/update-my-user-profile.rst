@@ -13,4 +13,3 @@ The user's AWS credentials are represented by the ``development`` profile in the
 For more information, see `Editing AWS OpsWorks User Settings`_ in the *AWS OpsWorks User Guide*.
 
 .. _`Editing AWS OpsWorks User Settings`: http://docs.aws.amazon.com/opsworks/latest/userguide/opsworks-security-users-manage-edit.html
-

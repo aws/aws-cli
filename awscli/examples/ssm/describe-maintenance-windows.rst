@@ -30,14 +30,14 @@ Output::
     }
 
 **Example 2: To list all enabled maintenance windows**
-  
+
 The following ``describe-maintenance-windows`` example lists all enabled maintenance windows. ::
 
     aws ssm describe-maintenance-windows \
         --filters "Key=Enabled,Values=true"
 
 **Example 3: To list maintenance windows matching a specific name**
-  
+
 This ``describe-maintenance-windows`` example lists all maintenance windows with the specified name. ::
 
     aws ssm describe-maintenance-windows \

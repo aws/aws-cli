@@ -3,7 +3,7 @@
 The following example shows you how to create an service control policy (SCP) named ``AllowAllS3Actions``. The policy contents are taken from a file on the local computer called ``policy.json``. ::
 
 	aws organizations create-policy --content file://policy.json --name AllowAllS3Actions, --type SERVICE_CONTROL_POLICY --description "Allows delegation of all S3 actions"
-	
+
 The output includes a policy object with details about the new policy: ::
 
 	{
@@ -17,7 +17,7 @@ The output includes a policy object with details about the new policy: ::
 			}
 		}
 	}
-	
+
 **Example 2: To create a policy with a JSON policy as a parameter**
 
 The following example shows you how to create the same SCP, this time by embedding the policy contents as a JSON string in the parameter. The string must be escaped with backslashes before the double quotes to ensure that they are treated as literals in the parameter, which itself is surrounded by double quotes: ::

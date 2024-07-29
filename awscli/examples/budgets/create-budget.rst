@@ -6,7 +6,7 @@ The following ``create-budget`` command creates a Cost and Usage budget. ::
         --account-id 111122223333 \
         --budget file://budget.json \
         --notifications-with-subscribers file://notifications-with-subscribers.json
-        
+
 Contents of ``budget.json``::
 
     {

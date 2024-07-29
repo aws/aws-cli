@@ -31,4 +31,3 @@ Output::
     }
 
 For more information, see `Creating services <https://docs.aws.amazon.com/cloud-map/latest/dg/creating-services.html>`__ in the *AWS Cloud Map Developer Guide*.
-

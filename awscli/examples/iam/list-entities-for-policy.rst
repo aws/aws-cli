@@ -3,7 +3,7 @@
 This example returns a list of IAM groups, roles, and users who have the policy ``arn:aws:iam::123456789012:policy/TestPolicy`` attached. ::
 
     aws iam list-entities-for-policy \
-        --policy-arn arn:aws:iam::123456789012:policy/TestPolicy 
+        --policy-arn arn:aws:iam::123456789012:policy/TestPolicy
 
 Output::
 

@@ -1,6 +1,6 @@
 **To respond to an authorization challenge**
 
-This example responds to an authorization challenge initiated with `initiate-auth`_. It is a response to the NEW_PASSWORD_REQUIRED challenge. 
+This example responds to an authorization challenge initiated with `initiate-auth`_. It is a response to the NEW_PASSWORD_REQUIRED challenge.
 It sets a password for user jane@example.com.
 
 Command::
@@ -23,5 +23,5 @@ Output::
         }
     }
   }
-  
+
 .. _`initiate-auth`: https://docs.aws.amazon.com/cli/latest/reference/cognito-idp/initiate-auth.html

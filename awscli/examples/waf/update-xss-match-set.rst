@@ -10,4 +10,3 @@ The following ``update-xss-match-set`` command  deletes an XssMatchTuple object 
 For more information, see `Working with Cross-site Scripting Match Conditions`_ in the *AWS WAF* developer guide.
 
 .. _`Working with Cross-site Scripting Match Conditions`: https://docs.aws.amazon.com/waf/latest/developerguide/web-acl-xss-conditions.html
-

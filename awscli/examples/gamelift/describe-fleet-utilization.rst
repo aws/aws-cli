@@ -24,7 +24,7 @@ Output::
 The following ``describe-fleet-utilization`` returns fleet usage data for all fleets with any status. This example uses pagination parameters to return data for two fleets at a time. ::
 
     aws gamelift describe-fleet-utilization \
-        --limit 2 
+        --limit 2
 
 Output::
 
@@ -57,5 +57,3 @@ Call the command a second time, passing the ``NextToken`` value as the argument 
 Repeat until the response no longer includes a ``NextToken`` value in the output.
 
 For more information, see `GameLift Metrics for Fleets <https://docs.aws.amazon.com/gamelift/latest/developerguide/monitoring-cloudwatch.html#gamelift-metrics-fleet>`__ in the *Amazon GameLift Developer Guide*.
-
-

@@ -33,6 +33,6 @@ Output::
                 "ScalingPlanName": "my-scaling-plan"
             }
         ]
-    }         
+    }
 
 For more information, see `What Is AWS Auto Scaling? <https://docs.aws.amazon.com/autoscaling/plans/userguide/what-is-aws-auto-scaling.html>`__ in the *AWS Auto Scaling User Guide*.

@@ -22,15 +22,15 @@ Contents of ``create-ota-update.json``::
         },
         "files": [
             {
-              "fileName": "firmware.bin",                
+              "fileName": "firmware.bin",
               "fileLocation": {
                 "stream": {
-                  "streamId": "004",                         
+                  "streamId": "004",
                   "fileId":123
-                }                        
+                }
               },
               "codeSigning": {
-                "awsSignerJobId": "48c67f3c-63bb-4f92-a98a-4ee0fbc2bef6"     
+                "awsSignerJobId": "48c67f3c-63bb-4f92-a98a-4ee0fbc2bef6"
               }
             }
         ]

@@ -4,7 +4,7 @@ The following ``list-group-certificate-authorities`` example lists the current c
 
     aws greengrass list-group-certificate-authorities \
         --group-id "1013db12-8b58-45ff-acc7-704248f66731"
-    
+
 Output::
 
     {

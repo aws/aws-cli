@@ -24,9 +24,9 @@ Output::
                 "State": "active",
                 "Tags": []
             }
-            
+
             ...
-            
+
         ],
         "NextToken": "9d624e0c-388b-4862-a31e-a85c64fc1d4a"
     }

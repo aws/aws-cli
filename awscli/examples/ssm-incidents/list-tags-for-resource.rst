@@ -3,7 +3,7 @@
 The following ``list-tags-for-resource`` example lists the tags associated with the specified response plan. ::
 
     aws ssm-incidents list-tags-for-resource \
-        --resource-arn "arn:aws:ssm-incidents::111122223333:response-plan/Example-Response-Plan" 
+        --resource-arn "arn:aws:ssm-incidents::111122223333:response-plan/Example-Response-Plan"
 
 Output::
 

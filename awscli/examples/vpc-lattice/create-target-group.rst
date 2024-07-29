@@ -100,7 +100,7 @@ The following ``create-target-group`` example creates a target group with the sp
 
     aws vpc-lattice create-target-group \
         --name my-lattice-target-group-lambda \
-        --type LAMBDA 
+        --type LAMBDA
 
 Output::
 

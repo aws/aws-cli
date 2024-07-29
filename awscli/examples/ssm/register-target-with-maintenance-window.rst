@@ -15,7 +15,7 @@ Output::
     }
 
 **Example 2: To register multiple targets with a maintenance window using instance IDs**
-    
+
 The following ``register-target-with-maintenance-window`` example registers two instances with a maintenance window by specifying their instance IDs. ::
 
     aws ssm register-target-with-maintenance-window \
@@ -29,7 +29,7 @@ Output::
     {
         "WindowTargetId":"1a2b3c4d-1a2b-1a2b-1a2b-1a2b3c4d-1a2"
     }
-  
+
 **Example 3: To register targets with a maintenance window using resource tags**
 
 The following ``register-target-with-maintenance-window`` example registers instances with a maintenance window by specifying resource tags that have been applied to the instances. ::
@@ -67,7 +67,7 @@ The following ``register-target-with-maintenance-window`` example register a spe
 
     aws ssm register-target-with-maintenance-window \
         --window-id "mw-0c50858d01EXAMPLE" \
-        --resource-type "RESOURCE_GROUP" \    
+        --resource-type "RESOURCE_GROUP" \
         --target "Key=resource-groups:Name,Values=MyResourceGroup"
 
 Output::

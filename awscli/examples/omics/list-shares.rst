@@ -35,7 +35,7 @@ Output::
             }
         ]
     }
-        
+
 
 
 For more information, see `Cross-account sharing <https://docs.aws.amazon.com/omics/latest/dev/cross-account-sharing.html>`__ in the *AWS HealthOmics User Guide*.

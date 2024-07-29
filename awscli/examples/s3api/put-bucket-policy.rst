@@ -31,4 +31,3 @@ grants ``put`` and ``delete`` permission to the root user of the AWS account ``1
          }
       ]
    }
-

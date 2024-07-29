@@ -19,7 +19,7 @@ This example sets the following attributes:
 
 - ``name`` - The name of the delivery channel. By default, AWS Config assigns the name ``default`` to a new delivery channel.
 
-  You cannot update the delivery channel name with the ``put-delivery-channel`` command. For the steps to change the name, see `Renaming the Delivery Channel`__. 
+  You cannot update the delivery channel name with the ``put-delivery-channel`` command. For the steps to change the name, see `Renaming the Delivery Channel`__.
 
   .. __: http://docs.aws.amazon.com/config/latest/developerguide/update-dc.html#update-dc-rename
 

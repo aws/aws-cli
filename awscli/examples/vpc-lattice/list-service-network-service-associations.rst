@@ -2,7 +2,7 @@
 
 The following ``list-service-network-service-associations`` example lists the service associations for the specified service network. The ``--query`` option scopes the output to the IDs of the service associations. ::
 
-    aws vpc-lattice list-service-network-service-associations \ 
+    aws vpc-lattice list-service-network-service-associations \
         --service-network-identifier sn-080ec7dc93EXAMPLE \
         --query items[*].id
 

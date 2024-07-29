@@ -91,14 +91,14 @@ TThe following ``describe-addresses`` example displays details about your Elasti
 
     aws ec2 describe-addresses \
         --filters "Name=domain,Values=standard"
-    
+
 Output::
 
     {
         "Addresses": [
             {
-                "InstanceId": "i-1234567890abcdef0", 
-                "PublicIp": "203.0.110.25", 
+                "InstanceId": "i-1234567890abcdef0",
+                "PublicIp": "203.0.110.25",
                 "PublicIpv4Pool": "amazon",
                 "Domain": "standard"
             }
@@ -117,11 +117,10 @@ Output::
     {
         "Addresses": [
             {
-                "InstanceId": "i-1234567890abcdef0", 
-                "PublicIp": "203.0.110.25", 
+                "InstanceId": "i-1234567890abcdef0",
+                "PublicIp": "203.0.110.25",
                 "PublicIpv4Pool": "amazon",
                 "Domain": "standard"
             }
         ]
     }
-

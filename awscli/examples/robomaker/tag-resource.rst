@@ -1,6 +1,6 @@
 **To tag a resource**
 
-This example tags a resource. It attaches two tags: Region and Stage. 
+This example tags a resource. It attaches two tags: Region and Stage.
 
 Command::
 

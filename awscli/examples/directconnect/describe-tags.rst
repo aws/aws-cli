@@ -11,10 +11,10 @@ Output::
   {
     "resourceTags": [
         {
-            "resourceArn": "arn:aws:directconnect:us-east-1:123456789012:dxcon/dxcon-abcabc12", 
+            "resourceArn": "arn:aws:directconnect:us-east-1:123456789012:dxcon/dxcon-abcabc12",
             "tags": [
                 {
-                    "value": "VAConnection", 
+                    "value": "VAConnection",
                     "key": "Name"
                 }
             ]

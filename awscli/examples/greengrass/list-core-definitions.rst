@@ -3,7 +3,7 @@
 The following ``list-core-definitions`` example lists all of the Greengrass core definitions for your AWS account. ::
 
     aws greengrass list-core-definitions
-    
+
 Output::
 
     {

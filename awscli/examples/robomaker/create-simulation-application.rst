@@ -1,6 +1,6 @@
 **To create a simulation application**
 
-This example creates a simulation application. 
+This example creates a simulation application.
 
 Command::
 
@@ -35,4 +35,3 @@ Output::
     "revisionId": "ee753e53-519c-4d37-895d-65e79bcd1914",
     "tags": {}
   }
-

@@ -20,10 +20,10 @@ Output::
         "Item": {
             "AlbumTitle": {
                 "S": "Songs About Life"
-            }, 
+            },
             "SongTitle": {
                 "S": "Happy Day"
-            }, 
+            },
             "Artist": {
                 "S": "Acme Band"
             }
@@ -59,10 +59,10 @@ Output::
         "Item": {
             "AlbumTitle": {
                 "S": "Songs About Life"
-            }, 
+            },
             "SongTitle": {
                 "S": "Happy Day"
-            }, 
+            },
             "Artist": {
                 "S": "Acme Band"
             }

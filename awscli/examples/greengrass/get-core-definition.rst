@@ -4,7 +4,7 @@ The following ``get-core-definition`` example retrieves information about the sp
 
     aws greengrass get-core-definition \
         --core-definition-id "c906ed39-a1e3-4822-a981-7b9bd57b4b46"
-    
+
 Output::
 
     {

@@ -9,7 +9,7 @@ Output::
     {
         "detectorModelSummaries": [
             {
-                "detectorModelName": "motorDetectorModel", 
+                "detectorModelName": "motorDetectorModel",
                 "creationTime": 1552072424.212
                 "detectorModelDescription": "Detect overpressure in a motor."
             }
@@ -17,4 +17,3 @@ Output::
     }
 
 For more information, see `ListDetectorModels <https://docs.aws.amazon.com/iotevents/latest/developerguide/iotevents-commands.html#api-iotevents-ListDetectorModels>`__ in the *AWS IoT Events Developer Guide**.
-

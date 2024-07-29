@@ -45,4 +45,3 @@ Output::
         ],
         "failures": []
     }
-

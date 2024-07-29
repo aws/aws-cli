@@ -2,7 +2,7 @@
 
 The following ``list-resolver-rule-associations`` example lists the associations between resolver rules and VPCs in the current AWS account. ::
 
-    aws route53resolver list-resolver-rule-associations 
+    aws route53resolver list-resolver-rule-associations
 
 Output::
 

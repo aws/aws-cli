@@ -5,7 +5,7 @@ The following ``create-cache-subnet-group`` example creates a new cache subnet g
     aws elasticache create-cache-subnet-group \
         --cache-subnet-group-name "mygroup" \
         --cache-subnet-group-description "my subnet group" \
-        --subnet-ids "subnet-xxxxec4f" 
+        --subnet-ids "subnet-xxxxec4f"
 
 Output::
 

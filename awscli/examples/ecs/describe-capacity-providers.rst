@@ -59,7 +59,7 @@ Output::
                 "name": "MyCapacityProvider",
                 "status": "ACTIVE",
                 "autoScalingGroupProvider": {
-                    "autoScalingGroupArn": "arn:aws:autoscaling:us-west-2:123456789012:autoScalingGroup:a1b2c3d4-5678-90ab-cdef-EXAMPLE11111:autoScalingGroupName/MyAutoScalingGroup",                    
+                    "autoScalingGroupArn": "arn:aws:autoscaling:us-west-2:123456789012:autoScalingGroup:a1b2c3d4-5678-90ab-cdef-EXAMPLE11111:autoScalingGroupName/MyAutoScalingGroup",
                     "managedScaling": {
                         "status": "ENABLED",
                         "targetCapacity": 100,

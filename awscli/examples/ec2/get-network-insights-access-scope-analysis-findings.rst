@@ -5,7 +5,7 @@ The following ``get-network-insights-access-scope-analysis-findings`` example ge
     aws ec2 get-network-insights-access-scope-analysis-findings \
         --region us-east-1 \
         --network-insights-access-scope-analysis-id nis \
-        --nis-123456789111 
+        --nis-123456789111
 
 Output::
 

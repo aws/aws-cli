@@ -5,7 +5,7 @@ The following example shows how to request a list of the accounts in an OU: ::
 	aws organizations list-accounts-for-parent --parent-id ou-examplerootid111-exampleouid111
 
 The output includes a list of account summary objects. ::
-  
+
 	{
 		"Accounts": [
 			{

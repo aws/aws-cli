@@ -7,4 +7,3 @@ The following ``untag-resource`` example removes the listed tags from the specif
         --tag-keys key1,key2
 
 This command produces no output.
-

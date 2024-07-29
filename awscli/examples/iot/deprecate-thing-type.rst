@@ -18,4 +18,3 @@ The following ``deprecate-thing-type`` example reverses the deprecation of a thi
 This command produces no output.
 
 For more information, see `Thing Types <https://docs.aws.amazon.com/iot/latest/developerguide/thing-types.html>`__ in the *AWS IoT Developers Guide*.
-

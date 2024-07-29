@@ -15,7 +15,7 @@ The following ``create-ipam-pool`` example creates an IPAM pool.
         --tag-specifications 'ResourceType=ipam-pool,Tags=[{Key=Name,Value="Preprod pool"}]'
 
 (Windows)::
-    
+
     aws ec2 create-ipam-pool ^
         --ipam-scope-id ipam-scope-02fc38cd4c48e7d38 ^
         --address-family ipv4 ^
@@ -60,4 +60,4 @@ Output::
         }
     }
 
-For more information, see `Plan for IP address provisioning <https://docs.aws.amazon.com/vpc/latest/ipam/planning-ipam.html>`__ in the *Amazon VPC IPAM User Guide*. 
+For more information, see `Plan for IP address provisioning <https://docs.aws.amazon.com/vpc/latest/ipam/planning-ipam.html>`__ in the *Amazon VPC IPAM User Guide*.

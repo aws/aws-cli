@@ -4,7 +4,7 @@ This example gets UI customization information for a user pool.
 
 Command::
 
-  aws cognito-idp get-ui-customization --user-pool-id us-west-2_aaaaaaaaa 
+  aws cognito-idp get-ui-customization --user-pool-id us-west-2_aaaaaaaaa
 
 Output::
 

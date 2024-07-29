@@ -14,4 +14,3 @@ Before you run ``assign-volume``, you must first run ``update-volume`` to assign
 For more information, see `Assigning Amazon EBS Volumes to an Instance`_ in the *AWS OpsWorks User Guide*.
 
 .. _`Assigning Amazon EBS Volumes to an Instance`: http://docs.aws.amazon.com/opsworks/latest/userguide/resources-attach.html#resources-attach-ebs
-

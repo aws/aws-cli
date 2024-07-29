@@ -3,7 +3,7 @@
 The following ``list-allowed-node-type-modifications`` example lists all the available node types that you can scale your Redis cluster's or replication group's current node type to. ::
 
     aws elasticache list-allowed-node-type-modifications \
-        --replication-group-id "my-replication-group" 
+        --replication-group-id "my-replication-group"
 
 Output::
 

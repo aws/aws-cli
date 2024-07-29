@@ -4,7 +4,7 @@ The following ``update-approval-rule-template-name`` example changes the name of
 
     aws codecommit update-approval-rule-template-name \
         --old-approval-rule-template-name 1-approver-rule  \
-        --new-approval-rule-template-name 1-approver-rule-for-all-pull-requests 
+        --new-approval-rule-template-name 1-approver-rule-for-all-pull-requests
 
 Output::
 

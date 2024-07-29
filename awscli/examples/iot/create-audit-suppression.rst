@@ -5,7 +5,7 @@ The following ``create-audit-suppression`` example creates an audit finding supp
     aws iot create-audit-suppression \
         --check-name IOT_POLICY_OVERLY_PERMISSIVE_CHECK \
         --resource-identifier policyVersionIdentifier={"policyName"="virtualMachinePolicy","policyVersionId"="1"} \
-        --no-suppress-indefinitely \ 
+        --no-suppress-indefinitely \
         --expiration-date 2020-10-20
 
 This command produces no output.

@@ -63,4 +63,3 @@ This example lists all compliance items for an instance after the specified date
 Command::
 
   aws ssm list-compliance-items --resource-ids "i-1234567890abcdef0" --resource-types "ManagedInstance" --filters "Key=ExecutionTime,Values=2019-02-18T16:00:00Z,Type=GREATER_THAN"
-

@@ -22,4 +22,4 @@ Output::
         }
     }
 
-For more information, see `Delete a scope <https://docs.aws.amazon.com/vpc/latest/ipam/delete-scope-ipam.html>`__ in the *Amazon VPC IPAM User Guide*. 
+For more information, see `Delete a scope <https://docs.aws.amazon.com/vpc/latest/ipam/delete-scope-ipam.html>`__ in the *Amazon VPC IPAM User Guide*.

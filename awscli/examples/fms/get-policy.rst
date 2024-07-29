@@ -7,7 +7,7 @@ The following ``get-policy`` example retrieves the policy with the specified ID.
 
 Output::
 
-    { 
+    {
         "Policy": {
             "PolicyId": "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
             "PolicyName": "test",
@@ -22,6 +22,6 @@ Output::
             "RemediationEnabled": false
         },
         "PolicyArn": "arn:aws:fms:us-west-2:123456789012:policy/d1ac59b8-938e-42b3-b2e0-7c620422ddc2"
-    }  
+    }
 
 For more information, see `Working with AWS Firewall Manager Policies <https://docs.aws.amazon.com/waf/latest/developerguide/working-with-policies.html>`__ in the *AWS WAF, AWS Firewall Manager, and AWS Shield Advanced Developer Guide*.

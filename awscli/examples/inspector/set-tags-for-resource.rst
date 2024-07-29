@@ -7,4 +7,3 @@ The following ``set-tags-for-resource`` command sets the tag with the key of ``E
 For more information, see `Amazon Inspector Assessment Templates and Assessment Runs`_ in the *Amazon Inspector* guide.
 
 .. _`Amazon Inspector Assessment Templates and Assessment Runs`: https://docs.aws.amazon.com/inspector/latest/userguide/inspector_assessments.html
-

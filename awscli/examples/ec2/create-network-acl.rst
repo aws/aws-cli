@@ -31,5 +31,5 @@ Output::
               }
           ],
           "IsDefault": false
-      }  
+      }
   }

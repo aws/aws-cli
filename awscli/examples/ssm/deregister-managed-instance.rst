@@ -2,8 +2,8 @@
 
 The following ``deregister-managed-instance`` example deregisters the specified managed instance. ::
 
-    aws ssm deregister-managed-instance 
-        --instance-id "mi-08ab247cdfEXAMPLE"  
+    aws ssm deregister-managed-instance
+        --instance-id "mi-08ab247cdfEXAMPLE"
 
 This command produces no output.
 

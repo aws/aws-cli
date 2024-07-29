@@ -1,6 +1,6 @@
 **Example 1: To modify a volume by changing its size**
 
-The following ``modify-volume`` example changes the size of the specified volume to 150GB. 
+The following ``modify-volume`` example changes the size of the specified volume to 150GB.
 
 Command::
 

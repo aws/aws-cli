@@ -4,7 +4,7 @@ The following ``update-alias`` example associates the alias with a different key
 
     aws payment-cryptography update-alias \
         --alias-name alias/sampleAlias1 \
-        --key-arn arn:aws:payment-cryptography:us-east-2:123456789012:key/tqv5yij6wtxx64pi 
+        --key-arn arn:aws:payment-cryptography:us-east-2:123456789012:key/tqv5yij6wtxx64pi
 
 Output::
 

@@ -1,6 +1,6 @@
 **To delete a custom on-demand queue**
 
-The following ``delete-queue`` example deletes the specified custom on-demand queue. 
+The following ``delete-queue`` example deletes the specified custom on-demand queue.
 
 You can't delete your default queue. You can't delete a reserved queue that has an active pricing plan or that contains unprocessed jobs. ::
 

@@ -3,7 +3,7 @@
 The following example shows you how to request details about a handshake. The handshake ID comes either from the original call to ``InviteAccountToOrganization``, or from a call to ``ListHandshakesForAccount`` or ``ListHandshakesForOrganization``: ::
 
 	aws organizations describe-handshake --handshake-id h-examplehandshakeid111
-	
+
 The output includes a handshake object that has all the details about the requested handshake: ::
 
 	{
@@ -42,7 +42,7 @@ The output includes a handshake object that has all the details about the reques
 			],
 			"Action": "INVITE",
 			"RequestedTimestamp": 1470158698.046,
-			"ExpirationTimestamp": 1471454698.046, 
+			"ExpirationTimestamp": 1471454698.046,
 			"Arn": "arn:aws:organizations::111111111111:handshake/o-exampleorgid/invite/h-examplehandshakeid111"
 		}
 	}

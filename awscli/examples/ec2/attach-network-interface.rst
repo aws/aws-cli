@@ -5,7 +5,7 @@ The following ``attach-network-interface`` example attaches the specified networ
     aws ec2 attach-network-interface \
         --network-interface-id eni-0dc56a8d4640ad10a \
         --instance-id i-1234567890abcdef0 \
-        --device-index 1  
+        --device-index 1
 
 Output::
 
@@ -23,7 +23,7 @@ The following ``attach-network-interface`` example attaches the specified networ
         --network-interface-id eni-07483b1897541ad83 \
         --instance-id i-01234567890abcdef \
         --network-card-index 1 \
-        --device-index 1  
+        --device-index 1
 
 Output::
 

@@ -5,7 +5,7 @@ The following ``get-deployment-status`` example retrieves the status for the spe
     aws greengrass get-deployment-status \
         --group-id "1013db12-8b58-45ff-acc7-704248f66731" \
         --deployment-id "1065b8a0-812b-4f21-9d5d-e89b232a530f"
-    
+
 Output::
 
     {

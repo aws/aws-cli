@@ -29,7 +29,7 @@ Output::
                 "VpcPeeringConnectionId": "pcx-11122233",
                 "RequesterVpcInfo": {
                     "PeeringOptions": {
-                        "AllowEgressFromLocalVpcToRemoteClassicLink": false, 
+                        "AllowEgressFromLocalVpcToRemoteClassicLink": false,
                         "AllowEgressFromLocalClassicLinkToRemoteVpc": false
                     },
                     "OwnerId": "444455556666",
@@ -45,7 +45,7 @@ Output::
                 "Tags": [],
                 "RequesterVpcInfo": {
                     "PeeringOptions": {
-                        "AllowEgressFromLocalVpcToRemoteClassicLink": false, 
+                        "AllowEgressFromLocalVpcToRemoteClassicLink": false,
                         "AllowEgressFromLocalClassicLinkToRemoteVpc": false
                     },
                     "OwnerId": "444455556666",
@@ -84,4 +84,3 @@ This example describes all of the VPC peering connections you requested for the 
 Command::
 
   aws ec2 describe-vpc-peering-connections --filters Name=requester-vpc-info.vpc-id,Values=vpc-1a2b3c4d
-

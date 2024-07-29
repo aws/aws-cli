@@ -94,7 +94,7 @@ Output::
                             ],
                             "OutputGroupSettings": {
                                 "FileGroupSettings": {
-                                    
+
                                 },
                                 "Type": "FILE_GROUP_SETTINGS"
                             },

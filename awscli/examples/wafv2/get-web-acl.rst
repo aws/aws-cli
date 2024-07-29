@@ -5,7 +5,7 @@ The following ``get-web-acl`` retrieves the web ACL with the specified name, sco
     aws wafv2 get-web-acl \
         --name test01 \
         --scope REGIONAL \
-        --id a1b2c3d4-5678-90ab-cdef-EXAMPLE11111 
+        --id a1b2c3d4-5678-90ab-cdef-EXAMPLE11111
 
 Output::
 
@@ -84,6 +84,6 @@ Output::
             "Name":"test01"
         },
         "LockToken":"e3db7e2c-d58b-4ee6-8346-6aec5511c6fb"
-    } 
+    }
 
 For more information, see `Managing and Using a Web Access Control List (Web ACL) <https://docs.aws.amazon.com/waf/latest/developerguide/web-acl.html>`__ in the *AWS WAF, AWS Firewall Manager, and AWS Shield Advanced Developer Guide*.

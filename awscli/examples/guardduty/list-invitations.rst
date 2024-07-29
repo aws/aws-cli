@@ -2,10 +2,10 @@
 
 The following ``list-invitations`` example lists details and statuses on your invitations to become a GuardDuty member account in the current region. ::
 
-    aws guardduty list-invitations 
+    aws guardduty list-invitations
 
 Output::
-    
+
     {
         "Invitations": [
             {

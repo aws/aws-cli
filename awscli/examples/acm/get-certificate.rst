@@ -23,7 +23,7 @@ Output similar to the following is displayed::
   FFBjvSfpJIlJ00zbhNYS5f6GuoEDmFJl0ZxBHjJnyp378OD8uTs7fLvjx79LjSTb
   NYiytVbZPQUQ5Yaxu2jXnimvw3rrszlaEXAMPLE=
   -----END CERTIFICATE-----",
-   
+
     "CertificateChain": "-----BEGIN CERTIFICATE-----
   MIICiTCCAfICCQD6m7oRw0uXOjANBgkqhkiG9w0BAQUFADCBiDELMAkGA1UEBhMC
   VVMxCzAJBgNVBAgTAldBMRAwDgYDVQQHEwdTZWF0dGxlMQ8wDQYDVQQKEwZBbWF6

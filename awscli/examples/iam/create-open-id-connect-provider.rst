@@ -30,6 +30,6 @@ Output::
         "OpenIDConnectProviderArn": "arn:aws:iam::123456789012:oidc-provider/server.example.com"
     }
 
-For more information about OIDC providers, see `Creating OpenID Connect (OIDC) identity providers <https://docs.aws.amazon.com/IAM/latest/UserGuide/id_roles_providers_create_oidc.html>`__ in the *AWS IAM User Guide*. 
+For more information about OIDC providers, see `Creating OpenID Connect (OIDC) identity providers <https://docs.aws.amazon.com/IAM/latest/UserGuide/id_roles_providers_create_oidc.html>`__ in the *AWS IAM User Guide*.
 
 For more information about obtaining thumbprints for an OIDC provider, see `Obtaining the thumbprint for an OpenID Connect Identity Provider <https://docs.aws.amazon.com/IAM/latest/UserGuide/id_roles_providers_create_oidc_verify-thumbprint.html>`__ in the *AWS IAM User Guide*.

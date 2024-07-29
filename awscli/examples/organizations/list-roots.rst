@@ -2,8 +2,8 @@
 
 This example shows you how to get the list of roots for an organization: ::
 
-	aws organizations list-roots 
-  
+	aws organizations list-roots
+
 The output includes a list of root structures with summary information: ::
 
 	{

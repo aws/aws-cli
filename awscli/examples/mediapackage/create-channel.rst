@@ -28,6 +28,6 @@ Output::
         "Tags": {
             "region": "west"
         }
-    }                
+    }
 
 For more information, see `Creating a Channel <https://docs.aws.amazon.com/mediapackage/latest/ug/channels-create.html>`__ in the *AWS Elemental MediaPackage User Guide*.

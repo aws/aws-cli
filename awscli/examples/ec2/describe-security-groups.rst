@@ -25,33 +25,33 @@ Output::
                 "Description": "My security group",
                 "Tags": [
                     {
-                        "Value": "SG1", 
+                        "Value": "SG1",
                         "Key": "Name"
                     }
-                ], 
+                ],
                 "IpPermissions": [
                     {
-                        "IpProtocol": "-1", 
-                        "IpRanges": [], 
+                        "IpProtocol": "-1",
+                        "IpRanges": [],
                         "UserIdGroupPairs": [
                             {
-                                "UserId": "123456789012", 
+                                "UserId": "123456789012",
                                 "GroupId": "sg-903004f8"
                             }
-                        ], 
+                        ],
                         "PrefixListIds": []
                     },
                     {
-                        "PrefixListIds": [], 
-                        "FromPort": 22, 
+                        "PrefixListIds": [],
+                        "FromPort": 22,
                         "IpRanges": [
                             {
                                 "Description": "Access from NY office",
                                 "CidrIp": "203.0.113.0/24"
                             }
-                        ], 
-                        "ToPort": 22, 
-                        "IpProtocol": "tcp", 
+                        ],
+                        "ToPort": 22,
+                        "IpProtocol": "tcp",
                         "UserIdGroupPairs": []
                         }
                 ],
@@ -86,16 +86,16 @@ The following ``describe-security-groups`` example uses filters to scope the res
     aws ec2 describe-security-groups \
         --filters Name=group-name,Values=*test* Name=tag:Test,Values=To-delete \
         --query "SecurityGroups[*].{Name:GroupName,ID:GroupId}"
-  
+
 Output::
 
     [
         {
-            "Name": "testfornewinstance", 
+            "Name": "testfornewinstance",
             "ID": "sg-33bb22aa"
-        }, 
+        },
         {
-            "Name": "newgrouptest", 
+            "Name": "newgrouptest",
             "ID": "sg-1a2b3c4d"
         }
     ]

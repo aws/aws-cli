@@ -8,8 +8,8 @@ The following ``describe-events`` example returns information about all events t
 The output for each event entry returned by the command resembles the following example::
 
     {
-        "ServerEvents": [ 
-            { 
+        "ServerEvents": [
+            {
                 "CreatedAt": 2016-07-29T13:38:47.520Z,
                 "LogUrl": "https://s3.amazonaws.com/<bucket-name>/automate-06-20160729133847520",
                 "Message": "Updates successfully installed.",

@@ -5,4 +5,3 @@ The following example uses the ``enable-alarm-actions`` command to enable all ac
   aws cloudwatch enable-alarm-actions --alarm-names myalarm
 
 This command returns to the prompt if successful.
-

@@ -8,25 +8,25 @@ This example demonstrates how to update triggers named 'MyFirstTrigger' and 'MyS
 Contents of ``MyTriggers.json``::
 
     {
-        "repositoryName": "MyDemoRepo", 
+        "repositoryName": "MyDemoRepo",
         "triggers": [
             {
-                "destinationArn": "arn:aws:sns:us-east-1:80398EXAMPLE:MyCodeCommitTopic", 
+                "destinationArn": "arn:aws:sns:us-east-1:80398EXAMPLE:MyCodeCommitTopic",
                 "branches": [
-                    "main", 
+                    "main",
                     "preprod"
-                ], 
-                "name": "MyFirstTrigger", 
-                "customData": "", 
+                ],
+                "name": "MyFirstTrigger",
+                "customData": "",
                 "events": [
                     "all"
                 ]
             },
             {
-                "destinationArn": "arn:aws:lambda:us-east-1:111111111111:function:MyCodeCommitPythonFunction", 
-                "branches": [], 
-                "name": "MySecondTrigger", 
-                "customData": "EXAMPLE", 
+                "destinationArn": "arn:aws:lambda:us-east-1:111111111111:function:MyCodeCommitPythonFunction",
+                "branches": [],
+                "name": "MySecondTrigger",
+                "customData": "EXAMPLE",
                 "events": [
                     "all"
                 ]

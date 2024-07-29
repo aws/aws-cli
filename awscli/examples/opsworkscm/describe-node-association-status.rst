@@ -17,4 +17,3 @@ The output for each account attribute entry returned by the command resembles th
 For more information, see `DescribeNodeAssociationStatus`_ in the *AWS OpsWorks for Chef Automate API Reference*.
 
 .. _`DescribeNodeAssociationStatus`: http://docs.aws.amazon.com/opsworks-cm/latest/APIReference/API_DescribeNodeAssociationStatus.html
-

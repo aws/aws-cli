@@ -5,7 +5,7 @@ The following ``get-trace-summaries`` example retrieves IDs and metadata for tra
     aws xray get-trace-summaries \
         --start-time 1568835392.0 \
         --end-time 1568835446.0
-	
+
 Output::
 
     [

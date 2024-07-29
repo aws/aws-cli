@@ -3,7 +3,7 @@
 The following ``get-job`` example retrieves information about a job. ::
 
     aws glue get-job \
-        --job-name my-testing-job 
+        --job-name my-testing-job
 
 Output::
 

@@ -1,6 +1,6 @@
 **To assign a specific secondary private IP address a network interface**
 
-This example assigns the specified secondary private IP address to the specified network interface. If the command succeeds, no output is returned. 
+This example assigns the specified secondary private IP address to the specified network interface. If the command succeeds, no output is returned.
 
 Command::
 

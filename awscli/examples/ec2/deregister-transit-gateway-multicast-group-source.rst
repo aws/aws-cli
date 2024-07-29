@@ -5,7 +5,7 @@ This example deregisters the specified network interface group source from the m
     aws ec2 register-transit-gateway-multicast-group-sources \
         --transit-gateway-multicast-domain-id tgw-mcast-domain-0c4905cef79d6e597 \
         --group-ip-address 224.0.1.0 \
-        --network-interface-ids eni-07f290fc3c090cbae 
+        --network-interface-ids eni-07f290fc3c090cbae
 
 Output::
 

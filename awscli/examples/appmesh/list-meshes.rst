@@ -3,7 +3,7 @@
 The following ``list-meshes`` example lists all of the service meshes in the current AWS Region. ::
 
     aws appmesh list-meshes
-    
+
 Output::
 
     {

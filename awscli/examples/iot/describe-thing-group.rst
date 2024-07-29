@@ -26,4 +26,3 @@ Output::
     }
 
 For more information, see `Thing Groups <https://docs.aws.amazon.com/iot/latest/developerguide/thing-groups.html>`__ in the *AWS IoT Developers Guide*.
-

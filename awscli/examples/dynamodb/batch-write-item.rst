@@ -11,7 +11,7 @@ Contents of ``request-items.json``::
 
     {
         "MusicCollection": [
-            { 
+            {
                 "PutRequest": {
                     "Item": {
                         "Artist": {"S": "No One You Know"},

@@ -39,7 +39,7 @@ Output::
                 "version": "0.1.0",
                 "revision": "REVISION-SAMPLE-4-AF669139B772FC",
                 "status": "Published"
-            }        
+            }
         ]
     }
 

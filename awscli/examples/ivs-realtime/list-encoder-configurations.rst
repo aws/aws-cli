@@ -6,7 +6,7 @@ The following ``list-encoder-configurations`` lists all composition encoder conf
 
 Output::
 
-    {  
+    {
         "encoderConfigurations": [
             {
                 "arn": "arn:aws:ivs:ap-northeast-1:123456789012:encoder-configuration/abcdABCDefgh",

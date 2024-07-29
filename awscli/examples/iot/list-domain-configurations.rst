@@ -8,29 +8,29 @@ The following ``list-domain-configurations`` example lists the domain configurat
 Output::
 
     {
-        "domainConfigurations": 
-        [       
-            {                 
-                "domainConfigurationName": "additionalDataDomain",              
-                "domainConfigurationArn": "arn:aws:iot:us-west-2:123456789012:domainconfiguration/additionalDataDomain/dikMh",          
-                "serviceType": "DATA"         
+        "domainConfigurations":
+        [
+            {
+                "domainConfigurationName": "additionalDataDomain",
+                "domainConfigurationArn": "arn:aws:iot:us-west-2:123456789012:domainconfiguration/additionalDataDomain/dikMh",
+                "serviceType": "DATA"
             },
-                
-            {               
-                "domainConfigurationName": "iot:Jobs",           
-                "domainConfigurationArn": "arn:aws:iot:us-west-2:123456789012:domainconfiguration/iot:Jobs",               
-                "serviceType": "JOBS"          
-            },          
-            {               
-                "domainConfigurationName": "iot:Data-ATS",              
-                "domainConfigurationArn": "arn:aws:iot:us-west-2:123456789012:domainconfiguration/iot:Data-ATS",                
-                "serviceType": "DATA"           
-            },          
-            {               
-                "domainConfigurationName": "iot:CredentialProvider",               
-                "domainConfigurationArn": "arn:aws:iot:us-west-2:123456789012:domainconfiguration/iot:CredentialProvider",               
-                "serviceType": "CREDENTIAL_PROVIDER"           
-            }    
+
+            {
+                "domainConfigurationName": "iot:Jobs",
+                "domainConfigurationArn": "arn:aws:iot:us-west-2:123456789012:domainconfiguration/iot:Jobs",
+                "serviceType": "JOBS"
+            },
+            {
+                "domainConfigurationName": "iot:Data-ATS",
+                "domainConfigurationArn": "arn:aws:iot:us-west-2:123456789012:domainconfiguration/iot:Data-ATS",
+                "serviceType": "DATA"
+            },
+            {
+                "domainConfigurationName": "iot:CredentialProvider",
+                "domainConfigurationArn": "arn:aws:iot:us-west-2:123456789012:domainconfiguration/iot:CredentialProvider",
+                "serviceType": "CREDENTIAL_PROVIDER"
+            }
         ]
     }
 

@@ -19,7 +19,7 @@ The output shows the new name and description. ::
                 "Description": "This description replaces the original.",
                 "Name": "Renamed-Policy",
                 "Type": "SERVICE_CONTROL_POLICY"
-            }    
+            }
         }
     }
 
@@ -36,7 +36,7 @@ The output shows the new content::
     {
         "Policy": {
             "Content": "{ \"Version\": \"2012-10-17\", \"Statement\": { \"Effect\": \"Allow\", \"Action\": \"s3:*\", \"Resource\": \"*\" } }",
-            "PolicySummary": {    
+            "PolicySummary": {
                 "Arn": "arn:aws:organizations::111111111111:policy/o-exampleorgid/service_control_policy/p-examplepolicyid111",
                 "AwsManaged": false;
                 "Description": "This description replaces the original.",

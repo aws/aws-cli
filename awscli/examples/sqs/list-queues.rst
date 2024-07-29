@@ -12,9 +12,9 @@ Output::
     "QueueUrls": [
       "https://queue.amazonaws.com/80398EXAMPLE/MyDeadLetterQueue",
       "https://queue.amazonaws.com/80398EXAMPLE/MyQueue",
-      "https://queue.amazonaws.com/80398EXAMPLE/MyOtherQueue",        
+      "https://queue.amazonaws.com/80398EXAMPLE/MyOtherQueue",
       "https://queue.amazonaws.com/80398EXAMPLE/TestQueue1",
-	  "https://queue.amazonaws.com/80398EXAMPLE/TestQueue2"		
+	  "https://queue.amazonaws.com/80398EXAMPLE/TestQueue2"
     ]
   }
 
@@ -30,6 +30,6 @@ Output::
     "QueueUrls": [
       "https://queue.amazonaws.com/80398EXAMPLE/MyDeadLetterQueue",
       "https://queue.amazonaws.com/80398EXAMPLE/MyQueue",
-      "https://queue.amazonaws.com/80398EXAMPLE/MyOtherQueue"	
+      "https://queue.amazonaws.com/80398EXAMPLE/MyOtherQueue"
     ]
   }

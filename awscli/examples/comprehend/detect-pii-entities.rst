@@ -1,6 +1,6 @@
 **To detect pii entities in input text**
 
-The following ``detect-pii-entities`` example analyzes the input text and identifies entities that contain personally identifiable information (PII). The pre-trained model's 
+The following ``detect-pii-entities`` example analyzes the input text and identifies entities that contain personally identifiable information (PII). The pre-trained model's
 confidence score is also output for each prediction. ::
 
     aws comprehend detect-pii-entities \
@@ -10,7 +10,7 @@ confidence score is also output for each prediction. ::
             we will withdraw your payment on the due date from your bank account number XXXXXX1111 with the routing number XXXXX0000. \
             Customer feedback for Sunshine Spa, 123 Main St, Anywhere. Send comments to Alice at AnySpa@example.com."
 
-Output:: 
+Output::
 
     {
         "Entities": [

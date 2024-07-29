@@ -3,9 +3,9 @@
 The following ``associate-resolver-rule`` example associates a Resolver rule with an Amazon VPC. After you run the command, Resolver starts to forward DNS queries to your network based on the settings in the rule, such as the domain name of the queries that are forwarded. ::
 
     aws route53resolver associate-resolver-rule \
-        --name my-resolver-rule-association \ 
-        --resolver-rule-id rslvr-rr-42b60677c0example \ 
-        --vpc-id vpc-304bexam 
+        --name my-resolver-rule-association \
+        --resolver-rule-id rslvr-rr-42b60677c0example \
+        --vpc-id vpc-304bexam
 
 Output::
 

@@ -8,7 +8,7 @@ Command::
 
 **To create a partition placement group**
 
-This example command creates a partition placement group named ``HDFS-Group-A`` with five partitions. 
+This example command creates a partition placement group named ``HDFS-Group-A`` with five partitions.
 
 Command::
 

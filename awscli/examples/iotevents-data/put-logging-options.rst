@@ -10,11 +10,11 @@ Contents of ``logging-options.json``::
     {
         "loggingOptions": {
             "roleArn": "arn:aws:iam::123456789012:role/IoTEventsRole",
-            "level": "DEBUG", 
-            "enabled": true, 
+            "level": "DEBUG",
+            "enabled": true,
             "detectorDebugOptions": [
                 {
-                    "detectorModelName": "motorDetectorModel", 
+                    "detectorModelName": "motorDetectorModel",
                     "keyValue": "Fulton-A32"
                 }
             ]
@@ -24,4 +24,3 @@ Contents of ``logging-options.json``::
 This command produces no output.
 
 For more information, see `PutLoggingOptions <https://docs.aws.amazon.com/iotevents/latest/developerguide/iotevents-commands.html#api-iotevents-PutLoggingOptions>`__ in the *AWS IoT Events Developer Guide**.
-

@@ -8,7 +8,7 @@ This example demonstrates how to view details of a comment with the system-gener
 Output::
 
     {
-        "comment": { 
+        "comment": {
             "authorArn": "arn:aws:iam::111111111111:user/Li_Juan",
             "clientRequestToken": "123Example",
             "commentId": "ff30b348EXAMPLEb9aa670f",
@@ -18,7 +18,7 @@ Output::
             "commentId": "",
             "lastModifiedDate": 1508369842.278,
             "callerReactions": [],
-            "reactionCounts": 
+            "reactionCounts":
             {
                 "SMILE" : 6,
                 "THUMBSUP" : 1

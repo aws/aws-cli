@@ -23,6 +23,6 @@ Output::
 
             ]
         }
-    } 
+    }
 
 For more information, see `Rate-Based Rule Statement <https://docs.aws.amazon.com/waf/latest/developerguide/waf-rule-statement-type-rate-based.html>`__ in the *AWS WAF, AWS Firewall Manager, and AWS Shield Advanced Developer Guide*.

@@ -4,7 +4,7 @@ The following ``get-pull-request-approval-states`` example returns approvals for
 
     aws codecommit get-pull-request-approval-states \
         --pull-request-id 8 \
-        --revision-id 9f29d167EXAMPLE 
+        --revision-id 9f29d167EXAMPLE
 
 Output::
 

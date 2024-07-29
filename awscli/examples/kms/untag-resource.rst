@@ -1,6 +1,6 @@
 **To delete a tag from a KMS key**
 
-The following ``untag-resource`` example deletes the tag with the ``"Purpose"`` key from a customer managed KMS key. 
+The following ``untag-resource`` example deletes the tag with the ``"Purpose"`` key from a customer managed KMS key.
 
 To specify the KMS key, use the ``key-id`` parameter. This example uses a key ID value, but you can use a key ID or key ARN in this command. Before running this command, replace the example key ID with a valid key ID from your AWS account. ::
 

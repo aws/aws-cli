@@ -4,7 +4,7 @@ The following ``tag-resource`` example adds two tags to the specified project re
 
     aws iot1click-projects tag-resource \
         --cli-input-json file://devices-tag-resource.json
-    
+
 Contents of ``devices-tag-resource.json``::
 
     {

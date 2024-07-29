@@ -49,7 +49,7 @@ Output::
                     "Cardinality": "ZERO_OR_ONE",
                     "AttributeName": "CookieExpirationPeriod",
                     "AttributeType": "Long"
-                } 
+                }
             ],
             "PolicyTypeName": "LBCookieStickinessPolicyType",
             "Description": "Stickiness policy with session lifetimes controlled by the browser (user-agent) or a specified expiration period. This policy can be associated only with HTTP/HTTPS listeners."

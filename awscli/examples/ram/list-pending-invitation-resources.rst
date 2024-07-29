@@ -8,7 +8,7 @@ The following ``list-pending-invitation-resources`` example lists all of the res
 Output::
 
     {
-       "resources": [ 
+       "resources": [
             {
                 "arn": "arn:aws:ec2:us-west-2:123456789012:subnet/subnet-04a555b0e6EXAMPLE",
                 "resourceShareArn": "arn:aws:ram:us-west-2:123456789012:resource-share/7be8694e-095c-41ca-9ce8-7be4aEXAMPLE",
@@ -17,7 +17,7 @@ Output::
                 "status": "AVAILABLE",
                 "type": "ec2:Subnet"
             },
-            { 
+            {
                 "arn": "arn:aws:license-manager:us-west-2:123456789012:license-configuration:lic-36be0485f5ae379cc74cf8e92EXAMPLE",
                 "resourceShareArn": "arn:aws:ram:us-west-2:123456789012:resource-share/7ab63972-b505-7e2a-420d-6f5d3EXAMPLE",
                 "creationTime": 1624912434.431,

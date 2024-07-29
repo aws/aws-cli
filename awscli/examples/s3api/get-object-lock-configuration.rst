@@ -12,7 +12,7 @@ Output::
             "ObjectLockEnabled": "Enabled",
             "Rule": {
                 "DefaultRetention": {
-                    "Mode": "COMPLIANCE", 
+                    "Mode": "COMPLIANCE",
                     "Days": 50
                 }
             }

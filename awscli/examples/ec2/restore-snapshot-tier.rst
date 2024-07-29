@@ -38,7 +38,7 @@ For more information about snapshot archiving, see `Archive Amazon EBS snapshots
 The following ``restore-snapshot-tier`` example changes the restore period for the specified snapshot to ``10`` days. ::
 
     aws ec2 restore-snapshot-tier \
-        --snapshot-id snap-01234567890abcedf 
+        --snapshot-id snap-01234567890abcedf
         --temporary-restore-days 10
 
 Output::
@@ -56,7 +56,7 @@ For more information about snapshot archiving, see `Archive Amazon EBS snapshots
 The following ``restore-snapshot-tier`` example changes the restore type for the specified snapshot from temporary to permanent. ::
 
     aws ec2 restore-snapshot-tier \
-        --snapshot-id snap-01234567890abcedf 
+        --snapshot-id snap-01234567890abcedf
         --permanent-restore
 
 Output::

@@ -8,7 +8,7 @@ The following ``modify-replication-subnet-group`` example changes the lists of s
 
 Output::
 
-    {   
+    {
         "ReplicationSubnetGroup": {
             "ReplicationSubnetGroupIdentifier": "my-subnet-group",
             "ReplicationSubnetGroupDescription": "my subnet group",

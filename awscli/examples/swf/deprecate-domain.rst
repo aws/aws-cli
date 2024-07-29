@@ -57,4 +57,3 @@ See Also
 
 -  `DeprecateDomain <https://docs.aws.amazon.com/amazonswf/latest/apireference/API_DeprecateDomain.html>`__
    in the *Amazon Simple Workflow Service API Reference*
-

@@ -9,4 +9,3 @@ The following ``add-thing-to-thing-group`` example adds the specified thing to t
 This command produces no output.
 
 For more information, see `Thing Groups <https://docs.aws.amazon.com/iot/latest/developerguide/thing-groups.html>`__ in the *AWS IoT Developers Guide*.
-

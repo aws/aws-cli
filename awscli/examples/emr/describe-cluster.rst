@@ -5,96 +5,96 @@
 - Output::
 
 	For release-label based uniform instance groups cluster:
-	
+
 		{
 		    "Cluster": {
 		        "Status": {
 		            "Timeline": {
-		                "ReadyDateTime": 1436475075.199, 
-		                "CreationDateTime": 1436474656.563, 
-		            }, 
+		                "ReadyDateTime": 1436475075.199,
+		                "CreationDateTime": 1436474656.563,
+		            },
 		            "State": "WAITING",
 		            "StateChangeReason": {
-		                "Message": "Waiting for steps to run" 
+		                "Message": "Waiting for steps to run"
 		            }
-		        }, 
+		        },
 		        "Ec2InstanceAttributes": {
 		            "ServiceAccessSecurityGroup": "sg-xxxxxxxx",
-		            "EmrManagedMasterSecurityGroup": "sg-xxxxxxxx", 
-		            "IamInstanceProfile": "EMR_EC2_DefaultRole", 
-		            "Ec2KeyName": "myKey", 
-		            "Ec2AvailabilityZone": "us-east-1c", 
+		            "EmrManagedMasterSecurityGroup": "sg-xxxxxxxx",
+		            "IamInstanceProfile": "EMR_EC2_DefaultRole",
+		            "Ec2KeyName": "myKey",
+		            "Ec2AvailabilityZone": "us-east-1c",
 		            "EmrManagedSlaveSecurityGroup": "sg-yyyyyyyyy"
-		        }, 
-		        "Name": "My Cluster", 
-		        "ServiceRole": "EMR_DefaultRole", 
-		        "Tags": [], 
-		        "TerminationProtected": true, 
-		        "UnhealthyNodeReplacement": true, 
-		        "ReleaseLabel": "emr-4.0.0", 
-		        "NormalizedInstanceHours": 96, 
+		        },
+		        "Name": "My Cluster",
+		        "ServiceRole": "EMR_DefaultRole",
+		        "Tags": [],
+		        "TerminationProtected": true,
+		        "UnhealthyNodeReplacement": true,
+		        "ReleaseLabel": "emr-4.0.0",
+		        "NormalizedInstanceHours": 96,
 		        "InstanceGroups": [
 		            {
-		                "RequestedInstanceCount": 2, 
+		                "RequestedInstanceCount": 2,
 		                "Status": {
 		                    "Timeline": {
-		                        "ReadyDateTime": 1436475074.245, 
-		                        "CreationDateTime": 1436474656.564, 
+		                        "ReadyDateTime": 1436475074.245,
+		                        "CreationDateTime": 1436474656.564,
 		                        "EndDateTime": 1436638158.387
-		                    }, 
-		                    "State": "RUNNING", 
+		                    },
+		                    "State": "RUNNING",
 		                    "StateChangeReason": {
-		                        "Message": "", 
+		                        "Message": "",
 		                    }
-		                }, 
-		                "Name": "CORE", 
-		                "InstanceGroupType": "CORE", 
-		                "Id": "ig-YYYYYYY", 
-		                "Configurations": [], 
-		                "InstanceType": "m3.large", 
-		                "Market": "ON_DEMAND", 
+		                },
+		                "Name": "CORE",
+		                "InstanceGroupType": "CORE",
+		                "Id": "ig-YYYYYYY",
+		                "Configurations": [],
+		                "InstanceType": "m3.large",
+		                "Market": "ON_DEMAND",
 		                "RunningInstanceCount": 2
 		            },
 		            {
-		                "RequestedInstanceCount": 1, 
+		                "RequestedInstanceCount": 1,
 		                "Status": {
 		                    "Timeline": {
-		                        "ReadyDateTime": 1436475074.245, 
-		                        "CreationDateTime": 1436474656.564, 
+		                        "ReadyDateTime": 1436475074.245,
+		                        "CreationDateTime": 1436474656.564,
 		                        "EndDateTime": 1436638158.387
-		                    }, 
-		                    "State": "RUNNING", 
+		                    },
+		                    "State": "RUNNING",
 		                    "StateChangeReason": {
-		                        "Message": "", 
+		                        "Message": "",
 		                    }
-		                }, 
-		                "Name": "MASTER", 
-		                "InstanceGroupType": "MASTER", 
-		                "Id": "ig-XXXXXXXXX", 
-		                "Configurations": [], 
-		                "InstanceType": "m3.large", 
-		                "Market": "ON_DEMAND", 
+		                },
+		                "Name": "MASTER",
+		                "InstanceGroupType": "MASTER",
+		                "Id": "ig-XXXXXXXXX",
+		                "Configurations": [],
+		                "InstanceType": "m3.large",
+		                "Market": "ON_DEMAND",
 		                "RunningInstanceCount": 1
 		            }
-		        ], 
+		        ],
 		        "Applications": [
 		            {
 		                "Name": "Hadoop"
 		            }
-		        ], 
-		        "VisibleToAllUsers": true, 
-		        "BootstrapActions": [], 
-		        "MasterPublicDnsName": "ec2-54-147-144-78.compute-1.amazonaws.com", 
-		        "AutoTerminate": false, 
-		        "Id": "j-XXXXXXXX", 
+		        ],
+		        "VisibleToAllUsers": true,
+		        "BootstrapActions": [],
+		        "MasterPublicDnsName": "ec2-54-147-144-78.compute-1.amazonaws.com",
+		        "AutoTerminate": false,
+		        "Id": "j-XXXXXXXX",
 		        "Configurations": [
 		            {
 		                "Properties": {
-		                    "fs.s3.consistent.retryPeriodSeconds": "20", 
-		                    "fs.s3.enableServerSideEncryption": "true", 
-		                    "fs.s3.consistent": "false", 
+		                    "fs.s3.consistent.retryPeriodSeconds": "20",
+		                    "fs.s3.enableServerSideEncryption": "true",
+		                    "fs.s3.consistent": "false",
 		                    "fs.s3.consistent.retryCount": "2"
-		                }, 
+		                },
 		                "Classification": "emrfs-site"
 		            }
 		        ]
@@ -127,7 +127,7 @@
                 "ServiceRole": "EMR_DefaultRole",
                 "Tags": [],
                 "TerminationProtected": false,
-                "UnhealthyNodeReplacement": false, 
+                "UnhealthyNodeReplacement": false,
                 "ReleaseLabel": "emr-5.2.0",
                 "NormalizedInstanceHours": 472,
                 "InstanceCollectionType": "INSTANCE_FLEET",
@@ -180,9 +180,9 @@
                 "Configurations": []
             }
         }
- 
+
 	For ami based uniform instance group cluster:
-	
+
 	    {
 	        "Cluster": {
 	            "Status": {
@@ -202,7 +202,7 @@
 	            "Name": "My Cluster",
 	            "Tags": [],
 	            "TerminationProtected": true,
-	            "UnhealthyNodeReplacement": true, 
+	            "UnhealthyNodeReplacement": true,
 	            "RunningAmiVersion": "2.5.4",
 	            "InstanceGroups": [
 	                {

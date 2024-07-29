@@ -4,7 +4,7 @@ The following ``get-lf-tag`` example retrieves LF-tag definition. ::
 
     aws lakeformation get-lf-tag \
         --catalog-id '123456789111' \
-        --tag-key 'usergroup' 
+        --tag-key 'usergroup'
 
 Output::
 

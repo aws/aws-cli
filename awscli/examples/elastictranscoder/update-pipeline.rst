@@ -3,7 +3,7 @@
 The following ``update-pipeline`` example updates the specified ElasticTranscoder pipeline. ::
 
     aws elastictranscoder update-pipeline \
-        --id 1111111111111-abcde1 
+        --id 1111111111111-abcde1
         --name DefaultExample \
         --input-bucket salesoffice.example.com-source \
         --role arn:aws:iam::123456789012:role/Elastic_Transcoder_Default_Role \

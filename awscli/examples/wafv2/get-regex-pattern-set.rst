@@ -26,6 +26,6 @@ Output::
             "Id":"a1b2c3d4-5678-90ab-cdef-EXAMPLE11111"
         },
         "LockToken":"c8abf33f-b6fc-46ae-846e-42f994d57b29"
-    } 
+    }
 
 For more information, see `IP Sets and Regex Pattern Sets <https://docs.aws.amazon.com/waf/latest/developerguide/waf-referenced-set-managing.html>`__ in the *AWS WAF, AWS Firewall Manager, and AWS Shield Advanced Developer Guide*.

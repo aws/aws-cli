@@ -13,8 +13,8 @@ VPC in the VPC peering connection. If the command succeeds, no output is returne
 Command::
 
   aws ec2 create-route --route-table-id rtb-g8ff4ea2 --destination-cidr-block 10.0.0.0/16 --vpc-peering-connection-id pcx-1a2b3c4d
-  
-This example creates a route in the specified route table that matches all IPv6 traffic (``::/0``) and routes it to the specified egress-only Internet gateway. 
+
+This example creates a route in the specified route table that matches all IPv6 traffic (``::/0``) and routes it to the specified egress-only Internet gateway.
 
 Command::
 

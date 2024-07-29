@@ -60,7 +60,7 @@ Output::
 The following ``describe-fleet-attributes`` returns fleet attributes for all fleets with any status. This example illustrates the use of pagination parameters to return one fleet at a time. ::
 
     aws gamelift describe-fleet-attributes \
-        --limit 1 
+        --limit 1
 
 Output::
 
@@ -92,7 +92,7 @@ Output::
     }
 
 The output includes a ``NextToken`` value that you can use when you call the command a second time. Pass the value to the ``--next-token`` parameter to specify where to pick up the output. The following command returns the second result in the output. ::
- 
+
     aws gamelift describe-fleet-attributes \
         --limit 1 \
         --next-token eyJhd3NBY2NvdW50SWQiOnsicyI6IjMwMjc3NjAxNjM5OCJ9LCJidWlsZElkIjp7InMiOiJidWlsZC01NWYxZTZmMS1jY2FlLTQ3YTctOWI5ZS1iYjFkYTQwMjEXAMPLE1

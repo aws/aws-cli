@@ -1,9 +1,9 @@
 **To start a key phrases detection job**
 
 The following ``start-key-phrases-detection-job`` example starts an asynchronous key phrases detection job for all files located at the address specified by
-the ``--input-data-config`` tag. The S3 bucket in this example contains ``Sampletext1.txt``, ``Sampletext2.txt``, and ``Sampletext3.txt``. 
-When the job is completed, the folder, ``output``, is placed in the location specified by the ``--output-data-config`` tag. The folder contains 
-the file ``output.txt`` which contains all the key phrases detected within each text file and the pre-trained model's confidence score for each prediction. 
+the ``--input-data-config`` tag. The S3 bucket in this example contains ``Sampletext1.txt``, ``Sampletext2.txt``, and ``Sampletext3.txt``.
+When the job is completed, the folder, ``output``, is placed in the location specified by the ``--output-data-config`` tag. The folder contains
+the file ``output.txt`` which contains all the key phrases detected within each text file and the pre-trained model's confidence score for each prediction.
 The Json output is printed on one line per file, but is formatted here for readability. ::
 
     aws comprehend start-key-phrases-detection-job \
@@ -22,10 +22,10 @@ Contents of ``Sampletext2.txt``::
 
     "Dear Max, based on your autopay settings for your account Internet.org account, we will withdraw your payment on the due date from your bank account number XXXXXX1111 with the routing number XXXXX0000. "
 
-Contents of ``Sampletext3.txt``:: 
+Contents of ``Sampletext3.txt``::
 
     "Jane, please submit any customer feedback from this weekend to Sunshine Spa, 123 Main St, Anywhere and send comments to Alice at AnySpa@example.com."
-    
+
 Output::
 
     {

@@ -7,4 +7,3 @@ The following ``stop-assessment-run`` command stops the assessment run with the 
 For more information, see `Amazon Inspector Assessment Templates and Assessment Runs`_ in the *Amazon Inspector* guide.
 
 .. _`Amazon Inspector Assessment Templates and Assessment Runs`: https://docs.aws.amazon.com/inspector/latest/userguide/inspector_assessments.html
-

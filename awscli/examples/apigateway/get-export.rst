@@ -15,4 +15,3 @@ Command::
 Command::
 
   aws apigateway get-export --parameters extensions='postman' --rest-api-id a1b2c3d4e5 --stage-name dev --export-type swagger /path/to/filename.json
-

@@ -32,7 +32,7 @@ Output::
 
 If the new password violates the account password policy, the command returns a ``PasswordPolicyViolation`` error.
 
-To change the password for a user that already has one, use ``update-login-profile``. To set a password policy for the account, use the ``update-account-password-policy`` command. 
+To change the password for a user that already has one, use ``update-login-profile``. To set a password policy for the account, use the ``update-account-password-policy`` command.
 
 If the account password policy allows them to, IAM users can change their own passwords using the ``change-password`` command.
 

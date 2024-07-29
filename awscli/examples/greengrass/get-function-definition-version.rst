@@ -5,7 +5,7 @@ The following ``get-function-definition-version`` retrieves information about th
     aws greengrass get-function-definition-version \
         --function-definition-id "063f5d1a-1dd1-40b4-9b51-56f8993d0f85" \
         --function-definition-version-id "9748fda7-1589-4fcc-ac94-f5559e88678b"
-    
+
 Output::
 
     {

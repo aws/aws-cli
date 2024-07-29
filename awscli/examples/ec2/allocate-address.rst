@@ -2,7 +2,7 @@
 
 The following ``allocate-address`` example allocates an Elastic IP address. Amazon EC2 selects the address from Amazon's address pool. ::
 
-    aws ec2 allocate-address 
+    aws ec2 allocate-address
 
 Output::
 

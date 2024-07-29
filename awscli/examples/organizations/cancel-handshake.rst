@@ -1,9 +1,9 @@
 **To cancel a handshake sent from another account**
 
-Bill previously sent an invitation to Susan's account to join his organization. He changes his mind and decides to cancel the invitation before Susan accepts it. The following example shows Bill's cancellation: :: 
+Bill previously sent an invitation to Susan's account to join his organization. He changes his mind and decides to cancel the invitation before Susan accepts it. The following example shows Bill's cancellation: ::
 
 	aws organizations cancel-handshake --handshake-id h-examplehandshakeid111
-	
+
 The output includes a handshake object that shows that the state is now ``CANCELED``: ::
 
 	{
@@ -12,7 +12,7 @@ The output includes a handshake object that shows that the state is now ``CANCEL
 			"State":"CANCELED",
 			"Action": "INVITE",
 			"Arn": "arn:aws:organizations::111111111111:handshake/o-exampleorgid/invite/h-examplehandshakeid111",
-			"Parties": [ 
+			"Parties": [
 				{
 					"Id": "o-exampleorgid",
 					"Type": "ORGANIZATION"

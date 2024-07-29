@@ -10,4 +10,3 @@ The following ``update-byte-match-set`` command  deletes a ByteMatchTuple object
 For more information, see `Working with String Match Conditions`_ in the *AWS WAF* developer guide.
 
 .. _`Working with String Match Conditions`: https://docs.aws.amazon.com/waf/latest/developerguide/web-acl-string-conditions.html
-

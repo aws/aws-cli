@@ -8,8 +8,8 @@ The following ``list-tags-for-resource`` example list all tags for an AWS IoT Th
 Output::
 
     {
-       "tags": [ 
-          { 
+       "tags": [
+          {
              "key": "Type",
              "value": "Residential"
           }

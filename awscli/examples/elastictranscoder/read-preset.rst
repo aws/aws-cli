@@ -4,7 +4,7 @@ This example retrieves the specified ElasticTranscoder preset.
 
 Command::
 
- aws elastictranscoder read-preset --id 1351620000001-500020 
+ aws elastictranscoder read-preset --id 1351620000001-500020
 
 Output::
 
@@ -97,4 +97,4 @@ Output::
         "Name": "System preset: MPEG-Dash Video - 4.8M"
     }
  }
- 
+

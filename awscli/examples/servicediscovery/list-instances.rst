@@ -20,4 +20,3 @@ Output::
     }
 
 For more information, see `Viewing a list of service instances <https://docs.aws.amazon.com/cloud-map/latest/dg/listing-instances.html>`__ in the *AWS Cloud Map Developer Guide*.
-

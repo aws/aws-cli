@@ -9,11 +9,11 @@ Output::
   {
       "locations": [
           {
-              "locationName": "NAP do Brasil, Barueri, Sao Paulo", 
+              "locationName": "NAP do Brasil, Barueri, Sao Paulo",
               "locationCode": "TNDB"
-          }, 
+          },
           {
-              "locationName": "Tivit - Site Transamerica (Sao Paulo)", 
+              "locationName": "Tivit - Site Transamerica (Sao Paulo)",
               "locationCode": "TIVIT"
           }
       ]

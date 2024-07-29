@@ -4,7 +4,7 @@ The following ``get-group`` example retrieves information about the specified Gr
 
     aws greengrass get-group \
         --group-id "1013db12-8b58-45ff-acc7-704248f66731"
-    
+
 Output::
 
     {

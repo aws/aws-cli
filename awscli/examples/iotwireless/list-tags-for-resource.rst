@@ -10,7 +10,7 @@ Output::
     {
         "Tags": [
             {
-                "Value": "MyValue", 
+                "Value": "MyValue",
                 "Key": "MyTag"
             }
         ]

@@ -18,7 +18,7 @@ Output::
             "deleted": false,
             "lastModifiedDate": 1508369929.287,
             "callerReactions": [],
-            "reactionCounts": 
+            "reactionCounts":
                 {
                     "THUMBSUP" : 2
                 }

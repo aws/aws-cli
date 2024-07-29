@@ -5,7 +5,7 @@ The following ``update-table`` example increases the provisioned read and write 
     aws dynamodb update-table \
         --table-name MusicCollection \
         --billing-mode PROVISIONED \
-        --provisioned-throughput ReadCapacityUnits=15,WriteCapacityUnits=10 
+        --provisioned-throughput ReadCapacityUnits=15,WriteCapacityUnits=10
 
 Output::
 

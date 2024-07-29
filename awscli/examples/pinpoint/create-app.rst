@@ -3,7 +3,7 @@
 The following ``create-app`` example creates a new application (project). ::
 
     aws pinpoint create-app \
-        --create-application-request Name=ExampleCorp 
+        --create-application-request Name=ExampleCorp
 
 Output::
 
@@ -21,7 +21,7 @@ Output::
 The following ``create-app`` example creates a new application (project) and associates a tag (key and value) with the application. ::
 
     aws pinpoint create-app \
-        --create-application-request Name=ExampleCorp,tags={"Stack"="Test"} 
+        --create-application-request Name=ExampleCorp,tags={"Stack"="Test"}
 
 Output::
 

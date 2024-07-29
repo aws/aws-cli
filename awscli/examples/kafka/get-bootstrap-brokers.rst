@@ -13,6 +13,3 @@ Output::
     }
 
 For more information, see `Getting the Bootstrap Brokers <https://docs.aws.amazon.com/msk/latest/developerguide/msk-get-bootstrap-brokers.html>`__ in the *Amazon Managed Streaming for Apache Kafka Developer Guide*.
-
-
-

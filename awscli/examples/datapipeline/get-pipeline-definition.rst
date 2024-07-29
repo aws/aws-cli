@@ -3,7 +3,7 @@
 This example gets the pipeline definition for the specified pipeline::
 
    aws datapipeline get-pipeline-definition --pipeline-id df-00627471SOVYZEXAMPLE
-   
+
 The following is example output::
 
   {

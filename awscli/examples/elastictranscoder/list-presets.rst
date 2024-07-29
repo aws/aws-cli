@@ -7,7 +7,7 @@ Command::
   aws elastictranscoder list-presets --max-items 2
 
 Output::
-	
+
   {
     "Presets": [
         {
@@ -92,4 +92,4 @@ Output::
     ],
     "NextToken": "eyJQYWdlVG9rZW4iOiBudWxsLCAiYm90b190cnVuY2F0ZV9hbW91bnQiOiAyfQ=="
   }
- 
+

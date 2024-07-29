@@ -5,7 +5,7 @@ The following ``create-repository`` example creates a repository named test-repo
     aws codeartifact create-repository \
         --domain test-domain \
         --domain-owner 111122223333 \
-        --repository test-repo \ 
+        --repository test-repo \
         --description "This is a test repository."
 
 Output::

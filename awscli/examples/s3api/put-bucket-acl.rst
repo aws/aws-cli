@@ -5,4 +5,3 @@ permission to everyone::
 
 See http://docs.aws.amazon.com/AmazonS3/latest/API/RESTBucketPUTacl.html for details on custom ACLs (the s3api ACL
 commands, such as ``put-bucket-acl``, use the same shorthand argument notation).
-

@@ -3,7 +3,7 @@
 The following ``list-users`` example lists the users in the specified Amazon Connect instance. ::
 
     aws connect list-users \
-        --instance-id 40c83b68-ea62-414c-97bb-d018e39e158e 
+        --instance-id 40c83b68-ea62-414c-97bb-d018e39e158e
 
 Output::
 

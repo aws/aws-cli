@@ -4,7 +4,7 @@ The following ``get-resource-request-status`` example returns status information
 
     aws cloudcontrol get-resource-request-status \
         --request-token "e1a6b86e-46bd-41ac-bfba-001234567890"
- 
+
 Output::
 
     {

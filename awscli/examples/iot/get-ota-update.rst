@@ -13,7 +13,7 @@ Output::
             "otaUpdateArn": "arn:aws:iot:us-west-2:123456789012:otaupdate/itsaupdate",
             "creationDate": 1557863215.995,
             "lastModifiedDate": 1557863215.995,
-            "description": "A critical update needed right away.",  
+            "description": "A critical update needed right away.",
             "targets": [
                "device1",
                "device2",
@@ -27,15 +27,15 @@ Output::
             },
             "otaUpdateFiles": [
                 {
-                    "fileName": "firmware.bin",                
+                    "fileName": "firmware.bin",
                     "fileLocation": {
                         "stream": {
-                            "streamId": "004",                         
+                            "streamId": "004",
                             "fileId":123
-                        }                        
+                        }
                     },
                     "codeSigning": {
-                        "awsSignerJobId": "48c67f3c-63bb-4f92-a98a-4ee0fbc2bef6"     
+                        "awsSignerJobId": "48c67f3c-63bb-4f92-a98a-4ee0fbc2bef6"
                     }
                 }
             ],

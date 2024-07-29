@@ -19,4 +19,3 @@ The output returned by the command resembles the following.
 For more information, see `Adding Nodes Automatically in AWS OpsWorks for Chef Automate`_ in the *AWS OpsWorks User Guide*.
 
 .. _`Adding Nodes Automatically in AWS OpsWorks for Chef Automate`: http://docs.aws.amazon.com/opsworks/latest/userguide/opscm-unattend-assoc.html
-

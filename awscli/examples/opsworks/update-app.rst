@@ -11,4 +11,3 @@ The following example updates a specified app to change its name. ::
 For more information, see `Editing Apps`_ in the *AWS OpsWorks User Guide*.
 
 .. _`Editing Apps`: http://docs.aws.amazon.com/opsworks/latest/userguide/workingapps-editing.html
-

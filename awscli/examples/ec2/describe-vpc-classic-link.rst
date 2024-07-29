@@ -11,11 +11,11 @@ Output::
   {
     "Vpcs": [
       {
-        "ClassicLinkEnabled": true, 
-        "VpcId": "vpc-88888888", 
+        "ClassicLinkEnabled": true,
+        "VpcId": "vpc-88888888",
         "Tags": [
           {
-            "Value": "classiclinkvpc", 
+            "Value": "classiclinkvpc",
             "Key": "Name"
           }
         ]

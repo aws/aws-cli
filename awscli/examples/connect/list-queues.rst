@@ -3,7 +3,7 @@
 The following ``list-queues`` example lists the queues in the specified Amazon Connect instance. ::
 
     aws connect list-queues \
-        --instance-id a1b2c3d4-5678-90ab-cdef-EXAMPLE11111 
+        --instance-id a1b2c3d4-5678-90ab-cdef-EXAMPLE11111
 
 Output::
 

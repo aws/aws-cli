@@ -1,6 +1,6 @@
 **To copy an option group**
 
-The following ``copy-option-group`` example makes a copy of an option group. :: 
+The following ``copy-option-group`` example makes a copy of an option group. ::
 
     aws rds copy-option-group \
         --source-option-group-identifier myoptiongroup \

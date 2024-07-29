@@ -20,6 +20,6 @@ Output::
         "PinData": {
             "VerificationValue": "5507"
         }
-    } 
+    }
 
 For more information, see `Generate PIN data  <https://docs.aws.amazon.com/payment-cryptography/latest/userguide/generate-pin-data.html>`__ in the *AWS Payment Cryptography User Guide*.

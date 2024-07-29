@@ -90,4 +90,3 @@ Output::
 When there are no further pages of results to retrieve, ``nextPageToken`` will not be returned in the results.
 
 For more information, see `ListDomains <https://docs.aws.amazon.com/amazonswf/latest/apireference/API_ListDomains.html>`__ in the *Amazon Simple Workflow Service API Reference*
-

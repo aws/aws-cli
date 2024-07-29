@@ -1,11 +1,11 @@
 **To list groups for a user**
 
-This example lists groups for username jane@example.com. 
+This example lists groups for username jane@example.com.
 
 Command::
 
   aws cognito-idp admin-list-groups-for-user --user-pool-id us-west-2_aaaaaaaaa --username diego@example.com
-  
+
 Output::
 
   {

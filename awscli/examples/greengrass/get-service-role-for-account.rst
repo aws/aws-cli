@@ -3,7 +3,7 @@
 The following ``get-service-role-for-account`` example retrieves information about the service role that is attached to your AWS account. ::
 
     aws greengrass get-service-role-for-account
-    
+
 Output::
 
     {

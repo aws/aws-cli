@@ -23,7 +23,7 @@ Run this command again and provide the ``nextToken`` value in the previous respo
 Next part of the output::
 
     {
-        "ids": [       
+        "ids": [
             "codebuild-demo-project:49015049-21cf-4b50-9708-df115EXAMPLE",
             "codebuild-demo-project:543e7206-68a3-46d6-a4da-759abEXAMPLE",
                 ... The full list of build IDs has been omitted for brevity ...
@@ -32,4 +32,3 @@ Next part of the output::
     }
 
 For more information, see `View a List of Build IDs (AWS CLI) <https://docs.aws.amazon.com/codebuild/latest/userguide/view-build-list.html>`_ in the *AWS CodeBuild User Guide*
-

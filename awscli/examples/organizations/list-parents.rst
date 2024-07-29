@@ -4,7 +4,7 @@ The following example you how to list the root or parent OU that contains that a
 
 	aws organizations list-parents --child-id 444444444444
 
-  
+
 The output shows that the specified account is in the OU with specified ID: ::
 
 	{

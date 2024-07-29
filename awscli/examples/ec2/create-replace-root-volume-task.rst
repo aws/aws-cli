@@ -8,12 +8,12 @@ The following ``create-replace-root-volume-task`` example restores the root volu
 Output::
 
     {
-        "ReplaceRootVolumeTask": 
+        "ReplaceRootVolumeTask":
         {
-            "InstanceId": "i-0123456789abcdefa", 
-                "ReplaceRootVolumeTaskId": "replacevol-0111122223333abcd", 
-                "TaskState": "pending", 
-                "StartTime": "2022-03-14T15:06:38Z", 
+            "InstanceId": "i-0123456789abcdefa",
+                "ReplaceRootVolumeTaskId": "replacevol-0111122223333abcd",
+                "TaskState": "pending",
+                "StartTime": "2022-03-14T15:06:38Z",
                 "Tags": []
         }
     }
@@ -31,12 +31,12 @@ The following ``create-replace-root-volume-task`` example restores the root volu
 Output::
 
     {
-        "ReplaceRootVolumeTask": 
+        "ReplaceRootVolumeTask":
         {
-            "InstanceId": "i-0123456789abcdefa", 
-            "ReplaceRootVolumeTaskId": "replacevol-0555566667777abcd", 
-            "TaskState": "pending", 
-            "StartTime": "2022-03-14T15:16:28Z", 
+            "InstanceId": "i-0123456789abcdefa",
+            "ReplaceRootVolumeTaskId": "replacevol-0555566667777abcd",
+            "TaskState": "pending",
+            "StartTime": "2022-03-14T15:16:28Z",
             "Tags": []
         }
     }

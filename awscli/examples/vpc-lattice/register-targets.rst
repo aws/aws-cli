@@ -4,7 +4,7 @@ The following ``register-targets`` example registers the specified targets with 
 
     aws vpc-lattice register-targets \
         --targets id=i-047b3c9078EXAMPLE id=i-07dd579bc5EXAMPLE \
-        --target-group-identifier tg-0eaa4b9ab4EXAMPLE 
+        --target-group-identifier tg-0eaa4b9ab4EXAMPLE
 
 Output::
 

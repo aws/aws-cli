@@ -19,7 +19,7 @@ Output::
             {
                 "ServiceCode": "acm",
                 "ServiceName": "AWS Certificate Manager (ACM)"
-            },     
+            },
 
             ...truncated...
 
@@ -47,4 +47,4 @@ Output::
         "application-autoscaling",
             ...truncated...
         "xray"
-    ] 
+    ]

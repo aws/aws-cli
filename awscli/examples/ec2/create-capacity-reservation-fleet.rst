@@ -26,14 +26,14 @@ Contents of ``instanceTypeSpecification.json``::
 Output::
 
     {
-        "Status": "submitted", 
-        "TotalFulfilledCapacity": 0.0, 
-        "CapacityReservationFleetId": "crf-abcdef01234567890", 
+        "Status": "submitted",
+        "TotalFulfilledCapacity": 0.0,
+        "CapacityReservationFleetId": "crf-abcdef01234567890",
         "TotalTargetCapacity": 24
     }
 
-For more information about Capacity Reservation Fleets, see `Capacity Reservation Fleets <https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/cr-fleets.html>`__ in the *Amazon EC2 User Guide*. 
+For more information about Capacity Reservation Fleets, see `Capacity Reservation Fleets <https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/cr-fleets.html>`__ in the *Amazon EC2 User Guide*.
 
-For more information about instance type weight and total target capacity, see `Instance type weight <https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/crfleet-concepts.html#instance-weight>`__ and `Total target capacity <https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/crfleet-concepts.html#target-capacity>`__ in the *Amazon EC2 User Guide*. 
+For more information about instance type weight and total target capacity, see `Instance type weight <https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/crfleet-concepts.html#instance-weight>`__ and `Total target capacity <https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/crfleet-concepts.html#target-capacity>`__ in the *Amazon EC2 User Guide*.
 
 For more information about designating priority for specified instance types, see `Allocation strategy <https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/crfleet-concepts.html#allocation-strategy>`__ and `Instance type priority <https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/crfleet-concepts.html#instance-priority>`__ in the *Amazon EC2 User Guide*.

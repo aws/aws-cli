@@ -4,7 +4,7 @@ The following ``untag-resource`` example removes a single tag from an Amazon Com
 
     aws comprehend untag-resource \
         --resource-arn arn:aws:comprehend:us-west-2:111122223333:document-classifier/example-classifier/version/1
-        --tag-keys Location 
+        --tag-keys Location
 
 This command produces no output.
 

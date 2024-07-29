@@ -11,7 +11,7 @@ The following ``modify-db-proxy-target-group`` example modifies a DB proxy targe
 Output::
 
     {
-    "DBProxyTargetGroup": 
+    "DBProxyTargetGroup":
         {
             "DBProxyName": "proxyExample",
             "TargetGroupName": "default",
@@ -30,5 +30,3 @@ Output::
     }
 
 For more information, see `Modifying an RDS Proxy <https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/rds-proxy-managing.html#rds-proxy-modifying-proxy>`__ in the *Amazon RDS User Guide* and `Modifying an RDS Proxy <https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/rds-proxy-managing.html#rds-proxy-modifying-proxy>`__ in the *Amazon Aurora User Guide*.
-
-

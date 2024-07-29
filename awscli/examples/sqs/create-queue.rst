@@ -10,7 +10,7 @@ Input file (create-queue.json)::
 
   {
     "RedrivePolicy": "{\"deadLetterTargetArn\":\"arn:aws:sqs:us-east-1:80398EXAMPLE:MyDeadLetterQueue\",\"maxReceiveCount\":\"1000\"}",
-    "MessageRetentionPeriod": "259200"  
+    "MessageRetentionPeriod": "259200"
   }
 
 Output::
@@ -18,4 +18,3 @@ Output::
   {
     "QueueUrl": "https://queue.amazonaws.com/80398EXAMPLE/MyQueue"
   }
-

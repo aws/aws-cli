@@ -1,6 +1,6 @@
 **To get a list of suggested domain names**
 
-The following ``get-domain-suggestions`` command displays a list of suggested domain names based on the domain name ``example.com``. The response includes only domain names that are available. 
+The following ``get-domain-suggestions`` command displays a list of suggested domain names based on the domain name ``example.com``. The response includes only domain names that are available.
 This command runs only in the ``us-east-1`` Region. If your default region is set to ``us-east-1``, you can omit the ``region`` parameter. ::
 
     aws route53domains get-domain-suggestions \

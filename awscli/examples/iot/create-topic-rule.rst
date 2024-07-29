@@ -25,4 +25,3 @@ The example requires the following JSON code to be saved to a file named ``plant
 This command produces no output.
 
 For more information, see `Creating an AWS IoT Rule <https://docs.aws.amazon.com/iot/latest/developerguide/iot-create-rule.html>`__ in the *AWS IoT Developers Guide*.
-

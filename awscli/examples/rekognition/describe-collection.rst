@@ -8,9 +8,9 @@ The following ``describe-collection`` example displays the details about the spe
 Output::
 
     {
-        "FaceCount": 200, 
-        "CreationTimestamp": 1569444828.274, 
-        "CollectionARN": "arn:aws:rekognition:us-west-2:123456789012:collection/MyCollection", 
+        "FaceCount": 200,
+        "CreationTimestamp": 1569444828.274,
+        "CollectionARN": "arn:aws:rekognition:us-west-2:123456789012:collection/MyCollection",
         "FaceModelVersion": "4.0"
     }
 

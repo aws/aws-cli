@@ -1,6 +1,6 @@
 **To register a domain**
 
-The following ``register-domain`` command registers a domain, retrieving all parameter values from a JSON-formatted file. 
+The following ``register-domain`` command registers a domain, retrieving all parameter values from a JSON-formatted file.
 
 This command runs only in the ``us-east-1`` Region. If your default region is set to ``us-east-1``, you can omit the ``region`` parameter. ::
 
@@ -64,7 +64,7 @@ Output::
         "OperationId": "b114c44a-9330-47d1-a6e8-a0b11example"
     }
 
-To confirm that the operation succeeded, you can run ``get-operation-detail``. For more information, see `get-operation-detail <https://docs.aws.amazon.com/cli/latest/reference/route53domains/get-operation-detail.html>`__ . 
+To confirm that the operation succeeded, you can run ``get-operation-detail``. For more information, see `get-operation-detail <https://docs.aws.amazon.com/cli/latest/reference/route53domains/get-operation-detail.html>`__ .
 
 For more information, see `Registering a New Domain <https://docs.aws.amazon.com/Route53/latest/DeveloperGuide/domain-register.html>`__ in the *Amazon Route 53 Developer Guide*.
 

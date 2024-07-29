@@ -1,6 +1,6 @@
 **To delete a Resolver rule**
 
-The following ``delete-resolver-rule`` example deletes the specified rule. 
+The following ``delete-resolver-rule`` example deletes the specified rule.
 
 **Note** If a rule is associated with any VPCs, you must first disassociate the rule from the VPCs before you can delete it. ::
 

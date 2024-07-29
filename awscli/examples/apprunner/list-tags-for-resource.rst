@@ -16,11 +16,11 @@ Output::
     {
         "Tags": [
             {
-                "Key": "Department", 
+                "Key": "Department",
                 "Value": "Retail"
             },
             {
-                "Key": "CustomerId", 
+                "Key": "CustomerId",
                 "Value": "56439872357912"
             }
         ]

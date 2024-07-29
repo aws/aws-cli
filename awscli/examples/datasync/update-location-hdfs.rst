@@ -14,7 +14,7 @@ Contents of ``hdfs.keytab``::
 
 Contents of ``krb5.conf``::
 
-    [libdefaults]  
+    [libdefaults]
         default_realm = EXAMPLE.COM
         dns_lookup_realm = false
         dns_lookup_kdc = false
@@ -25,18 +25,18 @@ Contents of ``krb5.conf``::
         default_tkt_enctypes = aes256-cts-hmac-sha1-96 aes128-cts-hmac-sha1-96 des3-cbc-sha1
         default_tgs_enctypes = aes256-cts-hmac-sha1-96 aes128-cts-hmac-sha1-96 des3-cbc-sha1
         permitted_enctypes = aes256-cts-hmac-sha1-96 aes128-cts-hmac-sha1-96 des3-cbc-sha1
-    
+
     [realms]
         EXAMPLE.COM = {
           kdc = kdc1.example.com
           admin_server = krbadmin.example.com
           default_domain = example.com
         }
-    
+
     [domain_realm]
         .example.com = EXAMPLE.COM
-        example.com = EXAMPLE.COM 
-    
+        example.com = EXAMPLE.COM
+
     [logging]
         kdc = FILE:/var/log/krb5kdc.log
         admin_server = FILE:/var/log/kerberos/kadmin.log

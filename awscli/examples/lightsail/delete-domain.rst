@@ -1,6 +1,6 @@
 **To delete a domain (DNS zone)**
 
-The following ``delete-domain`` example deletes the specified domain and all of the entries in the domain (DNS records). 
+The following ``delete-domain`` example deletes the specified domain and all of the entries in the domain (DNS records).
 
 **Note:** Lightsail's domain-related API operations are available in only the ``us-east-1`` Region. If your CLI profile is configured to use a different Region, you must include the ``--region us-east-1`` parameter or the command fails. ::
 

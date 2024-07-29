@@ -4,7 +4,7 @@ This example removes the managed policy with the ARN ``arn:aws:iam::123456789012
 
     aws iam detach-role-policy \
         --role-name FedTesterRole \
-        --policy-arn arn:aws:iam::123456789012:policy/FederatedTesterAccessPolicy 
+        --policy-arn arn:aws:iam::123456789012:policy/FederatedTesterAccessPolicy
 
 This command produces no output.
 

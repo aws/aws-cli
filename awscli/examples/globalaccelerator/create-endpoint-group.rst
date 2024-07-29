@@ -11,14 +11,14 @@ Output::
 
     {
         "EndpointGroup": {
-            "TrafficDialPercentage": 100.0, 
+            "TrafficDialPercentage": 100.0,
             "EndpointDescriptions": [
                 {
-                    "Weight": 128, 
+                    "Weight": 128,
                     "EndpointId": "i-1234567890abcdef0"
                 }
-            ], 
-            "EndpointGroupArn": "arn:aws:globalaccelerator::012345678901:accelerator/1234abcd-abcd-1234-abcd-1234abcdefgh/listener/0123vxyz/endpoint-group/098765zyxwvu", 
+            ],
+            "EndpointGroupArn": "arn:aws:globalaccelerator::012345678901:accelerator/1234abcd-abcd-1234-abcd-1234abcdefgh/listener/0123vxyz/endpoint-group/098765zyxwvu",
             "EndpointGroupRegion": "us-east-1"
         }
     }

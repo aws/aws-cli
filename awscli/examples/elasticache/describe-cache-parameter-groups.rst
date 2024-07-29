@@ -18,4 +18,3 @@ Output::
     }
 
 For more information, see `Configuring Engine Parameters Using Parameter Groups <https://docs.aws.amazon.com/AmazonElastiCache/latest/mem-ug/ParameterGroups.html>`__ in the *Elasticache User Guide*.
-

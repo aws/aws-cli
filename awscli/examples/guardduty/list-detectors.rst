@@ -2,7 +2,7 @@
 
 The following ``list-detectors`` example lists the available detectors in your current AWS region. ::
 
-    aws guardduty list-detectors 
+    aws guardduty list-detectors
 
 Output::
 

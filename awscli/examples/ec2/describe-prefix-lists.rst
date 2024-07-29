@@ -11,10 +11,10 @@ Output::
   {
     "PrefixLists": [
       {
-        "PrefixListName": "com.amazonaws.us-east-1.s3", 
+        "PrefixListName": "com.amazonaws.us-east-1.s3",
         "Cidrs": [
           "54.231.0.0/17"
-        ], 
+        ],
         "PrefixListId": "pl-63a5400a"
       }
     ]

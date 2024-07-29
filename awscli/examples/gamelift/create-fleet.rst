@@ -15,20 +15,20 @@ Output::
 
     {
         "FleetAttributes": {
-            "BuildId": "build-1111aaaa-22bb-33cc-44dd-5555eeee66ff", 
-            "CertificateConfiguration": { 
+            "BuildId": "build-1111aaaa-22bb-33cc-44dd-5555eeee66ff",
+            "CertificateConfiguration": {
                 "CertificateType": "GENERATED"
             },
-            "CreationTime": 1496365885.44, 
+            "CreationTime": 1496365885.44,
             "Description": "Hosts for v2 North America",
-            "FleetArn": "arn:aws:gamelift:us-west-2:444455556666:fleet/fleet-2222bbbb-33cc-44dd-55ee-6666ffff77aa", 
-            "FleetId": "fleet-2222bbbb-33cc-44dd-55ee-6666ffff77aa", 
+            "FleetArn": "arn:aws:gamelift:us-west-2:444455556666:fleet/fleet-2222bbbb-33cc-44dd-55ee-6666ffff77aa",
+            "FleetId": "fleet-2222bbbb-33cc-44dd-55ee-6666ffff77aa",
             "FleetType": "ON_DEMAND",
             "InstanceType": "c4.large",
             "MetricGroups": ["default"],
-            "Name": "MegaFrogRace.NA.v2", 
-            "NewGameSessionProtectionPolicy": "NoProtection", 
-            "OperatingSystem": "AMAZON_LINUX", 
+            "Name": "MegaFrogRace.NA.v2",
+            "NewGameSessionProtectionPolicy": "NoProtection",
+            "OperatingSystem": "AMAZON_LINUX",
             "ServerLaunchPath": "/local/game/release-na/MegaFrogRace_Server.exe",
             "Status": "NEW"
         }
@@ -51,20 +51,20 @@ Output::
 
     {
         "FleetAttributes": {
-            "BuildId": "build-2222aaaa-33bb-44cc-55dd-6666eeee77ff", 
-            "CertificateConfiguration": { 
+            "BuildId": "build-2222aaaa-33bb-44cc-55dd-6666eeee77ff",
+            "CertificateConfiguration": {
                 "CertificateType": "GENERATED"
             },
-            "CreationTime": 1496365885.44, 
+            "CreationTime": 1496365885.44,
             "Description": "Hosts for v2 North America",
-            "FleetArn": "arn:aws:gamelift:us-west-2:444455556666:fleet/fleet-2222bbbb-33cc-44dd-55ee-6666ffff77aa", 
-            "FleetId": "fleet-2222bbbb-33cc-44dd-55ee-6666ffff77aa", 
+            "FleetArn": "arn:aws:gamelift:us-west-2:444455556666:fleet/fleet-2222bbbb-33cc-44dd-55ee-6666ffff77aa",
+            "FleetId": "fleet-2222bbbb-33cc-44dd-55ee-6666ffff77aa",
             "FleetType": "SPOT",
             "InstanceType": "c4.large",
             "MetricGroups": ["default"],
-            "Name": "MegaFrogRace.NA.v2", 
-            "NewGameSessionProtectionPolicy": "NoProtection", 
-            "OperatingSystem": "WINDOWS_2012", 
+            "Name": "MegaFrogRace.NA.v2",
+            "NewGameSessionProtectionPolicy": "NoProtection",
+            "OperatingSystem": "WINDOWS_2012",
             "ServerLaunchPath": "C:\game\Bin64.Release.Dedicated\MegaFrogRace_Server.exe",
             "Status": "NEW"
         }
@@ -73,7 +73,7 @@ Output::
 
 **Example 3: To create a fully configured fleet**
 
-The following ``create-fleet`` example creates a fleet of Spot Windows instances for a custom server build, with most commonly used configuration settings provided. :: 
+The following ``create-fleet`` example creates a fleet of Spot Windows instances for a custom server build, with most commonly used configuration settings provided. ::
 
     aws gamelift create-fleet \
         --name MegaFrogRace.NA.v2 \

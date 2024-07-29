@@ -15,6 +15,6 @@ The output is the vault lock ID that you can use to complete the vault lock proc
 
     {
         "lockId": "9QZgEXAMPLEPhvL6xEXAMPLE"
-    }    
+    }
 
 For more information, see `Initiate Vault Lock (POST lock-policy) <https://docs.aws.amazon.com/amazonglacier/latest/dev/api-InitiateVaultLock.html>`__ in the *Amazon Glacier API Developer Guide*.

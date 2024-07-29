@@ -27,7 +27,7 @@ The following ``create-user`` command creates an IAM user named ``Bob`` at the s
         --user-name Bob \
         --path /division_abc/subdivision_xyz/
 
-Output:: 
+Output::
 
     {
         "User": {
@@ -43,7 +43,7 @@ For more information, see `IAM identifiers <https://docs.aws.amazon.com/IAM/late
 
 **Example 3: To Create an IAM User with tags**
 
-The following ``create-user`` command creates an IAM user named ``Bob`` with tags. This example uses the ``--tags`` parameter flag with the following 
+The following ``create-user`` command creates an IAM user named ``Bob`` with tags. This example uses the ``--tags`` parameter flag with the following
 JSON-formatted tags: ``'{"Key": "Department", "Value": "Accounting"}' '{"Key": "Location", "Value": "Seattle"}'``. Alternatively, the ``--tags`` flag can be used with tags in the shorthand format: ``'Key=Department,Value=Accounting Key=Location,Value=Seattle'``. ::
 
     aws iam create-user \

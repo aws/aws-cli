@@ -14,4 +14,3 @@ Output::
           "subnet-0ecac448"
       ]
    }
-

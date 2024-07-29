@@ -22,4 +22,3 @@ Output::
     }
 
 For more information, see `Working with packages in CodeArtifact <https://docs.aws.amazon.com/codeartifact/latest/ug/packages.html>`__ in the *AWS CodeArtifact User Guide*.
-

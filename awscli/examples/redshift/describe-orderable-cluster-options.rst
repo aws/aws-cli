@@ -64,5 +64,3 @@ Result::
     us-east-1b
     us-east-1c
     RESPONSEMETADATA	e648696b-64cb-11e2-bec0-17624ad140dd
-
-

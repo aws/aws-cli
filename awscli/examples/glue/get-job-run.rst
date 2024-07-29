@@ -4,7 +4,7 @@ The following ``get-job-run`` example retrieves information about a job run. ::
 
     aws glue get-job-run \
         --job-name "Combine legistators data" \
-        --run-id jr_012e176506505074d94d761755e5c62538ee1aad6f17d39f527e9140cf0c9a5e  
+        --run-id jr_012e176506505074d94d761755e5c62538ee1aad6f17d39f527e9140cf0c9a5e
 
 Output::
 

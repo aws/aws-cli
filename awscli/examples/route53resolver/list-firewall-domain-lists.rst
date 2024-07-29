@@ -2,7 +2,7 @@
 
 The following ``list-firewall-domain-lists`` example lists all the domain lists. ::
 
-    aws route53resolver list-firewall-domain-lists 
+    aws route53resolver list-firewall-domain-lists
 
 Output::
 

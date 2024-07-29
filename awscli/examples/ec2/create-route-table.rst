@@ -22,5 +22,5 @@ Output::
                   "State": "active"
               }
           ]
-      }  
+      }
   }

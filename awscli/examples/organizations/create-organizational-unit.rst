@@ -3,7 +3,7 @@
 The following example shows how to create an OU that is named AccountingOU: ::
 
 	aws organizations create-organizational-unit --parent-id r-examplerootid111 --name AccountingOU
-	
+
 The output includes an organizationalUnit object with details about the new OU: ::
 
 	{

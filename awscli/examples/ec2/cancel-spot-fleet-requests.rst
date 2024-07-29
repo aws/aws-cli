@@ -40,7 +40,7 @@ Output::
                 "PreviousSpotFleetRequestState": "active"
             }
         ],
-        "UnsuccessfulFleetRequests": []  
+        "UnsuccessfulFleetRequests": []
     }
 
 For more information, see `Cancel a Spot Fleet request <https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/work-with-spot-fleets.html#cancel-spot-fleet>`__ in the *Amazon Elastic Compute Cloud User Guide for Linux Instances*.

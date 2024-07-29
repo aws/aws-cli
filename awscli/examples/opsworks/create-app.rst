@@ -28,7 +28,7 @@ JSON files that are in the directory from which you run the command. ::
         --name SimpleJSP \
         --type java \
         --app-source file://appsource.json \
-        --data-sources file://datasource.json 
+        --data-sources file://datasource.json
 
 The application source information is in ``appsource.json`` and contains the following. ::
 
@@ -46,7 +46,7 @@ The database source information is in ``datasource.json`` and contains the follo
             "DatabaseName": "mydb"
         }
     ]
-  
+
 **Note**: For an RDS DB instance, you must first use ``register-rds-db-instance`` to register the instance with the stack.
 For MySQL App Server instances, set ``Type`` to ``OpsworksMysqlInstance``. These instances are
 created by AWS OpsWorks,
@@ -61,4 +61,3 @@ Output::
 For more information, see `Adding Apps`_ in the *AWS OpsWorks User Guide*.
 
 .. _`Adding Apps`: http://docs.aws.amazon.com/opsworks/latest/userguide/workingapps-creating.html
-

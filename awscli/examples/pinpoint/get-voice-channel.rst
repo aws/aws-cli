@@ -20,4 +20,3 @@ Output::
             "Version": 1
         }
     }
-

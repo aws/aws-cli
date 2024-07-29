@@ -6,7 +6,7 @@ The following ``create-option-group`` command creates a new Amazon RDS option gr
         --option-group-name MyOptionGroup \
         --engine-name oracle-ee \
         --major-engine-version 11.2 \
-        --option-group-description "Oracle Database Manager Database Control" 
+        --option-group-description "Oracle Database Manager Database Control"
 
 Output::
 

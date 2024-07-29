@@ -123,9 +123,9 @@ Output::
   {
       "Tags": [
           {
-              "ResourceType": "instance", 
-              "ResourceId": "i-1234567890abcdef5", 
-              "Value": null, 
+              "ResourceType": "instance",
+              "ResourceId": "i-1234567890abcdef5",
+              "Value": null,
               "Key": "Purpose"
           }
       ]

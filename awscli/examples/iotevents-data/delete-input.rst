@@ -3,7 +3,7 @@
 The following ``delete-input`` example deletes an input. ::
 
     aws iotevents delete-input \
-        --input-name PressureInput 
+        --input-name PressureInput
 
 This command produces no output.
 

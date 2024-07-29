@@ -10,11 +10,11 @@ Output::
     {
         "ReplaceRootVolumeTasks": [
             {
-                "ReplaceRootVolumeTaskId": "replacevol-0111122223333abcd", 
-                "Tags": [], 
-                "InstanceId": "i-0123456789abcdefa", 
-                "TaskState": "succeeded", 
-                "StartTime": "2022-03-14T15:16:28Z", 
+                "ReplaceRootVolumeTaskId": "replacevol-0111122223333abcd",
+                "Tags": [],
+                "InstanceId": "i-0123456789abcdefa",
+                "TaskState": "succeeded",
+                "StartTime": "2022-03-14T15:16:28Z",
                 "CompleteTime": "2022-03-14T15:16:52Z"
             }
         ]
@@ -35,19 +35,19 @@ Output::
     {
         "ReplaceRootVolumeTasks": [
             {
-                "ReplaceRootVolumeTaskId": "replacevol-0111122223333abcd", 
-                "Tags": [], 
-                "InstanceId": "i-0123456789abcdefa", 
-                "TaskState": "succeeded", 
-                "StartTime": "2022-03-14T15:06:38Z", 
+                "ReplaceRootVolumeTaskId": "replacevol-0111122223333abcd",
+                "Tags": [],
+                "InstanceId": "i-0123456789abcdefa",
+                "TaskState": "succeeded",
+                "StartTime": "2022-03-14T15:06:38Z",
                 "CompleteTime": "2022-03-14T15:07:03Z"
-            }, 
+            },
             {
-                "ReplaceRootVolumeTaskId": "replacevol-0444455555555abcd", 
-                "Tags": [], 
-                "InstanceId": "i-0123456789abcdefa", 
-                "TaskState": "succeeded", 
-                "StartTime": "2022-03-14T15:16:28Z", 
+                "ReplaceRootVolumeTaskId": "replacevol-0444455555555abcd",
+                "Tags": [],
+                "InstanceId": "i-0123456789abcdefa",
+                "TaskState": "succeeded",
+                "StartTime": "2022-03-14T15:16:28Z",
                 "CompleteTime": "2022-03-14T15:16:52Z"
             }
         ]

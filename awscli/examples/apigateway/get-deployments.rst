@@ -9,10 +9,9 @@ Output::
   {
       "items": [
           {
-              "createdDate": 1453797217, 
-              "id": "0a2b4c", 
+              "createdDate": 1453797217,
+              "id": "0a2b4c",
               "description": "Deployed my API for the first time"
           }
       ]
   }
-

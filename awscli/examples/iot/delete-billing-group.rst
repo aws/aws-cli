@@ -8,4 +8,3 @@ The following ``delete-billing-group`` example deletes the specified billing gro
 This command does not produce any output.
 
 For more information, see `Billing Groups <https://docs.aws.amazon.com/iot/latest/developerguide/tagging-iot-billing-groups.html>`__ in the *AWS IoT Developers Guide*.
-

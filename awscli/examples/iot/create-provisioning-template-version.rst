@@ -1,10 +1,10 @@
 **To create a provisioning template version**
 
-The following example creates a version for the specified provisioning template. The body of the new version is supplied in the file ``template.json``. :: 
+The following example creates a version for the specified provisioning template. The body of the new version is supplied in the file ``template.json``. ::
 
     aws iot create-provisioning-template-version \
         --template-name widget-template \
-        --template-body file://template.json  
+        --template-body file://template.json
 
 Contents of ``template.json``::
 
@@ -25,7 +25,7 @@ Contents of ``template.json``::
             "thing" : {
                 "Type" : "AWS::IoT::Thing",
                 "Properties" : {
-                    "AttributePayload" : { 
+                    "AttributePayload" : {
                         "version" : "v1",
                         "serialNumber" : "serialNumber"
                     },
@@ -66,7 +66,7 @@ Contents of ``template.json``::
             "LocationUrl": {
                 "Fn::FindInMap": ["LocationTable",{"Ref": "DeviceLocation"}, "LocationUrl"]}
             }
-        }    
+        }
     }
 
 Output::

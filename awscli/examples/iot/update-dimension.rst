@@ -3,7 +3,7 @@
 The following ``update-dimension`` example updates a dimension. ::
 
     aws iot update-dimension \
-        --name TopicFilterForAuthMessages \  
+        --name TopicFilterForAuthMessages \
         --string-values device/${iot:ClientId}/auth
 
 Output::

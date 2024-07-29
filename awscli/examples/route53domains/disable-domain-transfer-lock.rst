@@ -1,6 +1,6 @@
 **To disable the transfer lock on a domain**
 
-The following ``disable-domain-transfer-lock`` command removes the transfer lock on the domain ``example.com`` so that the domain can be transferred to another registrar. This command changes the ``clientTransferProhibited`` status. 
+The following ``disable-domain-transfer-lock`` command removes the transfer lock on the domain ``example.com`` so that the domain can be transferred to another registrar. This command changes the ``clientTransferProhibited`` status.
 
 This command runs only in the ``us-east-1`` Region. If your default region is set to ``us-east-1``, you can omit the ``region`` parameter. ::
 

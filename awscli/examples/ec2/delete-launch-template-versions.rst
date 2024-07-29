@@ -9,11 +9,11 @@ Command::
 Output::
 
   {
-    "UnsuccessfullyDeletedLaunchTemplateVersions": [], 
+    "UnsuccessfullyDeletedLaunchTemplateVersions": [],
     "SuccessfullyDeletedLaunchTemplateVersions": [
         {
-            "LaunchTemplateName": "TestVersion", 
-            "VersionNumber": 1, 
+            "LaunchTemplateName": "TestVersion",
+            "VersionNumber": 1,
             "LaunchTemplateId": "lt-0abcd290751193123"
         }
     ]

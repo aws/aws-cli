@@ -10,16 +10,16 @@ Output::
 
   {
     "BundleTask": {
-      "UpdateTime": "2015-09-15T13:30:35.000Z", 
-      "InstanceId": "i-1234567890abcdef0", 
+      "UpdateTime": "2015-09-15T13:30:35.000Z",
+      "InstanceId": "i-1234567890abcdef0",
       "Storage": {
         "S3": {
-          "Prefix": "winami", 
+          "Prefix": "winami",
           "Bucket": "bundletasks"
         }
-      }, 
-      "State": "pending", 
-      "StartTime": "2015-09-15T13:30:35.000Z", 
+      },
+      "State": "pending",
+      "StartTime": "2015-09-15T13:30:35.000Z",
       "BundleId": "bun-294e041f"
     }
   }

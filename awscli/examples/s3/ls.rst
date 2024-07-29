@@ -8,7 +8,7 @@ Output::
 
     2013-07-11 17:08:50 mybucket
     2013-07-24 14:55:44 mybucket2
-    
+
 **Example 2: Listing all prefixes and objects in a bucket**
 
 The following ``ls`` command lists objects and common prefixes under a specified bucket and prefix.  In this example, the user owns the bucket ``mybucket`` with the objects ``test.txt`` and ``somePrefix/test.txt``.  The ``LastWriteTime`` and ``Length`` are arbitrary. Note that since the ``ls`` command has no interaction with the local filesystem, the ``s3://`` URI scheme is not required to resolve ambiguity and may be omitted. ::
@@ -29,7 +29,7 @@ The following ``ls`` command lists objects and common prefixes under a specified
 Output::
 
     None
-    
+
 **Example 4: Recursively listing all prefixes and objects in a bucket**
 
 The following ``ls`` command will recursively list objects in a bucket.  Rather than showing ``PRE dirname/`` in the output, all the content in a bucket will be listed in order. ::

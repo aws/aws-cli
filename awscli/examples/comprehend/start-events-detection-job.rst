@@ -2,8 +2,8 @@
 
 The following ``start-events-detection-job`` example starts an asynchronous events detection job for all files located at the address specified by
 the ``--input-data-config`` tag. Possible target event types include ``BANKRUPCTY``, ``EMPLOYMENT``, ``CORPORATE_ACQUISITION``, ``INVESTMENT_GENERAL``, ``CORPORATE_MERGER``, ``IPO``, ``RIGHTS_ISSUE``,
-``SECONDARY_OFFERING``, ``SHELF_OFFERING``, ``TENDER_OFFERING``, and ``STOCK_SPLIT``. The S3 bucket in this example contains ``SampleText1.txt``, ``SampleText2.txt``, and ``SampleText3.txt``. 
-When the job is complete, the folder, ``output``, is placed in the location specified by the ``--output-data-config`` tag. The folder contains 
+``SECONDARY_OFFERING``, ``SHELF_OFFERING``, ``TENDER_OFFERING``, and ``STOCK_SPLIT``. The S3 bucket in this example contains ``SampleText1.txt``, ``SampleText2.txt``, and ``SampleText3.txt``.
+When the job is complete, the folder, ``output``, is placed in the location specified by the ``--output-data-config`` tag. The folder contains
 ``SampleText1.txt.out``, ``SampleText2.txt.out``, and ``SampleText3.txt.out``. The JSON output is printed on one line per file, but is formatted here for readability. ::
 
     aws comprehend start-events-detection-job \

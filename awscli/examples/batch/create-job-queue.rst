@@ -5,7 +5,7 @@ This example creates a job queue called `LowPriority` that uses the `M4Spot` com
 Command::
 
   aws batch create-job-queue --cli-input-json file://<path_to_json_file>/LowPriority.json
-  
+
 JSON file format::
 
   {
@@ -34,7 +34,7 @@ This example creates a job queue called `HighPriority` that uses the `C4OnDemand
 Command::
 
   aws batch create-job-queue --cli-input-json file://<path_to_json_file>/HighPriority.json
-  
+
 JSON file format::
 
   {

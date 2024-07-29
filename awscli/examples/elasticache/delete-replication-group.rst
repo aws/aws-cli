@@ -5,7 +5,7 @@ The following ``delete-replication-group`` example deletes an existing replicati
 When you receive a successful response from this operation, Amazon ElastiCache immediately begins deleting the selected resources; you cannot cancel or revert this operation. Valid for Redis only. ::
 
     aws elasticache delete-replication-group \
-        --replication-group-id "mygroup" 
+        --replication-group-id "mygroup"
 
 Output::
 

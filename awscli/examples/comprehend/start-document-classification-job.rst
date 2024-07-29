@@ -1,8 +1,8 @@
 **To start document classification job**
 
-The following ``start-document-classification-job`` example starts a document classification job with a custom model on all of the files at the address specified by the ``--input-data-config`` tag. 
-In this example, the input S3 bucket contains ``SampleSMStext1.txt``, ``SampleSMStext2.txt``, and ``SampleSMStext3.txt``. The model was previously trained on document classifications 
-of spam and non-spam, or, "ham", SMS messages. When the job is complete, ``output.tar.gz`` is put at the location specified by the ``--output-data-config`` tag. ``output.tar.gz`` contains ``predictions.jsonl`` 
+The following ``start-document-classification-job`` example starts a document classification job with a custom model on all of the files at the address specified by the ``--input-data-config`` tag.
+In this example, the input S3 bucket contains ``SampleSMStext1.txt``, ``SampleSMStext2.txt``, and ``SampleSMStext3.txt``. The model was previously trained on document classifications
+of spam and non-spam, or, "ham", SMS messages. When the job is complete, ``output.tar.gz`` is put at the location specified by the ``--output-data-config`` tag. ``output.tar.gz`` contains ``predictions.jsonl``
 which lists the classification of each document. The Json output is printed on one line per file, but is formatted here for readability. ::
 
     aws comprehend start-document-classification-job \

@@ -5,4 +5,3 @@ The following command removes the tag with the key ``Name`` from connection ``dx
 Command::
 
   aws directconnect untag-resource --resource-arn arn:aws:directconnect:us-east-1:123456789012:dxcon/dxcon-abcabc12 --tag-keys Name
-

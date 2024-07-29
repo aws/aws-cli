@@ -4,7 +4,7 @@ The following ``put-policy`` example creates a Firewall Manager security group p
 
     aws fms put-policy \
         --cli-input-json file://policy.json
-         
+
 Contents of ``policy.json``::
 
     {

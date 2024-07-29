@@ -6,7 +6,7 @@ The following ``batch-detect-targeted-sentiment`` example analyzes multiple inpu
         --language-code en \
         --text-list "That movie was really boring, the original was way more entertaining" "The trail is extra beautiful today." "My meal was just okay."
 
-Output:: 
+Output::
 
     {
         "ResultList": [

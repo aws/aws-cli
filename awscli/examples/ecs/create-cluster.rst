@@ -30,7 +30,7 @@ The following ``create-cluster`` example creates a cluster and associates two ex
     aws ecs create-cluster \
         --cluster-name MyCluster \
         --capacity-providers MyCapacityProvider1 MyCapacityProvider2 \
-        --default-capacity-provider-strategy capacityProvider=MyCapacityProvider1,weight=1 capacityProvider=MyCapacityProvider2,weight=1 
+        --default-capacity-provider-strategy capacityProvider=MyCapacityProvider1,weight=1 capacityProvider=MyCapacityProvider2,weight=1
 
 Output::
 

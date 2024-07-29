@@ -4,7 +4,7 @@ The following ``modify-private-dns-name-options`` example disables the option to
 
     aws ec2 modify-private-dns-name-options \
         --instance-id i-1234567890abcdef0 \
-        --no-enable-resource-name-dns-a-record 
+        --no-enable-resource-name-dns-a-record
 
 Output::
 

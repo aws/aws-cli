@@ -9,14 +9,14 @@ The following ``update-server`` command updates the maintenance start time of th
 The output shows you information similar to the following about the updated server. ::
 
     {
-        "Server": { 
+        "Server": {
             "BackupRetentionCount": 8,
             "CreatedAt": 2016-07-29T13:38:47.520Z,
             "DisableAutomatedBackup": TRUE,
             "Endpoint": "https://opsworks-cm.us-east-1.amazonaws.com",
             "Engine": "Chef",
-            "EngineAttributes": [ 
-                { 
+            "EngineAttributes": [
+                {
                     "Name": "CHEF_DELIVERY_ADMIN_PASSWORD",
                     "Value": "1Password1"
                 }

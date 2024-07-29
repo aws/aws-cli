@@ -10,4 +10,3 @@ The following ``update-sql-injection-match-set`` command  deletes a SqlInjection
 For more information, see `Working with SQL Injection Match Conditions`_ in the *AWS WAF* developer guide.
 
 .. _`Working with SQL Injection Match Conditions`: https://docs.aws.amazon.com/waf/latest/developerguide/web-acl-sql-conditions.html
-

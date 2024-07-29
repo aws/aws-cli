@@ -7,9 +7,9 @@ Command::
 Output::
 
   {
-      "cloudwatchRoleArn": "arn:aws:iam::123412341234:role/APIGatewayToCloudWatchLogsRole", 
+      "cloudwatchRoleArn": "arn:aws:iam::123412341234:role/APIGatewayToCloudWatchLogsRole",
       "throttleSettings": {
-          "rateLimit": 500.0, 
+          "rateLimit": 500.0,
           "burstLimit": 1000
       }
   }

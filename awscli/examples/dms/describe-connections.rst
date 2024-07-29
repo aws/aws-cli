@@ -2,7 +2,7 @@
 
 The following ``describe-connections`` example lists the connections that you have tested between a replication instance and an endpoint. ::
 
-    aws dms describe-connections 
+    aws dms describe-connections
 
 Output::
 

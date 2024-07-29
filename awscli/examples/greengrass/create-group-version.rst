@@ -1,14 +1,14 @@
 **To create a version of a Greengrass group**
 
-The following ``create-group-version`` example creates a group version and associates it with the specified group. The version references the core, resource, connector, function, and subscription versions that contain the entities to include in this group version. You must create these entities before you can create the group version. 
+The following ``create-group-version`` example creates a group version and associates it with the specified group. The version references the core, resource, connector, function, and subscription versions that contain the entities to include in this group version. You must create these entities before you can create the group version.
 
-* To create a resource definition with an initial version, use the ``create-resource-definition`` command. 
+* To create a resource definition with an initial version, use the ``create-resource-definition`` command.
 
-* To create a connector definition with an initial version, use the ``create-connector-definition`` command. 
+* To create a connector definition with an initial version, use the ``create-connector-definition`` command.
 
-* To create a function definition with an initial version, use the ``create-function-definition`` command. 
+* To create a function definition with an initial version, use the ``create-function-definition`` command.
 
-* To create a subscription definition with an initial version, use the ``create-subscription-definition`` command. 
+* To create a subscription definition with an initial version, use the ``create-subscription-definition`` command.
 
 * To retrieve the ARN of the latest core definition version, use the ``get-group-version`` command and specify the ID of the latest group version. ::
 

@@ -4,7 +4,7 @@ The following ``get-access-preview`` example retrieves information about an acce
 
     aws accessanalyzer get-access-preview \
         --access-preview-id 3c65eb13-6ef9-4629-8919-a32043619e6b \
-        --analyzer-arn arn:aws:access-analyzer:us-west-2:111122223333:analyzer/ConsoleAnalyzer-account 
+        --analyzer-arn arn:aws:access-analyzer:us-west-2:111122223333:analyzer/ConsoleAnalyzer-account
 
 Output::
 

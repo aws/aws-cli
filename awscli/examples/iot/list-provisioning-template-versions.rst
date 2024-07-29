@@ -1,9 +1,9 @@
 **To list provisioning template versions**
 
-The following ``list-provisioning-template-versions`` example lists the available versions of the specified provisioning template. :: 
+The following ``list-provisioning-template-versions`` example lists the available versions of the specified provisioning template. ::
 
     aws iot list-provisioning-template-versions \
-        --template-name "widget-template" 
+        --template-name "widget-template"
 
 Output::
 

@@ -14,7 +14,7 @@ Output::
           "Value": true
       }
   }
-  
+
 **To describe the enableDnsHostnames attribute**
 
 This example describes the ``enableDnsHostnames`` attribute. This attribute indicates whether the instances launched in the VPC get DNS hostnames. If this attribute is ``true``, instances in the VPC get DNS hostnames; otherwise, they do not.

@@ -36,7 +36,7 @@ Output::
                             "comparison": "EQUALS",
                             "value": "AWS_ECR_INSTANCE"
                         }
-                    ]   
+                    ]
                 },
                 "description": "This suppression rule omits ECR instance type findings",
                 "name": "ExampleSuppressionRuleECR",

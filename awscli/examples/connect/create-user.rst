@@ -9,7 +9,7 @@ The following ``create-user`` example adds a user with the specified attributes 
         --phone-config PhoneType=DESK_PHONE,AutoAccept=true,AfterContactWorkTimeLimit=60,DeskPhoneNumber=+15555551212 \
         --security-profile-id 12345678-1111-2222-aaaa-a1b2c3d4f5g7 \
         --routing-profile-id 87654321-9999-3434-abcd-x1y2z3a1b2c3 \
-        --instance-id a1b2c3d4-5678-90ab-cdef-EXAMPLE11111 
+        --instance-id a1b2c3d4-5678-90ab-cdef-EXAMPLE11111
 
 Output::
 

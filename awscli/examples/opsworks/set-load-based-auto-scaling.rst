@@ -16,7 +16,7 @@ The example puts the upscaling threshold settings in a separate file in the work
     "MemoryThreshold": 85,
     "LoadThreshold": 85
   }
-  
+
 The example puts the downscaling threshold settings in a separate file in the working directory named ``downscale.json``, which contains the following. ::
 
   {
@@ -35,4 +35,3 @@ The example puts the downscaling threshold settings in a separate file in the wo
 For more information, see `Using Automatic Load-based Scaling`_ in the *AWS OpsWorks User Guide*.
 
 .. _`Using Automatic Load-based Scaling`: http://docs.aws.amazon.com/opsworks/latest/userguide/workinginstances-autoscaling-loadbased.html
-

@@ -5,7 +5,7 @@ The following ``describe-job-execution`` example gets execution details for the 
     aws iot describe-job-execution \
         --job-id "example-job-01" \
         --thing-name "MyRaspberryPi"
-        
+
 Output::
 
     {

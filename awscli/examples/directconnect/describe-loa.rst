@@ -12,10 +12,10 @@ The previous example requires the use of the ``base64`` utility to decode the ou
 
 .. code::
 
-  aws directconnect describe-loa --connection-id dxcon-fh6ayh1d --output text --query loa.loaContent > myLoaCfa.base64 
+  aws directconnect describe-loa --connection-id dxcon-fh6ayh1d --output text --query loa.loaContent > myLoaCfa.base64
 
 .. code::
 
   certutil -decode myLoaCfa.base64 myLoaCfa.pdf
-  
+
 For more information about controlling AWS CLI output, see `Controlling Command Output from the AWS Command Line Interface <https://docs.aws.amazon.com/cli/latest/userguide/controlling-output.html>`_ in the *AWS Command Line Interface User Guide*.

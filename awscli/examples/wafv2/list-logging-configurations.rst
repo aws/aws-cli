@@ -4,7 +4,7 @@ The following ``list-logging-configurations`` retrieves the all logging configur
 
     aws wafv2 list-logging-configurations \
         --scope REGIONAL \
-        --region us-west-2 
+        --region us-west-2
 
 Output::
 
@@ -16,7 +16,7 @@ Output::
                     {
                         "QueryString":{
 
-                        } 
+                        }
                     }
                 ],
                 "LogDestinationConfigs":[

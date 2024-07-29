@@ -12,4 +12,3 @@ To start a particular instance, use ``start-instance``. ::
 For more information, see `Starting an Instance`_ in the *AWS OpsWorks User Guide*.
 
 .. _`Starting an Instance`: http://docs.aws.amazon.com/opsworks/latest/userguide/workinginstances-starting.html#workinginstances-starting-start
-

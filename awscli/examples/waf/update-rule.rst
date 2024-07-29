@@ -13,4 +13,3 @@ For more information, see `Working with Rules`_ in the *AWS WAF* developer guide
 
 .. _`Working with Rules`:
  https://docs.aws.amazon.com/waf/latest/developerguide/web-acl-rules.html
-

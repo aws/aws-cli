@@ -2,7 +2,7 @@
 
 The following ``list-license-configurations`` example lists all your license configurations. ::
 
-    aws license-manager list-license-configurations 
+    aws license-manager list-license-configurations
 
 Output::
 

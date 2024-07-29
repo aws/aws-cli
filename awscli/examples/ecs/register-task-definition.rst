@@ -28,32 +28,32 @@ Output::
 
     {
         "taskDefinition": {
-            "status": "ACTIVE", 
-            "family": "sleep360", 
-            "placementConstraints": [], 
+            "status": "ACTIVE",
+            "family": "sleep360",
+            "placementConstraints": [],
             "compatibilities": [
-                    "EXTERNAL", 
+                    "EXTERNAL",
                     "EC2"
-            ], 
-            "volumes": [], 
-            "taskDefinitionArn": "arn:aws:ecs:us-east-1:123456789012:task-definition/sleep360:1", 
+            ],
+            "volumes": [],
+            "taskDefinitionArn": "arn:aws:ecs:us-east-1:123456789012:task-definition/sleep360:1",
             "containerDefinitions": [
                 {
-                    "environment": [], 
-                    "name": "sleep", 
-                    "mountPoints": [], 
-                    "image": "busybox", 
-                    "cpu": 10, 
-                    "portMappings": [], 
+                    "environment": [],
+                    "name": "sleep",
+                    "mountPoints": [],
+                    "image": "busybox",
+                    "cpu": 10,
+                    "portMappings": [],
                     "command": [
-                        "sleep", 
+                        "sleep",
                         "360"
-                    ], 
-            "memory": 10, 
-            "essential": true, 
+                    ],
+            "memory": 10,
+            "essential": true,
             "volumesFrom": []
             }
-        ], 
+        ],
             "revision": 1
         }
     }

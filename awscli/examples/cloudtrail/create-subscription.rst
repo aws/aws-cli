@@ -11,20 +11,20 @@ Output::
   Creating/updating CloudTrail configuration...
   CloudTrail configuration:
   {
-  "trailList": [ 
+  "trailList": [
     {
-      "IncludeGlobalServiceEvents": true, 
-      "Name": "Trail1", 
-      "TrailARN": "arn:aws:cloudtrail:us-east-1:123456789012:trail/Trail1", 
-      "LogFileValidationEnabled": false, 
-      "IsMultiRegionTrail": false, 
-      "S3BucketName": "my-bucket", 
-      "SnsTopicName": "my-topic", 
+      "IncludeGlobalServiceEvents": true,
+      "Name": "Trail1",
+      "TrailARN": "arn:aws:cloudtrail:us-east-1:123456789012:trail/Trail1",
+      "LogFileValidationEnabled": false,
+      "IsMultiRegionTrail": false,
+      "S3BucketName": "my-bucket",
+      "SnsTopicName": "my-topic",
       "HomeRegion": "us-east-1"
     }
-  ], 
+  ],
   "ResponseMetadata": {
-  "HTTPStatusCode": 200, 
+  "HTTPStatusCode": 200,
   "RequestId": "f39e51f6-c615-11e5-85bd-d35ca21ee3e2"
   }
   }

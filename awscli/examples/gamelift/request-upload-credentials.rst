@@ -5,16 +5,16 @@ The following ``create-build`` example obtains new, valid access credentials for
     aws gamelift request-upload-credentials \
         --build-id build-a1b2c3d4-5678-90ab-cdef-EXAMPLE11111
 
-Output:: 
+Output::
 
     {
         "StorageLocation": {
-            "Bucket": "gamelift-builds-us-west-2", 
+            "Bucket": "gamelift-builds-us-west-2",
             "Key": "123456789012/build-a1b2c3d4-5678-90ab-cdef-EXAMPLE11111"
-        }, 
+        },
         "UploadCredentials": {
-            "AccessKeyId": "AKIAIOSFODNN7EXAMPLE", 
-            "SecretAccessKey": "wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY", 
+            "AccessKeyId": "AKIAIOSFODNN7EXAMPLE",
+            "SecretAccessKey": "wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY",
             "SessionToken": "AgoGb3JpZ2luENz...EXAMPLETOKEN=="
         }
     }

@@ -3,7 +3,7 @@
 The following ``list-extensions`` example lists all AWS AppConfig extensions for the current AWS account in a specific AWS Region. The command returns custom and AWS authored extensions. ::
 
     aws appconfig list-extensions \
-        --region us-west-2 
+        --region us-west-2
 
 Output::
 

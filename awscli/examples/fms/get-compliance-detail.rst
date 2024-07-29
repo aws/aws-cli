@@ -5,7 +5,7 @@ The following ``get-compliance-detail`` example retrieves compliance information
     aws fms get-compliance-detail \
         --policy-id a1b2c3d4-5678-90ab-cdef-EXAMPLE11111 \
         --member-account 123456789012
-         
+
 Output::
 
     {
@@ -17,5 +17,5 @@ Output::
         "PolicyOwner": "123456789012",
         "Violators": []
     }
-    
+
 For more information, see `Viewing Resource Compliance with a Policy <https://docs.aws.amazon.com/waf/latest/developerguide/fms-compliance.html>`__ in the *AWS WAF, AWS Firewall Manager, and AWS Shield Advanced Developer Guide*.

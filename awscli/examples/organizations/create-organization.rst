@@ -3,7 +3,7 @@
 Bill wants to create an organization using credentials from account 111111111111. The following example shows that the account becomes the master account in the new organization. Because he does not specify a features set, the new organization defaults to all features enabled and service control policies are enabled on the root. ::
 
 	aws organizations create-organization
-	
+
 The output includes an organization object with details about the new organization: ::
 
 	{
@@ -28,7 +28,7 @@ The output includes an organization object with details about the new organizati
 The following example creates an organization that supports only the consolidated billing features: ::
 
 	aws organizations create-organization --feature-set CONSOLIDATED_BILLING
-	
+
 The output includes an organization object with details about the new organization: ::
 
 	{

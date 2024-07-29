@@ -7,7 +7,7 @@ Command::
   aws ec2 describe-spot-fleet-request-history --spot-fleet-request-id sfr-73fbd2ce-aa30-494c-8788-1cee4EXAMPLE --start-time 2015-05-26T00:00:00Z
 
 The following example output shows the successful launches of two Spot Instances for the Spot fleet.
-  
+
 Output::
 
   {
@@ -45,5 +45,5 @@ Output::
     ],
     "SpotFleetRequestId": "sfr-73fbd2ce-aa30-494c-8788-1cee4EXAMPLE",
     "NextToken": "CpHNsscimcV5oH7bSbub03CI2Qms5+ypNpNm+53MNlR0YcXAkp0xFlfKf91yVxSExmbtma3awYxMFzNA663ZskT0AHtJ6TCb2Z8bQC2EnZgyELbymtWPfpZ1ZbauVg+P+TfGlWxWWB/Vr5dk5d4LfdgA/DRAHUrYgxzrEXAMPLE=",
-    "StartTime": "2015-05-26T00:00:00Z"  
+    "StartTime": "2015-05-26T00:00:00Z"
   }

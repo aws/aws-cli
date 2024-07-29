@@ -1,8 +1,8 @@
 **To start an asynchronous language detection job**
 
-The following ``start-dominant-language-detection-job`` example starts an asynchronous language detection job for all of the files located at the address specified by 
-the ``--input-data-config`` tag. The S3 bucket in this example contains ``Sampletext1.txt``. 
-When the job is complete, the folder, ``output``, is placed in the location specified by the ``--output-data-config`` tag. The folder contains ``output.txt`` 
+The following ``start-dominant-language-detection-job`` example starts an asynchronous language detection job for all of the files located at the address specified by
+the ``--input-data-config`` tag. The S3 bucket in this example contains ``Sampletext1.txt``.
+When the job is complete, the folder, ``output``, is placed in the location specified by the ``--output-data-config`` tag. The folder contains ``output.txt``
 which contains the dominant language of each of the text files as well as the pre-trained model's confidence score for each prediction. ::
 
     aws comprehend start-dominant-language-detection-job \

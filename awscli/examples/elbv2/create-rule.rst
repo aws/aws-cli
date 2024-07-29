@@ -5,7 +5,7 @@ The following ``create-rule`` example creates a rule that forwards requests to t
     aws elbv2 create-rule \
         --listener-arn arn:aws:elasticloadbalancing:us-west-2:123456789012:listener/app/my-load-balancer/50dc6c495c0c9188/f2f7dc8efc522ab2 \
         --priority 5 \
-        --conditions file://conditions-pattern.json 
+        --conditions file://conditions-pattern.json
         --actions Type=forward,TargetGroupArn=arn:aws:elasticloadbalancing:us-west-2:123456789012:targetgroup/my-targets/73e2d6bc24d8a067
 
 Contents of ``conditions-pattern.json``::
@@ -55,7 +55,7 @@ Contents of ``actions-fixed-response.json`` ::
 
 **Example 3: To create a rule using a source IP address condition, an authenticate action, and a forward action**
 
-The following ``create-rule`` example creates a rule that authenticates the user if the source IP address matches the specified IP address, and forwards the request to the specified target group if authentication is successful. :: 
+The following ``create-rule`` example creates a rule that authenticates the user if the source IP address matches the specified IP address, and forwards the request to the specified target group if authentication is successful. ::
 
     aws elbv2 create-rule \
         --listener-arn arn:aws:elasticloadbalancing:us-west-2:123456789012:listener/app/my-load-balancer/50dc6c495c0c9188/f2f7dc8efc522ab2 \

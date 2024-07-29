@@ -17,15 +17,15 @@ Output::
         "WindowId": "mw-1a2b3c4d5e6f7g8h9",
         "Duration": 4
     }
-  
+
 **Example 2: To disable a maintenance window**
-  
+
 The following ``update-maintenance-window`` example disables a maintenance window. ::
 
     aws ssm update-maintenance-window \
         --window-id "mw-1a2b3c4d5e6f7g8h9" \
         --no-enabled
-        
+
 **Example 3: To enable a maintenance window**
 
 The following ``update-maintenance-window`` example enables a maintenance window. ::

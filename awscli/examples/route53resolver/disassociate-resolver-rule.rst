@@ -7,7 +7,7 @@ The following ``disassociate-resolver-rule`` example removes the association bet
 
     aws route53resolver disassociate-resolver-rule \
         --resolver-rule-id rslvr-rr-4955cb98ceexample \
-        --vpc-id vpc-304bexam 
+        --vpc-id vpc-304bexam
 
 Output::
 

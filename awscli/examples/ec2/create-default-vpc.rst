@@ -10,13 +10,13 @@ Output::
 
  {
     "Vpc": {
-        "VpcId": "vpc-8eaae5ea", 
-        "InstanceTenancy": "default", 
-        "Tags": [], 
-        "Ipv6CidrBlockAssociationSet": [], 
-        "State": "pending", 
-        "DhcpOptionsId": "dopt-af0c32c6", 
-        "CidrBlock": "172.31.0.0/16", 
+        "VpcId": "vpc-8eaae5ea",
+        "InstanceTenancy": "default",
+        "Tags": [],
+        "Ipv6CidrBlockAssociationSet": [],
+        "State": "pending",
+        "DhcpOptionsId": "dopt-af0c32c6",
+        "CidrBlock": "172.31.0.0/16",
         "IsDefault": true
     }
   }

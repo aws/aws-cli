@@ -1,6 +1,6 @@
 **To describe servers**
 
-The following ``describe-servers`` command returns information about all servers 
+The following ``describe-servers`` command returns information about all servers
 that are associated with your account, and in your default region.::
 
   aws opsworks-cm describe-servers
@@ -9,15 +9,15 @@ The output for each server entry returned by the command resembles the following
 *Output*::
 
   {
-   "Servers": [ 
-      { 
+   "Servers": [
+      {
          "BackupRetentionCount": 8,
          "CreatedAt": 2016-07-29T13:38:47.520Z,
          "DisableAutomatedBackup": FALSE,
          "Endpoint": "https://opsworks-cm.us-east-1.amazonaws.com",
          "Engine": "Chef",
-         "EngineAttributes": [ 
-            { 
+         "EngineAttributes": [
+            {
                "Name": "CHEF_DELIVERY_ADMIN_PASSWORD",
                "Value": "1Password1"
             }

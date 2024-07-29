@@ -64,4 +64,3 @@ Output::
   {
       "DNSName": "internal-my-load-balancer-123456789.us-west-2.elb.amazonaws.com"
   }
-

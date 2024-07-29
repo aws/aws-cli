@@ -5,7 +5,7 @@ The following ``create-lf-tag`` example creates an LF-Tag with the specified nam
     aws lakeformation create-lf-tag \
         --catalog-id '123456789111' \
         --tag-key 'usergroup' \
-        --tag-values '["developer","analyst","campaign"]' 
+        --tag-values '["developer","analyst","campaign"]'
 
 This command produces no output.
 

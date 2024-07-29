@@ -3,7 +3,7 @@
 The following ``update-notification-rule`` example updates a notification rule named ``MyNotificationRule`` in the AWS account ``123456789012`` using a JSON file named ``update.json``. ::
 
     aws codestar-notifications update-notification-rule \
-        --cli-input-json file://update.json 
+        --cli-input-json file://update.json
 
 
 Contents of ``update.json``::

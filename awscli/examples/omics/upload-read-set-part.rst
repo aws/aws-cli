@@ -7,7 +7,7 @@ The following ``upload-read-set-part`` example uploads a specified part of a rea
         --upload-id 1122334455 \
         --part-source SOURCE1 \
         --part-number 1 \
-        --payload /path/to/file/read_1_part_1.fastq.gz  
+        --payload /path/to/file/read_1_part_1.fastq.gz
 
 Output::
 

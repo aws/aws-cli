@@ -17,12 +17,12 @@ Output::
             "Status": "creating",
             "VpcId": "vpc-1234567",
             "VpcSecurityGroupIds": [
-                "sg-1234", 
+                "sg-1234",
                 "sg-5678"
             ],
             "VpcSubnetIds": [
-                "subnetgroup1", 
-                "subnetgroup2" 
+                "subnetgroup1",
+                "subnetgroup2"
             ],
             "Endpoint": "proxyep1.endpoint.proxy-ab0cd1efghij.us-east-1.rds.amazonaws.com",
             "CreatedDate": "2023-04-05T16:09:33.452000+00:00",

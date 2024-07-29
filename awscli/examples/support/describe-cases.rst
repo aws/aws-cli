@@ -4,7 +4,7 @@ The following ``describe-cases`` example returns information about the specified
 
     aws support describe-cases \
         --display-id "1234567890" \
-        --after-time "2020-03-23T21:31:47.774Z" \ 
+        --after-time "2020-03-23T21:31:47.774Z" \
         --include-resolved-cases \
         --language "en" \
         --no-include-communications \

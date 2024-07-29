@@ -3,7 +3,7 @@
 The following ``delete-channel`` command deletes the channel named ``test``. ::
 
     aws mediapackage delete-channel \
-        --id test    
+        --id test
 
 This command produces no output.
 

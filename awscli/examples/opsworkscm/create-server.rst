@@ -15,14 +15,14 @@ The following ``create-server`` example creates a new Chef Automate server named
 The output shows you information similar to the following about the new server::
 
     {
-        "Server": { 
+        "Server": {
             "BackupRetentionCount": 10,
             "CreatedAt": 2016-07-29T13:38:47.520Z,
             "DisableAutomatedBackup": FALSE,
             "Endpoint": "https://opsworks-cm.us-east-1.amazonaws.com",
             "Engine": "Chef",
-            "EngineAttributes": [ 
-                { 
+            "EngineAttributes": [
+                {
                     "Name": "CHEF_DELIVERY_ADMIN_PASSWORD",
                     "Value": "1Password1"
                 }

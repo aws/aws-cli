@@ -192,4 +192,3 @@ See Also
 
 -  `ListActivityTypes <https://docs.aws.amazon.com/amazonswf/latest/apireference/API_ListActivityTypes.html>`_
    in the *Amazon Simple Workflow Service API Reference*
-

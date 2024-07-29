@@ -9,10 +9,10 @@ The following example shows how to to obtain an AWS Identity and Access Manageme
   {
     "Permissions": [
       {
-        "StackId": "d72553d4-8727-448c-9b00-f024f0ba1b06", 
-        "IamUserArn": "arn:aws:iam::123456789012:user/cli-user-test", 
-        "Level": "manage", 
-        "AllowSudo": true, 
+        "StackId": "d72553d4-8727-448c-9b00-f024f0ba1b06",
+        "IamUserArn": "arn:aws:iam::123456789012:user/cli-user-test",
+        "Level": "manage",
+        "AllowSudo": true,
         "AllowSsh": true
       }
     ]

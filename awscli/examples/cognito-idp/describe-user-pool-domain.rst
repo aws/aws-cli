@@ -1,6 +1,6 @@
 **To describe a user pool client**
 
-This example describes a user pool domain named my-domain. 
+This example describes a user pool domain named my-domain.
 
 Command::
 

@@ -7,7 +7,7 @@ The following ``create-job`` example creates a transcoding job with the settings
         --region region-name-1 \
         --cli-input-json file://~/job.json
 
-You can use the AWS Elemental MediaConvert console to generate the JSON job specification by choosing your job settings, and then choosing **Show job JSON** at the bottom of the **Job** section. 
+You can use the AWS Elemental MediaConvert console to generate the JSON job specification by choosing your job settings, and then choosing **Show job JSON** at the bottom of the **Job** section.
 
 To get your account-specific endpoint, use ``describe-endpoints``, or send the command without the endpoint. The service returns an error and your endpoint.
 

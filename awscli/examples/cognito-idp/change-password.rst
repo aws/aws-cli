@@ -1,6 +1,6 @@
 **To change a password**
 
-This example changes a password. 
+This example changes a password.
 
 Command::
 

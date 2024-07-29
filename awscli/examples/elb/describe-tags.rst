@@ -11,18 +11,17 @@ Output::
   {
     "TagDescriptions": [
         {
-            "Tags": [                
+            "Tags": [
                 {
-                    "Value": "lima", 
+                    "Value": "lima",
                     "Key": "project"
                 },
                 {
                     "Value": "digital-media",
                     "Key": "department"
                 }
-            ], 
+            ],
             "LoadBalancerName": "my-load-balancer"
         }
     ]
   }
-

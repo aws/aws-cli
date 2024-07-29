@@ -1,9 +1,9 @@
 **To copy a DB snapshot**
 
-The following ``copy-db-snapshot`` example creates a copy of a DB snapshot. :: 
+The following ``copy-db-snapshot`` example creates a copy of a DB snapshot. ::
 
     aws rds copy-db-snapshot \
-        --source-db-snapshot-identifier rds:database-mysql-2019-06-06-08-38 
+        --source-db-snapshot-identifier rds:database-mysql-2019-06-06-08-38
         --target-db-snapshot-identifier mydbsnapshotcopy
 
 Output::

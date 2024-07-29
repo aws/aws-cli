@@ -4,7 +4,7 @@ The following ``abort-multipart-read-set-upload`` example stops a multipart read
 
     aws omics abort-multipart-read-set-upload \
         --sequence-store-id 0123456789 \
-        --upload-id 1122334455 
+        --upload-id 1122334455
 
 This command produces no output.
 

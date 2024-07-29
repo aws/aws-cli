@@ -1,6 +1,6 @@
 **To create a csv header**
 
-This example creates a csv header. 
+This example creates a csv header.
 
 For more information about importing users, see `Importing Users into User Pools From a CSV File`_.
 

@@ -11,4 +11,3 @@ The following example reboots an instance. ::
 For more information, see `Rebooting an Instance`_ in the *AWS OpsWorks User Guide*.
 
 .. _`Rebooting an Instance`: http://docs.aws.amazon.com/opsworks/latest/userguide/workinginstances-starting.html#workinginstances-starting-reboot
-

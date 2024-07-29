@@ -3,7 +3,7 @@
 The following ``get-job-runs`` example retrieves information about job runs for a job. ::
 
     aws glue get-job-runs \
-        --job-name "my-testing-job" 
+        --job-name "my-testing-job"
 
 Output::
 
@@ -43,9 +43,9 @@ Output::
                 "LastModifiedOn": 1602811282.39,
                 "CompletedOn": 1602811282.39,
                 "JobRunState": "FAILED",
-                "ErrorMessage": "An error occurred while calling o122.pyWriteDynamicFrame. 
-                    Access Denied (Service: Amazon S3; Status Code: 403; Error Code: AccessDenied; 
-                    Request ID: 021AAB703DB20A2D; 
+                "ErrorMessage": "An error occurred while calling o122.pyWriteDynamicFrame.
+                    Access Denied (Service: Amazon S3; Status Code: 403; Error Code: AccessDenied;
+                    Request ID: 021AAB703DB20A2D;
                     S3 Extended Request ID: teZk24Y09TkXzBvMPG502L5VJBhe9DJuWA9/TXtuGOqfByajkfL/Tlqt5JBGdEGpigAqzdMDM/U=)",
                 "PredecessorRuns": [],
                 "AllocatedCapacity": 10,
@@ -66,9 +66,9 @@ Output::
                 "LastModifiedOn": 1602811138.364,
                 "CompletedOn": 1602811138.364,
                 "JobRunState": "FAILED",
-                "ErrorMessage": "An error occurred while calling o122.pyWriteDynamicFrame. 
-                     Access Denied (Service: Amazon S3; Status Code: 403; Error Code: AccessDenied; 
-                     Request ID: 2671D37856AE7ABB; 
+                "ErrorMessage": "An error occurred while calling o122.pyWriteDynamicFrame.
+                     Access Denied (Service: Amazon S3; Status Code: 403; Error Code: AccessDenied;
+                     Request ID: 2671D37856AE7ABB;
                      S3 Extended Request ID: RLJCJw20brV+PpC6GpORahyF2fp9flB5SSb2bTGPnUSPVizLXRl1PN3QZldb+v1o9qRVktNYbW8=)",
                 "PredecessorRuns": [],
                 "AllocatedCapacity": 10,

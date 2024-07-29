@@ -9,7 +9,6 @@ Output::
   {
       "responseModels": {
           "application/json": "Empty"
-      }, 
+      },
       "statusCode": "200"
   }
-

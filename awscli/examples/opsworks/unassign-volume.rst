@@ -13,4 +13,3 @@ you register the volume with a stack, not the Amazon Elastic Compute Cloud (Amaz
 For more information, see `Unassigning Amazon EBS Volumes`_ in the *AWS OpsWorks User Guide*.
 
 .. _`Unassigning Amazon EBS Volumes`: http://docs.aws.amazon.com/opsworks/latest/userguide/resources-detach.html#resources-detach-ebs
-

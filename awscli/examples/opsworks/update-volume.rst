@@ -13,4 +13,3 @@ you register it with a stack, not the Amazon Elastic Compute Cloud (Amazon EC2) 
 For more information, see `Assigning Amazon EBS Volumes to an Instance`_ in the *AWS OpsWorks User Guide*.
 
 .. _`Assigning Amazon EBS Volumes to an Instance`: http://docs.aws.amazon.com/opsworks/latest/userguide/resources-attach.html#resources-attach-ebs
-

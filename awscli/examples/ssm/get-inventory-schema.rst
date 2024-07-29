@@ -48,7 +48,7 @@ Output::
     ],
     "NextToken": "--token string truncated--"
   }
-  
+
 **To view the inventory schema for a specific inventory type**
 
 This example return the inventory schema for a the AWS:AWSComponent inventory type.

@@ -9,18 +9,18 @@ Command::
 Output::
 
   {
-    "TotalHourlyPrice": "1.499", 
+    "TotalHourlyPrice": "1.499",
     "Purchase": [
         {
-            "HourlyPrice": "1.499", 
-            "InstanceFamily": "m4", 
-            "PaymentOption": "NoUpfront", 
+            "HourlyPrice": "1.499",
+            "InstanceFamily": "m4",
+            "PaymentOption": "NoUpfront",
             "HostIdSet": [
                 "h-013abcd2a00cbd123"
-            ], 
-            "UpfrontPrice": "0.000", 
+            ],
+            "UpfrontPrice": "0.000",
             "Duration": 31536000
         }
-    ], 
+    ],
     "TotalUpfrontPrice": "0.000"
   }

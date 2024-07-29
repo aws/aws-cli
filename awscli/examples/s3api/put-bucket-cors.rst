@@ -21,4 +21,3 @@ requests from any domain::
        }
      ]
    }
-

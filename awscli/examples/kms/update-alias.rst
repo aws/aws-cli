@@ -2,7 +2,7 @@
 
 The following ``update-alias`` example associates the alias ``alias/test-key`` with a different KMS key.
 
-* The ``--alias-name`` parameter specifies the alias. The alias name value must begin with ``alias/``. 
+* The ``--alias-name`` parameter specifies the alias. The alias name value must begin with ``alias/``.
 * The ``--target-key-id`` parameter specifies the KMS key to associate with the alias. You don't need to specify the current KMS key for the alias. ::
 
     aws kms update-alias \

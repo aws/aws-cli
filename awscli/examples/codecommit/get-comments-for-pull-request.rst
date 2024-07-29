@@ -10,14 +10,14 @@ This example demonstrates how to view comments for a pull request in a repositor
 Output::
 
     {
-        "commentsForPullRequestData": [ 
-            { 
+        "commentsForPullRequestData": [
+            {
                 "afterBlobId": "1f330709EXAMPLE",
                 "afterCommitId": "5d036259EXAMPLE",
                 "beforeBlobId": "80906a4cEXAMPLE",
                 "beforeCommitId": "317f8570EXAMPLE",
-                "comments": [ 
-                    { 
+                "comments": [
+                    {
                         "authorArn": "arn:aws:iam::111111111111:user/Saanvi_Sarkar",
                         "clientRequestToken": "",
                         "commentId": "abcd1234EXAMPLEb5678efgh",
@@ -26,7 +26,7 @@ Output::
                         "deleted": false,
                         "lastModifiedDate": 1508369622.123,
                         "callerReactions": [],
-                        "reactionCounts": 
+                        "reactionCounts":
                         {
                             "THUMBSUP" : 6,
                             "CONFUSED" : 1
@@ -41,13 +41,13 @@ Output::
                         "deleted": false,
                         "lastModifiedDate": 150836912.273,
                         "callerReactions": ["THUMBSUP"]
-                        "reactionCounts": 
+                        "reactionCounts":
                         {
                             "THUMBSUP" : 14
                         }
                     }
                 ],
-                "location": { 
+                "location": {
                     "filePath": "ahs_count.py",
                     "filePosition": 367,
                     "relativeFileVersion": "AFTER"

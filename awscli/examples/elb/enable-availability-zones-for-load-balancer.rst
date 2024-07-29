@@ -14,4 +14,3 @@ Output::
             "us-west-2b"
         ]
     }
-

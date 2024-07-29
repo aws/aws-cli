@@ -8,16 +8,16 @@ The following ``detect-moderation-labels`` command detects unsafe content in the
 Output::
 
     {
-        "ModerationModelVersion": "3.0", 
+        "ModerationModelVersion": "3.0",
         "ModerationLabels": [
             {
-                "Confidence": 97.29618072509766, 
-                "ParentName": "Violence", 
+                "Confidence": 97.29618072509766,
+                "ParentName": "Violence",
                 "Name": "Weapon Violence"
-            }, 
+            },
             {
-                "Confidence": 97.29618072509766, 
-                "ParentName": "", 
+                "Confidence": 97.29618072509766,
+                "ParentName": "",
                 "Name": "Violence"
             }
         ]

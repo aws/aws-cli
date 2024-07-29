@@ -9,9 +9,9 @@ The following ``get-resource`` example returns the current state of the AWS::Kin
 Output::
 
     {
-        "TypeName": "AWS::Kinesis::Stream", 
+        "TypeName": "AWS::Kinesis::Stream",
         "ResourceDescription": {
-            "Identifier": "ResourceExample", 
+            "Identifier": "ResourceExample",
             "Properties": "{\"Arn\":\"arn:aws:kinesis:us-west-2:099908667365:stream/ResourceExample\",\"RetentionPeriodHours\":168,\"Name\":\"ResourceExample\",\"ShardCount\":3}"
         }
     }

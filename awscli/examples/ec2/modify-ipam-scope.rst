@@ -1,6 +1,6 @@
 **To modify the description of a scope**
 
-In this scenario, you're an IPAM delegated admin who wants to modify the description of an IPAM scope. 
+In this scenario, you're an IPAM delegated admin who wants to modify the description of an IPAM scope.
 
 To complete this request, you'll need the scope ID, which you can get with `describe-ipam-scopes <https://awscli.amazonaws.com/v2/documentation/api/latest/reference/ec2/describe-ipam-scopes.html>`__.
 

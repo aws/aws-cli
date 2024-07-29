@@ -7,7 +7,7 @@ The following ``modify-replication-group-shard-configuration`` decreases the nod
         --node-group-count 3 \
         --apply-immediately \
         --node-groups-to-remove 0002
-        
+
 Output ::
 
     {

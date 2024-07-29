@@ -1,6 +1,6 @@
 **To add an option to an option group**
 
-The following ``add-option-to-option-group`` example adds an option to the specified option group. :: 
+The following ``add-option-to-option-group`` example adds an option to the specified option group. ::
 
     aws rds add-option-to-option-group \
         --option-group-name myoptiongroup \

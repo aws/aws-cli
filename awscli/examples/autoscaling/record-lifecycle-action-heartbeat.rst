@@ -10,4 +10,3 @@ This example records a lifecycle action heartbeat to keep the instance in a pend
 This command produces no output.
 
 For more information, see `Amazon EC2 Auto Scaling lifecycle hooks <https://docs.aws.amazon.com/autoscaling/ec2/userguide/lifecycle-hooks.html>`__ in the *Amazon EC2 Auto Scaling User Guide*.
-

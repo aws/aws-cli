@@ -4,7 +4,7 @@ The following ``decrease-stream-retention-period`` example decreases the retenti
 
     aws kinesis decrease-stream-retention-period \
         --stream-name samplestream \
-        --retention-period-hours 48 
+        --retention-period-hours 48
 
 This command produces no output.
 

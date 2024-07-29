@@ -16,4 +16,3 @@ Command::
   aws elb set-load-balancer-policies-of-listener --load-balancer-name my-load-balancer --load-balancer-port 443 --policy-names []
 
 To confirm that the policies are removed from the load balancer, use the ``describe-load-balancer-policies`` command.
-

@@ -7,7 +7,7 @@ The following ``create-lifecycle-policy`` example creates a lifecycle policy tha
         --state ENABLED \
         --execution-role-arn arn:aws:iam::12345678910:role/AWSDataLifecycleManagerDefaultRole \
         --policy-details file://policyDetails.json
-  
+
 Contents of ``policyDetails.json``::
 
     {

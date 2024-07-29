@@ -6,7 +6,7 @@ The following ``modify-global-replication-group`` modifies the properties of a g
         --global-replication-group-id sgaui-pat-group \
         --apply-immediately \
         --no-automatic-failover-enabled
-        
+
 Output ::
 
     {

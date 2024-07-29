@@ -10,20 +10,20 @@ Output::
 
     {
         "detector": {
-            "lastUpdateTime": 1560797852.776, 
-            "creationTime": 1560797852.775, 
+            "lastUpdateTime": 1560797852.776,
+            "creationTime": 1560797852.775,
             "state": {
                 "variables": [
                     {
-                        "name": "pressureThresholdBreached", 
+                        "name": "pressureThresholdBreached",
                         "value": "3"
                     }
-                ], 
-                "stateName": "Dangerous", 
+                ],
+                "stateName": "Dangerous",
                 "timers": []
-            }, 
-            "keyValue": "Fulton-A32", 
-            "detectorModelName": "motorDetectorModel", 
+            },
+            "keyValue": "Fulton-A32",
+            "detectorModelName": "motorDetectorModel",
             "detectorModelVersion": "1"
         }
     }

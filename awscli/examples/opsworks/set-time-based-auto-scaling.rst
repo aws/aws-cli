@@ -14,12 +14,12 @@ For this example, the instance is on for a few hours around midday UTC (Coordina
       "11": "on",
       "12": "on",
       "13": "on"
-    }, 
+    },
     "Tuesday": {
       "10": "on",
       "11": "on",
       "12": "on",
-      "13": "on" 
+      "13": "on"
     }
   }
 
@@ -30,4 +30,3 @@ For this example, the instance is on for a few hours around midday UTC (Coordina
 For more information, see `Using Automatic Time-based Scaling`_ in the *AWS OpsWorks User Guide*.
 
 .. _`Using Automatic Time-based Scaling`: http://docs.aws.amazon.com/opsworks/latest/userguide/workinginstances-autoscaling-timebased.html
-

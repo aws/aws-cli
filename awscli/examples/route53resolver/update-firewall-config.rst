@@ -4,7 +4,7 @@ The following ``update-firewall-config`` example updates DNS Firewall configurat
 
     aws route53resolver update-firewall-config \
         --resource-id vpc-31e92222 \
-        --firewall-fail-open DISABLED 
+        --firewall-fail-open DISABLED
 
 Output::
 

@@ -1,6 +1,6 @@
 **To get information about differences for a commit specifier in a repository**
 
-This example shows view metadata information about changes between two commit specifiers (branch, tag, HEAD, or other fully qualified references, such as commit IDs) in a renamed folder in AWS CodeCommit repository named MyDemoRepo. The example includes several options that are not required, including --before-commit-specifier, --before-path, and --after-path, in order to more fully illustrate how you can use these options to limit the results. The response includes file mode permissions. 
+This example shows view metadata information about changes between two commit specifiers (branch, tag, HEAD, or other fully qualified references, such as commit IDs) in a renamed folder in AWS CodeCommit repository named MyDemoRepo. The example includes several options that are not required, including --before-commit-specifier, --before-path, and --after-path, in order to more fully illustrate how you can use these options to limit the results. The response includes file mode permissions.
 
 Command::
 

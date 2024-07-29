@@ -9,9 +9,9 @@ of the AWS Identity and Access Management (IAM) user that is running the command
 
   {
     "UserProfile": {
-      "IamUserArn": "arn:aws:iam::123456789012:user/myusername", 
-      "SshPublicKey": "ssh-rsa AAAAB3NzaC1yc2EAAAABJQ...3LQ4aX9jpxQw== rsa-key-20141104", 
-      "Name": "myusername", 
+      "IamUserArn": "arn:aws:iam::123456789012:user/myusername",
+      "SshPublicKey": "ssh-rsa AAAAB3NzaC1yc2EAAAABJQ...3LQ4aX9jpxQw== rsa-key-20141104",
+      "Name": "myusername",
       "SshUsername": "myusername"
     }
   }
@@ -21,4 +21,3 @@ of the AWS Identity and Access Management (IAM) user that is running the command
 For more information, see `Importing Users into AWS OpsWorks`_ in the *AWS OpsWorks User Guide*.
 
 .. _`Importing Users into AWS OpsWorks`: http://docs.aws.amazon.com/opsworks/latest/userguide/opsworks-security-users-manage-import.html
-

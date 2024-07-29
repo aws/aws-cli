@@ -10,7 +10,7 @@ Output::
     {
         "tags": [
             {
-                "value": "motor", 
+                "value": "motor",
                 "key": "deviceType"
             }
         ]

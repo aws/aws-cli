@@ -3,13 +3,13 @@
 The following ``start-next-pending-job-execution`` example retrieves and starts the next job execution whose status is `IN_PROGRESS` or `QUEUED` for the specified thing. ::
 
     aws iot-jobs-data start-next-pending-job-execution \
-        --thing-name MotionSensor1 
+        --thing-name MotionSensor1
         --endpoint-url https://1234567890abcd.jobs.iot.us-west-2.amazonaws.com
 
 Output::
 
     {
-        "execution": { 
+        "execution": {
             "approximateSecondsBeforeTimedOut": 88,
             "executionNumber": 2939653338,
             "jobId": "SampleJob",

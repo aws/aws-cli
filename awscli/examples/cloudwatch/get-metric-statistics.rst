@@ -1,7 +1,7 @@
 **To get the CPU utilization per EC2 instance**
 
 The following example uses the ``get-metric-statistics`` command to get the CPU utilization for an EC2
-instance with the ID i-abcdef. 
+instance with the ID i-abcdef.
 
 .. __: http://docs.aws.amazon.com/AmazonCloudWatch/latest/DeveloperGuide/US_GetStatistics.html
 

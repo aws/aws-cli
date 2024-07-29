@@ -9,7 +9,7 @@ This example demonstrates how to change the description of a pull request with t
 Output::
 
     {
-        "pullRequest": { 
+        "pullRequest": {
             "authorArn": "arn:aws:iam::111111111111:user/Li_Juan",
             "clientRequestToken": "",
             "creationDate": 1508530823.155,
@@ -17,11 +17,11 @@ Output::
             "lastActivityDate": 1508372423.204,
             "pullRequestId": "47",
             "pullRequestStatus": "OPEN",
-            "pullRequestTargets": [ 
-                { 
+            "pullRequestTargets": [
+                {
                     "destinationCommit": "9f31c968EXAMPLE",
                     "destinationReference": "refs/heads/main",
-                    "mergeMetadata": { 
+                    "mergeMetadata": {
                         "isMerged": false,
                     },
                     "repositoryName": "MyDemoRepo",

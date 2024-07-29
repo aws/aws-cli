@@ -3,7 +3,7 @@
 The following example shows you how to request details about an account: ::
 
 	aws organizations describe-account --account-id 555555555555
-	
+
 The output shows an account object with the details about the account: ::
 
 	{

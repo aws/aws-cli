@@ -1,6 +1,6 @@
 **To create an identity pool with Cognito identity pool provider**
 
-This example creates an identity pool named MyIdentityPool. It has a Cognito identity pool provider. 
+This example creates an identity pool named MyIdentityPool. It has a Cognito identity pool provider.
 Unauthenticated identities are not allowed.
 
 Command::
@@ -21,4 +21,3 @@ Output::
         }
     ]
   }
-

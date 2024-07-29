@@ -8,8 +8,8 @@ The following ``search-flow-executions`` example search for all executions of a 
 Output::
 
     {
-       "summaries": [ 
-          { 
+       "summaries": [
+          {
              "createdAt": 1559247540.656,
              "flowExecutionId": "f6294f1e-b109-4bbe-9073-f451a2dda2da",
              "flowTemplateId": "urn:tdm:us-west-2/123456789012/default:Workflow:MyFlow",

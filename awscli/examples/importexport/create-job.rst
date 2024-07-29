@@ -22,7 +22,7 @@ The file ``manifest`` is a YAML formatted text file in the current directory wit
 For more information on the manifest file format, see `Creating Import Manifests`_ in the *AWS Import/Export Developer Guide*.
 
 .. _`Creating Import Manifests`: http://docs.aws.amazon.com/AWSImportExport/latest/DG/ImportManifestFile.html
-  
+
 You can also pass the manifest as a string in quotes::
 
   aws importexport create-job --job-type import --manifest 'manifestVersion: 2.0;

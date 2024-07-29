@@ -1,6 +1,6 @@
 **To describe a cache engine version**
 
-The following ``describe-cache-engine-versions`` example returns a list of the available cache engines and their versions. :: 
+The following ``describe-cache-engine-versions`` example returns a list of the available cache engines and their versions. ::
 
     aws elasticache describe-cache-engine-versions \
         --engine "Redis"

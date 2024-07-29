@@ -35,5 +35,3 @@ Result::
           "SnapshotIdentifier": "my-snapshot-id"
        }
     }
-
-

@@ -37,4 +37,3 @@ See Also
 
 -  `DescribeDomain <https://docs.aws.amazon.com/amazonswf/latest/apireference/API_DescribeDomain.html>`__
    in the *Amazon Simple Workflow Service API Reference*
-

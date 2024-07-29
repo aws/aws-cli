@@ -118,7 +118,7 @@ The file ``policy.json`` is a JSON document in the current folder that grants ac
     }
 
 Output::
-    
+
     {
         "Policy": {
             "PolicyName": "my-policy",

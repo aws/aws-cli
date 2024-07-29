@@ -7,7 +7,7 @@ The following ``get-data-lake-settings`` example retrieves the list of data lake
 
 Contents of ``input.json``::
 
-    {   
+    {
         "CatalogId": "123456789111"
     }
 

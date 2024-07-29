@@ -32,5 +32,3 @@ Result::
 
     redshift-1.0	My first cluster parameter group	myclusterparametergroup
     RESPONSEMETADATA	9e665a36-64cc-11e2-8f7d-3b939af52818
-
-

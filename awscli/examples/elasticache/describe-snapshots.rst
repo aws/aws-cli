@@ -2,7 +2,7 @@
 
 The following ''describe-snapshots'' example returns information about your cluster or replication group snapshots. ::
 
-    aws elasticache describe-snapshots 
+    aws elasticache describe-snapshots
 
 Output::
 
@@ -99,4 +99,3 @@ Output::
     }
 
 For more information, see `Backup and Restore for ElastiCache for Redis <https://docs.aws.amazon.com/AmazonElastiCache/latest/red-ug/backups.html>`__ in the *Elasticache User Guide*.
-

@@ -7,4 +7,3 @@ The following ``update-assessment-target`` command updates the assessment target
 For more information, see `Amazon Inspector Assessment Targets`_ in the *Amazon Inspector* guide.
 
 .. _`Amazon Inspector Assessment Targets`: https://docs.aws.amazon.com/inspector/latest/userguide/inspector_applications.html
-

@@ -27,4 +27,3 @@ To reduce the number of results returned, you can:
 For more information, see `CountOpenWorkflowExecutions`_ in the *Amazon Simple Workflow Service API Reference*
 
 .. _`CountOpenWorkflowExecutions`: https://docs.aws.amazon.com/amazonswf/latest/apireference/API_CountOpenWorkflowExecutions.html
-

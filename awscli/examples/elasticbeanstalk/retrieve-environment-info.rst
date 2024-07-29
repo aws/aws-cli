@@ -20,4 +20,4 @@ Output::
 View the link in a browser. Prior to retrieval, logs must be requested with `request-environment-info`_.
 
 .. _`request-environment-info`: http://docs.aws.amazon.com/cli/latest/reference/elasticbeanstalk/retrieve-environment-info.html
-  
+

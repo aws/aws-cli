@@ -3,7 +3,7 @@
 The following ``associate-resolver-endpoint-ip-address`` example associates another IP address with an inbound Resolver endpoint. If you specify only a subnet ID and omit the IP address from the ``--ip-address`` parameter, Resolver chooses an IP address for you from among the available IP addresses in the specified subnet. ::
 
     aws route53resolver associate-resolver-endpoint-ip-address \
-        --resolver-endpoint-id rslvr-in-497098ad5example \ 
+        --resolver-endpoint-id rslvr-in-497098ad5example \
         --ip-address="SubnetId=subnet-12d8exam,Ip=192.0.2.118"
 
 Output::

@@ -11,8 +11,8 @@ The following ``get-merge-commit`` example displays details about a merge commit
 Output::
 
     {
-        "sourceCommitId": "c5709475EXAMPLE", 
-        "destinationCommitId": "317f8570EXAMPLE", 
+        "sourceCommitId": "c5709475EXAMPLE",
+        "destinationCommitId": "317f8570EXAMPLE",
         "baseCommitId": "fb12a539EXAMPLE",
         "mergeCommitId": "ffc4d608eEXAMPLE"
     }

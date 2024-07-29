@@ -4,7 +4,7 @@ The following ``get-job-document`` example displays details about the document f
 
     aws iot get-job-document \
         --job-id "example-job-01"
-        
+
 Output::
 
     {

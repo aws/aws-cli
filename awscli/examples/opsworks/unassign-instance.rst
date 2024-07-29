@@ -11,4 +11,3 @@ The following ``unassign-instance`` command unassigns an instance from its attac
 For more information, see `Unassigning a Registered Instance`_ in the *AWS OpsWorks User Guide*.
 
 .. _`Unassigning a Registered Instance`: http://docs.aws.amazon.com/opsworks/latest/userguide/registered-instances-unassign.html
-

@@ -2,7 +2,7 @@
 
 This example adds a Lambda function as the target of a rule::
 
-  aws events put-targets --rule DailyLambdaFunction --targets "Id"="1","Arn"="arn:aws:lambda:us-east-1:123456789012:function:MyFunctionName" 
+  aws events put-targets --rule DailyLambdaFunction --targets "Id"="1","Arn"="arn:aws:lambda:us-east-1:123456789012:function:MyFunctionName"
 
 This example sets an Amazon Kinesis stream as the target, so that events caught by this rule are relayed to the stream::
 

@@ -1,6 +1,6 @@
 **To list devices for a user**
 
-This example lists devices for username jane@example.com. 
+This example lists devices for username jane@example.com.
 
 Command::
 

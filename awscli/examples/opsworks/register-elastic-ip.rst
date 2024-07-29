@@ -4,7 +4,7 @@ The following example registers an Elastic IP address, identified by its IP addr
 
 **Note:** The Elastic IP address must be in the same region as the stack. ::
 
-  aws opsworks register-elastic-ip --region us-east-1 --stack-id d72553d4-8727-448c-9b00-f024f0ba1b06 --elastic-ip 54.148.130.96 
+  aws opsworks register-elastic-ip --region us-east-1 --stack-id d72553d4-8727-448c-9b00-f024f0ba1b06 --elastic-ip 54.148.130.96
 
 *Output* ::
 

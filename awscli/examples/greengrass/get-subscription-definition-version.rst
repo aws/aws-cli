@@ -5,7 +5,7 @@ The following ``get-subscription-definition-version`` example retrieves retrieve
     aws greengrass get-subscription-definition-version \
         --subscription-definition-id "70e49321-83d5-45d2-bc09-81f4917ae152" \
         --subscription-definition-version-id "88ae8699-12ac-4663-ba3f-4d7f0519140b"
-    
+
 Output::
 
    {

@@ -3,7 +3,7 @@
 The following ``delete-approval-rule-template`` example deletes the specified approval rule template. ::
 
     aws codecommit delete-approval-rule-template  \
-        --approval-rule-template-name 1-approver-for-all-pull-requests 
+        --approval-rule-template-name 1-approver-for-all-pull-requests
 
 Output::
 

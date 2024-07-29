@@ -4,7 +4,7 @@ The following ``delete-traffic-mirror-target`` example deletes the specified tra
 
     aws ec2 delete-traffic-mirror-target \
         --traffic-mirror-target-id tmt-060f48ce9EXAMPLE
-        
+
 Output::
 
     {

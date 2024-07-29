@@ -1,6 +1,6 @@
 **To list users**
 
-This example lists up to 20 users.   
+This example lists up to 20 users.
 
 Command::
 

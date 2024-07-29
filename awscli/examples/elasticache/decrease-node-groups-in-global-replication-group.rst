@@ -11,7 +11,7 @@ The following ``decrease-node-groups-in-global-replication-group`` decreases the
 Output::
 
     {
-        "GlobalReplicationGroup": 
+        "GlobalReplicationGroup":
         {
             "GlobalReplicationGroupId": "sgaui-test",
             "GlobalReplicationGroupDescription": "test",

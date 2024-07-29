@@ -1,6 +1,6 @@
 **To register a DB proxy with a database**
 
-The following ``register-db-proxy-targets`` example creates the association between a database and a proxy. :: 
+The following ``register-db-proxy-targets`` example creates the association between a database and a proxy. ::
 
     aws rds register-db-proxy-targets \
         --db-proxy-name proxyExample \

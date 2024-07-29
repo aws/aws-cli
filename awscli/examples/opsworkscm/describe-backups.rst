@@ -10,8 +10,8 @@ The output for each backup entry returned by the command resembles the following
 Output::
 
     {
-        "Backups": [ 
-            { 
+        "Backups": [
+            {
                 "BackupArn": "string",
                 "BackupId": "automate-06-20160729133847520",
                 "BackupType": "MANUAL",
@@ -41,4 +41,3 @@ Output::
 For more information, see `Back Up and Restore an AWS OpsWorks for Chef Automate Server`_ in the *AWS OpsWorks User Guide*.
 
 .. _`Back Up and Restore an AWS OpsWorks for Chef Automate Server`: http://docs.aws.amazon.com/opsworks/latest/userguide/opscm-backup-restore.html
-

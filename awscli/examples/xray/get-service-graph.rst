@@ -3,7 +3,7 @@
 The following example displays a document within a specified time period that describes services processing incoming requests, and the downstream services that they call as a result.::
 
     aws xray get-service-graph \
-        --start-time 1568835392.0 
+        --start-time 1568835392.0
         --end-time 1568835446.0
 
 Output::
@@ -72,9 +72,9 @@ Output::
                         ],
                         "Aliases": []
                     },
-                    
+
                     ... TRUNCATED FOR BREVITY ...
-                    
+
                 ]
             }
         ],

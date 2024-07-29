@@ -9,13 +9,13 @@ Output::
   {
       "items": [
           {
-              "basePath": "(none)", 
-              "restApiId": "1234w4321e", 
+              "basePath": "(none)",
+              "restApiId": "1234w4321e",
               "stage": "dev"
-          }, 
+          },
           {
-              "basePath": "v1", 
-              "restApiId": "1234w4321e", 
+              "basePath": "v1",
+              "restApiId": "1234w4321e",
               "stage": "api"
           }
       ]

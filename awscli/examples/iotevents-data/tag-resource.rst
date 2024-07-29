@@ -9,7 +9,7 @@ The following ``tag-resource`` example adds to or modifies the tags of the given
 Contents of ``pressureInput.tag.json``::
 
     {
-        "resourceArn": "arn:aws:iotevents:us-west-2:123456789012:input/PressureInput", 
+        "resourceArn": "arn:aws:iotevents:us-west-2:123456789012:input/PressureInput",
         "tags": [
             {
                 "key": "deviceType",
@@ -21,4 +21,3 @@ Contents of ``pressureInput.tag.json``::
 This command produces no output.
 
 For more information, see `TagResource <https://docs.aws.amazon.com/iotevents/latest/developerguide/iotevents-commands.html#api-iotevents-TagResource>`__ in the *AWS IoT Events Developer Guide**.
-

@@ -64,4 +64,3 @@ Output::
     }
 
 For more information, see `Working with reports <https://docs.aws.amazon.com/codebuild/latest/userguide/test-report.html>`__ in the *AWS CodeBuild User Guide*.
-

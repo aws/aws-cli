@@ -26,7 +26,7 @@ filters.json::
       }
     ]
   }
-  
+
 Output::
 
  {
@@ -58,5 +58,4 @@ Output::
         }
     ],
     "ReturnSize": 6
- }	
-
+ }

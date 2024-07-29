@@ -19,5 +19,3 @@ Result::
           "RequestId": "739448f0-64cc-11e2-8f7d-3b939af52818"
        }
     }
-
-

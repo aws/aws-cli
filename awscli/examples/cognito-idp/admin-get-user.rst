@@ -1,6 +1,6 @@
 **To get a user**
 
-This example gets information about username jane@example.com. 
+This example gets information about username jane@example.com.
 
 Command::
 

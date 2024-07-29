@@ -11,11 +11,11 @@ Output::
 
     {
         "ProgressEvent": {
-            "EventTime": "2021-08-09T18:17:15.219Z", 
-            "TypeName": "AWS::Logs::LogGroup", 
-            "OperationStatus": "IN_PROGRESS", 
-            "Operation": "UPDATE", 
-            "Identifier": "ExampleLogGroup", 
+            "EventTime": "2021-08-09T18:17:15.219Z",
+            "TypeName": "AWS::Logs::LogGroup",
+            "OperationStatus": "IN_PROGRESS",
+            "Operation": "UPDATE",
+            "Identifier": "ExampleLogGroup",
             "RequestToken": "5f40c577-3534-4b20-9599-0b0123456789"
         }
     }

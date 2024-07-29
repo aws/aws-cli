@@ -4,7 +4,7 @@ The following ``put-record`` example writes data to a stream.  The data is encod
 
     aws firehose put-record \
         --delivery-stream-name my-stream \
-        --record '{"Data":"SGVsbG8gd29ybGQ="}' 
+        --record '{"Data":"SGVsbG8gd29ybGQ="}'
 
 Output::
 

@@ -5,7 +5,7 @@ The following ``batch-check-layer-availability`` example checks the availability
     aws ecr batch-check-layer-availability \
         --repository-name cluster-autoscaler \
         --layer-digests sha256:6171c7451a50945f8ddd72f7732cc04d7a0d1f48138a426b2e64387fdeb834ed
-  
+
 Output::
 
     {

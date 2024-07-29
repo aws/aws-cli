@@ -13,4 +13,3 @@ Output::
           "subnet-15aaab61"
       ]
    }
-

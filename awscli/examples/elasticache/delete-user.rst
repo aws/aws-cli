@@ -3,7 +3,7 @@
 The following ``delete-user`` example deletes a user. ::
 
     aws elasticache delete-user \
-        --user-id user2  
+        --user-id user2
 
 Output::
 

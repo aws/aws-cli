@@ -3,7 +3,7 @@
 The following ``create-mitigation-action`` example defines a mitigation action named ``AddThingsToQuarantineGroup1Action`` that, when applied, moves things into the thing group named ``QuarantineGroup1``. This action overrides dynamic thing groups. ::
 
     aws iot create-mitigation-action --cli-input-json file::params.json
-    
+
 Contents of ``params.json``::
 
     {

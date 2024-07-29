@@ -5,4 +5,3 @@ executes it, use the ``--no-execute-changeset`` flag.
 
 To update a stack, specify the name of an existing stack. To create a new stack,
 specify a new stack name.
-

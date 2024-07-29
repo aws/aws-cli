@@ -19,7 +19,7 @@ Output::
                     "Action":{
                         "Block":{
 
-                        } 
+                        }
                     },
                     "VisibilityConfig":{
                         "SampledRequestsEnabled":true,

@@ -5,7 +5,7 @@ This example changes the 2 specified messages' timeout visibilities to 10 hours 
 Command::
 
   aws sqs change-message-visibility-batch --queue-url https://sqs.us-east-1.amazonaws.com/80398EXAMPLE/MyQueue --entries file://change-message-visibility-batch.json
-  
+
 Input file (change-message-visibility-batch.json)::
 
   [
@@ -17,7 +17,7 @@ Input file (change-message-visibility-batch.json)::
     {
       "Id": "SecondMessage",
 	  "ReceiptHandle": "AQEBkTUH...HifSnw==",
-	  "VisibilityTimeout": 36000  
+	  "VisibilityTimeout": 36000
     }
   ]
 
@@ -33,4 +33,3 @@ Output::
       }
     ]
   }
-

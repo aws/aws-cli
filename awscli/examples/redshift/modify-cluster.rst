@@ -26,5 +26,3 @@ This example shows how to change the master password for a cluster.
 Command::
 
    aws redshift modify-cluster --cluster-identifier mycluster --master-user-password A1b2c3d4
-
-

@@ -21,4 +21,3 @@ granted by the attached policies. You can grant per-stack AWS OpsWorks permissio
 For more information, see `Importing Users into AWS OpsWorks`_ in the *AWS OpsWorks User Guide*.
 
 .. _`Importing Users into AWS OpsWorks`: http://docs.aws.amazon.com/opsworks/latest/userguide/opsworks-security-users-manage-import.html
-

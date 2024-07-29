@@ -6,7 +6,7 @@ The following ``put-image`` example creates a new tag in the ``hello-world`` rep
         --repository-name hello-world \
         --image-tag 2019.08 \
         --image-manifest file://hello-world.manifest.json
-  
+
 Contents of ``hello-world.manifest.json``::
 
     {
@@ -75,7 +75,7 @@ Contents of ``hello-world.manifest.json``::
             }
         ]
     }
-  
+
 Output::
 
     {

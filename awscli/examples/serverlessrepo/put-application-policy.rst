@@ -20,7 +20,7 @@ Output::
                 "StatementId": "a1b2c3d4-5678-90ab-cdef-11111EXAMPLE"
             }
         ]
-    }  
+    }
 
 **Example 2:** To share an application privately
 

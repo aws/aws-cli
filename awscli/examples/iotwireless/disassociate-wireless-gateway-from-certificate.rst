@@ -3,7 +3,7 @@
 The following ``disassociate-wireless-gateway-from-certificate`` disassociates a wireless gateway from its currently associated certificate. ::
 
     aws iotwireless disassociate-wireless-gateway-from-certificate \
-        --id "12345678-a1b2-3c45-67d8-e90fa1b2c34d" 
+        --id "12345678-a1b2-3c45-67d8-e90fa1b2c34d"
 
 This command produces no output.
 

@@ -16,7 +16,7 @@ Output::
                 "category": "security",
                 "metadata": []
             }
-        ]         
+        ]
     }
 
 For more information, see `AWS Trusted Advisor <https://docs.aws.amazon.com/awssupport/latest/user/trusted-advisor.html>`__ in the *AWS Support User Guide*.

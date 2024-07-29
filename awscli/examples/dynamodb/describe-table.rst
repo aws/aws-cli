@@ -11,33 +11,33 @@ Output::
         "Table": {
             "AttributeDefinitions": [
                 {
-                    "AttributeName": "Artist", 
+                    "AttributeName": "Artist",
                     "AttributeType": "S"
-                }, 
+                },
                 {
-                    "AttributeName": "SongTitle", 
+                    "AttributeName": "SongTitle",
                     "AttributeType": "S"
                 }
-            ], 
+            ],
             "ProvisionedThroughput": {
-                "NumberOfDecreasesToday": 0, 
-                "WriteCapacityUnits": 5, 
+                "NumberOfDecreasesToday": 0,
+                "WriteCapacityUnits": 5,
                 "ReadCapacityUnits": 5
-            }, 
-            "TableSizeBytes": 0, 
-            "TableName": "MusicCollection", 
-            "TableStatus": "ACTIVE", 
+            },
+            "TableSizeBytes": 0,
+            "TableName": "MusicCollection",
+            "TableStatus": "ACTIVE",
             "KeySchema": [
                 {
-                    "KeyType": "HASH", 
+                    "KeyType": "HASH",
                     "AttributeName": "Artist"
-                }, 
+                },
                 {
-                    "KeyType": "RANGE", 
+                    "KeyType": "RANGE",
                     "AttributeName": "SongTitle"
                 }
-            ], 
-            "ItemCount": 0, 
+            ],
+            "ItemCount": 0,
             "CreationDateTime": 1421866952.062
         }
     }

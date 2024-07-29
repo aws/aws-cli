@@ -7,9 +7,8 @@ Command::
 Output::
 
   {
-      "statusCode": "200", 
+      "statusCode": "200",
       "responseTemplates": {
           "application/json": null
       }
   }
-

@@ -1,6 +1,6 @@
 **To list user pools**
 
-This example lists up to 20 user pools.   
+This example lists up to 20 user pools.
 
 Command::
 
@@ -19,4 +19,3 @@ Output::
         }
     ]
   }
-

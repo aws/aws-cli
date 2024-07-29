@@ -37,7 +37,7 @@ Contents of ``video.json``::
             {
                 "Id":"company logo",
                 "MaxWidth":"20%",
-                "MaxHeight":"20%", 
+                "MaxHeight":"20%",
                 "SizingPolicy":"ShrinkToFit",
                 "HorizontalAlign":"Right",
                 "HorizontalOffset":"10px",

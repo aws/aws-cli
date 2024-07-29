@@ -11,7 +11,7 @@ The following ``create-origin-endpoint`` command creates an origin endpoint name
         --startover-window-seconds 300 \
         --tags region=west,media=sports \
         --time-delay-seconds 10
-        
+
 Output::
 
     {

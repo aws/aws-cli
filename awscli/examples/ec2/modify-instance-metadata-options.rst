@@ -20,7 +20,7 @@ Output::
     }
 
 For more information, see `Instance metadata and user data <https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-instance-metadata.html>`__ in the *Amazon Elastic Compute Cloud User Guide for Linux Instances*.
- 
+
 **Example 2: To disable instance metadata**
 
 The following ``modify-instance-metadata-options`` example disables the use of all versions of instance metadata on the specified instance. ::

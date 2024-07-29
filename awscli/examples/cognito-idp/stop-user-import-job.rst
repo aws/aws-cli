@@ -1,6 +1,6 @@
 **To stop a user import job**
 
-This example stops a user input job. 
+This example stops a user input job.
 
 For more information about importing users, see `Importing Users into User Pools From a CSV File`_.
 
@@ -27,5 +27,5 @@ Output::
         "CompletionMessage": "The Import Job was stopped by the developer."
     }
   }
-  
+
 .. _`Importing Users into User Pools From a CSV File`: https://docs.aws.amazon.com/cognito/latest/developerguide/cognito-user-pools-using-import-tool.html

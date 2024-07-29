@@ -41,7 +41,7 @@ Output::
 This example filters the response to include only three-year, t2.micro Linux/UNIX Reserved Instances in us-west-1c.
 
 Command::
-    
+
     aws ec2 describe-reserved-instances --filters Name=duration,Values=94608000 Name=instance-type,Values=t2.micro Name=product-description,Values=Linux/UNIX Name=availability-zone,Values=us-east-1e
 
 Output::
@@ -71,4 +71,3 @@ Output::
 For more information, see `Using Amazon EC2 Instances`_ in the *AWS Command Line Interface User Guide*.
 
 .. _`Using Amazon EC2 Instances`: http://docs.aws.amazon.com/cli/latest/userguide/cli-ec2-launch.html
-

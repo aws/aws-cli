@@ -8,7 +8,7 @@ The following ``update-route`` example updates the integration of a specified ro
         --target integrations/a1b2c6
 
 Output::
-    
+
     {
         "ApiKeyRequired": false,
         "AuthorizationType": "NONE",

@@ -5,4 +5,3 @@ The following command adds a tag with a key of ``Name`` and a value of ``VAConne
 Command::
 
   aws directconnect tag-resource --resource-arn arn:aws:directconnect:us-east-1:123456789012:dxcon/dxcon-abcabc12 --tags "key=Name,value=VAConnection"
-

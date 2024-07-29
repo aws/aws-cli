@@ -3,7 +3,7 @@
 The following ``list-tags`` example lists the tag keys and values attached to the specified DAX cluster. ::
 
     aws dax list-tags \
-        --resource-name arn:aws:dax:us-west-2:123456789012:cache/daxcluster 
+        --resource-name arn:aws:dax:us-west-2:123456789012:cache/daxcluster
 
 Output::
 

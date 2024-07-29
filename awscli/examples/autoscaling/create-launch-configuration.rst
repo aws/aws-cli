@@ -35,7 +35,7 @@ This example creates a launch configuration with the instance profile name of an
         --launch-configuration-name my-lc \
         --image-id ami-04d5cc9b88example \
         --instance-type m5.large \
-        --iam-instance-profile my-autoscaling-role 
+        --iam-instance-profile my-autoscaling-role
 
 This command produces no output.
 
@@ -49,7 +49,7 @@ This example creates a launch configuration with EC2 detailed monitoring enabled
         --launch-configuration-name my-lc \
         --image-id ami-04d5cc9b88example \
         --instance-type m5.large \
-        --instance-monitoring Enabled=true 
+        --instance-monitoring Enabled=true
 
 This command produces no output.
 
@@ -78,7 +78,7 @@ This example creates a launch configuration based on the attributes of an existi
         --instance-id i-0123a456700123456 \
         --instance-type m5.large \
         --no-associate-public-ip-address \
-        --placement-tenancy dedicated 
+        --placement-tenancy dedicated
 
 This command produces no output.
 
@@ -98,7 +98,7 @@ This command produces no output.
 
 For more information, see `EBS <https://docs.aws.amazon.com/autoscaling/ec2/APIReference/API_Ebs.html>`__ in the *Amazon EC2 Auto Scaling API Reference*.
 
-For information about the syntax for quoting JSON-formatted parameter values, see `Using quotation marks with strings in the AWS CLI <https://docs.aws.amazon.com/cli/latest/userguide/cli-usage-parameters-quoting-strings.html>`__ in the *AWS Command Line Interface User Guide*. 
+For information about the syntax for quoting JSON-formatted parameter values, see `Using quotation marks with strings in the AWS CLI <https://docs.aws.amazon.com/cli/latest/userguide/cli-usage-parameters-quoting-strings.html>`__ in the *AWS Command Line Interface User Guide*.
 
 **Example 8: To create a launch configuration with a block device mapping for an instance store volume**
 
@@ -114,7 +114,7 @@ This command produces no output.
 
 For more information, see `BlockDeviceMapping <https://docs.aws.amazon.com/autoscaling/ec2/APIReference/API_BlockDeviceMapping.html>`__ in the *Amazon EC2 Auto Scaling API Reference*.
 
-For information about the syntax for quoting JSON-formatted parameter values, see `Using quotation marks with strings in the AWS CLI <https://docs.aws.amazon.com/cli/latest/userguide/cli-usage-parameters-quoting-strings.html>`__ in the *AWS Command Line Interface User Guide*. 
+For information about the syntax for quoting JSON-formatted parameter values, see `Using quotation marks with strings in the AWS CLI <https://docs.aws.amazon.com/cli/latest/userguide/cli-usage-parameters-quoting-strings.html>`__ in the *AWS Command Line Interface User Guide*.
 
 **Example 9: To create a launch configuration and suppress a block device from attaching at launch time**
 
@@ -130,4 +130,4 @@ This command produces no output.
 
 For more information, see `BlockDeviceMapping <https://docs.aws.amazon.com/autoscaling/ec2/APIReference/API_BlockDeviceMapping.html>`__ in the *Amazon EC2 Auto Scaling API Reference*.
 
-For information about the syntax for quoting JSON-formatted parameter values, see `Using quotation marks with strings in the AWS CLI <https://docs.aws.amazon.com/cli/latest/userguide/cli-usage-parameters-quoting-strings.html>`__ in the *AWS Command Line Interface User Guide*. 
+For information about the syntax for quoting JSON-formatted parameter values, see `Using quotation marks with strings in the AWS CLI <https://docs.aws.amazon.com/cli/latest/userguide/cli-usage-parameters-quoting-strings.html>`__ in the *AWS Command Line Interface User Guide*.

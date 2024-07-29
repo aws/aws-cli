@@ -7,11 +7,11 @@ The following ``create-connection`` command creates a connection from your netwo
 Output::
 
   {
-      "ownerAccount": "123456789012", 
-      "connectionId": "dxcon-fg31dyv6", 
-      "connectionState": "requested", 
-      "bandwidth": "1Gbps", 
-      "location": "TIVIT", 
-      "connectionName": "Connection to AWS", 
+      "ownerAccount": "123456789012",
+      "connectionId": "dxcon-fg31dyv6",
+      "connectionState": "requested",
+      "bandwidth": "1Gbps",
+      "location": "TIVIT",
+      "connectionName": "Connection to AWS",
       "region": "sa-east-1"
   }

@@ -37,4 +37,3 @@ Result::
     }
 
 .. tip:: To see a list of valid parameter group families, use the ``describe-cluster-parameter-groups`` command.
-

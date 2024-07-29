@@ -10,10 +10,10 @@ Output::
 
   {
     "directConnectGateway": {
-        "amazonSideAsn": 64512, 
-        "directConnectGatewayId": "5f294f92-bafb-4011-916d-9b0bexample", 
-        "ownerAccount": "123456789012", 
-        "directConnectGatewayName": "DxGateway1", 
+        "amazonSideAsn": 64512,
+        "directConnectGatewayId": "5f294f92-bafb-4011-916d-9b0bexample",
+        "ownerAccount": "123456789012",
+        "directConnectGatewayName": "DxGateway1",
         "directConnectGatewayState": "deleting"
     }
   }

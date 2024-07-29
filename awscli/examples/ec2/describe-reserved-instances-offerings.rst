@@ -66,47 +66,46 @@ Output::
   {
       "ReservedInstancesOfferings": [
         {
-            "OfferingType": "No Upfront", 
-            "AvailabilityZone": "us-east-1b", 
-            "InstanceTenancy": "default", 
-            "PricingDetails": [], 
-            "ProductDescription": "Windows", 
-            "UsagePrice": 0.0, 
+            "OfferingType": "No Upfront",
+            "AvailabilityZone": "us-east-1b",
+            "InstanceTenancy": "default",
+            "PricingDetails": [],
+            "ProductDescription": "Windows",
+            "UsagePrice": 0.0,
             "RecurringCharges": [
                 {
-                    "Amount": 0.015, 
+                    "Amount": 0.015,
                     "Frequency": "Hourly"
                 }
-            ], 
-            "Marketplace": false, 
-            "CurrencyCode": "USD", 
-            "FixedPrice": 0.0, 
-            "Duration": 31536000, 
-            "ReservedInstancesOfferingId": "c48ab04c-fe69-4f94-8e39-a23842292823", 
+            ],
+            "Marketplace": false,
+            "CurrencyCode": "USD",
+            "FixedPrice": 0.0,
+            "Duration": 31536000,
+            "ReservedInstancesOfferingId": "c48ab04c-fe69-4f94-8e39-a23842292823",
             "InstanceType": "t1.micro"
-        }, 
+        },
 
 		...
         {
-            "OfferingType": "No Upfront", 
-            "AvailabilityZone": "us-east-1d", 
-            "InstanceTenancy": "default", 
-            "PricingDetails": [], 
-            "ProductDescription": "Windows (Amazon VPC)", 
-            "UsagePrice": 0.0, 
+            "OfferingType": "No Upfront",
+            "AvailabilityZone": "us-east-1d",
+            "InstanceTenancy": "default",
+            "PricingDetails": [],
+            "ProductDescription": "Windows (Amazon VPC)",
+            "UsagePrice": 0.0,
             "RecurringCharges": [
                 {
-                    "Amount": 0.015, 
+                    "Amount": 0.015,
                     "Frequency": "Hourly"
                 }
-            ], 
-            "Marketplace": false, 
-            "CurrencyCode": "USD", 
-            "FixedPrice": 0.0, 
-            "Duration": 31536000, 
-            "ReservedInstancesOfferingId": "3a98bf7d-2123-42d4-b4f5-8dbec4b06dc6", 
+            ],
+            "Marketplace": false,
+            "CurrencyCode": "USD",
+            "FixedPrice": 0.0,
+            "Duration": 31536000,
+            "ReservedInstancesOfferingId": "3a98bf7d-2123-42d4-b4f5-8dbec4b06dc6",
             "InstanceType": "t1.micro"
         }
       ]
   }
-

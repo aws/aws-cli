@@ -3,7 +3,7 @@
 The following ``describe-activations`` example lists details about the activations in your AWS account. ::
 
     aws ssm describe-activations
-  
+
 Output::
 
     {

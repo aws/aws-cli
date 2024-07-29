@@ -10,29 +10,29 @@ Output::
     {
         "CapacityReservationFleets": [
             {
-                "Status": "active", 
-                "EndDate": "2022-12-31T23:59:59.000Z", 
-                "InstanceMatchCriteria": "open", 
-                "Tags": [], 
-                "CapacityReservationFleetId": "crf-abcdef01234567890", 
-                "Tenancy": "default", 
+                "Status": "active",
+                "EndDate": "2022-12-31T23:59:59.000Z",
+                "InstanceMatchCriteria": "open",
+                "Tags": [],
+                "CapacityReservationFleetId": "crf-abcdef01234567890",
+                "Tenancy": "default",
                 "InstanceTypeSpecifications": [
                     {
-                        "CapacityReservationId": "cr-1234567890abcdef0", 
-                        "AvailabilityZone": "us-east-1a", 
-                        "FulfilledCapacity": 5.0, 
-                        "Weight": 1.0, 
-                        "CreateDate": "2022-07-02T08:34:33.398Z", 
-                        "InstancePlatform": "Linux/UNIX", 
-                        "TotalInstanceCount": 5, 
-                        "Priority": 1, 
-                        "EbsOptimized": true, 
+                        "CapacityReservationId": "cr-1234567890abcdef0",
+                        "AvailabilityZone": "us-east-1a",
+                        "FulfilledCapacity": 5.0,
+                        "Weight": 1.0,
+                        "CreateDate": "2022-07-02T08:34:33.398Z",
+                        "InstancePlatform": "Linux/UNIX",
+                        "TotalInstanceCount": 5,
+                        "Priority": 1,
+                        "EbsOptimized": true,
                         "InstanceType": "m5.xlarge"
                     }
-                ], 
-                "TotalTargetCapacity": 5, 
-                "TotalFulfilledCapacity": 5.0, 
-                "CreateTime": "2022-07-02T08:34:33.397Z", 
+                ],
+                "TotalTargetCapacity": 5,
+                "TotalFulfilledCapacity": 5.0,
+                "CreateTime": "2022-07-02T08:34:33.397Z",
                 "AllocationStrategy": "prioritized"
             }
         ]

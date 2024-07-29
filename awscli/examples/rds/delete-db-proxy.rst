@@ -8,7 +8,7 @@ The following ``delete-db-proxy`` example deletes a DB proxy. ::
 Output::
 
     {
-            "DBProxy": 
+            "DBProxy":
             {
                 "DBProxyName": "proxyExample",
                 "DBProxyArn": "arn:aws:rds:us-east-1:123456789012:db-proxy:prx-0123a01b12345c0ab",
@@ -16,12 +16,12 @@ Output::
                 "EngineFamily": "PostgreSQL",
                 "VpcId": "vpc-1234567",
                 "VpcSecurityGroupIds": [
-                    "sg-1234", 
+                    "sg-1234",
                     "sg-5678"
                 ],
                 "VpcSubnetIds": [
-                    "subnetgroup1", 
-                    "subnetgroup2" 
+                    "subnetgroup1",
+                    "subnetgroup2"
                 ],
                 "Auth": "[
                     {

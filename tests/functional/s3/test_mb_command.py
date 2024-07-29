@@ -50,6 +50,3 @@ class TestMBCommand(BaseAWSCommandParamsTest):
         command = self.prefix + 's3://bucket--usw2-az1--x-s3/'
         stderr = self.run_cmd(command, expected_rc=252)[1]
         self.assertIn('Cannot use mb command with a directory bucket.', stderr)
-
-
-

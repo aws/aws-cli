@@ -2,6 +2,13 @@
 CHANGELOG
 =========
 
+1.33.32
+=======
+
+* api-change:``elasticache``: Renaming full service name as it appears in developer documentation.
+* api-change:``memorydb``: Renaming full service name as it appears in developer documentation.
+
+
 1.33.31
 =======
 

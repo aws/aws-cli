@@ -2,6 +2,23 @@
 CHANGELOG
 =========
 
+1.33.33
+=======
+
+* api-change:``appstream``: Added support for Red Hat Enterprise Linux 8 on Amazon AppStream 2.0
+* api-change:``autoscaling``: Increase the length limit for VPCZoneIdentifier from 2047 to 5000
+* api-change:``codepipeline``: AWS CodePipeline V2 type pipelines now support stage level conditions to enable development teams to safely release changes that meet quality and compliance requirements.
+* api-change:``elasticache``: Doc only update for changes to deletion API.
+* api-change:``elb``: Add v2 smoke tests and smithy smokeTests trait for SDK testing.
+* api-change:``events``: Add v2 smoke tests and smithy smokeTests trait for SDK testing.
+* api-change:``lexv2-models``: This release adds new capabilities to the AMAZON.QnAIntent: Custom prompting, Guardrails integration and ExactResponse support for Bedrock Knowledge Base.
+* api-change:``logs``: Add v2 smoke tests and smithy smokeTests trait for SDK testing.
+* api-change:``rolesanywhere``: IAM RolesAnywhere now supports custom role session name on the CreateSession. This release adds the acceptRoleSessionName option to a profile to control whether a role session name will be accepted in a session request with a given profile.
+* api-change:``tnb``: This release adds Network Service Update, through which customers will be able to update their instantiated networks to a new network package. See the documentation for limitations. The release also enhances the Get network operation API to return parameter overrides used during the operation.
+* api-change:``workspaces``: Removing multi-session as it isn't supported for pools
+* bugfix:``s3``: Disable usage of mb command with S3 Express directory buckets.
+
+
 1.33.32
 =======
 

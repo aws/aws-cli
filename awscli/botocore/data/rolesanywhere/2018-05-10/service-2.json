@@ -5,11 +5,13 @@
     "endpointPrefix":"rolesanywhere",
     "jsonVersion":"1.1",
     "protocol":"rest-json",
+    "protocols":["rest-json"],
     "serviceFullName":"IAM Roles Anywhere",
     "serviceId":"RolesAnywhere",
     "signatureVersion":"v4",
     "signingName":"rolesanywhere",
-    "uid":"rolesanywhere-2018-05-10"
+    "uid":"rolesanywhere-2018-05-10",
+    "auth":["aws.auth#sigv4"]
   },
   "operations":{
     "CreateProfile":{
@@ -537,6 +539,10 @@
         "roleArns"
       ],
       "members":{
+        "acceptRoleSessionName":{
+          "shape":"Boolean",
+          "documentation":"<p>Used to determine if a custom role session name will be accepted in a temporary credential request.</p>"
+        },
         "durationSeconds":{
           "shape":"CreateProfileRequestDurationSecondsInteger",
           "documentation":"<p> Used to determine how long sessions vended using this profile are valid for. See the <code>Expiration</code> section of the <a href=\"https://docs.aws.amazon.com/rolesanywhere/latest/userguide/authentication-create-session.html#credentials-object\">CreateSession API documentation</a> page for more details. In requests, if this value is not provided, the default value will be 3600. </p>"
@@ -1059,6 +1065,10 @@
     "ProfileDetail":{
       "type":"structure",
       "members":{
+        "acceptRoleSessionName":{
+          "shape":"Boolean",
+          "documentation":"<p>Used to determine if a custom role session name will be accepted in a temporary credential request.</p>"
+        },
         "attributeMappings":{
           "shape":"AttributeMappings",
           "documentation":"<p>A mapping applied to the authenticating end-entity certificate.</p>"
@@ -1614,6 +1624,10 @@
       "type":"structure",
       "required":["profileId"],
       "members":{
+        "acceptRoleSessionName":{
+          "shape":"Boolean",
+          "documentation":"<p>Used to determine if a custom role session name will be accepted in a temporary credential request.</p>"
+        },
         "durationSeconds":{
           "shape":"UpdateProfileRequestDurationSecondsInteger",
           "documentation":"<p> Used to determine how long sessions vended using this profile are valid for. See the <code>Expiration</code> section of the <a href=\"https://docs.aws.amazon.com/rolesanywhere/latest/userguide/authentication-create-session.html#credentials-object\">CreateSession API documentation</a> page for more details. In requests, if this value is not provided, the default value will be 3600. </p>"

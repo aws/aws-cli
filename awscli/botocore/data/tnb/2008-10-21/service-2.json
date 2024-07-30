@@ -5,11 +5,13 @@
     "endpointPrefix":"tnb",
     "jsonVersion":"1.1",
     "protocol":"rest-json",
+    "protocols":["rest-json"],
     "serviceFullName":"AWS Telco Network Builder",
     "serviceId":"tnb",
     "signatureVersion":"v4",
     "signingName":"tnb",
-    "uid":"tnb-2008-10-21"
+    "uid":"tnb-2008-10-21",
+    "auth":["aws.auth#sigv4"]
   },
   "operations":{
     "CancelSolNetworkOperation":{
@@ -154,7 +156,7 @@
         {"shape":"ResourceNotFoundException"},
         {"shape":"AccessDeniedException"}
       ],
-      "documentation":"<p>Gets the details of a network function instance, including the instantation state and metadata from the function package descriptor in the network function package.</p> <p>A network function instance is a function in a function package .</p>"
+      "documentation":"<p>Gets the details of a network function instance, including the instantiation state and metadata from the function package descriptor in the network function package.</p> <p>A network function instance is a function in a function package .</p>"
     },
     "GetSolFunctionPackage":{
       "name":"GetSolFunctionPackage",
@@ -552,7 +554,7 @@
         {"shape":"ResourceNotFoundException"},
         {"shape":"AccessDeniedException"}
       ],
-      "documentation":"<p>Update a network instance.</p> <p>A network instance is a single network created in Amazon Web Services TNB that can be deployed and on which life-cycle operations (like terminate, update, and delete) can be performed.</p>"
+      "documentation":"<p>Update a network instance.</p> <p>A network instance is a single network created in Amazon Web Services TNB that can be deployed and on which life-cycle operations (like terminate, update, and delete) can be performed.</p> <p>Choose the <i>updateType</i> parameter to target the necessary update of the network instance.</p>"
     },
     "UpdateSolNetworkPackage":{
       "name":"UpdateSolNetworkPackage",
@@ -1236,9 +1238,21 @@
           "shape":"SyntheticTimestamp_date_time",
           "documentation":"<p>The date that the resource was created.</p>"
         },
+        "instantiateMetadata":{
+          "shape":"InstantiateMetadata",
+          "documentation":"<p>Metadata related to the network operation occurrence for network instantiation. This is populated only if the lcmOperationType is <code>INSTANTIATE</code>.</p>"
+        },
         "lastModified":{
           "shape":"SyntheticTimestamp_date_time",
           "documentation":"<p>The date that the resource was last modified.</p>"
+        },
+        "modifyVnfInfoMetadata":{
+          "shape":"ModifyVnfInfoMetadata",
+          "documentation":"<p>Metadata related to the network operation occurrence for network function updates in a network instance. This is populated only if the lcmOperationType is <code>UPDATE</code> and the updateType is <code>MODIFY_VNF_INFORMATION</code>.</p>"
+        },
+        "updateNsMetadata":{
+          "shape":"UpdateNsMetadata",
+          "documentation":"<p>Metadata related to the network operation occurrence for network instance updates. This is populated only if the lcmOperationType is <code>UPDATE</code> and the updateType is <code>UPDATE_NS</code>.</p>"
         }
       },
       "documentation":"<p>Metadata related to a network operation occurrence.</p> <p>A network operation is any operation that is done to your network, such as network instance instantiation or termination.</p>"
@@ -1282,6 +1296,10 @@
         "tasks":{
           "shape":"GetSolNetworkOperationTasksList",
           "documentation":"<p>All tasks associated with this operation occurrence.</p>"
+        },
+        "updateType":{
+          "shape":"UpdateSolNetworkType",
+          "documentation":"<p>Type of the update. Only present if the network operation lcmOperationType is <code>UPDATE</code>.</p>"
         }
       }
     },
@@ -1522,6 +1540,21 @@
       },
       "documentation":"<p>The metadata of a network function.</p> <p>A network instance is a single network created in Amazon Web Services TNB that can be deployed and on which life-cycle operations (like terminate, update, and delete) can be performed.</p>"
     },
+    "InstantiateMetadata":{
+      "type":"structure",
+      "required":["nsdInfoId"],
+      "members":{
+        "additionalParamsForNs":{
+          "shape":"Document",
+          "documentation":"<p>The configurable properties used during instantiation.</p>"
+        },
+        "nsdInfoId":{
+          "shape":"NsdInfoId",
+          "documentation":"<p>The network service descriptor used for instantiating the network instance.</p>"
+        }
+      },
+      "documentation":"<p>Metadata related to the configuration properties used during instantiation of the network instance.</p>"
+    },
     "InstantiateSolNetworkInstanceInput":{
       "type":"structure",
       "required":["nsInstanceId"],
@@ -1544,7 +1577,7 @@
         },
         "tags":{
           "shape":"TagMap",
-          "documentation":"<p>A tag is a label that you assign to an Amazon Web Services resource. Each tag consists of a key and an optional value. When you use this API, the tags are transferred to the network operation that is created. Use tags to search and filter your resources or track your Amazon Web Services costs.</p>"
+          "documentation":"<p>A tag is a label that you assign to an Amazon Web Services resource. Each tag consists of a key and an optional value. When you use this API, the tags are only applied to the network operation that is created. These tags are not applied to the network instance. Use tags to search and filter your resources or track your Amazon Web Services costs.</p>"
         }
       }
     },
@@ -1558,7 +1591,7 @@
         },
         "tags":{
           "shape":"TagMap",
-          "documentation":"<p>A tag is a label that you assign to an Amazon Web Services resource. Each tag consists of a key and an optional value. When you use this API, the tags are transferred to the network operation that is created. Use tags to search and filter your resources or track your Amazon Web Services costs.</p>"
+          "documentation":"<p>A tag is a label that you assign to an Amazon Web Services resource. Each tag consists of a key and an optional value. When you use this API, the tags are only applied to the network operation that is created. These tags are not applied to the network instance. Use tags to search and filter your resources or track your Amazon Web Services costs.</p>"
         }
       }
     },
@@ -1948,6 +1981,10 @@
         "operationState":{
           "shape":"NsLcmOperationState",
           "documentation":"<p>The state of the network operation.</p>"
+        },
+        "updateType":{
+          "shape":"UpdateSolNetworkType",
+          "documentation":"<p>Type of the update. Only present if the network operation lcmOperationType is <code>UPDATE</code>.</p>"
         }
       },
       "documentation":"<p>Information parameters for a network operation.</p>"
@@ -1966,6 +2003,12 @@
           "documentation":"<p>The token for the next page of results.</p>",
           "location":"querystring",
           "locationName":"nextpage_opaque_marker"
+        },
+        "nsInstanceId":{
+          "shape":"NsInstanceId",
+          "documentation":"<p>Network instance id filter, to retrieve network operations associated to a network instance.</p>",
+          "location":"querystring",
+          "locationName":"nsInstanceId"
         }
       }
     },
@@ -1989,6 +2032,14 @@
         "lastModified":{
           "shape":"SyntheticTimestamp_date_time",
           "documentation":"<p>The date that the resource was last modified.</p>"
+        },
+        "nsdInfoId":{
+          "shape":"NsdInfoId",
+          "documentation":"<p>The network service descriptor id used for the operation.</p> <p>Only present if the updateType is <code>UPDATE_NS</code>.</p>"
+        },
+        "vnfInstanceId":{
+          "shape":"VnfInstanceId",
+          "documentation":"<p>The network function id used for the operation.</p> <p>Only present if the updateType is <code>MODIFY_VNF_INFO</code>.</p>"
         }
       },
       "documentation":"<p>Metadata related to a network operation.</p> <p>A network operation is any operation that is done to your network, such as network instance instantiation or termination.</p>"
@@ -2153,6 +2204,24 @@
         }
       }
     },
+    "ModifyVnfInfoMetadata":{
+      "type":"structure",
+      "required":[
+        "vnfConfigurableProperties",
+        "vnfInstanceId"
+      ],
+      "members":{
+        "vnfConfigurableProperties":{
+          "shape":"Document",
+          "documentation":"<p>The configurable properties used during update of the network function instance.</p>"
+        },
+        "vnfInstanceId":{
+          "shape":"VnfInstanceId",
+          "documentation":"<p>The network function instance that was updated in the network instance.</p>"
+        }
+      },
+      "documentation":"<p>Metadata related to the configuration properties used during update of a specific network function in a network instance.</p>"
+    },
     "NetworkArtifactMeta":{
       "type":"structure",
       "members":{
@@ -2194,10 +2263,13 @@
       "enum":[
         "INSTANTIATED",
         "NOT_INSTANTIATED",
+        "UPDATED",
         "IMPAIRED",
+        "UPDATE_FAILED",
         "STOPPED",
         "DELETED",
         "INSTANTIATE_IN_PROGRESS",
+        "INTENT_TO_UPDATE_IN_PROGRESS",
         "UPDATE_IN_PROGRESS",
         "TERMINATE_IN_PROGRESS"
       ]
@@ -2289,7 +2361,7 @@
           "locationName":"Content-Type"
         },
         "file":{
-          "shape":"Blob",
+          "shape":"SensitiveBlob",
           "documentation":"<p>Function package file.</p>"
         },
         "vnfPkgId":{
@@ -2359,7 +2431,7 @@
           "locationName":"Content-Type"
         },
         "file":{
-          "shape":"Blob",
+          "shape":"SensitiveBlob",
           "documentation":"<p>Network package file.</p>"
         },
         "nsdInfoId":{
@@ -2432,6 +2504,10 @@
         "senderFault":true
       },
       "exception":true
+    },
+    "SensitiveBlob":{
+      "type":"blob",
+      "sensitive":true
     },
     "ServiceQuotaExceededException":{
       "type":"structure",
@@ -2531,7 +2607,7 @@
         },
         "tags":{
           "shape":"TagMap",
-          "documentation":"<p>A tag is a label that you assign to an Amazon Web Services resource. Each tag consists of a key and an optional value. When you use this API, the tags are transferred to the network operation that is created. Use tags to search and filter your resources or track your Amazon Web Services costs.</p>"
+          "documentation":"<p>A tag is a label that you assign to an Amazon Web Services resource. Each tag consists of a key and an optional value. When you use this API, the tags are only applied to the network operation that is created. These tags are not applied to the network instance. Use tags to search and filter your resources or track your Amazon Web Services costs.</p>"
         }
       }
     },
@@ -2544,7 +2620,7 @@
         },
         "tags":{
           "shape":"TagMap",
-          "documentation":"<p>A tag is a label that you assign to an Amazon Web Services resource. Each tag consists of a key and an optional value. When you use this API, the tags are transferred to the network operation that is created. Use tags to search and filter your resources or track your Amazon Web Services costs.</p>"
+          "documentation":"<p>A tag is a label that you assign to an Amazon Web Services resource. Each tag consists of a key and an optional value. When you use this API, the tags are only applied to the network operation that is created. These tags are not applied to the network instance. Use tags to search and filter your resources or track your Amazon Web Services costs.</p>"
         }
       }
     },
@@ -2601,6 +2677,21 @@
       "members":{
       }
     },
+    "UpdateNsMetadata":{
+      "type":"structure",
+      "required":["nsdInfoId"],
+      "members":{
+        "additionalParamsForNs":{
+          "shape":"Document",
+          "documentation":"<p>The configurable properties used during update.</p>"
+        },
+        "nsdInfoId":{
+          "shape":"NsdInfoId",
+          "documentation":"<p>The network service descriptor used for updating the network instance.</p>"
+        }
+      },
+      "documentation":"<p>Metadata related to the configuration properties used during update of a network instance.</p>"
+    },
     "UpdateSolFunctionPackageInput":{
       "type":"structure",
       "required":[
@@ -2639,7 +2730,7 @@
       "members":{
         "modifyVnfInfoData":{
           "shape":"UpdateSolNetworkModify",
-          "documentation":"<p>Identifies the network function information parameters and/or the configurable properties of the network function to be modified.</p>"
+          "documentation":"<p>Identifies the network function information parameters and/or the configurable properties of the network function to be modified.</p> <p>Include this property only if the update type is <code>MODIFY_VNF_INFORMATION</code>.</p>"
         },
         "nsInstanceId":{
           "shape":"NsInstanceId",
@@ -2649,11 +2740,15 @@
         },
         "tags":{
           "shape":"TagMap",
-          "documentation":"<p>A tag is a label that you assign to an Amazon Web Services resource. Each tag consists of a key and an optional value. When you use this API, the tags are transferred to the network operation that is created. Use tags to search and filter your resources or track your Amazon Web Services costs.</p>"
+          "documentation":"<p>A tag is a label that you assign to an Amazon Web Services resource. Each tag consists of a key and an optional value. When you use this API, the tags are only applied to the network operation that is created. These tags are not applied to the network instance. Use tags to search and filter your resources or track your Amazon Web Services costs.</p>"
+        },
+        "updateNs":{
+          "shape":"UpdateSolNetworkServiceData",
+          "documentation":"<p>Identifies the network service descriptor and the configurable properties of the descriptor, to be used for the update.</p> <p>Include this property only if the update type is <code>UPDATE_NS</code>.</p>"
         },
         "updateType":{
           "shape":"UpdateSolNetworkType",
-          "documentation":"<p>The type of update.</p>"
+          "documentation":"<p>The type of update.</p> <ul> <li> <p>Use the <code>MODIFY_VNF_INFORMATION</code> update type, to update a specific network function configuration, in the network instance.</p> </li> <li> <p>Use the <code>UPDATE_NS</code> update type, to update the network instance to a new network service descriptor.</p> </li> </ul>"
         }
       }
     },
@@ -2666,7 +2761,7 @@
         },
         "tags":{
           "shape":"TagMap",
-          "documentation":"<p>A tag is a label that you assign to an Amazon Web Services resource. Each tag consists of a key and an optional value. When you use this API, the tags are transferred to the network operation that is created. Use tags to search and filter your resources or track your Amazon Web Services costs.</p>"
+          "documentation":"<p>A tag is a label that you assign to an Amazon Web Services resource. Each tag consists of a key and an optional value. When you use this API, the tags are only applied to the network operation that is created. These tags are not applied to the network instance. Use tags to search and filter your resources or track your Amazon Web Services costs.</p>"
         }
       }
     },
@@ -2717,9 +2812,27 @@
         }
       }
     },
+    "UpdateSolNetworkServiceData":{
+      "type":"structure",
+      "required":["nsdInfoId"],
+      "members":{
+        "additionalParamsForNs":{
+          "shape":"Document",
+          "documentation":"<p>Values for the configurable properties declared in the network service descriptor.</p>"
+        },
+        "nsdInfoId":{
+          "shape":"NsdInfoId",
+          "documentation":"<p>ID of the network service descriptor.</p>"
+        }
+      },
+      "documentation":"<p>Information parameters and/or the configurable properties for a network descriptor used for update.</p>"
+    },
     "UpdateSolNetworkType":{
       "type":"string",
-      "enum":["MODIFY_VNF_INFORMATION"]
+      "enum":[
+        "MODIFY_VNF_INFORMATION",
+        "UPDATE_NS"
+      ]
     },
     "UsageState":{
       "type":"string",
@@ -2742,7 +2855,7 @@
           "locationName":"Content-Type"
         },
         "file":{
-          "shape":"Blob",
+          "shape":"SensitiveBlob",
           "documentation":"<p>Function package file.</p>"
         },
         "vnfPkgId":{
@@ -2812,7 +2925,7 @@
           "locationName":"Content-Type"
         },
         "file":{
-          "shape":"Blob",
+          "shape":"SensitiveBlob",
           "documentation":"<p>Network package file.</p>"
         },
         "nsdInfoId":{

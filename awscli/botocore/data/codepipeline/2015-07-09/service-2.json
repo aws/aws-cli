@@ -314,6 +314,36 @@
       ],
       "documentation":"<p>Gets a summary of all of the pipelines associated with your account.</p>"
     },
+    "ListRuleExecutions":{
+      "name":"ListRuleExecutions",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"ListRuleExecutionsInput"},
+      "output":{"shape":"ListRuleExecutionsOutput"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"PipelineNotFoundException"},
+        {"shape":"InvalidNextTokenException"},
+        {"shape":"PipelineExecutionNotFoundException"}
+      ],
+      "documentation":"<p>Lists the rule executions that have occurred in a pipeline configured for conditions with rules.</p>"
+    },
+    "ListRuleTypes":{
+      "name":"ListRuleTypes",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"ListRuleTypesInput"},
+      "output":{"shape":"ListRuleTypesOutput"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"InvalidNextTokenException"}
+      ],
+      "documentation":"<p>Lists the rules for the condition.</p>"
+    },
     "ListTagsForResource":{
       "name":"ListTagsForResource",
       "http":{
@@ -343,6 +373,24 @@
         {"shape":"InvalidNextTokenException"}
       ],
       "documentation":"<p>Gets a listing of all the webhooks in this Amazon Web Services Region for this account. The output lists all webhooks and includes the webhook URL and ARN and the configuration for each webhook.</p>"
+    },
+    "OverrideStageCondition":{
+      "name":"OverrideStageCondition",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"OverrideStageConditionInput"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"ConflictException"},
+        {"shape":"PipelineNotFoundException"},
+        {"shape":"StageNotFoundException"},
+        {"shape":"ConditionNotOverridableException"},
+        {"shape":"NotLatestPipelineExecutionException"},
+        {"shape":"ConcurrentPipelineExecutionsLimitExceededException"}
+      ],
+      "documentation":"<p>Used to override a stage condition.</p>"
     },
     "PollForJobs":{
       "name":"PollForJobs",
@@ -384,7 +432,8 @@
         {"shape":"PipelineNotFoundException"},
         {"shape":"StageNotFoundException"},
         {"shape":"ActionNotFoundException"},
-        {"shape":"ValidationException"}
+        {"shape":"ValidationException"},
+        {"shape":"ConcurrentPipelineExecutionsLimitExceededException"}
       ],
       "documentation":"<p>Provides information to CodePipeline about new revisions to a source.</p>"
     },
@@ -513,7 +562,8 @@
         {"shape":"PipelineNotFoundException"},
         {"shape":"StageNotFoundException"},
         {"shape":"StageNotRetryableException"},
-        {"shape":"NotLatestPipelineExecutionException"}
+        {"shape":"NotLatestPipelineExecutionException"},
+        {"shape":"ConcurrentPipelineExecutionsLimitExceededException"}
       ],
       "documentation":"<p>You can retry a stage that has failed without having to run a pipeline again from the beginning. You do this by either retrying the failed actions in a stage or by retrying all actions in the stage starting from the first action in the stage. When you retry the failed actions in a stage, all actions that are still in progress continue working, and failed actions are triggered again. When you retry a failed stage from the first action in the stage, the stage cannot have any actions in progress. Before a stage can be retried, it must either have all actions failed or some actions failed and some succeeded.</p>"
     },
@@ -1687,6 +1737,17 @@
       "type":"string",
       "enum":["S3"]
     },
+    "BeforeEntryConditions":{
+      "type":"structure",
+      "required":["conditions"],
+      "members":{
+        "conditions":{
+          "shape":"ConditionList",
+          "documentation":"<p>The conditions that are configured as entry conditions.</p>"
+        }
+      },
+      "documentation":"<p>The conditions for making checks for entry to a stage. </p>"
+    },
     "BlockerDeclaration":{
       "type":"structure",
       "required":[
@@ -1746,6 +1807,89 @@
       },
       "documentation":"<p>The pipeline has reached the limit for concurrent pipeline executions.</p>",
       "exception":true
+    },
+    "Condition":{
+      "type":"structure",
+      "members":{
+        "result":{
+          "shape":"Result",
+          "documentation":"<p>The action to be done when the condition is met. For example, rolling back an execution for a failure condition.</p>"
+        },
+        "rules":{
+          "shape":"RuleDeclarationList",
+          "documentation":"<p>The rules that make up the condition.</p>"
+        }
+      },
+      "documentation":"<p>The condition for the stage. A condition is made up of the rules and the result for the condition.</p>"
+    },
+    "ConditionExecution":{
+      "type":"structure",
+      "members":{
+        "status":{
+          "shape":"ConditionExecutionStatus",
+          "documentation":"<p>The status of the run for a condition.</p>"
+        },
+        "summary":{
+          "shape":"ExecutionSummary",
+          "documentation":"<p>The summary of information about a run for a condition.</p>"
+        },
+        "lastStatusChange":{
+          "shape":"Timestamp",
+          "documentation":"<p>The last status change of the condition.</p>"
+        }
+      },
+      "documentation":"<p>The run of a condition.</p>"
+    },
+    "ConditionExecutionStatus":{
+      "type":"string",
+      "enum":[
+        "InProgress",
+        "Failed",
+        "Errored",
+        "Succeeded",
+        "Cancelled",
+        "Abandoned",
+        "Overridden"
+      ]
+    },
+    "ConditionList":{
+      "type":"list",
+      "member":{"shape":"Condition"},
+      "max":1,
+      "min":1
+    },
+    "ConditionNotOverridableException":{
+      "type":"structure",
+      "members":{
+        "message":{"shape":"String"}
+      },
+      "documentation":"<p>Unable to override because the condition does not allow overrides.</p>",
+      "exception":true
+    },
+    "ConditionState":{
+      "type":"structure",
+      "members":{
+        "latestExecution":{
+          "shape":"ConditionExecution",
+          "documentation":"<p>The state of the latest run of the rule.</p>"
+        },
+        "ruleStates":{
+          "shape":"RuleStateList",
+          "documentation":"<p>The state of the rules for the condition.</p>"
+        }
+      },
+      "documentation":"<p>Information about the state of the condition.</p>"
+    },
+    "ConditionStateList":{
+      "type":"list",
+      "member":{"shape":"ConditionState"}
+    },
+    "ConditionType":{
+      "type":"string",
+      "enum":[
+        "BEFORE_ENTRY",
+        "ON_SUCCESS"
+      ]
     },
     "ConflictException":{
       "type":"structure",
@@ -2136,6 +2280,10 @@
         "result":{
           "shape":"Result",
           "documentation":"<p>The specified result for when the failure conditions are met, such as rolling back the stage.</p>"
+        },
+        "conditions":{
+          "shape":"ConditionList",
+          "documentation":"<p>The conditions that are configured as failure conditions.</p>"
         }
       },
       "documentation":"<p>The configuration that specifies the result, such as rollback, to occur upon stage failure. </p>"
@@ -2932,6 +3080,64 @@
       },
       "documentation":"<p>Represents the output of a <code>ListPipelines</code> action.</p>"
     },
+    "ListRuleExecutionsInput":{
+      "type":"structure",
+      "required":["pipelineName"],
+      "members":{
+        "pipelineName":{
+          "shape":"PipelineName",
+          "documentation":"<p>The name of the pipeline for which you want to get execution summary information.</p>"
+        },
+        "filter":{
+          "shape":"RuleExecutionFilter",
+          "documentation":"<p>Input information used to filter rule execution history.</p>"
+        },
+        "maxResults":{
+          "shape":"MaxResults",
+          "documentation":"<p>The maximum number of results to return in a single call. To retrieve the remaining results, make another call with the returned nextToken value. Pipeline history is limited to the most recent 12 months, based on pipeline execution start times. Default value is 100.</p>"
+        },
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The token that was returned from the previous <code>ListRuleExecutions</code> call, which can be used to return the next set of rule executions in the list.</p>"
+        }
+      }
+    },
+    "ListRuleExecutionsOutput":{
+      "type":"structure",
+      "members":{
+        "ruleExecutionDetails":{
+          "shape":"RuleExecutionDetailList",
+          "documentation":"<p>Details about the output for listing rule executions.</p>"
+        },
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>A token that can be used in the next <code>ListRuleExecutions</code> call. To view all items in the list, continue to call this operation with each subsequent token until no more nextToken values are returned.</p>"
+        }
+      }
+    },
+    "ListRuleTypesInput":{
+      "type":"structure",
+      "members":{
+        "ruleOwnerFilter":{
+          "shape":"RuleOwner",
+          "documentation":"<p>The rule owner to filter on.</p>"
+        },
+        "regionFilter":{
+          "shape":"AWSRegionName",
+          "documentation":"<p>The rule Region to filter on.</p>"
+        }
+      }
+    },
+    "ListRuleTypesOutput":{
+      "type":"structure",
+      "required":["ruleTypes"],
+      "members":{
+        "ruleTypes":{
+          "shape":"RuleTypeList",
+          "documentation":"<p>Lists the rules that are configured for the condition.</p>"
+        }
+      }
+    },
     "ListTagsForResourceInput":{
       "type":"structure",
       "required":["resourceArn"],
@@ -3121,6 +3327,33 @@
       "exception":true
     },
     "OutputVariablesValue":{"type":"string"},
+    "OverrideStageConditionInput":{
+      "type":"structure",
+      "required":[
+        "pipelineName",
+        "stageName",
+        "pipelineExecutionId",
+        "conditionType"
+      ],
+      "members":{
+        "pipelineName":{
+          "shape":"PipelineName",
+          "documentation":"<p>The name of the pipeline with the stage that will override the condition.</p>"
+        },
+        "stageName":{
+          "shape":"StageName",
+          "documentation":"<p>The name of the stage for the override.</p>"
+        },
+        "pipelineExecutionId":{
+          "shape":"PipelineExecutionId",
+          "documentation":"<p>The ID of the pipeline execution for the override.</p>"
+        },
+        "conditionType":{
+          "shape":"ConditionType",
+          "documentation":"<p>The type of condition to override for the stage, such as entry conditions, failure conditions, or success conditions.</p>"
+        }
+      }
+    },
     "Percentage":{
       "type":"integer",
       "max":100,
@@ -3893,6 +4126,11 @@
       "type":"list",
       "member":{"shape":"ResolvedPipelineVariable"}
     },
+    "ResolvedRuleConfigurationMap":{
+      "type":"map",
+      "key":{"shape":"String"},
+      "value":{"shape":"String"}
+    },
     "ResourceArn":{
       "type":"string",
       "pattern":"arn:aws(-[\\w]+)*:codepipeline:.+:[0-9]{12}:.+"
@@ -3906,7 +4144,10 @@
     },
     "Result":{
       "type":"string",
-      "enum":["ROLLBACK"]
+      "enum":[
+        "ROLLBACK",
+        "FAIL"
+      ]
     },
     "RetryStageExecutionInput":{
       "type":"structure",
@@ -3997,6 +4238,457 @@
           "documentation":"<p>The execution ID of the pipeline execution for the stage that has been rolled back.</p>"
         }
       }
+    },
+    "RuleCategory":{
+      "type":"string",
+      "enum":["Rule"]
+    },
+    "RuleConfigurationKey":{
+      "type":"string",
+      "max":50,
+      "min":1
+    },
+    "RuleConfigurationMap":{
+      "type":"map",
+      "key":{"shape":"RuleConfigurationKey"},
+      "value":{"shape":"RuleConfigurationValue"},
+      "max":200,
+      "min":0
+    },
+    "RuleConfigurationProperty":{
+      "type":"structure",
+      "required":[
+        "name",
+        "required",
+        "key",
+        "secret"
+      ],
+      "members":{
+        "name":{
+          "shape":"RuleConfigurationKey",
+          "documentation":"<p>The name of the rule configuration property.</p>"
+        },
+        "required":{
+          "shape":"Boolean",
+          "documentation":"<p>Whether the configuration property is a required value.</p>"
+        },
+        "key":{
+          "shape":"Boolean",
+          "documentation":"<p>Whether the configuration property is a key.</p>"
+        },
+        "secret":{
+          "shape":"Boolean",
+          "documentation":"<p>Whether the configuration property is secret.</p> <p>When updating a pipeline, passing * * * * * without changing any other values of the action preserves the previous value of the secret.</p>"
+        },
+        "queryable":{
+          "shape":"Boolean",
+          "documentation":"<p>Indicates whether the property can be queried.</p> <p>If you create a pipeline with a condition and rule, and that rule contains a queryable property, the value for that configuration property is subject to other restrictions. The value must be less than or equal to twenty (20) characters. The value can contain only alphanumeric characters, underscores, and hyphens.</p>"
+        },
+        "description":{
+          "shape":"Description",
+          "documentation":"<p>The description of the action configuration property that is displayed to users.</p>"
+        },
+        "type":{
+          "shape":"RuleConfigurationPropertyType",
+          "documentation":"<p>The type of the configuration property.</p>"
+        }
+      },
+      "documentation":"<p>Represents information about a rule configuration property.</p>"
+    },
+    "RuleConfigurationPropertyList":{
+      "type":"list",
+      "member":{"shape":"RuleConfigurationProperty"},
+      "max":10
+    },
+    "RuleConfigurationPropertyType":{
+      "type":"string",
+      "enum":[
+        "String",
+        "Number",
+        "Boolean"
+      ]
+    },
+    "RuleConfigurationValue":{
+      "type":"string",
+      "max":10000,
+      "min":1
+    },
+    "RuleDeclaration":{
+      "type":"structure",
+      "required":[
+        "name",
+        "ruleTypeId"
+      ],
+      "members":{
+        "name":{
+          "shape":"RuleName",
+          "documentation":"<p>The name of the rule that is created for the condition, such as CheckAllResults.</p>"
+        },
+        "ruleTypeId":{
+          "shape":"RuleTypeId",
+          "documentation":"<p>The ID for the rule type, which is made up of the combined values for category, owner, provider, and version.</p>"
+        },
+        "configuration":{
+          "shape":"RuleConfigurationMap",
+          "documentation":"<p>The action configuration fields for the rule.</p>"
+        },
+        "inputArtifacts":{
+          "shape":"InputArtifactList",
+          "documentation":"<p>The input artifacts fields for the rule, such as specifying an input file for the rule.</p>"
+        },
+        "roleArn":{
+          "shape":"RoleArn",
+          "documentation":"<p>The pipeline role ARN associated with the rule.</p>"
+        },
+        "region":{
+          "shape":"AWSRegionName",
+          "documentation":"<p>The Region for the condition associated with the rule.</p>"
+        },
+        "timeoutInMinutes":{
+          "shape":"RuleTimeout",
+          "documentation":"<p>The action timeout for the rule.</p>"
+        }
+      },
+      "documentation":"<p>Represents information about the rule to be created for an associated condition. An example would be creating a new rule for an entry condition, such as a rule that checks for a test result before allowing the run to enter the deployment stage.</p>"
+    },
+    "RuleDeclarationList":{
+      "type":"list",
+      "member":{"shape":"RuleDeclaration"},
+      "max":5,
+      "min":1
+    },
+    "RuleExecution":{
+      "type":"structure",
+      "members":{
+        "ruleExecutionId":{
+          "shape":"RuleExecutionId",
+          "documentation":"<p>The execution ID for the run of the rule.</p>"
+        },
+        "status":{
+          "shape":"RuleExecutionStatus",
+          "documentation":"<p>The status of the run of the rule, such as FAILED.</p>"
+        },
+        "summary":{
+          "shape":"ExecutionSummary",
+          "documentation":"<p>A summary of the run of the rule.</p>"
+        },
+        "lastStatusChange":{
+          "shape":"Timestamp",
+          "documentation":"<p>The last status change of the rule.</p>"
+        },
+        "token":{
+          "shape":"RuleExecutionToken",
+          "documentation":"<p>The system-generated token used to identify a unique request.</p>"
+        },
+        "lastUpdatedBy":{
+          "shape":"LastUpdatedBy",
+          "documentation":"<p>The ARN of the user who last changed the rule.</p>"
+        },
+        "externalExecutionId":{
+          "shape":"ExecutionId",
+          "documentation":"<p>The external ID of the run of the rule.</p>"
+        },
+        "externalExecutionUrl":{
+          "shape":"Url",
+          "documentation":"<p>The URL of a resource external to Amazon Web Services that is used when running the rule (for example, an external repository URL).</p>"
+        },
+        "errorDetails":{"shape":"ErrorDetails"}
+      },
+      "documentation":"<p>Represents information about each time a rule is run as part of the pipeline execution for a pipeline configured with conditions.</p>"
+    },
+    "RuleExecutionDetail":{
+      "type":"structure",
+      "members":{
+        "pipelineExecutionId":{
+          "shape":"PipelineExecutionId",
+          "documentation":"<p>The ID of the pipeline execution in the stage where the rule was run. Use the <a>GetPipelineState</a> action to retrieve the current pipelineExecutionId of the stage.</p>"
+        },
+        "ruleExecutionId":{
+          "shape":"RuleExecutionId",
+          "documentation":"<p>The ID of the run for the rule.</p>"
+        },
+        "pipelineVersion":{
+          "shape":"PipelineVersion",
+          "documentation":"<p>The version number of the pipeline with the stage where the rule was run.</p>"
+        },
+        "stageName":{
+          "shape":"StageName",
+          "documentation":"<p>The name of the stage where the rule was run.</p>"
+        },
+        "ruleName":{
+          "shape":"RuleName",
+          "documentation":"<p>The name of the rule that was run in the stage.</p>"
+        },
+        "startTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The start time of the rule execution.</p>"
+        },
+        "lastUpdateTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The date and time of the last change to the rule execution, in timestamp format.</p>"
+        },
+        "updatedBy":{
+          "shape":"LastUpdatedBy",
+          "documentation":"<p>The ARN of the user who changed the rule execution details.</p>"
+        },
+        "status":{
+          "shape":"RuleExecutionStatus",
+          "documentation":"<p>The status of the rule execution. Status categories are <code>InProgress</code>, <code>Succeeded</code>, and <code>Failed</code>. </p>"
+        },
+        "input":{
+          "shape":"RuleExecutionInput",
+          "documentation":"<p>Input details for the rule execution, such as role ARN, Region, and input artifacts.</p>"
+        },
+        "output":{
+          "shape":"RuleExecutionOutput",
+          "documentation":"<p>Output details for the rule execution, such as the rule execution result.</p>"
+        }
+      },
+      "documentation":"<p>The details of the runs for a rule and the results produced on an artifact as it passes through stages in the pipeline.</p>"
+    },
+    "RuleExecutionDetailList":{
+      "type":"list",
+      "member":{"shape":"RuleExecutionDetail"}
+    },
+    "RuleExecutionFilter":{
+      "type":"structure",
+      "members":{
+        "pipelineExecutionId":{
+          "shape":"PipelineExecutionId",
+          "documentation":"<p>The pipeline execution ID used to filter rule execution history.</p>"
+        },
+        "latestInPipelineExecution":{"shape":"LatestInPipelineExecutionFilter"}
+      },
+      "documentation":"<p>Filter values for the rule execution.</p>"
+    },
+    "RuleExecutionId":{
+      "type":"string",
+      "max":200,
+      "min":1
+    },
+    "RuleExecutionInput":{
+      "type":"structure",
+      "members":{
+        "ruleTypeId":{
+          "shape":"RuleTypeId",
+          "documentation":"<p>The ID for the rule type, which is made up of the combined values for category, owner, provider, and version.</p>"
+        },
+        "configuration":{
+          "shape":"RuleConfigurationMap",
+          "documentation":"<p>Configuration data for a rule execution, such as the resolved values for that run.</p>"
+        },
+        "resolvedConfiguration":{
+          "shape":"ResolvedRuleConfigurationMap",
+          "documentation":"<p>Configuration data for a rule execution with all variable references replaced with their real values for the execution.</p>"
+        },
+        "roleArn":{
+          "shape":"RoleArn",
+          "documentation":"<p>The ARN of the IAM service role that performs the declared rule. This is assumed through the roleArn for the pipeline.</p>"
+        },
+        "region":{
+          "shape":"AWSRegionName",
+          "documentation":"<p>The Amazon Web Services Region for the rule, such as us-east-1.</p>"
+        },
+        "inputArtifacts":{
+          "shape":"ArtifactDetailList",
+          "documentation":"<p>Details of input artifacts of the rule that correspond to the rule execution.</p>"
+        }
+      },
+      "documentation":"<p>Input information used for a rule execution.</p>"
+    },
+    "RuleExecutionOutput":{
+      "type":"structure",
+      "members":{
+        "executionResult":{
+          "shape":"RuleExecutionResult",
+          "documentation":"<p>Execution result information listed in the output details for a rule execution.</p>"
+        }
+      },
+      "documentation":"<p>Output details listed for a rule execution, such as the rule execution result.</p>"
+    },
+    "RuleExecutionResult":{
+      "type":"structure",
+      "members":{
+        "externalExecutionId":{
+          "shape":"ExternalExecutionId",
+          "documentation":"<p>The external ID for the rule execution.</p>"
+        },
+        "externalExecutionSummary":{
+          "shape":"ExternalExecutionSummary",
+          "documentation":"<p>The external provider summary for the rule execution.</p>"
+        },
+        "externalExecutionUrl":{
+          "shape":"Url",
+          "documentation":"<p>The deepest external link to the external resource (for example, a repository URL or deployment endpoint) that is used when running the rule.</p>"
+        },
+        "errorDetails":{"shape":"ErrorDetails"}
+      },
+      "documentation":"<p>Execution result information, such as the external execution ID.</p>"
+    },
+    "RuleExecutionStatus":{
+      "type":"string",
+      "enum":[
+        "InProgress",
+        "Abandoned",
+        "Succeeded",
+        "Failed"
+      ]
+    },
+    "RuleExecutionToken":{
+      "type":"string",
+      "max":200,
+      "min":1,
+      "pattern":"[a-zA-Z0-9\\-\\.]+"
+    },
+    "RuleName":{
+      "type":"string",
+      "max":100,
+      "min":1,
+      "pattern":"[A-Za-z0-9.@\\-_]+"
+    },
+    "RuleOwner":{
+      "type":"string",
+      "enum":["AWS"]
+    },
+    "RuleProvider":{
+      "type":"string",
+      "max":35,
+      "min":1,
+      "pattern":"[0-9A-Za-z_-]+"
+    },
+    "RuleRevision":{
+      "type":"structure",
+      "required":[
+        "revisionId",
+        "revisionChangeId",
+        "created"
+      ],
+      "members":{
+        "revisionId":{
+          "shape":"Revision",
+          "documentation":"<p>The system-generated unique ID that identifies the revision number of the rule.</p>"
+        },
+        "revisionChangeId":{
+          "shape":"RevisionChangeIdentifier",
+          "documentation":"<p>The unique identifier of the change that set the state to this revision (for example, a deployment ID or timestamp).</p>"
+        },
+        "created":{
+          "shape":"Timestamp",
+          "documentation":"<p>The date and time when the most recent version of the rule was created, in timestamp format.</p>"
+        }
+      },
+      "documentation":"<p>The change to a rule that creates a revision of the rule.</p>"
+    },
+    "RuleState":{
+      "type":"structure",
+      "members":{
+        "ruleName":{
+          "shape":"RuleName",
+          "documentation":"<p>The name of the rule.</p>"
+        },
+        "currentRevision":{
+          "shape":"RuleRevision",
+          "documentation":"<p>The ID of the current revision of the artifact successfully worked on by the job.</p>"
+        },
+        "latestExecution":{
+          "shape":"RuleExecution",
+          "documentation":"<p>Represents information about the latest run of an rule.</p>"
+        },
+        "entityUrl":{
+          "shape":"Url",
+          "documentation":"<p>A URL link for more information about the state of the action, such as a details page.</p>"
+        },
+        "revisionUrl":{
+          "shape":"Url",
+          "documentation":"<p>A URL link for more information about the revision, such as a commit details page.</p>"
+        }
+      },
+      "documentation":"<p>Returns information about the state of a rule.</p> <note> <p>Values returned in the <code>revisionId</code> field indicate the rule revision information, such as the commit ID, for the current state.</p> </note>"
+    },
+    "RuleStateList":{
+      "type":"list",
+      "member":{"shape":"RuleState"}
+    },
+    "RuleTimeout":{
+      "type":"integer",
+      "box":true,
+      "max":86400,
+      "min":5
+    },
+    "RuleType":{
+      "type":"structure",
+      "required":[
+        "id",
+        "inputArtifactDetails"
+      ],
+      "members":{
+        "id":{
+          "shape":"RuleTypeId",
+          "documentation":"<p>Represents information about a rule type.</p>"
+        },
+        "settings":{
+          "shape":"RuleTypeSettings",
+          "documentation":"<p>Returns information about the settings for a rule type.</p>"
+        },
+        "ruleConfigurationProperties":{
+          "shape":"RuleConfigurationPropertyList",
+          "documentation":"<p>The configuration properties for the rule type.</p>"
+        },
+        "inputArtifactDetails":{"shape":"ArtifactDetails"}
+      },
+      "documentation":"<p>The rule type, which is made up of the combined values for category, owner, provider, and version.</p>"
+    },
+    "RuleTypeId":{
+      "type":"structure",
+      "required":[
+        "category",
+        "provider"
+      ],
+      "members":{
+        "category":{
+          "shape":"RuleCategory",
+          "documentation":"<p>A category defines what kind of rule can be run in the stage, and constrains the provider type for the rule. Valid categories are limited to one of the following values. </p> <ul> <li> <p>INVOKE</p> </li> <li> <p>Approval</p> </li> <li> <p>Rule</p> </li> </ul>"
+        },
+        "owner":{
+          "shape":"RuleOwner",
+          "documentation":"<p>The creator of the rule being called. The valid value for the <code>Owner</code> field in the rule category is <code>AWS</code>. </p>"
+        },
+        "provider":{
+          "shape":"RuleProvider",
+          "documentation":"<p>The provider of the service being called by the rule. Valid providers are determined by the rulecategory. For example, a managed rule in the Rule category type has an owner of AWS, which would be specified as <code>AWS</code>.</p>"
+        },
+        "version":{
+          "shape":"Version",
+          "documentation":"<p>A string that describes the rule version.</p>"
+        }
+      },
+      "documentation":"<p>The ID for the rule type, which is made up of the combined values for category, owner, provider, and version.</p>"
+    },
+    "RuleTypeList":{
+      "type":"list",
+      "member":{"shape":"RuleType"}
+    },
+    "RuleTypeSettings":{
+      "type":"structure",
+      "members":{
+        "thirdPartyConfigurationUrl":{
+          "shape":"Url",
+          "documentation":"<p>The URL of a sign-up page where users can sign up for an external service and perform initial configuration of the action provided by that service.</p>"
+        },
+        "entityUrlTemplate":{
+          "shape":"UrlTemplate",
+          "documentation":"<p>The URL returned to the CodePipeline console that provides a deep link to the resources of the external system, such as the configuration page for a CodeDeploy deployment group. This link is provided as part of the action display in the pipeline.</p>"
+        },
+        "executionUrlTemplate":{
+          "shape":"UrlTemplate",
+          "documentation":"<p>The URL returned to the CodePipeline console that contains a link to the top-level landing page for the external system, such as the console page for CodeDeploy. This link is shown on the pipeline view page in the CodePipeline console and provides a link to the execution entity of the external action.</p>"
+        },
+        "revisionUrlTemplate":{
+          "shape":"UrlTemplate",
+          "documentation":"<p>The URL returned to the CodePipeline console that contains a link to the page where customers can update or change the configuration of the external action.</p>"
+        }
+      },
+      "documentation":"<p>Returns information about the settings for a rule type.</p>"
     },
     "S3ArtifactLocation":{
       "type":"structure",
@@ -4128,6 +4820,34 @@
       "type":"list",
       "member":{"shape":"BlockerDeclaration"}
     },
+    "StageConditionState":{
+      "type":"structure",
+      "members":{
+        "latestExecution":{
+          "shape":"StageConditionsExecution",
+          "documentation":"<p>Represents information about the latest run of a condition for a stage.</p>"
+        },
+        "conditionStates":{
+          "shape":"ConditionStateList",
+          "documentation":"<p>The states of the conditions for a run of a condition for a stage.</p>"
+        }
+      },
+      "documentation":"<p>The state of a run of a condition for a stage.</p>"
+    },
+    "StageConditionsExecution":{
+      "type":"structure",
+      "members":{
+        "status":{
+          "shape":"ConditionExecutionStatus",
+          "documentation":"<p>The status of a run of a condition for a stage.</p>"
+        },
+        "summary":{
+          "shape":"ExecutionSummary",
+          "documentation":"<p>A summary of the run of the condition for a stage.</p>"
+        }
+      },
+      "documentation":"<p>Represents information about the run of a condition for a stage.</p>"
+    },
     "StageContext":{
       "type":"structure",
       "members":{
@@ -4160,6 +4880,14 @@
         "onFailure":{
           "shape":"FailureConditions",
           "documentation":"<p>The method to use when a stage has not completed successfully. For example, configuring this field for rollback will roll back a failed stage automatically to the last successful pipeline execution in the stage.</p>"
+        },
+        "onSuccess":{
+          "shape":"SuccessConditions",
+          "documentation":"<p>The method to use when a stage has succeeded. For example, configuring this field for conditions will allow the stage to succeed when the conditions are met.</p>"
+        },
+        "beforeEntry":{
+          "shape":"BeforeEntryConditions",
+          "documentation":"<p>The method to use when a stage allows entry. For example, configuring this field for conditions will allow entry to the stage when the conditions are met.</p>"
         }
       },
       "documentation":"<p>Represents information about a stage and its definition.</p>"
@@ -4251,6 +4979,18 @@
         "latestExecution":{
           "shape":"StageExecution",
           "documentation":"<p>Information about the latest execution in the stage, including its ID and status.</p>"
+        },
+        "beforeEntryConditionState":{
+          "shape":"StageConditionState",
+          "documentation":"<p>The state of the entry conditions for a stage.</p>"
+        },
+        "onSuccessConditionState":{
+          "shape":"StageConditionState",
+          "documentation":"<p>The state of the success conditions for a stage.</p>"
+        },
+        "onFailureConditionState":{
+          "shape":"StageConditionState",
+          "documentation":"<p>The state of the failure conditions for a stage.</p>"
         }
       },
       "documentation":"<p>Represents information about the state of the stage.</p>"
@@ -4365,6 +5105,17 @@
         }
       },
       "documentation":"<p>Filter for pipeline executions that have successfully completed the stage in the current pipeline version.</p>"
+    },
+    "SuccessConditions":{
+      "type":"structure",
+      "required":["conditions"],
+      "members":{
+        "conditions":{
+          "shape":"ConditionList",
+          "documentation":"<p>The conditions that are success conditions.</p>"
+        }
+      },
+      "documentation":"<p>The conditions for making checks that, if met, succeed a stage.</p>"
     },
     "Tag":{
       "type":"structure",

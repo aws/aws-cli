@@ -251,11 +251,21 @@ def _get_cli_name(param_objects, token_name):
             return param.cli_name.lstrip('-')
 
 
+# This function checks that the integral value passed to it is non-negative, and raises a
+# ParamValidationError if it not. As such, it can be used as a type for pagination-related
+# argparse arguments that must be non-negative integral values.
+def nonnegative_int(value):
+    ival = int(value)
+    if ival < 0:
+        raise ValueError("invalid literal for nonnegative int() with base 10: '%s'" % value)
+    return ival
+
+
 class PageArgument(BaseCLIArgument):
     type_map = {
         'string': str,
-        'integer': int,
-        'long': int,
+        'integer': nonnegative_int,
+        'long': nonnegative_int,
     }
 
     def __init__(self, name, documentation, parse_type, serialized_name):

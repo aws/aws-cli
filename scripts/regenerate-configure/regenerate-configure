@@ -10,7 +10,7 @@ DOCKERFILE_PATH = ROOT / "scripts" / "regenerate-configure" / "Dockerfile"
 IMAGE_RE = re.compile(r"sha256:(?P<image>.*?)\s")
 
 
-def main(dockerfile_path, cleanup):
+def main(cleanup, dockerfile_path):
     image = _build_image(dockerfile_path)
     container_id = _start_image(image)
     _extract_configure_file(container_id)
@@ -85,6 +85,6 @@ if __name__ == "__main__":
     )
     args = parser.parse_args()
     main(
-        args.dockerfile_path,
-        not args.no_cleanup
+        not args.no_cleanup,
+        args.dockerfile_path
     )

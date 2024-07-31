@@ -350,3 +350,15 @@ class TestEnsurePagingParamsNotSet(TestPaginateBase):
         del self.parsed_args.page_size
         self.assertIsNone(paginate.ensure_paging_params_not_set(
             self.parsed_args, {}))
+
+class TestNonnegativeIntType(TestPaginateBase):
+
+    def test_positive_integer_resolves_corectly(self):
+        self.assertEqual(paginate.nonnegative_int(1), 1)
+
+    def test_zero_resolves_corectly(self):
+        self.assertEqual(paginate.nonnegative_int(0), 0)
+
+    def test_negative_integer_raises_error(self):
+        with self.assertRaises(ValueError):
+            paginate.nonnegative_int(-1)

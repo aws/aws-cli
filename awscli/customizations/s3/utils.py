@@ -506,6 +506,12 @@ class RequestParamsMapper(object):
         cls._set_request_payer_param(request_params, cli_params)
 
     @classmethod
+    def map_head_object_params_with_copy_source_sse(cls, request_params, cli_params):
+        """Map CLI params to HeadObject request params, considering the SSE-C header from the copy source"""
+        cls._set_sse_c_request_params_with_copy_source_sse(request_params, cli_params)
+        cls._set_request_payer_param(request_params, cli_params)
+
+    @classmethod
     def map_create_multipart_upload_params(cls, request_params, cli_params):
         """Map CLI params to CreateMultipartUpload request params"""
         cls._set_general_object_params(request_params, cli_params)
@@ -617,6 +623,12 @@ class RequestParamsMapper(object):
         if cli_params.get('sse_c'):
             request_params['SSECustomerAlgorithm'] = cli_params['sse_c']
             request_params['SSECustomerKey'] = cli_params['sse_c_key']
+
+    @classmethod
+    def _set_sse_c_request_params_with_copy_source_sse(cls, request_params, cli_params):
+        if cli_params.get('sse_c_copy_source'):
+            request_params['SSECustomerAlgorithm'] = cli_params['sse_c_copy_source']
+            request_params['SSECustomerKey'] = cli_params['sse_c_copy_source_key']
 
     @classmethod
     def _set_sse_c_copy_source_request_params(cls, request_params, cli_params):

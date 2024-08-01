@@ -2,9 +2,10 @@
   "version":"2.0",
   "metadata":{
     "apiVersion":"2023-04-20",
+    "auth":["aws.auth#sigv4"],
     "endpointPrefix":"bedrock",
-    "jsonVersion":"1.1",
     "protocol":"rest-json",
+    "protocols":["rest-json"],
     "serviceFullName":"Amazon Bedrock",
     "serviceId":"Bedrock",
     "signatureVersion":"v4",
@@ -30,7 +31,7 @@
         {"shape":"ServiceQuotaExceededException"},
         {"shape":"ThrottlingException"}
       ],
-      "documentation":"<p>API operation for creating and managing Amazon Bedrock automatic model evaluation jobs and model evaluation jobs that use human workers. To learn more about the requirements for creating a model evaluation job see, <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/model-evaluation.html\">Model evaluations</a>.</p>",
+      "documentation":"<p>API operation for creating and managing Amazon Bedrock automatic model evaluation jobs and model evaluation jobs that use human workers. To learn more about the requirements for creating a model evaluation job see, <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/model-evaluation.html\">Model evaluation</a>.</p>",
       "idempotent":true
     },
     "CreateGuardrail":{
@@ -74,6 +75,24 @@
       ],
       "documentation":"<p>Creates a version of the guardrail. Use this API to create a snapshot of the guardrail when you are satisfied with a configuration, or to compare the configuration with another version.</p>"
     },
+    "CreateModelCopyJob":{
+      "name":"CreateModelCopyJob",
+      "http":{
+        "method":"POST",
+        "requestUri":"/model-copy-jobs",
+        "responseCode":201
+      },
+      "input":{"shape":"CreateModelCopyJobRequest"},
+      "output":{"shape":"CreateModelCopyJobResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalServerException"},
+        {"shape":"TooManyTagsException"}
+      ],
+      "documentation":"<p>Copies a model to another region so that it can be used there. For more information, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/copy-model.html\">Copy models to be used in other regions</a> in the <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/what-is-service.html\">Amazon Bedrock User Guide</a>.</p>",
+      "idempotent":true
+    },
     "CreateModelCustomizationJob":{
       "name":"CreateModelCustomizationJob",
       "http":{
@@ -93,7 +112,7 @@
         {"shape":"ServiceQuotaExceededException"},
         {"shape":"ThrottlingException"}
       ],
-      "documentation":"<p>Creates a fine-tuning job to customize a base model.</p> <p>You specify the base foundation model and the location of the training data. After the model-customization job completes successfully, your custom model resource will be ready to use. Amazon Bedrock returns validation loss metrics and output generations after the job completes. </p> <p>For information on the format of training and validation data, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/model-customization-prepare.html\">Prepare the datasets</a>.</p> <p> Model-customization jobs are asynchronous and the completion time depends on the base model and the training/validation data size. To monitor a job, use the <code>GetModelCustomizationJob</code> operation to retrieve the job status.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/custom-models.html\">Custom models</a> in the Amazon Bedrock User Guide.</p>",
+      "documentation":"<p>Creates a fine-tuning job to customize a base model.</p> <p>You specify the base foundation model and the location of the training data. After the model-customization job completes successfully, your custom model resource will be ready to use. Amazon Bedrock returns validation loss metrics and output generations after the job completes. </p> <p>For information on the format of training and validation data, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/model-customization-prepare.html\">Prepare the datasets</a>.</p> <p> Model-customization jobs are asynchronous and the completion time depends on the base model and the training/validation data size. To monitor a job, use the <code>GetModelCustomizationJob</code> operation to retrieve the job status.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/custom-models.html\">Custom models</a> in the <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/what-is-service.html\">Amazon Bedrock User Guide</a>.</p>",
       "idempotent":true
     },
     "CreateProvisionedModelThroughput":{
@@ -114,7 +133,7 @@
         {"shape":"ServiceQuotaExceededException"},
         {"shape":"ThrottlingException"}
       ],
-      "documentation":"<p>Creates dedicated throughput for a base or custom model with the model units and for the duration that you specify. For pricing details, see <a href=\"http://aws.amazon.com/bedrock/pricing/\">Amazon Bedrock Pricing</a>. For more information, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/prov-throughput.html\">Provisioned Throughput</a> in the Amazon Bedrock User Guide.</p>",
+      "documentation":"<p>Creates dedicated throughput for a base or custom model with the model units and for the duration that you specify. For pricing details, see <a href=\"http://aws.amazon.com/bedrock/pricing/\">Amazon Bedrock Pricing</a>. For more information, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/prov-throughput.html\">Provisioned Throughput</a> in the <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/what-is-service.html\">Amazon Bedrock User Guide</a>.</p>",
       "idempotent":true
     },
     "DeleteCustomModel":{
@@ -134,7 +153,7 @@
         {"shape":"InternalServerException"},
         {"shape":"ThrottlingException"}
       ],
-      "documentation":"<p>Deletes a custom model that you created earlier. For more information, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/custom-models.html\">Custom models</a> in the Amazon Bedrock User Guide.</p>",
+      "documentation":"<p>Deletes a custom model that you created earlier. For more information, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/custom-models.html\">Custom models</a> in the <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/what-is-service.html\">Amazon Bedrock User Guide</a>.</p>",
       "idempotent":true
     },
     "DeleteGuardrail":{
@@ -191,7 +210,7 @@
         {"shape":"InternalServerException"},
         {"shape":"ThrottlingException"}
       ],
-      "documentation":"<p>Deletes a Provisioned Throughput. You can't delete a Provisioned Throughput before the commitment term is over. For more information, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/prov-throughput.html\">Provisioned Throughput</a> in the Amazon Bedrock User Guide.</p>",
+      "documentation":"<p>Deletes a Provisioned Throughput. You can't delete a Provisioned Throughput before the commitment term is over. For more information, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/prov-throughput.html\">Provisioned Throughput</a> in the <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/what-is-service.html\">Amazon Bedrock User Guide</a>.</p>",
       "idempotent":true
     },
     "GetCustomModel":{
@@ -210,7 +229,7 @@
         {"shape":"InternalServerException"},
         {"shape":"ThrottlingException"}
       ],
-      "documentation":"<p>Get the properties associated with a Amazon Bedrock custom model that you have created.For more information, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/custom-models.html\">Custom models</a> in the Amazon Bedrock User Guide.</p>"
+      "documentation":"<p>Get the properties associated with a Amazon Bedrock custom model that you have created.For more information, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/custom-models.html\">Custom models</a> in the <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/what-is-service.html\">Amazon Bedrock User Guide</a>.</p>"
     },
     "GetEvaluationJob":{
       "name":"GetEvaluationJob",
@@ -228,7 +247,7 @@
         {"shape":"InternalServerException"},
         {"shape":"ThrottlingException"}
       ],
-      "documentation":"<p>Retrieves the properties associated with a model evaluation job, including the status of the job. For more information, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/latest/userguide/model-evaluation.html\">Model evaluations</a>.</p>"
+      "documentation":"<p>Retrieves the properties associated with a model evaluation job, including the status of the job. For more information, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/model-evaluation.html\">Model evaluation</a>.</p>"
     },
     "GetFoundationModel":{
       "name":"GetFoundationModel",
@@ -266,6 +285,24 @@
       ],
       "documentation":"<p>Gets details about a guardrail. If you don't specify a version, the response returns details for the <code>DRAFT</code> version.</p>"
     },
+    "GetModelCopyJob":{
+      "name":"GetModelCopyJob",
+      "http":{
+        "method":"GET",
+        "requestUri":"/model-copy-jobs/{jobArn}",
+        "responseCode":200
+      },
+      "input":{"shape":"GetModelCopyJobRequest"},
+      "output":{"shape":"GetModelCopyJobResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Retrieves information about a model copy job. For more information, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/copy-model.html\">Copy models to be used in other regions</a> in the <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/what-is-service.html\">Amazon Bedrock User Guide</a>.</p>"
+    },
     "GetModelCustomizationJob":{
       "name":"GetModelCustomizationJob",
       "http":{
@@ -282,7 +319,7 @@
         {"shape":"InternalServerException"},
         {"shape":"ThrottlingException"}
       ],
-      "documentation":"<p>Retrieves the properties associated with a model-customization job, including the status of the job. For more information, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/custom-models.html\">Custom models</a> in the Amazon Bedrock User Guide.</p>"
+      "documentation":"<p>Retrieves the properties associated with a model-customization job, including the status of the job. For more information, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/custom-models.html\">Custom models</a> in the <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/what-is-service.html\">Amazon Bedrock User Guide</a>.</p>"
     },
     "GetModelInvocationLoggingConfiguration":{
       "name":"GetModelInvocationLoggingConfiguration",
@@ -316,7 +353,7 @@
         {"shape":"InternalServerException"},
         {"shape":"ThrottlingException"}
       ],
-      "documentation":"<p>Returns details for a Provisioned Throughput. For more information, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/prov-throughput.html\">Provisioned Throughput</a> in the Amazon Bedrock User Guide.</p>"
+      "documentation":"<p>Returns details for a Provisioned Throughput. For more information, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/prov-throughput.html\">Provisioned Throughput</a> in the <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/what-is-service.html\">Amazon Bedrock User Guide</a>.</p>"
     },
     "ListCustomModels":{
       "name":"ListCustomModels",
@@ -333,7 +370,7 @@
         {"shape":"InternalServerException"},
         {"shape":"ThrottlingException"}
       ],
-      "documentation":"<p>Returns a list of the custom models that you have created with the <code>CreateModelCustomizationJob</code> operation.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/custom-models.html\">Custom models</a> in the Amazon Bedrock User Guide.</p>"
+      "documentation":"<p>Returns a list of the custom models that you have created with the <code>CreateModelCustomizationJob</code> operation.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/custom-models.html\">Custom models</a> in the <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/what-is-service.html\">Amazon Bedrock User Guide</a>.</p>"
     },
     "ListEvaluationJobs":{
       "name":"ListEvaluationJobs",
@@ -367,7 +404,7 @@
         {"shape":"InternalServerException"},
         {"shape":"ThrottlingException"}
       ],
-      "documentation":"<p>Lists Amazon Bedrock foundation models that you can use. You can filter the results with the request parameters. For more information, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/foundation-models.html\">Foundation models</a> in the Amazon Bedrock User Guide.</p>"
+      "documentation":"<p>Lists Amazon Bedrock foundation models that you can use. You can filter the results with the request parameters. For more information, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/foundation-models.html\">Foundation models</a> in the <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/what-is-service.html\">Amazon Bedrock User Guide</a>.</p>"
     },
     "ListGuardrails":{
       "name":"ListGuardrails",
@@ -387,6 +424,24 @@
       ],
       "documentation":"<p>Lists details about all the guardrails in an account. To list the <code>DRAFT</code> version of all your guardrails, don't specify the <code>guardrailIdentifier</code> field. To list all versions of a guardrail, specify the ARN of the guardrail in the <code>guardrailIdentifier</code> field.</p> <p>You can set the maximum number of results to return in a response in the <code>maxResults</code> field. If there are more results than the number you set, the response returns a <code>nextToken</code> that you can send in another <code>ListGuardrails</code> request to see the next batch of results.</p>"
     },
+    "ListModelCopyJobs":{
+      "name":"ListModelCopyJobs",
+      "http":{
+        "method":"GET",
+        "requestUri":"/model-copy-jobs",
+        "responseCode":200
+      },
+      "input":{"shape":"ListModelCopyJobsRequest"},
+      "output":{"shape":"ListModelCopyJobsResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Returns a list of model copy jobs that you have submitted. You can filter the jobs to return based on one or more criteria. For more information, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/copy-model.html\">Copy models to be used in other regions</a> in the <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/what-is-service.html\">Amazon Bedrock User Guide</a>.</p>"
+    },
     "ListModelCustomizationJobs":{
       "name":"ListModelCustomizationJobs",
       "http":{
@@ -402,7 +457,7 @@
         {"shape":"InternalServerException"},
         {"shape":"ThrottlingException"}
       ],
-      "documentation":"<p>Returns a list of model customization jobs that you have submitted. You can filter the jobs to return based on one or more criteria.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/custom-models.html\">Custom models</a> in the Amazon Bedrock User Guide.</p>"
+      "documentation":"<p>Returns a list of model customization jobs that you have submitted. You can filter the jobs to return based on one or more criteria.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/custom-models.html\">Custom models</a> in the <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/what-is-service.html\">Amazon Bedrock User Guide</a>.</p>"
     },
     "ListProvisionedModelThroughputs":{
       "name":"ListProvisionedModelThroughputs",
@@ -419,7 +474,7 @@
         {"shape":"InternalServerException"},
         {"shape":"ThrottlingException"}
       ],
-      "documentation":"<p>Lists the Provisioned Throughputs in the account. For more information, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/prov-throughput.html\">Provisioned Throughput</a> in the Amazon Bedrock User Guide.</p>"
+      "documentation":"<p>Lists the Provisioned Throughputs in the account. For more information, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/prov-throughput.html\">Provisioned Throughput</a> in the <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/what-is-service.html\">Amazon Bedrock User Guide</a>.</p>"
     },
     "ListTagsForResource":{
       "name":"ListTagsForResource",
@@ -437,7 +492,7 @@
         {"shape":"InternalServerException"},
         {"shape":"ThrottlingException"}
       ],
-      "documentation":"<p>List the tags associated with the specified resource.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/tagging.html\">Tagging resources</a> in the Amazon Bedrock User Guide.</p>"
+      "documentation":"<p>List the tags associated with the specified resource.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/tagging.html\">Tagging resources</a> in the <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/what-is-service.html\">Amazon Bedrock User Guide</a>.</p>"
     },
     "PutModelInvocationLoggingConfiguration":{
       "name":"PutModelInvocationLoggingConfiguration",
@@ -493,7 +548,7 @@
         {"shape":"InternalServerException"},
         {"shape":"ThrottlingException"}
       ],
-      "documentation":"<p>Stops an active model customization job. For more information, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/custom-models.html\">Custom models</a> in the Amazon Bedrock User Guide.</p>",
+      "documentation":"<p>Stops an active model customization job. For more information, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/custom-models.html\">Custom models</a> in the <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/what-is-service.html\">Amazon Bedrock User Guide</a>.</p>",
       "idempotent":true
     },
     "TagResource":{
@@ -513,7 +568,7 @@
         {"shape":"TooManyTagsException"},
         {"shape":"ThrottlingException"}
       ],
-      "documentation":"<p>Associate tags with a resource. For more information, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/tagging.html\">Tagging resources</a> in the Amazon Bedrock User Guide.</p>"
+      "documentation":"<p>Associate tags with a resource. For more information, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/tagging.html\">Tagging resources</a> in the <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/what-is-service.html\">Amazon Bedrock User Guide</a>.</p>"
     },
     "UntagResource":{
       "name":"UntagResource",
@@ -531,7 +586,7 @@
         {"shape":"InternalServerException"},
         {"shape":"ThrottlingException"}
       ],
-      "documentation":"<p>Remove one or more tags from a resource. For more information, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/tagging.html\">Tagging resources</a> in the Amazon Bedrock User Guide.</p>"
+      "documentation":"<p>Remove one or more tags from a resource. For more information, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/tagging.html\">Tagging resources</a> in the <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/what-is-service.html\">Amazon Bedrock User Guide</a>.</p>"
     },
     "UpdateGuardrail":{
       "name":"UpdateGuardrail",
@@ -570,7 +625,7 @@
         {"shape":"InternalServerException"},
         {"shape":"ThrottlingException"}
       ],
-      "documentation":"<p>Updates the name or associated model for a Provisioned Throughput. For more information, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/prov-throughput.html\">Provisioned Throughput</a> in the Amazon Bedrock User Guide.</p>",
+      "documentation":"<p>Updates the name or associated model for a Provisioned Throughput. For more information, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/prov-throughput.html\">Provisioned Throughput</a> in the <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/what-is-service.html\">Amazon Bedrock User Guide</a>.</p>",
       "idempotent":true
     }
   },
@@ -586,6 +641,10 @@
         "senderFault":true
       },
       "exception":true
+    },
+    "AccountId":{
+      "type":"string",
+      "pattern":"[0-9]{12}"
     },
     "AutomatedEvaluationConfig":{
       "type":"structure",
@@ -849,6 +908,46 @@
         }
       }
     },
+    "CreateModelCopyJobRequest":{
+      "type":"structure",
+      "required":[
+        "sourceModelArn",
+        "targetModelName"
+      ],
+      "members":{
+        "sourceModelArn":{
+          "shape":"ModelArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the model to be copied.</p>"
+        },
+        "targetModelName":{
+          "shape":"CustomModelName",
+          "documentation":"<p>A name for the copied model.</p>"
+        },
+        "modelKmsKeyId":{
+          "shape":"KmsKeyId",
+          "documentation":"<p>The ARN of the KMS key that you use to encrypt the model copy.</p>"
+        },
+        "targetModelTags":{
+          "shape":"TagList",
+          "documentation":"<p>Tags to associate with the target model. For more information, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/tagging.html\">Tag resources</a> in the <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/what-is-service.html\">Amazon Bedrock User Guide</a>.</p>"
+        },
+        "clientRequestToken":{
+          "shape":"IdempotencyToken",
+          "documentation":"<p>A unique, case-sensitive identifier to ensure that the API request completes no more than one time. If this token matches a previous request, Amazon Bedrock ignores the request, but does not return an error. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/APIReference/Run_Instance_Idempotency.html\">Ensuring idempotency</a>.</p>",
+          "idempotencyToken":true
+        }
+      }
+    },
+    "CreateModelCopyJobResponse":{
+      "type":"structure",
+      "required":["jobArn"],
+      "members":{
+        "jobArn":{
+          "shape":"ModelCopyJobArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the model copy job.</p>"
+        }
+      }
+    },
     "CreateModelCustomizationJobRequest":{
       "type":"structure",
       "required":[
@@ -945,7 +1044,7 @@
         },
         "modelUnits":{
           "shape":"PositiveInteger",
-          "documentation":"<p>Number of model units to allocate. A model unit delivers a specific throughput level for the specified model. The throughput level of a model unit specifies the total number of input and output tokens that it can process and generate within a span of one minute. By default, your account has no model units for purchasing Provisioned Throughputs with commitment. You must first visit the <a href=\"https://console.aws.amazon.com/support/home#/case/create?issueType=service-limit-increase\">Amazon Web Services support center</a> to request MUs.</p> <p>For model unit quotas, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/quotas.html#prov-thru-quotas\">Provisioned Throughput quotas</a> in the Amazon Bedrock User Guide.</p> <p>For more information about what an MU specifies, contact your Amazon Web Services account manager.</p>"
+          "documentation":"<p>Number of model units to allocate. A model unit delivers a specific throughput level for the specified model. The throughput level of a model unit specifies the total number of input and output tokens that it can process and generate within a span of one minute. By default, your account has no model units for purchasing Provisioned Throughputs with commitment. You must first visit the <a href=\"https://console.aws.amazon.com/support/home#/case/create?issueType=service-limit-increase\">Amazon Web Services support center</a> to request MUs.</p> <p>For model unit quotas, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/quotas.html#prov-thru-quotas\">Provisioned Throughput quotas</a> in the <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/what-is-service.html\">Amazon Bedrock User Guide</a>.</p> <p>For more information about what an MU specifies, contact your Amazon Web Services account manager.</p>"
         },
         "provisionedModelName":{
           "shape":"ProvisionedModelName",
@@ -953,11 +1052,11 @@
         },
         "modelId":{
           "shape":"ModelIdentifier",
-          "documentation":"<p>The Amazon Resource Name (ARN) or name of the model to associate with this Provisioned Throughput. For a list of models for which you can purchase Provisioned Throughput, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/model-ids.html#prov-throughput-models\">Amazon Bedrock model IDs for purchasing Provisioned Throughput</a> in the Amazon Bedrock User Guide.</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) or name of the model to associate with this Provisioned Throughput. For a list of models for which you can purchase Provisioned Throughput, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/model-ids.html#prov-throughput-models\">Amazon Bedrock model IDs for purchasing Provisioned Throughput</a> in the <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/what-is-service.html\">Amazon Bedrock User Guide</a>.</p>"
         },
         "commitmentDuration":{
           "shape":"CommitmentDuration",
-          "documentation":"<p>The commitment duration requested for the Provisioned Throughput. Billing occurs hourly and is discounted for longer commitment terms. To request a no-commit Provisioned Throughput, omit this field.</p> <p>Custom models support all levels of commitment. To see which base models support no commitment, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/pt-supported.html\">Supported regions and models for Provisioned Throughput</a> in the Amazon Bedrock User Guide</p>"
+          "documentation":"<p>The commitment duration requested for the Provisioned Throughput. Billing occurs hourly and is discounted for longer commitment terms. To request a no-commit Provisioned Throughput, omit this field.</p> <p>Custom models support all levels of commitment. To see which base models support no commitment, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/pt-supported.html\">Supported regions and models for Provisioned Throughput</a> in the <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/what-is-service.html\">Amazon Bedrock User Guide</a> </p>"
         },
         "tags":{
           "shape":"TagList",
@@ -985,7 +1084,7 @@
       "type":"string",
       "max":63,
       "min":1,
-      "pattern":"([0-9a-zA-Z][_-]?)+"
+      "pattern":"([0-9a-zA-Z][_-]?){1,63}"
     },
     "CustomModelSummary":{
       "type":"structure",
@@ -1020,6 +1119,10 @@
         "customizationType":{
           "shape":"CustomizationType",
           "documentation":"<p>Specifies whether to carry out continued pre-training of a model or whether to fine-tune it. For more information, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/custom-models.html\">Custom models</a>.</p>"
+        },
+        "ownerAccountId":{
+          "shape":"AccountId",
+          "documentation":"<p>The unique identifier of the account that owns the model.</p>"
         }
       },
       "documentation":"<p>Summary information for a custom model.</p>"
@@ -1827,6 +1930,75 @@
         }
       }
     },
+    "GetModelCopyJobRequest":{
+      "type":"structure",
+      "required":["jobArn"],
+      "members":{
+        "jobArn":{
+          "shape":"ModelCopyJobArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the model copy job.</p>",
+          "location":"uri",
+          "locationName":"jobArn"
+        }
+      }
+    },
+    "GetModelCopyJobResponse":{
+      "type":"structure",
+      "required":[
+        "jobArn",
+        "status",
+        "creationTime",
+        "targetModelArn",
+        "sourceAccountId",
+        "sourceModelArn"
+      ],
+      "members":{
+        "jobArn":{
+          "shape":"ModelCopyJobArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the model copy job.</p>"
+        },
+        "status":{
+          "shape":"ModelCopyJobStatus",
+          "documentation":"<p>The status of the model copy job.</p>"
+        },
+        "creationTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time at which the model copy job was created.</p>"
+        },
+        "targetModelArn":{
+          "shape":"CustomModelArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the copied model.</p>"
+        },
+        "targetModelName":{
+          "shape":"CustomModelName",
+          "documentation":"<p>The name of the copied model.</p>"
+        },
+        "sourceAccountId":{
+          "shape":"AccountId",
+          "documentation":"<p>The unique identifier of the account that the model being copied originated from.</p>"
+        },
+        "sourceModelArn":{
+          "shape":"ModelArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the original model being copied.</p>"
+        },
+        "targetModelKmsKeyArn":{
+          "shape":"KmsKeyArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the KMS key encrypting the copied model.</p>"
+        },
+        "targetModelTags":{
+          "shape":"TagList",
+          "documentation":"<p>The tags associated with the copied model.</p>"
+        },
+        "failureMessage":{
+          "shape":"ErrorMessage",
+          "documentation":"<p>An error message for why the model copy job failed.</p>"
+        },
+        "sourceModelName":{
+          "shape":"CustomModelName",
+          "documentation":"<p>The name of the original model being copied.</p>"
+        }
+      }
+    },
     "GetModelCustomizationJobRequest":{
       "type":"structure",
       "required":["jobIdentifier"],
@@ -2331,7 +2503,7 @@
       "members":{
         "type":{
           "shape":"GuardrailPiiEntityType",
-          "documentation":"<p>The type of PII entity. For example, Social Security Number.</p>"
+          "documentation":"<p>The type of PII entity. For exampvle, Social Security Number.</p>"
         },
         "action":{
           "shape":"GuardrailSensitiveInformationAction",
@@ -2945,13 +3117,13 @@
         },
         "maxResults":{
           "shape":"MaxResults",
-          "documentation":"<p>Maximum number of results to return in the response.</p>",
+          "documentation":"<p>The maximum number of results to return in the response. If the total number of results is greater than this value, use the token returned in the response in the <code>nextToken</code> field when making another request to return the next batch of results.</p>",
           "location":"querystring",
           "locationName":"maxResults"
         },
         "nextToken":{
           "shape":"PaginationToken",
-          "documentation":"<p>Continuation token from the previous response, for Amazon Bedrock to list the next set of results.</p>",
+          "documentation":"<p>If the total number of results is greater than the <code>maxResults</code> value provided in the request, enter the token returned in the <code>nextToken</code> field in the response in this field to return the next batch of results.</p>",
           "location":"querystring",
           "locationName":"nextToken"
         },
@@ -2966,6 +3138,12 @@
           "documentation":"<p>The sort order of the results.</p>",
           "location":"querystring",
           "locationName":"sortOrder"
+        },
+        "isOwned":{
+          "shape":"Boolean",
+          "documentation":"<p>Return custom models depending on if the current account owns them (<code>true</code>) or if they were shared with the current account (<code>false</code>).</p>",
+          "location":"querystring",
+          "locationName":"isOwned"
         }
       }
     },
@@ -2974,7 +3152,7 @@
       "members":{
         "nextToken":{
           "shape":"PaginationToken",
-          "documentation":"<p>Continuation token for the next request to list the next set of results.</p>"
+          "documentation":"<p>If the total number of results is greater than the <code>maxResults</code> value provided in the request, use this token when making another request in the <code>nextToken</code> field to return the next batch of results.</p>"
         },
         "modelSummaries":{
           "shape":"CustomModelSummaryList",
@@ -3059,7 +3237,7 @@
         },
         "byCustomizationType":{
           "shape":"ModelCustomization",
-          "documentation":"<p>Return models that support the customization type that you specify. For more information, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/custom-models.html\">Custom models</a> in the Amazon Bedrock User Guide.</p>",
+          "documentation":"<p>Return models that support the customization type that you specify. For more information, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/custom-models.html\">Custom models</a> in the <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/what-is-service.html\">Amazon Bedrock User Guide</a>.</p>",
           "location":"querystring",
           "locationName":"byCustomizationType"
         },
@@ -3071,7 +3249,7 @@
         },
         "byInferenceType":{
           "shape":"InferenceType",
-          "documentation":"<p>Return models that support the inference type that you specify. For more information, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/prov-throughput.html\">Provisioned Throughput</a> in the Amazon Bedrock User Guide.</p>",
+          "documentation":"<p>Return models that support the inference type that you specify. For more information, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/prov-throughput.html\">Provisioned Throughput</a> in the <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/what-is-service.html\">Amazon Bedrock User Guide</a>.</p>",
           "location":"querystring",
           "locationName":"byInferenceType"
         }
@@ -3123,6 +3301,84 @@
         }
       }
     },
+    "ListModelCopyJobsRequest":{
+      "type":"structure",
+      "members":{
+        "creationTimeAfter":{
+          "shape":"Timestamp",
+          "documentation":"<p>Filters for model copy jobs created after the specified time.</p>",
+          "location":"querystring",
+          "locationName":"creationTimeAfter"
+        },
+        "creationTimeBefore":{
+          "shape":"Timestamp",
+          "documentation":"<p>Filters for model copy jobs created before the specified time. </p>",
+          "location":"querystring",
+          "locationName":"creationTimeBefore"
+        },
+        "statusEquals":{
+          "shape":"ModelCopyJobStatus",
+          "documentation":"<p>Filters for model copy jobs whose status matches the value that you specify.</p>",
+          "location":"querystring",
+          "locationName":"statusEquals"
+        },
+        "sourceAccountEquals":{
+          "shape":"AccountId",
+          "documentation":"<p>Filters for model copy jobs in which the account that the source model belongs to is equal to the value that you specify.</p>",
+          "location":"querystring",
+          "locationName":"sourceAccountEquals"
+        },
+        "sourceModelArnEquals":{
+          "shape":"ModelArn",
+          "documentation":"<p>Filters for model copy jobs in which the Amazon Resource Name (ARN) of the source model to is equal to the value that you specify.</p>",
+          "location":"querystring",
+          "locationName":"sourceModelArnEquals"
+        },
+        "targetModelNameContains":{
+          "shape":"CustomModelName",
+          "documentation":"<p>Filters for model copy jobs in which the name of the copied model contains the string that you specify.</p>",
+          "location":"querystring",
+          "locationName":"outputModelNameContains"
+        },
+        "maxResults":{
+          "shape":"MaxResults",
+          "documentation":"<p>The maximum number of results to return in the response. If the total number of results is greater than this value, use the token returned in the response in the <code>nextToken</code> field when making another request to return the next batch of results.</p>",
+          "location":"querystring",
+          "locationName":"maxResults"
+        },
+        "nextToken":{
+          "shape":"PaginationToken",
+          "documentation":"<p>If the total number of results is greater than the <code>maxResults</code> value provided in the request, enter the token returned in the <code>nextToken</code> field in the response in this field to return the next batch of results.</p>",
+          "location":"querystring",
+          "locationName":"nextToken"
+        },
+        "sortBy":{
+          "shape":"SortJobsBy",
+          "documentation":"<p>The field to sort by in the returned list of model copy jobs.</p>",
+          "location":"querystring",
+          "locationName":"sortBy"
+        },
+        "sortOrder":{
+          "shape":"SortOrder",
+          "documentation":"<p>Specifies whether to sort the results in ascending or descending order.</p>",
+          "location":"querystring",
+          "locationName":"sortOrder"
+        }
+      }
+    },
+    "ListModelCopyJobsResponse":{
+      "type":"structure",
+      "members":{
+        "nextToken":{
+          "shape":"PaginationToken",
+          "documentation":"<p>If the total number of results is greater than the <code>maxResults</code> value provided in the request, use this token when making another request in the <code>nextToken</code> field to return the next batch of results.</p>"
+        },
+        "modelCopyJobSummaries":{
+          "shape":"ModelCopyJobSummaries",
+          "documentation":"<p>A list of information about each model copy job.</p>"
+        }
+      }
+    },
     "ListModelCustomizationJobsRequest":{
       "type":"structure",
       "members":{
@@ -3152,13 +3408,13 @@
         },
         "maxResults":{
           "shape":"MaxResults",
-          "documentation":"<p>Maximum number of results to return in the response.</p>",
+          "documentation":"<p>The maximum number of results to return in the response. If the total number of results is greater than this value, use the token returned in the response in the <code>nextToken</code> field when making another request to return the next batch of results.</p>",
           "location":"querystring",
           "locationName":"maxResults"
         },
         "nextToken":{
           "shape":"PaginationToken",
-          "documentation":"<p>Continuation token from the previous response, for Amazon Bedrock to list the next set of results.</p>",
+          "documentation":"<p>If the total number of results is greater than the <code>maxResults</code> value provided in the request, enter the token returned in the <code>nextToken</code> field in the response in this field to return the next batch of results.</p>",
           "location":"querystring",
           "locationName":"nextToken"
         },
@@ -3181,7 +3437,7 @@
       "members":{
         "nextToken":{
           "shape":"PaginationToken",
-          "documentation":"<p>Page continuation token to use in the next request.</p>"
+          "documentation":"<p>If the total number of results is greater than the <code>maxResults</code> value provided in the request, use this token when making another request in the <code>nextToken</code> field to return the next batch of results.</p>"
         },
         "modelCustomizationJobSummaries":{
           "shape":"ModelCustomizationJobSummaries",
@@ -3326,6 +3582,82 @@
       "max":1011,
       "min":20,
       "pattern":"arn:aws(-[^:]+)?:bedrock:[a-z0-9-]{1,20}:(([0-9]{12}:custom-model/[a-z0-9-]{1,63}[.]{1}[a-z0-9-]{1,63}/[a-z0-9]{12})|(:foundation-model/[a-z0-9-]{1,63}[.]{1}([a-z0-9-]{1,63}[.]){0,2}[a-z0-9-]{1,63}([:][a-z0-9-]{1,63}){0,2}))"
+    },
+    "ModelCopyJobArn":{
+      "type":"string",
+      "max":1011,
+      "min":0,
+      "pattern":"arn:aws(-[^:]+)?:bedrock:[a-z0-9-]{1,20}:[0-9]{12}:model-copy-job/[a-z0-9]{12}"
+    },
+    "ModelCopyJobStatus":{
+      "type":"string",
+      "enum":[
+        "InProgress",
+        "Completed",
+        "Failed"
+      ]
+    },
+    "ModelCopyJobSummaries":{
+      "type":"list",
+      "member":{"shape":"ModelCopyJobSummary"}
+    },
+    "ModelCopyJobSummary":{
+      "type":"structure",
+      "required":[
+        "jobArn",
+        "status",
+        "creationTime",
+        "targetModelArn",
+        "sourceAccountId",
+        "sourceModelArn"
+      ],
+      "members":{
+        "jobArn":{
+          "shape":"ModelCopyJobArn",
+          "documentation":"<p>The Amazon Resoource Name (ARN) of the model copy job.</p>"
+        },
+        "status":{
+          "shape":"ModelCopyJobStatus",
+          "documentation":"<p>The status of the model copy job.</p>"
+        },
+        "creationTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time that the model copy job was created.</p>"
+        },
+        "targetModelArn":{
+          "shape":"CustomModelArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the copied model.</p>"
+        },
+        "targetModelName":{
+          "shape":"CustomModelName",
+          "documentation":"<p>The name of the copied model.</p>"
+        },
+        "sourceAccountId":{
+          "shape":"AccountId",
+          "documentation":"<p>The unique identifier of the account that the model being copied originated from.</p>"
+        },
+        "sourceModelArn":{
+          "shape":"ModelArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the original model being copied.</p>"
+        },
+        "targetModelKmsKeyArn":{
+          "shape":"KmsKeyArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the KMS key used to encrypt the copied model.</p>"
+        },
+        "targetModelTags":{
+          "shape":"TagList",
+          "documentation":"<p>Tags associated with the copied model.</p>"
+        },
+        "failureMessage":{
+          "shape":"ErrorMessage",
+          "documentation":"<p>If a model fails to be copied, a message describing why the job failed is included here.</p>"
+        },
+        "sourceModelName":{
+          "shape":"CustomModelName",
+          "documentation":"<p>The name of the original model being copied.</p>"
+        }
+      },
+      "documentation":"<p>Contains details about each model copy job.</p> <p>This data type is used in the following API operations:</p> <ul> <li> <p> <a href=\"https://docs.aws.amazon.com/bedrock/latest/APIReference/API_ListModelCopyJobs.html#API_ListModelCopyJobs_ResponseSyntax\">ListModelCopyJobs response</a> </p> </li> </ul>"
     },
     "ModelCustomization":{
       "type":"string",

@@ -2,9 +2,10 @@
   "version":"2.0",
   "metadata":{
     "apiVersion":"2018-05-10",
+    "auth":["aws.auth#sigv4"],
     "endpointPrefix":"controlcatalog",
-    "jsonVersion":"1.1",
     "protocol":"rest-json",
+    "protocols":["rest-json"],
     "serviceFullName":"AWS Control Catalog",
     "serviceId":"ControlCatalog",
     "signatureVersion":"v4",
@@ -12,6 +13,24 @@
     "uid":"controlcatalog-2018-05-10"
   },
   "operations":{
+    "GetControl":{
+      "name":"GetControl",
+      "http":{
+        "method":"POST",
+        "requestUri":"/get-control",
+        "responseCode":200
+      },
+      "input":{"shape":"GetControlRequest"},
+      "output":{"shape":"GetControlResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ValidationException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Returns details about a specific control, most notably a list of Amazon Web Services Regions where this control is supported. Input a value for the <i>ControlArn</i> parameter, in ARN form. <code>GetControl</code> accepts <i>controltower</i> or <i>controlcatalog</i> control ARNs as input. Returns a <i>controlcatalog</i> ARN format.</p> <p>In the API response, controls that have the value <code>GLOBAL</code> in the <code>Scope</code> field do not show the <code>DeployableRegions</code> field, because it does not apply. Controls that have the value <code>REGIONAL</code> in the <code>Scope</code> field return a value for the <code>DeployableRegions</code> field, as shown in the example.</p>"
+    },
     "ListCommonControls":{
       "name":"ListCommonControls",
       "http":{
@@ -28,6 +47,23 @@
         {"shape":"ThrottlingException"}
       ],
       "documentation":"<p>Returns a paginated list of common controls from the Amazon Web Services Control Catalog.</p> <p>You can apply an optional filter to see common controls that have a specific objective. If you don’t provide a filter, the operation returns all common controls. </p>"
+    },
+    "ListControls":{
+      "name":"ListControls",
+      "http":{
+        "method":"POST",
+        "requestUri":"/list-controls",
+        "responseCode":200
+      },
+      "input":{"shape":"ListControlsRequest"},
+      "output":{"shape":"ListControlsResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ValidationException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Returns a paginated list of all available controls in the Amazon Web Services Control Catalog library. Allows you to discover available controls. The list of controls is given as structures of type <i>controlSummary</i>. The ARN is returned in the global <i>controlcatalog</i> format, as shown in the examples.</p>"
     },
     "ListDomains":{
       "name":"ListDomains",
@@ -109,7 +145,7 @@
       "type":"string",
       "max":2048,
       "min":41,
-      "pattern":"^arn:(aws(?:[-a-z]*)?):controlcatalog:::common-control/[0-9a-z]+$"
+      "pattern":"arn:(aws(?:[-a-z]*)?):controlcatalog:::common-control/[0-9a-z]+"
     },
     "CommonControlFilter":{
       "type":"structure",
@@ -125,21 +161,21 @@
       "type":"structure",
       "required":[
         "Arn",
-        "CreateTime",
+        "Name",
         "Description",
         "Domain",
-        "LastUpdateTime",
-        "Name",
-        "Objective"
+        "Objective",
+        "CreateTime",
+        "LastUpdateTime"
       ],
       "members":{
         "Arn":{
           "shape":"CommonControlArn",
           "documentation":"<p>The Amazon Resource Name (ARN) that identifies the common control.</p>"
         },
-        "CreateTime":{
-          "shape":"Timestamp",
-          "documentation":"<p>The time when the common control was created.</p>"
+        "Name":{
+          "shape":"String",
+          "documentation":"<p>The name of the common control.</p>"
         },
         "Description":{
           "shape":"String",
@@ -149,17 +185,17 @@
           "shape":"AssociatedDomainSummary",
           "documentation":"<p>The domain that the common control belongs to.</p>"
         },
-        "LastUpdateTime":{
-          "shape":"Timestamp",
-          "documentation":"<p>The time when the common control was most recently updated.</p>"
-        },
-        "Name":{
-          "shape":"String",
-          "documentation":"<p>The name of the common control.</p>"
-        },
         "Objective":{
           "shape":"AssociatedObjectiveSummary",
           "documentation":"<p>The objective that the common control belongs to.</p>"
+        },
+        "CreateTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time when the common control was created.</p>"
+        },
+        "LastUpdateTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time when the common control was most recently updated.</p>"
         }
       },
       "documentation":"<p>A summary of metadata for a common control.</p>"
@@ -168,11 +204,63 @@
       "type":"list",
       "member":{"shape":"CommonControlSummary"}
     },
+    "ControlArn":{
+      "type":"string",
+      "max":2048,
+      "min":34,
+      "pattern":"arn:(aws(?:[-a-z]*)?):(controlcatalog|controltower):[a-zA-Z0-9-]*::control/[0-9a-zA-Z_\\-]+"
+    },
+    "ControlBehavior":{
+      "type":"string",
+      "enum":[
+        "PREVENTIVE",
+        "PROACTIVE",
+        "DETECTIVE"
+      ]
+    },
+    "ControlScope":{
+      "type":"string",
+      "enum":[
+        "GLOBAL",
+        "REGIONAL"
+      ]
+    },
+    "ControlSummary":{
+      "type":"structure",
+      "required":[
+        "Arn",
+        "Name",
+        "Description"
+      ],
+      "members":{
+        "Arn":{
+          "shape":"ControlArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the control.</p>"
+        },
+        "Name":{
+          "shape":"String",
+          "documentation":"<p>The display name of the control.</p>"
+        },
+        "Description":{
+          "shape":"String",
+          "documentation":"<p>A description of the control, as it may appear in the console. Describes the functionality of the control.</p>"
+        }
+      },
+      "documentation":"<p>Overview of information about a control.</p>"
+    },
+    "Controls":{
+      "type":"list",
+      "member":{"shape":"ControlSummary"}
+    },
+    "DeployableRegions":{
+      "type":"list",
+      "member":{"shape":"RegionCode"}
+    },
     "DomainArn":{
       "type":"string",
       "max":2048,
       "min":33,
-      "pattern":"^arn:(aws(?:[-a-z]*)?):controlcatalog:::domain/[0-9a-z]+$"
+      "pattern":"arn:(aws(?:[-a-z]*)?):controlcatalog:::domain/[0-9a-z]+"
     },
     "DomainResourceFilter":{
       "type":"structure",
@@ -192,31 +280,31 @@
       "type":"structure",
       "required":[
         "Arn",
-        "CreateTime",
+        "Name",
         "Description",
-        "LastUpdateTime",
-        "Name"
+        "CreateTime",
+        "LastUpdateTime"
       ],
       "members":{
         "Arn":{
           "shape":"DomainArn",
           "documentation":"<p>The Amazon Resource Name (ARN) that identifies the domain.</p>"
         },
-        "CreateTime":{
-          "shape":"Timestamp",
-          "documentation":"<p>The time when the domain was created.</p>"
+        "Name":{
+          "shape":"String",
+          "documentation":"<p>The name of the domain.</p>"
         },
         "Description":{
           "shape":"String",
           "documentation":"<p>The description of the domain.</p>"
         },
+        "CreateTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time when the domain was created.</p>"
+        },
         "LastUpdateTime":{
           "shape":"Timestamp",
           "documentation":"<p>The time when the domain was most recently updated.</p>"
-        },
-        "Name":{
-          "shape":"String",
-          "documentation":"<p>The name of the domain.</p>"
         }
       },
       "documentation":"<p>A summary of metadata for a domain.</p>"
@@ -224,6 +312,45 @@
     "DomainSummaryList":{
       "type":"list",
       "member":{"shape":"DomainSummary"}
+    },
+    "GetControlRequest":{
+      "type":"structure",
+      "required":["ControlArn"],
+      "members":{
+        "ControlArn":{
+          "shape":"ControlArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the control. It has one of the following formats:</p> <p> <i>Global format</i> </p> <p> <code>arn:{PARTITION}:controlcatalog:::control/{CONTROL_CATALOG_OPAQUE_ID}</code> </p> <p> <i>Or Regional format</i> </p> <p> <code>arn:{PARTITION}:controltower:{REGION}::control/{CONTROL_TOWER_OPAQUE_ID}</code> </p> <p>Here is a more general pattern that covers Amazon Web Services Control Tower and Control Catalog ARNs:</p> <p> <code>^arn:(aws(?:[-a-z]*)?):(controlcatalog|controltower):[a-zA-Z0-9-]*::control/[0-9a-zA-Z_\\\\-]+$</code> </p>"
+        }
+      }
+    },
+    "GetControlResponse":{
+      "type":"structure",
+      "required":[
+        "Arn",
+        "Name",
+        "Description",
+        "Behavior",
+        "RegionConfiguration"
+      ],
+      "members":{
+        "Arn":{
+          "shape":"ControlArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the control.</p>"
+        },
+        "Name":{
+          "shape":"String",
+          "documentation":"<p>The display name of the control.</p>"
+        },
+        "Description":{
+          "shape":"String",
+          "documentation":"<p>A description of what the control does.</p>"
+        },
+        "Behavior":{
+          "shape":"ControlBehavior",
+          "documentation":"<p>A term that identifies the control's functional behavior. One of <code>Preventive</code>, <code>Deteictive</code>, <code>Proactive</code> </p>"
+        },
+        "RegionConfiguration":{"shape":"RegionConfiguration"}
+      }
     },
     "InternalServerException":{
       "type":"structure",
@@ -239,10 +366,6 @@
     "ListCommonControlsRequest":{
       "type":"structure",
       "members":{
-        "CommonControlFilter":{
-          "shape":"CommonControlFilter",
-          "documentation":"<p>An optional filter that narrows the results to a specific objective.</p> <p>This filter allows you to specify one objective ARN at a time. Passing multiple ARNs in the <code>CommonControlFilter</code> isn’t currently supported.</p>"
-        },
         "MaxResults":{
           "shape":"MaxListCommonControlsResults",
           "documentation":"<p>The maximum number of results on a page or for an API request call.</p>",
@@ -254,6 +377,10 @@
           "documentation":"<p>The pagination token that's used to fetch the next set of results.</p>",
           "location":"querystring",
           "locationName":"nextToken"
+        },
+        "CommonControlFilter":{
+          "shape":"CommonControlFilter",
+          "documentation":"<p>An optional filter that narrows the results to a specific objective.</p> <p>This filter allows you to specify one objective ARN at a time. Passing multiple ARNs in the <code>CommonControlFilter</code> isn’t currently supported.</p>"
         }
       }
     },
@@ -264,6 +391,37 @@
         "CommonControls":{
           "shape":"CommonControlSummaryList",
           "documentation":"<p>The list of common controls that the <code>ListCommonControls</code> API returns.</p>"
+        },
+        "NextToken":{
+          "shape":"PaginationToken",
+          "documentation":"<p>The pagination token that's used to fetch the next set of results.</p>"
+        }
+      }
+    },
+    "ListControlsRequest":{
+      "type":"structure",
+      "members":{
+        "NextToken":{
+          "shape":"PaginationToken",
+          "documentation":"<p>The pagination token that's used to fetch the next set of results.</p>",
+          "location":"querystring",
+          "locationName":"nextToken"
+        },
+        "MaxResults":{
+          "shape":"MaxListControlsResults",
+          "documentation":"<p>The maximum number of results on a page or for an API request call.</p>",
+          "location":"querystring",
+          "locationName":"maxResults"
+        }
+      }
+    },
+    "ListControlsResponse":{
+      "type":"structure",
+      "required":["Controls"],
+      "members":{
+        "Controls":{
+          "shape":"Controls",
+          "documentation":"<p>Returns a list of controls, given as structures of type <i>controlSummary</i>.</p>"
         },
         "NextToken":{
           "shape":"PaginationToken",
@@ -327,17 +485,23 @@
       "type":"structure",
       "required":["Objectives"],
       "members":{
-        "NextToken":{
-          "shape":"PaginationToken",
-          "documentation":"<p>The pagination token that's used to fetch the next set of results.</p>"
-        },
         "Objectives":{
           "shape":"ObjectiveSummaryList",
           "documentation":"<p>The list of objectives that the <code>ListObjectives</code> API returns.</p>"
+        },
+        "NextToken":{
+          "shape":"PaginationToken",
+          "documentation":"<p>The pagination token that's used to fetch the next set of results.</p>"
         }
       }
     },
     "MaxListCommonControlsResults":{
+      "type":"integer",
+      "box":true,
+      "max":100,
+      "min":1
+    },
+    "MaxListControlsResults":{
       "type":"integer",
       "box":true,
       "max":100,
@@ -359,7 +523,7 @@
       "type":"string",
       "max":2048,
       "min":36,
-      "pattern":"^arn:(aws(?:[-a-z]*)?):controlcatalog:::objective/[0-9a-z]+$"
+      "pattern":"arn:(aws(?:[-a-z]*)?):controlcatalog:::objective/[0-9a-z]+"
     },
     "ObjectiveFilter":{
       "type":"structure",
@@ -389,20 +553,20 @@
       "type":"structure",
       "required":[
         "Arn",
-        "CreateTime",
+        "Name",
         "Description",
         "Domain",
-        "LastUpdateTime",
-        "Name"
+        "CreateTime",
+        "LastUpdateTime"
       ],
       "members":{
         "Arn":{
           "shape":"ObjectiveArn",
           "documentation":"<p>The Amazon Resource Name (ARN) that identifies the objective.</p>"
         },
-        "CreateTime":{
-          "shape":"Timestamp",
-          "documentation":"<p>The time when the objective was created.</p>"
+        "Name":{
+          "shape":"String",
+          "documentation":"<p>The name of the objective.</p>"
         },
         "Description":{
           "shape":"String",
@@ -412,13 +576,13 @@
           "shape":"AssociatedDomainSummary",
           "documentation":"<p>The domain that the objective belongs to.</p>"
         },
+        "CreateTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time when the objective was created.</p>"
+        },
         "LastUpdateTime":{
           "shape":"Timestamp",
           "documentation":"<p>The time when the objective was most recently updated.</p>"
-        },
-        "Name":{
-          "shape":"String",
-          "documentation":"<p>The name of the objective.</p>"
         }
       },
       "documentation":"<p>A summary of metadata for an objective.</p>"
@@ -431,6 +595,37 @@
       "type":"string",
       "max":1024,
       "min":0
+    },
+    "RegionCode":{
+      "type":"string",
+      "pattern":"[a-zA-Z0-9-]{1,128}"
+    },
+    "RegionConfiguration":{
+      "type":"structure",
+      "required":["Scope"],
+      "members":{
+        "Scope":{
+          "shape":"ControlScope",
+          "documentation":"<p>The coverage of the control, if deployed. Scope is an enumerated type, with value <code>Regional</code>, or <code>Global</code>. A control with Global scope is effective in all Amazon Web Services Regions, regardless of the Region from which it is enabled, or to which it is deployed. A control implemented by an SCP is usually Global in scope. A control with Regional scope has operations that are restricted specifically to the Region from which it is enabled and to which it is deployed. Controls implemented by Config rules and CloudFormation hooks usually are Regional in scope. Security Hub controls usually are Regional in scope.</p>"
+        },
+        "DeployableRegions":{
+          "shape":"DeployableRegions",
+          "documentation":"<p>Regions in which the control is available to be deployed.</p>"
+        }
+      },
+      "documentation":"<p>Returns information about the control, including the scope of the control, if enabled, and the Regions in which the control currently is available for deployment.</p> <p>If you are applying controls through an Amazon Web Services Control Tower landing zone environment, remember that the values returned in the <code>RegionConfiguration</code> API operation are not related to the governed Regions in your landing zone. For example, if you are governing Regions <code>A</code>,<code>B</code>,and <code>C</code> while the control is available in Regions <code>A</code>, <code>B</code>, C<code>,</code> and <code>D</code>, you'd see a response with <code>DeployableRegions</code> of <code>A</code>, <code>B</code>, <code>C</code>, and <code>D</code> for a control with <code>REGIONAL</code> scope, even though you may not intend to deploy the control in Region <code>D</code>, because you do not govern it through your landing zone.</p>"
+    },
+    "ResourceNotFoundException":{
+      "type":"structure",
+      "members":{
+        "Message":{"shape":"String"}
+      },
+      "documentation":"<p>The requested resource does not exist.</p>",
+      "error":{
+        "httpStatusCode":404,
+        "senderFault":true
+      },
+      "exception":true
     },
     "String":{"type":"string"},
     "ThrottlingException":{

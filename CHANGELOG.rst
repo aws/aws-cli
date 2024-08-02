@@ -2,6 +2,16 @@
 CHANGELOG
 =========
 
+2.17.22
+=======
+
+* api-change:``cloudwatch``: Add v2 smoke tests and smithy smokeTests trait for SDK testing.
+* api-change:``kinesis``: Add v2 smoke tests and smithy smokeTests trait for SDK testing.
+* api-change:``waf-regional``: Add v2 smoke tests and smithy smokeTests trait for SDK testing.
+* api-change:``route53``: Add v2 smoke tests and smithy smokeTests trait for SDK testing.
+* api-change:``resiliencehub``: Customers are presented with the grouping recommendations and can determine if the recommendations are accurate and apply to their case. This feature simplifies onboarding by organizing resources into appropriate AppComponents.
+
+
 2.17.21
 =======
 

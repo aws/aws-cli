@@ -362,7 +362,7 @@ class TestSha256RSADigestValidator(unittest.TestCase):
         self._digest_data['_signature'] = 'aeff'
 
     def test_validates_digests(self):
-        private_key = rsa.generate_private_key(65537, 512, default_backend())
+        private_key = rsa.generate_private_key(65537, 1024, default_backend())
         sha256_hash = hashlib.sha256(self._inflated_digest)
         string_to_sign = "%s\n%s/%s\n%s\n%s" % (
             self._digest_data['digestEndTime'],

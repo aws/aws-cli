@@ -2,6 +2,15 @@
 CHANGELOG
 =========
 
+2.17.23
+=======
+
+* api-change:``datazone``: This releases Data Product feature. Data Products allow grouping data assets into cohesive, self-contained units for ease of publishing for data producers, and ease of finding and accessing for data consumers.
+* api-change:``kinesis-video-webrtc-storage``: Add JoinStorageSessionAsViewer API
+* api-change:``ecr``: Released two new APIs along with documentation updates. The GetAccountSetting API is used to view the current basic scan type version setting for your registry, while the PutAccountSetting API is used to update the basic scan type version for your registry.
+* api-change:``pi``: Added a description for the Dimension db.sql.tokenized_id on the DimensionGroup data type page.
+
+
 2.17.22
 =======
 

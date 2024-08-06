@@ -10,9 +10,28 @@
     "serviceId":"resiliencehub",
     "signatureVersion":"v4",
     "signingName":"resiliencehub",
-    "uid":"resiliencehub-2020-04-30"
+    "uid":"resiliencehub-2020-04-30",
+    "auth":["aws.auth#sigv4"]
   },
   "operations":{
+    "AcceptResourceGroupingRecommendations":{
+      "name":"AcceptResourceGroupingRecommendations",
+      "http":{
+        "method":"POST",
+        "requestUri":"/accept-resource-grouping-recommendations",
+        "responseCode":200
+      },
+      "input":{"shape":"AcceptResourceGroupingRecommendationsRequest"},
+      "output":{"shape":"AcceptResourceGroupingRecommendationsResponse"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Accepts the resource grouping recommendations suggested by Resilience Hub for your application.</p>"
+    },
     "AddDraftAppVersionResourceMappings":{
       "name":"AddDraftAppVersionResourceMappings",
       "http":{
@@ -26,11 +45,12 @@
         {"shape":"InternalServerException"},
         {"shape":"ResourceNotFoundException"},
         {"shape":"ConflictException"},
+        {"shape":"ServiceQuotaExceededException"},
         {"shape":"ThrottlingException"},
         {"shape":"ValidationException"},
         {"shape":"AccessDeniedException"}
       ],
-      "documentation":"<p>Adds the source of resource-maps to the draft version of an application. During assessment, Resilience Hub will use these resource-maps to resolve the latest physical ID for each resource in the application template. For more information about different types of resources suported by Resilience Hub and how to add them in your application, see <a href=\"https://docs.aws.amazon.com/resilience-hub/latest/userguide/how-app-manage.html\">Step 2: How is your application managed?</a> in the Resilience Hub User Guide.</p>"
+      "documentation":"<p>Adds the source of resource-maps to the draft version of an application. During assessment, Resilience Hub will use these resource-maps to resolve the latest physical ID for each resource in the application template. For more information about different types of resources supported by Resilience Hub and how to add them in your application, see <a href=\"https://docs.aws.amazon.com/resilience-hub/latest/userguide/how-app-manage.html\">Step 2: How is your application managed?</a> in the Resilience Hub User Guide.</p>"
     },
     "BatchUpdateRecommendationStatus":{
       "name":"BatchUpdateRecommendationStatus",
@@ -370,7 +390,7 @@
         {"shape":"ValidationException"},
         {"shape":"AccessDeniedException"}
       ],
-      "documentation":"<p>Describes a resource of the Resilience Hub application.</p> <note> <p>This API accepts only one of the following parameters to descibe the resource:</p> <ul> <li> <p> <code>resourceName</code> </p> </li> <li> <p> <code>logicalResourceId</code> </p> </li> <li> <p> <code>physicalResourceId</code> (Along with <code>physicalResourceId</code>, you can also provide <code>awsAccountId</code>, and <code>awsRegion</code>)</p> </li> </ul> </note>"
+      "documentation":"<p>Describes a resource of the Resilience Hub application.</p> <note> <p>This API accepts only one of the following parameters to describe the resource:</p> <ul> <li> <p> <code>resourceName</code> </p> </li> <li> <p> <code>logicalResourceId</code> </p> </li> <li> <p> <code>physicalResourceId</code> (Along with <code>physicalResourceId</code>, you can also provide <code>awsAccountId</code>, and <code>awsRegion</code>)</p> </li> </ul> </note>"
     },
     "DescribeAppVersionResourcesResolutionStatus":{
       "name":"DescribeAppVersionResourcesResolutionStatus",
@@ -443,6 +463,24 @@
         {"shape":"AccessDeniedException"}
       ],
       "documentation":"<p>Describes a specified resiliency policy for an Resilience Hub application. The returned policy object includes creation time, data location constraints, the Amazon Resource Name (ARN) for the policy, tags, tier, and more.</p>"
+    },
+    "DescribeResourceGroupingRecommendationTask":{
+      "name":"DescribeResourceGroupingRecommendationTask",
+      "http":{
+        "method":"POST",
+        "requestUri":"/describe-resource-grouping-recommendation-task",
+        "responseCode":200
+      },
+      "input":{"shape":"DescribeResourceGroupingRecommendationTaskRequest"},
+      "output":{"shape":"DescribeResourceGroupingRecommendationTaskResponse"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Describes the resource grouping recommendation tasks run by Resilience Hub for your application.</p>"
     },
     "ImportResourcesToDraftAppVersion":{
       "name":"ImportResourcesToDraftAppVersion",
@@ -713,6 +751,24 @@
       ],
       "documentation":"<p>Lists the resiliency policies for the Resilience Hub applications.</p>"
     },
+    "ListResourceGroupingRecommendations":{
+      "name":"ListResourceGroupingRecommendations",
+      "http":{
+        "method":"GET",
+        "requestUri":"/list-resource-grouping-recommendations",
+        "responseCode":200
+      },
+      "input":{"shape":"ListResourceGroupingRecommendationsRequest"},
+      "output":{"shape":"ListResourceGroupingRecommendationsResponse"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Lists the resource grouping recommendations suggested by Resilience Hub for your application.</p>"
+    },
     "ListSopRecommendations":{
       "name":"ListSopRecommendations",
       "http":{
@@ -844,6 +900,24 @@
       ],
       "documentation":"<p>Adds or updates the app template for an Resilience Hub application draft version.</p>"
     },
+    "RejectResourceGroupingRecommendations":{
+      "name":"RejectResourceGroupingRecommendations",
+      "http":{
+        "method":"POST",
+        "requestUri":"/reject-resource-grouping-recommendations",
+        "responseCode":200
+      },
+      "input":{"shape":"RejectResourceGroupingRecommendationsRequest"},
+      "output":{"shape":"RejectResourceGroupingRecommendationsResponse"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Rejects resource grouping recommendations.</p>"
+    },
     "RemoveDraftAppVersionResourceMappings":{
       "name":"RemoveDraftAppVersionResourceMappings",
       "http":{
@@ -901,6 +975,25 @@
         {"shape":"AccessDeniedException"}
       ],
       "documentation":"<p>Creates a new application assessment for an application.</p>"
+    },
+    "StartResourceGroupingRecommendationTask":{
+      "name":"StartResourceGroupingRecommendationTask",
+      "http":{
+        "method":"POST",
+        "requestUri":"/start-resource-grouping-recommendation-task",
+        "responseCode":200
+      },
+      "input":{"shape":"StartResourceGroupingRecommendationTaskRequest"},
+      "output":{"shape":"StartResourceGroupingRecommendationTaskResponse"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ConflictException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Starts grouping recommendation task.</p>"
     },
     "TagResource":{
       "name":"TagResource",
@@ -1036,6 +1129,57 @@
     }
   },
   "shapes":{
+    "AcceptGroupingRecommendationEntries":{
+      "type":"list",
+      "member":{"shape":"AcceptGroupingRecommendationEntry"},
+      "max":30,
+      "min":1
+    },
+    "AcceptGroupingRecommendationEntry":{
+      "type":"structure",
+      "required":["groupingRecommendationId"],
+      "members":{
+        "groupingRecommendationId":{
+          "shape":"String255",
+          "documentation":"<p>Indicates the identifier of the grouping recommendation.</p>"
+        }
+      },
+      "documentation":"<p>Indicates the grouping recommendation you have accepted to include in your application.</p>"
+    },
+    "AcceptResourceGroupingRecommendationsRequest":{
+      "type":"structure",
+      "required":[
+        "appArn",
+        "entries"
+      ],
+      "members":{
+        "appArn":{
+          "shape":"Arn",
+          "documentation":"<p>Amazon Resource Name (ARN) of the Resilience Hub application. The format for this ARN is: arn:<code>partition</code>:resiliencehub:<code>region</code>:<code>account</code>:app/<code>app-id</code>. For more information about ARNs, see <a href=\"https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html\"> Amazon Resource Names (ARNs)</a> in the <i>Amazon Web Services General Reference</i> guide.</p>"
+        },
+        "entries":{
+          "shape":"AcceptGroupingRecommendationEntries",
+          "documentation":"<p>Indicates the list of resource grouping recommendations you want to include in your application.</p>"
+        }
+      }
+    },
+    "AcceptResourceGroupingRecommendationsResponse":{
+      "type":"structure",
+      "required":[
+        "appArn",
+        "failedEntries"
+      ],
+      "members":{
+        "appArn":{
+          "shape":"Arn",
+          "documentation":"<p>Amazon Resource Name (ARN) of the Resilience Hub application. The format for this ARN is: arn:<code>partition</code>:resiliencehub:<code>region</code>:<code>account</code>:app/<code>app-id</code>. For more information about ARNs, see <a href=\"https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html\"> Amazon Resource Names (ARNs)</a> in the <i>Amazon Web Services General Reference</i> guide.</p>"
+        },
+        "failedEntries":{
+          "shape":"FailedGroupingRecommendationEntries",
+          "documentation":"<p>Indicates the list of resource grouping recommendations that could not be included in your application.</p>"
+        }
+      }
+    },
     "AccessDeniedException":{
       "type":"structure",
       "members":{
@@ -1327,6 +1471,10 @@
           "shape":"TimeStamp",
           "documentation":"<p>Starting time for the action.</p>"
         },
+        "summary":{
+          "shape":"AssessmentSummary",
+          "documentation":"<p>Indicates a concise summary that provides an overview of the Resilience Hub assessment.</p>"
+        },
         "tags":{
           "shape":"TagMap",
           "documentation":"<p>Tags assigned to the resource. A tag is a label that you assign to an Amazon Web Services resource. Each tag consists of a key/value pair.</p>"
@@ -1374,7 +1522,7 @@
         },
         "complianceStatus":{
           "shape":"ComplianceStatus",
-          "documentation":"<p>TCurrent status of compliance for the resiliency policy.</p>"
+          "documentation":"<p>Current status of compliance for the resiliency policy.</p>"
         },
         "cost":{
           "shape":"Cost",
@@ -1421,7 +1569,9 @@
         "PolicyBreached",
         "PolicyMet",
         "NotAssessed",
-        "ChangesDetected"
+        "ChangesDetected",
+        "NotApplicable",
+        "MissingPolicy"
       ]
     },
     "AppComponent":{
@@ -1436,11 +1586,11 @@
           "documentation":"<p>Additional configuration parameters for an Resilience Hub application. If you want to implement <code>additionalInfo</code> through the Resilience Hub console rather than using an API call, see <a href=\"https://docs.aws.amazon.com/resilience-hub/latest/userguide/app-config-param.html\">Configure the application configuration parameters</a>.</p> <note> <p>Currently, this parameter accepts a key-value mapping (in a string format) of only one failover region and one associated account.</p> <p>Key: <code>\"failover-regions\"</code> </p> <p>Value: <code>\"[{\"region\":\"&lt;REGION&gt;\", \"accounts\":[{\"id\":\"&lt;ACCOUNT_ID&gt;\"}]}]\"</code> </p> </note>"
         },
         "id":{
-          "shape":"String255",
+          "shape":"EntityName255",
           "documentation":"<p>Identifier of the Application Component.</p>"
         },
         "name":{
-          "shape":"String255",
+          "shape":"EntityName255",
           "documentation":"<p>Name of the Application Component.</p>"
         },
         "type":{
@@ -1654,6 +1804,28 @@
         "System"
       ]
     },
+    "AssessmentRiskRecommendation":{
+      "type":"structure",
+      "members":{
+        "appComponents":{
+          "shape":"AppComponentNameList",
+          "documentation":"<p>Indicates the Application Components (AppComponents) that were assessed as part of the assessnent and are associated with the identified risk and recommendation.</p> <note> <p>This property is available only in the US East (N. Virginia) Region.</p> </note>"
+        },
+        "recommendation":{
+          "shape":"String255",
+          "documentation":"<p>Indicates the recommendation provided by the Resilience Hub to address the identified risks in the application.</p> <note> <p>This property is available only in the US East (N. Virginia) Region.</p> </note>"
+        },
+        "risk":{
+          "shape":"String255",
+          "documentation":"<p>Indicates the description of the potential risk identified in the application as part of the Resilience Hub assessment.</p> <note> <p>This property is available only in the US East (N. Virginia) Region.</p> </note>"
+        }
+      },
+      "documentation":"<p>Indicates a specific risk identified in the Resilience Hub assessment and the corresponding recommendation provided to address that risk.</p> <note> <p>The assessment summary generated by large language models (LLMs) on Amazon Bedrock are only suggestions. The current level of generative AI technology is not perfect and LLMs are not infallible. Bias and incorrect answers, although rare, should be expected. Review each recommendation in the assessment summary before you use the output from an LLM. </p> </note> <note> <p>This property is available only in the US East (N. Virginia) Region.</p> </note>"
+    },
+    "AssessmentRiskRecommendationList":{
+      "type":"list",
+      "member":{"shape":"AssessmentRiskRecommendation"}
+    },
     "AssessmentStatus":{
       "type":"string",
       "enum":[
@@ -1668,6 +1840,20 @@
       "member":{"shape":"AssessmentStatus"},
       "max":10,
       "min":1
+    },
+    "AssessmentSummary":{
+      "type":"structure",
+      "members":{
+        "riskRecommendations":{
+          "shape":"AssessmentRiskRecommendationList",
+          "documentation":"<p>Indicates the top risks and recommendations identified by the Resilience Hub assessment, each representing a specific risk and the corresponding recommendation to address it.</p> <note> <p>This property is available only in the US East (N. Virginia) Region.</p> </note>"
+        },
+        "summary":{
+          "shape":"String500",
+          "documentation":"<p>Indicates a concise summary that provides an overview of the Resilience Hub assessment.</p> <note> <p>This property is available only in the US East (N. Virginia) Region.</p> </note>"
+        }
+      },
+      "documentation":"<p>Indicates the AI-generated summary for the Resilience Hub assessment, providing a concise overview that highlights the top risks and recommendations.</p> <note> <p>This property is available only in the US East (N. Virginia) Region.</p> </note>"
     },
     "AwsRegion":{
       "type":"string",
@@ -1801,7 +1987,7 @@
         },
         "diffType":{
           "shape":"DifferenceType",
-          "documentation":"<p>Difference type between actual and expected recovery point objective (RPO) and recovery time objective (RTO) values. Currently, Resilience Hub supports only <b>NotEqual</b> difference type.</p>"
+          "documentation":"<p>Difference type between actual and expected recovery point objective (RPO) and recovery time objective (RTO) values. Currently, Resilience Hub supports only <code>NotEqual</code> difference type.</p>"
         },
         "driftType":{
           "shape":"DriftType",
@@ -1834,7 +2020,9 @@
       "type":"string",
       "enum":[
         "PolicyBreached",
-        "PolicyMet"
+        "PolicyMet",
+        "NotApplicable",
+        "MissingPolicy"
       ]
     },
     "ComponentCompliancesList":{
@@ -2870,6 +3058,41 @@
         }
       }
     },
+    "DescribeResourceGroupingRecommendationTaskRequest":{
+      "type":"structure",
+      "required":["appArn"],
+      "members":{
+        "appArn":{
+          "shape":"Arn",
+          "documentation":"<p>Amazon Resource Name (ARN) of the Resilience Hub application. The format for this ARN is: arn:<code>partition</code>:resiliencehub:<code>region</code>:<code>account</code>:app/<code>app-id</code>. For more information about ARNs, see <a href=\"https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html\"> Amazon Resource Names (ARNs)</a> in the <i>Amazon Web Services General Reference</i> guide.</p>"
+        },
+        "groupingId":{
+          "shape":"String255",
+          "documentation":"<p>Indicates the identifier of the grouping recommendation task.</p>"
+        }
+      }
+    },
+    "DescribeResourceGroupingRecommendationTaskResponse":{
+      "type":"structure",
+      "required":[
+        "groupingId",
+        "status"
+      ],
+      "members":{
+        "errorMessage":{
+          "shape":"String500",
+          "documentation":"<p>Indicates the error that occurred while generating a grouping recommendation.</p>"
+        },
+        "groupingId":{
+          "shape":"String255",
+          "documentation":"<p>Indicates the identifier of the grouping recommendation task.</p>"
+        },
+        "status":{
+          "shape":"ResourcesGroupingRecGenStatusType",
+          "documentation":"<p>Status of the action.</p>"
+        }
+      }
+    },
     "DifferenceType":{
       "type":"string",
       "enum":[
@@ -3028,6 +3251,10 @@
       "type":"string",
       "pattern":"^[A-Za-z0-9][A-Za-z0-9_\\-]{1,59}$"
     },
+    "EntityName255":{
+      "type":"string",
+      "pattern":"^[A-Za-z0-9][A-Za-z0-9_\\-]{0,254}$"
+    },
     "EntityNameList":{
       "type":"list",
       "member":{"shape":"EntityName"}
@@ -3093,6 +3320,28 @@
         "ComplexityOfImplementation"
       ]
     },
+    "FailedGroupingRecommendationEntries":{
+      "type":"list",
+      "member":{"shape":"FailedGroupingRecommendationEntry"}
+    },
+    "FailedGroupingRecommendationEntry":{
+      "type":"structure",
+      "required":[
+        "errorMessage",
+        "groupingRecommendationId"
+      ],
+      "members":{
+        "errorMessage":{
+          "shape":"ErrorMessage",
+          "documentation":"<p>Indicates the error that occurred while implementing a grouping recommendation.</p>"
+        },
+        "groupingRecommendationId":{
+          "shape":"String255",
+          "documentation":"<p>Indicates the identifier of the grouping recommendation.</p>"
+        }
+      },
+      "documentation":"<p>Indicates the accepted grouping recommendation whose implementation failed.</p>"
+    },
     "FailurePolicy":{
       "type":"structure",
       "required":[
@@ -3110,6 +3359,146 @@
         }
       },
       "documentation":"<p>Defines a failure policy.</p>"
+    },
+    "GroupingAppComponent":{
+      "type":"structure",
+      "required":[
+        "appComponentId",
+        "appComponentName",
+        "appComponentType"
+      ],
+      "members":{
+        "appComponentId":{
+          "shape":"EntityName255",
+          "documentation":"<p>Indicates the identifier of an AppComponent.</p>"
+        },
+        "appComponentName":{
+          "shape":"EntityName255",
+          "documentation":"<p>Indicates the name of an AppComponent.</p>"
+        },
+        "appComponentType":{
+          "shape":"String255",
+          "documentation":"<p>Indicates the type of an AppComponent.</p>"
+        }
+      },
+      "documentation":"<p>Creates a new recommended Application Component (AppComponent).</p>"
+    },
+    "GroupingRecommendation":{
+      "type":"structure",
+      "required":[
+        "confidenceLevel",
+        "creationTime",
+        "groupingAppComponent",
+        "groupingRecommendationId",
+        "recommendationReasons",
+        "resources",
+        "score",
+        "status"
+      ],
+      "members":{
+        "confidenceLevel":{
+          "shape":"GroupingRecommendationConfidenceLevel",
+          "documentation":"<p>Indicates the confidence level of Resilience Hub on the grouping recommendation.</p>"
+        },
+        "creationTime":{
+          "shape":"TimeStamp",
+          "documentation":"<p>Indicates the creation time of the grouping recommendation.</p>"
+        },
+        "groupingAppComponent":{
+          "shape":"GroupingAppComponent",
+          "documentation":"<p>Indicates the name of the recommended Application Component (AppComponent).</p>"
+        },
+        "groupingRecommendationId":{
+          "shape":"String255",
+          "documentation":"<p>Indicates all the reasons available for rejecting a grouping recommendation.</p>"
+        },
+        "recommendationReasons":{
+          "shape":"String255List",
+          "documentation":"<p>Indicates all the reasons available for rejecting a grouping recommendation.</p>"
+        },
+        "rejectionReason":{
+          "shape":"GroupingRecommendationRejectionReason",
+          "documentation":"<p>Indicates the reason you had selected while rejecting a grouping recommendation.</p>"
+        },
+        "resources":{
+          "shape":"GroupingResourceList",
+          "documentation":"<p>Indicates the resources that are grouped in a recommended AppComponent.</p>"
+        },
+        "score":{
+          "shape":"Double",
+          "documentation":"<p>Indicates the confidence level of the grouping recommendation.</p>"
+        },
+        "status":{
+          "shape":"GroupingRecommendationStatusType",
+          "documentation":"<p>Indicates the status of grouping resources into AppComponents.</p>"
+        }
+      },
+      "documentation":"<p>Creates a new grouping recommendation.</p>"
+    },
+    "GroupingRecommendationConfidenceLevel":{
+      "type":"string",
+      "enum":[
+        "High",
+        "Medium"
+      ]
+    },
+    "GroupingRecommendationList":{
+      "type":"list",
+      "member":{"shape":"GroupingRecommendation"}
+    },
+    "GroupingRecommendationRejectionReason":{
+      "type":"string",
+      "enum":[
+        "DistinctBusinessPurpose",
+        "SeparateDataConcern",
+        "DistinctUserGroupHandling",
+        "Other"
+      ]
+    },
+    "GroupingRecommendationStatusType":{
+      "type":"string",
+      "enum":[
+        "Accepted",
+        "Rejected",
+        "PendingDecision"
+      ]
+    },
+    "GroupingResource":{
+      "type":"structure",
+      "required":[
+        "logicalResourceId",
+        "physicalResourceId",
+        "resourceName",
+        "resourceType",
+        "sourceAppComponentIds"
+      ],
+      "members":{
+        "logicalResourceId":{
+          "shape":"LogicalResourceId",
+          "documentation":"<p>Indicates the logical identifier of the resource.</p>"
+        },
+        "physicalResourceId":{
+          "shape":"PhysicalResourceId",
+          "documentation":"<p>Indicates the physical identifier of the resource.</p>"
+        },
+        "resourceName":{
+          "shape":"String255",
+          "documentation":"<p>Indicates the resource name.</p>"
+        },
+        "resourceType":{
+          "shape":"String255",
+          "documentation":"<p>Indicates the resource type.</p>"
+        },
+        "sourceAppComponentIds":{
+          "shape":"String255List",
+          "documentation":"<p>Indicates the identifier of the source AppComponents in which the resources were previously grouped into.</p>"
+        }
+      },
+      "documentation":"<p>Indicates the resource that will be grouped in the recommended Application Component (AppComponent).</p>"
+    },
+    "GroupingResourceList":{
+      "type":"list",
+      "member":{"shape":"GroupingResource"}
     },
     "HaArchitecture":{
       "type":"string",
@@ -3252,11 +3641,11 @@
         },
         "maxResults":{
           "shape":"MaxResults",
-          "documentation":"<p>Indicates the maximum number of applications requested.</p>"
+          "documentation":"<p>Indicates the maximum number of compliance drifts requested.</p>"
         },
         "nextToken":{
           "shape":"NextToken",
-          "documentation":"<p>Indicates the unique token number of the next application to be checked for compliance and regulatory requirements from the list of applications.</p>"
+          "documentation":"<p>Null, or the token from a previous call to get the next set of results.</p>"
         }
       }
     },
@@ -3270,7 +3659,7 @@
         },
         "nextToken":{
           "shape":"NextToken",
-          "documentation":"<p>Token number of the next application to be checked for compliance and regulatory requirements from the list of applications.</p>"
+          "documentation":"<p>Null, or the token from a previous call to get the next set of results.</p>"
         }
       }
     },
@@ -3690,7 +4079,7 @@
         },
         "reverseOrder":{
           "shape":"BooleanOptional",
-          "documentation":"<p>The application list is sorted based on the values of <code>lastAppComplianceEvaluationTime</code> field. By default, application list is sorted in ascending order. To sort the appliation list in descending order, set this field to <code>True</code>.</p>",
+          "documentation":"<p>The application list is sorted based on the values of <code>lastAppComplianceEvaluationTime</code> field. By default, application list is sorted in ascending order. To sort the application list in descending order, set this field to <code>True</code>.</p>",
           "location":"querystring",
           "locationName":"reverseOrder"
         },
@@ -3810,6 +4199,43 @@
         "resiliencyPolicies":{
           "shape":"ResiliencyPolicies",
           "documentation":"<p>The resiliency policies for the Resilience Hub applications.</p>"
+        }
+      }
+    },
+    "ListResourceGroupingRecommendationsRequest":{
+      "type":"structure",
+      "members":{
+        "appArn":{
+          "shape":"Arn",
+          "documentation":"<p>Amazon Resource Name (ARN) of the Resilience Hub application. The format for this ARN is: arn:<code>partition</code>:resiliencehub:<code>region</code>:<code>account</code>:app/<code>app-id</code>. For more information about ARNs, see <a href=\"https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html\"> Amazon Resource Names (ARNs)</a> in the <i>Amazon Web Services General Reference</i> guide.</p>",
+          "location":"querystring",
+          "locationName":"appArn"
+        },
+        "maxResults":{
+          "shape":"MaxResults",
+          "documentation":"<p>Maximum number of grouping recommendations to be displayed per Resilience Hub application.</p>",
+          "location":"querystring",
+          "locationName":"maxResults"
+        },
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>Null, or the token from a previous call to get the next set of results.</p>",
+          "location":"querystring",
+          "locationName":"nextToken"
+        }
+      }
+    },
+    "ListResourceGroupingRecommendationsResponse":{
+      "type":"structure",
+      "required":["groupingRecommendations"],
+      "members":{
+        "groupingRecommendations":{
+          "shape":"GroupingRecommendationList",
+          "documentation":"<p>List of resource grouping recommendations generated by Resilience Hub.</p>"
+        },
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>Null, or the token from a previous call to get the next set of results.</p>"
         }
       }
     },
@@ -4207,7 +4633,8 @@
       "enum":[
         "BreachedUnattainable",
         "BreachedCanMeet",
-        "MetCanImprove"
+        "MetCanImprove",
+        "MissingPolicy"
       ]
     },
     "RecommendationDisruptionCompliance":{
@@ -4374,6 +4801,61 @@
       "member":{"shape":"RecommendationTemplateStatus"},
       "max":4,
       "min":1
+    },
+    "RejectGroupingRecommendationEntries":{
+      "type":"list",
+      "member":{"shape":"RejectGroupingRecommendationEntry"},
+      "max":30,
+      "min":1
+    },
+    "RejectGroupingRecommendationEntry":{
+      "type":"structure",
+      "required":["groupingRecommendationId"],
+      "members":{
+        "groupingRecommendationId":{
+          "shape":"String255",
+          "documentation":"<p>Indicates the identifier of the grouping recommendation.</p>"
+        },
+        "rejectionReason":{
+          "shape":"GroupingRecommendationRejectionReason",
+          "documentation":"<p>Indicates the reason you had selected while rejecting a grouping recommendation.</p>"
+        }
+      },
+      "documentation":"<p>Indicates the rejected grouping recommendation.</p>"
+    },
+    "RejectResourceGroupingRecommendationsRequest":{
+      "type":"structure",
+      "required":[
+        "appArn",
+        "entries"
+      ],
+      "members":{
+        "appArn":{
+          "shape":"Arn",
+          "documentation":"<p>Amazon Resource Name (ARN) of the Resilience Hub application. The format for this ARN is: arn:<code>partition</code>:resiliencehub:<code>region</code>:<code>account</code>:app/<code>app-id</code>. For more information about ARNs, see <a href=\"https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html\"> Amazon Resource Names (ARNs)</a> in the <i>Amazon Web Services General Reference</i> guide.</p>"
+        },
+        "entries":{
+          "shape":"RejectGroupingRecommendationEntries",
+          "documentation":"<p>Indicates the list of resource grouping recommendations you have selected to exclude from your application.</p>"
+        }
+      }
+    },
+    "RejectResourceGroupingRecommendationsResponse":{
+      "type":"structure",
+      "required":[
+        "appArn",
+        "failedEntries"
+      ],
+      "members":{
+        "appArn":{
+          "shape":"Arn",
+          "documentation":"<p>Amazon Resource Name (ARN) of the Resilience Hub application. The format for this ARN is: arn:<code>partition</code>:resiliencehub:<code>region</code>:<code>account</code>:app/<code>app-id</code>. For more information about ARNs, see <a href=\"https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html\"> Amazon Resource Names (ARNs)</a> in the <i>Amazon Web Services General Reference</i> guide.</p>"
+        },
+        "failedEntries":{
+          "shape":"FailedGroupingRecommendationEntries",
+          "documentation":"<p>Indicates the list of resource grouping recommendations that failed to get excluded in your application.</p>"
+        }
+      }
     },
     "RemoveDraftAppVersionResourceMappingsRequest":{
       "type":"structure",
@@ -4625,7 +5107,7 @@
       "members":{
         "hasMoreErrors":{
           "shape":"BooleanOptional",
-          "documentation":"<p> This indicates if there are more errors not listed in the resourceErrors list. </p>"
+          "documentation":"<p> This indicates if there are more errors not listed in the <code>resourceErrors</code> list. </p>"
         },
         "resourceErrors":{
           "shape":"ResourceErrorList",
@@ -4764,6 +5246,15 @@
     "ResourceType":{
       "type":"string",
       "pattern":".*"
+    },
+    "ResourcesGroupingRecGenStatusType":{
+      "type":"string",
+      "enum":[
+        "Pending",
+        "InProgress",
+        "Failed",
+        "Success"
+      ]
     },
     "RetryAfterSeconds":{
       "type":"integer",
@@ -4930,6 +5421,42 @@
         "assessment":{
           "shape":"AppAssessment",
           "documentation":"<p>The assessment created.</p>"
+        }
+      }
+    },
+    "StartResourceGroupingRecommendationTaskRequest":{
+      "type":"structure",
+      "required":["appArn"],
+      "members":{
+        "appArn":{
+          "shape":"Arn",
+          "documentation":"<p>Amazon Resource Name (ARN) of the Resilience Hub application. The format for this ARN is: arn:<code>partition</code>:resiliencehub:<code>region</code>:<code>account</code>:app/<code>app-id</code>. For more information about ARNs, see <a href=\"https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html\"> Amazon Resource Names (ARNs)</a> in the <i>Amazon Web Services General Reference</i> guide.</p>"
+        }
+      }
+    },
+    "StartResourceGroupingRecommendationTaskResponse":{
+      "type":"structure",
+      "required":[
+        "appArn",
+        "groupingId",
+        "status"
+      ],
+      "members":{
+        "appArn":{
+          "shape":"Arn",
+          "documentation":"<p>Amazon Resource Name (ARN) of the Resilience Hub application. The format for this ARN is: arn:<code>partition</code>:resiliencehub:<code>region</code>:<code>account</code>:app/<code>app-id</code>. For more information about ARNs, see <a href=\"https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html\"> Amazon Resource Names (ARNs)</a> in the <i>Amazon Web Services General Reference</i> guide.</p>"
+        },
+        "errorMessage":{
+          "shape":"String500",
+          "documentation":"<p>Indicates the error that occurred while executing a grouping recommendation task.</p>"
+        },
+        "groupingId":{
+          "shape":"String255",
+          "documentation":"<p>Indicates the identifier of the grouping recommendation task.</p>"
+        },
+        "status":{
+          "shape":"ResourcesGroupingRecGenStatusType",
+          "documentation":"<p>Status of the action.</p>"
         }
       }
     },

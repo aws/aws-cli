@@ -5041,6 +5041,10 @@
           "shape":"DoubleOptional",
           "documentation":"<p>The maximum capacity of the DB shard group in Aurora capacity units (ACUs).</p>"
         },
+        "MinACU":{
+          "shape":"DoubleOptional",
+          "documentation":"<p>The minimum capacity of the DB shard group in Aurora capacity units (ACUs).</p>"
+        },
         "PubliclyAccessible":{
           "shape":"BooleanOptional",
           "documentation":"<p>Specifies whether the DB shard group is publicly accessible.</p> <p>When the DB shard group is publicly accessible, its Domain Name System (DNS) endpoint resolves to the private IP address from within the DB shard group's virtual private cloud (VPC). It resolves to the public IP address from outside of the DB shard group's VPC. Access to the DB shard group is ultimately controlled by the security group it uses. That public access is not permitted if the security group assigned to the DB shard group doesn't permit it.</p> <p>When the DB shard group isn't publicly accessible, it is an internal DB shard group with a DNS name that resolves to a private IP address.</p> <p>Default: The default behavior varies depending on whether <code>DBSubnetGroupName</code> is specified.</p> <p>If <code>DBSubnetGroupName</code> isn't specified, and <code>PubliclyAccessible</code> isn't specified, the following applies:</p> <ul> <li> <p>If the default VPC in the target Region doesn’t have an internet gateway attached to it, the DB shard group is private.</p> </li> <li> <p>If the default VPC in the target Region has an internet gateway attached to it, the DB shard group is public.</p> </li> </ul> <p>If <code>DBSubnetGroupName</code> is specified, and <code>PubliclyAccessible</code> isn't specified, the following applies:</p> <ul> <li> <p>If the subnets are part of a VPC that doesn’t have an internet gateway attached to it, the DB shard group is private.</p> </li> <li> <p>If the subnets are part of a VPC that has an internet gateway attached to it, the DB shard group is public.</p> </li> </ul>"
@@ -8107,6 +8111,10 @@
           "shape":"DoubleOptional",
           "documentation":"<p>The maximum capacity of the DB shard group in Aurora capacity units (ACUs).</p>"
         },
+        "MinACU":{
+          "shape":"DoubleOptional",
+          "documentation":"<p>The minimum capacity of the DB shard group in Aurora capacity units (ACUs).</p>"
+        },
         "ComputeRedundancy":{
           "shape":"IntegerOptional",
           "documentation":"<p>Specifies whether to create standby instances for the DB shard group. Valid values are the following:</p> <ul> <li> <p>0 - Creates a single, primary DB instance for each physical shard. This is the default value, and the only one supported for the preview.</p> </li> <li> <p>1 - Creates a primary DB instance and a standby instance in a different Availability Zone (AZ) for each physical shard.</p> </li> <li> <p>2 - Creates a primary DB instance and two standby instances in different AZs for each physical shard.</p> </li> </ul>"
@@ -8705,15 +8713,15 @@
         },
         "SkipFinalSnapshot":{
           "shape":"Boolean",
-          "documentation":"<p>Specifies whether to skip the creation of a final DB cluster snapshot before the DB cluster is deleted. If skip is specified, no DB cluster snapshot is created. If skip isn't specified, a DB cluster snapshot is created before the DB cluster is deleted. By default, skip isn't specified, and the DB cluster snapshot is created. By default, this parameter is disabled.</p> <note> <p>You must specify a <code>FinalDBSnapshotIdentifier</code> parameter if <code>SkipFinalSnapshot</code> is disabled.</p> </note>"
+          "documentation":"<p>Specifies whether to skip the creation of a final DB cluster snapshot before RDS deletes the DB cluster. If you set this value to <code>true</code>, RDS doesn't create a final DB cluster snapshot. If you set this value to <code>false</code> or don't specify it, RDS creates a DB cluster snapshot before it deletes the DB cluster. By default, this parameter is disabled, so RDS creates a final DB cluster snapshot.</p> <note> <p>If <code>SkipFinalSnapshot</code> is disabled, you must specify a value for the <code>FinalDBSnapshotIdentifier</code> parameter.</p> </note>"
         },
         "FinalDBSnapshotIdentifier":{
           "shape":"String",
-          "documentation":"<p>The DB cluster snapshot identifier of the new DB cluster snapshot created when <code>SkipFinalSnapshot</code> is disabled.</p> <note> <p>Specifying this parameter and also skipping the creation of a final DB cluster snapshot with the <code>SkipFinalShapshot</code> parameter results in an error.</p> </note> <p>Constraints:</p> <ul> <li> <p>Must be 1 to 255 letters, numbers, or hyphens.</p> </li> <li> <p>First character must be a letter</p> </li> <li> <p>Can't end with a hyphen or contain two consecutive hyphens</p> </li> </ul>"
+          "documentation":"<p>The DB cluster snapshot identifier of the new DB cluster snapshot created when <code>SkipFinalSnapshot</code> is disabled.</p> <note> <p>If you specify this parameter and also skip the creation of a final DB cluster snapshot with the <code>SkipFinalShapshot</code> parameter, the request results in an error.</p> </note> <p>Constraints:</p> <ul> <li> <p>Must be 1 to 255 letters, numbers, or hyphens.</p> </li> <li> <p>First character must be a letter</p> </li> <li> <p>Can't end with a hyphen or contain two consecutive hyphens</p> </li> </ul>"
         },
         "DeleteAutomatedBackups":{
           "shape":"BooleanOptional",
-          "documentation":"<p>Specifies whether to remove automated backups immediately after the DB cluster is deleted. This parameter isn't case-sensitive. The default is to remove automated backups immediately after the DB cluster is deleted. </p> <note> <p>You must delete automated backups for Amazon RDS Multi-AZ DB clusters. For more information about managing automated backups for RDS Multi-AZ DB clusters, see <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_ManagingAutomatedBackups.html\">Managing automated backups</a>.</p> </note>"
+          "documentation":"<p>Specifies whether to remove automated backups immediately after the DB cluster is deleted. This parameter isn't case-sensitive. The default is to remove automated backups immediately after the DB cluster is deleted.</p>"
         }
       },
       "documentation":"<p/>"
@@ -9182,7 +9190,7 @@
         },
         "Source":{
           "shape":"String",
-          "documentation":"<p>A specific source to return parameters for.</p> <p>Valid Values:</p> <ul> <li> <p> <code>user</code> </p> </li> <li> <p> <code>engine</code> </p> </li> <li> <p> <code>service</code> </p> </li> </ul>"
+          "documentation":"<p>A specific source to return parameters for.</p> <p>Valid Values:</p> <ul> <li> <p> <code>customer</code> </p> </li> <li> <p> <code>engine</code> </p> </li> <li> <p> <code>service</code> </p> </li> </ul>"
         },
         "Filters":{
           "shape":"FilterList",
@@ -12841,6 +12849,10 @@
         "MaxACU":{
           "shape":"DoubleOptional",
           "documentation":"<p>The maximum capacity of the DB shard group in Aurora capacity units (ACUs).</p>"
+        },
+        "MinACU":{
+          "shape":"DoubleOptional",
+          "documentation":"<p>The minimum capacity of the DB shard group in Aurora capacity units (ACUs).</p>"
         }
       }
     },
@@ -13146,18 +13158,18 @@
         },
         "DBSecurityGroupMemberships":{
           "shape":"DBSecurityGroupNameList",
-          "documentation":"<p>A list of DBSecurityGroupMembership name strings used for this option.</p>"
+          "documentation":"<p>A list of DB security groups used for this option.</p>"
         },
         "VpcSecurityGroupMemberships":{
           "shape":"VpcSecurityGroupIdList",
-          "documentation":"<p>A list of VpcSecurityGroupMembership name strings used for this option.</p>"
+          "documentation":"<p>A list of VPC security group names used for this option.</p>"
         },
         "OptionSettings":{
           "shape":"OptionSettingsList",
           "documentation":"<p>The option settings to include in an option group.</p>"
         }
       },
-      "documentation":"<p>A list of all available options</p>"
+      "documentation":"<p>A list of all available options for an option group.</p>"
     },
     "OptionConfigurationList":{
       "type":"list",
@@ -16569,7 +16581,7 @@
           "documentation":"<p>A value is the optional value of the tag. The string value can be from 1 to 256 Unicode characters in length and can't be prefixed with <code>aws:</code> or <code>rds:</code>. The string can only contain only the set of Unicode letters, digits, white-space, '_', '.', ':', '/', '=', '+', '-', '@' (Java regex: \"^([\\\\p{L}\\\\p{Z}\\\\p{N}_.:/=+\\\\-@]*)$\").</p>"
         }
       },
-      "documentation":"<p>Metadata assigned to an Amazon RDS resource consisting of a key-value pair.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_Tagging.html\">Tagging Amazon RDS Resources</a> in the <i>Amazon RDS User Guide</i> or <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/USER_Tagging.html\">Tagging Amazon Aurora and Amazon RDS Resources</a> in the <i>Amazon Aurora User Guide</i>. </p>"
+      "documentation":"<p>Metadata assigned to an Amazon RDS resource consisting of a key-value pair.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_Tagging.html\">Tagging Amazon RDS resources</a> in the <i>Amazon RDS User Guide</i> or <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/USER_Tagging.html\">Tagging Amazon Aurora and Amazon RDS resources</a> in the <i>Amazon Aurora User Guide</i>. </p>"
     },
     "TagList":{
       "type":"list",
@@ -16577,7 +16589,7 @@
         "shape":"Tag",
         "locationName":"Tag"
       },
-      "documentation":"<p>A list of tags. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_Tagging.html\">Tagging Amazon RDS Resources</a> in the <i>Amazon RDS User Guide.</i> </p>"
+      "documentation":"<p>A list of tags.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_Tagging.html\">Tagging Amazon RDS resources</a> in the <i>Amazon RDS User Guide</i> or <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/USER_Tagging.html\">Tagging Amazon Aurora and Amazon RDS resources</a> in the <i>Amazon Aurora User Guide</i>. </p>"
     },
     "TagListMessage":{
       "type":"structure",

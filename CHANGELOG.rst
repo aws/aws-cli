@@ -2,6 +2,39 @@
 CHANGELOG
 =========
 
+2.17.23
+=======
+
+* api-change:``datazone``: This releases Data Product feature. Data Products allow grouping data assets into cohesive, self-contained units for ease of publishing for data producers, and ease of finding and accessing for data consumers.
+* api-change:``kinesis-video-webrtc-storage``: Add JoinStorageSessionAsViewer API
+* api-change:``ecr``: Released two new APIs along with documentation updates. The GetAccountSetting API is used to view the current basic scan type version setting for your registry, while the PutAccountSetting API is used to update the basic scan type version for your registry.
+* api-change:``pi``: Added a description for the Dimension db.sql.tokenized_id on the DimensionGroup data type page.
+
+
+2.17.22
+=======
+
+* api-change:``cloudwatch``: Add v2 smoke tests and smithy smokeTests trait for SDK testing.
+* api-change:``kinesis``: Add v2 smoke tests and smithy smokeTests trait for SDK testing.
+* api-change:``waf-regional``: Add v2 smoke tests and smithy smokeTests trait for SDK testing.
+* api-change:``route53``: Add v2 smoke tests and smithy smokeTests trait for SDK testing.
+* api-change:``resiliencehub``: Customers are presented with the grouping recommendations and can determine if the recommendations are accurate and apply to their case. This feature simplifies onboarding by organizing resources into appropriate AppComponents.
+
+
+2.17.21
+=======
+
+* api-change:``controlcatalog``: AWS Control Tower provides two new public APIs controlcatalog:ListControls and controlcatalog:GetControl under controlcatalog service namespace, which enable customers to programmatically retrieve control metadata of available controls.
+* api-change:``sagemaker``: This release adds support for Amazon EMR Serverless applications in SageMaker Studio for running data processing jobs.
+* api-change:``memorydb``: Doc only update for changes to deletion API.
+* api-change:``controltower``: Updated Control Tower service documentation for controlcatalog control ARN support with existing Control Tower public APIs
+* api-change:``support``: Doc only updates to CaseDetails
+* api-change:``bedrock``: API and Documentation for Bedrock Model Copy feature. This feature lets you share and copy a custom model from one region to another or one account to another.
+* api-change:``iam``: Add v2 smoke tests and smithy smokeTests trait for SDK testing.
+* api-change:``rds``: This release adds support for specifying optional MinACU parameter in CreateDBShardGroup and ModifyDBShardGroup API. DBShardGroup response will contain MinACU if specified.
+* api-change:``ssm-quicksetup``: This release adds API support for the QuickSetup feature of AWS Systems Manager
+
+
 2.17.20
 =======
 

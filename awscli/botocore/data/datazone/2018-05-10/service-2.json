@@ -200,6 +200,49 @@
       ],
       "documentation":"<p>Creates a custom asset type.</p>"
     },
+    "CreateDataProduct":{
+      "name":"CreateDataProduct",
+      "http":{
+        "method":"POST",
+        "requestUri":"/v2/domains/{domainIdentifier}/data-products",
+        "responseCode":201
+      },
+      "input":{"shape":"CreateDataProductInput"},
+      "output":{"shape":"CreateDataProductOutput"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ServiceQuotaExceededException"},
+        {"shape":"ConflictException"},
+        {"shape":"ValidationException"},
+        {"shape":"UnauthorizedException"}
+      ],
+      "documentation":"<p>Creates a data product.</p>",
+      "idempotent":true
+    },
+    "CreateDataProductRevision":{
+      "name":"CreateDataProductRevision",
+      "http":{
+        "method":"POST",
+        "requestUri":"/v2/domains/{domainIdentifier}/data-products/{identifier}/revisions",
+        "responseCode":201
+      },
+      "input":{"shape":"CreateDataProductRevisionInput"},
+      "output":{"shape":"CreateDataProductRevisionOutput"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ConflictException"},
+        {"shape":"ValidationException"},
+        {"shape":"UnauthorizedException"}
+      ],
+      "documentation":"<p>Creates a data product revision.</p>",
+      "idempotent":true
+    },
     "CreateDataSource":{
       "name":"CreateDataSource",
       "http":{
@@ -543,10 +586,11 @@
         {"shape":"ResourceNotFoundException"},
         {"shape":"AccessDeniedException"},
         {"shape":"ThrottlingException"},
+        {"shape":"ConflictException"},
         {"shape":"ValidationException"},
         {"shape":"UnauthorizedException"}
       ],
-      "documentation":"<p>Delets an asset in Amazon DataZone.</p>",
+      "documentation":"<p>Deletes an asset in Amazon DataZone.</p>",
       "idempotent":true
     },
     "DeleteAssetFilter":{
@@ -588,6 +632,27 @@
         {"shape":"UnauthorizedException"}
       ],
       "documentation":"<p>Deletes an asset type in Amazon DataZone.</p>"
+    },
+    "DeleteDataProduct":{
+      "name":"DeleteDataProduct",
+      "http":{
+        "method":"DELETE",
+        "requestUri":"/v2/domains/{domainIdentifier}/data-products/{identifier}",
+        "responseCode":204
+      },
+      "input":{"shape":"DeleteDataProductInput"},
+      "output":{"shape":"DeleteDataProductOutput"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ConflictException"},
+        {"shape":"ValidationException"},
+        {"shape":"UnauthorizedException"}
+      ],
+      "documentation":"<p>Deletes an data product in Amazon DataZone.</p>",
+      "idempotent":true
     },
     "DeleteDataSource":{
       "name":"DeleteDataSource",
@@ -988,6 +1053,25 @@
       ],
       "documentation":"<p>Gets an Amazon DataZone asset type.</p>"
     },
+    "GetDataProduct":{
+      "name":"GetDataProduct",
+      "http":{
+        "method":"GET",
+        "requestUri":"/v2/domains/{domainIdentifier}/data-products/{identifier}",
+        "responseCode":200
+      },
+      "input":{"shape":"GetDataProductInput"},
+      "output":{"shape":"GetDataProductOutput"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ValidationException"},
+        {"shape":"UnauthorizedException"}
+      ],
+      "documentation":"<p>Gets the data product.</p>"
+    },
     "GetDataSource":{
       "name":"GetDataSource",
       "http":{
@@ -1296,7 +1380,7 @@
         {"shape":"ValidationException"},
         {"shape":"UnauthorizedException"}
       ],
-      "documentation":"<p>Gets a listing (a record of an asset at a given time).</p>"
+      "documentation":"<p>Gets a listing (a record of an asset at a given time). If you specify a listing version, only details that are specific to that version are returned.</p>"
     },
     "GetMetadataGenerationRun":{
       "name":"GetMetadataGenerationRun",
@@ -1487,6 +1571,25 @@
         {"shape":"UnauthorizedException"}
       ],
       "documentation":"<p>Lists the revisions for the asset.</p>"
+    },
+    "ListDataProductRevisions":{
+      "name":"ListDataProductRevisions",
+      "http":{
+        "method":"GET",
+        "requestUri":"/v2/domains/{domainIdentifier}/data-products/{identifier}/revisions",
+        "responseCode":200
+      },
+      "input":{"shape":"ListDataProductRevisionsInput"},
+      "output":{"shape":"ListDataProductRevisionsOutput"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ValidationException"},
+        {"shape":"UnauthorizedException"}
+      ],
+      "documentation":"<p>Lists data product revisions.</p>"
     },
     "ListDataSourceRunActivities":{
       "name":"ListDataSourceRunActivities",
@@ -2785,6 +2888,28 @@
       "type":"string",
       "pattern":"^[a-zA-Z0-9_-]{1,36}$"
     },
+    "AssetInDataProductListingItem":{
+      "type":"structure",
+      "members":{
+        "entityId":{
+          "shape":"String",
+          "documentation":"<p>The entity ID of the listing of the asset in a data product.</p>"
+        },
+        "entityRevision":{
+          "shape":"String",
+          "documentation":"<p>The entity revision of the listing of the asset in a data product.</p>"
+        },
+        "entityType":{
+          "shape":"String",
+          "documentation":"<p>The entity type of the listing of the asset in a data product.</p>"
+        }
+      },
+      "documentation":"<p>The listing of the asset in a data product.</p>"
+    },
+    "AssetInDataProductListingItems":{
+      "type":"list",
+      "member":{"shape":"AssetInDataProductListingItem"}
+    },
     "AssetItem":{
       "type":"structure",
       "required":[
@@ -3896,6 +4021,236 @@
         }
       }
     },
+    "CreateDataProductInput":{
+      "type":"structure",
+      "required":[
+        "domainIdentifier",
+        "name",
+        "owningProjectIdentifier"
+      ],
+      "members":{
+        "clientToken":{
+          "shape":"ClientToken",
+          "documentation":"<p>A unique, case-sensitive identifier that is provided to ensure the idempotency of the request.</p>",
+          "idempotencyToken":true
+        },
+        "description":{
+          "shape":"DataProductDescription",
+          "documentation":"<p>The description of the data product.</p>"
+        },
+        "domainIdentifier":{
+          "shape":"DomainId",
+          "documentation":"<p>The ID of the domain where the data product is created.</p>",
+          "location":"uri",
+          "locationName":"domainIdentifier"
+        },
+        "formsInput":{
+          "shape":"FormInputList",
+          "documentation":"<p>The metadata forms of the data product.</p>"
+        },
+        "glossaryTerms":{
+          "shape":"GlossaryTerms",
+          "documentation":"<p>The glossary terms of the data product.</p>"
+        },
+        "items":{
+          "shape":"DataProductItems",
+          "documentation":"<p>The data assets of the data product.</p>"
+        },
+        "name":{
+          "shape":"DataProductName",
+          "documentation":"<p>The name of the data product.</p>"
+        },
+        "owningProjectIdentifier":{
+          "shape":"ProjectId",
+          "documentation":"<p>The ID of the owning project of the data product.</p>"
+        }
+      }
+    },
+    "CreateDataProductOutput":{
+      "type":"structure",
+      "required":[
+        "domainId",
+        "id",
+        "name",
+        "owningProjectId",
+        "revision",
+        "status"
+      ],
+      "members":{
+        "createdAt":{
+          "shape":"CreatedAt",
+          "documentation":"<p>The timestamp at which the data product was created.</p>"
+        },
+        "createdBy":{
+          "shape":"CreatedBy",
+          "documentation":"<p>The user who created the data product.</p>"
+        },
+        "description":{
+          "shape":"DataProductDescription",
+          "documentation":"<p>The description of the data product.</p>"
+        },
+        "domainId":{
+          "shape":"DomainId",
+          "documentation":"<p>The ID of the domain where the data product lives.</p>"
+        },
+        "firstRevisionCreatedAt":{
+          "shape":"CreatedAt",
+          "documentation":"<p>The timestamp at which the first revision of the data product was created.</p>"
+        },
+        "firstRevisionCreatedBy":{
+          "shape":"CreatedBy",
+          "documentation":"<p>The user who created the first revision of the data product.</p>"
+        },
+        "formsOutput":{
+          "shape":"FormOutputList",
+          "documentation":"<p>The metadata forms of the data product.</p>"
+        },
+        "glossaryTerms":{
+          "shape":"GlossaryTerms",
+          "documentation":"<p>The glossary terms of the data product.</p>"
+        },
+        "id":{
+          "shape":"DataProductId",
+          "documentation":"<p>The ID of the data product.</p>"
+        },
+        "items":{
+          "shape":"DataProductItems",
+          "documentation":"<p>The data assets of the data product.</p>"
+        },
+        "name":{
+          "shape":"DataProductName",
+          "documentation":"<p>The name of the data product.</p>"
+        },
+        "owningProjectId":{
+          "shape":"ProjectId",
+          "documentation":"<p>The ID of the owning project of the data product.</p>"
+        },
+        "revision":{
+          "shape":"Revision",
+          "documentation":"<p>The revision of the data product.</p>"
+        },
+        "status":{
+          "shape":"DataProductStatus",
+          "documentation":"<p>The status of the data product.</p>"
+        }
+      }
+    },
+    "CreateDataProductRevisionInput":{
+      "type":"structure",
+      "required":[
+        "domainIdentifier",
+        "identifier",
+        "name"
+      ],
+      "members":{
+        "clientToken":{
+          "shape":"ClientToken",
+          "documentation":"<p>A unique, case-sensitive identifier that is provided to ensure the idempotency of the request.</p>",
+          "idempotencyToken":true
+        },
+        "description":{
+          "shape":"DataProductDescription",
+          "documentation":"<p>The description of the data product revision.</p>"
+        },
+        "domainIdentifier":{
+          "shape":"DomainId",
+          "documentation":"<p>The ID of the domain where the data product revision is created.</p>",
+          "location":"uri",
+          "locationName":"domainIdentifier"
+        },
+        "formsInput":{
+          "shape":"FormInputList",
+          "documentation":"<p>The metadata forms of the data product revision.</p>"
+        },
+        "glossaryTerms":{
+          "shape":"GlossaryTerms",
+          "documentation":"<p>The glossary terms of the data product revision.</p>"
+        },
+        "identifier":{
+          "shape":"DataProductId",
+          "documentation":"<p>The ID of the data product revision.</p>",
+          "location":"uri",
+          "locationName":"identifier"
+        },
+        "items":{
+          "shape":"DataProductItems",
+          "documentation":"<p>The data assets of the data product revision.</p>"
+        },
+        "name":{
+          "shape":"DataProductName",
+          "documentation":"<p>The name of the data product revision.</p>"
+        }
+      }
+    },
+    "CreateDataProductRevisionOutput":{
+      "type":"structure",
+      "required":[
+        "domainId",
+        "id",
+        "name",
+        "owningProjectId",
+        "revision",
+        "status"
+      ],
+      "members":{
+        "createdAt":{
+          "shape":"CreatedAt",
+          "documentation":"<p>The timestamp at which the data product revision is created.</p>"
+        },
+        "createdBy":{
+          "shape":"CreatedBy",
+          "documentation":"<p>The user who created the data product revision.</p>"
+        },
+        "description":{
+          "shape":"DataProductDescription",
+          "documentation":"<p>The description of the data product revision.</p>"
+        },
+        "domainId":{
+          "shape":"DomainId",
+          "documentation":"<p>The ID of the domain where data product revision is created.</p>"
+        },
+        "firstRevisionCreatedAt":{
+          "shape":"CreatedAt",
+          "documentation":"<p>The timestamp at which the first revision of the data product is created.</p>"
+        },
+        "firstRevisionCreatedBy":{
+          "shape":"CreatedBy",
+          "documentation":"<p>The user who created the first revision of the data product.</p>"
+        },
+        "formsOutput":{
+          "shape":"FormOutputList",
+          "documentation":"<p>The metadata forms of the data product revision.</p>"
+        },
+        "glossaryTerms":{
+          "shape":"GlossaryTerms",
+          "documentation":"<p>The glossary terms of the data product revision.</p>"
+        },
+        "id":{
+          "shape":"DataProductId",
+          "documentation":"<p>The ID of the data product revision.</p>"
+        },
+        "items":{
+          "shape":"DataProductItems",
+          "documentation":"<p>The data assets of the data product revision.</p>"
+        },
+        "name":{
+          "shape":"DataProductName",
+          "documentation":"<p>The name of the data product revision.</p>"
+        },
+        "owningProjectId":{
+          "shape":"ProjectId",
+          "documentation":"<p>The ID of the owning project of the data product revision.</p>"
+        },
+        "revision":{
+          "shape":"Revision",
+          "documentation":"<p>The revision of the data product revision.</p>"
+        },
+        "status":{
+          "shape":"DataProductStatus",
+          "documentation":"<p>The status of the data product revision.</p>"
+        }
+      }
+    },
     "CreateDataSourceInput":{
       "type":"structure",
       "required":[
@@ -5000,7 +5355,9 @@
         },
         "subscriptionId":{
           "shape":"SubscriptionId",
-          "documentation":"<p>The identifier of the subscription grant.</p>"
+          "documentation":"<p>The identifier of the subscription grant.</p>",
+          "deprecated":true,
+          "deprecatedMessage":"Multiple subscriptions can exist for a single grant"
         },
         "subscriptionTargetId":{
           "shape":"SubscriptionTargetId",
@@ -5383,6 +5740,249 @@
       "type":"string",
       "pattern":"^[a-zA-Z0-9_-]{0,36}$"
     },
+    "DataProductDescription":{
+      "type":"string",
+      "max":4096,
+      "min":1,
+      "sensitive":true
+    },
+    "DataProductId":{
+      "type":"string",
+      "pattern":"^[a-zA-Z0-9_-]{1,36}$"
+    },
+    "DataProductItem":{
+      "type":"structure",
+      "required":[
+        "identifier",
+        "itemType"
+      ],
+      "members":{
+        "glossaryTerms":{
+          "shape":"ItemGlossaryTerms",
+          "documentation":"<p>The glossary terms of the data product.</p>"
+        },
+        "identifier":{
+          "shape":"EntityIdentifier",
+          "documentation":"<p>The ID of the data product.</p>"
+        },
+        "itemType":{
+          "shape":"DataProductItemType",
+          "documentation":"<p>The type of the data product.</p>"
+        },
+        "revision":{
+          "shape":"Revision",
+          "documentation":"<p>The revision of the data product.</p>"
+        }
+      },
+      "documentation":"<p>The data product.</p>"
+    },
+    "DataProductItemType":{
+      "type":"string",
+      "enum":["ASSET"]
+    },
+    "DataProductItems":{
+      "type":"list",
+      "member":{"shape":"DataProductItem"},
+      "min":1
+    },
+    "DataProductListing":{
+      "type":"structure",
+      "members":{
+        "createdAt":{
+          "shape":"CreatedAt",
+          "documentation":"<p>The timestamp at which the data product listing was created.</p>"
+        },
+        "dataProductId":{
+          "shape":"DataProductId",
+          "documentation":"<p>The ID of the data product listing.</p>"
+        },
+        "dataProductRevision":{
+          "shape":"Revision",
+          "documentation":"<p>The revision of the data product listing.</p>"
+        },
+        "forms":{
+          "shape":"Forms",
+          "documentation":"<p>The metadata forms of the data product listing.</p>"
+        },
+        "glossaryTerms":{
+          "shape":"DetailedGlossaryTerms",
+          "documentation":"<p>The glossary terms of the data product listing.</p>"
+        },
+        "items":{
+          "shape":"ListingSummaries",
+          "documentation":"<p>The data assets of the data product listing.</p>"
+        },
+        "owningProjectId":{
+          "shape":"ProjectId",
+          "documentation":"<p>The ID of the owning project of the data product listing.</p>"
+        }
+      },
+      "documentation":"<p>The data product listing.</p>"
+    },
+    "DataProductListingItem":{
+      "type":"structure",
+      "members":{
+        "additionalAttributes":{
+          "shape":"DataProductListingItemAdditionalAttributes",
+          "documentation":"<p>The additional attributes of the asset of the data product.</p>"
+        },
+        "createdAt":{
+          "shape":"CreatedAt",
+          "documentation":"<p>The timestamp at which the asset of the data product listing was created. </p>"
+        },
+        "description":{
+          "shape":"Description",
+          "documentation":"<p>The description of the asset of the asset of the data product. </p>"
+        },
+        "entityId":{
+          "shape":"DataProductId",
+          "documentation":"<p>The entity ID of the asset of the asset of the data product. </p>"
+        },
+        "entityRevision":{
+          "shape":"Revision",
+          "documentation":"<p>The revision of the asset of the asset of the data product. </p>"
+        },
+        "glossaryTerms":{
+          "shape":"DetailedGlossaryTerms",
+          "documentation":"<p>The glossary terms of the asset of the asset of the data product. </p>"
+        },
+        "items":{
+          "shape":"ListingSummaryItems",
+          "documentation":"<p>The data of the asset of the data product. </p>"
+        },
+        "listingCreatedBy":{
+          "shape":"CreatedBy",
+          "documentation":"<p>The timestamp at which the listing was created.</p>"
+        },
+        "listingId":{
+          "shape":"ListingId",
+          "documentation":"<p>The ID of the listing.</p>"
+        },
+        "listingRevision":{
+          "shape":"Revision",
+          "documentation":"<p>The revision of the listing.</p>"
+        },
+        "listingUpdatedBy":{
+          "shape":"UpdatedBy",
+          "documentation":"<p>The user who updated the listing.</p>"
+        },
+        "name":{
+          "shape":"DataProductName",
+          "documentation":"<p>The name of the asset of the data product. </p>"
+        },
+        "owningProjectId":{
+          "shape":"ProjectId",
+          "documentation":"<p>The ID of the owning project of the asset of the data product. </p>"
+        }
+      },
+      "documentation":"<p>The asset of the data product listing.</p>"
+    },
+    "DataProductListingItemAdditionalAttributes":{
+      "type":"structure",
+      "members":{
+        "forms":{
+          "shape":"Forms",
+          "documentation":"<p>The metadata forms of the asset of the data product. </p>"
+        }
+      },
+      "documentation":"<p>The additional attributes of the asset of the data product. </p>"
+    },
+    "DataProductName":{
+      "type":"string",
+      "max":64,
+      "min":1,
+      "sensitive":true
+    },
+    "DataProductResultItem":{
+      "type":"structure",
+      "required":[
+        "domainId",
+        "id",
+        "name",
+        "owningProjectId"
+      ],
+      "members":{
+        "createdAt":{
+          "shape":"CreatedAt",
+          "documentation":"<p>The timestamp at which the data product was created.</p>"
+        },
+        "createdBy":{
+          "shape":"CreatedBy",
+          "documentation":"<p>The user who created the data product.</p>"
+        },
+        "description":{
+          "shape":"DataProductDescription",
+          "documentation":"<p>The description of the data product.</p>"
+        },
+        "domainId":{
+          "shape":"DomainId",
+          "documentation":"<p>The ID of the domain where the data product lives.</p>"
+        },
+        "firstRevisionCreatedAt":{
+          "shape":"CreatedAt",
+          "documentation":"<p>The timestamp at which first revision of the data product was created.</p>"
+        },
+        "firstRevisionCreatedBy":{
+          "shape":"CreatedBy",
+          "documentation":"<p>The user who created the first revision of the data product.</p>"
+        },
+        "glossaryTerms":{
+          "shape":"GlossaryTerms",
+          "documentation":"<p>The glossary terms of the data product.</p>"
+        },
+        "id":{
+          "shape":"DataProductId",
+          "documentation":"<p>The ID of the data product.</p>"
+        },
+        "name":{
+          "shape":"DataProductName",
+          "documentation":"<p>The name of the data product.</p>"
+        },
+        "owningProjectId":{
+          "shape":"ProjectId",
+          "documentation":"<p>The ID of the owning project of the data product.</p>"
+        }
+      },
+      "documentation":"<p>The data product.</p>"
+    },
+    "DataProductRevision":{
+      "type":"structure",
+      "members":{
+        "createdAt":{
+          "shape":"CreatedAt",
+          "documentation":"<p>The timestamp at which the data product revision was created.</p>"
+        },
+        "createdBy":{
+          "shape":"CreatedBy",
+          "documentation":"<p>The user who created the data product revision.</p>"
+        },
+        "domainId":{
+          "shape":"DomainId",
+          "documentation":"<p>The ID of the domain where the data product revision lives.</p>"
+        },
+        "id":{
+          "shape":"DataProductId",
+          "documentation":"<p>The ID of the data product revision.</p>"
+        },
+        "revision":{
+          "shape":"Revision",
+          "documentation":"<p>The data product revision.</p>"
+        }
+      },
+      "documentation":"<p>The data product revision.</p>"
+    },
+    "DataProductRevisions":{
+      "type":"list",
+      "member":{"shape":"DataProductRevision"}
+    },
+    "DataProductStatus":{
+      "type":"string",
+      "enum":[
+        "CREATED",
+        "CREATING",
+        "CREATE_FAILED"
+      ]
+    },
     "DataSourceConfigurationInput":{
       "type":"structure",
       "members":{
@@ -5750,6 +6350,32 @@
       }
     },
     "DeleteAssetTypeOutput":{
+      "type":"structure",
+      "members":{
+      }
+    },
+    "DeleteDataProductInput":{
+      "type":"structure",
+      "required":[
+        "domainIdentifier",
+        "identifier"
+      ],
+      "members":{
+        "domainIdentifier":{
+          "shape":"DomainId",
+          "documentation":"<p>The ID of the Amazon DataZone domain in which the data product is deleted.</p>",
+          "location":"uri",
+          "locationName":"domainIdentifier"
+        },
+        "identifier":{
+          "shape":"DataProductId",
+          "documentation":"<p>The identifier of the data product that is deleted.</p>",
+          "location":"uri",
+          "locationName":"identifier"
+        }
+      }
+    },
+    "DeleteDataProductOutput":{
       "type":"structure",
       "members":{
       }
@@ -6246,7 +6872,9 @@
         },
         "subscriptionId":{
           "shape":"SubscriptionId",
-          "documentation":"<p>The identifier of the subsctiption whose subscription grant is to be deleted.</p>"
+          "documentation":"<p>The identifier of the subsctiption whose subscription grant is to be deleted.</p>",
+          "deprecated":true,
+          "deprecatedMessage":"Multiple subscriptions can exist for a single grant"
         },
         "subscriptionTargetId":{
           "shape":"SubscriptionTargetId",
@@ -6605,7 +7233,10 @@
     },
     "EntityType":{
       "type":"string",
-      "enum":["ASSET"]
+      "enum":[
+        "ASSET",
+        "DATA_PRODUCT"
+      ]
     },
     "EnvironmentActionId":{
       "type":"string",
@@ -7597,6 +8228,102 @@
         "updatedBy":{
           "shape":"UpdatedBy",
           "documentation":"<p>The Amazon DataZone user that updated the asset type.</p>"
+        }
+      }
+    },
+    "GetDataProductInput":{
+      "type":"structure",
+      "required":[
+        "domainIdentifier",
+        "identifier"
+      ],
+      "members":{
+        "domainIdentifier":{
+          "shape":"DomainId",
+          "documentation":"<p>The ID of the domain where the data product lives.</p>",
+          "location":"uri",
+          "locationName":"domainIdentifier"
+        },
+        "identifier":{
+          "shape":"DataProductId",
+          "documentation":"<p>The ID of the data product.</p>",
+          "location":"uri",
+          "locationName":"identifier"
+        },
+        "revision":{
+          "shape":"Revision",
+          "documentation":"<p>The revision of the data product.</p>",
+          "location":"querystring",
+          "locationName":"revision"
+        }
+      }
+    },
+    "GetDataProductOutput":{
+      "type":"structure",
+      "required":[
+        "domainId",
+        "id",
+        "name",
+        "owningProjectId",
+        "revision",
+        "status"
+      ],
+      "members":{
+        "createdAt":{
+          "shape":"CreatedAt",
+          "documentation":"<p>The timestamp at which the data product is created.</p>"
+        },
+        "createdBy":{
+          "shape":"CreatedBy",
+          "documentation":"<p>The user who created the data product.</p>"
+        },
+        "description":{
+          "shape":"DataProductDescription",
+          "documentation":"<p>The description of the data product.</p>"
+        },
+        "domainId":{
+          "shape":"DomainId",
+          "documentation":"<p>The ID of the domain where the data product lives.</p>"
+        },
+        "firstRevisionCreatedAt":{
+          "shape":"CreatedAt",
+          "documentation":"<p>The timestamp at which the first revision of the data product is created.</p>"
+        },
+        "firstRevisionCreatedBy":{
+          "shape":"CreatedBy",
+          "documentation":"<p>The user who created the first revision of the data product.</p>"
+        },
+        "formsOutput":{
+          "shape":"FormOutputList",
+          "documentation":"<p>The metadata forms of the data product.</p>"
+        },
+        "glossaryTerms":{
+          "shape":"GlossaryTerms",
+          "documentation":"<p>The glossary terms of the data product.</p>"
+        },
+        "id":{
+          "shape":"DataProductId",
+          "documentation":"<p>The ID of the data product.</p>"
+        },
+        "items":{
+          "shape":"DataProductItems",
+          "documentation":"<p>The data assets of the data product.</p>"
+        },
+        "name":{
+          "shape":"DataProductName",
+          "documentation":"<p>The name of the data product.</p>"
+        },
+        "owningProjectId":{
+          "shape":"ProjectId",
+          "documentation":"<p>The ID of the owning project of the data product.</p>"
+        },
+        "revision":{
+          "shape":"Revision",
+          "documentation":"<p>The revision of the data product.</p>"
+        },
+        "status":{
+          "shape":"DataProductStatus",
+          "documentation":"<p>The status of the data product.</p>"
         }
       }
     },
@@ -9007,7 +9734,9 @@
         },
         "subscriptionId":{
           "shape":"SubscriptionId",
-          "documentation":"<p>The identifier of the subscription.</p>"
+          "documentation":"<p>The identifier of the subscription.</p>",
+          "deprecated":true,
+          "deprecatedMessage":"Multiple subscriptions can exist for a single grant"
         },
         "subscriptionTargetId":{
           "shape":"SubscriptionTargetId",
@@ -9864,7 +10593,8 @@
       "enum":[
         "ASSET",
         "GLOSSARY",
-        "GLOSSARY_TERM"
+        "GLOSSARY_TERM",
+        "DATA_PRODUCT"
       ]
     },
     "IsNotNullExpression":{
@@ -9888,6 +10618,12 @@
         }
       },
       "documentation":"<p>Specifies that the expression is null.</p>"
+    },
+    "ItemGlossaryTerms":{
+      "type":"list",
+      "member":{"shape":"GlossaryTermId"},
+      "max":2,
+      "min":1
     },
     "KmsKeyArn":{
       "type":"string",
@@ -10208,6 +10944,53 @@
         "nextToken":{
           "shape":"PaginationToken",
           "documentation":"<p>When the number of revisions is greater than the default value for the <code>MaxResults</code> parameter, or if you explicitly specify a value for <code>MaxResults</code> that is less than the number of revisions, the response includes a pagination token named <code>NextToken</code>. You can specify this <code>NextToken</code> value in a subsequent call to <code>ListAssetRevisions</code> to list the next set of revisions.</p>"
+        }
+      }
+    },
+    "ListDataProductRevisionsInput":{
+      "type":"structure",
+      "required":[
+        "domainIdentifier",
+        "identifier"
+      ],
+      "members":{
+        "domainIdentifier":{
+          "shape":"DomainId",
+          "documentation":"<p>The ID of the domain of the data product revisions that you want to list.</p>",
+          "location":"uri",
+          "locationName":"domainIdentifier"
+        },
+        "identifier":{
+          "shape":"DataProductId",
+          "documentation":"<p>The ID of the data product revision.</p>",
+          "location":"uri",
+          "locationName":"identifier"
+        },
+        "maxResults":{
+          "shape":"MaxResults",
+          "documentation":"<p>The maximum number of asset filters to return in a single call to <code>ListDataProductRevisions</code>. When the number of data product revisions to be listed is greater than the value of <code>MaxResults</code>, the response contains a <code>NextToken</code> value that you can use in a subsequent call to <code>ListDataProductRevisions</code> to list the next set of data product revisions.</p>",
+          "location":"querystring",
+          "locationName":"maxResults"
+        },
+        "nextToken":{
+          "shape":"PaginationToken",
+          "documentation":"<p>When the number of data product revisions is greater than the default value for the <code>MaxResults</code> parameter, or if you explicitly specify a value for <code>MaxResults</code> that is less than the number of data product revisions, the response includes a pagination token named <code>NextToken</code>. You can specify this <code>NextToken</code> value in a subsequent call to <code>ListDataProductRevisions</code> to list the next set of data product revisions.</p>",
+          "location":"querystring",
+          "locationName":"nextToken"
+        }
+      }
+    },
+    "ListDataProductRevisionsOutput":{
+      "type":"structure",
+      "required":["items"],
+      "members":{
+        "items":{
+          "shape":"DataProductRevisions",
+          "documentation":"<p>The results of the <code>ListDataProductRevisions</code> action.</p>"
+        },
+        "nextToken":{
+          "shape":"PaginationToken",
+          "documentation":"<p>When the number of data product revisions is greater than the default value for the <code>MaxResults</code> parameter, or if you explicitly specify a value for <code>MaxResults</code> that is less than the number of data product revisions, the response includes a pagination token named <code>NextToken</code>. You can specify this <code>NextToken</code> value in a subsequent call to <code>ListDataProductRevisions</code> to list the next set of data product revisions.</p>"
         }
       }
     },
@@ -11050,6 +11833,12 @@
           "location":"querystring",
           "locationName":"nextToken"
         },
+        "owningProjectId":{
+          "shape":"ProjectId",
+          "documentation":"<p>The ID of the owning project of the subscription grants.</p>",
+          "location":"querystring",
+          "locationName":"owningProjectId"
+        },
         "sortBy":{
           "shape":"SortKey",
           "documentation":"<p>Specifies the way of sorting the results of this action.</p>",
@@ -11144,7 +11933,7 @@
         },
         "status":{
           "shape":"SubscriptionRequestStatus",
-          "documentation":"<p>Specifies the status of the subscription requests.</p>",
+          "documentation":"<p>Specifies the status of the subscription requests.</p> <note> <p>This is not a required parameter, but if not specified, by default, Amazon DataZone returns only <code>PENDING</code> subscription requests. </p> </note>",
           "location":"querystring",
           "locationName":"status"
         },
@@ -11277,7 +12066,7 @@
         },
         "status":{
           "shape":"SubscriptionStatus",
-          "documentation":"<p>The status of the subscriptions that you want to list.</p>",
+          "documentation":"<p>The status of the subscriptions that you want to list.</p> <note> <p>This is not a required parameter, but if not provided, by default, Amazon DataZone returns only <code>APPROVED</code> subscriptions. </p> </note>",
           "location":"querystring",
           "locationName":"status"
         },
@@ -11412,6 +12201,10 @@
         "assetListing":{
           "shape":"AssetListing",
           "documentation":"<p>An asset published in an Amazon DataZone catalog.</p>"
+        },
+        "dataProductListing":{
+          "shape":"DataProductListing",
+          "documentation":"<p>The data product listing.</p>"
         }
       },
       "documentation":"<p>The details of a listing (aka asset published in a Amazon DataZone catalog).</p>",
@@ -11465,6 +12258,50 @@
         "ACTIVE",
         "INACTIVE"
       ]
+    },
+    "ListingSummaries":{
+      "type":"list",
+      "member":{"shape":"ListingSummary"}
+    },
+    "ListingSummary":{
+      "type":"structure",
+      "members":{
+        "glossaryTerms":{
+          "shape":"DetailedGlossaryTerms",
+          "documentation":"<p>The glossary terms of the data product.</p>"
+        },
+        "listingId":{
+          "shape":"ListingId",
+          "documentation":"<p>The ID of the data product listing.</p>"
+        },
+        "listingRevision":{
+          "shape":"Revision",
+          "documentation":"<p>The revision of the data product listing.</p>"
+        }
+      },
+      "documentation":"<p>The summary of the listing of the data product.</p>"
+    },
+    "ListingSummaryItem":{
+      "type":"structure",
+      "members":{
+        "glossaryTerms":{
+          "shape":"DetailedGlossaryTerms",
+          "documentation":"<p>The glossary terms of the data product listing.</p>"
+        },
+        "listingId":{
+          "shape":"ListingId",
+          "documentation":"<p>The ID of the data product listing.</p>"
+        },
+        "listingRevision":{
+          "shape":"Revision",
+          "documentation":"<p>The revision of the data product listing.</p>"
+        }
+      },
+      "documentation":"<p>The results of the data product summary.</p>"
+    },
+    "ListingSummaryItems":{
+      "type":"list",
+      "member":{"shape":"ListingSummaryItem"}
     },
     "LongDescription":{
       "type":"string",
@@ -12946,6 +13783,10 @@
           "shape":"AssetItem",
           "documentation":"<p>The asset item included in the search results.</p>"
         },
+        "dataProductItem":{
+          "shape":"DataProductResultItem",
+          "documentation":"<p>The data product.</p>"
+        },
         "glossaryItem":{
           "shape":"GlossaryItem",
           "documentation":"<p>The glossary item included in the search results.</p>"
@@ -13053,6 +13894,10 @@
         "assetListing":{
           "shape":"AssetListingItem",
           "documentation":"<p>The asset listing included in the results of the <code>SearchListings</code> action.</p>"
+        },
+        "dataProductListing":{
+          "shape":"DataProductListingItem",
+          "documentation":"<p>The data product listing.</p>"
         }
       },
       "documentation":"<p>The details of the results of the <code>SearchListings</code> action.</p>",
@@ -13657,6 +14502,10 @@
         "assetListing":{
           "shape":"SubscribedAssetListing",
           "documentation":"<p>The asset for which the subscription grant is created.</p>"
+        },
+        "productListing":{
+          "shape":"SubscribedProductListing",
+          "documentation":"<p>The data product listing.</p>"
         }
       },
       "documentation":"<p>The published asset for which the subscription grant is created.</p>",
@@ -13689,6 +14538,36 @@
       "member":{"shape":"SubscribedPrincipalInput"},
       "max":1,
       "min":1
+    },
+    "SubscribedProductListing":{
+      "type":"structure",
+      "members":{
+        "assetListings":{
+          "shape":"AssetInDataProductListingItems",
+          "documentation":"<p>The data assets of the data product listing.</p>"
+        },
+        "description":{
+          "shape":"String",
+          "documentation":"<p>The description of the data product listing.</p>"
+        },
+        "entityId":{
+          "shape":"AssetId",
+          "documentation":"<p>The ID of the data product listing.</p>"
+        },
+        "entityRevision":{
+          "shape":"Revision",
+          "documentation":"<p>The revision of the data product listing.</p>"
+        },
+        "glossaryTerms":{
+          "shape":"DetailedGlossaryTerms",
+          "documentation":"<p>The glossary terms of the data product listing.</p>"
+        },
+        "name":{
+          "shape":"String",
+          "documentation":"<p>The name of the data product listing.</p>"
+        }
+      },
+      "documentation":"<p>The data product listing.</p>"
     },
     "SubscribedProject":{
       "type":"structure",
@@ -13786,7 +14665,9 @@
         },
         "subscriptionId":{
           "shape":"SubscriptionId",
-          "documentation":"<p>The ID of the subscription grant.</p>"
+          "documentation":"<p>The ID of the subscription.</p>",
+          "deprecated":true,
+          "deprecatedMessage":"Multiple subscriptions can exist for a single grant"
         },
         "subscriptionTargetId":{
           "shape":"SubscriptionTargetId",
@@ -15487,7 +16368,9 @@
         },
         "subscriptionId":{
           "shape":"SubscriptionId",
-          "documentation":"<p>The identifier of the subscription.</p>"
+          "documentation":"<p>The identifier of the subscription.</p>",
+          "deprecated":true,
+          "deprecatedMessage":"Multiple subscriptions can exist for a single grant"
         },
         "subscriptionTargetId":{
           "shape":"SubscriptionTargetId",

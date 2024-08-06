@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 import argparse
 import re
-import time
 from pathlib import Path
 from subprocess import run
 
@@ -11,18 +10,18 @@ DOCKERFILE_PATH = ROOT / "scripts" / "regenerate-configure" / "Dockerfile"
 IMAGE_RE = re.compile(r"sha256:(?P<image>.*?)\s")
 
 
-def main(cleanup):
-    image = _build_image()
+def main(cleanup, dockerfile_path):
+    image = _build_image(dockerfile_path)
     container_id = _start_image(image)
     _extract_configure_file(container_id)
     if cleanup:
         _cleanup_image_and_container(image, container_id)
 
 
-def _build_image():
-    print(f"Building docker image from: {DOCKERFILE_PATH}")
+def _build_image(dockerfile_path):
+    print(f"Building docker image from: {dockerfile_path}")
     result = _docker(
-        ["build", "-f", str(DOCKERFILE_PATH), ".", "--quiet"],
+        ["build", "-f", dockerfile_path, ".", "--quiet"],
         cwd=ROOT,
     )
     _assert_success(result)
@@ -74,10 +73,18 @@ def _assert_success(result):
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument(
+        "--dockerfile-path",
+        default=str(DOCKERFILE_PATH),
+        help="Path to Dockerfile to build.",
+    )
+    parser.add_argument(
         "--no-cleanup",
         action="store_true",
         default=False,
         help="Do not clean up docker image and container. Useful for debugging.",
     )
     args = parser.parse_args()
-    main(not args.no_cleanup)
+    main(
+        not args.no_cleanup,
+        args.dockerfile_path
+    )

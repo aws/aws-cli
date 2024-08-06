@@ -2,6 +2,15 @@
 CHANGELOG
 =========
 
+1.33.37
+=======
+
+* api-change:``bedrock-agent-runtime``: Introduce model invocation output traces for orchestration traces, which contain the model's raw response and usage.
+* api-change:``cognito-idp``: Advanced security feature updates to include password history and log export for Cognito user pools.
+* api-change:``cost-optimization-hub``: This release adds savings percentage support to the ListRecommendationSummaries API.
+* api-change:``workspaces``: Added support for BYOL_GRAPHICS_G4DN_WSP IngestionProcess
+
+
 1.33.36
 =======
 

@@ -513,6 +513,7 @@ class TestCRTTransferManager(unittest.TestCase):
             {
                 'request': mock.ANY,
                 'type': awscrt.s3.S3RequestType.DEFAULT,
+                'operation_name': "DeleteObject",
                 'on_progress': mock.ANY,
                 'on_done': mock.ANY,
             },

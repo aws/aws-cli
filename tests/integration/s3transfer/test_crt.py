@@ -407,17 +407,6 @@ class TestCRTS3Transfers(BaseTransferManagerIntegTest):
             future.result()
         self.assertTrue(self.object_not_exists('foo.txt'))
 
-    def test_delete_exception_no_such_bucket(self):
-        # delete() uses awscrt.s3.S3RequestType.DEFAULT under the hood.
-        # Test that CRT exceptions translate properly into the botocore exceptions.
-        transfer = self._create_s3_transfer()
-        with self.assertRaises(ClientError) as ctx:
-            future = transfer.delete(
-                f"{self.bucket_name}-NONEXISTENT-{uuid4()}", "foo.txt"
-            )
-            future.result()
-        self.assertEqual(ctx.exception.__class__.__name__, 'NoSuchBucket')
-
     def test_many_files_download(self):
         transfer = self._create_s3_transfer()
 

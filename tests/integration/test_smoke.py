@@ -53,7 +53,6 @@ def test_can_make_success_request(cmd):
 
 @pytest.mark.parametrize('cmd', ERROR_COMMANDS)
 def test_display_error_message(cmd):
-    identifier = 'foo-awscli-test-%s' % random.randint(1000, 100000)
     result = _aws(cmd, target_rc=254)
     assert result.rc == 254
     error_message = re.compile(

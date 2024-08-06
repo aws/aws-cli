@@ -99,7 +99,7 @@
         {"shape":"AccessDeniedException"},
         {"shape":"ServiceQuotaExceededException"}
       ],
-      "documentation":"<p>Invokes an alias of a flow to run the inputs that you specify and return the output of each node as a stream. If there's an error, the error is returned. For more information, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/flows-test.html\">Test a flow in Amazon Bedrock</a> in the Amazon Bedrock User Guide.</p>"
+      "documentation":"<p>Invokes an alias of a flow to run the inputs that you specify and return the output of each node as a stream. If there's an error, the error is returned. For more information, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/flows-test.html\">Test a flow in Amazon Bedrock</a> in the Amazon Bedrock User Guide.</p> <note> <p>The CLI doesn't support streaming operations in Amazon Bedrock, including <code>InvokeFlow</code>.</p> </note>"
     },
     "Retrieve":{
       "name":"Retrieve",
@@ -822,25 +822,25 @@
       "members":{
         "content":{
           "shape":"FlowInputContent",
-          "documentation":"<p>Contains information about an input into the flow.</p>"
+          "documentation":"<p>Contains information about an input into the prompt flow.</p>"
         },
         "nodeName":{
           "shape":"NodeName",
-          "documentation":"<p>A name for the input of the flow input node.</p>"
+          "documentation":"<p>The name of the flow input node that begins the prompt flow.</p>"
         },
         "nodeOutputName":{
           "shape":"NodeOutputName",
-          "documentation":"<p>A name for the output of the flow input node.</p>"
+          "documentation":"<p>The name of the output from the flow input node that begins the prompt flow.</p>"
         }
       },
-      "documentation":"<p>Contains information about an input into the flow and what to do with it.</p> <p>This data type is used in the following API operations:</p> <ul> <li> <p> <a href=\"https://docs.aws.amazon.com/bedrock/latest/APIReference/API_agent-runtime_InvokeFlow.html#API_agent_InvokeFlow_RequestSyntax\">InvokeFlow request</a> </p> </li> </ul>"
+      "documentation":"<p>Contains information about an input into the prompt flow and where to send it.</p> <p>This data type is used in the following API operations:</p> <ul> <li> <p> <a href=\"https://docs.aws.amazon.com/bedrock/latest/APIReference/API_agent-runtime_InvokeFlow.html#API_agent_InvokeFlow_RequestSyntax\">InvokeFlow request</a> </p> </li> </ul>"
     },
     "FlowInputContent":{
       "type":"structure",
       "members":{
         "document":{
           "shape":"Document",
-          "documentation":"<p>The input for the flow input node.</p>"
+          "documentation":"<p>The input to send to the prompt flow input node.</p>"
         }
       },
       "documentation":"<p>Contains information about an input into the flow.</p> <p>This data type is used in the following API operations:</p> <ul> <li> <p> <a href=\"https://docs.aws.amazon.com/bedrock/latest/APIReference/API_agent-runtime_InvokeFlow.html#API_agent_InvokeFlow_RequestSyntax\">InvokeFlow request</a> </p> </li> </ul>",
@@ -858,10 +858,10 @@
       "members":{
         "document":{
           "shape":"Document",
-          "documentation":"<p>A name for the output of the flow.</p>"
+          "documentation":"<p>The content in the output.</p>"
         }
       },
-      "documentation":"<p>Contains information about the output node.</p> <p>This data type is used in the following API operations:</p> <ul> <li> <p> <a href=\"https://docs.aws.amazon.com/bedrock/latest/APIReference/API_agent-runtime_InvokeFlow.html#API_agent_InvokeFlow_RequestSyntax\">InvokeFlow request</a> </p> </li> </ul>",
+      "documentation":"<p>Contains information about the content in an output from prompt flow invocation.</p> <p>This data type is used in the following API operations:</p> <ul> <li> <p> <a href=\"https://docs.aws.amazon.com/bedrock/latest/APIReference/API_agent-runtime_InvokeFlow.html#API_agent_InvokeFlow_RequestSyntax\">InvokeFlow request</a> </p> </li> </ul>",
       "union":true
     },
     "FlowOutputEvent":{
@@ -874,18 +874,18 @@
       "members":{
         "content":{
           "shape":"FlowOutputContent",
-          "documentation":"<p>The output of the node.</p>"
+          "documentation":"<p>The content in the output.</p>"
         },
         "nodeName":{
           "shape":"NodeName",
-          "documentation":"<p>The name of the node to which input was provided.</p>"
+          "documentation":"<p>The name of the flow output node that the output is from.</p>"
         },
         "nodeType":{
           "shape":"NodeType",
-          "documentation":"<p>The type of node to which input was provided.</p>"
+          "documentation":"<p>The type of the node that the output is from.</p>"
         }
       },
-      "documentation":"<p>Contains information about an output from flow invoction.</p> <p>This data type is used in the following API operations:</p> <ul> <li> <p> <a href=\"https://docs.aws.amazon.com/bedrock/latest/APIReference/API_agent-runtime_InvokeFlow.html#API_agent_InvokeFlow_ResponseSyntax\">InvokeFlow response</a> </p> </li> </ul>",
+      "documentation":"<p>Contains information about an output from prompt flow invoction.</p> <p>This data type is used in the following API operations:</p> <ul> <li> <p> <a href=\"https://docs.aws.amazon.com/bedrock/latest/APIReference/API_agent-runtime_InvokeFlow.html#API_agent_InvokeFlow_ResponseSyntax\">InvokeFlow response</a> </p> </li> </ul>",
       "event":true,
       "sensitive":true
     },
@@ -1510,7 +1510,7 @@
         },
         "topP":{
           "shape":"TopP",
-          "documentation":"<p>While generating a response, the model determines the probability of the following token at each point of generation. The value that you set for <code>Top P</code> determines the number of most-likely candidates from which the model chooses the next token in the sequence. For example, if you set <code>topP</code> to 80, the model only selects the next token from the top 80% of the probability distribution of next tokens.</p>"
+          "documentation":"<p>While generating a response, the model determines the probability of the following token at each point of generation. The value that you set for <code>Top P</code> determines the number of most-likely candidates from which the model chooses the next token in the sequence. For example, if you set <code>topP</code> to 0.8, the model only selects the next token from the top 80% of the probability distribution of next tokens.</p>"
         }
       },
       "documentation":"<p>Specifications about the inference parameters that were provided alongside the prompt. These are specified in the <a href=\"https://docs.aws.amazon.com/bedrock/latest/APIReference/API_agent_PromptOverrideConfiguration.html\">PromptOverrideConfiguration</a> object that was set when the agent was created or updated. For more information, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/model-parameters.html\">Inference parameters for foundation models</a>.</p>"
@@ -1997,6 +1997,17 @@
       "type":"string",
       "enum":["SESSION_SUMMARY"]
     },
+    "Metadata":{
+      "type":"structure",
+      "members":{
+        "usage":{
+          "shape":"Usage",
+          "documentation":"<p>Contains details of the foundation model usage.</p>"
+        }
+      },
+      "documentation":"<p>Provides details of the foundation model.</p>",
+      "sensitive":true
+    },
     "MimeType":{"type":"string"},
     "ModelInvocationInput":{
       "type":"structure",
@@ -2109,6 +2120,25 @@
       },
       "documentation":"<p>Settings for how the model processes the prompt prior to retrieval and generation.</p>"
     },
+    "OrchestrationModelInvocationOutput":{
+      "type":"structure",
+      "members":{
+        "metadata":{
+          "shape":"Metadata",
+          "documentation":"<p>Contains information about the foundation model output.</p>"
+        },
+        "rawResponse":{
+          "shape":"RawResponse",
+          "documentation":"<p>Contains details of the raw response from the foundation model output.</p>"
+        },
+        "traceId":{
+          "shape":"TraceId",
+          "documentation":"<p>The unique identifier of the trace.</p>"
+        }
+      },
+      "documentation":"<p>The foundation model output from the orchestration step.</p>",
+      "sensitive":true
+    },
     "OrchestrationTrace":{
       "type":"structure",
       "members":{
@@ -2119,6 +2149,10 @@
         "modelInvocationInput":{
           "shape":"ModelInvocationInput",
           "documentation":"<p>The input for the orchestration step.</p> <ul> <li> <p>The <code>type</code> is <code>ORCHESTRATION</code>.</p> </li> <li> <p>The <code>text</code> contains the prompt.</p> </li> <li> <p>The <code>inferenceConfiguration</code>, <code>parserMode</code>, and <code>overrideLambda</code> values are set in the <a href=\"https://docs.aws.amazon.com/bedrock/latest/APIReference/API_agent_PromptOverrideConfiguration.html\">PromptOverrideConfiguration</a> object that was set when the agent was created or updated.</p> </li> </ul>"
+        },
+        "modelInvocationOutput":{
+          "shape":"OrchestrationModelInvocationOutput",
+          "documentation":"<p>Contains information pertaining to the output from the foundation model that is being invoked.</p>"
         },
         "observation":{
           "shape":"Observation",
@@ -2379,6 +2413,17 @@
     },
     "RationaleString":{
       "type":"string",
+      "sensitive":true
+    },
+    "RawResponse":{
+      "type":"structure",
+      "members":{
+        "content":{
+          "shape":"String",
+          "documentation":"<p>The foundation model's raw output content.</p>"
+        }
+      },
+      "documentation":"<p>Contains the raw output from the foundation model.</p>",
       "sensitive":true
     },
     "RepromptResponse":{
@@ -3155,6 +3200,21 @@
         "ASK_USER",
         "REPROMPT"
       ]
+    },
+    "Usage":{
+      "type":"structure",
+      "members":{
+        "inputTokens":{
+          "shape":"Integer",
+          "documentation":"<p>Contains information about the input tokens from the foundation model usage.</p>"
+        },
+        "outputTokens":{
+          "shape":"Integer",
+          "documentation":"<p>Contains information about the output tokens from the foundation model usage.</p>"
+        }
+      },
+      "documentation":"<p>Contains information of the usage of the foundation model.</p>",
+      "sensitive":true
     },
     "ValidationException":{
       "type":"structure",

@@ -110,7 +110,7 @@
         {"shape":"AccessDeniedException"},
         {"shape":"ThrottlingException"}
       ],
-      "documentation":"<p>Updates the enrollment (opt in and opt out) status of an account to the Cost Optimization Hub service.</p> <p>If the account is a management account of an organization, this action can also be used to enroll member accounts of the organization.</p> <p>You must have the appropriate permissions to opt in to Cost Optimization Hub and to view its recommendations. When you opt in, Cost Optimization Hub automatically creates a service-linked role in your account to access its data.</p>"
+      "documentation":"<p>Updates the enrollment (opt in and opt out) status of an account to the Cost Optimization Hub service.</p> <p>If the account is a management account or delegated administrator of an organization, this action can also be used to enroll member accounts of the organization.</p> <p>You must have the appropriate permissions to opt in to Cost Optimization Hub and to view its recommendations. When you opt in, Cost Optimization Hub automatically creates a service-linked role in your account to access its data.</p>"
     },
     "UpdatePreferences":{
       "name":"UpdatePreferences",
@@ -881,7 +881,7 @@
         },
         "includeMemberAccounts":{
           "shape":"Boolean",
-          "documentation":"<p>The enrollment status of all member accounts in the organization if the account is the management account.</p>"
+          "documentation":"<p>The enrollment status of all member accounts in the organization if the account is the management account or delegated administrator.</p>"
         },
         "nextToken":{
           "shape":"String",
@@ -900,7 +900,11 @@
         },
         "maxResults":{
           "shape":"ListRecommendationSummariesRequestMaxResultsInteger",
-          "documentation":"<p>The maximum number of recommendations that are returned for the request.</p>"
+          "documentation":"<p>The maximum number of recommendations to be returned for the request.</p>"
+        },
+        "metrics":{
+          "shape":"SummaryMetricsList",
+          "documentation":"<p>Additional metrics to be returned for the request. The only valid value is <code>savingsPercentage</code>.</p>"
         },
         "nextToken":{
           "shape":"String",
@@ -923,7 +927,7 @@
         },
         "items":{
           "shape":"RecommendationSummariesList",
-          "documentation":"<p>List of all savings recommendations.</p>"
+          "documentation":"<p>A list of all savings recommendations.</p>"
         },
         "groupBy":{
           "shape":"String",
@@ -932,6 +936,10 @@
         "currencyCode":{
           "shape":"String",
           "documentation":"<p>The currency code used for the recommendation.</p>"
+        },
+        "metrics":{
+          "shape":"SummaryMetricsResult",
+          "documentation":"<p>The results or descriptions for the additional metrics, based on whether the metrics were or were not requested.</p>"
         },
         "nextToken":{
           "shape":"String",
@@ -1714,6 +1722,26 @@
       "documentation":"<p>The storage configuration used for recommendations.</p>"
     },
     "String":{"type":"string"},
+    "SummaryMetrics":{
+      "type":"string",
+      "enum":["SavingsPercentage"]
+    },
+    "SummaryMetricsList":{
+      "type":"list",
+      "member":{"shape":"SummaryMetrics"},
+      "max":100,
+      "min":1
+    },
+    "SummaryMetricsResult":{
+      "type":"structure",
+      "members":{
+        "savingsPercentage":{
+          "shape":"String",
+          "documentation":"<p>The savings percentage based on your Amazon Web Services spend over the past 30 days.</p> <note> <p>Savings percentage is only supported when filtering by Region, account ID, or tags.</p> </note>"
+        }
+      },
+      "documentation":"<p>The results or descriptions for the additional metrics, based on whether the metrics were or were not requested.</p>"
+    },
     "Tag":{
       "type":"structure",
       "members":{
@@ -1753,7 +1781,7 @@
         },
         "includeMemberAccounts":{
           "shape":"Boolean",
-          "documentation":"<p>Indicates whether to enroll member accounts of the organization if the account is the management account.</p>"
+          "documentation":"<p>Indicates whether to enroll member accounts of the organization if the account is the management account or delegated administrator.</p>"
         }
       }
     },

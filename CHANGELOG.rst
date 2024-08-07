@@ -2,6 +2,13 @@
 CHANGELOG
 =========
 
+2.17.25
+=======
+
+* api-change:``glue``: Introducing AWS Glue Data Quality anomaly detection, a new functionality that uses ML-based solutions to detect data anomalies users have not explicitly defined rules for.
+* api-change:``appintegrations``: Updated CreateDataIntegration and CreateDataIntegrationAssociation API to support bulk data export from Amazon Connect Customer Profiles to the customer S3 bucket.
+
+
 2.17.24
 =======
 

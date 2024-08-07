@@ -2,6 +2,16 @@
 CHANGELOG
 =========
 
+2.17.24
+=======
+
+* enhancement:awscrt: Update awscrt version requirement to 0.21.2
+* api-change:``workspaces``: Added support for BYOL_GRAPHICS_G4DN_WSP IngestionProcess
+* api-change:``cost-optimization-hub``: This release adds savings percentage support to the ListRecommendationSummaries API.
+* api-change:``cognito-idp``: Advanced security feature updates to include password history and log export for Cognito user pools.
+* api-change:``bedrock-agent-runtime``: Introduce model invocation output traces for orchestration traces, which contain the model's raw response and usage.
+
+
 2.17.23
 =======
 

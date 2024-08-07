@@ -250,6 +250,22 @@
       ],
       "documentation":"<p>Returns a list of resource metadata for a given list of workflow names. After calling the <code>ListWorkflows</code> operation, you can call this operation to access the data to which you have been granted permissions. This operation supports all IAM permissions, including permission conditions that uses tags.</p>"
     },
+    "BatchPutDataQualityStatisticAnnotation":{
+      "name":"BatchPutDataQualityStatisticAnnotation",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"BatchPutDataQualityStatisticAnnotationRequest"},
+      "output":{"shape":"BatchPutDataQualityStatisticAnnotationResponse"},
+      "errors":[
+        {"shape":"EntityNotFoundException"},
+        {"shape":"InvalidInputException"},
+        {"shape":"InternalServiceException"},
+        {"shape":"ResourceNumberLimitExceededException"}
+      ],
+      "documentation":"<p>Annotate datapoints over time for a specific data quality statistic.</p>"
+    },
     "BatchStopJobRun":{
       "name":"BatchStopJobRun",
       "http":{
@@ -1474,6 +1490,38 @@
       ],
       "documentation":"<p>Retrieves the security configuration for a specified catalog.</p>"
     },
+    "GetDataQualityModel":{
+      "name":"GetDataQualityModel",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"GetDataQualityModelRequest"},
+      "output":{"shape":"GetDataQualityModelResponse"},
+      "errors":[
+        {"shape":"EntityNotFoundException"},
+        {"shape":"InvalidInputException"},
+        {"shape":"OperationTimeoutException"},
+        {"shape":"InternalServiceException"}
+      ],
+      "documentation":"<p>Retrieve the training status of the model along with more information (CompletedOn, StartedOn, FailureReason).</p>"
+    },
+    "GetDataQualityModelResult":{
+      "name":"GetDataQualityModelResult",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"GetDataQualityModelResultRequest"},
+      "output":{"shape":"GetDataQualityModelResultResponse"},
+      "errors":[
+        {"shape":"EntityNotFoundException"},
+        {"shape":"InvalidInputException"},
+        {"shape":"OperationTimeoutException"},
+        {"shape":"InternalServiceException"}
+      ],
+      "documentation":"<p>Retrieve a statistic's predictions for a given Profile ID.</p>"
+    },
     "GetDataQualityResult":{
       "name":"GetDataQualityResult",
       "http":{
@@ -2489,6 +2537,35 @@
       ],
       "documentation":"<p>Returns a paginated list of rulesets for the specified list of Glue tables.</p>"
     },
+    "ListDataQualityStatisticAnnotations":{
+      "name":"ListDataQualityStatisticAnnotations",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"ListDataQualityStatisticAnnotationsRequest"},
+      "output":{"shape":"ListDataQualityStatisticAnnotationsResponse"},
+      "errors":[
+        {"shape":"InvalidInputException"},
+        {"shape":"InternalServiceException"}
+      ],
+      "documentation":"<p>Retrieve annotations for a data quality statistic.</p>"
+    },
+    "ListDataQualityStatistics":{
+      "name":"ListDataQualityStatistics",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"ListDataQualityStatisticsRequest"},
+      "output":{"shape":"ListDataQualityStatisticsResponse"},
+      "errors":[
+        {"shape":"EntityNotFoundException"},
+        {"shape":"InvalidInputException"},
+        {"shape":"InternalServiceException"}
+      ],
+      "documentation":"<p>Retrieves a list of data quality statistics.</p>"
+    },
     "ListDevEndpoints":{
       "name":"ListDevEndpoints",
       "http":{
@@ -2695,6 +2772,21 @@
         {"shape":"OperationTimeoutException"}
       ],
       "documentation":"<p>Sets the security configuration for a specified catalog. After the configuration has been set, the specified encryption is applied to every catalog write thereafter.</p>"
+    },
+    "PutDataQualityProfileAnnotation":{
+      "name":"PutDataQualityProfileAnnotation",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"PutDataQualityProfileAnnotationRequest"},
+      "output":{"shape":"PutDataQualityProfileAnnotationResponse"},
+      "errors":[
+        {"shape":"EntityNotFoundException"},
+        {"shape":"InvalidInputException"},
+        {"shape":"InternalServiceException"}
+      ],
+      "documentation":"<p>Annotate all datapoints for a Profile.</p>"
     },
     "PutResourcePolicy":{
       "name":"PutResourcePolicy",
@@ -3950,6 +4042,32 @@
       },
       "documentation":"<p>Specifies an Amazon Redshift target.</p>"
     },
+    "AnnotationError":{
+      "type":"structure",
+      "members":{
+        "ProfileId":{
+          "shape":"HashString",
+          "documentation":"<p>The Profile ID for the failed annotation.</p>"
+        },
+        "StatisticId":{
+          "shape":"HashString",
+          "documentation":"<p>The Statistic ID for the failed annotation.</p>"
+        },
+        "FailureReason":{
+          "shape":"DescriptionString",
+          "documentation":"<p>The reason why the annotation failed.</p>"
+        }
+      },
+      "documentation":"<p>A failed annotation.</p>"
+    },
+    "AnnotationErrorList":{
+      "type":"list",
+      "member":{"shape":"AnnotationError"}
+    },
+    "AnnotationList":{
+      "type":"list",
+      "member":{"shape":"StatisticAnnotation"}
+    },
     "ApplyMapping":{
       "type":"structure",
       "required":[
@@ -4685,6 +4803,29 @@
         "MissingWorkflows":{
           "shape":"WorkflowNames",
           "documentation":"<p>A list of names of workflows not found.</p>"
+        }
+      }
+    },
+    "BatchPutDataQualityStatisticAnnotationRequest":{
+      "type":"structure",
+      "required":["InclusionAnnotations"],
+      "members":{
+        "InclusionAnnotations":{
+          "shape":"InclusionAnnotationList",
+          "documentation":"<p>A list of <code>DatapointInclusionAnnotation</code>'s.</p>"
+        },
+        "ClientToken":{
+          "shape":"HashString",
+          "documentation":"<p>Client Token.</p>"
+        }
+      }
+    },
+    "BatchPutDataQualityStatisticAnnotationResponse":{
+      "type":"structure",
+      "members":{
+        "FailedInclusionAnnotations":{
+          "shape":"AnnotationErrorList",
+          "documentation":"<p>A list of <code>AnnotationError</code>'s.</p>"
         }
       }
     },
@@ -7391,6 +7532,10 @@
           "shape":"DataQualityTargetTable",
           "documentation":"<p>A target table associated with the data quality ruleset.</p>"
         },
+        "DataQualitySecurityConfiguration":{
+          "shape":"NameString",
+          "documentation":"<p>The name of the security configuration created with the data quality encryption option.</p>"
+        },
         "ClientToken":{
           "shape":"HashString",
           "documentation":"<p>Used for idempotency and is recommended to be set to a random ID (such as a UUID) to avoid creating or starting multiple instances of the same resource.</p>"
@@ -8752,6 +8897,14 @@
       },
       "documentation":"<p>Describes the data quality metric value according to the analysis of historical data.</p>"
     },
+    "DataQualityModelStatus":{
+      "type":"string",
+      "enum":[
+        "RUNNING",
+        "SUCCEEDED",
+        "FAILED"
+      ]
+    },
     "DataQualityObservation":{
       "type":"structure",
       "members":{
@@ -8770,7 +8923,8 @@
       "type":"string",
       "max":2048,
       "min":0,
-      "pattern":"[\\u0020-\\uD7FF\\uE000-\\uFFFD\\uD800\\uDC00-\\uDBFF\\uDFFF\\r\\n\\t]*"
+      "pattern":"[\\u0020-\\uD7FF\\uE000-\\uFFFD\\uD800\\uDC00-\\uDBFF\\uDFFF\\r\\n\\t]*",
+      "sensitive":true
     },
     "DataQualityObservations":{
       "type":"list",
@@ -8784,6 +8938,10 @@
         "ResultId":{
           "shape":"HashString",
           "documentation":"<p>A unique result ID for the data quality result.</p>"
+        },
+        "ProfileId":{
+          "shape":"HashString",
+          "documentation":"<p>The Profile ID for the data quality result.</p>"
         },
         "Score":{
           "shape":"GenericBoundedDouble",
@@ -8975,6 +9133,10 @@
         "EvaluatedMetrics":{
           "shape":"EvaluatedMetricsMap",
           "documentation":"<p>A map of metrics associated with the evaluation of the rule.</p>"
+        },
+        "EvaluatedRule":{
+          "shape":"DataQualityRuleResultDescription",
+          "documentation":"<p>The evaluated rule.</p>"
         }
       },
       "documentation":"<p>Describes the result of the evaluation of a data quality rule.</p>"
@@ -8983,7 +9145,8 @@
       "type":"string",
       "max":2048,
       "min":0,
-      "pattern":"[\\u0020-\\uD7FF\\uE000-\\uFFFD\\uD800\\uDC00-\\uDBFF\\uDFFF\\r\\n\\t]*"
+      "pattern":"[\\u0020-\\uD7FF\\uE000-\\uFFFD\\uD800\\uDC00-\\uDBFF\\uDFFF\\r\\n\\t]*",
+      "sensitive":true
     },
     "DataQualityRuleResultStatus":{
       "type":"string",
@@ -9277,6 +9440,24 @@
     "DatabrewConditionValue":{
       "type":"string",
       "max":1024
+    },
+    "DatapointInclusionAnnotation":{
+      "type":"structure",
+      "members":{
+        "ProfileId":{
+          "shape":"HashString",
+          "documentation":"<p>The ID of the data quality profile the statistic belongs to.</p>"
+        },
+        "StatisticId":{
+          "shape":"HashString",
+          "documentation":"<p>The Statistic ID.</p>"
+        },
+        "InclusionAnnotation":{
+          "shape":"InclusionAnnotationValue",
+          "documentation":"<p>The inclusion annotation value to apply to the statistic.</p>"
+        }
+      },
+      "documentation":"<p>An Inclusion Annotation.</p>"
     },
     "Datatype":{
       "type":"structure",
@@ -10686,7 +10867,8 @@
     "EvaluatedMetricsMap":{
       "type":"map",
       "key":{"shape":"NameString"},
-      "value":{"shape":"NullableDouble"}
+      "value":{"shape":"NullableDouble"},
+      "sensitive":true
     },
     "EvaluationMetrics":{
       "type":"structure",
@@ -11599,6 +11781,71 @@
         }
       }
     },
+    "GetDataQualityModelRequest":{
+      "type":"structure",
+      "required":["ProfileId"],
+      "members":{
+        "StatisticId":{
+          "shape":"HashString",
+          "documentation":"<p>The Statistic ID.</p>"
+        },
+        "ProfileId":{
+          "shape":"HashString",
+          "documentation":"<p>The Profile ID.</p>"
+        }
+      }
+    },
+    "GetDataQualityModelResponse":{
+      "type":"structure",
+      "members":{
+        "Status":{
+          "shape":"DataQualityModelStatus",
+          "documentation":"<p>The training status of the data quality model.</p>"
+        },
+        "StartedOn":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp when the data quality model training started.</p>"
+        },
+        "CompletedOn":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp when the data quality model training completed.</p>"
+        },
+        "FailureReason":{
+          "shape":"HashString",
+          "documentation":"<p>The training failure reason.</p>"
+        }
+      }
+    },
+    "GetDataQualityModelResultRequest":{
+      "type":"structure",
+      "required":[
+        "StatisticId",
+        "ProfileId"
+      ],
+      "members":{
+        "StatisticId":{
+          "shape":"HashString",
+          "documentation":"<p>The Statistic ID.</p>"
+        },
+        "ProfileId":{
+          "shape":"HashString",
+          "documentation":"<p>The Profile ID.</p>"
+        }
+      }
+    },
+    "GetDataQualityModelResultResponse":{
+      "type":"structure",
+      "members":{
+        "CompletedOn":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp when the data quality model training completed.</p>"
+        },
+        "Model":{
+          "shape":"StatisticModelResults",
+          "documentation":"<p>A list of <code>StatisticModelResult</code> </p>"
+        }
+      }
+    },
     "GetDataQualityResultRequest":{
       "type":"structure",
       "required":["ResultId"],
@@ -11615,6 +11862,10 @@
         "ResultId":{
           "shape":"HashString",
           "documentation":"<p>A unique result ID for the data quality result.</p>"
+        },
+        "ProfileId":{
+          "shape":"HashString",
+          "documentation":"<p>The Profile ID for the data quality result.</p>"
         },
         "Score":{
           "shape":"GenericBoundedDouble",
@@ -11730,6 +11981,10 @@
         "CreatedRulesetName":{
           "shape":"NameString",
           "documentation":"<p>The name of the ruleset that was created by the run.</p>"
+        },
+        "DataQualitySecurityConfiguration":{
+          "shape":"NameString",
+          "documentation":"<p>The name of the security configuration created with the data quality encryption option.</p>"
         }
       }
     },
@@ -11848,6 +12103,10 @@
         "RecommendationRunId":{
           "shape":"HashString",
           "documentation":"<p>When a ruleset was created from a recommendation run, this run ID is generated to link the two together.</p>"
+        },
+        "DataQualitySecurityConfiguration":{
+          "shape":"NameString",
+          "documentation":"<p>The name of the security configuration created with the data quality encryption option.</p>"
         }
       }
     },
@@ -14091,6 +14350,17 @@
       },
       "documentation":"<p>Specifies configuration properties for an importing labels task run.</p>"
     },
+    "InclusionAnnotationList":{
+      "type":"list",
+      "member":{"shape":"DatapointInclusionAnnotation"}
+    },
+    "InclusionAnnotationValue":{
+      "type":"string",
+      "enum":[
+        "INCLUDE",
+        "EXCLUDE"
+      ]
+    },
     "Integer":{"type":"integer"},
     "IntegerFlag":{
       "type":"integer",
@@ -15504,6 +15774,82 @@
         }
       }
     },
+    "ListDataQualityStatisticAnnotationsRequest":{
+      "type":"structure",
+      "members":{
+        "StatisticId":{
+          "shape":"HashString",
+          "documentation":"<p>The Statistic ID.</p>"
+        },
+        "ProfileId":{
+          "shape":"HashString",
+          "documentation":"<p>The Profile ID.</p>"
+        },
+        "TimestampFilter":{
+          "shape":"TimestampFilter",
+          "documentation":"<p>A timestamp filter.</p>"
+        },
+        "MaxResults":{
+          "shape":"PageSize",
+          "documentation":"<p>The maximum number of results to return in this request.</p>"
+        },
+        "NextToken":{
+          "shape":"PaginationToken",
+          "documentation":"<p>A pagination token to retrieve the next set of results.</p>"
+        }
+      }
+    },
+    "ListDataQualityStatisticAnnotationsResponse":{
+      "type":"structure",
+      "members":{
+        "Annotations":{
+          "shape":"AnnotationList",
+          "documentation":"<p>A list of <code>StatisticAnnotation</code> applied to the Statistic</p>"
+        },
+        "NextToken":{
+          "shape":"PaginationToken",
+          "documentation":"<p>A pagination token to retrieve the next set of results.</p>"
+        }
+      }
+    },
+    "ListDataQualityStatisticsRequest":{
+      "type":"structure",
+      "members":{
+        "StatisticId":{
+          "shape":"HashString",
+          "documentation":"<p>The Statistic ID.</p>"
+        },
+        "ProfileId":{
+          "shape":"HashString",
+          "documentation":"<p>The Profile ID.</p>"
+        },
+        "TimestampFilter":{
+          "shape":"TimestampFilter",
+          "documentation":"<p>A timestamp filter.</p>"
+        },
+        "MaxResults":{
+          "shape":"PageSize",
+          "documentation":"<p>The maximum number of results to return in this request.</p>"
+        },
+        "NextToken":{
+          "shape":"PaginationToken",
+          "documentation":"<p>A pagination token to request the next page of results.</p>"
+        }
+      }
+    },
+    "ListDataQualityStatisticsResponse":{
+      "type":"structure",
+      "members":{
+        "Statistics":{
+          "shape":"StatisticSummaryList",
+          "documentation":"<p>A <code>StatisticSummaryList</code>.</p>"
+        },
+        "NextToken":{
+          "shape":"PaginationToken",
+          "documentation":"<p>A pagination token to request the next page of results.</p>"
+        }
+      }
+    },
     "ListDevEndpointsRequest":{
       "type":"structure",
       "members":{
@@ -16312,6 +16658,10 @@
         "MetricName":{
           "shape":"NameString",
           "documentation":"<p>The name of the data quality metric used for generating the observation.</p>"
+        },
+        "StatisticId":{
+          "shape":"HashString",
+          "documentation":"<p>The Statistic ID.</p>"
         },
         "MetricValues":{
           "shape":"DataQualityMetricValues",
@@ -17444,6 +17794,29 @@
       "members":{
       }
     },
+    "PutDataQualityProfileAnnotationRequest":{
+      "type":"structure",
+      "required":[
+        "ProfileId",
+        "InclusionAnnotation"
+      ],
+      "members":{
+        "ProfileId":{
+          "shape":"HashString",
+          "documentation":"<p>The ID of the data quality monitoring profile to annotate.</p>"
+        },
+        "InclusionAnnotation":{
+          "shape":"InclusionAnnotationValue",
+          "documentation":"<p>The inclusion annotation value to apply to the profile.</p>"
+        }
+      }
+    },
+    "PutDataQualityProfileAnnotationResponse":{
+      "type":"structure",
+      "members":{
+      },
+      "documentation":"<p>Left blank.</p>"
+    },
     "PutResourcePolicyRequest":{
       "type":"structure",
       "required":["PolicyInJson"],
@@ -17837,6 +18210,10 @@
       },
       "documentation":"<p>Specifies a target that uses Amazon Redshift.</p>"
     },
+    "ReferenceDatasetsList":{
+      "type":"list",
+      "member":{"shape":"NameString"}
+    },
     "RegisterSchemaVersionInput":{
       "type":"structure",
       "required":[
@@ -18167,6 +18544,20 @@
       "min":1
     },
     "RunId":{"type":"string"},
+    "RunIdentifier":{
+      "type":"structure",
+      "members":{
+        "RunId":{
+          "shape":"HashString",
+          "documentation":"<p>The Run ID.</p>"
+        },
+        "JobRunId":{
+          "shape":"HashString",
+          "documentation":"<p>The Job Run ID.</p>"
+        }
+      },
+      "documentation":"<p>A run identifier.</p>"
+    },
     "RunMetrics":{
       "type":"structure",
       "members":{
@@ -20103,6 +20494,10 @@
           "shape":"NameString",
           "documentation":"<p>A name for the ruleset.</p>"
         },
+        "DataQualitySecurityConfiguration":{
+          "shape":"NameString",
+          "documentation":"<p>The name of the security configuration created with the data quality encryption option.</p>"
+        },
         "ClientToken":{
           "shape":"HashString",
           "documentation":"<p>Used for idempotency and is recommended to be set to a random ID (such as a UUID) to avoid creating or starting multiple instances of the same resource.</p>"
@@ -20484,6 +20879,137 @@
         "CANCELLED",
         "ERROR"
       ]
+    },
+    "StatisticAnnotation":{
+      "type":"structure",
+      "members":{
+        "ProfileId":{
+          "shape":"HashString",
+          "documentation":"<p>The Profile ID.</p>"
+        },
+        "StatisticId":{
+          "shape":"HashString",
+          "documentation":"<p>The Statistic ID.</p>"
+        },
+        "StatisticRecordedOn":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp when the annotated statistic was recorded.</p>"
+        },
+        "InclusionAnnotation":{
+          "shape":"TimestampedInclusionAnnotation",
+          "documentation":"<p>The inclusion annotation applied to the statistic.</p>"
+        }
+      },
+      "documentation":"<p>A Statistic Annotation.</p>"
+    },
+    "StatisticEvaluationLevel":{
+      "type":"string",
+      "enum":[
+        "Dataset",
+        "Column",
+        "Multicolumn"
+      ]
+    },
+    "StatisticModelResult":{
+      "type":"structure",
+      "members":{
+        "LowerBound":{
+          "shape":"NullableDouble",
+          "documentation":"<p>The lower bound.</p>"
+        },
+        "UpperBound":{
+          "shape":"NullableDouble",
+          "documentation":"<p>The upper bound.</p>"
+        },
+        "PredictedValue":{
+          "shape":"NullableDouble",
+          "documentation":"<p>The predicted value.</p>"
+        },
+        "ActualValue":{
+          "shape":"NullableDouble",
+          "documentation":"<p>The actual value.</p>"
+        },
+        "Date":{
+          "shape":"Timestamp",
+          "documentation":"<p>The date.</p>"
+        },
+        "InclusionAnnotation":{
+          "shape":"InclusionAnnotationValue",
+          "documentation":"<p>The inclusion annotation.</p>"
+        }
+      },
+      "documentation":"<p>The statistic model result.</p>"
+    },
+    "StatisticModelResults":{
+      "type":"list",
+      "member":{"shape":"StatisticModelResult"}
+    },
+    "StatisticNameString":{
+      "type":"string",
+      "max":255,
+      "min":1,
+      "pattern":"[A-Z][A-Za-z\\.]+"
+    },
+    "StatisticPropertiesMap":{
+      "type":"map",
+      "key":{"shape":"NameString"},
+      "value":{"shape":"DescriptionString"},
+      "sensitive":true
+    },
+    "StatisticSummary":{
+      "type":"structure",
+      "members":{
+        "StatisticId":{
+          "shape":"HashString",
+          "documentation":"<p>The Statistic ID.</p>"
+        },
+        "ProfileId":{
+          "shape":"HashString",
+          "documentation":"<p>The Profile ID.</p>"
+        },
+        "RunIdentifier":{
+          "shape":"RunIdentifier",
+          "documentation":"<p>The Run Identifier</p>"
+        },
+        "StatisticName":{
+          "shape":"StatisticNameString",
+          "documentation":"<p>The name of the statistic.</p>"
+        },
+        "DoubleValue":{
+          "shape":"double",
+          "documentation":"<p>The value of the statistic.</p>"
+        },
+        "EvaluationLevel":{
+          "shape":"StatisticEvaluationLevel",
+          "documentation":"<p>The evaluation level of the statistic. Possible values: <code>Dataset</code>, <code>Column</code>, <code>Multicolumn</code>.</p>"
+        },
+        "ColumnsReferenced":{
+          "shape":"ColumnNameList",
+          "documentation":"<p>The list of columns referenced by the statistic.</p>"
+        },
+        "ReferencedDatasets":{
+          "shape":"ReferenceDatasetsList",
+          "documentation":"<p>The list of datasets referenced by the statistic.</p>"
+        },
+        "StatisticProperties":{
+          "shape":"StatisticPropertiesMap",
+          "documentation":"<p>A <code>StatisticPropertiesMap</code>, which contains a <code>NameString</code> and <code>DescriptionString</code> </p>"
+        },
+        "RecordedOn":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp when the statistic was recorded.</p>"
+        },
+        "InclusionAnnotation":{
+          "shape":"TimestampedInclusionAnnotation",
+          "documentation":"<p>The inclusion annotation for the statistic.</p>"
+        }
+      },
+      "documentation":"<p>Summary information about a statistic.</p>"
+    },
+    "StatisticSummaryList":{
+      "type":"list",
+      "member":{"shape":"StatisticSummary"},
+      "documentation":"<p>A list of <code>StatisticSummary</code>.</p>"
     },
     "StopColumnStatisticsTaskRunRequest":{
       "type":"structure",
@@ -21265,7 +21791,35 @@
       "min":1
     },
     "Timestamp":{"type":"timestamp"},
+    "TimestampFilter":{
+      "type":"structure",
+      "members":{
+        "RecordedBefore":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp before which statistics should be included in the results.</p>"
+        },
+        "RecordedAfter":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp after which statistics should be included in the results.</p>"
+        }
+      },
+      "documentation":"<p>A timestamp filter.</p>"
+    },
     "TimestampValue":{"type":"timestamp"},
+    "TimestampedInclusionAnnotation":{
+      "type":"structure",
+      "members":{
+        "Value":{
+          "shape":"InclusionAnnotationValue",
+          "documentation":"<p>The inclusion annotation value.</p>"
+        },
+        "LastModifiedOn":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp when the inclusion annotation was last modified.</p>"
+        }
+      },
+      "documentation":"<p>A timestamped inclusion annotation.</p>"
+    },
     "Token":{"type":"string"},
     "TokenUrl":{
       "type":"string",
@@ -23178,6 +23732,7 @@
       "type":"string",
       "min":1
     },
+    "double":{"type":"double"},
     "tableNameString":{
       "type":"string",
       "min":1

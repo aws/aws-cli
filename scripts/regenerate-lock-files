@@ -107,11 +107,13 @@ def show_files(build_directory: Path, include_sdist: bool, include_base: bool):
     if include_sdist:
         for root, dirs, files in os.walk(build_directory / 'requirements'):
             for filename in files:
-                if 'lock' in filename:
-                    show_file(os.path.join(root, filename))
+                stemmed_filename = Path(filename).stem
+                if stemmed_filename.endswith('-lock'):
+                    show_file(Path(root, filename))
     if include_base:
-        for filename in os.listdir(build_directory):
-            if 'lock' in filename:
+        for filename in Path.iterdir(build_directory):
+            stemmed_filename = Path(filename).stem
+            if stemmed_filename.endswith('-lock'):
                 show_file(filename)
 
 
@@ -147,7 +149,7 @@ def main(
             output=Path("requirements", "download-deps", "portable-exe"),
         )
         builder.build_lock_file(
-            sources=["pyproject.toml"],
+            sources=[Path("pyproject.toml")],
             output=Path("requirements/download-deps/system-sandbox"),
         )
     if include_base:

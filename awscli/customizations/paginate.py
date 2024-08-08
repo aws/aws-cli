@@ -164,16 +164,20 @@ def unify_paging_params(argument_table, operation_model, event_name,
                                      parse_type=type_name,
                                      serialized_name='MaxItems'),
                         shadowed_args)
-    # We will register two pagination handlers.
+
+    # We will register three pagination handlers.
     #
     # The first is focused on analyzing the CLI arguments passed to see
     # if they contain explicit operation-specific pagination args.  If so,
     # they are doing manual pagination and we turn off the CLI pagination.
     #
-    # The second is called later in the event chain and analyzes the actual
+    # The second analyzes the CLI arguments to see if the user has specified
+    # a valid value for the max-items argument, and warns them if not.
+    #
+    # The third is called later in the event chain and analyzes the actual
     # calling parameters passed to the operation.
     #
-    # The reason we have to do the second is that someone could put
+    # The reason we have to do the third is that someone could put
     # operation-specific pagination args in the CLI input JSON file
     # directly and this bypasses all of the CLI args processing.
     session.register(
@@ -181,6 +185,11 @@ def unify_paging_params(argument_table, operation_model, event_name,
         partial(check_should_enable_pagination,
                 list(_get_all_cli_input_tokens(paginator_config)),
                 shadowed_args, argument_table))
+
+    session.register(
+        parsed_args_event,
+        check_and_warn_negative_max_items)
+
     session.register(
         call_parameters_event,
         partial(check_should_enable_pagination_call_parameters,
@@ -223,6 +232,13 @@ def check_should_enable_pagination(input_tokens, shadowed_args, argument_table,
         # what we're doing here.
         for key, value in shadowed_args.items():
             argument_table[key] = value
+
+
+def check_and_warn_negative_max_items(parsed_args, parsed_globals, **kwargs):
+    parsed_max_items = getattr(parsed_args, 'max_items', None)
+    if parsed_globals.paginate and parsed_max_items is not None:
+        if int(parsed_max_items) <= 0:
+            logger.critical("Non-positive values for --max-items are unsupported and may yield undefined behavior.")
 
 
 def ensure_paging_params_not_set(parsed_args, shadowed_args):

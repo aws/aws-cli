@@ -19,6 +19,9 @@ from awscli.help import OperationHelpCommand, OperationDocumentEventHandler
 from awscli.customizations import paginate
 from awscli.customizations.exceptions import ParamValidationError
 
+import logging
+
+logger = logging.getLogger(__name__)
 
 class TestPaginateBase(unittest.TestCase):
 
@@ -351,14 +354,40 @@ class TestEnsurePagingParamsNotSet(TestPaginateBase):
         self.assertIsNone(paginate.ensure_paging_params_not_set(
             self.parsed_args, {}))
 
-class TestNonnegativeIntType(TestPaginateBase):
+class TestNonPositiveIntWarnings(TestPaginateBase):
 
-    def test_positive_integer_resolves_corectly(self):
-        self.assertEqual(paginate.nonnegative_int(1), 1)
+    def setUp(self):
+        super(TestNonPositiveIntWarnings, self).setUp()
+        self.parsed_args = mock.Mock()
+        self.parsed_globals = mock.Mock()
 
-    def test_zero_resolves_corectly(self):
-        self.assertEqual(paginate.nonnegative_int(0), 0)
+        self.parsed_globals.paginate = True
 
-    def test_negative_integer_raises_error(self):
-        with self.assertRaises(ValueError):
-            paginate.nonnegative_int(-1)
+        self.parsed_args.max_items = None
+
+    def test_positive_integer_does_not_raise_warning(self):
+        self.parsed_args.max_items = 10
+        with self.assertLogs(level='CRITICAL') as log:
+            paginate.check_and_warn_negative_max_items(self.parsed_args, self.parsed_globals)
+            logger.critical('Log message')
+
+            # Since we logged exactly once above, asserting the length of the log output equals 1
+            # confirms that check_and_warn_negative_max_items did not log to critical level.
+            self.assertEqual(len(log.output), 1)
+            self.assertEqual(len(log.records), 1)
+
+    def test_zero_raises_warning(self):
+        self.parsed_args.max_items = 0
+        with self.assertLogs(level='CRITICAL') as log:
+            paginate.check_and_warn_negative_max_items(self.parsed_args, self.parsed_globals)
+            self.assertEqual(len(log.output), 1)
+            self.assertEqual(len(log.records), 1)
+            self.assertIn("Non-positive values for --max-items are unsupported", log.output[0])
+
+    def test_negative_integer_raises_warning(self):
+        self.parsed_args.max_items = -1
+        with self.assertLogs(level='CRITICAL') as log:
+            paginate.check_and_warn_negative_max_items(self.parsed_args, self.parsed_globals)
+            self.assertEqual(len(log.output), 1)
+            self.assertEqual(len(log.records), 1)
+            self.assertIn("Non-positive values for --max-items are unsupported", log.output[0])

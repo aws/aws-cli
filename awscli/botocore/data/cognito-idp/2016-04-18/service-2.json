@@ -3116,6 +3116,23 @@
       },
       "documentation":"<p>The global sign-out response, as an administrator.</p>"
     },
+    "AdvancedSecurityAdditionalFlowsType":{
+      "type":"structure",
+      "members":{
+        "CustomAuthMode":{
+          "shape":"AdvancedSecurityEnabledModeType",
+          "documentation":"<p>The operating mode of advanced security features in custom authentication with <a href=\"https://docs.aws.amazon.com/cognito/latest/developerguide/user-pool-lambda-challenge.html\"> Custom authentication challenge Lambda triggers</a>. </p>"
+        }
+      },
+      "documentation":"<p>Advanced security configuration options for additional authentication types in your user pool, including custom authentication and refresh-token authentication. </p>"
+    },
+    "AdvancedSecurityEnabledModeType":{
+      "type":"string",
+      "enum":[
+        "AUDIT",
+        "ENFORCED"
+      ]
+    },
     "AdvancedSecurityModeType":{
       "type":"string",
       "enum":[
@@ -8169,7 +8186,11 @@
       "members":{
         "AdvancedSecurityMode":{
           "shape":"AdvancedSecurityModeType",
-          "documentation":"<p>The operating mode of advanced security features in your user pool.</p>"
+          "documentation":"<p>The operating mode of advanced security features for standard authentication types in your user pool, including username-password and secure remote password (SRP) authentication. </p>"
+        },
+        "AdvancedSecurityAdditionalFlows":{
+          "shape":"AdvancedSecurityAdditionalFlowsType",
+          "documentation":"<p>Advanced security configuration options for additional authentication types in your user pool, including custom authentication and refresh-token authentication. </p>"
         }
       },
       "documentation":"<p>User pool add-ons. Contains settings for activation of advanced security features. To log user security information but take no action, set to <code>AUDIT</code>. To configure automatic security responses to risky traffic to your user pool, set to <code>ENFORCED</code>.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/cognito/latest/developerguide/cognito-user-pool-settings-advanced-security.html\">Adding advanced security to a user pool</a>.</p>"

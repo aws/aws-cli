@@ -13396,6 +13396,10 @@
         "Tier":{
           "shape":"IpamTier",
           "documentation":"<p>IPAM is offered in a Free Tier and an Advanced Tier. For more information about the features available in each tier and the costs associated with the tiers, see <a href=\"http://aws.amazon.com/vpc/pricing/\">Amazon VPC pricing &gt; IPAM tab</a>.</p>"
+        },
+        "EnablePrivateGua":{
+          "shape":"Boolean",
+          "documentation":"<p>Enable this option to use your own GUA ranges as private IPv6 addresses. This option is disabled by default.</p>"
         }
       }
     },
@@ -37821,6 +37825,14 @@
         "locationName":"item"
       }
     },
+    "IpSource":{
+      "type":"string",
+      "enum":[
+        "amazon",
+        "byoip",
+        "none"
+      ]
+    },
     "Ipam":{
       "type":"structure",
       "members":{
@@ -37903,6 +37915,11 @@
           "shape":"IpamTier",
           "documentation":"<p>IPAM is offered in a Free Tier and an Advanced Tier. For more information about the features available in each tier and the costs associated with the tiers, see <a href=\"http://aws.amazon.com/vpc/pricing/\">Amazon VPC pricing &gt; IPAM tab</a>.</p>",
           "locationName":"tier"
+        },
+        "EnablePrivateGua":{
+          "shape":"Boolean",
+          "documentation":"<p>Enable this option to use your own GUA ranges as private IPv6 addresses. This option is disabled by default.</p>",
+          "locationName":"enablePrivateGua"
         }
       },
       "documentation":"<p>IPAM is a VPC feature that you can use to automate your IP address management workflows including assigning, tracking, troubleshooting, and auditing IP addresses across Amazon Web Services Regions and accounts throughout your Amazon Web Services Organization. For more information, see <a href=\"https://docs.aws.amazon.com/vpc/latest/ipam/what-is-it-ipam.html\">What is IPAM?</a> in the <i>Amazon VPC IPAM User Guide</i>.</p>"
@@ -38193,6 +38210,11 @@
           "shape":"String",
           "documentation":"<p>The resource CIDR.</p>",
           "locationName":"resourceCidr"
+        },
+        "IpSource":{
+          "shape":"IpamResourceCidrIpSource",
+          "documentation":"<p>The source that allocated the IP address space. <code>byoip</code> or <code>amazon</code> indicates public IP address space allocated by Amazon or space that you have allocated with Bring your own IP (BYOIP). <code>none</code> indicates private space.</p>",
+          "locationName":"ipSource"
         },
         "ResourceType":{
           "shape":"IpamResourceType",
@@ -38931,6 +38953,14 @@
       },
       "documentation":"<p>The CIDR for an IPAM resource.</p>"
     },
+    "IpamResourceCidrIpSource":{
+      "type":"string",
+      "enum":[
+        "amazon",
+        "byoip",
+        "none"
+      ]
+    },
     "IpamResourceCidrSet":{
       "type":"list",
       "member":{
@@ -39311,6 +39341,13 @@
       }
     },
     "Ipv6Address":{"type":"string"},
+    "Ipv6AddressAttribute":{
+      "type":"string",
+      "enum":[
+        "public",
+        "private"
+      ]
+    },
     "Ipv6AddressList":{
       "type":"list",
       "member":{
@@ -43207,6 +43244,10 @@
         "Tier":{
           "shape":"IpamTier",
           "documentation":"<p>IPAM is offered in a Free Tier and an Advanced Tier. For more information about the features available in each tier and the costs associated with the tiers, see <a href=\"http://aws.amazon.com/vpc/pricing/\">Amazon VPC pricing &gt; IPAM tab</a>.</p>"
+        },
+        "EnablePrivateGua":{
+          "shape":"Boolean",
+          "documentation":"<p>Enable this option to use your own GUA ranges as private IPv6 addresses. This option is disabled by default.</p>"
         }
       }
     },
@@ -48404,7 +48445,7 @@
         },
         "NetmaskLength":{
           "shape":"Integer",
-          "documentation":"<p>The netmask length of the CIDR you would like to allocate to the public IPv4 pool.</p>"
+          "documentation":"<p>The netmask length of the CIDR you would like to allocate to the public IPv4 pool. The least specific netmask length you can define is 24.</p>"
         },
         "NetworkBorderGroup":{
           "shape":"String",
@@ -55630,6 +55671,16 @@
           "shape":"SubnetCidrBlockState",
           "documentation":"<p>The state of the CIDR block.</p>",
           "locationName":"ipv6CidrBlockState"
+        },
+        "Ipv6AddressAttribute":{
+          "shape":"Ipv6AddressAttribute",
+          "documentation":"<p>Public IPv6 addresses are those advertised on the internet from Amazon Web Services. Private IP addresses are not and cannot be advertised on the internet from Amazon Web Services.</p>",
+          "locationName":"ipv6AddressAttribute"
+        },
+        "IpSource":{
+          "shape":"IpSource",
+          "documentation":"<p>The source that allocated the IP address space. <code>byoip</code> or <code>amazon</code> indicates public IP address space allocated by Amazon or space that you have allocated with Bring your own IP (BYOIP). <code>none</code> indicates private space.</p>",
+          "locationName":"ipSource"
         }
       },
       "documentation":"<p>Describes an association between a subnet and an IPv6 CIDR block.</p>"
@@ -60848,6 +60899,16 @@
           "shape":"String",
           "documentation":"<p>The ID of the IPv6 address pool from which the IPv6 CIDR block is allocated.</p>",
           "locationName":"ipv6Pool"
+        },
+        "Ipv6AddressAttribute":{
+          "shape":"Ipv6AddressAttribute",
+          "documentation":"<p>Public IPv6 addresses are those advertised on the internet from Amazon Web Services. Private IP addresses are not and cannot be advertised on the internet from Amazon Web Services.</p>",
+          "locationName":"ipv6AddressAttribute"
+        },
+        "IpSource":{
+          "shape":"IpSource",
+          "documentation":"<p>The source that allocated the IP address space. <code>byoip</code> or <code>amazon</code> indicates public IP address space allocated by Amazon or space that you have allocated with Bring your own IP (BYOIP). <code>none</code> indicates private space.</p>",
+          "locationName":"ipSource"
         }
       },
       "documentation":"<p>Describes an IPv6 CIDR block associated with a VPC.</p>"

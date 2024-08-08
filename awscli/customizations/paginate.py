@@ -314,21 +314,11 @@ def check_should_enable_pagination_call_parameters(
             parsed_globals.paginate = False
 
 
-# This function checks that the integral value passed to it is non-negative, and raises a
-# ParamValidationError if it not. As such, it can be used as a type for pagination-related
-# argparse arguments that must be non-negative integral values.
-def nonnegative_int(value):
-    ival = int(value)
-    if ival < 0:
-        raise ValueError("invalid literal for nonnegative int() with base 10: '%s'" % value)
-    return ival
-
-
 class PageArgument(BaseCLIArgument):
     type_map = {
         'string': str,
-        'integer': nonnegative_int,
-        'long': nonnegative_int,
+        'integer': int,
+        'long': int,
     }
 
     def __init__(self, name, documentation, parse_type, serialized_name):

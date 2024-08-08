@@ -226,6 +226,63 @@ class TestSyncCommand(BaseS3TransferCommandTest):
         self.assertEqual(len(self.operations_called), 1, self.operations_called)
         self.assertEqual(self.operations_called[0][0].name, 'ListObjectsV2')
 
+    def test_sync_delete_to_local_removes_directories(self):
+        path1 = self.files.create_file('abc/234/foo.txt', 'mycontent')
+        path2 = self.files.create_file('abc/foo.txt', 'mycontent')
+        path3 = self.files.create_file('bar/foo.txt', 'mycontent')
+        path4 = self.files.create_file('foo.txt', 'mycontent')
+        cmdline = self.prefix
+        cmdline += 's3://sourcebucket/'
+        cmdline += ' ' + self.files.rootdir
+        cmdline += ' --delete'
+        self.parsed_responses = [
+            self.list_objects_response(['abc/foo.txt']),
+            self.get_object_response()
+        ]
+
+        self.run_cmd(cmdline, expected_rc=0)
+
+        self.assertFalse(os.path.exists(os.path.dirname(path1)))
+        self.assertTrue(os.path.exists(os.path.dirname(path2)))
+        self.assertFalse(os.path.exists(os.path.dirname(path3)))
+        self.assertFalse(os.path.exists(path4))
+
+    def test_sync_delete_to_s3_removes_directories(self):
+        self.files.create_file('abc/foo.txt', 'mycontent')
+
+        cmdline = self.prefix
+        cmdline += ' ' + self.files.rootdir
+        cmdline += ' ' + 's3://sourcebucket/'
+        cmdline += ' --delete'
+        self.parsed_responses = [
+            self.list_objects_response([
+                'abc/234/foo.txt',
+                'abc/foo.txt',
+                'bar/foo.txt',
+                'foo.txt'
+            ], Size=1024),
+            self.delete_object_response(),
+            self.delete_object_response(),
+            self.delete_object_response(),
+            self.delete_object_response(),
+            self.delete_object_response(),
+            self.delete_object_response(),
+        ]
+
+        self.run_cmd(cmdline, expected_rc=0)
+
+        expected_requests = [
+            self.list_objects_request('sourcebucket'),
+            self.delete_object_request('sourcebucket', 'abc/234/foo.txt'),
+            self.delete_object_request('sourcebucket', 'abc/234/'),
+            self.delete_object_request('sourcebucket', 'bar/foo.txt'),
+            self.delete_object_request('sourcebucket', 'bar/'),
+            self.delete_object_request('sourcebucket', 'foo.txt'),
+            self.put_object_request('sourcebucket', 'abc/foo.txt', ContentType='text/plain'),
+        ]
+        for request in expected_requests:
+            self.assert_in_operations_called(request)
+
     # This test covers the case where an OSError is emitted.
     def test_sync_skips_over_files_deleted_between_listing_and_transfer_oserror(self):
         full_path = self.files.create_file('foo.txt', 'mycontent')

@@ -12,7 +12,6 @@
 # language governing permissions and limitations under the License.
 import re
 import os
-import random
 import time
 import json
 

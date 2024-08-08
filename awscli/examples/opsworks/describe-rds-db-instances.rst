@@ -9,14 +9,14 @@ The following example describes the Amazon RDS instances registered with a speci
   {
     "RdsDbInstances": [
       {
-        "Engine": "mysql", 
-        "StackId": "d72553d4-8727-448c-9b00-f024f0ba1b06", 
-        "MissingOnRds": false, 
-        "Region": "us-west-2", 
-        "RdsDbInstanceArn": "arn:aws:rds:us-west-2:123456789012:db:clitestdb", 
-        "DbPassword": "*****FILTERED*****", 
-        "Address": "clitestdb.cdlqlk5uwd0k.us-west-2.rds.amazonaws.com", 
-        "DbUser": "cliuser", 
+        "Engine": "mysql",
+        "StackId": "d72553d4-8727-448c-9b00-f024f0ba1b06",
+        "MissingOnRds": false,
+        "Region": "us-west-2",
+        "RdsDbInstanceArn": "arn:aws:rds:us-west-2:123456789012:db:clitestdb",
+        "DbPassword": "*****FILTERED*****",
+        "Address": "clitestdb.cdlqlk5uwd0k.us-west-2.rds.amazonaws.com",
+        "DbUser": "cliuser",
         "DbInstanceIdentifier": "clitestdb"
       }
     ]
@@ -26,4 +26,3 @@ The following example describes the Amazon RDS instances registered with a speci
 For more information, see `Resource Management`_ in the *AWS OpsWorks User Guide*.
 
 .. _`Resource Management`: http://docs.aws.amazon.com/opsworks/latest/userguide/resources.html
-

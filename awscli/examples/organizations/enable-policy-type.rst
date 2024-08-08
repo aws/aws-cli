@@ -3,7 +3,7 @@
 The following example shows how to enable the service control policy (SCP) policy type in a root: ::
 
 	aws organizations enable-policy-type --root-id r-examplerootid111 --policy-type SERVICE_CONTROL_POLICY
-		
+
 The output shows a root object with a policyTypes response element showing that SCPs are now enabled: ::
 
 	{

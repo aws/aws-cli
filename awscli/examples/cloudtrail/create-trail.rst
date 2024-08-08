@@ -7,11 +7,11 @@ The following ``create-trail`` command creates a multi-region trail named ``Trai
 Output::
 
   {
-    "IncludeGlobalServiceEvents": true, 
-    "Name": "Trail1", 
-    "TrailARN": "arn:aws:cloudtrail:us-west-2:123456789012:trail/Trail1", 
-    "LogFileValidationEnabled": false, 
-    "IsMultiRegionTrail": true, 
+    "IncludeGlobalServiceEvents": true,
+    "Name": "Trail1",
+    "TrailARN": "arn:aws:cloudtrail:us-west-2:123456789012:trail/Trail1",
+    "LogFileValidationEnabled": false,
+    "IsMultiRegionTrail": true,
     "S3BucketName": "my-bucket"
   }
- 
+

@@ -44,7 +44,7 @@ The following ``get-parameters`` example lists the names and values for the spec
         --query "Parameters[*].{Name:Name,Value:Value}"
 
 Output::
-  
+
     [
         {
             "Name": "MyStringListParameter",

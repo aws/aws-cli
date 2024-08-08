@@ -119,42 +119,42 @@ Output::
   {
     "NetworkInterfaces": [
         {
-            "Status": "available", 
-            "MacAddress": "12:2c:bd:f9:bf:17", 
-            "SourceDestCheck": true, 
-            "VpcId": "vpc-8941ebec", 
-            "Description": "ProdENI", 
-            "NetworkInterfaceId": "eni-b9a5ac93", 
+            "Status": "available",
+            "MacAddress": "12:2c:bd:f9:bf:17",
+            "SourceDestCheck": true,
+            "VpcId": "vpc-8941ebec",
+            "Description": "ProdENI",
+            "NetworkInterfaceId": "eni-b9a5ac93",
             "PrivateIpAddresses": [
                 {
-                    "PrivateDnsName": "ip-10-0-1-55.ec2.internal", 
-                    "Primary": true, 
+                    "PrivateDnsName": "ip-10-0-1-55.ec2.internal",
+                    "Primary": true,
                     "PrivateIpAddress": "10.0.1.55"
-                }, 
+                },
                 {
-                    "PrivateDnsName": "ip-10-0-1-117.ec2.internal", 
-                    "Primary": false, 
+                    "PrivateDnsName": "ip-10-0-1-117.ec2.internal",
+                    "Primary": false,
                     "PrivateIpAddress": "10.0.1.117"
                 }
-            ], 
-            "RequesterManaged": false, 
-            "PrivateDnsName": "ip-10-0-1-55.ec2.internal", 
-            "AvailabilityZone": "us-east-1d", 
-            "Ipv6Addresses": [], 
+            ],
+            "RequesterManaged": false,
+            "PrivateDnsName": "ip-10-0-1-55.ec2.internal",
+            "AvailabilityZone": "us-east-1d",
+            "Ipv6Addresses": [],
             "Groups": [
                 {
-                    "GroupName": "MySG", 
+                    "GroupName": "MySG",
                     "GroupId": "sg-905002f5"
                 }
-            ], 
-            "SubnetId": "subnet-31d6c219", 
-            "OwnerId": "123456789012", 
+            ],
+            "SubnetId": "subnet-31d6c219",
+            "OwnerId": "123456789012",
             "TagSet": [
                 {
-                    "Value": "Prod", 
+                    "Value": "Prod",
                     "Key": "Purpose"
                 }
-            ], 
+            ],
             "PrivateIpAddress": "10.0.1.55"
         }
     ]

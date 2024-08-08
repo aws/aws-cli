@@ -5,7 +5,7 @@ The following ``update-pull-request-approval-rule-content`` example updates she 
     aws codecommit update-pull-request-approval-rule-content \
         --pull-request-id 27  \
         --approval-rule-name "Require two approved approvers" \
-        --approval-rule-content "{Version: 2018-11-08, Statements: [{Type: \"Approvers\", NumberOfApprovalsNeeded: 1, ApprovalPoolMembers:[\"CodeCommitApprovers:123456789012:user/*\"]}]}}" 
+        --approval-rule-content "{Version: 2018-11-08, Statements: [{Type: \"Approvers\", NumberOfApprovalsNeeded: 1, ApprovalPoolMembers:[\"CodeCommitApprovers:123456789012:user/*\"]}]}}"
 
 Output::
 

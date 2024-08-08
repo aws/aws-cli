@@ -7,14 +7,14 @@ Command::
 Output::
 
   {
-      "description": "currentDescription", 
-      "enabled": true, 
+      "description": "currentDescription",
+      "enabled": true,
       "stageKeys": [
           "41t2j324r5/dev"
-      ], 
-      "lastUpdatedDate": 1470086052, 
-      "createdDate": 1445460347, 
-      "id": "sNvjQDMReA1vEQPNzW8r3dXsU2rrD7fcjm2SiMnu", 
+      ],
+      "lastUpdatedDate": 1470086052,
+      "createdDate": 1445460347,
+      "id": "sNvjQDMReA1vEQPNzW8r3dXsU2rrD7fcjm2SiMnu",
       "name": "newName"
   }
 
@@ -27,13 +27,13 @@ Command::
 Output::
 
   {
-      "description": "currentDescription", 
-      "enabled": false, 
+      "description": "currentDescription",
+      "enabled": false,
       "stageKeys": [
           "41t2j324r5/dev"
-      ], 
-      "lastUpdatedDate": 1470086052, 
-      "createdDate": 1445460347, 
-      "id": "sNvjQDMReA1vEQPNzW8r3dXsU2rrD7fcjm2SiMnu", 
+      ],
+      "lastUpdatedDate": 1470086052,
+      "createdDate": 1445460347,
+      "id": "sNvjQDMReA1vEQPNzW8r3dXsU2rrD7fcjm2SiMnu",
       "name": "newName"
   }

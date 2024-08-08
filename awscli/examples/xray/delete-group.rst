@@ -4,7 +4,7 @@ The following ``delete-group`` example deletes the specified group resource. ::
 
     aws xray delete-group \
         --group-name "AdminGroup" \
-        --group-arn "arn:aws:xray:us-east-2:123456789012:group/AdminGroup/123456789"     
+        --group-arn "arn:aws:xray:us-east-2:123456789012:group/AdminGroup/123456789"
 
 This command produces no output.
 

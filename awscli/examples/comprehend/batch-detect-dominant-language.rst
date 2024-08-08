@@ -1,6 +1,6 @@
 **To detect the dominant language of multiple input texts**
 
-The following ``batch-detect-dominant-language`` example analyzes multiple input texts and returns the dominant language of each. 
+The following ``batch-detect-dominant-language`` example analyzes multiple input texts and returns the dominant language of each.
 The pre-trained models confidence score is also output for each prediction. ::
 
     aws comprehend batch-detect-dominant-language \

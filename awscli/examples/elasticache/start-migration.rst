@@ -5,7 +5,7 @@ The following ``start-migration`` migrates your data from self-hosted Redis on A
     aws elasticache start-migration \
        --replication-group-id test \
        --customer-node-endpoint-list "Address='test.g2xbih.ng.0001.usw2.cache.amazonaws.com',Port=6379"
-        
+
 Output ::
 
     {

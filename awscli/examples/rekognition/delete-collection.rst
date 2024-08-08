@@ -3,7 +3,7 @@
 The following ``delete-collection`` command deletes the specified collection. ::
 
     aws rekognition delete-collection \
-        --collection-id MyCollection 
+        --collection-id MyCollection
 
 Output::
 

@@ -2,7 +2,7 @@
 
 The following ``update-resolver-endpoint`` example updates the name of a Resolver endpoint. Updating other values isn't supported. ::
 
-    aws route53resolver update-resolver-endpoint \ 
+    aws route53resolver update-resolver-endpoint \
         --resolver-endpoint-id rslvr-in-b5d45e32bdc445f09 \
         --name my-renamed-inbound-endpoint
 

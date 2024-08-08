@@ -8,7 +8,7 @@ The following ``list-tags-for-resource`` example returns the tags assigned to th
 Output::
 
     {
-        "Tags": { 
+        "Tags": {
             "Department" : "Operations",
             "Area" : "USMidwest"
         }

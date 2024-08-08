@@ -11,7 +11,7 @@ Output::
  {
     "AllowedPrincipals": [
         {
-            "PrincipalType": "Account", 
+            "PrincipalType": "Account",
             "Principal": "arn:aws:iam::123456789012:root"
         }
     ]

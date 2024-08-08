@@ -7,4 +7,3 @@ The following ``create-hosted-zone`` command adds a hosted zone named ``example.
 For more information, see `Working with Hosted Zones`_ in the *Amazon Route 53 Developer Guide*.
 
 .. _`Working with Hosted Zones`: http://docs.aws.amazon.com/Route53/latest/DeveloperGuide/AboutHZWorkingWith.html
-

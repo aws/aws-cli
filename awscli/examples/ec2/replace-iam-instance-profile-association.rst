@@ -10,11 +10,11 @@ Output::
 
     {
         "IamInstanceProfileAssociation": {
-            "InstanceId": "i-087711ddaf98f9489", 
-            "State": "associating", 
-            "AssociationId": "iip-assoc-0b215292fab192820", 
+            "InstanceId": "i-087711ddaf98f9489",
+            "State": "associating",
+            "AssociationId": "iip-assoc-0b215292fab192820",
             "IamInstanceProfile": {
-                "Id": "AIPAJLNLDX3AMYZNWYYAY", 
+                "Id": "AIPAJLNLDX3AMYZNWYYAY",
                 "Arn": "arn:aws:iam::123456789012:instance-profile/AdminRole"
             }
         }

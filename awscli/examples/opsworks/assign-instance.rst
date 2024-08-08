@@ -11,4 +11,3 @@ The following example assigns a registered instance to a custom layer. ::
 For more information, see `Assigning a Registered Instance to a Layer`_ in the *AWS OpsWorks User Guide*.
 
 .. _`Assigning a Registered Instance to a Layer`: http://docs.aws.amazon.com/opsworks/latest/userguide/registered-instances-assign.html
-

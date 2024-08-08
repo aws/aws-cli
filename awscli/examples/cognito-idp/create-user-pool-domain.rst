@@ -5,4 +5,4 @@ This example creates a new user pool domain. with two explicit authorization flo
 Command::
 
   aws cognito-idp create-user-pool-domain --user-pool-id us-west-2_aaaaaaaaa  --domain my-new-domain
-  
+

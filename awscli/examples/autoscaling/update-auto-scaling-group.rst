@@ -32,7 +32,7 @@ This example updates the placement group and termination policy to use. ::
     aws autoscaling update-auto-scaling-group \
         --auto-scaling-group-name my-asg \
         --placement-group my-placement-group \
-        --termination-policies "OldestInstance" 
+        --termination-policies "OldestInstance"
 
 This command produces no output.
 
@@ -67,7 +67,7 @@ For more information, see `Launch templates <https://docs.aws.amazon.com/autosca
 This example updates the specified Auto Scaling group to use a mixed instances policy and enables capacity rebalancing. This structure lets you specify groups with Spot and On-Demand capacities and use different launch templates for different architectures. ::
 
     aws autoscaling update-auto-scaling-group \
-        --cli-input-json file://~/config.json 
+        --cli-input-json file://~/config.json
 
 Contents of ``config.json``::
 

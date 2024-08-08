@@ -1,7 +1,7 @@
 **To retrieve a group**
 
 The following ``get-group`` example displays details for the specified group resource. The details include the group name, the group ARN, and the filter expression that defines the criteria for that group. Groups can also be retrieved by ARN. ::
-     
+
     aws xray get-group \
         --group-name "AdminGroup"
 

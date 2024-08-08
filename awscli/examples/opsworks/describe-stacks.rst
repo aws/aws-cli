@@ -62,4 +62,3 @@ The following ``describe-stacks`` command describes an account's stacks. ::
 For more information, see `Stacks`_ in the *AWS OpsWorks User Guide*.
 
 .. _`Stacks`: http://docs.aws.amazon.com/opsworks/latest/userguide/workingstacks.html
-

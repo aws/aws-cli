@@ -13,18 +13,18 @@ Output::
   {
   "trailList": [
     {
-      "IncludeGlobalServiceEvents": true, 
-      "Name": "Trail1", 
-      "TrailARN": "arn:aws:cloudtrail:us-east-1:123456789012:trail/Trail1", 
-      "LogFileValidationEnabled": false, 
-      "IsMultiRegionTrail": false, 
-      "S3BucketName": "my-bucket-new", 
-      "SnsTopicName": "my-topic-new", 
+      "IncludeGlobalServiceEvents": true,
+      "Name": "Trail1",
+      "TrailARN": "arn:aws:cloudtrail:us-east-1:123456789012:trail/Trail1",
+      "LogFileValidationEnabled": false,
+      "IsMultiRegionTrail": false,
+      "S3BucketName": "my-bucket-new",
+      "SnsTopicName": "my-topic-new",
       "HomeRegion": "us-east-1"
     }
-  ], 
+  ],
   "ResponseMetadata": {
-  "HTTPStatusCode": 200, 
+  "HTTPStatusCode": 200,
   "RequestId": "31126f8a-c616-11e5-9cc6-2fd637936879"
   }
   }

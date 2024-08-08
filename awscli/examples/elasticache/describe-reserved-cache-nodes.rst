@@ -2,7 +2,7 @@
 
 The following ``describe-reserved-cache-nodes`` example returns information about reserved cache nodes for this account, or about the specified reserved cache node.
 
-    aws elasticache describe-reserved-cache-nodes 
+    aws elasticache describe-reserved-cache-nodes
 
 Output::
 

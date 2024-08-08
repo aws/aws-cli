@@ -70,7 +70,7 @@ The following command creates an IAM Role ``Test-Role`` with tags. This example 
         --assume-role-policy-document file://Test-Role-Trust-Policy.json \
         --tags '{"Key": "Department", "Value": "Accounting"}' '{"Key": "Location", "Value": "Seattle"}'
 
-Output:: 
+Output::
 
     {
         "Role": {

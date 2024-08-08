@@ -30,5 +30,3 @@ Output::
     "MD5OfMessageAttributes": "00484c68...59e48f06",
     "MessageId": "da68f62c-0c07-4bee-bf5f-7e856EXAMPLE"
   }
-
-

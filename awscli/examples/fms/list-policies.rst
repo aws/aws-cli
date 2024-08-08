@@ -4,7 +4,7 @@ The following ``list-policies`` example retrieves the list of policies for the a
 
     aws fms list-policies \
         --max-items 2
-         
+
 Output::
 
     {
@@ -28,5 +28,5 @@ Output::
         ],
         "NextToken": "eyJOZXh0VG9rZW4iOiBudWxsLCAiYm90b190cnVuY2F0ZV9hbW91bnQiOiAyfQ=="
     }
-    
+
 For more information, see `Working with AWS Firewall Manager Policies <https://docs.aws.amazon.com/waf/latest/developerguide/working-with-policies.html>`__ in the *AWS WAF, AWS Firewall Manager, and AWS Shield Advanced Developer Guide*.

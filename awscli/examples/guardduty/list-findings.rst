@@ -3,11 +3,11 @@
 The following ``list-findings`` example displays a list of all findingIds for the current region sorted by severity from highest to lowest. ::
 
     aws guardduty list-findings \
-        --detector-id 12abc34d567e8fa901bc2d34eexample \ 
+        --detector-id 12abc34d567e8fa901bc2d34eexample \
         --sort-criteria '{"AttributeName": "severity","OrderBy":"DESC"}'
 
 Output::
-    
+
     {
         "FindingIds": [
             "04b8ab50fd29c64fc771b232dexample",
@@ -24,11 +24,11 @@ For more information, see `Findings <https://docs.aws.amazon.com/guardduty/lates
 The following ``list-findings`` example displays a list of all findingIds that match a specified finding type. ::
 
     aws guardduty list-findings \
-        --detector-id 12abc34d567e8fa901bc2d34eexample \ 
+        --detector-id 12abc34d567e8fa901bc2d34eexample \
         --finding-criteria  '{"Criterion":{"type": {"Eq":["UnauthorizedAccess:EC2/SSHBruteForce"]}}}'
 
 Output::
-    
+
     {
         "FindingIds": [
             "90b93de7aba69107f05bbe60bexample",
@@ -47,7 +47,7 @@ For more information, see `Findings <https://docs.aws.amazon.com/guardduty/lates
 The following ``list-findings`` example displays a list of all findingIds that are not archived, and involve the IAM user named "testuser", as specified in a JSON file. ::
 
     aws guardduty list-findings \
-        --detector-id 12abc34d567e8fa901bc2d34eexample \ 
+        --detector-id 12abc34d567e8fa901bc2d34eexample \
         --finding-criteria  file://myfile.json
 
 Contents of ``myfile.json``::
@@ -67,7 +67,7 @@ Contents of ``myfile.json``::
     }
 
 Output::
-    
+
     {
         "FindingIds": [
             "1ab92989eaf0e742df4a014d5example"

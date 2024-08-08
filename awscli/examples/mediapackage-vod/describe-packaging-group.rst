@@ -7,9 +7,9 @@ The following ``describe-packaging-group`` example displays all of the details o
 
 Output::
 
-    { 
-        "Arn": "arn:aws:mediapackage-vod:us-west-2:111122223333:packaging-groups/Packaging_group_1", 
-        "Id": "Packaging_group_1" 
+    {
+        "Arn": "arn:aws:mediapackage-vod:us-west-2:111122223333:packaging-groups/Packaging_group_1",
+        "Id": "Packaging_group_1"
     }
 
 For more information, see `Viewing Packaging Group Details <https://docs.aws.amazon.com/mediapackage/latest/ug/pkg-group-view.html>`__ in the *AWS Elemental MediaPackage User Guide*.

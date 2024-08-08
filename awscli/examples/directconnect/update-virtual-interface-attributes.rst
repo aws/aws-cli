@@ -46,6 +46,6 @@ Output::
         "awsDeviceV2": "loc1-26wz6vEXAMPLE",
         "tags": []
     }
-                  
+
 
 For more information, see `Setting Network MTU for Private Virtual Interfaces or Transit Virtual Interfaces <https://docs.aws.amazon.com/directconnect/latest/UserGuide/set-jumbo-frames-vif.html>`__ in the *AWS Direct Connect User Guide*.

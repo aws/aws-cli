@@ -9,7 +9,7 @@ Output::
 
     {
         "KeyId": "1234abcd-12ab-34cd-56ef-1234567890ab",
-        "KeyRotationEnabled": true,    
+        "KeyRotationEnabled": true,
         "NextRotationDate": "2024-02-14T18:14:33.587000+00:00",
         "RotationPeriodInDays": 365
     }

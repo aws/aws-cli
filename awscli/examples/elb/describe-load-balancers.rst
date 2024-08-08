@@ -8,7 +8,7 @@ Command::
 
 **To describe one of your load balancers**
 
-This example describes the specified load balancer. 
+This example describes the specified load balancer.
 
 Command::
 
@@ -106,4 +106,3 @@ Output::
       }
     ]
   }
-

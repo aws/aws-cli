@@ -2,8 +2,8 @@
 
 The following example shows how to get a list of all handshakes that are associated with the account of the credentials that were used to call the operation: ::
 
-	aws organizations list-handshakes-for-account 
-  
+	aws organizations list-handshakes-for-account
+
 The output includes a list of handshake structures with information about each handshake including its current state: ::
 
 	{

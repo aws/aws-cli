@@ -4,7 +4,7 @@ The following ``initiate-layer-upload`` example initiates an image layer upload 
 
     aws ecr initiate-layer-upload \
         --repository-name layer-test
-  
+
 Output::
 
     {

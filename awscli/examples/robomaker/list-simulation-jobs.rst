@@ -1,6 +1,6 @@
 **To list simulation jobs**
 
-This example lists simulation jobs. 
+This example lists simulation jobs.
 
 Command::
 

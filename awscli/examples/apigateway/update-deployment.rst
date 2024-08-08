@@ -7,8 +7,7 @@ Command::
 Output::
 
   {
-      "description": "newDescription", 
-      "id": "ztt4m2", 
+      "description": "newDescription",
+      "id": "ztt4m2",
       "createdDate": 1455218022
   }
-

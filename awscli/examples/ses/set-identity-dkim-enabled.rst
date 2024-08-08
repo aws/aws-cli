@@ -7,4 +7,3 @@ The following example uses the ``set-identity-dkim-enabled`` command to disable 
 For more information about Easy DKIM, see `Easy DKIM in Amazon SES`_ in the *Amazon Simple Email Service Developer Guide*.
 
 .. _`Easy DKIM in Amazon SES`: http://docs.aws.amazon.com/ses/latest/DeveloperGuide/easy-dkim.html
-

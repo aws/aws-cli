@@ -11,11 +11,11 @@ Contents of ``input.json``::
         "ResourceArn": "arn:aws:apprunner:us-east-1:123456789012:service/python-app/8fe1e10304f84fd2b0df550fe98a71fa",
         "Tags": [
             {
-                "Key": "Department", 
+                "Key": "Department",
                 "Value": "Retail"
             },
             {
-                "Key": "CustomerId", 
+                "Key": "CustomerId",
                 "Value": "56439872357912"
             }
         ]

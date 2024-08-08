@@ -7,7 +7,7 @@ This example shows how to upload a threat intel set to GuardDuty and activate it
         --name myThreatSet \
         --format TXT \
         --location s3://EXAMPLEBUCKET/threatlist.csv \
-        --activate 
+        --activate
 
 Output::
 

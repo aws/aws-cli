@@ -28,7 +28,7 @@ The following ``create-api`` example creates a WebSocket API with the specified 
     aws apigatewayv2 create-api \
         --name "myWebSocketApi" \
         --protocol-type WEBSOCKET \
-        --route-selection-expression '$request.body.action' 
+        --route-selection-expression '$request.body.action'
 
 Output::
 

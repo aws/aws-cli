@@ -7,7 +7,7 @@ Command::
 Output::
 
   {
-      "basePath": "v1", 
-      "restApiId": "1234w4321e", 
+      "basePath": "v1",
+      "restApiId": "1234w4321e",
       "stage": "api"
   }

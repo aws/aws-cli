@@ -9,7 +9,7 @@ Command::
 Output::
 
   {
-    "NetworkInterfaceId": "eni-23c49b68", 
+    "NetworkInterfaceId": "eni-23c49b68",
     "UnassignedIpv6Addresses": [
         "2001:db8:1234:1a00:3304:8879:34cf:4071"
     ]

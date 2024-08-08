@@ -11,23 +11,23 @@ The following ``create-workflow`` example creates a WDL workflow. ::
 ``workflow-crambam.zip`` is a ZIP archive containing a workflow definition. ``workflow-params.json`` defines runtime parameters for the workflow. ::
 
     {
-        "ref_fasta" : { 
+        "ref_fasta" : {
             "description": "Reference genome fasta file",
             "optional": false
         },
-        "ref_fasta_index" : { 
+        "ref_fasta_index" : {
             "description": "Index of the reference genome fasta file",
             "optional": false
         },
-        "ref_dict" : { 
+        "ref_dict" : {
             "description": "dictionary file for 'ref_fasta'",
             "optional": false
         },
-        "input_cram" : { 
+        "input_cram" : {
             "description": "The Cram file to convert to BAM",
             "optional": false
         },
-        "sample_name" : { 
+        "sample_name" : {
             "description": "The name of the input sample, used to name the output BAM",
             "optional": false
         }

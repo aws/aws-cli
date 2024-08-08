@@ -109,4 +109,3 @@ Output::
     }
 
 For more information, see `Create a Build Project (AWS CLI) <https://docs.aws.amazon.com/codebuild/latest/userguide/create-project.html#create-project-cli>`_ in the *AWS CodeBuild User Guide*.
-

@@ -3,7 +3,7 @@
 The following ``list-source-credentials`` example lists tokens for an AWS account connected to one Bitbucket account and one GitHub account. Each ``sourceCredentialsInfos`` object in the response contains connected source credentials information. ::
 
     aws codebuild list-source-credentials
-    
+
 Output::
 
     {

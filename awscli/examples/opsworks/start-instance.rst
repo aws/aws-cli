@@ -17,4 +17,3 @@ The following ``start-instance`` command starts a specified 24/7 instance. ::
 For more information, see `Manually Starting, Stopping, and Rebooting 24/7 Instances`_ in the *AWS OpsWorks User Guide*.
 
 .. _`Manually Starting, Stopping, and Rebooting 24/7 Instances`: http://docs.aws.amazon.com/opsworks/latest/userguide/workinginstances-starting.html
-

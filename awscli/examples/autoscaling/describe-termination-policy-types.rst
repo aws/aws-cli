@@ -19,4 +19,3 @@ Output::
     }
 
 For more information, see `Controlling which Auto Scaling instances terminate during scale in <https://docs.aws.amazon.com/autoscaling/ec2/userguide/as-instance-termination.html>`__ in the *Amazon EC2 Auto Scaling User Guide*.
-

@@ -17,4 +17,3 @@ Output::
     }
 
 For more information, see `Managing Thing Indexing <https://docs.aws.amazon.com/iot/latest/developerguide/managing-index.html>`__ in the *AWS IoT Developers Guide*.
-

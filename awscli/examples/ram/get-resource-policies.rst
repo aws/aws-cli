@@ -3,7 +3,7 @@
 The following ``get-resource-policies`` example displays the resource-based permission policies for the specified resource associated with a resource share. ::
 
     aws ram get-resource-policies \
-        --resource-arns arn:aws:ec2:us-west-2:123456789012:subnet/subnet-0250c25a1fEXAMPLE 
+        --resource-arns arn:aws:ec2:us-west-2:123456789012:subnet/subnet-0250c25a1fEXAMPLE
 
 Output::
 

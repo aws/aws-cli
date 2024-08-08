@@ -4,7 +4,7 @@ The following ``add-attachments-to-set`` example adds an image to a set that you
 
     aws support add-attachments-to-set \
         --attachment-set-id "as-2f5a6faa2a4a1e600-mu-nk5xQlBr70-G1cUos5LZkd38KOAHZa9BMDVzNEXAMPLE" \
-        --attachments fileName=troubleshoot-screenshot.png,data=base64-encoded-string 
+        --attachments fileName=troubleshoot-screenshot.png,data=base64-encoded-string
 
 Output::
 

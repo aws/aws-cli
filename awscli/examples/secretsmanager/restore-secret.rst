@@ -3,7 +3,7 @@
 The following ``restore-secret`` example restores a secret that was previously scheduled for deletion. ::
 
     aws secretsmanager restore-secret \
-        --secret-id MyTestSecret 
+        --secret-id MyTestSecret
 
 Output::
 

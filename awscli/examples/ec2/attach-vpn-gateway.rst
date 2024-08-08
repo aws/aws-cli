@@ -14,4 +14,3 @@ Output::
             "VpcId": "vpc-a01106c2"
         }
     }
-

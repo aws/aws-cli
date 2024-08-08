@@ -5,7 +5,7 @@ The following ``create-secret`` example creates a secret with two key-value pair
     aws secretsmanager create-secret \
         --name MyTestSecret \
         --description "My test secret created with the CLI." \
-        --secret-string "{\"user\":\"diegor\",\"password\":\"EXAMPLE-PASSWORD\"}" 
+        --secret-string "{\"user\":\"diegor\",\"password\":\"EXAMPLE-PASSWORD\"}"
 
 Output::
 
@@ -23,7 +23,7 @@ The following ``create-secret`` example creates a secret from credentials in a f
 
     aws secretsmanager create-secret \
         --name MyTestSecret \
-        --secret-string file://mycreds.json 
+        --secret-string file://mycreds.json
 
 Contents of ``mycreds.json``::
 

@@ -91,4 +91,3 @@ If the key already exists, you should see the following output::
     A client error (ConditionalCheckFailedException) occurred when calling the PutItem operation: The conditional request failed.
 
 For more information, see `Writing an Item <https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/WorkingWithItems.html#WorkingWithItems.WritingData>`__ in the *Amazon DynamoDB Developer Guide*.
-

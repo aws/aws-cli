@@ -4,7 +4,7 @@ The following ``phone-number-validate`` retrieves information about a phone numb
 
     aws pinpoint phone-number-validate \
         --number-validate-request PhoneNumber="+12065550142" \
-        --region us-east-1 
+        --region us-east-1
 
 Output::
 

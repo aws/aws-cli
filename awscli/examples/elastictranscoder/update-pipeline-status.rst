@@ -50,4 +50,3 @@ Output::
         "Arn": "arn:aws:elastictranscoder:us-west-2:123456789012:pipeline/1111111111111-abcde1"
     }
  }
-

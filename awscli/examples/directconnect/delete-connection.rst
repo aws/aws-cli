@@ -7,11 +7,11 @@ The following ``delete-connection`` command deletes the specified connection::
 Output::
 
   {
-      "ownerAccount": "123456789012", 
-      "connectionId": "dxcon-fg31dyv6", 
-      "connectionState": "deleted", 
-      "bandwidth": "1Gbps", 
-      "location": "TIVIT", 
-      "connectionName": "Connection to AWS", 
+      "ownerAccount": "123456789012",
+      "connectionId": "dxcon-fg31dyv6",
+      "connectionState": "deleted",
+      "bandwidth": "1Gbps",
+      "location": "TIVIT",
+      "connectionName": "Connection to AWS",
       "region": "sa-east-1"
   }

@@ -31,7 +31,7 @@ The output repeats back the contents of the JSON file, plus the following values
 
 * ``Arn`` for the input. The last part of the ARN is the unique input ID.
 * ``Attached Channels``, which is always empty for a newly created input.
-* ``Destinations``, which is empty in this example because it is used only with a PUSH input. 
+* ``Destinations``, which is empty in this example because it is used only with a PUSH input.
 * ``Id`` for the input, the same as the ID in the ARN.
 * ``MediaConnectFlows``, which is empty in this example because it is used only with an input of type MediaConnect.
 * ``SecurityGroups``, which is empty in this example because it is used only with a PUSH input.

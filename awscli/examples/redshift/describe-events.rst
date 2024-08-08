@@ -32,5 +32,3 @@ Result::
 
     2013-01-22T19:17:03.640Z	myclusterparametergroup	Cluster parameter group myclusterparametergroup has been created.	cluster-parameter-group
     RESPONSEMETADATA	8e5fe765-64c9-11e2-bce3-e56f52c50e17
-
-

@@ -12,7 +12,7 @@ Output::
 
     {
         "RouteAnalysis": {
-            "GlobalNetworkId": "global-network-00aa0aaa0b0aaa000 
+            "GlobalNetworkId": "global-network-00aa0aaa0b0aaa000
             "OwnerAccountId": "1111222233333",
             "RouteAnalysisId": "a1873de1-273c-470c-1a2bc2345678",
             "StartTimestamp": 1695760154.0,

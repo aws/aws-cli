@@ -3,7 +3,7 @@
 The following ``delete-app`` example deletes an application (project). ::
 
     aws pinpoint delete-app \
-        --application-id 810c7aab86d42fb2b56c8c966example 
+        --application-id 810c7aab86d42fb2b56c8c966example
 
 Output::
 

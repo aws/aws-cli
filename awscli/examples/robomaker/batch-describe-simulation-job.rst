@@ -1,6 +1,6 @@
 **To batch describe simulation jobs**
 
-The following ``batch-describe-simulation-job`` example retrieves details for the three specified simulation jobs. 
+The following ``batch-describe-simulation-job`` example retrieves details for the three specified simulation jobs.
 
 Command::
 

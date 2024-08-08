@@ -9,4 +9,3 @@ Output::
   {
       "value": "#set($inputRoot = $input.path('$'))\n{ }"
   }
-

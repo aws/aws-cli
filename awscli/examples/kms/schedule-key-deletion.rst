@@ -9,7 +9,7 @@ The following ``schedule-key-deletion`` example schedules the specified customer
         --key-id arn:aws:kms:us-west-2:123456789012:key/1234abcd-12ab-34cd-56ef-1234567890ab \
         --pending-window-in-days 15
 
-The response includes the key ARN, key state, waiting period (``PendingWindowInDays``), and the deletion date in Unix time. To view the deletion date in local time, use the AWS KMS console. 
+The response includes the key ARN, key state, waiting period (``PendingWindowInDays``), and the deletion date in Unix time. To view the deletion date in local time, use the AWS KMS console.
 KMS keys in the ``PendingDeletion`` key state cannot be used in cryptographic operations. ::
 
     {

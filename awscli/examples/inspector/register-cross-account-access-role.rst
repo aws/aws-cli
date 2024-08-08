@@ -7,4 +7,3 @@ The following ``register-cross-account-access-role`` command registers the IAM r
 For more information, see `Setting up Amazon Inspector`_ in the *Amazon Inspector* guide.
 
 .. _`Setting up Amazon Inspector`: https://docs.aws.amazon.com/inspector/latest/userguide/inspector_settingup.html
-

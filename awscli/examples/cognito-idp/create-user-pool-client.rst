@@ -5,7 +5,7 @@ This example creates a new user pool client with two explicit authorization flow
 Command::
 
   aws cognito-idp create-user-pool-client --user-pool-id us-west-2_aaaaaaaaa  --client-name MyNewClient --no-generate-secret --explicit-auth-flows "USER_PASSWORD_AUTH" "ADMIN_NO_SRP_AUTH"
-  
+
 Output::
 
   {
@@ -23,4 +23,3 @@ Output::
         "AllowedOAuthFlowsUserPoolClient": false
     }
   }
-

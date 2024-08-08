@@ -37,7 +37,7 @@ Output::
             },
             "LoadBalancerArn": "arn:aws:elasticloadbalancing:us-west-2:123456789012:loadbalancer/app/my-load-balancer/50dc6c495c0c9188"
         }
-    ]  
+    ]
   }
 
 **To describe all load balancers**
@@ -46,4 +46,4 @@ This example describes all of your load balancers.
 
 Command::
 
-  aws elbv2 describe-load-balancers 
+  aws elbv2 describe-load-balancers

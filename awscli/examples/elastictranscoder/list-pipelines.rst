@@ -4,7 +4,7 @@ This example retrieves a list of ElasticTranscoder pipelines.
 
 Command::
 
-  aws elastictranscoder list-pipelines 
+  aws elastictranscoder list-pipelines
 
 Output::
 
@@ -80,5 +80,4 @@ Output::
             "Arn": "arn:aws:elastictranscoder:us-west-2:123456789012:pipeline/3333333333333-abcde1"
         }
     ]
- }	
-
+ }

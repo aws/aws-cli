@@ -25,4 +25,4 @@ Output::
         }
     }
 
-For more information, see `Manually allocate a CIDR to a pool to reserve IP address space <https://docs.aws.amazon.com/vpc/latest/ipam/manually-allocate-ipam.html>`__ in the *Amazon VPC IPAM User Guide*. 
+For more information, see `Manually allocate a CIDR to a pool to reserve IP address space <https://docs.aws.amazon.com/vpc/latest/ipam/manually-allocate-ipam.html>`__ in the *Amazon VPC IPAM User Guide*.

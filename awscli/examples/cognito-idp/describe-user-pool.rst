@@ -1,6 +1,6 @@
 **To describe a user pool**
 
-This example describes a user pool with the user pool id us-west-2_aaaaaaaaa. 
+This example describes a user pool with the user pool id us-west-2_aaaaaaaaa.
 
 Command::
 
@@ -264,4 +264,4 @@ Output::
         "Id": "us-west-2_aaaaaaaaa",
         "LambdaConfig": {}
     }
-  }  
+  }

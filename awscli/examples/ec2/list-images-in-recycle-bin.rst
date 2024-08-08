@@ -9,10 +9,10 @@ Output::
     {
         "Images": [
             {
-                "RecycleBinEnterTime": "2022-03-14T15:35:08.000Z", 
-                "Description": "Monthly AMI One", 
-                "RecycleBinExitTime": "2022-03-15T15:35:08.000Z", 
-                "Name": "AMI_01", 
+                "RecycleBinEnterTime": "2022-03-14T15:35:08.000Z",
+                "Description": "Monthly AMI One",
+                "RecycleBinExitTime": "2022-03-15T15:35:08.000Z",
+                "Name": "AMI_01",
                 "ImageId": "ami-0111222333444abcd"
             }
         ]

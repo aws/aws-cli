@@ -29,7 +29,7 @@ Output::
             "callerReactions": [],
             "reactionCounts": []
         },
-        "location": { 
+        "location": {
             "filePath": "cl_sample.js",
             "filePosition": 1232,
             "relativeFileVersion": "AFTER"

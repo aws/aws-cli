@@ -4,7 +4,7 @@ The following ``modify-endpoint`` example adds an extra connection attribute to 
 
     aws dms modify-endpoint \
         --endpoint-arn "arn:aws:dms:us-east-1:123456789012:endpoint:GUVAFG34EECUOJ6QVZ56DAHT3U" \
-        --extra-connection-attributes "compressionType=GZIP" 
+        --extra-connection-attributes "compressionType=GZIP"
 
 Output::
 
@@ -32,4 +32,3 @@ Output::
     }
 
 For more information, see `Working with AWS DMS Endpoints` <https://docs.aws.amazon.com/dms/latest/userguide/CHAP_Endpoints.html>`__ in the *AWS Database Migration Service User Guide*.
-

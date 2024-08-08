@@ -8,6 +8,6 @@ Alias names must begin with ``alias/``. Do not use alias names that begin with `
         --alias-name alias/example-alias \
         --target-key-id 1234abcd-12ab-34cd-56ef-1234567890ab
 
-This command doesn't return any output. To see the new alias, use the ``list-aliases`` command. 
+This command doesn't return any output. To see the new alias, use the ``list-aliases`` command.
 
 For more information, see `Using aliases <https://docs.aws.amazon.com/kms/latest/developerguide/kms-alias.html>`__ in the *AWS Key Management Service Developer Guide*.

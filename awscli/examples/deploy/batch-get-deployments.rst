@@ -51,7 +51,7 @@ Output::
                     "code": "HEALTH_CONSTRAINTS"
                 },
                 "deploymentGroupName": "MyOther_DG",
-                "revision": {		  
+                "revision": {
                     "revisionType": "S3",
                     "s3Location": {
                     "bundleType": "zip",

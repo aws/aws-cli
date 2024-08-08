@@ -7,13 +7,13 @@ Linux::
     aws ec2 describe-addresses-attribute \
         --allocation-ids eipalloc-abcdef01234567890 \
         --attribute domain-name
-        
+
 Windows::
 
     aws ec2 describe-addresses-attribute ^
         --allocation-ids eipalloc-abcdef01234567890 ^
         --attribute domain-name
-        
+
 Output::
 
     {

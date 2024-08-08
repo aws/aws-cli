@@ -3,7 +3,7 @@
 The following ``delete-db-cluster-parameter-group`` example deletes the Amazon DocumentDB parameter group ``sample-parameter-group``. ::
 
     aws docdb delete-db-cluster-parameter-group \
-        --db-cluster-parameter-group-name sample-parameter-group 
+        --db-cluster-parameter-group-name sample-parameter-group
 
 This command produces no output.
 

@@ -5,7 +5,7 @@ The following ``get-resource-definition-version`` example retrieves information 
     aws greengrass get-resource-definition-version \
         --resource-definition-id "ad8c101d-8109-4b0e-b97d-9cc5802ab658" \
         --resource-definition-version-id "26e8829a-491a-464d-9c87-664bf6f6f2be"
-    
+
 Output::
 
     {

@@ -4,7 +4,7 @@ The following ``list-tags-for-resource`` example lists the tags and their values
 
     aws greengrass list-tags-for-resource \
         --resource-arn "arn:aws:greengrass:us-west-2:123456789012:/greengrass/definition/resources/ad8c101d-8109-4b0e-b97d-9cc5802ab658"
-    
+
 Output::
 
     {

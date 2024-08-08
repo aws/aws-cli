@@ -2,7 +2,7 @@
 
 The following ``describe-db-clusters`` example displays details for the Amazon DocumentDB cluster ``sample-cluster``. By omitting the ``--db-cluster-identifier`` parameter you can get information of up to 100 clusters. ::
 
-    aws docdb describe-db-clusters 
+    aws docdb describe-db-clusters
         --db-cluster-identifier sample-cluster
 
 Output::

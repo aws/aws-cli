@@ -18,4 +18,3 @@ Output::
           "UnhealthyThreshold": 2
       }
    }
-

@@ -5,7 +5,7 @@ In this example, for peering connection ``pcx-aaaabbb``, the owner of the reques
 Command::
 
   aws ec2 modify-vpc-peering-connection-options --vpc-peering-connection-id pcx-aaaabbbb --requester-peering-connection-options AllowEgressFromLocalClassicLinkToRemoteVpc=true
-  
+
 Output::
 
   {
@@ -16,7 +16,7 @@ Output::
 
 **To enable communication over a VPC peering connection from your local VPC to a remote ClassicLink connection**
 
-In this example, the owner of the accepter VPC modifies the VPC peering connection options to enable the local VPC to communicate with the ClassicLink connection in the peer VPC. 
+In this example, the owner of the accepter VPC modifies the VPC peering connection options to enable the local VPC to communicate with the ClassicLink connection in the peer VPC.
 
 Command::
 
@@ -37,7 +37,7 @@ In this example, the owner of the requester VPC modifies the VPC peering connect
 Command::
 
   aws ec2 modify-vpc-peering-connection-options --vpc-peering-connection-id pcx-aaaabbbb --requester-peering-connection-options AllowDnsResolutionFromRemoteVpc=true
-  
+
 Output::
 
   {

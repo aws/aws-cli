@@ -3,7 +3,7 @@
 The following example shows you how to get a list of SCPs, as specified by the filter parameter: ::
 
 	aws organizations list-policies --filter SERVICE_CONTROL_POLICY
-  
+
 The output includes a list of policies with summary information: ::
 
 	{

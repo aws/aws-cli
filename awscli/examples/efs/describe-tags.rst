@@ -11,7 +11,7 @@ Output::
         "Tags": [
             {
                 "Key": "Name",
-                "Value": "my-file-system"            
+                "Value": "my-file-system"
             },
             {
                 "Key": "Department",

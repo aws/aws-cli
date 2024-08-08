@@ -1,4 +1,4 @@
-**Example 1: To create a table for a Kinesis data stream** 
+**Example 1: To create a table for a Kinesis data stream**
 
 The following ``create-table`` example creates a table in the AWS Glue Data Catalog that describes a Kinesis data stream. ::
 
@@ -22,13 +22,13 @@ The following ``create-table`` example creates a table in the AWS Glue Data Cata
                 "classification":"json"} \
             }' \
         --profile my-profile \
-        --endpoint https://glue.us-east-1.amazonaws.com 
+        --endpoint https://glue.us-east-1.amazonaws.com
 
 This command produces no output.
 
 For more information, see `Defining Tables in the AWS Glue Data Catalog <https://docs.aws.amazon.com/glue/latest/dg/tables-described.html>`__ in the *AWS Glue Developer Guide*.
 
-**Example 2: To create a table for a Kafka data store** 
+**Example 2: To create a table for a Kafka data store**
 
 The following ``create-table`` example creates a table in the AWS Glue Data Catalog that describes a Kafka data store. ::
 
@@ -52,15 +52,15 @@ The following ``create-table`` example creates a table in the AWS Glue Data Cata
                     "separatorChar":","} \
                 }' \
             --profile my-profile \
-            --endpoint https://glue.us-east-1.amazonaws.com 
+            --endpoint https://glue.us-east-1.amazonaws.com
 
 This command produces no output.
 
 For more information, see `Defining Tables in the AWS Glue Data Catalog <https://docs.aws.amazon.com/glue/latest/dg/tables-described.html>`__ in the *AWS Glue Developer Guide*.
 
-**Example 3: To create a table for a AWS S3 data store** 
+**Example 3: To create a table for a AWS S3 data store**
 
-The following ``create-table`` example creates a table in the AWS Glue Data Catalog that 
+The following ``create-table`` example creates a table in the AWS Glue Data Catalog that
 describes a AWS Simple Storage Service (AWS S3) data store. ::
 
         aws glue create-table \
@@ -79,7 +79,7 @@ describes a AWS Simple Storage Service (AWS S3) data store. ::
                     "classification":"json"} \
                 }' \
             --profile my-profile \
-            --endpoint https://glue.us-east-1.amazonaws.com 
+            --endpoint https://glue.us-east-1.amazonaws.com
 
 This command produces no output.
 

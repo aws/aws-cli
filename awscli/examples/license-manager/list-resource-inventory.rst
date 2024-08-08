@@ -2,7 +2,7 @@
 
 The following ``list-resource-inventory`` example lists the resources managed using Systems Manager inventory. ::
 
-    aws license-manager list-resource-inventory 
+    aws license-manager list-resource-inventory
 
 Output::
 

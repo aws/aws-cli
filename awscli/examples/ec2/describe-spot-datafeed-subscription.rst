@@ -16,4 +16,3 @@ Output::
           "State": "Active"
       }
   }
-

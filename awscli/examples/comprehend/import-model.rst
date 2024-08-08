@@ -1,6 +1,6 @@
 **To import a model**
 
-The following ``import-model`` example imports a model from a different AWS account. The document classifier model in account ``444455556666`` 
+The following ``import-model`` example imports a model from a different AWS account. The document classifier model in account ``444455556666``
 has a resource-based policy allowing account ``111122223333`` to import the model. ::
 
     aws comprehend import-model \

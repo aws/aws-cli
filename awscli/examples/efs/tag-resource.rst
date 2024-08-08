@@ -4,7 +4,7 @@ The following ``tag-resource`` example adds the tag ``Department=Business Intell
 
     aws efs tag-resource \
         --resource-id fs-c7a0456e \
-        --tags Key=Department,Value="Business Intelligence" 
+        --tags Key=Department,Value="Business Intelligence"
 
 This command produces no output.
 

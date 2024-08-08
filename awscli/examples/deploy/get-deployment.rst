@@ -20,7 +20,7 @@ Output::
             "deploymentConfigName": "CodeDeployDefault.OneAtATime",
             "creator": "user",
             "description": "My WordPress app deployment",
-            "revision": {		  
+            "revision": {
                 "revisionType": "S3",
                 "s3Location":  {
                 "bundleType": "zip",

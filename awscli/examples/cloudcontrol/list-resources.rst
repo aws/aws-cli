@@ -4,18 +4,18 @@ The following ``list-resources`` example lists the AWS::Kinesis::Stream resource
 
     aws cloudcontrol list-resources \
         --type-name AWS::Kinesis::Stream
- 
+
 Output::
 
     {
-        "TypeName": "AWS::Kinesis::Stream", 
+        "TypeName": "AWS::Kinesis::Stream",
         "ResourceDescriptions": [
             {
-                "Identifier": "MyKinesisStream", 
+                "Identifier": "MyKinesisStream",
                 "Properties": "{\"Name\":\"MyKinesisStream\"}"
-            }, 
+            },
             {
-                "Identifier": "AnotherStream", 
+                "Identifier": "AnotherStream",
                 "Properties": "{\"Name\":\"AnotherStream\"}"
             }
         ]

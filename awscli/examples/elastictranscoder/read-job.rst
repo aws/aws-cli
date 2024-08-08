@@ -62,4 +62,3 @@ Output::
         "Arn": "arn:aws:elastictranscoder:us-west-2:123456789012:job/1533838012294-example"
     }
  }
-

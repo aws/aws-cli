@@ -13,6 +13,6 @@ Output::
       {
         "InstanceId": "i-1234567890abcdef0"
       }
-    ], 
+    ],
     "UnsuccessfulInstanceCreditSpecifications": []
   }

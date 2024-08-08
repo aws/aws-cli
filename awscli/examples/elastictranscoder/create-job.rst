@@ -7,7 +7,7 @@ The following ``create-job`` example creates a job for ElasticTranscoder. ::
         --inputs file://inputs.json \
         --outputs file://outputs.json \
         --output-key-prefix "recipes/" \
-        --user-metadata file://user-metadata.json  
+        --user-metadata file://user-metadata.json
 
 Contents of ``inputs.json``::
 
@@ -19,7 +19,7 @@ Contents of ``inputs.json``::
         "Interlaced":"auto",
         "Container":"mp4"
     }]
-   
+
 Contents of outputs.json::
 
     [

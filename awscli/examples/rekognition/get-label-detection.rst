@@ -10,51 +10,51 @@ Output::
     {
         "Labels": [
             {
-                "Timestamp": 0, 
+                "Timestamp": 0,
                 "Label": {
-                    "Instances": [], 
-                    "Confidence": 50.19071578979492, 
+                    "Instances": [],
+                    "Confidence": 50.19071578979492,
                     "Parents": [
                         {
                             "Name": "Person"
-                        }, 
+                        },
                         {
                             "Name": "Crowd"
                         }
-                    ], 
+                    ],
                     "Name": "Audience"
                 }
-            }, 
+            },
             {
-                "Timestamp": 0, 
+                "Timestamp": 0,
                 "Label": {
-                    "Instances": [], 
-                    "Confidence": 55.74115753173828, 
+                    "Instances": [],
+                    "Confidence": 55.74115753173828,
                     "Parents": [
                         {
                             "Name": "Room"
-                        }, 
+                        },
                         {
                             "Name": "Indoors"
-                        }, 
+                        },
                         {
                             "Name": "School"
                         }
-                    ], 
+                    ],
                     "Name": "Classroom"
                 }
             }
-        ], 
-        "JobStatus": "SUCCEEDED", 
-        "LabelModelVersion": "2.0", 
+        ],
+        "JobStatus": "SUCCEEDED",
+        "LabelModelVersion": "2.0",
         "VideoMetadata": {
-            "Format": "QuickTime / MOV", 
-            "FrameRate": 29.970617294311523, 
-            "Codec": "h264", 
-            "DurationMillis": 6806, 
-            "FrameHeight": 1080, 
+            "Format": "QuickTime / MOV",
+            "FrameRate": 29.970617294311523,
+            "Codec": "h264",
+            "DurationMillis": 6806,
+            "FrameHeight": 1080,
             "FrameWidth": 1920
-        }, 
+        },
         "NextToken": "BMugzAi4L72IERzQdbpyMQuEFBsjlo5W0Yx3mfG+sR9mm98E1/CpObenspRfs/5FBQFs4X7G"
     }
 

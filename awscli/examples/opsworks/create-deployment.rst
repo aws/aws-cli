@@ -6,7 +6,7 @@ The following ``create-deployment`` example deploys an app to a specified stack.
 
     aws opsworks create-deployment \
         --stack-id cfb7e082-ad1d-4599-8e81-de1c39ab45bf \
-        --app-id 307be5c8-d55d-47b5-bd6e-7bd417c6c7eb 
+        --app-id 307be5c8-d55d-47b5-bd6e-7bd417c6c7eb
         --command "{\"Name\":\"deploy\"}"
 
 Output::

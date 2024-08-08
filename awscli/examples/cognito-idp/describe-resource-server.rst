@@ -1,6 +1,6 @@
 **To describe a resource server**
 
-This example describes the resource server weather.example.com. 
+This example describes the resource server weather.example.com.
 
 Command::
 
@@ -29,4 +29,4 @@ Output::
         ]
     }
   }
-  
+

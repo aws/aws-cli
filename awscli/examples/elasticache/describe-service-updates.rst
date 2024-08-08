@@ -2,7 +2,7 @@
 
 The following ``describe-service-updates`` example returns details about service updates. ::
 
-    aws elasticache describe-service-updates 
+    aws elasticache describe-service-updates
 
 Output::
 

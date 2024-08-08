@@ -18,8 +18,8 @@ Output::
                     "sg-1234"
                 ],
                 "VpcSubnetIds": [
-                    "subnetgroup1", 
-                    "subnetgroup2" 
+                    "subnetgroup1",
+                    "subnetgroup2"
                 ],
                 "Endpoint": "proxyEndpoint1.endpoint.proxy-ab0cd1efghij.us-east-1.rds.amazonaws.com",
                 "CreatedDate": "2023-04-05T16:09:33.452000+00:00",
@@ -36,8 +36,8 @@ Output::
                     "sg-5678"
                 ],
                 "VpcSubnetIds": [
-                    "subnetgroup1", 
-                    "subnetgroup2" 
+                    "subnetgroup1",
+                    "subnetgroup2"
                 ],
                 "Endpoint": "proxyEndpoint2.endpoint.proxy-cd1ef2klmnop.us-east-1.rds.amazonaws.com",
                 "CreatedDate": "2023-04-05T16:09:33.452000+00:00",

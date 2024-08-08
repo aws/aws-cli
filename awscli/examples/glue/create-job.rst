@@ -16,7 +16,7 @@ The following ``create-job`` example creates a streaming job that runs a script 
             "--class":"GlueApp" \
         }' \
         --profile my-profile \
-        --endpoint https://glue.us-east-1.amazonaws.com 
+        --endpoint https://glue.us-east-1.amazonaws.com
 
 Contents of ``test_script.scala``::
 

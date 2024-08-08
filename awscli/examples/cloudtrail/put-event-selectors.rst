@@ -1,6 +1,6 @@
 **Example 1: Configure a trail to log management events and data events by using advanced event selectors**
 
-You can add advanced event selectors, and conditions for your advanced event selectors, up to a maximum of 500 values for all conditions and selectors on a trail. You can use advanced event selectors to log all available data event types. You can use either advanced event selectors or basic event selectors, but not both. If you apply advanced event selectors to a trail, any existing basic event selectors are overwritten. 
+You can add advanced event selectors, and conditions for your advanced event selectors, up to a maximum of 500 values for all conditions and selectors on a trail. You can use advanced event selectors to log all available data event types. You can use either advanced event selectors or basic event selectors, but not both. If you apply advanced event selectors to a trail, any existing basic event selectors are overwritten.
 
 The following example creates an advanced event selector for a trail named ``myTrail`` to log all management events, log S3 PutObject and DeleteObject API calls for all but one S3 bucket, log data API calls for a Lambda function named ``myFunction``, and log Publish API calls on an SNS topic named ``myTopic``. ::
 
@@ -109,7 +109,7 @@ Output::
         ]
     }
 
-For more information, see `Log events by using advanced event selectors <https://docs.aws.amazon.com/awscloudtrail/latest/userguide/logging-data-events-with-cloudtrail.html#creating-data-event-selectors-advanced>`__ in the *AWS CloudTrail User Guide*. 
+For more information, see `Log events by using advanced event selectors <https://docs.aws.amazon.com/awscloudtrail/latest/userguide/logging-data-events-with-cloudtrail.html#creating-data-event-selectors-advanced>`__ in the *AWS CloudTrail User Guide*.
 
 **Example 2: Configure event selectors for a trail to log all management events and data events**
 
@@ -148,7 +148,7 @@ Output::
         "TrailARN": "arn:aws:cloudtrail:us-east-2:123456789012:trail/TrailName"
     }
 
-For more information, see `Log events by using basic event selectors <https://docs.aws.amazon.com/awscloudtrail/latest/userguide/logging-data-events-with-cloudtrail.html#creating-data-event-selectors-basic>`__ in the *AWS CloudTrail User Guide*. 
+For more information, see `Log events by using basic event selectors <https://docs.aws.amazon.com/awscloudtrail/latest/userguide/logging-data-events-with-cloudtrail.html#creating-data-event-selectors-basic>`__ in the *AWS CloudTrail User Guide*.
 
 **Example 3: Configure event selectors for a trail to log management events, all S3 data events on S3 objects, and all Lambda data events on functions in your account**
 
@@ -184,4 +184,4 @@ Output::
         "TrailARN": "arn:aws:cloudtrail:us-east-2:123456789012:trail/TrailName2"
     }
 
-For more information, see `Log events by using basic event selectors <https://docs.aws.amazon.com/awscloudtrail/latest/userguide/logging-data-events-with-cloudtrail.html#creating-data-event-selectors-basic>`__ in the *AWS CloudTrail User Guide*. 
+For more information, see `Log events by using basic event selectors <https://docs.aws.amazon.com/awscloudtrail/latest/userguide/logging-data-events-with-cloudtrail.html#creating-data-event-selectors-basic>`__ in the *AWS CloudTrail User Guide*.

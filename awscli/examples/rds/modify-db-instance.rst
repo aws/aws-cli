@@ -94,7 +94,7 @@ Output::
         "AutoMinorVersionUpgrade": true,
         "ReadReplicaDBInstanceIdentifiers": [],
         "LicenseModel": "general-public-license",
-        
+
         ... output ommited ...
         }
     }

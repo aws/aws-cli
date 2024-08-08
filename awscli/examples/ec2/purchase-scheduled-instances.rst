@@ -43,5 +43,5 @@ Output::
             "NextSlotStartTime": "2016-01-31T09:00:00Z",
             "InstanceType": "c4.large"
         }
-    ]  
+    ]
   }

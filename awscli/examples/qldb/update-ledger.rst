@@ -32,7 +32,7 @@ Output::
         "DeletionProtection": false,
         "Name": "myExampleLedger",
         "State": "ACTIVE",
-        "EncryptionDescription": { 
+        "EncryptionDescription": {
             "KmsKeyArn": "arn:aws:kms:us-west-2:123456789012:key/a1b2c3d4-5678-90ab-cdef-EXAMPLE11111",
             "EncryptionStatus": "UPDATING"
         }

@@ -7,12 +7,12 @@ Command::
 Output::
 
   {
-      "authType": "custom", 
-      "name": "testAuthorizer", 
-      "authorizerUri": "arn:aws:apigateway:us-west-2:lambda:path/2015-03-31/functions/arn:aws:lambda:us-west-2:123412341234:function:customAuthorizer/invocations",         
-      "authorizerResultTtlInSeconds": 300, 
-      "identitySource": "method.request.header.Authorization", 
-      "type": "TOKEN", 
+      "authType": "custom",
+      "name": "testAuthorizer",
+      "authorizerUri": "arn:aws:apigateway:us-west-2:lambda:path/2015-03-31/functions/arn:aws:lambda:us-west-2:123412341234:function:customAuthorizer/invocations",
+      "authorizerResultTtlInSeconds": 300,
+      "identitySource": "method.request.header.Authorization",
+      "type": "TOKEN",
       "id": "gfi4n3"
   }
 
@@ -25,11 +25,11 @@ Command::
 Output::
 
   {
-      "authType": "custom", 
-      "name": "testAuthorizer", 
-      "authorizerUri": "arn:aws:apigateway:us-west-2:lambda:path/2015-03-31/functions/arn:aws:lambda:us-west-2:123412341234:function:newAuthorizer/invocations", 
-      "authorizerResultTtlInSeconds": 300, 
-      "identitySource": "method.request.header.Authorization", 
-      "type": "TOKEN", 
+      "authType": "custom",
+      "name": "testAuthorizer",
+      "authorizerUri": "arn:aws:apigateway:us-west-2:lambda:path/2015-03-31/functions/arn:aws:lambda:us-west-2:123412341234:function:newAuthorizer/invocations",
+      "authorizerResultTtlInSeconds": 300,
+      "identitySource": "method.request.header.Authorization",
+      "type": "TOKEN",
       "id": "gfi4n3"
   }

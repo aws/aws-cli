@@ -3,11 +3,11 @@
 The following ``get-sampled-requests`` retrieves the sampled web requests for the specified web ACL, rule metric, and time frame. ::
 
     aws wafv2 get-sampled-requests \
-        --web-acl-arn arn:aws:wafv2:us-west-2:123456789012:regional/webacl/test-cli/a1b2c3d4-5678-90ab-cdef-EXAMPLE11111 \ 
+        --web-acl-arn arn:aws:wafv2:us-west-2:123456789012:regional/webacl/test-cli/a1b2c3d4-5678-90ab-cdef-EXAMPLE11111 \
         --rule-metric-name AWS-AWSManagedRulesSQLiRuleSet \
         --scope=REGIONAL \
         --time-window StartTime=2020-02-12T20:00Z,EndTime=2020-02-12T21:10Z \
-        --max-items 100 
+        --max-items 100
 
 Output::
 

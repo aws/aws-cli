@@ -1,6 +1,6 @@
 **To retire a grant on a customer master key**
 
-The following ``retire-grant`` example deletes a grant from a KMS key. 
+The following ``retire-grant`` example deletes a grant from a KMS key.
 
 The following example command specifies the ``grant-id`` and the ``key-id`` parameters. The value of the ``key-id`` parameter must be the key ARN of the KMS key. ::
 

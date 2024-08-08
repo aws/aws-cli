@@ -7,7 +7,7 @@ Command::
 Output::
 
   {
-      "statusCode": "200", 
+      "statusCode": "200",
       "responseParameters": {
           "method.response.header.Access-Control-Allow-Origin": "'*'"
       }
@@ -18,4 +18,3 @@ Output::
 Command::
 
   aws apigateway update-integration-response --rest-api-id 1234123412 --resource-id 3gapai --http-method GET --status-code 200 --patch-operations op='remove',path='/responseParameters/method.response.header.Access-Control-Allow-Origin'
-

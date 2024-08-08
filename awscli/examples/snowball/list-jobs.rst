@@ -7,8 +7,8 @@ The following ``list-jobs`` example displays an array of ``JobListEntry`` object
 Output::
 
     {
-        "JobListEntries": [ 
-            { 
+        "JobListEntries": [
+            {
                 "CreationDate": 2016-09-27T14:50Z,
                  "Description": "Important Photos 2016-08-11",
                  "IsMaster": TRUE,

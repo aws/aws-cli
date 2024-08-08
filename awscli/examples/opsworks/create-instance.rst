@@ -22,4 +22,3 @@ Then pass that name to the `hostname` argument.
 For more information, see `Adding an Instance to a Layer`_ in the *AWS OpsWorks User Guide*.
 
 .. _`Adding an Instance to a Layer`: http://docs.aws.amazon.com/opsworks/latest/userguide/workinginstances-add.html
-

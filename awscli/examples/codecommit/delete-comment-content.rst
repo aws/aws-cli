@@ -8,17 +8,17 @@ You can only delete the content of a comment if you created the comment. This ex
 Output::
 
     {
-        "comment": { 
-            "creationDate": 1508369768.142,  
+        "comment": {
+            "creationDate": 1508369768.142,
             "deleted": true,
             "lastModifiedDate": 1508369842.278,
             "clientRequestToken": "123Example",
             "commentId": "ff30b348EXAMPLEb9aa670f",
             "authorArn": "arn:aws:iam::111111111111:user/Li_Juan",
             "callerReactions": [],
-            "reactionCounts": 
+            "reactionCounts":
             {
                 "CLAP" : 1
             }
-        } 
+        }
     }

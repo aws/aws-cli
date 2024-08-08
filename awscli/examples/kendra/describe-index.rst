@@ -8,7 +8,7 @@ The following ``describe-index`` gets information about an Amazon Kendra index. 
 Output::
 
     {
-        "CapacityUnits": { 
+        "CapacityUnits": {
             "QueryCapacityUnits": 0,
             "StorageCapacityUnits": 0
         },

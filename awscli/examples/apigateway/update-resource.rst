@@ -7,9 +7,9 @@ Command::
 Output::
 
   {
-      "path": "/resource", 
-      "pathPart": "resource", 
-      "id": "1a2b3c", 
+      "path": "/resource",
+      "pathPart": "resource",
+      "id": "1a2b3c",
       "parentId": "3c2b1a"
   }
 
@@ -22,8 +22,8 @@ Command::
 Output::
 
   {
-      "path": "/newresourcename", 
-      "pathPart": "newresourcename", 
-      "id": "1a2b3c", 
+      "path": "/newresourcename",
+      "pathPart": "newresourcename",
+      "id": "1a2b3c",
       "parentId": "3c2b1a"
   }

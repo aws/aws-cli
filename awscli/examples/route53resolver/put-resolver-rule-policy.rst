@@ -1,6 +1,6 @@
 **To share a Resolver rule with another AWS account**
 
-The following ``put-resolver-rule-policy`` example specifies a Resolver rule that you want to share with another AWS account, the account that you want to share the rule with, and the rule-related operations that you want the account to be able to perform on the rules. 
+The following ``put-resolver-rule-policy`` example specifies a Resolver rule that you want to share with another AWS account, the account that you want to share the rule with, and the rule-related operations that you want the account to be able to perform on the rules.
 
 **Note** You must run this command using credentials from the same account that created the rule. ::
 

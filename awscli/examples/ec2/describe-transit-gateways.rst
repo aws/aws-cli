@@ -3,7 +3,7 @@
 The following ``describe-transit-gateways`` example retrieves details about your transit gateways. ::
 
     aws ec2 describe-transit-gateways
-    
+
 Output::
 
     {

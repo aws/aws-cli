@@ -1,12 +1,12 @@
 **To create a user import job**
 
-This example creates a user import job named MyImportJob. 
+This example creates a user import job named MyImportJob.
 
 For more information about importing users, see `Importing Users into User Pools From a CSV File`_.
 
 Command::
 
-  aws cognito-idp create-user-import-job --user-pool-id us-west-2_aaaaaaaaa --job-name MyImportJob --cloud-watch-logs-role-arn arn:aws:iam::111111111111:role/CognitoCloudWatchLogsRole 
+  aws cognito-idp create-user-import-job --user-pool-id us-west-2_aaaaaaaaa --job-name MyImportJob --cloud-watch-logs-role-arn arn:aws:iam::111111111111:role/CognitoCloudWatchLogsRole
 
 Output::
 
@@ -24,7 +24,7 @@ Output::
         "FailedUsers": 0
     }
   }
-  
+
 Upload the .csv file with curl using the pre-signed URL:
 
 Command::

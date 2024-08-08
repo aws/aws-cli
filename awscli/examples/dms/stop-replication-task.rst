@@ -3,7 +3,7 @@
 The following ``stop-replication-task`` example stops a task. ::
 
     aws dms stop-replication-task \
-        --replication-task-arn arn:aws:dms:us-east-1:123456789012:task:K55IUCGBASJS5VHZJIINA45FII         
+        --replication-task-arn arn:aws:dms:us-east-1:123456789012:task:K55IUCGBASJS5VHZJIINA45FII
 
 Output::
 

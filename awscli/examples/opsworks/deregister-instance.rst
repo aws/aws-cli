@@ -11,4 +11,3 @@ The following ``deregister-instance`` command deregisters a registered instance 
 For more information, see `Deregistering a Registered Instance`_ in the *AWS OpsWorks User Guide*.
 
 .. _`Deregistering a Registered Instance`: http://docs.aws.amazon.com/opsworks/latest/userguide/registered-instances-unassign.html
-

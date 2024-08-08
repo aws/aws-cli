@@ -15,13 +15,13 @@ Contents of ``update-distribution-configuration.json``::
                 "region": "us-west-2",
                 "amiDistributionConfiguration": {
                     "name": "Name {{imagebuilder:buildDate}}",
-                    "description": "An example image name with parameter references"    
+                    "description": "An example image name with parameter references"
                 }
             },
             {
                 "region": "eu-west-2",
                 "amiDistributionConfiguration": {
-                    "name": "My {{imagebuilder:buildVersion}} image {{imagebuilder:buildDate}}"    
+                    "name": "My {{imagebuilder:buildVersion}} image {{imagebuilder:buildDate}}"
                 }
             }
         ]

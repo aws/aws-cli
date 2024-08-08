@@ -2,7 +2,7 @@
 
 This example command describes the configurations of two specified servers. The action detects the type of asset from the configuration ID. Only one type of asset is allowed per command.
 
-Command:: 
+Command::
 
   aws discovery describe-configurations --configuration-ids "d-server-099385097ef9fbcfb" "d-server-0c4f2dd1fee22c6c1"
 
@@ -111,7 +111,7 @@ Output::
 	            "application.configurationId": "d-application-0ac39bc0e4fad0e42"
            },
            {
-                    "application.serverCount": "0",		
+                    "application.serverCount": "0",
 	            "application.name": "Application-67890",
 	            "application.lastModifiedTime": "2016-12-13 23:53:33.0",
 	            "application.description": "",

@@ -16,5 +16,3 @@ This example revokes access to a CIDR range.
 Command::
 
    aws redshift revoke-cluster-security-group-ingress --cluster-security-group-name mysecuritygroup --cidrip 192.168.100.100/32
-
-

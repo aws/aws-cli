@@ -10,14 +10,14 @@ Output::
 
  {
     "ConnectionNotification": {
-        "ConnectionNotificationState": "Enabled", 
-        "ConnectionNotificationType": "Topic", 
-        "ServiceId": "vpce-svc-1237881c0d25a3abc", 
+        "ConnectionNotificationState": "Enabled",
+        "ConnectionNotificationType": "Topic",
+        "ServiceId": "vpce-svc-1237881c0d25a3abc",
         "ConnectionEvents": [
             "Accept",
             "Connect"
-        ], 
-        "ConnectionNotificationId": "vpce-nfn-008776de7e03f5abc", 
+        ],
+        "ConnectionNotificationId": "vpce-nfn-008776de7e03f5abc",
         "ConnectionNotificationArn": "arn:aws:sns:us-east-2:123456789012:VpceNotification"
     }
   }

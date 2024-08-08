@@ -9,7 +9,7 @@ Use the session information in the return value to call `admin-respond-to-auth-c
 Command::
 
   aws cognito-idp admin-initiate-auth --user-pool-id us-west-2_aaaaaaaaa --client-id 3n4b5urk1ft4fl3mg5e62d9ado --auth-flow ADMIN_NO_SRP_AUTH --auth-parameters USERNAME=jane@example.com,PASSWORD=password
-  
+
 Output::
 
   {
@@ -21,5 +21,5 @@ Output::
         "userAttributes": "{\"email_verified\":\"true\",\"phone_number_verified\":\"true\",\"phone_number\":\"+01xxx5550100\",\"email\":\"jane@example.com\"}"
     }
   }
-  
+
 .. _`admin-respond-to-auth-challenge`: https://docs.aws.amazon.com/cli/latest/reference/cognito-idp/admin-respond-to-auth-challenge.html

@@ -3,7 +3,7 @@
 The following ``describe-instance-refreshes`` example returns a description of all instance refresh requests for the specified Auto Scaling group, including the status message and (if available) the status reason. ::
 
     aws autoscaling describe-instance-refreshes \
-        --auto-scaling-group-name my-asg 
+        --auto-scaling-group-name my-asg
 
 Output::
 

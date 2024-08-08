@@ -46,7 +46,7 @@ Contents of `file://waf-rule-list.json`::
             },
             "Action":{
                 "Allow":{
-    
+
                 }
             },
             "VisibilityConfig":{
@@ -66,7 +66,7 @@ Contents of `file://waf-rule-list.json`::
             },
             "Action":{
                 "Block":{
-    
+
                 }
             },
             "VisibilityConfig":{
@@ -79,7 +79,7 @@ Contents of `file://waf-rule-list.json`::
 
 Output::
 
-    { 
+    {
         "Capacity":15
     }
 

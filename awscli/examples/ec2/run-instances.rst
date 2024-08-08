@@ -5,7 +5,7 @@ The following ``run-instances`` example launches a single instance of type ``t2.
     aws ec2 run-instances \
         --image-id ami-0abcdef1234567890 \
         --instance-type t2.micro \
-        --key-name MyKeyPair 
+        --key-name MyKeyPair
 
 Output::
 
@@ -122,7 +122,7 @@ The following ``run-instances`` example requests a public IP address for an inst
         --subnet-id subnet-08fc749671b2d077c \
         --security-group-ids sg-0b0384b66d7d692f9 \
         --associate-public-ip-address \
-        --key-name MyKeyPair 
+        --key-name MyKeyPair
 
 For an example of the output for ``run-instances``, see Example 1.
 
@@ -173,7 +173,7 @@ The following ``run-instances`` example adds a tag with a key of ``webserver`` a
         --subnet-id subnet-08fc749671b2d077c \
         --key-name MyKeyPair \
         --security-group-ids sg-0b0384b66d7d692f9 \
-        --tag-specifications 'ResourceType=instance,Tags=[{Key=webserver,Value=production}]' 'ResourceType=volume,Tags=[{Key=cost-center,Value=cc123}]' 
+        --tag-specifications 'ResourceType=instance,Tags=[{Key=webserver,Value=production}]' 'ResourceType=volume,Tags=[{Key=cost-center,Value=cc123}]'
 
 For an example of the output for ``run-instances``, see Example 1.
 
@@ -188,9 +188,9 @@ The following ``run-instances`` example passes user data in a file called ``my_s
         --subnet-id subnet-08fc749671b2d077c \
         --key-name MyKeyPair \
         --security-group-ids sg-0b0384b66d7d692f9 \
-        --user-data file://my_script.txt 
+        --user-data file://my_script.txt
 
-For an example of the output for ``run-instances``, see Example 1. 
+For an example of the output for ``run-instances``, see Example 1.
 
 For more information about instance user data, see `Working with instance user data <https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/instancedata-add-user-data.html>`__ in the *Amazon EC2 User Guide*.
 

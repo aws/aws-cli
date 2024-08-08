@@ -5,7 +5,7 @@ The following ``create-regex-pattern-set`` command creates a regex pattern set w
     aws wafv2 create-regex-pattern-set \
         --name regexPatterSet01 \
         --scope REGIONAL \
-        --description 'Test web-acl' \ 
+        --description 'Test web-acl' \
         --regular-expression-list '[{"RegexString": "/[0-9]*/"},{"RegexString": "/[a-z]*/"}]'
 
 Output::

@@ -7,8 +7,8 @@ Command::
 Output::
 
   {
-      "path": "/path", 
-      "pathPart": "path", 
-      "id": "zwo0y3", 
+      "path": "/path",
+      "pathPart": "path",
+      "id": "zwo0y3",
       "parentId": "uyokt6ij2g"
   }

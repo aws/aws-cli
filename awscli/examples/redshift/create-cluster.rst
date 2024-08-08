@@ -41,5 +41,3 @@ Result::
           "RequestId": "7cf4bcfc-64dd-11e2-bea9-49e0ce183f07"
        }
     }
-
-

@@ -4,7 +4,7 @@ The following ``apply-archive-rule`` example applies an archive rule to existing
 
     aws accessanalyzer apply-archive-rule \
         --analyzer-arn arn:aws:access-analyzer:us-west-2:111122223333:analyzer/UnusedAccess-ConsoleAnalyzer-organization \
-        --rule-name MyArchiveRule 
+        --rule-name MyArchiveRule
 
 This command produces no output.
 

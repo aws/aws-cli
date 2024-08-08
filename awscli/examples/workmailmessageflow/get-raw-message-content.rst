@@ -13,7 +13,7 @@ Contents of file ``test`` after command runs::
     To: =?UTF-8?Q?mateojackson=40example=2Enet?= <mateojackson@example.net>
     Date: Thu, 7 Nov 2019 19:22:46 +0000
     Mime-Version: 1.0
-    Content-Type: multipart/alternative; 
+    Content-Type: multipart/alternative;
      boundary="=_EXAMPLE+"
     References: <mail.1ab23c45.5de6.7f890g123hj45678@storage.wm.amazon.com>
     X-Priority: 3 (Normal)
@@ -21,25 +21,25 @@ Contents of file ``test`` after command runs::
     Thread-Index: EXAMPLE
     Thread-Topic: Hello World
     Message-Id: <mail.1ab23c45.5de6.7f890g123hj45678@storage.wm.amazon.com>
-    
+
     This is a multi-part message in MIME format. Your mail reader does not
     understand MIME message format.
     --=_EXAMPLE+
     Content-Type: text/plain; charset=UTF-8
     Content-Transfer-Encoding: 7bit
-    
+
     hello world
-    
-    
+
+
     --=_EXAMPLE+
     Content-Type: text/html; charset=utf-8
     Content-Transfer-Encoding: quoted-printable
-    
+
     <!DOCTYPE HTML><html>
     <head>
     <meta name=3D"Generator" content=3D"Amazon WorkMail v3.0-4510">
     <meta http-equiv=3D"Content-Type" content=3D"text/html; charset=3Dutf-8">=
-    
+
     <title>testing</title>
     </head>
     <body>

@@ -1,6 +1,6 @@
 **To disable a transition to a stage in a pipeline**
 
-This example disables transitions into the Beta stage of the MyFirstPipeline pipeline in AWS CodePipeline. 
+This example disables transitions into the Beta stage of the MyFirstPipeline pipeline in AWS CodePipeline.
 
 Command::
 

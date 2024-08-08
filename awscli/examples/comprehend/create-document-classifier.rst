@@ -7,8 +7,8 @@ The following ``create-document-classifier`` example begins the training process
         --data-access-arn arn:aws:comprehend:us-west-2:111122223333:pii-entities-detection-job/123456abcdeb0e11022f22a11EXAMPLE \
         --input-data-config "S3Uri=s3://DOC-EXAMPLE-BUCKET/" \
         --language-code en
-    
-Output:: 
+
+Output::
 
     {
         "DocumentClassifierArn": "arn:aws:comprehend:us-west-2:111122223333:document-classifier/example-classifier"

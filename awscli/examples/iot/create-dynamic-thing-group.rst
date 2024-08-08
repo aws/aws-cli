@@ -18,4 +18,3 @@ Output::
     }
 
 For more information, see `Dynamic Thing Groups <https://docs.aws.amazon.com/iot/latest/developerguide/dynamic-thing-groups.html>`__ in the *AWS IoT Developers Guide*.
-

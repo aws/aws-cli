@@ -8,7 +8,7 @@ The following ``describe-db-proxy-target-groups`` example returns information ab
 Output::
 
     {
-    "TargetGroups": 
+    "TargetGroups":
         {
             "DBProxyName": "proxyExample",
             "TargetGroupName": "default",

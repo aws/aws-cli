@@ -61,4 +61,3 @@ For the ``ComplianceResourceTypes`` attribute, this JSON code limits the scope t
 If the command succeeds, AWS Config returns no output. To verify the rule configuration, run the `describe-config-rules`__ command, and specify the rule name.
 
 .. __: http://docs.aws.amazon.com/cli/latest/reference/configservice/describe-config-rules.html
-

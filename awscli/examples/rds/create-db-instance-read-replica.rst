@@ -4,7 +4,7 @@ This example creates a read replica of an existing DB instance named ``test-inst
 
     aws rds create-db-instance-read-replica \
         --db-instance-identifier test-instance-repl \
-        --source-db-instance-identifier test-instance 
+        --source-db-instance-identifier test-instance
 
 Output::
 

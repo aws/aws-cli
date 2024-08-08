@@ -1,7 +1,7 @@
 **To create a deployment job**
 
-This example creates a deployment job for fleet MyFleet. It includes an environment variable named "ENVIRONMENT". 
-It also attaches a tag named "Region". 
+This example creates a deployment job for fleet MyFleet. It includes an environment variable named "ENVIRONMENT".
+It also attaches a tag named "Region".
 
 Command::
 

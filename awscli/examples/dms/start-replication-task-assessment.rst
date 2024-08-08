@@ -3,7 +3,7 @@
 The following ``start-replication-task-assessment`` example starts a replication task assessment. ::
 
     aws dms start-replication-task-assessment \
-        --replication-task-arn arn:aws:dms:us-east-1:123456789012:task:K55IUCGBASJS5VHZJIINA45FII  
+        --replication-task-arn arn:aws:dms:us-east-1:123456789012:task:K55IUCGBASJS5VHZJIINA45FII
 
 Output::
 
@@ -25,4 +25,3 @@ Output::
     }
 
 For more information, see `Creating a Task Assessment Report <https://docs.aws.amazon.com/dms/latest/userguide/CHAP_Tasks.AssessmentReport.html>`__ in the *AWS Database Migration Service User Guide*.
-

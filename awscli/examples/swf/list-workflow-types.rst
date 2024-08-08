@@ -30,4 +30,3 @@ See Also
 
 -  `ListWorkflowTypes <https://docs.aws.amazon.com/amazonswf/latest/apireference/API_ListWorkflowTypes.html>`_
    in the *Amazon Simple Workflow Service API Reference*
-

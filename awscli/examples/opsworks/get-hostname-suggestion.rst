@@ -9,7 +9,7 @@ the default, Layer_Dependent. ::
 *Output*::
 
   {
-    "Hostname": "java-app2", 
+    "Hostname": "java-app2",
     "LayerId": "888c5645-09a5-4d0e-95a8-812ef1db76a4"
   }
 
@@ -18,4 +18,3 @@ the default, Layer_Dependent. ::
 For more information, see `Create a New Stack`_ in the *AWS OpsWorks User Guide*.
 
 .. _`Create a New Stack`: http://docs.aws.amazon.com/opsworks/latest/userguide/workingstacks-creating.html
-

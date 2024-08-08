@@ -77,7 +77,7 @@ Output::
 The following ``create-snapshots`` example creates a snapshot of all volumes attached to the specified instance except for the root volume. ::
 
     aws ec2 create-snapshots \
-        --instance-specification InstanceId=i-1234567890abcdef0,ExcludeBootVolume=true 
+        --instance-specification InstanceId=i-1234567890abcdef0,ExcludeBootVolume=true
 
 See example 1 for sample output.
 

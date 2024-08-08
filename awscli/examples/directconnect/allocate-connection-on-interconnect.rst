@@ -7,13 +7,13 @@ The following ``allocate-connection-on-interconnect`` command creates a hosted c
 Output::
 
   {
-      "partnerName": "TIVIT", 
-      "vlan": 101, 
-      "ownerAccount": "123456789012", 
-      "connectionId": "dxcon-ffzc51m1", 
-      "connectionState": "ordering", 
-      "bandwidth": "500Mbps", 
-      "location": "TIVIT", 
-      "connectionName": "mydcinterconnect", 
+      "partnerName": "TIVIT",
+      "vlan": 101,
+      "ownerAccount": "123456789012",
+      "connectionId": "dxcon-ffzc51m1",
+      "connectionState": "ordering",
+      "bandwidth": "500Mbps",
+      "location": "TIVIT",
+      "connectionName": "mydcinterconnect",
       "region": "sa-east-1"
   }

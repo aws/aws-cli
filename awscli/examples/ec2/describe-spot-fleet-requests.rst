@@ -48,7 +48,7 @@ Output::
                 "IamFleetRole": "arn:aws:iam::123456789012:role/my-spot-fleet-role"
             },
             "SpotFleetRequestState": "active"
-        },  
+        },
         {
             "SpotFleetRequestId": "sfr-306341ed-9739-402e-881b-ce47bEXAMPLE",
             "SpotFleetRequestConfig": {

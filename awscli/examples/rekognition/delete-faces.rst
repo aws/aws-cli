@@ -4,7 +4,7 @@ The following ``delete-faces`` command deletes the specified face from a collect
 
     aws rekognition delete-faces \
         --collection-id MyCollection
-        --face-ids '["0040279c-0178-436e-b70a-e61b074e96b0"]' 
+        --face-ids '["0040279c-0178-436e-b70a-e61b074e96b0"]'
 
 Output::
 

@@ -8,12 +8,12 @@ Command::
 
 Output::
 
-  {    
+  {
     "SecurityGroupsReferenceSet": [
       {
         "ReferencingVpcId": "vpc-aaaaaaaa ",
-        "GroupId": "sg-bbbbb22222", 
-        "VpcPeeringConnectionId": "pcx-b04deed9"      
-      }   
+        "GroupId": "sg-bbbbb22222",
+        "VpcPeeringConnectionId": "pcx-b04deed9"
+      }
     ]
   }

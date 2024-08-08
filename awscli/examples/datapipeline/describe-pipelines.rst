@@ -3,7 +3,7 @@
 This example describes the specified pipeline::
 
    aws datapipeline describe-pipelines --pipeline-ids df-00627471SOVYZEXAMPLE
-   
+
 The following is example output::
 
   {

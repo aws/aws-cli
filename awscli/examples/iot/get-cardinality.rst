@@ -15,15 +15,15 @@ You can use the following setup script to create 10 things representing 10 tempe
 Example output of the setup script::
 
     {
-        "version": 1, 
-        "thingName": "TempSensor0", 
-        "defaultClientId": "TempSensor0", 
+        "version": 1,
+        "thingName": "TempSensor0",
+        "defaultClientId": "TempSensor0",
         "attributes": {
-            "rackId": "Rack1", 
-            "stateNormal": "true", 
+            "rackId": "Rack1",
+            "stateNormal": "true",
             "temperature": "70"
-        }, 
-        "thingArn": "arn:aws:iot:us-east-1:123456789012:thing/TempSensor0", 
+        },
+        "thingArn": "arn:aws:iot:us-east-1:123456789012:thing/TempSensor0",
         "thingId": "example1-90ab-cdef-fedc-ba987example"
     }
 

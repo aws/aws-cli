@@ -2,7 +2,7 @@
 
 The following ``list-keys`` example gets the KMS keys in an account and Region. This command returns both AWS managed keys and customer managed keys. ::
 
-    aws kms list-keys 
+    aws kms list-keys
 
 Output::
 
@@ -20,7 +20,7 @@ Output::
                 "KeyArn": "arn:aws:kms:us-east-2:111122223333:key/1a2b3c4d-5e6f-1a2b-3c4d-5e6f1a2b3c4d",
                 "KeyId": "1a2b3c4d-5e6f-1a2b-3c4d-5e6f1a2b3c4d"
             }
-        ]    
+        ]
     }
 
 For more information, see `Viewing Keys <https://docs.aws.amazon.com/kms/latest/developerguide/viewing-keys.html>`__ in the *AWS Key Management Service Developer Guide*.

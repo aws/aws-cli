@@ -6,4 +6,3 @@ This example generates a stickiness policy with sticky session lifetimes control
 Command::
 
     aws elb create-lb-cookie-stickiness-policy --load-balancer-name my-load-balancer --policy-name my-duration-cookie-policy --cookie-expiration-period 60
-

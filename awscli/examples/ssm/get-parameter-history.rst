@@ -4,7 +4,7 @@ The following ``get-parameter-history`` example lists the history of changes for
 
     aws ssm get-parameter-history \
         --name "MyStringParameter"
-  
+
 Output::
 
     {

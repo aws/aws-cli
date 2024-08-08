@@ -37,12 +37,12 @@ Output::
                     "AlbumTitle": {
                         "S": "Somewhat Famous"
                     }
-                }, 
+                },
                 {
                     "AlbumTitle": {
                         "S": "Blue Sky Blues"
                     }
-                }, 
+                },
                 {
                     "AlbumTitle": {
                         "S": "Louder Than Ever"
@@ -50,7 +50,7 @@ Output::
                 }
             ]
         },
-        "UnprocessedKeys": {}, 
+        "UnprocessedKeys": {},
         "ConsumedCapacity": [
             {
                 "TableName": "MusicCollection",

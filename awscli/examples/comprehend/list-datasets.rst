@@ -5,7 +5,7 @@ The following ``list-datasets`` example lists all datasets associated with a fly
     aws comprehend list-datasets \
         --flywheel-arn arn:aws:comprehend:us-west-2:111122223333:flywheel/flywheel-entity
 
-Output:: 
+Output::
 
     {
         "DatasetPropertiesList": [

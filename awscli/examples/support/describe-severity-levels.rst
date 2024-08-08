@@ -5,7 +5,7 @@ The following ``describe-severity-levels`` example lists the available severity 
     aws support describe-severity-levels
 
 Output::
-  
+
     {
         "severityLevels": [
             {

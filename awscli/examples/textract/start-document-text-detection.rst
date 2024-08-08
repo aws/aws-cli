@@ -1,6 +1,6 @@
 **To start detecting text in a multi-page document**
 
-The following ``start-document-text-detection`` example shows how to start asynchronous detection of text in a multi-page document. 
+The following ``start-document-text-detection`` example shows how to start asynchronous detection of text in a multi-page document.
 
 Linux/macOS::
 

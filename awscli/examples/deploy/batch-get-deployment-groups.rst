@@ -83,4 +83,4 @@ Output::
     }
 
 For more information, see `BatchGetDeploymentGroups <https://docs.aws.amazon.com/codedeploy/latest/APIReference/API_BatchGetDeploymentGroups.html>`_ in the *AWS CodeDeploy API Reference*.
-    
+

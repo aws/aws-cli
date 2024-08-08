@@ -6,7 +6,7 @@ The following ``list-storage-configurations`` lists all composition storage conf
 
 Output::
 
-    {  
+    {
         "storageConfigurations": [
             {
                 "arn": "arn:aws:ivs:ap-northeast-1:123456789012:storage-configuration/abcdABCDefgh",

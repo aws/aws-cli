@@ -13,9 +13,9 @@ Output::
             "DBInstanceClass": "db.r4.large",
             "Engine": "aurora-postgresql",
             "DBInstanceStatus": "deleting",
-    
+
         ...output omitted...
-    
+
         }
     }
 
@@ -45,9 +45,9 @@ Output::
             "DBClusterParameterGroup": "default.aurora-postgresql10",
             "DBSubnetGroup": "default-vpc-aa11bb22",
             "Status": "available",
-        
+
         ...output omitted...
-        
+
         }
     }
 

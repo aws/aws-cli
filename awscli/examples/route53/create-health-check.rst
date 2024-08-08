@@ -23,4 +23,3 @@ To add the health check to a Route 53 resource record set, use the ``change-reso
 For more information, see `Amazon Route 53 Health Checks and DNS Failover`_ in the *Amazon Route 53 Developer Guide*.
 
 .. _`Amazon Route 53 Health Checks and DNS Failover`: http://docs.aws.amazon.com/Route53/latest/DeveloperGuide/dns-failover.html
-

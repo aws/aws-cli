@@ -15,5 +15,5 @@ Output::
         "UpdatedAt": "2018-11-07T03:24:22.938Z",
         "CreatedAt": "2017-12-22T22:51:31.940Z"
     }
-    
+
 For more information, see `Concepts and Terminology <https://docs.aws.amazon.com/guardduty/latest/ug/guardduty_concepts.html>`__ in the GuardDuty User Guide.

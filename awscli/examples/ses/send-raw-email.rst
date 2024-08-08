@@ -29,4 +29,3 @@ For more information on sending raw email, see `Sending Raw Email Using the Amaz
 
 .. _`Sending Raw Email Using the Amazon SES API`: http://docs.aws.amazon.com/ses/latest/DeveloperGuide/send-email-raw.html
 .. _`Verifying Email Addresses and Domains in Amazon SES`: http://docs.aws.amazon.com/ses/latest/DeveloperGuide/verify-addresses-and-domains.html
-

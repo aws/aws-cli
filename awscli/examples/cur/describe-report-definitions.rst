@@ -7,7 +7,7 @@ Command::
   aws cur --region us-east-1 describe-report-definitions --max-items 5
 
 Output::
-	
+
 	{
       "ReportDefinitions": [
         {

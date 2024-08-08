@@ -4,8 +4,8 @@ In this example, you're a delegated IPAM admin who wants to create and share a r
 
 Important
 
-* This example includes both the ``--region`` and ``--operating-regions`` options because, while they are optional, they must be configured in a particular way to successfully integrate a resource discovery with an IPAM. 
-  * ``--operating-regions`` must match the Regions where you have resources that you want IPAM to discover. If there are Regions where you do not want IPAM to manage the IP addresses (for example for compliance reasons), do not include them. 
+* This example includes both the ``--region`` and ``--operating-regions`` options because, while they are optional, they must be configured in a particular way to successfully integrate a resource discovery with an IPAM.
+  * ``--operating-regions`` must match the Regions where you have resources that you want IPAM to discover. If there are Regions where you do not want IPAM to manage the IP addresses (for example for compliance reasons), do not include them.
   * ``--region`` must match the home Region of the IPAM you want to associate it with. You must create the resource discovery in the same Region that the IPAM was created in. For example, if the IPAM you are associating with was created in us-east-1, include ``--region us-east-1`` in the request.
 * Both the ``--region`` and ``--operating-regions`` options default to the Region you're running the command in if you don't specify them.
 
@@ -25,7 +25,7 @@ Output::
         "IpamResourceDiscovery":{
             "OwnerId": "149977607591",
             "IpamResourceDiscoveryId": "ipam-res-disco-0257046d8aa78b8bc",
-            "IpamResourceDiscoveryArn": "arn:aws:ec2::149977607591:ipam-resource-discovery/ipam-res-disco-0257046d8aa78b8bc", 
+            "IpamResourceDiscoveryArn": "arn:aws:ec2::149977607591:ipam-resource-discovery/ipam-res-disco-0257046d8aa78b8bc",
             "IpamResourceDiscoveryRegion": "us-east-1",
             "Description": "'Example-resource-discovery'",
             "OperatingRegions":[

@@ -9,23 +9,23 @@ Output::
   {
    "ResourceTagList": [
        {
-           "ResourceId": "arn:aws:cloudtrail:us-east-1:123456789012:trail/Trail1", 
+           "ResourceId": "arn:aws:cloudtrail:us-east-1:123456789012:trail/Trail1",
            "TagsList": [
                {
-                   "Value": "Alice", 
+                   "Value": "Alice",
                    "Key": "name"
-               }, 
+               },
                {
-                   "Value": "us", 
+                   "Value": "us",
                    "Key": "location"
                }
            ]
-       }, 
+       },
        {
-           "ResourceId": "arn:aws:cloudtrail:us-east-1:123456789012:trail/Trail2", 
+           "ResourceId": "arn:aws:cloudtrail:us-east-1:123456789012:trail/Trail2",
            "TagsList": [
                {
-                   "Value": "Bob", 
+                   "Value": "Bob",
                    "Key": "name"
                }
            ]

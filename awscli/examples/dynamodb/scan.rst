@@ -12,7 +12,7 @@ The following ``scan`` example scans the entire ``MusicCollection`` table, and t
 Contents of ``expression-attribute-names.json``::
 
     {
-        "#ST": "SongTitle", 
+        "#ST": "SongTitle",
         "#AT":"AlbumTitle"
     }
 
@@ -25,26 +25,26 @@ Contents of ``expression-attribute-values.json``::
 Output::
 
     {
-        "Count": 2, 
+        "Count": 2,
         "Items": [
             {
                 "SongTitle": {
                     "S": "Call Me Today"
-                }, 
+                },
                 "AlbumTitle": {
                     "S": "Somewhat Famous"
                 }
-            }, 
+            },
             {
                 "SongTitle": {
                     "S": "Scared of My Shadow"
-                }, 
+                },
                 "AlbumTitle": {
                     "S": "Blue Sky Blues"
                 }
             }
-        ], 
-        "ScannedCount": 3, 
+        ],
+        "ScannedCount": 3,
         "ConsumedCapacity": null
     }
 

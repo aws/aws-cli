@@ -4,7 +4,7 @@ The following ``list-core-definitions`` example lists all versions of the specie
 
     aws greengrass list-core-definition-versions \
         --core-definition-id "eaf280cb-138c-4d15-af36-6f681a1348f7"
-    
+
 Output::
 
     {

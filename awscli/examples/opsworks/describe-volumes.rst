@@ -28,4 +28,3 @@ The following example describes a stack's EBS volumes. ::
 For more information, see `Resource Management`_ in the *AWS OpsWorks User Guide*.
 
 .. _`Resource Management`: http://docs.aws.amazon.com/opsworks/latest/userguide/resources.html
-

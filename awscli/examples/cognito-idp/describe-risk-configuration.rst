@@ -1,6 +1,6 @@
 **To describe a risk configuration**
 
-This example describes the risk configuration associated with pool us-west-2_aaaaaaaaa. 
+This example describes the risk configuration associated with pool us-west-2_aaaaaaaaa.
 
 Command::
 

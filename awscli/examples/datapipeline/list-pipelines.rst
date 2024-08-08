@@ -3,7 +3,7 @@
 This example lists your pipelines::
 
    aws datapipeline list-pipelines
-   
+
 The following is example output::
 
   {

@@ -19,9 +19,9 @@ Output::
                 "Port": 3306,
                 "HostedZoneId": "Z1PVIF0EXAMPLE"
             },
-            
+
         ... output omitted...
-        
+
         }
     }
 

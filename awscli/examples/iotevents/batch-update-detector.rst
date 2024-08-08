@@ -10,14 +10,14 @@ Contents of ``budFulton-A32.json``::
     {
         "detectors": [
             {
-                "messageId": "00001", 
-                "detectorModelName": "motorDetectorModel", 
-                "keyValue": "Fulton-A32", 
+                "messageId": "00001",
+                "detectorModelName": "motorDetectorModel",
+                "keyValue": "Fulton-A32",
                 "state": {
-                    "stateName": "Normal", 
+                    "stateName": "Normal",
                     "variables": [
                         {
-                            "name": "pressureThresholdBreached", 
+                            "name": "pressureThresholdBreached",
                             "value": "0"
                         }
                     ],
@@ -27,7 +27,7 @@ Contents of ``budFulton-A32.json``::
             }
         ]
     }
-    
+
 Output::
 
     {

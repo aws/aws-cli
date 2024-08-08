@@ -10,28 +10,28 @@ Output::
 
   {
     "LaunchTemplateVersion": {
-        "VersionDescription": "WebVersion2", 
-        "LaunchTemplateId": "lt-0abcd290751193123", 
-        "LaunchTemplateName": "WebServers", 
-        "VersionNumber": 2, 
-        "CreatedBy": "arn:aws:iam::123456789012:root", 
+        "VersionDescription": "WebVersion2",
+        "LaunchTemplateId": "lt-0abcd290751193123",
+        "LaunchTemplateName": "WebServers",
+        "VersionNumber": 2,
+        "CreatedBy": "arn:aws:iam::123456789012:root",
         "LaunchTemplateData": {
-            "ImageId": "ami-c998b6b2", 
-            "InstanceType": "t2.micro", 
+            "ImageId": "ami-c998b6b2",
+            "InstanceType": "t2.micro",
             "NetworkInterfaces": [
                 {
                     "Ipv6Addresses": [
                         {
                             "Ipv6Address": "2001:db8:1234:1a00::123"
                         }
-                    ], 
-                    "DeviceIndex": 0, 
-                    "SubnetId": "subnet-7b16de0c", 
+                    ],
+                    "DeviceIndex": 0,
+                    "SubnetId": "subnet-7b16de0c",
                     "AssociatePublicIpAddress": true
                 }
             ]
-        }, 
-        "DefaultVersion": false, 
+        },
+        "DefaultVersion": false,
         "CreateTime": "2017-12-01T13:35:46.000Z"
     }
   }

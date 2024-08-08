@@ -19,4 +19,3 @@ Output::
     {
         "CopyProductToken": "copyproduct-abc5defgjkdji"
     }
-

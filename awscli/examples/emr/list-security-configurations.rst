@@ -1,7 +1,7 @@
 **To list security configurations in the current region**
- 
+
 Command::
- 
+
     aws emr list-security-configurations
 
 Output::
@@ -18,4 +18,4 @@ Output::
             }
         ]
     }
-    
+

@@ -9,7 +9,7 @@ Output::
   {
       "virtualGateways": [
           {
-              "virtualGatewayId": "vgw-aba37db6", 
+              "virtualGatewayId": "vgw-aba37db6",
               "virtualGatewayState": "available"
           }
       ]

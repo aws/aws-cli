@@ -7,4 +7,3 @@ The following example uses the ``set-identity-notification-topic`` command to sp
 For more information about notifications, see `Using Notifications With Amazon SES`_ in the *Amazon Simple Email Service Developer Guide*.
 
 .. _`Using Notifications With Amazon SES`: http://docs.aws.amazon.com/ses/latest/DeveloperGuide/notifications.html
-

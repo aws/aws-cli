@@ -5,7 +5,7 @@ The following ``get-group-certificate-authority`` example retrieves the certific
     aws greengrass get-group-certificate-authority \
         --group-id "1013db12-8b58-45ff-acc7-704248f66731" \
         --certificate-authority-id "f0430e1736ea8ed30cc5d5de9af67a7e3586bad9ae4d89c2a44163f65fdd8cf6"
-    
+
 Output::
 
     {

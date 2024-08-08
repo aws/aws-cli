@@ -3,7 +3,7 @@
 The following ``start-stream-processor`` command starts the specified video stream processor. ::
 
     aws rekognition start-stream-processor \
-        --name my-stream-processor 
+        --name my-stream-processor
 
 This command produces no output.
 

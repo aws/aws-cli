@@ -48,5 +48,3 @@ Result::
     Sets the schema search order for names that are not schema-qualified.	string	True	engine-default	$user, public	search_path
     Aborts any statement that takes over the specified number of milliseconds.	integer	True	engine-default	0	statement_timeout
     wlm json configuration	string	True	engine-default	\[{"query_concurrency":5}]	wlm_json_configuration
-
-

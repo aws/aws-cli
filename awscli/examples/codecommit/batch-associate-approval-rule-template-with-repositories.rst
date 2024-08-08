@@ -1,6 +1,6 @@
 **To associate an approval rule template with multiple repositories in a single operation**
 
-The following ``batch-associate-approval-rule-template-with-repositories`` example associates the specified approval rule template with  repositories named ``MyDemoRepo`` and ``MyOtherDemoRepo``. 
+The following ``batch-associate-approval-rule-template-with-repositories`` example associates the specified approval rule template with  repositories named ``MyDemoRepo`` and ``MyOtherDemoRepo``.
 
 Note: Approval rule templates are specific to the AWS Region where they are created. They can only be associated with repositories in that AWS Region. ::
 

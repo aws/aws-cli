@@ -9,8 +9,8 @@ The output for each account attribute entry returned by the command resembles th
 *Output*::
 
   {
-   "Attributes": [ 
-      { 
+   "Attributes": [
+      {
          "Maximum": 5,
          "Name": "ServerLimit",
          "Used": 2
@@ -23,4 +23,3 @@ The output for each account attribute entry returned by the command resembles th
 For more information, see `DescribeAccountAttributes`_ in the *AWS OpsWorks for Chef Automate API Reference*.
 
 .. _`DescribeAccountAttributes`: http://docs.aws.amazon.com/opsworks-cm/latest/APIReference/API_DescribeAccountAttributes.html
-

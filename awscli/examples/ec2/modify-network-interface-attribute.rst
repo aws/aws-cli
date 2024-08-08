@@ -14,7 +14,7 @@ This example command modifies the ``description`` attribute of the specified net
 Command::
 
   aws ec2 modify-network-interface-attribute --network-interface-id eni-686ea200 --description "My description"
-  
+
 
 **To modify the groupSet attribute of a network interface**
 
@@ -23,7 +23,7 @@ This example command modifies the ``groupSet`` attribute of the specified networ
 Command::
 
   aws ec2 modify-network-interface-attribute --network-interface-id eni-686ea200 --groups sg-903004f8 sg-1a2b3c4d
-  
+
 
 **To modify the sourceDestCheck attribute of a network interface**
 

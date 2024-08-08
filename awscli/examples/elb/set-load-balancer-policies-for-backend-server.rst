@@ -17,4 +17,3 @@ Command::
 
 
 To confirm that the policies are removed, use the ``describe-load-balancer-policies`` command.
-

@@ -1,6 +1,6 @@
 **To create a group**
 
-This example creates a group with a description. 
+This example creates a group with a description.
 
 Command::
 
@@ -17,10 +17,10 @@ Output::
         "CreationDate": 1548270073.795
     }
   }
-  
+
 **To create a group with a role and precedence**
 
-This example creates a group with a description. It also includes a role and precedence. 
+This example creates a group with a description. It also includes a role and precedence.
 
 Command::
 

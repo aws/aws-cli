@@ -10,11 +10,10 @@ Output::
     {
         "tags": [
             {
-                "value": "motor", 
+                "value": "motor",
                 "key": "deviceType"
             }
         ]
     }
 
 For more information, see `ListTagsForResource <https://docs.aws.amazon.com/iotevents/latest/developerguide/iotevents-commands.html#api-iotevents-ListTagsForResource>`__ in the *AWS IoT Events Developer Guide**.
-

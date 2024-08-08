@@ -120,6 +120,6 @@ Output::
             }
         ]
     }
-                  
+
 
 For more information, see `Network ACLs <https://docs.aws.amazon.com/vpc/latest/userguide/vpc-network-acls.html>`__ in the *AWS VPC User Guide*.

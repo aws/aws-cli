@@ -36,9 +36,8 @@ Output::
 		 "userAttributes": []
 	   }
 	 ]
-   }  
+   }
 
 For more information, see `Amazon Inspector Findings`_ in the *Amazon Inspector* guide.
 
 .. _`Amazon Inspector Findings`: https://docs.aws.amazon.com/inspector/latest/userguide/inspector_findings.html
-

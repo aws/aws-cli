@@ -30,6 +30,6 @@ Output::
                 "Name": "webdata"
             }
         ]
-    }    
-       
+    }
+
 For more information, see `Listing Databases in a Catalog: list-databases <https://docs.aws.amazon.com/athena/latest/ug/datastores-hive-cli.html#datastores-hive-cli-listing-databases>`__ in the *Amazon Athena User Guide*.

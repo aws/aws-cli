@@ -2,7 +2,7 @@
 
 The following ``describe-events`` example lists recent AWS Health events. ::
 
-    aws health describe-events \ 
+    aws health describe-events \
         --region us-east-1
 
 Output::

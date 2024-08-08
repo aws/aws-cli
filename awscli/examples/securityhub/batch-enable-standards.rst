@@ -8,8 +8,8 @@ The following ``batch-enable-standards`` example enables the PCI DSS standard fo
 Output::
 
     {
-        "StandardsSubscriptions": [ 
-            { 
+        "StandardsSubscriptions": [
+            {
                 "StandardsArn": "arn:aws:securityhub:us-west-1::standards/pci-dss/v/3.2.1",
                 "StandardsInput": { },
                 "StandardsStatus": "PENDING",

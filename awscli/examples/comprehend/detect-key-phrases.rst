@@ -1,6 +1,6 @@
 **To detect key phrases in input text**
 
-The following ``detect-key-phrases`` example analyzes the input text and identifies the key noun phrases. The pre-trained model's confidence score is also 
+The following ``detect-key-phrases`` example analyzes the input text and identifies the key noun phrases. The pre-trained model's confidence score is also
 output for each prediction. ::
 
     aws comprehend detect-key-phrases \

@@ -10,10 +10,10 @@ Output::
 
   {
     "EgressOnlyInternetGateway": {
-        "EgressOnlyInternetGatewayId": "eigw-015e0e244e24dfe8a", 
+        "EgressOnlyInternetGatewayId": "eigw-015e0e244e24dfe8a",
         "Attachments": [
             {
-                "State": "attached", 
+                "State": "attached",
                 "VpcId": "vpc-0c62a468"
             }
         ]

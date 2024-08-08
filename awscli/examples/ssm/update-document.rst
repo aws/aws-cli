@@ -44,5 +44,3 @@ Output::
         "Description": "Run an updated script"
     }
   }
-
-

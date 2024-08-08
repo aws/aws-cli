@@ -3,7 +3,7 @@
 This example creates a filter that matches all portscan findings for instance created from a specific image.::
 
     aws guardduty create-filter \
-        --detector-id b6b992d6d2f48e64bc59180bfexample \ 
+        --detector-id b6b992d6d2f48e64bc59180bfexample \
         --action ARCHIVE \
         --name myFilter \
         --finding-criteria '{"Criterion": {"type": {"Eq": ["Recon:EC2/Portscan"]},"resource.instanceDetails.imageId": {"Eq": ["ami-0a7a207083example"]}}}'

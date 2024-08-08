@@ -6,7 +6,7 @@ The following ``describe-flywheel-iteration`` example gets the properties of a f
         --flywheel-arn arn:aws:comprehend:us-west-2:111122223333:flywheel/example-flywheel \
         --flywheel-iteration-id 20232222AEXAMPLE
 
-Output:: 
+Output::
 
     {
         "FlywheelIterationProperties": {
@@ -34,4 +34,4 @@ Output::
         }
     }
 
-For more information, see `Flywheel overview <https://docs.aws.amazon.com/comprehend/latest/dg/flywheels-about.html>`__ in the *Amazon Comprehend Developer Guide*. 
+For more information, see `Flywheel overview <https://docs.aws.amazon.com/comprehend/latest/dg/flywheels-about.html>`__ in the *Amazon Comprehend Developer Guide*.

@@ -168,4 +168,3 @@ The following ``describe-layers`` command describes the layers in a specified st
 For more information, see Layers_ in the *AWS OpsWorks User Guide*.
 
 .. _Layers: http://docs.aws.amazon.com/opsworks/latest/userguide/workinglayers.html
-

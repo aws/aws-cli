@@ -1,8 +1,8 @@
 **To change the key policy for a KMS key**
 
-The following ``put-key-policy`` example changes the key policy for a customer managed key. 
+The following ``put-key-policy`` example changes the key policy for a customer managed key.
 
-To begin, create a key policy and save it in a local JSON file. In this example, the file is ``key_policy.json``. You can also specify the key policy as a string value of the ``policy`` parameter. 
+To begin, create a key policy and save it in a local JSON file. In this example, the file is ``key_policy.json``. You can also specify the key policy as a string value of the ``policy`` parameter.
 
 The first statement in this key policy gives the AWS account permission to use IAM policies to control access to the KMS key. The second statement gives the ``test-user`` user permission to run the ``describe-key`` and ``list-keys`` commands on the KMS key.
 
@@ -55,7 +55,7 @@ Output::
     {
         "Version" : "2012-10-17",
         "Id" : "key-default-1",
-        "Statement" : [ 
+        "Statement" : [
             {
                 "Sid" : "Enable IAM User Permissions",
                 "Effect" : "Allow",
@@ -64,7 +64,7 @@ Output::
                 },
                 "Action" : "kms:*",
                 "Resource" : "*"
-                }, 
+                },
                 {
                 "Sid" : "Allow Use of Key",
                 "Effect" : "Allow",
@@ -73,7 +73,7 @@ Output::
                 },
                 "Action" : [ "kms:Describe", "kms:List" ],
                 "Resource" : "*"
-            } 
+            }
         ]
     }
 

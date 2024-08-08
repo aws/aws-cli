@@ -61,4 +61,4 @@ Output::
         ]
     }
 
-For more information, see `View the history of IP addresses <https://docs.aws.amazon.com/vpc/latest/ipam/view-history-cidr-ipam.html>`__ in the *Amazon VPC IPAM User Guide*. 
+For more information, see `View the history of IP addresses <https://docs.aws.amazon.com/vpc/latest/ipam/view-history-cidr-ipam.html>`__ in the *Amazon VPC IPAM User Guide*.

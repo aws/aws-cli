@@ -4,7 +4,7 @@ The following ``modify-ebs-default-kms-key-id`` example sets the specified CMK a
 
     aws ec2 modify-ebs-default-kms-key-id \
         --kms-key-id alias/my-cmk
-  
+
 Output::
 
     {

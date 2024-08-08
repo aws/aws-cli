@@ -2,7 +2,7 @@
 
 The following ``list-resolver-rules`` example lists all the Resolver rules in the current AWS account. ::
 
-    aws route53resolver list-resolver-rules 
+    aws route53resolver list-resolver-rules
 
 Output::
 

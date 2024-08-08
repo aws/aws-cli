@@ -49,7 +49,7 @@ The following ``put-scaling-policy`` example applies a target tracking scaling p
 This example assumes that you have a `config.json` file in the current directory with the following contents::
 
     {
-        "TargetValue":75.0,  
+        "TargetValue":75.0,
         "CustomizedMetricSpecification":{
             "MetricName":"MyUtilizationMetric",
             "Namespace":"MyNamespace",

@@ -1,6 +1,6 @@
 **To list users in a group**
 
-This example lists users in group MyGroup.   
+This example lists users in group MyGroup.
 
 Command::
 
@@ -51,6 +51,6 @@ Output::
             "UserLastModifiedDate": 1548089817.683,
             "Enabled": true,
             "UserStatus": "FORCE_CHANGE_PASSWORD"
-        }    
+        }
     ]
   }

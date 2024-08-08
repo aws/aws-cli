@@ -10,7 +10,7 @@ Output::
 
   {
     "FpgaImageAttribute": {
-        "FpgaImageId": "afi-0d123e123bfc85abc", 
+        "FpgaImageId": "afi-0d123e123bfc85abc",
         "LoadPermissions": [
             {
                 "UserId": "123456789012"

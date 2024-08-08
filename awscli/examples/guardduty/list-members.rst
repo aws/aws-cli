@@ -3,10 +3,10 @@
 The following ``list-members`` example lists all member accounts and their details for the current region. ::
 
     aws guardduty list-members \
-        --detector-id 12abc34d567e8fa901bc2d34eexample 
+        --detector-id 12abc34d567e8fa901bc2d34eexample
 
 Output::
-    
+
     {
         "Members": [
             {

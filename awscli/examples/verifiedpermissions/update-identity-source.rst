@@ -2,7 +2,7 @@
 
 The following ``update-identity-source`` example modifies the specified identity source by providing a new Cognito user pool configuration and changing the entity type returned by the identity source. ::
 
-    aws verifiedpermissions update-identity-source 
+    aws verifiedpermissions update-identity-source
         --identity-source-id ISEXAMPLEabcdefg111111 \
         --update-configuration file://config.txt \
         --principal-entity-type "Employee" \

@@ -4,7 +4,7 @@ The following ``describe-workspace-bundles`` example lists the names and IDs of 
 
     aws workspaces describe-workspace-bundles \
         --owner AMAZON \
-        --query "Bundles[*].[Name, BundleId]" 
+        --query "Bundles[*].[Name, BundleId]"
 
 Output::
 

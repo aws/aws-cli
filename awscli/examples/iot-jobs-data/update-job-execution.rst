@@ -11,7 +11,7 @@ The following ``update-job-execution`` example updates the status of the specifi
 Output::
 
     {
-        "executionState": { 
+        "executionState": {
             "status": "REMOVED",
             "versionNumber": 3
         },

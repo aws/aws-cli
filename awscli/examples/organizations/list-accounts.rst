@@ -5,7 +5,7 @@ The following example shows you how to request a list of the accounts in an orga
 	aws organizations list-accounts
 
 The output includes a list of account summary objects. ::
-  
+
 	{
 		"Accounts": [
 			{

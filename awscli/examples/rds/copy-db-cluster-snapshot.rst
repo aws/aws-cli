@@ -1,9 +1,9 @@
 **To copy a DB cluster snapshot**
 
-The following ``copy-db-cluster-snapshot`` example creates a copy of a DB cluster snapshot, including its tags. :: 
+The following ``copy-db-cluster-snapshot`` example creates a copy of a DB cluster snapshot, including its tags. ::
 
     aws rds copy-db-cluster-snapshot \
-        --source-db-cluster-snapshot-identifier arn:aws:rds:us-east-1:123456789012:cluster-snapshot:rds:myaurora-2019-06-04-09-16 
+        --source-db-cluster-snapshot-identifier arn:aws:rds:us-east-1:123456789012:cluster-snapshot:rds:myaurora-2019-06-04-09-16
         --target-db-cluster-snapshot-identifier myclustersnapshotcopy \
         --copy-tags
 

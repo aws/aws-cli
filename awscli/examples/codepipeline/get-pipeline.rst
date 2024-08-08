@@ -1,6 +1,6 @@
 **To view the structure of a pipeline**
 
-This example returns the structure of a pipeline named MyFirstPipeline. 
+This example returns the structure of a pipeline named MyFirstPipeline.
 
 Command::
 
@@ -73,4 +73,4 @@ Output::
     }
   }
 
- 
+

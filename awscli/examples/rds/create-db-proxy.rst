@@ -18,13 +18,13 @@ Output::
             "EngineFamily": "MYSQL",
             "VpcId": "vpc-1234567",
             "VpcSecuritytGroupIds": [
-                "sg-1234", 
-                "sg-5678", 
+                "sg-1234",
+                "sg-5678",
                 "sg-9101"
             ],
             "VpcSubnetIds": [
-                "subnetgroup1", 
-                "subnetgroup2" 
+                "subnetgroup1",
+                "subnetgroup2"
             ],
             "Auth": "[
                 {

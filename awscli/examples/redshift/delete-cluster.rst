@@ -17,5 +17,3 @@ This example deletes a cluster, but specifies a final cluster snapshot.
 Command::
 
    aws redshift delete-cluster --cluster-identifier mycluster --final-cluster-snapshot-identifier myfinalsnapshot
-
-

@@ -9,4 +9,3 @@ Command::
 For more information, see `Reboot Your Instance`_ in the *Amazon Elastic Compute Cloud User Guide*.
 
 .. _`Reboot Your Instance`: http://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-instance-reboot.html
-

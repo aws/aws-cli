@@ -4,8 +4,8 @@ This example sends 2 messages with the specified message bodies, delay periods, 
 
 Command::
 
-  aws sqs send-message-batch --queue-url https://sqs.us-east-1.amazonaws.com/80398EXAMPLE/MyQueue --entries file://send-message-batch.json 
-  
+  aws sqs send-message-batch --queue-url https://sqs.us-east-1.amazonaws.com/80398EXAMPLE/MyQueue --entries file://send-message-batch.json
+
 Input file (send-message-batch.json)::
 
   [
@@ -23,7 +23,7 @@ Input file (send-message-batch.json)::
           "StringValue": "Any City"
         },
 	    "Region": {
-	      "DataType": "String", 
+	      "DataType": "String",
 		  "StringValue": "WA"
         },
 	    "PostalCode": {
@@ -50,7 +50,7 @@ Input file (send-message-batch.json)::
           "StringValue": "North Town"
         },
 	    "Region": {
-	      "DataType": "String", 
+	      "DataType": "String",
 		  "StringValue": "WA"
         },
 	    "PostalCode": {
@@ -84,5 +84,5 @@ Output::
     ]
   }
 
-  
-	
+
+

@@ -7,6 +7,6 @@ The following ``stop-deployment`` example attempts to stop an in-progress deploy
 Output::
 
     {
-        "status": "Succeeded", 
+        "status": "Succeeded",
         "statusMessage": "No more commands will be scheduled for execution in the deployment instances"
     }

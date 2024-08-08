@@ -32,11 +32,11 @@ Output::
 
     {
         "CidrBlockAssociation": {
-            "AssociationId": "vpc-cidr-assoc-2EXAMPLE", 
-            "CidrBlock": "10.2.0.0/16", 
+            "AssociationId": "vpc-cidr-assoc-2EXAMPLE",
+            "CidrBlock": "10.2.0.0/16",
             "CidrBlockState": {
                 "State": "associating"
             }
-        }, 
+        },
         "VpcId": "vpc-1EXAMPLE"
     }

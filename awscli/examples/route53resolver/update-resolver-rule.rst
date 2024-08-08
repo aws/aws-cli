@@ -1,6 +1,6 @@
 **Example 1: To update settings Resolver endpoint**
 
-The following ``update-resolver-rule`` example updates the name of the rule, the IP addresses on your on-premises network that DNS queries are forwarded to, and the ID of the outbound Resolver endpoint that you're using to forward queries to your network. 
+The following ``update-resolver-rule`` example updates the name of the rule, the IP addresses on your on-premises network that DNS queries are forwarded to, and the ID of the outbound Resolver endpoint that you're using to forward queries to your network.
 
 **Note** Existing values for ``TargetIps`` are overwritten, so you must specify all the IP addresses that you want the rule to have after the update. ::
 

@@ -2,7 +2,7 @@
 
 The following ``describe-users`` example returns a list of users. ::
 
-    aws elasticache describe-users 
+    aws elasticache describe-users
 
 Output::
 

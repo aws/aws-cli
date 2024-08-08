@@ -1,6 +1,6 @@
 **To preview the instance types that match specified attributes**
 
-The following ``get-instance-types-from-instance-requirements`` example first generates a list of all of the possible attributes that can be specified using the ``--generate-cli-skeleton`` parameter, and saves the list to a JSON file. Then, the JSON file is used to customize the attributes for which to preview matched instance types. 
+The following ``get-instance-types-from-instance-requirements`` example first generates a list of all of the possible attributes that can be specified using the ``--generate-cli-skeleton`` parameter, and saves the list to a JSON file. Then, the JSON file is used to customize the attributes for which to preview matched instance types.
 
 To generate all possible attributes and save the output directly to a JSON file, use the following command. ::
 
@@ -94,7 +94,7 @@ Preview the instance types that have the attributes specified in ``attributes.js
 Contents of ``attributes.json`` file::
 
     {
-        
+
         "ArchitectureTypes": [
             "x86_64"
         ],

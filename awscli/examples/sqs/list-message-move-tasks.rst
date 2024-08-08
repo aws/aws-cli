@@ -20,7 +20,7 @@ Output::
                 "ApproximateNumberOfMessagesToMove": 30,
                 "StartedTimestamp": 1442428276921
              },
-             
+
              {
                 "Status": "COMPLETED",
                 "SourceArn": "arn:aws:sqs:us-west-2:80398EXAMPLE:MyQueue1",

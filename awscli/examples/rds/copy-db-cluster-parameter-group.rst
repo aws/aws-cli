@@ -1,6 +1,6 @@
 **To copy a DB cluster parameter group**
 
-The following ``copy-db-cluster-parameter-group`` example makes a copy of a DB cluster parameter group. :: 
+The following ``copy-db-cluster-parameter-group`` example makes a copy of a DB cluster parameter group. ::
 
     aws rds copy-db-cluster-parameter-group \
         --source-db-cluster-parameter-group-identifier mydbclusterpg \

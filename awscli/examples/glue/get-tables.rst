@@ -2,7 +2,7 @@
 
 The following ``get-tables`` example returns information about the tables in the specified database. ::
 
-        aws glue get-tables --database-name 'tempdb' 
+        aws glue get-tables --database-name 'tempdb'
 
 Output::
 

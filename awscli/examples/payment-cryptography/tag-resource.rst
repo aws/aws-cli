@@ -4,7 +4,7 @@ The following ``tag-resource`` example tags a key. ::
 
     aws payment-cryptography tag-resource \
         --resource-arn arn:aws:payment-cryptography:us-east-2:123456789012:key/kwapwa6qaifllw2h \
-        --tags Key=sampleTag,Value=sampleValue 
+        --tags Key=sampleTag,Value=sampleValue
 
 This command produces no output.
 

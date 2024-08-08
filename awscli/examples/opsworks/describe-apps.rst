@@ -4,9 +4,9 @@ The following ``describe-apps`` command describes the apps in a specified stack.
 
     aws opsworks describe-apps \
         --stack-id 38ee91e2-abdc-4208-a107-0b7168b3cc7a \
-        --region us-east-1 
+        --region us-east-1
 
-Output:: 
+Output::
 
     {
         "Apps": [
@@ -35,4 +35,3 @@ Output::
 For more information, see Apps_ in the *AWS OpsWorks User Guide*.
 
 .. _Apps: http://docs.aws.amazon.com/opsworks/latest/userguide/workingapps.html
-

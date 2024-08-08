@@ -3,7 +3,7 @@
 The following ``get-query-statistics`` example retrieves statistics on the planning and execution of a query. ::
 
     aws lakeformation get-query-statistics \
-        --query-id='1234273f-4a62-4cda-8d98-69615ee8be9b' 
+        --query-id='1234273f-4a62-4cda-8d98-69615ee8be9b'
 
 Output::
 

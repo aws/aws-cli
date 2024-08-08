@@ -13,8 +13,8 @@ The output shows you information similar to the following about the new backup.
 Output::
 
     {
-        "Backups": [ 
-            { 
+        "Backups": [
+            {
                 "BackupArn": "string",
                 "BackupId": "automate-06-20160729133847520",
                 "BackupType": "MANUAL",

@@ -2,12 +2,12 @@
 
 The following example shows how to get a list of handshakes that are associated with the current organization: ::
 
-	aws organizations list-handshakes-for-organization 
-  
-The output shows two handshakes. The first one is an invitation to Juan's account and shows a state of OPEN. The second is an invitation to Anika's account and shows a state of ACCEPTED: ::  
+	aws organizations list-handshakes-for-organization
+
+The output shows two handshakes. The first one is an invitation to Juan's account and shows a state of OPEN. The second is an invitation to Anika's account and shows a state of ACCEPTED: ::
 
 	{
-		"Handshakes": [ 
+		"Handshakes": [
 			{
 				"Action": "INVITE",
 				"Arn": "arn:aws:organizations::111111111111:handshake/o-exampleorgid/invite/h-examplehandshakeid111",

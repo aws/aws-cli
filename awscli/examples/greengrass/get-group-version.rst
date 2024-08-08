@@ -5,7 +5,7 @@ The following ``get-group-version`` example retrieves information about the spec
     aws greengrass get-group-version \
         --group-id "1013db12-8b58-45ff-acc7-704248f66731"  \
         --group-version-id "115136b3-cfd7-4462-b77f-8741a4b00e5e"
-    
+
 Output::
 
     {

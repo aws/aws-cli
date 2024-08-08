@@ -10,10 +10,10 @@ Output::
 
   {
     "directConnectGatewayAssociation": {
-        "associationState": "associating", 
-        "virtualGatewayOwnerAccount": "123456789012", 
-        "directConnectGatewayId": "5f294f92-bafb-4011-916d-9b0bexample", 
-        "virtualGatewayId": "vgw-6efe725e", 
+        "associationState": "associating",
+        "virtualGatewayOwnerAccount": "123456789012",
+        "directConnectGatewayId": "5f294f92-bafb-4011-916d-9b0bexample",
+        "virtualGatewayId": "vgw-6efe725e",
         "virtualGatewayRegion": "us-east-2"
     }
   }

@@ -21,15 +21,15 @@ The SNS topic must have an IAM policy attached to it that allows Amazon S3 to pu
      "Sid": "example-statement-ID",
      "Effect": "Allow",
      "Principal": {
-       "Service": "s3.amazonaws.com"  
+       "Service": "s3.amazonaws.com"
      },
      "Action": [
       "SNS:Publish"
      ],
      "Resource": "arn:aws:sns:us-west-2:123456789012:my-bucket",
      "Condition": {
-        "ArnLike": {          
-        "aws:SourceArn": "arn:aws:s3:*:*:my-bucket"    
+        "ArnLike": {
+        "aws:SourceArn": "arn:aws:s3:*:*:my-bucket"
       }
      }
     }

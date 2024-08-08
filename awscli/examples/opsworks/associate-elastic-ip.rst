@@ -11,4 +11,3 @@ The following example associates an Elastic IP address with a specified instance
 For more information, see `Resource Management`_ in the *AWS OpsWorks User Guide*.
 
 .. _`Resource Management`: http://docs.aws.amazon.com/opsworks/latest/userguide/resources.html
-

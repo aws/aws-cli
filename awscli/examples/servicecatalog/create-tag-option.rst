@@ -2,7 +2,7 @@
 
 The following ``create-tag-option`` example creates a TagOption. ::
 
-    aws servicecatalog create-tag-option 
+    aws servicecatalog create-tag-option
         --key 1234
         --value name
 
@@ -16,4 +16,3 @@ Output::
         "Key": "1234"
         }
     }
-

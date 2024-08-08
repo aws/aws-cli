@@ -1,6 +1,6 @@
 **To get information about the state of a pipeline**
 
-This example returns the most recent state of a pipeline named MyFirstPipeline. 
+This example returns the most recent state of a pipeline named MyFirstPipeline.
 
 Command::
 
@@ -50,4 +50,4 @@ Output::
    "updated": 1446137312.204
   }
 
- 
+

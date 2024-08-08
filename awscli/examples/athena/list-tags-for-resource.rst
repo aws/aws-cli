@@ -23,7 +23,7 @@ Output::
             }
         ]
     }
-    
+
 **Example 2: To list the tags for a data catalog**
 
 The following ``list-tags-for-resource`` example lists the tags for the ``dynamo_db_catalog`` data catalog. ::

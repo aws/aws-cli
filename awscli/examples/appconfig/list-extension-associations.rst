@@ -3,7 +3,7 @@
 The following ``list-extension-associations`` example lists all AWS AppConfig extension associations for the current AWS account in a specific AWS Region. ::
 
     aws appconfig list-extension-associations \
-        --region us-west-2 
+        --region us-west-2
 
 Output::
 

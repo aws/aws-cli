@@ -72,4 +72,3 @@ This example lists the compliance summary for the Patch compliance type.
 Command::
 
   aws ssm list-compliance-summaries --filters "Key=ComplianceType,Values=Patch,Type=EQUAL"
-

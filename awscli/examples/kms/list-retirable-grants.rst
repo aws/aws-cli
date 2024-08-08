@@ -2,9 +2,9 @@
 
 The following ``list-retirable-grants`` example displays all of the grants that the ``ExampleAdmin`` user can retire on the KMS keys in an AWS account and Region. You can use a command like this one to view the grants that any account principal can retire on KMS keys in the AWS account and Region.
 
-The value of the required ``retiring-principal`` parameter must be the Amazon Resource Name (ARN) of an account, user, or role. 
+The value of the required ``retiring-principal`` parameter must be the Amazon Resource Name (ARN) of an account, user, or role.
 
-You cannot specify a service for the value of ``retiring-principal`` in this command, even though a service can be the retiring principal. To find the grants in which a particular service is the retiring principal, use the ``list-grants`` command. 
+You cannot specify a service for the value of ``retiring-principal`` in this command, even though a service can be the retiring principal. To find the grants in which a particular service is the retiring principal, use the ``list-grants`` command.
 
 The output shows that ``ExampleAdmin`` user has permission to retire grants on two different KMS keys in the account and region. In addition to the retiring principal, the account has permission to retire any grant in the account. ::
 

@@ -36,5 +36,3 @@ Result::
 
     This is my cluster security group	300454760768	mysecuritygroup
     a0c0bfab-343a-11e2-95d2-c3dc9fe8ab57
-
-

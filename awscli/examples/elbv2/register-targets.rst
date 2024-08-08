@@ -4,7 +4,7 @@ The following ``register-targets`` example registers the specified instances wit
 
     aws elbv2 register-targets \
         --target-group-arn arn:aws:elasticloadbalancing:us-west-2:123456789012:targetgroup/my-targets/73e2d6bc24d8a067 \
-        --targets Id=i-1234567890abcdef0 Id=i-0abcdef1234567890 
+        --targets Id=i-1234567890abcdef0 Id=i-0abcdef1234567890
 
 **Example 2: To register targets with a target group using port overrides**
 

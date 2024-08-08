@@ -1,6 +1,6 @@
 **To create a custom entity recognizer**
 
-The following ``create-entity-recognizer`` example begins the training process for a custom entity recognizer model. This example uses a CSV file containing training documents, ``raw_text.csv``, and a CSV entity list, ``entity_list.csv`` to train the model. 
+The following ``create-entity-recognizer`` example begins the training process for a custom entity recognizer model. This example uses a CSV file containing training documents, ``raw_text.csv``, and a CSV entity list, ``entity_list.csv`` to train the model.
 ``entity-list.csv`` contains the following columns: text and type. ::
 
     aws comprehend create-entity-recognizer \

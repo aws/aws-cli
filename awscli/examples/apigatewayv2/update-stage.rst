@@ -9,8 +9,8 @@ The following ``update-stage`` example configures custom throttling for the spec
 
 Output::
 
-    {    
-        "CreatedDate": "2020-04-05T16:21:16+00:00",    
+    {
+        "CreatedDate": "2020-04-05T16:21:16+00:00",
         "DefaultRouteSettings": {
             "DetailedMetricsEnabled": false
         },

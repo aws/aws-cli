@@ -10,14 +10,14 @@ The following ``create-policy-version`` example updates a policy definition, cre
 Contents of ``policy.json``::
 
     {
-        "Version": "2012-10-17", 
+        "Version": "2012-10-17",
         "Statement": [
-            { 
-                "Effect": "Allow", 
+            {
+                "Effect": "Allow",
                 "Action":  "iot:UpdateCertificate",
-                "Resource": "*" 
-            } 
-        ] 
+                "Resource": "*"
+            }
+        ]
     }
 
 Output::

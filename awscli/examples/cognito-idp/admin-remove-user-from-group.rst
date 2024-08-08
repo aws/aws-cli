@@ -1,6 +1,6 @@
 **To remove a user from a group**
 
-This example removes jane@example.com from SampleGroup. 
+This example removes jane@example.com from SampleGroup.
 
 Command::
 

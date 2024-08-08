@@ -11,35 +11,35 @@ Output::
     {
         "Images": [
             {
-                "VirtualizationType": "hvm", 
-                "Description": "Provided by Red Hat, Inc.", 
-                "PlatformDetails": "Red Hat Enterprise Linux", 
-                "EnaSupport": true, 
-                "Hypervisor": "xen", 
-                "State": "available", 
-                "SriovNetSupport": "simple", 
-                "ImageId": "ami-1234567890EXAMPLE", 
-                "UsageOperation": "RunInstances:0010", 
+                "VirtualizationType": "hvm",
+                "Description": "Provided by Red Hat, Inc.",
+                "PlatformDetails": "Red Hat Enterprise Linux",
+                "EnaSupport": true,
+                "Hypervisor": "xen",
+                "State": "available",
+                "SriovNetSupport": "simple",
+                "ImageId": "ami-1234567890EXAMPLE",
+                "UsageOperation": "RunInstances:0010",
                 "BlockDeviceMappings": [
                     {
-                        "DeviceName": "/dev/sda1", 
+                        "DeviceName": "/dev/sda1",
                         "Ebs": {
-                            "SnapshotId": "snap-111222333444aaabb", 
-                            "DeleteOnTermination": true, 
-                            "VolumeType": "gp2", 
-                            "VolumeSize": 10, 
+                            "SnapshotId": "snap-111222333444aaabb",
+                            "DeleteOnTermination": true,
+                            "VolumeType": "gp2",
+                            "VolumeSize": 10,
                             "Encrypted": false
                         }
                     }
-                ], 
-                "Architecture": "x86_64", 
-                "ImageLocation": "123456789012/RHEL-8.0.0_HVM-20190618-x86_64-1-Hourly2-GP2", 
-                "RootDeviceType": "ebs", 
-                "OwnerId": "123456789012", 
-                "RootDeviceName": "/dev/sda1", 
-                "CreationDate": "2019-05-10T13:17:12.000Z", 
-                "Public": true, 
-                "ImageType": "machine", 
+                ],
+                "Architecture": "x86_64",
+                "ImageLocation": "123456789012/RHEL-8.0.0_HVM-20190618-x86_64-1-Hourly2-GP2",
+                "RootDeviceType": "ebs",
+                "OwnerId": "123456789012",
+                "RootDeviceName": "/dev/sda1",
+                "CreationDate": "2019-05-10T13:17:12.000Z",
+                "Public": true,
+                "ImageType": "machine",
                 "Name": "RHEL-8.0.0_HVM-20190618-x86_64-1-Hourly2-GP2"
             }
         ]

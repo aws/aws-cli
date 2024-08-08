@@ -2,14 +2,14 @@
 
 The following ``list-stream-processors`` command lists the stream processors in your account and the state of each. ::
 
-    aws rekognition list-stream-processors 
+    aws rekognition list-stream-processors
 
 Output::
 
     {
         "StreamProcessors": [
             {
-                "Status": "STOPPED", 
+                "Status": "STOPPED",
                 "Name": "my-stream-processor"
             }
         ]

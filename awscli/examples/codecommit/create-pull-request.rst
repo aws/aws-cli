@@ -6,7 +6,7 @@ The following ``create-pull-request`` example creates a pull request named 'Pron
         --title "My Pull Request" \
         --description "Please review these changes by Tuesday" \
         --client-request-token 123Example \
-        --targets repositoryName=MyDemoRepo,sourceReference=MyNewBranch 
+        --targets repositoryName=MyDemoRepo,sourceReference=MyNewBranch
 
 Output::
 

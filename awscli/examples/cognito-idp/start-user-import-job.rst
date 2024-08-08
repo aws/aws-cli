@@ -1,6 +1,6 @@
 **To start a user import job**
 
-This example starts a user input job. 
+This example starts a user input job.
 
 For more information about importing users, see `Importing Users into User Pools From a CSV File`_.
 
@@ -25,5 +25,5 @@ Output::
         "FailedUsers": 0
     }
   }
-  
+
 .. _`Importing Users into User Pools From a CSV File`: https://docs.aws.amazon.com/cognito/latest/developerguide/cognito-user-pools-using-import-tool.html

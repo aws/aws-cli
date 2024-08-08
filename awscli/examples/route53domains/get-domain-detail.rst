@@ -1,10 +1,10 @@
 **To get detailed information about a specified domain**
 
-The following ``get-domain-detail`` command displays detailed information about the specified domain. 
+The following ``get-domain-detail`` command displays detailed information about the specified domain.
 
 This command runs only in the ``us-east-1`` Region. If your default region is set to ``us-east-1``, you can omit the ``region`` parameter. ::
 
-    aws route53domains get-domain-detail \ 
+    aws route53domains get-domain-detail \
         --region us-east-1 \
         --domain-name example.com
 

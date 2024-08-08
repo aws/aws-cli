@@ -23,4 +23,3 @@ The certificate is in a file named *certificate.pem* in PEM format.
 For more information, see `Creating and Uploading a User Signing Certificate`__ in the *Using IAM* guide.
 
 .. _`Creating and Uploading a User Signing Certificate`: http://docs.aws.amazon.com/IAM/latest/UserGuide/Using_UploadCertificate.html
-

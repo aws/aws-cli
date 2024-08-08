@@ -9,7 +9,7 @@ The following ``start-query-execution`` example uses the ``AthenaAdmin`` workgro
 
 Output::
 
-    { 
+    {
     "QueryExecutionId": "a1b2c3d4-5678-90ab-cdef-EXAMPLE11111"
     }
 
@@ -25,7 +25,7 @@ The following ``start-query-execution`` example uses the ``AthenaAdmin`` workgro
 
 Output::
 
-    { 
+    {
     "QueryExecutionId": "a1b2c3d4-5678-90ab-cdef-EXAMPLE11112"
     }
 
@@ -41,7 +41,7 @@ The following ``start-query-execution`` example uses  a ``SELECT`` statement on 
 
 Output::
 
-    { 
+    {
     "QueryExecutionId": "a1b2c3d4-5678-90ab-cdef-EXAMPLE11113"
     }
 

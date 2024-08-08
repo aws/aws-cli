@@ -20,8 +20,8 @@ Output::
                 "sg-1234"
             ],
             "VpcSubnetIds": [
-                "subnetgroup1", 
-                "subnetgroup2" 
+                "subnetgroup1",
+                "subnetgroup2"
             ],
             "Auth": "[
                 {

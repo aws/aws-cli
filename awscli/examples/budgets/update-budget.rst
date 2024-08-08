@@ -37,4 +37,3 @@ new-budget.json::
       },
       "TimeUnit": "MONTHLY"
    }
-

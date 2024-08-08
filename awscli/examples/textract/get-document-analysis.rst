@@ -13,49 +13,49 @@ Output::
             {
                 "Geometry": {
                     "BoundingBox": {
-                        "Width": 1.0, 
-                        "Top": 0.0, 
-                        "Left": 0.0, 
+                        "Width": 1.0,
+                        "Top": 0.0,
+                        "Left": 0.0,
                         "Height": 1.0
-                    }, 
+                    },
                     "Polygon": [
                         {
-                            "Y": 0.0, 
+                            "Y": 0.0,
                             "X": 0.0
-                        }, 
+                        },
                         {
-                            "Y": 0.0, 
+                            "Y": 0.0,
                             "X": 1.0
-                        }, 
+                        },
                         {
-                            "Y": 1.0, 
+                            "Y": 1.0,
                             "X": 1.0
-                        }, 
+                        },
                         {
-                            "Y": 1.0, 
+                            "Y": 1.0,
                             "X": 0.0
                         }
                     ]
-                }, 
+                },
                 "Relationships": [
                     {
-                        "Type": "CHILD", 
+                        "Type": "CHILD",
                         "Ids": [
-                            "75966e64-81c2-4540-9649-d66ec341cd8f", 
-                            "bb099c24-8282-464c-a179-8a9fa0a057f0", 
+                            "75966e64-81c2-4540-9649-d66ec341cd8f",
+                            "bb099c24-8282-464c-a179-8a9fa0a057f0",
                             "5ebf522d-f9e4-4dc7-bfae-a288dc094595"
                         ]
                     }
-                ], 
-                "BlockType": "PAGE", 
-                "Id": "247c28ee-b63d-4aeb-9af0-5f7ea8ba109e", 
+                ],
+                "BlockType": "PAGE",
+                "Id": "247c28ee-b63d-4aeb-9af0-5f7ea8ba109e",
                 "Page": 1
             }
-        ], 
-        "NextToken": "cY1W3eTFvoB0cH7YrKVudI4Gb0H8J0xAYLo8xI/JunCIPWCthaKQ+07n/ElyutsSy0+1VOImoTRmP1zw4P0RFtaeV9Bzhnfedpx1YqwB4xaGDA==", 
+        ],
+        "NextToken": "cY1W3eTFvoB0cH7YrKVudI4Gb0H8J0xAYLo8xI/JunCIPWCthaKQ+07n/ElyutsSy0+1VOImoTRmP1zw4P0RFtaeV9Bzhnfedpx1YqwB4xaGDA==",
         "DocumentMetadata": {
             "Pages": 1
-        }, 
+        },
         "JobStatus": "SUCCEEDED"
     }
 

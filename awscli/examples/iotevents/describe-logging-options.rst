@@ -8,8 +8,8 @@ Output::
 
     {
         "loggingOptions": {
-            "roleArn": "arn:aws:iam::123456789012:role/IoTEventsRole", 
-            "enabled": false, 
+            "roleArn": "arn:aws:iam::123456789012:role/IoTEventsRole",
+            "enabled": false,
             "level": "ERROR"
         }
     }

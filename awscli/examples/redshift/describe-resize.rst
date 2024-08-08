@@ -18,4 +18,3 @@ Result::
        },
        "TargetNumberOfNodes": "3"
     }
-

@@ -13,13 +13,13 @@ You can use the following setup script to create 10 things representing 10 tempe
 Example output of the setup script::
 
     {
-        "version": 1, 
-        "thingName": "TempSensor0", 
-        "defaultClientId": "TempSensor0", 
+        "version": 1,
+        "thingName": "TempSensor0",
+        "defaultClientId": "TempSensor0",
         "attributes": {
             "temperature": "70"
-        }, 
-        "thingArn": "arn:aws:iot:us-east-1:123456789012:thing/TempSensor0", 
+        },
+        "thingArn": "arn:aws:iot:us-east-1:123456789012:thing/TempSensor0",
         "thingId": "example1-90ab-cdef-fedc-ba987example"
     }
 
@@ -35,23 +35,23 @@ Output::
     {
         "percentiles": [
             {
-                "percent": 10.0, 
+                "percent": 10.0,
                 "value": 67.7
-            }, 
+            },
             {
-                "percent": 25.0, 
+                "percent": 25.0,
                 "value": 71.25
-            }, 
+            },
             {
-                "percent": 50.0, 
+                "percent": 50.0,
                 "value": 73.5
-            }, 
+            },
             {
-                "percent": 75.0, 
+                "percent": 75.0,
                 "value": 91.5
-            }, 
+            },
             {
-                "percent": 90.0, 
+                "percent": 90.0,
                 "value": 98.1
             }
         ]

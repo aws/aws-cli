@@ -9,7 +9,7 @@ Output::
     {
         "detectorModelSummaries": [
             {
-                "detectorModelName": "motorDetectorModel", 
+                "detectorModelName": "motorDetectorModel",
                 "creationTime": 1552072424.212
                 "detectorModelDescription": "Detect overpressure in a motor."
             }

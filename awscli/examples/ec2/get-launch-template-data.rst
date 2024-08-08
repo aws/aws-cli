@@ -9,42 +9,42 @@ Command::
 Output::
 
   {
-        "Monitoring": {}, 
-        "ImageId": "ami-8c1be5f6", 
+        "Monitoring": {},
+        "ImageId": "ami-8c1be5f6",
         "BlockDeviceMappings": [
             {
-                "DeviceName": "/dev/xvda", 
+                "DeviceName": "/dev/xvda",
                 "Ebs": {
                     "DeleteOnTermination": true
                 }
             }
-        ], 
-        "EbsOptimized": false, 
+        ],
+        "EbsOptimized": false,
         "Placement": {
-            "Tenancy": "default", 
-            "GroupName": "", 
+            "Tenancy": "default",
+            "GroupName": "",
             "AvailabilityZone": "us-east-1a"
-        }, 
-        "InstanceType": "t2.micro", 
+        },
+        "InstanceType": "t2.micro",
         "NetworkInterfaces": [
             {
-                "Description": "", 
-                "NetworkInterfaceId": "eni-35306abc", 
+                "Description": "",
+                "NetworkInterfaceId": "eni-35306abc",
                 "PrivateIpAddresses": [
                     {
-                        "Primary": true, 
+                        "Primary": true,
                         "PrivateIpAddress": "10.0.0.72"
                     }
-                ], 
-                "SubnetId": "subnet-7b16de0c", 
+                ],
+                "SubnetId": "subnet-7b16de0c",
                 "Groups": [
                     "sg-7c227019"
-                ], 
+                ],
                 "Ipv6Addresses": [
                     {
                         "Ipv6Address": "2001:db8:1234:1a00::123"
                     }
-                ], 
+                ],
                 "PrivateIpAddress": "10.0.0.72"
             }
         ]

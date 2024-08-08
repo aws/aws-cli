@@ -1,6 +1,6 @@
 **Example 1: To download the public key of an asymmetric KMS key**
 
-The following ``get-public-key`` example downloads the public key of an asymmetric KMS key. 
+The following ``get-public-key`` example downloads the public key of an asymmetric KMS key.
 
 In addition to returning the public key, the output includes information that you need to use the public key safely outside of AWS KMS, including the key usage and supported encryption algorithms. ::
 
@@ -26,7 +26,7 @@ For more information about using asymmetric KMS keys in AWS KMS, see `Using Symm
 
 The following ``get-public-key`` example downloads the public key of an asymmetric KMS key and saves it in a DER file.
 
-When you use the ``get-public-key`` command in the AWS CLI, it returns a DER-encoded X.509 public key that is Base64-encoded. This example gets the value of the ``PublicKey`` property as text. It Base64-decodes the ``PublicKey`` and saves it in the ``public_key.der`` file. The ``output`` parameter returns the output as text, instead of JSON. The ``--query`` parameter gets only the ``PublicKey`` property, not the properties that you need to use the public key safely outside of AWS KMS. 
+When you use the ``get-public-key`` command in the AWS CLI, it returns a DER-encoded X.509 public key that is Base64-encoded. This example gets the value of the ``PublicKey`` property as text. It Base64-decodes the ``PublicKey`` and saves it in the ``public_key.der`` file. The ``output`` parameter returns the output as text, instead of JSON. The ``--query`` parameter gets only the ``PublicKey`` property, not the properties that you need to use the public key safely outside of AWS KMS.
 
 Before running this command, replace the example key ID with a valid key ID from your AWS account. ::
 

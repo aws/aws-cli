@@ -13,5 +13,3 @@ running the ``describe-apps`` command. ::
 For more information, see `Apps`_ in the *AWS OpsWorks User Guide*.
 
 .. _`Apps`: http://docs.aws.amazon.com/opsworks/latest/userguide/workingapps.html
-
-

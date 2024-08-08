@@ -9,9 +9,9 @@ Output::
   {
       "items": [
           {
-              "distributionDomainName": "d9511k3l09bkd.cloudfront.net", 
-              "certificateUploadDate": 1452812505, 
-              "certificateName": "my_custom_domain-certificate", 
+              "distributionDomainName": "d9511k3l09bkd.cloudfront.net",
+              "certificateUploadDate": 1452812505,
+              "certificateName": "my_custom_domain-certificate",
               "domainName": "subdomain.domain.tld"
           }
       ]

@@ -1,6 +1,6 @@
 **To wait for a cluster to become active**
 
-This example command waits for a cluster named ``example`` to become active. 
+This example command waits for a cluster named ``example`` to become active.
 
 Command::
 
@@ -13,4 +13,3 @@ This example command waits for a cluster named ``example`` to be deleted.
 Command::
 
   aws eks wait cluster-deleted --name example
-

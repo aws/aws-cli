@@ -5,9 +5,9 @@ This example creates a pipeline in AWS CodePipeline using an already-created JSO
 Command::
 
   aws codepipeline create-pipeline --cli-input-json file://MySecondPipeline.json
-  
+
 JSON file sample contents::
-  
+
   {
    "pipeline": {
     "roleArn": "arn:aws:iam::111111111111:role/AWS-CodePipeline-Service",

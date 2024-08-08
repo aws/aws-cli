@@ -46,7 +46,7 @@
      }
    ]
 
-NOTE: JSON arguments must include options and values as their own items in the list. 
+NOTE: JSON arguments must include options and values as their own items in the list.
 
 - Command (using step.json)::
 
@@ -177,4 +177,3 @@ NOTE: JSON arguments must include options and values as their own items in the l
             "s-YYYYYYYY"
         ]
     }
-

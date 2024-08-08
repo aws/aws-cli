@@ -1,8 +1,8 @@
 **To create a device definition**
 
-The following ``create-device-definition`` example creates a device definition that contains an initial device definition version. The initial version defines two devices. 
+The following ``create-device-definition`` example creates a device definition that contains an initial device definition version. The initial version defines two devices.
 Before you can create a Greengrass device, you must first create and provision the corresponding AWS IoT thing. This process includes the following ``iot`` commands that you must run to get the required information for the Greengrass command:
- 
+
 * Create the AWS IoT thing that corresponds to the device::
 
     aws iot create-thing \
@@ -15,7 +15,7 @@ Output::
        "thingName": "InteriorTherm",
        "thingId": "01d4763c-78a6-46c6-92be-7add080394bf"
    }
-    
+
 * Create public and private keys and the device certificate for the thing. This example uses the ``create-keys-and-certificate`` command and requires write permissions to the current directory. Alternatively, you can use the ``create-certificate-from-csr`` command::
 
     aws iot create-keys-and-certificate \

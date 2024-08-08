@@ -3,10 +3,10 @@
 The following ``list-phone-numbers`` example lists the phone numbers in the specified Amazon Connect instance. ::
 
     aws connect list-phone-numbers \
-        --instance-id a1b2c3d4-5678-90ab-cdef-EXAMPLE11111 
-        
+        --instance-id a1b2c3d4-5678-90ab-cdef-EXAMPLE11111
+
 Output::
-   
+
     {
         "PhoneNumberSummaryList": [
             {
@@ -25,6 +25,5 @@ Output::
             }
         ]
     }
-    
-For more information, see `Set Up Phone Numbers for Your Contact Center <https://docs.aws.amazon.com/connect/latest/adminguide/contact-center-phone-number.html>`__ in the *Amazon Connect Administrator Guide*.
 
+For more information, see `Set Up Phone Numbers for Your Contact Center <https://docs.aws.amazon.com/connect/latest/adminguide/contact-center-phone-number.html>`__ in the *Amazon Connect Administrator Guide*.

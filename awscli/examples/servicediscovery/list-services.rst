@@ -27,4 +27,3 @@ Output::
     }
 
 For more information, see `Viewing a list of services <https://docs.aws.amazon.com/cloud-map/latest/dg/listing-services.html>`__ in the *AWS Cloud Map Developer Guide*.
-

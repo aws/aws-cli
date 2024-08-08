@@ -9,13 +9,13 @@ Contents of ``create-portal-administrator-access-policy.json``::
 
     {
         "accessPolicyIdentity": {
-            "user": { 
+            "user": {
                 "id": "a1b2c3d4e5-a1b2c3d4-5678-90ab-cdef-bbbbbEXAMPLE"
             }
         },
         "accessPolicyPermission": "ADMINISTRATOR",
-        "accessPolicyResource": { 
-            "portal": { 
+        "accessPolicyResource": {
+            "portal": {
                 "id": "a1b2c3d4-5678-90ab-cdef-aaaaaEXAMPLE"
             }
         }
@@ -41,13 +41,13 @@ Contents of ``create-project-viewer-access-policy.json``::
 
     {
         "accessPolicyIdentity": {
-            "user": { 
+            "user": {
                 "id": "a1b2c3d4e5-a1b2c3d4-5678-90ab-cdef-bbbbbEXAMPLE"
             }
         },
         "accessPolicyPermission": "VIEWER",
-        "accessPolicyResource": { 
-            "project": { 
+        "accessPolicyResource": {
+            "project": {
                 "id": "a1b2c3d4-5678-90ab-cdef-eeeeeEXAMPLE"
             }
         }

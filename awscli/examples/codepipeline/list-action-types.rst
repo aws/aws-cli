@@ -13,59 +13,59 @@ Output::
     "actionTypes": [
         {
             "inputArtifactDetails": {
-                "maximumCount": 5, 
+                "maximumCount": 5,
                 "minimumCount": 0
-            }, 
+            },
             "actionConfigurationProperties": [
                 {
-                    "secret": false, 
-                    "required": true, 
-                    "name": "MyJenkinsExampleBuildProject", 
-                    "key": true, 
+                    "secret": false,
+                    "required": true,
+                    "name": "MyJenkinsExampleBuildProject",
+                    "key": true,
                     "queryable": true
                 }
-            ], 
+            ],
             "outputArtifactDetails": {
-                "maximumCount": 5, 
+                "maximumCount": 5,
                 "minimumCount": 0
-            }, 
+            },
             "id": {
-                "category": "Build", 
-                "owner": "Custom", 
-                "version": "1", 
+                "category": "Build",
+                "owner": "Custom",
+                "version": "1",
                 "provider": "MyJenkinsProviderName"
-            }, 
+            },
             "settings": {
-                "entityUrlTemplate": "http://192.0.2.4/job/{Config:ProjectName}", 
+                "entityUrlTemplate": "http://192.0.2.4/job/{Config:ProjectName}",
                 "executionUrlTemplate": "http://192.0.2.4/job/{Config:ProjectName}/{ExternalExecutionId}"
             }
-        }, 
+        },
         {
             "inputArtifactDetails": {
-                "maximumCount": 5, 
+                "maximumCount": 5,
                 "minimumCount": 0
-            }, 
+            },
             "actionConfigurationProperties": [
                 {
-                    "secret": false, 
-                    "required": true, 
-                    "name": "MyJenkinsExampleTestProject", 
-                    "key": true, 
+                    "secret": false,
+                    "required": true,
+                    "name": "MyJenkinsExampleTestProject",
+                    "key": true,
                     "queryable": true
                 }
-            ], 
+            ],
             "outputArtifactDetails": {
-                "maximumCount": 5, 
+                "maximumCount": 5,
                 "minimumCount": 0
-            }, 
+            },
             "id": {
-                "category": "Test", 
-                "owner": "Custom", 
-                "version": "1", 
+                "category": "Test",
+                "owner": "Custom",
+                "version": "1",
                 "provider": "MyJenkinsProviderName"
-            }, 
+            },
             "settings": {
-                "entityUrlTemplate": "http://192.0.2.4/job/{Config:ProjectName}", 
+                "entityUrlTemplate": "http://192.0.2.4/job/{Config:ProjectName}",
                 "executionUrlTemplate": "http://192.0.2.4/job/{Config:ProjectName}/{ExternalExecutionId}"
             }
         }

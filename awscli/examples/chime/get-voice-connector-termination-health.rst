@@ -9,7 +9,7 @@ Output::
 
     {
         "TerminationHealth": {
-            "Timestamp": "Fri Aug 23 16:45:55 UTC 2019", 
+            "Timestamp": "Fri Aug 23 16:45:55 UTC 2019",
             "Source": "10.24.34.0"
         }
     }

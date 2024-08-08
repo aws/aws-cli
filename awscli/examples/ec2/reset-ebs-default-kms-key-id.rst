@@ -3,7 +3,7 @@
 The following ``reset-ebs-default-kms-key-id`` example resets the default CMK for EBS encryption for your AWS account in the current Region. ::
 
     aws ec2 reset-ebs-default-kms-key-id
-  
+
 Output::
 
    {

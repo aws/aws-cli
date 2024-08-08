@@ -7,7 +7,7 @@ The following ``rotate-encryption-key`` example rotates the encryption key for t
 
 Output::
 
-    {    
+    {
         "Cluster": {
             "ClusterIdentifier": "mycluster",
             "NodeType": "dc2.large",

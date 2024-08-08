@@ -1,6 +1,6 @@
 **To list tags for a resource**
 
-This example lists tags for an AWS RoboMaker resource. 
+This example lists tags for an AWS RoboMaker resource.
 
 Command::
 

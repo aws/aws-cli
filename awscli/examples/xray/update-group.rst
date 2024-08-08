@@ -6,7 +6,7 @@ The following ``update-group`` example updates the criteria by which to accept t
         --group-name "AdminGroup" \
         --group-arn "arn:aws:xray:us-west-2:123456789012:group/AdminGroup/123456789" \
         --filter-expression "service(\"mydomain.com\") {fault}"
-	
+
 Output::
 
     {

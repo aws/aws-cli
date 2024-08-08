@@ -10,4 +10,3 @@ Output::
     {
         "LicenseConfigurationArn": "arn:aws:license-manager:us-west-2:123456789012:license-configuration:lic-38b658717b87478aaa7c00883EXAMPLE"
     }
-

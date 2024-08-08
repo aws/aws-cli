@@ -64,5 +64,3 @@ Result::
           } ]
        }
        (...remaining output omitted...)
-
-

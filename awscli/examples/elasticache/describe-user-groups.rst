@@ -2,7 +2,7 @@
 
 The following ``describe-user-groups`` example returns a list of user groups. ::
 
-    aws elasticache describe-user-groups 
+    aws elasticache describe-user-groups
 
 Output::
 

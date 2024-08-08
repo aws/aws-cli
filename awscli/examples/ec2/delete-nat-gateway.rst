@@ -7,7 +7,7 @@ Command::
   aws ec2 delete-nat-gateway --nat-gateway-id nat-04ae55e711cec5680
 
 Output::
- 
+
  {
     "NatGatewayId": "nat-04ae55e711cec5680"
  }

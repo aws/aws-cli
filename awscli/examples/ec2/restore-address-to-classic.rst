@@ -9,6 +9,6 @@ Command::
 Output::
 
   {
-    "Status": "MoveInProgress", 
+    "Status": "MoveInProgress",
     "PublicIp": "198.51.100.0"
   }

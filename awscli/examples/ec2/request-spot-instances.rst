@@ -9,7 +9,7 @@ Command::
   aws ec2 request-spot-instances --spot-price "0.03" --instance-count 5 --type "one-time" --launch-specification file://specification.json
 
 Specification.json::
-  
+
   {
     "ImageId": "ami-1a2b3c4d",
     "KeyName": "my-key-pair",
@@ -71,7 +71,7 @@ do not receive a public IP address by default.
 Command::
 
   aws ec2 request-spot-instances --spot-price "0.050" --instance-count 5 --type "one-time" --launch-specification file://specification.json
-  
+
 Specification.json::
 
   {
@@ -134,7 +134,7 @@ Command::
   aws ec2 request-spot-instances --spot-price "0.050" --instance-count 1 --type "one-time" --launch-specification file://specification.json
 
 Specification.json::
-  
+
   {
     "ImageId": "ami-1a2b3c4d",
     "KeyName": "my-key-pair",

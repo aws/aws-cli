@@ -10,14 +10,14 @@ Contents of ``budFulton-A32.json``::
     {
         "detectors": [
             {
-                "messageId": "00001", 
-                "detectorModelName": "motorDetectorModel", 
-                "keyValue": "Fulton-A32", 
+                "messageId": "00001",
+                "detectorModelName": "motorDetectorModel",
+                "keyValue": "Fulton-A32",
                 "state": {
-                    "stateName": "Normal", 
+                    "stateName": "Normal",
                     "variables": [
                         {
-                            "name": "pressureThresholdBreached", 
+                            "name": "pressureThresholdBreached",
                             "value": "0"
                         }
                     ],
@@ -35,4 +35,3 @@ Output::
     }
 
 For more information, see `BatchUpdateDetector <https://docs.aws.amazon.com/iotevents/latest/developerguide/iotevents-commands.html#api-iotevents-data-BatchUpdateDetector>`__ in the *AWS IoT Events Developer Guide**.
-

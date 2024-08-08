@@ -7,7 +7,7 @@ Command::
 Output::
 
   {
-      "contentType": "application/octet-stream", 
+      "contentType": "application/octet-stream",
       "contentDisposition": "attachment; filename=\"android_2016-02-22_23-52Z.zip\""
   }
 
@@ -20,7 +20,7 @@ Command::
 Output::
 
   {
-      "contentType": "application/octet-stream", 
+      "contentType": "application/octet-stream",
       "contentDisposition": "attachment; filename=\"objectivec_2016-02-22_23-52Z.zip\""
   }
 
@@ -33,7 +33,6 @@ Command::
 Output::
 
   {
-      "contentType": "application/octet-stream", 
+      "contentType": "application/octet-stream",
       "contentDisposition": "attachment; filename=\"javascript_2016-02-22_23-52Z.zip\""
   }
-

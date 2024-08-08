@@ -5,7 +5,7 @@ The following ``get-logger-definition-version`` example retrieves information ab
     aws greengrass get-logger-definition-version \
         --logger-definition-id "49eeeb66-f1d3-4e34-86e3-3617262abf23" \
         --logger-definition-version-id "5e3f6f64-a565-491e-8de0-3c0d8e0f2073"
-    
+
 Output::
 
     {

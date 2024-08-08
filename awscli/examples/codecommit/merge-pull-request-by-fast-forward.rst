@@ -5,7 +5,7 @@ This example demonstrates how to merge and close a pull request with the ID of '
     aws codecommit merge-pull-request-by-fast-forward \
         --pull-request-id 47 \
         --source-commit-id 99132ab0EXAMPLE \
-        --repository-name MyDemoRepo 
+        --repository-name MyDemoRepo
 
 Output::
 

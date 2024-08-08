@@ -4,6 +4,6 @@ The following ``disassociate-tag-option-from-resource`` example disassociates th
 
    aws servicecatalog disassociate-tag-option-from-resource \
         --resource-id port-2s6abcdq5wdh4 \
-        --tag-option-id tag-p3abc2pkpz5qc 
+        --tag-option-id tag-p3abc2pkpz5qc
 
 This command produces no output.

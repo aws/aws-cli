@@ -4,15 +4,15 @@ The following ``get-partner-account`` example gets information about your Sidewa
 
     aws iotwireless get-partner-account \
         --partner-account-id "12345678901234" \
-        --partner-type "Sidewalk" 
+        --partner-type "Sidewalk"
 
 Output::
 
     {
         "Sidewalk": {
-            "AmazonId": "12345678901234", 
+            "AmazonId": "12345678901234",
             "Fingerprint": "a123b45c6d78e9f012a34cd5e6a7890b12c3d45e6f78a1b234c56d7e890a1234"
-        }, 
+        },
         "AccountLinked": false
     }
 

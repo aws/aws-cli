@@ -59,7 +59,7 @@ The following ``describe-addon-versions`` example list all the available addons 
     aws eks describe-addon-versions  \
         --kubernetes-version=1.26 \
         --query 'sort_by(addons  &owner)[].{publisher: publisher, owner: owner, addonName: addonName, type: type}' \
-        --output table 
+        --output table
 
 Output::
 

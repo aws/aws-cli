@@ -3,7 +3,7 @@
 The following example shows that Susan, an admin who is the owner of account 222222222222, declines an invitation to join Bill's organization. The DeclineHandshake operation returns a handshake object, showing that the state is now DECLINED: ::
 
 	aws organizations decline-handshake --handshake-id h-examplehandshakeid111
-	
+
 The output includes a handshake object that shows the new state of ``DECLINED``: ::
 
 	{

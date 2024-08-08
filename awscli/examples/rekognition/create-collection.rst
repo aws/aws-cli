@@ -8,8 +8,8 @@ The following ``create-collection`` command creates a collection with the specif
 Output::
 
     {
-        "CollectionArn": "aws:rekognition:us-west-2:123456789012:collection/MyCollection", 
-        "FaceModelVersion": "4.0", 
+        "CollectionArn": "aws:rekognition:us-west-2:123456789012:collection/MyCollection",
+        "FaceModelVersion": "4.0",
         "StatusCode": 200
     }
 

@@ -11,4 +11,3 @@ The following example updates a specified instance's type. ::
 For more information, see `Editing the Instance Configuration`_ in the *AWS OpsWorks User Guide*.
 
 .. _`Editing the Instance Configuration`: http://docs.aws.amazon.com/opsworks/latest/userguide/workinginstances-properties.html
-

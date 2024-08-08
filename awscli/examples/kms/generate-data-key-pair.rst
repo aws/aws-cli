@@ -22,6 +22,6 @@ Output::
         "KeyPairSpec": "RSA_2048"
     }
 
-The ``PublicKey``, ``PrivateKeyPlaintext``, and ``PrivateKeyCiphertextBlob`` are returned in base64-encoded format. 
+The ``PublicKey``, ``PrivateKeyPlaintext``, and ``PrivateKeyCiphertextBlob`` are returned in base64-encoded format.
 
 For more information, see `Data key pairs <https://docs.aws.amazon.com/kms/latest/developerguide/concepts.html#data-key-pairs>`__ in the *AWS Key Management Service Developer Guide*.

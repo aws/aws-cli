@@ -40,7 +40,7 @@ This command produces no output.
 
 **Example 5: To modify the user data attached to an instance**
 
-The following ``modify-instance-attribute`` example adds the contents of the file ``UserData.txt`` as the UserData for the specified instance. 
+The following ``modify-instance-attribute`` example adds the contents of the file ``UserData.txt`` as the UserData for the specified instance.
 
 Contents of original file ``UserData.txt``::
 
@@ -66,7 +66,7 @@ Output::
     Input Length = 67
     Output Length = 152
     CertUtil: -encode command completed successfully.
-    
+
 Now you can reference that file in the CLI command that follows::
 
     aws ec2 modify-instance-attribute \

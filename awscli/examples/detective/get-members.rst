@@ -9,8 +9,8 @@ The following ``get-members`` example retrieves information about two member acc
 Output::
 
     {
-        "MemberDetails": [ 
-        { 
+        "MemberDetails": [
+        {
             "AccountId": "444455556666",
             "AdministratorId": "111122223333",
             "EmailAddress": "mmajor@example.com",
@@ -20,7 +20,7 @@ Output::
             "Status": "INVITED",
             "UpdatedTime": 1579826107000
         }
-        { 
+        {
             "AccountId": "123456789012",
             "AdministratorId": "111122223333",
             "EmailAddress": "jstiles@example.com",

@@ -53,19 +53,19 @@ Output::
     [
         {
             "ParameterName": "allow-suspicious-udfs"
-        }, 
+        },
         {
             "ParameterName": "aurora_binlog_read_buffer_size"
-        }, 
+        },
         {
             "ParameterName": "aurora_binlog_replication_max_yield_seconds"
-        }, 
+        },
         {
             "ParameterName": "aurora_binlog_use_large_read_buffer"
-        }, 
+        },
         {
             "ParameterName": "aurora_lab_mode"
-        }, 
+        },
 
         ...some output truncated...
         }
@@ -83,21 +83,21 @@ Output::
 
     [
         {
-            "ParameterName": "aurora_binlog_read_buffer_size", 
+            "ParameterName": "aurora_binlog_read_buffer_size",
             "IsModifiable": true
-        }, 
+        },
         {
-            "ParameterName": "aurora_binlog_replication_max_yield_seconds", 
+            "ParameterName": "aurora_binlog_replication_max_yield_seconds",
             "IsModifiable": true
-        }, 
+        },
         {
-            "ParameterName": "aurora_binlog_use_large_read_buffer", 
+            "ParameterName": "aurora_binlog_use_large_read_buffer",
             "IsModifiable": true
-        }, 
+        },
         {
-            "ParameterName": "aurora_lab_mode", 
+            "ParameterName": "aurora_lab_mode",
             "IsModifiable": true
-        }, 
+        },
 
         ...some output truncated...
         }
@@ -115,25 +115,25 @@ Output::
 
     [
         {
-            "DataType": "boolean", 
-            "ParameterName": "aurora_binlog_use_large_read_buffer", 
+            "DataType": "boolean",
+            "ParameterName": "aurora_binlog_use_large_read_buffer",
             "IsModifiable": true
-        }, 
+        },
         {
-            "DataType": "boolean", 
-            "ParameterName": "aurora_lab_mode", 
+            "DataType": "boolean",
+            "ParameterName": "aurora_lab_mode",
             "IsModifiable": true
-        }, 
+        },
         {
-            "DataType": "boolean", 
-            "ParameterName": "autocommit", 
+            "DataType": "boolean",
+            "ParameterName": "autocommit",
             "IsModifiable": true
-        }, 
+        },
         {
-            "DataType": "boolean", 
-            "ParameterName": "automatic_sp_privileges", 
+            "DataType": "boolean",
+            "ParameterName": "automatic_sp_privileges",
             "IsModifiable": true
-        }, 
+        },
         ...some output truncated...
         }
     ]

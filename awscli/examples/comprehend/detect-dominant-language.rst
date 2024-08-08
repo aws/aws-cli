@@ -5,7 +5,7 @@ The following ``detect-dominant-language`` analyzes the input text and identifie
     aws comprehend detect-dominant-language \
         --text "It is a beautiful day in Seattle."
 
-Output:: 
+Output::
 
     {
         "Languages": [

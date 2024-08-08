@@ -13,4 +13,3 @@ Output::
     }
 
 For more information, see `Store and restore an AMI using S3 <https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ami-store-restore.html>`__ in the *Amazon EC2 User Guide*.
-

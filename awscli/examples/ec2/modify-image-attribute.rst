@@ -35,4 +35,3 @@ The following ``modify-instance-attribute`` example removes launch permissions f
     aws ec2 modify-image-attribute \
         --image-id ami-5731123e \
         --launch-permission "Remove=[{UserId=123456789012}]"
-

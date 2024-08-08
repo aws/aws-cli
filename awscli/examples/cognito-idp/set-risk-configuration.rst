@@ -1,6 +1,6 @@
 **To set risk configuration**
 
-This example sets the risk configuration for a user pool. It sets the sign-up event action to NO_ACTION. 
+This example sets the risk configuration for a user pool. It sets the sign-up event action to NO_ACTION.
 
 Command::
 

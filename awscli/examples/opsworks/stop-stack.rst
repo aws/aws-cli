@@ -12,4 +12,3 @@ To stop a particular instance, use ``stop-instance``. ::
 For more information, see `Stopping an Instance`_ in the *AWS OpsWorks User Guide*.
 
 .. _`Stopping an Instance`: http://docs.aws.amazon.com/opsworks/latest/userguide/workinginstances-starting.html#workinginstances-starting-stop
-

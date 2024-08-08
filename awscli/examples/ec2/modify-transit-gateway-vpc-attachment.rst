@@ -25,6 +25,6 @@ Output::
                 "Ipv6Support": "disable"
             }
         }
-    } 
+    }
 
 For more information, see `Transit gateway attachments to a VPC <https://docs.aws.amazon.com/vpc/latest/tgw/tgw-vpc-attachments.html>`__ in the *Transit Gateways Guide*.

@@ -4,7 +4,7 @@ This example describes your customer gateways.
 
 Command::
 
-  aws ec2 describe-customer-gateways 
+  aws ec2 describe-customer-gateways
 
 Output::
 
@@ -24,9 +24,9 @@ Output::
               "Type": "ipsec.1",
               "BgpAsn": "65534"
           }
-      ]  
+      ]
   }
-  
+
 **To describe a specific customer gateway**
 
 This example describes the specified customer gateway.
@@ -46,5 +46,5 @@ Output::
               "Type": "ipsec.1",
               "BgpAsn": "65534"
           }
-      ]  
-  }  
+      ]
+  }

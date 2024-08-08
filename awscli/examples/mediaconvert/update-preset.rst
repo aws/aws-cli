@@ -15,7 +15,7 @@ Output::
         "Preset": {
             "Arn": "arn:aws:mediaconvert:us-east-1:003235472598:presets/SimpleMP4",
             "Settings": {
-            ...<output settings removed for brevity>... 
+            ...<output settings removed for brevity>...
             },
             "Type": "CUSTOM",
             "LastUpdated": 1568938411,

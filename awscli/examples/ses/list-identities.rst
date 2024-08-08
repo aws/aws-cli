@@ -13,7 +13,7 @@ Output::
        "example.com"
      ]
  }
-  
+
 
 The list that is returned contains all identities regardless of verification status (verified, pending verification, failure, etc.).
 

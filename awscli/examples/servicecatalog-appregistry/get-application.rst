@@ -3,7 +3,7 @@
 The following ``get-application`` example retrieves metadata information about a specific application in your AWS account. ::
 
     aws servicecatalog-appregistry get-application \
-        --application "ExampleApplication" 
+        --application "ExampleApplication"
 
 Output::
 

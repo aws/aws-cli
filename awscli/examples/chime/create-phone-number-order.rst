@@ -3,7 +3,7 @@
 The following ``create-phone-number-order`` example  creates a phone number order for the specified phone numbers. ::
 
     aws chime create-phone-number-order \
-        --product-type VoiceConnector \ 
+        --product-type VoiceConnector \
         --e164-phone-numbers "+12065550100" "+12065550101" "+12065550102"
 
 Output::

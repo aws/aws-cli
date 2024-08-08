@@ -15,4 +15,3 @@ To get your account-specific endpoint, use ``describe-endpoints``, or send the c
 If your request is successful, the service returns the JSON specification for the job template that you created.
 
 For more information, see `Working with AWS Elemental MediaConvert Job Templates <https://docs.aws.amazon.com/mediaconvert/latest/ug/working-with-job-templates.html>`_ in the *AWS Elemental MediaConvert User Guide*.
-

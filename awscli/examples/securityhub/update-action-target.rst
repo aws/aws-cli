@@ -4,7 +4,7 @@ The following ``update-action-target`` example updates the name of the custom ac
 
     aws securityhub update-action-target \
         --action-target-arn "arn:aws:securityhub:us-west-1:123456789012:action/custom/Remediation" \
-        --name "Send to remediation" 
+        --name "Send to remediation"
 
 This command produces no output.
 

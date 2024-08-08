@@ -13,7 +13,7 @@ Output::
             "Filters" : {
                 "FilterString" : "service:ec2"
             },
-            "IncludedProperties" : [ 
+            "IncludedProperties" : [
                 {
                     "Name" : "tags"
                 }

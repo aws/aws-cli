@@ -15,4 +15,3 @@ To view information about the next resource record set in the hosted zone, take 
 To view all the resource record sets of a particular name, use the ``--query`` parameter to filter them out. For example::
 
   aws route53 list-resource-record-sets --hosted-zone-id Z2LD58HEXAMPLE --query "ResourceRecordSets[?Name == 'example.domain.']"
-

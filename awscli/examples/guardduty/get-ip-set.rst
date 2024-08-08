@@ -15,5 +15,5 @@ Output::
         "Format": "TXT",
         "Name": "test-ip-set"
     }
-    
+
 For more information, see `Working with Trusted IP Lists and Threat Lists <https://docs.aws.amazon.com/guardduty/latest/ug/guardduty_upload_lists.html>`__ in the GuardDuty User Guide.

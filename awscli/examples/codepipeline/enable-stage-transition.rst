@@ -1,6 +1,6 @@
 **To enable a transition to a stage in a pipeline**
 
-This example enables transitions into the Beta stage of the MyFirstPipeline pipeline in AWS CodePipeline. 
+This example enables transitions into the Beta stage of the MyFirstPipeline pipeline in AWS CodePipeline.
 
 Command::
 

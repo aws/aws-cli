@@ -10,7 +10,7 @@ The following ``describe-job-execution`` example retrieves the details of the la
 Output::
 
     {
-        "execution": { 
+        "execution": {
             "approximateSecondsBeforeTimedOut": 88,
             "executionNumber": 2939653338,
             "jobId": "SampleJob",

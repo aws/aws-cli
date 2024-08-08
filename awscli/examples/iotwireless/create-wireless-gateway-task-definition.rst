@@ -3,7 +3,7 @@
 The following ``create-wireless-gateway-task-definition`` automatically creates tasks using this task definition for all gateways with the specified current version. ::
 
     aws iotwireless create-wireless-gateway-task-definition \
-        --cli-input-json file://input.json 
+        --cli-input-json file://input.json
 
 Contents of ``input.json``::
 

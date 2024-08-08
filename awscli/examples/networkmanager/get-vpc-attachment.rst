@@ -3,7 +3,7 @@
 The following ``get-vpc-attachment`` example returns information about a VPC attachment. ::
 
     aws networkmanager get-vpc-attachment \
-        --attachment-id  attachment-03b7ea450134787da 
+        --attachment-id  attachment-03b7ea450134787da
 
 Output::
 

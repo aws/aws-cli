@@ -1,6 +1,6 @@
 **To describe the launch permissions for an AMI**
 
-This example describes the launch permissions for the specified AMI. 
+This example describes the launch permissions for the specified AMI.
 
 Command::
 

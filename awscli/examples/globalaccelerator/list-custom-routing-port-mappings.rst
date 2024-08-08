@@ -8,12 +8,12 @@ The following ``list-custom-routing-port-mappings`` example provides a partial l
 Output::
 
     {
-        "PortMappings": [ 
-            { 
+        "PortMappings": [
+            {
                 "AcceleratorPort": 40480,
                 "EndpointGroupArn": "arn:aws:globalaccelerator::012345678901:accelerator/1234abcd-abcd-1234-abcd-1234abcdefgh/listener/0123vxyz/endpoint-group/098765zyxwvu",
                 "EndpointId": "subnet-1234567890abcdef0",
-                "DestinationSocketAddress": { 
+                "DestinationSocketAddress": {
                     "IpAddress": "192.0.2.250",
                     "Port": 80
                 },
@@ -23,11 +23,11 @@ Output::
                 ],
                 "DestinationTrafficState": "ALLOW"
             }
-            { 
+            {
                 "AcceleratorPort": 40481,
                 "EndpointGroupArn": "arn:aws:globalaccelerator::012345678901:accelerator/1234abcd-abcd-1234-abcd-1234abcdefgh/listener/0123vxyz/endpoint-group/098765zyxwvu",
                 "EndpointId": "subnet-1234567890abcdef0",
-                "DestinationSocketAddress": { 
+                "DestinationSocketAddress": {
                    "IpAddress": "192.0.2.251",
                   "Port": 80
                 },

@@ -11,11 +11,11 @@ Output::
 
     {
         "LaunchTemplate": {
-            "LatestVersionNumber": 1, 
-            "LaunchTemplateId": "lt-01238c059e3466abc", 
-            "LaunchTemplateName": "TemplateForWebServer", 
-            "DefaultVersionNumber": 1, 
-            "CreatedBy": "arn:aws:iam::123456789012:user/Bob", 
+            "LatestVersionNumber": 1,
+            "LaunchTemplateId": "lt-01238c059e3466abc",
+            "LaunchTemplateName": "TemplateForWebServer",
+            "DefaultVersionNumber": 1,
+            "CreatedBy": "arn:aws:iam::123456789012:user/Bob",
             "CreateTime": "2019-01-27T09:13:24.000Z"
         }
     }
@@ -30,7 +30,7 @@ The following ``create-launch-template`` example creates a launch template with 
     aws ec2 create-launch-template \
         --launch-template-name TemplateForAutoScaling \
         --version-description AutoScalingVersion1 \
-        --launch-template-data '{"NetworkInterfaces":[{"DeviceIndex":0,"AssociatePublicIpAddress":true,"Groups":["sg-7c227019,sg-903004f8"],"DeleteOnTermination":true}],"ImageId":"ami-b42209de","InstanceType":"m4.large","TagSpecifications":[{"ResourceType":"instance","Tags":[{"Key":"environment","Value":"production"},{"Key":"purpose","Value":"webserver"}]},{"ResourceType":"volume","Tags":[{"Key":"environment","Value":"production"},{"Key":"cost-center","Value":"cc123"}]}],"BlockDeviceMappings":[{"DeviceName":"/dev/sda1","Ebs":{"VolumeSize":100}}]}' --region us-east-1 
+        --launch-template-data '{"NetworkInterfaces":[{"DeviceIndex":0,"AssociatePublicIpAddress":true,"Groups":["sg-7c227019,sg-903004f8"],"DeleteOnTermination":true}],"ImageId":"ami-b42209de","InstanceType":"m4.large","TagSpecifications":[{"ResourceType":"instance","Tags":[{"Key":"environment","Value":"production"},{"Key":"purpose","Value":"webserver"}]},{"ResourceType":"volume","Tags":[{"Key":"environment","Value":"production"},{"Key":"cost-center","Value":"cc123"}]}],"BlockDeviceMappings":[{"DeviceName":"/dev/sda1","Ebs":{"VolumeSize":100}}]}' --region us-east-1
 
 Output::
 

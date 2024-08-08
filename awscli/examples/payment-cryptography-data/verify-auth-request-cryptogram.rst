@@ -8,7 +8,7 @@ The following ``verify-auth-request-cryptogram`` example verifies an Authorizati
         --key-identifier arn:aws:payment-cryptography:us-west-2:111122223333:key/pboipdfzd4mdklya \
         --major-key-derivation-mode "EMV_OPTION_A" \
         --session-key-derivation-attributes '{"EmvCommon": {"ApplicationTransactionCounter": "1234","PanSequenceNumber": "01","PrimaryAccountNumber": "471234567890123"}}' \
-        --transaction-data "123456789ABCDEF" 
+        --transaction-data "123456789ABCDEF"
 
 Output::
 

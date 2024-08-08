@@ -6,7 +6,7 @@ The following ``generate-card-validation-data`` example generates a CVV/CVV2. ::
         --key-identifier arn:aws:payment-cryptography:us-east-2:123456789012:key/kwapwa6qaifllw2h \
         --primary-account-number=171234567890123 \
         --generation-attributes CardVerificationValue2={CardExpiryDate=0123}
-        
+
 Output::
 
     {

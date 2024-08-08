@@ -7,15 +7,15 @@ Command::
   aws codepipeline poll-for-jobs --cli-input-json file://MyActionTypeInfo.json
 
 JSON file sample contents::
-  
+
   {
     "actionTypeId": {
       "category": "Test",
       "owner": "Custom",
       "provider": "MyJenkinsProviderName",
       "version": "1"
-    }, 
-    "maxBatchSize": 5, 
+    },
+    "maxBatchSize": 5,
     "queryParam": {
         "ProjectName": "MyJenkinsTestProject"
     }

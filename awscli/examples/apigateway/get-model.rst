@@ -7,10 +7,9 @@ Command::
 Output::
 
   {
-      "contentType": "application/json", 
-      "description": "This is a default empty schema model", 
-      "name": "Empty", 
-      "id": "etd5w5", 
+      "contentType": "application/json",
+      "description": "This is a default empty schema model",
+      "name": "Empty",
+      "id": "etd5w5",
       "schema": "{\n  \"$schema\": \"http://json-schema.org/draft-04/schema#\",\n  \"title\" : \"Empty Schema\",\n  \"type\" : \"object\"\n}"
   }
-

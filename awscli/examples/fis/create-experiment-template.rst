@@ -2,7 +2,7 @@
 
 The following ``create-experiment-template`` example creates an experiment template in your AWS FIS account. ::
 
-    aws fis create-experiment-template \ 
+    aws fis create-experiment-template \
         --cli-input-json file://myfile.json
 
 Contents of ``myfile.json``::

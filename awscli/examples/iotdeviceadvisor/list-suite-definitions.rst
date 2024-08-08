@@ -2,7 +2,7 @@
 
 The following ``list-suite-definitions`` example lists up to 25 device advisor test suites you created in AWS IoT. If you have more than 25 test suites, the "nextToken" will be shown in the output. You can use this "nextToken" to show the rest of the test suites you created. ::
 
-    aws iotdeviceadvisor list-suite-definitions 
+    aws iotdeviceadvisor list-suite-definitions
 
 Output::
 

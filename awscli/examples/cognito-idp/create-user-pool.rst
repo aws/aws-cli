@@ -1,7 +1,7 @@
 **To create a minimally configured user pool**
 
 This example creates a user pool named MyUserPool using default values. There are no required attributes
-and no application clients. MFA and advanced security is disabled. 
+and no application clients. MFA and advanced security is disabled.
 
 Command::
 

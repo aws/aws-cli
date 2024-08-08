@@ -4,13 +4,13 @@ The following ``create-case`` example creates a support case for your AWS accoun
 
     aws support create-case \
         --category-code "using-aws" \
-        --cc-email-addresses "myemail@example.com" \ 
+        --cc-email-addresses "myemail@example.com" \
         --communication-body "I want to learn more about an AWS service." \
         --issue-type "technical" \
         --language "en" \
         --service-code "general-info" \
         --severity-code "low" \
-        --subject "Question about my account" 
+        --subject "Question about my account"
 
 Output::
 

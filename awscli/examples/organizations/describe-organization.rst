@@ -3,7 +3,7 @@
 The following example shows you how to request details about an organization: ::
 
 	aws organizations describe-organization
-	
+
 The output includes an organization object that has the details about the organization: ::
 
 	{

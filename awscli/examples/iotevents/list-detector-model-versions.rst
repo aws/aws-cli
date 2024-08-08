@@ -10,12 +10,12 @@ Output::
     {
         "detectorModelVersionSummaries": [
             {
-                "status": "ACTIVE", 
-                "lastUpdateTime": 1560796816.077, 
-                "roleArn": "arn:aws:iam::123456789012:role/IoTEventsRole", 
-                "creationTime": 1560796816.077, 
-                "detectorModelArn": "arn:aws:iotevents:us-west-2:123456789012:detectorModel/motorDetectorModel", 
-                "detectorModelName": "motorDetectorModel", 
+                "status": "ACTIVE",
+                "lastUpdateTime": 1560796816.077,
+                "roleArn": "arn:aws:iam::123456789012:role/IoTEventsRole",
+                "creationTime": 1560796816.077,
+                "detectorModelArn": "arn:aws:iotevents:us-west-2:123456789012:detectorModel/motorDetectorModel",
+                "detectorModelName": "motorDetectorModel",
                 "detectorModelVersion": "1"
             }
         ]

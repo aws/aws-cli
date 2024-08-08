@@ -9,15 +9,15 @@ The following ``create-packaging-configuration`` example creates a packaging con
 
 Contents of ``hls_pc.json``::
 
-    { 
-        "HlsManifests":[ 
-            { 
+    {
+        "HlsManifests":[
+            {
                 "AdMarkers":"NONE",
                 "IncludeIframeOnlyStream":false,
                 "ManifestName":"string",
                 "ProgramDateTimeIntervalSeconds":60,
                 "RepeatExtXKey":true,
-                "StreamSelection":{ 
+                "StreamSelection":{
                     "MaxVideoBitsPerSecond":1000,
                     "MinVideoBitsPerSecond":0,
                     "StreamOrder":"ORIGINAL"
@@ -30,21 +30,21 @@ Contents of ``hls_pc.json``::
 
 Output::
 
-    { 
+    {
         "Arn":"arn:aws:mediapackage-vod:us-west-2:111122223333:packaging-configurations/new_hls",
         "Id":"new_hls",
         "PackagingGroupId":"hls_chicken",
-        "HlsManifests":{ 
+        "HlsManifests":{
             "SegmentDurationSeconds":6,
             "UseAudioRenditionGroup":false,
-            "HlsMarkers":[ 
-                { 
+            "HlsMarkers":[
+                {
                     "AdMarkers":"NONE",
                     "IncludeIframeOnlyStream":false,
                     "ManifestName":"string",
                     "ProgramDateTimeIntervalSeconds":60,
                     "RepeatExtXKey":true,
-                    "StreamSelection":{ 
+                    "StreamSelection":{
                         "MaxVideoBitsPerSecond":1000,
                         "MinVideoBitsPerSecond":0,
                         "StreamOrder":"ORIGINAL"

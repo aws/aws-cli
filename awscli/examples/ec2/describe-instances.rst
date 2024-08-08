@@ -331,7 +331,7 @@ Output::
                 "PartitionNumber": 3,
                 "Tenancy": "default"
             }
-        
+
         ]
     ]
 
@@ -347,7 +347,7 @@ The following ``describe-instances`` example filters the results to only those i
 The following shows only the relevant information from the output. ::
 
     "Instances": [
-        {   
+        {
             "InstanceId": "i-0123a456700123456",
             "InstanceType": "r4.large",
             "Placement": {
@@ -357,7 +357,7 @@ The following shows only the relevant information from the output. ::
                 "Tenancy": "default"
             }
         },
-        {   
+        {
             "InstanceId": "i-9876a543210987654",
             "InstanceType": "r4.large",
             "Placement": {

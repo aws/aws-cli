@@ -1,9 +1,9 @@
 **Example 1: To start a standard entity detection job using the pre-trained model**
 
 The following ``start-entities-detection-job`` example starts an asynchronous entities detection job for all files located at the address specified by
-the ``--input-data-config`` tag. The S3 bucket in this example contains ``Sampletext1.txt``, ``Sampletext2.txt``, and ``Sampletext3.txt``. 
-When the job is complete, the folder, ``output``, is placed in the location specified by the ``--output-data-config`` tag. The folder contains 
-``output.txt`` which lists all of the named entities detected within each text file as well as the pre-trained model's confidence score for each prediction. 
+the ``--input-data-config`` tag. The S3 bucket in this example contains ``Sampletext1.txt``, ``Sampletext2.txt``, and ``Sampletext3.txt``.
+When the job is complete, the folder, ``output``, is placed in the location specified by the ``--output-data-config`` tag. The folder contains
+``output.txt`` which lists all of the named entities detected within each text file as well as the pre-trained model's confidence score for each prediction.
 The Json output is printed on one line per input file, but is formatted here for readability. ::
 
     aws comprehend start-entities-detection-job \
@@ -22,7 +22,7 @@ Contents of ``Sampletext2.txt``::
 
     "Dear Max, based on your autopay settings for your account example1.org account, we will withdraw your payment on the due date from your bank account number XXXXXX1111 with the routing number XXXXX0000. "
 
-Contents of ``Sampletext3.txt``:: 
+Contents of ``Sampletext3.txt``::
 
     "Jane, please submit any customer feedback from this weekend to AnySpa, 123 Main St, Anywhere and send comments to Alice at AnySpa@example.com."
 
@@ -159,15 +159,15 @@ Contents of ``output.txt`` with line indents for readability::
         "File": "SampleText3.txt",
         "Line": 0
     }
-    
+
 
 For more information, see `Async analysis for Amazon Comprehend insights <https://docs.aws.amazon.com/comprehend/latest/dg/api-async-insights.html>`__ in the *Amazon Comprehend Developer Guide*.
 
 **Example 2: To start a custom entity detection job**
 
 The following ``start-entities-detection-job`` example starts an asynchronous custom entities detection job for all files located at the address specified by
-the ``--input-data-config`` tag. In this example, the S3 bucket in this example contains ``SampleFeedback1.txt``, ``SampleFeedback2.txt``, and ``SampleFeedback3.txt``. 
-The entity recognizer model was trained on customer support Feedbacks to recognize device names. When the job is complete, an the folder, ``output``, is put at the location specified by the ``--output-data-config`` tag. The folder contains 
+the ``--input-data-config`` tag. In this example, the S3 bucket in this example contains ``SampleFeedback1.txt``, ``SampleFeedback2.txt``, and ``SampleFeedback3.txt``.
+The entity recognizer model was trained on customer support Feedbacks to recognize device names. When the job is complete, an the folder, ``output``, is put at the location specified by the ``--output-data-config`` tag. The folder contains
 ``output.txt``, which lists all of the named entities detected within each text file as well as the pre-trained model's confidence score for each prediction. The Json output is printed on one line per file, but is formatted here for readability. ::
 
     aws comprehend start-entities-detection-job \
@@ -176,7 +176,7 @@ The entity recognizer model was trained on customer support Feedbacks to recogni
         --language-code en \
         --input-data-config "S3Uri=s3://DOC-EXAMPLE-BUCKET/jobdata/" \
         --output-data-config "S3Uri=s3://DOC-EXAMPLE-DESTINATION-BUCKET/testfolder/" \
-        --data-access-role-arn "arn:aws:iam::111122223333:role/service-role/AmazonComprehendServiceRole-IOrole" 
+        --data-access-role-arn "arn:aws:iam::111122223333:role/service-role/AmazonComprehendServiceRole-IOrole"
 
 Contents of ``SampleFeedback1.txt``::
 

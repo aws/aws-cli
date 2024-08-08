@@ -22,7 +22,7 @@ Contents of ``9000-base-scorekeep.json``::
             "Version": 1
         }
     }
-  
+
 Output::
 
     {

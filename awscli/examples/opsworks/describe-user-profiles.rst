@@ -29,4 +29,3 @@ The following ``describe-user-profiles`` command describes the account's user pr
 For more information, see `Managing AWS OpsWorks Users`_ in the *AWS OpsWorks User Guide*.
 
 .. _`Managing AWS OpsWorks Users`: http://docs.aws.amazon.com/opsworks/latest/userguide/opsworks-security-users-manage.html
-

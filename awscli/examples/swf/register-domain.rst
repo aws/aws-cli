@@ -47,4 +47,3 @@ See Also
 
 -  `RegisterDomain <https://docs.aws.amazon.com/amazonswf/latest/apireference/API_RegisterDomain.html>`__
    in the *Amazon Simple Workflow Service API Reference*
-

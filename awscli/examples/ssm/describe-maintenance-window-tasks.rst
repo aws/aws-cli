@@ -95,7 +95,7 @@ The following ``describe-maintenance-window-tasks`` example lists all of the tas
 
     aws ssm describe-maintenance-window-tasks \
         --window-id "mw-ab12cd34eEXAMPLE" \
-        --filters "Key=Priority,Values=3"    
+        --filters "Key=Priority,Values=3"
 
 Output::
 

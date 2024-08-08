@@ -1,6 +1,6 @@
 **Example 1: To find detailed information about a KMS key**
 
-The following ``describe-key`` example gets detailed information about the AWS managed key for Amazon S3 in the example account and Region. You can use this command to find details about AWS managed keys and customer managed keys. 
+The following ``describe-key`` example gets detailed information about the AWS managed key for Amazon S3 in the example account and Region. You can use this command to find details about AWS managed keys and customer managed keys.
 
 To specify the KMS key, use the ``key-id`` parameter. This example uses an alias name value, but you can use a key ID, key ARN, alias name, or alias ARN in this command. ::
 

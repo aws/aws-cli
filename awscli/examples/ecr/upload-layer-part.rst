@@ -8,7 +8,7 @@ This following ``upload-layer-part`` uploads an image layer part to the ``layer-
         --part-first-byte 0 \
         --part-last-byte 8323314 \
         --layer-part-blob file:///var/lib/docker/image/overlay2/layerdb/sha256/ff986b10a018b48074e6d3a68b39aad8ccc002cdad912d4148c0f92b3729323e/layer.b64
-  
+
 Output::
 
     {

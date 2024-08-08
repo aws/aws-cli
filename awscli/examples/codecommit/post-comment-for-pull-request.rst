@@ -30,7 +30,7 @@ Output::
                 "callerReactions": [],
                 "reactionCounts": []
             },
-            "location": { 
+            "location": {
                 "filePath": "ahs_count.py",
                 "filePosition": 367,
                 "relativeFileVersion": "AFTER"

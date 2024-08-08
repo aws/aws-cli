@@ -7,7 +7,7 @@ The following ``update-job-template`` example replaces the JSON definition of th
         --endpoint-url https://abcd1234.mediaconvert.us-west-2.amazonaws.com \
         --cli-input-json file://~/job-template-update.json
 
-Contents of ``job-template-update.json``:: 
+Contents of ``job-template-update.json``::
 
     {
         "Description": "A simple job template that generates a single file output.",

@@ -8,17 +8,17 @@ The following ``get-insights`` example retrieves the configuration details for t
 Output::
 
     {
-        "Insights": [ 
-            { 
-                "Filters": { 
-                   "ResourceType": [ 
-                        { 
+        "Insights": [
+            {
+                "Filters": {
+                   "ResourceType": [
+                        {
                             "Comparison": "EQUALS",
                             "Value": "AwsIamRole"
                         }
                     ],
-                    "SeverityLabel": [ 
-                        { 
+                    "SeverityLabel": [
+                        {
                             "Comparison": "EQUALS",
                             "Value": "CRITICAL"
                         }

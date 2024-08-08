@@ -7,9 +7,9 @@ Command::
 Output::
 
   {
-      "contentType": "application/json", 
-      "description": "The First Model", 
-      "name": "firstModel", 
-      "id": "2rzg0l", 
+      "contentType": "application/json",
+      "description": "The First Model",
+      "name": "firstModel",
+      "id": "2rzg0l",
       "schema": "{ \"$schema\": \"http://json-schema.org/draft-04/schema#\", \"title\": \"firstModel\", \"type\": \"object\", \"properties\": { \"firstProperty\" : { \"type\": \"object\", \"properties\": { \"key\": { \"type\": \"string\" } } } } }"
   }

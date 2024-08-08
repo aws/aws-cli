@@ -5,7 +5,7 @@ The following ``describe-entity-recognizer`` example gets the properties of a cu
     aws comprehend describe-entity-recognizer \
         entity-recognizer-arn arn:aws:comprehend:us-west-2:111122223333:entity-recognizer/business-recongizer-1/version/1
 
-Output:: 
+Output::
 
     {
         "EntityRecognizerProperties": {

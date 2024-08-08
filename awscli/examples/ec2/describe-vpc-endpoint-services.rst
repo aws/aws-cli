@@ -13,76 +13,76 @@ Output::
                     {
                         "ServiceType": "Gateway"
                     }
-                ], 
-                "AcceptanceRequired": false, 
-                "ServiceName": "com.amazonaws.us-east-1.dynamodb", 
-                "VpcEndpointPolicySupported": true, 
-                "Owner": "amazon", 
+                ],
+                "AcceptanceRequired": false,
+                "ServiceName": "com.amazonaws.us-east-1.dynamodb",
+                "VpcEndpointPolicySupported": true,
+                "Owner": "amazon",
                 "AvailabilityZones": [
-                    "us-east-1a", 
-                    "us-east-1b", 
-                    "us-east-1c", 
-                    "us-east-1d", 
-                    "us-east-1e", 
+                    "us-east-1a",
+                    "us-east-1b",
+                    "us-east-1c",
+                    "us-east-1d",
+                    "us-east-1e",
                     "us-east-1f"
-                ], 
+                ],
                 "BaseEndpointDnsNames": [
                     "dynamodb.us-east-1.amazonaws.com"
                 ]
-            }, 
+            },
             {
                 "ServiceType": [
                     {
                         "ServiceType": "Interface"
                     }
-                ], 
-                "PrivateDnsName": "ec2.us-east-1.amazonaws.com", 
-                "ServiceName": "com.amazonaws.us-east-1.ec2", 
-                "VpcEndpointPolicySupported": false, 
-                "Owner": "amazon", 
+                ],
+                "PrivateDnsName": "ec2.us-east-1.amazonaws.com",
+                "ServiceName": "com.amazonaws.us-east-1.ec2",
+                "VpcEndpointPolicySupported": false,
+                "Owner": "amazon",
                 "AvailabilityZones": [
-                    "us-east-1a", 
-                    "us-east-1b", 
-                    "us-east-1c", 
-                    "us-east-1d", 
-                    "us-east-1e", 
+                    "us-east-1a",
+                    "us-east-1b",
+                    "us-east-1c",
+                    "us-east-1d",
+                    "us-east-1e",
                     "us-east-1f"
-                ], 
-                "AcceptanceRequired": false, 
+                ],
+                "AcceptanceRequired": false,
                 "BaseEndpointDnsNames": [
                     "ec2.us-east-1.vpce.amazonaws.com"
                 ]
-            }, 
+            },
             {
                 "ServiceType": [
                     {
                         "ServiceType": "Interface"
                     }
-                ], 
-                "PrivateDnsName": "ssm.us-east-1.amazonaws.com", 
-                "ServiceName": "com.amazonaws.us-east-1.ssm", 
-                "VpcEndpointPolicySupported": true, 
-                "Owner": "amazon", 
+                ],
+                "PrivateDnsName": "ssm.us-east-1.amazonaws.com",
+                "ServiceName": "com.amazonaws.us-east-1.ssm",
+                "VpcEndpointPolicySupported": true,
+                "Owner": "amazon",
                 "AvailabilityZones": [
-                    "us-east-1a", 
-                    "us-east-1b", 
-                    "us-east-1c", 
-                    "us-east-1d", 
+                    "us-east-1a",
+                    "us-east-1b",
+                    "us-east-1c",
+                    "us-east-1d",
                     "us-east-1e"
-                ], 
-                "AcceptanceRequired": false, 
+                ],
+                "AcceptanceRequired": false,
                 "BaseEndpointDnsNames": [
                     "ssm.us-east-1.vpce.amazonaws.com"
                 ]
             }
-        ], 
+        ],
         "ServiceNames": [
-            "com.amazonaws.us-east-1.dynamodb", 
-            "com.amazonaws.us-east-1.ec2", 
-            "com.amazonaws.us-east-1.ec2messages", 
-            "com.amazonaws.us-east-1.elasticloadbalancing", 
-            "com.amazonaws.us-east-1.kinesis-streams", 
-            "com.amazonaws.us-east-1.s3", 
+            "com.amazonaws.us-east-1.dynamodb",
+            "com.amazonaws.us-east-1.ec2",
+            "com.amazonaws.us-east-1.ec2messages",
+            "com.amazonaws.us-east-1.elasticloadbalancing",
+            "com.amazonaws.us-east-1.kinesis-streams",
+            "com.amazonaws.us-east-1.s3",
             "com.amazonaws.us-east-1.ssm"
         ]
     }

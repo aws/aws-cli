@@ -1,6 +1,6 @@
 **To create a virtual MFA device**
 
-This example creates a new virtual MFA device called ``BobsMFADevice``. It creates a file that contains bootstrap information called ``QRCode.png`` 
+This example creates a new virtual MFA device called ``BobsMFADevice``. It creates a file that contains bootstrap information called ``QRCode.png``
 and places it in the ``C:/`` directory. The bootstrap method used in this example is ``QRCodePNG``. ::
 
 

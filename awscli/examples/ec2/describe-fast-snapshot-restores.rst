@@ -26,4 +26,4 @@ Output::
 
 The following ``describe-fast-snapshot-restores`` example describes all fast snapshot restores. ::
 
-    aws ec2 describe-fast-snapshot-restores 
+    aws ec2 describe-fast-snapshot-restores

@@ -34,7 +34,7 @@ The following ``create-resource-share`` example creates a resource share that is
      aws ram create-resource-share \
          --name MyNewResourceShare \
          --no-allow-external-principals \
-         --principals arn:aws:organizations::123456789012:ou/o-63bEXAMPLE/ou-46xi-rEXAMPLE 
+         --principals arn:aws:organizations::123456789012:ou/o-63bEXAMPLE/ou-46xi-rEXAMPLE
 
 Output::
 

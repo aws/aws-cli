@@ -3,14 +3,14 @@
 The following ``create-ip-set`` example creates and activates a trusted IP set in the current region. ::
 
     aws guardduty create-ip-set \
-        --detector-id 12abc34d567e8fa901bc2d34eexample \ 
+        --detector-id 12abc34d567e8fa901bc2d34eexample \
         --name new-ip-set \
         --format TXT
         --location s3://AWSDOC-EXAMPLE-BUCKET/customtrustlist.csv
         --activate
 
 Output::
-    
+
     {
         "IpSetId": "d4b94fc952d6912b8f3060768example"
     }

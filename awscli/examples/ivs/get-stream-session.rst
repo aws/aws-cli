@@ -85,7 +85,7 @@ Output::
                     "name": "Stream Start",
                     "type": "IVS Stream State Change",
                     "eventTime": "2023-06-26T19:09:34+00:00"
-                },  
+                },
                 {
                     "name": "Session Created",
                     "type": "IVS Stream State Change",

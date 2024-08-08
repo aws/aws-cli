@@ -3,7 +3,7 @@
 The following ``list-authorizers`` example lists the custom authorizers in your AWS account. ::
 
     aws iot list-authorizers
-    
+
 Output::
 
     {

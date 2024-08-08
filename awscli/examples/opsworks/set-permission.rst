@@ -11,7 +11,7 @@ is identified by Amazon Resource Name (ARN). The example grants the user a Manag
 instances. ::
 
   aws opsworks set-permission --region us-east-1 --stack-id 71c7ca72-55ae-4b6a-8ee1-a8dcded3fa0f --level manage  --iam-user-arn arn:aws:iam::123456789102:user/cli-user-test --allow-ssh --allow-sudo
-  
+
 
 *Output*: None.
 
@@ -20,4 +20,3 @@ instances. ::
 For more information, see `Granting AWS OpsWorks Users Per-Stack Permissions`_ in the *AWS OpsWorks User Guide*.
 
 .. _`Granting AWS OpsWorks Users Per-Stack Permissions`: http://docs.aws.amazon.com/opsworks/latest/userguide/opsworks-security-users-console.html
-

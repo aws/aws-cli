@@ -20,7 +20,7 @@ Output::
             },
 
             ...remaining output omitted...
-    
+
         ],
         "UniqueAccountIdentifier": "cqahfbfy5xee"
     }

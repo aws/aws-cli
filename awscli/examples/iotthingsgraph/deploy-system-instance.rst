@@ -8,7 +8,7 @@ The following ``delete-system-template`` example deploys a system instance. ::
 Output::
 
     {
-       "summary": { 
+       "summary": {
           "arn": "arn:aws:iotthingsgraph:us-west-2:123456789012:Deployment:Room218",
           "createdAt": 1559249776.254,
           "id": "urn:tdm:us-west-2/123456789012/default:Deployment:Room218",

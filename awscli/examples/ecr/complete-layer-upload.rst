@@ -6,7 +6,7 @@ The following ``complete-layer-upload`` example completes an image layer upload 
         --repository-name layer-test \
         --upload-id 6cb64b8a-9378-0e33-2ab1-b780fab8a9e9 \
         --layer-digests 6cb64b8a-9378-0e33-2ab1-b780fab8a9e9:48074e6d3a68b39aad8ccc002cdad912d4148c0f92b3729323e
-  
+
 Output::
 
     {

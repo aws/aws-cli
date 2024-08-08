@@ -1,9 +1,9 @@
 **To retrieve the encryption configuration**
 
 The following ``get-encryption-config`` example retrieves the current encryption configuration for your AWS X-Ray data. ::
-   
+
    aws xray get-encryption-config
-   
+
 Output::
 
     {

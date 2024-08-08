@@ -10,11 +10,11 @@ Contents of ``logging-options.json``::
     {
         "loggingOptions": {
             "roleArn": "arn:aws:iam::123456789012:role/IoTEventsRole",
-            "level": "DEBUG", 
-            "enabled": true, 
+            "level": "DEBUG",
+            "enabled": true,
             "detectorDebugOptions": [
                 {
-                    "detectorModelName": "motorDetectorModel", 
+                    "detectorModelName": "motorDetectorModel",
                     "keyValue": "Fulton-A32"
                 }
             ]

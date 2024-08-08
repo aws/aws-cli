@@ -47,4 +47,3 @@ For more information, see `Modifying the Instance Size of Your Reservations`_ in
 
 .. _`Modifying the Instance Size of Your Reservations`: http://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ri-modification-instancemove.html
 .. _`Modifying Your Reserved Instances`: http://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ri-modifying.html
-

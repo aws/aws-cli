@@ -7,7 +7,7 @@ The following ``send-command`` example runs an ``echo`` command on a target inst
         --parameters 'commands=["echo HelloWorld"]' \
         --targets "Key=instanceids,Values=i-1234567890abcdef0" \
         --comment "echo HelloWorld"
-  
+
 Output::
 
     {

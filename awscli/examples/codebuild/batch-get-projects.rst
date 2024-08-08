@@ -86,4 +86,3 @@ In the following output, the ``projectsNotFound`` array lists any build project 
     }
 
 For more information, see `View a Build Project's Details (AWS CLI) <https://docs.aws.amazon.com/codebuild/latest/userguide/view-project-details.html#view-project-details-cli>`_ in the *AWS CodeBuild User Guide*.
-

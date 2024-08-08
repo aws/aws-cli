@@ -13,8 +13,8 @@ The arguments for ``--metric-queries`` are stored in a JSON file, ``metric-queri
   [
       {
           "Metric": "db.load.avg",
-          "GroupBy": { 
-              "Group":"db.wait_event" 
+          "GroupBy": {
+              "Group":"db.wait_event"
           }
       }
   ]

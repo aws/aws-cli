@@ -15,5 +15,5 @@ Output::
           "State": "available",
           "Type": "ipsec.1",
           "BgpAsn": "65534"
-      }  
+      }
   }

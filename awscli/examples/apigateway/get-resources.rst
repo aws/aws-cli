@@ -9,12 +9,12 @@ Output::
   {
       "items": [
           {
-              "path": "/resource/subresource", 
+              "path": "/resource/subresource",
               "resourceMethods": {
                   "POST": {}
-              }, 
-              "id": "024ace", 
-              "pathPart": "subresource", 
+              },
+              "id": "024ace",
+              "pathPart": "subresource",
               "parentId": "ai5b02"
           }
       ]

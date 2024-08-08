@@ -4,7 +4,7 @@ This ``start-session`` example establishes a connection with an instance for a S
 
     aws ssm start-session \
         --target "i-1234567890abcdef0"
-  
+
 Output::
 
     Starting session with SessionId: Jane-Roe-07a16060613c408b5
@@ -14,7 +14,7 @@ Output::
 This ``start-session`` example establishes a connection with an instance for a Session Manager session using SSH. Note that this interactive command requires the Session Manager plugin to be installed on the client machine making the call, and that the command uses the default user on the instance, such as ``ec2-user`` for EC2 instances for Linux. ::
 
     ssh -i /path/my-key-pair.pem ec2-user@i-02573cafcfEXAMPLE
-  
+
 Output::
 
     Starting session with SessionId: ec2-user-07a16060613c408b5

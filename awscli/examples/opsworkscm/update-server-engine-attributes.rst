@@ -10,14 +10,14 @@ The following ``update-server-engine-attributes`` command updates the value of t
 The output shows you information similar to the following about the updated server. ::
 
     {
-        "Server": { 
+        "Server": {
             "BackupRetentionCount": 2,
             "CreatedAt": 2016-07-29T13:38:47.520Z,
             "DisableAutomatedBackup": FALSE,
             "Endpoint": "https://opsworks-cm.us-east-1.amazonaws.com",
             "Engine": "Chef",
-            "EngineAttributes": [ 
-                { 
+            "EngineAttributes": [
+                {
                     "Name": "CHEF_PIVOTAL_KEY",
                     "Value": "new key value"
                 }

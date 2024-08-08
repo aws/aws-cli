@@ -27,7 +27,7 @@ For more information, see `Stop and Start Your Instance <https://docs.aws.amazon
 
 **Example 2: To hibernate an Amazon EC2 instance**
 
-The following ``stop-instances`` example hibernates Amazon EBS-backed instance if the instance is enabled for hibernation and meets the hibernation prerequisites. 
+The following ``stop-instances`` example hibernates Amazon EBS-backed instance if the instance is enabled for hibernation and meets the hibernation prerequisites.
 After the instance is put into hibernation the instance is stopped. ::
 
     aws ec2 stop-instances \
@@ -53,4 +53,3 @@ Output::
     }
 
 For more information, see `Hibernate your On-Demand Linux instance <https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/Hibernate.html>`__ in the *Amazon Elastic Cloud Compute User Guide*.
-

@@ -13,7 +13,7 @@ The following ``copy-package-versions`` moves versions 4.0.0 and 5.0.0 of a pack
 
 Output::
 
-    {  
+    {
         "format": "npm",
         "package": "test-package",
         "versions": [
@@ -31,4 +31,3 @@ Output::
     }
 
 For more information, see `Copy packages between repositories <https://docs.aws.amazon.com/codeartifact/latest/ug/copy-package.html>`__ in the *AWS CodeArtifact User Guide*.
-

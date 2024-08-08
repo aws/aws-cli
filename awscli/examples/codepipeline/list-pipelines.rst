@@ -22,5 +22,5 @@ Output::
             "name": "MySecondPipeline",
             "created": 1436460801.381
         }
-	]	
+	]
   }

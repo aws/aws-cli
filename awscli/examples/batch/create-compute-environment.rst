@@ -5,7 +5,7 @@ This example creates a managed compute environment with specific C4 instance typ
 Command::
 
   aws batch create-compute-environment --cli-input-json file://<path_to_json_file>/C4OnDemand.json
-  
+
 JSON file format::
 
   {
@@ -55,7 +55,7 @@ This example creates a managed compute environment with the M4 instance type tha
 Command::
 
   aws batch create-compute-environment --cli-input-json file://<path_to_json_file>/M4Spot.json
-  
+
 JSON file format::
 
   {

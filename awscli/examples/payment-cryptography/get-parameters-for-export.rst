@@ -12,8 +12,8 @@ Output::
         "ExportToken": "export-token-ep5cwyzune7oya53",
         "ParametersValidUntilTimestamp": "1687415640",
         "SigningKeyAlgorithm": "RSA_2048",
-        "SigningKeyCertificate": 
-        
+        "SigningKeyCertificate":
+
         "MIICiTCCAfICCQD6m7oRw0uXOjANBgkqhkiG9w0BAQUFADCBiDELMAkGA1UEBhMC
         VVMxCzAJBgNVBAgTAldBMRAwDgYDVQQHEwdTZWF0dGxlMQ8wDQYDVQQKEwZBbWF6
         b24xFDASBgNVBAsTC0lBTSBDb25zb2xlMRIwEAYDVQQDEwlUZXN0Q2lsYWMxHzAd
@@ -28,7 +28,7 @@ Output::
         nUhVVxYUntneD9+h8Mg9q6q+auNKyExzyLwaxlAoo7TJHidbtS4J5iNmZgXL0Fkb
         FFBjvSfpJIlJ00zbhNYS5f6GuoEDmFJl0ZxBHjJnyp378OD8uTs7fLvjx79LjSTb
         NYiytVbZPQUQ5Yaxu2jXnimvw3rrszlaEXAMPLE=",
-        "SigningKeyCertificateChain": 
+        "SigningKeyCertificateChain":
         "NIICiTCCAfICCQD6m7oRw0uXOjANBgkqhkiG9w0BAQUFADCBiDELMAkGA1UEBhMC
         VVMxCzAJBgNVBAgTAldBMRAwDgYDVQQHEwdTZWF0dGxlMQ8wDQYDVQQKEwZBbWF6
         b24xFDASBgNVBAsTC0lBTSBDb25zb2xlMRIwEAYDVQQDEwlUZXN0Q2lsYWMxHzAd

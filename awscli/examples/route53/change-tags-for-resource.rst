@@ -4,4 +4,4 @@ The following command adds a tag named ``owner`` to a healthcheck resource speci
 
 The following command removes a tag named ``owner`` from a hosted zone resource specified by ID::
 
-  aws route53 change-tags-for-resource --resource-type hostedzone --resource-id Z1523434445 --remove-tag-keys owner 
+  aws route53 change-tags-for-resource --resource-type hostedzone --resource-id Z1523434445 --remove-tag-keys owner

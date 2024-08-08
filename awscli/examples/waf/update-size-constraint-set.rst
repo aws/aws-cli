@@ -10,4 +10,3 @@ The following ``update-size-constraint-set`` command  deletes a SizeConstraint o
 For more information, see `Working with Size Constraint Conditions`_ in the *AWS WAF* developer guide.
 
 .. _`Working with Size Constraint Conditions`: https://docs.aws.amazon.com/waf/latest/developerguide/web-acl-size-conditions.html
-

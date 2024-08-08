@@ -1,7 +1,7 @@
 **To start an asynchronous targeted sentiment analysis job**
 
-The following ``start-targeted-sentiment-detection-job`` example starts an asynchronous targeted sentiment analysis detection job for all files located at the address specified by the ``--input-data-config`` tag. 
-The S3 bucket folder in this example contains ``SampleMovieReview1.txt``, ``SampleMovieReview2.txt``, and ``SampleMovieReview3.txt``. 
+The following ``start-targeted-sentiment-detection-job`` example starts an asynchronous targeted sentiment analysis detection job for all files located at the address specified by the ``--input-data-config`` tag.
+The S3 bucket folder in this example contains ``SampleMovieReview1.txt``, ``SampleMovieReview2.txt``, and ``SampleMovieReview3.txt``.
 When the job is complete, ``output.tar.gz`` is placed at the location specified by the ``--output-data-config`` tag. ``output.tar.gz`` contains the files ``SampleMovieReview1.txt.out``, ``SampleMovieReview2.txt.out``, and ``SampleMovieReview3.txt.out``, which each contain all of the named entities and associated sentiments for a single input text file. ::
 
     aws comprehend start-targeted-sentiment-detection-job \
@@ -23,7 +23,7 @@ Contents of ``SampleMovieReview3.txt``::
 
     "Don't get fooled by the 'awards' for AnyMovie. All parts of the film were poorly stolen from other modern directors."
 
-Output:: 
+Output::
 
     {
         "JobId": "0b5001e25f62ebb40631a9a1a7fde7b3",

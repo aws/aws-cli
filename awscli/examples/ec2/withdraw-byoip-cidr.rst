@@ -2,7 +2,7 @@
 
 The following ``withdraw-byoip-cidr`` example stops advertising the specified address range. ::
 
-    aws ec2 withdraw-byoip-cidr 
+    aws ec2 withdraw-byoip-cidr
         --cidr 203.0.113.25/24
 
 Output::

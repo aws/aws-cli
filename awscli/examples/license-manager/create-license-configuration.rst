@@ -17,7 +17,7 @@ Output::
 
 The following ``create-license-configuration`` example creates a license configuration with a soft limit of 100 vCPUs. It uses a rule to enable vCPU optimization. ::
 
-  aws license-manager create-license-configuration --name my-license-configuration 
+  aws license-manager create-license-configuration --name my-license-configuration
       --license-counting-type vCPU \
       --license-count 100 \
       --license-rules "#honorVcpuOptimization=true"

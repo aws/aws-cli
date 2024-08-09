@@ -19,12 +19,12 @@ import pytest
 
 from awscli.testutils import aws
 
-INTEG_TESTS_DIR = os.path.dirname(os.path.join(os.path.abspath(__file__)))
+INTEG_TESTS_DIR = os.path.dirname(os.path.abspath(__file__))
 
-with open(os.path.join(INTEG_TESTS_DIR, "smoke-test.json"), "r") as definitions_file:
+with open(os.path.join(INTEG_TESTS_DIR, "smoke-tests.json"), "r") as definitions_file:
     SMOKE_TESTS = json.load(definitions_file)
-    COMMANDS = [" ".join(SMOKE_TESTS["Commands"][i]) for i in range(len(SMOKE_TESTS["Commands"]))]
-    ERROR_COMMANDS = [" ".join(SMOKE_TESTS["ErrorCommands"][i]) for i in range(len(SMOKE_TESTS["ErrorCommands"]))]
+COMMANDS = [" ".join(SMOKE_TESTS["Commands"][i]) for i in range(len(SMOKE_TESTS["Commands"]))]
+ERROR_COMMANDS = [" ".join(SMOKE_TESTS["ErrorCommands"][i]) for i in range(len(SMOKE_TESTS["ErrorCommands"]))]
 REGION_OVERRIDES = SMOKE_TESTS.get("RegionOverrides", {})
 
 

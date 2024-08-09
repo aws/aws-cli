@@ -165,7 +165,6 @@ def unify_paging_params(argument_table, operation_model, event_name,
                                      parse_type=type_name,
                                      serialized_name='MaxItems'),
                         shadowed_args)
-
     # We will register two pagination handlers.
     #
     # The first is focused on analyzing the CLI arguments passed to see
@@ -183,7 +182,6 @@ def unify_paging_params(argument_table, operation_model, event_name,
         partial(check_should_enable_pagination,
                 list(_get_all_cli_input_tokens(paginator_config)),
                 shadowed_args, argument_table))
-
     session.register(
         call_parameters_event,
         partial(check_should_enable_pagination_call_parameters,

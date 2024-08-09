@@ -10,6 +10,10 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
+import contextlib
+import io
+
+from awscli.customizations.paginate import PageArgument
 from awscli.testutils import mock, unittest
 
 from botocore.exceptions import DataNotFoundError
@@ -18,7 +22,6 @@ from awscli.help import OperationHelpCommand, OperationDocumentEventHandler
 
 from awscli.customizations import paginate
 from awscli.customizations.exceptions import ParamValidationError
-
 
 class TestPaginateBase(unittest.TestCase):
 
@@ -350,3 +353,25 @@ class TestEnsurePagingParamsNotSet(TestPaginateBase):
         del self.parsed_args.page_size
         self.assertIsNone(paginate.ensure_paging_params_not_set(
             self.parsed_args, {}))
+
+class TestNonPositiveIntWarnings(TestPaginateBase):
+
+    def setUp(self):
+        super(TestNonPositiveIntWarnings, self).setUp()
+        self._stderr = io.StringIO()
+        self._page_arg = PageArgument('max-items', 'documentation', int, 'MaxItems')
+
+    def test_positive_integer_does_not_raise_warning(self):
+        with contextlib.redirect_stderr(self._stderr):
+            self._page_arg.add_to_params({}, 1)
+            self.assertNotIn('Non-positive values for --max-items are unsupported', self._stderr.getvalue())
+
+    def test_zero_raises_warning(self):
+        with contextlib.redirect_stderr(self._stderr):
+            self._page_arg.add_to_params({}, 0)
+            self.assertIn('Non-positive values for --max-items are unsupported', self._stderr.getvalue())
+
+    def test_negative_integer_raises_warning(self):
+        with contextlib.redirect_stderr(self._stderr):
+            self._page_arg.add_to_params({}, -1)
+            self.assertIn('Non-positive values for --max-items are unsupported', self._stderr.getvalue())

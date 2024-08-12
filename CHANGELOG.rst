@@ -2,6 +2,18 @@
 CHANGELOG
 =========
 
+2.17.28
+=======
+
+* api-change:``sagemaker``: Releasing large data support as part of CreateAutoMLJobV2 in SageMaker Autopilot and CreateDomain API for SageMaker Canvas.
+* api-change:``medialive``: AWS Elemental MediaLive now supports now supports editing the PID values for a Multiplex.
+* api-change:``compute-optimizer``: Doc only update for Compute Optimizer that fixes several customer-reported issues relating to ECS finding classifications
+* api-change:``eks``: Added support for new AL2023 GPU AMIs to the supported AMITypes.
+* api-change:``ec2``: This release adds new capabilities to manage On-Demand Capacity Reservations including the ability to split your reservation, move capacity between reservations, and modify the instance eligibility of your reservation.
+* api-change:``config``: Documentation update for the OrganizationConfigRuleName regex pattern.
+* api-change:``groundstation``: Updating documentation for OEMEphemeris to link to AWS Ground Station User Guide
+
+
 2.17.27
 =======
 

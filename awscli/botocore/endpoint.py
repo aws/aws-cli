@@ -25,7 +25,11 @@ from botocore.hooks import first_non_none_response
 from botocore.httpchecksum import handle_checksum_body
 from botocore.httpsession import URLLib3Session
 from botocore.response import StreamingBody
-from botocore.utils import get_environ_proxies, is_valid_endpoint_url
+from botocore.utils import (
+    get_environ_proxies,
+    is_valid_endpoint_url,
+    is_valid_ipv6_endpoint_url,
+)
 
 logger = logging.getLogger(__name__)
 history_recorder = get_global_history_recorder()
@@ -283,9 +287,12 @@ class EndpointCreator(object):
                         socket_options=None,
                         client_cert=None,
                         proxies_config=None):
-        if not is_valid_endpoint_url(endpoint_url):
-
+        if (
+            not is_valid_endpoint_url(endpoint_url)
+            and not is_valid_ipv6_endpoint_url(endpoint_url)
+        ):
             raise ValueError("Invalid endpoint: %s" % endpoint_url)
+
         if proxies is None:
             proxies = self._get_proxies(endpoint_url)
         endpoint_prefix = service_model.endpoint_prefix

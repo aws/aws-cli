@@ -329,6 +329,24 @@
       ],
       "documentation":"<p>Creates a temporary URL to start an AppStream 2.0 streaming session for the specified user. A streaming URL enables application streaming to be tested without user setup. </p>"
     },
+    "CreateThemeForStack":{
+      "name":"CreateThemeForStack",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"CreateThemeForStackRequest"},
+      "output":{"shape":"CreateThemeForStackResult"},
+      "errors":[
+        {"shape":"ConcurrentModificationException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ResourceAlreadyExistsException"},
+        {"shape":"LimitExceededException"},
+        {"shape":"InvalidAccountStatusException"},
+        {"shape":"OperationNotPermittedException"}
+      ],
+      "documentation":"<p>Creates custom branding that customizes the appearance of the streaming application catalog page.</p>"
+    },
     "CreateUpdatedImage":{
       "name":"CreateUpdatedImage",
       "http":{
@@ -534,6 +552,21 @@
       ],
       "documentation":"<p>Deletes the specified stack. After the stack is deleted, the application streaming environment provided by the stack is no longer available to users. Also, any reservations made for application streaming sessions for the stack are released.</p>"
     },
+    "DeleteThemeForStack":{
+      "name":"DeleteThemeForStack",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DeleteThemeForStackRequest"},
+      "output":{"shape":"DeleteThemeForStackResult"},
+      "errors":[
+        {"shape":"ConcurrentModificationException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"OperationNotPermittedException"}
+      ],
+      "documentation":"<p>Deletes custom branding that customizes the appearance of the streaming application catalog page.</p>"
+    },
     "DeleteUsageReportSubscription":{
       "name":"DeleteUsageReportSubscription",
       "http":{
@@ -737,6 +770,20 @@
         {"shape":"ResourceNotFoundException"}
       ],
       "documentation":"<p>Retrieves a list that describes one or more specified stacks, if the stack names are provided. Otherwise, all stacks in the account are described.</p>"
+    },
+    "DescribeThemeForStack":{
+      "name":"DescribeThemeForStack",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DescribeThemeForStackRequest"},
+      "output":{"shape":"DescribeThemeForStackResult"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"OperationNotPermittedException"}
+      ],
+      "documentation":"<p>Retrieves a list that describes the theme for a specified stack. A theme is custom branding that customizes the appearance of the streaming application catalog page.</p>"
     },
     "DescribeUsageReportSubscriptions":{
       "name":"DescribeUsageReportSubscriptions",
@@ -1185,6 +1232,24 @@
         {"shape":"ConcurrentModificationException"}
       ],
       "documentation":"<p>Updates the specified fields for the specified stack.</p>"
+    },
+    "UpdateThemeForStack":{
+      "name":"UpdateThemeForStack",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"UpdateThemeForStackRequest"},
+      "output":{"shape":"UpdateThemeForStackResult"},
+      "errors":[
+        {"shape":"ConcurrentModificationException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"LimitExceededException"},
+        {"shape":"InvalidAccountStatusException"},
+        {"shape":"InvalidParameterCombinationException"},
+        {"shape":"OperationNotPermittedException"}
+      ],
+      "documentation":"<p>Updates custom branding that customizes the appearance of the streaming application catalog page.</p>"
     }
   },
   "shapes":{
@@ -2171,7 +2236,7 @@
         },
         "InstanceType":{
           "shape":"String",
-          "documentation":"<p>The instance type to use when launching fleet instances. The following instance types are available:</p> <ul> <li> <p>stream.standard.small</p> </li> <li> <p>stream.standard.medium</p> </li> <li> <p>stream.standard.large</p> </li> <li> <p>stream.standard.xlarge</p> </li> <li> <p>stream.standard.2xlarge</p> </li> <li> <p>stream.compute.large</p> </li> <li> <p>stream.compute.xlarge</p> </li> <li> <p>stream.compute.2xlarge</p> </li> <li> <p>stream.compute.4xlarge</p> </li> <li> <p>stream.compute.8xlarge</p> </li> <li> <p>stream.memory.large</p> </li> <li> <p>stream.memory.xlarge</p> </li> <li> <p>stream.memory.2xlarge</p> </li> <li> <p>stream.memory.4xlarge</p> </li> <li> <p>stream.memory.8xlarge</p> </li> <li> <p>stream.memory.z1d.large</p> </li> <li> <p>stream.memory.z1d.xlarge</p> </li> <li> <p>stream.memory.z1d.2xlarge</p> </li> <li> <p>stream.memory.z1d.3xlarge</p> </li> <li> <p>stream.memory.z1d.6xlarge</p> </li> <li> <p>stream.memory.z1d.12xlarge</p> </li> <li> <p>stream.graphics-design.large</p> </li> <li> <p>stream.graphics-design.xlarge</p> </li> <li> <p>stream.graphics-design.2xlarge</p> </li> <li> <p>stream.graphics-design.4xlarge</p> </li> <li> <p>stream.graphics-desktop.2xlarge</p> </li> <li> <p>stream.graphics.g4dn.xlarge</p> </li> <li> <p>stream.graphics.g4dn.2xlarge</p> </li> <li> <p>stream.graphics.g4dn.4xlarge</p> </li> <li> <p>stream.graphics.g4dn.8xlarge</p> </li> <li> <p>stream.graphics.g4dn.12xlarge</p> </li> <li> <p>stream.graphics.g4dn.16xlarge</p> </li> <li> <p>stream.graphics-pro.4xlarge</p> </li> <li> <p>stream.graphics-pro.8xlarge</p> </li> <li> <p>stream.graphics-pro.16xlarge</p> </li> </ul> <p>The following instance types are available for Elastic fleets:</p> <ul> <li> <p>stream.standard.small</p> </li> <li> <p>stream.standard.medium</p> </li> <li> <p>stream.standard.large</p> </li> <li> <p>stream.standard.xlarge</p> </li> <li> <p>stream.standard.2xlarge</p> </li> </ul>"
+          "documentation":"<p>The instance type to use when launching fleet instances. The following instance types are available:</p> <ul> <li> <p>stream.standard.small</p> </li> <li> <p>stream.standard.medium</p> </li> <li> <p>stream.standard.large</p> </li> <li> <p>stream.standard.xlarge</p> </li> <li> <p>stream.standard.2xlarge</p> </li> <li> <p>stream.compute.large</p> </li> <li> <p>stream.compute.xlarge</p> </li> <li> <p>stream.compute.2xlarge</p> </li> <li> <p>stream.compute.4xlarge</p> </li> <li> <p>stream.compute.8xlarge</p> </li> <li> <p>stream.memory.large</p> </li> <li> <p>stream.memory.xlarge</p> </li> <li> <p>stream.memory.2xlarge</p> </li> <li> <p>stream.memory.4xlarge</p> </li> <li> <p>stream.memory.8xlarge</p> </li> <li> <p>stream.memory.z1d.large</p> </li> <li> <p>stream.memory.z1d.xlarge</p> </li> <li> <p>stream.memory.z1d.2xlarge</p> </li> <li> <p>stream.memory.z1d.3xlarge</p> </li> <li> <p>stream.memory.z1d.6xlarge</p> </li> <li> <p>stream.memory.z1d.12xlarge</p> </li> <li> <p>stream.graphics-design.large</p> </li> <li> <p>stream.graphics-design.xlarge</p> </li> <li> <p>stream.graphics-design.2xlarge</p> </li> <li> <p>stream.graphics-design.4xlarge</p> </li> <li> <p>stream.graphics-desktop.2xlarge</p> </li> <li> <p>stream.graphics.g4dn.xlarge</p> </li> <li> <p>stream.graphics.g4dn.2xlarge</p> </li> <li> <p>stream.graphics.g4dn.4xlarge</p> </li> <li> <p>stream.graphics.g4dn.8xlarge</p> </li> <li> <p>stream.graphics.g4dn.12xlarge</p> </li> <li> <p>stream.graphics.g4dn.16xlarge</p> </li> <li> <p>stream.graphics.g5.xlarge</p> </li> <li> <p>stream.graphics.g5.2xlarge</p> </li> <li> <p>stream.graphics.g5.4xlarge</p> </li> <li> <p>stream.graphics.g5.8xlarge</p> </li> <li> <p>stream.graphics.g5.12xlarge</p> </li> <li> <p>stream.graphics.g5.16xlarge</p> </li> <li> <p>stream.graphics.g5.24xlarge</p> </li> <li> <p>stream.graphics-pro.4xlarge</p> </li> <li> <p>stream.graphics-pro.8xlarge</p> </li> <li> <p>stream.graphics-pro.16xlarge</p> </li> </ul> <p>The following instance types are available for Elastic fleets:</p> <ul> <li> <p>stream.standard.small</p> </li> <li> <p>stream.standard.medium</p> </li> <li> <p>stream.standard.large</p> </li> <li> <p>stream.standard.xlarge</p> </li> <li> <p>stream.standard.2xlarge</p> </li> </ul>"
         },
         "FleetType":{
           "shape":"FleetType",
@@ -2463,6 +2528,51 @@
         }
       }
     },
+    "CreateThemeForStackRequest":{
+      "type":"structure",
+      "required":[
+        "StackName",
+        "TitleText",
+        "ThemeStyling",
+        "OrganizationLogoS3Location",
+        "FaviconS3Location"
+      ],
+      "members":{
+        "StackName":{
+          "shape":"Name",
+          "documentation":"<p>The name of the stack for the theme.</p>"
+        },
+        "FooterLinks":{
+          "shape":"ThemeFooterLinks",
+          "documentation":"<p>The links that are displayed in the footer of the streaming application catalog page. These links are helpful resources for users, such as the organization's IT support and product marketing sites.</p>"
+        },
+        "TitleText":{
+          "shape":"ThemeTitleText",
+          "documentation":"<p>The title that is displayed at the top of the browser tab during users' application streaming sessions.</p>"
+        },
+        "ThemeStyling":{
+          "shape":"ThemeStyling",
+          "documentation":"<p>The color theme that is applied to website links, text, and buttons. These colors are also applied as accents in the background for the streaming application catalog page.</p>"
+        },
+        "OrganizationLogoS3Location":{
+          "shape":"S3Location",
+          "documentation":"<p>The organization logo that appears on the streaming application catalog page.</p>"
+        },
+        "FaviconS3Location":{
+          "shape":"S3Location",
+          "documentation":"<p>The S3 location of the favicon. The favicon enables users to recognize their application streaming site in a browser full of tabs or bookmarks. It is displayed at the top of the browser tab for the application streaming site during users' streaming sessions.</p>"
+        }
+      }
+    },
+    "CreateThemeForStackResult":{
+      "type":"structure",
+      "members":{
+        "Theme":{
+          "shape":"Theme",
+          "documentation":"<p> The theme object that contains the metadata of the custom branding.</p>"
+        }
+      }
+    },
     "CreateUpdatedImageRequest":{
       "type":"structure",
       "required":[
@@ -2726,6 +2836,21 @@
       }
     },
     "DeleteStackResult":{
+      "type":"structure",
+      "members":{
+      }
+    },
+    "DeleteThemeForStackRequest":{
+      "type":"structure",
+      "required":["StackName"],
+      "members":{
+        "StackName":{
+          "shape":"Name",
+          "documentation":"<p>The name of the stack for the theme.</p>"
+        }
+      }
+    },
+    "DeleteThemeForStackResult":{
       "type":"structure",
       "members":{
       }
@@ -3200,6 +3325,25 @@
         }
       }
     },
+    "DescribeThemeForStackRequest":{
+      "type":"structure",
+      "required":["StackName"],
+      "members":{
+        "StackName":{
+          "shape":"Name",
+          "documentation":"<p>The name of the stack for the theme.</p>"
+        }
+      }
+    },
+    "DescribeThemeForStackResult":{
+      "type":"structure",
+      "members":{
+        "Theme":{
+          "shape":"Theme",
+          "documentation":"<p> The theme object that contains the metadata of the custom branding.</p>"
+        }
+      }
+    },
     "DescribeUsageReportSubscriptionsRequest":{
       "type":"structure",
       "members":{
@@ -3478,6 +3622,13 @@
       "type":"list",
       "member":{"shape":"Domain"},
       "max":50
+    },
+    "DynamicAppProvidersEnabled":{
+      "type":"string",
+      "enum":[
+        "ENABLED",
+        "DISABLED"
+      ]
     },
     "EmbedHostDomain":{
       "type":"string",
@@ -3929,6 +4080,22 @@
         "ImageErrors":{
           "shape":"ResourceErrors",
           "documentation":"<p>Describes the errors that are returned when a new image can't be created.</p>"
+        },
+        "LatestAppstreamAgentVersion":{
+          "shape":"LatestAppstreamAgentVersion",
+          "documentation":"<p>Indicates whether the image is using the latest AppStream 2.0 agent version or not.</p>"
+        },
+        "SupportedInstanceFamilies":{
+          "shape":"StringList",
+          "documentation":"<p>The supported instances families that determine which image a customer can use when the customer launches a fleet or image builder. The following instances families are supported:</p> <ul> <li> <p>General Purpose</p> </li> <li> <p>Compute Optimized</p> </li> <li> <p>Memory Optimized</p> </li> <li> <p>Graphics</p> </li> <li> <p>Graphics Design</p> </li> <li> <p>Graphics Pro</p> </li> <li> <p>Graphics G4</p> </li> <li> <p>Graphics G5</p> </li> </ul>"
+        },
+        "DynamicAppProvidersEnabled":{
+          "shape":"DynamicAppProvidersEnabled",
+          "documentation":"<p>Indicates whether dynamic app providers are enabled within an AppStream 2.0 image or not.</p>"
+        },
+        "ImageSharedWithOthers":{
+          "shape":"ImageSharedWithOthers",
+          "documentation":"<p>Indicates whether the image is shared with another account ID.</p>"
         }
       },
       "documentation":"<p>Describes an image.</p>"
@@ -4005,6 +4172,10 @@
         "AccessEndpoints":{
           "shape":"AccessEndpointList",
           "documentation":"<p>The list of virtual private cloud (VPC) interface endpoint objects. Administrators can connect to the image builder only through the specified endpoints.</p>"
+        },
+        "LatestAppstreamAgentVersion":{
+          "shape":"LatestAppstreamAgentVersion",
+          "documentation":"<p>Indicates whether the image builder is using the latest AppStream 2.0 agent version or not.</p>"
         }
       },
       "documentation":"<p>Describes a virtual machine that is used to create an image. </p>"
@@ -4067,6 +4238,13 @@
         }
       },
       "documentation":"<p>Describes the permissions for an image. </p>"
+    },
+    "ImageSharedWithOthers":{
+      "type":"string",
+      "enum":[
+        "TRUE",
+        "FALSE"
+      ]
     },
     "ImageState":{
       "type":"string",
@@ -4152,6 +4330,13 @@
     "LastReportGenerationExecutionErrors":{
       "type":"list",
       "member":{"shape":"LastReportGenerationExecutionError"}
+    },
+    "LatestAppstreamAgentVersion":{
+      "type":"string",
+      "enum":[
+        "TRUE",
+        "FALSE"
+      ]
     },
     "LimitExceededException":{
       "type":"structure",
@@ -4955,6 +5140,103 @@
       "max":50,
       "min":1
     },
+    "Theme":{
+      "type":"structure",
+      "members":{
+        "StackName":{
+          "shape":"Name",
+          "documentation":"<p>The stack that has the custom branding theme.</p>"
+        },
+        "State":{
+          "shape":"ThemeState",
+          "documentation":"<p>The state of the theme.</p>"
+        },
+        "ThemeTitleText":{
+          "shape":"ThemeTitleText",
+          "documentation":"<p>The browser tab page title.</p>"
+        },
+        "ThemeStyling":{
+          "shape":"ThemeStyling",
+          "documentation":"<p>The color that is used for the website links, text, buttons, and catalog page background.</p>"
+        },
+        "ThemeFooterLinks":{
+          "shape":"ThemeFooterLinks",
+          "documentation":"<p>The website links that display in the catalog page footer.</p>"
+        },
+        "ThemeOrganizationLogoURL":{
+          "shape":"String",
+          "documentation":"<p>The URL of the logo that displays in the catalog page header.</p>"
+        },
+        "ThemeFaviconURL":{
+          "shape":"String",
+          "documentation":"<p>The URL of the icon that displays at the top of a user's browser tab during streaming sessions.</p>"
+        },
+        "CreatedTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time the theme was created.</p>"
+        }
+      },
+      "documentation":"<p>The custom branding theme, which might include a custom logo, website links, and other branding to display to users.</p>"
+    },
+    "ThemeAttribute":{
+      "type":"string",
+      "enum":["FOOTER_LINKS"]
+    },
+    "ThemeAttributes":{
+      "type":"list",
+      "member":{"shape":"ThemeAttribute"}
+    },
+    "ThemeFooterLink":{
+      "type":"structure",
+      "members":{
+        "DisplayName":{
+          "shape":"ThemeFooterLinkDisplayName",
+          "documentation":"<p>The name of the websites that display in the catalog page footer.</p>"
+        },
+        "FooterLinkURL":{
+          "shape":"ThemeFooterLinkURL",
+          "documentation":"<p>The URL of the websites that display in the catalog page footer.</p>"
+        }
+      },
+      "documentation":"<p>The website links that display in the catalog page footer.</p>"
+    },
+    "ThemeFooterLinkDisplayName":{
+      "type":"string",
+      "max":300,
+      "min":1,
+      "pattern":"^[-@./#&+\\w\\s]*$"
+    },
+    "ThemeFooterLinkURL":{
+      "type":"string",
+      "max":1000,
+      "min":1
+    },
+    "ThemeFooterLinks":{
+      "type":"list",
+      "member":{"shape":"ThemeFooterLink"}
+    },
+    "ThemeState":{
+      "type":"string",
+      "enum":[
+        "ENABLED",
+        "DISABLED"
+      ]
+    },
+    "ThemeStyling":{
+      "type":"string",
+      "enum":[
+        "LIGHT_BLUE",
+        "BLUE",
+        "PINK",
+        "RED"
+      ]
+    },
+    "ThemeTitleText":{
+      "type":"string",
+      "max":300,
+      "min":1,
+      "pattern":"^[-@./#&+\\w\\s]*$"
+    },
     "Timestamp":{"type":"timestamp"},
     "UntagResourceRequest":{
       "type":"structure",
@@ -5342,6 +5624,53 @@
         "Stack":{
           "shape":"Stack",
           "documentation":"<p>Information about the stack.</p>"
+        }
+      }
+    },
+    "UpdateThemeForStackRequest":{
+      "type":"structure",
+      "required":["StackName"],
+      "members":{
+        "StackName":{
+          "shape":"Name",
+          "documentation":"<p>The name of the stack for the theme.</p>"
+        },
+        "FooterLinks":{
+          "shape":"ThemeFooterLinks",
+          "documentation":"<p>The links that are displayed in the footer of the streaming application catalog page. These links are helpful resources for users, such as the organization's IT support and product marketing sites.</p>"
+        },
+        "TitleText":{
+          "shape":"ThemeTitleText",
+          "documentation":"<p>The title that is displayed at the top of the browser tab during users' application streaming sessions.</p>"
+        },
+        "ThemeStyling":{
+          "shape":"ThemeStyling",
+          "documentation":"<p>The color theme that is applied to website links, text, and buttons. These colors are also applied as accents in the background for the streaming application catalog page.</p>"
+        },
+        "OrganizationLogoS3Location":{
+          "shape":"S3Location",
+          "documentation":"<p>The organization logo that appears on the streaming application catalog page.</p>"
+        },
+        "FaviconS3Location":{
+          "shape":"S3Location",
+          "documentation":"<p>The S3 location of the favicon. The favicon enables users to recognize their application streaming site in a browser full of tabs or bookmarks. It is displayed at the top of the browser tab for the application streaming site during users' streaming sessions.</p>"
+        },
+        "State":{
+          "shape":"ThemeState",
+          "documentation":"<p>Specifies whether custom branding should be applied to catalog page or not.</p>"
+        },
+        "AttributesToDelete":{
+          "shape":"ThemeAttributes",
+          "documentation":"<p>The attributes to delete.</p>"
+        }
+      }
+    },
+    "UpdateThemeForStackResult":{
+      "type":"structure",
+      "members":{
+        "Theme":{
+          "shape":"Theme",
+          "documentation":"<p> The theme object that contains the metadata of the custom branding.</p>"
         }
       }
     },

@@ -11,7 +11,8 @@
     "serviceId":"Amplify",
     "signatureVersion":"v4",
     "signingName":"amplify",
-    "uid":"amplify-2017-07-25"
+    "uid":"amplify-2017-07-25",
+    "auth":["aws.auth#sigv4"]
   },
   "operations":{
     "CreateApp":{
@@ -747,6 +748,10 @@
         "repositoryCloneMethod":{
           "shape":"RepositoryCloneMethod",
           "documentation":"<note> <p>This is for internal use.</p> </note> <p>The Amplify service uses this parameter to specify the authentication protocol to use to access the Git repository for an Amplify app. Amplify specifies <code>TOKEN</code> for a GitHub repository, <code>SIGV4</code> for an Amazon Web Services CodeCommit repository, and <code>SSH</code> for GitLab and Bitbucket repositories.</p>"
+        },
+        "cacheConfig":{
+          "shape":"CacheConfig",
+          "documentation":"<p>The cache configuration for the Amplify app. If you don't specify the cache configuration <code>type</code>, Amplify uses the default <code>AMPLIFY_MANAGED</code> setting.</p>"
         }
       },
       "documentation":"<p>Represents the different branches of a repository for building, deploying, and hosting an Amplify app. </p>"
@@ -1113,13 +1118,31 @@
       "pattern":"(?s).+",
       "sensitive":true
     },
+    "CacheConfig":{
+      "type":"structure",
+      "required":["type"],
+      "members":{
+        "type":{
+          "shape":"CacheConfigType",
+          "documentation":"<p>The type of cache configuration to use for an Amplify app.</p> <p>The <code>AMPLIFY_MANAGED</code> cache configuration automatically applies an optimized cache configuration for your app based on its platform, routing rules, and rewrite rules. This is the default setting.</p> <p>The <code>AMPLIFY_MANAGED_NO_COOKIES</code> cache configuration type is the same as <code>AMPLIFY_MANAGED</code>, except that it excludes all cookies from the cache key.</p>"
+        }
+      },
+      "documentation":"<p>Describes the cache configuration for an Amplify app.</p> <p>For more information about how Amplify applies an optimal cache configuration for your app based on the type of content that is being served, see <a href=\"https://docs.aws.amazon.com/amplify/latest/userguide/managing-cache-configuration\">Managing cache configuration</a> in the <i>Amplify User guide</i>.</p>"
+    },
+    "CacheConfigType":{
+      "type":"string",
+      "enum":[
+        "AMPLIFY_MANAGED",
+        "AMPLIFY_MANAGED_NO_COOKIES"
+      ]
+    },
     "Certificate":{
       "type":"structure",
       "required":["type"],
       "members":{
         "type":{
           "shape":"CertificateType",
-          "documentation":"<p>The type of SSL/TLS certificate that you want to use.</p> <p>Specify <code>AMPLIFY_MANAGED</code> to use the default certificate that Amplify provisions for you.</p> <p>Specify <code>CUSTOM</code> to use your own certificate that you have already added to Certificate Manager in your Amazon Web Services account. Make sure you request (or import) the certificate in the US East (N. Virginia) Region (us-east-1). For more information about using ACM, see <a href=\"https://docs.aws.amazon.com/acm/latest/userguide/import-certificate.html\">Importing certificates into Certificate Manager</a> in the <i>ACM User guide</i> .</p>"
+          "documentation":"<p>The type of SSL/TLS certificate that you want to use.</p> <p>Specify <code>AMPLIFY_MANAGED</code> to use the default certificate that Amplify provisions for you.</p> <p>Specify <code>CUSTOM</code> to use your own certificate that you have already added to Certificate Manager in your Amazon Web Services account. Make sure you request (or import) the certificate in the US East (N. Virginia) Region (us-east-1). For more information about using ACM, see <a href=\"https://docs.aws.amazon.com/acm/latest/userguide/import-certificate.html\">Importing certificates into Certificate Manager</a> in the <i>ACM User guide</i>.</p>"
         },
         "customCertificateArn":{
           "shape":"CertificateArn",
@@ -1262,6 +1285,10 @@
         "autoBranchCreationConfig":{
           "shape":"AutoBranchCreationConfig",
           "documentation":"<p>The automated branch creation configuration for an Amplify app. </p>"
+        },
+        "cacheConfig":{
+          "shape":"CacheConfig",
+          "documentation":"<p>The cache configuration for the Amplify app.</p>"
         }
       },
       "documentation":"<p>The request structure used to create apps in Amplify. </p>"
@@ -3275,6 +3302,10 @@
         "accessToken":{
           "shape":"AccessToken",
           "documentation":"<p>The personal access token for a GitHub repository for an Amplify app. The personal access token is used to authorize access to a GitHub repository using the Amplify GitHub App. The token is not stored.</p> <p>Use <code>accessToken</code> for GitHub repositories only. To authorize access to a repository provider such as Bitbucket or CodeCommit, use <code>oauthToken</code>.</p> <p>You must specify either <code>accessToken</code> or <code>oauthToken</code> when you update an app.</p> <p>Existing Amplify apps deployed from a GitHub repository using OAuth continue to work with CI/CD. However, we strongly recommend that you migrate these apps to use the GitHub App. For more information, see <a href=\"https://docs.aws.amazon.com/amplify/latest/userguide/setting-up-GitHub-access.html#migrating-to-github-app-auth\">Migrating an existing OAuth app to the Amplify GitHub App</a> in the <i>Amplify User Guide</i> .</p>"
+        },
+        "cacheConfig":{
+          "shape":"CacheConfig",
+          "documentation":"<p>The cache configuration for the Amplify app.</p>"
         }
       },
       "documentation":"<p>The request structure for the update app request. </p>"

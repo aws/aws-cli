@@ -635,6 +635,10 @@
       "min":1,
       "pattern":"arn:.+"
     },
+    "BlankNodeHandling":{
+      "type":"string",
+      "enum":["convertToIri"]
+    },
     "Boolean":{
       "type":"boolean",
       "box":true
@@ -962,6 +966,10 @@
           "shape":"Format",
           "documentation":"<p>Specifies the format of S3 data to be imported. Valid values are <code>CSV</code>, which identifies the <a href=\"https://docs.aws.amazon.com/neptune/latest/userguide/bulk-load-tutorial-format-gremlin.html\">Gremlin CSV format</a> or <code>OPENCYPHER</code>, which identies the <a href=\"https://docs.aws.amazon.com/neptune/latest/userguide/bulk-load-tutorial-format-opencypher.html\">openCypher load format</a>.</p>"
         },
+        "blankNodeHandling":{
+          "shape":"BlankNodeHandling",
+          "documentation":"<p>The method to handle blank nodes in the dataset. Currently, only <code>convertToIri</code> is supported, meaning blank nodes are converted to unique IRIs at load time. Must be provided when format is <code>ntriples</code>. For more information, see <a href=\"https://docs.aws.amazon.com/neptune-analytics/latest/userguide/using-rdf-data.html#rdf-handling\">Handling RDF values</a>.</p>"
+        },
         "roleArn":{
           "shape":"RoleArn",
           "documentation":"<p>The ARN of the IAM role that will allow access to the data that is to be imported.</p>"
@@ -991,7 +999,7 @@
         },
         "format":{
           "shape":"Format",
-          "documentation":"<p>Specifies the format of S3 data to be imported. Valid values are <code>CSV</code>, which identifies the <a href=\"https://docs.aws.amazon.com/neptune/latest/userguide/bulk-load-tutorial-format-gremlin.html\">Gremlin CSV format</a> or <code>OPENCYPHER</code>, which identies the <a href=\"https://docs.aws.amazon.com/neptune/latest/userguide/bulk-load-tutorial-format-opencypher.html\">openCypher load format</a>.</p>"
+          "documentation":"<p>Specifies the format of S3 data to be imported. Valid values are <code>CSV</code>, which identifies the <a href=\"https://docs.aws.amazon.com/neptune/latest/userguide/bulk-load-tutorial-format-gremlin.html\">Gremlin CSV format</a>, <code>OPENCYPHER</code>, which identifies the <a href=\"https://docs.aws.amazon.com/neptune/latest/userguide/bulk-load-tutorial-format-opencypher.html\">openCypher load format</a>, or <code>ntriples</code>, which identifies the <a href=\"https://docs.aws.amazon.com/neptune-analytics/latest/userguide/using-rdf-data.html\">RDF n-triples</a> format.</p>"
         },
         "roleArn":{
           "shape":"RoleArn",
@@ -1344,7 +1352,8 @@
       "type":"string",
       "enum":[
         "CSV",
-        "OPEN_CYPHER"
+        "OPEN_CYPHER",
+        "NTRIPLES"
       ]
     },
     "GetGraphInput":{
@@ -2700,6 +2709,10 @@
         "format":{
           "shape":"Format",
           "documentation":"<p>Specifies the format of Amazon S3 data to be imported. Valid values are CSV, which identifies the Gremlin CSV format or OPENCYPHER, which identies the openCypher load format.</p>"
+        },
+        "blankNodeHandling":{
+          "shape":"BlankNodeHandling",
+          "documentation":"<p>The method to handle blank nodes in the dataset. Currently, only <code>convertToIri</code> is supported, meaning blank nodes are converted to unique IRIs at load time. Must be provided when format is <code>ntriples</code>. For more information, see <a href=\"https://docs.aws.amazon.com/neptune-analytics/latest/userguide/using-rdf-data.html#rdf-handling\">Handling RDF values</a>.</p>"
         },
         "graphIdentifier":{
           "shape":"GraphIdentifier",

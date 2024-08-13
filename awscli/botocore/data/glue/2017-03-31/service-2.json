@@ -13411,6 +13411,10 @@
         "IncludeStatusDetails":{
           "shape":"BooleanNullable",
           "documentation":"<p>Specifies whether to include status details related to a request to create or update an Glue Data Catalog view.</p>"
+        },
+        "AttributesToGet":{
+          "shape":"TableAttributesList",
+          "documentation":"<p> Specifies the table fields returned by the <code>GetTables</code> call. This parameter doesn’t accept an empty list. The request must include <code>NAME</code>.</p> <p>The following are the valid combinations of values:</p> <ul> <li> <p> <code>NAME</code> - Names of all tables in the database.</p> </li> <li> <p> <code>NAME</code>, <code>TABLE_TYPE</code> - Names of all tables and the table types.</p> </li> </ul>"
         }
       }
     },
@@ -21401,6 +21405,17 @@
         "Status":{"shape":"TableStatus"}
       },
       "documentation":"<p>Represents a collection of related data organized in columns and rows.</p>"
+    },
+    "TableAttributes":{
+      "type":"string",
+      "enum":[
+        "NAME",
+        "TABLE_TYPE"
+      ]
+    },
+    "TableAttributesList":{
+      "type":"list",
+      "member":{"shape":"TableAttributes"}
     },
     "TableError":{
       "type":"structure",

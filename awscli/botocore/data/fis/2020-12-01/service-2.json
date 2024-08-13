@@ -5,12 +5,14 @@
     "endpointPrefix":"fis",
     "jsonVersion":"1.1",
     "protocol":"rest-json",
+    "protocols":["rest-json"],
     "serviceAbbreviation":"FIS",
     "serviceFullName":"AWS Fault Injection Simulator",
     "serviceId":"fis",
     "signatureVersion":"v4",
     "signingName":"fis",
-    "uid":"fis-2020-12-01"
+    "uid":"fis-2020-12-01",
+    "auth":["aws.auth#sigv4"]
   },
   "operations":{
     "CreateExperimentTemplate":{
@@ -1010,6 +1012,31 @@
       "documentation":"<p>Describes the configuration for experiment logging to Amazon CloudWatch Logs.</p>"
     },
     "ExperimentEndTime":{"type":"timestamp"},
+    "ExperimentError":{
+      "type":"structure",
+      "members":{
+        "accountId":{
+          "shape":"ExperimentErrorAccountId",
+          "documentation":"<p>The Amazon Web Services Account ID where the experiment failure occurred.</p>"
+        },
+        "code":{
+          "shape":"ExperimentErrorCode",
+          "documentation":"<p>The error code for the failed experiment.</p>"
+        },
+        "location":{
+          "shape":"ExperimentErrorLocation",
+          "documentation":"<p>Context for the section of the experiment template that failed.</p>"
+        }
+      },
+      "documentation":"<p>Describes the error when an experiment has <code>failed</code>.</p>"
+    },
+    "ExperimentErrorAccountId":{"type":"string"},
+    "ExperimentErrorCode":{
+      "type":"string",
+      "max":128,
+      "pattern":"[\\S]+"
+    },
+    "ExperimentErrorLocation":{"type":"string"},
     "ExperimentId":{
       "type":"string",
       "max":64,
@@ -1076,6 +1103,10 @@
         "reason":{
           "shape":"ExperimentStatusReason",
           "documentation":"<p>The reason for the state.</p>"
+        },
+        "error":{
+          "shape":"ExperimentError",
+          "documentation":"<p>The error information of the experiment when the action has <code>failed</code>.</p>"
         }
       },
       "documentation":"<p>Describes the state of an experiment.</p>"
@@ -2702,5 +2733,5 @@
       "exception":true
     }
   },
-  "documentation":"<p>Fault Injection Service is a managed service that enables you to perform fault injection experiments on your Amazon Web Services workloads. For more information, see the <a href=\"https://docs.aws.amazon.com/fis/latest/userguide/\">Fault Injection Service User Guide</a>.</p>"
+  "documentation":"<p>Amazon Web Services Fault Injection Service is a managed service that enables you to perform fault injection experiments on your Amazon Web Services workloads. For more information, see the <a href=\"https://docs.aws.amazon.com/fis/latest/userguide/\">Fault Injection Service User Guide</a>.</p>"
 }

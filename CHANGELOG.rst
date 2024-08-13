@@ -2,6 +2,16 @@
 CHANGELOG
 =========
 
+1.33.42
+=======
+
+* api-change:``amplify``: Add a new field "cacheConfig" that enables users to configure the CDN cache settings for an App
+* api-change:``appstream``: This release includes following new APIs: CreateThemeForStack, DescribeThemeForStack, UpdateThemeForStack, DeleteThemeForStack to support custom branding programmatically.
+* api-change:``fis``: This release adds support for additional error information on experiment failure. It adds the error code, location, and account id on relevant failures to the GetExperiment and ListExperiment API responses.
+* api-change:``glue``: Add AttributesToGet parameter support for Glue GetTables
+* api-change:``neptune-graph``: Amazon Neptune Analytics provides a new option for customers to load data into a graph using the RDF (Resource Description Framework) NTRIPLES format. When loading NTRIPLES files, use the value `convertToIri` for the `blankNodeHandling` parameter.
+
+
 1.33.41
 =======
 

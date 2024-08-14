@@ -152,7 +152,7 @@ class TestShorthandCompleter(unittest.TestCase):
 
         self.assert_command_generates_suggestions(
             'aws codebuild create-project --source auth={type=',
-            expected_suggestions=['OAUTH', 'CODECONNECTIONS',
+            expected_suggestions=['OAUTH', 'CODECONNECTIONS', 'SECRETS_MANAGER',
                                   'Autoclose brackets'])
 
         self.assert_command_generates_suggestions(

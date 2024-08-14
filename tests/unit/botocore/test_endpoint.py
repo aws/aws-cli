@@ -12,8 +12,10 @@
 # language governing permissions and limitations under the License.
 import io
 import socket
-from tests import mock, unittest
 
+import pytest
+
+from tests import mock, unittest
 from botocore.awsrequest import AWSRequest
 from botocore.endpoint import Endpoint, DEFAULT_TIMEOUT
 from botocore.endpoint import EndpointCreator
@@ -293,6 +295,25 @@ class TestEndpointCreator(unittest.TestCase):
             self.service_model, region_name='us-east-1',
             endpoint_url='https://endpoint.url')
         self.assertEqual(endpoint.host, 'https://endpoint.url')
+
+    def test_creates_endpoint_with_ipv4_url(self):
+        endpoint = self.creator.create_endpoint(
+            self.service_model, region_name='us-east-1',
+            endpoint_url='https://192.168.0.0')
+        self.assertEqual(endpoint.host, 'https://192.168.0.0')
+
+    def test_creates_endpoint_with_ipv6_url(self):
+        endpoint = self.creator.create_endpoint(
+            self.service_model, region_name='us-east-1',
+            endpoint_url='https://[100:0:2::61]:7480')
+        self.assertEqual(endpoint.host, 'https://[100:0:2::61]:7480')
+
+    def test_raises_error_with_invalid_url(self):
+        with pytest.raises(ValueError):
+            self.creator.create_endpoint(
+                self.service_model, region_name='us-east-1',
+                endpoint_url='https://*.aws.amazon.com/'
+            )
 
     def test_create_endpoint_with_default_timeout(self):
         endpoint = self.creator.create_endpoint(

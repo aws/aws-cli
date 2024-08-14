@@ -2,6 +2,12 @@
 CHANGELOG
 =========
 
+2.17.30
+=======
+
+* api-change:``codebuild``: AWS CodeBuild now supports using Secrets Manager to store git credentials and using multiple source credentials in a single project.
+
+
 2.17.29
 =======
 

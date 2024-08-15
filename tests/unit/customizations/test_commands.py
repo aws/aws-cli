@@ -216,8 +216,7 @@ class TestUserAgentCommandSection(BaseAWSCommandParamsTest):
 
     def test_customization_in_user_agent_s3_ls(self):
         cmd = 's3 ls'
-        # it should fail but the user_agent should be correct
-        self.run_cmd(cmd, expected_rc=255)
+        self.run_cmd(cmd)
         self._assert_customization_in_user_agent(' md/command#s3.ls')
 
     def test_customization_in_user_agent_logs_tail(self):

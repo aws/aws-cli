@@ -40,6 +40,12 @@ class TestLSCommand(BaseS3TransferCommandTest):
         self.assertIn('Unknown options', stderr)
         self.assertIn('--extra-argument-foo', stderr)
 
+    def test_list_buckets_use_page_size(self):
+        stdout, _, _ = self.run_cmd('s3 ls --page-size 8', expected_rc=0)
+        call_args = self.operations_called[0][1]
+        # The page size gets translated to ``MaxBuckets`` in the s3 model
+        self.assertEqual(call_args['MaxBuckets'], 8)
+
     def test_operations_use_page_size(self):
         time_utc = "2014-01-09T20:45:49.000Z"
         self.parsed_responses = [{"CommonPrefixes": [], "Contents": [

@@ -2,6 +2,15 @@
 CHANGELOG
 =========
 
+1.33.44
+=======
+
+* api-change:``docdb``: This release adds Global Cluster Failover capability which enables you to change your global cluster's primary AWS region, the region that serves writes, during a regional outage. Performing a failover action preserves your Global Cluster setup.
+* api-change:``ecs``: This release introduces a new ContainerDefinition configuration to support the customer-managed keys for ECS container restart feature.
+* api-change:``iam``: Make the LastUsedDate field in the GetAccessKeyLastUsed response optional. This may break customers who only call the API for access keys with a valid LastUsedDate. This fixes a deserialization issue for access keys without a LastUsedDate, because the field was marked as required but could be null.
+* api-change:``s3``: Amazon Simple Storage Service / Features  : Adds support for pagination in the S3 ListBuckets API.
+
+
 1.33.43
 =======
 

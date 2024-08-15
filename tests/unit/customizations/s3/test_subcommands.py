@@ -115,13 +115,21 @@ class TestLSCommand(unittest.TestCase):
                                  verify_ssl=None)
         parsed_args = FakeArgs(dir_op=False, paths='s3://',
                                human_readable=False, summarize=False,
-                               request_payer=None)
+                               request_payer=None, page_size=None)
         ls_command._run_main(parsed_args, parsed_global)
-        # We should only be a single call.
         call = self.session.create_client.return_value.list_buckets
-        self.assertTrue(call.called)
-        self.assertEqual(call.call_count, 1)
-        self.assertEqual(call.call_args[1], {})
+        paginate = self.session.create_client.return_value.get_paginator\
+            .return_value.paginate
+
+        # We should make no operation calls.
+        self.assertEqual(call.call_count, 0)
+        # And only a single pagination call to ListBuckets.
+        self.session.create_client.return_value.get_paginator.\
+            assert_called_with('list_buckets')
+        ref_call_args = {'PaginationConfig': {'PageSize': None}}
+
+        paginate.assert_called_with(**ref_call_args)
+
         # Verify get_client
         get_client = self.session.create_client
         args = get_client.call_args
@@ -136,7 +144,7 @@ class TestLSCommand(unittest.TestCase):
                                  verify_ssl=False)
         parsed_args = FakeArgs(paths='s3://', dir_op=False,
                                human_readable=False, summarize=False,
-                               request_payer=None)
+                               request_payer=None, page_size=None)
         ls_command._run_main(parsed_args, parsed_global)
         # Verify get_client
         get_client = self.session.create_client

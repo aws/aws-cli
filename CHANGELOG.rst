@@ -2,6 +2,17 @@
 CHANGELOG
 =========
 
+2.17.32
+=======
+
+* api-change:``sesv2``: Marking use case description field of account details as deprecated.
+* api-change:``inspector2``: Update the correct format of key and values for resource tags
+* api-change:``sagemaker``: Introduce Endpoint and EndpointConfig Arns in sagemaker:ListPipelineExecutionSteps API response
+* api-change:``batch``: Improvements of integration between AWS Batch and EC2.
+* enhancement:``codeartifact``: Update login command error message.
+* api-change:``quicksight``: Amazon QuickSight launches Customer Managed Key (CMK) encryption for Data Source metadata
+
+
 2.17.31
 =======
 

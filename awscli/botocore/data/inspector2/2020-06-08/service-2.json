@@ -7849,7 +7849,7 @@
     },
     "TagValueList":{
       "type":"list",
-      "member":{"shape":"String"},
+      "member":{"shape":"TargetResourceTagsValue"},
       "max":5,
       "min":1
     },
@@ -7870,9 +7870,20 @@
     },
     "TargetResourceTags":{
       "type":"map",
-      "key":{"shape":"NonEmptyString"},
+      "key":{"shape":"TargetResourceTagsKey"},
       "value":{"shape":"TagValueList"},
       "max":5,
+      "min":1
+    },
+    "TargetResourceTagsKey":{
+      "type":"string",
+      "max":128,
+      "min":1,
+      "pattern":"^[\\p{L}\\p{Z}\\p{N}_.:/=\\-@]*$"
+    },
+    "TargetResourceTagsValue":{
+      "type":"string",
+      "max":256,
       "min":1
     },
     "TargetStatusFilterList":{

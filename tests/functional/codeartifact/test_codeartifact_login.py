@@ -3,6 +3,7 @@ import os
 import platform
 import subprocess
 import time
+import re
 
 from botocore.utils import parse_timestamp
 
@@ -960,6 +961,24 @@ to an 'HTTPS' source."""
         self._assert_operations_called(package_format='pypi', result=result)
         self.assertIn(
             'Argument --namespace is not supported for pip', result.stderr
+        )
+
+    def test_pip_login_command_failed_auth_token_redacted(self):
+        def side_effect(command, capture_output, check):
+            raise subprocess.CalledProcessError(
+                returncode=1,
+                cmd=command
+            )
+
+        self.subprocess_mock.side_effect = side_effect
+        cmdline = self._setup_cmd(tool='pip')
+        result = self.cli_runner.run(cmdline)
+        self.assertEqual(result.rc, 255)
+        self.assertIn(
+            "Command '['pip', 'config', 'set', 'global.index-url',"
+            " 'https://aws:******@domain-domain-owner.codeartifact.aws.a2z.com/pypi/repository/simple/']'"
+            " returned non-zero exit status 1.",
+            result.stderr
         )
 
     def test_twine_login_without_domain_owner(self):

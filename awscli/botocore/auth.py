@@ -33,7 +33,11 @@ from botocore.compat import (
     urlunsplit,
 )
 from botocore.exceptions import NoAuthTokenError, NoCredentialsError
-from botocore.utils import normalize_url_path, percent_encode_sequence
+from botocore.utils import (
+    is_valid_ipv6_endpoint_url,
+    normalize_url_path,
+    percent_encode_sequence,
+)
 
 logger = logging.getLogger(__name__)
 
@@ -62,6 +66,11 @@ def _host_from_url(url):
     # 3) excludes userinfo
     url_parts = urlsplit(url)
     host = url_parts.hostname  # urlsplit's hostname is always lowercase
+    if is_valid_ipv6_endpoint_url(url):
+        # Enclose IPv6 Literal addresses in
+        # brackets as per RFC 3986 3.2.2.
+        host = f'[{host}]'
+
     default_ports = {
         'http': 80,
         'https': 443

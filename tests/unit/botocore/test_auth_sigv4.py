@@ -31,3 +31,24 @@ class TestSigV4Auth(unittest.TestCase):
         request = AWSRequest(method='GET', url=endpoint)
         headers_to_sign = self.sigv4.headers_to_sign(request)
         self.assertEqual(expected_host, headers_to_sign.get('host'))
+
+    def test_signed_host_is_ipv6_without_port(self):
+        endpoint = 'http://[::1]'
+        expected_host = '[::1]'
+        request = AWSRequest(method='GET', url=endpoint)
+        headers_to_sign = self.sigv4.headers_to_sign(request)
+        self.assertEqual(expected_host, headers_to_sign.get('host'))
+
+    def test_signed_host_is_ipv6_with_default_port(self):
+        endpoint = 'http://[::1]:80'
+        expected_host = '[::1]'
+        request = AWSRequest(method='GET', url=endpoint)
+        headers_to_sign = self.sigv4.headers_to_sign(request)
+        self.assertEqual(expected_host, headers_to_sign.get('host'))
+
+    def test_signed_host_is_ipv6_with_explicit_port(self):
+        endpoint = 'http://[::1]:6789'
+        expected_host = '[::1]:6789'
+        request = AWSRequest(method='GET', url=endpoint)
+        headers_to_sign = self.sigv4.headers_to_sign(request)
+        self.assertEqual(expected_host, headers_to_sign.get('host'))

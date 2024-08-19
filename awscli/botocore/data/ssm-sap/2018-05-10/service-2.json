@@ -2,9 +2,10 @@
   "version":"2.0",
   "metadata":{
     "apiVersion":"2018-05-10",
+    "auth":["aws.auth#sigv4"],
     "endpointPrefix":"ssm-sap",
-    "jsonVersion":"1.1",
     "protocol":"rest-json",
+    "protocols":["rest-json"],
     "serviceAbbreviation":"SsmSap",
     "serviceFullName":"AWS Systems Manager for SAP",
     "serviceId":"Ssm Sap",
@@ -406,9 +407,17 @@
         "StatusMessage":{
           "shape":"String",
           "documentation":"<p>The status message.</p>"
+        },
+        "AssociatedApplicationArns":{
+          "shape":"ApplicationArnList",
+          "documentation":"<p>The Amazon Resource Names of the associated AWS Systems Manager for SAP applications.</p>"
         }
       },
       "documentation":"<p>An SAP application registered with AWS Systems Manager for SAP.</p>"
+    },
+    "ApplicationArnList":{
+      "type":"list",
+      "member":{"shape":"SsmSapArn"}
     },
     "ApplicationCredential":{
       "type":"structure",
@@ -451,7 +460,9 @@
     },
     "ApplicationId":{
       "type":"string",
-      "pattern":"[\\w\\d]{1,50}"
+      "max":60,
+      "min":1,
+      "pattern":"[\\w\\d\\.-]+"
     },
     "ApplicationStatus":{
       "type":"string",
@@ -655,8 +666,14 @@
       },
       "documentation":"<p>The SAP component of your application.</p>"
     },
+    "ComponentArnList":{
+      "type":"list",
+      "member":{"shape":"SsmSapArn"}
+    },
     "ComponentId":{
       "type":"string",
+      "max":100,
+      "min":1,
       "pattern":"[\\w\\d-]+"
     },
     "ComponentIdList":{
@@ -784,6 +801,10 @@
         "LastUpdated":{
           "shape":"Timestamp",
           "documentation":"<p>The time at which the database was last updated.</p>"
+        },
+        "ConnectedComponentArns":{
+          "shape":"ComponentArnList",
+          "documentation":"<p>The Amazon Resource Names of the connected AWS Systems Manager for SAP components.</p>"
         }
       },
       "documentation":"<p>The SAP HANA database of the application registered with AWS Systems Manager for SAP.</p>"
@@ -815,6 +836,8 @@
     },
     "DatabaseId":{
       "type":"string",
+      "max":300,
+      "min":1,
       "pattern":".*[\\w\\d]+"
     },
     "DatabaseIdList":{

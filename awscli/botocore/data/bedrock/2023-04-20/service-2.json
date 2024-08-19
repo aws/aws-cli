@@ -115,6 +115,27 @@
       "documentation":"<p>Creates a fine-tuning job to customize a base model.</p> <p>You specify the base foundation model and the location of the training data. After the model-customization job completes successfully, your custom model resource will be ready to use. Amazon Bedrock returns validation loss metrics and output generations after the job completes. </p> <p>For information on the format of training and validation data, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/model-customization-prepare.html\">Prepare the datasets</a>.</p> <p> Model-customization jobs are asynchronous and the completion time depends on the base model and the training/validation data size. To monitor a job, use the <code>GetModelCustomizationJob</code> operation to retrieve the job status.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/custom-models.html\">Custom models</a> in the <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/what-is-service.html\">Amazon Bedrock User Guide</a>.</p>",
       "idempotent":true
     },
+    "CreateModelInvocationJob":{
+      "name":"CreateModelInvocationJob",
+      "http":{
+        "method":"POST",
+        "requestUri":"/model-invocation-job",
+        "responseCode":200
+      },
+      "input":{"shape":"CreateModelInvocationJobRequest"},
+      "output":{"shape":"CreateModelInvocationJobResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"},
+        {"shape":"ConflictException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ServiceQuotaExceededException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Creates a job to invoke a model on multiple prompts (batch inference). Format your data according to <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/batch-inference-prerq.html#batch-inference-data\">Format your inference data</a> and upload it to an Amazon S3 bucket. For more information, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/batch-inference-create.html\">Create a batch inference job</a>.</p> <p>The response returns a <code>jobArn</code> that you can use to stop or get details about the job. You can check the status of the job by sending a <a href=\"https://docs.aws.amazon.com/bedrock/latest/APIReference/API_GetModelCustomizationJob.html\">GetModelCustomizationJob</a> request.</p>",
+      "idempotent":true
+    },
     "CreateProvisionedModelThroughput":{
       "name":"CreateProvisionedModelThroughput",
       "http":{
@@ -321,6 +342,24 @@
       ],
       "documentation":"<p>Retrieves the properties associated with a model-customization job, including the status of the job. For more information, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/custom-models.html\">Custom models</a> in the <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/what-is-service.html\">Amazon Bedrock User Guide</a>.</p>"
     },
+    "GetModelInvocationJob":{
+      "name":"GetModelInvocationJob",
+      "http":{
+        "method":"GET",
+        "requestUri":"/model-invocation-job/{jobIdentifier}",
+        "responseCode":200
+      },
+      "input":{"shape":"GetModelInvocationJobRequest"},
+      "output":{"shape":"GetModelInvocationJobResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Gets details about a batch inference job. For more information, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/batch-inference-manage.html#batch-inference-view\">View details about a batch inference job</a> </p>"
+    },
     "GetModelInvocationLoggingConfiguration":{
       "name":"GetModelInvocationLoggingConfiguration",
       "http":{
@@ -459,6 +498,23 @@
       ],
       "documentation":"<p>Returns a list of model customization jobs that you have submitted. You can filter the jobs to return based on one or more criteria.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/custom-models.html\">Custom models</a> in the <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/what-is-service.html\">Amazon Bedrock User Guide</a>.</p>"
     },
+    "ListModelInvocationJobs":{
+      "name":"ListModelInvocationJobs",
+      "http":{
+        "method":"GET",
+        "requestUri":"/model-invocation-jobs",
+        "responseCode":200
+      },
+      "input":{"shape":"ListModelInvocationJobsRequest"},
+      "output":{"shape":"ListModelInvocationJobsResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Lists all batch inference jobs in the account. For more information, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/batch-inference-manage.html#batch-inference-view\">View details about a batch inference job</a>.</p>"
+    },
     "ListProvisionedModelThroughputs":{
       "name":"ListProvisionedModelThroughputs",
       "http":{
@@ -550,6 +606,25 @@
       ],
       "documentation":"<p>Stops an active model customization job. For more information, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/custom-models.html\">Custom models</a> in the <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/what-is-service.html\">Amazon Bedrock User Guide</a>.</p>",
       "idempotent":true
+    },
+    "StopModelInvocationJob":{
+      "name":"StopModelInvocationJob",
+      "http":{
+        "method":"POST",
+        "requestUri":"/model-invocation-job/{jobIdentifier}/stop",
+        "responseCode":200
+      },
+      "input":{"shape":"StopModelInvocationJobRequest"},
+      "output":{"shape":"StopModelInvocationJobResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"},
+        {"shape":"ConflictException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Stops a batch inference job. You're only charged for tokens that were already processed. For more information, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/batch-inference-manage.html#batch-inference-stop\">Stop a batch inference job</a>.</p>"
     },
     "TagResource":{
       "name":"TagResource",
@@ -1026,6 +1101,61 @@
         "jobArn":{
           "shape":"ModelCustomizationJobArn",
           "documentation":"<p>Amazon Resource Name (ARN) of the fine tuning job</p>"
+        }
+      }
+    },
+    "CreateModelInvocationJobRequest":{
+      "type":"structure",
+      "required":[
+        "jobName",
+        "roleArn",
+        "modelId",
+        "inputDataConfig",
+        "outputDataConfig"
+      ],
+      "members":{
+        "jobName":{
+          "shape":"ModelInvocationJobName",
+          "documentation":"<p>A name to give the batch inference job.</p>"
+        },
+        "roleArn":{
+          "shape":"RoleArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the service role with permissions to carry out and manage batch inference. You can use the console to create a default service role or follow the steps at <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/batch-iam-sr.html\">Create a service role for batch inference</a>.</p>"
+        },
+        "clientRequestToken":{
+          "shape":"ModelInvocationIdempotencyToken",
+          "documentation":"<p>A unique, case-sensitive identifier to ensure that the API request completes no more than one time. If this token matches a previous request, Amazon Bedrock ignores the request, but does not return an error. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/APIReference/Run_Instance_Idempotency.html\">Ensuring idempotency</a>.</p>",
+          "idempotencyToken":true
+        },
+        "modelId":{
+          "shape":"ModelId",
+          "documentation":"<p>The unique identifier of the foundation model to use for the batch inference job.</p>"
+        },
+        "inputDataConfig":{
+          "shape":"ModelInvocationJobInputDataConfig",
+          "documentation":"<p>Details about the location of the input to the batch inference job.</p>"
+        },
+        "outputDataConfig":{
+          "shape":"ModelInvocationJobOutputDataConfig",
+          "documentation":"<p>Details about the location of the output of the batch inference job.</p>"
+        },
+        "timeoutDurationInHours":{
+          "shape":"ModelInvocationJobTimeoutDurationInHours",
+          "documentation":"<p>The number of hours after which to force the batch inference job to time out.</p>"
+        },
+        "tags":{
+          "shape":"TagList",
+          "documentation":"<p>Any tags to associate with the batch inference job. For more information, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/tagging.html\">Tagging Amazon Bedrock resources</a>.</p>"
+        }
+      }
+    },
+    "CreateModelInvocationJobResponse":{
+      "type":"structure",
+      "required":["jobArn"],
+      "members":{
+        "jobArn":{
+          "shape":"ModelInvocationJobArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the batch inference job.</p>"
         }
       }
     },
@@ -2109,6 +2239,87 @@
         "vpcConfig":{
           "shape":"VpcConfig",
           "documentation":"<p>VPC configuration for the custom model job.</p>"
+        }
+      }
+    },
+    "GetModelInvocationJobRequest":{
+      "type":"structure",
+      "required":["jobIdentifier"],
+      "members":{
+        "jobIdentifier":{
+          "shape":"ModelInvocationJobIdentifier",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the batch inference job.</p>",
+          "location":"uri",
+          "locationName":"jobIdentifier"
+        }
+      }
+    },
+    "GetModelInvocationJobResponse":{
+      "type":"structure",
+      "required":[
+        "jobArn",
+        "modelId",
+        "roleArn",
+        "submitTime",
+        "inputDataConfig",
+        "outputDataConfig"
+      ],
+      "members":{
+        "jobArn":{
+          "shape":"ModelInvocationJobArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the batch inference job.</p>"
+        },
+        "jobName":{
+          "shape":"ModelInvocationJobName",
+          "documentation":"<p>The name of the batch inference job.</p>"
+        },
+        "modelId":{
+          "shape":"ModelId",
+          "documentation":"<p>The unique identifier of the foundation model used for model inference.</p>"
+        },
+        "clientRequestToken":{
+          "shape":"ModelInvocationIdempotencyToken",
+          "documentation":"<p>A unique, case-sensitive identifier to ensure that the API request completes no more than one time. If this token matches a previous request, Amazon Bedrock ignores the request, but does not return an error. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/APIReference/Run_Instance_Idempotency.html\">Ensuring idempotency</a>.</p>"
+        },
+        "roleArn":{
+          "shape":"RoleArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the service role with permissions to carry out and manage batch inference. You can use the console to create a default service role or follow the steps at <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/batch-iam-sr.html\">Create a service role for batch inference</a>.</p>"
+        },
+        "status":{
+          "shape":"ModelInvocationJobStatus",
+          "documentation":"<p>The status of the batch inference job.</p>"
+        },
+        "message":{
+          "shape":"Message",
+          "documentation":"<p>If the batch inference job failed, this field contains a message describing why the job failed.</p>"
+        },
+        "submitTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time at which the batch inference job was submitted.</p>"
+        },
+        "lastModifiedTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time at which the batch inference job was last modified.</p>"
+        },
+        "endTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time at which the batch inference job ended.</p>"
+        },
+        "inputDataConfig":{
+          "shape":"ModelInvocationJobInputDataConfig",
+          "documentation":"<p>Details about the location of the input to the batch inference job.</p>"
+        },
+        "outputDataConfig":{
+          "shape":"ModelInvocationJobOutputDataConfig",
+          "documentation":"<p>Details about the location of the output of the batch inference job.</p>"
+        },
+        "timeoutDurationInHours":{
+          "shape":"ModelInvocationJobTimeoutDurationInHours",
+          "documentation":"<p>The number of hours after which batch inference job was set to time out.</p>"
+        },
+        "jobExpirationTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time at which the batch inference job times or timed out.</p>"
         }
       }
     },
@@ -3445,6 +3656,72 @@
         }
       }
     },
+    "ListModelInvocationJobsRequest":{
+      "type":"structure",
+      "members":{
+        "submitTimeAfter":{
+          "shape":"Timestamp",
+          "documentation":"<p>Specify a time to filter for batch inference jobs that were submitted after the time you specify.</p>",
+          "location":"querystring",
+          "locationName":"submitTimeAfter"
+        },
+        "submitTimeBefore":{
+          "shape":"Timestamp",
+          "documentation":"<p>Specify a time to filter for batch inference jobs that were submitted before the time you specify.</p>",
+          "location":"querystring",
+          "locationName":"submitTimeBefore"
+        },
+        "statusEquals":{
+          "shape":"ModelInvocationJobStatus",
+          "documentation":"<p>Specify a status to filter for batch inference jobs whose statuses match the string you specify.</p>",
+          "location":"querystring",
+          "locationName":"statusEquals"
+        },
+        "nameContains":{
+          "shape":"ModelInvocationJobName",
+          "documentation":"<p>Specify a string to filter for batch inference jobs whose names contain the string.</p>",
+          "location":"querystring",
+          "locationName":"nameContains"
+        },
+        "maxResults":{
+          "shape":"MaxResults",
+          "documentation":"<p>The maximum number of results to return. If there are more results than the number that you specify, a <code>nextToken</code> value is returned. Use the <code>nextToken</code> in a request to return the next batch of results.</p>",
+          "location":"querystring",
+          "locationName":"maxResults"
+        },
+        "nextToken":{
+          "shape":"PaginationToken",
+          "documentation":"<p>If there were more results than the value you specified in the <code>maxResults</code> field in a previous <code>ListModelInvocationJobs</code> request, the response would have returned a <code>nextToken</code> value. To see the next batch of results, send the <code>nextToken</code> value in another request.</p>",
+          "location":"querystring",
+          "locationName":"nextToken"
+        },
+        "sortBy":{
+          "shape":"SortJobsBy",
+          "documentation":"<p>An attribute by which to sort the results.</p>",
+          "location":"querystring",
+          "locationName":"sortBy"
+        },
+        "sortOrder":{
+          "shape":"SortOrder",
+          "documentation":"<p>Specifies whether to sort the results by ascending or descending order.</p>",
+          "location":"querystring",
+          "locationName":"sortOrder"
+        }
+      }
+    },
+    "ListModelInvocationJobsResponse":{
+      "type":"structure",
+      "members":{
+        "nextToken":{
+          "shape":"PaginationToken",
+          "documentation":"<p>If there are more results than can fit in the response, a <code>nextToken</code> is returned. Use the <code>nextToken</code> in a request to return the next batch of results.</p>"
+        },
+        "invocationJobSummaries":{
+          "shape":"ModelInvocationJobSummaries",
+          "documentation":"<p>A list of items, each of which contains a summary about a batch inference job.</p>"
+        }
+      }
+    },
     "ListProvisionedModelThroughputsRequest":{
       "type":"structure",
       "members":{
@@ -3572,6 +3849,12 @@
       "box":true,
       "max":1000,
       "min":1
+    },
+    "Message":{
+      "type":"string",
+      "max":2048,
+      "min":0,
+      "sensitive":true
     },
     "MetricFloat":{
       "type":"float",
@@ -3754,11 +4037,189 @@
       "type":"list",
       "member":{"shape":"ModelCustomization"}
     },
+    "ModelId":{
+      "type":"string",
+      "max":2048,
+      "min":1,
+      "pattern":"(arn:aws(-[^:]+)?:bedrock:[a-z0-9-]{1,20}:(([0-9]{12}:custom-model/[a-z0-9-]{1,63}[.]{1}[a-z0-9-:]{1,63}/[a-z0-9]{12}$)|(:foundation-model/[a-z0-9-]{1,63}[.]{1}[a-z0-9-]{1,63}$)))|([a-z0-9-]{1,63}[.]{1}[a-z0-9-]{1,63}([.]?[a-z0-9-]{1,63})([:][a-z0-9-]{1,63}){0,2})|(([0-9a-zA-Z][_-]?)+)"
+    },
     "ModelIdentifier":{
       "type":"string",
       "max":2048,
       "min":1,
       "pattern":"arn:aws(-[^:]+)?:bedrock:[a-z0-9-]{1,20}:(([0-9]{12}:custom-model/[a-z0-9-]{1,63}[.]{1}[a-z0-9-]{1,63}(([:][a-z0-9-]{1,63}){0,2})?/[a-z0-9]{12})|(:foundation-model/([a-z0-9-]{1,63}[.]{1}[a-z0-9-]{1,63}([.]?[a-z0-9-]{1,63})([:][a-z0-9-]{1,63}){0,2})))|(([a-z0-9-]{1,63}[.]{1}[a-z0-9-]{1,63}([.]?[a-z0-9-]{1,63})([:][a-z0-9-]{1,63}){0,2}))|(([0-9a-zA-Z][_-]?)+)"
+    },
+    "ModelInvocationIdempotencyToken":{
+      "type":"string",
+      "max":256,
+      "min":1,
+      "pattern":"[a-zA-Z0-9]{1,256}(-*[a-zA-Z0-9]){0,256}"
+    },
+    "ModelInvocationJobArn":{
+      "type":"string",
+      "max":1011,
+      "min":0,
+      "pattern":"(arn:aws(-[^:]+)?:bedrock:[a-z0-9-]{1,20}:[0-9]{12}:model-invocation-job/[a-z0-9]{12})"
+    },
+    "ModelInvocationJobIdentifier":{
+      "type":"string",
+      "max":1011,
+      "min":0,
+      "pattern":"((arn:aws(-[^:]+)?:bedrock:[a-z0-9-]{1,20}:[0-9]{12}:model-invocation-job/)?[a-z0-9]{12})"
+    },
+    "ModelInvocationJobInputDataConfig":{
+      "type":"structure",
+      "members":{
+        "s3InputDataConfig":{
+          "shape":"ModelInvocationJobS3InputDataConfig",
+          "documentation":"<p>Contains the configuration of the S3 location of the input data.</p>"
+        }
+      },
+      "documentation":"<p>Details about the location of the input to the batch inference job.</p>",
+      "union":true
+    },
+    "ModelInvocationJobName":{
+      "type":"string",
+      "max":63,
+      "min":1,
+      "pattern":"[a-zA-Z0-9]{1,63}(-*[a-zA-Z0-9\\+\\-\\.]){0,63}"
+    },
+    "ModelInvocationJobOutputDataConfig":{
+      "type":"structure",
+      "members":{
+        "s3OutputDataConfig":{
+          "shape":"ModelInvocationJobS3OutputDataConfig",
+          "documentation":"<p>Contains the configuration of the S3 location of the output data.</p>"
+        }
+      },
+      "documentation":"<p>Contains the configuration of the S3 location of the output data.</p>",
+      "union":true
+    },
+    "ModelInvocationJobS3InputDataConfig":{
+      "type":"structure",
+      "required":["s3Uri"],
+      "members":{
+        "s3InputFormat":{
+          "shape":"S3InputFormat",
+          "documentation":"<p>The format of the input data.</p>"
+        },
+        "s3Uri":{
+          "shape":"S3Uri",
+          "documentation":"<p>The S3 location of the input data.</p>"
+        }
+      },
+      "documentation":"<p>Contains the configuration of the S3 location of the output data.</p>"
+    },
+    "ModelInvocationJobS3OutputDataConfig":{
+      "type":"structure",
+      "required":["s3Uri"],
+      "members":{
+        "s3Uri":{
+          "shape":"S3Uri",
+          "documentation":"<p>The S3 location of the output data.</p>"
+        },
+        "s3EncryptionKeyId":{
+          "shape":"KmsKeyId",
+          "documentation":"<p>The unique identifier of the key that encrypts the S3 location of the output data.</p>"
+        }
+      },
+      "documentation":"<p>Contains the configuration of the S3 location of the output data.</p>"
+    },
+    "ModelInvocationJobStatus":{
+      "type":"string",
+      "enum":[
+        "Submitted",
+        "InProgress",
+        "Completed",
+        "Failed",
+        "Stopping",
+        "Stopped",
+        "PartiallyCompleted",
+        "Expired",
+        "Validating",
+        "Scheduled"
+      ]
+    },
+    "ModelInvocationJobSummaries":{
+      "type":"list",
+      "member":{"shape":"ModelInvocationJobSummary"}
+    },
+    "ModelInvocationJobSummary":{
+      "type":"structure",
+      "required":[
+        "jobArn",
+        "jobName",
+        "modelId",
+        "roleArn",
+        "submitTime",
+        "inputDataConfig",
+        "outputDataConfig"
+      ],
+      "members":{
+        "jobArn":{
+          "shape":"ModelInvocationJobArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the batch inference job.</p>"
+        },
+        "jobName":{
+          "shape":"ModelInvocationJobName",
+          "documentation":"<p>The name of the batch inference job.</p>"
+        },
+        "modelId":{
+          "shape":"ModelId",
+          "documentation":"<p>The unique identifier of the foundation model used for model inference.</p>"
+        },
+        "clientRequestToken":{
+          "shape":"ModelInvocationIdempotencyToken",
+          "documentation":"<p>A unique, case-sensitive identifier to ensure that the API request completes no more than one time. If this token matches a previous request, Amazon Bedrock ignores the request, but does not return an error. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/APIReference/Run_Instance_Idempotency.html\">Ensuring idempotency</a>.</p>"
+        },
+        "roleArn":{
+          "shape":"RoleArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the service role with permissions to carry out and manage batch inference. You can use the console to create a default service role or follow the steps at <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/batch-iam-sr.html\">Create a service role for batch inference</a>.</p>"
+        },
+        "status":{
+          "shape":"ModelInvocationJobStatus",
+          "documentation":"<p>The status of the batch inference job.</p>"
+        },
+        "message":{
+          "shape":"Message",
+          "documentation":"<p>If the batch inference job failed, this field contains a message describing why the job failed.</p>"
+        },
+        "submitTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time at which the batch inference job was submitted.</p>"
+        },
+        "lastModifiedTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time at which the batch inference job was last modified.</p>"
+        },
+        "endTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time at which the batch inference job ended.</p>"
+        },
+        "inputDataConfig":{
+          "shape":"ModelInvocationJobInputDataConfig",
+          "documentation":"<p>Details about the location of the input to the batch inference job.</p>"
+        },
+        "outputDataConfig":{
+          "shape":"ModelInvocationJobOutputDataConfig",
+          "documentation":"<p>Details about the location of the output of the batch inference job.</p>"
+        },
+        "timeoutDurationInHours":{
+          "shape":"ModelInvocationJobTimeoutDurationInHours",
+          "documentation":"<p>The number of hours after which the batch inference job was set to time out.</p>"
+        },
+        "jobExpirationTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time at which the batch inference job times or timed out.</p>"
+        }
+      },
+      "documentation":"<p>A summary of a batch inference job.</p>"
+    },
+    "ModelInvocationJobTimeoutDurationInHours":{
+      "type":"integer",
+      "box":true,
+      "max":168,
+      "min":24
     },
     "ModelModality":{
       "type":"string",
@@ -3930,6 +4391,7 @@
     },
     "RoleArn":{
       "type":"string",
+      "documentation":"<p>ARN of a IAM role</p>",
       "max":2048,
       "min":0,
       "pattern":"arn:aws(-[^:]+)?:iam::([0-9]{12})?:role/.+"
@@ -3948,6 +4410,10 @@
         }
       },
       "documentation":"<p>S3 configuration for storing log data.</p>"
+    },
+    "S3InputFormat":{
+      "type":"string",
+      "enum":["JSONL"]
     },
     "S3Uri":{
       "type":"string",
@@ -4038,6 +4504,23 @@
       "members":{
       }
     },
+    "StopModelInvocationJobRequest":{
+      "type":"structure",
+      "required":["jobIdentifier"],
+      "members":{
+        "jobIdentifier":{
+          "shape":"ModelInvocationJobIdentifier",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the batch inference job to stop.</p>",
+          "location":"uri",
+          "locationName":"jobIdentifier"
+        }
+      }
+    },
+    "StopModelInvocationJobResponse":{
+      "type":"structure",
+      "members":{
+      }
+    },
     "String":{"type":"string"},
     "SubnetId":{
       "type":"string",
@@ -4119,7 +4602,7 @@
       "type":"string",
       "max":1011,
       "min":20,
-      "pattern":".*(^[a-zA-Z0-9][a-zA-Z0-9\\-]*$)|(^arn:aws(-[^:]+)?:bedrock:[a-z0-9-]{1,20}:([0-9]{12}|)((:(fine-tuning-job|model-customization-job|custom-model)/[a-z0-9-]{1,63}[.]{1}[a-z0-9-]{1,63}([a-z0-9-]{1,63}[.]){0,2}[a-z0-9-]{1,63}([:][a-z0-9-]{1,63}){0,2}(/[a-z0-9]{12})$)|(:provisioned-model/[a-z0-9]{12}$)|(:guardrail/[a-z0-9]+$)|(:evaluation-job/[a-z0-9]{12}$))).*"
+      "pattern":".*(^[a-zA-Z0-9][a-zA-Z0-9\\-]*$)|(^arn:aws(-[^:]+)?:bedrock:[a-z0-9-]{1,20}:([0-9]{12}|)((:(fine-tuning-job|model-customization-job|custom-model)/[a-z0-9-]{1,63}[.]{1}[a-z0-9-]{1,63}([a-z0-9-]{1,63}[.]){0,2}[a-z0-9-]{1,63}([:][a-z0-9-]{1,63}){0,2}(/[a-z0-9]{12})$)|(:guardrail/[a-z0-9]+$)|(:(provisioned-model|model-invocation-job|model-evaluation-job|evaluation-job|model-import-job|imported-model)/[a-z0-9]{12}$))).*"
     },
     "ThrottlingException":{
       "type":"structure",

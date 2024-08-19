@@ -2,6 +2,16 @@
 CHANGELOG
 =========
 
+2.17.33
+=======
+
+* api-change:``ssm-sap``: Add new attributes to the outputs of GetApplication and GetDatabase APIs.
+* api-change:``bedrock``: Amazon Bedrock Batch Inference/ Model Invocation is a feature which allows customers to asynchronously run inference on a large set of records/files stored in S3.
+* api-change:``lambda``: Release Lambda FunctionRecursiveConfig, enabling customers to turn recursive loop detection on or off on individual functions. This release adds two new APIs, GetFunctionRecursionConfig and PutFunctionRecursionConfig.
+* api-change:``deadline``: This release adds additional search fields and provides sorting by multiple fields.
+* api-change:``codebuild``: AWS CodeBuild now supports creating fleets with macOS platform for running builds.
+
+
 2.17.32
 =======
 

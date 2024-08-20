@@ -10,16 +10,18 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
-import csv
-import signal
-import datetime
 import contextlib
+import csv
+import datetime
 import os
-import sys
+import signal
 import subprocess
+import sys
 
 from awscli.compat import (
-    BytesIO, StringIO, get_binary_stdout, get_popen_kwargs_for_pager_cmd
+    StringIO,
+    get_binary_stdout,
+    get_popen_kwargs_for_pager_cmd,
 )
 
 
@@ -50,16 +52,19 @@ def _split_with_quotes(value):
         # Find an opening list bracket
         list_start = part.find('=[')
 
-        if list_start >= 0 and value.find(']') != -1 and \
-           (quote_char is None or part.find(quote_char) > list_start):
+        if (
+            list_start >= 0
+            and value.find(']') != -1
+            and (quote_char is None or part.find(quote_char) > list_start)
+        ):
             # This is a list, eat all the items until the end
             if ']' in part:
                 # Short circuit for only one item
                 new_chunk = part
             else:
                 new_chunk = _eat_items(value, iter_parts, part, ']')
-            list_items = _split_with_quotes(new_chunk[list_start + 2:-1])
-            new_chunk = new_chunk[:list_start + 1] + ','.join(list_items)
+            list_items = _split_with_quotes(new_chunk[list_start + 2 : -1])
+            new_chunk = new_chunk[: list_start + 1] + ','.join(list_items)
             new_parts.append(new_chunk)
             continue
         elif quote_char is None:
@@ -155,8 +160,11 @@ def is_document_type_container(shape):
 
 def is_streaming_blob_type(shape):
     """Check if the shape is a streaming blob type."""
-    return (shape and shape.type_name == 'blob' and
-            shape.serialization.get('streaming', False))
+    return (
+        shape
+        and shape.type_name == 'blob'
+        and shape.serialization.get('streaming', False)
+    )
 
 
 def is_tagged_union_type(shape):
@@ -194,18 +202,17 @@ def ignore_ctrl_c():
 
 
 def emit_top_level_args_parsed_event(session, args):
-    session.emit(
-        'top-level-args-parsed', parsed_args=args, session=session)
+    session.emit('top-level-args-parsed', parsed_args=args, session=session)
 
 
 def is_a_tty():
     try:
         return os.isatty(sys.stdout.fileno())
-    except Exception as e:
+    except Exception:
         return False
 
 
-class OutputStreamFactory(object):
+class OutputStreamFactory:
     def __init__(self, popen=None):
         self._popen = popen
         if popen is None:
@@ -217,7 +224,7 @@ class OutputStreamFactory(object):
         try:
             process = self._popen(**popen_kwargs)
             yield process.stdin
-        except IOError:
+        except OSError:
             # Ignore IOError since this can commonly be raised when a pager
             # is closed abruptly and causes a broken pipe.
             pass
@@ -240,7 +247,7 @@ def write_exception(ex, outfile):
     outfile.write("\n")
 
 
-class ShapeWalker(object):
+class ShapeWalker:
     def walk(self, shape, visitor):
         """Walk through and visit shapes for introspection
 
@@ -285,14 +292,16 @@ class ShapeWalker(object):
         visitor.visit_shape(shape)
 
 
-class BaseShapeVisitor(object):
+class BaseShapeVisitor:
     """Visit shape encountered by ShapeWalker"""
+
     def visit_shape(self, shape):
         pass
 
 
 class ShapeRecordingVisitor(BaseShapeVisitor):
     """Record shapes visited by ShapeWalker"""
+
     def __init__(self):
         self.visited = []
 

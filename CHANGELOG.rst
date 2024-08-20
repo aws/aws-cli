@@ -2,6 +2,15 @@
 CHANGELOG
 =========
 
+2.17.34
+=======
+
+* enhancement:tests: Replaced hard-coded smoke tests with a JSON data file.
+* api-change:``ecs``: Documentation only release to address various tickets
+* api-change:``s3``: Amazon Simple Storage Service / Features : Add support for conditional writes for PutObject and CompleteMultipartUpload APIs.
+* api-change:``opensearchserverless``: Added FailureCode and FailureMessage to BatchGetCollectionResponse for BatchGetVPCEResponse for non-Active Collection and VPCE.
+
+
 2.17.33
 =======
 

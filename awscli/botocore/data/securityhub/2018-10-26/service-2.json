@@ -1264,7 +1264,7 @@
         {"shape":"InvalidAccessException"},
         {"shape":"ResourceNotFoundException"}
       ],
-      "documentation":"<p> <code>UpdateFindings</code> is a deprecated operation. Instead of <code>UpdateFindings</code>, use the <code>BatchUpdateFindings</code> operation.</p> <p>Updates the <code>Note</code> and <code>RecordState</code> of the Security Hub-aggregated findings that the filter attributes specify. Any member account that can view the finding also sees the update to the finding.</p> <p>Finding updates made with <code>UpdateFindings</code> might not be persisted if the same finding is later updated by the finding provider through the <code>BatchImportFindings</code> operation.</p>"
+      "documentation":"<p> <code>UpdateFindings</code> is a deprecated operation. Instead of <code>UpdateFindings</code>, use the <code>BatchUpdateFindings</code> operation.</p> <p>The <code>UpdateFindings</code> operation updates the <code>Note</code> and <code>RecordState</code> of the Security Hub aggregated findings that the filter attributes specify. Any member account that can view the finding can also see the update to the finding.</p> <p>Finding updates made with <code>UpdateFindings</code> aren't persisted if the same finding is later updated by the finding provider through the <code>BatchImportFindings</code> operation. In addition, Security Hub doesn't record updates made with <code>UpdateFindings</code> in the finding history.</p>"
     },
     "UpdateInsight":{
       "name":"UpdateInsight",
@@ -1908,7 +1908,7 @@
         },
         "ResourceId":{
           "shape":"StringFilterList",
-          "documentation":"<p> The identifier for the given resource type. For Amazon Web Services resources that are identified by Amazon Resource Names (ARNs), this is the ARN. For Amazon Web Services resources that lack ARNs, this is the identifier as defined by the Amazon Web Service that created the resource. For non-Amazon Web Services resources, this is a unique identifier that is associated with the resource. </p> <p> Array Members: Minimum number of 1 item. Maximum number of 100 items. </p>"
+          "documentation":"<p> The identifier for the given resource type. For Amazon Web Services resources that are identified by Amazon Resource Names (ARNs), this is the ARN. For Amazon Web Services resources that lack ARNs, this is the identifier as defined by the Amazon Web Servicesservice that created the resource. For non-Amazon Web Services resources, this is a unique identifier that is associated with the resource. </p> <p> Array Members: Minimum number of 1 item. Maximum number of 100 items. </p>"
         },
         "ResourcePartition":{
           "shape":"StringFilterList",
@@ -14275,7 +14275,7 @@
         },
         "ComplianceSecurityControlId":{
           "shape":"StringFilterList",
-          "documentation":"<p> The unique identifier of a control across standards. Values for this field typically consist of an Amazon Web Service and a number, such as APIGateway.5. </p>"
+          "documentation":"<p> The unique identifier of a control across standards. Values for this field typically consist of an Amazon Web Servicesservice and a number, such as APIGateway.5. </p>"
         },
         "ComplianceAssociatedStandardsId":{
           "shape":"StringFilterList",
@@ -15857,7 +15857,7 @@
         },
         "SecurityControlId":{
           "shape":"NonEmptyString",
-          "documentation":"<p> The unique identifier of a control across standards. Values for this field typically consist of an Amazon Web Service and a number, such as APIGateway.5. </p>"
+          "documentation":"<p> The unique identifier of a control across standards. Values for this field typically consist of an Amazon Web Servicesservice and a number, such as APIGateway.5. </p>"
         },
         "AssociatedStandards":{
           "shape":"AssociatedStandardsList",
@@ -16227,11 +16227,11 @@
       "members":{
         "RegionLinkingMode":{
           "shape":"NonEmptyString",
-          "documentation":"<p>Indicates whether to aggregate findings from all of the available Regions in the current partition. Also determines whether to automatically aggregate findings from new Regions as Security Hub supports them and you opt into them.</p> <p>The selected option also determines how to use the Regions provided in the Regions list.</p> <p>The options are as follows:</p> <ul> <li> <p> <code>ALL_REGIONS</code> - Indicates to aggregate findings from all of the Regions where Security Hub is enabled. When you choose this option, Security Hub also automatically aggregates findings from new Regions as Security Hub supports them and you opt into them. </p> </li> <li> <p> <code>ALL_REGIONS_EXCEPT_SPECIFIED</code> - Indicates to aggregate findings from all of the Regions where Security Hub is enabled, except for the Regions listed in the <code>Regions</code> parameter. When you choose this option, Security Hub also automatically aggregates findings from new Regions as Security Hub supports them and you opt into them. </p> </li> <li> <p> <code>SPECIFIED_REGIONS</code> - Indicates to aggregate findings only from the Regions listed in the <code>Regions</code> parameter. Security Hub does not automatically aggregate findings from new Regions. </p> </li> </ul>"
+          "documentation":"<p>Indicates whether to aggregate findings from all of the available Regions in the current partition. Also determines whether to automatically aggregate findings from new Regions as Security Hub supports them and you opt into them.</p> <p>The selected option also determines how to use the Regions provided in the Regions list.</p> <p>The options are as follows:</p> <ul> <li> <p> <code>ALL_REGIONS</code> - Aggregates findings from all of the Regions where Security Hub is enabled. When you choose this option, Security Hub also automatically aggregates findings from new Regions as Security Hub supports them and you opt into them. </p> </li> <li> <p> <code>ALL_REGIONS_EXCEPT_SPECIFIED</code> - Aggregates findings from all of the Regions where Security Hub is enabled, except for the Regions listed in the <code>Regions</code> parameter. When you choose this option, Security Hub also automatically aggregates findings from new Regions as Security Hub supports them and you opt into them. </p> </li> <li> <p> <code>SPECIFIED_REGIONS</code> - Aggregates findings only from the Regions listed in the <code>Regions</code> parameter. Security Hub does not automatically aggregate findings from new Regions. </p> </li> <li> <p> <code>NO_REGIONS</code> - Aggregates no data because no Regions are selected as linked Regions. </p> </li> </ul>"
         },
         "Regions":{
           "shape":"StringList",
-          "documentation":"<p>If <code>RegionLinkingMode</code> is <code>ALL_REGIONS_EXCEPT_SPECIFIED</code>, then this is a space-separated list of Regions that do not aggregate findings to the aggregation Region.</p> <p>If <code>RegionLinkingMode</code> is <code>SPECIFIED_REGIONS</code>, then this is a space-separated list of Regions that do aggregate findings to the aggregation Region. </p>"
+          "documentation":"<p>If <code>RegionLinkingMode</code> is <code>ALL_REGIONS_EXCEPT_SPECIFIED</code>, then this is a space-separated list of Regions that do not aggregate findings to the aggregation Region.</p> <p>If <code>RegionLinkingMode</code> is <code>SPECIFIED_REGIONS</code>, then this is a space-separated list of Regions that do aggregate findings to the aggregation Region. </p> <p>An <code>InvalidInputException</code> error results if you populate this field while <code>RegionLinkingMode</code> is <code>NO_REGIONS</code>.</p>"
         }
       }
     },
@@ -17038,7 +17038,7 @@
         },
         "UpdateSource":{
           "shape":"FindingHistoryUpdateSource",
-          "documentation":"<p> Identifies the source of the event that changed the finding. For example, an integrated Amazon Web Service or third-party partner integration may call <a href=\"https://docs.aws.amazon.com/securityhub/1.0/APIReference/API_BatchImportFindings.html\"> <code>BatchImportFindings</code> </a>, or an Security Hub customer may call <a href=\"https://docs.aws.amazon.com/securityhub/1.0/APIReference/API_BatchUpdateFindings.html\"> <code>BatchUpdateFindings</code> </a>. </p>"
+          "documentation":"<p> Identifies the source of the event that changed the finding. For example, an integrated Amazon Web Servicesservice or third-party partner integration may call <a href=\"https://docs.aws.amazon.com/securityhub/1.0/APIReference/API_BatchImportFindings.html\"> <code>BatchImportFindings</code> </a>, or an Security Hub customer may call <a href=\"https://docs.aws.amazon.com/securityhub/1.0/APIReference/API_BatchUpdateFindings.html\"> <code>BatchUpdateFindings</code> </a>. </p>"
         },
         "Updates":{
           "shape":"FindingHistoryUpdatesList",
@@ -17078,7 +17078,7 @@
       "members":{
         "Type":{
           "shape":"FindingHistoryUpdateSourceType",
-          "documentation":"<p> Describes the type of finding change event, such as a call to <a href=\"https://docs.aws.amazon.com/securityhub/1.0/APIReference/API_BatchImportFindings.html\"> <code>BatchImportFindings</code> </a> (by an integrated Amazon Web Service or third party partner integration) or <a href=\"https://docs.aws.amazon.com/securityhub/1.0/APIReference/API_BatchUpdateFindings.html\"> <code>BatchUpdateFindings</code> </a> (by a Security Hub customer). </p>"
+          "documentation":"<p> Describes the type of finding change event, such as a call to <a href=\"https://docs.aws.amazon.com/securityhub/1.0/APIReference/API_BatchImportFindings.html\"> <code>BatchImportFindings</code> </a> (by an integrated Amazon Web Servicesservice or third party partner integration) or <a href=\"https://docs.aws.amazon.com/securityhub/1.0/APIReference/API_BatchUpdateFindings.html\"> <code>BatchUpdateFindings</code> </a> (by a Security Hub customer). </p>"
         },
         "Identity":{
           "shape":"NonEmptyString",
@@ -18632,6 +18632,10 @@
           "shape":"Double",
           "documentation":"<p>The less-than-equal condition to be applied to a single field when querying for findings. </p>"
         },
+        "Eq":{
+          "shape":"Double",
+          "documentation":"<p>The equal-to condition to be applied to a single field when querying for findings.</p>"
+        },
         "Gt":{
           "shape":"Double",
           "documentation":"<p> The greater-than condition to be applied to a single field when querying for findings. </p>"
@@ -18639,10 +18643,6 @@
         "Lt":{
           "shape":"Double",
           "documentation":"<p> The less-than condition to be applied to a single field when querying for findings. </p>"
-        },
-        "Eq":{
-          "shape":"Double",
-          "documentation":"<p>The equal-to condition to be applied to a single field when querying for findings.</p>"
         }
       },
       "documentation":"<p>A number filter for querying findings.</p>"
@@ -18885,7 +18885,7 @@
       "members":{
         "SecurityHub":{
           "shape":"SecurityHubPolicy",
-          "documentation":"<p> The Amazon Web Service that the configuration policy applies to. </p>"
+          "documentation":"<p> The Amazon Web Servicesservice that the configuration policy applies to. </p>"
         }
       },
       "documentation":"<p> An object that defines how Security Hub is configured. It includes whether Security Hub is enabled or disabled, a list of enabled security standards, a list of enabled or disabled security controls, and a list of custom parameter values for specified controls. If you provide a list of security controls that are enabled in the configuration policy, Security Hub disables all other controls (including newly released controls). If you provide a list of security controls that are disabled in the configuration policy, Security Hub enables all other controls (including newly released controls). </p>",
@@ -19680,7 +19680,7 @@
         },
         "DestinationPrefixListId":{
           "shape":"NonEmptyString",
-          "documentation":"<p> The prefix of the destination Amazon Web Service. </p>"
+          "documentation":"<p> The prefix of the destination Amazon Web Servicesservice. </p>"
         },
         "EgressOnlyInternetGatewayId":{
           "shape":"NonEmptyString",
@@ -20101,7 +20101,7 @@
       "members":{
         "SecurityControlId":{
           "shape":"NonEmptyString",
-          "documentation":"<p> The unique identifier of a security control across standards. Values for this field typically consist of an Amazon Web Service name and a number, such as APIGateway.3. </p>"
+          "documentation":"<p> The unique identifier of a security control across standards. Values for this field typically consist of an Amazon Web Servicesservice name and a number, such as APIGateway.3. </p>"
         },
         "SecurityControlArn":{
           "shape":"NonEmptyString",
@@ -20129,7 +20129,7 @@
         },
         "UpdateStatus":{
           "shape":"UpdateStatus",
-          "documentation":"<p> Identifies whether customizable properties of a security control are reflected in Security Hub findings. A status of <code>READY</code> indicates findings include the current parameter values. A status of <code>UPDATING</code> indicates that all findings may not include the current parameter values. </p>"
+          "documentation":"<p> Identifies whether customizable properties of a security control are reflected in Security Hub findings. A status of <code>READY</code> indicates that Security Hub uses the current control parameter values when running security checks of the control. A status of <code>UPDATING</code> indicates that all security checks might not use the current parameter values. </p>"
         },
         "Parameters":{
           "shape":"Parameters",
@@ -20173,7 +20173,7 @@
       "members":{
         "SecurityControlId":{
           "shape":"NonEmptyString",
-          "documentation":"<p> The unique identifier of a security control across standards. Values for this field typically consist of an Amazon Web Service name and a number (for example, APIGateway.3). This parameter differs from <code>SecurityControlArn</code>, which is a unique Amazon Resource Name (ARN) assigned to a control. The ARN references the security control ID (for example, arn:aws:securityhub:eu-central-1:123456789012:security-control/APIGateway.3). </p>"
+          "documentation":"<p> The unique identifier of a security control across standards. Values for this field typically consist of an Amazon Web Servicesservice name and a number (for example, APIGateway.3). This parameter differs from <code>SecurityControlArn</code>, which is a unique Amazon Resource Name (ARN) assigned to a control. The ARN references the security control ID (for example, arn:aws:securityhub:eu-central-1:123456789012:security-control/APIGateway.3). </p>"
         },
         "Title":{
           "shape":"NonEmptyString",
@@ -20554,7 +20554,7 @@
         },
         "SecurityControlId":{
           "shape":"NonEmptyString",
-          "documentation":"<p> The unique identifier of a security control across standards. Values for this field typically consist of an Amazon Web Service name and a number, such as APIGateway.3. </p>"
+          "documentation":"<p> The unique identifier of a security control across standards. Values for this field typically consist of an Amazon Web Servicesservice name and a number, such as APIGateway.3. </p>"
         },
         "SecurityControlArn":{
           "shape":"NonEmptyString",
@@ -20636,7 +20636,7 @@
         },
         "SecurityControlId":{
           "shape":"NonEmptyString",
-          "documentation":"<p> A unique standard-agnostic identifier for a control. Values for this field typically consist of an Amazon Web Service and a number, such as APIGateway.5. This field doesn't reference a specific standard. </p>"
+          "documentation":"<p> A unique standard-agnostic identifier for a control. Values for this field typically consist of an Amazon Web Servicesservice and a number, such as APIGateway.5. This field doesn't reference a specific standard. </p>"
         },
         "SecurityControlArn":{
           "shape":"NonEmptyString",
@@ -21479,11 +21479,11 @@
         },
         "RegionLinkingMode":{
           "shape":"NonEmptyString",
-          "documentation":"<p>Indicates whether to aggregate findings from all of the available Regions in the current partition. Also determines whether to automatically aggregate findings from new Regions as Security Hub supports them and you opt into them.</p> <p>The selected option also determines how to use the Regions provided in the Regions list.</p> <p>The options are as follows:</p> <ul> <li> <p> <code>ALL_REGIONS</code> - Indicates to aggregate findings from all of the Regions where Security Hub is enabled. When you choose this option, Security Hub also automatically aggregates findings from new Regions as Security Hub supports them and you opt into them. </p> </li> <li> <p> <code>ALL_REGIONS_EXCEPT_SPECIFIED</code> - Indicates to aggregate findings from all of the Regions where Security Hub is enabled, except for the Regions listed in the <code>Regions</code> parameter. When you choose this option, Security Hub also automatically aggregates findings from new Regions as Security Hub supports them and you opt into them. </p> </li> <li> <p> <code>SPECIFIED_REGIONS</code> - Indicates to aggregate findings only from the Regions listed in the <code>Regions</code> parameter. Security Hub does not automatically aggregate findings from new Regions. </p> </li> </ul>"
+          "documentation":"<p>Indicates whether to aggregate findings from all of the available Regions in the current partition. Also determines whether to automatically aggregate findings from new Regions as Security Hub supports them and you opt into them.</p> <p>The selected option also determines how to use the Regions provided in the Regions list.</p> <p>The options are as follows:</p> <ul> <li> <p> <code>ALL_REGIONS</code> - Aggregates findings from all of the Regions where Security Hub is enabled. When you choose this option, Security Hub also automatically aggregates findings from new Regions as Security Hub supports them and you opt into them. </p> </li> <li> <p> <code>ALL_REGIONS_EXCEPT_SPECIFIED</code> - Aggregates findings from all of the Regions where Security Hub is enabled, except for the Regions listed in the <code>Regions</code> parameter. When you choose this option, Security Hub also automatically aggregates findings from new Regions as Security Hub supports them and you opt into them. </p> </li> <li> <p> <code>SPECIFIED_REGIONS</code> - Aggregates findings only from the Regions listed in the <code>Regions</code> parameter. Security Hub does not automatically aggregate findings from new Regions. </p> </li> <li> <p> <code>NO_REGIONS</code> - Aggregates no data because no Regions are selected as linked Regions. </p> </li> </ul>"
         },
         "Regions":{
           "shape":"StringList",
-          "documentation":"<p>If <code>RegionLinkingMode</code> is <code>ALL_REGIONS_EXCEPT_SPECIFIED</code>, then this is a space-separated list of Regions that do not aggregate findings to the aggregation Region.</p> <p>If <code>RegionLinkingMode</code> is <code>SPECIFIED_REGIONS</code>, then this is a space-separated list of Regions that do aggregate findings to the aggregation Region.</p>"
+          "documentation":"<p>If <code>RegionLinkingMode</code> is <code>ALL_REGIONS_EXCEPT_SPECIFIED</code>, then this is a space-separated list of Regions that do not aggregate findings to the aggregation Region.</p> <p>If <code>RegionLinkingMode</code> is <code>SPECIFIED_REGIONS</code>, then this is a space-separated list of Regions that do aggregate findings to the aggregation Region.</p> <p>An <code>InvalidInputException</code> error results if you populate this field while <code>RegionLinkingMode</code> is <code>NO_REGIONS</code>.</p>"
         }
       }
     },
@@ -21924,5 +21924,5 @@
       "documentation":"<p>Used to update information about the investigation into the finding.</p>"
     }
   },
-  "documentation":"<p>Security Hub provides you with a comprehensive view of your security state in Amazon Web Services and helps you assess your Amazon Web Services environment against security industry standards and best practices.</p> <p>Security Hub collects security data across Amazon Web Services accounts, Amazon Web Services, and supported third-party products and helps you analyze your security trends and identify the highest priority security issues.</p> <p>To help you manage the security state of your organization, Security Hub supports multiple security standards. These include the Amazon Web Services Foundational Security Best Practices (FSBP) standard developed by Amazon Web Services, and external compliance frameworks such as the Center for Internet Security (CIS), the Payment Card Industry Data Security Standard (PCI DSS), and the National Institute of Standards and Technology (NIST). Each standard includes several security controls, each of which represents a security best practice. Security Hub runs checks against security controls and generates control findings to help you assess your compliance against security best practices.</p> <p>In addition to generating control findings, Security Hub also receives findings from other Amazon Web Services, such as Amazon GuardDuty and Amazon Inspector, and supported third-party products. This gives you a single pane of glass into a variety of security-related issues. You can also send Security Hub findings to other Amazon Web Services and supported third-party products.</p> <p>Security Hub offers automation features that help you triage and remediate security issues. For example, you can use automation rules to automatically update critical findings when a security check fails. You can also leverage the integration with Amazon EventBridge to trigger automatic responses to specific findings.</p> <p>This guide, the <i>Security Hub API Reference</i>, provides information about the Security Hub API. This includes supported resources, HTTP methods, parameters, and schemas. If you're new to Security Hub, you might find it helpful to also review the <a href=\"https://docs.aws.amazon.com/securityhub/latest/userguide/what-is-securityhub.html\"> <i>Security Hub User Guide</i> </a>. The user guide explains key concepts and provides procedures that demonstrate how to use Security Hub features. It also provides information about topics such as integrating Security Hub with other Amazon Web Services.</p> <p>In addition to interacting with Security Hub by making calls to the Security Hub API, you can use a current version of an Amazon Web Services command line tool or SDK. Amazon Web Services provides tools and SDKs that consist of libraries and sample code for various languages and platforms, such as PowerShell, Java, Go, Python, C++, and .NET. These tools and SDKs provide convenient, programmatic access to Security Hub and other Amazon Web Services . They also handle tasks such as signing requests, managing errors, and retrying requests automatically. For information about installing and using the Amazon Web Services tools and SDKs, see <a href=\"http://aws.amazon.com/developer/tools/\">Tools to Build on Amazon Web Services</a>.</p> <p>With the exception of operations that are related to central configuration, Security Hub API requests are executed only in the Amazon Web Services Region that is currently active or in the specific Amazon Web Services Region that you specify in your request. Any configuration or settings change that results from the operation is applied only to that Region. To make the same change in other Regions, call the same API operation in each Region in which you want to apply the change. When you use central configuration, API requests for enabling Security Hub, standards, and controls are executed in the home Region and all linked Regions. For a list of central configuration operations, see the <a href=\"https://docs.aws.amazon.com/securityhub/latest/userguide/central-configuration-intro.html#central-configuration-concepts\">Central configuration terms and concepts</a> section of the <i>Security Hub User Guide</i>.</p> <p>The following throttling limits apply to Security Hub API operations.</p> <ul> <li> <p> <code>BatchEnableStandards</code> - <code>RateLimit</code> of 1 request per second. <code>BurstLimit</code> of 1 request per second.</p> </li> <li> <p> <code>GetFindings</code> - <code>RateLimit</code> of 3 requests per second. <code>BurstLimit</code> of 6 requests per second.</p> </li> <li> <p> <code>BatchImportFindings</code> - <code>RateLimit</code> of 10 requests per second. <code>BurstLimit</code> of 30 requests per second.</p> </li> <li> <p> <code>BatchUpdateFindings</code> - <code>RateLimit</code> of 10 requests per second. <code>BurstLimit</code> of 30 requests per second.</p> </li> <li> <p> <code>UpdateStandardsControl</code> - <code>RateLimit</code> of 1 request per second. <code>BurstLimit</code> of 5 requests per second.</p> </li> <li> <p>All other operations - <code>RateLimit</code> of 10 requests per second. <code>BurstLimit</code> of 30 requests per second.</p> </li> </ul>"
+  "documentation":"<p>Security Hub provides you with a comprehensive view of your security state in Amazon Web Services and helps you assess your Amazon Web Services environment against security industry standards and best practices.</p> <p>Security Hub collects security data across Amazon Web Services accounts, Amazon Web Servicesservices, and supported third-party products and helps you analyze your security trends and identify the highest priority security issues.</p> <p>To help you manage the security state of your organization, Security Hub supports multiple security standards. These include the Amazon Web Services Foundational Security Best Practices (FSBP) standard developed by Amazon Web Services, and external compliance frameworks such as the Center for Internet Security (CIS), the Payment Card Industry Data Security Standard (PCI DSS), and the National Institute of Standards and Technology (NIST). Each standard includes several security controls, each of which represents a security best practice. Security Hub runs checks against security controls and generates control findings to help you assess your compliance against security best practices.</p> <p>In addition to generating control findings, Security Hub also receives findings from other Amazon Web Servicesservices, such as Amazon GuardDuty and Amazon Inspector, and supported third-party products. This gives you a single pane of glass into a variety of security-related issues. You can also send Security Hub findings to other Amazon Web Servicesservices and supported third-party products.</p> <p>Security Hub offers automation features that help you triage and remediate security issues. For example, you can use automation rules to automatically update critical findings when a security check fails. You can also leverage the integration with Amazon EventBridge to trigger automatic responses to specific findings.</p> <p>This guide, the <i>Security Hub API Reference</i>, provides information about the Security Hub API. This includes supported resources, HTTP methods, parameters, and schemas. If you're new to Security Hub, you might find it helpful to also review the <a href=\"https://docs.aws.amazon.com/securityhub/latest/userguide/what-is-securityhub.html\"> <i>Security Hub User Guide</i> </a>. The user guide explains key concepts and provides procedures that demonstrate how to use Security Hub features. It also provides information about topics such as integrating Security Hub with other Amazon Web Servicesservices.</p> <p>In addition to interacting with Security Hub by making calls to the Security Hub API, you can use a current version of an Amazon Web Services command line tool or SDK. Amazon Web Services provides tools and SDKs that consist of libraries and sample code for various languages and platforms, such as PowerShell, Java, Go, Python, C++, and .NET. These tools and SDKs provide convenient, programmatic access to Security Hub and other Amazon Web Servicesservices . They also handle tasks such as signing requests, managing errors, and retrying requests automatically. For information about installing and using the Amazon Web Services tools and SDKs, see <a href=\"http://aws.amazon.com/developer/tools/\">Tools to Build on Amazon Web Services</a>.</p> <p>With the exception of operations that are related to central configuration, Security Hub API requests are executed only in the Amazon Web Services Region that is currently active or in the specific Amazon Web Services Region that you specify in your request. Any configuration or settings change that results from the operation is applied only to that Region. To make the same change in other Regions, call the same API operation in each Region in which you want to apply the change. When you use central configuration, API requests for enabling Security Hub, standards, and controls are executed in the home Region and all linked Regions. For a list of central configuration operations, see the <a href=\"https://docs.aws.amazon.com/securityhub/latest/userguide/central-configuration-intro.html#central-configuration-concepts\">Central configuration terms and concepts</a> section of the <i>Security Hub User Guide</i>.</p> <p>The following throttling limits apply to Security Hub API operations.</p> <ul> <li> <p> <code>BatchEnableStandards</code> - <code>RateLimit</code> of 1 request per second. <code>BurstLimit</code> of 1 request per second.</p> </li> <li> <p> <code>GetFindings</code> - <code>RateLimit</code> of 3 requests per second. <code>BurstLimit</code> of 6 requests per second.</p> </li> <li> <p> <code>BatchImportFindings</code> - <code>RateLimit</code> of 10 requests per second. <code>BurstLimit</code> of 30 requests per second.</p> </li> <li> <p> <code>BatchUpdateFindings</code> - <code>RateLimit</code> of 10 requests per second. <code>BurstLimit</code> of 30 requests per second.</p> </li> <li> <p> <code>UpdateStandardsControl</code> - <code>RateLimit</code> of 1 request per second. <code>BurstLimit</code> of 5 requests per second.</p> </li> <li> <p>All other operations - <code>RateLimit</code> of 10 requests per second. <code>BurstLimit</code> of 30 requests per second.</p> </li> </ul>"
 }

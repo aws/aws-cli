@@ -7777,6 +7777,10 @@
           "shape":"JobMode",
           "documentation":"<p>A mode that describes how a job was created. Valid values are:</p> <ul> <li> <p> <code>SCRIPT</code> - The job was created using the Glue Studio script editor.</p> </li> <li> <p> <code>VISUAL</code> - The job was created using the Glue Studio visual editor.</p> </li> <li> <p> <code>NOTEBOOK</code> - The job was created using an interactive sessions notebook.</p> </li> </ul> <p>When the <code>JobMode</code> field is missing or null, <code>SCRIPT</code> is assigned as the default value.</p>"
         },
+        "JobRunQueuingEnabled":{
+          "shape":"NullableBoolean",
+          "documentation":"<p>Specifies whether job run queuing is enabled for the job runs for this job.</p> <p>A value of true means job run queuing is enabled for the job runs. If false or not populated, the job runs will not be considered for queueing.</p> <p>If this field does not match the value set in the job run, then the value from the job run field will be used.</p>"
+        },
         "Description":{
           "shape":"DescriptionString",
           "documentation":"<p>Description of the job being defined.</p>"
@@ -14664,6 +14668,10 @@
           "shape":"JobMode",
           "documentation":"<p>A mode that describes how a job was created. Valid values are:</p> <ul> <li> <p> <code>SCRIPT</code> - The job was created using the Glue Studio script editor.</p> </li> <li> <p> <code>VISUAL</code> - The job was created using the Glue Studio visual editor.</p> </li> <li> <p> <code>NOTEBOOK</code> - The job was created using an interactive sessions notebook.</p> </li> </ul> <p>When the <code>JobMode</code> field is missing or null, <code>SCRIPT</code> is assigned as the default value.</p>"
         },
+        "JobRunQueuingEnabled":{
+          "shape":"NullableBoolean",
+          "documentation":"<p>Specifies whether job run queuing is enabled for the job runs for this job.</p> <p>A value of true means job run queuing is enabled for the job runs. If false or not populated, the job runs will not be considered for queueing.</p> <p>If this field does not match the value set in the job run, then the value from the job run field will be used.</p>"
+        },
         "Description":{
           "shape":"DescriptionString",
           "documentation":"<p>A description of the job.</p>"
@@ -14896,6 +14904,10 @@
           "shape":"JobMode",
           "documentation":"<p>A mode that describes how a job was created. Valid values are:</p> <ul> <li> <p> <code>SCRIPT</code> - The job was created using the Glue Studio script editor.</p> </li> <li> <p> <code>VISUAL</code> - The job was created using the Glue Studio visual editor.</p> </li> <li> <p> <code>NOTEBOOK</code> - The job was created using an interactive sessions notebook.</p> </li> </ul> <p>When the <code>JobMode</code> field is missing or null, <code>SCRIPT</code> is assigned as the default value.</p>"
         },
+        "JobRunQueuingEnabled":{
+          "shape":"NullableBoolean",
+          "documentation":"<p>Specifies whether job run queuing is enabled for the job run.</p> <p>A value of true means job run queuing is enabled for the job run. If false or not populated, the job run will not be considered for queueing.</p>"
+        },
         "StartedOn":{
           "shape":"TimestampValue",
           "documentation":"<p>The date and time at which this job run was started.</p>"
@@ -14981,6 +14993,10 @@
         "ProfileName":{
           "shape":"NameString",
           "documentation":"<p>The name of an Glue usage profile associated with the job run.</p>"
+        },
+        "StateDetail":{
+          "shape":"OrchestrationMessageString",
+          "documentation":"<p>This field holds details that pertain to the state of a job run. The field is nullable.</p> <p>For example, when a job run is in a WAITING state as a result of job run queuing, the field has the reason why the job run is in that state.</p>"
         }
       },
       "documentation":"<p>Contains information about a job run.</p>"
@@ -15010,6 +15026,10 @@
         "JobMode":{
           "shape":"JobMode",
           "documentation":"<p>A mode that describes how a job was created. Valid values are:</p> <ul> <li> <p> <code>SCRIPT</code> - The job was created using the Glue Studio script editor.</p> </li> <li> <p> <code>VISUAL</code> - The job was created using the Glue Studio visual editor.</p> </li> <li> <p> <code>NOTEBOOK</code> - The job was created using an interactive sessions notebook.</p> </li> </ul> <p>When the <code>JobMode</code> field is missing or null, <code>SCRIPT</code> is assigned as the default value.</p>"
+        },
+        "JobRunQueuingEnabled":{
+          "shape":"NullableBoolean",
+          "documentation":"<p>Specifies whether job run queuing is enabled for the job runs for this job.</p> <p>A value of true means job run queuing is enabled for the job runs. If false or not populated, the job runs will not be considered for queueing.</p> <p>If this field does not match the value set in the job run, then the value from the job run field will be used.</p>"
         },
         "Description":{
           "shape":"DescriptionString",
@@ -17194,6 +17214,10 @@
       "max":1024,
       "min":1,
       "pattern":"arn:aws[^:]*:iam::[0-9]*:role/.+"
+    },
+    "OrchestrationMessageString":{
+      "type":"string",
+      "max":400000
     },
     "OrchestrationNameString":{
       "type":"string",
@@ -20670,6 +20694,10 @@
         "JobName":{
           "shape":"NameString",
           "documentation":"<p>The name of the job definition to use.</p>"
+        },
+        "JobRunQueuingEnabled":{
+          "shape":"NullableBoolean",
+          "documentation":"<p>Specifies whether job run queuing is enabled for the job run.</p> <p>A value of true means job run queuing is enabled for the job run. If false or not populated, the job run will not be considered for queueing.</p>"
         },
         "JobRunId":{
           "shape":"IdString",

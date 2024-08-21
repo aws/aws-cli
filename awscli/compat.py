@@ -1,38 +1,36 @@
 # Copyright 2012-2013 Amazon.com, Inc. or its affiliates. All Rights Reserved.
-
+#
 # Licensed under the Apache License, Version 2.0 (the "License"). You
 # may not use this file except in compliance with the License. A copy of
 # the License is located at
-
+#
 #     http://aws.amazon.com/apache2.0/
-
+#
 # or in the "license" file accompanying this file. This file is
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
-import sys
-import re
-import shlex
+
+import collections.abc as collections_abc
+import contextlib
+import io
+import locale
 import os
 import os.path
-import platform
-import zipfile
-import signal
-import contextlib
 import queue
-import io
-import collections.abc as collections_abc
-import locale
+import re
+import shlex
+import signal
 import urllib.parse as urlparse
+from configparser import RawConfigParser
 from urllib.error import URLError
 from urllib.request import urlopen
-from configparser import RawConfigParser
+
+from botocore.compat import six, OrderedDict
+
+import sys
+import zipfile
 from functools import partial
-
-from urllib.error import URLError
-
-from botocore.compat import six
-from botocore.compat import OrderedDict
 
 # Backwards compatible definitions from six
 PY3 = sys.version_info[0] == 3
@@ -49,6 +47,7 @@ raw_input = input
 # package the files in a zip container.
 try:
     import zlib
+
     ZIP_COMPRESSION_MODE = zipfile.ZIP_DEFLATED
 except ImportError:
     ZIP_COMPRESSION_MODE = zipfile.ZIP_STORED
@@ -73,14 +72,12 @@ else:
 
 class StdinMissingError(Exception):
     def __init__(self):
-        message = (
-            'stdin is required for this operation, but is not available.'
-        )
+        message = 'stdin is required for this operation, but is not available.'
         super(StdinMissingError, self).__init__(message)
 
 
-class NonTranslatedStdout(object):
-    """ This context manager sets the line-end translation mode for stdout.
+class NonTranslatedStdout:
+    """This context manager sets the line-end translation mode for stdout.
 
     It is deliberately set to binary mode so that `\r` does not get added to
     the line ending. This can be useful when printing commands where a
@@ -90,13 +87,16 @@ class NonTranslatedStdout(object):
     def __enter__(self):
         if sys.platform == "win32":
             import msvcrt
-            self.previous_mode = msvcrt.setmode(sys.stdout.fileno(),
-                                                os.O_BINARY)
+
+            self.previous_mode = msvcrt.setmode(
+                sys.stdout.fileno(), os.O_BINARY
+            )
         return sys.stdout
 
     def __exit__(self, type, value, traceback):
         if sys.platform == "win32":
             import msvcrt
+
             msvcrt.setmode(sys.stdout.fileno(), self.previous_mode)
 
 
@@ -312,12 +312,12 @@ try:
     from platform import linux_distribution
 except ImportError:
     _UNIXCONFDIR = '/etc'
-    def _dist_try_harder(distname, version, id):
 
-        """ Tries some special tricks to get the distribution
-            information in case the default method fails.
-            Currently supports older SuSE Linux, Caldera OpenLinux and
-            Slackware Linux distributions.
+    def _dist_try_harder(distname, version, id):
+        """Tries some special tricks to get the distribution
+        information in case the default method fails.
+        Currently supports older SuSE Linux, Caldera OpenLinux and
+        Slackware Linux distributions.
         """
         if os.path.exists('/var/adm/inst-log/info'):
             # SuSE Linux stores distribution information in that file
@@ -349,7 +349,7 @@ except ImportError:
         if os.path.isdir('/usr/lib/setup'):
             # Check for slackware version tag file (thanks to Greg Andruk)
             verfiles = os.listdir('/usr/lib/setup')
-            for n in range(len(verfiles)-1, -1, -1):
+            for n in range(len(verfiles) - 1, -1, -1):
                 if verfiles[n][:14] != 'slack-version-':
                     del verfiles[n]
             if verfiles:
@@ -361,14 +361,13 @@ except ImportError:
         return distname, version, id
 
     _release_filename = re.compile(r'(\w+)[-_](release|version)', re.ASCII)
-    _lsb_release_version = re.compile(r'(.+)'
-                                      r' release '
-                                      r'([\d.]+)'
-                                      r'[^(]*(?:\((.+)\))?', re.ASCII)
-    _release_version = re.compile(r'([^0-9]+)'
-                                  r'(?: release )?'
-                                  r'([\d.]+)'
-                                  r'[^(]*(?:\((.+)\))?', re.ASCII)
+    _lsb_release_version = re.compile(
+        r'(.+) release ([\d.]+)[^(]*(?:\((.+)\))?', re.ASCII
+    )
+    _release_version = re.compile(
+        r'([^0-9]+)(?: release )?([\d.]+)[^(]*(?:\((.+)\))?',
+        re.ASCII,
+    )
 
     # See also http://www.novell.com/coolsolutions/feature/11251.html
     # and http://linuxmafia.com/faq/Admin/release-files.html
@@ -376,12 +375,24 @@ except ImportError:
     # and http://www.die.net/doc/linux/man/man1/lsb_release.1.html
 
     _supported_dists = (
-        'SuSE', 'debian', 'fedora', 'redhat', 'centos',
-        'mandrake', 'mandriva', 'rocks', 'slackware', 'yellowdog', 'gentoo',
-        'UnitedLinux', 'turbolinux', 'arch', 'mageia')
+        'SuSE',
+        'debian',
+        'fedora',
+        'redhat',
+        'centos',
+        'mandrake',
+        'mandriva',
+        'rocks',
+        'slackware',
+        'yellowdog',
+        'gentoo',
+        'UnitedLinux',
+        'turbolinux',
+        'arch',
+        'mageia',
+    )
 
     def _parse_release_file(firstline):
-
         # Default to empty 'version' and 'id' strings.  Both defaults are used
         # when 'firstline' is empty.  'id' defaults to empty when an id can not
         # be deduced.
@@ -411,34 +422,39 @@ except ImportError:
     _release_file_re = re.compile("(?:DISTRIB_RELEASE\s*=)\s*(.*)", re.I)
     _codename_file_re = re.compile("(?:DISTRIB_CODENAME\s*=)\s*(.*)", re.I)
 
-    def linux_distribution(distname='', version='', id='',
-                           supported_dists=_supported_dists,
-                           full_distribution_name=1):
-        return _linux_distribution(distname, version, id, supported_dists,
-                                   full_distribution_name)
+    def linux_distribution(
+        distname='',
+        version='',
+        id='',
+        supported_dists=_supported_dists,
+        full_distribution_name=1,
+    ):
+        return _linux_distribution(
+            distname, version, id, supported_dists, full_distribution_name
+        )
 
-    def _linux_distribution(distname, version, id, supported_dists,
-                            full_distribution_name):
-
-        """ Tries to determine the name of the Linux OS distribution name.
-            The function first looks for a distribution release file in
-            /etc and then reverts to _dist_try_harder() in case no
-            suitable files are found.
-            supported_dists may be given to define the set of Linux
-            distributions to look for. It defaults to a list of currently
-            supported Linux distributions identified by their release file
-            name.
-            If full_distribution_name is true (default), the full
-            distribution read from the OS is returned. Otherwise the short
-            name taken from supported_dists is used.
-            Returns a tuple (distname, version, id) which default to the
-            args given as parameters.
+    def _linux_distribution(
+        distname, version, id, supported_dists, full_distribution_name
+    ):
+        """Tries to determine the name of the Linux OS distribution name.
+        The function first looks for a distribution release file in
+        /etc and then reverts to _dist_try_harder() in case no
+        suitable files are found.
+        supported_dists may be given to define the set of Linux
+        distributions to look for. It defaults to a list of currently
+        supported Linux distributions identified by their release file
+        name.
+        If full_distribution_name is true (default), the full
+        distribution read from the OS is returned. Otherwise the short
+        name taken from supported_dists is used.
+        Returns a tuple (distname, version, id) which default to the
+        args given as parameters.
         """
         # check for the Debian/Ubuntu /etc/lsb-release file first, needed so
         # that the distribution doesn't get identified as Debian.
         # https://bugs.python.org/issue9514
         try:
-            with open("/etc/lsb-release", "r") as etclsbrel:
+            with open("/etc/lsb-release") as etclsbrel:
                 for line in etclsbrel:
                     m = _distributor_id_file_re.search(line)
                     if m:
@@ -451,8 +467,8 @@ except ImportError:
                         _u_id = m.group(1).strip()
                 if _u_distname and _u_version:
                     return (_u_distname, _u_version, _u_id)
-        except (EnvironmentError, UnboundLocalError):
-                pass
+        except (OSError, UnboundLocalError):
+            pass
 
         try:
             etc = os.listdir(_UNIXCONFDIR)
@@ -471,8 +487,11 @@ except ImportError:
             return _dist_try_harder(distname, version, id)
 
         # Read the first line
-        with open(os.path.join(_UNIXCONFDIR, file), 'r',
-                  encoding='utf-8', errors='surrogateescape') as f:
+        with open(
+            os.path.join(_UNIXCONFDIR, file),
+            encoding='utf-8',
+            errors='surrogateescape',
+        ) as f:
             firstline = f.readline()
         _distname, _version, _id = _parse_release_file(firstline)
 

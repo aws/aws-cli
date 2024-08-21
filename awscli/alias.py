@@ -17,10 +17,9 @@ import subprocess
 
 from botocore.configloader import raw_config_parse
 
-from awscli.compat import compat_shell_quote
 from awscli.commands import CLICommand
+from awscli.compat import compat_shell_quote
 from awscli.utils import emit_top_level_args_parsed_event
-
 
 LOG = logging.getLogger(__name__)
 
@@ -29,10 +28,13 @@ class InvalidAliasException(Exception):
     pass
 
 
-class AliasLoader(object):
-    def __init__(self,
-                 alias_filename=os.path.expanduser(
-                     os.path.join('~', '.aws', 'cli', 'alias'))):
+class AliasLoader:
+    def __init__(
+        self,
+        alias_filename=os.path.expanduser(
+            os.path.join('~', '.aws', 'cli', 'alias')
+        ),
+    ):
         """Interface for loading and interacting with alias file
 
         :param alias_filename: The name of the file to load aliases from.
@@ -47,8 +49,7 @@ class AliasLoader(object):
 
     def _load_aliases(self):
         if os.path.exists(self._filename):
-            return raw_config_parse(
-                self._filename, parse_subsections=False)
+            return raw_config_parse(self._filename, parse_subsections=False)
         return {'toplevel': {}}
 
     def _cleanup_alias_values(self, aliases):
@@ -63,7 +64,7 @@ class AliasLoader(object):
         return self._aliases.get('toplevel', {})
 
 
-class AliasCommandInjector(object):
+class AliasCommandInjector:
     def __init__(self, session, alias_loader):
         """Injects alias commands for a command table
 
@@ -77,22 +78,26 @@ class AliasCommandInjector(object):
         self._alias_loader = alias_loader
 
     def inject_aliases(self, command_table, parser):
-        for alias_name, alias_value in \
-                self._alias_loader.get_aliases().items():
+        for (
+            alias_name,
+            alias_value,
+        ) in self._alias_loader.get_aliases().items():
             if alias_value.startswith('!'):
                 alias_cmd = ExternalAliasCommand(alias_name, alias_value)
             else:
                 service_alias_cmd_args = [
-                    alias_name, alias_value, self._session, command_table,
-                    parser
+                    alias_name,
+                    alias_value,
+                    self._session,
+                    command_table,
+                    parser,
                 ]
                 # If the alias name matches something already in the
                 # command table provide the command it is about
                 # to clobber as a possible reference that it will
                 # need to proxy to.
                 if alias_name in command_table:
-                    service_alias_cmd_args.append(
-                        command_table[alias_name])
+                    service_alias_cmd_args.append(command_table[alias_name])
                 alias_cmd = ServiceAliasCommand(*service_alias_cmd_args)
             command_table[alias_name] = alias_cmd
 
@@ -126,13 +131,17 @@ class BaseAliasCommand(CLICommand):
 
 
 class ServiceAliasCommand(BaseAliasCommand):
-    UNSUPPORTED_GLOBAL_PARAMETERS = [
-        'debug',
-        'profile'
-    ]
+    UNSUPPORTED_GLOBAL_PARAMETERS = ('debug', 'profile')
 
-    def __init__(self, alias_name, alias_value, session, command_table,
-                 parser, shadow_proxy_command=None):
+    def __init__(
+        self,
+        alias_name,
+        alias_value,
+        session,
+        command_table,
+        parser,
+        shadow_proxy_command=None,
+    ):
         """Command for a `toplevel` subcommand alias
 
         :type alias_name: string
@@ -163,7 +172,7 @@ class ServiceAliasCommand(BaseAliasCommand):
             to this command as opposed to proxy to itself in the command
             table
         """
-        super(ServiceAliasCommand, self).__init__(alias_name, alias_value)
+        super().__init__(alias_name, alias_value)
         self._session = session
         self._command_table = command_table
         self._parser = parser
@@ -172,14 +181,18 @@ class ServiceAliasCommand(BaseAliasCommand):
     def __call__(self, args, parsed_globals):
         alias_args = self._get_alias_args()
         parsed_alias_args, remaining = self._parser.parse_known_args(
-            alias_args)
+            alias_args
+        )
         self._update_parsed_globals(parsed_alias_args, parsed_globals)
         # Take any of the remaining arguments that were not parsed out and
         # prepend them to the remaining args provided to the alias.
         remaining.extend(args)
         LOG.debug(
             'Alias %r passing on arguments: %r to %r command',
-            self._alias_name, remaining, parsed_alias_args.command)
+            self._alias_name,
+            remaining,
+            parsed_alias_args.command,
+        )
         # Pass the update remaining args and global args to the service command
         # the alias proxied to.
         command = self._command_table[parsed_alias_args.command]
@@ -190,9 +203,9 @@ class ServiceAliasCommand(BaseAliasCommand):
             # a built-in command.
             if shadow_name == parsed_alias_args.command:
                 LOG.debug(
-                    'Using shadowed command object: %s '
-                    'for alias: %s', self._shadow_proxy_command,
-                    self._alias_name
+                    'Using shadowed command object: %s for alias: %s',
+                    self._shadow_proxy_command,
+                    self._alias_name,
                 )
                 command = self._shadow_proxy_command
         return command(remaining, parsed_globals)
@@ -202,21 +215,23 @@ class ServiceAliasCommand(BaseAliasCommand):
             alias_args = shlex.split(self._alias_value)
         except ValueError as e:
             raise InvalidAliasException(
-                'Value of alias "%s" could not be parsed. '
-                'Received error: %s when parsing:\n%s' % (
-                    self._alias_name, e, self._alias_value)
+                f'Value of alias "{self._alias_name}" could not be parsed. '
+                f'Received error: {e} when parsing:\n{self._alias_value}'
             )
 
         alias_args = [arg.strip(os.linesep) for arg in alias_args]
         LOG.debug(
             'Expanded subcommand alias %r with value: %r to: %r',
-            self._alias_name, self._alias_value, alias_args
+            self._alias_name,
+            self._alias_value,
+            alias_args,
         )
         return alias_args
 
     def _update_parsed_globals(self, parsed_alias_args, parsed_globals):
         global_params_to_update = self._get_global_parameters_to_update(
-            parsed_alias_args)
+            parsed_alias_args
+        )
         # Emit the top level args parsed event to ensure all possible
         # customizations that typically get applied are applied to the
         # global parameters provided in the alias before updating
@@ -241,9 +256,10 @@ class ServiceAliasCommand(BaseAliasCommand):
             if self._parser.get_default(parsed_param) != value:
                 if parsed_param in self.UNSUPPORTED_GLOBAL_PARAMETERS:
                     raise InvalidAliasException(
-                        'Global parameter "--%s" detected in alias "%s" '
-                        'which is not support in subcommand aliases.' % (
-                            parsed_param, self._alias_name))
+                        f'Global parameter "--{parsed_param}" detected in alias '
+                        f'"{self._alias_name}" which is not support in '
+                        'subcommand aliases.'
+                    )
                 else:
                     global_params_to_update.append(parsed_param)
         return global_params_to_update
@@ -272,12 +288,13 @@ class ExternalAliasCommand(BaseAliasCommand):
         self._invoker = invoker
 
     def __call__(self, args, parsed_globals):
-        command_components = [
-            self._alias_value[1:]
-        ]
+        command_components = [self._alias_value[1:]]
         command_components.extend(compat_shell_quote(a) for a in args)
         command = ' '.join(command_components)
         LOG.debug(
             'Using external alias %r with value: %r to run: %r',
-            self._alias_name, self._alias_value, command)
+            self._alias_name,
+            self._alias_value,
+            command,
+        )
         return self._invoker(command, shell=True)

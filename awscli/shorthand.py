@@ -356,7 +356,7 @@ class ShorthandParser:
         if result is not None:
             return self._consume_matched_regex(result)
         raise ShorthandParseSyntaxError(
-            self._input_value, f'<regex.name>', '<none>', self._index
+            self._input_value, f'<{regex.name}>', '<none>', self._index
         )
 
     def _consume_matched_regex(self, result):

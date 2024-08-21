@@ -2,6 +2,17 @@
 CHANGELOG
 =========
 
+1.34.3
+======
+
+* api-change:``ec2``: DescribeInstanceStatus now returns health information on EBS volumes attached to Nitro instances
+* api-change:``entityresolution``: Increase the mapping attributes in Schema to 35.
+* api-change:``glue``: Add optional field JobRunQueuingEnabled to CreateJob and UpdateJob APIs.
+* api-change:``lambda``: Release FilterCriteria encryption for Lambda EventSourceMapping,  enabling customers to encrypt their filter criteria using a customer-owned KMS key.
+* api-change:``securityhub``: Security Hub documentation and definition updates
+* api-change:``ses``: Enable email receiving customers to provide SES with access to their S3 buckets via an IAM role for "Deliver to S3 Action"
+
+
 1.34.2
 ======
 

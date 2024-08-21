@@ -13,7 +13,7 @@
 import logging
 import os
 import re
-from botocore import xform_name
+
 from botocore.model import StringShape
 from botocore.utils import is_json_value_header
 
@@ -22,21 +22,24 @@ from awscli.argprocess import ParamShorthandDocGen
 from awscli.bcdoc.docevents import DOC_EVENTS
 from awscli.topictags import TopicTagDB
 from awscli.utils import (
-    find_service_and_method_in_event_name, is_document_type,
-    operation_uses_document_types, is_streaming_blob_type,
-    is_tagged_union_type
+    find_service_and_method_in_event_name,
+    is_document_type,
+    is_streaming_blob_type,
+    is_tagged_union_type,
+    operation_uses_document_types,
 )
 
 LOG = logging.getLogger(__name__)
-EXAMPLES_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)),
-                            'examples')
+EXAMPLES_DIR = os.path.join(
+    os.path.dirname(os.path.abspath(__file__)), 'examples'
+)
 GLOBAL_OPTIONS_FILE = os.path.join(EXAMPLES_DIR, 'global_options.rst')
-GLOBAL_OPTIONS_SYNOPSIS_FILE = os.path.join(EXAMPLES_DIR,
-                                            'global_synopsis.rst')
+GLOBAL_OPTIONS_SYNOPSIS_FILE = os.path.join(
+    EXAMPLES_DIR, 'global_synopsis.rst'
+)
 
 
-class CLIDocumentEventHandler(object):
-
+class CLIDocumentEventHandler:
     def __init__(self, help_command):
         self.help_command = help_command
         self.register(help_command.session, help_command.event_class)
@@ -91,9 +94,11 @@ class CLIDocumentEventHandler(object):
         handler method will be unregistered for the all events of
         that type for the specified ``event_class``.
         """
-        self._map_handlers(self.help_command.session,
-                           self.help_command.event_class,
-                           self.help_command.session.unregister)
+        self._map_handlers(
+            self.help_command.session,
+            self.help_command.event_class,
+            self.help_command.session.unregister,
+        )
 
     # These are default doc handlers that apply in the general case.
 
@@ -108,7 +113,7 @@ class CLIDocumentEventHandler(object):
                 doc.write(' . ')
                 full_cmd_list.append(cmd)
                 full_cmd_name = ' '.join(full_cmd_list)
-                doc.write(':ref:`%s <cli:%s>`' % (cmd, full_cmd_name))
+                doc.write(f':ref:`{cmd} <cli:{full_cmd_name}>`')
             doc.write(' ]')
 
     def doc_title(self, help_command, **kwargs):
@@ -117,7 +122,7 @@ class CLIDocumentEventHandler(object):
         reference = help_command.event_class.replace('.', ' ')
         if reference != 'aws':
             reference = 'aws ' + reference
-        doc.writeln('.. _cli:%s:' % reference)
+        doc.writeln(f'.. _cli:{reference}:')
         doc.style.h1(help_command.name)
 
     def doc_description(self, help_command, **kwargs):
@@ -131,7 +136,7 @@ class CLIDocumentEventHandler(object):
         doc = help_command.doc
         doc.style.h2('Synopsis')
         doc.style.start_codeblock()
-        doc.writeln('%s' % help_command.name)
+        doc.writeln(help_command.name)
 
     def doc_synopsis_option(self, arg_name, help_command, **kwargs):
         doc = help_command.doc
@@ -141,17 +146,19 @@ class CLIDocumentEventHandler(object):
                 # This arg is already documented so we can move on.
                 return
             option_str = ' | '.join(
-                [a.cli_name for a in
-                 self._arg_groups[argument.group_name]])
+                a.cli_name for a in self._arg_groups[argument.group_name]
+            )
             self._documented_arg_groups.append(argument.group_name)
         elif argument.cli_name.startswith('--'):
-            option_str = '%s <value>' % argument.cli_name
+            option_str = f'{argument.cli_name} <value>'
         else:
-            option_str = '<%s>' % argument.cli_name
-        if not (argument.required
-                or getattr(argument, '_DOCUMENT_AS_REQUIRED', False)):
-            option_str = '[%s]' % option_str
-        doc.writeln('%s' % option_str)
+            option_str = f'<{argument.cli_name}>'
+        if not (
+            argument.required
+            or getattr(argument, '_DOCUMENT_AS_REQUIRED', False)
+        ):
+            option_str = f'[{option_str}]'
+        doc.writeln(option_str)
 
     def doc_synopsis_end(self, help_command, **kwargs):
         doc = help_command.doc
@@ -177,13 +184,15 @@ class CLIDocumentEventHandler(object):
                 # This arg is already documented so we can move on.
                 return
             name = ' | '.join(
-                ['``%s``' % a.cli_name for a in
-                 self._arg_groups[argument.group_name]])
+                f'``{a.cli_name}``' for a in self._arg_groups[argument.group_name]
+            )
             self._documented_arg_groups.append(argument.group_name)
         else:
-            name = '``%s``' % argument.cli_name
-        doc.write('%s (%s)\n' % (name, self._get_argument_type_name(
-            argument.argument_model, argument.cli_type_name)))
+            name = f'``{argument.cli_name}``'
+        argument_type_name = self._get_argument_type_name(
+            argument.argument_model, argument.cli_type_name
+        )
+        doc.write(f'{name} ({argument_type_name})\n')
         doc.style.indent()
         doc.include_doc_string(argument.documentation)
         if is_streaming_blob_type(argument.argument_model):
@@ -210,8 +219,7 @@ class CLIDocumentEventHandler(object):
         doc = help_command.doc
         doc.write('* ')
         doc.style.sphinx_reference_label(
-            label='cli:%s' % related_item,
-            text=related_item
+            label=f'cli:{related_item}', text=related_item
         )
         doc.write('\n')
 
@@ -223,7 +231,7 @@ class CLIDocumentEventHandler(object):
                 doc.write('Possible values:')
                 doc.style.start_ul()
                 for enum in model.enum:
-                    doc.style.li('``%s``' % enum)
+                    doc.style.li(f'``{enum}``')
                 doc.style.end_ul()
 
     def _document_nested_structure(self, model, doc):
@@ -231,8 +239,9 @@ class CLIDocumentEventHandler(object):
         member_type_name = getattr(model, 'type_name', None)
         if member_type_name == 'structure':
             for member_name, member_shape in model.members.items():
-                self._doc_member(doc, member_name, member_shape,
-                                 stack=[model.name])
+                self._doc_member(
+                    doc, member_name, member_shape, stack=[model.name]
+                )
         elif member_type_name == 'list':
             self._doc_member(doc, '', model.member, stack=[model.name])
         elif member_type_name == 'map':
@@ -253,19 +262,19 @@ class CLIDocumentEventHandler(object):
                 return
         stack.append(member_shape.name)
         try:
-            self._do_doc_member(doc, member_name,
-                                member_shape, stack)
+            self._do_doc_member(doc, member_name, member_shape, stack)
         finally:
             stack.pop()
 
     def _do_doc_member(self, doc, member_name, member_shape, stack):
         docs = member_shape.documentation
         type_name = self._get_argument_type_name(
-            member_shape, member_shape.type_name)
+            member_shape, member_shape.type_name
+        )
         if member_name:
-            doc.write('%s -> (%s)' % (member_name, type_name))
+            doc.write(f'{member_name} -> ({type_name})')
         else:
-            doc.write('(%s)' % type_name)
+            doc.write(f'({type_name})')
         doc.style.indent()
         doc.style.new_paragraph()
         doc.include_doc_string(docs)
@@ -290,26 +299,26 @@ class CLIDocumentEventHandler(object):
 
     def _add_streaming_blob_note(self, doc):
         doc.style.start_note()
-        msg = ("This argument is of type: streaming blob. "
-               "Its value must be the path to a file "
-               "(e.g. ``path/to/file``) and must **not** "
-               "be prefixed with ``file://`` or ``fileb://``")
+        msg = (
+            "This argument is of type: streaming blob. "
+            "Its value must be the path to a file "
+            "(e.g. ``path/to/file``) and must **not** "
+            "be prefixed with ``file://`` or ``fileb://``"
+        )
         doc.writeln(msg)
         doc.style.end_note()
 
     def _add_tagged_union_note(self, shape, doc):
         doc.style.start_note()
-        members_str = ", ".join(
-            [f'``{key}``' for key in shape.members.keys()]
+        members_str = ", ".join(f'``{key}``' for key in shape.members.keys())
+        doc.writeln(
+            "This is a Tagged Union structure. Only one of the "
+            f"following top level keys can be set: {members_str}."
         )
-        msg = ("This is a Tagged Union structure. Only one of the "
-               f"following top level keys can be set: {members_str}.")
-        doc.writeln(msg)
         doc.style.end_note()
 
 
 class ProviderDocumentEventHandler(CLIDocumentEventHandler):
-
     def doc_breadcrumbs(self, help_command, event_name, **kwargs):
         pass
 
@@ -339,12 +348,10 @@ class ProviderDocumentEventHandler(CLIDocumentEventHandler):
 
     def doc_subitem(self, command_name, help_command, **kwargs):
         doc = help_command.doc
-        file_name = '%s/index' % command_name
-        doc.style.tocitem(command_name, file_name=file_name)
+        doc.style.tocitem(command_name, file_name=f"{command_name}/index")
 
 
 class ServiceDocumentEventHandler(CLIDocumentEventHandler):
-
     # A service document has no synopsis.
     def doc_synopsis_start(self, help_command, **kwargs):
         pass
@@ -390,15 +397,13 @@ class ServiceDocumentEventHandler(CLIDocumentEventHandler):
         # If the subcommand table has commands in it,
         # direct the subitem to the command's index because
         # it has more subcommands to be documented.
-        if (len(subcommand_table) > 0):
-            file_name = '%s/index' % command_name
-            doc.style.tocitem(command_name, file_name=file_name)
+        if len(subcommand_table) > 0:
+            doc.style.tocitem(command_name, file_name=f"{command_name}/index")
         else:
             doc.style.tocitem(command_name)
 
 
 class OperationDocumentEventHandler(CLIDocumentEventHandler):
-
     AWS_DOC_BASE = 'https://docs.aws.amazon.com/goto/WebAPI'
 
     def doc_description(self, help_command, **kwargs):
@@ -408,7 +413,6 @@ class OperationDocumentEventHandler(CLIDocumentEventHandler):
         doc.include_doc_string(operation_model.documentation)
         self._add_webapi_crosslink(help_command)
         self._add_note_for_document_types_if_used(help_command)
-
 
     def _add_webapi_crosslink(self, help_command):
         doc = help_command.doc
@@ -422,8 +426,7 @@ class OperationDocumentEventHandler(CLIDocumentEventHandler):
             return
         doc.style.new_paragraph()
         doc.write("See also: ")
-        link = '%s/%s/%s' % (self.AWS_DOC_BASE, service_uid,
-                             operation_model.name)
+        link = f'{self.AWS_DOC_BASE}/{service_uid}/{operation_model.name}'
         doc.style.external_link(title="AWS API Documentation", link=link)
         doc.writeln('')
 
@@ -431,27 +434,29 @@ class OperationDocumentEventHandler(CLIDocumentEventHandler):
         if operation_uses_document_types(help_command.obj):
             help_command.doc.style.new_paragraph()
             help_command.doc.writeln(
-                '``%s`` uses document type values. Document types follow the '
-                'JSON data model where valid values are: strings, numbers, '
-                'booleans, null, arrays, and objects. For command input, '
-                'options and nested parameters that are labeled with the type '
-                '``document`` must be provided as JSON. Shorthand syntax does '
-                'not support document types.' % help_command.name
+                f'``{help_command.name}`` uses document type values. Document '
+                'types follow the JSON data model where valid values are: '
+                'strings, numbers, booleans, null, arrays, and objects. For '
+                'command input, options and nested parameters that are labeled '
+                'with the type ``document`` must be provided as JSON. '
+                'Shorthand syntax does not support document types.'
             )
 
-    def _json_example_value_name(self, argument_model, include_enum_values=True):
+    def _json_example_value_name(
+        self, argument_model, include_enum_values=True
+    ):
         # If include_enum_values is True, then the valid enum values
         # are included as the sample JSON value.
         if isinstance(argument_model, StringShape):
             if argument_model.enum and include_enum_values:
                 choices = argument_model.enum
-                return '|'.join(['"%s"' % c for c in choices])
+                return '|'.join(f'"{c}"' for c in choices)
             else:
                 return '"string"'
         elif argument_model.type_name == 'boolean':
             return 'true|false'
         else:
-            return '%s' % argument_model.type_name
+            return argument_model.type_name
 
     def _json_example(self, doc, argument_model, stack):
         if argument_model.name in stack:
@@ -471,7 +476,8 @@ class OperationDocumentEventHandler(CLIDocumentEventHandler):
         if argument_model.type_name == 'list':
             doc.write('[')
             if argument_model.member.type_name in SCALAR_TYPES:
-                doc.write('%s, ...' % self._json_example_value_name(argument_model.member))
+                example_name = self._json_example_value_name(argument_model.member)
+                doc.write(f'{example_name}, ...')
             else:
                 doc.style.indent()
                 doc.style.new_line()
@@ -485,7 +491,7 @@ class OperationDocumentEventHandler(CLIDocumentEventHandler):
             doc.write('{')
             doc.style.indent()
             key_string = self._json_example_value_name(argument_model.key)
-            doc.write('%s: ' % key_string)
+            doc.write(f'{key_string}: ')
             if argument_model.value.type_name in SCALAR_TYPES:
                 doc.write(self._json_example_value_name(argument_model.value))
             else:
@@ -514,16 +520,16 @@ class OperationDocumentEventHandler(CLIDocumentEventHandler):
             member_model = members[member_name]
             member_type_name = member_model.type_name
             if member_type_name in SCALAR_TYPES:
-                doc.write('"%s": %s' % (member_name,
-                    self._json_example_value_name(member_model)))
+                example_name = self._json_example_value_name(member_model)
+                doc.write(f'"{member_name}": {example_name}')
             elif member_type_name == 'structure':
-                doc.write('"%s": ' % member_name)
+                doc.write(f'"{member_name}": ')
                 self._json_example(doc, member_model, stack)
             elif member_type_name == 'map':
-                doc.write('"%s": ' % member_name)
+                doc.write(f'"{member_name}": ')
                 self._json_example(doc, member_model, stack)
             elif member_type_name == 'list':
-                doc.write('"%s": ' % member_name)
+                doc.write(f'"{member_name}": ')
                 self._json_example(doc, member_model, stack)
             if i < len(members) - 1:
                 doc.write(',')
@@ -533,8 +539,9 @@ class OperationDocumentEventHandler(CLIDocumentEventHandler):
         doc.write('}')
 
     def doc_option_example(self, arg_name, help_command, event_name, **kwargs):
-        service_id, operation_name = \
-            find_service_and_method_in_event_name(event_name)
+        service_id, operation_name = find_service_and_method_in_event_name(
+            event_name
+        )
         doc = help_command.doc
         cli_argument = help_command.arg_table[arg_name]
         if cli_argument.group_name in self._arg_groups:
@@ -546,7 +553,8 @@ class OperationDocumentEventHandler(CLIDocumentEventHandler):
         docgen = ParamShorthandDocGen()
         if docgen.supports_shorthand(cli_argument.argument_model):
             example_shorthand_syntax = docgen.generate_shorthand_example(
-                cli_argument, service_id, operation_name)
+                cli_argument, service_id, operation_name
+            )
             if example_shorthand_syntax is None:
                 # If the shorthand syntax returns a value of None,
                 # this indicates to us that there is no example
@@ -560,8 +568,11 @@ class OperationDocumentEventHandler(CLIDocumentEventHandler):
                 for example_line in example_shorthand_syntax.splitlines():
                     doc.writeln(example_line)
                 doc.style.end_codeblock()
-        if argument_model is not None and argument_model.type_name == 'list' and \
-                argument_model.member.type_name in SCALAR_TYPES:
+        if (
+            argument_model is not None
+            and argument_model.type_name == 'list'
+            and argument_model.member.type_name in SCALAR_TYPES
+        ):
             # A list of scalars is special.  While you *can* use
             # JSON ( ["foo", "bar", "baz"] ), you can also just
             # use the argparse behavior of space separated lists.
@@ -572,8 +583,9 @@ class OperationDocumentEventHandler(CLIDocumentEventHandler):
             doc.write('Syntax')
             doc.style.start_codeblock()
             example_type = self._json_example_value_name(
-                member, include_enum_values=False)
-            doc.write('%s %s ...' % (example_type, example_type))
+                member, include_enum_values=False
+            )
+            doc.write(f'{example_type} {example_type} ...')
             if isinstance(member, StringShape) and member.enum:
                 # If we have enum values, we can tell the user
                 # exactly what valid values they can provide.
@@ -592,7 +604,7 @@ class OperationDocumentEventHandler(CLIDocumentEventHandler):
         doc.style.new_paragraph()
         doc.write("Where valid values are:\n")
         for value in enum_values:
-            doc.write("    %s\n" % value)
+            doc.write(f"    {value}\n")
         doc.write("\n")
 
     def doc_output(self, help_command, event_name, **kwargs):
@@ -614,7 +626,8 @@ class TopicListerDocumentEventHandler(CLIDocumentEventHandler):
         'the list of topics from the command line, run ``aws help topics``. '
         'To access a specific topic from the command line, run '
         '``aws help [topicname]``, where ``topicname`` is the name of the '
-        'topic as it appears in the output from ``aws help topics``.')
+        'topic as it appears in the output from ``aws help topics``.'
+    )
 
     def __init__(self, help_command):
         self.help_command = help_command
@@ -633,8 +646,8 @@ class TopicListerDocumentEventHandler(CLIDocumentEventHandler):
         doc = help_command.doc
         doc.style.new_paragraph()
         doc.style.link_target_definition(
-            refname='cli:aws help %s' % self.help_command.name,
-            link='')
+            refname=f'cli:aws help {self.help_command.name}', link=''
+        )
         doc.style.h1('AWS CLI Topic Guide')
 
     def doc_description(self, help_command, **kwargs):
@@ -674,13 +687,13 @@ class TopicListerDocumentEventHandler(CLIDocumentEventHandler):
             # each category.
             for topic_name in sorted(categories[category_name]):
                 description = self._topic_tag_db.get_tag_single_value(
-                    topic_name, 'description')
+                    topic_name, 'description'
+                )
                 doc.write('* ')
                 doc.style.sphinx_reference_label(
-                    label='cli:aws help %s' % topic_name,
-                    text=topic_name
+                    label=f'cli:aws help {topic_name}', text=topic_name
                 )
-                doc.write(': %s\n' % description)
+                doc.write(f': {description}\n')
         # Add a hidden toctree to make sure everything is connected in
         # the document.
         doc.style.hidden_toctree()
@@ -689,7 +702,6 @@ class TopicListerDocumentEventHandler(CLIDocumentEventHandler):
 
 
 class TopicDocumentEventHandler(TopicListerDocumentEventHandler):
-
     def doc_breadcrumbs(self, help_command, **kwargs):
         doc = help_command.doc
         if doc.target != 'man':
@@ -697,8 +709,7 @@ class TopicDocumentEventHandler(TopicListerDocumentEventHandler):
             doc.style.sphinx_reference_label(label='cli:aws', text='aws')
             doc.write(' . ')
             doc.style.sphinx_reference_label(
-                label='cli:aws help topics',
-                text='topics'
+                label='cli:aws help topics', text='topics'
             )
             doc.write(' ]')
 
@@ -706,22 +717,24 @@ class TopicDocumentEventHandler(TopicListerDocumentEventHandler):
         doc = help_command.doc
         doc.style.new_paragraph()
         doc.style.link_target_definition(
-            refname='cli:aws help %s' % self.help_command.name,
-            link='')
+            refname=f'cli:aws help {self.help_command.name}', link=''
+        )
         title = self._topic_tag_db.get_tag_single_value(
-            help_command.name, 'title')
+            help_command.name, 'title'
+        )
         doc.style.h1(title)
 
     def doc_description(self, help_command, **kwargs):
         doc = help_command.doc
-        topic_filename = os.path.join(self._topic_tag_db.topic_dir,
-                                      help_command.name + '.rst')
+        topic_filename = os.path.join(
+            self._topic_tag_db.topic_dir, f'{help_command.name}.rst'
+        )
         contents = self._remove_tags_from_content(topic_filename)
         doc.writeln(contents)
         doc.style.new_paragraph()
 
     def _remove_tags_from_content(self, filename):
-        with open(filename, 'r') as f:
+        with open(filename) as f:
             lines = f.readlines()
 
         content_begin_index = 0
@@ -737,7 +750,7 @@ class TopicDocumentEventHandler(TopicListerDocumentEventHandler):
 
     def _line_has_tag(self, line):
         for tag in self._topic_tag_db.valid_tags:
-            if line.startswith(':' + tag + ':'):
+            if line.startswith(f':{tag}:'):
                 return True
         return False
 
@@ -759,7 +772,8 @@ class GlobalOptionsDocumenter:
         for arg in help_command.arg_table:
             argument = help_command.arg_table.get(arg)
             help_command.doc.writeln(
-                f"``{argument.cli_name}`` ({argument.cli_type_name})")
+                f"``{argument.cli_name}`` ({argument.cli_type_name})"
+            )
             help_command.doc.style.indent()
             help_command.doc.style.new_paragraph()
             help_command.doc.include_doc_string(argument.documentation)

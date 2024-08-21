@@ -19,40 +19,29 @@ package so that code that is not part of the CLI can still take
 advantage of all the testing utilities we provide.
 
 """
-import os
-import sys
+
+import binascii
+import contextlib
 import copy
-import shutil
-import time
 import json
 import logging
-import tempfile
+import os
 import platform
-import contextlib
-import string
-import binascii
+import shutil
+import sys
+import tempfile
+import time
+import unittest
 from pprint import pformat
-from subprocess import Popen, PIPE
+from subprocess import PIPE, Popen
 from unittest import mock
 
-from awscli.compat import StringIO
-
-
-from botocore.session import Session
-from botocore.exceptions import ClientError
-from botocore.exceptions import WaiterError
 import botocore.loaders
 from botocore.awsrequest import AWSResponse
+from botocore.exceptions import ClientError, WaiterError
 
 import awscli.clidriver
-from awscli.plugin import load_plugins
-from awscli.clidriver import CLIDriver
 from awscli.compat import BytesIO, StringIO
-from awscli import EnvironmentVariables
-
-
-import unittest
-
 
 _LOADER = botocore.loaders.Loader()
 INTEG_LOG = logging.getLogger('awscli.tests.integration')
@@ -69,9 +58,12 @@ def skip_if_windows(reason):
             self.assertEqual(...)
 
     """
+
     def decorator(func):
         return unittest.skipIf(
-            platform.system() not in ['Darwin', 'Linux'], reason)(func)
+            platform.system() not in ['Darwin', 'Linux'], reason
+        )(func)
+
     return decorator
 
 
@@ -89,6 +81,7 @@ def create_clidriver():
 def get_aws_cmd():
     global AWS_CMD
     import awscli
+
     if AWS_CMD is None:
         # Try <repo>/bin/aws
         repo_root = os.path.dirname(os.path.abspath(awscli.__file__))
@@ -96,10 +89,12 @@ def get_aws_cmd():
         if not os.path.isfile(aws_cmd):
             aws_cmd = _search_path_for_cmd('aws')
             if aws_cmd is None:
-                raise ValueError('Could not find "aws" executable.  Either '
-                                 'make sure it is on your PATH, or you can '
-                                 'explicitly set this value using '
-                                 '"set_aws_cmd()"')
+                raise ValueError(
+                    'Could not find "aws" executable.  Either '
+                    'make sure it is on your PATH, or you can '
+                    'explicitly set this value using '
+                    '"set_aws_cmd()"'
+                )
         AWS_CMD = aws_cmd
     return AWS_CMD
 
@@ -184,15 +179,12 @@ def create_dir_bucket(session, name=None, location=None):
     params = {
         'Bucket': bucket_name,
         'CreateBucketConfiguration': {
-            'Location': {
-                'Type': 'AvailabilityZone',
-                'Name': az
-            },
+            'Location': {'Type': 'AvailabilityZone', 'Name': az},
             'Bucket': {
                 'Type': 'Directory',
-                'DataRedundancy': 'SingleAvailabilityZone'
-            }
-        }
+                'DataRedundancy': 'SingleAvailabilityZone',
+            },
+        },
     }
     try:
         client.create_bucket(**params)
@@ -236,6 +228,7 @@ class BaseCLIDriverTest(unittest.TestCase):
     This will load all the default plugins as well so it
     will simulate the behavior the user will see.
     """
+
     def setUp(self):
         self.environ = {
             'AWS_DATA_PATH': os.environ['AWS_DATA_PATH'],
@@ -255,35 +248,41 @@ class BaseCLIDriverTest(unittest.TestCase):
 
 class BaseAWSHelpOutputTest(BaseCLIDriverTest):
     def setUp(self):
-        super(BaseAWSHelpOutputTest, self).setUp()
+        super().setUp()
         self.renderer_patch = mock.patch('awscli.help.get_renderer')
         self.renderer_mock = self.renderer_patch.start()
         self.renderer = CapturedRenderer()
         self.renderer_mock.return_value = self.renderer
 
     def tearDown(self):
-        super(BaseAWSHelpOutputTest, self).tearDown()
+        super().tearDown()
         self.renderer_patch.stop()
 
     def assert_contains(self, contains):
         if contains not in self.renderer.rendered_contents:
-            self.fail("The expected contents:\n%s\nwere not in the "
-                      "actual rendered contents:\n%s" % (
-                          contains, self.renderer.rendered_contents))
+            self.fail(
+                "The expected contents:\n%s\nwere not in the "
+                "actual rendered contents:\n%s"
+                % (contains, self.renderer.rendered_contents)
+            )
 
     def assert_contains_with_count(self, contains, count):
         r_count = self.renderer.rendered_contents.count(contains)
         if r_count != count:
-            self.fail("The expected contents:\n%s\n, with the "
-                      "count:\n%d\nwere not in the actual rendered "
-                      " contents:\n%s\nwith count:\n%d" % (
-                          contains, count, self.renderer.rendered_contents, r_count))
+            self.fail(
+                "The expected contents:\n%s\n, with the "
+                "count:\n%d\nwere not in the actual rendered "
+                " contents:\n%s\nwith count:\n%d"
+                % (contains, count, self.renderer.rendered_contents, r_count)
+            )
 
     def assert_not_contains(self, contents):
         if contents in self.renderer.rendered_contents:
-            self.fail("The contents:\n%s\nwere not suppose to be in the "
-                      "actual rendered contents:\n%s" % (
-                          contents, self.renderer.rendered_contents))
+            self.fail(
+                "The contents:\n%s\nwere not suppose to be in the "
+                "actual rendered contents:\n%s"
+                % (contents, self.renderer.rendered_contents)
+            )
 
     def assert_text_order(self, *args, **kwargs):
         # First we need to find where the SYNOPSIS section starts.
@@ -296,15 +295,19 @@ class BaseAWSHelpOutputTest(BaseCLIDriverTest):
         previous = arg_indices[0]
         for i, index in enumerate(arg_indices[1:], 1):
             if index == -1:
-                self.fail('The string %r was not found in the contents: %s'
-                          % (args[index], contents))
+                self.fail(
+                    'The string %r was not found in the contents: %s'
+                    % (args[index], contents)
+                )
             if index < previous:
-                self.fail('The string %r came before %r, but was suppose to come '
-                          'after it.\n%s' % (args[i], args[i - 1], contents))
+                self.fail(
+                    'The string %r came before %r, but was suppose to come '
+                    'after it.\n%s' % (args[i], args[i - 1], contents)
+                )
             previous = index
 
 
-class CapturedRenderer(object):
+class CapturedRenderer:
     def __init__(self):
         self.rendered_contents = ''
 
@@ -312,7 +315,7 @@ class CapturedRenderer(object):
         self.rendered_contents = contents.decode('utf-8')
 
 
-class CapturedOutput(object):
+class CapturedOutput:
     def __init__(self, stdout, stderr):
         self.stdout = stdout
         self.stderr = stderr
@@ -362,7 +365,9 @@ class BaseAWSCommandParamsTest(unittest.TestCase):
         self.environ_patch.start()
         self.http_response = AWSResponse(None, 200, {}, None)
         self.parsed_response = {}
-        self.make_request_patch = mock.patch('botocore.endpoint.Endpoint.make_request')
+        self.make_request_patch = mock.patch(
+            'botocore.endpoint.Endpoint.make_request'
+        )
         self.make_request_is_patched = False
         self.operations_called = []
         self.parsed_responses = None
@@ -392,14 +397,25 @@ class BaseAWSCommandParamsTest(unittest.TestCase):
             self.make_request_is_patched = False
         make_request_patch = self.make_request_patch.start()
         if self.parsed_responses is not None:
-            make_request_patch.side_effect = lambda *args, **kwargs: \
-                (self.http_response, self.parsed_responses.pop(0))
+            make_request_patch.side_effect = lambda *args, **kwargs: (
+                self.http_response,
+                self.parsed_responses.pop(0),
+            )
         else:
-            make_request_patch.return_value = (self.http_response, self.parsed_response)
+            make_request_patch.return_value = (
+                self.http_response,
+                self.parsed_response,
+            )
         self.make_request_is_patched = True
 
-    def assert_params_for_cmd(self, cmd, params=None, expected_rc=0,
-                              stderr_contains=None, ignore_params=None):
+    def assert_params_for_cmd(
+        self,
+        cmd,
+        params=None,
+        expected_rc=0,
+        stderr_contains=None,
+        ignore_params=None,
+    ):
         stdout, stderr, rc = self.run_cmd(cmd, expected_rc)
         if stderr_contains is not None:
             self.assertIn(stderr_contains, stderr)
@@ -413,11 +429,12 @@ class BaseAWSCommandParamsTest(unittest.TestCase):
                     except KeyError:
                         pass
             if params != last_kwargs:
-                self.fail("Actual params did not match expected params.\n"
-                          "Expected:\n\n"
-                          "%s\n"
-                          "Actual:\n\n%s\n" % (
-                              pformat(params), pformat(last_kwargs)))
+                self.fail(
+                    "Actual params did not match expected params.\n"
+                    "Expected:\n\n"
+                    "%s\n"
+                    "Actual:\n\n%s\n" % (pformat(params), pformat(last_kwargs))
+                )
         return stdout, stderr, rc
 
     def before_parameter_build(self, params, model, **kwargs):
@@ -430,7 +447,8 @@ class BaseAWSCommandParamsTest(unittest.TestCase):
         event_emitter = self.driver.session.get_component('event_emitter')
         event_emitter.register('before-call', self.before_call)
         event_emitter.register_first(
-            'before-parameter-build.*.*', self.before_parameter_build)
+            'before-parameter-build.*.*', self.before_parameter_build
+        )
         if not isinstance(cmd, list):
             cmdlist = cmd.split()
         else:
@@ -448,23 +466,25 @@ class BaseAWSCommandParamsTest(unittest.TestCase):
         stderr = captured.stderr.getvalue()
         stdout = captured.stdout.getvalue()
         self.assertEqual(
-            rc, expected_rc,
+            rc,
+            expected_rc,
             "Unexpected rc (expected: %s, actual: %s) for command: %s\n"
-            "stdout:\n%sstderr:\n%s" % (
-                expected_rc, rc, cmd, stdout, stderr))
+            "stdout:\n%sstderr:\n%s" % (expected_rc, rc, cmd, stdout, stderr),
+        )
         return stdout, stderr, rc
 
 
 class BaseAWSPreviewCommandParamsTest(BaseAWSCommandParamsTest):
     def setUp(self):
         self.preview_patch = mock.patch(
-            'awscli.customizations.preview.mark_as_preview')
+            'awscli.customizations.preview.mark_as_preview'
+        )
         self.preview_patch.start()
-        super(BaseAWSPreviewCommandParamsTest, self).setUp()
+        super().setUp()
 
     def tearDown(self):
         self.preview_patch.stop()
-        super(BaseAWSPreviewCommandParamsTest, self).tearDown()
+        super().tearDown()
 
 
 class BaseCLIWireResponseTest(unittest.TestCase):
@@ -474,7 +494,7 @@ class BaseCLIWireResponseTest(unittest.TestCase):
             'AWS_DEFAULT_REGION': 'us-east-1',
             'AWS_ACCESS_KEY_ID': 'access_key',
             'AWS_SECRET_ACCESS_KEY': 'secret_key',
-            'AWS_CONFIG_FILE': ''
+            'AWS_CONFIG_FILE': '',
         }
         self.environ_patch = mock.patch('os.environ', self.environ)
         self.environ_patch.start()
@@ -494,9 +514,9 @@ class BaseCLIWireResponseTest(unittest.TestCase):
             self.send_patch.stop()
             self.send_is_patched = False
         send_patch = self.send_patch.start()
-        send_patch.return_value = mock.Mock(status_code=status_code,
-                                            headers=headers,
-                                            content=content)
+        send_patch.return_value = mock.Mock(
+            status_code=status_code, headers=headers, content=content
+        )
         self.send_is_patched = True
 
     def run_cmd(self, cmd, expected_rc=0):
@@ -512,15 +532,15 @@ class BaseCLIWireResponseTest(unittest.TestCase):
         stderr = captured.stderr.getvalue()
         stdout = captured.stdout.getvalue()
         self.assertEqual(
-            rc, expected_rc,
+            rc,
+            expected_rc,
             "Unexpected rc (expected: %s, actual: %s) for command: %s\n"
-            "stdout:\n%sstderr:\n%s" % (
-                expected_rc, rc, cmd, stdout, stderr))
+            "stdout:\n%sstderr:\n%s" % (expected_rc, rc, cmd, stdout, stderr),
+        )
         return stdout, stderr, rc
 
 
-
-class FileCreator(object):
+class FileCreator:
     def __init__(self):
         self.rootdir = tempfile.mkdtemp()
 
@@ -583,7 +603,7 @@ class ProcessTerminatedError(Exception):
     pass
 
 
-class Result(object):
+class Result:
     def __init__(self, rc, stdout, stderr, memory_usage=None):
         self.rc = rc
         self.stdout = stdout
@@ -610,8 +630,14 @@ def _escape_quotes(command):
     return command
 
 
-def aws(command, collect_memory=False, env_vars=None,
-        wait_for_finish=True, input_data=None, input_file=None):
+def aws(
+    command,
+    collect_memory=False,
+    env_vars=None,
+    wait_for_finish=True,
+    input_data=None,
+    input_file=None,
+):
     """Run an aws command.
 
     This help function abstracts the differences of running the "aws"
@@ -659,8 +685,14 @@ def aws(command, collect_memory=False, env_vars=None,
         env = env_vars
     if input_file is None:
         input_file = PIPE
-    process = Popen(full_command, stdout=PIPE, stderr=PIPE, stdin=input_file,
-                    shell=True, env=env)
+    process = Popen(
+        full_command,
+        stdout=PIPE,
+        stderr=PIPE,
+        stdin=input_file,
+        shell=True,
+        env=env,
+    )
     if not wait_for_finish:
         return process
     memory = None
@@ -671,10 +703,12 @@ def aws(command, collect_memory=False, env_vars=None,
         stdout, stderr = process.communicate(**kwargs)
     else:
         stdout, stderr, memory = _wait_and_collect_mem(process)
-    return Result(process.returncode,
-                  stdout.decode(stdout_encoding),
-                  stderr.decode(stdout_encoding),
-                  memory)
+    return Result(
+        process.returncode,
+        stdout.decode(stdout_encoding),
+        stderr.decode(stdout_encoding),
+        memory,
+    )
 
 
 def get_stdout_encoding():
@@ -692,8 +726,8 @@ def _wait_and_collect_mem(process):
         get_memory = _get_memory_with_ps
     else:
         raise ValueError(
-            "Can't collect memory for process on platform %s." %
-            platform.system())
+            f"Can't collect memory for process on platform {platform.system()}."
+        )
     memory = []
     while process.poll() is None:
         try:
@@ -730,6 +764,7 @@ class BaseS3CLICommand(unittest.TestCase):
     and more streamlined.
 
     """
+
     _PUT_HEAD_SHARED_EXTRAS = [
         'SSECustomerAlgorithm',
         'SSECustomerKey',
@@ -775,14 +810,14 @@ class BaseS3CLICommand(unittest.TestCase):
         # without necessarily printing the actual contents.
         self.assertEqual(len(actual_contents), len(expected_contents))
         if actual_contents != expected_contents:
-            self.fail("Contents for %s/%s do not match (but they "
-                      "have the same length)" % (bucket, key))
+            self.fail(
+                f"Contents for {bucket}/{key} do not match (but they "
+                "have the same length)"
+            )
 
     def delete_public_access_block(self, bucket_name):
         client = self.create_client_for_bucket(bucket_name)
-        client.delete_public_access_block(
-             Bucket=bucket_name
-        )
+        client.delete_public_access_block(Bucket=bucket_name)
 
     def create_bucket(self, name=None, region=None):
         if not region:
@@ -811,10 +846,7 @@ class BaseS3CLICommand(unittest.TestCase):
 
     def put_object(self, bucket_name, key_name, contents='', extra_args=None):
         client = self.create_client_for_bucket(bucket_name)
-        call_args = {
-            'Bucket': bucket_name,
-            'Key': key_name, 'Body': contents
-        }
+        call_args = {'Bucket': bucket_name, 'Key': key_name, 'Body': contents}
         if extra_args is not None:
             call_args.update(extra_args)
         response = client.put_object(**call_args)
@@ -822,7 +854,8 @@ class BaseS3CLICommand(unittest.TestCase):
         extra_head_params = {}
         if extra_args:
             extra_head_params = dict(
-                (k, v) for (k, v) in extra_args.items()
+                (k, v)
+                for (k, v) in extra_args.items()
                 if k in self._PUT_HEAD_SHARED_EXTRAS
             )
         self.wait_until_key_exists(
@@ -879,7 +912,8 @@ class BaseS3CLICommand(unittest.TestCase):
         client = self.create_client_for_bucket(bucket_name)
         waiter = client.get_waiter('bucket_exists')
         consistency_waiter = ConsistencyWaiter(
-            min_successes=min_successes, delay_initial_poll=True)
+            min_successes=min_successes, delay_initial_poll=True
+        )
         consistency_waiter.wait(
             lambda: waiter.wait(Bucket=bucket_name) is None
         )
@@ -897,7 +931,8 @@ class BaseS3CLICommand(unittest.TestCase):
     def key_exists(self, bucket_name, key_name, min_successes=3):
         try:
             self.wait_until_key_exists(
-                    bucket_name, key_name, min_successes=min_successes)
+                bucket_name, key_name, min_successes=min_successes
+            )
             return True
         except (ClientError, WaiterError):
             return False
@@ -905,7 +940,8 @@ class BaseS3CLICommand(unittest.TestCase):
     def key_not_exists(self, bucket_name, key_name, min_successes=3):
         try:
             self.wait_until_key_not_exists(
-                    bucket_name, key_name, min_successes=min_successes)
+                bucket_name, key_name, min_successes=min_successes
+            )
             return True
         except (ClientError, WaiterError):
             return False
@@ -923,18 +959,28 @@ class BaseS3CLICommand(unittest.TestCase):
         response = client.head_object(Bucket=bucket_name, Key=key_name)
         return response
 
-    def wait_until_key_exists(self, bucket_name, key_name, extra_params=None,
-                              min_successes=3):
-        self._wait_for_key(bucket_name, key_name, extra_params,
-                           min_successes, exists=True)
+    def wait_until_key_exists(
+        self, bucket_name, key_name, extra_params=None, min_successes=3
+    ):
+        self._wait_for_key(
+            bucket_name, key_name, extra_params, min_successes, exists=True
+        )
 
-    def wait_until_key_not_exists(self, bucket_name, key_name, extra_params=None,
-                                  min_successes=3):
-        self._wait_for_key(bucket_name, key_name, extra_params,
-                           min_successes, exists=False)
+    def wait_until_key_not_exists(
+        self, bucket_name, key_name, extra_params=None, min_successes=3
+    ):
+        self._wait_for_key(
+            bucket_name, key_name, extra_params, min_successes, exists=False
+        )
 
-    def _wait_for_key(self, bucket_name, key_name, extra_params=None,
-                      min_successes=3, exists=True):
+    def _wait_for_key(
+        self,
+        bucket_name,
+        key_name,
+        extra_params=None,
+        min_successes=3,
+        exists=True,
+    ):
         client = self.create_client_for_bucket(bucket_name)
         if exists:
             waiter = client.get_waiter('object_exists')
@@ -948,8 +994,10 @@ class BaseS3CLICommand(unittest.TestCase):
 
     def assert_no_errors(self, p):
         self.assertEqual(
-            p.rc, 0,
-            "Non zero rc (%s) received: %s" % (p.rc, p.stdout + p.stderr))
+            p.rc,
+            0,
+            "Non zero rc (%s) received: %s" % (p.rc, p.stdout + p.stderr),
+        )
         self.assertNotIn("Error:", p.stderr)
         self.assertNotIn("failed:", p.stderr)
         self.assertNotIn("client error", p.stderr)
@@ -961,7 +1009,7 @@ class StringIOWithFileNo(StringIO):
         return 0
 
 
-class TestEventHandler(object):
+class TestEventHandler:
     def __init__(self, handler=None):
         self._handler = handler
         self._called = False
@@ -981,7 +1029,7 @@ class ConsistencyWaiterException(Exception):
     pass
 
 
-class ConsistencyWaiter(object):
+class ConsistencyWaiter:
     """
     A waiter class for some check to reach a consistent state.
 
@@ -997,8 +1045,14 @@ class ConsistencyWaiter(object):
     :param delay: The number of seconds to delay the next API call after a
     failed check call. Default of 5 seconds.
     """
-    def __init__(self, min_successes=1, max_attempts=20, delay=5,
-                 delay_initial_poll=False):
+
+    def __init__(
+        self,
+        min_successes=1,
+        max_attempts=20,
+        delay=5,
+        delay_initial_poll=False,
+    ):
         self.min_successes = min_successes
         self.max_attempts = max_attempts
         self.delay = delay

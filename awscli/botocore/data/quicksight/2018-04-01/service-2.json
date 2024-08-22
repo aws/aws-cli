@@ -3715,7 +3715,8 @@
         "Options":{
           "shape":"AssetOptions",
           "documentation":"<p>An array of option definitions for an analysis.</p>"
-        }
+        },
+        "QueryExecutionOptions":{"shape":"QueryExecutionOptions"}
       },
       "documentation":"<p>The definition of an analysis.</p>"
     },
@@ -3908,9 +3909,47 @@
         "InitialDashboardId":{
           "shape":"ShortRestrictiveResourceId",
           "documentation":"<p>The dashboard ID for the dashboard that you want the user to see first. This ID is included in the output URL. When the URL in response is accessed, Amazon QuickSight renders this dashboard.</p> <p>The Amazon Resource Name (ARN) of this dashboard must be included in the <code>AuthorizedResourceArns</code> parameter. Otherwise, the request will fail with <code>InvalidParameterValueException</code>.</p>"
+        },
+        "EnabledFeatures":{
+          "shape":"AnonymousUserDashboardEmbeddingConfigurationEnabledFeatures",
+          "documentation":"<p>A list of all enabled features of a specified anonymous dashboard.</p>"
+        },
+        "DisabledFeatures":{
+          "shape":"AnonymousUserDashboardEmbeddingConfigurationDisabledFeatures",
+          "documentation":"<p>A list of all disabled features of a specified anonymous dashboard.</p>"
+        },
+        "FeatureConfigurations":{
+          "shape":"AnonymousUserDashboardFeatureConfigurations",
+          "documentation":"<p>The feature configuration for an embedded dashboard.</p>"
         }
       },
       "documentation":"<p>Information about the dashboard that you want to embed.</p>"
+    },
+    "AnonymousUserDashboardEmbeddingConfigurationDisabledFeature":{
+      "type":"string",
+      "enum":["SHARED_VIEW"]
+    },
+    "AnonymousUserDashboardEmbeddingConfigurationDisabledFeatures":{
+      "type":"list",
+      "member":{"shape":"AnonymousUserDashboardEmbeddingConfigurationDisabledFeature"}
+    },
+    "AnonymousUserDashboardEmbeddingConfigurationEnabledFeature":{
+      "type":"string",
+      "enum":["SHARED_VIEW"]
+    },
+    "AnonymousUserDashboardEmbeddingConfigurationEnabledFeatures":{
+      "type":"list",
+      "member":{"shape":"AnonymousUserDashboardEmbeddingConfigurationEnabledFeature"}
+    },
+    "AnonymousUserDashboardFeatureConfigurations":{
+      "type":"structure",
+      "members":{
+        "SharedView":{
+          "shape":"SharedViewConfigurations",
+          "documentation":"<p>The shared view settings of an embedded dashboard.</p>"
+        }
+      },
+      "documentation":"<p>The feature configuration for an embedded dashboard.</p>"
     },
     "AnonymousUserDashboardVisualEmbeddingConfiguration":{
       "type":"structure",
@@ -24152,6 +24191,23 @@
       "max":256,
       "min":1
     },
+    "QueryExecutionMode":{
+      "type":"string",
+      "enum":[
+        "AUTO",
+        "MANUAL"
+      ]
+    },
+    "QueryExecutionOptions":{
+      "type":"structure",
+      "members":{
+        "QueryExecutionMode":{
+          "shape":"QueryExecutionMode",
+          "documentation":"<p>A structure that describes the query execution mode.</p>"
+        }
+      },
+      "documentation":"<p>A structure that describes the query execution options.</p>"
+    },
     "QueueInfo":{
       "type":"structure",
       "required":[
@@ -24872,6 +24928,10 @@
         "StatePersistence":{
           "shape":"StatePersistenceConfigurations",
           "documentation":"<p>The state persistence configurations of an embedded Amazon QuickSight console.</p>"
+        },
+        "SharedView":{
+          "shape":"SharedViewConfigurations",
+          "documentation":"<p>The shared view settings of an embedded dashboard.</p>"
         }
       },
       "documentation":"<p>The feature configurations of an embedded Amazon QuickSight console.</p>"
@@ -24897,6 +24957,10 @@
         "StatePersistence":{
           "shape":"StatePersistenceConfigurations",
           "documentation":"<p>The state persistence settings of an embedded dashboard.</p>"
+        },
+        "SharedView":{
+          "shape":"SharedViewConfigurations",
+          "documentation":"<p>The shared view settings of an embedded dashboard.</p>"
         },
         "Bookmarks":{
           "shape":"BookmarksConfigurations",
@@ -26572,6 +26636,17 @@
         }
       },
       "documentation":"<p>The shape conditional formatting of a filled map visual.</p>"
+    },
+    "SharedViewConfigurations":{
+      "type":"structure",
+      "required":["Enabled"],
+      "members":{
+        "Enabled":{
+          "shape":"Boolean",
+          "documentation":"<p>The shared view settings of an embedded dashboard.</p>"
+        }
+      },
+      "documentation":"<p>The shared view settings of an embedded dashboard.</p>"
     },
     "SharingModel":{
       "type":"string",
@@ -28853,7 +28928,8 @@
         "Options":{
           "shape":"AssetOptions",
           "documentation":"<p>An array of option definitions for a template.</p>"
-        }
+        },
+        "QueryExecutionOptions":{"shape":"QueryExecutionOptions"}
       },
       "documentation":"<p>The detailed definition of a template.</p>"
     },

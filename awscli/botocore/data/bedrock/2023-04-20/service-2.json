@@ -13,6 +13,25 @@
     "uid":"bedrock-2023-04-20"
   },
   "operations":{
+    "BatchDeleteEvaluationJob":{
+      "name":"BatchDeleteEvaluationJob",
+      "http":{
+        "method":"POST",
+        "requestUri":"/evaluation-jobs/batch-delete",
+        "responseCode":202
+      },
+      "input":{"shape":"BatchDeleteEvaluationJobRequest"},
+      "output":{"shape":"BatchDeleteEvaluationJobResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"},
+        {"shape":"ConflictException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Creates a batch deletion job. A model evaluation job can only be deleted if it has following status <code>FAILED</code>, <code>COMPLETED</code>, and <code>STOPPED</code>. You can request up to 25 model evaluation jobs be deleted in a single request.</p>"
+    },
     "CreateEvaluationJob":{
       "name":"CreateEvaluationJob",
       "http":{
@@ -115,6 +134,28 @@
       "documentation":"<p>Creates a fine-tuning job to customize a base model.</p> <p>You specify the base foundation model and the location of the training data. After the model-customization job completes successfully, your custom model resource will be ready to use. Amazon Bedrock returns validation loss metrics and output generations after the job completes. </p> <p>For information on the format of training and validation data, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/model-customization-prepare.html\">Prepare the datasets</a>.</p> <p> Model-customization jobs are asynchronous and the completion time depends on the base model and the training/validation data size. To monitor a job, use the <code>GetModelCustomizationJob</code> operation to retrieve the job status.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/custom-models.html\">Custom models</a> in the <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/what-is-service.html\">Amazon Bedrock User Guide</a>.</p>",
       "idempotent":true
     },
+    "CreateModelImportJob":{
+      "name":"CreateModelImportJob",
+      "http":{
+        "method":"POST",
+        "requestUri":"/model-import-jobs",
+        "responseCode":201
+      },
+      "input":{"shape":"CreateModelImportJobRequest"},
+      "output":{"shape":"CreateModelImportJobResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"},
+        {"shape":"ConflictException"},
+        {"shape":"InternalServerException"},
+        {"shape":"TooManyTagsException"},
+        {"shape":"ServiceQuotaExceededException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Creates a model import job to import model that you have customized in other environments, such as Amazon SageMaker. For more information, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/model-customization-import-model.html\">Import a customized model</a> </p>",
+      "idempotent":true
+    },
     "CreateModelInvocationJob":{
       "name":"CreateModelInvocationJob",
       "http":{
@@ -195,6 +236,26 @@
         {"shape":"ThrottlingException"}
       ],
       "documentation":"<p>Deletes a guardrail.</p> <ul> <li> <p>To delete a guardrail, only specify the ARN of the guardrail in the <code>guardrailIdentifier</code> field. If you delete a guardrail, all of its versions will be deleted.</p> </li> <li> <p>To delete a version of a guardrail, specify the ARN of the guardrail in the <code>guardrailIdentifier</code> field and the version in the <code>guardrailVersion</code> field.</p> </li> </ul>",
+      "idempotent":true
+    },
+    "DeleteImportedModel":{
+      "name":"DeleteImportedModel",
+      "http":{
+        "method":"DELETE",
+        "requestUri":"/imported-models/{modelIdentifier}",
+        "responseCode":200
+      },
+      "input":{"shape":"DeleteImportedModelRequest"},
+      "output":{"shape":"DeleteImportedModelResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"},
+        {"shape":"ConflictException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Deletes a custom model that you imported earlier. For more information, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/model-customization-import-model.html\">Import a customized model</a> in the <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/what-is-service.html\">Amazon Bedrock User Guide</a>. </p>",
       "idempotent":true
     },
     "DeleteModelInvocationLoggingConfiguration":{
@@ -306,6 +367,24 @@
       ],
       "documentation":"<p>Gets details about a guardrail. If you don't specify a version, the response returns details for the <code>DRAFT</code> version.</p>"
     },
+    "GetImportedModel":{
+      "name":"GetImportedModel",
+      "http":{
+        "method":"GET",
+        "requestUri":"/imported-models/{modelIdentifier}",
+        "responseCode":200
+      },
+      "input":{"shape":"GetImportedModelRequest"},
+      "output":{"shape":"GetImportedModelResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Gets properties associated with a customized model you imported. </p>"
+    },
     "GetModelCopyJob":{
       "name":"GetModelCopyJob",
       "http":{
@@ -341,6 +420,24 @@
         {"shape":"ThrottlingException"}
       ],
       "documentation":"<p>Retrieves the properties associated with a model-customization job, including the status of the job. For more information, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/custom-models.html\">Custom models</a> in the <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/what-is-service.html\">Amazon Bedrock User Guide</a>.</p>"
+    },
+    "GetModelImportJob":{
+      "name":"GetModelImportJob",
+      "http":{
+        "method":"GET",
+        "requestUri":"/model-import-jobs/{jobIdentifier}",
+        "responseCode":200
+      },
+      "input":{"shape":"GetModelImportJobRequest"},
+      "output":{"shape":"GetModelImportJobResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Retrieves the properties associated with import model job, including the status of the job. For more information, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/model-customization-import-model.html\">Import a customized model</a> in the <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/what-is-service.html\">Amazon Bedrock User Guide</a>.</p>"
     },
     "GetModelInvocationJob":{
       "name":"GetModelInvocationJob",
@@ -463,6 +560,23 @@
       ],
       "documentation":"<p>Lists details about all the guardrails in an account. To list the <code>DRAFT</code> version of all your guardrails, don't specify the <code>guardrailIdentifier</code> field. To list all versions of a guardrail, specify the ARN of the guardrail in the <code>guardrailIdentifier</code> field.</p> <p>You can set the maximum number of results to return in a response in the <code>maxResults</code> field. If there are more results than the number you set, the response returns a <code>nextToken</code> that you can send in another <code>ListGuardrails</code> request to see the next batch of results.</p>"
     },
+    "ListImportedModels":{
+      "name":"ListImportedModels",
+      "http":{
+        "method":"GET",
+        "requestUri":"/imported-models",
+        "responseCode":200
+      },
+      "input":{"shape":"ListImportedModelsRequest"},
+      "output":{"shape":"ListImportedModelsResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Returns a list of models you've imported. You can filter the results to return based on one or more criteria. For more information, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/model-customization-import-model.html\">Import a customized model</a> in the <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/what-is-service.html\">Amazon Bedrock User Guide</a>.</p>"
+    },
     "ListModelCopyJobs":{
       "name":"ListModelCopyJobs",
       "http":{
@@ -497,6 +611,23 @@
         {"shape":"ThrottlingException"}
       ],
       "documentation":"<p>Returns a list of model customization jobs that you have submitted. You can filter the jobs to return based on one or more criteria.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/custom-models.html\">Custom models</a> in the <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/what-is-service.html\">Amazon Bedrock User Guide</a>.</p>"
+    },
+    "ListModelImportJobs":{
+      "name":"ListModelImportJobs",
+      "http":{
+        "method":"GET",
+        "requestUri":"/model-import-jobs",
+        "responseCode":200
+      },
+      "input":{"shape":"ListModelImportJobsRequest"},
+      "output":{"shape":"ListModelImportJobsResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Returns a list of import jobs you've submitted. You can filter the results to return based on one or more criteria. For more information, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/model-customization-import-model.html\">Import a customized model</a> in the <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/what-is-service.html\">Amazon Bedrock User Guide</a>.</p>"
     },
     "ListModelInvocationJobs":{
       "name":"ListModelInvocationJobs",
@@ -737,6 +868,83 @@
       "max":2048,
       "min":1,
       "pattern":"(arn:aws(-[^:]+)?:bedrock:[a-z0-9-]{1,20}:(([0-9]{12}:custom-model/([a-z0-9-]{1,63}[.]{1}[a-z0-9-]{1,63}([.]?[a-z0-9-]{1,63})([:][a-z0-9-]{1,63}){0,2})/[a-z0-9]{12})|(:foundation-model/[a-z0-9-]{1,63}[.]{1}[a-z0-9-]{1,63}([:][a-z0-9-]{1,63}){0,2})))|([a-z0-9-]{1,63}[.]{1}[a-z0-9-]{1,63}([.]?[a-z0-9-]{1,63})([:][a-z0-9-]{1,63}){0,2})|(([0-9a-zA-Z][_-]?)+)"
+    },
+    "BatchDeleteEvaluationJobError":{
+      "type":"structure",
+      "required":[
+        "jobIdentifier",
+        "code"
+      ],
+      "members":{
+        "jobIdentifier":{
+          "shape":"EvaluationJobIdentifier",
+          "documentation":"<p>The ARN of the model evaluation job being deleted.</p>"
+        },
+        "code":{
+          "shape":"String",
+          "documentation":"<p>A HTTP status code of the model evaluation job being deleted.</p>"
+        },
+        "message":{
+          "shape":"String",
+          "documentation":"<p>A status message about the model evaluation job deletion.</p>"
+        }
+      },
+      "documentation":"<p>A JSON array that provides the status of the model evaluation jobs being deleted.</p>"
+    },
+    "BatchDeleteEvaluationJobErrors":{
+      "type":"list",
+      "member":{"shape":"BatchDeleteEvaluationJobError"},
+      "max":25,
+      "min":0
+    },
+    "BatchDeleteEvaluationJobItem":{
+      "type":"structure",
+      "required":[
+        "jobIdentifier",
+        "jobStatus"
+      ],
+      "members":{
+        "jobIdentifier":{
+          "shape":"EvaluationJobIdentifier",
+          "documentation":"<p>The ARN of model evaluation job to be deleted.</p>"
+        },
+        "jobStatus":{
+          "shape":"EvaluationJobStatus",
+          "documentation":"<p>The status of the job's deletion.</p>"
+        }
+      },
+      "documentation":"<p>An array of model evaluation jobs to be deleted, and their associated statuses.</p>"
+    },
+    "BatchDeleteEvaluationJobItems":{
+      "type":"list",
+      "member":{"shape":"BatchDeleteEvaluationJobItem"}
+    },
+    "BatchDeleteEvaluationJobRequest":{
+      "type":"structure",
+      "required":["jobIdentifiers"],
+      "members":{
+        "jobIdentifiers":{
+          "shape":"EvaluationJobIdentifiers",
+          "documentation":"<p>An array of model evaluation job ARNs to be deleted.</p>"
+        }
+      }
+    },
+    "BatchDeleteEvaluationJobResponse":{
+      "type":"structure",
+      "required":[
+        "errors",
+        "evaluationJobs"
+      ],
+      "members":{
+        "errors":{
+          "shape":"BatchDeleteEvaluationJobErrors",
+          "documentation":"<p>A JSON object containing the HTTP status codes and the ARNs of model evaluation jobs that failed to be deleted.</p>"
+        },
+        "evaluationJobs":{
+          "shape":"BatchDeleteEvaluationJobItems",
+          "documentation":"<p>The list of model evaluation jobs to be deleted.</p>"
+        }
+      }
     },
     "BedrockModelId":{
       "type":"string",
@@ -1104,6 +1312,63 @@
         }
       }
     },
+    "CreateModelImportJobRequest":{
+      "type":"structure",
+      "required":[
+        "jobName",
+        "importedModelName",
+        "roleArn",
+        "modelDataSource"
+      ],
+      "members":{
+        "jobName":{
+          "shape":"JobName",
+          "documentation":"<p>The name of the import job.</p>"
+        },
+        "importedModelName":{
+          "shape":"ImportedModelName",
+          "documentation":"<p>The name of the imported model.</p>"
+        },
+        "roleArn":{
+          "shape":"RoleArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the model import job.</p>"
+        },
+        "modelDataSource":{
+          "shape":"ModelDataSource",
+          "documentation":"<p>The data source for the imported model.</p>"
+        },
+        "jobTags":{
+          "shape":"TagList",
+          "documentation":"<p>Tags to attach to this import job. </p>"
+        },
+        "importedModelTags":{
+          "shape":"TagList",
+          "documentation":"<p>Tags to attach to the imported model.</p>"
+        },
+        "clientRequestToken":{
+          "shape":"IdempotencyToken",
+          "documentation":"<p>A unique, case-sensitive identifier to ensure that the API request completes no more than one time. If this token matches a previous request, Amazon Bedrock ignores the request, but does not return an error. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/APIReference/Run_Instance_Idempotency.html\">Ensuring idempotency</a>.</p>"
+        },
+        "vpcConfig":{
+          "shape":"VpcConfig",
+          "documentation":"<p>VPC configuration parameters for the private Virtual Private Cloud (VPC) that contains the resources you are using for the import job.</p>"
+        },
+        "importedModelKmsKeyId":{
+          "shape":"KmsKeyId",
+          "documentation":"<p>The imported model is encrypted at rest using this key.</p>"
+        }
+      }
+    },
+    "CreateModelImportJobResponse":{
+      "type":"structure",
+      "required":["jobArn"],
+      "members":{
+        "jobArn":{
+          "shape":"ModelImportJobArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the model import job.</p>"
+        }
+      }
+    },
     "CreateModelInvocationJobRequest":{
       "type":"structure",
       "required":[
@@ -1308,6 +1573,23 @@
       "members":{
       }
     },
+    "DeleteImportedModelRequest":{
+      "type":"structure",
+      "required":["modelIdentifier"],
+      "members":{
+        "modelIdentifier":{
+          "shape":"ImportedModelIdentifier",
+          "documentation":"<p>Name of the imported model to delete.</p>",
+          "location":"uri",
+          "locationName":"modelIdentifier"
+        }
+      }
+    },
+    "DeleteImportedModelResponse":{
+      "type":"structure",
+      "members":{
+      }
+    },
     "DeleteModelInvocationLoggingConfigurationRequest":{
       "type":"structure",
       "members":{
@@ -1362,7 +1644,7 @@
           "documentation":"<p>Each Amazon Bedrock support different inference parameters that change how the model behaves during inference.</p>"
         }
       },
-      "documentation":"<p>Contains the ARN of the Amazon Bedrock models specified in your model evaluation job. Each Amazon Bedrock model supports different <code>inferenceParams</code>. To learn more about supported inference parameters for Amazon Bedrock models, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/model-evaluation-prompt-datasets-custom.html\">Inference parameters for foundation models</a>.</p> <p>The <code>inferenceParams</code> are specified using JSON. To successfully insert JSON as string make sure that all quotations are properly escaped. For example, <code>\"temperature\":\"0.25\"</code> key value pair would need to be formatted as <code>\\\"temperature\\\":\\\"0.25\\\"</code> to successfully accepted in the request.</p>"
+      "documentation":"<p>Contains the ARN of the Amazon Bedrock models specified in your model evaluation job. Each Amazon Bedrock model supports different <code>inferenceParams</code>. To learn more about supported inference parameters for Amazon Bedrock models, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/model-parameters.html\">Inference parameters for foundation models</a>.</p> <p>The <code>inferenceParams</code> are specified using JSON. To successfully insert JSON as string make sure that all quotations are properly escaped. For example, <code>\"temperature\":\"0.25\"</code> key value pair would need to be formatted as <code>\\\"temperature\\\":\\\"0.25\\\"</code> to successfully accepted in the request.</p>"
     },
     "EvaluationConfig":{
       "type":"structure",
@@ -1385,7 +1667,7 @@
       "members":{
         "name":{
           "shape":"EvaluationDatasetName",
-          "documentation":"<p>Used to specify supported built-in prompt datasets. Valid values are <code>Builtin.Bold</code>, <code>Builtin.BoolQ</code>, <code>Builtin.NaturalQuestions</code>, <code>Builtin.Gigaword</code>, <code>Builtin.RealToxicityPrompts</code>, <code>Builtin.TriviaQa</code>, <code>Builtin.T-Rex</code>, <code>Builtin.WomensEcommerceClothingReviews</code> and <code>Builtin.Wikitext2</code>.</p>"
+          "documentation":"<p>Used to specify supported built-in prompt datasets. Valid values are <code>Builtin.Bold</code>, <code>Builtin.BoolQ</code>, <code>Builtin.NaturalQuestions</code>, <code>Builtin.Gigaword</code>, <code>Builtin.RealToxicityPrompts</code>, <code>Builtin.TriviaQA</code>, <code>Builtin.T-Rex</code>, <code>Builtin.WomensEcommerceClothingReviews</code> and <code>Builtin.Wikitext2</code>.</p>"
         },
         "datasetLocation":{
           "shape":"EvaluationDatasetLocation",
@@ -1472,6 +1754,12 @@
       "pattern":"(arn:aws(-[^:]+)?:bedrock:[a-z0-9-]{1,20}:[0-9]{12}:evaluation-job/[a-z0-9]{12})",
       "sensitive":true
     },
+    "EvaluationJobIdentifiers":{
+      "type":"list",
+      "member":{"shape":"EvaluationJobIdentifier"},
+      "max":25,
+      "min":1
+    },
     "EvaluationJobName":{
       "type":"string",
       "max":63,
@@ -1485,7 +1773,8 @@
         "Completed",
         "Failed",
         "Stopping",
-        "Stopped"
+        "Stopped",
+        "Deleting"
       ]
     },
     "EvaluationJobType":{
@@ -2060,6 +2349,55 @@
         }
       }
     },
+    "GetImportedModelRequest":{
+      "type":"structure",
+      "required":["modelIdentifier"],
+      "members":{
+        "modelIdentifier":{
+          "shape":"ImportedModelIdentifier",
+          "documentation":"<p>Name or Amazon Resource Name (ARN) of the imported model.</p>",
+          "location":"uri",
+          "locationName":"modelIdentifier"
+        }
+      }
+    },
+    "GetImportedModelResponse":{
+      "type":"structure",
+      "members":{
+        "modelArn":{
+          "shape":"ImportedModelArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) associated with this imported model.</p>"
+        },
+        "modelName":{
+          "shape":"ImportedModelName",
+          "documentation":"<p>The name of the imported model.</p>"
+        },
+        "jobName":{
+          "shape":"JobName",
+          "documentation":"<p>Job name associated with the imported model.</p>"
+        },
+        "jobArn":{
+          "shape":"ModelImportJobArn",
+          "documentation":"<p>Job Amazon Resource Name (ARN) associated with the imported model.</p>"
+        },
+        "modelDataSource":{
+          "shape":"ModelDataSource",
+          "documentation":"<p>The data source for this imported model.</p>"
+        },
+        "creationTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>Creation time of the imported model.</p>"
+        },
+        "modelArchitecture":{
+          "shape":"String",
+          "documentation":"<p>The architecture of the imported model.</p>"
+        },
+        "modelKmsKeyArn":{
+          "shape":"KmsKeyArn",
+          "documentation":"<p>The imported model is encrypted at rest using this key.</p>"
+        }
+      }
+    },
     "GetModelCopyJobRequest":{
       "type":"structure",
       "required":["jobArn"],
@@ -2239,6 +2577,75 @@
         "vpcConfig":{
           "shape":"VpcConfig",
           "documentation":"<p>VPC configuration for the custom model job.</p>"
+        }
+      }
+    },
+    "GetModelImportJobRequest":{
+      "type":"structure",
+      "required":["jobIdentifier"],
+      "members":{
+        "jobIdentifier":{
+          "shape":"ModelImportJobIdentifier",
+          "documentation":"<p>The identifier of the import job.</p>",
+          "location":"uri",
+          "locationName":"jobIdentifier"
+        }
+      }
+    },
+    "GetModelImportJobResponse":{
+      "type":"structure",
+      "members":{
+        "jobArn":{
+          "shape":"ModelImportJobArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the import job.</p>"
+        },
+        "jobName":{
+          "shape":"JobName",
+          "documentation":"<p>The name of the import job.</p>"
+        },
+        "importedModelName":{
+          "shape":"ImportedModelName",
+          "documentation":"<p>The name of the imported model.</p>"
+        },
+        "importedModelArn":{
+          "shape":"ImportedModelArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the imported model.</p>"
+        },
+        "roleArn":{
+          "shape":"RoleArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the IAM role associated with this job.</p>"
+        },
+        "modelDataSource":{
+          "shape":"ModelDataSource",
+          "documentation":"<p>The data source for the imported model.</p>"
+        },
+        "status":{
+          "shape":"ModelImportJobStatus",
+          "documentation":"<p>The status of the job. A successful job transitions from in-progress to completed when the imported model is ready to use. If the job failed, the failure message contains information about why the job failed.</p>"
+        },
+        "failureMessage":{
+          "shape":"ErrorMessage",
+          "documentation":"<p>Information about why the import job failed.</p>"
+        },
+        "creationTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time the resource was created.</p>"
+        },
+        "lastModifiedTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>Time the resource was last modified.</p>"
+        },
+        "endTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>Time that the resource transitioned to terminal state.</p>"
+        },
+        "vpcConfig":{
+          "shape":"VpcConfig",
+          "documentation":"<p>The Virtual Private Cloud (VPC) configuration of the import model job.</p>"
+        },
+        "importedModelKmsKeyArn":{
+          "shape":"KmsKeyArn",
+          "documentation":"<p>The imported model is encrypted at rest using this key.</p>"
         }
       }
     },
@@ -3249,6 +3656,51 @@
       "min":1,
       "pattern":"[a-zA-Z0-9](-*[a-zA-Z0-9])*"
     },
+    "ImportedModelArn":{
+      "type":"string",
+      "max":1011,
+      "min":20,
+      "pattern":"arn:aws(-[^:]+)?:bedrock:[a-z0-9-]{1,20}:[0-9]{12}:imported-model/[a-z0-9]{12}"
+    },
+    "ImportedModelIdentifier":{
+      "type":"string",
+      "max":1011,
+      "min":1,
+      "pattern":"(arn:aws(-[^:]+)?:bedrock:[a-z0-9-]{1,20}:[0-9]{12}:imported-model/[a-z0-9]{12})|(([0-9a-zA-Z][_-]?)+)"
+    },
+    "ImportedModelName":{
+      "type":"string",
+      "max":63,
+      "min":1,
+      "pattern":"([0-9a-zA-Z][_-]?)+"
+    },
+    "ImportedModelSummary":{
+      "type":"structure",
+      "required":[
+        "modelArn",
+        "modelName",
+        "creationTime"
+      ],
+      "members":{
+        "modelArn":{
+          "shape":"ImportedModelArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the imported model.</p>"
+        },
+        "modelName":{
+          "shape":"ImportedModelName",
+          "documentation":"<p>Name of the imported model.</p>"
+        },
+        "creationTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>Creation time of the imported model.</p>"
+        }
+      },
+      "documentation":"<p>Information about tne imported model.</p>"
+    },
+    "ImportedModelSummaryList":{
+      "type":"list",
+      "member":{"shape":"ImportedModelSummary"}
+    },
     "InferenceType":{
       "type":"string",
       "enum":[
@@ -3291,7 +3743,7 @@
       "type":"string",
       "max":2048,
       "min":1,
-      "pattern":"arn:aws(-[^:]+)?:kms:[a-zA-Z0-9-]*:[0-9]{12}:((key/[a-zA-Z0-9-]{36})|(alias/[a-zA-Z0-9-_/]+))"
+      "pattern":"(arn:aws(-[^:]+)?:kms:[a-zA-Z0-9-]*:[0-9]{12}:((key/[a-zA-Z0-9-]{36})|(alias/[a-zA-Z0-9-_/]+)))|([a-zA-Z0-9-]{36})|(alias/[a-zA-Z0-9-_/]+)"
     },
     "ListCustomModelsRequest":{
       "type":"structure",
@@ -3512,6 +3964,66 @@
         }
       }
     },
+    "ListImportedModelsRequest":{
+      "type":"structure",
+      "members":{
+        "creationTimeBefore":{
+          "shape":"Timestamp",
+          "documentation":"<p>Return imported models that created before the specified time.</p>",
+          "location":"querystring",
+          "locationName":"creationTimeBefore"
+        },
+        "creationTimeAfter":{
+          "shape":"Timestamp",
+          "documentation":"<p>Return imported models that were created after the specified time.</p>",
+          "location":"querystring",
+          "locationName":"creationTimeAfter"
+        },
+        "nameContains":{
+          "shape":"ImportedModelName",
+          "documentation":"<p>Return imported models only if the model name contains these characters.</p>",
+          "location":"querystring",
+          "locationName":"nameContains"
+        },
+        "maxResults":{
+          "shape":"MaxResults",
+          "documentation":"<p>The maximum number of results to return in the response. If the total number of results is greater than this value, use the token returned in the response in the <code>nextToken</code> field when making another request to return the next batch of results.</p>",
+          "location":"querystring",
+          "locationName":"maxResults"
+        },
+        "nextToken":{
+          "shape":"PaginationToken",
+          "documentation":"<p>If the total number of results is greater than the <code>maxResults</code> value provided in the request, enter the token returned in the <code>nextToken</code> field in the response in this field to return the next batch of results.</p>",
+          "location":"querystring",
+          "locationName":"nextToken"
+        },
+        "sortBy":{
+          "shape":"SortModelsBy",
+          "documentation":"<p>The field to sort by in the returned list of imported models.</p>",
+          "location":"querystring",
+          "locationName":"sortBy"
+        },
+        "sortOrder":{
+          "shape":"SortOrder",
+          "documentation":"<p>Specifies whetehr to sort the results in ascending or descending order.</p>",
+          "location":"querystring",
+          "locationName":"sortOrder"
+        }
+      }
+    },
+    "ListImportedModelsResponse":{
+      "type":"structure",
+      "members":{
+        "nextToken":{
+          "shape":"PaginationToken",
+          "documentation":"<p>If the total number of results is greater than the <code>maxResults</code> value provided in the request, use this token when making another request in the <code>nextToken</code> field to return the next batch of results.</p>"
+        },
+        "modelSummaries":{
+          "shape":"ImportedModelSummaryList",
+          "documentation":"<p>Model summaries.</p>"
+        }
+      }
+    },
     "ListModelCopyJobsRequest":{
       "type":"structure",
       "members":{
@@ -3653,6 +4165,72 @@
         "modelCustomizationJobSummaries":{
           "shape":"ModelCustomizationJobSummaries",
           "documentation":"<p>Job summaries.</p>"
+        }
+      }
+    },
+    "ListModelImportJobsRequest":{
+      "type":"structure",
+      "members":{
+        "creationTimeAfter":{
+          "shape":"Timestamp",
+          "documentation":"<p>Return import jobs that were created after the specified time.</p>",
+          "location":"querystring",
+          "locationName":"creationTimeAfter"
+        },
+        "creationTimeBefore":{
+          "shape":"Timestamp",
+          "documentation":"<p>Return import jobs that were created before the specified time.</p>",
+          "location":"querystring",
+          "locationName":"creationTimeBefore"
+        },
+        "statusEquals":{
+          "shape":"ModelImportJobStatus",
+          "documentation":"<p>Return imported jobs with the specified status.</p>",
+          "location":"querystring",
+          "locationName":"statusEquals"
+        },
+        "nameContains":{
+          "shape":"JobName",
+          "documentation":"<p>Return imported jobs only if the job name contains these characters.</p>",
+          "location":"querystring",
+          "locationName":"nameContains"
+        },
+        "maxResults":{
+          "shape":"MaxResults",
+          "documentation":"<p>The maximum number of results to return in the response. If the total number of results is greater than this value, use the token returned in the response in the <code>nextToken</code> field when making another request to return the next batch of results.</p>",
+          "location":"querystring",
+          "locationName":"maxResults"
+        },
+        "nextToken":{
+          "shape":"PaginationToken",
+          "documentation":"<p>If the total number of results is greater than the <code>maxResults</code> value provided in the request, enter the token returned in the <code>nextToken</code> field in the response in this field to return the next batch of results.</p>",
+          "location":"querystring",
+          "locationName":"nextToken"
+        },
+        "sortBy":{
+          "shape":"SortJobsBy",
+          "documentation":"<p>The field to sort by in the returned list of imported jobs.</p>",
+          "location":"querystring",
+          "locationName":"sortBy"
+        },
+        "sortOrder":{
+          "shape":"SortOrder",
+          "documentation":"<p>Specifies whether to sort the results in ascending or descending order.</p>",
+          "location":"querystring",
+          "locationName":"sortOrder"
+        }
+      }
+    },
+    "ListModelImportJobsResponse":{
+      "type":"structure",
+      "members":{
+        "nextToken":{
+          "shape":"PaginationToken",
+          "documentation":"<p>If the total number of results is greater than the <code>maxResults</code> value provided in the request, enter the token returned in the <code>nextToken</code> field in the response in this field to return the next batch of results.</p>"
+        },
+        "modelImportJobSummaries":{
+          "shape":"ModelImportJobSummaries",
+          "documentation":"<p>Import job summaries.</p>"
         }
       }
     },
@@ -4037,6 +4615,17 @@
       "type":"list",
       "member":{"shape":"ModelCustomization"}
     },
+    "ModelDataSource":{
+      "type":"structure",
+      "members":{
+        "s3DataSource":{
+          "shape":"S3DataSource",
+          "documentation":"<p>The Amazon S3 data source of the imported model.</p>"
+        }
+      },
+      "documentation":"<p>Data source for the imported model.</p>",
+      "union":true
+    },
     "ModelId":{
       "type":"string",
       "max":2048,
@@ -4048,6 +4637,74 @@
       "max":2048,
       "min":1,
       "pattern":"arn:aws(-[^:]+)?:bedrock:[a-z0-9-]{1,20}:(([0-9]{12}:custom-model/[a-z0-9-]{1,63}[.]{1}[a-z0-9-]{1,63}(([:][a-z0-9-]{1,63}){0,2})?/[a-z0-9]{12})|(:foundation-model/([a-z0-9-]{1,63}[.]{1}[a-z0-9-]{1,63}([.]?[a-z0-9-]{1,63})([:][a-z0-9-]{1,63}){0,2})))|(([a-z0-9-]{1,63}[.]{1}[a-z0-9-]{1,63}([.]?[a-z0-9-]{1,63})([:][a-z0-9-]{1,63}){0,2}))|(([0-9a-zA-Z][_-]?)+)"
+    },
+    "ModelImportJobArn":{
+      "type":"string",
+      "max":1011,
+      "min":0,
+      "pattern":"arn:aws(-[^:]+)?:bedrock:[a-z0-9-]{1,20}:[0-9]{12}:model-import-job/[a-z0-9]{12}"
+    },
+    "ModelImportJobIdentifier":{
+      "type":"string",
+      "max":1011,
+      "min":0,
+      "pattern":"(arn:aws(-[^:]+)?:bedrock:[a-z0-9-]{1,20}:[0-9]{12}:model-import-job/[a-z0-9]{12})|([a-zA-Z0-9](-*[a-zA-Z0-9\\+\\-\\.])*)"
+    },
+    "ModelImportJobStatus":{
+      "type":"string",
+      "enum":[
+        "InProgress",
+        "Completed",
+        "Failed"
+      ]
+    },
+    "ModelImportJobSummaries":{
+      "type":"list",
+      "member":{"shape":"ModelImportJobSummary"}
+    },
+    "ModelImportJobSummary":{
+      "type":"structure",
+      "required":[
+        "jobArn",
+        "jobName",
+        "status",
+        "creationTime"
+      ],
+      "members":{
+        "jobArn":{
+          "shape":"ModelImportJobArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the import job.</p>"
+        },
+        "jobName":{
+          "shape":"JobName",
+          "documentation":"<p>The name of the import job.</p>"
+        },
+        "status":{
+          "shape":"ModelImportJobStatus",
+          "documentation":"<p>The status of the imported job. </p>"
+        },
+        "lastModifiedTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time when the import job was last modified.</p>"
+        },
+        "creationTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time import job was created.</p>"
+        },
+        "endTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time when import job ended.</p>"
+        },
+        "importedModelArn":{
+          "shape":"ImportedModelArn",
+          "documentation":"<p>The Amazon resource Name (ARN) of the imported model.</p>"
+        },
+        "importedModelName":{
+          "shape":"ImportedModelName",
+          "documentation":"<p>The name of the imported model.</p>"
+        }
+      },
+      "documentation":"<p>Information about the import job.</p>"
     },
     "ModelInvocationIdempotencyToken":{
       "type":"string",
@@ -4411,6 +5068,17 @@
       },
       "documentation":"<p>S3 configuration for storing log data.</p>"
     },
+    "S3DataSource":{
+      "type":"structure",
+      "required":["s3Uri"],
+      "members":{
+        "s3Uri":{
+          "shape":"S3Uri",
+          "documentation":"<p>The URI of the Amazon S3 data source.</p>"
+        }
+      },
+      "documentation":"<p>The Amazon S3 data source of the imported job.</p>"
+    },
     "S3InputFormat":{
       "type":"string",
       "enum":["JSONL"]
@@ -4419,7 +5087,7 @@
       "type":"string",
       "max":1024,
       "min":1,
-      "pattern":"s3://[a-z0-9][\\.\\-a-z0-9]{1,61}[a-z0-9](/.*)?"
+      "pattern":"s3://[a-z0-9][-.a-z0-9]{1,61}(?:/[-!_*'().a-z0-9A-Z]+(?:/[-!_*'().a-z0-9A-Z]+)*)?/?"
     },
     "SageMakerFlowDefinitionArn":{
       "type":"string",

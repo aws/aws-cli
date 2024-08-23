@@ -2,9 +2,10 @@
   "version":"2.0",
   "metadata":{
     "apiVersion":"2024-01-01",
+    "auth":["aws.auth#sigv4"],
     "endpointPrefix":"scn",
-    "jsonVersion":"1.1",
     "protocol":"rest-json",
+    "protocols":["rest-json"],
     "serviceFullName":"AWS Supply Chain",
     "serviceId":"SupplyChain",
     "signatureVersion":"v4",
@@ -71,7 +72,7 @@
         {"shape":"InternalServerException"},
         {"shape":"ConflictException"}
       ],
-      "documentation":"<p>Send transactional data events with real-time data for analysis or monitoring.</p>",
+      "documentation":"<p>Send the transactional data payload for the event with real-time data for analysis or monitoring. The real-time data events are stored in an Amazon Web Services service before being processed and stored in data lake. New data events are synced with data lake at 5 PM GMT everyday. The updated transactional data is available in data lake after ingestion.</p>",
       "idempotent":true
     }
   },
@@ -298,7 +299,7 @@
         },
         "data":{
           "shape":"DataIntegrationEventData",
-          "documentation":"<p>The data payload of the event.</p>"
+          "documentation":"<p>The data payload of the event. For more information on the data schema to use, see <a href=\"https://docs.aws.amazon.com/aws-supply-chain/latest/userguide/data-model-asc.html\">Data entities supported in AWS Supply Chain </a>.</p>"
         },
         "eventGroupId":{
           "shape":"DataIntegrationEventGroupId",

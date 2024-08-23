@@ -215,6 +215,14 @@
       "type":"string",
       "sensitive":true
     },
+    "ActionInvocationType":{
+      "type":"string",
+      "enum":[
+        "RESULT",
+        "USER_CONFIRMATION",
+        "USER_CONFIRMATION_AND_RESULT"
+      ]
+    },
     "AdditionalModelRequestFields":{
       "type":"map",
       "key":{"shape":"AdditionalModelRequestFieldsKey"},
@@ -261,6 +269,10 @@
         "actionGroup":{
           "shape":"String",
           "documentation":"<p>The action group that the API operation belongs to.</p>"
+        },
+        "actionInvocationType":{
+          "shape":"ActionInvocationType",
+          "documentation":"<p>Contains information about the API operation to invoke.</p>"
         },
         "apiPath":{
           "shape":"ApiPath",
@@ -328,6 +340,10 @@
         "apiPath":{
           "shape":"ApiPath",
           "documentation":"<p>The path to the API operation.</p>"
+        },
+        "confirmationState":{
+          "shape":"ConfirmationState",
+          "documentation":"<p>Controls the API operations or functions to invoke based on the user confirmation.</p>"
         },
         "httpMethod":{
           "shape":"String",
@@ -482,6 +498,13 @@
         }
       },
       "documentation":"<p>Contains the JSON-formatted string returned by the API invoked by the code interpreter.</p>"
+    },
+    "ConfirmationState":{
+      "type":"string",
+      "enum":[
+        "CONFIRM",
+        "DENY"
+      ]
     },
     "ConflictException":{
       "type":"structure",
@@ -952,6 +975,10 @@
           "shape":"String",
           "documentation":"<p>The action group that the function belongs to.</p>"
         },
+        "actionInvocationType":{
+          "shape":"ActionInvocationType",
+          "documentation":"<p>Contains information about the function to invoke,</p>"
+        },
         "function":{
           "shape":"String",
           "documentation":"<p>The name of the function.</p>"
@@ -992,6 +1019,10 @@
         "actionGroup":{
           "shape":"String",
           "documentation":"<p>The action group that the function belongs to.</p>"
+        },
+        "confirmationState":{
+          "shape":"ConfirmationState",
+          "documentation":"<p>Contains the user confirmation information about the function that was called.</p>"
         },
         "function":{
           "shape":"String",

@@ -2,6 +2,17 @@
 CHANGELOG
 =========
 
+1.34.5
+======
+
+* api-change:``bedrock-agent``: Releasing the support for Action User Confirmation.
+* api-change:``bedrock-agent-runtime``: Releasing the support for Action User Confirmation.
+* api-change:``codebuild``: Added support for the MAC_ARM environment type for CodeBuild fleets.
+* api-change:``organizations``: Releasing minor partitional endpoint updates.
+* api-change:``qbusiness``: Amazon QBusiness: Enable support for SAML and OIDC federation through AWS IAM Identity Provider integration.
+* api-change:``supplychain``: Update API documentation to clarify the event SLA as well as the data model expectations
+
+
 1.34.4
 ======
 

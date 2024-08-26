@@ -3456,6 +3456,47 @@
         }
       }
     },
+    "DescribeWorkspaceDirectoriesFilter":{
+      "type":"structure",
+      "required":[
+        "Name",
+        "Values"
+      ],
+      "members":{
+        "Name":{
+          "shape":"DescribeWorkspaceDirectoriesFilterName",
+          "documentation":"<p>The name of the WorkSpaces to filter.</p>"
+        },
+        "Values":{
+          "shape":"DescribeWorkspaceDirectoriesFilterValues",
+          "documentation":"<p>The values for filtering WorkSpaces</p>"
+        }
+      },
+      "documentation":"<p>Describes the filter conditions for the WorkSpaces to return.</p>"
+    },
+    "DescribeWorkspaceDirectoriesFilterList":{
+      "type":"list",
+      "member":{"shape":"DescribeWorkspaceDirectoriesFilter"},
+      "max":25,
+      "min":1
+    },
+    "DescribeWorkspaceDirectoriesFilterName":{
+      "type":"string",
+      "enum":[
+        "USER_IDENTITY_TYPE",
+        "WORKSPACE_TYPE"
+      ]
+    },
+    "DescribeWorkspaceDirectoriesFilterValue":{
+      "type":"string",
+      "pattern":"^[0-9a-zA-Z\\*\\.\\\\/\\?-_]{0,64}$"
+    },
+    "DescribeWorkspaceDirectoriesFilterValues":{
+      "type":"list",
+      "member":{"shape":"DescribeWorkspaceDirectoriesFilterValue"},
+      "max":25,
+      "min":1
+    },
     "DescribeWorkspaceDirectoriesRequest":{
       "type":"structure",
       "members":{
@@ -3474,6 +3515,10 @@
         "NextToken":{
           "shape":"PaginationToken",
           "documentation":"<p>If you received a <code>NextToken</code> from a previous call that was paginated, provide this token to receive the next set of results.</p>"
+        },
+        "Filters":{
+          "shape":"DescribeWorkspaceDirectoriesFilterList",
+          "documentation":"<p>The filter condition for the WorkSpaces.</p>"
         }
       }
     },
@@ -4005,6 +4050,20 @@
         }
       }
     },
+    "IDCConfig":{
+      "type":"structure",
+      "members":{
+        "InstanceArn":{
+          "shape":"ARN",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the identity center instance.</p>"
+        },
+        "ApplicationArn":{
+          "shape":"ARN",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the application.</p>"
+        }
+      },
+      "documentation":"<p>Specifies the configurations of the identity center.</p>"
+    },
     "IdleDisconnectTimeoutInSeconds":{
       "type":"integer",
       "max":36000,
@@ -4444,6 +4503,24 @@
     "MaximumLength":{
       "type":"integer",
       "min":0
+    },
+    "MicrosoftEntraConfig":{
+      "type":"structure",
+      "members":{
+        "TenantId":{
+          "shape":"MicrosoftEntraConfigTenantId",
+          "documentation":"<p>The identifier of the tenant.</p>"
+        },
+        "ApplicationConfigSecretArn":{
+          "shape":"SecretsManagerArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the application config.</p>"
+        }
+      },
+      "documentation":"<p>Specifies the configurations of the Microsoft Entra.</p>"
+    },
+    "MicrosoftEntraConfigTenantId":{
+      "type":"string",
+      "pattern":"^[a-zA-Z0-9-]{1,100}$"
     },
     "MigrateWorkspaceRequest":{
       "type":"structure",
@@ -4975,6 +5052,14 @@
         "UserIdentityType":{
           "shape":"UserIdentityType",
           "documentation":"<p>The type of identity management the user is using.</p>"
+        },
+        "IdcInstanceArn":{
+          "shape":"ARN",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the identity center instance.</p>"
+        },
+        "MicrosoftEntraConfig":{
+          "shape":"MicrosoftEntraConfig",
+          "documentation":"<p>The details about Microsoft Entra config.</p>"
         },
         "WorkspaceType":{
           "shape":"WorkspaceType",
@@ -5869,7 +5954,8 @@
       "type":"string",
       "enum":[
         "CUSTOMER_MANAGED",
-        "AWS_DIRECTORY_SERVICE"
+        "AWS_DIRECTORY_SERVICE",
+        "AWS_IAM_IDENTITY_CENTER"
       ]
     },
     "UserName":{
@@ -6364,6 +6450,10 @@
           "shape":"CertificateBasedAuthProperties",
           "documentation":"<p>The certificate-based authentication properties used to authenticate SAML 2.0 Identity Provider (IdP) user identities to Active Directory for WorkSpaces login.</p>"
         },
+        "MicrosoftEntraConfig":{
+          "shape":"MicrosoftEntraConfig",
+          "documentation":"<p>Specifies details about Microsoft Entra configurations.</p>"
+        },
         "WorkspaceDirectoryName":{
           "shape":"WorkspaceDirectoryName",
           "documentation":"<p>The name fo the WorkSpace directory.</p>"
@@ -6379,6 +6469,10 @@
         "WorkspaceType":{
           "shape":"WorkspaceType",
           "documentation":"<p>Indicates whether the directory's WorkSpace type is personal or pools.</p>"
+        },
+        "IDCConfig":{
+          "shape":"IDCConfig",
+          "documentation":"<p>Specifies details about identity center configurations.</p>"
         },
         "ActiveDirectoryConfig":{
           "shape":"ActiveDirectoryConfig",
@@ -6424,7 +6518,8 @@
       "enum":[
         "SIMPLE_AD",
         "AD_CONNECTOR",
-        "CUSTOMER_MANAGED"
+        "CUSTOMER_MANAGED",
+        "AWS_IAM_IDENTITY_CENTER"
       ]
     },
     "WorkspaceErrorCode":{"type":"string"},

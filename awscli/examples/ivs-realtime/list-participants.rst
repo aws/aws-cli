@@ -14,10 +14,11 @@ Output::
                 "firstJoinTime": "2023-04-26T20:30:34+00:00",
                 "participantId": "abCDEf12GHIj"
                 "published": true,
+                "recordingState": "STOPPED",
                 "state": "DISCONNECTED",
                 "userId": ""
             }
         ]
     }
 
-For more information, see `Enabling Multiple Hosts on an Amazon IVS Stream <https://docs.aws.amazon.com/ivs/latest/userguide/multiple-hosts.html>`__ in the *Amazon Interactive Video Service User Guide*.
+For more information, see `Enabling Multiple Hosts on an Amazon IVS Stream <https://docs.aws.amazon.com/ivs/latest/LowLatencyUserGuide/multiple-hosts.html>`__ in the *Amazon Interactive Video Service User Guide*.

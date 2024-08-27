@@ -2,6 +2,16 @@
 CHANGELOG
 =========
 
+1.34.7
+======
+
+* api-change:``bedrock``: Amazon Bedrock SDK updates for Inference Profile.
+* api-change:``bedrock-runtime``: Amazon Bedrock SDK updates for Inference Profile.
+* api-change:``chatbot``: Update documentation to be consistent with the API docs
+* api-change:``omics``: Adds data provenance to import jobs from read sets and references
+* api-change:``polly``: Amazon Polly adds 2 new voices: Jitka (cs-CZ) and Sabrina (de-CH).
+
+
 1.34.6
 ======
 

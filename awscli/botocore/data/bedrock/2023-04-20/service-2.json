@@ -174,7 +174,7 @@
         {"shape":"ServiceQuotaExceededException"},
         {"shape":"ThrottlingException"}
       ],
-      "documentation":"<p>Creates a job to invoke a model on multiple prompts (batch inference). Format your data according to <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/batch-inference-prerq.html#batch-inference-data\">Format your inference data</a> and upload it to an Amazon S3 bucket. For more information, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/batch-inference-create.html\">Create a batch inference job</a>.</p> <p>The response returns a <code>jobArn</code> that you can use to stop or get details about the job. You can check the status of the job by sending a <a href=\"https://docs.aws.amazon.com/bedrock/latest/APIReference/API_GetModelCustomizationJob.html\">GetModelCustomizationJob</a> request.</p>",
+      "documentation":"<p>Creates a batch inference job to invoke a model on multiple prompts. Format your data according to <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/batch-inference-data\">Format your inference data</a> and upload it to an Amazon S3 bucket. For more information, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/batch-inference.html\">Process multiple prompts with batch inference</a>.</p> <p>The response returns a <code>jobArn</code> that you can use to stop or get details about the job.</p>",
       "idempotent":true
     },
     "CreateProvisionedModelThroughput":{
@@ -385,6 +385,24 @@
       ],
       "documentation":"<p>Gets properties associated with a customized model you imported. </p>"
     },
+    "GetInferenceProfile":{
+      "name":"GetInferenceProfile",
+      "http":{
+        "method":"GET",
+        "requestUri":"/inference-profiles/{inferenceProfileIdentifier}",
+        "responseCode":200
+      },
+      "input":{"shape":"GetInferenceProfileRequest"},
+      "output":{"shape":"GetInferenceProfileResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Gets information about an inference profile. For more information, see the Amazon Bedrock User Guide.</p>"
+    },
     "GetModelCopyJob":{
       "name":"GetModelCopyJob",
       "http":{
@@ -576,6 +594,23 @@
         {"shape":"ThrottlingException"}
       ],
       "documentation":"<p>Returns a list of models you've imported. You can filter the results to return based on one or more criteria. For more information, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/model-customization-import-model.html\">Import a customized model</a> in the <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/what-is-service.html\">Amazon Bedrock User Guide</a>.</p>"
+    },
+    "ListInferenceProfiles":{
+      "name":"ListInferenceProfiles",
+      "http":{
+        "method":"GET",
+        "requestUri":"/inference-profiles",
+        "responseCode":200
+      },
+      "input":{"shape":"ListInferenceProfilesRequest"},
+      "output":{"shape":"ListInferenceProfilesResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Returns a list of inference profiles that you can use.</p>"
     },
     "ListModelCopyJobs":{
       "name":"ListModelCopyJobs",
@@ -2398,6 +2433,67 @@
         }
       }
     },
+    "GetInferenceProfileRequest":{
+      "type":"structure",
+      "required":["inferenceProfileIdentifier"],
+      "members":{
+        "inferenceProfileIdentifier":{
+          "shape":"InferenceProfileIdentifier",
+          "documentation":"<p>The unique identifier of the inference profile.</p>",
+          "location":"uri",
+          "locationName":"inferenceProfileIdentifier"
+        }
+      }
+    },
+    "GetInferenceProfileResponse":{
+      "type":"structure",
+      "required":[
+        "inferenceProfileName",
+        "models",
+        "inferenceProfileArn",
+        "inferenceProfileId",
+        "status",
+        "type"
+      ],
+      "members":{
+        "inferenceProfileName":{
+          "shape":"InferenceProfileName",
+          "documentation":"<p>The name of the inference profile.</p>"
+        },
+        "models":{
+          "shape":"InferenceProfileModels",
+          "documentation":"<p>A list of information about each model in the inference profile.</p>"
+        },
+        "description":{
+          "shape":"InferenceProfileDescription",
+          "documentation":"<p>The description of the inference profile.</p>"
+        },
+        "createdAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time at which the inference profile was created.</p>"
+        },
+        "updatedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time at which the inference profile was last updated.</p>"
+        },
+        "inferenceProfileArn":{
+          "shape":"InferenceProfileArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the inference profile.</p>"
+        },
+        "inferenceProfileId":{
+          "shape":"InferenceProfileId",
+          "documentation":"<p>The unique identifier of the inference profile.</p>"
+        },
+        "status":{
+          "shape":"InferenceProfileStatus",
+          "documentation":"<p>The status of the inference profile. <code>ACTIVE</code> means that the inference profile is available to use.</p>"
+        },
+        "type":{
+          "shape":"InferenceProfileType",
+          "documentation":"<p>The type of the inference profile. <code>SYSTEM_DEFINED</code> means that the inference profile is defined by Amazon Bedrock.</p>"
+        }
+      }
+    },
     "GetModelCopyJobRequest":{
       "type":"structure",
       "required":["jobArn"],
@@ -3701,6 +3797,114 @@
       "type":"list",
       "member":{"shape":"ImportedModelSummary"}
     },
+    "InferenceProfileArn":{
+      "type":"string",
+      "max":2048,
+      "min":1,
+      "pattern":"arn:aws(|-us-gov|-cn|-iso|-iso-b):bedrock:(|[0-9a-z-]{0,20}):(|[0-9]{12}):inference-profile/[a-zA-Z0-9-:.]+"
+    },
+    "InferenceProfileDescription":{
+      "type":"string",
+      "max":500,
+      "min":1,
+      "pattern":".+"
+    },
+    "InferenceProfileId":{
+      "type":"string",
+      "max":64,
+      "min":1,
+      "pattern":"[a-zA-Z0-9-:.]+"
+    },
+    "InferenceProfileIdentifier":{
+      "type":"string",
+      "max":2048,
+      "min":1,
+      "pattern":"(arn:aws(|-us-gov|-cn|-iso|-iso-b):bedrock:(|[0-9a-z-]{0,20}):(|[0-9]{12}):inference-profile/)?[a-zA-Z0-9-:.]+"
+    },
+    "InferenceProfileModel":{
+      "type":"structure",
+      "members":{
+        "modelArn":{
+          "shape":"FoundationModelArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the model.</p>"
+        }
+      },
+      "documentation":"<p>Contains information about a model.</p>"
+    },
+    "InferenceProfileModels":{
+      "type":"list",
+      "member":{"shape":"InferenceProfileModel"},
+      "max":5,
+      "min":1
+    },
+    "InferenceProfileName":{
+      "type":"string",
+      "max":64,
+      "min":1,
+      "pattern":"([0-9a-zA-Z][ _-]?)+"
+    },
+    "InferenceProfileStatus":{
+      "type":"string",
+      "enum":["ACTIVE"]
+    },
+    "InferenceProfileSummaries":{
+      "type":"list",
+      "member":{"shape":"InferenceProfileSummary"}
+    },
+    "InferenceProfileSummary":{
+      "type":"structure",
+      "required":[
+        "inferenceProfileName",
+        "models",
+        "inferenceProfileArn",
+        "inferenceProfileId",
+        "status",
+        "type"
+      ],
+      "members":{
+        "inferenceProfileName":{
+          "shape":"InferenceProfileName",
+          "documentation":"<p>The name of the inference profile.</p>"
+        },
+        "models":{
+          "shape":"InferenceProfileModels",
+          "documentation":"<p>A list of information about each model in the inference profile.</p>"
+        },
+        "description":{
+          "shape":"InferenceProfileDescription",
+          "documentation":"<p>The description of the inference profile.</p>"
+        },
+        "createdAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time at which the inference profile was created.</p>"
+        },
+        "updatedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time at which the inference profile was last updated.</p>"
+        },
+        "inferenceProfileArn":{
+          "shape":"InferenceProfileArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the inference profile.</p>"
+        },
+        "inferenceProfileId":{
+          "shape":"InferenceProfileId",
+          "documentation":"<p>The unique identifier of the inference profile.</p>"
+        },
+        "status":{
+          "shape":"InferenceProfileStatus",
+          "documentation":"<p>The status of the inference profile. <code>ACTIVE</code> means that the inference profile is available to use.</p>"
+        },
+        "type":{
+          "shape":"InferenceProfileType",
+          "documentation":"<p>The type of the inference profile. <code>SYSTEM_DEFINED</code> means that the inference profile is defined by Amazon Bedrock.</p>"
+        }
+      },
+      "documentation":"<p>Contains information about an inference profile.</p>"
+    },
+    "InferenceProfileType":{
+      "type":"string",
+      "enum":["SYSTEM_DEFINED"]
+    },
     "InferenceType":{
       "type":"string",
       "enum":[
@@ -4021,6 +4225,36 @@
         "modelSummaries":{
           "shape":"ImportedModelSummaryList",
           "documentation":"<p>Model summaries.</p>"
+        }
+      }
+    },
+    "ListInferenceProfilesRequest":{
+      "type":"structure",
+      "members":{
+        "maxResults":{
+          "shape":"MaxResults",
+          "documentation":"<p>The maximum number of results to return in the response. If the total number of results is greater than this value, use the token returned in the response in the <code>nextToken</code> field when making another request to return the next batch of results.</p>",
+          "location":"querystring",
+          "locationName":"maxResults"
+        },
+        "nextToken":{
+          "shape":"PaginationToken",
+          "documentation":"<p>If the total number of results is greater than the <code>maxResults</code> value provided in the request, enter the token returned in the <code>nextToken</code> field in the response in this field to return the next batch of results.</p>",
+          "location":"querystring",
+          "locationName":"nextToken"
+        }
+      }
+    },
+    "ListInferenceProfilesResponse":{
+      "type":"structure",
+      "members":{
+        "inferenceProfileSummaries":{
+          "shape":"InferenceProfileSummaries",
+          "documentation":"<p>A list of information about each inference profile that you can use.</p>"
+        },
+        "nextToken":{
+          "shape":"PaginationToken",
+          "documentation":"<p>If the total number of results is greater than the <code>maxResults</code> value provided in the request, use this token when making another request in the <code>nextToken</code> field to return the next batch of results.</p>"
         }
       }
     },

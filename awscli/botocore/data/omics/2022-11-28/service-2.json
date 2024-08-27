@@ -2,9 +2,10 @@
   "version":"2.0",
   "metadata":{
     "apiVersion":"2022-11-28",
+    "auth":["aws.auth#sigv4"],
     "endpointPrefix":"omics",
-    "jsonVersion":"1.1",
     "protocol":"rest-json",
+    "protocols":["rest-json"],
     "serviceFullName":"Amazon Omics",
     "serviceId":"Omics",
     "signatureVersion":"v4",
@@ -262,7 +263,7 @@
         {"shape":"AccessDeniedException"},
         {"shape":"RequestTimeoutException"}
       ],
-      "documentation":"<p>Creates a run group.</p>",
+      "documentation":"<p>You can optionally create a run group to limit the compute resources for the runs that you add to the group.</p>",
       "endpoint":{"hostPrefix":"workflows-"}
     },
     "CreateSequenceStore":{
@@ -303,7 +304,7 @@
         {"shape":"ResourceNotFoundException"},
         {"shape":"AccessDeniedException"}
       ],
-      "documentation":"<p>Creates a cross-account shared resource. The resource owner makes an offer to share the resource with the principal subscriber (an AWS user with a different account than the resource owner).</p> <p>The following resources support cross-account sharing:</p> <ul> <li> <p>Healthomics variant stores</p> </li> <li> <p>Healthomics annotation stores</p> </li> <li> <p>Private workflows</p> </li> </ul>",
+      "documentation":"<p>Creates a cross-account shared resource. The resource owner makes an offer to share the resource with the principal subscriber (an AWS user with a different account than the resource owner).</p> <p>The following resources support cross-account sharing:</p> <ul> <li> <p>HealthOmics variant stores</p> </li> <li> <p>HealthOmics annotation stores</p> </li> <li> <p>Private workflows</p> </li> </ul>",
       "endpoint":{"hostPrefix":"analytics-"}
     },
     "CreateVariantStore":{
@@ -1711,8 +1712,9 @@
         {"shape":"RequestTimeoutException"}
       ],
       "documentation":"<p>This operation uploads a specific part of a read set. If you upload a new part using a previously used part number, the previously uploaded part will be overwritten.</p>",
-      "authtype":"v4-unsigned-body",
-      "endpoint":{"hostPrefix":"storage-"}
+      "endpoint":{"hostPrefix":"storage-"},
+      "unsignedPayload":true,
+      "authtype":"v4-unsigned-body"
     }
   },
   "shapes":{
@@ -2663,15 +2665,15 @@
         },
         "maxCpus":{
           "shape":"CreateRunGroupRequestMaxCpusInteger",
-          "documentation":"<p>The maximum number of CPUs to use in the group.</p>"
+          "documentation":"<p>The maximum number of CPUs that can run concurrently across all active runs in the run group.</p>"
         },
         "maxRuns":{
           "shape":"CreateRunGroupRequestMaxRunsInteger",
-          "documentation":"<p>The maximum number of concurrent runs for the group.</p>"
+          "documentation":"<p>The maximum number of runs that can be running at the same time.</p>"
         },
         "maxDuration":{
           "shape":"CreateRunGroupRequestMaxDurationInteger",
-          "documentation":"<p>A maximum run time for the group in minutes.</p>"
+          "documentation":"<p>The maximum time for each run (in minutes). If a run exceeds the maximum run time, the run fails automatically.</p>"
         },
         "tags":{
           "shape":"TagMap",
@@ -2684,7 +2686,7 @@
         },
         "maxGpus":{
           "shape":"CreateRunGroupRequestMaxGpusInteger",
-          "documentation":"<p>The maximum GPUs that can be used by a run group.</p>"
+          "documentation":"<p>The maximum number of GPUs that can run concurrently across all active runs in the run group.</p>"
         }
       }
     },
@@ -2934,7 +2936,7 @@
         },
         "storageCapacity":{
           "shape":"CreateWorkflowRequestStorageCapacityInteger",
-          "documentation":"<p>The storage capacity for the workflow in gibibytes.</p>"
+          "documentation":"<p>The default storage capacity for the workflow runs, in gibibytes.</p>"
         },
         "tags":{
           "shape":"TagMap",
@@ -2977,6 +2979,12 @@
           "documentation":"<p>The workflow's tags.</p>"
         }
       }
+    },
+    "CreationJobId":{
+      "type":"string",
+      "max":127,
+      "min":1,
+      "pattern":"[a-zA-Z0-9]+"
     },
     "CreationTime":{
       "type":"timestamp",
@@ -4021,6 +4029,10 @@
         "etag":{
           "shape":"ETag",
           "documentation":"<p>The entity tag (ETag) is a hash of the object meant to represent its semantic content.</p>"
+        },
+        "creationJobId":{
+          "shape":"CreationJobId",
+          "documentation":"<p>The read set's creation job ID.</p>"
         }
       }
     },
@@ -4211,6 +4223,14 @@
         "files":{
           "shape":"ReferenceFiles",
           "documentation":"<p>The reference's files.</p>"
+        },
+        "creationType":{
+          "shape":"ReferenceCreationType",
+          "documentation":"<p>The reference's creation type.</p>"
+        },
+        "creationJobId":{
+          "shape":"CreationJobId",
+          "documentation":"<p>The reference's creation job ID.</p>"
         }
       }
     },
@@ -4954,7 +4974,7 @@
         },
         "storageCapacity":{
           "shape":"GetWorkflowResponseStorageCapacityInteger",
-          "documentation":"<p>The workflow's storage capacity in gibibytes.</p>"
+          "documentation":"<p>The workflow's default run storage capacity in gibibytes.</p>"
         },
         "creationTime":{
           "shape":"WorkflowTimestamp",
@@ -5103,6 +5123,10 @@
         "tags":{
           "shape":"TagMap",
           "documentation":"<p>The source's tags.</p>"
+        },
+        "readSetId":{
+          "shape":"ReadSetId",
+          "documentation":"<p>The source's read set ID.</p>"
         }
       },
       "documentation":"<p>A source for an import read set job.</p>"
@@ -5197,6 +5221,10 @@
         "tags":{
           "shape":"TagMap",
           "documentation":"<p>The source's tags.</p>"
+        },
+        "referenceId":{
+          "shape":"ReferenceId",
+          "documentation":"<p>The source's reference ID.</p>"
         }
       },
       "documentation":"<p>An genome reference source.</p>"
@@ -6845,6 +6873,10 @@
       "max":127,
       "min":0,
       "pattern":"$|^arn:.+"
+    },
+    "ReferenceCreationType":{
+      "type":"string",
+      "enum":["IMPORT"]
     },
     "ReferenceDescription":{
       "type":"string",

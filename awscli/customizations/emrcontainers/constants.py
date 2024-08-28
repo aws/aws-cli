@@ -14,6 +14,8 @@
 # Declare all the constants used by Lifecycle in this file
 
 # Lifecycle role names
+from enum import Enum
+
 TRUST_POLICY_STATEMENT_FORMAT = '{ \
     "Effect": "Allow", \
     "Principal": { \
@@ -35,3 +37,11 @@ TRUST_POLICY_STATEMENT_ALREADY_EXISTS = "Trust policy statement already " \
                                         "were made!"
 
 TRUST_POLICY_UPDATE_SUCCESSFUL = "Successfully updated trust policy of role %s"
+
+SERVICE_ACCOUNT_NAMING = "emr-containers-sa-%(FRAMEWORK)s-%(COMPONENT)s-%(AWS_ACCOUNT_ID)s-%(BASE36_ENCODED_ROLE_NAME)s"
+
+class ServiceAccount(Enum):
+    SPARK_OPERATOR_SERVICE_ACCOUNT = "emr-containers-sa-spark-operator"
+    FLINK_OPERATOR_SERVICE_ACCOUNT = "emr-containers-sa-flink-operator"
+    LIVY_SERVICE_ACCOUNT = "emr-containers-sa-livy"
+    LIVY_SPARK_SERVICE_ACCOUNT = "emr-container-sa-spark-livy"

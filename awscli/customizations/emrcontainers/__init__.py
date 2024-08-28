@@ -13,6 +13,10 @@
 
 from awscli.customizations.emrcontainers.update_role_trust_policy \
     import UpdateRoleTrustPolicyCommand
+from awscli.customizations.emrcontainers.create_role_associations \
+    import CreateRoleAssociationsCommand
+from awscli.customizations.emrcontainers.delete_role_associations \
+    import DeleteRoleAssociationsCommand
 
 
 def initialize(cli):
@@ -29,3 +33,8 @@ def inject_commands(command_table, session, **kwargs):
     """
     command_table['update-role-trust-policy'] = UpdateRoleTrustPolicyCommand(
         session)
+    command_table['create-role-associations'] = CreateRoleAssociationsCommand(
+        session)
+    command_table['delete-role-associations'] = DeleteRoleAssociationsCommand(
+        session)
+

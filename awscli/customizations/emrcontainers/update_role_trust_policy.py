@@ -23,18 +23,9 @@ from awscli.customizations.emrcontainers.base36 import Base36
 from awscli.customizations.emrcontainers.eks import EKS
 from awscli.customizations.emrcontainers.iam import IAM
 from awscli.customizations.utils import uni_print, get_policy_arn_suffix
+from awscli.customizations.emrcontainers.utils import get_region
 
 LOG = logging.getLogger(__name__)
-
-
-# Method to parse the arguments to get the region value
-def get_region(session, parsed_globals):
-    region = parsed_globals.region
-
-    if region is None:
-        region = session.get_config_variable('region')
-
-    return region
 
 
 def check_if_statement_exists(expected_statement, actual_assume_role_document):

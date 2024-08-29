@@ -3964,10 +3964,23 @@
         "type":{
           "shape":"StateMachineType",
           "documentation":"<p>The target type of state machine for this definition. The default is <code>STANDARD</code>.</p>"
+        },
+        "severity":{
+          "shape":"ValidateStateMachineDefinitionSeverity",
+          "documentation":"<p>Minimum level of diagnostics to return. <code>ERROR</code> returns only <code>ERROR</code> diagnostics, whereas <code>WARNING</code> returns both <code>WARNING</code> and <code>ERROR</code> diagnostics. The default is <code>ERROR</code>. </p>"
+        },
+        "maxResults":{
+          "shape":"ValidateStateMachineDefinitionMaxResult",
+          "documentation":"<p>The maximum number of diagnostics that are returned per call. The default and maximum value is 100. Setting the value to 0 will also use the default of 100.</p> <p>If the number of diagnostics returned in the response exceeds <code>maxResults</code>, the value of the <code>truncated</code> field in the response will be set to <code>true</code>.</p>"
         }
       }
     },
     "ValidateStateMachineDefinitionLocation":{"type":"string"},
+    "ValidateStateMachineDefinitionMaxResult":{
+      "type":"integer",
+      "max":100,
+      "min":0
+    },
     "ValidateStateMachineDefinitionMessage":{"type":"string"},
     "ValidateStateMachineDefinitionOutput":{
       "type":"structure",
@@ -3983,6 +3996,10 @@
         "diagnostics":{
           "shape":"ValidateStateMachineDefinitionDiagnosticList",
           "documentation":"<p>If the result is <code>OK</code>, this field will be empty. When there are errors, this field will contain an array of <b>Diagnostic</b> objects to help you troubleshoot.</p>"
+        },
+        "truncated":{
+          "shape":"ValidateStateMachineDefinitionTruncated",
+          "documentation":"<p>The result value will be <code>true</code> if the number of diagnostics found in the workflow definition exceeds <code>maxResults</code>. When all diagnostics results are returned, the value will be <code>false</code>.</p>"
         }
       }
     },
@@ -3995,7 +4012,14 @@
     },
     "ValidateStateMachineDefinitionSeverity":{
       "type":"string",
-      "enum":["ERROR"]
+      "enum":[
+        "ERROR",
+        "WARNING"
+      ]
+    },
+    "ValidateStateMachineDefinitionTruncated":{
+      "type":"boolean",
+      "box":true
     },
     "ValidationException":{
       "type":"structure",

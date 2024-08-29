@@ -5,11 +5,13 @@
     "endpointPrefix":"bedrock-agent-runtime",
     "jsonVersion":"1.1",
     "protocol":"rest-json",
+    "protocols":["rest-json"],
     "serviceFullName":"Agents for Amazon Bedrock Runtime",
     "serviceId":"Bedrock Agent Runtime",
     "signatureVersion":"v4",
     "signingName":"bedrock",
-    "uid":"bedrock-agent-runtime-2023-07-26"
+    "uid":"bedrock-agent-runtime-2023-07-26",
+    "auth":["aws.auth#sigv4"]
   },
   "operations":{
     "DeleteAgentMemory":{
@@ -436,7 +438,7 @@
       "members":{
         "data":{
           "shape":"ByteContentBlob",
-          "documentation":"<p>The byte value of the file to attach, encoded as Base-64 string. The maximum size of all files that is attached is 10MB. You can attach a maximum of 5 files. </p>"
+          "documentation":"<p>The raw bytes of the file to attach. The maximum size of all files that is attached is 10MB. You can attach a maximum of 5 files. </p>"
         },
         "mediaType":{
           "shape":"MimeType",
@@ -2628,7 +2630,6 @@
     "RetrievalFilterList":{
       "type":"list",
       "member":{"shape":"RetrievalFilter"},
-      "max":5,
       "min":2
     },
     "RetrievalResultConfluenceLocation":{

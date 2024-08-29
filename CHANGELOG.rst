@@ -2,6 +2,17 @@
 CHANGELOG
 =========
 
+2.17.41
+=======
+
+* api-change:``wafv2``: The minimum request rate for a rate-based rule is now 10. Before this, it was 100.
+* api-change:``bedrock-runtime``: Add support for imported-model in invokeModel and InvokeModelWithResponseStream.
+* api-change:``bedrock-agent-runtime``: Lifting the maximum length on Bedrock KnowledgeBase RetrievalFilter array
+* api-change:``stepfunctions``: This release adds support for static analysis to ValidateStateMachineDefinition API, which can now return optional WARNING diagnostics for semantic errors on the definition of an Amazon States Language (ASL) state machine.
+* api-change:``personalize``: This releases ability to update automatic training scheduler for customer solutions
+* api-change:``quicksight``: Increased Character Limit for Dataset Calculation Field expressions
+
+
 2.17.40
 =======
 

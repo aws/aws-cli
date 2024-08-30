@@ -54,6 +54,49 @@
       "documentation":"<p>Accepts a subscription request to a specific asset. </p>",
       "idempotent":true
     },
+    "AddEntityOwner":{
+      "name":"AddEntityOwner",
+      "http":{
+        "method":"POST",
+        "requestUri":"/v2/domains/{domainIdentifier}/entities/{entityType}/{entityIdentifier}/addOwner",
+        "responseCode":201
+      },
+      "input":{"shape":"AddEntityOwnerInput"},
+      "output":{"shape":"AddEntityOwnerOutput"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ServiceQuotaExceededException"},
+        {"shape":"ConflictException"},
+        {"shape":"ValidationException"},
+        {"shape":"UnauthorizedException"}
+      ],
+      "documentation":"<p>Adds the owner of an entity (a domain unit).</p>",
+      "idempotent":true
+    },
+    "AddPolicyGrant":{
+      "name":"AddPolicyGrant",
+      "http":{
+        "method":"POST",
+        "requestUri":"/v2/domains/{domainIdentifier}/policies/managed/{entityType}/{entityIdentifier}/addGrant",
+        "responseCode":201
+      },
+      "input":{"shape":"AddPolicyGrantInput"},
+      "output":{"shape":"AddPolicyGrantOutput"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ServiceQuotaExceededException"},
+        {"shape":"ConflictException"},
+        {"shape":"ValidationException"},
+        {"shape":"UnauthorizedException"}
+      ],
+      "documentation":"<p>Adds a policy grant (an authorization policy) to a specified entity, including domain units, environment blueprint configurations, or environment profiles.</p>",
+      "idempotent":true
+    },
     "AssociateEnvironmentRole":{
       "name":"AssociateEnvironmentRole",
       "http":{
@@ -285,6 +328,27 @@
         {"shape":"UnauthorizedException"}
       ],
       "documentation":"<p>Creates an Amazon DataZone domain.</p>",
+      "idempotent":true
+    },
+    "CreateDomainUnit":{
+      "name":"CreateDomainUnit",
+      "http":{
+        "method":"POST",
+        "requestUri":"/v2/domains/{domainIdentifier}/domain-units",
+        "responseCode":201
+      },
+      "input":{"shape":"CreateDomainUnitInput"},
+      "output":{"shape":"CreateDomainUnitOutput"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ServiceQuotaExceededException"},
+        {"shape":"ConflictException"},
+        {"shape":"ValidationException"},
+        {"shape":"UnauthorizedException"}
+      ],
+      "documentation":"<p>Creates a domain unit in Amazon DataZone.</p>",
       "idempotent":true
     },
     "CreateEnvironment":{
@@ -695,6 +759,27 @@
         {"shape":"UnauthorizedException"}
       ],
       "documentation":"<p>Deletes a Amazon DataZone domain.</p>",
+      "idempotent":true
+    },
+    "DeleteDomainUnit":{
+      "name":"DeleteDomainUnit",
+      "http":{
+        "method":"DELETE",
+        "requestUri":"/v2/domains/{domainIdentifier}/domain-units/{identifier}",
+        "responseCode":204
+      },
+      "input":{"shape":"DeleteDomainUnitInput"},
+      "output":{"shape":"DeleteDomainUnitOutput"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ConflictException"},
+        {"shape":"ValidationException"},
+        {"shape":"UnauthorizedException"}
+      ],
+      "documentation":"<p>Deletes a domain unit.</p>",
       "idempotent":true
     },
     "DeleteEnvironment":{
@@ -1133,6 +1218,25 @@
         {"shape":"UnauthorizedException"}
       ],
       "documentation":"<p>Gets an Amazon DataZone domain.</p>"
+    },
+    "GetDomainUnit":{
+      "name":"GetDomainUnit",
+      "http":{
+        "method":"GET",
+        "requestUri":"/v2/domains/{domainIdentifier}/domain-units/{identifier}",
+        "responseCode":200
+      },
+      "input":{"shape":"GetDomainUnitInput"},
+      "output":{"shape":"GetDomainUnitOutput"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ValidationException"},
+        {"shape":"UnauthorizedException"}
+      ],
+      "documentation":"<p>Gets the details of the specified domain unit.</p>"
     },
     "GetEnvironment":{
       "name":"GetEnvironment",
@@ -1654,6 +1758,24 @@
       ],
       "documentation":"<p>Lists data sources in Amazon DataZone.</p>"
     },
+    "ListDomainUnitsForParent":{
+      "name":"ListDomainUnitsForParent",
+      "http":{
+        "method":"GET",
+        "requestUri":"/v2/domains/{domainIdentifier}/domain-units",
+        "responseCode":200
+      },
+      "input":{"shape":"ListDomainUnitsForParentInput"},
+      "output":{"shape":"ListDomainUnitsForParentOutput"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ValidationException"},
+        {"shape":"UnauthorizedException"}
+      ],
+      "documentation":"<p>Lists child domain units for the specified parent domain unit.</p>"
+    },
     "ListDomains":{
       "name":"ListDomains",
       "http":{
@@ -1674,6 +1796,24 @@
         {"shape":"UnauthorizedException"}
       ],
       "documentation":"<p>Lists Amazon DataZone domains.</p>"
+    },
+    "ListEntityOwners":{
+      "name":"ListEntityOwners",
+      "http":{
+        "method":"GET",
+        "requestUri":"/v2/domains/{domainIdentifier}/entities/{entityType}/{entityIdentifier}/owners",
+        "responseCode":200
+      },
+      "input":{"shape":"ListEntityOwnersInput"},
+      "output":{"shape":"ListEntityOwnersOutput"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ValidationException"},
+        {"shape":"UnauthorizedException"}
+      ],
+      "documentation":"<p>Lists the entity (domain units) owners.</p>"
     },
     "ListEnvironmentActions":{
       "name":"ListEnvironmentActions",
@@ -1823,6 +1963,24 @@
         {"shape":"UnauthorizedException"}
       ],
       "documentation":"<p>Lists all Amazon DataZone notifications.</p>"
+    },
+    "ListPolicyGrants":{
+      "name":"ListPolicyGrants",
+      "http":{
+        "method":"GET",
+        "requestUri":"/v2/domains/{domainIdentifier}/policies/managed/{entityType}/{entityIdentifier}/grants",
+        "responseCode":200
+      },
+      "input":{"shape":"ListPolicyGrantsInput"},
+      "output":{"shape":"ListPolicyGrantsOutput"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ValidationException"},
+        {"shape":"UnauthorizedException"}
+      ],
+      "documentation":"<p>Lists policy grants.</p>"
     },
     "ListProjectMemberships":{
       "name":"ListProjectMemberships",
@@ -2080,6 +2238,45 @@
         {"shape":"UnauthorizedException"}
       ],
       "documentation":"<p>Rejects the specified subscription request.</p>",
+      "idempotent":true
+    },
+    "RemoveEntityOwner":{
+      "name":"RemoveEntityOwner",
+      "http":{
+        "method":"POST",
+        "requestUri":"/v2/domains/{domainIdentifier}/entities/{entityType}/{entityIdentifier}/removeOwner",
+        "responseCode":204
+      },
+      "input":{"shape":"RemoveEntityOwnerInput"},
+      "output":{"shape":"RemoveEntityOwnerOutput"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ValidationException"},
+        {"shape":"UnauthorizedException"}
+      ],
+      "documentation":"<p>Removes an owner from an entity.</p>",
+      "idempotent":true
+    },
+    "RemovePolicyGrant":{
+      "name":"RemovePolicyGrant",
+      "http":{
+        "method":"POST",
+        "requestUri":"/v2/domains/{domainIdentifier}/policies/managed/{entityType}/{entityIdentifier}/removeGrant",
+        "responseCode":204
+      },
+      "input":{"shape":"RemovePolicyGrantInput"},
+      "output":{"shape":"RemovePolicyGrantOutput"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ValidationException"},
+        {"shape":"UnauthorizedException"}
+      ],
+      "documentation":"<p>Removes a policy grant.</p>",
       "idempotent":true
     },
     "RevokeSubscription":{
@@ -2340,6 +2537,27 @@
         {"shape":"UnauthorizedException"}
       ],
       "documentation":"<p>Updates a Amazon DataZone domain.</p>",
+      "idempotent":true
+    },
+    "UpdateDomainUnit":{
+      "name":"UpdateDomainUnit",
+      "http":{
+        "method":"PUT",
+        "requestUri":"/v2/domains/{domainIdentifier}/domain-units/{identifier}",
+        "responseCode":200
+      },
+      "input":{"shape":"UpdateDomainUnitInput"},
+      "output":{"shape":"UpdateDomainUnitOutput"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ConflictException"},
+        {"shape":"ValidationException"},
+        {"shape":"UnauthorizedException"}
+      ],
+      "documentation":"<p>Updates the domain unit.</p>",
       "idempotent":true
     },
     "UpdateEnvironment":{
@@ -2804,6 +3022,124 @@
       },
       "documentation":"<p>The parameters of the environment action.</p>",
       "union":true
+    },
+    "AddEntityOwnerInput":{
+      "type":"structure",
+      "required":[
+        "domainIdentifier",
+        "entityIdentifier",
+        "entityType",
+        "owner"
+      ],
+      "members":{
+        "clientToken":{
+          "shape":"ClientToken",
+          "documentation":"<p>A unique, case-sensitive identifier that is provided to ensure the idempotency of the request.</p>",
+          "idempotencyToken":true
+        },
+        "domainIdentifier":{
+          "shape":"DomainId",
+          "documentation":"<p>The ID of the domain in which you want to add the entity owner.</p>",
+          "location":"uri",
+          "locationName":"domainIdentifier"
+        },
+        "entityIdentifier":{
+          "shape":"String",
+          "documentation":"<p>The ID of the entity to which you want to add an owner.</p>",
+          "location":"uri",
+          "locationName":"entityIdentifier"
+        },
+        "entityType":{
+          "shape":"DataZoneEntityType",
+          "documentation":"<p>The type of an entity.</p>",
+          "location":"uri",
+          "locationName":"entityType"
+        },
+        "owner":{
+          "shape":"OwnerProperties",
+          "documentation":"<p>The owner that you want to add to the entity.</p>"
+        }
+      }
+    },
+    "AddEntityOwnerOutput":{
+      "type":"structure",
+      "members":{
+      }
+    },
+    "AddPolicyGrantInput":{
+      "type":"structure",
+      "required":[
+        "detail",
+        "domainIdentifier",
+        "entityIdentifier",
+        "entityType",
+        "policyType",
+        "principal"
+      ],
+      "members":{
+        "clientToken":{
+          "shape":"ClientToken",
+          "documentation":"<p>A unique, case-sensitive identifier that is provided to ensure the idempotency of the request.</p>",
+          "idempotencyToken":true
+        },
+        "detail":{
+          "shape":"PolicyGrantDetail",
+          "documentation":"<p>The details of the policy grant.</p>"
+        },
+        "domainIdentifier":{
+          "shape":"DomainId",
+          "documentation":"<p>The ID of the domain where you want to add a policy grant.</p>",
+          "location":"uri",
+          "locationName":"domainIdentifier"
+        },
+        "entityIdentifier":{
+          "shape":"String",
+          "documentation":"<p>The ID of the entity (resource) to which you want to add a policy grant.</p>",
+          "location":"uri",
+          "locationName":"entityIdentifier"
+        },
+        "entityType":{
+          "shape":"TargetEntityType",
+          "documentation":"<p>The type of entity (resource) to which the grant is added.</p>",
+          "location":"uri",
+          "locationName":"entityType"
+        },
+        "policyType":{
+          "shape":"ManagedPolicyType",
+          "documentation":"<p>The type of policy that you want to grant.</p>"
+        },
+        "principal":{
+          "shape":"PolicyGrantPrincipal",
+          "documentation":"<p>The principal to whom the permissions are granted.</p>"
+        }
+      }
+    },
+    "AddPolicyGrantOutput":{
+      "type":"structure",
+      "members":{
+      }
+    },
+    "AddToProjectMemberPoolPolicyGrantDetail":{
+      "type":"structure",
+      "members":{
+        "includeChildDomainUnits":{
+          "shape":"Boolean",
+          "documentation":"<p>Specifies whether the policy grant is applied to child domain units.</p>"
+        }
+      },
+      "documentation":"<p>The details of the policy grant.</p>"
+    },
+    "AllDomainUnitsGrantFilter":{
+      "type":"structure",
+      "members":{
+      },
+      "documentation":"<p>The grant filter for all domain units.</p>"
+    },
+    "AllUsersGrantFilter":{
+      "type":"structure",
+      "members":{
+      },
+      "documentation":"<p>The all users grant filter.</p>"
     },
     "ApplicableAssetTypes":{
       "type":"list",
@@ -4021,6 +4357,16 @@
         }
       }
     },
+    "CreateAssetTypePolicyGrantDetail":{
+      "type":"structure",
+      "members":{
+        "includeChildDomainUnits":{
+          "shape":"Boolean",
+          "documentation":"<p>Specifies whether the policy grant is applied to child domain units.</p>"
+        }
+      },
+      "documentation":"<p>The details of the policy grant.</p>"
+    },
     "CreateDataProductInput":{
       "type":"structure",
       "required":[
@@ -4480,6 +4826,10 @@
           "shape":"String",
           "documentation":"<p>The URL of the data portal for this Amazon DataZone domain.</p>"
         },
+        "rootDomainUnitId":{
+          "shape":"DomainUnitId",
+          "documentation":"<p>The ID of the root domain unit.</p>"
+        },
         "singleSignOn":{
           "shape":"SingleSignOn",
           "documentation":"<p>The single-sign on configuration of the Amazon DataZone domain.</p>"
@@ -4493,6 +4843,97 @@
           "documentation":"<p>The tags specified for the Amazon DataZone domain.</p>"
         }
       }
+    },
+    "CreateDomainUnitInput":{
+      "type":"structure",
+      "required":[
+        "domainIdentifier",
+        "name",
+        "parentDomainUnitIdentifier"
+      ],
+      "members":{
+        "clientToken":{
+          "shape":"ClientToken",
+          "documentation":"<p>A unique, case-sensitive identifier that is provided to ensure the idempotency of the request.</p>",
+          "idempotencyToken":true
+        },
+        "description":{
+          "shape":"DomainUnitDescription",
+          "documentation":"<p>The description of the domain unit.</p>"
+        },
+        "domainIdentifier":{
+          "shape":"DomainId",
+          "documentation":"<p>The ID of the domain where you want to crate a domain unit.</p>",
+          "location":"uri",
+          "locationName":"domainIdentifier"
+        },
+        "name":{
+          "shape":"DomainUnitName",
+          "documentation":"<p>The name of the domain unit.</p>"
+        },
+        "parentDomainUnitIdentifier":{
+          "shape":"DomainUnitId",
+          "documentation":"<p>The ID of the parent domain unit.</p>"
+        }
+      }
+    },
+    "CreateDomainUnitOutput":{
+      "type":"structure",
+      "required":[
+        "ancestorDomainUnitIds",
+        "domainId",
+        "id",
+        "name",
+        "owners"
+      ],
+      "members":{
+        "ancestorDomainUnitIds":{
+          "shape":"DomainUnitIds",
+          "documentation":"<p>The IDs of the ancestor domain units.</p>"
+        },
+        "createdAt":{
+          "shape":"CreatedAt",
+          "documentation":"<p>The timestamp at which the domain unit was created.</p>"
+        },
+        "createdBy":{
+          "shape":"CreatedBy",
+          "documentation":"<p>The user who created the domain unit.</p>"
+        },
+        "description":{
+          "shape":"DomainUnitDescription",
+          "documentation":"<p>The description of the domain unit.</p>"
+        },
+        "domainId":{
+          "shape":"DomainId",
+          "documentation":"<p>The ID of the domain where the domain unit was created.</p>"
+        },
+        "id":{
+          "shape":"DomainUnitId",
+          "documentation":"<p>The ID of the domain unit.</p>"
+        },
+        "name":{
+          "shape":"DomainUnitName",
+          "documentation":"<p>The name of the domain unit.</p>"
+        },
+        "owners":{
+          "shape":"DomainUnitOwners",
+          "documentation":"<p>The owners of the domain unit.</p>"
+        },
+        "parentDomainUnitId":{
+          "shape":"DomainUnitId",
+          "documentation":"<p>The ID of the parent domain unit.</p>"
+        }
+      }
+    },
+    "CreateDomainUnitPolicyGrantDetail":{
+      "type":"structure",
+      "members":{
+        "includeChildDomainUnits":{
+          "shape":"Boolean",
+          "documentation":"<p>Specifies whether the policy grant is applied to child domain units.</p>"
+        }
+      },
+      "documentation":"<p>The details of the policy grant.</p>"
     },
     "CreateEnvironmentActionInput":{
       "type":"structure",
@@ -4819,6 +5260,16 @@
         }
       }
     },
+    "CreateEnvironmentProfilePolicyGrantDetail":{
+      "type":"structure",
+      "members":{
+        "domainUnitId":{
+          "shape":"DomainUnitId",
+          "documentation":"<p>The ID of the domain unit.</p>"
+        }
+      },
+      "documentation":"<p>The details of the policy grant.</p>"
+    },
     "CreateFormTypeInput":{
       "type":"structure",
       "required":[
@@ -4894,6 +5345,16 @@
         }
       }
     },
+    "CreateFormTypePolicyGrantDetail":{
+      "type":"structure",
+      "members":{
+        "includeChildDomainUnits":{
+          "shape":"Boolean",
+          "documentation":"<p>Specifies whether the policy grant is applied to child domain units.</p>"
+        }
+      },
+      "documentation":"<p>The details of the policy grant.</p>"
+    },
     "CreateGlossaryInput":{
       "type":"structure",
       "required":[
@@ -4965,6 +5426,16 @@
           "documentation":"<p>The status of this business glossary.</p>"
         }
       }
+    },
+    "CreateGlossaryPolicyGrantDetail":{
+      "type":"structure",
+      "members":{
+        "includeChildDomainUnits":{
+          "shape":"Boolean",
+          "documentation":"<p>Specifies whether the policy grant is applied to child domain units.</p>"
+        }
+      },
+      "documentation":"<p>The details of the policy grant.</p>"
     },
     "CreateGlossaryTermInput":{
       "type":"structure",
@@ -5177,6 +5648,10 @@
           "location":"uri",
           "locationName":"domainIdentifier"
         },
+        "domainUnitId":{
+          "shape":"DomainUnitId",
+          "documentation":"<p>The ID of the domain unit. This parameter is not required and if it is not specified, then the project is created at the root domain unit level.</p>"
+        },
         "glossaryTerms":{
           "shape":"GlossaryTerms",
           "documentation":"<p>The glossary terms that can be used in this Amazon DataZone project.</p>"
@@ -5248,6 +5723,10 @@
           "shape":"DomainId",
           "documentation":"<p>The identifier of the Amazon DataZone domain in which the project was created.</p>"
         },
+        "domainUnitId":{
+          "shape":"DomainUnitId",
+          "documentation":"<p>The ID of the domain unit.</p>"
+        },
         "failureReasons":{
           "shape":"FailureReasons",
           "documentation":"<p>Specifies the error message that is returned if the operation cannot be successfully completed.</p>"
@@ -5273,6 +5752,16 @@
           "documentation":"<p>The status of the Amazon DataZone project that was created.</p>"
         }
       }
+    },
+    "CreateProjectPolicyGrantDetail":{
+      "type":"structure",
+      "members":{
+        "includeChildDomainUnits":{
+          "shape":"Boolean",
+          "documentation":"<p>Specifies whether the policy grant is applied to child domain units.</p>"
+        }
+      },
+      "documentation":"<p>The details of the policy grant.</p>"
     },
     "CreateSubscriptionGrantInput":{
       "type":"structure",
@@ -6264,6 +6753,10 @@
       "max":256,
       "min":1
     },
+    "DataZoneEntityType":{
+      "type":"string",
+      "enum":["DOMAIN_UNIT"]
+    },
     "DateTime":{
       "type":"timestamp",
       "timestampFormat":"iso8601"
@@ -6543,6 +7036,32 @@
           "shape":"DomainStatus",
           "documentation":"<p>The status of the domain.</p>"
         }
+      }
+    },
+    "DeleteDomainUnitInput":{
+      "type":"structure",
+      "required":[
+        "domainIdentifier",
+        "identifier"
+      ],
+      "members":{
+        "domainIdentifier":{
+          "shape":"DomainId",
+          "documentation":"<p>The ID of the domain where you want to delete a domain unit.</p>",
+          "location":"uri",
+          "locationName":"domainIdentifier"
+        },
+        "identifier":{
+          "shape":"DomainUnitId",
+          "documentation":"<p>The ID of the domain unit that you want to delete.</p>",
+          "location":"uri",
+          "locationName":"identifier"
+        }
+      }
+    },
+    "DeleteDomainUnitOutput":{
+      "type":"structure",
+      "members":{
       }
     },
     "DeleteEnvironmentActionInput":{
@@ -7198,6 +7717,142 @@
       },
       "documentation":"<p>A summary of a Amazon DataZone domain.</p>"
     },
+    "DomainUnitDescription":{
+      "type":"string",
+      "max":2048,
+      "min":0,
+      "sensitive":true
+    },
+    "DomainUnitDesignation":{
+      "type":"string",
+      "enum":["OWNER"]
+    },
+    "DomainUnitFilterForProject":{
+      "type":"structure",
+      "required":["domainUnit"],
+      "members":{
+        "domainUnit":{
+          "shape":"DomainUnitId",
+          "documentation":"<p>The domain unit ID to use in the filter.</p>"
+        },
+        "includeChildDomainUnits":{
+          "shape":"Boolean",
+          "documentation":"<p>Specifies whether to include child domain units.</p>",
+          "box":true
+        }
+      },
+      "documentation":"<p>The domain unit filter of the project grant filter.</p>"
+    },
+    "DomainUnitGrantFilter":{
+      "type":"structure",
+      "members":{
+        "allDomainUnitsGrantFilter":{
+          "shape":"AllDomainUnitsGrantFilter",
+          "documentation":"<p>Specifies a grant filter containing all domain units.</p>"
+        }
+      },
+      "documentation":"<p>The grant filter for the domain unit. In the current release of Amazon DataZone, the only supported filter is the <code>allDomainUnitsGrantFilter</code>.</p>",
+      "union":true
+    },
+    "DomainUnitGroupProperties":{
+      "type":"structure",
+      "members":{
+        "groupId":{
+          "shape":"String",
+          "documentation":"<p>The ID of the domain unit group.</p>"
+        }
+      },
+      "documentation":"<p>The properties of a domain unit group.</p>"
+    },
+    "DomainUnitId":{
+      "type":"string",
+      "max":256,
+      "min":1,
+      "pattern":"^[a-z0-9_\\-]+$"
+    },
+    "DomainUnitIds":{
+      "type":"list",
+      "member":{"shape":"DomainUnitId"}
+    },
+    "DomainUnitName":{
+      "type":"string",
+      "max":128,
+      "min":1,
+      "pattern":"^[\\w -]+$",
+      "sensitive":true
+    },
+    "DomainUnitOwnerProperties":{
+      "type":"structure",
+      "members":{
+        "group":{
+          "shape":"DomainUnitGroupProperties",
+          "documentation":"<p>Indicates that the domain unit owner is a group.</p>"
+        },
+        "user":{
+          "shape":"DomainUnitUserProperties",
+          "documentation":"<p>Indicates that the domain unit owner is a user.</p>"
+        }
+      },
+      "documentation":"<p>The properties of the domain unit owner.</p>",
+      "union":true
+    },
+    "DomainUnitOwners":{
+      "type":"list",
+      "member":{"shape":"DomainUnitOwnerProperties"},
+      "max":20,
+      "min":0
+    },
+    "DomainUnitPolicyGrantPrincipal":{
+      "type":"structure",
+      "required":["domainUnitDesignation"],
+      "members":{
+        "domainUnitDesignation":{
+          "shape":"DomainUnitDesignation",
+          "documentation":"<p>Specifes the designation of the domain unit users.</p>"
+        },
+        "domainUnitGrantFilter":{
+          "shape":"DomainUnitGrantFilter",
+          "documentation":"<p>The grant filter for the domain unit.</p>"
+        },
+        "domainUnitIdentifier":{
+          "shape":"DomainUnitId",
+          "documentation":"<p>The ID of the domain unit.</p>"
+        }
+      },
+      "documentation":"<p>The domain unit principal to whom the policy is granted.</p>"
+    },
+    "DomainUnitSummaries":{
+      "type":"list",
+      "member":{"shape":"DomainUnitSummary"}
+    },
+    "DomainUnitSummary":{
+      "type":"structure",
+      "required":[
+        "id",
+        "name"
+      ],
+      "members":{
+        "id":{
+          "shape":"DomainUnitId",
+          "documentation":"<p>The ID of the domain unit summary.</p>"
+        },
+        "name":{
+          "shape":"String",
+          "documentation":"<p>The name of the domain unit summary.</p>"
+        }
+      },
+      "documentation":"<p>The summary of the domain unit.</p>"
+    },
+    "DomainUnitUserProperties":{
+      "type":"structure",
+      "members":{
+        "userId":{
+          "shape":"String",
+          "documentation":"<p>The ID of teh domain unit user.</p>"
+        }
+      },
+      "documentation":"<p>The properties of the domain unit user.</p>"
+    },
     "EdgeDirection":{
       "type":"string",
       "enum":[
@@ -7230,6 +7885,10 @@
     "EntityIdentifier":{
       "type":"string",
       "pattern":"^[a-zA-Z0-9_-]{1,36}$"
+    },
+    "EntityOwners":{
+      "type":"list",
+      "member":{"shape":"OwnerPropertiesOutput"}
     },
     "EntityType":{
       "type":"string",
@@ -8592,6 +9251,10 @@
           "shape":"String",
           "documentation":"<p>The URL of the data portal for this Amazon DataZone domain.</p>"
         },
+        "rootDomainUnitId":{
+          "shape":"DomainUnitId",
+          "documentation":"<p>The ID of the root domain in Amazon Datazone.</p>"
+        },
         "singleSignOn":{
           "shape":"SingleSignOn",
           "documentation":"<p>The single sing-on option of the specified Amazon DataZone domain.</p>"
@@ -8603,6 +9266,78 @@
         "tags":{
           "shape":"Tags",
           "documentation":"<p>The tags specified for the Amazon DataZone domain.</p>"
+        }
+      }
+    },
+    "GetDomainUnitInput":{
+      "type":"structure",
+      "required":[
+        "domainIdentifier",
+        "identifier"
+      ],
+      "members":{
+        "domainIdentifier":{
+          "shape":"DomainId",
+          "documentation":"<p>The ID of the domain where you want to get a domain unit.</p>",
+          "location":"uri",
+          "locationName":"domainIdentifier"
+        },
+        "identifier":{
+          "shape":"DomainUnitId",
+          "documentation":"<p>The identifier of the domain unit that you want to get.</p>",
+          "location":"uri",
+          "locationName":"identifier"
+        }
+      }
+    },
+    "GetDomainUnitOutput":{
+      "type":"structure",
+      "required":[
+        "domainId",
+        "id",
+        "name",
+        "owners"
+      ],
+      "members":{
+        "createdAt":{
+          "shape":"CreatedAt",
+          "documentation":"<p>The time stamp at which the domain unit was created.</p>"
+        },
+        "createdBy":{
+          "shape":"CreatedBy",
+          "documentation":"<p>The user who created the domain unit.</p>"
+        },
+        "description":{
+          "shape":"DomainUnitDescription",
+          "documentation":"<p>The description of the domain unit.</p>"
+        },
+        "domainId":{
+          "shape":"DomainId",
+          "documentation":"<p>The ID of the domain in which the domain unit lives.</p>"
+        },
+        "id":{
+          "shape":"DomainUnitId",
+          "documentation":"<p>The ID of the domain unit.</p>"
+        },
+        "lastUpdatedAt":{
+          "shape":"UpdatedAt",
+          "documentation":"<p>The timestamp at which the domain unit was last updated.</p>"
+        },
+        "lastUpdatedBy":{
+          "shape":"UpdatedBy",
+          "documentation":"<p>The user who last updated the domain unit.</p>"
+        },
+        "name":{
+          "shape":"DomainUnitName",
+          "documentation":"<p>The name of the domain unit.</p>"
+        },
+        "owners":{
+          "shape":"DomainUnitOwners",
+          "documentation":"<p>The owners of the domain unit.</p>"
+        },
+        "parentDomainUnitId":{
+          "shape":"DomainUnitId",
+          "documentation":"<p>The ID of the parent domain unit.</p>"
         }
       }
     },
@@ -9644,6 +10379,10 @@
           "shape":"DomainId",
           "documentation":"<p>The ID of the Amazon DataZone domain in which the project exists.</p>"
         },
+        "domainUnitId":{
+          "shape":"DomainUnitId",
+          "documentation":"<p>The ID of the domain unit.</p>"
+        },
         "failureReasons":{
           "shape":"FailureReasons",
           "documentation":"<p>Specifies the error message that is returned if the operation cannot be successfully completed.</p>"
@@ -10461,11 +11200,22 @@
     },
     "GroupIdentifier":{
       "type":"string",
-      "pattern":"(^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$|[\\p{L}\\p{M}\\p{S}\\p{N}\\p{P}\\t\\n\\r  ]+)"
+      "pattern":"(^([0-9a-f]{10}-|)[A-Fa-f0-9]{8}-[A-Fa-f0-9]{4}-[A-Fa-f0-9]{4}-[A-Fa-f0-9]{4}-[A-Fa-f0-9]{12}$|[\\p{L}\\p{M}\\p{S}\\p{N}\\p{P}\\t\\n\\r  ]+)"
+    },
+    "GroupPolicyGrantPrincipal":{
+      "type":"structure",
+      "members":{
+        "groupIdentifier":{
+          "shape":"GroupIdentifier",
+          "documentation":"<p>The ID Of the group of the group principal.</p>"
+        }
+      },
+      "documentation":"<p>The group principal to whom the policy is granted.</p>",
+      "union":true
     },
     "GroupProfileId":{
       "type":"string",
-      "pattern":"^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
+      "pattern":"^([0-9a-f]{10}-|)[A-Fa-f0-9]{8}-[A-Fa-f0-9]{4}-[A-Fa-f0-9]{4}-[A-Fa-f0-9]{4}-[A-Fa-f0-9]{12}$"
     },
     "GroupProfileName":{
       "type":"string",
@@ -11171,6 +11921,53 @@
         }
       }
     },
+    "ListDomainUnitsForParentInput":{
+      "type":"structure",
+      "required":[
+        "domainIdentifier",
+        "parentDomainUnitIdentifier"
+      ],
+      "members":{
+        "domainIdentifier":{
+          "shape":"DomainId",
+          "documentation":"<p>The ID of the domain in which you want to list domain units for a parent domain unit.</p>",
+          "location":"uri",
+          "locationName":"domainIdentifier"
+        },
+        "maxResults":{
+          "shape":"MaxResultsForListDomains",
+          "documentation":"<p>The maximum number of domain units to return in a single call to ListDomainUnitsForParent. When the number of domain units to be listed is greater than the value of MaxResults, the response contains a NextToken value that you can use in a subsequent call to ListDomainUnitsForParent to list the next set of domain units.</p>",
+          "location":"querystring",
+          "locationName":"maxResults"
+        },
+        "nextToken":{
+          "shape":"PaginationToken",
+          "documentation":"<p>When the number of domain units is greater than the default value for the MaxResults parameter, or if you explicitly specify a value for MaxResults that is less than the number of domain units, the response includes a pagination token named NextToken. You can specify this NextToken value in a subsequent call to ListDomainUnitsForParent to list the next set of domain units.</p>",
+          "location":"querystring",
+          "locationName":"nextToken"
+        },
+        "parentDomainUnitIdentifier":{
+          "shape":"DomainUnitId",
+          "documentation":"<p>The ID of the parent domain unit.</p>",
+          "location":"querystring",
+          "locationName":"parentDomainUnitIdentifier"
+        }
+      }
+    },
+    "ListDomainUnitsForParentOutput":{
+      "type":"structure",
+      "required":["items"],
+      "members":{
+        "items":{
+          "shape":"DomainUnitSummaries",
+          "documentation":"<p>The results returned by this action.</p>"
+        },
+        "nextToken":{
+          "shape":"PaginationToken",
+          "documentation":"<p>When the number of domain units is greater than the default value for the MaxResults parameter, or if you explicitly specify a value for MaxResults that is less than the number of domain units, the response includes a pagination token named NextToken. You can specify this NextToken value in a subsequent call to ListDomainUnitsForParent to list the next set of domain units.</p>"
+        }
+      }
+    },
     "ListDomainsInput":{
       "type":"structure",
       "members":{
@@ -11205,6 +12002,60 @@
         "nextToken":{
           "shape":"PaginationToken",
           "documentation":"<p>When the number of domains is greater than the default value for the <code>MaxResults</code> parameter, or if you explicitly specify a value for <code>MaxResults</code> that is less than the number of domains, the response includes a pagination token named <code>NextToken</code>. You can specify this <code>NextToken</code> value in a subsequent call to <code>ListDomains</code> to list the next set of domains.</p>"
+        }
+      }
+    },
+    "ListEntityOwnersInput":{
+      "type":"structure",
+      "required":[
+        "domainIdentifier",
+        "entityIdentifier",
+        "entityType"
+      ],
+      "members":{
+        "domainIdentifier":{
+          "shape":"DomainId",
+          "documentation":"<p>The ID of the domain where you want to list entity owners.</p>",
+          "location":"uri",
+          "locationName":"domainIdentifier"
+        },
+        "entityIdentifier":{
+          "shape":"String",
+          "documentation":"<p>The ID of the entity that you want to list.</p>",
+          "location":"uri",
+          "locationName":"entityIdentifier"
+        },
+        "entityType":{
+          "shape":"DataZoneEntityType",
+          "documentation":"<p>The type of the entity that you want to list.</p>",
+          "location":"uri",
+          "locationName":"entityType"
+        },
+        "maxResults":{
+          "shape":"MaxResultsForListDomains",
+          "documentation":"<p>The maximum number of entities to return in a single call to <code>ListEntityOwners</code>. When the number of entities to be listed is greater than the value of <code>MaxResults</code>, the response contains a <code>NextToken</code> value that you can use in a subsequent call to <code>ListEntityOwners</code> to list the next set of entities.</p>",
+          "location":"querystring",
+          "locationName":"maxResults"
+        },
+        "nextToken":{
+          "shape":"PaginationToken",
+          "documentation":"<p>When the number of entities is greater than the default value for the <code>MaxResults</code> parameter, or if you explicitly specify a value for <code>MaxResults</code> that is less than the number of entities, the response includes a pagination token named <code>NextToken</code>. You can specify this <code>NextToken</code> value in a subsequent call to <code>ListEntityOwners</code> to list the next set of entities.</p>",
+          "location":"querystring",
+          "locationName":"nextToken"
+        }
+      }
+    },
+    "ListEntityOwnersOutput":{
+      "type":"structure",
+      "required":["owners"],
+      "members":{
+        "nextToken":{
+          "shape":"PaginationToken",
+          "documentation":"<p>When the number of entities is greater than the default value for the <code>MaxResults</code> parameter, or if you explicitly specify a value for <code>MaxResults</code> that is less than the number of entities, the response includes a pagination token named <code>NextToken</code>. You can specify this <code>NextToken</code> value in a subsequent call to <code>ListEntityOwners</code> to list the next set of entities.</p>"
+        },
+        "owners":{
+          "shape":"EntityOwners",
+          "documentation":"<p>The owners of the entity.</p>"
         }
       }
     },
@@ -11688,6 +12539,67 @@
         "notifications":{
           "shape":"NotificationsList",
           "documentation":"<p>The results of the <code>ListNotifications</code> action.</p>"
+        }
+      }
+    },
+    "ListPolicyGrantsInput":{
+      "type":"structure",
+      "required":[
+        "domainIdentifier",
+        "entityIdentifier",
+        "entityType",
+        "policyType"
+      ],
+      "members":{
+        "domainIdentifier":{
+          "shape":"DomainId",
+          "documentation":"<p>The ID of the domain where you want to list policy grants.</p>",
+          "location":"uri",
+          "locationName":"domainIdentifier"
+        },
+        "entityIdentifier":{
+          "shape":"String",
+          "documentation":"<p>The ID of the entity for which you want to list policy grants.</p>",
+          "location":"uri",
+          "locationName":"entityIdentifier"
+        },
+        "entityType":{
+          "shape":"TargetEntityType",
+          "documentation":"<p>The type of entity for which you want to list policy grants.</p>",
+          "location":"uri",
+          "locationName":"entityType"
+        },
+        "maxResults":{
+          "shape":"MaxResultsForListDomains",
+          "documentation":"<p>The maximum number of grants to return in a single call to <code>ListPolicyGrants</code>. When the number of grants to be listed is greater than the value of <code>MaxResults</code>, the response contains a <code>NextToken</code> value that you can use in a subsequent call to <code>ListPolicyGrants</code> to list the next set of grants.</p>",
+          "location":"querystring",
+          "locationName":"maxResults"
+        },
+        "nextToken":{
+          "shape":"PaginationToken",
+          "documentation":"<p>When the number of grants is greater than the default value for the <code>MaxResults</code> parameter, or if you explicitly specify a value for <code>MaxResults</code> that is less than the number of grants, the response includes a pagination token named <code>NextToken</code>. You can specify this <code>NextToken</code> value in a subsequent call to <code>ListPolicyGrants</code> to list the next set of grants.</p>",
+          "location":"querystring",
+          "locationName":"nextToken"
+        },
+        "policyType":{
+          "shape":"ManagedPolicyType",
+          "documentation":"<p>The type of policy that you want to list.</p>",
+          "location":"querystring",
+          "locationName":"policyType"
+        }
+      }
+    },
+    "ListPolicyGrantsOutput":{
+      "type":"structure",
+      "required":["grantList"],
+      "members":{
+        "grantList":{
+          "shape":"PolicyGrantList",
+          "documentation":"<p>The results of this action - the listed grants.</p>"
+        },
+        "nextToken":{
+          "shape":"PaginationToken",
+          "documentation":"<p>When the number of grants is greater than the default value for the <code>MaxResults</code> parameter, or if you explicitly specify a value for <code>MaxResults</code> that is less than the number of grants, the response includes a pagination token named <code>NextToken</code>. You can specify this <code>NextToken</code> value in a subsequent call to <code>ListPolicyGrants</code> to list the next set of grants.</p>"
         }
       }
     },
@@ -12309,6 +13221,22 @@
       "min":0,
       "sensitive":true
     },
+    "ManagedPolicyType":{
+      "type":"string",
+      "enum":[
+        "CREATE_DOMAIN_UNIT",
+        "OVERRIDE_DOMAIN_UNIT_OWNERS",
+        "ADD_TO_PROJECT_MEMBER_POOL",
+        "OVERRIDE_PROJECT_OWNERS",
+        "CREATE_GLOSSARY",
+        "CREATE_FORM_TYPE",
+        "CREATE_ASSET_TYPE",
+        "CREATE_PROJECT",
+        "CREATE_ENVIRONMENT_PROFILE",
+        "DELEGATE_CREATE_ENVIRONMENT_PROFILE",
+        "CREATE_ENVIRONMENT"
+      ]
+    },
     "MaxResults":{
       "type":"integer",
       "box":true,
@@ -12637,10 +13565,202 @@
       "type":"list",
       "member":{"shape":"NotificationOutput"}
     },
+    "OverrideDomainUnitOwnersPolicyGrantDetail":{
+      "type":"structure",
+      "members":{
+        "includeChildDomainUnits":{
+          "shape":"Boolean",
+          "documentation":"<p>Specifies whether the policy is inherited by child domain units.</p>"
+        }
+      },
+      "documentation":"<p>The grant details of the override domain unit owners policy.</p>"
+    },
+    "OverrideProjectOwnersPolicyGrantDetail":{
+      "type":"structure",
+      "members":{
+        "includeChildDomainUnits":{
+          "shape":"Boolean",
+          "documentation":"<p>Specifies whether the policy is inherited by child domain units.</p>"
+        }
+      },
+      "documentation":"<p>The details of the override project owners policy grant.</p>"
+    },
+    "OwnerGroupProperties":{
+      "type":"structure",
+      "required":["groupIdentifier"],
+      "members":{
+        "groupIdentifier":{
+          "shape":"GroupIdentifier",
+          "documentation":"<p>The ID of the domain unit owners group.</p>"
+        }
+      },
+      "documentation":"<p>The properties of the domain unit owners group.</p>"
+    },
+    "OwnerGroupPropertiesOutput":{
+      "type":"structure",
+      "members":{
+        "groupId":{
+          "shape":"String",
+          "documentation":"<p>The ID of the domain unit owners group.</p>"
+        }
+      },
+      "documentation":"<p>The properties of the domain unit owners group.</p>"
+    },
+    "OwnerProperties":{
+      "type":"structure",
+      "members":{
+        "group":{
+          "shape":"OwnerGroupProperties",
+          "documentation":"<p>Specifies that the domain unit owner is a group.</p>"
+        },
+        "user":{
+          "shape":"OwnerUserProperties",
+          "documentation":"<p>Specifies that the domain unit owner is a user.</p>"
+        }
+      },
+      "documentation":"<p>The properties of a domain unit's owner.</p>",
+      "union":true
+    },
+    "OwnerPropertiesOutput":{
+      "type":"structure",
+      "members":{
+        "group":{
+          "shape":"OwnerGroupPropertiesOutput",
+          "documentation":"<p>Specifies that the domain unit owner is a group.</p>"
+        },
+        "user":{
+          "shape":"OwnerUserPropertiesOutput",
+          "documentation":"<p>Specifies that the domain unit owner is a user.</p>"
+        }
+      },
+      "documentation":"<p>The ID of the domain unit owners group.</p>",
+      "union":true
+    },
+    "OwnerUserProperties":{
+      "type":"structure",
+      "required":["userIdentifier"],
+      "members":{
+        "userIdentifier":{
+          "shape":"UserIdentifier",
+          "documentation":"<p>The ID of the owner user.</p>"
+        }
+      },
+      "documentation":"<p>The properties of the owner user.</p>"
+    },
+    "OwnerUserPropertiesOutput":{
+      "type":"structure",
+      "members":{
+        "userId":{
+          "shape":"String",
+          "documentation":"<p>The ID of the owner user.</p>"
+        }
+      },
+      "documentation":"<p>The properties of the owner user.</p>"
+    },
     "PaginationToken":{
       "type":"string",
       "max":8192,
       "min":1
+    },
+    "PolicyGrantDetail":{
+      "type":"structure",
+      "members":{
+        "addToProjectMemberPool":{
+          "shape":"AddToProjectMemberPoolPolicyGrantDetail",
+          "documentation":"<p>Specifies that the policy grant is to be added to the members of the project.</p>"
+        },
+        "createAssetType":{
+          "shape":"CreateAssetTypePolicyGrantDetail",
+          "documentation":"<p>Specifies that this is a create asset type policy.</p>"
+        },
+        "createDomainUnit":{
+          "shape":"CreateDomainUnitPolicyGrantDetail",
+          "documentation":"<p>Specifies that this is a create domain unit policy.</p>"
+        },
+        "createEnvironment":{
+          "shape":"Unit",
+          "documentation":"<p>Specifies that this is a create environment policy.</p>"
+        },
+        "createEnvironmentProfile":{
+          "shape":"CreateEnvironmentProfilePolicyGrantDetail",
+          "documentation":"<p>Specifies that this is a create environment profile policy.</p>"
+        },
+        "createFormType":{
+          "shape":"CreateFormTypePolicyGrantDetail",
+          "documentation":"<p>Specifies that this is a create form type policy.</p>"
+        },
+        "createGlossary":{
+          "shape":"CreateGlossaryPolicyGrantDetail",
+          "documentation":"<p>Specifies that this is a create glossary policy.</p>"
+        },
+        "createProject":{
+          "shape":"CreateProjectPolicyGrantDetail",
+          "documentation":"<p>Specifies that this is a create project policy.</p>"
+        },
+        "delegateCreateEnvironmentProfile":{
+          "shape":"Unit",
+          "documentation":"<p>Specifies that this is the delegation of the create environment profile policy.</p>"
+        },
+        "overrideDomainUnitOwners":{
+          "shape":"OverrideDomainUnitOwnersPolicyGrantDetail",
+          "documentation":"<p>Specifies whether to override domain unit owners.</p>"
+        },
+        "overrideProjectOwners":{
+          "shape":"OverrideProjectOwnersPolicyGrantDetail",
+          "documentation":"<p>Specifies whether to override project owners.</p>"
+        }
+      },
+      "documentation":"<p>The details of the policy grant.</p>",
+      "union":true
+    },
+    "PolicyGrantList":{
+      "type":"list",
+      "member":{"shape":"PolicyGrantMember"}
+    },
+    "PolicyGrantMember":{
+      "type":"structure",
+      "members":{
+        "createdAt":{
+          "shape":"CreatedAt",
+          "documentation":"<p>Specifies the timestamp at which policy grant member was created.</p>"
+        },
+        "createdBy":{
+          "shape":"CreatedBy",
+          "documentation":"<p>Specifies the user who created the policy grant member.</p>"
+        },
+        "detail":{
+          "shape":"PolicyGrantDetail",
+          "documentation":"<p>The details of the policy grant member.</p>"
+        },
+        "principal":{
+          "shape":"PolicyGrantPrincipal",
+          "documentation":"<p>The principal of the policy grant member.</p>"
+        }
+      },
+      "documentation":"<p>A member of the policy grant list.</p>"
+    },
+    "PolicyGrantPrincipal":{
+      "type":"structure",
+      "members":{
+        "domainUnit":{
+          "shape":"DomainUnitPolicyGrantPrincipal",
+          "documentation":"<p>The domain unit of the policy grant principal.</p>"
+        },
+        "group":{
+          "shape":"GroupPolicyGrantPrincipal",
+          "documentation":"<p>The group of the policy grant principal.</p>"
+        },
+        "project":{
+          "shape":"ProjectPolicyGrantPrincipal",
+          "documentation":"<p>The project of the policy grant principal.</p>"
+        },
+        "user":{
+          "shape":"UserPolicyGrantPrincipal",
+          "documentation":"<p>The user of the policy grant principal.</p>"
+        }
+      },
+      "documentation":"<p>The policy grant principal.</p>",
+      "union":true
     },
     "PostLineageEventInput":{
       "type":"structure",
@@ -12761,6 +13881,24 @@
       },
       "documentation":"<p>Specifies the error message that is returned if the operation cannot be successfully completed.</p>"
     },
+    "ProjectDesignation":{
+      "type":"string",
+      "enum":[
+        "OWNER",
+        "CONTRIBUTOR"
+      ]
+    },
+    "ProjectGrantFilter":{
+      "type":"structure",
+      "members":{
+        "domainUnitFilter":{
+          "shape":"DomainUnitFilterForProject",
+          "documentation":"<p>The domain unit filter of the project grant filter.</p>"
+        }
+      },
+      "documentation":"<p>The project grant filter.</p>",
+      "union":true
+    },
     "ProjectId":{
       "type":"string",
       "pattern":"^[a-zA-Z0-9_-]{1,36}$"
@@ -12793,6 +13931,25 @@
       "min":1,
       "pattern":"^[\\w -]+$",
       "sensitive":true
+    },
+    "ProjectPolicyGrantPrincipal":{
+      "type":"structure",
+      "required":["projectDesignation"],
+      "members":{
+        "projectDesignation":{
+          "shape":"ProjectDesignation",
+          "documentation":"<p>The project designation of the project policy grant principal.</p>"
+        },
+        "projectGrantFilter":{
+          "shape":"ProjectGrantFilter",
+          "documentation":"<p>The project grant filter of the project policy grant principal.</p>"
+        },
+        "projectIdentifier":{
+          "shape":"ProjectId",
+          "documentation":"<p>The project ID of the project policy grant principal.</p>"
+        }
+      },
+      "documentation":"<p>The project policy grant principal.</p>"
     },
     "ProjectStatus":{
       "type":"string",
@@ -12830,6 +13987,10 @@
         "domainId":{
           "shape":"DomainId",
           "documentation":"<p>The identifier of a Amazon DataZone domain where the project exists.</p>"
+        },
+        "domainUnitId":{
+          "shape":"DomainUnitId",
+          "documentation":"<p>The ID of the domain unit.</p>"
         },
         "failureReasons":{
           "shape":"FailureReasons",
@@ -13375,6 +14536,97 @@
     "RelationalFilterConfigurations":{
       "type":"list",
       "member":{"shape":"RelationalFilterConfiguration"}
+    },
+    "RemoveEntityOwnerInput":{
+      "type":"structure",
+      "required":[
+        "domainIdentifier",
+        "entityIdentifier",
+        "entityType",
+        "owner"
+      ],
+      "members":{
+        "clientToken":{
+          "shape":"ClientToken",
+          "documentation":"<p>A unique, case-sensitive identifier that is provided to ensure the idempotency of the request.</p>",
+          "idempotencyToken":true
+        },
+        "domainIdentifier":{
+          "shape":"DomainId",
+          "documentation":"<p>The ID of the domain where you want to remove an owner from an entity.</p>",
+          "location":"uri",
+          "locationName":"domainIdentifier"
+        },
+        "entityIdentifier":{
+          "shape":"String",
+          "documentation":"<p>The ID of the entity from which you want to remove an owner.</p>",
+          "location":"uri",
+          "locationName":"entityIdentifier"
+        },
+        "entityType":{
+          "shape":"DataZoneEntityType",
+          "documentation":"<p>The type of the entity from which you want to remove an owner.</p>",
+          "location":"uri",
+          "locationName":"entityType"
+        },
+        "owner":{
+          "shape":"OwnerProperties",
+          "documentation":"<p>The owner that you want to remove from an entity.</p>"
+        }
+      }
+    },
+    "RemoveEntityOwnerOutput":{
+      "type":"structure",
+      "members":{
+      }
+    },
+    "RemovePolicyGrantInput":{
+      "type":"structure",
+      "required":[
+        "domainIdentifier",
+        "entityIdentifier",
+        "entityType",
+        "policyType",
+        "principal"
+      ],
+      "members":{
+        "clientToken":{
+          "shape":"ClientToken",
+          "documentation":"<p>A unique, case-sensitive identifier that is provided to ensure the idempotency of the request.</p>",
+          "idempotencyToken":true
+        },
+        "domainIdentifier":{
+          "shape":"DomainId",
+          "documentation":"<p>The ID of the domain where you want to remove a policy grant.</p>",
+          "location":"uri",
+          "locationName":"domainIdentifier"
+        },
+        "entityIdentifier":{
+          "shape":"String",
+          "documentation":"<p>The ID of the entity from which you want to remove a policy grant.</p>",
+          "location":"uri",
+          "locationName":"entityIdentifier"
+        },
+        "entityType":{
+          "shape":"TargetEntityType",
+          "documentation":"<p>The type of the entity from which you want to remove a policy grant.</p>",
+          "location":"uri",
+          "locationName":"entityType"
+        },
+        "policyType":{
+          "shape":"ManagedPolicyType",
+          "documentation":"<p>The type of the policy that you want to remove.</p>"
+        },
+        "principal":{
+          "shape":"PolicyGrantPrincipal",
+          "documentation":"<p>The principal from which you want to remove a policy grant.</p>"
+        }
+      }
+    },
+    "RemovePolicyGrantOutput":{
+      "type":"structure",
+      "members":{
+      }
     },
     "RequestReason":{
       "type":"string",
@@ -15023,6 +16275,14 @@
       "key":{"shape":"TagKey"},
       "value":{"shape":"TagValue"}
     },
+    "TargetEntityType":{
+      "type":"string",
+      "enum":[
+        "DOMAIN_UNIT",
+        "ENVIRONMENT_BLUEPRINT_CONFIGURATION",
+        "ENVIRONMENT_PROFILE"
+      ]
+    },
     "TaskId":{
       "type":"string",
       "pattern":"^[a-zA-Z0-9_-]{1,36}$"
@@ -15340,6 +16600,12 @@
         "senderFault":true
       },
       "exception":true
+    },
+    "Unit":{
+      "type":"structure",
+      "members":{
+      },
+      "documentation":"<p>The details of the policy of creating an environment.</p>"
     },
     "UntagResourceRequest":{
       "type":"structure",
@@ -15679,9 +16945,93 @@
           "shape":"String",
           "documentation":"<p>The name to be updated as part of the <code>UpdateDomain</code> action.</p>"
         },
+        "rootDomainUnitId":{
+          "shape":"DomainUnitId",
+          "documentation":"<p>The ID of the root domain unit.</p>"
+        },
         "singleSignOn":{
           "shape":"SingleSignOn",
           "documentation":"<p>The single sign-on option of the Amazon DataZone domain.</p>"
+        }
+      }
+    },
+    "UpdateDomainUnitInput":{
+      "type":"structure",
+      "required":[
+        "domainIdentifier",
+        "identifier"
+      ],
+      "members":{
+        "description":{
+          "shape":"DomainUnitDescription",
+          "documentation":"<p>The description of the domain unit that you want to update.</p>"
+        },
+        "domainIdentifier":{
+          "shape":"DomainId",
+          "documentation":"<p>The ID of the domain where you want to update a domain unit.</p>",
+          "location":"uri",
+          "locationName":"domainIdentifier"
+        },
+        "identifier":{
+          "shape":"DomainUnitId",
+          "documentation":"<p>The ID of the domain unit that you want to update.</p>",
+          "location":"uri",
+          "locationName":"identifier"
+        },
+        "name":{
+          "shape":"DomainUnitName",
+          "documentation":"<p>The name of the domain unit that you want to update.</p>"
+        }
+      }
+    },
+    "UpdateDomainUnitOutput":{
+      "type":"structure",
+      "required":[
+        "domainId",
+        "id",
+        "name",
+        "owners"
+      ],
+      "members":{
+        "createdAt":{
+          "shape":"CreatedAt",
+          "documentation":"<p>The time stamp at which the domain unit that you want to update was created.</p>"
+        },
+        "createdBy":{
+          "shape":"CreatedBy",
+          "documentation":"<p>The user who created the domain unit that you want to update.</p>"
+        },
+        "description":{
+          "shape":"DomainUnitDescription",
+          "documentation":"<p>The description of the domain unit that you want to update.</p>"
+        },
+        "domainId":{
+          "shape":"DomainId",
+          "documentation":"<p>The ID of the domain where you want to update the domain unit.</p>"
+        },
+        "id":{
+          "shape":"DomainUnitId",
+          "documentation":"<p>The ID of the domain unit that you want to update.</p>"
+        },
+        "lastUpdatedAt":{
+          "shape":"UpdatedAt",
+          "documentation":"<p>The timestamp at which the domain unit was last updated.</p>"
+        },
+        "lastUpdatedBy":{
+          "shape":"UpdatedBy",
+          "documentation":"<p>The user who last updated the domain unit.</p>"
+        },
+        "name":{
+          "shape":"DomainUnitName",
+          "documentation":"<p>The name of the domain unit that you want to update.</p>"
+        },
+        "owners":{
+          "shape":"DomainUnitOwners",
+          "documentation":"<p>The owners of the domain unit that you want to update.</p>"
+        },
+        "parentDomainUnitId":{
+          "shape":"DomainUnitId",
+          "documentation":"<p>The ID of the parent domain unit.</p>"
         }
       }
     },
@@ -16213,7 +17563,7 @@
         },
         "domainIdentifier":{
           "shape":"DomainId",
-          "documentation":"<p>The identifier of the Amazon DataZone domain in which a project is to be updated.</p>",
+          "documentation":"<p>The ID of the Amazon DataZone domain where a project is being updated.</p>",
           "location":"uri",
           "locationName":"domainIdentifier"
         },
@@ -16257,6 +17607,10 @@
         "domainId":{
           "shape":"DomainId",
           "documentation":"<p>The identifier of the Amazon DataZone domain in which a project is updated.</p>"
+        },
+        "domainUnitId":{
+          "shape":"DomainUnitId",
+          "documentation":"<p>The ID of the domain unit.</p>"
         },
         "failureReasons":{
           "shape":"FailureReasons",
@@ -16701,7 +18055,22 @@
     },
     "UserIdentifier":{
       "type":"string",
-      "pattern":"(^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$|^[a-zA-Z_0-9+=,.@-]+$|^arn:aws:iam::\\d{12}:.+$)"
+      "pattern":"(^([0-9a-f]{10}-|)[A-Fa-f0-9]{8}-[A-Fa-f0-9]{4}-[A-Fa-f0-9]{4}-[A-Fa-f0-9]{4}-[A-Fa-f0-9]{12}$|^[a-zA-Z_0-9+=,.@-]+$|^arn:aws:iam::\\d{12}:.+$)"
+    },
+    "UserPolicyGrantPrincipal":{
+      "type":"structure",
+      "members":{
+        "allUsersGrantFilter":{
+          "shape":"AllUsersGrantFilter",
+          "documentation":"<p>The all users grant filter of the user policy grant principal.</p>"
+        },
+        "userIdentifier":{
+          "shape":"UserIdentifier",
+          "documentation":"<p>The user ID of the user policy grant principal.</p>"
+        }
+      },
+      "documentation":"<p>The user policy grant principal.</p>",
+      "union":true
     },
     "UserProfileDetails":{
       "type":"structure",
@@ -16720,7 +18089,7 @@
     },
     "UserProfileId":{
       "type":"string",
-      "pattern":"^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
+      "pattern":"^([0-9a-f]{10}-|)[A-Fa-f0-9]{8}-[A-Fa-f0-9]{4}-[A-Fa-f0-9]{4}-[A-Fa-f0-9]{4}-[A-Fa-f0-9]{12}$"
     },
     "UserProfileName":{
       "type":"string",

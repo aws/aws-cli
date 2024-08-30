@@ -5,10 +5,12 @@
     "endpointPrefix":"backup",
     "jsonVersion":"1.1",
     "protocol":"rest-json",
+    "protocols":["rest-json"],
     "serviceFullName":"AWS Backup",
     "serviceId":"Backup",
     "signatureVersion":"v4",
-    "uid":"backup-2018-11-15"
+    "uid":"backup-2018-11-15",
+    "auth":["aws.auth#sigv4"]
   },
   "operations":{
     "CancelLegalHold":{
@@ -27,7 +29,7 @@
         {"shape":"ServiceUnavailableException"},
         {"shape":"ResourceNotFoundException"}
       ],
-      "documentation":"<p>This action removes the specified legal hold on a recovery point. This action can only be performed by a user with sufficient permissions.</p>",
+      "documentation":"<p>Removes the specified legal hold on a recovery point. This action can only be performed by a user with sufficient permissions.</p>",
       "idempotent":true
     },
     "CreateBackupPlan":{
@@ -116,7 +118,7 @@
         {"shape":"ServiceUnavailableException"},
         {"shape":"LimitExceededException"}
       ],
-      "documentation":"<p>This action creates a legal hold on a recovery point (backup). A legal hold is a restraint on altering or deleting a backup until an authorized user cancels the legal hold. Any actions to delete or disassociate a recovery point will fail with an error if one or more active legal holds are on the recovery point.</p>",
+      "documentation":"<p>Creates a legal hold on a recovery point (backup). A legal hold is a restraint on altering or deleting a backup until an authorized user cancels the legal hold. Any actions to delete or disassociate a recovery point will fail with an error if one or more active legal holds are on the recovery point.</p>",
       "idempotent":true
     },
     "CreateLogicallyAirGappedBackupVault":{
@@ -135,7 +137,7 @@
         {"shape":"ServiceUnavailableException"},
         {"shape":"InvalidRequestException"}
       ],
-      "documentation":"<p>This request creates a logical container to where backups may be copied.</p> <p>This request includes a name, the Region, the maximum number of retention days, the minimum number of retention days, and optionally can include tags and a creator request ID.</p> <note> <p>Do not include sensitive data, such as passport numbers, in the name of a backup vault.</p> </note>",
+      "documentation":"<p>Creates a logical container to where backups may be copied.</p> <p>This request includes a name, the Region, the maximum number of retention days, the minimum number of retention days, and optionally can include tags and a creator request ID.</p> <note> <p>Do not include sensitive data, such as passport numbers, in the name of a backup vault.</p> </note>",
       "idempotent":true
     },
     "CreateReportPlan":{
@@ -173,7 +175,7 @@
         {"shape":"MissingParameterValueException"},
         {"shape":"ServiceUnavailableException"}
       ],
-      "documentation":"<p>This is the first of two steps to create a restore testing plan; once this request is successful, finish the procedure with request CreateRestoreTestingSelection.</p> <p>You must include the parameter RestoreTestingPlan. You may optionally include CreatorRequestId and Tags.</p>",
+      "documentation":"<p>Creates a restore testing plan.</p> <p>The first of two steps to create a restore testing plan. After this request is successful, finish the procedure using CreateRestoreTestingSelection.</p>",
       "idempotent":true
     },
     "CreateRestoreTestingSelection":{
@@ -855,7 +857,7 @@
         {"shape":"ServiceUnavailableException"},
         {"shape":"ResourceNotFoundException"}
       ],
-      "documentation":"<p>Returns metadata of your saved backup plan templates, including the template ID, name, and the creation and deletion dates.</p>"
+      "documentation":"<p>Lists the backup plan templates.</p>"
     },
     "ListBackupPlanVersions":{
       "name":"ListBackupPlanVersions",
@@ -888,7 +890,7 @@
         {"shape":"MissingParameterValueException"},
         {"shape":"ServiceUnavailableException"}
       ],
-      "documentation":"<p>Returns a list of all active backup plans for an authenticated account. The list contains information such as Amazon Resource Names (ARNs), plan IDs, creation and deletion dates, version IDs, plan names, and creator request IDs.</p>",
+      "documentation":"<p>Lists the active backup plans for the account.</p>",
       "idempotent":true
     },
     "ListBackupSelections":{
@@ -1059,7 +1061,7 @@
         {"shape":"MissingParameterValueException"},
         {"shape":"ServiceUnavailableException"}
       ],
-      "documentation":"<p>Returns detailed information about all the recovery points of the type specified by a resource Amazon Resource Name (ARN).</p> <note> <p>For Amazon EFS and Amazon EC2, this action only lists recovery points created by Backup.</p> </note>",
+      "documentation":"<p>The information about the recovery points of the type specified by a resource Amazon Resource Name (ARN).</p> <note> <p>For Amazon EFS and Amazon EC2, this action only lists recovery points created by Backup.</p> </note>",
       "idempotent":true
     },
     "ListReportJobs":{
@@ -1183,7 +1185,7 @@
         {"shape":"MissingParameterValueException"},
         {"shape":"ServiceUnavailableException"}
       ],
-      "documentation":"<p>Returns a list of key-value pairs assigned to a target recovery point, backup plan, or backup vault.</p> <p> <code>ListTags</code> only works for resource types that support full Backup management of their backups. Those resource types are listed in the \"Full Backup management\" section of the <a href=\"https://docs.aws.amazon.com/aws-backup/latest/devguide/whatisbackup.html#features-by-resource\"> Feature availability by resource</a> table.</p>",
+      "documentation":"<p>Returns the tags assigned to the resource, such as a target recovery point, backup plan, or backup vault.</p>",
       "idempotent":true
     },
     "PutBackupVaultAccessPolicy":{
@@ -1216,7 +1218,7 @@
         {"shape":"InvalidRequestException"},
         {"shape":"ServiceUnavailableException"}
       ],
-      "documentation":"<p>Applies Backup Vault Lock to a backup vault, preventing attempts to delete any recovery point stored in or created in a backup vault. Vault Lock also prevents attempts to update the lifecycle policy that controls the retention period of any recovery point currently stored in a backup vault. If specified, Vault Lock enforces a minimum and maximum retention period for future backup and copy jobs that target a backup vault.</p> <note> <p>Backup Vault Lock has been assessed by Cohasset Associates for use in environments that are subject to SEC 17a-4, CFTC, and FINRA regulations. For more information about how Backup Vault Lock relates to these regulations, see the <a href=\"samples/cohassetreport.zip\">Cohasset Associates Compliance Assessment.</a> </p> </note>",
+      "documentation":"<p>Applies Backup Vault Lock to a backup vault, preventing attempts to delete any recovery point stored in or created in a backup vault. Vault Lock also prevents attempts to update the lifecycle policy that controls the retention period of any recovery point currently stored in a backup vault. If specified, Vault Lock enforces a minimum and maximum retention period for future backup and copy jobs that target a backup vault.</p> <note> <p>Backup Vault Lock has been assessed by Cohasset Associates for use in environments that are subject to SEC 17a-4, CFTC, and FINRA regulations. For more information about how Backup Vault Lock relates to these regulations, see the <a href=\"https://docs.aws.amazon.com/aws-backup/latest/devguide/samples/cohassetreport.zip\">Cohasset Associates Compliance Assessment.</a> </p> </note> <p>For more information, see <a href=\"https://docs.aws.amazon.com/aws-backup/latest/devguide/vault-lock.html\">Backup Vault Lock</a>.</p>",
       "idempotent":true
     },
     "PutBackupVaultNotifications":{
@@ -1340,7 +1342,7 @@
         {"shape":"InvalidRequestException"},
         {"shape":"ServiceUnavailableException"}
       ],
-      "documentation":"<p>Attempts to cancel a job to create a one-time backup of a resource.</p> <p>This action is not supported for the following services: Amazon FSx for Windows File Server, Amazon FSx for Lustre, Amazon FSx for NetApp ONTAP , Amazon FSx for OpenZFS, Amazon DocumentDB (with MongoDB compatibility), Amazon RDS, Amazon Aurora, and Amazon Neptune.</p>"
+      "documentation":"<p>Attempts to cancel a job to create a one-time backup of a resource.</p> <p>This action is not supported for the following services: Amazon FSx for Windows File Server, Amazon FSx for Lustre, Amazon FSx for NetApp ONTAP, Amazon FSx for OpenZFS, Amazon DocumentDB (with MongoDB compatibility), Amazon RDS, Amazon Aurora, and Amazon Neptune.</p>"
     },
     "TagResource":{
       "name":"TagResource",
@@ -1356,7 +1358,7 @@
         {"shape":"ServiceUnavailableException"},
         {"shape":"LimitExceededException"}
       ],
-      "documentation":"<p>Assigns a set of key-value pairs to a recovery point, backup plan, or backup vault identified by an Amazon Resource Name (ARN).</p>",
+      "documentation":"<p>Assigns a set of key-value pairs to a recovery point, backup plan, or backup vault identified by an Amazon Resource Name (ARN).</p> <p>This API is supported for recovery points for resource types including Aurora, Amazon DocumentDB. Amazon EBS, Amazon FSx, Neptune, and Amazon RDS.</p>",
       "idempotent":true
     },
     "UntagResource":{
@@ -1372,7 +1374,7 @@
         {"shape":"MissingParameterValueException"},
         {"shape":"ServiceUnavailableException"}
       ],
-      "documentation":"<p>Removes a set of key-value pairs from a recovery point, backup plan, or backup vault identified by an Amazon Resource Name (ARN)</p>",
+      "documentation":"<p>Removes a set of key-value pairs from a recovery point, backup plan, or backup vault identified by an Amazon Resource Name (ARN)</p> <p>This API is not supported for recovery points for resource types including Aurora, Amazon DocumentDB. Amazon EBS, Amazon FSx, Neptune, and Amazon RDS.</p>",
       "idempotent":true
     },
     "UpdateBackupPlan":{
@@ -1389,7 +1391,7 @@
         {"shape":"MissingParameterValueException"},
         {"shape":"ServiceUnavailableException"}
       ],
-      "documentation":"<p>Updates an existing backup plan identified by its <code>backupPlanId</code> with the input document in JSON format. The new version is uniquely identified by a <code>VersionId</code>.</p>",
+      "documentation":"<p>Updates the specified backup plan. The new version is uniquely identified by its ID.</p>",
       "idempotent":true
     },
     "UpdateFramework":{
@@ -1409,7 +1411,7 @@
         {"shape":"ConflictException"},
         {"shape":"ServiceUnavailableException"}
       ],
-      "documentation":"<p>Updates an existing framework identified by its <code>FrameworkName</code> with the input document in JSON format.</p>",
+      "documentation":"<p>Updates the specified framework.</p>",
       "idempotent":true
     },
     "UpdateGlobalSettings":{
@@ -1442,7 +1444,7 @@
         {"shape":"MissingParameterValueException"},
         {"shape":"ServiceUnavailableException"}
       ],
-      "documentation":"<p>Sets the transition lifecycle of a recovery point.</p> <p>The lifecycle defines when a protected resource is transitioned to cold storage and when it expires. Backup transitions and expires backups automatically according to the lifecycle that you define.</p> <p>Backups transitioned to cold storage must be stored in cold storage for a minimum of 90 days. Therefore, the “retention” setting must be 90 days greater than the “transition to cold after days” setting. The “transition to cold after days” setting cannot be changed after a backup has been transitioned to cold.</p> <p>Resource types that are able to be transitioned to cold storage are listed in the \"Lifecycle to cold storage\" section of the <a href=\"https://docs.aws.amazon.com/aws-backup/latest/devguide/whatisbackup.html#features-by-resource\"> Feature availability by resource</a> table. Backup ignores this expression for other resource types.</p> <p>This operation does not support continuous backups.</p>",
+      "documentation":"<p>Sets the transition lifecycle of a recovery point.</p> <p>The lifecycle defines when a protected resource is transitioned to cold storage and when it expires. Backup transitions and expires backups automatically according to the lifecycle that you define.</p> <p>Resource types that can transition to cold storage are listed in the <a href=\"https://docs.aws.amazon.com/aws-backup/latest/devguide/backup-feature-availability.html#features-by-resource\">Feature availability by resource</a> table. Backup ignores this expression for other resource types.</p> <p>Backups transitioned to cold storage must be stored in cold storage for a minimum of 90 days. Therefore, the “retention” setting must be 90 days greater than the “transition to cold after days” setting. The “transition to cold after days” setting cannot be changed after a backup has been transitioned to cold.</p> <important> <p>If your lifecycle currently uses the parameters <code>DeleteAfterDays</code> and <code>MoveToColdStorageAfterDays</code>, include these parameters and their values when you call this operation. Not including them may result in your plan updating with null values.</p> </important> <p>This operation does not support continuous backups.</p>",
       "idempotent":true
     },
     "UpdateRegionSettings":{
@@ -1474,7 +1476,7 @@
         {"shape":"MissingParameterValueException"},
         {"shape":"ConflictException"}
       ],
-      "documentation":"<p>Updates an existing report plan identified by its <code>ReportPlanName</code> with the input document in JSON format.</p>",
+      "documentation":"<p>Updates the specified report plan.</p>",
       "idempotent":true
     },
     "UpdateRestoreTestingPlan":{
@@ -1512,7 +1514,7 @@
         {"shape":"ResourceNotFoundException"},
         {"shape":"ServiceUnavailableException"}
       ],
-      "documentation":"<p>Most elements except the <code>RestoreTestingSelectionName</code> can be updated with this request.</p> <p> <code>RestoreTestingSelection</code> can use either protected resource ARNs or conditions, but not both. That is, if your selection has <code>ProtectedResourceArns</code>, requesting an update with the parameter <code>ProtectedResourceConditions</code> will be unsuccessful.</p>",
+      "documentation":"<p>Updates the specified restore testing selection.</p> <p>Most elements except the <code>RestoreTestingSelectionName</code> can be updated with this request.</p> <p>You can use either protected resource ARNs or conditions, but not both.</p>",
       "idempotent":true
     }
   },
@@ -1534,7 +1536,7 @@
           "documentation":"<p>Specifies the backup option for a selected resource. This option is only available for Windows VSS backup jobs.</p> <p>Valid values: </p> <p>Set to <code>\"WindowsVSS\":\"enabled\"</code> to enable the <code>WindowsVSS</code> backup option and create a Windows VSS backup. </p> <p>Set to <code>\"WindowsVSS\":\"disabled\"</code> to create a regular backup. The <code>WindowsVSS</code> option is not enabled by default.</p> <p>If you specify an invalid option, you get an <code>InvalidParameterValueException</code> exception.</p> <p>For more information about Windows VSS backups, see <a href=\"https://docs.aws.amazon.com/aws-backup/latest/devguide/windows-backups.html\">Creating a VSS-Enabled Windows Backup</a>.</p>"
         }
       },
-      "documentation":"<p>A list of backup options for each resource type.</p>"
+      "documentation":"<p>The backup options for each resource type.</p>"
     },
     "AdvancedBackupSettings":{
       "type":"list",
@@ -1586,11 +1588,11 @@
         },
         "BackupVaultName":{
           "shape":"BackupVaultName",
-          "documentation":"<p>The name of a logical container where backups are stored. Backup vaults are identified by names that are unique to the account used to create them and the Amazon Web Services Region where they are created. They consist of lowercase letters, numbers, and hyphens.</p>"
+          "documentation":"<p>The name of a logical container where backups are stored. Backup vaults are identified by names that are unique to the account used to create them and the Amazon Web Services Region where they are created.</p>"
         },
         "BackupVaultArn":{
           "shape":"ARN",
-          "documentation":"<p>An Amazon Resource Name (ARN) that uniquely identifies a backup vault; for example, <code>arn:aws:backup:us-east-1:123456789012:vault:aBackupVault</code>.</p>"
+          "documentation":"<p>An Amazon Resource Name (ARN) that uniquely identifies a backup vault; for example, <code>arn:aws:backup:us-east-1:123456789012:backup-vault:aBackupVault</code>.</p>"
         },
         "RecoveryPointArn":{
           "shape":"ARN",
@@ -1666,11 +1668,11 @@
         },
         "ResourceName":{
           "shape":"string",
-          "documentation":"<p>This is the non-unique name of the resource that belongs to the specified backup.</p>"
+          "documentation":"<p>The non-unique name of the resource that belongs to the specified backup.</p>"
         },
         "InitiationDate":{
           "shape":"timestamp",
-          "documentation":"<p>This is the date on which the backup job was initiated.</p>"
+          "documentation":"<p>The date on which the backup job was initiated.</p>"
         },
         "MessageCategory":{
           "shape":"string",
@@ -1782,7 +1784,7 @@
       "members":{
         "BackupPlanName":{
           "shape":"BackupPlanName",
-          "documentation":"<p>The display name of a backup plan. Must contain 1 to 50 alphanumeric or '-_.' characters.</p>"
+          "documentation":"<p>The display name of a backup plan. Must contain only alphanumeric or '-_.' special characters.</p> <p>If this is set in the console, it can contain 1 to 50 characters; if this is set through CLI or API, it can contain 1 to 200 characters.</p>"
         },
         "Rules":{
           "shape":"BackupRules",
@@ -1877,7 +1879,7 @@
         },
         "LastExecutionDate":{
           "shape":"timestamp",
-          "documentation":"<p>The last time a job to back up resources was run with this rule. A date and time, in Unix format and Coordinated Universal Time (UTC). The value of <code>LastExecutionDate</code> is accurate to milliseconds. For example, the value 1516925490.087 represents Friday, January 26, 2018 12:11:30.087 AM.</p>"
+          "documentation":"<p>The last time this backup plan was run. A date and time, in Unix format and Coordinated Universal Time (UTC). The value of <code>LastExecutionDate</code> is accurate to milliseconds. For example, the value 1516925490.087 represents Friday, January 26, 2018 12:11:30.087 AM.</p>"
         },
         "AdvancedBackupSettings":{
           "shape":"AdvancedBackupSettings",
@@ -1899,7 +1901,7 @@
         },
         "TargetBackupVaultName":{
           "shape":"BackupVaultName",
-          "documentation":"<p>The name of a logical container where backups are stored. Backup vaults are identified by names that are unique to the account used to create them and the Amazon Web Services Region where they are created. They consist of lowercase letters, numbers, and hyphens.</p>"
+          "documentation":"<p>The name of a logical container where backups are stored. Backup vaults are identified by names that are unique to the account used to create them and the Amazon Web Services Region where they are created.</p>"
         },
         "ScheduleExpression":{
           "shape":"CronExpression",
@@ -1915,11 +1917,11 @@
         },
         "Lifecycle":{
           "shape":"Lifecycle",
-          "documentation":"<p>The lifecycle defines when a protected resource is transitioned to cold storage and when it expires. Backup transitions and expires backups automatically according to the lifecycle that you define. </p> <p>Backups transitioned to cold storage must be stored in cold storage for a minimum of 90 days. Therefore, the “retention” setting must be 90 days greater than the “transition to cold after days” setting. The “transition to cold after days” setting cannot be changed after a backup has been transitioned to cold. </p> <p>Resource types that are able to be transitioned to cold storage are listed in the \"Lifecycle to cold storage\" section of the <a href=\"https://docs.aws.amazon.com/aws-backup/latest/devguide/whatisbackup.html#features-by-resource\"> Feature availability by resource</a> table. Backup ignores this expression for other resource types.</p>"
+          "documentation":"<p>The lifecycle defines when a protected resource is transitioned to cold storage and when it expires. Backup transitions and expires backups automatically according to the lifecycle that you define. </p> <p>Backups transitioned to cold storage must be stored in cold storage for a minimum of 90 days. Therefore, the “retention” setting must be 90 days greater than the “transition to cold after days” setting. The “transition to cold after days” setting cannot be changed after a backup has been transitioned to cold. </p> <p>Resource types that can transition to cold storage are listed in the <a href=\"https://docs.aws.amazon.com/aws-backup/latest/devguide/backup-feature-availability.html#features-by-resource\">Feature availability by resource</a> table. Backup ignores this expression for other resource types.</p>"
         },
         "RecoveryPointTags":{
           "shape":"Tags",
-          "documentation":"<p>An array of key-value pair strings that are assigned to resources that are associated with this rule when restored from backup.</p>"
+          "documentation":"<p>The tags that are assigned to resources that are associated with this rule when restored from backup.</p>"
         },
         "RuleId":{
           "shape":"string",
@@ -1935,7 +1937,7 @@
         },
         "ScheduleExpressionTimezone":{
           "shape":"Timezone",
-          "documentation":"<p>This is the timezone in which the schedule expression is set. By default, ScheduleExpressions are in UTC. You can modify this to a specified timezone.</p>"
+          "documentation":"<p>The timezone in which the schedule expression is set. By default, ScheduleExpressions are in UTC. You can modify this to a specified timezone.</p>"
         }
       },
       "documentation":"<p>Specifies a scheduled task used to back up a selection of resources.</p>"
@@ -1953,7 +1955,7 @@
         },
         "TargetBackupVaultName":{
           "shape":"BackupVaultName",
-          "documentation":"<p>The name of a logical container where backups are stored. Backup vaults are identified by names that are unique to the account used to create them and the Amazon Web Services Region where they are created. They consist of lowercase letters, numbers, and hyphens.</p>"
+          "documentation":"<p>The name of a logical container where backups are stored. Backup vaults are identified by names that are unique to the account used to create them and the Amazon Web Services Region where they are created.</p>"
         },
         "ScheduleExpression":{
           "shape":"CronExpression",
@@ -1969,11 +1971,11 @@
         },
         "Lifecycle":{
           "shape":"Lifecycle",
-          "documentation":"<p>The lifecycle defines when a protected resource is transitioned to cold storage and when it expires. Backup will transition and expire backups automatically according to the lifecycle that you define. </p> <p>Backups transitioned to cold storage must be stored in cold storage for a minimum of 90 days. Therefore, the “retention” setting must be 90 days greater than the “transition to cold after days” setting. The “transition to cold after days” setting cannot be changed after a backup has been transitioned to cold.</p> <p>Resource types that are able to be transitioned to cold storage are listed in the \"Lifecycle to cold storage\" section of the <a href=\"https://docs.aws.amazon.com/aws-backup/latest/devguide/whatisbackup.html#features-by-resource\"> Feature availability by resource</a> table. Backup ignores this expression for other resource types.</p> <p>This parameter has a maximum value of 100 years (36,500 days).</p>"
+          "documentation":"<p>The lifecycle defines when a protected resource is transitioned to cold storage and when it expires. Backup will transition and expire backups automatically according to the lifecycle that you define. </p> <p>Backups transitioned to cold storage must be stored in cold storage for a minimum of 90 days. Therefore, the “retention” setting must be 90 days greater than the “transition to cold after days” setting. The “transition to cold after days” setting cannot be changed after a backup has been transitioned to cold storage.</p> <p>Resource types that can transition to cold storage are listed in the <a href=\"https://docs.aws.amazon.com/aws-backup/latest/devguide/backup-feature-availability.html#features-by-resource\">Feature availability by resource</a> table. Backup ignores this expression for other resource types.</p> <p>This parameter has a maximum value of 100 years (36,500 days).</p>"
         },
         "RecoveryPointTags":{
           "shape":"Tags",
-          "documentation":"<p>To help organize your resources, you can assign your own metadata to the resources that you create. Each tag is a key-value pair.</p>"
+          "documentation":"<p>The tags to assign to the resources.</p>"
         },
         "CopyActions":{
           "shape":"CopyActions",
@@ -1985,7 +1987,7 @@
         },
         "ScheduleExpressionTimezone":{
           "shape":"Timezone",
-          "documentation":"<p>This is the timezone in which the schedule expression is set. By default, ScheduleExpressions are in UTC. You can modify this to a specified timezone.</p>"
+          "documentation":"<p>The timezone in which the schedule expression is set. By default, ScheduleExpressions are in UTC. You can modify this to a specified timezone.</p>"
         }
       },
       "documentation":"<p>Specifies a scheduled task used to back up a selection of resources.</p>"
@@ -2019,22 +2021,22 @@
         },
         "Resources":{
           "shape":"ResourceArns",
-          "documentation":"<p>A list of Amazon Resource Names (ARNs) to assign to a backup plan. The maximum number of ARNs is 500 without wildcards, or 30 ARNs with wildcards.</p> <p>If you need to assign many resources to a backup plan, consider a different resource selection strategy, such as assigning all resources of a resource type or refining your resource selection using tags.</p>"
+          "documentation":"<p>The Amazon Resource Names (ARNs) of the resources to assign to a backup plan. The maximum number of ARNs is 500 without wildcards, or 30 ARNs with wildcards.</p> <p>If you need to assign many resources to a backup plan, consider a different resource selection strategy, such as assigning all resources of a resource type or refining your resource selection using tags.</p> <p>If you specify multiple ARNs, the resources much match any of the ARNs (OR logic).</p>"
         },
         "ListOfTags":{
           "shape":"ListOfTags",
-          "documentation":"<p>A list of conditions that you define to assign resources to your backup plans using tags. For example, <code>\"StringEquals\": { \"Key\": \"aws:ResourceTag/CreatedByCryo\", \"Value\": \"true\" },</code>. Condition operators are case sensitive.</p> <p> <code>ListOfTags</code> differs from <code>Conditions</code> as follows:</p> <ul> <li> <p>When you specify more than one condition, you assign all resources that match AT LEAST ONE condition (using OR logic).</p> </li> <li> <p> <code>ListOfTags</code> only supports <code>StringEquals</code>. <code>Conditions</code> supports <code>StringEquals</code>, <code>StringLike</code>, <code>StringNotEquals</code>, and <code>StringNotLike</code>. </p> </li> </ul>"
+          "documentation":"<p>The conditions that you define to assign resources to your backup plans using tags. For example, <code>\"StringEquals\": { \"ConditionKey\": \"backup\", \"ConditionValue\": \"daily\"}</code>.</p> <p> <code>ListOfTags</code> supports only <code>StringEquals</code>. Condition operators are case sensitive.</p> <p>If you specify multiple conditions, the resources much match any of the conditions (OR logic).</p>"
         },
         "NotResources":{
           "shape":"ResourceArns",
-          "documentation":"<p>A list of Amazon Resource Names (ARNs) to exclude from a backup plan. The maximum number of ARNs is 500 without wildcards, or 30 ARNs with wildcards.</p> <p>If you need to exclude many resources from a backup plan, consider a different resource selection strategy, such as assigning only one or a few resource types or refining your resource selection using tags.</p>"
+          "documentation":"<p>The Amazon Resource Names (ARNs) of the resources to exclude from a backup plan. The maximum number of ARNs is 500 without wildcards, or 30 ARNs with wildcards.</p> <p>If you need to exclude many resources from a backup plan, consider a different resource selection strategy, such as assigning only one or a few resource types or refining your resource selection using tags.</p>"
         },
         "Conditions":{
           "shape":"Conditions",
-          "documentation":"<p>A list of conditions that you define to assign resources to your backup plans using tags. For example, <code>\"StringEquals\": { \"Key\": \"aws:ResourceTag/CreatedByCryo\", \"Value\": \"true\" },</code>. Condition operators are case sensitive.</p> <p> <code>Conditions</code> differs from <code>ListOfTags</code> as follows:</p> <ul> <li> <p>When you specify more than one condition, you only assign the resources that match ALL conditions (using AND logic).</p> </li> <li> <p> <code>Conditions</code> supports <code>StringEquals</code>, <code>StringLike</code>, <code>StringNotEquals</code>, and <code>StringNotLike</code>. <code>ListOfTags</code> only supports <code>StringEquals</code>.</p> </li> </ul>"
+          "documentation":"<p>The conditions that you define to assign resources to your backup plans using tags. For example, <code>\"StringEquals\": { \"ConditionKey\": \"aws:ResourceTag/backup\", \"ConditionValue\": \"daily\" }</code>.</p> <p> <code>Conditions</code> supports <code>StringEquals</code>, <code>StringLike</code>, <code>StringNotEquals</code>, and <code>StringNotLike</code>. Condition operators are case sensitive.</p> <p>If you specify multiple conditions, the resources much match all conditions (AND logic).</p>"
         }
       },
-      "documentation":"<p>Used to specify a set of resources to a backup plan.</p> <p>Specifying your desired <code>Conditions</code>, <code>ListOfTags</code>, <code>NotResources</code>, and/or <code>Resources</code> is recommended. If none of these are specified, Backup will attempt to select all supported and opted-in storage resources, which could have unintended cost implications.</p>"
+      "documentation":"<p>Used to specify a set of resources to a backup plan.</p> <p>We recommend that you specify conditions, tags, or resources to include or exclude. Otherwise, Backup attempts to select all supported and opted-in storage resources, which could have unintended cost implications.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/aws-backup/latest/devguide/assigning-resources.html#assigning-resources-json\">Assigning resources programmatically</a>.</p>"
     },
     "BackupSelectionName":{
       "type":"string",
@@ -2109,11 +2111,19 @@
       "members":{
         "BackupVaultName":{
           "shape":"BackupVaultName",
-          "documentation":"<p>The name of a logical container where backups are stored. Backup vaults are identified by names that are unique to the account used to create them and the Amazon Web Services Region where they are created. They consist of lowercase letters, numbers, and hyphens.</p>"
+          "documentation":"<p>The name of a logical container where backups are stored. Backup vaults are identified by names that are unique to the account used to create them and the Amazon Web Services Region where they are created.</p>"
         },
         "BackupVaultArn":{
           "shape":"ARN",
-          "documentation":"<p>An Amazon Resource Name (ARN) that uniquely identifies a backup vault; for example, <code>arn:aws:backup:us-east-1:123456789012:vault:aBackupVault</code>.</p>"
+          "documentation":"<p>An Amazon Resource Name (ARN) that uniquely identifies a backup vault; for example, <code>arn:aws:backup:us-east-1:123456789012:backup-vault:aBackupVault</code>.</p>"
+        },
+        "VaultType":{
+          "shape":"VaultType",
+          "documentation":"<p>The type of vault in which the described recovery point is stored.</p>"
+        },
+        "VaultState":{
+          "shape":"VaultState",
+          "documentation":"<p>The current state of the vault.</p>"
         },
         "CreationDate":{
           "shape":"timestamp",
@@ -2167,7 +2177,7 @@
           "documentation":"<p>A timestamp that specifies when to delete a recovery point.</p>"
         }
       },
-      "documentation":"<p>Contains <code>DeleteAt</code> and <code>MoveToColdStorageAt</code> timestamps, which are used to specify a lifecycle for a recovery point.</p> <p>The lifecycle defines when a protected resource is transitioned to cold storage and when it expires. Backup transitions and expires backups automatically according to the lifecycle that you define.</p> <p>Backups transitioned to cold storage must be stored in cold storage for a minimum of 90 days. Therefore, the “retention” setting must be 90 days greater than the “transition to cold after days” setting. The “transition to cold after days” setting cannot be changed after a backup has been transitioned to cold.</p> <p>Resource types that are able to be transitioned to cold storage are listed in the \"Lifecycle to cold storage\" section of the <a href=\"https://docs.aws.amazon.com/aws-backup/latest/devguide/whatisbackup.html#features-by-resource\"> Feature availability by resource</a> table. Backup ignores this expression for other resource types.</p>"
+      "documentation":"<p>Contains <code>DeleteAt</code> and <code>MoveToColdStorageAt</code> timestamps, which are used to specify a lifecycle for a recovery point.</p> <p>The lifecycle defines when a protected resource is transitioned to cold storage and when it expires. Backup transitions and expires backups automatically according to the lifecycle that you define.</p> <p>Backups transitioned to cold storage must be stored in cold storage for a minimum of 90 days. Therefore, the “retention” setting must be 90 days greater than the “transition to cold after days” setting. The “transition to cold after days” setting cannot be changed after a backup has been transitioned to cold.</p> <p>Resource types that can transition to cold storage are listed in the <a href=\"https://docs.aws.amazon.com/aws-backup/latest/devguide/backup-feature-availability.html#features-by-resource\">Feature availability by resource</a> table. Backup ignores this expression for other resource types.</p>"
     },
     "CancelLegalHoldInput":{
       "type":"structure",
@@ -2178,19 +2188,19 @@
       "members":{
         "LegalHoldId":{
           "shape":"string",
-          "documentation":"<p>Legal hold ID required to remove the specified legal hold on a recovery point.</p>",
+          "documentation":"<p>The ID of the legal hold.</p>",
           "location":"uri",
           "locationName":"legalHoldId"
         },
         "CancelDescription":{
           "shape":"string",
-          "documentation":"<p>String describing the reason for removing the legal hold.</p>",
+          "documentation":"<p>A string the describes the reason for removing the legal hold.</p>",
           "location":"querystring",
           "locationName":"cancelDescription"
         },
         "RetainRecordInDays":{
           "shape":"Long",
-          "documentation":"<p>The integer amount in days specifying amount of days after this API operation to remove legal hold.</p>",
+          "documentation":"<p>The integer amount, in days, after which to remove legal hold.</p>",
           "location":"querystring",
           "locationName":"retainRecordInDays"
         }
@@ -2243,7 +2253,7 @@
           "documentation":"<p>The value in a key-value pair. For example, in the tag <code>Department: Accounting</code>, <code>Accounting</code> is the value.</p>"
         }
       },
-      "documentation":"<p>Includes information about tags you define to assign tagged resources to a backup plan.</p>"
+      "documentation":"<p>Includes information about tags you define to assign tagged resources to a backup plan.</p> <p>Include the prefix <code>aws:ResourceTag</code> in your tags. For example, <code>\"aws:ResourceTag/TagKey1\": \"Value1\"</code>.</p>"
     },
     "ConditionParameters":{
       "type":"list",
@@ -2305,7 +2315,7 @@
           "documentation":"<p>The value of parameter, for example, <code>hourly</code>.</p>"
         }
       },
-      "documentation":"<p>A list of parameters for a control. A control can have zero, one, or more than one parameter. An example of a control with two parameters is: \"backup plan frequency is at least <code>daily</code> and the retention period is at least <code>1 year</code>\". The first parameter is <code>daily</code>. The second parameter is <code>1 year</code>.</p>"
+      "documentation":"<p>The parameters for a control. A control can have zero, one, or more than one parameter. An example of a control with two parameters is: \"backup plan frequency is at least <code>daily</code> and the retention period is at least <code>1 year</code>\". The first parameter is <code>daily</code>. The second parameter is <code>1 year</code>.</p>"
     },
     "ControlInputParameters":{
       "type":"list",
@@ -2325,7 +2335,7 @@
         },
         "Tags":{
           "shape":"stringMap",
-          "documentation":"<p>The tag key-value pair applied to those Amazon Web Services resources that you want to trigger an evaluation for a rule. A maximum of one key-value pair can be provided. The tag value is optional, but it cannot be an empty string. The structure to assign a tag is: <code>[{\"Key\":\"string\",\"Value\":\"string\"}]</code>.</p>"
+          "documentation":"<p>The tag key-value pair applied to those Amazon Web Services resources that you want to trigger an evaluation for a rule. A maximum of one key-value pair can be provided. The tag value is optional, but it cannot be an empty string if you are creating or editing a framework from the console (though the value can be an empty string when included in a CloudFormation template).</p> <p>The structure to assign a tag is: <code>[{\"Key\":\"string\",\"Value\":\"string\"}]</code>.</p>"
         }
       },
       "documentation":"<p>A framework consists of one or more controls. Each control has its own control scope. The control scope can include one or more resource types, a combination of a tag key and value, or a combination of one resource type and one resource ID. If no scope is specified, evaluations for the rule are triggered when any resource in your recording group changes in configuration.</p> <note> <p>To set a control scope that includes all of a particular resource, leave the <code>ControlScope</code> empty or do not pass it when calling <code>CreateFramework</code>.</p> </note>"
@@ -2337,7 +2347,7 @@
         "Lifecycle":{"shape":"Lifecycle"},
         "DestinationBackupVaultArn":{
           "shape":"ARN",
-          "documentation":"<p>An Amazon Resource Name (ARN) that uniquely identifies the destination backup vault for the copied backup. For example, <code>arn:aws:backup:us-east-1:123456789012:vault:aBackupVault</code>.</p>"
+          "documentation":"<p>An Amazon Resource Name (ARN) that uniquely identifies the destination backup vault for the copied backup. For example, <code>arn:aws:backup:us-east-1:123456789012:backup-vault:aBackupVault</code>.</p>"
         }
       },
       "documentation":"<p>The details of the copy operation.</p>"
@@ -2359,7 +2369,7 @@
         },
         "SourceBackupVaultArn":{
           "shape":"ARN",
-          "documentation":"<p>An Amazon Resource Name (ARN) that uniquely identifies a source copy vault; for example, <code>arn:aws:backup:us-east-1:123456789012:vault:aBackupVault</code>. </p>"
+          "documentation":"<p>An Amazon Resource Name (ARN) that uniquely identifies a source copy vault; for example, <code>arn:aws:backup:us-east-1:123456789012:backup-vault:aBackupVault</code>. </p>"
         },
         "SourceRecoveryPointArn":{
           "shape":"ARN",
@@ -2367,7 +2377,7 @@
         },
         "DestinationBackupVaultArn":{
           "shape":"ARN",
-          "documentation":"<p>An Amazon Resource Name (ARN) that uniquely identifies a destination copy vault; for example, <code>arn:aws:backup:us-east-1:123456789012:vault:aBackupVault</code>.</p>"
+          "documentation":"<p>An Amazon Resource Name (ARN) that uniquely identifies a destination copy vault; for example, <code>arn:aws:backup:us-east-1:123456789012:backup-vault:aBackupVault</code>.</p>"
         },
         "DestinationRecoveryPointArn":{
           "shape":"ARN",
@@ -2416,11 +2426,11 @@
         },
         "CompositeMemberIdentifier":{
           "shape":"string",
-          "documentation":"<p>This is the identifier of a resource within a composite group, such as nested (child) recovery point belonging to a composite (parent) stack. The ID is transferred from the <a href=\"https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/resources-section-structure.html#resources-section-structure-syntax\"> logical ID</a> within a stack.</p>"
+          "documentation":"<p>The identifier of a resource within a composite group, such as nested (child) recovery point belonging to a composite (parent) stack. The ID is transferred from the <a href=\"https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/resources-section-structure.html#resources-section-structure-syntax\"> logical ID</a> within a stack.</p>"
         },
         "NumberOfChildJobs":{
           "shape":"Long",
-          "documentation":"<p>This is the number of child (nested) copy jobs.</p>"
+          "documentation":"<p>The number of child (nested) copy jobs.</p>"
         },
         "ChildJobsInState":{
           "shape":"CopyJobChildJobsInState",
@@ -2428,7 +2438,7 @@
         },
         "ResourceName":{
           "shape":"string",
-          "documentation":"<p>This is the non-unique name of the resource that belongs to the specified backup.</p>"
+          "documentation":"<p>The non-unique name of the resource that belongs to the specified backup.</p>"
         },
         "MessageCategory":{
           "shape":"string",
@@ -2473,7 +2483,7 @@
       "members":{
         "Region":{
           "shape":"Region",
-          "documentation":"<p>This is the Amazon Web Services Regions within the job summary.</p>"
+          "documentation":"<p>The Amazon Web Services Regions within the job summary.</p>"
         },
         "AccountId":{
           "shape":"AccountId",
@@ -2520,11 +2530,11 @@
       "members":{
         "BackupPlan":{
           "shape":"BackupPlanInput",
-          "documentation":"<p>Specifies the body of a backup plan. Includes a <code>BackupPlanName</code> and one or more sets of <code>Rules</code>.</p>"
+          "documentation":"<p>The body of a backup plan. Includes a <code>BackupPlanName</code> and one or more sets of <code>Rules</code>.</p>"
         },
         "BackupPlanTags":{
           "shape":"Tags",
-          "documentation":"<p>To help organize your resources, you can assign your own metadata to the resources that you create. Each tag is a key-value pair. The specified tags are assigned to all backups created with this plan.</p>"
+          "documentation":"<p>The tags to assign to the backup plan.</p>"
         },
         "CreatorRequestId":{
           "shape":"string",
@@ -2537,7 +2547,7 @@
       "members":{
         "BackupPlanId":{
           "shape":"string",
-          "documentation":"<p>Uniquely identifies a backup plan.</p>"
+          "documentation":"<p>The ID of the backup plan.</p>"
         },
         "BackupPlanArn":{
           "shape":"ARN",
@@ -2553,7 +2563,7 @@
         },
         "AdvancedBackupSettings":{
           "shape":"AdvancedBackupSettings",
-          "documentation":"<p>A list of <code>BackupOptions</code> settings for a resource type. This option is only available for Windows Volume Shadow Copy Service (VSS) backup jobs.</p>"
+          "documentation":"<p>The settings for a resource type. This option is only available for Windows Volume Shadow Copy Service (VSS) backup jobs.</p>"
         }
       }
     },
@@ -2566,13 +2576,13 @@
       "members":{
         "BackupPlanId":{
           "shape":"string",
-          "documentation":"<p>Uniquely identifies the backup plan to be associated with the selection of resources.</p>",
+          "documentation":"<p>The ID of the backup plan.</p>",
           "location":"uri",
           "locationName":"backupPlanId"
         },
         "BackupSelection":{
           "shape":"BackupSelection",
-          "documentation":"<p>Specifies the body of a request to assign a set of resources to a backup plan.</p>"
+          "documentation":"<p>The body of a request to assign a set of resources to a backup plan.</p>"
         },
         "CreatorRequestId":{
           "shape":"string",
@@ -2589,7 +2599,7 @@
         },
         "BackupPlanId":{
           "shape":"string",
-          "documentation":"<p>Uniquely identifies a backup plan.</p>"
+          "documentation":"<p>The ID of the backup plan.</p>"
         },
         "CreationDate":{
           "shape":"timestamp",
@@ -2609,7 +2619,7 @@
         },
         "BackupVaultTags":{
           "shape":"Tags",
-          "documentation":"<p>Metadata that you can assign to help organize the resources that you create. Each tag is a key-value pair.</p>"
+          "documentation":"<p>The tags to assign to the backup vault.</p>"
         },
         "EncryptionKeyArn":{
           "shape":"ARN",
@@ -2630,7 +2640,7 @@
         },
         "BackupVaultArn":{
           "shape":"ARN",
-          "documentation":"<p>An Amazon Resource Name (ARN) that uniquely identifies a backup vault; for example, <code>arn:aws:backup:us-east-1:123456789012:vault:aBackupVault</code>.</p>"
+          "documentation":"<p>An Amazon Resource Name (ARN) that uniquely identifies a backup vault; for example, <code>arn:aws:backup:us-east-1:123456789012:backup-vault:aBackupVault</code>.</p>"
         },
         "CreationDate":{
           "shape":"timestamp",
@@ -2655,7 +2665,7 @@
         },
         "FrameworkControls":{
           "shape":"FrameworkControls",
-          "documentation":"<p>A list of the controls that make up the framework. Each control in the list has a name, input parameters, and scope.</p>"
+          "documentation":"<p>The controls that make up the framework. Each control in the list has a name, input parameters, and scope.</p>"
         },
         "IdempotencyToken":{
           "shape":"string",
@@ -2664,7 +2674,7 @@
         },
         "FrameworkTags":{
           "shape":"stringMap",
-          "documentation":"<p>Metadata that you can assign to help organize the frameworks that you create. Each tag is a key-value pair.</p>"
+          "documentation":"<p>The tags to assign to the framework.</p>"
         }
       }
     },
@@ -2690,11 +2700,11 @@
       "members":{
         "Title":{
           "shape":"string",
-          "documentation":"<p>This is the string title of the legal hold.</p>"
+          "documentation":"<p>The title of the legal hold.</p>"
         },
         "Description":{
           "shape":"string",
-          "documentation":"<p>This is the string description of the legal hold.</p>"
+          "documentation":"<p>The description of the legal hold.</p>"
         },
         "IdempotencyToken":{
           "shape":"string",
@@ -2702,7 +2712,7 @@
         },
         "RecoveryPointSelection":{
           "shape":"RecoveryPointSelection",
-          "documentation":"<p>This specifies criteria to assign a set of resources, such as resource types or backup vaults.</p>"
+          "documentation":"<p>The criteria to assign a set of resources, such as resource types or backup vaults.</p>"
         },
         "Tags":{
           "shape":"Tags",
@@ -2715,31 +2725,31 @@
       "members":{
         "Title":{
           "shape":"string",
-          "documentation":"<p>This is the string title of the legal hold returned after creating the legal hold.</p>"
+          "documentation":"<p>The title of the legal hold.</p>"
         },
         "Status":{
           "shape":"LegalHoldStatus",
-          "documentation":"<p>This displays the status of the legal hold returned after creating the legal hold. Statuses can be <code>ACTIVE</code>, <code>PENDING</code>, <code>CANCELED</code>, <code>CANCELING</code>, or <code>FAILED</code>.</p>"
+          "documentation":"<p>The status of the legal hold.</p>"
         },
         "Description":{
           "shape":"string",
-          "documentation":"<p>This is the returned string description of the legal hold.</p>"
+          "documentation":"<p>The description of the legal hold.</p>"
         },
         "LegalHoldId":{
           "shape":"string",
-          "documentation":"<p>Legal hold ID returned for the specified legal hold on a recovery point.</p>"
+          "documentation":"<p>The ID of the legal hold.</p>"
         },
         "LegalHoldArn":{
           "shape":"ARN",
-          "documentation":"<p>This is the ARN (Amazon Resource Number) of the created legal hold.</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of the legal hold.</p>"
         },
         "CreationDate":{
           "shape":"timestamp",
-          "documentation":"<p>Time in number format when legal hold was created.</p>"
+          "documentation":"<p>The time when the legal hold was created.</p>"
         },
         "RecoveryPointSelection":{
           "shape":"RecoveryPointSelection",
-          "documentation":"<p>This specifies criteria to assign a set of resources, such as resource types or backup vaults.</p>"
+          "documentation":"<p>The criteria to assign to a set of resources, such as resource types or backup vaults.</p>"
         }
       }
     },
@@ -2753,25 +2763,25 @@
       "members":{
         "BackupVaultName":{
           "shape":"BackupVaultName",
-          "documentation":"<p>This is the name of the vault that is being created.</p>",
+          "documentation":"<p>The name of a logical container where backups are stored. Logically air-gapped backup vaults are identified by names that are unique to the account used to create them and the Region where they are created.</p>",
           "location":"uri",
           "locationName":"backupVaultName"
         },
         "BackupVaultTags":{
           "shape":"Tags",
-          "documentation":"<p>These are the tags that will be included in the newly-created vault.</p>"
+          "documentation":"<p>The tags to assign to the vault.</p>"
         },
         "CreatorRequestId":{
           "shape":"string",
-          "documentation":"<p>This is the ID of the creation request.</p> <p>This parameter is optional. If used, this parameter must contain 1 to 50 alphanumeric or '-_.' characters.</p>"
+          "documentation":"<p>The ID of the creation request.</p> <p>This parameter is optional. If used, this parameter must contain 1 to 50 alphanumeric or '-_.' characters.</p>"
         },
         "MinRetentionDays":{
           "shape":"Long",
-          "documentation":"<p>This setting specifies the minimum retention period that the vault retains its recovery points. If this parameter is not specified, no minimum retention period is enforced.</p> <p>If specified, any backup or copy job to the vault must have a lifecycle policy with a retention period equal to or longer than the minimum retention period. If a job retention period is shorter than that minimum retention period, then the vault fails the backup or copy job, and you should either modify your lifecycle settings or use a different vault.</p>"
+          "documentation":"<p>This setting specifies the minimum retention period that the vault retains its recovery points.</p> <p>The minimum value accepted is 7 days.</p>"
         },
         "MaxRetentionDays":{
           "shape":"Long",
-          "documentation":"<p>This is the setting that specifies the maximum retention period that the vault retains its recovery points. If this parameter is not specified, Backup does not enforce a maximum retention period on the recovery points in the vault (allowing indefinite storage).</p> <p>If specified, any backup or copy job to the vault must have a lifecycle policy with a retention period equal to or shorter than the maximum retention period. If the job retention period is longer than that maximum retention period, then the vault fails the backup or copy job, and you should either modify your lifecycle settings or use a different vault.</p>"
+          "documentation":"<p>The maximum retention period that the vault retains its recovery points.</p>"
         }
       }
     },
@@ -2780,11 +2790,11 @@
       "members":{
         "BackupVaultName":{
           "shape":"BackupVaultName",
-          "documentation":"<p>The name of a logical container where backups are stored. Logically air-gapped backup vaults are identified by names that are unique to the account used to create them and the Region where they are created. They consist of lowercase letters, numbers, and hyphens.</p>"
+          "documentation":"<p>The name of a logical container where backups are stored. Logically air-gapped backup vaults are identified by names that are unique to the account used to create them and the Region where they are created.</p>"
         },
         "BackupVaultArn":{
           "shape":"ARN",
-          "documentation":"<p>This is the ARN (Amazon Resource Name) of the vault being created.</p>"
+          "documentation":"<p>The ARN (Amazon Resource Name) of the vault.</p>"
         },
         "CreationDate":{
           "shape":"timestamp",
@@ -2792,7 +2802,7 @@
         },
         "VaultState":{
           "shape":"VaultState",
-          "documentation":"<p>This is the current state of the vault.</p>"
+          "documentation":"<p>The current state of the vault.</p>"
         }
       }
     },
@@ -2822,7 +2832,7 @@
         },
         "ReportPlanTags":{
           "shape":"stringMap",
-          "documentation":"<p>Metadata that you can assign to help organize the report plans that you create. Each tag is a key-value pair.</p>"
+          "documentation":"<p>The tags to assign to the report plan.</p>"
         },
         "IdempotencyToken":{
           "shape":"string",
@@ -2862,7 +2872,7 @@
         },
         "Tags":{
           "shape":"SensitiveStringMap",
-          "documentation":"<p>Optional tags to include. A tag is a key-value pair you can use to manage, filter, and search for your resources. Allowed characters include UTF-8 letters,numbers, spaces, and the following characters: + - = . _ : /.</p>"
+          "documentation":"<p>The tags to assign to the restore testing plan.</p>"
         }
       }
     },
@@ -2922,19 +2932,19 @@
       "members":{
         "CreationTime":{
           "shape":"Timestamp",
-          "documentation":"<p>This is the time the resource testing selection was created successfully.</p>"
+          "documentation":"<p>The time that the resource testing selection was created.</p>"
         },
         "RestoreTestingPlanArn":{
           "shape":"String",
-          "documentation":"<p>This is the ARN of the restore testing plan with which the restore testing selection is associated.</p>"
+          "documentation":"<p>The ARN of the restore testing plan with which the restore testing selection is associated.</p>"
         },
         "RestoreTestingPlanName":{
           "shape":"String",
-          "documentation":"<p>Unique string that is the name of the restore testing plan.</p> <p>The name cannot be changed after creation. The name consists of only alphanumeric characters and underscores. Maximum length is 50.</p>"
+          "documentation":"<p>The name of the restore testing plan.</p> <p>The name cannot be changed after creation. The name consists of only alphanumeric characters and underscores. Maximum length is 50.</p>"
         },
         "RestoreTestingSelectionName":{
           "shape":"String",
-          "documentation":"<p>This is the unique name of the restore testing selection that belongs to the related restore testing plan.</p>"
+          "documentation":"<p>The name of the restore testing selection for the related restore testing plan.</p>"
         }
       }
     },
@@ -3029,7 +3039,7 @@
       "members":{
         "BackupVaultName":{
           "shape":"string",
-          "documentation":"<p>The name of a logical container where backups are stored. Backup vaults are identified by names that are unique to the account used to create them and the Amazon Web Services Region where they are created. They consist of lowercase letters, numbers, and hyphens.</p>",
+          "documentation":"<p>The name of a logical container where backups are stored. Backup vaults are identified by names that are unique to the account used to create them and the Amazon Web Services Region where they are created.</p>",
           "location":"uri",
           "locationName":"backupVaultName"
         }
@@ -3053,7 +3063,7 @@
       "members":{
         "BackupVaultName":{
           "shape":"BackupVaultName",
-          "documentation":"<p>The name of a logical container where backups are stored. Backup vaults are identified by names that are unique to the account used to create them and the Region where they are created. They consist of lowercase letters, numbers, and hyphens.</p>",
+          "documentation":"<p>The name of a logical container where backups are stored. Backup vaults are identified by names that are unique to the account used to create them and the Region where they are created.</p>",
           "location":"uri",
           "locationName":"backupVaultName"
         }
@@ -3080,7 +3090,7 @@
       "members":{
         "BackupVaultName":{
           "shape":"BackupVaultName",
-          "documentation":"<p>The name of a logical container where backups are stored. Backup vaults are identified by names that are unique to the account used to create them and the Amazon Web Services Region where they are created. They consist of lowercase letters, numbers, and hyphens.</p>",
+          "documentation":"<p>The name of a logical container where backups are stored. Backup vaults are identified by names that are unique to the account used to create them and the Amazon Web Services Region where they are created.</p>",
           "location":"uri",
           "locationName":"backupVaultName"
         },
@@ -3180,11 +3190,11 @@
         },
         "BackupVaultName":{
           "shape":"BackupVaultName",
-          "documentation":"<p>The name of a logical container where backups are stored. Backup vaults are identified by names that are unique to the account used to create them and the Amazon Web Services Region where they are created. They consist of lowercase letters, numbers, and hyphens.</p>"
+          "documentation":"<p>The name of a logical container where backups are stored. Backup vaults are identified by names that are unique to the account used to create them and the Amazon Web Services Region where they are created.</p>"
         },
         "BackupVaultArn":{
           "shape":"ARN",
-          "documentation":"<p>An Amazon Resource Name (ARN) that uniquely identifies a backup vault; for example, <code>arn:aws:backup:us-east-1:123456789012:vault:aBackupVault</code>.</p>"
+          "documentation":"<p>An Amazon Resource Name (ARN) that uniquely identifies a backup vault; for example, <code>arn:aws:backup:us-east-1:123456789012:backup-vault:aBackupVault</code>.</p>"
         },
         "RecoveryPointArn":{
           "shape":"ARN",
@@ -3268,15 +3278,15 @@
         },
         "ResourceName":{
           "shape":"string",
-          "documentation":"<p>This is the non-unique name of the resource that belongs to the specified backup.</p>"
+          "documentation":"<p>The non-unique name of the resource that belongs to the specified backup.</p>"
         },
         "InitiationDate":{
           "shape":"timestamp",
-          "documentation":"<p>This is the date a backup job was initiated.</p>"
+          "documentation":"<p>The date a backup job was initiated.</p>"
         },
         "MessageCategory":{
           "shape":"string",
-          "documentation":"<p>This is the job count for the specified message category.</p> <p>Example strings may include <code>AccessDenied</code>, <code>SUCCESS</code>, <code>AGGREGATE_ALL</code>, and <code>INVALIDPARAMETERS</code>. View <a href=\"https://docs.aws.amazon.com/aws-backup/latest/devguide/monitoring.html\">Monitoring</a> for a list of accepted MessageCategory strings.</p>"
+          "documentation":"<p>The job count for the specified message category.</p> <p>Example strings may include <code>AccessDenied</code>, <code>SUCCESS</code>, <code>AGGREGATE_ALL</code>, and <code>INVALIDPARAMETERS</code>. View <a href=\"https://docs.aws.amazon.com/aws-backup/latest/devguide/monitoring.html\">Monitoring</a> for a list of accepted MessageCategory strings.</p>"
         }
       }
     },
@@ -3286,13 +3296,13 @@
       "members":{
         "BackupVaultName":{
           "shape":"string",
-          "documentation":"<p>The name of a logical container where backups are stored. Backup vaults are identified by names that are unique to the account used to create them and the Amazon Web Services Region where they are created. They consist of lowercase letters, numbers, and hyphens.</p>",
+          "documentation":"<p>The name of a logical container where backups are stored. Backup vaults are identified by names that are unique to the account used to create them and the Amazon Web Services Region where they are created.</p>",
           "location":"uri",
           "locationName":"backupVaultName"
         },
         "BackupVaultAccountId":{
           "shape":"string",
-          "documentation":"<p>This is the account ID of the specified backup vault.</p>",
+          "documentation":"<p>The account ID of the specified backup vault.</p>",
           "location":"querystring",
           "locationName":"backupVaultAccountId"
         }
@@ -3303,15 +3313,19 @@
       "members":{
         "BackupVaultName":{
           "shape":"string",
-          "documentation":"<p>The name of a logical container where backups are stored. Backup vaults are identified by names that are unique to the account used to create them and the Region where they are created. They consist of lowercase letters, numbers, and hyphens.</p>"
+          "documentation":"<p>The name of a logical container where backups are stored. Backup vaults are identified by names that are unique to the account used to create them and the Region where they are created.</p>"
         },
         "BackupVaultArn":{
           "shape":"ARN",
-          "documentation":"<p>An Amazon Resource Name (ARN) that uniquely identifies a backup vault; for example, <code>arn:aws:backup:us-east-1:123456789012:vault:aBackupVault</code>.</p>"
+          "documentation":"<p>An Amazon Resource Name (ARN) that uniquely identifies a backup vault; for example, <code>arn:aws:backup:us-east-1:123456789012:backup-vault:aBackupVault</code>.</p>"
         },
         "VaultType":{
           "shape":"VaultType",
-          "documentation":"<p>This is the type of vault described.</p>"
+          "documentation":"<p>The type of vault described.</p>"
+        },
+        "VaultState":{
+          "shape":"VaultState",
+          "documentation":"<p>The current state of the vault.-&gt;</p>"
         },
         "EncryptionKeyArn":{
           "shape":"ARN",
@@ -3335,7 +3349,7 @@
         },
         "MinRetentionDays":{
           "shape":"Long",
-          "documentation":"<p>The Backup Vault Lock setting that specifies the minimum retention period that the vault retains its recovery points. If this parameter is not specified, Vault Lock does not enforce a minimum retention period.</p> <p>If specified, any backup or copy job to the vault must have a lifecycle policy with a retention period equal to or longer than the minimum retention period. If the job's retention period is shorter than that minimum retention period, then the vault fails the backup or copy job, and you should either modify your lifecycle settings or use a different vault. Recovery points already stored in the vault prior to Vault Lock are not affected.</p>"
+          "documentation":"<p>The Backup Vault Lock setting that specifies the minimum retention period that the vault retains its recovery points. If this parameter is not specified, Vault Lock will not enforce a minimum retention period.</p> <p>If specified, any backup or copy job to the vault must have a lifecycle policy with a retention period equal to or longer than the minimum retention period. If the job's retention period is shorter than that minimum retention period, then the vault fails the backup or copy job, and you should either modify your lifecycle settings or use a different vault. Recovery points already stored in the vault prior to Vault Lock are not affected.</p>"
         },
         "MaxRetentionDays":{
           "shape":"Long",
@@ -3397,7 +3411,7 @@
         },
         "FrameworkControls":{
           "shape":"FrameworkControls",
-          "documentation":"<p>A list of the controls that make up the framework. Each control in the list has a name, input parameters, and scope.</p>"
+          "documentation":"<p>The controls that make up the framework. Each control in the list has a name, input parameters, and scope.</p>"
         },
         "CreationTime":{
           "shape":"timestamp",
@@ -3464,27 +3478,27 @@
         },
         "ResourceName":{
           "shape":"string",
-          "documentation":"<p>This is the non-unique name of the resource that belongs to the specified backup.</p>"
+          "documentation":"<p>The name of the resource that belongs to the specified backup.</p>"
         },
         "LastBackupVaultArn":{
           "shape":"ARN",
-          "documentation":"<p>This is the ARN (Amazon Resource Name) of the backup vault that contains the most recent backup recovery point.</p>"
+          "documentation":"<p>The ARN (Amazon Resource Name) of the backup vault that contains the most recent backup recovery point.</p>"
         },
         "LastRecoveryPointArn":{
           "shape":"ARN",
-          "documentation":"<p>This is the ARN (Amazon Resource Name) of the most recent recovery point.</p>"
+          "documentation":"<p>The ARN (Amazon Resource Name) of the most recent recovery point.</p>"
         },
         "LatestRestoreExecutionTimeMinutes":{
           "shape":"Long",
-          "documentation":"<p>This is the time in minutes the most recent restore job took to complete.</p>"
+          "documentation":"<p>The time, in minutes, that the most recent restore job took to complete.</p>"
         },
         "LatestRestoreJobCreationDate":{
           "shape":"timestamp",
-          "documentation":"<p>This is the creation date of the most recent restore job.</p>"
+          "documentation":"<p>The creation date of the most recent restore job.</p>"
         },
         "LatestRestoreRecoveryPointCreationDate":{
           "shape":"timestamp",
-          "documentation":"<p>This is the date the most recent recovery point was created.</p>"
+          "documentation":"<p>The date the most recent recovery point was created.</p>"
         }
       }
     },
@@ -3497,7 +3511,7 @@
       "members":{
         "BackupVaultName":{
           "shape":"BackupVaultName",
-          "documentation":"<p>The name of a logical container where backups are stored. Backup vaults are identified by names that are unique to the account used to create them and the Amazon Web Services Region where they are created. They consist of lowercase letters, numbers, and hyphens.</p>",
+          "documentation":"<p>The name of a logical container where backups are stored. Backup vaults are identified by names that are unique to the account used to create them and the Amazon Web Services Region where they are created.</p>",
           "location":"uri",
           "locationName":"backupVaultName"
         },
@@ -3509,7 +3523,7 @@
         },
         "BackupVaultAccountId":{
           "shape":"AccountId",
-          "documentation":"<p>This is the account ID of the specified backup vault.</p>",
+          "documentation":"<p>The account ID of the specified backup vault.</p>",
           "location":"querystring",
           "locationName":"backupVaultAccountId"
         }
@@ -3524,15 +3538,15 @@
         },
         "BackupVaultName":{
           "shape":"BackupVaultName",
-          "documentation":"<p>The name of a logical container where backups are stored. Backup vaults are identified by names that are unique to the account used to create them and the Region where they are created. They consist of lowercase letters, numbers, and hyphens.</p>"
+          "documentation":"<p>The name of a logical container where backups are stored. Backup vaults are identified by names that are unique to the account used to create them and the Region where they are created.</p>"
         },
         "BackupVaultArn":{
           "shape":"ARN",
-          "documentation":"<p>An ARN that uniquely identifies a backup vault; for example, <code>arn:aws:backup:us-east-1:123456789012:vault:aBackupVault</code>.</p>"
+          "documentation":"<p>An ARN that uniquely identifies a backup vault; for example, <code>arn:aws:backup:us-east-1:123456789012:backup-vault:aBackupVault</code>.</p>"
         },
         "SourceBackupVaultArn":{
           "shape":"ARN",
-          "documentation":"<p>An Amazon Resource Name (ARN) that uniquely identifies the source vault where the resource was originally backed up in; for example, <code>arn:aws:backup:us-east-1:123456789012:vault:BackupVault</code>. If the recovery is restored to the same Amazon Web Services account or Region, this value will be <code>null</code>.</p>"
+          "documentation":"<p>An Amazon Resource Name (ARN) that uniquely identifies the source vault where the resource was originally backed up in; for example, <code>arn:aws:backup:us-east-1:123456789012:backup-vault:aBackupVault</code>. If the recovery is restored to the same Amazon Web Services account or Region, this value will be <code>null</code>.</p>"
         },
         "ResourceArn":{
           "shape":"ARN",
@@ -3552,7 +3566,7 @@
         },
         "Status":{
           "shape":"RecoveryPointStatus",
-          "documentation":"<p>A status code specifying the state of the recovery point.</p> <p> <code>PARTIAL</code> status indicates Backup could not create the recovery point before the backup window closed. To increase your backup plan window using the API, see <a href=\"https://docs.aws.amazon.com/aws-backup/latest/devguide/API_UpdateBackupPlan.html\">UpdateBackupPlan</a>. You can also increase your backup plan window using the Console by choosing and editing your backup plan.</p> <p> <code>EXPIRED</code> status indicates that the recovery point has exceeded its retention period, but Backup lacks permission or is otherwise unable to delete it. To manually delete these recovery points, see <a href=\"https://docs.aws.amazon.com/aws-backup/latest/devguide/gs-cleanup-resources.html#cleanup-backups\"> Step 3: Delete the recovery points</a> in the <i>Clean up resources</i> section of <i>Getting started</i>.</p> <p> <code>STOPPED</code> status occurs on a continuous backup where a user has taken some action that causes the continuous backup to be disabled. This can be caused by the removal of permissions, turning off versioning, turning off events being sent to EventBridge, or disabling the EventBridge rules that are put in place by Backup.</p> <p>To resolve <code>STOPPED</code> status, ensure that all requested permissions are in place and that versioning is enabled on the S3 bucket. Once these conditions are met, the next instance of a backup rule running will result in a new continuous recovery point being created. The recovery points with STOPPED status do not need to be deleted.</p> <p>For SAP HANA on Amazon EC2 <code>STOPPED</code> status occurs due to user action, application misconfiguration, or backup failure. To ensure that future continuous backups succeed, refer to the recovery point status and check SAP HANA for details.</p>"
+          "documentation":"<p>A status code specifying the state of the recovery point.</p> <p> <code>PARTIAL</code> status indicates Backup could not create the recovery point before the backup window closed. To increase your backup plan window using the API, see <a href=\"https://docs.aws.amazon.com/aws-backup/latest/devguide/API_UpdateBackupPlan.html\">UpdateBackupPlan</a>. You can also increase your backup plan window using the Console by choosing and editing your backup plan.</p> <p> <code>EXPIRED</code> status indicates that the recovery point has exceeded its retention period, but Backup lacks permission or is otherwise unable to delete it. To manually delete these recovery points, see <a href=\"https://docs.aws.amazon.com/aws-backup/latest/devguide/gs-cleanup-resources.html#cleanup-backups\"> Step 3: Delete the recovery points</a> in the <i>Clean up resources</i> section of <i>Getting started</i>.</p> <p> <code>STOPPED</code> status occurs on a continuous backup where a user has taken some action that causes the continuous backup to be disabled. This can be caused by the removal of permissions, turning off versioning, turning off events being sent to EventBridge, or disabling the EventBridge rules that are put in place by Backup. For recovery points of Amazon S3, Amazon RDS, and Amazon Aurora resources, this status occurs when the retention period of a continuous backup rule is changed.</p> <p>To resolve <code>STOPPED</code> status, ensure that all requested permissions are in place and that versioning is enabled on the S3 bucket. Once these conditions are met, the next instance of a backup rule running will result in a new continuous recovery point being created. The recovery points with STOPPED status do not need to be deleted.</p> <p>For SAP HANA on Amazon EC2 <code>STOPPED</code> status occurs due to user action, application misconfiguration, or backup failure. To ensure that future continuous backups succeed, refer to the recovery point status and check SAP HANA for details.</p>"
         },
         "StatusMessage":{
           "shape":"string",
@@ -3576,7 +3590,7 @@
         },
         "Lifecycle":{
           "shape":"Lifecycle",
-          "documentation":"<p>The lifecycle defines when a protected resource is transitioned to cold storage and when it expires. Backup transitions and expires backups automatically according to the lifecycle that you define.</p> <p>Backups that are transitioned to cold storage must be stored in cold storage for a minimum of 90 days. Therefore, the “retention” setting must be 90 days greater than the “transition to cold after days” setting. The “transition to cold after days” setting cannot be changed after a backup has been transitioned to cold. </p> <p>Resource types that are able to be transitioned to cold storage are listed in the \"Lifecycle to cold storage\" section of the <a href=\"https://docs.aws.amazon.com/aws-backup/latest/devguide/whatisbackup.html#features-by-resource\"> Feature availability by resource</a> table. Backup ignores this expression for other resource types.</p>"
+          "documentation":"<p>The lifecycle defines when a protected resource is transitioned to cold storage and when it expires. Backup transitions and expires backups automatically according to the lifecycle that you define.</p> <p>Backups that are transitioned to cold storage must be stored in cold storage for a minimum of 90 days. Therefore, the “retention” setting must be 90 days greater than the “transition to cold after days” setting. The “transition to cold after days” setting cannot be changed after a backup has been transitioned to cold. </p> <p>Resource types that can transition to cold storage are listed in the <a href=\"https://docs.aws.amazon.com/aws-backup/latest/devguide/backup-feature-availability.html#features-by-resource\">Feature availability by resource</a> table. Backup ignores this expression for other resource types.</p>"
         },
         "EncryptionKeyArn":{
           "shape":"ARN",
@@ -3600,7 +3614,7 @@
         },
         "CompositeMemberIdentifier":{
           "shape":"string",
-          "documentation":"<p>This is the identifier of a resource within a composite group, such as nested (child) recovery point belonging to a composite (parent) stack. The ID is transferred from the <a href=\"https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/resources-section-structure.html#resources-section-structure-syntax\"> logical ID</a> within a stack.</p>"
+          "documentation":"<p>The identifier of a resource within a composite group, such as nested (child) recovery point belonging to a composite (parent) stack. The ID is transferred from the <a href=\"https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/resources-section-structure.html#resources-section-structure-syntax\"> logical ID</a> within a stack.</p>"
         },
         "IsParent":{
           "shape":"boolean",
@@ -3608,11 +3622,11 @@
         },
         "ResourceName":{
           "shape":"string",
-          "documentation":"<p>This is the non-unique name of the resource that belongs to the specified backup.</p>"
+          "documentation":"<p>The name of the resource that belongs to the specified backup.</p>"
         },
         "VaultType":{
           "shape":"VaultType",
-          "documentation":"<p>This is the type of vault in which the described recovery point is stored.</p>"
+          "documentation":"<p>The type of vault in which the described recovery point is stored.</p>"
         }
       }
     },
@@ -3626,11 +3640,11 @@
       "members":{
         "ResourceTypeOptInPreference":{
           "shape":"ResourceTypeOptInPreference",
-          "documentation":"<p>Returns a list of all services along with the opt-in preferences in the Region.</p>"
+          "documentation":"<p>The services along with the opt-in preferences in the Region.</p>"
         },
         "ResourceTypeManagementPreference":{
           "shape":"ResourceTypeManagementPreference",
-          "documentation":"<p>Returns whether Backup fully manages the backups for a resource type.</p> <p>For the benefits of full Backup management, see <a href=\"https://docs.aws.amazon.com/aws-backup/latest/devguide/whatisbackup.html#full-management\"> Full Backup management</a>.</p> <p>For a list of resource types and whether each supports full Backup management, see the <a href=\"https://docs.aws.amazon.com/aws-backup/latest/devguide/whatisbackup.html#features-by-resource\"> Feature availability by resource</a> table.</p> <p>If <code>\"DynamoDB\":false</code>, you can enable full Backup management for DynamoDB backup by enabling <a href=\"https://docs.aws.amazon.com/aws-backup/latest/devguide/advanced-ddb-backup.html#advanced-ddb-backup-enable-cli\"> Backup's advanced DynamoDB backup features</a>.</p>"
+          "documentation":"<p>Returns whether Backup fully manages the backups for a resource type.</p> <p>For the benefits of full Backup management, see <a href=\"https://docs.aws.amazon.com/aws-backup/latest/devguide/whatisbackup.html#full-management\">Full Backup management</a>.</p> <p>For a list of resource types and whether each supports full Backup management, see the <a href=\"https://docs.aws.amazon.com/aws-backup/latest/devguide/backup-feature-availability.html#features-by-resource\">Feature availability by resource</a> table.</p> <p>If <code>\"DynamoDB\":false</code>, you can enable full Backup management for DynamoDB backup by enabling <a href=\"https://docs.aws.amazon.com/aws-backup/latest/devguide/advanced-ddb-backup.html#advanced-ddb-backup-enable-cli\"> Backup's advanced DynamoDB backup features</a>.</p>"
         }
       }
     },
@@ -3651,7 +3665,7 @@
       "members":{
         "ReportJob":{
           "shape":"ReportJob",
-          "documentation":"<p>A list of information about a report job, including its completion and creation times, report destination, unique report job ID, Amazon Resource Name (ARN), report template, status, and status message.</p>"
+          "documentation":"<p>The information about a report job, including its completion and creation times, report destination, unique report job ID, Amazon Resource Name (ARN), report template, status, and status message.</p>"
         }
       }
     },
@@ -3737,7 +3751,7 @@
         },
         "CreatedResourceArn":{
           "shape":"ARN",
-          "documentation":"<p>An Amazon Resource Name (ARN) that uniquely identifies a resource whose recovery point is being restored. The format of the ARN depends on the resource type of the backed-up resource.</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of the resource that was created by the restore job.</p> <p>The format of the ARN depends on the resource type of the backed-up resource.</p>"
         },
         "ResourceType":{
           "shape":"ResourceType",
@@ -3745,7 +3759,7 @@
         },
         "RecoveryPointCreationDate":{
           "shape":"timestamp",
-          "documentation":"<p>This is the creation date of the recovery point made by the specifed restore job.</p>"
+          "documentation":"<p>The creation date of the recovery point made by the specifed restore job.</p>"
         },
         "CreatedBy":{
           "shape":"RestoreJobCreator",
@@ -3753,15 +3767,15 @@
         },
         "ValidationStatus":{
           "shape":"RestoreValidationStatus",
-          "documentation":"<p>This is the status of validation run on the indicated restore job.</p>"
+          "documentation":"<p>The status of validation run on the indicated restore job.</p>"
         },
         "ValidationStatusMessage":{
           "shape":"string",
-          "documentation":"<p>This describes the status of validation run on the indicated restore job.</p>"
+          "documentation":"<p>The status message.</p>"
         },
         "DeletionStatus":{
           "shape":"RestoreDeletionStatus",
-          "documentation":"<p>This notes the status of the data generated by the restore test. The status may be <code>Deleting</code>, <code>Failed</code>, or <code>Successful</code>.</p>"
+          "documentation":"<p>The status of the data generated by the restore test.</p>"
         },
         "DeletionStatusMessage":{
           "shape":"string",
@@ -3778,13 +3792,13 @@
       "members":{
         "BackupVaultName":{
           "shape":"BackupVaultName",
-          "documentation":"<p>This is the name of a logical container where the child (nested) recovery point is stored. Backup vaults are identified by names that are unique to the account used to create them and the Amazon Web Services Region where they are created. They consist of lowercase letters, numbers, and hyphens.</p>",
+          "documentation":"<p>The name of a logical container where the child (nested) recovery point is stored. Backup vaults are identified by names that are unique to the account used to create them and the Amazon Web Services Region where they are created.</p>",
           "location":"uri",
           "locationName":"backupVaultName"
         },
         "RecoveryPointArn":{
           "shape":"ARN",
-          "documentation":"<p>This is the Amazon Resource Name (ARN) that uniquely identifies the child (nested) recovery point; for example, <code>arn:aws:backup:us-east-1:123456789012:recovery-point:1EB3B5E7-9EB0-435A-A80B-108B488B0D45.</code> </p>",
+          "documentation":"<p>The Amazon Resource Name (ARN) that uniquely identifies the child (nested) recovery point; for example, <code>arn:aws:backup:us-east-1:123456789012:recovery-point:1EB3B5E7-9EB0-435A-A80B-108B488B0D45.</code> </p>",
           "location":"uri",
           "locationName":"recoveryPointArn"
         }
@@ -3876,7 +3890,7 @@
         },
         "ControlInputParameters":{
           "shape":"ControlInputParameters",
-          "documentation":"<p>A list of <code>ParameterName</code> and <code>ParameterValue</code> pairs.</p>"
+          "documentation":"<p>The name/value pairs.</p>"
         },
         "ControlScope":{
           "shape":"ControlScope",
@@ -3996,7 +4010,7 @@
         },
         "LastExecutionDate":{
           "shape":"timestamp",
-          "documentation":"<p>The last time a job to back up resources was run with this backup plan. A date and time, in Unix format and Coordinated Universal Time (UTC). The value of <code>LastExecutionDate</code> is accurate to milliseconds. For example, the value 1516925490.087 represents Friday, January 26, 2018 12:11:30.087 AM.</p>"
+          "documentation":"<p>The last time this backup plan was run. A date and time, in Unix format and Coordinated Universal Time (UTC). The value of <code>LastExecutionDate</code> is accurate to milliseconds. For example, the value 1516925490.087 represents Friday, January 26, 2018 12:11:30.087 AM.</p>"
         },
         "AdvancedBackupSettings":{
           "shape":"AdvancedBackupSettings",
@@ -4056,7 +4070,7 @@
       "members":{
         "BackupVaultName":{
           "shape":"BackupVaultName",
-          "documentation":"<p>The name of a logical container where backups are stored. Backup vaults are identified by names that are unique to the account used to create them and the Amazon Web Services Region where they are created. They consist of lowercase letters, numbers, and hyphens.</p>",
+          "documentation":"<p>The name of a logical container where backups are stored. Backup vaults are identified by names that are unique to the account used to create them and the Amazon Web Services Region where they are created.</p>",
           "location":"uri",
           "locationName":"backupVaultName"
         }
@@ -4067,11 +4081,11 @@
       "members":{
         "BackupVaultName":{
           "shape":"BackupVaultName",
-          "documentation":"<p>The name of a logical container where backups are stored. Backup vaults are identified by names that are unique to the account used to create them and the Region where they are created. They consist of lowercase letters, numbers, and hyphens.</p>"
+          "documentation":"<p>The name of a logical container where backups are stored. Backup vaults are identified by names that are unique to the account used to create them and the Region where they are created.</p>"
         },
         "BackupVaultArn":{
           "shape":"ARN",
-          "documentation":"<p>An Amazon Resource Name (ARN) that uniquely identifies a backup vault; for example, <code>arn:aws:backup:us-east-1:123456789012:vault:aBackupVault</code>.</p>"
+          "documentation":"<p>An Amazon Resource Name (ARN) that uniquely identifies a backup vault; for example, <code>arn:aws:backup:us-east-1:123456789012:backup-vault:aBackupVault</code>.</p>"
         },
         "Policy":{
           "shape":"IAMPolicy",
@@ -4085,7 +4099,7 @@
       "members":{
         "BackupVaultName":{
           "shape":"BackupVaultName",
-          "documentation":"<p>The name of a logical container where backups are stored. Backup vaults are identified by names that are unique to the account used to create them and the Amazon Web Services Region where they are created. They consist of lowercase letters, numbers, and hyphens.</p>",
+          "documentation":"<p>The name of a logical container where backups are stored. Backup vaults are identified by names that are unique to the account used to create them and the Amazon Web Services Region where they are created.</p>",
           "location":"uri",
           "locationName":"backupVaultName"
         }
@@ -4096,11 +4110,11 @@
       "members":{
         "BackupVaultName":{
           "shape":"BackupVaultName",
-          "documentation":"<p>The name of a logical container where backups are stored. Backup vaults are identified by names that are unique to the account used to create them and the Region where they are created. They consist of lowercase letters, numbers, and hyphens.</p>"
+          "documentation":"<p>The name of a logical container where backups are stored. Backup vaults are identified by names that are unique to the account used to create them and the Region where they are created.</p>"
         },
         "BackupVaultArn":{
           "shape":"ARN",
-          "documentation":"<p>An Amazon Resource Name (ARN) that uniquely identifies a backup vault; for example, <code>arn:aws:backup:us-east-1:123456789012:vault:aBackupVault</code>.</p>"
+          "documentation":"<p>An Amazon Resource Name (ARN) that uniquely identifies a backup vault; for example, <code>arn:aws:backup:us-east-1:123456789012:backup-vault:aBackupVault</code>.</p>"
         },
         "SNSTopicArn":{
           "shape":"ARN",
@@ -4118,7 +4132,7 @@
       "members":{
         "LegalHoldId":{
           "shape":"string",
-          "documentation":"<p>This is the ID required to use <code>GetLegalHold</code>. This unique ID is associated with a specific legal hold.</p>",
+          "documentation":"<p>The ID of the legal hold.</p>",
           "location":"uri",
           "locationName":"legalHoldId"
         }
@@ -4129,43 +4143,43 @@
       "members":{
         "Title":{
           "shape":"string",
-          "documentation":"<p>This is the string title of the legal hold.</p>"
+          "documentation":"<p>The title of the legal hold.</p>"
         },
         "Status":{
           "shape":"LegalHoldStatus",
-          "documentation":"<p>This is the status of the legal hold. Statuses can be <code>ACTIVE</code>, <code>CREATING</code>, <code>CANCELED</code>, and <code>CANCELING</code>.</p>"
+          "documentation":"<p>The status of the legal hold.</p>"
         },
         "Description":{
           "shape":"string",
-          "documentation":"<p>This is the returned string description of the legal hold.</p>"
+          "documentation":"<p>The description of the legal hold.</p>"
         },
         "CancelDescription":{
           "shape":"string",
-          "documentation":"<p>String describing the reason for removing the legal hold.</p>"
+          "documentation":"<p>The reason for removing the legal hold.</p>"
         },
         "LegalHoldId":{
           "shape":"string",
-          "documentation":"<p>This is the returned ID associated with a specified legal hold.</p>"
+          "documentation":"<p>The ID of the legal hold.</p>"
         },
         "LegalHoldArn":{
           "shape":"ARN",
-          "documentation":"<p>This is the returned framework ARN for the specified legal hold. An Amazon Resource Name (ARN) uniquely identifies a resource. The format of the ARN depends on the resource type.</p>"
+          "documentation":"<p>The framework ARN for the specified legal hold. The format of the ARN depends on the resource type.</p>"
         },
         "CreationDate":{
           "shape":"timestamp",
-          "documentation":"<p>Time in number format when legal hold was created.</p>"
+          "documentation":"<p>The time when the legal hold was created.</p>"
         },
         "CancellationDate":{
           "shape":"timestamp",
-          "documentation":"<p>Time in number when legal hold was cancelled.</p>"
+          "documentation":"<p>The time when the legal hold was cancelled.</p>"
         },
         "RetainRecordUntil":{
           "shape":"timestamp",
-          "documentation":"<p>This is the date and time until which the legal hold record will be retained.</p>"
+          "documentation":"<p>The date and time until which the legal hold record is retained.</p>"
         },
         "RecoveryPointSelection":{
           "shape":"RecoveryPointSelection",
-          "documentation":"<p>This specifies criteria to assign a set of resources, such as resource types or backup vaults.</p>"
+          "documentation":"<p>The criteria to assign a set of resources, such as resource types or backup vaults.</p>"
         }
       }
     },
@@ -4178,7 +4192,7 @@
       "members":{
         "BackupVaultName":{
           "shape":"BackupVaultName",
-          "documentation":"<p>The name of a logical container where backups are stored. Backup vaults are identified by names that are unique to the account used to create them and the Amazon Web Services Region where they are created. They consist of lowercase letters, numbers, and hyphens.</p>",
+          "documentation":"<p>The name of a logical container where backups are stored. Backup vaults are identified by names that are unique to the account used to create them and the Amazon Web Services Region where they are created.</p>",
           "location":"uri",
           "locationName":"backupVaultName"
         },
@@ -4190,7 +4204,7 @@
         },
         "BackupVaultAccountId":{
           "shape":"AccountId",
-          "documentation":"<p>This is the account ID of the specified backup vault.</p>",
+          "documentation":"<p>The account ID of the specified backup vault.</p>",
           "location":"querystring",
           "locationName":"backupVaultAccountId"
         }
@@ -4201,7 +4215,7 @@
       "members":{
         "BackupVaultArn":{
           "shape":"ARN",
-          "documentation":"<p>An ARN that uniquely identifies a backup vault; for example, <code>arn:aws:backup:us-east-1:123456789012:vault:aBackupVault</code>.</p>"
+          "documentation":"<p>An ARN that uniquely identifies a backup vault; for example, <code>arn:aws:backup:us-east-1:123456789012:backup-vault:aBackupVault</code>.</p>"
         },
         "RecoveryPointArn":{
           "shape":"ARN",
@@ -4213,7 +4227,7 @@
         },
         "ResourceType":{
           "shape":"ResourceType",
-          "documentation":"<p>This is the resource type associated with the recovery point.</p>"
+          "documentation":"<p>The resource type of the recovery point.</p>"
         }
       }
     },
@@ -4251,7 +4265,7 @@
       "members":{
         "BackupVaultAccountId":{
           "shape":"String",
-          "documentation":"<p>This is the account ID of the specified backup vault.</p>",
+          "documentation":"<p>The account ID of the specified backup vault.</p>",
           "location":"querystring",
           "locationName":"BackupVaultAccountId"
         },
@@ -4337,7 +4351,7 @@
       "members":{
         "ResourceTypes":{
           "shape":"ResourceTypes",
-          "documentation":"<p>Contains a string with the supported Amazon Web Services resource types:</p> <ul> <li> <p> <code>Aurora</code> for Amazon Aurora</p> </li> <li> <p> <code>DynamoDB</code> for Amazon DynamoDB</p> </li> <li> <p> <code>EBS</code> for Amazon Elastic Block Store</p> </li> <li> <p> <code>EC2</code> for Amazon Elastic Compute Cloud</p> </li> <li> <p> <code>EFS</code> for Amazon Elastic File System</p> </li> <li> <p> <code>FSX</code> for Amazon FSx</p> </li> <li> <p> <code>RDS</code> for Amazon Relational Database Service</p> </li> <li> <p> <code>Storage Gateway</code> for Storage Gateway</p> </li> <li> <p> <code>DocDB</code> for Amazon DocumentDB (with MongoDB compatibility)</p> </li> <li> <p> <code>Neptune</code> for Amazon Neptune</p> </li> </ul>"
+          "documentation":"<p>Contains a string with the supported Amazon Web Services resource types:</p> <ul> <li> <p> <code>Aurora</code> for Amazon Aurora</p> </li> <li> <p> <code>CloudFormation</code> for CloudFormation</p> </li> <li> <p> <code>DocumentDB</code> for Amazon DocumentDB (with MongoDB compatibility)</p> </li> <li> <p> <code>DynamoDB</code> for Amazon DynamoDB</p> </li> <li> <p> <code>EBS</code> for Amazon Elastic Block Store</p> </li> <li> <p> <code>EC2</code> for Amazon Elastic Compute Cloud</p> </li> <li> <p> <code>EFS</code> for Amazon Elastic File System</p> </li> <li> <p> <code>FSx</code> for Amazon FSx</p> </li> <li> <p> <code>Neptune</code> for Amazon Neptune</p> </li> <li> <p> <code>RDS</code> for Amazon Relational Database Service</p> </li> <li> <p> <code>Redshift</code> for Amazon Redshift</p> </li> <li> <p> <code>S3</code> for Amazon Simple Storage Service (Amazon S3)</p> </li> <li> <p> <code>SAP HANA on Amazon EC2</code> for SAP HANA databases on Amazon Elastic Compute Cloud instances</p> </li> <li> <p> <code>Storage Gateway</code> for Storage Gateway</p> </li> <li> <p> <code>Timestream</code> for Amazon Timestream</p> </li> <li> <p> <code>VirtualMachine</code> for VMware virtual machines</p> </li> </ul>"
         }
       }
     },
@@ -4429,31 +4443,31 @@
       "members":{
         "Title":{
           "shape":"string",
-          "documentation":"<p>This is the title of a legal hold.</p>"
+          "documentation":"<p>The title of a legal hold.</p>"
         },
         "Status":{
           "shape":"LegalHoldStatus",
-          "documentation":"<p>This is the status of the legal hold. Statuses can be <code>ACTIVE</code>, <code>CREATING</code>, <code>CANCELED</code>, and <code>CANCELING</code>.</p>"
+          "documentation":"<p>The status of the legal hold.</p>"
         },
         "Description":{
           "shape":"string",
-          "documentation":"<p>This is the description of a legal hold.</p>"
+          "documentation":"<p>The description of a legal hold.</p>"
         },
         "LegalHoldId":{
           "shape":"string",
-          "documentation":"<p>ID of specific legal hold on one or more recovery points.</p>"
+          "documentation":"<p>The ID of the legal hold.</p>"
         },
         "LegalHoldArn":{
           "shape":"ARN",
-          "documentation":"<p>This is an Amazon Resource Number (ARN) that uniquely identifies the legal hold; for example, <code>arn:aws:backup:us-east-1:123456789012:recovery-point:1EB3B5E7-9EB0-435A-A80B-108B488B0D45</code>.</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of the legal hold; for example, <code>arn:aws:backup:us-east-1:123456789012:recovery-point:1EB3B5E7-9EB0-435A-A80B-108B488B0D45</code>.</p>"
         },
         "CreationDate":{
           "shape":"timestamp",
-          "documentation":"<p>This is the time in number format when legal hold was created.</p>"
+          "documentation":"<p>The time when the legal hold was created.</p>"
         },
         "CancellationDate":{
           "shape":"timestamp",
-          "documentation":"<p>This is the time in number format when legal hold was cancelled.</p>"
+          "documentation":"<p>The time when the legal hold was cancelled.</p>"
         }
       },
       "documentation":"<p>A legal hold is an administrative tool that helps prevent backups from being deleted while under a hold. While the hold is in place, backups under a hold cannot be deleted and lifecycle policies that would alter the backup status (such as transition to cold storage) are delayed until the legal hold is removed. A backup can have more than one legal hold. Legal holds are applied to one or more backups (also known as recovery points). These backups can be filtered by resource types and by resource IDs.</p>"
@@ -4476,18 +4490,18 @@
       "members":{
         "MoveToColdStorageAfterDays":{
           "shape":"Long",
-          "documentation":"<p>Specifies the number of days after creation that a recovery point is moved to cold storage.</p>"
+          "documentation":"<p>The number of days after creation that a recovery point is moved to cold storage.</p>"
         },
         "DeleteAfterDays":{
           "shape":"Long",
-          "documentation":"<p>Specifies the number of days after creation that a recovery point is deleted. Must be greater than 90 days plus <code>MoveToColdStorageAfterDays</code>.</p>"
+          "documentation":"<p>The number of days after creation that a recovery point is deleted. This value must be at least 90 days after the number of days specified in <code>MoveToColdStorageAfterDays</code>.</p>"
         },
         "OptInToArchiveForSupportedResources":{
           "shape":"Boolean",
-          "documentation":"<p>Optional Boolean. If this is true, this setting will instruct your backup plan to transition supported resources to archive (cold) storage tier in accordance with your lifecycle settings.</p>"
+          "documentation":"<p>If the value is true, your backup plan transitions supported resources to archive (cold) storage tier in accordance with your lifecycle settings.</p>"
         }
       },
-      "documentation":"<p>Contains an array of <code>Transition</code> objects specifying how long in days before a recovery point transitions to cold storage or is deleted.</p> <p>Backups transitioned to cold storage must be stored in cold storage for a minimum of 90 days. Therefore, on the console, the “retention” setting must be 90 days greater than the “transition to cold after days” setting. The “transition to cold after days” setting cannot be changed after a backup has been transitioned to cold.</p> <p>Resource types that are able to be transitioned to cold storage are listed in the \"Lifecycle to cold storage\" section of the <a href=\"https://docs.aws.amazon.com/aws-backup/latest/devguide/whatisbackup.html#features-by-resource\"> Feature availability by resource</a> table. Backup ignores this expression for other resource types.</p>"
+      "documentation":"<p>Specifies the time period, in days, before a recovery point transitions to cold storage or is deleted.</p> <p>Backups transitioned to cold storage must be stored in cold storage for a minimum of 90 days. Therefore, on the console, the retention setting must be 90 days greater than the transition to cold after days setting. The transition to cold after days setting can't be changed after a backup has been transitioned to cold.</p> <p>Resource types that can transition to cold storage are listed in the <a href=\"https://docs.aws.amazon.com/aws-backup/latest/devguide/backup-feature-availability.html#features-by-resource\">Feature availability by resource</a> table. Backup ignores this expression for other resource types.</p> <p>To remove the existing lifecycle and retention periods and keep your recovery points indefinitely, specify -1 for <code>MoveToColdStorageAfterDays</code> and <code>DeleteAfterDays</code>.</p>"
     },
     "LimitExceededException":{
       "type":"structure",
@@ -4535,13 +4549,13 @@
         },
         "AggregationPeriod":{
           "shape":"AggregationPeriod",
-          "documentation":"<p>This is the period that sets the boundaries for returned results.</p> <p>Acceptable values include</p> <ul> <li> <p> <code>ONE_DAY</code> for daily job count for the prior 14 days.</p> </li> <li> <p> <code>SEVEN_DAYS</code> for the aggregated job count for the prior 7 days.</p> </li> <li> <p> <code>FOURTEEN_DAYS</code> for aggregated job count for prior 14 days.</p> </li> </ul>",
+          "documentation":"<p>The period for the returned results.</p> <ul> <li> <p> <code>ONE_DAY</code> - The daily job count for the prior 14 days.</p> </li> <li> <p> <code>SEVEN_DAYS</code> - The aggregated job count for the prior 7 days.</p> </li> <li> <p> <code>FOURTEEN_DAYS</code> - The aggregated job count for prior 14 days.</p> </li> </ul>",
           "location":"querystring",
           "locationName":"AggregationPeriod"
         },
         "MaxResults":{
           "shape":"MaxResults",
-          "documentation":"<p>This parameter sets the maximum number of items to be returned.</p> <p>The value is an integer. Range of accepted values is from 1 to 500.</p>",
+          "documentation":"<p>The maximum number of items to be returned.</p> <p>The value is an integer. Range of accepted values is from 1 to 500.</p>",
           "location":"querystring",
           "locationName":"MaxResults"
         },
@@ -4558,11 +4572,11 @@
       "members":{
         "BackupJobSummaries":{
           "shape":"BackupJobSummaryList",
-          "documentation":"<p>This request returns a summary that contains Region, Account, State, ResourceType, MessageCategory, StartTime, EndTime, and Count of included jobs.</p>"
+          "documentation":"<p>The summary information.</p>"
         },
         "AggregationPeriod":{
           "shape":"string",
-          "documentation":"<p>This is the period that sets the boundaries for returned results.</p> <ul> <li> <p> <code>ONE_DAY</code> for daily job count for the prior 14 days.</p> </li> <li> <p> <code>SEVEN_DAYS</code> for the aggregated job count for the prior 7 days.</p> </li> <li> <p> <code>FOURTEEN_DAYS</code> for aggregated job count for prior 14 days.</p> </li> </ul>"
+          "documentation":"<p>The period for the returned results.</p> <ul> <li> <p> <code>ONE_DAY</code> - The daily job count for the prior 14 days.</p> </li> <li> <p> <code>SEVEN_DAYS</code> - The aggregated job count for the prior 7 days.</p> </li> <li> <p> <code>FOURTEEN_DAYS</code> - The aggregated job count for prior 14 days.</p> </li> </ul>"
         },
         "NextToken":{
           "shape":"string",
@@ -4599,7 +4613,7 @@
         },
         "ByBackupVaultName":{
           "shape":"BackupVaultName",
-          "documentation":"<p>Returns only backup jobs that will be stored in the specified backup vault. Backup vaults are identified by names that are unique to the account used to create them and the Amazon Web Services Region where they are created. They consist of lowercase letters, numbers, and hyphens.</p>",
+          "documentation":"<p>Returns only backup jobs that will be stored in the specified backup vault. Backup vaults are identified by names that are unique to the account used to create them and the Amazon Web Services Region where they are created.</p>",
           "location":"querystring",
           "locationName":"backupVaultName"
         },
@@ -4617,7 +4631,7 @@
         },
         "ByResourceType":{
           "shape":"ResourceType",
-          "documentation":"<p>Returns only backup jobs for the specified resources:</p> <ul> <li> <p> <code>Aurora</code> for Amazon Aurora</p> </li> <li> <p> <code>CloudFormation</code> for CloudFormation</p> </li> <li> <p> <code>DocumentDB</code> for Amazon DocumentDB (with MongoDB compatibility)</p> </li> <li> <p> <code>DynamoDB</code> for Amazon DynamoDB</p> </li> <li> <p> <code>EBS</code> for Amazon Elastic Block Store</p> </li> <li> <p> <code>EC2</code> for Amazon Elastic Compute Cloud</p> </li> <li> <p> <code>EFS</code> for Amazon Elastic File System</p> </li> <li> <p> <code>FSx</code> for Amazon FSx</p> </li> <li> <p> <code>Neptune</code> for Amazon Neptune</p> </li> <li> <p> <code>Redshift</code> for Amazon Redshift</p> </li> <li> <p> <code>RDS</code> for Amazon Relational Database Service</p> </li> <li> <p> <code>SAP HANA on Amazon EC2</code> for SAP HANA databases</p> </li> <li> <p> <code>Storage Gateway</code> for Storage Gateway</p> </li> <li> <p> <code>S3</code> for Amazon S3</p> </li> <li> <p> <code>Timestream</code> for Amazon Timestream</p> </li> <li> <p> <code>VirtualMachine</code> for virtual machines</p> </li> </ul>",
+          "documentation":"<p>Returns only backup jobs for the specified resources:</p> <ul> <li> <p> <code>Aurora</code> for Amazon Aurora</p> </li> <li> <p> <code>CloudFormation</code> for CloudFormation</p> </li> <li> <p> <code>DocumentDB</code> for Amazon DocumentDB (with MongoDB compatibility)</p> </li> <li> <p> <code>DynamoDB</code> for Amazon DynamoDB</p> </li> <li> <p> <code>EBS</code> for Amazon Elastic Block Store</p> </li> <li> <p> <code>EC2</code> for Amazon Elastic Compute Cloud</p> </li> <li> <p> <code>EFS</code> for Amazon Elastic File System</p> </li> <li> <p> <code>FSx</code> for Amazon FSx</p> </li> <li> <p> <code>Neptune</code> for Amazon Neptune</p> </li> <li> <p> <code>RDS</code> for Amazon Relational Database Service</p> </li> <li> <p> <code>Redshift</code> for Amazon Redshift</p> </li> <li> <p> <code>S3</code> for Amazon Simple Storage Service (Amazon S3)</p> </li> <li> <p> <code>SAP HANA on Amazon EC2</code> for SAP HANA databases on Amazon Elastic Compute Cloud instances</p> </li> <li> <p> <code>Storage Gateway</code> for Storage Gateway</p> </li> <li> <p> <code>Timestream</code> for Amazon Timestream</p> </li> <li> <p> <code>VirtualMachine</code> for VMware virtual machines</p> </li> </ul>",
           "location":"querystring",
           "locationName":"resourceType"
         },
@@ -4677,7 +4691,7 @@
         },
         "MaxResults":{
           "shape":"MaxResults",
-          "documentation":"<p>The maximum number of items to be returned.</p>",
+          "documentation":"<p>The maximum number of items to return.</p>",
           "location":"querystring",
           "locationName":"maxResults"
         }
@@ -4765,7 +4779,7 @@
         },
         "BackupPlansList":{
           "shape":"BackupPlansList",
-          "documentation":"<p>An array of backup plan list items containing metadata about your saved backup plans.</p>"
+          "documentation":"<p>Information about the backup plans.</p>"
         }
       }
     },
@@ -4877,7 +4891,7 @@
         },
         "AggregationPeriod":{
           "shape":"AggregationPeriod",
-          "documentation":"<p>This is the period that sets the boundaries for returned results.</p> <ul> <li> <p> <code>ONE_DAY</code> for daily job count for the prior 14 days.</p> </li> <li> <p> <code>SEVEN_DAYS</code> for the aggregated job count for the prior 7 days.</p> </li> <li> <p> <code>FOURTEEN_DAYS</code> for aggregated job count for prior 14 days.</p> </li> </ul>",
+          "documentation":"<p>The period for the returned results.</p> <ul> <li> <p> <code>ONE_DAY</code> - The daily job count for the prior 14 days.</p> </li> <li> <p> <code>SEVEN_DAYS</code> - The aggregated job count for the prior 7 days.</p> </li> <li> <p> <code>FOURTEEN_DAYS</code> - The aggregated job count for prior 14 days.</p> </li> </ul>",
           "location":"querystring",
           "locationName":"AggregationPeriod"
         },
@@ -4904,7 +4918,7 @@
         },
         "AggregationPeriod":{
           "shape":"string",
-          "documentation":"<p>This is the period that sets the boundaries for returned results.</p> <ul> <li> <p> <code>ONE_DAY</code> for daily job count for the prior 14 days.</p> </li> <li> <p> <code>SEVEN_DAYS</code> for the aggregated job count for the prior 7 days.</p> </li> <li> <p> <code>FOURTEEN_DAYS</code> for aggregated job count for prior 14 days.</p> </li> </ul>"
+          "documentation":"<p>The period for the returned results.</p> <ul> <li> <p> <code>ONE_DAY</code> - The daily job count for the prior 14 days.</p> </li> <li> <p> <code>SEVEN_DAYS</code> - The aggregated job count for the prior 7 days.</p> </li> <li> <p> <code>FOURTEEN_DAYS</code> - The aggregated job count for prior 14 days.</p> </li> </ul>"
         },
         "NextToken":{
           "shape":"string",
@@ -4953,13 +4967,13 @@
         },
         "ByResourceType":{
           "shape":"ResourceType",
-          "documentation":"<p>Returns only backup jobs for the specified resources:</p> <ul> <li> <p> <code>Aurora</code> for Amazon Aurora</p> </li> <li> <p> <code>CloudFormation</code> for CloudFormation</p> </li> <li> <p> <code>DocumentDB</code> for Amazon DocumentDB (with MongoDB compatibility)</p> </li> <li> <p> <code>DynamoDB</code> for Amazon DynamoDB</p> </li> <li> <p> <code>EBS</code> for Amazon Elastic Block Store</p> </li> <li> <p> <code>EC2</code> for Amazon Elastic Compute Cloud</p> </li> <li> <p> <code>EFS</code> for Amazon Elastic File System</p> </li> <li> <p> <code>FSx</code> for Amazon FSx</p> </li> <li> <p> <code>Neptune</code> for Amazon Neptune</p> </li> <li> <p> <code>Redshift</code> for Amazon Redshift</p> </li> <li> <p> <code>RDS</code> for Amazon Relational Database Service</p> </li> <li> <p> <code>SAP HANA on Amazon EC2</code> for SAP HANA databases</p> </li> <li> <p> <code>Storage Gateway</code> for Storage Gateway</p> </li> <li> <p> <code>S3</code> for Amazon S3</p> </li> <li> <p> <code>Timestream</code> for Amazon Timestream</p> </li> <li> <p> <code>VirtualMachine</code> for virtual machines</p> </li> </ul>",
+          "documentation":"<p>Returns only backup jobs for the specified resources:</p> <ul> <li> <p> <code>Aurora</code> for Amazon Aurora</p> </li> <li> <p> <code>CloudFormation</code> for CloudFormation</p> </li> <li> <p> <code>DocumentDB</code> for Amazon DocumentDB (with MongoDB compatibility)</p> </li> <li> <p> <code>DynamoDB</code> for Amazon DynamoDB</p> </li> <li> <p> <code>EBS</code> for Amazon Elastic Block Store</p> </li> <li> <p> <code>EC2</code> for Amazon Elastic Compute Cloud</p> </li> <li> <p> <code>EFS</code> for Amazon Elastic File System</p> </li> <li> <p> <code>FSx</code> for Amazon FSx</p> </li> <li> <p> <code>Neptune</code> for Amazon Neptune</p> </li> <li> <p> <code>RDS</code> for Amazon Relational Database Service</p> </li> <li> <p> <code>Redshift</code> for Amazon Redshift</p> </li> <li> <p> <code>S3</code> for Amazon Simple Storage Service (Amazon S3)</p> </li> <li> <p> <code>SAP HANA on Amazon EC2</code> for SAP HANA databases on Amazon Elastic Compute Cloud instances</p> </li> <li> <p> <code>Storage Gateway</code> for Storage Gateway</p> </li> <li> <p> <code>Timestream</code> for Amazon Timestream</p> </li> <li> <p> <code>VirtualMachine</code> for VMware virtual machines</p> </li> </ul>",
           "location":"querystring",
           "locationName":"resourceType"
         },
         "ByDestinationVaultArn":{
           "shape":"string",
-          "documentation":"<p>An Amazon Resource Name (ARN) that uniquely identifies a source backup vault to copy from; for example, <code>arn:aws:backup:us-east-1:123456789012:vault:aBackupVault</code>. </p>",
+          "documentation":"<p>An Amazon Resource Name (ARN) that uniquely identifies a source backup vault to copy from; for example, <code>arn:aws:backup:us-east-1:123456789012:backup-vault:aBackupVault</code>. </p>",
           "location":"querystring",
           "locationName":"destinationVaultArn"
         },
@@ -5030,7 +5044,7 @@
       "members":{
         "Frameworks":{
           "shape":"FrameworkList",
-          "documentation":"<p>A list of frameworks with details for each framework, including the framework name, Amazon Resource Name (ARN), description, number of controls, creation time, and deployment status.</p>"
+          "documentation":"<p>The frameworks with details for each framework, including the framework name, Amazon Resource Name (ARN), description, number of controls, creation time, and deployment status.</p>"
         },
         "NextToken":{
           "shape":"string",
@@ -5078,13 +5092,13 @@
       "members":{
         "BackupVaultName":{
           "shape":"BackupVaultName",
-          "documentation":"<p>This is the list of protected resources by backup vault within the vault(s) you specify by name.</p>",
+          "documentation":"<p>The list of protected resources by backup vault within the vault(s) you specify by name.</p>",
           "location":"uri",
           "locationName":"backupVaultName"
         },
         "BackupVaultAccountId":{
           "shape":"AccountId",
-          "documentation":"<p>This is the list of protected resources by backup vault within the vault(s) you specify by account ID.</p>",
+          "documentation":"<p>The list of protected resources by backup vault within the vault(s) you specify by account ID.</p>",
           "location":"querystring",
           "locationName":"backupVaultAccountId"
         },
@@ -5151,7 +5165,7 @@
       "members":{
         "BackupVaultName":{
           "shape":"BackupVaultName",
-          "documentation":"<p>The name of a logical container where backups are stored. Backup vaults are identified by names that are unique to the account used to create them and the Amazon Web Services Region where they are created. They consist of lowercase letters, numbers, and hyphens.</p> <note> <p>Backup vault name might not be available when a supported service creates the backup.</p> </note>",
+          "documentation":"<p>The name of a logical container where backups are stored. Backup vaults are identified by names that are unique to the account used to create them and the Amazon Web Services Region where they are created.</p> <note> <p>Backup vault name might not be available when a supported service creates the backup.</p> </note>",
           "location":"uri",
           "locationName":"backupVaultName"
         },
@@ -5181,7 +5195,7 @@
         },
         "ByResourceType":{
           "shape":"ResourceType",
-          "documentation":"<p>Returns only recovery points that match the specified resource type(s):</p> <ul> <li> <p> <code>Aurora</code> for Amazon Aurora</p> </li> <li> <p> <code>CloudFormation</code> for CloudFormation</p> </li> <li> <p> <code>DocumentDB</code> for Amazon DocumentDB (with MongoDB compatibility)</p> </li> <li> <p> <code>DynamoDB</code> for Amazon DynamoDB</p> </li> <li> <p> <code>EBS</code> for Amazon Elastic Block Store</p> </li> <li> <p> <code>EC2</code> for Amazon Elastic Compute Cloud</p> </li> <li> <p> <code>EFS</code> for Amazon Elastic File System</p> </li> <li> <p> <code>FSx</code> for Amazon FSx</p> </li> <li> <p> <code>Neptune</code> for Amazon Neptune</p> </li> <li> <p> <code>Redshift</code> for Amazon Redshift</p> </li> <li> <p> <code>RDS</code> for Amazon Relational Database Service</p> </li> <li> <p> <code>SAP HANA on Amazon EC2</code> for SAP HANA databases</p> </li> <li> <p> <code>Storage Gateway</code> for Storage Gateway</p> </li> <li> <p> <code>S3</code> for Amazon S3</p> </li> <li> <p> <code>Timestream</code> for Amazon Timestream</p> </li> <li> <p> <code>VirtualMachine</code> for virtual machines</p> </li> </ul>",
+          "documentation":"<p>Returns only recovery points that match the specified resource type(s):</p> <ul> <li> <p> <code>Aurora</code> for Amazon Aurora</p> </li> <li> <p> <code>CloudFormation</code> for CloudFormation</p> </li> <li> <p> <code>DocumentDB</code> for Amazon DocumentDB (with MongoDB compatibility)</p> </li> <li> <p> <code>DynamoDB</code> for Amazon DynamoDB</p> </li> <li> <p> <code>EBS</code> for Amazon Elastic Block Store</p> </li> <li> <p> <code>EC2</code> for Amazon Elastic Compute Cloud</p> </li> <li> <p> <code>EFS</code> for Amazon Elastic File System</p> </li> <li> <p> <code>FSx</code> for Amazon FSx</p> </li> <li> <p> <code>Neptune</code> for Amazon Neptune</p> </li> <li> <p> <code>RDS</code> for Amazon Relational Database Service</p> </li> <li> <p> <code>Redshift</code> for Amazon Redshift</p> </li> <li> <p> <code>S3</code> for Amazon Simple Storage Service (Amazon S3)</p> </li> <li> <p> <code>SAP HANA on Amazon EC2</code> for SAP HANA databases on Amazon Elastic Compute Cloud instances</p> </li> <li> <p> <code>Storage Gateway</code> for Storage Gateway</p> </li> <li> <p> <code>Timestream</code> for Amazon Timestream</p> </li> <li> <p> <code>VirtualMachine</code> for VMware virtual machines</p> </li> </ul>",
           "location":"querystring",
           "locationName":"resourceType"
         },
@@ -5230,19 +5244,19 @@
       "members":{
         "LegalHoldId":{
           "shape":"string",
-          "documentation":"<p>This is the ID of the legal hold.</p>",
+          "documentation":"<p>The ID of the legal hold.</p>",
           "location":"uri",
           "locationName":"legalHoldId"
         },
         "NextToken":{
           "shape":"string",
-          "documentation":"<p>This is the next item following a partial list of returned resources. For example, if a request is made to return <code>MaxResults</code> number of resources, <code>NextToken</code> allows you to return more items in your list starting at the location pointed to by the next token.</p>",
+          "documentation":"<p>The next item following a partial list of returned resources. For example, if a request is made to return <code>MaxResults</code> number of resources, <code>NextToken</code> allows you to return more items in your list starting at the location pointed to by the next token.</p>",
           "location":"querystring",
           "locationName":"nextToken"
         },
         "MaxResults":{
           "shape":"MaxResults",
-          "documentation":"<p>This is the maximum number of resource list items to be returned.</p>",
+          "documentation":"<p>The maximum number of resource list items to be returned.</p>",
           "location":"querystring",
           "locationName":"maxResults"
         }
@@ -5253,11 +5267,11 @@
       "members":{
         "RecoveryPoints":{
           "shape":"RecoveryPointsList",
-          "documentation":"<p>This is a list of the recovery points returned by <code>ListRecoveryPointsByLegalHold</code>.</p>"
+          "documentation":"<p>The recovery points.</p>"
         },
         "NextToken":{
           "shape":"string",
-          "documentation":"<p>This return is the next item following a partial list of returned resources.</p>"
+          "documentation":"<p>The next item following a partial list of returned resources.</p>"
         }
       }
     },
@@ -5380,7 +5394,7 @@
       "members":{
         "ReportPlans":{
           "shape":"ReportPlanList",
-          "documentation":"<p>A list of your report plans with detailed information for each plan. This information includes the Amazon Resource Name (ARN), report plan name, description, settings, delivery channel, deployment status, creation time, and last times the report plan attempted to and successfully ran.</p>"
+          "documentation":"<p>The report plans with detailed information for each plan. This information includes the Amazon Resource Name (ARN), report plan name, description, settings, delivery channel, deployment status, creation time, and last times the report plan attempted to and successfully ran.</p>"
         },
         "NextToken":{
           "shape":"string",
@@ -5411,7 +5425,7 @@
         },
         "AggregationPeriod":{
           "shape":"AggregationPeriod",
-          "documentation":"<p>This is the period that sets the boundaries for returned results.</p> <p>Acceptable values include</p> <ul> <li> <p> <code>ONE_DAY</code> for daily job count for the prior 14 days.</p> </li> <li> <p> <code>SEVEN_DAYS</code> for the aggregated job count for the prior 7 days.</p> </li> <li> <p> <code>FOURTEEN_DAYS</code> for aggregated job count for prior 14 days.</p> </li> </ul>",
+          "documentation":"<p>The period for the returned results.</p> <ul> <li> <p> <code>ONE_DAY</code> - The daily job count for the prior 14 days.</p> </li> <li> <p> <code>SEVEN_DAYS</code> - The aggregated job count for the prior 7 days.</p> </li> <li> <p> <code>FOURTEEN_DAYS</code> - The aggregated job count for prior 14 days.</p> </li> </ul>",
           "location":"querystring",
           "locationName":"AggregationPeriod"
         },
@@ -5438,7 +5452,7 @@
         },
         "AggregationPeriod":{
           "shape":"string",
-          "documentation":"<p>This is the period that sets the boundaries for returned results.</p> <ul> <li> <p> <code>ONE_DAY</code> for daily job count for the prior 14 days.</p> </li> <li> <p> <code>SEVEN_DAYS</code> for the aggregated job count for the prior 7 days.</p> </li> <li> <p> <code>FOURTEEN_DAYS</code> for aggregated job count for prior 14 days.</p> </li> </ul>"
+          "documentation":"<p>The period for the returned results.</p> <ul> <li> <p> <code>ONE_DAY</code> - The daily job count for the prior 14 days.</p> </li> <li> <p> <code>SEVEN_DAYS</code> - The aggregated job count for the prior 7 days.</p> </li> <li> <p> <code>FOURTEEN_DAYS</code> - The aggregated job count for prior 14 days.</p> </li> </ul>"
         },
         "NextToken":{
           "shape":"string",
@@ -5524,7 +5538,7 @@
         },
         "ByResourceType":{
           "shape":"ResourceType",
-          "documentation":"<p>Include this parameter to return only restore jobs for the specified resources:</p> <ul> <li> <p> <code>Aurora</code> for Amazon Aurora</p> </li> <li> <p> <code>CloudFormation</code> for CloudFormation</p> </li> <li> <p> <code>DocumentDB</code> for Amazon DocumentDB (with MongoDB compatibility)</p> </li> <li> <p> <code>DynamoDB</code> for Amazon DynamoDB</p> </li> <li> <p> <code>EBS</code> for Amazon Elastic Block Store</p> </li> <li> <p> <code>EC2</code> for Amazon Elastic Compute Cloud</p> </li> <li> <p> <code>EFS</code> for Amazon Elastic File System</p> </li> <li> <p> <code>FSx</code> for Amazon FSx</p> </li> <li> <p> <code>Neptune</code> for Amazon Neptune</p> </li> <li> <p> <code>Redshift</code> for Amazon Redshift</p> </li> <li> <p> <code>RDS</code> for Amazon Relational Database Service</p> </li> <li> <p> <code>SAP HANA on Amazon EC2</code> for SAP HANA databases</p> </li> <li> <p> <code>Storage Gateway</code> for Storage Gateway</p> </li> <li> <p> <code>S3</code> for Amazon S3</p> </li> <li> <p> <code>Timestream</code> for Amazon Timestream</p> </li> <li> <p> <code>VirtualMachine</code> for virtual machines</p> </li> </ul>",
+          "documentation":"<p>Include this parameter to return only restore jobs for the specified resources:</p> <ul> <li> <p> <code>Aurora</code> for Amazon Aurora</p> </li> <li> <p> <code>CloudFormation</code> for CloudFormation</p> </li> <li> <p> <code>DocumentDB</code> for Amazon DocumentDB (with MongoDB compatibility)</p> </li> <li> <p> <code>DynamoDB</code> for Amazon DynamoDB</p> </li> <li> <p> <code>EBS</code> for Amazon Elastic Block Store</p> </li> <li> <p> <code>EC2</code> for Amazon Elastic Compute Cloud</p> </li> <li> <p> <code>EFS</code> for Amazon Elastic File System</p> </li> <li> <p> <code>FSx</code> for Amazon FSx</p> </li> <li> <p> <code>Neptune</code> for Amazon Neptune</p> </li> <li> <p> <code>RDS</code> for Amazon Relational Database Service</p> </li> <li> <p> <code>Redshift</code> for Amazon Redshift</p> </li> <li> <p> <code>S3</code> for Amazon Simple Storage Service (Amazon S3)</p> </li> <li> <p> <code>SAP HANA on Amazon EC2</code> for SAP HANA databases on Amazon Elastic Compute Cloud instances</p> </li> <li> <p> <code>Storage Gateway</code> for Storage Gateway</p> </li> <li> <p> <code>Timestream</code> for Amazon Timestream</p> </li> <li> <p> <code>VirtualMachine</code> for VMware virtual machines</p> </li> </ul>",
           "location":"querystring",
           "locationName":"resourceType"
         },
@@ -5693,7 +5707,7 @@
         },
         "Tags":{
           "shape":"Tags",
-          "documentation":"<p>To help organize your resources, you can assign your own metadata to the resources you create. Each tag is a key-value pair.</p>"
+          "documentation":"<p>Information about the tags.</p>"
         }
       }
     },
@@ -5753,15 +5767,15 @@
         },
         "ResourceName":{
           "shape":"string",
-          "documentation":"<p>This is the non-unique name of the resource that belongs to the specified backup.</p>"
+          "documentation":"<p>The non-unique name of the resource that belongs to the specified backup.</p>"
         },
         "LastBackupVaultArn":{
           "shape":"ARN",
-          "documentation":"<p>This is the ARN (Amazon Resource Name) of the backup vault that contains the most recent backup recovery point.</p>"
+          "documentation":"<p>The ARN (Amazon Resource Name) of the backup vault that contains the most recent backup recovery point.</p>"
         },
         "LastRecoveryPointArn":{
           "shape":"ARN",
-          "documentation":"<p>This is the ARN (Amazon Resource Name) of the most recent recovery point.</p>"
+          "documentation":"<p>The ARN (Amazon Resource Name) of the most recent recovery point.</p>"
         }
       },
       "documentation":"<p>A structure that contains information about a backed-up resource.</p>"
@@ -5778,7 +5792,7 @@
           "documentation":"<p>Filters the values of your tagged resources for only those resources that you tagged that do not have the same value. Also called \"negated matching.\"</p>"
         }
       },
-      "documentation":"<p>A list of conditions that you define for resources in your restore testing plan using tags.</p> <p>For example, <code>\"StringEquals\": { \"Key\": \"aws:ResourceTag/CreatedByCryo\", \"Value\": \"true\" },</code>. Condition operators are case sensitive.</p>"
+      "documentation":"<p>The conditions that you define for resources in your restore testing plan using tags.</p>"
     },
     "ProtectedResourcesList":{
       "type":"list",
@@ -5790,7 +5804,7 @@
       "members":{
         "BackupVaultName":{
           "shape":"BackupVaultName",
-          "documentation":"<p>The name of a logical container where backups are stored. Backup vaults are identified by names that are unique to the account used to create them and the Amazon Web Services Region where they are created. They consist of lowercase letters, numbers, and hyphens.</p>",
+          "documentation":"<p>The name of a logical container where backups are stored. Backup vaults are identified by names that are unique to the account used to create them and the Amazon Web Services Region where they are created.</p>",
           "location":"uri",
           "locationName":"backupVaultName"
         },
@@ -5812,7 +5826,7 @@
         },
         "MinRetentionDays":{
           "shape":"Long",
-          "documentation":"<p>The Backup Vault Lock configuration that specifies the minimum retention period that the vault retains its recovery points. This setting can be useful if, for example, your organization's policies require you to retain certain data for at least seven years (2555 days).</p> <p>If this parameter is not specified, Vault Lock will not enforce a minimum retention period.</p> <p>If this parameter is specified, any backup or copy job to the vault must have a lifecycle policy with a retention period equal to or longer than the minimum retention period. If the job's retention period is shorter than that minimum retention period, then the vault fails that backup or copy job, and you should either modify your lifecycle settings or use a different vault. The shortest minimum retention period you can specify is 1 day. Recovery points already saved in the vault prior to Vault Lock are not affected.</p>"
+          "documentation":"<p>The Backup Vault Lock configuration that specifies the minimum retention period that the vault retains its recovery points. This setting can be useful if, for example, your organization's policies require you to retain certain data for at least seven years (2555 days).</p> <p>This parameter is required when a vault lock is created through CloudFormation; otherwise, this parameter is optional. If this parameter is not specified, Vault Lock will not enforce a minimum retention period.</p> <p>If this parameter is specified, any backup or copy job to the vault must have a lifecycle policy with a retention period equal to or longer than the minimum retention period. If the job's retention period is shorter than that minimum retention period, then the vault fails that backup or copy job, and you should either modify your lifecycle settings or use a different vault. The shortest minimum retention period you can specify is 1 day. Recovery points already saved in the vault prior to Vault Lock are not affected.</p>"
         },
         "MaxRetentionDays":{
           "shape":"Long",
@@ -5834,7 +5848,7 @@
       "members":{
         "BackupVaultName":{
           "shape":"BackupVaultName",
-          "documentation":"<p>The name of a logical container where backups are stored. Backup vaults are identified by names that are unique to the account used to create them and the Amazon Web Services Region where they are created. They consist of lowercase letters, numbers, and hyphens.</p>",
+          "documentation":"<p>The name of a logical container where backups are stored. Backup vaults are identified by names that are unique to the account used to create them and the Amazon Web Services Region where they are created.</p>",
           "location":"uri",
           "locationName":"backupVaultName"
         },
@@ -5844,7 +5858,7 @@
         },
         "BackupVaultEvents":{
           "shape":"BackupVaultEvents",
-          "documentation":"<p>An array of events that indicate the status of jobs to back up resources to the backup vault.</p> <p>For common use cases and code samples, see <a href=\"https://docs.aws.amazon.com/aws-backup/latest/devguide/sns-notifications.html\">Using Amazon SNS to track Backup events</a>.</p> <p>The following events are supported:</p> <ul> <li> <p> <code>BACKUP_JOB_STARTED</code> | <code>BACKUP_JOB_COMPLETED</code> </p> </li> <li> <p> <code>COPY_JOB_STARTED</code> | <code>COPY_JOB_SUCCESSFUL</code> | <code>COPY_JOB_FAILED</code> </p> </li> <li> <p> <code>RESTORE_JOB_STARTED</code> | <code>RESTORE_JOB_COMPLETED</code> | <code>RECOVERY_POINT_MODIFIED</code> </p> </li> <li> <p> <code>S3_BACKUP_OBJECT_FAILED</code> | <code>S3_RESTORE_OBJECT_FAILED</code> </p> </li> </ul> <note> <p>The list below shows items that are deprecated events (for reference) and are no longer in use. They are no longer supported and will not return statuses or notifications. Refer to the list above for current supported events.</p> </note>"
+          "documentation":"<p>An array of events that indicate the status of jobs to back up resources to the backup vault.</p> <p>For common use cases and code samples, see <a href=\"https://docs.aws.amazon.com/aws-backup/latest/devguide/sns-notifications.html\">Using Amazon SNS to track Backup events</a>.</p> <p>The following events are supported:</p> <ul> <li> <p> <code>BACKUP_JOB_STARTED</code> | <code>BACKUP_JOB_COMPLETED</code> </p> </li> <li> <p> <code>COPY_JOB_STARTED</code> | <code>COPY_JOB_SUCCESSFUL</code> | <code>COPY_JOB_FAILED</code> </p> </li> <li> <p> <code>RESTORE_JOB_STARTED</code> | <code>RESTORE_JOB_COMPLETED</code> | <code>RECOVERY_POINT_MODIFIED</code> </p> </li> <li> <p> <code>S3_BACKUP_OBJECT_FAILED</code> | <code>S3_RESTORE_OBJECT_FAILED</code> </p> </li> </ul> <note> <p>The list below includes both supported events and deprecated events that are no longer in use (for reference). Deprecated events do not return statuses or notifications. Refer to the list above for the supported events.</p> </note>"
         }
       }
     },
@@ -5863,7 +5877,7 @@
         },
         "ValidationStatus":{
           "shape":"RestoreValidationStatus",
-          "documentation":"<p>This is the status of your restore validation.</p>"
+          "documentation":"<p>The status of your restore validation.</p>"
         },
         "ValidationStatusMessage":{
           "shape":"string",
@@ -5880,11 +5894,11 @@
         },
         "BackupVaultName":{
           "shape":"BackupVaultName",
-          "documentation":"<p>The name of a logical container where backups are stored. Backup vaults are identified by names that are unique to the account used to create them and the Amazon Web Services Region where they are created. They consist of lowercase letters, numbers, and hyphens.</p>"
+          "documentation":"<p>The name of a logical container where backups are stored. Backup vaults are identified by names that are unique to the account used to create them and the Amazon Web Services Region where they are created.</p>"
         },
         "BackupVaultArn":{
           "shape":"ARN",
-          "documentation":"<p>An ARN that uniquely identifies a backup vault; for example, <code>arn:aws:backup:us-east-1:123456789012:vault:aBackupVault</code>.</p>"
+          "documentation":"<p>An ARN that uniquely identifies a backup vault; for example, <code>arn:aws:backup:us-east-1:123456789012:backup-vault:aBackupVault</code>.</p>"
         },
         "SourceBackupVaultArn":{
           "shape":"ARN",
@@ -5912,7 +5926,7 @@
         },
         "StatusMessage":{
           "shape":"string",
-          "documentation":"<p>A message explaining the reason of the recovery point deletion failure.</p>"
+          "documentation":"<p>A message explaining the current status of the recovery point.</p>"
         },
         "CreationDate":{
           "shape":"timestamp",
@@ -5932,7 +5946,7 @@
         },
         "Lifecycle":{
           "shape":"Lifecycle",
-          "documentation":"<p>The lifecycle defines when a protected resource is transitioned to cold storage and when it expires. Backup transitions and expires backups automatically according to the lifecycle that you define. </p> <p>Backups transitioned to cold storage must be stored in cold storage for a minimum of 90 days. Therefore, the “retention” setting must be 90 days greater than the “transition to cold after days” setting. The “transition to cold after days” setting cannot be changed after a backup has been transitioned to cold. </p> <p>Resource types that are able to be transitioned to cold storage are listed in the \"Lifecycle to cold storage\" section of the <a href=\"https://docs.aws.amazon.com/aws-backup/latest/devguide/whatisbackup.html#features-by-resource\"> Feature availability by resource</a> table. Backup ignores this expression for other resource types.</p>"
+          "documentation":"<p>The lifecycle defines when a protected resource is transitioned to cold storage and when it expires. Backup transitions and expires backups automatically according to the lifecycle that you define. </p> <p>Backups transitioned to cold storage must be stored in cold storage for a minimum of 90 days. Therefore, the “retention” setting must be 90 days greater than the “transition to cold after days” setting. The “transition to cold after days” setting cannot be changed after a backup has been transitioned to cold. </p> <p>Resource types that can transition to cold storage are listed in the <a href=\"https://docs.aws.amazon.com/aws-backup/latest/devguide/backup-feature-availability.html#features-by-resource\">Feature availability by resource</a> table. Backup ignores this expression for other resource types.</p>"
         },
         "EncryptionKeyArn":{
           "shape":"ARN",
@@ -5948,11 +5962,11 @@
         },
         "ParentRecoveryPointArn":{
           "shape":"ARN",
-          "documentation":"<p>This is the Amazon Resource Name (ARN) of the parent (composite) recovery point.</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of the parent (composite) recovery point.</p>"
         },
         "CompositeMemberIdentifier":{
           "shape":"string",
-          "documentation":"<p>This is the identifier of a resource within a composite group, such as nested (child) recovery point belonging to a composite (parent) stack. The ID is transferred from the <a href=\"https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/resources-section-structure.html#resources-section-structure-syntax\"> logical ID</a> within a stack.</p>"
+          "documentation":"<p>The identifier of a resource within a composite group, such as nested (child) recovery point belonging to a composite (parent) stack. The ID is transferred from the <a href=\"https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/resources-section-structure.html#resources-section-structure-syntax\"> logical ID</a> within a stack.</p>"
         },
         "IsParent":{
           "shape":"boolean",
@@ -5960,11 +5974,11 @@
         },
         "ResourceName":{
           "shape":"string",
-          "documentation":"<p>This is the non-unique name of the resource that belongs to the specified backup.</p>"
+          "documentation":"<p>The non-unique name of the resource that belongs to the specified backup.</p>"
         },
         "VaultType":{
           "shape":"VaultType",
-          "documentation":"<p>This is the type of vault in which the described recovery point is stored.</p>"
+          "documentation":"<p>The type of vault in which the described recovery point is stored.</p>"
         }
       },
       "documentation":"<p>Contains detailed information about the recovery points stored in a backup vault.</p>"
@@ -5990,7 +6004,7 @@
         },
         "StatusMessage":{
           "shape":"string",
-          "documentation":"<p>A message explaining the reason of the recovery point deletion failure.</p>"
+          "documentation":"<p>A message explaining the current status of the recovery point.</p>"
         },
         "EncryptionKeyArn":{
           "shape":"ARN",
@@ -6002,7 +6016,7 @@
         },
         "BackupVaultName":{
           "shape":"BackupVaultName",
-          "documentation":"<p>The name of a logical container where backups are stored. Backup vaults are identified by names that are unique to the account used to create them and the Amazon Web Services Region where they are created. They consist of lowercase letters, numbers, and hyphens.</p>"
+          "documentation":"<p>The name of a logical container where backups are stored. Backup vaults are identified by names that are unique to the account used to create them and the Amazon Web Services Region where they are created.</p>"
         },
         "IsParent":{
           "shape":"boolean",
@@ -6010,15 +6024,15 @@
         },
         "ParentRecoveryPointArn":{
           "shape":"ARN",
-          "documentation":"<p>This is the Amazon Resource Name (ARN) of the parent (composite) recovery point.</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of the parent (composite) recovery point.</p>"
         },
         "ResourceName":{
           "shape":"string",
-          "documentation":"<p>This is the non-unique name of the resource that belongs to the specified backup.</p>"
+          "documentation":"<p>The non-unique name of the resource that belongs to the specified backup.</p>"
         },
         "VaultType":{
           "shape":"VaultType",
-          "documentation":"<p>This is the type of vault in which the described recovery point is stored.</p>"
+          "documentation":"<p>The type of vault in which the described recovery point is stored.</p>"
         }
       },
       "documentation":"<p>Contains detailed information about a saved recovery point.</p>"
@@ -6054,19 +6068,19 @@
       "members":{
         "RecoveryPointArn":{
           "shape":"ARN",
-          "documentation":"<p>This is the Amazon Resource Name (ARN) of the parent (composite) recovery point.</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of the parent (composite) recovery point.</p>"
         },
         "ResourceArn":{
           "shape":"ARN",
-          "documentation":"<p>This is the Amazon Resource Name (ARN) that uniquely identifies a saved resource.</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) that uniquely identifies a saved resource.</p>"
         },
         "ResourceType":{
           "shape":"ResourceType",
-          "documentation":"<p>This is the Amazon Web Services resource type that is saved as a recovery point.</p>"
+          "documentation":"<p>The Amazon Web Services resource type that is saved as a recovery point.</p>"
         },
         "BackupVaultName":{
           "shape":"BackupVaultName",
-          "documentation":"<p>This is the name of the backup vault (the logical container in which backups are stored).</p>"
+          "documentation":"<p>The name of the backup vault (the logical container in which backups are stored).</p>"
         }
       },
       "documentation":"<p>This is a recovery point which is a child (nested) recovery point of a parent (composite) recovery point. These recovery points can be disassociated from their parent (composite) recovery point, in which case they will no longer be a member.</p>"
@@ -6114,7 +6128,7 @@
         },
         "Formats":{
           "shape":"FormatList",
-          "documentation":"<p>A list of the format of your reports: <code>CSV</code>, <code>JSON</code>, or both. If not specified, the default format is <code>CSV</code>.</p>"
+          "documentation":"<p>The format of your reports: <code>CSV</code>, <code>JSON</code>, or both. If not specified, the default format is <code>CSV</code>.</p>"
         }
       },
       "documentation":"<p>Contains information from your report plan about where to deliver your reports, specifically your Amazon S3 bucket name, S3 key prefix, and the formats of your reports.</p>"
@@ -6252,7 +6266,7 @@
         },
         "Accounts":{
           "shape":"stringList",
-          "documentation":"<p>These are the accounts to be included in the report.</p>"
+          "documentation":"<p>These are the accounts to be included in the report.</p> <p>Use string value of <code>ROOT</code> to include all organizational units.</p>"
         },
         "OrganizationUnits":{
           "shape":"stringList",
@@ -6260,7 +6274,7 @@
         },
         "Regions":{
           "shape":"stringList",
-          "documentation":"<p>These are the Regions to be included in the report.</p>"
+          "documentation":"<p>These are the Regions to be included in the report.</p> <p>Use the wildcard as the string value to include all Regions.</p>"
         }
       },
       "documentation":"<p>Contains detailed information about a report setting.</p>"
@@ -6437,7 +6451,7 @@
         },
         "IamRoleArn":{
           "shape":"IAMRoleArn",
-          "documentation":"<p>Specifies the IAM role ARN used to create the target recovery point; for example, <code>arn:aws:iam::123456789012:role/S3Access</code>.</p>"
+          "documentation":"<p>The IAM role ARN used to create the target recovery point; for example, <code>arn:aws:iam::123456789012:role/S3Access</code>.</p>"
         },
         "ExpectedCompletionTimeMinutes":{
           "shape":"Long",
@@ -6461,7 +6475,7 @@
         },
         "ValidationStatus":{
           "shape":"RestoreValidationStatus",
-          "documentation":"<p>This is the status of validation run on the indicated restore job.</p>"
+          "documentation":"<p>The status of validation run on the indicated restore job.</p>"
         },
         "ValidationStatusMessage":{
           "shape":"string",
@@ -6488,7 +6502,7 @@
       "members":{
         "RecoveryPointSelection":{
           "shape":"RestoreTestingRecoveryPointSelection",
-          "documentation":"<p>Required: Algorithm; Required: Recovery point types; IncludeVaults (one or more). Optional: SelectionWindowDays ('30' if not specified); ExcludeVaults (list of selectors), defaults to empty list if not listed.</p>"
+          "documentation":"<p> <code>RecoveryPointSelection</code> has five parameters (three required and two optional). The values you specify determine which recovery point is included in the restore test. You must indicate with <code>Algorithm</code> if you want the latest recovery point within your <code>SelectionWindowDays</code> or if you want a random recovery point, and you must indicate through <code>IncludeVaults</code> from which vaults the recovery points can be chosen.</p> <p> <code>Algorithm</code> (<i>required</i>) Valid values: \"<code>LATEST_WITHIN_WINDOW</code>\" or \"<code>RANDOM_WITHIN_WINDOW</code>\".</p> <p> <code>Recovery point types</code> (<i>required</i>) Valid values: \"<code>SNAPSHOT</code>\" and/or \"<code>CONTINUOUS</code>\". Include <code>SNAPSHOT</code> to restore only snapshot recovery points; include <code>CONTINUOUS</code> to restore continuous recovery points (point in time restore / PITR); use both to restore either a snapshot or a continuous recovery point. The recovery point will be determined by the value for <code>Algorithm</code>.</p> <p> <code>IncludeVaults</code> (<i>required</i>). You must include one or more backup vaults. Use the wildcard [\"*\"] or specific ARNs.</p> <p> <code>SelectionWindowDays</code> (<i>optional</i>) Value must be an integer (in days) from 1 to 365. If not included, the value defaults to <code>30</code>.</p> <p> <code>ExcludeVaults</code> (<i>optional</i>). You can choose to input one or more specific backup vault ARNs to exclude those vaults' contents from restore eligibility. Or, you can include a list of selectors. If this parameter and its value are not included, it defaults to empty list.</p>"
         },
         "RestoreTestingPlanName":{
           "shape":"String",
@@ -6545,7 +6559,7 @@
         },
         "RestoreTestingPlanName":{
           "shape":"String",
-          "documentation":"<p>This is the restore testing plan name.</p>"
+          "documentation":"<p>The restore testing plan name.</p>"
         },
         "ScheduleExpression":{
           "shape":"String",
@@ -6589,7 +6603,7 @@
         },
         "RestoreTestingPlanName":{
           "shape":"String",
-          "documentation":"<p>This is the restore testing plan name.</p>"
+          "documentation":"<p>The restore testing plan name.</p>"
         },
         "ScheduleExpression":{
           "shape":"String",
@@ -6649,14 +6663,14 @@
         },
         "RecoveryPointTypes":{
           "shape":"RestoreTestingRecoveryPointTypeList",
-          "documentation":"<p>These are the types of recovery points.</p>"
+          "documentation":"<p>These are the types of recovery points.</p> <p>Include <code>SNAPSHOT</code> to restore only snapshot recovery points; include <code>CONTINUOUS</code> to restore continuous recovery points (point in time restore / PITR); use both to restore either a snapshot or a continuous recovery point. The recovery point will be determined by the value for <code>Algorithm</code>.</p>"
         },
         "SelectionWindowDays":{
           "shape":"integer",
           "documentation":"<p>Accepted values are integers from 1 to 365.</p>"
         }
       },
-      "documentation":"<p>Required: Algorithm; Required: Recovery point types; IncludeVaults(one or more). Optional: SelectionWindowDays ('30' if not specified);ExcludeVaults (list of selectors), defaults to empty list if not listed.</p>"
+      "documentation":"<p> <code>RecoveryPointSelection</code> has five parameters (three required and two optional). The values you specify determine which recovery point is included in the restore test. You must indicate with <code>Algorithm</code> if you want the latest recovery point within your <code>SelectionWindowDays</code> or if you want a random recovery point, and you must indicate through <code>IncludeVaults</code> from which vaults the recovery points can be chosen.</p> <p> <code>Algorithm</code> (<i>required</i>) Valid values: \"<code>LATEST_WITHIN_WINDOW</code>\" or \"<code>RANDOM_WITHIN_WINDOW</code>\".</p> <p> <code>Recovery point types</code> (<i>required</i>) Valid values: \"<code>SNAPSHOT</code>\" and/or \"<code>CONTINUOUS</code>\". Include <code>SNAPSHOT</code> to restore only snapshot recovery points; include <code>CONTINUOUS</code> to restore continuous recovery points (point in time restore / PITR); use both to restore either a snapshot or a continuous recovery point. The recovery point will be determined by the value for <code>Algorithm</code>.</p> <p> <code>IncludeVaults</code> (<i>required</i>). You must include one or more backup vaults. Use the wildcard [\"*\"] or specific ARNs.</p> <p> <code>SelectionWindowDays</code> (<i>optional</i>) Value must be an integer (in days) from 1 to 365. If not included, the value defaults to <code>30</code>.</p> <p> <code>ExcludeVaults</code> (<i>optional</i>). You can choose to input one or more specific backup vault ARNs to exclude those vaults' contents from restore eligibility. Or, you can include a list of selectors. If this parameter and its value are not included, it defaults to empty list.</p>"
     },
     "RestoreTestingRecoveryPointSelectionAlgorithm":{
       "type":"string",
@@ -6706,7 +6720,7 @@
         },
         "RestoreTestingSelectionName":{
           "shape":"String",
-          "documentation":"<p>This is the unique name of the restore testing selection that belongs to the related restore testing plan.</p>"
+          "documentation":"<p>The unique name of the restore testing selection that belongs to the related restore testing plan.</p>"
         },
         "ValidationWindowHours":{
           "shape":"integer",
@@ -6759,7 +6773,7 @@
         },
         "RestoreTestingSelectionName":{
           "shape":"String",
-          "documentation":"<p>This is the unique name of the restore testing selection that belongs to the related restore testing plan.</p>"
+          "documentation":"<p>The unique name of the restore testing selection that belongs to the related restore testing plan.</p>"
         },
         "ValidationWindowHours":{
           "shape":"integer",
@@ -6780,7 +6794,7 @@
       "members":{
         "CreationTime":{
           "shape":"Timestamp",
-          "documentation":"<p>This is the date and time that a restore testing selection was created, in Unix format and Coordinated Universal Time (UTC). The value of <code>CreationTime</code> is accurate to milliseconds. For example, the value 1516925490.087 represents Friday, January 26,2018 12:11:30.087 AM.</p>"
+          "documentation":"<p>The date and time that a restore testing selection was created, in Unix format and Coordinated Universal Time (UTC). The value of <code>CreationTime</code> is accurate to milliseconds. For example, the value 1516925490.087 represents Friday, January 26,2018 12:11:30.087 AM.</p>"
         },
         "IamRoleArn":{
           "shape":"String",
@@ -6818,7 +6832,7 @@
         },
         "ProtectedResourceConditions":{
           "shape":"ProtectedResourceConditions",
-          "documentation":"<p>A list of conditions that you define for resources in your restore testing plan using tags.</p> <p>For example, <code>\"StringEquals\": { \"Key\": \"aws:ResourceTag/CreatedByCryo\", \"Value\": \"true\" },</code>. Condition operators are case sensitive.</p>"
+          "documentation":"<p>The conditions that you define for resources in your restore testing plan using tags.</p>"
         },
         "RestoreMetadataOverrides":{
           "shape":"SensitiveStringMap",
@@ -6878,7 +6892,7 @@
       "members":{
         "BackupVaultName":{
           "shape":"BackupVaultName",
-          "documentation":"<p>The name of a logical container where backups are stored. Backup vaults are identified by names that are unique to the account used to create them and the Amazon Web Services Region where they are created. They consist of lowercase letters, numbers, and hyphens.</p>"
+          "documentation":"<p>The name of a logical container where backups are stored. Backup vaults are identified by names that are unique to the account used to create them and the Amazon Web Services Region where they are created.</p>"
         },
         "ResourceArn":{
           "shape":"ARN",
@@ -6902,15 +6916,15 @@
         },
         "Lifecycle":{
           "shape":"Lifecycle",
-          "documentation":"<p>The lifecycle defines when a protected resource is transitioned to cold storage and when it expires. Backup will transition and expire backups automatically according to the lifecycle that you define. </p> <p>Backups transitioned to cold storage must be stored in cold storage for a minimum of 90 days. Therefore, the “retention” setting must be 90 days greater than the “transition to cold after days” setting. The “transition to cold after days” setting cannot be changed after a backup has been transitioned to cold. </p> <p>Resource types that are able to be transitioned to cold storage are listed in the \"Lifecycle to cold storage\" section of the <a href=\"https://docs.aws.amazon.com/aws-backup/latest/devguide/whatisbackup.html#features-by-resource\"> Feature availability by resource</a> table. Backup ignores this expression for other resource types.</p> <p>This parameter has a maximum value of 100 years (36,500 days).</p>"
+          "documentation":"<p>The lifecycle defines when a protected resource is transitioned to cold storage and when it expires. Backup will transition and expire backups automatically according to the lifecycle that you define. </p> <p>Backups transitioned to cold storage must be stored in cold storage for a minimum of 90 days. Therefore, the “retention” setting must be 90 days greater than the “transition to cold after days” setting. The “transition to cold after days” setting cannot be changed after a backup has been transitioned to cold. </p> <p>Resource types that can transition to cold storage are listed in the <a href=\"https://docs.aws.amazon.com/aws-backup/latest/devguide/backup-feature-availability.html#features-by-resource\">Feature availability by resource</a> table. Backup ignores this expression for other resource types.</p> <p>This parameter has a maximum value of 100 years (36,500 days).</p>"
         },
         "RecoveryPointTags":{
           "shape":"Tags",
-          "documentation":"<p>To help organize your resources, you can assign your own metadata to the resources that you create. Each tag is a key-value pair.</p>"
+          "documentation":"<p>The tags to assign to the resources.</p>"
         },
         "BackupOptions":{
           "shape":"BackupOptions",
-          "documentation":"<p>Specifies the backup option for a selected resource. This option is only available for Windows Volume Shadow Copy Service (VSS) backup jobs.</p> <p>Valid values: Set to <code>\"WindowsVSS\":\"enabled\"</code> to enable the <code>WindowsVSS</code> backup option and create a Windows VSS backup. Set to <code>\"WindowsVSS\"\"disabled\"</code> to create a regular backup. The <code>WindowsVSS</code> option is not enabled by default.</p>"
+          "documentation":"<p>The backup option for a selected resource. This option is only available for Windows Volume Shadow Copy Service (VSS) backup jobs.</p> <p>Valid values: Set to <code>\"WindowsVSS\":\"enabled\"</code> to enable the <code>WindowsVSS</code> backup option and create a Windows VSS backup. Set to <code>\"WindowsVSS\"\"disabled\"</code> to create a regular backup. The <code>WindowsVSS</code> option is not enabled by default.</p>"
         }
       }
     },
@@ -6950,11 +6964,11 @@
         },
         "SourceBackupVaultName":{
           "shape":"BackupVaultName",
-          "documentation":"<p>The name of a logical source container where backups are stored. Backup vaults are identified by names that are unique to the account used to create them and the Amazon Web Services Region where they are created. They consist of lowercase letters, numbers, and hyphens.</p>"
+          "documentation":"<p>The name of a logical source container where backups are stored. Backup vaults are identified by names that are unique to the account used to create them and the Amazon Web Services Region where they are created.</p>"
         },
         "DestinationBackupVaultArn":{
           "shape":"ARN",
-          "documentation":"<p>An Amazon Resource Name (ARN) that uniquely identifies a destination backup vault to copy to; for example, <code>arn:aws:backup:us-east-1:123456789012:vault:aBackupVault</code>.</p>"
+          "documentation":"<p>An Amazon Resource Name (ARN) that uniquely identifies a destination backup vault to copy to; for example, <code>arn:aws:backup:us-east-1:123456789012:backup-vault:aBackupVault</code>.</p>"
         },
         "IamRoleArn":{
           "shape":"IAMRoleArn",
@@ -7023,7 +7037,7 @@
         },
         "Metadata":{
           "shape":"Metadata",
-          "documentation":"<p>A set of metadata key-value pairs. Contains information, such as a resource name, required to restore a recovery point.</p> <p> You can get configuration metadata about a resource at the time it was backed up by calling <code>GetRecoveryPointRestoreMetadata</code>. However, values in addition to those provided by <code>GetRecoveryPointRestoreMetadata</code> might be required to restore a resource. For example, you might need to provide a new resource name if the original already exists.</p> <p>You need to specify specific metadata to restore an Amazon Elastic File System (Amazon EFS) instance:</p> <ul> <li> <p> <code>file-system-id</code>: The ID of the Amazon EFS file system that is backed up by Backup. Returned in <code>GetRecoveryPointRestoreMetadata</code>.</p> </li> <li> <p> <code>Encrypted</code>: A Boolean value that, if true, specifies that the file system is encrypted. If <code>KmsKeyId</code> is specified, <code>Encrypted</code> must be set to <code>true</code>.</p> </li> <li> <p> <code>KmsKeyId</code>: Specifies the Amazon Web Services KMS key that is used to encrypt the restored file system. You can specify a key from another Amazon Web Services account provided that key it is properly shared with your account via Amazon Web Services KMS.</p> </li> <li> <p> <code>PerformanceMode</code>: Specifies the throughput mode of the file system.</p> </li> <li> <p> <code>CreationToken</code>: A user-supplied value that ensures the uniqueness (idempotency) of the request.</p> </li> <li> <p> <code>newFileSystem</code>: A Boolean value that, if true, specifies that the recovery point is restored to a new Amazon EFS file system.</p> </li> <li> <p> <code>ItemsToRestore</code>: An array of one to five strings where each string is a file path. Use <code>ItemsToRestore</code> to restore specific files or directories rather than the entire file system. This parameter is optional. For example, <code>\"itemsToRestore\":\"[\\\"/my.test\\\"]\"</code>.</p> </li> </ul>"
+          "documentation":"<p>A set of metadata key-value pairs.</p> <p>You can get configuration metadata about a resource at the time it was backed up by calling <code>GetRecoveryPointRestoreMetadata</code>. However, values in addition to those provided by <code>GetRecoveryPointRestoreMetadata</code> might be required to restore a resource. For example, you might need to provide a new resource name if the original already exists.</p> <p>For more information about the metadata for each resource, see the following:</p> <ul> <li> <p> <a href=\"https://docs.aws.amazon.com/aws-backup/latest/devguide/restoring-aur.html#aur-restore-cli\">Metadata for Amazon Aurora</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/aws-backup/latest/devguide/restoring-docdb.html#docdb-restore-cli\">Metadata for Amazon DocumentDB</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/aws-backup/latest/devguide/restore-application-stacks.html#restoring-cfn-cli\">Metadata for CloudFormation</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/aws-backup/latest/devguide/restoring-dynamodb.html#ddb-restore-cli\">Metadata for Amazon DynamoDB</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/aws-backup/latest/devguide/restoring-ebs.html#ebs-restore-cli\"> Metadata for Amazon EBS</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/aws-backup/latest/devguide/restoring-ec2.html#restoring-ec2-cli\">Metadata for Amazon EC2</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/aws-backup/latest/devguide/restoring-efs.html#efs-restore-cli\">Metadata for Amazon EFS</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/aws-backup/latest/devguide/restoring-fsx.html#fsx-restore-cli\">Metadata for Amazon FSx</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/aws-backup/latest/devguide/restoring-nep.html#nep-restore-cli\">Metadata for Amazon Neptune</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/aws-backup/latest/devguide/restoring-rds.html#rds-restore-cli\">Metadata for Amazon RDS</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/aws-backup/latest/devguide/redshift-restores.html#redshift-restore-api\">Metadata for Amazon Redshift</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/aws-backup/latest/devguide/restoring-storage-gateway.html#restoring-sgw-cli\">Metadata for Storage Gateway</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/aws-backup/latest/devguide/restoring-s3.html#s3-restore-cli\">Metadata for Amazon S3</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/aws-backup/latest/devguide/timestream-restore.html#timestream-restore-api\">Metadata for Amazon Timestream</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/aws-backup/latest/devguide/restoring-vm.html#vm-restore-cli\">Metadata for virtual machines</a> </p> </li> </ul>"
         },
         "IamRoleArn":{
           "shape":"IAMRoleArn",
@@ -7035,7 +7049,7 @@
         },
         "ResourceType":{
           "shape":"ResourceType",
-          "documentation":"<p>Starts a job to restore a recovery point for one of the following resources:</p> <ul> <li> <p> <code>Aurora</code> for Amazon Aurora</p> </li> <li> <p> <code>DocumentDB</code> for Amazon DocumentDB (with MongoDB compatibility)</p> </li> <li> <p> <code>CloudFormation</code> for CloudFormation</p> </li> <li> <p> <code>DynamoDB</code> for Amazon DynamoDB</p> </li> <li> <p> <code>EBS</code> for Amazon Elastic Block Store</p> </li> <li> <p> <code>EC2</code> for Amazon Elastic Compute Cloud</p> </li> <li> <p> <code>EFS</code> for Amazon Elastic File System</p> </li> <li> <p> <code>FSx</code> for Amazon FSx</p> </li> <li> <p> <code>Neptune</code> for Amazon Neptune</p> </li> <li> <p> <code>RDS</code> for Amazon Relational Database Service</p> </li> <li> <p> <code>Redshift</code> for Amazon Redshift</p> </li> <li> <p> <code>Storage Gateway</code> for Storage Gateway</p> </li> <li> <p> <code>S3</code> for Amazon S3</p> </li> <li> <p> <code>Timestream</code> for Amazon Timestream</p> </li> <li> <p> <code>VirtualMachine</code> for virtual machines</p> </li> </ul>"
+          "documentation":"<p>Starts a job to restore a recovery point for one of the following resources:</p> <ul> <li> <p> <code>Aurora</code> - Amazon Aurora</p> </li> <li> <p> <code>DocumentDB</code> - Amazon DocumentDB</p> </li> <li> <p> <code>CloudFormation</code> - CloudFormation</p> </li> <li> <p> <code>DynamoDB</code> - Amazon DynamoDB</p> </li> <li> <p> <code>EBS</code> - Amazon Elastic Block Store</p> </li> <li> <p> <code>EC2</code> - Amazon Elastic Compute Cloud</p> </li> <li> <p> <code>EFS</code> - Amazon Elastic File System</p> </li> <li> <p> <code>FSx</code> - Amazon FSx</p> </li> <li> <p> <code>Neptune</code> - Amazon Neptune</p> </li> <li> <p> <code>RDS</code> - Amazon Relational Database Service</p> </li> <li> <p> <code>Redshift</code> - Amazon Redshift</p> </li> <li> <p> <code>Storage Gateway</code> - Storage Gateway</p> </li> <li> <p> <code>S3</code> - Amazon Simple Storage Service</p> </li> <li> <p> <code>Timestream</code> - Amazon Timestream</p> </li> <li> <p> <code>VirtualMachine</code> - Virtual machines</p> </li> </ul>"
         },
         "CopySourceTagsToRestoredResource":{
           "shape":"boolean",
@@ -7088,7 +7102,7 @@
       "members":{
         "ResourceArn":{
           "shape":"ARN",
-          "documentation":"<p>An ARN that uniquely identifies a resource. The format of the ARN depends on the type of the tagged resource.</p>",
+          "documentation":"<p>An ARN that uniquely identifies a resource. The format of the ARN depends on the type of the tagged resource.</p> <p>ARNs that do not include <code>backup</code> are incompatible with tagging. <code>TagResource</code> and <code>UntagResource</code> with invalid ARNs will result in an error. Acceptable ARN content can include <code>arn:aws:backup:us-east</code>. Invalid ARN content may look like <code>arn:aws:ec2:us-east</code>.</p>",
           "location":"uri",
           "locationName":"resourceArn"
         },
@@ -7116,13 +7130,13 @@
       "members":{
         "ResourceArn":{
           "shape":"ARN",
-          "documentation":"<p>An ARN that uniquely identifies a resource. The format of the ARN depends on the type of the tagged resource.</p>",
+          "documentation":"<p>An ARN that uniquely identifies a resource. The format of the ARN depends on the type of the tagged resource.</p> <p>ARNs that do not include <code>backup</code> are incompatible with tagging. <code>TagResource</code> and <code>UntagResource</code> with invalid ARNs will result in an error. Acceptable ARN content can include <code>arn:aws:backup:us-east</code>. Invalid ARN content may look like <code>arn:aws:ec2:us-east</code>.</p>",
           "location":"uri",
           "locationName":"resourceArn"
         },
         "TagKeyList":{
           "shape":"TagKeyList",
-          "documentation":"<p>A list of keys to identify which key-value tags to remove from a resource.</p>"
+          "documentation":"<p>The keys to identify which key-value tags to remove from a resource.</p>"
         }
       }
     },
@@ -7135,13 +7149,13 @@
       "members":{
         "BackupPlanId":{
           "shape":"string",
-          "documentation":"<p>Uniquely identifies a backup plan.</p>",
+          "documentation":"<p>The ID of the backup plan.</p>",
           "location":"uri",
           "locationName":"backupPlanId"
         },
         "BackupPlan":{
           "shape":"BackupPlanInput",
-          "documentation":"<p>Specifies the body of a backup plan. Includes a <code>BackupPlanName</code> and one or more sets of <code>Rules</code>.</p>"
+          "documentation":"<p>The body of a backup plan. Includes a <code>BackupPlanName</code> and one or more sets of <code>Rules</code>.</p>"
         }
       }
     },
@@ -7186,7 +7200,7 @@
         },
         "FrameworkControls":{
           "shape":"FrameworkControls",
-          "documentation":"<p>A list of the controls that make up the framework. Each control in the list has a name, input parameters, and scope.</p>"
+          "documentation":"<p>The controls that make up the framework. Each control in the list has a name, input parameters, and scope.</p>"
         },
         "IdempotencyToken":{
           "shape":"string",
@@ -7230,7 +7244,7 @@
       "members":{
         "BackupVaultName":{
           "shape":"BackupVaultName",
-          "documentation":"<p>The name of a logical container where backups are stored. Backup vaults are identified by names that are unique to the account used to create them and the Amazon Web Services Region where they are created. They consist of lowercase letters, numbers, and hyphens.</p>",
+          "documentation":"<p>The name of a logical container where backups are stored. Backup vaults are identified by names that are unique to the account used to create them and the Amazon Web Services Region where they are created.</p>",
           "location":"uri",
           "locationName":"backupVaultName"
         },
@@ -7251,7 +7265,7 @@
       "members":{
         "BackupVaultArn":{
           "shape":"ARN",
-          "documentation":"<p>An ARN that uniquely identifies a backup vault; for example, <code>arn:aws:backup:us-east-1:123456789012:vault:aBackupVault</code>.</p>"
+          "documentation":"<p>An ARN that uniquely identifies a backup vault; for example, <code>arn:aws:backup:us-east-1:123456789012:backup-vault:aBackupVault</code>.</p>"
         },
         "RecoveryPointArn":{
           "shape":"ARN",
@@ -7259,7 +7273,7 @@
         },
         "Lifecycle":{
           "shape":"Lifecycle",
-          "documentation":"<p>The lifecycle defines when a protected resource is transitioned to cold storage and when it expires. Backup transitions and expires backups automatically according to the lifecycle that you define.</p> <p>Backups transitioned to cold storage must be stored in cold storage for a minimum of 90 days. Therefore, the “retention” setting must be 90 days greater than the “transition to cold after days” setting. The “transition to cold after days” setting cannot be changed after a backup has been transitioned to cold.</p> <p>Resource types that are able to be transitioned to cold storage are listed in the \"Lifecycle to cold storage\" section of the <a href=\"https://docs.aws.amazon.com/aws-backup/latest/devguide/whatisbackup.html#features-by-resource\"> Feature availability by resource</a> table. Backup ignores this expression for other resource types.</p>"
+          "documentation":"<p>The lifecycle defines when a protected resource is transitioned to cold storage and when it expires. Backup transitions and expires backups automatically according to the lifecycle that you define.</p> <p>Backups transitioned to cold storage must be stored in cold storage for a minimum of 90 days. Therefore, the “retention” setting must be 90 days greater than the “transition to cold after days” setting. The “transition to cold after days” setting cannot be changed after a backup has been transitioned to cold.</p> <p>Resource types that can transition to cold storage are listed in the <a href=\"https://docs.aws.amazon.com/aws-backup/latest/devguide/backup-feature-availability.html#features-by-resource\">Feature availability by resource</a> table. Backup ignores this expression for other resource types.</p>"
         },
         "CalculatedLifecycle":{
           "shape":"CalculatedLifecycle",
@@ -7296,11 +7310,11 @@
         },
         "ReportDeliveryChannel":{
           "shape":"ReportDeliveryChannel",
-          "documentation":"<p>A structure that contains information about where to deliver your reports, specifically your Amazon S3 bucket name, S3 key prefix, and the formats of your reports.</p>"
+          "documentation":"<p>The information about where to deliver your reports, specifically your Amazon S3 bucket name, S3 key prefix, and the formats of your reports.</p>"
         },
         "ReportSetting":{
           "shape":"ReportSetting",
-          "documentation":"<p>Identifies the report template for the report. Reports are built using a report template. The report templates are:</p> <p> <code>RESOURCE_COMPLIANCE_REPORT | CONTROL_COMPLIANCE_REPORT | BACKUP_JOB_REPORT | COPY_JOB_REPORT | RESTORE_JOB_REPORT</code> </p> <p>If the report template is <code>RESOURCE_COMPLIANCE_REPORT</code> or <code>CONTROL_COMPLIANCE_REPORT</code>, this API resource also describes the report coverage by Amazon Web Services Regions and frameworks.</p>"
+          "documentation":"<p>The report template for the report. Reports are built using a report template. The report templates are:</p> <p> <code>RESOURCE_COMPLIANCE_REPORT | CONTROL_COMPLIANCE_REPORT | BACKUP_JOB_REPORT | COPY_JOB_REPORT | RESTORE_JOB_REPORT</code> </p> <p>If the report template is <code>RESOURCE_COMPLIANCE_REPORT</code> or <code>CONTROL_COMPLIANCE_REPORT</code>, this API resource also describes the report coverage by Amazon Web Services Regions and frameworks.</p>"
         },
         "IdempotencyToken":{
           "shape":"string",
@@ -7339,7 +7353,7 @@
         },
         "RestoreTestingPlanName":{
           "shape":"String",
-          "documentation":"<p>This is the restore testing plan name you wish to update.</p>",
+          "documentation":"<p>The name of the restore testing plan name.</p>",
           "location":"uri",
           "locationName":"RestoreTestingPlanName"
         }
@@ -7356,7 +7370,7 @@
       "members":{
         "CreationTime":{
           "shape":"Timestamp",
-          "documentation":"<p>This is the time the resource testing plan was created.</p>"
+          "documentation":"<p>The time the resource testing plan was created.</p>"
         },
         "RestoreTestingPlanArn":{
           "shape":"String",
@@ -7368,7 +7382,7 @@
         },
         "UpdateTime":{
           "shape":"Timestamp",
-          "documentation":"<p>This is the time the update completed for the restore testing plan.</p>"
+          "documentation":"<p>The time the update completed for the restore testing plan.</p>"
         }
       }
     },
@@ -7392,7 +7406,7 @@
         },
         "RestoreTestingSelectionName":{
           "shape":"String",
-          "documentation":"<p>This is the required restore testing selection name of the restore testing selection you wish to update.</p>",
+          "documentation":"<p>The required restore testing selection name of the restore testing selection you wish to update.</p>",
           "location":"uri",
           "locationName":"RestoreTestingSelectionName"
         }
@@ -7410,7 +7424,7 @@
       "members":{
         "CreationTime":{
           "shape":"Timestamp",
-          "documentation":"<p>This is the time the resource testing selection was updated successfully.</p>"
+          "documentation":"<p>The time the resource testing selection was updated successfully.</p>"
         },
         "RestoreTestingPlanArn":{
           "shape":"String",
@@ -7418,15 +7432,15 @@
         },
         "RestoreTestingPlanName":{
           "shape":"String",
-          "documentation":"<p>This is the restore testing plan with which the updated restore testing selection is associated.</p>"
+          "documentation":"<p>The restore testing plan with which the updated restore testing selection is associated.</p>"
         },
         "RestoreTestingSelectionName":{
           "shape":"String",
-          "documentation":"<p>This is the returned restore testing selection name.</p>"
+          "documentation":"<p>The returned restore testing selection name.</p>"
         },
         "UpdateTime":{
           "shape":"Timestamp",
-          "documentation":"<p>This is the time the update completed for the restore testing selection.</p>"
+          "documentation":"<p>The time the update completed for the restore testing selection.</p>"
         }
       }
     },

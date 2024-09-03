@@ -678,7 +678,7 @@ class TestCreateWaiter(unittest.TestCase):
             ('    Polls :py:meth:`MyService.Client.foo` every 1 '
              'seconds until a successful state is reached. An error '
              'is returned after 1 failed checks.'),
-            '    **Request Syntax** ',
+            '    **Request Syntax**',
             '    ::',
             '      waiter.wait(',
             "          bar='string'",

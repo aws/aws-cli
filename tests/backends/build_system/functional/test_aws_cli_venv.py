@@ -214,7 +214,7 @@ class TestAwsCliVenv:
 
     @skip_if_windows("Python binary location on posix")
     def test_python_exe(self, cli_venv, venv_path):
-        assert cli_venv.python_exe == os.path.join(venv_path, "bin", "python3.12")
+        assert cli_venv.python_exe == os.path.join(venv_path, "bin", "python")
 
     @if_windows("Python binary location on win")
     def test_python_exe_windows(self, cli_venv, venv_path):

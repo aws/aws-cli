@@ -1049,16 +1049,24 @@ class TestSwitchToVirtualHostStyle(unittest.TestCase):
 
 
 class TestSwitchToChunkedEncodingForNonSeekableObjects(unittest.TestCase):
-    def test_switch_to_chunked_encodeing_for_stream_like_object(self):
+    def test_chunked_encoding_used_for_stream_like_object(self):
+        class BufferedStream(io.BufferedIOBase):
+            """Class to ensure seek/tell don't work, but read is implemented."""
+
+            def __init__(self, value):
+                self.value = io.BytesIO(value)
+
+            def read(self, size=-1):
+                return self.value.read(size)
+
         request = AWSRequest(
-            method='POST', headers={},
-            data=io.BufferedIOBase(b"some initial binary data"),
-            url='https://foo.amazonaws.com/bucket/key.txt'
+            method='POST',
+            headers={},
+            data=BufferedStream(b"some initial binary data"),
+            url='https://foo.amazonaws.com/bucket/key.txt',
         )
         prepared_request = request.prepare()
-        self.assertEqual(
-            prepared_request.headers, {'Transfer-Encoding': 'chunked'}
-        )
+        assert prepared_request.headers == {'Transfer-Encoding': 'chunked'}
 
 
 class TestInstanceCache(unittest.TestCase):

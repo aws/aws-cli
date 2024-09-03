@@ -25,7 +25,7 @@ PYINSTALLER_DIR = EXE_DIR / "pyinstaller"
 # Platform specific values
 IS_WINDOWS = sys.platform == "win32"
 BIN_DIRNAME = "Scripts" if IS_WINDOWS else "bin"
-PYTHON_EXE_NAME = "python.exe" if IS_WINDOWS else "python3.12"
+PYTHON_EXE_NAME = "python.exe" if IS_WINDOWS else "python"
 PYINSTALLER_EXE_NAME = "pyinstaller.exe" if IS_WINDOWS else "pyinstaller"
 CLI_SCRIPTS = ["aws.cmd"] if IS_WINDOWS else ["aws", "aws_completer"]
 LOCK_SUFFIX = "win-lock.txt" if IS_WINDOWS else "lock.txt"

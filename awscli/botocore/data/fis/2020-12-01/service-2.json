@@ -139,6 +139,20 @@
       ],
       "documentation":"<p>Gets information about the specified experiment template.</p>"
     },
+    "GetSafetyLever":{
+      "name":"GetSafetyLever",
+      "http":{
+        "method":"GET",
+        "requestUri":"/safetyLevers/{id}",
+        "responseCode":200
+      },
+      "input":{"shape":"GetSafetyLeverRequest"},
+      "output":{"shape":"GetSafetyLeverResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p> Gets information about the specified safety lever. </p>"
+    },
     "GetTargetAccountConfiguration":{
       "name":"GetTargetAccountConfiguration",
       "http":{
@@ -350,6 +364,22 @@
         {"shape":"ServiceQuotaExceededException"}
       ],
       "documentation":"<p>Updates the specified experiment template.</p>"
+    },
+    "UpdateSafetyLeverState":{
+      "name":"UpdateSafetyLeverState",
+      "http":{
+        "method":"PATCH",
+        "requestUri":"/safetyLevers/{id}/state",
+        "responseCode":200
+      },
+      "input":{"shape":"UpdateSafetyLeverStateRequest"},
+      "output":{"shape":"UpdateSafetyLeverStateResponse"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"ConflictException"},
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p> Updates the specified safety lever state. </p>"
     },
     "UpdateTargetAccountConfiguration":{
       "name":"UpdateTargetAccountConfiguration",
@@ -1120,7 +1150,8 @@
         "completed",
         "stopping",
         "stopped",
-        "failed"
+        "failed",
+        "cancelled"
       ]
     },
     "ExperimentStatusReason":{
@@ -1801,6 +1832,27 @@
         }
       }
     },
+    "GetSafetyLeverRequest":{
+      "type":"structure",
+      "required":["id"],
+      "members":{
+        "id":{
+          "shape":"SafetyLeverId",
+          "documentation":"<p> The ID of the safety lever. </p>",
+          "location":"uri",
+          "locationName":"id"
+        }
+      }
+    },
+    "GetSafetyLeverResponse":{
+      "type":"structure",
+      "members":{
+        "safetyLever":{
+          "shape":"SafetyLever",
+          "documentation":"<p> Information about the safety lever. </p>"
+        }
+      }
+    },
     "GetTargetAccountConfigurationRequest":{
       "type":"structure",
       "required":[
@@ -2214,6 +2266,59 @@
       "min":1,
       "pattern":"[\\s\\S]+"
     },
+    "SafetyLever":{
+      "type":"structure",
+      "members":{
+        "id":{
+          "shape":"SafetyLeverId",
+          "documentation":"<p> The ID of the safety lever. </p>"
+        },
+        "arn":{
+          "shape":"ResourceArn",
+          "documentation":"<p> The Amazon Resource Name (ARN) of the safety lever. </p>"
+        },
+        "state":{
+          "shape":"SafetyLeverState",
+          "documentation":"<p> The state of the safety lever. </p>"
+        }
+      },
+      "documentation":"<p> Describes a safety lever. </p>"
+    },
+    "SafetyLeverId":{
+      "type":"string",
+      "max":64,
+      "pattern":"[\\S]+"
+    },
+    "SafetyLeverState":{
+      "type":"structure",
+      "members":{
+        "status":{
+          "shape":"SafetyLeverStatus",
+          "documentation":"<p> The state of the safety lever. </p>"
+        },
+        "reason":{
+          "shape":"SafetyLeverStatusReason",
+          "documentation":"<p> The reason for the state of the safety lever. </p>"
+        }
+      },
+      "documentation":"<p> Describes the state of the safety lever. </p>"
+    },
+    "SafetyLeverStatus":{
+      "type":"string",
+      "enum":[
+        "disengaged",
+        "engaged",
+        "engaging"
+      ]
+    },
+    "SafetyLeverStatusInput":{
+      "type":"string",
+      "enum":[
+        "disengaged",
+        "engaged"
+      ]
+    },
+    "SafetyLeverStatusReason":{"type":"string"},
     "ServiceQuotaExceededException":{
       "type":"structure",
       "members":{
@@ -2684,6 +2789,52 @@
       "type":"map",
       "key":{"shape":"ExperimentTemplateTargetName"},
       "value":{"shape":"UpdateExperimentTemplateTargetInput"}
+    },
+    "UpdateSafetyLeverStateInput":{
+      "type":"structure",
+      "required":[
+        "status",
+        "reason"
+      ],
+      "members":{
+        "status":{
+          "shape":"SafetyLeverStatusInput",
+          "documentation":"<p> The updated state of the safety lever. </p>"
+        },
+        "reason":{
+          "shape":"SafetyLeverStatusReason",
+          "documentation":"<p> The reason for updating the state of the safety lever. </p>"
+        }
+      },
+      "documentation":"<p> Specifies a state for a safety lever. </p>"
+    },
+    "UpdateSafetyLeverStateRequest":{
+      "type":"structure",
+      "required":[
+        "id",
+        "state"
+      ],
+      "members":{
+        "id":{
+          "shape":"SafetyLeverId",
+          "documentation":"<p> The ID of the safety lever. </p>",
+          "location":"uri",
+          "locationName":"id"
+        },
+        "state":{
+          "shape":"UpdateSafetyLeverStateInput",
+          "documentation":"<p> The state of the safety lever. </p>"
+        }
+      }
+    },
+    "UpdateSafetyLeverStateResponse":{
+      "type":"structure",
+      "members":{
+        "safetyLever":{
+          "shape":"SafetyLever",
+          "documentation":"<p> Information about the safety lever. </p>"
+        }
+      }
     },
     "UpdateTargetAccountConfigurationRequest":{
       "type":"structure",

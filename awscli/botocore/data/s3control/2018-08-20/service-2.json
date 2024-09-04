@@ -4,11 +4,13 @@
     "apiVersion":"2018-08-20",
     "endpointPrefix":"s3-control",
     "protocol":"rest-xml",
+    "protocols":["rest-xml"],
     "serviceFullName":"AWS S3 Control",
     "serviceId":"S3 Control",
     "signatureVersion":"s3v4",
     "signingName":"s3",
-    "uid":"s3control-2018-08-20"
+    "uid":"s3control-2018-08-20",
+    "auth":["aws.auth#sigv4"]
   },
   "operations":{
     "AssociateAccessGrantsIdentityCenter":{
@@ -600,7 +602,7 @@
       },
       "input":{"shape":"GetAccessGrantsInstanceRequest"},
       "output":{"shape":"GetAccessGrantsInstanceResult"},
-      "documentation":"<p>Retrieves the S3 Access Grants instance for a Region in your account. </p> <dl> <dt>Permissions</dt> <dd> <p>You must have the <code>s3:GetAccessGrantsInstance</code> permission to use this operation. </p> </dd> </dl>",
+      "documentation":"<p>Retrieves the S3 Access Grants instance for a Region in your account. </p> <dl> <dt>Permissions</dt> <dd> <p>You must have the <code>s3:GetAccessGrantsInstance</code> permission to use this operation. </p> </dd> </dl> <note> <p> <code>GetAccessGrantsInstance</code> is not supported for cross-account access. You can only call the API from the account that owns the S3 Access Grants instance.</p> </note>",
       "endpoint":{
         "hostPrefix":"{AccountId}."
       },
@@ -1120,6 +1122,23 @@
       "endpoint":{
         "hostPrefix":"{AccountId}."
       },
+      "staticContextParams":{
+        "RequiresAccountId":{"value":true}
+      }
+    },
+    "ListCallerAccessGrants":{
+      "name":"ListCallerAccessGrants",
+      "http":{
+        "method":"GET",
+        "requestUri":"/v20180820/accessgrantsinstance/caller/grants"
+      },
+      "input":{"shape":"ListCallerAccessGrantsRequest"},
+      "output":{"shape":"ListCallerAccessGrantsResult"},
+      "documentation":"<p>Returns a list of the access grants that were given to the caller using S3 Access Grants and that allow the caller to access the S3 data of the Amazon Web Services account specified in the request.</p> <dl> <dt>Permissions</dt> <dd> <p>You must have the <code>s3:ListCallerAccessGrants</code> permission to use this operation. </p> </dd> </dl>",
+      "endpoint":{
+        "hostPrefix":"{AccountId}."
+      },
+      "httpChecksumRequired":true,
       "staticContextParams":{
         "RequiresAccountId":{"value":true}
       }
@@ -1746,7 +1765,7 @@
         },
         "VpcConfiguration":{
           "shape":"VpcConfiguration",
-          "documentation":"<p>The virtual private cloud (VPC) configuration for this access point, if one exists.</p> <note> <p>This element is empty if this access point is an Amazon S3 on Outposts access point that is used by other Amazon Web Services.</p> </note>"
+          "documentation":"<p>The virtual private cloud (VPC) configuration for this access point, if one exists.</p> <note> <p>This element is empty if this access point is an Amazon S3 on Outposts access point that is used by other Amazon Web Servicesservices.</p> </note>"
         },
         "Bucket":{
           "shape":"BucketName",
@@ -1859,7 +1878,7 @@
       "members":{
         "AccountId":{
           "shape":"AccountId",
-          "documentation":"<p>The ID of the Amazon Web Services account that is making this request.</p>",
+          "documentation":"<p>The Amazon Web Services account ID of the S3 Access Grants instance.</p>",
           "contextParam":{"name":"AccountId"},
           "hostLabel":true,
           "location":"header",
@@ -2087,6 +2106,13 @@
         "locationName":"Arn"
       }
     },
+    "CallerAccessGrantsList":{
+      "type":"list",
+      "member":{
+        "shape":"ListCallerAccessGrantsEntry",
+        "locationName":"AccessGrant"
+      }
+    },
     "CloudWatchMetrics":{
       "type":"structure",
       "required":["IsEnabled"],
@@ -2118,7 +2144,7 @@
       "members":{
         "AccountId":{
           "shape":"AccountId",
-          "documentation":"<p>The ID of the Amazon Web Services account that is making this request.</p>",
+          "documentation":"<p>The Amazon Web Services account ID of the S3 Access Grants instance.</p>",
           "contextParam":{"name":"AccountId"},
           "hostLabel":true,
           "location":"header",
@@ -2201,7 +2227,7 @@
       "members":{
         "AccountId":{
           "shape":"AccountId",
-          "documentation":"<p>The ID of the Amazon Web Services account that is making this request.</p>",
+          "documentation":"<p>The Amazon Web Services account ID of the S3 Access Grants instance.</p>",
           "contextParam":{"name":"AccountId"},
           "hostLabel":true,
           "location":"header",
@@ -2230,11 +2256,21 @@
         },
         "AccessGrantsInstanceArn":{
           "shape":"AccessGrantsInstanceArn",
-          "documentation":"<p>The Amazon Resource Name (ARN) of the S3 Access Grants instance. </p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of the Amazon Web Services IAM Identity Center instance that you are associating with your S3 Access Grants instance. An IAM Identity Center instance is your corporate identity directory that you added to the IAM Identity Center. You can use the <a href=\"https://docs.aws.amazon.com/singlesignon/latest/APIReference/API_ListInstances.html\">ListInstances</a> API operation to retrieve a list of your Identity Center instances and their ARNs.</p>"
         },
         "IdentityCenterArn":{
           "shape":"IdentityCenterArn",
-          "documentation":"<p>If you associated your S3 Access Grants instance with an Amazon Web Services IAM Identity Center instance, this field returns the Amazon Resource Name (ARN) of the IAM Identity Center instance application; a subresource of the original Identity Center instance passed in the request. S3 Access Grants creates this Identity Center application for this specific S3 Access Grants instance. </p>"
+          "documentation":"<p>If you associated your S3 Access Grants instance with an Amazon Web Services IAM Identity Center instance, this field returns the Amazon Resource Name (ARN) of the IAM Identity Center instance application; a subresource of the original Identity Center instance. S3 Access Grants creates this Identity Center application for the specific S3 Access Grants instance. </p>",
+          "deprecated":true,
+          "deprecatedMessage":"IdentityCenterArn has been deprecated. Use IdentityCenterInstanceArn or IdentityCenterApplicationArn."
+        },
+        "IdentityCenterInstanceArn":{
+          "shape":"IdentityCenterArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the Amazon Web Services IAM Identity Center instance that you are associating with your S3 Access Grants instance. An IAM Identity Center instance is your corporate identity directory that you added to the IAM Identity Center. You can use the <a href=\"https://docs.aws.amazon.com/singlesignon/latest/APIReference/API_ListInstances.html\">ListInstances</a> API operation to retrieve a list of your Identity Center instances and their ARNs.</p>"
+        },
+        "IdentityCenterApplicationArn":{
+          "shape":"IdentityCenterApplicationArn",
+          "documentation":"<p>If you associated your S3 Access Grants instance with an Amazon Web Services IAM Identity Center instance, this field returns the Amazon Resource Name (ARN) of the IAM Identity Center instance application; a subresource of the original Identity Center instance. S3 Access Grants creates this Identity Center application for the specific S3 Access Grants instance. </p>"
         }
       }
     },
@@ -2248,7 +2284,7 @@
       "members":{
         "AccountId":{
           "shape":"AccountId",
-          "documentation":"<p>The ID of the Amazon Web Services account that is making this request.</p>",
+          "documentation":"<p>The Amazon Web Services account ID of the S3 Access Grants instance.</p>",
           "contextParam":{"name":"AccountId"},
           "hostLabel":true,
           "location":"header",
@@ -2672,7 +2708,7 @@
       "members":{
         "AccountId":{
           "shape":"AccountId",
-          "documentation":"<p>The ID of the Amazon Web Services account that is making this request.</p>",
+          "documentation":"<p>The Amazon Web Services account ID of the S3 Access Grants instance.</p>",
           "contextParam":{"name":"AccountId"},
           "hostLabel":true,
           "location":"header",
@@ -2692,7 +2728,7 @@
       "members":{
         "AccountId":{
           "shape":"AccountId",
-          "documentation":"<p>The ID of the Amazon Web Services account that is making this request.</p>",
+          "documentation":"<p>The Amazon Web Services account ID of the S3 Access Grants instance.</p>",
           "contextParam":{"name":"AccountId"},
           "hostLabel":true,
           "location":"header",
@@ -2706,7 +2742,7 @@
       "members":{
         "AccountId":{
           "shape":"AccountId",
-          "documentation":"<p>The ID of the Amazon Web Services account that is making this request.</p>",
+          "documentation":"<p>The Amazon Web Services account ID of the S3 Access Grants instance.</p>",
           "contextParam":{"name":"AccountId"},
           "hostLabel":true,
           "location":"header",
@@ -2723,7 +2759,7 @@
       "members":{
         "AccountId":{
           "shape":"AccountId",
-          "documentation":"<p>The ID of the Amazon Web Services account that is making this request.</p>",
+          "documentation":"<p>The Amazon Web Services account ID of the S3 Access Grants instance.</p>",
           "contextParam":{"name":"AccountId"},
           "hostLabel":true,
           "location":"header",
@@ -3247,7 +3283,7 @@
       "members":{
         "AccountId":{
           "shape":"AccountId",
-          "documentation":"<p>The ID of the Amazon Web Services account that is making this request.</p>",
+          "documentation":"<p>The Amazon Web Services account ID of the S3 Access Grants instance.</p>",
           "contextParam":{"name":"AccountId"},
           "hostLabel":true,
           "location":"header",
@@ -3270,7 +3306,7 @@
           "box":true
         }
       },
-      "documentation":"<p>Specifies encryption-related information for an Amazon S3 bucket that is a destination for replicated objects.</p> <note> <p>This is not supported by Amazon S3 on Outposts buckets.</p> </note>"
+      "documentation":"<p>Specifies encryption-related information for an Amazon S3 bucket that is a destination for replicated objects. If you're specifying a customer managed KMS key, we recommend using a fully qualified KMS key ARN. If you use a KMS key alias instead, then KMS resolves the key within the requester’s account. This behavior can result in data that's encrypted with a KMS key that belongs to the requester, and not the bucket owner.</p> <note> <p>This is not supported by Amazon S3 on Outposts buckets.</p> </note>"
     },
     "Endpoints":{
       "type":"map",
@@ -3375,7 +3411,7 @@
       "members":{
         "AccountId":{
           "shape":"AccountId",
-          "documentation":"<p>The ID of the Amazon Web Services account that is making this request.</p>",
+          "documentation":"<p>The Amazon Web Services account ID of the S3 Access Grants instance.</p>",
           "contextParam":{"name":"AccountId"},
           "hostLabel":true,
           "location":"header",
@@ -3472,7 +3508,7 @@
       "members":{
         "AccountId":{
           "shape":"AccountId",
-          "documentation":"<p>The ID of the Amazon Web Services account that is making this request.</p>",
+          "documentation":"<p>The Amazon Web Services account ID of the S3 Access Grants instance.</p>",
           "contextParam":{"name":"AccountId"},
           "hostLabel":true,
           "location":"header",
@@ -3486,7 +3522,7 @@
       "members":{
         "AccountId":{
           "shape":"AccountId",
-          "documentation":"<p>The ID of the Amazon Web Services account that is making this request.</p>",
+          "documentation":"<p>The Amazon Web Services account ID of the S3 Access Grants instance.</p>",
           "contextParam":{"name":"AccountId"},
           "hostLabel":true,
           "location":"header",
@@ -3524,7 +3560,17 @@
         },
         "IdentityCenterArn":{
           "shape":"IdentityCenterArn",
-          "documentation":"<p>If you associated your S3 Access Grants instance with an Amazon Web Services IAM Identity Center instance, this field returns the Amazon Resource Name (ARN) of the Amazon Web Services IAM Identity Center instance application; a subresource of the original Identity Center instance. S3 Access Grants creates this Identity Center application for the specific S3 Access Grants instance. </p>"
+          "documentation":"<p>If you associated your S3 Access Grants instance with an Amazon Web Services IAM Identity Center instance, this field returns the Amazon Resource Name (ARN) of the IAM Identity Center instance application; a subresource of the original Identity Center instance. S3 Access Grants creates this Identity Center application for the specific S3 Access Grants instance. </p>",
+          "deprecated":true,
+          "deprecatedMessage":"IdentityCenterArn has been deprecated. Use IdentityCenterInstanceArn or IdentityCenterApplicationArn."
+        },
+        "IdentityCenterInstanceArn":{
+          "shape":"IdentityCenterArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the Amazon Web Services IAM Identity Center instance that you are associating with your S3 Access Grants instance. An IAM Identity Center instance is your corporate identity directory that you added to the IAM Identity Center. You can use the <a href=\"https://docs.aws.amazon.com/singlesignon/latest/APIReference/API_ListInstances.html\">ListInstances</a> API operation to retrieve a list of your Identity Center instances and their ARNs.</p>"
+        },
+        "IdentityCenterApplicationArn":{
+          "shape":"IdentityCenterApplicationArn",
+          "documentation":"<p>If you associated your S3 Access Grants instance with an Amazon Web Services IAM Identity Center instance, this field returns the Amazon Resource Name (ARN) of the IAM Identity Center instance application; a subresource of the original Identity Center instance. S3 Access Grants creates this Identity Center application for the specific S3 Access Grants instance. </p>"
         },
         "CreatedAt":{
           "shape":"CreationTimestamp",
@@ -3541,7 +3587,7 @@
       "members":{
         "AccountId":{
           "shape":"AccountId",
-          "documentation":"<p>The ID of the Amazon Web Services account that is making this request.</p>",
+          "documentation":"<p>The Amazon Web Services account ID of the S3 Access Grants instance.</p>",
           "contextParam":{"name":"AccountId"},
           "hostLabel":true,
           "location":"header",
@@ -3824,7 +3870,7 @@
         },
         "VpcConfiguration":{
           "shape":"VpcConfiguration",
-          "documentation":"<p>Contains the virtual private cloud (VPC) configuration for the specified access point.</p> <note> <p>This element is empty if this access point is an Amazon S3 on Outposts access point that is used by other Amazon Web Services.</p> </note>"
+          "documentation":"<p>Contains the virtual private cloud (VPC) configuration for the specified access point.</p> <note> <p>This element is empty if this access point is an Amazon S3 on Outposts access point that is used by other Amazon Web Servicesservices.</p> </note>"
         },
         "PublicAccessBlockConfiguration":{"shape":"PublicAccessBlockConfiguration"},
         "CreationDate":{
@@ -4071,7 +4117,7 @@
       "members":{
         "AccountId":{
           "shape":"AccountId",
-          "documentation":"<p>The ID of the Amazon Web Services account that is making this request.</p>",
+          "documentation":"<p>The Amazon Web Services account ID of the S3 Access Grants instance.</p>",
           "contextParam":{"name":"AccountId"},
           "hostLabel":true,
           "location":"header",
@@ -4452,7 +4498,7 @@
       "type":"string",
       "max":1224,
       "min":10,
-      "pattern":"arn:[^:]+:sso:.*$"
+      "pattern":"arn:[^:]+:sso::\\d{12}:application/.*$"
     },
     "IdentityCenterArn":{
       "type":"string",
@@ -4997,15 +5043,15 @@
       "members":{
         "MatchAnyPrefix":{
           "shape":"NonEmptyMaxLength1024StringList",
-          "documentation":"<p>If provided, the generated manifest includes objects where the specified string appears at the start of the object key string.</p>"
+          "documentation":"<p>If provided, the generated manifest includes objects where the specified string appears at the start of the object key string. Each KeyNameConstraint filter accepts an array of strings with a length of 1 string.</p>"
         },
         "MatchAnySuffix":{
           "shape":"NonEmptyMaxLength1024StringList",
-          "documentation":"<p>If provided, the generated manifest includes objects where the specified string appears at the end of the object key string.</p>"
+          "documentation":"<p>If provided, the generated manifest includes objects where the specified string appears at the end of the object key string. Each KeyNameConstraint filter accepts an array of strings with a length of 1 string.</p>"
         },
         "MatchAnySubstring":{
           "shape":"NonEmptyMaxLength1024StringList",
-          "documentation":"<p>If provided, the generated manifest includes objects where the specified string appears anywhere within the object key string.</p>"
+          "documentation":"<p>If provided, the generated manifest includes objects where the specified string appears anywhere within the object key string. Each KeyNameConstraint filter accepts an array of strings with a length of 1 string.</p>"
         }
       },
       "documentation":"<p>If provided, the generated manifest includes only source bucket objects whose object keys match the string constraints specified for <code>MatchAnyPrefix</code>, <code>MatchAnySuffix</code>, and <code>MatchAnySubstring</code>.</p>"
@@ -5215,6 +5261,16 @@
         },
         "IdentityCenterArn":{
           "shape":"IdentityCenterArn",
+          "documentation":"<p>If you associated your S3 Access Grants instance with an Amazon Web Services IAM Identity Center instance, this field returns the Amazon Resource Name (ARN) of the IAM Identity Center instance application; a subresource of the original Identity Center instance. S3 Access Grants creates this Identity Center application for the specific S3 Access Grants instance. </p>",
+          "deprecated":true,
+          "deprecatedMessage":"IdentityCenterArn has been deprecated. Use IdentityCenterInstanceArn or IdentityCenterApplicationArn."
+        },
+        "IdentityCenterInstanceArn":{
+          "shape":"IdentityCenterArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the Amazon Web Services IAM Identity Center instance that you are associating with your S3 Access Grants instance. An IAM Identity Center instance is your corporate identity directory that you added to the IAM Identity Center. You can use the <a href=\"https://docs.aws.amazon.com/singlesignon/latest/APIReference/API_ListInstances.html\">ListInstances</a> API operation to retrieve a list of your Identity Center instances and their ARNs.</p>"
+        },
+        "IdentityCenterApplicationArn":{
+          "shape":"IdentityCenterApplicationArn",
           "documentation":"<p>If you associated your S3 Access Grants instance with an Amazon Web Services IAM Identity Center instance, this field returns the Amazon Resource Name (ARN) of the IAM Identity Center instance application; a subresource of the original Identity Center instance. S3 Access Grants creates this Identity Center application for the specific S3 Access Grants instance. </p>"
         }
       },
@@ -5226,7 +5282,7 @@
       "members":{
         "AccountId":{
           "shape":"AccountId",
-          "documentation":"<p>The ID of the Amazon Web Services account that is making this request.</p>",
+          "documentation":"<p>The Amazon Web Services account ID of the S3 Access Grants instance.</p>",
           "contextParam":{"name":"AccountId"},
           "hostLabel":true,
           "location":"header",
@@ -5291,7 +5347,7 @@
       "members":{
         "AccountId":{
           "shape":"AccountId",
-          "documentation":"<p>The ID of the Amazon Web Services account that is making this request.</p>",
+          "documentation":"<p>The Amazon Web Services account ID of the S3 Access Grants instance.</p>",
           "contextParam":{"name":"AccountId"},
           "hostLabel":true,
           "location":"header",
@@ -5336,7 +5392,7 @@
       "members":{
         "AccountId":{
           "shape":"AccountId",
-          "documentation":"<p>The ID of the Amazon Web Services account that is making this request.</p>",
+          "documentation":"<p>The Amazon Web Services account ID of the S3 Access Grants instance.</p>",
           "contextParam":{"name":"AccountId"},
           "hostLabel":true,
           "location":"header",
@@ -5481,6 +5537,75 @@
         "NextToken":{
           "shape":"NonEmptyMaxLength1024String",
           "documentation":"<p>If the specified bucket has more access points than can be returned in one call to this API, this field contains a continuation token that you can provide in subsequent calls to this API to retrieve additional access points.</p>"
+        }
+      }
+    },
+    "ListCallerAccessGrantsEntry":{
+      "type":"structure",
+      "members":{
+        "Permission":{
+          "shape":"Permission",
+          "documentation":"<p>The type of permission granted, which can be one of the following values:</p> <ul> <li> <p> <code>READ</code> - Grants read-only access to the S3 data.</p> </li> <li> <p> <code>WRITE</code> - Grants write-only access to the S3 data.</p> </li> <li> <p> <code>READWRITE</code> - Grants both read and write access to the S3 data.</p> </li> </ul>"
+        },
+        "GrantScope":{
+          "shape":"S3Prefix",
+          "documentation":"<p>The S3 path of the data to which you have been granted access. </p>"
+        },
+        "ApplicationArn":{
+          "shape":"IdentityCenterApplicationArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of an Amazon Web Services IAM Identity Center application associated with your Identity Center instance. If the grant includes an application ARN, the grantee can only access the S3 data through this application. </p>"
+        }
+      },
+      "documentation":"<p>Part of <code>ListCallerAccessGrantsResult</code>. Each entry includes the permission level (READ, WRITE, or READWRITE) and the grant scope of the access grant. If the grant also includes an application ARN, the grantee can only access the S3 data through this application.</p>"
+    },
+    "ListCallerAccessGrantsRequest":{
+      "type":"structure",
+      "required":["AccountId"],
+      "members":{
+        "AccountId":{
+          "shape":"AccountId",
+          "documentation":"<p>The Amazon Web Services account ID of the S3 Access Grants instance.</p>",
+          "contextParam":{"name":"AccountId"},
+          "hostLabel":true,
+          "location":"header",
+          "locationName":"x-amz-account-id"
+        },
+        "GrantScope":{
+          "shape":"S3Prefix",
+          "documentation":"<p>The S3 path of the data that you would like to access. Must start with <code>s3://</code>. You can optionally pass only the beginning characters of a path, and S3 Access Grants will search for all applicable grants for the path fragment. </p>",
+          "location":"querystring",
+          "locationName":"grantscope"
+        },
+        "NextToken":{
+          "shape":"ContinuationToken",
+          "documentation":"<p>A pagination token to request the next page of results. Pass this value into a subsequent <code>List Caller Access Grants</code> request in order to retrieve the next page of results.</p>",
+          "location":"querystring",
+          "locationName":"nextToken"
+        },
+        "MaxResults":{
+          "shape":"MaxResults",
+          "documentation":"<p>The maximum number of access grants that you would like returned in the <code>List Caller Access Grants</code> response. If the results include the pagination token <code>NextToken</code>, make another call using the <code>NextToken</code> to determine if there are more results.</p>",
+          "location":"querystring",
+          "locationName":"maxResults"
+        },
+        "AllowedByApplication":{
+          "shape":"Boolean",
+          "documentation":"<p>If this optional parameter is passed in the request, a filter is applied to the results. The results will include only the access grants for the caller's Identity Center application or for any other applications (<code>ALL</code>).</p>",
+          "location":"querystring",
+          "locationName":"allowedByApplication"
+        }
+      }
+    },
+    "ListCallerAccessGrantsResult":{
+      "type":"structure",
+      "members":{
+        "NextToken":{
+          "shape":"ContinuationToken",
+          "documentation":"<p>A pagination token that you can use to request the next page of results. Pass this value into a subsequent <code>List Caller Access Grants</code> request in order to retrieve the next page of results.</p>"
+        },
+        "CallerAccessGrantsList":{
+          "shape":"CallerAccessGrantsList",
+          "documentation":"<p>A list of the caller's access grants that were created using S3 Access Grants and that grant the caller access to the S3 data of the Amazon Web Services account ID that was specified in the request. </p>"
         }
       }
     },
@@ -6373,7 +6498,7 @@
         },
         "RestrictPublicBuckets":{
           "shape":"Setting",
-          "documentation":"<p>Specifies whether Amazon S3 should restrict public bucket policies for buckets in this account. Setting this element to <code>TRUE</code> restricts access to buckets with public policies to only Amazon Web Service principals and authorized users within this account.</p> <p>Enabling this setting doesn't affect previously stored bucket policies, except that public and cross-account access within any public bucket policy, including non-public delegation to specific accounts, is blocked.</p> <p>This property is not supported for Amazon S3 on Outposts.</p>",
+          "documentation":"<p>Specifies whether Amazon S3 should restrict public bucket policies for buckets in this account. Setting this element to <code>TRUE</code> restricts access to buckets with public policies to only Amazon Web Servicesservice principals and authorized users within this account.</p> <p>Enabling this setting doesn't affect previously stored bucket policies, except that public and cross-account access within any public bucket policy, including non-public delegation to specific accounts, is blocked.</p> <p>This property is not supported for Amazon S3 on Outposts.</p>",
           "locationName":"RestrictPublicBuckets"
         }
       },
@@ -6389,7 +6514,7 @@
       "members":{
         "AccountId":{
           "shape":"AccountId",
-          "documentation":"<p>The ID of the Amazon Web Services account that is making this request.</p>",
+          "documentation":"<p>The Amazon Web Services account ID of the S3 Access Grants instance.</p>",
           "contextParam":{"name":"AccountId"},
           "hostLabel":true,
           "location":"header",
@@ -7455,7 +7580,7 @@
         },
         "SourceBucket":{
           "shape":"S3BucketArnString",
-          "documentation":"<p>The source bucket used by the ManifestGenerator.</p> <note> <p> <b>Directory buckets</b> - Directory buckets aren't supported as the source buckets used by <code>S3JobManifestGenerator</code> to generate the job manifest.</p> </note>"
+          "documentation":"<p>The ARN of the source bucket used by the ManifestGenerator.</p> <note> <p> <b>Directory buckets</b> - Directory buckets aren't supported as the source buckets used by <code>S3JobManifestGenerator</code> to generate the job manifest.</p> </note>"
         },
         "ManifestOutputLocation":{
           "shape":"S3ManifestOutputLocation",
@@ -8404,7 +8529,7 @@
       "members":{
         "AccountId":{
           "shape":"AccountId",
-          "documentation":"<p>The ID of the Amazon Web Services account that is making this request.</p>",
+          "documentation":"<p>The Amazon Web Services account ID of the S3 Access Grants instance.</p>",
           "contextParam":{"name":"AccountId"},
           "hostLabel":true,
           "location":"header",

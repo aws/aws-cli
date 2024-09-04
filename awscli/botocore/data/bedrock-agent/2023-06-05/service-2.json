@@ -50,7 +50,7 @@
         {"shape":"ConflictException"},
         {"shape":"ServiceQuotaExceededException"}
       ],
-      "documentation":"<p>Creates an agent that orchestrates interactions between foundation models, data sources, software applications, user conversations, and APIs to carry out tasks to help customers.</p> <ul> <li> <p>Specify the following fields for security purposes.</p> <ul> <li> <p> <code>agentResourceRoleArn</code> – The Amazon Resource Name (ARN) of the role with permissions to invoke API operations on an agent.</p> </li> <li> <p>(Optional) <code>customerEncryptionKeyArn</code> – The Amazon Resource Name (ARN) of a KMS key to encrypt the creation of the agent.</p> </li> <li> <p>(Optional) <code>idleSessionTTLinSeconds</code> – Specify the number of seconds for which the agent should maintain session information. After this time expires, the subsequent <code>InvokeAgent</code> request begins a new session.</p> </li> </ul> </li> <li> <p>To enable your agent to retain conversational context across multiple sessions, include a <code>memoryConfiguration</code> object. For more information, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/agents-configure-memory.html\">Configure memory</a>.</p> </li> <li> <p>To override the default prompt behavior for agent orchestration and to use advanced prompts, include a <code>promptOverrideConfiguration</code> object. For more information, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/advanced-prompts.html\">Advanced prompts</a>.</p> </li> <li> <p>If you agent fails to be created, the response returns a list of <code>failureReasons</code> alongside a list of <code>recommendedActions</code> for you to troubleshoot.</p> </li> </ul>",
+      "documentation":"<p>Creates an agent that orchestrates interactions between foundation models, data sources, software applications, user conversations, and APIs to carry out tasks to help customers.</p> <ul> <li> <p>Specify the following fields for security purposes.</p> <ul> <li> <p> <code>agentResourceRoleArn</code> – The Amazon Resource Name (ARN) of the role with permissions to invoke API operations on an agent.</p> </li> <li> <p>(Optional) <code>customerEncryptionKeyArn</code> – The Amazon Resource Name (ARN) of a KMS key to encrypt the creation of the agent.</p> </li> <li> <p>(Optional) <code>idleSessionTTLinSeconds</code> – Specify the number of seconds for which the agent should maintain session information. After this time expires, the subsequent <code>InvokeAgent</code> request begins a new session.</p> </li> </ul> </li> <li> <p>To enable your agent to retain conversational context across multiple sessions, include a <code>memoryConfiguration</code> object. For more information, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/agents-configure-memory.html\">Configure memory</a>.</p> </li> <li> <p>To override the default prompt behavior for agent orchestration and to use advanced prompts, include a <code>promptOverrideConfiguration</code> object. For more information, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/advanced-prompts.html\">Advanced prompts</a>.</p> </li> <li> <p>If your agent fails to be created, the response returns a list of <code>failureReasons</code> alongside a list of <code>recommendedActions</code> for you to troubleshoot.</p> </li> <li> <p>The agent instructions will not be honored if your agent has only one knowledge base, uses default prompts, has no action group, and user input is disabled.</p> </li> </ul>",
       "idempotent":true
     },
     "CreateAgentActionGroup":{
@@ -6042,7 +6042,7 @@
           "documentation":"<p>The parsing strategy for the data source.</p>"
         }
       },
-      "documentation":"<p>Settings for parsing document contents. By default, the service converts the contents of each document into text before splitting it into chunks. To improve processing of PDF files with tables and images, you can configure the data source to convert the pages of text into images and use a model to describe the contents of each page.</p> <p>To use a model to parse PDF documents, set the parsing strategy to <code>BEDROCK_FOUNDATION_MODEL</code> and specify the model to use by ARN. You can also override the default parsing prompt with instructions for how to interpret images and tables in your documents. The following models are supported.</p> <ul> <li> <p>Anthropic Claude 3 Sonnet - <code>anthropic.claude-3-sonnet-20240229-v1:0</code> </p> </li> <li> <p>Anthropic Claude 3 Haiku - <code>anthropic.claude-3-haiku-20240307-v1:0</code> </p> </li> </ul> <p>You can get the ARN of a model with the action. Standard model usage charges apply for the foundation model parsing strategy.</p>"
+      "documentation":"<p>Settings for parsing document contents. By default, the service converts the contents of each document into text before splitting it into chunks. To improve processing of PDF files with tables and images, you can configure the data source to convert the pages of text into images and use a model to describe the contents of each page.</p> <p>To use a model to parse PDF documents, set the parsing strategy to <code>BEDROCK_FOUNDATION_MODEL</code> and specify the model to use by ARN. You can also override the default parsing prompt with instructions for how to interpret images and tables in your documents. The following models are supported.</p> <ul> <li> <p>Anthropic Claude 3 Sonnet - <code>anthropic.claude-3-sonnet-20240229-v1:0</code> </p> </li> <li> <p>Anthropic Claude 3 Haiku - <code>anthropic.claude-3-haiku-20240307-v1:0</code> </p> </li> </ul> <p>You can get the ARN of a model with the <a href=\"https://docs.aws.amazon.com/bedrock/latest/APIReference/API_ListFoundationModels.html\">ListFoundationModels</a> action. Standard model usage charges apply for the foundation model parsing strategy.</p>"
     },
     "ParsingPrompt":{
       "type":"structure",
@@ -6380,6 +6380,46 @@
       "min":0,
       "sensitive":true
     },
+    "PromptMetadataEntry":{
+      "type":"structure",
+      "required":[
+        "key",
+        "value"
+      ],
+      "members":{
+        "key":{
+          "shape":"PromptMetadataKey",
+          "documentation":"<p>The key of a metadata tag for a prompt variant.</p>"
+        },
+        "value":{
+          "shape":"PromptMetadataValue",
+          "documentation":"<p>The value of a metadata tag for a prompt variant.</p>"
+        }
+      },
+      "documentation":"<p>Contains a key-value pair that defines a metadata tag and value to attach to a prompt variant. For more information, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/prompt-management-create.html\">Create a prompt using Prompt management</a>.</p>",
+      "sensitive":true
+    },
+    "PromptMetadataKey":{
+      "type":"string",
+      "max":128,
+      "min":1,
+      "pattern":"^[a-zA-Z0-9\\s._:/=+@-]*$",
+      "sensitive":true
+    },
+    "PromptMetadataList":{
+      "type":"list",
+      "member":{"shape":"PromptMetadataEntry"},
+      "max":50,
+      "min":0,
+      "sensitive":true
+    },
+    "PromptMetadataValue":{
+      "type":"string",
+      "max":1024,
+      "min":0,
+      "pattern":"^[a-zA-Z0-9\\s._:/=+@-]*$",
+      "sensitive":true
+    },
     "PromptModelIdentifier":{
       "type":"string",
       "max":2048,
@@ -6521,6 +6561,10 @@
         "inferenceConfiguration":{
           "shape":"PromptInferenceConfiguration",
           "documentation":"<p>Contains inference configurations for the prompt variant.</p>"
+        },
+        "metadata":{
+          "shape":"PromptMetadataList",
+          "documentation":"<p>An array of objects, each containing a key-value pair that defines a metadata tag and value to attach to a prompt variant. For more information, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/prompt-management-create.html\">Create a prompt using Prompt management</a>.</p>"
         },
         "modelId":{
           "shape":"PromptModelIdentifier",

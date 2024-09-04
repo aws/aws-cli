@@ -375,6 +375,22 @@
       ],
       "documentation":"<p>Returns a list of all CloudWatch Logs account policies in the account.</p>"
     },
+    "DescribeConfigurationTemplates":{
+      "name":"DescribeConfigurationTemplates",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DescribeConfigurationTemplatesRequest"},
+      "output":{"shape":"DescribeConfigurationTemplatesResponse"},
+      "errors":[
+        {"shape":"ServiceUnavailableException"},
+        {"shape":"ValidationException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Use this operation to return the valid and default values that are used when creating delivery sources, delivery destinations, and deliveries. For more information about deliveries, see <a href=\"https://docs.aws.amazon.com/AmazonCloudWatchLogs/latest/APIReference/API_CreateDelivery.html\">CreateDelivery</a>.</p>"
+    },
     "DescribeDeliveries":{
       "name":"DescribeDeliveries",
       "http":{
@@ -1153,6 +1169,24 @@
       ],
       "documentation":"<p>Use this operation to <i>suppress</i> anomaly detection for a specified anomaly or pattern. If you suppress an anomaly, CloudWatch Logs won’t report new occurrences of that anomaly and won't update that anomaly with new data. If you suppress a pattern, CloudWatch Logs won’t report any anomalies related to that pattern.</p> <p>You must specify either <code>anomalyId</code> or <code>patternId</code>, but you can't specify both parameters in the same operation.</p> <p>If you have previously used this operation to suppress detection of a pattern or anomaly, you can use it again to cause CloudWatch Logs to end the suppression. To do this, use this operation and specify the anomaly or pattern to stop suppressing, and omit the <code>suppressionType</code> and <code>suppressionPeriod</code> parameters.</p>"
     },
+    "UpdateDeliveryConfiguration":{
+      "name":"UpdateDeliveryConfiguration",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"UpdateDeliveryConfigurationRequest"},
+      "output":{"shape":"UpdateDeliveryConfigurationResponse"},
+      "errors":[
+        {"shape":"ServiceUnavailableException"},
+        {"shape":"ConflictException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Use this operation to update the configuration of a <a href=\"https://docs.aws.amazon.com/AmazonCloudWatchLogs/latest/APIReference/API_Delivery.html\">delivery</a> to change either the S3 path pattern or the format of the delivered logs. You can't use this operation to change the source or destination of the delivery.</p>"
+    },
     "UpdateLogAnomalyDetector":{
       "name":"UpdateLogAnomalyDetector",
       "http":{
@@ -1232,6 +1266,15 @@
       "documentation":"<p>A structure that contains information about one CloudWatch Logs account policy.</p>"
     },
     "AccountPolicyDocument":{"type":"string"},
+    "AllowedActionForAllowVendedLogsDeliveryForResource":{"type":"string"},
+    "AllowedFieldDelimiters":{
+      "type":"list",
+      "member":{"shape":"FieldDelimiter"}
+    },
+    "AllowedFields":{
+      "type":"list",
+      "member":{"shape":"RecordField"}
+    },
     "AmazonResourceName":{
       "type":"string",
       "max":1011,
@@ -1448,6 +1491,74 @@
       "min":36,
       "pattern":"\\S{36,128}"
     },
+    "ConfigurationTemplate":{
+      "type":"structure",
+      "members":{
+        "service":{
+          "shape":"Service",
+          "documentation":"<p>A string specifying which service this configuration template applies to. For more information about supported services see <a href=\"https://docs.aws.amazon.com/AmazonCloudWatch/latest/logs/AWS-logs-and-resource-policy.html\">Enable logging from Amazon Web Services services.</a>.</p>"
+        },
+        "logType":{
+          "shape":"LogType",
+          "documentation":"<p>A string specifying which log type this configuration template applies to.</p>"
+        },
+        "resourceType":{
+          "shape":"ResourceType",
+          "documentation":"<p>A string specifying which resource type this configuration template applies to.</p>"
+        },
+        "deliveryDestinationType":{
+          "shape":"DeliveryDestinationType",
+          "documentation":"<p>A string specifying which destination type this configuration template applies to.</p>"
+        },
+        "defaultDeliveryConfigValues":{
+          "shape":"ConfigurationTemplateDeliveryConfigValues",
+          "documentation":"<p>A mapping that displays the default value of each property within a delivery’s configuration, if it is not specified in the request.</p>"
+        },
+        "allowedFields":{
+          "shape":"AllowedFields",
+          "documentation":"<p>The allowed fields that a caller can use in the <code>recordFields</code> parameter of a <a href=\"https://docs.aws.amazon.com/AmazonCloudWatchLogs/latest/APIReference/API_CreateDelivery.html\">CreateDelivery</a> or <a href=\"https://docs.aws.amazon.com/AmazonCloudWatchLogs/latest/APIReference/API_UpdateDeliveryConfiguration.html\">UpdateDeliveryConfiguration</a> operation.</p>"
+        },
+        "allowedOutputFormats":{
+          "shape":"OutputFormats",
+          "documentation":"<p>The list of delivery destination output formats that are supported by this log source.</p>"
+        },
+        "allowedActionForAllowVendedLogsDeliveryForResource":{
+          "shape":"AllowedActionForAllowVendedLogsDeliveryForResource",
+          "documentation":"<p>The action permissions that a caller needs to have to be able to successfully create a delivery source on the desired resource type when calling <a href=\"https://docs.aws.amazon.com/AmazonCloudWatchLogs/latest/APIReference/API_PutDeliverySource.html\">PutDeliverySource</a>.</p>"
+        },
+        "allowedFieldDelimiters":{
+          "shape":"AllowedFieldDelimiters",
+          "documentation":"<p>The valid values that a caller can use as field delimiters when calling <a href=\"https://docs.aws.amazon.com/AmazonCloudWatchLogs/latest/APIReference/API_CreateDelivery.html\">CreateDelivery</a> or <a href=\"https://docs.aws.amazon.com/AmazonCloudWatchLogs/latest/APIReference/API_UpdateDeliveryConfiguration.html\">UpdateDeliveryConfiguration</a> on a delivery that delivers in <code>Plain</code>, <code>W3C</code>, or <code>Raw</code> format.</p>"
+        },
+        "allowedSuffixPathFields":{
+          "shape":"RecordFields",
+          "documentation":"<p>The list of variable fields that can be used in the suffix path of a delivery that delivers to an S3 bucket.</p>"
+        }
+      },
+      "documentation":"<p>A structure containing information about the deafult settings and available settings that you can use to configure a <a href=\"https://docs.aws.amazon.com/AmazonCloudWatchLogs/latest/APIReference/API_Delivery.html\">delivery</a> or a <a href=\"https://docs.aws.amazon.com/AmazonCloudWatchLogs/latest/APIReference/API_DeliveryDestination.html\">delivery destination</a>.</p>"
+    },
+    "ConfigurationTemplateDeliveryConfigValues":{
+      "type":"structure",
+      "members":{
+        "recordFields":{
+          "shape":"RecordFields",
+          "documentation":"<p>The default record fields that will be delivered when a list of record fields is not provided in a <a href=\"https://docs.aws.amazon.com/AmazonCloudWatchLogs/latest/APIReference/API_CreateDelivery.html\">CreateDelivery</a> operation.</p>"
+        },
+        "fieldDelimiter":{
+          "shape":"FieldDelimiter",
+          "documentation":"<p>The default field delimiter that is used in a <a href=\"https://docs.aws.amazon.com/AmazonCloudWatchLogs/latest/APIReference/API_CreateDelivery.html\">CreateDelivery</a> operation when the field delimiter is not specified in that operation. The field delimiter is used only when the final output delivery is in <code>Plain</code>, <code>W3C</code>, or <code>Raw</code> format.</p>"
+        },
+        "s3DeliveryConfiguration":{
+          "shape":"S3DeliveryConfiguration",
+          "documentation":"<p>The delivery parameters that are used when you create a delivery to a delivery destination that is an S3 Bucket.</p>"
+        }
+      },
+      "documentation":"<p>This structure contains the default values that are used for each configuration parameter when you use <a href=\"https://docs.aws.amazon.com/AmazonCloudWatchLogs/latest/APIReference/API_CreateDelivery.html\">CreateDelivery</a> to create a deliver under the current service type, resource type, and log type.</p>"
+    },
+    "ConfigurationTemplates":{
+      "type":"list",
+      "member":{"shape":"ConfigurationTemplate"}
+    },
     "ConflictException":{
       "type":"structure",
       "members":{
@@ -1470,6 +1581,18 @@
         "deliveryDestinationArn":{
           "shape":"Arn",
           "documentation":"<p>The ARN of the delivery destination to use for this delivery.</p>"
+        },
+        "recordFields":{
+          "shape":"RecordFields",
+          "documentation":"<p>The list of record fields to be delivered to the destination, in order. If the delivery’s log source has mandatory fields, they must be included in this list.</p>"
+        },
+        "fieldDelimiter":{
+          "shape":"FieldDelimiter",
+          "documentation":"<p>The field delimiter to use between record fields when the final output format of a delivery is in <code>Plain</code>, <code>W3C</code>, or <code>Raw</code> format.</p>"
+        },
+        "s3DeliveryConfiguration":{
+          "shape":"S3DeliveryConfiguration",
+          "documentation":"<p>This structure contains parameters that are valid only when the delivery’s delivery destination is an S3 bucket.</p>"
         },
         "tags":{
           "shape":"Tags",
@@ -1852,6 +1975,18 @@
           "shape":"DeliveryDestinationType",
           "documentation":"<p>Displays whether the delivery destination associated with this delivery is CloudWatch Logs, Amazon S3, or Firehose.</p>"
         },
+        "recordFields":{
+          "shape":"RecordFields",
+          "documentation":"<p>The record fields used in this delivery.</p>"
+        },
+        "fieldDelimiter":{
+          "shape":"FieldDelimiter",
+          "documentation":"<p>The field delimiter that is used between record fields when the final output format of a delivery is in <code>Plain</code>, <code>W3C</code>, or <code>Raw</code> format.</p>"
+        },
+        "s3DeliveryConfiguration":{
+          "shape":"S3DeliveryConfiguration",
+          "documentation":"<p>This structure contains delivery configurations that apply only when the delivery destination resource is an S3 bucket.</p>"
+        },
         "tags":{
           "shape":"Tags",
           "documentation":"<p>The tags that have been assigned to this delivery.</p>"
@@ -1919,6 +2054,12 @@
         "FH"
       ]
     },
+    "DeliveryDestinationTypes":{
+      "type":"list",
+      "member":{"shape":"DeliveryDestinationType"},
+      "max":3,
+      "min":1
+    },
     "DeliveryDestinations":{
       "type":"list",
       "member":{"shape":"DeliveryDestination"}
@@ -1969,6 +2110,11 @@
       "type":"list",
       "member":{"shape":"DeliverySource"}
     },
+    "DeliverySuffixPath":{
+      "type":"string",
+      "max":256,
+      "min":1
+    },
     "Descending":{"type":"boolean"},
     "DescribeAccountPoliciesRequest":{
       "type":"structure",
@@ -1995,6 +2141,42 @@
           "shape":"AccountPolicies",
           "documentation":"<p>An array of structures that contain information about the CloudWatch Logs account policies that match the specified filters.</p>"
         }
+      }
+    },
+    "DescribeConfigurationTemplatesRequest":{
+      "type":"structure",
+      "members":{
+        "service":{
+          "shape":"Service",
+          "documentation":"<p>Use this parameter to filter the response to include only the configuration templates that apply to the Amazon Web Services service that you specify here.</p>"
+        },
+        "logTypes":{
+          "shape":"LogTypes",
+          "documentation":"<p>Use this parameter to filter the response to include only the configuration templates that apply to the log types that you specify here.</p>"
+        },
+        "resourceTypes":{
+          "shape":"ResourceTypes",
+          "documentation":"<p>Use this parameter to filter the response to include only the configuration templates that apply to the resource types that you specify here.</p>"
+        },
+        "deliveryDestinationTypes":{
+          "shape":"DeliveryDestinationTypes",
+          "documentation":"<p>Use this parameter to filter the response to include only the configuration templates that apply to the delivery destination types that you specify here.</p>"
+        },
+        "nextToken":{"shape":"NextToken"},
+        "limit":{
+          "shape":"DescribeLimit",
+          "documentation":"<p>Use this parameter to limit the number of configuration templates that are returned in the response.</p>"
+        }
+      }
+    },
+    "DescribeConfigurationTemplatesResponse":{
+      "type":"structure",
+      "members":{
+        "configurationTemplates":{
+          "shape":"ConfigurationTemplates",
+          "documentation":"<p>An array of objects, where each object describes one configuration template that matches the filters that you specified in the request.</p>"
+        },
+        "nextToken":{"shape":"NextToken"}
       }
     },
     "DescribeDeliveriesRequest":{
@@ -2450,14 +2632,14 @@
       "members":{
         "keyAttributes":{
           "shape":"EntityKeyAttributes",
-          "documentation":"<p>Reserved for future use.</p>"
+          "documentation":"<p>Reserved for internal use.</p>"
         },
         "attributes":{
           "shape":"EntityAttributes",
-          "documentation":"<p>Reserved for future use.</p>"
+          "documentation":"<p>Reserved for internal use.</p>"
         }
       },
-      "documentation":"<p>Reserved for future use.</p>"
+      "documentation":"<p>Reserved for internal use.</p>"
     },
     "EntityAttributes":{
       "type":"map",
@@ -2644,6 +2826,16 @@
       "value":{"shape":"Value"}
     },
     "Field":{"type":"string"},
+    "FieldDelimiter":{
+      "type":"string",
+      "max":5,
+      "min":0
+    },
+    "FieldHeader":{
+      "type":"string",
+      "max":64,
+      "min":1
+    },
     "FilterCount":{"type":"integer"},
     "FilterLogEventsRequest":{
       "type":"structure",
@@ -3510,6 +3702,12 @@
       "min":1,
       "pattern":"[\\w]*"
     },
+    "LogTypes":{
+      "type":"list",
+      "member":{"shape":"LogType"},
+      "max":10,
+      "min":1
+    },
     "MalformedQueryException":{
       "type":"structure",
       "members":{
@@ -3653,6 +3851,10 @@
         "raw",
         "parquet"
       ]
+    },
+    "OutputFormats":{
+      "type":"list",
+      "member":{"shape":"OutputFormat"}
     },
     "OutputLogEvent":{
       "type":"structure",
@@ -3997,7 +4199,7 @@
         },
         "entity":{
           "shape":"Entity",
-          "documentation":"<p>Reserved for future use.</p>"
+          "documentation":"<p>Reserved for internal use.</p>"
         }
       }
     },
@@ -4014,7 +4216,7 @@
         },
         "rejectedEntityInfo":{
           "shape":"RejectedEntityInfo",
-          "documentation":"<p>Reserved for future use.</p>"
+          "documentation":"<p>Reserved for internal use.</p>"
         }
       }
     },
@@ -4303,16 +4505,36 @@
       "max":10000,
       "min":0
     },
+    "RecordField":{
+      "type":"structure",
+      "members":{
+        "name":{
+          "shape":"FieldHeader",
+          "documentation":"<p>The name to use when specifying this record field in a <a href=\"https://docs.aws.amazon.com/AmazonCloudWatchLogs/latest/APIReference/API_CreateDelivery.html\">CreateDelivery</a> or <a href=\"https://docs.aws.amazon.com/AmazonCloudWatchLogs/latest/APIReference/API_UpdateDeliveryConfiguration.html\">UpdateDeliveryConfiguration</a> operation. </p>"
+        },
+        "mandatory":{
+          "shape":"Boolean",
+          "documentation":"<p>If this is <code>true</code>, the record field must be present in the <code>recordFields</code> parameter provided to a <a href=\"https://docs.aws.amazon.com/AmazonCloudWatchLogs/latest/APIReference/API_CreateDelivery.html\">CreateDelivery</a> or <a href=\"https://docs.aws.amazon.com/AmazonCloudWatchLogs/latest/APIReference/API_UpdateDeliveryConfiguration.html\">UpdateDeliveryConfiguration</a> operation.</p>"
+        }
+      },
+      "documentation":"<p>A structure that represents a valid record field header and whether it is mandatory.</p>"
+    },
+    "RecordFields":{
+      "type":"list",
+      "member":{"shape":"FieldHeader"},
+      "max":128,
+      "min":0
+    },
     "RejectedEntityInfo":{
       "type":"structure",
       "required":["errorType"],
       "members":{
         "errorType":{
           "shape":"EntityRejectionErrorType",
-          "documentation":"<p>Reserved for future use.</p>"
+          "documentation":"<p>Reserved for internal use.</p>"
         }
       },
-      "documentation":"<p>Reserved for future use.</p>"
+      "documentation":"<p>Reserved for internal use.</p>"
     },
     "RejectedLogEventsInfo":{
       "type":"structure",
@@ -4383,6 +4605,18 @@
       },
       "documentation":"<p>A policy enabling one or more entities to put logs to a log group in this account.</p>"
     },
+    "ResourceType":{
+      "type":"string",
+      "max":255,
+      "min":1,
+      "pattern":"[\\w-_]*"
+    },
+    "ResourceTypes":{
+      "type":"list",
+      "member":{"shape":"ResourceType"},
+      "max":10,
+      "min":1
+    },
     "ResultField":{
       "type":"structure",
       "members":{
@@ -4404,6 +4638,21 @@
     "RoleArn":{
       "type":"string",
       "min":1
+    },
+    "S3DeliveryConfiguration":{
+      "type":"structure",
+      "members":{
+        "suffixPath":{
+          "shape":"DeliverySuffixPath",
+          "documentation":"<p>This string allows re-configuring the S3 object prefix to contain either static or variable sections. The valid variables to use in the suffix path will vary by each log source. See ConfigurationTemplate$allowedSuffixPathFields for more info on what values are supported in the suffix path for each log source.</p>"
+        },
+        "enableHiveCompatiblePath":{
+          "shape":"Boolean",
+          "documentation":"<p>This parameter causes the S3 objects that contain delivered logs to use a prefix structure that allows for integration with Apache Hive.</p>",
+          "box":true
+        }
+      },
+      "documentation":"<p>This structure contains delivery configurations that apply only when the delivery destination resource is an S3 bucket.</p>"
     },
     "Scope":{
       "type":"string",
@@ -4436,7 +4685,7 @@
       "type":"string",
       "max":255,
       "min":1,
-      "pattern":"[\\w]*"
+      "pattern":"[\\w_-]*"
     },
     "ServiceQuotaExceededException":{
       "type":"structure",
@@ -4914,6 +5163,33 @@
           "shape":"SuppressionPeriod",
           "documentation":"<p>If you are temporarily suppressing an anomaly or pattern, use this structure to specify how long the suppression is to last.</p>"
         }
+      }
+    },
+    "UpdateDeliveryConfigurationRequest":{
+      "type":"structure",
+      "required":["id"],
+      "members":{
+        "id":{
+          "shape":"DeliveryId",
+          "documentation":"<p>The ID of the delivery to be updated by this request.</p>"
+        },
+        "recordFields":{
+          "shape":"RecordFields",
+          "documentation":"<p>The list of record fields to be delivered to the destination, in order. If the delivery’s log source has mandatory fields, they must be included in this list.</p>"
+        },
+        "fieldDelimiter":{
+          "shape":"FieldDelimiter",
+          "documentation":"<p>The field delimiter to use between record fields when the final output format of a delivery is in <code>Plain</code>, <code>W3C</code>, or <code>Raw</code> format.</p>"
+        },
+        "s3DeliveryConfiguration":{
+          "shape":"S3DeliveryConfiguration",
+          "documentation":"<p>This structure contains parameters that are valid only when the delivery’s delivery destination is an S3 bucket.</p>"
+        }
+      }
+    },
+    "UpdateDeliveryConfigurationResponse":{
+      "type":"structure",
+      "members":{
       }
     },
     "UpdateLogAnomalyDetectorRequest":{

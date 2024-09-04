@@ -2,6 +2,17 @@
 CHANGELOG
 =========
 
+1.34.12
+=======
+
+* api-change:``appsync``: Adds new logging levels (INFO and DEBUG) for additional log output control
+* api-change:``bedrock-agent``: Add support for user metadata inside PromptVariant.
+* api-change:``finspace``: Updates Finspace documentation for smaller instances.
+* api-change:``fis``: This release adds safety levers, a new mechanism to stop all running experiments and prevent new experiments from starting.
+* api-change:``logs``: Update to support new APIs for delivery of logs from AWS services.
+* api-change:``s3control``: Amazon Simple Storage Service /S3 Access Grants / Features : This release launches new Access Grants API - ListCallerAccessGrants.
+
+
 1.34.11
 =======
 

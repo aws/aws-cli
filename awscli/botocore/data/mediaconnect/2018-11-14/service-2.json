@@ -722,6 +722,48 @@
       ],
       "documentation": "Displays details of the flow's source stream. The response contains information about the contents of the stream and its programs."
     },
+    "DescribeFlowSourceThumbnail": {
+      "name": "DescribeFlowSourceThumbnail",
+      "http": {
+        "method": "GET",
+        "requestUri": "/v1/flows/{flowArn}/source-thumbnail",
+        "responseCode": 200
+      },
+      "input": {
+        "shape": "DescribeFlowSourceThumbnailRequest"
+      },
+      "output": {
+        "shape": "DescribeFlowSourceThumbnailResponse",
+        "documentation": "Flow source thumbnail successfully described."
+      },
+      "errors": [
+        {
+          "shape": "BadRequestException",
+          "documentation": "The request that you submitted is not valid."
+        },
+        {
+          "shape": "InternalServerErrorException",
+          "documentation": "AWS Elemental MediaConnect can't fulfill your request because it encountered an unexpected condition."
+        },
+        {
+          "shape": "ForbiddenException",
+          "documentation": "You don't have the required permissions to perform this operation."
+        },
+        {
+          "shape": "NotFoundException",
+          "documentation": "AWS Elemental MediaConnect did not find the resource that you specified in the request."
+        },
+        {
+          "shape": "ServiceUnavailableException",
+          "documentation": "AWS Elemental MediaConnect is currently unavailable. Try again later."
+        },
+        {
+          "shape": "TooManyRequestsException",
+          "documentation": "You have exceeded the service request rate limit for your AWS Elemental MediaConnect account."
+        }
+      ],
+      "documentation": "Displays the thumbnail details of a flow's source stream."
+    },
     "DescribeGateway": {
       "name": "DescribeGateway",
       "http": {
@@ -3146,6 +3188,10 @@
         "Maintenance": {
           "shape": "AddMaintenance",
           "locationName": "maintenance"
+        },
+        "SourceMonitoringConfig": {
+          "shape": "MonitoringConfig",
+          "locationName": "sourceMonitoringConfig"
         }
       },
       "documentation": "Creates a new flow. The request must include one source. The request optionally can include outputs (up to 50) and entitlements (up to 50).",
@@ -3418,6 +3464,29 @@
         "TransportMediaInfo": {
           "shape": "TransportMediaInfo",
           "locationName": "transportMediaInfo"
+        }
+      }
+    },
+    "DescribeFlowSourceThumbnailRequest": {
+      "type": "structure",
+      "members": {
+        "FlowArn": {
+          "shape": "__string",
+          "location": "uri",
+          "locationName": "flowArn",
+          "documentation": "The Amazon Resource Name (ARN) of the flow."
+        }
+      },
+      "required": [
+        "FlowArn"
+      ]
+    },
+    "DescribeFlowSourceThumbnailResponse": {
+      "type": "structure",
+      "members": {
+        "ThumbnailDetails": {
+          "shape": "ThumbnailDetails",
+          "locationName": "thumbnailDetails"
         }
       }
     },
@@ -3868,6 +3937,10 @@
         "Maintenance": {
           "shape": "Maintenance",
           "locationName": "maintenance"
+        },
+        "SourceMonitoringConfig": {
+          "shape": "MonitoringConfig",
+          "locationName": "sourceMonitoringConfig"
         }
       },
       "documentation": "The settings for a flow, including its source, outputs, and entitlements.",
@@ -5087,6 +5160,17 @@
         "Errors"
       ]
     },
+    "MonitoringConfig": {
+      "type": "structure",
+      "members": {
+        "ThumbnailState": {
+          "shape": "ThumbnailState",
+          "locationName": "thumbnailState",
+          "documentation": "The state of thumbnail monitoring."
+        }
+      },
+      "documentation": "The settings for source monitoring."
+    },
     "NetworkInterfaceType": {
       "type": "string",
       "enum": [
@@ -6093,6 +6177,48 @@
         "DENSITY"
       ]
     },
+    "ThumbnailDetails": {
+      "type": "structure",
+      "members": {
+        "FlowArn": {
+          "shape": "__string",
+          "locationName": "flowArn",
+          "documentation": "The ARN of the flow that DescribeFlowSourceThumbnail was performed on."
+        },
+        "Thumbnail": {
+          "shape": "__string",
+          "locationName": "thumbnail",
+          "documentation": "Thumbnail Base64 string."
+        },
+        "ThumbnailMessages": {
+          "shape": "__listOfMessageDetail",
+          "locationName": "thumbnailMessages",
+          "documentation": "Status code and messages about the flow source thumbnail."
+        },
+        "Timecode": {
+          "shape": "__string",
+          "locationName": "timecode",
+          "documentation": "Timecode of thumbnail."
+        },
+        "Timestamp": {
+          "shape": "__timestampIso8601",
+          "locationName": "timestamp",
+          "documentation": "The timestamp of when thumbnail was generated."
+        }
+      },
+      "documentation": "The details of the thumbnail, including thumbnail base64 string, timecode and the time when thumbnail was generated.",
+      "required": [
+        "ThumbnailMessages",
+        "FlowArn"
+      ]
+    },
+    "ThumbnailState": {
+      "type": "string",
+      "enum": [
+        "ENABLED",
+        "DISABLED"
+      ]
+    },
     "TooManyRequestsException": {
       "type": "structure",
       "members": {
@@ -6884,6 +7010,10 @@
         "Maintenance": {
           "shape": "UpdateMaintenance",
           "locationName": "maintenance"
+        },
+        "SourceMonitoringConfig": {
+          "shape": "MonitoringConfig",
+          "locationName": "sourceMonitoringConfig"
         }
       },
       "documentation": "A request to update flow.",

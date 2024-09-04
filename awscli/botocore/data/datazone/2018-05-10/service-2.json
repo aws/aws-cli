@@ -2901,6 +2901,10 @@
         "identifier"
       ],
       "members":{
+        "assetScopes":{
+          "shape":"AcceptedAssetScopes",
+          "documentation":"<p>The asset scopes of the accept subscription request.</p>"
+        },
         "decisionComment":{
           "shape":"DecisionComment",
           "documentation":"<p>A description that specifies the reason for accepting the specified subscription request.</p>"
@@ -2994,6 +2998,28 @@
       "member":{"shape":"SubscribedPrincipal"},
       "max":1,
       "min":1
+    },
+    "AcceptedAssetScope":{
+      "type":"structure",
+      "required":[
+        "assetId",
+        "filterIds"
+      ],
+      "members":{
+        "assetId":{
+          "shape":"AssetId",
+          "documentation":"<p>The asset ID of the accepted asset scope.</p>"
+        },
+        "filterIds":{
+          "shape":"FilterIds",
+          "documentation":"<p>The filter IDs of the accepted asset scope.</p>"
+        }
+      },
+      "documentation":"<p>The accepted asset scope.</p>"
+    },
+    "AcceptedAssetScopes":{
+      "type":"list",
+      "member":{"shape":"AcceptedAssetScope"}
     },
     "AccessDeniedException":{
       "type":"structure",
@@ -3497,6 +3523,33 @@
     "AssetRevisions":{
       "type":"list",
       "member":{"shape":"AssetRevision"}
+    },
+    "AssetScope":{
+      "type":"structure",
+      "required":[
+        "assetId",
+        "filterIds",
+        "status"
+      ],
+      "members":{
+        "assetId":{
+          "shape":"AssetId",
+          "documentation":"<p>The asset ID of the asset scope.</p>"
+        },
+        "errorMessage":{
+          "shape":"String",
+          "documentation":"<p>The error message of the asset scope.</p>"
+        },
+        "filterIds":{
+          "shape":"FilterIds",
+          "documentation":"<p>The filter IDs of the asset scope.</p>"
+        },
+        "status":{
+          "shape":"String",
+          "documentation":"<p>The status of the asset scope.</p>"
+        }
+      },
+      "documentation":"<p>The asset scope.</p>"
     },
     "AssetTargetNameMap":{
       "type":"structure",
@@ -8362,6 +8415,10 @@
     "FilterId":{
       "type":"string",
       "pattern":"^[a-zA-Z0-9_-]{1,36}$"
+    },
+    "FilterIds":{
+      "type":"list",
+      "member":{"shape":"FilterId"}
     },
     "FilterList":{
       "type":"list",
@@ -15637,6 +15694,10 @@
           "shape":"Revision",
           "documentation":"<p>The revision of the asset for which the subscription grant is created.</p>"
         },
+        "assetScope":{
+          "shape":"AssetScope",
+          "documentation":"<p>The asset scope of the subscribed asset.</p>"
+        },
         "failureCause":{
           "shape":"FailureCause",
           "documentation":"<p>The failure cause included in the details of the asset for which the subscription grant is created.</p>"
@@ -15663,6 +15724,10 @@
     "SubscribedAssetListing":{
       "type":"structure",
       "members":{
+        "assetScope":{
+          "shape":"AssetScope",
+          "documentation":"<p>The asset scope of the subscribed asset listing.</p>"
+        },
         "entityId":{
           "shape":"AssetId",
           "documentation":"<p>The identifier of the published asset for which the subscription grant is created.</p>"

@@ -339,6 +339,22 @@
       },
       "documentation":"<p>Describes the current Elastic Load Balancing resource limits for your Amazon Web Services account.</p> <p>For more information, see the following:</p> <ul> <li> <p> <a href=\"https://docs.aws.amazon.com/elasticloadbalancing/latest/application/load-balancer-limits.html\">Quotas for your Application Load Balancers</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/elasticloadbalancing/latest/network/load-balancer-limits.html\">Quotas for your Network Load Balancers</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/elasticloadbalancing/latest/gateway/quotas-limits.html\">Quotas for your Gateway Load Balancers</a> </p> </li> </ul>"
     },
+    "DescribeListenerAttributes":{
+      "name":"DescribeListenerAttributes",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DescribeListenerAttributesInput"},
+      "output":{
+        "shape":"DescribeListenerAttributesOutput",
+        "resultWrapper":"DescribeListenerAttributesResult"
+      },
+      "errors":[
+        {"shape":"ListenerNotFoundException"}
+      ],
+      "documentation":"<p>Describes the attributes for the specified listener.</p>"
+    },
     "DescribeListenerCertificates":{
       "name":"DescribeListenerCertificates",
       "http":{
@@ -641,6 +657,23 @@
         {"shape":"TrustStoreNotReadyException"}
       ],
       "documentation":"<p>Replaces the specified properties of the specified listener. Any properties that you do not specify remain unchanged.</p> <p>Changing the protocol from HTTPS to HTTP, or from TLS to TCP, removes the security policy and default certificate properties. If you change the protocol from HTTP to HTTPS, or from TCP to TLS, you must add the security policy and default certificate properties.</p> <p>To add an item to a list, remove an item from a list, or update an item in a list, you must provide the entire list. For example, to add an action, specify a list with the current actions plus the new action.</p>"
+    },
+    "ModifyListenerAttributes":{
+      "name":"ModifyListenerAttributes",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"ModifyListenerAttributesInput"},
+      "output":{
+        "shape":"ModifyListenerAttributesOutput",
+        "resultWrapper":"ModifyListenerAttributesResult"
+      },
+      "errors":[
+        {"shape":"ListenerNotFoundException"},
+        {"shape":"InvalidConfigurationRequestException"}
+      ],
+      "documentation":"<p>Modifies the specified attributes of the specified listener.</p>"
     },
     "ModifyLoadBalancerAttributes":{
       "name":"ModifyLoadBalancerAttributes",
@@ -1756,6 +1789,25 @@
         }
       }
     },
+    "DescribeListenerAttributesInput":{
+      "type":"structure",
+      "required":["ListenerArn"],
+      "members":{
+        "ListenerArn":{
+          "shape":"ListenerArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the listener.</p>"
+        }
+      }
+    },
+    "DescribeListenerAttributesOutput":{
+      "type":"structure",
+      "members":{
+        "Attributes":{
+          "shape":"ListenerAttributes",
+          "documentation":"<p>Information about the listener attributes.</p>"
+        }
+      }
+    },
     "DescribeListenerCertificatesInput":{
       "type":"structure",
       "required":["ListenerArn"],
@@ -2616,6 +2668,30 @@
       "type":"list",
       "member":{"shape":"ListenerArn"}
     },
+    "ListenerAttribute":{
+      "type":"structure",
+      "members":{
+        "Key":{
+          "shape":"ListenerAttributeKey",
+          "documentation":"<p>The name of the attribute.</p> <p>The following attribute is supported by Network Load Balancers, and Gateway Load Balancers.</p> <ul> <li> <p> <code>tcp.idle_timeout.seconds</code> - The tcp idle timeout value, in seconds. The valid range is 60-6000 seconds. The default is 350 seconds.</p> </li> </ul>"
+        },
+        "Value":{
+          "shape":"ListenerAttributeValue",
+          "documentation":"<p>The value of the attribute.</p>"
+        }
+      },
+      "documentation":"<p>Information about a listener attribute.</p>"
+    },
+    "ListenerAttributeKey":{
+      "type":"string",
+      "max":256,
+      "pattern":"^[a-zA-Z0-9._]+$"
+    },
+    "ListenerAttributeValue":{"type":"string"},
+    "ListenerAttributes":{
+      "type":"list",
+      "member":{"shape":"ListenerAttribute"}
+    },
     "ListenerNotFoundException":{
       "type":"structure",
       "members":{
@@ -2837,6 +2913,32 @@
       ]
     },
     "Mode":{"type":"string"},
+    "ModifyListenerAttributesInput":{
+      "type":"structure",
+      "required":[
+        "ListenerArn",
+        "Attributes"
+      ],
+      "members":{
+        "ListenerArn":{
+          "shape":"ListenerArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the listener.</p>"
+        },
+        "Attributes":{
+          "shape":"ListenerAttributes",
+          "documentation":"<p>The listener attributes.</p>"
+        }
+      }
+    },
+    "ModifyListenerAttributesOutput":{
+      "type":"structure",
+      "members":{
+        "Attributes":{
+          "shape":"ListenerAttributes",
+          "documentation":"<p>Information about the listener attributes.</p>"
+        }
+      }
+    },
     "ModifyListenerInput":{
       "type":"structure",
       "required":["ListenerArn"],
@@ -2950,7 +3052,7 @@
         },
         "Attributes":{
           "shape":"TargetGroupAttributes",
-          "documentation":"<p>The attributes.</p>"
+          "documentation":"<p>The target group attributes.</p>"
         }
       }
     },
@@ -2959,7 +3061,7 @@
       "members":{
         "Attributes":{
           "shape":"TargetGroupAttributes",
-          "documentation":"<p>Information about the attributes.</p>"
+          "documentation":"<p>Information about the target group attributes.</p>"
         }
       }
     },

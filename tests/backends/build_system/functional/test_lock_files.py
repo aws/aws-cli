@@ -165,4 +165,4 @@ def test_lock_files_are_up_to_date(tmpdir):
     }
 
     for regenerated_file, original_file in lockfile_mapping.items():
-        assert read_lock_file(regenerated_file) == read_lock_file(original_file), ('%s (regenerated) differs from %s (original)' % (regenerated_file, original_file))
+        assert read_lock_file(regenerated_file) == read_lock_file(original_file)

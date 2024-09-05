@@ -26,7 +26,7 @@
         {"shape":"ValidationException"},
         {"shape":"ThrottlingException"}
       ],
-      "documentation":"<p>Use this operation to retrieve one or more <i>service level objective (SLO) budget reports</i>.</p> <p>An <i>error budget</i> is the amount of time in unhealthy periods that your service can accumulate during an interval before your overall SLO budget health is breached and the SLO is considered to be unmet. For example, an SLO with a threshold of 99.95% and a monthly interval translates to an error budget of 21.9 minutes of downtime in a 30-day month.</p> <p>Budget reports include a health indicator, the attainment value, and remaining budget.</p> <p>For more information about SLO error budgets, see <a href=\"https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/CloudWatch-ServiceLevelObjectives.html#CloudWatch-ServiceLevelObjectives-concepts\"> SLO concepts</a>.</p>"
+      "documentation":"<p>Use this operation to retrieve one or more <i>service level objective (SLO) budget reports</i>.</p> <p>An <i>error budget</i> is the amount of time or requests in an unhealthy state that your service can accumulate during an interval before your overall SLO budget health is breached and the SLO is considered to be unmet. For example, an SLO with a threshold of 99.95% and a monthly interval translates to an error budget of 21.9 minutes of downtime in a 30-day month.</p> <p>Budget reports include a health indicator, the attainment value, and remaining budget.</p> <p>For more information about SLO error budgets, see <a href=\"https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/CloudWatch-ServiceLevelObjectives.html#CloudWatch-ServiceLevelObjectives-concepts\"> SLO concepts</a>.</p>"
     },
     "CreateServiceLevelObjective":{
       "name":"CreateServiceLevelObjective",
@@ -44,7 +44,7 @@
         {"shape":"ServiceQuotaExceededException"},
         {"shape":"ConflictException"}
       ],
-      "documentation":"<p>Creates a service level objective (SLO), which can help you ensure that your critical business operations are meeting customer expectations. Use SLOs to set and track specific target levels for the reliability and availability of your applications and services. SLOs use service level indicators (SLIs) to calculate whether the application is performing at the level that you want.</p> <p>Create an SLO to set a target for a service or operation’s availability or latency. CloudWatch measures this target frequently you can find whether it has been breached. </p> <p>When you create an SLO, you set an <i>attainment goal</i> for it. An <i>attainment goal</i> is the ratio of good periods that meet the threshold requirements to the total periods within the interval. For example, an attainment goal of 99.9% means that within your interval, you are targeting 99.9% of the periods to be in healthy state.</p> <p>After you have created an SLO, you can retrieve error budget reports for it. An <i>error budget</i> is the number of periods or amount of time that your service can accumulate during an interval before your overall SLO budget health is breached and the SLO is considered to be unmet. for example, an SLO with a threshold that 99.95% of requests must be completed under 2000ms every month translates to an error budget of 21.9 minutes of downtime per month.</p> <p>When you call this operation, Application Signals creates the <i>AWSServiceRoleForCloudWatchApplicationSignals</i> service-linked role, if it doesn't already exist in your account. This service- linked role has the following permissions:</p> <ul> <li> <p> <code>xray:GetServiceGraph</code> </p> </li> <li> <p> <code>logs:StartQuery</code> </p> </li> <li> <p> <code>logs:GetQueryResults</code> </p> </li> <li> <p> <code>cloudwatch:GetMetricData</code> </p> </li> <li> <p> <code>cloudwatch:ListMetrics</code> </p> </li> <li> <p> <code>tag:GetResources</code> </p> </li> <li> <p> <code>autoscaling:DescribeAutoScalingGroups</code> </p> </li> </ul> <p>You can easily set SLO targets for your applications that are discovered by Application Signals, using critical metrics such as latency and availability. You can also set SLOs against any CloudWatch metric or math expression that produces a time series.</p> <p>For more information about SLOs, see <a href=\"https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/CloudWatch-ServiceLevelObjectives.html\"> Service level objectives (SLOs)</a>. </p>"
+      "documentation":"<p>Creates a service level objective (SLO), which can help you ensure that your critical business operations are meeting customer expectations. Use SLOs to set and track specific target levels for the reliability and availability of your applications and services. SLOs use service level indicators (SLIs) to calculate whether the application is performing at the level that you want.</p> <p>Create an SLO to set a target for a service or operation’s availability or latency. CloudWatch measures this target frequently you can find whether it has been breached. </p> <p>The target performance quality that is defined for an SLO is the <i>attainment goal</i>.</p> <p>You can set SLO targets for your applications that are discovered by Application Signals, using critical metrics such as latency and availability. You can also set SLOs against any CloudWatch metric or math expression that produces a time series.</p> <p>When you create an SLO, you specify whether it is a <i>period-based SLO</i> or a <i>request-based SLO</i>. Each type of SLO has a different way of evaluating your application's performance against its attainment goal.</p> <ul> <li> <p>A <i>period-based SLO</i> uses defined <i>periods</i> of time within a specified total time interval. For each period of time, Application Signals determines whether the application met its goal. The attainment rate is calculated as the <code>number of good periods/number of total periods</code>.</p> <p>For example, for a period-based SLO, meeting an attainment goal of 99.9% means that within your interval, your application must meet its performance goal during at least 99.9% of the time periods.</p> </li> <li> <p>A <i>request-based SLO</i> doesn't use pre-defined periods of time. Instead, the SLO measures <code>number of good requests/number of total requests</code> during the interval. At any time, you can find the ratio of good requests to total requests for the interval up to the time stamp that you specify, and measure that ratio against the goal set in your SLO.</p> </li> </ul> <p>After you have created an SLO, you can retrieve error budget reports for it. An <i>error budget</i> is the amount of time or amount of requests that your application can be non-compliant with the SLO's goal, and still have your application meet the goal.</p> <ul> <li> <p>For a period-based SLO, the error budget starts at a number defined by the highest number of periods that can fail to meet the threshold, while still meeting the overall goal. The <i>remaining error budget</i> decreases with every failed period that is recorded. The error budget within one interval can never increase.</p> <p>For example, an SLO with a threshold that 99.95% of requests must be completed under 2000ms every month translates to an error budget of 21.9 minutes of downtime per month.</p> </li> <li> <p>For a request-based SLO, the remaining error budget is dynamic and can increase or decrease, depending on the ratio of good requests to total requests.</p> </li> </ul> <p>For more information about SLOs, see <a href=\"https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/CloudWatch-ServiceLevelObjectives.html\"> Service level objectives (SLOs)</a>. </p> <p>When you perform a <code>CreateServiceLevelObjective</code> operation, Application Signals creates the <i>AWSServiceRoleForCloudWatchApplicationSignals</i> service-linked role, if it doesn't already exist in your account. This service- linked role has the following permissions:</p> <ul> <li> <p> <code>xray:GetServiceGraph</code> </p> </li> <li> <p> <code>logs:StartQuery</code> </p> </li> <li> <p> <code>logs:GetQueryResults</code> </p> </li> <li> <p> <code>cloudwatch:GetMetricData</code> </p> </li> <li> <p> <code>cloudwatch:ListMetrics</code> </p> </li> <li> <p> <code>tag:GetResources</code> </p> </li> <li> <p> <code>autoscaling:DescribeAutoScalingGroups</code> </p> </li> </ul>"
     },
     "DeleteServiceLevelObjective":{
       "name":"DeleteServiceLevelObjective",
@@ -245,7 +245,7 @@
         {"shape":"ResourceNotFoundException"},
         {"shape":"ThrottlingException"}
       ],
-      "documentation":"<p>Updates an existing service level objective (SLO). If you omit parameters, the previous values of those parameters are retained. </p>"
+      "documentation":"<p>Updates an existing service level objective (SLO). If you omit parameters, the previous values of those parameters are retained. </p> <p>You cannot change from a period-based SLO to a request-based SLO, or change from a request-based SLO to a period-based SLO.</p>"
     }
   },
   "shapes":{
@@ -334,6 +334,10 @@
         }
       }
     },
+    "BudgetRequestsRemaining":{
+      "type":"integer",
+      "box":true
+    },
     "BudgetSecondsRemaining":{
       "type":"integer",
       "box":true
@@ -381,10 +385,7 @@
     },
     "CreateServiceLevelObjectiveInput":{
       "type":"structure",
-      "required":[
-        "Name",
-        "SliConfig"
-      ],
+      "required":["Name"],
       "members":{
         "Name":{
           "shape":"ServiceLevelObjectiveName",
@@ -396,11 +397,15 @@
         },
         "SliConfig":{
           "shape":"ServiceLevelIndicatorConfig",
-          "documentation":"<p>A structure that contains information about what service and what performance metric that this SLO will monitor.</p>"
+          "documentation":"<p>If this SLO is a period-based SLO, this structure defines the information about what performance metric this SLO will monitor.</p> <p>You can't specify both <code>RequestBasedSliConfig</code> and <code>SliConfig</code> in the same operation.</p>"
+        },
+        "RequestBasedSliConfig":{
+          "shape":"RequestBasedServiceLevelIndicatorConfig",
+          "documentation":"<p>If this SLO is a request-based SLO, this structure defines the information about what performance metric this SLO will monitor.</p> <p>You can't specify both <code>RequestBasedSliConfig</code> and <code>SliConfig</code> in the same operation.</p>"
         },
         "Goal":{
           "shape":"Goal",
-          "documentation":"<p>A structure that contains the attributes that determine the goal of the SLO. This includes the time period for evaluation and the attainment threshold.</p>"
+          "documentation":"<p>This structure contains the attributes that determine the goal of the SLO.</p>"
         },
         "Tags":{
           "shape":"TagList",
@@ -472,8 +477,17 @@
     "DurationUnit":{
       "type":"string",
       "enum":[
+        "MINUTE",
+        "HOUR",
         "DAY",
         "MONTH"
+      ]
+    },
+    "EvaluationType":{
+      "type":"string",
+      "enum":[
+        "PeriodBased",
+        "RequestBased"
       ]
     },
     "FaultDescription":{"type":"string"},
@@ -560,7 +574,7 @@
         },
         "AttainmentGoal":{
           "shape":"AttainmentGoal",
-          "documentation":"<p>The threshold that determines if the goal is being met. An <i>attainment goal</i> is the ratio of good periods that meet the threshold requirements to the total periods within the interval. For example, an attainment goal of 99.9% means that within your interval, you are targeting 99.9% of the periods to be in healthy state.</p> <p>If you omit this parameter, 99 is used to represent 99% as the attainment goal.</p>"
+          "documentation":"<p>The threshold that determines if the goal is being met.</p> <p>If this is a period-based SLO, the attainment goal is the percentage of good periods that meet the threshold requirements to the total periods within the interval. For example, an attainment goal of 99.9% means that within your interval, you are targeting 99.9% of the periods to be in healthy state.</p> <p>If this is a request-based SLO, the attainment goal is the percentage of requests that must be successful to meet the attainment goal.</p> <p>If you omit this parameter, 99 is used to represent 99% as the attainment goal.</p>"
         },
         "WarningThreshold":{
           "shape":"WarningThreshold",
@@ -992,7 +1006,7 @@
         },
         "AccountId":{
           "shape":"AccountId",
-          "documentation":"<p>The ID of the account where this metric is located. If you are performing this operatiion in a monitoring account, use this to specify which source account to retrieve this metric from.</p>"
+          "documentation":"<p>The ID of the account where this metric is located. If you are performing this operation in a monitoring account, use this to specify which source account to retrieve this metric from.</p>"
         }
       },
       "documentation":"<p>Use this structure to define a metric or metric math expression that you want to use as for a service level objective. </p> <p>Each <code>MetricDataQuery</code> in the <code>MetricDataQueries</code> array specifies either a metric to retrieve, or a metric math expression to be performed on retrieved metrics. A single <code>MetricDataQueries</code> array can include as many as 20 <code>MetricDataQuery</code> structures in the array. The 20 structures can include as many as 10 structures that contain a <code>MetricStat</code> parameter to retrieve a metric, and as many as 10 structures that contain the <code>Expression</code> parameter to perform a math expression. Of those <code>Expression</code> structures, exactly one must have true as the value for <code>ReturnData</code>. The result of this expression used for the SLO.</p> <p>For more information about metric math expressions, see <a href=\"https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/using-metric-math.html\">CloudWatchUse metric math</a>.</p> <p>Within each <code>MetricDataQuery</code> object, you must specify either <code>Expression</code> or <code>MetricStat</code> but not both.</p>"
@@ -1075,6 +1089,21 @@
       "type":"string",
       "pattern":"[A-Za-z0-9 -]+"
     },
+    "MonitoredRequestCountMetricDataQueries":{
+      "type":"structure",
+      "members":{
+        "GoodCountMetric":{
+          "shape":"MetricDataQueries",
+          "documentation":"<p>If you want to count \"good requests\" to determine the percentage of successful requests for this request-based SLO, specify the metric to use as \"good requests\" in this structure.</p>"
+        },
+        "BadCountMetric":{
+          "shape":"MetricDataQueries",
+          "documentation":"<p>If you want to count \"bad requests\" to determine the percentage of successful requests for this request-based SLO, specify the metric to use as \"bad requests\" in this structure.</p>"
+        }
+      },
+      "documentation":"<p>This structure defines the metric that is used as the \"good request\" or \"bad request\" value for a request-based SLO. This value observed for the metric defined in <code>TotalRequestCountMetric</code> is divided by the number found for <code>MonitoredRequestCountMetric</code> to determine the percentage of successful requests that this SLO tracks.</p>",
+      "union":true
+    },
     "Namespace":{
       "type":"string",
       "max":255,
@@ -1091,6 +1120,100 @@
       "type":"integer",
       "box":true,
       "min":1
+    },
+    "RequestBasedServiceLevelIndicator":{
+      "type":"structure",
+      "required":["RequestBasedSliMetric"],
+      "members":{
+        "RequestBasedSliMetric":{
+          "shape":"RequestBasedServiceLevelIndicatorMetric",
+          "documentation":"<p>A structure that contains information about the metric that the SLO monitors. </p>"
+        },
+        "MetricThreshold":{
+          "shape":"ServiceLevelIndicatorMetricThreshold",
+          "documentation":"<p>This value is the threshold that the observed metric values of the SLI metric are compared to.</p>"
+        },
+        "ComparisonOperator":{
+          "shape":"ServiceLevelIndicatorComparisonOperator",
+          "documentation":"<p>The arithmetic operation used when comparing the specified metric to the threshold.</p>"
+        }
+      },
+      "documentation":"<p>This structure contains information about the performance metric that a request-based SLO monitors.</p>"
+    },
+    "RequestBasedServiceLevelIndicatorConfig":{
+      "type":"structure",
+      "required":["RequestBasedSliMetricConfig"],
+      "members":{
+        "RequestBasedSliMetricConfig":{
+          "shape":"RequestBasedServiceLevelIndicatorMetricConfig",
+          "documentation":"<p>Use this structure to specify the metric to be used for the SLO.</p>"
+        },
+        "MetricThreshold":{
+          "shape":"ServiceLevelIndicatorMetricThreshold",
+          "documentation":"<p>The value that the SLI metric is compared to. This parameter is required if this SLO is tracking the <code>Latency</code> metric.</p>"
+        },
+        "ComparisonOperator":{
+          "shape":"ServiceLevelIndicatorComparisonOperator",
+          "documentation":"<p>The arithmetic operation to use when comparing the specified metric to the threshold. This parameter is required if this SLO is tracking the <code>Latency</code> metric.</p>"
+        }
+      },
+      "documentation":"<p>This structure specifies the information about the service and the performance metric that a request-based SLO is to monitor.</p>"
+    },
+    "RequestBasedServiceLevelIndicatorMetric":{
+      "type":"structure",
+      "required":[
+        "TotalRequestCountMetric",
+        "MonitoredRequestCountMetric"
+      ],
+      "members":{
+        "KeyAttributes":{
+          "shape":"Attributes",
+          "documentation":"<p>This is a string-to-string map that contains information about the type of object that this SLO is related to. It can include the following fields.</p> <ul> <li> <p> <code>Type</code> designates the type of object that this SLO is related to.</p> </li> <li> <p> <code>ResourceType</code> specifies the type of the resource. This field is used only when the value of the <code>Type</code> field is <code>Resource</code> or <code>AWS::Resource</code>.</p> </li> <li> <p> <code>Name</code> specifies the name of the object. This is used only if the value of the <code>Type</code> field is <code>Service</code>, <code>RemoteService</code>, or <code>AWS::Service</code>.</p> </li> <li> <p> <code>Identifier</code> identifies the resource objects of this resource. This is used only if the value of the <code>Type</code> field is <code>Resource</code> or <code>AWS::Resource</code>.</p> </li> <li> <p> <code>Environment</code> specifies the location where this object is hosted, or what it belongs to.</p> </li> </ul>"
+        },
+        "OperationName":{
+          "shape":"OperationName",
+          "documentation":"<p>If the SLO monitors a specific operation of the service, this field displays that operation name.</p>"
+        },
+        "MetricType":{
+          "shape":"ServiceLevelIndicatorMetricType",
+          "documentation":"<p>If the SLO monitors either the <code>LATENCY</code> or <code>AVAILABILITY</code> metric that Application Signals collects, this field displays which of those metrics is used.</p>"
+        },
+        "TotalRequestCountMetric":{
+          "shape":"MetricDataQueries",
+          "documentation":"<p>This structure defines the metric that is used as the \"total requests\" number for a request-based SLO. The number observed for this metric is divided by the number of \"good requests\" or \"bad requests\" that is observed for the metric defined in <code>MonitoredRequestCountMetric</code>.</p>"
+        },
+        "MonitoredRequestCountMetric":{
+          "shape":"MonitoredRequestCountMetricDataQueries",
+          "documentation":"<p>This structure defines the metric that is used as the \"good request\" or \"bad request\" value for a request-based SLO. This value observed for the metric defined in <code>TotalRequestCountMetric</code> is divided by the number found for <code>MonitoredRequestCountMetric</code> to determine the percentage of successful requests that this SLO tracks.</p>"
+        }
+      },
+      "documentation":"<p>This structure contains the information about the metric that is used for a request-based SLO.</p>"
+    },
+    "RequestBasedServiceLevelIndicatorMetricConfig":{
+      "type":"structure",
+      "members":{
+        "KeyAttributes":{
+          "shape":"Attributes",
+          "documentation":"<p>If this SLO is related to a metric collected by Application Signals, you must use this field to specify which service the SLO metric is related to. To do so, you must specify at least the <code>Type</code>, <code>Name</code>, and <code>Environment</code> attributes.</p> <p>This is a string-to-string map. It can include the following fields.</p> <ul> <li> <p> <code>Type</code> designates the type of object this is.</p> </li> <li> <p> <code>ResourceType</code> specifies the type of the resource. This field is used only when the value of the <code>Type</code> field is <code>Resource</code> or <code>AWS::Resource</code>.</p> </li> <li> <p> <code>Name</code> specifies the name of the object. This is used only if the value of the <code>Type</code> field is <code>Service</code>, <code>RemoteService</code>, or <code>AWS::Service</code>.</p> </li> <li> <p> <code>Identifier</code> identifies the resource objects of this resource. This is used only if the value of the <code>Type</code> field is <code>Resource</code> or <code>AWS::Resource</code>.</p> </li> <li> <p> <code>Environment</code> specifies the location where this object is hosted, or what it belongs to.</p> </li> </ul>"
+        },
+        "OperationName":{
+          "shape":"OperationName",
+          "documentation":"<p>If the SLO is to monitor a specific operation of the service, use this field to specify the name of that operation.</p>"
+        },
+        "MetricType":{
+          "shape":"ServiceLevelIndicatorMetricType",
+          "documentation":"<p>If the SLO is to monitor either the <code>LATENCY</code> or <code>AVAILABILITY</code> metric that Application Signals collects, use this field to specify which of those metrics is used.</p>"
+        },
+        "TotalRequestCountMetric":{
+          "shape":"MetricDataQueries",
+          "documentation":"<p>Use this structure to define the metric that you want to use as the \"total requests\" number for a request-based SLO. This result will be divided by the \"good request\" or \"bad request\" value defined in <code>MonitoredRequestCountMetric</code>.</p>"
+        },
+        "MonitoredRequestCountMetric":{
+          "shape":"MonitoredRequestCountMetricDataQueries",
+          "documentation":"<p>Use this structure to define the metric that you want to use as the \"good request\" or \"bad request\" value for a request-based SLO. This value observed for the metric defined in <code>TotalRequestCountMetric</code> will be divided by the number found for <code>MonitoredRequestCountMetric</code> to determine the percentage of successful requests that this SLO tracks.</p>"
+        }
+      },
+      "documentation":"<p>Use this structure to specify the information for the metric that a period-based SLO will monitor.</p>"
     },
     "ResourceId":{"type":"string"},
     "ResourceNotFoundException":{
@@ -1165,7 +1288,7 @@
         },
         "AttributeMaps":{
           "shape":"AttributeMaps",
-          "documentation":"<p>This structure contains one or more string-to-string maps that help identify this service. It can include <i>platform attributes</i>, <i>application attributes</i>, and <i>telemetry attributes</i>.</p> <p>Platform attributes contain information the service's platform.</p> <ul> <li> <p> <code>PlatformType</code> defines the hosted-in platform.</p> </li> <li> <p> <code>EKS.Cluster</code> is the name of the Amazon EKS cluster.</p> </li> <li> <p> <code>K8s.Cluster</code> is the name of the self-hosted Kubernetes cluster.</p> </li> <li> <p> <code>K8s.Namespace</code> is the name of the Kubernetes namespace in either Amazon EKS or Kubernetes clusters.</p> </li> <li> <p> <code>K8s.Workload</code> is the name of the Kubernetes workload in either Amazon EKS or Kubernetes clusters.</p> </li> <li> <p> <code>K8s.Node</code> is the name of the Kubernetes node in either Amazon EKS or Kubernetes clusters.</p> </li> <li> <p> <code>K8s.Pod</code> is the name of the Kubernetes pod in either Amazon EKS or Kubernetes clusters.</p> </li> <li> <p> <code>EC2.AutoScalingGroup</code> is the name of the Amazon EC2 Auto Scaling group.</p> </li> <li> <p> <code>EC2.InstanceId</code> is the ID of the Amazon EC2 instance.</p> </li> <li> <p> <code>Host</code> is the name of the host, for all platform types.</p> </li> </ul> <p>Applciation attributes contain information about the application.</p> <ul> <li> <p> <code>AWS.Application</code> is the application's name in Amazon Web Services Service Catalog AppRegistry.</p> </li> <li> <p> <code>AWS.Application.ARN</code> is the application's ARN in Amazon Web Services Service Catalog AppRegistry.</p> </li> </ul> <p>Telemetry attributes contain telemetry information.</p> <ul> <li> <p> <code>Telemetry.SDK</code> is the fingerprint of the OpenTelemetry SDK version for instrumented services.</p> </li> <li> <p> <code>Telemetry.Agent</code> is the fingerprint of the agent used to collect and send telemetry data.</p> </li> <li> <p> <code>Telemetry.Source</code> Specifies the point of application where the telemetry was collected or specifies what was used for the source of telemetry data.</p> </li> </ul>"
+          "documentation":"<p>This structure contains one or more string-to-string maps that help identify this service. It can include <i>platform attributes</i>, <i>application attributes</i>, and <i>telemetry attributes</i>.</p> <p>Platform attributes contain information the service's platform.</p> <ul> <li> <p> <code>PlatformType</code> defines the hosted-in platform.</p> </li> <li> <p> <code>EKS.Cluster</code> is the name of the Amazon EKS cluster.</p> </li> <li> <p> <code>K8s.Cluster</code> is the name of the self-hosted Kubernetes cluster.</p> </li> <li> <p> <code>K8s.Namespace</code> is the name of the Kubernetes namespace in either Amazon EKS or Kubernetes clusters.</p> </li> <li> <p> <code>K8s.Workload</code> is the name of the Kubernetes workload in either Amazon EKS or Kubernetes clusters.</p> </li> <li> <p> <code>K8s.Node</code> is the name of the Kubernetes node in either Amazon EKS or Kubernetes clusters.</p> </li> <li> <p> <code>K8s.Pod</code> is the name of the Kubernetes pod in either Amazon EKS or Kubernetes clusters.</p> </li> <li> <p> <code>EC2.AutoScalingGroup</code> is the name of the Amazon EC2 Auto Scaling group.</p> </li> <li> <p> <code>EC2.InstanceId</code> is the ID of the Amazon EC2 instance.</p> </li> <li> <p> <code>Host</code> is the name of the host, for all platform types.</p> </li> </ul> <p>Application attributes contain information about the application.</p> <ul> <li> <p> <code>AWS.Application</code> is the application's name in Amazon Web Services Service Catalog AppRegistry.</p> </li> <li> <p> <code>AWS.Application.ARN</code> is the application's ARN in Amazon Web Services Service Catalog AppRegistry.</p> </li> </ul> <p>Telemetry attributes contain telemetry information.</p> <ul> <li> <p> <code>Telemetry.SDK</code> is the fingerprint of the OpenTelemetry SDK version for instrumented services.</p> </li> <li> <p> <code>Telemetry.Agent</code> is the fingerprint of the agent used to collect and send telemetry data.</p> </li> <li> <p> <code>Telemetry.Source</code> Specifies the point of application where the telemetry was collected or specifies what was used for the source of telemetry data.</p> </li> </ul>"
         },
         "MetricReferences":{
           "shape":"MetricReferences",
@@ -1266,7 +1389,7 @@
           "documentation":"<p>The arithmetic operation used when comparing the specified metric to the threshold.</p>"
         }
       },
-      "documentation":"<p>This structure contains information about the performance metric that an SLO monitors.</p>"
+      "documentation":"<p>This structure contains information about the performance metric that a period-based SLO monitors.</p>"
     },
     "ServiceLevelIndicatorComparisonOperator":{
       "type":"string",
@@ -1291,14 +1414,14 @@
         },
         "MetricThreshold":{
           "shape":"ServiceLevelIndicatorMetricThreshold",
-          "documentation":"<p>The value that the SLI metric is compared to.</p>"
+          "documentation":"<p>This parameter is used only when a request-based SLO tracks the <code>Latency</code> metric. Specify the threshold value that the observed <code>Latency</code> metric values are to be compared to.</p>"
         },
         "ComparisonOperator":{
           "shape":"ServiceLevelIndicatorComparisonOperator",
           "documentation":"<p>The arithmetic operation to use when comparing the specified metric to the threshold.</p>"
         }
       },
-      "documentation":"<p>This structure specifies the information about the service and the performance metric that an SLO is to monitor.</p>"
+      "documentation":"<p>This structure specifies the information about the service and the performance metric that a period-based SLO is to monitor.</p>"
     },
     "ServiceLevelIndicatorMetric":{
       "type":"structure",
@@ -1321,7 +1444,7 @@
           "documentation":"<p>If this SLO monitors a CloudWatch metric or the result of a CloudWatch metric math expression, this structure includes the information about that metric or expression. </p>"
         }
       },
-      "documentation":"<p>This structure contains the information about the metric that is used for the SLO.</p>"
+      "documentation":"<p>This structure contains the information about the metric that is used for a period-based SLO.</p>"
     },
     "ServiceLevelIndicatorMetricConfig":{
       "type":"structure",
@@ -1351,7 +1474,7 @@
           "documentation":"<p>If this SLO monitors a CloudWatch metric or the result of a CloudWatch metric math expression, use this structure to specify that metric or expression. </p>"
         }
       },
-      "documentation":"<p>Use this structure to specify the information for the metric that the SLO will monitor.</p>"
+      "documentation":"<p>Use this structure to specify the information for the metric that a period-based SLO will monitor.</p>"
     },
     "ServiceLevelIndicatorMetricThreshold":{
       "type":"double",
@@ -1377,7 +1500,6 @@
         "Name",
         "CreatedTime",
         "LastUpdatedTime",
-        "Sli",
         "Goal"
       ],
       "members":{
@@ -1403,7 +1525,15 @@
         },
         "Sli":{
           "shape":"ServiceLevelIndicator",
-          "documentation":"<p>A structure containing information about the performance metric that this SLO monitors.</p>"
+          "documentation":"<p>A structure containing information about the performance metric that this SLO monitors, if this is a period-based SLO.</p>"
+        },
+        "RequestBasedSli":{
+          "shape":"RequestBasedServiceLevelIndicator",
+          "documentation":"<p>A structure containing information about the performance metric that this SLO monitors, if this is a request-based SLO.</p>"
+        },
+        "EvaluationType":{
+          "shape":"EvaluationType",
+          "documentation":"<p>Displays whether this is a period-based SLO or a request-based SLO.</p>"
         },
         "Goal":{"shape":"Goal"}
       },
@@ -1431,26 +1561,39 @@
           "shape":"ServiceLevelObjectiveName",
           "documentation":"<p>The name of the SLO that this report is for.</p>"
         },
+        "EvaluationType":{
+          "shape":"EvaluationType",
+          "documentation":"<p>Displays whether this budget report is for a period-based SLO or a request-based SLO.</p>"
+        },
         "BudgetStatus":{
           "shape":"ServiceLevelObjectiveBudgetStatus",
-          "documentation":"<p>The status of this SLO, as it relates to the error budget for the entire time interval.</p> <ul> <li> <p> <code>OK</code> means that the SLO had remaining budget above the warning threshold, as of the time that you specified in <code>TimeStamp</code>.</p> </li> <li> <p> <code>WARNING</code> means that the SLO's remaining budget was below the warning threshold, as of the time that you specified in <code>TimeStamp</code>.</p> </li> <li> <p> <code>BREACHED</code> means that the SLO's budget was exhausted, as of the time that you specified in <code>TimeStamp</code>.</p> </li> <li> <p> <code>INSUFFICIENT_DATA</code> means that the specifed start and end times were before the SLO was created, or that attainment data is missing.</p> </li> </ul>"
+          "documentation":"<p>The status of this SLO, as it relates to the error budget for the entire time interval.</p> <ul> <li> <p> <code>OK</code> means that the SLO had remaining budget above the warning threshold, as of the time that you specified in <code>TimeStamp</code>.</p> </li> <li> <p> <code>WARNING</code> means that the SLO's remaining budget was below the warning threshold, as of the time that you specified in <code>TimeStamp</code>.</p> </li> <li> <p> <code>BREACHED</code> means that the SLO's budget was exhausted, as of the time that you specified in <code>TimeStamp</code>.</p> </li> <li> <p> <code>INSUFFICIENT_DATA</code> means that the specified start and end times were before the SLO was created, or that attainment data is missing.</p> </li> </ul>"
         },
         "Attainment":{
           "shape":"Attainment",
-          "documentation":"<p>A number between 0 and 100 that represents the percentage of time periods that the service has attained the SLO's attainment goal, as of the time of the request.</p>"
+          "documentation":"<p>A number between 0 and 100 that represents the success percentage of your application compared to the goal set by the SLO.</p> <p>If this is a period-based SLO, the number is the percentage of time periods that the service has attained the SLO's attainment goal, as of the time of the request.</p> <p>If this is a request-based SLO, the number is the number of successful requests divided by the number of total requests, multiplied by 100, during the time range that you specified in your request.</p>"
         },
         "TotalBudgetSeconds":{
           "shape":"TotalBudgetSeconds",
-          "documentation":"<p>The total number of seconds in the error budget for the interval.</p>"
+          "documentation":"<p>The total number of seconds in the error budget for the interval. This field is included only if the SLO is a period-based SLO.</p>"
         },
         "BudgetSecondsRemaining":{
           "shape":"BudgetSecondsRemaining",
-          "documentation":"<p>The budget amount remaining before the SLO status becomes <code>BREACHING</code>, at the time specified in the <code>Timestemp</code> parameter of the request. If this value is negative, then the SLO is already in <code>BREACHING</code> status.</p>"
+          "documentation":"<p>The budget amount remaining before the SLO status becomes <code>BREACHING</code>, at the time specified in the <code>Timestemp</code> parameter of the request. If this value is negative, then the SLO is already in <code>BREACHING</code> status.</p> <p> This field is included only if the SLO is a period-based SLO.</p>"
+        },
+        "TotalBudgetRequests":{
+          "shape":"TotalBudgetRequests",
+          "documentation":"<p>This field is displayed only for request-based SLOs. It displays the total number of failed requests that can be tolerated during the time range between the start of the interval and the time stamp supplied in the budget report request. It is based on the total number of requests that occurred, and the percentage specified in the attainment goal. If the number of failed requests matches this number or is higher, then this SLO is currently breaching.</p> <p>This number can go up and down between reports with different time stamps, based on both how many total requests occur.</p>"
+        },
+        "BudgetRequestsRemaining":{
+          "shape":"BudgetRequestsRemaining",
+          "documentation":"<p>This field is displayed only for request-based SLOs. It displays the number of failed requests that can be tolerated before any more successful requests occur, and still have the application meet its SLO goal.</p> <p>This number can go up and down between different reports, based on both how many successful requests and how many failed requests occur in that time.</p>"
         },
         "Sli":{
           "shape":"ServiceLevelIndicator",
           "documentation":"<p>A structure that contains information about the performance metric that this SLO monitors.</p>"
         },
+        "RequestBasedSli":{"shape":"RequestBasedServiceLevelIndicator"},
         "Goal":{"shape":"Goal"}
       },
       "documentation":"<p>A structure containing an SLO budget report that you have requested.</p>"
@@ -1613,14 +1756,14 @@
         },
         "AttributeMaps":{
           "shape":"AttributeMaps",
-          "documentation":"<p>This structure contains one or more string-to-string maps that help identify this service. It can include <i>platform attributes</i>, <i>application attributes</i>, and <i>telemetry attributes</i>.</p> <p>Platform attributes contain information the service's platform.</p> <ul> <li> <p> <code>PlatformType</code> defines the hosted-in platform.</p> </li> <li> <p> <code>EKS.Cluster</code> is the name of the Amazon EKS cluster.</p> </li> <li> <p> <code>K8s.Cluster</code> is the name of the self-hosted Kubernetes cluster.</p> </li> <li> <p> <code>K8s.Namespace</code> is the name of the Kubernetes namespace in either Amazon EKS or Kubernetes clusters.</p> </li> <li> <p> <code>K8s.Workload</code> is the name of the Kubernetes workload in either Amazon EKS or Kubernetes clusters.</p> </li> <li> <p> <code>K8s.Node</code> is the name of the Kubernetes node in either Amazon EKS or Kubernetes clusters.</p> </li> <li> <p> <code>K8s.Pod</code> is the name of the Kubernetes pod in either Amazon EKS or Kubernetes clusters.</p> </li> <li> <p> <code>EC2.AutoScalingGroup</code> is the name of the Amazon EC2 Auto Scaling group.</p> </li> <li> <p> <code>EC2.InstanceId</code> is the ID of the Amazon EC2 instance.</p> </li> <li> <p> <code>Host</code> is the name of the host, for all platform types.</p> </li> </ul> <p>Applciation attributes contain information about the application.</p> <ul> <li> <p> <code>AWS.Application</code> is the application's name in Amazon Web Services Service Catalog AppRegistry.</p> </li> <li> <p> <code>AWS.Application.ARN</code> is the application's ARN in Amazon Web Services Service Catalog AppRegistry.</p> </li> </ul> <p>Telemetry attributes contain telemetry information.</p> <ul> <li> <p> <code>Telemetry.SDK</code> is the fingerprint of the OpenTelemetry SDK version for instrumented services.</p> </li> <li> <p> <code>Telemetry.Agent</code> is the fingerprint of the agent used to collect and send telemetry data.</p> </li> <li> <p> <code>Telemetry.Source</code> Specifies the point of application where the telemetry was collected or specifies what was used for the source of telemetry data.</p> </li> </ul>"
+          "documentation":"<p>This structure contains one or more string-to-string maps that help identify this service. It can include <i>platform attributes</i>, <i>application attributes</i>, and <i>telemetry attributes</i>.</p> <p>Platform attributes contain information the service's platform.</p> <ul> <li> <p> <code>PlatformType</code> defines the hosted-in platform.</p> </li> <li> <p> <code>EKS.Cluster</code> is the name of the Amazon EKS cluster.</p> </li> <li> <p> <code>K8s.Cluster</code> is the name of the self-hosted Kubernetes cluster.</p> </li> <li> <p> <code>K8s.Namespace</code> is the name of the Kubernetes namespace in either Amazon EKS or Kubernetes clusters.</p> </li> <li> <p> <code>K8s.Workload</code> is the name of the Kubernetes workload in either Amazon EKS or Kubernetes clusters.</p> </li> <li> <p> <code>K8s.Node</code> is the name of the Kubernetes node in either Amazon EKS or Kubernetes clusters.</p> </li> <li> <p> <code>K8s.Pod</code> is the name of the Kubernetes pod in either Amazon EKS or Kubernetes clusters.</p> </li> <li> <p> <code>EC2.AutoScalingGroup</code> is the name of the Amazon EC2 Auto Scaling group.</p> </li> <li> <p> <code>EC2.InstanceId</code> is the ID of the Amazon EC2 instance.</p> </li> <li> <p> <code>Host</code> is the name of the host, for all platform types.</p> </li> </ul> <p>Application attributes contain information about the application.</p> <ul> <li> <p> <code>AWS.Application</code> is the application's name in Amazon Web Services Service Catalog AppRegistry.</p> </li> <li> <p> <code>AWS.Application.ARN</code> is the application's ARN in Amazon Web Services Service Catalog AppRegistry.</p> </li> </ul> <p>Telemetry attributes contain telemetry information.</p> <ul> <li> <p> <code>Telemetry.SDK</code> is the fingerprint of the OpenTelemetry SDK version for instrumented services.</p> </li> <li> <p> <code>Telemetry.Agent</code> is the fingerprint of the agent used to collect and send telemetry data.</p> </li> <li> <p> <code>Telemetry.Source</code> Specifies the point of application where the telemetry was collected or specifies what was used for the source of telemetry data.</p> </li> </ul>"
         },
         "MetricReferences":{
           "shape":"MetricReferences",
           "documentation":"<p>An array of structures that each contain information about one metric associated with this service.</p>"
         }
       },
-      "documentation":"<p>This structure contains information about one of your services that was discoverd by Application Signals</p>"
+      "documentation":"<p>This structure contains information about one of your services that was discovered by Application Signals</p>"
     },
     "StandardUnit":{
       "type":"string",
@@ -1742,6 +1885,10 @@
       "exception":true
     },
     "Timestamp":{"type":"timestamp"},
+    "TotalBudgetRequests":{
+      "type":"integer",
+      "box":true
+    },
     "TotalBudgetSeconds":{
       "type":"integer",
       "box":true
@@ -1784,7 +1931,11 @@
         },
         "SliConfig":{
           "shape":"ServiceLevelIndicatorConfig",
-          "documentation":"<p>A structure that contains information about what performance metric this SLO will monitor.</p>"
+          "documentation":"<p>If this SLO is a period-based SLO, this structure defines the information about what performance metric this SLO will monitor.</p>"
+        },
+        "RequestBasedSliConfig":{
+          "shape":"RequestBasedServiceLevelIndicatorConfig",
+          "documentation":"<p>If this SLO is a request-based SLO, this structure defines the information about what performance metric this SLO will monitor.</p> <p>You can't specify both <code>SliConfig</code> and <code>RequestBasedSliConfig</code> in the same operation.</p>"
         },
         "Goal":{
           "shape":"Goal",

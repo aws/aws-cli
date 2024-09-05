@@ -3,7 +3,7 @@ import os
 from utils import cd, bin_path, run, virtualenv_enabled
 
 INSTALL_ARGS = "--no-build-isolation --no-cache-dir --no-index --prefer-binary "
-PINNED_PIP_VERSION = '24.0'
+PINNED_PIP_VERSION = '24.1.1'
 SETUP_DEPS = ("setuptools-", "setuptools_scm", "wheel", "hatchling")
 
 

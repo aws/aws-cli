@@ -341,7 +341,7 @@ class PageArgument(BaseCLIArgument):
     def _check_and_warn_negative_max_items(self, value):
         if int(value) <= 0:
             uni_print(
-                "warning: Non-positive values for --max-items are unsupported and may yield undefined behavior.\n",
+                "warning: Non-positive values for --max-items may result in undefined behavior.\n",
                 sys.stderr)
 
     def add_to_params(self, parameters, value):

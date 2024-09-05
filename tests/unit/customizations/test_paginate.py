@@ -23,6 +23,7 @@ from awscli.help import OperationHelpCommand, OperationDocumentEventHandler
 from awscli.customizations import paginate
 from awscli.customizations.exceptions import ParamValidationError
 
+
 class TestPaginateBase(unittest.TestCase):
 
     def setUp(self):

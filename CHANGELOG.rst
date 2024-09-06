@@ -2,6 +2,12 @@
 CHANGELOG
 =========
 
+2.17.46
+=======
+
+* api-change:``qapps``: Adds UpdateLibraryItemMetadata api to change status of app for admin verification feature and returns isVerified field in any api returning the app or library item.
+
+
 2.17.45
 =======
 

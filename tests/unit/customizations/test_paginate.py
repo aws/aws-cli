@@ -370,9 +370,9 @@ class TestNonPositiveIntWarnings(TestPaginateBase):
     def test_zero_raises_warning(self):
         with contextlib.redirect_stderr(self._stderr):
             self._page_arg.add_to_params({}, 0)
-            self.assertIn('Non-positive values for --max-items are unsupported', self._stderr.getvalue())
+            self.assertIn('Non-positive values for --max-items may result in undefined behavior', self._stderr.getvalue())
 
     def test_negative_integer_raises_warning(self):
         with contextlib.redirect_stderr(self._stderr):
             self._page_arg.add_to_params({}, -1)
-            self.assertIn('Non-positive values for --max-items are unsupported', self._stderr.getvalue())
+            self.assertIn('Non-positive values for --max-items may result in undefined behavior', self._stderr.getvalue())

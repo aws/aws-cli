@@ -2,6 +2,17 @@
 CHANGELOG
 =========
 
+1.34.15
+=======
+
+* api-change:``dynamodb``: Doc-only update for DynamoDB. Added information about async behavior for TagResource and UntagResource APIs and updated the description of ResourceInUseException.
+* api-change:``elbv2``: Add paginators for the ELBv2 DescribeListenerCertificates and DescribeRules APIs. Fix broken waiter for the ELBv2 DescribeLoadBalancers API.
+* api-change:``ivs-realtime``: IVS Real-Time now offers customers the ability to broadcast to Stages using RTMP(S).
+* api-change:``kafka``: Amazon MSK Replicator can now replicate data to identically named topics between MSK clusters within the same AWS Region or across different AWS Regions.
+* api-change:``sagemaker``: Amazon Sagemaker supports orchestrating SageMaker HyperPod clusters with Amazon EKS
+* api-change:``sagemaker-runtime``: AWS SageMaker Runtime feature: Add sticky routing to support stateful inference models.
+
+
 1.34.14
 =======
 

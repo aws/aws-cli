@@ -93,6 +93,24 @@ class Push(BasicCommand):
                 'current directory is used.'
             )
         },
+                {
+            'name': 'preserve-symlinks',
+            'action': 'store_true',
+            'default': False,
+            'group_name': 'preserve-symlinks',
+            'help_text': (
+                'Optional. Set the --preserve-symlinks flag to preserve symlinks '
+                'when building your deployment archive; otherwise, set the '
+                '--no-preserve-symlinks flag (the default) to resolve symlinks '
+                'to their contents and include contents directly in the archive.'
+            )
+        },
+        {
+            'name': 'no-preserve-symlinks',
+            'action': 'store_true',
+            'default': False,
+            'group_name': 'preserve-symlinks'
+        },
         {
             'name': 'description',
             'synopsis': '--description <description>',
@@ -127,6 +145,12 @@ class Push(BasicCommand):
                 'You cannot specify both --ignore-hidden-files and '
                 '--no-ignore-hidden-files.'
             )
+            if parsed_args.preserve_symlinks \
+                    and parsed_args.no_preserve_symlinks:
+                raise RuntimeError(
+                    'You cannot specify both --preserve-symlinks and '
+                    '--no-preserve-symlinks.'
+                )
         if not parsed_args.description:
             parsed_args.description = (
                 'Uploaded by AWS CLI {0} UTC'.format(
@@ -137,7 +161,8 @@ class Push(BasicCommand):
     def _push(self, params):
         with self._compress(
                 params.source,
-                params.ignore_hidden_files
+                params.ignore_hidden_files,
+                params.preserve_symlinks
         ) as bundle:
             try:
                 upload_response = self._upload_to_s3(params, bundle)
@@ -179,7 +204,7 @@ class Push(BasicCommand):
         )
 
     @contextlib.contextmanager
-    def _compress(self, source, ignore_hidden_files=False):
+    def _compress(self, source, ignore_hidden_files=False, preserve_symlinks=False):
         source_path = os.path.abspath(source)
         appspec_path = os.path.sep.join([source_path, 'appspec.yml'])
         with tempfile.TemporaryFile('w+b') as tf:
@@ -199,6 +224,16 @@ class Push(BasicCommand):
                         if filename == appspec_path:
                             contains_appspec = True
                         zf.write(filename, arcname, ZIP_COMPRESSION_MODE)
+                        if preserve_symlinks and os.path.islink(filename):
+                            # Adapted from https://gist.github.com/kgn/610907
+                            # http://www.mail-archive.com/python-list@python.org/msg34223.html
+                            zip_info = zipfile.ZipInfo(arcname)
+                            zip_info.create_system = 3
+                            # long type of hex val of '0xA1ED0000L', say, symlink attr magic...
+                            zip_info.external_attr = 2716663808
+                            zf.writestr(zip_info, os.readlink(filename))
+                        else:
+                            zf.write(filename, arcname, ZIP_COMPRESSION_MODE)                        
                 if not contains_appspec:
                     raise RuntimeError(
                         '{0} was not found'.format(appspec_path)

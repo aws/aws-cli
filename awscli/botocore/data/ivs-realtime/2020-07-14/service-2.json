@@ -3,8 +3,8 @@
   "metadata":{
     "apiVersion":"2020-07-14",
     "endpointPrefix":"ivsrealtime",
+    "jsonVersion":"1.1",
     "protocol":"rest-json",
-    "protocols":["rest-json"],
     "serviceAbbreviation":"ivsrealtime",
     "serviceFullName":"Amazon Interactive Video Service RealTime",
     "serviceId":"IVS RealTime",
@@ -32,6 +32,23 @@
         {"shape":"PendingVerification"}
       ],
       "documentation":"<p>Creates an EncoderConfiguration object.</p>"
+    },
+    "CreateIngestConfiguration":{
+      "name":"CreateIngestConfiguration",
+      "http":{
+        "method":"POST",
+        "requestUri":"/CreateIngestConfiguration",
+        "responseCode":200
+      },
+      "input":{"shape":"CreateIngestConfigurationRequest"},
+      "output":{"shape":"CreateIngestConfigurationResponse"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ServiceQuotaExceededException"},
+        {"shape":"PendingVerification"}
+      ],
+      "documentation":"<p>Creates a new IngestConfiguration resource, used to specify the ingest protocol for a stage.</p>"
     },
     "CreateParticipantToken":{
       "name":"CreateParticipantToken",
@@ -107,6 +124,24 @@
       ],
       "documentation":"<p>Deletes an EncoderConfiguration resource. Ensures that no Compositions are using this template; otherwise, returns an error.</p>"
     },
+    "DeleteIngestConfiguration":{
+      "name":"DeleteIngestConfiguration",
+      "http":{
+        "method":"POST",
+        "requestUri":"/DeleteIngestConfiguration",
+        "responseCode":200
+      },
+      "input":{"shape":"DeleteIngestConfigurationRequest"},
+      "output":{"shape":"DeleteIngestConfigurationResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ConflictException"},
+        {"shape":"PendingVerification"}
+      ],
+      "documentation":"<p>Deletes a specified IngestConfiguration, so it can no longer be used to broadcast. An IngestConfiguration cannot be deleted if the publisher is actively streaming to a stage, unless <code>force</code> is set to <code>true</code>.</p>"
+    },
     "DeletePublicKey":{
       "name":"DeletePublicKey",
       "http":{
@@ -141,7 +176,7 @@
         {"shape":"ConflictException"},
         {"shape":"PendingVerification"}
       ],
-      "documentation":"<p>Shuts down and deletes the specified stage (disconnecting all participants).</p>"
+      "documentation":"<p>Shuts down and deletes the specified stage (disconnecting all participants). This operation also removes the <code>stageArn</code> from the associated <a>IngestConfiguration</a>, if there are participants using the IngestConfiguration to publish to the stage.</p>"
     },
     "DeleteStorageConfiguration":{
       "name":"DeleteStorageConfiguration",
@@ -177,7 +212,7 @@
         {"shape":"AccessDeniedException"},
         {"shape":"PendingVerification"}
       ],
-      "documentation":"<p>Disconnects a specified participant and revokes the participant permanently from a specified stage.</p>"
+      "documentation":"<p>Disconnects a specified participant from a specified stage. If the participant is publishing using an <a>IngestConfiguration</a>, DisconnectParticipant also updates the <code>stageArn</code> in the IngestConfiguration to be an empty string.</p>"
     },
     "GetComposition":{
       "name":"GetComposition",
@@ -216,6 +251,22 @@
         {"shape":"ConflictException"}
       ],
       "documentation":"<p>Gets information about the specified EncoderConfiguration resource. </p>"
+    },
+    "GetIngestConfiguration":{
+      "name":"GetIngestConfiguration",
+      "http":{
+        "method":"POST",
+        "requestUri":"/GetIngestConfiguration",
+        "responseCode":200
+      },
+      "input":{"shape":"GetIngestConfigurationRequest"},
+      "output":{"shape":"GetIngestConfigurationResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Gets information about the specified IngestConfiguration.</p>"
     },
     "GetParticipant":{
       "name":"GetParticipant",
@@ -354,6 +405,21 @@
       ],
       "documentation":"<p>Gets summary information about all EncoderConfigurations in your account, in the AWS region where the API request is processed.</p>"
     },
+    "ListIngestConfigurations":{
+      "name":"ListIngestConfigurations",
+      "http":{
+        "method":"POST",
+        "requestUri":"/ListIngestConfigurations",
+        "responseCode":200
+      },
+      "input":{"shape":"ListIngestConfigurationsRequest"},
+      "output":{"shape":"ListIngestConfigurationsResponse"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Lists all IngestConfigurations in your account, in the AWS region where the API request is processed.</p>"
+    },
     "ListParticipantEvents":{
       "name":"ListParticipantEvents",
       "http":{
@@ -482,7 +548,7 @@
         {"shape":"ConflictException"},
         {"shape":"PendingVerification"}
       ],
-      "documentation":"<p>Starts a Composition from a stage based on the configuration provided in the request.</p> <p>A Composition is an ephemeral resource that exists after this endpoint returns successfully. Composition stops and the resource is deleted:</p> <ul> <li> <p>When <a>StopComposition</a> is called.</p> </li> <li> <p>After a 1-minute timeout, when all participants are disconnected from the stage.</p> </li> <li> <p>After a 1-minute timeout, if there are no participants in the stage when StartComposition is called.</p> </li> <li> <p>When broadcasting to the IVS channel fails and all retries are exhausted.</p> </li> <li> <p>When broadcasting is disconnected and all attempts to reconnect are exhausted.</p> </li> </ul>"
+      "documentation":"<p>Starts a Composition from a stage based on the configuration provided in the request.</p> <p>A Composition is an ephemeral resource that exists after this operation returns successfully. Composition stops and the resource is deleted:</p> <ul> <li> <p>When <a>StopComposition</a> is called.</p> </li> <li> <p>After a 1-minute timeout, when all participants are disconnected from the stage.</p> </li> <li> <p>After a 1-minute timeout, if there are no participants in the stage when StartComposition is called.</p> </li> <li> <p>When broadcasting to the IVS channel fails and all retries are exhausted.</p> </li> <li> <p>When broadcasting is disconnected and all attempts to reconnect are exhausted.</p> </li> </ul>"
     },
     "StopComposition":{
       "name":"StopComposition",
@@ -535,6 +601,24 @@
       ],
       "documentation":"<p>Removes tags from the resource with the specified ARN.</p>",
       "idempotent":true
+    },
+    "UpdateIngestConfiguration":{
+      "name":"UpdateIngestConfiguration",
+      "http":{
+        "method":"POST",
+        "requestUri":"/UpdateIngestConfiguration",
+        "responseCode":200
+      },
+      "input":{"shape":"UpdateIngestConfigurationRequest"},
+      "output":{"shape":"UpdateIngestConfigurationResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ConflictException"},
+        {"shape":"PendingVerification"}
+      ],
+      "documentation":"<p>Updates a specified IngestConfiguration. Only the stage ARN attached to the IngestConfiguration can be updated. An IngestConfiguration that is active cannot be updated.</p>"
     },
     "UpdateStage":{
       "name":"UpdateStage",
@@ -605,6 +689,7 @@
       "max":8500000,
       "min":1
     },
+    "Boolean":{"type":"boolean"},
     "ChannelArn":{
       "type":"string",
       "max":128,
@@ -658,7 +743,7 @@
         },
         "tags":{
           "shape":"Tags",
-          "documentation":"<p>Tags attached to the resource. Array of maps, each of the form <code>string:string (key:value)</code>. See <a href=\"https://docs.aws.amazon.com/general/latest/gr/aws_tagging.html\">Tagging AWS Resources</a> for details, including restrictions that apply to tags and \"Tag naming limits and requirements\"; Amazon IVS has no constraints on tags beyond what is documented there.</p>"
+          "documentation":"<p>Tags attached to the resource. Array of maps, each of the form <code>string:string (key:value)</code>. See <a href=\"https://docs.aws.amazon.com/tag-editor/latest/userguide/best-practices-and-strats.html\">Best practices and strategies</a> in <i>Tagging AWS Resources and Tag Editor</i> for details, including restrictions that apply to tags and \"Tag naming limits and requirements\"; Amazon IVS has no constraints on tags beyond what is documented there.</p>"
         },
         "startTime":{
           "shape":"Time",
@@ -720,7 +805,7 @@
         },
         "tags":{
           "shape":"Tags",
-          "documentation":"<p>Tags attached to the resource. Array of maps, each of the form <code>string:string (key:value)</code>. See <a href=\"https://docs.aws.amazon.com/general/latest/gr/aws_tagging.html\">Tagging AWS Resources</a> for details, including restrictions that apply to tags and \"Tag naming limits and requirements\"; Amazon IVS has no constraints on tags beyond what is documented there.</p>"
+          "documentation":"<p>Tags attached to the resource. Array of maps, each of the form <code>string:string (key:value)</code>. See <a href=\"https://docs.aws.amazon.com/tag-editor/latest/userguide/best-practices-and-strats.html\">Best practices and strategies</a> in <i>Tagging AWS Resources and Tag Editor</i> for details, including restrictions that apply to tags and \"Tag naming limits and requirements\"; Amazon IVS has no constraints on tags beyond what is documented there.</p>"
         },
         "startTime":{
           "shape":"Time",
@@ -765,7 +850,7 @@
         },
         "tags":{
           "shape":"Tags",
-          "documentation":"<p>Tags attached to the resource. Array of maps, each of the form <code>string:string (key:value)</code>. See <a href=\"https://docs.aws.amazon.com/general/latest/gr/aws_tagging.html\">Tagging AWS Resources</a> for details, including restrictions that apply to tags and \"Tag naming limits and requirements\"; Amazon IVS has no constraints on tags beyond what is documented there.</p>"
+          "documentation":"<p>Tags attached to the resource. Array of maps, each of the form <code>string:string (key:value)</code>. See <a href=\"https://docs.aws.amazon.com/tag-editor/latest/userguide/best-practices-and-strats.html\">Best practices and strategies</a> in <i>Tagging AWS Resources and Tag Editor</i> for details, including restrictions that apply to tags and \"Tag naming limits and requirements\"; Amazon IVS has no constraints on tags beyond what is documented there.</p>"
         }
       }
     },
@@ -775,6 +860,49 @@
         "encoderConfiguration":{
           "shape":"EncoderConfiguration",
           "documentation":"<p>The EncoderConfiguration that was created.</p>"
+        }
+      }
+    },
+    "CreateIngestConfigurationRequest":{
+      "type":"structure",
+      "required":["ingestProtocol"],
+      "members":{
+        "name":{
+          "shape":"IngestConfigurationName",
+          "documentation":"<p>Optional name that can be specified for the IngestConfiguration being created.</p>"
+        },
+        "stageArn":{
+          "shape":"IngestConfigurationStageArn",
+          "documentation":"<p>ARN of the stage with which the IngestConfiguration is associated.</p>"
+        },
+        "userId":{
+          "shape":"UserId",
+          "documentation":"<p>Customer-assigned name to help identify the participant using the IngestConfiguration; this can be used to link a participant to a user in the customer’s own systems. This can be any UTF-8 encoded text. <i>This field is exposed to all stage participants and should not be used for personally identifying, confidential, or sensitive information.</i> </p>"
+        },
+        "attributes":{
+          "shape":"ParticipantAttributes",
+          "documentation":"<p>Application-provided attributes to store in the IngestConfiguration and attach to a stage. Map keys and values can contain UTF-8 encoded text. The maximum length of this field is 1 KB total. <i>This field is exposed to all stage participants and should not be used for personally identifying, confidential, or sensitive information.</i> </p>"
+        },
+        "ingestProtocol":{
+          "shape":"IngestProtocol",
+          "documentation":"<p>Type of ingest protocol that the user employs to broadcast. If this is set to <code>RTMP</code>, <code>insecureIngest</code> must be set to <code>true</code>.</p>"
+        },
+        "insecureIngest":{
+          "shape":"InsecureIngest",
+          "documentation":"<p>Whether the stage allows insecure RTMP ingest. This must be set to <code>true</code>, if <code>ingestProtocol</code> is set to <code>RTMP</code>. Default: <code>false</code>. </p>"
+        },
+        "tags":{
+          "shape":"Tags",
+          "documentation":"<p>Tags attached to the resource. Array of maps, each of the form <code>string:string (key:value)</code>. See <a href=\"https://docs.aws.amazon.com/tag-editor/latest/userguide/best-practices-and-strats.html\">Best practices and strategies</a> in <i>Tagging AWS Resources and Tag Editor</i> for details, including restrictions that apply to tags and \"Tag naming limits and requirements\"; Amazon IVS has no constraints on tags beyond what is documented there.</p>"
+        }
+      }
+    },
+    "CreateIngestConfigurationResponse":{
+      "type":"structure",
+      "members":{
+        "ingestConfiguration":{
+          "shape":"IngestConfiguration",
+          "documentation":"<p>The IngestConfiguration that was created.</p>"
         }
       }
     },
@@ -826,7 +954,7 @@
         },
         "tags":{
           "shape":"Tags",
-          "documentation":"<p>Tags attached to the resource. Array of maps, each of the form <code>string:string (key:value)</code>. See <a href=\"https://docs.aws.amazon.com/general/latest/gr/aws_tagging.html\">Tagging AWS Resources</a> for details, including restrictions that apply to tags and \"Tag naming limits and requirements\"; Amazon IVS has no constraints on tags beyond what is documented there. </p>"
+          "documentation":"<p>Tags attached to the resource. Array of maps, each of the form <code>string:string (key:value)</code>. See <a href=\"https://docs.aws.amazon.com/tag-editor/latest/userguide/best-practices-and-strats.html\">Best practices and strategies</a> in <i>Tagging AWS Resources and Tag Editor</i> for details, including restrictions that apply to tags and \"Tag naming limits and requirements\"; Amazon IVS has no constraints on tags beyond what is documented there. </p>"
         },
         "autoParticipantRecordingConfiguration":{
           "shape":"AutoParticipantRecordingConfiguration",
@@ -861,7 +989,7 @@
         },
         "tags":{
           "shape":"Tags",
-          "documentation":"<p>Tags attached to the resource. Array of maps, each of the form <code>string:string (key:value)</code>. See <a href=\"https://docs.aws.amazon.com/general/latest/gr/aws_tagging.html\">Tagging AWS Resources</a> for details, including restrictions that apply to tags and \"Tag naming limits and requirements\"; Amazon IVS has no constraints on tags beyond what is documented there.</p>"
+          "documentation":"<p>Tags attached to the resource. Array of maps, each of the form <code>string:string (key:value)</code>. See <a href=\"https://docs.aws.amazon.com/tag-editor/latest/userguide/best-practices-and-strats.html\">Best practices and strategies</a> in <i>Tagging AWS Resources and Tag Editor</i> for details, including restrictions that apply to tags and \"Tag naming limits and requirements\"; Amazon IVS has no constraints on tags beyond what is documented there.</p>"
         }
       }
     },
@@ -885,6 +1013,25 @@
       }
     },
     "DeleteEncoderConfigurationResponse":{
+      "type":"structure",
+      "members":{
+      }
+    },
+    "DeleteIngestConfigurationRequest":{
+      "type":"structure",
+      "required":["arn"],
+      "members":{
+        "arn":{
+          "shape":"IngestConfigurationArn",
+          "documentation":"<p>ARN of the IngestConfiguration.</p>"
+        },
+        "force":{
+          "shape":"Boolean",
+          "documentation":"<p>Optional field to force deletion of the IngestConfiguration. If this is set to <code>true</code> when a participant is actively publishing, the participant is disconnected from the stage, followed by deletion of the IngestConfiguration. Default: <code>false</code>.</p>"
+        }
+      }
+    },
+    "DeleteIngestConfigurationResponse":{
       "type":"structure",
       "members":{
       }
@@ -1076,7 +1223,7 @@
         },
         "participantId":{
           "shape":"ParticipantTokenId",
-          "documentation":"<p>Identifier of the participant to be disconnected. This is assigned by IVS and returned by <a>CreateParticipantToken</a>.</p>"
+          "documentation":"<p>Identifier of the participant to be disconnected. IVS assigns this; it is returned by <a>CreateParticipantToken</a> (for streams using WebRTC ingest) or <a>CreateIngestConfiguration</a> (for streams using RTMP ingest).</p>"
         },
         "reason":{
           "shape":"DisconnectParticipantReason",
@@ -1107,7 +1254,7 @@
         },
         "tags":{
           "shape":"Tags",
-          "documentation":"<p>Tags attached to the resource. Array of maps, each of the form <code>string:string (key:value)</code>. See <a href=\"https://docs.aws.amazon.com/general/latest/gr/aws_tagging.html\">Tagging AWS Resources</a> for details, including restrictions that apply to tags and \"Tag naming limits and requirements\"; Amazon IVS has no constraints on tags beyond what is documented there.</p>"
+          "documentation":"<p>Tags attached to the resource. Array of maps, each of the form <code>string:string (key:value)</code>. See <a href=\"https://docs.aws.amazon.com/tag-editor/latest/userguide/best-practices-and-strats.html\">Best practices and strategies</a> in <i>Tagging AWS Resources and Tag Editor</i> for details, including restrictions that apply to tags and \"Tag naming limits and requirements\"; Amazon IVS has no constraints on tags beyond what is documented there.</p>"
         }
       },
       "documentation":"<p>Settings for transcoding.</p>"
@@ -1144,7 +1291,7 @@
         },
         "tags":{
           "shape":"Tags",
-          "documentation":"<p>Tags attached to the resource. Array of maps, each of the form <code>string:string (key:value)</code>. See <a href=\"https://docs.aws.amazon.com/general/latest/gr/aws_tagging.html\">Tagging AWS Resources</a> for details, including restrictions that apply to tags and \"Tag naming limits and requirements\"; Amazon IVS has no constraints on tags beyond what is documented there.</p>"
+          "documentation":"<p>Tags attached to the resource. Array of maps, each of the form <code>string:string (key:value)</code>. See <a href=\"https://docs.aws.amazon.com/tag-editor/latest/userguide/best-practices-and-strats.html\">Best practices and strategies</a> in <i>Tagging AWS Resources and Tag Editor</i> for details, including restrictions that apply to tags and \"Tag naming limits and requirements\"; Amazon IVS has no constraints on tags beyond what is documented there.</p>"
         }
       },
       "documentation":"<p>Summary information about an EncoderConfiguration.</p>"
@@ -1184,7 +1331,15 @@
       "enum":[
         "INSUFFICIENT_CAPABILITIES",
         "QUOTA_EXCEEDED",
-        "PUBLISHER_NOT_FOUND"
+        "PUBLISHER_NOT_FOUND",
+        "BITRATE_EXCEEDED",
+        "RESOLUTION_EXCEEDED",
+        "STREAM_DURATION_EXCEEDED",
+        "INVALID_AUDIO_CODEC",
+        "INVALID_VIDEO_CODEC",
+        "INVALID_PROTOCOL",
+        "INVALID_STREAM_KEY",
+        "REUSE_OF_STREAM_KEY"
       ]
     },
     "EventList":{
@@ -1246,6 +1401,25 @@
         "encoderConfiguration":{
           "shape":"EncoderConfiguration",
           "documentation":"<p>The EncoderConfiguration that was returned.</p>"
+        }
+      }
+    },
+    "GetIngestConfigurationRequest":{
+      "type":"structure",
+      "required":["arn"],
+      "members":{
+        "arn":{
+          "shape":"IngestConfigurationArn",
+          "documentation":"<p>ARN of the ingest for which the information is to be retrieved.</p>"
+        }
+      }
+    },
+    "GetIngestConfigurationResponse":{
+      "type":"structure",
+      "members":{
+        "ingestConfiguration":{
+          "shape":"IngestConfiguration",
+          "documentation":"<p>The IngestConfiguration that was returned.</p>"
         }
       }
     },
@@ -1413,7 +1587,7 @@
         },
         "tags":{
           "shape":"Tags",
-          "documentation":"<p>Tags attached to the resource. Array of maps, each of the form <code>string:string (key:value)</code>. See <a href=\"https://docs.aws.amazon.com/general/latest/gr/aws_tagging.html\">Tagging AWS Resources</a> for details, including restrictions that apply to tags and \"Tag naming limits and requirements\"; Amazon IVS has no constraints on tags beyond what is documented there.</p>"
+          "documentation":"<p>Tags attached to the resource. Array of maps, each of the form <code>string:string (key:value)</code>. See <a href=\"https://docs.aws.amazon.com/tag-editor/latest/userguide/best-practices-and-strats.html\">Best practices and strategies</a> in <i>Tagging AWS Resources and Tag Editor</i> for details, including restrictions that apply to tags and \"Tag naming limits and requirements\"; Amazon IVS has no constraints on tags beyond what is documented there.</p>"
         }
       }
     },
@@ -1426,6 +1600,138 @@
         }
       }
     },
+    "IngestConfiguration":{
+      "type":"structure",
+      "required":[
+        "arn",
+        "ingestProtocol",
+        "streamKey",
+        "stageArn",
+        "participantId",
+        "state"
+      ],
+      "members":{
+        "name":{
+          "shape":"IngestConfigurationName",
+          "documentation":"<p>Ingest name</p>"
+        },
+        "arn":{
+          "shape":"IngestConfigurationArn",
+          "documentation":"<p>Ingest configuration ARN.</p>"
+        },
+        "ingestProtocol":{
+          "shape":"IngestProtocol",
+          "documentation":"<p>Type of ingest protocol that the user employs for broadcasting.</p>"
+        },
+        "streamKey":{
+          "shape":"StreamKey",
+          "documentation":"<p>Ingest-key value for the RTMP(S) protocol.</p>"
+        },
+        "stageArn":{
+          "shape":"IngestConfigurationStageArn",
+          "documentation":"<p>ARN of the stage with which the IngestConfiguration is associated.</p>"
+        },
+        "participantId":{
+          "shape":"ParticipantId",
+          "documentation":"<p>ID of the participant within the stage.</p>"
+        },
+        "state":{
+          "shape":"IngestConfigurationState",
+          "documentation":"<p>State of the ingest configuration. It is <code>ACTIVE</code> if a publisher currently is publishing to the stage associated with the ingest configuration.</p>"
+        },
+        "userId":{
+          "shape":"UserId",
+          "documentation":"<p>Customer-assigned name to help identify the participant using the IngestConfiguration; this can be used to link a participant to a user in the customer’s own systems. This can be any UTF-8 encoded text. <i>This field is exposed to all stage participants and should not be used for personally identifying, confidential, or sensitive information.</i> </p>"
+        },
+        "attributes":{
+          "shape":"ParticipantAttributes",
+          "documentation":"<p>Application-provided attributes to to store in the IngestConfiguration and attach to a stage. Map keys and values can contain UTF-8 encoded text. The maximum length of this field is 1 KB total. <i>This field is exposed to all stage participants and should not be used for personally identifying, confidential, or sensitive information.</i> </p>"
+        },
+        "tags":{
+          "shape":"Tags",
+          "documentation":"<p>Tags attached to the resource. Array of maps, each of the form <code>string:string (key:value)</code>. See <a href=\"https://docs.aws.amazon.com/tag-editor/latest/userguide/best-practices-and-strats.html\">Best practices and strategies</a> in <i>Tagging AWS Resources and Tag Editor</i> for details, including restrictions that apply to tags and \"Tag naming limits and requirements\"; Amazon IVS has no constraints on tags beyond what is documented there.</p>"
+        }
+      },
+      "documentation":"<p>Object specifying an ingest configuration.</p>"
+    },
+    "IngestConfigurationArn":{
+      "type":"string",
+      "max":128,
+      "min":1,
+      "pattern":"arn:aws:ivs:[a-z0-9-]+:[0-9]+:ingest-configuration/[a-zA-Z0-9-]+"
+    },
+    "IngestConfigurationList":{
+      "type":"list",
+      "member":{"shape":"IngestConfigurationSummary"}
+    },
+    "IngestConfigurationName":{
+      "type":"string",
+      "max":128,
+      "min":0,
+      "pattern":"[a-zA-Z0-9-_]*"
+    },
+    "IngestConfigurationStageArn":{
+      "type":"string",
+      "max":128,
+      "min":0,
+      "pattern":"^$|^arn:aws:ivs:[a-z0-9-]+:[0-9]+:stage/[a-zA-Z0-9-]+$"
+    },
+    "IngestConfigurationState":{
+      "type":"string",
+      "enum":[
+        "ACTIVE",
+        "INACTIVE"
+      ]
+    },
+    "IngestConfigurationSummary":{
+      "type":"structure",
+      "required":[
+        "arn",
+        "ingestProtocol",
+        "stageArn",
+        "participantId",
+        "state"
+      ],
+      "members":{
+        "name":{
+          "shape":"IngestConfigurationName",
+          "documentation":"<p>Ingest name.</p>"
+        },
+        "arn":{
+          "shape":"IngestConfigurationArn",
+          "documentation":"<p>Ingest configuration ARN.</p>"
+        },
+        "ingestProtocol":{
+          "shape":"IngestProtocol",
+          "documentation":"<p>Type of ingest protocol that the user employs for broadcasting.</p>"
+        },
+        "stageArn":{
+          "shape":"IngestConfigurationStageArn",
+          "documentation":"<p>ARN of the stage with which the IngestConfiguration is associated.</p>"
+        },
+        "participantId":{
+          "shape":"ParticipantId",
+          "documentation":"<p>ID of the participant within the stage.</p>"
+        },
+        "state":{
+          "shape":"IngestConfigurationState",
+          "documentation":"<p>State of the ingest configuration. It is <code>ACTIVE</code> if a publisher currently is publishing to the stage associated with the ingest configuration.</p>"
+        },
+        "userId":{
+          "shape":"UserId",
+          "documentation":"<p>Customer-assigned name to help identify the participant using the IngestConfiguration; this can be used to link a participant to a user in the customer’s own systems. This can be any UTF-8 encoded text. <i>This field is exposed to all stage participants and should not be used for personally identifying, confidential, or sensitive information.</i> </p>"
+        }
+      },
+      "documentation":"<p>Summary information about an IngestConfiguration.</p>"
+    },
+    "IngestProtocol":{
+      "type":"string",
+      "enum":[
+        "RTMP",
+        "RTMPS"
+      ]
+    },
+    "InsecureIngest":{"type":"boolean"},
     "InternalServerException":{
       "type":"structure",
       "members":{
@@ -1512,6 +1818,41 @@
         "nextToken":{
           "shape":"PaginationToken",
           "documentation":"<p>If there are more encoder configurations than <code>maxResults</code>, use <code>nextToken</code> in the request to get the next set.</p>"
+        }
+      }
+    },
+    "ListIngestConfigurationsRequest":{
+      "type":"structure",
+      "members":{
+        "filterByStageArn":{
+          "shape":"StageArn",
+          "documentation":"<p>Filters the response list to match the specified stage ARN. Only one filter (by stage ARN or by state) can be used at a time.</p>"
+        },
+        "filterByState":{
+          "shape":"IngestConfigurationState",
+          "documentation":"<p>Filters the response list to match the specified state. Only one filter (by stage ARN or by state) can be used at a time.</p>"
+        },
+        "nextToken":{
+          "shape":"PaginationToken",
+          "documentation":"<p>The first IngestConfiguration to retrieve. This is used for pagination; see the <code>nextToken</code> response field.</p>"
+        },
+        "maxResults":{
+          "shape":"MaxIngestConfigurationResults",
+          "documentation":"<p>Maximum number of results to return. Default: 50.</p>"
+        }
+      }
+    },
+    "ListIngestConfigurationsResponse":{
+      "type":"structure",
+      "required":["ingestConfigurations"],
+      "members":{
+        "ingestConfigurations":{
+          "shape":"IngestConfigurationList",
+          "documentation":"<p>List of the matching ingest configurations (summary information only).</p>"
+        },
+        "nextToken":{
+          "shape":"PaginationToken",
+          "documentation":"<p>If there are more IngestConfigurations than <code>maxResults</code>, use <code>nextToken</code> in the request to get the next set.</p>"
         }
       }
     },
@@ -1761,6 +2102,12 @@
       "max":100,
       "min":1
     },
+    "MaxIngestConfigurationResults":{
+      "type":"integer",
+      "box":true,
+      "max":100,
+      "min":1
+    },
     "MaxParticipantEventResults":{
       "type":"integer",
       "box":true,
@@ -1866,6 +2213,10 @@
         "recordingState":{
           "shape":"ParticipantRecordingState",
           "documentation":"<p>The participant’s recording state.</p>"
+        },
+        "protocol":{
+          "shape":"ParticipantProtocol",
+          "documentation":"<p>Type of ingest protocol that the participant employs for broadcasting.</p>"
         }
       },
       "documentation":"<p>Object describing a participant that has joined a stage.</p>"
@@ -1890,6 +2241,15 @@
     "ParticipantList":{
       "type":"list",
       "member":{"shape":"ParticipantSummary"}
+    },
+    "ParticipantProtocol":{
+      "type":"string",
+      "enum":[
+        "UNKNOWN",
+        "WHIP",
+        "RTMP",
+        "RTMPS"
+      ]
     },
     "ParticipantRecordingFilterByRecordingState":{
       "type":"string",
@@ -2190,7 +2550,7 @@
         },
         "tags":{
           "shape":"Tags",
-          "documentation":"<p>Tags attached to the resource. Array of maps, each of the form <code>string:string (key:value)</code>. See <a href=\"https://docs.aws.amazon.com/general/latest/gr/aws_tagging.html\">Tagging AWS Resources</a> for details, including restrictions that apply to tags and \"Tag naming limits and requirements\"; Amazon IVS has no constraints on tags beyond what is documented there.</p>"
+          "documentation":"<p>Tags attached to the resource. Array of maps, each of the form <code>string:string (key:value)</code>. See <a href=\"https://docs.aws.amazon.com/tag-editor/latest/userguide/best-practices-and-strats.html\">Best practices and strategies</a> in <i>Tagging AWS Resources and Tag Editor</i> for details, including restrictions that apply to tags and \"Tag naming limits and requirements\"; Amazon IVS has no constraints on tags beyond what is documented there.</p>"
         }
       },
       "documentation":"<p>Object specifying a public key used to sign stage participant tokens.</p>"
@@ -2229,7 +2589,7 @@
         },
         "tags":{
           "shape":"Tags",
-          "documentation":"<p>Tags attached to the resource. Array of maps, each of the form <code>string:string (key:value)</code>. See <a href=\"https://docs.aws.amazon.com/general/latest/gr/aws_tagging.html\">Tagging AWS Resources</a> for details, including restrictions that apply to tags and \"Tag naming limits and requirements\"; Amazon IVS has no constraints on tags beyond what is documented there.</p>"
+          "documentation":"<p>Tags attached to the resource. Array of maps, each of the form <code>string:string (key:value)</code>. See <a href=\"https://docs.aws.amazon.com/tag-editor/latest/userguide/best-practices-and-strats.html\">Best practices and strategies</a> in <i>Tagging AWS Resources and Tag Editor</i> for details, including restrictions that apply to tags and \"Tag naming limits and requirements\"; Amazon IVS has no constraints on tags beyond what is documented there.</p>"
         }
       },
       "documentation":"<p>Summary information about a public key.</p>"
@@ -2353,7 +2713,7 @@
         },
         "tags":{
           "shape":"Tags",
-          "documentation":"<p>Tags attached to the resource. Array of maps, each of the form <code>string:string (key:value)</code>. See <a href=\"https://docs.aws.amazon.com/general/latest/gr/aws_tagging.html\">Tagging AWS Resources</a> for details, including restrictions that apply to tags and \"Tag naming limits and requirements\"; Amazon IVS has no constraints on tags beyond what is documented there.</p>"
+          "documentation":"<p>Tags attached to the resource. Array of maps, each of the form <code>string:string (key:value)</code>. See <a href=\"https://docs.aws.amazon.com/tag-editor/latest/userguide/best-practices-and-strats.html\">Best practices and strategies</a> in <i>Tagging AWS Resources and Tag Editor</i> for details, including restrictions that apply to tags and \"Tag naming limits and requirements\"; Amazon IVS has no constraints on tags beyond what is documented there.</p>"
         },
         "autoParticipantRecordingConfiguration":{
           "shape":"AutoParticipantRecordingConfiguration",
@@ -2386,10 +2746,18 @@
         },
         "whip":{
           "shape":"StageEndpoint",
-          "documentation":"<p>WHIP endpoint.</p>"
+          "documentation":"<p>The endpoint to be used for IVS real-time streaming using the WHIP protocol.</p>"
+        },
+        "rtmp":{
+          "shape":"StageEndpoint",
+          "documentation":"<p>The endpoint to be used for IVS real-time streaming using the RTMP protocol.</p>"
+        },
+        "rtmps":{
+          "shape":"StageEndpoint",
+          "documentation":"<p>The endpoint to be used for IVS real-time streaming using the RTMPS protocol.</p>"
         }
       },
-      "documentation":"<p>Summary information about various endpoints for a stage.</p>"
+      "documentation":"<p>Summary information about various endpoints for a stage. We recommend that you cache these values at stage creation; the values can be cached for up to 14 days.</p>"
     },
     "StageName":{
       "type":"string",
@@ -2461,7 +2829,7 @@
         },
         "tags":{
           "shape":"Tags",
-          "documentation":"<p>Tags attached to the resource. Array of maps, each of the form <code>string:string (key:value)</code>. See <a href=\"https://docs.aws.amazon.com/general/latest/gr/aws_tagging.html\">Tagging AWS Resources</a> for details, including restrictions that apply to tags and \"Tag naming limits and requirements\"; Amazon IVS has no constraints on tags beyond what is documented there.</p>"
+          "documentation":"<p>Tags attached to the resource. Array of maps, each of the form <code>string:string (key:value)</code>. See <a href=\"https://docs.aws.amazon.com/tag-editor/latest/userguide/best-practices-and-strats.html\">Best practices and strategies</a> in <i>Tagging AWS Resources and Tag Editor</i> for details, including restrictions that apply to tags and \"Tag naming limits and requirements\"; Amazon IVS has no constraints on tags beyond what is documented there.</p>"
         }
       },
       "documentation":"<p>Summary information about a stage.</p>"
@@ -2496,7 +2864,7 @@
         },
         "tags":{
           "shape":"Tags",
-          "documentation":"<p>Tags attached to the resource. Array of maps, each of the form <code>string:string (key:value)</code>. See <a href=\"https://docs.aws.amazon.com/general/latest/gr/aws_tagging.html\">Tagging AWS Resources</a> for details, including restrictions that apply to tags and \"Tag naming limits and requirements\"; Amazon IVS has no constraints on tags beyond what is documented there.</p>"
+          "documentation":"<p>Tags attached to the resource. Array of maps, each of the form <code>string:string (key:value)</code>. See <a href=\"https://docs.aws.amazon.com/tag-editor/latest/userguide/best-practices-and-strats.html\">Best practices and strategies</a> in <i>Tagging AWS Resources and Tag Editor</i> for details, including restrictions that apply to tags and \"Tag naming limits and requirements\"; Amazon IVS has no constraints on tags beyond what is documented there.</p>"
         }
       }
     },
@@ -2542,7 +2910,7 @@
         },
         "tags":{
           "shape":"Tags",
-          "documentation":"<p>Tags attached to the resource. Array of maps, each of the form <code>string:string (key:value)</code>. See <a href=\"https://docs.aws.amazon.com/general/latest/gr/aws_tagging.html\">Tagging AWS Resources</a> for details, including restrictions that apply to tags and \"Tag naming limits and requirements\"; Amazon IVS has no constraints on tags beyond what is documented there.</p>"
+          "documentation":"<p>Tags attached to the resource. Array of maps, each of the form <code>string:string (key:value)</code>. See <a href=\"https://docs.aws.amazon.com/tag-editor/latest/userguide/best-practices-and-strats.html\">Best practices and strategies</a> in <i>Tagging AWS Resources and Tag Editor</i> for details, including restrictions that apply to tags and \"Tag naming limits and requirements\"; Amazon IVS has no constraints on tags beyond what is documented there.</p>"
         }
       },
       "documentation":"<p>A complex type that describes a location where recorded videos will be stored.</p>"
@@ -2577,7 +2945,7 @@
         },
         "tags":{
           "shape":"Tags",
-          "documentation":"<p>Tags attached to the resource. Array of maps, each of the form <code>string:string (key:value)</code>. See <a href=\"https://docs.aws.amazon.com/general/latest/gr/aws_tagging.html\">Tagging AWS Resources</a> for details, including restrictions that apply to tags and \"Tag naming limits and requirements\"; Amazon IVS has no constraints on tags beyond what is documented there.</p>"
+          "documentation":"<p>Tags attached to the resource. Array of maps, each of the form <code>string:string (key:value)</code>. See <a href=\"https://docs.aws.amazon.com/tag-editor/latest/userguide/best-practices-and-strats.html\">Best practices and strategies</a> in <i>Tagging AWS Resources and Tag Editor</i> for details, including restrictions that apply to tags and \"Tag naming limits and requirements\"; Amazon IVS has no constraints on tags beyond what is documented there.</p>"
         }
       },
       "documentation":"<p>Summary information about a storage configuration.</p>"
@@ -2585,6 +2953,11 @@
     "StorageConfigurationSummaryList":{
       "type":"list",
       "member":{"shape":"StorageConfigurationSummary"}
+    },
+    "StreamKey":{
+      "type":"string",
+      "pattern":"rt_[0-9]+_[a-z0-9-]+_[a-zA-Z0-9-]+_.+",
+      "sensitive":true
     },
     "String":{"type":"string"},
     "TagKey":{
@@ -2613,7 +2986,7 @@
         },
         "tags":{
           "shape":"Tags",
-          "documentation":"<p>Array of tags to be added or updated. Array of maps, each of the form <code>string:string (key:value)</code>. See <a href=\"https://docs.aws.amazon.com/general/latest/gr/aws_tagging.html\">Tagging AWS Resources</a> for details, including restrictions that apply to tags and \"Tag naming limits and requirements\"; Amazon IVS has no constraints beyond what is documented there.</p>"
+          "documentation":"<p>Array of tags to be added or updated. Array of maps, each of the form <code>string:string (key:value)</code>. See <a href=\"https://docs.aws.amazon.com/tag-editor/latest/userguide/best-practices-and-strats.html\">Best practices and strategies</a> in <i>Tagging AWS Resources and Tag Editor</i> for details, including restrictions that apply to tags and \"Tag naming limits and requirements\"; Amazon IVS has no constraints on tags beyond what is documented there.</p>"
         }
       }
     },
@@ -2653,7 +3026,7 @@
         },
         "tagKeys":{
           "shape":"TagKeyList",
-          "documentation":"<p>Array of tags to be removed. Array of maps, each of the form <code>string:string (key:value)</code>. See <a href=\"https://docs.aws.amazon.com/general/latest/gr/aws_tagging.html\">Tagging AWS Resources</a> for details, including restrictions that apply to tags and \"Tag naming limits and requirements\"; Amazon IVS has no constraints beyond what is documented there.</p>",
+          "documentation":"<p>Array of tags to be removed. Array of maps, each of the form <code>string:string (key:value)</code>. See <a href=\"https://docs.aws.amazon.com/tag-editor/latest/userguide/best-practices-and-strats.html\">Best practices and strategies</a> in <i>Tagging AWS Resources and Tag Editor</i> for details, including restrictions that apply to tags and \"Tag naming limits and requirements\"; Amazon IVS has no constraints on tags beyond what is documented there.</p>",
           "location":"querystring",
           "locationName":"tagKeys"
         }
@@ -2662,6 +3035,29 @@
     "UntagResourceResponse":{
       "type":"structure",
       "members":{
+      }
+    },
+    "UpdateIngestConfigurationRequest":{
+      "type":"structure",
+      "required":["arn"],
+      "members":{
+        "arn":{
+          "shape":"IngestConfigurationArn",
+          "documentation":"<p>ARN of the IngestConfiguration, for which the related stage ARN needs to be updated.</p>"
+        },
+        "stageArn":{
+          "shape":"IngestConfigurationStageArn",
+          "documentation":"<p>Stage ARN that needs to be updated.</p>"
+        }
+      }
+    },
+    "UpdateIngestConfigurationResponse":{
+      "type":"structure",
+      "members":{
+        "ingestConfiguration":{
+          "shape":"IngestConfiguration",
+          "documentation":"<p>The updated IngestConfiguration.</p>"
+        }
       }
     },
     "UpdateStageRequest":{
@@ -2758,5 +3154,5 @@
     },
     "errorMessage":{"type":"string"}
   },
-  "documentation":"<p>The Amazon Interactive Video Service (IVS) real-time API is REST compatible, using a standard HTTP API and an AWS EventBridge event stream for responses. JSON is used for both requests and responses, including errors. </p> <p> <b>Key Concepts</b> </p> <ul> <li> <p> <b>Stage</b> — A virtual space where participants can exchange video in real time.</p> </li> <li> <p> <b>Participant token</b> — A token that authenticates a participant when they join a stage.</p> </li> <li> <p> <b>Participant object</b> — Represents participants (people) in the stage and contains information about them. When a token is created, it includes a participant ID; when a participant uses that token to join a stage, the participant is associated with that participant ID. There is a 1:1 mapping between participant tokens and participants.</p> </li> </ul> <p>For server-side composition:</p> <ul> <li> <p> <b>Composition process</b> — Composites participants of a stage into a single video and forwards it to a set of outputs (e.g., IVS channels). Composition endpoints support this process.</p> </li> <li> <p> <b>Composition</b> — Controls the look of the outputs, including how participants are positioned in the video.</p> </li> </ul> <p>For more information about your IVS live stream, also see <a href=\"https://docs.aws.amazon.com/ivs/latest/RealTimeUserGuide/getting-started.html\">Getting Started with Amazon IVS Real-Time Streaming</a>.</p> <p> <b>Tagging</b> </p> <p>A <i>tag</i> is a metadata label that you assign to an AWS resource. A tag comprises a <i>key</i> and a <i>value</i>, both set by you. For example, you might set a tag as <code>topic:nature</code> to label a particular video category. See <a href=\"https://docs.aws.amazon.com/general/latest/gr/aws_tagging.html\">Tagging AWS Resources</a> for more information, including restrictions that apply to tags and \"Tag naming limits and requirements\"; Amazon IVS stages has no service-specific constraints beyond what is documented there.</p> <p>Tags can help you identify and organize your AWS resources. For example, you can use the same tag for different resources to indicate that they are related. You can also use tags to manage access (see <a href=\"https://docs.aws.amazon.com/IAM/latest/UserGuide/access_tags.html\">Access Tags</a>).</p> <p>The Amazon IVS real-time API has these tag-related endpoints: <a>TagResource</a>, <a>UntagResource</a>, and <a>ListTagsForResource</a>. The following resource supports tagging: Stage.</p> <p>At most 50 tags can be applied to a resource.</p>"
+  "documentation":"<p>The Amazon Interactive Video Service (IVS) real-time API is REST compatible, using a standard HTTP API and an AWS EventBridge event stream for responses. JSON is used for both requests and responses, including errors. </p> <p> <b>Key Concepts</b> </p> <ul> <li> <p> <b>Stage</b> — A virtual space where participants can exchange video in real time.</p> </li> <li> <p> <b>Participant token</b> — A token that authenticates a participant when they join a stage.</p> </li> <li> <p> <b>Participant object</b> — Represents participants (people) in the stage and contains information about them. When a token is created, it includes a participant ID; when a participant uses that token to join a stage, the participant is associated with that participant ID. There is a 1:1 mapping between participant tokens and participants.</p> </li> </ul> <p>For server-side composition:</p> <ul> <li> <p> <b>Composition process</b> — Composites participants of a stage into a single video and forwards it to a set of outputs (e.g., IVS channels). Composition operations support this process.</p> </li> <li> <p> <b>Composition</b> — Controls the look of the outputs, including how participants are positioned in the video.</p> </li> </ul> <p>For more information about your IVS live stream, also see <a href=\"https://docs.aws.amazon.com/ivs/latest/RealTimeUserGuide/getting-started.html\">Getting Started with Amazon IVS Real-Time Streaming</a>.</p> <p> <b>Tagging</b> </p> <p>A <i>tag</i> is a metadata label that you assign to an AWS resource. A tag comprises a <i>key</i> and a <i>value</i>, both set by you. For example, you might set a tag as <code>topic:nature</code> to label a particular video category. See <a href=\"https://docs.aws.amazon.com/tag-editor/latest/userguide/best-practices-and-strats.html\">Best practices and strategies</a> in <i>Tagging AWS Resources and Tag Editor</i> for details, including restrictions that apply to tags and \"Tag naming limits and requirements\"; Amazon IVS stages has no service-specific constraints beyond what is documented there.</p> <p>Tags can help you identify and organize your AWS resources. For example, you can use the same tag for different resources to indicate that they are related. You can also use tags to manage access (see <a href=\"https://docs.aws.amazon.com/IAM/latest/UserGuide/access_tags.html\">Access Tags</a>).</p> <p>The Amazon IVS real-time API has these tag-related operations: <a>TagResource</a>, <a>UntagResource</a>, and <a>ListTagsForResource</a>. The following resource supports tagging: Stage.</p> <p>At most 50 tags can be applied to a resource.</p>"
 }

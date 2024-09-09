@@ -9,46 +9,57 @@
     "protocol": "rest-json",
     "jsonVersion": "1.1",
     "uid": "kafka-2018-11-14",
-    "signatureVersion": "v4"
+    "signatureVersion": "v4",
+    "auth": [
+      "aws.auth#sigv4"
+    ]
   },
   "operations": {
-    "BatchAssociateScramSecret" : {
-      "name" : "BatchAssociateScramSecret",
-      "http" : {
-        "method" : "POST",
-        "requestUri" : "/v1/clusters/{clusterArn}/scram-secrets",
-        "responseCode" : 200
+    "BatchAssociateScramSecret": {
+      "name": "BatchAssociateScramSecret",
+      "http": {
+        "method": "POST",
+        "requestUri": "/v1/clusters/{clusterArn}/scram-secrets",
+        "responseCode": 200
       },
-      "input" : {
-        "shape" : "BatchAssociateScramSecretRequest"
+      "input": {
+        "shape": "BatchAssociateScramSecretRequest"
       },
-      "output" : {
-        "shape" : "BatchAssociateScramSecretResponse",
+      "output": {
+        "shape": "BatchAssociateScramSecretResponse",
         "documentation": "\n            <p>200 response</p>\n         "
       },
-      "errors" : [ {
-        "shape" : "BadRequestException",
-        "documentation" : "\n            <p>The request isn't valid because the input is incorrect. Correct your input and then submit it again.</p>\n         "
-      }, {
-        "shape" : "UnauthorizedException",
-        "documentation" : "\n            <p>The request is not authorized. The provided credentials couldn't be validated.</p>\n         "
-      }, {
-        "shape" : "InternalServerErrorException",
-        "documentation" : "\n            <p>There was an unexpected internal server error. Retrying your request might resolve the issue.</p>\n         "
-      }, {
-        "shape" : "ForbiddenException",
-        "documentation" : "\n            <p>Access forbidden. Check your credentials and then retry your request.</p>\n         "
-      }, {
-        "shape" : "NotFoundException",
-        "documentation" : "\n            <p>The resource could not be found due to incorrect input. Correct the input, then retry the request.</p>\n         "
-      }, {
-        "shape" : "ServiceUnavailableException",
-        "documentation" : "\n            <p>503 response</p>\n         "
-      }, {
-        "shape" : "TooManyRequestsException",
-        "documentation" : "\n            <p>429 response</p>\n         "
-      } ],
-      "documentation" : "\n            <p>Associates one or more Scram Secrets with an Amazon MSK cluster.</p>\n         "
+      "errors": [
+        {
+          "shape": "BadRequestException",
+          "documentation": "\n            <p>The request isn't valid because the input is incorrect. Correct your input and then submit it again.</p>\n         "
+        },
+        {
+          "shape": "UnauthorizedException",
+          "documentation": "\n            <p>The request is not authorized. The provided credentials couldn't be validated.</p>\n         "
+        },
+        {
+          "shape": "InternalServerErrorException",
+          "documentation": "\n            <p>There was an unexpected internal server error. Retrying your request might resolve the issue.</p>\n         "
+        },
+        {
+          "shape": "ForbiddenException",
+          "documentation": "\n            <p>Access forbidden. Check your credentials and then retry your request.</p>\n         "
+        },
+        {
+          "shape": "NotFoundException",
+          "documentation": "\n            <p>The resource could not be found due to incorrect input. Correct the input, then retry the request.</p>\n         "
+        },
+        {
+          "shape": "ServiceUnavailableException",
+          "documentation": "\n            <p>503 response</p>\n         "
+        },
+        {
+          "shape": "TooManyRequestsException",
+          "documentation": "\n            <p>429 response</p>\n         "
+        }
+      ],
+      "documentation": "\n            <p>Associates one or more Scram Secrets with an Amazon MSK cluster.</p>\n         "
     },
     "CreateCluster": {
       "name": "CreateCluster",
@@ -398,7 +409,8 @@
         {
           "shape": "BadRequestException",
           "documentation": "<p>HTTP Status Code 400: Bad request due to incorrect input. Correct your request and then retry it.</p>"
-        }, {
+        },
+        {
           "shape": "UnauthorizedException",
           "documentation": "<p>HTTP Status Code 401: Unauthorized request. The provided credentials couldn't be validated.</p>"
         },
@@ -573,43 +585,51 @@
       ],
       "documentation": "\n            <p>Returns a description of the cluster operation specified by the ARN.</p>\n         "
     },
-    "DescribeClusterOperationV2" : {
-      "name" : "DescribeClusterOperationV2",
-      "http" : {
-        "method" : "GET",
-        "requestUri" : "/api/v2/operations/{clusterOperationArn}",
-        "responseCode" : 200
+    "DescribeClusterOperationV2": {
+      "name": "DescribeClusterOperationV2",
+      "http": {
+        "method": "GET",
+        "requestUri": "/api/v2/operations/{clusterOperationArn}",
+        "responseCode": 200
       },
-      "input" : {
-        "shape" : "DescribeClusterOperationV2Request"
+      "input": {
+        "shape": "DescribeClusterOperationV2Request"
       },
-      "output" : {
-        "shape" : "DescribeClusterOperationV2Response",
-        "documentation" : "\n            <p>HTTP Status Code 200: OK.</p>"
+      "output": {
+        "shape": "DescribeClusterOperationV2Response",
+        "documentation": "\n            <p>HTTP Status Code 200: OK.</p>"
       },
-      "errors" : [ {
-        "shape" : "BadRequestException",
-        "documentation" : "\n            <p>HTTP Status Code 400: Bad request due to incorrect input. Correct your request and then retry it.</p>"
-      }, {
-        "shape" : "UnauthorizedException",
-        "documentation" : "\n            <p>HTTP Status Code 401: Unauthorized request. The provided credentials couldn't be validated.</p>"
-      }, {
-        "shape" : "InternalServerErrorException",
-        "documentation" : "\n            <p>HTTP Status Code 500: Unexpected internal server error. Retrying your request might resolve the issue.</p>"
-      }, {
-        "shape" : "ForbiddenException",
-        "documentation" : "\n            <p>HTTP Status Code 403: Access forbidden. Correct your credentials and then retry your request.</p>"
-      }, {
-        "shape" : "NotFoundException",
-        "documentation" : "\n            <p>HTTP Status Code 404: Resource not found due to incorrect input. Correct your request and then retry it.</p>"
-      }, {
-        "shape" : "ServiceUnavailableException",
-        "documentation" : "\n            <p>HTTP Status Code 503: Service Unavailable. Retrying your request in some time might resolve the issue.</p>"
-      }, {
-        "shape" : "TooManyRequestsException",
-        "documentation" : "\n            <p>HTTP Status Code 429: Limit exceeded. Resource limit reached.</p>"
-      } ],
-      "documentation" : "\n            <p>Returns a description of the cluster operation specified by the ARN.</p>\n"
+      "errors": [
+        {
+          "shape": "BadRequestException",
+          "documentation": "\n            <p>HTTP Status Code 400: Bad request due to incorrect input. Correct your request and then retry it.</p>"
+        },
+        {
+          "shape": "UnauthorizedException",
+          "documentation": "\n            <p>HTTP Status Code 401: Unauthorized request. The provided credentials couldn't be validated.</p>"
+        },
+        {
+          "shape": "InternalServerErrorException",
+          "documentation": "\n            <p>HTTP Status Code 500: Unexpected internal server error. Retrying your request might resolve the issue.</p>"
+        },
+        {
+          "shape": "ForbiddenException",
+          "documentation": "\n            <p>HTTP Status Code 403: Access forbidden. Correct your credentials and then retry your request.</p>"
+        },
+        {
+          "shape": "NotFoundException",
+          "documentation": "\n            <p>HTTP Status Code 404: Resource not found due to incorrect input. Correct your request and then retry it.</p>"
+        },
+        {
+          "shape": "ServiceUnavailableException",
+          "documentation": "\n            <p>HTTP Status Code 503: Service Unavailable. Retrying your request in some time might resolve the issue.</p>"
+        },
+        {
+          "shape": "TooManyRequestsException",
+          "documentation": "\n            <p>HTTP Status Code 429: Limit exceeded. Resource limit reached.</p>"
+        }
+      ],
+      "documentation": "\n            <p>Returns a description of the cluster operation specified by the ARN.</p>\n"
     },
     "DescribeConfiguration": {
       "name": "DescribeConfiguration",
@@ -783,43 +803,51 @@
       ],
       "documentation": "\n            <p>Returns a description of this MSK VPC connection.</p>\n         "
     },
-    "BatchDisassociateScramSecret" : {
-      "name" : "BatchDisassociateScramSecret",
-      "http" : {
-        "method" : "PATCH",
-        "requestUri" : "/v1/clusters/{clusterArn}/scram-secrets",
-        "responseCode" : 200
+    "BatchDisassociateScramSecret": {
+      "name": "BatchDisassociateScramSecret",
+      "http": {
+        "method": "PATCH",
+        "requestUri": "/v1/clusters/{clusterArn}/scram-secrets",
+        "responseCode": 200
       },
-      "input" : {
-        "shape" : "BatchDisassociateScramSecretRequest"
+      "input": {
+        "shape": "BatchDisassociateScramSecretRequest"
       },
-      "output" : {
-        "shape" : "BatchDisassociateScramSecretResponse",
+      "output": {
+        "shape": "BatchDisassociateScramSecretResponse",
         "documentation": "\n            <p>200 response</p>\n         "
       },
-      "errors" : [ {
-        "shape" : "BadRequestException",
-        "documentation" : "\n            <p>The request isn't valid because the input is incorrect. Correct your input and then submit it again.</p>\n         "
-      }, {
-        "shape" : "UnauthorizedException",
-        "documentation" : "\n            <p>The request is not authorized. The provided credentials couldn't be validated.</p>\n         "
-      }, {
-        "shape" : "InternalServerErrorException",
-        "documentation" : "\n            <p>There was an unexpected internal server error. Retrying your request might resolve the issue.</p>\n         "
-      }, {
-        "shape" : "ForbiddenException",
-        "documentation" : "\n            <p>Access forbidden. Check your credentials and then retry your request.</p>\n         "
-      }, {
-        "shape" : "NotFoundException",
-        "documentation" : "\n            <p>The resource could not be found due to incorrect input. Correct the input, then retry the request.</p>\n         "
-      }, {
-        "shape" : "ServiceUnavailableException",
-        "documentation" : "\n            <p>503 response</p>\n         "
-      }, {
-        "shape" : "TooManyRequestsException",
-        "documentation" : "\n            <p>429 response</p>\n         "
-      } ],
-      "documentation" : "\n            <p>Disassociates one or more Scram Secrets from an Amazon MSK cluster.</p>\n         "
+      "errors": [
+        {
+          "shape": "BadRequestException",
+          "documentation": "\n            <p>The request isn't valid because the input is incorrect. Correct your input and then submit it again.</p>\n         "
+        },
+        {
+          "shape": "UnauthorizedException",
+          "documentation": "\n            <p>The request is not authorized. The provided credentials couldn't be validated.</p>\n         "
+        },
+        {
+          "shape": "InternalServerErrorException",
+          "documentation": "\n            <p>There was an unexpected internal server error. Retrying your request might resolve the issue.</p>\n         "
+        },
+        {
+          "shape": "ForbiddenException",
+          "documentation": "\n            <p>Access forbidden. Check your credentials and then retry your request.</p>\n         "
+        },
+        {
+          "shape": "NotFoundException",
+          "documentation": "\n            <p>The resource could not be found due to incorrect input. Correct the input, then retry the request.</p>\n         "
+        },
+        {
+          "shape": "ServiceUnavailableException",
+          "documentation": "\n            <p>503 response</p>\n         "
+        },
+        {
+          "shape": "TooManyRequestsException",
+          "documentation": "\n            <p>429 response</p>\n         "
+        }
+      ],
+      "documentation": "\n            <p>Disassociates one or more Scram Secrets from an Amazon MSK cluster.</p>\n         "
     },
     "GetBootstrapBrokers": {
       "name": "GetBootstrapBrokers",
@@ -857,51 +885,50 @@
           "documentation": "\n            <p>Access forbidden. Check your credentials and then retry your request.</p>\n         "
         }
       ],
-      "documentation": "\n            <p>A list of brokers that a client application can use to bootstrap.</p>\n         "
+      "documentation": "\n            <p>A list of brokers that a client application can use to bootstrap. This list doesn't necessarily include all of the brokers in the cluster. The following Python 3.6 example shows how you can use the Amazon Resource Name (ARN) of a cluster to get its bootstrap brokers. If you don't know the ARN of your cluster, you can use the <code>ListClusters</code> operation to get the ARNs of all the clusters in this account and Region.</p>\n         "
     },
-    "GetCompatibleKafkaVersions" : {
-      "name" : "GetCompatibleKafkaVersions",
-      "http" : {
-        "method" : "GET",
-        "requestUri" : "/v1/compatible-kafka-versions",
-        "responseCode" : 200
+    "GetCompatibleKafkaVersions": {
+      "name": "GetCompatibleKafkaVersions",
+      "http": {
+        "method": "GET",
+        "requestUri": "/v1/compatible-kafka-versions",
+        "responseCode": 200
       },
-      "input" : {
-        "shape" : "GetCompatibleKafkaVersionsRequest"
+      "input": {
+        "shape": "GetCompatibleKafkaVersionsRequest"
       },
-      "output" : {
-        "shape" : "GetCompatibleKafkaVersionsResponse",
+      "output": {
+        "shape": "GetCompatibleKafkaVersionsResponse",
         "documentation": "\n            <p>Successful response.</p>\n         "
       },
-      "errors" :
-      [
+      "errors": [
         {
-          "shape" : "BadRequestException",
-          "documentation" : "n            <p>The request isn't valid because the input is incorrect. Correct your input and then submit it again.</p>n            "
+          "shape": "BadRequestException",
+          "documentation": "n            <p>The request isn't valid because the input is incorrect. Correct your input and then submit it again.</p>n            "
         },
         {
-          "shape" : "UnauthorizedException",
-          "documentation" : "n            <p>The request is not authorized. The provided credentials couldn't be validated.</p>n            "
+          "shape": "UnauthorizedException",
+          "documentation": "n            <p>The request is not authorized. The provided credentials couldn't be validated.</p>n            "
         },
         {
-          "shape" : "InternalServerErrorException",
-          "documentation" : "n            <p>There was an unexpected internal server error. Retrying your request might resolve the issue.</p>n            "
+          "shape": "InternalServerErrorException",
+          "documentation": "n            <p>There was an unexpected internal server error. Retrying your request might resolve the issue.</p>n            "
         },
         {
-          "shape" : "ForbiddenException",
-          "documentation" : "n            <p>Access forbidden. Check your credentials and then retry your request.</p>n            "
+          "shape": "ForbiddenException",
+          "documentation": "n            <p>Access forbidden. Check your credentials and then retry your request.</p>n            "
         },
         {
-          "shape" : "NotFoundException",
-          "documentation" : "n            <p>The resource could not be found due to incorrect input. Correct the input, then retry the request.</p>n            "
+          "shape": "NotFoundException",
+          "documentation": "n            <p>The resource could not be found due to incorrect input. Correct the input, then retry the request.</p>n            "
         },
         {
-          "shape" : "ServiceUnavailableException",
-          "documentation" : "n            <p>503 response</p>n            "
+          "shape": "ServiceUnavailableException",
+          "documentation": "n            <p>503 response</p>n            "
         },
         {
-          "shape" : "TooManyRequestsException",
-          "documentation" : "n            <p>429 response</p>n            "
+          "shape": "TooManyRequestsException",
+          "documentation": "n            <p>429 response</p>n            "
         }
       ],
       "documentation": "\n            <p>Gets the Apache Kafka versions to which you can update the MSK cluster.</p>\n         "
@@ -974,43 +1001,51 @@
       ],
       "documentation": "\n            <p>Returns a list of all the operations that have been performed on the specified MSK cluster.</p>\n         "
     },
-    "ListClusterOperationsV2" : {
-      "name" : "ListClusterOperationsV2",
-      "http" : {
-        "method" : "GET",
-        "requestUri" : "/api/v2/clusters/{clusterArn}/operations",
-        "responseCode" : 200
+    "ListClusterOperationsV2": {
+      "name": "ListClusterOperationsV2",
+      "http": {
+        "method": "GET",
+        "requestUri": "/api/v2/clusters/{clusterArn}/operations",
+        "responseCode": 200
       },
-      "input" : {
-        "shape" : "ListClusterOperationsV2Request"
+      "input": {
+        "shape": "ListClusterOperationsV2Request"
       },
-      "output" : {
-        "shape" : "ListClusterOperationsV2Response",
-        "documentation" : "\n            <p>HTTP Status Code 200: OK.</p>"
+      "output": {
+        "shape": "ListClusterOperationsV2Response",
+        "documentation": "\n            <p>HTTP Status Code 200: OK.</p>"
       },
-      "errors" : [ {
-        "shape" : "BadRequestException",
-        "documentation" : "\n            <p>HTTP Status Code 400: Bad request due to incorrect input. Correct your request and then retry it.</p>"
-      }, {
-        "shape" : "UnauthorizedException",
-        "documentation" : "\n            <p>HTTP Status Code 401: Unauthorized request. The provided credentials couldn't be validated.</p>"
-      }, {
-        "shape" : "InternalServerErrorException",
-        "documentation" : "\n            <p>HTTP Status Code 500: Unexpected internal server error. Retrying your request might resolve the issue.</p>"
-      }, {
-        "shape" : "ForbiddenException",
-        "documentation" : "\n            <p>HTTP Status Code 403: Access forbidden. Correct your credentials and then retry your request.</p>"
-      }, {
-        "shape" : "NotFoundException",
-        "documentation" : "\n            <p>HTTP Status Code 404: Resource not found due to incorrect input. Correct your request and then retry it.</p>"
-      }, {
-        "shape" : "ServiceUnavailableException",
-        "documentation" : "\n            <p>HTTP Status Code 503: Service Unavailable. Retrying your request in some time might resolve the issue.</p>"
-      }, {
-        "shape" : "TooManyRequestsException",
-        "documentation" : "\n            <p>HTTP Status Code 429: Limit exceeded. Resource limit reached.</p>"
-      } ],
-      "documentation" : "\n            <p>Returns a list of all the operations that have been performed on the specified MSK cluster.</p>\n         "
+      "errors": [
+        {
+          "shape": "BadRequestException",
+          "documentation": "\n            <p>HTTP Status Code 400: Bad request due to incorrect input. Correct your request and then retry it.</p>"
+        },
+        {
+          "shape": "UnauthorizedException",
+          "documentation": "\n            <p>HTTP Status Code 401: Unauthorized request. The provided credentials couldn't be validated.</p>"
+        },
+        {
+          "shape": "InternalServerErrorException",
+          "documentation": "\n            <p>HTTP Status Code 500: Unexpected internal server error. Retrying your request might resolve the issue.</p>"
+        },
+        {
+          "shape": "ForbiddenException",
+          "documentation": "\n            <p>HTTP Status Code 403: Access forbidden. Correct your credentials and then retry your request.</p>"
+        },
+        {
+          "shape": "NotFoundException",
+          "documentation": "\n            <p>HTTP Status Code 404: Resource not found due to incorrect input. Correct your request and then retry it.</p>"
+        },
+        {
+          "shape": "ServiceUnavailableException",
+          "documentation": "\n            <p>HTTP Status Code 503: Service Unavailable. Retrying your request in some time might resolve the issue.</p>"
+        },
+        {
+          "shape": "TooManyRequestsException",
+          "documentation": "\n            <p>HTTP Status Code 429: Limit exceeded. Resource limit reached.</p>"
+        }
+      ],
+      "documentation": "\n            <p>Returns a list of all the operations that have been performed on the specified MSK cluster.</p>\n         "
     },
     "ListClusters": {
       "name": "ListClusters",
@@ -1273,43 +1308,51 @@
       ],
       "documentation": "<p>Lists the replicators.</p>"
     },
-    "ListScramSecrets" : {
-      "name" : "ListScramSecrets",
-      "http" : {
-        "method" : "GET",
-        "requestUri" : "/v1/clusters/{clusterArn}/scram-secrets",
-        "responseCode" : 200
+    "ListScramSecrets": {
+      "name": "ListScramSecrets",
+      "http": {
+        "method": "GET",
+        "requestUri": "/v1/clusters/{clusterArn}/scram-secrets",
+        "responseCode": 200
       },
-      "input" : {
-        "shape" : "ListScramSecretsRequest"
+      "input": {
+        "shape": "ListScramSecretsRequest"
       },
-      "output" : {
-        "shape" : "ListScramSecretsResponse",
+      "output": {
+        "shape": "ListScramSecretsResponse",
         "documentation": "\n            <p>200 response</p>\n         "
       },
-      "errors" : [ {
-        "shape" : "BadRequestException",
-        "documentation" : "\n            <p>The request isn't valid because the input is incorrect. Correct your input and then submit it again.</p>\n         "
-      }, {
-        "shape" : "UnauthorizedException",
-        "documentation" : "\n            <p>The request is not authorized. The provided credentials couldn't be validated.</p>\n         "
-      }, {
-        "shape" : "InternalServerErrorException",
-        "documentation" : "\n            <p>There was an unexpected internal server error. Retrying your request might resolve the issue.</p>\n         "
-      }, {
-        "shape" : "ForbiddenException",
-        "documentation" : "\n            <p>Access forbidden. Check your credentials and then retry your request.</p>\n         "
-      }, {
-        "shape" : "NotFoundException",
-        "documentation" : "\n            <p>The resource could not be found due to incorrect input. Correct the input, then retry the request.</p>\n         "
-      }, {
-        "shape" : "ServiceUnavailableException",
-        "documentation" : "\n            <p>503 response</p>\n         "
-      }, {
-        "shape" : "TooManyRequestsException",
-        "documentation" : "\n            <p>429 response</p>\n         "
-      } ],
-      "documentation" : "\n            <p>Returns a list of the Scram Secrets associated with an Amazon MSK cluster.</p>\n         "
+      "errors": [
+        {
+          "shape": "BadRequestException",
+          "documentation": "\n            <p>The request isn't valid because the input is incorrect. Correct your input and then submit it again.</p>\n         "
+        },
+        {
+          "shape": "UnauthorizedException",
+          "documentation": "\n            <p>The request is not authorized. The provided credentials couldn't be validated.</p>\n         "
+        },
+        {
+          "shape": "InternalServerErrorException",
+          "documentation": "\n            <p>There was an unexpected internal server error. Retrying your request might resolve the issue.</p>\n         "
+        },
+        {
+          "shape": "ForbiddenException",
+          "documentation": "\n            <p>Access forbidden. Check your credentials and then retry your request.</p>\n         "
+        },
+        {
+          "shape": "NotFoundException",
+          "documentation": "\n            <p>The resource could not be found due to incorrect input. Correct the input, then retry the request.</p>\n         "
+        },
+        {
+          "shape": "ServiceUnavailableException",
+          "documentation": "\n            <p>503 response</p>\n         "
+        },
+        {
+          "shape": "TooManyRequestsException",
+          "documentation": "\n            <p>429 response</p>\n         "
+        }
+      ],
+      "documentation": "\n            <p>Returns a list of the Scram Secrets associated with an Amazon MSK cluster.</p>\n         "
     },
     "ListTagsForResource": {
       "name": "ListTagsForResource",
@@ -1485,51 +1528,51 @@
       ],
       "documentation": "\n            <p>Creates or updates the MSK cluster policy specified by the cluster Amazon Resource Name (ARN) in the request.</p>\n         "
     },
-    "RebootBroker" : {
-      "name" : "RebootBroker",
-      "http" : {
-        "method" : "PUT",
-        "requestUri" : "/v1/clusters/{clusterArn}/reboot-broker",
-        "responseCode" : 200
+    "RebootBroker": {
+      "name": "RebootBroker",
+      "http": {
+        "method": "PUT",
+        "requestUri": "/v1/clusters/{clusterArn}/reboot-broker",
+        "responseCode": 200
       },
-      "input" : {
-        "shape" : "RebootBrokerRequest"
+      "input": {
+        "shape": "RebootBrokerRequest"
       },
-      "output" : {
-        "shape" : "RebootBrokerResponse",
+      "output": {
+        "shape": "RebootBrokerResponse",
         "documentation": "\n            <p>Successful response.</p>\n         "
       },
-      "errors" : [
+      "errors": [
         {
-          "shape" : "BadRequestException",
+          "shape": "BadRequestException",
           "documentation": "\n            <p>The request isn't valid because the input is incorrect. Correct your input and then submit it again.</p>\n         "
         },
         {
-          "shape" : "UnauthorizedException",
+          "shape": "UnauthorizedException",
           "documentation": "\n            <p>The request is not authorized. The provided credentials couldn't be validated.</p>\n         "
         },
         {
-          "shape" : "InternalServerErrorException",
+          "shape": "InternalServerErrorException",
           "documentation": "\n            <p>There was an unexpected internal server error. Retrying your request might resolve the issue.</p>\n         "
         },
         {
-          "shape" : "ForbiddenException",
+          "shape": "ForbiddenException",
           "documentation": "\n            <p>Access forbidden. Check your credentials and then retry your request.</p>\n         "
         },
         {
-          "shape" : "NotFoundException",
+          "shape": "NotFoundException",
           "documentation": "\n            <p>The resource could not be found due to incorrect input. Correct the input, then retry the request.</p>\n         "
         },
         {
-          "shape" : "ServiceUnavailableException",
+          "shape": "ServiceUnavailableException",
           "documentation": "\n            <p>503 response</p>\n         "
         },
         {
-          "shape" : "TooManyRequestsException",
-          "documentation" : "\n            <p>429 response</p>\n            "
+          "shape": "TooManyRequestsException",
+          "documentation": "\n            <p>429 response</p>\n            "
         }
       ],
-      "documentation" : "Reboots brokers."
+      "documentation": "Reboots brokers."
     },
     "TagResource": {
       "name": "TagResource",
@@ -1637,32 +1680,32 @@
       },
       "errors": [
         {
-          "shape" : "BadRequestException",
-          "documentation" : "\n            <p>The request isn't valid because the input is incorrect. Correct your input and then submit it again.</p>\n            "
+          "shape": "BadRequestException",
+          "documentation": "\n            <p>The request isn't valid because the input is incorrect. Correct your input and then submit it again.</p>\n            "
         },
         {
-          "shape" : "UnauthorizedException",
-          "documentation" : "\n            <p>The request is not authorized. The provided credentials couldn't be validated.</p>\n            "
+          "shape": "UnauthorizedException",
+          "documentation": "\n            <p>The request is not authorized. The provided credentials couldn't be validated.</p>\n            "
         },
         {
-          "shape" : "InternalServerErrorException",
-          "documentation" : "\n            <p>There was an unexpected internal server error. Retrying your request might resolve the issue.</p>\n            "
+          "shape": "InternalServerErrorException",
+          "documentation": "\n            <p>There was an unexpected internal server error. Retrying your request might resolve the issue.</p>\n            "
         },
         {
-          "shape" : "ForbiddenException",
-          "documentation" : "\n            <p>Access forbidden. Check your credentials and then retry your request.</p>\n            "
+          "shape": "ForbiddenException",
+          "documentation": "\n            <p>Access forbidden. Check your credentials and then retry your request.</p>\n            "
         },
         {
-          "shape" : "NotFoundException",
-          "documentation" : "\n            <p>The resource could not be found due to incorrect input. Correct the input, then retry the request.</p>\n            "
+          "shape": "NotFoundException",
+          "documentation": "\n            <p>The resource could not be found due to incorrect input. Correct the input, then retry the request.</p>\n            "
         },
         {
-          "shape" : "ServiceUnavailableException",
-          "documentation" : "\n            <p>503 response</p>\n            "
+          "shape": "ServiceUnavailableException",
+          "documentation": "\n            <p>503 response</p>\n            "
         },
         {
-          "shape" : "TooManyRequestsException",
-          "documentation" : "\n            <p>429 response</p>\n            "
+          "shape": "TooManyRequestsException",
+          "documentation": "\n            <p>429 response</p>\n            "
         }
       ],
       "documentation": "\n            <p>Updates EC2 instance type.</p>\n         "
@@ -1747,18 +1790,18 @@
       ],
       "documentation": "\n            <p>Updates an MSK configuration.</p>\n         "
     },
-    "UpdateConnectivity" : {
-      "name" : "UpdateConnectivity",
-      "http" : {
-        "method" : "PUT",
-        "requestUri" : "/v1/clusters/{clusterArn}/connectivity",
-        "responseCode" : 200
+    "UpdateConnectivity": {
+      "name": "UpdateConnectivity",
+      "http": {
+        "method": "PUT",
+        "requestUri": "/v1/clusters/{clusterArn}/connectivity",
+        "responseCode": 200
       },
-      "input" : {
-        "shape" : "UpdateConnectivityRequest"
+      "input": {
+        "shape": "UpdateConnectivityRequest"
       },
-      "output" : {
-        "shape" : "UpdateConnectivityResponse",
+      "output": {
+        "shape": "UpdateConnectivityResponse",
         "documentation": "\n            <p>Successful response.</p>\n         "
       },
       "errors": [
@@ -1787,7 +1830,7 @@
           "documentation": "\n            <p>503 response</p>\n         "
         }
       ],
-      "documentation" : "\n            <p>Updates the cluster's connectivity configuration.</p>\n         "
+      "documentation": "\n            <p>Updates the cluster's connectivity configuration.</p>\n         "
     },
     "UpdateClusterConfiguration": {
       "name": "UpdateClusterConfiguration",
@@ -1831,83 +1874,89 @@
       ],
       "documentation": "\n            <p>Updates the cluster with the configuration that is specified in the request body.</p>\n         "
     },
-    "UpdateClusterKafkaVersion" : {
-      "name" : "UpdateClusterKafkaVersion",
-      "http" : {
-        "method" : "PUT",
-        "requestUri" : "/v1/clusters/{clusterArn}/version",
-        "responseCode" : 200
+    "UpdateClusterKafkaVersion": {
+      "name": "UpdateClusterKafkaVersion",
+      "http": {
+        "method": "PUT",
+        "requestUri": "/v1/clusters/{clusterArn}/version",
+        "responseCode": 200
       },
-      "input" : {
-        "shape" : "UpdateClusterKafkaVersionRequest"
+      "input": {
+        "shape": "UpdateClusterKafkaVersionRequest"
       },
-      "output" : {
-        "shape" : "UpdateClusterKafkaVersionResponse",
-        "documentation" : "\n            <p>Successful response.</p>\n            "
+      "output": {
+        "shape": "UpdateClusterKafkaVersionResponse",
+        "documentation": "\n            <p>Successful response.</p>\n            "
       },
-      "errors" : [
+      "errors": [
         {
-          "shape" : "BadRequestException",
-          "documentation" : "\n            <p>The request isn't valid because the input is incorrect. Correct your input and then submit it again.</p>\n            "
+          "shape": "BadRequestException",
+          "documentation": "\n            <p>The request isn't valid because the input is incorrect. Correct your input and then submit it again.</p>\n            "
         },
         {
-          "shape" : "UnauthorizedException",
-          "documentation" : "\n            <p>The request is not authorized. The provided credentials couldn't be validated.</p>\n            "
+          "shape": "UnauthorizedException",
+          "documentation": "\n            <p>The request is not authorized. The provided credentials couldn't be validated.</p>\n            "
         },
         {
-          "shape" : "InternalServerErrorException",
-          "documentation" : "\n            <p>There was an unexpected internal server error. Retrying your request might resolve the issue.</p>\n            "
+          "shape": "InternalServerErrorException",
+          "documentation": "\n            <p>There was an unexpected internal server error. Retrying your request might resolve the issue.</p>\n            "
         },
         {
-          "shape" : "ForbiddenException",
-          "documentation" : "\n            <p>Access forbidden. Check your credentials and then retry your request.</p>\n            "
+          "shape": "ForbiddenException",
+          "documentation": "\n            <p>Access forbidden. Check your credentials and then retry your request.</p>\n            "
         },
         {
-          "shape" : "NotFoundException",
-          "documentation" : "\n            <p>The resource could not be found due to incorrect input. Correct the input, then retry the request.</p>\n            "
+          "shape": "NotFoundException",
+          "documentation": "\n            <p>The resource could not be found due to incorrect input. Correct the input, then retry the request.</p>\n            "
         },
         {
-          "shape" : "ServiceUnavailableException",
-          "documentation" : "\n            <p>503 response</p>\n            "
+          "shape": "ServiceUnavailableException",
+          "documentation": "\n            <p>503 response</p>\n            "
         },
         {
-          "shape" : "TooManyRequestsException",
-          "documentation" : "\n            <p>429 response</p>\n            "
+          "shape": "TooManyRequestsException",
+          "documentation": "\n            <p>429 response</p>\n            "
         }
       ],
       "documentation": "\n            <p>Updates the Apache Kafka version for the cluster.</p>\n         "
     },
-    "UpdateMonitoring" : {
-      "name" : "UpdateMonitoring",
-      "http" : {
-        "method" : "PUT",
-        "requestUri" : "/v1/clusters/{clusterArn}/monitoring",
-        "responseCode" : 200
+    "UpdateMonitoring": {
+      "name": "UpdateMonitoring",
+      "http": {
+        "method": "PUT",
+        "requestUri": "/v1/clusters/{clusterArn}/monitoring",
+        "responseCode": 200
       },
-      "input" : {
-        "shape" : "UpdateMonitoringRequest"
+      "input": {
+        "shape": "UpdateMonitoringRequest"
       },
-      "output" : {
-        "shape" : "UpdateMonitoringResponse",
-        "documentation" : "\n            <p>HTTP Status Code 200: OK.</p>\n         "
+      "output": {
+        "shape": "UpdateMonitoringResponse",
+        "documentation": "\n            <p>HTTP Status Code 200: OK.</p>\n         "
       },
-      "errors" : [ {
-        "shape" : "ServiceUnavailableException",
-        "documentation" : "\n            <p>503 response</p>\n         "
-      }, {
-        "shape" : "BadRequestException",
-        "documentation" : "\n            <p>The request isn't valid because the input is incorrect. Correct your input and then submit it again.</p>\n         "
-      }, {
-        "shape" : "UnauthorizedException",
-        "documentation" : "\n            <p>The request is not authorized. The provided credentials couldn't be validated.</p>\n         "
-      }, {
-        "shape" : "InternalServerErrorException",
-        "documentation" : "\n            <p>There was an unexpected internal server error. Retrying your request might resolve the issue.</p>\n         "
-      }, {
-        "shape" : "ForbiddenException",
-        "documentation" : "\n            <p>Access forbidden. Check your credentials and then retry your request.</p>\n         "
-      } ],
-      "documentation" : "\n            <p>Updates the monitoring settings for the cluster. You can use this operation to specify which Apache Kafka metrics you want Amazon MSK to send to Amazon CloudWatch. You can also specify settings for open monitoring with Prometheus.</p>\n         "
+      "errors": [
+        {
+          "shape": "ServiceUnavailableException",
+          "documentation": "\n            <p>503 response</p>\n         "
+        },
+        {
+          "shape": "BadRequestException",
+          "documentation": "\n            <p>The request isn't valid because the input is incorrect. Correct your input and then submit it again.</p>\n         "
+        },
+        {
+          "shape": "UnauthorizedException",
+          "documentation": "\n            <p>The request is not authorized. The provided credentials couldn't be validated.</p>\n         "
+        },
+        {
+          "shape": "InternalServerErrorException",
+          "documentation": "\n            <p>There was an unexpected internal server error. Retrying your request might resolve the issue.</p>\n         "
+        },
+        {
+          "shape": "ForbiddenException",
+          "documentation": "\n            <p>Access forbidden. Check your credentials and then retry your request.</p>\n         "
+        }
+      ],
+      "documentation": "\n            <p>Updates the monitoring settings for the cluster. You can use this operation to specify which Apache Kafka metrics you want Amazon MSK to send to Amazon CloudWatch. You can also specify settings for open monitoring with Prometheus.</p>\n         "
     },
     "UpdateReplicationInfo": {
       "name": "UpdateReplicationInfo",
@@ -1955,80 +2004,96 @@
       ],
       "documentation": "<p>Updates replication info of a replicator.</p>"
     },
-    "UpdateSecurity" : {
-      "name" : "UpdateSecurity",
-      "http" : {
-        "method" : "PATCH",
-        "requestUri" : "/v1/clusters/{clusterArn}/security",
-        "responseCode" : 200
+    "UpdateSecurity": {
+      "name": "UpdateSecurity",
+      "http": {
+        "method": "PATCH",
+        "requestUri": "/v1/clusters/{clusterArn}/security",
+        "responseCode": 200
       },
-      "input" : {
-        "shape" : "UpdateSecurityRequest"
+      "input": {
+        "shape": "UpdateSecurityRequest"
       },
-      "output" : {
-        "shape" : "UpdateSecurityResponse"
+      "output": {
+        "shape": "UpdateSecurityResponse"
       },
-      "errors" : [ {
-        "shape" : "BadRequestException",
-        "documentation" : "\n            <p>The request isn't valid because the input is incorrect. Correct your input and then submit it again.</p>\n         "
-      }, {
-        "shape" : "UnauthorizedException",
-        "documentation" : "\n            <p>The request is not authorized. The provided credentials couldn't be validated.</p>\n         "
-      }, {
-        "shape" : "InternalServerErrorException",
-        "documentation" : "\n            <p>There was an unexpected internal server error. Retrying your request might resolve the issue.</p>\n         "
-      }, {
-        "shape" : "ForbiddenException",
-        "documentation" : "\n            <p>Access forbidden. Check your credentials and then retry your request.</p>\n         "
-      }, {
-        "shape" : "NotFoundException",
-        "documentation" : "\n            <p>The resource could not be found due to incorrect input. Correct the input, then retry the request.</p>\n         "
-      }, {
-        "shape" : "ServiceUnavailableException",
-        "documentation" : "\n            <p>The service cannot complete the request.</p>\n         "
-      }, {
-        "shape" : "TooManyRequestsException",
-        "documentation" : "\n            <p>The request throughput limit was exceeded.</p>\n         "
-      } ],
-      "documentation" : "\n            <p>Updates the security settings for the cluster. You can use this operation to specify encryption and authentication on existing clusters.</p>\n         "
+      "errors": [
+        {
+          "shape": "BadRequestException",
+          "documentation": "\n            <p>The request isn't valid because the input is incorrect. Correct your input and then submit it again.</p>\n         "
+        },
+        {
+          "shape": "UnauthorizedException",
+          "documentation": "\n            <p>The request is not authorized. The provided credentials couldn't be validated.</p>\n         "
+        },
+        {
+          "shape": "InternalServerErrorException",
+          "documentation": "\n            <p>There was an unexpected internal server error. Retrying your request might resolve the issue.</p>\n         "
+        },
+        {
+          "shape": "ForbiddenException",
+          "documentation": "\n            <p>Access forbidden. Check your credentials and then retry your request.</p>\n         "
+        },
+        {
+          "shape": "NotFoundException",
+          "documentation": "\n            <p>The resource could not be found due to incorrect input. Correct the input, then retry the request.</p>\n         "
+        },
+        {
+          "shape": "ServiceUnavailableException",
+          "documentation": "\n            <p>The service cannot complete the request.</p>\n         "
+        },
+        {
+          "shape": "TooManyRequestsException",
+          "documentation": "\n            <p>The request throughput limit was exceeded.</p>\n         "
+        }
+      ],
+      "documentation": "\n            <p>Updates the security settings for the cluster. You can use this operation to specify encryption and authentication on existing clusters.</p>\n         "
     },
-    "UpdateStorage" : {
-      "name" : "UpdateStorage",
-      "http" : {
-        "method" : "PUT",
-        "requestUri" : "/v1/clusters/{clusterArn}/storage",
-        "responseCode" : 200
+    "UpdateStorage": {
+      "name": "UpdateStorage",
+      "http": {
+        "method": "PUT",
+        "requestUri": "/v1/clusters/{clusterArn}/storage",
+        "responseCode": 200
       },
-      "input" : {
-        "shape" : "UpdateStorageRequest"
+      "input": {
+        "shape": "UpdateStorageRequest"
       },
-      "output" : {
-        "shape" : "UpdateStorageResponse",
-        "documentation" : "HTTP Status Code 200: OK."
+      "output": {
+        "shape": "UpdateStorageResponse",
+        "documentation": "HTTP Status Code 200: OK."
       },
-      "errors" : [ {
-        "shape" : "BadRequestException",
-        "documentation" : "HTTP Status Code 400: Bad request due to incorrect input. Correct your request and then retry it."
-      }, {
-        "shape" : "UnauthorizedException",
-        "documentation" : "HTTP Status Code 401: Unauthorized request. The provided credentials couldn't be validated."
-      }, {
-        "shape" : "InternalServerErrorException",
-        "documentation" : "HTTP Status Code 500: Unexpected internal server error. Retrying your request might resolve the issue."
-      }, {
-        "shape" : "ForbiddenException",
-        "documentation" : "HTTP Status Code 403: Access forbidden. Correct your credentials and then retry your request."
-      }, {
-        "shape" : "NotFoundException",
-        "documentation" : "HTTP Status Code 404: Resource not found due to incorrect input. Correct your request and then retry it."
-      }, {
-        "shape" : "ServiceUnavailableException",
-        "documentation" : "HTTP Status Code 503: Service Unavailable. Retrying your request in some time might resolve the issue."
-      }, {
-        "shape" : "TooManyRequestsException",
-        "documentation" : "HTTP Status Code 429: Limit exceeded. Resource limit reached."
-      } ],
-      "documentation" : "Updates cluster broker volume size (or) sets cluster storage mode to TIERED."
+      "errors": [
+        {
+          "shape": "BadRequestException",
+          "documentation": "HTTP Status Code 400: Bad request due to incorrect input. Correct your request and then retry it."
+        },
+        {
+          "shape": "UnauthorizedException",
+          "documentation": "HTTP Status Code 401: Unauthorized request. The provided credentials couldn't be validated."
+        },
+        {
+          "shape": "InternalServerErrorException",
+          "documentation": "HTTP Status Code 500: Unexpected internal server error. Retrying your request might resolve the issue."
+        },
+        {
+          "shape": "ForbiddenException",
+          "documentation": "HTTP Status Code 403: Access forbidden. Correct your credentials and then retry your request."
+        },
+        {
+          "shape": "NotFoundException",
+          "documentation": "HTTP Status Code 404: Resource not found due to incorrect input. Correct your request and then retry it."
+        },
+        {
+          "shape": "ServiceUnavailableException",
+          "documentation": "HTTP Status Code 503: Service Unavailable. Retrying your request in some time might resolve the issue."
+        },
+        {
+          "shape": "TooManyRequestsException",
+          "documentation": "HTTP Status Code 429: Limit exceeded. Resource limit reached."
+        }
+      ],
+      "documentation": "Updates cluster broker volume size (or) sets cluster storage mode to TIERED."
     }
   },
   "shapes": {
@@ -2042,38 +2107,43 @@
         }
       },
       "documentation": "<p>Details of an Amazon MSK Cluster.</p>",
-      "required": ["MskClusterArn"]
+      "required": [
+        "MskClusterArn"
+      ]
     },
-    "BatchAssociateScramSecretRequest" : {
-      "type" : "structure",
-      "members" : {
-        "ClusterArn" : {
-          "shape" : "__string",
-          "location" : "uri",
-          "locationName" : "clusterArn",
-          "documentation" : "\n            <p>The Amazon Resource Name (ARN) of the cluster to be updated.</p>\n         "
+    "BatchAssociateScramSecretRequest": {
+      "type": "structure",
+      "members": {
+        "ClusterArn": {
+          "shape": "__string",
+          "location": "uri",
+          "locationName": "clusterArn",
+          "documentation": "\n            <p>The Amazon Resource Name (ARN) of the cluster to be updated.</p>\n         "
         },
-        "SecretArnList" : {
-          "shape" : "__listOf__string",
-          "locationName" : "secretArnList",
-          "documentation" : "\n            <p>List of AWS Secrets Manager secret ARNs.</p>\n         "
+        "SecretArnList": {
+          "shape": "__listOf__string",
+          "locationName": "secretArnList",
+          "documentation": "\n            <p>List of AWS Secrets Manager secret ARNs.</p>\n         "
         }
       },
-      "documentation" : "\n            <p>Associates sasl scram secrets to cluster.</p>\n         ",
-      "required" : [ "ClusterArn", "SecretArnList" ]
+      "documentation": "\n            <p>Associates sasl scram secrets to cluster.</p>\n         ",
+      "required": [
+        "ClusterArn",
+        "SecretArnList"
+      ]
     },
-    "BatchAssociateScramSecretResponse" : {
-      "type" : "structure",
-      "members" : {
-        "ClusterArn" : {
-          "shape" : "__string",
-          "locationName" : "clusterArn",
-          "documentation" : "\n            <p>The Amazon Resource Name (ARN) of the cluster.</p>\n         "
+    "BatchAssociateScramSecretResponse": {
+      "type": "structure",
+      "members": {
+        "ClusterArn": {
+          "shape": "__string",
+          "locationName": "clusterArn",
+          "documentation": "\n            <p>The Amazon Resource Name (ARN) of the cluster.</p>\n         "
         },
-        "UnprocessedScramSecrets" : {
-          "shape" : "__listOfUnprocessedScramSecret",
-          "locationName" : "unprocessedScramSecrets",
-          "documentation" : "\n            <p>List of errors when associating secrets to cluster.</p>\n         "
+        "UnprocessedScramSecrets": {
+          "shape": "__listOfUnprocessedScramSecret",
+          "locationName": "unprocessedScramSecrets",
+          "documentation": "\n            <p>List of errors when associating secrets to cluster.</p>\n         "
         }
       }
     },
@@ -2104,17 +2174,17 @@
         "DEFAULT"
       ]
     },
-    "BrokerCountUpdateInfo" : {
-      "type" : "structure",
-      "members" : {
-        "CreatedBrokerIds" : {
-          "shape" : "__listOf__double",
-          "locationName" : "createdBrokerIds",
+    "BrokerCountUpdateInfo": {
+      "type": "structure",
+      "members": {
+        "CreatedBrokerIds": {
+          "shape": "__listOf__double",
+          "locationName": "createdBrokerIds",
           "documentation": "\n            <p>Kafka Broker IDs of brokers being created.</p>\n         "
         },
-        "DeletedBrokerIds" : {
-          "shape" : "__listOf__double",
-          "locationName" : "deletedBrokerIds",
+        "DeletedBrokerIds": {
+          "shape": "__listOf__double",
+          "locationName": "deletedBrokerIds",
           "documentation": "\n            <p>Kafka Broker IDs of brokers being deleted.</p>\n         "
         }
       },
@@ -2128,10 +2198,10 @@
           "locationName": "kafkaBrokerNodeId",
           "documentation": "\n            <p>The ID of the broker to update.</p>\n         "
         },
-        "ProvisionedThroughput" : {
-          "shape" : "ProvisionedThroughput",
-          "locationName" : "provisionedThroughput",
-          "documentation" : "\n            <p>EBS volume provisioned throughput information.</p>\n         "
+        "ProvisionedThroughput": {
+          "shape": "ProvisionedThroughput",
+          "locationName": "provisionedThroughput",
+          "documentation": "\n            <p>EBS volume provisioned throughput information.</p>\n         "
         },
         "VolumeSizeGB": {
           "shape": "__integer",
@@ -2189,10 +2259,10 @@
           "locationName": "storageInfo",
           "documentation": "\n            <p>Contains information about storage volumes attached to MSK broker nodes.</p>\n         "
         },
-        "ConnectivityInfo" : {
-          "shape" : "ConnectivityInfo",
-          "locationName" : "connectivityInfo",
-          "documentation" : "\n            <p>Information about the broker access configuration.</p>\n         "
+        "ConnectivityInfo": {
+          "shape": "ConnectivityInfo",
+          "locationName": "connectivityInfo",
+          "documentation": "\n            <p>Information about the broker access configuration.</p>\n         "
         },
         "ZoneIds": {
           "shape": "__listOf__string",
@@ -2263,34 +2333,34 @@
       },
       "documentation": "\n            <p>Information about the current software installed on the cluster.</p>\n         "
     },
-    "ClientAuthentication" : {
-      "type" : "structure",
-      "members" : {
-        "Sasl" : {
-          "shape" : "Sasl",
-          "locationName" : "sasl",
-          "documentation" : "\n            <p>Details for ClientAuthentication using SASL.</p>\n         "
+    "ClientAuthentication": {
+      "type": "structure",
+      "members": {
+        "Sasl": {
+          "shape": "Sasl",
+          "locationName": "sasl",
+          "documentation": "\n            <p>Details for ClientAuthentication using SASL.</p>\n         "
         },
         "Tls": {
           "shape": "Tls",
           "locationName": "tls",
           "documentation": "\n            <p>Details for ClientAuthentication using TLS.</p>\n         "
         },
-        "Unauthenticated" : {
-          "shape" : "Unauthenticated",
-          "locationName" : "unauthenticated",
+        "Unauthenticated": {
+          "shape": "Unauthenticated",
+          "locationName": "unauthenticated",
           "documentation": "\n            <p>Contains information about unauthenticated traffic to the cluster.</p>\n         "
         }
       },
-      "documentation" : "\n            <p>Includes all client authentication information.</p>\n         "
+      "documentation": "\n            <p>Includes all client authentication information.</p>\n         "
     },
-    "VpcConnectivityClientAuthentication" : {
-      "type" : "structure",
-      "members" : {
-        "Sasl" : {
-          "shape" : "VpcConnectivitySasl",
-          "locationName" : "sasl",
-          "documentation" : "\n            <p>SASL authentication type details for VPC connectivity.</p>\n         "
+    "VpcConnectivityClientAuthentication": {
+      "type": "structure",
+      "members": {
+        "Sasl": {
+          "shape": "VpcConnectivitySasl",
+          "locationName": "sasl",
+          "documentation": "\n            <p>SASL authentication type details for VPC connectivity.</p>\n         "
         },
         "Tls": {
           "shape": "VpcConnectivityTls",
@@ -2298,18 +2368,18 @@
           "documentation": "\n            <p>TLS authentication type details for VPC connectivity.</p>\n         "
         }
       },
-      "documentation" : "\n            <p>Includes all client authentication information for VPC connectivity.</p>\n         "
+      "documentation": "\n            <p>Includes all client authentication information for VPC connectivity.</p>\n         "
     },
-    "ServerlessClientAuthentication" : {
-      "type" : "structure",
-      "members" : {
-        "Sasl" : {
-          "shape" : "ServerlessSasl",
-          "locationName" : "sasl",
-          "documentation" : "\n            <p>Details for ClientAuthentication using SASL.</p>\n         "
+    "ServerlessClientAuthentication": {
+      "type": "structure",
+      "members": {
+        "Sasl": {
+          "shape": "ServerlessSasl",
+          "locationName": "sasl",
+          "documentation": "\n            <p>Details for ClientAuthentication using SASL.</p>\n         "
         }
       },
-      "documentation" : "\n            <p>Includes all client authentication information.</p>\n         "
+      "documentation": "\n            <p>Includes all client authentication information.</p>\n         "
     },
     "ClientBroker": {
       "type": "string",
@@ -2320,19 +2390,21 @@
         "PLAINTEXT"
       ]
     },
-    "CloudWatchLogs" : {
-      "type" : "structure",
-      "members" : {
-        "Enabled" : {
-          "shape" : "__boolean",
-          "locationName" : "enabled"
+    "CloudWatchLogs": {
+      "type": "structure",
+      "members": {
+        "Enabled": {
+          "shape": "__boolean",
+          "locationName": "enabled"
         },
-        "LogGroup" : {
-          "shape" : "__string",
-          "locationName" : "logGroup"
+        "LogGroup": {
+          "shape": "__string",
+          "locationName": "logGroup"
         }
       },
-      "required" : [ "Enabled" ]
+      "required": [
+        "Enabled"
+      ]
     },
     "ClusterInfo": {
       "type": "structure",
@@ -2387,10 +2459,10 @@
           "locationName": "enhancedMonitoring",
           "documentation": "\n            <p>Specifies which metrics are gathered for the MSK cluster. This property has the following possible values: DEFAULT, PER_BROKER, PER_TOPIC_PER_BROKER, and PER_TOPIC_PER_PARTITION. For a list of the metrics associated with each of these levels of monitoring, see <a href=\"https://docs.aws.amazon.com/msk/latest/developerguide/monitoring.html\">Monitoring</a>.</p>\n         "
         },
-        "OpenMonitoring" : {
-          "shape" : "OpenMonitoring",
-          "locationName" : "openMonitoring",
-          "documentation" : "\n            <p>Settings for open monitoring using Prometheus.</p>\n         "
+        "OpenMonitoring": {
+          "shape": "OpenMonitoring",
+          "locationName": "openMonitoring",
+          "documentation": "\n            <p>Settings for open monitoring using Prometheus.</p>\n         "
         },
         "LoggingInfo": {
           "shape": "LoggingInfo",
@@ -2406,9 +2478,9 @@
           "locationName": "state",
           "documentation": "\n            <p>The state of the cluster. The possible states are ACTIVE, CREATING, DELETING, FAILED, HEALING, MAINTENANCE, REBOOTING_BROKER, and UPDATING.</p>\n         "
         },
-        "StateInfo" : {
-          "shape" : "StateInfo",
-          "locationName" : "stateInfo"
+        "StateInfo": {
+          "shape": "StateInfo",
+          "locationName": "stateInfo"
         },
         "Tags": {
           "shape": "__mapOf__string",
@@ -2420,15 +2492,15 @@
           "locationName": "zookeeperConnectString",
           "documentation": "\n            <p>The connection string to use to connect to the Apache ZooKeeper cluster.</p>\n         "
         },
-        "ZookeeperConnectStringTls" : {
-          "shape" : "__string",
-          "locationName" : "zookeeperConnectStringTls",
-          "documentation" : "\n            <p>The connection string to use to connect to zookeeper cluster on Tls port.</p>\n         "
+        "ZookeeperConnectStringTls": {
+          "shape": "__string",
+          "locationName": "zookeeperConnectStringTls",
+          "documentation": "\n            <p>The connection string to use to connect to zookeeper cluster on Tls port.</p>\n         "
         },
-        "StorageMode" : {
-          "shape" : "StorageMode",
-          "locationName" : "storageMode",
-          "documentation" : "\n            <p>This controls storage mode for supported storage tiers.</p>\n         "
+        "StorageMode": {
+          "shape": "StorageMode",
+          "locationName": "storageMode",
+          "documentation": "\n            <p>This controls storage mode for supported storage tiers.</p>\n         "
         },
         "CustomerActionStatus": {
           "shape": "CustomerActionStatus",
@@ -2476,9 +2548,9 @@
           "locationName": "state",
           "documentation": "\n            <p>The state of the cluster. The possible states are ACTIVE, CREATING, DELETING, FAILED, HEALING, MAINTENANCE, REBOOTING_BROKER, and UPDATING.</p>\n         "
         },
-        "StateInfo" : {
-          "shape" : "StateInfo",
-          "locationName" : "stateInfo",
+        "StateInfo": {
+          "shape": "StateInfo",
+          "locationName": "stateInfo",
           "documentation": "\n            <p>State Info for the Amazon MSK cluster.</p>\n         "
         },
         "Tags": {
@@ -2537,10 +2609,10 @@
           "locationName": "operationState",
           "documentation": "\n            <p>State of the cluster operation.</p>\n         "
         },
-        "OperationSteps" : {
-          "shape" : "__listOfClusterOperationStep",
-          "locationName" : "operationSteps",
-          "documentation" : "\n            <p>Steps completed during the operation.</p>\n         "
+        "OperationSteps": {
+          "shape": "__listOfClusterOperationStep",
+          "locationName": "operationSteps",
+          "documentation": "\n            <p>Steps completed during the operation.</p>\n         "
         },
         "OperationType": {
           "shape": "__string",
@@ -2565,32 +2637,32 @@
       },
       "documentation": "\n            <p>Returns information about a cluster operation.</p>\n         "
     },
-    "ClusterOperationStep" : {
-      "type" : "structure",
-      "members" : {
-        "StepInfo" : {
-          "shape" : "ClusterOperationStepInfo",
-          "locationName" : "stepInfo",
-          "documentation" : "\n            <p>Information about the step and its status.</p>\n         "
+    "ClusterOperationStep": {
+      "type": "structure",
+      "members": {
+        "StepInfo": {
+          "shape": "ClusterOperationStepInfo",
+          "locationName": "stepInfo",
+          "documentation": "\n            <p>Information about the step and its status.</p>\n         "
         },
-        "StepName" : {
-          "shape" : "__string",
-          "locationName" : "stepName",
-          "documentation" : "\n            <p>The name of the step.</p>\n         "
+        "StepName": {
+          "shape": "__string",
+          "locationName": "stepName",
+          "documentation": "\n            <p>The name of the step.</p>\n         "
         }
       },
-      "documentation" : "\n            <p>Step taken during a cluster operation.</p>\n         "
+      "documentation": "\n            <p>Step taken during a cluster operation.</p>\n         "
     },
-    "ClusterOperationStepInfo" : {
-      "type" : "structure",
-      "members" : {
-        "StepStatus" : {
-          "shape" : "__string",
-          "locationName" : "stepStatus",
-          "documentation" : "\n            <p>The steps current status.</p>\n         "
+    "ClusterOperationStepInfo": {
+      "type": "structure",
+      "members": {
+        "StepStatus": {
+          "shape": "__string",
+          "locationName": "stepStatus",
+          "documentation": "\n            <p>The steps current status.</p>\n         "
         }
       },
-      "documentation" : "\n            <p>State information about the operation step.</p>\n         "
+      "documentation": "\n            <p>State information about the operation step.</p>\n         "
     },
     "ClusterState": {
       "type": "string",
@@ -2615,9 +2687,9 @@
       ]
     },
     "ProvisionedRequest": {
-      "type" : "structure",
+      "type": "structure",
       "documentation": "\n            <p>Provisioned cluster request.</p>\n         ",
-      "members" : {
+      "members": {
         "BrokerNodeGroupInfo": {
           "shape": "BrokerNodeGroupInfo",
           "locationName": "brokerNodeGroupInfo",
@@ -2643,10 +2715,10 @@
           "locationName": "enhancedMonitoring",
           "documentation": "\n            <p>Specifies the level of monitoring for the MSK cluster. The possible values are DEFAULT, PER_BROKER, PER_TOPIC_PER_BROKER, and PER_TOPIC_PER_PARTITION.</p>\n         "
         },
-        "OpenMonitoring" : {
-          "shape" : "OpenMonitoringInfo",
-          "locationName" : "openMonitoring",
-          "documentation" : "\n            <p>The settings for open monitoring.</p>\n         "
+        "OpenMonitoring": {
+          "shape": "OpenMonitoringInfo",
+          "locationName": "openMonitoring",
+          "documentation": "\n            <p>The settings for open monitoring.</p>\n         "
         },
         "KafkaVersion": {
           "shape": "__stringMin1Max128",
@@ -2663,10 +2735,10 @@
           "locationName": "numberOfBrokerNodes",
           "documentation": "\n            <p>The number of broker nodes in the cluster.</p>\n         "
         },
-        "StorageMode" : {
-          "shape" : "StorageMode",
-          "locationName" : "storageMode",
-          "documentation" : "\n            <p>This controls storage mode for supported storage tiers.</p>\n         "
+        "StorageMode": {
+          "shape": "StorageMode",
+          "locationName": "storageMode",
+          "documentation": "\n            <p>This controls storage mode for supported storage tiers.</p>\n         "
         }
       },
       "required": [
@@ -2676,9 +2748,9 @@
       ]
     },
     "Provisioned": {
-      "type" : "structure",
+      "type": "structure",
       "documentation": "\n            <p>Provisioned cluster.</p>\n         ",
-      "members" : {
+      "members": {
         "BrokerNodeGroupInfo": {
           "shape": "BrokerNodeGroupInfo",
           "locationName": "brokerNodeGroupInfo",
@@ -2704,10 +2776,10 @@
           "locationName": "enhancedMonitoring",
           "documentation": "\n            <p>Specifies the level of monitoring for the MSK cluster. The possible values are DEFAULT, PER_BROKER, PER_TOPIC_PER_BROKER, and PER_TOPIC_PER_PARTITION.</p>\n         "
         },
-        "OpenMonitoring" : {
-          "shape" : "OpenMonitoringInfo",
-          "locationName" : "openMonitoring",
-          "documentation" : "\n            <p>The settings for open monitoring.</p>\n         "
+        "OpenMonitoring": {
+          "shape": "OpenMonitoringInfo",
+          "locationName": "openMonitoring",
+          "documentation": "\n            <p>The settings for open monitoring.</p>\n         "
         },
         "LoggingInfo": {
           "shape": "LoggingInfo",
@@ -2724,15 +2796,15 @@
           "locationName": "zookeeperConnectString",
           "documentation": "\n            <p>The connection string to use to connect to the Apache ZooKeeper cluster.</p>\n         "
         },
-        "ZookeeperConnectStringTls" : {
-          "shape" : "__string",
-          "locationName" : "zookeeperConnectStringTls",
-          "documentation" : "\n            <p>The connection string to use to connect to the Apache ZooKeeper cluster on a TLS port.</p>\n         "
+        "ZookeeperConnectStringTls": {
+          "shape": "__string",
+          "locationName": "zookeeperConnectStringTls",
+          "documentation": "\n            <p>The connection string to use to connect to the Apache ZooKeeper cluster on a TLS port.</p>\n         "
         },
-        "StorageMode" : {
-          "shape" : "StorageMode",
-          "locationName" : "storageMode",
-          "documentation" : "\n            <p>This controls storage mode for supported storage tiers.</p>\n         "
+        "StorageMode": {
+          "shape": "StorageMode",
+          "locationName": "storageMode",
+          "documentation": "\n            <p>This controls storage mode for supported storage tiers.</p>\n         "
         },
         "CustomerActionStatus": {
           "shape": "CustomerActionStatus",
@@ -2746,18 +2818,18 @@
       ]
     },
     "VpcConfig": {
-      "type" : "structure",
+      "type": "structure",
       "documentation": "\n            <p>The configuration of the Amazon VPCs for the cluster.</p>\n         ",
       "members": {
         "SubnetIds": {
           "shape": "__listOf__string",
           "locationName": "subnetIds",
-          "documentation" : "\n            <p>The IDs of the subnets associated with the cluster.</p>\n         "
+          "documentation": "\n            <p>The IDs of the subnets associated with the cluster.</p>\n         "
         },
         "SecurityGroupIds": {
           "shape": "__listOf__string",
           "locationName": "securityGroupIds",
-          "documentation" : "\n            <p>The IDs of the security groups associated with the cluster.</p>\n         "
+          "documentation": "\n            <p>The IDs of the security groups associated with the cluster.</p>\n         "
         }
       },
       "required": [
@@ -2765,9 +2837,9 @@
       ]
     },
     "ServerlessRequest": {
-      "type" : "structure",
+      "type": "structure",
       "documentation": "\n            <p>Serverless cluster request.</p>\n         ",
-      "members" : {
+      "members": {
         "VpcConfigs": {
           "shape": "__listOfVpcConfig",
           "locationName": "vpcConfigs",
@@ -2784,9 +2856,9 @@
       ]
     },
     "Serverless": {
-      "type" : "structure",
+      "type": "structure",
       "documentation": "\n            <p>Serverless cluster.</p>\n         ",
-      "members" : {
+      "members": {
         "VpcConfigs": {
           "shape": "__listOfVpcConfig",
           "locationName": "vpcConfigs",
@@ -2810,7 +2882,6 @@
           "shape": "__string",
           "locationName": "authentication",
           "documentation": "\n            <p>Information about the auth scheme of Vpc Connection.</p>\n         "
-
         },
         "CreationTime": {
           "shape": "__timestampIso8601",
@@ -2831,7 +2902,6 @@
           "shape": "__string",
           "locationName": "owner",
           "documentation": "\n            <p>The Owner of the Vpc Connection.</p>\n         "
-
         }
       },
       "required": [
@@ -2878,17 +2948,17 @@
         "TargetClusterArn"
       ]
     },
-    "CompatibleKafkaVersion" : {
-      "type" : "structure",
-      "members" : {
-        "SourceVersion" : {
-          "shape" : "__string",
-          "locationName" : "sourceVersion",
+    "CompatibleKafkaVersion": {
+      "type": "structure",
+      "members": {
+        "SourceVersion": {
+          "shape": "__string",
+          "locationName": "sourceVersion",
           "documentation": "\n            <p>An Apache Kafka version.</p>\n            "
         },
-        "TargetVersions" : {
-          "shape" : "__listOf__string",
-          "locationName" : "targetVersions",
+        "TargetVersions": {
+          "shape": "__listOf__string",
+          "locationName": "targetVersions",
           "documentation": "\n            <p>A list of Apache Kafka versions.</p>\n            "
         }
       },
@@ -3018,7 +3088,7 @@
         "httpStatusCode": 409
       }
     },
-    "ConnectivityInfo" : {
+    "ConnectivityInfo": {
       "type": "structure",
       "members": {
         "PublicAccess": {
@@ -3048,18 +3118,20 @@
           "documentation": "<p>List of regular expression patterns indicating the consumer groups to copy.</p>"
         },
         "DetectAndCopyNewConsumerGroups": {
-            "shape": "__boolean",
-            "locationName": "detectAndCopyNewConsumerGroups",
-            "documentation": "<p>Enables synchronization of consumer groups to target cluster.</p>"
+          "shape": "__boolean",
+          "locationName": "detectAndCopyNewConsumerGroups",
+          "documentation": "<p>Enables synchronization of consumer groups to target cluster.</p>"
         },
         "SynchroniseConsumerGroupOffsets": {
           "shape": "__boolean",
           "locationName": "synchroniseConsumerGroupOffsets",
           "documentation": "<p>Enables synchronization of consumer group offsets to target cluster. The translated offsets will be written to topic __consumer_offsets.</p>"
-          }
-        },
-        "documentation": "<p>Details about consumer group replication.</p>",
-        "required": ["ConsumerGroupsToReplicate"]
+        }
+      },
+      "documentation": "<p>Details about consumer group replication.</p>",
+      "required": [
+        "ConsumerGroupsToReplicate"
+      ]
     },
     "ConsumerGroupReplicationUpdate": {
       "type": "structure",
@@ -3086,7 +3158,12 @@
         }
       },
       "documentation": "<p>Details about consumer group replication.</p>",
-      "required": ["ConsumerGroupsToReplicate", "ConsumerGroupsToExclude", "SynchroniseConsumerGroupOffsets", "DetectAndCopyNewConsumerGroups"]
+      "required": [
+        "ConsumerGroupsToReplicate",
+        "ConsumerGroupsToExclude",
+        "SynchroniseConsumerGroupOffsets",
+        "DetectAndCopyNewConsumerGroups"
+      ]
     },
     "CreateClusterV2Request": {
       "type": "structure",
@@ -3149,10 +3226,10 @@
           "locationName": "enhancedMonitoring",
           "documentation": "\n            <p>Specifies the level of monitoring for the MSK cluster. The possible values are DEFAULT, PER_BROKER, PER_TOPIC_PER_BROKER, and PER_TOPIC_PER_PARTITION.</p>\n         "
         },
-        "OpenMonitoring" : {
-          "shape" : "OpenMonitoringInfo",
-          "locationName" : "openMonitoring",
-          "documentation" : "\n            <p>The settings for open monitoring.</p>\n         "
+        "OpenMonitoring": {
+          "shape": "OpenMonitoringInfo",
+          "locationName": "openMonitoring",
+          "documentation": "\n            <p>The settings for open monitoring.</p>\n         "
         },
         "KafkaVersion": {
           "shape": "__stringMin1Max128",
@@ -3173,10 +3250,10 @@
           "locationName": "tags",
           "documentation": "\n            <p>Create tags when creating the cluster.</p>\n         "
         },
-        "StorageMode" : {
-          "shape" : "StorageMode",
-          "locationName" : "storageMode",
-          "documentation" : "\n            <p>This controls storage mode for supported storage tiers.</p>\n         "
+        "StorageMode": {
+          "shape": "StorageMode",
+          "locationName": "storageMode",
+          "documentation": "\n            <p>This controls storage mode for supported storage tiers.</p>\n         "
         }
       },
       "required": [
@@ -3325,7 +3402,12 @@
         }
       },
       "documentation": "<p>Creates a replicator using the specified configuration.</p>",
-      "required": ["ServiceExecutionRoleArn", "ReplicatorName", "ReplicationInfoList", "KafkaClusters"]
+      "required": [
+        "ServiceExecutionRoleArn",
+        "ReplicatorName",
+        "ReplicationInfoList",
+        "KafkaClusters"
+      ]
     },
     "CreateReplicatorResponse": {
       "type": "structure",
@@ -3401,7 +3483,6 @@
           "shape": "VpcConnectionState",
           "locationName": "state",
           "documentation": "\n            <p>The State of Vpc Connection.</p>\n         "
-
         },
         "Authentication": {
           "shape": "__string",
@@ -3435,139 +3516,139 @@
         }
       }
     },
-    "ClusterOperationV2" : {
-      "type" : "structure",
-      "members" : {
-        "ClusterArn" : {
-          "shape" : "__string",
-          "locationName" : "clusterArn",
-          "documentation" : "\n            <p>ARN of the cluster.</p>"
+    "ClusterOperationV2": {
+      "type": "structure",
+      "members": {
+        "ClusterArn": {
+          "shape": "__string",
+          "locationName": "clusterArn",
+          "documentation": "\n            <p>ARN of the cluster.</p>"
         },
-        "ClusterType" : {
-          "shape" : "ClusterType",
-          "locationName" : "clusterType",
-          "documentation" : "\n            <p>Type of the backend cluster.</p>"
+        "ClusterType": {
+          "shape": "ClusterType",
+          "locationName": "clusterType",
+          "documentation": "\n            <p>Type of the backend cluster.</p>"
         },
-        "StartTime" : {
-          "shape" : "__timestampIso8601",
-          "locationName" : "startTime",
-          "documentation" : "\n            <p>The time at which operation was started.</p>"
+        "StartTime": {
+          "shape": "__timestampIso8601",
+          "locationName": "startTime",
+          "documentation": "\n            <p>The time at which operation was started.</p>"
         },
-        "EndTime" : {
-          "shape" : "__timestampIso8601",
-          "locationName" : "endTime",
-          "documentation" : "\n            <p>The time at which the operation finished.</p>"
+        "EndTime": {
+          "shape": "__timestampIso8601",
+          "locationName": "endTime",
+          "documentation": "\n            <p>The time at which the operation finished.</p>"
         },
-        "ErrorInfo" : {
-          "shape" : "ErrorInfo",
-          "locationName" : "errorInfo",
-          "documentation" : "\n            <p>If cluster operation failed from an error, it describes the error.</p>"
+        "ErrorInfo": {
+          "shape": "ErrorInfo",
+          "locationName": "errorInfo",
+          "documentation": "\n            <p>If cluster operation failed from an error, it describes the error.</p>"
         },
-        "OperationArn" : {
-          "shape" : "__string",
-          "locationName" : "operationArn",
-          "documentation" : "\n            <p>ARN of the cluster operation.</p>"
+        "OperationArn": {
+          "shape": "__string",
+          "locationName": "operationArn",
+          "documentation": "\n            <p>ARN of the cluster operation.</p>"
         },
-        "OperationState" : {
-          "shape" : "__string",
-          "locationName" : "operationState",
-          "documentation" : "\n            <p>State of the cluster operation.</p>"
+        "OperationState": {
+          "shape": "__string",
+          "locationName": "operationState",
+          "documentation": "\n            <p>State of the cluster operation.</p>"
         },
-        "OperationType" : {
-          "shape" : "__string",
-          "locationName" : "operationType",
-          "documentation" : "\n            <p>Type of the cluster operation.</p>"
+        "OperationType": {
+          "shape": "__string",
+          "locationName": "operationType",
+          "documentation": "\n            <p>Type of the cluster operation.</p>"
         },
-        "Provisioned" : {
-          "shape" : "ClusterOperationV2Provisioned",
-          "locationName" : "provisioned",
-          "documentation" : "\n            <p>Properties of a provisioned cluster.</p>"
+        "Provisioned": {
+          "shape": "ClusterOperationV2Provisioned",
+          "locationName": "provisioned",
+          "documentation": "\n            <p>Properties of a provisioned cluster.</p>"
         },
-        "Serverless" : {
-          "shape" : "ClusterOperationV2Serverless",
-          "locationName" : "serverless",
-          "documentation" : "\n            <p>Properties of a serverless cluster.</p>"
+        "Serverless": {
+          "shape": "ClusterOperationV2Serverless",
+          "locationName": "serverless",
+          "documentation": "\n            <p>Properties of a serverless cluster.</p>"
         }
       },
-      "documentation" : "\n            <p>Returns information about a cluster operation.</p>"
+      "documentation": "\n            <p>Returns information about a cluster operation.</p>"
     },
-    "ClusterOperationV2Provisioned" : {
-      "type" : "structure",
-      "members" : {
-        "OperationSteps" : {
-          "shape" : "__listOfClusterOperationStep",
-          "locationName" : "operationSteps",
-          "documentation" : "\n            <p>Steps completed during the operation.</p>"
+    "ClusterOperationV2Provisioned": {
+      "type": "structure",
+      "members": {
+        "OperationSteps": {
+          "shape": "__listOfClusterOperationStep",
+          "locationName": "operationSteps",
+          "documentation": "\n            <p>Steps completed during the operation.</p>"
         },
-        "SourceClusterInfo" : {
-          "shape" : "MutableClusterInfo",
-          "locationName" : "sourceClusterInfo",
-          "documentation" : "\n            <p>Information about cluster attributes before a cluster is updated.</p>"
+        "SourceClusterInfo": {
+          "shape": "MutableClusterInfo",
+          "locationName": "sourceClusterInfo",
+          "documentation": "\n            <p>Information about cluster attributes before a cluster is updated.</p>"
         },
-        "TargetClusterInfo" : {
-          "shape" : "MutableClusterInfo",
-          "locationName" : "targetClusterInfo",
-          "documentation" : "\n            <p>Information about cluster attributes after a cluster is updated.</p>"
+        "TargetClusterInfo": {
+          "shape": "MutableClusterInfo",
+          "locationName": "targetClusterInfo",
+          "documentation": "\n            <p>Information about cluster attributes after a cluster is updated.</p>"
         },
-        "VpcConnectionInfo" : {
-          "shape" : "VpcConnectionInfo",
-          "locationName" : "vpcConnectionInfo",
-          "documentation" : "\n            <p>Description of the VPC connection for CreateVpcConnection and DeleteVpcConnection operations.</p>"
+        "VpcConnectionInfo": {
+          "shape": "VpcConnectionInfo",
+          "locationName": "vpcConnectionInfo",
+          "documentation": "\n            <p>Description of the VPC connection for CreateVpcConnection and DeleteVpcConnection operations.</p>"
         }
       },
-      "documentation" : "\n            <p>Returns information about a provisioned cluster operation.</p>"
+      "documentation": "\n            <p>Returns information about a provisioned cluster operation.</p>"
     },
-    "ClusterOperationV2Serverless" : {
-      "type" : "structure",
-      "members" : {
-        "VpcConnectionInfo" : {
-          "shape" : "VpcConnectionInfoServerless",
-          "locationName" : "vpcConnectionInfo",
-          "documentation" : "\n            <p>Description of the VPC connection for CreateVpcConnection and DeleteVpcConnection operations.</p>"
+    "ClusterOperationV2Serverless": {
+      "type": "structure",
+      "members": {
+        "VpcConnectionInfo": {
+          "shape": "VpcConnectionInfoServerless",
+          "locationName": "vpcConnectionInfo",
+          "documentation": "\n            <p>Description of the VPC connection for CreateVpcConnection and DeleteVpcConnection operations.</p>"
         }
       },
-      "documentation" : "\n            <p>Returns information about a serverless cluster operation.</p>"
+      "documentation": "\n            <p>Returns information about a serverless cluster operation.</p>"
     },
-    "ClusterOperationV2Summary" : {
-      "type" : "structure",
-      "members" : {
-        "ClusterArn" : {
-          "shape" : "__string",
-          "locationName" : "clusterArn",
-          "documentation" : "\n            <p>ARN of the cluster.</p>"
+    "ClusterOperationV2Summary": {
+      "type": "structure",
+      "members": {
+        "ClusterArn": {
+          "shape": "__string",
+          "locationName": "clusterArn",
+          "documentation": "\n            <p>ARN of the cluster.</p>"
         },
-        "ClusterType" : {
-          "shape" : "ClusterType",
-          "locationName" : "clusterType",
-          "documentation" : "\n            <p>Type of the backend cluster.</p>"
+        "ClusterType": {
+          "shape": "ClusterType",
+          "locationName": "clusterType",
+          "documentation": "\n            <p>Type of the backend cluster.</p>"
         },
-        "StartTime" : {
-          "shape" : "__timestampIso8601",
-          "locationName" : "startTime",
-          "documentation" : "\n            <p>The time at which operation was started.</p>"
+        "StartTime": {
+          "shape": "__timestampIso8601",
+          "locationName": "startTime",
+          "documentation": "\n            <p>The time at which operation was started.</p>"
         },
-        "EndTime" : {
-          "shape" : "__timestampIso8601",
-          "locationName" : "endTime",
-          "documentation" : "\n            <p>The time at which the operation finished.</p>"
+        "EndTime": {
+          "shape": "__timestampIso8601",
+          "locationName": "endTime",
+          "documentation": "\n            <p>The time at which the operation finished.</p>"
         },
-        "OperationArn" : {
-          "shape" : "__string",
-          "locationName" : "operationArn",
-          "documentation" : "\n            <p>ARN of the cluster operation.</p>"
+        "OperationArn": {
+          "shape": "__string",
+          "locationName": "operationArn",
+          "documentation": "\n            <p>ARN of the cluster operation.</p>"
         },
-        "OperationState" : {
-          "shape" : "__string",
-          "locationName" : "operationState",
-          "documentation" : "\n            <p>State of the cluster operation.</p>"
+        "OperationState": {
+          "shape": "__string",
+          "locationName": "operationState",
+          "documentation": "\n            <p>State of the cluster operation.</p>"
         },
-        "OperationType" : {
-          "shape" : "__string",
-          "locationName" : "operationType",
-          "documentation" : "\n            <p>Type of the cluster operation.</p>"
+        "OperationType": {
+          "shape": "__string",
+          "locationName": "operationType",
+          "documentation": "\n            <p>Type of the cluster operation.</p>"
         }
       },
-      "documentation" : "\n            <p>Returns information about a cluster operation.</p>"
+      "documentation": "\n            <p>Returns information about a cluster operation.</p>"
     },
     "ControllerNodeInfo": {
       "type": "structure",
@@ -3583,7 +3664,11 @@
     "CustomerActionStatus": {
       "type": "string",
       "documentation": "\n            <p>A type of an action required from the customer.</p>",
-      "enum": [ "CRITICAL_ACTION_REQUIRED", "ACTION_RECOMMENDED", "NONE" ]
+      "enum": [
+        "CRITICAL_ACTION_REQUIRED",
+        "ACTION_RECOMMENDED",
+        "NONE"
+      ]
     },
     "DeleteClusterRequest": {
       "type": "structure",
@@ -3684,7 +3769,9 @@
           "documentation": "<p>The Amazon Resource Name (ARN) of the replicator to be deleted.</p>"
         }
       },
-      "required": ["ReplicatorArn"]
+      "required": [
+        "ReplicatorArn"
+      ]
     },
     "DeleteReplicatorResponse": {
       "type": "structure",
@@ -3744,17 +3831,19 @@
         "ClusterOperationArn"
       ]
     },
-    "DescribeClusterOperationV2Request" : {
-      "type" : "structure",
-      "members" : {
-        "ClusterOperationArn" : {
-          "shape" : "__string",
-          "location" : "uri",
-          "locationName" : "clusterOperationArn",
-          "documentation" : "ARN of the cluster operation to describe."
+    "DescribeClusterOperationV2Request": {
+      "type": "structure",
+      "members": {
+        "ClusterOperationArn": {
+          "shape": "__string",
+          "location": "uri",
+          "locationName": "clusterOperationArn",
+          "documentation": "ARN of the cluster operation to describe."
         }
       },
-      "required" : [ "ClusterOperationArn" ]
+      "required": [
+        "ClusterOperationArn"
+      ]
     },
     "DescribeClusterOperationResponse": {
       "type": "structure",
@@ -3766,13 +3855,13 @@
         }
       }
     },
-    "DescribeClusterOperationV2Response" : {
-      "type" : "structure",
-      "members" : {
-        "ClusterOperationInfo" : {
-          "shape" : "ClusterOperationV2",
-          "locationName" : "clusterOperationInfo",
-          "documentation" : "\n            <p>Cluster operation information</p>"
+    "DescribeClusterOperationV2Response": {
+      "type": "structure",
+      "members": {
+        "ClusterOperationInfo": {
+          "shape": "ClusterOperationV2",
+          "locationName": "clusterOperationInfo",
+          "documentation": "\n            <p>Cluster operation information</p>"
         }
       }
     },
@@ -3953,7 +4042,9 @@
           "documentation": "<p>The Amazon Resource Name (ARN) of the replicator to be described.</p>"
         }
       },
-      "required": ["ReplicatorArn"]
+      "required": [
+        "ReplicatorArn"
+      ]
     },
     "DescribeReplicatorResponse": {
       "type": "structure",
@@ -4057,19 +4148,16 @@
           "shape": "__listOf__string",
           "locationName": "subnets",
           "documentation": "\n            <p>The list of subnets for the VPC connection.</p>\n   "
-
         },
         "SecurityGroups": {
           "shape": "__listOf__string",
           "locationName": "securityGroups",
           "documentation": "\n            <p>The list of security groups for the VPC connection.</p>\n   "
-
         },
         "CreationTime": {
           "shape": "__timestampIso8601",
           "locationName": "creationTime",
           "documentation": "\n            <p>The creation time of the VPC connection.</p>\n   "
-
         },
         "Tags": {
           "shape": "__mapOf__string",
@@ -4078,46 +4166,49 @@
         }
       }
     },
-    "BatchDisassociateScramSecretRequest" : {
-      "type" : "structure",
-      "members" : {
-        "ClusterArn" : {
-          "shape" : "__string",
-          "location" : "uri",
-          "locationName" : "clusterArn",
-          "documentation" : "\n            <p>The Amazon Resource Name (ARN) of the cluster to be updated.</p>\n         "
+    "BatchDisassociateScramSecretRequest": {
+      "type": "structure",
+      "members": {
+        "ClusterArn": {
+          "shape": "__string",
+          "location": "uri",
+          "locationName": "clusterArn",
+          "documentation": "\n            <p>The Amazon Resource Name (ARN) of the cluster to be updated.</p>\n         "
         },
-        "SecretArnList" : {
-          "shape" : "__listOf__string",
-          "locationName" : "secretArnList",
-          "documentation" : "\n            <p>List of AWS Secrets Manager secret ARNs.</p>\n         "
+        "SecretArnList": {
+          "shape": "__listOf__string",
+          "locationName": "secretArnList",
+          "documentation": "\n            <p>List of AWS Secrets Manager secret ARNs.</p>\n         "
         }
       },
-      "documentation" : "\n            <p>Disassociates sasl scram secrets to cluster.</p>\n         ",
-      "required" : [ "ClusterArn", "SecretArnList" ]
+      "documentation": "\n            <p>Disassociates sasl scram secrets to cluster.</p>\n         ",
+      "required": [
+        "ClusterArn",
+        "SecretArnList"
+      ]
     },
-    "BatchDisassociateScramSecretResponse" : {
-      "type" : "structure",
-      "members" : {
-        "ClusterArn" : {
-          "shape" : "__string",
-          "locationName" : "clusterArn",
-          "documentation" : "\n            <p>The Amazon Resource Name (ARN) of the cluster.</p>\n         "
+    "BatchDisassociateScramSecretResponse": {
+      "type": "structure",
+      "members": {
+        "ClusterArn": {
+          "shape": "__string",
+          "locationName": "clusterArn",
+          "documentation": "\n            <p>The Amazon Resource Name (ARN) of the cluster.</p>\n         "
         },
-        "UnprocessedScramSecrets" : {
-          "shape" : "__listOfUnprocessedScramSecret",
-          "locationName" : "unprocessedScramSecrets",
-          "documentation" : "\n            <p>List of errors when disassociating secrets to cluster.</p>\n         "
+        "UnprocessedScramSecrets": {
+          "shape": "__listOfUnprocessedScramSecret",
+          "locationName": "unprocessedScramSecrets",
+          "documentation": "\n            <p>List of errors when disassociating secrets to cluster.</p>\n         "
         }
       }
     },
     "EBSStorageInfo": {
       "type": "structure",
       "members": {
-        "ProvisionedThroughput" : {
-          "shape" : "ProvisionedThroughput",
-          "locationName" : "provisionedThroughput",
-          "documentation" : "\n            <p>EBS volume provisioned throughput information.</p>\n         "
+        "ProvisionedThroughput": {
+          "shape": "ProvisionedThroughput",
+          "locationName": "provisionedThroughput",
+          "documentation": "\n            <p>EBS volume provisioned throughput information.</p>\n         "
         },
         "VolumeSize": {
           "shape": "__integerMin1Max16384",
@@ -4215,19 +4306,21 @@
       },
       "documentation": "\n            <p>Returns information about an error state of the cluster.</p>\n         "
     },
-    "Firehose" : {
-      "type" : "structure",
-      "members" : {
-        "DeliveryStream" : {
-          "shape" : "__string",
-          "locationName" : "deliveryStream"
+    "Firehose": {
+      "type": "structure",
+      "members": {
+        "DeliveryStream": {
+          "shape": "__string",
+          "locationName": "deliveryStream"
         },
-        "Enabled" : {
-          "shape" : "__boolean",
-          "locationName" : "enabled"
+        "Enabled": {
+          "shape": "__boolean",
+          "locationName": "enabled"
         }
       },
-      "required" : [ "Enabled" ]
+      "required": [
+        "Enabled"
+      ]
     },
     "ForbiddenException": {
       "type": "structure",
@@ -4318,23 +4411,23 @@
         }
       }
     },
-    "GetCompatibleKafkaVersionsRequest" : {
-      "type" : "structure",
-      "members" : {
-        "ClusterArn" : {
-          "shape" : "__string",
-          "location" : "querystring",
-          "locationName" : "clusterArn",
+    "GetCompatibleKafkaVersionsRequest": {
+      "type": "structure",
+      "members": {
+        "ClusterArn": {
+          "shape": "__string",
+          "location": "querystring",
+          "locationName": "clusterArn",
           "documentation": "\n            <p>The Amazon Resource Name (ARN) of the cluster check.</p>\n            "
         }
       }
     },
-    "GetCompatibleKafkaVersionsResponse" : {
-      "type" : "structure",
-      "members" : {
-        "CompatibleKafkaVersions" : {
-          "shape" : "__listOfCompatibleKafkaVersion",
-          "locationName" : "compatibleKafkaVersions",
+    "GetCompatibleKafkaVersionsResponse": {
+      "type": "structure",
+      "members": {
+        "CompatibleKafkaVersions": {
+          "shape": "__listOfCompatibleKafkaVersion",
+          "locationName": "compatibleKafkaVersions",
           "documentation": "\n            <p>A list of CompatibleKafkaVersion objects.</p>\n            "
         }
       }
@@ -4365,7 +4458,6 @@
           "shape": "__string",
           "locationName": "policy",
           "documentation": "\n            <p>The cluster policy.</p>\n            "
-
         }
       }
     },
@@ -4404,24 +4496,29 @@
         }
       },
       "documentation": "<p>Information about Kafka Cluster to be used as source / target for replication.</p>",
-      "required": ["VpcConfig", "AmazonMskCluster"]
+      "required": [
+        "VpcConfig",
+        "AmazonMskCluster"
+      ]
     },
-    "KafkaClusterClientVpcConfig" : {
-      "type" : "structure",
-      "members" : {
-        "SecurityGroupIds" : {
-          "shape" : "__listOf__string",
-          "locationName" : "securityGroupIds",
-          "documentation" : "<p>The security groups to attach to the ENIs for the broker nodes.</p>"
+    "KafkaClusterClientVpcConfig": {
+      "type": "structure",
+      "members": {
+        "SecurityGroupIds": {
+          "shape": "__listOf__string",
+          "locationName": "securityGroupIds",
+          "documentation": "<p>The security groups to attach to the ENIs for the broker nodes.</p>"
         },
-        "SubnetIds" : {
-          "shape" : "__listOf__string",
-          "locationName" : "subnetIds",
-          "documentation" : "<p>The list of subnets in the client VPC to connect to.</p>"
+        "SubnetIds": {
+          "shape": "__listOf__string",
+          "locationName": "subnetIds",
+          "documentation": "<p>The list of subnets in the client VPC to connect to.</p>"
         }
       },
-      "documentation" : "<p>Details of an Amazon VPC which has network connectivity to the Apache Kafka cluster.</p>",
-      "required" : [ "SubnetIds" ]
+      "documentation": "<p>Details of an Amazon VPC which has network connectivity to the Apache Kafka cluster.</p>",
+      "required": [
+        "SubnetIds"
+      ]
     },
     "KafkaClusterDescription": {
       "type": "structure",
@@ -4506,29 +4603,31 @@
         "ClusterArn"
       ]
     },
-    "ListClusterOperationsV2Request" : {
-      "type" : "structure",
-      "members" : {
-        "ClusterArn" : {
-          "shape" : "__string",
-          "location" : "uri",
-          "locationName" : "clusterArn",
-          "documentation" : "The arn of the cluster whose operations are being requested."
+    "ListClusterOperationsV2Request": {
+      "type": "structure",
+      "members": {
+        "ClusterArn": {
+          "shape": "__string",
+          "location": "uri",
+          "locationName": "clusterArn",
+          "documentation": "The arn of the cluster whose operations are being requested."
         },
-        "MaxResults" : {
-          "shape" : "MaxResults",
-          "location" : "querystring",
-          "locationName" : "maxResults",
-          "documentation" : "The maxResults of the query."
+        "MaxResults": {
+          "shape": "MaxResults",
+          "location": "querystring",
+          "locationName": "maxResults",
+          "documentation": "The maxResults of the query."
         },
-        "NextToken" : {
-          "shape" : "__string",
-          "location" : "querystring",
-          "locationName" : "nextToken",
-          "documentation" : "The nextToken of the query."
+        "NextToken": {
+          "shape": "__string",
+          "location": "querystring",
+          "locationName": "nextToken",
+          "documentation": "The nextToken of the query."
         }
       },
-      "required" : [ "ClusterArn" ]
+      "required": [
+        "ClusterArn"
+      ]
     },
     "ListClusterOperationsResponse": {
       "type": "structure",
@@ -4545,18 +4644,18 @@
         }
       }
     },
-    "ListClusterOperationsV2Response" : {
-      "type" : "structure",
-      "members" : {
-        "ClusterOperationInfoList" : {
-          "shape" : "__listOfClusterOperationV2Summary",
-          "locationName" : "clusterOperationInfoList",
-          "documentation" : "\n            <p>An array of cluster operation information objects.</p>"
+    "ListClusterOperationsV2Response": {
+      "type": "structure",
+      "members": {
+        "ClusterOperationInfoList": {
+          "shape": "__listOfClusterOperationV2Summary",
+          "locationName": "clusterOperationInfoList",
+          "documentation": "\n            <p>An array of cluster operation information objects.</p>"
         },
-        "NextToken" : {
-          "shape" : "__string",
-          "locationName" : "nextToken",
-          "documentation" : "\n            <p>If the response of ListClusterOperationsV2 is truncated, it returns a NextToken in the response. This NextToken should be sent in the subsequent request to ListClusterOperationsV2.</p>"
+        "NextToken": {
+          "shape": "__string",
+          "locationName": "nextToken",
+          "documentation": "\n            <p>If the response of ListClusterOperationsV2 is truncated, it returns a NextToken in the response. This NextToken should be sent in the subsequent request to ListClusterOperationsV2.</p>"
         }
       }
     },
@@ -4824,42 +4923,44 @@
         }
       }
     },
-    "ListScramSecretsRequest" : {
-      "type" : "structure",
-      "members" : {
-        "ClusterArn" : {
-          "shape" : "__string",
-          "location" : "uri",
-          "locationName" : "clusterArn",
-          "documentation" : "\n            <p>The arn of the cluster.</p>\n         "
+    "ListScramSecretsRequest": {
+      "type": "structure",
+      "members": {
+        "ClusterArn": {
+          "shape": "__string",
+          "location": "uri",
+          "locationName": "clusterArn",
+          "documentation": "\n            <p>The arn of the cluster.</p>\n         "
         },
-        "MaxResults" : {
-          "shape" : "MaxResults",
-          "location" : "querystring",
-          "locationName" : "maxResults",
-          "documentation" : "\n            <p>The maxResults of the query.</p>\n         "
+        "MaxResults": {
+          "shape": "MaxResults",
+          "location": "querystring",
+          "locationName": "maxResults",
+          "documentation": "\n            <p>The maxResults of the query.</p>\n         "
         },
-        "NextToken" : {
-          "shape" : "__string",
-          "location" : "querystring",
-          "locationName" : "nextToken",
-          "documentation" : "\n            <p>The nextToken of the query.</p>\n         "
+        "NextToken": {
+          "shape": "__string",
+          "location": "querystring",
+          "locationName": "nextToken",
+          "documentation": "\n            <p>The nextToken of the query.</p>\n         "
         }
       },
-      "required" : [ "ClusterArn" ]
+      "required": [
+        "ClusterArn"
+      ]
     },
-    "ListScramSecretsResponse" : {
-      "type" : "structure",
-      "members" : {
-        "NextToken" : {
-          "shape" : "__string",
-          "locationName" : "nextToken",
-          "documentation" : "\n            <p>Paginated results marker.</p>\n         "
+    "ListScramSecretsResponse": {
+      "type": "structure",
+      "members": {
+        "NextToken": {
+          "shape": "__string",
+          "locationName": "nextToken",
+          "documentation": "\n            <p>Paginated results marker.</p>\n         "
         },
-        "SecretArnList" : {
-          "shape" : "__listOf__string",
-          "locationName" : "secretArnList",
-          "documentation" : "\n            <p>The list of scram secrets associated with the cluster.</p>\n         "
+        "SecretArnList": {
+          "shape": "__listOf__string",
+          "locationName": "secretArnList",
+          "documentation": "\n            <p>The list of scram secrets associated with the cluster.</p>\n         "
         }
       }
     },
@@ -4890,11 +4991,11 @@
     "ListClientVpcConnectionsRequest": {
       "type": "structure",
       "members": {
-        "ClusterArn" : {
-          "shape" : "__string",
-          "location" : "uri",
-          "locationName" : "clusterArn",
-          "documentation" : "\n            <p>The Amazon Resource Name (ARN) of the cluster.</p>\n         "
+        "ClusterArn": {
+          "shape": "__string",
+          "location": "uri",
+          "locationName": "clusterArn",
+          "documentation": "\n            <p>The Amazon Resource Name (ARN) of the cluster.</p>\n         "
         },
         "MaxResults": {
           "shape": "MaxResults",
@@ -4909,14 +5010,16 @@
           "documentation": "\n            <p>The paginated results marker. When the result of the operation is truncated, the call returns NextToken in the response. \n            To get the next batch, provide this token in your next request.</p>\n         "
         }
       },
-      "required": [ "ClusterArn" ]
+      "required": [
+        "ClusterArn"
+      ]
     },
     "ListClientVpcConnectionsResponse": {
       "type": "structure",
       "members": {
-        "ClientVpcConnections" : {
-          "shape" : "__listOfClientVpcConnection",
-          "locationName" : "clientVpcConnections",
+        "ClientVpcConnections": {
+          "shape": "__listOfClientVpcConnection",
+          "locationName": "clientVpcConnections",
           "documentation": "\n            <p>List of client VPC connections.</p>\n         "
         },
         "NextToken": {
@@ -4946,9 +5049,9 @@
     "ListVpcConnectionsResponse": {
       "type": "structure",
       "members": {
-        "VpcConnections" : {
-          "shape" : "__listOfVpcConnection",
-          "locationName" : "vpcConnections",
+        "VpcConnections": {
+          "shape": "__listOfVpcConnection",
+          "locationName": "vpcConnections",
           "documentation": "\n            <p>List of VPC connections.</p>\n         "
         },
         "NextToken": {
@@ -4958,14 +5061,14 @@
         }
       }
     },
-    "RejectClientVpcConnectionRequest" : {
-      "type" : "structure",
-      "members" : {
+    "RejectClientVpcConnectionRequest": {
+      "type": "structure",
+      "members": {
         "ClusterArn": {
           "shape": "__string",
           "location": "uri",
           "locationName": "clusterArn",
-          "documentation" : "\n            <p>The Amazon Resource Name (ARN) of the cluster.</p>\n         "
+          "documentation": "\n            <p>The Amazon Resource Name (ARN) of the cluster.</p>\n         "
         },
         "VpcConnectionArn": {
           "shape": "__string",
@@ -4973,9 +5076,12 @@
           "documentation": "\n            <p>The VPC connection ARN.</p>\n         "
         }
       },
-      "required" : [ "VpcConnectionArn", "ClusterArn" ]
+      "required": [
+        "VpcConnectionArn",
+        "ClusterArn"
+      ]
     },
-    "RejectClientVpcConnectionResponse" : {
+    "RejectClientVpcConnectionResponse": {
       "type": "structure",
       "members": {
       }
@@ -4993,7 +5099,9 @@
           "locationName": "brokerLogs"
         }
       },
-      "required": [ "BrokerLogs" ]
+      "required": [
+        "BrokerLogs"
+      ]
     },
     "MutableClusterInfo": {
       "type": "structure",
@@ -5013,189 +5121,201 @@
           "locationName": "numberOfBrokerNodes",
           "documentation": "\n            <p>The number of broker nodes in the cluster.</p>\n         "
         },
-        "EnhancedMonitoring" : {
-          "shape" : "EnhancedMonitoring",
-          "locationName" : "enhancedMonitoring",
-          "documentation" : "\n            <p>Specifies which Apache Kafka metrics Amazon MSK gathers and sends to Amazon CloudWatch for this cluster.</p>\n         "
+        "EnhancedMonitoring": {
+          "shape": "EnhancedMonitoring",
+          "locationName": "enhancedMonitoring",
+          "documentation": "\n            <p>Specifies which Apache Kafka metrics Amazon MSK gathers and sends to Amazon CloudWatch for this cluster.</p>\n         "
         },
-        "OpenMonitoring" : {
-          "shape" : "OpenMonitoring",
-          "locationName" : "openMonitoring",
-          "documentation" : "\n            <p>The settings for open monitoring.</p>\n         "
+        "OpenMonitoring": {
+          "shape": "OpenMonitoring",
+          "locationName": "openMonitoring",
+          "documentation": "\n            <p>The settings for open monitoring.</p>\n         "
         },
-        "KafkaVersion" : {
-          "shape" : "__string",
-          "locationName" : "kafkaVersion",
-          "documentation" : "\n            <p>The Apache Kafka version.</p>\n            "
+        "KafkaVersion": {
+          "shape": "__string",
+          "locationName": "kafkaVersion",
+          "documentation": "\n            <p>The Apache Kafka version.</p>\n            "
         },
         "LoggingInfo": {
           "shape": "LoggingInfo",
           "locationName": "loggingInfo",
-          "documentation" : "\n            <p>You can configure your MSK cluster to send broker logs to different destination types. This is a container for the configuration details related to broker logs.</p>\n            "
+          "documentation": "\n            <p>You can configure your MSK cluster to send broker logs to different destination types. This is a container for the configuration details related to broker logs.</p>\n            "
         },
         "InstanceType": {
-          "shape" : "__stringMin5Max32",
-          "locationName" : "instanceType",
-          "documentation" : "\n            <p>Information about the Amazon MSK broker type.</p>\n            "
+          "shape": "__stringMin5Max32",
+          "locationName": "instanceType",
+          "documentation": "\n            <p>Information about the Amazon MSK broker type.</p>\n            "
         },
-        "ClientAuthentication" : {
-          "shape" : "ClientAuthentication",
-          "locationName" : "clientAuthentication",
+        "ClientAuthentication": {
+          "shape": "ClientAuthentication",
+          "locationName": "clientAuthentication",
           "documentation": "\n            <p>Includes all client authentication information.</p>\n         "
         },
-        "EncryptionInfo" : {
-          "shape" : "EncryptionInfo",
-          "locationName" : "encryptionInfo",
+        "EncryptionInfo": {
+          "shape": "EncryptionInfo",
+          "locationName": "encryptionInfo",
           "documentation": "\n            <p>Includes all encryption-related information.</p>\n         "
         },
-        "ConnectivityInfo" : {
-          "shape" : "ConnectivityInfo",
-          "locationName" : "connectivityInfo",
-          "documentation" : "\n            <p>Information about the broker access configuration.</p>\n         "
+        "ConnectivityInfo": {
+          "shape": "ConnectivityInfo",
+          "locationName": "connectivityInfo",
+          "documentation": "\n            <p>Information about the broker access configuration.</p>\n         "
         },
-        "StorageMode" : {
-          "shape" : "StorageMode",
-          "locationName" : "storageMode",
-          "documentation" : "\n            <p>This controls storage mode for supported storage tiers.</p>\n         "
+        "StorageMode": {
+          "shape": "StorageMode",
+          "locationName": "storageMode",
+          "documentation": "\n            <p>This controls storage mode for supported storage tiers.</p>\n         "
         },
-        "BrokerCountUpdateInfo" : {
+        "BrokerCountUpdateInfo": {
           "shape": "BrokerCountUpdateInfo",
-          "locationName" : "brokerCountUpdateInfo",
-          "documentation" : "\n            <p>Describes brokers being changed during a broker count update.</p>\n         "
+          "locationName": "brokerCountUpdateInfo",
+          "documentation": "\n            <p>Describes brokers being changed during a broker count update.</p>\n         "
         }
       },
       "documentation": "\n            <p>Information about cluster attributes that can be updated via update APIs.</p>\n         "
     },
-    "NodeExporter" : {
-      "type" : "structure",
-      "members" : {
-        "EnabledInBroker" : {
-          "shape" : "__boolean",
-          "locationName" : "enabledInBroker",
-          "documentation" : "\n            <p>Indicates whether you want to turn on or turn off the Node Exporter.</p>\n         "
+    "NodeExporter": {
+      "type": "structure",
+      "members": {
+        "EnabledInBroker": {
+          "shape": "__boolean",
+          "locationName": "enabledInBroker",
+          "documentation": "\n            <p>Indicates whether you want to turn on or turn off the Node Exporter.</p>\n         "
         }
       },
-      "documentation" : "\n            <p>Indicates whether you want to turn on or turn off the Node Exporter.</p>\n         ",
-      "required" : [ "EnabledInBroker" ]
+      "documentation": "\n            <p>Indicates whether you want to turn on or turn off the Node Exporter.</p>\n         ",
+      "required": [
+        "EnabledInBroker"
+      ]
     },
-    "NodeExporterInfo" : {
-      "type" : "structure",
-      "members" : {
-        "EnabledInBroker" : {
-          "shape" : "__boolean",
-          "locationName" : "enabledInBroker",
-          "documentation" : "\n            <p>Indicates whether you want to turn on or turn off the Node Exporter.</p>\n         "
+    "NodeExporterInfo": {
+      "type": "structure",
+      "members": {
+        "EnabledInBroker": {
+          "shape": "__boolean",
+          "locationName": "enabledInBroker",
+          "documentation": "\n            <p>Indicates whether you want to turn on or turn off the Node Exporter.</p>\n         "
         }
       },
-      "documentation" : "\n            <p>Indicates whether you want to turn on or turn off the Node Exporter.</p>\n         ",
-      "required" : [ "EnabledInBroker" ]
+      "documentation": "\n            <p>Indicates whether you want to turn on or turn off the Node Exporter.</p>\n         ",
+      "required": [
+        "EnabledInBroker"
+      ]
     },
-    "JmxExporter" : {
-      "type" : "structure",
-      "members" : {
-        "EnabledInBroker" : {
-          "shape" : "__boolean",
-          "locationName" : "enabledInBroker",
-          "documentation" : "\n            <p>Indicates whether you want to turn on or turn off the JMX Exporter.</p>\n         "
+    "JmxExporter": {
+      "type": "structure",
+      "members": {
+        "EnabledInBroker": {
+          "shape": "__boolean",
+          "locationName": "enabledInBroker",
+          "documentation": "\n            <p>Indicates whether you want to turn on or turn off the JMX Exporter.</p>\n         "
         }
       },
-      "documentation" : "\n            <p>Indicates whether you want to turn on or turn off the JMX Exporter.</p>\n         ",
-      "required" : [ "EnabledInBroker" ]
+      "documentation": "\n            <p>Indicates whether you want to turn on or turn off the JMX Exporter.</p>\n         ",
+      "required": [
+        "EnabledInBroker"
+      ]
     },
-    "JmxExporterInfo" : {
-      "type" : "structure",
-      "members" : {
-        "EnabledInBroker" : {
-          "shape" : "__boolean",
-          "locationName" : "enabledInBroker",
-          "documentation" : "\n            <p>Indicates whether you want to turn on or turn off the JMX Exporter.</p>\n         "
+    "JmxExporterInfo": {
+      "type": "structure",
+      "members": {
+        "EnabledInBroker": {
+          "shape": "__boolean",
+          "locationName": "enabledInBroker",
+          "documentation": "\n            <p>Indicates whether you want to turn on or turn off the JMX Exporter.</p>\n         "
         }
       },
-      "documentation" : "\n            <p>Indicates whether you want to turn on or turn off the JMX Exporter.</p>\n         ",
-      "required" : [ "EnabledInBroker" ]
+      "documentation": "\n            <p>Indicates whether you want to turn on or turn off the JMX Exporter.</p>\n         ",
+      "required": [
+        "EnabledInBroker"
+      ]
     },
-    "OpenMonitoring" : {
-      "type" : "structure",
-      "members" : {
-        "Prometheus" : {
-          "shape" : "Prometheus",
-          "locationName" : "prometheus",
-          "documentation" : "\n            <p>Prometheus settings.</p>\n         "
+    "OpenMonitoring": {
+      "type": "structure",
+      "members": {
+        "Prometheus": {
+          "shape": "Prometheus",
+          "locationName": "prometheus",
+          "documentation": "\n            <p>Prometheus settings.</p>\n         "
         }
       },
-      "documentation" : "\n            <p>JMX and Node monitoring for the MSK cluster.</p>\n         ",
-      "required" : [ "Prometheus" ]
+      "documentation": "\n            <p>JMX and Node monitoring for the MSK cluster.</p>\n         ",
+      "required": [
+        "Prometheus"
+      ]
     },
-    "OpenMonitoringInfo" : {
-      "type" : "structure",
-      "members" : {
-        "Prometheus" : {
-          "shape" : "PrometheusInfo",
-          "locationName" : "prometheus",
-          "documentation" : "\n            <p>Prometheus settings.</p>\n         "
+    "OpenMonitoringInfo": {
+      "type": "structure",
+      "members": {
+        "Prometheus": {
+          "shape": "PrometheusInfo",
+          "locationName": "prometheus",
+          "documentation": "\n            <p>Prometheus settings.</p>\n         "
         }
       },
-      "documentation" : "\n            <p>JMX and Node monitoring for the MSK cluster.</p>\n         ",
-      "required" : [ "Prometheus" ]
+      "documentation": "\n            <p>JMX and Node monitoring for the MSK cluster.</p>\n         ",
+      "required": [
+        "Prometheus"
+      ]
     },
-    "Prometheus" : {
-      "type" : "structure",
-      "members" : {
-        "JmxExporter" : {
-          "shape" : "JmxExporter",
-          "locationName" : "jmxExporter",
-          "documentation" : "\n            <p>Indicates whether you want to turn on or turn off the JMX Exporter.</p>\n         "
+    "Prometheus": {
+      "type": "structure",
+      "members": {
+        "JmxExporter": {
+          "shape": "JmxExporter",
+          "locationName": "jmxExporter",
+          "documentation": "\n            <p>Indicates whether you want to turn on or turn off the JMX Exporter.</p>\n         "
         },
-        "NodeExporter" : {
-          "shape" : "NodeExporter",
-          "locationName" : "nodeExporter",
-          "documentation" : "\n            <p>Indicates whether you want to turn on or turn off the Node Exporter.</p>\n         "
+        "NodeExporter": {
+          "shape": "NodeExporter",
+          "locationName": "nodeExporter",
+          "documentation": "\n            <p>Indicates whether you want to turn on or turn off the Node Exporter.</p>\n         "
         }
       },
-      "documentation" : "\n            <p>Prometheus settings.</p>\n         "
+      "documentation": "\n            <p>Prometheus settings.</p>\n         "
     },
-    "PrometheusInfo" : {
-      "type" : "structure",
-      "members" : {
-        "JmxExporter" : {
-          "shape" : "JmxExporterInfo",
-          "locationName" : "jmxExporter",
-          "documentation" : "\n            <p>Indicates whether you want to turn on or turn off the JMX Exporter.</p>\n         "
+    "PrometheusInfo": {
+      "type": "structure",
+      "members": {
+        "JmxExporter": {
+          "shape": "JmxExporterInfo",
+          "locationName": "jmxExporter",
+          "documentation": "\n            <p>Indicates whether you want to turn on or turn off the JMX Exporter.</p>\n         "
         },
-        "NodeExporter" : {
-          "shape" : "NodeExporterInfo",
-          "locationName" : "nodeExporter",
-          "documentation" : "\n            <p>Indicates whether you want to turn on or turn off the Node Exporter.</p>\n         "
+        "NodeExporter": {
+          "shape": "NodeExporterInfo",
+          "locationName": "nodeExporter",
+          "documentation": "\n            <p>Indicates whether you want to turn on or turn off the Node Exporter.</p>\n         "
         }
       },
-      "documentation" : "\n            <p>Prometheus settings.</p>\n         "
+      "documentation": "\n            <p>Prometheus settings.</p>\n         "
     },
-    "ProvisionedThroughput" : {
-      "type" : "structure",
-      "members" : {
-        "Enabled" : {
-          "shape" : "__boolean",
-          "locationName" : "enabled",
-          "documentation" : "\n            <p>Provisioned throughput is enabled or not.</p>\n         "
+    "ProvisionedThroughput": {
+      "type": "structure",
+      "members": {
+        "Enabled": {
+          "shape": "__boolean",
+          "locationName": "enabled",
+          "documentation": "\n            <p>Provisioned throughput is enabled or not.</p>\n         "
         },
-        "VolumeThroughput" : {
-          "shape" : "__integer",
-          "locationName" : "volumeThroughput",
-          "documentation" : "\n            <p>Throughput value of the EBS volumes for the data drive on each kafka broker node in MiB per second.</p>\n         "
+        "VolumeThroughput": {
+          "shape": "__integer",
+          "locationName": "volumeThroughput",
+          "documentation": "\n            <p>Throughput value of the EBS volumes for the data drive on each kafka broker node in MiB per second.</p>\n         "
         }
       },
-      "documentation" : "\n            <p>Contains information about provisioned throughput for EBS storage volumes attached to kafka broker nodes.</p>\n         "
+      "documentation": "\n            <p>Contains information about provisioned throughput for EBS storage volumes attached to kafka broker nodes.</p>\n         "
     },
-    "PublicAccess" : {
-      "type" : "structure",
-      "members" : {
-        "Type" : {
-          "shape" : "__string",
-          "locationName" : "type",
-          "documentation" : "\n            <p>The value DISABLED indicates that public access is turned off. SERVICE_PROVIDED_EIPS indicates that public access is turned on.</p>\n         "
+    "PublicAccess": {
+      "type": "structure",
+      "members": {
+        "Type": {
+          "shape": "__string",
+          "locationName": "type",
+          "documentation": "\n            <p>The value DISABLED indicates that public access is turned off. SERVICE_PROVIDED_EIPS indicates that public access is turned on.</p>\n         "
         }
       },
-      "documentation" : "Public access control for brokers."
+      "documentation": "Public access control for brokers."
     },
     "PutClusterPolicyRequest": {
       "type": "structure",
@@ -5204,18 +5324,17 @@
           "shape": "__string",
           "location": "uri",
           "locationName": "clusterArn",
-          "documentation" : "\n            <p>The Amazon Resource Name (ARN) of the cluster.</p>\n         "
+          "documentation": "\n            <p>The Amazon Resource Name (ARN) of the cluster.</p>\n         "
         },
         "CurrentVersion": {
           "shape": "__string",
           "locationName": "currentVersion",
-          "documentation" : "\n            <p>The policy version.</p>\n         "
+          "documentation": "\n            <p>The policy version.</p>\n         "
         },
         "Policy": {
           "shape": "__string",
           "locationName": "policy",
-          "documentation" : "\n            <p>The policy.</p>\n         "
-
+          "documentation": "\n            <p>The policy.</p>\n         "
         }
       },
       "required": [
@@ -5229,147 +5348,152 @@
         "CurrentVersion": {
           "shape": "__string",
           "locationName": "currentVersion",
-          "documentation" : "\n            <p>The policy version.</p>\n         "
+          "documentation": "\n            <p>The policy version.</p>\n         "
         }
       }
     },
-    "RebootBrokerRequest" : {
-      "type" : "structure",
-      "members" : {
-        "BrokerIds" : {
-          "shape" : "__listOf__string",
-          "locationName" : "brokerIds",
-          "documentation" : "\n            <p>The list of broker IDs to be rebooted. The reboot-broker operation supports rebooting one broker at a time.</p>\n         "
+    "RebootBrokerRequest": {
+      "type": "structure",
+      "members": {
+        "BrokerIds": {
+          "shape": "__listOf__string",
+          "locationName": "brokerIds",
+          "documentation": "\n            <p>The list of broker IDs to be rebooted. The reboot-broker operation supports rebooting one broker at a time.</p>\n         "
         },
-        "ClusterArn" : {
-          "shape" : "__string",
-          "location" : "uri",
-          "locationName" : "clusterArn",
-          "documentation" : "\n            <p>The Amazon Resource Name (ARN) of the cluster to be updated.</p>\n         "
+        "ClusterArn": {
+          "shape": "__string",
+          "location": "uri",
+          "locationName": "clusterArn",
+          "documentation": "\n            <p>The Amazon Resource Name (ARN) of the cluster to be updated.</p>\n         "
         }
       },
-      "documentation" : "Reboots a node.",
-      "required" : [ "ClusterArn", "BrokerIds" ]
+      "documentation": "Reboots a node.",
+      "required": [
+        "ClusterArn",
+        "BrokerIds"
+      ]
     },
-    "RebootBrokerResponse" : {
-      "type" : "structure",
-      "members" : {
-        "ClusterArn" : {
-          "shape" : "__string",
-          "locationName" : "clusterArn",
-          "documentation" : "\n            <p>The Amazon Resource Name (ARN) of the cluster.</p>\n         "
+    "RebootBrokerResponse": {
+      "type": "structure",
+      "members": {
+        "ClusterArn": {
+          "shape": "__string",
+          "locationName": "clusterArn",
+          "documentation": "\n            <p>The Amazon Resource Name (ARN) of the cluster.</p>\n         "
         },
-        "ClusterOperationArn" : {
-          "shape" : "__string",
-          "locationName" : "clusterOperationArn",
-          "documentation" : "\n            <p>The Amazon Resource Name (ARN) of the cluster operation.</p>\n         "
+        "ClusterOperationArn": {
+          "shape": "__string",
+          "locationName": "clusterOperationArn",
+          "documentation": "\n            <p>The Amazon Resource Name (ARN) of the cluster operation.</p>\n         "
         }
       }
     },
-    "S3" : {
-      "type" : "structure",
-      "members" : {
-        "Bucket" : {
-          "shape" : "__string",
-          "locationName" : "bucket"
+    "S3": {
+      "type": "structure",
+      "members": {
+        "Bucket": {
+          "shape": "__string",
+          "locationName": "bucket"
         },
-        "Enabled" : {
-          "shape" : "__boolean",
-          "locationName" : "enabled"
+        "Enabled": {
+          "shape": "__boolean",
+          "locationName": "enabled"
         },
-        "Prefix" : {
-          "shape" : "__string",
-          "locationName" : "prefix"
+        "Prefix": {
+          "shape": "__string",
+          "locationName": "prefix"
         }
       },
-      "required" : [ "Enabled" ]
+      "required": [
+        "Enabled"
+      ]
     },
-    "ServerlessSasl" : {
-      "type" : "structure",
-      "members" : {
-        "Iam" : {
-          "shape" : "Iam",
-          "locationName" : "iam",
-          "documentation" : "\n            <p>Indicates whether IAM access control is enabled.</p>\n         "
+    "ServerlessSasl": {
+      "type": "structure",
+      "members": {
+        "Iam": {
+          "shape": "Iam",
+          "locationName": "iam",
+          "documentation": "\n            <p>Indicates whether IAM access control is enabled.</p>\n         "
         }
       },
-      "documentation" : "\n            <p>Details for client authentication using SASL.</p>\n         "
+      "documentation": "\n            <p>Details for client authentication using SASL.</p>\n         "
     },
-    "Sasl" : {
-      "type" : "structure",
-      "members" : {
-        "Scram" : {
-          "shape" : "Scram",
-          "locationName" : "scram",
-          "documentation" : "\n            <p>Details for SASL/SCRAM client authentication.</p>\n         "
+    "Sasl": {
+      "type": "structure",
+      "members": {
+        "Scram": {
+          "shape": "Scram",
+          "locationName": "scram",
+          "documentation": "\n            <p>Details for SASL/SCRAM client authentication.</p>\n         "
         },
-        "Iam" : {
-          "shape" : "Iam",
-          "locationName" : "iam",
-          "documentation" : "\n            <p>Indicates whether IAM access control is enabled.</p>\n         "
+        "Iam": {
+          "shape": "Iam",
+          "locationName": "iam",
+          "documentation": "\n            <p>Indicates whether IAM access control is enabled.</p>\n         "
         }
       },
-      "documentation" : "\n            <p>Details for client authentication using SASL.</p>\n         "
+      "documentation": "\n            <p>Details for client authentication using SASL.</p>\n         "
     },
-    "VpcConnectivitySasl" : {
-      "type" : "structure",
-      "members" : {
-        "Scram" : {
-          "shape" : "VpcConnectivityScram",
-          "locationName" : "scram",
-          "documentation" : "\n            <p>Details for SASL/SCRAM client authentication for VPC connectivity.</p>\n         "
+    "VpcConnectivitySasl": {
+      "type": "structure",
+      "members": {
+        "Scram": {
+          "shape": "VpcConnectivityScram",
+          "locationName": "scram",
+          "documentation": "\n            <p>Details for SASL/SCRAM client authentication for VPC connectivity.</p>\n         "
         },
-        "Iam" : {
-          "shape" : "VpcConnectivityIam",
-          "locationName" : "iam",
-          "documentation" : "\n            <p>Details for SASL/IAM client authentication for VPC connectivity.</p>\n         "
+        "Iam": {
+          "shape": "VpcConnectivityIam",
+          "locationName": "iam",
+          "documentation": "\n            <p>Details for SASL/IAM client authentication for VPC connectivity.</p>\n         "
         }
       },
-      "documentation" : "\n            <p>Details for SASL client authentication for VPC connectivity.</p>\n         "
+      "documentation": "\n            <p>Details for SASL client authentication for VPC connectivity.</p>\n         "
     },
-    "Scram" : {
-      "type" : "structure",
-      "members" : {
-        "Enabled" : {
-          "shape" : "__boolean",
-          "locationName" : "enabled",
-          "documentation" : "\n            <p>SASL/SCRAM authentication is enabled or not.</p>\n         "
+    "Scram": {
+      "type": "structure",
+      "members": {
+        "Enabled": {
+          "shape": "__boolean",
+          "locationName": "enabled",
+          "documentation": "\n            <p>SASL/SCRAM authentication is enabled or not.</p>\n         "
         }
       },
-      "documentation" : "\n            <p>Details for SASL/SCRAM client authentication.</p>\n         "
+      "documentation": "\n            <p>Details for SASL/SCRAM client authentication.</p>\n         "
     },
-    "VpcConnectivityScram" : {
-      "type" : "structure",
-      "members" : {
-        "Enabled" : {
-          "shape" : "__boolean",
-          "locationName" : "enabled",
-          "documentation" : "\n            <p>SASL/SCRAM authentication is on or off for VPC connectivity.</p>\n         "
+    "VpcConnectivityScram": {
+      "type": "structure",
+      "members": {
+        "Enabled": {
+          "shape": "__boolean",
+          "locationName": "enabled",
+          "documentation": "\n            <p>SASL/SCRAM authentication is on or off for VPC connectivity.</p>\n         "
         }
       },
-      "documentation" : "\n            <p>Details for SASL/SCRAM client authentication for VPC connectivity.</p>\n         "
+      "documentation": "\n            <p>Details for SASL/SCRAM client authentication for VPC connectivity.</p>\n         "
     },
-    "Iam" : {
-      "type" : "structure",
-      "members" : {
-        "Enabled" : {
-          "shape" : "__boolean",
-          "locationName" : "enabled",
-          "documentation" : "\n            <p>Indicates whether IAM access control is enabled.</p>\n         "
+    "Iam": {
+      "type": "structure",
+      "members": {
+        "Enabled": {
+          "shape": "__boolean",
+          "locationName": "enabled",
+          "documentation": "\n            <p>Indicates whether IAM access control is enabled.</p>\n         "
         }
       },
-      "documentation" : "\n            <p>Details for IAM access control.</p>\n         "
+      "documentation": "\n            <p>Details for IAM access control.</p>\n         "
     },
-    "VpcConnectivityIam" : {
-      "type" : "structure",
-      "members" : {
-        "Enabled" : {
-          "shape" : "__boolean",
-          "locationName" : "enabled",
-          "documentation" : "\n            <p>SASL/IAM authentication is on or off for VPC connectivity.</p>\n         "
+    "VpcConnectivityIam": {
+      "type": "structure",
+      "members": {
+        "Enabled": {
+          "shape": "__boolean",
+          "locationName": "enabled",
+          "documentation": "\n            <p>SASL/IAM authentication is on or off for VPC connectivity.</p>\n         "
         }
       },
-      "documentation" : "\n            <p>Details for IAM access control for VPC connectivity.</p>\n         "
+      "documentation": "\n            <p>Details for IAM access control for VPC connectivity.</p>\n         "
     },
     "NodeInfo": {
       "type": "structure",
@@ -5469,7 +5593,13 @@
         }
       },
       "documentation": "<p>Specifies configuration for replication between a source and target Kafka cluster.</p>",
-      "required": ["TargetCompressionType", "TopicReplication", "ConsumerGroupReplication", "SourceKafkaClusterArn", "TargetKafkaClusterArn"]
+      "required": [
+        "TargetCompressionType",
+        "TopicReplication",
+        "ConsumerGroupReplication",
+        "SourceKafkaClusterArn",
+        "TargetKafkaClusterArn"
+      ]
     },
     "ReplicationInfoDescription": {
       "type": "structure",
@@ -5518,42 +5648,70 @@
       },
       "documentation": "<p>Summarized information of replication between clusters.</p>"
     },
-    "ReplicationStartingPosition" : {
-      "type" : "structure",
-      "members" : {
-        "Type" : {
-          "shape" : "ReplicationStartingPositionType",
-          "locationName" : "type",
+    "ReplicationStartingPosition": {
+      "type": "structure",
+      "members": {
+        "Type": {
+          "shape": "ReplicationStartingPositionType",
+          "locationName": "type",
           "documentation": "<p>The type of replication starting position.</p>"
         }
       },
       "documentation": "<p>Configuration for specifying the position in the topics to start replicating from.</p>"
     },
-    "ReplicationStartingPositionType" : {
-      "type" : "string",
-      "enum" : [ "LATEST", "EARLIEST" ],
+    "ReplicationStartingPositionType": {
+      "type": "string",
+      "enum": [
+        "LATEST",
+        "EARLIEST"
+      ],
       "documentation": "<p>The type of replication starting position.</p>"
     },
-    "ReplicationStateInfo" : {
-      "type" : "structure",
-      "members" : {
-        "Code" : {
-          "shape" : "__string",
-          "locationName" : "code",
-          "documentation" : "Code that describes the current state of the replicator."
-        },
-        "Message" : {
-          "shape" : "__string",
-          "locationName" : "message",
-          "documentation" : "Message that describes the state of the replicator."
+    "ReplicationTopicNameConfiguration": {
+      "type": "structure",
+      "members": {
+        "Type": {
+          "shape": "ReplicationTopicNameConfigurationType",
+          "locationName": "type",
+          "documentation": "<p>The type of replicated topic name.</p>"
         }
       },
-      "documentation" : "Details about the state of a replicator"
+      "documentation": "<p>Configuration for specifying replicated topic names should be the same as their corresponding upstream topics or prefixed with source cluster alias.</p>"
+    },
+    "ReplicationTopicNameConfigurationType": {
+      "type": "string",
+      "enum": [
+        "PREFIXED_WITH_SOURCE_CLUSTER_ALIAS",
+        "IDENTICAL"
+      ],
+      "documentation": "<p>The type of replicated topic name.</p>"
+    },
+    "ReplicationStateInfo": {
+      "type": "structure",
+      "members": {
+        "Code": {
+          "shape": "__string",
+          "locationName": "code",
+          "documentation": "Code that describes the current state of the replicator."
+        },
+        "Message": {
+          "shape": "__string",
+          "locationName": "message",
+          "documentation": "Message that describes the state of the replicator."
+        }
+      },
+      "documentation": "Details about the state of a replicator"
     },
     "ReplicatorState": {
       "type": "string",
       "documentation": "<p>The state of a replicator.</p>",
-      "enum": ["RUNNING", "CREATING", "UPDATING", "DELETING", "FAILED"]
+      "enum": [
+        "RUNNING",
+        "CREATING",
+        "UPDATING",
+        "DELETING",
+        "FAILED"
+      ]
     },
     "ReplicatorSummary": {
       "type": "structure",
@@ -5626,16 +5784,16 @@
         "httpStatusCode": 503
       }
     },
-    "StateInfo" : {
-      "type" : "structure",
-      "members" : {
-        "Code" : {
-          "shape" : "__string",
-          "locationName" : "code"
+    "StateInfo": {
+      "type": "structure",
+      "members": {
+        "Code": {
+          "shape": "__string",
+          "locationName": "code"
         },
-        "Message" : {
-          "shape" : "__string",
-          "locationName" : "message"
+        "Message": {
+          "shape": "__string",
+          "locationName": "message"
         }
       }
     },
@@ -5650,10 +5808,13 @@
       },
       "documentation": "\n            <p>Contains information about storage volumes attached to MSK broker nodes.</p>\n         "
     },
-    "StorageMode" : {
-      "type" : "string",
-      "documentation" : "Controls storage mode for various supported storage tiers.",
-      "enum" : [ "LOCAL", "TIERED" ]
+    "StorageMode": {
+      "type": "string",
+      "documentation": "Controls storage mode for various supported storage tiers.",
+      "enum": [
+        "LOCAL",
+        "TIERED"
+      ]
     },
     "TagResourceRequest": {
       "type": "structure",
@@ -5678,7 +5839,13 @@
     "TargetCompressionType": {
       "type": "string",
       "documentation": "<p>The type of compression to use producing records to the target cluster.</p>",
-      "enum": ["NONE", "GZIP", "SNAPPY", "LZ4", "ZSTD"]
+      "enum": [
+        "NONE",
+        "GZIP",
+        "SNAPPY",
+        "LZ4",
+        "ZSTD"
+      ]
     },
     "Tls": {
       "type": "structure",
@@ -5688,10 +5855,10 @@
           "locationName": "certificateAuthorityArnList",
           "documentation": "\n            <p>List of ACM Certificate Authority ARNs.</p>\n         "
         },
-        "Enabled" : {
-          "shape" : "__boolean",
-          "locationName" : "enabled",
-          "documentation" : "\n            <p>Specifies whether you want to turn on or turn off TLS authentication.</p>\n         "
+        "Enabled": {
+          "shape": "__boolean",
+          "locationName": "enabled",
+          "documentation": "\n            <p>Specifies whether you want to turn on or turn off TLS authentication.</p>\n         "
         }
       },
       "documentation": "\n            <p>Details for client authentication using TLS.</p>\n         "
@@ -5699,10 +5866,10 @@
     "VpcConnectivityTls": {
       "type": "structure",
       "members": {
-        "Enabled" : {
-          "shape" : "__boolean",
-          "locationName" : "enabled",
-          "documentation" : "\n            <p>TLS authentication is on or off for VPC connectivity.</p>\n         "
+        "Enabled": {
+          "shape": "__boolean",
+          "locationName": "enabled",
+          "documentation": "\n            <p>TLS authentication is on or off for VPC connectivity.</p>\n         "
         }
       },
       "documentation": "\n            <p>Details for TLS client authentication for VPC connectivity.</p>\n         "
@@ -5745,10 +5912,15 @@
           "locationName": "detectAndCopyNewTopics",
           "documentation": "<p>Whether to periodically check for new topics and partitions.</p>"
         },
-        "StartingPosition" : {
-          "shape" : "ReplicationStartingPosition",
-          "locationName" : "startingPosition",
+        "StartingPosition": {
+          "shape": "ReplicationStartingPosition",
+          "locationName": "startingPosition",
           "documentation": "<p>Configuration for specifying the position in the topics to start replicating from.</p>"
+        },
+        "TopicNameConfiguration": {
+          "shape": "ReplicationTopicNameConfiguration",
+          "locationName": "topicNameConfiguration",
+          "documentation": "<p>Configuration for specifying replicated topic names should be the same as their corresponding upstream topics or prefixed with source cluster alias.</p>"
         },
         "TopicsToExclude": {
           "shape": "__listOf__stringMax249",
@@ -5762,7 +5934,9 @@
         }
       },
       "documentation": "<p>Details about topic replication.</p>",
-      "required": ["TopicsToReplicate"]
+      "required": [
+        "TopicsToReplicate"
+      ]
     },
     "TopicReplicationUpdate": {
       "type": "structure",
@@ -5794,15 +5968,21 @@
         }
       },
       "documentation": "<p>Details for updating the topic replication of a replicator.</p>",
-      "required": ["TopicsToReplicate", "TopicsToExclude", "CopyTopicConfigurations", "DetectAndCopyNewTopics", "CopyAccessControlListsForTopics"]
+      "required": [
+        "TopicsToReplicate",
+        "TopicsToExclude",
+        "CopyTopicConfigurations",
+        "DetectAndCopyNewTopics",
+        "CopyAccessControlListsForTopics"
+      ]
     },
-    "Unauthenticated" : {
-      "type" : "structure",
-      "members" : {
-        "Enabled" : {
-          "shape" : "__boolean",
-          "locationName" : "enabled",
-          "documentation" : "\n            <p>Specifies whether you want to turn on or turn off unauthenticated traffic to your cluster.</p>\n         "
+    "Unauthenticated": {
+      "type": "structure",
+      "members": {
+        "Enabled": {
+          "shape": "__boolean",
+          "locationName": "enabled",
+          "documentation": "\n            <p>Specifies whether you want to turn on or turn off unauthenticated traffic to your cluster.</p>\n         "
         }
       }
     },
@@ -5826,26 +6006,26 @@
         "httpStatusCode": 401
       }
     },
-    "UnprocessedScramSecret" : {
-      "type" : "structure",
-      "members" : {
-        "ErrorCode" : {
-          "shape" : "__string",
-          "locationName" : "errorCode",
-          "documentation" : "\n            <p>Error code for associate/disassociate failure.</p>\n         "
+    "UnprocessedScramSecret": {
+      "type": "structure",
+      "members": {
+        "ErrorCode": {
+          "shape": "__string",
+          "locationName": "errorCode",
+          "documentation": "\n            <p>Error code for associate/disassociate failure.</p>\n         "
         },
-        "ErrorMessage" : {
-          "shape" : "__string",
-          "locationName" : "errorMessage",
-          "documentation" : "\n            <p>Error message for associate/disassociate failure.</p>\n         "
+        "ErrorMessage": {
+          "shape": "__string",
+          "locationName": "errorMessage",
+          "documentation": "\n            <p>Error message for associate/disassociate failure.</p>\n         "
         },
-        "SecretArn" : {
-          "shape" : "__string",
-          "locationName" : "secretArn",
-          "documentation" : "\n            <p>AWS Secrets Manager secret ARN.</p>\n         "
+        "SecretArn": {
+          "shape": "__string",
+          "locationName": "secretArn",
+          "documentation": "\n            <p>AWS Secrets Manager secret ARN.</p>\n         "
         }
       },
-      "documentation" : "\n            <p>Error info for scram secret associate/disassociate failure.</p>\n         "
+      "documentation": "\n            <p>Error info for scram secret associate/disassociate failure.</p>\n         "
     },
     "UntagResourceRequest": {
       "type": "structure",
@@ -6032,92 +6212,99 @@
         }
       }
     },
-    "UpdateClusterKafkaVersionRequest" : {
-      "type" : "structure",
-      "members" : {
-        "ClusterArn" : {
-          "shape" : "__string",
-          "location" : "uri",
-          "locationName" : "clusterArn",
-          "documentation" : "\n            <p>The Amazon Resource Name (ARN) of the cluster to be updated.</p>\n            "
+    "UpdateClusterKafkaVersionRequest": {
+      "type": "structure",
+      "members": {
+        "ClusterArn": {
+          "shape": "__string",
+          "location": "uri",
+          "locationName": "clusterArn",
+          "documentation": "\n            <p>The Amazon Resource Name (ARN) of the cluster to be updated.</p>\n            "
         },
-        "ConfigurationInfo" : {
-          "shape" : "ConfigurationInfo",
-          "locationName" : "configurationInfo",
+        "ConfigurationInfo": {
+          "shape": "ConfigurationInfo",
+          "locationName": "configurationInfo",
           "documentation": "\n            <p>The custom configuration that should be applied on the new version of cluster.</p>\n            "
         },
-        "CurrentVersion" : {
-          "shape" : "__string",
-          "locationName" : "currentVersion",
+        "CurrentVersion": {
+          "shape": "__string",
+          "locationName": "currentVersion",
           "documentation": "\n            <p>Current cluster version.</p>\n            "
         },
-        "TargetKafkaVersion" : {
-          "shape" : "__string",
-          "locationName" : "targetKafkaVersion"
-        ,"documentation": "\n            <p>Target Kafka version.</p>\n            "
+        "TargetKafkaVersion": {
+          "shape": "__string",
+          "locationName": "targetKafkaVersion",
+          "documentation": "\n            <p>Target Kafka version.</p>\n            "
         }
       },
-      "required" : [ "ClusterArn", "TargetKafkaVersion", "CurrentVersion" ]
+      "required": [
+        "ClusterArn",
+        "TargetKafkaVersion",
+        "CurrentVersion"
+      ]
     },
-    "UpdateClusterKafkaVersionResponse" : {
-      "type" : "structure",
-      "members" : {
-        "ClusterArn" : {
-          "shape" : "__string",
-          "locationName" : "clusterArn",
+    "UpdateClusterKafkaVersionResponse": {
+      "type": "structure",
+      "members": {
+        "ClusterArn": {
+          "shape": "__string",
+          "locationName": "clusterArn",
           "documentation": "\n            <p>The Amazon Resource Name (ARN) of the cluster.</p>\n            "
         },
-        "ClusterOperationArn" : {
-          "shape" : "__string",
-          "locationName" : "clusterOperationArn",
+        "ClusterOperationArn": {
+          "shape": "__string",
+          "locationName": "clusterOperationArn",
           "documentation": "\n            <p>The Amazon Resource Name (ARN) of the cluster operation.</p>\n            "
         }
       }
     },
-    "UpdateMonitoringRequest" : {
-      "type" : "structure",
-      "members" : {
-        "ClusterArn" : {
-          "shape" : "__string",
-          "location" : "uri",
-          "locationName" : "clusterArn",
-          "documentation" : "\n            <p>The Amazon Resource Name (ARN) that uniquely identifies the cluster.</p>\n         "
+    "UpdateMonitoringRequest": {
+      "type": "structure",
+      "members": {
+        "ClusterArn": {
+          "shape": "__string",
+          "location": "uri",
+          "locationName": "clusterArn",
+          "documentation": "\n            <p>The Amazon Resource Name (ARN) that uniquely identifies the cluster.</p>\n         "
         },
-        "CurrentVersion" : {
-          "shape" : "__string",
-          "locationName" : "currentVersion",
-          "documentation" : "\n            <p>The version of the MSK cluster to update. Cluster versions aren't simple numbers. You can describe an MSK cluster to find its version. When this update operation is successful, it generates a new cluster version.</p>\n         "
+        "CurrentVersion": {
+          "shape": "__string",
+          "locationName": "currentVersion",
+          "documentation": "\n            <p>The version of the MSK cluster to update. Cluster versions aren't simple numbers. You can describe an MSK cluster to find its version. When this update operation is successful, it generates a new cluster version.</p>\n         "
         },
-        "EnhancedMonitoring" : {
-          "shape" : "EnhancedMonitoring",
-          "locationName" : "enhancedMonitoring",
-          "documentation" : "\n            <p>Specifies which Apache Kafka metrics Amazon MSK gathers and sends to Amazon CloudWatch for this cluster.</p>\n         "
+        "EnhancedMonitoring": {
+          "shape": "EnhancedMonitoring",
+          "locationName": "enhancedMonitoring",
+          "documentation": "\n            <p>Specifies which Apache Kafka metrics Amazon MSK gathers and sends to Amazon CloudWatch for this cluster.</p>\n         "
         },
-        "OpenMonitoring" : {
-          "shape" : "OpenMonitoringInfo",
-          "locationName" : "openMonitoring",
-          "documentation" : "\n            <p>The settings for open monitoring.</p>\n         "
+        "OpenMonitoring": {
+          "shape": "OpenMonitoringInfo",
+          "locationName": "openMonitoring",
+          "documentation": "\n            <p>The settings for open monitoring.</p>\n         "
         },
         "LoggingInfo": {
           "shape": "LoggingInfo",
           "locationName": "loggingInfo"
         }
       },
-      "documentation" : "Request body for UpdateMonitoring.",
-      "required" : [ "ClusterArn", "CurrentVersion" ]
+      "documentation": "Request body for UpdateMonitoring.",
+      "required": [
+        "ClusterArn",
+        "CurrentVersion"
+      ]
     },
-    "UpdateMonitoringResponse" : {
-      "type" : "structure",
-      "members" : {
-        "ClusterArn" : {
-          "shape" : "__string",
-          "locationName" : "clusterArn",
-          "documentation" : "\n            <p>The Amazon Resource Name (ARN) of the cluster.</p>\n         "
+    "UpdateMonitoringResponse": {
+      "type": "structure",
+      "members": {
+        "ClusterArn": {
+          "shape": "__string",
+          "locationName": "clusterArn",
+          "documentation": "\n            <p>The Amazon Resource Name (ARN) of the cluster.</p>\n         "
         },
-        "ClusterOperationArn" : {
-          "shape" : "__string",
-          "locationName" : "clusterOperationArn",
-          "documentation" : "\n            <p>The Amazon Resource Name (ARN) of the cluster operation.</p>\n         "
+        "ClusterOperationArn": {
+          "shape": "__string",
+          "locationName": "clusterOperationArn",
+          "documentation": "\n            <p>The Amazon Resource Name (ARN) of the cluster operation.</p>\n         "
         }
       }
     },
@@ -6157,7 +6344,12 @@
         }
       },
       "documentation": "<p>Update information relating to replication between a given source and target Kafka cluster.</p>",
-      "required": ["ReplicatorArn", "SourceKafkaClusterArn", "CurrentVersion", "TargetKafkaClusterArn"]
+      "required": [
+        "ReplicatorArn",
+        "SourceKafkaClusterArn",
+        "CurrentVersion",
+        "TargetKafkaClusterArn"
+      ]
     },
     "UpdateReplicationInfoResponse": {
       "type": "structure",
@@ -6174,93 +6366,99 @@
         }
       }
     },
-    "UpdateSecurityRequest" : {
-      "type" : "structure",
-      "members" : {
-        "ClientAuthentication" : {
-          "shape" : "ClientAuthentication",
-          "locationName" : "clientAuthentication",
-          "documentation" : "\n            <p>Includes all client authentication related information.</p>\n         "
+    "UpdateSecurityRequest": {
+      "type": "structure",
+      "members": {
+        "ClientAuthentication": {
+          "shape": "ClientAuthentication",
+          "locationName": "clientAuthentication",
+          "documentation": "\n            <p>Includes all client authentication related information.</p>\n         "
         },
-        "ClusterArn" : {
-          "shape" : "__string",
-          "location" : "uri",
-          "locationName" : "clusterArn",
-          "documentation" : "\n            <p>The Amazon Resource Name (ARN) that uniquely identifies the cluster.</p>\n         "
+        "ClusterArn": {
+          "shape": "__string",
+          "location": "uri",
+          "locationName": "clusterArn",
+          "documentation": "\n            <p>The Amazon Resource Name (ARN) that uniquely identifies the cluster.</p>\n         "
         },
-        "CurrentVersion" : {
-          "shape" : "__string",
-          "locationName" : "currentVersion",
-          "documentation" : "\n            <p>The version of the MSK cluster to update. Cluster versions aren't simple numbers. You can describe an MSK cluster to find its version. When this update operation is successful, it generates a new cluster version.</p>\n         "
+        "CurrentVersion": {
+          "shape": "__string",
+          "locationName": "currentVersion",
+          "documentation": "\n            <p>The version of the MSK cluster to update. Cluster versions aren't simple numbers. You can describe an MSK cluster to find its version. When this update operation is successful, it generates a new cluster version.</p>\n         "
         },
-        "EncryptionInfo" : {
-          "shape" : "EncryptionInfo",
-          "locationName" : "encryptionInfo",
-          "documentation" : "\n            <p>Includes all encryption-related information.</p>\n         "
+        "EncryptionInfo": {
+          "shape": "EncryptionInfo",
+          "locationName": "encryptionInfo",
+          "documentation": "\n            <p>Includes all encryption-related information.</p>\n         "
         }
       },
-      "required" : [ "ClusterArn", "CurrentVersion" ]
+      "required": [
+        "ClusterArn",
+        "CurrentVersion"
+      ]
     },
-    "UpdateSecurityResponse" : {
-      "type" : "structure",
-      "members" : {
-        "ClusterArn" : {
-          "shape" : "__string",
-          "locationName" : "clusterArn",
-          "documentation" : "\n            <p>The Amazon Resource Name (ARN) of the cluster.</p>\n         "
+    "UpdateSecurityResponse": {
+      "type": "structure",
+      "members": {
+        "ClusterArn": {
+          "shape": "__string",
+          "locationName": "clusterArn",
+          "documentation": "\n            <p>The Amazon Resource Name (ARN) of the cluster.</p>\n         "
         },
-        "ClusterOperationArn" : {
-          "shape" : "__string",
-          "locationName" : "clusterOperationArn",
-          "documentation" : "\n            <p>The Amazon Resource Name (ARN) of the cluster operation.</p>\n         "
+        "ClusterOperationArn": {
+          "shape": "__string",
+          "locationName": "clusterOperationArn",
+          "documentation": "\n            <p>The Amazon Resource Name (ARN) of the cluster operation.</p>\n         "
         }
       }
     },
-    "UpdateStorageRequest" : {
-      "type" : "structure",
-      "members" : {
-        "ClusterArn" : {
-          "shape" : "__string",
-          "location" : "uri",
-          "locationName" : "clusterArn",
-          "documentation" : "\n            <p>The Amazon Resource Name (ARN) of the cluster to be updated.</p>\n         "
+    "UpdateStorageRequest": {
+      "type": "structure",
+      "members": {
+        "ClusterArn": {
+          "shape": "__string",
+          "location": "uri",
+          "locationName": "clusterArn",
+          "documentation": "\n            <p>The Amazon Resource Name (ARN) of the cluster to be updated.</p>\n         "
         },
-        "CurrentVersion" : {
-          "shape" : "__string",
-          "locationName" : "currentVersion",
-          "documentation" : "\n            <p>The version of cluster to update from. A successful operation will then generate a new version.</p>\n         "
+        "CurrentVersion": {
+          "shape": "__string",
+          "locationName": "currentVersion",
+          "documentation": "\n            <p>The version of cluster to update from. A successful operation will then generate a new version.</p>\n         "
         },
-        "ProvisionedThroughput" : {
-          "shape" : "ProvisionedThroughput",
-          "locationName" : "provisionedThroughput",
-          "documentation" : "\n            <p>EBS volume provisioned throughput information.</p>\n         "
+        "ProvisionedThroughput": {
+          "shape": "ProvisionedThroughput",
+          "locationName": "provisionedThroughput",
+          "documentation": "\n            <p>EBS volume provisioned throughput information.</p>\n         "
         },
-        "StorageMode" : {
-          "shape" : "StorageMode",
-          "locationName" : "storageMode",
-          "documentation" : "\n            <p>Controls storage mode for supported storage tiers.</p>\n         "
+        "StorageMode": {
+          "shape": "StorageMode",
+          "locationName": "storageMode",
+          "documentation": "\n            <p>Controls storage mode for supported storage tiers.</p>\n         "
         },
-        "VolumeSizeGB" : {
-          "shape" : "__integer",
-          "locationName" : "volumeSizeGB",
-          "documentation" : "\n            <p>size of the EBS volume to update.</p>\n         "
+        "VolumeSizeGB": {
+          "shape": "__integer",
+          "locationName": "volumeSizeGB",
+          "documentation": "\n            <p>size of the EBS volume to update.</p>\n         "
         }
       },
-      "documentation" : "\n            <p>Request object for UpdateStorage api. Its used to update the storage attributes for the cluster.</p>\n         ",
-      "required" : [ "ClusterArn", "CurrentVersion" ]
+      "documentation": "\n            <p>Request object for UpdateStorage api. Its used to update the storage attributes for the cluster.</p>\n         ",
+      "required": [
+        "ClusterArn",
+        "CurrentVersion"
+      ]
     },
-    "UpdateStorageResponse" : {
-      "type" : "structure",
-      "members" : {
-        "ClusterArn" : {
-          "shape" : "__string",
-          "locationName" : "clusterArn",
-          "documentation" : "\n            <p>The Amazon Resource Name (ARN) of the cluster.</p>\n         "
+    "UpdateStorageResponse": {
+      "type": "structure",
+      "members": {
+        "ClusterArn": {
+          "shape": "__string",
+          "locationName": "clusterArn",
+          "documentation": "\n            <p>The Amazon Resource Name (ARN) of the cluster.</p>\n         "
         },
-        "ClusterOperationArn" : {
-          "shape" : "__string",
-          "locationName" : "clusterOperationArn",
-          "documentation" : "\n            <p>The Amazon Resource Name (ARN) of the cluster operation.</p>\n         "
+        "ClusterOperationArn": {
+          "shape": "__string",
+          "locationName": "clusterOperationArn",
+          "documentation": "\n            <p>The Amazon Resource Name (ARN) of the cluster operation.</p>\n         "
         }
       }
     },
@@ -6269,7 +6467,7 @@
       "members": {
         "Arn": {
           "shape": "__string",
-          "location" : "uri",
+          "location": "uri",
           "locationName": "arn",
           "documentation": "\n            <p>The Amazon Resource Name (ARN) of the configuration.</p>\n         "
         },
@@ -6304,41 +6502,45 @@
         }
       }
     },
-    "UpdateConnectivityRequest" : {
-      "type" : "structure",
-      "members" : {
-        "ClusterArn" : {
-          "shape" : "__string",
-          "location" : "uri",
-          "locationName" : "clusterArn",
+    "UpdateConnectivityRequest": {
+      "type": "structure",
+      "members": {
+        "ClusterArn": {
+          "shape": "__string",
+          "location": "uri",
+          "locationName": "clusterArn",
           "documentation": "\n            <p>The Amazon Resource Name (ARN) of the configuration.</p>\n         "
         },
-        "ConnectivityInfo" : {
-          "shape" : "ConnectivityInfo",
-          "locationName" : "connectivityInfo",
-          "documentation" : "\n            <p>Information about the broker access configuration.</p>\n         "
+        "ConnectivityInfo": {
+          "shape": "ConnectivityInfo",
+          "locationName": "connectivityInfo",
+          "documentation": "\n            <p>Information about the broker access configuration.</p>\n         "
         },
-        "CurrentVersion" : {
-          "shape" : "__string",
-          "locationName" : "currentVersion",
-          "documentation" : "\n            <p>The version of the MSK cluster to update. Cluster versions aren't simple numbers. You can describe an MSK cluster to find its version. When this update operation is successful, it generates a new cluster version.</p>\n         "
+        "CurrentVersion": {
+          "shape": "__string",
+          "locationName": "currentVersion",
+          "documentation": "\n            <p>The version of the MSK cluster to update. Cluster versions aren't simple numbers. You can describe an MSK cluster to find its version. When this update operation is successful, it generates a new cluster version.</p>\n         "
         }
       },
-      "documentation" : "Request body for UpdateConnectivity.",
-      "required" : [ "ClusterArn", "ConnectivityInfo", "CurrentVersion" ]
+      "documentation": "Request body for UpdateConnectivity.",
+      "required": [
+        "ClusterArn",
+        "ConnectivityInfo",
+        "CurrentVersion"
+      ]
     },
-    "UpdateConnectivityResponse" : {
-      "type" : "structure",
-      "members" : {
-        "ClusterArn" : {
-          "shape" : "__string",
-          "locationName" : "clusterArn",
-          "documentation" : "\n            <p>The Amazon Resource Name (ARN) of the cluster.</p>\n         "
+    "UpdateConnectivityResponse": {
+      "type": "structure",
+      "members": {
+        "ClusterArn": {
+          "shape": "__string",
+          "locationName": "clusterArn",
+          "documentation": "\n            <p>The Amazon Resource Name (ARN) of the cluster.</p>\n         "
         },
-        "ClusterOperationArn" : {
-          "shape" : "__string",
-          "locationName" : "clusterOperationArn",
-          "documentation" : "\n            <p>The Amazon Resource Name (ARN) of the cluster operation.</p>\n         "
+        "ClusterOperationArn": {
+          "shape": "__string",
+          "locationName": "clusterOperationArn",
+          "documentation": "\n            <p>The Amazon Resource Name (ARN) of the cluster operation.</p>\n         "
         }
       }
     },
@@ -6348,15 +6550,15 @@
         "Type": {
           "shape": "UserIdentityType",
           "locationName": "type",
-          "documentation" : "\n            <p>The identity type of the requester that calls the API operation.</p>\n         "
+          "documentation": "\n            <p>The identity type of the requester that calls the API operation.</p>\n         "
         },
         "PrincipalId": {
           "shape": "__string",
           "locationName": "principalId",
-          "documentation" : "\n            <p>A unique identifier for the requester that calls the API operation.</p>\n         "
+          "documentation": "\n            <p>A unique identifier for the requester that calls the API operation.</p>\n         "
         }
       },
-      "documentation" : "\n            <p>Description of the requester that calls the API operation.</p>\n         "
+      "documentation": "\n            <p>Description of the requester that calls the API operation.</p>\n         "
     },
     "UserIdentityType": {
       "type": "string",
@@ -6372,51 +6574,51 @@
         "VpcConnectionArn": {
           "shape": "__string",
           "locationName": "vpcConnectionArn",
-          "documentation" : "\n            <p>The Amazon Resource Name (ARN) of the VPC connection.</p>\n         "
+          "documentation": "\n            <p>The Amazon Resource Name (ARN) of the VPC connection.</p>\n         "
         },
         "Owner": {
           "shape": "__string",
           "locationName": "owner",
-          "documentation" : "\n            <p>The owner of the VPC Connection.</p>\n         "
+          "documentation": "\n            <p>The owner of the VPC Connection.</p>\n         "
         },
         "UserIdentity": {
           "shape": "UserIdentity",
           "locationName": "userIdentity",
-          "documentation" : "\n            <p>Description of the requester that calls the API operation.</p>\n         "
+          "documentation": "\n            <p>Description of the requester that calls the API operation.</p>\n         "
         },
         "CreationTime": {
           "shape": "__timestampIso8601",
           "locationName": "creationTime",
-          "documentation" : "\n            <p>The time when Amazon MSK creates the VPC Connnection.</p>\n         "
+          "documentation": "\n            <p>The time when Amazon MSK creates the VPC Connnection.</p>\n         "
         }
       },
       "documentation": "\n            <p>Description of the VPC connection.</p>\n         "
     },
-    "VpcConnectionInfoServerless" : {
-      "type" : "structure",
-      "members" : {
-        "CreationTime" : {
-          "shape" : "__timestampIso8601",
-          "locationName" : "creationTime",
-          "documentation" : "\n            <p>The time when Amazon MSK creates the VPC Connnection.</p>"
+    "VpcConnectionInfoServerless": {
+      "type": "structure",
+      "members": {
+        "CreationTime": {
+          "shape": "__timestampIso8601",
+          "locationName": "creationTime",
+          "documentation": "\n            <p>The time when Amazon MSK creates the VPC Connnection.</p>"
         },
-        "Owner" : {
-          "shape" : "__string",
-          "locationName" : "owner",
-          "documentation" : "\n            <p>The owner of the VPC Connection.</p>"
+        "Owner": {
+          "shape": "__string",
+          "locationName": "owner",
+          "documentation": "\n            <p>The owner of the VPC Connection.</p>"
         },
-        "UserIdentity" : {
-          "shape" : "UserIdentity",
-          "locationName" : "userIdentity",
-          "documentation" : "\n            <p>Description of the requester that calls the API operation.</p>"
+        "UserIdentity": {
+          "shape": "UserIdentity",
+          "locationName": "userIdentity",
+          "documentation": "\n            <p>Description of the requester that calls the API operation.</p>"
         },
-        "VpcConnectionArn" : {
-          "shape" : "__string",
-          "locationName" : "vpcConnectionArn",
-          "documentation" : "\n            <p>The Amazon Resource Name (ARN) of the VPC connection.</p>"
+        "VpcConnectionArn": {
+          "shape": "__string",
+          "locationName": "vpcConnectionArn",
+          "documentation": "\n            <p>The Amazon Resource Name (ARN) of the VPC connection.</p>"
         }
       },
-      "documentation" : "Description of the VPC connection."
+      "documentation": "Description of the VPC connection."
     },
     "VpcConnectionState": {
       "type": "string",
@@ -6432,16 +6634,16 @@
         "REJECTING"
       ]
     },
-    "VpcConnectivity" : {
-      "type" : "structure",
-      "members" : {
+    "VpcConnectivity": {
+      "type": "structure",
+      "members": {
         "ClientAuthentication": {
           "shape": "VpcConnectivityClientAuthentication",
           "locationName": "clientAuthentication",
           "documentation": "\n            <p>Includes all client authentication information for VPC connectivity.</p>\n         "
         }
       },
-      "documentation" : "VPC connectivity access control for brokers."
+      "documentation": "VPC connectivity access control for brokers."
     },
     "ZookeeperNodeInfo": {
       "type": "structure",
@@ -6520,28 +6722,28 @@
         "shape": "ClusterOperationInfo"
       }
     },
-    "__listOfClusterOperationV2Summary" : {
-      "type" : "list",
-      "member" : {
-        "shape" : "ClusterOperationV2Summary"
+    "__listOfClusterOperationV2Summary": {
+      "type": "list",
+      "member": {
+        "shape": "ClusterOperationV2Summary"
       }
     },
-    "__listOfClusterOperationStep" : {
-      "type" : "list",
-      "member" : {
-        "shape" : "ClusterOperationStep"
+    "__listOfClusterOperationStep": {
+      "type": "list",
+      "member": {
+        "shape": "ClusterOperationStep"
       }
     },
-    "__listOfCompatibleKafkaVersion" : {
-      "type" : "list",
-      "member" : {
-        "shape" : "CompatibleKafkaVersion"
+    "__listOfCompatibleKafkaVersion": {
+      "type": "list",
+      "member": {
+        "shape": "CompatibleKafkaVersion"
       }
     },
-    "__listOfVpcConfig" : {
-      "type" : "list",
-      "member" : {
-        "shape" : "VpcConfig"
+    "__listOfVpcConfig": {
+      "type": "list",
+      "member": {
+        "shape": "VpcConfig"
       }
     },
     "__listOfConfiguration": {
@@ -6622,16 +6824,16 @@
         "shape": "VpcConnection"
       }
     },
-    "__listOfUnprocessedScramSecret" : {
-      "type" : "list",
-      "member" : {
-        "shape" : "UnprocessedScramSecret"
+    "__listOfUnprocessedScramSecret": {
+      "type": "list",
+      "member": {
+        "shape": "UnprocessedScramSecret"
       }
     },
-    "__listOf__double" : {
-      "type" : "list",
-      "member" : {
-        "shape" : "__double"
+    "__listOf__double": {
+      "type": "list",
+      "member": {
+        "shape": "__double"
       }
     },
     "__listOf__string": {

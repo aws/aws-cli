@@ -5,11 +5,13 @@
     "endpointPrefix":"runtime.sagemaker",
     "jsonVersion":"1.1",
     "protocol":"rest-json",
+    "protocols":["rest-json"],
     "serviceFullName":"Amazon SageMaker Runtime",
     "serviceId":"SageMaker Runtime",
     "signatureVersion":"v4",
     "signingName":"sagemaker",
-    "uid":"runtime.sagemaker-2017-05-13"
+    "uid":"runtime.sagemaker-2017-05-13",
+    "auth":["aws.auth#sigv4"]
   },
   "operations":{
     "InvokeEndpoint":{
@@ -296,6 +298,12 @@
           "documentation":"<p>If the endpoint hosts one or more inference components, this parameter specifies the name of inference component to invoke.</p>",
           "location":"header",
           "locationName":"X-Amzn-SageMaker-Inference-Component"
+        },
+        "SessionId":{
+          "shape":"SessionIdOrNewSessionConstantHeader",
+          "documentation":"<p>Creates a stateful session or identifies an existing one. You can do one of the following:</p> <ul> <li> <p>Create a stateful session by specifying the value <code>NEW_SESSION</code>.</p> </li> <li> <p>Send your request to an existing stateful session by specifying the ID of that session.</p> </li> </ul> <p>With a stateful session, you can send multiple requests to a stateful model. When you create a session with a stateful model, the model must create the session ID and set the expiration time. The model must also provide that information in the response to your request. You can get the ID and timestamp from the <code>NewSessionId</code> response parameter. For any subsequent request where you specify that session ID, SageMaker routes the request to the same instance that supports the session.</p>",
+          "location":"header",
+          "locationName":"X-Amzn-SageMaker-Session-Id"
         }
       },
       "payload":"Body"
@@ -325,6 +333,18 @@
           "documentation":"<p>Provides additional information in the response about the inference returned by a model hosted at an Amazon SageMaker endpoint. The information is an opaque value that is forwarded verbatim. You could use this value, for example, to return an ID received in the <code>CustomAttributes</code> header of a request or other metadata that a service endpoint was programmed to produce. The value must consist of no more than 1024 visible US-ASCII characters as specified in <a href=\"https://tools.ietf.org/html/rfc7230#section-3.2.6\">Section 3.3.6. Field Value Components</a> of the Hypertext Transfer Protocol (HTTP/1.1). If the customer wants the custom attribute returned, the model must set the custom attribute to be included on the way back. </p> <p>The code in your model is responsible for setting or updating any custom attributes in the response. If your code does not set this value in the response, an empty value is returned. For example, if a custom attribute represents the trace ID, your model can prepend the custom attribute with <code>Trace ID:</code> in your post-processing function.</p> <p>This feature is currently supported in the Amazon Web Services SDKs but not in the Amazon SageMaker Python SDK.</p>",
           "location":"header",
           "locationName":"X-Amzn-SageMaker-Custom-Attributes"
+        },
+        "NewSessionId":{
+          "shape":"NewSessionResponseHeader",
+          "documentation":"<p>If you created a stateful session with your request, the ID and expiration time that the model assigns to that session.</p>",
+          "location":"header",
+          "locationName":"X-Amzn-SageMaker-New-Session-Id"
+        },
+        "ClosedSessionId":{
+          "shape":"SessionIdHeader",
+          "documentation":"<p>If you closed a stateful session with your request, the ID of that session.</p>",
+          "location":"header",
+          "locationName":"X-Amzn-SageMaker-Closed-Session-Id"
         }
       },
       "payload":"Body"
@@ -387,6 +407,12 @@
           "documentation":"<p>If the endpoint hosts one or more inference components, this parameter specifies the name of inference component to invoke for a streaming response.</p>",
           "location":"header",
           "locationName":"X-Amzn-SageMaker-Inference-Component"
+        },
+        "SessionId":{
+          "shape":"SessionIdHeader",
+          "documentation":"<p>The ID of a stateful session to handle your request.</p> <p>You can't create a stateful session by using the <code>InvokeEndpointWithResponseStream</code> action. Instead, you can create one by using the <code> <a>InvokeEndpoint</a> </code> action. In your request, you specify <code>NEW_SESSION</code> for the <code>SessionId</code> request parameter. The response to that request provides the session ID for the <code>NewSessionId</code> response parameter.</p>",
+          "location":"header",
+          "locationName":"X-Amzn-SageMaker-Session-Id"
         }
       },
       "payload":"Body"
@@ -466,6 +492,11 @@
       "exception":true,
       "synthetic":true
     },
+    "NewSessionResponseHeader":{
+      "type":"string",
+      "max":256,
+      "pattern":"^[a-zA-Z0-9](-*[a-zA-Z0-9])*;\\sExpires=[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}Z$"
+    },
     "PartBlob":{
       "type":"blob",
       "sensitive":true
@@ -516,6 +547,16 @@
       "exception":true,
       "fault":true,
       "synthetic":true
+    },
+    "SessionIdHeader":{
+      "type":"string",
+      "max":256,
+      "pattern":"^[a-zA-Z0-9](-*[a-zA-Z0-9])*$"
+    },
+    "SessionIdOrNewSessionConstantHeader":{
+      "type":"string",
+      "max":256,
+      "pattern":"^(NEW_SESSION)$|^[a-zA-Z0-9](-*[a-zA-Z0-9])*$"
     },
     "StatusCode":{"type":"integer"},
     "TargetContainerHostnameHeader":{

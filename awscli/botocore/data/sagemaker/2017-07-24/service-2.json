@@ -7256,7 +7256,7 @@
           "documentation":"<p>Details of LifeCycle configuration for the instance group.</p>"
         },
         "ExecutionRole":{
-          "shape":"IAMRoleArn",
+          "shape":"RoleArn",
           "documentation":"<p>The execution role for the instance group to assume.</p>"
         },
         "ThreadsPerCore":{
@@ -7266,6 +7266,10 @@
         "InstanceStorageConfigs":{
           "shape":"ClusterInstanceStorageConfigs",
           "documentation":"<p>The additional storage configurations for the instances in the SageMaker HyperPod cluster instance group.</p>"
+        },
+        "OnStartDeepHealthChecks":{
+          "shape":"OnStartDeepHealthChecks",
+          "documentation":"<p>A flag indicating whether deep health checks should be performed when the cluster instance group is created or updated.</p>"
         }
       },
       "documentation":"<p>Details of an instance group in a SageMaker HyperPod cluster.</p>"
@@ -7307,7 +7311,7 @@
           "documentation":"<p>Specifies the LifeCycle configuration for the instance group.</p>"
         },
         "ExecutionRole":{
-          "shape":"IAMRoleArn",
+          "shape":"RoleArn",
           "documentation":"<p>Specifies an IAM execution role to be assumed by the instance group.</p>"
         },
         "ThreadsPerCore":{
@@ -7317,6 +7321,10 @@
         "InstanceStorageConfigs":{
           "shape":"ClusterInstanceStorageConfigs",
           "documentation":"<p>Specifies the additional storage configurations for the instances in the SageMaker HyperPod cluster instance group.</p>"
+        },
+        "OnStartDeepHealthChecks":{
+          "shape":"OnStartDeepHealthChecks",
+          "documentation":"<p>A flag indicating whether deep health checks should be performed when the cluster instance group is created or updated.</p>"
         }
       },
       "documentation":"<p>The specifications of an instance group that you need to define.</p>"
@@ -7348,7 +7356,8 @@
         "Failure",
         "Pending",
         "ShuttingDown",
-        "SystemUpdating"
+        "SystemUpdating",
+        "DeepHealthCheckInProgress"
       ]
     },
     "ClusterInstanceStatusDetails":{
@@ -7516,6 +7525,13 @@
       "min":1,
       "pattern":"^i-[a-f0-9]{8}(?:[a-f0-9]{9})?$"
     },
+    "ClusterNodeRecovery":{
+      "type":"string",
+      "enum":[
+        "Automatic",
+        "None"
+      ]
+    },
     "ClusterNodeSummaries":{
       "type":"list",
       "member":{"shape":"ClusterNodeSummary"}
@@ -7556,6 +7572,28 @@
     "ClusterNonNegativeInstanceCount":{
       "type":"integer",
       "min":0
+    },
+    "ClusterOrchestrator":{
+      "type":"structure",
+      "required":["Eks"],
+      "members":{
+        "Eks":{
+          "shape":"ClusterOrchestratorEksConfig",
+          "documentation":"<p>The Amazon EKS cluster used as the orchestrator for the SageMaker HyperPod cluster.</p>"
+        }
+      },
+      "documentation":"<p>The type of orchestrator used for the SageMaker HyperPod cluster.</p>"
+    },
+    "ClusterOrchestratorEksConfig":{
+      "type":"structure",
+      "required":["ClusterArn"],
+      "members":{
+        "ClusterArn":{
+          "shape":"EksClusterArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the Amazon EKS cluster associated with the SageMaker HyperPod cluster.</p>"
+        }
+      },
+      "documentation":"<p>The configuration settings for the Amazon EKS cluster used as the orchestrator for the SageMaker HyperPod cluster.</p>"
     },
     "ClusterPrivateDnsHostname":{
       "type":"string",
@@ -7643,7 +7681,7 @@
         },
         "AppLifecycleManagement":{
           "shape":"AppLifecycleManagement",
-          "documentation":"<p>Settings that are used to configure and manage the lifecycle of CodeEditor applications.</p> <p/>"
+          "documentation":"<p>Settings that are used to configure and manage the lifecycle of CodeEditor applications.</p>"
         }
       },
       "documentation":"<p>The Code Editor application settings.</p> <p>For more information about Code Editor, see <a href=\"https://docs.aws.amazon.com/sagemaker/latest/dg/code-editor.html\">Get started with Code Editor in Amazon SageMaker</a>.</p>"
@@ -8620,6 +8658,14 @@
         "Tags":{
           "shape":"TagList",
           "documentation":"<p>Custom tags for managing the SageMaker HyperPod cluster as an Amazon Web Services resource. You can add tags to your cluster in the same way you add them in other Amazon Web Services services that support tagging. To learn more about tagging Amazon Web Services resources in general, see <a href=\"https://docs.aws.amazon.com/tag-editor/latest/userguide/tagging.html\">Tagging Amazon Web Services Resources User Guide</a>.</p>"
+        },
+        "Orchestrator":{
+          "shape":"ClusterOrchestrator",
+          "documentation":"<p>The type of orchestrator to use for the SageMaker HyperPod cluster. Currently, the only supported value is <code>\"eks\"</code>, which is to use an Amazon Elastic Kubernetes Service (EKS) cluster as the orchestrator.</p>"
+        },
+        "NodeRecovery":{
+          "shape":"ClusterNodeRecovery",
+          "documentation":"<p>The node recovery mode for the SageMaker HyperPod cluster. When set to <code>Automatic</code>, SageMaker HyperPod will automatically reboot or replace faulty nodes when issues are detected. When set to <code>None</code>, cluster administrators will need to manually manage any faulty cluster instances.</p>"
         }
       }
     },
@@ -11626,6 +11672,13 @@
       "max":20,
       "min":0
     },
+    "DeepHealthCheckType":{
+      "type":"string",
+      "enum":[
+        "InstanceStress",
+        "InstanceConnectivity"
+      ]
+    },
     "DefaultEbsStorageSettings":{
       "type":"structure",
       "required":[
@@ -13208,7 +13261,15 @@
           "shape":"ClusterInstanceGroupDetailsList",
           "documentation":"<p>The instance groups of the SageMaker HyperPod cluster.</p>"
         },
-        "VpcConfig":{"shape":"VpcConfig"}
+        "VpcConfig":{"shape":"VpcConfig"},
+        "Orchestrator":{
+          "shape":"ClusterOrchestrator",
+          "documentation":"<p>The type of orchestrator used for the SageMaker HyperPod cluster. </p>"
+        },
+        "NodeRecovery":{
+          "shape":"ClusterNodeRecovery",
+          "documentation":"<p>The node recovery mode configured for the SageMaker HyperPod cluster.</p>"
+        }
       }
     },
     "DescribeCodeRepositoryInput":{
@@ -18055,6 +18116,12 @@
       "max":10,
       "pattern":"\\d+"
     },
+    "EksClusterArn":{
+      "type":"string",
+      "max":2048,
+      "min":20,
+      "pattern":"^arn:aws[a-z\\-]*:eks:[a-z0-9\\-]*:[0-9]{12}:cluster\\/[0-9A-Za-z][A-Za-z0-9\\-_]{0,99}$"
+    },
     "EmrServerlessComputeConfig":{
       "type":"structure",
       "required":["ExecutionRoleARN"],
@@ -20831,12 +20898,6 @@
     "HyperbandStrategyMinResource":{
       "type":"integer",
       "min":1
-    },
-    "IAMRoleArn":{
-      "type":"string",
-      "max":2048,
-      "min":20,
-      "pattern":"^arn:aws[a-z\\-]*:iam::\\d{12}:role/[\\w+=,.@-]{1,64}$"
     },
     "IamIdentity":{
       "type":"structure",
@@ -30091,6 +30152,12 @@
       },
       "documentation":"<p>A list of user groups that exist in your OIDC Identity Provider (IdP). One to ten groups can be used to create a single private work team. When you add a user group to the list of <code>Groups</code>, you can add that user group to one or more private work teams. If you add a user group to a private work team, all workers in that user group are added to the work team.</p>"
     },
+    "OnStartDeepHealthChecks":{
+      "type":"list",
+      "member":{"shape":"DeepHealthCheckType"},
+      "max":2,
+      "min":1
+    },
     "OnlineStoreConfig":{
       "type":"structure",
       "members":{
@@ -37844,6 +37911,10 @@
         "InstanceGroups":{
           "shape":"ClusterInstanceGroupSpecifications",
           "documentation":"<p>Specify the instance groups to update.</p>"
+        },
+        "NodeRecovery":{
+          "shape":"ClusterNodeRecovery",
+          "documentation":"<p>The node recovery mode to be applied to the SageMaker HyperPod cluster.</p>"
         }
       }
     },

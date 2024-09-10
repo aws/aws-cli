@@ -2284,7 +2284,7 @@
         },
         "RemoteIpDetails":{
           "shape":"ActionRemoteIpDetails",
-          "documentation":"<p>Provided if <code>CallerType</code> is <code>remoteIp</code>. Provides information about the remote IP address that the API call originated from.</p>"
+          "documentation":"<p>Provided if <code>CallerType</code> is <code>remoteip</code>. Provides information about the remote IP address that the API call originated from.</p>"
         },
         "DomainDetails":{
           "shape":"AwsApiCallActionDomainDetails",
@@ -15845,30 +15845,30 @@
       "members":{
         "Status":{
           "shape":"ComplianceStatus",
-          "documentation":"<p>The result of a standards check.</p> <p>The valid values for <code>Status</code> are as follows.</p> <ul> <li> <ul> <li> <p> <code>PASSED</code> - Standards check passed for all evaluated resources.</p> </li> <li> <p> <code>WARNING</code> - Some information is missing or this check is not supported for your configuration.</p> </li> <li> <p> <code>FAILED</code> - Standards check failed for at least one evaluated resource.</p> </li> <li> <p> <code>NOT_AVAILABLE</code> - Check could not be performed due to a service outage, API error, or because the result of the Config evaluation was <code>NOT_APPLICABLE</code>. If the Config evaluation result was <code>NOT_APPLICABLE</code> for a Security Hub control, Security Hub automatically archives the finding after 3 days.</p> </li> </ul> </li> </ul>"
+          "documentation":"<p>Typically summarizes the result of a control check.</p> <p>For Security Hub controls, valid values for <code>Status</code> are as follows.</p> <ul> <li> <ul> <li> <p> <code>PASSED</code> - Standards check passed for all evaluated resources.</p> </li> <li> <p> <code>WARNING</code> - Some information is missing or this check is not supported for your configuration.</p> </li> <li> <p> <code>FAILED</code> - Standards check failed for at least one evaluated resource.</p> </li> <li> <p> <code>NOT_AVAILABLE</code> - Check could not be performed due to a service outage, API error, or because the result of the Config evaluation was <code>NOT_APPLICABLE</code>. If the Config evaluation result was <code>NOT_APPLICABLE</code> for a Security Hub control, Security Hub automatically archives the finding after 3 days.</p> </li> </ul> </li> </ul>"
         },
         "RelatedRequirements":{
           "shape":"RelatedRequirementsList",
-          "documentation":"<p>For a control, the industry or regulatory framework requirements that are related to the control. The check for that control is aligned with these requirements.</p> <p>Array Members: Maximum number of 32 items.</p>"
+          "documentation":"<p>Typically provides the industry or regulatory framework requirements that are related to a control. The check for that control is aligned with these requirements.</p> <p>Array Members: Maximum number of 32 items.</p>"
         },
         "StatusReasons":{
           "shape":"StatusReasonsList",
-          "documentation":"<p>For findings generated from controls, a list of reasons behind the value of <code>Status</code>. For the list of status reason codes and their meanings, see <a href=\"https://docs.aws.amazon.com/securityhub/latest/userguide/securityhub-standards-results.html#securityhub-standards-results-asff\">Standards-related information in the ASFF</a> in the <i>Security Hub User Guide</i>. </p>"
+          "documentation":"<p>Typically used to provide a list of reasons for the value of <code>Status</code>.</p>"
         },
         "SecurityControlId":{
           "shape":"NonEmptyString",
-          "documentation":"<p> The unique identifier of a control across standards. Values for this field typically consist of an Amazon Web Servicesservice and a number, such as APIGateway.5. </p>"
+          "documentation":"<p> Typically provides the unique identifier of a control across standards. For Security Hub controls, this field consists of an Amazon Web Servicesservice and a unique number, such as <code>APIGateway.5</code>. </p>"
         },
         "AssociatedStandards":{
           "shape":"AssociatedStandardsList",
-          "documentation":"<p>The enabled security standards in which a security control is currently enabled. </p>"
+          "documentation":"<p>Typically provides an array of enabled security standards in which a security control is currently enabled. </p>"
         },
         "SecurityControlParameters":{
           "shape":"SecurityControlParametersList",
-          "documentation":"<p> An object that includes security control parameter names and values. </p>"
+          "documentation":"<p> Typically an object that includes security control parameter names and values. </p>"
         }
       },
-      "documentation":"<p>Contains finding details that are specific to control-based findings. Only returned for findings generated from controls.</p>"
+      "documentation":"<p>This object typically provides details about a control finding, such as applicable standards and the status of control checks. While finding providers can add custom content in <code>Compliance</code> object fields, they are typically used to review details of Security Hub control findings.</p>"
     },
     "ComplianceStatus":{
       "type":"string",

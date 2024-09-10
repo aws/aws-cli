@@ -2,6 +2,15 @@
 CHANGELOG
 =========
 
+1.34.16
+=======
+
+* api-change:``chime-sdk-voice``: Documentation-only update that clarifies the ValidateE911Address action of the Amazon Chime SDK Voice APIs.
+* api-change:``cognito-identity``: This release adds sensitive trait to some required shapes.
+* api-change:``pipes``: This release adds support for customer managed KMS keys in Amazon EventBridge Pipe
+* api-change:``securityhub``: Documentation update for Security Hub
+
+
 1.34.15
 =======
 

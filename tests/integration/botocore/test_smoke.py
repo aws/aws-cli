@@ -12,6 +12,7 @@ to use and all the services in SMOKE_TESTS/ERROR_TESTS will be tested.
 """
 import os
 from pprint import pformat
+import warnings
 import logging
 
 import pytest
@@ -271,8 +272,11 @@ def test_can_make_request_with_client(
     # instead of service/operations.
     client = _get_client(botocore_session, service_name)
     method = getattr(client, xform_name(operation_name))
-    response = method(**kwargs)
-    assert 'Errors' not in response
+    with warnings.catch_warnings(record=True) as caught_warnings:
+        response = method(**kwargs)
+        err_msg = f"Warnings were emitted during smoke test: {caught_warnings}"
+        assert len(caught_warnings) == 0, err_msg
+        assert 'Errors' not in response
 
 
 @pytest.mark.parametrize("service_name, operation_name, kwargs", _error_tests())

@@ -2,6 +2,17 @@
 CHANGELOG
 =========
 
+2.17.49
+=======
+
+* api-change:``guardduty``: Add support for new statistic types in GetFindingsStatistics.
+* api-change:``lexv2-models``: Support new Polly voice engines in VoiceSettings: long-form and generative
+* api-change:``medialive``: Adds AV1 Codec support, SRT ouputs, and MediaLive Anywhere support.
+* api-change:``bedrock-agent-runtime``: Amazon Bedrock Knowledge Bases now supports using inference profiles to increase throughput and improve resilience.
+* api-change:``ecr``: Added KMS_DSSE to EncryptionType
+* api-change:``bedrock-agent``: Amazon Bedrock Knowledge Bases now supports using inference profiles to increase throughput and improve resilience.
+
+
 2.17.48
 =======
 

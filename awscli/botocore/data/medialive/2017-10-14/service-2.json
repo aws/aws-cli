@@ -2810,7 +2810,7 @@
         },
         {
           "shape": "NotFoundException",
-          "documentation": "The input device you're requesting to  does not exist. Check the ID."
+          "documentation": "The input device you're requesting to does not exist. Check the ID."
         },
         {
           "shape": "GatewayTimeoutException",
@@ -4142,6 +4142,1026 @@
         }
       ],
       "documentation": "Updates the specified eventbridge rule template group."
+    },
+    "CreateChannelPlacementGroup": {
+      "name": "CreateChannelPlacementGroup",
+      "http": {
+        "method": "POST",
+        "requestUri": "/prod/clusters/{clusterId}/channelplacementgroups",
+        "responseCode": 201
+      },
+      "input": {
+        "shape": "CreateChannelPlacementGroupRequest"
+      },
+      "output": {
+        "shape": "CreateChannelPlacementGroupResponse",
+        "documentation": "Successfully created the channel placement group."
+      },
+      "errors": [
+        {
+          "shape": "BadRequestException",
+          "documentation": "This request was invalid."
+        },
+        {
+          "shape": "UnprocessableEntityException",
+          "documentation": "The channel placement group failed validation and could not be created."
+        },
+        {
+          "shape": "InternalServerErrorException",
+          "documentation": "Internal Service Error."
+        },
+        {
+          "shape": "ForbiddenException",
+          "documentation": "You don't have permission to create a channel placement group in this cluster."
+        },
+        {
+          "shape": "BadGatewayException",
+          "documentation": "Bad Gateway Error."
+        },
+        {
+          "shape": "GatewayTimeoutException",
+          "documentation": "Gateway Timeout."
+        },
+        {
+          "shape": "TooManyRequestsException",
+          "documentation": "Request limit exceeded in createNode calls to the cluster service."
+        }
+      ],
+      "documentation": "Create a ChannelPlacementGroup in the specified Cluster. As part of the create operation, you specify the Nodes to attach the group to.After you create a ChannelPlacementGroup, you add Channels to the group (you do this by modifying the Channels to add them to a specific group). You now have an association of Channels to ChannelPlacementGroup, and ChannelPlacementGroup to Nodes. This association means that all the Channels in the group are able to run on any of the Nodes associated with the group."
+    },
+    "CreateCluster": {
+      "name": "CreateCluster",
+      "http": {
+        "method": "POST",
+        "requestUri": "/prod/clusters",
+        "responseCode": 201
+      },
+      "input": {
+        "shape": "CreateClusterRequest"
+      },
+      "output": {
+        "shape": "CreateClusterResponse",
+        "documentation": "Creation of the Cluster is in progress."
+      },
+      "errors": [
+        {
+          "shape": "BadRequestException",
+          "documentation": "MediaLive can't process your request because of a problem in the request. Please check your request form and syntax."
+        },
+        {
+          "shape": "InternalServerErrorException",
+          "documentation": "Internal Service Error."
+        },
+        {
+          "shape": "ForbiddenException",
+          "documentation": "You don't have permission to create the Cluster."
+        },
+        {
+          "shape": "BadGatewayException",
+          "documentation": "Bad Gateway Error."
+        },
+        {
+          "shape": "GatewayTimeoutException",
+          "documentation": "Gateway Timeout."
+        },
+        {
+          "shape": "TooManyRequestsException",
+          "documentation": "Request limit exceeded on create Cluster calls to service."
+        },
+        {
+          "shape": "ConflictException",
+          "documentation": "The Cluster is unable to create due to an issue with cluster resources."
+        }
+      ],
+      "documentation": "Create a new Cluster."
+    },
+    "CreateNetwork": {
+      "name": "CreateNetwork",
+      "http": {
+        "method": "POST",
+        "requestUri": "/prod/networks",
+        "responseCode": 201
+      },
+      "input": {
+        "shape": "CreateNetworkRequest"
+      },
+      "output": {
+        "shape": "CreateNetworkResponse",
+        "documentation": "Creation of the Network is in progress."
+      },
+      "errors": [
+        {
+          "shape": "BadRequestException",
+          "documentation": "MediaLive can't process your request because of a problem in the request. Please check your request form and syntax."
+        },
+        {
+          "shape": "InternalServerErrorException",
+          "documentation": "Internal Service Error."
+        },
+        {
+          "shape": "ForbiddenException",
+          "documentation": "You don't have permission to create the Network."
+        },
+        {
+          "shape": "BadGatewayException",
+          "documentation": "Bad Gateway Error."
+        },
+        {
+          "shape": "GatewayTimeoutException",
+          "documentation": "Gateway Timeout."
+        },
+        {
+          "shape": "TooManyRequestsException",
+          "documentation": "Request limit exceeded on create Network calls to service."
+        },
+        {
+          "shape": "ConflictException",
+          "documentation": "The Network is unable to create due to an issue with network resources."
+        }
+      ],
+      "documentation": "Create as many Networks as you need. You will associate one or more Clusters with each Network.Each Network provides MediaLive Anywhere with required information about the network in your organization that you are using for video encoding using MediaLive."
+    },
+    "CreateNode": {
+      "name": "CreateNode",
+      "http": {
+        "method": "POST",
+        "requestUri": "/prod/clusters/{clusterId}/nodes",
+        "responseCode": 201
+      },
+      "input": {
+        "shape": "CreateNodeRequest"
+      },
+      "output": {
+        "shape": "CreateNodeResponse",
+        "documentation": "A node create is in progress."
+      },
+      "errors": [
+        {
+          "shape": "BadRequestException",
+          "documentation": "This request was invalid."
+        },
+        {
+          "shape": "UnprocessableEntityException",
+          "documentation": "The node failed validation and could not be created."
+        },
+        {
+          "shape": "InternalServerErrorException",
+          "documentation": "Internal Service Error."
+        },
+        {
+          "shape": "ForbiddenException",
+          "documentation": "You don't have permission to create a node in this cluster."
+        },
+        {
+          "shape": "BadGatewayException",
+          "documentation": "Bad Gateway Error."
+        },
+        {
+          "shape": "GatewayTimeoutException",
+          "documentation": "Gateway Timeout."
+        },
+        {
+          "shape": "TooManyRequestsException",
+          "documentation": "Request limit exceeded in createNode calls to the cluster service."
+        }
+      ],
+      "documentation": "Create a Node in the specified Cluster. You can also create Nodes using the CreateNodeRegistrationScript. Note that you can't move a Node to another Cluster."
+    },
+    "CreateNodeRegistrationScript": {
+      "name": "CreateNodeRegistrationScript",
+      "http": {
+        "method": "POST",
+        "requestUri": "/prod/clusters/{clusterId}/nodeRegistrationScript",
+        "responseCode": 200
+      },
+      "input": {
+        "shape": "CreateNodeRegistrationScriptRequest"
+      },
+      "output": {
+        "shape": "CreateNodeRegistrationScriptResponse",
+        "documentation": "A new node registration script has been completed."
+      },
+      "errors": [
+        {
+          "shape": "BadRequestException",
+          "documentation": "MediaLive can't process your request because of a problem in the request. Please check your request form and syntax."
+        },
+        {
+          "shape": "InternalServerErrorException",
+          "documentation": "Internal Service Error."
+        },
+        {
+          "shape": "ForbiddenException",
+          "documentation": "You don't have permission to create a node registration script for this cluster."
+        },
+        {
+          "shape": "BadGatewayException",
+          "documentation": "Bad Gateway Error."
+        },
+        {
+          "shape": "GatewayTimeoutException",
+          "documentation": "Gateway Timeout."
+        },
+        {
+          "shape": "TooManyRequestsException",
+          "documentation": "Request limit exceeded on create node registration script calls to service."
+        },
+        {
+          "shape": "ConflictException",
+          "documentation": "The node registration script is unable to be created due to an issue with cluster resources."
+        }
+      ],
+      "documentation": "Create the Register Node script for all the nodes intended for a specific Cluster. You will then run the script on each hardware unit that is intended for that Cluster. The script creates a Node in the specified Cluster. It then binds the Node to this hardware unit, and activates the node hardware for use with MediaLive Anywhere."
+    },
+    "DeleteChannelPlacementGroup": {
+      "name": "DeleteChannelPlacementGroup",
+      "http": {
+        "method": "DELETE",
+        "requestUri": "/prod/clusters/{clusterId}/channelplacementgroups/{channelPlacementGroupId}",
+        "responseCode": 200
+      },
+      "input": {
+        "shape": "DeleteChannelPlacementGroupRequest"
+      },
+      "output": {
+        "shape": "DeleteChannelPlacementGroupResponse",
+        "documentation": "Deletion of the channel placement group is successful."
+      },
+      "errors": [
+        {
+          "shape": "BadRequestException",
+          "documentation": "This request was invalid."
+        },
+        {
+          "shape": "InternalServerErrorException",
+          "documentation": "Internal Service Error."
+        },
+        {
+          "shape": "ForbiddenException",
+          "documentation": "You don't have permission to delete the channel placement group."
+        },
+        {
+          "shape": "BadGatewayException",
+          "documentation": "Bad Gateway Error."
+        },
+        {
+          "shape": "NotFoundException",
+          "documentation": "The channel placement group that you are trying to delete does not exist. Check the ID and try again."
+        },
+        {
+          "shape": "GatewayTimeoutException",
+          "documentation": "Gateway Timeout."
+        },
+        {
+          "shape": "TooManyRequestsException",
+          "documentation": "Request limit exceeded on delete channel placement group calls to the cluster service."
+        },
+        {
+          "shape": "ConflictException",
+          "documentation": "The channel placement group is unable to delete due to an issue with channel placement group resources."
+        }
+      ],
+      "documentation": "Delete the specified ChannelPlacementGroup that exists in the specified Cluster."
+    },
+    "DeleteCluster": {
+      "name": "DeleteCluster",
+      "http": {
+        "method": "DELETE",
+        "requestUri": "/prod/clusters/{clusterId}",
+        "responseCode": 202
+      },
+      "input": {
+        "shape": "DeleteClusterRequest"
+      },
+      "output": {
+        "shape": "DeleteClusterResponse",
+        "documentation": "Deletion of the cluster is in progress."
+      },
+      "errors": [
+        {
+          "shape": "BadRequestException",
+          "documentation": "This request was invalid."
+        },
+        {
+          "shape": "InternalServerErrorException",
+          "documentation": "Internal Service Error."
+        },
+        {
+          "shape": "ForbiddenException",
+          "documentation": "You don't have permission to delete the cluster."
+        },
+        {
+          "shape": "BadGatewayException",
+          "documentation": "Bad Gateway Error."
+        },
+        {
+          "shape": "NotFoundException",
+          "documentation": "The cluster that you are trying to delete doesn't exist. Check the ID and try again."
+        },
+        {
+          "shape": "GatewayTimeoutException",
+          "documentation": "Gateway Timeout."
+        },
+        {
+          "shape": "TooManyRequestsException",
+          "documentation": "Request limit exceeded on delete cluster calls to cluster service."
+        },
+        {
+          "shape": "ConflictException",
+          "documentation": "The cluster is unable to delete due to an issue with cluster resources."
+        }
+      ],
+      "documentation": "Delete a Cluster. The Cluster must be idle."
+    },
+    "DeleteNetwork": {
+      "name": "DeleteNetwork",
+      "http": {
+        "method": "DELETE",
+        "requestUri": "/prod/networks/{networkId}",
+        "responseCode": 202
+      },
+      "input": {
+        "shape": "DeleteNetworkRequest"
+      },
+      "output": {
+        "shape": "DeleteNetworkResponse",
+        "documentation": "Deletion of the network is in progress."
+      },
+      "errors": [
+        {
+          "shape": "BadRequestException",
+          "documentation": "This request was invalid."
+        },
+        {
+          "shape": "InternalServerErrorException",
+          "documentation": "Internal Service Error."
+        },
+        {
+          "shape": "ForbiddenException",
+          "documentation": "You don't have permission to delete the network."
+        },
+        {
+          "shape": "BadGatewayException",
+          "documentation": "Bad Gateway Error."
+        },
+        {
+          "shape": "NotFoundException",
+          "documentation": "The network that you are trying to delete doesnâ€™t exist. Check the ID and try again."
+        },
+        {
+          "shape": "GatewayTimeoutException",
+          "documentation": "Gateway Timeout."
+        },
+        {
+          "shape": "TooManyRequestsException",
+          "documentation": "Request limit exceeded on delete network calls to network service."
+        },
+        {
+          "shape": "ConflictException",
+          "documentation": "The network is unable to delete due to an issue with network resources."
+        }
+      ],
+      "documentation": "Delete a Network. The Network must have no resources associated with it."
+    },
+    "DeleteNode": {
+      "name": "DeleteNode",
+      "http": {
+        "method": "DELETE",
+        "requestUri": "/prod/clusters/{clusterId}/nodes/{nodeId}",
+        "responseCode": 202
+      },
+      "input": {
+        "shape": "DeleteNodeRequest"
+      },
+      "output": {
+        "shape": "DeleteNodeResponse",
+        "documentation": "Deletion of the node is in progress."
+      },
+      "errors": [
+        {
+          "shape": "BadRequestException",
+          "documentation": "This request was invalid."
+        },
+        {
+          "shape": "InternalServerErrorException",
+          "documentation": "Internal Service Error."
+        },
+        {
+          "shape": "ForbiddenException",
+          "documentation": "You don't have permission to delete the node."
+        },
+        {
+          "shape": "BadGatewayException",
+          "documentation": "Bad Gateway Error."
+        },
+        {
+          "shape": "NotFoundException",
+          "documentation": "The node that you are trying to delete doesnâ€™t exist. Check the ID and try again."
+        },
+        {
+          "shape": "GatewayTimeoutException",
+          "documentation": "Gateway Timeout."
+        },
+        {
+          "shape": "TooManyRequestsException",
+          "documentation": "Request limit exceeded on delete node calls to the cluster service."
+        },
+        {
+          "shape": "ConflictException",
+          "documentation": "The node is unable to delete due to an issue with node resources."
+        }
+      ],
+      "documentation": "Delete a Node. The Node must be IDLE."
+    },
+    "DescribeChannelPlacementGroup": {
+      "name": "DescribeChannelPlacementGroup",
+      "http": {
+        "method": "GET",
+        "requestUri": "/prod/clusters/{clusterId}/channelplacementgroups/{channelPlacementGroupId}",
+        "responseCode": 200
+      },
+      "input": {
+        "shape": "DescribeChannelPlacementGroupRequest"
+      },
+      "output": {
+        "shape": "DescribeChannelPlacementGroupResponse",
+        "documentation": "Details for one channel placement group."
+      },
+      "errors": [
+        {
+          "shape": "BadRequestException",
+          "documentation": "This request was invalid."
+        },
+        {
+          "shape": "InternalServerErrorException",
+          "documentation": "Internal Service Error."
+        },
+        {
+          "shape": "ForbiddenException",
+          "documentation": "You do not have permission to describe the channel placement group."
+        },
+        {
+          "shape": "BadGatewayException",
+          "documentation": "Bad Gateway Error."
+        },
+        {
+          "shape": "NotFoundException",
+          "documentation": "The channel placement group that you are trying to describe does not exist. Check the ID and try again."
+        },
+        {
+          "shape": "GatewayTimeoutException",
+          "documentation": "Gateway Timeout."
+        },
+        {
+          "shape": "TooManyRequestsException",
+          "documentation": "Request limit exceeded on describe channel placement group calls to the cluster service."
+        }
+      ],
+      "documentation": "Get details about a ChannelPlacementGroup."
+    },
+    "DescribeCluster": {
+      "name": "DescribeCluster",
+      "http": {
+        "method": "GET",
+        "requestUri": "/prod/clusters/{clusterId}",
+        "responseCode": 200
+      },
+      "input": {
+        "shape": "DescribeClusterRequest"
+      },
+      "output": {
+        "shape": "DescribeClusterResponse",
+        "documentation": "Details for one cluster."
+      },
+      "errors": [
+        {
+          "shape": "BadRequestException",
+          "documentation": "This request was invalid."
+        },
+        {
+          "shape": "InternalServerErrorException",
+          "documentation": "Internal Service Error."
+        },
+        {
+          "shape": "ForbiddenException",
+          "documentation": "You don't have permission to describe the cluster."
+        },
+        {
+          "shape": "BadGatewayException",
+          "documentation": "Bad Gateway Error."
+        },
+        {
+          "shape": "NotFoundException",
+          "documentation": "The cluster that you are trying to describe does not exist. Check the ID and try again."
+        },
+        {
+          "shape": "GatewayTimeoutException",
+          "documentation": "Gateway Timeout."
+        },
+        {
+          "shape": "TooManyRequestsException",
+          "documentation": "Request limit exceeded on describe cluster calls to cluster service."
+        }
+      ],
+      "documentation": "Get details about a Cluster."
+    },
+    "DescribeNetwork": {
+      "name": "DescribeNetwork",
+      "http": {
+        "method": "GET",
+        "requestUri": "/prod/networks/{networkId}",
+        "responseCode": 200
+      },
+      "input": {
+        "shape": "DescribeNetworkRequest"
+      },
+      "output": {
+        "shape": "DescribeNetworkResponse",
+        "documentation": "Details for one network."
+      },
+      "errors": [
+        {
+          "shape": "BadRequestException",
+          "documentation": "This request was invalid."
+        },
+        {
+          "shape": "InternalServerErrorException",
+          "documentation": "Internal Service Error."
+        },
+        {
+          "shape": "ForbiddenException",
+          "documentation": "You don't have permission to describe the network."
+        },
+        {
+          "shape": "BadGatewayException",
+          "documentation": "Bad Gateway Error."
+        },
+        {
+          "shape": "NotFoundException",
+          "documentation": "The network that you are trying to describe does not exist. Check the ID and try again."
+        },
+        {
+          "shape": "GatewayTimeoutException",
+          "documentation": "Gateway Timeout."
+        },
+        {
+          "shape": "TooManyRequestsException",
+          "documentation": "Request limit exceeded on describe network calls to network service."
+        }
+      ],
+      "documentation": "Get details about a Network."
+    },
+    "DescribeNode": {
+      "name": "DescribeNode",
+      "http": {
+        "method": "GET",
+        "requestUri": "/prod/clusters/{clusterId}/nodes/{nodeId}",
+        "responseCode": 200
+      },
+      "input": {
+        "shape": "DescribeNodeRequest"
+      },
+      "output": {
+        "shape": "DescribeNodeResponse",
+        "documentation": "Details for one node."
+      },
+      "errors": [
+        {
+          "shape": "BadRequestException",
+          "documentation": "This request was invalid."
+        },
+        {
+          "shape": "InternalServerErrorException",
+          "documentation": "Internal Service Error."
+        },
+        {
+          "shape": "ForbiddenException",
+          "documentation": "You don't have permission to describe the node."
+        },
+        {
+          "shape": "BadGatewayException",
+          "documentation": "Bad Gateway Error."
+        },
+        {
+          "shape": "NotFoundException",
+          "documentation": "The node that you are trying to describe doesnâ€™t exist. Check the ID and try again."
+        },
+        {
+          "shape": "GatewayTimeoutException",
+          "documentation": "Gateway Timeout."
+        },
+        {
+          "shape": "TooManyRequestsException",
+          "documentation": "Request limit exceeded on describe node calls to the cluster service."
+        }
+      ],
+      "documentation": "Get details about a Node in the specified Cluster."
+    },
+    "ListChannelPlacementGroups": {
+      "name": "ListChannelPlacementGroups",
+      "http": {
+        "method": "GET",
+        "requestUri": "/prod/clusters/{clusterId}/channelplacementgroups",
+        "responseCode": 200
+      },
+      "input": {
+        "shape": "ListChannelPlacementGroupsRequest"
+      },
+      "output": {
+        "shape": "ListChannelPlacementGroupsResponse",
+        "documentation": "An array of channel placement groups."
+      },
+      "errors": [
+        {
+          "shape": "BadRequestException",
+          "documentation": "MediaLive can't process your request because of a problem in the request. Please check your request form and syntax."
+        },
+        {
+          "shape": "InternalServerErrorException",
+          "documentation": "Internal Service Error."
+        },
+        {
+          "shape": "ForbiddenException",
+          "documentation": "You don't have permission to list channel placement groups."
+        },
+        {
+          "shape": "BadGatewayException",
+          "documentation": "Bad Gateway Error."
+        },
+        {
+          "shape": "GatewayTimeoutException",
+          "documentation": "Gateway Timeout."
+        },
+        {
+          "shape": "TooManyRequestsException",
+          "documentation": "Request limit exceeded on list channel placement group calls to the cluster service."
+        }
+      ],
+      "documentation": "Retrieve the list of ChannelPlacementGroups in the specified Cluster."
+    },
+    "ListClusters": {
+      "name": "ListClusters",
+      "http": {
+        "method": "GET",
+        "requestUri": "/prod/clusters",
+        "responseCode": 200
+      },
+      "input": {
+        "shape": "ListClustersRequest"
+      },
+      "output": {
+        "shape": "ListClustersResponse",
+        "documentation": "An array of clusters."
+      },
+      "errors": [
+        {
+          "shape": "BadRequestException",
+          "documentation": "MediaLive can't process your request because of a problem in the request. Please check your request form and syntax."
+        },
+        {
+          "shape": "InternalServerErrorException",
+          "documentation": "Internal Service Error."
+        },
+        {
+          "shape": "ForbiddenException",
+          "documentation": "You don't have permission to list clusters."
+        },
+        {
+          "shape": "BadGatewayException",
+          "documentation": "Bad Gateway Error."
+        },
+        {
+          "shape": "GatewayTimeoutException",
+          "documentation": "Gateway Timeout."
+        },
+        {
+          "shape": "TooManyRequestsException",
+          "documentation": "Request limit exceeded on list cluster calls to cluster service."
+        }
+      ],
+      "documentation": "Retrieve the list of Clusters."
+    },
+    "ListNetworks": {
+      "name": "ListNetworks",
+      "http": {
+        "method": "GET",
+        "requestUri": "/prod/networks",
+        "responseCode": 200
+      },
+      "input": {
+        "shape": "ListNetworksRequest"
+      },
+      "output": {
+        "shape": "ListNetworksResponse",
+        "documentation": "An array of networks."
+      },
+      "errors": [
+        {
+          "shape": "BadRequestException",
+          "documentation": "MediaLive can't process your request because of a problem in the request. Please check your request form and syntax."
+        },
+        {
+          "shape": "InternalServerErrorException",
+          "documentation": "Internal Service Error."
+        },
+        {
+          "shape": "ForbiddenException",
+          "documentation": "You don't have permission to list clusters."
+        },
+        {
+          "shape": "BadGatewayException",
+          "documentation": "Bad Gateway Error."
+        },
+        {
+          "shape": "GatewayTimeoutException",
+          "documentation": "Gateway Timeout."
+        },
+        {
+          "shape": "TooManyRequestsException",
+          "documentation": "Request limit exceeded on list cluster calls to cluster service."
+        }
+      ],
+      "documentation": "Retrieve the list of Networks."
+    },
+    "ListNodes": {
+      "name": "ListNodes",
+      "http": {
+        "method": "GET",
+        "requestUri": "/prod/clusters/{clusterId}/nodes",
+        "responseCode": 200
+      },
+      "input": {
+        "shape": "ListNodesRequest"
+      },
+      "output": {
+        "shape": "ListNodesResponse",
+        "documentation": "An array of nodes."
+      },
+      "errors": [
+        {
+          "shape": "BadRequestException",
+          "documentation": "MediaLive can't process your request because of a problem in the request. Please check your request form and syntax."
+        },
+        {
+          "shape": "InternalServerErrorException",
+          "documentation": "Internal Service Error."
+        },
+        {
+          "shape": "ForbiddenException",
+          "documentation": "You don't have permission to list nodes."
+        },
+        {
+          "shape": "BadGatewayException",
+          "documentation": "Bad Gateway Error."
+        },
+        {
+          "shape": "GatewayTimeoutException",
+          "documentation": "Gateway Timeout."
+        },
+        {
+          "shape": "TooManyRequestsException",
+          "documentation": "Request limit exceeded on list node calls to the cluster service."
+        }
+      ],
+      "documentation": "Retrieve the list of Nodes."
+    },
+    "UpdateChannelPlacementGroup": {
+      "name": "UpdateChannelPlacementGroup",
+      "http": {
+        "method": "PUT",
+        "requestUri": "/prod/clusters/{clusterId}/channelplacementgroups/{channelPlacementGroupId}",
+        "responseCode": 200
+      },
+      "input": {
+        "shape": "UpdateChannelPlacementGroupRequest"
+      },
+      "output": {
+        "shape": "UpdateChannelPlacementGroupResponse",
+        "documentation": "The channel placement group has been successfully updated."
+      },
+      "errors": [
+        {
+          "shape": "BadRequestException",
+          "documentation": "This request was invalid"
+        },
+        {
+          "shape": "UnprocessableEntityException",
+          "documentation": "The channel placement group failed validation and could not be updated."
+        },
+        {
+          "shape": "InternalServerErrorException",
+          "documentation": "Internal Service Error."
+        },
+        {
+          "shape": "ForbiddenException",
+          "documentation": "You don't have permission to update the channel placement group."
+        },
+        {
+          "shape": "BadGatewayException",
+          "documentation": "Bad Gateway Error."
+        },
+        {
+          "shape": "GatewayTimeoutException",
+          "documentation": "Gateway Timeout."
+        },
+        {
+          "shape": "TooManyRequestsException",
+          "documentation": "Request limit exceeded on update channel placement group calls to service."
+        },
+        {
+          "shape": "ConflictException",
+          "documentation": "The channel placement group is unable to update due to an issue with channel placement group resources."
+        }
+      ],
+      "documentation": "Change the settings for a ChannelPlacementGroup."
+    },
+    "UpdateCluster": {
+      "name": "UpdateCluster",
+      "http": {
+        "method": "PUT",
+        "requestUri": "/prod/clusters/{clusterId}",
+        "responseCode": 200
+      },
+      "input": {
+        "shape": "UpdateClusterRequest"
+      },
+      "output": {
+        "shape": "UpdateClusterResponse",
+        "documentation": "The cluster has been successfully updated."
+      },
+      "errors": [
+        {
+          "shape": "BadRequestException",
+          "documentation": "MediaLive can't process your request because of a problem in the request. Please check your request form and syntax."
+        },
+        {
+          "shape": "InternalServerErrorException",
+          "documentation": "Internal Service Error."
+        },
+        {
+          "shape": "ForbiddenException",
+          "documentation": "You don't have permission to update the Cluster."
+        },
+        {
+          "shape": "BadGatewayException",
+          "documentation": "Bad Gateway Error."
+        },
+        {
+          "shape": "GatewayTimeoutException",
+          "documentation": "Gateway Timeout."
+        },
+        {
+          "shape": "TooManyRequestsException",
+          "documentation": "Request limit exceeded on update Cluster calls to service."
+        },
+        {
+          "shape": "ConflictException",
+          "documentation": "The Cluster is unable to update due to an issue with cluster resources."
+        }
+      ],
+      "documentation": "Change the settings for a Cluster."
+    },
+    "UpdateNetwork": {
+      "name": "UpdateNetwork",
+      "http": {
+        "method": "PUT",
+        "requestUri": "/prod/networks/{networkId}",
+        "responseCode": 200
+      },
+      "input": {
+        "shape": "UpdateNetworkRequest"
+      },
+      "output": {
+        "shape": "UpdateNetworkResponse",
+        "documentation": "The network has been successfully updated."
+      },
+      "errors": [
+        {
+          "shape": "BadRequestException",
+          "documentation": "MediaLive can't process your request because of a problem in the request. Please check your request form and syntax."
+        },
+        {
+          "shape": "InternalServerErrorException",
+          "documentation": "Internal Service Error."
+        },
+        {
+          "shape": "ForbiddenException",
+          "documentation": "You don't have permission to update the Network."
+        },
+        {
+          "shape": "BadGatewayException",
+          "documentation": "Bad Gateway Error."
+        },
+        {
+          "shape": "GatewayTimeoutException",
+          "documentation": "Gateway Timeout."
+        },
+        {
+          "shape": "TooManyRequestsException",
+          "documentation": "Request limit exceeded on update Network calls to service."
+        },
+        {
+          "shape": "ConflictException",
+          "documentation": "The Network is unable to update due to an issue with network resources."
+        }
+      ],
+      "documentation": "Change the settings for a Network."
+    },
+    "UpdateNode": {
+      "name": "UpdateNode",
+      "http": {
+        "method": "PUT",
+        "requestUri": "/prod/clusters/{clusterId}/nodes/{nodeId}",
+        "responseCode": 201
+      },
+      "input": {
+        "shape": "UpdateNodeRequest"
+      },
+      "output": {
+        "shape": "UpdateNodeResponse",
+        "documentation": "Update of the Node is in progress."
+      },
+      "errors": [
+        {
+          "shape": "BadRequestException",
+          "documentation": "MediaLive can't process your request because of a problem in the request. Please check your request form and syntax."
+        },
+        {
+          "shape": "InternalServerErrorException",
+          "documentation": "Internal Service Error."
+        },
+        {
+          "shape": "ForbiddenException",
+          "documentation": "You don't have permission to update the node."
+        },
+        {
+          "shape": "BadGatewayException",
+          "documentation": "Bad Gateway Error."
+        },
+        {
+          "shape": "GatewayTimeoutException",
+          "documentation": "Gateway Timeout."
+        },
+        {
+          "shape": "TooManyRequestsException",
+          "documentation": "Request limit exceeded on update node calls to the service."
+        },
+        {
+          "shape": "ConflictException",
+          "documentation": "The node is unable to update due to an issue with node resources."
+        }
+      ],
+      "documentation": "Change the settings for a Node."
+    },
+    "UpdateNodeState": {
+      "name": "UpdateNodeState",
+      "http": {
+        "method": "PUT",
+        "requestUri": "/prod/clusters/{clusterId}/nodes/{nodeId}/state",
+        "responseCode": 201
+      },
+      "input": {
+        "shape": "UpdateNodeStateRequest"
+      },
+      "output": {
+        "shape": "UpdateNodeStateResponse",
+        "documentation": "An update to node state is in progress."
+      },
+      "errors": [
+        {
+          "shape": "BadRequestException",
+          "documentation": "MediaLive can't process your request because of a problem in the request. Please check your request form and syntax."
+        },
+        {
+          "shape": "UnprocessableEntityException",
+          "documentation": "The node failed validation and the state could not be updated."
+        },
+        {
+          "shape": "InternalServerErrorException",
+          "documentation": "Internal Service Error."
+        },
+        {
+          "shape": "ForbiddenException",
+          "documentation": "You don't have permission to update the state of the node."
+        },
+        {
+          "shape": "BadGatewayException",
+          "documentation": "Bad Gateway Error."
+        },
+        {
+          "shape": "GatewayTimeoutException",
+          "documentation": "Gateway Timeout."
+        },
+        {
+          "shape": "TooManyRequestsException",
+          "documentation": "Request limit exceeded on node calls to service."
+        },
+        {
+          "shape": "ConflictException",
+          "documentation": "The node state is unable to updated due to an issue with node resources."
+        }
+      ],
+      "documentation": "Update the state of a node."
     }
   },
   "shapes": {
@@ -5995,6 +7015,11 @@
           "shape": "VpcOutputSettingsDescription",
           "locationName": "vpc",
           "documentation": "Settings for VPC output"
+        },
+        "AnywhereSettings": {
+          "shape": "DescribeAnywhereSettings",
+          "locationName": "anywhereSettings",
+          "documentation": "Anywhere settings for this channel."
         }
       },
       "documentation": "Placeholder documentation for Channel"
@@ -6131,6 +7156,11 @@
           "shape": "VpcOutputSettingsDescription",
           "locationName": "vpc",
           "documentation": "Settings for any VPC outputs."
+        },
+        "AnywhereSettings": {
+          "shape": "DescribeAnywhereSettings",
+          "locationName": "anywhereSettings",
+          "documentation": "AnywhereSettings settings for this channel."
         }
       },
       "documentation": "Placeholder documentation for ChannelSummary"
@@ -6294,6 +7324,11 @@
           "shape": "VpcOutputSettings",
           "locationName": "vpc",
           "documentation": "Settings for the VPC outputs"
+        },
+        "AnywhereSettings": {
+          "shape": "AnywhereSettings",
+          "locationName": "anywhereSettings",
+          "documentation": "The Elemental Anywhere settings for this channel."
         }
       },
       "documentation": "Placeholder documentation for CreateChannel"
@@ -6370,6 +7405,11 @@
           "shape": "VpcOutputSettings",
           "locationName": "vpc",
           "documentation": "Settings for the VPC outputs"
+        },
+        "AnywhereSettings": {
+          "shape": "AnywhereSettings",
+          "locationName": "anywhereSettings",
+          "documentation": "The Elemental Anywhere settings for this channel."
         }
       },
       "documentation": "A request to create a channel"
@@ -6455,6 +7495,16 @@
           "shape": "SrtSettingsRequest",
           "locationName": "srtSettings",
           "documentation": "The settings associated with an SRT input."
+        },
+        "InputNetworkLocation": {
+          "shape": "InputNetworkLocation",
+          "locationName": "inputNetworkLocation",
+          "documentation": "The location of this input. AWS, for an input existing in the AWS Cloud, On-Prem for\nan input in a customer network."
+        },
+        "MulticastSettings": {
+          "shape": "MulticastSettingsCreateRequest",
+          "locationName": "multicastSettings",
+          "documentation": "Multicast Input settings."
         }
       },
       "documentation": "Placeholder documentation for CreateInput"
@@ -6520,6 +7570,16 @@
           "shape": "SrtSettingsRequest",
           "locationName": "srtSettings",
           "documentation": "The settings associated with an SRT input."
+        },
+        "InputNetworkLocation": {
+          "shape": "InputNetworkLocation",
+          "locationName": "inputNetworkLocation",
+          "documentation": "The location of this input. AWS, for an input existing in the AWS Cloud, On-Prem for\nan input in a customer network."
+        },
+        "MulticastSettings": {
+          "shape": "MulticastSettingsCreateRequest",
+          "locationName": "multicastSettings",
+          "documentation": "Multicast Input settings."
         }
       },
       "documentation": "The name of the input"
@@ -6947,6 +8007,11 @@
           "shape": "VpcOutputSettingsDescription",
           "locationName": "vpc",
           "documentation": "Settings for VPC output"
+        },
+        "AnywhereSettings": {
+          "shape": "DescribeAnywhereSettings",
+          "locationName": "anywhereSettings",
+          "documentation": "Anywhere settings for this channel."
         }
       },
       "documentation": "Placeholder documentation for DeleteChannelResponse"
@@ -7406,6 +8471,11 @@
           "shape": "VpcOutputSettingsDescription",
           "locationName": "vpc",
           "documentation": "Settings for VPC output"
+        },
+        "AnywhereSettings": {
+          "shape": "DescribeAnywhereSettings",
+          "locationName": "anywhereSettings",
+          "documentation": "Anywhere settings for this channel."
         }
       },
       "documentation": "Placeholder documentation for DescribeChannelResponse"
@@ -7610,7 +8680,7 @@
         "InputClass": {
           "shape": "InputClass",
           "locationName": "inputClass",
-          "documentation": "STANDARD - MediaLive expects two sources to be connected to this input. If the channel is also STANDARD, both sources will be ingested. If the channel is SINGLE_PIPELINE, only the first source will be ingested; the second source will always be ignored, even if the first source fails.\nSINGLE_PIPELINE - You can connect only one source to this input. If the ChannelClass is also  SINGLE_PIPELINE, this value is valid. If the ChannelClass is STANDARD, this value is not valid because the channel requires two sources in the input."
+          "documentation": "STANDARD - MediaLive expects two sources to be connected to this input. If the channel is also STANDARD, both sources will be ingested. If the channel is SINGLE_PIPELINE, only the first source will be ingested; the second source will always be ignored, even if the first source fails.\nSINGLE_PIPELINE - You can connect only one source to this input. If the ChannelClass is also SINGLE_PIPELINE, this value is valid. If the ChannelClass is STANDARD, this value is not valid because the channel requires two sources in the input."
         },
         "InputDevices": {
           "shape": "__listOfInputDeviceSettings",
@@ -7669,6 +8739,16 @@
           "shape": "SrtSettings",
           "locationName": "srtSettings",
           "documentation": "The settings associated with an SRT input."
+        },
+        "InputNetworkLocation": {
+          "shape": "InputNetworkLocation",
+          "locationName": "inputNetworkLocation",
+          "documentation": "The location of this input. AWS, for an input existing in the AWS Cloud, On-Prem for\nan input in a customer network."
+        },
+        "MulticastSettings": {
+          "shape": "MulticastSettings",
+          "locationName": "multicastSettings",
+          "documentation": "Multicast Input settings."
         }
       },
       "documentation": "Placeholder documentation for DescribeInputResponse"
@@ -10945,7 +12025,7 @@
         "InputClass": {
           "shape": "InputClass",
           "locationName": "inputClass",
-          "documentation": "STANDARD - MediaLive expects two sources to be connected to this input. If the channel is also STANDARD, both sources will be ingested. If the channel is SINGLE_PIPELINE, only the first source will be ingested; the second source will always be ignored, even if the first source fails.\nSINGLE_PIPELINE - You can connect only one source to this input. If the ChannelClass is also  SINGLE_PIPELINE, this value is valid. If the ChannelClass is STANDARD, this value is not valid because the channel requires two sources in the input."
+          "documentation": "STANDARD - MediaLive expects two sources to be connected to this input. If the channel is also STANDARD, both sources will be ingested. If the channel is SINGLE_PIPELINE, only the first source will be ingested; the second source will always be ignored, even if the first source fails.\nSINGLE_PIPELINE - You can connect only one source to this input. If the ChannelClass is also SINGLE_PIPELINE, this value is valid. If the ChannelClass is STANDARD, this value is not valid because the channel requires two sources in the input."
         },
         "InputDevices": {
           "shape": "__listOfInputDeviceSettings",
@@ -11004,6 +12084,16 @@
           "shape": "SrtSettings",
           "locationName": "srtSettings",
           "documentation": "The settings associated with an SRT input."
+        },
+        "InputNetworkLocation": {
+          "shape": "InputNetworkLocation",
+          "locationName": "inputNetworkLocation",
+          "documentation": "The location of this input. AWS, for an input existing in the AWS Cloud, On-Prem for\nan input in a customer network."
+        },
+        "MulticastSettings": {
+          "shape": "MulticastSettings",
+          "locationName": "multicastSettings",
+          "documentation": "Multicast Input settings."
         }
       },
       "documentation": "Placeholder documentation for Input"
@@ -11030,6 +12120,11 @@
           "shape": "InputSettings",
           "locationName": "inputSettings",
           "documentation": "Settings of an input (caption selector, etc.)"
+        },
+        "LogicalInterfaceNames": {
+          "shape": "__listOf__string",
+          "locationName": "logicalInterfaceNames",
+          "documentation": "Optional assignment of an input to a logical interface on the Node. Only applies to on premises channels."
         }
       },
       "documentation": "Placeholder documentation for InputAttachment"
@@ -11132,6 +12227,16 @@
         "Vpc": {
           "shape": "InputDestinationVpc",
           "locationName": "vpc"
+        },
+        "Network": {
+          "shape": "__string",
+          "locationName": "network",
+          "documentation": "The ID of the attached network."
+        },
+        "NetworkRoutes": {
+          "shape": "__listOfInputDestinationRoute",
+          "locationName": "networkRoutes",
+          "documentation": "If the push input has an input location of ON-PREM it's a requirement to specify what the route of the input\nis going to be on the customer local network."
         }
       },
       "documentation": "The settings for a PUSH type input."
@@ -11143,6 +12248,21 @@
           "shape": "__string",
           "locationName": "streamName",
           "documentation": "A unique name for the location the RTMP stream is being pushed\nto."
+        },
+        "Network": {
+          "shape": "__string",
+          "locationName": "network",
+          "documentation": "If the push input has an input location of ON-PREM, ID the ID of the attached network."
+        },
+        "NetworkRoutes": {
+          "shape": "__listOfInputRequestDestinationRoute",
+          "locationName": "networkRoutes",
+          "documentation": "If the push input has an input location of ON-PREM it's a requirement to specify what the route of the input\nis going to be on the customer local network."
+        },
+        "StaticIpAddress": {
+          "shape": "__string",
+          "locationName": "staticIpAddress",
+          "documentation": "If the push input has an input location of ON-PREM it's optional to specify what the ip address\nof the input is going to be on the customer local network."
         }
       },
       "documentation": "Endpoint settings for a PUSH type input."
@@ -12113,7 +13233,8 @@
         "INPUT_DEVICE",
         "AWS_CDI",
         "TS_FILE",
-        "SRT_CALLER"
+        "SRT_CALLER",
+        "MULTICAST"
       ]
     },
     "InputVpcRequest": {
@@ -12585,7 +13706,7 @@
           "shape": "__string",
           "location": "querystring",
           "locationName": "codec",
-          "documentation": "Filter by codec, 'AVC', 'HEVC', 'MPEG2', 'AUDIO', or 'LINK'"
+          "documentation": "Filter by codec, 'AVC', 'HEVC', 'MPEG2', 'AUDIO', 'LINK', or 'AV1'"
         },
         "Duration": {
           "shape": "__string",
@@ -12687,7 +13808,7 @@
           "shape": "__string",
           "location": "querystring",
           "locationName": "codec",
-          "documentation": "Filter by codec, 'AVC', 'HEVC', 'MPEG2', 'AUDIO', or 'LINK'"
+          "documentation": "Filter by codec, 'AVC', 'HEVC', 'MPEG2', 'AUDIO', 'LINK', or 'AV1'"
         },
         "MaxResults": {
           "shape": "MaxResults",
@@ -14268,7 +15389,7 @@
         "Priority": {
           "shape": "__integerMinNegative5Max5",
           "locationName": "priority",
-          "documentation": "The purpose of the priority is to use a combination of the\\nmultiplex rate control algorithm and the QVBR capability of the\\nencoder to prioritize the video quality of some channels in a\\nmultiplex over others.  Channels that have a higher priority will\\nget higher video quality at the expense of the video quality of\\nother channels in the multiplex with lower priority."
+          "documentation": "The purpose of the priority is to use a combination of the\\nmultiplex rate control algorithm and the QVBR capability of the\\nencoder to prioritize the video quality of some channels in a\\nmultiplex over others. Channels that have a higher priority will\\nget higher video quality at the expense of the video quality of\\nother channels in the multiplex with lower priority."
         }
       },
       "documentation": "Statmux rate control settings"
@@ -14360,6 +15481,11 @@
           "shape": "NetworkInputServerValidation",
           "locationName": "serverValidation",
           "documentation": "Check HTTPS server certificates. When set to checkCryptographyOnly, cryptography in the certificate will be checked, but not the server's name. Certain subdomains (notably S3 buckets that use dots in the bucket name) do not strictly match the corresponding certificate's wildcard pattern and would otherwise cause the event to error. This setting is ignored for protocols that do not use https."
+        },
+        "MulticastInputSettings": {
+          "shape": "MulticastInputSettings",
+          "locationName": "multicastInputSettings",
+          "documentation": "Specifies multicast input settings when the uri is for a multicast event."
         }
       },
       "documentation": "Network source to transcode. Must be accessible to the Elemental Live node that is running the live event through a network connection."
@@ -14637,6 +15763,11 @@
           "shape": "__listOfOutputDestinationSettings",
           "locationName": "settings",
           "documentation": "Destination settings for a standard output; one destination for each redundant encoder."
+        },
+        "SrtSettings": {
+          "shape": "__listOfSrtOutputDestinationSettings",
+          "locationName": "srtSettings",
+          "documentation": "SRT settings for an SRT output; one destination for each redundant encoder."
         }
       },
       "documentation": "Placeholder documentation for OutputDestination"
@@ -14729,6 +15860,10 @@
         "CmafIngestGroupSettings": {
           "shape": "CmafIngestGroupSettings",
           "locationName": "cmafIngestGroupSettings"
+        },
+        "SrtGroupSettings": {
+          "shape": "SrtGroupSettings",
+          "locationName": "srtGroupSettings"
         }
       },
       "documentation": "Output Group Settings"
@@ -14795,6 +15930,10 @@
         "CmafIngestOutputSettings": {
           "shape": "CmafIngestOutputSettings",
           "locationName": "cmafIngestOutputSettings"
+        },
+        "SrtOutputSettings": {
+          "shape": "SrtOutputSettings",
+          "locationName": "srtOutputSettings"
         }
       },
       "documentation": "Output Settings"
@@ -15226,13 +16365,14 @@
     },
     "ReservationCodec": {
       "type": "string",
-      "documentation": "Codec, 'MPEG2', 'AVC', 'HEVC', or 'AUDIO'",
+      "documentation": "Codec, 'MPEG2', 'AVC', 'HEVC', 'AUDIO', 'LINK', or 'AV1'",
       "enum": [
         "MPEG2",
         "AVC",
         "HEVC",
         "AUDIO",
-        "LINK"
+        "LINK",
+        "AV1"
       ]
     },
     "ReservationMaximumBitrate": {
@@ -16225,6 +17365,11 @@
           "shape": "VpcOutputSettingsDescription",
           "locationName": "vpc",
           "documentation": "Settings for VPC output"
+        },
+        "AnywhereSettings": {
+          "shape": "DescribeAnywhereSettings",
+          "locationName": "anywhereSettings",
+          "documentation": "Anywhere settings for this channel."
         }
       },
       "documentation": "Placeholder documentation for StartChannelResponse"
@@ -16641,6 +17786,11 @@
           "shape": "VpcOutputSettingsDescription",
           "locationName": "vpc",
           "documentation": "Settings for VPC output"
+        },
+        "AnywhereSettings": {
+          "shape": "DescribeAnywhereSettings",
+          "locationName": "anywhereSettings",
+          "documentation": "Anywhere settings for this channel."
         }
       },
       "documentation": "Placeholder documentation for StopChannelResponse"
@@ -17481,6 +18631,11 @@
           "shape": "SrtSettingsRequest",
           "locationName": "srtSettings",
           "documentation": "The settings associated with an SRT input."
+        },
+        "MulticastSettings": {
+          "shape": "MulticastSettingsUpdateRequest",
+          "locationName": "multicastSettings",
+          "documentation": "Multicast Input settings."
         }
       },
       "documentation": "Placeholder documentation for UpdateInput"
@@ -17680,6 +18835,11 @@
           "shape": "SrtSettingsRequest",
           "locationName": "srtSettings",
           "documentation": "The settings associated with an SRT input."
+        },
+        "MulticastSettings": {
+          "shape": "MulticastSettingsUpdateRequest",
+          "locationName": "multicastSettings",
+          "documentation": "Multicast Input settings."
         }
       },
       "documentation": "A request to update an input.",
@@ -17994,6 +19154,10 @@
         "Mpeg2Settings": {
           "shape": "Mpeg2Settings",
           "locationName": "mpeg2Settings"
+        },
+        "Av1Settings": {
+          "shape": "Av1Settings",
+          "locationName": "av1Settings"
         }
       },
       "documentation": "Video Codec Settings"
@@ -19323,6 +20487,11 @@
           "shape": "VpcOutputSettingsDescription",
           "locationName": "vpc",
           "documentation": "Settings for VPC output"
+        },
+        "AnywhereSettings": {
+          "shape": "DescribeAnywhereSettings",
+          "locationName": "anywhereSettings",
+          "documentation": "Anywhere settings for this channel."
         }
       },
       "documentation": "Placeholder documentation for RestartChannelPipelinesResponse"
@@ -23919,6 +25088,2862 @@
       "min": 1,
       "max": 51,
       "documentation": "Placeholder documentation for __integerMin1Max51"
+    },
+    "AnywhereSettings": {
+      "type": "structure",
+      "members": {
+        "ChannelPlacementGroupId": {
+          "shape": "__string",
+          "locationName": "channelPlacementGroupId",
+          "documentation": "The ID of the channel placement group for the channel."
+        },
+        "ClusterId": {
+          "shape": "__string",
+          "locationName": "clusterId",
+          "documentation": "The ID of the cluster for the channel."
+        }
+      },
+      "documentation": "Elemental anywhere settings"
+    },
+    "Av1ColorSpaceSettings": {
+      "type": "structure",
+      "members": {
+        "ColorSpacePassthroughSettings": {
+          "shape": "ColorSpacePassthroughSettings",
+          "locationName": "colorSpacePassthroughSettings"
+        },
+        "Hdr10Settings": {
+          "shape": "Hdr10Settings",
+          "locationName": "hdr10Settings"
+        },
+        "Rec601Settings": {
+          "shape": "Rec601Settings",
+          "locationName": "rec601Settings"
+        },
+        "Rec709Settings": {
+          "shape": "Rec709Settings",
+          "locationName": "rec709Settings"
+        }
+      },
+      "documentation": "Av1 Color Space Settings"
+    },
+    "Av1GopSizeUnits": {
+      "type": "string",
+      "documentation": "Av1 Gop Size Units",
+      "enum": [
+        "FRAMES",
+        "SECONDS"
+      ]
+    },
+    "Av1Level": {
+      "type": "string",
+      "documentation": "Av1 Level",
+      "enum": [
+        "AV1_LEVEL_2",
+        "AV1_LEVEL_2_1",
+        "AV1_LEVEL_3",
+        "AV1_LEVEL_3_1",
+        "AV1_LEVEL_4",
+        "AV1_LEVEL_4_1",
+        "AV1_LEVEL_5",
+        "AV1_LEVEL_5_1",
+        "AV1_LEVEL_5_2",
+        "AV1_LEVEL_5_3",
+        "AV1_LEVEL_6",
+        "AV1_LEVEL_6_1",
+        "AV1_LEVEL_6_2",
+        "AV1_LEVEL_6_3",
+        "AV1_LEVEL_AUTO"
+      ]
+    },
+    "Av1LookAheadRateControl": {
+      "type": "string",
+      "documentation": "Av1 Look Ahead Rate Control",
+      "enum": [
+        "HIGH",
+        "LOW",
+        "MEDIUM"
+      ]
+    },
+    "Av1SceneChangeDetect": {
+      "type": "string",
+      "documentation": "Av1 Scene Change Detect",
+      "enum": [
+        "DISABLED",
+        "ENABLED"
+      ]
+    },
+    "Av1Settings": {
+      "type": "structure",
+      "members": {
+        "AfdSignaling": {
+          "shape": "AfdSignaling",
+          "locationName": "afdSignaling",
+          "documentation": "Configures whether MediaLive will write AFD values into the video.\nAUTO: MediaLive will try to preserve the input AFD value (in cases where multiple AFD values are valid).\nFIXED: the AFD value will be the value configured in the fixedAfd parameter.\nNONE: MediaLive won't write AFD into the video"
+        },
+        "BufSize": {
+          "shape": "__integerMin50000Max16000000",
+          "locationName": "bufSize",
+          "documentation": "The size of the buffer (HRD buffer model) in bits."
+        },
+        "ColorSpaceSettings": {
+          "shape": "Av1ColorSpaceSettings",
+          "locationName": "colorSpaceSettings",
+          "documentation": "Color Space settings"
+        },
+        "FixedAfd": {
+          "shape": "FixedAfd",
+          "locationName": "fixedAfd",
+          "documentation": "Complete this property only if you set the afdSignaling property to FIXED. Choose the AFD value (4 bits) to write on all frames of the video encode."
+        },
+        "FramerateDenominator": {
+          "shape": "__integerMin1Max3003",
+          "locationName": "framerateDenominator",
+          "documentation": "The denominator for the framerate. Framerate is a fraction, for example, 24000 / 1001."
+        },
+        "FramerateNumerator": {
+          "shape": "__integerMin1",
+          "locationName": "framerateNumerator",
+          "documentation": "The numerator for the framerate. Framerate is a fraction, for example, 24000 / 1001."
+        },
+        "GopSize": {
+          "shape": "__doubleMin0",
+          "locationName": "gopSize",
+          "documentation": "The GOP size (keyframe interval).\nIf GopSizeUnits is frames, GopSize must be a whole number and must be greater than or equal to 1.\nIf GopSizeUnits is seconds, GopSize must be greater than 0, but it can be a decimal."
+        },
+        "GopSizeUnits": {
+          "shape": "Av1GopSizeUnits",
+          "locationName": "gopSizeUnits",
+          "documentation": "Choose the units for the GOP size: FRAMES or SECONDS. For SECONDS, MediaLive converts the size into a frame count at run time."
+        },
+        "Level": {
+          "shape": "Av1Level",
+          "locationName": "level",
+          "documentation": "Sets the level. This parameter is one of the properties of the encoding scheme for AV1."
+        },
+        "LookAheadRateControl": {
+          "shape": "Av1LookAheadRateControl",
+          "locationName": "lookAheadRateControl",
+          "documentation": "Sets the amount of lookahead. A value of LOW can decrease latency and memory usage. A value of HIGH can produce better quality for certain content."
+        },
+        "MaxBitrate": {
+          "shape": "__integerMin50000Max8000000",
+          "locationName": "maxBitrate",
+          "documentation": "The maximum bitrate to assign.\nFor recommendations, see the description for qvbrQualityLevel."
+        },
+        "MinIInterval": {
+          "shape": "__integerMin0Max30",
+          "locationName": "minIInterval",
+          "documentation": "Applies only if you enable SceneChangeDetect. Sets the interval between frames. This property ensures a minimum separation between repeated (cadence) I-frames and any I-frames inserted by scene change detection (SCD frames).\nEnter a number for the interval, measured in number of frames.\nIf an SCD frame and a cadence frame are closer than the specified number of frames, MediaLive shrinks or stretches the GOP to include the SCD frame. Then normal cadence resumes in the next GOP. For GOP stretch to succeed, you must enable LookAheadRateControl.\nNote that the maximum GOP stretch = (GOP size) + (Minimum I-interval) - 1"
+        },
+        "ParDenominator": {
+          "shape": "__integerMin1",
+          "locationName": "parDenominator",
+          "documentation": "The denominator for the output pixel aspect ratio (PAR)."
+        },
+        "ParNumerator": {
+          "shape": "__integerMin1",
+          "locationName": "parNumerator",
+          "documentation": "The numerator for the output pixel aspect ratio (PAR)."
+        },
+        "QvbrQualityLevel": {
+          "shape": "__integerMin1Max10",
+          "locationName": "qvbrQualityLevel",
+          "documentation": "Controls the target quality for the video encode. With QVBR rate control mode, the final quality is the target quality, constrained by the maxBitrate.\nSet values for the qvbrQualityLevel property and maxBitrate property that suit your most important viewing devices.\nTo let MediaLive set the quality level (AUTO mode), leave the qvbrQualityLevel field empty. In this case, MediaLive uses the maximum bitrate, and the quality follows from that: more complex content might have a lower quality.\nOr set a target quality level and a maximum bitrate. With more complex content, MediaLive will try to achieve the target quality, but it won't exceed the maximum bitrate. With less complex content, This option will use only the bitrate needed to reach the target quality.\nRecommended values are:\nPrimary screen: qvbrQualityLevel: Leave empty. maxBitrate: 4,000,000\nPC or tablet: qvbrQualityLevel: Leave empty. maxBitrate: 1,500,000 to 3,000,000\nSmartphone: qvbrQualityLevel: Leave empty. maxBitrate: 1,000,000 to 1,500,000"
+        },
+        "SceneChangeDetect": {
+          "shape": "Av1SceneChangeDetect",
+          "locationName": "sceneChangeDetect",
+          "documentation": "Controls whether MediaLive inserts I-frames when it detects a scene change. ENABLED or DISABLED."
+        },
+        "TimecodeBurninSettings": {
+          "shape": "TimecodeBurninSettings",
+          "locationName": "timecodeBurninSettings",
+          "documentation": "Configures the timecode burn-in feature. If you enable this feature, the timecode will become part of the video."
+        }
+      },
+      "documentation": "Av1 Settings",
+      "required": [
+        "FramerateNumerator",
+        "FramerateDenominator"
+      ]
+    },
+    "ChannelPlacementGroupState": {
+      "type": "string",
+      "documentation": "Used in DescribeChannelPlacementGroupResult",
+      "enum": [
+        "UNASSIGNED",
+        "ASSIGNING",
+        "ASSIGNED",
+        "DELETING",
+        "DELETE_FAILED",
+        "DELETED",
+        "UNASSIGNING"
+      ]
+    },
+    "ClusterNetworkSettings": {
+      "type": "structure",
+      "members": {
+        "DefaultRoute": {
+          "shape": "__string",
+          "locationName": "defaultRoute",
+          "documentation": "The network interface that is the default route for traffic to and from the node. MediaLive Anywhere uses this default when the destination for the traffic isn't covered by the route table for any of the networks. Specify the value of the appropriate logicalInterfaceName parameter that you create in the interfaceMappings."
+        },
+        "InterfaceMappings": {
+          "shape": "__listOfInterfaceMapping",
+          "locationName": "interfaceMappings",
+          "documentation": "An array of interfaceMapping objects for this Cluster. Each mapping logically connects one interface on the nodes with one Network. You need only one mapping for each interface because all the Nodes share the mapping."
+        }
+      },
+      "documentation": "Used in DescribeClusterResult, DescribeClusterSummary, UpdateClusterResult."
+    },
+    "ClusterNetworkSettingsCreateRequest": {
+      "type": "structure",
+      "members": {
+        "DefaultRoute": {
+          "shape": "__string",
+          "locationName": "defaultRoute",
+          "documentation": "Specify one network interface as the default route for traffic to and from the Node. MediaLive Anywhere uses this default when the destination for the traffic isn't covered by the route table for any of the networks. Specify the value of the appropriate logicalInterfaceName parameter that you create in the interfaceMappings."
+        },
+        "InterfaceMappings": {
+          "shape": "__listOfInterfaceMappingCreateRequest",
+          "locationName": "interfaceMappings",
+          "documentation": "An array of interfaceMapping objects for this Cluster. You must create a mapping for node interfaces that you plan to use for encoding traffic. You typically don't create a mapping for the management interface. You define this mapping in the Cluster so that the mapping can be used by all the Nodes. Each mapping logically connects one interface on the nodes with one Network. Each mapping consists of a pair of parameters. The logicalInterfaceName parameter creates a logical name for the Node interface that handles a specific type of traffic. For example, my-Inputs-Interface. The networkID parameter refers to the ID of the network. When you create the Nodes in this Cluster, you will associate the logicalInterfaceName with the appropriate physical interface."
+        }
+      },
+      "documentation": "Used in a CreateClusterRequest."
+    },
+    "ClusterNetworkSettingsUpdateRequest": {
+      "type": "structure",
+      "members": {
+        "DefaultRoute": {
+          "shape": "__string",
+          "locationName": "defaultRoute",
+          "documentation": "Include this parameter only if you want to change the default route for the Cluster. Specify one network interface as the default route for traffic to and from the node. MediaLive Anywhere uses this default when the destination for the traffic isn't covered by the route table for any of the networks. Specify the value of the appropriate logicalInterfaceName parameter that you create in the interfaceMappings."
+        },
+        "InterfaceMappings": {
+          "shape": "__listOfInterfaceMappingUpdateRequest",
+          "locationName": "interfaceMappings",
+          "documentation": "An array of interfaceMapping objects for this Cluster. Include this parameter only if you want to change the interface mappings for the Cluster. Typically, you change the interface mappings only to fix an error you made when creating the mapping. In an update request, make sure that you enter the entire set of mappings again, not just the mappings that you want to add or change. You define this mapping so that the mapping can be used by all the Nodes. Each mapping logically connects one interface on the nodes with one Network. Each mapping consists of a pair of parameters. The logicalInterfaceName parameter creates a logical name for the Node interface that handles a specific type of traffic. For example, my-Inputs-Interface. The networkID parameter refers to the ID of the network. When you create the Nodes in this Cluster, you will associate the logicalInterfaceName with the appropriate physical interface."
+        }
+      },
+      "documentation": "Placeholder documentation for ClusterNetworkSettingsUpdateRequest"
+    },
+    "ClusterState": {
+      "type": "string",
+      "documentation": "Used in DescribeClusterSummary, DescribeClusterResult, UpdateClusterResult.",
+      "enum": [
+        "CREATING",
+        "CREATE_FAILED",
+        "ACTIVE",
+        "DELETING",
+        "DELETE_FAILED",
+        "DELETED"
+      ]
+    },
+    "ClusterType": {
+      "type": "string",
+      "documentation": "Used in CreateClusterSummary, DescribeClusterSummary, DescribeClusterResult, UpdateClusterResult.",
+      "enum": [
+        "ON_PREMISES"
+      ]
+    },
+    "CreateChannelPlacementGroupRequest": {
+      "type": "structure",
+      "members": {
+        "ClusterId": {
+          "shape": "__string",
+          "location": "uri",
+          "locationName": "clusterId",
+          "documentation": "The ID of the cluster."
+        },
+        "Name": {
+          "shape": "__string",
+          "locationName": "name",
+          "documentation": "Specify a name that is unique in the Cluster. You can't change the name. Names are case-sensitive."
+        },
+        "Nodes": {
+          "shape": "__listOf__string",
+          "locationName": "nodes",
+          "documentation": "An array of one ID for the Node that you want to associate with the ChannelPlacementGroup. (You can't associate more than one Node with the ChannelPlacementGroup.) The Node and the ChannelPlacementGroup must be in the same Cluster."
+        },
+        "RequestId": {
+          "shape": "__string",
+          "locationName": "requestId",
+          "documentation": "An ID that you assign to a create request. This ID ensures idempotency when creating resources. the request.",
+          "idempotencyToken": true
+        },
+        "Tags": {
+          "shape": "Tags",
+          "locationName": "tags",
+          "documentation": "A collection of key-value pairs."
+        }
+      },
+      "documentation": "A request to create a channel placement group.",
+      "required": [
+        "ClusterId"
+      ]
+    },
+    "CreateChannelPlacementGroupResponse": {
+      "type": "structure",
+      "members": {
+        "Arn": {
+          "shape": "__string",
+          "locationName": "arn",
+          "documentation": "The ARN of this ChannelPlacementGroup. It is automatically assigned when the ChannelPlacementGroup is created."
+        },
+        "Channels": {
+          "shape": "__listOf__string",
+          "locationName": "channels",
+          "documentation": "Used in ListChannelPlacementGroupsResult"
+        },
+        "ClusterId": {
+          "shape": "__string",
+          "locationName": "clusterId",
+          "documentation": "The ID of the Cluster that the Node belongs to."
+        },
+        "Id": {
+          "shape": "__string",
+          "locationName": "id",
+          "documentation": "The ID of the ChannelPlacementGroup. Unique in the AWS account. The ID is the resource-id portion of the ARN."
+        },
+        "Name": {
+          "shape": "__string",
+          "locationName": "name",
+          "documentation": "The name that you specified for the ChannelPlacementGroup."
+        },
+        "Nodes": {
+          "shape": "__listOf__string",
+          "locationName": "nodes",
+          "documentation": "An array with one item, which is the signle Node that is associated with the ChannelPlacementGroup."
+        },
+        "State": {
+          "shape": "ChannelPlacementGroupState",
+          "locationName": "state",
+          "documentation": "The current state of the ChannelPlacementGroup."
+        }
+      },
+      "documentation": "Placeholder documentation for CreateChannelPlacementGroupResponse"
+    },
+    "CreateClusterRequest": {
+      "type": "structure",
+      "members": {
+        "ClusterType": {
+          "shape": "ClusterType",
+          "locationName": "clusterType",
+          "documentation": "Specify a type. All the Nodes that you later add to this Cluster must be this type of hardware. One Cluster instance can't contain different hardware types. You won't be able to change this parameter after you create the Cluster."
+        },
+        "InstanceRoleArn": {
+          "shape": "__string",
+          "locationName": "instanceRoleArn",
+          "documentation": "The ARN of the IAM role for the Node in this Cluster. The role must include all the operations that you expect these Node to perform. If necessary, create a role in IAM, then attach it here."
+        },
+        "Name": {
+          "shape": "__string",
+          "locationName": "name",
+          "documentation": "Specify a name that is unique in the AWS account. We recommend that you assign a name that hints at the types of Nodes in the Cluster. Names are case-sensitive."
+        },
+        "NetworkSettings": {
+          "shape": "ClusterNetworkSettingsCreateRequest",
+          "locationName": "networkSettings",
+          "documentation": "Network settings that connect the Nodes in the Cluster to one or more of the Networks that the Cluster is associated with."
+        },
+        "RequestId": {
+          "shape": "__string",
+          "locationName": "requestId",
+          "documentation": "The unique ID of the request.",
+          "idempotencyToken": true
+        },
+        "Tags": {
+          "shape": "Tags",
+          "locationName": "tags",
+          "documentation": "A collection of key-value pairs."
+        }
+      },
+      "documentation": "Create as many Clusters as you want, but create at least one. Each Cluster groups together Nodes that you want to treat as a collection. Within the Cluster, you will set up some Nodes as active Nodes, and some as backup Nodes, for Node failover purposes. Each Node can belong to only one Cluster."
+    },
+    "CreateClusterResponse": {
+      "type": "structure",
+      "members": {
+        "Arn": {
+          "shape": "__string",
+          "locationName": "arn",
+          "documentation": "The ARN of this Cluster. It is automatically assigned when the Cluster is created."
+        },
+        "ChannelIds": {
+          "shape": "__listOf__string",
+          "locationName": "channelIds"
+        },
+        "ClusterType": {
+          "shape": "ClusterType",
+          "locationName": "clusterType",
+          "documentation": "The hardware type for the Cluster"
+        },
+        "Id": {
+          "shape": "__string",
+          "locationName": "id",
+          "documentation": "The ID of the  Cluster. Unique in the AWS account. The ID is the resource-id portion of the ARN."
+        },
+        "InstanceRoleArn": {
+          "shape": "__string",
+          "locationName": "instanceRoleArn",
+          "documentation": "The ARN of the IAM role for the Node in this Cluster. Any Nodes that are associated with this Cluster assume this role. The role gives permissions to the operations that you expect these Node to perform."
+        },
+        "Name": {
+          "shape": "__string",
+          "locationName": "name",
+          "documentation": "The name that you specified for the Cluster."
+        },
+        "NetworkSettings": {
+          "shape": "ClusterNetworkSettings",
+          "locationName": "networkSettings",
+          "documentation": "Network settings that connect the Nodes in the Cluster to one or more of the Networks that the Cluster is associated with."
+        },
+        "State": {
+          "shape": "ClusterState",
+          "locationName": "state",
+          "documentation": "The current state of the Cluster."
+        }
+      },
+      "documentation": "Placeholder documentation for CreateClusterResponse"
+    },
+    "CreateNetworkRequest": {
+      "type": "structure",
+      "members": {
+        "IpPools": {
+          "shape": "__listOfIpPoolCreateRequest",
+          "locationName": "ipPools",
+          "documentation": "An array of IpPoolCreateRequests that identify a collection of IP addresses in your network that you want to reserve for use in MediaLive Anywhere. MediaLiveAnywhere uses these IP addresses for Push inputs (in both Bridge and NATnetworks) and for output destinations (only in Bridge networks). EachIpPoolUpdateRequest specifies one CIDR block."
+        },
+        "Name": {
+          "shape": "__string",
+          "locationName": "name",
+          "documentation": "Specify a name that is unique in the AWS account. We recommend that you assign a name that hints at the type of traffic on the network. Names are case-sensitive."
+        },
+        "RequestId": {
+          "shape": "__string",
+          "locationName": "requestId",
+          "documentation": "An ID that you assign to a create request. This ID ensures idempotency when creating resources.",
+          "idempotencyToken": true
+        },
+        "Routes": {
+          "shape": "__listOfRouteCreateRequest",
+          "locationName": "routes",
+          "documentation": "An array of routes that MediaLive Anywhere needs to know about in order to route encoding traffic."
+        },
+        "Tags": {
+          "shape": "Tags",
+          "locationName": "tags",
+          "documentation": "A collection of key-value pairs."
+        }
+      },
+      "documentation": "A request to create a Network."
+    },
+    "CreateNetworkResponse": {
+      "type": "structure",
+      "members": {
+        "Arn": {
+          "shape": "__string",
+          "locationName": "arn",
+          "documentation": "The ARN of this Network. It is automatically assigned when the Network is created."
+        },
+        "AssociatedClusterIds": {
+          "shape": "__listOf__string",
+          "locationName": "associatedClusterIds"
+        },
+        "Id": {
+          "shape": "__string",
+          "locationName": "id",
+          "documentation": "The ID of the Network. Unique in the AWS account. The ID is the resource-id portion of the ARN."
+        },
+        "IpPools": {
+          "shape": "__listOfIpPool",
+          "locationName": "ipPools",
+          "documentation": "An array of IpPools in your organization's network that identify a collection of IP addresses in this network that are reserved for use in MediaLive Anywhere. MediaLive Anywhere uses these IP addresses for Push inputs (in both Bridge and NAT networks) and for output destinations (only in Bridge networks). Each IpPool specifies one CIDR block."
+        },
+        "Name": {
+          "shape": "__string",
+          "locationName": "name",
+          "documentation": "The name that you specified for the Network."
+        },
+        "Routes": {
+          "shape": "__listOfRoute",
+          "locationName": "routes",
+          "documentation": "An array of routes that MediaLive Anywhere needs to know about in order to route encoding traffic."
+        },
+        "State": {
+          "shape": "NetworkState",
+          "locationName": "state",
+          "documentation": "The current state of the Network. Only MediaLive Anywhere can change the state."
+        }
+      },
+      "documentation": "Placeholder documentation for CreateNetworkResponse"
+    },
+    "CreateNodeRegistrationScriptRequest": {
+      "type": "structure",
+      "members": {
+        "ClusterId": {
+          "shape": "__string",
+          "location": "uri",
+          "locationName": "clusterId",
+          "documentation": "The ID of the cluster"
+        },
+        "Id": {
+          "shape": "__string",
+          "locationName": "id",
+          "documentation": "If you're generating a re-registration script for an already existing node, this is where you provide the id."
+        },
+        "Name": {
+          "shape": "__string",
+          "locationName": "name",
+          "documentation": "Specify a pattern for MediaLive Anywhere to use to assign a name to each Node in the Cluster. The pattern can include the variables $hn (hostname of the node hardware) and $ts for the date and time that the Node is created, in UTC (for example, 2024-08-20T23:35:12Z)."
+        },
+        "NodeInterfaceMappings": {
+          "shape": "__listOfNodeInterfaceMapping",
+          "locationName": "nodeInterfaceMappings",
+          "documentation": "Documentation update needed"
+        },
+        "RequestId": {
+          "shape": "__string",
+          "locationName": "requestId",
+          "documentation": "An ID that you assign to a create request. This ID ensures idempotency when creating resources.",
+          "idempotencyToken": true
+        },
+        "Role": {
+          "shape": "NodeRole",
+          "locationName": "role",
+          "documentation": "The initial role of the Node in the Cluster. ACTIVE means the Node is available for encoding. BACKUP means the Node is a redundant Node and might get used if an ACTIVE Node fails."
+        }
+      },
+      "documentation": "A request to create a new node registration script.",
+      "required": [
+        "ClusterId"
+      ]
+    },
+    "CreateNodeRegistrationScriptResponse": {
+      "type": "structure",
+      "members": {
+        "NodeRegistrationScript": {
+          "shape": "__string",
+          "locationName": "nodeRegistrationScript",
+          "documentation": "A script that can be run on a Bring Your Own Device Elemental Anywhere system to create a node in a cluster."
+        }
+      },
+      "documentation": "Placeholder documentation for CreateNodeRegistrationScriptResponse"
+    },
+    "CreateNodeRegistrationScriptResult": {
+      "type": "structure",
+      "members": {
+        "NodeRegistrationScript": {
+          "shape": "__string",
+          "locationName": "nodeRegistrationScript",
+          "documentation": "A script that can be run on a Bring Your Own Device Elemental Anywhere system to create a node in a cluster."
+        }
+      },
+      "documentation": "Contains the response for CreateNodeRegistrationScript."
+    },
+    "CreateNodeRequest": {
+      "type": "structure",
+      "members": {
+        "ClusterId": {
+          "shape": "__string",
+          "location": "uri",
+          "locationName": "clusterId",
+          "documentation": "The ID of the cluster."
+        },
+        "Name": {
+          "shape": "__string",
+          "locationName": "name",
+          "documentation": "The user-specified name of the Node to be created."
+        },
+        "NodeInterfaceMappings": {
+          "shape": "__listOfNodeInterfaceMappingCreateRequest",
+          "locationName": "nodeInterfaceMappings",
+          "documentation": "Documentation update needed"
+        },
+        "RequestId": {
+          "shape": "__string",
+          "locationName": "requestId",
+          "documentation": "An ID that you assign to a create request. This ID ensures idempotency when creating resources.",
+          "idempotencyToken": true
+        },
+        "Role": {
+          "shape": "NodeRole",
+          "locationName": "role",
+          "documentation": "The initial role of the Node in the Cluster. ACTIVE means the Node is available for encoding. BACKUP means the Node is a redundant Node and might get used if an ACTIVE Node fails."
+        },
+        "Tags": {
+          "shape": "Tags",
+          "locationName": "tags",
+          "documentation": "A collection of key-value pairs."
+        }
+      },
+      "documentation": "A request to create a node",
+      "required": [
+        "ClusterId"
+      ]
+    },
+    "CreateNodeResponse": {
+      "type": "structure",
+      "members": {
+        "Arn": {
+          "shape": "__string",
+          "locationName": "arn",
+          "documentation": "The ARN of the Node. It is automatically assigned when the Node is created."
+        },
+        "ChannelPlacementGroups": {
+          "shape": "__listOf__string",
+          "locationName": "channelPlacementGroups",
+          "documentation": "An array of IDs. Each ID is one ChannelPlacementGroup that is associated with this Node. Empty if the Node is not yet associated with any groups."
+        },
+        "ClusterId": {
+          "shape": "__string",
+          "locationName": "clusterId",
+          "documentation": "The ID of the Cluster that the Node belongs to."
+        },
+        "ConnectionState": {
+          "shape": "NodeConnectionState",
+          "locationName": "connectionState",
+          "documentation": "The current connection state of the Node."
+        },
+        "Id": {
+          "shape": "__string",
+          "locationName": "id",
+          "documentation": "The unique ID of the Node. Unique in the Cluster. The ID is the resource-id portion of the ARN."
+        },
+        "InstanceArn": {
+          "shape": "__string",
+          "locationName": "instanceArn",
+          "documentation": "The ARN of the EC2 instance hosting the Node."
+        },
+        "Name": {
+          "shape": "__string",
+          "locationName": "name",
+          "documentation": "The name that you specified for the Node."
+        },
+        "NodeInterfaceMappings": {
+          "shape": "__listOfNodeInterfaceMapping",
+          "locationName": "nodeInterfaceMappings",
+          "documentation": "Documentation update needed"
+        },
+        "Role": {
+          "shape": "NodeRole",
+          "locationName": "role",
+          "documentation": "The initial role current role of the Node in the Cluster. ACTIVE means the Node is available for encoding. BACKUP means the Node is a redundant Node and might get used if an ACTIVE Node fails."
+        },
+        "State": {
+          "shape": "NodeState",
+          "locationName": "state",
+          "documentation": "The current state of the Node."
+        }
+      },
+      "documentation": "Placeholder documentation for CreateNodeResponse"
+    },
+    "DeleteChannelPlacementGroupRequest": {
+      "type": "structure",
+      "members": {
+        "ChannelPlacementGroupId": {
+          "shape": "__string",
+          "location": "uri",
+          "locationName": "channelPlacementGroupId",
+          "documentation": "The ID of the channel placement group."
+        },
+        "ClusterId": {
+          "shape": "__string",
+          "location": "uri",
+          "locationName": "clusterId",
+          "documentation": "The ID of the cluster."
+        }
+      },
+      "required": [
+        "ClusterId",
+        "ChannelPlacementGroupId"
+      ],
+      "documentation": "Placeholder documentation for DeleteChannelPlacementGroupRequest"
+    },
+    "DeleteChannelPlacementGroupResponse": {
+      "type": "structure",
+      "members": {
+        "Arn": {
+          "shape": "__string",
+          "locationName": "arn",
+          "documentation": "The ARN of this ChannelPlacementGroup. It is automatically assigned when the ChannelPlacementGroup is created."
+        },
+        "Channels": {
+          "shape": "__listOf__string",
+          "locationName": "channels",
+          "documentation": "Used in ListChannelPlacementGroupsResult"
+        },
+        "ClusterId": {
+          "shape": "__string",
+          "locationName": "clusterId",
+          "documentation": "The ID of the Cluster that the Node belongs to."
+        },
+        "Id": {
+          "shape": "__string",
+          "locationName": "id",
+          "documentation": "The ID of the ChannelPlacementGroup. Unique in the AWS account. The ID is the resource-id portion of the ARN."
+        },
+        "Name": {
+          "shape": "__string",
+          "locationName": "name",
+          "documentation": "The name that you specified for the ChannelPlacementGroup."
+        },
+        "Nodes": {
+          "shape": "__listOf__string",
+          "locationName": "nodes",
+          "documentation": "An array with one item, which is the signle Node that is associated with the ChannelPlacementGroup."
+        },
+        "State": {
+          "shape": "ChannelPlacementGroupState",
+          "locationName": "state",
+          "documentation": "The current state of the ChannelPlacementGroup."
+        }
+      },
+      "documentation": "Placeholder documentation for DeleteChannelPlacementGroupResponse"
+    },
+    "DeleteClusterRequest": {
+      "type": "structure",
+      "members": {
+        "ClusterId": {
+          "shape": "__string",
+          "location": "uri",
+          "locationName": "clusterId",
+          "documentation": "The ID of the cluster."
+        }
+      },
+      "required": [
+        "ClusterId"
+      ],
+      "documentation": "Placeholder documentation for DeleteClusterRequest"
+    },
+    "DeleteClusterResponse": {
+      "type": "structure",
+      "members": {
+        "Arn": {
+          "shape": "__string",
+          "locationName": "arn",
+          "documentation": "The ARN of this Cluster. It is automatically assigned when the Cluster is created."
+        },
+        "ChannelIds": {
+          "shape": "__listOf__string",
+          "locationName": "channelIds"
+        },
+        "ClusterType": {
+          "shape": "ClusterType",
+          "locationName": "clusterType",
+          "documentation": "The hardware type for the Cluster"
+        },
+        "Id": {
+          "shape": "__string",
+          "locationName": "id",
+          "documentation": "The ID of the  Cluster. Unique in the AWS account. The ID is the resource-id portion of the ARN."
+        },
+        "InstanceRoleArn": {
+          "shape": "__string",
+          "locationName": "instanceRoleArn",
+          "documentation": "The ARN of the IAM role for the Node in this Cluster. Any Nodes that are associated with this Cluster assume this role. The role gives permissions to the operations that you expect these Node to perform."
+        },
+        "Name": {
+          "shape": "__string",
+          "locationName": "name",
+          "documentation": "The name that you specified for the Cluster."
+        },
+        "NetworkSettings": {
+          "shape": "ClusterNetworkSettings",
+          "locationName": "networkSettings",
+          "documentation": "Network settings that connect the Nodes in the Cluster to one or more of the Networks that the Cluster is associated with."
+        },
+        "State": {
+          "shape": "ClusterState",
+          "locationName": "state",
+          "documentation": "The current state of the Cluster."
+        }
+      },
+      "documentation": "Placeholder documentation for DeleteClusterResponse"
+    },
+    "DeleteNetworkRequest": {
+      "type": "structure",
+      "members": {
+        "NetworkId": {
+          "shape": "__string",
+          "location": "uri",
+          "locationName": "networkId",
+          "documentation": "The ID of the network."
+        }
+      },
+      "required": [
+        "NetworkId"
+      ],
+      "documentation": "Placeholder documentation for DeleteNetworkRequest"
+    },
+    "DeleteNetworkResponse": {
+      "type": "structure",
+      "members": {
+        "Arn": {
+          "shape": "__string",
+          "locationName": "arn",
+          "documentation": "The ARN of this Network. It is automatically assigned when the Network is created."
+        },
+        "AssociatedClusterIds": {
+          "shape": "__listOf__string",
+          "locationName": "associatedClusterIds"
+        },
+        "Id": {
+          "shape": "__string",
+          "locationName": "id",
+          "documentation": "The ID of the Network. Unique in the AWS account. The ID is the resource-id portion of the ARN."
+        },
+        "IpPools": {
+          "shape": "__listOfIpPool",
+          "locationName": "ipPools",
+          "documentation": "An array of IpPools in your organization's network that identify a collection of IP addresses in this network that are reserved for use in MediaLive Anywhere. MediaLive Anywhere uses these IP addresses for Push inputs (in both Bridge and NAT networks) and for output destinations (only in Bridge networks). Each IpPool specifies one CIDR block."
+        },
+        "Name": {
+          "shape": "__string",
+          "locationName": "name",
+          "documentation": "The name that you specified for the Network."
+        },
+        "Routes": {
+          "shape": "__listOfRoute",
+          "locationName": "routes",
+          "documentation": "An array of routes that MediaLive Anywhere needs to know about in order to route encoding traffic."
+        },
+        "State": {
+          "shape": "NetworkState",
+          "locationName": "state",
+          "documentation": "The current state of the Network. Only MediaLive Anywhere can change the state."
+        }
+      },
+      "documentation": "Placeholder documentation for DeleteNetworkResponse"
+    },
+    "DeleteNodeRequest": {
+      "type": "structure",
+      "members": {
+        "ClusterId": {
+          "shape": "__string",
+          "location": "uri",
+          "locationName": "clusterId",
+          "documentation": "The ID of the cluster"
+        },
+        "NodeId": {
+          "shape": "__string",
+          "location": "uri",
+          "locationName": "nodeId",
+          "documentation": "The ID of the node."
+        }
+      },
+      "required": [
+        "NodeId",
+        "ClusterId"
+      ],
+      "documentation": "Placeholder documentation for DeleteNodeRequest"
+    },
+    "DeleteNodeResponse": {
+      "type": "structure",
+      "members": {
+        "Arn": {
+          "shape": "__string",
+          "locationName": "arn",
+          "documentation": "The ARN of the Node. It is automatically assigned when the Node is created."
+        },
+        "ChannelPlacementGroups": {
+          "shape": "__listOf__string",
+          "locationName": "channelPlacementGroups",
+          "documentation": "An array of IDs. Each ID is one ChannelPlacementGroup that is associated with this Node. Empty if the Node is not yet associated with any groups."
+        },
+        "ClusterId": {
+          "shape": "__string",
+          "locationName": "clusterId",
+          "documentation": "The ID of the Cluster that the Node belongs to."
+        },
+        "ConnectionState": {
+          "shape": "NodeConnectionState",
+          "locationName": "connectionState",
+          "documentation": "The current connection state of the Node."
+        },
+        "Id": {
+          "shape": "__string",
+          "locationName": "id",
+          "documentation": "The unique ID of the Node. Unique in the Cluster. The ID is the resource-id portion of the ARN."
+        },
+        "InstanceArn": {
+          "shape": "__string",
+          "locationName": "instanceArn",
+          "documentation": "The ARN of the EC2 instance hosting the Node."
+        },
+        "Name": {
+          "shape": "__string",
+          "locationName": "name",
+          "documentation": "The name that you specified for the Node."
+        },
+        "NodeInterfaceMappings": {
+          "shape": "__listOfNodeInterfaceMapping",
+          "locationName": "nodeInterfaceMappings",
+          "documentation": "Documentation update needed"
+        },
+        "Role": {
+          "shape": "NodeRole",
+          "locationName": "role",
+          "documentation": "The initial role current role of the Node in the Cluster. ACTIVE means the Node is available for encoding. BACKUP means the Node is a redundant Node and might get used if an ACTIVE Node fails."
+        },
+        "State": {
+          "shape": "NodeState",
+          "locationName": "state",
+          "documentation": "The current state of the Node."
+        }
+      },
+      "documentation": "Placeholder documentation for DeleteNodeResponse"
+    },
+    "DescribeAnywhereSettings": {
+      "type": "structure",
+      "members": {
+        "ChannelPlacementGroupId": {
+          "shape": "__string",
+          "locationName": "channelPlacementGroupId",
+          "documentation": "The ID of the channel placement group for the channel."
+        },
+        "ClusterId": {
+          "shape": "__string",
+          "locationName": "clusterId",
+          "documentation": "The ID of the cluster for the channel."
+        }
+      },
+      "documentation": "Elemental anywhere settings"
+    },
+    "DescribeChannelPlacementGroupRequest": {
+      "type": "structure",
+      "members": {
+        "ChannelPlacementGroupId": {
+          "shape": "__string",
+          "location": "uri",
+          "locationName": "channelPlacementGroupId",
+          "documentation": "The ID of the channel placement group."
+        },
+        "ClusterId": {
+          "shape": "__string",
+          "location": "uri",
+          "locationName": "clusterId",
+          "documentation": "The ID of the cluster."
+        }
+      },
+      "required": [
+        "ClusterId",
+        "ChannelPlacementGroupId"
+      ],
+      "documentation": "Placeholder documentation for DescribeChannelPlacementGroupRequest"
+    },
+    "DescribeChannelPlacementGroupResponse": {
+      "type": "structure",
+      "members": {
+        "Arn": {
+          "shape": "__string",
+          "locationName": "arn",
+          "documentation": "The ARN of this ChannelPlacementGroup. It is automatically assigned when the ChannelPlacementGroup is created."
+        },
+        "Channels": {
+          "shape": "__listOf__string",
+          "locationName": "channels",
+          "documentation": "Used in ListChannelPlacementGroupsResult"
+        },
+        "ClusterId": {
+          "shape": "__string",
+          "locationName": "clusterId",
+          "documentation": "The ID of the Cluster that the Node belongs to."
+        },
+        "Id": {
+          "shape": "__string",
+          "locationName": "id",
+          "documentation": "The ID of the ChannelPlacementGroup. Unique in the AWS account. The ID is the resource-id portion of the ARN."
+        },
+        "Name": {
+          "shape": "__string",
+          "locationName": "name",
+          "documentation": "The name that you specified for the ChannelPlacementGroup."
+        },
+        "Nodes": {
+          "shape": "__listOf__string",
+          "locationName": "nodes",
+          "documentation": "An array with one item, which is the signle Node that is associated with the ChannelPlacementGroup."
+        },
+        "State": {
+          "shape": "ChannelPlacementGroupState",
+          "locationName": "state",
+          "documentation": "The current state of the ChannelPlacementGroup."
+        }
+      },
+      "documentation": "Placeholder documentation for DescribeChannelPlacementGroupResponse"
+    },
+    "DescribeChannelPlacementGroupResult": {
+      "type": "structure",
+      "members": {
+        "Arn": {
+          "shape": "__string",
+          "locationName": "arn",
+          "documentation": "The ARN of this ChannelPlacementGroup. It is automatically assigned when the ChannelPlacementGroup is created."
+        },
+        "Channels": {
+          "shape": "__listOf__string",
+          "locationName": "channels",
+          "documentation": "Used in ListChannelPlacementGroupsResult"
+        },
+        "ClusterId": {
+          "shape": "__string",
+          "locationName": "clusterId",
+          "documentation": "The ID of the Cluster that the Node belongs to."
+        },
+        "Id": {
+          "shape": "__string",
+          "locationName": "id",
+          "documentation": "The ID of the ChannelPlacementGroup. Unique in the AWS account. The ID is the resource-id portion of the ARN."
+        },
+        "Name": {
+          "shape": "__string",
+          "locationName": "name",
+          "documentation": "The name that you specified for the ChannelPlacementGroup."
+        },
+        "Nodes": {
+          "shape": "__listOf__string",
+          "locationName": "nodes",
+          "documentation": "An array with one item, which is the signle Node that is associated with the ChannelPlacementGroup."
+        },
+        "State": {
+          "shape": "ChannelPlacementGroupState",
+          "locationName": "state",
+          "documentation": "The current state of the ChannelPlacementGroup."
+        }
+      },
+      "documentation": "Contains the response for CreateChannelPlacementGroup, DescribeChannelPlacementGroup, DeleteChannelPlacementGroup, UpdateChannelPlacementGroup"
+    },
+    "DescribeChannelPlacementGroupSummary": {
+      "type": "structure",
+      "members": {
+        "Arn": {
+          "shape": "__string",
+          "locationName": "arn",
+          "documentation": "The ARN of this ChannelPlacementGroup. It is automatically assigned when the ChannelPlacementGroup is created."
+        },
+        "Channels": {
+          "shape": "__listOf__string",
+          "locationName": "channels",
+          "documentation": "Used in ListChannelPlacementGroupsResult"
+        },
+        "ClusterId": {
+          "shape": "__string",
+          "locationName": "clusterId",
+          "documentation": "The ID of the Cluster that the Node belongs to."
+        },
+        "Id": {
+          "shape": "__string",
+          "locationName": "id",
+          "documentation": "The ID of the ChannelPlacementGroup. Unique in the AWS account. The ID is the resource-id portion of the ARN."
+        },
+        "Name": {
+          "shape": "__string",
+          "locationName": "name",
+          "documentation": "The name that you specified for the ChannelPlacementGroup."
+        },
+        "Nodes": {
+          "shape": "__listOf__string",
+          "locationName": "nodes",
+          "documentation": "An array with one item, which is the signle Node that is associated with the ChannelPlacementGroup."
+        },
+        "State": {
+          "shape": "ChannelPlacementGroupState",
+          "locationName": "state",
+          "documentation": "The current state of the ChannelPlacementGroup."
+        }
+      },
+      "documentation": "Contains the response for ListChannelPlacementGroups"
+    },
+    "DescribeClusterRequest": {
+      "type": "structure",
+      "members": {
+        "ClusterId": {
+          "shape": "__string",
+          "location": "uri",
+          "locationName": "clusterId",
+          "documentation": "The ID of the cluster."
+        }
+      },
+      "required": [
+        "ClusterId"
+      ],
+      "documentation": "Placeholder documentation for DescribeClusterRequest"
+    },
+    "DescribeClusterResponse": {
+      "type": "structure",
+      "members": {
+        "Arn": {
+          "shape": "__string",
+          "locationName": "arn",
+          "documentation": "The ARN of this Cluster. It is automatically assigned when the Cluster is created."
+        },
+        "ChannelIds": {
+          "shape": "__listOf__string",
+          "locationName": "channelIds"
+        },
+        "ClusterType": {
+          "shape": "ClusterType",
+          "locationName": "clusterType",
+          "documentation": "The hardware type for the Cluster"
+        },
+        "Id": {
+          "shape": "__string",
+          "locationName": "id",
+          "documentation": "The ID of the  Cluster. Unique in the AWS account. The ID is the resource-id portion of the ARN."
+        },
+        "InstanceRoleArn": {
+          "shape": "__string",
+          "locationName": "instanceRoleArn",
+          "documentation": "The ARN of the IAM role for the Node in this Cluster. Any Nodes that are associated with this Cluster assume this role. The role gives permissions to the operations that you expect these Node to perform."
+        },
+        "Name": {
+          "shape": "__string",
+          "locationName": "name",
+          "documentation": "The name that you specified for the Cluster."
+        },
+        "NetworkSettings": {
+          "shape": "ClusterNetworkSettings",
+          "locationName": "networkSettings",
+          "documentation": "Network settings that connect the Nodes in the Cluster to one or more of the Networks that the Cluster is associated with."
+        },
+        "State": {
+          "shape": "ClusterState",
+          "locationName": "state",
+          "documentation": "The current state of the Cluster."
+        }
+      },
+      "documentation": "Placeholder documentation for DescribeClusterResponse"
+    },
+    "DescribeClusterResult": {
+      "type": "structure",
+      "members": {
+        "Arn": {
+          "shape": "__string",
+          "locationName": "arn",
+          "documentation": "The ARN of this Cluster. It is automatically assigned when the Cluster is created."
+        },
+        "ChannelIds": {
+          "shape": "__listOf__string",
+          "locationName": "channelIds"
+        },
+        "ClusterType": {
+          "shape": "ClusterType",
+          "locationName": "clusterType",
+          "documentation": "The hardware type for the Cluster"
+        },
+        "Id": {
+          "shape": "__string",
+          "locationName": "id",
+          "documentation": "The ID of the  Cluster. Unique in the AWS account. The ID is the resource-id portion of the ARN."
+        },
+        "InstanceRoleArn": {
+          "shape": "__string",
+          "locationName": "instanceRoleArn",
+          "documentation": "The ARN of the IAM role for the Node in this Cluster. Any Nodes that are associated with this Cluster assume this role. The role gives permissions to the operations that you expect these Node to perform."
+        },
+        "Name": {
+          "shape": "__string",
+          "locationName": "name",
+          "documentation": "The name that you specified for the Cluster."
+        },
+        "NetworkSettings": {
+          "shape": "ClusterNetworkSettings",
+          "locationName": "networkSettings",
+          "documentation": "Network settings that connect the Nodes in the Cluster to one or more of the Networks that the Cluster is associated with."
+        },
+        "State": {
+          "shape": "ClusterState",
+          "locationName": "state",
+          "documentation": "The current state of the Cluster."
+        }
+      },
+      "documentation": "Contains the response for CreateCluster, DescribeCluster, DeleteCluster, UpdateCluster"
+    },
+    "DescribeClusterSummary": {
+      "type": "structure",
+      "members": {
+        "Arn": {
+          "shape": "__string",
+          "locationName": "arn",
+          "documentation": "The ARN of this Cluster. It is automatically assigned when the Cluster is created."
+        },
+        "ChannelIds": {
+          "shape": "__listOf__string",
+          "locationName": "channelIds",
+          "documentation": "An array of the IDs of the Channels that are associated with this Cluster. One Channel is associated with the Cluster as follows: A Channel belongs to a ChannelPlacementGroup. A ChannelPlacementGroup is attached to a Node. A Node belongs to a Cluster."
+        },
+        "ClusterType": {
+          "shape": "ClusterType",
+          "locationName": "clusterType",
+          "documentation": "The hardware type for the Cluster."
+        },
+        "Id": {
+          "shape": "__string",
+          "locationName": "id",
+          "documentation": "The ID of the Cluster. Unique in the AWS account. The ID is the resource-id portion of the ARN."
+        },
+        "InstanceRoleArn": {
+          "shape": "__string",
+          "locationName": "instanceRoleArn",
+          "documentation": "The ARN of the IAM role for the Node in this Cluster. Any Nodes that are associated with this Cluster assume this role. The role gives permissions to the operations that you expect these Node to perform."
+        },
+        "Name": {
+          "shape": "__string",
+          "locationName": "name",
+          "documentation": "The name that you specified for the Cluster."
+        },
+        "NetworkSettings": {
+          "shape": "ClusterNetworkSettings",
+          "locationName": "networkSettings",
+          "documentation": "Network settings that connect the Nodes in the Cluster to one or more of the Networks that the Cluster is associated with."
+        },
+        "State": {
+          "shape": "ClusterState",
+          "locationName": "state",
+          "documentation": "The current state of the Cluster."
+        }
+      },
+      "documentation": "Used in ListClustersResult."
+    },
+    "DescribeNetworkRequest": {
+      "type": "structure",
+      "members": {
+        "NetworkId": {
+          "shape": "__string",
+          "location": "uri",
+          "locationName": "networkId",
+          "documentation": "The ID of the network."
+        }
+      },
+      "required": [
+        "NetworkId"
+      ],
+      "documentation": "Placeholder documentation for DescribeNetworkRequest"
+    },
+    "DescribeNetworkResponse": {
+      "type": "structure",
+      "members": {
+        "Arn": {
+          "shape": "__string",
+          "locationName": "arn",
+          "documentation": "The ARN of this Network. It is automatically assigned when the Network is created."
+        },
+        "AssociatedClusterIds": {
+          "shape": "__listOf__string",
+          "locationName": "associatedClusterIds"
+        },
+        "Id": {
+          "shape": "__string",
+          "locationName": "id",
+          "documentation": "The ID of the Network. Unique in the AWS account. The ID is the resource-id portion of the ARN."
+        },
+        "IpPools": {
+          "shape": "__listOfIpPool",
+          "locationName": "ipPools",
+          "documentation": "An array of IpPools in your organization's network that identify a collection of IP addresses in this network that are reserved for use in MediaLive Anywhere. MediaLive Anywhere uses these IP addresses for Push inputs (in both Bridge and NAT networks) and for output destinations (only in Bridge networks). Each IpPool specifies one CIDR block."
+        },
+        "Name": {
+          "shape": "__string",
+          "locationName": "name",
+          "documentation": "The name that you specified for the Network."
+        },
+        "Routes": {
+          "shape": "__listOfRoute",
+          "locationName": "routes",
+          "documentation": "An array of routes that MediaLive Anywhere needs to know about in order to route encoding traffic."
+        },
+        "State": {
+          "shape": "NetworkState",
+          "locationName": "state",
+          "documentation": "The current state of the Network. Only MediaLive Anywhere can change the state."
+        }
+      },
+      "documentation": "Placeholder documentation for DescribeNetworkResponse"
+    },
+    "DescribeNetworkResult": {
+      "type": "structure",
+      "members": {
+        "Arn": {
+          "shape": "__string",
+          "locationName": "arn",
+          "documentation": "The ARN of this Network. It is automatically assigned when the Network is created."
+        },
+        "AssociatedClusterIds": {
+          "shape": "__listOf__string",
+          "locationName": "associatedClusterIds"
+        },
+        "Id": {
+          "shape": "__string",
+          "locationName": "id",
+          "documentation": "The ID of the Network. Unique in the AWS account. The ID is the resource-id portion of the ARN."
+        },
+        "IpPools": {
+          "shape": "__listOfIpPool",
+          "locationName": "ipPools",
+          "documentation": "An array of IpPools in your organization's network that identify a collection of IP addresses in this network that are reserved for use in MediaLive Anywhere. MediaLive Anywhere uses these IP addresses for Push inputs (in both Bridge and NAT networks) and for output destinations (only in Bridge networks). Each IpPool specifies one CIDR block."
+        },
+        "Name": {
+          "shape": "__string",
+          "locationName": "name",
+          "documentation": "The name that you specified for the Network."
+        },
+        "Routes": {
+          "shape": "__listOfRoute",
+          "locationName": "routes",
+          "documentation": "An array of routes that MediaLive Anywhere needs to know about in order to route encoding traffic."
+        },
+        "State": {
+          "shape": "NetworkState",
+          "locationName": "state",
+          "documentation": "The current state of the Network. Only MediaLive Anywhere can change the state."
+        }
+      },
+      "documentation": "Contains the response for CreateNetwork, DescribeNetwork, DeleteNetwork, UpdateNetwork."
+    },
+    "DescribeNetworkSummary": {
+      "type": "structure",
+      "members": {
+        "Arn": {
+          "shape": "__string",
+          "locationName": "arn",
+          "documentation": "The ARN of this Network. It is automatically assigned when the Network is created."
+        },
+        "AssociatedClusterIds": {
+          "shape": "__listOf__string",
+          "locationName": "associatedClusterIds"
+        },
+        "Id": {
+          "shape": "__string",
+          "locationName": "id",
+          "documentation": "The ID of the Network. Unique in the AWS account. The ID is the resource-id portion of the ARN."
+        },
+        "IpPools": {
+          "shape": "__listOfIpPool",
+          "locationName": "ipPools",
+          "documentation": "An array of IpPools in your organization's network that identify a collection of IP addresses in your organization's network that are reserved for use in MediaLive Anywhere. MediaLive Anywhere uses these IP addresses for Push inputs (in both Bridge and NAT networks) and for output destinations (only in Bridge networks). Each IpPool specifies one CIDR block."
+        },
+        "Name": {
+          "shape": "__string",
+          "locationName": "name",
+          "documentation": "The name that you specified for this Network."
+        },
+        "Routes": {
+          "shape": "__listOfRoute",
+          "locationName": "routes",
+          "documentation": "An array of routes that MediaLive Anywhere needs to know about in order to route encoding traffic."
+        },
+        "State": {
+          "shape": "NetworkState",
+          "locationName": "state",
+          "documentation": "The current state of the Network. Only MediaLive Anywhere can change the state."
+        }
+      },
+      "documentation": "Used in ListNetworksResult."
+    },
+    "DescribeNodeRequest": {
+      "type": "structure",
+      "members": {
+        "ClusterId": {
+          "shape": "__string",
+          "location": "uri",
+          "locationName": "clusterId",
+          "documentation": "The ID of the cluster"
+        },
+        "NodeId": {
+          "shape": "__string",
+          "location": "uri",
+          "locationName": "nodeId",
+          "documentation": "The ID of the node."
+        }
+      },
+      "required": [
+        "NodeId",
+        "ClusterId"
+      ],
+      "documentation": "Placeholder documentation for DescribeNodeRequest"
+    },
+    "DescribeNodeResponse": {
+      "type": "structure",
+      "members": {
+        "Arn": {
+          "shape": "__string",
+          "locationName": "arn",
+          "documentation": "The ARN of the Node. It is automatically assigned when the Node is created."
+        },
+        "ChannelPlacementGroups": {
+          "shape": "__listOf__string",
+          "locationName": "channelPlacementGroups",
+          "documentation": "An array of IDs. Each ID is one ChannelPlacementGroup that is associated with this Node. Empty if the Node is not yet associated with any groups."
+        },
+        "ClusterId": {
+          "shape": "__string",
+          "locationName": "clusterId",
+          "documentation": "The ID of the Cluster that the Node belongs to."
+        },
+        "ConnectionState": {
+          "shape": "NodeConnectionState",
+          "locationName": "connectionState",
+          "documentation": "The current connection state of the Node."
+        },
+        "Id": {
+          "shape": "__string",
+          "locationName": "id",
+          "documentation": "The unique ID of the Node. Unique in the Cluster. The ID is the resource-id portion of the ARN."
+        },
+        "InstanceArn": {
+          "shape": "__string",
+          "locationName": "instanceArn",
+          "documentation": "The ARN of the EC2 instance hosting the Node."
+        },
+        "Name": {
+          "shape": "__string",
+          "locationName": "name",
+          "documentation": "The name that you specified for the Node."
+        },
+        "NodeInterfaceMappings": {
+          "shape": "__listOfNodeInterfaceMapping",
+          "locationName": "nodeInterfaceMappings",
+          "documentation": "Documentation update needed"
+        },
+        "Role": {
+          "shape": "NodeRole",
+          "locationName": "role",
+          "documentation": "The initial role current role of the Node in the Cluster. ACTIVE means the Node is available for encoding. BACKUP means the Node is a redundant Node and might get used if an ACTIVE Node fails."
+        },
+        "State": {
+          "shape": "NodeState",
+          "locationName": "state",
+          "documentation": "The current state of the Node."
+        }
+      },
+      "documentation": "Placeholder documentation for DescribeNodeResponse"
+    },
+    "DescribeNodeResult": {
+      "type": "structure",
+      "members": {
+        "Arn": {
+          "shape": "__string",
+          "locationName": "arn",
+          "documentation": "The ARN of the Node. It is automatically assigned when the Node is created."
+        },
+        "ChannelPlacementGroups": {
+          "shape": "__listOf__string",
+          "locationName": "channelPlacementGroups",
+          "documentation": "An array of IDs. Each ID is one ChannelPlacementGroup that is associated with this Node. Empty if the Node is not yet associated with any groups."
+        },
+        "ClusterId": {
+          "shape": "__string",
+          "locationName": "clusterId",
+          "documentation": "The ID of the Cluster that the Node belongs to."
+        },
+        "ConnectionState": {
+          "shape": "NodeConnectionState",
+          "locationName": "connectionState",
+          "documentation": "The current connection state of the Node."
+        },
+        "Id": {
+          "shape": "__string",
+          "locationName": "id",
+          "documentation": "The unique ID of the Node. Unique in the Cluster. The ID is the resource-id portion of the ARN."
+        },
+        "InstanceArn": {
+          "shape": "__string",
+          "locationName": "instanceArn",
+          "documentation": "The ARN of the EC2 instance hosting the Node."
+        },
+        "Name": {
+          "shape": "__string",
+          "locationName": "name",
+          "documentation": "The name that you specified for the Node."
+        },
+        "NodeInterfaceMappings": {
+          "shape": "__listOfNodeInterfaceMapping",
+          "locationName": "nodeInterfaceMappings",
+          "documentation": "Documentation update needed"
+        },
+        "Role": {
+          "shape": "NodeRole",
+          "locationName": "role",
+          "documentation": "The initial role current role of the Node in the Cluster. ACTIVE means the Node is available for encoding. BACKUP means the Node is a redundant Node and might get used if an ACTIVE Node fails."
+        },
+        "State": {
+          "shape": "NodeState",
+          "locationName": "state",
+          "documentation": "The current state of the Node."
+        }
+      },
+      "documentation": "Contains the response for CreateNode, DescribeNode, DeleteNode, UpdateNode"
+    },
+    "DescribeNodeSummary": {
+      "type": "structure",
+      "members": {
+        "Arn": {
+          "shape": "__string",
+          "locationName": "arn",
+          "documentation": "The ARN of the Node. It is automatically assigned when the Node is created."
+        },
+        "ChannelPlacementGroups": {
+          "shape": "__listOf__string",
+          "locationName": "channelPlacementGroups",
+          "documentation": "An array of IDs. Each ID is one ChannelPlacementGroup that is associated with this Node. Empty if the Node is not yet associated with any groups."
+        },
+        "ClusterId": {
+          "shape": "__string",
+          "locationName": "clusterId",
+          "documentation": "The ID of the Cluster that the Node belongs to."
+        },
+        "ConnectionState": {
+          "shape": "NodeConnectionState",
+          "locationName": "connectionState",
+          "documentation": "The current connection state of the Node."
+        },
+        "Id": {
+          "shape": "__string",
+          "locationName": "id",
+          "documentation": "The unique ID of the Node. Unique in the Cluster. The ID is the resource-id portion of the ARN."
+        },
+        "InstanceArn": {
+          "shape": "__string",
+          "locationName": "instanceArn",
+          "documentation": "The EC2 ARN of the Instance associated with the Node."
+        },
+        "ManagedInstanceId": {
+          "shape": "__string",
+          "locationName": "managedInstanceId",
+          "documentation": "At the routing layer will get it from the callerId/context for use with bring your own device."
+        },
+        "Name": {
+          "shape": "__string",
+          "locationName": "name",
+          "documentation": "The name that you specified for the Node."
+        },
+        "NodeInterfaceMappings": {
+          "shape": "__listOfNodeInterfaceMapping",
+          "locationName": "nodeInterfaceMappings",
+          "documentation": "Documentation update needed"
+        },
+        "Role": {
+          "shape": "NodeRole",
+          "locationName": "role",
+          "documentation": "The initial role current role of the Node in the Cluster. ACTIVE means the Node is available for encoding. BACKUP means the Node is a redundant Node and might get used if an ACTIVE Node fails."
+        },
+        "State": {
+          "shape": "NodeState",
+          "locationName": "state",
+          "documentation": "The current state of the Node."
+        }
+      },
+      "documentation": "Placeholder documentation for DescribeNodeSummary"
+    },
+    "InputDestinationRoute": {
+      "type": "structure",
+      "members": {
+        "Cidr": {
+          "shape": "__string",
+          "locationName": "cidr",
+          "documentation": "The CIDR of the route."
+        },
+        "Gateway": {
+          "shape": "__string",
+          "locationName": "gateway",
+          "documentation": "An optional gateway for the route."
+        }
+      },
+      "documentation": "A network route configuration."
+    },
+    "InputNetworkLocation": {
+      "type": "string",
+      "documentation": "With the introduction of MediaLive OnPrem, a MediaLive input can now exist in two different places: AWS or\ninside an on-premise datacenter. By default all inputs will continue to be AWS inputs.",
+      "enum": [
+        "AWS",
+        "ON_PREMISE",
+        "ON_PREMISES"
+      ]
+    },
+    "InputRequestDestinationRoute": {
+      "type": "structure",
+      "members": {
+        "Cidr": {
+          "shape": "__string",
+          "locationName": "cidr",
+          "documentation": "The CIDR of the route."
+        },
+        "Gateway": {
+          "shape": "__string",
+          "locationName": "gateway",
+          "documentation": "An optional gateway for the route."
+        }
+      },
+      "documentation": "A network route configuration."
+    },
+    "InterfaceMapping": {
+      "type": "structure",
+      "members": {
+        "LogicalInterfaceName": {
+          "shape": "__string",
+          "locationName": "logicalInterfaceName",
+          "documentation": "The logical name for one interface (on every Node) that handles a specific type of traffic. We recommend that the name hints at the physical interface it applies to. For example, it could refer to the traffic that the physical interface handles. For example, my-Inputs-Interface."
+        },
+        "NetworkId": {
+          "shape": "__string",
+          "locationName": "networkId",
+          "documentation": "The ID of the network that you want to connect to the specified logicalInterfaceName."
+        }
+      },
+      "documentation": "Used in ClusterNetworkSettings"
+    },
+    "InterfaceMappingCreateRequest": {
+      "type": "structure",
+      "members": {
+        "LogicalInterfaceName": {
+          "shape": "__string",
+          "locationName": "logicalInterfaceName",
+          "documentation": "The logical name for one interface (on every Node) that handles a specific type of traffic. We recommend that the name hints at the physical interface it applies to. For example, it could refer to the traffic that the physical interface handles. For example, my-Inputs-Interface."
+        },
+        "NetworkId": {
+          "shape": "__string",
+          "locationName": "networkId",
+          "documentation": "The ID of the network that you want to connect to the specified logicalInterfaceName."
+        }
+      },
+      "documentation": "Used in ClusterNetworkSettingsCreateRequest."
+    },
+    "InterfaceMappingUpdateRequest": {
+      "type": "structure",
+      "members": {
+        "LogicalInterfaceName": {
+          "shape": "__string",
+          "locationName": "logicalInterfaceName",
+          "documentation": "The logical name for one interface (on every Node) that handles a specific type of traffic. We recommend that the name hints at the physical interface it applies to. For example, it could refer to the traffic that the physical interface handles. For example, my-Inputs-Interface."
+        },
+        "NetworkId": {
+          "shape": "__string",
+          "locationName": "networkId",
+          "documentation": "The ID of the network that you want to connect to the specified logicalInterfaceName. You can use the ListNetworks operation to discover all the IDs."
+        }
+      },
+      "documentation": "Placeholder documentation for InterfaceMappingUpdateRequest"
+    },
+    "IpPool": {
+      "type": "structure",
+      "members": {
+        "Cidr": {
+          "shape": "__string",
+          "locationName": "cidr",
+          "documentation": "A CIDR block of IP addresses that are reserved for MediaLive Anywhere."
+        }
+      },
+      "documentation": "Used in DescribeNetworkResult, DescribeNetworkSummary, UpdateNetworkResult."
+    },
+    "IpPoolCreateRequest": {
+      "type": "structure",
+      "members": {
+        "Cidr": {
+          "shape": "__string",
+          "locationName": "cidr",
+          "documentation": "A CIDR block of IP addresses to reserve for MediaLive Anywhere."
+        }
+      },
+      "documentation": "Used in CreateNetworkRequest."
+    },
+    "IpPoolUpdateRequest": {
+      "type": "structure",
+      "members": {
+        "Cidr": {
+          "shape": "__string",
+          "locationName": "cidr",
+          "documentation": "A CIDR block of IP addresses to reserve for MediaLive Anywhere."
+        }
+      },
+      "documentation": "Used in UpdateNetworkRequest."
+    },
+    "ListChannelPlacementGroupsRequest": {
+      "type": "structure",
+      "members": {
+        "ClusterId": {
+          "shape": "__string",
+          "location": "uri",
+          "locationName": "clusterId",
+          "documentation": "The ID of the cluster"
+        },
+        "MaxResults": {
+          "shape": "MaxResults",
+          "location": "querystring",
+          "locationName": "maxResults",
+          "documentation": "The maximum number of items to return."
+        },
+        "NextToken": {
+          "shape": "__string",
+          "location": "querystring",
+          "locationName": "nextToken",
+          "documentation": "The token to retrieve the next page of results."
+        }
+      },
+      "required": [
+        "ClusterId"
+      ],
+      "documentation": "Placeholder documentation for ListChannelPlacementGroupsRequest"
+    },
+    "ListChannelPlacementGroupsResponse": {
+      "type": "structure",
+      "members": {
+        "ChannelPlacementGroups": {
+          "shape": "__listOfDescribeChannelPlacementGroupSummary",
+          "locationName": "channelPlacementGroups",
+          "documentation": "An array of ChannelPlacementGroups that exist in the Cluster."
+        },
+        "NextToken": {
+          "shape": "__string",
+          "locationName": "nextToken",
+          "documentation": "Token for the next result."
+        }
+      },
+      "documentation": "Placeholder documentation for ListChannelPlacementGroupsResponse"
+    },
+    "ListChannelPlacementGroupsResult": {
+      "type": "structure",
+      "members": {
+        "ChannelPlacementGroups": {
+          "shape": "__listOfDescribeChannelPlacementGroupSummary",
+          "locationName": "channelPlacementGroups",
+          "documentation": "An array of ChannelPlacementGroups that exist in the Cluster."
+        },
+        "NextToken": {
+          "shape": "__string",
+          "locationName": "nextToken",
+          "documentation": "Token for the next result."
+        }
+      },
+      "documentation": "Contains the response for ListChannelPlacementGroups."
+    },
+    "ListClustersRequest": {
+      "type": "structure",
+      "members": {
+        "MaxResults": {
+          "shape": "MaxResults",
+          "location": "querystring",
+          "locationName": "maxResults",
+          "documentation": "The maximum number of items to return."
+        },
+        "NextToken": {
+          "shape": "__string",
+          "location": "querystring",
+          "locationName": "nextToken",
+          "documentation": "The token to retrieve the next page of results."
+        }
+      },
+      "documentation": "Placeholder documentation for ListClustersRequest"
+    },
+    "ListClustersResponse": {
+      "type": "structure",
+      "members": {
+        "Clusters": {
+          "shape": "__listOfDescribeClusterSummary",
+          "locationName": "clusters",
+          "documentation": "A list of the Clusters that exist in your AWS account."
+        },
+        "NextToken": {
+          "shape": "__string",
+          "locationName": "nextToken",
+          "documentation": "Token for the next result."
+        }
+      },
+      "documentation": "Placeholder documentation for ListClustersResponse"
+    },
+    "ListClustersResult": {
+      "type": "structure",
+      "members": {
+        "Clusters": {
+          "shape": "__listOfDescribeClusterSummary",
+          "locationName": "clusters",
+          "documentation": "A list of the Clusters that exist in your AWS account."
+        },
+        "NextToken": {
+          "shape": "__string",
+          "locationName": "nextToken",
+          "documentation": "Token for the next result."
+        }
+      },
+      "documentation": "Contains the response for ListClusters."
+    },
+    "ListNetworksRequest": {
+      "type": "structure",
+      "members": {
+        "MaxResults": {
+          "shape": "MaxResults",
+          "location": "querystring",
+          "locationName": "maxResults",
+          "documentation": "The maximum number of items to return."
+        },
+        "NextToken": {
+          "shape": "__string",
+          "location": "querystring",
+          "locationName": "nextToken",
+          "documentation": "The token to retrieve the next page of results."
+        }
+      },
+      "documentation": "Placeholder documentation for ListNetworksRequest"
+    },
+    "ListNetworksResponse": {
+      "type": "structure",
+      "members": {
+        "Networks": {
+          "shape": "__listOfDescribeNetworkSummary",
+          "locationName": "networks",
+          "documentation": "An array of networks that you have created."
+        },
+        "NextToken": {
+          "shape": "__string",
+          "locationName": "nextToken",
+          "documentation": "Token for the next ListNetworks request."
+        }
+      },
+      "documentation": "Placeholder documentation for ListNetworksResponse"
+    },
+    "ListNetworksResult": {
+      "type": "structure",
+      "members": {
+        "Networks": {
+          "shape": "__listOfDescribeNetworkSummary",
+          "locationName": "networks",
+          "documentation": "An array of networks that you have created."
+        },
+        "NextToken": {
+          "shape": "__string",
+          "locationName": "nextToken",
+          "documentation": "Token for the next ListNetworks request."
+        }
+      },
+      "documentation": "Contains the response for ListNetworks"
+    },
+    "ListNodesRequest": {
+      "type": "structure",
+      "members": {
+        "ClusterId": {
+          "shape": "__string",
+          "location": "uri",
+          "locationName": "clusterId",
+          "documentation": "The ID of the cluster"
+        },
+        "MaxResults": {
+          "shape": "MaxResults",
+          "location": "querystring",
+          "locationName": "maxResults",
+          "documentation": "The maximum number of items to return."
+        },
+        "NextToken": {
+          "shape": "__string",
+          "location": "querystring",
+          "locationName": "nextToken",
+          "documentation": "The token to retrieve the next page of results."
+        }
+      },
+      "required": [
+        "ClusterId"
+      ],
+      "documentation": "Placeholder documentation for ListNodesRequest"
+    },
+    "ListNodesResponse": {
+      "type": "structure",
+      "members": {
+        "NextToken": {
+          "shape": "__string",
+          "locationName": "nextToken",
+          "documentation": "Token for the next result."
+        },
+        "Nodes": {
+          "shape": "__listOfDescribeNodeSummary",
+          "locationName": "nodes",
+          "documentation": "An array of Nodes that exist in the Cluster."
+        }
+      },
+      "documentation": "Placeholder documentation for ListNodesResponse"
+    },
+    "ListNodesResult": {
+      "type": "structure",
+      "members": {
+        "NextToken": {
+          "shape": "__string",
+          "locationName": "nextToken",
+          "documentation": "Token for the next result."
+        },
+        "Nodes": {
+          "shape": "__listOfDescribeNodeSummary",
+          "locationName": "nodes",
+          "documentation": "An array of Nodes that exist in the Cluster."
+        }
+      },
+      "documentation": "Contains the response for ListNodes."
+    },
+    "MulticastInputSettings": {
+      "type": "structure",
+      "members": {
+        "SourceIpAddress": {
+          "shape": "__string",
+          "locationName": "sourceIpAddress",
+          "documentation": "Optionally, a source ip address to filter by for Source-specific Multicast (SSM)"
+        }
+      },
+      "documentation": "Multicast-specific input settings."
+    },
+    "MulticastSettings": {
+      "type": "structure",
+      "members": {
+        "Sources": {
+          "shape": "__listOfMulticastSource",
+          "locationName": "sources"
+        }
+      },
+      "documentation": "Settings for a Multicast input. Contains a list of multicast Urls and optional source ip addresses."
+    },
+    "MulticastSettingsCreateRequest": {
+      "type": "structure",
+      "members": {
+        "Sources": {
+          "shape": "__listOfMulticastSourceCreateRequest",
+          "locationName": "sources"
+        }
+      },
+      "documentation": "Settings for a Multicast input. Contains a list of multicast Urls and optional source ip addresses."
+    },
+    "MulticastSettingsUpdateRequest": {
+      "type": "structure",
+      "members": {
+        "Sources": {
+          "shape": "__listOfMulticastSourceUpdateRequest",
+          "locationName": "sources"
+        }
+      },
+      "documentation": "Settings for a Multicast input. Contains a list of multicast Urls and optional source ip addresses."
+    },
+    "MulticastSource": {
+      "type": "structure",
+      "members": {
+        "SourceIp": {
+          "shape": "__string",
+          "locationName": "sourceIp",
+          "documentation": "This represents the ip address of the device sending the multicast stream."
+        },
+        "Url": {
+          "shape": "__string",
+          "locationName": "url",
+          "documentation": "This represents the customer's source URL where multicast stream is pulled from."
+        }
+      },
+      "documentation": "Pair of multicast url and source ip address (optional) that make up a multicast source.",
+      "required": [
+        "Url"
+      ]
+    },
+    "MulticastSourceCreateRequest": {
+      "type": "structure",
+      "members": {
+        "SourceIp": {
+          "shape": "__string",
+          "locationName": "sourceIp",
+          "documentation": "This represents the ip address of the device sending the multicast stream."
+        },
+        "Url": {
+          "shape": "__string",
+          "locationName": "url",
+          "documentation": "This represents the customer's source URL where multicast stream is pulled from."
+        }
+      },
+      "documentation": "Pair of multicast url and source ip address (optional) that make up a multicast source.",
+      "required": [
+        "Url"
+      ]
+    },
+    "MulticastSourceUpdateRequest": {
+      "type": "structure",
+      "members": {
+        "SourceIp": {
+          "shape": "__string",
+          "locationName": "sourceIp",
+          "documentation": "This represents the ip address of the device sending the multicast stream."
+        },
+        "Url": {
+          "shape": "__string",
+          "locationName": "url",
+          "documentation": "This represents the customer's source URL where multicast stream is pulled from."
+        }
+      },
+      "documentation": "Pair of multicast url and source ip address (optional) that make up a multicast source.",
+      "required": [
+        "Url"
+      ]
+    },
+    "NetworkInterfaceMode": {
+      "type": "string",
+      "documentation": "Used in NodeInterfaceMapping and NodeInterfaceMappingCreateRequest",
+      "enum": [
+        "NAT",
+        "BRIDGE"
+      ]
+    },
+    "NetworkState": {
+      "type": "string",
+      "documentation": "Used in DescribeNetworkResult, DescribeNetworkSummary, UpdateNetworkResult.",
+      "enum": [
+        "CREATING",
+        "CREATE_FAILED",
+        "ACTIVE",
+        "DELETING",
+        "IDLE",
+        "IN_USE",
+        "UPDATING",
+        "DELETE_FAILED",
+        "DELETED"
+      ]
+    },
+    "NodeConfigurationValidationError": {
+      "type": "structure",
+      "members": {
+        "Message": {
+          "shape": "__string",
+          "locationName": "message",
+          "documentation": "The error message."
+        },
+        "ValidationErrors": {
+          "shape": "__listOfValidationError",
+          "locationName": "validationErrors",
+          "documentation": "A collection of validation error responses."
+        }
+      },
+      "documentation": "Details about a configuration error on the Node."
+    },
+    "NodeConnectionState": {
+      "type": "string",
+      "documentation": "Used in DescribeNodeSummary.",
+      "enum": [
+        "CONNECTED",
+        "DISCONNECTED"
+      ]
+    },
+    "NodeInterfaceMapping": {
+      "type": "structure",
+      "members": {
+        "LogicalInterfaceName": {
+          "shape": "__string",
+          "locationName": "logicalInterfaceName",
+          "documentation": "A uniform logical interface name to address in a MediaLive channel configuration."
+        },
+        "NetworkInterfaceMode": {
+          "shape": "NetworkInterfaceMode",
+          "locationName": "networkInterfaceMode"
+        },
+        "PhysicalInterfaceName": {
+          "shape": "__string",
+          "locationName": "physicalInterfaceName",
+          "documentation": "The name of the physical interface on the hardware that will be running Elemental anywhere."
+        }
+      },
+      "documentation": "A mapping that's used to pair a logical network interface name on a Node with the physical interface name exposed in the operating system."
+    },
+    "NodeInterfaceMappingCreateRequest": {
+      "type": "structure",
+      "members": {
+        "LogicalInterfaceName": {
+          "shape": "__string",
+          "locationName": "logicalInterfaceName",
+          "documentation": "Specify one of the logicalInterfaceNames that you created in the Cluster that this node belongs to. For example, my-Inputs-Interface."
+        },
+        "NetworkInterfaceMode": {
+          "shape": "NetworkInterfaceMode",
+          "locationName": "networkInterfaceMode",
+          "documentation": "The style of the network -- NAT or BRIDGE."
+        },
+        "PhysicalInterfaceName": {
+          "shape": "__string",
+          "locationName": "physicalInterfaceName",
+          "documentation": "Specify the physical name that corresponds to the logicalInterfaceName that you specified in this interface mapping. For example, Eth1 or ENO1234EXAMPLE."
+        }
+      },
+      "documentation": "Used in CreateNodeRequest."
+    },
+    "NodeRole": {
+      "type": "string",
+      "documentation": "Used in CreateNodeRequest, CreateNodeRegistrationScriptRequest, DescribeNodeResult, DescribeNodeSummary, UpdateNodeRequest.",
+      "enum": [
+        "BACKUP",
+        "ACTIVE"
+      ]
+    },
+    "NodeState": {
+      "type": "string",
+      "documentation": "Used in DescribeNodeSummary.",
+      "enum": [
+        "CREATED",
+        "REGISTERING",
+        "READY_TO_ACTIVATE",
+        "REGISTRATION_FAILED",
+        "ACTIVATION_FAILED",
+        "ACTIVE",
+        "READY",
+        "IN_USE",
+        "DEREGISTERING",
+        "DRAINING",
+        "DEREGISTRATION_FAILED",
+        "DEREGISTERED"
+      ]
+    },
+    "Route": {
+      "type": "structure",
+      "members": {
+        "Cidr": {
+          "shape": "__string",
+          "locationName": "cidr",
+          "documentation": "A CIDR block for one Route."
+        },
+        "Gateway": {
+          "shape": "__string",
+          "locationName": "gateway",
+          "documentation": "The IP address of the Gateway for this route, if applicable."
+        }
+      },
+      "documentation": "Used in DescribeNetworkResult, DescribeNetworkSummary, UpdateNetworkResult."
+    },
+    "RouteCreateRequest": {
+      "type": "structure",
+      "members": {
+        "Cidr": {
+          "shape": "__string",
+          "locationName": "cidr",
+          "documentation": "A CIDR block for one Route."
+        },
+        "Gateway": {
+          "shape": "__string",
+          "locationName": "gateway",
+          "documentation": "The IP address of the Gateway for this route, if applicable."
+        }
+      },
+      "documentation": "Used in CreateNetworkRequest."
+    },
+    "RouteUpdateRequest": {
+      "type": "structure",
+      "members": {
+        "Cidr": {
+          "shape": "__string",
+          "locationName": "cidr",
+          "documentation": "A CIDR block for one Route."
+        },
+        "Gateway": {
+          "shape": "__string",
+          "locationName": "gateway",
+          "documentation": "The IP address of the Gateway for this route, if applicable."
+        }
+      },
+      "documentation": "Used in UpdateNetworkRequest."
+    },
+    "SrtEncryptionType": {
+      "type": "string",
+      "documentation": "Srt Encryption Type",
+      "enum": [
+        "AES128",
+        "AES192",
+        "AES256"
+      ]
+    },
+    "SrtGroupSettings": {
+      "type": "structure",
+      "members": {
+        "InputLossAction": {
+          "shape": "InputLossActionForUdpOut",
+          "locationName": "inputLossAction",
+          "documentation": "Specifies behavior of last resort when input video is lost, and no more backup inputs are available. When dropTs is selected the entire transport stream will stop being emitted.  When dropProgram is selected the program can be dropped from the transport stream (and replaced with null packets to meet the TS bitrate requirement).  Or, when emitProgram is chosen the transport stream will continue to be produced normally with repeat frames, black frames, or slate frames substituted for the absent input video."
+        }
+      },
+      "documentation": "Srt Group Settings"
+    },
+    "SrtOutputDestinationSettings": {
+      "type": "structure",
+      "members": {
+        "EncryptionPassphraseSecretArn": {
+          "shape": "__string",
+          "locationName": "encryptionPassphraseSecretArn",
+          "documentation": "Arn used to extract the password from Secrets Manager"
+        },
+        "StreamId": {
+          "shape": "__string",
+          "locationName": "streamId",
+          "documentation": "Stream id for SRT destinations (URLs of type srt://)"
+        },
+        "Url": {
+          "shape": "__string",
+          "locationName": "url",
+          "documentation": "A URL specifying a destination"
+        }
+      },
+      "documentation": "Placeholder documentation for SrtOutputDestinationSettings"
+    },
+    "SrtOutputSettings": {
+      "type": "structure",
+      "members": {
+        "BufferMsec": {
+          "shape": "__integerMin0Max10000",
+          "locationName": "bufferMsec",
+          "documentation": "SRT output buffering in milliseconds. A higher value increases latency through the encoder. But the benefits are that it helps to maintain a constant, low-jitter SRT output, and it accommodates clock recovery, input switching, input disruptions, picture reordering, and so on. Range: 0-10000 milliseconds."
+        },
+        "ContainerSettings": {
+          "shape": "UdpContainerSettings",
+          "locationName": "containerSettings"
+        },
+        "Destination": {
+          "shape": "OutputLocationRef",
+          "locationName": "destination"
+        },
+        "EncryptionType": {
+          "shape": "SrtEncryptionType",
+          "locationName": "encryptionType",
+          "documentation": "The encryption level for the content. Valid values are AES128, AES192, AES256. You and the downstream system should plan how to set this field because the values must not conflict with each other."
+        },
+        "Latency": {
+          "shape": "__integerMin40Max16000",
+          "locationName": "latency",
+          "documentation": "The latency value, in milliseconds, that is proposed during the SRT connection handshake. SRT will choose the maximum of the values proposed by the sender and receiver. On the sender side, latency is the amount of time a packet is held to give it a chance to be delivered successfully. On the receiver side, latency is the amount of time the packet is held before delivering to the application, aiding in packet recovery and matching as closely as possible the packet timing of the sender. Range: 40-16000 milliseconds."
+        }
+      },
+      "documentation": "Srt Output Settings",
+      "required": [
+        "Destination",
+        "ContainerSettings"
+      ]
+    },
+    "UpdateChannelPlacementGroupRequest": {
+      "type": "structure",
+      "members": {
+        "ChannelPlacementGroupId": {
+          "shape": "__string",
+          "location": "uri",
+          "locationName": "channelPlacementGroupId",
+          "documentation": "The ID of the channel placement group."
+        },
+        "ClusterId": {
+          "shape": "__string",
+          "location": "uri",
+          "locationName": "clusterId",
+          "documentation": "The ID of the cluster."
+        },
+        "Name": {
+          "shape": "__string",
+          "locationName": "name",
+          "documentation": "Include this parameter only if you want to change the current name of the ChannelPlacementGroup. Specify a name that is unique in the Cluster. You can't change the name. Names are case-sensitive."
+        },
+        "Nodes": {
+          "shape": "__listOf__string",
+          "locationName": "nodes",
+          "documentation": "Include this parameter only if you want to change the list of Nodes that are associated with the ChannelPlacementGroup."
+        }
+      },
+      "documentation": "A request to update the channel placement group",
+      "required": [
+        "ClusterId",
+        "ChannelPlacementGroupId"
+      ]
+    },
+    "UpdateChannelPlacementGroupResponse": {
+      "type": "structure",
+      "members": {
+        "Arn": {
+          "shape": "__string",
+          "locationName": "arn",
+          "documentation": "The ARN of this ChannelPlacementGroup. It is automatically assigned when the ChannelPlacementGroup is created."
+        },
+        "Channels": {
+          "shape": "__listOf__string",
+          "locationName": "channels",
+          "documentation": "Used in ListChannelPlacementGroupsResult"
+        },
+        "ClusterId": {
+          "shape": "__string",
+          "locationName": "clusterId",
+          "documentation": "The ID of the Cluster that the Node belongs to."
+        },
+        "Id": {
+          "shape": "__string",
+          "locationName": "id",
+          "documentation": "The ID of the ChannelPlacementGroup. Unique in the AWS account. The ID is the resource-id portion of the ARN."
+        },
+        "Name": {
+          "shape": "__string",
+          "locationName": "name",
+          "documentation": "The name that you specified for the ChannelPlacementGroup."
+        },
+        "Nodes": {
+          "shape": "__listOf__string",
+          "locationName": "nodes",
+          "documentation": "An array with one item, which is the signle Node that is associated with the ChannelPlacementGroup."
+        },
+        "State": {
+          "shape": "ChannelPlacementGroupState",
+          "locationName": "state",
+          "documentation": "The current state of the ChannelPlacementGroup."
+        }
+      },
+      "documentation": "Placeholder documentation for UpdateChannelPlacementGroupResponse"
+    },
+    "UpdateClusterRequest": {
+      "type": "structure",
+      "members": {
+        "ClusterId": {
+          "shape": "__string",
+          "location": "uri",
+          "locationName": "clusterId",
+          "documentation": "The ID of the cluster"
+        },
+        "Name": {
+          "shape": "__string",
+          "locationName": "name",
+          "documentation": "Include this parameter only if you want to change the current name of the Cluster. Specify a name that is unique in the AWS account. You can't change the name. Names are case-sensitive."
+        },
+        "NetworkSettings": {
+          "shape": "ClusterNetworkSettingsUpdateRequest",
+          "locationName": "networkSettings",
+          "documentation": "Include this property only if you want to change the current connections between the Nodes in the Cluster and the Networks the Cluster is associated with."
+        }
+      },
+      "documentation": "A request to update the cluster.",
+      "required": [
+        "ClusterId"
+      ]
+    },
+    "UpdateClusterResponse": {
+      "type": "structure",
+      "members": {
+        "Arn": {
+          "shape": "__string",
+          "locationName": "arn",
+          "documentation": "The ARN of the Cluster."
+        },
+        "ChannelIds": {
+          "shape": "__listOf__string",
+          "locationName": "channelIds",
+          "documentation": "An array of the IDs of the Channels that are associated with this Cluster. One Channel is associated with the Cluster as follows: A Channel belongs to a ChannelPlacementGroup. A ChannelPlacementGroup is attached to a Node. A Node belongs to a Cluster."
+        },
+        "ClusterType": {
+          "shape": "ClusterType",
+          "locationName": "clusterType",
+          "documentation": "The hardware type for the Cluster"
+        },
+        "Id": {
+          "shape": "__string",
+          "locationName": "id",
+          "documentation": "The unique ID of the Cluster."
+        },
+        "Name": {
+          "shape": "__string",
+          "locationName": "name",
+          "documentation": "The user-specified name of the Cluster."
+        },
+        "NetworkSettings": {
+          "shape": "ClusterNetworkSettings",
+          "locationName": "networkSettings",
+          "documentation": "Network settings that connect the Nodes in the Cluster to one or more of the Networks that the Cluster is associated with."
+        },
+        "State": {
+          "shape": "ClusterState",
+          "locationName": "state",
+          "documentation": "The current state of the Cluster."
+        }
+      },
+      "documentation": "Placeholder documentation for UpdateClusterResponse"
+    },
+    "UpdateClusterResult": {
+      "type": "structure",
+      "members": {
+        "Arn": {
+          "shape": "__string",
+          "locationName": "arn",
+          "documentation": "The ARN of the Cluster."
+        },
+        "ChannelIds": {
+          "shape": "__listOf__string",
+          "locationName": "channelIds",
+          "documentation": "An array of the IDs of the Channels that are associated with this Cluster. One Channel is associated with the Cluster as follows: A Channel belongs to a ChannelPlacementGroup. A ChannelPlacementGroup is attached to a Node. A Node belongs to a Cluster."
+        },
+        "ClusterType": {
+          "shape": "ClusterType",
+          "locationName": "clusterType",
+          "documentation": "The hardware type for the Cluster"
+        },
+        "Id": {
+          "shape": "__string",
+          "locationName": "id",
+          "documentation": "The unique ID of the Cluster."
+        },
+        "Name": {
+          "shape": "__string",
+          "locationName": "name",
+          "documentation": "The user-specified name of the Cluster."
+        },
+        "NetworkSettings": {
+          "shape": "ClusterNetworkSettings",
+          "locationName": "networkSettings",
+          "documentation": "Network settings that connect the Nodes in the Cluster to one or more of the Networks that the Cluster is associated with."
+        },
+        "State": {
+          "shape": "ClusterState",
+          "locationName": "state",
+          "documentation": "The current state of the Cluster."
+        }
+      },
+      "documentation": "The name that you specified for the Cluster."
+    },
+    "UpdateNetworkRequest": {
+      "type": "structure",
+      "members": {
+        "IpPools": {
+          "shape": "__listOfIpPoolUpdateRequest",
+          "locationName": "ipPools",
+          "documentation": "Include this parameter only if you want to change the pool of IP addresses in the network. An array of IpPoolCreateRequests that identify a collection of IP addresses in this network that you want to reserve for use in MediaLive Anywhere. MediaLive Anywhere uses these IP addresses for Push inputs (in both Bridge and NAT networks) and for output destinations (only in Bridge networks). Each IpPoolUpdateRequest specifies one CIDR block."
+        },
+        "Name": {
+          "shape": "__string",
+          "locationName": "name",
+          "documentation": "Include this parameter only if you want to change the name of the Network. Specify a name that is unique in the AWS account. Names are case-sensitive."
+        },
+        "NetworkId": {
+          "shape": "__string",
+          "location": "uri",
+          "locationName": "networkId",
+          "documentation": "The ID of the network"
+        },
+        "Routes": {
+          "shape": "__listOfRouteUpdateRequest",
+          "locationName": "routes",
+          "documentation": "Include this parameter only if you want to change or add routes in the Network. An array of Routes that MediaLive Anywhere needs to know about in order to route encoding traffic."
+        }
+      },
+      "documentation": "A request to update the network.",
+      "required": [
+        "NetworkId"
+      ]
+    },
+    "UpdateNetworkResponse": {
+      "type": "structure",
+      "members": {
+        "Arn": {
+          "shape": "__string",
+          "locationName": "arn",
+          "documentation": "The ARN of this Network. It is automatically assigned when the Network is created."
+        },
+        "AssociatedClusterIds": {
+          "shape": "__listOf__string",
+          "locationName": "associatedClusterIds"
+        },
+        "Id": {
+          "shape": "__string",
+          "locationName": "id",
+          "documentation": "The ID of the Network. Unique in the AWS account. The ID is the resource-id portion of the ARN."
+        },
+        "IpPools": {
+          "shape": "__listOfIpPool",
+          "locationName": "ipPools",
+          "documentation": "An array of IpPools in your organization's network that identify a collection of IP addresses in this network that are reserved for use in MediaLive Anywhere. MediaLive Anywhere uses these IP addresses for Push inputs (in both Bridge and NAT networks) and for output destinations (only in Bridge networks). Each IpPool specifies one CIDR block."
+        },
+        "Name": {
+          "shape": "__string",
+          "locationName": "name",
+          "documentation": "The name that you specified for the Network."
+        },
+        "Routes": {
+          "shape": "__listOfRoute",
+          "locationName": "routes",
+          "documentation": "An array of Routes that MediaLive Anywhere needs to know about in order to route encoding traffic."
+        },
+        "State": {
+          "shape": "NetworkState",
+          "locationName": "state",
+          "documentation": "The current state of the Network. Only MediaLive Anywhere can change the state."
+        }
+      },
+      "documentation": "Placeholder documentation for UpdateNetworkResponse"
+    },
+    "UpdateNetworkResult": {
+      "type": "structure",
+      "members": {
+        "Arn": {
+          "shape": "__string",
+          "locationName": "arn",
+          "documentation": "The ARN of this Network. It is automatically assigned when the Network is created."
+        },
+        "AssociatedClusterIds": {
+          "shape": "__listOf__string",
+          "locationName": "associatedClusterIds"
+        },
+        "Id": {
+          "shape": "__string",
+          "locationName": "id",
+          "documentation": "The ID of the Network. Unique in the AWS account. The ID is the resource-id portion of the ARN."
+        },
+        "IpPools": {
+          "shape": "__listOfIpPool",
+          "locationName": "ipPools",
+          "documentation": "An array of IpPools in your organization's network that identify a collection of IP addresses in this network that are reserved for use in MediaLive Anywhere. MediaLive Anywhere uses these IP addresses for Push inputs (in both Bridge and NAT networks) and for output destinations (only in Bridge networks). Each IpPool specifies one CIDR block."
+        },
+        "Name": {
+          "shape": "__string",
+          "locationName": "name",
+          "documentation": "The name that you specified for the Network."
+        },
+        "Routes": {
+          "shape": "__listOfRoute",
+          "locationName": "routes",
+          "documentation": "An array of Routes that MediaLive Anywhere needs to know about in order to route encoding traffic."
+        },
+        "State": {
+          "shape": "NetworkState",
+          "locationName": "state",
+          "documentation": "The current state of the Network. Only MediaLive Anywhere can change the state."
+        }
+      },
+      "documentation": "Contains the response for the UpdateNetwork"
+    },
+    "UpdateNodeRequest": {
+      "type": "structure",
+      "members": {
+        "ClusterId": {
+          "shape": "__string",
+          "location": "uri",
+          "locationName": "clusterId",
+          "documentation": "The ID of the cluster"
+        },
+        "Name": {
+          "shape": "__string",
+          "locationName": "name",
+          "documentation": "Include this parameter only if you want to change the current name of the Node. Specify a name that is unique in the Cluster. You can't change the name. Names are case-sensitive."
+        },
+        "NodeId": {
+          "shape": "__string",
+          "location": "uri",
+          "locationName": "nodeId",
+          "documentation": "The ID of the node."
+        },
+        "Role": {
+          "shape": "NodeRole",
+          "locationName": "role",
+          "documentation": "The initial role of the Node in the Cluster. ACTIVE means the Node is available for encoding. BACKUP means the Node is a redundant Node and might get used if an ACTIVE Node fails."
+        }
+      },
+      "documentation": "A request to update the node.",
+      "required": [
+        "NodeId",
+        "ClusterId"
+      ]
+    },
+    "UpdateNodeResponse": {
+      "type": "structure",
+      "members": {
+        "Arn": {
+          "shape": "__string",
+          "locationName": "arn",
+          "documentation": "The ARN of the Node. It is automatically assigned when the Node is created."
+        },
+        "ChannelPlacementGroups": {
+          "shape": "__listOf__string",
+          "locationName": "channelPlacementGroups",
+          "documentation": "An array of IDs. Each ID is one ChannelPlacementGroup that is associated with this Node. Empty if the Node is not yet associated with any groups."
+        },
+        "ClusterId": {
+          "shape": "__string",
+          "locationName": "clusterId",
+          "documentation": "The ID of the Cluster that the Node belongs to."
+        },
+        "ConnectionState": {
+          "shape": "NodeConnectionState",
+          "locationName": "connectionState",
+          "documentation": "The current connection state of the Node."
+        },
+        "Id": {
+          "shape": "__string",
+          "locationName": "id",
+          "documentation": "The unique ID of the Node. Unique in the Cluster. The ID is the resource-id portion of the ARN."
+        },
+        "InstanceArn": {
+          "shape": "__string",
+          "locationName": "instanceArn",
+          "documentation": "The ARN of the EC2 instance hosting the Node."
+        },
+        "Name": {
+          "shape": "__string",
+          "locationName": "name",
+          "documentation": "The name that you specified for the Node."
+        },
+        "NodeInterfaceMappings": {
+          "shape": "__listOfNodeInterfaceMapping",
+          "locationName": "nodeInterfaceMappings",
+          "documentation": "Documentation update needed"
+        },
+        "Role": {
+          "shape": "NodeRole",
+          "locationName": "role",
+          "documentation": "The initial role current role of the Node in the Cluster. ACTIVE means the Node is available for encoding. BACKUP means the Node is a redundant Node and might get used if an ACTIVE Node fails."
+        },
+        "State": {
+          "shape": "NodeState",
+          "locationName": "state",
+          "documentation": "The current state of the Node."
+        }
+      },
+      "documentation": "Placeholder documentation for UpdateNodeResponse"
+    },
+    "UpdateNodeState": {
+      "type": "string",
+      "documentation": "Used in UpdateNodeStateRequest.",
+      "enum": [
+        "ACTIVE",
+        "DRAINING"
+      ]
+    },
+    "UpdateNodeStateRequest": {
+      "type": "structure",
+      "members": {
+        "ClusterId": {
+          "shape": "__string",
+          "location": "uri",
+          "locationName": "clusterId",
+          "documentation": "The ID of the cluster"
+        },
+        "NodeId": {
+          "shape": "__string",
+          "location": "uri",
+          "locationName": "nodeId",
+          "documentation": "The ID of the node."
+        },
+        "State": {
+          "shape": "UpdateNodeState",
+          "locationName": "state",
+          "documentation": "The state to apply to the Node. Set to ACTIVE (COMMISSIONED) to indicate that the Node is deployable. MediaLive Anywhere will consider this node it needs a Node to run a Channel on, or when it needs a Node to promote from a backup node to an active node. Set to DRAINING to isolate the Node so that MediaLive Anywhere won't use it."
+        }
+      },
+      "documentation": "A request to update the state of a node.",
+      "required": [
+        "NodeId",
+        "ClusterId"
+      ]
+    },
+    "UpdateNodeStateResponse": {
+      "type": "structure",
+      "members": {
+        "Arn": {
+          "shape": "__string",
+          "locationName": "arn",
+          "documentation": "The ARN of the Node. It is automatically assigned when the Node is created."
+        },
+        "ChannelPlacementGroups": {
+          "shape": "__listOf__string",
+          "locationName": "channelPlacementGroups",
+          "documentation": "An array of IDs. Each ID is one ChannelPlacementGroup that is associated with this Node. Empty if the Node is not yet associated with any groups."
+        },
+        "ClusterId": {
+          "shape": "__string",
+          "locationName": "clusterId",
+          "documentation": "The ID of the Cluster that the Node belongs to."
+        },
+        "ConnectionState": {
+          "shape": "NodeConnectionState",
+          "locationName": "connectionState",
+          "documentation": "The current connection state of the Node."
+        },
+        "Id": {
+          "shape": "__string",
+          "locationName": "id",
+          "documentation": "The unique ID of the Node. Unique in the Cluster. The ID is the resource-id portion of the ARN."
+        },
+        "InstanceArn": {
+          "shape": "__string",
+          "locationName": "instanceArn",
+          "documentation": "The ARN of the EC2 instance hosting the Node."
+        },
+        "Name": {
+          "shape": "__string",
+          "locationName": "name",
+          "documentation": "The name that you specified for the Node."
+        },
+        "NodeInterfaceMappings": {
+          "shape": "__listOfNodeInterfaceMapping",
+          "locationName": "nodeInterfaceMappings",
+          "documentation": "Documentation update needed"
+        },
+        "Role": {
+          "shape": "NodeRole",
+          "locationName": "role",
+          "documentation": "The initial role current role of the Node in the Cluster. ACTIVE means the Node is available for encoding. BACKUP means the Node is a redundant Node and might get used if an ACTIVE Node fails."
+        },
+        "State": {
+          "shape": "NodeState",
+          "locationName": "state",
+          "documentation": "The current state of the Node."
+        }
+      },
+      "documentation": "Placeholder documentation for UpdateNodeStateResponse"
+    },
+    "__integerMin40Max16000": {
+      "type": "integer",
+      "min": 40,
+      "max": 16000,
+      "documentation": "Placeholder documentation for __integerMin40Max16000"
+    },
+    "__integerMin50000Max16000000": {
+      "type": "integer",
+      "min": 50000,
+      "max": 16000000,
+      "documentation": "Placeholder documentation for __integerMin50000Max16000000"
+    },
+    "__integerMin50000Max8000000": {
+      "type": "integer",
+      "min": 50000,
+      "max": 8000000,
+      "documentation": "Placeholder documentation for __integerMin50000Max8000000"
+    },
+    "__listOfDescribeChannelPlacementGroupSummary": {
+      "type": "list",
+      "member": {
+        "shape": "DescribeChannelPlacementGroupSummary"
+      },
+      "documentation": "Placeholder documentation for __listOfDescribeChannelPlacementGroupSummary"
+    },
+    "__listOfDescribeClusterSummary": {
+      "type": "list",
+      "member": {
+        "shape": "DescribeClusterSummary"
+      },
+      "documentation": "Placeholder documentation for __listOfDescribeClusterSummary"
+    },
+    "__listOfDescribeNetworkSummary": {
+      "type": "list",
+      "member": {
+        "shape": "DescribeNetworkSummary"
+      },
+      "documentation": "Placeholder documentation for __listOfDescribeNetworkSummary"
+    },
+    "__listOfDescribeNodeSummary": {
+      "type": "list",
+      "member": {
+        "shape": "DescribeNodeSummary"
+      },
+      "documentation": "Placeholder documentation for __listOfDescribeNodeSummary"
+    },
+    "__listOfInputDestinationRoute": {
+      "type": "list",
+      "member": {
+        "shape": "InputDestinationRoute"
+      },
+      "documentation": "Placeholder documentation for __listOfInputDestinationRoute"
+    },
+    "__listOfInputRequestDestinationRoute": {
+      "type": "list",
+      "member": {
+        "shape": "InputRequestDestinationRoute"
+      },
+      "documentation": "Placeholder documentation for __listOfInputRequestDestinationRoute"
+    },
+    "__listOfInterfaceMapping": {
+      "type": "list",
+      "member": {
+        "shape": "InterfaceMapping"
+      },
+      "documentation": "Placeholder documentation for __listOfInterfaceMapping"
+    },
+    "__listOfInterfaceMappingCreateRequest": {
+      "type": "list",
+      "member": {
+        "shape": "InterfaceMappingCreateRequest"
+      },
+      "documentation": "Placeholder documentation for __listOfInterfaceMappingCreateRequest"
+    },
+    "__listOfInterfaceMappingUpdateRequest": {
+      "type": "list",
+      "member": {
+        "shape": "InterfaceMappingUpdateRequest"
+      },
+      "documentation": "Placeholder documentation for __listOfInterfaceMappingUpdateRequest"
+    },
+    "__listOfIpPool": {
+      "type": "list",
+      "member": {
+        "shape": "IpPool"
+      },
+      "documentation": "Placeholder documentation for __listOfIpPool"
+    },
+    "__listOfIpPoolCreateRequest": {
+      "type": "list",
+      "member": {
+        "shape": "IpPoolCreateRequest"
+      },
+      "documentation": "Placeholder documentation for __listOfIpPoolCreateRequest"
+    },
+    "__listOfIpPoolUpdateRequest": {
+      "type": "list",
+      "member": {
+        "shape": "IpPoolUpdateRequest"
+      },
+      "documentation": "Placeholder documentation for __listOfIpPoolUpdateRequest"
+    },
+    "__listOfMulticastSource": {
+      "type": "list",
+      "member": {
+        "shape": "MulticastSource"
+      },
+      "documentation": "Placeholder documentation for __listOfMulticastSource"
+    },
+    "__listOfMulticastSourceCreateRequest": {
+      "type": "list",
+      "member": {
+        "shape": "MulticastSourceCreateRequest"
+      },
+      "documentation": "Placeholder documentation for __listOfMulticastSourceCreateRequest"
+    },
+    "__listOfMulticastSourceUpdateRequest": {
+      "type": "list",
+      "member": {
+        "shape": "MulticastSourceUpdateRequest"
+      },
+      "documentation": "Placeholder documentation for __listOfMulticastSourceUpdateRequest"
+    },
+    "__listOfNodeInterfaceMapping": {
+      "type": "list",
+      "member": {
+        "shape": "NodeInterfaceMapping"
+      },
+      "documentation": "Placeholder documentation for __listOfNodeInterfaceMapping"
+    },
+    "__listOfNodeInterfaceMappingCreateRequest": {
+      "type": "list",
+      "member": {
+        "shape": "NodeInterfaceMappingCreateRequest"
+      },
+      "documentation": "Placeholder documentation for __listOfNodeInterfaceMappingCreateRequest"
+    },
+    "__listOfRoute": {
+      "type": "list",
+      "member": {
+        "shape": "Route"
+      },
+      "documentation": "Placeholder documentation for __listOfRoute"
+    },
+    "__listOfRouteCreateRequest": {
+      "type": "list",
+      "member": {
+        "shape": "RouteCreateRequest"
+      },
+      "documentation": "Placeholder documentation for __listOfRouteCreateRequest"
+    },
+    "__listOfRouteUpdateRequest": {
+      "type": "list",
+      "member": {
+        "shape": "RouteUpdateRequest"
+      },
+      "documentation": "Placeholder documentation for __listOfRouteUpdateRequest"
+    },
+    "__listOfSrtOutputDestinationSettings": {
+      "type": "list",
+      "member": {
+        "shape": "SrtOutputDestinationSettings"
+      },
+      "documentation": "Placeholder documentation for __listOfSrtOutputDestinationSettings"
     }
   },
   "documentation": "API for AWS Elemental MediaLive"

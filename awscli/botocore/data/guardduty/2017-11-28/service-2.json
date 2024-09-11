@@ -151,7 +151,7 @@
         {"shape":"BadRequestException"},
         {"shape":"InternalServerErrorException"}
       ],
-      "documentation":"<p>Creates a publishing destination to export findings to. The resource to export findings to must exist before you use this operation.</p>"
+      "documentation":"<p>Creates a publishing destination where you can export your GuardDuty findings. Before you start exporting the findings, the destination resource must exist.</p>"
     },
     "CreateSampleFindings":{
       "name":"CreateSampleFindings",
@@ -484,7 +484,7 @@
         {"shape":"BadRequestException"},
         {"shape":"InternalServerErrorException"}
       ],
-      "documentation":"<p>Retrieves an Amazon GuardDuty detector specified by the detectorId.</p> <p>There might be regional differences because some data sources might not be available in all the Amazon Web Services Regions where GuardDuty is presently supported. For more information, see <a href=\"https://docs.aws.amazon.com/guardduty/latest/ug/guardduty_regions.html\">Regions and endpoints</a>.</p>"
+      "documentation":"<p>Retrieves a GuardDuty detector specified by the detectorId.</p> <p>There might be regional differences because some data sources might not be available in all the Amazon Web Services Regions where GuardDuty is presently supported. For more information, see <a href=\"https://docs.aws.amazon.com/guardduty/latest/ug/guardduty_regions.html\">Regions and endpoints</a>.</p>"
     },
     "GetFilter":{
       "name":"GetFilter",
@@ -529,7 +529,7 @@
         {"shape":"BadRequestException"},
         {"shape":"InternalServerErrorException"}
       ],
-      "documentation":"<p>Lists Amazon GuardDuty findings statistics for the specified detector ID.</p> <p>There might be regional differences because some flags might not be available in all the Regions where GuardDuty is currently supported. For more information, see <a href=\"https://docs.aws.amazon.com/guardduty/latest/ug/guardduty_regions.html\">Regions and endpoints</a>.</p>"
+      "documentation":"<p>Lists GuardDuty findings statistics for the specified detector ID.</p> <p>You must provide either <code>findingStatisticTypes</code> or <code>groupBy</code> parameter, and not both. You can use the <code>maxResults</code> and <code>orderBy</code> parameters only when using <code>groupBy</code>.</p> <p>There might be regional differences because some flags might not be available in all the Regions where GuardDuty is currently supported. For more information, see <a href=\"https://docs.aws.amazon.com/guardduty/latest/ug/guardduty_regions.html\">Regions and endpoints</a>.</p>"
     },
     "GetIPSet":{
       "name":"GetIPSet",
@@ -1342,6 +1342,27 @@
         }
       },
       "documentation":"<p>Contains information about the account level permissions on the S3 bucket.</p>"
+    },
+    "AccountStatistics":{
+      "type":"structure",
+      "members":{
+        "AccountId":{
+          "shape":"String",
+          "documentation":"<p>The ID of the Amazon Web Services account.</p>",
+          "locationName":"accountId"
+        },
+        "LastGeneratedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp at which the finding for this account was last generated.</p>",
+          "locationName":"lastGeneratedAt"
+        },
+        "TotalFindings":{
+          "shape":"Integer",
+          "documentation":"<p>The total number of findings associated with an account.</p>",
+          "locationName":"totalFindings"
+        }
+      },
+      "documentation":"<p>Represents a list of map of accounts with the number of findings associated with each account.</p>"
     },
     "Action":{
       "type":"structure",
@@ -2283,7 +2304,7 @@
       "members":{
         "DetectorId":{
           "shape":"DetectorId",
-          "documentation":"<p>The ID of the detector belonging to the GuardDuty account that you want to create a filter for.</p>",
+          "documentation":"<p>The detector ID associated with the GuardDuty account for which you want to create a filter.</p>",
           "location":"uri",
           "locationName":"detectorId"
         },
@@ -2348,7 +2369,7 @@
       "members":{
         "DetectorId":{
           "shape":"DetectorId",
-          "documentation":"<p>The unique ID of the detector of the GuardDuty account that you want to create an IPSet for.</p>",
+          "documentation":"<p>The unique ID of the detector of the GuardDuty account for which you want to create an IPSet.</p>",
           "location":"uri",
           "locationName":"detectorId"
         },
@@ -2411,7 +2432,7 @@
         },
         "Role":{
           "shape":"String",
-          "documentation":"<p>IAM role with permissions required to scan and add tags to the associated protected resource.</p>",
+          "documentation":"<p>Amazon Resource Name (ARN) of the IAM role that has the permissions to scan and add tags to the associated protected resource.</p>",
           "locationName":"role"
         },
         "ProtectedResource":{
@@ -2450,7 +2471,7 @@
       "members":{
         "DetectorId":{
           "shape":"DetectorId",
-          "documentation":"<p>The unique ID of the detector of the GuardDuty account that you want to associate member accounts with.</p>",
+          "documentation":"<p>The unique ID of the detector of the GuardDuty account for which you want to associate member accounts.</p>",
           "location":"uri",
           "locationName":"detectorId"
         },
@@ -2548,7 +2569,7 @@
       "members":{
         "DetectorId":{
           "shape":"DetectorId",
-          "documentation":"<p>The ID of the detector to create sample findings for.</p>",
+          "documentation":"<p>The ID of the detector for which you need to create sample findings.</p>",
           "location":"uri",
           "locationName":"detectorId"
         },
@@ -2576,7 +2597,7 @@
       "members":{
         "DetectorId":{
           "shape":"DetectorId",
-          "documentation":"<p>The unique ID of the detector of the GuardDuty account that you want to create a threatIntelSet for.</p>",
+          "documentation":"<p>The unique ID of the detector of the GuardDuty account for which you want to create a <code>ThreatIntelSet</code>.</p>",
           "location":"uri",
           "locationName":"detectorId"
         },
@@ -2787,6 +2808,32 @@
       },
       "documentation":"<p>Contains information about which data sources are enabled for the GuardDuty member account.</p>"
     },
+    "DateStatistics":{
+      "type":"structure",
+      "members":{
+        "Date":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp when the total findings count is observed.</p> <p>For example, <code>Date</code> would look like <code>\"2024-09-05T17:00:00-07:00\"</code> whereas <code>LastGeneratedAt</code> would look like 2024-09-05T17:12:29-07:00\".</p>",
+          "locationName":"date"
+        },
+        "LastGeneratedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp at which the last finding in the findings count, was generated.</p>",
+          "locationName":"lastGeneratedAt"
+        },
+        "Severity":{
+          "shape":"Double",
+          "documentation":"<p>The severity of the findings generated on each date.</p>",
+          "locationName":"severity"
+        },
+        "TotalFindings":{
+          "shape":"Integer",
+          "documentation":"<p>The total number of findings that were generated per severity level on each date.</p>",
+          "locationName":"totalFindings"
+        }
+      },
+      "documentation":"<p>Represents list a map of dates with a count of total findings generated on each date.</p>"
+    },
     "DeclineInvitationsRequest":{
       "type":"structure",
       "required":["AccountIds"],
@@ -2851,7 +2898,7 @@
       "members":{
         "DetectorId":{
           "shape":"DetectorId",
-          "documentation":"<p>The unique ID of the detector that the filter is associated with.</p>",
+          "documentation":"<p>The unique ID of the detector that is associated with the filter.</p>",
           "location":"uri",
           "locationName":"detectorId"
         },
@@ -2994,7 +3041,7 @@
       "members":{
         "DetectorId":{
           "shape":"DetectorId",
-          "documentation":"<p>The unique ID of the detector that the threatIntelSet is associated with.</p>",
+          "documentation":"<p>The unique ID of the detector that is associated with the threatIntelSet.</p>",
           "location":"uri",
           "locationName":"detectorId"
         },
@@ -3065,7 +3112,7 @@
       "members":{
         "DetectorId":{
           "shape":"DetectorId",
-          "documentation":"<p>The ID of the detector to retrieve information about the delegated administrator from.</p>",
+          "documentation":"<p>The detector ID of the delegated administrator for which you need to retrieve the information.</p>",
           "location":"uri",
           "locationName":"detectorId"
         },
@@ -4035,8 +4082,35 @@
       "members":{
         "CountBySeverity":{
           "shape":"CountBySeverity",
-          "documentation":"<p>Represents a map of severity to count statistics for a set of findings.</p>",
+          "documentation":"<p>Represents a list of map of severity to count statistics for a set of findings.</p>",
+          "deprecated":true,
+          "deprecatedMessage":"This parameter is deprecated. Please set GroupBy to 'SEVERITY' to return GroupedBySeverity instead.",
           "locationName":"countBySeverity"
+        },
+        "GroupedByAccount":{
+          "shape":"GroupedByAccount",
+          "documentation":"<p>Represents a list of map of accounts with a findings count associated with each account.</p>",
+          "locationName":"groupedByAccount"
+        },
+        "GroupedByDate":{
+          "shape":"GroupedByDate",
+          "documentation":"<p>Represents a list of map of dates with a count of total findings generated on each date per severity level.</p>",
+          "locationName":"groupedByDate"
+        },
+        "GroupedByFindingType":{
+          "shape":"GroupedByFindingType",
+          "documentation":"<p>Represents a list of map of finding types with a count of total findings generated for each type. </p> <p>Based on the <code>orderBy</code> parameter, this request returns either the most occurring finding types or the least occurring finding types. If the <code>orderBy</code> parameter is <code>ASC</code>, this will represent the least occurring finding types in your account; otherwise, this will represent the most occurring finding types. The default value of <code>orderBy</code> is <code>DESC</code>.</p>",
+          "locationName":"groupedByFindingType"
+        },
+        "GroupedByResource":{
+          "shape":"GroupedByResource",
+          "documentation":"<p>Represents a list of map of top resources with a count of total findings.</p>",
+          "locationName":"groupedByResource"
+        },
+        "GroupedBySeverity":{
+          "shape":"GroupedBySeverity",
+          "documentation":"<p>Represents a list of map of total findings for each severity level.</p>",
+          "locationName":"groupedBySeverity"
         }
       },
       "documentation":"<p>Contains information about finding statistics.</p>"
@@ -4045,6 +4119,27 @@
       "type":"string",
       "max":50,
       "min":1
+    },
+    "FindingTypeStatistics":{
+      "type":"structure",
+      "members":{
+        "FindingType":{
+          "shape":"String",
+          "documentation":"<p>Name of the finding type.</p>",
+          "locationName":"findingType"
+        },
+        "LastGeneratedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp at which this finding type was last generated in your environment.</p>",
+          "locationName":"lastGeneratedAt"
+        },
+        "TotalFindings":{
+          "shape":"Integer",
+          "documentation":"<p>The total number of findings associated with generated for each distinct finding type.</p>",
+          "locationName":"totalFindings"
+        }
+      },
+      "documentation":"<p>Information about each finding type associated with the <code>groupedByFindingType</code> statistics.</p>"
     },
     "FindingTypes":{
       "type":"list",
@@ -4158,13 +4253,13 @@
       "members":{
         "DetectorId":{
           "shape":"DetectorId",
-          "documentation":"<p>The unique ID of the GuardDuty detector associated to the coverage statistics.</p>",
+          "documentation":"<p>The unique ID of the GuardDuty detector.</p>",
           "location":"uri",
           "locationName":"detectorId"
         },
         "FilterCriteria":{
           "shape":"CoverageFilterCriteria",
-          "documentation":"<p>Represents the criteria used to filter the coverage statistics</p>",
+          "documentation":"<p>Represents the criteria used to filter the coverage statistics.</p>",
           "locationName":"filterCriteria"
         },
         "StatisticsType":{
@@ -4256,7 +4351,7 @@
       "members":{
         "DetectorId":{
           "shape":"DetectorId",
-          "documentation":"<p>The unique ID of the detector that the filter is associated with.</p>",
+          "documentation":"<p>The unique ID of the detector that is associated with this filter.</p>",
           "location":"uri",
           "locationName":"detectorId"
         },
@@ -4346,26 +4441,40 @@
     },
     "GetFindingsStatisticsRequest":{
       "type":"structure",
-      "required":[
-        "DetectorId",
-        "FindingStatisticTypes"
-      ],
+      "required":["DetectorId"],
       "members":{
         "DetectorId":{
           "shape":"DetectorId",
-          "documentation":"<p>The ID of the detector that specifies the GuardDuty service whose findings' statistics you want to retrieve.</p>",
+          "documentation":"<p>The ID of the detector whose findings statistics you want to retrieve.</p>",
           "location":"uri",
           "locationName":"detectorId"
         },
         "FindingStatisticTypes":{
           "shape":"FindingStatisticTypes",
           "documentation":"<p>The types of finding statistics to retrieve.</p>",
+          "deprecated":true,
+          "deprecatedMessage":"This parameter is deprecated, please use GroupBy instead",
           "locationName":"findingStatisticTypes"
         },
         "FindingCriteria":{
           "shape":"FindingCriteria",
           "documentation":"<p>Represents the criteria that is used for querying findings.</p>",
           "locationName":"findingCriteria"
+        },
+        "GroupBy":{
+          "shape":"GroupByType",
+          "documentation":"<p>Displays the findings statistics grouped by one of the listed valid values.</p>",
+          "locationName":"groupBy"
+        },
+        "OrderBy":{
+          "shape":"OrderBy",
+          "documentation":"<p>Displays the sorted findings in the requested order. The default value of <code>orderBy</code> is <code>DESC</code>.</p> <p>You can use this parameter only with the <code>groupBy</code> parameter.</p>",
+          "locationName":"orderBy"
+        },
+        "MaxResults":{
+          "shape":"MaxResults100",
+          "documentation":"<p>The maximum number of results to be returned in the response. The default value is 25.</p> <p>You can use this parameter only with the <code>groupBy</code> parameter.</p>",
+          "locationName":"maxResults"
         }
       }
     },
@@ -4377,6 +4486,11 @@
           "shape":"FindingStatistics",
           "documentation":"<p>The finding statistics object.</p>",
           "locationName":"findingStatistics"
+        },
+        "NextToken":{
+          "shape":"String",
+          "documentation":"<p>The pagination parameter to be used on the next list operation to retrieve more items.</p> <p>This parameter is currently not supported.</p>",
+          "locationName":"nextToken"
         }
       }
     },
@@ -4389,7 +4503,7 @@
       "members":{
         "DetectorId":{
           "shape":"DetectorId",
-          "documentation":"<p>The unique ID of the detector that the IPSet is associated with.</p>",
+          "documentation":"<p>The unique ID of the detector that is associated with the IPSet.</p>",
           "location":"uri",
           "locationName":"detectorId"
         },
@@ -4474,7 +4588,7 @@
         },
         "Role":{
           "shape":"String",
-          "documentation":"<p>IAM role that includes the permissions required to scan and add tags to the associated protected resource.</p>",
+          "documentation":"<p>Amazon Resource Name (ARN) of the IAM role that includes the permissions to scan and add tags to the associated protected resource.</p>",
           "locationName":"role"
         },
         "ProtectedResource":{
@@ -4515,7 +4629,7 @@
       "members":{
         "DetectorId":{
           "shape":"DetectorId",
-          "documentation":"<p>The unique ID of the detector that the scan setting is associated with.</p>",
+          "documentation":"<p>The unique ID of the detector that is associated with this scan.</p>",
           "location":"uri",
           "locationName":"detectorId"
         }
@@ -4578,7 +4692,7 @@
         },
         "AccountIds":{
           "shape":"AccountIds",
-          "documentation":"<p>The account ID of the member account.</p>",
+          "documentation":"<p>A list of member account IDs.</p>",
           "locationName":"accountIds"
         }
       }
@@ -4692,7 +4806,7 @@
       "members":{
         "DetectorId":{
           "shape":"DetectorId",
-          "documentation":"<p>The unique ID of the detector that the threatIntelSet is associated with.</p>",
+          "documentation":"<p>The unique ID of the detector that is associated with the threatIntelSet.</p>",
           "location":"uri",
           "locationName":"detectorId"
         },
@@ -4795,6 +4909,36 @@
           "locationName":"nextToken"
         }
       }
+    },
+    "GroupByType":{
+      "type":"string",
+      "enum":[
+        "ACCOUNT",
+        "DATE",
+        "FINDING_TYPE",
+        "RESOURCE",
+        "SEVERITY"
+      ]
+    },
+    "GroupedByAccount":{
+      "type":"list",
+      "member":{"shape":"AccountStatistics"}
+    },
+    "GroupedByDate":{
+      "type":"list",
+      "member":{"shape":"DateStatistics"}
+    },
+    "GroupedByFindingType":{
+      "type":"list",
+      "member":{"shape":"FindingTypeStatistics"}
+    },
+    "GroupedByResource":{
+      "type":"list",
+      "member":{"shape":"ResourceStatistics"}
+    },
+    "GroupedBySeverity":{
+      "type":"list",
+      "member":{"shape":"SeverityStatistics"}
     },
     "Groups":{
       "type":"list",
@@ -5008,7 +5152,7 @@
       "members":{
         "DetectorId":{
           "shape":"DetectorId",
-          "documentation":"<p>The unique ID of the detector of the GuardDuty account that you want to invite members with.</p>",
+          "documentation":"<p>The unique ID of the detector of the GuardDuty account with which you want to invite members.</p>",
           "location":"uri",
           "locationName":"detectorId"
         },
@@ -5596,7 +5740,7 @@
       "members":{
         "DetectorId":{
           "shape":"DetectorId",
-          "documentation":"<p>The unique ID of the detector that the filter is associated with.</p>",
+          "documentation":"<p>The unique ID of the detector that is associated with the filter.</p>",
           "location":"uri",
           "locationName":"detectorId"
         },
@@ -5642,7 +5786,7 @@
         },
         "FindingCriteria":{
           "shape":"FindingCriteria",
-          "documentation":"<p>Represents the criteria used for querying findings. Valid values include:</p> <ul> <li> <p>JSON field name</p> </li> <li> <p>accountId</p> </li> <li> <p>region</p> </li> <li> <p>confidence</p> </li> <li> <p>id</p> </li> <li> <p>resource.accessKeyDetails.accessKeyId</p> </li> <li> <p>resource.accessKeyDetails.principalId</p> </li> <li> <p>resource.accessKeyDetails.userName</p> </li> <li> <p>resource.accessKeyDetails.userType</p> </li> <li> <p>resource.instanceDetails.iamInstanceProfile.id</p> </li> <li> <p>resource.instanceDetails.imageId</p> </li> <li> <p>resource.instanceDetails.instanceId</p> </li> <li> <p>resource.instanceDetails.networkInterfaces.ipv6Addresses</p> </li> <li> <p>resource.instanceDetails.networkInterfaces.privateIpAddresses.privateIpAddress</p> </li> <li> <p>resource.instanceDetails.networkInterfaces.publicDnsName</p> </li> <li> <p>resource.instanceDetails.networkInterfaces.publicIp</p> </li> <li> <p>resource.instanceDetails.networkInterfaces.securityGroups.groupId</p> </li> <li> <p>resource.instanceDetails.networkInterfaces.securityGroups.groupName</p> </li> <li> <p>resource.instanceDetails.networkInterfaces.subnetId</p> </li> <li> <p>resource.instanceDetails.networkInterfaces.vpcId</p> </li> <li> <p>resource.instanceDetails.tags.key</p> </li> <li> <p>resource.instanceDetails.tags.value</p> </li> <li> <p>resource.resourceType</p> </li> <li> <p>service.action.actionType</p> </li> <li> <p>service.action.awsApiCallAction.api</p> </li> <li> <p>service.action.awsApiCallAction.callerType</p> </li> <li> <p>service.action.awsApiCallAction.remoteIpDetails.city.cityName</p> </li> <li> <p>service.action.awsApiCallAction.remoteIpDetails.country.countryName</p> </li> <li> <p>service.action.awsApiCallAction.remoteIpDetails.ipAddressV4</p> </li> <li> <p>service.action.awsApiCallAction.remoteIpDetails.organization.asn</p> </li> <li> <p>service.action.awsApiCallAction.remoteIpDetails.organization.asnOrg</p> </li> <li> <p>service.action.awsApiCallAction.serviceName</p> </li> <li> <p>service.action.dnsRequestAction.domain</p> </li> <li> <p>service.action.dnsRequestAction.domainWithSuffix</p> </li> <li> <p>service.action.networkConnectionAction.blocked</p> </li> <li> <p>service.action.networkConnectionAction.connectionDirection</p> </li> <li> <p>service.action.networkConnectionAction.localPortDetails.port</p> </li> <li> <p>service.action.networkConnectionAction.protocol</p> </li> <li> <p>service.action.networkConnectionAction.remoteIpDetails.country.countryName</p> </li> <li> <p>service.action.networkConnectionAction.remoteIpDetails.ipAddressV4</p> </li> <li> <p>service.action.networkConnectionAction.remoteIpDetails.organization.asn</p> </li> <li> <p>service.action.networkConnectionAction.remoteIpDetails.organization.asnOrg</p> </li> <li> <p>service.action.networkConnectionAction.remotePortDetails.port</p> </li> <li> <p>service.additionalInfo.threatListName</p> </li> <li> <p>service.archived</p> <p>When this attribute is set to 'true', only archived findings are listed. When it's set to 'false', only unarchived findings are listed. When this attribute is not set, all existing findings are listed.</p> </li> <li> <p>service.resourceRole</p> </li> <li> <p>severity</p> </li> <li> <p>type</p> </li> <li> <p>updatedAt</p> <p>Type: Timestamp in Unix Epoch millisecond format: 1486685375000</p> </li> </ul>",
+          "documentation":"<p>Represents the criteria used for querying findings. Valid values include:</p> <ul> <li> <p>JSON field name</p> </li> <li> <p>accountId</p> </li> <li> <p>region</p> </li> <li> <p>confidence</p> </li> <li> <p>id</p> </li> <li> <p>resource.accessKeyDetails.accessKeyId</p> </li> <li> <p>resource.accessKeyDetails.principalId</p> </li> <li> <p>resource.accessKeyDetails.userName</p> </li> <li> <p>resource.accessKeyDetails.userType</p> </li> <li> <p>resource.instanceDetails.iamInstanceProfile.id</p> </li> <li> <p>resource.instanceDetails.imageId</p> </li> <li> <p>resource.instanceDetails.instanceId</p> </li> <li> <p>resource.instanceDetails.networkInterfaces.ipv6Addresses</p> </li> <li> <p>resource.instanceDetails.networkInterfaces.privateIpAddresses.privateIpAddress</p> </li> <li> <p>resource.instanceDetails.networkInterfaces.publicDnsName</p> </li> <li> <p>resource.instanceDetails.networkInterfaces.publicIp</p> </li> <li> <p>resource.instanceDetails.networkInterfaces.securityGroups.groupId</p> </li> <li> <p>resource.instanceDetails.networkInterfaces.securityGroups.groupName</p> </li> <li> <p>resource.instanceDetails.networkInterfaces.subnetId</p> </li> <li> <p>resource.instanceDetails.networkInterfaces.vpcId</p> </li> <li> <p>resource.instanceDetails.tags.key</p> </li> <li> <p>resource.instanceDetails.tags.value</p> </li> <li> <p>resource.resourceType</p> </li> <li> <p>service.action.actionType</p> </li> <li> <p>service.action.awsApiCallAction.api</p> </li> <li> <p>service.action.awsApiCallAction.callerType</p> </li> <li> <p>service.action.awsApiCallAction.remoteIpDetails.city.cityName</p> </li> <li> <p>service.action.awsApiCallAction.remoteIpDetails.country.countryName</p> </li> <li> <p>service.action.awsApiCallAction.remoteIpDetails.ipAddressV4</p> </li> <li> <p>service.action.awsApiCallAction.remoteIpDetails.organization.asn</p> </li> <li> <p>service.action.awsApiCallAction.remoteIpDetails.organization.asnOrg</p> </li> <li> <p>service.action.awsApiCallAction.serviceName</p> </li> <li> <p>service.action.dnsRequestAction.domain</p> </li> <li> <p>service.action.dnsRequestAction.domainWithSuffix</p> </li> <li> <p>service.action.networkConnectionAction.blocked</p> </li> <li> <p>service.action.networkConnectionAction.connectionDirection</p> </li> <li> <p>service.action.networkConnectionAction.localPortDetails.port</p> </li> <li> <p>service.action.networkConnectionAction.protocol</p> </li> <li> <p>service.action.networkConnectionAction.remoteIpDetails.country.countryName</p> </li> <li> <p>service.action.networkConnectionAction.remoteIpDetails.ipAddressV4</p> </li> <li> <p>service.action.networkConnectionAction.remoteIpDetails.organization.asn</p> </li> <li> <p>service.action.networkConnectionAction.remoteIpDetails.organization.asnOrg</p> </li> <li> <p>service.action.networkConnectionAction.remotePortDetails.port</p> </li> <li> <p>service.additionalInfo.threatListName</p> </li> <li> <p>service.archived</p> <p>When this attribute is set to 'true', only archived findings are listed. When it's set to 'false', only unarchived findings are listed. When this attribute is not set, all existing findings are listed.</p> </li> <li> <p>service.ebsVolumeScanDetails.scanId</p> </li> <li> <p>service.resourceRole</p> </li> <li> <p>severity</p> </li> <li> <p>type</p> </li> <li> <p>updatedAt</p> <p>Type: Timestamp in Unix Epoch millisecond format: 1486685375000</p> </li> </ul>",
           "locationName":"findingCriteria"
         },
         "SortCriteria":{
@@ -5684,7 +5828,7 @@
       "members":{
         "DetectorId":{
           "shape":"DetectorId",
-          "documentation":"<p>The unique ID of the detector that the IPSet is associated with.</p>",
+          "documentation":"<p>The unique ID of the detector that is associated with IPSet.</p>",
           "location":"uri",
           "locationName":"detectorId"
         },
@@ -5782,7 +5926,7 @@
       "members":{
         "DetectorId":{
           "shape":"DetectorId",
-          "documentation":"<p>The unique ID of the detector the member is associated with.</p>",
+          "documentation":"<p>The unique ID of the detector that is associated with the member.</p>",
           "location":"uri",
           "locationName":"detectorId"
         },
@@ -5859,7 +6003,7 @@
       "members":{
         "DetectorId":{
           "shape":"DetectorId",
-          "documentation":"<p>The ID of the detector to retrieve publishing destinations for.</p>",
+          "documentation":"<p>The detector ID for which you want to retrieve the publishing destination.</p>",
           "location":"uri",
           "locationName":"detectorId"
         },
@@ -5921,7 +6065,7 @@
       "members":{
         "DetectorId":{
           "shape":"DetectorId",
-          "documentation":"<p>The unique ID of the detector that the threatIntelSet is associated with.</p>",
+          "documentation":"<p>The unique ID of the detector that is associated with the threatIntelSet.</p>",
           "location":"uri",
           "locationName":"detectorId"
         },
@@ -6194,6 +6338,11 @@
     "MaxResults":{
       "type":"integer",
       "max":50,
+      "min":1
+    },
+    "MaxResults100":{
+      "type":"integer",
+      "max":100,
       "min":1
     },
     "Member":{
@@ -7421,6 +7570,37 @@
       "error":{"httpStatusCode":404},
       "exception":true
     },
+    "ResourceStatistics":{
+      "type":"structure",
+      "members":{
+        "AccountId":{
+          "shape":"String",
+          "documentation":"<p>The ID of the Amazon Web Services account.</p>",
+          "locationName":"accountId"
+        },
+        "LastGeneratedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp at which the statistics for this resource was last generated.</p>",
+          "locationName":"lastGeneratedAt"
+        },
+        "ResourceId":{
+          "shape":"String",
+          "documentation":"<p>ID associated with each resource. The following list provides the mapping of the resource type and resource ID.</p> <p class=\"title\"> <b>Mapping of resource and resource ID</b> </p> <ul> <li> <p>AccessKey - <code>resource.accessKeyDetails.accessKeyId</code> </p> </li> <li> <p>Container - <code>resource.containerDetails.id</code> </p> </li> <li> <p>ECSCluster - <code>resource.ecsClusterDetails.name</code> </p> </li> <li> <p>EKSCluster - <code>resource.eksClusterDetails.name</code> </p> </li> <li> <p>Instance - <code>resource.instanceDetails.instanceId</code> </p> </li> <li> <p>KubernetesCluster - <code>resource.kubernetesDetails.kubernetesWorkloadDetails.name</code> </p> </li> <li> <p>Lambda - <code>resource.lambdaDetails.functionName</code> </p> </li> <li> <p>RDSDBInstance - <code>resource.rdsDbInstanceDetails.dbInstanceIdentifier</code> </p> </li> <li> <p>S3Bucket - <code>resource.s3BucketDetails.name</code> </p> </li> <li> <p>S3Object - <code>resource.s3BucketDetails.name</code> </p> </li> </ul>",
+          "locationName":"resourceId"
+        },
+        "ResourceType":{
+          "shape":"String",
+          "documentation":"<p>The type of resource.</p>",
+          "locationName":"resourceType"
+        },
+        "TotalFindings":{
+          "shape":"Integer",
+          "documentation":"<p>The total number of findings associated with this resource.</p>",
+          "locationName":"totalFindings"
+        }
+      },
+      "documentation":"<p>Information about each resource type associated with the <code>groupedByResource</code> statistics.</p>"
+    },
     "ResourceType":{
       "type":"string",
       "enum":[
@@ -7700,7 +7880,7 @@
         },
         "AdminDetectorId":{
           "shape":"DetectorId",
-          "documentation":"<p>The unique detector ID of the administrator account that the request is associated with. Note that this value will be the same as the one used for <code>DetectorId</code> if the account is an administrator.</p>",
+          "documentation":"<p>The unique detector ID of the administrator account that the request is associated with. If the account is an administrator, the <code>AdminDetectorId</code> will be the same as the one used for <code>DetectorId</code>.</p>",
           "locationName":"adminDetectorId"
         },
         "ScanId":{
@@ -8135,6 +8315,27 @@
     "SessionNameList":{
       "type":"list",
       "member":{"shape":"String"}
+    },
+    "SeverityStatistics":{
+      "type":"structure",
+      "members":{
+        "LastGeneratedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp at which a finding type for a specific severity was last generated.</p>",
+          "locationName":"lastGeneratedAt"
+        },
+        "Severity":{
+          "shape":"Double",
+          "documentation":"<p>The severity level associated with each finding type.</p>",
+          "locationName":"severity"
+        },
+        "TotalFindings":{
+          "shape":"Integer",
+          "documentation":"<p>The total number of findings associated with this severity.</p>",
+          "locationName":"totalFindings"
+        }
+      },
+      "documentation":"<p>Information about severity level for each finding type.</p>"
     },
     "SortCriteria":{
       "type":"structure",
@@ -8661,7 +8862,7 @@
       "members":{
         "DetectorId":{
           "shape":"DetectorId",
-          "documentation":"<p>The ID of the detector associated with the findings to update feedback for.</p>",
+          "documentation":"<p>The ID of the detector that is associated with the findings for which you want to update the feedback.</p>",
           "location":"uri",
           "locationName":"detectorId"
         },
@@ -8740,7 +8941,7 @@
         },
         "Role":{
           "shape":"String",
-          "documentation":"<p>IAM role with permissions required to scan and add tags to the associated protected resource.</p>",
+          "documentation":"<p>Amazon Resource Name (ARN) of the IAM role with permissions to scan and add tags to the associated protected resource.</p>",
           "locationName":"role"
         },
         "Actions":{

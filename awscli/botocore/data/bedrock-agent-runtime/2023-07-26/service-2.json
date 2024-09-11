@@ -145,7 +145,7 @@
         {"shape":"AccessDeniedException"},
         {"shape":"ServiceQuotaExceededException"}
       ],
-      "documentation":"<p>Queries a knowledge base and generates responses based on the retrieved results. The response only cites sources that are relevant to the query.</p>"
+      "documentation":"<p>Queries a knowledge base and generates responses based on the retrieved results and using the specified foundation model or <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/cross-region-inference.html\">inference profile</a>. The response only cites sources that are relevant to the query.</p>"
     }
   },
   "shapes":{
@@ -392,9 +392,9 @@
     },
     "BedrockModelArn":{
       "type":"string",
-      "max":1011,
-      "min":20,
-      "pattern":"^arn:aws(-[^:]+)?:bedrock:[a-z0-9-]{1,20}:(([0-9]{12}:custom-model/[a-z0-9-]{1,63}[.]{1}[a-z0-9-]{1,63}/[a-z0-9]{12})|(:foundation-model/[a-z0-9-]{1,63}[.]{1}[a-z0-9-]{1,63}))$"
+      "max":2048,
+      "min":1,
+      "pattern":"^(arn:aws(-[^:]+)?:bedrock:[a-z0-9-]{1,20}:(([0-9]{12}:custom-model/[a-z0-9-]{1,63}[.]{1}[a-z0-9-]{1,63}/[a-z0-9]{12})|(:foundation-model/[a-z0-9-]{1,63}[.]{1}[a-z0-9-]{1,63}([.:]?[a-z0-9-]{1,63}))))|(arn:aws(|-us-gov|-cn|-iso|-iso-b):bedrock:(|[0-9a-z-]{1,20}):(|[0-9]{12}):inference-profile/[a-zA-Z0-9-:.]+)|([a-z0-9-]{1,63}[.]{1}[a-z0-9-]{1,63}([.:]?[a-z0-9-]{1,63}))|(([0-9a-zA-Z][_-]?)+)$"
     },
     "Boolean":{
       "type":"boolean",
@@ -1917,11 +1917,11 @@
         },
         "knowledgeBaseId":{
           "shape":"KnowledgeBaseId",
-          "documentation":"<p>The unique identifier of the knowledge base that is queried and the foundation model used for generation.</p>"
+          "documentation":"<p>The unique identifier of the knowledge base that is queried.</p>"
         },
         "modelArn":{
           "shape":"BedrockModelArn",
-          "documentation":"<p>The ARN of the foundation model used to generate a response.</p>"
+          "documentation":"<p>The ARN of the foundation model or <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/cross-region-inference.html\">inference profile</a> used to generate a response.</p>"
         },
         "orchestrationConfiguration":{
           "shape":"OrchestrationConfiguration",

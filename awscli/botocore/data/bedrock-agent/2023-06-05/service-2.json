@@ -1994,20 +1994,20 @@
       "members":{
         "modelArn":{
           "shape":"BedrockModelArn",
-          "documentation":"<p>The model's ARN.</p>"
+          "documentation":"<p>The ARN of the foundation model or <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/cross-region-inference.html\">inference profile</a>.</p>"
         },
         "parsingPrompt":{
           "shape":"ParsingPrompt",
           "documentation":"<p>Instructions for interpreting the contents of a document.</p>"
         }
       },
-      "documentation":"<p>Settings for a foundation model used to parse documents for a data source.</p>"
+      "documentation":"<p>Settings for a foundation model or <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/cross-region-inference.html\">inference profile</a> used to parse documents for a data source.</p>"
     },
     "BedrockModelArn":{
       "type":"string",
       "max":2048,
       "min":1,
-      "pattern":"^arn:aws(-[^:]+)?:bedrock:[a-z0-9-]{1,20}::foundation-model/([a-z0-9-]{1,63}[.]{1}[a-z0-9-]{1,63}([.]?[a-z0-9-]{1,63})([:][a-z0-9-]{1,63}){0,2})$"
+      "pattern":"^arn:aws(-[^:]+)?:bedrock:[a-z0-9-]{1,20}::foundation-model/([a-z0-9-]{1,63}[.]{1}[a-z0-9-]{1,63}([.]?[a-z0-9-]{1,63})([:][a-z0-9-]{1,63}){0,2})|(arn:aws(|-us-gov|-cn|-iso|-iso-b):bedrock:(|[0-9a-z-]{1,20}):(|[0-9]{12}):inference-profile/[a-zA-Z0-9-:.]+)$"
     },
     "Boolean":{
       "type":"boolean",
@@ -6042,7 +6042,7 @@
           "documentation":"<p>The parsing strategy for the data source.</p>"
         }
       },
-      "documentation":"<p>Settings for parsing document contents. By default, the service converts the contents of each document into text before splitting it into chunks. To improve processing of PDF files with tables and images, you can configure the data source to convert the pages of text into images and use a model to describe the contents of each page.</p> <p>To use a model to parse PDF documents, set the parsing strategy to <code>BEDROCK_FOUNDATION_MODEL</code> and specify the model to use by ARN. You can also override the default parsing prompt with instructions for how to interpret images and tables in your documents. The following models are supported.</p> <ul> <li> <p>Anthropic Claude 3 Sonnet - <code>anthropic.claude-3-sonnet-20240229-v1:0</code> </p> </li> <li> <p>Anthropic Claude 3 Haiku - <code>anthropic.claude-3-haiku-20240307-v1:0</code> </p> </li> </ul> <p>You can get the ARN of a model with the <a href=\"https://docs.aws.amazon.com/bedrock/latest/APIReference/API_ListFoundationModels.html\">ListFoundationModels</a> action. Standard model usage charges apply for the foundation model parsing strategy.</p>"
+      "documentation":"<p>Settings for parsing document contents. By default, the service converts the contents of each document into text before splitting it into chunks. To improve processing of PDF files with tables and images, you can configure the data source to convert the pages of text into images and use a model to describe the contents of each page.</p> <p>To use a model to parse PDF documents, set the parsing strategy to <code>BEDROCK_FOUNDATION_MODEL</code> and specify the model or <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/cross-region-inference.html\">inference profile</a> to use by ARN. You can also override the default parsing prompt with instructions for how to interpret images and tables in your documents. The following models are supported.</p> <ul> <li> <p>Anthropic Claude 3 Sonnet - <code>anthropic.claude-3-sonnet-20240229-v1:0</code> </p> </li> <li> <p>Anthropic Claude 3 Haiku - <code>anthropic.claude-3-haiku-20240307-v1:0</code> </p> </li> </ul> <p>You can get the ARN of a model with the <a href=\"https://docs.aws.amazon.com/bedrock/latest/APIReference/API_ListFoundationModels.html\">ListFoundationModels</a> action. Standard model usage charges apply for the foundation model parsing strategy.</p>"
     },
     "ParsingPrompt":{
       "type":"structure",

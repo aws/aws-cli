@@ -5,12 +5,14 @@
     "endpointPrefix":"synthetics",
     "jsonVersion":"1.1",
     "protocol":"rest-json",
+    "protocols":["rest-json"],
     "serviceAbbreviation":"Synthetics",
     "serviceFullName":"Synthetics",
     "serviceId":"synthetics",
     "signatureVersion":"v4",
     "signingName":"synthetics",
-    "uid":"synthetics-2017-10-11"
+    "uid":"synthetics-2017-10-11",
+    "auth":["aws.auth#sigv4"]
   },
   "operations":{
     "AssociateResource":{
@@ -75,7 +77,7 @@
         {"shape":"ResourceNotFoundException"},
         {"shape":"ConflictException"}
       ],
-      "documentation":"<p>Permanently deletes the specified canary.</p> <p>If you specify <code>DeleteLambda</code> to <code>true</code>, CloudWatch Synthetics also deletes the Lambda functions and layers that are used by the canary.</p> <p>Other resources used and created by the canary are not automatically deleted. After you delete a canary that you do not intend to use again, you should also delete the following:</p> <ul> <li> <p>The CloudWatch alarms created for this canary. These alarms have a name of <code>Synthetics-SharpDrop-Alarm-<i>MyCanaryName</i> </code>.</p> </li> <li> <p>Amazon S3 objects and buckets, such as the canary's artifact location.</p> </li> <li> <p>IAM roles created for the canary. If they were created in the console, these roles have the name <code> role/service-role/CloudWatchSyntheticsRole-<i>MyCanaryName</i> </code>.</p> </li> <li> <p>CloudWatch Logs log groups created for the canary. These logs groups have the name <code>/aws/lambda/cwsyn-<i>MyCanaryName</i> </code>. </p> </li> </ul> <p>Before you delete a canary, you might want to use <code>GetCanary</code> to display the information about this canary. Make note of the information returned by this operation so that you can delete these resources after you delete the canary.</p>"
+      "documentation":"<p>Permanently deletes the specified canary.</p> <p>If you specify <code>DeleteLambda</code> to <code>true</code>, CloudWatch Synthetics also deletes the Lambda functions and layers that are used by the canary.</p> <p>Other resources used and created by the canary are not automatically deleted. After you delete a canary that you do not intend to use again, you should also delete the following:</p> <ul> <li> <p>The CloudWatch alarms created for this canary. These alarms have a name of <code>Synthetics-Alarm-<i>first-198-characters-of-canary-name</i>-<i>canaryId</i>-<i>alarm number</i> </code> </p> </li> <li> <p>Amazon S3 objects and buckets, such as the canary's artifact location.</p> </li> <li> <p>IAM roles created for the canary. If they were created in the console, these roles have the name <code> role/service-role/CloudWatchSyntheticsRole-<i>First-21-Characters-of-CanaryName</i> </code> </p> </li> <li> <p>CloudWatch Logs log groups created for the canary. These logs groups have the name <code>/aws/lambda/cwsyn-<i>First-21-Characters-of-CanaryName</i> </code> </p> </li> </ul> <p>Before you delete a canary, you might want to use <code>GetCanary</code> to display the information about this canary. Make note of the information returned by this operation so that you can delete these resources after you delete the canary.</p>"
     },
     "DeleteGroup":{
       "name":"DeleteGroup",
@@ -507,7 +509,7 @@
       "type":"string",
       "max":2048,
       "min":1,
-      "pattern":"arn:(aws[a-zA-Z-]*)?:synthetics:[a-z]{2}((-gov)|(-iso(b?)))?-[a-z]+-\\d{1}:\\d{12}:canary:[0-9a-z_\\-]{1,21}"
+      "pattern":"arn:(aws[a-zA-Z-]*)?:synthetics:[a-z]{2}((-gov)|(-iso(b?)))?-[a-z]+-\\d{1}:\\d{12}:canary:[0-9a-z_\\-]{1,255}"
     },
     "CanaryCodeInput":{
       "type":"structure",
@@ -534,7 +536,7 @@
           "documentation":"<p>The entry point to use for the source code when running the canary. For canaries that use the <code>syn-python-selenium-1.0</code> runtime or a <code>syn-nodejs.puppeteer</code> runtime earlier than <code>syn-nodejs.puppeteer-3.4</code>, the handler must be specified as <code> <i>fileName</i>.handler</code>. For <code>syn-python-selenium-1.1</code>, <code>syn-nodejs.puppeteer-3.4</code>, and later runtimes, the handler can be specified as <code> <i>fileName</i>.<i>functionName</i> </code>, or you can specify a folder where canary scripts reside as <code> <i>folder</i>/<i>fileName</i>.<i>functionName</i> </code>.</p>"
         }
       },
-      "documentation":"<p>Use this structure to input your script code for the canary. This structure contains the Lambda handler with the location where the canary should start running the script. If the script is stored in an S3 bucket, the bucket name, key, and version are also included. If the script was passed into the canary directly, the script code is contained in the value of <code>Zipfile</code>. </p>"
+      "documentation":"<p>Use this structure to input your script code for the canary. This structure contains the Lambda handler with the location where the canary should start running the script. If the script is stored in an S3 bucket, the bucket name, key, and version are also included. If the script was passed into the canary directly, the script code is contained in the value of <code>Zipfile</code>. </p> <p>If you are uploading your canary scripts with an Amazon S3 bucket, your zip file should include your script in a certain folder structure.</p> <ul> <li> <p>For Node.js canaries, the folder structure must be <code>nodejs/node_modules/<i>myCanaryFilename.js</i> </code> For more information, see <a href=\"https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/CloudWatch_Synthetics_Canaries_WritingCanary_Nodejs.html#CloudWatch_Synthetics_Canaries_package\">Packaging your Node.js canary files</a> </p> </li> <li> <p>For Python canaries, the folder structure must be <code>python/<i>myCanaryFilename.p</i> </code> or <code>python/<i>myFolder/myCanaryFilename.py</i> </code> For more information, see <a href=\"https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/CloudWatch_Synthetics_Canaries_WritingCanary_Python.html#CloudWatch_Synthetics_Canaries_WritingCanary_Python_package\">Packaging your Python canary files</a> </p> </li> </ul>"
     },
     "CanaryCodeOutput":{
       "type":"structure",
@@ -566,7 +568,7 @@
     },
     "CanaryName":{
       "type":"string",
-      "max":21,
+      "max":255,
       "min":1,
       "pattern":"^[0-9a-z_\\-]+$"
     },
@@ -853,9 +855,13 @@
           "shape":"VpcConfigInput",
           "documentation":"<p>If this canary is to test an endpoint in a VPC, this structure contains information about the subnet and security groups of the VPC endpoint. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/CloudWatch_Synthetics_Canaries_VPC.html\"> Running a Canary in a VPC</a>.</p>"
         },
+        "ResourcesToReplicateTags":{
+          "shape":"ResourceList",
+          "documentation":"<p>To have the tags that you apply to this canary also be applied to the Lambda function that the canary uses, specify this parameter with the value <code>lambda-function</code>.</p> <p>If you specify this parameter and don't specify any tags in the <code>Tags</code> parameter, the canary creation fails.</p>"
+        },
         "Tags":{
           "shape":"TagMap",
-          "documentation":"<p>A list of key-value pairs to associate with the canary. You can associate as many as 50 tags with a canary.</p> <p>Tags can help you organize and categorize your resources. You can also use them to scope user permissions, by granting a user permission to access or change only the resources that have certain tag values.</p>"
+          "documentation":"<p>A list of key-value pairs to associate with the canary. You can associate as many as 50 tags with a canary.</p> <p>Tags can help you organize and categorize your resources. You can also use them to scope user permissions, by granting a user permission to access or change only the resources that have certain tag values.</p> <p>To have the tags that you apply to this canary also be applied to the Lambda function that the canary uses, specify this parameter with the value <code>lambda-function</code>.</p>"
         },
         "ArtifactConfig":{
           "shape":"ArtifactConfigInput",
@@ -986,7 +992,7 @@
         },
         "MaxResults":{
           "shape":"MaxCanaryResults",
-          "documentation":"<p>Specify this parameter to limit how many canaries are returned each time you use the <code>DescribeCanaries</code> operation. If you omit this parameter, the default of 100 is used.</p>"
+          "documentation":"<p>Specify this parameter to limit how many canaries are returned each time you use the <code>DescribeCanaries</code> operation. If you omit this parameter, the default of 20 is used.</p>"
         },
         "Names":{
           "shape":"DescribeCanariesNameFilter",
@@ -1427,6 +1433,12 @@
       "min":1,
       "pattern":"arn:(aws[a-zA-Z-]*)?:synthetics:[a-z]{2}((-gov)|(-iso(b?)))?-[a-z]+-\\d{1}:\\d{12}:(canary|group):[0-9a-z_\\-]+"
     },
+    "ResourceList":{
+      "type":"list",
+      "member":{"shape":"ResourceToTag"},
+      "max":1,
+      "min":1
+    },
     "ResourceNotFoundException":{
       "type":"structure",
       "members":{
@@ -1435,6 +1447,10 @@
       "documentation":"<p>One of the specified resources was not found.</p>",
       "error":{"httpStatusCode":404},
       "exception":true
+    },
+    "ResourceToTag":{
+      "type":"string",
+      "enum":["lambda-function"]
     },
     "RoleArn":{
       "type":"string",

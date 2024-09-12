@@ -216,7 +216,11 @@
       "input":{"shape":"BatchGetTableOptimizerRequest"},
       "output":{"shape":"BatchGetTableOptimizerResponse"},
       "errors":[
-        {"shape":"InternalServiceException"}
+        {"shape":"EntityNotFoundException"},
+        {"shape":"InvalidInputException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalServiceException"},
+        {"shape":"ThrottlingException"}
       ],
       "documentation":"<p>Returns the configuration for the specified table optimizers.</p>"
     },
@@ -717,10 +721,12 @@
       "output":{"shape":"CreateTableOptimizerResponse"},
       "errors":[
         {"shape":"EntityNotFoundException"},
+        {"shape":"ValidationException"},
         {"shape":"InvalidInputException"},
         {"shape":"AccessDeniedException"},
         {"shape":"AlreadyExistsException"},
-        {"shape":"InternalServiceException"}
+        {"shape":"InternalServiceException"},
+        {"shape":"ThrottlingException"}
       ],
       "documentation":"<p>Creates a new table optimizer for a specific function. <code>compaction</code> is the only currently supported optimizer type.</p>"
     },
@@ -1152,7 +1158,8 @@
         {"shape":"EntityNotFoundException"},
         {"shape":"InvalidInputException"},
         {"shape":"AccessDeniedException"},
-        {"shape":"InternalServiceException"}
+        {"shape":"InternalServiceException"},
+        {"shape":"ThrottlingException"}
       ],
       "documentation":"<p>Deletes an optimizer and all associated metadata for a table. The optimization will no longer be performed on the table.</p>"
     },
@@ -2111,7 +2118,8 @@
         {"shape":"EntityNotFoundException"},
         {"shape":"InvalidInputException"},
         {"shape":"AccessDeniedException"},
-        {"shape":"InternalServiceException"}
+        {"shape":"InternalServiceException"},
+        {"shape":"ThrottlingException"}
       ],
       "documentation":"<p>Returns the configuration of all optimizers associated with a specified table.</p>"
     },
@@ -2707,7 +2715,9 @@
         {"shape":"EntityNotFoundException"},
         {"shape":"AccessDeniedException"},
         {"shape":"InvalidInputException"},
-        {"shape":"InternalServiceException"}
+        {"shape":"ValidationException"},
+        {"shape":"InternalServiceException"},
+        {"shape":"ThrottlingException"}
       ],
       "documentation":"<p>Lists the history of previous optimizer runs for a specific table.</p>"
     },
@@ -3643,7 +3653,10 @@
         {"shape":"EntityNotFoundException"},
         {"shape":"InvalidInputException"},
         {"shape":"AccessDeniedException"},
-        {"shape":"InternalServiceException"}
+        {"shape":"ValidationException"},
+        {"shape":"InternalServiceException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ConcurrentModificationException"}
       ],
       "documentation":"<p>Updates the configuration for an existing table optimizer.</p>"
     },
@@ -4931,7 +4944,7 @@
         },
         "tableOptimizer":{
           "shape":"TableOptimizer",
-          "documentation":"<p>A <code>TableOptimizer</code> object that contains details on the configuration and last run of a table optimzer.</p>"
+          "documentation":"<p>A <code>TableOptimizer</code> object that contains details on the configuration and last run of a table optimizer.</p>"
         }
       },
       "documentation":"<p>Contains details for one of the table optimizers returned by the <code>BatchGetTableOptimizer</code> operation.</p>"
@@ -6431,6 +6444,16 @@
       "max":40,
       "min":1,
       "pattern":"[\\u0020-\\uD7FF\\uE000-\\uFFFD\\uD800\\uDC00-\\uDBFF\\uDFFF\\t]*"
+    },
+    "CompactionMetrics":{
+      "type":"structure",
+      "members":{
+        "IcebergMetrics":{
+          "shape":"IcebergCompactionMetrics",
+          "documentation":"<p>A structure containing the Iceberg compaction metrics for the optimizer run.</p>"
+        }
+      },
+      "documentation":"<p>A structure that contains compaction metrics for the optimizer run.</p>"
     },
     "Comparator":{
       "type":"string",
@@ -14253,6 +14276,28 @@
       "type":"string",
       "pattern":"^arn:aws(-(cn|us-gov|iso(-[bef])?))?:iam::[0-9]{12}:role/.+"
     },
+    "IcebergCompactionMetrics":{
+      "type":"structure",
+      "members":{
+        "NumberOfBytesCompacted":{
+          "shape":"metricCounts",
+          "documentation":"<p>The number of bytes removed by the compaction job run.</p>"
+        },
+        "NumberOfFilesCompacted":{
+          "shape":"metricCounts",
+          "documentation":"<p>The number of files removed by the compaction job run.</p>"
+        },
+        "NumberOfDpus":{
+          "shape":"dpuCounts",
+          "documentation":"<p>The number of DPU hours consumed by the job.</p>"
+        },
+        "JobDurationInHour":{
+          "shape":"dpuDurationInHour",
+          "documentation":"<p>The duration of the job in hours.</p>"
+        }
+      },
+      "documentation":"<p>Compaction metrics for Iceberg for the optimizer run.</p>"
+    },
     "IcebergInput":{
       "type":"structure",
       "required":["MetadataOperation"],
@@ -14267,6 +14312,82 @@
         }
       },
       "documentation":"<p>A structure that defines an Apache Iceberg metadata table to create in the catalog.</p>"
+    },
+    "IcebergOrphanFileDeletionConfiguration":{
+      "type":"structure",
+      "members":{
+        "orphanFileRetentionPeriodInDays":{
+          "shape":"NullableInteger",
+          "documentation":"<p>The number of days that orphan files should be retained before file deletion. If an input is not provided, the default value 3 will be used.</p>"
+        },
+        "location":{
+          "shape":"MessageString",
+          "documentation":"<p>Specifies a directory in which to look for files (defaults to the table's location). You may choose a sub-directory rather than the top-level table location.</p>"
+        }
+      },
+      "documentation":"<p>The configuration for an Iceberg orphan file deletion optimizer.</p>"
+    },
+    "IcebergOrphanFileDeletionMetrics":{
+      "type":"structure",
+      "members":{
+        "NumberOfOrphanFilesDeleted":{
+          "shape":"metricCounts",
+          "documentation":"<p>The number of orphan files deleted by the orphan file deletion job run.</p>"
+        },
+        "NumberOfDpus":{
+          "shape":"dpuCounts",
+          "documentation":"<p>The number of DPU hours consumed by the job.</p>"
+        },
+        "JobDurationInHour":{
+          "shape":"dpuDurationInHour",
+          "documentation":"<p>The duration of the job in hours.</p>"
+        }
+      },
+      "documentation":"<p>Orphan file deletion metrics for Iceberg for the optimizer run.</p>"
+    },
+    "IcebergRetentionConfiguration":{
+      "type":"structure",
+      "members":{
+        "snapshotRetentionPeriodInDays":{
+          "shape":"NullableInteger",
+          "documentation":"<p>The number of days to retain the Iceberg snapshots. If an input is not provided, the corresponding Iceberg table configuration field will be used or if not present, the default value 5 will be used.</p>"
+        },
+        "numberOfSnapshotsToRetain":{
+          "shape":"NullableInteger",
+          "documentation":"<p>The number of Iceberg snapshots to retain within the retention period. If an input is not provided, the corresponding Iceberg table configuration field will be used or if not present, the default value 1 will be used.</p>"
+        },
+        "cleanExpiredFiles":{
+          "shape":"NullableBoolean",
+          "documentation":"<p>If set to false, snapshots are only deleted from table metadata, and the underlying data and metadata files are not deleted.</p>"
+        }
+      },
+      "documentation":"<p>The configuration for an Iceberg snapshot retention optimizer.</p>"
+    },
+    "IcebergRetentionMetrics":{
+      "type":"structure",
+      "members":{
+        "NumberOfDataFilesDeleted":{
+          "shape":"metricCounts",
+          "documentation":"<p>The number of data files deleted by the retention job run.</p>"
+        },
+        "NumberOfManifestFilesDeleted":{
+          "shape":"metricCounts",
+          "documentation":"<p>The number of manifest files deleted by the retention job run.</p>"
+        },
+        "NumberOfManifestListsDeleted":{
+          "shape":"metricCounts",
+          "documentation":"<p>The number of manifest lists deleted by the retention job run.</p>"
+        },
+        "NumberOfDpus":{
+          "shape":"dpuCounts",
+          "documentation":"<p>The number of DPU hours consumed by the job.</p>"
+        },
+        "JobDurationInHour":{
+          "shape":"dpuDurationInHour",
+          "documentation":"<p>The duration of the job in hours.</p>"
+        }
+      },
+      "documentation":"<p>Snapshot retention metrics for Iceberg for the optimizer run.</p>"
     },
     "IcebergTarget":{
       "type":"structure",
@@ -17283,6 +17404,26 @@
       "type":"list",
       "member":{"shape":"Order"}
     },
+    "OrphanFileDeletionConfiguration":{
+      "type":"structure",
+      "members":{
+        "icebergConfiguration":{
+          "shape":"IcebergOrphanFileDeletionConfiguration",
+          "documentation":"<p>The configuration for an Iceberg orphan file deletion optimizer.</p>"
+        }
+      },
+      "documentation":"<p>The configuration for an orphan file deletion optimizer.</p>"
+    },
+    "OrphanFileDeletionMetrics":{
+      "type":"structure",
+      "members":{
+        "IcebergMetrics":{
+          "shape":"IcebergOrphanFileDeletionMetrics",
+          "documentation":"<p>A structure containing the Iceberg orphan file deletion metrics for the optimizer run.</p>"
+        }
+      },
+      "documentation":"<p>A structure that contains orphan file deletion metrics for the optimizer run.</p>"
+    },
     "OtherMetadataValueList":{
       "type":"list",
       "member":{"shape":"OtherMetadataValueListItem"}
@@ -18593,6 +18734,26 @@
         }
       }
     },
+    "RetentionConfiguration":{
+      "type":"structure",
+      "members":{
+        "icebergConfiguration":{
+          "shape":"IcebergRetentionConfiguration",
+          "documentation":"<p>The configuration for an Iceberg snapshot retention optimizer.</p>"
+        }
+      },
+      "documentation":"<p>The configuration for a snapshot retention optimizer.</p>"
+    },
+    "RetentionMetrics":{
+      "type":"structure",
+      "members":{
+        "IcebergMetrics":{
+          "shape":"IcebergRetentionMetrics",
+          "documentation":"<p>A structure containing the Iceberg retention metrics for the optimizer run.</p>"
+        }
+      },
+      "documentation":"<p>A structure that contains retention metrics for the optimizer run.</p>"
+    },
     "Role":{"type":"string"},
     "RoleArn":{
       "type":"string",
@@ -18641,7 +18802,7 @@
           "documentation":"<p>The duration of the job in hours.</p>"
         }
       },
-      "documentation":"<p>Metrics for the optimizer run.</p>"
+      "documentation":"<p>Metrics for the optimizer run.</p> <p>This structure is deprecated. See the individual metric members for compaction, retention, and orphan file deletion.</p>"
     },
     "RunStatementRequest":{
       "type":"structure",
@@ -21558,7 +21719,7 @@
       "members":{
         "type":{
           "shape":"TableOptimizerType",
-          "documentation":"<p>The type of table optimizer. Currently, the only valid value is <code>compaction</code>.</p>"
+          "documentation":"<p>The type of table optimizer. The valid values are:</p> <ul> <li> <p> <code>compaction</code>: for managing compaction with a table optimizer.</p> </li> <li> <p> <code>retention</code>: for managing the retention of snapshot with a table optimizer.</p> </li> <li> <p> <code>orphan_file_deletion</code>: for managing the deletion of orphan files with a table optimizer.</p> </li> </ul>"
         },
         "configuration":{
           "shape":"TableOptimizerConfiguration",
@@ -21580,7 +21741,15 @@
         },
         "enabled":{
           "shape":"NullableBoolean",
-          "documentation":"<p>Whether table optimization is enabled. </p>"
+          "documentation":"<p>Whether table optimization is enabled.</p>"
+        },
+        "retentionConfiguration":{
+          "shape":"RetentionConfiguration",
+          "documentation":"<p>The configuration for a snapshot retention optimizer.</p>"
+        },
+        "orphanFileDeletionConfiguration":{
+          "shape":"OrphanFileDeletionConfiguration",
+          "documentation":"<p>The configuration for an orphan file deletion optimizer.</p>"
         }
       },
       "documentation":"<p>Contains details on the configuration of a table optimizer. You pass this configuration when creating or updating a table optimizer.</p>"
@@ -21611,11 +21780,25 @@
         },
         "metrics":{
           "shape":"RunMetrics",
-          "documentation":"<p>A <code>RunMetrics</code> object containing metrics for the optimizer run.</p>"
+          "documentation":"<p>A <code>RunMetrics</code> object containing metrics for the optimizer run.</p> <p>This member is deprecated. See the individual metric members for compaction, retention, and orphan file deletion.</p>",
+          "deprecated":true,
+          "deprecatedMessage":"Metrics has been replaced by optimizer type specific metrics such as IcebergCompactionMetrics"
         },
         "error":{
           "shape":"MessageString",
           "documentation":"<p>An error that occured during the optimizer run.</p>"
+        },
+        "compactionMetrics":{
+          "shape":"CompactionMetrics",
+          "documentation":"<p>A <code>CompactionMetrics</code> object containing metrics for the optimizer run.</p>"
+        },
+        "retentionMetrics":{
+          "shape":"RetentionMetrics",
+          "documentation":"<p>A <code>RetentionMetrics</code> object containing metrics for the optimizer run.</p>"
+        },
+        "orphanFileDeletionMetrics":{
+          "shape":"OrphanFileDeletionMetrics",
+          "documentation":"<p>An <code>OrphanFileDeletionMetrics</code> object containing metrics for the optimizer run.</p>"
         }
       },
       "documentation":"<p>Contains details for a table optimizer run.</p>"
@@ -21627,7 +21810,11 @@
     },
     "TableOptimizerType":{
       "type":"string",
-      "enum":["compaction"]
+      "enum":[
+        "compaction",
+        "retention",
+        "orphan_file_deletion"
+      ]
     },
     "TablePrefix":{
       "type":"string",
@@ -21919,6 +22106,17 @@
         "EXPORT_LABELS",
         "FIND_MATCHES"
       ]
+    },
+    "ThrottlingException":{
+      "type":"structure",
+      "members":{
+        "Message":{
+          "shape":"MessageString",
+          "documentation":"<p>A message describing the problem.</p>"
+        }
+      },
+      "documentation":"<p>The throttling threshhold was exceeded.</p>",
+      "exception":true
     },
     "Timeout":{
       "type":"integer",
@@ -23902,6 +24100,9 @@
       "min":1
     },
     "double":{"type":"double"},
+    "dpuCounts":{"type":"integer"},
+    "dpuDurationInHour":{"type":"double"},
+    "metricCounts":{"type":"long"},
     "tableNameString":{
       "type":"string",
       "min":1

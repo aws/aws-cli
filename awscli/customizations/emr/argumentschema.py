@@ -57,6 +57,41 @@ OUTER_CONFIGURATIONS_SCHEMA = {
     "description": "Instance group application configurations."
 }
 
+ONDEMAND_CAPACITY_RESERVATION_OPTIONS_SCHEMA = {
+    "type": "object",
+    "properties" : {
+        "UsageStrategy": {
+            "type": "string",
+            "description": "The strategy of whether to use available capacity reservations to fulfill On-Demand capacity.",
+            "enum": ["use-capacity-reservations-first"]
+        },
+        "CapacityReservationPreference": {
+            "type": "string",
+            "description": "The preference of the capacity reservation of the instance.",
+            "enum": [
+                "open",
+                "none"
+            ]
+        },
+        "CapacityReservationResourceGroupArn": {
+            "type": "string",
+            "description": "The ARN of the capacity reservation resource group in which to run the instance."
+        }
+    }
+}
+
+SPOT_ALLOCATION_STRATEGY_SCHEMA = {
+    "type": "string",
+    "description": "The strategy to use to launch Spot instance fleets.",
+    "enum": ["capacity-optimized", "price-capacity-optimized", "lowest-price", "diversified", "capacity-optimized-prioritized"]
+}
+
+ONDEMAND_ALLOCATION_STRATEGY_SCHEMA = {
+    "type": "string",
+    "description": "The strategy to use to launch On-Demand instance fleets.",
+    "enum": ["lowest-price", "prioritized"]
+}
+
 INSTANCE_GROUPS_SCHEMA = {
     "type": "array",
     "items": {
@@ -411,33 +446,8 @@ INSTANCE_FLEETS_SCHEMA = {
                     "OnDemandSpecification": {
                         "type": "object",
                         "properties": {
-                            "AllocationStrategy": {
-                                "type": "string",
-                                "description": "The strategy to use in launching On-Demand instance fleets.",
-                                "enum": ["lowest-price", "prioritized"]
-                            },
-                            "CapacityReservationOptions": {
-                                "type": "object",
-                                "properties" : {
-                                    "UsageStrategy": {
-                                        "type": "string",
-                                        "description": "The strategy of whether to use unused Capacity Reservations for fulfilling On-Demand capacity.",
-                                        "enum": ["use-capacity-reservations-first"]
-                                    },
-                                    "CapacityReservationPreference": {
-                                        "type": "string",
-                                        "description": "The preference of the instance's Capacity Reservation.",
-                                        "enum": [
-                                            "open",
-                                            "none"
-                                        ]
-                                    },
-                                    "CapacityReservationResourceGroupArn": {
-                                        "type": "string",
-                                        "description": "The ARN of the Capacity Reservation resource group in which to run the instance."
-                                    }
-                                }
-                            }
+                            "AllocationStrategy": ONDEMAND_ALLOCATION_STRATEGY_SCHEMA,
+                            "CapacityReservationOptions": ONDEMAND_CAPACITY_RESERVATION_OPTIONS_SCHEMA
                         }
                     },
                     "SpotSpecification": {
@@ -459,11 +469,7 @@ INSTANCE_FLEETS_SCHEMA = {
                                 "type": "integer",
                                 "description": "Block duration in minutes."
                             },
-                            "AllocationStrategy": {
-                                "type": "string",
-                                "description": "The strategy to use in launching Spot instance fleets.",
-                                "enum": ["capacity-optimized", "price-capacity-optimized", "lowest-price", "diversified", "capacity-optimized-prioritized"]
-                            }
+                            "AllocationStrategy": SPOT_ALLOCATION_STRATEGY_SCHEMA
                         }
                     }
                 }
@@ -477,7 +483,8 @@ INSTANCE_FLEETS_SCHEMA = {
                             "TimeoutDurationMinutes": {
                                 "type" : "integer",
                                 "description": "The time, in minutes, after which the resize will be stopped if requested resources are unavailable."
-                            }
+                            },
+                            "AllocationStrategy": SPOT_ALLOCATION_STRATEGY_SCHEMA
                         }
                     },
                     "OnDemandResizeSpecification": {
@@ -486,7 +493,9 @@ INSTANCE_FLEETS_SCHEMA = {
                             "TimeoutDurationMinutes": {
                                 "type" : "integer",
                                 "description": "The time, in minutes, after which the resize will be stopped if requested resources are unavailable."
-                            }
+                            },
+                            "AllocationStrategy": ONDEMAND_ALLOCATION_STRATEGY_SCHEMA,
+                            "CapacityReservationOptions": ONDEMAND_CAPACITY_RESERVATION_OPTIONS_SCHEMA
                         }
                     }
                 }

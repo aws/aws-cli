@@ -2,6 +2,19 @@
 CHANGELOG
 =========
 
+1.34.18
+=======
+
+* api-change:``cognito-idp``: Added email MFA option to user pools with advanced security features.
+* api-change:``elbv2``: Correct incorrectly mapped error in ELBv2 waiters
+* api-change:``emr``: Update APIs to allow modification of ODCR options, allocation strategy, and InstanceTypeConfigs on running InstanceFleet clusters.
+* api-change:``glue``: AWS Glue is introducing two new optimizers for Apache Iceberg tables: snapshot retention and orphan file deletion. Customers can enable these optimizers and customize their configurations to perform daily maintenance tasks on their Iceberg tables based on their specific requirements.
+* api-change:``mediaconvert``: This release includes support for dynamic video overlay workflows, including picture-in-picture and squeezeback
+* api-change:``rds``: This release adds support for the os-upgrade pending maintenance action for Amazon Aurora DB clusters.
+* api-change:``storagegateway``: The S3 File Gateway now supports DSSE-KMS encryption. A new parameter EncryptionType is added to these APIs: CreateSmbFileShare, CreateNfsFileShare, UpdateSmbFileShare, UpdateNfsFileShare, DescribeSmbFileShares, DescribeNfsFileShares. Also, in favor of EncryptionType, KmsEncrypted is deprecated.
+* api-change:``synthetics``: This release introduces two features. The first is tag replication, which allows for the propagation of canary tags onto Synthetics related resources, such as Lambda functions. The second is a limit increase in canary name length, which has now been increased from 21 to 255 characters.
+
+
 1.34.17
 =======
 

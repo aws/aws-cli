@@ -120,8 +120,7 @@ class TestKubeconfigLoader(unittest.TestCase):
         ])
         loaded_config = self._loader.load_kubeconfig(simple_path)
         self.assertEqual(loaded_config.content, content)
-        self._validator.validate_config.assert_called_with(Kubeconfig(simple_path,
-                                                               content))
+        self._validator.validate_config.assert_called_with(Kubeconfig(simple_path,content))
 
     def test_load_noexist(self):
         no_exist_path = os.path.join(self._temp_directory,

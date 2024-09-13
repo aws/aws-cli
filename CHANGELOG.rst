@@ -2,6 +2,14 @@
 CHANGELOG
 =========
 
+2.17.51
+=======
+
+* api-change:``amplify``: Doc only update to Amplify to explain platform setting for Next.js 14 SSG only applications
+* api-change:``ivschat``: Updates to all tags descriptions.
+* api-change:``ivs``: Updates to all tags descriptions.
+
+
 2.17.50
 =======
 

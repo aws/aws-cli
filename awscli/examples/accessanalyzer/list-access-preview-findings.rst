@@ -20,7 +20,7 @@ Output::
                     "s3:PutObjectAcl"
                 ],
                 "condition": {},
-                "resource": "arn:aws:s3:::DOC-EXAMPLE-BUCKET",
+                "resource": "arn:aws:s3:::amzn-s3-demo-bucket",
                 "isPublic": false,
                 "resourceType": "AWS::S3::Bucket",
                 "createdAt": "2024-02-17T00:18:46+00:00",

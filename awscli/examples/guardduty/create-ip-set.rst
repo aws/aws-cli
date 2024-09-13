@@ -6,7 +6,7 @@ The following ``create-ip-set`` example creates and activates a trusted IP set i
         --detector-id 12abc34d567e8fa901bc2d34eexample \ 
         --name new-ip-set \
         --format TXT
-        --location s3://AWSDOC-EXAMPLE-BUCKET/customtrustlist.csv
+        --location s3://amzn-s3-demo-bucket/customtrustlist.csv
         --activate
 
 Output::

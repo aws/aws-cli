@@ -3,7 +3,7 @@
 The following ``put-bucket-replication`` example applies a replication configuration to the specified S3 bucket. ::
 
     aws s3api put-bucket-replication \
-        --bucket AWSDOC-EXAMPLE-BUCKET1 \
+        --bucket amzn-s3-demo-bucket1 \
         --replication-configuration file://replication.json
 
 Contents of ``replication.json``::
@@ -17,7 +17,7 @@ Contents of ``replication.json``::
                 "DeleteMarkerReplication": { "Status": "Disabled" },
                 "Filter" : { "Prefix": ""},
                 "Destination": {
-                    "Bucket": "arn:aws:s3:::AWSDOC-EXAMPLE-BUCKET2"
+                    "Bucket": "arn:aws:s3:::amzn-s3-demo-bucket2"
                 }
             }
         ]
@@ -37,7 +37,7 @@ Example role permission policy::
                     "s3:ListBucket"
                 ],
                 "Resource": [
-                    "arn:aws:s3:::AWSDOC-EXAMPLE-BUCKET1"
+                    "arn:aws:s3:::amzn-s3-demo-bucket1"
                 ]
             },
             {
@@ -48,7 +48,7 @@ Example role permission policy::
                     "s3:GetObjectVersionTagging"
                 ],
                 "Resource": [
-                    "arn:aws:s3:::AWSDOC-EXAMPLE-BUCKET1/*"
+                    "arn:aws:s3:::amzn-s3-demo-bucket1/*"
                 ]
             },
             {
@@ -58,7 +58,7 @@ Example role permission policy::
                     "s3:ReplicateDelete",
                     "s3:ReplicateTags"
                 ],
-                "Resource": "arn:aws:s3:::AWSDOC-EXAMPLE-BUCKET2/*"
+                "Resource": "arn:aws:s3:::amzn-s3-demo-bucket2/*"
             }
         ]
     }

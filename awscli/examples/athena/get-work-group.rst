@@ -13,7 +13,7 @@ Output::
             "State": "ENABLED",
             "Configuration": {
                 "ResultConfiguration": {
-                    "OutputLocation": "s3://awsdoc-example-bucket/"
+                    "OutputLocation": "s3://amzn-s3-demo-bucket/"
                 },
                 "EnforceWorkGroupConfiguration": false,
                 "PublishCloudWatchMetricsEnabled": true,

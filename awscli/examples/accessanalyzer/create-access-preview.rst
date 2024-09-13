@@ -9,9 +9,9 @@ The following ``create-access-preview`` example creates an access preview that a
 Contents of ``myfile.json``::
 
     {
-        "arn:aws:s3:::DOC-EXAMPLE-BUCKET": {
+        "arn:aws:s3:::amzn-s3-demo-bucket": {
             "s3Bucket": {
-                "bucketPolicy": "{\"Version\":\"2012-10-17\",\"Statement\":[{\"Effect\":\"Allow\",\"Principal\":{\"AWS\":[\"arn:aws:iam::111122223333:root\"]},\"Action\":[\"s3:PutObject\",\"s3:PutObjectAcl\"],\"Resource\":\"arn:aws:s3:::DOC-EXAMPLE-BUCKET/*\"}]}",
+                "bucketPolicy": "{\"Version\":\"2012-10-17\",\"Statement\":[{\"Effect\":\"Allow\",\"Principal\":{\"AWS\":[\"arn:aws:iam::111122223333:root\"]},\"Action\":[\"s3:PutObject\",\"s3:PutObjectAcl\"],\"Resource\":\"arn:aws:s3:::amzn-s3-demo-bucket/*\"}]}",
                 "bucketPublicAccessBlock": {
                     "ignorePublicAcls": true,
                     "restrictPublicBuckets": true

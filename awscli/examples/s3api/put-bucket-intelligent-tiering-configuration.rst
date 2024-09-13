@@ -3,7 +3,7 @@
 The following ``put-bucket-intelligent-tiering-configuration`` example updates an S3 Intelligent-Tiering configuration, named ExampleConfig, on a bucket. The configuration will transition objects that have not been accessed under the prefix images to Archive Access after 90 days and Deep Archive Access after 180 days. ::
 
     aws s3api put-bucket-intelligent-tiering-configuration \
-        --bucket DOC-EXAMPLE-BUCKET \
+        --bucket amzn-s3-demo-bucket \
         --id "ExampleConfig" \
         --intelligent-tiering-configuration file://intelligent-tiering-configuration.json
 

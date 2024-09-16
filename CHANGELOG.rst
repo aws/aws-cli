@@ -2,6 +2,18 @@
 CHANGELOG
 =========
 
+2.17.52
+=======
+
+* api-change:``rds``: Launching Global Cluster tagging.
+* api-change:``organizations``: Doc only update for AWS Organizations that fixes several customer-reported issues
+* api-change:``medialive``: Removing the ON_PREMISE enum from the input settings field.
+* ehancement:python: Update bundled Python interpreter version to 3.12.6
+* api-change:``pca-connector-scep``: This is a general availability (GA) release of Connector for SCEP, a feature of AWS Private CA. Connector for SCEP links your SCEP-enabled and mobile device management systems to AWS Private CA for digital signature installation and certificate management.
+* api-change:``iot``: This release adds additional enhancements to AWS IoT Device Management Software Package Catalog and Jobs. It also adds SBOM support in Software Package Version.
+* api-change:``bedrock``: This feature adds cross account s3 bucket and VPC support to ModelInvocation jobs. To use a cross account bucket, pass in the accountId of the bucket to s3BucketOwner in the ModelInvocationJobInputDataConfig or ModelInvocationJobOutputDataConfig.
+
+
 2.17.51
 =======
 

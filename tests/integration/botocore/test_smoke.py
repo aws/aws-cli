@@ -21,7 +21,6 @@ from tests import ClientHTTPStubber
 from botocore import xform_name
 import botocore.session
 from botocore.client import ClientError
-from botocore.endpoint import Endpoint
 from botocore.exceptions import ConnectionClosedError
 
 
@@ -276,7 +275,13 @@ def test_can_make_request_with_client(
     with warnings.catch_warnings(record=True) as caught_warnings:
         response = method(**kwargs)
         err_msg = f"Warnings were emitted during smoke test: {caught_warnings}"
-        assert len(caught_warnings) == 0, err_msg
+        unexpected_warnings = []
+        for warning in caught_warnings:
+            # we are explicitly ignoring this deprecation warning that is introduced in Python 3.12+
+            # until the deprecated call is removed
+            if "datetime.datetime.utcnow() is deprecated" not in str(warning.message):
+                unexpected_warnings.append(warning)
+        assert len(unexpected_warnings) == 0, err_msg
         assert 'Errors' not in response
 
 

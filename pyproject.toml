@@ -21,26 +21,28 @@ classifiers = [
     "Natural Language :: English",
     "License :: OSI Approved :: Apache Software License",
     "Programming Language :: Python",
+    'Programming Language :: Python :: 3 :: Only',
     "Programming Language :: Python :: 3",
     "Programming Language :: Python :: 3.8",
     "Programming Language :: Python :: 3.9",
     "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
+    'Programming Language :: Python :: 3.12',
 ]
 dependencies = [
     "colorama>=0.2.5,<0.4.7",
     "docutils>=0.10,<0.20",
-    "cryptography>=3.3.2,<40.0.2",
+    "cryptography>=40.0.0,<40.0.2",
     "ruamel.yaml>=0.15.0,<=0.17.21",
     # ruamel.yaml only requires ruamel.yaml.clib for Python versions
     # less than or equal to Python 3.10. In order to ensure we have
     # a consistent dependency closure across all Python versions,
     # we explicitly include ruamel.yaml.clib as a dependency.
-    "ruamel.yaml.clib>=0.2.0,<=0.2.7",
+    "ruamel.yaml.clib>=0.2.0,<=0.2.8",
     "prompt-toolkit>=3.0.24,<3.0.39",
     "distro>=1.5.0,<1.9.0",
     "awscrt>=0.19.18,<=0.21.2",
-    "python-dateutil>=2.1,<=2.8.2",
+    "python-dateutil>=2.1,<=2.9.0",
     "jmespath>=0.7.1,<1.1.0",
     "urllib3>=1.25.4,<1.27",
 ]
@@ -76,6 +78,31 @@ filterwarnings = [
     "error::DeprecationWarning",
     "error::PendingDeprecationWarning",
 
+    # Python 3.12 introduced a new DeprecationWarning in python-dateutil's
+    # datetime.now() functions and they're scheduled for removal in a future
+    # version. When we fully switch over to timezone-aware calls instead,
+    # we should be able to remove these filters.
+    'default:datetime\.datetime\.utcnow\(\) is deprecated:DeprecationWarning',
+
+    # Python 3.12 introduced a new DeprecationWarning in python-dateutil's
+    # datetime.utcfromtimestamp() functions and they're scheduled for removal in
+    # a future version. When we fully switch over to timezone-aware calls instead,
+    # we should be able to remove these filters.
+    'default:datetime\.datetime\.utcfromtimestamp\(\) is deprecated:DeprecationWarning',
+
+    # Python 3.12 introduced a new DeprecationWarning in calls to ast.Str, which
+    # flit-core uses. When they release the removal of such calls, we should
+    # be able to remove these filters.
+    'default:ast\.Str is deprecated and will be removed:DeprecationWarning',
+
+    # Python 3.12 introduced a new DeprecationWarning in flit-core. When they release the
+    # removal of reference to 'attribute s', we should be able to remove these filters.
+    'default:Attribute s is deprecated and will be removed:DeprecationWarning',
+
+    # Python 3.12 introduced a new DeprecationWarning which gets raised in our call to build_sdist of
+    # pep517 backend. When we explicitly address this change, we should be able to remove these filters.
+    'default:Python 3\.14 will, by default, filter extracted tar archives and reject files or modify their metadata:DeprecationWarning',
+
     # Do not error out on deprecation warnings stemming from our current
     # version of setuptools (57.5.0) in a Python 3.10 environment. When we add
     # support for the latest version of setuptools, we should be able to remove
@@ -95,6 +122,9 @@ filterwarnings = [
     # https://github.com/pytest-dev/pytest-cov/issues/557
     # https://github.com/pytest-dev/pytest-xdist/issues/825
     'default:The --rsyncdir command line argument and rsyncdirs config variable are deprecated.:DeprecationWarning'
+]
+markers = [
+    "slow"
 ]
 
 [tool.black]

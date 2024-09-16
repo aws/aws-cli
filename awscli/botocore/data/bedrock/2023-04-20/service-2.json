@@ -1333,7 +1333,7 @@
         },
         "vpcConfig":{
           "shape":"VpcConfig",
-          "documentation":"<p>VPC configuration (optional). Configuration parameters for the private Virtual Private Cloud (VPC) that contains the resources you are using for this job.</p>"
+          "documentation":"<p>The configuration of the Virtual Private Cloud (VPC) that contains the resources that you're using for this job. For more information, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/vpc-model-customization.html\">Protect your model customization jobs using a VPC</a>.</p>"
         }
       }
     },
@@ -1438,6 +1438,10 @@
         "outputDataConfig":{
           "shape":"ModelInvocationJobOutputDataConfig",
           "documentation":"<p>Details about the location of the output of the batch inference job.</p>"
+        },
+        "vpcConfig":{
+          "shape":"VpcConfig",
+          "documentation":"<p>The configuration of the Virtual Private Cloud (VPC) for the data in the batch inference job. For more information, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/batch-inference-vpc\">Protect batch inference jobs using a VPC</a>.</p>"
         },
         "timeoutDurationInHours":{
           "shape":"ModelInvocationJobTimeoutDurationInHours",
@@ -2815,6 +2819,10 @@
         "outputDataConfig":{
           "shape":"ModelInvocationJobOutputDataConfig",
           "documentation":"<p>Details about the location of the output of the batch inference job.</p>"
+        },
+        "vpcConfig":{
+          "shape":"VpcConfig",
+          "documentation":"<p>The configuration of the Virtual Private Cloud (VPC) for the data in the batch inference job. For more information, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/batch-inference-vpc\">Protect batch inference jobs using a VPC</a>.</p>"
         },
         "timeoutDurationInHours":{
           "shape":"ModelInvocationJobTimeoutDurationInHours",
@@ -4997,9 +5005,13 @@
         "s3Uri":{
           "shape":"S3Uri",
           "documentation":"<p>The S3 location of the input data.</p>"
+        },
+        "s3BucketOwner":{
+          "shape":"AccountId",
+          "documentation":"<p>The ID of the Amazon Web Services account that owns the S3 bucket containing the input data.</p>"
         }
       },
-      "documentation":"<p>Contains the configuration of the S3 location of the output data.</p>"
+      "documentation":"<p>Contains the configuration of the S3 location of the input data.</p>"
     },
     "ModelInvocationJobS3OutputDataConfig":{
       "type":"structure",
@@ -5012,6 +5024,10 @@
         "s3EncryptionKeyId":{
           "shape":"KmsKeyId",
           "documentation":"<p>The unique identifier of the key that encrypts the S3 location of the output data.</p>"
+        },
+        "s3BucketOwner":{
+          "shape":"AccountId",
+          "documentation":"<p>The ID of the Amazon Web Services account that owns the S3 bucket containing the output data.</p>"
         }
       },
       "documentation":"<p>Contains the configuration of the S3 location of the output data.</p>"
@@ -5094,6 +5110,10 @@
         "outputDataConfig":{
           "shape":"ModelInvocationJobOutputDataConfig",
           "documentation":"<p>Details about the location of the output of the batch inference job.</p>"
+        },
+        "vpcConfig":{
+          "shape":"VpcConfig",
+          "documentation":"<p>The configuration of the Virtual Private Cloud (VPC) for the data in the batch inference job. For more information, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/batch-inference-vpc\">Protect batch inference jobs using a VPC</a>.</p>"
         },
         "timeoutDurationInHours":{
           "shape":"ModelInvocationJobTimeoutDurationInHours",
@@ -5753,14 +5773,14 @@
       "members":{
         "subnetIds":{
           "shape":"SubnetIds",
-          "documentation":"<p>VPC configuration subnets.</p>"
+          "documentation":"<p>An array of IDs for each subnet in the VPC to use.</p>"
         },
         "securityGroupIds":{
           "shape":"SecurityGroupIds",
-          "documentation":"<p>VPC configuration security group Ids.</p>"
+          "documentation":"<p>An array of IDs for each security group in the VPC to use.</p>"
         }
       },
-      "documentation":"<p>VPC configuration.</p>"
+      "documentation":"<p>The configuration of a virtual private cloud (VPC). For more information, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/usingVPC.html\">Protect your data using Amazon Virtual Private Cloud and Amazon Web Services PrivateLink</a>.</p>"
     }
   },
   "documentation":"<p>Describes the API operations for creating, managing, fine-turning, and evaluating Amazon Bedrock models.</p>"

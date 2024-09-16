@@ -4,11 +4,13 @@
     "apiVersion":"2015-05-28",
     "endpointPrefix":"iot",
     "protocol":"rest-json",
+    "protocols":["rest-json"],
     "serviceFullName":"AWS IoT",
     "serviceId":"IoT",
     "signatureVersion":"v4",
     "signingName":"iot",
-    "uid":"iot-2015-05-28"
+    "uid":"iot-2015-05-28",
+    "auth":["aws.auth#sigv4"]
   },
   "operations":{
     "AcceptCertificateTransfer":{
@@ -60,6 +62,26 @@
         {"shape":"ResourceNotFoundException"}
       ],
       "documentation":"<p>Adds a thing to a thing group.</p> <p>Requires permission to access the <a href=\"https://docs.aws.amazon.com/service-authorization/latest/reference/list_awsiot.html#awsiot-actions-as-permissions\">AddThingToThingGroup</a> action.</p>"
+    },
+    "AssociateSbomWithPackageVersion":{
+      "name":"AssociateSbomWithPackageVersion",
+      "http":{
+        "method":"PUT",
+        "requestUri":"/packages/{packageName}/versions/{versionName}/sbom",
+        "responseCode":200
+      },
+      "input":{"shape":"AssociateSbomWithPackageVersionRequest"},
+      "output":{"shape":"AssociateSbomWithPackageVersionResponse"},
+      "errors":[
+        {"shape":"ThrottlingException"},
+        {"shape":"ConflictException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ValidationException"},
+        {"shape":"ServiceQuotaExceededException"},
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p>Associates a software bill of materials (SBOM) with a specific software package version.</p> <p>Requires permission to access the <a href=\"https://docs.aws.amazon.com/service-authorization/latest/reference/list_awsiot.html#awsiot-actions-as-permissions\">AssociateSbomWithPackageVersion</a> action.</p>",
+      "idempotent":true
     },
     "AssociateTargetsWithJob":{
       "name":"AssociateTargetsWithJob",
@@ -2102,6 +2124,25 @@
       ],
       "documentation":"<p>Disables the rule.</p> <p>Requires permission to access the <a href=\"https://docs.aws.amazon.com/service-authorization/latest/reference/list_awsiot.html#awsiot-actions-as-permissions\">DisableTopicRule</a> action.</p>"
     },
+    "DisassociateSbomFromPackageVersion":{
+      "name":"DisassociateSbomFromPackageVersion",
+      "http":{
+        "method":"DELETE",
+        "requestUri":"/packages/{packageName}/versions/{versionName}/sbom",
+        "responseCode":200
+      },
+      "input":{"shape":"DisassociateSbomFromPackageVersionRequest"},
+      "output":{"shape":"DisassociateSbomFromPackageVersionResponse"},
+      "errors":[
+        {"shape":"ThrottlingException"},
+        {"shape":"ConflictException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ValidationException"},
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p>Disassociates a software bill of materials (SBOM) from a specific software package version.</p> <p>Requires permission to access the <a href=\"https://docs.aws.amazon.com/service-authorization/latest/reference/list_awsiot.html#awsiot-actions-as-permissions\">DisassociateSbomWithPackageVersion</a> action.</p>",
+      "idempotent":true
+    },
     "EnableTopicRule":{
       "name":"EnableTopicRule",
       "http":{
@@ -3106,6 +3147,23 @@
         {"shape":"InternalFailureException"}
       ],
       "documentation":"<p>Lists the role aliases registered in your account.</p> <p>Requires permission to access the <a href=\"https://docs.aws.amazon.com/service-authorization/latest/reference/list_awsiot.html#awsiot-actions-as-permissions\">ListRoleAliases</a> action.</p>"
+    },
+    "ListSbomValidationResults":{
+      "name":"ListSbomValidationResults",
+      "http":{
+        "method":"GET",
+        "requestUri":"/packages/{packageName}/versions/{versionName}/sbom-validation-results",
+        "responseCode":200
+      },
+      "input":{"shape":"ListSbomValidationResultsRequest"},
+      "output":{"shape":"ListSbomValidationResultsResponse"},
+      "errors":[
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ValidationException"},
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p>The validation results for all software bill of materials (SBOM) attached to a specific software package version.</p> <p>Requires permission to access the <a href=\"https://docs.aws.amazon.com/service-authorization/latest/reference/list_awsiot.html#awsiot-actions-as-permissions\">ListSbomValidationResults</a> action.</p>"
     },
     "ListScheduledAudits":{
       "name":"ListScheduledAudits",
@@ -4277,6 +4335,7 @@
       "output":{"shape":"UpdateStreamResponse"},
       "errors":[
         {"shape":"InvalidRequestException"},
+        {"shape":"LimitExceededException"},
         {"shape":"ResourceNotFoundException"},
         {"shape":"ThrottlingException"},
         {"shape":"UnauthorizedException"},
@@ -4857,6 +4916,54 @@
         }
       },
       "documentation":"<p>Contains an asset property value (of a single type).</p>"
+    },
+    "AssociateSbomWithPackageVersionRequest":{
+      "type":"structure",
+      "required":[
+        "packageName",
+        "versionName",
+        "sbom"
+      ],
+      "members":{
+        "packageName":{
+          "shape":"PackageName",
+          "documentation":"<p>The name of the new software package.</p>",
+          "location":"uri",
+          "locationName":"packageName"
+        },
+        "versionName":{
+          "shape":"VersionName",
+          "documentation":"<p>The name of the new package version.</p>",
+          "location":"uri",
+          "locationName":"versionName"
+        },
+        "sbom":{"shape":"Sbom"},
+        "clientToken":{
+          "shape":"ClientToken",
+          "documentation":"<p>A unique case-sensitive identifier that you can provide to ensure the idempotency of the request. Don't reuse this client token if a new idempotent request is required.</p>",
+          "idempotencyToken":true,
+          "location":"querystring",
+          "locationName":"clientToken"
+        }
+      }
+    },
+    "AssociateSbomWithPackageVersionResponse":{
+      "type":"structure",
+      "members":{
+        "packageName":{
+          "shape":"PackageName",
+          "documentation":"<p>The name of the new software package.</p>"
+        },
+        "versionName":{
+          "shape":"VersionName",
+          "documentation":"<p>The name of the new package version.</p>"
+        },
+        "sbom":{"shape":"Sbom"},
+        "sbomValidationStatus":{
+          "shape":"SbomValidationStatus",
+          "documentation":"<p>The status of the initial validation for the SBOM against the Software Package Data Exchange (SPDX) and CycloneDX industry standard format.</p>"
+        }
+      }
     },
     "AssociateTargetsWithJobRequest":{
       "type":"structure",
@@ -5726,6 +5833,7 @@
     },
     "AwsJobTimeoutInProgressTimeoutInMinutes":{"type":"long"},
     "BatchMode":{"type":"boolean"},
+    "BeforeSubstitutionFlag":{"type":"boolean"},
     "Behavior":{
       "type":"structure",
       "required":["name"],
@@ -7557,6 +7665,14 @@
         "attributes":{
           "shape":"ResourceAttributes",
           "documentation":"<p>Metadata that can be used to define a package version’s configuration. For example, the S3 file location, configuration options that are being sent to the device or fleet.</p> <p>The combined size of all the attributes on a package version is limited to 3KB.</p>"
+        },
+        "artifact":{
+          "shape":"PackageVersionArtifact",
+          "documentation":"<p>The various build components created during the build process such as libraries and configuration files that make up a software package version.</p>"
+        },
+        "recipe":{
+          "shape":"PackageVersionRecipe",
+          "documentation":"<p>The inline job document associated with a software package version used for a quick job deployment via IoT Jobs.</p>"
         },
         "tags":{
           "shape":"TagMap",
@@ -9684,6 +9800,12 @@
           "documentation":"<p>The unique identifier you assigned to this job when it was created.</p>",
           "location":"uri",
           "locationName":"jobId"
+        },
+        "beforeSubstitution":{
+          "shape":"BeforeSubstitutionFlag",
+          "documentation":"<p>A flag that provides a view of the job document before and after the substitution parameters have been resolved with their exact values.</p>",
+          "location":"querystring",
+          "locationName":"beforeSubstitution"
         }
       }
     },
@@ -10664,6 +10786,39 @@
       },
       "documentation":"<p>The input for the DisableTopicRuleRequest operation.</p>"
     },
+    "DisassociateSbomFromPackageVersionRequest":{
+      "type":"structure",
+      "required":[
+        "packageName",
+        "versionName"
+      ],
+      "members":{
+        "packageName":{
+          "shape":"PackageName",
+          "documentation":"<p>The name of the new software package.</p>",
+          "location":"uri",
+          "locationName":"packageName"
+        },
+        "versionName":{
+          "shape":"VersionName",
+          "documentation":"<p>The name of the new package version.</p>",
+          "location":"uri",
+          "locationName":"versionName"
+        },
+        "clientToken":{
+          "shape":"ClientToken",
+          "documentation":"<p>A unique case-sensitive identifier that you can provide to ensure the idempotency of the request. Don't reuse this client token if a new idempotent request is required.</p>",
+          "idempotencyToken":true,
+          "location":"querystring",
+          "locationName":"clientToken"
+        }
+      }
+    },
+    "DisassociateSbomFromPackageVersionResponse":{
+      "type":"structure",
+      "members":{
+      }
+    },
     "DisconnectReason":{"type":"string"},
     "DocumentParameter":{
       "type":"structure",
@@ -11397,6 +11552,12 @@
           "documentation":"<p>The unique identifier you assigned to this job when it was created.</p>",
           "location":"uri",
           "locationName":"jobId"
+        },
+        "beforeSubstitution":{
+          "shape":"BeforeSubstitutionFlag",
+          "documentation":"<p>A flag that provides a view of the job document before and after the substitution parameters have been resolved with their exact values.</p>",
+          "location":"querystring",
+          "locationName":"beforeSubstitution"
         }
       }
     },
@@ -11549,6 +11710,10 @@
           "shape":"ResourceAttributes",
           "documentation":"<p>Metadata that were added to the package version that can be used to define a package version’s configuration.</p>"
         },
+        "artifact":{
+          "shape":"PackageVersionArtifact",
+          "documentation":"<p>The various components that make up a software package version.</p>"
+        },
         "status":{
           "shape":"PackageVersionStatus",
           "documentation":"<p>The status associated to the package version. For more information, see <a href=\"https://docs.aws.amazon.com/iot/latest/developerguide/preparing-to-use-software-package-catalog.html#package-version-lifecycle\">Package version lifecycle</a>.</p>"
@@ -11564,6 +11729,18 @@
         "lastModifiedDate":{
           "shape":"LastModifiedDate",
           "documentation":"<p>The date when the package version was last updated.</p>"
+        },
+        "sbom":{
+          "shape":"Sbom",
+          "documentation":"<p>The software bill of materials for a software package version.</p>"
+        },
+        "sbomValidationStatus":{
+          "shape":"SbomValidationStatus",
+          "documentation":"<p>The status of the validation for a new software bill of materials added to a software package version.</p>"
+        },
+        "recipe":{
+          "shape":"PackageVersionRecipe",
+          "documentation":"<p>The inline job document associated with a software package version used for a quick job deployment via IoT Jobs.</p>"
         }
       }
     },
@@ -14501,6 +14678,58 @@
         }
       }
     },
+    "ListSbomValidationResultsRequest":{
+      "type":"structure",
+      "required":[
+        "packageName",
+        "versionName"
+      ],
+      "members":{
+        "packageName":{
+          "shape":"PackageName",
+          "documentation":"<p>The name of the new software package.</p>",
+          "location":"uri",
+          "locationName":"packageName"
+        },
+        "versionName":{
+          "shape":"VersionName",
+          "documentation":"<p>The name of the new package version.</p>",
+          "location":"uri",
+          "locationName":"versionName"
+        },
+        "validationResult":{
+          "shape":"SbomValidationResult",
+          "documentation":"<p>The end result of the </p>",
+          "location":"querystring",
+          "locationName":"validationResult"
+        },
+        "maxResults":{
+          "shape":"PackageCatalogMaxResults",
+          "documentation":"<p>The maximum number of results to return at one time.</p>",
+          "location":"querystring",
+          "locationName":"maxResults"
+        },
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>A token that can be used to retrieve the next set of results, or null if there are no additional results.</p>",
+          "location":"querystring",
+          "locationName":"nextToken"
+        }
+      }
+    },
+    "ListSbomValidationResultsResponse":{
+      "type":"structure",
+      "members":{
+        "validationResultSummaries":{
+          "shape":"SbomValidationResultSummaryList",
+          "documentation":"<p>A summary of the validation results for each software bill of materials attached to a software package version.</p>"
+        },
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>A token that can be used to retrieve the next set of results, or null if there are no additional results.</p>"
+        }
+      }
+    },
     "ListScheduledAuditsRequest":{
       "type":"structure",
       "members":{
@@ -16224,7 +16453,19 @@
       "min":1,
       "pattern":"^arn:[!-~]+$"
     },
+    "PackageVersionArtifact":{
+      "type":"structure",
+      "members":{
+        "s3Location":{"shape":"S3Location"}
+      },
+      "documentation":"<p>The Amazon S3 location for the artifacts associated with a software package version.</p>"
+    },
     "PackageVersionErrorReason":{"type":"string"},
+    "PackageVersionRecipe":{
+      "type":"string",
+      "max":3072,
+      "sensitive":true
+    },
     "PackageVersionStatus":{
       "type":"string",
       "enum":[
@@ -17425,6 +17666,62 @@
       "type":"string",
       "min":40
     },
+    "Sbom":{
+      "type":"structure",
+      "members":{
+        "s3Location":{"shape":"S3Location"}
+      },
+      "documentation":"<p>The Amazon S3 location for the software bill of materials associated with a software package version.</p>"
+    },
+    "SbomValidationErrorCode":{
+      "type":"string",
+      "enum":[
+        "INCOMPATIBLE_FORMAT",
+        "FILE_SIZE_LIMIT_EXCEEDED"
+      ]
+    },
+    "SbomValidationErrorMessage":{"type":"string"},
+    "SbomValidationResult":{
+      "type":"string",
+      "enum":[
+        "FAILED",
+        "SUCCEEDED"
+      ]
+    },
+    "SbomValidationResultSummary":{
+      "type":"structure",
+      "members":{
+        "fileName":{
+          "shape":"FileName",
+          "documentation":"<p>The name of the SBOM file.</p>"
+        },
+        "validationResult":{
+          "shape":"SbomValidationResult",
+          "documentation":"<p>The end result of the SBOM validation.</p>"
+        },
+        "errorCode":{
+          "shape":"SbomValidationErrorCode",
+          "documentation":"<p>The <code>errorCode</code> representing the validation failure error if the SBOM validation failed.</p>"
+        },
+        "errorMessage":{
+          "shape":"SbomValidationErrorMessage",
+          "documentation":"<p>The <code>errorMessage</code> representing the validation failure error if the SBOM validation failed.</p>"
+        }
+      },
+      "documentation":"<p>A summary of the validation results for a specific software bill of materials (SBOM) attached to a software package version.</p>"
+    },
+    "SbomValidationResultSummaryList":{
+      "type":"list",
+      "member":{"shape":"SbomValidationResultSummary"}
+    },
+    "SbomValidationStatus":{
+      "type":"string",
+      "enum":[
+        "IN_PROGRESS",
+        "FAILED",
+        "SUCCEEDED"
+      ]
+    },
     "ScheduledAuditArn":{"type":"string"},
     "ScheduledAuditMetadata":{
       "type":"structure",
@@ -17639,7 +17936,7 @@
       "members":{
         "enableOCSPCheck":{
           "shape":"EnableOCSPCheck",
-          "documentation":"<p>A Boolean value that indicates whether Online Certificate Status Protocol (OCSP) server certificate check is enabled or not.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/iot/latest/developerguide/iot-custom-domain-ocsp-config.html\">Configuring OCSP server-certificate stapling in domain configuration</a> from Amazon Web Services IoT Core Developer Guide.</p>"
+          "documentation":"<p>A Boolean value that indicates whether Online Certificate Status Protocol (OCSP) server certificate check is enabled or not.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/iot/latest/developerguide/iot-custom-endpoints-cert-config.html\">Configuring OCSP server-certificate stapling in domain configuration</a> from Amazon Web Services IoT Core Developer Guide.</p>"
         }
       },
       "documentation":"<p>The server certificate configuration.</p>"
@@ -20148,9 +20445,17 @@
           "shape":"ResourceAttributes",
           "documentation":"<p>Metadata that can be used to define a package version’s configuration. For example, the Amazon S3 file location, configuration options that are being sent to the device or fleet. </p> <p> <b>Note:</b> Attributes can be updated only when the package version is in a draft state.</p> <p>The combined size of all the attributes on a package version is limited to 3KB.</p>"
         },
+        "artifact":{
+          "shape":"PackageVersionArtifact",
+          "documentation":"<p>The various components that make up a software package version.</p>"
+        },
         "action":{
           "shape":"PackageVersionAction",
           "documentation":"<p>The status that the package version should be assigned. For more information, see <a href=\"https://docs.aws.amazon.com/iot/latest/developerguide/preparing-to-use-software-package-catalog.html#package-version-lifecycle\">Package version lifecycle</a>.</p>"
+        },
+        "recipe":{
+          "shape":"PackageVersionRecipe",
+          "documentation":"<p>The inline job document associated with a software package version used for a quick job deployment via IoT Jobs.</p>"
         },
         "clientToken":{
           "shape":"ClientToken",

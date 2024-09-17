@@ -2,6 +2,17 @@
 CHANGELOG
 =========
 
+2.17.53
+=======
+
+* api-change:``ecr``: The `DescribeImageScanning` API now includes `fixAvailable`, `exploitAvailable`, and `fixedInVersion` fields to provide more detailed information about the availability of fixes, exploits, and fixed versions for identified image vulnerabilities.
+* api-change:``ssm``: Support for additional levels of cross-account, cross-Region organizational units in Automation. Various documentation updates.
+* api-change:``codebuild``: GitLab Enhancements - Add support for Self-Hosted GitLab runners in CodeBuild. Add group webhooks
+* api-change:``ecs``: This is a documentation only release to address various tickets.
+* api-change:``rds``: Updates Amazon RDS documentation with configuration information about the BYOL model for RDS for Db2.
+* api-change:``lambda``: Support for JSON resource-based policies and block public access
+
+
 2.17.52
 =======
 

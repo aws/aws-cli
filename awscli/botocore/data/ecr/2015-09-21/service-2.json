@@ -1806,7 +1806,7 @@
       "members":{
         "encryptionType":{
           "shape":"EncryptionType",
-          "documentation":"<p>The encryption type to use.</p> <p>If you use the <code>KMS</code> encryption type, the contents of the repository will be encrypted using server-side encryption with Key Management Service key stored in KMS. When you use KMS to encrypt your data, you can either use the default Amazon Web Services managed KMS key for Amazon ECR, or specify your own KMS key, which you already created.</p> <p>If you use the <code>KMS_DSSE</code> encryption type, the contents of the repository will be encrypted with two layers of encryption using server-side encryption with the KMS Management Service key stored in KMS. Similar to the KMS encryption type, you can either use the default Amazon Web Services managed KMS key for Amazon ECR, or specify your own KMS key, which you've already created. </p> <p>If you use the <code>AES256</code> encryption type, Amazon ECR uses server-side encryption with Amazon S3-managed encryption keys which encrypts the images in the repository using an AES256 encryption algorithm. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/dev/UsingServerSideEncryption.html\">Protecting data using server-side encryption with Amazon S3-managed encryption keys (SSE-S3)</a> in the <i>Amazon Simple Storage Service Console Developer Guide</i>.</p>"
+          "documentation":"<p>The encryption type to use.</p> <p>If you use the <code>KMS</code> encryption type, the contents of the repository will be encrypted using server-side encryption with Key Management Service key stored in KMS. When you use KMS to encrypt your data, you can either use the default Amazon Web Services managed KMS key for Amazon ECR, or specify your own KMS key, which you already created.</p> <p>If you use the <code>KMS_DSSE</code> encryption type, the contents of the repository will be encrypted with two layers of encryption using server-side encryption with the KMS Management Service key stored in KMS. Similar to the <code>KMS</code> encryption type, you can either use the default Amazon Web Services managed KMS key for Amazon ECR, or specify your own KMS key, which you've already created. </p> <p>If you use the <code>AES256</code> encryption type, Amazon ECR uses server-side encryption with Amazon S3-managed encryption keys which encrypts the images in the repository using an AES256 encryption algorithm.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/AmazonECR/latest/userguide/encryption-at-rest.html\">Amazon ECR encryption at rest</a> in the <i>Amazon Elastic Container Registry User Guide</i>.</p>"
         },
         "kmsKey":{
           "shape":"KmsKey",
@@ -1900,6 +1900,14 @@
         "updatedAt":{
           "shape":"Date",
           "documentation":"<p>The date and time the finding was last updated at.</p>"
+        },
+        "fixAvailable":{
+          "shape":"FixAvailable",
+          "documentation":"<p>Details on whether a fix is available through a version update. This value can be <code>YES</code>, <code>NO</code>, or <code>PARTIAL</code>. A <code>PARTIAL</code> fix means that some, but not all, of the packages identified in the finding have fixes available through updated versions.</p>"
+        },
+        "exploitAvailable":{
+          "shape":"ExploitAvailable",
+          "documentation":"<p>If a finding discovered in your environment has an exploit available.</p>"
         }
       },
       "documentation":"<p>The details of an enhanced image scan. This is returned when enhanced scanning is enabled for your private registry.</p>"
@@ -1912,6 +1920,7 @@
     "EvaluationTimestamp":{"type":"timestamp"},
     "ExceptionMessage":{"type":"string"},
     "ExpirationTimestamp":{"type":"timestamp"},
+    "ExploitAvailable":{"type":"string"},
     "FilePath":{"type":"string"},
     "FindingArn":{"type":"string"},
     "FindingDescription":{"type":"string"},
@@ -1932,6 +1941,8 @@
       "key":{"shape":"FindingSeverity"},
       "value":{"shape":"SeverityCount"}
     },
+    "FixAvailable":{"type":"string"},
+    "FixedInVersion":{"type":"string"},
     "ForceFlag":{"type":"boolean"},
     "GetAccountSettingRequest":{
       "type":"structure",
@@ -4466,6 +4477,10 @@
         "version":{
           "shape":"Version",
           "documentation":"<p>The version of the vulnerable package.</p>"
+        },
+        "fixedInVersion":{
+          "shape":"FixedInVersion",
+          "documentation":"<p>The version of the package that contains the vulnerability fix.</p>"
         }
       },
       "documentation":"<p>Information on the vulnerable package identified by a finding.</p>"

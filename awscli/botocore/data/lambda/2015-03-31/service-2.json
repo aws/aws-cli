@@ -311,6 +311,24 @@
       ],
       "documentation":"<p>Deletes the provisioned concurrency configuration for a function.</p>"
     },
+    "DeleteResourcePolicy":{
+      "name":"DeleteResourcePolicy",
+      "http":{
+        "method":"DELETE",
+        "requestUri":"/2024-09-16/resource-policy/{ResourceArn}",
+        "responseCode":204
+      },
+      "input":{"shape":"DeleteResourcePolicyRequest"},
+      "errors":[
+        {"shape":"ServiceException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ResourceConflictException"},
+        {"shape":"InvalidParameterValueException"},
+        {"shape":"TooManyRequestsException"},
+        {"shape":"PreconditionFailedException"}
+      ],
+      "documentation":"<p>Deletes a <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/access-control-resource-based.html\">resource-based policy</a> from a function.</p>"
+    },
     "GetAccountSettings":{
       "name":"GetAccountSettings",
       "http":{
@@ -580,6 +598,40 @@
         {"shape":"ProvisionedConcurrencyConfigNotFoundException"}
       ],
       "documentation":"<p>Retrieves the provisioned concurrency configuration for a function's alias or version.</p>"
+    },
+    "GetPublicAccessBlockConfig":{
+      "name":"GetPublicAccessBlockConfig",
+      "http":{
+        "method":"GET",
+        "requestUri":"/2024-09-16/public-access-block/{ResourceArn}",
+        "responseCode":200
+      },
+      "input":{"shape":"GetPublicAccessBlockConfigRequest"},
+      "output":{"shape":"GetPublicAccessBlockConfigResponse"},
+      "errors":[
+        {"shape":"ServiceException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"TooManyRequestsException"},
+        {"shape":"InvalidParameterValueException"}
+      ],
+      "documentation":"<p>Retrieve the public-access settings for a function.</p>"
+    },
+    "GetResourcePolicy":{
+      "name":"GetResourcePolicy",
+      "http":{
+        "method":"GET",
+        "requestUri":"/2024-09-16/resource-policy/{ResourceArn}",
+        "responseCode":200
+      },
+      "input":{"shape":"GetResourcePolicyRequest"},
+      "output":{"shape":"GetResourcePolicyResponse"},
+      "errors":[
+        {"shape":"ServiceException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"TooManyRequestsException"},
+        {"shape":"InvalidParameterValueException"}
+      ],
+      "documentation":"<p>Retrieves the <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/access-control-resource-based.html\">resource-based policy</a> attached to a function.</p>"
     },
     "GetRuntimeManagementConfig":{
       "name":"GetRuntimeManagementConfig",
@@ -1027,6 +1079,45 @@
         {"shape":"ServiceException"}
       ],
       "documentation":"<p>Adds a provisioned concurrency configuration to a function's alias or version.</p>"
+    },
+    "PutPublicAccessBlockConfig":{
+      "name":"PutPublicAccessBlockConfig",
+      "http":{
+        "method":"PUT",
+        "requestUri":"/2024-09-16/public-access-block/{ResourceArn}",
+        "responseCode":200
+      },
+      "input":{"shape":"PutPublicAccessBlockConfigRequest"},
+      "output":{"shape":"PutPublicAccessBlockConfigResponse"},
+      "errors":[
+        {"shape":"ServiceException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ResourceConflictException"},
+        {"shape":"InvalidParameterValueException"},
+        {"shape":"TooManyRequestsException"}
+      ],
+      "documentation":"<p>Configure your function's public-access settings.</p> <p>To control public access to a Lambda function, you can choose whether to allow the creation of <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/access-control-resource-based.html\">resource-based policies</a> that allow public access to that function. You can also block public access to a function, even if it has an existing resource-based policy that allows it.</p>"
+    },
+    "PutResourcePolicy":{
+      "name":"PutResourcePolicy",
+      "http":{
+        "method":"PUT",
+        "requestUri":"/2024-09-16/resource-policy/{ResourceArn}",
+        "responseCode":200
+      },
+      "input":{"shape":"PutResourcePolicyRequest"},
+      "output":{"shape":"PutResourcePolicyResponse"},
+      "errors":[
+        {"shape":"ServiceException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ResourceConflictException"},
+        {"shape":"InvalidParameterValueException"},
+        {"shape":"PolicyLengthExceededException"},
+        {"shape":"TooManyRequestsException"},
+        {"shape":"PreconditionFailedException"},
+        {"shape":"PublicPolicyException"}
+      ],
+      "documentation":"<p>Adds a <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/access-control-resource-based.html\">resource-based policy</a> to a function. You can use resource-based policies to grant access to other <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/permissions-function-cross-account.html\">Amazon Web Services accounts</a>, <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/permissions-function-organization.html\">organizations</a>, or <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/permissions-function-services.html\">services</a>. Resource-based policies apply to a single function, version, or alias.</p> <important> <p>Adding a resource-based policy using this API action replaces any existing policy you've previously created. This means that if you've previously added resource-based permissions to a function using the <a>AddPermission</a> action, those permissions will be overwritten by your new policy.</p> </important>"
     },
     "PutRuntimeManagementConfig":{
       "name":"PutRuntimeManagementConfig",
@@ -2233,6 +2324,24 @@
           "documentation":"<p>The version number or alias name.</p>",
           "location":"querystring",
           "locationName":"Qualifier"
+        }
+      }
+    },
+    "DeleteResourcePolicyRequest":{
+      "type":"structure",
+      "required":["ResourceArn"],
+      "members":{
+        "ResourceArn":{
+          "shape":"PolicyResourceArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the function you want to delete the policy from. You can use either a qualified or an unqualified ARN, but the value you specify must be a complete ARN and wildcard characters are not accepted.</p>",
+          "location":"uri",
+          "locationName":"ResourceArn"
+        },
+        "RevisionId":{
+          "shape":"RevisionId",
+          "documentation":"<p>Delete the existing policy only if its revision ID matches the string you specify. To find the revision ID of the policy currently attached to your function, use the <a>GetResourcePolicy</a> action.</p>",
+          "location":"querystring",
+          "locationName":"RevisionId"
         }
       }
     },
@@ -3463,6 +3572,52 @@
         "LastModified":{
           "shape":"Timestamp",
           "documentation":"<p>The date and time that a user last updated the configuration, in <a href=\"https://www.iso.org/iso-8601-date-and-time-format.html\">ISO 8601 format</a>.</p>"
+        }
+      }
+    },
+    "GetPublicAccessBlockConfigRequest":{
+      "type":"structure",
+      "required":["ResourceArn"],
+      "members":{
+        "ResourceArn":{
+          "shape":"PublicAccessBlockResourceArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the function you want to retrieve public-access settings for.</p>",
+          "location":"uri",
+          "locationName":"ResourceArn"
+        }
+      }
+    },
+    "GetPublicAccessBlockConfigResponse":{
+      "type":"structure",
+      "members":{
+        "PublicAccessBlockConfig":{
+          "shape":"PublicAccessBlockConfig",
+          "documentation":"<p>The public-access settings configured for the function you specified</p>"
+        }
+      }
+    },
+    "GetResourcePolicyRequest":{
+      "type":"structure",
+      "required":["ResourceArn"],
+      "members":{
+        "ResourceArn":{
+          "shape":"PolicyResourceArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the function you want to retrieve the policy for. You can use either a qualified or an unqualified ARN, but the value you specify must be a complete ARN and wildcard characters are not accepted.</p>",
+          "location":"uri",
+          "locationName":"ResourceArn"
+        }
+      }
+    },
+    "GetResourcePolicyResponse":{
+      "type":"structure",
+      "members":{
+        "Policy":{
+          "shape":"ResourcePolicy",
+          "documentation":"<p>The resource-based policy attached to the function you specified.</p>"
+        },
+        "RevisionId":{
+          "shape":"RevisionId",
+          "documentation":"<p>The revision ID of the policy.</p>"
         }
       }
     },
@@ -4789,6 +4944,11 @@
       "error":{"httpStatusCode":400},
       "exception":true
     },
+    "PolicyResourceArn":{
+      "type":"string",
+      "max":256,
+      "pattern":"arn:(aws[a-zA-Z-]*)?:lambda:[a-z]{2}((-gov)|(-iso([a-z]?)))?-[a-z]+-\\d{1}:\\d{12}:function:[a-zA-Z0-9-_]+(:(\\$LATEST|[a-zA-Z0-9-_])+)?"
+    },
     "PositiveInteger":{
       "type":"integer",
       "min":1
@@ -4874,6 +5034,38 @@
         "READY",
         "FAILED"
       ]
+    },
+    "PublicAccessBlockConfig":{
+      "type":"structure",
+      "members":{
+        "BlockPublicPolicy":{
+          "shape":"NullableBoolean",
+          "documentation":"<p>To block the creation of resource-based policies that would grant public access to your function, set <code>BlockPublicPolicy</code> to <code>true</code>. To allow the creation of resource-based policies that would grant public access to your function, set <code>BlockPublicPolicy</code> to <code>false</code>.</p>"
+        },
+        "RestrictPublicResource":{
+          "shape":"NullableBoolean",
+          "documentation":"<p>To block public access to your function, even if its resource-based policy allows it, set <code>RestrictPublicResource</code> to <code>true</code>. To allow public access to a function with a resource-based policy that permits it, set <code>RestrictPublicResource</code> to <code>false</code>.</p>"
+        }
+      },
+      "documentation":"<p>An object that defines the public-access settings for a function.</p>"
+    },
+    "PublicAccessBlockResourceArn":{
+      "type":"string",
+      "max":170,
+      "pattern":"arn:(aws[a-zA-Z-]*)?:lambda:[a-z]{2}((-gov)|(-iso([a-z]?)))?-[a-z]+-\\d{1}:\\d{12}:function:[a-zA-Z0-9-_]+"
+    },
+    "PublicPolicyException":{
+      "type":"structure",
+      "members":{
+        "Type":{
+          "shape":"String",
+          "documentation":"<p>The exception type.</p>"
+        },
+        "Message":{"shape":"String"}
+      },
+      "documentation":"<p>Lambda prevented your policy from being created because it would grant public access to your function. If you intended to create a public policy, use the <a>PutPublicAccessBlockConfig</a> API action to configure your function's public-access settings to allow public policies.</p>",
+      "error":{"httpStatusCode":400},
+      "exception":true
     },
     "PublishLayerVersionRequest":{
       "type":"structure",
@@ -5143,6 +5335,70 @@
         }
       }
     },
+    "PutPublicAccessBlockConfigRequest":{
+      "type":"structure",
+      "required":[
+        "ResourceArn",
+        "PublicAccessBlockConfig"
+      ],
+      "members":{
+        "ResourceArn":{
+          "shape":"PublicAccessBlockResourceArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the function you want to configure public-access settings for. Public-access settings are applied at the function level, so you can't apply different settings to function versions or aliases.</p>",
+          "location":"uri",
+          "locationName":"ResourceArn"
+        },
+        "PublicAccessBlockConfig":{
+          "shape":"PublicAccessBlockConfig",
+          "documentation":"<p>An object defining the public-access settings you want to apply.</p> <p>To block the creation of resource-based policies that would grant public access to your function, set <code>BlockPublicPolicy</code> to <code>true</code>. To allow the creation of resource-based policies that would grant public access to your function, set <code>BlockPublicPolicy</code> to <code>false</code>.</p> <p>To block public access to your function, even if its resource-based policy allows it, set <code>RestrictPublicResource</code> to <code>true</code>. To allow public access to a function with a resource-based policy that permits it, set <code>RestrictPublicResource</code> to <code>false</code>.</p> <p>The default setting for both <code>BlockPublicPolicy</code> and <code>RestrictPublicResource</code> is <code>true</code>.</p>"
+        }
+      }
+    },
+    "PutPublicAccessBlockConfigResponse":{
+      "type":"structure",
+      "members":{
+        "PublicAccessBlockConfig":{
+          "shape":"PublicAccessBlockConfig",
+          "documentation":"<p>The public-access settings Lambda applied to your function.</p>"
+        }
+      }
+    },
+    "PutResourcePolicyRequest":{
+      "type":"structure",
+      "required":[
+        "ResourceArn",
+        "Policy"
+      ],
+      "members":{
+        "ResourceArn":{
+          "shape":"PolicyResourceArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the function you want to add the policy to. You can use either a qualified or an unqualified ARN, but the value you specify must be a complete ARN and wildcard characters are not accepted.</p>",
+          "location":"uri",
+          "locationName":"ResourceArn"
+        },
+        "Policy":{
+          "shape":"ResourcePolicy",
+          "documentation":"<p>The JSON resource-based policy you want to add to your function.</p> <p>To learn more about creating resource-based policies for controlling access to Lambda, see <a href=\"https://docs.aws.amazon.com/\">Working with resource-based IAM policies in Lambda</a> in the <i>Lambda Developer Guide</i>.</p>"
+        },
+        "RevisionId":{
+          "shape":"RevisionId",
+          "documentation":"<p>Replace the existing policy only if its revision ID matches the string you specify. To find the revision ID of the policy currently attached to your function, use the <a>GetResourcePolicy</a> action.</p>"
+        }
+      }
+    },
+    "PutResourcePolicyResponse":{
+      "type":"structure",
+      "members":{
+        "Policy":{
+          "shape":"ResourcePolicy",
+          "documentation":"<p>The policy Lambda added to your function.</p>"
+        },
+        "RevisionId":{
+          "shape":"RevisionId",
+          "documentation":"<p>The revision ID of the policy Lambda added to your function.</p>"
+        }
+      }
+    },
     "PutRuntimeManagementConfigRequest":{
       "type":"structure",
       "required":[
@@ -5371,12 +5627,24 @@
       "error":{"httpStatusCode":502},
       "exception":true
     },
+    "ResourcePolicy":{
+      "type":"string",
+      "max":20480,
+      "min":1,
+      "pattern":"[\\s\\S]+"
+    },
     "ResponseStreamingInvocationType":{
       "type":"string",
       "enum":[
         "RequestResponse",
         "DryRun"
       ]
+    },
+    "RevisionId":{
+      "type":"string",
+      "max":36,
+      "min":36,
+      "pattern":"[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}"
     },
     "RoleArn":{
       "type":"string",

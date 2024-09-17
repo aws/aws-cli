@@ -3941,15 +3941,15 @@
       "members":{
         "name":{
           "shape":"String",
-          "documentation":"<p>The name of either the enterprise or organization that will send webhook events to CodeBuild, depending on if the webhook is a global or organization webhook respectively.</p>"
+          "documentation":"<p>The name of either the group, enterprise, or organization that will send webhook events to CodeBuild, depending on the type of webhook.</p>"
         },
         "domain":{
           "shape":"String",
-          "documentation":"<p>The domain of the GitHub Enterprise organization. Note that this parameter is only required if your project's source type is GITHUB_ENTERPRISE</p>"
+          "documentation":"<p>The domain of the GitHub Enterprise organization or the GitLab Self Managed group. Note that this parameter is only required if your project's source type is GITHUB_ENTERPRISE or GITLAB_SELF_MANAGED.</p>"
         },
         "scope":{
           "shape":"WebhookScopeType",
-          "documentation":"<p>The type of scope for a GitHub webhook.</p>"
+          "documentation":"<p>The type of scope for a GitHub or GitLab webhook.</p>"
         }
       },
       "documentation":"<p>Contains configuration information about the scope for a webhook. </p>"
@@ -4867,7 +4867,8 @@
       "type":"string",
       "enum":[
         "GITHUB_ORGANIZATION",
-        "GITHUB_GLOBAL"
+        "GITHUB_GLOBAL",
+        "GITLAB_GROUP"
       ]
     },
     "WrapperBoolean":{"type":"boolean"},

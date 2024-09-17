@@ -126,9 +126,9 @@ class ShorthandParser:
 
     _SINGLE_QUOTED = _NamedRegex('singled quoted', r'\'(?:\\\\|\\\'|[^\'])*\'')
     _DOUBLE_QUOTED = _NamedRegex('double quoted', r'"(?:\\\\|\\"|[^"])*"')
-    _START_WORD = '\!\#-&\(-\+\--\<\>-Z\\\\-z\u007c-\uffff'
-    _FIRST_FOLLOW_CHARS = '\s\!\#-&\(-\+\--\\\\\^-\|~-\uffff'
-    _SECOND_FOLLOW_CHARS = '\s\!\#-&\(-\+\--\<\>-\uffff'
+    _START_WORD = r'\!\#-&\(-\+\--\<\>-Z\\\\-z\u007c-\uffff'
+    _FIRST_FOLLOW_CHARS = r'\s\!\#-&\(-\+\--\\\\\^-\|~-\uffff'
+    _SECOND_FOLLOW_CHARS = r'\s\!\#-&\(-\+\--\<\>-\uffff'
     _ESCAPED_COMMA = '(\\\\,)'
     _FIRST_VALUE = _NamedRegex(
         'first',

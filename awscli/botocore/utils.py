@@ -3590,6 +3590,7 @@ CLIENT_NAME_TO_HYPHENIZED_SERVICE_ID_OVERRIDES = {
     'discovery': 'application-discovery-service',
     'dms': 'database-migration-service',
     'ds': 'directory-service',
+    'ds-data': 'directory-service-data',
     'dynamodbstreams': 'dynamodb-streams',
     'elasticbeanstalk': 'elastic-beanstalk',
     'elastictranscoder': 'elastic-transcoder',

@@ -338,16 +338,12 @@ class PageArgument(BaseCLIArgument):
         parser.add_argument(self.cli_name, dest=self.py_name,
                             type=self.type_map[self._parse_type])
 
-    def _emit_non_positive_max_items_warning(self, value):
-        if int(value) <= 0:
-            uni_print(
-                "warning: Non-positive values for --max-items may result in undefined behavior.\n",
-                sys.stderr)
-
     def add_to_params(self, parameters, value):
         if value is not None:
-            if self._serialized_name == 'MaxItems':
-                self._emit_non_positive_max_items_warning(value)
+            if self._serialized_name == 'MaxItems' and int(value) <= 0:
+                uni_print(
+                    "warning: Non-positive values for --max-items may result in undefined behavior.\n",
+                    sys.stderr)
             pagination_config = parameters.get('PaginationConfig', {})
             pagination_config[self._serialized_name] = value
             parameters['PaginationConfig'] = pagination_config

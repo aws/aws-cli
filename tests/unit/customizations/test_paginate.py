@@ -23,6 +23,11 @@ from awscli.customizations import paginate
 from awscli.customizations.exceptions import ParamValidationError
 
 
+@pytest.fixture
+def max_items_page_arg():
+    return PageArgument('max-items', 'documentation', int, 'MaxItems')
+
+
 class TestPaginateBase(unittest.TestCase):
 
     def setUp(self):
@@ -355,10 +360,6 @@ class TestEnsurePagingParamsNotSet(TestPaginateBase):
             self.parsed_args, {}))
 
 class TestNonPositiveMaxItems:
-    @pytest.fixture
-    def max_items_page_arg(self):
-        return PageArgument('max-items', 'documentation', int, 'MaxItems')
-
     def test_positive_integer_does_not_raise_warning(self, max_items_page_arg, capsys):
         max_items_page_arg.add_to_params({}, 1)
         captured = capsys.readouterr()

@@ -481,6 +481,17 @@ VALIDATE_SAME_S3_PATHS = {
     )
 }
 
+CHECKSUM_MODE = {
+        'name': 'checksum-modee', 'choices': ['ENABLED'],
+        'help_text': 'To retrieve the checksum, this mode must be enabled.'
+}
+
+CHECKSUM_ALGORITHM = {
+        'name': 'checksum-algorithm', 'choices': ['CRC32', 'SHA256', 'SHA1', 'CRC64NVME', 'CRC32C'],
+        'help_text': 'Indicates the algorithm used to create the checksum for the object when you use the SDK. '
+        'This header will not provide any additional functionality if you don’t use the SDK.'
+} # TODO truncated some of the doc description from low-level api until i see exactly how this affects things.
+
 TRANSFER_ARGS = [DRYRUN, QUIET, INCLUDE, EXCLUDE, ACL,
                  FOLLOW_SYMLINKS, NO_FOLLOW_SYMLINKS, NO_GUESS_MIME_TYPE,
                  SSE, SSE_C, SSE_C_KEY, SSE_KMS_KEY_ID, SSE_C_COPY_SOURCE,
@@ -489,7 +500,7 @@ TRANSFER_ARGS = [DRYRUN, QUIET, INCLUDE, EXCLUDE, ACL,
                  CONTENT_DISPOSITION, CONTENT_ENCODING, CONTENT_LANGUAGE,
                  EXPIRES, SOURCE_REGION, ONLY_SHOW_ERRORS, NO_PROGRESS,
                  PAGE_SIZE, IGNORE_GLACIER_WARNINGS, FORCE_GLACIER_TRANSFER,
-                 REQUEST_PAYER]
+                 REQUEST_PAYER, CHECKSUM_MODE, CHECKSUM_ALGORITHM]
 
 
 class S3Command(BasicCommand):

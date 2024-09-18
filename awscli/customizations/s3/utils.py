@@ -470,12 +470,15 @@ class RequestParamsMapper(object):
         cls._set_sse_request_params(request_params, cli_params)
         cls._set_sse_c_request_params(request_params, cli_params)
         cls._set_request_payer_param(request_params, cli_params)
+        cls._set_checksum_algorithm_param(request_params, cli_params)
+
 
     @classmethod
     def map_get_object_params(cls, request_params, cli_params):
         """Map CLI params to GetObject request params"""
         cls._set_sse_c_request_params(request_params, cli_params)
         cls._set_request_payer_param(request_params, cli_params)
+        cls._set_checksum_mode_param(request_params, cli_params)
 
     @classmethod
     def map_get_object_tagging_params(cls, request_params, cli_params):
@@ -519,6 +522,7 @@ class RequestParamsMapper(object):
         """Map CLI params to UploadPart request params"""
         cls._set_sse_c_request_params(request_params, cli_params)
         cls._set_request_payer_param(request_params, cli_params)
+        cls._set_checksum_algorithm_param(request_params, cli_params)
 
     @classmethod
     def map_upload_part_copy_params(cls, request_params, cli_params):
@@ -529,6 +533,12 @@ class RequestParamsMapper(object):
 
     @classmethod
     def map_delete_object_params(cls, request_params, cli_params):
+        # TODO add brawn support. deleteObjects API has a checksumAlgorithm (request) member.
+        # weirdly though, it does not include individual algorithm headers.
+        # perhaps it is meant to be sent as a trailer?
+        # also, this function is called delete_object. does it even include deleteObjects in its scope ?
+        # additionally, do any high-level s3 commands even call deleteObjects? (most important question here).
+        # potential candidates: sync, mv
         cls._set_request_payer_param(request_params, cli_params)
 
     @classmethod
@@ -539,6 +549,17 @@ class RequestParamsMapper(object):
     def _set_request_payer_param(cls, request_params, cli_params):
         if cli_params.get('request_payer'):
             request_params['RequestPayer'] = cli_params['request_payer']
+
+    @classmethod
+    def _set_checksum_mode_param(cls, request_params, cli_params):
+        if cli_params.get('checksum_mode'):
+            request_params['ChecksumMode'] = cli_params['checksum_mode']
+
+    # TODO we might want to pluralize this and parse each algorithm's header if desired
+    @classmethod
+    def _set_checksum_algorithm_param(cls, request_params, cli_params):
+        if cli_params.get('checksum_algorithm'):
+            request_params['ChecksumAlgorithm'] = cli_params['checksum_algorithm']
 
     @classmethod
     def _set_general_object_params(cls, request_params, cli_params):

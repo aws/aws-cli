@@ -199,9 +199,11 @@ class CreateCluster(Command):
                     raise ValueError('aws: error: invalid json argument for '
                                      'option --configurations')
 
-        if (parsed_args.release_label is None and
-                parsed_args.ami_version is not None):
-            is_valid_ami_version = re.match('\d?\..*', parsed_args.ami_version)
+        if (
+            parsed_args.release_label is None
+            and parsed_args.ami_version is not None
+        ):
+            is_valid_ami_version = re.match(r'\d?\..*', parsed_args.ami_version)
             if is_valid_ami_version is None:
                 raise exceptions.InvalidAmiVersionError(
                     ami_version=parsed_args.ami_version)

@@ -11,7 +11,8 @@
     "signatureVersion":"v4",
     "signingName":"ses",
     "targetPrefix":"MailManagerSvc",
-    "uid":"mailmanager-2023-10-17"
+    "uid":"mailmanager-2023-10-17",
+    "auth":["aws.auth#sigv4"]
   },
   "operations":{
     "CreateAddonInstance":{
@@ -717,7 +718,7 @@
         {"shape":"ConflictException"},
         {"shape":"ResourceNotFoundException"}
       ],
-      "documentation":"<p>&gt;Update attributes of an already provisioned rule set.</p>",
+      "documentation":"<p>Update attributes of an already provisioned rule set.</p>",
       "idempotent":true
     },
     "UpdateTrafficPolicy":{
@@ -2725,6 +2726,10 @@
       },
       "documentation":"<p>The textual body content of an email message.</p>"
     },
+    "MimeHeaderAttribute":{
+      "type":"string",
+      "pattern":"^X-[a-zA-Z0-9-]{1,256}$"
+    },
     "NameOrArn":{
       "type":"string",
       "max":2048,
@@ -3388,6 +3393,10 @@
         "Attribute":{
           "shape":"RuleStringEmailAttribute",
           "documentation":"<p>The email attribute to evaluate in a string condition expression.</p>"
+        },
+        "MimeHeaderAttribute":{
+          "shape":"MimeHeaderAttribute",
+          "documentation":"<p>The email MIME X-Header attribute to evaluate in a string condition expression.</p>"
         }
       },
       "documentation":"<p>The string to evaluate in a string condition expression.</p>",
@@ -3750,9 +3759,14 @@
       "type":"list",
       "member":{"shape":"String"}
     },
+    "StringValue":{
+      "type":"string",
+      "max":2048,
+      "min":1
+    },
     "StringValueList":{
       "type":"list",
-      "member":{"shape":"String"},
+      "member":{"shape":"StringValue"},
       "max":10,
       "min":1
     },
@@ -4052,5 +4066,5 @@
       "exception":true
     }
   },
-  "documentation":"<p><fullname>AWS SES Mail Manager API</fullname> <p> <a href=\"http://aws.amazon.com/ses\">AWS SES Mail Manager API</a> contains operations and data types that comprise the Mail Manager feature of Amazon Simple Email Service.</p> <p>Mail Manager is a set of Amazon SES email gateway features designed to help you strengthen your organization's email infrastructure, simplify email workflow management, and streamline email compliance control. To learn more, see the <a href=\"https://docs.aws.amazon.com/ses/latest/dg/eb.html\">Mail Manager chapter</a> in the Amazon SES Developer Guide.</p></p>"
+  "documentation":"<p><fullname>Amazon SES Mail Manager API</fullname> <p>The Amazon SES Mail Manager API contains operations and data types that comprise the Mail Manager feature of <a href=\"http://aws.amazon.com/ses\">Amazon Simple Email Service (SES)</a>.</p> <p>Mail Manager is a set of Amazon SES email gateway features designed to help you strengthen your organization's email infrastructure, simplify email workflow management, and streamline email compliance control. To learn more, see the <a href=\"https://docs.aws.amazon.com/ses/latest/dg/eb.html\">Mail Manager chapter</a> in the <i>Amazon SES Developer Guide</i>.</p></p>"
 }

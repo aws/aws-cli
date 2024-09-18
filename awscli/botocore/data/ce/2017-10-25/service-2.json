@@ -5,13 +5,15 @@
     "endpointPrefix":"ce",
     "jsonVersion":"1.1",
     "protocol":"json",
+    "protocols":["json"],
     "serviceAbbreviation":"AWS Cost Explorer",
     "serviceFullName":"AWS Cost Explorer Service",
     "serviceId":"Cost Explorer",
     "signatureVersion":"v4",
     "signingName":"ce",
     "targetPrefix":"AWSInsightsIndexService",
-    "uid":"ce-2017-10-25"
+    "uid":"ce-2017-10-25",
+    "auth":["aws.auth#sigv4"]
   },
   "operations":{
     "CreateAnomalyMonitor":{
@@ -651,7 +653,7 @@
         },
         "DimensionValue":{
           "shape":"GenericString",
-          "documentation":"<p>The dimension for the anomaly (for example, an Amazon Web Service in a service monitor). </p>"
+          "documentation":"<p>The dimension for the anomaly (for example, an Amazon Web Servicesservice in a service monitor). </p>"
         },
         "RootCauses":{
           "shape":"RootCauses",
@@ -1715,6 +1717,20 @@
       },
       "documentation":"<p>The field that contains a list of disk (local storage) metrics that are associated with the current instance. </p>"
     },
+    "DynamoDBCapacityDetails":{
+      "type":"structure",
+      "members":{
+        "CapacityUnits":{
+          "shape":"GenericString",
+          "documentation":"<p>The capacity unit of the recommended reservation.</p>"
+        },
+        "Region":{
+          "shape":"GenericString",
+          "documentation":"<p>The Amazon Web Services Region of the recommended reservation.</p>"
+        }
+      },
+      "documentation":"<p>The DynamoDB reservations that Amazon Web Services recommends that you purchase.</p>"
+    },
     "EBSResourceUtilization":{
       "type":"structure",
       "members":{
@@ -2431,7 +2447,7 @@
         },
         "Context":{
           "shape":"Context",
-          "documentation":"<p>The context for the call to <code>GetDimensionValues</code>. This can be <code>RESERVATIONS</code> or <code>COST_AND_USAGE</code>. The default value is <code>COST_AND_USAGE</code>. If the context is set to <code>RESERVATIONS</code>, the resulting dimension values can be used in the <code>GetReservationUtilization</code> operation. If the context is set to <code>COST_AND_USAGE</code>, the resulting dimension values can be used in the <code>GetCostAndUsage</code> operation.</p> <p>If you set the context to <code>COST_AND_USAGE</code>, you can use the following dimensions for searching:</p> <ul> <li> <p>AZ - The Availability Zone. An example is <code>us-east-1a</code>.</p> </li> <li> <p>BILLING_ENTITY - The Amazon Web Services seller that your account is with. Possible values are the following:</p> <p>- Amazon Web Services(Amazon Web Services): The entity that sells Amazon Web Services.</p> <p>- AISPL (Amazon Internet Services Pvt. Ltd.): The local Indian entity that's an acting reseller for Amazon Web Services in India.</p> <p>- Amazon Web Services Marketplace: The entity that supports the sale of solutions that are built on Amazon Web Services by third-party software providers.</p> </li> <li> <p>CACHE_ENGINE - The Amazon ElastiCache operating system. Examples are Windows or Linux.</p> </li> <li> <p>DEPLOYMENT_OPTION - The scope of Amazon Relational Database Service deployments. Valid values are <code>SingleAZ</code> and <code>MultiAZ</code>.</p> </li> <li> <p>DATABASE_ENGINE - The Amazon Relational Database Service database. Examples are Aurora or MySQL.</p> </li> <li> <p>INSTANCE_TYPE - The type of Amazon EC2 instance. An example is <code>m4.xlarge</code>.</p> </li> <li> <p>INSTANCE_TYPE_FAMILY - A family of instance types optimized to fit different use cases. Examples are <code>Compute Optimized</code> (for example, <code>C4</code>, <code>C5</code>, <code>C6g</code>, and <code>C7g</code>), <code>Memory Optimization</code> (for example, <code>R4</code>, <code>R5n</code>, <code>R5b</code>, and <code>R6g</code>).</p> </li> <li> <p>INVOICING_ENTITY - The name of the entity that issues the Amazon Web Services invoice.</p> </li> <li> <p>LEGAL_ENTITY_NAME - The name of the organization that sells you Amazon Web Services services, such as Amazon Web Services.</p> </li> <li> <p>LINKED_ACCOUNT - The description in the attribute map that includes the full name of the member account. The value field contains the Amazon Web Services ID of the member account.</p> </li> <li> <p>OPERATING_SYSTEM - The operating system. Examples are Windows or Linux.</p> </li> <li> <p>OPERATION - The action performed. Examples include <code>RunInstance</code> and <code>CreateBucket</code>.</p> </li> <li> <p>PLATFORM - The Amazon EC2 operating system. Examples are Windows or Linux.</p> </li> <li> <p>PURCHASE_TYPE - The reservation type of the purchase that this usage is related to. Examples include On-Demand Instances and Standard Reserved Instances.</p> </li> <li> <p>RESERVATION_ID - The unique identifier for an Amazon Web Services Reservation Instance.</p> </li> <li> <p>SAVINGS_PLAN_ARN - The unique identifier for your Savings Plans.</p> </li> <li> <p>SAVINGS_PLANS_TYPE - Type of Savings Plans (EC2 Instance or Compute).</p> </li> <li> <p>SERVICE - The Amazon Web Services service such as Amazon DynamoDB.</p> </li> <li> <p>TENANCY - The tenancy of a resource. Examples are shared or dedicated.</p> </li> <li> <p>USAGE_TYPE - The type of usage. An example is DataTransfer-In-Bytes. The response for the <code>GetDimensionValues</code> operation includes a unit attribute. Examples include GB and Hrs.</p> </li> <li> <p>USAGE_TYPE_GROUP - The grouping of common usage types. An example is Amazon EC2: CloudWatch – Alarms. The response for this operation includes a unit attribute.</p> </li> <li> <p>REGION - The Amazon Web Services Region.</p> </li> <li> <p>RECORD_TYPE - The different types of charges such as Reserved Instance (RI) fees, usage costs, tax refunds, and credits.</p> </li> <li> <p>RESOURCE_ID - The unique identifier of the resource. ResourceId is an opt-in feature only available for last 14 days for EC2-Compute Service.</p> </li> </ul> <p>If you set the context to <code>RESERVATIONS</code>, you can use the following dimensions for searching:</p> <ul> <li> <p>AZ - The Availability Zone. An example is <code>us-east-1a</code>.</p> </li> <li> <p>CACHE_ENGINE - The Amazon ElastiCache operating system. Examples are Windows or Linux.</p> </li> <li> <p>DEPLOYMENT_OPTION - The scope of Amazon Relational Database Service deployments. Valid values are <code>SingleAZ</code> and <code>MultiAZ</code>.</p> </li> <li> <p>INSTANCE_TYPE - The type of Amazon EC2 instance. An example is <code>m4.xlarge</code>.</p> </li> <li> <p>LINKED_ACCOUNT - The description in the attribute map that includes the full name of the member account. The value field contains the Amazon Web Services ID of the member account.</p> </li> <li> <p>PLATFORM - The Amazon EC2 operating system. Examples are Windows or Linux.</p> </li> <li> <p>REGION - The Amazon Web Services Region.</p> </li> <li> <p>SCOPE (Utilization only) - The scope of a Reserved Instance (RI). Values are regional or a single Availability Zone.</p> </li> <li> <p>TAG (Coverage only) - The tags that are associated with a Reserved Instance (RI).</p> </li> <li> <p>TENANCY - The tenancy of a resource. Examples are shared or dedicated.</p> </li> </ul> <p>If you set the context to <code>SAVINGS_PLANS</code>, you can use the following dimensions for searching:</p> <ul> <li> <p>SAVINGS_PLANS_TYPE - Type of Savings Plans (EC2 Instance or Compute)</p> </li> <li> <p>PAYMENT_OPTION - The payment option for the given Savings Plans (for example, All Upfront)</p> </li> <li> <p>REGION - The Amazon Web Services Region.</p> </li> <li> <p>INSTANCE_TYPE_FAMILY - The family of instances (For example, <code>m5</code>)</p> </li> <li> <p>LINKED_ACCOUNT - The description in the attribute map that includes the full name of the member account. The value field contains the Amazon Web Services ID of the member account.</p> </li> <li> <p>SAVINGS_PLAN_ARN - The unique identifier for your Savings Plans.</p> </li> </ul>"
+          "documentation":"<p>The context for the call to <code>GetDimensionValues</code>. This can be <code>RESERVATIONS</code> or <code>COST_AND_USAGE</code>. The default value is <code>COST_AND_USAGE</code>. If the context is set to <code>RESERVATIONS</code>, the resulting dimension values can be used in the <code>GetReservationUtilization</code> operation. If the context is set to <code>COST_AND_USAGE</code>, the resulting dimension values can be used in the <code>GetCostAndUsage</code> operation.</p> <p>If you set the context to <code>COST_AND_USAGE</code>, you can use the following dimensions for searching:</p> <ul> <li> <p>AZ - The Availability Zone. An example is <code>us-east-1a</code>.</p> </li> <li> <p>BILLING_ENTITY - The Amazon Web Services seller that your account is with. Possible values are the following:</p> <p>- Amazon Web Services(Amazon Web Services): The entity that sells Amazon Web Servicesservices.</p> <p>- AISPL (Amazon Internet Services Pvt. Ltd.): The local Indian entity that's an acting reseller for Amazon Web Servicesservices in India.</p> <p>- Amazon Web Services Marketplace: The entity that supports the sale of solutions that are built on Amazon Web Services by third-party software providers.</p> </li> <li> <p>CACHE_ENGINE - The Amazon ElastiCache operating system. Examples are Windows or Linux.</p> </li> <li> <p>DEPLOYMENT_OPTION - The scope of Amazon Relational Database Service deployments. Valid values are <code>SingleAZ</code> and <code>MultiAZ</code>.</p> </li> <li> <p>DATABASE_ENGINE - The Amazon Relational Database Service database. Examples are Aurora or MySQL.</p> </li> <li> <p>INSTANCE_TYPE - The type of Amazon EC2 instance. An example is <code>m4.xlarge</code>.</p> </li> <li> <p>INSTANCE_TYPE_FAMILY - A family of instance types optimized to fit different use cases. Examples are <code>Compute Optimized</code> (for example, <code>C4</code>, <code>C5</code>, <code>C6g</code>, and <code>C7g</code>), <code>Memory Optimization</code> (for example, <code>R4</code>, <code>R5n</code>, <code>R5b</code>, and <code>R6g</code>).</p> </li> <li> <p>INVOICING_ENTITY - The name of the entity that issues the Amazon Web Services invoice.</p> </li> <li> <p>LEGAL_ENTITY_NAME - The name of the organization that sells you Amazon Web Services services, such as Amazon Web Services.</p> </li> <li> <p>LINKED_ACCOUNT - The description in the attribute map that includes the full name of the member account. The value field contains the Amazon Web Services ID of the member account.</p> </li> <li> <p>OPERATING_SYSTEM - The operating system. Examples are Windows or Linux.</p> </li> <li> <p>OPERATION - The action performed. Examples include <code>RunInstance</code> and <code>CreateBucket</code>.</p> </li> <li> <p>PLATFORM - The Amazon EC2 operating system. Examples are Windows or Linux.</p> </li> <li> <p>PURCHASE_TYPE - The reservation type of the purchase that this usage is related to. Examples include On-Demand Instances and Standard Reserved Instances.</p> </li> <li> <p>RESERVATION_ID - The unique identifier for an Amazon Web Services Reservation Instance.</p> </li> <li> <p>SAVINGS_PLAN_ARN - The unique identifier for your Savings Plans.</p> </li> <li> <p>SAVINGS_PLANS_TYPE - Type of Savings Plans (EC2 Instance or Compute).</p> </li> <li> <p>SERVICE - The Amazon Web Services service such as Amazon DynamoDB.</p> </li> <li> <p>TENANCY - The tenancy of a resource. Examples are shared or dedicated.</p> </li> <li> <p>USAGE_TYPE - The type of usage. An example is DataTransfer-In-Bytes. The response for the <code>GetDimensionValues</code> operation includes a unit attribute. Examples include GB and Hrs.</p> </li> <li> <p>USAGE_TYPE_GROUP - The grouping of common usage types. An example is Amazon EC2: CloudWatch – Alarms. The response for this operation includes a unit attribute.</p> </li> <li> <p>REGION - The Amazon Web Services Region.</p> </li> <li> <p>RECORD_TYPE - The different types of charges such as Reserved Instance (RI) fees, usage costs, tax refunds, and credits.</p> </li> <li> <p>RESOURCE_ID - The unique identifier of the resource. ResourceId is an opt-in feature only available for last 14 days for EC2-Compute Service.</p> </li> </ul> <p>If you set the context to <code>RESERVATIONS</code>, you can use the following dimensions for searching:</p> <ul> <li> <p>AZ - The Availability Zone. An example is <code>us-east-1a</code>.</p> </li> <li> <p>CACHE_ENGINE - The Amazon ElastiCache operating system. Examples are Windows or Linux.</p> </li> <li> <p>DEPLOYMENT_OPTION - The scope of Amazon Relational Database Service deployments. Valid values are <code>SingleAZ</code> and <code>MultiAZ</code>.</p> </li> <li> <p>INSTANCE_TYPE - The type of Amazon EC2 instance. An example is <code>m4.xlarge</code>.</p> </li> <li> <p>LINKED_ACCOUNT - The description in the attribute map that includes the full name of the member account. The value field contains the Amazon Web Services ID of the member account.</p> </li> <li> <p>PLATFORM - The Amazon EC2 operating system. Examples are Windows or Linux.</p> </li> <li> <p>REGION - The Amazon Web Services Region.</p> </li> <li> <p>SCOPE (Utilization only) - The scope of a Reserved Instance (RI). Values are regional or a single Availability Zone.</p> </li> <li> <p>TAG (Coverage only) - The tags that are associated with a Reserved Instance (RI).</p> </li> <li> <p>TENANCY - The tenancy of a resource. Examples are shared or dedicated.</p> </li> </ul> <p>If you set the context to <code>SAVINGS_PLANS</code>, you can use the following dimensions for searching:</p> <ul> <li> <p>SAVINGS_PLANS_TYPE - Type of Savings Plans (EC2 Instance or Compute)</p> </li> <li> <p>PAYMENT_OPTION - The payment option for the given Savings Plans (for example, All Upfront)</p> </li> <li> <p>REGION - The Amazon Web Services Region.</p> </li> <li> <p>INSTANCE_TYPE_FAMILY - The family of instances (For example, <code>m5</code>)</p> </li> <li> <p>LINKED_ACCOUNT - The description in the attribute map that includes the full name of the member account. The value field contains the Amazon Web Services ID of the member account.</p> </li> <li> <p>SAVINGS_PLAN_ARN - The unique identifier for your Savings Plans.</p> </li> </ul>"
         },
         "Filter":{"shape":"Expression"},
         "SortBy":{
@@ -3967,15 +3983,15 @@
         },
         "AverageUtilization":{
           "shape":"GenericString",
-          "documentation":"<p>The average utilization of your instances. Amazon Web Services uses this to calculate your recommended reservation purchases.</p>"
+          "documentation":"<p>The average utilization of your recommendations. Amazon Web Services uses this to calculate your recommended reservation purchases.</p>"
         },
         "EstimatedBreakEvenInMonths":{
           "shape":"GenericString",
-          "documentation":"<p>How long Amazon Web Services estimates that it takes for this instance to start saving you money, in months.</p>"
+          "documentation":"<p>How long Amazon Web Services estimates that it takes for this recommendation to start saving you money, in months.</p>"
         },
         "CurrencyCode":{
           "shape":"GenericString",
-          "documentation":"<p>The currency code that Amazon Web Services used to calculate the costs for this instance.</p>"
+          "documentation":"<p>The currency code that Amazon Web Services used to calculate the costs for this recommendation.</p>"
         },
         "EstimatedMonthlySavingsAmount":{
           "shape":"GenericString",
@@ -3995,11 +4011,31 @@
         },
         "UpfrontCost":{
           "shape":"GenericString",
-          "documentation":"<p>How much purchasing this instance costs you upfront.</p>"
+          "documentation":"<p>How much purchasing this recommendation costs you upfront.</p>"
         },
         "RecurringStandardMonthlyCost":{
           "shape":"GenericString",
-          "documentation":"<p>How much purchasing this instance costs you on a monthly basis.</p>"
+          "documentation":"<p>How much purchasing this recommendation costs you on a monthly basis.</p>"
+        },
+        "ReservedCapacityDetails":{
+          "shape":"ReservedCapacityDetails",
+          "documentation":"<p>Details about the reservations that Amazon Web Services recommends that you purchase.</p>"
+        },
+        "RecommendedNumberOfCapacityUnitsToPurchase":{
+          "shape":"GenericString",
+          "documentation":"<p>The number of reserved capacity units that Amazon Web Services recommends that you purchase.</p>"
+        },
+        "MinimumNumberOfCapacityUnitsUsedPerHour":{
+          "shape":"GenericString",
+          "documentation":"<p>The minimum number of provisioned capacity units that you used in an hour during the historical period. Amazon Web Services uses this to calculate your recommended reservation purchases.</p>"
+        },
+        "MaximumNumberOfCapacityUnitsUsedPerHour":{
+          "shape":"GenericString",
+          "documentation":"<p>The maximum number of provisioned capacity units that you used in an hour during the historical period. Amazon Web Services uses this to calculate your recommended reservation purchases.</p>"
+        },
+        "AverageNumberOfCapacityUnitsUsedPerHour":{
+          "shape":"GenericString",
+          "documentation":"<p>The average number of provisioned capacity units that you used in an hour during the historical period. Amazon Web Services uses this to calculate your recommended reservation purchases.</p>"
         }
       },
       "documentation":"<p>Details about your recommended reservation purchase.</p>"
@@ -4073,6 +4109,16 @@
     "ReservationUtilizationGroups":{
       "type":"list",
       "member":{"shape":"ReservationUtilizationGroup"}
+    },
+    "ReservedCapacityDetails":{
+      "type":"structure",
+      "members":{
+        "DynamoDBCapacityDetails":{
+          "shape":"DynamoDBCapacityDetails",
+          "documentation":"<p>The DynamoDB reservations that Amazon Web Services recommends that you purchase.</p>"
+        }
+      },
+      "documentation":"<p>Details about the reservations that Amazon Web Services recommends that you purchase.</p>"
     },
     "ReservedHours":{"type":"string"},
     "ReservedNormalizedUnits":{"type":"string"},
@@ -4281,7 +4327,7 @@
       "members":{
         "Service":{
           "shape":"GenericString",
-          "documentation":"<p>The Amazon Web Service name that's associated with the cost anomaly. </p>"
+          "documentation":"<p>The Amazon Web Servicesservice name that's associated with the cost anomaly. </p>"
         },
         "Region":{
           "shape":"GenericString",
@@ -4300,7 +4346,7 @@
           "documentation":"<p>The member account name value that's associated with the cost anomaly.</p>"
         }
       },
-      "documentation":"<p>The combination of Amazon Web Service, linked account, linked account name, Region, and usage type where a cost anomaly is observed. The linked account name will only be available when the account name can be identified.</p>"
+      "documentation":"<p>The combination of Amazon Web Servicesservice, linked account, linked account name, Region, and usage type where a cost anomaly is observed. The linked account name will only be available when the account name can be identified.</p>"
     },
     "RootCauses":{
       "type":"list",

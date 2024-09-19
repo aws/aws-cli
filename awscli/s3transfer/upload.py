@@ -800,9 +800,7 @@ class UploadPartTask(Task):
             )
         etag = response['ETag']
         part_metadata = {'ETag': etag, 'PartNumber': part_number}
-        print('THE CODE HAS BEEN REACHED!')
         if 'ChecksumAlgorithm' in extra_args:
-            print('THE BRANCH HAS BEEN EXECUTED!')
             algorithm_name = extra_args['ChecksumAlgorithm'].upper()
             checksum_member = f'Checksum{algorithm_name}'
             if checksum_member in response:

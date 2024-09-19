@@ -118,8 +118,6 @@ class S3TransferHandler(object):
         # abstraction to enqueue results.
         self._result_command_recorder = result_command_recorder
 
-        print('S3HANDLER.PY: CLI_PARAMS: ', cli_params)
-
         submitter_args = (
             self._transfer_manager, self._result_command_recorder.result_queue,
             cli_params
@@ -217,11 +215,8 @@ class BaseTransferRequestSubmitter(object):
 
     def _do_submit(self, fileinfo):
         extra_args = {}
-        print('S3HANDLER do_submit extra_args: ', extra_args)
         if self.REQUEST_MAPPER_METHOD:
             self.REQUEST_MAPPER_METHOD(extra_args, self._cli_params)
-            print('S3HANDLER do_submit request params: ', extra_args)
-            print('S3HANDLER do_submit cli_params: ', self._cli_params)
         if not self._cli_params.get('dryrun'):
             return self._submit_transfer_request(
                 fileinfo, extra_args, self._get_subscribers(fileinfo))

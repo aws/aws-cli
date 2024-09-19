@@ -533,12 +533,6 @@ class RequestParamsMapper(object):
 
     @classmethod
     def map_delete_object_params(cls, request_params, cli_params):
-        # TODO add brawn support. deleteObjects API has a checksumAlgorithm (request) member.
-        # weirdly though, it does not include individual algorithm headers.
-        # perhaps it is meant to be sent as a trailer?
-        # also, this function is called delete_object. does it even include deleteObjects in its scope ?
-        # additionally, do any high-level s3 commands even call deleteObjects? (most important question here).
-        # potential candidates: sync, mv
         cls._set_request_payer_param(request_params, cli_params)
 
     @classmethod

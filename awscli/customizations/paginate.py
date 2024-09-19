@@ -314,6 +314,10 @@ class PageArgument(BaseCLIArgument):
         self._parse_type = parse_type
         self._required = False
 
+    def _emit_non_positive_max_items_warning(self):
+            uni_print("warning: Non-positive values for --max-items may result in undefined behavior.\n",
+                      sys.stderr)
+
     @property
     def cli_name(self):
         return '--' + self._name
@@ -337,10 +341,6 @@ class PageArgument(BaseCLIArgument):
     def add_to_parser(self, parser):
         parser.add_argument(self.cli_name, dest=self.py_name,
                             type=self.type_map[self._parse_type])
-
-    def _emit_non_positive_max_items_warning(self):
-            uni_print("warning: Non-positive values for --max-items may result in undefined behavior.\n",
-                      sys.stderr)
 
     def add_to_params(self, parameters, value):
         if value is not None:

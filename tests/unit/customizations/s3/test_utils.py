@@ -653,6 +653,33 @@ class TestRequestParamsMapperSSE(unittest.TestCase):
              'SSECustomerKey': 'my-sse-c-key'})
 
 
+class TestRequestParamsMapperFlexibleChecksumsUploads:
+    @pytest.fixture
+    def cli_params(self):
+        return {'checksum_algorithm': 'CRC32'}
+
+    def test_put_object(self, cli_params):
+        request_params = {}
+        RequestParamsMapper.map_put_object_params(request_params, cli_params)
+        assert request_params == {'ChecksumAlgorithm': 'CRC32'}
+
+    def test_upload_part(self, cli_params):
+        request_params = {}
+        RequestParamsMapper.map_upload_part_params(request_params, cli_params)
+        assert request_params == {'ChecksumAlgorithm': 'CRC32'}
+
+
+class TestRequestParamsMapperFlexibleChecksumsDownloads:
+    @pytest.fixture
+    def cli_params(self):
+        return {'checksum_mode': 'ENABLED'}
+
+    def test_get_object(self, cli_params):
+        request_params = {}
+        RequestParamsMapper.map_get_object_params(request_params, cli_params)
+        assert request_params == {'ChecksumMode': 'ENABLED'}
+
+
 class TestRequestParamsMapperRequestPayer(unittest.TestCase):
     def setUp(self):
         self.cli_params = {'request_payer': 'requester'}

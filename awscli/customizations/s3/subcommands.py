@@ -1286,14 +1286,15 @@ class CommandParameters(object):
                 self._validate_same_underlying_s3_paths()
             if self._should_emit_validate_s3_paths_warning():
                 self._emit_validate_s3_paths_warning()
+
         # If we're using the checksum-algorithm flag, the path type must be locals3
-        if params['checksum_algorithm']:
+        if params.get('checksum_algorithm'):
             self._raise_if_paths_type_incorrect_for_param(
                 CHECKSUM_ALGORITHM['name'],
                 params['paths_type'],
                 'locals3')
         # If we're using the checksum-mode flag, the path type must be s3local
-        elif params['checksum_mode']:
+        if params.get('checksum_mode'):
             self._raise_if_paths_type_incorrect_for_param(
                 CHECKSUM_MODE['name'],
                 params['paths_type'],

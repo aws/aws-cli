@@ -760,6 +760,22 @@ class TestCPCommand(BaseCPCommandTest):
         self.assertIn('upload failed', stderr)
         self.assertIn('warning: File has an invalid timestamp.', stderr)
 
+    def test_upload_with_flexible_checksum_crc32(self):
+        # TODO Ahmed
+        pass
+
+    def test_upload_with_flexible_checksum_crc32c(self):
+        # TODO Ahmed
+        pass
+
+    def test_download_with_flexible_checksum_crc32(self):
+        # TODO Ahmed
+        pass
+
+    def test_download_with_flexible_checksum_crc32c(self):
+        # TODO Ahmed
+        pass
+
 
 class TestStreamingCPCommand(BaseAWSCommandParamsTest):
     def test_streaming_upload(self):

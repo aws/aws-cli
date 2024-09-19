@@ -244,6 +244,14 @@ class TestMvCommand(BaseS3TransferCommandTest):
             ]
         )
 
+    def test_upload_with_flexible_checksum_crc32(self):
+        # TODO Ahmed
+        pass
+
+    def test_download_with_flexible_checksum_crc32(self):
+        # TODO Ahmed
+        pass
+
 
 class TestMvWithCRTClient(BaseCRTTransferClientTest):
     def test_upload_move_using_crt_client(self):

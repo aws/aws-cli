@@ -353,6 +353,22 @@ class TestSyncCommand(BaseS3TransferCommandTest):
             ]
         )
 
+    def test_upload_with_flexible_checksum_sha1(self):
+        # TODO Ahmed
+        pass
+
+    def test_upload_with_flexible_checksum_sha256(self):
+        # TODO Ahmed
+        pass
+
+    def test_download_with_flexible_checksum_sha1(self):
+        # TODO Ahmed
+        pass
+
+    def test_download_with_flexible_checksum_sha256(self):
+        # TODO Ahmed
+        pass
+
 
 class TestSyncSourceRegion(BaseS3CLIRunnerTest):
     def test_respects_source_region(self):

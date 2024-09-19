@@ -339,9 +339,8 @@ class PageArgument(BaseCLIArgument):
                             type=self.type_map[self._parse_type])
 
     def _emit_non_positive_max_items_warning(self):
-            uni_print(
-                "warning: Non-positive values for --max-items may result in undefined behavior.\n",
-                sys.stderr)
+            uni_print("warning: Non-positive values for --max-items may result in undefined behavior.\n",
+                      sys.stderr)
 
     def add_to_params(self, parameters, value):
         if value is not None:

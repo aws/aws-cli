@@ -269,7 +269,8 @@ class PageArgument(BaseCLIArgument):
         self._required = False
 
     def _emit_non_positive_max_items_warning(self):
-        uni_print("warning: Non-positive values for --max-items may result in undefined behavior.\n",
+        uni_print(
+            "warning: Non-positive values for --max-items may result in undefined behavior.\n",
             sys.stderr)
 
     @property

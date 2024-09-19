@@ -5476,6 +5476,22 @@
         "USE_MDPM"
       ]
     },
+    "EncryptionContractConfiguration": {
+      "type": "structure",
+      "members": {
+        "SpekeAudioPreset": {
+          "shape": "PresetSpeke20Audio",
+          "locationName": "spekeAudioPreset",
+          "documentation": "Specify which SPEKE version 2.0 audio preset MediaConvert uses to request content keys from your SPEKE server. For more information, see: https://docs.aws.amazon.com/mediaconvert/latest/ug/drm-content-speke-v2-presets.html To encrypt to your audio outputs, choose from the following: Audio preset 1, Audio preset 2, or Audio preset 3. To encrypt your audio outputs, using the same content key for both your audio and video outputs: Choose Shared. When you do, you must also set SPEKE v2.0 video preset to Shared. To not encrypt your audio outputs: Choose Unencrypted. When you do, to encrypt your video outputs, you must also specify a SPEKE v2.0 video preset (other than Shared or Unencrypted)."
+        },
+        "SpekeVideoPreset": {
+          "shape": "PresetSpeke20Video",
+          "locationName": "spekeVideoPreset",
+          "documentation": "Specify which SPEKE version 2.0 video preset MediaConvert uses to request content keys from your SPEKE server. For more information, see: https://docs.aws.amazon.com/mediaconvert/latest/ug/drm-content-speke-v2-presets.html To encrypt to your video outputs, choose from the following: Video preset 1, Video preset 2, Video preset 3, Video preset 4, Video preset 5, Video preset 6, Video preset 7, or Video preset 8. To encrypt your video outputs, using the same content key for both your video and audio outputs: Choose Shared. When you do, you must also set SPEKE v2.0 audio preset to Shared. To not encrypt your video outputs: Choose Unencrypted. When you do, to encrypt your audio outputs, you must also specify a SPEKE v2.0 audio preset (other than Shared or Unencrypted)."
+        }
+      },
+      "documentation": "Specify the SPEKE version, either v1.0 or v2.0, that MediaConvert uses when encrypting your output. For more information, see: https://docs.aws.amazon.com/speke/latest/documentation/speke-api-specification.html To use SPEKE v1.0: Leave blank. To use SPEKE v2.0: Specify a SPEKE v2.0 video preset and a SPEKE v2.0 audio preset."
+    },
     "Endpoint": {
       "type": "structure",
       "members": {
@@ -11042,6 +11058,33 @@
       },
       "documentation": "Settings for preset"
     },
+    "PresetSpeke20Audio": {
+      "type": "string",
+      "documentation": "Specify which SPEKE version 2.0 audio preset MediaConvert uses to request content keys from your SPEKE server. For more information, see: https://docs.aws.amazon.com/mediaconvert/latest/ug/drm-content-speke-v2-presets.html To encrypt to your audio outputs, choose from the following: Audio preset 1, Audio preset 2, or Audio preset 3. To encrypt your audio outputs, using the same content key for both your audio and video outputs: Choose Shared. When you do, you must also set SPEKE v2.0 video preset to Shared. To not encrypt your audio outputs: Choose Unencrypted. When you do, to encrypt your video outputs, you must also specify a SPEKE v2.0 video preset (other than Shared or Unencrypted).",
+      "enum": [
+        "PRESET_AUDIO_1",
+        "PRESET_AUDIO_2",
+        "PRESET_AUDIO_3",
+        "SHARED",
+        "UNENCRYPTED"
+      ]
+    },
+    "PresetSpeke20Video": {
+      "type": "string",
+      "documentation": "Specify which SPEKE version 2.0 video preset MediaConvert uses to request content keys from your SPEKE server. For more information, see: https://docs.aws.amazon.com/mediaconvert/latest/ug/drm-content-speke-v2-presets.html To encrypt to your video outputs, choose from the following: Video preset 1, Video preset 2, Video preset 3, Video preset 4, Video preset 5, Video preset 6, Video preset 7, or Video preset 8. To encrypt your video outputs, using the same content key for both your video and audio outputs: Choose Shared. When you do, you must also set SPEKE v2.0 audio preset to Shared. To not encrypt your video outputs: Choose Unencrypted. When you do, to encrypt your audio outputs, you must also specify a SPEKE v2.0 audio preset (other than Shared or Unencrypted).",
+      "enum": [
+        "PRESET_VIDEO_1",
+        "PRESET_VIDEO_2",
+        "PRESET_VIDEO_3",
+        "PRESET_VIDEO_4",
+        "PRESET_VIDEO_5",
+        "PRESET_VIDEO_6",
+        "PRESET_VIDEO_7",
+        "PRESET_VIDEO_8",
+        "SHARED",
+        "UNENCRYPTED"
+      ]
+    },
     "PricingPlan": {
       "type": "string",
       "documentation": "Specifies whether the pricing plan for the queue is on-demand or reserved. For on-demand, you pay per minute, billed in increments of .01 minute. For reserved, you pay for the transcoding capacity of the entire queue, regardless of how much or how little you use it. Reserved pricing requires a 12-month commitment.",
@@ -11701,6 +11744,11 @@
           "locationName": "certificateArn",
           "documentation": "If you want your key provider to encrypt the content keys that it provides to MediaConvert, set up a certificate with a master key using AWS Certificate Manager. Specify the certificate's Amazon Resource Name (ARN) here."
         },
+        "EncryptionContractConfiguration": {
+          "shape": "EncryptionContractConfiguration",
+          "locationName": "encryptionContractConfiguration",
+          "documentation": "Specify the SPEKE version, either v1.0 or v2.0, that MediaConvert uses when encrypting your output. For more information, see: https://docs.aws.amazon.com/speke/latest/documentation/speke-api-specification.html To use SPEKE v1.0: Leave blank. To use SPEKE v2.0: Specify a SPEKE v2.0 video preset and a SPEKE v2.0 audio preset."
+        },
         "ResourceId": {
           "shape": "__string",
           "locationName": "resourceId",
@@ -11731,6 +11779,11 @@
           "shape": "__listOf__stringMin36Max36Pattern09aFAF809aFAF409aFAF409aFAF409aFAF12",
           "locationName": "dashSignaledSystemIds",
           "documentation": "Specify the DRM system IDs that you want signaled in the DASH manifest that MediaConvert creates as part of this CMAF package. The DASH manifest can currently signal up to three system IDs. For more information, see https://dashif.org/identifiers/content_protection/."
+        },
+        "EncryptionContractConfiguration": {
+          "shape": "EncryptionContractConfiguration",
+          "locationName": "encryptionContractConfiguration",
+          "documentation": "Specify the SPEKE version, either v1.0 or v2.0, that MediaConvert uses when encrypting your output. For more information, see: https://docs.aws.amazon.com/speke/latest/documentation/speke-api-specification.html To use SPEKE v1.0: Leave blank. To use SPEKE v2.0: Specify a SPEKE v2.0 video preset and a SPEKE v2.0 audio preset."
         },
         "HlsSignaledSystemIds": {
           "shape": "__listOf__stringMin36Max36Pattern09aFAF809aFAF409aFAF409aFAF409aFAF12",

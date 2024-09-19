@@ -5,11 +5,13 @@
     "endpointPrefix":"workspaces-web",
     "jsonVersion":"1.1",
     "protocol":"rest-json",
+    "protocols":["rest-json"],
     "serviceFullName":"Amazon WorkSpaces Web",
     "serviceId":"WorkSpaces Web",
     "signatureVersion":"v4",
     "signingName":"workspaces-web",
-    "uid":"workspaces-web-2020-07-08"
+    "uid":"workspaces-web-2020-07-08",
+    "auth":["aws.auth#sigv4"]
   },
   "operations":{
     "AssociateBrowserSettings":{
@@ -559,6 +561,25 @@
       "documentation":"<p>Disassociates user settings from a web portal.</p>",
       "idempotent":true
     },
+    "ExpireSession":{
+      "name":"ExpireSession",
+      "http":{
+        "method":"DELETE",
+        "requestUri":"/portals/{portalId}/sessions/{sessionId}",
+        "responseCode":200
+      },
+      "input":{"shape":"ExpireSessionRequest"},
+      "output":{"shape":"ExpireSessionResponse"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ValidationException"}
+      ],
+      "documentation":"<p>Expires an active secure browser session.</p>",
+      "idempotent":true
+    },
     "GetBrowserSettings":{
       "name":"GetBrowserSettings",
       "http":{
@@ -666,6 +687,24 @@
         {"shape":"ValidationException"}
       ],
       "documentation":"<p>Gets the service provider metadata.</p>"
+    },
+    "GetSession":{
+      "name":"GetSession",
+      "http":{
+        "method":"GET",
+        "requestUri":"/portals/{portalId}/sessions/{sessionId}",
+        "responseCode":200
+      },
+      "input":{"shape":"GetSessionRequest"},
+      "output":{"shape":"GetSessionResponse"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ValidationException"}
+      ],
+      "documentation":"<p>Gets information for a secure browser session.</p>"
     },
     "GetTrustStore":{
       "name":"GetTrustStore",
@@ -823,6 +862,24 @@
         {"shape":"ValidationException"}
       ],
       "documentation":"<p>Retrieves a list or web portals.</p>"
+    },
+    "ListSessions":{
+      "name":"ListSessions",
+      "http":{
+        "method":"GET",
+        "requestUri":"/portals/{portalId}/sessions",
+        "responseCode":200
+      },
+      "input":{"shape":"ListSessionsRequest"},
+      "output":{"shape":"ListSessionsResponse"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ValidationException"}
+      ],
+      "documentation":"<p>Lists information for multiple secure browser sessions from a specific portal.</p>"
     },
     "ListTagsForResource":{
       "name":"ListTagsForResource",
@@ -1754,7 +1811,7 @@
         },
         "authenticationType":{
           "shape":"AuthenticationType",
-          "documentation":"<p>The type of authentication integration points used when signing into the web portal. Defaults to <code>Standard</code>.</p> <p> <code>Standard</code> web portals are authenticated directly through your identity provider. You need to call <code>CreateIdentityProvider</code> to integrate your identity provider with your web portal. User and group access to your web portal is controlled through your identity provider.</p> <p> <code>IAM Identity Center</code> web portals are authenticated through IAM Identity Center (successor to Single Sign-On). Identity sources (including external identity provider integration), plus user and group access to your web portal, can be configured in the IAM Identity Center.</p>"
+          "documentation":"<p>The type of authentication integration points used when signing into the web portal. Defaults to <code>Standard</code>.</p> <p> <code>Standard</code> web portals are authenticated directly through your identity provider. You need to call <code>CreateIdentityProvider</code> to integrate your identity provider with your web portal. User and group access to your web portal is controlled through your identity provider.</p> <p> <code>IAM Identity Center</code> web portals are authenticated through IAM Identity Center. Identity sources (including external identity provider integration), plus user and group access to your web portal, can be configured in the IAM Identity Center.</p>"
         },
         "clientToken":{
           "shape":"ClientToken",
@@ -2204,6 +2261,32 @@
       "value":{"shape":"StringType"}
     },
     "ExceptionMessage":{"type":"string"},
+    "ExpireSessionRequest":{
+      "type":"structure",
+      "required":[
+        "portalId",
+        "sessionId"
+      ],
+      "members":{
+        "portalId":{
+          "shape":"PortalId",
+          "documentation":"<p>The ID of the web portal for the session.</p>",
+          "location":"uri",
+          "locationName":"portalId"
+        },
+        "sessionId":{
+          "shape":"SessionId",
+          "documentation":"<p>The ID of the session to expire.</p>",
+          "location":"uri",
+          "locationName":"sessionId"
+        }
+      }
+    },
+    "ExpireSessionResponse":{
+      "type":"structure",
+      "members":{
+      }
+    },
     "FieldName":{"type":"string"},
     "GetBrowserSettingsRequest":{
       "type":"structure",
@@ -2333,6 +2416,36 @@
         "serviceProviderSamlMetadata":{
           "shape":"SamlMetadata",
           "documentation":"<p>The service provider SAML metadata.</p>"
+        }
+      }
+    },
+    "GetSessionRequest":{
+      "type":"structure",
+      "required":[
+        "portalId",
+        "sessionId"
+      ],
+      "members":{
+        "portalId":{
+          "shape":"PortalId",
+          "documentation":"<p>The ID of the web portal for the session.</p>",
+          "location":"uri",
+          "locationName":"portalId"
+        },
+        "sessionId":{
+          "shape":"SessionId",
+          "documentation":"<p>The ID of the session.</p>",
+          "location":"uri",
+          "locationName":"sessionId"
+        }
+      }
+    },
+    "GetSessionResponse":{
+      "type":"structure",
+      "members":{
+        "session":{
+          "shape":"Session",
+          "documentation":"<p>The sessions in a list.</p>"
         }
       }
     },
@@ -2600,6 +2713,19 @@
       },
       "documentation":"<p>The summary of IP access settings.</p>"
     },
+    "IpAddress":{
+      "type":"string",
+      "max":15,
+      "min":1,
+      "pattern":"^((([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5]))$|^(([0-9a-fA-F]{1,4}:){7,7}[0-9a-fA-F]{1,4}|([0-9a-fA-F]{1,4}:){1,7}:|([0-9a-fA-F]{1,4}:){1,6}:[0-9a-fA-F]{1,4}|([0-9a-fA-F]{1,4}:){1,5}(:[0-9a-fA-F]{1,4}){1,2}|([0-9a-fA-F]{1,4}:){1,4}(:[0-9a-fA-F]{1,4}){1,3}|([0-9a-fA-F]{1,4}:){1,3}(:[0-9a-fA-F]{1,4}){1,4}|([0-9a-fA-F]{1,4}:){1,2}(:[0-9a-fA-F]{1,4}){1,5}|[0-9a-fA-F]{1,4}:((:[0-9a-fA-F]{1,4}){1,6})|:((:[0-9a-fA-F]{1,4}){1,7}|:)|fe80:(:[0-9a-fA-F]{0,4}){0,4}%[0-9a-zA-Z]{1,}|::(ffff(:0{1,4}){0,1}:){0,1}((25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])\\.){3,3}(25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])|([0-9a-fA-F]{1,4}:){1,4}:((25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])\\.){3,3}(25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9]))$",
+      "sensitive":true
+    },
+    "IpAddressList":{
+      "type":"list",
+      "member":{"shape":"IpAddress"},
+      "max":45,
+      "min":1
+    },
     "IpRange":{
       "type":"string",
       "documentation":"<p>A single IP address or an IP address range in CIDR notation</p>",
@@ -2789,6 +2915,68 @@
         "portals":{
           "shape":"PortalList",
           "documentation":"<p>The portals in the list.</p>"
+        }
+      }
+    },
+    "ListSessionsRequest":{
+      "type":"structure",
+      "required":["portalId"],
+      "members":{
+        "maxResults":{
+          "shape":"MaxResults",
+          "documentation":"<p>The maximum number of results to be included in the next page.</p>",
+          "location":"querystring",
+          "locationName":"maxResults"
+        },
+        "nextToken":{
+          "shape":"PaginationToken",
+          "documentation":"<p>The pagination token used to retrieve the next page of results for this operation.</p>",
+          "location":"querystring",
+          "locationName":"nextToken"
+        },
+        "portalId":{
+          "shape":"PortalId",
+          "documentation":"<p>The ID of the web portal for the sessions.</p>",
+          "location":"uri",
+          "locationName":"portalId"
+        },
+        "sessionId":{
+          "shape":"SessionId",
+          "documentation":"<p>The ID of the session.</p>",
+          "location":"querystring",
+          "locationName":"sessionId"
+        },
+        "sortBy":{
+          "shape":"SessionSortBy",
+          "documentation":"<p>The method in which the returned sessions should be sorted.</p>",
+          "location":"querystring",
+          "locationName":"sortBy"
+        },
+        "status":{
+          "shape":"SessionStatus",
+          "documentation":"<p>The status of the session.</p>",
+          "location":"querystring",
+          "locationName":"status"
+        },
+        "username":{
+          "shape":"Username",
+          "documentation":"<p>The username of the session.</p>",
+          "location":"querystring",
+          "locationName":"username"
+        }
+      }
+    },
+    "ListSessionsResponse":{
+      "type":"structure",
+      "required":["sessions"],
+      "members":{
+        "nextToken":{
+          "shape":"PaginationToken",
+          "documentation":"<p>The pagination token used to retrieve the next page of results for this operation.</p>"
+        },
+        "sessions":{
+          "shape":"SessionSummaryList",
+          "documentation":"<p>The sessions in a list.</p>"
         }
       }
     },
@@ -3018,7 +3206,7 @@
         },
         "authenticationType":{
           "shape":"AuthenticationType",
-          "documentation":"<p>The type of authentication integration points used when signing into the web portal. Defaults to <code>Standard</code>.</p> <p> <code>Standard</code> web portals are authenticated directly through your identity provider. You need to call <code>CreateIdentityProvider</code> to integrate your identity provider with your web portal. User and group access to your web portal is controlled through your identity provider.</p> <p> <code>IAM Identity Center</code> web portals are authenticated through IAM Identity Center (successor to Single Sign-On). Identity sources (including external identity provider integration), plus user and group access to your web portal, can be configured in the IAM Identity Center.</p>"
+          "documentation":"<p>The type of authentication integration points used when signing into the web portal. Defaults to <code>Standard</code>.</p> <p> <code>Standard</code> web portals are authenticated directly through your identity provider. You need to call <code>CreateIdentityProvider</code> to integrate your identity provider with your web portal. User and group access to your web portal is controlled through your identity provider.</p> <p> <code>IAM Identity Center</code> web portals are authenticated through IAM Identity Center. Identity sources (including external identity provider integration), plus user and group access to your web portal, can be configured in the IAM Identity Center.</p>"
         },
         "browserSettingsArn":{
           "shape":"ARN",
@@ -3097,6 +3285,12 @@
       "min":1,
       "pattern":"^[a-zA-Z0-9]?((?!-)([A-Za-z0-9-]*[A-Za-z0-9])\\.)+[a-zA-Z0-9]+$"
     },
+    "PortalId":{
+      "type":"string",
+      "max":36,
+      "min":36,
+      "pattern":"^[a-zA-Z0-9\\-]+$"
+    },
     "PortalList":{
       "type":"list",
       "member":{"shape":"PortalSummary"}
@@ -3115,7 +3309,7 @@
       "members":{
         "authenticationType":{
           "shape":"AuthenticationType",
-          "documentation":"<p>The type of authentication integration points used when signing into the web portal. Defaults to <code>Standard</code>.</p> <p> <code>Standard</code> web portals are authenticated directly through your identity provider. You need to call <code>CreateIdentityProvider</code> to integrate your identity provider with your web portal. User and group access to your web portal is controlled through your identity provider.</p> <p> <code>IAM Identity Center</code> web portals are authenticated through IAM Identity Center (successor to Single Sign-On). Identity sources (including external identity provider integration), plus user and group access to your web portal, can be configured in the IAM Identity Center.</p>"
+          "documentation":"<p>The type of authentication integration points used when signing into the web portal. Defaults to <code>Standard</code>.</p> <p> <code>Standard</code> web portals are authenticated directly through your identity provider. You need to call <code>CreateIdentityProvider</code> to integrate your identity provider with your web portal. User and group access to your web portal is controlled through your identity provider.</p> <p> <code>IAM Identity Center</code> web portals are authenticated through IAM Identity Center. Identity sources (including external identity provider integration), plus user and group access to your web portal, can be configured in the IAM Identity Center.</p>"
         },
         "browserSettingsArn":{
           "shape":"ARN",
@@ -3255,6 +3449,94 @@
       },
       "exception":true
     },
+    "Session":{
+      "type":"structure",
+      "members":{
+        "clientIpAddresses":{
+          "shape":"IpAddressList",
+          "documentation":"<p>The IP address of the client.</p>"
+        },
+        "endTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The end time of the session.</p>"
+        },
+        "portalArn":{
+          "shape":"ARN",
+          "documentation":"<p>The ARN of the web portal.</p>"
+        },
+        "sessionId":{
+          "shape":"StringType",
+          "documentation":"<p>The ID of the session.</p>"
+        },
+        "startTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The start time of the session.</p>"
+        },
+        "status":{
+          "shape":"SessionStatus",
+          "documentation":"<p>The status of the session.</p>"
+        },
+        "username":{
+          "shape":"Username",
+          "documentation":"<p>The username of the session.</p>"
+        }
+      },
+      "documentation":"<p>Information about a secure browser session.</p>"
+    },
+    "SessionId":{
+      "type":"string",
+      "max":36,
+      "min":36,
+      "pattern":"^[a-zA-Z0-9\\-]+$"
+    },
+    "SessionSortBy":{
+      "type":"string",
+      "enum":[
+        "StartTimeAscending",
+        "StartTimeDescending"
+      ]
+    },
+    "SessionStatus":{
+      "type":"string",
+      "enum":[
+        "Active",
+        "Terminated"
+      ]
+    },
+    "SessionSummary":{
+      "type":"structure",
+      "members":{
+        "endTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The end time of the session.</p>"
+        },
+        "portalArn":{
+          "shape":"ARN",
+          "documentation":"<p>The ARN of the web portal.</p>"
+        },
+        "sessionId":{
+          "shape":"StringType",
+          "documentation":"<p>The ID of the session.</p>"
+        },
+        "startTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The start time of the session.</p>"
+        },
+        "status":{
+          "shape":"SessionStatus",
+          "documentation":"<p>The status of the session.</p>"
+        },
+        "username":{
+          "shape":"Username",
+          "documentation":"<p>The username of the session.</p>"
+        }
+      },
+      "documentation":"<p>Summary information about a secure browser session.</p>"
+    },
+    "SessionSummaryList":{
+      "type":"list",
+      "member":{"shape":"SessionSummary"}
+    },
     "StatusReason":{
       "type":"string",
       "max":1024,
@@ -3276,7 +3558,7 @@
     "SubnetIdList":{
       "type":"list",
       "member":{"shape":"SubnetId"},
-      "max":3,
+      "max":5,
       "min":2
     },
     "SubresourceARN":{
@@ -3612,7 +3894,7 @@
       "members":{
         "authenticationType":{
           "shape":"AuthenticationType",
-          "documentation":"<p>The type of authentication integration points used when signing into the web portal. Defaults to <code>Standard</code>.</p> <p> <code>Standard</code> web portals are authenticated directly through your identity provider. You need to call <code>CreateIdentityProvider</code> to integrate your identity provider with your web portal. User and group access to your web portal is controlled through your identity provider.</p> <p> <code>IAM Identity Center</code> web portals are authenticated through IAM Identity Center (successor to Single Sign-On). Identity sources (including external identity provider integration), plus user and group access to your web portal, can be configured in the IAM Identity Center.</p>"
+          "documentation":"<p>The type of authentication integration points used when signing into the web portal. Defaults to <code>Standard</code>.</p> <p> <code>Standard</code> web portals are authenticated directly through your identity provider. You need to call <code>CreateIdentityProvider</code> to integrate your identity provider with your web portal. User and group access to your web portal is controlled through your identity provider.</p> <p> <code>IAM Identity Center</code> web portals are authenticated through IAM Identity Center. Identity sources (including external identity provider integration), plus user and group access to your web portal, can be configured in the IAM Identity Center.</p>"
         },
         "displayName":{
           "shape":"DisplayName",
@@ -3919,6 +4201,13 @@
         }
       },
       "documentation":"<p>The summary of user settings.</p>"
+    },
+    "Username":{
+      "type":"string",
+      "max":256,
+      "min":0,
+      "pattern":"^[\\s\\S]*$",
+      "sensitive":true
     },
     "ValidationException":{
       "type":"structure",

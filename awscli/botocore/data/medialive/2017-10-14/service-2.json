@@ -10480,6 +10480,10 @@
         "TemporalFilterSettings": {
           "shape": "TemporalFilterSettings",
           "locationName": "temporalFilterSettings"
+        },
+        "BandwidthReductionFilterSettings": {
+          "shape": "BandwidthReductionFilterSettings",
+          "locationName": "bandwidthReductionFilterSettings"
         }
       },
       "documentation": "H264 Filter Settings"
@@ -10932,6 +10936,10 @@
         "TemporalFilterSettings": {
           "shape": "TemporalFilterSettings",
           "locationName": "temporalFilterSettings"
+        },
+        "BandwidthReductionFilterSettings": {
+          "shape": "BandwidthReductionFilterSettings",
+          "locationName": "bandwidthReductionFilterSettings"
         }
       },
       "documentation": "H265 Filter Settings"
@@ -15108,6 +15116,10 @@
           "shape": "OutputLocationRef",
           "locationName": "destination",
           "documentation": "Destination is a Multiplex."
+        },
+        "ContainerSettings": {
+          "shape": "MultiplexContainerSettings",
+          "locationName": "containerSettings"
         }
       },
       "documentation": "Multiplex Output Settings",
@@ -26655,7 +26667,7 @@
     },
     "InputNetworkLocation": {
       "type": "string",
-      "documentation": "With the introduction of MediaLive OnPrem, a MediaLive input can now exist in two different places: AWS or\ninside an on-premise datacenter. By default all inputs will continue to be AWS inputs.",
+      "documentation": "With the introduction of MediaLive Anywhere, a MediaLive input can now exist in two different places: AWS or\ninside an on-premises datacenter. By default all inputs will continue to be AWS inputs.",
       "enum": [
         "AWS",
         "ON_PREMISES"
@@ -27943,6 +27955,129 @@
         "shape": "SrtOutputDestinationSettings"
       },
       "documentation": "Placeholder documentation for __listOfSrtOutputDestinationSettings"
+    },
+    "BandwidthReductionFilterSettings": {
+      "type": "structure",
+      "members": {
+        "PostFilterSharpening": {
+          "shape": "BandwidthReductionPostFilterSharpening",
+          "locationName": "postFilterSharpening",
+          "documentation": "Configures the sharpening control, which is available when the bandwidth reduction filter is enabled. This\ncontrol sharpens edges and contours, which produces a specific artistic effect that you might want.\n\nWe recommend that you test each of the values (including DISABLED) to observe the sharpening effect on the\ncontent."
+        },
+        "Strength": {
+          "shape": "BandwidthReductionFilterStrength",
+          "locationName": "strength",
+          "documentation": "Enables the bandwidth reduction filter. The filter strengths range from 1 to 4. We recommend that you always\nenable this filter and use AUTO, to let MediaLive apply the optimum filtering for the context."
+        }
+      },
+      "documentation": "Bandwidth Reduction Filter Settings"
+    },
+    "BandwidthReductionFilterStrength": {
+      "type": "string",
+      "documentation": "Bandwidth Reduction Filter Strength",
+      "enum": [
+        "AUTO",
+        "STRENGTH_1",
+        "STRENGTH_2",
+        "STRENGTH_3",
+        "STRENGTH_4"
+      ]
+    },
+    "BandwidthReductionPostFilterSharpening": {
+      "type": "string",
+      "documentation": "Bandwidth Reduction Post Filter Sharpening",
+      "enum": [
+        "DISABLED",
+        "SHARPENING_1",
+        "SHARPENING_2",
+        "SHARPENING_3"
+      ]
+    },
+    "MultiplexContainerSettings": {
+      "type": "structure",
+      "members": {
+        "MultiplexM2tsSettings": {
+          "shape": "MultiplexM2tsSettings",
+          "locationName": "multiplexM2tsSettings"
+        }
+      },
+      "documentation": "Multiplex Container Settings"
+    },
+    "MultiplexM2tsSettings": {
+      "type": "structure",
+      "members": {
+        "AbsentInputAudioBehavior": {
+          "shape": "M2tsAbsentInputAudioBehavior",
+          "locationName": "absentInputAudioBehavior",
+          "documentation": "When set to drop, output audio streams will be removed from the program if the selected input audio stream is removed from the input. This allows the output audio configuration to dynamically change based on input configuration. If this is set to encodeSilence, all output audio streams will output encoded silence when not connected to an active input stream."
+        },
+        "Arib": {
+          "shape": "M2tsArib",
+          "locationName": "arib",
+          "documentation": "When set to enabled, uses ARIB-compliant field muxing and removes video descriptor."
+        },
+        "AudioBufferModel": {
+          "shape": "M2tsAudioBufferModel",
+          "locationName": "audioBufferModel",
+          "documentation": "When set to dvb, uses DVB buffer model for Dolby Digital audio.  When set to atsc, the ATSC model is used."
+        },
+        "AudioFramesPerPes": {
+          "shape": "__integerMin0",
+          "locationName": "audioFramesPerPes",
+          "documentation": "The number of audio frames to insert for each PES packet."
+        },
+        "AudioStreamType": {
+          "shape": "M2tsAudioStreamType",
+          "locationName": "audioStreamType",
+          "documentation": "When set to atsc, uses stream type = 0x81 for AC3 and stream type = 0x87 for EAC3. When set to dvb, uses stream type = 0x06."
+        },
+        "CcDescriptor": {
+          "shape": "M2tsCcDescriptor",
+          "locationName": "ccDescriptor",
+          "documentation": "When set to enabled, generates captionServiceDescriptor in PMT."
+        },
+        "Ebif": {
+          "shape": "M2tsEbifControl",
+          "locationName": "ebif",
+          "documentation": "If set to passthrough, passes any EBIF data from the input source to this output."
+        },
+        "EsRateInPes": {
+          "shape": "M2tsEsRateInPes",
+          "locationName": "esRateInPes",
+          "documentation": "Include or exclude the ES Rate field in the PES header."
+        },
+        "Klv": {
+          "shape": "M2tsKlv",
+          "locationName": "klv",
+          "documentation": "If set to passthrough, passes any KLV data from the input source to this output."
+        },
+        "NielsenId3Behavior": {
+          "shape": "M2tsNielsenId3Behavior",
+          "locationName": "nielsenId3Behavior",
+          "documentation": "If set to passthrough, Nielsen inaudible tones for media tracking will be detected in the input audio and an equivalent ID3 tag will be inserted in the output."
+        },
+        "PcrControl": {
+          "shape": "M2tsPcrControl",
+          "locationName": "pcrControl",
+          "documentation": "When set to pcrEveryPesPacket, a Program Clock Reference value is inserted for every Packetized Elementary Stream (PES) header. This parameter is effective only when the PCR PID is the same as the video or audio elementary stream."
+        },
+        "PcrPeriod": {
+          "shape": "__integerMin0Max500",
+          "locationName": "pcrPeriod",
+          "documentation": "Maximum time in milliseconds between Program Clock Reference (PCRs) inserted into the transport stream."
+        },
+        "Scte35Control": {
+          "shape": "M2tsScte35Control",
+          "locationName": "scte35Control",
+          "documentation": "Optionally pass SCTE-35 signals from the input source to this output."
+        },
+        "Scte35PrerollPullupMilliseconds": {
+          "shape": "__doubleMin0Max5000",
+          "locationName": "scte35PrerollPullupMilliseconds",
+          "documentation": "Defines the amount SCTE-35 preroll will be increased (in milliseconds) on the output. Preroll is the amount of time between the presence of a SCTE-35 indication in a transport stream and the PTS of the video frame it references. Zero means don't add pullup (it doesn't mean set the preroll to zero). Negative pullup is not supported, which means that you can't make the preroll shorter. Be aware that latency in the output will increase by the pullup amount."
+        }
+      },
+      "documentation": "Multiplex M2ts Settings"
     }
   },
   "documentation": "API for AWS Elemental MediaLive"

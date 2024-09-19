@@ -48,9 +48,10 @@
         {"shape":"InvalidParameterValueException"},
         {"shape":"PolicyLengthExceededException"},
         {"shape":"TooManyRequestsException"},
-        {"shape":"PreconditionFailedException"}
+        {"shape":"PreconditionFailedException"},
+        {"shape":"PublicPolicyException"}
       ],
-      "documentation":"<p>Grants an Amazon Web Servicesservice, Amazon Web Services account, or Amazon Web Services organization permission to use a function. You can apply the policy at the function level, or specify a qualifier to restrict access to a single version or alias. If you use a qualifier, the invoker must use the full Amazon Resource Name (ARN) of that version or alias to invoke the function. Note: Lambda does not support adding policies to version $LATEST.</p> <p>To grant permission to another account, specify the account ID as the <code>Principal</code>. To grant permission to an organization defined in Organizations, specify the organization ID as the <code>PrincipalOrgID</code>. For Amazon Web Servicesservices, the principal is a domain-style identifier that the service defines, such as <code>s3.amazonaws.com</code> or <code>sns.amazonaws.com</code>. For Amazon Web Servicesservices, you can also specify the ARN of the associated resource as the <code>SourceArn</code>. If you grant permission to a service principal without specifying the source, other accounts could potentially configure resources in their account to invoke your Lambda function.</p> <p>This operation adds a statement to a resource-based permissions policy for the function. For more information about function policies, see <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/access-control-resource-based.html\">Using resource-based policies for Lambda</a>.</p>"
+      "documentation":"<p>Grants a <a href=\"https://docs.aws.amazon.com/IAM/latest/UserGuide/reference_policies_elements_principal.html#Principal_specifying\">principal</a> permission to use a function. You can apply the policy at the function level, or specify a qualifier to restrict access to a single version or alias. If you use a qualifier, the invoker must use the full Amazon Resource Name (ARN) of that version or alias to invoke the function. Note: Lambda does not support adding policies to version $LATEST.</p> <p>To grant permission to another account, specify the account ID as the <code>Principal</code>. To grant permission to an organization defined in Organizations, specify the organization ID as the <code>PrincipalOrgID</code>. For Amazon Web Servicesservices, the principal is a domain-style identifier that the service defines, such as <code>s3.amazonaws.com</code> or <code>sns.amazonaws.com</code>. For Amazon Web Servicesservices, you can also specify the ARN of the associated resource as the <code>SourceArn</code>. If you grant permission to a service principal without specifying the source, other accounts could potentially configure resources in their account to invoke your Lambda function.</p> <p>This operation adds a statement to a resource-based permissions policy for the function. For more information about function policies, see <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/access-control-resource-based.html\">Using resource-based policies for Lambda</a>.</p>"
     },
     "CreateAlias":{
       "name":"CreateAlias",
@@ -327,7 +328,7 @@
         {"shape":"TooManyRequestsException"},
         {"shape":"PreconditionFailedException"}
       ],
-      "documentation":"<p>Deletes a <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/access-control-resource-based.html\">resource-based policy</a> from a function.</p>"
+      "documentation":"<note> <p>The option to create and modify full JSON resource-based policies, and to use the PutResourcePolicy, GetResourcePolicy, and DeleteResourcePolicy APIs, won't be available in all Amazon Web Services Regions until September 30, 2024.</p> </note> <p>Deletes a <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/access-control-resource-based.html\">resource-based policy</a> from a function.</p>"
     },
     "GetAccountSettings":{
       "name":"GetAccountSettings",
@@ -614,7 +615,7 @@
         {"shape":"TooManyRequestsException"},
         {"shape":"InvalidParameterValueException"}
       ],
-      "documentation":"<p>Retrieve the public-access settings for a function.</p>"
+      "documentation":"<note> <p>The option to configure public-access settings, and to use the PutPublicAccessBlock and GetPublicAccessBlock APIs, won't be available in all Amazon Web Services Regions until September 30, 2024.</p> </note> <p>Retrieve the public-access settings for a function.</p>"
     },
     "GetResourcePolicy":{
       "name":"GetResourcePolicy",
@@ -631,7 +632,7 @@
         {"shape":"TooManyRequestsException"},
         {"shape":"InvalidParameterValueException"}
       ],
-      "documentation":"<p>Retrieves the <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/access-control-resource-based.html\">resource-based policy</a> attached to a function.</p>"
+      "documentation":"<note> <p>The option to create and modify full JSON resource-based policies, and to use the PutResourcePolicy, GetResourcePolicy, and DeleteResourcePolicy APIs, won't be available in all Amazon Web Services Regions until September 30, 2024.</p> </note> <p>Retrieves the <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/access-control-resource-based.html\">resource-based policy</a> attached to a function.</p>"
     },
     "GetRuntimeManagementConfig":{
       "name":"GetRuntimeManagementConfig",
@@ -932,7 +933,7 @@
         {"shape":"InvalidParameterValueException"},
         {"shape":"TooManyRequestsException"}
       ],
-      "documentation":"<p>Returns a function's <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/tagging.html\">tags</a>. You can also view tags with <a>GetFunction</a>.</p>"
+      "documentation":"<p>Returns a function, event source mapping, or code signing configuration's <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/tagging.html\">tags</a>. You can also view funciton tags with <a>GetFunction</a>.</p>"
     },
     "ListVersionsByFunction":{
       "name":"ListVersionsByFunction",
@@ -1096,7 +1097,7 @@
         {"shape":"InvalidParameterValueException"},
         {"shape":"TooManyRequestsException"}
       ],
-      "documentation":"<p>Configure your function's public-access settings.</p> <p>To control public access to a Lambda function, you can choose whether to allow the creation of <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/access-control-resource-based.html\">resource-based policies</a> that allow public access to that function. You can also block public access to a function, even if it has an existing resource-based policy that allows it.</p>"
+      "documentation":"<note> <p>The option to configure public-access settings, and to use the PutPublicAccessBlock and GetPublicAccessBlock APIs, won't be available in all Amazon Web Services Regions until September 30, 2024.</p> </note> <p>Configure your function's public-access settings.</p> <p>To control public access to a Lambda function, you can choose whether to allow the creation of <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/access-control-resource-based.html\">resource-based policies</a> that allow public access to that function. You can also block public access to a function, even if it has an existing resource-based policy that allows it.</p>"
     },
     "PutResourcePolicy":{
       "name":"PutResourcePolicy",
@@ -1117,7 +1118,7 @@
         {"shape":"PreconditionFailedException"},
         {"shape":"PublicPolicyException"}
       ],
-      "documentation":"<p>Adds a <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/access-control-resource-based.html\">resource-based policy</a> to a function. You can use resource-based policies to grant access to other <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/permissions-function-cross-account.html\">Amazon Web Services accounts</a>, <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/permissions-function-organization.html\">organizations</a>, or <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/permissions-function-services.html\">services</a>. Resource-based policies apply to a single function, version, or alias.</p> <important> <p>Adding a resource-based policy using this API action replaces any existing policy you've previously created. This means that if you've previously added resource-based permissions to a function using the <a>AddPermission</a> action, those permissions will be overwritten by your new policy.</p> </important>"
+      "documentation":"<note> <p>The option to create and modify full JSON resource-based policies, and to use the PutResourcePolicy, GetResourcePolicy, and DeleteResourcePolicy APIs, won't be available in all Amazon Web Services Regions until September 30, 2024.</p> </note> <p>Adds a <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/access-control-resource-based.html\">resource-based policy</a> to a function. You can use resource-based policies to grant access to other <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/permissions-function-cross-account.html\">Amazon Web Services accounts</a>, <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/permissions-function-organization.html\">organizations</a>, or <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/permissions-function-services.html\">services</a>. Resource-based policies apply to a single function, version, or alias.</p> <important> <p>Adding a resource-based policy using this API action replaces any existing policy you've previously created. This means that if you've previously added resource-based permissions to a function using the <a>AddPermission</a> action, those permissions will be overwritten by your new policy.</p> </important>"
     },
     "PutRuntimeManagementConfig":{
       "name":"PutRuntimeManagementConfig",
@@ -1167,7 +1168,8 @@
         {"shape":"ResourceNotFoundException"},
         {"shape":"InvalidParameterValueException"},
         {"shape":"TooManyRequestsException"},
-        {"shape":"PreconditionFailedException"}
+        {"shape":"PreconditionFailedException"},
+        {"shape":"PublicPolicyException"}
       ],
       "documentation":"<p>Revokes function-use permission from an Amazon Web Servicesservice or another Amazon Web Services account. You can get the ID of the statement from the output of <a>GetPolicy</a>.</p>"
     },
@@ -1186,7 +1188,7 @@
         {"shape":"TooManyRequestsException"},
         {"shape":"ResourceConflictException"}
       ],
-      "documentation":"<p>Adds <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/tagging.html\">tags</a> to a function.</p>"
+      "documentation":"<p>Adds <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/tagging.html\">tags</a> to a function, event source mapping, or code signing configuration.</p>"
     },
     "UntagResource":{
       "name":"UntagResource",
@@ -1203,7 +1205,7 @@
         {"shape":"TooManyRequestsException"},
         {"shape":"ResourceConflictException"}
       ],
-      "documentation":"<p>Removes <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/tagging.html\">tags</a> from a function.</p>"
+      "documentation":"<p>Removes <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/tagging.html\">tags</a> from a function, event source mapping, or code signing configuration.</p>"
     },
     "UpdateAlias":{
       "name":"UpdateAlias",
@@ -1470,7 +1472,7 @@
         },
         "Principal":{
           "shape":"Principal",
-          "documentation":"<p>The Amazon Web Servicesservice or Amazon Web Services account that invokes the function. If you specify a service, use <code>SourceArn</code> or <code>SourceAccount</code> to limit who can invoke the function through that service.</p>"
+          "documentation":"<p>The Amazon Web Servicesservice, Amazon Web Services account, IAM user, or IAM role that invokes the function. If you specify a service, use <code>SourceArn</code> or <code>SourceAccount</code> to limit who can invoke the function through that service.</p>"
         },
         "SourceArn":{
           "shape":"Arn",
@@ -1851,6 +1853,10 @@
         "CodeSigningPolicies":{
           "shape":"CodeSigningPolicies",
           "documentation":"<p>The code signing policies define the actions to take if the validation checks fail. </p>"
+        },
+        "Tags":{
+          "shape":"Tags",
+          "documentation":"<p>A list of tags to add to the code signing configuration.</p>"
         }
       }
     },
@@ -1919,6 +1925,10 @@
         "MaximumRetryAttempts":{
           "shape":"MaximumRetryAttemptsEventSourceMapping",
           "documentation":"<p>(Kinesis and DynamoDB Streams only) Discard records after the specified number of retries. The default value is infinite (-1). When set to infinite (-1), failed records are retried until the record expires.</p>"
+        },
+        "Tags":{
+          "shape":"Tags",
+          "documentation":"<p>A list of tags to apply to the event source mapping.</p>"
         },
         "TumblingWindowInSeconds":{
           "shape":"TumblingWindowInSeconds",
@@ -2562,6 +2572,12 @@
       "max":10240,
       "min":512
     },
+    "EventSourceMappingArn":{
+      "type":"string",
+      "max":120,
+      "min":85,
+      "pattern":"arn:(aws[a-zA-Z-]*)?:lambda:[a-z]{2}((-gov)|(-iso([a-z]?)))?-[a-z]+-\\d{1}:\\d{12}:event-source-mapping:[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}"
+    },
     "EventSourceMappingConfiguration":{
       "type":"structure",
       "members":{
@@ -2680,6 +2696,10 @@
         "FilterCriteriaError":{
           "shape":"FilterCriteriaError",
           "documentation":"<p>An object that contains details about an error related to filter criteria encryption.</p>"
+        },
+        "EventSourceMappingArn":{
+          "shape":"EventSourceMappingArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the event source mapping.</p>"
         }
       },
       "documentation":"<p>A mapping between an Amazon Web Services resource and a Lambda function. For details, see <a>CreateEventSourceMapping</a>.</p>"
@@ -4689,8 +4709,8 @@
       "required":["Resource"],
       "members":{
         "Resource":{
-          "shape":"FunctionArn",
-          "documentation":"<p>The function's Amazon Resource Name (ARN). Note: Lambda does not support adding tags to aliases or versions.</p>",
+          "shape":"TaggableResource",
+          "documentation":"<p>The resource's Amazon Resource Name (ARN). Note: Lambda does not support adding tags to function aliases or versions.</p>",
           "location":"uri",
           "locationName":"ARN"
         }
@@ -5993,18 +6013,24 @@
       ],
       "members":{
         "Resource":{
-          "shape":"FunctionArn",
-          "documentation":"<p>The function's Amazon Resource Name (ARN).</p>",
+          "shape":"TaggableResource",
+          "documentation":"<p>The resource's Amazon Resource Name (ARN).</p>",
           "location":"uri",
           "locationName":"ARN"
         },
         "Tags":{
           "shape":"Tags",
-          "documentation":"<p>A list of tags to apply to the function.</p>"
+          "documentation":"<p>A list of tags to apply to the resource.</p>"
         }
       }
     },
     "TagValue":{"type":"string"},
+    "TaggableResource":{
+      "type":"string",
+      "max":256,
+      "min":1,
+      "pattern":"arn:(aws[a-zA-Z-]*):lambda:[a-z]{2}((-gov)|(-iso([a-z]?)))?-[a-z]+-\\d{1}:\\d{12}:(function:[a-zA-Z0-9-_]+(:(\\$LATEST|[a-zA-Z0-9-_]+))?|code-signing-config:csc-[a-z0-9]{17}|event-source-mapping:[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12})"
+    },
     "Tags":{
       "type":"map",
       "key":{"shape":"TagKey"},
@@ -6121,14 +6147,14 @@
       ],
       "members":{
         "Resource":{
-          "shape":"FunctionArn",
-          "documentation":"<p>The function's Amazon Resource Name (ARN).</p>",
+          "shape":"TaggableResource",
+          "documentation":"<p>The resource's Amazon Resource Name (ARN).</p>",
           "location":"uri",
           "locationName":"ARN"
         },
         "TagKeys":{
           "shape":"TagKeyList",
-          "documentation":"<p>A list of tag keys to remove from the function.</p>",
+          "documentation":"<p>A list of tag keys to remove from the resource.</p>",
           "location":"querystring",
           "locationName":"tagKeys"
         }

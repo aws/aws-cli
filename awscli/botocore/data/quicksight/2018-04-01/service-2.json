@@ -2008,6 +2008,25 @@
       ],
       "documentation":"<p>Lists all folders in an account.</p>"
     },
+    "ListFoldersForResource":{
+      "name":"ListFoldersForResource",
+      "http":{
+        "method":"GET",
+        "requestUri":"/accounts/{AwsAccountId}/resource/{ResourceArn}/folders"
+      },
+      "input":{"shape":"ListFoldersForResourceRequest"},
+      "output":{"shape":"ListFoldersForResourceResponse"},
+      "errors":[
+        {"shape":"InvalidParameterValueException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InvalidNextTokenException"},
+        {"shape":"UnsupportedUserEditionException"},
+        {"shape":"InternalFailureException"}
+      ],
+      "documentation":"<p>List all folders that a resource is a member of.</p>"
+    },
     "ListGroupMemberships":{
       "name":"ListGroupMemberships",
       "http":{
@@ -7305,6 +7324,13 @@
       },
       "documentation":"<p>A combo chart.</p> <p>The <code>ComboChartVisual</code> includes stacked bar combo charts and clustered bar combo charts</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/quicksight/latest/user/combo-charts.html\">Using combo charts</a> in the <i>Amazon QuickSight User Guide</i>.</p>"
     },
+    "CommitMode":{
+      "type":"string",
+      "enum":[
+        "AUTO",
+        "MANUAL"
+      ]
+    },
     "ComparativeOrder":{
       "type":"structure",
       "members":{
@@ -11600,6 +11626,10 @@
         "DisplayOptions":{
           "shape":"DateTimePickerControlDisplayOptions",
           "documentation":"<p>The display options of a control.</p>"
+        },
+        "CommitMode":{
+          "shape":"CommitMode",
+          "documentation":"<p>The visibility configuration of the Apply button on a <code>DateTimePickerControl</code>.</p>"
         }
       },
       "documentation":"<p>The default options that correspond to the filter control type of a <code>DateTimePicker</code>.</p>"
@@ -11670,6 +11700,10 @@
         "SelectableValues":{
           "shape":"FilterSelectableValues",
           "documentation":"<p>A list of selectable values that are used in a control.</p>"
+        },
+        "CommitMode":{
+          "shape":"CommitMode",
+          "documentation":"<p>The visibility configuration of the Apply button on a <code>FilterDropDownControl</code>.</p>"
         }
       },
       "documentation":"<p>The default options that correspond to the <code>Dropdown</code> filter control type.</p>"
@@ -11776,6 +11810,10 @@
         "DisplayOptions":{
           "shape":"RelativeDateTimeControlDisplayOptions",
           "documentation":"<p>The display options of a control.</p>"
+        },
+        "CommitMode":{
+          "shape":"CommitMode",
+          "documentation":"<p>The visibility configuration of the Apply button on a <code>RelativeDateTimeControl</code>.</p>"
         }
       },
       "documentation":"<p>The default options that correspond to the <code>RelativeDateTime</code> filter control type.</p>"
@@ -16152,6 +16190,10 @@
         "Type":{
           "shape":"SheetControlDateTimePickerType",
           "documentation":"<p>The type of the <code>FilterDropDownControl</code>. Choose one of the following options:</p> <ul> <li> <p> <code>MULTI_SELECT</code>: The user can select multiple entries from a dropdown menu.</p> </li> <li> <p> <code>SINGLE_SELECT</code>: The user can select a single entry from a dropdown menu.</p> </li> </ul>"
+        },
+        "CommitMode":{
+          "shape":"CommitMode",
+          "documentation":"<p>The visibility configurationof the Apply button on a <code>DateTimePickerControl</code>.</p>"
         }
       },
       "documentation":"<p>A control from a date filter that is used to specify date and time.</p>"
@@ -16191,6 +16233,10 @@
         "CascadingControlConfiguration":{
           "shape":"CascadingControlConfiguration",
           "documentation":"<p>The values that are displayed in a control can be configured to only show values that are valid based on what's selected in other controls.</p>"
+        },
+        "CommitMode":{
+          "shape":"CommitMode",
+          "documentation":"<p>The visibility configuration of the Apply button on a <code>FilterDropDownControl</code>.</p>"
         }
       },
       "documentation":"<p>A control to display a dropdown list with buttons that are used to select a single value.</p>"
@@ -16376,6 +16422,10 @@
         "DisplayOptions":{
           "shape":"RelativeDateTimeControlDisplayOptions",
           "documentation":"<p>The display options of a control.</p>"
+        },
+        "CommitMode":{
+          "shape":"CommitMode",
+          "documentation":"<p>The visibility configuration of the Apply button on a <code>FilterRelativeDateTimeControl</code>.</p>"
         }
       },
       "documentation":"<p>A control from a date filter that is used to specify the relative date.</p>"
@@ -16672,6 +16722,11 @@
         "SHARED",
         "RESTRICTED"
       ]
+    },
+    "FoldersForResourceArnList":{
+      "type":"list",
+      "member":{"shape":"Arn"},
+      "max":20
     },
     "Font":{
       "type":"structure",
@@ -20333,6 +20388,62 @@
         }
       }
     },
+    "ListFoldersForResourceRequest":{
+      "type":"structure",
+      "required":[
+        "AwsAccountId",
+        "ResourceArn"
+      ],
+      "members":{
+        "AwsAccountId":{
+          "shape":"AwsAccountId",
+          "documentation":"<p>The ID for the Amazon Web Services account that contains the resource.</p>",
+          "location":"uri",
+          "locationName":"AwsAccountId"
+        },
+        "ResourceArn":{
+          "shape":"Arn",
+          "documentation":"<p>The Amazon Resource Name (ARN) the resource whose folders you need to list.</p>",
+          "location":"uri",
+          "locationName":"ResourceArn"
+        },
+        "NextToken":{
+          "shape":"String",
+          "documentation":"<p>The token for the next set of results, or null if there are no more results.</p>",
+          "location":"querystring",
+          "locationName":"next-token"
+        },
+        "MaxResults":{
+          "shape":"MaxResults",
+          "documentation":"<p>The maximum number of results to be returned per request.</p>",
+          "box":true,
+          "location":"querystring",
+          "locationName":"max-results"
+        }
+      }
+    },
+    "ListFoldersForResourceResponse":{
+      "type":"structure",
+      "members":{
+        "Status":{
+          "shape":"StatusCode",
+          "documentation":"<p>The HTTP status of the request.</p>",
+          "location":"statusCode"
+        },
+        "Folders":{
+          "shape":"FoldersForResourceArnList",
+          "documentation":"<p>A list that contains the Amazon Resource Names (ARNs) of all folders that the resource is a member of.</p>"
+        },
+        "NextToken":{
+          "shape":"String",
+          "documentation":"<p>The token for the next set of results, or null if there are no more results.</p>"
+        },
+        "RequestId":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Web Services request ID for this operation.</p>"
+        }
+      }
+    },
     "ListFoldersRequest":{
       "type":"structure",
       "required":["AwsAccountId"],
@@ -22941,6 +23052,10 @@
         "CascadingControlConfiguration":{
           "shape":"CascadingControlConfiguration",
           "documentation":"<p>The values that are displayed in a control can be configured to only show values that are valid based on what's selected in other controls.</p>"
+        },
+        "CommitMode":{
+          "shape":"CommitMode",
+          "documentation":"<p>The visibility configuration of the Apply button on a <code>ParameterDropDownControl</code>.</p>"
         }
       },
       "documentation":"<p>A control to display a dropdown list with buttons that are used to select a single value.</p>"

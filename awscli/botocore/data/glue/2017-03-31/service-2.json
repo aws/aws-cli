@@ -3309,6 +3309,27 @@
       ],
       "documentation":"<p>Adds tags to a resource. A tag is a label you can assign to an Amazon Web Services resource. In Glue, you can tag only certain resources. For information about what resources you can tag, see <a href=\"https://docs.aws.amazon.com/glue/latest/dg/monitor-tags.html\">Amazon Web Services Tags in Glue</a>.</p>"
     },
+    "TestConnection":{
+      "name":"TestConnection",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"TestConnectionRequest"},
+      "output":{"shape":"TestConnectionResponse"},
+      "errors":[
+        {"shape":"InvalidInputException"},
+        {"shape":"OperationTimeoutException"},
+        {"shape":"ResourceNumberLimitExceededException"},
+        {"shape":"GlueEncryptionException"},
+        {"shape":"FederationSourceException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"EntityNotFoundException"},
+        {"shape":"ConflictException"},
+        {"shape":"InternalServiceException"}
+      ],
+      "documentation":"<p>Tests a connection to a service to validate the service credentials that you provide.</p> <p>You can either provide an existing connection name or a <code>TestConnectionInput</code> for testing a non-existing connection input. Providing both at the same time will cause an error.</p> <p>If the action is successful, the service sends back an HTTP 200 response.</p>"
+    },
     "UntagResource":{
       "name":"UntagResource",
       "http":{
@@ -22106,6 +22127,46 @@
         "EXPORT_LABELS",
         "FIND_MATCHES"
       ]
+    },
+    "TestConnectionInput":{
+      "type":"structure",
+      "required":[
+        "ConnectionType",
+        "ConnectionProperties"
+      ],
+      "members":{
+        "ConnectionType":{
+          "shape":"ConnectionType",
+          "documentation":"<p>The type of connection to test. This operation is only available for the <code>JDBC</code> or <code>SALESFORCE</code> connection types.</p>"
+        },
+        "ConnectionProperties":{
+          "shape":"ConnectionProperties",
+          "documentation":"<p>The key-value pairs that define parameters for the connection.</p> <p>JDBC connections use the following connection properties:</p> <ul> <li> <p>Required: All of (<code>HOST</code>, <code>PORT</code>, <code>JDBC_ENGINE</code>) or <code>JDBC_CONNECTION_URL</code>.</p> </li> <li> <p>Required: All of (<code>USERNAME</code>, <code>PASSWORD</code>) or <code>SECRET_ID</code>.</p> </li> <li> <p>Optional: <code>JDBC_ENFORCE_SSL</code>, <code>CUSTOM_JDBC_CERT</code>, <code>CUSTOM_JDBC_CERT_STRING</code>, <code>SKIP_CUSTOM_JDBC_CERT_VALIDATION</code>. These parameters are used to configure SSL with JDBC.</p> </li> </ul> <p>SALESFORCE connections require the <code>AuthenticationConfiguration</code> member to be configured.</p>"
+        },
+        "AuthenticationConfiguration":{
+          "shape":"AuthenticationConfigurationInput",
+          "documentation":"<p>A structure containing the authentication configuration in the TestConnection request. Required for a connection to Salesforce using OAuth authentication.</p>"
+        }
+      },
+      "documentation":"<p>A structure that is used to specify testing a connection to a service.</p>"
+    },
+    "TestConnectionRequest":{
+      "type":"structure",
+      "members":{
+        "ConnectionName":{
+          "shape":"NameString",
+          "documentation":"<p>Optional. The name of the connection to test. If only name is provided, the operation will get the connection and use that for testing.</p>"
+        },
+        "TestConnectionInput":{
+          "shape":"TestConnectionInput",
+          "documentation":"<p>A structure that is used to specify testing a connection to a service.</p>"
+        }
+      }
+    },
+    "TestConnectionResponse":{
+      "type":"structure",
+      "members":{
+      }
     },
     "ThrottlingException":{
       "type":"structure",

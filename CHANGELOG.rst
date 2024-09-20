@@ -2,6 +2,17 @@
 CHANGELOG
 =========
 
+1.34.24
+=======
+
+* api-change:``dynamodb``: Generate account endpoint for DynamoDB requests when the account ID is available
+* api-change:``neptune``: Add v2 smoke tests and smithy smokeTests trait for SDK testing.
+* api-change:``sagemaker``: Amazon SageMaker now supports using manifest files to specify the location of uncompressed model artifacts within Model Packages
+* api-change:``sagemaker-metrics``: This release introduces support for the SageMaker Metrics BatchGetMetrics API.
+* api-change:``workspaces``: Releasing new ErrorCodes for SysPrep failures during ImageImport and CreateImage process
+* enhancement:paginator: Add warning when a non-positive value is provided for the max-items pagination parameter.
+
+
 1.34.23
 =======
 

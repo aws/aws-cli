@@ -707,6 +707,843 @@
             "expect": {
                 "error": "Invalid Configuration: Missing Region"
             }
+        },
+        {
+            "documentation": "For custom endpoint with account ID available, FIPS enabled, and DualStack enabled",
+            "expect": {
+                "error": "Invalid Configuration: FIPS and custom endpoint are not supported"
+            },
+            "params": {
+                "AccountId": "012345678901",
+                "UseFIPS": true,
+                "UseDualStack": true,
+                "Endpoint": "https://example.com"
+            }
+        },
+        {
+            "documentation": "For custom endpoint with account ID available, FIPS enabled, and DualStack disabled",
+            "expect": {
+                "error": "Invalid Configuration: FIPS and custom endpoint are not supported"
+            },
+            "params": {
+                "AccountId": "012345678901",
+                "UseFIPS": true,
+                "UseDualStack": false,
+                "Endpoint": "https://example.com"
+            }
+        },
+        {
+            "documentation": "For custom endpoint with account ID available, FIPS disabled, and DualStack enabled",
+            "expect": {
+                "error": "Invalid Configuration: Dualstack and custom endpoint are not supported"
+            },
+            "params": {
+                "AccountId": "012345678901",
+                "UseFIPS": false,
+                "UseDualStack": true,
+                "Endpoint": "https://example.com"
+            }
+        },
+        {
+            "documentation": "For custom endpoint with account ID available, FIPS disabled, and DualStack disabled",
+            "expect": {
+                "endpoint": {
+                    "url": "https://example.com"
+                }
+            },
+            "operationInputs": [
+                {
+                    "builtInParams": {
+                        "SDK::Endpoint": "https://example.com",
+                        "AWS::Auth::AccountId": "012345678901"
+                    },
+                    "operationName": "ListTables"
+                }
+            ],
+            "params": {
+                "AccountId": "012345678901",
+                "UseFIPS": false,
+                "UseDualStack": false,
+                "Endpoint": "https://example.com"
+            }
+        },
+        {
+            "documentation": "For custom endpoint with empty account ID available, FIPS disabled, and DualStack disabled",
+            "expect": {
+                "endpoint": {
+                    "url": "https://example.com"
+                }
+            },
+            "operationInputs": [
+                {
+                    "builtInParams": {
+                        "SDK::Endpoint": "https://example.com",
+                        "AWS::Auth::AccountId": ""
+                    },
+                    "operationName": "ListTables"
+                }
+            ],
+            "params": {
+                "AccountId": "",
+                "UseFIPS": false,
+                "UseDualStack": false,
+                "Endpoint": "https://example.com"
+            }
+        },
+        {
+            "documentation": "For region local with account ID available, FIPS enabled, and DualStack enabled",
+            "expect": {
+                "error": "Invalid Configuration: FIPS and local endpoint are not supported"
+            },
+            "params": {
+                "Region": "local",
+                "AccountId": "012345678901",
+                "UseFIPS": true,
+                "UseDualStack": true
+            }
+        },
+        {
+            "documentation": "For region local with account ID available, FIPS enabled, and DualStack disabled",
+            "expect": {
+                "error": "Invalid Configuration: FIPS and local endpoint are not supported"
+            },
+            "params": {
+                "Region": "local",
+                "AccountId": "012345678901",
+                "UseFIPS": true,
+                "UseDualStack": false
+            }
+        },
+        {
+            "documentation": "For region local with account ID available, FIPS disabled, and DualStack enabled",
+            "expect": {
+                "error": "Invalid Configuration: Dualstack and local endpoint are not supported"
+            },
+            "params": {
+                "Region": "local",
+                "AccountId": "012345678901",
+                "UseFIPS": false,
+                "UseDualStack": true
+            }
+        },
+        {
+            "documentation": "For region local with account ID available, FIPS disabled, and DualStack disabled",
+            "expect": {
+                "endpoint": {
+                    "properties": {
+                        "authSchemes": [
+                            {
+                                "name": "sigv4",
+                                "signingName": "dynamodb",
+                                "signingRegion": "us-east-1"
+                            }
+                        ]
+                    },
+                    "url": "http://localhost:8000"
+                }
+            },
+            "operationInputs": [
+                {
+                    "builtInParams": {
+                        "AWS::Region": "local",
+                        "AWS::Auth::AccountId": "012345678901"
+                    },
+                    "operationName": "ListTables"
+                }
+            ],
+            "params": {
+                "Region": "local",
+                "AccountId": "012345678901",
+                "UseFIPS": false,
+                "UseDualStack": false
+            }
+        },
+        {
+            "documentation": "For region local with empty account ID available, FIPS disabled, and DualStack disabled",
+            "expect": {
+                "endpoint": {
+                    "properties": {
+                        "authSchemes": [
+                            {
+                                "name": "sigv4",
+                                "signingName": "dynamodb",
+                                "signingRegion": "us-east-1"
+                            }
+                        ]
+                    },
+                    "url": "http://localhost:8000"
+                }
+            },
+            "operationInputs": [
+                {
+                    "builtInParams": {
+                        "AWS::Region": "local",
+                        "AWS::Auth::AccountId": ""
+                    },
+                    "operationName": "ListTables"
+                }
+            ],
+            "params": {
+                "Region": "local",
+                "AccountId": "",
+                "UseFIPS": false,
+                "UseDualStack": false
+            }
+        },
+        {
+            "documentation": "For AccountIdEndpointMode required and no AccountId set",
+            "expect": {
+                "error": "AccountIdEndpointMode is required but no AccountID was provided or able to be loaded."
+            },
+            "operationInputs": [
+                {
+                    "builtInParams": {
+                        "AWS::Region": "us-east-1",
+                        "AWS::Auth::AccountIdEndpointMode": "required"
+                    },
+                    "operationName": "ListTables"
+                }
+            ],
+            "params": {
+                "Region": "us-east-1",
+                "AccountIdEndpointMode": "required"
+            }
+        },
+        {
+            "documentation": "For region us-east-1 with account ID available, FIPS enabled, and DualStack enabled",
+            "expect": {
+                "endpoint": {
+                    "url": "https://dynamodb-fips.us-east-1.api.aws"
+                }
+            },
+            "operationInputs": [
+                {
+                    "builtInParams": {
+                        "AWS::Region": "us-east-1",
+                        "AWS::Auth::AccountId": "012345678901",
+                        "AWS::UseFIPS": true,
+                        "AWS::UseDualStack": true
+                    },
+                    "operationName": "ListTables"
+                }
+            ],
+            "params": {
+                "Region": "us-east-1",
+                "AccountId": "012345678901",
+                "UseFIPS": true,
+                "UseDualStack": true
+            }
+        },
+        {
+            "documentation": "For region us-east-1 with account ID available, FIPS enabled, and DualStack disabled",
+            "expect": {
+                "endpoint": {
+                    "url": "https://dynamodb-fips.us-east-1.amazonaws.com"
+                }
+            },
+            "operationInputs": [
+                {
+                    "builtInParams": {
+                        "AWS::Region": "us-east-1",
+                        "AWS::Auth::AccountId": "012345678901",
+                        "AWS::UseFIPS": true
+                    },
+                    "operationName": "ListTables"
+                }
+            ],
+            "params": {
+                "Region": "us-east-1",
+                "AccountId": "012345678901",
+                "UseFIPS": true,
+                "UseDualStack": false
+            }
+        },
+        {
+            "documentation": "For region us-east-1 with account ID available, AccountIdEndpointMode preferred, FIPS enabled, and DualStack disabled",
+            "expect": {
+                "endpoint": {
+                    "url": "https://dynamodb-fips.us-east-1.amazonaws.com"
+                }
+            },
+            "operationInputs": [
+                {
+                    "builtInParams": {
+                        "AWS::Region": "us-east-1",
+                        "AWS::Auth::AccountId": "012345678901",
+                        "AWS::Auth::AccountIdEndpointMode": "preferred",
+                        "AWS::UseFIPS": true
+                    },
+                    "operationName": "ListTables"
+                }
+            ],
+            "params": {
+                "Region": "us-east-1",
+                "AccountId": "012345678901",
+                "AccountIdEndpointMode": "preferred",
+                "UseFIPS": true,
+                "UseDualStack": false
+            }
+        },
+        {
+            "documentation": "For region us-east-1 with account ID available, AccountIdEndpointMode required, FIPS enabled, and DualStack disabled",
+            "expect": {
+                "endpoint": {
+                    "url": "https://dynamodb-fips.us-east-1.amazonaws.com"
+                }
+            },
+            "operationInputs": [
+                {
+                    "builtInParams": {
+                        "AWS::Region": "us-east-1",
+                        "AWS::Auth::AccountId": "012345678901",
+                        "AWS::Auth::AccountIdEndpointMode": "required",
+                        "AWS::UseFIPS": true
+                    },
+                    "operationName": "ListTables"
+                }
+            ],
+            "params": {
+                "Region": "us-east-1",
+                "AccountId": "012345678901",
+                "AccountIdEndpointMode": "required",
+                "UseFIPS": true,
+                "UseDualStack": false
+            }
+        },
+        {
+            "documentation": "For region us-east-1 with account ID available, FIPS disabled, and DualStack enabled",
+            "expect": {
+                "endpoint": {
+                    "url": "https://dynamodb.us-east-1.api.aws"
+                }
+            },
+            "operationInputs": [
+                {
+                    "builtInParams": {
+                        "AWS::Region": "us-east-1",
+                        "AWS::Auth::AccountId": "012345678901",
+                        "AWS::UseDualStack": true
+                    },
+                    "operationName": "ListTables"
+                }
+            ],
+            "params": {
+                "Region": "us-east-1",
+                "AccountId": "012345678901",
+                "UseFIPS": false,
+                "UseDualStack": true
+            }
+        },
+        {
+            "documentation": "For region us-east-1 with account ID available, FIPS disabled, and DualStack enabled",
+            "expect": {
+                "endpoint": {
+                    "url": "https://dynamodb.us-east-1.api.aws"
+                }
+            },
+            "operationInputs": [
+                {
+                    "builtInParams": {
+                        "AWS::Region": "us-east-1",
+                        "AWS::Auth::AccountId": "012345678901",
+                        "AWS::UseDualStack": true
+                    },
+                    "operationName": "ListTables"
+                }
+            ],
+            "params": {
+                "Region": "us-east-1",
+                "AccountId": "012345678901",
+                "UseFIPS": false,
+                "UseDualStack": true
+            }
+        },
+        {
+            "documentation": "For region us-east-1 with account ID available, AccountIdEndpointMode preferred, FIPS disabled, and DualStack enabled",
+            "expect": {
+                "endpoint": {
+                    "url": "https://dynamodb.us-east-1.api.aws"
+                }
+            },
+            "params": {
+                "Region": "us-east-1",
+                "AccountId": "012345678901",
+                "AccountIdEndpointMode": "preferred",
+                "UseFIPS": false,
+                "UseDualStack": true
+            }
+        },
+        {
+            "documentation": "For region us-east-1 with account ID available, AccountIdEndpointMode disabled, FIPS disabled, and DualStack enabled",
+            "expect": {
+                "endpoint": {
+                    "url": "https://dynamodb.us-east-1.api.aws"
+                }
+            },
+            "params": {
+                "Region": "us-east-1",
+                "AccountId": "012345678901",
+                "AccountIdEndpointMode": "disabled",
+                "UseFIPS": false,
+                "UseDualStack": true
+            }
+        },
+        {
+            "documentation": "For region us-east-1 with account ID available, AccountIdEndpointMode required, FIPS disabled, and DualStack enabled",
+            "expect": {
+                "endpoint": {
+                    "url": "https://dynamodb.us-east-1.api.aws"
+                }
+            },
+            "params": {
+                "Region": "us-east-1",
+                "AccountId": "012345678901",
+                "AccountIdEndpointMode": "required",
+                "UseFIPS": false,
+                "UseDualStack": true
+            }
+        },
+        {
+            "documentation": "For region us-east-1 with account ID available, AccountIdEndpointMode preferred, FIPS disabled, and DualStack disabled",
+            "expect": {
+                "endpoint": {
+                    "url": "https://012345678901.ddb.us-east-1.amazonaws.com"
+                }
+            },
+            "operationInputs": [
+                {
+                    "builtInParams": {
+                        "AWS::Region": "us-east-1",
+                        "AWS::Auth::AccountId": "012345678901",
+                        "AWS::Auth::AccountIdEndpointMode": "preferred"
+                    },
+                    "operationName": "ListTables"
+                }
+            ],
+            "params": {
+                "Region": "us-east-1",
+                "AccountId": "012345678901",
+                "UseFIPS": false,
+                "UseDualStack": false,
+                "AccountIdEndpointMode": "preferred"
+            }
+        },
+        {
+            "documentation": "For region us-east-1 with account ID available, AccountIdEndpointMode required, FIPS disabled, and DualStack disabled",
+            "expect": {
+                "endpoint": {
+                    "url": "https://012345678901.ddb.us-east-1.amazonaws.com"
+                }
+            },
+            "operationInputs": [
+                {
+                    "builtInParams": {
+                        "AWS::Region": "us-east-1",
+                        "AWS::Auth::AccountId": "012345678901",
+                        "AWS::Auth::AccountIdEndpointMode": "required"
+                    },
+                    "operationName": "ListTables"
+                }
+            ],
+            "params": {
+                "Region": "us-east-1",
+                "AccountId": "012345678901",
+                "UseFIPS": false,
+                "UseDualStack": false,
+                "AccountIdEndpointMode": "required"
+            }
+        },
+        {
+            "documentation": "For region us-east-1 with account ID available, AccountIdEndpointMode disabled, FIPS disabled, and DualStack disabled",
+            "expect": {
+                "endpoint": {
+                    "url": "https://dynamodb.us-east-1.amazonaws.com"
+                }
+            },
+            "operationInputs": [
+                {
+                    "builtInParams": {
+                        "AWS::Region": "us-east-1",
+                        "AWS::Auth::AccountId": "012345678901",
+                        "AWS::Auth::AccountIdEndpointMode": "disabled"
+                    },
+                    "operationName": "ListTables"
+                }
+            ],
+            "params": {
+                "Region": "us-east-1",
+                "AccountId": "012345678901",
+                "UseFIPS": false,
+                "UseDualStack": false,
+                "AccountIdEndpointMode": "disabled"
+            }
+        },
+        {
+            "documentation": "For region us-east-1 with empty account ID, FIPS disabled, and DualStack disabled",
+            "expect": {
+                "error": "Credentials-sourced account ID parameter is invalid"
+            },
+            "operationInputs": [
+                {
+                    "builtInParams": {
+                        "AWS::Region": "us-east-1",
+                        "AWS::Auth::AccountId": " "
+                    },
+                    "operationName": "ListTables"
+                }
+            ],
+            "params": {
+                "Region": "us-east-1",
+                "AccountId": "",
+                "UseFIPS": false,
+                "UseDualStack": false
+            }
+        },
+        {
+            "documentation": "For region cn-north-1 with account ID available, FIPS enabled, and DualStack enabled",
+            "expect": {
+                "endpoint": {
+                    "url": "https://dynamodb-fips.cn-north-1.api.amazonwebservices.com.cn"
+                }
+            },
+            "operationInputs": [
+                {
+                    "builtInParams": {
+                        "AWS::Region": "cn-north-1",
+                        "AWS::Auth::AccountId": "012345678901",
+                        "AWS::UseFIPS": true,
+                        "AWS::UseDualStack": true
+                    },
+                    "operationName": "ListTables"
+                }
+            ],
+            "params": {
+                "Region": "cn-north-1",
+                "AccountId": "012345678901",
+                "UseFIPS": true,
+                "UseDualStack": true
+            }
+        },
+        {
+            "documentation": "For region cn-north-1 with account ID available, FIPS enabled, and DualStack disabled",
+            "expect": {
+                "endpoint": {
+                    "url": "https://dynamodb-fips.cn-north-1.amazonaws.com.cn"
+                }
+            },
+            "operationInputs": [
+                {
+                    "builtInParams": {
+                        "AWS::Region": "cn-north-1",
+                        "AWS::Auth::AccountId": "012345678901",
+                        "AWS::UseFIPS": true
+                    },
+                    "operationName": "ListTables"
+                }
+            ],
+            "params": {
+                "Region": "cn-north-1",
+                "AccountId": "012345678901",
+                "UseFIPS": true,
+                "UseDualStack": false
+            }
+        },
+        {
+            "documentation": "For region cn-north-1 with account ID available, FIPS disabled, and DualStack enabled",
+            "expect": {
+                "endpoint": {
+                    "url": "https://dynamodb.cn-north-1.api.amazonwebservices.com.cn"
+                }
+            },
+            "operationInputs": [
+                {
+                    "builtInParams": {
+                        "AWS::Region": "cn-north-1",
+                        "AWS::Auth::AccountId": "012345678901",
+                        "AWS::UseDualStack": true
+                    },
+                    "operationName": "ListTables"
+                }
+            ],
+            "params": {
+                "Region": "cn-north-1",
+                "AccountId": "012345678901",
+                "UseFIPS": false,
+                "UseDualStack": true
+            }
+        },
+        {
+            "documentation": "For region cn-north-1 with account ID available, FIPS disabled, and DualStack disabled",
+            "expect": {
+                "endpoint": {
+                    "url": "https://dynamodb.cn-north-1.amazonaws.com.cn"
+                }
+            },
+            "operationInputs": [
+                {
+                    "builtInParams": {
+                        "AWS::Region": "cn-north-1",
+                        "AWS::Auth::AccountId": "012345678901"
+                    },
+                    "operationName": "ListTables"
+                }
+            ],
+            "params": {
+                "Region": "cn-north-1",
+                "AccountId": "012345678901",
+                "UseFIPS": false,
+                "UseDualStack": false
+            }
+        },
+        {
+            "documentation": "For region cn-north-1 with account ID available, AccountIdEndpointMode preferred, FIPS disabled, and DualStack disabled",
+            "expect": {
+                "endpoint": {
+                    "url": "https://dynamodb.cn-north-1.amazonaws.com.cn"
+                }
+            },
+            "params": {
+                "Region": "cn-north-1",
+                "AccountId": "012345678901",
+                "AccountIdEndpointMode": "preferred",
+                "UseFIPS": false,
+                "UseDualStack": false
+            }
+        },
+        {
+            "documentation": "For region cn-north-1 with account ID available, AccountIdEndpointMode disabled, FIPS disabled, and DualStack disabled",
+            "expect": {
+                "endpoint": {
+                    "url": "https://dynamodb.cn-north-1.amazonaws.com.cn"
+                }
+            },
+            "params": {
+                "Region": "cn-north-1",
+                "AccountId": "012345678901",
+                "AccountIdEndpointMode": "disabled",
+                "UseFIPS": false,
+                "UseDualStack": false
+            }
+        },
+        {
+            "documentation": "For region cn-north-1 with account ID available, AccountIdEndpointMode required, FIPS disabled, and DualStack disabled",
+            "expect": {
+                "endpoint": {
+                    "url": "https://dynamodb.cn-north-1.amazonaws.com.cn"
+                }
+            },
+            "params": {
+                "Region": "cn-north-1",
+                "AccountId": "012345678901",
+                "AccountIdEndpointMode": "required",
+                "UseFIPS": false,
+                "UseDualStack": false
+            }
+        },
+        {
+            "documentation": "For region cn-north-1 with empty account ID available, FIPS disabled, and DualStack disabled",
+            "expect": {
+                "endpoint": {
+                    "url": "https://dynamodb.cn-north-1.amazonaws.com.cn"
+                }
+            },
+            "operationInputs": [
+                {
+                    "builtInParams": {
+                        "AWS::Region": "cn-north-1",
+                        "AWS::Auth::AccountId": ""
+                    },
+                    "operationName": "ListTables"
+                }
+            ],
+            "params": {
+                "Region": "cn-north-1",
+                "AccountId": "",
+                "UseFIPS": false,
+                "UseDualStack": false
+            }
+        },
+        {
+            "documentation": "For region us-iso-east-1 with account ID available, FIPS enabled, and DualStack enabled",
+            "expect": {
+                "error": "FIPS and DualStack are enabled, but this partition does not support one or both"
+            },
+            "params": {
+                "Region": "us-iso-east-1",
+                "AccountId": "012345678901",
+                "UseFIPS": true,
+                "UseDualStack": true
+            }
+        },
+        {
+            "documentation": "For region us-iso-east-1 with account ID available, FIPS enabled, and DualStack disabled",
+            "expect": {
+                "endpoint": {
+                    "url": "https://dynamodb-fips.us-iso-east-1.c2s.ic.gov"
+                }
+            },
+            "operationInputs": [
+                {
+                    "builtInParams": {
+                        "AWS::Region": "us-iso-east-1",
+                        "AWS::Auth::AccountId": "012345678901",
+                        "AWS::UseFIPS": true
+                    },
+                    "operationName": "ListTables"
+                }
+            ],
+            "params": {
+                "Region": "us-iso-east-1",
+                "AccountId": "012345678901",
+                "UseFIPS": true,
+                "UseDualStack": false
+            }
+        },
+        {
+            "documentation": "For region us-iso-east-1 with account ID available, FIPS disabled, and DualStack enabled",
+            "expect": {
+                "error": "DualStack is enabled but this partition does not support DualStack"
+            },
+            "params": {
+                "Region": "us-iso-east-1",
+                "AccountId": "012345678901",
+                "UseFIPS": false,
+                "UseDualStack": true
+            }
+        },
+        {
+            "documentation": "For region us-iso-east-1 with account ID available, FIPS disabled, and DualStack disabled",
+            "expect": {
+                "endpoint": {
+                    "url": "https://dynamodb.us-iso-east-1.c2s.ic.gov"
+                }
+            },
+            "operationInputs": [
+                {
+                    "builtInParams": {
+                        "AWS::Region": "us-iso-east-1",
+                        "AWS::Auth::AccountId": "012345678901"
+                    },
+                    "operationName": "ListTables"
+                }
+            ],
+            "params": {
+                "Region": "us-iso-east-1",
+                "AccountId": "012345678901",
+                "UseFIPS": false,
+                "UseDualStack": false
+            }
+        },
+        {
+            "documentation": "For region us-iso-east-1 with empty account ID available, FIPS disabled, and DualStack disabled",
+            "expect": {
+                "endpoint": {
+                    "url": "https://dynamodb.us-iso-east-1.c2s.ic.gov"
+                }
+            },
+            "operationInputs": [
+                {
+                    "builtInParams": {
+                        "AWS::Region": "us-iso-east-1",
+                        "AWS::Auth::AccountId": "012345678901"
+                    },
+                    "operationName": "ListTables"
+                }
+            ],
+            "params": {
+                "Region": "us-iso-east-1",
+                "AccountId": "",
+                "UseFIPS": false,
+                "UseDualStack": false
+            }
+        },
+        {
+            "documentation": "For region us-gov-east-1 with account ID available, FIPS enabled, and DualStack enabled",
+            "expect": {
+                "endpoint": {
+                    "url": "https://dynamodb-fips.us-gov-east-1.api.aws"
+                }
+            },
+            "params": {
+                "Region": "us-gov-east-1",
+                "AccountId": "012345678901",
+                "UseFIPS": true,
+                "UseDualStack": true
+            }
+        },
+        {
+            "documentation": "For region us-gov-east-1 with account ID available, FIPS enabled, and DualStack disabled",
+            "expect": {
+                "endpoint": {
+                    "url": "https://dynamodb.us-gov-east-1.amazonaws.com"
+                }
+            },
+            "params": {
+                "Region": "us-gov-east-1",
+                "AccountId": "012345678901",
+                "UseFIPS": true,
+                "UseDualStack": false
+            }
+        },
+        {
+            "documentation": "For region us-gov-east-1 with account ID available, FIPS disabled, and DualStack enabled",
+            "expect": {
+                "endpoint": {
+                    "url": "https://dynamodb.us-gov-east-1.api.aws"
+                }
+            },
+            "params": {
+                "Region": "us-gov-east-1",
+                "AccountId": "012345678901",
+                "UseFIPS": false,
+                "UseDualStack": true
+            }
+        },
+        {
+            "documentation": "For region us-gov-east-1 with account ID available, FIPS disabled, and DualStack disabled",
+            "expect": {
+                "endpoint": {
+                    "url": "https://dynamodb.us-gov-east-1.amazonaws.com"
+                }
+            },
+            "operationInputs": [
+                {
+                    "builtInParams": {
+                        "AWS::Region": "us-gov-east-1",
+                        "AWS::Auth::AccountId": "012345678901"
+                    },
+                    "operationName": "ListTables"
+                }
+            ],
+            "params": {
+                "Region": "us-gov-east-1",
+                "AccountId": "012345678901",
+                "UseFIPS": false,
+                "UseDualStack": false
+            }
+        },
+        {
+            "documentation": "For region us-gov-east-1 with empty account ID available, FIPS disabled, and DualStack disabled",
+            "expect": {
+                "endpoint": {
+                    "url": "https://dynamodb.us-gov-east-1.amazonaws.com"
+                }
+            },
+            "operationInputs": [
+                {
+                    "builtInParams": {
+                        "AWS::Region": "us-gov-east-1",
+                        "AWS::Auth::AccountId": ""
+                    },
+                    "operationName": "ListTables"
+                }
+            ],
+            "params": {
+                "Region": "us-gov-east-1",
+                "AccountId": "",
+                "UseFIPS": false,
+                "UseDualStack": false
+            }
         }
     ],
     "version": "1.0"

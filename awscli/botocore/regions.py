@@ -402,7 +402,9 @@ class EndpointResolverBuiltins(str, Enum):
     AWS_S3_DISABLE_MRAP = "AWS::S3::DisableMultiRegionAccessPoints"
     # Whether a custom endpoint has been configured (str)
     SDK_ENDPOINT = "SDK::Endpoint"
-
+    # Currently not implemented:
+    ACCOUNT_ID = "AWS::Auth::AccountId"
+    ACCOUNT_ID_ENDPOINT_MODE = "AWS::Auth::AccountIdEndpointMode"
 
 class EndpointRulesetResolver:
     """Resolves endpoints using a service's endpoint ruleset"""

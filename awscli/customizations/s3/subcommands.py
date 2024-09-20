@@ -484,13 +484,12 @@ VALIDATE_SAME_S3_PATHS = {
 CHECKSUM_MODE = {
         'name': 'checksum-mode', 'choices': ['ENABLED'],
         'help_text': 'To retrieve the checksum, this mode must be enabled.'
-} # TODO finalize help text
+}
 
 CHECKSUM_ALGORITHM = {
         'name': 'checksum-algorithm', 'choices': ['CRC32', 'SHA256', 'SHA1', 'CRC32C'],
-        'help_text': 'Indicates the algorithm used to create the checksum for the object when you use the SDK. '
-        'This header will not provide any additional functionality if you don’t use the SDK.'
-} # TODO truncated some of the doc description from low-level api until i see exactly how this affects things.
+        'help_text': 'Indicates the algorithm used to create the checksum for the object.'
+}
 
 TRANSFER_ARGS = [DRYRUN, QUIET, INCLUDE, EXCLUDE, ACL,
                  FOLLOW_SYMLINKS, NO_FOLLOW_SYMLINKS, NO_GUESS_MIME_TYPE,

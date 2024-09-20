@@ -549,7 +549,6 @@ class RequestParamsMapper(object):
         if cli_params.get('checksum_mode'):
             request_params['ChecksumMode'] = cli_params['checksum_mode']
 
-    # TODO we might want to pluralize this and parse each algorithm's header if desired
     @classmethod
     def _set_checksum_algorithm_param(cls, request_params, cli_params):
         if cli_params.get('checksum_algorithm'):

@@ -76,13 +76,16 @@ class TestEndpointBase(unittest.TestCase):
     def tearDown(self):
         self.factory_patch.stop()
 
-    def get_emitter_responses(self, num_retries=0, sleep_time=0):
+    def get_emitter_responses(self, num_retries=0, sleep_time=0, num_events=4):
         emitter_responses = []
+        # We emit the following events:
+        # 1. request-created
+        # 2. before-send
+        # 3. before-parse (may not be emitted if certain errors are thrown)
+        # 4. response-received
         response_request_emitter_responses = [
-            [(None, None)],  # emit() response for request-created
-            [(None, None)],  # emit() response for before-send
-            [(None, None)],  # emit() response for response-received
-        ]
+            [(None, None)]  # emit() response for each emitted event
+        ] * num_events
         for _ in range(num_retries):
             emitter_responses.extend(response_request_emitter_responses)
             # emit() response for retry for sleep time
@@ -195,6 +198,7 @@ class TestRetryInterface(TestEndpointBase):
             expected_events=[
                 'request-created.ec2.DescribeInstances',
                 'before-send.ec2.DescribeInstances',
+                'before-parse.ec2.DescribeInstances',
                 'response-received.ec2.DescribeInstances',
                 'needs-retry.ec2.DescribeInstances',
             ] * 2
@@ -202,7 +206,7 @@ class TestRetryInterface(TestEndpointBase):
 
     def test_retry_on_socket_errors(self):
         self.event_emitter.emit.side_effect = self.get_emitter_responses(
-            num_retries=1)
+            num_retries=1, num_events=3)
         self.http_session.send.side_effect = HTTPClientError(error='wrapped')
         with self.assertRaises(HTTPClientError):
             self.endpoint.make_request(self._operation, request_dict())

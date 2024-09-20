@@ -186,6 +186,9 @@ class DocumentStructure(ReSTDocument):
         """Retrieve a section"""
         return self._structure[name]
 
+    def has_section(self, name):
+        return name in self._structure
+
     def delete_section(self, name):
         """Delete a section"""
         del self._structure[name]

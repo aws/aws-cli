@@ -16,8 +16,9 @@ from tests import mock, unittest, BaseSessionTest
 import base64
 import copy
 import io
-import os
 import json
+import logging
+import os
 
 import pytest
 
@@ -1509,3 +1510,166 @@ def test_remove_arn_from_signing_path(auth_path_in, auth_path_expected):
         request=request, some='other', kwarg='values'
     )
     assert request.auth_path == auth_path_expected
+
+
+@pytest.fixture()
+def operation_model_mock():
+    operation_model = mock.Mock()
+    operation_model.output_shape = mock.Mock()
+    operation_model.output_shape.members = {'Expires': mock.Mock()}
+    operation_model.output_shape.members['Expires'].name = 'Expires'
+    operation_model.output_shape.members['Expires'].serialization = {
+        'name': 'Expires'
+    }
+    return operation_model
+
+
+@pytest.mark.parametrize(
+    "expires, expect_expires_header",
+    [
+        # Valid expires values
+        ("Thu, 01 Jan 2015 00:00:00 GMT", True),
+        ("10/21/2018", True),
+        ("01 dec 2100", True),
+        ("2023-11-02 08:43:04 -0400", True),
+        ("Sun, 22 Oct 23 00:45:02 UTC", True),
+        # Invalid expires values
+        ("Invalid Date", False),
+        ("access plus 1 month", False),
+        ("Expires: Thu, 9 Sep 2013 14:19:41 GMT", False),
+        ("{ts '2023-10-10 09:27:14'}", False),
+        (-33702800404003370280040400, False),
+    ],
+)
+def test_handle_expires_header(
+    expires, expect_expires_header, operation_model_mock
+):
+    response_dict = {
+        'headers': {
+            'Expires': expires,
+        }
+    }
+    customized_response_dict = {}
+    handlers.handle_expires_header(
+        operation_model_mock, response_dict, customized_response_dict
+    )
+    assert customized_response_dict.get('ExpiresString') == expires
+    assert ('Expires' in response_dict['headers']) == expect_expires_header
+
+
+def test_handle_expires_header_logs_warning(operation_model_mock, caplog):
+    response_dict = {
+        'headers': {
+            'Expires': 'Invalid Date',
+        }
+    }
+    with caplog.at_level(logging.WARNING):
+        handlers.handle_expires_header(operation_model_mock, response_dict, {})
+    assert len(caplog.records) == 1
+    assert 'Failed to parse the "Expires" member as a timestamp' in caplog.text
+
+
+def test_handle_expires_header_does_not_log_warning(
+    operation_model_mock, caplog
+):
+    response_dict = {
+        'headers': {
+            'Expires': 'Thu, 01 Jan 2015 00:00:00 GMT',
+        }
+    }
+    with caplog.at_level(logging.WARNING):
+        handlers.handle_expires_header(operation_model_mock, response_dict, {})
+    assert len(caplog.records) == 0
+
+
+@pytest.fixture()
+def document_expires_mocks():
+    return {
+        'section': mock.Mock(),
+        'parent': mock.Mock(),
+        'param_line': mock.Mock(),
+        'param_section': mock.Mock(),
+        'doc_section': mock.Mock(),
+        'new_param_line': mock.Mock(),
+        'new_param_section': mock.Mock(),
+        'response_example_event': 'docs.response-example.s3.TestOperation.complete-section',
+        'response_params_event': 'docs.response-params.s3.TestOperation.complete-section',
+    }
+
+
+def test_document_response_example_with_expires(document_expires_mocks):
+    mocks = document_expires_mocks
+    mocks['section'].has_section.return_value = True
+    mocks['section'].get_section.return_value = mocks['parent']
+    mocks['parent'].has_section.return_value = True
+    mocks['parent'].get_section.return_value = mocks['param_line']
+    mocks['param_line'].has_section.return_value = True
+    mocks['param_line'].get_section.return_value = mocks['new_param_line']
+    handlers.document_expires_shape(
+        mocks['section'], mocks['response_example_event']
+    )
+    mocks['param_line'].add_new_section.assert_called_once_with(
+        'ExpiresString'
+    )
+    mocks['new_param_line'].write.assert_called_once_with(
+        "'ExpiresString': 'string',"
+    )
+    mocks['new_param_line'].style.new_line.assert_called_once()
+
+
+def test_document_response_example_without_expires(document_expires_mocks):
+    mocks = document_expires_mocks
+    mocks['section'].has_section.return_value = True
+    mocks['section'].get_section.return_value = mocks['parent']
+    mocks['parent'].has_section.return_value = False
+    handlers.document_expires_shape(
+        mocks['section'], mocks['response_example_event']
+    )
+    mocks['parent'].add_new_section.assert_not_called()
+    mocks['parent'].get_section.assert_not_called()
+    mocks['new_param_line'].write.assert_not_called()
+
+
+def test_document_response_params_with_expires(document_expires_mocks):
+    mocks = document_expires_mocks
+    mocks['section'].has_section.return_value = True
+    mocks['section'].get_section.return_value = mocks['param_section']
+    mocks['param_section'].get_section.side_effect = [
+        mocks['doc_section'],
+    ]
+    mocks['param_section'].add_new_section.side_effect = [
+        mocks['new_param_section'],
+    ]
+    mocks['doc_section'].style = mock.Mock()
+    mocks['new_param_section'].style = mock.Mock()
+    handlers.document_expires_shape(
+        mocks['section'], mocks['response_params_event']
+    )
+    mocks['param_section'].get_section.assert_any_call('param-documentation')
+    mocks['doc_section'].style.start_note.assert_called_once()
+    mocks['doc_section'].write.assert_called_once_with(
+        'This member has been deprecated. Please use ``ExpiresString`` instead.'
+    )
+    mocks['doc_section'].style.end_note.assert_called_once()
+    mocks['param_section'].add_new_section.assert_called_once_with(
+        'ExpiresString'
+    )
+    mocks['new_param_section'].style.new_paragraph.assert_any_call()
+    mocks['new_param_section'].write.assert_any_call(
+        '- **ExpiresString** *(string) --*'
+    )
+    mocks['new_param_section'].style.indent.assert_called_once()
+    mocks['new_param_section'].write.assert_any_call(
+        'The raw, unparsed value of the ``Expires`` field.'
+    )
+
+
+def test_document_response_params_without_expires(document_expires_mocks):
+    mocks = document_expires_mocks
+    mocks['section'].has_section.return_value = False
+    handlers.document_expires_shape(
+        mocks['section'], mocks['response_params_event']
+    )
+    mocks['section'].get_section.assert_not_called()
+    mocks['param_section'].add_new_section.assert_not_called()
+    mocks['doc_section'].write.assert_not_called()

@@ -354,20 +354,68 @@ class TestSyncCommand(BaseS3TransferCommandTest):
         )
 
     def test_upload_with_flexible_checksum_sha1(self):
-        # TODO Ahmed
-        pass
+        self.files.create_file('foo.txt', 'contents')
+        cmdline = (
+                '%s %s s3://bucket/ --checksum-algorithm SHA1' % (
+            self.prefix, self.files.rootdir))
+        self.run_cmd(cmdline, expected_rc=0)
+        self.assert_in_operations_called(
+            ('PutObject', {
+                'Bucket': 'bucket',
+                'Key': 'foo.txt',
+                'ChecksumAlgorithm': 'SHA1',
+                'Body': mock.ANY,
+                'ContentType': 'text/plain'
+            })
+        )
 
     def test_upload_with_flexible_checksum_sha256(self):
-        # TODO Ahmed
-        pass
+        self.files.create_file('foo.txt', 'contents')
+        cmdline = (
+                '%s %s s3://bucket/ --checksum-algorithm SHA256' % (
+            self.prefix, self.files.rootdir))
+        self.run_cmd(cmdline, expected_rc=0)
+        self.assert_in_operations_called(
+            ('PutObject', {
+                'Bucket': 'bucket',
+                'Key': 'foo.txt',
+                'ChecksumAlgorithm': 'SHA256',
+                'Body': mock.ANY,
+                'ContentType': 'text/plain'
+            })
+        )
 
     def test_download_with_flexible_checksum_sha1(self):
-        # TODO Ahmed
-        pass
+        self.parsed_responses = [
+            self.head_object_response(),
+            {
+                'ContentLength': '100',
+                'LastModified': '00:00:00Z',
+                'ETag': 'foo-1',
+                'ChecksumSHA1': 'checksum',
+                'Body': BytesIO(b'foo')
+            }
+        ]
+        cmdline = '%s s3://bucket/foo %s --checksum-mode ENABLED' \
+                  % (self.prefix, self.files.rootdir)
+        self.run_cmd(cmdline, expected_rc=0)
+        self.assertEqual(self.operations_called[0][0].name, 'ListObjectsV2')
 
     def test_download_with_flexible_checksum_sha256(self):
-        # TODO Ahmed
-        pass
+        self.parsed_responses = [
+            self.head_object_response(),
+            {
+                'ContentLength': '100',
+                'LastModified': '00:00:00Z',
+                'ETag': 'foo-1',
+                'ChecksumSHA256': 'checksum',
+                'Body': BytesIO(b'foo')
+            }
+        ]
+        cmdline = '%s s3://bucket/foo %s --checksum-mode ENABLED' \
+                  % (self.prefix, self.files.rootdir)
+        self.run_cmd(cmdline, expected_rc=0)
+        self.assertEqual(self.operations_called[0][0].name, 'ListObjectsV2')
 
 
 class TestSyncSourceRegion(BaseS3CLIRunnerTest):

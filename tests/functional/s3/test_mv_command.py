@@ -245,12 +245,38 @@ class TestMvCommand(BaseS3TransferCommandTest):
         )
 
     def test_upload_with_flexible_checksum_crc32(self):
-        # TODO Ahmed
-        pass
+        full_path = self.files.create_file('foo.txt', 'contents')
+        cmdline = (
+                '%s %s s3://bucket/key.txt --checksum-algorithm CRC32' % (
+            self.prefix, full_path))
+        self.run_cmd(cmdline, expected_rc=0)
+        self.assert_in_operations_called(
+            ('PutObject', {
+                'Bucket': 'bucket',
+                'Key': 'key.txt',
+                'ChecksumAlgorithm': 'CRC32',
+                'Body': mock.ANY,
+                'ContentType': 'text/plain'
+            })
+        )
 
     def test_download_with_flexible_checksum_crc32(self):
-        # TODO Ahmed
-        pass
+        self.parsed_responses = [
+            self.head_object_response(),
+            {
+                'ContentLength': '100',
+                'LastModified': '00:00:00Z',
+                'ETag': 'foo-1',
+                'ChecksumCRC32': 'checksum',
+                'Body': BytesIO(b'foo')
+            },
+            self.delete_object_response()
+        ]
+        cmdline = '%s s3://bucket/foo %s --checksum-mode ENABLED' \
+                  % (self.prefix, self.files.rootdir)
+        self.run_cmd(cmdline, expected_rc=0)
+        self.assertEqual(self.operations_called[1][0].name, 'GetObject')
+        self.assertEqual(self.operations_called[1][1]['ChecksumMode'], 'ENABLED')
 
 
 class TestMvWithCRTClient(BaseCRTTransferClientTest):

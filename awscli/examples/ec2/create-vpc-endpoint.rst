@@ -86,7 +86,7 @@ For more information, see `Creating an interface endpoint <https://docs.aws.amaz
 
 **Example 3: To create a Gateway Load Balancer endpoint**
 
-The following ``create-vpc-endpoint`` example creates a Gateway Load Balancer endpoint between VPC ``vpc-111122223333aabbc`` and and a service that is configured using a Gateway Load Balancer. ::
+The following ``create-vpc-endpoint`` example creates a Gateway Load Balancer endpoint between VPC ``vpc-111122223333aabbc`` and a service that is configured using a Gateway Load Balancer. ::
 
     aws ec2 create-vpc-endpoint \
         --service-name com.amazonaws.vpce.us-east-1.vpce-svc-123123a1c43abc123 \

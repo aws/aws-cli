@@ -522,7 +522,6 @@ class RequestParamsMapper(object):
         """Map CLI params to UploadPart request params"""
         cls._set_sse_c_request_params(request_params, cli_params)
         cls._set_request_payer_param(request_params, cli_params)
-        cls._set_checksum_algorithm_param(request_params, cli_params)
 
     @classmethod
     def map_upload_part_copy_params(cls, request_params, cli_params):

@@ -244,7 +244,7 @@ class TestMvCommand(BaseS3TransferCommandTest):
             ]
         )
 
-    def test_upload_with_flexible_checksum_crc32(self):
+    def test_upload_with_checksum_algorithm_crc32(self):
         full_path = self.files.create_file('foo.txt', 'contents')
         cmdline = (
                 '%s %s s3://bucket/key.txt --checksum-algorithm CRC32' % (
@@ -260,7 +260,7 @@ class TestMvCommand(BaseS3TransferCommandTest):
             })
         )
 
-    def test_download_with_flexible_checksum_crc32(self):
+    def test_download_with_checksum_mode_crc32(self):
         self.parsed_responses = [
             self.head_object_response(),
             {

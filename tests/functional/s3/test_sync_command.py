@@ -353,7 +353,7 @@ class TestSyncCommand(BaseS3TransferCommandTest):
             ]
         )
 
-    def test_upload_with_flexible_checksum_sha1(self):
+    def test_upload_with_checksum_algorithm_sha1(self):
         self.files.create_file('foo.txt', 'contents')
         cmdline = (
                 '%s %s s3://bucket/ --checksum-algorithm SHA1' % (
@@ -369,7 +369,7 @@ class TestSyncCommand(BaseS3TransferCommandTest):
             })
         )
 
-    def test_upload_with_flexible_checksum_sha256(self):
+    def test_upload_with_checksum_algorithm_sha256(self):
         self.files.create_file('foo.txt', 'contents')
         cmdline = (
                 '%s %s s3://bucket/ --checksum-algorithm SHA256' % (
@@ -385,7 +385,7 @@ class TestSyncCommand(BaseS3TransferCommandTest):
             })
         )
 
-    def test_download_with_flexible_checksum_sha1(self):
+    def test_download_with_checksum_mode_sha1(self):
         self.parsed_responses = [
             self.head_object_response(),
             {
@@ -401,7 +401,7 @@ class TestSyncCommand(BaseS3TransferCommandTest):
         self.run_cmd(cmdline, expected_rc=0)
         self.assertEqual(self.operations_called[0][0].name, 'ListObjectsV2')
 
-    def test_download_with_flexible_checksum_sha256(self):
+    def test_download_with_checksum_mode_sha256(self):
         self.parsed_responses = [
             self.head_object_response(),
             {

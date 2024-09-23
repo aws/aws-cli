@@ -653,7 +653,7 @@ class TestRequestParamsMapperSSE(unittest.TestCase):
              'SSECustomerKey': 'my-sse-c-key'})
 
 
-class TestRequestParamsMapperFlexibleChecksumsUploads:
+class TestRequestParamsMapperChecksumAlgorithm:
     @pytest.fixture
     def cli_params(self):
         return {'checksum_algorithm': 'CRC32'}
@@ -669,7 +669,7 @@ class TestRequestParamsMapperFlexibleChecksumsUploads:
         assert request_params == {'ChecksumAlgorithm': 'CRC32'}
 
 
-class TestRequestParamsMapperFlexibleChecksumsDownloads:
+class TestRequestParamsMapperChecksumMode:
     @pytest.fixture
     def cli_params(self):
         return {'checksum_mode': 'ENABLED'}

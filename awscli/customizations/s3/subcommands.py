@@ -1380,8 +1380,8 @@ class CommandParameters(object):
                 f"{self.parameters['src']} - {self.parameters['dest']}"
             )
 
-    def _raise_if_paths_type_incorrect_for_param(self, param, paths_type, expected_paths_type):
-        if paths_type not in expected_paths_type:
+    def _raise_if_paths_type_incorrect_for_param(self, param, paths_type, allowed_paths):
+        if paths_type not in allowed_paths:
             expected_usage_map = {
                 'locals3': '<LocalPath> <S3Uri>',
                 's3s3': '<S3Uri> <S3Uri>',
@@ -1389,8 +1389,8 @@ class CommandParameters(object):
                 's3': '<S3Uri>'
             }
             raise ParamValidationError(
-                "The %s flag is only compatible with the format: %s. You used the format: %s." %
-                (param, expected_usage_map[expected_paths_type], expected_usage_map[paths_type])
+                f"Expected {param} parameter to be used with one of following path formats: "
+                f"{', '.join(allowed_paths)} but received {expected_usage_map[paths_type]}"
             )
 
     def _normalize_s3_trailing_slash(self, paths):

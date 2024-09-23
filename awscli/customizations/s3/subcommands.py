@@ -1286,18 +1286,16 @@ class CommandParameters(object):
             if self._should_emit_validate_s3_paths_warning():
                 self._emit_validate_s3_paths_warning()
 
-        # If we're using the checksum-algorithm flag, the path type must be locals3
         if params.get('checksum_algorithm'):
             self._raise_if_paths_type_incorrect_for_param(
                 CHECKSUM_ALGORITHM['name'],
                 params['paths_type'],
-                'locals3')
-        # If we're using the checksum-mode flag, the path type must be s3local
+                ['locals3', 's3s3'])
         if params.get('checksum_mode'):
             self._raise_if_paths_type_incorrect_for_param(
                 CHECKSUM_MODE['name'],
                 params['paths_type'],
-                's3local')
+                ['s3local'])
 
         # If the user provided local path does not exist, hard fail because
         # we know that we will not be able to upload the file.
@@ -1383,7 +1381,7 @@ class CommandParameters(object):
             )
 
     def _raise_if_paths_type_incorrect_for_param(self, param, paths_type, expected_paths_type):
-        if paths_type != expected_paths_type:
+        if paths_type not in expected_paths_type:
             expected_usage_map = {
                 'locals3': '<LocalPath> <S3Uri>',
                 's3s3': '<S3Uri> <S3Uri>',

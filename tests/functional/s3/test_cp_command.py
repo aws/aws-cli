@@ -762,9 +762,7 @@ class TestCPCommand(BaseCPCommandTest):
 
     def test_upload_with_checksum_algorithm_crc32(self):
         full_path = self.files.create_file('foo.txt', 'contents')
-        cmdline = (
-                '%s %s s3://bucket/key.txt --checksum-algorithm CRC32' % (
-            self.prefix, full_path))
+        cmdline = f'{self.prefix} {full_path} s3://bucket/key.txt --checksum-algorithm CRC32'
         self.run_cmd(cmdline, expected_rc=0)
         self.assert_in_operations_called(
             ('PutObject', {
@@ -778,9 +776,7 @@ class TestCPCommand(BaseCPCommandTest):
 
     def test_upload_with_checksum_algorithm_crc32c(self):
         full_path = self.files.create_file('foo.txt', 'contents')
-        cmdline = (
-                '%s %s s3://bucket/key.txt --checksum-algorithm CRC32C' % (
-            self.prefix, full_path))
+        cmdline = f'{self.prefix} {full_path} s3://bucket/key.txt --checksum-algorithm CRC32C'
         self.run_cmd(cmdline, expected_rc=0)
         self.assert_in_operations_called(
             ('PutObject', {
@@ -803,8 +799,7 @@ class TestCPCommand(BaseCPCommandTest):
                 'Body': BytesIO(b'foo')
             }
         ]
-        cmdline = '%s s3://bucket/foo %s --checksum-mode ENABLED' \
-                  % (self.prefix, self.files.rootdir)
+        cmdline = f'{self.prefix} s3://bucket/foo {self.files.rootdir} --checksum-mode ENABLED'
         self.run_cmd(cmdline, expected_rc=0)
         self.assertEqual(self.operations_called[1][0].name, 'GetObject')
         self.assertEqual(self.operations_called[1][1]['ChecksumMode'], 'ENABLED')
@@ -820,8 +815,7 @@ class TestCPCommand(BaseCPCommandTest):
                 'Body': BytesIO(b'foo')
             }
         ]
-        cmdline = '%s s3://bucket/foo %s --checksum-mode ENABLED' \
-                  % (self.prefix, self.files.rootdir)
+        cmdline = f'{self.prefix} s3://bucket/foo {self.files.rootdir} --checksum-mode ENABLED'
         self.run_cmd(cmdline, expected_rc=0)
         self.assertEqual(self.operations_called[1][0].name, 'GetObject')
         self.assertEqual(self.operations_called[1][1]['ChecksumMode'], 'ENABLED')

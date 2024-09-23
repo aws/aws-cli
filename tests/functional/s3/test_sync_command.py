@@ -355,9 +355,7 @@ class TestSyncCommand(BaseS3TransferCommandTest):
 
     def test_upload_with_checksum_algorithm_sha1(self):
         self.files.create_file('foo.txt', 'contents')
-        cmdline = (
-                '%s %s s3://bucket/ --checksum-algorithm SHA1' % (
-            self.prefix, self.files.rootdir))
+        cmdline = f'{self.prefix} {self.files.rootdir} s3://bucket/ --checksum-algorithm SHA1'
         self.run_cmd(cmdline, expected_rc=0)
         self.assert_in_operations_called(
             ('PutObject', {
@@ -371,9 +369,7 @@ class TestSyncCommand(BaseS3TransferCommandTest):
 
     def test_upload_with_checksum_algorithm_sha256(self):
         self.files.create_file('foo.txt', 'contents')
-        cmdline = (
-                '%s %s s3://bucket/ --checksum-algorithm SHA256' % (
-            self.prefix, self.files.rootdir))
+        cmdline = f'{self.prefix} {self.files.rootdir} s3://bucket/ --checksum-algorithm SHA256'
         self.run_cmd(cmdline, expected_rc=0)
         self.assert_in_operations_called(
             ('PutObject', {
@@ -396,8 +392,7 @@ class TestSyncCommand(BaseS3TransferCommandTest):
                 'Body': BytesIO(b'foo')
             }
         ]
-        cmdline = '%s s3://bucket/foo %s --checksum-mode ENABLED' \
-                  % (self.prefix, self.files.rootdir)
+        cmdline = f'{self.prefix} s3://bucket/foo {self.files.rootdir} --checksum-mode ENABLED'
         self.run_cmd(cmdline, expected_rc=0)
         self.assertEqual(self.operations_called[0][0].name, 'ListObjectsV2')
 
@@ -412,8 +407,7 @@ class TestSyncCommand(BaseS3TransferCommandTest):
                 'Body': BytesIO(b'foo')
             }
         ]
-        cmdline = '%s s3://bucket/foo %s --checksum-mode ENABLED' \
-                  % (self.prefix, self.files.rootdir)
+        cmdline = f'{self.prefix} s3://bucket/foo {self.files.rootdir} --checksum-mode ENABLED'
         self.run_cmd(cmdline, expected_rc=0)
         self.assertEqual(self.operations_called[0][0].name, 'ListObjectsV2')
 

@@ -364,6 +364,11 @@ def relative_path(filename, start=os.path.curdir):
     except ValueError:
         return os.path.abspath(filename)
 
+    except OSError as e:
+        if e.errno != errno.ENOENT:
+            raise e
+        return os.path.abspath(filename)
+
 
 def set_file_utime(filename, desired_time):
     """

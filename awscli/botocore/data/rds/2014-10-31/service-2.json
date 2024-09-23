@@ -553,7 +553,6 @@
         {"shape":"DBClusterNotFoundFault"},
         {"shape":"MaxDBShardGroupLimitReached"},
         {"shape":"InvalidDBClusterStateFault"},
-        {"shape":"InvalidMaxAcuFault"},
         {"shape":"UnsupportedDBEngineVersionFault"},
         {"shape":"InvalidVPCNetworkStateFault"}
       ],
@@ -2166,8 +2165,7 @@
       "errors":[
         {"shape":"InvalidDBClusterStateFault"},
         {"shape":"DBShardGroupAlreadyExistsFault"},
-        {"shape":"DBShardGroupNotFoundFault"},
-        {"shape":"InvalidMaxAcuFault"}
+        {"shape":"DBShardGroupNotFoundFault"}
       ],
       "documentation":"<p>Modifies the settings of an Aurora Limitless Database DB shard group. You can change one or more settings by specifying these parameters and the new values in the request.</p>"
     },
@@ -2703,7 +2701,7 @@
         {"shape":"CertificateNotFoundFault"},
         {"shape":"TenantDatabaseQuotaExceededFault"}
       ],
-      "documentation":"<p>Creates a new DB instance from a DB snapshot. The target database is created from the source database restore point with most of the source's original configuration, including the default security group and DB parameter group. By default, the new DB instance is created as a Single-AZ deployment, except when the instance is a SQL Server instance that has an option group associated with mirroring. In this case, the instance becomes a Multi-AZ deployment, not a Single-AZ deployment.</p> <p>If you want to replace your original DB instance with the new, restored DB instance, then rename your original DB instance before you call the <code>RestoreDBInstanceFromDBSnapshot</code> operation. RDS doesn't allow two DB instances with the same name. After you have renamed your original DB instance with a different identifier, then you can pass the original name of the DB instance as the <code>DBInstanceIdentifier</code> in the call to the <code>RestoreDBInstanceFromDBSnapshot</code> operation. The result is that you replace the original DB instance with the DB instance created from the snapshot.</p> <p>If you are restoring from a shared manual DB snapshot, the <code>DBSnapshotIdentifier</code> must be the ARN of the shared DB snapshot.</p> <p>To restore from a DB snapshot with an unsupported engine version, you must first upgrade the engine version of the snapshot. For more information about upgrading a RDS for MySQL DB snapshot engine version, see <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/mysql-upgrade-snapshot.html\">Upgrading a MySQL DB snapshot engine version</a>. For more information about upgrading a RDS for PostgreSQL DB snapshot engine version, <a href=\"https://docs.aws.amazon.com/USER_UpgradeDBSnapshot.PostgreSQL.html\">Upgrading a PostgreSQL DB snapshot engine version</a>.</p> <note> <p>This command doesn't apply to Aurora MySQL and Aurora PostgreSQL. For Aurora, use <code>RestoreDBClusterFromSnapshot</code>.</p> </note>"
+      "documentation":"<p>Creates a new DB instance from a DB snapshot. The target database is created from the source database restore point with most of the source's original configuration, including the default security group and DB parameter group. By default, the new DB instance is created as a Single-AZ deployment, except when the instance is a SQL Server instance that has an option group associated with mirroring. In this case, the instance becomes a Multi-AZ deployment, not a Single-AZ deployment.</p> <p>If you want to replace your original DB instance with the new, restored DB instance, then rename your original DB instance before you call the <code>RestoreDBInstanceFromDBSnapshot</code> operation. RDS doesn't allow two DB instances with the same name. After you have renamed your original DB instance with a different identifier, then you can pass the original name of the DB instance as the <code>DBInstanceIdentifier</code> in the call to the <code>RestoreDBInstanceFromDBSnapshot</code> operation. The result is that you replace the original DB instance with the DB instance created from the snapshot.</p> <p>If you are restoring from a shared manual DB snapshot, the <code>DBSnapshotIdentifier</code> must be the ARN of the shared DB snapshot.</p> <p>To restore from a DB snapshot with an unsupported engine version, you must first upgrade the engine version of the snapshot. For more information about upgrading a RDS for MySQL DB snapshot engine version, see <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/mysql-upgrade-snapshot.html\">Upgrading a MySQL DB snapshot engine version</a>. For more information about upgrading a RDS for PostgreSQL DB snapshot engine version, <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_UpgradeDBSnapshot.PostgreSQL.html\">Upgrading a PostgreSQL DB snapshot engine version</a>.</p> <note> <p>This command doesn't apply to Aurora MySQL and Aurora PostgreSQL. For Aurora, use <code>RestoreDBClusterFromSnapshot</code>.</p> </note>"
     },
     "RestoreDBInstanceFromS3":{
       "name":"RestoreDBInstanceFromS3",
@@ -4702,7 +4700,7 @@
         },
         "DBParameterGroupName":{
           "shape":"String",
-          "documentation":"<p>The name of the DB parameter group to associate with this DB instance.</p> <p>If you don't specify a value for <code>DBParameterGroupName</code>, then Amazon RDS uses the <code>DBParameterGroup</code> of the source DB instance for a same Region read replica, or the default <code>DBParameterGroup</code> for the specified DB engine for a cross-Region read replica.</p> <p>Specifying a parameter group for this operation is only supported for MySQL DB instances for cross-Region read replicas and for Oracle DB instances. It isn't supported for MySQL DB instances for same Region read replicas or for RDS Custom.</p> <p>Constraints:</p> <ul> <li> <p>Must be 1 to 255 letters, numbers, or hyphens.</p> </li> <li> <p>First character must be a letter.</p> </li> <li> <p>Can't end with a hyphen or contain two consecutive hyphens.</p> </li> </ul>"
+          "documentation":"<p>The name of the DB parameter group to associate with this read replica DB instance.</p> <p>For Single-AZ or Multi-AZ DB instance read replica instances, if you don't specify a value for <code>DBParameterGroupName</code>, then Amazon RDS uses the <code>DBParameterGroup</code> of the source DB instance for a same Region read replica, or the default <code>DBParameterGroup</code> for the specified DB engine for a cross-Region read replica.</p> <p>For Multi-AZ DB cluster same Region read replica instances, if you don't specify a value for <code>DBParameterGroupName</code>, then Amazon RDS uses the default <code>DBParameterGroup</code>.</p> <p>Specifying a parameter group for this operation is only supported for MySQL DB instances for cross-Region read replicas, for Multi-AZ DB cluster read replica instances, and for Oracle DB instances. It isn't supported for MySQL DB instances for same Region read replicas or for RDS Custom.</p> <p>Constraints:</p> <ul> <li> <p>Must be 1 to 255 letters, numbers, or hyphens.</p> </li> <li> <p>First character must be a letter.</p> </li> <li> <p>Can't end with a hyphen or contain two consecutive hyphens.</p> </li> </ul>"
         },
         "PubliclyAccessible":{
           "shape":"BooleanOptional",
@@ -5035,7 +5033,7 @@
         },
         "ComputeRedundancy":{
           "shape":"IntegerOptional",
-          "documentation":"<p>Specifies whether to create standby instances for the DB shard group. Valid values are the following:</p> <ul> <li> <p>0 - Creates a single, primary DB instance for each physical shard. This is the default value, and the only one supported for the preview.</p> </li> <li> <p>1 - Creates a primary DB instance and a standby instance in a different Availability Zone (AZ) for each physical shard.</p> </li> <li> <p>2 - Creates a primary DB instance and two standby instances in different AZs for each physical shard.</p> </li> </ul>"
+          "documentation":"<p>Specifies whether to create standby DB shard groups for the DB shard group. Valid values are the following:</p> <ul> <li> <p>0 - Creates a DB shard group without a standby DB shard group. This is the default value.</p> </li> <li> <p>1 - Creates a DB shard group with a standby DB shard group in a different Availability Zone (AZ).</p> </li> <li> <p>2 - Creates a DB shard group with two standby DB shard groups in two different AZs.</p> </li> </ul>"
         },
         "MaxACU":{
           "shape":"DoubleOptional",
@@ -8121,7 +8119,7 @@
         },
         "ComputeRedundancy":{
           "shape":"IntegerOptional",
-          "documentation":"<p>Specifies whether to create standby instances for the DB shard group. Valid values are the following:</p> <ul> <li> <p>0 - Creates a single, primary DB instance for each physical shard. This is the default value, and the only one supported for the preview.</p> </li> <li> <p>1 - Creates a primary DB instance and a standby instance in a different Availability Zone (AZ) for each physical shard.</p> </li> <li> <p>2 - Creates a primary DB instance and two standby instances in different AZs for each physical shard.</p> </li> </ul>"
+          "documentation":"<p>Specifies whether to create standby DB shard groups for the DB shard group. Valid values are the following:</p> <ul> <li> <p>0 - Creates a DB shard group without a standby DB shard group. This is the default value.</p> </li> <li> <p>1 - Creates a DB shard group with a standby DB shard group in a different Availability Zone (AZ).</p> </li> <li> <p>2 - Creates a DB shard group with two standby DB shard groups in two different AZs.</p> </li> </ul>"
         },
         "Status":{
           "shape":"String",
@@ -8134,6 +8132,10 @@
         "Endpoint":{
           "shape":"String",
           "documentation":"<p>The connection endpoint for the DB shard group.</p>"
+        },
+        "DBShardGroupArn":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Resource Name (ARN) for the DB shard group.</p>"
         }
       }
     },
@@ -11783,18 +11785,6 @@
       },
       "exception":true
     },
-    "InvalidMaxAcuFault":{
-      "type":"structure",
-      "members":{
-      },
-      "documentation":"<p>The maximum capacity of the DB shard group must be 48-7168 Aurora capacity units (ACUs).</p>",
-      "error":{
-        "code":"InvalidMaxAcu",
-        "httpStatusCode":400,
-        "senderFault":true
-      },
-      "exception":true
-    },
     "InvalidOptionGroupStateFault":{
       "type":"structure",
       "members":{
@@ -12858,6 +12848,10 @@
         "MinACU":{
           "shape":"DoubleOptional",
           "documentation":"<p>The minimum capacity of the DB shard group in Aurora capacity units (ACUs).</p>"
+        },
+        "ComputeRedundancy":{
+          "shape":"IntegerOptional",
+          "documentation":"<p>Specifies whether to create standby DB shard groups for the DB shard group. Valid values are the following:</p> <ul> <li> <p>0 - Creates a DB shard group without a standby DB shard group. This is the default value.</p> </li> <li> <p>1 - Creates a DB shard group with a standby DB shard group in a different Availability Zone (AZ).</p> </li> <li> <p>2 - Creates a DB shard group with two standby DB shard groups in two different AZs.</p> </li> </ul>"
         }
       }
     },

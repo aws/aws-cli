@@ -2,9 +2,10 @@
   "version":"2.0",
   "metadata":{
     "apiVersion":"2021-07-13",
+    "auth":["aws.auth#sigv4"],
     "endpointPrefix":"emr-serverless",
-    "jsonVersion":"1.1",
     "protocol":"rest-json",
+    "protocols":["rest-json"],
     "serviceFullName":"EMR Serverless",
     "serviceId":"EMR Serverless",
     "signatureVersion":"v4",
@@ -370,6 +371,10 @@
         "interactiveConfiguration":{
           "shape":"InteractiveConfiguration",
           "documentation":"<p>The interactive configuration object that enables the interactive use cases for an application.</p>"
+        },
+        "schedulerConfiguration":{
+          "shape":"SchedulerConfiguration",
+          "documentation":"<p>The scheduler configuration for batch and streaming jobs running on this application. Supported with release labels emr-7.0.0 and above.</p>"
         }
       },
       "documentation":"<p>Information about an application. Amazon EMR Serverless uses applications to run jobs.</p>"
@@ -728,6 +733,10 @@
         "interactiveConfiguration":{
           "shape":"InteractiveConfiguration",
           "documentation":"<p>The interactive configuration object that enables the interactive use cases to use when running an application.</p>"
+        },
+        "schedulerConfiguration":{
+          "shape":"SchedulerConfiguration",
+          "documentation":"<p>The scheduler configuration for batch and streaming jobs running on this application. Supported with release labels emr-7.0.0 and above.</p>"
         }
       }
     },
@@ -793,7 +802,7 @@
       "type":"string",
       "max":2048,
       "min":20,
-      "pattern":"arn:(aws[a-zA-Z0-9-]*):kms:[a-zA-Z0-9\\-]*:(\\d{12})?:key\\/[a-zA-Z0-9-]+"
+      "pattern":"arn:(aws[a-zA-Z0-9-]*):kms:[a-zA-Z0-9\\-]*:([0-9]{12}):key\\/[a-zA-Z0-9-]+"
     },
     "EngineType":{
       "type":"string",
@@ -943,7 +952,7 @@
       "type":"string",
       "max":2048,
       "min":20,
-      "pattern":"arn:(aws[a-zA-Z0-9-]*):iam::(\\d{12})?:(role((\\u002F)|(\\u002F[\\u0021-\\u007F]+\\u002F))[\\w+=,.@-]+)"
+      "pattern":"arn:(aws[a-zA-Z0-9-]*):iam::([0-9]{12}):(role((\\u002F)|(\\u002F[\\u0021-\\u007F]+\\u002F))[\\w+=,.@-]+)"
     },
     "ImageConfiguration":{
       "type":"structure",
@@ -1168,6 +1177,18 @@
         "attemptUpdatedAt":{
           "shape":"Date",
           "documentation":"<p>The date and time of when the job run attempt was last updated.</p>"
+        },
+        "startedAt":{
+          "shape":"Date",
+          "documentation":"<p>The date and time when the job moved to the RUNNING state.</p>"
+        },
+        "endedAt":{
+          "shape":"Date",
+          "documentation":"<p>The date and time when the job was terminated.</p>"
+        },
+        "queuedDurationMilliseconds":{
+          "shape":"Long",
+          "documentation":"<p>The total time for a job in the QUEUED state in milliseconds.</p>"
         }
       },
       "documentation":"<p>Information about a job run. A job run is a unit of work, such as a Spark JAR, Hive query, or SparkSQL query, that you submit to an Amazon EMR Serverless application.</p>"
@@ -1278,7 +1299,8 @@
         "SUCCESS",
         "FAILED",
         "CANCELLING",
-        "CANCELLED"
+        "CANCELLED",
+        "QUEUED"
       ]
     },
     "JobRunStateSet":{
@@ -1591,6 +1613,10 @@
       "min":1,
       "pattern":"[a-zA-Z]+[-_]*[a-zA-Z]+"
     },
+    "Long":{
+      "type":"long",
+      "box":true
+    },
     "ManagedPersistenceMonitoringConfiguration":{
       "type":"structure",
       "members":{
@@ -1779,6 +1805,20 @@
         }
       },
       "documentation":"<p>The Amazon S3 configuration for monitoring log publishing. You can configure your jobs to send log information to Amazon S3.</p>"
+    },
+    "SchedulerConfiguration":{
+      "type":"structure",
+      "members":{
+        "queueTimeoutMinutes":{
+          "shape":"Integer",
+          "documentation":"<p>The maximum duration in minutes for the job in QUEUED state. If scheduler configuration is enabled on your application, the default value is 360 minutes (6 hours). The valid range is from 15 to 720.</p>"
+        },
+        "maxConcurrentRuns":{
+          "shape":"Integer",
+          "documentation":"<p>The maximum concurrent job runs on this application. If scheduler configuration is enabled on your application, the default value is 15. The valid range is 1 to 1000.</p>"
+        }
+      },
+      "documentation":"<p>The scheduler configuration for batch and streaming jobs running on this application. Supported with release labels emr-7.0.0 and above.</p>"
     },
     "SecurityGroupIds":{
       "type":"list",
@@ -2128,6 +2168,10 @@
         "monitoringConfiguration":{
           "shape":"MonitoringConfiguration",
           "documentation":"<p>The configuration setting for monitoring.</p>"
+        },
+        "schedulerConfiguration":{
+          "shape":"SchedulerConfiguration",
+          "documentation":"<p>The scheduler configuration for batch and streaming jobs running on this application. Supported with release labels emr-7.0.0 and above.</p>"
         }
       }
     },

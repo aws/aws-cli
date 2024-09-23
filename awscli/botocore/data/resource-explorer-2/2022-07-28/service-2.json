@@ -5,11 +5,13 @@
     "endpointPrefix":"resource-explorer-2",
     "jsonVersion":"1.1",
     "protocol":"rest-json",
+    "protocols":["rest-json"],
     "serviceFullName":"AWS Resource Explorer",
     "serviceId":"Resource Explorer 2",
     "signatureVersion":"v4",
     "signingName":"resource-explorer-2",
-    "uid":"resource-explorer-2-2022-07-28"
+    "uid":"resource-explorer-2-2022-07-28",
+    "auth":["aws.auth#sigv4"]
   },
   "operations":{
     "AssociateDefaultView":{
@@ -158,7 +160,7 @@
         {"shape":"ThrottlingException"},
         {"shape":"AccessDeniedException"}
       ],
-      "documentation":"<p>Retrieves the status of your account's Amazon Web Services service access, and validates the service linked role required to access the multi-account search feature. Only the management account or a delegated administrator with service access enabled can invoke this API call. </p>"
+      "documentation":"<p>Retrieves the status of your account's Amazon Web Services service access, and validates the service linked role required to access the multi-account search feature. Only the management account can invoke this API call. </p>"
     },
     "GetDefaultView":{
       "name":"GetDefaultView",
@@ -246,6 +248,25 @@
         {"shape":"AccessDeniedException"}
       ],
       "documentation":"<p>Retrieves a list of a member's indexes in all Amazon Web Services Regions that are currently collecting resource information for Amazon Web Services Resource Explorer. Only the management account or a delegated administrator with service access enabled can invoke this API call. </p>"
+    },
+    "ListResources":{
+      "name":"ListResources",
+      "http":{
+        "method":"POST",
+        "requestUri":"/ListResources",
+        "responseCode":200
+      },
+      "input":{"shape":"ListResourcesInput"},
+      "output":{"shape":"ListResourcesOutput"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ValidationException"},
+        {"shape":"UnauthorizedException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Returns a list of resources and their details that match the specified criteria. This query must use a view. If you don’t explicitly specify a view, then Resource Explorer uses the default view for the Amazon Web Services Region in which you call this operation. </p>"
     },
     "ListSupportedResourceTypes":{
       "name":"ListSupportedResourceTypes",
@@ -903,6 +924,67 @@
         }
       }
     },
+    "ListResourcesInput":{
+      "type":"structure",
+      "members":{
+        "Filters":{"shape":"SearchFilter"},
+        "MaxResults":{
+          "shape":"ListResourcesInputMaxResultsInteger",
+          "documentation":"<p>The maximum number of results that you want included on each page of the response. If you do not include this parameter, it defaults to a value appropriate to the operation. If additional items exist beyond those included in the current response, the <code>NextToken</code> response element is present and has a value (is not null). Include that value as the <code>NextToken</code> request parameter in the next call to the operation to get the next part of the results.</p> <note> <p>An API operation can return fewer results than the maximum even when there are more results available. You should check <code>NextToken</code> after every operation to ensure that you receive all of the results.</p> </note>"
+        },
+        "NextToken":{
+          "shape":"ListResourcesInputNextTokenString",
+          "documentation":"<p>The parameter for receiving additional results if you receive a <code>NextToken</code> response in a previous request. A <code>NextToken</code> response indicates that more output is available. Set this parameter to the value of the previous call's <code>NextToken</code> response to indicate where the output should continue from. The pagination tokens expire after 24 hours.</p>"
+        },
+        "ViewArn":{
+          "shape":"ListResourcesInputViewArnString",
+          "documentation":"<p>Specifies the Amazon resource name (ARN) of the view to use for the query. If you don't specify a value for this parameter, then the operation automatically uses the default view for the Amazon Web Services Region in which you called this operation. If the Region either doesn't have a default view or if you don't have permission to use the default view, then the operation fails with a 401 Unauthorized exception.</p>"
+        }
+      }
+    },
+    "ListResourcesInputMaxResultsInteger":{
+      "type":"integer",
+      "box":true,
+      "max":1000,
+      "min":1
+    },
+    "ListResourcesInputNextTokenString":{
+      "type":"string",
+      "max":2048,
+      "min":1
+    },
+    "ListResourcesInputViewArnString":{
+      "type":"string",
+      "max":1000,
+      "min":0
+    },
+    "ListResourcesOutput":{
+      "type":"structure",
+      "members":{
+        "NextToken":{
+          "shape":"ListResourcesOutputNextTokenString",
+          "documentation":"<p>If present, indicates that more output is available than is included in the current response. Use this value in the <code>NextToken</code> request parameter in a subsequent call to the operation to get the next part of the output. You should repeat this until the <code>NextToken</code> response element comes back as <code>null</code>. The pagination tokens expire after 24 hours.</p>"
+        },
+        "Resources":{
+          "shape":"ResourceList",
+          "documentation":"<p>The list of structures that describe the resources that match the query. </p>"
+        },
+        "ViewArn":{
+          "shape":"ListResourcesOutputViewArnString",
+          "documentation":"<p>The Amazon resource name (ARN) of the view that this operation used to perform the search. </p>"
+        }
+      }
+    },
+    "ListResourcesOutputNextTokenString":{
+      "type":"string",
+      "max":2048,
+      "min":1
+    },
+    "ListResourcesOutputViewArnString":{
+      "type":"string",
+      "max":1011,
+      "min":1
+    },
     "ListSupportedResourceTypesInput":{
       "type":"structure",
       "members":{
@@ -1035,7 +1117,7 @@
     },
     "QueryString":{
       "type":"string",
-      "max":1011,
+      "max":1280,
       "min":0,
       "sensitive":true
     },
@@ -1072,7 +1154,7 @@
         },
         "Service":{
           "shape":"String",
-          "documentation":"<p>The Amazon Web Service that owns the resource and is responsible for creating and updating it.</p>"
+          "documentation":"<p>The Amazon Web Servicesservice that owns the resource and is responsible for creating and updating it.</p>"
         }
       },
       "documentation":"<p>A resource in Amazon Web Services that Amazon Web Services Resource Explorer has discovered, and for which it has stored information in the index of the Amazon Web Services Region that contains the resource.</p>"
@@ -1259,7 +1341,7 @@
         },
         "Service":{
           "shape":"String",
-          "documentation":"<p>The Amazon Web Service that is associated with the resource type. This is the primary service that lets you create and interact with resources of this type.</p>"
+          "documentation":"<p>The Amazon Web Servicesservice that is associated with the resource type. This is the primary service that lets you create and interact with resources of this type.</p>"
         }
       },
       "documentation":"<p>A structure that describes a resource type supported by Amazon Web Services Resource Explorer.</p>"

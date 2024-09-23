@@ -81,15 +81,7 @@ def document_expires_string(help_command, **kwargs):
     doc.push_write(popped.pop())
     doc.push_write(popped.pop())
     doc.push_write(popped.pop())
-    # TODO add note about deprecation
 
-    # ..note::
-    #
-    #
-    #
-    # This functionality is not supported for directory buckets.
-    #
-    #
     doc.push_write('\n\n\n' + doc.style.spaces())
     doc.push_write('.. note::')
     doc.style.indent()
@@ -97,6 +89,7 @@ def document_expires_string(help_command, **kwargs):
     doc.push_write('This member has been deprecated. Please use `ExpiresString` instead.\n')
     doc.style.dedent()
     doc.push_write('\n\n' + doc.style.spaces())
+
     doc.push_write('\n\n' + doc.style.spaces())
     doc.push_write('ExpiresString -> (string)\n\n')
     doc.push_write('\tThe raw, unparsed value of the ``Expires`` field.')

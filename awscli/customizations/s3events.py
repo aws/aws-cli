@@ -25,9 +25,17 @@ def register_event_stream_arg(event_handlers):
     event_handlers.register(
         'building-argument-table.s3api.select-object-content',
         add_event_stream_output_arg)
+
     event_handlers.register_last(
         'doc-output.s3api.select-object-content',
         replace_event_stream_docs
+    )
+
+
+def register_document_expires_string(event_handlers):
+    event_handlers.register_last(
+        'doc-output.s3api',
+        document_expires_string
     )
 
 
@@ -55,6 +63,48 @@ def replace_event_stream_docs(help_command, **kwargs):
     doc.write('======\nOutput\n======\n')
     doc.write("This command generates no output.  The selected "
               "object content is written to the specified outfile.\n")
+
+
+def document_expires_string(help_command, **kwargs):
+    doc = help_command.doc
+    popped = []
+    current = ''
+    while current != 'Expires -> (timestamp)':
+        try:
+            current = doc.pop_write()
+            popped.append(current)
+        except IndexError:
+            # Do nothing if Expires is not in the modeled response
+            break
+    # Put back the expires field and description
+    doc.push_write(popped.pop())
+    doc.push_write(popped.pop())
+    doc.push_write(popped.pop())
+    doc.push_write(popped.pop())
+    # TODO add note about deprecation
+
+    # ..note::
+    #
+    #
+    #
+    # This functionality is not supported for directory buckets.
+    #
+    #
+    doc.push_write('\n\n\n' + doc.style.spaces())
+    doc.push_write('.. note::')
+    doc.style.indent()
+    doc.push_write('\n\n\n' + doc.style.spaces())
+    doc.push_write('This member has been deprecated. Please use `ExpiresString` instead.\n')
+    doc.style.dedent()
+    doc.push_write('\n\n' + doc.style.spaces())
+    doc.push_write('\n\n' + doc.style.spaces())
+    doc.push_write('ExpiresString -> (string)\n\n')
+    doc.push_write('\tThe raw, unparsed value of the ``Expires`` field.')
+    doc.push_write('\n\n' + doc.style.spaces())
+
+    # Write rest of document
+    while len(popped) > 0:
+        doc.push_write(popped.pop())
 
 
 class S3SelectStreamOutputArgument(CustomArgument):

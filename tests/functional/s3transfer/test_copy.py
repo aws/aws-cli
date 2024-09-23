@@ -200,6 +200,29 @@ class TestNonMultipartCopy(BaseCopyTest):
         future.result()
         self.stubber.assert_no_pending_responses()
 
+    def test_copy_with_checksum(self):
+        self.extra_args['ChecksumAlgorithm'] = 'crc32'
+        expected_head_params = {
+            'Bucket': 'mysourcebucket',
+            'Key': 'mysourcekey',
+        }
+        expected_copy_object = {
+            'Bucket': self.bucket,
+            'Key': self.key,
+            'CopySource': self.copy_source,
+            'ChecksumAlgorithm': 'crc32',
+        }
+        self.add_head_object_response(expected_params=expected_head_params)
+        self.add_successful_copy_responses(
+            expected_copy_params=expected_copy_object
+        )
+
+        call_kwargs = self.create_call_kwargs()
+        call_kwargs['extra_args'] = self.extra_args
+        future = self.manager.copy(**call_kwargs)
+        future.result()
+        self.stubber.assert_no_pending_responses()
+
     def test_copy_with_extra_args(self):
         self.extra_args['MetadataDirective'] = 'REPLACE'
 
@@ -302,6 +325,7 @@ class TestMultipartCopy(BaseCopyTest):
             multipart_chunksize=4,
         )
         self._manager = TransferManager(self.client, self.config)
+        self.multipart_id = 'my-upload-id'
 
     def create_stubbed_responses(self):
         return [
@@ -311,7 +335,7 @@ class TestMultipartCopy(BaseCopyTest):
             },
             {
                 'method': 'create_multipart_upload',
-                'service_response': {'UploadId': 'my-upload-id'},
+                'service_response': {'UploadId': self.multipart_id},
             },
             {
                 'method': 'upload_part_copy',
@@ -328,6 +352,84 @@ class TestMultipartCopy(BaseCopyTest):
             {'method': 'complete_multipart_upload', 'service_response': {}},
         ]
 
+    def add_get_head_response_with_default_expected_params(
+            self, extra_expected_params=None
+    ):
+        expected_params = {
+            'Bucket': 'mysourcebucket',
+            'Key': 'mysourcekey',
+        }
+        if extra_expected_params:
+            expected_params.update(extra_expected_params)
+        response = self.create_stubbed_responses()[0]
+        response['expected_params'] = expected_params
+        self.stubber.add_response(**response)
+
+    def add_create_multipart_response_with_default_expected_params(
+            self, extra_expected_params=None
+    ):
+        expected_params = {'Bucket': self.bucket, 'Key': self.key}
+        if extra_expected_params:
+            expected_params.update(extra_expected_params)
+        response = self.create_stubbed_responses()[1]
+        response['expected_params'] = expected_params
+        self.stubber.add_response(**response)
+
+    def add_upload_part_copy_responses_with_default_expected_params(
+            self, extra_expected_params=None
+    ):
+        ranges = [
+            'bytes=0-5242879',
+            'bytes=5242880-10485759',
+            'bytes=10485760-13107199',
+        ]
+        upload_part_responses = self.create_stubbed_responses()[2:-1]
+        for i, range_val in enumerate(ranges):
+            upload_part_response = upload_part_responses[i]
+            expected_params = {
+                'Bucket': self.bucket,
+                'Key': self.key,
+                'CopySource': self.copy_source,
+                'UploadId': self.multipart_id,
+                'PartNumber': i + 1,
+                'CopySourceRange': range_val,
+            }
+            if extra_expected_params:
+                if 'ChecksumAlgorithm' in extra_expected_params:
+                    name = extra_expected_params['ChecksumAlgorithm']
+                    checksum_member = 'Checksum%s' % name.upper()
+                    response = upload_part_response['service_response']
+                    response['CopyPartResult'][checksum_member] = 'sum%s==' % (
+                            i + 1
+                    )
+                else:
+                    expected_params.update(extra_expected_params)
+
+            upload_part_response['expected_params'] = expected_params
+            self.stubber.add_response(**upload_part_response)
+
+    def add_complete_multipart_response_with_default_expected_params(
+            self, extra_expected_params=None
+    ):
+        expected_params = {
+            'Bucket': self.bucket,
+            'Key': self.key,
+            'UploadId': self.multipart_id,
+            'MultipartUpload': {
+                'Parts': [
+                    {'ETag': 'etag-1', 'PartNumber': 1},
+                    {'ETag': 'etag-2', 'PartNumber': 2},
+                    {'ETag': 'etag-3', 'PartNumber': 3},
+                ]
+            },
+        }
+        if extra_expected_params:
+            expected_params.update(extra_expected_params)
+
+        response = self.create_stubbed_responses()[-1]
+        response['expected_params'] = expected_params
+        self.stubber.add_response(**response)
+
     def create_expected_progress_callback_info(self):
         # Note that last read is from the empty sentinel indicating
         # that the stream is done.
@@ -341,8 +443,6 @@ class TestMultipartCopy(BaseCopyTest):
         self.stubber.add_response(**self.create_stubbed_responses()[1])
 
     def _get_expected_params(self):
-        upload_id = 'my-upload-id'
-
         # Add expected parameters to the head object
         expected_head_params = {
             'Bucket': 'mysourcebucket',
@@ -368,7 +468,7 @@ class TestMultipartCopy(BaseCopyTest):
                     'Bucket': self.bucket,
                     'Key': self.key,
                     'CopySource': self.copy_source,
-                    'UploadId': upload_id,
+                    'UploadId': self.multipart_id,
                     'PartNumber': i + 1,
                     'CopySourceRange': range_val,
                 }
@@ -378,7 +478,7 @@ class TestMultipartCopy(BaseCopyTest):
         expected_complete_mpu_params = {
             'Bucket': self.bucket,
             'Key': self.key,
-            'UploadId': upload_id,
+            'UploadId': self.multipart_id,
             'MultipartUpload': {
                 'Parts': [
                     {'ETag': 'etag-1', 'PartNumber': 1},
@@ -434,6 +534,54 @@ class TestMultipartCopy(BaseCopyTest):
             self.extra_args,
         )
         self.add_successful_copy_responses(**add_copy_kwargs)
+
+        call_kwargs = self.create_call_kwargs()
+        call_kwargs['extra_args'] = self.extra_args
+        future = self.manager.copy(**call_kwargs)
+        future.result()
+        self.stubber.assert_no_pending_responses()
+
+    def test_copy_passes_checksums(self):
+        # This extra argument should be added to the head object,
+        # the create multipart upload, and upload part copy.
+        self.extra_args['ChecksumAlgorithm'] = 'sha256'
+
+        self.add_get_head_response_with_default_expected_params()
+
+        # ChecksumAlgorithm should be passed on the create_multipart call
+        self.add_create_multipart_response_with_default_expected_params(
+            self.extra_args,
+        )
+
+        # ChecksumAlgorithm should be passed to the upload_part_copy calls
+        self.add_upload_part_copy_responses_with_default_expected_params(
+            self.extra_args,
+        )
+
+        # The checksums should be used in the complete call like etags
+        self.add_complete_multipart_response_with_default_expected_params(
+            extra_expected_params={
+                'MultipartUpload': {
+                    'Parts': [
+                        {
+                            'ETag': 'etag-1',
+                            'PartNumber': 1,
+                            'ChecksumSHA256': 'sum1==',
+                        },
+                        {
+                            'ETag': 'etag-2',
+                            'PartNumber': 2,
+                            'ChecksumSHA256': 'sum2==',
+                        },
+                        {
+                            'ETag': 'etag-3',
+                            'PartNumber': 3,
+                            'ChecksumSHA256': 'sum3==',
+                        },
+                    ]
+                }
+            }
+        )
 
         call_kwargs = self.create_call_kwargs()
         call_kwargs['extra_args'] = self.extra_args
@@ -530,7 +678,7 @@ class TestMultipartCopy(BaseCopyTest):
             expected_params={
                 'Bucket': self.bucket,
                 'Key': self.key,
-                'UploadId': 'my-upload-id',
+                'UploadId': self.multipart_id,
             },
         )
 

@@ -1084,7 +1084,7 @@
         },
         "inferenceConfig":{
           "shape":"EvaluationInferenceConfig",
-          "documentation":"<p>Specify the models you want to use in your model evaluation job. Automatic model evaluation jobs support a single model, and model evaluation job that use human workers support two models.</p>"
+          "documentation":"<p>Specify the models you want to use in your model evaluation job. Automatic model evaluation jobs support a single model or <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/cross-region-inference.html\">inference profile</a>, and model evaluation job that use human workers support two models or inference profiles.</p>"
         },
         "outputDataConfig":{
           "shape":"EvaluationOutputDataConfig",
@@ -1676,14 +1676,14 @@
       "members":{
         "modelIdentifier":{
           "shape":"EvaluationModelIdentifier",
-          "documentation":"<p>The ARN of the Amazon Bedrock model specified.</p>"
+          "documentation":"<p>The ARN of the Amazon Bedrock model or inference profile specified.</p>"
         },
         "inferenceParams":{
           "shape":"EvaluationModelInferenceParams",
           "documentation":"<p>Each Amazon Bedrock support different inference parameters that change how the model behaves during inference.</p>"
         }
       },
-      "documentation":"<p>Contains the ARN of the Amazon Bedrock models specified in your model evaluation job. Each Amazon Bedrock model supports different <code>inferenceParams</code>. To learn more about supported inference parameters for Amazon Bedrock models, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/model-parameters.html\">Inference parameters for foundation models</a>.</p> <p>The <code>inferenceParams</code> are specified using JSON. To successfully insert JSON as string make sure that all quotations are properly escaped. For example, <code>\"temperature\":\"0.25\"</code> key value pair would need to be formatted as <code>\\\"temperature\\\":\\\"0.25\\\"</code> to successfully accepted in the request.</p>"
+      "documentation":"<p>Contains the ARN of the Amazon Bedrock model or <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/cross-region-inference.html\">inference profile</a> specified in your model evaluation job. Each Amazon Bedrock model supports different <code>inferenceParams</code>. To learn more about supported inference parameters for Amazon Bedrock models, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/model-parameters.html\">Inference parameters for foundation models</a>.</p> <p>The <code>inferenceParams</code> are specified using JSON. To successfully insert JSON as string make sure that all quotations are properly escaped. For example, <code>\"temperature\":\"0.25\"</code> key value pair would need to be formatted as <code>\\\"temperature\\\":\\\"0.25\\\"</code> to successfully accepted in the request.</p>"
     },
     "EvaluationConfig":{
       "type":"structure",
@@ -1848,7 +1848,7 @@
       "members":{
         "bedrockModel":{
           "shape":"EvaluationBedrockModel",
-          "documentation":"<p>Defines the Amazon Bedrock model and inference parameters you want used.</p>"
+          "documentation":"<p>Defines the Amazon Bedrock model or inference profile and inference parameters you want used.</p>"
         }
       },
       "documentation":"<p>Defines the models used in the model evaluation job.</p>",
@@ -1864,7 +1864,7 @@
       "type":"string",
       "max":2048,
       "min":1,
-      "pattern":"arn:aws(-[^:]+)?:bedrock:[a-z0-9-]{1,20}:(([0-9]{12}:custom-model/[a-z0-9-]{1,63}[.]{1}[a-z0-9-]{1,63}(([:][a-z0-9-]{1,63}){0,2})?/[a-z0-9]{12})|(:foundation-model/([a-z0-9-]{1,63}[.]{1}[a-z0-9-]{1,63}([.]?[a-z0-9-]{1,63})([:][a-z0-9-]{1,63}){0,2})))|(([a-z0-9-]{1,63}[.]{1}[a-z0-9-]{1,63}([.]?[a-z0-9-]{1,63})([:][a-z0-9-]{1,63}){0,2}))|(([0-9a-zA-Z][_-]?)+)"
+      "pattern":"(arn:aws(-[^:]+)?:bedrock:[a-z0-9-]{1,20}:((:foundation-model/[a-z0-9-]{1,63}[.]{1}[a-z0-9-]{1,63}([.:]?[a-z0-9-]{1,63}))|([0-9]{12}:inference-profile/(([a-z]{2}.)[a-z0-9-]{1,63}[.]{1}[a-z0-9-]{1,63}([.:]?[a-z0-9-]{1,63})))))|(([a-z]{2}[.]{1})([a-z0-9-]{1,63}[.]{1}[a-z0-9-]{1,63}([.:]?[a-z0-9-]{1,63})))|([a-z0-9-]{1,63}[.]{1}[a-z0-9-]{1,63}([.:]?[a-z0-9-]{1,63}))"
     },
     "EvaluationModelIdentifiers":{
       "type":"list",

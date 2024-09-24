@@ -480,6 +480,23 @@
       ],
       "documentation":"<p>Delete the value in a registration form field.</p>"
     },
+    "DeleteResourcePolicy":{
+      "name":"DeleteResourcePolicy",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DeleteResourcePolicyRequest"},
+      "output":{"shape":"DeleteResourcePolicyResult"},
+      "errors":[
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ValidationException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Deletes the resource-based policy document attached to the AWS End User Messaging SMS and Voice resource. A shared resource can be a Pool, Opt-out list, Sender Id, or Phone number.</p>"
+    },
     "DeleteTextMessageSpendLimitOverride":{
       "name":"DeleteTextMessageSpendLimitOverride",
       "http":{
@@ -918,6 +935,23 @@
       ],
       "documentation":"<p>Retrieve the CountryRuleSet for the specified NumberCapability from a protect configuration.</p>"
     },
+    "GetResourcePolicy":{
+      "name":"GetResourcePolicy",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"GetResourcePolicyRequest"},
+      "output":{"shape":"GetResourcePolicyResult"},
+      "errors":[
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ValidationException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Retrieves the JSON text of the resource-based policy document attached to the AWS End User Messaging SMS and Voice resource. A shared resource can be a Pool, Opt-out list, Sender Id, or Phone number.</p>"
+    },
     "ListPoolOriginationIdentities":{
       "name":"ListPoolOriginationIdentities",
       "http":{
@@ -1022,6 +1056,23 @@
         {"shape":"InternalServerException"}
       ],
       "documentation":"<p>Creates or updates a field value for a registration.</p>"
+    },
+    "PutResourcePolicy":{
+      "name":"PutResourcePolicy",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"PutResourcePolicyRequest"},
+      "output":{"shape":"PutResourcePolicyResult"},
+      "errors":[
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ValidationException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Attaches a resource-based policy to a AWS End User Messaging SMS and Voice resource(phone number, sender Id, phone poll, or opt-out list) that is used for sharing the resource. A shared resource can be a Pool, Opt-out list, Sender Id, or Phone number. For more information about resource-based policies, see <a href=\"https://docs.aws.amazon.com/sms-voice/latest/userguide/shared-resources.html\">Working with shared resources</a> in the <i>AWS End User Messaging SMS User Guide</i>. </p>"
     },
     "ReleasePhoneNumber":{
       "name":"ReleasePhoneNumber",
@@ -1553,11 +1604,11 @@
       "members":{
         "PoolId":{
           "shape":"PoolIdOrArn",
-          "documentation":"<p>The pool to update with the new Identity. This value can be either the PoolId or PoolArn, and you can find these values using <a>DescribePools</a>.</p>"
+          "documentation":"<p>The pool to update with the new Identity. This value can be either the PoolId or PoolArn, and you can find these values using <a>DescribePools</a>.</p> <important> <p>If you are using a shared AWS End User Messaging SMS and Voice resource then you must use the full Amazon Resource Name(ARN).</p> </important>"
         },
         "OriginationIdentity":{
           "shape":"PhoneOrSenderIdOrArn",
-          "documentation":"<p>The origination identity to use, such as PhoneNumberId, PhoneNumberArn, SenderId, or SenderIdArn. You can use <a>DescribePhoneNumbers</a> to find the values for PhoneNumberId and PhoneNumberArn, while <a>DescribeSenderIds</a> can be used to get the values for SenderId and SenderIdArn.</p>"
+          "documentation":"<p>The origination identity to use, such as PhoneNumberId, PhoneNumberArn, SenderId, or SenderIdArn. You can use <a>DescribePhoneNumbers</a> to find the values for PhoneNumberId and PhoneNumberArn, while <a>DescribeSenderIds</a> can be used to get the values for SenderId and SenderIdArn.</p> <important> <p>If you are using a shared AWS End User Messaging SMS and Voice resource then you must use the full Amazon Resource Name(ARN).</p> </important>"
         },
         "IsoCountryCode":{
           "shape":"IsoCountryCode",
@@ -2012,7 +2063,7 @@
       "members":{
         "OriginationIdentity":{
           "shape":"PhoneOrSenderIdOrArn",
-          "documentation":"<p>The origination identity to use such as a PhoneNumberId, PhoneNumberArn, SenderId or SenderIdArn. You can use <a>DescribePhoneNumbers</a> to find the values for PhoneNumberId and PhoneNumberArn while <a>DescribeSenderIds</a> can be used to get the values for SenderId and SenderIdArn.</p> <p>After the pool is created you can add more origination identities to the pool by using <a href=\"https://docs.aws.amazon.com/pinpoint/latest/apireference_smsvoicev2/API_AssociateOriginationIdentity.html\">AssociateOriginationIdentity</a>.</p>"
+          "documentation":"<p>The origination identity to use such as a PhoneNumberId, PhoneNumberArn, SenderId or SenderIdArn. You can use <a>DescribePhoneNumbers</a> to find the values for PhoneNumberId and PhoneNumberArn while <a>DescribeSenderIds</a> can be used to get the values for SenderId and SenderIdArn.</p> <p>After the pool is created you can add more origination identities to the pool by using <a href=\"https://docs.aws.amazon.com/pinpoint/latest/apireference_smsvoicev2/API_AssociateOriginationIdentity.html\">AssociateOriginationIdentity</a>.</p> <important> <p>If you are using a shared AWS End User Messaging SMS and Voice resource then you must use the full Amazon Resource Name(ARN).</p> </important>"
         },
         "IsoCountryCode":{
           "shape":"IsoCountryCode",
@@ -2582,7 +2633,7 @@
       "members":{
         "OriginationIdentity":{
           "shape":"PhoneOrPoolIdOrArn",
-          "documentation":"<p>The origination identity to use such as a PhoneNumberId, PhoneNumberArn, PoolId or PoolArn. You can use <a>DescribePhoneNumbers</a> to find the values for PhoneNumberId and PhoneNumberArn and <a>DescribePools</a> to find the values of PoolId and PoolArn.</p>"
+          "documentation":"<p>The origination identity to use such as a PhoneNumberId, PhoneNumberArn, PoolId or PoolArn. You can use <a>DescribePhoneNumbers</a> to find the values for PhoneNumberId and PhoneNumberArn and <a>DescribePools</a> to find the values of PoolId and PoolArn.</p> <important> <p>If you are using a shared AWS End User Messaging SMS and Voice resource then you must use the full Amazon Resource Name(ARN).</p> </important>"
         },
         "Keyword":{
           "shape":"Keyword",
@@ -2635,7 +2686,7 @@
       "members":{
         "OptOutListName":{
           "shape":"OptOutListNameOrArn",
-          "documentation":"<p>The OptOutListName or OptOutListArn of the OptOutList to delete. You can use <a>DescribeOptOutLists</a> to find the values for OptOutListName and OptOutListArn.</p>"
+          "documentation":"<p>The OptOutListName or OptOutListArn of the OptOutList to delete. You can use <a>DescribeOptOutLists</a> to find the values for OptOutListName and OptOutListArn.</p> <important> <p>If you are using a shared AWS End User Messaging SMS and Voice resource then you must use the full Amazon Resource Name(ARN).</p> </important>"
         }
       }
     },
@@ -2665,7 +2716,7 @@
       "members":{
         "OptOutListName":{
           "shape":"OptOutListNameOrArn",
-          "documentation":"<p>The OptOutListName or OptOutListArn to remove the phone number from.</p>"
+          "documentation":"<p>The OptOutListName or OptOutListArn to remove the phone number from.</p> <important> <p>If you are using a shared AWS End User Messaging SMS and Voice resource then you must use the full Amazon Resource Name(ARN).</p> </important>"
         },
         "OptedOutNumber":{
           "shape":"PhoneNumber",
@@ -2704,7 +2755,7 @@
       "members":{
         "PoolId":{
           "shape":"PoolIdOrArn",
-          "documentation":"<p>The PoolId or PoolArn of the pool to delete. You can use <a>DescribePools</a> to find the values for PoolId and PoolArn .</p>"
+          "documentation":"<p>The PoolId or PoolArn of the pool to delete. You can use <a>DescribePools</a> to find the values for PoolId and PoolArn .</p> <important> <p>If you are using a shared AWS End User Messaging SMS and Voice resource then you must use the full Amazon Resource Name(ARN).</p> </important>"
         }
       }
     },
@@ -2955,6 +3006,33 @@
         }
       }
     },
+    "DeleteResourcePolicyRequest":{
+      "type":"structure",
+      "required":["ResourceArn"],
+      "members":{
+        "ResourceArn":{
+          "shape":"AmazonResourceName",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the AWS End User Messaging SMS and Voice resource you're deleting the resource-based policy from.</p>"
+        }
+      }
+    },
+    "DeleteResourcePolicyResult":{
+      "type":"structure",
+      "members":{
+        "ResourceArn":{
+          "shape":"AmazonResourceName",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the AWS End User Messaging SMS and Voice resource that the resource-based policy was deleted from.</p>"
+        },
+        "Policy":{
+          "shape":"ResourcePolicy",
+          "documentation":"<p>The JSON formatted resource-based policy that was deleted.</p>"
+        },
+        "CreatedTimestamp":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time when the resource-based policy was created, in <a href=\"https://www.epochconverter.com/\">UNIX epoch time</a> format.</p>"
+        }
+      }
+    },
     "DeleteTextMessageSpendLimitOverrideRequest":{
       "type":"structure",
       "members":{
@@ -3118,7 +3196,7 @@
       "members":{
         "OriginationIdentity":{
           "shape":"PhoneOrPoolIdOrArn",
-          "documentation":"<p>The origination identity to use such as a PhoneNumberId, PhoneNumberArn, SenderId or SenderIdArn. You can use <a>DescribePhoneNumbers</a> to find the values for PhoneNumberId and PhoneNumberArn while <a>DescribeSenderIds</a> can be used to get the values for SenderId and SenderIdArn.</p>"
+          "documentation":"<p>The origination identity to use such as a PhoneNumberId, PhoneNumberArn, SenderId or SenderIdArn. You can use <a>DescribePhoneNumbers</a> to find the values for PhoneNumberId and PhoneNumberArn while <a>DescribeSenderIds</a> can be used to get the values for SenderId and SenderIdArn.</p> <important> <p>If you are using a shared AWS End User Messaging SMS and Voice resource then you must use the full Amazon Resource Name(ARN).</p> </important>"
         },
         "Keywords":{
           "shape":"KeywordList",
@@ -3164,7 +3242,7 @@
       "members":{
         "OptOutListNames":{
           "shape":"OptOutListNameList",
-          "documentation":"<p>The OptOutLists to show the details of. This is an array of strings that can be either the OptOutListName or OptOutListArn.</p>"
+          "documentation":"<p>The OptOutLists to show the details of. This is an array of strings that can be either the OptOutListName or OptOutListArn.</p> <important> <p>If you are using a shared AWS End User Messaging SMS and Voice resource then you must use the full Amazon Resource Name(ARN).</p> </important>"
         },
         "NextToken":{
           "shape":"NextToken",
@@ -3173,6 +3251,10 @@
         "MaxResults":{
           "shape":"MaxResults",
           "documentation":"<p>The maximum number of results to return per each request.</p>"
+        },
+        "Owner":{
+          "shape":"Owner",
+          "documentation":"<p>Use <code>SELF</code> to filter the list of Opt-Out List to ones your account owns or use <code>SHARED</code> to filter on Opt-Out List shared with your account. The <code>Owner</code> and <code>OptOutListNames</code> parameters can't be used at the same time.</p>"
         }
       }
     },
@@ -3195,7 +3277,7 @@
       "members":{
         "OptOutListName":{
           "shape":"OptOutListNameOrArn",
-          "documentation":"<p>The OptOutListName or OptOutListArn of the OptOutList. You can use <a>DescribeOptOutLists</a> to find the values for OptOutListName and OptOutListArn.</p>"
+          "documentation":"<p>The OptOutListName or OptOutListArn of the OptOutList. You can use <a>DescribeOptOutLists</a> to find the values for OptOutListName and OptOutListArn.</p> <important> <p>If you are using a shared AWS End User Messaging SMS and Voice resource then you must use the full Amazon Resource Name(ARN).</p> </important>"
         },
         "OptedOutNumbers":{
           "shape":"OptedOutNumberList",
@@ -3241,7 +3323,7 @@
       "members":{
         "PhoneNumberIds":{
           "shape":"PhoneNumberIdList",
-          "documentation":"<p>The unique identifier of phone numbers to find information about. This is an array of strings that can be either the PhoneNumberId or PhoneNumberArn.</p>"
+          "documentation":"<p>The unique identifier of phone numbers to find information about. This is an array of strings that can be either the PhoneNumberId or PhoneNumberArn.</p> <important> <p>If you are using a shared AWS End User Messaging SMS and Voice resource then you must use the full Amazon Resource Name(ARN).</p> </important>"
         },
         "Filters":{
           "shape":"PhoneNumberFilterList",
@@ -3254,6 +3336,10 @@
         "MaxResults":{
           "shape":"MaxResults",
           "documentation":"<p>The maximum number of results to return per each request.</p>"
+        },
+        "Owner":{
+          "shape":"Owner",
+          "documentation":"<p>Use <code>SELF</code> to filter the list of phone numbers to ones your account owns or use <code>SHARED</code> to filter on phone numbers shared with your account. The <code>Owner</code> and <code>PhoneNumberIds</code> parameters can't be used at the same time.</p>"
         }
       }
     },
@@ -3275,7 +3361,7 @@
       "members":{
         "PoolIds":{
           "shape":"PoolIdList",
-          "documentation":"<p>The unique identifier of pools to find. This is an array of strings that can be either the PoolId or PoolArn.</p>"
+          "documentation":"<p>The unique identifier of pools to find. This is an array of strings that can be either the PoolId or PoolArn.</p> <important> <p>If you are using a shared AWS End User Messaging SMS and Voice resource then you must use the full Amazon Resource Name(ARN).</p> </important>"
         },
         "Filters":{
           "shape":"PoolFilterList",
@@ -3288,6 +3374,10 @@
         "MaxResults":{
           "shape":"MaxResults",
           "documentation":"<p>The maximum number of results to return per each request.</p>"
+        },
+        "Owner":{
+          "shape":"Owner",
+          "documentation":"<p>Use <code>SELF</code> to filter the list of Pools to ones your account owns or use <code>SHARED</code> to filter on Pools shared with your account. The <code>Owner</code> and <code>PoolIds</code> parameters can't be used at the same time.</p>"
         }
       }
     },
@@ -3651,7 +3741,7 @@
       "members":{
         "SenderIds":{
           "shape":"SenderIdList",
-          "documentation":"<p>An array of SenderIdAndCountry objects to search for.</p>"
+          "documentation":"<p>An array of SenderIdAndCountry objects to search for.</p> <important> <p>If you are using a shared AWS End User Messaging SMS and Voice resource then you must use the full Amazon Resource Name(ARN).</p> </important>"
         },
         "Filters":{
           "shape":"SenderIdFilterList",
@@ -3664,6 +3754,10 @@
         "MaxResults":{
           "shape":"MaxResults",
           "documentation":"<p>The maximum number of results to return per each request.</p>"
+        },
+        "Owner":{
+          "shape":"Owner",
+          "documentation":"<p>Use <code>SELF</code> to filter the list of Sender Ids to ones your account owns or use <code>SHARED</code> to filter on Sender Ids shared with your account. The <code>Owner</code> and <code>SenderIds</code> parameters can't be used at the same time. </p>"
         }
       }
     },
@@ -3781,11 +3875,11 @@
       "members":{
         "PoolId":{
           "shape":"PoolIdOrArn",
-          "documentation":"<p>The unique identifier for the pool to disassociate with the origination identity. This value can be either the PoolId or PoolArn.</p>"
+          "documentation":"<p>The unique identifier for the pool to disassociate with the origination identity. This value can be either the PoolId or PoolArn.</p> <important> <p>If you are using a shared AWS End User Messaging SMS and Voice resource then you must use the full Amazon Resource Name(ARN).</p> </important>"
         },
         "OriginationIdentity":{
           "shape":"PhoneOrSenderIdOrArn",
-          "documentation":"<p>The origination identity to use such as a PhoneNumberId, PhoneNumberArn, SenderId or SenderIdArn. You can use <a>DescribePhoneNumbers</a> find the values for PhoneNumberId and PhoneNumberArn, or use <a>DescribeSenderIds</a> to get the values for SenderId and SenderIdArn.</p>"
+          "documentation":"<p>The origination identity to use such as a PhoneNumberId, PhoneNumberArn, SenderId or SenderIdArn. You can use <a>DescribePhoneNumbers</a> find the values for PhoneNumberId and PhoneNumberArn, or use <a>DescribeSenderIds</a> to get the values for SenderId and SenderIdArn.</p> <important> <p>If you are using a shared AWS End User Messaging SMS and Voice resource then you must use the full Amazon Resource Name(ARN).</p> </important>"
         },
         "IsoCountryCode":{
           "shape":"IsoCountryCode",
@@ -4091,6 +4185,33 @@
         }
       }
     },
+    "GetResourcePolicyRequest":{
+      "type":"structure",
+      "required":["ResourceArn"],
+      "members":{
+        "ResourceArn":{
+          "shape":"AmazonResourceName",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the AWS End User Messaging SMS and Voice resource attached to the resource-based policy.</p>"
+        }
+      }
+    },
+    "GetResourcePolicyResult":{
+      "type":"structure",
+      "members":{
+        "ResourceArn":{
+          "shape":"AmazonResourceName",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the AWS End User Messaging SMS and Voice resource attached to the resource-based policy.</p>"
+        },
+        "Policy":{
+          "shape":"ResourcePolicy",
+          "documentation":"<p>The JSON formatted string that contains the resource-based policy attached to the AWS End User Messaging SMS and Voice resource. </p>"
+        },
+        "CreatedTimestamp":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time when the resource-based policy was created, in <a href=\"https://www.epochconverter.com/\">UNIX epoch time</a> format.</p>"
+        }
+      }
+    },
     "IamRoleArn":{
       "type":"string",
       "max":2048,
@@ -4244,7 +4365,7 @@
       "members":{
         "PoolId":{
           "shape":"PoolIdOrArn",
-          "documentation":"<p>The unique identifier for the pool. This value can be either the PoolId or PoolArn.</p>"
+          "documentation":"<p>The unique identifier for the pool. This value can be either the PoolId or PoolArn.</p> <important> <p>If you are using a shared AWS End User Messaging SMS and Voice resource then you must use the full Amazon Resource Name(ARN).</p> </important>"
         },
         "Filters":{
           "shape":"PoolOriginationIdentitiesFilterList",
@@ -4599,6 +4720,13 @@
     "OriginationIdentityMetadataList":{
       "type":"list",
       "member":{"shape":"OriginationIdentityMetadata"}
+    },
+    "Owner":{
+      "type":"string",
+      "enum":[
+        "SELF",
+        "SHARED"
+      ]
     },
     "PhoneNumber":{
       "type":"string",
@@ -5055,7 +5183,7 @@
       "members":{
         "OriginationIdentity":{
           "shape":"PhoneOrPoolIdOrArn",
-          "documentation":"<p>The origination identity to use such as a PhoneNumberId, PhoneNumberArn, SenderId or SenderIdArn. You can use <a>DescribePhoneNumbers</a> get the values for PhoneNumberId and PhoneNumberArn while <a>DescribeSenderIds</a> can be used to get the values for SenderId and SenderIdArn.</p>"
+          "documentation":"<p>The origination identity to use such as a PhoneNumberId, PhoneNumberArn, SenderId or SenderIdArn. You can use <a>DescribePhoneNumbers</a> get the values for PhoneNumberId and PhoneNumberArn while <a>DescribeSenderIds</a> can be used to get the values for SenderId and SenderIdArn.</p> <important> <p>If you are using a shared AWS End User Messaging SMS and Voice resource then you must use the full Amazon Resource Name(ARN).</p> </important>"
         },
         "Keyword":{
           "shape":"Keyword",
@@ -5105,7 +5233,7 @@
       "members":{
         "OptOutListName":{
           "shape":"OptOutListNameOrArn",
-          "documentation":"<p>The OptOutListName or OptOutListArn to add the phone number to.</p>"
+          "documentation":"<p>The OptOutListName or OptOutListArn to add the phone number to.</p> <important> <p>If you are using a shared AWS End User Messaging SMS and Voice resource then you must use the full Amazon Resource Name(ARN).</p> </important>"
         },
         "OptedOutNumber":{
           "shape":"PhoneNumber",
@@ -5203,6 +5331,40 @@
         "RegistrationAttachmentId":{
           "shape":"String",
           "documentation":"<p>The unique identifier for the registration attachment.</p>"
+        }
+      }
+    },
+    "PutResourcePolicyRequest":{
+      "type":"structure",
+      "required":[
+        "ResourceArn",
+        "Policy"
+      ],
+      "members":{
+        "ResourceArn":{
+          "shape":"AmazonResourceName",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the AWS End User Messaging SMS and Voice resource to attach the resource-based policy to.</p>"
+        },
+        "Policy":{
+          "shape":"ResourcePolicy",
+          "documentation":"<p>The JSON formatted resource-based policy to attach.</p>"
+        }
+      }
+    },
+    "PutResourcePolicyResult":{
+      "type":"structure",
+      "members":{
+        "ResourceArn":{
+          "shape":"AmazonResourceName",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the AWS End User Messaging SMS and Voice resource attached to the resource-based policy.</p>"
+        },
+        "Policy":{
+          "shape":"ResourcePolicy",
+          "documentation":"<p>The JSON formatted Resource Policy.</p>"
+        },
+        "CreatedTimestamp":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time when the resource-based policy was created, in <a href=\"https://www.epochconverter.com/\">UNIX epoch time</a> format.</p>"
         }
       }
     },
@@ -5903,7 +6065,7 @@
       "members":{
         "PhoneNumberId":{
           "shape":"PhoneNumberIdOrArn",
-          "documentation":"<p>The PhoneNumberId or PhoneNumberArn of the phone number to release. You can use <a>DescribePhoneNumbers</a> to get the values for PhoneNumberId and PhoneNumberArn.</p>"
+          "documentation":"<p>The PhoneNumberId or PhoneNumberArn of the phone number to release. You can use <a>DescribePhoneNumbers</a> to get the values for PhoneNumberId and PhoneNumberArn.</p> <important> <p>If you are using a shared AWS End User Messaging SMS and Voice resource then you must use the full Amazon Resource Name(ARN).</p> </important>"
         }
       }
     },
@@ -6061,11 +6223,11 @@
         },
         "OptOutListName":{
           "shape":"OptOutListNameOrArn",
-          "documentation":"<p>The name of the OptOutList to associate with the phone number. You can use the OptOutListName or OptOutListArn.</p>"
+          "documentation":"<p>The name of the OptOutList to associate with the phone number. You can use the OptOutListName or OptOutListArn.</p> <important> <p>If you are using a shared AWS End User Messaging SMS and Voice resource then you must use the full Amazon Resource Name(ARN).</p> </important>"
         },
         "PoolId":{
           "shape":"PoolIdOrArn",
-          "documentation":"<p>The pool to associated with the phone number. You can use the PoolId or PoolArn. </p>"
+          "documentation":"<p>The pool to associated with the phone number. You can use the PoolId or PoolArn. </p> <important> <p>If you are using a shared AWS End User Messaging SMS and Voice resource then you must use the full Amazon Resource Name(ARN).</p> </important>"
         },
         "RegistrationId":{
           "shape":"RegistrationIdOrArn",
@@ -6278,6 +6440,11 @@
       "documentation":"<p>A requested resource couldn't be found.</p>",
       "exception":true
     },
+    "ResourcePolicy":{
+      "type":"string",
+      "max":10000,
+      "min":1
+    },
     "ResourceType":{
       "type":"string",
       "enum":[
@@ -6293,7 +6460,8 @@
         "registration",
         "registration-attachment",
         "verified-destination-number",
-        "protect-configuration"
+        "protect-configuration",
+        "policy"
       ]
     },
     "SectionPath":{
@@ -6386,7 +6554,7 @@
         },
         "OriginationIdentity":{
           "shape":"VerificationMessageOriginationIdentity",
-          "documentation":"<p>The origination identity of the message. This can be either the PhoneNumber, PhoneNumberId, PhoneNumberArn, SenderId, SenderIdArn, PoolId, or PoolArn.</p>"
+          "documentation":"<p>The origination identity of the message. This can be either the PhoneNumber, PhoneNumberId, PhoneNumberArn, SenderId, SenderIdArn, PoolId, or PoolArn.</p> <important> <p>If you are using a shared AWS End User Messaging SMS and Voice resource then you must use the full Amazon Resource Name(ARN).</p> </important>"
         },
         "ConfigurationSetName":{
           "shape":"ConfigurationSetNameOrArn",
@@ -6425,7 +6593,7 @@
         },
         "OriginationIdentity":{
           "shape":"MediaMessageOriginationIdentity",
-          "documentation":"<p>The origination identity of the message. This can be either the PhoneNumber, PhoneNumberId, PhoneNumberArn, SenderId, SenderIdArn, PoolId, or PoolArn.</p>"
+          "documentation":"<p>The origination identity of the message. This can be either the PhoneNumber, PhoneNumberId, PhoneNumberArn, SenderId, SenderIdArn, PoolId, or PoolArn.</p> <important> <p>If you are using a shared AWS End User Messaging SMS and Voice resource then you must use the full Amazon Resource Name(ARN).</p> </important>"
         },
         "MessageBody":{
           "shape":"TextMessageBody",
@@ -6480,7 +6648,7 @@
         },
         "OriginationIdentity":{
           "shape":"TextMessageOriginationIdentity",
-          "documentation":"<p>The origination identity of the message. This can be either the PhoneNumber, PhoneNumberId, PhoneNumberArn, SenderId, SenderIdArn, PoolId, or PoolArn.</p>"
+          "documentation":"<p>The origination identity of the message. This can be either the PhoneNumber, PhoneNumberId, PhoneNumberArn, SenderId, SenderIdArn, PoolId, or PoolArn.</p> <important> <p>If you are using a shared AWS End User Messaging SMS and Voice resource then you must use the full Amazon Resource Name(ARN).</p> </important>"
         },
         "MessageBody":{
           "shape":"TextMessageBody",
@@ -6546,7 +6714,7 @@
         },
         "OriginationIdentity":{
           "shape":"VoiceMessageOriginationIdentity",
-          "documentation":"<p>The origination identity to use for the voice call. This can be the PhoneNumber, PhoneNumberId, PhoneNumberArn, PoolId, or PoolArn.</p>"
+          "documentation":"<p>The origination identity to use for the voice call. This can be the PhoneNumber, PhoneNumberId, PhoneNumberArn, PoolId, or PoolArn.</p> <important> <p>If you are using a shared AWS End User Messaging SMS and Voice resource then you must use the full Amazon Resource Name(ARN).</p> </important>"
         },
         "MessageBody":{
           "shape":"VoiceMessageBody",
@@ -7256,7 +7424,7 @@
       "members":{
         "PhoneNumberId":{
           "shape":"PhoneNumberIdOrArn",
-          "documentation":"<p>The unique identifier of the phone number. Valid values for this field can be either the PhoneNumberId or PhoneNumberArn.</p>"
+          "documentation":"<p>The unique identifier of the phone number. Valid values for this field can be either the PhoneNumberId or PhoneNumberArn.</p> <important> <p>If you are using a shared AWS End User Messaging SMS and Voice resource then you must use the full Amazon Resource Name(ARN).</p> </important>"
         },
         "TwoWayEnabled":{
           "shape":"Boolean",
@@ -7363,7 +7531,7 @@
       "members":{
         "PoolId":{
           "shape":"PoolIdOrArn",
-          "documentation":"<p>The unique identifier of the pool to update. Valid values are either the PoolId or PoolArn.</p>"
+          "documentation":"<p>The unique identifier of the pool to update. Valid values are either the PoolId or PoolArn.</p> <important> <p>If you are using a shared AWS End User Messaging SMS and Voice resource then you must use the full Amazon Resource Name(ARN).</p> </important>"
         },
         "TwoWayEnabled":{
           "shape":"Boolean",
@@ -7383,7 +7551,7 @@
         },
         "OptOutListName":{
           "shape":"OptOutListNameOrArn",
-          "documentation":"<p>The OptOutList to associate with the pool. Valid values are either OptOutListName or OptOutListArn.</p>"
+          "documentation":"<p>The OptOutList to associate with the pool. Valid values are either OptOutListName or OptOutListArn.</p> <important> <p>If you are using a shared AWS End User Messaging SMS and Voice resource then you must use the full Amazon Resource Name(ARN).</p> </important>"
         },
         "SharedRoutesEnabled":{
           "shape":"Boolean",

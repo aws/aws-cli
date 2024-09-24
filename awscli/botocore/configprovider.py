@@ -131,6 +131,12 @@ BOTOCORE_DEFAUT_SESSION_VARIABLES = {
         False,
         utils.ensure_boolean,
     ),
+    'sigv4a_signing_region_set': (
+        'sigv4a_signing_region_set',
+        'AWS_SIGV4A_SIGNING_REGION_SET',
+        None,
+        None,
+    ),
 }
 # A mapping for the s3 specific configuration vars. These are the configuration
 # vars that typically go in the s3 section of the config file. This mapping

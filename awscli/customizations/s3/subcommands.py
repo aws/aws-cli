@@ -1286,11 +1286,13 @@ class CommandParameters(object):
             if self._should_emit_validate_s3_paths_warning():
                 self._emit_validate_s3_paths_warning()
 
+        checksum_algorithm_allowed_paths = ['locals3', 's3s3'] if self.cmd in ['cp', 'sync'] else ['locals3']
+
         if params.get('checksum_algorithm'):
             self._raise_if_paths_type_incorrect_for_param(
                 CHECKSUM_ALGORITHM['name'],
                 params['paths_type'],
-                ['locals3', 's3s3'])
+                checksum_algorithm_allowed_paths)
         if params.get('checksum_mode'):
             self._raise_if_paths_type_incorrect_for_param(
                 CHECKSUM_MODE['name'],

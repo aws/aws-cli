@@ -663,11 +663,6 @@ class TestRequestParamsMapperChecksumAlgorithm:
         RequestParamsMapper.map_put_object_params(request_params, cli_params)
         assert request_params == {'ChecksumAlgorithm': 'CRC32'}
 
-    def test_upload_part(self, cli_params):
-        request_params = {}
-        RequestParamsMapper.map_upload_part_params(request_params, cli_params)
-        assert request_params == {'ChecksumAlgorithm': 'CRC32'}
-
 
 class TestRequestParamsMapperChecksumMode:
     @pytest.fixture

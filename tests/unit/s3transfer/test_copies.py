@@ -98,6 +98,7 @@ class TestCopyPartTask(BaseCopyTaskTest):
         self.upload_id = 'myuploadid'
         self.part_number = 1
         self.result_etag = 'my-etag'
+        self.checksum_sha1 = 'my-checksum_sha1'
 
     def get_copy_task(self, **kwargs):
         default_kwargs = {
@@ -130,6 +131,35 @@ class TestCopyPartTask(BaseCopyTaskTest):
         task = self.get_copy_task()
         self.assertEqual(
             task(), {'PartNumber': self.part_number, 'ETag': self.result_etag}
+        )
+        self.stubber.assert_no_pending_responses()
+
+    def test_main_with_checksum(self):
+        self.stubber.add_response(
+            'upload_part_copy',
+            service_response={
+                'CopyPartResult': {
+                    'ETag': self.result_etag,
+                    'ChecksumSHA1': self.checksum_sha1,
+                }
+            },
+            expected_params={
+                'Bucket': self.bucket,
+                'Key': self.key,
+                'CopySource': self.copy_source,
+                'UploadId': self.upload_id,
+                'PartNumber': self.part_number,
+                'CopySourceRange': self.copy_source_range,
+            },
+        )
+        task = self.get_copy_task(checksum_algorithm="sha1")
+        self.assertEqual(
+            task(),
+            {
+                'PartNumber': self.part_number,
+                'ETag': self.result_etag,
+                'ChecksumSHA1': self.checksum_sha1,
+            },
         )
         self.stubber.assert_no_pending_responses()
 

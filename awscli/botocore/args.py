@@ -214,6 +214,9 @@ class ClientArgsCreator(object):
                 ),
                 user_agent_extra=client_config.user_agent_extra,
                 user_agent_appid=client_config.user_agent_appid,
+                sigv4a_signing_region_set=(
+                    client_config.sigv4a_signing_region_set
+                ),
             )
         self._compute_retry_config(config_kwargs)
         self._compute_request_compression_config(config_kwargs)

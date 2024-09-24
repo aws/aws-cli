@@ -2,6 +2,17 @@
 CHANGELOG
 =========
 
+2.17.58
+=======
+
+* api-change:``pinpoint-sms-voice-v2``: AWS End User Messaging SMS-Voice V2 has added support for resource policies. Use the three new APIs to create, view, edit, and delete resource policies.
+* api-change:``budgets``: Releasing minor partitional endpoint updates
+* api-change:``bedrock``: Add support for Cross Region Inference in Bedrock Model Evaluations.
+* api-change:``kinesis``: This release includes support to add tags when creating a stream
+* api-change:``sagemaker``: Adding `HiddenInstanceTypes` and `HiddenSageMakerImageVersionAliases` attribute to SageMaker API
+* bugfix:copy: Added support for ``ChecksumAlgorithm`` when uploading copy data in parts.
+
+
 2.17.57
 =======
 

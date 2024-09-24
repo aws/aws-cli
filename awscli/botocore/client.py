@@ -15,7 +15,7 @@ import logging
 
 from botocore import UNSIGNED, waiter, xform_name
 from botocore.args import ClientArgsCreator
-from botocore.auth import AUTH_TYPE_MAPS
+from botocore.auth import AUTH_TYPE_MAPS, resolve_auth_type
 from botocore.awsrequest import prepare_request_dict
 from botocore.compress import maybe_compress_request
 from botocore.config import Config
@@ -118,13 +118,17 @@ class ClientCreator(object):
         cls = self._create_client_class(service_name, service_model)
         region_name, client_config = self._normalize_fips_region(
             region_name, client_config)
+        if auth := service_model.metadata.get('auth'):
+            service_signature_version = resolve_auth_type(auth)
+        else:
+            service_signature_version = service_model.metadata.get(
+                'signatureVersion'
+            )
         endpoint_bridge = ClientEndpointBridge(
             self._endpoint_resolver, scoped_config, client_config,
             service_signing_name=service_model.metadata.get('signingName'),
             config_store=self._config_store,
-            service_signature_version=service_model.metadata.get(
-                'signatureVersion'
-            ),
+            service_signature_version=service_signature_version,
         )
         client_args = self._get_client_args(
             service_model, region_name, is_secure, endpoint_url,

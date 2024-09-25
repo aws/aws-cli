@@ -2,6 +2,14 @@
 CHANGELOG
 =========
 
+1.34.27
+=======
+
+* api-change:``cloudtrail``: Doc-only update for CloudTrail network activity events release (in preview)
+* api-change:``ec2``: Updates to documentation for the transit gateway security group referencing feature.
+* api-change:``fsx``: Doc-only update to address Lustre S3 hard-coded names.
+
+
 1.34.26
 =======
 

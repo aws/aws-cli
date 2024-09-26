@@ -258,6 +258,30 @@ class DeployCommand(BasicCommand):
                 ' to resources in the stack if the resource supports it.'
                 ' Syntax: TagKey1=TagValue1 TagKey2=TagValue2 ...'
             )
+        },
+        {
+            'name': 'wait-delay',
+            'required': False,
+            'default': 30,
+            'help_text': (
+                'Delay in seconds to between each call to check wether '
+                'the stack has been created/updated or not'
+            ),
+            'schema': {
+                'type': 'integer'
+            }
+        },
+        {
+            'name': 'wait-max-attempts',
+            'required': False,
+            'default': 120,
+            'help_text': (
+                'Max attempts to check wether the stack has been created/'
+                'updated or not'
+            ),
+            'schema': {
+                'type': 'integer'
+            }
         }
     ]
 
@@ -310,7 +334,10 @@ class DeployCommand(BasicCommand):
         else:
             s3_uploader = None
 
-        deployer = Deployer(cloudformation_client)
+        wait_delay = parsed_args.wait_delay
+        wait_max_attempts = parsed_args.wait_max_attempts
+
+        deployer = Deployer(cloudformation_client, wait_delay, wait_max_attempts)
         return self.deploy(deployer, stack_name, template_str,
                            parameters, parsed_args.capabilities,
                            parsed_args.execute_changeset, parsed_args.role_arn,

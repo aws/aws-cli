@@ -29,4 +29,4 @@ Output::
         ]
     }
 
-To monitor the pending change and to view the modified attributes of an elastic IP address, see `describe-addresses-attribute <https://docs.aws.amazon.com/cli/latest/reference/ec2/describe-addresses-attribute.html>`__ in the *AWS CLI Command Reference*.
+To monitor the pending change and to view the modified attributes of an elastic IP address, see `describe-addresses-attribute <https://awscli.amazonaws.com/v2/documentation/api/latest/reference/ec2/describe-addresses-attribute.html>`__ in the *AWS CLI Command Reference*.

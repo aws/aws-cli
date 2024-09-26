@@ -15,6 +15,6 @@ Output::
         "OperationId": "f1691ec4-0e7a-489e-82e0-b19d3example"
     }
 
-To confirm that the operation succeeded, you can run `get-domain-detail <https://docs.aws.amazon.com/cli/latest/reference/route53domains/get-domain-detail.html>`__ .
+To confirm that the operation succeeded, you can run `get-domain-detail <https://awscli.amazonaws.com/v2/documentation/api/latest/reference/route53domains/get-domain-detail.html>`__ .
 
 For more information, see `Adding or Changing Name Servers and Glue Records for a Domain <https://docs.aws.amazon.com/Route53/latest/DeveloperGuide/domain-name-servers-glue-records.html>`__ in the *Amazon Route 53 Developer Guide*.

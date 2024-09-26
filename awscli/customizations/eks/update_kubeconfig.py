@@ -77,6 +77,11 @@ class UpdateKubeconfigCommand(BasicCommand):
             'required': False
         },
         {
+            'name': 'external-id',
+            'help_text': ("The external ID to use when assuming IAM role."),
+            'required': False
+        },
+        {
             'name': 'dry-run',
             'action': 'store_true',
             'default': False,
@@ -330,6 +335,12 @@ class EKSClient(object):
             generated_user["user"]["exec"]["args"].extend([
                 "--role",
                 self._parsed_args.role_arn
+            ])
+
+        if self._parsed_args.external_id is not None:
+            generated_user["user"]["exec"]["args"].extend([
+                "--external-id",
+                self._parsed_args.external_id
             ])
 
         if self._session.profile:

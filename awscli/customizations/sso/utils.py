@@ -24,6 +24,7 @@ from botocore.exceptions import AuthCodeFetcherError
 from botocore.utils import SSOTokenFetcher, SSOTokenFetcherAuth
 from botocore.utils import original_ld_library_path
 
+from awscli.customizations.assumerole import CACHE_DIR as AWS_CREDS_CACHE_DIR
 from awscli.customizations.commands import BasicCommand
 from awscli.customizations.exceptions import ConfigurationError
 from awscli.customizations.utils import uni_print

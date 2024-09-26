@@ -78,6 +78,11 @@ class CreateCluster(Command):
          'help_text': helptext.TERMINATION_PROTECTED},
         {'name': 'no-termination-protected', 'action': 'store_true',
          'group_name': 'termination_protected'},
+        {'name': 'unhealthy-node-replacement', 'action': 'store_true',
+        'group_name': 'unhealthy_node_replacement',
+        'help_text': helptext.UNHEALTHY_NODE_REPLACEMENT},
+        {'name': 'no-unhealthy-node-replacement', 'action': 'store_true',
+        'group_name': 'unhealthy_node_replacement'},
         {'name': 'scale-down-behavior',
          'help_text': helptext.SCALE_DOWN_BEHAVIOR},
         {'name': 'visible-to-all-users', 'action': 'store_true',
@@ -116,6 +121,10 @@ class CreateCluster(Command):
          'help_text' : helptext.CUSTOM_AMI_ID},
         {'name': 'ebs-root-volume-size',
          'help_text' : helptext.EBS_ROOT_VOLUME_SIZE},
+        {'name': 'ebs-root-volume-iops',
+         'help_text' : helptext.EBS_ROOT_VOLUME_IOPS},
+        {'name': 'ebs-root-volume-throughput',
+         'help_text' : helptext.EBS_ROOT_VOLUME_THROUGHPUT},
         {'name': 'repo-upgrade-on-boot',
          'help_text' : helptext.REPO_UPGRADE_ON_BOOT},
         {'name': 'kerberos-attributes',
@@ -190,9 +199,11 @@ class CreateCluster(Command):
                     raise ValueError('aws: error: invalid json argument for '
                                      'option --configurations')
 
-        if (parsed_args.release_label is None and
-                parsed_args.ami_version is not None):
-            is_valid_ami_version = re.match('\d?\..*', parsed_args.ami_version)
+        if (
+            parsed_args.release_label is None
+            and parsed_args.ami_version is not None
+        ):
+            is_valid_ami_version = re.match(r'\d?\..*', parsed_args.ami_version)
             if is_valid_ami_version is None:
                 raise exceptions.InvalidAmiVersionError(
                     ami_version=parsed_args.ami_version)
@@ -246,6 +257,14 @@ class CreateCluster(Command):
                 '--termination-protected',
                 parsed_args.no_termination_protected,
                 '--no-termination-protected')
+        
+        if (parsed_args.unhealthy_node_replacement or parsed_args.no_unhealthy_node_replacement):
+            instances_config['UnhealthyNodeReplacement'] = \
+            emrutils.apply_boolean_options(
+                parsed_args.unhealthy_node_replacement,
+                '--unhealthy-node-replacement',
+                parsed_args.no_unhealthy_node_replacement,
+                '--no-unhealthy-node-replacement')
 
         if (parsed_args.visible_to_all_users is False and
                 parsed_args.no_visible_to_all_users is False):
@@ -342,6 +361,14 @@ class CreateCluster(Command):
         if parsed_args.ebs_root_volume_size is not None:
             emrutils.apply_dict(
                 params, 'EbsRootVolumeSize', int(parsed_args.ebs_root_volume_size)
+            )
+        if parsed_args.ebs_root_volume_iops is not None:
+            emrutils.apply_dict(
+                params, 'EbsRootVolumeIops', int(parsed_args.ebs_root_volume_iops)
+            )
+        if parsed_args.ebs_root_volume_throughput is not None:
+            emrutils.apply_dict(
+                params, 'EbsRootVolumeThroughput', int(parsed_args.ebs_root_volume_throughput)
             )
 
         if parsed_args.repo_upgrade_on_boot is not None:

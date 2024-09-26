@@ -1,42 +1,45 @@
 # Copyright 2012-2013 Amazon.com, Inc. or its affiliates. All Rights Reserved.
-
+#
 # Licensed under the Apache License, Version 2.0 (the "License"). You
 # may not use this file except in compliance with the License. A copy of
 # the License is located at
-
+#
 #     http://aws.amazon.com/apache2.0/
-
+#
 # or in the "license" file accompanying this file. This file is
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
-import sys
-import re
-import shlex
+
+import collections.abc as collections_abc
+import contextlib
+import io
+import locale
 import os
 import os.path
-import platform
-import zipfile
+import queue
+import re
+import shlex
 import signal
-import contextlib
+import urllib.parse as urlparse
 from configparser import RawConfigParser
+from urllib.error import URLError
+from urllib.request import urlopen
 
-from botocore.compat import six
-#import botocore.compat
+from botocore.compat import six, OrderedDict
 
-from botocore.compat import OrderedDict
+import sys
+import zipfile
+from functools import partial
 
-# If you ever want to import from the vendored six. Add it here and then
-# import from awscli.compat. Also try to keep it in alphabetical order.
-# This may get large.
-advance_iterator = six.advance_iterator
-PY3 = six.PY3
-queue = six.moves.queue
-shlex_quote = six.moves.shlex_quote
-StringIO = six.StringIO
-BytesIO = six.BytesIO
-urlopen = six.moves.urllib.request.urlopen
-binary_type = six.binary_type
+# Backwards compatible definitions from six
+PY3 = sys.version_info[0] == 3
+advance_iterator = next
+shlex_quote = shlex.quote
+StringIO = io.StringIO
+BytesIO = io.BytesIO
+binary_type = bytes
+raw_input = input
 
 
 # Most, but not all, python installations will have zlib. This is required to
@@ -44,6 +47,7 @@ binary_type = six.binary_type
 # package the files in a zip container.
 try:
     import zlib
+
     ZIP_COMPRESSION_MODE = zipfile.ZIP_DEFLATED
 except ImportError:
     ZIP_COMPRESSION_MODE = zipfile.ZIP_STORED
@@ -57,6 +61,8 @@ except ImportError:
 
 is_windows = sys.platform == 'win32'
 
+is_macos = sys.platform == 'darwin'
+
 
 if is_windows:
     default_pager = 'more'
@@ -66,14 +72,12 @@ else:
 
 class StdinMissingError(Exception):
     def __init__(self):
-        message = (
-            'stdin is required for this operation, but is not available.'
-        )
+        message = 'stdin is required for this operation, but is not available.'
         super(StdinMissingError, self).__init__(message)
 
 
-class NonTranslatedStdout(object):
-    """ This context manager sets the line-end translation mode for stdout.
+class NonTranslatedStdout:
+    """This context manager sets the line-end translation mode for stdout.
 
     It is deliberately set to binary mode so that `\r` does not get added to
     the line ending. This can be useful when printing commands where a
@@ -83,128 +87,73 @@ class NonTranslatedStdout(object):
     def __enter__(self):
         if sys.platform == "win32":
             import msvcrt
-            self.previous_mode = msvcrt.setmode(sys.stdout.fileno(),
-                                                os.O_BINARY)
+
+            self.previous_mode = msvcrt.setmode(
+                sys.stdout.fileno(), os.O_BINARY
+            )
         return sys.stdout
 
     def __exit__(self, type, value, traceback):
         if sys.platform == "win32":
             import msvcrt
+
             msvcrt.setmode(sys.stdout.fileno(), self.previous_mode)
 
 
 def ensure_text_type(s):
-    if isinstance(s, six.text_type):
+    if isinstance(s, str):
         return s
-    if isinstance(s, six.binary_type):
+    if isinstance(s, bytes):
         return s.decode('utf-8')
     raise ValueError("Expected str, unicode or bytes, received %s." % type(s))
 
 
-if six.PY3:
-    import collections.abc as collections_abc
-    import locale
-    import urllib.parse as urlparse
+def get_binary_stdin():
+    if sys.stdin is None:
+        raise StdinMissingError()
+    return sys.stdin.buffer
 
-    from urllib.error import URLError
 
-    raw_input = input
+def get_binary_stdout():
+    return sys.stdout.buffer
 
-    def get_binary_stdin():
-        if sys.stdin is None:
-            raise StdinMissingError()
-        return sys.stdin.buffer
 
-    def get_binary_stdout():
-        return sys.stdout.buffer
+def _get_text_writer(stream, errors):
+    return stream
 
-    def _get_text_writer(stream, errors):
-        return stream
 
-    def compat_open(filename, mode='r', encoding=None):
-        """Back-port open() that accepts an encoding argument.
+def bytes_print(statement, stdout=None):
+    """
+    This function is used to write raw bytes to stdout.
+    """
+    if stdout is None:
+        stdout = sys.stdout
 
-        In python3 this uses the built in open() and in python2 this
-        uses the io.open() function.
+    if getattr(stdout, 'buffer', None):
+        stdout.buffer.write(statement)
+    else:
+        # If it is not possible to write to the standard out buffer.
+        # The next best option is to decode and write to standard out.
+        stdout.write(statement.decode('utf-8'))
 
-        If the file is not being opened in binary mode, then we'll
-        use locale.getpreferredencoding() to find the preferred
-        encoding.
 
-        """
-        if 'b' not in mode:
-            encoding = locale.getpreferredencoding()
-        return open(filename, mode, encoding=encoding)
+def compat_open(filename, mode='r', encoding=None, access_permissions=None):
+    """Back-port open() that accepts an encoding argument.
 
-    def bytes_print(statement, stdout=None):
-        """
-        This function is used to write raw bytes to stdout.
-        """
-        if stdout is None:
-            stdout = sys.stdout
+    In python3 this uses the built in open() and in python2 this
+    uses the io.open() function.
 
-        if getattr(stdout, 'buffer', None):
-            stdout.buffer.write(statement)
-        else:
-            # If it is not possible to write to the standard out buffer.
-            # The next best option is to decode and write to standard out.
-            stdout.write(statement.decode('utf-8'))
+    If the file is not being opened in binary mode, then we'll
+    use locale.getpreferredencoding() to find the preferred
+    encoding.
 
-else:
-    import codecs
-    import collections as collections_abc
-    import locale
-    import io
-    import urlparse
-
-    from urllib2 import URLError
-
-    raw_input = raw_input
-
-    def get_binary_stdin():
-        if sys.stdin is None:
-            raise StdinMissingError()
-        return sys.stdin
-
-    def get_binary_stdout():
-        return sys.stdout
-
-    def _get_text_writer(stream, errors):
-        # In python3, all the sys.stdout/sys.stderr streams are in text
-        # mode.  This means they expect unicode, and will encode the
-        # unicode automatically before actually writing to stdout/stderr.
-        # In python2, that's not the case.  In order to provide a consistent
-        # interface, we can create a wrapper around sys.stdout that will take
-        # unicode, and automatically encode it to the preferred encoding.
-        # That way consumers can just call get_text_writer(stream) and write
-        # unicode to the returned stream.  Note that get_text_writer
-        # just returns the stream in the PY3 section above because python3
-        # handles this.
-
-        # We're going to use the preferred encoding, but in cases that there is
-        # no preferred encoding we're going to fall back to assuming ASCII is
-        # what we should use. This will currently break the use of
-        # PYTHONIOENCODING, which would require checking stream.encoding first,
-        # however, the existing behavior is to only use
-        # locale.getpreferredencoding() and so in the hope of not breaking what
-        # is currently working, we will continue to only use that.
+    """
+    opener = os.open
+    if access_permissions is not None:
+        opener = partial(os.open, mode=access_permissions)
+    if 'b' not in mode:
         encoding = locale.getpreferredencoding()
-        if encoding is None:
-            encoding = "ascii"
-
-        return codecs.getwriter(encoding)(stream, errors)
-
-    def compat_open(filename, mode='r', encoding=None):
-        # See docstring for compat_open in the PY3 section above.
-        if 'b' not in mode:
-            encoding = locale.getpreferredencoding()
-        return io.open(filename, mode, encoding=encoding)
-
-    def bytes_print(statement, stdout=None):
-        if stdout is None:
-            stdout = sys.stdout
-
-        stdout.write(statement)
+    return open(filename, mode, encoding=encoding, opener=opener)
 
 
 def get_stdout_text_writer():
@@ -213,6 +162,13 @@ def get_stdout_text_writer():
 
 def get_stderr_text_writer():
     return _get_text_writer(sys.stderr, errors="replace")
+
+
+def get_stderr_encoding():
+    encoding = getattr(sys.__stderr__, 'encoding', None)
+    if encoding is None:
+        encoding = 'utf-8'
+    return encoding
 
 
 def compat_input(prompt):
@@ -244,7 +200,7 @@ def compat_shell_quote(s, platform=None):
     if platform == "win32":
         return _windows_shell_quote(s)
     else:
-        return shlex_quote(s)
+        return shlex.quote(s)
 
 
 def _windows_shell_quote(s):
@@ -356,12 +312,12 @@ try:
     from platform import linux_distribution
 except ImportError:
     _UNIXCONFDIR = '/etc'
-    def _dist_try_harder(distname, version, id):
 
-        """ Tries some special tricks to get the distribution
-            information in case the default method fails.
-            Currently supports older SuSE Linux, Caldera OpenLinux and
-            Slackware Linux distributions.
+    def _dist_try_harder(distname, version, id):
+        """Tries some special tricks to get the distribution
+        information in case the default method fails.
+        Currently supports older SuSE Linux, Caldera OpenLinux and
+        Slackware Linux distributions.
         """
         if os.path.exists('/var/adm/inst-log/info'):
             # SuSE Linux stores distribution information in that file
@@ -393,7 +349,7 @@ except ImportError:
         if os.path.isdir('/usr/lib/setup'):
             # Check for slackware version tag file (thanks to Greg Andruk)
             verfiles = os.listdir('/usr/lib/setup')
-            for n in range(len(verfiles)-1, -1, -1):
+            for n in range(len(verfiles) - 1, -1, -1):
                 if verfiles[n][:14] != 'slack-version-':
                     del verfiles[n]
             if verfiles:
@@ -405,14 +361,13 @@ except ImportError:
         return distname, version, id
 
     _release_filename = re.compile(r'(\w+)[-_](release|version)', re.ASCII)
-    _lsb_release_version = re.compile(r'(.+)'
-                                      r' release '
-                                      r'([\d.]+)'
-                                      r'[^(]*(?:\((.+)\))?', re.ASCII)
-    _release_version = re.compile(r'([^0-9]+)'
-                                  r'(?: release )?'
-                                  r'([\d.]+)'
-                                  r'[^(]*(?:\((.+)\))?', re.ASCII)
+    _lsb_release_version = re.compile(
+        r'(.+) release ([\d.]+)[^(]*(?:\((.+)\))?', re.ASCII
+    )
+    _release_version = re.compile(
+        r'([^0-9]+)(?: release )?([\d.]+)[^(]*(?:\((.+)\))?',
+        re.ASCII,
+    )
 
     # See also http://www.novell.com/coolsolutions/feature/11251.html
     # and http://linuxmafia.com/faq/Admin/release-files.html
@@ -420,12 +375,24 @@ except ImportError:
     # and http://www.die.net/doc/linux/man/man1/lsb_release.1.html
 
     _supported_dists = (
-        'SuSE', 'debian', 'fedora', 'redhat', 'centos',
-        'mandrake', 'mandriva', 'rocks', 'slackware', 'yellowdog', 'gentoo',
-        'UnitedLinux', 'turbolinux', 'arch', 'mageia')
+        'SuSE',
+        'debian',
+        'fedora',
+        'redhat',
+        'centos',
+        'mandrake',
+        'mandriva',
+        'rocks',
+        'slackware',
+        'yellowdog',
+        'gentoo',
+        'UnitedLinux',
+        'turbolinux',
+        'arch',
+        'mageia',
+    )
 
     def _parse_release_file(firstline):
-
         # Default to empty 'version' and 'id' strings.  Both defaults are used
         # when 'firstline' is empty.  'id' defaults to empty when an id can not
         # be deduced.
@@ -451,38 +418,43 @@ except ImportError:
                 id = l[1]
         return '', version, id
 
-    _distributor_id_file_re = re.compile("(?:DISTRIB_ID\s*=)\s*(.*)", re.I)
-    _release_file_re = re.compile("(?:DISTRIB_RELEASE\s*=)\s*(.*)", re.I)
-    _codename_file_re = re.compile("(?:DISTRIB_CODENAME\s*=)\s*(.*)", re.I)
+    _distributor_id_file_re = re.compile(r"(?:DISTRIB_ID\s*=)\s*(.*)", re.I)
+    _release_file_re = re.compile(r"(?:DISTRIB_RELEASE\s*=)\s*(.*)", re.I)
+    _codename_file_re = re.compile(r"(?:DISTRIB_CODENAME\s*=)\s*(.*)", re.I)
 
-    def linux_distribution(distname='', version='', id='',
-                           supported_dists=_supported_dists,
-                           full_distribution_name=1):
-        return _linux_distribution(distname, version, id, supported_dists,
-                                   full_distribution_name)
+    def linux_distribution(
+        distname='',
+        version='',
+        id='',
+        supported_dists=_supported_dists,
+        full_distribution_name=1,
+    ):
+        return _linux_distribution(
+            distname, version, id, supported_dists, full_distribution_name
+        )
 
-    def _linux_distribution(distname, version, id, supported_dists,
-                            full_distribution_name):
-
-        """ Tries to determine the name of the Linux OS distribution name.
-            The function first looks for a distribution release file in
-            /etc and then reverts to _dist_try_harder() in case no
-            suitable files are found.
-            supported_dists may be given to define the set of Linux
-            distributions to look for. It defaults to a list of currently
-            supported Linux distributions identified by their release file
-            name.
-            If full_distribution_name is true (default), the full
-            distribution read from the OS is returned. Otherwise the short
-            name taken from supported_dists is used.
-            Returns a tuple (distname, version, id) which default to the
-            args given as parameters.
+    def _linux_distribution(
+        distname, version, id, supported_dists, full_distribution_name
+    ):
+        """Tries to determine the name of the Linux OS distribution name.
+        The function first looks for a distribution release file in
+        /etc and then reverts to _dist_try_harder() in case no
+        suitable files are found.
+        supported_dists may be given to define the set of Linux
+        distributions to look for. It defaults to a list of currently
+        supported Linux distributions identified by their release file
+        name.
+        If full_distribution_name is true (default), the full
+        distribution read from the OS is returned. Otherwise the short
+        name taken from supported_dists is used.
+        Returns a tuple (distname, version, id) which default to the
+        args given as parameters.
         """
         # check for the Debian/Ubuntu /etc/lsb-release file first, needed so
         # that the distribution doesn't get identified as Debian.
         # https://bugs.python.org/issue9514
         try:
-            with open("/etc/lsb-release", "r") as etclsbrel:
+            with open("/etc/lsb-release") as etclsbrel:
                 for line in etclsbrel:
                     m = _distributor_id_file_re.search(line)
                     if m:
@@ -495,8 +467,8 @@ except ImportError:
                         _u_id = m.group(1).strip()
                 if _u_distname and _u_version:
                     return (_u_distname, _u_version, _u_id)
-        except (EnvironmentError, UnboundLocalError):
-                pass
+        except (OSError, UnboundLocalError):
+            pass
 
         try:
             etc = os.listdir(_UNIXCONFDIR)
@@ -515,8 +487,11 @@ except ImportError:
             return _dist_try_harder(distname, version, id)
 
         # Read the first line
-        with open(os.path.join(_UNIXCONFDIR, file), 'r',
-                  encoding='utf-8', errors='surrogateescape') as f:
+        with open(
+            os.path.join(_UNIXCONFDIR, file),
+            encoding='utf-8',
+            errors='surrogateescape',
+        ) as f:
             firstline = f.readline()
         _distname, _version, _id = _parse_release_file(firstline)
 

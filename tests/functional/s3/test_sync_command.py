@@ -12,8 +12,8 @@
 # language governing permissions and limitations under the License.
 import os
 
-from awscli.compat import six
-from awscli.testutils import mock
+from awscli.testutils import mock, cd
+from awscli.compat import BytesIO
 from tests.functional.s3 import BaseS3TransferCommandTest
 
 
@@ -65,7 +65,7 @@ class TestSyncCommand(BaseS3TransferCommandTest):
                 {"Key": key, "Size": 3,
                  "LastModified": "2014-01-09T20:45:49.000Z"}]},
             {'ETag': '"c8afdb36c52cf4727836669019e69222-"',
-             'Body': six.BytesIO(b'foo')}
+             'Body': BytesIO(b'foo')}
         ]
         self.run_cmd(cmdline, expected_rc=0)
         # Make sure the file now exists.
@@ -83,7 +83,7 @@ class TestSyncCommand(BaseS3TransferCommandTest):
                 ],
                 'CommonPrefixes': []
             },
-            {'ETag': '"foo-1"', 'Body': six.BytesIO(b'foo')},
+            {'ETag': '"foo-1"', 'Body': BytesIO(b'foo')},
         ]
         cmdline = '%s s3://bucket/foo %s --force-glacier-transfer' % (
             self.prefix, self.files.rootdir)
@@ -287,3 +287,41 @@ class TestSyncCommand(BaseS3TransferCommandTest):
                 self.get_object_request(accesspoint_arn, 'mykey')
             ]
         )
+
+
+class TestSyncCommandWithS3Express(BaseS3TransferCommandTest):
+
+    prefix = 's3 sync '
+
+    def test_incompatible_with_sync_upload(self):
+        cmdline = '%s %s s3://testdirectorybucket--usw2-az1--x-s3/' % (self.prefix, self.files.rootdir)
+        stderr = self.run_cmd(cmdline, expected_rc=255)[1]
+        self.assertIn('Cannot use sync command with a directory bucket.', stderr)
+
+    def test_incompatible_with_sync_download(self):
+        cmdline = '%s s3://testdirectorybucket--usw2-az1--x-s3/ %s' % (self.prefix, self.files.rootdir)
+        stderr = self.run_cmd(cmdline, expected_rc=255)[1]
+        self.assertIn('Cannot use sync command with a directory bucket.', stderr)
+
+    def test_incompatible_with_sync_copy(self):
+        cmdline = '%s s3://bucket/ s3://testdirectorybucket--usw2-az1--x-s3/' % self.prefix
+        stderr = self.run_cmd(cmdline, expected_rc=255)[1]
+        self.assertIn('Cannot use sync command with a directory bucket.', stderr)
+
+    def test_incompatible_with_sync_with_delete(self):
+        cmdline = '%s s3://bucket/ s3://testdirectorybucket--usw2-az1--x-s3/ --delete' % self.prefix
+        stderr = self.run_cmd(cmdline, expected_rc=255)[1]
+        self.assertIn('Cannot use sync command with a directory bucket.', stderr)
+
+    def test_compatible_with_sync_with_local_directory_like_directory_bucket(self):
+        self.parsed_responses = [
+            {'Contents': []}
+        ]
+
+        cmdline = '%s s3://bucket/ testdirectorybucket--usw2-az1--x-s3/' % self.prefix
+        with cd(self.files.rootdir):
+            _, stderr, _ = self.run_cmd(cmdline)
+
+        # Just asserting that command validated and made an API call
+        self.assertEqual(len(self.operations_called), 1)
+        self.assertEqual(self.operations_called[0][0].name, 'ListObjectsV2')

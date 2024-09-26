@@ -10,7 +10,6 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
-from awscli.compat import six
 
 
 def format_text(data, stream):
@@ -25,7 +24,7 @@ def _format_text(item, stream, identifier=None, scalar_keys=None):
     else:
         # If it's not a list or a dict, we just write the scalar
         # value out directly.
-        stream.write(six.text_type(item))
+        stream.write(str(item))
         stream.write('\n')
 
 
@@ -35,15 +34,18 @@ def _format_list(item, identifier, stream):
     if any(isinstance(el, dict) for el in item):
         all_keys = _all_scalar_keys(item)
         for element in item:
-            _format_text(element, stream=stream, identifier=identifier,
-                         scalar_keys=all_keys)
+            _format_text(
+                element,
+                stream=stream,
+                identifier=identifier,
+                scalar_keys=all_keys,
+            )
     elif any(isinstance(el, list) for el in item):
         scalar_elements, non_scalars = _partition_list(item)
         if scalar_elements:
             _format_scalar_list(scalar_elements, identifier, stream)
         for non_scalar in non_scalars:
-            _format_text(non_scalar, stream=stream,
-                         identifier=identifier)
+            _format_text(non_scalar, stream=stream, identifier=identifier)
     else:
         _format_scalar_list(item, identifier, stream)
 
@@ -62,11 +64,10 @@ def _partition_list(item):
 def _format_scalar_list(elements, identifier, stream):
     if identifier is not None:
         for item in elements:
-            stream.write('%s\t%s\n' % (identifier.upper(),
-                                       item))
+            stream.write(f'{identifier.upper()}\t{item}\n')
     else:
         # For a bare list, just print the contents.
-        stream.write('\t'.join([six.text_type(item) for item in elements]))
+        stream.write('\t'.join([str(item) for item in elements]))
         stream.write('\n')
 
 
@@ -78,8 +79,7 @@ def _format_dict(scalar_keys, item, identifier, stream):
         stream.write('\t'.join(scalars))
         stream.write('\n')
     for new_identifier, non_scalar in non_scalars:
-        _format_text(item=non_scalar, stream=stream,
-                     identifier=new_identifier)
+        _format_text(item=non_scalar, stream=stream, identifier=new_identifier)
 
 
 def _all_scalar_keys(list_of_dicts):
@@ -107,10 +107,10 @@ def _partition_dict(item_dict, scalar_keys):
             if isinstance(value, (dict, list)):
                 non_scalar.append((key, value))
             else:
-                scalar.append(six.text_type(value))
+                scalar.append(str(value))
     else:
         for key in scalar_keys:
-            scalar.append(six.text_type(item_dict.get(key, '')))
+            scalar.append(str(item_dict.get(key, '')))
         remaining_keys = sorted(set(item_dict.keys()) - set(scalar_keys))
         for remaining_key in remaining_keys:
             non_scalar.append((remaining_key, item_dict[remaining_key]))

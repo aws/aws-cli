@@ -13,7 +13,6 @@
 # language governing permissions and limitations under the License.
 import sys
 
-from awscli.compat import six
 from awscli.testutils import unittest
 from awscli.testutils import BaseAWSCommandParamsTest
 
@@ -28,18 +27,4 @@ class TestCreateTags(BaseAWSCommandParamsTest):
         result = {
             'Resources': ['i-12345678'],
             'Tags': [{'Key': 'Name', 'Value': 'bar'}]}
-        self.assert_params_for_cmd(cmdline, result)
-
-    @unittest.skipIf(
-        six.PY3, 'Unicode cmd line test only is relevant to python2.')
-    def test_create_tag_unicode(self):
-        cmdline = self.prefix
-        cmdline += u' --resources i-12345678 --tags Key=Name,Value=\u6211'
-        encoding = getattr(sys.stdin, 'encoding', 'utf-8')
-        if encoding is None:
-            encoding = 'utf-8'
-        cmdline = cmdline.encode(encoding)
-        result = {
-            'Resources': ['i-12345678'],
-            'Tags': [{'Key': 'Name', 'Value': u'\u6211'}]}
         self.assert_params_for_cmd(cmdline, result)

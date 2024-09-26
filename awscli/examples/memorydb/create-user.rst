@@ -1,4 +1,4 @@
-**To creat a user**
+**To create a user**
 
 The following ``create-user`` example creates a new user. ::
 

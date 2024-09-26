@@ -15,38 +15,37 @@ import signal
 
 import pytest
 
-from botocore.compat import six
-
 from awscli.compat import ensure_text_type
 from awscli.compat import compat_shell_quote
+from awscli.compat import compat_open
 from awscli.compat import get_popen_kwargs_for_pager_cmd
 from awscli.compat import ignore_user_entered_signals
-from awscli.testutils import mock, unittest, skip_if_windows
+from awscli.testutils import mock, unittest, skip_if_windows, FileCreator
 
 
 class TestEnsureText(unittest.TestCase):
     def test_string(self):
         value = 'foo'
         response = ensure_text_type(value)
-        self.assertIsInstance(response, six.text_type)
+        self.assertIsInstance(response, str)
         self.assertEqual(response, 'foo')
 
     def test_binary(self):
         value = b'bar'
         response = ensure_text_type(value)
-        self.assertIsInstance(response, six.text_type)
+        self.assertIsInstance(response, str)
         self.assertEqual(response, 'bar')
 
     def test_unicode(self):
         value = u'baz'
         response = ensure_text_type(value)
-        self.assertIsInstance(response, six.text_type)
+        self.assertIsInstance(response, str)
         self.assertEqual(response, 'baz')
 
     def test_non_ascii(self):
         value = b'\xe2\x9c\x93'
         response = ensure_text_type(value)
-        self.assertIsInstance(response, six.text_type)
+        self.assertIsInstance(response, str)
         self.assertEqual(response, u'\u2713')
 
     def test_non_string_or_bytes_raises_error(self):
@@ -152,3 +151,28 @@ class TestIgnoreUserSignals(unittest.TestCase):
         with ignore_user_entered_signals():
             self.assertEqual(signal.getsignal(signal.SIGTSTP), signal.SIG_IGN)
             os.kill(os.getpid(), signal.SIGTSTP)
+
+
+class TestCompatOpenWithAccessPermissions(unittest.TestCase):
+    def setUp(self):
+        self.files = FileCreator()
+
+    def tearDown(self):
+        self.files.remove_all()
+
+    @skip_if_windows('Permissions tests only supported on mac/linux')
+    def test_can_create_file_with_acess_permissions(self):
+        file_path = os.path.join(self.files.rootdir, "foo_600.txt")
+        with compat_open(file_path, access_permissions=0o600, mode='w') as f:
+            f.write('bar')
+        self.assertEqual(os.stat(file_path).st_mode & 0o777, 0o600)
+
+    def test_not_override_existing_file_access_permissions(self):
+        file_path = os.path.join(self.files.rootdir, "foo.txt")
+        with open(file_path, mode='w') as f:
+            f.write('bar')
+        expected_st_mode = os.stat(file_path).st_mode
+
+        with compat_open(file_path, access_permissions=0o600, mode='w') as f:
+            f.write('bar')
+        self.assertEqual(os.stat(file_path).st_mode, expected_st_mode)

@@ -4,7 +4,7 @@ The following ``delete-domain-configuration`` example deletes a domain configura
 
     aws iot delete-domain-configuration \
         --domain-configuration-name "additionalDataDomain" \
-        --domain-configuration-status "DISABLED"
+        --domain-configuration-status "OK"
 
 This command produces no output.
 

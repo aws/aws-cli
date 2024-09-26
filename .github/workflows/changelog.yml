@@ -1,0 +1,68 @@
+name: Generate changelog
+
+on:
+  workflow_dispatch:
+    inputs:
+
+      ref:
+        description: |
+          Branch or ref to clone. This is where the changelog will be added and
+          ultimately committed.
+        required: true
+
+      type:
+        type: choice
+        options:
+          - enhancement
+          - bugfix
+          - api-change
+        description: |
+          Type should be one of: feature, bugfix, enhancement, api-change
+          feature: A larger feature or change in behavior, usually resulting in a
+                   minor version bump.
+          bugfix: Fixing a bug in an existing code path.
+          enhancement: Small change to an underlying implementation detail.
+          api-change: Changes to a modeled API.
+        required: true
+
+      category:
+        description: |
+          Category is the high level feature area.
+          This can be a service identifier (e.g ``s3``),
+          or something like: Paginator.
+        required: true
+
+      description:
+        description: |
+          A brief description of the change.  You can
+          use github style references to issues such as
+          "fixes #489", "boto/boto3#100", etc.  These
+          will get automatically replaced with the correct
+          link.
+        required: true
+
+jobs:
+  add-changelog:
+    runs-on: Ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v4
+      with:
+        ref: ${{ github.event.inputs.ref }}
+
+    - name: Set up Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v5
+      with:
+        python-version: "3.11"
+    - name: Create changelog
+      run: |
+        python scripts/new-change -t '${{ github.event.inputs.type }}' -c '${{ github.event.inputs.category }}' -d '${{ github.event.inputs.description }}'
+    - name: Commit and push changelog entry
+      run: |
+        git config --global user.name "Github Actions"
+        git config --global user.email "<>"
+        git fetch
+        git add .changes
+        git commit -m "Add changelog entry"
+        git pull --rebase
+        git push

@@ -11,7 +11,6 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 import tempfile
-import six
 import collections
 
 from awscli.testutils import mock, unittest

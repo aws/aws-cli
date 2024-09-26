@@ -23,8 +23,8 @@ Output::
             "fromAttachedDisks": [],
             "fromInstanceName": "MEAN-1",
             "fromInstanceArn": "arn:aws:lightsail:us-west-2:111122223333:Instance/bd470fc5-a68b-44c5-8dbc-8EXAMPLEbada",
-            "fromBlueprintId": "mean_4_0_9",
-            "fromBundleId": "medium_2_0",
+            "fromBlueprintId": "mean",
+            "fromBundleId": "medium_3_0",
             "isFromAutoSnapshot": false,
             "sizeInGb": 80
         }

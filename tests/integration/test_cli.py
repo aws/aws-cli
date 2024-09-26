@@ -34,8 +34,9 @@ class TestBasicCommandFunctionality(unittest.TestCase):
     def put_object(self, bucket, key, content, extra_args=None):
         session = botocore.session.get_session()
         client = session.create_client('s3', 'us-east-1')
-        client.create_bucket(Bucket=bucket)
+        client.create_bucket(Bucket=bucket, ObjectOwnership='ObjectWriter')
         time.sleep(5)
+        client.delete_public_access_block(Bucket=bucket)
         self.addCleanup(client.delete_bucket, Bucket=bucket)
         call_args = {
             'Bucket': bucket,
@@ -64,7 +65,7 @@ class TestBasicCommandFunctionality(unittest.TestCase):
     def test_service_help_output(self):
         p = aws('ec2 help')
         self.assertEqual(p.rc, 0)
-        self.assertIn('Amazon EC2', p.stdout)
+        self.assertRegex(p.stdout, r'Amazon\s+EC2')
 
     def test_operation_help_output(self):
         p = aws('ec2 describe-instances help')

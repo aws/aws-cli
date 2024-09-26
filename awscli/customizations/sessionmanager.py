@@ -13,8 +13,10 @@
 import logging
 import json
 import errno
+import os
+import re
 
-from subprocess import check_call
+from subprocess import check_call, check_output
 from awscli.compat import ignore_user_entered_signals
 from awscli.clidriver import ServiceOperation, CLIOperationCaller
 
@@ -44,8 +46,43 @@ def add_custom_start_session(session, command_table, **kwargs):
     )
 
 
-class StartSessionCommand(ServiceOperation):
+class VersionRequirement:
+    WHITESPACE_REGEX = re.compile(r"\s+")
+    SSM_SESSION_PLUGIN_VERSION_REGEX = re.compile(r"^\d+(\.\d+){0,3}$")
 
+    def __init__(self, min_version):
+        self.min_version = min_version
+
+    def meets_requirement(self, version):
+        ssm_plugin_version = self._sanitize_plugin_version(version)
+        if self._is_valid_version(ssm_plugin_version):
+            norm_version, norm_min_version = self._normalize(
+                ssm_plugin_version, self.min_version
+            )
+            return norm_version > norm_min_version
+        else:
+            return False
+
+    def _sanitize_plugin_version(self, plugin_version):
+        return re.sub(self.WHITESPACE_REGEX, "", plugin_version)
+
+    def _is_valid_version(self, plugin_version):
+        return bool(
+            self.SSM_SESSION_PLUGIN_VERSION_REGEX.match(plugin_version)
+        )
+
+    def _normalize(self, v1, v2):
+        v1_parts = [int(v) for v in v1.split(".")]
+        v2_parts = [int(v) for v in v2.split(".")]
+        while len(v1_parts) != len(v2_parts):
+            if len(v1_parts) - len(v2_parts) > 0:
+                v2_parts.append(0)
+            else:
+                v1_parts.append(0)
+        return v1_parts, v2_parts
+
+
+class StartSessionCommand(ServiceOperation):
     def create_help_command(self):
         help_command = super(
             StartSessionCommand, self).create_help_command()
@@ -55,6 +92,9 @@ class StartSessionCommand(ServiceOperation):
 
 
 class StartSessionCaller(CLIOperationCaller):
+    LAST_PLUGIN_VERSION_WITHOUT_ENV_VAR = "1.2.497.0"
+    DEFAULT_SSM_ENV_NAME = "AWS_SSM_START_SESSION_RESPONSE"
+
     def invoke(self, service_name, operation_name, parameters,
                parsed_globals):
         client = self._session.create_client(
@@ -64,14 +104,41 @@ class StartSessionCaller(CLIOperationCaller):
         response = client.start_session(**parameters)
         session_id = response['SessionId']
         region_name = client.meta.region_name
-        # profile_name is used to passed on to session manager plugin
+        # Profile_name is used to passed on to session manager plugin
         # to fetch same profile credentials to make an api call in the plugin.
-        # If no profile is passed then pass on empty string
-        profile_name = self._session.profile \
-            if self._session.profile is not None else ''
+        # If --profile flag is configured, pass it to Session Manager plugin.
+        # If not, set empty string.
+        profile_name = parsed_globals.profile \
+            if parsed_globals.profile is not None else ''
         endpoint_url = client.meta.endpoint_url
+        ssm_env_name = self.DEFAULT_SSM_ENV_NAME
 
         try:
+            session_parameters = {
+                "SessionId": response["SessionId"],
+                "TokenValue": response["TokenValue"],
+                "StreamUrl": response["StreamUrl"],
+            }
+            start_session_response = json.dumps(session_parameters)
+
+            plugin_version = check_output(
+                ["session-manager-plugin", "--version"], text=True
+            )
+            env = os.environ.copy()
+
+            # Check if this plugin supports passing the start session response
+            # as an environment variable name. If it does, it will set the
+            # value to the response from the start_session operation to the env
+            # variable defined in DEFAULT_SSM_ENV_NAME. If the session plugin
+            # version is invalid or older than the version defined in
+            # LAST_PLUGIN_VERSION_WITHOUT_ENV_VAR, it will fall back to
+            # passing the start_session response directly.
+            version_requirement = VersionRequirement(
+                min_version=self.LAST_PLUGIN_VERSION_WITHOUT_ENV_VAR
+            )
+            if version_requirement.meets_requirement(plugin_version):
+                env[ssm_env_name] = start_session_response
+                start_session_response = ssm_env_name
             # ignore_user_entered_signals ignores these signals
             # because if signals which kills the process are not
             # captured would kill the foreground process but not the
@@ -81,12 +148,13 @@ class StartSessionCaller(CLIOperationCaller):
             with ignore_user_entered_signals():
                 # call executable with necessary input
                 check_call(["session-manager-plugin",
-                            json.dumps(response),
+                            start_session_response,
                             region_name,
                             "StartSession",
                             profile_name,
                             json.dumps(parameters),
-                            endpoint_url])
+                            endpoint_url], env=env)
+
             return 0
         except OSError as ex:
             if ex.errno == errno.ENOENT:

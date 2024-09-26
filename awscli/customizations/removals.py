@@ -39,11 +39,26 @@ def register_removals(event_handler):
                                         'list-bootstrap-actions',
                                         'list-instance-groups',
                                         'set-termination-protection',
-                                        'set-visible-to-all-users'])
+                                        'set-keep-job-flow-alive-when-no-steps',
+                                        'set-visible-to-all-users',
+                                        'set-unhealthy-node-replacement'])
     cmd_remover.remove(on_event='building-command-table.kinesis',
                        remove_commands=['subscribe-to-shard'])
     cmd_remover.remove(on_event='building-command-table.lexv2-runtime',
                          remove_commands=['start-conversation'])
+    cmd_remover.remove(on_event='building-command-table.lambda',
+                         remove_commands=['invoke-with-response-stream'])
+    cmd_remover.remove(on_event='building-command-table.sagemaker-runtime',
+                         remove_commands=['invoke-endpoint-with-response-stream'])
+    cmd_remover.remove(on_event='building-command-table.bedrock-runtime',
+                         remove_commands=['invoke-model-with-response-stream',
+                                          'converse-stream'])
+    cmd_remover.remove(on_event='building-command-table.bedrock-agent-runtime',
+                         remove_commands=['invoke-agent',
+                                          'invoke-flow'])
+    cmd_remover.remove(on_event='building-command-table.qbusiness',
+                        remove_commands=['chat'])
+
 
 class CommandRemover(object):
     def __init__(self, events):

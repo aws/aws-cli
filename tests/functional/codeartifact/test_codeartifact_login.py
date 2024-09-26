@@ -3,6 +3,7 @@ import os
 import platform
 import subprocess
 import time
+import re
 
 from botocore.utils import parse_timestamp
 
@@ -40,7 +41,15 @@ class TestCodeArtifactLogin(unittest.TestCase):
         self.pypi_rc_path_mock = self.pypi_rc_path_patch.start()
         self.pypi_rc_path_mock.return_value = self.test_pypi_rc_path
 
-        self.subprocess_patch = mock.patch('subprocess.check_call')
+        self.test_netrc_path = self.file_creator.full_path('.netrc')
+        self.get_netrc_path_patch = mock.patch(
+            'awscli.customizations.codeartifact.login.SwiftLogin'
+            '.get_netrc_path'
+        )
+        self.get_netrc_mock = self.get_netrc_path_patch.start()
+        self.get_netrc_mock.return_value = self.test_netrc_path
+
+        self.subprocess_patch = mock.patch('subprocess.run')
         self.subprocess_mock = self.subprocess_patch.start()
         self.subprocess_check_output_patch = mock.patch(
             'subprocess.check_output'
@@ -51,6 +60,8 @@ class TestCodeArtifactLogin(unittest.TestCase):
 
     def tearDown(self):
         self.pypi_rc_path_patch.stop()
+        self.subprocess_check_output_patch.stop()
+        self.get_netrc_path_patch.stop()
         self.subprocess_patch.stop()
         self.file_creator.remove_all()
 
@@ -105,6 +116,24 @@ class TestCodeArtifactLogin(unittest.TestCase):
         )
 
         return cmdline
+
+    def _get_swift_commands(self, scope=None, token=None):
+        commands = []
+        set_registry_command = [
+            'swift', 'package-registry', 'set', self.endpoint
+        ]
+        if scope is not None:
+            set_registry_command.extend(['--scope', scope])
+        commands.append(set_registry_command)
+
+        login_registry_command = [
+            'swift', 'package-registry', 'login', f'{self.endpoint}login'
+        ]
+        if token is not None:
+            login_registry_command.extend(['--token', token])
+        commands.append(login_registry_command)
+
+        return commands
 
     def _get_nuget_commands(self):
         nuget_index_url = self.nuget_index_url_fmt.format(
@@ -274,8 +303,8 @@ password: {auth_token}'''
         expected_calls = [
             mock.call(
                 command,
-                stdout=subprocess.PIPE,
-                stderr=subprocess.PIPE,
+                capture_output=True,
+                check=True
             ) for command in commands
         ]
         self.subprocess_mock.assert_has_calls(
@@ -330,13 +359,183 @@ password: {auth_token}'''
             self.assertIn('password', pypi_rc.options(server))
             self.assertEqual(pypi_rc.get(server, 'password'), password)
 
+    def _assert_netrc_has_expected_content(self):
+        with open(self.test_netrc_path, 'r') as f:
+            actual_contents = f.read()
+
+        hostname = urlparse.urlparse(self.endpoint).hostname
+        expected_contents = f'machine {hostname} login token password {self.auth_token}\n'
+        self.assertEqual(expected_contents, actual_contents)
+
+    @mock.patch('awscli.customizations.codeartifact.login.is_macos', True)
+    def test_swift_login_without_domain_owner_macos(self):
+        cmdline = self._setup_cmd(tool='swift')
+        result = self.cli_runner.run(cmdline)
+        self.assertEqual(result.rc, 0)
+        self._assert_operations_called(package_format='swift', result=result)
+        self._assert_expiration_printed_to_stdout(result.stdout)
+        self._assert_subprocess_execution(
+            self._get_swift_commands(token=self.auth_token)
+        )
+        self.assertFalse(os.path.exists(self.test_netrc_path))
+
+    @mock.patch('awscli.customizations.codeartifact.login.is_macos', False)
+    def test_swift_login_without_domain_owner_non_macos(self):
+        cmdline = self._setup_cmd(tool='swift')
+        result = self.cli_runner.run(cmdline)
+        self.assertEqual(result.rc, 0)
+        self._assert_operations_called(package_format='swift', result=result)
+        self._assert_expiration_printed_to_stdout(result.stdout)
+        self._assert_subprocess_execution(
+            self._get_swift_commands()
+        )
+        self._assert_netrc_has_expected_content()
+
+    @mock.patch('awscli.customizations.codeartifact.login.is_macos', False)
+    def test_swift_login_without_domain_owner_dry_run(self):
+        cmdline = self._setup_cmd(tool='swift', dry_run=True)
+        result = self.cli_runner.run(cmdline)
+        self.assertEqual(result.rc, 0)
+        self._assert_operations_called(package_format='swift', result=result)
+        self._assert_dry_run_execution(self._get_swift_commands(), result.stdout)
+        self.assertFalse(os.path.exists(self.test_netrc_path))
+
+    @mock.patch('awscli.customizations.codeartifact.login.is_macos', True)
+    def test_swift_login_with_domain_owner_macos(self):
+        cmdline = self._setup_cmd(tool='swift', include_domain_owner=True)
+        result = self.cli_runner.run(cmdline)
+        self.assertEqual(result.rc, 0)
+        self._assert_operations_called(
+            package_format='swift', result=result,
+            include_domain_owner=True, include_duration_seconds=False
+        )
+        self._assert_expiration_printed_to_stdout(result.stdout)
+        self._assert_subprocess_execution(
+            self._get_swift_commands(token=self.auth_token)
+        )
+
+    @mock.patch('awscli.customizations.codeartifact.login.is_macos', False)
+    def test_swift_login_with_domain_owner_non_macos(self):
+        cmdline = self._setup_cmd(tool='swift', include_domain_owner=True)
+        result = self.cli_runner.run(cmdline)
+        self.assertEqual(result.rc, 0)
+        self._assert_operations_called(
+            package_format='swift', result=result,
+            include_domain_owner=True, include_duration_seconds=False
+        )
+        self._assert_expiration_printed_to_stdout(result.stdout)
+        self._assert_subprocess_execution(
+            self._get_swift_commands()
+        )
+        self._assert_netrc_has_expected_content()
+
+    @mock.patch('awscli.customizations.codeartifact.login.is_macos', True)
+    def test_swift_login_with_domain_owner_duration_macos(self):
+        cmdline = self._setup_cmd(tool='swift', include_domain_owner=True,
+                                  include_duration_seconds=True)
+        result = self.cli_runner.run(cmdline)
+        self.assertEqual(result.rc, 0)
+        self._assert_operations_called(
+            package_format='swift', result=result,
+            include_domain_owner=True, include_duration_seconds=True
+        )
+        self._assert_expiration_printed_to_stdout(result.stdout)
+        self._assert_subprocess_execution(
+            self._get_swift_commands(token=self.auth_token)
+        )
+
+    @mock.patch('awscli.customizations.codeartifact.login.is_macos', False)
+    def test_swift_login_with_domain_owner_duration_non_macos(self):
+        cmdline = self._setup_cmd(tool='swift', include_domain_owner=True,
+                                  include_duration_seconds=True)
+        result = self.cli_runner.run(cmdline)
+        self.assertEqual(result.rc, 0)
+        self._assert_operations_called(
+            package_format='swift', result=result,
+            include_domain_owner=True, include_duration_seconds=True
+        )
+        self._assert_expiration_printed_to_stdout(result.stdout)
+        self._assert_subprocess_execution(
+            self._get_swift_commands()
+        )
+        self._assert_netrc_has_expected_content()
+
+    @mock.patch('awscli.customizations.codeartifact.login.is_macos', False)
+    def test_swift_login_with_domain_owner_dry_run(self):
+        cmdline = self._setup_cmd(
+            tool='swift', include_domain_owner=True, dry_run=True
+        )
+        result = self.cli_runner.run(cmdline)
+        self.assertEqual(result.rc, 0)
+        self._assert_operations_called(
+            package_format='swift', result=result, include_domain_owner=True
+        )
+        self._assert_dry_run_execution(
+            self._get_swift_commands(), result.stdout
+        )
+        self.assertFalse(os.path.exists(self.test_netrc_path))
+
+    @mock.patch('awscli.customizations.codeartifact.login.is_macos', True)
+    def test_swift_login_with_domain_owner_duration_dry_run(self):
+        cmdline = self._setup_cmd(
+            tool='swift', include_domain_owner=True,
+            include_duration_seconds=True, dry_run=True
+        )
+        result = self.cli_runner.run(cmdline)
+        self.assertEqual(result.rc, 0)
+        self._assert_operations_called(
+            package_format='swift', result=result, include_domain_owner=True,
+            include_duration_seconds=True
+        )
+        self._assert_dry_run_execution(
+            self._get_swift_commands(token=self.auth_token), result.stdout
+        )
+
+    @mock.patch('awscli.customizations.codeartifact.login.is_macos', True)
+    def test_swift_login_with_namespace_macos(self):
+        cmdline = self._setup_cmd(
+            tool='swift', include_namespace=True
+        )
+        result = self.cli_runner.run(cmdline)
+        self.assertEqual(result.rc, 0)
+        self._assert_operations_called(package_format='swift', result=result)
+        self._assert_expiration_printed_to_stdout(result.stdout)
+        self._assert_subprocess_execution(
+            self._get_swift_commands(scope=self.namespace, token=self.auth_token)
+        )
+
+    @mock.patch('awscli.customizations.codeartifact.login.is_macos', False)
+    def test_swift_login_with_namespace_non_macos(self):
+        cmdline = self._setup_cmd(
+            tool='swift', include_namespace=True
+        )
+        result = self.cli_runner.run(cmdline)
+        self.assertEqual(result.rc, 0)
+        self._assert_operations_called(package_format='swift', result=result)
+        self._assert_expiration_printed_to_stdout(result.stdout)
+        self._assert_subprocess_execution(
+            self._get_swift_commands(scope=self.namespace)
+        )
+        self._assert_netrc_has_expected_content()
+
+    @mock.patch('awscli.customizations.codeartifact.login.is_macos', True)
+    def test_swift_login_with_namespace_dry_run(self):
+        cmdline = self._setup_cmd(
+            tool='swift', include_namespace=True, dry_run=True
+        )
+        result = self.cli_runner.run(cmdline)
+        self.assertEqual(result.rc, 0)
+        self._assert_operations_called(package_format='swift', result=result)
+        self._assert_dry_run_execution(
+            self._get_swift_commands(scope=self.namespace),result.stdout)
+
     def test_nuget_login_without_domain_owner_without_duration_seconds(self):
         cmdline = self._setup_cmd(tool='nuget')
         result = self.cli_runner.run(cmdline)
         self.assertEqual(result.rc, 0)
         self._assert_operations_called(package_format='nuget', result=result)
         self._assert_expiration_printed_to_stdout(result.stdout)
-        self._assert_subprocess_check_output_execution(
+        self._assert_subprocess_execution(
             self._get_nuget_commands()
         )
 
@@ -350,7 +549,7 @@ password: {auth_token}'''
             result=result
         )
         self._assert_expiration_printed_to_stdout(result.stdout)
-        self._assert_subprocess_check_output_execution(
+        self._assert_subprocess_execution(
             self._get_nuget_commands()
         )
 
@@ -364,7 +563,7 @@ password: {auth_token}'''
             result=result
         )
         self._assert_expiration_printed_to_stdout(result.stdout)
-        self._assert_subprocess_check_output_execution(
+        self._assert_subprocess_execution(
             self._get_nuget_commands()
         )
 
@@ -383,7 +582,7 @@ password: {auth_token}'''
             result=result
         )
         self._assert_expiration_printed_to_stdout(result.stdout)
-        self._assert_subprocess_check_output_execution(
+        self._assert_subprocess_execution(
             self._get_nuget_commands()
         )
 
@@ -454,7 +653,7 @@ password: {auth_token}'''
         self.assertEqual(result.rc, 0)
         self._assert_operations_called(package_format='nuget', result=result)
         self._assert_expiration_printed_to_stdout(result.stdout)
-        self._assert_subprocess_check_output_execution(
+        self._assert_subprocess_execution(
             self._get_dotnet_commands()
         )
 
@@ -469,7 +668,7 @@ password: {auth_token}'''
             result=result
         )
         self._assert_expiration_printed_to_stdout(result.stdout)
-        self._assert_subprocess_check_output_execution(
+        self._assert_subprocess_execution(
             self._get_dotnet_commands()
         )
 
@@ -484,7 +683,7 @@ password: {auth_token}'''
             result=result
         )
         self._assert_expiration_printed_to_stdout(result.stdout)
-        self._assert_subprocess_check_output_execution(
+        self._assert_subprocess_execution(
             self._get_dotnet_commands()
         )
 
@@ -504,7 +703,7 @@ password: {auth_token}'''
             result=result
         )
         self._assert_expiration_printed_to_stdout(result.stdout)
-        self._assert_subprocess_check_output_execution(
+        self._assert_subprocess_execution(
             self._get_dotnet_commands()
         )
 
@@ -623,7 +822,7 @@ to an 'HTTPS' source."""
         exit code. This is to make sure that login ignores that error and all
         other commands executes successfully.
         """
-        def side_effect(command, stdout, stderr):
+        def side_effect(command, capture_output, check):
             if any('always-auth' in arg for arg in command):
                 raise subprocess.CalledProcessError(
                     returncode=1,
@@ -762,6 +961,24 @@ to an 'HTTPS' source."""
         self._assert_operations_called(package_format='pypi', result=result)
         self.assertIn(
             'Argument --namespace is not supported for pip', result.stderr
+        )
+
+    def test_pip_login_command_failed_auth_token_redacted(self):
+        def side_effect(command, capture_output, check):
+            raise subprocess.CalledProcessError(
+                returncode=1,
+                cmd=command
+            )
+
+        self.subprocess_mock.side_effect = side_effect
+        cmdline = self._setup_cmd(tool='pip')
+        result = self.cli_runner.run(cmdline)
+        self.assertEqual(result.rc, 255)
+        self.assertIn(
+            "Command '['pip', 'config', 'set', 'global.index-url',"
+            " 'https://aws:******@domain-domain-owner.codeartifact.aws.a2z.com/pypi/repository/simple/']'"
+            " returned non-zero exit status 1.",
+            result.stderr
         )
 
     def test_twine_login_without_domain_owner(self):

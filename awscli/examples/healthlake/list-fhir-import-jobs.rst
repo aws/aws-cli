@@ -32,4 +32,4 @@ Output::
     }
     "NextToken": String
 
-For more information, see `Importing files to FHIR Data Store <ttps://docs.aws.amazon.com/healthlake/latest/devguide/import-examples.html>`__ in the Amazon HealthLake Developer Guide.
+For more information, see `Importing files to FHIR Data Store <https://docs.aws.amazon.com/healthlake/latest/devguide/import-examples.html>`__ in the Amazon HealthLake Developer Guide.

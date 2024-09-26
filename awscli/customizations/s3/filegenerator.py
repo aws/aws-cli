@@ -21,7 +21,6 @@ from botocore.exceptions import ClientError
 from awscli.customizations.s3.utils import find_bucket_key, get_file_stat
 from awscli.customizations.s3.utils import BucketLister, create_warning, \
     find_dest_path_comp_key, EPOCH_TIME
-from awscli.compat import six
 from awscli.compat import queue
 
 _open = open
@@ -250,7 +249,7 @@ class FileGenerator(object):
         happens we warn using a FileDecodingError that provides more
         information into what's going on.
         """
-        if not isinstance(filename, six.text_type):
+        if not isinstance(filename, str):
             decoding_error = FileDecodingError(dirname, filename)
             warning = create_warning(repr(filename),
                                      decoding_error.error_message)

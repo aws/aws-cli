@@ -27,8 +27,8 @@ Output::
                 "fromAttachedDisks": [],
                 "fromInstanceName": "MEAN-1",
                 "fromInstanceArn": "arn:aws:lightsail:us-west-2:111122223333:Instance/1761aa0a-6038-4f25-8b94-2EXAMPLE19fd",
-                "fromBlueprintId": "wordpress_5_1_1_2",
-                "fromBundleId": "micro_2_0",
+                "fromBlueprintId": "wordpress",
+                "fromBundleId": "micro_3_0",
                 "isFromAutoSnapshot": false,
                 "sizeInGb": 40
             },
@@ -47,8 +47,8 @@ Output::
                 "fromAttachedDisks": [],
                 "fromInstanceName": "MEAN-1",
                 "fromInstanceArn": "arn:aws:lightsail:us-west-2:111122223333:Instance/bd470fc5-a68b-44c5-8dbc-8EXAMPLEbada",
-                "fromBlueprintId": "mean_4_0_9",
-                "fromBundleId": "medium_2_0",
+                "fromBlueprintId": "mean",
+                "fromBundleId": "medium_3_0",
                 "isFromAutoSnapshot": false,
                 "sizeInGb": 80
             }

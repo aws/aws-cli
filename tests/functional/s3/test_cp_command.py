@@ -16,12 +16,12 @@ import os
 from awscli.testutils import BaseAWSCommandParamsTest
 from awscli.testutils import capture_input
 from awscli.testutils import mock 
-from awscli.compat import six
+from awscli.compat import BytesIO
 from tests.functional.s3 import BaseS3TransferCommandTest
 from tests import requires_crt
 
 
-class BufferedBytesIO(six.BytesIO):
+class BufferedBytesIO(BytesIO):
     @property
     def buffer(self):
         return self
@@ -178,7 +178,7 @@ class TestCPCommand(BaseCPCommandTest):
     def test_operations_used_in_download_file(self):
         self.parsed_responses = [
             {"ContentLength": "100", "LastModified": "00:00:00Z"},
-            {'ETag': '"foo-1"', 'Body': six.BytesIO(b'foo')},
+            {'ETag': '"foo-1"', 'Body': BytesIO(b'foo')},
         ]
         cmdline = '%s s3://bucket/key.txt %s' % (self.prefix,
                                                  self.files.rootdir)
@@ -306,7 +306,7 @@ class TestCPCommand(BaseCPCommandTest):
         cmdline = '%s s3://bucket/key.txt %s' % (self.prefix, full_path)
         self.parsed_responses = [
             {"ContentLength": "100", "LastModified": "00:00:00Z"},
-            {'ETag': '"foo-1"', 'Body': six.BytesIO(b'foo')}
+            {'ETag': '"foo-1"', 'Body': BytesIO(b'foo')}
         ]
         with mock.patch('os.utime') as mock_utime:
             mock_utime.side_effect = OSError(1, '')
@@ -324,7 +324,7 @@ class TestCPCommand(BaseCPCommandTest):
                 ],
                 'CommonPrefixes': []
             },
-            {'ETag': '"foo-1"', 'Body': six.BytesIO(b'foo')},
+            {'ETag': '"foo-1"', 'Body': BytesIO(b'foo')},
         ]
         cmdline = '%s s3://bucket/foo %s --recursive --force-glacier-transfer'\
                   % (self.prefix, self.files.rootdir)
@@ -512,7 +512,7 @@ class TestCPCommand(BaseCPCommandTest):
                 "ContentLength": 4,
                 "ETag": '"d3b07384d113edec49eaa6238ad5ff00"',
                 "LastModified": "Tue, 12 Jul 2016 21:26:07 GMT",
-                "Body": six.BytesIO(b'foo\n')
+                "Body": BytesIO(b'foo\n')
             },
             {}
         ]
@@ -790,7 +790,7 @@ class TestStreamingCPCommand(BaseAWSCommandParamsTest):
                 "ContentLength": 4,
                 "ETag": '"d3b07384d113edec49eaa6238ad5ff00"',
                 "LastModified": "Tue, 12 Jul 2016 21:26:07 GMT",
-                "Body": six.BytesIO(b'foo\n')
+                "Body": BytesIO(b'foo\n')
             }
         ]
 

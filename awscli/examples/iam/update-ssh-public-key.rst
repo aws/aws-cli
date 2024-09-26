@@ -9,4 +9,4 @@ The following ``update-ssh-public-key`` command changes the status of the specif
 
 This command produces no output.
 
-For more information about SSH keys in IAM, see `Use SSH Keys and SSH with CodeCommit <https://docs.aws.amazon.com/IAM/latest/UserGuide/id_credentials_ssh-keys.html#ssh-keys-code-commit>`_ in the *AWS IAM User Guide*
+For more information, see `Use SSH keys and SSH with CodeCommit <https://docs.aws.amazon.com/IAM/latest/UserGuide/id_credentials_ssh-keys.html#ssh-keys-code-commit>`__ in the *AWS IAM User Guide*.

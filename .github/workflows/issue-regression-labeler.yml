@@ -1,0 +1,33 @@
+# Apply potential regression label on issues
+name: issue-regression-label
+on:
+  issues:
+    types: [opened, edited]
+permissions: read-all
+jobs:
+  add-regression-label:
+    runs-on: ubuntu-latest
+    permissions:
+      issues: write
+    steps:
+    - name: Fetch template body
+      id: check_regression
+      uses: actions/github-script@60a0d83039c74a4aee543508d2ffcb1c3799cdea
+      env: 
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        TEMPLATE_BODY: ${{ github.event.issue.body }}
+      with:
+        script: |
+          const regressionPattern = /\[x\] Select this option if this issue appears to be a regression\./i;
+          const template = `${process.env.TEMPLATE_BODY}`
+          const match = regressionPattern.test(template);
+          core.setOutput('is_regression', match);
+    - name: Manage regression label
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      run: |
+        if [ "${{ steps.check_regression.outputs.is_regression }}" == "true" ]; then
+          gh issue edit ${{ github.event.issue.number }} --add-label "potential-regression" -R ${{ github.repository }}
+        else
+          gh issue edit ${{ github.event.issue.number }} --remove-label "potential-regression" -R ${{ github.repository }}
+        fi

@@ -1,10 +1,9 @@
-**Example 1: To describe scaling activities for a scalable target**
+**Example 1: To describe scaling activities for the specified Amazon ECS service**
 
-The following ``describe-scaling-activities`` example displays details for th the scaling activities for an Amazon ECS service called `web-app` that is running in the `default` cluster. ::
+The following ``describe-scaling-activities`` example describes the scaling activities for an Amazon ECS service called ``web-app`` that is running in the ``default`` cluster. The output shows a scaling activity initiated by a scaling policy. ::
 
     aws application-autoscaling describe-scaling-activities \
         --service-namespace ecs \
-        --scalable-dimension ecs:service:DesiredCount \
         --resource-id service/default/web-app
 
 Output::
@@ -26,14 +25,15 @@ Output::
         ]
     }
 
-**Example 2:  To describe scaling activities triggered by scheduled actions**
+For more information, see `Scaling activities for Application Auto Scaling <https://docs.aws.amazon.com/autoscaling/application/userguide/application-auto-scaling-scaling-activities.html>`__ in the *Application Auto Scaling User Guide*.
 
-The following ``describe-scaling-activities`` example describes the scaling activities for the specified DynamoDB table. The output shows scaling activities triggered by two different scheduled actions::
+**Example 2:  To describe scaling activities for the specified DynamoDB table**
+
+The following ``describe-scaling-activities`` example describes the scaling activities for a DynamoDB table called ``TestTable``. The output shows scaling activities initiated by two different scheduled actions. ::
 
     aws application-autoscaling describe-scaling-activities \
         --service-namespace dynamodb \
-        --scalable-dimension dynamodb:table:WriteCapacityUnits \
-        --resource-id table/my-table
+        --resource-id table/TestTable
 
 Output::
 
@@ -88,4 +88,4 @@ Output::
         ]
     }
 
-For more information, see `Scheduled Scaling <https://docs.aws.amazon.com/autoscaling/application/userguide/application-auto-scaling-scheduled-scaling.html>`__ in the *Application Auto Scaling User Guide*.
+For more information, see `Scaling activities for Application Auto Scaling <https://docs.aws.amazon.com/autoscaling/application/userguide/application-auto-scaling-scaling-activities.html>`__ in the *Application Auto Scaling User Guide*.

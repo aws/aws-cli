@@ -4,7 +4,7 @@ The following ``modify-security-group-rules`` example updates the description, t
 
     aws ec2 modify-security-group-rules \
         --group-id sg-1234567890abcdef0 \
-        --security-group-rules SecurityGroupRuleId=sgr-abcdef01234567890,SecurityGroupRule={Description=test,IpProtocol=-1,CidrIpv4=0.0.0.0/0}
+        --security-group-rules SecurityGroupRuleId=sgr-abcdef01234567890,SecurityGroupRule='{Description=test,IpProtocol=-1,CidrIpv4=0.0.0.0/0}'
 
 Output::
 
@@ -12,4 +12,4 @@ Output::
         "Return": true
     }
 
-For more information about security group rules, see `Security group rules <https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/security-group-rules.html>` in the *Amazon EC2 User Guide*.
+For more information about security group rules, see `Security group rules <https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/security-group-rules.html>`__ in the *Amazon EC2 User Guide*.

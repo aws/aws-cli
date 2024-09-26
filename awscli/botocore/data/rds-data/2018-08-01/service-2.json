@@ -2,9 +2,10 @@
   "version":"2.0",
   "metadata":{
     "apiVersion":"2018-08-01",
+    "auth":["aws.auth#sigv4"],
     "endpointPrefix":"rds-data",
-    "jsonVersion":"1.1",
     "protocol":"rest-json",
+    "protocols":["rest-json"],
     "serviceFullName":"AWS RDS DataService",
     "serviceId":"RDS Data",
     "signatureVersion":"v4",
@@ -62,7 +63,7 @@
         {"shape":"StatementTimeoutException"},
         {"shape":"InternalServerErrorException"}
       ],
-      "documentation":"<p>Starts a SQL transaction.</p> <note> <p>A transaction can run for a maximum of 24 hours. A transaction is terminated and rolled back automatically after 24 hours.</p> <p>A transaction times out if no calls use its transaction ID in three minutes. If a transaction times out before it's committed, it's rolled back automatically.</p> <p>DDL statements inside a transaction cause an implicit commit. We recommend that you run each DDL statement in a separate <code>ExecuteStatement</code> call with <code>continueAfterTimeout</code> enabled.</p> </note>"
+      "documentation":"<p>Starts a SQL transaction.</p> <note> <p>A transaction can run for a maximum of 24 hours. A transaction is terminated and rolled back automatically after 24 hours.</p> <p>A transaction times out if no calls use its transaction ID in three minutes. If a transaction times out before it's committed, it's rolled back automatically.</p> <p>For Aurora MySQL, DDL statements inside a transaction cause an implicit commit. We recommend that you run each MySQL DDL statement in a separate <code>ExecuteStatement</code> call with <code>continueAfterTimeout</code> enabled.</p> </note>"
     },
     "CommitTransaction":{
       "name":"CommitTransaction",
@@ -107,7 +108,7 @@
         {"shape":"ForbiddenException"},
         {"shape":"ServiceUnavailableError"}
       ],
-      "documentation":"<p>Runs one or more SQL statements.</p> <note> <p>This operation isn't supported for Aurora PostgreSQL Serverless v2 and provisioned DB clusters, and for Aurora Serverless v1 DB clusters, the operation is deprecated. Use the <code>BatchExecuteStatement</code> or <code>ExecuteStatement</code> operation.</p> </note>",
+      "documentation":"<p>Runs one or more SQL statements.</p> <note> <p>This operation isn't supported for Aurora Serverless v2 and provisioned DB clusters. For Aurora Serverless v1 DB clusters, the operation is deprecated. Use the <code>BatchExecuteStatement</code> or <code>ExecuteStatement</code> operation.</p> </note>",
       "deprecated":true,
       "deprecatedMessage":"The ExecuteSql API is deprecated, please use the ExecuteStatement API."
     },
@@ -1054,5 +1055,5 @@
       "union":true
     }
   },
-  "documentation":"<p><fullname>RDS Data API</fullname> <p>Amazon RDS provides an HTTP endpoint to run SQL statements on an Amazon Aurora DB cluster. To run these statements, you use the RDS Data API (Data API).</p> <p>Data API is available with the following types of Aurora databases:</p> <ul> <li> <p>Aurora PostgreSQL - Serverless v2, Serverless v1, and provisioned</p> </li> <li> <p>Aurora MySQL - Serverless v1 only</p> </li> </ul> <p>For more information about the Data API, see <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/data-api.html\">Using RDS Data API</a> in the <i>Amazon Aurora User Guide</i>.</p></p>"
+  "documentation":"<p><fullname>RDS Data API</fullname> <p>Amazon RDS provides an HTTP endpoint to run SQL statements on an Amazon Aurora DB cluster. To run these statements, you use the RDS Data API (Data API).</p> <p>Data API is available with the following types of Aurora databases:</p> <ul> <li> <p>Aurora PostgreSQL - Serverless v2, provisioned, and Serverless v1</p> </li> <li> <p>Aurora MySQL - Serverless v2, provisioned, and Serverless v1</p> </li> </ul> <p>For more information about the Data API, see <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/data-api.html\">Using RDS Data API</a> in the <i>Amazon Aurora User Guide</i>.</p></p>"
 }

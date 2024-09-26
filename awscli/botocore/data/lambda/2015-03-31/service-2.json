@@ -48,10 +48,9 @@
         {"shape":"InvalidParameterValueException"},
         {"shape":"PolicyLengthExceededException"},
         {"shape":"TooManyRequestsException"},
-        {"shape":"PreconditionFailedException"},
-        {"shape":"PublicPolicyException"}
+        {"shape":"PreconditionFailedException"}
       ],
-      "documentation":"<p>Grants a <a href=\"https://docs.aws.amazon.com/IAM/latest/UserGuide/reference_policies_elements_principal.html#Principal_specifying\">principal</a> permission to use a function. You can apply the policy at the function level, or specify a qualifier to restrict access to a single version or alias. If you use a qualifier, the invoker must use the full Amazon Resource Name (ARN) of that version or alias to invoke the function. Note: Lambda does not support adding policies to version $LATEST.</p> <p>To grant permission to another account, specify the account ID as the <code>Principal</code>. To grant permission to an organization defined in Organizations, specify the organization ID as the <code>PrincipalOrgID</code>. For Amazon Web Servicesservices, the principal is a domain-style identifier that the service defines, such as <code>s3.amazonaws.com</code> or <code>sns.amazonaws.com</code>. For Amazon Web Servicesservices, you can also specify the ARN of the associated resource as the <code>SourceArn</code>. If you grant permission to a service principal without specifying the source, other accounts could potentially configure resources in their account to invoke your Lambda function.</p> <p>This operation adds a statement to a resource-based permissions policy for the function. For more information about function policies, see <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/access-control-resource-based.html\">Using resource-based policies for Lambda</a>.</p>"
+      "documentation":"<p>Grants a <a href=\"https://docs.aws.amazon.com/IAM/latest/UserGuide/reference_policies_elements_principal.html#Principal_specifying\">principal</a> permission to use a function. You can apply the policy at the function level, or specify a qualifier to restrict access to a single version or alias. If you use a qualifier, the invoker must use the full Amazon Resource Name (ARN) of that version or alias to invoke the function. Note: Lambda does not support adding policies to version $LATEST.</p> <p>To grant permission to another account, specify the account ID as the <code>Principal</code>. To grant permission to an organization defined in Organizations, specify the organization ID as the <code>PrincipalOrgID</code>. For Amazon Web Services services, the principal is a domain-style identifier that the service defines, such as <code>s3.amazonaws.com</code> or <code>sns.amazonaws.com</code>. For Amazon Web Services services, you can also specify the ARN of the associated resource as the <code>SourceArn</code>. If you grant permission to a service principal without specifying the source, other accounts could potentially configure resources in their account to invoke your Lambda function.</p> <p>This operation adds a statement to a resource-based permissions policy for the function. For more information about function policies, see <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/access-control-resource-based.html\">Using resource-based policies for Lambda</a>.</p>"
     },
     "CreateAlias":{
       "name":"CreateAlias",
@@ -124,7 +123,7 @@
         {"shape":"InvalidCodeSignatureException"},
         {"shape":"CodeSigningConfigNotFoundException"}
       ],
-      "documentation":"<p>Creates a Lambda function. To create a function, you need a <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/gettingstarted-package.html\">deployment package</a> and an <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/intro-permission-model.html#lambda-intro-execution-role\">execution role</a>. The deployment package is a .zip file archive or container image that contains your function code. The execution role grants the function permission to use Amazon Web Servicesservices, such as Amazon CloudWatch Logs for log streaming and X-Ray for request tracing.</p> <p>If the deployment package is a <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/lambda-images.html\">container image</a>, then you set the package type to <code>Image</code>. For a container image, the code property must include the URI of a container image in the Amazon ECR registry. You do not need to specify the handler and runtime properties.</p> <p>If the deployment package is a <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/gettingstarted-package.html#gettingstarted-package-zip\">.zip file archive</a>, then you set the package type to <code>Zip</code>. For a .zip file archive, the code property specifies the location of the .zip file. You must also specify the handler and runtime properties. The code in the deployment package must be compatible with the target instruction set architecture of the function (<code>x86-64</code> or <code>arm64</code>). If you do not specify the architecture, then the default value is <code>x86-64</code>.</p> <p>When you create a function, Lambda provisions an instance of the function and its supporting resources. If your function connects to a VPC, this process can take a minute or so. During this time, you can't invoke or modify the function. The <code>State</code>, <code>StateReason</code>, and <code>StateReasonCode</code> fields in the response from <a>GetFunctionConfiguration</a> indicate when the function is ready to invoke. For more information, see <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/functions-states.html\">Lambda function states</a>.</p> <p>A function has an unpublished version, and can have published versions and aliases. The unpublished version changes when you update your function's code and configuration. A published version is a snapshot of your function code and configuration that can't be changed. An alias is a named resource that maps to a version, and can be changed to map to a different version. Use the <code>Publish</code> parameter to create version <code>1</code> of your function from its initial configuration.</p> <p>The other parameters let you configure version-specific and function-level settings. You can modify version-specific settings later with <a>UpdateFunctionConfiguration</a>. Function-level settings apply to both the unpublished and published versions of the function, and include tags (<a>TagResource</a>) and per-function concurrency limits (<a>PutFunctionConcurrency</a>).</p> <p>You can use code signing if your deployment package is a .zip file archive. To enable code signing for this function, specify the ARN of a code-signing configuration. When a user attempts to deploy a code package with <a>UpdateFunctionCode</a>, Lambda checks that the code package has a valid signature from a trusted publisher. The code-signing configuration includes set of signing profiles, which define the trusted publishers for this function.</p> <p>If another Amazon Web Services account or an Amazon Web Servicesservice invokes your function, use <a>AddPermission</a> to grant permission by creating a resource-based Identity and Access Management (IAM) policy. You can grant permissions at the function level, on a version, or on an alias.</p> <p>To invoke your function directly, use <a>Invoke</a>. To invoke your function in response to events in other Amazon Web Servicesservices, create an event source mapping (<a>CreateEventSourceMapping</a>), or configure a function trigger in the other service. For more information, see <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/lambda-invocation.html\">Invoking Lambda functions</a>.</p>"
+      "documentation":"<p>Creates a Lambda function. To create a function, you need a <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/gettingstarted-package.html\">deployment package</a> and an <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/intro-permission-model.html#lambda-intro-execution-role\">execution role</a>. The deployment package is a .zip file archive or container image that contains your function code. The execution role grants the function permission to use Amazon Web Services services, such as Amazon CloudWatch Logs for log streaming and X-Ray for request tracing.</p> <p>If the deployment package is a <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/lambda-images.html\">container image</a>, then you set the package type to <code>Image</code>. For a container image, the code property must include the URI of a container image in the Amazon ECR registry. You do not need to specify the handler and runtime properties.</p> <p>If the deployment package is a <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/gettingstarted-package.html#gettingstarted-package-zip\">.zip file archive</a>, then you set the package type to <code>Zip</code>. For a .zip file archive, the code property specifies the location of the .zip file. You must also specify the handler and runtime properties. The code in the deployment package must be compatible with the target instruction set architecture of the function (<code>x86-64</code> or <code>arm64</code>). If you do not specify the architecture, then the default value is <code>x86-64</code>.</p> <p>When you create a function, Lambda provisions an instance of the function and its supporting resources. If your function connects to a VPC, this process can take a minute or so. During this time, you can't invoke or modify the function. The <code>State</code>, <code>StateReason</code>, and <code>StateReasonCode</code> fields in the response from <a>GetFunctionConfiguration</a> indicate when the function is ready to invoke. For more information, see <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/functions-states.html\">Lambda function states</a>.</p> <p>A function has an unpublished version, and can have published versions and aliases. The unpublished version changes when you update your function's code and configuration. A published version is a snapshot of your function code and configuration that can't be changed. An alias is a named resource that maps to a version, and can be changed to map to a different version. Use the <code>Publish</code> parameter to create version <code>1</code> of your function from its initial configuration.</p> <p>The other parameters let you configure version-specific and function-level settings. You can modify version-specific settings later with <a>UpdateFunctionConfiguration</a>. Function-level settings apply to both the unpublished and published versions of the function, and include tags (<a>TagResource</a>) and per-function concurrency limits (<a>PutFunctionConcurrency</a>).</p> <p>You can use code signing if your deployment package is a .zip file archive. To enable code signing for this function, specify the ARN of a code-signing configuration. When a user attempts to deploy a code package with <a>UpdateFunctionCode</a>, Lambda checks that the code package has a valid signature from a trusted publisher. The code-signing configuration includes set of signing profiles, which define the trusted publishers for this function.</p> <p>If another Amazon Web Services account or an Amazon Web Services service invokes your function, use <a>AddPermission</a> to grant permission by creating a resource-based Identity and Access Management (IAM) policy. You can grant permissions at the function level, on a version, or on an alias.</p> <p>To invoke your function directly, use <a>Invoke</a>. To invoke your function in response to events in other Amazon Web Services services, create an event source mapping (<a>CreateEventSourceMapping</a>), or configure a function trigger in the other service. For more information, see <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/lambda-invocation.html\">Invoking Lambda functions</a>.</p>"
     },
     "CreateFunctionUrlConfig":{
       "name":"CreateFunctionUrlConfig",
@@ -211,7 +210,7 @@
         {"shape":"InvalidParameterValueException"},
         {"shape":"ResourceConflictException"}
       ],
-      "documentation":"<p>Deletes a Lambda function. To delete a specific function version, use the <code>Qualifier</code> parameter. Otherwise, all versions and aliases are deleted. This doesn't require the user to have explicit permissions for <a>DeleteAlias</a>.</p> <p>To delete Lambda event source mappings that invoke a function, use <a>DeleteEventSourceMapping</a>. For Amazon Web Servicesservices and resources that invoke your function directly, delete the trigger in the service where you originally configured it.</p>"
+      "documentation":"<p>Deletes a Lambda function. To delete a specific function version, use the <code>Qualifier</code> parameter. Otherwise, all versions and aliases are deleted. This doesn't require the user to have explicit permissions for <a>DeleteAlias</a>.</p> <p>To delete Lambda event source mappings that invoke a function, use <a>DeleteEventSourceMapping</a>. For Amazon Web Services services and resources that invoke your function directly, delete the trigger in the service where you originally configured it.</p>"
     },
     "DeleteFunctionCodeSigningConfig":{
       "name":"DeleteFunctionCodeSigningConfig",
@@ -311,24 +310,6 @@
         {"shape":"ServiceException"}
       ],
       "documentation":"<p>Deletes the provisioned concurrency configuration for a function.</p>"
-    },
-    "DeleteResourcePolicy":{
-      "name":"DeleteResourcePolicy",
-      "http":{
-        "method":"DELETE",
-        "requestUri":"/2024-09-16/resource-policy/{ResourceArn}",
-        "responseCode":204
-      },
-      "input":{"shape":"DeleteResourcePolicyRequest"},
-      "errors":[
-        {"shape":"ServiceException"},
-        {"shape":"ResourceNotFoundException"},
-        {"shape":"ResourceConflictException"},
-        {"shape":"InvalidParameterValueException"},
-        {"shape":"TooManyRequestsException"},
-        {"shape":"PreconditionFailedException"}
-      ],
-      "documentation":"<note> <p>The option to create and modify full JSON resource-based policies, and to use the PutResourcePolicy, GetResourcePolicy, and DeleteResourcePolicy APIs, won't be available in all Amazon Web Services Regions until September 30, 2024.</p> </note> <p>Deletes a <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/access-control-resource-based.html\">resource-based policy</a> from a function.</p>"
     },
     "GetAccountSettings":{
       "name":"GetAccountSettings",
@@ -599,40 +580,6 @@
         {"shape":"ProvisionedConcurrencyConfigNotFoundException"}
       ],
       "documentation":"<p>Retrieves the provisioned concurrency configuration for a function's alias or version.</p>"
-    },
-    "GetPublicAccessBlockConfig":{
-      "name":"GetPublicAccessBlockConfig",
-      "http":{
-        "method":"GET",
-        "requestUri":"/2024-09-16/public-access-block/{ResourceArn}",
-        "responseCode":200
-      },
-      "input":{"shape":"GetPublicAccessBlockConfigRequest"},
-      "output":{"shape":"GetPublicAccessBlockConfigResponse"},
-      "errors":[
-        {"shape":"ServiceException"},
-        {"shape":"ResourceNotFoundException"},
-        {"shape":"TooManyRequestsException"},
-        {"shape":"InvalidParameterValueException"}
-      ],
-      "documentation":"<note> <p>The option to configure public-access settings, and to use the PutPublicAccessBlock and GetPublicAccessBlock APIs, won't be available in all Amazon Web Services Regions until September 30, 2024.</p> </note> <p>Retrieve the public-access settings for a function.</p>"
-    },
-    "GetResourcePolicy":{
-      "name":"GetResourcePolicy",
-      "http":{
-        "method":"GET",
-        "requestUri":"/2024-09-16/resource-policy/{ResourceArn}",
-        "responseCode":200
-      },
-      "input":{"shape":"GetResourcePolicyRequest"},
-      "output":{"shape":"GetResourcePolicyResponse"},
-      "errors":[
-        {"shape":"ServiceException"},
-        {"shape":"ResourceNotFoundException"},
-        {"shape":"TooManyRequestsException"},
-        {"shape":"InvalidParameterValueException"}
-      ],
-      "documentation":"<note> <p>The option to create and modify full JSON resource-based policies, and to use the PutResourcePolicy, GetResourcePolicy, and DeleteResourcePolicy APIs, won't be available in all Amazon Web Services Regions until September 30, 2024.</p> </note> <p>Retrieves the <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/access-control-resource-based.html\">resource-based policy</a> attached to a function.</p>"
     },
     "GetRuntimeManagementConfig":{
       "name":"GetRuntimeManagementConfig",
@@ -933,7 +880,7 @@
         {"shape":"InvalidParameterValueException"},
         {"shape":"TooManyRequestsException"}
       ],
-      "documentation":"<p>Returns a function, event source mapping, or code signing configuration's <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/tagging.html\">tags</a>. You can also view funciton tags with <a>GetFunction</a>.</p>"
+      "documentation":"<p>Returns a function, event source mapping, or code signing configuration's <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/tagging.html\">tags</a>. You can also view function tags with <a>GetFunction</a>.</p>"
     },
     "ListVersionsByFunction":{
       "name":"ListVersionsByFunction",
@@ -1081,45 +1028,6 @@
       ],
       "documentation":"<p>Adds a provisioned concurrency configuration to a function's alias or version.</p>"
     },
-    "PutPublicAccessBlockConfig":{
-      "name":"PutPublicAccessBlockConfig",
-      "http":{
-        "method":"PUT",
-        "requestUri":"/2024-09-16/public-access-block/{ResourceArn}",
-        "responseCode":200
-      },
-      "input":{"shape":"PutPublicAccessBlockConfigRequest"},
-      "output":{"shape":"PutPublicAccessBlockConfigResponse"},
-      "errors":[
-        {"shape":"ServiceException"},
-        {"shape":"ResourceNotFoundException"},
-        {"shape":"ResourceConflictException"},
-        {"shape":"InvalidParameterValueException"},
-        {"shape":"TooManyRequestsException"}
-      ],
-      "documentation":"<note> <p>The option to configure public-access settings, and to use the PutPublicAccessBlock and GetPublicAccessBlock APIs, won't be available in all Amazon Web Services Regions until September 30, 2024.</p> </note> <p>Configure your function's public-access settings.</p> <p>To control public access to a Lambda function, you can choose whether to allow the creation of <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/access-control-resource-based.html\">resource-based policies</a> that allow public access to that function. You can also block public access to a function, even if it has an existing resource-based policy that allows it.</p>"
-    },
-    "PutResourcePolicy":{
-      "name":"PutResourcePolicy",
-      "http":{
-        "method":"PUT",
-        "requestUri":"/2024-09-16/resource-policy/{ResourceArn}",
-        "responseCode":200
-      },
-      "input":{"shape":"PutResourcePolicyRequest"},
-      "output":{"shape":"PutResourcePolicyResponse"},
-      "errors":[
-        {"shape":"ServiceException"},
-        {"shape":"ResourceNotFoundException"},
-        {"shape":"ResourceConflictException"},
-        {"shape":"InvalidParameterValueException"},
-        {"shape":"PolicyLengthExceededException"},
-        {"shape":"TooManyRequestsException"},
-        {"shape":"PreconditionFailedException"},
-        {"shape":"PublicPolicyException"}
-      ],
-      "documentation":"<note> <p>The option to create and modify full JSON resource-based policies, and to use the PutResourcePolicy, GetResourcePolicy, and DeleteResourcePolicy APIs, won't be available in all Amazon Web Services Regions until September 30, 2024.</p> </note> <p>Adds a <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/access-control-resource-based.html\">resource-based policy</a> to a function. You can use resource-based policies to grant access to other <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/permissions-function-cross-account.html\">Amazon Web Services accounts</a>, <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/permissions-function-organization.html\">organizations</a>, or <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/permissions-function-services.html\">services</a>. Resource-based policies apply to a single function, version, or alias.</p> <important> <p>Adding a resource-based policy using this API action replaces any existing policy you've previously created. This means that if you've previously added resource-based permissions to a function using the <a>AddPermission</a> action, those permissions will be overwritten by your new policy.</p> </important>"
-    },
     "PutRuntimeManagementConfig":{
       "name":"PutRuntimeManagementConfig",
       "http":{
@@ -1168,10 +1076,9 @@
         {"shape":"ResourceNotFoundException"},
         {"shape":"InvalidParameterValueException"},
         {"shape":"TooManyRequestsException"},
-        {"shape":"PreconditionFailedException"},
-        {"shape":"PublicPolicyException"}
+        {"shape":"PreconditionFailedException"}
       ],
-      "documentation":"<p>Revokes function-use permission from an Amazon Web Servicesservice or another Amazon Web Services account. You can get the ID of the statement from the output of <a>GetPolicy</a>.</p>"
+      "documentation":"<p>Revokes function-use permission from an Amazon Web Services service or another Amazon Web Services account. You can get the ID of the statement from the output of <a>GetPolicy</a>.</p>"
     },
     "TagResource":{
       "name":"TagResource",
@@ -1304,7 +1211,7 @@
         {"shape":"InvalidCodeSignatureException"},
         {"shape":"CodeSigningConfigNotFoundException"}
       ],
-      "documentation":"<p>Modify the version-specific settings of a Lambda function.</p> <p>When you update a function, Lambda provisions an instance of the function and its supporting resources. If your function connects to a VPC, this process can take a minute. During this time, you can't modify the function, but you can still invoke it. The <code>LastUpdateStatus</code>, <code>LastUpdateStatusReason</code>, and <code>LastUpdateStatusReasonCode</code> fields in the response from <a>GetFunctionConfiguration</a> indicate when the update is complete and the function is processing events with the new configuration. For more information, see <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/functions-states.html\">Lambda function states</a>.</p> <p>These settings can vary between versions of a function and are locked when you publish a version. You can't modify the configuration of a published version, only the unpublished version.</p> <p>To configure function concurrency, use <a>PutFunctionConcurrency</a>. To grant invoke permissions to an Amazon Web Services account or Amazon Web Servicesservice, use <a>AddPermission</a>.</p>"
+      "documentation":"<p>Modify the version-specific settings of a Lambda function.</p> <p>When you update a function, Lambda provisions an instance of the function and its supporting resources. If your function connects to a VPC, this process can take a minute. During this time, you can't modify the function, but you can still invoke it. The <code>LastUpdateStatus</code>, <code>LastUpdateStatusReason</code>, and <code>LastUpdateStatusReasonCode</code> fields in the response from <a>GetFunctionConfiguration</a> indicate when the update is complete and the function is processing events with the new configuration. For more information, see <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/functions-states.html\">Lambda function states</a>.</p> <p>These settings can vary between versions of a function and are locked when you publish a version. You can't modify the configuration of a published version, only the unpublished version.</p> <p>To configure function concurrency, use <a>PutFunctionConcurrency</a>. To grant invoke permissions to an Amazon Web Services account or Amazon Web Services service, use <a>AddPermission</a>.</p>"
     },
     "UpdateFunctionEventInvokeConfig":{
       "name":"UpdateFunctionEventInvokeConfig",
@@ -1472,15 +1379,15 @@
         },
         "Principal":{
           "shape":"Principal",
-          "documentation":"<p>The Amazon Web Servicesservice, Amazon Web Services account, IAM user, or IAM role that invokes the function. If you specify a service, use <code>SourceArn</code> or <code>SourceAccount</code> to limit who can invoke the function through that service.</p>"
+          "documentation":"<p>The Amazon Web Services service, Amazon Web Services account, IAM user, or IAM role that invokes the function. If you specify a service, use <code>SourceArn</code> or <code>SourceAccount</code> to limit who can invoke the function through that service.</p>"
         },
         "SourceArn":{
           "shape":"Arn",
-          "documentation":"<p>For Amazon Web Servicesservices, the ARN of the Amazon Web Services resource that invokes the function. For example, an Amazon S3 bucket or Amazon SNS topic.</p> <p>Note that Lambda configures the comparison using the <code>StringLike</code> operator.</p>"
+          "documentation":"<p>For Amazon Web Services services, the ARN of the Amazon Web Services resource that invokes the function. For example, an Amazon S3 bucket or Amazon SNS topic.</p> <p>Note that Lambda configures the comparison using the <code>StringLike</code> operator.</p>"
         },
         "SourceAccount":{
           "shape":"SourceOwner",
-          "documentation":"<p>For Amazon Web Servicesservice, the ID of the Amazon Web Services account that owns the resource. Use this together with <code>SourceArn</code> to ensure that the specified account owns the resource. It is possible for an Amazon S3 bucket to be deleted by its owner and recreated by another account.</p>"
+          "documentation":"<p>For Amazon Web Services service, the ID of the Amazon Web Services account that owns the resource. Use this together with <code>SourceArn</code> to ensure that the specified account owns the resource. It is possible for an Amazon S3 bucket to be deleted by its owner and recreated by another account.</p>"
         },
         "EventSourceToken":{
           "shape":"EventSourceToken",
@@ -2334,24 +2241,6 @@
           "documentation":"<p>The version number or alias name.</p>",
           "location":"querystring",
           "locationName":"Qualifier"
-        }
-      }
-    },
-    "DeleteResourcePolicyRequest":{
-      "type":"structure",
-      "required":["ResourceArn"],
-      "members":{
-        "ResourceArn":{
-          "shape":"PolicyResourceArn",
-          "documentation":"<p>The Amazon Resource Name (ARN) of the function you want to delete the policy from. You can use either a qualified or an unqualified ARN, but the value you specify must be a complete ARN and wildcard characters are not accepted.</p>",
-          "location":"uri",
-          "locationName":"ResourceArn"
-        },
-        "RevisionId":{
-          "shape":"RevisionId",
-          "documentation":"<p>Delete the existing policy only if its revision ID matches the string you specify. To find the revision ID of the policy currently attached to your function, use the <a>GetResourcePolicy</a> action.</p>",
-          "location":"querystring",
-          "locationName":"RevisionId"
         }
       }
     },
@@ -3592,52 +3481,6 @@
         "LastModified":{
           "shape":"Timestamp",
           "documentation":"<p>The date and time that a user last updated the configuration, in <a href=\"https://www.iso.org/iso-8601-date-and-time-format.html\">ISO 8601 format</a>.</p>"
-        }
-      }
-    },
-    "GetPublicAccessBlockConfigRequest":{
-      "type":"structure",
-      "required":["ResourceArn"],
-      "members":{
-        "ResourceArn":{
-          "shape":"PublicAccessBlockResourceArn",
-          "documentation":"<p>The Amazon Resource Name (ARN) of the function you want to retrieve public-access settings for.</p>",
-          "location":"uri",
-          "locationName":"ResourceArn"
-        }
-      }
-    },
-    "GetPublicAccessBlockConfigResponse":{
-      "type":"structure",
-      "members":{
-        "PublicAccessBlockConfig":{
-          "shape":"PublicAccessBlockConfig",
-          "documentation":"<p>The public-access settings configured for the function you specified</p>"
-        }
-      }
-    },
-    "GetResourcePolicyRequest":{
-      "type":"structure",
-      "required":["ResourceArn"],
-      "members":{
-        "ResourceArn":{
-          "shape":"PolicyResourceArn",
-          "documentation":"<p>The Amazon Resource Name (ARN) of the function you want to retrieve the policy for. You can use either a qualified or an unqualified ARN, but the value you specify must be a complete ARN and wildcard characters are not accepted.</p>",
-          "location":"uri",
-          "locationName":"ResourceArn"
-        }
-      }
-    },
-    "GetResourcePolicyResponse":{
-      "type":"structure",
-      "members":{
-        "Policy":{
-          "shape":"ResourcePolicy",
-          "documentation":"<p>The resource-based policy attached to the function you specified.</p>"
-        },
-        "RevisionId":{
-          "shape":"RevisionId",
-          "documentation":"<p>The revision ID of the policy.</p>"
         }
       }
     },
@@ -4964,11 +4807,6 @@
       "error":{"httpStatusCode":400},
       "exception":true
     },
-    "PolicyResourceArn":{
-      "type":"string",
-      "max":256,
-      "pattern":"arn:(aws[a-zA-Z-]*)?:lambda:[a-z]{2}((-gov)|(-iso([a-z]?)))?-[a-z]+-\\d{1}:\\d{12}:function:[a-zA-Z0-9-_]+(:(\\$LATEST|[a-zA-Z0-9-_])+)?"
-    },
     "PositiveInteger":{
       "type":"integer",
       "min":1
@@ -5054,38 +4892,6 @@
         "READY",
         "FAILED"
       ]
-    },
-    "PublicAccessBlockConfig":{
-      "type":"structure",
-      "members":{
-        "BlockPublicPolicy":{
-          "shape":"NullableBoolean",
-          "documentation":"<p>To block the creation of resource-based policies that would grant public access to your function, set <code>BlockPublicPolicy</code> to <code>true</code>. To allow the creation of resource-based policies that would grant public access to your function, set <code>BlockPublicPolicy</code> to <code>false</code>.</p>"
-        },
-        "RestrictPublicResource":{
-          "shape":"NullableBoolean",
-          "documentation":"<p>To block public access to your function, even if its resource-based policy allows it, set <code>RestrictPublicResource</code> to <code>true</code>. To allow public access to a function with a resource-based policy that permits it, set <code>RestrictPublicResource</code> to <code>false</code>.</p>"
-        }
-      },
-      "documentation":"<p>An object that defines the public-access settings for a function.</p>"
-    },
-    "PublicAccessBlockResourceArn":{
-      "type":"string",
-      "max":170,
-      "pattern":"arn:(aws[a-zA-Z-]*)?:lambda:[a-z]{2}((-gov)|(-iso([a-z]?)))?-[a-z]+-\\d{1}:\\d{12}:function:[a-zA-Z0-9-_]+"
-    },
-    "PublicPolicyException":{
-      "type":"structure",
-      "members":{
-        "Type":{
-          "shape":"String",
-          "documentation":"<p>The exception type.</p>"
-        },
-        "Message":{"shape":"String"}
-      },
-      "documentation":"<p>Lambda prevented your policy from being created because it would grant public access to your function. If you intended to create a public policy, use the <a>PutPublicAccessBlockConfig</a> API action to configure your function's public-access settings to allow public policies.</p>",
-      "error":{"httpStatusCode":400},
-      "exception":true
     },
     "PublishLayerVersionRequest":{
       "type":"structure",
@@ -5355,70 +5161,6 @@
         }
       }
     },
-    "PutPublicAccessBlockConfigRequest":{
-      "type":"structure",
-      "required":[
-        "ResourceArn",
-        "PublicAccessBlockConfig"
-      ],
-      "members":{
-        "ResourceArn":{
-          "shape":"PublicAccessBlockResourceArn",
-          "documentation":"<p>The Amazon Resource Name (ARN) of the function you want to configure public-access settings for. Public-access settings are applied at the function level, so you can't apply different settings to function versions or aliases.</p>",
-          "location":"uri",
-          "locationName":"ResourceArn"
-        },
-        "PublicAccessBlockConfig":{
-          "shape":"PublicAccessBlockConfig",
-          "documentation":"<p>An object defining the public-access settings you want to apply.</p> <p>To block the creation of resource-based policies that would grant public access to your function, set <code>BlockPublicPolicy</code> to <code>true</code>. To allow the creation of resource-based policies that would grant public access to your function, set <code>BlockPublicPolicy</code> to <code>false</code>.</p> <p>To block public access to your function, even if its resource-based policy allows it, set <code>RestrictPublicResource</code> to <code>true</code>. To allow public access to a function with a resource-based policy that permits it, set <code>RestrictPublicResource</code> to <code>false</code>.</p> <p>The default setting for both <code>BlockPublicPolicy</code> and <code>RestrictPublicResource</code> is <code>true</code>.</p>"
-        }
-      }
-    },
-    "PutPublicAccessBlockConfigResponse":{
-      "type":"structure",
-      "members":{
-        "PublicAccessBlockConfig":{
-          "shape":"PublicAccessBlockConfig",
-          "documentation":"<p>The public-access settings Lambda applied to your function.</p>"
-        }
-      }
-    },
-    "PutResourcePolicyRequest":{
-      "type":"structure",
-      "required":[
-        "ResourceArn",
-        "Policy"
-      ],
-      "members":{
-        "ResourceArn":{
-          "shape":"PolicyResourceArn",
-          "documentation":"<p>The Amazon Resource Name (ARN) of the function you want to add the policy to. You can use either a qualified or an unqualified ARN, but the value you specify must be a complete ARN and wildcard characters are not accepted.</p>",
-          "location":"uri",
-          "locationName":"ResourceArn"
-        },
-        "Policy":{
-          "shape":"ResourcePolicy",
-          "documentation":"<p>The JSON resource-based policy you want to add to your function.</p> <p>To learn more about creating resource-based policies for controlling access to Lambda, see <a href=\"https://docs.aws.amazon.com/\">Working with resource-based IAM policies in Lambda</a> in the <i>Lambda Developer Guide</i>.</p>"
-        },
-        "RevisionId":{
-          "shape":"RevisionId",
-          "documentation":"<p>Replace the existing policy only if its revision ID matches the string you specify. To find the revision ID of the policy currently attached to your function, use the <a>GetResourcePolicy</a> action.</p>"
-        }
-      }
-    },
-    "PutResourcePolicyResponse":{
-      "type":"structure",
-      "members":{
-        "Policy":{
-          "shape":"ResourcePolicy",
-          "documentation":"<p>The policy Lambda added to your function.</p>"
-        },
-        "RevisionId":{
-          "shape":"RevisionId",
-          "documentation":"<p>The revision ID of the policy Lambda added to your function.</p>"
-        }
-      }
-    },
     "PutRuntimeManagementConfigRequest":{
       "type":"structure",
       "required":[
@@ -5647,24 +5389,12 @@
       "error":{"httpStatusCode":502},
       "exception":true
     },
-    "ResourcePolicy":{
-      "type":"string",
-      "max":20480,
-      "min":1,
-      "pattern":"[\\s\\S]+"
-    },
     "ResponseStreamingInvocationType":{
       "type":"string",
       "enum":[
         "RequestResponse",
         "DryRun"
       ]
-    },
-    "RevisionId":{
-      "type":"string",
-      "max":36,
-      "min":36,
-      "pattern":"[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}"
     },
     "RoleArn":{
       "type":"string",

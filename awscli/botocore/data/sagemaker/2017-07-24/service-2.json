@@ -8957,6 +8957,10 @@
           "shape":"AppSecurityGroupManagement",
           "documentation":"<p>The entity that creates and manages the required security groups for inter-app communication in <code>VPCOnly</code> mode. Required when <code>CreateDomain.AppNetworkAccessType</code> is <code>VPCOnly</code> and <code>DomainSettings.RStudioServerProDomainSettings.DomainExecutionRoleArn</code> is provided. If setting up the domain for use with RStudio, this value must be set to <code>Service</code>.</p>"
         },
+        "TagPropagation":{
+          "shape":"TagPropagation",
+          "documentation":"<p>Indicates whether custom tag propagation is supported for the domain. Defaults to <code>DISABLED</code>.</p>"
+        },
         "DefaultSpaceSettings":{
           "shape":"DefaultSpaceSettings",
           "documentation":"<p>The default settings used to create a space.</p>"
@@ -13761,6 +13765,10 @@
         "AppSecurityGroupManagement":{
           "shape":"AppSecurityGroupManagement",
           "documentation":"<p>The entity that creates and manages the required security groups for inter-app communication in <code>VPCOnly</code> mode. Required when <code>CreateDomain.AppNetworkAccessType</code> is <code>VPCOnly</code> and <code>DomainSettings.RStudioServerProDomainSettings.DomainExecutionRoleArn</code> is provided.</p>"
+        },
+        "TagPropagation":{
+          "shape":"TagPropagation",
+          "documentation":"<p>Indicates whether custom tag propagation is supported for the domain.</p>"
         },
         "DefaultSpaceSettings":{
           "shape":"DefaultSpaceSettings",
@@ -35740,6 +35748,13 @@
       "max":50,
       "min":0
     },
+    "TagPropagation":{
+      "type":"string",
+      "enum":[
+        "ENABLED",
+        "DISABLED"
+      ]
+    },
     "TagValue":{
       "type":"string",
       "max":256,
@@ -38131,6 +38146,10 @@
         "AppNetworkAccessType":{
           "shape":"AppNetworkAccessType",
           "documentation":"<p>Specifies the VPC used for non-EFS traffic.</p> <ul> <li> <p> <code>PublicInternetOnly</code> - Non-EFS traffic is through a VPC managed by Amazon SageMaker, which allows direct internet access.</p> </li> <li> <p> <code>VpcOnly</code> - All Studio traffic is through the specified VPC and subnets.</p> </li> </ul> <p>This configuration can only be modified if there are no apps in the <code>InService</code>, <code>Pending</code>, or <code>Deleting</code> state. The configuration cannot be updated if <code>DomainSettings.RStudioServerProDomainSettings.DomainExecutionRoleArn</code> is already set or <code>DomainSettings.RStudioServerProDomainSettings.DomainExecutionRoleArn</code> is provided as part of the same request.</p>"
+        },
+        "TagPropagation":{
+          "shape":"TagPropagation",
+          "documentation":"<p>Indicates whether custom tag propagation is supported for the domain. Defaults to <code>DISABLED</code>.</p>"
         }
       }
     },

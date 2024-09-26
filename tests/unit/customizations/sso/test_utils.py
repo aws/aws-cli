@@ -222,7 +222,7 @@ class TestAuthCodeFetcher(unittest.TestCase):
         self.server_thread = threading.Thread(
             target=self.fetcher.get_auth_code_and_state
         )
-        self.server_thread.setDaemon(True)
+        self.server_thread.daemon = True
         self.server_thread.start()
 
     def test_expected_auth_code(self):

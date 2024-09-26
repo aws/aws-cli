@@ -52,6 +52,7 @@ class LoginCommand(BaseSSOCommand):
             force_refresh=True,
             session_name=sso_config.get('session_name'),
             registration_scopes=sso_config.get('registration_scopes'),
+            use_device_code=parsed_args.use_device_code,
         )
         success_msg = 'Successfully logged into Start URL: %s\n'
         uni_print(success_msg % sso_config['sso_start_url'])

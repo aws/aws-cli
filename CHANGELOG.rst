@@ -2,6 +2,17 @@
 CHANGELOG
 =========
 
+1.34.28
+=======
+
+* api-change:``chatbot``: Return State and StateReason fields for Chatbot Channel Configurations.
+* api-change:``lambda``: Reverting Lambda resource-based policy and block public access APIs.
+* api-change:``organizations``: Add support for policy operations on the CHATBOT_POLICY policy type.
+* api-change:``pcs``: AWS PCS API documentation - Edited the description of the iamInstanceProfileArn parameter of the CreateComputeNodeGroup and UpdateComputeNodeGroup actions; edited the description of the SlurmCustomSetting data type to list the supported parameters for clusters and compute node groups.
+* api-change:``rds-data``: Documentation update for RDS Data API to reflect support for Aurora MySQL Serverless v2 and Provisioned DB clusters.
+* api-change:``sagemaker``: Adding `TagPropagation` attribute to Sagemaker API
+
+
 1.34.27
 =======
 

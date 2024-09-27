@@ -4230,6 +4230,15 @@
       },
       "documentation":"<p>An object containing additional settings for your VDM configuration as applicable to the Guardian.</p>"
     },
+    "HttpsPolicy":{
+      "type":"string",
+      "documentation":"<p>The https policy to use for tracking open and click events. If the value is OPTIONAL or HttpsPolicy is not specified, the open trackers use HTTP and click tracker use the original protocol of the link. If the value is REQUIRE, both open and click tracker uses HTTPS and if the value is REQUIRE_OPEN_ONLY open tracker uses HTTPS and link tracker is same as original protocol of the link. </p>",
+      "enum":[
+        "REQUIRE",
+        "REQUIRE_OPEN_ONLY",
+        "OPTIONAL"
+      ]
+    },
     "Identity":{
       "type":"string",
       "min":1
@@ -5702,7 +5711,8 @@
         "CustomRedirectDomain":{
           "shape":"CustomRedirectDomain",
           "documentation":"<p>The domain to use to track open and click events.</p>"
-        }
+        },
+        "HttpsPolicy":{"shape":"HttpsPolicy"}
       },
       "documentation":"<p>A request to add a custom domain for tracking open and click events to a configuration set.</p>"
     },
@@ -6724,6 +6734,10 @@
         "CustomRedirectDomain":{
           "shape":"CustomRedirectDomain",
           "documentation":"<p>The domain to use for tracking open and click events.</p>"
+        },
+        "HttpsPolicy":{
+          "shape":"HttpsPolicy",
+          "documentation":"<p>The https policy to use for tracking open and click events.</p>"
         }
       },
       "documentation":"<p>An object that defines the tracking options for a configuration set. When you use the Amazon SES API v2 to send an email, it contains an invisible image that's used to track when recipients open your email. If your email contains links, those links are changed slightly in order to track when recipients click them.</p> <p>These images and links include references to a domain operated by Amazon Web Services. You can optionally configure the Amazon SES to use a domain that you operate for these images and links.</p>"

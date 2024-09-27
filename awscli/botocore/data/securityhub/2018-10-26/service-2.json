@@ -29,7 +29,7 @@
         {"shape":"ResourceNotFoundException"},
         {"shape":"InvalidAccessException"}
       ],
-      "documentation":"<p>Accepts the invitation to be a member account and be monitored by the Security Hub administrator account that the invitation was sent from.</p> <p>This operation is only used by member accounts that are not added through Organizations.</p> <p>When the member account accepts the invitation, permission is granted to the administrator account to view findings generated in the member account.</p>"
+      "documentation":"<note> <p>We recommend using Organizations instead of Security Hub invitations to manage your member accounts. For information, see <a href=\"https://docs.aws.amazon.com/securityhub/latest/userguide/securityhub-accounts-orgs.html\">Managing Security Hub administrator and member accounts with Organizations</a> in the <i>Security Hub User Guide</i>.</p> </note> <p>Accepts the invitation to be a member account and be monitored by the Security Hub administrator account that the invitation was sent from.</p> <p>This operation is only used by member accounts that are not added through Organizations.</p> <p>When the member account accepts the invitation, permission is granted to the administrator account to view findings generated in the member account.</p>"
     },
     "AcceptInvitation":{
       "name":"AcceptInvitation",
@@ -216,7 +216,7 @@
         {"shape":"LimitExceededException"},
         {"shape":"InvalidAccessException"}
       ],
-      "documentation":"<p>Used by Security Hub customers to update information about their investigation into a finding. Requested by administrator accounts or member accounts. Administrator accounts can update findings for their account and their member accounts. Member accounts can update findings for their account.</p> <p>Updates from <code>BatchUpdateFindings</code> do not affect the value of <code>UpdatedAt</code> for a finding.</p> <p>Administrator and member accounts can use <code>BatchUpdateFindings</code> to update the following finding fields and objects.</p> <ul> <li> <p> <code>Confidence</code> </p> </li> <li> <p> <code>Criticality</code> </p> </li> <li> <p> <code>Note</code> </p> </li> <li> <p> <code>RelatedFindings</code> </p> </li> <li> <p> <code>Severity</code> </p> </li> <li> <p> <code>Types</code> </p> </li> <li> <p> <code>UserDefinedFields</code> </p> </li> <li> <p> <code>VerificationState</code> </p> </li> <li> <p> <code>Workflow</code> </p> </li> </ul> <p>You can configure IAM policies to restrict access to fields and field values. For example, you might not want member accounts to be able to suppress findings or change the finding severity. See <a href=\"https://docs.aws.amazon.com/securityhub/latest/userguide/finding-update-batchupdatefindings.html#batchupdatefindings-configure-access\">Configuring access to BatchUpdateFindings</a> in the <i>Security Hub User Guide</i>.</p>"
+      "documentation":"<p>Used by Security Hub customers to update information about their investigation into a finding. Requested by administrator accounts or member accounts. Administrator accounts can update findings for their account and their member accounts. Member accounts can update findings for their account.</p> <p>Updates from <code>BatchUpdateFindings</code> don't affect the value of <code>UpdatedAt</code> for a finding.</p> <p>Administrator and member accounts can use <code>BatchUpdateFindings</code> to update the following finding fields and objects.</p> <ul> <li> <p> <code>Confidence</code> </p> </li> <li> <p> <code>Criticality</code> </p> </li> <li> <p> <code>Note</code> </p> </li> <li> <p> <code>RelatedFindings</code> </p> </li> <li> <p> <code>Severity</code> </p> </li> <li> <p> <code>Types</code> </p> </li> <li> <p> <code>UserDefinedFields</code> </p> </li> <li> <p> <code>VerificationState</code> </p> </li> <li> <p> <code>Workflow</code> </p> </li> </ul> <p>You can configure IAM policies to restrict access to fields and field values. For example, you might not want member accounts to be able to suppress findings or change the finding severity. See <a href=\"https://docs.aws.amazon.com/securityhub/latest/userguide/finding-update-batchupdatefindings.html#batchupdatefindings-configure-access\">Configuring access to BatchUpdateFindings</a> in the <i>Security Hub User Guide</i>.</p>"
     },
     "BatchUpdateStandardsControlAssociations":{
       "name":"BatchUpdateStandardsControlAssociations",
@@ -302,7 +302,7 @@
         {"shape":"AccessDeniedException"},
         {"shape":"InvalidInputException"}
       ],
-      "documentation":"<p>Used to enable finding aggregation. Must be called from the aggregation Region.</p> <p>For more details about cross-Region replication, see <a href=\"https://docs.aws.amazon.com/securityhub/latest/userguide/finding-aggregation.html\">Configuring finding aggregation</a> in the <i>Security Hub User Guide</i>. </p>"
+      "documentation":"<note> <p>The <i>aggregation Region</i> is now called the <i>home Region</i>.</p> </note> <p>Used to enable cross-Region aggregation. This operation can be invoked from the home Region only.</p> <p>For information about how cross-Region aggregation works, see <a href=\"https://docs.aws.amazon.com/securityhub/latest/userguide/finding-aggregation.html\">Understanding cross-Region aggregation in Security Hub</a> in the <i>Security Hub User Guide</i>. </p>"
     },
     "CreateInsight":{
       "name":"CreateInsight",
@@ -337,7 +337,7 @@
         {"shape":"ResourceConflictException"},
         {"shape":"AccessDeniedException"}
       ],
-      "documentation":"<p>Creates a member association in Security Hub between the specified accounts and the account used to make the request, which is the administrator account. If you are integrated with Organizations, then the administrator account is designated by the organization management account.</p> <p> <code>CreateMembers</code> is always used to add accounts that are not organization members.</p> <p>For accounts that are managed using Organizations, <code>CreateMembers</code> is only used in the following cases:</p> <ul> <li> <p>Security Hub is not configured to automatically add new organization accounts.</p> </li> <li> <p>The account was disassociated or deleted in Security Hub.</p> </li> </ul> <p>This action can only be used by an account that has Security Hub enabled. To enable Security Hub, you can use the <code>EnableSecurityHub</code> operation.</p> <p>For accounts that are not organization members, you create the account association and then send an invitation to the member account. To send the invitation, you use the <code>InviteMembers</code> operation. If the account owner accepts the invitation, the account becomes a member account in Security Hub.</p> <p>Accounts that are managed using Organizations do not receive an invitation. They automatically become a member account in Security Hub.</p> <ul> <li> <p>If the organization account does not have Security Hub enabled, then Security Hub and the default standards are automatically enabled. Note that Security Hub cannot be enabled automatically for the organization management account. The organization management account must enable Security Hub before the administrator account enables it as a member account.</p> </li> <li> <p>For organization accounts that already have Security Hub enabled, Security Hub does not make any other changes to those accounts. It does not change their enabled standards or controls.</p> </li> </ul> <p>A permissions policy is added that permits the administrator account to view the findings generated in the member account.</p> <p>To remove the association between the administrator and member accounts, use the <code>DisassociateFromMasterAccount</code> or <code>DisassociateMembers</code> operation.</p>"
+      "documentation":"<p>Creates a member association in Security Hub between the specified accounts and the account used to make the request, which is the administrator account. If you are integrated with Organizations, then the administrator account is designated by the organization management account.</p> <p> <code>CreateMembers</code> is always used to add accounts that are not organization members.</p> <p>For accounts that are managed using Organizations, <code>CreateMembers</code> is only used in the following cases:</p> <ul> <li> <p>Security Hub is not configured to automatically add new organization accounts.</p> </li> <li> <p>The account was disassociated or deleted in Security Hub.</p> </li> </ul> <p>This action can only be used by an account that has Security Hub enabled. To enable Security Hub, you can use the <code>EnableSecurityHub</code> operation.</p> <p>For accounts that are not organization members, you create the account association and then send an invitation to the member account. To send the invitation, you use the <code>InviteMembers</code> operation. If the account owner accepts the invitation, the account becomes a member account in Security Hub.</p> <p>Accounts that are managed using Organizations don't receive an invitation. They automatically become a member account in Security Hub.</p> <ul> <li> <p>If the organization account does not have Security Hub enabled, then Security Hub and the default standards are automatically enabled. Note that Security Hub cannot be enabled automatically for the organization management account. The organization management account must enable Security Hub before the administrator account enables it as a member account.</p> </li> <li> <p>For organization accounts that already have Security Hub enabled, Security Hub does not make any other changes to those accounts. It does not change their enabled standards or controls.</p> </li> </ul> <p>A permissions policy is added that permits the administrator account to view the findings generated in the member account.</p> <p>To remove the association between the administrator and member accounts, use the <code>DisassociateFromMasterAccount</code> or <code>DisassociateMembers</code> operation.</p>"
     },
     "DeclineInvitations":{
       "name":"DeclineInvitations",
@@ -353,7 +353,7 @@
         {"shape":"InvalidAccessException"},
         {"shape":"ResourceNotFoundException"}
       ],
-      "documentation":"<p>Declines invitations to become a member account.</p> <p>A prospective member account uses this operation to decline an invitation to become a member.</p> <p>This operation is only called by member accounts that aren't part of an organization. Organization accounts don't receive invitations.</p>"
+      "documentation":"<note> <p>We recommend using Organizations instead of Security Hub invitations to manage your member accounts. For information, see <a href=\"https://docs.aws.amazon.com/securityhub/latest/userguide/securityhub-accounts-orgs.html\">Managing Security Hub administrator and member accounts with Organizations</a> in the <i>Security Hub User Guide</i>.</p> </note> <p>Declines invitations to become a Security Hub member account.</p> <p>A prospective member account uses this operation to decline an invitation to become a member.</p> <p>Only member accounts that aren't part of an Amazon Web Services organization should use this operation. Organization accounts don't receive invitations.</p>"
     },
     "DeleteActionTarget":{
       "name":"DeleteActionTarget",
@@ -406,7 +406,7 @@
         {"shape":"InvalidInputException"},
         {"shape":"ResourceNotFoundException"}
       ],
-      "documentation":"<p>Deletes a finding aggregator. When you delete the finding aggregator, you stop finding aggregation.</p> <p>When you stop finding aggregation, findings that were already aggregated to the aggregation Region are still visible from the aggregation Region. New findings and finding updates are not aggregated. </p>"
+      "documentation":"<note> <p>The <i>aggregation Region</i> is now called the <i>home Region</i>.</p> </note> <p>Deletes a finding aggregator. When you delete the finding aggregator, you stop cross-Region aggregation. Finding replication stops occurring from the linked Regions to the home Region.</p> <p>When you stop cross-Region aggregation, findings that were already replicated and sent to the home Region are still visible from the home Region. However, new findings and finding updates are no longer replicated and sent to the home Region. </p>"
     },
     "DeleteInsight":{
       "name":"DeleteInsight",
@@ -440,7 +440,7 @@
         {"shape":"ResourceNotFoundException"},
         {"shape":"InvalidAccessException"}
       ],
-      "documentation":"<p>Deletes invitations received by the Amazon Web Services account to become a member account.</p> <p>A Security Hub administrator account can use this operation to delete invitations sent to one or more member accounts.</p> <p>This operation is only used to delete invitations that are sent to member accounts that aren't part of an organization. Organization accounts don't receive invitations.</p>"
+      "documentation":"<note> <p>We recommend using Organizations instead of Security Hub invitations to manage your member accounts. For information, see <a href=\"https://docs.aws.amazon.com/securityhub/latest/userguide/securityhub-accounts-orgs.html\">Managing Security Hub administrator and member accounts with Organizations</a> in the <i>Security Hub User Guide</i>.</p> </note> <p>Deletes invitations to become a Security Hub member account.</p> <p>A Security Hub administrator account can use this operation to delete invitations sent to one or more prospective member accounts.</p> <p>This operation is only used to delete invitations that are sent to prospective member accounts that aren't part of an Amazon Web Services organization. Organization accounts don't receive invitations.</p>"
     },
     "DeleteMembers":{
       "name":"DeleteMembers",
@@ -522,7 +522,7 @@
         {"shape":"InvalidAccessException"},
         {"shape":"InvalidInputException"}
       ],
-      "documentation":"<p>Returns information about product integrations in Security Hub.</p> <p>You can optionally provide an integration ARN. If you provide an integration ARN, then the results only include that integration.</p> <p>If you do not provide an integration ARN, then the results include all of the available product integrations. </p>"
+      "documentation":"<p>Returns information about product integrations in Security Hub.</p> <p>You can optionally provide an integration ARN. If you provide an integration ARN, then the results only include that integration.</p> <p>If you don't provide an integration ARN, then the results include all of the available product integrations. </p>"
     },
     "DescribeStandards":{
       "name":"DescribeStandards",
@@ -796,7 +796,7 @@
         {"shape":"InvalidInputException"},
         {"shape":"ResourceNotFoundException"}
       ],
-      "documentation":"<p>Returns the current finding aggregation configuration.</p>"
+      "documentation":"<note> <p>The <i>aggregation Region</i> is now called the <i>home Region</i>.</p> </note> <p>Returns the current configuration in the calling account for cross-Region aggregation. A finding aggregator is a resource that establishes the home Region and any linked Regions.</p>"
     },
     "GetFindingHistory":{
       "name":"GetFindingHistory",
@@ -828,7 +828,7 @@
         {"shape":"InvalidAccessException"},
         {"shape":"LimitExceededException"}
       ],
-      "documentation":"<p>Returns a list of findings that match the specified criteria.</p> <p>If finding aggregation is enabled, then when you call <code>GetFindings</code> from the aggregation Region, the results include all of the matching findings from both the aggregation Region and the linked Regions.</p>"
+      "documentation":"<p>Returns a list of findings that match the specified criteria.</p> <p>If cross-Region aggregation is enabled, then when you call <code>GetFindings</code> from the home Region, the results include all of the matching findings from both the home Region and linked Regions.</p>"
     },
     "GetInsightResults":{
       "name":"GetInsightResults",
@@ -878,7 +878,7 @@
         {"shape":"InvalidAccessException"},
         {"shape":"LimitExceededException"}
       ],
-      "documentation":"<p>Returns the count of all Security Hub membership invitations that were sent to the current member account, not including the currently accepted invitation. </p>"
+      "documentation":"<note> <p>We recommend using Organizations instead of Security Hub invitations to manage your member accounts. For information, see <a href=\"https://docs.aws.amazon.com/securityhub/latest/userguide/securityhub-accounts-orgs.html\">Managing Security Hub administrator and member accounts with Organizations</a> in the <i>Security Hub User Guide</i>.</p> </note> <p>Returns the count of all Security Hub membership invitations that were sent to the calling member account, not including the currently accepted invitation. </p>"
     },
     "GetMasterAccount":{
       "name":"GetMasterAccount",
@@ -948,7 +948,7 @@
         {"shape":"LimitExceededException"},
         {"shape":"ResourceNotFoundException"}
       ],
-      "documentation":"<p>Invites other Amazon Web Services accounts to become member accounts for the Security Hub administrator account that the invitation is sent from.</p> <p>This operation is only used to invite accounts that do not belong to an organization. Organization accounts do not receive invitations.</p> <p>Before you can use this action to invite a member, you must first use the <code>CreateMembers</code> action to create the member account in Security Hub.</p> <p>When the account owner enables Security Hub and accepts the invitation to become a member account, the administrator account can view the findings generated from the member account.</p>"
+      "documentation":"<note> <p>We recommend using Organizations instead of Security Hub invitations to manage your member accounts. For information, see <a href=\"https://docs.aws.amazon.com/securityhub/latest/userguide/securityhub-accounts-orgs.html\">Managing Security Hub administrator and member accounts with Organizations</a> in the <i>Security Hub User Guide</i>.</p> </note> <p>Invites other Amazon Web Services accounts to become member accounts for the Security Hub administrator account that the invitation is sent from.</p> <p>This operation is only used to invite accounts that don't belong to an Amazon Web Services organization. Organization accounts don't receive invitations.</p> <p>Before you can use this action to invite a member, you must first use the <code>CreateMembers</code> action to create the member account in Security Hub.</p> <p>When the account owner enables Security Hub and accepts the invitation to become a member account, the administrator account can view the findings generated in the member account.</p>"
     },
     "ListAutomationRules":{
       "name":"ListAutomationRules",
@@ -1032,7 +1032,7 @@
         {"shape":"AccessDeniedException"},
         {"shape":"InvalidInputException"}
       ],
-      "documentation":"<p>If finding aggregation is enabled, then <code>ListFindingAggregators</code> returns the ARN of the finding aggregator. You can run this operation from any Region.</p>"
+      "documentation":"<p>If cross-Region aggregation is enabled, then <code>ListFindingAggregators</code> returns the Amazon Resource Name (ARN) of the finding aggregator. You can run this operation from any Amazon Web Services Region.</p>"
     },
     "ListInvitations":{
       "name":"ListInvitations",
@@ -1048,7 +1048,7 @@
         {"shape":"InvalidAccessException"},
         {"shape":"LimitExceededException"}
       ],
-      "documentation":"<p>Lists all Security Hub membership invitations that were sent to the current Amazon Web Services account.</p> <p>This operation is only used by accounts that are managed by invitation. Accounts that are managed using the integration with Organizations do not receive invitations.</p>"
+      "documentation":"<note> <p>We recommend using Organizations instead of Security Hub invitations to manage your member accounts. For information, see <a href=\"https://docs.aws.amazon.com/securityhub/latest/userguide/securityhub-accounts-orgs.html\">Managing Security Hub administrator and member accounts with Organizations</a> in the <i>Security Hub User Guide</i>.</p> </note> <p>Lists all Security Hub membership invitations that were sent to the calling account.</p> <p>Only accounts that are managed by invitation can use this operation. Accounts that are managed using the integration with Organizations don't receive invitations.</p>"
     },
     "ListMembers":{
       "name":"ListMembers",
@@ -1247,7 +1247,7 @@
         {"shape":"InvalidInputException"},
         {"shape":"ResourceNotFoundException"}
       ],
-      "documentation":"<p>Updates the finding aggregation configuration. Used to update the Region linking mode and the list of included or excluded Regions. You cannot use <code>UpdateFindingAggregator</code> to change the aggregation Region.</p> <p>You must run <code>UpdateFindingAggregator</code> from the current aggregation Region. </p>"
+      "documentation":"<note> <p>The <i>aggregation Region</i> is now called the <i>home Region</i>.</p> </note> <p>Updates cross-Region aggregation settings. You can use this operation to update the Region linking mode and the list of included or excluded Amazon Web Services Regions. However, you can't use this operation to change the home Region.</p> <p>You can invoke this operation from the current home Region only. </p>"
     },
     "UpdateFindings":{
       "name":"UpdateFindings",
@@ -1725,14 +1725,14 @@
       "members":{
         "Type":{
           "shape":"AutomationRulesActionType",
-          "documentation":"<p> Specifies that the rule action should update the <code>Types</code> finding field. The <code>Types</code> finding field classifies findings in the format of namespace/category/classifier. For more information, see <a href=\"https://docs.aws.amazon.com/securityhub/latest/userguide/securityhub-findings-format-type-taxonomy.html\">Types taxonomy for ASFF</a> in the <i>Security Hub User Guide</i>. </p>"
+          "documentation":"<p> Specifies the type of action that Security Hub takes when a finding matches the defined criteria of a rule. </p>"
         },
         "FindingFieldsUpdate":{
           "shape":"AutomationRulesFindingFieldsUpdate",
           "documentation":"<p> Specifies that the automation rule action is an update to a finding field. </p>"
         }
       },
-      "documentation":"<p> One or more actions to update finding fields if a finding matches the defined criteria of the rule. </p>"
+      "documentation":"<p> One or more actions that Security Hub takes when a finding matches the defined criteria of a rule. </p>"
     },
     "AutomationRulesActionType":{
       "type":"string",
@@ -1908,7 +1908,7 @@
         },
         "ResourceId":{
           "shape":"StringFilterList",
-          "documentation":"<p> The identifier for the given resource type. For Amazon Web Services resources that are identified by Amazon Resource Names (ARNs), this is the ARN. For Amazon Web Services resources that lack ARNs, this is the identifier as defined by the Amazon Web Servicesservice that created the resource. For non-Amazon Web Services resources, this is a unique identifier that is associated with the resource. </p> <p> Array Members: Minimum number of 1 item. Maximum number of 100 items. </p>"
+          "documentation":"<p> The identifier for the given resource type. For Amazon Web Services resources that are identified by Amazon Resource Names (ARNs), this is the ARN. For Amazon Web Services resources that lack ARNs, this is the identifier as defined by the Amazon Web Services service that created the resource. For non-Amazon Web Services resources, this is a unique identifier that is associated with the resource. </p> <p> Array Members: Minimum number of 1 item. Maximum number of 100 items. </p>"
         },
         "ResourcePartition":{
           "shape":"StringFilterList",
@@ -3292,7 +3292,7 @@
         },
         "Lifecycle":{
           "shape":"AwsBackupBackupPlanLifecycleDetails",
-          "documentation":"<p>Defines when a protected resource is transitioned to cold storage and when it expires. Backup transitions and expires backups automatically according to the lifecycle that you define. If you do not specify a lifecycle, Backup applies the lifecycle policy of the source backup to the destination backup.</p> <p>Backups transitioned to cold storage must be stored in cold storage for a minimum of 90 days.</p>"
+          "documentation":"<p>Defines when a protected resource is transitioned to cold storage and when it expires. Backup transitions and expires backups automatically according to the lifecycle that you define. If you don't specify a lifecycle, Backup applies the lifecycle policy of the source backup to the destination backup.</p> <p>Backups transitioned to cold storage must be stored in cold storage for a minimum of 90 days.</p>"
         }
       },
       "documentation":"<p>An array of <code>CopyAction</code> objects, each of which contains details of the copy operation. </p>"
@@ -3338,7 +3338,7 @@
         },
         "Lifecycle":{
           "shape":"AwsBackupBackupPlanLifecycleDetails",
-          "documentation":"<p>Defines when a protected resource is transitioned to cold storage and when it expires. Backup transitions and expires backups automatically according to the lifecycle that you define. If you do not specify a lifecycle, Backup applies the lifecycle policy of the source backup to the destination backup.</p> <p>Backups transitioned to cold storage must be stored in cold storage for a minimum of 90 days.</p>"
+          "documentation":"<p>Defines when a protected resource is transitioned to cold storage and when it expires. Backup transitions and expires backups automatically according to the lifecycle that you define. If you don't specify a lifecycle, Backup applies the lifecycle policy of the source backup to the destination backup.</p> <p>Backups transitioned to cold storage must be stored in cold storage for a minimum of 90 days.</p>"
         }
       },
       "documentation":"<p>Provides details about an array of <code>BackupRule</code> objects, each of which specifies a scheduled task that is used to back up a selection of resources. </p>"
@@ -3360,7 +3360,7 @@
         },
         "EncryptionKeyArn":{
           "shape":"NonEmptyString",
-          "documentation":"<p>The unique ARN associated with the server-side encryption key. You can specify a key to encrypt your backups from services that support full Backup management. If you do not specify a key, Backup creates an KMS key for you by default. </p>"
+          "documentation":"<p>The unique ARN associated with the server-side encryption key. You can specify a key to encrypt your backups from services that support full Backup management. If you don't specify a key, Backup creates an KMS key for you by default. </p>"
         },
         "Notifications":{
           "shape":"AwsBackupBackupVaultNotificationsDetails",
@@ -7636,7 +7636,7 @@
         },
         "SchedulingStrategy":{
           "shape":"NonEmptyString",
-          "documentation":"<p>The scheduling strategy to use for the service.</p> <p>The <code>REPLICA</code> scheduling strategy places and maintains the desired number of tasks across the cluster. By default, the service scheduler spreads tasks across Availability Zones. Task placement strategies and constraints are used to customize task placement decisions.</p> <p>The <code>DAEMON</code> scheduling strategy deploys exactly one task on each active container instance that meets all of the task placement constraints that are specified in the cluster. The service scheduler also evaluates the task placement constraints for running tasks and stops tasks that do not meet the placement constraints.</p> <p>Valid values: <code>REPLICA</code> | <code>DAEMON</code> </p>"
+          "documentation":"<p>The scheduling strategy to use for the service.</p> <p>The <code>REPLICA</code> scheduling strategy places and maintains the desired number of tasks across the cluster. By default, the service scheduler spreads tasks across Availability Zones. Task placement strategies and constraints are used to customize task placement decisions.</p> <p>The <code>DAEMON</code> scheduling strategy deploys exactly one task on each active container instance that meets all of the task placement constraints that are specified in the cluster. The service scheduler also evaluates the task placement constraints for running tasks and stops tasks that don't meet the placement constraints.</p> <p>Valid values: <code>REPLICA</code> | <code>DAEMON</code> </p>"
         },
         "ServiceArn":{
           "shape":"NonEmptyString",
@@ -11610,7 +11610,7 @@
         },
         "DBName":{
           "shape":"NonEmptyString",
-          "documentation":"<p>The meaning of this parameter differs according to the database engine you use.</p> <p> <b>MySQL, MariaDB, SQL Server, PostgreSQL</b> </p> <p>Contains the name of the initial database of this instance that was provided at create time, if one was specified when the DB instance was created. This same name is returned for the life of the DB instance.</p> <p> <b>Oracle</b> </p> <p>Contains the Oracle System ID (SID) of the created DB instance. Not shown when the returned parameters do not apply to an Oracle DB instance. </p>"
+          "documentation":"<p>The meaning of this parameter differs according to the database engine you use.</p> <p> <b>MySQL, MariaDB, SQL Server, PostgreSQL</b> </p> <p>Contains the name of the initial database of this instance that was provided at create time, if one was specified when the DB instance was created. This same name is returned for the life of the DB instance.</p> <p> <b>Oracle</b> </p> <p>Contains the Oracle System ID (SID) of the created DB instance. Not shown when the returned parameters don't apply to an Oracle DB instance. </p>"
         },
         "DeletionProtection":{
           "shape":"Boolean",
@@ -14209,7 +14209,7 @@
         },
         "WorkflowStatus":{
           "shape":"StringFilterList",
-          "documentation":"<p>The status of the investigation into a finding. Allowed values are the following.</p> <ul> <li> <p> <code>NEW</code> - The initial state of a finding, before it is reviewed.</p> <p>Security Hub also resets the workflow status from <code>NOTIFIED</code> or <code>RESOLVED</code> to <code>NEW</code> in the following cases:</p> <ul> <li> <p> <code>RecordState</code> changes from <code>ARCHIVED</code> to <code>ACTIVE</code>.</p> </li> <li> <p> <code>Compliance.Status</code> changes from <code>PASSED</code> to either <code>WARNING</code>, <code>FAILED</code>, or <code>NOT_AVAILABLE</code>.</p> </li> </ul> </li> <li> <p> <code>NOTIFIED</code> - Indicates that the resource owner has been notified about the security issue. Used when the initial reviewer is not the resource owner, and needs intervention from the resource owner.</p> <p>If one of the following occurs, the workflow status is changed automatically from <code>NOTIFIED</code> to <code>NEW</code>:</p> <ul> <li> <p> <code>RecordState</code> changes from <code>ARCHIVED</code> to <code>ACTIVE</code>.</p> </li> <li> <p> <code>Compliance.Status</code> changes from <code>PASSED</code> to <code>FAILED</code>, <code>WARNING</code>, or <code>NOT_AVAILABLE</code>.</p> </li> </ul> </li> <li> <p> <code>SUPPRESSED</code> - Indicates that you reviewed the finding and do not believe that any action is needed.</p> <p>The workflow status of a <code>SUPPRESSED</code> finding does not change if <code>RecordState</code> changes from <code>ARCHIVED</code> to <code>ACTIVE</code>.</p> </li> <li> <p> <code>RESOLVED</code> - The finding was reviewed and remediated and is now considered resolved. </p> <p>The finding remains <code>RESOLVED</code> unless one of the following occurs:</p> <ul> <li> <p> <code>RecordState</code> changes from <code>ARCHIVED</code> to <code>ACTIVE</code>.</p> </li> <li> <p> <code>Compliance.Status</code> changes from <code>PASSED</code> to <code>FAILED</code>, <code>WARNING</code>, or <code>NOT_AVAILABLE</code>.</p> </li> </ul> <p>In those cases, the workflow status is automatically reset to <code>NEW</code>.</p> <p>For findings from controls, if <code>Compliance.Status</code> is <code>PASSED</code>, then Security Hub automatically sets the workflow status to <code>RESOLVED</code>.</p> </li> </ul>"
+          "documentation":"<p>The status of the investigation into a finding. Allowed values are the following.</p> <ul> <li> <p> <code>NEW</code> - The initial state of a finding, before it is reviewed.</p> <p>Security Hub also resets the workflow status from <code>NOTIFIED</code> or <code>RESOLVED</code> to <code>NEW</code> in the following cases:</p> <ul> <li> <p> <code>RecordState</code> changes from <code>ARCHIVED</code> to <code>ACTIVE</code>.</p> </li> <li> <p> <code>Compliance.Status</code> changes from <code>PASSED</code> to either <code>WARNING</code>, <code>FAILED</code>, or <code>NOT_AVAILABLE</code>.</p> </li> </ul> </li> <li> <p> <code>NOTIFIED</code> - Indicates that the resource owner has been notified about the security issue. Used when the initial reviewer is not the resource owner, and needs intervention from the resource owner.</p> <p>If one of the following occurs, the workflow status is changed automatically from <code>NOTIFIED</code> to <code>NEW</code>:</p> <ul> <li> <p> <code>RecordState</code> changes from <code>ARCHIVED</code> to <code>ACTIVE</code>.</p> </li> <li> <p> <code>Compliance.Status</code> changes from <code>PASSED</code> to <code>FAILED</code>, <code>WARNING</code>, or <code>NOT_AVAILABLE</code>.</p> </li> </ul> </li> <li> <p> <code>SUPPRESSED</code> - Indicates that you reviewed the finding and don't believe that any action is needed.</p> <p>The workflow status of a <code>SUPPRESSED</code> finding does not change if <code>RecordState</code> changes from <code>ARCHIVED</code> to <code>ACTIVE</code>.</p> </li> <li> <p> <code>RESOLVED</code> - The finding was reviewed and remediated and is now considered resolved. </p> <p>The finding remains <code>RESOLVED</code> unless one of the following occurs:</p> <ul> <li> <p> <code>RecordState</code> changes from <code>ARCHIVED</code> to <code>ACTIVE</code>.</p> </li> <li> <p> <code>Compliance.Status</code> changes from <code>PASSED</code> to <code>FAILED</code>, <code>WARNING</code>, or <code>NOT_AVAILABLE</code>.</p> </li> </ul> <p>In those cases, the workflow status is automatically reset to <code>NEW</code>.</p> <p>For findings from controls, if <code>Compliance.Status</code> is <code>PASSED</code>, then Security Hub automatically sets the workflow status to <code>RESOLVED</code>.</p> </li> </ul>"
         },
         "RecordState":{
           "shape":"StringFilterList",
@@ -14275,7 +14275,7 @@
         },
         "ComplianceSecurityControlId":{
           "shape":"StringFilterList",
-          "documentation":"<p> The unique identifier of a control across standards. Values for this field typically consist of an Amazon Web Servicesservice and a number, such as APIGateway.5. </p>"
+          "documentation":"<p> The unique identifier of a control across standards. Values for this field typically consist of an Amazon Web Services service and a number, such as APIGateway.5. </p>"
         },
         "ComplianceAssociatedStandardsId":{
           "shape":"StringFilterList",
@@ -15035,11 +15035,11 @@
         },
         "OverrideAction":{
           "shape":"WafOverrideAction",
-          "documentation":"<p>Use the <code>OverrideAction</code> to test your <code>RuleGroup</code>.</p> <p>Any rule in a <code>RuleGroup</code> can potentially block a request. If you set the <code>OverrideAction</code> to <code>None</code>, the <code>RuleGroup</code> blocks a request if any individual rule in the <code>RuleGroup</code> matches the request and is configured to block that request.</p> <p>However, if you first want to test the <code>RuleGroup</code>, set the <code>OverrideAction</code> to <code>Count</code>. The <code>RuleGroup</code> then overrides any block action specified by individual rules contained within the group. Instead of blocking matching requests, those requests are counted.</p> <p> <code>ActivatedRule</code>|<code>OverrideAction</code> applies only when updating or adding a <code>RuleGroup</code> to a web ACL. In this case you do not use <code>ActivatedRule</code> <code>Action</code>. For all other update requests, <code>ActivatedRule</code> <code>Action</code> is used instead of <code>ActivatedRule</code> <code>OverrideAction</code>.</p>"
+          "documentation":"<p>Use the <code>OverrideAction</code> to test your <code>RuleGroup</code>.</p> <p>Any rule in a <code>RuleGroup</code> can potentially block a request. If you set the <code>OverrideAction</code> to <code>None</code>, the <code>RuleGroup</code> blocks a request if any individual rule in the <code>RuleGroup</code> matches the request and is configured to block that request.</p> <p>However, if you first want to test the <code>RuleGroup</code>, set the <code>OverrideAction</code> to <code>Count</code>. The <code>RuleGroup</code> then overrides any block action specified by individual rules contained within the group. Instead of blocking matching requests, those requests are counted.</p> <p> <code>ActivatedRule</code>|<code>OverrideAction</code> applies only when updating or adding a <code>RuleGroup</code> to a web ACL. In this case you don't use <code>ActivatedRule</code> <code>Action</code>. For all other update requests, <code>ActivatedRule</code> <code>Action</code> is used instead of <code>ActivatedRule</code> <code>OverrideAction</code>.</p>"
         },
         "Priority":{
           "shape":"Integer",
-          "documentation":"<p>Specifies the order in which the rules in a web ACL are evaluated. Rules with a lower value for <code>Priority</code> are evaluated before rules with a higher value. The value must be a unique integer. If you add multiple rules to a web ACL, the values do not need to be consecutive.</p>"
+          "documentation":"<p>Specifies the order in which the rules in a web ACL are evaluated. Rules with a lower value for <code>Priority</code> are evaluated before rules with a higher value. The value must be a unique integer. If you add multiple rules to a web ACL, the values don't need to be consecutive.</p>"
         },
         "RuleId":{
           "shape":"NonEmptyString",
@@ -15857,7 +15857,7 @@
         },
         "SecurityControlId":{
           "shape":"NonEmptyString",
-          "documentation":"<p> Typically provides the unique identifier of a control across standards. For Security Hub controls, this field consists of an Amazon Web Servicesservice and a unique number, such as <code>APIGateway.5</code>. </p>"
+          "documentation":"<p> Typically provides the unique identifier of a control across standards. For Security Hub controls, this field consists of an Amazon Web Services service and a unique number, such as <code>APIGateway.5</code>. </p>"
         },
         "AssociatedStandards":{
           "shape":"AssociatedStandardsList",
@@ -16231,7 +16231,7 @@
         },
         "Regions":{
           "shape":"StringList",
-          "documentation":"<p>If <code>RegionLinkingMode</code> is <code>ALL_REGIONS_EXCEPT_SPECIFIED</code>, then this is a space-separated list of Regions that do not aggregate findings to the aggregation Region.</p> <p>If <code>RegionLinkingMode</code> is <code>SPECIFIED_REGIONS</code>, then this is a space-separated list of Regions that do aggregate findings to the aggregation Region. </p> <p>An <code>InvalidInputException</code> error results if you populate this field while <code>RegionLinkingMode</code> is <code>NO_REGIONS</code>.</p>"
+          "documentation":"<p>If <code>RegionLinkingMode</code> is <code>ALL_REGIONS_EXCEPT_SPECIFIED</code>, then this is a space-separated list of Regions that don't replicate and send findings to the home Region.</p> <p>If <code>RegionLinkingMode</code> is <code>SPECIFIED_REGIONS</code>, then this is a space-separated list of Regions that do replicate and send findings to the home Region. </p> <p>An <code>InvalidInputException</code> error results if you populate this field while <code>RegionLinkingMode</code> is <code>NO_REGIONS</code>.</p>"
         }
       }
     },
@@ -16240,11 +16240,11 @@
       "members":{
         "FindingAggregatorArn":{
           "shape":"NonEmptyString",
-          "documentation":"<p>The ARN of the finding aggregator. You use the finding aggregator ARN to retrieve details for, update, and stop finding aggregation.</p>"
+          "documentation":"<p>The ARN of the finding aggregator. You use the finding aggregator ARN to retrieve details for, update, and stop cross-Region aggregation.</p>"
         },
         "FindingAggregationRegion":{
           "shape":"NonEmptyString",
-          "documentation":"<p>The aggregation Region.</p>"
+          "documentation":"<p>The home Region. Findings generated in linked Regions are replicated and sent to the home Region.</p>"
         },
         "RegionLinkingMode":{
           "shape":"NonEmptyString",
@@ -16926,7 +16926,7 @@
         },
         "EnableDefaultStandards":{
           "shape":"Boolean",
-          "documentation":"<p>Whether to enable the security standards that Security Hub has designated as automatically enabled. If you do not provide a value for <code>EnableDefaultStandards</code>, it is set to <code>true</code>. To not enable the automatically enabled standards, set <code>EnableDefaultStandards</code> to <code>false</code>.</p>"
+          "documentation":"<p>Whether to enable the security standards that Security Hub has designated as automatically enabled. If you don't provide a value for <code>EnableDefaultStandards</code>, it is set to <code>true</code>. To not enable the automatically enabled standards, set <code>EnableDefaultStandards</code> to <code>false</code>.</p>"
         },
         "ControlFindingGenerator":{
           "shape":"ControlFindingGenerator",
@@ -17018,7 +17018,7 @@
           "documentation":"<p>The ARN of the finding aggregator. You use the finding aggregator ARN to retrieve details for, update, and delete the finding aggregator.</p>"
         }
       },
-      "documentation":"<p>A finding aggregator. A finding aggregator contains the configuration for finding aggregation.</p>"
+      "documentation":"<p>A finding aggregator is a Security Hub resource that specifies cross-Region aggregation settings, including the home Region and any linked Regions.</p>"
     },
     "FindingAggregatorList":{
       "type":"list",
@@ -17038,7 +17038,7 @@
         },
         "UpdateSource":{
           "shape":"FindingHistoryUpdateSource",
-          "documentation":"<p> Identifies the source of the event that changed the finding. For example, an integrated Amazon Web Servicesservice or third-party partner integration may call <a href=\"https://docs.aws.amazon.com/securityhub/1.0/APIReference/API_BatchImportFindings.html\"> <code>BatchImportFindings</code> </a>, or an Security Hub customer may call <a href=\"https://docs.aws.amazon.com/securityhub/1.0/APIReference/API_BatchUpdateFindings.html\"> <code>BatchUpdateFindings</code> </a>. </p>"
+          "documentation":"<p> Identifies the source of the event that changed the finding. For example, an integrated Amazon Web Services service or third-party partner integration may call <a href=\"https://docs.aws.amazon.com/securityhub/1.0/APIReference/API_BatchImportFindings.html\"> <code>BatchImportFindings</code> </a>, or an Security Hub customer may call <a href=\"https://docs.aws.amazon.com/securityhub/1.0/APIReference/API_BatchUpdateFindings.html\"> <code>BatchUpdateFindings</code> </a>. </p>"
         },
         "Updates":{
           "shape":"FindingHistoryUpdatesList",
@@ -17078,7 +17078,7 @@
       "members":{
         "Type":{
           "shape":"FindingHistoryUpdateSourceType",
-          "documentation":"<p> Describes the type of finding change event, such as a call to <a href=\"https://docs.aws.amazon.com/securityhub/1.0/APIReference/API_BatchImportFindings.html\"> <code>BatchImportFindings</code> </a> (by an integrated Amazon Web Servicesservice or third party partner integration) or <a href=\"https://docs.aws.amazon.com/securityhub/1.0/APIReference/API_BatchUpdateFindings.html\"> <code>BatchUpdateFindings</code> </a> (by a Security Hub customer). </p>"
+          "documentation":"<p> Describes the type of finding change event, such as a call to <a href=\"https://docs.aws.amazon.com/securityhub/1.0/APIReference/API_BatchImportFindings.html\"> <code>BatchImportFindings</code> </a> (by an integrated Amazon Web Services service or third party partner integration) or <a href=\"https://docs.aws.amazon.com/securityhub/1.0/APIReference/API_BatchUpdateFindings.html\"> <code>BatchUpdateFindings</code> </a> (by a Security Hub customer). </p>"
         },
         "Identity":{
           "shape":"NonEmptyString",
@@ -17396,7 +17396,7 @@
         },
         "FindingAggregationRegion":{
           "shape":"NonEmptyString",
-          "documentation":"<p>The aggregation Region.</p>"
+          "documentation":"<p>The home Region. Findings generated in linked Regions are replicated and sent to the home Region.</p>"
         },
         "RegionLinkingMode":{
           "shape":"NonEmptyString",
@@ -17506,7 +17506,7 @@
       "members":{
         "InsightArns":{
           "shape":"ArnList",
-          "documentation":"<p>The ARNs of the insights to describe. If you do not provide any insight ARNs, then <code>GetInsights</code> returns all of your custom insights. It does not return any managed insights.</p>"
+          "documentation":"<p>The ARNs of the insights to describe. If you don't provide any insight ARNs, then <code>GetInsights</code> returns all of your custom insights. It does not return any managed insights.</p>"
         },
         "NextToken":{
           "shape":"NextToken",
@@ -18885,7 +18885,7 @@
       "members":{
         "SecurityHub":{
           "shape":"SecurityHubPolicy",
-          "documentation":"<p> The Amazon Web Servicesservice that the configuration policy applies to. </p>"
+          "documentation":"<p> The Amazon Web Services service that the configuration policy applies to. </p>"
         }
       },
       "documentation":"<p> An object that defines how Security Hub is configured. It includes whether Security Hub is enabled or disabled, a list of enabled security standards, a list of enabled or disabled security controls, and a list of custom parameter values for specified controls. If you provide a list of security controls that are enabled in the configuration policy, Security Hub disables all other controls (including newly released controls). If you provide a list of security controls that are disabled in the configuration policy, Security Hub enables all other controls (including newly released controls). </p>",
@@ -19680,7 +19680,7 @@
         },
         "DestinationPrefixListId":{
           "shape":"NonEmptyString",
-          "documentation":"<p> The prefix of the destination Amazon Web Servicesservice. </p>"
+          "documentation":"<p> The prefix of the destination Amazon Web Services service. </p>"
         },
         "EgressOnlyInternetGatewayId":{
           "shape":"NonEmptyString",
@@ -20101,7 +20101,7 @@
       "members":{
         "SecurityControlId":{
           "shape":"NonEmptyString",
-          "documentation":"<p> The unique identifier of a security control across standards. Values for this field typically consist of an Amazon Web Servicesservice name and a number, such as APIGateway.3. </p>"
+          "documentation":"<p> The unique identifier of a security control across standards. Values for this field typically consist of an Amazon Web Services service name and a number, such as APIGateway.3. </p>"
         },
         "SecurityControlArn":{
           "shape":"NonEmptyString",
@@ -20173,7 +20173,7 @@
       "members":{
         "SecurityControlId":{
           "shape":"NonEmptyString",
-          "documentation":"<p> The unique identifier of a security control across standards. Values for this field typically consist of an Amazon Web Servicesservice name and a number (for example, APIGateway.3). This parameter differs from <code>SecurityControlArn</code>, which is a unique Amazon Resource Name (ARN) assigned to a control. The ARN references the security control ID (for example, arn:aws:securityhub:eu-central-1:123456789012:security-control/APIGateway.3). </p>"
+          "documentation":"<p> The unique identifier of a security control across standards. Values for this field typically consist of an Amazon Web Services service name and a number (for example, APIGateway.3). This parameter differs from <code>SecurityControlArn</code>, which is a unique Amazon Resource Name (ARN) assigned to a control. The ARN references the security control ID (for example, arn:aws:securityhub:eu-central-1:123456789012:security-control/APIGateway.3). </p>"
         },
         "Title":{
           "shape":"NonEmptyString",
@@ -20329,11 +20329,11 @@
         },
         "Label":{
           "shape":"SeverityLabel",
-          "documentation":"<p>The severity value of the finding. The allowed values are the following.</p> <ul> <li> <p> <code>INFORMATIONAL</code> - No issue was found.</p> </li> <li> <p> <code>LOW</code> - The issue does not require action on its own.</p> </li> <li> <p> <code>MEDIUM</code> - The issue must be addressed but not urgently.</p> </li> <li> <p> <code>HIGH</code> - The issue must be addressed as a priority.</p> </li> <li> <p> <code>CRITICAL</code> - The issue must be remediated immediately to avoid it escalating.</p> </li> </ul> <p>If you provide <code>Normalized</code> and do not provide <code>Label</code>, then <code>Label</code> is set automatically as follows. </p> <ul> <li> <p>0 - <code>INFORMATIONAL</code> </p> </li> <li> <p>1–39 - <code>LOW</code> </p> </li> <li> <p>40–69 - <code>MEDIUM</code> </p> </li> <li> <p>70–89 - <code>HIGH</code> </p> </li> <li> <p>90–100 - <code>CRITICAL</code> </p> </li> </ul>"
+          "documentation":"<p>The severity value of the finding. The allowed values are the following.</p> <ul> <li> <p> <code>INFORMATIONAL</code> - No issue was found.</p> </li> <li> <p> <code>LOW</code> - The issue does not require action on its own.</p> </li> <li> <p> <code>MEDIUM</code> - The issue must be addressed but not urgently.</p> </li> <li> <p> <code>HIGH</code> - The issue must be addressed as a priority.</p> </li> <li> <p> <code>CRITICAL</code> - The issue must be remediated immediately to avoid it escalating.</p> </li> </ul> <p>If you provide <code>Normalized</code> and don't provide <code>Label</code>, then <code>Label</code> is set automatically as follows. </p> <ul> <li> <p>0 - <code>INFORMATIONAL</code> </p> </li> <li> <p>1–39 - <code>LOW</code> </p> </li> <li> <p>40–69 - <code>MEDIUM</code> </p> </li> <li> <p>70–89 - <code>HIGH</code> </p> </li> <li> <p>90–100 - <code>CRITICAL</code> </p> </li> </ul>"
         },
         "Normalized":{
           "shape":"Integer",
-          "documentation":"<p>Deprecated. The normalized severity of a finding. Instead of providing <code>Normalized</code>, provide <code>Label</code>.</p> <p>The value of <code>Normalized</code> can be an integer between <code>0</code> and <code>100</code>.</p> <p>If you provide <code>Label</code> and do not provide <code>Normalized</code>, then <code>Normalized</code> is set automatically as follows.</p> <ul> <li> <p> <code>INFORMATIONAL</code> - 0</p> </li> <li> <p> <code>LOW</code> - 1</p> </li> <li> <p> <code>MEDIUM</code> - 40</p> </li> <li> <p> <code>HIGH</code> - 70</p> </li> <li> <p> <code>CRITICAL</code> - 90</p> </li> </ul>"
+          "documentation":"<p>Deprecated. The normalized severity of a finding. Instead of providing <code>Normalized</code>, provide <code>Label</code>.</p> <p>The value of <code>Normalized</code> can be an integer between <code>0</code> and <code>100</code>.</p> <p>If you provide <code>Label</code> and don't provide <code>Normalized</code>, then <code>Normalized</code> is set automatically as follows.</p> <ul> <li> <p> <code>INFORMATIONAL</code> - 0</p> </li> <li> <p> <code>LOW</code> - 1</p> </li> <li> <p> <code>MEDIUM</code> - 40</p> </li> <li> <p> <code>HIGH</code> - 70</p> </li> <li> <p> <code>CRITICAL</code> - 90</p> </li> </ul>"
         },
         "Original":{
           "shape":"NonEmptyString",
@@ -20366,7 +20366,7 @@
       "members":{
         "Normalized":{
           "shape":"RatioScale",
-          "documentation":"<p>The normalized severity for the finding. This attribute is to be deprecated in favor of <code>Label</code>.</p> <p>If you provide <code>Normalized</code> and do not provide <code>Label</code>, <code>Label</code> is set automatically as follows.</p> <ul> <li> <p>0 - <code>INFORMATIONAL</code> </p> </li> <li> <p>1–39 - <code>LOW</code> </p> </li> <li> <p>40–69 - <code>MEDIUM</code> </p> </li> <li> <p>70–89 - <code>HIGH</code> </p> </li> <li> <p>90–100 - <code>CRITICAL</code> </p> </li> </ul>"
+          "documentation":"<p>The normalized severity for the finding. This attribute is to be deprecated in favor of <code>Label</code>.</p> <p>If you provide <code>Normalized</code> and don't provide <code>Label</code>, <code>Label</code> is set automatically as follows.</p> <ul> <li> <p>0 - <code>INFORMATIONAL</code> </p> </li> <li> <p>1–39 - <code>LOW</code> </p> </li> <li> <p>40–69 - <code>MEDIUM</code> </p> </li> <li> <p>70–89 - <code>HIGH</code> </p> </li> <li> <p>90–100 - <code>CRITICAL</code> </p> </li> </ul>"
         },
         "Product":{
           "shape":"Double",
@@ -20554,7 +20554,7 @@
         },
         "SecurityControlId":{
           "shape":"NonEmptyString",
-          "documentation":"<p> The unique identifier of a security control across standards. Values for this field typically consist of an Amazon Web Servicesservice name and a number, such as APIGateway.3. </p>"
+          "documentation":"<p> The unique identifier of a security control across standards. Values for this field typically consist of an Amazon Web Services service name and a number, such as APIGateway.3. </p>"
         },
         "SecurityControlArn":{
           "shape":"NonEmptyString",
@@ -20636,7 +20636,7 @@
         },
         "SecurityControlId":{
           "shape":"NonEmptyString",
-          "documentation":"<p> A unique standard-agnostic identifier for a control. Values for this field typically consist of an Amazon Web Servicesservice and a number, such as APIGateway.5. This field doesn't reference a specific standard. </p>"
+          "documentation":"<p> A unique standard-agnostic identifier for a control. Values for this field typically consist of an Amazon Web Services service and a number, such as APIGateway.5. This field doesn't reference a specific standard. </p>"
         },
         "SecurityControlArn":{
           "shape":"NonEmptyString",
@@ -21483,7 +21483,7 @@
         },
         "Regions":{
           "shape":"StringList",
-          "documentation":"<p>If <code>RegionLinkingMode</code> is <code>ALL_REGIONS_EXCEPT_SPECIFIED</code>, then this is a space-separated list of Regions that do not aggregate findings to the aggregation Region.</p> <p>If <code>RegionLinkingMode</code> is <code>SPECIFIED_REGIONS</code>, then this is a space-separated list of Regions that do aggregate findings to the aggregation Region.</p> <p>An <code>InvalidInputException</code> error results if you populate this field while <code>RegionLinkingMode</code> is <code>NO_REGIONS</code>.</p>"
+          "documentation":"<p>If <code>RegionLinkingMode</code> is <code>ALL_REGIONS_EXCEPT_SPECIFIED</code>, then this is a space-separated list of Regions that don't replicate and send findings to the home Region.</p> <p>If <code>RegionLinkingMode</code> is <code>SPECIFIED_REGIONS</code>, then this is a space-separated list of Regions that do replicate and send findings to the home Region.</p> <p>An <code>InvalidInputException</code> error results if you populate this field while <code>RegionLinkingMode</code> is <code>NO_REGIONS</code>.</p>"
         }
       }
     },
@@ -21496,7 +21496,7 @@
         },
         "FindingAggregationRegion":{
           "shape":"NonEmptyString",
-          "documentation":"<p>The aggregation Region.</p>"
+          "documentation":"<p>The home Region. Findings generated in linked Regions are replicated and sent to the home Region.</p>"
         },
         "RegionLinkingMode":{
           "shape":"NonEmptyString",
@@ -21887,7 +21887,7 @@
       "members":{
         "Status":{
           "shape":"WorkflowStatus",
-          "documentation":"<p>The status of the investigation into the finding. The workflow status is specific to an individual finding. It does not affect the generation of new findings. For example, setting the workflow status to <code>SUPPRESSED</code> or <code>RESOLVED</code> does not prevent a new finding for the same issue.</p> <p>The allowed values are the following.</p> <ul> <li> <p> <code>NEW</code> - The initial state of a finding, before it is reviewed.</p> <p>Security Hub also resets the workflow status from <code>NOTIFIED</code> or <code>RESOLVED</code> to <code>NEW</code> in the following cases:</p> <ul> <li> <p> <code>RecordState</code> changes from <code>ARCHIVED</code> to <code>ACTIVE</code>.</p> </li> <li> <p> <code>ComplianceStatus</code> changes from <code>PASSED</code> to either <code>WARNING</code>, <code>FAILED</code>, or <code>NOT_AVAILABLE</code>.</p> </li> </ul> </li> <li> <p> <code>NOTIFIED</code> - Indicates that you notified the resource owner about the security issue. Used when the initial reviewer is not the resource owner, and needs intervention from the resource owner.</p> </li> <li> <p> <code>SUPPRESSED</code> - Indicates that you reviewed the finding and do not believe that any action is needed. The finding is no longer updated.</p> </li> <li> <p> <code>RESOLVED</code> - The finding was reviewed and remediated and is now considered resolved. </p> </li> </ul>"
+          "documentation":"<p>The status of the investigation into the finding. The workflow status is specific to an individual finding. It does not affect the generation of new findings. For example, setting the workflow status to <code>SUPPRESSED</code> or <code>RESOLVED</code> does not prevent a new finding for the same issue.</p> <p>The allowed values are the following.</p> <ul> <li> <p> <code>NEW</code> - The initial state of a finding, before it is reviewed.</p> <p>Security Hub also resets the workflow status from <code>NOTIFIED</code> or <code>RESOLVED</code> to <code>NEW</code> in the following cases:</p> <ul> <li> <p> <code>RecordState</code> changes from <code>ARCHIVED</code> to <code>ACTIVE</code>.</p> </li> <li> <p> <code>ComplianceStatus</code> changes from <code>PASSED</code> to either <code>WARNING</code>, <code>FAILED</code>, or <code>NOT_AVAILABLE</code>.</p> </li> </ul> </li> <li> <p> <code>NOTIFIED</code> - Indicates that you notified the resource owner about the security issue. Used when the initial reviewer is not the resource owner, and needs intervention from the resource owner.</p> </li> <li> <p> <code>SUPPRESSED</code> - Indicates that you reviewed the finding and don't believe that any action is needed. The finding is no longer updated.</p> </li> <li> <p> <code>RESOLVED</code> - The finding was reviewed and remediated and is now considered resolved. </p> </li> </ul>"
         }
       },
       "documentation":"<p>Provides details about the status of the investigation into a finding.</p>"
@@ -21918,11 +21918,11 @@
       "members":{
         "Status":{
           "shape":"WorkflowStatus",
-          "documentation":"<p>The status of the investigation into the finding. The workflow status is specific to an individual finding. It does not affect the generation of new findings. For example, setting the workflow status to <code>SUPPRESSED</code> or <code>RESOLVED</code> does not prevent a new finding for the same issue.</p> <p>The allowed values are the following.</p> <ul> <li> <p> <code>NEW</code> - The initial state of a finding, before it is reviewed.</p> <p>Security Hub also resets <code>WorkFlowStatus</code> from <code>NOTIFIED</code> or <code>RESOLVED</code> to <code>NEW</code> in the following cases:</p> <ul> <li> <p>The record state changes from <code>ARCHIVED</code> to <code>ACTIVE</code>.</p> </li> <li> <p>The compliance status changes from <code>PASSED</code> to either <code>WARNING</code>, <code>FAILED</code>, or <code>NOT_AVAILABLE</code>.</p> </li> </ul> </li> <li> <p> <code>NOTIFIED</code> - Indicates that you notified the resource owner about the security issue. Used when the initial reviewer is not the resource owner, and needs intervention from the resource owner.</p> </li> <li> <p> <code>RESOLVED</code> - The finding was reviewed and remediated and is now considered resolved.</p> </li> <li> <p> <code>SUPPRESSED</code> - Indicates that you reviewed the finding and do not believe that any action is needed. The finding is no longer updated.</p> </li> </ul>"
+          "documentation":"<p>The status of the investigation into the finding. The workflow status is specific to an individual finding. It does not affect the generation of new findings. For example, setting the workflow status to <code>SUPPRESSED</code> or <code>RESOLVED</code> does not prevent a new finding for the same issue.</p> <p>The allowed values are the following.</p> <ul> <li> <p> <code>NEW</code> - The initial state of a finding, before it is reviewed.</p> <p>Security Hub also resets <code>WorkFlowStatus</code> from <code>NOTIFIED</code> or <code>RESOLVED</code> to <code>NEW</code> in the following cases:</p> <ul> <li> <p>The record state changes from <code>ARCHIVED</code> to <code>ACTIVE</code>.</p> </li> <li> <p>The compliance status changes from <code>PASSED</code> to either <code>WARNING</code>, <code>FAILED</code>, or <code>NOT_AVAILABLE</code>.</p> </li> </ul> </li> <li> <p> <code>NOTIFIED</code> - Indicates that you notified the resource owner about the security issue. Used when the initial reviewer is not the resource owner, and needs intervention from the resource owner.</p> </li> <li> <p> <code>RESOLVED</code> - The finding was reviewed and remediated and is now considered resolved.</p> </li> <li> <p> <code>SUPPRESSED</code> - Indicates that you reviewed the finding and don't believe that any action is needed. The finding is no longer updated.</p> </li> </ul>"
         }
       },
       "documentation":"<p>Used to update information about the investigation into the finding.</p>"
     }
   },
-  "documentation":"<p>Security Hub provides you with a comprehensive view of your security state in Amazon Web Services and helps you assess your Amazon Web Services environment against security industry standards and best practices.</p> <p>Security Hub collects security data across Amazon Web Services accounts, Amazon Web Servicesservices, and supported third-party products and helps you analyze your security trends and identify the highest priority security issues.</p> <p>To help you manage the security state of your organization, Security Hub supports multiple security standards. These include the Amazon Web Services Foundational Security Best Practices (FSBP) standard developed by Amazon Web Services, and external compliance frameworks such as the Center for Internet Security (CIS), the Payment Card Industry Data Security Standard (PCI DSS), and the National Institute of Standards and Technology (NIST). Each standard includes several security controls, each of which represents a security best practice. Security Hub runs checks against security controls and generates control findings to help you assess your compliance against security best practices.</p> <p>In addition to generating control findings, Security Hub also receives findings from other Amazon Web Servicesservices, such as Amazon GuardDuty and Amazon Inspector, and supported third-party products. This gives you a single pane of glass into a variety of security-related issues. You can also send Security Hub findings to other Amazon Web Servicesservices and supported third-party products.</p> <p>Security Hub offers automation features that help you triage and remediate security issues. For example, you can use automation rules to automatically update critical findings when a security check fails. You can also leverage the integration with Amazon EventBridge to trigger automatic responses to specific findings.</p> <p>This guide, the <i>Security Hub API Reference</i>, provides information about the Security Hub API. This includes supported resources, HTTP methods, parameters, and schemas. If you're new to Security Hub, you might find it helpful to also review the <a href=\"https://docs.aws.amazon.com/securityhub/latest/userguide/what-is-securityhub.html\"> <i>Security Hub User Guide</i> </a>. The user guide explains key concepts and provides procedures that demonstrate how to use Security Hub features. It also provides information about topics such as integrating Security Hub with other Amazon Web Servicesservices.</p> <p>In addition to interacting with Security Hub by making calls to the Security Hub API, you can use a current version of an Amazon Web Services command line tool or SDK. Amazon Web Services provides tools and SDKs that consist of libraries and sample code for various languages and platforms, such as PowerShell, Java, Go, Python, C++, and .NET. These tools and SDKs provide convenient, programmatic access to Security Hub and other Amazon Web Servicesservices . They also handle tasks such as signing requests, managing errors, and retrying requests automatically. For information about installing and using the Amazon Web Services tools and SDKs, see <a href=\"http://aws.amazon.com/developer/tools/\">Tools to Build on Amazon Web Services</a>.</p> <p>With the exception of operations that are related to central configuration, Security Hub API requests are executed only in the Amazon Web Services Region that is currently active or in the specific Amazon Web Services Region that you specify in your request. Any configuration or settings change that results from the operation is applied only to that Region. To make the same change in other Regions, call the same API operation in each Region in which you want to apply the change. When you use central configuration, API requests for enabling Security Hub, standards, and controls are executed in the home Region and all linked Regions. For a list of central configuration operations, see the <a href=\"https://docs.aws.amazon.com/securityhub/latest/userguide/central-configuration-intro.html#central-configuration-concepts\">Central configuration terms and concepts</a> section of the <i>Security Hub User Guide</i>.</p> <p>The following throttling limits apply to Security Hub API operations.</p> <ul> <li> <p> <code>BatchEnableStandards</code> - <code>RateLimit</code> of 1 request per second. <code>BurstLimit</code> of 1 request per second.</p> </li> <li> <p> <code>GetFindings</code> - <code>RateLimit</code> of 3 requests per second. <code>BurstLimit</code> of 6 requests per second.</p> </li> <li> <p> <code>BatchImportFindings</code> - <code>RateLimit</code> of 10 requests per second. <code>BurstLimit</code> of 30 requests per second.</p> </li> <li> <p> <code>BatchUpdateFindings</code> - <code>RateLimit</code> of 10 requests per second. <code>BurstLimit</code> of 30 requests per second.</p> </li> <li> <p> <code>UpdateStandardsControl</code> - <code>RateLimit</code> of 1 request per second. <code>BurstLimit</code> of 5 requests per second.</p> </li> <li> <p>All other operations - <code>RateLimit</code> of 10 requests per second. <code>BurstLimit</code> of 30 requests per second.</p> </li> </ul>"
+  "documentation":"<p>Security Hub provides you with a comprehensive view of your security state in Amazon Web Services and helps you assess your Amazon Web Services environment against security industry standards and best practices.</p> <p>Security Hub collects security data across Amazon Web Services accounts, Amazon Web Services services, and supported third-party products and helps you analyze your security trends and identify the highest priority security issues.</p> <p>To help you manage the security state of your organization, Security Hub supports multiple security standards. These include the Amazon Web Services Foundational Security Best Practices (FSBP) standard developed by Amazon Web Services, and external compliance frameworks such as the Center for Internet Security (CIS), the Payment Card Industry Data Security Standard (PCI DSS), and the National Institute of Standards and Technology (NIST). Each standard includes several security controls, each of which represents a security best practice. Security Hub runs checks against security controls and generates control findings to help you assess your compliance against security best practices.</p> <p>In addition to generating control findings, Security Hub also receives findings from other Amazon Web Services services, such as Amazon GuardDuty and Amazon Inspector, and supported third-party products. This gives you a single pane of glass into a variety of security-related issues. You can also send Security Hub findings to other Amazon Web Services services and supported third-party products.</p> <p>Security Hub offers automation features that help you triage and remediate security issues. For example, you can use automation rules to automatically update critical findings when a security check fails. You can also leverage the integration with Amazon EventBridge to trigger automatic responses to specific findings.</p> <p>This guide, the <i>Security Hub API Reference</i>, provides information about the Security Hub API. This includes supported resources, HTTP methods, parameters, and schemas. If you're new to Security Hub, you might find it helpful to also review the <a href=\"https://docs.aws.amazon.com/securityhub/latest/userguide/what-is-securityhub.html\"> <i>Security Hub User Guide</i> </a>. The user guide explains key concepts and provides procedures that demonstrate how to use Security Hub features. It also provides information about topics such as integrating Security Hub with other Amazon Web Services services.</p> <p>In addition to interacting with Security Hub by making calls to the Security Hub API, you can use a current version of an Amazon Web Services command line tool or SDK. Amazon Web Services provides tools and SDKs that consist of libraries and sample code for various languages and platforms, such as PowerShell, Java, Go, Python, C++, and .NET. These tools and SDKs provide convenient, programmatic access to Security Hub and other Amazon Web Services services . They also handle tasks such as signing requests, managing errors, and retrying requests automatically. For information about installing and using the Amazon Web Services tools and SDKs, see <a href=\"http://aws.amazon.com/developer/tools/\">Tools to Build on Amazon Web Services</a>.</p> <p>With the exception of operations that are related to central configuration, Security Hub API requests are executed only in the Amazon Web Services Region that is currently active or in the specific Amazon Web Services Region that you specify in your request. Any configuration or settings change that results from the operation is applied only to that Region. To make the same change in other Regions, call the same API operation in each Region in which you want to apply the change. When you use central configuration, API requests for enabling Security Hub, standards, and controls are executed in the home Region and all linked Regions. For a list of central configuration operations, see the <a href=\"https://docs.aws.amazon.com/securityhub/latest/userguide/central-configuration-intro.html#central-configuration-concepts\">Central configuration terms and concepts</a> section of the <i>Security Hub User Guide</i>.</p> <p>The following throttling limits apply to Security Hub API operations.</p> <ul> <li> <p> <code>BatchEnableStandards</code> - <code>RateLimit</code> of 1 request per second. <code>BurstLimit</code> of 1 request per second.</p> </li> <li> <p> <code>GetFindings</code> - <code>RateLimit</code> of 3 requests per second. <code>BurstLimit</code> of 6 requests per second.</p> </li> <li> <p> <code>BatchImportFindings</code> - <code>RateLimit</code> of 10 requests per second. <code>BurstLimit</code> of 30 requests per second.</p> </li> <li> <p> <code>BatchUpdateFindings</code> - <code>RateLimit</code> of 10 requests per second. <code>BurstLimit</code> of 30 requests per second.</p> </li> <li> <p> <code>UpdateStandardsControl</code> - <code>RateLimit</code> of 1 request per second. <code>BurstLimit</code> of 5 requests per second.</p> </li> <li> <p>All other operations - <code>RateLimit</code> of 10 requests per second. <code>BurstLimit</code> of 30 requests per second.</p> </li> </ul>"
 }

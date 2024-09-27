@@ -1492,6 +1492,24 @@
       ],
       "documentation":"<p>Describes the current namespace.</p>"
     },
+    "DescribeQPersonalizationConfiguration":{
+      "name":"DescribeQPersonalizationConfiguration",
+      "http":{
+        "method":"GET",
+        "requestUri":"/accounts/{AwsAccountId}/q-personalization-configuration"
+      },
+      "input":{"shape":"DescribeQPersonalizationConfigurationRequest"},
+      "output":{"shape":"DescribeQPersonalizationConfigurationResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"ConflictException"},
+        {"shape":"InvalidParameterValueException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalFailureException"}
+      ],
+      "documentation":"<p>Describes a personalization configuration.</p>"
+    },
     "DescribeRefreshSchedule":{
       "name":"DescribeRefreshSchedule",
       "http":{
@@ -3072,6 +3090,25 @@
         {"shape":"InternalFailureException"}
       ],
       "documentation":"<p>Use the <code>UpdatePublicSharingSettings</code> operation to turn on or turn off the public sharing settings of an Amazon QuickSight dashboard.</p> <p>To use this operation, turn on session capacity pricing for your Amazon QuickSight account.</p> <p>Before you can turn on public sharing on your account, make sure to give public sharing permissions to an administrative user in the Identity and Access Management (IAM) console. For more information on using IAM with Amazon QuickSight, see <a href=\"https://docs.aws.amazon.com/quicksight/latest/user/security_iam_service-with-iam.html\">Using Amazon QuickSight with IAM</a> in the <i>Amazon QuickSight User Guide</i>.</p>"
+    },
+    "UpdateQPersonalizationConfiguration":{
+      "name":"UpdateQPersonalizationConfiguration",
+      "http":{
+        "method":"PUT",
+        "requestUri":"/accounts/{AwsAccountId}/q-personalization-configuration"
+      },
+      "input":{"shape":"UpdateQPersonalizationConfigurationRequest"},
+      "output":{"shape":"UpdateQPersonalizationConfigurationResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"ConflictException"},
+        {"shape":"InvalidParameterValueException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalFailureException"},
+        {"shape":"ResourceUnavailableException"}
+      ],
+      "documentation":"<p>Updates a personalization configuration.</p>"
     },
     "UpdateRefreshSchedule":{
       "name":"UpdateRefreshSchedule",
@@ -14520,6 +14557,36 @@
         }
       }
     },
+    "DescribeQPersonalizationConfigurationRequest":{
+      "type":"structure",
+      "required":["AwsAccountId"],
+      "members":{
+        "AwsAccountId":{
+          "shape":"AwsAccountId",
+          "documentation":"<p>The ID of the Amazon Web Services account that contains the personalization configuration that the user wants described.</p>",
+          "location":"uri",
+          "locationName":"AwsAccountId"
+        }
+      }
+    },
+    "DescribeQPersonalizationConfigurationResponse":{
+      "type":"structure",
+      "members":{
+        "PersonalizationMode":{
+          "shape":"PersonalizationMode",
+          "documentation":"<p>A value that indicates whether personalization is enabled or not.</p>"
+        },
+        "RequestId":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Web Services request ID for this operation.</p>"
+        },
+        "Status":{
+          "shape":"StatusCode",
+          "documentation":"<p>The HTTP status of the request.</p>",
+          "location":"statusCode"
+        }
+      }
+    },
     "DescribeRefreshScheduleRequest":{
       "type":"structure",
       "required":[
@@ -23389,6 +23456,13 @@
       "type":"integer",
       "max":1000,
       "min":1
+    },
+    "PersonalizationMode":{
+      "type":"string",
+      "enum":[
+        "ENABLED",
+        "DISABLED"
+      ]
     },
     "PhysicalTable":{
       "type":"structure",
@@ -32450,6 +32524,43 @@
     "UpdatePublicSharingSettingsResponse":{
       "type":"structure",
       "members":{
+        "RequestId":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Web Services request ID for this operation.</p>"
+        },
+        "Status":{
+          "shape":"StatusCode",
+          "documentation":"<p>The HTTP status of the request.</p>",
+          "location":"statusCode"
+        }
+      }
+    },
+    "UpdateQPersonalizationConfigurationRequest":{
+      "type":"structure",
+      "required":[
+        "AwsAccountId",
+        "PersonalizationMode"
+      ],
+      "members":{
+        "AwsAccountId":{
+          "shape":"AwsAccountId",
+          "documentation":"<p>The ID of the Amazon Web Services account account that contains the personalization configuration that the user wants to update.</p>",
+          "location":"uri",
+          "locationName":"AwsAccountId"
+        },
+        "PersonalizationMode":{
+          "shape":"PersonalizationMode",
+          "documentation":"<p>An option to allow Amazon QuickSight to customize data stories with user specific metadata, specifically location and job information, in your IAM Identity Center instance.</p>"
+        }
+      }
+    },
+    "UpdateQPersonalizationConfigurationResponse":{
+      "type":"structure",
+      "members":{
+        "PersonalizationMode":{
+          "shape":"PersonalizationMode",
+          "documentation":"<p>The personalization mode that is used for the personalization configuration.</p>"
+        },
         "RequestId":{
           "shape":"String",
           "documentation":"<p>The Amazon Web Services request ID for this operation.</p>"

@@ -2,6 +2,15 @@
 CHANGELOG
 =========
 
+2.17.61
+=======
+
+* api-change:``quicksight``: Adding personalization in QuickSight data stories. Admins can enable or disable personalization through QuickSight settings.
+* api-change:``sesv2``: This release adds support for engagement tracking over Https using custom domains.
+* api-change:``customer-profiles``: Introduces optional RoleArn parameter for PutIntegration request and includes RoleArn in the response of PutIntegration, GetIntegration and ListIntegrations
+* api-change:``securityhub``: Documentation updates for AWS Security Hub
+
+
 2.17.60
 =======
 

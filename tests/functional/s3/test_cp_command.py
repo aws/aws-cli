@@ -788,6 +788,51 @@ class TestCPCommand(BaseCPCommandTest):
             })
         )
 
+    def test_multipart_upload_with_checksum_algorithm_crc32(self):
+        full_path = self.files.create_file('foo.txt', 'a' * 10 * MB)
+        self.parsed_responses = [
+            {'UploadId': 'foo'},
+            {'ETag': 'foo-e1', 'ChecksumCRC32': 'foo-1'},
+            {'ETag': 'foo-e2', 'ChecksumCRC32': 'foo-2'},
+            {}
+        ]
+        cmdline = ('%s %s s3://bucket/key2.txt'
+                   ' --checksum-algorithm CRC32' % (self.prefix, full_path))
+        self.run_cmd(cmdline, expected_rc=0)
+        self.assertEqual(len(self.operations_called), 4, self.operations_called)
+        self.assertEqual(self.operations_called[0][0].name,'CreateMultipartUpload')
+        self.assertEqual(self.operations_called[0][1]['ChecksumAlgorithm'],'CRC32')
+        self.assertEqual(self.operations_called[1][0].name, 'UploadPart')
+        self.assertEqual(self.operations_called[1][1]['ChecksumAlgorithm'], 'CRC32')
+        self.assertEqual(self.operations_called[3][0].name, 'CompleteMultipartUpload')
+        self.assertEqual(self.operations_called[3][1]['MultipartUpload']['Parts'][0]['ChecksumCRC32'], 'foo-1')
+        self.assertEqual(self.operations_called[3][1]['MultipartUpload']['Parts'][1]['ChecksumCRC32'], 'foo-2')
+
+    def test_copy_with_checksum_algorithm_crc32(self):
+        self.parsed_responses = [
+            self.head_object_response(),
+            {
+                'ContentLength': '100',
+                'LastModified': '00:00:00Z',
+                'ETag': 'foo-1',
+                'ChecksumCRC32': 'Tq0H4g==',
+                'Body': BytesIO(b'foo')
+            }
+        ]
+        cmdline = f'{self.prefix} s3://bucket1/key.txt s3://bucket2/key.txt --checksum-algorithm CRC32'
+        self.run_cmd(cmdline, expected_rc=0)
+        self.assert_in_operations_called(
+            ('CopyObject', {
+                'CopySource': {
+                    'Bucket': 'bucket1',
+                    'Key': 'key.txt'
+                },
+                'Bucket': 'bucket2',
+                'Key': 'key.txt',
+                'ChecksumAlgorithm': 'CRC32'
+            })
+        )
+
     def test_download_with_checksum_mode_crc32(self):
         self.parsed_responses = [
             self.head_object_response(),

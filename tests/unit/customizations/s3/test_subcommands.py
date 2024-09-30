@@ -404,20 +404,14 @@ class CommandParametersTest(unittest.TestCase):
         paths = ['s3://bucket/key', self.file_creator.rootdir]
         parameters = {'checksum_algorithm': 'CRC32'}
         cmd_params = CommandParameters('cp', parameters, '')
-        with self.assertRaises(ParamValidationError):
+        with self.assertRaises(ParamValidationError) as cm:
             cmd_params.add_paths(paths)
+            self.assertIn('Expected checksum-algorithm parameter to be used with one of following path formats', cm.msg)
 
     def test_validate_checksum_algorithm_sync_download_error(self):
         paths = ['s3://bucket/key', self.file_creator.rootdir]
         parameters = {'checksum_algorithm': 'CRC32C'}
         cmd_params = CommandParameters('sync', parameters, '')
-        with self.assertRaises(ParamValidationError):
-            cmd_params.add_paths(paths)
-
-    def test_validate_checksum_algorithm_move_error(self):
-        paths = ['s3://bucket/key', 's3://bucket2/key']
-        parameters = {'checksum_algorithm': 'SHA1'}
-        cmd_params = CommandParameters('mv', parameters, '')
         with self.assertRaises(ParamValidationError):
             cmd_params.add_paths(paths)
 

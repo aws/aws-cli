@@ -836,6 +836,7 @@ class TestCPCommand(BaseCPCommandTest):
     def test_download_with_checksum_mode_crc32(self):
         self.parsed_responses = [
             self.head_object_response(),
+            # Mocked GetObject response with a checksum algorithm specified
             {
                 'ContentLength': '100',
                 'LastModified': '00:00:00Z',
@@ -852,6 +853,7 @@ class TestCPCommand(BaseCPCommandTest):
     def test_download_with_checksum_mode_crc32c(self):
         self.parsed_responses = [
             self.head_object_response(),
+            # Mocked GetObject response with a checksum algorithm specified
             {
                 'ContentLength': '100',
                 'LastModified': '00:00:00Z',

@@ -261,6 +261,7 @@ class TestMvCommand(BaseS3TransferCommandTest):
     def test_download_with_checksum_mode_crc32(self):
         self.parsed_responses = [
             self.head_object_response(),
+            # Mocked GetObject response with a checksum algorithm specified
             {
                 'ContentLength': '100',
                 'LastModified': '00:00:00Z',

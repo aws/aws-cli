@@ -415,7 +415,7 @@ class TestSyncCommand(BaseS3TransferCommandTest):
     def test_download_with_checksum_mode_sha1(self):
         self.parsed_responses = [
             self.list_objects_response(['bucket']),
-            # Mocked GetObject response with an included checksum algorithm specified
+            # Mocked GetObject response with a checksum algorithm specified
             {
                 'ContentLength': '100',
                 'LastModified': '00:00:00Z',
@@ -433,7 +433,7 @@ class TestSyncCommand(BaseS3TransferCommandTest):
     def test_download_with_checksum_mode_sha256(self):
         self.parsed_responses = [
             self.list_objects_response(['bucket']),
-            # Mocked GetObject response with an included checksum algorithm specified
+            # Mocked GetObject response with a checksum algorithm specified
             {
                 'ContentLength': '100',
                 'LastModified': '00:00:00Z',

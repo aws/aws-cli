@@ -414,7 +414,8 @@ class TestSyncCommand(BaseS3TransferCommandTest):
 
     def test_download_with_checksum_mode_sha1(self):
         self.parsed_responses = [
-            self.head_object_response(),
+            self.list_objects_response(['bucket']),
+            # Mocked GetObject response with an included checksum algorithm specified
             {
                 'ContentLength': '100',
                 'LastModified': '00:00:00Z',
@@ -426,10 +427,13 @@ class TestSyncCommand(BaseS3TransferCommandTest):
         cmdline = f'{self.prefix} s3://bucket/foo {self.files.rootdir} --checksum-mode ENABLED'
         self.run_cmd(cmdline, expected_rc=0)
         self.assertEqual(self.operations_called[0][0].name, 'ListObjectsV2')
+        self.assertEqual(self.operations_called[1][0].name, 'GetObject')
+        self.assertIn(('ChecksumMode', 'ENABLED'), self.operations_called[1][1].items())
 
     def test_download_with_checksum_mode_sha256(self):
         self.parsed_responses = [
-            self.head_object_response(),
+            self.list_objects_response(['bucket']),
+            # Mocked GetObject response with an included checksum algorithm specified
             {
                 'ContentLength': '100',
                 'LastModified': '00:00:00Z',
@@ -441,6 +445,8 @@ class TestSyncCommand(BaseS3TransferCommandTest):
         cmdline = f'{self.prefix} s3://bucket/foo {self.files.rootdir} --checksum-mode ENABLED'
         self.run_cmd(cmdline, expected_rc=0)
         self.assertEqual(self.operations_called[0][0].name, 'ListObjectsV2')
+        self.assertEqual(self.operations_called[1][0].name, 'GetObject')
+        self.assertIn(('ChecksumMode', 'ENABLED'), self.operations_called[1][1].items())
 
 
 class TestSyncSourceRegion(BaseS3CLIRunnerTest):

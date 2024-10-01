@@ -195,7 +195,7 @@
         {"shape":"ConflictException"},
         {"shape":"ServiceQuotaExceededException"}
       ],
-      "documentation":"<p>Creates a knowledge base that contains data sources from which information can be queried and used by LLMs. To create a knowledge base, you must first set up your data sources and configure a supported vector store. For more information, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/knowledge-base-setup.html\">Set up your data for ingestion</a>.</p> <note> <p>If you prefer to let Amazon Bedrock create and manage a vector store for you in Amazon OpenSearch Service, use the console. For more information, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/knowledge-base-create\">Create a knowledge base</a>.</p> </note> <ul> <li> <p>Provide the <code>name</code> and an optional <code>description</code>.</p> </li> <li> <p>Provide the Amazon Resource Name (ARN) with permissions to create a knowledge base in the <code>roleArn</code> field.</p> </li> <li> <p>Provide the embedding model to use in the <code>embeddingModelArn</code> field in the <code>knowledgeBaseConfiguration</code> object.</p> </li> <li> <p>Provide the configuration for your vector store in the <code>storageConfiguration</code> object.</p> <ul> <li> <p>For an Amazon OpenSearch Service database, use the <code>opensearchServerlessConfiguration</code> object. For more information, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/knowledge-base-setup-oss.html\">Create a vector store in Amazon OpenSearch Service</a>.</p> </li> <li> <p>For an Amazon Aurora database, use the <code>RdsConfiguration</code> object. For more information, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/knowledge-base-setup-rds.html\">Create a vector store in Amazon Aurora</a>.</p> </li> <li> <p>For a Pinecone database, use the <code>pineconeConfiguration</code> object. For more information, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/knowledge-base-setup-pinecone.html\">Create a vector store in Pinecone</a>.</p> </li> <li> <p>For a Redis Enterprise Cloud database, use the <code>redisEnterpriseCloudConfiguration</code> object. For more information, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/knowledge-base-setup-redis.html\">Create a vector store in Redis Enterprise Cloud</a>.</p> </li> </ul> </li> </ul>",
+      "documentation":"<p>Creates a knowledge base. A knowledge base contains your data sources so that Large Language Models (LLMs) can use your data. To create a knowledge base, you must first set up your data sources and configure a supported vector store. For more information, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/knowlege-base-prereq.html\">Set up a knowledge base</a>.</p> <note> <p>If you prefer to let Amazon Bedrock create and manage a vector store for you in Amazon OpenSearch Service, use the console. For more information, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/knowledge-base-create\">Create a knowledge base</a>.</p> </note> <ul> <li> <p>Provide the <code>name</code> and an optional <code>description</code>.</p> </li> <li> <p>Provide the Amazon Resource Name (ARN) with permissions to create a knowledge base in the <code>roleArn</code> field.</p> </li> <li> <p>Provide the embedding model to use in the <code>embeddingModelArn</code> field in the <code>knowledgeBaseConfiguration</code> object.</p> </li> <li> <p>Provide the configuration for your vector store in the <code>storageConfiguration</code> object.</p> <ul> <li> <p>For an Amazon OpenSearch Service database, use the <code>opensearchServerlessConfiguration</code> object. For more information, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/knowledge-base-setup-oss.html\">Create a vector store in Amazon OpenSearch Service</a>.</p> </li> <li> <p>For an Amazon Aurora database, use the <code>RdsConfiguration</code> object. For more information, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/knowledge-base-setup-rds.html\">Create a vector store in Amazon Aurora</a>.</p> </li> <li> <p>For a Pinecone database, use the <code>pineconeConfiguration</code> object. For more information, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/knowledge-base-setup-pinecone.html\">Create a vector store in Pinecone</a>.</p> </li> <li> <p>For a Redis Enterprise Cloud database, use the <code>redisEnterpriseCloudConfiguration</code> object. For more information, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/knowledge-base-setup-redis.html\">Create a vector store in Redis Enterprise Cloud</a>.</p> </li> </ul> </li> </ul>",
       "idempotent":true
     },
     "CreatePrompt":{
@@ -636,7 +636,7 @@
         {"shape":"InternalServerException"},
         {"shape":"ResourceNotFoundException"}
       ],
-      "documentation":"<p>Gets information about a ingestion job, in which a data source is added to a knowledge base.</p>"
+      "documentation":"<p>Gets information about a data ingestion job. Data sources are ingested into your knowledge base so that Large Lanaguage Models (LLMs) can use your data.</p>"
     },
     "GetKnowledgeBase":{
       "name":"GetKnowledgeBase",
@@ -850,7 +850,7 @@
         {"shape":"InternalServerException"},
         {"shape":"ResourceNotFoundException"}
       ],
-      "documentation":"<p>Lists the ingestion jobs for a data source and information about each of them.</p>"
+      "documentation":"<p>Lists the data ingestion jobs for a data source. The list also includes information about each job.</p>"
     },
     "ListKnowledgeBases":{
       "name":"ListKnowledgeBases",
@@ -867,7 +867,7 @@
         {"shape":"ValidationException"},
         {"shape":"InternalServerException"}
       ],
-      "documentation":"<p>Lists the knowledge bases in an account and information about each of them.</p>"
+      "documentation":"<p>Lists the knowledge bases in an account. The list also includesinformation about each knowledge base.</p>"
     },
     "ListPrompts":{
       "name":"ListPrompts",
@@ -963,7 +963,27 @@
         {"shape":"ConflictException"},
         {"shape":"ServiceQuotaExceededException"}
       ],
-      "documentation":"<p>Begins an ingestion job, in which a data source is added to a knowledge base.</p>",
+      "documentation":"<p>Begins a data ingestion job. Data sources are ingested into your knowledge base so that Large Language Models (LLMs) can use your data.</p>",
+      "idempotent":true
+    },
+    "StopIngestionJob":{
+      "name":"StopIngestionJob",
+      "http":{
+        "method":"POST",
+        "requestUri":"/knowledgebases/{knowledgeBaseId}/datasources/{dataSourceId}/ingestionjobs/{ingestionJobId}/stop",
+        "responseCode":202
+      },
+      "input":{"shape":"StopIngestionJobRequest"},
+      "output":{"shape":"StopIngestionJobResponse"},
+      "errors":[
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ConflictException"}
+      ],
+      "documentation":"<p>Stops a currently running data ingestion job. You can send a <code>StartIngestionJob</code> request again to ingest the rest of your data when you are ready.</p>",
       "idempotent":true
     },
     "TagResource":{
@@ -4369,7 +4389,7 @@
         },
         "knowledgeBaseId":{
           "shape":"Id",
-          "documentation":"<p>The unique identifier of the knowledge base that the data source was added to.</p>",
+          "documentation":"<p>The unique identifier of the knowledge base for the data source.</p>",
           "location":"uri",
           "locationName":"knowledgeBaseId"
         }
@@ -4612,19 +4632,19 @@
       "members":{
         "dataSourceId":{
           "shape":"Id",
-          "documentation":"<p>The unique identifier of the data source in the ingestion job.</p>",
+          "documentation":"<p>The unique identifier of the data source for the data ingestion job you want to get information on.</p>",
           "location":"uri",
           "locationName":"dataSourceId"
         },
         "ingestionJobId":{
           "shape":"Id",
-          "documentation":"<p>The unique identifier of the ingestion job.</p>",
+          "documentation":"<p>The unique identifier of the data ingestion job you want to get information on.</p>",
           "location":"uri",
           "locationName":"ingestionJobId"
         },
         "knowledgeBaseId":{
           "shape":"Id",
-          "documentation":"<p>The unique identifier of the knowledge base for which the ingestion job applies.</p>",
+          "documentation":"<p>The unique identifier of the knowledge base for the data ingestion job you want to get information on.</p>",
           "location":"uri",
           "locationName":"knowledgeBaseId"
         }
@@ -4636,7 +4656,7 @@
       "members":{
         "ingestionJob":{
           "shape":"IngestionJob",
-          "documentation":"<p>Contains details about the ingestion job.</p>"
+          "documentation":"<p>Contains details about the data ingestion job.</p>"
         }
       }
     },
@@ -4646,7 +4666,7 @@
       "members":{
         "knowledgeBaseId":{
           "shape":"Id",
-          "documentation":"<p>The unique identifier of the knowledge base for which to get information.</p>",
+          "documentation":"<p>The unique identifier of the knowledge base you want to get information on.</p>",
           "location":"uri",
           "locationName":"knowledgeBaseId"
         }
@@ -4850,42 +4870,42 @@
       "members":{
         "dataSourceId":{
           "shape":"Id",
-          "documentation":"<p>The unique identifier of the ingested data source.</p>"
+          "documentation":"<p>The unique identifier of the data source for the data ingestion job.</p>"
         },
         "description":{
           "shape":"Description",
-          "documentation":"<p>The description of the ingestion job.</p>"
+          "documentation":"<p>The description of the data ingestion job.</p>"
         },
         "failureReasons":{
           "shape":"FailureReasons",
-          "documentation":"<p>A list of reasons that the ingestion job failed.</p>"
+          "documentation":"<p>A list of reasons that the data ingestion job failed.</p>"
         },
         "ingestionJobId":{
           "shape":"Id",
-          "documentation":"<p>The unique identifier of the ingestion job.</p>"
+          "documentation":"<p>The unique identifier of the data ingestion job.</p>"
         },
         "knowledgeBaseId":{
           "shape":"Id",
-          "documentation":"<p>The unique identifier of the knowledge base to which the data source is being added.</p>"
+          "documentation":"<p>The unique identifier of the knowledge for the data ingestion job.</p>"
         },
         "startedAt":{
           "shape":"DateTimestamp",
-          "documentation":"<p>The time at which the ingestion job started.</p>"
+          "documentation":"<p>The time the data ingestion job started.</p> <p>If you stop a data ingestion job, the <code>startedAt</code> time is the time the job was started before the job was stopped.</p>"
         },
         "statistics":{
           "shape":"IngestionJobStatistics",
-          "documentation":"<p>Contains statistics about the ingestion job.</p>"
+          "documentation":"<p>Contains statistics about the data ingestion job.</p>"
         },
         "status":{
           "shape":"IngestionJobStatus",
-          "documentation":"<p>The status of the ingestion job.</p>"
+          "documentation":"<p>The status of the data ingestion job.</p>"
         },
         "updatedAt":{
           "shape":"DateTimestamp",
-          "documentation":"<p>The time at which the ingestion job was last updated.</p>"
+          "documentation":"<p>The time the data ingestion job was last updated.</p> <p>If you stop a data ingestion job, the <code>updatedAt</code> time is the time the job was stopped.</p>"
         }
       },
-      "documentation":"<p>Contains details about an ingestion job, which converts a data source to embeddings for a vector store in knowledge base.</p> <p>This data type is used in the following API operations:</p> <ul> <li> <p> <a href=\"https://docs.aws.amazon.com/bedrock/latest/APIReference/API_agent_StartIngestionJob.html#API_agent_StartIngestionJob_ResponseSyntax\">StartIngestionJob response</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/bedrock/latest/APIReference/API_agent_GetIngestionJob.html#API_agent_GetIngestionJob_ResponseSyntax\">GetIngestionJob response</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/bedrock/latest/APIReference/API_agent_ListIngestionJobs.html#API_agent_ListIngestionJobs_ResponseSyntax\">ListIngestionJob response</a> </p> </li> </ul>"
+      "documentation":"<p>Contains details about a data ingestion job. Data sources are ingested into a knowledge base so that Large Language Models (LLMs) can use your data.</p> <p>This data type is used in the following API operations:</p> <ul> <li> <p> <a href=\"https://docs.aws.amazon.com/bedrock/latest/APIReference/API_agent_StartIngestionJob.html#API_agent_StartIngestionJob_ResponseSyntax\">StartIngestionJob response</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/bedrock/latest/APIReference/API_agent_GetIngestionJob.html#API_agent_GetIngestionJob_ResponseSyntax\">GetIngestionJob response</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/bedrock/latest/APIReference/API_agent_ListIngestionJobs.html#API_agent_ListIngestionJobs_ResponseSyntax\">ListIngestionJob response</a> </p> </li> </ul>"
     },
     "IngestionJobFilter":{
       "type":"structure",
@@ -4897,18 +4917,18 @@
       "members":{
         "attribute":{
           "shape":"IngestionJobFilterAttribute",
-          "documentation":"<p>The attribute by which to filter the results.</p>"
+          "documentation":"<p>The name of field or attribute to apply the filter.</p>"
         },
         "operator":{
           "shape":"IngestionJobFilterOperator",
-          "documentation":"<p>The operation to carry out between the attribute and the values.</p>"
+          "documentation":"<p>The operation to apply to the field or attribute.</p>"
         },
         "values":{
           "shape":"IngestionJobFilterValues",
-          "documentation":"<p>A list of values for the attribute.</p>"
+          "documentation":"<p>A list of values that belong to the field or attribute.</p>"
         }
       },
-      "documentation":"<p>Defines a filter by which to filter the results.</p>"
+      "documentation":"<p>The definition of a filter to filter the data.</p>"
     },
     "IngestionJobFilterAttribute":{
       "type":"string",
@@ -4945,14 +4965,14 @@
       "members":{
         "attribute":{
           "shape":"IngestionJobSortByAttribute",
-          "documentation":"<p>The attribute by which to sort the results.</p>"
+          "documentation":"<p>The name of field or attribute to apply sorting of data.</p>"
         },
         "order":{
           "shape":"SortOrder",
-          "documentation":"<p>The order by which to sort the results.</p>"
+          "documentation":"<p>The order for sorting the data.</p>"
         }
       },
-      "documentation":"<p>Parameters by which to sort the results.</p>"
+      "documentation":"<p>The parameters of sorting the data.</p>"
     },
     "IngestionJobSortByAttribute":{
       "type":"string",
@@ -4966,7 +4986,7 @@
       "members":{
         "numberOfDocumentsDeleted":{
           "shape":"PrimitiveLong",
-          "documentation":"<p>The number of source documents that was deleted.</p>"
+          "documentation":"<p>The number of source documents that were deleted.</p>"
         },
         "numberOfDocumentsFailed":{
           "shape":"PrimitiveLong",
@@ -4993,7 +5013,7 @@
           "documentation":"<p>The number of new source documents in the data source that were successfully indexed.</p>"
         }
       },
-      "documentation":"<p>Contains the statistics for the ingestion job.</p>"
+      "documentation":"<p>Contains the statistics for the data ingestion job.</p>"
     },
     "IngestionJobStatus":{
       "type":"string",
@@ -5001,7 +5021,9 @@
         "STARTING",
         "IN_PROGRESS",
         "COMPLETE",
-        "FAILED"
+        "FAILED",
+        "STOPPING",
+        "STOPPED"
       ]
     },
     "IngestionJobSummaries":{
@@ -5021,38 +5043,38 @@
       "members":{
         "dataSourceId":{
           "shape":"Id",
-          "documentation":"<p>The unique identifier of the data source in the ingestion job.</p>"
+          "documentation":"<p>The unique identifier of the data source for the data ingestion job.</p>"
         },
         "description":{
           "shape":"Description",
-          "documentation":"<p>The description of the ingestion job.</p>"
+          "documentation":"<p>The description of the data ingestion job.</p>"
         },
         "ingestionJobId":{
           "shape":"Id",
-          "documentation":"<p>The unique identifier of the ingestion job.</p>"
+          "documentation":"<p>The unique identifier of the data ingestion job.</p>"
         },
         "knowledgeBaseId":{
           "shape":"Id",
-          "documentation":"<p>The unique identifier of the knowledge base to which the data source is added.</p>"
+          "documentation":"<p>The unique identifier of the knowledge base for the data ingestion job.</p>"
         },
         "startedAt":{
           "shape":"DateTimestamp",
-          "documentation":"<p>The time at which the ingestion job was started.</p>"
+          "documentation":"<p>The time the data ingestion job started.</p>"
         },
         "statistics":{
           "shape":"IngestionJobStatistics",
-          "documentation":"<p>Contains statistics for the ingestion job.</p>"
+          "documentation":"<p>Contains statistics for the data ingestion job.</p>"
         },
         "status":{
           "shape":"IngestionJobStatus",
-          "documentation":"<p>The status of the ingestion job.</p>"
+          "documentation":"<p>The status of the data ingestion job.</p>"
         },
         "updatedAt":{
           "shape":"DateTimestamp",
-          "documentation":"<p>The time at which the ingestion job was last updated.</p>"
+          "documentation":"<p>The time the data ingestion job was last updated.</p>"
         }
       },
-      "documentation":"<p>Contains details about an ingestion job.</p>"
+      "documentation":"<p>Contains details about a data ingestion job.</p>"
     },
     "InputFlowNodeConfiguration":{
       "type":"structure",
@@ -5115,7 +5137,7 @@
       "members":{
         "createdAt":{
           "shape":"DateTimestamp",
-          "documentation":"<p>The time at which the knowledge base was created.</p>"
+          "documentation":"<p>The time the knowledge base was created.</p>"
         },
         "description":{
           "shape":"Description",
@@ -5155,7 +5177,7 @@
         },
         "updatedAt":{
           "shape":"DateTimestamp",
-          "documentation":"<p>The time at which the knowledge base was last updated.</p>"
+          "documentation":"<p>The time the knowledge base was last updated.</p>"
         }
       },
       "documentation":"<p>Contains information about a knowledge base.</p>"
@@ -5176,10 +5198,10 @@
         },
         "vectorKnowledgeBaseConfiguration":{
           "shape":"VectorKnowledgeBaseConfiguration",
-          "documentation":"<p>Contains details about the embeddings model that'sused to convert the data source.</p>"
+          "documentation":"<p>Contains details about the model that's used to convert the data source into vector embeddings.</p>"
         }
       },
-      "documentation":"<p>Contains details about the embeddings configuration of the knowledge base.</p>"
+      "documentation":"<p>Contains details about the vector embeddings configuration of the knowledge base.</p>"
     },
     "KnowledgeBaseFlowNodeConfiguration":{
       "type":"structure",
@@ -5273,7 +5295,7 @@
         },
         "updatedAt":{
           "shape":"DateTimestamp",
-          "documentation":"<p>The time at which the knowledge base was last updated.</p>"
+          "documentation":"<p>The time the knowledge base was last updated.</p>"
         }
       },
       "documentation":"<p>Contains details about a knowledge base.</p>"
@@ -5659,17 +5681,17 @@
       "members":{
         "dataSourceId":{
           "shape":"Id",
-          "documentation":"<p>The unique identifier of the data source for which to return ingestion jobs.</p>",
+          "documentation":"<p>The unique identifier of the data source for the list of data ingestion jobs.</p>",
           "location":"uri",
           "locationName":"dataSourceId"
         },
         "filters":{
           "shape":"IngestionJobFilters",
-          "documentation":"<p>Contains a definition of a filter for which to filter the results.</p>"
+          "documentation":"<p>Contains information about the filters for filtering the data.</p>"
         },
         "knowledgeBaseId":{
           "shape":"Id",
-          "documentation":"<p>The unique identifier of the knowledge base for which to return ingestion jobs.</p>",
+          "documentation":"<p>The unique identifier of the knowledge base for the list of data ingestion jobs.</p>",
           "location":"uri",
           "locationName":"knowledgeBaseId"
         },
@@ -5683,7 +5705,7 @@
         },
         "sortBy":{
           "shape":"IngestionJobSortBy",
-          "documentation":"<p>Contains details about how to sort the results.</p>"
+          "documentation":"<p>Contains details about how to sort the data.</p>"
         }
       }
     },
@@ -5693,7 +5715,7 @@
       "members":{
         "ingestionJobSummaries":{
           "shape":"IngestionJobSummaries",
-          "documentation":"<p>A list of objects, each of which contains information about an ingestion job.</p>"
+          "documentation":"<p>A list of data ingestion jobs with information about each job.</p>"
         },
         "nextToken":{
           "shape":"NextToken",
@@ -5720,7 +5742,7 @@
       "members":{
         "knowledgeBaseSummaries":{
           "shape":"KnowledgeBaseSummaries",
-          "documentation":"<p>A list of objects, each of which contains information about a knowledge base.</p>"
+          "documentation":"<p>A list of knowledge bases with information about each knowledge base.</p>"
         },
         "nextToken":{
           "shape":"NextToken",
@@ -7135,17 +7157,17 @@
         },
         "dataSourceId":{
           "shape":"Id",
-          "documentation":"<p>The unique identifier of the data source to ingest.</p>",
+          "documentation":"<p>The unique identifier of the data source you want to ingest into your knowledge base.</p>",
           "location":"uri",
           "locationName":"dataSourceId"
         },
         "description":{
           "shape":"Description",
-          "documentation":"<p>A description of the ingestion job.</p>"
+          "documentation":"<p>A description of the data ingestion job.</p>"
         },
         "knowledgeBaseId":{
           "shape":"Id",
-          "documentation":"<p>The unique identifier of the knowledge base to which to add the data source.</p>",
+          "documentation":"<p>The unique identifier of the knowledge base for the data ingestion job.</p>",
           "location":"uri",
           "locationName":"knowledgeBaseId"
         }
@@ -7157,13 +7179,51 @@
       "members":{
         "ingestionJob":{
           "shape":"IngestionJob",
-          "documentation":"<p>An object containing information about the ingestion job.</p>"
+          "documentation":"<p>Contains information about the data ingestion job.</p>"
         }
       }
     },
     "StepType":{
       "type":"string",
       "enum":["POST_CHUNKING"]
+    },
+    "StopIngestionJobRequest":{
+      "type":"structure",
+      "required":[
+        "dataSourceId",
+        "ingestionJobId",
+        "knowledgeBaseId"
+      ],
+      "members":{
+        "dataSourceId":{
+          "shape":"Id",
+          "documentation":"<p>The unique identifier of the data source for the data ingestion job you want to stop.</p>",
+          "location":"uri",
+          "locationName":"dataSourceId"
+        },
+        "ingestionJobId":{
+          "shape":"Id",
+          "documentation":"<p>The unique identifier of the data ingestion job you want to stop.</p>",
+          "location":"uri",
+          "locationName":"ingestionJobId"
+        },
+        "knowledgeBaseId":{
+          "shape":"Id",
+          "documentation":"<p>The unique identifier of the knowledge base for the data ingestion job you want to stop.</p>",
+          "location":"uri",
+          "locationName":"knowledgeBaseId"
+        }
+      }
+    },
+    "StopIngestionJobResponse":{
+      "type":"structure",
+      "required":["ingestionJob"],
+      "members":{
+        "ingestionJob":{
+          "shape":"IngestionJob",
+          "documentation":"<p>Contains information about the stopped data ingestion job.</p>"
+        }
+      }
     },
     "StopSequences":{
       "type":"list",

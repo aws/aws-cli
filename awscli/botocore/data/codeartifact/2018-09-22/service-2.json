@@ -1973,6 +1973,13 @@
       "type":"list",
       "member":{"shape":"DomainSummary"}
     },
+    "EndpointType":{
+      "type":"string",
+      "enum":[
+        "dualstack",
+        "ipv4"
+      ]
+    },
     "ErrorMessage":{"type":"string"},
     "ExternalConnectionName":{
       "type":"string",
@@ -2311,6 +2318,12 @@
           "documentation":"<p> Returns which endpoint of a repository to return. A repository has one endpoint for each package format. </p>",
           "location":"querystring",
           "locationName":"format"
+        },
+        "endpointType":{
+          "shape":"EndpointType",
+          "documentation":"<p>A string that specifies the type of endpoint.</p>",
+          "location":"querystring",
+          "locationName":"endpointType"
         }
       }
     },
@@ -4029,7 +4042,7 @@
         },
         "packageFormat":{
           "shape":"PackageFormat",
-          "documentation":"<p> The package format associated with a repository's external connection. The valid package formats are: </p> <ul> <li> <p> <code>npm</code>: A Node Package Manager (npm) package. </p> </li> <li> <p> <code>pypi</code>: A Python Package Index (PyPI) package. </p> </li> <li> <p> <code>maven</code>: A Maven package that contains compiled code in a distributable format, such as a JAR file. </p> </li> <li> <p> <code>nuget</code>: A NuGet package. </p> </li> </ul>"
+          "documentation":"<p> The package format associated with a repository's external connection. The valid package formats are: </p> <ul> <li> <p> <code>npm</code>: A Node Package Manager (npm) package. </p> </li> <li> <p> <code>pypi</code>: A Python Package Index (PyPI) package. </p> </li> <li> <p> <code>maven</code>: A Maven package that contains compiled code in a distributable format, such as a JAR file. </p> </li> <li> <p> <code>nuget</code>: A NuGet package. </p> </li> <li> <p> <code>generic</code>: A generic package. </p> </li> <li> <p> <code>ruby</code>: A Ruby package. </p> </li> <li> <p> <code>swift</code>: A Swift package. </p> </li> <li> <p> <code>cargo</code>: A Cargo package. </p> </li> </ul>"
         },
         "status":{
           "shape":"ExternalConnectionStatus",

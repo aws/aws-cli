@@ -299,31 +299,6 @@ class ClientCreator(object):
             return
         S3ControlArnParamHandlerv2().register(client.meta.events)
 
-    def _default_s3_presign_to_sigv2(self, signature_version, **kwargs):
-        """
-        Returns the 's3' (sigv2) signer if presigning an s3 request. This is
-        intended to be used to set the default signature version for the signer
-        to sigv2. Situations where an asymmetric signature is required are the
-        exception, for example MRAP needs v4a.
-
-        :type signature_version: str
-        :param signature_version: The current client signature version.
-
-        :type signing_name: str
-        :param signing_name: The signing name of the service.
-
-        :return: 's3' if the request is an s3 presign request, None otherwise
-        """
-        if signature_version.startswith('v4a'):
-            return
-
-        if signature_version.startswith('v4-s3express'):
-            return signature_version
-
-        for suffix in ['-query', '-presign-post']:
-            if signature_version.endswith(suffix):
-                return f's3{suffix}'
-
     def _get_client_args(
             self,
             service_model,

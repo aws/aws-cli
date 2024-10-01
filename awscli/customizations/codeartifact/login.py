@@ -721,6 +721,11 @@ class CodeArtifactLogin(BasicCommand):
             'required': True,
         },
         {
+            'name': 'endpoint-type',
+            'help_text': 'The type of endpoint you want the tool to interact with',
+            'required': False
+        },
+        {
             'name': 'dry-run',
             'action': 'store_true',
             'help_text': 'Only print the commands that would be executed '
@@ -750,6 +755,8 @@ class CodeArtifactLogin(BasicCommand):
             'repository': parsed_args.repository,
             'format': package_format
         }
+        if parsed_args.endpoint_type:
+            kwargs['endpointType'] = parsed_args.endpoint_type
         if parsed_args.domain_owner:
             kwargs['domainOwner'] = parsed_args.domain_owner
 

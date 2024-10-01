@@ -1390,7 +1390,7 @@ class CommandParameters(object):
             }
             raise ParamValidationError(
                 f"Expected {param} parameter to be used with one of following path formats: "
-                f"{', '.join(allowed_paths)} but received {expected_usage_map[paths_type]}"
+                f"{', '.join([expected_usage_map[path] for path in allowed_paths])}. Instead, received {expected_usage_map[paths_type]}."
             )
 
     def _normalize_s3_trailing_slash(self, paths):

@@ -4,14 +4,33 @@
     "apiVersion":"2017-11-27",
     "endpointPrefix":"resource-groups",
     "protocol":"rest-json",
+    "protocols":["rest-json"],
     "serviceAbbreviation":"Resource Groups",
     "serviceFullName":"AWS Resource Groups",
     "serviceId":"Resource Groups",
     "signatureVersion":"v4",
     "signingName":"resource-groups",
-    "uid":"resource-groups-2017-11-27"
+    "uid":"resource-groups-2017-11-27",
+    "auth":["aws.auth#sigv4"]
   },
   "operations":{
+    "CancelTagSyncTask":{
+      "name":"CancelTagSyncTask",
+      "http":{
+        "method":"POST",
+        "requestUri":"/cancel-tag-sync-task"
+      },
+      "input":{"shape":"CancelTagSyncTaskInput"},
+      "errors":[
+        {"shape":"UnauthorizedException"},
+        {"shape":"BadRequestException"},
+        {"shape":"ForbiddenException"},
+        {"shape":"MethodNotAllowedException"},
+        {"shape":"TooManyRequestsException"},
+        {"shape":"InternalServerErrorException"}
+      ],
+      "documentation":"<p>Cancels the specified tag-sync task. </p> <p> <b>Minimum permissions</b> </p> <p>To run this command, you must have the following permissions:</p> <ul> <li> <p> <code>resource-groups:CancelTagSyncTask</code> on the application group</p> </li> <li> <p> <code>resource-groups:DeleteGroup</code> </p> </li> </ul>"
+    },
     "CreateGroup":{
       "name":"CreateGroup",
       "http":{
@@ -117,6 +136,25 @@
       ],
       "documentation":"<p>Retrieves the resource query associated with the specified resource group. For more information about resource queries, see <a href=\"https://docs.aws.amazon.com/ARG/latest/userguide/gettingstarted-query.html#gettingstarted-query-cli-tag\">Create a tag-based group in Resource Groups</a>.</p> <p> <b>Minimum permissions</b> </p> <p>To run this command, you must have the following permissions:</p> <ul> <li> <p> <code>resource-groups:GetGroupQuery</code> </p> </li> </ul>"
     },
+    "GetTagSyncTask":{
+      "name":"GetTagSyncTask",
+      "http":{
+        "method":"POST",
+        "requestUri":"/get-tag-sync-task"
+      },
+      "input":{"shape":"GetTagSyncTaskInput"},
+      "output":{"shape":"GetTagSyncTaskOutput"},
+      "errors":[
+        {"shape":"UnauthorizedException"},
+        {"shape":"BadRequestException"},
+        {"shape":"ForbiddenException"},
+        {"shape":"NotFoundException"},
+        {"shape":"MethodNotAllowedException"},
+        {"shape":"TooManyRequestsException"},
+        {"shape":"InternalServerErrorException"}
+      ],
+      "documentation":"<p>Returns information about a specified tag-sync task. </p> <p> <b>Minimum permissions</b> </p> <p>To run this command, you must have the following permissions:</p> <ul> <li> <p> <code>resource-groups:GetTagSyncTask</code> on the application group</p> </li> </ul>"
+    },
     "GetTags":{
       "name":"GetTags",
       "http":{
@@ -133,7 +171,7 @@
         {"shape":"TooManyRequestsException"},
         {"shape":"InternalServerErrorException"}
       ],
-      "documentation":"<p>Returns a list of tags that are associated with a resource group, specified by an ARN.</p> <p> <b>Minimum permissions</b> </p> <p>To run this command, you must have the following permissions:</p> <ul> <li> <p> <code>resource-groups:GetTags</code> </p> </li> </ul>"
+      "documentation":"<p>Returns a list of tags that are associated with a resource group, specified by an Amazon resource name (ARN).</p> <p> <b>Minimum permissions</b> </p> <p>To run this command, you must have the following permissions:</p> <ul> <li> <p> <code>resource-groups:GetTags</code> </p> </li> </ul>"
     },
     "GroupResources":{
       "name":"GroupResources",
@@ -151,7 +189,7 @@
         {"shape":"TooManyRequestsException"},
         {"shape":"InternalServerErrorException"}
       ],
-      "documentation":"<p>Adds the specified resources to the specified group.</p> <important> <p>You can use this operation with only resource groups that are configured with the following types:</p> <ul> <li> <p> <code>AWS::EC2::HostManagement</code> </p> </li> <li> <p> <code>AWS::EC2::CapacityReservationPool</code> </p> </li> </ul> <p>Other resource group type and resource types aren't currently supported by this operation.</p> </important> <p> <b>Minimum permissions</b> </p> <p>To run this command, you must have the following permissions:</p> <ul> <li> <p> <code>resource-groups:GroupResources</code> </p> </li> </ul>"
+      "documentation":"<p>Adds the specified resources to the specified group.</p> <important> <p>You can only use this operation with the following groups:</p> <ul> <li> <p> <code>AWS::EC2::HostManagement</code> </p> </li> <li> <p> <code>AWS::EC2::CapacityReservationPool</code> </p> </li> <li> <p> <code>AWS::ResourceGroups::ApplicationGroup</code> </p> </li> </ul> <p>Other resource group types and resource types are not currently supported by this operation.</p> </important> <p> <b>Minimum permissions</b> </p> <p>To run this command, you must have the following permissions:</p> <ul> <li> <p> <code>resource-groups:GroupResources</code> </p> </li> </ul>"
     },
     "ListGroupResources":{
       "name":"ListGroupResources",
@@ -170,7 +208,24 @@
         {"shape":"TooManyRequestsException"},
         {"shape":"InternalServerErrorException"}
       ],
-      "documentation":"<p>Returns a list of ARNs of the resources that are members of a specified resource group.</p> <p> <b>Minimum permissions</b> </p> <p>To run this command, you must have the following permissions:</p> <ul> <li> <p> <code>resource-groups:ListGroupResources</code> </p> </li> <li> <p> <code>cloudformation:DescribeStacks</code> </p> </li> <li> <p> <code>cloudformation:ListStackResources</code> </p> </li> <li> <p> <code>tag:GetResources</code> </p> </li> </ul>"
+      "documentation":"<p>Returns a list of Amazon resource names (ARNs) of the resources that are members of a specified resource group.</p> <p> <b>Minimum permissions</b> </p> <p>To run this command, you must have the following permissions:</p> <ul> <li> <p> <code>resource-groups:ListGroupResources</code> </p> </li> <li> <p> <code>cloudformation:DescribeStacks</code> </p> </li> <li> <p> <code>cloudformation:ListStackResources</code> </p> </li> <li> <p> <code>tag:GetResources</code> </p> </li> </ul>"
+    },
+    "ListGroupingStatuses":{
+      "name":"ListGroupingStatuses",
+      "http":{
+        "method":"POST",
+        "requestUri":"/list-grouping-statuses"
+      },
+      "input":{"shape":"ListGroupingStatusesInput"},
+      "output":{"shape":"ListGroupingStatusesOutput"},
+      "errors":[
+        {"shape":"BadRequestException"},
+        {"shape":"ForbiddenException"},
+        {"shape":"MethodNotAllowedException"},
+        {"shape":"TooManyRequestsException"},
+        {"shape":"InternalServerErrorException"}
+      ],
+      "documentation":"<p>Returns the status of the last grouping or ungrouping action for each resource in the specified application group. </p>"
     },
     "ListGroups":{
       "name":"ListGroups",
@@ -188,6 +243,24 @@
         {"shape":"InternalServerErrorException"}
       ],
       "documentation":"<p>Returns a list of existing Resource Groups in your account.</p> <p> <b>Minimum permissions</b> </p> <p>To run this command, you must have the following permissions:</p> <ul> <li> <p> <code>resource-groups:ListGroups</code> </p> </li> </ul>"
+    },
+    "ListTagSyncTasks":{
+      "name":"ListTagSyncTasks",
+      "http":{
+        "method":"POST",
+        "requestUri":"/list-tag-sync-tasks"
+      },
+      "input":{"shape":"ListTagSyncTasksInput"},
+      "output":{"shape":"ListTagSyncTasksOutput"},
+      "errors":[
+        {"shape":"UnauthorizedException"},
+        {"shape":"BadRequestException"},
+        {"shape":"ForbiddenException"},
+        {"shape":"MethodNotAllowedException"},
+        {"shape":"TooManyRequestsException"},
+        {"shape":"InternalServerErrorException"}
+      ],
+      "documentation":"<p>Returns a list of tag-sync tasks. </p> <p> <b>Minimum permissions</b> </p> <p>To run this command, you must have the following permissions:</p> <ul> <li> <p> <code>resource-groups:ListTagSyncTasks</code> with the group passed in the filters as the resource or * if using no filters </p> </li> </ul>"
     },
     "PutGroupConfiguration":{
       "name":"PutGroupConfiguration",
@@ -226,6 +299,25 @@
       ],
       "documentation":"<p>Returns a list of Amazon Web Services resource identifiers that matches the specified query. The query uses the same format as a resource query in a <a>CreateGroup</a> or <a>UpdateGroupQuery</a> operation.</p> <p> <b>Minimum permissions</b> </p> <p>To run this command, you must have the following permissions:</p> <ul> <li> <p> <code>resource-groups:SearchResources</code> </p> </li> <li> <p> <code>cloudformation:DescribeStacks</code> </p> </li> <li> <p> <code>cloudformation:ListStackResources</code> </p> </li> <li> <p> <code>tag:GetResources</code> </p> </li> </ul>"
     },
+    "StartTagSyncTask":{
+      "name":"StartTagSyncTask",
+      "http":{
+        "method":"POST",
+        "requestUri":"/start-tag-sync-task"
+      },
+      "input":{"shape":"StartTagSyncTaskInput"},
+      "output":{"shape":"StartTagSyncTaskOutput"},
+      "errors":[
+        {"shape":"UnauthorizedException"},
+        {"shape":"BadRequestException"},
+        {"shape":"ForbiddenException"},
+        {"shape":"NotFoundException"},
+        {"shape":"MethodNotAllowedException"},
+        {"shape":"TooManyRequestsException"},
+        {"shape":"InternalServerErrorException"}
+      ],
+      "documentation":"<p>Creates a new tag-sync task to onboard and sync resources tagged with a specific tag key-value pair to an application. </p> <p> <b>Minimum permissions</b> </p> <p>To run this command, you must have the following permissions:</p> <ul> <li> <p> <code>resource-groups:StartTagSyncTask</code> on the application group</p> </li> <li> <p> <code>resource-groups:CreateGroup</code> </p> </li> <li> <p> <code>iam:PassRole</code> on the role provided in the request </p> </li> </ul>"
+    },
     "Tag":{
       "name":"Tag",
       "http":{
@@ -242,7 +334,7 @@
         {"shape":"TooManyRequestsException"},
         {"shape":"InternalServerErrorException"}
       ],
-      "documentation":"<p>Adds tags to a resource group with the specified ARN. Existing tags on a resource group are not changed if they are not specified in the request parameters.</p> <important> <p>Do not store personally identifiable information (PII) or other confidential or sensitive information in tags. We use tags to provide you with billing and administration services. Tags are not intended to be used for private or sensitive data.</p> </important> <p> <b>Minimum permissions</b> </p> <p>To run this command, you must have the following permissions:</p> <ul> <li> <p> <code>resource-groups:Tag</code> </p> </li> </ul>"
+      "documentation":"<p>Adds tags to a resource group with the specified Amazon resource name (ARN). Existing tags on a resource group are not changed if they are not specified in the request parameters.</p> <important> <p>Do not store personally identifiable information (PII) or other confidential or sensitive information in tags. We use tags to provide you with billing and administration services. Tags are not intended to be used for private or sensitive data.</p> </important> <p> <b>Minimum permissions</b> </p> <p>To run this command, you must have the following permissions:</p> <ul> <li> <p> <code>resource-groups:Tag</code> </p> </li> </ul>"
     },
     "UngroupResources":{
       "name":"UngroupResources",
@@ -353,6 +445,21 @@
       },
       "documentation":"<p>The Resource Groups settings for this Amazon Web Services account.</p>"
     },
+    "ApplicationArn":{
+      "type":"string",
+      "max":1600,
+      "min":12,
+      "pattern":"arn:aws(-[a-z]+)*:resource-groups:[a-z]{2}(-[a-z]+)+-\\d{1}:[0-9]{12}:group/[a-zA-Z0-9_\\.-]{1,150}/[a-zA-Z0-9]{22,26}"
+    },
+    "ApplicationTag":{
+      "type":"map",
+      "key":{"shape":"ApplicationTagKey"},
+      "value":{"shape":"ApplicationArn"}
+    },
+    "ApplicationTagKey":{
+      "type":"string",
+      "pattern":"awsApplication"
+    },
     "BadRequestException":{
       "type":"structure",
       "members":{
@@ -362,12 +469,22 @@
       "error":{"httpStatusCode":400},
       "exception":true
     },
+    "CancelTagSyncTaskInput":{
+      "type":"structure",
+      "required":["TaskArn"],
+      "members":{
+        "TaskArn":{
+          "shape":"TagSyncTaskArn",
+          "documentation":"<p>The Amazon resource name (ARN) of the tag-sync task. </p>"
+        }
+      }
+    },
     "CreateGroupInput":{
       "type":"structure",
       "required":["Name"],
       "members":{
         "Name":{
-          "shape":"GroupName",
+          "shape":"CreateGroupName",
           "documentation":"<p>The name of the group, which is the identifier of the group in other operations. You can't change the name of a resource group after you create it. A resource group name can consist of letters, numbers, hyphens, periods, and underscores. The name cannot start with <code>AWS</code>, <code>aws</code>, or any other possible capitalization; these are reserved. A resource group name must be unique within each Amazon Web Services Region in your Amazon Web Services account.</p>"
         },
         "Description":{
@@ -385,8 +502,26 @@
         "Configuration":{
           "shape":"GroupConfigurationList",
           "documentation":"<p>A configuration associates the resource group with an Amazon Web Services service and specifies how the service can interact with the resources in the group. A configuration is an array of <a>GroupConfigurationItem</a> elements. For details about the syntax of service configurations, see <a href=\"https://docs.aws.amazon.com/ARG/latest/APIReference/about-slg.html\">Service configurations for Resource Groups</a>.</p> <note> <p>A resource group can contain either a <code>Configuration</code> or a <code>ResourceQuery</code>, but not both.</p> </note>"
+        },
+        "Criticality":{
+          "shape":"Criticality",
+          "documentation":"<p>The critical rank of the application group on a scale of 1 to 10, with a rank of 1 being the most critical, and a rank of 10 being least critical.</p>"
+        },
+        "Owner":{
+          "shape":"Owner",
+          "documentation":"<p>A name, email address or other identifier for the person or group who is considered as the owner of this application group within your organization. </p>"
+        },
+        "DisplayName":{
+          "shape":"DisplayName",
+          "documentation":"<p>The name of the application group, which you can change at any time. </p>"
         }
       }
+    },
+    "CreateGroupName":{
+      "type":"string",
+      "max":300,
+      "min":1,
+      "pattern":"[a-zA-Z0-9_\\.-]+"
     },
     "CreateGroupOutput":{
       "type":"structure",
@@ -409,6 +544,11 @@
         }
       }
     },
+    "Criticality":{
+      "type":"integer",
+      "max":10,
+      "min":1
+    },
     "DeleteGroupInput":{
       "type":"structure",
       "members":{
@@ -419,8 +559,8 @@
           "deprecatedMessage":"This field is deprecated, use Group instead."
         },
         "Group":{
-          "shape":"GroupString",
-          "documentation":"<p>The name or the ARN of the resource group to delete.</p>"
+          "shape":"GroupStringV2",
+          "documentation":"<p>The name or the Amazon resource name (ARN) of the resource group to delete.</p>"
         }
       }
     },
@@ -438,6 +578,12 @@
       "max":1024,
       "pattern":"[\\sa-zA-Z0-9_\\.-]*"
     },
+    "DisplayName":{
+      "type":"string",
+      "max":300,
+      "min":0,
+      "pattern":"^([\\p{L}\\p{Z}\\p{N}_.:/=+\\-@]*)$"
+    },
     "ErrorCode":{
       "type":"string",
       "max":128,
@@ -453,7 +599,7 @@
       "members":{
         "ResourceArn":{
           "shape":"ResourceArn",
-          "documentation":"<p>The ARN of the resource that failed to be added or removed.</p>"
+          "documentation":"<p>The Amazon resource name (ARN) of the resource that failed to be added or removed.</p>"
         },
         "ErrorMessage":{
           "shape":"ErrorMessage",
@@ -493,7 +639,7 @@
       "members":{
         "Group":{
           "shape":"GroupString",
-          "documentation":"<p>The name or the ARN of the resource group for which you want to retrive the service configuration.</p>"
+          "documentation":"<p>The name or the Amazon resource name (ARN) of the resource group for which you want to retrive the service configuration.</p>"
         }
       }
     },
@@ -516,8 +662,8 @@
           "deprecatedMessage":"This field is deprecated, use Group instead."
         },
         "Group":{
-          "shape":"GroupString",
-          "documentation":"<p>The name or the ARN of the resource group to retrieve.</p>"
+          "shape":"GroupStringV2",
+          "documentation":"<p>The name or the Amazon resource name (ARN) of the resource group to retrieve.</p>"
         }
       }
     },
@@ -541,7 +687,7 @@
         },
         "Group":{
           "shape":"GroupString",
-          "documentation":"<p>The name or the ARN of the resource group to query.</p>"
+          "documentation":"<p>The name or the Amazon resource name (ARN) of the resource group to query.</p>"
         }
       }
     },
@@ -554,13 +700,64 @@
         }
       }
     },
+    "GetTagSyncTaskInput":{
+      "type":"structure",
+      "required":["TaskArn"],
+      "members":{
+        "TaskArn":{
+          "shape":"TagSyncTaskArn",
+          "documentation":"<p>The Amazon resource name (ARN) of the tag-sync task. </p>"
+        }
+      }
+    },
+    "GetTagSyncTaskOutput":{
+      "type":"structure",
+      "members":{
+        "GroupArn":{
+          "shape":"GroupArnV2",
+          "documentation":"<p>The Amazon resource name (ARN) of the application group. </p>"
+        },
+        "GroupName":{
+          "shape":"GroupName",
+          "documentation":"<p>The name of the application group. </p>"
+        },
+        "TaskArn":{
+          "shape":"TagSyncTaskArn",
+          "documentation":"<p>The Amazon resource name (ARN) of the tag-sync task. </p>"
+        },
+        "TagKey":{
+          "shape":"TagKey",
+          "documentation":"<p>The tag key. </p>"
+        },
+        "TagValue":{
+          "shape":"TagValue",
+          "documentation":"<p>The tag value. </p>"
+        },
+        "RoleArn":{
+          "shape":"RoleArn",
+          "documentation":"<p>The Amazon resource name (ARN) of the role assumed by Resource Groups to tag and untag resources on your behalf. </p> <p>For more information about this role, review <a href=\"https://docs.aws.amazon.com/servicecatalog/latest/arguide/app-tag-sync.html#tag-sync-role\">Tag-sync required permissions</a>. </p>"
+        },
+        "Status":{
+          "shape":"TagSyncTaskStatus",
+          "documentation":"<p>The status of the tag-sync task. </p> <p>Valid values include:</p> <ul> <li> <p> <code>ACTIVE</code> - The tag-sync task is actively managing resources in the application by adding or removing the <code>awsApplication</code> tag from resources when they are tagged or untagged with the specified tag key-value pair. </p> </li> <li> <p> <code>ERROR</code> - The tag-sync task is not actively managing resources in the application. Review the <code>ErrorMessage</code> for more information about resolving the error. </p> </li> </ul>"
+        },
+        "ErrorMessage":{
+          "shape":"ErrorMessage",
+          "documentation":"<p>The specific error message in cases where the tag-sync task status is <code>ERROR</code>. </p>"
+        },
+        "CreatedAt":{
+          "shape":"timestamp",
+          "documentation":"<p>The timestamp of when the tag-sync task was created. </p>"
+        }
+      }
+    },
     "GetTagsInput":{
       "type":"structure",
       "required":["Arn"],
       "members":{
         "Arn":{
-          "shape":"GroupArn",
-          "documentation":"<p>The ARN of the resource group whose tags you want to retrieve.</p>",
+          "shape":"GroupArnV2",
+          "documentation":"<p>The Amazon resource name (ARN) of the resource group whose tags you want to retrieve.</p>",
           "location":"uri",
           "locationName":"Arn"
         }
@@ -570,8 +767,8 @@
       "type":"structure",
       "members":{
         "Arn":{
-          "shape":"GroupArn",
-          "documentation":"<p>The ARN of the tagged resource group.</p>"
+          "shape":"GroupArnV2",
+          "documentation":"<p>TheAmazon resource name (ARN) of the tagged resource group.</p>"
         },
         "Tags":{
           "shape":"Tags",
@@ -587,8 +784,8 @@
       ],
       "members":{
         "GroupArn":{
-          "shape":"GroupArn",
-          "documentation":"<p>The ARN of the resource group.</p>"
+          "shape":"GroupArnV2",
+          "documentation":"<p>The Amazon resource name (ARN) of the resource group.</p>"
         },
         "Name":{
           "shape":"GroupName",
@@ -597,6 +794,22 @@
         "Description":{
           "shape":"Description",
           "documentation":"<p>The description of the resource group.</p>"
+        },
+        "Criticality":{
+          "shape":"Criticality",
+          "documentation":"<p>The critical rank of the application group on a scale of 1 to 10, with a rank of 1 being the most critical, and a rank of 10 being least critical.</p>"
+        },
+        "Owner":{
+          "shape":"Owner",
+          "documentation":"<p>A name, email address or other identifier for the person or group who is considered as the owner of this application group within your organization. </p>"
+        },
+        "DisplayName":{
+          "shape":"DisplayName",
+          "documentation":"<p>The name of the application group, which you can change at any time. </p>"
+        },
+        "ApplicationTag":{
+          "shape":"ApplicationTag",
+          "documentation":"<p>A tag that defines the application group membership. This tag is only supported for application groups. </p>"
         }
       },
       "documentation":"<p>A resource group that contains Amazon Web Services resources. You can assign resources to the group by associating either of the following elements with the group:</p> <ul> <li> <p> <a>ResourceQuery</a> - Use a resource query to specify a set of tag keys and values. All resources in the same Amazon Web Services Region and Amazon Web Services account that have those keys with the same values are included in the group. You can add a resource query when you create the group, or later by using the <a>PutGroupConfiguration</a> operation.</p> </li> <li> <p> <a>GroupConfiguration</a> - Use a service configuration to associate the group with an Amazon Web Services service. The configuration specifies which resource types can be included in the group.</p> </li> </ul>"
@@ -605,7 +818,13 @@
       "type":"string",
       "max":1600,
       "min":12,
-      "pattern":"arn:aws(-[a-z]+)*:resource-groups:[a-z]{2}(-[a-z]+)+-\\d{1}:[0-9]{12}:group/[a-zA-Z0-9_\\.-]{1,300}"
+      "pattern":"arn:aws(-[a-z]+)*:resource-groups:[a-z]{2}(-[a-z]+)+-\\d{1}:[0-9]{12}:group/([a-zA-Z0-9_\\.-]{1,300}|[a-zA-Z0-9_\\.-]{1,150}/[a-z0-9]{26})"
+    },
+    "GroupArnV2":{
+      "type":"string",
+      "max":1600,
+      "min":12,
+      "pattern":"arn:aws(-[a-z]+)*:resource-groups:[a-z]{2}(-[a-z]+)+-\\d{1}:[0-9]{12}:group/([a-zA-Z0-9_\\.-]{1,300}|[a-zA-Z0-9_\\.-]{1,150}/[a-z0-9]{26})"
     },
     "GroupConfiguration":{
       "type":"structure",
@@ -720,14 +939,17 @@
       "type":"string",
       "enum":[
         "resource-type",
-        "configuration-type"
+        "configuration-type",
+        "owner",
+        "display-name",
+        "criticality"
       ]
     },
     "GroupFilterValue":{
       "type":"string",
-      "max":128,
+      "max":300,
       "min":1,
-      "pattern":"AWS::(AllSupported|[a-zA-Z0-9]+::[a-zA-Z0-9]+)"
+      "pattern":"AWS::(AllSupported|[a-zA-Z0-9]+::[a-zA-Z0-9]+)|[\\s\\p{L}0-9_\\.-]*"
     },
     "GroupFilterValues":{
       "type":"list",
@@ -744,7 +966,23 @@
         },
         "GroupArn":{
           "shape":"GroupArn",
-          "documentation":"<p>The ARN of the resource group.</p>"
+          "documentation":"<p>The Amazon resource name (ARN) of the resource group.</p>"
+        },
+        "Description":{
+          "shape":"Description",
+          "documentation":"<p>The description of the application group. </p>"
+        },
+        "Criticality":{
+          "shape":"Criticality",
+          "documentation":"<p>The critical rank of the application group on a scale of 1 to 10, with a rank of 1 being the most critical, and a rank of 10 being least critical.</p>"
+        },
+        "Owner":{
+          "shape":"Owner",
+          "documentation":"<p>A name, email address or other identifier for the person or group who is considered as the owner of this group within your organization. </p>"
+        },
+        "DisplayName":{
+          "shape":"DisplayName",
+          "documentation":"<p>The name of the application group, which you can change at any time. </p>"
         }
       },
       "documentation":"<p>The unique identifiers for a resource group.</p>"
@@ -782,7 +1020,7 @@
       "type":"string",
       "max":300,
       "min":1,
-      "pattern":"[a-zA-Z0-9_\\.-]+"
+      "pattern":"[a-zA-Z0-9_\\.-]{1,300}|[a-zA-Z0-9_\\.-]{1,150}/[a-z0-9]{26}"
     },
     "GroupParameterList":{
       "type":"list",
@@ -814,12 +1052,12 @@
       ],
       "members":{
         "Group":{
-          "shape":"GroupString",
-          "documentation":"<p>The name or the ARN of the resource group to add resources to.</p>"
+          "shape":"GroupStringV2",
+          "documentation":"<p>The name or the Amazon resource name (ARN) of the resource group to add resources to.</p>"
         },
         "ResourceArns":{
           "shape":"ResourceArnList",
-          "documentation":"<p>The list of ARNs of the resources to be added to the group. </p>"
+          "documentation":"<p>The list of Amazon resource names (ARNs) of the resources to be added to the group. </p>"
         }
       }
     },
@@ -828,15 +1066,15 @@
       "members":{
         "Succeeded":{
           "shape":"ResourceArnList",
-          "documentation":"<p>A list of ARNs of the resources that this operation successfully added to the group.</p>"
+          "documentation":"<p>A list of Amazon resource names (ARNs) of the resources that this operation successfully added to the group.</p>"
         },
         "Failed":{
           "shape":"FailedResourceList",
-          "documentation":"<p>A list of ARNs of any resources that this operation failed to add to the group.</p>"
+          "documentation":"<p>A list of Amazon resource names (ARNs) of any resources that this operation failed to add to the group.</p>"
         },
         "Pending":{
           "shape":"PendingResourceList",
-          "documentation":"<p>A list of ARNs of any resources that this operation is still in the process adding to the group. These pending additions continue asynchronously. You can check the status of pending additions by using the <code> <a>ListGroupResources</a> </code> operation, and checking the <code>Resources</code> array in the response and the <code>Status</code> field of each object in that array. </p>"
+          "documentation":"<p>A list of Amazon resource names (ARNs) of any resources that this operation is still in the process adding to the group. These pending additions continue asynchronously. You can check the status of pending additions by using the <code> <a>ListGroupResources</a> </code> operation, and checking the <code>Resources</code> array in the response and the <code>Status</code> field of each object in that array. </p>"
         }
       }
     },
@@ -844,7 +1082,63 @@
       "type":"string",
       "max":1600,
       "min":1,
-      "pattern":"(arn:aws(-[a-z]+)*:resource-groups:[a-z]{2}(-[a-z]+)+-\\d{1}:[0-9]{12}:group/)?[a-zA-Z0-9_\\.-]{1,300}"
+      "pattern":"[a-zA-Z0-9_\\.-]{1,300}|[a-zA-Z0-9_\\.-]{1,150}/[a-z0-9]{26}|arn:aws(-[a-z]+)*:resource-groups:[a-z]{2}(-[a-z]+)+-\\d{1}:[0-9]{12}:group/([a-zA-Z0-9_\\.-]{1,300}|[a-zA-Z0-9_\\.-]{1,150}/[a-z0-9]{26})"
+    },
+    "GroupStringV2":{
+      "type":"string",
+      "max":1600,
+      "min":1,
+      "pattern":"[a-zA-Z0-9_\\.-]{1,300}|[a-zA-Z0-9_\\.-]{1,150}/[a-z0-9]{26}|arn:aws(-[a-z]+)*:resource-groups:[a-z]{2}(-[a-z]+)+-\\d{1}:[0-9]{12}:group/([a-zA-Z0-9_\\.-]{1,300}|[a-zA-Z0-9_\\.-]{1,150}/[a-z0-9]{26})"
+    },
+    "GroupingStatus":{
+      "type":"string",
+      "enum":[
+        "SUCCESS",
+        "FAILED",
+        "IN_PROGRESS",
+        "SKIPPED"
+      ]
+    },
+    "GroupingStatusesItem":{
+      "type":"structure",
+      "members":{
+        "ResourceArn":{
+          "shape":"ResourceArn",
+          "documentation":"<p>The Amazon resource name (ARN) of a resource. </p>"
+        },
+        "Action":{
+          "shape":"GroupingType",
+          "documentation":"<p>Describes the resource grouping action with values of <code>GROUP</code> or <code>UNGROUP</code>. </p>"
+        },
+        "Status":{
+          "shape":"GroupingStatus",
+          "documentation":"<p>Describes the resource grouping status with values of <code>SUCCESS</code>, <code>FAILED</code>, <code>IN_PROGRESS</code>, or <code>SKIPPED</code>. </p>"
+        },
+        "ErrorMessage":{
+          "shape":"ErrorMessage",
+          "documentation":"<p>A message that explains the <code>ErrorCode</code>. </p>"
+        },
+        "ErrorCode":{
+          "shape":"ErrorCode",
+          "documentation":"<p>Specifies the error code that was raised. </p>"
+        },
+        "UpdatedAt":{
+          "shape":"timestamp",
+          "documentation":"<p>A timestamp of when the status was last updated. </p>"
+        }
+      },
+      "documentation":"<p>The information about a grouping or ungrouping resource action. </p>"
+    },
+    "GroupingStatusesList":{
+      "type":"list",
+      "member":{"shape":"GroupingStatusesItem"}
+    },
+    "GroupingType":{
+      "type":"string",
+      "enum":[
+        "GROUP",
+        "UNGROUP"
+      ]
     },
     "InternalServerErrorException":{
       "type":"structure",
@@ -865,8 +1159,8 @@
           "deprecatedMessage":"This field is deprecated, use Group instead."
         },
         "Group":{
-          "shape":"GroupString",
-          "documentation":"<p>The name or the ARN of the resource group</p>"
+          "shape":"GroupStringV2",
+          "documentation":"<p>The name or the Amazon resource name (ARN) of the resource group. </p>"
         },
         "Filters":{
           "shape":"ResourceFilterList",
@@ -920,12 +1214,90 @@
         }
       }
     },
+    "ListGroupingStatusesFilter":{
+      "type":"structure",
+      "required":[
+        "Name",
+        "Values"
+      ],
+      "members":{
+        "Name":{
+          "shape":"ListGroupingStatusesFilterName",
+          "documentation":"<p>The name of the filter. Filter names are case-sensitive. </p>"
+        },
+        "Values":{
+          "shape":"ListGroupingStatusesFilterValues",
+          "documentation":"<p>One or more filter values. Allowed filter values vary by resource filter name, and are case-sensitive. </p>"
+        }
+      },
+      "documentation":"<p>A filter name and value pair that is used to obtain more specific results from the list of grouping statuses. </p>"
+    },
+    "ListGroupingStatusesFilterList":{
+      "type":"list",
+      "member":{"shape":"ListGroupingStatusesFilter"}
+    },
+    "ListGroupingStatusesFilterName":{
+      "type":"string",
+      "enum":[
+        "status",
+        "resource-arn"
+      ]
+    },
+    "ListGroupingStatusesFilterValue":{
+      "type":"string",
+      "pattern":"SUCCESS|FAILED|IN_PROGRESS|SKIPPED|arn:aws(-[a-z]+)*:[a-z0-9\\-]*:([a-z]{2}(-[a-z]+)+-\\d{1})?:([0-9]{12})?:.+"
+    },
+    "ListGroupingStatusesFilterValues":{
+      "type":"list",
+      "member":{"shape":"ListGroupingStatusesFilterValue"},
+      "max":10,
+      "min":1
+    },
+    "ListGroupingStatusesInput":{
+      "type":"structure",
+      "required":["Group"],
+      "members":{
+        "Group":{
+          "shape":"GroupStringV2",
+          "documentation":"<p>The application group identifier, expressed as an Amazon resource name (ARN) or the application group name. </p>"
+        },
+        "MaxResults":{
+          "shape":"MaxResults",
+          "documentation":"<p>The maximum number of resources and their statuses returned in the response. </p>"
+        },
+        "Filters":{
+          "shape":"ListGroupingStatusesFilterList",
+          "documentation":"<p>The filter name and value pair that is used to return more specific results from a list of resources. </p>"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The parameter for receiving additional results if you receive a <code>NextToken</code> response in a previous request. A <code>NextToken</code> response indicates that more output is available. Set this parameter to the value provided by a previous call's <code>NextToken</code> response to indicate where the output should continue from. </p>"
+        }
+      }
+    },
+    "ListGroupingStatusesOutput":{
+      "type":"structure",
+      "members":{
+        "Group":{
+          "shape":"GroupStringV2",
+          "documentation":"<p>The application group identifier, expressed as an Amazon resource name (ARN) or the application group name.</p>"
+        },
+        "GroupingStatuses":{
+          "shape":"GroupingStatusesList",
+          "documentation":"<p>Returns details about the grouping or ungrouping status of the resources in the specified application group. </p>"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>If present, indicates that more output is available than is included in the current response. Use this value in the <code>NextToken</code> request parameter in a subsequent call to the operation to get the next part of the output. You should repeat this until the <code>NextToken</code> response element comes back as <code>null</code>. </p>"
+        }
+      }
+    },
     "ListGroupsInput":{
       "type":"structure",
       "members":{
         "Filters":{
           "shape":"GroupFilterList",
-          "documentation":"<p>Filters, formatted as <a>GroupFilter</a> objects, that you want to apply to a <code>ListGroups</code> operation.</p> <ul> <li> <p> <code>resource-type</code> - Filter the results to include only those resource groups that have the specified resource type in their <code>ResourceTypeFilter</code>. For example, <code>AWS::EC2::Instance</code> would return any resource group with a <code>ResourceTypeFilter</code> that includes <code>AWS::EC2::Instance</code>.</p> </li> <li> <p> <code>configuration-type</code> - Filter the results to include only those groups that have the specified configuration types attached. The current supported values are:</p> <ul> <li> <p> <code>AWS::AppRegistry::Application</code> </p> </li> <li> <p> <code>AWS::AppRegistry::ApplicationResourceGroups</code> </p> </li> <li> <p> <code>AWS::CloudFormation::Stack</code> </p> </li> <li> <p> <code>AWS::EC2::CapacityReservationPool</code> </p> </li> <li> <p> <code>AWS::EC2::HostManagement</code> </p> </li> <li> <p> <code>AWS::NetworkFirewall::RuleGroup</code> </p> </li> </ul> </li> </ul>"
+          "documentation":"<p>Filters, formatted as <a>GroupFilter</a> objects, that you want to apply to a <code>ListGroups</code> operation.</p> <ul> <li> <p> <code>resource-type</code> - Filter the results to include only those resource groups that have the specified resource type in their <code>ResourceTypeFilter</code>. For example, <code>AWS::EC2::Instance</code> would return any resource group with a <code>ResourceTypeFilter</code> that includes <code>AWS::EC2::Instance</code>.</p> </li> <li> <p> <code>configuration-type</code> - Filter the results to include only those groups that have the specified configuration types attached. The current supported values are:</p> <ul> <li> <p> <code>AWS::ResourceGroups::ApplicationGroup</code> </p> </li> <li> <p> <code>AWS::AppRegistry::Application</code> </p> </li> <li> <p> <code>AWS::AppRegistry::ApplicationResourceGroups</code> </p> </li> <li> <p> <code>AWS::CloudFormation::Stack</code> </p> </li> <li> <p> <code>AWS::EC2::CapacityReservationPool</code> </p> </li> <li> <p> <code>AWS::EC2::HostManagement</code> </p> </li> <li> <p> <code>AWS::NetworkFirewall::RuleGroup</code> </p> </li> </ul> </li> </ul>"
         },
         "MaxResults":{
           "shape":"MaxResults",
@@ -953,6 +1325,54 @@
           "documentation":"<important> <p> <i> <b>Deprecated - don't use this field. Use the <code>GroupIdentifiers</code> response field instead.</b> </i> </p> </important>",
           "deprecated":true,
           "deprecatedMessage":"This field is deprecated, use GroupIdentifiers instead."
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>If present, indicates that more output is available than is included in the current response. Use this value in the <code>NextToken</code> request parameter in a subsequent call to the operation to get the next part of the output. You should repeat this until the <code>NextToken</code> response element comes back as <code>null</code>.</p>"
+        }
+      }
+    },
+    "ListTagSyncTasksFilter":{
+      "type":"structure",
+      "members":{
+        "GroupArn":{
+          "shape":"GroupArnV2",
+          "documentation":"<p>The Amazon resource name (ARN) of the application group. </p>"
+        },
+        "GroupName":{
+          "shape":"GroupName",
+          "documentation":"<p>The name of the application group. </p>"
+        }
+      },
+      "documentation":"<p>Returns tag-sync tasks filtered by the Amazon resource name (ARN) or name of a specified application group. </p>"
+    },
+    "ListTagSyncTasksFilterList":{
+      "type":"list",
+      "member":{"shape":"ListTagSyncTasksFilter"}
+    },
+    "ListTagSyncTasksInput":{
+      "type":"structure",
+      "members":{
+        "Filters":{
+          "shape":"ListTagSyncTasksFilterList",
+          "documentation":"<p>The Amazon resource name (ARN) or name of the application group for which you want to return a list of tag-sync tasks. </p>"
+        },
+        "MaxResults":{
+          "shape":"MaxResults",
+          "documentation":"<p>The maximum number of results to be included in the response. </p>"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The parameter for receiving additional results if you receive a <code>NextToken</code> response in a previous request. A <code>NextToken</code> response indicates that more output is available. Set this parameter to the value provided by a previous call's <code>NextToken</code> response to indicate where the output should continue from. </p>"
+        }
+      }
+    },
+    "ListTagSyncTasksOutput":{
+      "type":"structure",
+      "members":{
+        "TagSyncTasks":{
+          "shape":"TagSyncTaskList",
+          "documentation":"<p>A list of tag-sync tasks and information about each task. </p>"
         },
         "NextToken":{
           "shape":"NextToken",
@@ -989,6 +1409,12 @@
       "error":{"httpStatusCode":404},
       "exception":true
     },
+    "Owner":{
+      "type":"string",
+      "max":300,
+      "min":0,
+      "pattern":"^([\\p{L}\\p{Z}\\p{N}_.:/=+\\-@]*)$"
+    },
     "PendingResource":{
       "type":"structure",
       "members":{
@@ -1008,7 +1434,7 @@
       "members":{
         "Group":{
           "shape":"GroupString",
-          "documentation":"<p>The name or ARN of the resource group with the configuration that you want to update.</p>"
+          "documentation":"<p>The name or Amazon resource name (ARN) of the resource group with the configuration that you want to update.</p>"
         },
         "Configuration":{
           "shape":"GroupConfigurationList",
@@ -1117,7 +1543,7 @@
       "members":{
         "ResourceArn":{
           "shape":"ResourceArn",
-          "documentation":"<p>The ARN of a resource.</p>"
+          "documentation":"<p>The Amazon resource name (ARN) of a resource.</p>"
         },
         "ResourceType":{
           "shape":"ResourceType",
@@ -1139,7 +1565,7 @@
       "members":{
         "Type":{
           "shape":"QueryType",
-          "documentation":"<p>The type of the query to perform. This can have one of two values:</p> <ul> <li> <p> <i> <code>CLOUDFORMATION_STACK_1_0:</code> </i> Specifies that you want the group to contain the members of an CloudFormation stack. The <code>Query</code> contains a <code>StackIdentifier</code> element with an ARN for a CloudFormation stack.</p> </li> <li> <p> <i> <code>TAG_FILTERS_1_0:</code> </i> Specifies that you want the group to include resource that have tags that match the query. </p> </li> </ul>"
+          "documentation":"<p>The type of the query to perform. This can have one of two values:</p> <ul> <li> <p> <i> <code>CLOUDFORMATION_STACK_1_0:</code> </i> Specifies that you want the group to contain the members of an CloudFormation stack. The <code>Query</code> contains a <code>StackIdentifier</code> element with an Amazon resource name (ARN) for a CloudFormation stack.</p> </li> <li> <p> <i> <code>TAG_FILTERS_1_0:</code> </i> Specifies that you want the group to include resource that have tags that match the query. </p> </li> </ul>"
         },
         "Query":{
           "shape":"Query",
@@ -1165,6 +1591,12 @@
     "ResourceType":{
       "type":"string",
       "pattern":"AWS::[a-zA-Z0-9]+::\\w+"
+    },
+    "RoleArn":{
+      "type":"string",
+      "max":2048,
+      "min":20,
+      "pattern":"arn:(aws[a-zA-Z-]*)?:iam::\\d{12}:role/?[a-zA-Z_0-9+=,.@\\-_/]+"
     },
     "SearchResourcesInput":{
       "type":"structure",
@@ -1201,6 +1633,62 @@
         }
       }
     },
+    "StartTagSyncTaskInput":{
+      "type":"structure",
+      "required":[
+        "Group",
+        "TagKey",
+        "TagValue",
+        "RoleArn"
+      ],
+      "members":{
+        "Group":{
+          "shape":"GroupStringV2",
+          "documentation":"<p>The Amazon resource name (ARN) or name of the application group for which you want to create a tag-sync task. </p>"
+        },
+        "TagKey":{
+          "shape":"TagKey",
+          "documentation":"<p>The tag key. Resources tagged with this tag key-value pair will be added to the application. If a resource with this tag is later untagged, the tag-sync task removes the resource from the application. </p>"
+        },
+        "TagValue":{
+          "shape":"TagValue",
+          "documentation":"<p>The tag value. Resources tagged with this tag key-value pair will be added to the application. If a resource with this tag is later untagged, the tag-sync task removes the resource from the application. </p>"
+        },
+        "RoleArn":{
+          "shape":"RoleArn",
+          "documentation":"<p>The Amazon resource name (ARN) of the role assumed by the service to tag and untag resources on your behalf.</p>"
+        }
+      }
+    },
+    "StartTagSyncTaskOutput":{
+      "type":"structure",
+      "members":{
+        "GroupArn":{
+          "shape":"GroupArnV2",
+          "documentation":"<p>The Amazon resource name (ARN) of the application group for which you want to add or remove resources. </p>"
+        },
+        "GroupName":{
+          "shape":"GroupName",
+          "documentation":"<p>The name of the application group to onboard and sync resources.</p>"
+        },
+        "TaskArn":{
+          "shape":"TagSyncTaskArn",
+          "documentation":"<p>The Amazon resource name (ARN) of the new tag-sync task. </p>"
+        },
+        "TagKey":{
+          "shape":"TagKey",
+          "documentation":"<p>The tag key of the tag-sync task. </p>"
+        },
+        "TagValue":{
+          "shape":"TagValue",
+          "documentation":"<p>The tag value of the tag-sync task. </p>"
+        },
+        "RoleArn":{
+          "shape":"RoleArn",
+          "documentation":"<p>The Amazon resource name (ARN) of the role assumed by the service to tag and untag resources on your behalf.</p>"
+        }
+      }
+    },
     "TagInput":{
       "type":"structure",
       "required":[
@@ -1209,8 +1697,8 @@
       ],
       "members":{
         "Arn":{
-          "shape":"GroupArn",
-          "documentation":"<p>The ARN of the resource group to which to add tags.</p>",
+          "shape":"GroupArnV2",
+          "documentation":"<p>The Amazon resource name (ARN) of the resource group to which to add tags.</p>",
           "location":"uri",
           "locationName":"Arn"
         },
@@ -1234,14 +1722,73 @@
       "type":"structure",
       "members":{
         "Arn":{
-          "shape":"GroupArn",
-          "documentation":"<p>The ARN of the tagged resource.</p>"
+          "shape":"GroupArnV2",
+          "documentation":"<p>The Amazon resource name (ARN) of the tagged resource.</p>"
         },
         "Tags":{
           "shape":"Tags",
           "documentation":"<p>The tags that have been added to the specified resource group.</p>"
         }
       }
+    },
+    "TagSyncTaskArn":{
+      "type":"string",
+      "max":1600,
+      "min":12,
+      "pattern":"arn:aws(-[a-z]+)*:resource-groups:[a-z]{2}(-[a-z]+)+-\\d{1}:[0-9]{12}:group/[a-zA-Z0-9_\\.-]{1,150}/[a-z0-9]{26}/tag-sync-task/[a-z0-9]{26}"
+    },
+    "TagSyncTaskItem":{
+      "type":"structure",
+      "members":{
+        "GroupArn":{
+          "shape":"GroupArnV2",
+          "documentation":"<p>The Amazon resource name (ARN) of the application group. </p>"
+        },
+        "GroupName":{
+          "shape":"GroupName",
+          "documentation":"<p>The name of the application group. </p>"
+        },
+        "TaskArn":{
+          "shape":"TagSyncTaskArn",
+          "documentation":"<p>The Amazon resource name (ARN) of the tag-sync task. </p>"
+        },
+        "TagKey":{
+          "shape":"TagKey",
+          "documentation":"<p>The tag key. </p>"
+        },
+        "TagValue":{
+          "shape":"TagValue",
+          "documentation":"<p>The tag value. </p>"
+        },
+        "RoleArn":{
+          "shape":"RoleArn",
+          "documentation":"<p>The Amazon resource name (ARN) of the role assumed by the service to tag and untag resources on your behalf.</p>"
+        },
+        "Status":{
+          "shape":"TagSyncTaskStatus",
+          "documentation":"<p>The status of the tag-sync task. </p> <p>Valid values include:</p> <ul> <li> <p> <code>ACTIVE</code> - The tag-sync task is actively managing resources in the application by adding or removing the <code>awsApplication</code> tag from resources when they are tagged or untagged with the specified tag key-value pair. </p> </li> <li> <p> <code>ERROR</code> - The tag-sync task is not actively managing resources in the application. Review the <code>ErrorMessage</code> for more information about resolving the error. </p> </li> </ul>"
+        },
+        "ErrorMessage":{
+          "shape":"ErrorMessage",
+          "documentation":"<p>The specific error message in cases where the tag-sync task status is <code>Error</code>.</p>"
+        },
+        "CreatedAt":{
+          "shape":"timestamp",
+          "documentation":"<p>The timestamp of when the tag-sync task was created. </p>"
+        }
+      },
+      "documentation":"<p>The Amazon resource name (ARN) of the tag-sync task. </p>"
+    },
+    "TagSyncTaskList":{
+      "type":"list",
+      "member":{"shape":"TagSyncTaskItem"}
+    },
+    "TagSyncTaskStatus":{
+      "type":"string",
+      "enum":[
+        "ACTIVE",
+        "ERROR"
+      ]
     },
     "TagValue":{
       "type":"string",
@@ -1280,12 +1827,12 @@
       ],
       "members":{
         "Group":{
-          "shape":"GroupString",
-          "documentation":"<p>The name or the ARN of the resource group from which to remove the resources.</p>"
+          "shape":"GroupStringV2",
+          "documentation":"<p>The name or the Amazon resource name (ARN) of the resource group from which to remove the resources.</p>"
         },
         "ResourceArns":{
           "shape":"ResourceArnList",
-          "documentation":"<p>The ARNs of the resources to be removed from the group.</p>"
+          "documentation":"<p>The Amazon resource names (ARNs) of the resources to be removed from the group.</p>"
         }
       }
     },
@@ -1314,8 +1861,8 @@
       ],
       "members":{
         "Arn":{
-          "shape":"GroupArn",
-          "documentation":"<p>The ARN of the resource group from which to remove tags. The command removed both the specified keys and any values associated with those keys.</p>",
+          "shape":"GroupArnV2",
+          "documentation":"<p>The Amazon resource name (ARN) of the resource group from which to remove tags. The command removed both the specified keys and any values associated with those keys.</p>",
           "location":"uri",
           "locationName":"Arn"
         },
@@ -1329,8 +1876,8 @@
       "type":"structure",
       "members":{
         "Arn":{
-          "shape":"GroupArn",
-          "documentation":"<p>The ARN of the resource group from which tags have been removed.</p>"
+          "shape":"GroupArnV2",
+          "documentation":"<p>The Amazon resource name (ARN) of the resource group from which tags have been removed.</p>"
         },
         "Keys":{
           "shape":"TagKeyList",
@@ -1343,7 +1890,7 @@
       "members":{
         "GroupLifecycleEventsDesiredStatus":{
           "shape":"GroupLifecycleEventsDesiredStatus",
-          "documentation":"<p>Specifies whether you want to turn <a href=\"https://docs.aws.amazon.com/ARG/latest/userguide/monitor-groups.html\">group lifecycle events</a> on or off.</p>"
+          "documentation":"<p>Specifies whether you want to turn <a href=\"https://docs.aws.amazon.com/ARG/latest/userguide/monitor-groups.html\">group lifecycle events</a> on or off.</p> <p>You can't turn on group lifecycle events if your resource groups quota is greater than 2,000. </p>"
         }
       }
     },
@@ -1366,12 +1913,24 @@
           "deprecatedMessage":"This field is deprecated, use Group instead."
         },
         "Group":{
-          "shape":"GroupString",
-          "documentation":"<p>The name or the ARN of the resource group to modify.</p>"
+          "shape":"GroupStringV2",
+          "documentation":"<p>The name or the ARN of the resource group to update.</p>"
         },
         "Description":{
           "shape":"Description",
           "documentation":"<p>The new description that you want to update the resource group with. Descriptions can contain letters, numbers, hyphens, underscores, periods, and spaces.</p>"
+        },
+        "Criticality":{
+          "shape":"Criticality",
+          "documentation":"<p>The critical rank of the application group on a scale of 1 to 10, with a rank of 1 being the most critical, and a rank of 10 being least critical.</p>"
+        },
+        "Owner":{
+          "shape":"Owner",
+          "documentation":"<p>A name, email address or other identifier for the person or group who is considered as the owner of this application group within your organization. </p>"
+        },
+        "DisplayName":{
+          "shape":"DisplayName",
+          "documentation":"<p>The name of the application group, which you can change at any time. </p>"
         }
       }
     },
@@ -1396,7 +1955,7 @@
         },
         "Group":{
           "shape":"GroupString",
-          "documentation":"<p>The name or the ARN of the resource group to query.</p>"
+          "documentation":"<p>The name or the Amazon resource name (ARN) of the resource group to query.</p>"
         },
         "ResourceQuery":{
           "shape":"ResourceQuery",
@@ -1412,7 +1971,8 @@
           "documentation":"<p>The updated resource query associated with the resource group after the update.</p>"
         }
       }
-    }
+    },
+    "timestamp":{"type":"timestamp"}
   },
-  "documentation":"<p>Resource Groups lets you organize Amazon Web Services resources such as Amazon Elastic Compute Cloud instances, Amazon Relational Database Service databases, and Amazon Simple Storage Service buckets into groups using criteria that you define as tags. A resource group is a collection of resources that match the resource types specified in a query, and share one or more tags or portions of tags. You can create a group of resources based on their roles in your cloud infrastructure, lifecycle stages, regions, application layers, or virtually any criteria. Resource Groups enable you to automate management tasks, such as those in Amazon Web Services Systems Manager Automation documents, on tag-related resources in Amazon Web Services Systems Manager. Groups of tagged resources also let you quickly view a custom console in Amazon Web Services Systems Manager that shows Config compliance and other monitoring data about member resources.</p> <p>To create a resource group, build a resource query, and specify tags that identify the criteria that members of the group have in common. Tags are key-value pairs.</p> <p>For more information about Resource Groups, see the <a href=\"https://docs.aws.amazon.com/ARG/latest/userguide/welcome.html\">Resource Groups User Guide</a>.</p> <p>Resource Groups uses a REST-compliant API that you can use to perform the following types of operations.</p> <ul> <li> <p>Create, Read, Update, and Delete (CRUD) operations on resource groups and resource query entities</p> </li> <li> <p>Applying, editing, and removing tags from resource groups</p> </li> <li> <p>Resolving resource group member ARNs so they can be returned as search results</p> </li> <li> <p>Getting data about resources that are members of a group</p> </li> <li> <p>Searching Amazon Web Services resources based on a resource query</p> </li> </ul>"
+  "documentation":"<p>Resource Groups lets you organize Amazon Web Services resources such as Amazon Elastic Compute Cloud instances, Amazon Relational Database Service databases, and Amazon Simple Storage Service buckets into groups using criteria that you define as tags. A resource group is a collection of resources that match the resource types specified in a query, and share one or more tags or portions of tags. You can create a group of resources based on their roles in your cloud infrastructure, lifecycle stages, regions, application layers, or virtually any criteria. Resource Groups enable you to automate management tasks, such as those in Amazon Web Services Systems Manager Automation documents, on tag-related resources in Amazon Web Services Systems Manager. Groups of tagged resources also let you quickly view a custom console in Amazon Web Services Systems Manager that shows Config compliance and other monitoring data about member resources.</p> <p>To create a resource group, build a resource query, and specify tags that identify the criteria that members of the group have in common. Tags are key-value pairs.</p> <p>For more information about Resource Groups, see the <a href=\"https://docs.aws.amazon.com/ARG/latest/userguide/welcome.html\">Resource Groups User Guide</a>.</p> <p>Resource Groups uses a REST-compliant API that you can use to perform the following types of operations.</p> <ul> <li> <p>Create, Read, Update, and Delete (CRUD) operations on resource groups and resource query entities</p> </li> <li> <p>Applying, editing, and removing tags from resource groups</p> </li> <li> <p>Resolving resource group member Amazon resource names (ARN)s so they can be returned as search results</p> </li> <li> <p>Getting data about resources that are members of a group</p> </li> <li> <p>Searching Amazon Web Services resources based on a resource query</p> </li> </ul>"
 }

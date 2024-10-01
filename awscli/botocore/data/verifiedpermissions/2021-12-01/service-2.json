@@ -2,6 +2,7 @@
   "version":"2.0",
   "metadata":{
     "apiVersion":"2021-12-01",
+    "auth":["aws.auth#sigv4"],
     "endpointPrefix":"verifiedpermissions",
     "jsonVersion":"1.0",
     "protocol":"json",
@@ -65,7 +66,7 @@
         {"shape":"ThrottlingException"},
         {"shape":"InternalServerException"}
       ],
-      "documentation":"<p>Adds an identity source to a policy store–an Amazon Cognito user pool or OpenID Connect (OIDC) identity provider (IdP). </p> <p>After you create an identity source, you can use the identities provided by the IdP as proxies for the principal in authorization queries that use the <a href=\"https://docs.aws.amazon.com/verifiedpermissions/latest/apireference/API_IsAuthorizedWithToken.html\">IsAuthorizedWithToken</a> or <a href=\"https://docs.aws.amazon.com/verifiedpermissions/latest/apireference/API_BatchIsAuthorizedWithToken.html\">BatchIsAuthorizedWithToken</a> API operations. These identities take the form of tokens that contain claims about the user, such as IDs, attributes and group memberships. Identity sources provide identity (ID) tokens and access tokens. Verified Permissions derives information about your user and session from token claims. Access tokens provide action <code>context</code> to your policies, and ID tokens provide principal <code>Attributes</code>.</p> <important> <p>Tokens from an identity source user continue to be usable until they expire. Token revocation and resource deletion have no effect on the validity of a token in your policy store</p> </important> <note> <p>To reference a user from this identity source in your Cedar policies, refer to the following syntax examples.</p> <ul> <li> <p>Amazon Cognito user pool: <code>Namespace::[Entity type]::[User pool ID]|[user principal attribute]</code>, for example <code>MyCorp::User::us-east-1_EXAMPLE|a1b2c3d4-5678-90ab-cdef-EXAMPLE11111</code>.</p> </li> <li> <p>OpenID Connect (OIDC) provider: <code>Namespace::[Entity type]::[principalIdClaim]|[user principal attribute]</code>, for example <code>MyCorp::User::MyOIDCProvider|a1b2c3d4-5678-90ab-cdef-EXAMPLE22222</code>.</p> </li> </ul> </note> <note> <p>Verified Permissions is <i> <a href=\"https://wikipedia.org/wiki/Eventual_consistency\">eventually consistent</a> </i>. It can take a few seconds for a new or changed element to propagate through the service and be visible in the results of other Verified Permissions operations.</p> </note>",
+      "documentation":"<p>Adds an identity source to a policy store–an Amazon Cognito user pool or OpenID Connect (OIDC) identity provider (IdP). </p> <p>After you create an identity source, you can use the identities provided by the IdP as proxies for the principal in authorization queries that use the <a href=\"https://docs.aws.amazon.com/verifiedpermissions/latest/apireference/API_IsAuthorizedWithToken.html\">IsAuthorizedWithToken</a> or <a href=\"https://docs.aws.amazon.com/verifiedpermissions/latest/apireference/API_BatchIsAuthorizedWithToken.html\">BatchIsAuthorizedWithToken</a> API operations. These identities take the form of tokens that contain claims about the user, such as IDs, attributes and group memberships. Identity sources provide identity (ID) tokens and access tokens. Verified Permissions derives information about your user and session from token claims. Access tokens provide action <code>context</code> to your policies, and ID tokens provide principal <code>Attributes</code>.</p> <important> <p>Tokens from an identity source user continue to be usable until they expire. Token revocation and resource deletion have no effect on the validity of a token in your policy store</p> </important> <note> <p>To reference a user from this identity source in your Cedar policies, refer to the following syntax examples.</p> <ul> <li> <p>Amazon Cognito user pool: <code>Namespace::[Entity type]::[User pool ID]|[user principal attribute]</code>, for example <code>MyCorp::User::us-east-1_EXAMPLE|a1b2c3d4-5678-90ab-cdef-EXAMPLE11111</code>.</p> </li> <li> <p>OpenID Connect (OIDC) provider: <code>Namespace::[Entity type]::[entityIdPrefix]|[user principal attribute]</code>, for example <code>MyCorp::User::MyOIDCProvider|a1b2c3d4-5678-90ab-cdef-EXAMPLE22222</code>.</p> </li> </ul> </note> <note> <p>Verified Permissions is <i> <a href=\"https://wikipedia.org/wiki/Eventual_consistency\">eventually consistent</a> </i>. It can take a few seconds for a new or changed element to propagate through the service and be visible in the results of other Verified Permissions operations.</p> </note>",
       "idempotent":true
     },
     "CreatePolicy":{
@@ -318,7 +319,7 @@
         {"shape":"ThrottlingException"},
         {"shape":"InternalServerException"}
       ],
-      "documentation":"<p>Makes an authorization decision about a service request described in the parameters. The principal in this request comes from an external identity source in the form of an identity token formatted as a <a href=\"https://wikipedia.org/wiki/JSON_Web_Token\">JSON web token (JWT)</a>. The information in the parameters can also define additional context that Verified Permissions can include in the evaluation. The request is evaluated against all matching policies in the specified policy store. The result of the decision is either <code>Allow</code> or <code>Deny</code>, along with a list of the policies that resulted in the decision.</p> <p>At this time, Verified Permissions accepts tokens from only Amazon Cognito.</p> <p>Verified Permissions validates each token that is specified in a request by checking its expiration date and its signature.</p> <important> <p>Tokens from an identity source user continue to be usable until they expire. Token revocation and resource deletion have no effect on the validity of a token in your policy store</p> </important>"
+      "documentation":"<p>Makes an authorization decision about a service request described in the parameters. The principal in this request comes from an external identity source in the form of an identity token formatted as a <a href=\"https://wikipedia.org/wiki/JSON_Web_Token\">JSON web token (JWT)</a>. The information in the parameters can also define additional context that Verified Permissions can include in the evaluation. The request is evaluated against all matching policies in the specified policy store. The result of the decision is either <code>Allow</code> or <code>Deny</code>, along with a list of the policies that resulted in the decision.</p> <p>Verified Permissions validates each token that is specified in a request by checking its expiration date and its signature.</p> <important> <p>Tokens from an identity source user continue to be usable until they expire. Token revocation and resource deletion have no effect on the validity of a token in your policy store</p> </important>"
     },
     "ListIdentitySources":{
       "name":"ListIdentitySources",
@@ -2486,7 +2487,7 @@
         },
         "policyType":{
           "shape":"PolicyType",
-          "documentation":"<p>The type of the policy. This is one of the following values:</p> <ul> <li> <p> <code>static</code> </p> </li> <li> <p> <code>templateLinked</code> </p> </li> </ul>"
+          "documentation":"<p>The type of the policy. This is one of the following values:</p> <ul> <li> <p> <code>STATIC</code> </p> </li> <li> <p> <code>TEMPLATE_LINKED</code> </p> </li> </ul>"
         },
         "principal":{
           "shape":"EntityIdentifier",
@@ -2751,7 +2752,7 @@
       "members":{
         "cedarJson":{
           "shape":"SchemaJson",
-          "documentation":"<p>A JSON string representation of the schema supported by applications that use this policy store. For more information, see <a href=\"https://docs.aws.amazon.com/verifiedpermissions/latest/userguide/schema.html\">Policy store schema</a> in the <i>Amazon Verified Permissions User Guide</i>.</p>"
+          "documentation":"<p>A JSON string representation of the schema supported by applications that use this policy store. To delete the schema, run <a href=\"https://docs.aws.amazon.com/verifiedpermissions/latest/apireference/API_PutSchema.html\">PutSchema</a> with <code>{}</code> for this parameter. For more information, see <a href=\"https://docs.aws.amazon.com/verifiedpermissions/latest/userguide/schema.html\">Policy store schema</a> in the <i>Amazon Verified Permissions User Guide</i>.</p>"
         }
       },
       "documentation":"<p>Contains a list of principal types, resource types, and actions that can be specified in policies stored in the same policy store. If the validation mode for the policy store is set to <code>STRICT</code>, then policies that can't be validated by this schema are rejected by Verified Permissions and can't be stored in the policy store.</p>",
@@ -2781,7 +2782,7 @@
         },
         "serviceCode":{
           "shape":"String",
-          "documentation":"<p>The code for the Amazon Web Service that owns the quota.</p>"
+          "documentation":"<p>The code for the Amazon Web Services service that owns the quota.</p>"
         },
         "quotaCode":{
           "shape":"String",
@@ -2910,7 +2911,7 @@
         "message":{"shape":"String"},
         "serviceCode":{
           "shape":"String",
-          "documentation":"<p>The code for the Amazon Web Service that owns the quota.</p>"
+          "documentation":"<p>The code for the Amazon Web Services service that owns the quota.</p>"
         },
         "quotaCode":{
           "shape":"String",
@@ -2995,7 +2996,7 @@
         },
         "updateConfiguration":{
           "shape":"UpdateConfiguration",
-          "documentation":"<p>Specifies the details required to communicate with the identity provider (IdP) associated with this identity source.</p> <note> <p>At this time, the only valid member of this structure is a Amazon Cognito user pool configuration.</p> <p>You must specify a <code>userPoolArn</code>, and optionally, a <code>ClientId</code>.</p> </note>"
+          "documentation":"<p>Specifies the details required to communicate with the identity provider (IdP) associated with this identity source.</p>"
         },
         "principalEntityType":{
           "shape":"PrincipalEntityType",

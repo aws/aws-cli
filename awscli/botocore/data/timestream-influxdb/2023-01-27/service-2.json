@@ -324,6 +324,10 @@
         "tags":{
           "shape":"RequestTagMap",
           "documentation":"<p>A list of key-value pairs to associate with the DB instance.</p>"
+        },
+        "port":{
+          "shape":"Port",
+          "documentation":"<p>The port number on which InfluxDB accepts connections.</p> <p>Valid Values: 1024-65535</p> <p>Default: 8086</p> <p>Constraints: The value can't be 2375-2376, 7788-7799, 8090, or 51678-51680</p>"
         }
       }
     },
@@ -355,6 +359,10 @@
         "endpoint":{
           "shape":"String",
           "documentation":"<p>The endpoint used to connect to InfluxDB. The default InfluxDB port is 8086.</p>"
+        },
+        "port":{
+          "shape":"Port",
+          "documentation":"<p>The port number on which InfluxDB accepts connections. The default value is 8086.</p>"
         },
         "dbInstanceType":{
           "shape":"DbInstanceType",
@@ -509,6 +517,10 @@
           "shape":"String",
           "documentation":"<p>The endpoint used to connect to InfluxDB. The default InfluxDB port is 8086.</p>"
         },
+        "port":{
+          "shape":"Port",
+          "documentation":"<p>The port number on which InfluxDB accepts connections.</p>"
+        },
         "dbInstanceType":{
           "shape":"DbInstanceType",
           "documentation":"<p>The Timestream for InfluxDB instance type to run InfluxDB on.</p>"
@@ -641,6 +653,10 @@
           "shape":"String",
           "documentation":"<p>The endpoint used to connect to InfluxDB. The default InfluxDB port is 8086.</p>"
         },
+        "port":{
+          "shape":"Port",
+          "documentation":"<p>The port number on which InfluxDB accepts connections.</p>"
+        },
         "dbInstanceType":{
           "shape":"DbInstanceType",
           "documentation":"<p>The Timestream for InfluxDB instance type that InfluxDB runs on.</p>"
@@ -698,6 +714,38 @@
         "WITH_MULTIAZ_STANDBY"
       ]
     },
+    "Duration":{
+      "type":"structure",
+      "required":[
+        "durationType",
+        "value"
+      ],
+      "members":{
+        "durationType":{
+          "shape":"DurationType",
+          "documentation":"<p>The type of duration for InfluxDB parameters.</p>"
+        },
+        "value":{
+          "shape":"DurationValueLong",
+          "documentation":"<p>The value of duration for InfluxDB parameters.</p>"
+        }
+      },
+      "documentation":"<p>Duration for InfluxDB parameters in Timestream for InfluxDB.</p>"
+    },
+    "DurationType":{
+      "type":"string",
+      "enum":[
+        "hours",
+        "minutes",
+        "seconds",
+        "milliseconds"
+      ]
+    },
+    "DurationValueLong":{
+      "type":"long",
+      "box":true,
+      "min":0
+    },
     "GetDbInstanceInput":{
       "type":"structure",
       "required":["identifier"],
@@ -736,6 +784,10 @@
         "endpoint":{
           "shape":"String",
           "documentation":"<p>The endpoint used to connect to InfluxDB. The default InfluxDB port is 8086.</p>"
+        },
+        "port":{
+          "shape":"Port",
+          "documentation":"<p>The port number on which InfluxDB accepts connections.</p>"
         },
         "dbInstanceType":{
           "shape":"DbInstanceType",
@@ -857,9 +909,135 @@
         "metricsDisabled":{
           "shape":"Boolean",
           "documentation":"<p>Disable the HTTP /metrics endpoint which exposes <a href=\"https://docs.influxdata.com/influxdb/v2/reference/internals/metrics/\">internal InfluxDB metrics</a>.</p> <p>Default: false</p>"
+        },
+        "httpIdleTimeout":{
+          "shape":"Duration",
+          "documentation":"<p>Maximum duration the server should keep established connections alive while waiting for new requests. Set to 0 for no timeout.</p> <p>Default: 3 minutes</p>"
+        },
+        "httpReadHeaderTimeout":{
+          "shape":"Duration",
+          "documentation":"<p>Maximum duration the server should try to read HTTP headers for new requests. Set to 0 for no timeout.</p> <p>Default: 10 seconds</p>"
+        },
+        "httpReadTimeout":{
+          "shape":"Duration",
+          "documentation":"<p>Maximum duration the server should try to read the entirety of new requests. Set to 0 for no timeout.</p> <p>Default: 0</p>"
+        },
+        "httpWriteTimeout":{
+          "shape":"Duration",
+          "documentation":"<p>Maximum duration the server should spend processing and responding to write requests. Set to 0 for no timeout.</p> <p>Default: 0</p>"
+        },
+        "influxqlMaxSelectBuckets":{
+          "shape":"InfluxDBv2ParametersInfluxqlMaxSelectBucketsLong",
+          "documentation":"<p>Maximum number of group by time buckets a SELECT statement can create. 0 allows an unlimited number of buckets.</p> <p>Default: 0</p>"
+        },
+        "influxqlMaxSelectPoint":{
+          "shape":"InfluxDBv2ParametersInfluxqlMaxSelectPointLong",
+          "documentation":"<p>Maximum number of points a SELECT statement can process. 0 allows an unlimited number of points. InfluxDB checks the point count every second (so queries exceeding the maximum aren’t immediately aborted).</p> <p>Default: 0</p>"
+        },
+        "influxqlMaxSelectSeries":{
+          "shape":"InfluxDBv2ParametersInfluxqlMaxSelectSeriesLong",
+          "documentation":"<p>Maximum number of series a SELECT statement can return. 0 allows an unlimited number of series.</p> <p>Default: 0</p>"
+        },
+        "pprofDisabled":{
+          "shape":"Boolean",
+          "documentation":"<p>Disable the /debug/pprof HTTP endpoint. This endpoint provides runtime profiling data and can be helpful when debugging.</p> <p>Default: false</p>"
+        },
+        "queryInitialMemoryBytes":{
+          "shape":"InfluxDBv2ParametersQueryInitialMemoryBytesLong",
+          "documentation":"<p>Initial bytes of memory allocated for a query.</p> <p>Default: 0</p>"
+        },
+        "queryMaxMemoryBytes":{
+          "shape":"InfluxDBv2ParametersQueryMaxMemoryBytesLong",
+          "documentation":"<p>Maximum number of queries allowed in execution queue. When queue limit is reached, new queries are rejected. Setting to 0 allows an unlimited number of queries in the queue.</p> <p>Default: 0</p>"
+        },
+        "queryMemoryBytes":{
+          "shape":"InfluxDBv2ParametersQueryMemoryBytesLong",
+          "documentation":"<p>Maximum bytes of memory allowed for a single query. Must be greater or equal to queryInitialMemoryBytes.</p> <p>Default: 0</p>"
+        },
+        "sessionLength":{
+          "shape":"InfluxDBv2ParametersSessionLengthInteger",
+          "documentation":"<p>Specifies the Time to Live (TTL) in minutes for newly created user sessions.</p> <p>Default: 60</p>"
+        },
+        "sessionRenewDisabled":{
+          "shape":"Boolean",
+          "documentation":"<p>Disables automatically extending a user’s session TTL on each request. By default, every request sets the session’s expiration time to five minutes from now. When disabled, sessions expire after the specified <a href=\"https://docs.influxdata.com/influxdb/v2/reference/config-options/#session-length\">session length</a> and the user is redirected to the login page, even if recently active.</p> <p>Default: false</p>"
+        },
+        "storageCacheMaxMemorySize":{
+          "shape":"InfluxDBv2ParametersStorageCacheMaxMemorySizeLong",
+          "documentation":"<p>Maximum size (in bytes) a shard’s cache can reach before it starts rejecting writes. Must be greater than storageCacheSnapShotMemorySize and lower than instance’s total memory capacity. We recommend setting it to below 15% of the total memory capacity.</p> <p>Default: 1073741824</p>"
+        },
+        "storageCacheSnapshotMemorySize":{
+          "shape":"InfluxDBv2ParametersStorageCacheSnapshotMemorySizeLong",
+          "documentation":"<p>Size (in bytes) at which the storage engine will snapshot the cache and write it to a TSM file to make more memory available. Must not be greater than storageCacheMaxMemorySize.</p> <p>Default: 26214400</p>"
+        },
+        "storageCacheSnapshotWriteColdDuration":{
+          "shape":"Duration",
+          "documentation":"<p>Duration at which the storage engine will snapshot the cache and write it to a new TSM file if the shard hasn’t received writes or deletes.</p> <p>Default: 10 minutes</p>"
+        },
+        "storageCompactFullWriteColdDuration":{
+          "shape":"Duration",
+          "documentation":"<p>Duration at which the storage engine will compact all TSM files in a shard if it hasn't received writes or deletes.</p> <p>Default: 4 hours</p>"
+        },
+        "storageCompactThroughputBurst":{
+          "shape":"InfluxDBv2ParametersStorageCompactThroughputBurstLong",
+          "documentation":"<p>Rate limit (in bytes per second) that TSM compactions can write to disk.</p> <p>Default: 50331648</p>"
+        },
+        "storageMaxConcurrentCompactions":{
+          "shape":"InfluxDBv2ParametersStorageMaxConcurrentCompactionsInteger",
+          "documentation":"<p>Maximum number of full and level compactions that can run concurrently. A value of 0 results in 50% of runtime.GOMAXPROCS(0) used at runtime. Any number greater than zero limits compactions to that value. This setting does not apply to cache snapshotting.</p> <p>Default: 0</p>"
+        },
+        "storageMaxIndexLogFileSize":{
+          "shape":"InfluxDBv2ParametersStorageMaxIndexLogFileSizeLong",
+          "documentation":"<p>Size (in bytes) at which an index write-ahead log (WAL) file will compact into an index file. Lower sizes will cause log files to be compacted more quickly and result in lower heap usage at the expense of write throughput.</p> <p>Default: 1048576</p>"
+        },
+        "storageNoValidateFieldSize":{
+          "shape":"Boolean",
+          "documentation":"<p>Skip field size validation on incoming write requests.</p> <p>Default: false</p>"
+        },
+        "storageRetentionCheckInterval":{
+          "shape":"Duration",
+          "documentation":"<p>Interval of retention policy enforcement checks. Must be greater than 0.</p> <p>Default: 30 minutes</p>"
+        },
+        "storageSeriesFileMaxConcurrentSnapshotCompactions":{
+          "shape":"InfluxDBv2ParametersStorageSeriesFileMaxConcurrentSnapshotCompactionsInteger",
+          "documentation":"<p>Maximum number of snapshot compactions that can run concurrently across all series partitions in a database.</p> <p>Default: 0</p>"
+        },
+        "storageSeriesIdSetCacheSize":{
+          "shape":"InfluxDBv2ParametersStorageSeriesIdSetCacheSizeLong",
+          "documentation":"<p>Size of the internal cache used in the TSI index to store previously calculated series results. Cached results are returned quickly rather than needing to be recalculated when a subsequent query with the same tag key/value predicate is executed. Setting this value to 0 will disable the cache and may decrease query performance.</p> <p>Default: 100</p>"
+        },
+        "storageWalMaxConcurrentWrites":{
+          "shape":"InfluxDBv2ParametersStorageWalMaxConcurrentWritesInteger",
+          "documentation":"<p>Maximum number writes to the WAL directory to attempt at the same time. Setting this value to 0 results in number of processing units available x2.</p> <p>Default: 0</p>"
+        },
+        "storageWalMaxWriteDelay":{
+          "shape":"Duration",
+          "documentation":"<p>Maximum amount of time a write request to the WAL directory will wait when the <a href=\"https://docs.influxdata.com/influxdb/v2/reference/config-options/#storage-wal-max-concurrent-writes\">maximum number of concurrent active writes to the WAL directory has been met</a>. Set to 0 to disable the timeout.</p> <p>Default: 10 minutes</p>"
+        },
+        "uiDisabled":{
+          "shape":"Boolean",
+          "documentation":"<p>Disable the InfluxDB user interface (UI). The UI is enabled by default.</p> <p>Default: false</p>"
         }
       },
       "documentation":"<p>All the customer-modifiable InfluxDB v2 parameters in Timestream for InfluxDB.</p>"
+    },
+    "InfluxDBv2ParametersInfluxqlMaxSelectBucketsLong":{
+      "type":"long",
+      "box":true,
+      "max":1000000000000,
+      "min":0
+    },
+    "InfluxDBv2ParametersInfluxqlMaxSelectPointLong":{
+      "type":"long",
+      "box":true,
+      "max":1000000000000,
+      "min":0
+    },
+    "InfluxDBv2ParametersInfluxqlMaxSelectSeriesLong":{
+      "type":"long",
+      "box":true,
+      "max":1000000000000,
+      "min":0
     },
     "InfluxDBv2ParametersQueryConcurrencyInteger":{
       "type":"integer",
@@ -867,7 +1045,79 @@
       "max":256,
       "min":0
     },
+    "InfluxDBv2ParametersQueryInitialMemoryBytesLong":{
+      "type":"long",
+      "box":true,
+      "max":1000000000000,
+      "min":0
+    },
+    "InfluxDBv2ParametersQueryMaxMemoryBytesLong":{
+      "type":"long",
+      "box":true,
+      "max":1000000000000,
+      "min":0
+    },
+    "InfluxDBv2ParametersQueryMemoryBytesLong":{
+      "type":"long",
+      "box":true,
+      "max":1000000000000,
+      "min":0
+    },
     "InfluxDBv2ParametersQueryQueueSizeInteger":{
+      "type":"integer",
+      "box":true,
+      "max":256,
+      "min":0
+    },
+    "InfluxDBv2ParametersSessionLengthInteger":{
+      "type":"integer",
+      "box":true,
+      "max":2880,
+      "min":1
+    },
+    "InfluxDBv2ParametersStorageCacheMaxMemorySizeLong":{
+      "type":"long",
+      "box":true,
+      "max":1000000000000,
+      "min":0
+    },
+    "InfluxDBv2ParametersStorageCacheSnapshotMemorySizeLong":{
+      "type":"long",
+      "box":true,
+      "max":1000000000000,
+      "min":0
+    },
+    "InfluxDBv2ParametersStorageCompactThroughputBurstLong":{
+      "type":"long",
+      "box":true,
+      "max":1000000000000,
+      "min":0
+    },
+    "InfluxDBv2ParametersStorageMaxConcurrentCompactionsInteger":{
+      "type":"integer",
+      "box":true,
+      "max":64,
+      "min":0
+    },
+    "InfluxDBv2ParametersStorageMaxIndexLogFileSizeLong":{
+      "type":"long",
+      "box":true,
+      "max":1000000000000,
+      "min":0
+    },
+    "InfluxDBv2ParametersStorageSeriesFileMaxConcurrentSnapshotCompactionsInteger":{
+      "type":"integer",
+      "box":true,
+      "max":64,
+      "min":0
+    },
+    "InfluxDBv2ParametersStorageSeriesIdSetCacheSizeLong":{
+      "type":"long",
+      "box":true,
+      "max":1000000000000,
+      "min":0
+    },
+    "InfluxDBv2ParametersStorageWalMaxConcurrentWritesInteger":{
       "type":"integer",
       "box":true,
       "max":256,
@@ -1012,6 +1262,12 @@
       "min":8,
       "pattern":"[a-zA-Z0-9]+",
       "sensitive":true
+    },
+    "Port":{
+      "type":"integer",
+      "box":true,
+      "max":65535,
+      "min":1024
     },
     "RequestTagMap":{
       "type":"map",
@@ -1183,6 +1439,10 @@
           "shape":"DbParameterGroupIdentifier",
           "documentation":"<p>The id of the DB parameter group to assign to your DB instance. DB parameter groups specify how the database is configured. For example, DB parameter groups can specify the limit for query concurrency.</p>"
         },
+        "port":{
+          "shape":"Port",
+          "documentation":"<p>The port number on which InfluxDB accepts connections.</p> <p>If you change the Port value, your database restarts immediately.</p> <p>Valid Values: 1024-65535</p> <p>Default: 8086</p> <p>Constraints: The value can't be 2375-2376, 7788-7799, 8090, or 51678-51680</p>"
+        },
         "dbInstanceType":{
           "shape":"DbInstanceType",
           "documentation":"<p>The Timestream for InfluxDB DB instance type to run InfluxDB on.</p>"
@@ -1221,6 +1481,10 @@
         "endpoint":{
           "shape":"String",
           "documentation":"<p>The endpoint used to connect to InfluxDB. The default InfluxDB port is 8086.</p>"
+        },
+        "port":{
+          "shape":"Port",
+          "documentation":"<p>The port number on which InfluxDB accepts connections.</p>"
         },
         "dbInstanceType":{
           "shape":"DbInstanceType",

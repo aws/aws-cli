@@ -67,6 +67,7 @@ def replace_event_stream_docs(help_command, **kwargs):
 
 def document_expires_string(help_command, **kwargs):
     doc = help_command.doc
+    caught_index_error = False
     popped = []
     current = ''
     while current != 'Expires -> (timestamp)':
@@ -75,25 +76,29 @@ def document_expires_string(help_command, **kwargs):
             popped.append(current)
         except IndexError:
             # Do nothing if Expires is not in the modeled response
+            caught_index_error = True
             break
-    # Put back the expires field and description
-    doc.push_write(popped.pop())
-    doc.push_write(popped.pop())
-    doc.push_write(popped.pop())
-    doc.push_write(popped.pop())
 
-    doc.push_write('\n\n\n' + doc.style.spaces())
-    doc.push_write('.. note::')
-    doc.style.indent()
-    doc.push_write('\n\n\n' + doc.style.spaces())
-    doc.push_write('This member has been deprecated. Please use `ExpiresString` instead.\n')
-    doc.style.dedent()
-    doc.push_write('\n\n' + doc.style.spaces())
+    # Only inject the deprecation notice if the Expires timestamp arg was found in the document
+    if not caught_index_error:
+        # Put back the expires field and description
+        doc.push_write(popped.pop())
+        doc.push_write(popped.pop())
+        doc.push_write(popped.pop())
+        doc.push_write(popped.pop())
 
-    doc.push_write('\n\n' + doc.style.spaces())
-    doc.push_write('ExpiresString -> (string)\n\n')
-    doc.push_write('\tThe raw, unparsed value of the ``Expires`` field.')
-    doc.push_write('\n\n' + doc.style.spaces())
+        doc.push_write('\n\n\n' + doc.style.spaces())
+        doc.push_write('.. note::')
+        doc.style.indent()
+        doc.push_write('\n\n\n' + doc.style.spaces())
+        doc.push_write('This member has been deprecated. Please use `ExpiresString` instead.\n')
+        doc.style.dedent()
+        doc.push_write('\n\n' + doc.style.spaces())
+
+        doc.push_write('\n\n' + doc.style.spaces())
+        doc.push_write('ExpiresString -> (string)\n\n')
+        doc.push_write('\tThe raw, unparsed value of the ``Expires`` field.')
+        doc.push_write('\n\n' + doc.style.spaces())
 
     # Write rest of document
     while len(popped) > 0:

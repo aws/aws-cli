@@ -297,8 +297,6 @@ class TestSyncCommand(BaseS3TransferCommandTest):
 
     def test_copy_with_checksum_algorithm_update_sha1(self):
         cmdline = f'{self.prefix} s3://src-bucket/ s3://dest-bucket/ --checksum-algorithm SHA1'
-        list_objects_src_with_checksum_algorithm = self.list_objects_response(['mykey'])
-        list_objects_src_with_checksum_algorithm['Contents'][0]['ChecksumAlgorithm'] = 'SHA1'
         self.parsed_responses = [
             # Response for ListObjects on source bucket
             {

@@ -700,6 +700,7 @@ class TestCPCommand(BaseCPCommandTest):
         self.assertEqual(self.operations_called[0][0].name, 'PutObject')
         self.assertEqual(self.operations_called[0][1]['ChecksumAlgorithm'], 'CRC32')
 
+    @requires_crt
     def test_upload_with_checksum_algorithm_crc32c(self):
         full_path = self.files.create_file('foo.txt', 'contents')
         cmdline = f'{self.prefix} {full_path} s3://bucket/key.txt --checksum-algorithm CRC32C'

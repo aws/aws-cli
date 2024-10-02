@@ -198,6 +198,10 @@
         "assessments":{
           "shape":"GuardrailAssessmentList",
           "documentation":"<p>The assessment details in the response from the guardrail.</p>"
+        },
+        "guardrailCoverage":{
+          "shape":"GuardrailCoverage",
+          "documentation":"<p>The guardrail coverage details in the apply guardrail response.</p>"
         }
       }
     },
@@ -709,6 +713,10 @@
         "contextualGroundingPolicy":{
           "shape":"GuardrailContextualGroundingPolicyAssessment",
           "documentation":"<p>The contextual grounding policy used for the guardrail assessment.</p>"
+        },
+        "invocationMetrics":{
+          "shape":"GuardrailInvocationMetrics",
+          "documentation":"<p>The invocation metrics for the guardrail assessment.</p>"
         }
       },
       "documentation":"<p>A behavior assessment of the guardrail policies used in a call to the Converse API. </p>"
@@ -780,6 +788,10 @@
           "shape":"GuardrailContentFilterConfidence",
           "documentation":"<p>The guardrail confidence.</p>"
         },
+        "filterStrength":{
+          "shape":"GuardrailContentFilterStrength",
+          "documentation":"<p>The filter strength setting for the guardrail content filter.</p>"
+        },
         "action":{
           "shape":"GuardrailContentPolicyAction",
           "documentation":"<p>The guardrail action.</p>"
@@ -799,6 +811,15 @@
     "GuardrailContentFilterList":{
       "type":"list",
       "member":{"shape":"GuardrailContentFilter"}
+    },
+    "GuardrailContentFilterStrength":{
+      "type":"string",
+      "enum":[
+        "NONE",
+        "LOW",
+        "MEDIUM",
+        "HIGH"
+      ]
     },
     "GuardrailContentFilterType":{
       "type":"string",
@@ -959,6 +980,16 @@
       },
       "documentation":"<p>A text block that contains text that you want to assess with a guardrail. For more information, see <a>GuardrailConverseContentBlock</a>.</p>"
     },
+    "GuardrailCoverage":{
+      "type":"structure",
+      "members":{
+        "textCharacters":{
+          "shape":"GuardrailTextCharactersCoverage",
+          "documentation":"<p>The text characters of the guardrail coverage details.</p>"
+        }
+      },
+      "documentation":"<p>The action of the guardrail coverage details.</p>"
+    },
     "GuardrailCustomWord":{
       "type":"structure",
       "required":[
@@ -986,6 +1017,24 @@
       "max":2048,
       "min":0,
       "pattern":"(([a-z0-9]+)|(arn:aws(-[^:]+)?:bedrock:[a-z0-9-]{1,20}:[0-9]{12}:guardrail/[a-z0-9]+))"
+    },
+    "GuardrailInvocationMetrics":{
+      "type":"structure",
+      "members":{
+        "guardrailProcessingLatency":{
+          "shape":"GuardrailProcessingLatency",
+          "documentation":"<p>The processing latency details for the guardrail invocation metrics.</p>"
+        },
+        "usage":{
+          "shape":"GuardrailUsage",
+          "documentation":"<p>The usage details for the guardrail invocation metrics.</p>"
+        },
+        "guardrailCoverage":{
+          "shape":"GuardrailCoverage",
+          "documentation":"<p>The coverage details for the guardrail invocation metrics.</p>"
+        }
+      },
+      "documentation":"<p>The invocation metrics for the guardrail.</p>"
     },
     "GuardrailManagedWord":{
       "type":"structure",
@@ -1096,6 +1145,10 @@
         "VEHICLE_IDENTIFICATION_NUMBER"
       ]
     },
+    "GuardrailProcessingLatency":{
+      "type":"long",
+      "box":true
+    },
     "GuardrailRegexFilter":{
       "type":"structure",
       "required":["action"],
@@ -1203,6 +1256,20 @@
         }
       },
       "documentation":"<p>The text block to be evaluated by the guardrail.</p>"
+    },
+    "GuardrailTextCharactersCoverage":{
+      "type":"structure",
+      "members":{
+        "guarded":{
+          "shape":"TextCharactersGuarded",
+          "documentation":"<p>The text characters that were guarded by the guardrail coverage.</p>"
+        },
+        "total":{
+          "shape":"TextCharactersTotal",
+          "documentation":"<p>The total text characters by the guardrail coverage.</p>"
+        }
+      },
+      "documentation":"<p>The guardrail coverage for the text characters.</p>"
     },
     "GuardrailTopic":{
       "type":"structure",
@@ -1858,6 +1925,14 @@
     "SystemContentBlocks":{
       "type":"list",
       "member":{"shape":"SystemContentBlock"}
+    },
+    "TextCharactersGuarded":{
+      "type":"integer",
+      "box":true
+    },
+    "TextCharactersTotal":{
+      "type":"integer",
+      "box":true
     },
     "ThrottlingException":{
       "type":"structure",

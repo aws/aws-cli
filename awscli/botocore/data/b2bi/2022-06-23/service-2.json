@@ -76,6 +76,22 @@
       "documentation":"<p>Creates a customer profile. You can have up to five customer profiles, each representing a distinct private network. A profile is the mechanism used to create the concept of a private network.</p>",
       "idempotent":true
     },
+    "CreateStarterMappingTemplate":{
+      "name":"CreateStarterMappingTemplate",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"CreateStarterMappingTemplateRequest"},
+      "output":{"shape":"CreateStarterMappingTemplateResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Amazon Web Services B2B Data Interchange uses a mapping template in JSONata or XSLT format to transform a customer input file into a JSON or XML file that can be converted to EDI.</p> <p>If you provide a sample EDI file with the same structure as the EDI files that you wish to generate, then the service can generate a mapping template. The starter template contains placeholder values which you can replace with JSONata or XSLT expressions to take data from your input file and insert it into the JSON or XML file that is used to generate the EDI.</p> <p>If you do not provide a sample EDI file, then the service can generate a mapping template based on the EDI settings in the <code>templateDetails</code> parameter. </p> <p> Currently, we only support generating a template that can generate the input to produce an Outbound X12 EDI file.</p>"
+    },
     "CreateTransformer":{
       "name":"CreateTransformer",
       "http":{
@@ -93,7 +109,7 @@
         {"shape":"ServiceQuotaExceededException"},
         {"shape":"InternalServerException"}
       ],
-      "documentation":"<p>Creates a transformer. A transformer describes how to process the incoming EDI documents and extract the necessary information to the output file.</p>",
+      "documentation":"<p>Creates a transformer. Amazon Web Services B2B Data Interchange currently supports two scenarios:</p> <ul> <li> <p> <i>Inbound EDI</i>: the Amazon Web Services customer receives an EDI file from their trading partner. Amazon Web Services B2B Data Interchange converts this EDI file into a JSON or XML file with a service-defined structure. A mapping template provided by the customer, in JSONata or XSLT format, is optionally applied to this file to produce a JSON or XML file with the structure the customer requires.</p> </li> <li> <p> <i>Outbound EDI</i>: the Amazon Web Services customer has a JSON or XML file containing data that they wish to use in an EDI file. A mapping template, provided by the customer (in either JSONata or XSLT format) is applied to this file to generate a JSON or XML file in the service-defined structure. This file is then converted to an EDI file.</p> </li> </ul> <note> <p>The following fields are provided for backwards compatibility only: <code>fileFormat</code>, <code>mappingTemplate</code>, <code>ediType</code>, and <code>sampleDocument</code>.</p> <ul> <li> <p>Use the <code>mapping</code> data type in place of <code>mappingTemplate</code> and <code>fileFormat</code> </p> </li> <li> <p>Use the <code>sampleDocuments</code> data type in place of <code>sampleDocument</code> </p> </li> <li> <p>Use either the <code>inputConversion</code> or <code>outputConversion</code> in place of <code>ediType</code> </p> </li> </ul> </note>",
       "idempotent":true
     },
     "DeleteCapability":{
@@ -165,7 +181,7 @@
         {"shape":"ResourceNotFoundException"},
         {"shape":"InternalServerException"}
       ],
-      "documentation":"<p>Deletes the specified transformer. A transformer describes how to process the incoming EDI documents and extract the necessary information to the output file.</p>",
+      "documentation":"<p>Deletes the specified transformer. A transformer can take an EDI file as input and transform it into a JSON-or XML-formatted document. Alternatively, a transformer can take a JSON-or XML-formatted document as input and transform it into an EDI file.</p>",
       "idempotent":true
     },
     "GetCapability":{
@@ -234,7 +250,7 @@
         {"shape":"ResourceNotFoundException"},
         {"shape":"InternalServerException"}
       ],
-      "documentation":"<p>Retrieves the details for the transformer specified by the transformer ID. A transformer describes how to process the incoming EDI documents and extract the necessary information to the output file.</p>"
+      "documentation":"<p>Retrieves the details for the transformer specified by the transformer ID. A transformer can take an EDI file as input and transform it into a JSON-or XML-formatted document. Alternatively, a transformer can take a JSON-or XML-formatted document as input and transform it into an EDI file.</p>"
     },
     "GetTransformerJob":{
       "name":"GetTransformerJob",
@@ -331,7 +347,7 @@
         {"shape":"ThrottlingException"},
         {"shape":"InternalServerException"}
       ],
-      "documentation":"<p>Lists the available transformers. A transformer describes how to process the incoming EDI documents and extract the necessary information to the output file.</p>"
+      "documentation":"<p>Lists the available transformers. A transformer can take an EDI file as input and transform it into a JSON-or XML-formatted document. Alternatively, a transformer can take a JSON-or XML-formatted document as input and transform it into an EDI file.</p>"
     },
     "StartTransformerJob":{
       "name":"StartTransformerJob",
@@ -349,7 +365,7 @@
         {"shape":"ResourceNotFoundException"},
         {"shape":"InternalServerException"}
       ],
-      "documentation":"<p>Runs a job, using a transformer, to parse input EDI (electronic data interchange) file into the output structures used by Amazon Web Services B2BI Data Interchange.</p> <p>If you only want to transform EDI (electronic data interchange) documents, you don't need to create profiles, partnerships or capabilities. Just create and configure a transformer, and then run the <code>StartTransformerJob</code> API to process your files.</p>",
+      "documentation":"<p>Runs a job, using a transformer, to parse input EDI (electronic data interchange) file into the output structures used by Amazon Web Services B2B Data Interchange.</p> <p>If you only want to transform EDI (electronic data interchange) documents, you don't need to create profiles, partnerships or capabilities. Just create and configure a transformer, and then run the <code>StartTransformerJob</code> API to process your files.</p>",
       "idempotent":true
     },
     "TagResource":{
@@ -366,6 +382,24 @@
         {"shape":"InternalServerException"}
       ],
       "documentation":"<p>Attaches a key-value pair to a resource, as identified by its Amazon Resource Name (ARN). Resources are capability, partnership, profile, transformers and other entities.</p> <p>There is no response returned from this call.</p>"
+    },
+    "TestConversion":{
+      "name":"TestConversion",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"TestConversionRequest"},
+      "output":{"shape":"TestConversionResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>This operation mimics the latter half of a typical Outbound EDI request. It takes an input JSON/XML in the B2Bi shape as input, converts it to an X12 EDI string, and return that string.</p>",
+      "idempotent":true
     },
     "TestMapping":{
       "name":"TestMapping",
@@ -495,7 +529,7 @@
         {"shape":"ServiceQuotaExceededException"},
         {"shape":"InternalServerException"}
       ],
-      "documentation":"<p>Updates the specified parameters for a transformer. A transformer describes how to process the incoming EDI documents and extract the necessary information to the output file.</p>",
+      "documentation":"<p>Updates the specified parameters for a transformer. A transformer can take an EDI file as input and transform it into a JSON-or XML-formatted document. Alternatively, a transformer can take a JSON-or XML-formatted document as input and transform it into an EDI file.</p>",
       "idempotent":true
     }
   },
@@ -535,6 +569,13 @@
       "documentation":"<p>A capability object. Currently, only EDI (electronic data interchange) capabilities are supported. A trading capability contains the information required to transform incoming EDI documents into JSON or XML outputs.</p>",
       "union":true
     },
+    "CapabilityDirection":{
+      "type":"string",
+      "enum":[
+        "INBOUND",
+        "OUTBOUND"
+      ]
+    },
     "CapabilityId":{
       "type":"string",
       "max":64,
@@ -549,6 +590,16 @@
       "type":"string",
       "max":254,
       "min":1
+    },
+    "CapabilityOptions":{
+      "type":"structure",
+      "members":{
+        "outboundEdi":{
+          "shape":"OutboundEdiOptions",
+          "documentation":"<p>A structure that contains the outbound EDI options.</p>"
+        }
+      },
+      "documentation":"<p>Contains the details for an Outbound EDI capability.</p>"
     },
     "CapabilitySummary":{
       "type":"structure",
@@ -594,6 +645,62 @@
       },
       "documentation":"<p>A conflict exception is thrown when you attempt to delete a resource (such as a profile or a capability) that is being used by other resources.</p>",
       "exception":true
+    },
+    "ConversionSource":{
+      "type":"structure",
+      "required":[
+        "fileFormat",
+        "inputFile"
+      ],
+      "members":{
+        "fileFormat":{
+          "shape":"ConversionSourceFormat",
+          "documentation":"<p>The format for the input file: either JSON or XML.</p>"
+        },
+        "inputFile":{
+          "shape":"InputFileSource",
+          "documentation":"<p>File to be converted</p>"
+        }
+      },
+      "documentation":"<p>Describes the input for an outbound transformation. </p>"
+    },
+    "ConversionSourceFormat":{
+      "type":"string",
+      "enum":[
+        "JSON",
+        "XML"
+      ]
+    },
+    "ConversionTarget":{
+      "type":"structure",
+      "required":["fileFormat"],
+      "members":{
+        "fileFormat":{
+          "shape":"ConversionTargetFormat",
+          "documentation":"<p>Currently, only X12 format is supported.</p>"
+        },
+        "formatDetails":{
+          "shape":"ConversionTargetFormatDetails",
+          "documentation":"<p>A structure that contains the formatting details for the conversion target.</p>"
+        },
+        "outputSampleFile":{
+          "shape":"OutputSampleFileSource",
+          "documentation":"<p>Customer uses this to provide a sample on what should file look like after conversion X12 EDI use case around this would be discovering the file syntax</p>"
+        }
+      },
+      "documentation":"<p>Provide a sample of what the output of the transformation should look like.</p>"
+    },
+    "ConversionTargetFormat":{
+      "type":"string",
+      "enum":["X12"]
+    },
+    "ConversionTargetFormatDetails":{
+      "type":"structure",
+      "members":{
+        "x12":{"shape":"X12Details"}
+      },
+      "documentation":"<p>Contains a structure describing the X12 details for the conversion target.</p>",
+      "union":true
     },
     "CreateCapabilityRequest":{
       "type":"structure",
@@ -700,6 +807,10 @@
           "shape":"PartnershipCapabilities",
           "documentation":"<p>Specifies a list of the capabilities associated with this partnership.</p>"
         },
+        "capabilityOptions":{
+          "shape":"CapabilityOptions",
+          "documentation":"<p>Specify the structure that contains the details for the associated capabilities.</p>"
+        },
         "clientToken":{
           "shape":"String",
           "documentation":"<p>Reserved for future use.</p>",
@@ -747,6 +858,10 @@
         "capabilities":{
           "shape":"PartnershipCapabilities",
           "documentation":"<p>Returns one or more capabilities associated with this partnership.</p>"
+        },
+        "capabilityOptions":{
+          "shape":"CapabilityOptions",
+          "documentation":"<p>Returns the structure that contains the details for the associated capabilities.</p>"
         },
         "tradingPartnerId":{
           "shape":"TradingPartnerId",
@@ -847,34 +962,44 @@
         }
       }
     },
-    "CreateTransformerRequest":{
+    "CreateStarterMappingTemplateRequest":{
       "type":"structure",
       "required":[
-        "name",
-        "fileFormat",
-        "mappingTemplate",
-        "ediType"
+        "mappingType",
+        "templateDetails"
       ],
+      "members":{
+        "outputSampleLocation":{
+          "shape":"S3Location",
+          "documentation":"<p>Specify the location of the sample EDI file that is used to generate the mapping template.</p>"
+        },
+        "mappingType":{
+          "shape":"MappingType",
+          "documentation":"<p>Specify the format for the mapping template: either JSONATA or XSLT.</p>"
+        },
+        "templateDetails":{
+          "shape":"TemplateDetails",
+          "documentation":"<p> Describes the details needed for generating the template. Specify the X12 transaction set and version for which the template is used: currently, we only support X12. </p>"
+        }
+      }
+    },
+    "CreateStarterMappingTemplateResponse":{
+      "type":"structure",
+      "required":["mappingTemplate"],
+      "members":{
+        "mappingTemplate":{
+          "shape":"String",
+          "documentation":"<p>Returns a string that represents the mapping template.</p>"
+        }
+      }
+    },
+    "CreateTransformerRequest":{
+      "type":"structure",
+      "required":["name"],
       "members":{
         "name":{
           "shape":"TransformerName",
           "documentation":"<p>Specifies the name of the transformer, used to identify it.</p>"
-        },
-        "fileFormat":{
-          "shape":"FileFormat",
-          "documentation":"<p>Specifies that the currently supported file formats for EDI transformations are <code>JSON</code> and <code>XML</code>.</p>"
-        },
-        "mappingTemplate":{
-          "shape":"MappingTemplate",
-          "documentation":"<p>Specifies the mapping template for the transformer. This template is used to map the parsed EDI file using JSONata or XSLT.</p>"
-        },
-        "ediType":{
-          "shape":"EdiType",
-          "documentation":"<p>Specifies the details for the EDI standard that is being used for the transformer. Currently, only X12 is supported. X12 is a set of standards and corresponding messages that define specific business documents.</p>"
-        },
-        "sampleDocument":{
-          "shape":"FileLocation",
-          "documentation":"<p>Specifies a sample EDI document that is used by a transformer as a guide for processing the EDI data.</p>"
         },
         "clientToken":{
           "shape":"String",
@@ -884,6 +1009,46 @@
         "tags":{
           "shape":"TagList",
           "documentation":"<p>Specifies the key-value pairs assigned to ARNs that you can use to group and search for resources by type. You can attach this metadata to resources (capabilities, partnerships, and so on) for any purpose.</p>"
+        },
+        "fileFormat":{
+          "shape":"FileFormat",
+          "documentation":"<p>Specifies that the currently supported file formats for EDI transformations are <code>JSON</code> and <code>XML</code>.</p>",
+          "deprecated":true,
+          "deprecatedMessage":"This is a legacy trait. Please use input-conversion or output-conversion."
+        },
+        "mappingTemplate":{
+          "shape":"MappingTemplate",
+          "documentation":"<p>Specifies the mapping template for the transformer. This template is used to map the parsed EDI file using JSONata or XSLT.</p> <note> <p>This parameter is available for backwards compatibility. Use the <a href=\"https://docs.aws.amazon.com/b2bi/latest/APIReference/API_Mapping.html\">Mapping</a> data type instead.</p> </note>",
+          "deprecated":true,
+          "deprecatedMessage":"This is a legacy trait. Please use input-conversion or output-conversion."
+        },
+        "ediType":{
+          "shape":"EdiType",
+          "documentation":"<p>Specifies the details for the EDI standard that is being used for the transformer. Currently, only X12 is supported. X12 is a set of standards and corresponding messages that define specific business documents.</p>",
+          "deprecated":true,
+          "deprecatedMessage":"This is a legacy trait. Please use input-conversion or output-conversion."
+        },
+        "sampleDocument":{
+          "shape":"FileLocation",
+          "documentation":"<p>Specifies a sample EDI document that is used by a transformer as a guide for processing the EDI data.</p>",
+          "deprecated":true,
+          "deprecatedMessage":"This is a legacy trait. Please use input-conversion or output-conversion."
+        },
+        "inputConversion":{
+          "shape":"InputConversion",
+          "documentation":"<p>Specify the <code>InputConversion</code> object, which contains the format options for the inbound transformation.</p>"
+        },
+        "mapping":{
+          "shape":"Mapping",
+          "documentation":"<p>Specify the structure that contains the mapping template and its language (either XSLT or JSONATA).</p>"
+        },
+        "outputConversion":{
+          "shape":"OutputConversion",
+          "documentation":"<p>A structure that contains the <code>OutputConversion</code> object, which contains the format options for the outbound transformation.</p>"
+        },
+        "sampleDocuments":{
+          "shape":"SampleDocuments",
+          "documentation":"<p>Specify a structure that contains the Amazon S3 bucket and an array of the corresponding keys used to identify the location for your sample documents.</p>"
         }
       }
     },
@@ -893,10 +1058,7 @@
         "transformerId",
         "transformerArn",
         "name",
-        "fileFormat",
-        "mappingTemplate",
         "status",
-        "ediType",
         "createdAt"
       ],
       "members":{
@@ -912,29 +1074,53 @@
           "shape":"TransformerName",
           "documentation":"<p>Returns the name of the transformer, used to identify it.</p>"
         },
-        "fileFormat":{
-          "shape":"FileFormat",
-          "documentation":"<p>Returns that the currently supported file formats for EDI transformations are <code>JSON</code> and <code>XML</code>.</p>"
-        },
-        "mappingTemplate":{
-          "shape":"MappingTemplate",
-          "documentation":"<p>Returns the mapping template for the transformer. This template is used to map the parsed EDI file using JSONata or XSLT.</p>"
-        },
         "status":{
           "shape":"TransformerStatus",
           "documentation":"<p>Returns the state of the newly created transformer. The transformer can be either <code>active</code> or <code>inactive</code>. For the transformer to be used in a capability, its status must <code>active</code>.</p>"
         },
-        "ediType":{
-          "shape":"EdiType",
-          "documentation":"<p>Returns the details for the EDI standard that is being used for the transformer. Currently, only X12 is supported. X12 is a set of standards and corresponding messages that define specific business documents.</p>"
-        },
-        "sampleDocument":{
-          "shape":"FileLocation",
-          "documentation":"<p>Returns a sample EDI document that is used by a transformer as a guide for processing the EDI data.</p>"
-        },
         "createdAt":{
           "shape":"CreatedDate",
           "documentation":"<p>Returns a timestamp for creation date and time of the transformer.</p>"
+        },
+        "fileFormat":{
+          "shape":"FileFormat",
+          "documentation":"<p>Returns that the currently supported file formats for EDI transformations are <code>JSON</code> and <code>XML</code>.</p>",
+          "deprecated":true,
+          "deprecatedMessage":"This is a legacy trait. Please use input-conversion or output-conversion."
+        },
+        "mappingTemplate":{
+          "shape":"MappingTemplate",
+          "documentation":"<p>Returns the mapping template for the transformer. This template is used to map the parsed EDI file using JSONata or XSLT.</p>",
+          "deprecated":true,
+          "deprecatedMessage":"This is a legacy trait. Please use input-conversion or output-conversion."
+        },
+        "ediType":{
+          "shape":"EdiType",
+          "documentation":"<p>Returns the details for the EDI standard that is being used for the transformer. Currently, only X12 is supported. X12 is a set of standards and corresponding messages that define specific business documents.</p>",
+          "deprecated":true,
+          "deprecatedMessage":"This is a legacy trait. Please use input-conversion or output-conversion."
+        },
+        "sampleDocument":{
+          "shape":"FileLocation",
+          "documentation":"<p>Returns a sample EDI document that is used by a transformer as a guide for processing the EDI data.</p>",
+          "deprecated":true,
+          "deprecatedMessage":"This is a legacy trait. Please use input-conversion or output-conversion."
+        },
+        "inputConversion":{
+          "shape":"InputConversion",
+          "documentation":"<p>Returns the <code>InputConversion</code> object, which contains the format options for the inbound transformation.</p>"
+        },
+        "mapping":{
+          "shape":"Mapping",
+          "documentation":"<p>Returns the structure that contains the mapping template and its language (either XSLT or JSONATA).</p>"
+        },
+        "outputConversion":{
+          "shape":"OutputConversion",
+          "documentation":"<p>Returns the <code>OutputConversion</code> object, which contains the format options for the outbound transformation.</p>"
+        },
+        "sampleDocuments":{
+          "shape":"SampleDocuments",
+          "documentation":"<p>Returns a structure that contains the Amazon S3 bucket and an array of the corresponding keys used to identify the location for your sample documents.</p>"
         }
       }
     },
@@ -991,6 +1177,10 @@
         "transformerId"
       ],
       "members":{
+        "capabilityDirection":{
+          "shape":"CapabilityDirection",
+          "documentation":"<p>Specifies whether this is capability is for inbound or outbound transformations.</p>"
+        },
         "type":{
           "shape":"EdiType",
           "documentation":"<p>Returns the type of the capability. Currently, only <code>edi</code> is supported.</p>"
@@ -1037,13 +1227,26 @@
       "type":"string",
       "enum":[
         "XML",
-        "JSON"
+        "JSON",
+        "NOT_USED"
       ]
     },
     "FileLocation":{
       "type":"string",
       "max":1024,
       "min":0
+    },
+    "FormatOptions":{
+      "type":"structure",
+      "members":{
+        "x12":{"shape":"X12Details"}
+      },
+      "documentation":"<p>A structure that contains the X12 transaction set and version.</p>",
+      "union":true
+    },
+    "FromFormat":{
+      "type":"string",
+      "enum":["X12"]
     },
     "GetCapabilityRequest":{
       "type":"structure",
@@ -1147,6 +1350,7 @@
           "shape":"PartnershipCapabilities",
           "documentation":"<p>Returns one or more capabilities associated with this partnership.</p>"
         },
+        "capabilityOptions":{"shape":"CapabilityOptions"},
         "tradingPartnerId":{
           "shape":"TradingPartnerId",
           "documentation":"<p>Returns the unique identifier for the partner for this partnership.</p>"
@@ -1275,10 +1479,7 @@
         "transformerId",
         "transformerArn",
         "name",
-        "fileFormat",
-        "mappingTemplate",
         "status",
-        "ediType",
         "createdAt"
       ],
       "members":{
@@ -1294,25 +1495,9 @@
           "shape":"TransformerName",
           "documentation":"<p>Returns the name of the transformer, used to identify it.</p>"
         },
-        "fileFormat":{
-          "shape":"FileFormat",
-          "documentation":"<p>Returns that the currently supported file formats for EDI transformations are <code>JSON</code> and <code>XML</code>.</p>"
-        },
-        "mappingTemplate":{
-          "shape":"MappingTemplate",
-          "documentation":"<p>Returns the mapping template for the transformer. This template is used to map the parsed EDI file using JSONata or XSLT.</p>"
-        },
         "status":{
           "shape":"TransformerStatus",
           "documentation":"<p>Returns the state of the newly created transformer. The transformer can be either <code>active</code> or <code>inactive</code>. For the transformer to be used in a capability, its status must <code>active</code>.</p>"
-        },
-        "ediType":{
-          "shape":"EdiType",
-          "documentation":"<p>Returns the details for the EDI standard that is being used for the transformer. Currently, only X12 is supported. X12 is a set of standards and corresponding messages that define specific business documents.</p>"
-        },
-        "sampleDocument":{
-          "shape":"FileLocation",
-          "documentation":"<p>Returns a sample EDI document that is used by a transformer as a guide for processing the EDI data.</p>"
         },
         "createdAt":{
           "shape":"CreatedDate",
@@ -1321,8 +1506,79 @@
         "modifiedAt":{
           "shape":"ModifiedDate",
           "documentation":"<p>Returns a timestamp for last time the transformer was modified.</p>"
+        },
+        "fileFormat":{
+          "shape":"FileFormat",
+          "documentation":"<p>Returns that the currently supported file formats for EDI transformations are <code>JSON</code> and <code>XML</code>.</p>",
+          "deprecated":true,
+          "deprecatedMessage":"This is a legacy trait. Please use input-conversion or output-conversion."
+        },
+        "mappingTemplate":{
+          "shape":"MappingTemplate",
+          "documentation":"<p>Returns the mapping template for the transformer. This template is used to map the parsed EDI file using JSONata or XSLT.</p>",
+          "deprecated":true,
+          "deprecatedMessage":"This is a legacy trait. Please use input-conversion or output-conversion."
+        },
+        "ediType":{
+          "shape":"EdiType",
+          "documentation":"<p>Returns the details for the EDI standard that is being used for the transformer. Currently, only X12 is supported. X12 is a set of standards and corresponding messages that define specific business documents.</p>",
+          "deprecated":true,
+          "deprecatedMessage":"This is a legacy trait. Please use input-conversion or output-conversion."
+        },
+        "sampleDocument":{
+          "shape":"FileLocation",
+          "documentation":"<p>Returns a sample EDI document that is used by a transformer as a guide for processing the EDI data.</p>",
+          "deprecated":true,
+          "deprecatedMessage":"This is a legacy trait. Please use input-conversion or output-conversion."
+        },
+        "inputConversion":{
+          "shape":"InputConversion",
+          "documentation":"<p>Returns the <code>InputConversion</code> object, which contains the format options for the inbound transformation.</p>"
+        },
+        "mapping":{
+          "shape":"Mapping",
+          "documentation":"<p>Returns the structure that contains the mapping template and its language (either XSLT or JSONATA).</p>"
+        },
+        "outputConversion":{
+          "shape":"OutputConversion",
+          "documentation":"<p>Returns the <code>OutputConversion</code> object, which contains the format options for the outbound transformation.</p>"
+        },
+        "sampleDocuments":{
+          "shape":"SampleDocuments",
+          "documentation":"<p>Returns a structure that contains the Amazon S3 bucket and an array of the corresponding keys used to identify the location for your sample documents.</p>"
         }
       }
+    },
+    "InputConversion":{
+      "type":"structure",
+      "required":["fromFormat"],
+      "members":{
+        "fromFormat":{
+          "shape":"FromFormat",
+          "documentation":"<p>The format for the transformer input: currently on <code>X12</code> is supported.</p>"
+        },
+        "formatOptions":{
+          "shape":"FormatOptions",
+          "documentation":"<p>A structure that contains the formatting options for an inbound transformer.</p>"
+        }
+      },
+      "documentation":"<p>Contains the input formatting options for an inbound transformer (takes an X12-formatted EDI document as input and converts it to JSON or XML.</p>"
+    },
+    "InputFileSource":{
+      "type":"structure",
+      "members":{
+        "fileContent":{
+          "shape":"InputFileSourceFileContentString",
+          "documentation":"<p>Specify the input contents, as a string, for the source of an outbound transformation.</p>"
+        }
+      },
+      "documentation":"<p>The input file to use for an outbound transformation.</p>",
+      "union":true
+    },
+    "InputFileSourceFileContentString":{
+      "type":"string",
+      "max":5000000,
+      "min":1
     },
     "InstructionsDocuments":{
       "type":"list",
@@ -1348,6 +1604,10 @@
       "exception":true,
       "fault":true,
       "retryable":{"throttling":false}
+    },
+    "KeyList":{
+      "type":"list",
+      "member":{"shape":"SampleDocumentKeys"}
     },
     "ListCapabilitiesRequest":{
       "type":"structure",
@@ -1492,10 +1752,39 @@
         "DISABLED"
       ]
     },
+    "Mapping":{
+      "type":"structure",
+      "required":["templateLanguage"],
+      "members":{
+        "templateLanguage":{
+          "shape":"MappingTemplateLanguage",
+          "documentation":"<p>The transformation language for the template, either XSLT or JSONATA.</p>"
+        },
+        "template":{
+          "shape":"MappingTemplate",
+          "documentation":"<p>A string that represents the mapping template, in the transformation language specified in <code>templateLanguage</code>.</p>"
+        }
+      },
+      "documentation":"<p>Specifies the mapping template for the transformer. This template is used to map the parsed EDI file using JSONata or XSLT.</p>"
+    },
     "MappingTemplate":{
       "type":"string",
       "max":350000,
       "min":0
+    },
+    "MappingTemplateLanguage":{
+      "type":"string",
+      "enum":[
+        "XSLT",
+        "JSONATA"
+      ]
+    },
+    "MappingType":{
+      "type":"string",
+      "enum":[
+        "JSONATA",
+        "XSLT"
+      ]
     },
     "MaxResults":{
       "type":"integer",
@@ -1506,6 +1795,40 @@
     "ModifiedDate":{
       "type":"timestamp",
       "timestampFormat":"iso8601"
+    },
+    "OutboundEdiOptions":{
+      "type":"structure",
+      "members":{
+        "x12":{
+          "shape":"X12Envelope",
+          "documentation":"<p>A structure that contains an X12 envelope structure.</p>"
+        }
+      },
+      "documentation":"<p>A container for outbound EDI options.</p>",
+      "union":true
+    },
+    "OutputConversion":{
+      "type":"structure",
+      "required":["toFormat"],
+      "members":{
+        "toFormat":{
+          "shape":"ToFormat",
+          "documentation":"<p>The format for the output from an outbound transformer: only X12 is currently supported.</p>"
+        },
+        "formatOptions":{
+          "shape":"FormatOptions",
+          "documentation":"<p>A structure that contains the X12 transaction set and version for the transformer output.</p>"
+        }
+      },
+      "documentation":"<p>Contains the formatting options for an outbound transformer (takes JSON or XML as input and converts it to an EDI document (currently only X12 format is supported).</p>"
+    },
+    "OutputSampleFileSource":{
+      "type":"structure",
+      "members":{
+        "fileLocation":{"shape":"S3Location"}
+      },
+      "documentation":"<p>Container for the location of a sample file used for outbound transformations.</p>",
+      "union":true
     },
     "PageToken":{
       "type":"string",
@@ -1555,6 +1878,7 @@
           "shape":"PartnershipCapabilities",
           "documentation":"<p>Returns one or more capabilities associated with this partnership.</p>"
         },
+        "capabilityOptions":{"shape":"CapabilityOptions"},
         "tradingPartnerId":{
           "shape":"TradingPartnerId",
           "documentation":"<p>Returns the unique, system-generated identifier for a trading partner.</p>"
@@ -1663,11 +1987,43 @@
           "documentation":"<p>Specifies the Amazon S3 key for the file location.</p>"
         }
       },
-      "documentation":"<p>Specifies the details for the Amazon S3 file location that is being used with Amazon Web Services B2BI Data Interchange. File locations in Amazon S3 are identified using a combination of the bucket and key.</p>"
+      "documentation":"<p>Specifies the details for the Amazon S3 file location that is being used with Amazon Web Services B2B Data Interchange. File locations in Amazon S3 are identified using a combination of the bucket and key.</p>"
     },
     "S3LocationList":{
       "type":"list",
       "member":{"shape":"S3Location"}
+    },
+    "SampleDocumentKeys":{
+      "type":"structure",
+      "members":{
+        "input":{
+          "shape":"S3Key",
+          "documentation":"<p>An array of keys for your input sample documents.</p>"
+        },
+        "output":{
+          "shape":"S3Key",
+          "documentation":"<p>An array of keys for your output sample documents.</p>"
+        }
+      },
+      "documentation":"<p>An array of the Amazon S3 keys used to identify the location for your sample documents.</p>"
+    },
+    "SampleDocuments":{
+      "type":"structure",
+      "required":[
+        "bucketName",
+        "keys"
+      ],
+      "members":{
+        "bucketName":{
+          "shape":"BucketName",
+          "documentation":"<p>Contains the Amazon S3 bucket that is used to hold your sample documents.</p>"
+        },
+        "keys":{
+          "shape":"KeyList",
+          "documentation":"<p>Contains an array of the Amazon S3 keys used to identify the location for your sample documents.</p>"
+        }
+      },
+      "documentation":"<p>Describes a structure that contains the Amazon S3 bucket and an array of the corresponding keys used to identify the location for your sample documents.</p>"
     },
     "ServiceQuotaExceededException":{
       "type":"structure",
@@ -1795,6 +2151,45 @@
       "max":256,
       "min":0
     },
+    "TemplateDetails":{
+      "type":"structure",
+      "members":{
+        "x12":{"shape":"X12Details"}
+      },
+      "documentation":"<p>A data structure that contains the information to use when generating a mapping template.</p>",
+      "union":true
+    },
+    "TestConversionRequest":{
+      "type":"structure",
+      "required":[
+        "source",
+        "target"
+      ],
+      "members":{
+        "source":{
+          "shape":"ConversionSource",
+          "documentation":"<p>Specify the source file for an outbound EDI request.</p>"
+        },
+        "target":{
+          "shape":"ConversionTarget",
+          "documentation":"<p>Specify the format (X12 is the only currently supported format), and other details for the conversion target.</p>"
+        }
+      }
+    },
+    "TestConversionResponse":{
+      "type":"structure",
+      "required":["convertedFileContent"],
+      "members":{
+        "convertedFileContent":{
+          "shape":"String",
+          "documentation":"<p>Returns the converted file content.</p>"
+        },
+        "validationMessages":{
+          "shape":"ValidationMessages",
+          "documentation":"<p>Returns an array of strings, each containing a message that Amazon Web Services B2B Data Interchange generates during the conversion.</p>"
+        }
+      }
+    },
     "TestMappingInputFileContent":{
       "type":"string",
       "max":5000000,
@@ -1814,7 +2209,7 @@
         },
         "mappingTemplate":{
           "shape":"MappingTemplate",
-          "documentation":"<p>Specifies the mapping template for the transformer. This template is used to map the parsed EDI file using JSONata or XSLT.</p>"
+          "documentation":"<p>Specifies the mapping template for the transformer. This template is used to map the parsed EDI file using JSONata or XSLT.</p> <note> <p>This parameter is available for backwards compatibility. Use the <a href=\"https://docs.aws.amazon.com/b2bi/latest/APIReference/API_Mapping.html\">Mapping</a> data type instead.</p> </note>"
         },
         "fileFormat":{
           "shape":"FileFormat",
@@ -1878,6 +2273,10 @@
       "exception":true,
       "retryable":{"throttling":false}
     },
+    "ToFormat":{
+      "type":"string",
+      "enum":["X12"]
+    },
     "TradingPartnerId":{
       "type":"string",
       "max":64,
@@ -1911,7 +2310,8 @@
     "TransformerName":{
       "type":"string",
       "max":254,
-      "min":1
+      "min":1,
+      "pattern":"[a-zA-Z0-9_-]{1,512}"
     },
     "TransformerStatus":{
       "type":"string",
@@ -1925,10 +2325,7 @@
       "required":[
         "transformerId",
         "name",
-        "fileFormat",
-        "mappingTemplate",
         "status",
-        "ediType",
         "createdAt"
       ],
       "members":{
@@ -1940,25 +2337,9 @@
           "shape":"TransformerName",
           "documentation":"<p>Returns the descriptive name for the transformer.</p>"
         },
-        "fileFormat":{
-          "shape":"FileFormat",
-          "documentation":"<p>Returns that the currently supported file formats for EDI transformations are <code>JSON</code> and <code>XML</code>.</p>"
-        },
-        "mappingTemplate":{
-          "shape":"MappingTemplate",
-          "documentation":"<p>Returns the mapping template for the transformer. This template is used to map the parsed EDI file using JSONata or XSLT.</p>"
-        },
         "status":{
           "shape":"TransformerStatus",
           "documentation":"<p>Returns the state of the newly created transformer. The transformer can be either <code>active</code> or <code>inactive</code>. For the transformer to be used in a capability, its status must <code>active</code>.</p>"
-        },
-        "ediType":{
-          "shape":"EdiType",
-          "documentation":"<p>Returns the details for the EDI standard that is being used for the transformer. Currently, only X12 is supported. X12 is a set of standards and corresponding messages that define specific business documents.</p>"
-        },
-        "sampleDocument":{
-          "shape":"FileLocation",
-          "documentation":"<p>Returns a sample EDI document that is used by a transformer as a guide for processing the EDI data.</p>"
         },
         "createdAt":{
           "shape":"CreatedDate",
@@ -1967,9 +2348,49 @@
         "modifiedAt":{
           "shape":"ModifiedDate",
           "documentation":"<p>Returns a timestamp representing the date and time for the most recent change for the transformer object.</p>"
+        },
+        "fileFormat":{
+          "shape":"FileFormat",
+          "documentation":"<p>Returns that the currently supported file formats for EDI transformations are <code>JSON</code> and <code>XML</code>.</p>",
+          "deprecated":true,
+          "deprecatedMessage":"This is a legacy trait. Please use input-conversion or output-conversion."
+        },
+        "mappingTemplate":{
+          "shape":"MappingTemplate",
+          "documentation":"<p>Returns the mapping template for the transformer. This template is used to map the parsed EDI file using JSONata or XSLT.</p>",
+          "deprecated":true,
+          "deprecatedMessage":"This is a legacy trait. Please use input-conversion or output-conversion."
+        },
+        "ediType":{
+          "shape":"EdiType",
+          "documentation":"<p>Returns the details for the EDI standard that is being used for the transformer. Currently, only X12 is supported. X12 is a set of standards and corresponding messages that define specific business documents.</p>",
+          "deprecated":true,
+          "deprecatedMessage":"This is a legacy trait. Please use input-conversion or output-conversion."
+        },
+        "sampleDocument":{
+          "shape":"FileLocation",
+          "documentation":"<p>Returns a sample EDI document that is used by a transformer as a guide for processing the EDI data.</p>",
+          "deprecated":true,
+          "deprecatedMessage":"This is a legacy trait. Please use input-conversion or output-conversion."
+        },
+        "inputConversion":{
+          "shape":"InputConversion",
+          "documentation":"<p>Returns a structure that contains the format options for the transformation.</p>"
+        },
+        "mapping":{
+          "shape":"Mapping",
+          "documentation":"<p>Returns the structure that contains the mapping template and its language (either XSLT or JSONATA).</p>"
+        },
+        "outputConversion":{
+          "shape":"OutputConversion",
+          "documentation":"<p>Returns the <code>OutputConversion</code> object, which contains the format options for the outbound transformation.</p>"
+        },
+        "sampleDocuments":{
+          "shape":"SampleDocuments",
+          "documentation":"<p>Returns a structure that contains the Amazon S3 bucket and an array of the corresponding keys used to identify the location for your sample documents.</p>"
         }
       },
-      "documentation":"<p>Contains the details for a transformer object. A transformer describes how to process the incoming EDI documents and extract the necessary information to the output file.</p>"
+      "documentation":"<p>Contains the details for a transformer object. A transformer can take an EDI file as input and transform it into a JSON-or XML-formatted document. Alternatively, a transformer can take a JSON-or XML-formatted document as input and transform it into an EDI file.</p>"
     },
     "UntagResourceRequest":{
       "type":"structure",
@@ -2070,6 +2491,10 @@
         "capabilities":{
           "shape":"PartnershipCapabilities",
           "documentation":"<p>List of the capabilities associated with this partnership.</p>"
+        },
+        "capabilityOptions":{
+          "shape":"CapabilityOptions",
+          "documentation":"<p>To update, specify the structure that contains the details for the associated capabilities.</p>"
         }
       }
     },
@@ -2109,6 +2534,10 @@
         "capabilities":{
           "shape":"PartnershipCapabilities",
           "documentation":"<p>Returns one or more capabilities associated with this partnership.</p>"
+        },
+        "capabilityOptions":{
+          "shape":"CapabilityOptions",
+          "documentation":"<p>Returns the structure that contains the details for the associated capabilities.</p>"
         },
         "tradingPartnerId":{
           "shape":"TradingPartnerId",
@@ -2215,25 +2644,49 @@
           "shape":"TransformerName",
           "documentation":"<p>Specify a new name for the transformer, if you want to update it.</p>"
         },
-        "fileFormat":{
-          "shape":"FileFormat",
-          "documentation":"<p>Specifies that the currently supported file formats for EDI transformations are <code>JSON</code> and <code>XML</code>.</p>"
-        },
-        "mappingTemplate":{
-          "shape":"MappingTemplate",
-          "documentation":"<p>Specifies the mapping template for the transformer. This template is used to map the parsed EDI file using JSONata or XSLT.</p>"
-        },
         "status":{
           "shape":"TransformerStatus",
           "documentation":"<p>Specifies the transformer's status. You can update the state of the transformer, from <code>active</code> to <code>inactive</code>, or <code>inactive</code> to <code>active</code>.</p>"
         },
+        "fileFormat":{
+          "shape":"FileFormat",
+          "documentation":"<p>Specifies that the currently supported file formats for EDI transformations are <code>JSON</code> and <code>XML</code>.</p>",
+          "deprecated":true,
+          "deprecatedMessage":"This is a legacy trait. Please use input-conversion or output-conversion."
+        },
+        "mappingTemplate":{
+          "shape":"MappingTemplate",
+          "documentation":"<p>Specifies the mapping template for the transformer. This template is used to map the parsed EDI file using JSONata or XSLT.</p> <note> <p>This parameter is available for backwards compatibility. Use the <a href=\"https://docs.aws.amazon.com/b2bi/latest/APIReference/API_Mapping.html\">Mapping</a> data type instead.</p> </note>",
+          "deprecated":true,
+          "deprecatedMessage":"This is a legacy trait. Please use input-conversion or output-conversion."
+        },
         "ediType":{
           "shape":"EdiType",
-          "documentation":"<p>Specifies the details for the EDI standard that is being used for the transformer. Currently, only X12 is supported. X12 is a set of standards and corresponding messages that define specific business documents.</p>"
+          "documentation":"<p>Specifies the details for the EDI standard that is being used for the transformer. Currently, only X12 is supported. X12 is a set of standards and corresponding messages that define specific business documents.</p>",
+          "deprecated":true,
+          "deprecatedMessage":"This is a legacy trait. Please use input-conversion or output-conversion."
         },
         "sampleDocument":{
           "shape":"FileLocation",
-          "documentation":"<p>Specifies a sample EDI document that is used by a transformer as a guide for processing the EDI data.</p>"
+          "documentation":"<p>Specifies a sample EDI document that is used by a transformer as a guide for processing the EDI data.</p>",
+          "deprecated":true,
+          "deprecatedMessage":"This is a legacy trait. Please use input-conversion or output-conversion."
+        },
+        "inputConversion":{
+          "shape":"InputConversion",
+          "documentation":"<p>To update, specify the <code>InputConversion</code> object, which contains the format options for the inbound transformation.</p>"
+        },
+        "mapping":{
+          "shape":"Mapping",
+          "documentation":"<p>Specify the structure that contains the mapping template and its language (either XSLT or JSONATA).</p>"
+        },
+        "outputConversion":{
+          "shape":"OutputConversion",
+          "documentation":"<p>To update, specify the <code>OutputConversion</code> object, which contains the format options for the outbound transformation.</p>"
+        },
+        "sampleDocuments":{
+          "shape":"SampleDocuments",
+          "documentation":"<p>Specify a structure that contains the Amazon S3 bucket and an array of the corresponding keys used to identify the location for your sample documents.</p>"
         }
       }
     },
@@ -2243,10 +2696,7 @@
         "transformerId",
         "transformerArn",
         "name",
-        "fileFormat",
-        "mappingTemplate",
         "status",
-        "ediType",
         "createdAt",
         "modifiedAt"
       ],
@@ -2263,25 +2713,9 @@
           "shape":"TransformerName",
           "documentation":"<p>Returns the name of the transformer.</p>"
         },
-        "fileFormat":{
-          "shape":"FileFormat",
-          "documentation":"<p>Returns that the currently supported file formats for EDI transformations are <code>JSON</code> and <code>XML</code>.</p>"
-        },
-        "mappingTemplate":{
-          "shape":"MappingTemplate",
-          "documentation":"<p>Returns the mapping template for the transformer. This template is used to map the parsed EDI file using JSONata or XSLT.</p>"
-        },
         "status":{
           "shape":"TransformerStatus",
           "documentation":"<p>Returns the state of the newly created transformer. The transformer can be either <code>active</code> or <code>inactive</code>. For the transformer to be used in a capability, its status must <code>active</code>.</p>"
-        },
-        "ediType":{
-          "shape":"EdiType",
-          "documentation":"<p>Returns the details for the EDI standard that is being used for the transformer. Currently, only X12 is supported. X12 is a set of standards and corresponding messages that define specific business documents.</p>"
-        },
-        "sampleDocument":{
-          "shape":"FileLocation",
-          "documentation":"<p>Returns a sample EDI document that is used by a transformer as a guide for processing the EDI data.</p>"
         },
         "createdAt":{
           "shape":"CreatedDate",
@@ -2290,6 +2724,46 @@
         "modifiedAt":{
           "shape":"ModifiedDate",
           "documentation":"<p>Returns a timestamp for last time the transformer was modified.</p>"
+        },
+        "fileFormat":{
+          "shape":"FileFormat",
+          "documentation":"<p>Returns that the currently supported file formats for EDI transformations are <code>JSON</code> and <code>XML</code>.</p>",
+          "deprecated":true,
+          "deprecatedMessage":"This is a legacy trait. Please use input-conversion or output-conversion."
+        },
+        "mappingTemplate":{
+          "shape":"MappingTemplate",
+          "documentation":"<p>Returns the mapping template for the transformer. This template is used to map the parsed EDI file using JSONata or XSLT.</p>",
+          "deprecated":true,
+          "deprecatedMessage":"This is a legacy trait. Please use input-conversion or output-conversion."
+        },
+        "ediType":{
+          "shape":"EdiType",
+          "documentation":"<p>Returns the details for the EDI standard that is being used for the transformer. Currently, only X12 is supported. X12 is a set of standards and corresponding messages that define specific business documents.</p>",
+          "deprecated":true,
+          "deprecatedMessage":"This is a legacy trait. Please use input-conversion or output-conversion."
+        },
+        "sampleDocument":{
+          "shape":"FileLocation",
+          "documentation":"<p>Returns a sample EDI document that is used by a transformer as a guide for processing the EDI data.</p>",
+          "deprecated":true,
+          "deprecatedMessage":"This is a legacy trait. Please use input-conversion or output-conversion."
+        },
+        "inputConversion":{
+          "shape":"InputConversion",
+          "documentation":"<p>Returns the <code>InputConversion</code> object, which contains the format options for the inbound transformation.</p>"
+        },
+        "mapping":{
+          "shape":"Mapping",
+          "documentation":"<p>Returns the structure that contains the mapping template and its language (either XSLT or JSONATA).</p>"
+        },
+        "outputConversion":{
+          "shape":"OutputConversion",
+          "documentation":"<p>Returns the <code>OutputConversion</code> object, which contains the format options for the outbound transformation.</p>"
+        },
+        "sampleDocuments":{
+          "shape":"SampleDocuments",
+          "documentation":"<p>Returns a structure that contains the Amazon S3 bucket and an array of the corresponding keys used to identify the location for your sample documents.</p>"
         }
       }
     },
@@ -2302,6 +2776,58 @@
       "documentation":"<p>Occurs when a B2BI object cannot be validated against a request from another object.</p>",
       "exception":true
     },
+    "ValidationMessages":{
+      "type":"list",
+      "member":{"shape":"String"}
+    },
+    "X12AcknowledgmentRequestedCode":{
+      "type":"string",
+      "max":1,
+      "min":1,
+      "pattern":"[a-zA-Z0-9]*"
+    },
+    "X12ApplicationReceiverCode":{
+      "type":"string",
+      "max":15,
+      "min":2,
+      "pattern":"[a-zA-Z0-9]*"
+    },
+    "X12ApplicationSenderCode":{
+      "type":"string",
+      "max":15,
+      "min":2,
+      "pattern":"[a-zA-Z0-9]*"
+    },
+    "X12ComponentSeparator":{
+      "type":"string",
+      "max":1,
+      "min":1,
+      "pattern":"[!&'()*+,\\-./:;?=%@\\[\\]_{}|<>~^`\"]"
+    },
+    "X12DataElementSeparator":{
+      "type":"string",
+      "max":1,
+      "min":1,
+      "pattern":"[!&'()*+,\\-./:;?=%@\\[\\]_{}|<>~^`\"]"
+    },
+    "X12Delimiters":{
+      "type":"structure",
+      "members":{
+        "componentSeparator":{
+          "shape":"X12ComponentSeparator",
+          "documentation":"<p>The component, or sub-element, separator. The default value is <code>:</code> (colon).</p>"
+        },
+        "dataElementSeparator":{
+          "shape":"X12DataElementSeparator",
+          "documentation":"<p>The data element separator. The default value is <code>*</code> (asterisk).</p>"
+        },
+        "segmentTerminator":{
+          "shape":"X12SegmentTerminator",
+          "documentation":"<p>The segment terminator. The default value is <code>~</code> (tilde).</p>"
+        }
+      },
+      "documentation":"<p>In X12 EDI messages, delimiters are used to mark the end of segments or elements, and are defined in the interchange control header. The delimiters are part of the message's syntax and divide up its different elements.</p>"
+    },
     "X12Details":{
       "type":"structure",
       "members":{
@@ -2311,10 +2837,129 @@
         },
         "version":{
           "shape":"X12Version",
-          "documentation":"<p>Returns the version to use for the specified X12 transaction set. <pre><code> &lt;/p&gt; </code></pre>"
+          "documentation":"<p>Returns the version to use for the specified X12 transaction set.</p>"
         }
       },
       "documentation":"<p>A structure that contains the X12 transaction set and version. The X12 structure is used when the system transforms an EDI (electronic data interchange) file.</p> <note> <p>If an EDI input file contains more than one transaction, each transaction must have the same transaction set and version, for example 214/4010. If not, the transformer cannot parse the file.</p> </note>"
+    },
+    "X12Envelope":{
+      "type":"structure",
+      "members":{
+        "common":{
+          "shape":"X12OutboundEdiHeaders",
+          "documentation":"<p>A container for the X12 outbound EDI headers.</p>"
+        }
+      },
+      "documentation":"<p>A wrapper structure for an X12 definition object.</p> <p>the X12 envelope ensures the integrity of the data and the efficiency of the information exchange. The X12 message structure has hierarchical levels. From highest to the lowest, they are:</p> <ul> <li> <p>Interchange Envelope</p> </li> <li> <p>Functional Group</p> </li> <li> <p>Transaction Set</p> </li> </ul>"
+    },
+    "X12FunctionalGroupHeaders":{
+      "type":"structure",
+      "members":{
+        "applicationSenderCode":{
+          "shape":"X12ApplicationSenderCode",
+          "documentation":"<p>A value representing the code used to identify the party transmitting a message, at position GS-02.</p>"
+        },
+        "applicationReceiverCode":{
+          "shape":"X12ApplicationReceiverCode",
+          "documentation":"<p>A value representing the code used to identify the party receiving a message, at position GS-03.</p>"
+        },
+        "responsibleAgencyCode":{
+          "shape":"X12ResponsibleAgencyCode",
+          "documentation":"<p>A code that identifies the issuer of the standard, at position GS-07.</p>"
+        }
+      },
+      "documentation":"<p>Part of the X12 message structure. These are the functional group headers for the X12 EDI object.</p>"
+    },
+    "X12IdQualifier":{
+      "type":"string",
+      "max":2,
+      "min":2,
+      "pattern":"[a-zA-Z0-9]*"
+    },
+    "X12InterchangeControlHeaders":{
+      "type":"structure",
+      "members":{
+        "senderIdQualifier":{
+          "shape":"X12IdQualifier",
+          "documentation":"<p>Located at position ISA-05 in the header. Qualifier for the sender ID. Together, the ID and qualifier uniquely identify the sending trading partner.</p>"
+        },
+        "senderId":{
+          "shape":"X12SenderId",
+          "documentation":"<p>Located at position ISA-06 in the header. This value (along with the <code>senderIdQualifier</code>) identifies the sender of the interchange. </p>"
+        },
+        "receiverIdQualifier":{
+          "shape":"X12IdQualifier",
+          "documentation":"<p>Located at position ISA-07 in the header. Qualifier for the receiver ID. Together, the ID and qualifier uniquely identify the receiving trading partner.</p>"
+        },
+        "receiverId":{
+          "shape":"X12ReceiverId",
+          "documentation":"<p>Located at position ISA-08 in the header. This value (along with the <code>receiverIdQualifier</code>) identifies the intended recipient of the interchange. </p>"
+        },
+        "repetitionSeparator":{
+          "shape":"X12RepetitionSeparator",
+          "documentation":"<p>Located at position ISA-11 in the header. This string makes it easier when you need to group similar adjacent element values together without using extra segments.</p> <note> <p>This parameter is only honored for version greater than 401 (<code>VERSION_4010</code> and higher).</p> <p>For versions less than 401, this field is called <a href=\"https://www.stedi.com/edi/x12-004010/segment/ISA#ISA-11\">StandardsId</a>, in which case our service sets the value to <code>U</code>.</p> </note>"
+        },
+        "acknowledgmentRequestedCode":{
+          "shape":"X12AcknowledgmentRequestedCode",
+          "documentation":"<p>Located at position ISA-14 in the header. The value \"1\" indicates that the sender is requesting an interchange acknowledgment at receipt of the interchange. The value \"0\" is used otherwise.</p>"
+        },
+        "usageIndicatorCode":{
+          "shape":"X12UsageIndicatorCode",
+          "documentation":"<p>Located at position ISA-15 in the header. Specifies how this interchange is being used:</p> <ul> <li> <p> <code>T</code> indicates this interchange is for testing.</p> </li> <li> <p> <code>P</code> indicates this interchange is for production.</p> </li> <li> <p> <code>I</code> indicates this interchange is informational.</p> </li> </ul>"
+        }
+      },
+      "documentation":"<p>In X12, the Interchange Control Header is the first segment of an EDI document and is part of the Interchange Envelope. It contains information about the sender and receiver, the date and time of transmission, and the X12 version being used. It also includes delivery information, such as the sender and receiver IDs.</p>"
+    },
+    "X12OutboundEdiHeaders":{
+      "type":"structure",
+      "members":{
+        "interchangeControlHeaders":{
+          "shape":"X12InterchangeControlHeaders",
+          "documentation":"<p>In X12 EDI messages, delimiters are used to mark the end of segments or elements, and are defined in the interchange control header.</p>"
+        },
+        "functionalGroupHeaders":{
+          "shape":"X12FunctionalGroupHeaders",
+          "documentation":"<p>The functional group headers for the X12 object.</p>"
+        },
+        "delimiters":{
+          "shape":"X12Delimiters",
+          "documentation":"<p>The delimiters, for example semicolon (<code>;</code>), that separates sections of the headers for the X12 object.</p>"
+        },
+        "validateEdi":{
+          "shape":"X12ValidateEdi",
+          "documentation":"<p>Specifies whether or not to validate the EDI for this X12 object: <code>TRUE</code> or <code>FALSE</code>.</p>"
+        }
+      },
+      "documentation":"<p>A structure containing the details for an outbound EDI object.</p>"
+    },
+    "X12ReceiverId":{
+      "type":"string",
+      "max":15,
+      "min":15,
+      "pattern":"[a-zA-Z0-9]*"
+    },
+    "X12RepetitionSeparator":{
+      "type":"string",
+      "max":1,
+      "min":1
+    },
+    "X12ResponsibleAgencyCode":{
+      "type":"string",
+      "max":2,
+      "min":1,
+      "pattern":"[a-zA-Z0-9]*"
+    },
+    "X12SegmentTerminator":{
+      "type":"string",
+      "max":1,
+      "min":1,
+      "pattern":"[!&'()*+,\\-./:;?=%@\\[\\]_{}|<>~^`\"]"
+    },
+    "X12SenderId":{
+      "type":"string",
+      "max":15,
+      "min":15,
+      "pattern":"[a-zA-Z0-9]*"
     },
     "X12TransactionSet":{
       "type":"string",
@@ -2395,6 +3040,16 @@
         "X12_837_X298",
         "X12_999_X231"
       ]
+    },
+    "X12UsageIndicatorCode":{
+      "type":"string",
+      "max":1,
+      "min":1,
+      "pattern":"[a-zA-Z0-9]*"
+    },
+    "X12ValidateEdi":{
+      "type":"boolean",
+      "box":true
     },
     "X12Version":{
       "type":"string",

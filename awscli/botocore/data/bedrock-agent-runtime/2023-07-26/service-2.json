@@ -679,18 +679,18 @@
       "members":{
         "generationConfiguration":{
           "shape":"ExternalSourcesGenerationConfiguration",
-          "documentation":"<p>The prompt used with the external source wrapper object with the retrieveAndGenerate function.</p>"
+          "documentation":"<p>The prompt used with the external source wrapper object with the <code>retrieveAndGenerate</code> function.</p>"
         },
         "modelArn":{
           "shape":"BedrockModelArn",
-          "documentation":"<p>The modelArn used with the external source wrapper object in the retrieveAndGenerate function.</p>"
+          "documentation":"<p>The model Amazon Resource Name (ARN) for the external source wrapper object in the <code>retrieveAndGenerate</code> function.</p>"
         },
         "sources":{
           "shape":"ExternalSources",
-          "documentation":"<p>The document used with the external source wrapper object in the retrieveAndGenerate function.</p>"
+          "documentation":"<p>The document for the external source wrapper object in the <code>retrieveAndGenerate</code> function.</p>"
         }
       },
-      "documentation":"<p>The configurations of the external source wrapper object in the retrieveAndGenerate function.</p>"
+      "documentation":"<p>The configurations of the external source wrapper object in the <code>retrieveAndGenerate</code> function.</p>"
     },
     "FailureReasonString":{
       "type":"string",
@@ -2280,10 +2280,12 @@
     "PostProcessingModelInvocationOutput":{
       "type":"structure",
       "members":{
+        "metadata":{"shape":"Metadata"},
         "parsedResponse":{
           "shape":"PostProcessingParsedResponse",
           "documentation":"<p>Details about the response from the Lambda parsing of the output of the post-processing step.</p>"
         },
+        "rawResponse":{"shape":"RawResponse"},
         "traceId":{
           "shape":"TraceId",
           "documentation":"<p>The unique identifier of the trace.</p>"
@@ -2322,10 +2324,12 @@
     "PreProcessingModelInvocationOutput":{
       "type":"structure",
       "members":{
+        "metadata":{"shape":"Metadata"},
         "parsedResponse":{
           "shape":"PreProcessingParsedResponse",
           "documentation":"<p>Details about the response from the Lambda parsing of the output of the pre-processing step.</p>"
         },
+        "rawResponse":{"shape":"RawResponse"},
         "traceId":{
           "shape":"TraceId",
           "documentation":"<p>The unique identifier of the trace.</p>"
@@ -2760,15 +2764,15 @@
       "members":{
         "externalSourcesConfiguration":{
           "shape":"ExternalSourcesRetrieveAndGenerateConfiguration",
-          "documentation":"<p>The configuration used with the external source wrapper object in the retrieveAndGenerate function.</p>"
+          "documentation":"<p>The configuration for the external source wrapper object in the <code>retrieveAndGenerate</code> function.</p>"
         },
         "knowledgeBaseConfiguration":{
           "shape":"KnowledgeBaseRetrieveAndGenerateConfiguration",
-          "documentation":"<p>Contains details about the resource being queried.</p>"
+          "documentation":"<p>Contains details about the knowledge base for retrieving information and generating responses.</p>"
         },
         "type":{
           "shape":"RetrieveAndGenerateType",
-          "documentation":"<p>The type of resource that is queried by the request.</p>"
+          "documentation":"<p>The type of resource that contains your data for retrieving information and generating responses.</p> <p>If you choose ot use <code>EXTERNAL_SOURCES</code>, then currently only Claude 3 Sonnet models for knowledge bases are supported.</p>"
         }
       },
       "documentation":"<p>Contains details about the resource being queried.</p> <p>This data type is used in the following API operations:</p> <ul> <li> <p> <a href=\"https://docs.aws.amazon.com/bedrock/latest/APIReference/API_agent-runtime_RetrieveAndGenerate.html#API_agent-runtime_RetrieveAndGenerate_RequestSyntax\">RetrieveAndGenerate request</a> – in the <code>retrieveAndGenerateConfiguration</code> field</p> </li> </ul>"

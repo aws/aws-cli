@@ -791,8 +791,10 @@ class TestCPCommand(BaseCPCommandTest):
         self.assertEqual(self.operations_called[1][0].name, 'UploadPart')
         self.assertEqual(self.operations_called[1][1]['ChecksumAlgorithm'], 'CRC32')
         self.assertEqual(self.operations_called[3][0].name, 'CompleteMultipartUpload')
-        self.assertEqual(self.operations_called[3][1]['MultipartUpload']['Parts'][0]['ChecksumCRC32'], 'foo-1')
-        self.assertEqual(self.operations_called[3][1]['MultipartUpload']['Parts'][1]['ChecksumCRC32'], 'foo-2')
+        self.assertIn({'ETag': 'foo-e1', 'ChecksumCRC32': 'foo-1', 'PartNumber': 1},
+                      self.operations_called[3][1]['MultipartUpload']['Parts'])
+        self.assertIn({'ETag': 'foo-e2', 'ChecksumCRC32': 'foo-2', 'PartNumber': 2},
+                      self.operations_called[3][1]['MultipartUpload']['Parts'])
 
     def test_copy_with_checksum_algorithm_crc32(self):
         self.parsed_responses = [

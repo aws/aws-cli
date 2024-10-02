@@ -2,6 +2,20 @@
 CHANGELOG
 =========
 
+2.17.64
+=======
+
+* api-change:``workspaces``: WSP is being rebranded to become DCV.
+* api-change:``s3``: This release introduces a header representing the minimum object size limit for Lifecycle transitions.
+* api-change:``sagemaker``: releasing builtinlcc to public
+* api-change:``appstream``: Added support for Automatic Time Zone Redirection on Amazon AppStream 2.0
+* api-change:``ivs-realtime``: Adds new Stage Health EventErrorCodes applicable to RTMP(S) broadcasts. Bug Fix: Enforces that EncoderConfiguration Video height and width must be even-number values.
+* api-change:``iotdeviceadvisor``: Add clientToken attribute and implement idempotency for CreateSuiteDefinition.
+* api-change:``b2bi``: Added and updated APIs to support outbound EDI transformations
+* api-change:``bedrock-agent-runtime``: Added raw model response and usage metrics to PreProcessing and PostProcessing Trace
+* api-change:``bedrock-runtime``: Added new fields to Amazon Bedrock Guardrails trace
+
+
 2.17.63
 =======
 

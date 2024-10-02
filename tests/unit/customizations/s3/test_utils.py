@@ -665,6 +665,56 @@ class TestRequestParamsMapperSSE(unittest.TestCase):
              'SSECustomerKey': 'my-sse-c-key'})
 
 
+class TestRequestParamsMapperChecksumAlgorithm:
+    @pytest.fixture
+    def cli_params(self):
+        return {'checksum_algorithm': 'CRC32'}
+
+    @pytest.fixture
+    def cli_params_no_algorithm(self):
+        return {}
+
+    def test_put_object(self, cli_params):
+        request_params = {}
+        RequestParamsMapper.map_put_object_params(request_params, cli_params)
+        assert request_params == {'ChecksumAlgorithm': 'CRC32'}
+
+    def test_put_object_no_checksum(self, cli_params_no_algorithm):
+        request_params = {}
+        RequestParamsMapper.map_put_object_params(request_params, cli_params_no_algorithm)
+        assert 'ChecksumAlgorithm' not in request_params
+
+    def test_copy_object(self, cli_params):
+        request_params = {}
+        RequestParamsMapper.map_copy_object_params(request_params, cli_params)
+        assert request_params == {'ChecksumAlgorithm': 'CRC32'}
+
+    def test_copy_object_no_checksum(self, cli_params_no_algorithm):
+        request_params = {}
+        RequestParamsMapper.map_put_object_params(request_params, cli_params_no_algorithm)
+        assert 'ChecksumAlgorithm' not in request_params
+
+
+class TestRequestParamsMapperChecksumMode:
+    @pytest.fixture
+    def cli_params(self):
+        return {'checksum_mode': 'ENABLED'}
+
+    @pytest.fixture
+    def cli_params_no_checksum(self):
+        return {}
+
+    def test_get_object(self, cli_params):
+        request_params = {}
+        RequestParamsMapper.map_get_object_params(request_params, cli_params)
+        assert request_params == {'ChecksumMode': 'ENABLED'}
+
+    def test_get_object_no_checksums(self, cli_params_no_checksum):
+        request_params = {}
+        RequestParamsMapper.map_get_object_params(request_params, cli_params_no_checksum)
+        assert 'ChecksumMode' not in request_params
+
+
 class TestRequestParamsMapperRequestPayer(unittest.TestCase):
     def setUp(self):
         self.cli_params = {'request_payer': 'requester'}

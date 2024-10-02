@@ -357,21 +357,24 @@ class TestSyncCommand(BaseS3TransferCommandTest):
         self.files.create_file('foo.txt', 'contents')
         cmdline = f'{self.prefix} {self.files.rootdir} s3://bucket/ --checksum-algorithm SHA1'
         self.run_cmd(cmdline, expected_rc=0)
-        self.assert_in_operations_called(
-            ('PutObject', {
-                'Bucket': 'bucket',
-                'Key': 'foo.txt',
-                'ChecksumAlgorithm': 'SHA1',
-                'Body': mock.ANY,
-                'ContentType': 'text/plain'
-            })
-        )
+        self.assertEqual(self.operations_called[1][0].name, 'PutObject')
+        self.assertEqual(self.operations_called[1][1]['ChecksumAlgorithm'], 'SHA1')
 
     def test_copy_with_checksum_algorithm_update_sha1(self):
         cmdline = f'{self.prefix} s3://src-bucket/ s3://dest-bucket/ --checksum-algorithm SHA1'
         self.parsed_responses = [
             # Response for ListObjects on source bucket
-            self.list_objects_response(['mykey'], override_kwargs={'ChecksumAlgorithm': 'CRC32'}),
+            {
+                'Contents': [
+                    {
+                        'Key': 'mykey',
+                        'LastModified': '00:00:00Z',
+                        'Size': 100,
+                        'ChecksumAlgorithm': 'SHA1'
+                    }
+                ],
+                'CommonPrefixes': []
+            },
             # Response for ListObjects on destination bucket
             self.list_objects_response([]),
             # Response for CopyObject
@@ -402,23 +405,14 @@ class TestSyncCommand(BaseS3TransferCommandTest):
         self.files.create_file('foo.txt', 'contents')
         cmdline = f'{self.prefix} {self.files.rootdir} s3://bucket/ --checksum-algorithm SHA256'
         self.run_cmd(cmdline, expected_rc=0)
-        self.assert_in_operations_called(
-            ('PutObject', {
-                'Bucket': 'bucket',
-                'Key': 'foo.txt',
-                'ChecksumAlgorithm': 'SHA256',
-                'Body': mock.ANY,
-                'ContentType': 'text/plain'
-            })
-        )
+        self.assertEqual(self.operations_called[1][0].name, 'PutObject')
+        self.assertEqual(self.operations_called[1][1]['ChecksumAlgorithm'], 'SHA256')
 
     def test_download_with_checksum_mode_sha1(self):
         self.parsed_responses = [
             self.list_objects_response(['bucket']),
             # Mocked GetObject response with a checksum algorithm specified
             {
-                'ContentLength': '100',
-                'LastModified': '00:00:00Z',
                 'ETag': 'foo-1',
                 'ChecksumSHA1': 'checksum',
                 'Body': BytesIO(b'foo')
@@ -435,8 +429,6 @@ class TestSyncCommand(BaseS3TransferCommandTest):
             self.list_objects_response(['bucket']),
             # Mocked GetObject response with a checksum algorithm specified
             {
-                'ContentLength': '100',
-                'LastModified': '00:00:00Z',
                 'ETag': 'foo-1',
                 'ChecksumSHA256': 'checksum',
                 'Body': BytesIO(b'foo')

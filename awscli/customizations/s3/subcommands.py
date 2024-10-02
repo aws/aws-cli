@@ -483,7 +483,8 @@ VALIDATE_SAME_S3_PATHS = {
 
 CHECKSUM_MODE = {
         'name': 'checksum-mode', 'choices': ['ENABLED'],
-        'help_text': 'To retrieve the checksum, this mode must be enabled.'
+        'help_text': 'To retrieve the checksum, this mode must be enabled. If the object has a '
+                     'checksum, it will be verified.'
 }
 
 CHECKSUM_ALGORITHM = {

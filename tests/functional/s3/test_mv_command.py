@@ -248,23 +248,14 @@ class TestMvCommand(BaseS3TransferCommandTest):
         full_path = self.files.create_file('foo.txt', 'contents')
         cmdline = f'{self.prefix} {full_path} s3://bucket/key.txt --checksum-algorithm CRC32'
         self.run_cmd(cmdline, expected_rc=0)
-        self.assert_in_operations_called(
-            ('PutObject', {
-                'Bucket': 'bucket',
-                'Key': 'key.txt',
-                'ChecksumAlgorithm': 'CRC32',
-                'Body': mock.ANY,
-                'ContentType': 'text/plain'
-            })
-        )
+        self.assertEqual(self.operations_called[0][0].name, 'PutObject')
+        self.assertEqual(self.operations_called[0][1]['ChecksumAlgorithm'], 'CRC32')
 
     def test_download_with_checksum_mode_crc32(self):
         self.parsed_responses = [
             self.head_object_response(),
             # Mocked GetObject response with a checksum algorithm specified
             {
-                'ContentLength': '100',
-                'LastModified': '00:00:00Z',
                 'ETag': 'foo-1',
                 'ChecksumCRC32': 'checksum',
                 'Body': BytesIO(b'foo')

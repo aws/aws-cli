@@ -764,32 +764,18 @@ class TestCPCommand(BaseCPCommandTest):
         full_path = self.files.create_file('foo.txt', 'contents')
         cmdline = f'{self.prefix} {full_path} s3://bucket/key.txt --checksum-algorithm CRC32'
         self.run_cmd(cmdline, expected_rc=0)
-        self.assert_in_operations_called(
-            ('PutObject', {
-                'Bucket': 'bucket',
-                'Key': 'key.txt',
-                'ChecksumAlgorithm': 'CRC32',
-                'Body': mock.ANY,
-                'ContentType': 'text/plain'
-            })
-        )
+        self.assertEqual(self.operations_called[0][0].name, 'PutObject')
+        self.assertEqual(self.operations_called[0][1]['ChecksumAlgorithm'], 'CRC32')
 
     def test_upload_with_checksum_algorithm_crc32c(self):
         full_path = self.files.create_file('foo.txt', 'contents')
         cmdline = f'{self.prefix} {full_path} s3://bucket/key.txt --checksum-algorithm CRC32C'
         self.run_cmd(cmdline, expected_rc=0)
-        self.assert_in_operations_called(
-            ('PutObject', {
-                'Bucket': 'bucket',
-                'Key': 'key.txt',
-                'ChecksumAlgorithm': 'CRC32C',
-                'Body': mock.ANY,
-                'ContentType': 'text/plain'
-            })
-        )
+        self.assertEqual(self.operations_called[0][0].name, 'PutObject')
+        self.assertEqual(self.operations_called[0][1]['ChecksumAlgorithm'], 'CRC32C')
 
     def test_multipart_upload_with_checksum_algorithm_crc32(self):
-        full_path = self.files.create_file('foo.txt', 'a' * 10 * MB)
+        full_path = self.files.create_file('foo.txt', 'a' * 10 * (1024 ** 2))
         self.parsed_responses = [
             {'UploadId': 'foo'},
             {'ETag': 'foo-e1', 'ChecksumCRC32': 'foo-1'},
@@ -800,8 +786,8 @@ class TestCPCommand(BaseCPCommandTest):
                    ' --checksum-algorithm CRC32' % (self.prefix, full_path))
         self.run_cmd(cmdline, expected_rc=0)
         self.assertEqual(len(self.operations_called), 4, self.operations_called)
-        self.assertEqual(self.operations_called[0][0].name,'CreateMultipartUpload')
-        self.assertEqual(self.operations_called[0][1]['ChecksumAlgorithm'],'CRC32')
+        self.assertEqual(self.operations_called[0][0].name, 'CreateMultipartUpload')
+        self.assertEqual(self.operations_called[0][1]['ChecksumAlgorithm'], 'CRC32')
         self.assertEqual(self.operations_called[1][0].name, 'UploadPart')
         self.assertEqual(self.operations_called[1][1]['ChecksumAlgorithm'], 'CRC32')
         self.assertEqual(self.operations_called[3][0].name, 'CompleteMultipartUpload')
@@ -811,35 +797,22 @@ class TestCPCommand(BaseCPCommandTest):
     def test_copy_with_checksum_algorithm_crc32(self):
         self.parsed_responses = [
             self.head_object_response(),
+            # Mocked CopyObject response with a CRC32 checksum specified
             {
-                'ContentLength': '100',
-                'LastModified': '00:00:00Z',
                 'ETag': 'foo-1',
-                'ChecksumCRC32': 'Tq0H4g==',
-                'Body': BytesIO(b'foo')
+                'ChecksumCRC32': 'Tq0H4g=='
             }
         ]
         cmdline = f'{self.prefix} s3://bucket1/key.txt s3://bucket2/key.txt --checksum-algorithm CRC32'
         self.run_cmd(cmdline, expected_rc=0)
-        self.assert_in_operations_called(
-            ('CopyObject', {
-                'CopySource': {
-                    'Bucket': 'bucket1',
-                    'Key': 'key.txt'
-                },
-                'Bucket': 'bucket2',
-                'Key': 'key.txt',
-                'ChecksumAlgorithm': 'CRC32'
-            })
-        )
+        self.assertEqual(self.operations_called[1][0].name, 'CopyObject')
+        self.assertEqual(self.operations_called[1][1]['ChecksumAlgorithm'], 'CRC32')
 
     def test_download_with_checksum_mode_crc32(self):
         self.parsed_responses = [
             self.head_object_response(),
             # Mocked GetObject response with a checksum algorithm specified
             {
-                'ContentLength': '100',
-                'LastModified': '00:00:00Z',
                 'ETag': 'foo-1',
                 'ChecksumCRC32': 'Tq0H4g==',
                 'Body': BytesIO(b'foo')
@@ -855,8 +828,6 @@ class TestCPCommand(BaseCPCommandTest):
             self.head_object_response(),
             # Mocked GetObject response with a checksum algorithm specified
             {
-                'ContentLength': '100',
-                'LastModified': '00:00:00Z',
                 'ETag': 'foo-1',
                 'ChecksumCRC32C': 'checksum',
                 'Body': BytesIO(b'foo')

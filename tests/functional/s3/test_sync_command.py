@@ -348,8 +348,6 @@ class TestSyncCommand(BaseS3TransferCommandTest):
             self.list_objects_response(['bucket']),
             # Mocked GetObject response with a checksum algorithm specified
             {
-                'ContentLength': '100',
-                'LastModified': '00:00:00Z',
                 'ETag': 'foo-1',
                 'ChecksumSHA1': 'checksum',
                 'Body': BytesIO(b'foo')
@@ -366,8 +364,6 @@ class TestSyncCommand(BaseS3TransferCommandTest):
             self.list_objects_response(['bucket']),
             # Mocked GetObject response with a checksum algorithm specified
             {
-                'ContentLength': '100',
-                'LastModified': '00:00:00Z',
                 'ETag': 'foo-1',
                 'ChecksumSHA256': 'checksum',
                 'Body': BytesIO(b'foo')

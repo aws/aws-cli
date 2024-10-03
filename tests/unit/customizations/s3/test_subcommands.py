@@ -649,6 +649,46 @@ class CommandParametersTest(unittest.TestCase):
         cmd_params.add_paths(paths)
         self.assertFalse(cmd_params.parameters['is_stream'])
 
+    def test_validate_checksum_algorithm_download_error(self):
+        paths = ['s3://bucket/key', self.file_creator.rootdir]
+        parameters = {'checksum_algorithm': 'CRC32'}
+        cmd_params = CommandParameters('cp', parameters, '')
+        with self.assertRaises(ValueError) as cm:
+            cmd_params.add_paths(paths)
+            self.assertIn('Expected checksum-algorithm parameter to be used with one of following path formats', cm.msg)
+
+    def test_validate_checksum_algorithm_sync_download_error(self):
+        paths = ['s3://bucket/key', self.file_creator.rootdir]
+        parameters = {'checksum_algorithm': 'CRC32C'}
+        cmd_params = CommandParameters('sync', parameters, '')
+        with self.assertRaises(ValueError) as cm:
+            cmd_params.add_paths(paths)
+            self.assertIn('Expected checksum-algorithm parameter to be used with one of following path formats', cm.msg)
+
+    def test_validate_checksum_mode_upload_error(self):
+        paths = [self.file_creator.rootdir, 's3://bucket/key']
+        parameters = {'checksum_mode': 'ENABLED'}
+        cmd_params = CommandParameters('cp', parameters, '')
+        with self.assertRaises(ValueError) as cm:
+            cmd_params.add_paths(paths)
+            self.assertIn('Expected checksum-mode parameter to be used with one of following path formats', cm.msg)
+
+    def test_validate_checksum_mode_sync_upload_error(self):
+        paths = [self.file_creator.rootdir, 's3://bucket/key']
+        parameters = {'checksum_mode': 'ENABLED'}
+        cmd_params = CommandParameters('sync', parameters, '')
+        with self.assertRaises(ValueError) as cm:
+            cmd_params.add_paths(paths)
+            self.assertIn('Expected checksum-mode parameter to be used with one of following path formats', cm.msg)
+
+    def test_validate_checksum_mode_move_error(self):
+        paths = ['s3://bucket/key', 's3://bucket2/key']
+        parameters = {'checksum_mode': 'ENABLED'}
+        cmd_params = CommandParameters('mv', parameters, '')
+        with self.assertRaises(ValueError) as cm:
+            cmd_params.add_paths(paths)
+            self.assertIn('Expected checksum-mode parameter to be used with one of following path formats', cm.msg)
+
     def test_validate_streaming_paths_error(self):
         parameters = {'src': '-', 'dest': 's3://bucket'}
         cmd_params = CommandParameters('sync', parameters, '')

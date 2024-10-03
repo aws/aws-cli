@@ -85,6 +85,24 @@ class TestGetObject(BaseAWSCommandParamsTest):
         self.assert_params_for_cmd(
             cmdline, {'Bucket': 'mybucket', 'Key': 'mykey'})
 
+    def test_invalid_expires_timestamp(self):
+        # Checking correct params are generated and that no errors are raised
+        # in the case botocore cannot parse an invalid "Expires" string and surfaces
+        # the raw string value as an "ExpiresString" field.
+        self.parsed_response = {
+            "AcceptRanges": "bytes",
+            "LastModified": "2024-09-20T18:56:59+00:00",
+            "ContentLength": 23230,
+            "ETag": "\"207d91b3fd7953aac7b28b8ddf882953\"",
+            "ContentType": "binary/octet-stream",
+            "ServerSideEncryption": "AES256",
+            "Metadata": {},
+            "ExpiresString": "invalid string"
+        }
+        cmdline = f'{self.prefix} --bucket mybucket --key mykey outfile --debug'
+        self.addCleanup(self.remove_file_if_exists, 'outfile')
+        self.assert_params_for_cmd(cmdline, {'Bucket': 'mybucket', 'Key': 'mykey'})
+
 
 if __name__ == "__main__":
     unittest.main()

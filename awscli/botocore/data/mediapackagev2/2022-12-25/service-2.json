@@ -850,6 +850,7 @@
           "documentation":"<p>A short string that's appended to the endpoint URL. The child manifest name creates a unique path to this endpoint. If you don't enter a value, MediaPackage uses the default manifest name, index, with an added suffix to distinguish it from the manifest name. The manifestName on the HLSManifest object overrides the manifestName you provided on the originEndpoint object.</p>"
         },
         "ScteHls":{"shape":"ScteHls"},
+        "StartTag":{"shape":"StartTag"},
         "ManifestWindowSeconds":{
           "shape":"CreateHlsManifestConfigurationManifestWindowSecondsInteger",
           "documentation":"<p>The total duration (in seconds) of the manifest's content.</p>"
@@ -890,6 +891,7 @@
           "documentation":"<p>A short string that's appended to the endpoint URL. The child manifest name creates a unique path to this endpoint. If you don't enter a value, MediaPackage uses the default manifest name, index, with an added suffix to distinguish it from the manifest name. The manifestName on the HLSManifest object overrides the manifestName you provided on the originEndpoint object.</p>"
         },
         "ScteHls":{"shape":"ScteHls"},
+        "StartTag":{"shape":"StartTag"},
         "ManifestWindowSeconds":{
           "shape":"CreateLowLatencyHlsManifestConfigurationManifestWindowSecondsInteger",
           "documentation":"<p>The total duration (in seconds) of the manifest's content.</p>"
@@ -1379,6 +1381,10 @@
         "TimeDelaySeconds":{
           "shape":"FilterConfigurationTimeDelaySecondsInteger",
           "documentation":"<p>Optionally specify the time delay for all of your manifest egress requests. Enter a value that is smaller than your endpoint's startover window. When you include time delay, note that you cannot use time delay query parameters for this manifest's endpoint URL.</p>"
+        },
+        "ClipStartTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>Optionally specify the clip start time for all of your manifest egress requests. When you include clip start time, note that you cannot use clip start time query parameters for this manifest's endpoint URL.</p>"
         }
       },
       "documentation":"<p>Filter configuration includes settings for manifest filtering, start and end times, and time delay that apply to all of your egress requests for this manifest. </p>"
@@ -1393,6 +1399,10 @@
       "box":true,
       "max":1209600,
       "min":0
+    },
+    "Float":{
+      "type":"float",
+      "box":true
     },
     "ForceEndpointErrorConfiguration":{
       "type":"structure",
@@ -1661,7 +1671,8 @@
           "documentation":"<p>Inserts EXT-X-PROGRAM-DATE-TIME tags in the output manifest at the interval that you specify. If you don't enter an interval, EXT-X-PROGRAM-DATE-TIME tags aren't included in the manifest. The tags sync the stream to the wall clock so that viewers can seek to a specific time in the playback timeline on the player. ID3Timed metadata messages generate every 5 seconds whenever the content is ingested.</p> <p>Irrespective of this parameter, if any ID3Timed metadata is in the HLS input, it is passed through to the HLS output.</p>"
         },
         "ScteHls":{"shape":"ScteHls"},
-        "FilterConfiguration":{"shape":"FilterConfiguration"}
+        "FilterConfiguration":{"shape":"FilterConfiguration"},
+        "StartTag":{"shape":"StartTag"}
       },
       "documentation":"<p>Retrieve the HTTP live streaming (HLS) manifest configuration.</p>"
     },
@@ -1697,7 +1708,8 @@
           "documentation":"<p>Inserts EXT-X-PROGRAM-DATE-TIME tags in the output manifest at the interval that you specify. If you don't enter an interval, EXT-X-PROGRAM-DATE-TIME tags aren't included in the manifest. The tags sync the stream to the wall clock so that viewers can seek to a specific time in the playback timeline on the player. ID3Timed metadata messages generate every 5 seconds whenever the content is ingested.</p> <p>Irrespective of this parameter, if any ID3Timed metadata is in the HLS input, it is passed through to the HLS output.</p>"
         },
         "ScteHls":{"shape":"ScteHls"},
-        "FilterConfiguration":{"shape":"FilterConfiguration"}
+        "FilterConfiguration":{"shape":"FilterConfiguration"},
+        "StartTag":{"shape":"StartTag"}
       },
       "documentation":"<p>Retrieve the low-latency HTTP live streaming (HLS) manifest configuration.</p>"
     },
@@ -2481,6 +2493,21 @@
       "max":1024,
       "min":1
     },
+    "StartTag":{
+      "type":"structure",
+      "required":["TimeOffset"],
+      "members":{
+        "TimeOffset":{
+          "shape":"Float",
+          "documentation":"<p>Specify the value for TIME-OFFSET within your EXT-X-START tag. Enter a signed floating point value which, if positive, must be less than the configured manifest duration minus three times the configured segment target duration. If negative, the absolute value must be larger than three times the configured segment target duration, and the absolute value must be smaller than the configured manifest duration.</p>"
+        },
+        "Precise":{
+          "shape":"Boolean",
+          "documentation":"<p>Specify the value for PRECISE within your EXT-X-START tag. Leave blank, or choose false, to use the default value NO. Choose yes to use the value YES.</p>"
+        }
+      },
+      "documentation":"<p>To insert an EXT-X-START tag in your HLS playlist, specify a StartTag configuration object with a valid TimeOffset. When you do, you can also optionally specify whether to include a PRECISE value in the EXT-X-START tag.</p>"
+    },
     "String":{"type":"string"},
     "TagArn":{"type":"string"},
     "TagKey":{"type":"string"},
@@ -2917,7 +2944,9 @@
         "PERIOD_TRIGGERS_NONE_SPECIFIED_WITH_ADDITIONAL_VALUES",
         "DRM_SIGNALING_MISMATCH_SEGMENT_ENCRYPTION_STATUS",
         "ONLY_CMAF_INPUT_TYPE_ALLOW_FORCE_ENDPOINT_ERROR_CONFIGURATION",
-        "SOURCE_DISRUPTIONS_ENABLED_INCORRECTLY"
+        "SOURCE_DISRUPTIONS_ENABLED_INCORRECTLY",
+        "CLIP_START_TIME_WITH_START_OR_END",
+        "START_TAG_TIME_OFFSET_INVALID"
       ]
     }
   },

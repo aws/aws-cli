@@ -80,7 +80,7 @@
         {"shape":"ServiceQuotaExceededException"},
         {"shape":"ResourceNotFoundException"}
       ],
-      "documentation":"<p>Associates a software bill of materials (SBOM) with a specific software package version.</p> <p>Requires permission to access the <a href=\"https://docs.aws.amazon.com/service-authorization/latest/reference/list_awsiot.html#awsiot-actions-as-permissions\">AssociateSbomWithPackageVersion</a> action.</p>",
+      "documentation":"<p>Associates the selected software bill of materials (SBOM) with a specific software package version.</p> <p>Requires permission to access the <a href=\"https://docs.aws.amazon.com/service-authorization/latest/reference/list_awsiot.html#awsiot-actions-as-permissions\">AssociateSbomWithPackageVersion</a> action.</p>",
       "idempotent":true
     },
     "AssociateTargetsWithJob":{
@@ -358,7 +358,7 @@
         {"shape":"ThrottlingException"},
         {"shape":"InternalFailureException"}
       ],
-      "documentation":"<p>Creates a billing group.</p> <p>Requires permission to access the <a href=\"https://docs.aws.amazon.com/service-authorization/latest/reference/list_awsiot.html#awsiot-actions-as-permissions\">CreateBillingGroup</a> action.</p>"
+      "documentation":"<p>Creates a billing group. If this call is made multiple times using the same billing group name and configuration, the call will succeed. If this call is made with the same billing group name but different configuration a <code>ResourceAlreadyExistsException</code> is thrown.</p> <p>Requires permission to access the <a href=\"https://docs.aws.amazon.com/service-authorization/latest/reference/list_awsiot.html#awsiot-actions-as-permissions\">CreateBillingGroup</a> action.</p>"
     },
     "CreateCertificateFromCsr":{
       "name":"CreateCertificateFromCsr",
@@ -731,7 +731,7 @@
         {"shape":"ServiceUnavailableException"},
         {"shape":"InternalFailureException"}
       ],
-      "documentation":"<p>Creates a role alias.</p> <p>Requires permission to access the <a href=\"https://docs.aws.amazon.com/service-authorization/latest/reference/list_awsiot.html#awsiot-actions-as-permissions\">CreateRoleAlias</a> action.</p>"
+      "documentation":"<p>Creates a role alias.</p> <p>Requires permission to access the <a href=\"https://docs.aws.amazon.com/service-authorization/latest/reference/list_awsiot.html#awsiot-actions-as-permissions\">CreateRoleAlias</a> action.</p> <important> <p>The value of <a href=\"https://docs.aws.amazon.com/iot/latest/apireference/API_CreateRoleAlias.html#iot-CreateRoleAlias-request-credentialDurationSeconds\"> <code>credentialDurationSeconds</code> </a> must be less than or equal to the maximum session duration of the IAM role that the role alias references. For more information, see <a href=\"https://docs.aws.amazon.com/IAM/latest/UserGuide/roles-managingrole-editing-api.html#roles-modify_max-session-duration-api\"> Modifying a role maximum session duration (Amazon Web Services API)</a> from the Amazon Web Services Identity and Access Management User Guide.</p> </important>"
     },
     "CreateScheduledAudit":{
       "name":"CreateScheduledAudit",
@@ -837,7 +837,7 @@
         {"shape":"InternalFailureException"},
         {"shape":"ResourceAlreadyExistsException"}
       ],
-      "documentation":"<p>Creates a new thing type.</p> <p>Requires permission to access the <a href=\"https://docs.aws.amazon.com/service-authorization/latest/reference/list_awsiot.html#awsiot-actions-as-permissions\">CreateThingType</a> action.</p>"
+      "documentation":"<p>Creates a new thing type. If this call is made multiple times using the same thing type name and configuration, the call will succeed. If this call is made with the same thing type name but different configuration a <code>ResourceAlreadyExistsException</code> is thrown. </p> <p>Requires permission to access the <a href=\"https://docs.aws.amazon.com/service-authorization/latest/reference/list_awsiot.html#awsiot-actions-as-permissions\">CreateThingType</a> action.</p>"
     },
     "CreateTopicRule":{
       "name":"CreateTopicRule",
@@ -2140,7 +2140,7 @@
         {"shape":"ValidationException"},
         {"shape":"ResourceNotFoundException"}
       ],
-      "documentation":"<p>Disassociates a software bill of materials (SBOM) from a specific software package version.</p> <p>Requires permission to access the <a href=\"https://docs.aws.amazon.com/service-authorization/latest/reference/list_awsiot.html#awsiot-actions-as-permissions\">DisassociateSbomWithPackageVersion</a> action.</p>",
+      "documentation":"<p>Disassociates the selected software bill of materials (SBOM) from a specific software package version.</p> <p>Requires permission to access the <a href=\"https://docs.aws.amazon.com/service-authorization/latest/reference/list_awsiot.html#awsiot-actions-as-permissions\">DisassociateSbomWithPackageVersion</a> action.</p>",
       "idempotent":true
     },
     "EnableTopicRule":{
@@ -4290,7 +4290,7 @@
         {"shape":"ServiceUnavailableException"},
         {"shape":"InternalFailureException"}
       ],
-      "documentation":"<p>Updates a role alias.</p> <p>Requires permission to access the <a href=\"https://docs.aws.amazon.com/service-authorization/latest/reference/list_awsiot.html#awsiot-actions-as-permissions\">UpdateRoleAlias</a> action.</p>"
+      "documentation":"<p>Updates a role alias.</p> <p>Requires permission to access the <a href=\"https://docs.aws.amazon.com/service-authorization/latest/reference/list_awsiot.html#awsiot-actions-as-permissions\">UpdateRoleAlias</a> action.</p> <important> <p>The value of <a href=\"https://docs.aws.amazon.com/iot/latest/apireference/API_UpdateRoleAlias.html#iot-UpdateRoleAlias-request-credentialDurationSeconds\"> <code>credentialDurationSeconds</code> </a> must be less than or equal to the maximum session duration of the IAM role that the role alias references. For more information, see <a href=\"https://docs.aws.amazon.com/IAM/latest/UserGuide/roles-managingrole-editing-api.html#roles-modify_max-session-duration-api\"> Modifying a role maximum session duration (Amazon Web Services API)</a> from the Amazon Web Services Identity and Access Management User Guide.</p> </important>"
     },
     "UpdateScheduledAudit":{
       "name":"UpdateScheduledAudit",
@@ -4833,6 +4833,15 @@
       },
       "documentation":"<p>Contains information that allowed the authorization.</p>"
     },
+    "ApplicationProtocol":{
+      "type":"string",
+      "enum":[
+        "SECURE_MQTT",
+        "MQTT_WSS",
+        "HTTPS",
+        "DEFAULT"
+      ]
+    },
     "ApproximateSecondsBeforeTimedOut":{"type":"long"},
     "AscendingOrder":{"type":"boolean"},
     "AssetId":{"type":"string"},
@@ -4961,7 +4970,7 @@
         "sbom":{"shape":"Sbom"},
         "sbomValidationStatus":{
           "shape":"SbomValidationStatus",
-          "documentation":"<p>The status of the initial validation for the SBOM against the Software Package Data Exchange (SPDX) and CycloneDX industry standard format.</p>"
+          "documentation":"<p>The status of the initial validation for the software bill of materials against the Software Package Data Exchange (SPDX) and CycloneDX industry standard formats.</p>"
         }
       }
     },
@@ -5565,6 +5574,16 @@
     "AuthResults":{
       "type":"list",
       "member":{"shape":"AuthResult"}
+    },
+    "AuthenticationType":{
+      "type":"string",
+      "enum":[
+        "CUSTOM_AUTH_X509",
+        "CUSTOM_AUTH",
+        "AWS_X509",
+        "AWS_SIGV4",
+        "DEFAULT"
+      ]
     },
     "AuthorizerArn":{
       "type":"string",
@@ -6524,6 +6543,21 @@
       "members":{
       }
     },
+    "ClientCertificateCallbackArn":{
+      "type":"string",
+      "max":2048,
+      "pattern":"[\\s\\S]*"
+    },
+    "ClientCertificateConfig":{
+      "type":"structure",
+      "members":{
+        "clientCertificateCallbackArn":{
+          "shape":"ClientCertificateCallbackArn",
+          "documentation":"<p>The ARN of the Lambda function that IoT invokes after mutual TLS authentication during the connection.</p>"
+        }
+      },
+      "documentation":"<p>An object that speciﬁes the client certificate conﬁguration for a domain.</p>"
+    },
     "ClientId":{"type":"string"},
     "ClientProperties":{
       "type":"map",
@@ -7123,6 +7157,18 @@
         "serverCertificateConfig":{
           "shape":"ServerCertificateConfig",
           "documentation":"<p>The server certificate configuration.</p>"
+        },
+        "authenticationType":{
+          "shape":"AuthenticationType",
+          "documentation":"<p>An enumerated string that speciﬁes the authentication type.</p> <ul> <li> <p> <code>CUSTOM_AUTH_X509</code> - Use custom authentication and authorization with additional details from the X.509 client certificate.</p> </li> </ul> <ul> <li> <p> <code>CUSTOM_AUTH</code> - Use custom authentication and authorization. For more information, see <a href=\"https://docs.aws.amazon.com/iot/latest/developerguide/custom-authentication.html\">Custom authentication and authorization</a>.</p> </li> </ul> <ul> <li> <p> <code>AWS_X509</code> - Use X.509 client certificates without custom authentication and authorization. For more information, see <a href=\"https://docs.aws.amazon.com/iot/latest/developerguide/x509-client-certs.html\">X.509 client certificates</a>.</p> </li> </ul> <ul> <li> <p> <code>AWS_SIGV4</code> - Use Amazon Web Services Signature Version 4. For more information, see <a href=\"https://docs.aws.amazon.com/iot/latest/developerguide/custom-authentication.html\">IAM users, groups, and roles</a>.</p> </li> </ul> <ul> <li> <p> <code>DEFAULT</code> - Use a combination of port and Application Layer Protocol Negotiation (ALPN) to specify authentication type. For more information, see <a href=\"https://docs.aws.amazon.com/iot/latest/developerguide/protocols.html\">Device communication protocols</a>.</p> </li> </ul>"
+        },
+        "applicationProtocol":{
+          "shape":"ApplicationProtocol",
+          "documentation":"<p>An enumerated string that speciﬁes the application-layer protocol.</p> <ul> <li> <p> <code>SECURE_MQTT</code> - MQTT over TLS.</p> </li> </ul> <ul> <li> <p> <code>MQTT_WSS</code> - MQTT over WebSocket.</p> </li> </ul> <ul> <li> <p> <code>HTTPS</code> - HTTP over TLS.</p> </li> </ul> <ul> <li> <p> <code>DEFAULT</code> - Use a combination of port and Application Layer Protocol Negotiation (ALPN) to specify application_layer protocol. For more information, see <a href=\"https://docs.aws.amazon.com/iot/latest/developerguide/protocols.html\">Device communication protocols</a>.</p> </li> </ul>"
+        },
+        "clientCertificateConfig":{
+          "shape":"ClientCertificateConfig",
+          "documentation":"<p>An object that speciﬁes the client certificate conﬁguration for a domain.</p>"
         }
       }
     },
@@ -7672,7 +7718,7 @@
         },
         "recipe":{
           "shape":"PackageVersionRecipe",
-          "documentation":"<p>The inline job document associated with a software package version used for a quick job deployment via IoT Jobs.</p>"
+          "documentation":"<p>The inline job document associated with a software package version used for a quick job deployment.</p>"
         },
         "tags":{
           "shape":"TagMap",
@@ -9610,6 +9656,18 @@
         "serverCertificateConfig":{
           "shape":"ServerCertificateConfig",
           "documentation":"<p>The server certificate configuration.</p>"
+        },
+        "authenticationType":{
+          "shape":"AuthenticationType",
+          "documentation":"<p>An enumerated string that speciﬁes the authentication type.</p> <ul> <li> <p> <code>CUSTOM_AUTH_X509</code> - Use custom authentication and authorization with additional details from the X.509 client certificate.</p> </li> </ul> <ul> <li> <p> <code>CUSTOM_AUTH</code> - Use custom authentication and authorization. For more information, see <a href=\"https://docs.aws.amazon.com/iot/latest/developerguide/custom-authentication.html\">Custom authentication and authorization</a>.</p> </li> </ul> <ul> <li> <p> <code>AWS_X509</code> - Use X.509 client certificates without custom authentication and authorization. For more information, see <a href=\"https://docs.aws.amazon.com/iot/latest/developerguide/x509-client-certs.html\">X.509 client certificates</a>.</p> </li> </ul> <ul> <li> <p> <code>AWS_SIGV4</code> - Use Amazon Web Services Signature Version 4. For more information, see <a href=\"https://docs.aws.amazon.com/iot/latest/developerguide/custom-authentication.html\">IAM users, groups, and roles</a>.</p> </li> </ul> <ul> <li> <p> <code>DEFAULT</code> - Use a combination of port and Application Layer Protocol Negotiation (ALPN) to specify authentication type. For more information, see <a href=\"https://docs.aws.amazon.com/iot/latest/developerguide/protocols.html\">Device communication protocols</a>.</p> </li> </ul>"
+        },
+        "applicationProtocol":{
+          "shape":"ApplicationProtocol",
+          "documentation":"<p>An enumerated string that speciﬁes the application-layer protocol.</p> <ul> <li> <p> <code>SECURE_MQTT</code> - MQTT over TLS.</p> </li> </ul> <ul> <li> <p> <code>MQTT_WSS</code> - MQTT over WebSocket.</p> </li> </ul> <ul> <li> <p> <code>HTTPS</code> - HTTP over TLS.</p> </li> </ul> <ul> <li> <p> <code>DEFAULT</code> - Use a combination of port and Application Layer Protocol Negotiation (ALPN) to specify application_layer protocol. For more information, see <a href=\"https://docs.aws.amazon.com/iot/latest/developerguide/protocols.html\">Device communication protocols</a>.</p> </li> </ul>"
+        },
+        "clientCertificateConfig":{
+          "shape":"ClientCertificateConfig",
+          "documentation":"<p>An object that speciﬁes the client certificate conﬁguration for a domain.</p>"
         }
       }
     },
@@ -11740,7 +11798,7 @@
         },
         "recipe":{
           "shape":"PackageVersionRecipe",
-          "documentation":"<p>The inline job document associated with a software package version used for a quick job deployment via IoT Jobs.</p>"
+          "documentation":"<p>The inline job document associated with a software package version used for a quick job deployment.</p>"
         }
       }
     },
@@ -16458,7 +16516,7 @@
       "members":{
         "s3Location":{"shape":"S3Location"}
       },
-      "documentation":"<p>The Amazon S3 location for the artifacts associated with a software package version.</p>"
+      "documentation":"<p>A specific package version artifact associated with a software package version.</p>"
     },
     "PackageVersionErrorReason":{"type":"string"},
     "PackageVersionRecipe":{
@@ -17671,7 +17729,7 @@
       "members":{
         "s3Location":{"shape":"S3Location"}
       },
-      "documentation":"<p>The Amazon S3 location for the software bill of materials associated with a software package version.</p>"
+      "documentation":"<p>A specific software bill of matrerials associated with a software package version.</p>"
     },
     "SbomValidationErrorCode":{
       "type":"string",
@@ -19018,7 +19076,7 @@
         },
         "thingGroupNames":{
           "shape":"ThingGroupNameList",
-          "documentation":"<p>Thing group names.</p>"
+          "documentation":"<p>Thing group and billing group names.</p>"
         },
         "attributes":{
           "shape":"Attributes",
@@ -20143,6 +20201,18 @@
         "serverCertificateConfig":{
           "shape":"ServerCertificateConfig",
           "documentation":"<p>The server certificate configuration.</p>"
+        },
+        "authenticationType":{
+          "shape":"AuthenticationType",
+          "documentation":"<p>An enumerated string that speciﬁes the authentication type.</p> <ul> <li> <p> <code>CUSTOM_AUTH_X509</code> - Use custom authentication and authorization with additional details from the X.509 client certificate.</p> </li> </ul> <ul> <li> <p> <code>CUSTOM_AUTH</code> - Use custom authentication and authorization. For more information, see <a href=\"https://docs.aws.amazon.com/iot/latest/developerguide/custom-authentication.html\">Custom authentication and authorization</a>.</p> </li> </ul> <ul> <li> <p> <code>AWS_X509</code> - Use X.509 client certificates without custom authentication and authorization. For more information, see <a href=\"https://docs.aws.amazon.com/iot/latest/developerguide/x509-client-certs.html\">X.509 client certificates</a>.</p> </li> </ul> <ul> <li> <p> <code>AWS_SIGV4</code> - Use Amazon Web Services Signature Version 4. For more information, see <a href=\"https://docs.aws.amazon.com/iot/latest/developerguide/custom-authentication.html\">IAM users, groups, and roles</a>.</p> </li> </ul> <ul> <li> <p> <code>DEFAULT </code> - Use a combination of port and Application Layer Protocol Negotiation (ALPN) to specify authentication type. For more information, see <a href=\"https://docs.aws.amazon.com/iot/latest/developerguide/protocols.html\">Device communication protocols</a>.</p> </li> </ul>"
+        },
+        "applicationProtocol":{
+          "shape":"ApplicationProtocol",
+          "documentation":"<p>An enumerated string that speciﬁes the application-layer protocol.</p> <ul> <li> <p> <code>SECURE_MQTT</code> - MQTT over TLS.</p> </li> </ul> <ul> <li> <p> <code>MQTT_WSS</code> - MQTT over WebSocket.</p> </li> </ul> <ul> <li> <p> <code>HTTPS</code> - HTTP over TLS.</p> </li> </ul> <ul> <li> <p> <code>DEFAULT</code> - Use a combination of port and Application Layer Protocol Negotiation (ALPN) to specify application_layer protocol. For more information, see <a href=\"https://docs.aws.amazon.com/iot/latest/developerguide/protocols.html\">Device communication protocols</a>.</p> </li> </ul>"
+        },
+        "clientCertificateConfig":{
+          "shape":"ClientCertificateConfig",
+          "documentation":"<p>An object that speciﬁes the client certificate conﬁguration for a domain.</p>"
         }
       }
     },
@@ -20455,7 +20525,7 @@
         },
         "recipe":{
           "shape":"PackageVersionRecipe",
-          "documentation":"<p>The inline job document associated with a software package version used for a quick job deployment via IoT Jobs.</p>"
+          "documentation":"<p>The inline job document associated with a software package version used for a quick job deployment.</p>"
         },
         "clientToken":{
           "shape":"ClientToken",

@@ -918,6 +918,10 @@
           "shape":"ActionConfigurationMap",
           "documentation":"<p>The action's configuration. These are key-value pairs that specify input values for an action. For more information, see <a href=\"https://docs.aws.amazon.com/codepipeline/latest/userguide/reference-pipeline-structure.html#action-requirements\">Action Structure Requirements in CodePipeline</a>. For the list of configuration properties for the CloudFormation action type in CodePipeline, see <a href=\"https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/continuous-delivery-codepipeline-action-reference.html\">Configuration Properties Reference</a> in the <i>CloudFormation User Guide</i>. For template snippets with examples, see <a href=\"https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/continuous-delivery-codepipeline-parameter-override-functions.html\">Using Parameter Override Functions with CodePipeline Pipelines</a> in the <i>CloudFormation User Guide</i>.</p> <p>The values can be represented in either JSON or YAML format. For example, the JSON configuration item format is as follows: </p> <p> <i>JSON:</i> </p> <p> <code>\"Configuration\" : { Key : Value },</code> </p>"
         },
+        "commands":{
+          "shape":"CommandList",
+          "documentation":"<p>The shell commands to run with your compute action in CodePipeline. All commands are supported except multi-line formats. While CodeBuild logs and permissions are used, you do not need to create any resources in CodeBuild.</p> <note> <p>Using compute time for this action will incur separate charges in CodeBuild.</p> </note>"
+        },
         "outputArtifacts":{
           "shape":"OutputArtifactList",
           "documentation":"<p>The name or ID of the result of the action declaration, such as a test or build artifact.</p>"
@@ -925,6 +929,10 @@
         "inputArtifacts":{
           "shape":"InputArtifactList",
           "documentation":"<p>The name or ID of the artifact consumed by the action, such as a test or build artifact.</p>"
+        },
+        "outputVariables":{
+          "shape":"OutputVariableList",
+          "documentation":"<p>The list of variables that are to be exported from the compute action. This is specifically CodeBuild environment variables as used for that action.</p>"
         },
         "roleArn":{
           "shape":"RoleArn",
@@ -1792,6 +1800,17 @@
       "min":1
     },
     "Code":{"type":"string"},
+    "Command":{
+      "type":"string",
+      "max":1000,
+      "min":1
+    },
+    "CommandList":{
+      "type":"list",
+      "member":{"shape":"Command"},
+      "max":50,
+      "min":1
+    },
     "ConcurrentModificationException":{
       "type":"structure",
       "members":{
@@ -2320,6 +2339,17 @@
         "RevisionUnavailable",
         "SystemUnavailable"
       ]
+    },
+    "FilePath":{
+      "type":"string",
+      "max":128,
+      "min":1
+    },
+    "FilePathList":{
+      "type":"list",
+      "member":{"shape":"FilePath"},
+      "max":10,
+      "min":1
     },
     "GetActionTypeInput":{
       "type":"structure",
@@ -3301,6 +3331,10 @@
         "name":{
           "shape":"ArtifactName",
           "documentation":"<p>The name of the output of an artifact, such as \"My App\".</p> <p>The input artifact of an action must exactly match the output artifact declared in a preceding action, but the input artifact does not have to be the next action in strict sequence from the action that provided the output artifact. Actions in parallel can declare different output artifacts, which are in turn consumed by different following actions.</p> <p>Output artifact names must be unique within a pipeline.</p>"
+        },
+        "files":{
+          "shape":"FilePathList",
+          "documentation":"<p>The files that you want to associate with the output artifact that will be exported from the compute action.</p>"
         }
       },
       "documentation":"<p>Represents information about the output of an action.</p>"
@@ -3308,6 +3342,17 @@
     "OutputArtifactList":{
       "type":"list",
       "member":{"shape":"OutputArtifact"}
+    },
+    "OutputVariable":{
+      "type":"string",
+      "max":128,
+      "min":1
+    },
+    "OutputVariableList":{
+      "type":"list",
+      "member":{"shape":"OutputVariable"},
+      "max":15,
+      "min":1
     },
     "OutputVariablesKey":{
       "type":"string",

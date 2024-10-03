@@ -37,7 +37,6 @@ def register_document_expires_string(event_handlers):
         document_expires_string
     )
 
-
 def add_event_stream_output_arg(argument_table, operation_model,
                                 session, **kwargs):
     argument_table['outfile'] = S3SelectStreamOutputArgument(

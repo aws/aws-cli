@@ -3098,8 +3098,10 @@ class BaseSSOTokenFetcher(object):
         return seconds < self._EXPIRY_WINDOW
 
     def _is_registration_for_auth_code(self, registration):
-        if ('grantTypes' in registration and
-                'authorization_code' in registration['grantTypes']):
+        if (
+            'grantTypes' in registration
+            and 'authorization_code' in registration['grantTypes']
+        ):
             return True
 
         # Else assume that it's device flow,
@@ -3154,12 +3156,20 @@ class SSOTokenFetcher(BaseSSOTokenFetcher):
     _GRANT_TYPE = 'urn:ietf:params:oauth:grant-type:device_code'
 
     def __init__(
-            self, sso_region, client_creator, cache=None,
-            on_pending_authorization=None, time_fetcher=None, sleep=None
+        self,
+        sso_region,
+        client_creator,
+        cache=None,
+        on_pending_authorization=None,
+        time_fetcher=None,
+        sleep=None,
     ):
         super().__init__(
-            sso_region, client_creator, cache, on_pending_authorization,
-            time_fetcher
+            sso_region,
+            client_creator,
+            cache,
+            on_pending_authorization,
+            time_fetcher,
         )
 
         if sleep is None:
@@ -3199,8 +3209,10 @@ class SSOTokenFetcher(BaseSSOTokenFetcher):
         )
         if not force_refresh and cache_key in self._cache:
             registration = self._cache[cache_key]
-            if (not self._is_expired(registration) and
-                    not self._is_registration_for_auth_code(registration)):
+            if (
+                not self._is_expired(registration)
+                and not self._is_registration_for_auth_code(registration)
+            ):
                 return registration
 
         registration = self._register_client(
@@ -3341,16 +3353,25 @@ class SSOTokenFetcher(BaseSSOTokenFetcher):
 
 class SSOTokenFetcherAuth(BaseSSOTokenFetcher):
     """Performs the authorization code grant with PKCE OAuth2.0 flow"""
-    _AUTH_GRANT_TYPES = ['authorization_code', 'refresh_token']
+    _AUTH_GRANT_TYPES = ('authorization_code', 'refresh_token')
     _AUTH_GRANT_DEFAULT_SCOPE = 'sso:account:access'
 
     def __init__(
-            self, sso_region, client_creator, auth_code_fetcher, cache=None,
-            on_pending_authorization=None, time_fetcher=None
+        self,
+        sso_region,
+        client_creator,
+        auth_code_fetcher,
+        cache=None,
+        on_pending_authorization=None,
+        time_fetcher=None,
     ):
-        super().__init__(sso_region, client_creator, cache,
-                         on_pending_authorization, time_fetcher
-                         )
+        super().__init__(
+            sso_region,
+            client_creator,
+            cache,
+            on_pending_authorization,
+            time_fetcher,
+        )
 
         self._auth_code_fetcher = auth_code_fetcher
 
@@ -3362,7 +3383,8 @@ class SSOTokenFetcherAuth(BaseSSOTokenFetcher):
             for _ in range(64)
         )
         self.code_challenge = base64.urlsafe_b64encode(
-            hashlib.sha256(self.code_verifier.encode()).digest()).decode()
+            hashlib.sha256(self.code_verifier.encode()).digest()
+        ).decode()
 
     def _register_client(self, session_name, scopes, redirect_uri, issuer_url):
         register_kwargs = {
@@ -3393,11 +3415,11 @@ class SSOTokenFetcherAuth(BaseSSOTokenFetcher):
         return registration
 
     def _registration(
-            self,
-            start_url,
-            session_name,
-            scopes,
-            force_refresh=False,
+        self,
+        start_url,
+        session_name,
+        scopes,
+        force_refresh=False,
     ):
         cache_key = self._registration_cache_key(
             start_url,
@@ -3406,8 +3428,10 @@ class SSOTokenFetcherAuth(BaseSSOTokenFetcher):
         )
         if not force_refresh and cache_key in self._cache:
             registration = self._cache[cache_key]
-            if (not self._is_expired(registration) and
-                    self._is_registration_for_auth_code(registration)):
+            if (
+                not self._is_expired(registration)
+                and self._is_registration_for_auth_code(registration)
+            ):
                 return registration
 
         registration = self._register_client(
@@ -3437,22 +3461,25 @@ class SSOTokenFetcherAuth(BaseSSOTokenFetcher):
         endpoint for the current client to use for the un-modeled Authorize
         operation
         """
-        self._client.meta.events.register('before-call',
-                                          self._extract_resolved_endpoint)
+        self._client.meta.events.register(
+            'before-call', self._extract_resolved_endpoint
+        )
         self._client.register_client(
             clientName='temp',
             clientType='public'
         )
-        self._client.meta.events.unregister('before-call',
-                                            self._extract_resolved_endpoint)
+        self._client.meta.events.unregister(
+            'before-call', self._extract_resolved_endpoint
+        )
 
         return self._base_endpoint
 
     def _get_authorization_uri(
-            self,
-            client_id,
-            registration_scopes,
-            expected_state):
+        self,
+        client_id,
+        registration_scopes,
+        expected_state
+    ):
 
         query_params = {
             'response_type': 'code',
@@ -3485,9 +3512,10 @@ class SSOTokenFetcherAuth(BaseSSOTokenFetcher):
         authorization_uri = self._get_authorization_uri(
             registration['clientId'],
             registration_scopes,
-            expected_state)
+            expected_state
+        )
 
-        # Even though there's just one uri, this matches the inputs
+        # Even though there's just one URI, this matches the inputs
         # for the device code flow so that we can reuse the browser handlers
         authorization_args = {
             'verificationUri': authorization_uri,

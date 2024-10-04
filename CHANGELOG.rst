@@ -2,6 +2,14 @@
 CHANGELOG
 =========
 
+2.18.0
+======
+
+* api-change:``iot-data``: Add v2 smoke tests and smithy smokeTests trait for SDK testing.
+* feature:s3: Adds ``--checksum-mode`` and ``--checksum-algorithm`` parameters to high-level ``s3`` commands.
+* api-change:``ec2``: Documentation updates for Amazon EC2.
+
+
 2.17.65
 =======
 

@@ -451,6 +451,17 @@ VALIDATE_SAME_S3_PATHS = {
     )
 }
 
+CHECKSUM_MODE = {
+        'name': 'checksum-mode', 'choices': ['ENABLED'],
+        'help_text': 'To retrieve the checksum, this mode must be enabled. If the object has a '
+                     'checksum, it will be verified.'
+}
+
+CHECKSUM_ALGORITHM = {
+        'name': 'checksum-algorithm', 'choices': ['CRC32', 'SHA256', 'SHA1', 'CRC32C'],
+        'help_text': 'Indicates the algorithm used to create the checksum for the object.'
+}
+
 TRANSFER_ARGS = [DRYRUN, QUIET, INCLUDE, EXCLUDE, ACL,
                  FOLLOW_SYMLINKS, NO_FOLLOW_SYMLINKS, NO_GUESS_MIME_TYPE,
                  SSE, SSE_C, SSE_C_KEY, SSE_KMS_KEY_ID, SSE_C_COPY_SOURCE,
@@ -459,7 +470,7 @@ TRANSFER_ARGS = [DRYRUN, QUIET, INCLUDE, EXCLUDE, ACL,
                  CONTENT_DISPOSITION, CONTENT_ENCODING, CONTENT_LANGUAGE,
                  EXPIRES, SOURCE_REGION, ONLY_SHOW_ERRORS, NO_PROGRESS,
                  PAGE_SIZE, IGNORE_GLACIER_WARNINGS, FORCE_GLACIER_TRANSFER,
-                 REQUEST_PAYER]
+                 REQUEST_PAYER, CHECKSUM_MODE, CHECKSUM_ALGORITHM]
 
 
 def get_client(session, region, endpoint_url, verify, config=None):
@@ -1242,6 +1253,17 @@ class CommandParameters(object):
             if self._should_emit_validate_s3_paths_warning():
                 self._emit_validate_s3_paths_warning()
 
+        if params.get('checksum_algorithm'):
+            self._raise_if_paths_type_incorrect_for_param(
+                CHECKSUM_ALGORITHM['name'],
+                params['paths_type'],
+                ['locals3', 's3s3'])
+        if params.get('checksum_mode'):
+            self._raise_if_paths_type_incorrect_for_param(
+                CHECKSUM_MODE['name'],
+                params['paths_type'],
+                ['s3local'])
+
         # If the user provided local path does not exist, hard fail because
         # we know that we will not be able to upload the file.
         if 'locals3' == params['paths_type'] and not params['is_stream']:
@@ -1323,6 +1345,19 @@ class CommandParameters(object):
             raise ValueError(
                 "Cannot mv a file onto itself: "
                 f"{self.parameters['src']} - {self.parameters['dest']}"
+            )
+
+    def _raise_if_paths_type_incorrect_for_param(self, param, paths_type, allowed_paths):
+        if paths_type not in allowed_paths:
+            expected_usage_map = {
+                'locals3': '<LocalPath> <S3Uri>',
+                's3s3': '<S3Uri> <S3Uri>',
+                's3local': '<S3Uri> <LocalPath>',
+                's3': '<S3Uri>'
+            }
+            raise ValueError(
+                f"Expected {param} parameter to be used with one of following path formats: "
+                f"{', '.join([expected_usage_map[path] for path in allowed_paths])}. Instead, received {expected_usage_map[paths_type]}."
             )
 
     def _normalize_s3_trailing_slash(self, paths):

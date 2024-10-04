@@ -145,7 +145,8 @@ class PrintOnlyHandler(BaseAuthorizationhandler):
             f'\n{userCode}\n'
             f'\nAlternatively, you may visit the following URL which will '
             f'autofill the code upon loading:'
-            f'\n{verificationUriComplete}\n')
+            f'\n{verificationUriComplete}\n'
+        )
 
         uni_print(opening_msg, self._outfile)
         if userCode:
@@ -237,8 +238,9 @@ class OAuthCallbackHandler(BaseHTTPRequestHandler):
         self.send_response(200)
         self.end_headers()
         with open(
-                os.path.join(os.path.dirname(__file__), 'index.html'),
-                'rb') as file:
+            os.path.join(os.path.dirname(__file__), 'index.html'),
+            'rb',
+        ) as file:
             self.wfile.write(file.read())
 
         query_params = parse_qs(urlparse(self.path).query)

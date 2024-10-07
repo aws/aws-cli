@@ -67,42 +67,27 @@ def replace_event_stream_docs(help_command, **kwargs):
 
 def document_expires_string(help_command, **kwargs):
     doc = help_command.doc
-    caught_index_error = False
-    popped = []
-    current = ''
-    while current != 'Expires -> (timestamp)':
-        try:
-            current = doc.pop_write()
-            popped.append(current)
-        except IndexError:
-            # Do nothing if Expires is not in the modeled response
-            caught_index_error = True
-            break
+    expires_field_idx = doc.find_last_write('Expires -> (timestamp)')
 
-    # Only inject the deprecation notice if the Expires timestamp arg was found in the document
-    if not caught_index_error:
-        # Put back the expires field and description
-        doc.push_write(popped.pop())
-        doc.push_write(popped.pop())
-        doc.push_write(popped.pop())
-        doc.push_write(popped.pop())
+    if expires_field_idx is None:
+        return
 
-        doc.push_write('\n\n\n' + doc.style.spaces())
-        doc.push_write('.. note::')
-        doc.style.indent()
-        doc.push_write('\n\n\n' + doc.style.spaces())
-        doc.push_write('This member has been deprecated. Please use `ExpiresString` instead.\n')
-        doc.style.dedent()
-        doc.push_write('\n\n' + doc.style.spaces())
+    deprecation_note_and_expires_string = [
+        f'\n\n\n{" " * doc.style.indentation * doc.style.indent_width}',
+        '.. note::',
+        f'\n\n\n{" " * (doc.style.indentation + 1) * doc.style.indent_width}',
+        'This member has been deprecated. Please use `ExpiresString` instead.\n',
+        f'\n\n{" " * doc.style.indentation * doc.style.indent_width}',
+        f'\n\n{" " * doc.style.indentation * doc.style.indent_width}',
+        'ExpiresString -> (string)\n\n',
+        '\tThe raw, unparsed value of the ``Expires`` field.',
+        f'\n\n{" " * doc.style.indentation * doc.style.indent_width}'
+    ]
 
-        doc.push_write('\n\n' + doc.style.spaces())
-        doc.push_write('ExpiresString -> (string)\n\n')
-        doc.push_write('\tThe raw, unparsed value of the ``Expires`` field.')
-        doc.push_write('\n\n' + doc.style.spaces())
-
-    # Write rest of document
-    while len(popped) > 0:
-        doc.push_write(popped.pop())
+    for idx in range(len(deprecation_note_and_expires_string)):
+        # We add 4 to the index of the expires field name because each
+        # field in the output section consists of exactly 4 elements.
+        doc.insert_write(expires_field_idx + idx + 4, deprecation_note_and_expires_string[idx])
 
 
 class S3SelectStreamOutputArgument(CustomArgument):

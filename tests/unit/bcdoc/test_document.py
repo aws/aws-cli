@@ -26,6 +26,10 @@ from awscli.bcdoc.restdoc import ReSTDocument, DocumentStructure
 
 class TestReSTDocument(unittest.TestCase):
 
+    def _write_array(self, doc, arr):
+        for elt in arr:
+            doc.write(elt)
+
     def test_write(self):
         doc = ReSTDocument()
         doc.write('foo')
@@ -35,6 +39,29 @@ class TestReSTDocument(unittest.TestCase):
         doc = ReSTDocument()
         doc.writeln('foo')
         self.assertEqual(doc.getvalue(), b'foo\n')
+
+    def test_find_last_write(self):
+        doc = ReSTDocument()
+        self._write_array(doc, ['a', 'b', 'c', 'd', 'e'])
+        expected_index = 0
+        self.assertEqual(doc.find_last_write('a'), expected_index)
+
+    def test_find_last_write_duplicates(self):
+        doc = ReSTDocument()
+        self._write_array(doc, ['a', 'b', 'c', 'a', 'e'])
+        expected_index = 3
+        self.assertEqual(doc.find_last_write('a'), expected_index)
+
+    def test_find_last_write_not_found(self):
+        doc = ReSTDocument()
+        self._write_array(doc, ['a', 'b', 'c', 'd', 'e'])
+        self.assertIsNone(doc.find_last_write('f'))
+
+    def test_insert_write(self):
+        doc = ReSTDocument()
+        self._write_array(doc, ['foo', 'bar'])
+        doc.insert_write(1, 'baz')
+        self.assertEqual(doc.getvalue(), b'foobazbar')
 
     def test_include_doc_string(self):
         doc = ReSTDocument()

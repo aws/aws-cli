@@ -84,10 +84,10 @@ def document_expires_string(help_command, **kwargs):
         f'\n\n{" " * doc.style.indentation * doc.style.indent_width}'
     ]
 
-    for idx in range(len(deprecation_note_and_expires_string)):
+    for idx, write in enumerate(deprecation_note_and_expires_string):
         # We add 4 to the index of the expires field name because each
         # field in the output section consists of exactly 4 elements.
-        doc.insert_write(expires_field_idx + idx + 4, deprecation_note_and_expires_string[idx])
+        doc.insert_write(expires_field_idx + idx + 4, write)
 
 
 class S3SelectStreamOutputArgument(CustomArgument):

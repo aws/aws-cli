@@ -31,6 +31,12 @@ def register_event_stream_arg(event_handlers):
     )
 
 
+def register_document_expires_string(event_handlers):
+    event_handlers.register_last(
+        'doc-output.s3api',
+        document_expires_string
+    )
+
 def add_event_stream_output_arg(argument_table, operation_model,
                                 session, **kwargs):
     argument_table['outfile'] = S3SelectStreamOutputArgument(
@@ -55,6 +61,30 @@ def replace_event_stream_docs(help_command, **kwargs):
     doc.write('======\nOutput\n======\n')
     doc.write("This command generates no output.  The selected "
               "object content is written to the specified outfile.\n")
+
+def document_expires_string(help_command, **kwargs):
+    doc = help_command.doc
+    expires_field_idx = doc.find_last_write('Expires -> (timestamp)')
+
+    if expires_field_idx is None:
+        return
+
+    deprecation_note_and_expires_string = [
+        f'\n\n\n{" " * doc.style.indentation * doc.style.indent_width}',
+        '.. note::',
+        f'\n\n\n{" " * (doc.style.indentation + 1) * doc.style.indent_width}',
+        'This member has been deprecated. Please use `ExpiresString` instead.\n',
+        f'\n\n{" " * doc.style.indentation * doc.style.indent_width}',
+        f'\n\n{" " * doc.style.indentation * doc.style.indent_width}',
+        'ExpiresString -> (string)\n\n',
+        '\tThe raw, unparsed value of the ``Expires`` field.',
+        f'\n\n{" " * doc.style.indentation * doc.style.indent_width}'
+    ]
+
+    for idx, write in enumerate(deprecation_note_and_expires_string):
+        # We add 4 to the index of the expires field name because each
+        # field in the output section consists of exactly 4 elements.
+        doc.insert_write(expires_field_idx + idx + 4, write)
 
 
 class S3SelectStreamOutputArgument(CustomArgument):

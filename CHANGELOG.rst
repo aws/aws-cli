@@ -2,6 +2,15 @@
 CHANGELOG
 =========
 
+1.35.1
+======
+
+* api-change:``deadline``: Add support for using the template from a previous job during job creation and listing parameter definitions for a job.
+* api-change:``marketplace-reporting``: Documentation-only update for AWS Marketplace Reporting API.
+* api-change:``qconnect``: This release adds support for the following capabilities: Configuration of the Gen AI system via AIAgent and AIPrompts. Integration support for Bedrock Knowledge Base.
+* api-change:``redshift``: Add validation pattern to S3KeyPrefix on the EnableLogging API
+
+
 1.35.0
 ======
 

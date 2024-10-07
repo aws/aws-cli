@@ -6420,8 +6420,8 @@
           "documentation":"<p>The name of an existing S3 bucket where the log files are to be stored.</p> <p>Constraints:</p> <ul> <li> <p>Must be in the same region as the cluster</p> </li> <li> <p>The cluster must have read bucket and put object permissions</p> </li> </ul>"
         },
         "S3KeyPrefix":{
-          "shape":"String",
-          "documentation":"<p>The prefix applied to the log file names.</p> <p>Constraints:</p> <ul> <li> <p>Cannot exceed 512 characters</p> </li> <li> <p>Cannot contain spaces( ), double quotes (\"), single quotes ('), a backslash (\\), or control characters. The hexadecimal codes for invalid characters are: </p> <ul> <li> <p>x00 to x20</p> </li> <li> <p>x22</p> </li> <li> <p>x27</p> </li> <li> <p>x5c</p> </li> <li> <p>x7f or larger</p> </li> </ul> </li> </ul>"
+          "shape":"S3KeyPrefixValue",
+          "documentation":"<p>The prefix applied to the log file names.</p> <p>Valid characters are any letter from any language, any whitespace character, any numeric character, and the following characters: underscore (<code>_</code>), period (<code>.</code>), colon (<code>:</code>), slash (<code>/</code>), equal (<code>=</code>), plus (<code>+</code>), backslash (<code>\\</code>), hyphen (<code>-</code>), at symbol (<code>@</code>).</p>"
         },
         "LogDestinationType":{
           "shape":"LogDestinationType",
@@ -7916,7 +7916,7 @@
           "documentation":"<p>The name of the S3 bucket where the log files are stored.</p>"
         },
         "S3KeyPrefix":{
-          "shape":"String",
+          "shape":"S3KeyPrefixValue",
           "documentation":"<p>The prefix applied to the log file names.</p>"
         },
         "LastSuccessfulDeliveryTime":{
@@ -10200,6 +10200,11 @@
       "members":{
         "Cluster":{"shape":"Cluster"}
       }
+    },
+    "S3KeyPrefixValue":{
+      "type":"string",
+      "max":256,
+      "pattern":"[\\p{L}\\p{Z}\\p{N}_.:/=+\\-@]*"
     },
     "SNSInvalidTopicFault":{
       "type":"structure",

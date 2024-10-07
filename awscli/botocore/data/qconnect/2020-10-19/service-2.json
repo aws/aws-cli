@@ -5,13 +5,95 @@
     "endpointPrefix":"wisdom",
     "jsonVersion":"1.1",
     "protocol":"rest-json",
+    "protocols":["rest-json"],
     "serviceFullName":"Amazon Q Connect",
     "serviceId":"QConnect",
     "signatureVersion":"v4",
     "signingName":"wisdom",
-    "uid":"qconnect-2020-10-19"
+    "uid":"qconnect-2020-10-19",
+    "auth":["aws.auth#sigv4"]
   },
   "operations":{
+    "CreateAIAgent":{
+      "name":"CreateAIAgent",
+      "http":{
+        "method":"POST",
+        "requestUri":"/assistants/{assistantId}/aiagents",
+        "responseCode":200
+      },
+      "input":{"shape":"CreateAIAgentRequest"},
+      "output":{"shape":"CreateAIAgentResponse"},
+      "errors":[
+        {"shape":"ConflictException"},
+        {"shape":"ValidationException"},
+        {"shape":"ServiceQuotaExceededException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Creates an Amazon Q in Connect AI Agent.</p>",
+      "idempotent":true
+    },
+    "CreateAIAgentVersion":{
+      "name":"CreateAIAgentVersion",
+      "http":{
+        "method":"POST",
+        "requestUri":"/assistants/{assistantId}/aiagents/{aiAgentId}/versions",
+        "responseCode":200
+      },
+      "input":{"shape":"CreateAIAgentVersionRequest"},
+      "output":{"shape":"CreateAIAgentVersionResponse"},
+      "errors":[
+        {"shape":"ConflictException"},
+        {"shape":"ValidationException"},
+        {"shape":"ServiceQuotaExceededException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Creates and Amazon Q in Connect AI Agent version.</p>",
+      "idempotent":true
+    },
+    "CreateAIPrompt":{
+      "name":"CreateAIPrompt",
+      "http":{
+        "method":"POST",
+        "requestUri":"/assistants/{assistantId}/aiprompts",
+        "responseCode":200
+      },
+      "input":{"shape":"CreateAIPromptRequest"},
+      "output":{"shape":"CreateAIPromptResponse"},
+      "errors":[
+        {"shape":"ConflictException"},
+        {"shape":"ValidationException"},
+        {"shape":"ServiceQuotaExceededException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Creates an Amazon Q in Connect AI Prompt.</p>",
+      "idempotent":true
+    },
+    "CreateAIPromptVersion":{
+      "name":"CreateAIPromptVersion",
+      "http":{
+        "method":"POST",
+        "requestUri":"/assistants/{assistantId}/aiprompts/{aiPromptId}/versions",
+        "responseCode":200
+      },
+      "input":{"shape":"CreateAIPromptVersionRequest"},
+      "output":{"shape":"CreateAIPromptVersionResponse"},
+      "errors":[
+        {"shape":"ConflictException"},
+        {"shape":"ValidationException"},
+        {"shape":"ServiceQuotaExceededException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Creates an Amazon Q in Connect AI Prompt version.</p>",
+      "idempotent":true
+    },
     "CreateAssistant":{
       "name":"CreateAssistant",
       "http":{
@@ -142,6 +224,80 @@
       "documentation":"<p>Creates a session. A session is a contextual container used for generating recommendations. Amazon Connect creates a new Amazon Q in Connect session for each contact on which Amazon Q in Connect is enabled.</p>",
       "idempotent":true
     },
+    "DeleteAIAgent":{
+      "name":"DeleteAIAgent",
+      "http":{
+        "method":"DELETE",
+        "requestUri":"/assistants/{assistantId}/aiagents/{aiAgentId}",
+        "responseCode":204
+      },
+      "input":{"shape":"DeleteAIAgentRequest"},
+      "output":{"shape":"DeleteAIAgentResponse"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Deletes an Amazon Q in Connect AI Agent.</p>",
+      "idempotent":true
+    },
+    "DeleteAIAgentVersion":{
+      "name":"DeleteAIAgentVersion",
+      "http":{
+        "method":"DELETE",
+        "requestUri":"/assistants/{assistantId}/aiagents/{aiAgentId}/versions/{versionNumber}",
+        "responseCode":204
+      },
+      "input":{"shape":"DeleteAIAgentVersionRequest"},
+      "output":{"shape":"DeleteAIAgentVersionResponse"},
+      "errors":[
+        {"shape":"ConflictException"},
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Deletes an Amazon Q in Connect AI Agent Version.</p>",
+      "idempotent":true
+    },
+    "DeleteAIPrompt":{
+      "name":"DeleteAIPrompt",
+      "http":{
+        "method":"DELETE",
+        "requestUri":"/assistants/{assistantId}/aiprompts/{aiPromptId}",
+        "responseCode":204
+      },
+      "input":{"shape":"DeleteAIPromptRequest"},
+      "output":{"shape":"DeleteAIPromptResponse"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Deletes an Amazon Q in Connect AI Prompt.</p>",
+      "idempotent":true
+    },
+    "DeleteAIPromptVersion":{
+      "name":"DeleteAIPromptVersion",
+      "http":{
+        "method":"DELETE",
+        "requestUri":"/assistants/{assistantId}/aiprompts/{aiPromptId}/versions/{versionNumber}",
+        "responseCode":204
+      },
+      "input":{"shape":"DeleteAIPromptVersionRequest"},
+      "output":{"shape":"DeleteAIPromptVersionResponse"},
+      "errors":[
+        {"shape":"ConflictException"},
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Delete and Amazon Q in Connect AI Prompt version.</p>",
+      "idempotent":true
+    },
     "DeleteAssistant":{
       "name":"DeleteAssistant",
       "http":{
@@ -262,6 +418,40 @@
       ],
       "documentation":"<p>Deletes a quick response.</p>",
       "idempotent":true
+    },
+    "GetAIAgent":{
+      "name":"GetAIAgent",
+      "http":{
+        "method":"GET",
+        "requestUri":"/assistants/{assistantId}/aiagents/{aiAgentId}",
+        "responseCode":200
+      },
+      "input":{"shape":"GetAIAgentRequest"},
+      "output":{"shape":"GetAIAgentResponse"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Gets an Amazon Q in Connect AI Agent.</p>"
+    },
+    "GetAIPrompt":{
+      "name":"GetAIPrompt",
+      "http":{
+        "method":"GET",
+        "requestUri":"/assistants/{assistantId}/aiprompts/{aiPromptId}",
+        "responseCode":200
+      },
+      "input":{"shape":"GetAIPromptRequest"},
+      "output":{"shape":"GetAIPromptResponse"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Gets and Amazon Q in Connect AI Prompt.</p>"
     },
     "GetAssistant":{
       "name":"GetAssistant",
@@ -424,6 +614,74 @@
         {"shape":"ResourceNotFoundException"}
       ],
       "documentation":"<p>Retrieves information for a specified session.</p>"
+    },
+    "ListAIAgentVersions":{
+      "name":"ListAIAgentVersions",
+      "http":{
+        "method":"GET",
+        "requestUri":"/assistants/{assistantId}/aiagents/{aiAgentId}/versions",
+        "responseCode":200
+      },
+      "input":{"shape":"ListAIAgentVersionsRequest"},
+      "output":{"shape":"ListAIAgentVersionsResponse"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>List AI Agent versions.</p>"
+    },
+    "ListAIAgents":{
+      "name":"ListAIAgents",
+      "http":{
+        "method":"GET",
+        "requestUri":"/assistants/{assistantId}/aiagents",
+        "responseCode":200
+      },
+      "input":{"shape":"ListAIAgentsRequest"},
+      "output":{"shape":"ListAIAgentsResponse"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Lists AI Agents.</p>"
+    },
+    "ListAIPromptVersions":{
+      "name":"ListAIPromptVersions",
+      "http":{
+        "method":"GET",
+        "requestUri":"/assistants/{assistantId}/aiprompts/{aiPromptId}/versions",
+        "responseCode":200
+      },
+      "input":{"shape":"ListAIPromptVersionsRequest"},
+      "output":{"shape":"ListAIPromptVersionsResponse"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Lists AI Prompt versions.</p>"
+    },
+    "ListAIPrompts":{
+      "name":"ListAIPrompts",
+      "http":{
+        "method":"GET",
+        "requestUri":"/assistants/{assistantId}/aiprompts",
+        "responseCode":200
+      },
+      "input":{"shape":"ListAIPromptsRequest"},
+      "output":{"shape":"ListAIPromptsResponse"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Lists the AI Prompts available on the Amazon Q in Connect assistant.</p>"
     },
     "ListAssistantAssociations":{
       "name":"ListAssistantAssociations",
@@ -601,6 +859,24 @@
       "deprecated":true,
       "deprecatedMessage":"QueryAssistant API will be discontinued starting June 1, 2024. To receive generative responses after March 1, 2024 you will need to create a new Assistant in the Connect console and integrate the Amazon Q in Connect JavaScript library (amazon-q-connectjs) into your applications."
     },
+    "RemoveAssistantAIAgent":{
+      "name":"RemoveAssistantAIAgent",
+      "http":{
+        "method":"DELETE",
+        "requestUri":"/assistants/{assistantId}/aiagentConfiguration",
+        "responseCode":204
+      },
+      "input":{"shape":"RemoveAssistantAIAgentRequest"},
+      "output":{"shape":"RemoveAssistantAIAgentResponse"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Removes the AI Agent that is set for use by defafult on an Amazon Q in Connect Assistant.</p>",
+      "idempotent":true
+    },
     "RemoveKnowledgeBaseTemplateUri":{
       "name":"RemoveKnowledgeBaseTemplateUri",
       "http":{
@@ -732,6 +1008,61 @@
       "documentation":"<p>Removes the specified tags from the specified resource.</p>",
       "idempotent":true
     },
+    "UpdateAIAgent":{
+      "name":"UpdateAIAgent",
+      "http":{
+        "method":"POST",
+        "requestUri":"/assistants/{assistantId}/aiagents/{aiAgentId}",
+        "responseCode":200
+      },
+      "input":{"shape":"UpdateAIAgentRequest"},
+      "output":{"shape":"UpdateAIAgentResponse"},
+      "errors":[
+        {"shape":"ConflictException"},
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Updates an AI Agent.</p>",
+      "idempotent":true
+    },
+    "UpdateAIPrompt":{
+      "name":"UpdateAIPrompt",
+      "http":{
+        "method":"POST",
+        "requestUri":"/assistants/{assistantId}/aiprompts/{aiPromptId}",
+        "responseCode":200
+      },
+      "input":{"shape":"UpdateAIPromptRequest"},
+      "output":{"shape":"UpdateAIPromptResponse"},
+      "errors":[
+        {"shape":"ConflictException"},
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Updates an AI Prompt.</p>",
+      "idempotent":true
+    },
+    "UpdateAssistantAIAgent":{
+      "name":"UpdateAssistantAIAgent",
+      "http":{
+        "method":"POST",
+        "requestUri":"/assistants/{assistantId}/aiagentConfiguration",
+        "responseCode":200
+      },
+      "input":{"shape":"UpdateAssistantAIAgentRequest"},
+      "output":{"shape":"UpdateAssistantAIAgentResponse"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Updates the AI Agent that is set for use by defafult on an Amazon Q in Connect Assistant.</p>"
+    },
     "UpdateContent":{
       "name":"UpdateContent",
       "http":{
@@ -798,9 +1129,442 @@
         {"shape":"ResourceNotFoundException"}
       ],
       "documentation":"<p>Updates a session. A session is a contextual container used for generating recommendations. Amazon Connect updates the existing Amazon Q in Connect session for each contact on which Amazon Q in Connect is enabled.</p>"
+    },
+    "UpdateSessionData":{
+      "name":"UpdateSessionData",
+      "http":{
+        "method":"PATCH",
+        "requestUri":"/assistants/{assistantId}/sessions/{sessionId}/data",
+        "responseCode":200
+      },
+      "input":{"shape":"UpdateSessionDataRequest"},
+      "output":{"shape":"UpdateSessionDataResponse"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p>Updates the data stored on an Amazon Q in Connect Session.</p>"
     }
   },
   "shapes":{
+    "AIAgentAssociationConfigurationType":{
+      "type":"string",
+      "enum":["KNOWLEDGE_BASE"]
+    },
+    "AIAgentConfiguration":{
+      "type":"structure",
+      "members":{
+        "answerRecommendationAIAgentConfiguration":{
+          "shape":"AnswerRecommendationAIAgentConfiguration",
+          "documentation":"<p>The configuration for AI Agents of type <code>ANSWER_RECOMMENDATION</code>.</p>"
+        },
+        "manualSearchAIAgentConfiguration":{
+          "shape":"ManualSearchAIAgentConfiguration",
+          "documentation":"<p>The configuration for AI Agents of type <code>MANUAL_SEARCH</code>.</p>"
+        }
+      },
+      "documentation":"<p>A typed union that specifies the configuration based on the type of AI Agent.</p>",
+      "union":true
+    },
+    "AIAgentConfigurationData":{
+      "type":"structure",
+      "required":["aiAgentId"],
+      "members":{
+        "aiAgentId":{
+          "shape":"UuidWithQualifier",
+          "documentation":"<p>The ID of the AI Agent to be configured.</p>"
+        }
+      },
+      "documentation":"<p>A type that specifies the AI Agent ID configuration data when mapping an AI Agents to be used for an AI Agent type on a session or assistant.</p>"
+    },
+    "AIAgentConfigurationMap":{
+      "type":"map",
+      "key":{"shape":"AIAgentType"},
+      "value":{"shape":"AIAgentConfigurationData"}
+    },
+    "AIAgentData":{
+      "type":"structure",
+      "required":[
+        "aiAgentArn",
+        "aiAgentId",
+        "assistantArn",
+        "assistantId",
+        "configuration",
+        "name",
+        "type",
+        "visibilityStatus"
+      ],
+      "members":{
+        "aiAgentArn":{
+          "shape":"Arn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the AI agent.</p>"
+        },
+        "aiAgentId":{
+          "shape":"Uuid",
+          "documentation":"<p>The identifier of the AI Agent.</p>"
+        },
+        "assistantArn":{
+          "shape":"Arn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the Amazon Q in Connect assistant.</p>"
+        },
+        "assistantId":{
+          "shape":"Uuid",
+          "documentation":"<p>The identifier of the Amazon Q in Connect assistant. Can be either the ID or the ARN. URLs cannot contain the ARN.</p>"
+        },
+        "configuration":{
+          "shape":"AIAgentConfiguration",
+          "documentation":"<p>Configuration for the AI Agent.</p>"
+        },
+        "description":{
+          "shape":"Description",
+          "documentation":"<p>The description of the AI Agent.</p>"
+        },
+        "modifiedTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time the AI Agent was last modified.</p>"
+        },
+        "name":{
+          "shape":"Name",
+          "documentation":"<p>The name of the AI Agent.</p>"
+        },
+        "origin":{
+          "shape":"Origin",
+          "documentation":"<p>Specifies the origin of the AI Agent. <code>SYSTEM</code> for a default AI Agent created by Q in Connect or <code>CUSTOMER</code> for an AI Agent created by calling AI Agent creation APIs. </p>"
+        },
+        "status":{
+          "shape":"Status",
+          "documentation":"<p>The status of the AI Agent.</p>"
+        },
+        "tags":{
+          "shape":"Tags",
+          "documentation":"<p>The tags used to organize, track, or control access for this resource.</p>"
+        },
+        "type":{
+          "shape":"AIAgentType",
+          "documentation":"<p>The type of the AI Agent.</p>"
+        },
+        "visibilityStatus":{
+          "shape":"VisibilityStatus",
+          "documentation":"<p>The visibility status of the AI Agent.</p>"
+        }
+      },
+      "documentation":"<p>The data for the AI Agent.</p>"
+    },
+    "AIAgentSummary":{
+      "type":"structure",
+      "required":[
+        "aiAgentArn",
+        "aiAgentId",
+        "assistantArn",
+        "assistantId",
+        "name",
+        "type",
+        "visibilityStatus"
+      ],
+      "members":{
+        "aiAgentArn":{
+          "shape":"Arn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the AI agent.</p>"
+        },
+        "aiAgentId":{
+          "shape":"Uuid",
+          "documentation":"<p>The identifier of the AI Agent.</p>"
+        },
+        "assistantArn":{
+          "shape":"Arn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the Amazon Q in Connect assistant.</p>"
+        },
+        "assistantId":{
+          "shape":"Uuid",
+          "documentation":"<p>The identifier of the Amazon Q in Connect assistant. Can be either the ID or the ARN. URLs cannot contain the ARN.</p>"
+        },
+        "configuration":{
+          "shape":"AIAgentConfiguration",
+          "documentation":"<p>The configuration for the AI Agent.</p>"
+        },
+        "description":{
+          "shape":"Description",
+          "documentation":"<p>The description of the AI Agent.</p>"
+        },
+        "modifiedTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time the AI Agent was last modified.</p>"
+        },
+        "name":{
+          "shape":"Name",
+          "documentation":"<p>The name of the AI Agent.</p>"
+        },
+        "origin":{
+          "shape":"Origin",
+          "documentation":"<p>The origin of the AI Agent. <code>SYSTEM</code> for a default AI Agent created by Q in Connect or <code>CUSTOMER</code> for an AI Agent created by calling AI Agent creation APIs.</p>"
+        },
+        "status":{
+          "shape":"Status",
+          "documentation":"<p>The status of the AI Agent.</p>"
+        },
+        "tags":{
+          "shape":"Tags",
+          "documentation":"<p>The tags used to organize, track, or control access for this resource.</p>"
+        },
+        "type":{
+          "shape":"AIAgentType",
+          "documentation":"<p>The type of the AI Agent.</p>"
+        },
+        "visibilityStatus":{
+          "shape":"VisibilityStatus",
+          "documentation":"<p>The visibility status of the AI Agent.</p>"
+        }
+      },
+      "documentation":"<p>The summary of the AI Agent.</p>"
+    },
+    "AIAgentSummaryList":{
+      "type":"list",
+      "member":{"shape":"AIAgentSummary"}
+    },
+    "AIAgentType":{
+      "type":"string",
+      "enum":[
+        "MANUAL_SEARCH",
+        "ANSWER_RECOMMENDATION"
+      ]
+    },
+    "AIAgentVersionSummariesList":{
+      "type":"list",
+      "member":{"shape":"AIAgentVersionSummary"}
+    },
+    "AIAgentVersionSummary":{
+      "type":"structure",
+      "members":{
+        "aiAgentSummary":{
+          "shape":"AIAgentSummary",
+          "documentation":"<p>The data for the summary of the AI Agent version.</p>"
+        },
+        "versionNumber":{
+          "shape":"Version",
+          "documentation":"<p>The version number for this AI Agent version.</p>"
+        }
+      },
+      "documentation":"<p>The summary of the AI Agent version.</p>"
+    },
+    "AIPromptAPIFormat":{
+      "type":"string",
+      "enum":[
+        "ANTHROPIC_CLAUDE_MESSAGES",
+        "ANTHROPIC_CLAUDE_TEXT_COMPLETIONS"
+      ]
+    },
+    "AIPromptData":{
+      "type":"structure",
+      "required":[
+        "aiPromptArn",
+        "aiPromptId",
+        "apiFormat",
+        "assistantArn",
+        "assistantId",
+        "modelId",
+        "name",
+        "templateConfiguration",
+        "templateType",
+        "type",
+        "visibilityStatus"
+      ],
+      "members":{
+        "aiPromptArn":{
+          "shape":"Arn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the AI Prompt.</p>"
+        },
+        "aiPromptId":{
+          "shape":"Uuid",
+          "documentation":"<p>The identifier of the Amazon Q in Connect AI prompt.</p>"
+        },
+        "apiFormat":{
+          "shape":"AIPromptAPIFormat",
+          "documentation":"<p>The API format used for this AI Prompt.</p>"
+        },
+        "assistantArn":{
+          "shape":"Arn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the Amazon Q in Connect assistant.</p>"
+        },
+        "assistantId":{
+          "shape":"Uuid",
+          "documentation":"<p>The identifier of the Amazon Q in Connect assistant. Can be either the ID or the ARN. URLs cannot contain the ARN.</p>"
+        },
+        "description":{
+          "shape":"Description",
+          "documentation":"<p>The description of the AI Prompt.</p>"
+        },
+        "modelId":{
+          "shape":"AIPromptModelIdentifier",
+          "documentation":"<p>The identifier of the model used for this AI Prompt. Model Ids supported are: <code>CLAUDE_3_HAIKU_20240307_V1</code>.</p>"
+        },
+        "modifiedTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time the AI Prompt was last modified.</p>"
+        },
+        "name":{
+          "shape":"Name",
+          "documentation":"<p>The name of the AI Prompt</p>"
+        },
+        "origin":{
+          "shape":"Origin",
+          "documentation":"<p>The origin of the AI Prompt. <code>SYSTEM</code> for a default AI Prompt created by Q in Connect or <code>CUSTOMER</code> for an AI Prompt created by calling AI Prompt creation APIs. </p>"
+        },
+        "status":{
+          "shape":"Status",
+          "documentation":"<p>The status of the AI Prompt.</p>"
+        },
+        "tags":{
+          "shape":"Tags",
+          "documentation":"<p>The tags used to organize, track, or control access for this resource.</p>"
+        },
+        "templateConfiguration":{
+          "shape":"AIPromptTemplateConfiguration",
+          "documentation":"<p>The configuration of the prompt template for this AI Prompt.</p>"
+        },
+        "templateType":{
+          "shape":"AIPromptTemplateType",
+          "documentation":"<p>The type of the prompt template for this AI Prompt.</p>"
+        },
+        "type":{
+          "shape":"AIPromptType",
+          "documentation":"<p>The type of this AI Prompt.</p>"
+        },
+        "visibilityStatus":{
+          "shape":"VisibilityStatus",
+          "documentation":"<p>The visibility status of the AI Prompt.</p>"
+        }
+      },
+      "documentation":"<p>The data for the AI Prompt</p>"
+    },
+    "AIPromptModelIdentifier":{
+      "type":"string",
+      "max":2048,
+      "min":1
+    },
+    "AIPromptSummary":{
+      "type":"structure",
+      "required":[
+        "aiPromptArn",
+        "aiPromptId",
+        "apiFormat",
+        "assistantArn",
+        "assistantId",
+        "modelId",
+        "name",
+        "templateType",
+        "type",
+        "visibilityStatus"
+      ],
+      "members":{
+        "aiPromptArn":{
+          "shape":"Arn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the AI Prompt.</p>"
+        },
+        "aiPromptId":{
+          "shape":"Uuid",
+          "documentation":"<p>The identifier of the Amazon Q in Connect AI prompt.</p>"
+        },
+        "apiFormat":{
+          "shape":"AIPromptAPIFormat",
+          "documentation":"<p>The API format used for this AI Prompt.</p>"
+        },
+        "assistantArn":{
+          "shape":"Arn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the Amazon Q in Connect assistant.</p>"
+        },
+        "assistantId":{
+          "shape":"Uuid",
+          "documentation":"<p>The identifier of the Amazon Q in Connect assistant. Can be either the ID or the ARN. URLs cannot contain the ARN.</p>"
+        },
+        "description":{
+          "shape":"Description",
+          "documentation":"<p>The description of the AI Prompt.</p>"
+        },
+        "modelId":{
+          "shape":"AIPromptModelIdentifier",
+          "documentation":"<p>The identifier of the model used for this AI Prompt. Model Ids supported are: <code>CLAUDE_3_HAIKU_20240307_V1</code>.</p>"
+        },
+        "modifiedTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time the AI Prompt was last modified.</p>"
+        },
+        "name":{
+          "shape":"Name",
+          "documentation":"<p>The name of the AI Prompt.</p>"
+        },
+        "origin":{
+          "shape":"Origin",
+          "documentation":"<p>The origin of the AI Prompt. <code>SYSTEM</code> for a default AI Prompt created by Q in Connect or <code>CUSTOMER</code> for an AI Prompt created by calling AI Prompt creation APIs. </p>"
+        },
+        "status":{
+          "shape":"Status",
+          "documentation":"<p>The status of the AI Prompt.</p>"
+        },
+        "tags":{
+          "shape":"Tags",
+          "documentation":"<p>The tags used to organize, track, or control access for this resource.</p>"
+        },
+        "templateType":{
+          "shape":"AIPromptTemplateType",
+          "documentation":"<p>The type of the prompt template for this AI Prompt.</p>"
+        },
+        "type":{
+          "shape":"AIPromptType",
+          "documentation":"<p>The type of this AI Prompt.</p>"
+        },
+        "visibilityStatus":{
+          "shape":"VisibilityStatus",
+          "documentation":"<p>The visibility status of the AI Prompt.</p>"
+        }
+      },
+      "documentation":"<p>The summary of the AI Prompt.</p>"
+    },
+    "AIPromptSummaryList":{
+      "type":"list",
+      "member":{"shape":"AIPromptSummary"}
+    },
+    "AIPromptTemplateConfiguration":{
+      "type":"structure",
+      "members":{
+        "textFullAIPromptEditTemplateConfiguration":{
+          "shape":"TextFullAIPromptEditTemplateConfiguration",
+          "documentation":"<p>The configuration for a prompt template that supports full textual prompt configuration using a YAML prompt.</p>"
+        }
+      },
+      "documentation":"<p>A typed union that specifies the configuration for a prompt template based on its type.</p>",
+      "union":true
+    },
+    "AIPromptTemplateType":{
+      "type":"string",
+      "enum":["TEXT"]
+    },
+    "AIPromptType":{
+      "type":"string",
+      "enum":[
+        "ANSWER_GENERATION",
+        "INTENT_LABELING_GENERATION",
+        "QUERY_REFORMULATION"
+      ]
+    },
+    "AIPromptVersionSummariesList":{
+      "type":"list",
+      "member":{"shape":"AIPromptVersionSummary"}
+    },
+    "AIPromptVersionSummary":{
+      "type":"structure",
+      "members":{
+        "aiPromptSummary":{
+          "shape":"AIPromptSummary",
+          "documentation":"<p>The date for the summary of the AI Prompt version.</p>"
+        },
+        "versionNumber":{
+          "shape":"Version",
+          "documentation":"<p>The version number for this AI Prompt version.</p>"
+        }
+      },
+      "documentation":"<p>The summary of the AI Prompt version.</p>"
+    },
     "AccessDeniedException":{
       "type":"structure",
       "members":{
@@ -827,13 +1591,35 @@
       "type":"list",
       "member":{"shape":"TagCondition"}
     },
+    "AnswerRecommendationAIAgentConfiguration":{
+      "type":"structure",
+      "members":{
+        "answerGenerationAIPromptId":{
+          "shape":"UuidWithQualifier",
+          "documentation":"<p>The AI Prompt identifier for the Answer Generation prompt used by the <code>ANSWER_RECOMMENDATION</code> AI Agent.</p>"
+        },
+        "associationConfigurations":{
+          "shape":"AssociationConfigurationList",
+          "documentation":"<p>The association configurations for overriding behavior on this AI Agent.</p>"
+        },
+        "intentLabelingGenerationAIPromptId":{
+          "shape":"UuidWithQualifier",
+          "documentation":"<p>The AI Prompt identifier for the Intent Labeling prompt used by the <code>ANSWER_RECOMMENDATION</code> AI Agent.</p>"
+        },
+        "queryReformulationAIPromptId":{
+          "shape":"UuidWithQualifier",
+          "documentation":"<p>The AI Prompt identifier for the Query Reformulation prompt used by the <code>ANSWER_RECOMMENDATION</code> AI Agent.</p>"
+        }
+      },
+      "documentation":"<p>The configuration for the <code>ANSWER_RECOMMENDATION</code> AI Agent type.</p>"
+    },
     "AppIntegrationsConfiguration":{
       "type":"structure",
       "required":["appIntegrationArn"],
       "members":{
         "appIntegrationArn":{
           "shape":"GenericArn",
-          "documentation":"<p>The Amazon Resource Name (ARN) of the AppIntegrations DataIntegration to use for ingesting content.</p> <ul> <li> <p> For <a href=\"https://developer.salesforce.com/docs/atlas.en-us.knowledge_dev.meta/knowledge_dev/sforce_api_objects_knowledge__kav.htm\"> Salesforce</a>, your AppIntegrations DataIntegration must have an ObjectConfiguration if objectFields is not provided, including at least <code>Id</code>, <code>ArticleNumber</code>, <code>VersionNumber</code>, <code>Title</code>, <code>PublishStatus</code>, and <code>IsDeleted</code> as source fields. </p> </li> <li> <p> For <a href=\"https://developer.servicenow.com/dev.do#!/reference/api/rome/rest/knowledge-management-api\"> ServiceNow</a>, your AppIntegrations DataIntegration must have an ObjectConfiguration if objectFields is not provided, including at least <code>number</code>, <code>short_description</code>, <code>sys_mod_count</code>, <code>workflow_state</code>, and <code>active</code> as source fields. </p> </li> <li> <p> For <a href=\"https://developer.zendesk.com/api-reference/help_center/help-center-api/articles/\"> Zendesk</a>, your AppIntegrations DataIntegration must have an ObjectConfiguration if <code>objectFields</code> is not provided, including at least <code>id</code>, <code>title</code>, <code>updated_at</code>, and <code>draft</code> as source fields. </p> </li> <li> <p> For <a href=\"https://learn.microsoft.com/en-us/sharepoint/dev/sp-add-ins/sharepoint-net-server-csom-jsom-and-rest-api-index\">SharePoint</a>, your AppIntegrations DataIntegration must have a FileConfiguration, including only file extensions that are among <code>docx</code>, <code>pdf</code>, <code>html</code>, <code>htm</code>, and <code>txt</code>. </p> </li> <li> <p> For <a href=\"https://aws.amazon.com/s3/\">Amazon S3</a>, the ObjectConfiguration and FileConfiguration of your AppIntegrations DataIntegration must be null. The <code>SourceURI</code> of your DataIntegration must use the following format: <code>s3://your_s3_bucket_name</code>.</p> <important> <p>The bucket policy of the corresponding S3 bucket must allow the Amazon Web Services principal <code>app-integrations.amazonaws.com</code> to perform <code>s3:ListBucket</code>, <code>s3:GetObject</code>, and <code>s3:GetBucketLocation</code> against the bucket.</p> </important> </li> </ul>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of the AppIntegrations DataIntegration to use for ingesting content.</p> <ul> <li> <p> For <a href=\"https://developer.salesforce.com/docs/atlas.en-us.knowledge_dev.meta/knowledge_dev/sforce_api_objects_knowledge__kav.htm\"> Salesforce</a>, your AppIntegrations DataIntegration must have an ObjectConfiguration if objectFields is not provided, including at least <code>Id</code>, <code>ArticleNumber</code>, <code>VersionNumber</code>, <code>Title</code>, <code>PublishStatus</code>, and <code>IsDeleted</code> as source fields. </p> </li> <li> <p> For <a href=\"https://developer.servicenow.com/dev.do#!/reference/api/rome/rest/knowledge-management-api\"> ServiceNow</a>, your AppIntegrations DataIntegration must have an ObjectConfiguration if objectFields is not provided, including at least <code>number</code>, <code>short_description</code>, <code>sys_mod_count</code>, <code>workflow_state</code>, and <code>active</code> as source fields. </p> </li> <li> <p> For <a href=\"https://developer.zendesk.com/api-reference/help_center/help-center-api/articles/\"> Zendesk</a>, your AppIntegrations DataIntegration must have an ObjectConfiguration if <code>objectFields</code> is not provided, including at least <code>id</code>, <code>title</code>, <code>updated_at</code>, and <code>draft</code> as source fields. </p> </li> <li> <p> For <a href=\"https://learn.microsoft.com/en-us/sharepoint/dev/sp-add-ins/sharepoint-net-server-csom-jsom-and-rest-api-index\">SharePoint</a>, your AppIntegrations DataIntegration must have a FileConfiguration, including only file extensions that are among <code>docx</code>, <code>pdf</code>, <code>html</code>, <code>htm</code>, and <code>txt</code>. </p> </li> <li> <p> For <a href=\"http://aws.amazon.com/s3/\">Amazon S3</a>, the ObjectConfiguration and FileConfiguration of your AppIntegrations DataIntegration must be null. The <code>SourceURI</code> of your DataIntegration must use the following format: <code>s3://your_s3_bucket_name</code>.</p> <important> <p>The bucket policy of the corresponding S3 bucket must allow the Amazon Web Services principal <code>app-integrations.amazonaws.com</code> to perform <code>s3:ListBucket</code>, <code>s3:GetObject</code>, and <code>s3:GetBucketLocation</code> against the bucket.</p> </important> </li> </ul>"
         },
         "objectFields":{
           "shape":"ObjectFieldsList",
@@ -983,6 +1769,10 @@
         "type"
       ],
       "members":{
+        "aiAgentConfiguration":{
+          "shape":"AIAgentConfigurationMap",
+          "documentation":"<p>The configuration of the AI Agents (mapped by AI Agent Type to AI Agent version) that is set on the Amazon Q in Connect Assistant.</p>"
+        },
         "assistantArn":{
           "shape":"Arn",
           "documentation":"<p>The Amazon Resource Name (ARN) of the Amazon Q in Connect assistant.</p>"
@@ -1061,6 +1851,10 @@
         "type"
       ],
       "members":{
+        "aiAgentConfiguration":{
+          "shape":"AIAgentConfigurationMap",
+          "documentation":"<p>The configuration of the AI Agents (mapped by AI Agent Type to AI Agent version) that is set on the Amazon Q in Connect Assistant.</p>"
+        },
         "assistantArn":{
           "shape":"Arn",
           "documentation":"<p>The Amazon Resource Name (ARN) of the Amazon Q in Connect assistant.</p>"
@@ -1108,9 +1902,63 @@
       "type":"string",
       "enum":["AGENT"]
     },
+    "AssociationConfiguration":{
+      "type":"structure",
+      "members":{
+        "associationConfigurationData":{
+          "shape":"AssociationConfigurationData",
+          "documentation":"<p>The data of the configuration for an Amazon Q in Connect Assistant Association.</p>"
+        },
+        "associationId":{
+          "shape":"Uuid",
+          "documentation":"<p>The identifier of the association for this Association Configuration.</p>"
+        },
+        "associationType":{
+          "shape":"AIAgentAssociationConfigurationType",
+          "documentation":"<p>The type of the association for this Association Configuration.</p>"
+        }
+      },
+      "documentation":"<p>The configuration for an Amazon Q in Connect Assistant Association.</p>"
+    },
+    "AssociationConfigurationData":{
+      "type":"structure",
+      "members":{
+        "knowledgeBaseAssociationConfigurationData":{
+          "shape":"KnowledgeBaseAssociationConfigurationData",
+          "documentation":"<p>The data of the configuration for a <code>KNOWLEDGE_BASE</code> type Amazon Q in Connect Assistant Association.</p>"
+        }
+      },
+      "documentation":"<p>A typed union of the data of the configuration for an Amazon Q in Connect Assistant Association.</p>",
+      "union":true
+    },
+    "AssociationConfigurationList":{
+      "type":"list",
+      "member":{"shape":"AssociationConfiguration"}
+    },
     "AssociationType":{
       "type":"string",
       "enum":["KNOWLEDGE_BASE"]
+    },
+    "BedrockFoundationModelConfigurationForParsing":{
+      "type":"structure",
+      "required":["modelArn"],
+      "members":{
+        "modelArn":{
+          "shape":"BedrockModelArnForParsing",
+          "documentation":"<p>The ARN of the foundation model.</p>"
+        },
+        "parsingPrompt":{
+          "shape":"ParsingPrompt",
+          "documentation":"<p>Instructions for interpreting the contents of a document.</p>"
+        }
+      },
+      "documentation":"<p>Settings for a foundation model used to parse documents for a data source.</p>"
+    },
+    "BedrockModelArnForParsing":{
+      "type":"string",
+      "max":2048,
+      "min":1,
+      "pattern":"^arn:aws(-[^:]+)?:bedrock:[a-z0-9-]{1,20}::foundation-model/anthropic.claude-3-haiku-20240307-v1:0$"
     },
     "Boolean":{
       "type":"boolean",
@@ -1126,6 +1974,53 @@
       "type":"list",
       "member":{"shape":"Channel"}
     },
+    "ChunkingConfiguration":{
+      "type":"structure",
+      "required":["chunkingStrategy"],
+      "members":{
+        "chunkingStrategy":{
+          "shape":"ChunkingStrategy",
+          "documentation":"<p>Knowledge base can split your source data into chunks. A chunk refers to an excerpt from a data source that is returned when the knowledge base that it belongs to is queried. You have the following options for chunking your data. If you opt for <code>NONE</code>, then you may want to pre-process your files by splitting them up such that each file corresponds to a chunk.</p>"
+        },
+        "fixedSizeChunkingConfiguration":{
+          "shape":"FixedSizeChunkingConfiguration",
+          "documentation":"<p>Configurations for when you choose fixed-size chunking. If you set the <code>chunkingStrategy</code> as <code>NONE</code>, exclude this field.</p>"
+        },
+        "hierarchicalChunkingConfiguration":{
+          "shape":"HierarchicalChunkingConfiguration",
+          "documentation":"<p>Settings for hierarchical document chunking for a data source. Hierarchical chunking splits documents into layers of chunks where the first layer contains large chunks, and the second layer contains smaller chunks derived from the first layer.</p>"
+        },
+        "semanticChunkingConfiguration":{
+          "shape":"SemanticChunkingConfiguration",
+          "documentation":"<p>Settings for semantic document chunking for a data source. Semantic chunking splits a document into smaller documents based on groups of similar content derived from the text with natural language processing.</p>"
+        }
+      },
+      "documentation":"<p>Details about how to chunk the documents in the data source. A chunk refers to an excerpt from a data source that is returned when the knowledge base that it belongs to is queried.</p>"
+    },
+    "ChunkingStrategy":{
+      "type":"string",
+      "enum":[
+        "FIXED_SIZE",
+        "NONE",
+        "HIERARCHICAL",
+        "SEMANTIC"
+      ]
+    },
+    "CitationSpan":{
+      "type":"structure",
+      "members":{
+        "beginOffsetInclusive":{
+          "shape":"CitationSpanOffset",
+          "documentation":"<p>Where the text with a citation starts in the generated output.</p>"
+        },
+        "endOffsetExclusive":{
+          "shape":"CitationSpanOffset",
+          "documentation":"<p>Where the text with a citation ends in the generated output.</p>"
+        }
+      },
+      "documentation":"<p>Contains information about where the text with a citation begins and ends in the generated output.</p>"
+    },
+    "CitationSpanOffset":{"type":"integer"},
     "ClientToken":{
       "type":"string",
       "max":4096,
@@ -1430,6 +2325,14 @@
         "knowledgeBaseId":{
           "shape":"Uuid",
           "documentation":"<p>The identifier of the knowledge base. This should not be a QUICK_RESPONSES type knowledge base.</p>"
+        },
+        "referenceType":{
+          "shape":"ReferenceType",
+          "documentation":"<p>The type of reference content.</p>"
+        },
+        "sourceURL":{
+          "shape":"String",
+          "documentation":"<p>The web URL of the source content.</p>"
         }
       },
       "documentation":"<p>Reference information about the content.</p>"
@@ -1520,6 +2423,219 @@
     "ContentType":{
       "type":"string",
       "pattern":"^(text/(plain|html|csv))|(application/(pdf|vnd\\.openxmlformats-officedocument\\.wordprocessingml\\.document))|(application/x\\.wisdom-json;source=(salesforce|servicenow|zendesk))$"
+    },
+    "CreateAIAgentRequest":{
+      "type":"structure",
+      "required":[
+        "assistantId",
+        "configuration",
+        "name",
+        "type",
+        "visibilityStatus"
+      ],
+      "members":{
+        "assistantId":{
+          "shape":"UuidOrArn",
+          "documentation":"<p>The identifier of the Amazon Q in Connect assistant. Can be either the ID or the ARN. URLs cannot contain the ARN.</p>",
+          "location":"uri",
+          "locationName":"assistantId"
+        },
+        "clientToken":{
+          "shape":"ClientToken",
+          "documentation":"<p>A unique, case-sensitive identifier that you provide to ensure the idempotency of the request. If not provided, the AWS SDK populates this field. For more information about idempotency, see <a href=\"http://aws.amazon.com/builders-library/making-retries-safe-with-idempotent-APIs/\">Making retries safe with idempotent APIs</a>.</p>",
+          "idempotencyToken":true
+        },
+        "configuration":{
+          "shape":"AIAgentConfiguration",
+          "documentation":"<p>The configuration of the AI Agent.</p>"
+        },
+        "description":{
+          "shape":"Description",
+          "documentation":"<p>The description of the AI Agent.</p>"
+        },
+        "name":{
+          "shape":"Name",
+          "documentation":"<p>The name of the AI Agent.</p>"
+        },
+        "tags":{
+          "shape":"Tags",
+          "documentation":"<p>The tags used to organize, track, or control access for this resource.</p>"
+        },
+        "type":{
+          "shape":"AIAgentType",
+          "documentation":"<p>The type of the AI Agent.</p>"
+        },
+        "visibilityStatus":{
+          "shape":"VisibilityStatus",
+          "documentation":"<p>The visibility status of the AI Agent.</p>"
+        }
+      }
+    },
+    "CreateAIAgentResponse":{
+      "type":"structure",
+      "members":{
+        "aiAgent":{
+          "shape":"AIAgentData",
+          "documentation":"<p>The data of the created AI Agent.</p>"
+        }
+      }
+    },
+    "CreateAIAgentVersionRequest":{
+      "type":"structure",
+      "required":[
+        "aiAgentId",
+        "assistantId"
+      ],
+      "members":{
+        "aiAgentId":{
+          "shape":"UuidOrArnOrEitherWithQualifier",
+          "documentation":"<p>The identifier of the Amazon Q in Connect AI Agent.</p>",
+          "location":"uri",
+          "locationName":"aiAgentId"
+        },
+        "assistantId":{
+          "shape":"UuidOrArn",
+          "documentation":"<p>The identifier of the Amazon Q in Connect assistant. Can be either the ID or the ARN. URLs cannot contain the ARN.</p>",
+          "location":"uri",
+          "locationName":"assistantId"
+        },
+        "clientToken":{
+          "shape":"ClientToken",
+          "documentation":"<p>A unique, case-sensitive identifier that you provide to ensure the idempotency of the request. If not provided, the AWS SDK populates this field. For more information about idempotency, see <a href=\"http://aws.amazon.com/builders-library/making-retries-safe-with-idempotent-APIs/\">Making retries safe with idempotent APIs</a>.</p>",
+          "idempotencyToken":true
+        },
+        "modifiedTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The modification time of the AI Agent should be tracked for version creation. This field should be specified to avoid version creation when simultaneous update to the underlying AI Agent are possible. The value should be the modifiedTime returned from the request to create or update an AI Agent so that version creation can fail if an update to the AI Agent post the specified modification time has been made.</p>"
+        }
+      }
+    },
+    "CreateAIAgentVersionResponse":{
+      "type":"structure",
+      "members":{
+        "aiAgent":{
+          "shape":"AIAgentData",
+          "documentation":"<p>The data of the AI Agent version.</p>"
+        },
+        "versionNumber":{
+          "shape":"Version",
+          "documentation":"<p>The version number of the AI Agent version.</p>"
+        }
+      }
+    },
+    "CreateAIPromptRequest":{
+      "type":"structure",
+      "required":[
+        "apiFormat",
+        "assistantId",
+        "modelId",
+        "name",
+        "templateConfiguration",
+        "templateType",
+        "type",
+        "visibilityStatus"
+      ],
+      "members":{
+        "apiFormat":{
+          "shape":"AIPromptAPIFormat",
+          "documentation":"<p>The API Format of the AI Prompt.</p>"
+        },
+        "assistantId":{
+          "shape":"UuidOrArn",
+          "documentation":"<p>The identifier of the Amazon Q in Connect assistant. Can be either the ID or the ARN. URLs cannot contain the ARN.</p>",
+          "location":"uri",
+          "locationName":"assistantId"
+        },
+        "clientToken":{
+          "shape":"ClientToken",
+          "documentation":"<p>A unique, case-sensitive identifier that you provide to ensure the idempotency of the request. If not provided, the AWS SDK populates this field. For more information about idempotency, see <a href=\"http://aws.amazon.com/builders-library/making-retries-safe-with-idempotent-APIs/\">Making retries safe with idempotent APIs</a>.</p>",
+          "idempotencyToken":true
+        },
+        "description":{
+          "shape":"Description",
+          "documentation":"<p>The description of the AI Prompt.</p>"
+        },
+        "modelId":{
+          "shape":"AIPromptModelIdentifier",
+          "documentation":"<p>The identifier of the model used for this AI Prompt. Model Ids supported are: <code>CLAUDE_3_HAIKU_20240307_V1</code> </p>"
+        },
+        "name":{
+          "shape":"Name",
+          "documentation":"<p>The name of the AI Prompt.</p>"
+        },
+        "tags":{
+          "shape":"Tags",
+          "documentation":"<p>The tags used to organize, track, or control access for this resource.</p>"
+        },
+        "templateConfiguration":{
+          "shape":"AIPromptTemplateConfiguration",
+          "documentation":"<p>The configuration of the prompt template for this AI Prompt.</p>"
+        },
+        "templateType":{
+          "shape":"AIPromptTemplateType",
+          "documentation":"<p>The type of the prompt template for this AI Prompt.</p>"
+        },
+        "type":{
+          "shape":"AIPromptType",
+          "documentation":"<p>The type of this AI Prompt.</p>"
+        },
+        "visibilityStatus":{
+          "shape":"VisibilityStatus",
+          "documentation":"<p>The visibility status of the AI Prompt.</p>"
+        }
+      }
+    },
+    "CreateAIPromptResponse":{
+      "type":"structure",
+      "members":{
+        "aiPrompt":{
+          "shape":"AIPromptData",
+          "documentation":"<p>The data of the AI Prompt.</p>"
+        }
+      }
+    },
+    "CreateAIPromptVersionRequest":{
+      "type":"structure",
+      "required":[
+        "aiPromptId",
+        "assistantId"
+      ],
+      "members":{
+        "aiPromptId":{
+          "shape":"UuidOrArnOrEitherWithQualifier",
+          "documentation":"<p>The identifier of the Amazon Q in Connect AI prompt.</p>",
+          "location":"uri",
+          "locationName":"aiPromptId"
+        },
+        "assistantId":{
+          "shape":"UuidOrArn",
+          "documentation":"<p>The identifier of the Amazon Q in Connect assistant. Can be either the ID or the ARN. URLs cannot contain the ARN.</p>",
+          "location":"uri",
+          "locationName":"assistantId"
+        },
+        "clientToken":{
+          "shape":"ClientToken",
+          "documentation":"<p>A unique, case-sensitive identifier that you provide to ensure the idempotency of the request. If not provided, the AWS SDK populates this field. For more information about idempotency, see <a href=\"http://aws.amazon.com/https:/aws.amazon.com/builders-library/making-retries-safe-with-idempotent-APIs/\">Making retries safe with idempotent APIs</a>.</p>",
+          "idempotencyToken":true
+        },
+        "modifiedTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time the AI Prompt was last modified.</p>"
+        }
+      }
+    },
+    "CreateAIPromptVersionResponse":{
+      "type":"structure",
+      "members":{
+        "aiPrompt":{
+          "shape":"AIPromptData",
+          "documentation":"<p>The data of the AI Prompt version.</p>"
+        },
+        "versionNumber":{
+          "shape":"Version",
+          "documentation":"<p>The version number of the AI Prompt version.</p>"
+        }
+      }
     },
     "CreateAssistantAssociationRequest":{
       "type":"structure",
@@ -1748,6 +2864,10 @@
         "tags":{
           "shape":"Tags",
           "documentation":"<p>The tags used to organize, track, or control access for this resource.</p>"
+        },
+        "vectorIngestionConfiguration":{
+          "shape":"VectorIngestionConfiguration",
+          "documentation":"<p>Contains details about how to ingest the documents in a data source.</p>"
         }
       }
     },
@@ -1837,6 +2957,10 @@
         "name"
       ],
       "members":{
+        "aiAgentConfiguration":{
+          "shape":"AIAgentConfigurationMap",
+          "documentation":"<p>The configuration of the AI Agents (mapped by AI Agent Type to AI Agent version) that should be used by Amazon Q in Connect for this Session.</p>"
+        },
         "assistantId":{
           "shape":"UuidOrArn",
           "documentation":"<p>The identifier of the Amazon Q in Connect assistant. Can be either the ID or the ARN. URLs cannot contain the ARN.</p>",
@@ -1886,6 +3010,10 @@
           "shape":"GenerativeDataDetails",
           "documentation":"<p> Details about the generative data.</p>"
         },
+        "intentDetectedData":{
+          "shape":"IntentDetectedDataDetails",
+          "documentation":"<p>Details about the intent data.</p>"
+        },
         "sourceContentData":{
           "shape":"SourceContentDataDetails",
           "documentation":"<p>Details about the content data.</p>"
@@ -1927,6 +3055,124 @@
     "DataSummaryList":{
       "type":"list",
       "member":{"shape":"DataSummary"}
+    },
+    "DeleteAIAgentRequest":{
+      "type":"structure",
+      "required":[
+        "aiAgentId",
+        "assistantId"
+      ],
+      "members":{
+        "aiAgentId":{
+          "shape":"UuidOrArnOrEitherWithQualifier",
+          "documentation":"<p>The identifier of the Amazon Q in Connect AI Agent. Can be either the ID or the ARN. URLs cannot contain the ARN.</p>",
+          "location":"uri",
+          "locationName":"aiAgentId"
+        },
+        "assistantId":{
+          "shape":"UuidOrArn",
+          "documentation":"<p>The identifier of the Amazon Q in Connect assistant. Can be either the ID or the ARN. URLs cannot contain the ARN.</p>",
+          "location":"uri",
+          "locationName":"assistantId"
+        }
+      }
+    },
+    "DeleteAIAgentResponse":{
+      "type":"structure",
+      "members":{
+      }
+    },
+    "DeleteAIAgentVersionRequest":{
+      "type":"structure",
+      "required":[
+        "aiAgentId",
+        "assistantId",
+        "versionNumber"
+      ],
+      "members":{
+        "aiAgentId":{
+          "shape":"UuidOrArnOrEitherWithQualifier",
+          "documentation":"<p>The identifier of the Amazon Q in Connect AI Agent. Can be either the ID or the ARN. URLs cannot contain the ARN.</p>",
+          "location":"uri",
+          "locationName":"aiAgentId"
+        },
+        "assistantId":{
+          "shape":"UuidOrArn",
+          "documentation":"<p>The identifier of the Amazon Q in Connect assistant. Can be either the ID or the ARN. URLs cannot contain the ARN.</p>",
+          "location":"uri",
+          "locationName":"assistantId"
+        },
+        "versionNumber":{
+          "shape":"Version",
+          "documentation":"<p>The version number of the AI Agent version.</p>",
+          "location":"uri",
+          "locationName":"versionNumber"
+        }
+      }
+    },
+    "DeleteAIAgentVersionResponse":{
+      "type":"structure",
+      "members":{
+      }
+    },
+    "DeleteAIPromptRequest":{
+      "type":"structure",
+      "required":[
+        "aiPromptId",
+        "assistantId"
+      ],
+      "members":{
+        "aiPromptId":{
+          "shape":"UuidOrArnOrEitherWithQualifier",
+          "documentation":"<p>The identifier of the Amazon Q in Connect AI prompt. Can be either the ID or the ARN. URLs cannot contain the ARN.</p>",
+          "location":"uri",
+          "locationName":"aiPromptId"
+        },
+        "assistantId":{
+          "shape":"UuidOrArn",
+          "documentation":"<p>The identifier of the Amazon Q in Connect assistant. Can be either the ID or the ARN. URLs cannot contain the ARN.</p>",
+          "location":"uri",
+          "locationName":"assistantId"
+        }
+      }
+    },
+    "DeleteAIPromptResponse":{
+      "type":"structure",
+      "members":{
+      }
+    },
+    "DeleteAIPromptVersionRequest":{
+      "type":"structure",
+      "required":[
+        "aiPromptId",
+        "assistantId",
+        "versionNumber"
+      ],
+      "members":{
+        "aiPromptId":{
+          "shape":"UuidOrArnOrEitherWithQualifier",
+          "documentation":"<p>The identifier of the Amazon Q in Connect AI prompt.</p>",
+          "location":"uri",
+          "locationName":"aiPromptId"
+        },
+        "assistantId":{
+          "shape":"UuidOrArn",
+          "documentation":"<p>The identifier of the Amazon Q in Connect assistant. Can be either the ID or the ARN. URLs cannot contain the ARN.</p>",
+          "location":"uri",
+          "locationName":"assistantId"
+        },
+        "versionNumber":{
+          "shape":"Version",
+          "documentation":"<p>The version number of the AI Prompt version to be deleted.</p>",
+          "location":"uri",
+          "locationName":"versionNumber"
+        }
+      }
+    },
+    "DeleteAIPromptVersionResponse":{
+      "type":"structure",
+      "members":{
+      }
     },
     "DeleteAssistantAssociationRequest":{
       "type":"structure",
@@ -2160,6 +3406,10 @@
       },
       "documentation":"<p>The configuration information of the external data source.</p>"
     },
+    "FailureReason":{
+      "type":"list",
+      "member":{"shape":"NonEmptyString"}
+    },
     "Filter":{
       "type":"structure",
       "required":[
@@ -2194,6 +3444,35 @@
     "FilterOperator":{
       "type":"string",
       "enum":["EQUALS"]
+    },
+    "FixedSizeChunkingConfiguration":{
+      "type":"structure",
+      "required":[
+        "maxTokens",
+        "overlapPercentage"
+      ],
+      "members":{
+        "maxTokens":{
+          "shape":"FixedSizeChunkingConfigurationMaxTokensInteger",
+          "documentation":"<p>The maximum number of tokens to include in a chunk.</p>"
+        },
+        "overlapPercentage":{
+          "shape":"FixedSizeChunkingConfigurationOverlapPercentageInteger",
+          "documentation":"<p>The percentage of overlap between adjacent chunks of a data source.</p>"
+        }
+      },
+      "documentation":"<p>Configurations for when you choose fixed-size chunking. If you set the <code>chunkingStrategy</code> as <code>NONE</code>, exclude this field.</p>"
+    },
+    "FixedSizeChunkingConfigurationMaxTokensInteger":{
+      "type":"integer",
+      "box":true,
+      "min":1
+    },
+    "FixedSizeChunkingConfigurationOverlapPercentageInteger":{
+      "type":"integer",
+      "box":true,
+      "max":99,
+      "min":1
     },
     "GenerativeContentFeedbackData":{
       "type":"structure",
@@ -2248,6 +3527,74 @@
       "max":2048,
       "min":1,
       "pattern":"^arn:[a-z-]+?:[a-z-]+?:[a-z0-9-]*?:([0-9]{12})?:[a-zA-Z0-9-:/]+$"
+    },
+    "GetAIAgentRequest":{
+      "type":"structure",
+      "required":[
+        "aiAgentId",
+        "assistantId"
+      ],
+      "members":{
+        "aiAgentId":{
+          "shape":"UuidOrArnOrEitherWithQualifier",
+          "documentation":"<p>The identifier of the Amazon Q in Connect AI Agent (with or without a version qualifier). Can be either the ID or the ARN. URLs cannot contain the ARN.</p>",
+          "location":"uri",
+          "locationName":"aiAgentId"
+        },
+        "assistantId":{
+          "shape":"UuidOrArn",
+          "documentation":"<p>The identifier of the Amazon Q in Connect assistant. Can be either the ID or the ARN. URLs cannot contain the ARN.</p>",
+          "location":"uri",
+          "locationName":"assistantId"
+        }
+      }
+    },
+    "GetAIAgentResponse":{
+      "type":"structure",
+      "members":{
+        "aiAgent":{
+          "shape":"AIAgentData",
+          "documentation":"<p>The data of the AI Agent.</p>"
+        },
+        "versionNumber":{
+          "shape":"Version",
+          "documentation":"<p>The version number of the AI Agent version (returned if an AI Agent version was specified via use of a qualifier for the <code>aiAgentId</code> on the request). </p>"
+        }
+      }
+    },
+    "GetAIPromptRequest":{
+      "type":"structure",
+      "required":[
+        "aiPromptId",
+        "assistantId"
+      ],
+      "members":{
+        "aiPromptId":{
+          "shape":"UuidOrArnOrEitherWithQualifier",
+          "documentation":"<p>The identifier of the Amazon Q in Connect AI prompt.</p>",
+          "location":"uri",
+          "locationName":"aiPromptId"
+        },
+        "assistantId":{
+          "shape":"UuidOrArn",
+          "documentation":"<p>The identifier of the Amazon Q in Connect assistant. Can be either the ID or the ARN. URLs cannot contain the ARN.</p>",
+          "location":"uri",
+          "locationName":"assistantId"
+        }
+      }
+    },
+    "GetAIPromptResponse":{
+      "type":"structure",
+      "members":{
+        "aiPrompt":{
+          "shape":"AIPromptData",
+          "documentation":"<p>The data of the AI Prompt.</p>"
+        },
+        "versionNumber":{
+          "shape":"Version",
+          "documentation":"<p>The version number of the AI Prompt version (returned if an AI Prompt version was specified via use of a qualifier for the <code>aiPromptId</code> on the request). </p>"
+        }
+      }
     },
     "GetAssistantAssociationRequest":{
       "type":"structure",
@@ -2590,6 +3937,52 @@
       "key":{"shape":"NonEmptyString"},
       "value":{"shape":"NonEmptyString"}
     },
+    "HierarchicalChunkingConfiguration":{
+      "type":"structure",
+      "required":[
+        "levelConfigurations",
+        "overlapTokens"
+      ],
+      "members":{
+        "levelConfigurations":{
+          "shape":"HierarchicalChunkingLevelConfigurations",
+          "documentation":"<p>Token settings for each layer.</p>"
+        },
+        "overlapTokens":{
+          "shape":"HierarchicalChunkingConfigurationOverlapTokensInteger",
+          "documentation":"<p>The number of tokens to repeat across chunks in the same layer.</p>"
+        }
+      },
+      "documentation":"<p>Settings for hierarchical document chunking for a data source. Hierarchical chunking splits documents into layers of chunks where the first layer contains large chunks, and the second layer contains smaller chunks derived from the first layer.</p>"
+    },
+    "HierarchicalChunkingConfigurationOverlapTokensInteger":{
+      "type":"integer",
+      "box":true,
+      "min":1
+    },
+    "HierarchicalChunkingLevelConfiguration":{
+      "type":"structure",
+      "required":["maxTokens"],
+      "members":{
+        "maxTokens":{
+          "shape":"HierarchicalChunkingLevelConfigurationMaxTokensInteger",
+          "documentation":"<p>The maximum number of tokens that a chunk can contain in this layer.</p>"
+        }
+      },
+      "documentation":"<p>Token settings for each layer.</p>"
+    },
+    "HierarchicalChunkingLevelConfigurationMaxTokensInteger":{
+      "type":"integer",
+      "box":true,
+      "max":8192,
+      "min":1
+    },
+    "HierarchicalChunkingLevelConfigurations":{
+      "type":"list",
+      "member":{"shape":"HierarchicalChunkingLevelConfiguration"},
+      "max":2,
+      "min":2
+    },
     "Highlight":{
       "type":"structure",
       "members":{
@@ -2751,6 +4144,50 @@
       "type":"string",
       "enum":["QUICK_RESPONSES"]
     },
+    "IntentDetectedDataDetails":{
+      "type":"structure",
+      "required":[
+        "intent",
+        "intentId"
+      ],
+      "members":{
+        "intent":{
+          "shape":"SensitiveString",
+          "documentation":"<p>The detected intent.</p>"
+        },
+        "intentId":{
+          "shape":"Uuid",
+          "documentation":"<p>The identifier of the detected intent.</p>"
+        }
+      },
+      "documentation":"<p>Details about the detected intent.</p>"
+    },
+    "IntentInputData":{
+      "type":"structure",
+      "required":["intentId"],
+      "members":{
+        "intentId":{
+          "shape":"Uuid",
+          "documentation":"<p>The identifier of the Amazon Q intent.</p>"
+        }
+      },
+      "documentation":"<p>Information about the Amazon Q intent.</p>"
+    },
+    "KnowledgeBaseAssociationConfigurationData":{
+      "type":"structure",
+      "members":{
+        "contentTagFilter":{"shape":"TagFilter"},
+        "maxResults":{
+          "shape":"MaxResults",
+          "documentation":"<p>The maximum number of results to return per page.</p>"
+        },
+        "overrideKnowledgeBaseSearchType":{
+          "shape":"KnowledgeBaseSearchType",
+          "documentation":"<p>The search type to be used against the Knowledge Base for this request. The values can be <code>SEMANTIC</code> which uses vector embeddings or <code>HYBRID</code> which use vector embeddings and raw text</p>"
+        }
+      },
+      "documentation":"<p>The data of the configuration for a <code>KNOWLEDGE_BASE</code> type Amazon Q in Connect Assistant Association.</p>"
+    },
     "KnowledgeBaseAssociationData":{
       "type":"structure",
       "members":{
@@ -2778,6 +4215,14 @@
         "description":{
           "shape":"Description",
           "documentation":"<p>The description.</p>"
+        },
+        "ingestionFailureReasons":{
+          "shape":"FailureReason",
+          "documentation":"<p>List of failure reasons on ingestion per file.</p>"
+        },
+        "ingestionStatus":{
+          "shape":"SyncStatus",
+          "documentation":"<p>Status of ingestion on data source.</p>"
         },
         "knowledgeBaseArn":{
           "shape":"Arn",
@@ -2818,6 +4263,10 @@
         "tags":{
           "shape":"Tags",
           "documentation":"<p>The tags used to organize, track, or control access for this resource.</p>"
+        },
+        "vectorIngestionConfiguration":{
+          "shape":"VectorIngestionConfiguration",
+          "documentation":"<p>Contains details about how to ingest the documents in a data source.</p>"
         }
       },
       "documentation":"<p>Information about the knowledge base.</p>"
@@ -2825,6 +4274,13 @@
     "KnowledgeBaseList":{
       "type":"list",
       "member":{"shape":"KnowledgeBaseSummary"}
+    },
+    "KnowledgeBaseSearchType":{
+      "type":"string",
+      "enum":[
+        "HYBRID",
+        "SEMANTIC"
+      ]
     },
     "KnowledgeBaseStatus":{
       "type":"string",
@@ -2886,6 +4342,10 @@
         "tags":{
           "shape":"Tags",
           "documentation":"<p>The tags used to organize, track, or control access for this resource.</p>"
+        },
+        "vectorIngestionConfiguration":{
+          "shape":"VectorIngestionConfiguration",
+          "documentation":"<p>Contains details about how to ingest the documents in a data source.</p>"
         }
       },
       "documentation":"<p>Summary information about the knowledge base.</p>"
@@ -2895,13 +4355,209 @@
       "enum":[
         "EXTERNAL",
         "CUSTOM",
-        "QUICK_RESPONSES"
+        "QUICK_RESPONSES",
+        "MESSAGE_TEMPLATES",
+        "MANAGED"
       ]
     },
     "LanguageCode":{
       "type":"string",
       "max":5,
       "min":2
+    },
+    "ListAIAgentVersionsRequest":{
+      "type":"structure",
+      "required":[
+        "aiAgentId",
+        "assistantId"
+      ],
+      "members":{
+        "aiAgentId":{
+          "shape":"UuidOrArnOrEitherWithQualifier",
+          "documentation":"<p>The identifier of the Amazon Q in Connect AI Agent for which versions are to be listed.</p>",
+          "location":"uri",
+          "locationName":"aiAgentId"
+        },
+        "assistantId":{
+          "shape":"UuidOrArn",
+          "documentation":"<p>The identifier of the Amazon Q in Connect assistant. Can be either the ID or the ARN. URLs cannot contain the ARN.</p>",
+          "location":"uri",
+          "locationName":"assistantId"
+        },
+        "maxResults":{
+          "shape":"MaxResults",
+          "documentation":"<p>The maximum number of results to return per page.</p>",
+          "location":"querystring",
+          "locationName":"maxResults"
+        },
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The token for the next set of results. Use the value returned in the previous response in the next request to retrieve the next set of results.</p>",
+          "location":"querystring",
+          "locationName":"nextToken"
+        },
+        "origin":{
+          "shape":"Origin",
+          "documentation":"<p>The origin of the AI Agent versions to be listed. <code>SYSTEM</code> for a default AI Agent created by Q in Connect or <code>CUSTOMER</code> for an AI Agent created by calling AI Agent creation APIs. </p>",
+          "location":"querystring",
+          "locationName":"origin"
+        }
+      }
+    },
+    "ListAIAgentVersionsResponse":{
+      "type":"structure",
+      "required":["aiAgentVersionSummaries"],
+      "members":{
+        "aiAgentVersionSummaries":{
+          "shape":"AIAgentVersionSummariesList",
+          "documentation":"<p>The summaries of AI Agent versions.</p>"
+        },
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The token for the next set of results. Use the value returned in the previous response in the next request to retrieve the next set of results.</p>"
+        }
+      }
+    },
+    "ListAIAgentsRequest":{
+      "type":"structure",
+      "required":["assistantId"],
+      "members":{
+        "assistantId":{
+          "shape":"UuidOrArn",
+          "documentation":"<p>The identifier of the Amazon Q in Connect assistant. Can be either the ID or the ARN. URLs cannot contain the ARN.</p>",
+          "location":"uri",
+          "locationName":"assistantId"
+        },
+        "maxResults":{
+          "shape":"MaxResults",
+          "documentation":"<p>The maximum number of results to return per page.</p>",
+          "location":"querystring",
+          "locationName":"maxResults"
+        },
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The token for the next set of results. Use the value returned in the previous response in the next request to retrieve the next set of results.</p>",
+          "location":"querystring",
+          "locationName":"nextToken"
+        },
+        "origin":{
+          "shape":"Origin",
+          "documentation":"<p>The origin of the AI Agents to be listed. <code>SYSTEM</code> for a default AI Agent created by Q in Connect or <code>CUSTOMER</code> for an AI Agent created by calling AI Agent creation APIs. </p>",
+          "location":"querystring",
+          "locationName":"origin"
+        }
+      }
+    },
+    "ListAIAgentsResponse":{
+      "type":"structure",
+      "required":["aiAgentSummaries"],
+      "members":{
+        "aiAgentSummaries":{
+          "shape":"AIAgentSummaryList",
+          "documentation":"<p>The summaries of AI Agents.</p>"
+        },
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The token for the next set of results. Use the value returned in the previous response in the next request to retrieve the next set of results.</p>"
+        }
+      }
+    },
+    "ListAIPromptVersionsRequest":{
+      "type":"structure",
+      "required":[
+        "aiPromptId",
+        "assistantId"
+      ],
+      "members":{
+        "aiPromptId":{
+          "shape":"UuidOrArnOrEitherWithQualifier",
+          "documentation":"<p>The identifier of the Amazon Q in Connect AI prompt for which versions are to be listed.</p>",
+          "location":"uri",
+          "locationName":"aiPromptId"
+        },
+        "assistantId":{
+          "shape":"UuidOrArn",
+          "documentation":"<p>The identifier of the Amazon Q in Connect assistant. Can be either the ID or the ARN. URLs cannot contain the ARN.</p>",
+          "location":"uri",
+          "locationName":"assistantId"
+        },
+        "maxResults":{
+          "shape":"MaxResults",
+          "documentation":"<p>The maximum number of results to return per page.</p>",
+          "location":"querystring",
+          "locationName":"maxResults"
+        },
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The token for the next set of results. Use the value returned in the previous response in the next request to retrieve the next set of results.</p>",
+          "location":"querystring",
+          "locationName":"nextToken"
+        },
+        "origin":{
+          "shape":"Origin",
+          "documentation":"<p>The origin of the AI Prompt versions to be listed. <code>SYSTEM</code> for a default AI Agent created by Q in Connect or <code>CUSTOMER</code> for an AI Agent created by calling AI Agent creation APIs. </p>",
+          "location":"querystring",
+          "locationName":"origin"
+        }
+      }
+    },
+    "ListAIPromptVersionsResponse":{
+      "type":"structure",
+      "required":["aiPromptVersionSummaries"],
+      "members":{
+        "aiPromptVersionSummaries":{
+          "shape":"AIPromptVersionSummariesList",
+          "documentation":"<p>The summaries of the AI Prompt versions.</p>"
+        },
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The token for the next set of results. Use the value returned in the previous response in the next request to retrieve the next set of results.</p>"
+        }
+      }
+    },
+    "ListAIPromptsRequest":{
+      "type":"structure",
+      "required":["assistantId"],
+      "members":{
+        "assistantId":{
+          "shape":"UuidOrArn",
+          "documentation":"<p>The identifier of the Amazon Q in Connect assistant. Can be either the ID or the ARN. URLs cannot contain the ARN.</p>",
+          "location":"uri",
+          "locationName":"assistantId"
+        },
+        "maxResults":{
+          "shape":"MaxResults",
+          "documentation":"<p>The maximum number of results to return per page.</p>",
+          "location":"querystring",
+          "locationName":"maxResults"
+        },
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The token for the next set of results. Use the value returned in the previous response in the next request to retrieve the next set of results.</p>",
+          "location":"querystring",
+          "locationName":"nextToken"
+        },
+        "origin":{
+          "shape":"Origin",
+          "documentation":"<p>The origin of the AI Prompts to be listed. <code>SYSTEM</code> for a default AI Agent created by Q in Connect or <code>CUSTOMER</code> for an AI Agent created by calling AI Agent creation APIs. </p>",
+          "location":"querystring",
+          "locationName":"origin"
+        }
+      }
+    },
+    "ListAIPromptsResponse":{
+      "type":"structure",
+      "required":["aiPromptSummaries"],
+      "members":{
+        "aiPromptSummaries":{
+          "shape":"AIPromptSummaryList",
+          "documentation":"<p>The summaries of the AI Prompts.</p>"
+        },
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The token for the next set of results. Use the value returned in the previous response in the next request to retrieve the next set of results.</p>"
+        }
+      }
     },
     "ListAssistantAssociationsRequest":{
       "type":"structure",
@@ -3190,6 +4846,31 @@
       "max":128,
       "min":1
     },
+    "ManagedSourceConfiguration":{
+      "type":"structure",
+      "members":{
+        "webCrawlerConfiguration":{
+          "shape":"WebCrawlerConfiguration",
+          "documentation":"<p>Configuration data for web crawler data source.</p>"
+        }
+      },
+      "documentation":"<p>Source configuration for managed resources.</p>",
+      "union":true
+    },
+    "ManualSearchAIAgentConfiguration":{
+      "type":"structure",
+      "members":{
+        "answerGenerationAIPromptId":{
+          "shape":"UuidWithQualifier",
+          "documentation":"<p>The AI Prompt identifier for the Answer Generation prompt used by the MANUAL_SEARCH AI Agent.</p>"
+        },
+        "associationConfigurations":{
+          "shape":"AssociationConfigurationList",
+          "documentation":"<p>The association configurations for overriding behavior on this AI Agent.</p>"
+        }
+      },
+      "documentation":"<p>The configuration for the <code>MANUAL_SEARCH</code> AI Agent type.</p>"
+    },
     "MaxResults":{
       "type":"integer",
       "box":true,
@@ -3206,6 +4887,12 @@
       "type":"string",
       "max":2048,
       "min":1
+    },
+    "NonEmptySensitiveString":{
+      "type":"string",
+      "max":4096,
+      "min":1,
+      "sensitive":true
     },
     "NonEmptyString":{
       "type":"string",
@@ -3302,6 +4989,48 @@
         "DESC"
       ]
     },
+    "Origin":{
+      "type":"string",
+      "enum":[
+        "SYSTEM",
+        "CUSTOMER"
+      ]
+    },
+    "ParsingConfiguration":{
+      "type":"structure",
+      "required":["parsingStrategy"],
+      "members":{
+        "bedrockFoundationModelConfiguration":{
+          "shape":"BedrockFoundationModelConfigurationForParsing",
+          "documentation":"<p>Settings for a foundation model used to parse documents for a data source.</p>"
+        },
+        "parsingStrategy":{
+          "shape":"ParsingStrategy",
+          "documentation":"<p>The parsing strategy for the data source.</p>"
+        }
+      },
+      "documentation":"<p>Settings for parsing document contents. By default, the service converts the contents of each document into text before splitting it into chunks. To improve processing of PDF files with tables and images, you can configure the data source to convert the pages of text into images and use a model to describe the contents of each page.</p>"
+    },
+    "ParsingPrompt":{
+      "type":"structure",
+      "required":["parsingPromptText"],
+      "members":{
+        "parsingPromptText":{
+          "shape":"ParsingPromptText",
+          "documentation":"<p>Instructions for interpreting the contents of a document.</p>"
+        }
+      },
+      "documentation":"<p>Instructions for interpreting the contents of a document.</p>"
+    },
+    "ParsingPromptText":{
+      "type":"string",
+      "max":10000,
+      "min":1
+    },
+    "ParsingStrategy":{
+      "type":"string",
+      "enum":["BEDROCK_FOUNDATION_MODEL"]
+    },
     "PreconditionFailedException":{
       "type":"structure",
       "members":{
@@ -3385,10 +5114,7 @@
     },
     "QueryAssistantRequest":{
       "type":"structure",
-      "required":[
-        "assistantId",
-        "queryText"
-      ],
+      "required":["assistantId"],
       "members":{
         "assistantId":{
           "shape":"UuidOrArn",
@@ -3404,9 +5130,17 @@
           "shape":"NextToken",
           "documentation":"<p>The token for the next set of results. Use the value returned in the previous response in the next request to retrieve the next set of results.</p>"
         },
+        "overrideKnowledgeBaseSearchType":{
+          "shape":"KnowledgeBaseSearchType",
+          "documentation":"<p>The search type to be used against the Knowledge Base for this request. The values can be <code>SEMANTIC</code> which uses vector embeddings or <code>HYBRID</code> which use vector embeddings and raw text.</p>"
+        },
         "queryCondition":{
           "shape":"QueryConditionExpression",
           "documentation":"<p>Information about how to query content.</p>"
+        },
+        "queryInputData":{
+          "shape":"QueryInputData",
+          "documentation":"<p>Information about the query.</p>"
         },
         "queryText":{
           "shape":"QueryText",
@@ -3480,6 +5214,21 @@
       },
       "documentation":"<p>The condition for the query.</p>"
     },
+    "QueryInputData":{
+      "type":"structure",
+      "members":{
+        "intentInputData":{
+          "shape":"IntentInputData",
+          "documentation":"<p>Input information for the intent.</p>"
+        },
+        "queryTextInputData":{
+          "shape":"QueryTextInputData",
+          "documentation":"<p>Input information for the query.</p>"
+        }
+      },
+      "documentation":"<p>Input information for the query.</p>",
+      "union":true
+    },
     "QueryRecommendationTriggerData":{
       "type":"structure",
       "members":{
@@ -3494,6 +5243,7 @@
       "type":"string",
       "enum":[
         "KNOWLEDGE_CONTENT",
+        "INTENT_ANSWER",
         "GENERATIVE_ANSWER"
       ]
     },
@@ -3503,9 +5253,20 @@
     },
     "QueryText":{
       "type":"string",
-      "max":1024,
+      "max":512,
       "min":0,
       "sensitive":true
+    },
+    "QueryTextInputData":{
+      "type":"structure",
+      "required":["text"],
+      "members":{
+        "text":{
+          "shape":"QueryText",
+          "documentation":"<p>The text to search for.</p>"
+        }
+      },
+      "documentation":"<p>Information about the text to search for.</p>"
     },
     "QuickResponseContent":{
       "type":"string",
@@ -4105,7 +5866,15 @@
       "enum":[
         "KNOWLEDGE_CONTENT",
         "GENERATIVE_RESPONSE",
-        "GENERATIVE_ANSWER"
+        "GENERATIVE_ANSWER",
+        "DETECTED_INTENT"
+      ]
+    },
+    "ReferenceType":{
+      "type":"string",
+      "enum":[
+        "WEB_CRAWLER",
+        "KNOWLEDGE_BASE"
       ]
     },
     "Relevance":{
@@ -4126,6 +5895,32 @@
     "RelevanceScore":{
       "type":"double",
       "min":0.0
+    },
+    "RemoveAssistantAIAgentRequest":{
+      "type":"structure",
+      "required":[
+        "aiAgentType",
+        "assistantId"
+      ],
+      "members":{
+        "aiAgentType":{
+          "shape":"AIAgentType",
+          "documentation":"<p>The type of the AI Agent being removed for use by default from the Amazon Q in Connect Assistant.</p>",
+          "location":"querystring",
+          "locationName":"aiAgentType"
+        },
+        "assistantId":{
+          "shape":"UuidOrArn",
+          "documentation":"<p>The identifier of the Amazon Q in Connect assistant. Can be either the ID or the ARN. URLs cannot contain the ARN.</p>",
+          "location":"uri",
+          "locationName":"assistantId"
+        }
+      }
+    },
+    "RemoveAssistantAIAgentResponse":{
+      "type":"structure",
+      "members":{
+      }
     },
     "RemoveKnowledgeBaseTemplateUriRequest":{
       "type":"structure",
@@ -4209,6 +6004,41 @@
         }
       },
       "documentation":"<p>Information about the result.</p>"
+    },
+    "RuntimeSessionData":{
+      "type":"structure",
+      "required":[
+        "key",
+        "value"
+      ],
+      "members":{
+        "key":{
+          "shape":"NonEmptySensitiveString",
+          "documentation":"<p>The key of the data stored on the session.</p>"
+        },
+        "value":{
+          "shape":"RuntimeSessionDataValue",
+          "documentation":"<p>The value of the data stored on the session.</p>"
+        }
+      },
+      "documentation":"<p>The list of key-value pairs that are stored on the session.</p>"
+    },
+    "RuntimeSessionDataList":{
+      "type":"list",
+      "member":{"shape":"RuntimeSessionData"},
+      "max":50,
+      "min":0
+    },
+    "RuntimeSessionDataValue":{
+      "type":"structure",
+      "members":{
+        "stringValue":{
+          "shape":"NonEmptySensitiveString",
+          "documentation":"<p>The string value of the data stored on the session.</p>"
+        }
+      },
+      "documentation":"<p>A union type that specifies the data stored on the session.</p>",
+      "union":true
     },
     "SearchContentRequest":{
       "type":"structure",
@@ -4360,6 +6190,62 @@
         }
       }
     },
+    "SeedUrl":{
+      "type":"structure",
+      "members":{
+        "url":{
+          "shape":"WebUrl",
+          "documentation":"<p>URL for crawling</p>"
+        }
+      },
+      "documentation":"<p>A URL for crawling.</p>"
+    },
+    "SeedUrls":{
+      "type":"list",
+      "member":{"shape":"SeedUrl"},
+      "max":100,
+      "min":1
+    },
+    "SemanticChunkingConfiguration":{
+      "type":"structure",
+      "required":[
+        "breakpointPercentileThreshold",
+        "bufferSize",
+        "maxTokens"
+      ],
+      "members":{
+        "breakpointPercentileThreshold":{
+          "shape":"SemanticChunkingConfigurationBreakpointPercentileThresholdInteger",
+          "documentation":"<p>The dissimilarity threshold for splitting chunks.</p>"
+        },
+        "bufferSize":{
+          "shape":"SemanticChunkingConfigurationBufferSizeInteger",
+          "documentation":"<p>The buffer size.</p>"
+        },
+        "maxTokens":{
+          "shape":"SemanticChunkingConfigurationMaxTokensInteger",
+          "documentation":"<p>The maximum number of tokens that a chunk can contain.</p>"
+        }
+      },
+      "documentation":"<p>Settings for semantic document chunking for a data source. Semantic chunking splits a document into smaller documents based on groups of similar content derived from the text with natural language processing.</p>"
+    },
+    "SemanticChunkingConfigurationBreakpointPercentileThresholdInteger":{
+      "type":"integer",
+      "box":true,
+      "max":99,
+      "min":50
+    },
+    "SemanticChunkingConfigurationBufferSizeInteger":{
+      "type":"integer",
+      "box":true,
+      "max":1,
+      "min":0
+    },
+    "SemanticChunkingConfigurationMaxTokensInteger":{
+      "type":"integer",
+      "box":true,
+      "min":1
+    },
     "SensitiveString":{
       "type":"string",
       "sensitive":true
@@ -4394,6 +6280,10 @@
         "sessionId"
       ],
       "members":{
+        "aiAgentConfiguration":{
+          "shape":"AIAgentConfigurationMap",
+          "documentation":"<p>The configuration of the AI Agents (mapped by AI Agent Type to AI Agent version) that should be used by Amazon Q in Connect for this Session.</p>"
+        },
         "description":{
           "shape":"Description",
           "documentation":"<p>The description of the session.</p>"
@@ -4424,6 +6314,10 @@
         }
       },
       "documentation":"<p>Information about the session.</p>"
+    },
+    "SessionDataNamespace":{
+      "type":"string",
+      "enum":["Custom"]
     },
     "SessionIntegrationConfiguration":{
       "type":"structure",
@@ -4478,6 +6372,10 @@
         "appIntegrations":{
           "shape":"AppIntegrationsConfiguration",
           "documentation":"<p>Configuration information for Amazon AppIntegrations to automatically ingest content.</p>"
+        },
+        "managedSourceConfiguration":{
+          "shape":"ManagedSourceConfiguration",
+          "documentation":"<p>Source configuration for managed resources.</p>"
         }
       },
       "documentation":"<p>Configuration information about the external data source.</p>",
@@ -4492,6 +6390,10 @@
         "type"
       ],
       "members":{
+        "citationSpan":{
+          "shape":"CitationSpan",
+          "documentation":"<p>Contains information about where the text with a citation begins and ends in the generated output.</p>"
+        },
         "id":{
           "shape":"Uuid",
           "documentation":"<p>The identifier of the source content.</p>"
@@ -4611,7 +6513,27 @@
         }
       }
     },
+    "Status":{
+      "type":"string",
+      "enum":[
+        "CREATE_IN_PROGRESS",
+        "CREATE_FAILED",
+        "ACTIVE",
+        "DELETE_IN_PROGRESS",
+        "DELETE_FAILED",
+        "DELETED"
+      ]
+    },
     "String":{"type":"string"},
+    "SyncStatus":{
+      "type":"string",
+      "enum":[
+        "SYNC_FAILED",
+        "SYNCING_IN_PROGRESS",
+        "SYNC_SUCCESS",
+        "CREATE_IN_PROGRESS"
+      ]
+    },
     "SyntheticTimestamp_epoch_seconds":{
       "type":"timestamp",
       "timestampFormat":"unixTimestamp"
@@ -4703,6 +6625,12 @@
         "RESULT"
       ]
     },
+    "TextAIPrompt":{
+      "type":"string",
+      "max":200000,
+      "min":1,
+      "sensitive":true
+    },
     "TextData":{
       "type":"structure",
       "members":{
@@ -4710,6 +6638,17 @@
         "title":{"shape":"DocumentText"}
       },
       "documentation":"<p>Details about the source content text data.</p>"
+    },
+    "TextFullAIPromptEditTemplateConfiguration":{
+      "type":"structure",
+      "required":["text"],
+      "members":{
+        "text":{
+          "shape":"TextAIPrompt",
+          "documentation":"<p>The YAML text for the AI Prompt template.</p>"
+        }
+      },
+      "documentation":"<p>The configuration for a prompt template that supports full textual prompt configuration using a YAML prompt.</p>"
     },
     "ThrottlingException":{
       "type":"structure",
@@ -4731,6 +6670,7 @@
       "max":60,
       "min":1
     },
+    "Timestamp":{"type":"timestamp"},
     "TooManyTagsException":{
       "type":"structure",
       "members":{
@@ -4771,6 +6711,132 @@
     "UntagResourceResponse":{
       "type":"structure",
       "members":{
+      }
+    },
+    "UpdateAIAgentRequest":{
+      "type":"structure",
+      "required":[
+        "aiAgentId",
+        "assistantId",
+        "visibilityStatus"
+      ],
+      "members":{
+        "aiAgentId":{
+          "shape":"UuidOrArnOrEitherWithQualifier",
+          "documentation":"<p>The identifier of the Amazon Q in Connect AI Agent.</p>",
+          "location":"uri",
+          "locationName":"aiAgentId"
+        },
+        "assistantId":{
+          "shape":"UuidOrArn",
+          "documentation":"<p>The identifier of the Amazon Q in Connect assistant. Can be either the ID or the ARN. URLs cannot contain the ARN.</p>",
+          "location":"uri",
+          "locationName":"assistantId"
+        },
+        "clientToken":{
+          "shape":"ClientToken",
+          "documentation":"<p>A unique, case-sensitive identifier that you provide to ensure the idempotency of the request. If not provided, the AWS SDK populates this field. For more information about idempotency, see <a href=\"http://aws.amazon.com/builders-library/making-retries-safe-with-idempotent-APIs/\">Making retries safe with idempotent APIs</a>.</p>",
+          "idempotencyToken":true
+        },
+        "configuration":{
+          "shape":"AIAgentConfiguration",
+          "documentation":"<p>The configuration of the Amazon Q in Connect AI Agent.</p>"
+        },
+        "description":{
+          "shape":"Description",
+          "documentation":"<p>The description of the Amazon Q in Connect AI Agent.</p>"
+        },
+        "visibilityStatus":{
+          "shape":"VisibilityStatus",
+          "documentation":"<p>The visbility status of the Amazon Q in Connect AI Agent.</p>"
+        }
+      }
+    },
+    "UpdateAIAgentResponse":{
+      "type":"structure",
+      "members":{
+        "aiAgent":{
+          "shape":"AIAgentData",
+          "documentation":"<p>The data of the updated Amazon Q in Connect AI Agent.</p>"
+        }
+      }
+    },
+    "UpdateAIPromptRequest":{
+      "type":"structure",
+      "required":[
+        "aiPromptId",
+        "assistantId",
+        "visibilityStatus"
+      ],
+      "members":{
+        "aiPromptId":{
+          "shape":"UuidOrArnOrEitherWithQualifier",
+          "documentation":"<p>The identifier of the Amazon Q in Connect AI Prompt.</p>",
+          "location":"uri",
+          "locationName":"aiPromptId"
+        },
+        "assistantId":{
+          "shape":"UuidOrArn",
+          "documentation":"<p>The identifier of the Amazon Q in Connect assistant. Can be either the ID or the ARN. URLs cannot contain the ARN.</p>",
+          "location":"uri",
+          "locationName":"assistantId"
+        },
+        "clientToken":{
+          "shape":"ClientToken",
+          "documentation":"<p>A unique, case-sensitive identifier that you provide to ensure the idempotency of the request. If not provided, the AWS SDK populates this field. For more information about idempotency, see <a href=\"http://aws.amazon.com/https:/aws.amazon.com/builders-library/making-retries-safe-with-idempotent-APIs/\">Making retries safe with idempotent APIs</a>.</p>",
+          "idempotencyToken":true
+        },
+        "description":{
+          "shape":"Description",
+          "documentation":"<p>The description of the Amazon Q in Connect AI Prompt.</p>"
+        },
+        "templateConfiguration":{
+          "shape":"AIPromptTemplateConfiguration",
+          "documentation":"<p>The configuration of the prompt template for this AI Prompt.</p>"
+        },
+        "visibilityStatus":{
+          "shape":"VisibilityStatus",
+          "documentation":"<p>The visibility status of the Amazon Q in Connect AI prompt.</p>"
+        }
+      }
+    },
+    "UpdateAIPromptResponse":{
+      "type":"structure",
+      "members":{
+        "aiPrompt":{
+          "shape":"AIPromptData",
+          "documentation":"<p>The data of the updated Amazon Q in Connect AI Prompt.</p>"
+        }
+      }
+    },
+    "UpdateAssistantAIAgentRequest":{
+      "type":"structure",
+      "required":[
+        "aiAgentType",
+        "assistantId",
+        "configuration"
+      ],
+      "members":{
+        "aiAgentType":{
+          "shape":"AIAgentType",
+          "documentation":"<p>The type of the AI Agent being updated for use by default on the Amazon Q in Connect Assistant.</p>"
+        },
+        "assistantId":{
+          "shape":"UuidOrArn",
+          "documentation":"<p>The identifier of the Amazon Q in Connect assistant. Can be either the ID or the ARN. URLs cannot contain the ARN.</p>",
+          "location":"uri",
+          "locationName":"assistantId"
+        },
+        "configuration":{
+          "shape":"AIAgentConfigurationData",
+          "documentation":"<p>The configuration of the AI Agent being updated for use by default on the Amazon Q in Connect Assistant.</p>"
+        }
+      }
+    },
+    "UpdateAssistantAIAgentResponse":{
+      "type":"structure",
+      "members":{
+        "assistant":{"shape":"AssistantData"}
       }
     },
     "UpdateContentRequest":{
@@ -4933,6 +6999,63 @@
         }
       }
     },
+    "UpdateSessionDataRequest":{
+      "type":"structure",
+      "required":[
+        "assistantId",
+        "data",
+        "sessionId"
+      ],
+      "members":{
+        "assistantId":{
+          "shape":"UuidOrArn",
+          "documentation":"<p>The identifier of the Amazon Q in Connect assistant. Can be either the ID or the ARN. URLs cannot contain the ARN.</p>",
+          "location":"uri",
+          "locationName":"assistantId"
+        },
+        "data":{
+          "shape":"RuntimeSessionDataList",
+          "documentation":"<p>The data stored on the Amazon Q in Connect Session.</p>"
+        },
+        "namespace":{
+          "shape":"SessionDataNamespace",
+          "documentation":"<p>The namespace into which the session data is stored. Supported namespaces are: Custom</p>"
+        },
+        "sessionId":{
+          "shape":"UuidOrArn",
+          "documentation":"<p>The identifier of the session. Can be either the ID or the ARN. URLs cannot contain the ARN.</p>",
+          "location":"uri",
+          "locationName":"sessionId"
+        }
+      }
+    },
+    "UpdateSessionDataResponse":{
+      "type":"structure",
+      "required":[
+        "data",
+        "namespace",
+        "sessionArn",
+        "sessionId"
+      ],
+      "members":{
+        "data":{
+          "shape":"RuntimeSessionDataList",
+          "documentation":"<p>Data stored in the session.</p>"
+        },
+        "namespace":{
+          "shape":"SessionDataNamespace",
+          "documentation":"<p>The namespace into which the session data is stored. Supported namespaces are: Custom</p>"
+        },
+        "sessionArn":{
+          "shape":"Arn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the session.</p>"
+        },
+        "sessionId":{
+          "shape":"Uuid",
+          "documentation":"<p>The identifier of the session.</p>"
+        }
+      }
+    },
     "UpdateSessionRequest":{
       "type":"structure",
       "required":[
@@ -4940,6 +7063,10 @@
         "sessionId"
       ],
       "members":{
+        "aiAgentConfiguration":{
+          "shape":"AIAgentConfigurationMap",
+          "documentation":"<p>The configuration of the AI Agents (mapped by AI Agent Type to AI Agent version) that should be used by Amazon Q in Connect for this Session.</p>"
+        },
         "assistantId":{
           "shape":"UuidOrArn",
           "documentation":"<p>The identifier of the Amazon Q in Connect assistant. Can be either the ID or the ARN. URLs cannot contain the ARN.</p>",
@@ -4984,6 +7111,29 @@
       "min":1,
       "sensitive":true
     },
+    "UrlConfiguration":{
+      "type":"structure",
+      "members":{
+        "seedUrls":{
+          "shape":"SeedUrls",
+          "documentation":"<p>List of URLs for crawling.</p>"
+        }
+      },
+      "documentation":"<p>The configuration of the URL/URLs for the web content that you want to crawl. You should be authorized to crawl the URLs.</p>"
+    },
+    "UrlFilterList":{
+      "type":"list",
+      "member":{"shape":"UrlFilterPattern"},
+      "max":25,
+      "min":1,
+      "sensitive":true
+    },
+    "UrlFilterPattern":{
+      "type":"string",
+      "max":1000,
+      "min":1,
+      "sensitive":true
+    },
     "Uuid":{
       "type":"string",
       "pattern":"^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$"
@@ -4991,6 +7141,14 @@
     "UuidOrArn":{
       "type":"string",
       "pattern":"^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$|^arn:[a-z-]*?:wisdom:[a-z0-9-]*?:[0-9]{12}:[a-z-]*?/[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}(?:/[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}){0,2}$"
+    },
+    "UuidOrArnOrEitherWithQualifier":{
+      "type":"string",
+      "pattern":"^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}(:[A-Z0-9_$]+){0,1}$|^arn:[a-z-]*?:wisdom:[a-z0-9-]*?:[0-9]{12}:[a-z-]*?/[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}(?:/[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}){0,2}(:[A-Z0-9_$]+){0,1}$"
+    },
+    "UuidWithQualifier":{
+      "type":"string",
+      "pattern":"^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}(:[A-Z0-9_$]+){0,1}$"
     },
     "ValidationException":{
       "type":"structure",
@@ -5004,11 +7162,91 @@
       },
       "exception":true
     },
+    "VectorIngestionConfiguration":{
+      "type":"structure",
+      "members":{
+        "chunkingConfiguration":{
+          "shape":"ChunkingConfiguration",
+          "documentation":"<p>Details about how to chunk the documents in the data source. A chunk refers to an excerpt from a data source that is returned when the knowledge base that it belongs to is queried.</p>"
+        },
+        "parsingConfiguration":{
+          "shape":"ParsingConfiguration",
+          "documentation":"<p>A custom parser for data source documents.</p>"
+        }
+      },
+      "documentation":"<p>Contains details about how to ingest the documents in a data source.</p>"
+    },
+    "Version":{
+      "type":"long",
+      "box":true,
+      "min":1
+    },
+    "VisibilityStatus":{
+      "type":"string",
+      "enum":[
+        "SAVED",
+        "PUBLISHED"
+      ]
+    },
     "WaitTimeSeconds":{
       "type":"integer",
       "max":20,
       "min":0
+    },
+    "WebCrawlerConfiguration":{
+      "type":"structure",
+      "required":["urlConfiguration"],
+      "members":{
+        "crawlerLimits":{
+          "shape":"WebCrawlerLimits",
+          "documentation":"<p>The configuration of crawl limits for the web URLs.</p>"
+        },
+        "exclusionFilters":{
+          "shape":"UrlFilterList",
+          "documentation":"<p>A list of one or more exclusion regular expression patterns to exclude certain URLs. If you specify an inclusion and exclusion filter/pattern and both match a URL, the exclusion filter takes precedence and the web content of the URL isn’t crawled.</p>"
+        },
+        "inclusionFilters":{
+          "shape":"UrlFilterList",
+          "documentation":"<p>A list of one or more inclusion regular expression patterns to include certain URLs. If you specify an inclusion and exclusion filter/pattern and both match a URL, the exclusion filter takes precedence and the web content of the URL isn’t crawled.</p>"
+        },
+        "scope":{
+          "shape":"WebScopeType",
+          "documentation":"<p>The scope of what is crawled for your URLs. You can choose to crawl only web pages that belong to the same host or primary domain. For example, only web pages that contain the seed URL <code>https://docs.aws.amazon.com/bedrock/latest/userguide/</code> and no other domains. You can choose to include sub domains in addition to the host or primary domain. For example, web pages that contain <code>aws.amazon.com</code> can also include sub domain <code>docs.aws.amazon.com</code>.</p>"
+        },
+        "urlConfiguration":{
+          "shape":"UrlConfiguration",
+          "documentation":"<p>The configuration of the URL/URLs for the web content that you want to crawl. You should be authorized to crawl the URLs.</p>"
+        }
+      },
+      "documentation":"<p>The configuration details for the web data source.</p>"
+    },
+    "WebCrawlerLimits":{
+      "type":"structure",
+      "members":{
+        "rateLimit":{
+          "shape":"WebCrawlerLimitsRateLimitInteger",
+          "documentation":"<p>Rate of web URLs retrieved per minute.</p>"
+        }
+      },
+      "documentation":"<p>The configuration of crawl limits for the web URLs.</p>"
+    },
+    "WebCrawlerLimitsRateLimitInteger":{
+      "type":"integer",
+      "box":true,
+      "max":300,
+      "min":1
+    },
+    "WebScopeType":{
+      "type":"string",
+      "enum":[
+        "HOST_ONLY",
+        "SUBDOMAINS"
+      ]
+    },
+    "WebUrl":{
+      "type":"string",
+      "pattern":"^https?://[A-Za-z0-9][^\\s]*$"
     }
   },
-  "documentation":"<note> <p> <b>Powered by Amazon Bedrock</b>: Amazon Web Services implements <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/abuse-detection.html\">automated abuse detection</a>. Because Amazon Q in Connect is built on Amazon Bedrock, users can take full advantage of the controls implemented in Amazon Bedrock to enforce safety, security, and the responsible use of artificial intelligence (AI).</p> </note> <p>Amazon Q in Connect is a generative AI customer service assistant. It is an LLM-enhanced evolution of Amazon Connect Wisdom that delivers real-time recommendations to help contact center agents resolve customer issues quickly and accurately.</p> <p>Amazon Q in Connect automatically detects customer intent during calls and chats using conversational analytics and natural language understanding (NLU). It then provides agents with immediate, real-time generative responses and suggested actions, and links to relevant documents and articles. Agents can also query Amazon Q in Connect directly using natural language or keywords to answer customer requests.</p> <p>Use the Amazon Q in Connect APIs to create an assistant and a knowledge base, for example, or manage content by uploading custom files.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/amazon-q-connect.html\">Use Amazon Q in Connect for generative AI powered agent assistance in real-time</a> in the <i>Amazon Connect Administrator Guide</i>.</p>"
+  "documentation":"<ul> <li> <p> <a href=\"https://docs.aws.amazon.com/connect/latest/APIReference/API_Operations_Amazon_Q_Connect.html\">Amazon Q actions</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/connect/latest/APIReference/API_Types_Amazon_Q_Connect.html\">Amazon Q data types</a> </p> </li> </ul> <note> <p> <b>Powered by Amazon Bedrock</b>: Amazon Web Services implements <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/abuse-detection.html\">automated abuse detection</a>. Because Amazon Q in Connect is built on Amazon Bedrock, users can take full advantage of the controls implemented in Amazon Bedrock to enforce safety, security, and the responsible use of artificial intelligence (AI).</p> </note> <p>Amazon Q in Connect is a generative AI customer service assistant. It is an LLM-enhanced evolution of Amazon Connect Wisdom that delivers real-time recommendations to help contact center agents resolve customer issues quickly and accurately.</p> <p>Amazon Q in Connect automatically detects customer intent during calls and chats using conversational analytics and natural language understanding (NLU). It then provides agents with immediate, real-time generative responses and suggested actions, and links to relevant documents and articles. Agents can also query Amazon Q in Connect directly using natural language or keywords to answer customer requests.</p> <p>Use the Amazon Q in Connect APIs to create an assistant and a knowledge base, for example, or manage content by uploading custom files.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/amazon-q-connect.html\">Use Amazon Q in Connect for generative AI powered agent assistance in real-time</a> in the <i>Amazon Connect Administrator Guide</i>.</p>"
 }

@@ -70,10 +70,10 @@ class ReSTDocument(object):
     def find_last_write(self, content):
         """
         Returns the index of the last occurrence of the content argument
-        in the stack, or raises a ValueError if content is not on the stack.
+        in the stack, or returns None if content is not on the stack.
         """
         try:
-            return len(self._writes) - self._writes[::-1].index(content)
+            return len(self._writes) - self._writes[::-1].index(content) - 1
         except ValueError:
             return None
 

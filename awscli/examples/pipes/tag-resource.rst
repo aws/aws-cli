@@ -1,6 +1,6 @@
-**To Tag an existing pipe.**
+**To Tag an existing pipe**
 
-The following ``tag-resource`` example tags a Pipe named ``Demo_Pipe``. If the command succeeds, no output is returned ::
+The following ``tag-resource`` example tags a Pipe named ``Demo_Pipe``. If the command succeeds, no output is returned. ::
 
     aws pipes tag-resource \
         --resource-arn arn:aws:pipes:us-east-1:123456789012:pipe/Demo_Pipe \

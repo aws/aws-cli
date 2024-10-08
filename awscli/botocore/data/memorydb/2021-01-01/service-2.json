@@ -204,7 +204,7 @@
         {"shape":"InvalidParameterValueException"},
         {"shape":"InvalidParameterCombinationException"}
       ],
-      "documentation":"<p>Deletes a cluster. It also deletes all associated nodes and node endpoints</p> <note> <p> <code>CreateSnapshot</code> permission is required to create a final snapshot. Without this permission, the API call will fail with an <code>Access Denied</code> exception.</p> </note>"
+      "documentation":"<p>Deletes a cluster. It also deletes all associated nodes and node endpoints</p>"
     },
     "DeleteParameterGroup":{
       "name":"DeleteParameterGroup",
@@ -313,7 +313,7 @@
         {"shape":"InvalidParameterValueException"},
         {"shape":"InvalidParameterCombinationException"}
       ],
-      "documentation":"<p>Returns a list of the available Redis OSS engine versions.</p>"
+      "documentation":"<p>Returns a list of the available engine versions.</p>"
     },
     "DescribeEvents":{
       "name":"DescribeEvents",
@@ -918,13 +918,17 @@
           "shape":"String",
           "documentation":"<p>The cluster's node type</p>"
         },
+        "Engine":{
+          "shape":"String",
+          "documentation":"<p> The Redis OSS or Valkey engine used by the cluster.</p>"
+        },
         "EngineVersion":{
           "shape":"String",
-          "documentation":"<p>The Redis OSS engine version used by the cluster</p>"
+          "documentation":"<p>The Redis engine version used by the cluster</p>"
         },
         "EnginePatchVersion":{
           "shape":"String",
-          "documentation":"<p>The Redis OSS engine patch version used by the cluster</p>"
+          "documentation":"<p>The engine patch version used by the cluster</p>"
         },
         "ParameterGroupName":{
           "shape":"String",
@@ -1011,9 +1015,13 @@
           "shape":"String",
           "documentation":"<p>The node type used for the cluster</p>"
         },
+        "Engine":{
+          "shape":"String",
+          "documentation":"<p>The configuration for the Redis OSS or Valkey engine used by the cluster.</p>"
+        },
         "EngineVersion":{
           "shape":"String",
-          "documentation":"<p>The Redis OSS engine version used by the cluster</p>"
+          "documentation":"<p>The engine version used by the cluster</p>"
         },
         "MaintenanceWindow":{
           "shape":"String",
@@ -1248,9 +1256,13 @@
           "shape":"ACLName",
           "documentation":"<p>The name of the Access Control List to associate with the cluster.</p>"
         },
+        "Engine":{
+          "shape":"String",
+          "documentation":"<p>The name of the engine to be used for the nodes in this cluster. The value must be set to either Redis or Valkey.</p>"
+        },
         "EngineVersion":{
           "shape":"String",
-          "documentation":"<p>The version number of the Redis OSS engine to be used for the cluster.</p>"
+          "documentation":"<p>The version number of the engine to be used for the cluster.</p>"
         },
         "AutoMinorVersionUpgrade":{
           "shape":"BooleanOptional",
@@ -1607,9 +1619,13 @@
     "DescribeEngineVersionsRequest":{
       "type":"structure",
       "members":{
+        "Engine":{
+          "shape":"String",
+          "documentation":"<p>The engine version to return. Valid values are either valkey or redis.</p>"
+        },
         "EngineVersion":{
           "shape":"String",
-          "documentation":"<p>The Redis OSS engine version</p>"
+          "documentation":"<p>The engine version.</p>"
         },
         "ParameterGroupFamily":{
           "shape":"String",
@@ -2006,6 +2022,10 @@
     "EngineVersionInfo":{
       "type":"structure",
       "members":{
+        "Engine":{
+          "shape":"String",
+          "documentation":"<p>The version of the Redis OSS or Valkey engine used by the cluster.</p>"
+        },
         "EngineVersion":{
           "shape":"String",
           "documentation":"<p>The engine version</p>"
@@ -2019,7 +2039,7 @@
           "documentation":"<p>Specifies the name of the parameter group family to which the engine default parameters apply.</p>"
         }
       },
-      "documentation":"<p>Provides details of the Redis OSS engine version</p>"
+      "documentation":"<p>Provides details of the engine version.</p>"
     },
     "EngineVersionInfoList":{
       "type":"list",
@@ -2722,6 +2742,10 @@
           "shape":"ServiceUpdateType",
           "documentation":"<p>Reflects the nature of the service update</p>"
         },
+        "Engine":{
+          "shape":"String",
+          "documentation":"<p>The MemoryDB engine to which the update applies. The values are either Redis or Valkey.</p>"
+        },
         "NodesUpdated":{
           "shape":"String",
           "documentation":"<p>A list of nodes updated by the service update</p>"
@@ -3243,6 +3267,10 @@
           "shape":"String",
           "documentation":"<p>A valid node type that you want to scale this cluster up or down to.</p>"
         },
+        "Engine":{
+          "shape":"String",
+          "documentation":"<p>The name of the engine to be used for the nodes in this cluster. The value must be set to either Redis or Valkey.</p>"
+        },
         "EngineVersion":{
           "shape":"String",
           "documentation":"<p>The upgraded version of the engine to be run on the nodes. You can upgrade to a newer engine version, but you cannot downgrade to an earlier engine version. If you want to use an earlier engine version, you must delete the existing cluster and create it anew with the earlier engine version.</p>"
@@ -3424,5 +3452,5 @@
       "exception":true
     }
   },
-  "documentation":"<p>MemoryDB is a fully managed, Redis OSS-compatible, in-memory database that delivers ultra-fast performance and Multi-AZ durability for modern applications built using microservices architectures. MemoryDB stores the entire database in-memory, enabling low latency and high throughput data access. It is compatible with Redis OSS, a popular open source data store, enabling you to leverage Redis OSS’ flexible and friendly data structures, APIs, and commands.</p>"
+  "documentation":"<p>MemoryDB for Redis is a fully managed, Redis-compatible, in-memory database that delivers ultra-fast performance and Multi-AZ durability for modern applications built using microservices architectures. MemoryDB stores the entire database in-memory, enabling low latency and high throughput data access. It is compatible with Redis, a popular open source data store, enabling you to leverage Redis’ flexible and friendly data structures, APIs, and commands.</p>"
 }

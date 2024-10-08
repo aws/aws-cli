@@ -1,6 +1,6 @@
 **To retrieve information about a Pipe**
 
-The following ``describe-pipe`` example displays information about the Pipe ``Demo_Pipe`` in the specified account.::
+The following ``describe-pipe`` example displays information about the Pipe ``Demo_Pipe`` in the specified account. ::
 
     aws pipes describe-pipe \
         --name Demo_Pipe

@@ -1,6 +1,6 @@
-**To delete an existing pipe.**
+**To delete an existing pipe**
 
-The following ``delete-pipe`` example deletes a Pipe named ``Demo_Pipe`` in the specified account.::
+The following ``delete-pipe`` example deletes a Pipe named ``Demo_Pipe`` in the specified account. ::
 
     aws pipes delete-pipe \
         --name Demo_Pipe

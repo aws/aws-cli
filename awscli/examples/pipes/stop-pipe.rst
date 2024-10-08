@@ -1,6 +1,6 @@
-**To stop an existing pipe.**
+**To stop an existing pipe**
 
-The following ``stop-pipe`` example stops a Pipe named ``Demo_Pipe`` in the specified account ::
+The following ``stop-pipe`` example stops a Pipe named ``Demo_Pipe`` in the specified account. ::
 
     aws pipes stop-pipe \
         --name Demo_Pipe

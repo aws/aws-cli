@@ -5,13 +5,13 @@ The following ``update-pipe`` example updates the Pipe named ``Demo_Pipe`` by ad
     aws pipes update-pipe \
         --name Demo_Pipe \
         --desired-state RUNNING \
-        --log-configuration CloudwatchLogsLogDestination={LogGroupArn=arn:aws:logs:us-east-1:716763681054:log-group:/aws/vendedlogs/pipes/Demo_Pipe},Level=TRACE \
-        --role-arn arn:aws:iam::716763681054:role/service-role/Amazon_EventBridge_Pipe_Demo_Pipe_28b3aa4f 
+        --log-configuration CloudwatchLogsLogDestination={LogGroupArn=arn:aws:logs:us-east-1:123456789012:log-group:/aws/vendedlogs/pipes/Demo_Pipe},Level=TRACE \
+        --role-arn arn:aws:iam::123456789012:role/service-role/Amazon_EventBridge_Pipe_Demo_Pipe_28b3aa4f 
 
 Output::
 
     {
-        "Arn": "arn:aws:pipes:us-east-1:716763681054:pipe/Demo_Pipe",
+        "Arn": "arn:aws:pipes:us-east-1:123456789012:pipe/Demo_Pipe",
         "Name": "Demo_Pipe",
         "DesiredState": "RUNNING",
         "CurrentState": "UPDATING",

@@ -1,6 +1,6 @@
-**To Create a pipe.**
+**To Create a pipe**
 
-The following ``create-pipe`` example creates a Pipe named ``Demo_Pipe`` with SQS as the source and CloudWatch Log Group as the target for the Pipe ::
+The following ``create-pipe`` example creates a Pipe named ``Demo_Pipe`` with SQS as the source and CloudWatch Log Group as the target for the Pipe. ::
 
     aws pipes create-pipe \
         --name Demo_Pipe \

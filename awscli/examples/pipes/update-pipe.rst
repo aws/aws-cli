@@ -1,6 +1,6 @@
-**To update an existing pipe.**
+**To update an existing pipe**
 
-The following ``update-pipe`` example updates the Pipe named ``Demo_Pipe`` by adding a CloudWatch Log configuration parameter, enure to update the execution role of the pipe so that it has the correct permissions for Log destination ::
+The following ``update-pipe`` example updates the Pipe named ``Demo_Pipe`` by adding a CloudWatch Log configuration parameter, enure to update the execution role of the pipe so that it has the correct permissions for Log destination. ::
 
     aws pipes update-pipe \
         --name Demo_Pipe \

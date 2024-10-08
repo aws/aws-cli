@@ -2,6 +2,14 @@
 CHANGELOG
 =========
 
+1.35.2
+======
+
+* api-change:``elasticache``: AWS ElastiCache SDK now supports using APIs with newly launched Valkey engine. Please refer to updated AWS ElastiCache public documentation for detailed information on API usage.
+* api-change:``memorydb``: Amazon MemoryDB SDK now supports all APIs for newly launched Valkey engine. Please refer to the updated Amazon MemoryDB public documentation for detailed information on API usage.
+* enhancement:``s3``: Adds logic to gracefully handle invalid timestamps returned in the Expires header.
+
+
 1.35.1
 ======
 

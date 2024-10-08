@@ -1,10 +1,10 @@
 **To list devices for a user**
 
-The following ``admin-list-devices`` example lists devices for the user diego. ::
+The following ``list-devices`` example lists devices for the currently sign-in user. ::
 
     aws cognito-idp admin-list-devices \
         --user-pool-id us-west-2_EXAMPLE \
-        --username diego \
+        --access-token eyJra456defEXAMPLE \
         --limit 1
 
 Output::

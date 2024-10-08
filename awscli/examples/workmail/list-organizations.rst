@@ -1,6 +1,6 @@
 **To retrieve a list of organizations**
 
-The following ``list-organizations`` command retrieves summaries of non-deleted organizations. ::
+The following ``list-organizations`` command retrieves summaries of the customer's organizations. ::
 
     aws workmail list-organizations
 

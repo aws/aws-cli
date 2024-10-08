@@ -1,6 +1,6 @@
-**To start an existing pipe.**
+**To start an existing pipe**
 
-The following ``start-pipe`` example starts a Pipe named ``Demo_Pipe`` in the specified account ::
+The following ``start-pipe`` example starts a Pipe named ``Demo_Pipe`` in the specified account. ::
 
     aws pipes start-pipe \
         --name Demo_Pipe

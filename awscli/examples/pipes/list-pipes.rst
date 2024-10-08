@@ -1,6 +1,6 @@
 **To retrieve a list of Pipes**
 
-The following ``list-pipes`` example shows all the pipes in the specified account ::
+The following ``list-pipes`` example shows all the pipes in the specified account. ::
 
     aws pipes list-pipes
 

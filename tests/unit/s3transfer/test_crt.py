@@ -14,7 +14,7 @@ import io
 
 import pytest
 from botocore.credentials import Credentials, ReadOnlyCredentials
-from botocore.exceptions import NoCredentialsError
+from botocore.exceptions import ClientError, NoCredentialsError
 from botocore.session import Session
 
 from s3transfer.exceptions import TransferNotDoneError
@@ -163,6 +163,60 @@ class TestBotocoreCRTRequestSerializer(unittest.TestCase):
         self.assertEqual(self.expected_path, crt_request.path)
         self.assertEqual(self.expected_host, crt_request.headers.get("host"))
         self.assertIsNone(crt_request.headers.get("Authorization"))
+
+    def _create_crt_response_error(
+            self, status_code, body, operation_name=None
+    ):
+        return awscrt.s3.S3ResponseError(
+            code=14343,
+            name='AWS_ERROR_S3_INVALID_RESPONSE_STATUS',
+            message='Invalid response status from request',
+            status_code=status_code,
+            headers=[
+                ('x-amz-request-id', 'QSJHJJZR2EDYD4GQ'),
+                (
+                    'x-amz-id-2',
+                    'xDbgdKdvYZTjgpOTzm7yNP2JPrOQl+eaQvUkFdOjdJoWkIC643fgHxdsHpUKvVAfjKf5F6otEYA=',
+                ),
+                ('Content-Type', 'application/xml'),
+                ('Transfer-Encoding', 'chunked'),
+                ('Date', 'Fri, 10 Nov 2023 23:22:47 GMT'),
+                ('Server', 'AmazonS3'),
+            ],
+            body=body,
+            operation_name=operation_name,
+        )
+
+    def test_translate_get_object_404(self):
+        body = (
+            b'<?xml version="1.0" encoding="UTF-8"?>\n<Error>'
+            b'<Code>NoSuchKey</Code>'
+            b'<Message>The specified key does not exist.</Message>'
+            b'<Key>obviously-no-such-key.txt</Key>'
+            b'<RequestId>SBJ7ZQY03N1WDW9T</RequestId>'
+            b'<HostId>SomeHostId</HostId></Error>'
+        )
+        crt_exc = self._create_crt_response_error(404, body, 'GetObject')
+        boto_err = self.request_serializer.translate_crt_exception(crt_exc)
+        self.assertIsInstance(
+            boto_err, self.session.create_client('s3').exceptions.NoSuchKey
+        )
+
+    def test_translate_head_object_404(self):
+        # There's no body in a HEAD response, so we can't map it to a modeled S3 exception.
+        # But it should still map to a botocore ClientError
+        body = None
+        crt_exc = self._create_crt_response_error(
+            404, body, operation_name='HeadObject'
+        )
+        boto_err = self.request_serializer.translate_crt_exception(crt_exc)
+        self.assertIsInstance(boto_err, ClientError)
+
+    def test_translate_unknown_operation_404(self):
+        body = None
+        crt_exc = self._create_crt_response_error(404, body)
+        boto_err = self.request_serializer.translate_crt_exception(crt_exc)
+        self.assertIsInstance(boto_err, ClientError)
 
 
 @requires_crt_pytest

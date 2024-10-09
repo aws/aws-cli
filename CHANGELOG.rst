@@ -2,6 +2,12 @@
 CHANGELOG
 =========
 
+2.18.3
+======
+
+* api-change:``codepipeline``: AWS CodePipeline introduces a Compute category
+
+
 2.18.2
 ======
 

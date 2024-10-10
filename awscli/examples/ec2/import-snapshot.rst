@@ -4,7 +4,7 @@ The following ``import-snapshot`` example imports the specified disk as a snapsh
 
     aws ec2 import-snapshot \
         --description "My server VMDK" \
-        --disk-container Format=VMDK,UserBucket={S3Bucket=my-import-bucket,S3Key=vms/my-server-vm.vmdk}
+        --disk-container Format=VMDK,UserBucket={'S3Bucket=my-import-bucket,S3Key=vms/my-server-vm.vmdk'}
 
 Output::
 

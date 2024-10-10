@@ -1,8 +1,11 @@
-**To delete user attributes**
+**To delete a user attribute**
 
-This example deletes the user attribute "FAVORITE_ANIMAL".
+The following ``delete-user-attributes`` example deletes the custom attribute "custom:attribute" from the currently signed-in user. ::
 
-Command::
+    aws cognito-idp delete-user-attributes \
+        --access-token ACCESS_TOKEN \
+        --user-attribute-names "custom:department"
 
-  aws cognito-idp delete-user-attributes --access-token ACCESS_TOKEN --user-attribute-names "FAVORITE_ANIMAL"
-  
+This command produces no output.
+
+For more information, see `Working with user attributes <https://docs.aws.amazon.com/cognito/latest/developerguide/user-pool-settings-attributes.html>`__ in the *Amazon Cognito Developer Guide*.

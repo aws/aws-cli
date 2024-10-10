@@ -1015,7 +1015,8 @@
     "AmazonResourceName":{
       "type":"string",
       "max":1011,
-      "min":1
+      "min":1,
+      "pattern":"arn:.*"
     },
     "AssociateVehicleFleetRequest":{
       "type":"structure",
@@ -1181,7 +1182,7 @@
       ],
       "members":{
         "arn":{
-          "shape":"arn",
+          "shape":"campaignArn",
           "documentation":"<p>The Amazon Resource Name (ARN) of a campaign.</p>"
         },
         "name":{
@@ -1451,7 +1452,9 @@
         },
         "priority":{
           "shape":"priority",
-          "documentation":"<p>(Optional) A number indicating the priority of one campaign over another campaign for a certain vehicle or fleet. A campaign with the lowest value is deployed to vehicles before any other campaigns. If it's not specified, <code>0</code> is used. </p> <p>Default: <code>0</code> </p>"
+          "documentation":"<p>(Optional) A number indicating the priority of one campaign over another campaign for a certain vehicle or fleet. A campaign with the lowest value is deployed to vehicles before any other campaigns. If it's not specified, <code>0</code> is used. </p> <p>Default: <code>0</code> </p>",
+          "deprecated":true,
+          "deprecatedMessage":"priority is no longer used or needed as input"
         },
         "signalsToCollect":{
           "shape":"SignalInformationList",
@@ -1483,7 +1486,7 @@
           "documentation":"<p>The name of the created campaign.</p>"
         },
         "arn":{
-          "shape":"arn",
+          "shape":"campaignArn",
           "documentation":"<p> The ARN of the created campaign. </p>"
         }
       }
@@ -1874,7 +1877,8 @@
       "type":"list",
       "member":{"shape":"NodePath"},
       "max":5,
-      "min":0
+      "min":0,
+      "sensitive":true
     },
     "DataFormat":{
       "type":"string",
@@ -1959,7 +1963,7 @@
           "documentation":"<p>The name of the deleted campaign.</p>"
         },
         "arn":{
-          "shape":"arn",
+          "shape":"campaignArn",
           "documentation":"<p> The Amazon Resource Name (ARN) of the deleted campaign.</p> <note> <p>The ARN isn’t returned if a campaign doesn’t exist.</p> </note>"
         }
       }
@@ -2215,7 +2219,7 @@
           "documentation":"<p>The name of the campaign.</p>"
         },
         "arn":{
-          "shape":"arn",
+          "shape":"campaignArn",
           "documentation":"<p> The Amazon Resource Name (ARN) of the campaign. </p>"
         },
         "description":{
@@ -2905,7 +2909,7 @@
           "documentation":"<p> The maximum number of items to return, between 1 and 100, inclusive. </p>"
         },
         "status":{
-          "shape":"status",
+          "shape":"statusStr",
           "documentation":"<p>Optional parameter to filter the results by the status of each created campaign in your account. The status can be one of: <code>CREATING</code>, <code>WAITING_FOR_APPROVAL</code>, <code>RUNNING</code>, or <code>SUSPENDED</code>.</p>"
         }
       }
@@ -4072,7 +4076,8 @@
       "type":"list",
       "member":{"shape":"SignalInformation"},
       "max":1000,
-      "min":0
+      "min":0,
+      "sensitive":true
     },
     "SignalNodeType":{
       "type":"string",
@@ -4439,7 +4444,7 @@
       "type":"structure",
       "members":{
         "arn":{
-          "shape":"arn",
+          "shape":"campaignArn",
           "documentation":"<p> The Amazon Resource Name (ARN) of the campaign. </p>"
         },
         "name":{
@@ -4825,7 +4830,7 @@
       "type":"structure",
       "members":{
         "campaignName":{
-          "shape":"string",
+          "shape":"campaignName",
           "documentation":"<p>The name of a campaign.</p>"
         },
         "vehicleName":{
@@ -4910,6 +4915,10 @@
       "key":{"shape":"attributeName"},
       "value":{"shape":"attributeValue"}
     },
+    "campaignArn":{
+      "type":"string",
+      "pattern":"arn:aws:iotfleetwise:[a-z0-9-]+:[0-9]{12}:campaign/[a-zA-Z\\d\\-_:]{1,100}"
+    },
     "campaignName":{
       "type":"string",
       "max":100,
@@ -4923,7 +4932,7 @@
     "collectionPeriodMs":{
       "type":"long",
       "box":true,
-      "max":60000,
+      "max":86400000,
       "min":10000
     },
     "createVehicleErrors":{
@@ -4958,7 +4967,8 @@
     "eventExpression":{
       "type":"string",
       "max":2048,
-      "min":1
+      "min":1,
+      "sensitive":true
     },
     "fleetId":{
       "type":"string",
@@ -4977,6 +4987,7 @@
     "languageVersion":{
       "type":"integer",
       "box":true,
+      "max":1,
       "min":1
     },
     "listOfStrings":{
@@ -5041,7 +5052,12 @@
       "type":"list",
       "member":{"shape":"SignalCatalogSummary"}
     },
-    "status":{"type":"string"},
+    "statusStr":{
+      "type":"string",
+      "max":20,
+      "min":7,
+      "pattern":"[A-Z_]*"
+    },
     "string":{"type":"string"},
     "timestamp":{"type":"timestamp"},
     "uint32":{

@@ -23,7 +23,8 @@
       "input":{"shape":"AddTagsToResourceMessage"},
       "output":{"shape":"AddTagsToResourceResponse"},
       "errors":[
-        {"shape":"ResourceNotFoundFault"}
+        {"shape":"ResourceNotFoundFault"},
+        {"shape":"InvalidResourceStateFault"}
       ],
       "documentation":"<p>Adds metadata tags to an DMS resource, including replication instance, endpoint, subnet group, and migration task. These tags can also be used with cost allocation reporting to track cost associated with DMS resources, or used in a Condition statement in an IAM policy for DMS. For more information, see <a href=\"https://docs.aws.amazon.com/dms/latest/APIReference/API_Tag.html\"> <code>Tag</code> </a> data type description.</p>"
     },
@@ -70,6 +71,23 @@
       ],
       "documentation":"<p>Cancels a single premigration assessment run.</p> <p>This operation prevents any individual assessments from running if they haven't started running. It also attempts to cancel any individual assessments that are currently running.</p>"
     },
+    "CreateDataMigration":{
+      "name":"CreateDataMigration",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"CreateDataMigrationMessage"},
+      "output":{"shape":"CreateDataMigrationResponse"},
+      "errors":[
+        {"shape":"ResourceQuotaExceededFault"},
+        {"shape":"ResourceNotFoundFault"},
+        {"shape":"ResourceAlreadyExistsFault"},
+        {"shape":"InvalidOperationFault"},
+        {"shape":"FailedDependencyFault"}
+      ],
+      "documentation":"<p>Creates a data migration using the provided settings.</p>"
+    },
     "CreateDataProvider":{
       "name":"CreateDataProvider",
       "http":{
@@ -81,7 +99,8 @@
       "errors":[
         {"shape":"ResourceQuotaExceededFault"},
         {"shape":"AccessDeniedFault"},
-        {"shape":"ResourceAlreadyExistsFault"}
+        {"shape":"ResourceAlreadyExistsFault"},
+        {"shape":"FailedDependencyFault"}
       ],
       "documentation":"<p>Creates a data provider using the provided settings. A data provider stores a data store type and location information about your database. </p>"
     },
@@ -159,7 +178,8 @@
         {"shape":"InvalidResourceStateFault"},
         {"shape":"KMSKeyNotAccessibleFault"},
         {"shape":"S3ResourceNotFoundFault"},
-        {"shape":"S3AccessDeniedFault"}
+        {"shape":"S3AccessDeniedFault"},
+        {"shape":"FailedDependencyFault"}
       ],
       "documentation":"<p>Creates the instance profile using the specified parameters.</p>"
     },
@@ -177,7 +197,8 @@
         {"shape":"ResourceQuotaExceededFault"},
         {"shape":"ResourceNotFoundFault"},
         {"shape":"S3ResourceNotFoundFault"},
-        {"shape":"S3AccessDeniedFault"}
+        {"shape":"S3AccessDeniedFault"},
+        {"shape":"FailedDependencyFault"}
       ],
       "documentation":"<p>Creates the migration project using the specified parameters.</p> <p>You can run this action only after you create an instance profile and data providers using <a href=\"https://docs.aws.amazon.com/dms/latest/APIReference/API_CreateInstanceProfile.html\">CreateInstanceProfile</a> and <a href=\"https://docs.aws.amazon.com/dms/latest/APIReference/API_CreateDataProvider.html\">CreateDataProvider</a>.</p>"
     },
@@ -288,6 +309,21 @@
       ],
       "documentation":"<p>Deletes the connection between a replication instance and an endpoint.</p>"
     },
+    "DeleteDataMigration":{
+      "name":"DeleteDataMigration",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DeleteDataMigrationMessage"},
+      "output":{"shape":"DeleteDataMigrationResponse"},
+      "errors":[
+        {"shape":"InvalidResourceStateFault"},
+        {"shape":"ResourceNotFoundFault"},
+        {"shape":"FailedDependencyFault"}
+      ],
+      "documentation":"<p>Deletes the specified data migration.</p>"
+    },
     "DeleteDataProvider":{
       "name":"DeleteDataProvider",
       "http":{
@@ -299,7 +335,8 @@
       "errors":[
         {"shape":"AccessDeniedFault"},
         {"shape":"ResourceNotFoundFault"},
-        {"shape":"InvalidResourceStateFault"}
+        {"shape":"InvalidResourceStateFault"},
+        {"shape":"FailedDependencyFault"}
       ],
       "documentation":"<p>Deletes the specified data provider.</p> <note> <p>All migration projects associated with the data provider must be deleted or modified before you can delete the data provider.</p> </note>"
     },
@@ -340,7 +377,8 @@
       "input":{"shape":"DeleteCollectorRequest"},
       "errors":[
         {"shape":"InvalidResourceStateFault"},
-        {"shape":"CollectorNotFoundFault"}
+        {"shape":"CollectorNotFoundFault"},
+        {"shape":"AccessDeniedFault"}
       ],
       "documentation":"<p>Deletes the specified Fleet Advisor collector.</p>"
     },
@@ -354,7 +392,8 @@
       "output":{"shape":"DeleteFleetAdvisorDatabasesResponse"},
       "errors":[
         {"shape":"ResourceNotFoundFault"},
-        {"shape":"InvalidOperationFault"}
+        {"shape":"InvalidOperationFault"},
+        {"shape":"AccessDeniedFault"}
       ],
       "documentation":"<p>Deletes the specified Fleet Advisor collector databases.</p>"
     },
@@ -369,7 +408,8 @@
       "errors":[
         {"shape":"AccessDeniedFault"},
         {"shape":"ResourceNotFoundFault"},
-        {"shape":"InvalidResourceStateFault"}
+        {"shape":"InvalidResourceStateFault"},
+        {"shape":"FailedDependencyFault"}
       ],
       "documentation":"<p>Deletes the specified instance profile.</p> <note> <p>All migration projects associated with the instance profile must be deleted or modified before you can delete the instance profile.</p> </note>"
     },
@@ -384,7 +424,9 @@
       "errors":[
         {"shape":"AccessDeniedFault"},
         {"shape":"ResourceNotFoundFault"},
-        {"shape":"InvalidResourceStateFault"}
+        {"shape":"AccessDeniedFault"},
+        {"shape":"InvalidResourceStateFault"},
+        {"shape":"FailedDependencyFault"}
       ],
       "documentation":"<p>Deletes the specified migration project.</p> <note> <p>The migration project must be closed before you can delete it.</p> </note>"
     },
@@ -524,6 +566,21 @@
       ],
       "documentation":"<p>Returns configuration parameters for a schema conversion project.</p>"
     },
+    "DescribeDataMigrations":{
+      "name":"DescribeDataMigrations",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DescribeDataMigrationsMessage"},
+      "output":{"shape":"DescribeDataMigrationsResponse"},
+      "errors":[
+        {"shape":"InvalidResourceStateFault"},
+        {"shape":"ResourceNotFoundFault"},
+        {"shape":"FailedDependencyFault"}
+      ],
+      "documentation":"<p>Returns information about data migrations.</p>"
+    },
     "DescribeDataProviders":{
       "name":"DescribeDataProviders",
       "http":{
@@ -534,7 +591,8 @@
       "output":{"shape":"DescribeDataProvidersResponse"},
       "errors":[
         {"shape":"ResourceNotFoundFault"},
-        {"shape":"AccessDeniedFault"}
+        {"shape":"AccessDeniedFault"},
+        {"shape":"FailedDependencyFault"}
       ],
       "documentation":"<p>Returns a paginated list of data providers for your account in the current region.</p>"
     },
@@ -699,7 +757,8 @@
       "output":{"shape":"DescribeInstanceProfilesResponse"},
       "errors":[
         {"shape":"ResourceNotFoundFault"},
-        {"shape":"AccessDeniedFault"}
+        {"shape":"AccessDeniedFault"},
+        {"shape":"FailedDependencyFault"}
       ],
       "documentation":"<p>Returns a paginated list of instance profiles for your account in the current region.</p>"
     },
@@ -778,7 +837,8 @@
       "output":{"shape":"DescribeMigrationProjectsResponse"},
       "errors":[
         {"shape":"ResourceNotFoundFault"},
-        {"shape":"AccessDeniedFault"}
+        {"shape":"AccessDeniedFault"},
+        {"shape":"FailedDependencyFault"}
       ],
       "documentation":"<p>Returns a paginated list of migration projects for your account in the current region.</p>"
     },
@@ -1044,7 +1104,8 @@
       "input":{"shape":"ListTagsForResourceMessage"},
       "output":{"shape":"ListTagsForResourceResponse"},
       "errors":[
-        {"shape":"ResourceNotFoundFault"}
+        {"shape":"ResourceNotFoundFault"},
+        {"shape":"InvalidResourceStateFault"}
       ],
       "documentation":"<p>Lists all metadata tags attached to an DMS resource, including replication instance, endpoint, subnet group, and migration task. For more information, see <a href=\"https://docs.aws.amazon.com/dms/latest/APIReference/API_Tag.html\"> <code>Tag</code> </a> data type description.</p>"
     },
@@ -1062,6 +1123,21 @@
       ],
       "documentation":"<p>Modifies the specified schema conversion configuration using the provided parameters. </p>"
     },
+    "ModifyDataMigration":{
+      "name":"ModifyDataMigration",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"ModifyDataMigrationMessage"},
+      "output":{"shape":"ModifyDataMigrationResponse"},
+      "errors":[
+        {"shape":"InvalidResourceStateFault"},
+        {"shape":"ResourceNotFoundFault"},
+        {"shape":"FailedDependencyFault"}
+      ],
+      "documentation":"<p>Modifies an existing DMS data migration.</p>"
+    },
     "ModifyDataProvider":{
       "name":"ModifyDataProvider",
       "http":{
@@ -1073,7 +1149,8 @@
       "errors":[
         {"shape":"AccessDeniedFault"},
         {"shape":"ResourceNotFoundFault"},
-        {"shape":"InvalidResourceStateFault"}
+        {"shape":"InvalidResourceStateFault"},
+        {"shape":"FailedDependencyFault"}
       ],
       "documentation":"<p>Modifies the specified data provider using the provided settings.</p> <note> <p>You must remove the data provider from all migration projects before you can modify it.</p> </note>"
     },
@@ -1129,7 +1206,8 @@
         {"shape":"InvalidResourceStateFault"},
         {"shape":"KMSKeyNotAccessibleFault"},
         {"shape":"S3ResourceNotFoundFault"},
-        {"shape":"S3AccessDeniedFault"}
+        {"shape":"S3AccessDeniedFault"},
+        {"shape":"FailedDependencyFault"}
       ],
       "documentation":"<p>Modifies the specified instance profile using the provided parameters.</p> <note> <p>All migration projects associated with the instance profile must be deleted or modified before you can modify the instance profile.</p> </note>"
     },
@@ -1146,7 +1224,8 @@
         {"shape":"ResourceNotFoundFault"},
         {"shape":"InvalidResourceStateFault"},
         {"shape":"S3ResourceNotFoundFault"},
-        {"shape":"S3AccessDeniedFault"}
+        {"shape":"S3AccessDeniedFault"},
+        {"shape":"FailedDependencyFault"}
       ],
       "documentation":"<p>Modifies the specified migration project using the provided parameters.</p> <note> <p>The migration project must be closed before you can modify it.</p> </note>"
     },
@@ -1305,7 +1384,8 @@
       "input":{"shape":"RemoveTagsFromResourceMessage"},
       "output":{"shape":"RemoveTagsFromResourceResponse"},
       "errors":[
-        {"shape":"ResourceNotFoundFault"}
+        {"shape":"ResourceNotFoundFault"},
+        {"shape":"InvalidResourceStateFault"}
       ],
       "documentation":"<p>Removes metadata tags from an DMS resource, including replication instance, endpoint, subnet group, and migration task. For more information, see <a href=\"https://docs.aws.amazon.com/dms/latest/APIReference/API_Tag.html\"> <code>Tag</code> </a> data type description.</p>"
     },
@@ -1321,6 +1401,23 @@
         {"shape":"ResourceNotFoundFault"}
       ],
       "documentation":"<p>Runs large-scale assessment (LSA) analysis on every Fleet Advisor collector in your account.</p>"
+    },
+    "StartDataMigration":{
+      "name":"StartDataMigration",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"StartDataMigrationMessage"},
+      "output":{"shape":"StartDataMigrationResponse"},
+      "errors":[
+        {"shape":"InvalidResourceStateFault"},
+        {"shape":"InvalidOperationFault"},
+        {"shape":"ResourceNotFoundFault"},
+        {"shape":"ResourceQuotaExceededFault"},
+        {"shape":"FailedDependencyFault"}
+      ],
+      "documentation":"<p>Starts the specified data migration.</p>"
     },
     "StartExtensionPackAssociation":{
       "name":"StartExtensionPackAssociation",
@@ -1523,6 +1620,21 @@
         {"shape":"ResourceAlreadyExistsFault"}
       ],
       "documentation":"<p>Starts a new premigration assessment run for one or more individual assessments of a migration task.</p> <p>The assessments that you can specify depend on the source and target database engine and the migration type defined for the given task. To run this operation, your migration task must already be created. After you run this operation, you can review the status of each individual assessment. You can also run the migration task manually after the assessment run and its individual assessments complete.</p>"
+    },
+    "StopDataMigration":{
+      "name":"StopDataMigration",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"StopDataMigrationMessage"},
+      "output":{"shape":"StopDataMigrationResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundFault"},
+        {"shape":"InvalidResourceStateFault"},
+        {"shape":"FailedDependencyFault"}
+      ],
+      "documentation":"<p>Stops the specified data migration.</p>"
     },
     "StopReplication":{
       "name":"StopReplication",
@@ -1999,7 +2111,7 @@
         },
         "MinCapacityUnits":{
           "shape":"IntegerOptional",
-          "documentation":"<p>Specifies the minimum value of the DMS capacity units (DCUs) for which a given DMS Serverless replication can be provisioned. A single DCU is 2GB of RAM, with 1 DCU as the minimum value allowed. The list of valid DCU values includes 1, 2, 4, 8, 16, 32, 64, 128, 192, 256, and 384. So, the minimum DCU value that you can specify for DMS Serverless is 1. You don't have to specify a value for the <code>MinCapacityUnits</code> parameter. If you don't set this value, DMS scans the current activity of available source tables to identify an optimum setting for this parameter. If there is no current source activity or DMS can't otherwise identify a more appropriate value, it sets this parameter to the minimum DCU value allowed, 1.</p>"
+          "documentation":"<p>Specifies the minimum value of the DMS capacity units (DCUs) for which a given DMS Serverless replication can be provisioned. A single DCU is 2GB of RAM, with 1 DCU as the minimum value allowed. The list of valid DCU values includes 1, 2, 4, 8, 16, 32, 64, 128, 192, 256, and 384. So, the minimum DCU value that you can specify for DMS Serverless is 1. If you don't set this value, DMS sets this parameter to the minimum DCU value allowed, 1. If there is no current source activity, DMS scales down your replication until it reaches the value specified in <code>MinCapacityUnits</code>.</p>"
         },
         "MultiAZ":{
           "shape":"BooleanOptional",
@@ -2053,6 +2165,61 @@
     "ConnectionList":{
       "type":"list",
       "member":{"shape":"Connection"}
+    },
+    "CreateDataMigrationMessage":{
+      "type":"structure",
+      "required":[
+        "MigrationProjectIdentifier",
+        "DataMigrationType",
+        "ServiceAccessRoleArn"
+      ],
+      "members":{
+        "DataMigrationName":{
+          "shape":"String",
+          "documentation":"<p>A user-friendly name for the data migration. Data migration names have the following constraints:</p> <ul> <li> <p>Must begin with a letter, and can only contain ASCII letters, digits, and hyphens. </p> </li> <li> <p>Can't end with a hyphen or contain two consecutive hyphens.</p> </li> <li> <p>Length must be from 1 to 255 characters.</p> </li> </ul>"
+        },
+        "MigrationProjectIdentifier":{
+          "shape":"String",
+          "documentation":"<p>An identifier for the migration project.</p>"
+        },
+        "DataMigrationType":{
+          "shape":"MigrationTypeValue",
+          "documentation":"<p>Specifies if the data migration is full-load only, change data capture (CDC) only, or full-load and CDC.</p>"
+        },
+        "ServiceAccessRoleArn":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Resource Name (ARN) for the service access role that you want to use to create the data migration.</p>"
+        },
+        "EnableCloudwatchLogs":{
+          "shape":"BooleanOptional",
+          "documentation":"<p>Specifies whether to enable CloudWatch logs for the data migration.</p>"
+        },
+        "SourceDataSettings":{
+          "shape":"SourceDataSettings",
+          "documentation":"<p>Specifies information about the source data provider.</p>"
+        },
+        "NumberOfJobs":{
+          "shape":"IntegerOptional",
+          "documentation":"<p>The number of parallel jobs that trigger parallel threads to unload the tables from the source, and then load them to the target.</p>"
+        },
+        "Tags":{
+          "shape":"TagList",
+          "documentation":"<p>One or more tags to be assigned to the data migration.</p>"
+        },
+        "SelectionRules":{
+          "shape":"SecretString",
+          "documentation":"<p>An optional JSON string specifying what tables, views, and schemas to include or exclude from the migration.</p>"
+        }
+      }
+    },
+    "CreateDataMigrationResponse":{
+      "type":"structure",
+      "members":{
+        "DataMigration":{
+          "shape":"DataMigration",
+          "documentation":"<p>Information about the created data migration.</p>"
+        }
+      }
     },
     "CreateDataProviderMessage":{
       "type":"structure",
@@ -2110,7 +2277,7 @@
         },
         "EngineName":{
           "shape":"String",
-          "documentation":"<p>The type of engine for the endpoint. Valid values, depending on the <code>EndpointType</code> value, include <code>\"mysql\"</code>, <code>\"oracle\"</code>, <code>\"postgres\"</code>, <code>\"mariadb\"</code>, <code>\"aurora\"</code>, <code>\"aurora-postgresql\"</code>, <code>\"opensearch\"</code>, <code>\"redshift\"</code>, <code>\"s3\"</code>, <code>\"db2\"</code>, <code>\"db2-zos\"</code>, <code>\"azuredb\"</code>, <code>\"sybase\"</code>, <code>\"dynamodb\"</code>, <code>\"mongodb\"</code>, <code>\"kinesis\"</code>, <code>\"kafka\"</code>, <code>\"elasticsearch\"</code>, <code>\"docdb\"</code>, <code>\"sqlserver\"</code>, <code>\"neptune\"</code>, and <code>\"babelfish\"</code>.</p>"
+          "documentation":"<p>The type of engine for the endpoint. Valid values, depending on the <code>EndpointType</code> value, include <code>\"mysql\"</code>, <code>\"oracle\"</code>, <code>\"postgres\"</code>, <code>\"mariadb\"</code>, <code>\"aurora\"</code>, <code>\"aurora-postgresql\"</code>, <code>\"opensearch\"</code>, <code>\"redshift\"</code>, <code>\"s3\"</code>, <code>\"db2\"</code>, <code>\"db2-zos\"</code>, <code>\"azuredb\"</code>, <code>\"sybase\"</code>, <code>\"dynamodb\"</code>, <code>\"mongodb\"</code>, <code>\"kinesis\"</code>, <code>\"kafka\"</code>, <code>\"elasticsearch\"</code>, <code>\"docdb\"</code>, <code>\"sqlserver\"</code>, <code>\"neptune\"</code>, <code>\"babelfish\"</code>, <code>redshift-serverless</code>, <code>aurora-serverless</code>, <code>aurora-postgresql-serverless</code>, <code>gcp-mysql</code>, <code>azure-sql-managed-instance</code>, <code>redis</code>, <code>dms-transfer</code>.</p>"
         },
         "Username":{
           "shape":"String",
@@ -2605,7 +2772,7 @@
       "members":{
         "ReplicationSubnetGroupIdentifier":{
           "shape":"String",
-          "documentation":"<p>The name for the replication subnet group. This value is stored as a lowercase string.</p> <p>Constraints: Must contain no more than 255 alphanumeric characters, periods, spaces, underscores, or hyphens. Must not be \"default\".</p> <p>Example: <code>mySubnetgroup</code> </p>"
+          "documentation":"<p>The name for the replication subnet group. This value is stored as a lowercase string.</p> <p>Constraints: Must contain no more than 255 alphanumeric characters, periods, underscores, or hyphens. Must not be \"default\".</p> <p>Example: <code>mySubnetgroup</code> </p>"
         },
         "ReplicationSubnetGroupDescription":{
           "shape":"String",
@@ -2714,6 +2881,136 @@
         "csv",
         "parquet"
       ]
+    },
+    "DataMigration":{
+      "type":"structure",
+      "members":{
+        "DataMigrationName":{
+          "shape":"String",
+          "documentation":"<p>The user-friendly name for the data migration.</p>"
+        },
+        "DataMigrationArn":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Resource Name (ARN) that identifies this replication.</p>"
+        },
+        "DataMigrationCreateTime":{
+          "shape":"Iso8601DateTime",
+          "documentation":"<p>The UTC time when DMS created the data migration.</p>"
+        },
+        "DataMigrationStartTime":{
+          "shape":"Iso8601DateTime",
+          "documentation":"<p>The UTC time when DMS started the data migration.</p>"
+        },
+        "DataMigrationEndTime":{
+          "shape":"Iso8601DateTime",
+          "documentation":"<p>The UTC time when data migration ended.</p>"
+        },
+        "ServiceAccessRoleArn":{
+          "shape":"String",
+          "documentation":"<p>The IAM role that the data migration uses to access Amazon Web Services resources.</p>"
+        },
+        "MigrationProjectArn":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the data migration's associated migration project.</p>"
+        },
+        "DataMigrationType":{
+          "shape":"MigrationTypeValue",
+          "documentation":"<p>Specifies whether the data migration is full-load only, change data capture (CDC) only, or full-load and CDC.</p>"
+        },
+        "DataMigrationSettings":{
+          "shape":"DataMigrationSettings",
+          "documentation":"<p>Specifies CloudWatch settings and selection rules for the data migration.</p>"
+        },
+        "SourceDataSettings":{
+          "shape":"SourceDataSettings",
+          "documentation":"<p>Specifies information about the data migration's source data provider.</p>"
+        },
+        "DataMigrationStatistics":{
+          "shape":"DataMigrationStatistics",
+          "documentation":"<p>Provides information about the data migration's run, including start and stop time, latency, and data migration progress.</p>"
+        },
+        "DataMigrationStatus":{
+          "shape":"String",
+          "documentation":"<p>The current status of the data migration. </p>"
+        },
+        "PublicIpAddresses":{
+          "shape":"PublicIpAddressList",
+          "documentation":"<p>The IP addresses of the endpoints for the data migration.</p>"
+        },
+        "LastFailureMessage":{
+          "shape":"String",
+          "documentation":"<p>Information about the data migration's most recent error or failure.</p>"
+        },
+        "StopReason":{
+          "shape":"String",
+          "documentation":"<p>The reason the data migration last stopped.</p>"
+        }
+      },
+      "documentation":"<p>This object provides information about a DMS data migration.</p>"
+    },
+    "DataMigrationSettings":{
+      "type":"structure",
+      "members":{
+        "NumberOfJobs":{
+          "shape":"IntegerOptional",
+          "documentation":"<p>The number of parallel jobs that trigger parallel threads to unload the tables from the source, and then load them to the target.</p>"
+        },
+        "CloudwatchLogsEnabled":{
+          "shape":"BooleanOptional",
+          "documentation":"<p>Whether to enable CloudWatch logging for the data migration.</p>"
+        },
+        "SelectionRules":{
+          "shape":"SecretString",
+          "documentation":"<p>A JSON-formatted string that defines what objects to include and exclude from the migration.</p>"
+        }
+      },
+      "documentation":"<p>Options for configuring a data migration, including whether to enable CloudWatch logs, and the selection rules to use to include or exclude database objects from the migration.</p>"
+    },
+    "DataMigrationStatistics":{
+      "type":"structure",
+      "members":{
+        "TablesLoaded":{
+          "shape":"Integer",
+          "documentation":"<p>The number of tables loaded in the current data migration run.</p>"
+        },
+        "ElapsedTimeMillis":{
+          "shape":"Long",
+          "documentation":"<p>The elapsed duration of the data migration run.</p>"
+        },
+        "TablesLoading":{
+          "shape":"Integer",
+          "documentation":"<p>The data migration's table loading progress.</p>"
+        },
+        "FullLoadPercentage":{
+          "shape":"Integer",
+          "documentation":"<p>The data migration's progress in the full-load migration phase.</p>"
+        },
+        "CDCLatency":{
+          "shape":"Integer",
+          "documentation":"<p>The current latency of the change data capture (CDC) operation.</p>"
+        },
+        "TablesQueued":{
+          "shape":"Integer",
+          "documentation":"<p>The number of tables that are waiting for processing.</p>"
+        },
+        "TablesErrored":{
+          "shape":"Integer",
+          "documentation":"<p>The number of tables that DMS failed to process.</p>"
+        },
+        "StartTime":{
+          "shape":"Iso8601DateTime",
+          "documentation":"<p>The time when the migration started.</p>"
+        },
+        "StopTime":{
+          "shape":"Iso8601DateTime",
+          "documentation":"<p>The time when the migration stopped or failed.</p>"
+        }
+      },
+      "documentation":"<p>Information about the data migration run, including start and stop time, latency, and migration progress.</p>"
+    },
+    "DataMigrations":{
+      "type":"list",
+      "member":{"shape":"DataMigration"}
     },
     "DataProvider":{
       "type":"structure",
@@ -3005,6 +3302,25 @@
         }
       },
       "documentation":"<p/>"
+    },
+    "DeleteDataMigrationMessage":{
+      "type":"structure",
+      "required":["DataMigrationIdentifier"],
+      "members":{
+        "DataMigrationIdentifier":{
+          "shape":"String",
+          "documentation":"<p>The identifier (name or ARN) of the data migration to delete.</p>"
+        }
+      }
+    },
+    "DeleteDataMigrationResponse":{
+      "type":"structure",
+      "members":{
+        "DataMigration":{
+          "shape":"DataMigration",
+          "documentation":"<p>The deleted data migration.</p>"
+        }
+      }
     },
     "DeleteDataProviderMessage":{
       "type":"structure",
@@ -3375,6 +3691,44 @@
         "ConversionConfiguration":{
           "shape":"String",
           "documentation":"<p>The configuration parameters for the schema conversion project.</p>"
+        }
+      }
+    },
+    "DescribeDataMigrationsMessage":{
+      "type":"structure",
+      "members":{
+        "Filters":{
+          "shape":"FilterList",
+          "documentation":"<p>Filters applied to the data migrations.</p>"
+        },
+        "MaxRecords":{
+          "shape":"IntegerOptional",
+          "documentation":"<p>The maximum number of records to include in the response. If more records exist than the specified <code>MaxRecords</code> value, a pagination token called a marker is included in the response so that the remaining results can be retrieved. </p>"
+        },
+        "Marker":{
+          "shape":"Marker",
+          "documentation":"<p>An optional pagination token provided by a previous request. If this parameter is specified, the response includes only records beyond the marker, up to the value specified by <code>MaxRecords</code>. </p>"
+        },
+        "WithoutSettings":{
+          "shape":"BooleanOptional",
+          "documentation":"<p>An option to set to avoid returning information about settings. Use this to reduce overhead when setting information is too large. To use this option, choose <code>true</code>; otherwise, choose <code>false</code> (the default).</p>"
+        },
+        "WithoutStatistics":{
+          "shape":"BooleanOptional",
+          "documentation":"<p>An option to set to avoid returning information about statistics. Use this to reduce overhead when statistics information is too large. To use this option, choose <code>true</code>; otherwise, choose <code>false</code> (the default).</p>"
+        }
+      }
+    },
+    "DescribeDataMigrationsResponse":{
+      "type":"structure",
+      "members":{
+        "DataMigrations":{
+          "shape":"DataMigrations",
+          "documentation":"<p>Returns information about the data migrations used in the project.</p>"
+        },
+        "Marker":{
+          "shape":"Marker",
+          "documentation":"<p>An optional pagination token provided by a previous request. If this parameter is specified, the response includes only records beyond the marker, up to the value specified by <code>MaxRecords</code>. </p>"
         }
       }
     },
@@ -5216,6 +5570,14 @@
       },
       "documentation":"<p>Provides information about a metadata model assessment exported to SQL.</p>"
     },
+    "FailedDependencyFault":{
+      "type":"structure",
+      "members":{
+        "message":{"shape":"ExceptionMessage"}
+      },
+      "documentation":"<p>A dependency threw an exception.</p>",
+      "exception":true
+    },
     "Filter":{
       "type":"structure",
       "required":[
@@ -5888,6 +6250,10 @@
       },
       "documentation":"<p>Provides information that defines a MariaDB data provider.</p>"
     },
+    "Marker":{
+      "type":"string",
+      "max":1024
+    },
     "MessageFormatValue":{
       "type":"string",
       "enum":[
@@ -6076,6 +6442,53 @@
         "MigrationProjectIdentifier":{
           "shape":"String",
           "documentation":"<p>The name or Amazon Resource Name (ARN) of the modified configuration.</p>"
+        }
+      }
+    },
+    "ModifyDataMigrationMessage":{
+      "type":"structure",
+      "required":["DataMigrationIdentifier"],
+      "members":{
+        "DataMigrationIdentifier":{
+          "shape":"String",
+          "documentation":"<p>The identifier (name or ARN) of the data migration to modify.</p>"
+        },
+        "DataMigrationName":{
+          "shape":"String",
+          "documentation":"<p>The new name for the data migration.</p>"
+        },
+        "EnableCloudwatchLogs":{
+          "shape":"BooleanOptional",
+          "documentation":"<p>Whether to enable Cloudwatch logs for the data migration.</p>"
+        },
+        "ServiceAccessRoleArn":{
+          "shape":"String",
+          "documentation":"<p>The new service access role ARN for the data migration.</p>"
+        },
+        "DataMigrationType":{
+          "shape":"MigrationTypeValue",
+          "documentation":"<p>The new migration type for the data migration.</p>"
+        },
+        "SourceDataSettings":{
+          "shape":"SourceDataSettings",
+          "documentation":"<p>The new information about the source data provider for the data migration.</p>"
+        },
+        "NumberOfJobs":{
+          "shape":"IntegerOptional",
+          "documentation":"<p>The number of parallel jobs that trigger parallel threads to unload the tables from the source, and then load them to the target.</p>"
+        },
+        "SelectionRules":{
+          "shape":"SecretString",
+          "documentation":"<p>A JSON-formatted string that defines what objects to include and exclude from the migration.</p>"
+        }
+      }
+    },
+    "ModifyDataMigrationResponse":{
+      "type":"structure",
+      "members":{
+        "DataMigration":{
+          "shape":"DataMigration",
+          "documentation":"<p>Information about the modified data migration.</p>"
         }
       }
     },
@@ -7361,6 +7774,11 @@
         }
       },
       "documentation":"<p>Information about provisioning resources for an DMS serverless replication.</p>"
+    },
+    "PublicIpAddressList":{
+      "type":"list",
+      "member":{"shape":"String"},
+      "sensitive":true
     },
     "RdsConfiguration":{
       "type":"structure",
@@ -9005,6 +9423,32 @@
       },
       "documentation":"<p>Describes a server in a Fleet Advisor collector inventory.</p>"
     },
+    "SourceDataSetting":{
+      "type":"structure",
+      "members":{
+        "CDCStartPosition":{
+          "shape":"String",
+          "documentation":"<p>The change data capture (CDC) start position for the source data provider.</p>"
+        },
+        "CDCStartTime":{
+          "shape":"Iso8601DateTime",
+          "documentation":"<p>The change data capture (CDC) start time for the source data provider.</p>"
+        },
+        "CDCStopTime":{
+          "shape":"Iso8601DateTime",
+          "documentation":"<p>The change data capture (CDC) stop time for the source data provider.</p>"
+        },
+        "SlotName":{
+          "shape":"String",
+          "documentation":"<p>The name of the replication slot on the source data provider. This attribute is only valid for a PostgreSQL or Aurora PostgreSQL source.</p>"
+        }
+      },
+      "documentation":"<p>Defines settings for a source data provider for a data migration.</p>"
+    },
+    "SourceDataSettings":{
+      "type":"list",
+      "member":{"shape":"SourceDataSetting"}
+    },
     "SourceIdsList":{
       "type":"list",
       "member":{"shape":"String"}
@@ -9019,6 +9463,32 @@
         "plaintext",
         "ssl-encryption"
       ]
+    },
+    "StartDataMigrationMessage":{
+      "type":"structure",
+      "required":[
+        "DataMigrationIdentifier",
+        "StartType"
+      ],
+      "members":{
+        "DataMigrationIdentifier":{
+          "shape":"String",
+          "documentation":"<p>The identifier (name or ARN) of the data migration to start.</p>"
+        },
+        "StartType":{
+          "shape":"StartReplicationMigrationTypeValue",
+          "documentation":"<p>Specifies the start type for the data migration. Valid values include <code>start-replication</code>, <code>reload-target</code>, and <code>resume-processing</code>.</p>"
+        }
+      }
+    },
+    "StartDataMigrationResponse":{
+      "type":"structure",
+      "members":{
+        "DataMigration":{
+          "shape":"DataMigration",
+          "documentation":"<p>The data migration that DMS started.</p>"
+        }
+      }
     },
     "StartExtensionPackAssociationMessage":{
       "type":"structure",
@@ -9260,6 +9730,14 @@
       },
       "documentation":"<p/>"
     },
+    "StartReplicationMigrationTypeValue":{
+      "type":"string",
+      "enum":[
+        "reload-target",
+        "resume-processing",
+        "start-replication"
+      ]
+    },
     "StartReplicationResponse":{
       "type":"structure",
       "members":{
@@ -9396,6 +9874,25 @@
         "resume-processing",
         "reload-target"
       ]
+    },
+    "StopDataMigrationMessage":{
+      "type":"structure",
+      "required":["DataMigrationIdentifier"],
+      "members":{
+        "DataMigrationIdentifier":{
+          "shape":"String",
+          "documentation":"<p>The identifier (name or ARN) of the data migration to stop.</p>"
+        }
+      }
+    },
+    "StopDataMigrationResponse":{
+      "type":"structure",
+      "members":{
+        "DataMigration":{
+          "shape":"DataMigration",
+          "documentation":"<p>The data migration that DMS stopped.</p>"
+        }
+      }
     },
     "StopReplicationMessage":{
       "type":"structure",

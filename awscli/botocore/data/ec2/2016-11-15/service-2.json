@@ -24,6 +24,16 @@
       "output":{"shape":"AcceptAddressTransferResult"},
       "documentation":"<p>Accepts an Elastic IP address transfer. For more information, see <a href=\"https://docs.aws.amazon.com/vpc/latest/userguide/vpc-eips.html#using-instance-addressing-eips-transfer-accept\">Accept a transferred Elastic IP address</a> in the <i>Amazon VPC User Guide</i>.</p>"
     },
+    "AcceptCapacityReservationBillingOwnership":{
+      "name":"AcceptCapacityReservationBillingOwnership",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"AcceptCapacityReservationBillingOwnershipRequest"},
+      "output":{"shape":"AcceptCapacityReservationBillingOwnershipResult"},
+      "documentation":"<p>Accepts a request to assign billing of the available capacity of a shared Capacity Reservation to your account. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/assign-billing.html\"> Billing assignment for shared Amazon EC2 Capacity Reservations</a>.</p>"
+    },
     "AcceptReservedInstancesExchangeQuote":{
       "name":"AcceptReservedInstancesExchangeQuote",
       "http":{
@@ -162,7 +172,7 @@
       },
       "input":{"shape":"AssignPrivateNatGatewayAddressRequest"},
       "output":{"shape":"AssignPrivateNatGatewayAddressResult"},
-      "documentation":"<p>Assigns private IPv4 addresses to a private NAT gateway. For more information, see <a href=\"https://docs.aws.amazon.com/vpc/latest/userguide/nat-gateway-working-with.html\">Work with NAT gateways</a> in the <i>Amazon VPC User Guide</i>.</p>"
+      "documentation":"<p>Assigns private IPv4 addresses to a private NAT gateway. For more information, see <a href=\"https://docs.aws.amazon.com/vpc/latest/userguide/vpc-nat-gateway.html#nat-gateway-working-with\">Work with NAT gateways</a> in the <i>Amazon VPC User Guide</i>.</p>"
     },
     "AssociateAddress":{
       "name":"AssociateAddress",
@@ -173,6 +183,16 @@
       "input":{"shape":"AssociateAddressRequest"},
       "output":{"shape":"AssociateAddressResult"},
       "documentation":"<p>Associates an Elastic IP address, or carrier IP address (for instances that are in subnets in Wavelength Zones) with an instance or a network interface. Before you can use an Elastic IP address, you must allocate it to your account.</p> <p>If the Elastic IP address is already associated with a different instance, it is disassociated from that instance and associated with the specified instance. If you associate an Elastic IP address with an instance that has an existing Elastic IP address, the existing address is disassociated from the instance, but remains allocated to your account.</p> <p>[Subnets in Wavelength Zones] You can associate an IP address from the telecommunication carrier to the instance or network interface. </p> <p>You cannot associate an Elastic IP address with an interface in a different network border group.</p> <important> <p>This is an idempotent operation. If you perform the operation more than once, Amazon EC2 doesn't return an error, and you may be charged for each time the Elastic IP address is remapped to the same instance. For more information, see the <i>Elastic IP Addresses</i> section of <a href=\"http://aws.amazon.com/ec2/pricing/\">Amazon EC2 Pricing</a>.</p> </important>"
+    },
+    "AssociateCapacityReservationBillingOwner":{
+      "name":"AssociateCapacityReservationBillingOwner",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"AssociateCapacityReservationBillingOwnerRequest"},
+      "output":{"shape":"AssociateCapacityReservationBillingOwnerResult"},
+      "documentation":"<p>Initiates a request to assign billing of the unused capacity of a shared Capacity Reservation to a consumer account that is consolidated under the same Amazon Web Services organizations payer account. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/assign-billing.html\">Billing assignment for shared Amazon EC2 Capacity Reservations</a>.</p>"
     },
     "AssociateClientVpnTargetNetwork":{
       "name":"AssociateClientVpnTargetNetwork",
@@ -251,7 +271,7 @@
       },
       "input":{"shape":"AssociateNatGatewayAddressRequest"},
       "output":{"shape":"AssociateNatGatewayAddressResult"},
-      "documentation":"<p>Associates Elastic IP addresses (EIPs) and private IPv4 addresses with a public NAT gateway. For more information, see <a href=\"https://docs.aws.amazon.com/vpc/latest/userguide/nat-gateway-working-with.html\">Work with NAT gateways</a> in the <i>Amazon VPC User Guide</i>.</p> <p>By default, you can associate up to 2 Elastic IP addresses per public NAT gateway. You can increase the limit by requesting a quota adjustment. For more information, see <a href=\"https://docs.aws.amazon.com/vpc/latest/userguide/amazon-vpc-limits.html#vpc-limits-eips\">Elastic IP address quotas</a> in the <i>Amazon VPC User Guide</i>.</p> <important> <p>When you associate an EIP or secondary EIPs with a public NAT gateway, the network border group of the EIPs must match the network border group of the Availability Zone (AZ) that the public NAT gateway is in. If it's not the same, the EIP will fail to associate. You can see the network border group for the subnet's AZ by viewing the details of the subnet. Similarly, you can view the network border group of an EIP by viewing the details of the EIP address. For more information about network border groups and EIPs, see <a href=\"https://docs.aws.amazon.com/vpc/latest/userguide/WorkWithEIPs.html\">Allocate an Elastic IP address</a> in the <i>Amazon VPC User Guide</i>. </p> </important>"
+      "documentation":"<p>Associates Elastic IP addresses (EIPs) and private IPv4 addresses with a public NAT gateway. For more information, see <a href=\"https://docs.aws.amazon.com/vpc/latest/userguide/vpc-nat-gateway.html#nat-gateway-working-with\">Work with NAT gateways</a> in the <i>Amazon VPC User Guide</i>.</p> <p>By default, you can associate up to 2 Elastic IP addresses per public NAT gateway. You can increase the limit by requesting a quota adjustment. For more information, see <a href=\"https://docs.aws.amazon.com/vpc/latest/userguide/amazon-vpc-limits.html#vpc-limits-eips\">Elastic IP address quotas</a> in the <i>Amazon VPC User Guide</i>.</p> <important> <p>When you associate an EIP or secondary EIPs with a public NAT gateway, the network border group of the EIPs must match the network border group of the Availability Zone (AZ) that the public NAT gateway is in. If it's not the same, the EIP will fail to associate. You can see the network border group for the subnet's AZ by viewing the details of the subnet. Similarly, you can view the network border group of an EIP by viewing the details of the EIP address. For more information about network border groups and EIPs, see <a href=\"https://docs.aws.amazon.com/vpc/latest/userguide/vpc-eips.html#allocate-eip\">Allocate an Elastic IP address</a> in the <i>Amazon VPC User Guide</i>. </p> </important>"
     },
     "AssociateRouteTable":{
       "name":"AssociateRouteTable",
@@ -658,7 +678,7 @@
       },
       "input":{"shape":"CreateDefaultSubnetRequest"},
       "output":{"shape":"CreateDefaultSubnetResult"},
-      "documentation":"<p>Creates a default subnet with a size <code>/20</code> IPv4 CIDR block in the specified Availability Zone in your default VPC. You can have only one default subnet per Availability Zone. For more information, see <a href=\"https://docs.aws.amazon.com/vpc/latest/userguide/work-with-default-vpc.html#create-default-subnet\">Create a default subnet</a> in the <i>Amazon VPC User Guide</i>.</p>"
+      "documentation":"<p>Creates a default subnet with a size <code>/20</code> IPv4 CIDR block in the specified Availability Zone in your default VPC. You can have only one default subnet per Availability Zone. For more information, see <a href=\"https://docs.aws.amazon.com/vpc/latest/userguide/default-vpc.html#create-default-subnet\">Create a default subnet</a> in the <i>Amazon VPC User Guide</i>.</p>"
     },
     "CreateDefaultVpc":{
       "name":"CreateDefaultVpc",
@@ -708,7 +728,7 @@
       },
       "input":{"shape":"CreateFlowLogsRequest"},
       "output":{"shape":"CreateFlowLogsResult"},
-      "documentation":"<p>Creates one or more flow logs to capture information about IP traffic for a specific network interface, subnet, or VPC. </p> <p>Flow log data for a monitored network interface is recorded as flow log records, which are log events consisting of fields that describe the traffic flow. For more information, see <a href=\"https://docs.aws.amazon.com/vpc/latest/userguide/flow-log-records.html\">Flow log records</a> in the <i>Amazon VPC User Guide</i>.</p> <p>When publishing to CloudWatch Logs, flow log records are published to a log group, and each network interface has a unique log stream in the log group. When publishing to Amazon S3, flow log records for all of the monitored network interfaces are published to a single log file object that is stored in the specified bucket.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/vpc/latest/userguide/flow-logs.html\">VPC Flow Logs</a> in the <i>Amazon VPC User Guide</i>.</p>"
+      "documentation":"<p>Creates one or more flow logs to capture information about IP traffic for a specific network interface, subnet, or VPC. </p> <p>Flow log data for a monitored network interface is recorded as flow log records, which are log events consisting of fields that describe the traffic flow. For more information, see <a href=\"https://docs.aws.amazon.com/vpc/latest/userguide/flow-logs.html#flow-log-records\">Flow log records</a> in the <i>Amazon VPC User Guide</i>.</p> <p>When publishing to CloudWatch Logs, flow log records are published to a log group, and each network interface has a unique log stream in the log group. When publishing to Amazon S3, flow log records for all of the monitored network interfaces are published to a single log file object that is stored in the specified bucket.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/vpc/latest/userguide/flow-logs.html\">VPC Flow Logs</a> in the <i>Amazon VPC User Guide</i>.</p>"
     },
     "CreateFpgaImage":{
       "name":"CreateFpgaImage",
@@ -908,7 +928,7 @@
       },
       "input":{"shape":"CreateNatGatewayRequest"},
       "output":{"shape":"CreateNatGatewayResult"},
-      "documentation":"<p>Creates a NAT gateway in the specified subnet. This action creates a network interface in the specified subnet with a private IP address from the IP address range of the subnet. You can create either a public NAT gateway or a private NAT gateway.</p> <p>With a public NAT gateway, internet-bound traffic from a private subnet can be routed to the NAT gateway, so that instances in a private subnet can connect to the internet.</p> <p>With a private NAT gateway, private communication is routed across VPCs and on-premises networks through a transit gateway or virtual private gateway. Common use cases include running large workloads behind a small pool of allowlisted IPv4 addresses, preserving private IPv4 addresses, and communicating between overlapping networks.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/vpc/latest/userguide/vpc-nat-gateway.html\">NAT gateways</a> in the <i>Amazon VPC User Guide</i>.</p> <important> <p>When you create a public NAT gateway and assign it an EIP or secondary EIPs, the network border group of the EIPs must match the network border group of the Availability Zone (AZ) that the public NAT gateway is in. If it's not the same, the NAT gateway will fail to launch. You can see the network border group for the subnet's AZ by viewing the details of the subnet. Similarly, you can view the network border group of an EIP by viewing the details of the EIP address. For more information about network border groups and EIPs, see <a href=\"https://docs.aws.amazon.com/vpc/latest/userguide/WorkWithEIPs.html\">Allocate an Elastic IP address</a> in the <i>Amazon VPC User Guide</i>. </p> </important>"
+      "documentation":"<p>Creates a NAT gateway in the specified subnet. This action creates a network interface in the specified subnet with a private IP address from the IP address range of the subnet. You can create either a public NAT gateway or a private NAT gateway.</p> <p>With a public NAT gateway, internet-bound traffic from a private subnet can be routed to the NAT gateway, so that instances in a private subnet can connect to the internet.</p> <p>With a private NAT gateway, private communication is routed across VPCs and on-premises networks through a transit gateway or virtual private gateway. Common use cases include running large workloads behind a small pool of allowlisted IPv4 addresses, preserving private IPv4 addresses, and communicating between overlapping networks.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/vpc/latest/userguide/vpc-nat-gateway.html\">NAT gateways</a> in the <i>Amazon VPC User Guide</i>.</p> <important> <p>When you create a public NAT gateway and assign it an EIP or secondary EIPs, the network border group of the EIPs must match the network border group of the Availability Zone (AZ) that the public NAT gateway is in. If it's not the same, the NAT gateway will fail to launch. You can see the network border group for the subnet's AZ by viewing the details of the subnet. Similarly, you can view the network border group of an EIP by viewing the details of the EIP address. For more information about network border groups and EIPs, see <a href=\"https://docs.aws.amazon.com/vpc/latest/userguide/vpc-eips.html#allocate-eip\">Allocate an Elastic IP address</a> in the <i>Amazon VPC User Guide</i>. </p> </important>"
     },
     "CreateNetworkAcl":{
       "name":"CreateNetworkAcl",
@@ -1107,7 +1127,7 @@
       },
       "input":{"shape":"CreateSubnetCidrReservationRequest"},
       "output":{"shape":"CreateSubnetCidrReservationResult"},
-      "documentation":"<p>Creates a subnet CIDR reservation. For more information, see <a href=\"https://docs.aws.amazon.com/vpc/latest/userguide/subnet-cidr-reservation.html\">Subnet CIDR reservations</a> in the <i>Amazon VPC User Guide</i> and <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/work-with-prefixes.html\">Manage prefixes for your network interfaces</a> in the <i>Amazon EC2 User Guide</i>.</p>"
+      "documentation":"<p>Creates a subnet CIDR reservation. For more information, see <a href=\"https://docs.aws.amazon.com/vpc/latest/userguide/subnet-cidr-reservation.html\">Subnet CIDR reservations</a> in the <i>Amazon VPC User Guide</i> and <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-prefix-eni.html\">Assign prefixes to network interfaces</a> in the <i>Amazon EC2 User Guide</i>.</p>"
     },
     "CreateTags":{
       "name":"CreateTags",
@@ -2059,7 +2079,7 @@
         "requestUri":"/"
       },
       "input":{"shape":"DeleteVpcRequest"},
-      "documentation":"<p>Deletes the specified VPC. You must detach or delete all gateways and resources that are associated with the VPC before you can delete it. For example, you must terminate all instances running in the VPC, delete all security groups associated with the VPC (except the default one), delete all route tables associated with the VPC (except the default one), and so on. When you delete the VPC, it deletes the default security group, network ACL, and route table for the VPC.</p> <p>If you created a flow log for the VPC that you are deleting, note that flow logs for deleted VPCs are eventually automatically removed.</p>"
+      "documentation":"<p>Deletes the specified VPC. You must detach or delete all gateways and resources that are associated with the VPC before you can delete it. For example, you must terminate all instances running in the VPC, delete all security groups associated with the VPC (except the default one), delete all route tables associated with the VPC (except the default one), and so on. When you delete the VPC, it deletes the VPC's default security group, network ACL, and route table.</p>"
     },
     "DeleteVpcEndpointConnectionNotifications":{
       "name":"DeleteVpcEndpointConnectionNotifications",
@@ -2307,6 +2327,16 @@
       "output":{"shape":"DescribeCapacityBlockOfferingsResult"},
       "documentation":"<p>Describes Capacity Block offerings available for purchase in the Amazon Web Services Region that you're currently using. With Capacity Blocks, you purchase a specific instance type for a period of time.</p>"
     },
+    "DescribeCapacityReservationBillingRequests":{
+      "name":"DescribeCapacityReservationBillingRequests",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DescribeCapacityReservationBillingRequestsRequest"},
+      "output":{"shape":"DescribeCapacityReservationBillingRequestsResult"},
+      "documentation":"<p>Describes a request to assign the billing of the unused capacity of a Capacity Reservation. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/transfer-billing.html\"> Billing assignment for shared Amazon EC2 Capacity Reservations</a>.</p>"
+    },
     "DescribeCapacityReservationFleets":{
       "name":"DescribeCapacityReservationFleets",
       "http":{
@@ -2455,7 +2485,7 @@
       },
       "input":{"shape":"DescribeElasticGpusRequest"},
       "output":{"shape":"DescribeElasticGpusResult"},
-      "documentation":"<note> <p>Amazon Elastic Graphics reached end of life on January 8, 2024. For workloads that require graphics acceleration, we recommend that you use Amazon EC2 G4, G5, or G6 instances.</p> </note> <p>Describes the Elastic Graphics accelerator associated with your instances.</p>"
+      "documentation":"<note> <p>Amazon Elastic Graphics reached end of life on January 8, 2024.</p> </note> <p>Describes the Elastic Graphics accelerator associated with your instances.</p>"
     },
     "DescribeExportImageTasks":{
       "name":"DescribeExportImageTasks",
@@ -3952,6 +3982,16 @@
       "input":{"shape":"DisassociateAddressRequest"},
       "documentation":"<p>Disassociates an Elastic IP address from the instance or network interface it's associated with.</p> <p>This is an idempotent operation. If you perform the operation more than once, Amazon EC2 doesn't return an error.</p>"
     },
+    "DisassociateCapacityReservationBillingOwner":{
+      "name":"DisassociateCapacityReservationBillingOwner",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DisassociateCapacityReservationBillingOwnerRequest"},
+      "output":{"shape":"DisassociateCapacityReservationBillingOwnerResult"},
+      "documentation":"<p>Cancels a pending request to assign billing of the unused capacity of a Capacity Reservation to a consumer account, or revokes a request that has already been accepted. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/assign-billing.html\">Billing assignment for shared Amazon EC2 Capacity Reservations</a>.</p>"
+    },
     "DisassociateClientVpnTargetNetwork":{
       "name":"DisassociateClientVpnTargetNetwork",
       "http":{
@@ -4020,7 +4060,7 @@
       },
       "input":{"shape":"DisassociateNatGatewayAddressRequest"},
       "output":{"shape":"DisassociateNatGatewayAddressResult"},
-      "documentation":"<p>Disassociates secondary Elastic IP addresses (EIPs) from a public NAT gateway. You cannot disassociate your primary EIP. For more information, see <a href=\"https://docs.aws.amazon.com/vpc/latest/userguide/nat-gateway-working-with.html#nat-gateway-edit-secondary\">Edit secondary IP address associations</a> in the <i>Amazon VPC User Guide</i>.</p> <p>While disassociating is in progress, you cannot associate/disassociate additional EIPs while the connections are being drained. You are, however, allowed to delete the NAT gateway.</p> <p>An EIP is released only at the end of MaxDrainDurationSeconds. It stays associated and supports the existing connections but does not support any new connections (new connections are distributed across the remaining associated EIPs). As the existing connections drain out, the EIPs (and the corresponding private IP addresses mapped to them) are released.</p>"
+      "documentation":"<p>Disassociates secondary Elastic IP addresses (EIPs) from a public NAT gateway. You cannot disassociate your primary EIP. For more information, see <a href=\"https://docs.aws.amazon.com/vpc/latest/userguide/vpc-nat-gateway.html#nat-gateway-edit-secondary\">Edit secondary IP address associations</a> in the <i>Amazon VPC User Guide</i>.</p> <p>While disassociating is in progress, you cannot associate/disassociate additional EIPs while the connections are being drained. You are, however, allowed to delete the NAT gateway.</p> <p>An EIP is released only at the end of MaxDrainDurationSeconds. It stays associated and supports the existing connections but does not support any new connections (new connections are distributed across the remaining associated EIPs). As the existing connections drain out, the EIPs (and the corresponding private IP addresses mapped to them) are released.</p>"
     },
     "DisassociateRouteTable":{
       "name":"DisassociateRouteTable",
@@ -5043,7 +5083,7 @@
       },
       "input":{"shape":"ModifyInstanceCpuOptionsRequest"},
       "output":{"shape":"ModifyInstanceCpuOptionsResult"},
-      "documentation":"<p>By default, all vCPUs for the instance type are active when you launch an instance. When you configure the number of active vCPUs for the instance, it can help you save on licensing costs and optimize performance. The base cost of the instance remains unchanged.</p> <p>The number of active vCPUs equals the number of threads per CPU core multiplied by the number of cores.</p> <note> <p>Some instance type options do not support this capability. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/cpu-options-supported-instances-values.html\">Supported CPU options</a> in the <i>Amazon EC2 User Guide</i>.</p> </note>"
+      "documentation":"<p>By default, all vCPUs for the instance type are active when you launch an instance. When you configure the number of active vCPUs for the instance, it can help you save on licensing costs and optimize performance. The base cost of the instance remains unchanged.</p> <p>The number of active vCPUs equals the number of threads per CPU core multiplied by the number of cores. The instance must be in a <code>Stopped</code> state before you make changes.</p> <note> <p>Some instance type options do not support this capability. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/cpu-options-supported-instances-values.html\">Supported CPU options</a> in the <i>Amazon EC2 User Guide</i>.</p> </note>"
     },
     "ModifyInstanceCreditSpecification":{
       "name":"ModifyInstanceCreditSpecification",
@@ -5709,6 +5749,16 @@
       "output":{"shape":"RegisterTransitGatewayMulticastGroupSourcesResult"},
       "documentation":"<p>Registers sources (network interfaces) with the specified transit gateway multicast group.</p> <p>A multicast source is a network interface attached to a supported instance that sends multicast traffic. For more information about supported instances, see <a href=\"https://docs.aws.amazon.com/vpc/latest/tgw/tgw-multicast-overview.html\">Multicast on transit gateways</a> in the <i>Amazon Web Services Transit Gateways Guide</i>.</p> <p>After you add the source, use <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/APIReference/API_SearchTransitGatewayMulticastGroups.html\">SearchTransitGatewayMulticastGroups</a> to verify that the source was added to the multicast group.</p>"
     },
+    "RejectCapacityReservationBillingOwnership":{
+      "name":"RejectCapacityReservationBillingOwnership",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"RejectCapacityReservationBillingOwnershipRequest"},
+      "output":{"shape":"RejectCapacityReservationBillingOwnershipResult"},
+      "documentation":"<p>Rejects a request to assign billing of the available capacity of a shared Capacity Reservation to your account. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/assign-billing.html\"> Billing assignment for shared Amazon EC2 Capacity Reservations</a>.</p>"
+    },
     "RejectTransitGatewayMulticastDomainAssociations":{
       "name":"RejectTransitGatewayMulticastDomainAssociations",
       "http":{
@@ -6187,7 +6237,7 @@
       },
       "input":{"shape":"UnassignPrivateNatGatewayAddressRequest"},
       "output":{"shape":"UnassignPrivateNatGatewayAddressResult"},
-      "documentation":"<p>Unassigns secondary private IPv4 addresses from a private NAT gateway. You cannot unassign your primary private IP. For more information, see <a href=\"https://docs.aws.amazon.com/vpc/latest/userguide/nat-gateway-working-with.html#nat-gateway-edit-secondary\">Edit secondary IP address associations</a> in the <i>Amazon VPC User Guide</i>.</p> <p>While unassigning is in progress, you cannot assign/unassign additional IP addresses while the connections are being drained. You are, however, allowed to delete the NAT gateway.</p> <p>A private IP address will only be released at the end of MaxDrainDurationSeconds. The private IP addresses stay associated and support the existing connections, but do not support any new connections (new connections are distributed across the remaining assigned private IP address). After the existing connections drain out, the private IP addresses are released.</p> <p/> <p/>"
+      "documentation":"<p>Unassigns secondary private IPv4 addresses from a private NAT gateway. You cannot unassign your primary private IP. For more information, see <a href=\"https://docs.aws.amazon.com/vpc/latest/userguide/vpc-nat-gateway.html#nat-gateway-edit-secondary\">Edit secondary IP address associations</a> in the <i>Amazon VPC User Guide</i>.</p> <p>While unassigning is in progress, you cannot assign/unassign additional IP addresses while the connections are being drained. You are, however, allowed to delete the NAT gateway.</p> <p>A private IP address will only be released at the end of MaxDrainDurationSeconds. The private IP addresses stay associated and support the existing connections, but do not support any new connections (new connections are distributed across the remaining assigned private IP address). After the existing connections drain out, the private IP addresses are released.</p> <p/> <p/>"
     },
     "UnlockSnapshot":{
       "name":"UnlockSnapshot",
@@ -6383,6 +6433,30 @@
           "shape":"AddressTransfer",
           "documentation":"<p>An Elastic IP address transfer.</p>",
           "locationName":"addressTransfer"
+        }
+      }
+    },
+    "AcceptCapacityReservationBillingOwnershipRequest":{
+      "type":"structure",
+      "required":["CapacityReservationId"],
+      "members":{
+        "DryRun":{
+          "shape":"Boolean",
+          "documentation":"<p>Checks whether you have the required permissions for the action, without actually making the request, and provides an error response. If you have the required permissions, the error response is <code>DryRunOperation</code>. Otherwise, it is <code>UnauthorizedOperation</code>.</p>"
+        },
+        "CapacityReservationId":{
+          "shape":"CapacityReservationId",
+          "documentation":"<p>The ID of the Capacity Reservation for which to accept the request.</p>"
+        }
+      }
+    },
+    "AcceptCapacityReservationBillingOwnershipResult":{
+      "type":"structure",
+      "members":{
+        "Return":{
+          "shape":"Boolean",
+          "documentation":"<p>Returns <code>true</code> if the request succeeds; otherwise, it returns an error.</p>",
+          "locationName":"return"
         }
       }
     },
@@ -6696,6 +6770,12 @@
         "shape":"AccountAttributeValue",
         "locationName":"item"
       }
+    },
+    "AccountID":{
+      "type":"string",
+      "max":12,
+      "min":12,
+      "pattern":"[0-9]{12}"
     },
     "ActiveInstance":{
       "type":"structure",
@@ -8049,6 +8129,37 @@
           "shape":"String",
           "documentation":"<p>The ID that represents the association of the Elastic IP address with an instance.</p>",
           "locationName":"associationId"
+        }
+      }
+    },
+    "AssociateCapacityReservationBillingOwnerRequest":{
+      "type":"structure",
+      "required":[
+        "CapacityReservationId",
+        "UnusedReservationBillingOwnerId"
+      ],
+      "members":{
+        "DryRun":{
+          "shape":"Boolean",
+          "documentation":"<p>Checks whether you have the required permissions for the action, without actually making the request, and provides an error response. If you have the required permissions, the error response is <code>DryRunOperation</code>. Otherwise, it is <code>UnauthorizedOperation</code>.</p>"
+        },
+        "CapacityReservationId":{
+          "shape":"CapacityReservationId",
+          "documentation":"<p>The ID of the Capacity Reservation.</p>"
+        },
+        "UnusedReservationBillingOwnerId":{
+          "shape":"AccountID",
+          "documentation":"<p>The ID of the consumer account to which assign billing.</p>"
+        }
+      }
+    },
+    "AssociateCapacityReservationBillingOwnerResult":{
+      "type":"structure",
+      "members":{
+        "Return":{
+          "shape":"Boolean",
+          "documentation":"<p>Returns <code>true</code> if the request succeeds; otherwise, it returns an error.</p>",
+          "locationName":"return"
         }
       }
     },
@@ -9780,6 +9891,13 @@
         "provisioned-not-publicly-advertisable"
       ]
     },
+    "CallerRole":{
+      "type":"string",
+      "enum":[
+        "odcr-owner",
+        "unused-reservation-billing-owner"
+      ]
+    },
     "CancelBatchErrorCode":{
       "type":"string",
       "enum":[
@@ -10381,9 +10499,73 @@
           "shape":"CapacityReservationType",
           "documentation":"<p>The type of Capacity Reservation.</p>",
           "locationName":"reservationType"
+        },
+        "UnusedReservationBillingOwnerId":{
+          "shape":"AccountID",
+          "documentation":"<p>The ID of the Amazon Web Services account to which billing of the unused capacity of the Capacity Reservation is assigned.</p>",
+          "locationName":"unusedReservationBillingOwnerId"
         }
       },
       "documentation":"<p>Describes a Capacity Reservation.</p>"
+    },
+    "CapacityReservationBillingRequest":{
+      "type":"structure",
+      "members":{
+        "CapacityReservationId":{
+          "shape":"String",
+          "documentation":"<p>The ID of the Capacity Reservation.</p>",
+          "locationName":"capacityReservationId"
+        },
+        "RequestedBy":{
+          "shape":"String",
+          "documentation":"<p>The ID of the Amazon Web Services account that initiated the request.</p>",
+          "locationName":"requestedBy"
+        },
+        "UnusedReservationBillingOwnerId":{
+          "shape":"AccountID",
+          "documentation":"<p>The ID of the Amazon Web Services account to which the request was sent.</p>",
+          "locationName":"unusedReservationBillingOwnerId"
+        },
+        "LastUpdateTime":{
+          "shape":"MillisecondDateTime",
+          "documentation":"<p>The date and time, in UTC time format, at which the request was initiated.</p>",
+          "locationName":"lastUpdateTime"
+        },
+        "Status":{
+          "shape":"CapacityReservationBillingRequestStatus",
+          "documentation":"<p>The status of the request. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/view-billing-transfers.html\"> View billing assignment requests for a shared Amazon EC2 Capacity Reservation</a>.</p>",
+          "locationName":"status"
+        },
+        "StatusMessage":{
+          "shape":"String",
+          "documentation":"<p>Information about the status.</p>",
+          "locationName":"statusMessage"
+        },
+        "CapacityReservationInfo":{
+          "shape":"CapacityReservationInfo",
+          "documentation":"<p>Information about the Capacity Reservation.</p>",
+          "locationName":"capacityReservationInfo"
+        }
+      },
+      "documentation":"<p>Information about a request to assign billing of the unused capacity of a Capacity Reservation.</p>"
+    },
+    "CapacityReservationBillingRequestSet":{
+      "type":"list",
+      "member":{
+        "shape":"CapacityReservationBillingRequest",
+        "locationName":"item"
+      }
+    },
+    "CapacityReservationBillingRequestStatus":{
+      "type":"string",
+      "enum":[
+        "pending",
+        "accepted",
+        "rejected",
+        "cancelled",
+        "revoked",
+        "expired"
+      ]
     },
     "CapacityReservationFleet":{
       "type":"structure",
@@ -10538,6 +10720,27 @@
         "shape":"CapacityReservationId",
         "locationName":"item"
       }
+    },
+    "CapacityReservationInfo":{
+      "type":"structure",
+      "members":{
+        "InstanceType":{
+          "shape":"String",
+          "documentation":"<p>The instance type for the Capacity Reservation.</p>",
+          "locationName":"instanceType"
+        },
+        "AvailabilityZone":{
+          "shape":"AvailabilityZoneName",
+          "documentation":"<p>The Availability Zone for the Capacity Reservation.</p>",
+          "locationName":"availabilityZone"
+        },
+        "Tenancy":{
+          "shape":"CapacityReservationTenancy",
+          "documentation":"<p>The tenancy of the Capacity Reservation.</p>",
+          "locationName":"tenancy"
+        }
+      },
+      "documentation":"<p>Information about a Capacity Reservation.</p>"
     },
     "CapacityReservationInstancePlatform":{
       "type":"string",
@@ -13032,7 +13235,7 @@
         },
         "LogFormat":{
           "shape":"String",
-          "documentation":"<p>The fields to include in the flow log record. List the fields in the order in which they should appear. If you omit this parameter, the flow log is created using the default format. If you specify this parameter, you must include at least one field. For more information about the available fields, see <a href=\"https://docs.aws.amazon.com/vpc/latest/userguide/flow-log-records.html\">Flow log records</a> in the <i>Amazon VPC User Guide</i> or <a href=\"https://docs.aws.amazon.com/vpc/latest/tgw/tgw-flow-logs.html#flow-log-records\">Transit Gateway Flow Log records</a> in the <i>Amazon Web Services Transit Gateway Guide</i>.</p> <p>Specify the fields using the <code>${field-id}</code> format, separated by spaces.</p>"
+          "documentation":"<p>The fields to include in the flow log record. List the fields in the order in which they should appear. If you omit this parameter, the flow log is created using the default format. If you specify this parameter, you must include at least one field. For more information about the available fields, see <a href=\"https://docs.aws.amazon.com/vpc/latest/userguide/flow-logs.html#flow-log-records\">Flow log records</a> in the <i>Amazon VPC User Guide</i> or <a href=\"https://docs.aws.amazon.com/vpc/latest/tgw/tgw-flow-logs.html#flow-log-records\">Transit Gateway Flow Log records</a> in the <i>Amazon Web Services Transit Gateway Guide</i>.</p> <p>Specify the fields using the <code>${field-id}</code> format, separated by spaces.</p>"
         },
         "TagSpecifications":{
           "shape":"TagSpecificationList",
@@ -13936,17 +14139,17 @@
         },
         "SecondaryAllocationIds":{
           "shape":"AllocationIdList",
-          "documentation":"<p>Secondary EIP allocation IDs. For more information, see <a href=\"https://docs.aws.amazon.com/vpc/latest/userguide/nat-gateway-working-with.html\">Create a NAT gateway</a> in the <i>Amazon VPC User Guide</i>.</p>",
+          "documentation":"<p>Secondary EIP allocation IDs. For more information, see <a href=\"https://docs.aws.amazon.com/vpc/latest/userguide/vpc-nat-gateway.html#nat-gateway-creating\">Create a NAT gateway</a> in the <i>Amazon VPC User Guide</i>.</p>",
           "locationName":"SecondaryAllocationId"
         },
         "SecondaryPrivateIpAddresses":{
           "shape":"IpList",
-          "documentation":"<p>Secondary private IPv4 addresses. For more information about secondary addresses, see <a href=\"https://docs.aws.amazon.com/vpc/latest/userguide/nat-gateway-working-with.html\">Create a NAT gateway</a> in the <i>Amazon VPC User Guide</i>.</p>",
+          "documentation":"<p>Secondary private IPv4 addresses. For more information about secondary addresses, see <a href=\"https://docs.aws.amazon.com/vpc/latest/userguide/vpc-nat-gateway.html#nat-gateway-creating\">Create a NAT gateway</a> in the <i>Amazon VPC User Guide</i>.</p>",
           "locationName":"SecondaryPrivateIpAddress"
         },
         "SecondaryPrivateIpAddressCount":{
           "shape":"PrivateIpAddressCount",
-          "documentation":"<p>[Private NAT gateway only] The number of secondary private IPv4 addresses you want to assign to the NAT gateway. For more information about secondary addresses, see <a href=\"https://docs.aws.amazon.com/vpc/latest/userguide/nat-gateway-working-with.html\">Create a NAT gateway</a> in the <i>Amazon VPC User Guide</i>.</p>"
+          "documentation":"<p>[Private NAT gateway only] The number of secondary private IPv4 addresses you want to assign to the NAT gateway. For more information about secondary addresses, see <a href=\"https://docs.aws.amazon.com/vpc/latest/userguide/vpc-nat-gateway.html#nat-gateway-creating\">Create a NAT gateway</a> in the <i>Amazon VPC User Guide</i>.</p>"
         }
       }
     },
@@ -15671,7 +15874,7 @@
         },
         "SecurityGroupReferencingSupport":{
           "shape":"SecurityGroupReferencingSupportValue",
-          "documentation":"<p>Enables you to reference a security group across VPCs attached to a transit gateway to simplify security group management.</p> <p>This option is enabled by default. However, security group referencing is disabled by default at the transit gateway level.</p> <p>For more information about security group referencing, see <a href=\"https://docs.aws.amazon.com/vpc/latest/tgw/tgw-vpc-attachments.html#vpc-attachment-security\">Security group referencing </a> in the <i>Amazon Web Services Transit Gateways Guide</i>.</p>"
+          "documentation":"<p>Enables you to reference a security group across VPCs attached to a transit gateway to simplify security group management.</p> <p>This option is set to <code>enable</code> by default. However, at the transit gateway level the default is set to <code>disable</code>.</p> <p>For more information about security group referencing, see <a href=\"https://docs.aws.amazon.com/vpc/latest/tgw/tgw-vpc-attachments.html#vpc-attachment-security\">Security group referencing </a> in the <i>Amazon Web Services Transit Gateways Guide</i>.</p>"
         },
         "Ipv6Support":{
           "shape":"Ipv6SupportValue",
@@ -19367,6 +19570,58 @@
         }
       }
     },
+    "DescribeCapacityReservationBillingRequestsRequest":{
+      "type":"structure",
+      "required":["Role"],
+      "members":{
+        "CapacityReservationIds":{
+          "shape":"CapacityReservationIdSet",
+          "documentation":"<p>The ID of the Capacity Reservation.</p>",
+          "locationName":"CapacityReservationId"
+        },
+        "Role":{
+          "shape":"CallerRole",
+          "documentation":"<p>Specify one of the following:</p> <ul> <li> <p> <code>odcr-owner</code> - If you are the Capacity Reservation owner, specify this value to view requests that you have initiated. Not supported with the <code>requested-by</code> filter.</p> </li> <li> <p> <code>unused-reservation-billing-owner</code> - If you are the consumer account, specify this value to view requests that have been sent to you. Not supported with the <code>unused-reservation-billing-owner</code> filter.</p> </li> </ul>"
+        },
+        "NextToken":{
+          "shape":"String",
+          "documentation":"<p>The token to use to retrieve the next page of results.</p>"
+        },
+        "MaxResults":{
+          "shape":"DescribeCapacityReservationBillingRequestsRequestMaxResults",
+          "documentation":"<p>The maximum number of items to return for this request. To get the next page of items, make another request with the token returned in the output. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/APIReference/Query-Requests.html#api-pagination\">Pagination</a>.</p>"
+        },
+        "Filters":{
+          "shape":"FilterList",
+          "documentation":"<p>One or more filters.</p> <ul> <li> <p> <code>status</code> - The state of the request (<code>pending</code> | <code>accepted</code> | <code>rejected</code> | <code>cancelled</code> | <code>revoked</code> | <code>expired</code>).</p> </li> <li> <p> <code>requested-by</code> - The account ID of the Capacity Reservation owner that initiated the request. Not supported if you specify <code>requested-by</code> for <b>Role</b>.</p> </li> <li> <p> <code>unused-reservation-billing-owner</code> - The ID of the consumer account to which the request was sent. Not supported if you specify <code>unused-reservation-billing-owner</code> for <b>Role</b>.</p> </li> </ul>",
+          "locationName":"Filter"
+        },
+        "DryRun":{
+          "shape":"Boolean",
+          "documentation":"<p>Checks whether you have the required permissions for the action, without actually making the request, and provides an error response. If you have the required permissions, the error response is <code>DryRunOperation</code>. Otherwise, it is <code>UnauthorizedOperation</code>.</p>"
+        }
+      }
+    },
+    "DescribeCapacityReservationBillingRequestsRequestMaxResults":{
+      "type":"integer",
+      "max":1000,
+      "min":1
+    },
+    "DescribeCapacityReservationBillingRequestsResult":{
+      "type":"structure",
+      "members":{
+        "NextToken":{
+          "shape":"String",
+          "documentation":"<p>The token to use to retrieve the next page of results. This value is <code>null</code> when there are no more results to return.</p>",
+          "locationName":"nextToken"
+        },
+        "CapacityReservationBillingRequests":{
+          "shape":"CapacityReservationBillingRequestSet",
+          "documentation":"<p>Information about the request.</p>",
+          "locationName":"capacityReservationBillingRequestSet"
+        }
+      }
+    },
     "DescribeCapacityReservationFleetsMaxResults":{
       "type":"integer",
       "max":100,
@@ -21439,7 +21694,7 @@
         },
         "Filters":{
           "shape":"FilterList",
-          "documentation":"<p>The filters.</p> <ul> <li> <p> <code>affinity</code> - The affinity setting for an instance running on a Dedicated Host (<code>default</code> | <code>host</code>).</p> </li> <li> <p> <code>architecture</code> - The instance architecture (<code>i386</code> | <code>x86_64</code> | <code>arm64</code>).</p> </li> <li> <p> <code>availability-zone</code> - The Availability Zone of the instance.</p> </li> <li> <p> <code>block-device-mapping.attach-time</code> - The attach time for an EBS volume mapped to the instance, for example, <code>2022-09-15T17:15:20.000Z</code>.</p> </li> <li> <p> <code>block-device-mapping.delete-on-termination</code> - A Boolean that indicates whether the EBS volume is deleted on instance termination.</p> </li> <li> <p> <code>block-device-mapping.device-name</code> - The device name specified in the block device mapping (for example, <code>/dev/sdh</code> or <code>xvdh</code>).</p> </li> <li> <p> <code>block-device-mapping.status</code> - The status for the EBS volume (<code>attaching</code> | <code>attached</code> | <code>detaching</code> | <code>detached</code>).</p> </li> <li> <p> <code>block-device-mapping.volume-id</code> - The volume ID of the EBS volume.</p> </li> <li> <p> <code>boot-mode</code> - The boot mode that was specified by the AMI (<code>legacy-bios</code> | <code>uefi</code> | <code>uefi-preferred</code>).</p> </li> <li> <p> <code>capacity-reservation-id</code> - The ID of the Capacity Reservation into which the instance was launched.</p> </li> <li> <p> <code>capacity-reservation-specification.capacity-reservation-preference</code> - The instance's Capacity Reservation preference (<code>open</code> | <code>none</code>).</p> </li> <li> <p> <code>capacity-reservation-specification.capacity-reservation-target.capacity-reservation-id</code> - The ID of the targeted Capacity Reservation.</p> </li> <li> <p> <code>capacity-reservation-specification.capacity-reservation-target.capacity-reservation-resource-group-arn</code> - The ARN of the targeted Capacity Reservation group.</p> </li> <li> <p> <code>client-token</code> - The idempotency token you provided when you launched the instance.</p> </li> <li> <p> <code>current-instance-boot-mode</code> - The boot mode that is used to launch the instance at launch or start (<code>legacy-bios</code> | <code>uefi</code>).</p> </li> <li> <p> <code>dns-name</code> - The public DNS name of the instance.</p> </li> <li> <p> <code>ebs-optimized</code> - A Boolean that indicates whether the instance is optimized for Amazon EBS I/O.</p> </li> <li> <p> <code>ena-support</code> - A Boolean that indicates whether the instance is enabled for enhanced networking with ENA.</p> </li> <li> <p> <code>enclave-options.enabled</code> - A Boolean that indicates whether the instance is enabled for Amazon Web Services Nitro Enclaves.</p> </li> <li> <p> <code>hibernation-options.configured</code> - A Boolean that indicates whether the instance is enabled for hibernation. A value of <code>true</code> means that the instance is enabled for hibernation.</p> </li> <li> <p> <code>host-id</code> - The ID of the Dedicated Host on which the instance is running, if applicable.</p> </li> <li> <p> <code>hypervisor</code> - The hypervisor type of the instance (<code>ovm</code> | <code>xen</code>). The value <code>xen</code> is used for both Xen and Nitro hypervisors.</p> </li> <li> <p> <code>iam-instance-profile.arn</code> - The instance profile associated with the instance. Specified as an ARN.</p> </li> <li> <p> <code>iam-instance-profile.id</code> - The instance profile associated with the instance. Specified as an ID.</p> </li> <li> <p> <code>iam-instance-profile.name</code> - The instance profile associated with the instance. Specified as an name.</p> </li> <li> <p> <code>image-id</code> - The ID of the image used to launch the instance.</p> </li> <li> <p> <code>instance-id</code> - The ID of the instance.</p> </li> <li> <p> <code>instance-lifecycle</code> - Indicates whether this is a Spot Instance, a Scheduled Instance, or a Capacity Block (<code>spot</code> | <code>scheduled</code> | <code>capacity-block</code>).</p> </li> <li> <p> <code>instance-state-code</code> - The state of the instance, as a 16-bit unsigned integer. The high byte is used for internal purposes and should be ignored. The low byte is set based on the state represented. The valid values are: 0 (pending), 16 (running), 32 (shutting-down), 48 (terminated), 64 (stopping), and 80 (stopped).</p> </li> <li> <p> <code>instance-state-name</code> - The state of the instance (<code>pending</code> | <code>running</code> | <code>shutting-down</code> | <code>terminated</code> | <code>stopping</code> | <code>stopped</code>).</p> </li> <li> <p> <code>instance-type</code> - The type of instance (for example, <code>t2.micro</code>).</p> </li> <li> <p> <code>instance.group-id</code> - The ID of the security group for the instance. </p> </li> <li> <p> <code>instance.group-name</code> - The name of the security group for the instance. </p> </li> <li> <p> <code>ip-address</code> - The public IPv4 address of the instance.</p> </li> <li> <p> <code>ipv6-address</code> - The IPv6 address of the instance.</p> </li> <li> <p> <code>kernel-id</code> - The kernel ID.</p> </li> <li> <p> <code>key-name</code> - The name of the key pair used when the instance was launched.</p> </li> <li> <p> <code>launch-index</code> - When launching multiple instances, this is the index for the instance in the launch group (for example, 0, 1, 2, and so on). </p> </li> <li> <p> <code>launch-time</code> - The time when the instance was launched, in the ISO 8601 format in the UTC time zone (YYYY-MM-DDThh:mm:ss.sssZ), for example, <code>2021-09-29T11:04:43.305Z</code>. You can use a wildcard (<code>*</code>), for example, <code>2021-09-29T*</code>, which matches an entire day.</p> </li> <li> <p> <code>maintenance-options.auto-recovery</code> - The current automatic recovery behavior of the instance (<code>disabled</code> | <code>default</code>).</p> </li> <li> <p> <code>metadata-options.http-endpoint</code> - The status of access to the HTTP metadata endpoint on your instance (<code>enabled</code> | <code>disabled</code>)</p> </li> <li> <p> <code>metadata-options.http-protocol-ipv4</code> - Indicates whether the IPv4 endpoint is enabled (<code>disabled</code> | <code>enabled</code>).</p> </li> <li> <p> <code>metadata-options.http-protocol-ipv6</code> - Indicates whether the IPv6 endpoint is enabled (<code>disabled</code> | <code>enabled</code>).</p> </li> <li> <p> <code>metadata-options.http-put-response-hop-limit</code> - The HTTP metadata request put response hop limit (integer, possible values <code>1</code> to <code>64</code>)</p> </li> <li> <p> <code>metadata-options.http-tokens</code> - The metadata request authorization state (<code>optional</code> | <code>required</code>)</p> </li> <li> <p> <code>metadata-options.instance-metadata-tags</code> - The status of access to instance tags from the instance metadata (<code>enabled</code> | <code>disabled</code>)</p> </li> <li> <p> <code>metadata-options.state</code> - The state of the metadata option changes (<code>pending</code> | <code>applied</code>).</p> </li> <li> <p> <code>monitoring-state</code> - Indicates whether detailed monitoring is enabled (<code>disabled</code> | <code>enabled</code>).</p> </li> <li> <p> <code>network-interface.addresses.association.allocation-id</code> - The allocation ID.</p> </li> <li> <p> <code>network-interface.addresses.association.association-id</code> - The association ID.</p> </li> <li> <p> <code>network-interface.addresses.association.carrier-ip</code> - The carrier IP address.</p> </li> <li> <p> <code>network-interface.addresses.association.customer-owned-ip</code> - The customer-owned IP address.</p> </li> <li> <p> <code>network-interface.addresses.association.ip-owner-id</code> - The owner ID of the private IPv4 address associated with the network interface.</p> </li> <li> <p> <code>network-interface.addresses.association.public-dns-name</code> - The public DNS name.</p> </li> <li> <p> <code>network-interface.addresses.association.public-ip</code> - The ID of the association of an Elastic IP address (IPv4) with a network interface.</p> </li> <li> <p> <code>network-interface.addresses.primary</code> - Specifies whether the IPv4 address of the network interface is the primary private IPv4 address.</p> </li> <li> <p> <code>network-interface.addresses.private-dns-name</code> - The private DNS name.</p> </li> <li> <p> <code>network-interface.addresses.private-ip-address</code> - The private IPv4 address associated with the network interface.</p> </li> <li> <p> <code>network-interface.association.allocation-id</code> - The allocation ID returned when you allocated the Elastic IP address (IPv4) for your network interface.</p> </li> <li> <p> <code>network-interface.association.association-id</code> - The association ID returned when the network interface was associated with an IPv4 address.</p> </li> <li> <p> <code>network-interface.association.carrier-ip</code> - The customer-owned IP address.</p> </li> <li> <p> <code>network-interface.association.customer-owned-ip</code> - The customer-owned IP address.</p> </li> <li> <p> <code>network-interface.association.ip-owner-id</code> - The owner of the Elastic IP address (IPv4) associated with the network interface.</p> </li> <li> <p> <code>network-interface.association.public-dns-name</code> - The public DNS name.</p> </li> <li> <p> <code>network-interface.association.public-ip</code> - The address of the Elastic IP address (IPv4) bound to the network interface.</p> </li> <li> <p> <code>network-interface.attachment.attach-time</code> - The time that the network interface was attached to an instance.</p> </li> <li> <p> <code>network-interface.attachment.attachment-id</code> - The ID of the interface attachment.</p> </li> <li> <p> <code>network-interface.attachment.delete-on-termination</code> - Specifies whether the attachment is deleted when an instance is terminated.</p> </li> <li> <p> <code>network-interface.attachment.device-index</code> - The device index to which the network interface is attached.</p> </li> <li> <p> <code>network-interface.attachment.instance-id</code> - The ID of the instance to which the network interface is attached.</p> </li> <li> <p> <code>network-interface.attachment.instance-owner-id</code> - The owner ID of the instance to which the network interface is attached.</p> </li> <li> <p> <code>network-interface.attachment.network-card-index</code> - The index of the network card.</p> </li> <li> <p> <code>network-interface.attachment.status</code> - The status of the attachment (<code>attaching</code> | <code>attached</code> | <code>detaching</code> | <code>detached</code>).</p> </li> <li> <p> <code>network-interface.availability-zone</code> - The Availability Zone for the network interface.</p> </li> <li> <p> <code>network-interface.deny-all-igw-traffic</code> - A Boolean that indicates whether a network interface with an IPv6 address is unreachable from the public internet.</p> </li> <li> <p> <code>network-interface.description</code> - The description of the network interface.</p> </li> <li> <p> <code>network-interface.group-id</code> - The ID of a security group associated with the network interface.</p> </li> <li> <p> <code>network-interface.group-name</code> - The name of a security group associated with the network interface.</p> </li> <li> <p> <code>network-interface.ipv4-prefixes.ipv4-prefix</code> - The IPv4 prefixes that are assigned to the network interface.</p> </li> <li> <p> <code>network-interface.ipv6-address</code> - The IPv6 address associated with the network interface.</p> </li> <li> <p> <code>network-interface.ipv6-addresses.ipv6-address</code> - The IPv6 address associated with the network interface.</p> </li> <li> <p> <code>network-interface.ipv6-addresses.is-primary-ipv6</code> - A Boolean that indicates whether this is the primary IPv6 address.</p> </li> <li> <p> <code>network-interface.ipv6-native</code> - A Boolean that indicates whether this is an IPv6 only network interface.</p> </li> <li> <p> <code>network-interface.ipv6-prefixes.ipv6-prefix</code> - The IPv6 prefix assigned to the network interface.</p> </li> <li> <p> <code>network-interface.mac-address</code> - The MAC address of the network interface.</p> </li> <li> <p> <code>network-interface.network-interface-id</code> - The ID of the network interface.</p> </li> <li> <p> <code>network-interface.outpost-arn</code> - The ARN of the Outpost.</p> </li> <li> <p> <code>network-interface.owner-id</code> - The ID of the owner of the network interface.</p> </li> <li> <p> <code>network-interface.private-dns-name</code> - The private DNS name of the network interface.</p> </li> <li> <p> <code>network-interface.private-ip-address</code> - The private IPv4 address.</p> </li> <li> <p> <code>network-interface.public-dns-name</code> - The public DNS name.</p> </li> <li> <p> <code>network-interface.requester-id</code> - The requester ID for the network interface.</p> </li> <li> <p> <code>network-interface.requester-managed</code> - Indicates whether the network interface is being managed by Amazon Web Services.</p> </li> <li> <p> <code>network-interface.status</code> - The status of the network interface (<code>available</code>) | <code>in-use</code>).</p> </li> <li> <p> <code>network-interface.source-dest-check</code> - Whether the network interface performs source/destination checking. A value of <code>true</code> means that checking is enabled, and <code>false</code> means that checking is disabled. The value must be <code>false</code> for the network interface to perform network address translation (NAT) in your VPC.</p> </li> <li> <p> <code>network-interface.subnet-id</code> - The ID of the subnet for the network interface.</p> </li> <li> <p> <code>network-interface.tag-key</code> - The key of a tag assigned to the network interface.</p> </li> <li> <p> <code>network-interface.tag-value</code> - The value of a tag assigned to the network interface.</p> </li> <li> <p> <code>network-interface.vpc-id</code> - The ID of the VPC for the network interface.</p> </li> <li> <p> <code>outpost-arn</code> - The Amazon Resource Name (ARN) of the Outpost.</p> </li> <li> <p> <code>owner-id</code> - The Amazon Web Services account ID of the instance owner.</p> </li> <li> <p> <code>placement-group-name</code> - The name of the placement group for the instance.</p> </li> <li> <p> <code>placement-partition-number</code> - The partition in which the instance is located.</p> </li> <li> <p> <code>platform</code> - The platform. To list only Windows instances, use <code>windows</code>.</p> </li> <li> <p> <code>platform-details</code> - The platform (<code>Linux/UNIX</code> | <code>Red Hat BYOL Linux</code> | <code> Red Hat Enterprise Linux</code> | <code>Red Hat Enterprise Linux with HA</code> | <code>Red Hat Enterprise Linux with SQL Server Standard and HA</code> | <code>Red Hat Enterprise Linux with SQL Server Enterprise and HA</code> | <code>Red Hat Enterprise Linux with SQL Server Standard</code> | <code>Red Hat Enterprise Linux with SQL Server Web</code> | <code>Red Hat Enterprise Linux with SQL Server Enterprise</code> | <code>SQL Server Enterprise</code> | <code>SQL Server Standard</code> | <code>SQL Server Web</code> | <code>SUSE Linux</code> | <code>Ubuntu Pro</code> | <code>Windows</code> | <code>Windows BYOL</code> | <code>Windows with SQL Server Enterprise</code> | <code>Windows with SQL Server Standard</code> | <code>Windows with SQL Server Web</code>).</p> </li> <li> <p> <code>private-dns-name</code> - The private IPv4 DNS name of the instance.</p> </li> <li> <p> <code>private-dns-name-options.enable-resource-name-dns-a-record</code> - A Boolean that indicates whether to respond to DNS queries for instance hostnames with DNS A records.</p> </li> <li> <p> <code>private-dns-name-options.enable-resource-name-dns-aaaa-record</code> - A Boolean that indicates whether to respond to DNS queries for instance hostnames with DNS AAAA records.</p> </li> <li> <p> <code>private-dns-name-options.hostname-type</code> - The type of hostname (<code>ip-name</code> | <code>resource-name</code>).</p> </li> <li> <p> <code>private-ip-address</code> - The private IPv4 address of the instance. This can only be used to filter by the primary IP address of the network interface attached to the instance. To filter by additional IP addresses assigned to the network interface, use the filter <code>network-interface.addresses.private-ip-address</code>.</p> </li> <li> <p> <code>product-code</code> - The product code associated with the AMI used to launch the instance.</p> </li> <li> <p> <code>product-code.type</code> - The type of product code (<code>devpay</code> | <code>marketplace</code>).</p> </li> <li> <p> <code>ramdisk-id</code> - The RAM disk ID.</p> </li> <li> <p> <code>reason</code> - The reason for the current state of the instance (for example, shows \"User Initiated [date]\" when you stop or terminate the instance). Similar to the state-reason-code filter.</p> </li> <li> <p> <code>requester-id</code> - The ID of the entity that launched the instance on your behalf (for example, Amazon Web Services Management Console, Auto Scaling, and so on).</p> </li> <li> <p> <code>reservation-id</code> - The ID of the instance's reservation. A reservation ID is created any time you launch an instance. A reservation ID has a one-to-one relationship with an instance launch request, but can be associated with more than one instance if you launch multiple instances using the same launch request. For example, if you launch one instance, you get one reservation ID. If you launch ten instances using the same launch request, you also get one reservation ID.</p> </li> <li> <p> <code>root-device-name</code> - The device name of the root device volume (for example, <code>/dev/sda1</code>).</p> </li> <li> <p> <code>root-device-type</code> - The type of the root device volume (<code>ebs</code> | <code>instance-store</code>).</p> </li> <li> <p> <code>source-dest-check</code> - Indicates whether the instance performs source/destination checking. A value of <code>true</code> means that checking is enabled, and <code>false</code> means that checking is disabled. The value must be <code>false</code> for the instance to perform network address translation (NAT) in your VPC. </p> </li> <li> <p> <code>spot-instance-request-id</code> - The ID of the Spot Instance request.</p> </li> <li> <p> <code>state-reason-code</code> - The reason code for the state change.</p> </li> <li> <p> <code>state-reason-message</code> - A message that describes the state change.</p> </li> <li> <p> <code>subnet-id</code> - The ID of the subnet for the instance.</p> </li> <li> <p> <code>tag:&lt;key&gt;</code> - The key/value combination of a tag assigned to the resource. Use the tag key in the filter name and the tag value as the filter value. For example, to find all resources that have a tag with the key <code>Owner</code> and the value <code>TeamA</code>, specify <code>tag:Owner</code> for the filter name and <code>TeamA</code> for the filter value.</p> </li> <li> <p> <code>tag-key</code> - The key of a tag assigned to the resource. Use this filter to find all resources that have a tag with a specific key, regardless of the tag value.</p> </li> <li> <p> <code>tenancy</code> - The tenancy of an instance (<code>dedicated</code> | <code>default</code> | <code>host</code>).</p> </li> <li> <p> <code>tpm-support</code> - Indicates if the instance is configured for NitroTPM support (<code>v2.0</code>). </p> </li> <li> <p> <code>usage-operation</code> - The usage operation value for the instance (<code>RunInstances</code> | <code>RunInstances:00g0</code> | <code>RunInstances:0010</code> | <code>RunInstances:1010</code> | <code>RunInstances:1014</code> | <code>RunInstances:1110</code> | <code>RunInstances:0014</code> | <code>RunInstances:0210</code> | <code>RunInstances:0110</code> | <code>RunInstances:0100</code> | <code>RunInstances:0004</code> | <code>RunInstances:0200</code> | <code>RunInstances:000g</code> | <code>RunInstances:0g00</code> | <code>RunInstances:0002</code> | <code>RunInstances:0800</code> | <code>RunInstances:0102</code> | <code>RunInstances:0006</code> | <code>RunInstances:0202</code>).</p> </li> <li> <p> <code>usage-operation-update-time</code> - The time that the usage operation was last updated, for example, <code>2022-09-15T17:15:20.000Z</code>.</p> </li> <li> <p> <code>virtualization-type</code> - The virtualization type of the instance (<code>paravirtual</code> | <code>hvm</code>).</p> </li> <li> <p> <code>vpc-id</code> - The ID of the VPC that the instance is running in.</p> </li> </ul>",
+          "documentation":"<p>The filters.</p> <ul> <li> <p> <code>affinity</code> - The affinity setting for an instance running on a Dedicated Host (<code>default</code> | <code>host</code>).</p> </li> <li> <p> <code>architecture</code> - The instance architecture (<code>i386</code> | <code>x86_64</code> | <code>arm64</code>).</p> </li> <li> <p> <code>availability-zone</code> - The Availability Zone of the instance.</p> </li> <li> <p> <code>block-device-mapping.attach-time</code> - The attach time for an EBS volume mapped to the instance, for example, <code>2022-09-15T17:15:20.000Z</code>.</p> </li> <li> <p> <code>block-device-mapping.delete-on-termination</code> - A Boolean that indicates whether the EBS volume is deleted on instance termination.</p> </li> <li> <p> <code>block-device-mapping.device-name</code> - The device name specified in the block device mapping (for example, <code>/dev/sdh</code> or <code>xvdh</code>).</p> </li> <li> <p> <code>block-device-mapping.status</code> - The status for the EBS volume (<code>attaching</code> | <code>attached</code> | <code>detaching</code> | <code>detached</code>).</p> </li> <li> <p> <code>block-device-mapping.volume-id</code> - The volume ID of the EBS volume.</p> </li> <li> <p> <code>boot-mode</code> - The boot mode that was specified by the AMI (<code>legacy-bios</code> | <code>uefi</code> | <code>uefi-preferred</code>).</p> </li> <li> <p> <code>capacity-reservation-id</code> - The ID of the Capacity Reservation into which the instance was launched.</p> </li> <li> <p> <code>capacity-reservation-specification.capacity-reservation-preference</code> - The instance's Capacity Reservation preference (<code>open</code> | <code>none</code>).</p> </li> <li> <p> <code>capacity-reservation-specification.capacity-reservation-target.capacity-reservation-id</code> - The ID of the targeted Capacity Reservation.</p> </li> <li> <p> <code>capacity-reservation-specification.capacity-reservation-target.capacity-reservation-resource-group-arn</code> - The ARN of the targeted Capacity Reservation group.</p> </li> <li> <p> <code>client-token</code> - The idempotency token you provided when you launched the instance.</p> </li> <li> <p> <code>current-instance-boot-mode</code> - The boot mode that is used to launch the instance at launch or start (<code>legacy-bios</code> | <code>uefi</code>).</p> </li> <li> <p> <code>dns-name</code> - The public DNS name of the instance.</p> </li> <li> <p> <code>ebs-optimized</code> - A Boolean that indicates whether the instance is optimized for Amazon EBS I/O.</p> </li> <li> <p> <code>ena-support</code> - A Boolean that indicates whether the instance is enabled for enhanced networking with ENA.</p> </li> <li> <p> <code>enclave-options.enabled</code> - A Boolean that indicates whether the instance is enabled for Amazon Web Services Nitro Enclaves.</p> </li> <li> <p> <code>hibernation-options.configured</code> - A Boolean that indicates whether the instance is enabled for hibernation. A value of <code>true</code> means that the instance is enabled for hibernation.</p> </li> <li> <p> <code>host-id</code> - The ID of the Dedicated Host on which the instance is running, if applicable.</p> </li> <li> <p> <code>hypervisor</code> - The hypervisor type of the instance (<code>ovm</code> | <code>xen</code>). The value <code>xen</code> is used for both Xen and Nitro hypervisors.</p> </li> <li> <p> <code>iam-instance-profile.arn</code> - The instance profile associated with the instance. Specified as an ARN.</p> </li> <li> <p> <code>iam-instance-profile.id</code> - The instance profile associated with the instance. Specified as an ID.</p> </li> <li> <p> <code>image-id</code> - The ID of the image used to launch the instance.</p> </li> <li> <p> <code>instance-id</code> - The ID of the instance.</p> </li> <li> <p> <code>instance-lifecycle</code> - Indicates whether this is a Spot Instance, a Scheduled Instance, or a Capacity Block (<code>spot</code> | <code>scheduled</code> | <code>capacity-block</code>).</p> </li> <li> <p> <code>instance-state-code</code> - The state of the instance, as a 16-bit unsigned integer. The high byte is used for internal purposes and should be ignored. The low byte is set based on the state represented. The valid values are: 0 (pending), 16 (running), 32 (shutting-down), 48 (terminated), 64 (stopping), and 80 (stopped).</p> </li> <li> <p> <code>instance-state-name</code> - The state of the instance (<code>pending</code> | <code>running</code> | <code>shutting-down</code> | <code>terminated</code> | <code>stopping</code> | <code>stopped</code>).</p> </li> <li> <p> <code>instance-type</code> - The type of instance (for example, <code>t2.micro</code>).</p> </li> <li> <p> <code>instance.group-id</code> - The ID of the security group for the instance. </p> </li> <li> <p> <code>instance.group-name</code> - The name of the security group for the instance. </p> </li> <li> <p> <code>ip-address</code> - The public IPv4 address of the instance.</p> </li> <li> <p> <code>ipv6-address</code> - The IPv6 address of the instance.</p> </li> <li> <p> <code>kernel-id</code> - The kernel ID.</p> </li> <li> <p> <code>key-name</code> - The name of the key pair used when the instance was launched.</p> </li> <li> <p> <code>launch-index</code> - When launching multiple instances, this is the index for the instance in the launch group (for example, 0, 1, 2, and so on). </p> </li> <li> <p> <code>launch-time</code> - The time when the instance was launched, in the ISO 8601 format in the UTC time zone (YYYY-MM-DDThh:mm:ss.sssZ), for example, <code>2021-09-29T11:04:43.305Z</code>. You can use a wildcard (<code>*</code>), for example, <code>2021-09-29T*</code>, which matches an entire day.</p> </li> <li> <p> <code>maintenance-options.auto-recovery</code> - The current automatic recovery behavior of the instance (<code>disabled</code> | <code>default</code>).</p> </li> <li> <p> <code>metadata-options.http-endpoint</code> - The status of access to the HTTP metadata endpoint on your instance (<code>enabled</code> | <code>disabled</code>)</p> </li> <li> <p> <code>metadata-options.http-protocol-ipv4</code> - Indicates whether the IPv4 endpoint is enabled (<code>disabled</code> | <code>enabled</code>).</p> </li> <li> <p> <code>metadata-options.http-protocol-ipv6</code> - Indicates whether the IPv6 endpoint is enabled (<code>disabled</code> | <code>enabled</code>).</p> </li> <li> <p> <code>metadata-options.http-put-response-hop-limit</code> - The HTTP metadata request put response hop limit (integer, possible values <code>1</code> to <code>64</code>)</p> </li> <li> <p> <code>metadata-options.http-tokens</code> - The metadata request authorization state (<code>optional</code> | <code>required</code>)</p> </li> <li> <p> <code>metadata-options.instance-metadata-tags</code> - The status of access to instance tags from the instance metadata (<code>enabled</code> | <code>disabled</code>)</p> </li> <li> <p> <code>metadata-options.state</code> - The state of the metadata option changes (<code>pending</code> | <code>applied</code>).</p> </li> <li> <p> <code>monitoring-state</code> - Indicates whether detailed monitoring is enabled (<code>disabled</code> | <code>enabled</code>).</p> </li> <li> <p> <code>network-interface.addresses.association.allocation-id</code> - The allocation ID.</p> </li> <li> <p> <code>network-interface.addresses.association.association-id</code> - The association ID.</p> </li> <li> <p> <code>network-interface.addresses.association.carrier-ip</code> - The carrier IP address.</p> </li> <li> <p> <code>network-interface.addresses.association.customer-owned-ip</code> - The customer-owned IP address.</p> </li> <li> <p> <code>network-interface.addresses.association.ip-owner-id</code> - The owner ID of the private IPv4 address associated with the network interface.</p> </li> <li> <p> <code>network-interface.addresses.association.public-dns-name</code> - The public DNS name.</p> </li> <li> <p> <code>network-interface.addresses.association.public-ip</code> - The ID of the association of an Elastic IP address (IPv4) with a network interface.</p> </li> <li> <p> <code>network-interface.addresses.primary</code> - Specifies whether the IPv4 address of the network interface is the primary private IPv4 address.</p> </li> <li> <p> <code>network-interface.addresses.private-dns-name</code> - The private DNS name.</p> </li> <li> <p> <code>network-interface.addresses.private-ip-address</code> - The private IPv4 address associated with the network interface.</p> </li> <li> <p> <code>network-interface.association.allocation-id</code> - The allocation ID returned when you allocated the Elastic IP address (IPv4) for your network interface.</p> </li> <li> <p> <code>network-interface.association.association-id</code> - The association ID returned when the network interface was associated with an IPv4 address.</p> </li> <li> <p> <code>network-interface.association.carrier-ip</code> - The customer-owned IP address.</p> </li> <li> <p> <code>network-interface.association.customer-owned-ip</code> - The customer-owned IP address.</p> </li> <li> <p> <code>network-interface.association.ip-owner-id</code> - The owner of the Elastic IP address (IPv4) associated with the network interface.</p> </li> <li> <p> <code>network-interface.association.public-dns-name</code> - The public DNS name.</p> </li> <li> <p> <code>network-interface.association.public-ip</code> - The address of the Elastic IP address (IPv4) bound to the network interface.</p> </li> <li> <p> <code>network-interface.attachment.attach-time</code> - The time that the network interface was attached to an instance.</p> </li> <li> <p> <code>network-interface.attachment.attachment-id</code> - The ID of the interface attachment.</p> </li> <li> <p> <code>network-interface.attachment.delete-on-termination</code> - Specifies whether the attachment is deleted when an instance is terminated.</p> </li> <li> <p> <code>network-interface.attachment.device-index</code> - The device index to which the network interface is attached.</p> </li> <li> <p> <code>network-interface.attachment.instance-id</code> - The ID of the instance to which the network interface is attached.</p> </li> <li> <p> <code>network-interface.attachment.instance-owner-id</code> - The owner ID of the instance to which the network interface is attached.</p> </li> <li> <p> <code>network-interface.attachment.network-card-index</code> - The index of the network card.</p> </li> <li> <p> <code>network-interface.attachment.status</code> - The status of the attachment (<code>attaching</code> | <code>attached</code> | <code>detaching</code> | <code>detached</code>).</p> </li> <li> <p> <code>network-interface.availability-zone</code> - The Availability Zone for the network interface.</p> </li> <li> <p> <code>network-interface.deny-all-igw-traffic</code> - A Boolean that indicates whether a network interface with an IPv6 address is unreachable from the public internet.</p> </li> <li> <p> <code>network-interface.description</code> - The description of the network interface.</p> </li> <li> <p> <code>network-interface.group-id</code> - The ID of a security group associated with the network interface.</p> </li> <li> <p> <code>network-interface.group-name</code> - The name of a security group associated with the network interface.</p> </li> <li> <p> <code>network-interface.ipv4-prefixes.ipv4-prefix</code> - The IPv4 prefixes that are assigned to the network interface.</p> </li> <li> <p> <code>network-interface.ipv6-address</code> - The IPv6 address associated with the network interface.</p> </li> <li> <p> <code>network-interface.ipv6-addresses.ipv6-address</code> - The IPv6 address associated with the network interface.</p> </li> <li> <p> <code>network-interface.ipv6-addresses.is-primary-ipv6</code> - A Boolean that indicates whether this is the primary IPv6 address.</p> </li> <li> <p> <code>network-interface.ipv6-native</code> - A Boolean that indicates whether this is an IPv6 only network interface.</p> </li> <li> <p> <code>network-interface.ipv6-prefixes.ipv6-prefix</code> - The IPv6 prefix assigned to the network interface.</p> </li> <li> <p> <code>network-interface.mac-address</code> - The MAC address of the network interface.</p> </li> <li> <p> <code>network-interface.network-interface-id</code> - The ID of the network interface.</p> </li> <li> <p> <code>network-interface.outpost-arn</code> - The ARN of the Outpost.</p> </li> <li> <p> <code>network-interface.owner-id</code> - The ID of the owner of the network interface.</p> </li> <li> <p> <code>network-interface.private-dns-name</code> - The private DNS name of the network interface.</p> </li> <li> <p> <code>network-interface.private-ip-address</code> - The private IPv4 address.</p> </li> <li> <p> <code>network-interface.public-dns-name</code> - The public DNS name.</p> </li> <li> <p> <code>network-interface.requester-id</code> - The requester ID for the network interface.</p> </li> <li> <p> <code>network-interface.requester-managed</code> - Indicates whether the network interface is being managed by Amazon Web Services.</p> </li> <li> <p> <code>network-interface.status</code> - The status of the network interface (<code>available</code>) | <code>in-use</code>).</p> </li> <li> <p> <code>network-interface.source-dest-check</code> - Whether the network interface performs source/destination checking. A value of <code>true</code> means that checking is enabled, and <code>false</code> means that checking is disabled. The value must be <code>false</code> for the network interface to perform network address translation (NAT) in your VPC.</p> </li> <li> <p> <code>network-interface.subnet-id</code> - The ID of the subnet for the network interface.</p> </li> <li> <p> <code>network-interface.tag-key</code> - The key of a tag assigned to the network interface.</p> </li> <li> <p> <code>network-interface.tag-value</code> - The value of a tag assigned to the network interface.</p> </li> <li> <p> <code>network-interface.vpc-id</code> - The ID of the VPC for the network interface.</p> </li> <li> <p> <code>outpost-arn</code> - The Amazon Resource Name (ARN) of the Outpost.</p> </li> <li> <p> <code>owner-id</code> - The Amazon Web Services account ID of the instance owner.</p> </li> <li> <p> <code>placement-group-name</code> - The name of the placement group for the instance.</p> </li> <li> <p> <code>placement-partition-number</code> - The partition in which the instance is located.</p> </li> <li> <p> <code>platform</code> - The platform. To list only Windows instances, use <code>windows</code>.</p> </li> <li> <p> <code>platform-details</code> - The platform (<code>Linux/UNIX</code> | <code>Red Hat BYOL Linux</code> | <code> Red Hat Enterprise Linux</code> | <code>Red Hat Enterprise Linux with HA</code> | <code>Red Hat Enterprise Linux with SQL Server Standard and HA</code> | <code>Red Hat Enterprise Linux with SQL Server Enterprise and HA</code> | <code>Red Hat Enterprise Linux with SQL Server Standard</code> | <code>Red Hat Enterprise Linux with SQL Server Web</code> | <code>Red Hat Enterprise Linux with SQL Server Enterprise</code> | <code>SQL Server Enterprise</code> | <code>SQL Server Standard</code> | <code>SQL Server Web</code> | <code>SUSE Linux</code> | <code>Ubuntu Pro</code> | <code>Windows</code> | <code>Windows BYOL</code> | <code>Windows with SQL Server Enterprise</code> | <code>Windows with SQL Server Standard</code> | <code>Windows with SQL Server Web</code>).</p> </li> <li> <p> <code>private-dns-name</code> - The private IPv4 DNS name of the instance.</p> </li> <li> <p> <code>private-dns-name-options.enable-resource-name-dns-a-record</code> - A Boolean that indicates whether to respond to DNS queries for instance hostnames with DNS A records.</p> </li> <li> <p> <code>private-dns-name-options.enable-resource-name-dns-aaaa-record</code> - A Boolean that indicates whether to respond to DNS queries for instance hostnames with DNS AAAA records.</p> </li> <li> <p> <code>private-dns-name-options.hostname-type</code> - The type of hostname (<code>ip-name</code> | <code>resource-name</code>).</p> </li> <li> <p> <code>private-ip-address</code> - The private IPv4 address of the instance. This can only be used to filter by the primary IP address of the network interface attached to the instance. To filter by additional IP addresses assigned to the network interface, use the filter <code>network-interface.addresses.private-ip-address</code>.</p> </li> <li> <p> <code>product-code</code> - The product code associated with the AMI used to launch the instance.</p> </li> <li> <p> <code>product-code.type</code> - The type of product code (<code>devpay</code> | <code>marketplace</code>).</p> </li> <li> <p> <code>ramdisk-id</code> - The RAM disk ID.</p> </li> <li> <p> <code>reason</code> - The reason for the current state of the instance (for example, shows \"User Initiated [date]\" when you stop or terminate the instance). Similar to the state-reason-code filter.</p> </li> <li> <p> <code>requester-id</code> - The ID of the entity that launched the instance on your behalf (for example, Amazon Web Services Management Console, Auto Scaling, and so on).</p> </li> <li> <p> <code>reservation-id</code> - The ID of the instance's reservation. A reservation ID is created any time you launch an instance. A reservation ID has a one-to-one relationship with an instance launch request, but can be associated with more than one instance if you launch multiple instances using the same launch request. For example, if you launch one instance, you get one reservation ID. If you launch ten instances using the same launch request, you also get one reservation ID.</p> </li> <li> <p> <code>root-device-name</code> - The device name of the root device volume (for example, <code>/dev/sda1</code>).</p> </li> <li> <p> <code>root-device-type</code> - The type of the root device volume (<code>ebs</code> | <code>instance-store</code>).</p> </li> <li> <p> <code>source-dest-check</code> - Indicates whether the instance performs source/destination checking. A value of <code>true</code> means that checking is enabled, and <code>false</code> means that checking is disabled. The value must be <code>false</code> for the instance to perform network address translation (NAT) in your VPC. </p> </li> <li> <p> <code>spot-instance-request-id</code> - The ID of the Spot Instance request.</p> </li> <li> <p> <code>state-reason-code</code> - The reason code for the state change.</p> </li> <li> <p> <code>state-reason-message</code> - A message that describes the state change.</p> </li> <li> <p> <code>subnet-id</code> - The ID of the subnet for the instance.</p> </li> <li> <p> <code>tag:&lt;key&gt;</code> - The key/value combination of a tag assigned to the resource. Use the tag key in the filter name and the tag value as the filter value. For example, to find all resources that have a tag with the key <code>Owner</code> and the value <code>TeamA</code>, specify <code>tag:Owner</code> for the filter name and <code>TeamA</code> for the filter value.</p> </li> <li> <p> <code>tag-key</code> - The key of a tag assigned to the resource. Use this filter to find all resources that have a tag with a specific key, regardless of the tag value.</p> </li> <li> <p> <code>tenancy</code> - The tenancy of an instance (<code>dedicated</code> | <code>default</code> | <code>host</code>).</p> </li> <li> <p> <code>tpm-support</code> - Indicates if the instance is configured for NitroTPM support (<code>v2.0</code>). </p> </li> <li> <p> <code>usage-operation</code> - The usage operation value for the instance (<code>RunInstances</code> | <code>RunInstances:00g0</code> | <code>RunInstances:0010</code> | <code>RunInstances:1010</code> | <code>RunInstances:1014</code> | <code>RunInstances:1110</code> | <code>RunInstances:0014</code> | <code>RunInstances:0210</code> | <code>RunInstances:0110</code> | <code>RunInstances:0100</code> | <code>RunInstances:0004</code> | <code>RunInstances:0200</code> | <code>RunInstances:000g</code> | <code>RunInstances:0g00</code> | <code>RunInstances:0002</code> | <code>RunInstances:0800</code> | <code>RunInstances:0102</code> | <code>RunInstances:0006</code> | <code>RunInstances:0202</code>).</p> </li> <li> <p> <code>usage-operation-update-time</code> - The time that the usage operation was last updated, for example, <code>2022-09-15T17:15:20.000Z</code>.</p> </li> <li> <p> <code>virtualization-type</code> - The virtualization type of the instance (<code>paravirtual</code> | <code>hvm</code>).</p> </li> <li> <p> <code>vpc-id</code> - The ID of the VPC that the instance is running in.</p> </li> </ul>",
           "locationName":"Filter"
         },
         "NextToken":{
@@ -26719,6 +26974,37 @@
         }
       }
     },
+    "DisassociateCapacityReservationBillingOwnerRequest":{
+      "type":"structure",
+      "required":[
+        "CapacityReservationId",
+        "UnusedReservationBillingOwnerId"
+      ],
+      "members":{
+        "DryRun":{
+          "shape":"Boolean",
+          "documentation":"<p>Checks whether you have the required permissions for the action, without actually making the request, and provides an error response. If you have the required permissions, the error response is <code>DryRunOperation</code>. Otherwise, it is <code>UnauthorizedOperation</code>.</p>"
+        },
+        "CapacityReservationId":{
+          "shape":"CapacityReservationId",
+          "documentation":"<p>The ID of the Capacity Reservation.</p>"
+        },
+        "UnusedReservationBillingOwnerId":{
+          "shape":"AccountID",
+          "documentation":"<p>The ID of the consumer account to which the request was sent.</p>"
+        }
+      }
+    },
+    "DisassociateCapacityReservationBillingOwnerResult":{
+      "type":"structure",
+      "members":{
+        "Return":{
+          "shape":"Boolean",
+          "documentation":"<p>Returns <code>true</code> if the request succeeds; otherwise, it returns an error.</p>",
+          "locationName":"return"
+        }
+      }
+    },
     "DisassociateClientVpnTargetNetworkRequest":{
       "type":"structure",
       "required":[
@@ -27811,7 +28097,7 @@
           "locationName":"elasticGpuAssociationTime"
         }
       },
-      "documentation":"<note> <p>Amazon Elastic Graphics reached end of life on January 8, 2024. For workloads that require graphics acceleration, we recommend that you use Amazon EC2 G4, G5, or G6 instances.</p> </note> <p>Describes the association between an instance and an Elastic Graphics accelerator.</p>"
+      "documentation":"<note> <p>Amazon Elastic Graphics reached end of life on January 8, 2024.</p> </note> <p>Describes the association between an instance and an Elastic Graphics accelerator.</p>"
     },
     "ElasticGpuAssociationList":{
       "type":"list",
@@ -27829,7 +28115,7 @@
           "locationName":"status"
         }
       },
-      "documentation":"<note> <p>Amazon Elastic Graphics reached end of life on January 8, 2024. For workloads that require graphics acceleration, we recommend that you use Amazon EC2 G4, G5, or G6 instances.</p> </note> <p>Describes the status of an Elastic Graphics accelerator.</p>"
+      "documentation":"<note> <p>Amazon Elastic Graphics reached end of life on January 8, 2024.</p> </note> <p>Describes the status of an Elastic Graphics accelerator.</p>"
     },
     "ElasticGpuId":{"type":"string"},
     "ElasticGpuIdSet":{
@@ -27855,7 +28141,7 @@
           "documentation":"<p>The type of Elastic Graphics accelerator.</p>"
         }
       },
-      "documentation":"<note> <p>Amazon Elastic Graphics reached end of life on January 8, 2024. For workloads that require graphics acceleration, we recommend that you use Amazon EC2 G4, G5, or G6 instances.</p> </note> <p>A specification for an Elastic Graphics accelerator.</p>"
+      "documentation":"<note> <p>Amazon Elastic Graphics reached end of life on January 8, 2024.</p> </note> <p>A specification for an Elastic Graphics accelerator.</p>"
     },
     "ElasticGpuSpecificationList":{
       "type":"list",
@@ -27869,11 +28155,11 @@
       "members":{
         "Type":{
           "shape":"String",
-          "documentation":"<p>Deprecated.</p> <note> <p>Amazon Elastic Graphics reached end of life on January 8, 2024. For workloads that require graphics acceleration, we recommend that you use Amazon EC2 G4ad, G4dn, or G5 instances.</p> </note>",
+          "documentation":"<p>The elastic GPU type.</p>",
           "locationName":"type"
         }
       },
-      "documentation":"<p>Deprecated.</p> <note> <p>Amazon Elastic Graphics reached end of life on January 8, 2024. For workloads that require graphics acceleration, we recommend that you use Amazon EC2 G4ad, G4dn, or G5 instances.</p> </note>"
+      "documentation":"<note> <p>Amazon Elastic Graphics reached end of life on January 8, 2024.</p> </note> <p>Describes an elastic GPU.</p>"
     },
     "ElasticGpuSpecificationResponseList":{
       "type":"list",
@@ -27939,7 +28225,7 @@
           "locationName":"tagSet"
         }
       },
-      "documentation":"<note> <p>Amazon Elastic Graphics reached end of life on January 8, 2024. For workloads that require graphics acceleration, we recommend that you use Amazon EC2 G4, G5, or G6 instances.</p> </note> <p>Describes an Elastic Graphics accelerator.</p>"
+      "documentation":"<note> <p>Amazon Elastic Graphics reached end of life on January 8, 2024.</p> </note> <p>Describes an Elastic Graphics accelerator.</p>"
     },
     "ElasticInferenceAccelerator":{
       "type":"structure",
@@ -27954,7 +28240,7 @@
           "documentation":"<p> The number of elastic inference accelerators to attach to the instance. </p> <p>Default: 1</p>"
         }
       },
-      "documentation":"<p> Describes an elastic inference accelerator. </p>"
+      "documentation":"<note> <p>Amazon Elastic Inference is no longer available.</p> </note> <p> Describes an elastic inference accelerator. </p>"
     },
     "ElasticInferenceAcceleratorAssociation":{
       "type":"structure",
@@ -27980,7 +28266,7 @@
           "locationName":"elasticInferenceAcceleratorAssociationTime"
         }
       },
-      "documentation":"<p> Describes the association between an instance and an elastic inference accelerator. </p>"
+      "documentation":"<note> <p>Amazon Elastic Inference is no longer available.</p> </note> <p> Describes the association between an instance and an elastic inference accelerator. </p>"
     },
     "ElasticInferenceAcceleratorAssociationList":{
       "type":"list",
@@ -34533,7 +34819,7 @@
           "locationName":"totalInferenceMemoryInMiB"
         }
       },
-      "documentation":"<p>Describes the Inference accelerators for the instance type.</p>"
+      "documentation":"<note> <p>Amazon Elastic Inference is no longer available.</p> </note> <p>Describes the Inference accelerators for the instance type.</p>"
     },
     "InferenceDeviceCount":{"type":"integer"},
     "InferenceDeviceInfo":{
@@ -34560,7 +34846,7 @@
           "locationName":"memoryInfo"
         }
       },
-      "documentation":"<p>Describes the Inference accelerators for the instance type.</p>"
+      "documentation":"<note> <p>Amazon Elastic Inference is no longer available.</p> </note> <p>Describes the Inference accelerators for the instance type.</p>"
     },
     "InferenceDeviceInfoList":{
       "type":"list",
@@ -34577,7 +34863,7 @@
           "locationName":"sizeInMiB"
         }
       },
-      "documentation":"<p>Describes the memory available to the inference accelerator.</p>"
+      "documentation":"<note> <p>Amazon Elastic Inference is no longer available.</p> </note> <p>Describes the memory available to the inference accelerator.</p>"
     },
     "InferenceDeviceMemorySize":{"type":"integer"},
     "InferenceDeviceName":{"type":"string"},
@@ -34633,12 +34919,12 @@
         },
         "ElasticGpuAssociations":{
           "shape":"ElasticGpuAssociationList",
-          "documentation":"<p>Deprecated.</p> <note> <p>Amazon Elastic Graphics reached end of life on January 8, 2024. For workloads that require graphics acceleration, we recommend that you use Amazon EC2 G4ad, G4dn, or G5 instances.</p> </note>",
+          "documentation":"<p>Deprecated.</p> <note> <p>Amazon Elastic Graphics reached end of life on January 8, 2024.</p> </note>",
           "locationName":"elasticGpuAssociationSet"
         },
         "ElasticInferenceAcceleratorAssociations":{
           "shape":"ElasticInferenceAcceleratorAssociationList",
-          "documentation":"<p>The elastic inference accelerator associated with the instance.</p>",
+          "documentation":"<p>Deprecated</p> <note> <p>Amazon Elastic Inference is no longer available.</p> </note>",
           "locationName":"elasticInferenceAcceleratorAssociationSet"
         },
         "NetworkInterfaces":{
@@ -36181,7 +36467,7 @@
         },
         "AcceleratorTypes":{
           "shape":"AcceleratorTypeSet",
-          "documentation":"<p>The accelerator types that must be on the instance type.</p> <ul> <li> <p>For instance types with GPU accelerators, specify <code>gpu</code>.</p> </li> <li> <p>For instance types with FPGA accelerators, specify <code>fpga</code>.</p> </li> <li> <p>For instance types with inference accelerators, specify <code>inference</code>.</p> </li> </ul> <p>Default: Any accelerator type</p>",
+          "documentation":"<p>The accelerator types that must be on the instance type.</p> <ul> <li> <p>For instance types with GPU accelerators, specify <code>gpu</code>.</p> </li> <li> <p>For instance types with FPGA accelerators, specify <code>fpga</code>.</p> </li> </ul> <p>Default: Any accelerator type</p>",
           "locationName":"acceleratorTypeSet"
         },
         "AcceleratorCount":{
@@ -36299,7 +36585,7 @@
         },
         "AcceleratorTypes":{
           "shape":"AcceleratorTypeSet",
-          "documentation":"<p>The accelerator types that must be on the instance type.</p> <ul> <li> <p>To include instance types with GPU hardware, specify <code>gpu</code>.</p> </li> <li> <p>To include instance types with FPGA hardware, specify <code>fpga</code>.</p> </li> <li> <p>To include instance types with inference hardware, specify <code>inference</code>.</p> </li> </ul> <p>Default: Any accelerator type</p>",
+          "documentation":"<p>The accelerator types that must be on the instance type.</p> <ul> <li> <p>To include instance types with GPU hardware, specify <code>gpu</code>.</p> </li> <li> <p>To include instance types with FPGA hardware, specify <code>fpga</code>.</p> </li> </ul> <p>Default: Any accelerator type</p>",
           "locationName":"AcceleratorType"
         },
         "AcceleratorCount":{
@@ -40253,7 +40539,7 @@
           "documentation":"<p> The number of elastic inference accelerators to attach to the instance. </p> <p>Default: 1</p>"
         }
       },
-      "documentation":"<p> Describes an elastic inference accelerator. </p>"
+      "documentation":"<note> <p>Amazon Elastic Inference is no longer available.</p> </note> <p> Describes an elastic inference accelerator.</p>"
     },
     "LaunchTemplateElasticInferenceAcceleratorCount":{
       "type":"integer",
@@ -40280,7 +40566,7 @@
           "locationName":"count"
         }
       },
-      "documentation":"<p> Describes an elastic inference accelerator. </p>"
+      "documentation":"<note> <p>Amazon Elastic Inference is no longer available.</p> </note> <p> Describes an elastic inference accelerator. </p>"
     },
     "LaunchTemplateElasticInferenceAcceleratorResponseList":{
       "type":"list",
@@ -43999,7 +44285,7 @@
         },
         "EnableDns64":{
           "shape":"AttributeBooleanValue",
-          "documentation":"<p>Indicates whether DNS queries made to the Amazon-provided DNS Resolver in this subnet should return synthetic IPv6 addresses for IPv4-only destinations.</p> <p>You must first configure a NAT gateway in a public subnet (separate from the subnet containing the IPv6-only workloads). For example, the subnet containing the NAT gateway should have a <code>0.0.0.0/0</code> route pointing to the internet gateway. For more information, see <a href=\"https://docs.aws.amazon.com/vpc/latest/userguide/nat-gateway-nat64-dns64.html#nat-gateway-nat64-dns64-walkthrough\">Configure DNS64 and NAT64</a> in the <i>Amazon VPC User Guide</i>.</p>"
+          "documentation":"<p>Indicates whether DNS queries made to the Amazon-provided DNS Resolver in this subnet should return synthetic IPv6 addresses for IPv4-only destinations.</p> <note> <p>You must first configure a NAT gateway in a public subnet (separate from the subnet containing the IPv6-only workloads). For example, the subnet containing the NAT gateway should have a <code>0.0.0.0/0</code> route pointing to the internet gateway. For more information, see <a href=\"https://docs.aws.amazon.com/vpc/latest/userguide/nat-gateway-nat64-dns64.html#nat-gateway-nat64-dns64-walkthrough\">Configure DNS64 and NAT64</a> in the <i>Amazon VPC User Guide</i>.</p> </note>"
         },
         "PrivateDnsHostnameTypeOnLaunch":{
           "shape":"HostnameType",
@@ -49472,6 +49758,30 @@
         }
       }
     },
+    "RejectCapacityReservationBillingOwnershipRequest":{
+      "type":"structure",
+      "required":["CapacityReservationId"],
+      "members":{
+        "DryRun":{
+          "shape":"Boolean",
+          "documentation":"<p>Checks whether you have the required permissions for the action, without actually making the request, and provides an error response. If you have the required permissions, the error response is <code>DryRunOperation</code>. Otherwise, it is <code>UnauthorizedOperation</code>.</p>"
+        },
+        "CapacityReservationId":{
+          "shape":"CapacityReservationId",
+          "documentation":"<p>The ID of the Capacity Reservation for which to reject the request.</p>"
+        }
+      }
+    },
+    "RejectCapacityReservationBillingOwnershipResult":{
+      "type":"structure",
+      "members":{
+        "Return":{
+          "shape":"Boolean",
+          "documentation":"<p>Returns <code>true</code> if the request succeeds; otherwise, it returns an error.</p>",
+          "locationName":"return"
+        }
+      }
+    },
     "RejectTransitGatewayMulticastDomainAssociationsRequest":{
       "type":"structure",
       "members":{
@@ -50326,12 +50636,12 @@
         },
         "ElasticGpuSpecifications":{
           "shape":"ElasticGpuSpecificationList",
-          "documentation":"<p>Deprecated.</p> <note> <p>Amazon Elastic Graphics reached end of life on January 8, 2024. For workloads that require graphics acceleration, we recommend that you use Amazon EC2 G4ad, G4dn, or G5 instances.</p> </note>",
+          "documentation":"<p>Deprecated.</p> <note> <p>Amazon Elastic Graphics reached end of life on January 8, 2024.</p> </note>",
           "locationName":"ElasticGpuSpecification"
         },
         "ElasticInferenceAccelerators":{
           "shape":"LaunchTemplateElasticInferenceAcceleratorList",
-          "documentation":"<p>An elastic inference accelerator to associate with the instance. Elastic inference accelerators are a resource you can attach to your Amazon EC2 instances to accelerate your Deep Learning (DL) inference workloads.</p> <p>You cannot specify accelerators from different generations in the same request.</p> <note> <p>Starting April 15, 2023, Amazon Web Services will not onboard new customers to Amazon Elastic Inference (EI), and will help current customers migrate their workloads to options that offer better price and performance. After April 15, 2023, new customers will not be able to launch instances with Amazon EI accelerators in Amazon SageMaker, Amazon ECS, or Amazon EC2. However, customers who have used Amazon EI at least once during the past 30-day period are considered current customers and will be able to continue using the service.</p> </note>",
+          "documentation":"<p>Deprecated.</p> <note> <p>Amazon Elastic Inference is no longer available.</p> </note>",
           "locationName":"ElasticInferenceAccelerator"
         },
         "SecurityGroupIds":{
@@ -51607,12 +51917,12 @@
         },
         "ElasticGpuSpecifications":{
           "shape":"ElasticGpuSpecificationResponseList",
-          "documentation":"<p>Deprecated.</p> <note> <p>Amazon Elastic Graphics reached end of life on January 8, 2024. For workloads that require graphics acceleration, we recommend that you use Amazon EC2 G4ad, G4dn, or G5 instances.</p> </note>",
+          "documentation":"<p>Deprecated.</p> <note> <p>Amazon Elastic Graphics reached end of life on January 8, 2024.</p> </note>",
           "locationName":"elasticGpuSpecificationSet"
         },
         "ElasticInferenceAccelerators":{
           "shape":"LaunchTemplateElasticInferenceAcceleratorResponseList",
-          "documentation":"<p>An elastic inference accelerator to associate with the instance. Elastic inference accelerators are a resource you can attach to your Amazon EC2 instances to accelerate your Deep Learning (DL) inference workloads.</p> <p>You cannot specify accelerators from different generations in the same request.</p> <note> <p>Starting April 15, 2023, Amazon Web Services will not onboard new customers to Amazon Elastic Inference (EI), and will help current customers migrate their workloads to options that offer better price and performance. After April 15, 2023, new customers will not be able to launch instances with Amazon EI accelerators in Amazon SageMaker, Amazon ECS, or Amazon EC2. However, customers who have used Amazon EI at least once during the past 30-day period are considered current customers and will be able to continue using the service.</p> </note>",
+          "documentation":"<p>Deprecated.</p> <note> <p>Amazon Elastic Inference is no longer available.</p> </note>",
           "locationName":"elasticInferenceAcceleratorSet"
         },
         "SecurityGroupIds":{
@@ -52511,7 +52821,7 @@
         },
         "ElasticInferenceAccelerators":{
           "shape":"ElasticInferenceAccelerators",
-          "documentation":"<p>An elastic inference accelerator to associate with the instance.</p> <note> <p>Amazon Elastic Inference (EI) is no longer available to new customers. For more information, see <a href=\"http://aws.amazon.com/machine-learning/elastic-inference/faqs/\">Amazon Elastic Inference FAQs</a>.</p> </note>",
+          "documentation":"<p>An elastic inference accelerator to associate with the instance.</p> <note> <p>Amazon Elastic Inference is no longer available.</p> </note>",
           "locationName":"ElasticInferenceAccelerator"
         },
         "TagSpecifications":{

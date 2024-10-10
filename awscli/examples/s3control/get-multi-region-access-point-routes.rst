@@ -13,12 +13,12 @@ Output::
         "Mrap": "arn:aws:s3::111122223333:accesspoint/0000000000000.mrap",
         "Routes": [
             {
-                "Bucket": "DOC-EXAMPLE-BUCKET-1",
+                "Bucket": "amzn-s3-demo-bucket1",
                 "Region": "ap-southeast-2",
                 "TrafficDialPercentage": 100
             },
             {
-                "Bucket": "DOC-EXAMPLE-BUCKET-2",
+                "Bucket": "amzn-s3-demo-bucket2",
                 "Region": "us-west-1",
                 "TrafficDialPercentage": 0
             }

@@ -14,7 +14,7 @@ Contents of ``file://inputConfig.json``::
     {
         "DataFormat": "COMPREHEND_CSV",
         "DocumentClassifierInputDataConfig": {
-            "S3Uri": "s3://DOC-EXAMPLE-BUCKET/training-data.csv"
+            "S3Uri": "s3://amzn-s3-demo-bucket/training-data.csv"
         }
     }  
 

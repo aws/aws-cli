@@ -189,6 +189,11 @@ class Config(object):
     set to True.
 
         Defaults to None.
+
+    :type sigv4a_signing_region_set: string
+    :param sigv4a_signing_region_set: A set of AWS regions to apply the signature for
+        when using SigV4a for signing. Set to ``*`` to represent all regions.
+        Defaults to None.
     """
     OPTION_DEFAULTS = OrderedDict([
         ('region_name', None),
@@ -212,6 +217,7 @@ class Config(object):
         ('ignore_configured_endpoint_urls', None),
         ('request_min_compression_size_bytes', None),
         ('disable_request_compression', None),
+        ('sigv4a_signing_region_set', None),
     ])
 
     def __init__(self, *args, **kwargs):

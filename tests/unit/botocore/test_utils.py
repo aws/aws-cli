@@ -283,6 +283,45 @@ class TestTransformName(unittest.TestCase):
                          'create-stored-iscsi-volume')
         self.assertEqual(xform_name('sourceServerIDs', '-'),
                          'source-server-ids')
+        self.assertEqual(
+            xform_name('AssociateWhatsAppBusinessAccount', '-'),
+            'associate-whatsapp-business-account',
+        )
+        self.assertEqual(
+            xform_name('DeleteWhatsAppMessageMedia', '-'),
+            'delete-whatsapp-media-message',
+        )
+        self.assertEqual(
+            xform_name('DisassociateWhatsAppBusinessAccount', '-'),
+            'disassociate-whatsapp-business-account',
+        )
+        self.assertEqual(
+            xform_name('GetLinkedWhatsAppBusinessAccount', '-'),
+            'get-linked-whatsapp-business-account',
+        )
+        self.assertEqual(
+            xform_name('GetLinkedWhatsAppBusinessAccountPhoneNumber', '-'),
+            'get-linked-whatsapp-business-account-phone-number',
+        )
+        self.assertEqual(
+            xform_name('GetWhatsAppMessageMedia', '-'),
+            'get-whatsapp-message-media',
+        )
+        self.assertEqual(
+            xform_name('ListLinkedWhatsAppBusinessAccounts', '-'),
+            'list-linked-whatsapp-business-accounts',
+        )
+        self.assertEqual(
+            xform_name('PostWhatsAppMessageMedia', '-'),
+            'post-whatsapp-message-media',
+        )
+        self.assertEqual(
+            xform_name('PutWhatsAppBusinessAccountEventDestinations', '-'),
+            'put-whatsapp-business-account-event-destinations',
+        )
+        self.assertEqual(
+            xform_name('SendWhatsAppMessage', '-'), 'send-whatsapp-message'
+        )
 
     def test_special_case_ends_with_s(self):
         self.assertEqual(xform_name('GatewayARNs', '-'), 'gateway-arns')

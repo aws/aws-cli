@@ -545,6 +545,17 @@ class TestIMDSRegionProvider(BaseIMDSRegionTest):
         provider.provide()
         args, _ = self._send.call_args
         self.assertIn('http://myendpoint/', args[0].url)
+    
+    def test_can_set_imds_service_endpoint_custom(self):
+        driver = create_clidriver()
+        driver.session.set_config_variable(
+            'ec2_metadata_service_endpoint', 'http://myendpoint')
+        self.add_imds_token_response()
+        self.add_get_region_imds_response()
+        provider = IMDSRegionProvider(driver.session)
+        provider.provide()
+        args, _ = self._send.call_args
+        self.assertIn('http://myendpoint/', args[0].url)
 
     def test_imds_service_endpoint_overrides_ipv6_endpoint(self):
         driver = create_clidriver()

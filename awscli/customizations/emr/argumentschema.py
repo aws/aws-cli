@@ -499,6 +499,10 @@ INSTANCE_FLEETS_SCHEMA = {
                         }
                     }
                 }
+            },
+            "Context": {
+                "type": "string",
+                "description": "Reserved."
             }
         }
     }

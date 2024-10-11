@@ -2,6 +2,16 @@
 CHANGELOG
 =========
 
+1.35.5
+======
+
+* api-change:``appflow``: Doc only updates for clarification around OAuth2GrantType for Salesforce.
+* api-change:``elbv2``: Add zonal_shift.config.enabled attribute. Add new AdministrativeOverride construct in the describe-target-health API response to include information about the override status applied to a target.
+* api-change:``emr``: This release provides new parameter "Context" in instance fleet clusters.
+* api-change:``guardduty``: Added a new field for network connection details.
+* api-change:``robomaker``: Documentation update: added support notices to each API action.
+
+
 1.35.4
 ======
 

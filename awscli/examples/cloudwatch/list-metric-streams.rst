@@ -1,6 +1,6 @@
 **To retrieve a list of metric streams**
 
-The following ``list-metric-streams`` example example lists all the metric streams in the specified account. ::
+The following ``list-metric-streams`` example lists all the metric streams in the specified account. ::
 
     aws cloudwatch list-metric-streams 
 

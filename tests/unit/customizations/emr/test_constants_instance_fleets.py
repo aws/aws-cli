@@ -91,7 +91,7 @@ INSTANCE_FLEETS_WITH_PRIORITIZED_ALLOCATION_STRATEGY_SPOT_AND_OD = (
     'capacity-optimized-prioritized},OnDemandSpecification={AllocationStrategy=prioritized}}')
 
 TASK_INSTANCE_FLEET_WITH_RESIZE_ALLOCATION_STRATEGY_SPOT_AND_OD = (
-    'InstanceFleetType=TASK,TargetSpotCapacity=100,InstanceTypeConfigs=[{InstanceType=d2.xlarge,'
+    'InstanceFleetType=TASK,TargetSpotCapacity=100,Context=testContext,InstanceTypeConfigs=[{InstanceType=d2.xlarge,'
     'BidPrice=0.5,WeightedCapacity=1},{InstanceType=m3.2xlarge,BidPrice=0.2,WeightedCapacity=2},'
     '{InstanceType=m3.4xlarge,BidPrice=0.4,WeightedCapacity=4}],LaunchSpecifications={'
     'SpotSpecification={TimeoutDurationMinutes=77,TimeoutAction=TERMINATE_CLUSTER,'
@@ -119,7 +119,7 @@ INSTANCE_FLEETS_WITH_RESIZE_ALLOCATION_STRATEGY_SPOT_AND_OD = (
 
 MODIFY_INSTANCE_FLEET_WITH_INSTANCE_TYPE_CONFIGS = (
     f'InstanceFleetId={DEFAULT_INSTANCE_FLEET_NAME},'
-    f'InstanceTypeConfigs=[{{InstanceType=d2.xlarge}}]')
+    f'InstanceTypeConfigs=[{{InstanceType=d2.xlarge}}],Context=testContext')
 
 MODIFY_INSTANCE_FLEET_WITH_SPOT_AND_OD_RESIZE_SPECIFICATIONS = (
     f'InstanceFleetId={DEFAULT_INSTANCE_FLEET_NAME},ResizeSpecifications={{SpotResizeSpecification='
@@ -512,6 +512,7 @@ RES_INSTANCE_FLEETS_WITH_RESIZE_ALLOCATION_STRATEGY_SPOT_AND_OD = \
       },
       "TargetSpotCapacity": 100,
       "InstanceFleetType": "TASK",
+      "Context": "testContext",
       "Name": "TASK"
     }
   ]
@@ -558,7 +559,8 @@ RES_TASK_INSTANCE_FLEET_WITH_RESIZE_ALLOCATION_STRATEGY_SPOT_AND_OD = \
       }
     },
     "TargetSpotCapacity": 100,
-    "InstanceFleetType": "TASK"
+    "InstanceFleetType": "TASK",
+    "Context": "testContext"
   }
 
 RES_MODIFY_INSTANCE_FLEET_WITH_INSTANCE_TYPE_CONFIGS = \
@@ -568,7 +570,8 @@ RES_MODIFY_INSTANCE_FLEET_WITH_INSTANCE_TYPE_CONFIGS = \
         "InstanceFleetId": DEFAULT_INSTANCE_FLEET_NAME,
         "InstanceTypeConfigs": [
           {"InstanceType": "d2.xlarge"}
-        ]
+        ],
+        "Context": "testContext"
       }
     }
 

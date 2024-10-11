@@ -1,6 +1,6 @@
 **To retrieve a list of Dashboards**
 
-The following ``list-dashboards`` example example lists all the Dashboards in the specified account. ::
+The following ``list-dashboards`` example lists all the Dashboards in the specified account. ::
 
     aws cloudwatch list-dashboards 
 

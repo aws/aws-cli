@@ -18,7 +18,6 @@ registered with the event system.
 """
 from awscli.argprocess import ParamShorthandParser
 from awscli.customizations.ec2instanceconnect import register_ec2_instance_connect_commands
-from awscli.paramfile import register_uri_param_handler
 from awscli.clidriver import no_pager_handler
 from awscli.customizations import datapipeline
 from awscli.customizations.addexamples import add_examples
@@ -102,6 +101,7 @@ from awscli.customizations.kinesis import \
     register_kinesis_list_streams_pagination_backcompat
 from awscli.customizations.quicksight import \
     register_quicksight_asset_bundle_customizations
+from awscli.uriargumenthandler import register_uri_param_handler
 
 
 def awscli_initialize(event_handlers):

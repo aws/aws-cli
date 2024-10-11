@@ -38,10 +38,35 @@ necessary to maintain backwards compatibility.  This is done in the
 ``BackCompatVisitor`` class.
 
 """
+import copy
 import re
 import string
 
+from awscli.paramfile import get_paramfile, LOCAL_PREFIX_MAP
 from awscli.utils import is_document_type
+
+"""
+argprocess imports from shorthand
+
+paramfile imports from argprocess
+
+shorthand imports from paramfile
+
+argprocess -> shorthand (->) paramfile -> argprocess
+"""
+
+# TODO refactor paramfile:
+#     URIArgumentHandler to a new file uriargumenthandler.py (imports from paramfile)
+#     uriargumenthandler will import from argprocess
+#     shorthand will keep importing from paramfile
+#     paramfile will no longer import from argprocess.
+
+# new state (no cycles!):
+#
+# handlers -> uriargumenthandler -> argprocess
+#                     V
+#                  paramfile <- shorthand
+#
 
 
 _EOF = object()
@@ -191,15 +216,34 @@ class ShorthandParser(object):
         return params
 
     def _keyval(self):
-        # keyval = key "=" [values]
+        # keyval = key "=" [values] / key ":=" [file-optional-values]
+        # file-optional-values = file://value / value
         key = self._key()
-        self._expect('=', consume_whitespace=True)
-        values = self._values()
+        resolve_paramfiles = False
+        print('KEYVAL INVOKED. key: ', key)
+
+        # first try to parse '='. if exception is caught and actual char is ':',
+        # try to parse '=' a second time. if that fails, raise the exception
+        # if the second attempt passes, change inner state to allow file prefix,
+        # and continue parsing values
+        try:
+            self._expect('=', consume_whitespace=True)
+        except ShorthandParseSyntaxError as e:
+            if e.actual == ':':
+                self._index+=1
+                self._expect('=', consume_whitespace=True)
+                resolve_paramfiles = True
+
+        values = self._values(resolve_paramfiles)
         return key, values
 
     def _key(self):
         # key = 1*(alpha / %x30-39 / %x5f / %x2e / %x23)  ; [a-zA-Z0-9\-_.#/]
-        valid_chars = string.ascii_letters + string.digits + '-_.#/:'
+        # valid_chars = string.ascii_letters + string.digits + '-_.#/:'
+        # TODO: previously colons were allowed. i removed it to get this working.
+        # investigate if they're really allowed in sdks. if so, we'll need to adjust design
+        # (could be as simple as swapping := for ~=).
+        valid_chars = string.ascii_letters + string.digits + '-_.#/'
         start = self._index
         while not self._at_eof():
             if self._current() not in valid_chars:
@@ -207,24 +251,25 @@ class ShorthandParser(object):
             self._index += 1
         return self._input_value[start:self._index]
 
-    def _values(self):
+    def _values(self, resolve_paramfiles=False):
         # values = csv-list / explicit-list / hash-literal
         if self._at_eof():
             return ''
         elif self._current() == '[':
-            return self._explicit_list()
+            return self._explicit_list(resolve_paramfiles)
         elif self._current() == '{':
-            return self._hash_literal()
+            return self._hash_literal(resolve_paramfiles)
         else:
-            return self._csv_value()
+            return self._csv_value(resolve_paramfiles)
 
-    def _csv_value(self):
+    def _csv_value(self, resolve_paramfiles=False):
         # Supports either:
         # foo=bar     -> 'bar'
         #     ^
         # foo=bar,baz -> ['bar', 'baz']
         #     ^
-        first_value = self._first_value()
+        first_value = self._first_value(resolve_paramfiles)
+        # print('CSV VALUE, first value: ', first_value)
         self._consume_whitespace()
         if self._at_eof() or self._input_value[self._index] != ',':
             return first_value
@@ -237,6 +282,11 @@ class ShorthandParser(object):
         # In the case above, we'll hit the ShorthandParser,
         # backtrack to the comma, and return a single scalar
         # value 'b'.
+
+        # TODO
+        # right before each time we append to csv_list (including the initial time above)
+        # use get_paramfile on the value appended. If none is returned,
+        # append the raw value. else, append the returned value.
         while True:
             try:
                 current = self._second_value()
@@ -266,19 +316,22 @@ class ShorthandParser(object):
             return first_value
         return csv_list
 
-    def _value(self):
+    def _value(self, resolve_paramfiles=False):
         result = self._FIRST_VALUE.match(self._input_value[self._index:])
         if result is not None:
             consumed = self._consume_matched_regex(result)
-            return consumed.replace('\\,', ',').rstrip()
+            return self._resolve_paramfile(
+                consumed.replace('\\,', ',').rstrip(),
+                resolve_paramfiles
+            )
         return ''
 
-    def _explicit_list(self):
+    def _explicit_list(self, resolve_paramfiles=False):
         # explicit-list = "[" [value *(",' value)] "]"
         self._expect('[', consume_whitespace=True)
         values = []
         while self._current() != ']':
-            val = self._explicit_values()
+            val = self._explicit_values(resolve_paramfiles)
             values.append(val)
             self._consume_whitespace()
             if self._current() != ']':
@@ -287,22 +340,22 @@ class ShorthandParser(object):
         self._expect(']')
         return values
 
-    def _explicit_values(self):
+    def _explicit_values(self, resolve_paramfiles=False):
         # values = csv-list / explicit-list / hash-literal
         if self._current() == '[':
-            return self._explicit_list()
+            return self._explicit_list(resolve_paramfiles)
         elif self._current() == '{':
-            return self._hash_literal()
+            return self._hash_literal(resolve_paramfiles)
         else:
-            return self._first_value()
+            return self._first_value(resolve_paramfiles)
 
-    def _hash_literal(self):
+    def _hash_literal(self, resolve_paramfiles=False):
         self._expect('{', consume_whitespace=True)
         keyvals = {}
         while self._current() != '}':
             key = self._key()
             self._expect('=', consume_whitespace=True)
-            v = self._explicit_values()
+            v = self._explicit_values(resolve_paramfiles)
             self._consume_whitespace()
             if self._current() != '}':
                 self._expect(',')
@@ -311,19 +364,28 @@ class ShorthandParser(object):
         self._expect('}')
         return keyvals
 
-    def _first_value(self):
+    def _first_value(self, resolve_paramfiles=False):
         # first-value = value / single-quoted-val / double-quoted-val
         if self._current() == "'":
-            return self._single_quoted_value()
+            return self._single_quoted_value(resolve_paramfiles)
         elif self._current() == '"':
-            return self._double_quoted_value()
-        return self._value()
+            return self._double_quoted_value(resolve_paramfiles)
+        return self._value(resolve_paramfiles)
 
-    def _single_quoted_value(self):
+    def _single_quoted_value(self, resolve_paramfiles=False):
         # single-quoted-value = %x27 *(val-escaped-single) %x27
         # val-escaped-single  = %x20-26 / %x28-7F / escaped-escape /
         #                       (escape single-quote)
-        return self._consume_quoted(self._SINGLE_QUOTED, escaped_char="'")
+
+        # TODO next issue:
+        # each time we call resolve_paramfile, we need to ensure that we are correctly
+        # updating the index to be the end-of-contents of the resolved file contents.
+        # in the case of resolve_parmfile(consume_regex()):
+            # the consume_regex functions already increment the index
+        return self._resolve_paramfile(
+            self._consume_quoted(self._SINGLE_QUOTED, escaped_char="'"),
+            resolve_paramfiles
+        )
 
     def _consume_quoted(self, regex, escaped_char=None):
         value = self._must_consume_regex(regex)[1:-1]
@@ -332,17 +394,35 @@ class ShorthandParser(object):
             value = value.replace("\\\\", "\\")
         return value
 
-    def _double_quoted_value(self):
-        return self._consume_quoted(self._DOUBLE_QUOTED, escaped_char='"')
+    def _double_quoted_value(self, resolve_paramfiles=False):
+        return self._resolve_paramfile(
+            self._consume_quoted(self._DOUBLE_QUOTED, escaped_char='"'),
+            resolve_paramfiles
+        )
 
-    def _second_value(self):
+    def _second_value(self, resolve_paramfiles=False):
         if self._current() == "'":
-            return self._single_quoted_value()
+            return self._single_quoted_value(resolve_paramfiles)
         elif self._current() == '"':
-            return self._double_quoted_value()
+            return self._double_quoted_value(resolve_paramfiles)
         else:
             consumed = self._must_consume_regex(self._SECOND_VALUE)
-            return consumed.replace('\\,', ',').rstrip()
+            return self._resolve_paramfile(
+                consumed.replace('\\,', ',').rstrip(),
+                resolve_paramfiles,
+            )
+
+    def _resolve_paramfile(self, val, resolve_param_files):
+        # If resolve_param_files is True, this function tries to resolve val to a
+        # paramfile (i.e. a file path prefixed with a key of LOCAL_PREFIX_MAP).
+        # If val is a paramfile, returns the contents of the file (retrieved
+        # according to the spec of get_paramfile).
+        # If val is not a paramfile, returns val.
+        # If resolve_param_files is False, returns val.
+        if (resolve_param_files and
+                (paramfile := get_paramfile(val, LOCAL_PREFIX_MAP)) is not None):
+            return paramfile
+        return val
 
     def _expect(self, char, consume_whitespace=False):
         if consume_whitespace:

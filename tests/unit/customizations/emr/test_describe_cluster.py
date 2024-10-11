@@ -194,6 +194,7 @@ list_instance_fleets_result_mock = {
             "InstanceFleetType": "MASTER",
             "InstanceType": "m1.large",
             "Id": "if-ABCD",
+            "Context": "testContext"
         }
     ]
 }
@@ -359,6 +360,7 @@ EXPECTED_RESULT_IF = {
                 "InstanceFleetType": "MASTER",
                 "InstanceType": "m1.large",
                 "Id": "if-ABCD",
+                "Context": "testContext"
             }
         ],
         "RequestedAmiVersion": "2.4.2",

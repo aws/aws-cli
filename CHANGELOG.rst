@@ -2,6 +2,16 @@
 CHANGELOG
 =========
 
+2.18.6
+======
+
+* api-change:``securitylake``: This release updates request validation regex for resource ARNs.
+* api-change:``codepipeline``: AWS CodePipeline V2 type pipelines now support automatically retrying failed stages and skipping stage for failed entry conditions.
+* api-change:``transfer``: This release enables customers using SFTP connectors to query the transfer status of their files to meet their monitoring needs as well as orchestrate post transfer actions.
+* api-change:``mailmanager``: Mail Manager support for viewing and exporting metadata of archived messages.
+* api-change:``supplychain``: This release adds AWS Supply Chain instance management functionality. Specifically adding CreateInstance, DeleteInstance, GetInstance, ListInstances, and UpdateInstance APIs.
+
+
 2.18.5
 ======
 

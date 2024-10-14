@@ -129,8 +129,25 @@ PARSING_TEST_CASES = (
         'Name=[{foo=[a,b]}, {bar=[c,d]}]',
         {'Name': [{'foo': ['a', 'b']}, {'bar': ['c', 'd']}]}
     ),
+    # key-value pairs using ~= syntax
+    ('foo~=bar', {'foo': 'bar'}),
+    ('foo~=bar,baz~=qux', {'foo': 'bar', 'baz': 'qux'}),
+    ('foo~=,bar~=', {'foo': '', 'bar': ''}),
+    (u'foo~=\u2713,\u2713', {'foo': [u'\u2713', u'\u2713']}),
+    ('foo~=a,b,bar=c,d', {'foo': ['a', 'b'], 'bar': ['c', 'd']}),
+    ('foo=a,b~=with space', {'foo': 'a', 'b': 'with space'}),
+    ('foo=a,b~=with trailing space  ', {'foo': 'a', 'b': 'with trailing space'}),
+    ('aws:service:region:124:foo/bar~=baz', {'aws:service:region:124:foo/bar': 'baz'}),
+    ('foo=[a,b],bar~=[c,d]', {'foo': ['a', 'b'], 'bar': ['c', 'd']}),
+    ('foo  ~=  [ a , b  , c  ]', {'foo': ['a', 'b', 'c']}),
+    ('A=b,\nC~=d,\nE~=f\n', {'A': 'b', 'C': 'd', 'E': 'f'}),
+    ('Bar~=baz,Name={foo~=bar}', {'Bar': 'baz', 'Name': {'foo': 'bar'}}),
+    ('Name=[{foo~=bar}, {baz=qux}]', {'Name': [{'foo': 'bar'}, {'baz': 'qux'}]}),
+    (
+        'Name=[{foo~=[a,b]}, {bar=[c,d]}]',
+        {'Name': [{'foo': ['a', 'b']}, {'bar': ['c', 'd']}]}
+    )
 )
-
 
 @pytest.mark.parametrize(
     "expr", (
@@ -154,6 +171,7 @@ def test_error_parsing(expr):
         shorthand.ShorthandParser().parse(expr)
 
 
+# TODO add a few tests to allow ~= synax:
 @pytest.mark.parametrize(
     "expr", (
         # starting with " but unclosed, then repeated \
@@ -183,6 +201,12 @@ def handle_timeout(signum, frame):
 def test_parse(data, expected):
     actual = shorthand.ShorthandParser().parse(data)
     assert actual == expected
+
+
+# TODO add a few tests for the following:
+# 1. ~= syntax with file prefix actually uses the contents of the local file
+# 2. ~= syntax without file prefix uses the raw value
+# 3. file prefix without ~= syntax emits a warning
 
 
 class TestModelVisitor(unittest.TestCase):

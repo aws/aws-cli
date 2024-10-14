@@ -116,10 +116,12 @@ class ShorthandParseSyntaxError(ShorthandParseError):
         super(ShorthandParseSyntaxError, self).__init__(msg)
 
     def _construct_msg(self):
+        expected_txt = ' or '.join(self.expected) \
+            if isinstance(self.expected, list) else self.expected
         msg = (
             "Expected: '%s', received: '%s' for input:\n"
             "%s"
-        ) % (self.expected, self.actual, self._error_location())
+        ) % (expected_txt, self.actual, self._error_location())
         return msg
 
 
@@ -220,30 +222,31 @@ class ShorthandParser(object):
         # file-optional-values = file://value / value
         key = self._key()
         resolve_paramfiles = False
-        print('KEYVAL INVOKED. key: ', key)
 
         # first try to parse '='. if exception is caught and actual char is ':',
         # try to parse '=' a second time. if that fails, raise the exception
         # if the second attempt passes, change inner state to allow file prefix,
         # and continue parsing values
+
+        # TODO clean this into a new helper function. expect_any([list], consume_whitespace_
+        # handles any string in the list, and returns the first index/element that it parsed
+        # (in order of the list).
         try:
             self._expect('=', consume_whitespace=True)
         except ShorthandParseSyntaxError as e:
-            if e.actual == ':':
+            if e.actual == '~':
                 self._index+=1
                 self._expect('=', consume_whitespace=True)
                 resolve_paramfiles = True
+            else:
+                raise
 
         values = self._values(resolve_paramfiles)
         return key, values
 
     def _key(self):
         # key = 1*(alpha / %x30-39 / %x5f / %x2e / %x23)  ; [a-zA-Z0-9\-_.#/]
-        # valid_chars = string.ascii_letters + string.digits + '-_.#/:'
-        # TODO: previously colons were allowed. i removed it to get this working.
-        # investigate if they're really allowed in sdks. if so, we'll need to adjust design
-        # (could be as simple as swapping := for ~=).
-        valid_chars = string.ascii_letters + string.digits + '-_.#/'
+        valid_chars = string.ascii_letters + string.digits + '-_.#/:'
         start = self._index
         while not self._at_eof():
             if self._current() not in valid_chars:
@@ -269,7 +272,6 @@ class ShorthandParser(object):
         # foo=bar,baz -> ['bar', 'baz']
         #     ^
         first_value = self._first_value(resolve_paramfiles)
-        # print('CSV VALUE, first value: ', first_value)
         self._consume_whitespace()
         if self._at_eof() or self._input_value[self._index] != ',':
             return first_value
@@ -283,13 +285,9 @@ class ShorthandParser(object):
         # backtrack to the comma, and return a single scalar
         # value 'b'.
 
-        # TODO
-        # right before each time we append to csv_list (including the initial time above)
-        # use get_paramfile on the value appended. If none is returned,
-        # append the raw value. else, append the returned value.
         while True:
             try:
-                current = self._second_value()
+                current = self._second_value(resolve_paramfiles)
                 self._consume_whitespace()
                 if self._at_eof():
                     csv_list.append(current)
@@ -352,6 +350,8 @@ class ShorthandParser(object):
     def _hash_literal(self, resolve_paramfiles=False):
         self._expect('{', consume_whitespace=True)
         keyvals = {}
+        # TODO after factoring out a expect_any helper function,
+        # use it below to support file-resolving for the values of hash literals.
         while self._current() != '}':
             key = self._key()
             self._expect('=', consume_whitespace=True)
@@ -376,12 +376,6 @@ class ShorthandParser(object):
         # single-quoted-value = %x27 *(val-escaped-single) %x27
         # val-escaped-single  = %x20-26 / %x28-7F / escaped-escape /
         #                       (escape single-quote)
-
-        # TODO next issue:
-        # each time we call resolve_paramfile, we need to ensure that we are correctly
-        # updating the index to be the end-of-contents of the resolved file contents.
-        # in the case of resolve_parmfile(consume_regex()):
-            # the consume_regex functions already increment the index
         return self._resolve_paramfile(
             self._consume_quoted(self._SINGLE_QUOTED, escaped_char="'"),
             resolve_paramfiles
@@ -430,6 +424,42 @@ class ShorthandParser(object):
         if self._index >= len(self._input_value):
             raise ShorthandParseSyntaxError(self._input_value, char,
                                             'EOF', self._index)
+        actual = self._input_value[self._index]
+        if actual != char:
+            raise ShorthandParseSyntaxError(self._input_value, char,
+                                            actual, self._index)
+        self._index += 1
+        if consume_whitespace:
+            self._consume_whitespace()
+
+    def _expect_strings(self, strs, consume_whitespace=False):
+        # Tries to parse the content at the cursor as the
+        #   first element of the strs list.
+        #
+        # If the content does not parse to the first element of strs,
+        #   successively tries to parse it as the other elements of
+        #   the list (in order).
+        # Raises ShorthandParseSyntaxError if cursor is already at the
+        #   end of the file, or if the content does not parse to any
+        #   element of the list.
+        # Returns the element of strs that content was parsed to.
+        if len(strs) == 0:
+            raise ValueError('strs argument of _expect_strings must be non-empty.')
+        if consume_whitespace:
+            self._consume_whitespace()
+        if self._index >= len(self._input_value):
+            raise ShorthandParseSyntaxError(self._input_value, strs,
+                                            'EOF', self._index)
+
+        for str in strs:
+
+        # for each str in strs
+        #   if the cursor parses to str at index
+        #       increment index by len(str)
+        #       break
+        # raise if no str parsed
+        # consume whitespace
+        # return the parsed str
         actual = self._input_value[self._index]
         if actual != char:
             raise ShorthandParseSyntaxError(self._input_value, char,

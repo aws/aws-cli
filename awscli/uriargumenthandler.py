@@ -1,6 +1,6 @@
 import copy
 
-from awscli.paramfile import get_paramfile, ResourceLoadingError,d LOCAL_PREFIX_MAP
+from awscli.paramfile import get_paramfile, ResourceLoadingError,LOCAL_PREFIX_MAP
 from awscli.argprocess import ParamError
 
 

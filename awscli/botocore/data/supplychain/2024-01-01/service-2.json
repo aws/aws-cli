@@ -76,6 +76,27 @@
       "documentation":"<p>Create a data lake dataset.</p>",
       "idempotent":true
     },
+    "CreateInstance":{
+      "name":"CreateInstance",
+      "http":{
+        "method":"POST",
+        "requestUri":"/api/instance",
+        "responseCode":200
+      },
+      "input":{"shape":"CreateInstanceRequest"},
+      "output":{"shape":"CreateInstanceResponse"},
+      "errors":[
+        {"shape":"ServiceQuotaExceededException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ConflictException"}
+      ],
+      "documentation":"<p>Create a new instance for AWS Supply Chain. This is an asynchronous operation. Upon receiving a CreateInstance request, AWS Supply Chain immediately returns the instance resource, with instance ID, and the initializing state while simultaneously creating all required Amazon Web Services resources for an instance creation. You can use GetInstance to check the status of the instance.</p>",
+      "idempotent":true
+    },
     "DeleteDataIntegrationFlow":{
       "name":"DeleteDataIntegrationFlow",
       "http":{
@@ -116,6 +137,27 @@
         {"shape":"ConflictException"}
       ],
       "documentation":"<p>Delete a data lake dataset.</p>",
+      "idempotent":true
+    },
+    "DeleteInstance":{
+      "name":"DeleteInstance",
+      "http":{
+        "method":"DELETE",
+        "requestUri":"/api/instance/{instanceId}",
+        "responseCode":200
+      },
+      "input":{"shape":"DeleteInstanceRequest"},
+      "output":{"shape":"DeleteInstanceResponse"},
+      "errors":[
+        {"shape":"ServiceQuotaExceededException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ConflictException"}
+      ],
+      "documentation":"<p>Delete the instance. This is an asynchronous operation. Upon receiving a DeleteInstance request, AWS Supply Chain immediately returns a response with the instance resource, delete state while cleaning up all Amazon Web Services resources created during the instance creation process. You can use the GetInstance action to check the instance status.</p>",
       "idempotent":true
     },
     "GetBillOfMaterialsImportJob":{
@@ -178,6 +220,26 @@
       ],
       "documentation":"<p>Get a data lake dataset.</p>"
     },
+    "GetInstance":{
+      "name":"GetInstance",
+      "http":{
+        "method":"GET",
+        "requestUri":"/api/instance/{instanceId}",
+        "responseCode":200
+      },
+      "input":{"shape":"GetInstanceRequest"},
+      "output":{"shape":"GetInstanceResponse"},
+      "errors":[
+        {"shape":"ServiceQuotaExceededException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ConflictException"}
+      ],
+      "documentation":"<p>Get the AWS Supply Chain instance details.</p>"
+    },
     "ListDataIntegrationFlows":{
       "name":"ListDataIntegrationFlows",
       "http":{
@@ -217,6 +279,26 @@
         {"shape":"ConflictException"}
       ],
       "documentation":"<p>List the data lake datasets for a specific instance and name space.</p>"
+    },
+    "ListInstances":{
+      "name":"ListInstances",
+      "http":{
+        "method":"GET",
+        "requestUri":"/api/instance",
+        "responseCode":200
+      },
+      "input":{"shape":"ListInstancesRequest"},
+      "output":{"shape":"ListInstancesResponse"},
+      "errors":[
+        {"shape":"ServiceQuotaExceededException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ConflictException"}
+      ],
+      "documentation":"<p>List all the AWS Supply Chain instances in a paginated way.</p>"
     },
     "ListTagsForResource":{
       "name":"ListTagsForResource",
@@ -339,6 +421,26 @@
         {"shape":"ConflictException"}
       ],
       "documentation":"<p>Update a data lake dataset.</p>"
+    },
+    "UpdateInstance":{
+      "name":"UpdateInstance",
+      "http":{
+        "method":"PATCH",
+        "requestUri":"/api/instance/{instanceId}",
+        "responseCode":200
+      },
+      "input":{"shape":"UpdateInstanceRequest"},
+      "output":{"shape":"UpdateInstanceResponse"},
+      "errors":[
+        {"shape":"ServiceQuotaExceededException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ConflictException"}
+      ],
+      "documentation":"<p>Update the instance.</p>"
     }
   },
   "shapes":{
@@ -359,6 +461,10 @@
       "max":1011,
       "min":20,
       "pattern":"arn:aws:scn(?::([a-z0-9-]+):([0-9]+):instance)?/([a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12})[-_./A-Za-z0-9]*"
+    },
+    "AwsAccountId":{
+      "type":"string",
+      "pattern":"[0-9]{12}"
     },
     "BillOfMaterialsImportJob":{
       "type":"structure",
@@ -576,6 +682,44 @@
         }
       },
       "documentation":"<p>The response parameters of CreateDataLakeDataset.</p>"
+    },
+    "CreateInstanceRequest":{
+      "type":"structure",
+      "members":{
+        "instanceName":{
+          "shape":"InstanceName",
+          "documentation":"<p>The AWS Supply Chain instance name.</p>"
+        },
+        "instanceDescription":{
+          "shape":"InstanceDescription",
+          "documentation":"<p>The AWS Supply Chain instance description.</p>"
+        },
+        "kmsKeyArn":{
+          "shape":"KmsKeyArn",
+          "documentation":"<p>The ARN (Amazon Resource Name) of the Key Management Service (KMS) key you provide for encryption. This is required if you do not want to use the Amazon Web Services owned KMS key. If you don't provide anything here, AWS Supply Chain uses the Amazon Web Services owned KMS key.</p>"
+        },
+        "tags":{
+          "shape":"TagMap",
+          "documentation":"<p>The Amazon Web Services tags of an instance to be created.</p>"
+        },
+        "clientToken":{
+          "shape":"ClientToken",
+          "documentation":"<p>The client token for idempotency.</p>",
+          "idempotencyToken":true
+        }
+      },
+      "documentation":"<p>The request parameters for CreateInstance.</p>"
+    },
+    "CreateInstanceResponse":{
+      "type":"structure",
+      "required":["instance"],
+      "members":{
+        "instance":{
+          "shape":"Instance",
+          "documentation":"<p>The AWS Supply Chain instance resource data details.</p>"
+        }
+      },
+      "documentation":"<p>The response parameters for CreateInstance.</p>"
     },
     "DataIntegrationEventData":{
       "type":"string",
@@ -1147,6 +1291,34 @@
       },
       "documentation":"<p>The response parameters of DeleteDataLakeDataset.</p>"
     },
+    "DeleteInstanceRequest":{
+      "type":"structure",
+      "required":["instanceId"],
+      "members":{
+        "instanceId":{
+          "shape":"UUID",
+          "documentation":"<p>The AWS Supply Chain instance identifier.</p>",
+          "location":"uri",
+          "locationName":"instanceId"
+        }
+      },
+      "documentation":"<p>The request parameters for DeleteInstance.</p>"
+    },
+    "DeleteInstanceResponse":{
+      "type":"structure",
+      "required":["instance"],
+      "members":{
+        "instance":{
+          "shape":"Instance",
+          "documentation":"<p>The AWS Supply Chain instance resource data details.</p>"
+        }
+      },
+      "documentation":"<p>The response parameters for DeleteInstance.</p>"
+    },
+    "Double":{
+      "type":"double",
+      "box":true
+    },
     "GetBillOfMaterialsImportJobRequest":{
       "type":"structure",
       "required":[
@@ -1253,6 +1425,135 @@
       },
       "documentation":"<p>The response parameters for UpdateDataLakeDataset.</p>"
     },
+    "GetInstanceRequest":{
+      "type":"structure",
+      "required":["instanceId"],
+      "members":{
+        "instanceId":{
+          "shape":"UUID",
+          "documentation":"<p>The AWS Supply Chain instance identifier</p>",
+          "location":"uri",
+          "locationName":"instanceId"
+        }
+      },
+      "documentation":"<p>The request parameters for GetInstance.</p>"
+    },
+    "GetInstanceResponse":{
+      "type":"structure",
+      "required":["instance"],
+      "members":{
+        "instance":{
+          "shape":"Instance",
+          "documentation":"<p>The instance resource data details.</p>"
+        }
+      },
+      "documentation":"<p>The response parameters for GetInstance.</p>"
+    },
+    "Instance":{
+      "type":"structure",
+      "required":[
+        "instanceId",
+        "awsAccountId",
+        "state"
+      ],
+      "members":{
+        "instanceId":{
+          "shape":"UUID",
+          "documentation":"<p>The Amazon Web Services Supply Chain instance identifier.</p>"
+        },
+        "awsAccountId":{
+          "shape":"AwsAccountId",
+          "documentation":"<p>The Amazon Web Services account ID that owns the instance.</p>"
+        },
+        "state":{
+          "shape":"InstanceState",
+          "documentation":"<p>The state of the instance.</p>"
+        },
+        "webAppDnsDomain":{
+          "shape":"InstanceWebAppDnsDomain",
+          "documentation":"<p>The WebApp DNS domain name of the instance.</p>"
+        },
+        "createdTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The instance creation timestamp.</p>"
+        },
+        "lastModifiedTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The instance last modified timestamp.</p>"
+        },
+        "instanceName":{
+          "shape":"InstanceName",
+          "documentation":"<p>The Amazon Web Services Supply Chain instance name.</p>"
+        },
+        "instanceDescription":{
+          "shape":"InstanceDescription",
+          "documentation":"<p>The Amazon Web Services Supply Chain instance description.</p>"
+        },
+        "kmsKeyArn":{
+          "shape":"KmsKeyArn",
+          "documentation":"<p>The ARN (Amazon Resource Name) of the Key Management Service (KMS) key you optionally provided for encryption. If you did not provide anything here, AWS Supply Chain uses the Amazon Web Services owned KMS key and nothing is returned.</p>"
+        },
+        "versionNumber":{
+          "shape":"Double",
+          "documentation":"<p>The version number of the instance.</p>"
+        }
+      },
+      "documentation":"<p>The details of the instance.</p>"
+    },
+    "InstanceDescription":{
+      "type":"string",
+      "max":501,
+      "min":0,
+      "pattern":"([a-zA-Z0-9., _ʼ'%-]){0,500}"
+    },
+    "InstanceList":{
+      "type":"list",
+      "member":{"shape":"Instance"}
+    },
+    "InstanceMaxResults":{
+      "type":"integer",
+      "box":true,
+      "max":20,
+      "min":0
+    },
+    "InstanceName":{
+      "type":"string",
+      "max":63,
+      "min":0,
+      "pattern":"(?![ _ʼ'%-])[a-zA-Z0-9 _ʼ'%-]{0,62}[a-zA-Z0-9]"
+    },
+    "InstanceNameList":{
+      "type":"list",
+      "member":{"shape":"InstanceName"},
+      "max":10,
+      "min":0
+    },
+    "InstanceNextToken":{
+      "type":"string",
+      "max":1024,
+      "min":1
+    },
+    "InstanceState":{
+      "type":"string",
+      "enum":[
+        "Initializing",
+        "Active",
+        "CreateFailed",
+        "DeleteFailed",
+        "Deleting",
+        "Deleted"
+      ]
+    },
+    "InstanceStateList":{
+      "type":"list",
+      "member":{"shape":"InstanceState"},
+      "max":6,
+      "min":0
+    },
+    "InstanceWebAppDnsDomain":{
+      "type":"string",
+      "pattern":"[A-Za-z0-9]+(.[A-Za-z0-9]+)+"
+    },
     "InternalServerException":{
       "type":"structure",
       "members":{
@@ -1263,6 +1564,12 @@
       "exception":true,
       "fault":true,
       "retryable":{"throttling":false}
+    },
+    "KmsKeyArn":{
+      "type":"string",
+      "max":2048,
+      "min":0,
+      "pattern":"arn:[a-z0-9][-.a-z0-9]{0,62}:kms:([a-z0-9][-.a-z0-9]{0,62})?:([a-z0-9][-.a-z0-9]{0,62})?:key/.{0,1019}"
     },
     "ListDataIntegrationFlowsRequest":{
       "type":"structure",
@@ -1352,6 +1659,51 @@
         }
       },
       "documentation":"<p>The response parameters of ListDataLakeDatasets.</p>"
+    },
+    "ListInstancesRequest":{
+      "type":"structure",
+      "members":{
+        "nextToken":{
+          "shape":"InstanceNextToken",
+          "documentation":"<p>The pagination token to fetch the next page of instances.</p>",
+          "location":"querystring",
+          "locationName":"nextToken"
+        },
+        "maxResults":{
+          "shape":"InstanceMaxResults",
+          "documentation":"<p>Specify the maximum number of instances to fetch in this paginated request.</p>",
+          "location":"querystring",
+          "locationName":"maxResults"
+        },
+        "instanceNameFilter":{
+          "shape":"InstanceNameList",
+          "documentation":"<p>The filter to ListInstances based on their names.</p>",
+          "location":"querystring",
+          "locationName":"instanceNameFilter"
+        },
+        "instanceStateFilter":{
+          "shape":"InstanceStateList",
+          "documentation":"<p>The filter to ListInstances based on their state.</p>",
+          "location":"querystring",
+          "locationName":"instanceStateFilter"
+        }
+      },
+      "documentation":"<p>The request parameters for ListInstances.</p>"
+    },
+    "ListInstancesResponse":{
+      "type":"structure",
+      "required":["instances"],
+      "members":{
+        "instances":{
+          "shape":"InstanceList",
+          "documentation":"<p>The list of instances resource data details.</p>"
+        },
+        "nextToken":{
+          "shape":"InstanceNextToken",
+          "documentation":"<p>The pagination token to fetch the next page of instances.</p>"
+        }
+      },
+      "documentation":"<p>The response parameters for ListInstances.</p>"
     },
     "ListTagsForResourceRequest":{
       "type":"structure",
@@ -1647,6 +1999,38 @@
         }
       },
       "documentation":"<p>The response parameters of UpdateDataLakeDataset.</p>"
+    },
+    "UpdateInstanceRequest":{
+      "type":"structure",
+      "required":["instanceId"],
+      "members":{
+        "instanceId":{
+          "shape":"UUID",
+          "documentation":"<p>The AWS Supply Chain instance identifier.</p>",
+          "location":"uri",
+          "locationName":"instanceId"
+        },
+        "instanceName":{
+          "shape":"InstanceName",
+          "documentation":"<p>The AWS Supply Chain instance name.</p>"
+        },
+        "instanceDescription":{
+          "shape":"InstanceDescription",
+          "documentation":"<p>The AWS Supply Chain instance description.</p>"
+        }
+      },
+      "documentation":"<p>The request parameters for UpdateInstance.</p>"
+    },
+    "UpdateInstanceResponse":{
+      "type":"structure",
+      "required":["instance"],
+      "members":{
+        "instance":{
+          "shape":"Instance",
+          "documentation":"<p>The instance resource data details.</p>"
+        }
+      },
+      "documentation":"<p>The response parameters for UpdateInstance.</p>"
     },
     "ValidationException":{
       "type":"structure",

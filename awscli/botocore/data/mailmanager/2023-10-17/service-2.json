@@ -1027,7 +1027,9 @@
         "TO",
         "FROM",
         "CC",
-        "SUBJECT"
+        "SUBJECT",
+        "ENVELOPE_TO",
+        "ENVELOPE_FROM"
       ]
     },
     "ArchiveStringExpression":{
@@ -1509,6 +1511,24 @@
       "type":"list",
       "member":{"shape":"String"}
     },
+    "Envelope":{
+      "type":"structure",
+      "members":{
+        "From":{
+          "shape":"String",
+          "documentation":"<p>The RCPT FROM given by the host from which the email was received.</p>"
+        },
+        "Helo":{
+          "shape":"String",
+          "documentation":"<p>The HELO used by the host from which the email was received.</p>"
+        },
+        "To":{
+          "shape":"StringList",
+          "documentation":"<p>All SMTP TO entries given by the host from which the email was received.</p>"
+        }
+      },
+      "documentation":"<p>The SMTP envelope information of the email.</p>"
+    },
     "ErrorMessage":{"type":"string"},
     "ExportDestinationConfiguration":{
       "type":"structure",
@@ -1719,9 +1739,17 @@
     "GetArchiveMessageResponse":{
       "type":"structure",
       "members":{
+        "Envelope":{
+          "shape":"Envelope",
+          "documentation":"<p>The SMTP envelope information of the email.</p>"
+        },
         "MessageDownloadLink":{
           "shape":"S3PresignedURL",
           "documentation":"<p>A pre-signed URL to temporarily download the full message content.</p>"
+        },
+        "Metadata":{
+          "shape":"Metadata",
+          "documentation":"<p>The metadata about the email.</p>"
         }
       },
       "documentation":"<p>The response containing details about the requested archived email message.</p>"
@@ -2726,6 +2754,44 @@
       },
       "documentation":"<p>The textual body content of an email message.</p>"
     },
+    "Metadata":{
+      "type":"structure",
+      "members":{
+        "IngressPointId":{
+          "shape":"IngressPointId",
+          "documentation":"<p>The ID of the ingress endpoint through which the email was received.</p>"
+        },
+        "RuleSetId":{
+          "shape":"RuleSetId",
+          "documentation":"<p>The ID of the rule set that processed the email.</p>"
+        },
+        "SenderHostname":{
+          "shape":"String",
+          "documentation":"<p>The name of the host from which the email was received.</p>"
+        },
+        "SenderIpAddress":{
+          "shape":"SenderIpAddress",
+          "documentation":"<p>The IP address of the host from which the email was received.</p>"
+        },
+        "Timestamp":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp of when the email was received.</p>"
+        },
+        "TlsCipherSuite":{
+          "shape":"String",
+          "documentation":"<p>The TLS cipher suite used to communicate with the host from which the email was received.</p>"
+        },
+        "TlsProtocol":{
+          "shape":"String",
+          "documentation":"<p>The TLS protocol used to communicate with the host from which the email was received.</p>"
+        },
+        "TrafficPolicyId":{
+          "shape":"TrafficPolicyId",
+          "documentation":"<p>The ID of the traffic policy that was in effect when the email was received.</p>"
+        }
+      },
+      "documentation":"<p>The metadata about the email.</p>"
+    },
     "MimeHeaderAttribute":{
       "type":"string",
       "pattern":"^X-[a-zA-Z0-9-]{1,256}$"
@@ -2950,6 +3016,10 @@
           "shape":"String",
           "documentation":"<p>The date the email was sent.</p>"
         },
+        "Envelope":{
+          "shape":"Envelope",
+          "documentation":"<p>The SMTP envelope information of the email.</p>"
+        },
         "From":{
           "shape":"String",
           "documentation":"<p>The email address of the sender.</p>"
@@ -2962,6 +3032,10 @@
           "shape":"String",
           "documentation":"<p>The email message ID this is a reply to.</p>"
         },
+        "IngressPointId":{
+          "shape":"IngressPointId",
+          "documentation":"<p>The ID of the ingress endpoint through which the email was received.</p>"
+        },
         "MessageId":{
           "shape":"String",
           "documentation":"<p>The unique message ID of the email.</p>"
@@ -2973,6 +3047,14 @@
         "ReceivedTimestamp":{
           "shape":"Timestamp",
           "documentation":"<p>The timestamp of when the email was received.</p>"
+        },
+        "SenderHostname":{
+          "shape":"String",
+          "documentation":"<p>The name of the host from which the email was received.</p>"
+        },
+        "SenderIpAddress":{
+          "shape":"SenderIpAddress",
+          "documentation":"<p>The IP address of the host from which the email was received.</p>"
         },
         "Subject":{
           "shape":"String",
@@ -3617,6 +3699,10 @@
       },
       "documentation":"<p>Sends the email to the internet using the ses:SendRawEmail API.</p>"
     },
+    "SenderIpAddress":{
+      "type":"string",
+      "sensitive":true
+    },
     "ServiceQuotaExceededException":{
       "type":"structure",
       "members":{
@@ -3656,6 +3742,10 @@
         "FromTimestamp":{
           "shape":"Timestamp",
           "documentation":"<p>The start of the timestamp range to include emails from.</p>"
+        },
+        "IncludeMetadata":{
+          "shape":"Boolean",
+          "documentation":"<p>Whether to include message metadata as JSON files in the export.</p>"
         },
         "MaxResults":{
           "shape":"ExportMaxResults",

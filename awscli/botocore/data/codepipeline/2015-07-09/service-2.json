@@ -2301,6 +2301,10 @@
           "shape":"Result",
           "documentation":"<p>The specified result for when the failure conditions are met, such as rolling back the stage.</p>"
         },
+        "retryConfiguration":{
+          "shape":"RetryConfiguration",
+          "documentation":"<p>The retry configuration specifies automatic retry for a failed stage, along with the configured retry mode.</p>"
+        },
         "conditions":{
           "shape":"ConditionList",
           "documentation":"<p>The conditions that are configured as failure conditions.</p>"
@@ -4192,8 +4196,24 @@
       "type":"string",
       "enum":[
         "ROLLBACK",
-        "FAIL"
+        "FAIL",
+        "RETRY",
+        "SKIP"
       ]
+    },
+    "RetryAttempt":{
+      "type":"integer",
+      "min":1
+    },
+    "RetryConfiguration":{
+      "type":"structure",
+      "members":{
+        "retryMode":{
+          "shape":"StageRetryMode",
+          "documentation":"<p>The method that you want to configure for automatic stage retry on stage failure. You can specify to retry only failed action in the stage or all actions in the stage.</p>"
+        }
+      },
+      "documentation":"<p>The retry configuration specifies automatic retry for a failed stage, along with the configured retry mode.</p>"
     },
     "RetryStageExecutionInput":{
       "type":"structure",
@@ -4232,6 +4252,31 @@
         }
       },
       "documentation":"<p>Represents the output of a <code>RetryStageExecution</code> action.</p>"
+    },
+    "RetryStageMetadata":{
+      "type":"structure",
+      "members":{
+        "autoStageRetryAttempt":{
+          "shape":"RetryAttempt",
+          "documentation":"<p>The number of attempts for a specific stage with automatic retry on stage failure. One attempt is allowed for automatic stage retry on failure.</p>"
+        },
+        "manualStageRetryAttempt":{
+          "shape":"RetryAttempt",
+          "documentation":"<p>The number of attempts for a specific stage where manual retries have been made upon stage failure.</p>"
+        },
+        "latestRetryTrigger":{
+          "shape":"RetryTrigger",
+          "documentation":"<p>The latest trigger for a specific stage where manual or automatic retries have been made upon stage failure.</p>"
+        }
+      },
+      "documentation":"<p>The details of a specific automatic retry on stage failure, including the attempt number and trigger.</p>"
+    },
+    "RetryTrigger":{
+      "type":"string",
+      "enum":[
+        "AutomatedStageRetry",
+        "ManualStageRetry"
+      ]
     },
     "Revision":{
       "type":"string",
@@ -4972,7 +5017,8 @@
         "Failed",
         "Stopped",
         "Stopping",
-        "Succeeded"
+        "Succeeded",
+        "Skipped"
       ]
     },
     "StageName":{
@@ -5037,6 +5083,10 @@
         "onFailureConditionState":{
           "shape":"StageConditionState",
           "documentation":"<p>The state of the failure conditions for a stage.</p>"
+        },
+        "retryStageMetadata":{
+          "shape":"RetryStageMetadata",
+          "documentation":"<p>he details of a specific automatic retry on stage failure, including the attempt number and trigger.</p>"
         }
       },
       "documentation":"<p>Represents information about the state of the stage.</p>"

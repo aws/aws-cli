@@ -13,12 +13,12 @@ The following ``assume-role-with-web-identity`` command retrieves a set of short
 Output::
 
     {
-        "SubjectFromWebIdentityToken": "amzn1.account.AF6RHO7KZU5XRVQJGXK6HB56KR2A"
+        "SubjectFromWebIdentityToken": "amzn1.account.AF6RHO7KZU5XRVQJGXK6HB56KR2A",
         "Audience": "client.5498841531868486423.1548@apps.example.com",
         "AssumedRoleUser": {
             "Arn": "arn:aws:sts::123456789012:assumed-role/FederatedWebIdentityRole/app1",
             "AssumedRoleId": "AROACLKWSDQRAOEXAMPLE:app1"
-        }
+        },
         "Credentials": {
             "AccessKeyId": "AKIAIOSFODNN7EXAMPLE",
             "SecretAccessKey": "wJalrXUtnFEMI/K7MDENG/bPxRfiCYzEXAMPLEKEY",

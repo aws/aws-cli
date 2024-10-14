@@ -220,10 +220,13 @@ def set_operation_specific_signer(context, signing_name, **kwargs):
 
 def _resolve_sigv4a_region(context):
     region = None
+    logger.debug(f'context: {context}')
     if 'client_config' in context:
+        print(f'client config: {context["client_config"].sigv4a_signing_region_set}')
         region = context['client_config'].sigv4a_signing_region_set
     if not region and context.get('signing', {}).get('region'):
         region = context['signing']['region']
+    logger.debug(f'BOTO REGION: {region}')
     return region or '*'
 
 

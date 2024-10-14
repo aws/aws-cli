@@ -243,6 +243,7 @@ class CLIDriver(object):
         self.alias_loader = AliasLoader()
 
     def _update_config_chain(self):
+        print('config chain updated')
         config_store = self.session.get_component('config_store')
         config_store.set_config_provider(
             'region',
@@ -264,6 +265,17 @@ class CLIDriver(object):
             'cli_auto_prompt',
             self._construct_cli_auto_prompt_chain()
         )
+
+        config_store.set_config_provider(
+            'sigv4a_signing_region_set',
+            ChainProvider(providers=[EnvironmentProvider(
+                name='AWS_SIGV4A_SIGNING_REGION_SET',
+                env=os.environ,
+            )])
+        )
+
+        self.session.set_config_variable('sigv4a_signing_region_set', 'us-west-2,us-east-1')
+        print(self.session.get_config_variable('sigv4a_signing_region_set'))
 
     def _construct_cli_region_chain(self):
         providers = [

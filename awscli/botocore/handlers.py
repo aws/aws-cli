@@ -168,6 +168,7 @@ def set_operation_specific_signer(context, signing_name, **kwargs):
     authenticated at all, but can include other auth modes such as sigv4
     without body signing.
     """
+    logger.debug(f'context: {context}')
     auth_type = context.get('auth_type')
 
     # Auth type will be None if the operation doesn't have a configured auth

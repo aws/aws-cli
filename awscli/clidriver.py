@@ -98,6 +98,8 @@ def create_clidriver(args=None):
         args, _ = parser.parse_known_args(args)
         debug = args.debug
     session = botocore.session.Session()
+    print(f'ENV VAR: {os.environ["AWS_SIGV4A_SIGNING_REGION_SET"]}')
+    print(f'CLIDRIVER FULL CONFIG: {session.full_config}')
     _set_user_agent_for_session(session)
     load_plugins(session.full_config.get('plugins', {}),
                  event_hooks=session.get_component('event_emitter'))
@@ -243,7 +245,6 @@ class CLIDriver(object):
         self.alias_loader = AliasLoader()
 
     def _update_config_chain(self):
-        print('config chain updated')
         config_store = self.session.get_component('config_store')
         config_store.set_config_provider(
             'region',
@@ -265,17 +266,23 @@ class CLIDriver(object):
             'cli_auto_prompt',
             self._construct_cli_auto_prompt_chain()
         )
-
         config_store.set_config_provider(
             'sigv4a_signing_region_set',
-            ChainProvider(providers=[EnvironmentProvider(
+            ChainProvider(providers=[
+                InstanceVarProvider(
+                    instance_var='sigv4a_signing_region_set',
+                    session=self.session
+                ),
+                EnvironmentProvider(
                 name='AWS_SIGV4A_SIGNING_REGION_SET',
                 env=os.environ,
-            )])
+                ),
+                ScopedConfigProvider(
+                    config_var_name='sigv4a_signing_region_set',
+                    session=self.session,
+                )
+            ])
         )
-
-        self.session.set_config_variable('sigv4a_signing_region_set', 'us-west-2,us-east-1')
-        print(self.session.get_config_variable('sigv4a_signing_region_set'))
 
     def _construct_cli_region_chain(self):
         providers = [
@@ -968,6 +975,8 @@ class CLIOperationCaller(object):
             value is returned.
 
         """
+        print('CLIDRIVER: ABOUT TO CREATE CLIENT')
+        print(f'full config: {self._session.full_config}')
         client = self._session.create_client(
             service_name, region_name=parsed_globals.region,
             endpoint_url=parsed_globals.endpoint_url,

@@ -148,6 +148,7 @@ class ClientArgsCreator(object):
                             endpoint_bridge, region_name, endpoint_url,
                             is_secure, scoped_config):
         service_name = service_model.endpoint_prefix
+        logger.debug(f'CLI ARGS.PY: {client_config.sigv4a_signing_region_set}')
         protocol = service_model.metadata['protocol']
         parameter_validation = True
         if client_config and not client_config.parameter_validation:

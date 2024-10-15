@@ -377,6 +377,7 @@ class Session(object):
         :rtype: dict
         """
         if self._config is None:
+            print(f'self._config IS NONE!')
             try:
                 config_file = self.get_config_variable('config_file')
                 self._config = botocore.configloader.load_config(config_file)
@@ -813,6 +814,7 @@ class Session(object):
 
         """
         default_client_config = self.get_default_client_config()
+        print(f'DEFAULT CONFIG: {default_client_config.sigv4a_signing_region_set}')
         # If a config is provided and a default config is set, then
         # use the config resulting from merging the two.
         if config is not None and default_client_config is not None:
@@ -823,6 +825,8 @@ class Session(object):
             config = default_client_config
 
         region_name = self._resolve_region_name(region_name, config)
+
+        print(f'SESSION CREATE CLIENT: {config.sigv4a_signing_region_set}')
 
         # Figure out the verify value base on the various
         # configuration options.
@@ -870,6 +874,7 @@ class Session(object):
             loader, endpoint_resolver, self.user_agent(), event_emitter,
             response_parser_factory, exceptions_factory, config_store,
             user_agent_creator=user_agent_creator)
+        print(f'scoped config: {self.get_scoped_config()}')
         client = client_creator.create_client(
             service_name=service_name, region_name=region_name,
             is_secure=use_ssl, endpoint_url=endpoint_url, verify=verify,

@@ -1861,7 +1861,7 @@
         },
         "userGroups":{
           "shape":"UserGroups",
-          "documentation":"<p>The groups that a user associated with the chat input belongs to.</p>",
+          "documentation":"<p>The group names that a user associated with the chat input belongs to.</p>",
           "location":"querystring",
           "locationName":"userGroups"
         },
@@ -1996,7 +1996,7 @@
         },
         "userGroups":{
           "shape":"UserGroups",
-          "documentation":"<p>The groups that a user associated with the chat input belongs to.</p>",
+          "documentation":"<p>The group names that a user associated with the chat input belongs to.</p>",
           "location":"querystring",
           "locationName":"userGroups"
         },
@@ -2211,7 +2211,7 @@
         },
         "roleArn":{
           "shape":"RoleArn",
-          "documentation":"<p> The Amazon Resource Name (ARN) of an IAM role with permissions to access your Amazon CloudWatch logs and metrics.</p>"
+          "documentation":"<p> The Amazon Resource Name (ARN) of an IAM role with permissions to access your Amazon CloudWatch logs and metrics. If this property is not specified, Amazon Q Business will create a <a href=\"https://docs.aws.amazon.com/amazonq/latest/qbusiness-ug/using-service-linked-roles.html#slr-permissions\">service linked role (SLR)</a> and use it as the application's role.</p>"
         },
         "identityType":{
           "shape":"IdentityType",
@@ -2572,6 +2572,10 @@
         "samplePromptsControlMode":{
           "shape":"WebExperienceSamplePromptsControlMode",
           "documentation":"<p>Determines whether sample prompts are enabled in the web experience for an end user.</p>"
+        },
+        "origins":{
+          "shape":"WebExperienceOrigins",
+          "documentation":"<p>Sets the website domain origins that are allowed to embed the Amazon Q Business web experience. <pre><code> The &lt;i&gt;domain origin&lt;/i&gt; refers to the base URL for accessing a website including the protocol (&lt;code&gt;http/https&lt;/code&gt;), the domain name, and the port number (if specified). &lt;/p&gt; &lt;note&gt; &lt;p&gt;You must only submit a &lt;i&gt;base URL&lt;/i&gt; and not a full path. For example, &lt;code&gt;https://docs.aws.amazon.com&lt;/code&gt;.&lt;/p&gt; &lt;/note&gt; </code></pre>"
         },
         "roleArn":{
           "shape":"RoleArn",
@@ -4144,6 +4148,10 @@
           "shape":"WebExperienceSamplePromptsControlMode",
           "documentation":"<p>Determines whether sample prompts are enabled in the web experience for an end user.</p>"
         },
+        "origins":{
+          "shape":"WebExperienceOrigins",
+          "documentation":"<p>Gets the website domain origins that are allowed to embed the Amazon Q Business web experience. <pre><code> The &lt;i&gt;domain origin&lt;/i&gt; refers to the base URL for accessing a website including the protocol (&lt;code&gt;http/https&lt;/code&gt;), the domain name, and the port number (if specified). &lt;/p&gt; </code></pre>"
+        },
         "roleArn":{
           "shape":"RoleArn",
           "documentation":"<p> The Amazon Resource Name (ARN) of the service role attached to your web experience.</p>"
@@ -5342,6 +5350,12 @@
       },
       "documentation":"<p>Information about the OIDC-compliant identity provider (IdP) used to authenticate end users of an Amazon Q Business web experience.</p>"
     },
+    "Origin":{
+      "type":"string",
+      "max":256,
+      "min":1,
+      "pattern":"(http://|https://)[a-zA-Z0-9-_.]+(?::[0-9]{1,5})?"
+    },
     "Payload":{
       "type":"string",
       "sensitive":true
@@ -5638,7 +5652,7 @@
           "documentation":"<p>Status information about whether end users can create and use Amazon Q Apps in the web experience.</p>"
         }
       },
-      "documentation":"<p>Configuration information about Amazon Q Apps. (preview feature)</p>"
+      "documentation":"<p>Configuration information about Amazon Q Apps.</p>"
     },
     "QAppsControlMode":{
       "type":"string",
@@ -6739,6 +6753,10 @@
         "identityProviderConfiguration":{
           "shape":"IdentityProviderConfiguration",
           "documentation":"<p>Information about the identity provider (IdP) used to authenticate end users of an Amazon Q Business web experience.</p>"
+        },
+        "origins":{
+          "shape":"WebExperienceOrigins",
+          "documentation":"<p>Updates the website domain origins that are allowed to embed the Amazon Q Business web experience. <pre><code> The &lt;i&gt;domain origin&lt;/i&gt; refers to the &lt;i&gt;base URL&lt;/i&gt; for accessing a website including the protocol (&lt;code&gt;http/https&lt;/code&gt;), the domain name, and the port number (if specified).&lt;/p&gt; &lt;note&gt; &lt;ul&gt; &lt;li&gt; &lt;p&gt;Any values except &lt;code&gt;null&lt;/code&gt; submitted as part of this update will replace all previous values.&lt;/p&gt; &lt;/li&gt; &lt;li&gt; &lt;p&gt;You must only submit a &lt;i&gt;base URL&lt;/i&gt; and not a full path. For example, &lt;code&gt;https://docs.aws.amazon.com&lt;/code&gt;.&lt;/p&gt; &lt;/li&gt; &lt;/ul&gt; &lt;/note&gt; </code></pre>"
         }
       }
     },
@@ -6804,10 +6822,10 @@
         },
         "userGroups":{
           "shape":"UserGroups",
-          "documentation":"<p>The user groups associated with a topic control rule.</p>"
+          "documentation":"<p>The user group names associated with a topic control rule.</p>"
         }
       },
-      "documentation":"<p>Provides information about users and groups associated with a topic control rule.</p>"
+      "documentation":"<p>Provides information about users and group names associated with a topic control rule.</p>"
     },
     "ValidationException":{
       "type":"structure",
@@ -6911,6 +6929,12 @@
       "max":36,
       "min":36,
       "pattern":"[a-zA-Z0-9][a-zA-Z0-9-]*"
+    },
+    "WebExperienceOrigins":{
+      "type":"list",
+      "member":{"shape":"Origin"},
+      "max":10,
+      "min":0
     },
     "WebExperienceSamplePromptsControlMode":{
       "type":"string",

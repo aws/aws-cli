@@ -2,8 +2,8 @@
   "version":"2.0",
   "metadata":{
     "apiVersion":"2020-07-14",
-    "auth":["aws.auth#sigv4"],
     "endpointPrefix":"ivs",
+    "jsonVersion":"1.1",
     "protocol":"rest-json",
     "protocols":["rest-json"],
     "serviceAbbreviation":"Amazon IVS",
@@ -11,7 +11,8 @@
     "serviceId":"ivs",
     "signatureVersion":"v4",
     "signingName":"ivs",
-    "uid":"ivs-2020-07-14"
+    "uid":"ivs-2020-07-14",
+    "auth":["aws.auth#sigv4"]
   },
   "operations":{
     "BatchGetChannel":{
@@ -613,21 +614,21 @@
     "AudioConfiguration":{
       "type":"structure",
       "members":{
+        "channels":{
+          "shape":"Integer",
+          "documentation":"<p>Number of audio channels.</p>"
+        },
         "codec":{
           "shape":"String",
           "documentation":"<p>Codec used for the audio encoding.</p>"
-        },
-        "targetBitrate":{
-          "shape":"Integer",
-          "documentation":"<p>The expected ingest bitrate (bits per second). This is configured in the encoder.</p>"
         },
         "sampleRate":{
           "shape":"Integer",
           "documentation":"<p>Number of audio samples recorded per second.</p>"
         },
-        "channels":{
+        "targetBitrate":{
           "shape":"Integer",
-          "documentation":"<p>Number of audio channels.</p>"
+          "documentation":"<p>The expected ingest bitrate (bits per second). This is configured in the encoder.</p>"
         }
       },
       "documentation":"<p>Object specifying a stream’s audio configuration, as set up by the broadcaster (usually in an encoder). This is part of the <a>IngestConfiguration</a> object and used for monitoring stream health.</p>"
@@ -690,12 +691,12 @@
     "BatchGetStreamKeyResponse":{
       "type":"structure",
       "members":{
-        "streamKeys":{
-          "shape":"StreamKeys",
-          "documentation":"<p/>"
-        },
         "errors":{
           "shape":"BatchErrors",
+          "documentation":"<p/>"
+        },
+        "streamKeys":{
+          "shape":"StreamKeys",
           "documentation":"<p/>"
         }
       }
@@ -711,10 +712,6 @@
           "shape":"ChannelArn",
           "documentation":"<p>Channel ARN.</p>"
         },
-        "viewerId":{
-          "shape":"ViewerId",
-          "documentation":"<p>The ID of the viewer session to revoke.</p>"
-        },
         "code":{
           "shape":"errorCode",
           "documentation":"<p>Error code.</p>"
@@ -722,6 +719,10 @@
         "message":{
           "shape":"errorMessage",
           "documentation":"<p>Error message, determined by the application.</p>"
+        },
+        "viewerId":{
+          "shape":"ViewerId",
+          "documentation":"<p>The ID of the viewer session to revoke.</p>"
         }
       },
       "documentation":"<p>Error for a request in the batch for BatchStartViewerSessionRevocation. Each error is related to a specific channel-ARN and viewer-ID pair.</p>"
@@ -785,53 +786,53 @@
           "shape":"ChannelArn",
           "documentation":"<p>Channel ARN.</p>"
         },
-        "name":{
-          "shape":"ChannelName",
-          "documentation":"<p>Channel name.</p>"
-        },
-        "latencyMode":{
-          "shape":"ChannelLatencyMode",
-          "documentation":"<p>Channel latency mode. Use <code>NORMAL</code> to broadcast and deliver live video up to Full HD. Use <code>LOW</code> for near-real-time interaction with viewers. Default: <code>LOW</code>.</p>"
-        },
-        "type":{
-          "shape":"ChannelType",
-          "documentation":"<p>Channel type, which determines the allowable resolution and bitrate. <i>If you exceed the allowable input resolution or bitrate, the stream probably will disconnect immediately.</i> Default: <code>STANDARD</code>. For details, see <a href=\"https://docs.aws.amazon.com/ivs/latest/LowLatencyAPIReference/channel-types.html\">Channel Types</a>.</p>"
-        },
-        "recordingConfigurationArn":{
-          "shape":"ChannelRecordingConfigurationArn",
-          "documentation":"<p>Recording-configuration ARN. A valid ARN value here both specifies the ARN and enables recording. Default: \"\" (empty string, recording is disabled).</p>"
+        "authorized":{
+          "shape":"IsAuthorized",
+          "documentation":"<p>Whether the channel is private (enabled for playback authorization). Default: <code>false</code>.</p>"
         },
         "ingestEndpoint":{
           "shape":"IngestEndpoint",
           "documentation":"<p>Channel ingest endpoint, part of the definition of an ingest server, used when you set up streaming software.</p>"
         },
-        "playbackUrl":{
-          "shape":"PlaybackURL",
-          "documentation":"<p>Channel playback URL.</p>"
-        },
-        "authorized":{
-          "shape":"IsAuthorized",
-          "documentation":"<p>Whether the channel is private (enabled for playback authorization). Default: <code>false</code>.</p>"
-        },
-        "tags":{
-          "shape":"Tags",
-          "documentation":"<p>Tags attached to the resource. Array of 1-50 maps, each of the form <code>string:string (key:value)</code>. See <a href=\"https://docs.aws.amazon.com/tag-editor/latest/userguide/best-practices-and-strats.html\">Best practices and strategies</a> in <i>Tagging Amazon Web Services Resources and Tag Editor</i> for details, including restrictions that apply to tags and \"Tag naming limits and requirements\"; Amazon IVS has no service-specific constraints beyond what is documented there.</p>"
-        },
         "insecureIngest":{
           "shape":"InsecureIngest",
           "documentation":"<p>Whether the channel allows insecure RTMP ingest. Default: <code>false</code>.</p>"
+        },
+        "latencyMode":{
+          "shape":"ChannelLatencyMode",
+          "documentation":"<p>Channel latency mode. Use <code>NORMAL</code> to broadcast and deliver live video up to Full HD. Use <code>LOW</code> for near-real-time interaction with viewers. Default: <code>LOW</code>.</p>"
+        },
+        "name":{
+          "shape":"ChannelName",
+          "documentation":"<p>Channel name.</p>"
+        },
+        "playbackRestrictionPolicyArn":{
+          "shape":"ChannelPlaybackRestrictionPolicyArn",
+          "documentation":"<p>Playback-restriction-policy ARN. A valid ARN value here both specifies the ARN and enables playback restriction. Default: \"\" (empty string, no playback restriction policy is applied).</p>"
+        },
+        "playbackUrl":{
+          "shape":"PlaybackURL",
+          "documentation":"<p>Channel playback URL.</p>"
         },
         "preset":{
           "shape":"TranscodePreset",
           "documentation":"<p>Optional transcode preset for the channel. This is selectable only for <code>ADVANCED_HD</code> and <code>ADVANCED_SD</code> channel types. For those channel types, the default <code>preset</code> is <code>HIGHER_BANDWIDTH_DELIVERY</code>. For other channel types (<code>BASIC</code> and <code>STANDARD</code>), <code>preset</code> is the empty string (<code>\"\"</code>).</p>"
         },
+        "recordingConfigurationArn":{
+          "shape":"ChannelRecordingConfigurationArn",
+          "documentation":"<p>Recording-configuration ARN. A valid ARN value here both specifies the ARN and enables recording. Default: \"\" (empty string, recording is disabled).</p>"
+        },
         "srt":{
           "shape":"Srt",
           "documentation":"<p>Specifies the endpoint and optional passphrase for streaming with the SRT protocol.</p>"
         },
-        "playbackRestrictionPolicyArn":{
-          "shape":"ChannelPlaybackRestrictionPolicyArn",
-          "documentation":"<p>Playback-restriction-policy ARN. A valid ARN value here both specifies the ARN and enables playback restriction. Default: \"\" (empty string, no playback restriction policy is applied).</p>"
+        "tags":{
+          "shape":"Tags",
+          "documentation":"<p>Tags attached to the resource. Array of 1-50 maps, each of the form <code>string:string (key:value)</code>. See <a href=\"https://docs.aws.amazon.com/tag-editor/latest/userguide/best-practices-and-strats.html\">Best practices and strategies</a> in <i>Tagging Amazon Web Services Resources and Tag Editor</i> for details, including restrictions that apply to tags and \"Tag naming limits and requirements\"; Amazon IVS has no service-specific constraints beyond what is documented there.</p>"
+        },
+        "type":{
+          "shape":"ChannelType",
+          "documentation":"<p>Channel type, which determines the allowable resolution and bitrate. <i>If you exceed the allowable input resolution or bitrate, the stream probably will disconnect immediately.</i> Default: <code>STANDARD</code>. For details, see <a href=\"https://docs.aws.amazon.com/ivs/latest/LowLatencyAPIReference/channel-types.html\">Channel Types</a>.</p>"
         }
       },
       "documentation":"<p>Object specifying a channel.</p>"
@@ -840,7 +841,7 @@
       "type":"string",
       "max":128,
       "min":1,
-      "pattern":"arn:aws:ivs:[a-z0-9-]+:[0-9]+:channel/[a-zA-Z0-9-]+"
+      "pattern":"^arn:aws:ivs:[a-z0-9-]+:[0-9]+:channel/[a-zA-Z0-9-]+$"
     },
     "ChannelArnList":{
       "type":"list",
@@ -863,7 +864,7 @@
       "type":"string",
       "max":128,
       "min":0,
-      "pattern":"[a-zA-Z0-9-_]*"
+      "pattern":"^[a-zA-Z0-9-_]*$"
     },
     "ChannelNotBroadcasting":{
       "type":"structure",
@@ -884,13 +885,13 @@
       "type":"string",
       "max":128,
       "min":0,
-      "pattern":"^$|^arn:aws:ivs:[a-z0-9-]+:[0-9]+:playback-restriction-policy/[a-zA-Z0-9-]+$"
+      "pattern":"^^$|^arn:aws:ivs:[a-z0-9-]+:[0-9]+:playback-restriction-policy/[a-zA-Z0-9-]+$$"
     },
     "ChannelRecordingConfigurationArn":{
       "type":"string",
       "max":128,
       "min":0,
-      "pattern":"^$|^arn:aws:ivs:[a-z0-9-]+:[0-9]+:recording-configuration/[a-zA-Z0-9-]+$"
+      "pattern":"^^$|^arn:aws:ivs:[a-z0-9-]+:[0-9]+:recording-configuration/[a-zA-Z0-9-]+$$"
     },
     "ChannelSummary":{
       "type":"structure",
@@ -899,17 +900,29 @@
           "shape":"ChannelArn",
           "documentation":"<p>Channel ARN.</p>"
         },
-        "name":{
-          "shape":"ChannelName",
-          "documentation":"<p>Channel name.</p>"
+        "authorized":{
+          "shape":"IsAuthorized",
+          "documentation":"<p>Whether the channel is private (enabled for playback authorization). Default: <code>false</code>.</p>"
+        },
+        "insecureIngest":{
+          "shape":"InsecureIngest",
+          "documentation":"<p>Whether the channel allows insecure RTMP ingest. Default: <code>false</code>.</p>"
         },
         "latencyMode":{
           "shape":"ChannelLatencyMode",
           "documentation":"<p>Channel latency mode. Use <code>NORMAL</code> to broadcast and deliver live video up to Full HD. Use <code>LOW</code> for near-real-time interaction with viewers. Default: <code>LOW</code>.</p>"
         },
-        "authorized":{
-          "shape":"IsAuthorized",
-          "documentation":"<p>Whether the channel is private (enabled for playback authorization). Default: <code>false</code>.</p>"
+        "name":{
+          "shape":"ChannelName",
+          "documentation":"<p>Channel name.</p>"
+        },
+        "playbackRestrictionPolicyArn":{
+          "shape":"ChannelPlaybackRestrictionPolicyArn",
+          "documentation":"<p>Playback-restriction-policy ARN. A valid ARN value here both specifies the ARN and enables playback restriction. Default: \"\" (empty string, no playback restriction policy is applied).</p>"
+        },
+        "preset":{
+          "shape":"TranscodePreset",
+          "documentation":"<p>Optional transcode preset for the channel. This is selectable only for <code>ADVANCED_HD</code> and <code>ADVANCED_SD</code> channel types. For those channel types, the default <code>preset</code> is <code>HIGHER_BANDWIDTH_DELIVERY</code>. For other channel types (<code>BASIC</code> and <code>STANDARD</code>), <code>preset</code> is the empty string (<code>\"\"</code>).</p>"
         },
         "recordingConfigurationArn":{
           "shape":"ChannelRecordingConfigurationArn",
@@ -919,21 +932,9 @@
           "shape":"Tags",
           "documentation":"<p>Tags attached to the resource. Array of 1-50 maps, each of the form <code>string:string (key:value)</code>. See <a href=\"https://docs.aws.amazon.com/tag-editor/latest/userguide/best-practices-and-strats.html\">Best practices and strategies</a> in <i>Tagging Amazon Web Services Resources and Tag Editor</i> for details, including restrictions that apply to tags and \"Tag naming limits and requirements\"; Amazon IVS has no service-specific constraints beyond what is documented there.</p>"
         },
-        "insecureIngest":{
-          "shape":"InsecureIngest",
-          "documentation":"<p>Whether the channel allows insecure RTMP ingest. Default: <code>false</code>.</p>"
-        },
         "type":{
           "shape":"ChannelType",
           "documentation":"<p>Channel type, which determines the allowable resolution and bitrate. <i>If you exceed the allowable input resolution or bitrate, the stream probably will disconnect immediately.</i> Default: <code>STANDARD</code>. For details, see <a href=\"https://docs.aws.amazon.com/ivs/latest/LowLatencyAPIReference/channel-types.html\">Channel Types</a>.</p>"
-        },
-        "preset":{
-          "shape":"TranscodePreset",
-          "documentation":"<p>Optional transcode preset for the channel. This is selectable only for <code>ADVANCED_HD</code> and <code>ADVANCED_SD</code> channel types. For those channel types, the default <code>preset</code> is <code>HIGHER_BANDWIDTH_DELIVERY</code>. For other channel types (<code>BASIC</code> and <code>STANDARD</code>), <code>preset</code> is the empty string (<code>\"\"</code>).</p>"
-        },
-        "playbackRestrictionPolicyArn":{
-          "shape":"ChannelPlaybackRestrictionPolicyArn",
-          "documentation":"<p>Playback-restriction-policy ARN. A valid ARN value here both specifies the ARN and enables playback restriction. Default: \"\" (empty string, no playback restriction policy is applied).</p>"
         }
       },
       "documentation":"<p>Summary information about a channel.</p>"
@@ -969,21 +970,29 @@
     "CreateChannelRequest":{
       "type":"structure",
       "members":{
-        "name":{
-          "shape":"ChannelName",
-          "documentation":"<p>Channel name.</p>"
+        "authorized":{
+          "shape":"Boolean",
+          "documentation":"<p>Whether the channel is private (enabled for playback authorization). Default: <code>false</code>.</p>"
+        },
+        "insecureIngest":{
+          "shape":"Boolean",
+          "documentation":"<p>Whether the channel allows insecure RTMP and SRT ingest. Default: <code>false</code>.</p>"
         },
         "latencyMode":{
           "shape":"ChannelLatencyMode",
           "documentation":"<p>Channel latency mode. Use <code>NORMAL</code> to broadcast and deliver live video up to Full HD. Use <code>LOW</code> for near-real-time interaction with viewers. Default: <code>LOW</code>.</p>"
         },
-        "type":{
-          "shape":"ChannelType",
-          "documentation":"<p>Channel type, which determines the allowable resolution and bitrate. <i>If you exceed the allowable input resolution or bitrate, the stream probably will disconnect immediately.</i> Default: <code>STANDARD</code>. For details, see <a href=\"https://docs.aws.amazon.com/ivs/latest/LowLatencyAPIReference/channel-types.html\">Channel Types</a>.</p>"
+        "name":{
+          "shape":"ChannelName",
+          "documentation":"<p>Channel name.</p>"
         },
-        "authorized":{
-          "shape":"Boolean",
-          "documentation":"<p>Whether the channel is private (enabled for playback authorization). Default: <code>false</code>.</p>"
+        "playbackRestrictionPolicyArn":{
+          "shape":"ChannelPlaybackRestrictionPolicyArn",
+          "documentation":"<p>Playback-restriction-policy ARN. A valid ARN value here both specifies the ARN and enables playback restriction. Default: \"\" (empty string, no playback restriction policy is applied).</p>"
+        },
+        "preset":{
+          "shape":"TranscodePreset",
+          "documentation":"<p>Optional transcode preset for the channel. This is selectable only for <code>ADVANCED_HD</code> and <code>ADVANCED_SD</code> channel types. For those channel types, the default <code>preset</code> is <code>HIGHER_BANDWIDTH_DELIVERY</code>. For other channel types (<code>BASIC</code> and <code>STANDARD</code>), <code>preset</code> is the empty string (<code>\"\"</code>).</p>"
         },
         "recordingConfigurationArn":{
           "shape":"ChannelRecordingConfigurationArn",
@@ -993,17 +1002,9 @@
           "shape":"Tags",
           "documentation":"<p>Array of 1-50 maps, each of the form <code>string:string (key:value)</code>. See <a href=\"https://docs.aws.amazon.com/tag-editor/latest/userguide/best-practices-and-strats.html\">Best practices and strategies</a> in <i>Tagging Amazon Web Services Resources and Tag Editor</i> for details, including restrictions that apply to tags and \"Tag naming limits and requirements\"; Amazon IVS has no service-specific constraints beyond what is documented there.</p>"
         },
-        "insecureIngest":{
-          "shape":"Boolean",
-          "documentation":"<p>Whether the channel allows insecure RTMP and SRT ingest. Default: <code>false</code>.</p>"
-        },
-        "preset":{
-          "shape":"TranscodePreset",
-          "documentation":"<p>Optional transcode preset for the channel. This is selectable only for <code>ADVANCED_HD</code> and <code>ADVANCED_SD</code> channel types. For those channel types, the default <code>preset</code> is <code>HIGHER_BANDWIDTH_DELIVERY</code>. For other channel types (<code>BASIC</code> and <code>STANDARD</code>), <code>preset</code> is the empty string (<code>\"\"</code>).</p>"
-        },
-        "playbackRestrictionPolicyArn":{
-          "shape":"ChannelPlaybackRestrictionPolicyArn",
-          "documentation":"<p>Playback-restriction-policy ARN. A valid ARN value here both specifies the ARN and enables playback restriction. Default: \"\" (empty string, no playback restriction policy is applied).</p>"
+        "type":{
+          "shape":"ChannelType",
+          "documentation":"<p>Channel type, which determines the allowable resolution and bitrate. <i>If you exceed the allowable input resolution or bitrate, the stream probably will disconnect immediately.</i> Default: <code>STANDARD</code>. For details, see <a href=\"https://docs.aws.amazon.com/ivs/latest/LowLatencyAPIReference/channel-types.html\">Channel Types</a>.</p>"
         }
       }
     },
@@ -1058,21 +1059,13 @@
       "type":"structure",
       "required":["destinationConfiguration"],
       "members":{
-        "name":{
-          "shape":"RecordingConfigurationName",
-          "documentation":"<p>Recording-configuration name. The value does not need to be unique.</p>"
-        },
         "destinationConfiguration":{
           "shape":"DestinationConfiguration",
           "documentation":"<p>A complex type that contains a destination configuration for where recorded video will be stored.</p>"
         },
-        "tags":{
-          "shape":"Tags",
-          "documentation":"<p>Array of 1-50 maps, each of the form <code>string:string (key:value)</code>. See <a href=\"https://docs.aws.amazon.com/tag-editor/latest/userguide/best-practices-and-strats.html\">Best practices and strategies</a> in <i>Tagging Amazon Web Services Resources and Tag Editor</i> for details, including restrictions that apply to tags and \"Tag naming limits and requirements\"; Amazon IVS has no service-specific constraints beyond what is documented there.</p>"
-        },
-        "thumbnailConfiguration":{
-          "shape":"ThumbnailConfiguration",
-          "documentation":"<p>A complex type that allows you to enable/disable the recording of thumbnails for a live session and modify the interval at which thumbnails are generated for the live session.</p>"
+        "name":{
+          "shape":"RecordingConfigurationName",
+          "documentation":"<p>Recording-configuration name. The value does not need to be unique.</p>"
         },
         "recordingReconnectWindowSeconds":{
           "shape":"RecordingReconnectWindowSeconds",
@@ -1081,6 +1074,14 @@
         "renditionConfiguration":{
           "shape":"RenditionConfiguration",
           "documentation":"<p>Object that describes which renditions should be recorded for a stream.</p>"
+        },
+        "tags":{
+          "shape":"Tags",
+          "documentation":"<p>Array of 1-50 maps, each of the form <code>string:string (key:value)</code>. See <a href=\"https://docs.aws.amazon.com/tag-editor/latest/userguide/best-practices-and-strats.html\">Best practices and strategies</a> in <i>Tagging Amazon Web Services Resources and Tag Editor</i> for details, including restrictions that apply to tags and \"Tag naming limits and requirements\"; Amazon IVS has no service-specific constraints beyond what is documented there.</p>"
+        },
+        "thumbnailConfiguration":{
+          "shape":"ThumbnailConfiguration",
+          "documentation":"<p>A complex type that allows you to enable/disable the recording of thumbnails for a live session and modify the interval at which thumbnails are generated for the live session.</p>"
         }
       }
     },
@@ -1322,13 +1323,13 @@
       "type":"structure",
       "required":["publicKeyMaterial"],
       "members":{
-        "publicKeyMaterial":{
-          "shape":"PlaybackPublicKeyMaterial",
-          "documentation":"<p>The public portion of a customer-generated key pair.</p>"
-        },
         "name":{
           "shape":"PlaybackKeyPairName",
           "documentation":"<p>Playback-key-pair name. The value does not need to be unique.</p>"
+        },
+        "publicKeyMaterial":{
+          "shape":"PlaybackPublicKeyMaterial",
+          "documentation":"<p>The public portion of a customer-generated key pair.</p>"
         },
         "tags":{
           "shape":"Tags",
@@ -1348,13 +1349,13 @@
     "IngestConfiguration":{
       "type":"structure",
       "members":{
-        "video":{
-          "shape":"VideoConfiguration",
-          "documentation":"<p>Encoder settings for video.</p>"
-        },
         "audio":{
           "shape":"AudioConfiguration",
           "documentation":"<p>Encoder settings for audio.</p>"
+        },
+        "video":{
+          "shape":"VideoConfiguration",
+          "documentation":"<p>Encoder settings for video.</p>"
         }
       },
       "documentation":"<p>Object specifying the ingest configuration set up by the broadcaster, usually in an encoder.</p>"
@@ -1383,21 +1384,21 @@
           "shape":"ChannelName",
           "documentation":"<p>Filters the channel list to match the specified name.</p>"
         },
-        "filterByRecordingConfigurationArn":{
-          "shape":"ChannelRecordingConfigurationArn",
-          "documentation":"<p>Filters the channel list to match the specified recording-configuration ARN.</p>"
-        },
         "filterByPlaybackRestrictionPolicyArn":{
           "shape":"ChannelPlaybackRestrictionPolicyArn",
           "documentation":"<p>Filters the channel list to match the specified policy.</p>"
         },
-        "nextToken":{
-          "shape":"PaginationToken",
-          "documentation":"<p>The first channel to retrieve. This is used for pagination; see the <code>nextToken</code> response field.</p>"
+        "filterByRecordingConfigurationArn":{
+          "shape":"ChannelRecordingConfigurationArn",
+          "documentation":"<p>Filters the channel list to match the specified recording-configuration ARN.</p>"
         },
         "maxResults":{
           "shape":"MaxChannelResults",
           "documentation":"<p>Maximum number of channels to return. Default: 100.</p>"
+        },
+        "nextToken":{
+          "shape":"PaginationToken",
+          "documentation":"<p>The first channel to retrieve. This is used for pagination; see the <code>nextToken</code> response field.</p>"
         }
       }
     },
@@ -1418,13 +1419,13 @@
     "ListPlaybackKeyPairsRequest":{
       "type":"structure",
       "members":{
-        "nextToken":{
-          "shape":"PaginationToken",
-          "documentation":"<p>The first key pair to retrieve. This is used for pagination; see the <code>nextToken</code> response field.</p>"
-        },
         "maxResults":{
           "shape":"MaxPlaybackKeyPairResults",
           "documentation":"<p>Maximum number of key pairs to return. Default: your service quota or 100, whichever is smaller.</p>"
+        },
+        "nextToken":{
+          "shape":"PaginationToken",
+          "documentation":"<p>The first key pair to retrieve. This is used for pagination; see the <code>nextToken</code> response field.</p>"
         }
       }
     },
@@ -1445,13 +1446,13 @@
     "ListPlaybackRestrictionPoliciesRequest":{
       "type":"structure",
       "members":{
-        "nextToken":{
-          "shape":"PaginationToken",
-          "documentation":"<p>The first policy to retrieve. This is used for pagination; see the <code>nextToken</code> response field.</p>"
-        },
         "maxResults":{
           "shape":"MaxPlaybackRestrictionPolicyResults",
           "documentation":"<p>Maximum number of policies to return. Default: 1.</p>"
+        },
+        "nextToken":{
+          "shape":"PaginationToken",
+          "documentation":"<p>The first policy to retrieve. This is used for pagination; see the <code>nextToken</code> response field.</p>"
         }
       }
     },
@@ -1459,26 +1460,26 @@
       "type":"structure",
       "required":["playbackRestrictionPolicies"],
       "members":{
-        "playbackRestrictionPolicies":{
-          "shape":"PlaybackRestrictionPolicyList",
-          "documentation":"<p>List of the matching policies.</p>"
-        },
         "nextToken":{
           "shape":"PaginationToken",
           "documentation":"<p>If there are more channels than <code>maxResults</code>, use <code>nextToken</code> in the request to get the next set.</p>"
+        },
+        "playbackRestrictionPolicies":{
+          "shape":"PlaybackRestrictionPolicyList",
+          "documentation":"<p>List of the matching policies.</p>"
         }
       }
     },
     "ListRecordingConfigurationsRequest":{
       "type":"structure",
       "members":{
-        "nextToken":{
-          "shape":"PaginationToken",
-          "documentation":"<p>The first recording configuration to retrieve. This is used for pagination; see the <code>nextToken</code> response field.</p>"
-        },
         "maxResults":{
           "shape":"MaxRecordingConfigurationResults",
           "documentation":"<p>Maximum number of recording configurations to return. Default: your service quota or 100, whichever is smaller. </p>"
+        },
+        "nextToken":{
+          "shape":"PaginationToken",
+          "documentation":"<p>The first recording configuration to retrieve. This is used for pagination; see the <code>nextToken</code> response field.</p>"
         }
       }
     },
@@ -1486,13 +1487,13 @@
       "type":"structure",
       "required":["recordingConfigurations"],
       "members":{
-        "recordingConfigurations":{
-          "shape":"RecordingConfigurationList",
-          "documentation":"<p>List of the matching recording configurations.</p>"
-        },
         "nextToken":{
           "shape":"PaginationToken",
           "documentation":"<p>If there are more recording configurations than <code>maxResults</code>, use <code>nextToken</code> in the request to get the next set.</p>"
+        },
+        "recordingConfigurations":{
+          "shape":"RecordingConfigurationList",
+          "documentation":"<p>List of the matching recording configurations.</p>"
         }
       }
     },
@@ -1504,13 +1505,13 @@
           "shape":"ChannelArn",
           "documentation":"<p>Channel ARN used to filter the list.</p>"
         },
-        "nextToken":{
-          "shape":"PaginationToken",
-          "documentation":"<p>The first stream key to retrieve. This is used for pagination; see the <code>nextToken</code> response field.</p>"
-        },
         "maxResults":{
           "shape":"MaxStreamKeyResults",
           "documentation":"<p>Maximum number of streamKeys to return. Default: 1.</p>"
+        },
+        "nextToken":{
+          "shape":"PaginationToken",
+          "documentation":"<p>The first stream key to retrieve. This is used for pagination; see the <code>nextToken</code> response field.</p>"
         }
       }
     },
@@ -1518,13 +1519,13 @@
       "type":"structure",
       "required":["streamKeys"],
       "members":{
-        "streamKeys":{
-          "shape":"StreamKeyList",
-          "documentation":"<p>List of stream keys.</p>"
-        },
         "nextToken":{
           "shape":"PaginationToken",
           "documentation":"<p>If there are more stream keys than <code>maxResults</code>, use <code>nextToken</code> in the request to get the next set.</p>"
+        },
+        "streamKeys":{
+          "shape":"StreamKeyList",
+          "documentation":"<p>List of stream keys.</p>"
         }
       }
     },
@@ -1536,13 +1537,13 @@
           "shape":"ChannelArn",
           "documentation":"<p>Channel ARN used to filter the list.</p>"
         },
-        "nextToken":{
-          "shape":"PaginationToken",
-          "documentation":"<p>The first stream to retrieve. This is used for pagination; see the <code>nextToken</code> response field.</p>"
-        },
         "maxResults":{
           "shape":"MaxStreamResults",
           "documentation":"<p>Maximum number of streams to return. Default: 100.</p>"
+        },
+        "nextToken":{
+          "shape":"PaginationToken",
+          "documentation":"<p>The first stream to retrieve. This is used for pagination; see the <code>nextToken</code> response field.</p>"
         }
       }
     },
@@ -1550,13 +1551,13 @@
       "type":"structure",
       "required":["streamSessions"],
       "members":{
-        "streamSessions":{
-          "shape":"StreamSessionList",
-          "documentation":"<p>List of stream sessions.</p>"
-        },
         "nextToken":{
           "shape":"PaginationToken",
           "documentation":"<p>If there are more streams than <code>maxResults</code>, use <code>nextToken</code> in the request to get the next set.</p>"
+        },
+        "streamSessions":{
+          "shape":"StreamSessionList",
+          "documentation":"<p>List of stream sessions.</p>"
         }
       }
     },
@@ -1567,13 +1568,13 @@
           "shape":"StreamFilters",
           "documentation":"<p>Filters the stream list to match the specified criterion.</p>"
         },
-        "nextToken":{
-          "shape":"PaginationToken",
-          "documentation":"<p>The first stream to retrieve. This is used for pagination; see the <code>nextToken</code> response field.</p>"
-        },
         "maxResults":{
           "shape":"MaxStreamResults",
           "documentation":"<p>Maximum number of streams to return. Default: 100.</p>"
+        },
+        "nextToken":{
+          "shape":"PaginationToken",
+          "documentation":"<p>The first stream to retrieve. This is used for pagination; see the <code>nextToken</code> response field.</p>"
         }
       }
     },
@@ -1581,13 +1582,13 @@
       "type":"structure",
       "required":["streams"],
       "members":{
-        "streams":{
-          "shape":"StreamList",
-          "documentation":"<p>List of streams.</p>"
-        },
         "nextToken":{
           "shape":"PaginationToken",
           "documentation":"<p>If there are more streams than <code>maxResults</code>, use <code>nextToken</code> in the request to get the next set.</p>"
+        },
+        "streams":{
+          "shape":"StreamList",
+          "documentation":"<p>List of streams.</p>"
         }
       }
     },
@@ -1653,7 +1654,7 @@
       "type":"string",
       "max":1024,
       "min":0,
-      "pattern":"[a-zA-Z0-9+/=_-]*"
+      "pattern":"^[a-zA-Z0-9+/=_-]*$"
     },
     "PendingVerification":{
       "type":"structure",
@@ -1677,13 +1678,13 @@
           "shape":"PlaybackKeyPairArn",
           "documentation":"<p>Key-pair ARN.</p>"
         },
-        "name":{
-          "shape":"PlaybackKeyPairName",
-          "documentation":"<p>Playback-key-pair name. The value does not need to be unique.</p>"
-        },
         "fingerprint":{
           "shape":"PlaybackKeyPairFingerprint",
           "documentation":"<p>Key-pair identifier.</p>"
+        },
+        "name":{
+          "shape":"PlaybackKeyPairName",
+          "documentation":"<p>Playback-key-pair name. The value does not need to be unique.</p>"
         },
         "tags":{
           "shape":"Tags",
@@ -1696,7 +1697,7 @@
       "type":"string",
       "max":128,
       "min":1,
-      "pattern":"arn:aws:ivs:[a-z0-9-]+:[0-9]+:playback-key/[a-zA-Z0-9-]+"
+      "pattern":"^arn:aws:ivs:[a-z0-9-]+:[0-9]+:playback-key/[a-zA-Z0-9-]+$"
     },
     "PlaybackKeyPairFingerprint":{"type":"string"},
     "PlaybackKeyPairList":{
@@ -1707,7 +1708,7 @@
       "type":"string",
       "max":128,
       "min":0,
-      "pattern":"[a-zA-Z0-9-_]*"
+      "pattern":"^[a-zA-Z0-9-_]*$"
     },
     "PlaybackKeyPairSummary":{
       "type":"structure",
@@ -1731,15 +1732,11 @@
     "PlaybackRestrictionPolicy":{
       "type":"structure",
       "required":[
-        "arn",
         "allowedCountries",
-        "allowedOrigins"
+        "allowedOrigins",
+        "arn"
       ],
       "members":{
-        "arn":{
-          "shape":"PlaybackRestrictionPolicyArn",
-          "documentation":"<p>Playback-restriction-policy ARN</p>"
-        },
         "allowedCountries":{
           "shape":"PlaybackRestrictionPolicyAllowedCountryList",
           "documentation":"<p>A list of country codes that control geoblocking restriction. Allowed values are the officially assigned <a href=\"https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2\">ISO 3166-1 alpha-2</a> codes. Default: All countries (an empty array).</p>"
@@ -1747,6 +1744,10 @@
         "allowedOrigins":{
           "shape":"PlaybackRestrictionPolicyAllowedOriginList",
           "documentation":"<p>A list of origin sites that control CORS restriction. Allowed values are the same as valid values of the Origin header defined at <a href=\"https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Origin\">https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Origin</a>. Default: All origins (an empty array).</p>"
+        },
+        "arn":{
+          "shape":"PlaybackRestrictionPolicyArn",
+          "documentation":"<p>Playback-restriction-policy ARN</p>"
         },
         "enableStrictOriginEnforcement":{
           "shape":"PlaybackRestrictionPolicyEnableStrictOriginEnforcement",
@@ -1785,7 +1786,7 @@
       "type":"string",
       "max":128,
       "min":1,
-      "pattern":"arn:aws:ivs:[a-z0-9-]+:[0-9]+:playback-restriction-policy/[a-zA-Z0-9-]+"
+      "pattern":"^arn:aws:ivs:[a-z0-9-]+:[0-9]+:playback-restriction-policy/[a-zA-Z0-9-]+$"
     },
     "PlaybackRestrictionPolicyEnableStrictOriginEnforcement":{
       "type":"boolean",
@@ -1799,20 +1800,16 @@
       "type":"string",
       "max":128,
       "min":0,
-      "pattern":"[a-zA-Z0-9-_]*"
+      "pattern":"^[a-zA-Z0-9-_]*$"
     },
     "PlaybackRestrictionPolicySummary":{
       "type":"structure",
       "required":[
-        "arn",
         "allowedCountries",
-        "allowedOrigins"
+        "allowedOrigins",
+        "arn"
       ],
       "members":{
-        "arn":{
-          "shape":"PlaybackRestrictionPolicyArn",
-          "documentation":"<p>Playback-restriction-policy ARN</p>"
-        },
         "allowedCountries":{
           "shape":"PlaybackRestrictionPolicyAllowedCountryList",
           "documentation":"<p>A list of country codes that control geoblocking restriction. Allowed values are the officially assigned <a href=\"https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2\">ISO 3166-1 alpha-2</a> codes. Default: All countries (an empty array).</p>"
@@ -1820,6 +1817,10 @@
         "allowedOrigins":{
           "shape":"PlaybackRestrictionPolicyAllowedOriginList",
           "documentation":"<p>A list of origin sites that control CORS restriction. Allowed values are the same as valid values of the Origin header defined at <a href=\"https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Origin\">https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Origin</a>. Default: All origins (an empty array).</p>"
+        },
+        "arn":{
+          "shape":"PlaybackRestrictionPolicyArn",
+          "documentation":"<p>Playback-restriction-policy ARN</p>"
         },
         "enableStrictOriginEnforcement":{
           "shape":"PlaybackRestrictionPolicyEnableStrictOriginEnforcement",
@@ -1866,13 +1867,21 @@
           "shape":"RecordingConfigurationArn",
           "documentation":"<p>Recording-configuration ARN.</p>"
         },
+        "destinationConfiguration":{
+          "shape":"DestinationConfiguration",
+          "documentation":"<p>A complex type that contains information about where recorded video will be stored.</p>"
+        },
         "name":{
           "shape":"RecordingConfigurationName",
           "documentation":"<p>Recording-configuration name. The value does not need to be unique.</p>"
         },
-        "destinationConfiguration":{
-          "shape":"DestinationConfiguration",
-          "documentation":"<p>A complex type that contains information about where recorded video will be stored.</p>"
+        "recordingReconnectWindowSeconds":{
+          "shape":"RecordingReconnectWindowSeconds",
+          "documentation":"<p>If a broadcast disconnects and then reconnects within the specified interval, the multiple streams will be considered a single broadcast and merged together. Default: 0.</p>"
+        },
+        "renditionConfiguration":{
+          "shape":"RenditionConfiguration",
+          "documentation":"<p>Object that describes which renditions should be recorded for a stream.</p>"
         },
         "state":{
           "shape":"RecordingConfigurationState",
@@ -1885,14 +1894,6 @@
         "thumbnailConfiguration":{
           "shape":"ThumbnailConfiguration",
           "documentation":"<p>A complex type that allows you to enable/disable the recording of thumbnails for a live session and modify the interval at which thumbnails are generated for the live session.</p>"
-        },
-        "recordingReconnectWindowSeconds":{
-          "shape":"RecordingReconnectWindowSeconds",
-          "documentation":"<p>If a broadcast disconnects and then reconnects within the specified interval, the multiple streams will be considered a single broadcast and merged together. Default: 0.</p>"
-        },
-        "renditionConfiguration":{
-          "shape":"RenditionConfiguration",
-          "documentation":"<p>Object that describes which renditions should be recorded for a stream.</p>"
         }
       },
       "documentation":"<p>An object representing a configuration to record a channel stream.</p>"
@@ -1901,7 +1902,7 @@
       "type":"string",
       "max":128,
       "min":0,
-      "pattern":"arn:aws:ivs:[a-z0-9-]+:[0-9]+:recording-configuration/[a-zA-Z0-9-]+"
+      "pattern":"^arn:aws:ivs:[a-z0-9-]+:[0-9]+:recording-configuration/[a-zA-Z0-9-]+$"
     },
     "RecordingConfigurationList":{
       "type":"list",
@@ -1911,7 +1912,7 @@
       "type":"string",
       "max":128,
       "min":0,
-      "pattern":"[a-zA-Z0-9-_]*"
+      "pattern":"^[a-zA-Z0-9-_]*$"
     },
     "RecordingConfigurationState":{
       "type":"string",
@@ -1933,13 +1934,13 @@
           "shape":"RecordingConfigurationArn",
           "documentation":"<p>Recording-configuration ARN.</p>"
         },
-        "name":{
-          "shape":"RecordingConfigurationName",
-          "documentation":"<p>Recording-configuration name. The value does not need to be unique.</p>"
-        },
         "destinationConfiguration":{
           "shape":"DestinationConfiguration",
           "documentation":"<p>A complex type that contains information about where recorded video will be stored.</p>"
+        },
+        "name":{
+          "shape":"RecordingConfigurationName",
+          "documentation":"<p>Recording-configuration name. The value does not need to be unique.</p>"
         },
         "state":{
           "shape":"RecordingConfigurationState",
@@ -2003,7 +2004,7 @@
       "type":"string",
       "max":128,
       "min":1,
-      "pattern":"arn:aws:ivs:[a-z0-9-]+:[0-9]+:[a-z-]/[a-zA-Z0-9-]+"
+      "pattern":"^arn:aws:ivs:[a-z0-9-]+:[0-9]+:[a-z-]/[a-zA-Z0-9-]+$"
     },
     "ResourceNotFoundException":{
       "type":"structure",
@@ -2024,7 +2025,7 @@
       "type":"string",
       "max":63,
       "min":3,
-      "pattern":"[a-z0-9-.]+"
+      "pattern":"^[a-z0-9-.]+$"
     },
     "S3DestinationConfiguration":{
       "type":"structure",
@@ -2119,9 +2120,9 @@
           "shape":"ChannelArn",
           "documentation":"<p>Channel ARN for the stream.</p>"
         },
-        "streamId":{
-          "shape":"StreamId",
-          "documentation":"<p>Unique identifier for a live or previously live stream in the specified channel.</p>"
+        "health":{
+          "shape":"StreamHealth",
+          "documentation":"<p>The stream’s health.</p>"
         },
         "playbackUrl":{
           "shape":"PlaybackURL",
@@ -2135,9 +2136,9 @@
           "shape":"StreamState",
           "documentation":"<p>The stream’s state. Do not rely on the <code>OFFLINE</code> state, as the API may not return it; instead, a \"NotBroadcasting\" error will indicate that the stream is not live.</p>"
         },
-        "health":{
-          "shape":"StreamHealth",
-          "documentation":"<p>The stream’s health.</p>"
+        "streamId":{
+          "shape":"StreamId",
+          "documentation":"<p>Unique identifier for a live or previously live stream in the specified channel.</p>"
         },
         "viewerCount":{
           "shape":"StreamViewerCount",
@@ -2149,6 +2150,14 @@
     "StreamEvent":{
       "type":"structure",
       "members":{
+        "code":{
+          "shape":"String",
+          "documentation":"<p>Provides additional details about the stream event. There are several values; note that the long descriptions are provided in the IVS console but not delivered through the IVS API or EventBridge:</p> <ul> <li> <p> <code>StreamTakeoverMediaMismatch</code> — The broadcast client attempted to take over with different media properties (e.g., codec, resolution, or video track type) from the original stream.</p> </li> <li> <p> <code>StreamTakeoverInvalidPriority</code> — The broadcast client attempted a takeover with either a priority integer value equal to or lower than the original stream's value or a value outside the allowed range of 1 to 2,147,483,647.</p> </li> <li> <p> <code>StreamTakeoverLimitBreached</code> — The broadcast client reached the maximum allowed takeover attempts for this stream.</p> </li> </ul>"
+        },
+        "eventTime":{
+          "shape":"Time",
+          "documentation":"<p>Time when the event occurred. This is an ISO 8601 timestamp; <i>note that this is returned as a string</i>.</p>"
+        },
         "name":{
           "shape":"String",
           "documentation":"<p>Name that identifies the stream event within a <code>type</code>.</p>"
@@ -2156,10 +2165,6 @@
         "type":{
           "shape":"String",
           "documentation":"<p>Logical group for certain events.</p>"
-        },
-        "eventTime":{
-          "shape":"Time",
-          "documentation":"<p>Time when the event occurred. This is an ISO 8601 timestamp; <i>note that this is returned as a string</i>.</p>"
         }
       },
       "documentation":"<p>Object specifying a stream’s events. For a list of events, see <a href=\"https://docs.aws.amazon.com/ivs/latest/userguide/eventbridge.html\">Using Amazon EventBridge with Amazon IVS</a>.</p>"
@@ -2192,7 +2197,7 @@
       "type":"string",
       "max":26,
       "min":26,
-      "pattern":"st-[a-zA-Z0-9]+"
+      "pattern":"^st-[a-zA-Z0-9]+$"
     },
     "StreamKey":{
       "type":"structure",
@@ -2201,10 +2206,6 @@
           "shape":"StreamKeyArn",
           "documentation":"<p>Stream-key ARN.</p>"
         },
-        "value":{
-          "shape":"StreamKeyValue",
-          "documentation":"<p>Stream-key value.</p>"
-        },
         "channelArn":{
           "shape":"ChannelArn",
           "documentation":"<p>Channel ARN for the stream.</p>"
@@ -2212,6 +2213,10 @@
         "tags":{
           "shape":"Tags",
           "documentation":"<p>Tags attached to the resource. Array of 1-50 maps, each of the form <code>string:string (key:value)</code>. See <a href=\"https://docs.aws.amazon.com/tag-editor/latest/userguide/best-practices-and-strats.html\">Best practices and strategies</a> in <i>Tagging Amazon Web Services Resources and Tag Editor</i> for details, including restrictions that apply to tags and \"Tag naming limits and requirements\"; Amazon IVS has no service-specific constraints beyond what is documented there.</p>"
+        },
+        "value":{
+          "shape":"StreamKeyValue",
+          "documentation":"<p>Stream-key value.</p>"
         }
       },
       "documentation":"<p>Object specifying a stream key.</p>"
@@ -2220,7 +2225,7 @@
       "type":"string",
       "max":128,
       "min":1,
-      "pattern":"arn:aws:ivs:[a-z0-9-]+:[0-9]+:stream-key/[a-zA-Z0-9-]+"
+      "pattern":"^arn:aws:ivs:[a-z0-9-]+:[0-9]+:stream-key/[a-zA-Z0-9-]+$"
     },
     "StreamKeyArnList":{
       "type":"list",
@@ -2270,21 +2275,13 @@
     "StreamSession":{
       "type":"structure",
       "members":{
-        "streamId":{
-          "shape":"StreamId",
-          "documentation":"<p>Unique identifier for a live or previously live stream in the specified channel.</p>"
-        },
-        "startTime":{
-          "shape":"Time",
-          "documentation":"<p>Time when the channel went live. This is an ISO 8601 timestamp; <i>note that this is returned as a string</i>.</p>"
+        "channel":{
+          "shape":"Channel",
+          "documentation":"<p>The properties of the channel at the time of going live.</p>"
         },
         "endTime":{
           "shape":"Time",
           "documentation":"<p>Time when the channel went offline. This is an ISO 8601 timestamp; <i>note that this is returned as a string</i>. For live streams, this is <code>NULL</code>.</p>"
-        },
-        "channel":{
-          "shape":"Channel",
-          "documentation":"<p>The properties of the channel at the time of going live.</p>"
         },
         "ingestConfiguration":{
           "shape":"IngestConfiguration",
@@ -2293,6 +2290,14 @@
         "recordingConfiguration":{
           "shape":"RecordingConfiguration",
           "documentation":"<p>The properties of recording the live stream.</p>"
+        },
+        "startTime":{
+          "shape":"Time",
+          "documentation":"<p>Time when the channel went live. This is an ISO 8601 timestamp; <i>note that this is returned as a string</i>.</p>"
+        },
+        "streamId":{
+          "shape":"StreamId",
+          "documentation":"<p>Unique identifier for a live or previously live stream in the specified channel.</p>"
         },
         "truncatedEvents":{
           "shape":"StreamEvents",
@@ -2308,14 +2313,6 @@
     "StreamSessionSummary":{
       "type":"structure",
       "members":{
-        "streamId":{
-          "shape":"StreamId",
-          "documentation":"<p>Unique identifier for a live or previously live stream in the specified channel.</p>"
-        },
-        "startTime":{
-          "shape":"Time",
-          "documentation":"<p>Time when the channel went live. This is an ISO 8601 timestamp; <i>note that this is returned as a string</i>.</p>"
-        },
         "endTime":{
           "shape":"Time",
           "documentation":"<p>Time when the channel went offline. This is an ISO 8601 timestamp; <i>note that this is returned as a string</i>. For live streams, this is <code>NULL</code>.</p>"
@@ -2323,6 +2320,14 @@
         "hasErrorEvent":{
           "shape":"Boolean",
           "documentation":"<p>If <code>true</code>, this stream encountered a quota breach or failure.</p>"
+        },
+        "startTime":{
+          "shape":"Time",
+          "documentation":"<p>Time when the channel went live. This is an ISO 8601 timestamp; <i>note that this is returned as a string</i>.</p>"
+        },
+        "streamId":{
+          "shape":"StreamId",
+          "documentation":"<p>Unique identifier for a live or previously live stream in the specified channel.</p>"
         }
       },
       "documentation":"<p>Summary information about a stream session.</p>"
@@ -2345,25 +2350,25 @@
           "shape":"ChannelArn",
           "documentation":"<p>Channel ARN for the stream.</p>"
         },
-        "streamId":{
-          "shape":"StreamId",
-          "documentation":"<p>Unique identifier for a live or previously live stream in the specified channel.</p>"
+        "health":{
+          "shape":"StreamHealth",
+          "documentation":"<p>The stream’s health.</p>"
+        },
+        "startTime":{
+          "shape":"StreamStartTime",
+          "documentation":"<p>Time of the stream’s start. This is an ISO 8601 timestamp; <i>note that this is returned as a string</i>. </p>"
         },
         "state":{
           "shape":"StreamState",
           "documentation":"<p>The stream’s state. Do not rely on the <code>OFFLINE</code> state, as the API may not return it; instead, a \"NotBroadcasting\" error will indicate that the stream is not live.</p>"
         },
-        "health":{
-          "shape":"StreamHealth",
-          "documentation":"<p>The stream’s health.</p>"
+        "streamId":{
+          "shape":"StreamId",
+          "documentation":"<p>Unique identifier for a live or previously live stream in the specified channel.</p>"
         },
         "viewerCount":{
           "shape":"StreamViewerCount",
           "documentation":"<p>A count of concurrent views of the stream. Typically, a new view appears in <code>viewerCount</code> within 15 seconds of when video playback starts and a view is removed from <code>viewerCount</code> within 1 minute of when video playback ends. A value of -1 indicates that the request timed out; in this case, retry.</p>"
-        },
-        "startTime":{
-          "shape":"StreamStartTime",
-          "documentation":"<p>Time of the stream’s start. This is an ISO 8601 timestamp; <i>note that this is returned as a string</i>. </p>"
         }
       },
       "documentation":"<p>Summary information about a stream.</p>"
@@ -2458,10 +2463,6 @@
           "shape":"RecordingMode",
           "documentation":"<p>Thumbnail recording mode. Default: <code>INTERVAL</code>.</p>"
         },
-        "targetIntervalSeconds":{
-          "shape":"TargetIntervalSeconds",
-          "documentation":"<p>The targeted thumbnail-generation interval in seconds. This is configurable (and required) only if <code>recordingMode</code> is <code>INTERVAL</code>. Default: 60.</p> <p> <b>Important:</b> For the <code>BASIC</code> channel type, setting a value for <code>targetIntervalSeconds</code> does not guarantee that thumbnails are generated at the specified interval. For thumbnails to be generated at the <code>targetIntervalSeconds</code> interval, the <code>IDR/Keyframe</code> value for the input video must be less than the <code>targetIntervalSeconds</code> value. See <a href=\"https://docs.aws.amazon.com/ivs/latest/userguide/streaming-config.html\"> Amazon IVS Streaming Configuration</a> for information on setting <code>IDR/Keyframe</code> to the recommended value in video-encoder settings.</p>"
-        },
         "resolution":{
           "shape":"ThumbnailConfigurationResolution",
           "documentation":"<p>Indicates the desired resolution of recorded thumbnails. Thumbnails are recorded at the selected resolution if the corresponding rendition is available during the stream; otherwise, they are recorded at source resolution. For more information about resolution values and their corresponding height and width dimensions, see <a href=\"https://docs.aws.amazon.com/ivs/latest/userguide/record-to-s3.html\">Auto-Record to Amazon S3</a>. Default: Null (source resolution is returned).</p>"
@@ -2469,6 +2470,10 @@
         "storage":{
           "shape":"ThumbnailConfigurationStorageList",
           "documentation":"<p>Indicates the format in which thumbnails are recorded. <code>SEQUENTIAL</code> records all generated thumbnails in a serial manner, to the media/thumbnails directory. <code>LATEST</code> saves the latest thumbnail in media/latest_thumbnail/thumb.jpg and overwrites it at the interval specified by <code>targetIntervalSeconds</code>. You can enable both <code>SEQUENTIAL</code> and <code>LATEST</code>. Default: <code>SEQUENTIAL</code>.</p>"
+        },
+        "targetIntervalSeconds":{
+          "shape":"TargetIntervalSeconds",
+          "documentation":"<p>The targeted thumbnail-generation interval in seconds. This is configurable (and required) only if <code>recordingMode</code> is <code>INTERVAL</code>. Default: 60.</p> <p> <b>Important:</b> For the <code>BASIC</code> channel type, setting a value for <code>targetIntervalSeconds</code> does not guarantee that thumbnails are generated at the specified interval. For thumbnails to be generated at the <code>targetIntervalSeconds</code> interval, the <code>IDR/Keyframe</code> value for the input video must be less than the <code>targetIntervalSeconds</code> value. See <a href=\"https://docs.aws.amazon.com/ivs/latest/userguide/streaming-config.html\"> Amazon IVS Streaming Configuration</a> for information on setting <code>IDR/Keyframe</code> to the recommended value in video-encoder settings.</p>"
         }
       },
       "documentation":"<p>An object representing a configuration of thumbnails for recorded video.</p>"
@@ -2538,37 +2543,37 @@
           "shape":"ChannelArn",
           "documentation":"<p>ARN of the channel to be updated.</p>"
         },
-        "name":{
-          "shape":"ChannelName",
-          "documentation":"<p>Channel name.</p>"
-        },
-        "latencyMode":{
-          "shape":"ChannelLatencyMode",
-          "documentation":"<p>Channel latency mode. Use <code>NORMAL</code> to broadcast and deliver live video up to Full HD. Use <code>LOW</code> for near-real-time interaction with viewers.</p>"
-        },
-        "type":{
-          "shape":"ChannelType",
-          "documentation":"<p>Channel type, which determines the allowable resolution and bitrate. <i>If you exceed the allowable input resolution or bitrate, the stream probably will disconnect immediately.</i> Default: <code>STANDARD</code>. For details, see <a href=\"https://docs.aws.amazon.com/ivs/latest/LowLatencyAPIReference/channel-types.html\">Channel Types</a>.</p>"
-        },
         "authorized":{
           "shape":"Boolean",
           "documentation":"<p>Whether the channel is private (enabled for playback authorization).</p>"
-        },
-        "recordingConfigurationArn":{
-          "shape":"ChannelRecordingConfigurationArn",
-          "documentation":"<p>Recording-configuration ARN. A valid ARN value here both specifies the ARN and enables recording. If this is set to an empty string, recording is disabled.</p>"
         },
         "insecureIngest":{
           "shape":"Boolean",
           "documentation":"<p>Whether the channel allows insecure RTMP and SRT ingest. Default: <code>false</code>.</p>"
         },
-        "preset":{
-          "shape":"TranscodePreset",
-          "documentation":"<p>Optional transcode preset for the channel. This is selectable only for <code>ADVANCED_HD</code> and <code>ADVANCED_SD</code> channel types. For those channel types, the default <code>preset</code> is <code>HIGHER_BANDWIDTH_DELIVERY</code>. For other channel types (<code>BASIC</code> and <code>STANDARD</code>), <code>preset</code> is the empty string (<code>\"\"</code>).</p>"
+        "latencyMode":{
+          "shape":"ChannelLatencyMode",
+          "documentation":"<p>Channel latency mode. Use <code>NORMAL</code> to broadcast and deliver live video up to Full HD. Use <code>LOW</code> for near-real-time interaction with viewers.</p>"
+        },
+        "name":{
+          "shape":"ChannelName",
+          "documentation":"<p>Channel name.</p>"
         },
         "playbackRestrictionPolicyArn":{
           "shape":"ChannelPlaybackRestrictionPolicyArn",
           "documentation":"<p>Playback-restriction-policy ARN. A valid ARN value here both specifies the ARN and enables playback restriction. If this is set to an empty string, playback restriction policy is disabled.</p>"
+        },
+        "preset":{
+          "shape":"TranscodePreset",
+          "documentation":"<p>Optional transcode preset for the channel. This is selectable only for <code>ADVANCED_HD</code> and <code>ADVANCED_SD</code> channel types. For those channel types, the default <code>preset</code> is <code>HIGHER_BANDWIDTH_DELIVERY</code>. For other channel types (<code>BASIC</code> and <code>STANDARD</code>), <code>preset</code> is the empty string (<code>\"\"</code>).</p>"
+        },
+        "recordingConfigurationArn":{
+          "shape":"ChannelRecordingConfigurationArn",
+          "documentation":"<p>Recording-configuration ARN. A valid ARN value here both specifies the ARN and enables recording. If this is set to an empty string, recording is disabled.</p>"
+        },
+        "type":{
+          "shape":"ChannelType",
+          "documentation":"<p>Channel type, which determines the allowable resolution and bitrate. <i>If you exceed the allowable input resolution or bitrate, the stream probably will disconnect immediately.</i> Default: <code>STANDARD</code>. For details, see <a href=\"https://docs.aws.amazon.com/ivs/latest/LowLatencyAPIReference/channel-types.html\">Channel Types</a>.</p>"
         }
       }
     },
@@ -2585,10 +2590,6 @@
       "type":"structure",
       "required":["arn"],
       "members":{
-        "arn":{
-          "shape":"PlaybackRestrictionPolicyArn",
-          "documentation":"<p>ARN of the playback-restriction-policy to be updated.</p>"
-        },
         "allowedCountries":{
           "shape":"PlaybackRestrictionPolicyAllowedCountryList",
           "documentation":"<p>A list of country codes that control geoblocking restriction. Allowed values are the officially assigned <a href=\"https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2\">ISO 3166-1 alpha-2</a> codes. Default: All countries (an empty array).</p>"
@@ -2596,6 +2597,10 @@
         "allowedOrigins":{
           "shape":"PlaybackRestrictionPolicyAllowedOriginList",
           "documentation":"<p>A list of origin sites that control CORS restriction. Allowed values are the same as valid values of the Origin header defined at <a href=\"https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Origin\">https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Origin</a>. Default: All origins (an empty array).</p>"
+        },
+        "arn":{
+          "shape":"PlaybackRestrictionPolicyArn",
+          "documentation":"<p>ARN of the playback-restriction-policy to be updated.</p>"
         },
         "enableStrictOriginEnforcement":{
           "shape":"PlaybackRestrictionPolicyEnableStrictOriginEnforcement",
@@ -2634,13 +2639,13 @@
     "VideoConfiguration":{
       "type":"structure",
       "members":{
-        "avcProfile":{
-          "shape":"String",
-          "documentation":"<p>Indicates to the decoder the requirements for decoding the stream. For definitions of the valid values, see the H.264 specification.</p>"
-        },
         "avcLevel":{
           "shape":"String",
           "documentation":"<p>Indicates the degree of required decoder performance for a profile. Normally this is set automatically by the encoder. For details, see the H.264 specification.</p>"
+        },
+        "avcProfile":{
+          "shape":"String",
+          "documentation":"<p>Indicates to the decoder the requirements for decoding the stream. For definitions of the valid values, see the H.264 specification.</p>"
         },
         "codec":{
           "shape":"String",

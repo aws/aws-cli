@@ -1607,6 +1607,10 @@
           "documentation":"<p>The compute fleet overflow behavior.</p> <ul> <li> <p>For overflow behavior <code>QUEUE</code>, your overflow builds need to wait on the existing fleet instance to become available.</p> </li> <li> <p>For overflow behavior <code>ON_DEMAND</code>, your overflow builds run on CodeBuild on-demand.</p> <note> <p>If you choose to set your overflow behavior to on-demand while creating a VPC-connected fleet, make sure that you add the required VPC permissions to your project service role. For more information, see <a href=\"https://docs.aws.amazon.com/codebuild/latest/userguide/auth-and-access-control-iam-identity-based-access-control.html#customer-managed-policies-example-create-vpc-network-interface\">Example policy statement to allow CodeBuild access to Amazon Web Services services required to create a VPC network interface</a>.</p> </note> </li> </ul>"
         },
         "vpcConfig":{"shape":"VpcConfig"},
+        "proxyConfiguration":{
+          "shape":"ProxyConfiguration",
+          "documentation":"<p>The proxy configuration of the compute fleet.</p>"
+        },
         "imageId":{
           "shape":"NonEmptyString",
           "documentation":"<p>The Amazon Machine Image (AMI) of the compute fleet.</p>"
@@ -2232,6 +2236,10 @@
           "documentation":"<p>The compute fleet overflow behavior.</p> <ul> <li> <p>For overflow behavior <code>QUEUE</code>, your overflow builds need to wait on the existing fleet instance to become available.</p> </li> <li> <p>For overflow behavior <code>ON_DEMAND</code>, your overflow builds run on CodeBuild on-demand.</p> <note> <p>If you choose to set your overflow behavior to on-demand while creating a VPC-connected fleet, make sure that you add the required VPC permissions to your project service role. For more information, see <a href=\"https://docs.aws.amazon.com/codebuild/latest/userguide/auth-and-access-control-iam-identity-based-access-control.html#customer-managed-policies-example-create-vpc-network-interface\">Example policy statement to allow CodeBuild access to Amazon Web Services services required to create a VPC network interface</a>.</p> </note> </li> </ul>"
         },
         "vpcConfig":{"shape":"VpcConfig"},
+        "proxyConfiguration":{
+          "shape":"ProxyConfiguration",
+          "documentation":"<p>The proxy configuration of the compute fleet.</p>"
+        },
         "imageId":{
           "shape":"NonEmptyString",
           "documentation":"<p>The Amazon Machine Image (AMI) of the compute fleet.</p>"
@@ -2285,6 +2293,61 @@
         "QUEUE",
         "ON_DEMAND"
       ]
+    },
+    "FleetProxyRule":{
+      "type":"structure",
+      "required":[
+        "type",
+        "effect",
+        "entities"
+      ],
+      "members":{
+        "type":{
+          "shape":"FleetProxyRuleType",
+          "documentation":"<p>The type of proxy rule.</p>"
+        },
+        "effect":{
+          "shape":"FleetProxyRuleEffectType",
+          "documentation":"<p>The behavior of the proxy rule.</p>"
+        },
+        "entities":{
+          "shape":"FleetProxyRuleEntities",
+          "documentation":"<p>The destination of the proxy rule.</p>"
+        }
+      },
+      "documentation":"<p>Information about the proxy rule for your reserved capacity instances.</p>"
+    },
+    "FleetProxyRuleBehavior":{
+      "type":"string",
+      "enum":[
+        "ALLOW_ALL",
+        "DENY_ALL"
+      ]
+    },
+    "FleetProxyRuleEffectType":{
+      "type":"string",
+      "enum":[
+        "ALLOW",
+        "DENY"
+      ]
+    },
+    "FleetProxyRuleEntities":{
+      "type":"list",
+      "member":{"shape":"String"},
+      "max":100,
+      "min":1
+    },
+    "FleetProxyRuleType":{
+      "type":"string",
+      "enum":[
+        "DOMAIN",
+        "IP"
+      ]
+    },
+    "FleetProxyRules":{
+      "type":"list",
+      "member":{"shape":"FleetProxyRule"},
+      "max":100
     },
     "FleetScalingMetricType":{
       "type":"string",
@@ -3460,6 +3523,20 @@
       "type":"list",
       "member":{"shape":"Project"}
     },
+    "ProxyConfiguration":{
+      "type":"structure",
+      "members":{
+        "defaultBehavior":{
+          "shape":"FleetProxyRuleBehavior",
+          "documentation":"<p>The default behavior of outgoing traffic.</p>"
+        },
+        "orderedProxyRules":{
+          "shape":"FleetProxyRules",
+          "documentation":"<p>An array of <code>FleetProxyRule</code> objects that represent the specified destination domains or IPs to allow or deny network access control to.</p>"
+        }
+      },
+      "documentation":"<p>Information about the proxy configurations that apply network access control to your reserved capacity instances.</p>"
+    },
     "PutResourcePolicyInput":{
       "type":"structure",
       "required":[
@@ -4541,6 +4618,10 @@
           "documentation":"<p>The compute fleet overflow behavior.</p> <ul> <li> <p>For overflow behavior <code>QUEUE</code>, your overflow builds need to wait on the existing fleet instance to become available.</p> </li> <li> <p>For overflow behavior <code>ON_DEMAND</code>, your overflow builds run on CodeBuild on-demand.</p> <note> <p>If you choose to set your overflow behavior to on-demand while creating a VPC-connected fleet, make sure that you add the required VPC permissions to your project service role. For more information, see <a href=\"https://docs.aws.amazon.com/codebuild/latest/userguide/auth-and-access-control-iam-identity-based-access-control.html#customer-managed-policies-example-create-vpc-network-interface\">Example policy statement to allow CodeBuild access to Amazon Web Services services required to create a VPC network interface</a>.</p> </note> </li> </ul>"
         },
         "vpcConfig":{"shape":"VpcConfig"},
+        "proxyConfiguration":{
+          "shape":"ProxyConfiguration",
+          "documentation":"<p>The proxy configuration of the compute fleet.</p>"
+        },
         "imageId":{
           "shape":"NonEmptyString",
           "documentation":"<p>The Amazon Machine Image (AMI) of the compute fleet.</p>"
@@ -4860,7 +4941,8 @@
         "COMMIT_MESSAGE",
         "WORKFLOW_NAME",
         "TAG_NAME",
-        "RELEASE_NAME"
+        "RELEASE_NAME",
+        "REPOSITORY_NAME"
       ]
     },
     "WebhookScopeType":{

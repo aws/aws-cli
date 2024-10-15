@@ -535,7 +535,7 @@
         {"shape":"ValidationException"},
         {"shape":"AccessDeniedException"}
       ],
-      "documentation":"<p>List of compliance drifts that were detected while running an assessment.</p>"
+      "documentation":"<p>Indicates the list of compliance drifts that were detected while running an assessment.</p>"
     },
     "ListAppAssessmentResourceDrifts":{
       "name":"ListAppAssessmentResourceDrifts",
@@ -1332,6 +1332,10 @@
           "shape":"AppAssessmentScheduleType",
           "documentation":"<p>Assessment execution schedule with 'Daily' or 'Disabled' values. </p>"
         },
+        "awsApplicationArn":{
+          "shape":"Arn",
+          "documentation":"<p>Amazon Resource Name (ARN) of Resource Groups group that is integrated with an AppRegistry application. For more information about ARNs, see <a href=\"https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html\"> Amazon Resource Names (ARNs)</a> in the <i>Amazon Web Services General Reference</i> guide.</p>"
+        },
         "complianceStatus":{
           "shape":"AppComplianceStatusType",
           "documentation":"<p>Current status of compliance for the resiliency policy.</p>"
@@ -1473,7 +1477,7 @@
         },
         "summary":{
           "shape":"AssessmentSummary",
-          "documentation":"<p>Indicates a concise summary that provides an overview of the Resilience Hub assessment.</p>"
+          "documentation":"<p>Indicates the AI-generated summary for the Resilience Hub assessment, providing a concise overview that highlights the top risks and recommendations.</p> <note> <p>This property is available only in the US East (N. Virginia) Region.</p> </note>"
         },
         "tags":{
           "shape":"TagMap",
@@ -1704,6 +1708,10 @@
           "shape":"AppAssessmentScheduleType",
           "documentation":"<p> Assessment execution schedule with 'Daily' or 'Disabled' values. </p>"
         },
+        "awsApplicationArn":{
+          "shape":"Arn",
+          "documentation":"<p>Amazon Resource Name (ARN) of Resource Groups group that is integrated with an AppRegistry application. For more information about ARNs, see <a href=\"https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html\"> Amazon Resource Names (ARNs)</a> in the <i>Amazon Web Services General Reference</i> guide.</p>"
+        },
         "complianceStatus":{
           "shape":"AppComplianceStatusType",
           "documentation":"<p>The current status of compliance for the resiliency policy.</p>"
@@ -1929,7 +1937,6 @@
       "required":[
         "entryId",
         "excluded",
-        "item",
         "referenceId"
       ],
       "members":{
@@ -2181,6 +2188,10 @@
         "assessmentSchedule":{
           "shape":"AppAssessmentScheduleType",
           "documentation":"<p> Assessment execution schedule with 'Daily' or 'Disabled' values. </p>"
+        },
+        "awsApplicationArn":{
+          "shape":"Arn",
+          "documentation":"<p>Amazon Resource Name (ARN) of Resource Groups group that is integrated with an AppRegistry application. For more information about ARNs, see <a href=\"https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html\"> Amazon Resource Names (ARNs)</a> in the <i>Amazon Web Services General Reference</i> guide.</p>"
         },
         "clientToken":{
           "shape":"ClientToken",
@@ -3024,9 +3035,13 @@
           "shape":"EntityVersion",
           "documentation":"<p>The version of the application.</p>"
         },
+        "errorDetails":{
+          "shape":"ErrorDetailList",
+          "documentation":"<p>List of errors that were encountered while importing resources.</p>"
+        },
         "errorMessage":{
           "shape":"String500",
-          "documentation":"<p>The returned error message for the request.</p>"
+          "documentation":"<p>The error message returned for the resource request.</p>"
         },
         "status":{
           "shape":"ResourceImportStatusType",
@@ -3262,6 +3277,20 @@
     "EntityVersion":{
       "type":"string",
       "pattern":"^\\S{1,50}$"
+    },
+    "ErrorDetail":{
+      "type":"structure",
+      "members":{
+        "errorMessage":{
+          "shape":"ErrorMessage",
+          "documentation":"<p>Provides additional information about the error.</p>"
+        }
+      },
+      "documentation":"<p>Indicates the error that was encountered while importing a resource.</p>"
+    },
+    "ErrorDetailList":{
+      "type":"list",
+      "member":{"shape":"ErrorDetail"}
     },
     "ErrorMessage":{
       "type":"string",
@@ -4052,6 +4081,12 @@
           "documentation":"<p>Amazon Resource Name (ARN) of the Resilience Hub application. The format for this ARN is: arn:<code>partition</code>:resiliencehub:<code>region</code>:<code>account</code>:app/<code>app-id</code>. For more information about ARNs, see <a href=\"https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html\"> Amazon Resource Names (ARNs)</a> in the <i>Amazon Web Services General Reference</i> guide.</p>",
           "location":"querystring",
           "locationName":"appArn"
+        },
+        "awsApplicationArn":{
+          "shape":"Arn",
+          "documentation":"<p>Amazon Resource Name (ARN) of Resource Groups group that is integrated with an AppRegistry application. For more information about ARNs, see <a href=\"https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html\"> Amazon Resource Names (ARNs)</a> in the <i>Amazon Web Services General Reference</i> guide.</p>",
+          "location":"querystring",
+          "locationName":"awsApplicationArn"
         },
         "fromLastAssessmentTime":{
           "shape":"TimeStamp",
@@ -5940,7 +5975,6 @@
       "required":[
         "entryId",
         "excluded",
-        "item",
         "referenceId"
       ],
       "members":{

@@ -470,6 +470,30 @@
       ],
       "documentation":"<p>Creates an HSM configuration that contains the information required by an Amazon Redshift cluster to store and use database encryption keys in a Hardware Security Module (HSM). After creating the HSM configuration, you can specify it as a parameter when creating a cluster. The cluster will then store its encryption keys in the HSM.</p> <p>In addition to creating an HSM configuration, you must also create an HSM client certificate. For more information, go to <a href=\"https://docs.aws.amazon.com/redshift/latest/mgmt/working-with-HSM.html\">Hardware Security Modules</a> in the Amazon Redshift Cluster Management Guide.</p>"
     },
+    "CreateIntegration":{
+      "name":"CreateIntegration",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"CreateIntegrationMessage"},
+      "output":{
+        "shape":"Integration",
+        "resultWrapper":"CreateIntegrationResult"
+      },
+      "errors":[
+        {"shape":"IntegrationAlreadyExistsFault"},
+        {"shape":"IntegrationConflictOperationFault"},
+        {"shape":"IntegrationQuotaExceededFault"},
+        {"shape":"IntegrationSourceNotFoundFault"},
+        {"shape":"IntegrationTargetNotFoundFault"},
+        {"shape":"UnsupportedOperationFault"},
+        {"shape":"InvalidClusterStateFault"},
+        {"shape":"TagLimitExceededFault"},
+        {"shape":"InvalidTagFault"}
+      ],
+      "documentation":"<p>Creates a zero-ETL integration with Amazon Redshift.</p>"
+    },
     "CreateRedshiftIdcApplication":{
       "name":"CreateRedshiftIdcApplication",
       "http":{
@@ -775,6 +799,25 @@
         {"shape":"HsmConfigurationNotFoundFault"}
       ],
       "documentation":"<p>Deletes the specified Amazon Redshift HSM configuration.</p>"
+    },
+    "DeleteIntegration":{
+      "name":"DeleteIntegration",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DeleteIntegrationMessage"},
+      "output":{
+        "shape":"Integration",
+        "resultWrapper":"DeleteIntegrationResult"
+      },
+      "errors":[
+        {"shape":"IntegrationNotFoundFault"},
+        {"shape":"IntegrationConflictStateFault"},
+        {"shape":"IntegrationConflictOperationFault"},
+        {"shape":"UnsupportedOperationFault"}
+      ],
+      "documentation":"<p>Deletes a zero-ETL integration with Amazon Redshift.</p>"
     },
     "DeletePartner":{
       "name":"DeletePartner",
@@ -1275,6 +1318,23 @@
         {"shape":"UnsupportedOperationFault"}
       ],
       "documentation":"<p>Returns a list of inbound integrations.</p>"
+    },
+    "DescribeIntegrations":{
+      "name":"DescribeIntegrations",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DescribeIntegrationsMessage"},
+      "output":{
+        "shape":"IntegrationsMessage",
+        "resultWrapper":"DescribeIntegrationsResult"
+      },
+      "errors":[
+        {"shape":"IntegrationNotFoundFault"},
+        {"shape":"UnsupportedOperationFault"}
+      ],
+      "documentation":"<p>Describes one or more zero-ETL integrations with Amazon Redshift.</p>"
     },
     "DescribeLoggingStatus":{
       "name":"DescribeLoggingStatus",
@@ -2039,6 +2099,26 @@
       ],
       "documentation":"<p>Modifies an existing Amazon Redshift event notification subscription.</p>"
     },
+    "ModifyIntegration":{
+      "name":"ModifyIntegration",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"ModifyIntegrationMessage"},
+      "output":{
+        "shape":"Integration",
+        "resultWrapper":"ModifyIntegrationResult"
+      },
+      "errors":[
+        {"shape":"IntegrationNotFoundFault"},
+        {"shape":"IntegrationConflictStateFault"},
+        {"shape":"IntegrationConflictOperationFault"},
+        {"shape":"IntegrationAlreadyExistsFault"},
+        {"shape":"UnsupportedOperationFault"}
+      ],
+      "documentation":"<p>Modifies a zero-ETL integration with Amazon Redshift.</p>"
+    },
     "ModifyRedshiftIdcApplication":{
       "name":"ModifyRedshiftIdcApplication",
       "http":{
@@ -2270,7 +2350,7 @@
         {"shape":"DependentServiceUnavailableFault"},
         {"shape":"ReservedNodeAlreadyExistsFault"}
       ],
-      "documentation":"<p>Changes the size of the cluster. You can change the cluster's type, or change the number or type of nodes. The default behavior is to use the elastic resize method. With an elastic resize, your cluster is available for read and write operations more quickly than with the classic resize method. </p> <p>Elastic resize operations have the following restrictions:</p> <ul> <li> <p>You can only resize clusters of the following types:</p> <ul> <li> <p>dc2.large</p> </li> <li> <p>dc2.8xlarge</p> </li> <li> <p>ra3.xlplus</p> </li> <li> <p>ra3.4xlarge</p> </li> <li> <p>ra3.16xlarge</p> </li> </ul> </li> <li> <p>The type of nodes that you add must match the node type for the cluster.</p> </li> </ul>"
+      "documentation":"<p>Changes the size of the cluster. You can change the cluster's type, or change the number or type of nodes. The default behavior is to use the elastic resize method. With an elastic resize, your cluster is available for read and write operations more quickly than with the classic resize method. </p> <p>Elastic resize operations have the following restrictions:</p> <ul> <li> <p>You can only resize clusters of the following types:</p> <ul> <li> <p>dc2.large</p> </li> <li> <p>dc2.8xlarge</p> </li> <li> <p>ra3.large</p> </li> <li> <p>ra3.xlplus</p> </li> <li> <p>ra3.4xlarge</p> </li> <li> <p>ra3.16xlarge</p> </li> </ul> </li> <li> <p>The type of nodes that you add must match the node type for the cluster.</p> </li> </ul>"
     },
     "RestoreFromClusterSnapshot":{
       "name":"RestoreFromClusterSnapshot",
@@ -4085,7 +4165,7 @@
         },
         "NodeType":{
           "shape":"String",
-          "documentation":"<p>The node type to be provisioned for the cluster. For information about node types, go to <a href=\"https://docs.aws.amazon.com/redshift/latest/mgmt/working-with-clusters.html#how-many-nodes\"> Working with Clusters</a> in the <i>Amazon Redshift Cluster Management Guide</i>. </p> <p>Valid Values: <code>dc2.large</code> | <code>dc2.8xlarge</code> | <code>ra3.xlplus</code> | <code>ra3.4xlarge</code> | <code>ra3.16xlarge</code> </p>"
+          "documentation":"<p>The node type to be provisioned for the cluster. For information about node types, go to <a href=\"https://docs.aws.amazon.com/redshift/latest/mgmt/working-with-clusters.html#how-many-nodes\"> Working with Clusters</a> in the <i>Amazon Redshift Cluster Management Guide</i>. </p> <p>Valid Values: <code>dc2.large</code> | <code>dc2.8xlarge</code> | <code>ra3.large</code> | <code>ra3.xlplus</code> | <code>ra3.4xlarge</code> | <code>ra3.16xlarge</code> </p>"
         },
         "MasterUsername":{
           "shape":"String",
@@ -4549,6 +4629,44 @@
       "type":"structure",
       "members":{
         "HsmConfiguration":{"shape":"HsmConfiguration"}
+      }
+    },
+    "CreateIntegrationMessage":{
+      "type":"structure",
+      "required":[
+        "SourceArn",
+        "TargetArn",
+        "IntegrationName"
+      ],
+      "members":{
+        "SourceArn":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the database to use as the source for replication.</p>"
+        },
+        "TargetArn":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the Amazon Redshift data warehouse to use as the target for replication.</p>"
+        },
+        "IntegrationName":{
+          "shape":"IntegrationName",
+          "documentation":"<p>The name of the integration.</p>"
+        },
+        "KMSKeyId":{
+          "shape":"String",
+          "documentation":"<p>An Key Management Service (KMS) key identifier for the key to use to encrypt the integration. If you don't specify an encryption key, the default Amazon Web Services owned key is used.</p>"
+        },
+        "TagList":{
+          "shape":"TagList",
+          "documentation":"<p>A list of tags.</p>"
+        },
+        "AdditionalEncryptionContext":{
+          "shape":"EncryptionContextMap",
+          "documentation":"<p>An optional set of non-secret key–value pairs that contains additional contextual information about the data. For more information, see <a href=\"https://docs.aws.amazon.com/kms/latest/developerguide/concepts.html#encrypt_context\">Encryption context</a> in the <i>Amazon Web Services Key Management Service Developer Guide</i>.</p> <p>You can only include this parameter if you specify the <code>KMSKeyId</code> parameter.</p>"
+        },
+        "Description":{
+          "shape":"IntegrationDescription",
+          "documentation":"<p>A description of the integration.</p>"
+        }
       }
     },
     "CreateRedshiftIdcApplicationMessage":{
@@ -5173,6 +5291,16 @@
         }
       },
       "documentation":"<p/>"
+    },
+    "DeleteIntegrationMessage":{
+      "type":"structure",
+      "required":["IntegrationArn"],
+      "members":{
+        "IntegrationArn":{
+          "shape":"IntegrationArn",
+          "documentation":"<p>The unique identifier of the integration to delete.</p>"
+        }
+      }
     },
     "DeleteRedshiftIdcApplicationMessage":{
       "type":"structure",
@@ -5898,6 +6026,68 @@
         }
       }
     },
+    "DescribeIntegrationsFilter":{
+      "type":"structure",
+      "required":[
+        "Name",
+        "Values"
+      ],
+      "members":{
+        "Name":{
+          "shape":"DescribeIntegrationsFilterName",
+          "documentation":"<p>Specifies the type of integration filter.</p>"
+        },
+        "Values":{
+          "shape":"DescribeIntegrationsFilterValueList",
+          "documentation":"<p>Specifies the values to filter on.</p>"
+        }
+      },
+      "documentation":"<p>A set of elements to filter the returned integrations.</p>"
+    },
+    "DescribeIntegrationsFilterList":{
+      "type":"list",
+      "member":{
+        "shape":"DescribeIntegrationsFilter",
+        "locationName":"DescribeIntegrationsFilter"
+      }
+    },
+    "DescribeIntegrationsFilterName":{
+      "type":"string",
+      "enum":[
+        "integration-arn",
+        "source-arn",
+        "source-types",
+        "status"
+      ]
+    },
+    "DescribeIntegrationsFilterValueList":{
+      "type":"list",
+      "member":{
+        "shape":"String",
+        "locationName":"Value"
+      }
+    },
+    "DescribeIntegrationsMessage":{
+      "type":"structure",
+      "members":{
+        "IntegrationArn":{
+          "shape":"IntegrationArn",
+          "documentation":"<p>The unique identifier of the integration.</p>"
+        },
+        "MaxRecords":{
+          "shape":"IntegerOptional",
+          "documentation":"<p>The maximum number of response records to return in each call. If the number of remaining response records exceeds the specified <code>MaxRecords</code> value, a value is returned in a <code>marker</code> field of the response. You can retrieve the next set of records by retrying the command with the returned marker value. </p> <p>Default: <code>100</code> </p> <p>Constraints: minimum 20, maximum 100.</p>"
+        },
+        "Marker":{
+          "shape":"String",
+          "documentation":"<p>An optional pagination token provided by a previous <code>DescribeIntegrations</code> request. If this parameter is specified, the response includes only records beyond the marker, up to the value specified by <code>MaxRecords</code>.</p>"
+        },
+        "Filters":{
+          "shape":"DescribeIntegrationsFilterList",
+          "documentation":"<p>A filter that specifies one or more resources to return.</p>"
+        }
+      }
+    },
     "DescribeLoggingStatusMessage":{
       "type":"structure",
       "required":["ClusterIdentifier"],
@@ -6251,7 +6441,7 @@
         },
         "ResourceType":{
           "shape":"String",
-          "documentation":"<p>The type of resource with which you want to view tags. Valid resource types are: </p> <ul> <li> <p>Cluster</p> </li> <li> <p>CIDR/IP</p> </li> <li> <p>EC2 security group</p> </li> <li> <p>Snapshot</p> </li> <li> <p>Cluster security group</p> </li> <li> <p>Subnet group</p> </li> <li> <p>HSM connection</p> </li> <li> <p>HSM certificate</p> </li> <li> <p>Parameter group</p> </li> <li> <p>Snapshot copy grant</p> </li> </ul> <p>For more information about Amazon Redshift resource types and constructing ARNs, go to <a href=\"https://docs.aws.amazon.com/redshift/latest/mgmt/redshift-iam-access-control-overview.html#redshift-iam-access-control-specify-actions\">Specifying Policy Elements: Actions, Effects, Resources, and Principals</a> in the Amazon Redshift Cluster Management Guide. </p>"
+          "documentation":"<p>The type of resource with which you want to view tags. Valid resource types are: </p> <ul> <li> <p>Cluster</p> </li> <li> <p>CIDR/IP</p> </li> <li> <p>EC2 security group</p> </li> <li> <p>Snapshot</p> </li> <li> <p>Cluster security group</p> </li> <li> <p>Subnet group</p> </li> <li> <p>HSM connection</p> </li> <li> <p>HSM certificate</p> </li> <li> <p>Parameter group</p> </li> <li> <p>Snapshot copy grant</p> </li> <li> <p>Integration (zero-ETL integration)</p> <note> <p>To describe the tags associated with an <code>integration</code>, don't specify <code>ResourceType</code>, instead specify the <code>ResourceName</code> of the integration.</p> </note> </li> </ul> <p>For more information about Amazon Redshift resource types and constructing ARNs, go to <a href=\"https://docs.aws.amazon.com/redshift/latest/mgmt/redshift-iam-access-control-overview.html#redshift-iam-access-control-specify-actions\">Specifying Policy Elements: Actions, Effects, Resources, and Principals</a> in the Amazon Redshift Cluster Management Guide. </p>"
         },
         "MaxRecords":{
           "shape":"IntegerOptional",
@@ -6304,6 +6494,12 @@
           "documentation":"<p>A tag value or values for which you want to return all matching usage limit objects that are associated with the specified tag value or values. For example, suppose that you have parameter groups that are tagged with values called <code>admin</code> and <code>test</code>. If you specify both of these tag values in the request, Amazon Redshift returns a response with the usage limit objects that have either or both of these tag values associated with them.</p>"
         }
       }
+    },
+    "Description":{
+      "type":"string",
+      "max":1000,
+      "min":1,
+      "pattern":"^.*$"
     },
     "DisableLoggingMessage":{
       "type":"structure",
@@ -6469,6 +6665,11 @@
       "members":{
         "Cluster":{"shape":"Cluster"}
       }
+    },
+    "EncryptionContextMap":{
+      "type":"map",
+      "key":{"shape":"String"},
+      "value":{"shape":"String"}
     },
     "Endpoint":{
       "type":"structure",
@@ -7403,6 +7604,103 @@
     },
     "Integer":{"type":"integer"},
     "IntegerOptional":{"type":"integer"},
+    "Integration":{
+      "type":"structure",
+      "members":{
+        "IntegrationArn":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the integration.</p>"
+        },
+        "IntegrationName":{
+          "shape":"IntegrationName",
+          "documentation":"<p>The name of the integration.</p>"
+        },
+        "SourceArn":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the database used as the source for replication.</p>"
+        },
+        "TargetArn":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the Amazon Redshift data warehouse to use as the target for replication.</p>"
+        },
+        "Status":{
+          "shape":"ZeroETLIntegrationStatus",
+          "documentation":"<p>The current status of the integration.</p>"
+        },
+        "Errors":{
+          "shape":"IntegrationErrorList",
+          "documentation":"<p>Any errors associated with the integration.</p>"
+        },
+        "CreateTime":{
+          "shape":"TStamp",
+          "documentation":"<p>The time (UTC) when the integration was created.</p>"
+        },
+        "Description":{
+          "shape":"Description",
+          "documentation":"<p>The description of the integration.</p>"
+        },
+        "KMSKeyId":{
+          "shape":"String",
+          "documentation":"<p>The Key Management Service (KMS) key identifier for the key used to encrypt the integration.</p>"
+        },
+        "AdditionalEncryptionContext":{
+          "shape":"EncryptionContextMap",
+          "documentation":"<p>The encryption context for the integration. For more information, see <a href=\"https://docs.aws.amazon.com/kms/latest/developerguide/concepts.html#encrypt_context\">Encryption context</a> in the <i>Amazon Web Services Key Management Service Developer Guide</i>.</p>"
+        },
+        "Tags":{
+          "shape":"TagList",
+          "documentation":"<p>The list of tags associated with the integration.</p>"
+        }
+      }
+    },
+    "IntegrationAlreadyExistsFault":{
+      "type":"structure",
+      "members":{
+      },
+      "documentation":"<p>The integration you are trying to create already exists.</p>",
+      "error":{
+        "code":"IntegrationAlreadyExistsFault",
+        "httpStatusCode":400,
+        "senderFault":true
+      },
+      "exception":true
+    },
+    "IntegrationArn":{
+      "type":"string",
+      "max":255,
+      "min":1,
+      "pattern":"arn:aws[a-z\\-]*:redshift:[a-z0-9\\-]*:[0-9]*:integration:[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}"
+    },
+    "IntegrationConflictOperationFault":{
+      "type":"structure",
+      "members":{
+      },
+      "documentation":"<p>A conflicting conditional operation is currently in progress against this resource. This typically occurs when there are multiple requests being made to the same resource at the same time, and these requests conflict with each other.</p>",
+      "error":{
+        "code":"IntegrationConflictOperationFault",
+        "httpStatusCode":400,
+        "senderFault":true
+      },
+      "exception":true
+    },
+    "IntegrationConflictStateFault":{
+      "type":"structure",
+      "members":{
+      },
+      "documentation":"<p>The integration is in an invalid state and can't perform the requested operation.</p>",
+      "error":{
+        "code":"IntegrationConflictStateFault",
+        "httpStatusCode":400,
+        "senderFault":true
+      },
+      "exception":true
+    },
+    "IntegrationDescription":{
+      "type":"string",
+      "max":1000,
+      "min":0,
+      "pattern":"^.*$"
+    },
     "IntegrationError":{
       "type":"structure",
       "required":["ErrorCode"],
@@ -7425,6 +7723,19 @@
         "locationName":"IntegrationError"
       }
     },
+    "IntegrationList":{
+      "type":"list",
+      "member":{
+        "shape":"Integration",
+        "locationName":"Integration"
+      }
+    },
+    "IntegrationName":{
+      "type":"string",
+      "max":63,
+      "min":1,
+      "pattern":"^[a-zA-Z][a-zA-Z0-9]*(-[a-zA-Z0-9]+)*$"
+    },
     "IntegrationNotFoundFault":{
       "type":"structure",
       "members":{
@@ -7436,6 +7747,55 @@
         "senderFault":true
       },
       "exception":true
+    },
+    "IntegrationQuotaExceededFault":{
+      "type":"structure",
+      "members":{
+      },
+      "documentation":"<p>You can't create any more zero-ETL integrations because the quota has been reached.</p>",
+      "error":{
+        "code":"IntegrationQuotaExceededFault",
+        "httpStatusCode":400,
+        "senderFault":true
+      },
+      "exception":true
+    },
+    "IntegrationSourceNotFoundFault":{
+      "type":"structure",
+      "members":{
+      },
+      "documentation":"<p>The specified integration source can't be found.</p>",
+      "error":{
+        "code":"IntegrationSourceNotFoundFault",
+        "httpStatusCode":404,
+        "senderFault":true
+      },
+      "exception":true
+    },
+    "IntegrationTargetNotFoundFault":{
+      "type":"structure",
+      "members":{
+      },
+      "documentation":"<p>The specified integration target can't be found.</p>",
+      "error":{
+        "code":"IntegrationTargetNotFoundFault",
+        "httpStatusCode":404,
+        "senderFault":true
+      },
+      "exception":true
+    },
+    "IntegrationsMessage":{
+      "type":"structure",
+      "members":{
+        "Marker":{
+          "shape":"String",
+          "documentation":"<p>A value that indicates the starting point for the next set of response records in a subsequent request. If a value is returned in a response, you can retrieve the next set of records by providing this returned marker value in the <code>Marker</code> parameter and retrying the command. If the <code>Marker</code> field is empty, all response records have been retrieved for the request.</p>"
+        },
+        "Integrations":{
+          "shape":"IntegrationList",
+          "documentation":"<p>List of integrations that are described.</p>"
+        }
+      }
     },
     "InvalidAuthenticationProfileRequestFault":{
       "type":"structure",
@@ -8124,7 +8484,7 @@
         },
         "NodeType":{
           "shape":"String",
-          "documentation":"<p>The new node type of the cluster. If you specify a new node type, you must also specify the number of nodes parameter.</p> <p> For more information about resizing clusters, go to <a href=\"https://docs.aws.amazon.com/redshift/latest/mgmt/rs-resize-tutorial.html\">Resizing Clusters in Amazon Redshift</a> in the <i>Amazon Redshift Cluster Management Guide</i>.</p> <p>Valid Values: <code>dc2.large</code> | <code>dc2.8xlarge</code> | <code>ra3.xlplus</code> | <code>ra3.4xlarge</code> | <code>ra3.16xlarge</code> </p>"
+          "documentation":"<p>The new node type of the cluster. If you specify a new node type, you must also specify the number of nodes parameter.</p> <p> For more information about resizing clusters, go to <a href=\"https://docs.aws.amazon.com/redshift/latest/mgmt/rs-resize-tutorial.html\">Resizing Clusters in Amazon Redshift</a> in the <i>Amazon Redshift Cluster Management Guide</i>.</p> <p>Valid Values: <code>dc2.large</code> | <code>dc2.8xlarge</code> | <code>ra3.large</code> | <code>ra3.xlplus</code> | <code>ra3.4xlarge</code> | <code>ra3.16xlarge</code> </p>"
         },
         "NumberOfNodes":{
           "shape":"IntegerOptional",
@@ -8423,6 +8783,24 @@
       "type":"structure",
       "members":{
         "EventSubscription":{"shape":"EventSubscription"}
+      }
+    },
+    "ModifyIntegrationMessage":{
+      "type":"structure",
+      "required":["IntegrationArn"],
+      "members":{
+        "IntegrationArn":{
+          "shape":"IntegrationArn",
+          "documentation":"<p>The unique identifier of the integration to modify.</p>"
+        },
+        "Description":{
+          "shape":"IntegrationDescription",
+          "documentation":"<p>A new description for the integration.</p>"
+        },
+        "IntegrationName":{
+          "shape":"IntegrationName",
+          "documentation":"<p>A new name for the integration.</p>"
+        }
       }
     },
     "ModifyRedshiftIdcApplicationMessage":{
